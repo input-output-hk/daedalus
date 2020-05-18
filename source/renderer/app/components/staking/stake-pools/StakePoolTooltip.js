@@ -19,7 +19,7 @@ import closeCross from '../../../assets/images/close-cross.inline.svg';
 import experimentalIcon from '../../../assets/images/experiment-icon.inline.svg';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
 import { formattedWalletAmount, shortNumber } from '../../../utils/formatters';
-import { rangeMap } from '../../../utils/rangeMap';
+import { rangeMap } from '../../../utils/numbers';
 import {
   THUMBNAIL_HEIGHT,
   THUMBNAIL_OFFSET_WIDTH,

@@ -442,3 +442,33 @@ export const getWalletType = async function(_type?: string = '') {
   }
   return type;
 }
+
+export const restoreWallet = async function(walletName: string, kind: string, subkind: string, recovery_phrase: string) {
+  await this.client.executeAsync((done) => {
+    daedalus.stores.wallets._pausePolling().then(done);
+  });
+  let recoveryPhrase = recovery_phrase.split(' ');
+  await this.client.executeAsync((walletName, kind, subkind, recoveryPhrase, done) => {
+    const {
+      restoreWalletSetKind,
+      restoreWalletSetMnemonics,
+      restoreWalletSetConfig,
+    } = daedalus.actions.wallets;
+    restoreWalletSetKind.trigger({ kind });
+    restoreWalletSetKind.trigger({ param: kind, kind: subkind });
+    const { restoreRequest } = daedalus.stores.wallets;
+    const spendingPassword = 'Secret1234';
+    const data = {
+      recoveryPhrase,
+      walletName,
+      spendingPassword,
+    };
+    restoreRequest.execute(data)
+      .then(() => {
+        daedalus.stores.wallets._resumePolling();
+        daedalus.stores.wallets.refreshWalletsData()
+          .then(done)
+      })
+      .catch(error => done(error));
+  }, walletName, kind, subkind, recoveryPhrase);
+};
