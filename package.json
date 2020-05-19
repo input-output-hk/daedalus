@@ -193,6 +193,7 @@
     "mobx-react-form": "1.35.1",
     "mobx-react-router": "3.1.2",
     "moment": "2.24.0",
+    "node-downloader-helper": "^1.0.12",
     "pbkdf2": "3.0.17",
     "pdfkit": "0.8.3",
     "prop-types": "15.7.2",

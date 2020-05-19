@@ -27,6 +27,7 @@ import type {
   WalletMigrationReportData,
 } from '../types/logging.types';
 import type { Locale } from '../types/locales.types';
+import type { UpdateManagerStatusResponse } from '../types/update-manager.types';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -285,3 +286,25 @@ export type ElectronStoreMessage = {
   key: string,
   data?: any,
 };
+
+/**
+ * Channel for initiating the update manager
+ */
+export const UPDATE_MANAGER_INIT = 'UPDATE_MANAGER_INIT';
+export type UpdateManagerInitRendererRequest = void;
+export type UpdateManagerInitMainResponse = UpdateManagerStatusResponse;
+
+/**
+ * Channel for receiving the update manager status
+ */
+export const UPDATE_MANAGER_STATUS = 'UPDATE_MANAGER_STATUS';
+export type UpdateManagerStatusRendererRequest = void;
+export type UpdateManagerStatusMainResponse = UpdateManagerStatusResponse;
+
+/**
+ * Channel for receiving the update manager status
+ */
+export const UPDATE_MANAGER_REQUEST_DOWNLOAD =
+  'UPDATE_MANAGER_REQUEST_DOWNLOAD';
+export type UpdateManagerRequestDownloadRendererRequest = void;
+export type UpdateManagerRequestDownloadMainResponse = UpdateManagerStatusResponse;
