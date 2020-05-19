@@ -9,7 +9,7 @@ const DIALOG_SUCCESSFUL_SELECTOR = '.verification-successful';
 const DIALOG_UNSUCCESSFUL_SELECTOR = '.verification-unsuccessful';
 const DIALOG_VERIFY_AGAIN_BUTTON_SELECTOR = `${DIALOG_SELECTOR} button.attention`;
 const DIALOG_CLOSE_BUTTON_SELECTOR = `${DIALOG_SELECTOR} .DialogCloseButton_component`;
-const DIALOG_VERIFY_BUTTON_SELECTOR = '.WalletRecoveryPhraseStepDialogs_dialog .SimpleButton_root.ButtonOverrides_root';
+const DIALOG_VERIFY_BUTTON_SELECTOR = '.WalletRecoveryPhraseStepDialogs_dialog button.primary';
 
 Given(
   'the last recovery phrase veryfication was done {int} days ago',
@@ -49,7 +49,12 @@ When(/^I click the checkbox and Continue button$/, function() {
 When(/^I enter the recovery phrase mnemonics (correctly|incorrectly)$/, async function(_type) {
   const recoveryPhrase = await this.client.execute((type, mnemonics) => {
     const activeWallet = daedalus.stores.wallets.active;
-    return type === 'correctly' ? mnemonics[activeWallet.name] : daedalus.utils.crypto.generateMnemonic(12).split(' ');
+    const correctMnemonics = mnemonics[activeWallet.name];
+    const incorrectMnemonics =
+      daedalus.utils.crypto.generateMnemonic(correctMnemonics.length).split(' ');
+    return type === 'correctly'
+      ? correctMnemonics
+      : incorrectMnemonics;
   }, _type, this.mnemonics);
 
   for (let i = 0; i < recoveryPhrase.value.length; i++) {
@@ -63,6 +68,22 @@ When(/^I enter the recovery phrase mnemonics (correctly|incorrectly)$/, async fu
     await this.client.waitForVisible(`//span[text()="${word}"]`);
   }
 });
+
+When(/^I enter the "([^"]*)" recovery phrase mnemonics$/, async function(_recoveryPhrase) {
+  const recoveryPhrase = _recoveryPhrase.split(' ');
+  for (let i = 0; i < recoveryPhrase.length; i++) {
+    const word = recoveryPhrase[i];
+    await this.client.setValue(
+      '.AutocompleteOverrides_autocompleteWrapper input',
+      word
+    );
+    await this.client.waitForVisible(`//li[text()="${word}"]`);
+    await this.waitAndClick(`//li[text()="${word}"]`);
+    await this.client.waitForVisible(`//span[text()="${word}"]`);
+  }
+});
+
+
 
 When(/^I click the verify button$/, async function() {
   await this.client.waitForEnabled(DIALOG_VERIFY_BUTTON_SELECTOR);

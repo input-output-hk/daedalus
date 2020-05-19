@@ -22,14 +22,14 @@ export const defaultProps = {
     <WalletRecoveryPhraseStep1Dialog
       onClose={action('onClose')}
       onContinue={action('onContinue')}
-      wordCount={number('wordCount', 12)}
+      wordCount={number('wordCount', 15)}
     />
   ),
   walletRecoveryPhraseStep2Container: (
     <WalletRecoveryPhraseStep2Dialog
       onClose={action('onClose')}
       onContinue={action('onContinue')}
-      wordCount={number('wordCount', 12)}
+      wordCount={number('wordCount', 15)}
     />
   ),
   walletRecoveryPhraseStep3Container: (
