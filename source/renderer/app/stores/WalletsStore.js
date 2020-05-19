@@ -59,6 +59,7 @@ export default class WalletsStore extends Store {
   // REQUESTS
   @observable active: ?Wallet = null;
   @observable activeValue: ?BigNumber = null;
+  @observable hardwareActive: ?Wallet = null;
   @observable walletsRequest: Request<Array<Wallet>> = new Request(
     this.api.ada.getWallets
   );
@@ -734,6 +735,11 @@ export default class WalletsStore extends Store {
     return matchRoute(`${ROUTES.WALLETS.ROOT}(/*rest)`, currentRoute);
   }
 
+  @computed get isHardwareWalletRoute(): boolean {
+    const { currentRoute } = this.stores.app;
+    return matchRoute(`${ROUTES.HARDWARE_WALLETS.ROOT}(/*rest)`, currentRoute);
+  }
+
   @computed get restoreRequest(): Request {
     switch (this.walletKind) {
       case WALLET_KINDS.DAEDALUS:
@@ -764,10 +770,20 @@ export default class WalletsStore extends Store {
   getWalletRoute = (walletId: string, page: string = 'summary'): string =>
     buildRoute(ROUTES.WALLETS.PAGE, { id: walletId, page });
 
+  getHardwareWalletRoute = (
+    walletId: string,
+    page: string = 'summary'
+  ): string => buildRoute(ROUTES.HARDWARE_WALLETS.PAGE, { id: walletId, page });
+
   // ACTIONS
 
   goToWalletRoute(walletId: string) {
     const route = this.getWalletRoute(walletId);
+    this.actions.router.goToRoute.trigger({ route });
+  }
+
+  goToHardwareWalletRoute(walletId: string) {
+    const route = this.getHardwareWalletRoute(walletId);
     this.actions.router.goToRoute.trigger({ route });
   }
 

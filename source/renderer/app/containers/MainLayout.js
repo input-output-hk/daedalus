@@ -29,7 +29,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
       environment: { network },
     } = app;
 
-    const sidebarMenus =
+    const nonHardwareWallets =
       sidebar.wallets.length > 0
         ? {
             wallets: {
@@ -37,12 +37,32 @@ export default class MainLayout extends Component<InjectedContainerProps> {
               activeWalletId,
               actions: {
                 onWalletItemClick: (walletId: string) => {
+                  actions.sidebar.hardwareWalletSelected.trigger({ walletId });
+                },
+              },
+            },
+          }
+        : null;
+
+    const hardwareWallets =
+      sidebar.hardwareWallets.length > 0
+        ? {
+            wallets: {
+              items: sidebar.hardwareWallets,
+              activeWalletId,
+              actions: {
+                onHardwareWalletItemClick: (walletId: string) => {
                   actions.sidebar.walletSelected.trigger({ walletId });
                 },
               },
             },
           }
         : null;
+
+    const sidebarMenus = {
+      nonHardwareWallets,
+      hardwareWallets,
+    };
 
     const sidebarComponent = (
       <Sidebar
