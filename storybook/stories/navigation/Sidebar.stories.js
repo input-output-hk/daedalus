@@ -19,43 +19,87 @@ import {
 } from '../../../source/renderer/app/config/sidebarConfig';
 
 const sidebarMenus = observable({
-  wallets: {
-    items: [
-      {
-        id: '1',
-        title: 'First',
-        info: '100 ADA',
-        isNotResponding: false,
-        isConnected: true,
-        isLegacy: false,
-        hasNotification: false,
+  nonHardwareWallets: {
+    wallets: {
+      items: [
+        {
+          id: '1',
+          title: 'First',
+          info: '100 ADA',
+          isNotResponding: false,
+          isConnected: true,
+          isLegacy: false,
+          hasNotification: false,
+        },
+        {
+          id: '2',
+          title: 'Second',
+          info: '200 ADA',
+          isNotResponding: false,
+          isConnected: true,
+          isLegacy: false,
+          hasNotification: false,
+        },
+        {
+          id: '3',
+          title: 'Third',
+          info: '300 ADA',
+          isNotResponding: false,
+          isConnected: true,
+          isLegacy: false,
+          hasNotification: false,
+        },
+      ],
+      activeWalletId: '1',
+      actions: {
+        onAddWallet: action('toggleAddWallet'),
+        onWalletItemClick: (walletId: string) => {
+          runInAction(() => {
+            sidebarMenus.nonHardwareWallets.wallets.activeWalletId = walletId;
+          });
+        },
       },
-      {
-        id: '2',
-        title: 'Second',
-        info: '200 ADA',
-        isNotResponding: false,
-        isConnected: true,
-        isLegacy: false,
-        hasNotification: false,
-      },
-      {
-        id: '3',
-        title: 'Third',
-        info: '300 ADA',
-        isNotResponding: false,
-        isConnected: true,
-        isLegacy: false,
-        hasNotification: false,
-      },
-    ],
-    activeWalletId: '1',
-    actions: {
-      onAddWallet: action('toggleAddWallet'),
-      onWalletItemClick: (walletId: string) => {
-        runInAction(() => {
-          sidebarMenus.wallets.activeWalletId = walletId;
-        });
+    },
+  },
+  hardwareWallets: {
+    wallets: {
+      items: [
+        {
+          id: '1',
+          title: 'First',
+          info: '100 ADA',
+          isNotResponding: false,
+          isConnected: true,
+          isLegacy: false,
+          hasNotification: false,
+        },
+        {
+          id: '2',
+          title: 'Second',
+          info: '200 ADA',
+          isNotResponding: false,
+          isConnected: true,
+          isLegacy: false,
+          hasNotification: false,
+        },
+        {
+          id: '3',
+          title: 'Third',
+          info: '300 ADA',
+          isNotResponding: false,
+          isConnected: true,
+          isLegacy: false,
+          hasNotification: false,
+        },
+      ],
+      activeWalletId: '1',
+      actions: {
+        onAddWallet: action('toggleAddWallet'),
+        onHardwareWalletItemClick: (walletId: string) => {
+          runInAction(() => {
+            sidebarMenus.hardwareWallets.wallets.activeWalletId = walletId;
+          });
+        },
       },
     },
   },

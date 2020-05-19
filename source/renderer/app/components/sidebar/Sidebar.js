@@ -32,7 +32,7 @@ type Props = {
 };
 
 export type SidebarMenus = {
-  nonHardwareWallets: {
+  nonHardwareWallets: ?{
     wallets: {
       items: Array<SidebarWalletType>,
       activeWalletId: ?string,
@@ -41,7 +41,7 @@ export type SidebarMenus = {
       },
     },
   },
-  hardwareWallets: {
+  hardwareWallets: ?{
     wallets: {
       items: Array<SidebarHardwareWalletType>,
       activeWalletId: ?string,
@@ -83,17 +83,27 @@ export default class Sidebar extends Component<Props> {
     if (
       menus &&
       menus.nonHardwareWallets &&
+      menus.nonHardwareWallets.wallets &&
       activeSidebarCategory === walletsCategory
     ) {
       subMenu = (
         <SidebarWalletsMenu
-          wallets={menus.nonHardwareWallets.wallets.items}
+          wallets={
+            menus.nonHardwareWallets && menus.nonHardwareWallets.wallets
+              ? menus.nonHardwareWallets.wallets.items
+              : []
+          }
           onAddWallet={onAddWallet}
           onWalletItemClick={
-            menus.nonHardwareWallets.wallets.actions.onWalletItemClick
+            menus.nonHardwareWallets && menus.nonHardwareWallets.wallets
+              ? menus.nonHardwareWallets.wallets.actions.onWalletItemClick
+              : null
           }
           isActiveWallet={id =>
-            id === menus.nonHardwareWallets.wallets.activeWalletId
+            id ===
+            (menus.nonHardwareWallets && menus.nonHardwareWallets.wallets
+              ? menus.nonHardwareWallets.wallets.activeWalletId
+              : null)
           }
           isAddWalletButtonActive={pathname === '/wallets/add'}
           isIncentivizedTestnet={isIncentivizedTestnet}
@@ -109,13 +119,22 @@ export default class Sidebar extends Component<Props> {
     ) {
       subMenu = (
         <SidebarWalletsMenu
-          wallets={menus.hardwareWallets.wallets.items}
+          wallets={
+            menus.hardwareWallets && menus.hardwareWallets.wallets
+              ? menus.hardwareWallets.wallets.items
+              : []
+          }
           onAddWallet={onAddWallet}
           onWalletItemClick={
-            menus.hardwareWallets.wallets.actions.onHardwareWalletItemClick
+            menus.hardwareWallets && menus.hardwareWallets.wallets
+              ? menus.hardwareWallets.wallets.actions.onHardwareWalletItemClick
+              : null
           }
           isActiveWallet={id =>
-            id === menus.hardwareWallets.wallets.activeWalletId
+            id ===
+            (menus.hardwareWallets && menus.hardwareWallets.wallets
+              ? menus.hardwareWallets.wallets.activeWalletId
+              : null)
           }
           isAddWalletButtonActive={pathname === '/hardware-wallets/add'}
           isIncentivizedTestnet={isIncentivizedTestnet}

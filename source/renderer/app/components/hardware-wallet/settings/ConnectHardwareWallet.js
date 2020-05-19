@@ -41,7 +41,7 @@ export default class ConnectHardwareWallet extends Component<Props> {
   render() {
     const { intl } = this.context;
 
-    const { onOpenExternalLink } = this.props;
+    // const { onOpenExternalLink } = this.props;
 
     return (
       <>
