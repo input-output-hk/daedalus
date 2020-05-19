@@ -1,4 +1,4 @@
-@e2e
+@e2e @skip
 Feature: Quitting Daedalus
 
   Daedalus can be quit in multiple (and unexpected) ways and
