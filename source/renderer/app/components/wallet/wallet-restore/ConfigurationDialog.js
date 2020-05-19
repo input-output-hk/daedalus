@@ -128,9 +128,11 @@ export default class ConfigurationDialog extends Component<Props> {
           validators: [
             ({ field, form }) => {
               const repeatPasswordField = form.$('repeatPassword');
-              if (repeatPasswordField.value.length > 0) {
-                repeatPasswordField.validate({ showErrors: true });
-              }
+              const isRepeatPasswordFieldSet =
+                repeatPasswordField.value.length > 0;
+              repeatPasswordField.validate({
+                showErrors: isRepeatPasswordFieldSet,
+              });
               return [
                 isValidSpendingPassword(field.value),
                 this.context.intl.formatMessage(
@@ -153,7 +155,6 @@ export default class ConfigurationDialog extends Component<Props> {
           validators: [
             ({ field, form }) => {
               const spendingPassword = form.$('spendingPassword').value;
-              if (spendingPassword.length === 0) return [true];
               return [
                 isValidRepeatPassword(spendingPassword, field.value),
                 this.context.intl.formatMessage(
@@ -221,12 +222,15 @@ export default class ConfigurationDialog extends Component<Props> {
       'repeatPassword',
     ]);
 
+    const canSubmit = !isSubmitting && form.isValid;
+
     return (
       <WalletRestoreDialog
         stepNumber={2}
         actions={[
           {
             className: isSubmitting ? styles.isSubmitting : null,
+            disabled: !canSubmit,
             primary: true,
             label: intl.formatMessage(messages.continueButtonLabel),
             onClick: this.submit,

@@ -10,6 +10,7 @@ import {
   waitUntilUrlEquals,
   navigateTo,
   getWalletType,
+  restoreWallet,
 } from './helpers';
 import type { Daedalus } from '../../../types';
 
@@ -28,6 +29,14 @@ Given(/^I have (created )?the following (balance )?wallets:$/, async function(mo
       await waitUntilWalletIsLoaded.call(this, wallet.name)
     )
   );
+});
+
+// Restore a wallet of any kind
+Given(/^I have restored the "([^"]*)" wallet of "([^"]*)" kind, "([^"]*)" subkind and "([^"]*)" recovery phrase$/,
+  { timeout: 60000 },
+  async function(walletName, kind, subkind, recovery_phrase ) {
+  await restoreWallet.call(this, walletName, kind, subkind, recovery_phrase);
+  await waitUntilWalletIsLoaded.call(this, walletName);
 });
 
 // Create a single wallet with funds
@@ -71,6 +80,15 @@ Given(/^I am on the "([^"]*)" wallet "([^"]*)" screen$/, async function(
     }
   }
   await proceedToScreen();
+});
+
+Given('I have {int} restored wallets', async function(numberOfWallets) {
+  const wallets = [...Array(numberOfWallets)].map((x, i) => ({
+    name: `Wallet ${i + 1}`,
+    password: 'Secret1234',
+  }));
+  const isIncentivizedTestnet = await this.client.execute(() => global.isIncentivizedTestnet);
+  await createWallets.call(this, wallets, { isLegacy: !isIncentivizedTestnet.value });
 });
 
 When(/^I have one wallet address$/, function() {

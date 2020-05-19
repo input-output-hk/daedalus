@@ -65,13 +65,16 @@ export default class WalletSettingsPage extends Component<Props> {
       recoveryPhraseVerificationStatusType,
     } = getWalletsRecoveryPhraseVerificationData(activeWallet.id);
 
-    const wordCount =
-      activeWallet.discovery === 'random'
-        ? LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT
-        : WALLET_RECOVERY_PHRASE_WORD_COUNT;
-
     const locale = profile.currentLocale;
     const { isIncentivizedTestnet } = global;
+
+    const shouldDisplayRecoveryPhrase =
+      (!isIncentivizedTestnet && isLegacyWallet) ||
+      (isIncentivizedTestnet && !isLegacyWallet);
+
+    const wordCount = activeWallet.isRandom
+      ? LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT
+      : WALLET_RECOVERY_PHRASE_WORD_COUNT;
 
     return (
       <>
@@ -121,8 +124,9 @@ export default class WalletSettingsPage extends Component<Props> {
           exportWalletDialogContainer={<ExportWalletToFileDialogContainer />}
           locale={locale}
           wordCount={wordCount}
+          shouldDisplayRecoveryPhrase={shouldDisplayRecoveryPhrase}
         />
-        {!isIncentivizedTestnet && <WalletRecoveryPhraseContainer />}
+        {shouldDisplayRecoveryPhrase && <WalletRecoveryPhraseContainer />}
       </>
     );
   }

@@ -57,6 +57,7 @@ export default class WalletMigrationStore extends Store {
   @observable exportErrors: string = '';
   @observable exportSourcePath: string = '';
   @observable defaultExportSourcePath: string = global.legacyStateDir;
+  @observable isTestMigrationEnabled: boolean = false;
 
   @observable isRestorationRunning = false;
   @observable restoredWallets: Array<Wallet> = [];
@@ -373,8 +374,8 @@ export default class WalletMigrationStore extends Store {
   };
 
   @action _startMigration = async () => {
-    const { isMainnet, isTestnet } = this.environment;
-    if (isMainnet || isTestnet) {
+    const { isMainnet, isTestnet, isTest } = this.environment;
+    if (isMainnet || isTestnet || (isTest && this.isTestMigrationEnabled)) {
       // Reset migration data
       this._resetMigration();
 
@@ -435,6 +436,25 @@ export default class WalletMigrationStore extends Store {
     this._resetRestorationData();
     this.exportSourcePath = '';
     this.walletMigrationStep = 1;
+  };
+
+  // For E2E test purpose
+  @action _setFakedImportPath = sourcePath => {
+    if (this.environment.isTest) {
+      this.exportSourcePath = sourcePath;
+      this.defaultExportSourcePath = sourcePath;
+    }
+  };
+
+  // For E2E test purpose
+  @action _enableTestWalletMigration = async () => {
+    if (this.environment.isTest) {
+      this.isTestMigrationEnabled = true;
+      await this.setWalletMigrationStatusRequest.execute(
+        WalletMigrationStatuses.UNSTARTED
+      );
+      this._startMigration();
+    }
   };
 
   @action _finishMigration = async () => {
