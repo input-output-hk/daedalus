@@ -2,14 +2,11 @@
 import { action, computed, observable } from 'mobx';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import type {
-  NodeSoftware,
-  GetLatestAppVersionResponse,
-} from '../api/nodes/types';
+import type { AppInfo, GetLatestAppVersionResponse } from '../api/nodes/types';
 import { NODE_UPDATE_POLL_INTERVAL } from '../config/timingConfig';
 import { rebuildApplicationMenu } from '../ipc/rebuild-application-menu';
 
-export default class NodeUpdateStore extends Store {
+export default class AppUpdateStore extends Store {
   @observable isUpdateAvailable = false;
   @observable isUpdatePostponed = false;
   @observable isUpdateInstalled = false;
@@ -19,7 +16,7 @@ export default class NodeUpdateStore extends Store {
   @observable applicationVersion: ?number = null;
 
   // REQUESTS
-  @observable nextUpdateRequest: Request<NodeSoftware> = new Request(
+  @observable nextUpdateRequest: Request<AppInfo> = new Request(
     this.api.ada.nextUpdate
   );
   @observable postponeUpdateRequest: Request<Promise<void>> = new Request(
@@ -36,9 +33,9 @@ export default class NodeUpdateStore extends Store {
   nextUpdateInterval: ?IntervalID = null;
 
   setup() {
-    const actions = this.actions.nodeUpdate;
-    actions.acceptNodeUpdate.listen(this._acceptNodeUpdate);
-    actions.postponeNodeUpdate.listen(this._postponeNodeUpdate);
+    const actions = this.actions.appUpdate;
+    actions.acceptAppUpdate.listen(this._acceptAppUpdate);
+    actions.postponeAppUpdate.listen(this._postponeAppUpdate);
     actions.getLatestAvailableAppVersion.listen(
       this._getLatestAvailableAppVersion
     );
@@ -64,7 +61,7 @@ export default class NodeUpdateStore extends Store {
     }
   };
 
-  @action _activateAutomaticUpdate = async nextUpdateVersion => {
+  @action _activateAutomaticUpdate = async (nextUpdateVersion?: string) => {
     if (
       nextUpdateVersion &&
       !this.isUpdateAvailable &&
@@ -90,7 +87,7 @@ export default class NodeUpdateStore extends Store {
     }
   };
 
-  @action _postponeNodeUpdate = async () => {
+  @action _postponeAppUpdate = async () => {
     this.postponeUpdateRequest.execute();
     this.isUpdatePostponed = true;
     this.isUpdateAvailable = false;
@@ -99,7 +96,7 @@ export default class NodeUpdateStore extends Store {
     });
   };
 
-  @action _acceptNodeUpdate = async () => {
+  @action _acceptAppUpdate = async () => {
     this.applyUpdateRequest.execute();
   };
 

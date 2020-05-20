@@ -1,5 +1,5 @@
 // @flow
-export type NodeSoftware = {
+export type AppInfo = {
   applicationName: string,
   version: number,
 };
