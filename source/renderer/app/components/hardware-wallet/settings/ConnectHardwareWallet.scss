@@ -18,10 +18,31 @@
       height: 100%;
       justify-content: center;
 
-      .trezorIcon {
-        height: 138px;
-        object-fit: contain;
-        width: 325.5px;
+      .hardwareWalletTrezor {
+        display: flex;
+
+        .trezorIcon {
+          height: 138px;
+          object-fit: contain;
+          width: 325.5px;
+        }
+      }
+
+      .hardwareWalletLedger {
+        display: flex;
+        flex-direction: column;
+
+        .ledgerIcon {
+          height: 78px;
+          object-fit: contain;
+          width: 250px;
+        }
+
+        .ledgerXIcon {
+          height: 75px;
+          object-fit: contain;
+          width: 250px;
+        }
       }
 
       .hardwareWalletTitle {
@@ -45,13 +66,56 @@
       }
 
       .hardwareWalletStepsWrapper {
+        max-width: 640px;
         padding-top: 30px;
+        width: 100%;
 
         .hardwareWalletStep {
-          height: 72px;
+          align-items: center;
+          background-color: var(--theme-hardware-wallet-step-background-color);
           border-radius: 4px;
-          background-color: #fafbfc;
+          display: flex;
+          height: 72px;
+          justify-content: space-between;
           padding: 20px;
+
+          .hardwareWalletInnerStep {
+            align-items: center;
+            display: flex;
+          }
+
+          span {
+            color: var(--theme-hardware-wallet-step-color);
+            font-family: var(--font-light);
+            font-size: 16px;
+            font-weight: 300;
+            line-height: 1.38;
+
+            span {
+              font-family: var(--font-medium);
+              font-weight: 500;
+            }
+          }
+
+          .ledgerSmallIcon {
+            height: 32px;
+            margin-right: 20px;
+            object-fit: contain;
+            width: 32px;
+          }
+
+          .exportIcon {
+            height: 32px;
+            margin-right: 20px;
+            object-fit: contain;
+            width: 32px;
+          }
+
+          .checkIcon {
+            height: 24px;
+            object-fit: contain;
+            width: 24px;
+          }
         }
       }
     }

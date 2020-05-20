@@ -38,7 +38,7 @@ const messages = defineMessages({
   description: {
     id: 'wallet.select.import.dialog.description',
     defaultMessage:
-      '!!!These wallets were found in your Daedalus state directory.<pPlease select the wallets you want to import.</p>',
+      '!!!These wallets were found in your Daedalus state directory.<p>Please select the wallets you want to import.</p>',
     description:
       'These wallets were found in your Daedalus state directory. Please select the wallets you want to import.',
   },

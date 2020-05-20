@@ -1,12 +1,14 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, FormattedHTMLMessage, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import ledgerIcon from '../../../assets/images/hardware-wallet/ledger-cropped.inline.svg';
+import ledgerXIcon from '../../../assets/images/hardware-wallet/ledger-x-cropped-outlines.inline.svg';
 import trezorIcon from '../../../assets/images/hardware-wallet/trezor-ledger.inline.svg';
 import exportIcon from '../../../assets/images/hardware-wallet/export.inline.svg';
 import checkIcon from '../../../assets/images/hardware-wallet/check.inline.svg';
+import ledgerSmallIcon from '../../../assets/images/hardware-wallet/ledger-bold-ic.inline.svg';
 import styles from './ConnectHardwareWallet.scss';
 
 const messages = defineMessages({
@@ -64,7 +66,13 @@ export default class ConnectHardwareWallet extends Component<Props> {
         <div className={styles.component}>
           <div className={styles.hardwareWalletContainer}>
             <div className={styles.hardwareWalletWrapper}>
-              <SVGInline svg={trezorIcon} className={styles.trezorIcon} />
+              <div className={styles.hardwareWalletTrezor}>
+                <SVGInline svg={trezorIcon} className={styles.trezorIcon} />
+              </div>
+              <div className={styles.hardwareWalletLedger}>
+                <SVGInline svg={ledgerXIcon} className={styles.ledgerXIcon} />
+                <SVGInline svg={ledgerIcon} className={styles.ledgerIcon} />
+              </div>
               <h2 className={styles.hardwareWalletTitle}>
                 {intl.formatMessage(messages.hardwareWalletTitle)}
               </h2>
@@ -73,10 +81,18 @@ export default class ConnectHardwareWallet extends Component<Props> {
               </p>
               <div className={styles.hardwareWalletStepsWrapper}>
                 <div className={styles.hardwareWalletStep}>
-                  {intl.formatMessage(messages.hardwareWalletBegin)}
+                  <div className={styles.hardwareWalletInnerStep}>
+                    <SVGInline svg={ledgerSmallIcon} className={styles.ledgerSmallIcon} />
+                    <FormattedHTMLMessage {...messages.hardwareWalletBegin} />
+                  </div>
+                  <SVGInline svg={checkIcon} className={styles.checkIcon} />
                 </div>
                 <div className={styles.hardwareWalletStep}>
-                  {intl.formatMessage(messages.hardwareWalletExport)}
+                  <div className={styles.hardwareWalletInnerStep}>
+                    <SVGInline svg={exportIcon} className={styles.exportIcon} />
+                    <FormattedHTMLMessage {...messages.hardwareWalletExport} />
+                  </div>
+                  <SVGInline svg={checkIcon} className={styles.checkIcon} />
                 </div>
               </div>
             </div>

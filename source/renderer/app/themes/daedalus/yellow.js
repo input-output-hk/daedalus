@@ -241,6 +241,8 @@ export const YELLOW_THEME_OUTPUT = {
     '--font-mono': 'SFMono-Light',
   },
   hardwareWallet: {
+    '--theme-hardware-wallet-step-background-color': '#fafbfc',
+    '--theme-hardware-wallet-step-color': '#5e6066',
     '--theme-hardware-wallet-title-color': '#5e6066',
     '--theme-hardware-wallet-message-color': '#5e6066',
   },
