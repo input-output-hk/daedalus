@@ -67,6 +67,10 @@ Given(/^I have a "([^"]*)" balance wallet for transfering funds$/, async functio
   await waitUntilWalletIsLoaded.call(this, walletName);
 });
 
+Given(/^I am on the wallets root screen$/, async function() {
+  await navigateTo.call(this, `/wallets`);
+});
+
 Given(/^I am on the "([^"]*)" wallet "([^"]*)" screen$/, async function(
   walletName,
   screen
