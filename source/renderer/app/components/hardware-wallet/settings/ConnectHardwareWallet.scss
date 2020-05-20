@@ -82,6 +82,20 @@
           .hardwareWalletInnerStep {
             align-items: center;
             display: flex;
+
+            .ledgerSmallIcon {
+              height: 32px;
+              margin-right: 20px;
+              object-fit: contain;
+              width: 32px;
+            }
+
+            .exportIcon {
+              height: 24px;
+              margin-right: 29px;
+              object-fit: contain;
+              width: 24px;
+            }
           }
 
           span {
@@ -95,20 +109,6 @@
               font-family: var(--font-medium);
               font-weight: 500;
             }
-          }
-
-          .ledgerSmallIcon {
-            height: 32px;
-            margin-right: 20px;
-            object-fit: contain;
-            width: 32px;
-          }
-
-          .exportIcon {
-            height: 32px;
-            margin-right: 20px;
-            object-fit: contain;
-            width: 32px;
           }
 
           .checkIcon {
