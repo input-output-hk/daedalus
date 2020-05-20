@@ -27,21 +27,20 @@ const messages = defineMessages({
   },
   hardwareWalletLedgerBegin: {
     id: 'wallet.hardware.hardwareWalletLedgerBegin',
-    defaultMessage: '!!!To begin, connect and unlock your <span>Ledger Device</span>',
-    description:
-      'Connect device label',
+    defaultMessage:
+      '!!!To begin, connect and unlock your <span>Ledger Device</span>',
+    description: 'Connect device label',
   },
   hardwareWalletBegin: {
     id: 'wallet.hardware.hardwareWalletBegin',
-    defaultMessage: '!!!To begin, connect and unlock your <span>Hardware wallet Device</span>',
-    description:
-      'Connect device label',
+    defaultMessage:
+      '!!!To begin, connect and unlock your <span>Hardware wallet Device</span>',
+    description: 'Connect device label',
   },
   hardwareWalletExport: {
     id: 'wallet.hardware.hardwareWalletExport',
     defaultMessage: '!!!Export <span>public key</span> on your device',
-    description:
-      'Export wallet label',
+    description: 'Export wallet label',
   },
 });
 
@@ -64,17 +63,22 @@ export default class ConnectHardwareWallet extends Component<Props> {
       <>
         <div className={styles.component}>
           <div className={styles.hardwareWalletContainer}>
-            <div className={styles.hardwareWalletdWrapper}>
-              <SVGInline
-                svg={trezorIcon}
-                className={styles.trezorIcon}
-              />
+            <div className={styles.hardwareWalletWrapper}>
+              <SVGInline svg={trezorIcon} className={styles.trezorIcon} />
               <h2 className={styles.hardwareWalletTitle}>
                 {intl.formatMessage(messages.hardwareWalletTitle)}
               </h2>
               <p className={styles.hardwareWalletMessage}>
                 {intl.formatMessage(messages.hardwareWalletInstructions)}
               </p>
+              <div className={styles.hardwareWalletStepsWrapper}>
+                <div className={styles.hardwareWalletStep}>
+                  {intl.formatMessage(messages.hardwareWalletBegin)}
+                </div>
+                <div className={styles.hardwareWalletStep}>
+                  {intl.formatMessage(messages.hardwareWalletExport)}
+                </div>
+              </div>
             </div>
           </div>
         </div>

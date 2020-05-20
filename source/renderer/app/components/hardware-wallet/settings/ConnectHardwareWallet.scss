@@ -11,7 +11,7 @@
     height: 100%;
     width: 100%;
 
-    .hardwareWalletdWrapper {
+    .hardwareWalletWrapper {
       align-items: center;
       display: flex;
       flex-direction: column;
@@ -42,6 +42,17 @@
         opacity: 0.7;
         padding-top: 11px;
         text-align: center;
+      }
+
+      .hardwareWalletStepsWrapper {
+        padding-top: 30px;
+
+        .hardwareWalletStep {
+          height: 72px;
+          border-radius: 4px;
+          background-color: #fafbfc;
+          padding: 20px;
+        }
       }
     }
   }
