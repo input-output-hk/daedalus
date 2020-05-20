@@ -249,6 +249,10 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--font-black': 'NotoSans-Black, NotoSansCJKjp-Black',
     '--font-mono': 'SFMono-Light',
   },
+  hardwareWallet: {
+    '--theme-hardware-wallet-title-color': '#5e6066',
+    '--theme-hardware-wallet-message-color': '#5e6066',
+  },
   icon: {
     '--theme-icon-nav-color': 'rgba(250, 251, 252, 0.6)',
     '--theme-icon-nav-color-active': '#1d2e47',

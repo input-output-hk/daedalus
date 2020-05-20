@@ -236,6 +236,10 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--font-black': 'NotoSans-Black, NotoSansCJKjp-Black',
     '--font-mono': 'SFMono-Light',
   },
+  hardwareWallet: {
+    '--theme-hardware-wallet-title-color': '#5e6066',
+    '--theme-hardware-wallet-message-color': '#5e6066',
+  },
   icon: {
     '--theme-icon-nav-color': 'rgba(255, 255, 255, 0.6)',
     '--theme-icon-nav-color-active': 'rgba(255, 255, 255, 1)',

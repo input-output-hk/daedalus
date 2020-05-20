@@ -1,55 +1,42 @@
 .component {
-  border-radius: 0 !important;
-  bottom: 0;
+  align-items: center;
   display: flex;
   flex-direction: column;
+  min-height: 100%;
   justify-content: center;
-  position: absolute;
-  top: 0;
   width: 100%;
-  z-index: 9;
 
-  .setPasswordDialog {
+  .hardwareWalletContainer {
     font-family: var(--font-regular);
     height: 100%;
     width: 100%;
 
-    .setPasswordWrapper {
+    .hardwareWalletdWrapper {
       align-items: center;
       display: flex;
       flex-direction: column;
       height: 100%;
       justify-content: center;
 
-      .insecureWalletIcon {
-        height: 105px;
+      .trezorIcon {
+        height: 138px;
         object-fit: contain;
-        width: 105px;
-
-        svg {
-          path,
-          rect,
-          circle {
-            stroke: var(--theme-dialog-set-wallet-password-message-color);
-          }
-
-          g > g path:last-child {
-            fill: var(--theme-dialog-set-wallet-password-message-color);
-          }
-        }
+        width: 325.5px;
       }
 
-      .setPasswordTitle {
-        color: var(--theme-dialog-set-wallet-password-title-color);
+      .hardwareWalletTitle {
+        color: var(--theme-hardware-wallet-title-color);
         font-size: 20px;
-        line-height: 1.2;
+        font-weight: 500;
+        line-height: 1.4;
         padding-top: 36px;
         text-align: center;
       }
 
-      .setPasswordMessage {
-        color: var(--theme-dialog-set-wallet-password-message-color);
+      .hardwareWalletMessage {
+        color: var(--theme-hardware-wallet-message-color);
         font-size: 16px;
+        font-weight: 300;
         line-height: 1.38;
         max-width: 670px;
         opacity: 0.7;

@@ -240,6 +240,10 @@ export const YELLOW_THEME_OUTPUT = {
     '--font-black': 'NotoSans-Black, NotoSansCJKjp-Black',
     '--font-mono': 'SFMono-Light',
   },
+  hardwareWallet: {
+    '--theme-hardware-wallet-title-color': '#5e6066',
+    '--theme-hardware-wallet-message-color': '#5e6066',
+  },
   icon: {
     '--theme-icon-nav-color': 'rgba(45, 45, 45, 0.6)',
     '--theme-icon-nav-color-active': '#ffffff',

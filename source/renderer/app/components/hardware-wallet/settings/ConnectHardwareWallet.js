@@ -3,28 +3,45 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
-import insecureWalletIcon from '../../../assets/images/insecure-wallet.inline.svg';
+import ledgerIcon from '../../../assets/images/hardware-wallet/ledger-cropped.inline.svg';
+import trezorIcon from '../../../assets/images/hardware-wallet/trezor-ledger.inline.svg';
+import exportIcon from '../../../assets/images/hardware-wallet/export.inline.svg';
+import checkIcon from '../../../assets/images/hardware-wallet/check.inline.svg';
 import styles from './ConnectHardwareWallet.scss';
 
 const messages = defineMessages({
-  setPasswordButton: {
-    id: 'wallet.settings.setWalletPassword.dialog.setPasswordButton',
-    defaultMessage: '!!!Set a password',
-    description:
-      'Label for the "Set a password" button in the set wallet password dialog.',
+  hardwareWalletTitle: {
+    id: 'wallet.hardware.hardwareWalletTitle',
+    defaultMessage: '!!!Hardware wallet',
+    description: 'Hardware wallet title.',
   },
-  setPasswordMessage: {
-    id: 'wallet.settings.setWalletPassword.dialog.setPasswordMessage',
-    defaultMessage:
-      '!!!To keep your wallet secure and start using it in Daedalus, you need to set a spending password.',
-    description:
-      'Message for the "Set a password" button in the set wallet password dialog.',
+  ledgerWalletTitle: {
+    id: 'wallet.hardware.ledgerWalletTitle',
+    defaultMessage: '!!!Ledger wallet',
+    description: 'Ledger wallet title.',
   },
-  setPasswordTitle: {
-    id: 'wallet.settings.setWalletPassword.dialog.setPasswordTitle',
-    defaultMessage: '!!!Your wallet is not protected with a password',
+  hardwareWalletInstructions: {
+    id: 'wallet.hardware.hardwareWalletInstructions',
+    defaultMessage: '!!!Follow instructions to access your wallet',
+    description: 'Follow instructions label',
+  },
+  hardwareWalletLedgerBegin: {
+    id: 'wallet.hardware.hardwareWalletLedgerBegin',
+    defaultMessage: '!!!To begin, connect and unlock your <span>Ledger Device</span>',
     description:
-      'Title for the "Set wallet password" dialog when there is not password set.',
+      'Connect device label',
+  },
+  hardwareWalletBegin: {
+    id: 'wallet.hardware.hardwareWalletBegin',
+    defaultMessage: '!!!To begin, connect and unlock your <span>Hardware wallet Device</span>',
+    description:
+      'Connect device label',
+  },
+  hardwareWalletExport: {
+    id: 'wallet.hardware.hardwareWalletExport',
+    defaultMessage: '!!!Export <span>public key</span> on your device',
+    description:
+      'Export wallet label',
   },
 });
 
@@ -41,22 +58,22 @@ export default class ConnectHardwareWallet extends Component<Props> {
   render() {
     const { intl } = this.context;
 
-    // const { onOpenExternalLink } = this.props;
+    const { onOpenExternalLink } = this.props;
 
     return (
       <>
         <div className={styles.component}>
-          <div className={styles.setPasswordDialog}>
-            <div className={styles.setPasswordWrapper}>
+          <div className={styles.hardwareWalletContainer}>
+            <div className={styles.hardwareWalletdWrapper}>
               <SVGInline
-                svg={insecureWalletIcon}
-                className={styles.insecureWalletIcon}
+                svg={trezorIcon}
+                className={styles.trezorIcon}
               />
-              <h2 className={styles.setPasswordTitle}>
-                {intl.formatMessage(messages.setPasswordTitle)}
+              <h2 className={styles.hardwareWalletTitle}>
+                {intl.formatMessage(messages.hardwareWalletTitle)}
               </h2>
-              <p className={styles.setPasswordMessage}>
-                {intl.formatMessage(messages.setPasswordMessage)}
+              <p className={styles.hardwareWalletMessage}>
+                {intl.formatMessage(messages.hardwareWalletInstructions)}
               </p>
             </div>
           </div>
