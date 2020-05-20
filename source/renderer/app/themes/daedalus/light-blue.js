@@ -385,7 +385,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-news-item-info-background-color': 'rgba(0, 0, 0, 0.1)',
     '--theme-news-item-title-color': '#fafbfc',
   },
-  nodeUpdate: {
+  appUpdate: {
     '--theme-node-update-background-color': '#ebeff2',
     '--theme-node-update-title-color': '#5e6066',
     '--theme-node-update-message-color': '#5e6066',

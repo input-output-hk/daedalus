@@ -528,7 +528,7 @@ export class CardanoNode {
    *
    * @returns {Promise<void>} resolves if the node updated, rejects with error otherwise.
    */
-  async expectNodeREVERTUpdate(): Promise<void> {
+  async expectNodeUpdate(): Promise<void> {
     const { _log, _config } = this;
     this._changeToState(CardanoNodeStates.UPDATING);
     _log.info('CardanoNode: waiting for node to apply update');

@@ -8,12 +8,14 @@ import { rebuildApplicationMenu } from '../ipc/rebuild-application-menu';
 
 export default class AppUpdateStore extends Store {
   @observable isUpdateAvailable = false;
+  @observable isDownloadingUpdate = false;
   @observable isUpdatePostponed = false;
   @observable isUpdateInstalled = false;
   @observable availableAppVersion: ?string = null;
   @observable isNewAppVersionAvailable: boolean = false;
   @observable nextUpdateVersion: ?string = null;
   @observable applicationVersion: ?number = null;
+  @observable updateDownloadProgress: ?number = null;
 
   // REQUESTS
   @observable nextUpdateRequest: Request<AppInfo> = new Request(

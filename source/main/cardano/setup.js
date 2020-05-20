@@ -162,7 +162,7 @@ export const setupCardanoNode = (
   cardanoAwaitUpdateChannel.onReceive(() => {
     logger.info('ipcMain: Received request from renderer to await update');
     setTimeout(async () => {
-      await cardanoNode.expectNodeREVERTUpdate();
+      await cardanoNode.expectNodeUpdate();
       logger.info(
         'CardanoNode applied an update. Exiting Daedalus with code 20.'
       );

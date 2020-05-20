@@ -376,7 +376,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-news-item-info-background-color': 'rgba(0, 0, 0, 0.1)',
     '--theme-news-item-title-color': '#2d2d2d',
   },
-  nodeUpdate: {
+  appUpdate: {
     '--theme-node-update-background-color': '#f8f3ed',
     '--theme-node-update-title-color': '#2d2d2d',
     '--theme-node-update-message-color': '#2d2d2d',
