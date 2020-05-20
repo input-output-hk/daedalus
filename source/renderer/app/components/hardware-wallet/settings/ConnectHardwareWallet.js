@@ -10,6 +10,7 @@ import exportIcon from '../../../assets/images/hardware-wallet/export.inline.svg
 import checkIcon from '../../../assets/images/hardware-wallet/check.inline.svg';
 import ledgerSmallIcon from '../../../assets/images/hardware-wallet/ledger-bold-ic.inline.svg';
 import styles from './ConnectHardwareWallet.scss';
+import LoadingSpinner from "../../widgets/LoadingSpinner";
 
 const messages = defineMessages({
   hardwareWalletTitle: {
@@ -48,6 +49,10 @@ const messages = defineMessages({
 
 type Props = {
   onOpenExternalLink: Function,
+  isDeviceConnected: boolean,
+  fetchingDevice: boolean,
+  exportingExtendedPublicKey: boolean,
+  isExportingPublicKeyAborted: boolean,
 };
 
 @observer
@@ -59,7 +64,13 @@ export default class ConnectHardwareWallet extends Component<Props> {
   render() {
     const { intl } = this.context;
 
-    const { onOpenExternalLink } = this.props;
+    const {
+      onOpenExternalLink,
+      isDeviceConnected,
+      fetchingDevice,
+      exportingExtendedPublicKey,
+      isExportingPublicKeyAborted,
+    } = this.props;
 
     return (
       <>
@@ -85,6 +96,7 @@ export default class ConnectHardwareWallet extends Component<Props> {
                     <SVGInline svg={ledgerSmallIcon} className={styles.ledgerSmallIcon} />
                     <FormattedHTMLMessage {...messages.hardwareWalletBegin} />
                   </div>
+                  <LoadingSpinner />
                   <SVGInline svg={checkIcon} className={styles.checkIcon} />
                 </div>
                 <div className={styles.hardwareWalletStep}>
@@ -92,6 +104,7 @@ export default class ConnectHardwareWallet extends Component<Props> {
                     <SVGInline svg={exportIcon} className={styles.exportIcon} />
                     <FormattedHTMLMessage {...messages.hardwareWalletExport} />
                   </div>
+                  <LoadingSpinner />
                   <SVGInline svg={checkIcon} className={styles.checkIcon} />
                 </div>
               </div>

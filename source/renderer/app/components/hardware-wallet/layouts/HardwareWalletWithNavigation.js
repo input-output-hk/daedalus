@@ -14,6 +14,10 @@ type Props = {
   isActiveScreen: Function,
   onOpenExternalLink: Function,
   onWalletNavItemClick: Function,
+  isDeviceConnected: boolean,
+  fetchingDevice: boolean,
+  exportingExtendedPublicKey: boolean,
+  isExportingPublicKeyAborted: boolean,
 };
 
 @observer
@@ -27,12 +31,22 @@ export default class HardwareWalletWithNavigation extends Component<Props> {
       isActiveScreen,
       onWalletNavItemClick,
       onOpenExternalLink,
+      isDeviceConnected,
+      fetchingDevice,
+      exportingExtendedPublicKey,
+      isExportingPublicKeyAborted
     } = this.props;
 
     return (
       <div className={styles.component}>
         {walletNotConnected ? (
-          <ConnectHardwareWallet onOpenExternalLink={onOpenExternalLink} />
+          <ConnectHardwareWallet
+            onOpenExternalLink={onOpenExternalLink}
+            isDeviceConnected={isDeviceConnected}
+            fetchingDevice={fetchingDevice}
+            exportingExtendedPublicKey={exportingExtendedPublicKey}
+            isExportingPublicKeyAborted={isExportingPublicKeyAborted}
+          />
         ) : (
           <div className={styles.navigation}>
             <HardwareWalletNavigation

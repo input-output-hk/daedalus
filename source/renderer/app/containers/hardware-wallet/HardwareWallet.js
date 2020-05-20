@@ -49,7 +49,13 @@ export default class HardwareWallet extends Component<Props> {
     const { actions, stores } = this.props;
     const { app, wallets, walletSettings } = stores;
     const { restartNode } = actions.networkStatus;
-    let { active: activeHardwareWallet } = wallets;
+    let {
+      active: activeHardwareWallet,
+      isDeviceConnected,
+      fetchingDevice,
+      exportingExtendedPublicKey,
+      isExportingPublicKeyAborted
+    } = wallets;
     const {
       hasNotification,
     } = walletSettings.getWalletsRecoveryPhraseVerificationData(
