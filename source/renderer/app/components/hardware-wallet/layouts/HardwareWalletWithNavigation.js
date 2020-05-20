@@ -14,6 +14,8 @@ type Props = {
   isActiveScreen: Function,
   onOpenExternalLink: Function,
   onWalletNavItemClick: Function,
+  isLedger: boolean,
+  isTrezor: boolean,
   isDeviceConnected: boolean,
   fetchingDevice: boolean,
   exportingExtendedPublicKey: boolean,
@@ -31,10 +33,12 @@ export default class HardwareWalletWithNavigation extends Component<Props> {
       isActiveScreen,
       onWalletNavItemClick,
       onOpenExternalLink,
+      isLedger,
+      isTrezor,
       isDeviceConnected,
       fetchingDevice,
       exportingExtendedPublicKey,
-      isExportingPublicKeyAborted
+      isExportingPublicKeyAborted,
     } = this.props;
 
     return (
@@ -42,6 +46,8 @@ export default class HardwareWalletWithNavigation extends Component<Props> {
         {walletNotConnected ? (
           <ConnectHardwareWallet
             onOpenExternalLink={onOpenExternalLink}
+            isLedger={isLedger}
+            isTrezor={isTrezor}
             isDeviceConnected={isDeviceConnected}
             fetchingDevice={fetchingDevice}
             exportingExtendedPublicKey={exportingExtendedPublicKey}

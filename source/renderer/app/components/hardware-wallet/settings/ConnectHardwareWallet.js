@@ -8,9 +8,10 @@ import ledgerXIcon from '../../../assets/images/hardware-wallet/ledger-x-cropped
 import trezorIcon from '../../../assets/images/hardware-wallet/trezor-ledger.inline.svg';
 import exportIcon from '../../../assets/images/hardware-wallet/export.inline.svg';
 import checkIcon from '../../../assets/images/hardware-wallet/check.inline.svg';
+import clearIcon from '../../../assets/images/hardware-wallet/close-cross-red.inline.svg';
 import ledgerSmallIcon from '../../../assets/images/hardware-wallet/ledger-bold-ic.inline.svg';
 import styles from './ConnectHardwareWallet.scss';
-import LoadingSpinner from "../../widgets/LoadingSpinner";
+import LoadingSpinner from '../../widgets/LoadingSpinner';
 
 const messages = defineMessages({
   hardwareWalletTitle: {
@@ -49,6 +50,8 @@ const messages = defineMessages({
 
 type Props = {
   onOpenExternalLink: Function,
+  isLedger: boolean,
+  isTrezor: boolean,
   isDeviceConnected: boolean,
   fetchingDevice: boolean,
   exportingExtendedPublicKey: boolean,
@@ -64,48 +67,76 @@ export default class ConnectHardwareWallet extends Component<Props> {
   render() {
     const { intl } = this.context;
 
+    const link = '';
+
     const {
       onOpenExternalLink,
+      isLedger,
+      isTrezor,
       isDeviceConnected,
       fetchingDevice,
       exportingExtendedPublicKey,
       isExportingPublicKeyAborted,
     } = this.props;
 
+    const hardwareTitle = isTrezor
+      ? intl.formatMessage(messages.hardwareWalletTitle)
+      : intl.formatMessage(messages.ledgerWalletTitle);
+
+    const hardwareConnectLabel = isTrezor
+      ? messages.hardwareWalletBegin
+      : messages.hardwareWalletLedgerBegin;
+
     return (
       <>
         <div className={styles.component}>
           <div className={styles.hardwareWalletContainer}>
             <div className={styles.hardwareWalletWrapper}>
-              <div className={styles.hardwareWalletTrezor}>
-                <SVGInline svg={trezorIcon} className={styles.trezorIcon} />
-              </div>
-              <div className={styles.hardwareWalletLedger}>
-                <SVGInline svg={ledgerXIcon} className={styles.ledgerXIcon} />
-                <SVGInline svg={ledgerIcon} className={styles.ledgerIcon} />
-              </div>
-              <h2 className={styles.hardwareWalletTitle}>
-                {intl.formatMessage(messages.hardwareWalletTitle)}
-              </h2>
+              {isTrezor && (
+                <div className={styles.hardwareWalletTrezor}>
+                  <SVGInline svg={trezorIcon} className={styles.trezorIcon} />
+                </div>
+              )}
+              {isLedger && (
+                <div className={styles.hardwareWalletLedger}>
+                  <SVGInline svg={ledgerXIcon} className={styles.ledgerXIcon} />
+                  <SVGInline svg={ledgerIcon} className={styles.ledgerIcon} />
+                </div>
+              )}
+              <h2 className={styles.hardwareWalletTitle}>{hardwareTitle}</h2>
               <p className={styles.hardwareWalletMessage}>
                 {intl.formatMessage(messages.hardwareWalletInstructions)}
               </p>
               <div className={styles.hardwareWalletStepsWrapper}>
                 <div className={styles.hardwareWalletStep}>
                   <div className={styles.hardwareWalletInnerStep}>
-                    <SVGInline svg={ledgerSmallIcon} className={styles.ledgerSmallIcon} />
-                    <FormattedHTMLMessage {...messages.hardwareWalletBegin} />
+                    <SVGInline
+                      svg={ledgerSmallIcon}
+                      className={styles.ledgerSmallIcon}
+                    />
+                    <FormattedHTMLMessage {...hardwareConnectLabel} />
                   </div>
-                  <LoadingSpinner />
-                  <SVGInline svg={checkIcon} className={styles.checkIcon} />
+                  {fetchingDevice && <LoadingSpinner />}
+                  {isDeviceConnected && (
+                    <SVGInline svg={checkIcon} className={styles.checkIcon} />
+                  )}
                 </div>
                 <div className={styles.hardwareWalletStep}>
                   <div className={styles.hardwareWalletInnerStep}>
-                    <SVGInline svg={exportIcon} className={styles.exportIcon} />
+                    <SVGInline
+                      svg={exportIcon}
+                      className={styles.exportIcon}
+                      onClick={() => onOpenExternalLink(link)}
+                    />
                     <FormattedHTMLMessage {...messages.hardwareWalletExport} />
                   </div>
-                  <LoadingSpinner />
-                  <SVGInline svg={checkIcon} className={styles.checkIcon} />
+                  {exportingExtendedPublicKey && <LoadingSpinner />}
+                  {!isExportingPublicKeyAborted && !exportingExtendedPublicKey && (
+                    <SVGInline svg={checkIcon} className={styles.checkIcon} />
+                  )}
+                  {!exportingExtendedPublicKey && isExportingPublicKeyAborted && (
+                    <SVGInline svg={clearIcon} className={styles.clearIcon} />
+                  )}
                 </div>
               </div>
             </div>

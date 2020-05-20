@@ -49,12 +49,14 @@ export default class HardwareWallet extends Component<Props> {
     const { actions, stores } = this.props;
     const { app, wallets, walletSettings } = stores;
     const { restartNode } = actions.networkStatus;
-    let {
-      active: activeHardwareWallet,
+    let { active: activeHardwareWallet, isLedger } = wallets;
+
+    const {
       isDeviceConnected,
       fetchingDevice,
       exportingExtendedPublicKey,
-      isExportingPublicKeyAborted
+      isExportingPublicKeyAborted,
+      isTrezor,
     } = wallets;
     const {
       hasNotification,
@@ -70,12 +72,21 @@ export default class HardwareWallet extends Component<Props> {
     }
     const { walletNotConnected } = activeHardwareWallet;
 
+    // @todo - remove after adding logic from store
+    isLedger = true;
+
     return (
       <MainLayout>
         <HardwareWalletWithNavigation
           activeItem={app.currentPage}
           hasNotification={hasNotification}
           walletNotConnected={walletNotConnected}
+          isDeviceConnected={isDeviceConnected}
+          fetchingDevice={fetchingDevice}
+          exportingExtendedPublicKey={exportingExtendedPublicKey}
+          isExportingPublicKeyAborted={isExportingPublicKeyAborted}
+          isLedger={isLedger}
+          isTrezor={isTrezor}
           isActiveScreen={this.isActiveScreen}
           onOpenExternalLink={(url: string) => stores.app.openExternalLink(url)}
           onRestartNode={() => restartNode.trigger()}

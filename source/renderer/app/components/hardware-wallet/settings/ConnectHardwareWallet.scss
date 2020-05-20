@@ -73,11 +73,18 @@
         .hardwareWalletStep {
           align-items: center;
           background-color: var(--theme-hardware-wallet-step-background-color);
-          border-radius: 4px;
           display: flex;
           height: 72px;
           justify-content: space-between;
           padding: 20px;
+
+          &:first-child {
+            border-radius: 4px 4px 0 0;
+          }
+
+          &:nth-child(2) {
+            border-radius: 0 0 4px 4px;
+          }
 
           .hardwareWalletInnerStep {
             align-items: center;
@@ -91,6 +98,7 @@
             }
 
             .exportIcon {
+              cursor: pointer;
               height: 24px;
               margin-right: 29px;
               object-fit: contain;
@@ -112,6 +120,12 @@
           }
 
           .checkIcon {
+            height: 16px;
+            object-fit: contain;
+            width: 16px;
+          }
+
+          .clearIcon {
             height: 24px;
             object-fit: contain;
             width: 24px;
