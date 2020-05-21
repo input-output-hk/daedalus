@@ -12,9 +12,16 @@
 }
 
 .page {
+  align-items: center;
+  display: flex;
   height: calc(100% - 50px);
+  justify-content: center;
   overflow: overlay;
   position: relative;
+
+  > div {
+    width: 100%;
+  }
 }
 
 .settingsTabPage {
