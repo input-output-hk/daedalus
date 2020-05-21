@@ -49,8 +49,7 @@ const messages = defineMessages({
   },
   linkUrl: {
     id: 'wallet.select.import.dialog.linkUrl',
-    defaultMessage:
-      '!!!https://daedaluswallet.io/',
+    defaultMessage: '!!!https://daedaluswallet.io/',
     description: 'External link URL on the hardware wallet connect screen',
   },
 });
@@ -73,8 +72,6 @@ export default class ConnectHardwareWallet extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-
-    const link = '';
 
     const {
       onOpenExternalLink,
@@ -147,7 +144,9 @@ export default class ConnectHardwareWallet extends Component<Props> {
                   <SVGInline
                     svg={exportIcon}
                     className={styles.exportIcon}
-                    onClick={() => onOpenExternalLink(intl.formatMessage(messages.linkUrl))}
+                    onClick={() =>
+                      onOpenExternalLink(intl.formatMessage(messages.linkUrl))
+                    }
                   />
                   <FormattedHTMLMessage {...messages.hardwareWalletExport} />
                 </div>
