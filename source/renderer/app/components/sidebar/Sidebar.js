@@ -32,7 +32,7 @@ type Props = {
 };
 
 export type SidebarMenus = {
-  nonHardwareWallets: ?{
+  wallets: ?{
     wallets: {
       items: Array<SidebarWalletType>,
       activeWalletId: ?string,
@@ -82,27 +82,27 @@ export default class Sidebar extends Component<Props> {
 
     if (
       menus &&
-      menus.nonHardwareWallets &&
-      menus.nonHardwareWallets.wallets &&
+      menus.wallets &&
+      menus.wallets.wallets &&
       activeSidebarCategory === walletsCategory
     ) {
       subMenu = (
         <SidebarWalletsMenu
           wallets={
-            menus.nonHardwareWallets && menus.nonHardwareWallets.wallets
-              ? menus.nonHardwareWallets.wallets.items
+            menus.wallets && menus.wallets.wallets
+              ? menus.wallets.wallets.items
               : []
           }
           onAddWallet={onAddWallet}
           onWalletItemClick={
-            menus.nonHardwareWallets && menus.nonHardwareWallets.wallets
-              ? menus.nonHardwareWallets.wallets.actions.onWalletItemClick
+            menus.wallets && menus.wallets.wallets
+              ? menus.wallets.wallets.actions.onWalletItemClick
               : null
           }
           isActiveWallet={id =>
             id ===
-            (menus.nonHardwareWallets && menus.nonHardwareWallets.wallets
-              ? menus.nonHardwareWallets.wallets.activeWalletId
+            (menus.wallets && menus.wallets.wallets
+              ? menus.wallets.wallets.activeWalletId
               : null)
           }
           isAddWalletButtonActive={pathname === '/wallets/add'}
