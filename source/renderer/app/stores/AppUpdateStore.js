@@ -105,20 +105,11 @@ export default class AppUpdateStore extends Store {
   };
 
   _requestDownload = async () => {
-    const blah = requestDownloadChannel
-      .request({
-        url:
-          'https://update-cardano-mainnet.iohk.io/daedalus-1.1.0-mainnet-12849.pkg',
-        // destinationFolder: 'downloads',
-      })
-      .then((a, b, c) => {
-        console.log('_requestDownload ---');
-        console.log('a', a);
-        console.log('b', b);
-        console.log('c', c);
-      });
-    console.log('FOI PROMISE', blah);
-    // url
+    requestDownloadChannel.request({
+      url:
+        'https://update-cardano-mainnet.iohk.io/daedalus-1.1.0-mainnet-12849.pkg',
+      // destinationFolder: 'downloads',
+    });
   };
 
   _getUpdateStatus = async ({

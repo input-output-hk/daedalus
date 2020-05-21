@@ -12,22 +12,22 @@ import type {
   DownloadRendererRequest,
   DownloadMainResponse,
 } from '../../../common/ipc/api';
-import { RendererIpcChannel } from './lib/RendererIpcChannel';
+import { RendererIpcConversation } from './lib/RendererIpcConversation';
 
 export const getPersistedDownloadStatusChannel: // IpcChannel<Incoming, Outgoing>
-RendererIpcChannel<
+RendererIpcConversation<
   PersistedDownloadStatusMainResponse,
   PersistedDownloadStatusRendererRequest
-> = new RendererIpcChannel(PERSISTED_DOWNLOAD_STATUS);
+> = new RendererIpcConversation(PERSISTED_DOWNLOAD_STATUS);
 
 export const getDownloadStatusChannel: // IpcChannel<Incoming, Outgoing>
-RendererIpcChannel<
+RendererIpcConversation<
   DownloadStatusMainResponse,
   DownloadStatusRendererRequest
-> = new RendererIpcChannel(DOWNLOAD_STATUS);
+> = new RendererIpcConversation(DOWNLOAD_STATUS);
 
 export const requestDownloadChannel: // IpcChannel<Incoming, Outgoing>
-RendererIpcChannel<
+RendererIpcConversation<
   DownloadMainResponse,
   DownloadRendererRequest
-> = new RendererIpcChannel(REQUEST_DOWNLOAD);
+> = new RendererIpcConversation(REQUEST_DOWNLOAD);

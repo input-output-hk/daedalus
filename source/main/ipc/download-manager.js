@@ -1,6 +1,6 @@
 // @flow
 import { DownloaderHelper } from 'node-downloader-helper';
-import { app } from 'electron';
+import { app, ipcMain } from 'electron';
 import { MainIpcConversation } from './lib/MainIpcConversation';
 import {
   PERSISTED_DOWNLOAD_STATUS,
@@ -66,8 +66,13 @@ const requestDownload = async (
   download.on('end', () =>
     sendDownloadStatus({ isDownloading: true, downloadProgress: 100 })
   );
+  // download.on('progress', (a, b, c) => {
+  //   console.log('progress----');
+  //   console.log('a', a);
+  //   console.log('b', b);
+  //   console.log('c', c);
+  // })
   download.start();
-  return 'RECEBIDO, SENHOR!';
 };
 
 const checkisDownloading = async (): Promise<boolean> => false;
