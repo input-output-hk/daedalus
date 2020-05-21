@@ -52,12 +52,16 @@ export default class WalletNavigation extends Component<Props> {
         )
     );
     return (
-      <Navigation
-        activeItem={activeItem}
-        isActiveNavItem={isActiveNavItem}
-        onNavItemClick={onNavItemClick}
-        items={items}
-      />
+      <>
+        {activeItem ? (
+          <Navigation
+            activeItem={activeItem}
+            isActiveNavItem={isActiveNavItem}
+            onNavItemClick={onNavItemClick}
+            items={items}
+          />
+        ) : null}
+      </>
     );
   }
 }

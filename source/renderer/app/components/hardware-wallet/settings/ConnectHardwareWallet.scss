@@ -126,11 +126,24 @@
           }
 
           .clearIcon {
-            height: 24px;
+            height: 14px;
             object-fit: contain;
-            width: 24px;
+            width: 14px;
           }
         }
+      }
+    }
+  }
+
+  :global {
+    .LoadingSpinner_component {
+      height: 24px;
+      margin: initial;
+      width: 24px;
+
+      .LoadingSpinner_icon svg path {
+        fill: var(--theme-hardware-wallet-message-color) !important;
+        opacity: 0.5;
       }
     }
   }

@@ -52,9 +52,9 @@ type Props = {
   onOpenExternalLink: Function,
   isLedger: boolean,
   isTrezor: boolean,
-  isDeviceConnected: boolean,
+  isDeviceConnected: boolean | null,
   fetchingDevice: boolean,
-  exportingExtendedPublicKey: boolean,
+  exportingExtendedPublicKey: boolean | null,
   isExportingPublicKeyAborted: boolean,
 };
 
@@ -120,6 +120,9 @@ export default class ConnectHardwareWallet extends Component<Props> {
                   {isDeviceConnected && (
                     <SVGInline svg={checkIcon} className={styles.checkIcon} />
                   )}
+                  {!fetchingDevice && isDeviceConnected === null && (
+                    <SVGInline svg={clearIcon} className={styles.clearIcon} />
+                  )}
                 </div>
                 <div className={styles.hardwareWalletStep}>
                   <div className={styles.hardwareWalletInnerStep}>
@@ -131,12 +134,15 @@ export default class ConnectHardwareWallet extends Component<Props> {
                     <FormattedHTMLMessage {...messages.hardwareWalletExport} />
                   </div>
                   {exportingExtendedPublicKey && <LoadingSpinner />}
-                  {!isExportingPublicKeyAborted && !exportingExtendedPublicKey && (
-                    <SVGInline svg={checkIcon} className={styles.checkIcon} />
-                  )}
-                  {!exportingExtendedPublicKey && isExportingPublicKeyAborted && (
-                    <SVGInline svg={clearIcon} className={styles.clearIcon} />
-                  )}
+                  {!isExportingPublicKeyAborted &&
+                    exportingExtendedPublicKey !== true &&
+                      exportingExtendedPublicKey !== null && (
+                      <SVGInline svg={checkIcon} className={styles.checkIcon} />
+                    )}
+                  {!exportingExtendedPublicKey &&
+                    isExportingPublicKeyAborted && (
+                      <SVGInline svg={clearIcon} className={styles.clearIcon} />
+                    )}
                 </div>
               </div>
             </div>

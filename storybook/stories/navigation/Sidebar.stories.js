@@ -160,11 +160,28 @@ storiesOf('Navigation|Sidebar', module)
       isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
     />
   ))
+  .add('Hardware Wallet Selected', (props: { currentTheme: string }) => (
+    <Sidebar
+      categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
+      activeSidebarCategory={CATEGORIES_WITH_DELEGATION_COUNTDOWN[1].route}
+      menus={sidebarMenus}
+      onActivateCategory={action('onActivateCategory')}
+      isShowingSubMenus
+      isDialogOpen={() => false}
+      onAddWallet={action('onAddWallet')}
+      onOpenDialog={action('openDialog')}
+      onSubmitSupportRequest={() => {}}
+      pathname="/"
+      currentTheme={props.currentTheme}
+      network="testnet"
+      isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
+    />
+  ))
   .add('Delegation Category', (props: { currentTheme: string }) => (
     <Sidebar
       menus={emptyMenus}
       categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
-      activeSidebarCategory={CATEGORIES_WITH_DELEGATION_COUNTDOWN[1].route}
+      activeSidebarCategory={CATEGORIES_WITH_DELEGATION_COUNTDOWN[2].route}
       onActivateCategory={action('onActivateCategory')}
       isDialogOpen={() => false}
       onAddWallet={action('onAddWallet')}
