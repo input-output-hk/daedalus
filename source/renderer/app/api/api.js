@@ -1250,7 +1250,6 @@ export default class AdaApi {
     try {
       await awaitUpdateChannel.send();
       const response: Promise<any> = await applyAppUpdate(this.config);
-      console.log('response', response);
       logger.debug('AdaApi::applyUpdate success', { response });
     } catch (error) {
       logger.error('AdaApi::applyUpdate error', { error });

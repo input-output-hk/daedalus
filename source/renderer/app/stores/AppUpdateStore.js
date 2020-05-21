@@ -3,14 +3,21 @@ import { action, computed, observable } from 'mobx';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import type { AppInfo, GetLatestAppVersionResponse } from '../api/nodes/types';
-import { NODE_UPDATE_POLL_INTERVAL } from '../config/timingConfig';
+import { APP_UPDATE_POLL_INTERVAL } from '../config/timingConfig';
 import { rebuildApplicationMenu } from '../ipc/rebuild-application-menu';
+import {
+  updateManagerInitChannel,
+  updateManagerStatusChannel,
+  updateManagerRequestDownloadChannel,
+} from '../ipc/updateManagerChannel';
+import type { UpdateManagerStatusResponse } from '../../../common/types/update-manager.types';
 
 export default class AppUpdateStore extends Store {
   @observable isUpdateAvailable = false;
   @observable isDownloadingUpdate = false;
   @observable isUpdatePostponed = false;
   @observable isUpdateInstalled = false;
+  @observable hasPendingUpdateDownload = false;
   @observable availableAppVersion: ?string = null;
   @observable isNewAppVersionAvailable: boolean = false;
   @observable nextUpdateVersion: ?string = null;
@@ -46,10 +53,23 @@ export default class AppUpdateStore extends Store {
     if (!isFlight && !isIncentivizedTestnet) {
       this.nextUpdateInterval = setInterval(
         this.refreshNextUpdate,
-        NODE_UPDATE_POLL_INTERVAL
+        APP_UPDATE_POLL_INTERVAL
       );
     }
+
+    this.getInitialStatus();
   }
+
+  getInitialStatus = async () => {
+    const initialStatus = await updateManagerInitChannel.request();
+    console.log('initialStatus', initialStatus);
+    if (this.isUpdateInstalled) {
+      updateManagerStatusChannel.request();
+      updateManagerRequestDownloadChannel.request();
+    }
+  };
+
+  getUpdateStatus = async (): UpdateManagerStatusResponse => {};
 
   refreshNextUpdate = async () => {
     if (this.stores.networkStatus.isSynced) {

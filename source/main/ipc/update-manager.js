@@ -8,42 +8,63 @@ import {
 import type { UpdateManagerStatusResponse } from '../../common/types/update-manager.types';
 
 const updateManagerInit = async (): Promise<UpdateManagerStatusResponse> => {
-  const hasUpdateAvailable = await checkHasUpdateAvailable();
+  const isUpdateAvailable = await checkisUpdateAvailable();
   const isDownloadingUpdate = await checkIsDownloadingUpdate();
   const updateDownloadProgress = await checkUpdateDownloadProgress();
+  const haspendingUpdateDownload = await checkHaspendingUpdateDownload();
   return {
-    hasUpdateAvailable,
+    isUpdateAvailable,
     isDownloadingUpdate,
     updateDownloadProgress,
+    haspendingUpdateDownload,
   };
 };
 
 const updateManagerStatus = async (): Promise<UpdateManagerStatusResponse> => {
-  return {};
+  const isUpdateAvailable = await checkisUpdateAvailable();
+  const isDownloadingUpdate = await checkIsDownloadingUpdate();
+  const updateDownloadProgress = await checkUpdateDownloadProgress();
+  const haspendingUpdateDownload = await checkHaspendingUpdateDownload();
+  return {
+    isUpdateAvailable,
+    isDownloadingUpdate,
+    updateDownloadProgress,
+    haspendingUpdateDownload,
+  };
 };
 
 const updateManagerRequestDownload = async (): Promise<UpdateManagerStatusResponse> => {
-  return {};
+  const isUpdateAvailable = await checkisUpdateAvailable();
+  const isDownloadingUpdate = await checkIsDownloadingUpdate();
+  const updateDownloadProgress = await checkUpdateDownloadProgress();
+  const haspendingUpdateDownload = await checkHaspendingUpdateDownload();
+  return {
+    isUpdateAvailable,
+    isDownloadingUpdate,
+    updateDownloadProgress,
+    haspendingUpdateDownload,
+  };
 };
 
-const checkHasUpdateAvailable = async (): Promise<boolean> => false;
+const checkisUpdateAvailable = async (): Promise<boolean> => false;
 const checkIsDownloadingUpdate = async (): Promise<boolean> => false;
 const checkUpdateDownloadProgress = async (): Promise<number> => 0;
+const checkHaspendingUpdateDownload = async (): Promise<boolean> => false;
 
-const updateManagerInitChannel: MainIpcChannel<
-  void,
-  UpdateManagerStatusResponse
-> = new MainIpcChannel(UPDATE_MANAGER_INIT);
+const updateManagerInitChannel: // IpcChannel<Incoming, Outgoing>
+MainIpcChannel<void, UpdateManagerStatusResponse> = new MainIpcChannel(
+  UPDATE_MANAGER_INIT
+);
 
-const updateManagerStatusChannel: MainIpcChannel<
-  void,
-  UpdateManagerStatusResponse
-> = new MainIpcChannel(UPDATE_MANAGER_STATUS);
+const updateManagerStatusChannel: // IpcChannel<Incoming, Outgoing>
+MainIpcChannel<void, UpdateManagerStatusResponse> = new MainIpcChannel(
+  UPDATE_MANAGER_STATUS
+);
 
-const updateManagerRequestDownloadChannel: MainIpcChannel<
-  void,
-  UpdateManagerStatusResponse
-> = new MainIpcChannel(UPDATE_MANAGER_REQUEST_DOWNLOAD);
+const updateManagerRequestDownloadChannel: // IpcChannel<Incoming, Outgoing>
+MainIpcChannel<void, UpdateManagerStatusResponse> = new MainIpcChannel(
+  UPDATE_MANAGER_REQUEST_DOWNLOAD
+);
 
 export default () => {
   updateManagerInitChannel.onReceive(updateManagerInit);

@@ -1,7 +1,8 @@
 // @flow
 
 export type UpdateManagerStatusResponse = {
-  hasUpdateAvailable?: boolean,
+  isUpdateAvailable?: boolean,
   isDownloadingUpdate?: boolean,
   updateDownloadProgress?: number,
+  haspendingUpdateDownload?: boolean,
 };
