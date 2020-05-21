@@ -1,28 +1,35 @@
 // @flow
-import { action, computed, observable } from 'mobx';
+import { action, computed, observable, runInAction } from 'mobx';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import type { AppInfo, GetLatestAppVersionResponse } from '../api/nodes/types';
 import { APP_UPDATE_POLL_INTERVAL } from '../config/timingConfig';
 import { rebuildApplicationMenu } from '../ipc/rebuild-application-menu';
 import {
-  updateManagerInitChannel,
-  updateManagerStatusChannel,
-  updateManagerRequestDownloadChannel,
-} from '../ipc/updateManagerChannel';
-import type { UpdateManagerStatusResponse } from '../../../common/types/update-manager.types';
+  getPersistedDownloadStatusChannel,
+  getDownloadStatusChannel,
+  requestDownloadChannel,
+} from '../ipc/downloadManagerChannel';
+import type {
+  PersistedDownloadStatusRendererRequest,
+  PersistedDownloadStatusMainResponse,
+  DownloadStatusRendererRequest,
+  DownloadStatusMainResponse,
+  DownloadRendererRequest,
+  DownloadMainResponse,
+} from '../../../common/ipc/api';
 
 export default class AppUpdateStore extends Store {
   @observable isUpdateAvailable = false;
-  @observable isDownloadingUpdate = false;
+  @observable isDownloading = false;
   @observable isUpdatePostponed = false;
   @observable isUpdateInstalled = false;
-  @observable hasPendingUpdateDownload = false;
+  @observable hasPendingDownload = false;
   @observable availableAppVersion: ?string = null;
   @observable isNewAppVersionAvailable: boolean = false;
   @observable nextUpdateVersion: ?string = null;
   @observable applicationVersion: ?number = null;
-  @observable updateDownloadProgress: ?number = null;
+  @observable downloadProgress: ?number = null;
 
   // REQUESTS
   @observable nextUpdateRequest: Request<AppInfo> = new Request(
@@ -57,19 +64,81 @@ export default class AppUpdateStore extends Store {
       );
     }
 
-    this.getInitialStatus();
+    this.getPersistedDownloadStatus();
   }
 
-  getInitialStatus = async () => {
-    const initialStatus = await updateManagerInitChannel.request();
-    console.log('initialStatus', initialStatus);
-    if (this.isUpdateInstalled) {
-      updateManagerStatusChannel.request();
-      updateManagerRequestDownloadChannel.request();
-    }
+  // PersistedDownloadStatusRendererRequest,
+  // PersistedDownloadStatusMainResponse,
+  // DownloadStatusRendererRequest,
+  // DownloadStatusMainResponse,
+  // DownloadRendererRequest,
+  // DownloadMainResponse,
+
+  getPersistedDownloadStatus = async () => {
+    const fileToMatch = {
+      fileNamePattern: new RegExp(/daedalus/),
+      fileExtentionPattern: 'pkg',
+    };
+    const {
+      // hasPendingDownload,
+      pendingUpdateFileName,
+    }: // downloadProgress,
+    PersistedDownloadStatusMainResponse = await getPersistedDownloadStatusChannel.request(
+      {
+        file: fileToMatch,
+      }
+    );
+
+    console.log('pendingUpdateFileName', typeof pendingUpdateFileName);
+
+    // if (
+    //   hasPendingDownload &&
+    //   (await this._isUpdateValid(pendingUpdateFileName))
+    // ) {
+    //   runInAction('Set downloading true', () => {
+    //     this.isUpdateAvailable = true;
+    //     this.isDownloading = true;
+    //     // this.downloadProgress = downloadProgress;
+    //   });
+    //   // requestDownloadChannel.send();
+    // }
   };
 
-  getUpdateStatus = async (): UpdateManagerStatusResponse => {};
+  _requestDownload = async () => {
+    const blah = requestDownloadChannel
+      .request({
+        url:
+          'https://update-cardano-mainnet.iohk.io/daedalus-1.1.0-mainnet-12849.pkg',
+        // destinationFolder: 'downloads',
+      })
+      .then((a, b, c) => {
+        console.log('_requestDownload ---');
+        console.log('a', a);
+        console.log('b', b);
+        console.log('c', c);
+      });
+    console.log('FOI PROMISE', blah);
+    // url
+  };
+
+  _getUpdateStatus = async ({
+    file,
+  }: DownloadStatusRendererRequest): Promise<void> => {
+    const {
+      isDownloading,
+      downloadProgress,
+    } = await getDownloadStatusChannel.request({ file });
+
+    runInAction('Update download status', () => {
+      this.isDownloading = isDownloading;
+      this.downloadProgress = downloadProgress;
+    });
+  };
+
+  _isUpdateValid = async (fileName: string): Promise<boolean> => {
+    console.log('fileName', fileName);
+    return true;
+  };
 
   refreshNextUpdate = async () => {
     if (this.stores.networkStatus.isSynced) {

@@ -27,7 +27,13 @@ import type {
   WalletMigrationReportData,
 } from '../types/logging.types';
 import type { Locale } from '../types/locales.types';
-import type { UpdateManagerStatusResponse } from '../types/update-manager.types';
+import type {
+  PersistedDownloadStatusRequest,
+  PersistedDownloadStatusResponse,
+  DownloadStatusRequest,
+  DownloadStatusResponse,
+  DownloadRequest,
+} from '../types/download-manager.types';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -288,23 +294,23 @@ export type ElectronStoreMessage = {
 };
 
 /**
- * Channel for initiating the update manager
+ * Channel for initiating the download manager
  */
-export const UPDATE_MANAGER_INIT = 'UPDATE_MANAGER_INIT';
-export type UpdateManagerInitRendererRequest = void;
-export type UpdateManagerInitMainResponse = UpdateManagerStatusResponse;
+export const PERSISTED_DOWNLOAD_STATUS = 'PERSISTED_DOWNLOAD_STATUS';
+export type PersistedDownloadStatusRendererRequest = PersistedDownloadStatusRequest;
+export type PersistedDownloadStatusMainResponse = PersistedDownloadStatusResponse;
 
 /**
- * Channel for receiving the update manager status
+ * Channel for receiving the download manager status
  */
-export const UPDATE_MANAGER_STATUS = 'UPDATE_MANAGER_STATUS';
-export type UpdateManagerStatusRendererRequest = void;
-export type UpdateManagerStatusMainResponse = UpdateManagerStatusResponse;
+export const DOWNLOAD_STATUS = 'DOWNLOAD_STATUS';
+export type DownloadStatusRendererRequest = DownloadStatusRequest;
+export type DownloadStatusMainResponse = DownloadStatusResponse;
 
 /**
- * Channel for receiving the update manager status
+ * Channel for receiving the download manager status
  */
-export const UPDATE_MANAGER_REQUEST_DOWNLOAD =
-  'UPDATE_MANAGER_REQUEST_DOWNLOAD';
-export type UpdateManagerRequestDownloadRendererRequest = void;
-export type UpdateManagerRequestDownloadMainResponse = UpdateManagerStatusResponse;
+export const REQUEST_DOWNLOAD = 'REQUEST_DOWNLOAD';
+export type DownloadRendererRequest = DownloadRequest;
+export type DownloadMainResponse = void;
+export type DownloadMainAsyncResponse = DownloadStatusResponse;

@@ -7,7 +7,7 @@ import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteS
 import WalletRestoreDialog from './widgets/WalletRestoreDialog';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import globalMessages from '../../../i18n/global-messages';
-import validWords from '../../../../../common/crypto/valid-words.en';
+import validWords from '../../../../../common/config/crypto/valid-words.en';
 import type {
   WalletKind,
   WalletDaedalusKind,

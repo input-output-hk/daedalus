@@ -6,7 +6,7 @@ import { chunk } from 'lodash';
 import { pbkdf2Sync as pbkdf2 } from 'pbkdf2';
 import * as unorm from 'unorm';
 import CardanoCrypto from 'rust-cardano-crypto';
-import validWords from '../../../common/crypto/valid-words.en';
+import validWords from '../../../common/config/crypto/valid-words.en';
 import { ADA_CERTIFICATE_MNEMONIC_LENGTH } from '../config/cryptoConfig';
 
 /**

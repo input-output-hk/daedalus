@@ -4,7 +4,7 @@ import { observer, inject } from 'mobx-react';
 import MnemonicsDialog from '../../../../components/wallet/wallet-restore/MnemonicsDialog';
 import type { InjectedDialogContainerStepProps } from '../../../../types/injectedPropsType';
 import { InjectedDialogContainerStepDefaultProps } from '../../../../types/injectedPropsType';
-import { isValidMnemonic } from '../../../../../../common/crypto/decrypt';
+import { isValidMnemonic } from '../../../../../../common/config/crypto/decrypt';
 import {
   getScrambledInput,
   unscramblePaperWalletMnemonic,
