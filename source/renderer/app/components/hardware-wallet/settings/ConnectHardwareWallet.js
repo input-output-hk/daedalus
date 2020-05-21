@@ -47,6 +47,12 @@ const messages = defineMessages({
     defaultMessage: '!!!Export <span>public key</span> on your device',
     description: 'Export wallet label',
   },
+  linkUrl: {
+    id: 'wallet.select.import.dialog.linkUrl',
+    defaultMessage:
+      '!!!https://daedaluswallet.io/',
+    description: 'External link URL on the hardware wallet connect screen',
+  },
 });
 
 type Props = {
@@ -141,7 +147,7 @@ export default class ConnectHardwareWallet extends Component<Props> {
                   <SVGInline
                     svg={exportIcon}
                     className={styles.exportIcon}
-                    onClick={() => onOpenExternalLink(link)}
+                    onClick={() => onOpenExternalLink(intl.formatMessage(messages.linkUrl))}
                   />
                   <FormattedHTMLMessage {...messages.hardwareWalletExport} />
                 </div>
