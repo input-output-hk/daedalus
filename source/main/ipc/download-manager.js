@@ -1,6 +1,7 @@
 // @flow
 import { DownloaderHelper } from 'node-downloader-helper';
-import { app, ipcMain } from 'electron';
+import { app } from 'electron';
+import type { BrowserWindow } from 'electron';
 import { MainIpcConversation } from './lib/MainIpcConversation';
 import {
   PERSISTED_DOWNLOAD_STATUS,
@@ -14,7 +15,6 @@ import type {
   DownloadStatusMainResponse,
   DownloadRendererRequest,
   DownloadMainResponse,
-  DownloadMainAsyncResponse,
 } from '../../common/ipc/api';
 
 const getPersistDownloadStatus = async ({
@@ -48,23 +48,25 @@ const getDownloadStatus = async (): Promise<DownloadStatusMainResponse> => {
   };
 };
 
-const sendDownloadStatus = (status: DownloadMainAsyncResponse) => {
-  console.log('sendDownloadStatus: ', status);
-};
-
 const requestDownload = async (
-  downloadRequest: DownloadRendererRequest
-): Promise<void> => {
-  console.log('downloadRequest -----', downloadRequest);
+  downloadRequest: DownloadRendererRequest,
+  window: BrowserWindow
+): Promise<DownloadMainResponse> => {
   const downloadsPath = app.getPath('downloads');
   const { url, destinationFolder = downloadsPath } = downloadRequest;
 
   const download = new DownloaderHelper(url, destinationFolder);
   download.on('start', () =>
-    sendDownloadStatus({ isDownloading: true, downloadProgress: 0 })
+    requestDownloadChannel.send(
+      { isDownloading: true, downloadProgress: 0 },
+      window
+    )
   );
   download.on('end', () =>
-    sendDownloadStatus({ isDownloading: true, downloadProgress: 100 })
+    requestDownloadChannel.send(
+      { isDownloading: false, downloadProgress: 100 },
+      window
+    )
   );
   // download.on('progress', (a, b, c) => {
   //   console.log('progress----');
@@ -73,6 +75,7 @@ const requestDownload = async (
   //   console.log('c', c);
   // })
   download.start();
+  return { isDownloading: false, downloadProgress: 0 };
 };
 
 const checkisDownloading = async (): Promise<boolean> => false;
@@ -118,8 +121,10 @@ MainIpcConversation<
   DownloadMainResponse
 > = new MainIpcConversation(REQUEST_DOWNLOAD);
 
-export default () => {
-  getPersistDownloadStatusChannel.onReceive(getPersistDownloadStatus);
-  getDownloadStatusChannel.onReceive(getDownloadStatus);
-  requestDownloadChannel.onReceive(requestDownload);
+export default (window: BrowserWindow) => {
+  getPersistDownloadStatusChannel.onRequest(getPersistDownloadStatus);
+  getDownloadStatusChannel.onRequest(getDownloadStatus);
+  requestDownloadChannel.onRequest((downloadRequest: DownloadRendererRequest) =>
+    requestDownload(downloadRequest, window)
+  );
 };

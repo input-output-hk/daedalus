@@ -312,5 +312,4 @@ export type DownloadStatusMainResponse = DownloadStatusResponse;
  */
 export const REQUEST_DOWNLOAD = 'REQUEST_DOWNLOAD';
 export type DownloadRendererRequest = DownloadRequest;
-export type DownloadMainResponse = void;
-export type DownloadMainAsyncResponse = DownloadStatusResponse;
+export type DownloadMainResponse = DownloadStatusResponse;
