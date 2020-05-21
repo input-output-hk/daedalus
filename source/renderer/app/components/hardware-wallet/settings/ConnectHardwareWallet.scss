@@ -73,6 +73,7 @@
         .hardwareWalletStep {
           align-items: center;
           background-color: var(--theme-hardware-wallet-step-background-color);
+          border: 1px solid var(--theme-input-border-color);
           display: flex;
           height: 72px;
           justify-content: space-between;
@@ -129,6 +130,17 @@
             height: 14px;
             object-fit: contain;
             width: 14px;
+          }
+
+          &.isActiveFetchingDevice,
+          &.isActiveExport {
+            border: 1px solid
+              var(--theme-hardware-wallet-step-border-active-color);
+          }
+
+          &.isErrorDevice,
+          &.isErrorExport {
+            border: 1px solid var(--rp-theme-color-error);
           }
         }
       }

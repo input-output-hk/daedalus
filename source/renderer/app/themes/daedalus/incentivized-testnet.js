@@ -239,6 +239,8 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
   },
   hardwareWallet: {
     '--theme-hardware-wallet-step-background-color': '#fafbfc',
+    '--theme-hardware-wallet-step-border-active-color': '#296fd0',
+    '--theme-hardware-wallet-step-border-color': '#c6cdd6',
     '--theme-hardware-wallet-step-color': '#5e6066',
     '--theme-hardware-wallet-title-color': '#5e6066',
     '--theme-hardware-wallet-message-color': '#5e6066',

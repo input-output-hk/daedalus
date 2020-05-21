@@ -59,7 +59,6 @@ export default class WalletsStore extends Store {
   // REQUESTS
   @observable active: ?Wallet = null;
   @observable activeValue: ?BigNumber = null;
-  @observable hardwareActive: ?Wallet = null;
   @observable walletsRequest: Request<Array<Wallet>> = new Request(
     this.api.ada.getWallets
   );
