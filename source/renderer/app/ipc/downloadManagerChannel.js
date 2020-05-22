@@ -12,6 +12,7 @@ import type {
   DownloadRendererRequest,
   DownloadMainResponse,
 } from '../../../common/ipc/api';
+// import { RendererIpcConversation as RendererIpcChannel } from './lib/RendererIpcConversation';
 import { RendererIpcChannel } from './lib/RendererIpcChannel';
 
 export const getPersistedDownloadStatusChannel: // IpcChannel<Incoming, Outgoing>

@@ -33,6 +33,7 @@ import type {
   DownloadStatusRequest,
   DownloadStatusResponse,
   DownloadRequest,
+  DownloadResponse,
 } from '../types/download-manager.types';
 
 /**
@@ -312,4 +313,4 @@ export type DownloadStatusMainResponse = DownloadStatusResponse;
  */
 export const REQUEST_DOWNLOAD = 'REQUEST_DOWNLOAD';
 export type DownloadRendererRequest = DownloadRequest;
-export type DownloadMainResponse = DownloadStatusResponse;
+export type DownloadMainResponse = DownloadResponse;

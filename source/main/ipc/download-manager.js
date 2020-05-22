@@ -1,14 +1,19 @@
 // @flow
 import { DownloaderHelper } from 'node-downloader-helper';
+import { throttle } from 'lodash';
 import { app } from 'electron';
 import type { BrowserWindow } from 'electron';
+// import { MainIpcConversation as MainIpcChannel } from './lib/MainIpcConversation';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import {
   PERSISTED_DOWNLOAD_STATUS,
   DOWNLOAD_STATUS,
   REQUEST_DOWNLOAD,
 } from '../../common/ipc/api';
-import { ALLOWED_DOWNLOAD_DIRECTORIES } from '../../common/config/download-manager';
+import {
+  ALLOWED_DOWNLOAD_DIRECTORIES,
+  DOWNLOAD_PROGRESS_STATUSES as statusType,
+} from '../../common/config/download-manager';
 import type {
   PersistedDownloadStatusRendererRequest,
   PersistedDownloadStatusMainResponse,
@@ -17,7 +22,11 @@ import type {
   DownloadRendererRequest,
   DownloadMainResponse,
 } from '../../common/ipc/api';
-import type { AllowedDownloadDirectories } from '../../common/types/download-manager.types';
+import type {
+  AllowedDownloadDirectories,
+  DownloadInfo,
+  DownloadProgressStatuses,
+} from '../../common/types/download-manager.types';
 
 const getPathFromDirectoryName = (dir: AllowedDownloadDirectories) => {
   switch (dir) {
@@ -87,7 +96,7 @@ const checkhasPendingDownload = async ({
 const requestDownload = async (
   downloadRequest: DownloadRendererRequest,
   window: BrowserWindow
-): Promise<DownloadMainResponse> => {
+): Promise<any> => {
   const defaultDirectoryName = ALLOWED_DOWNLOAD_DIRECTORIES.DOWNLOADS;
   const {
     fileUrl,
@@ -95,27 +104,31 @@ const requestDownload = async (
     options,
   } = downloadRequest;
   const destinationPath = getPathFromDirectoryName(destinationDirectoryName);
-  console.log('fileUrl', fileUrl);
-  console.log('destinationPath', destinationPath);
-  console.log('options', options);
 
-  const update = (isDownloading: boolean, downloadProgress: number) =>
+  const update = (
+    progressStatusType: DownloadProgressStatuses,
+    downloadInfo: DownloadInfo
+  ) =>
     requestDownloadChannel.send(
-      { isDownloading, downloadProgress },
+      {
+        ...downloadInfo,
+        progressStatusType,
+      },
       window.webContents
     );
 
+  const updateThrottle = throttle(update, 1000, {
+    leading: true,
+    trailing: true,
+  });
+
   const download = new DownloaderHelper(fileUrl, destinationPath, options);
-  download.on('start', update(true, 0));
-  download.on('download', update(true, 0));
-  download.on('end', update(true, 0));
-  download.on('error', update(true, 0));
-  download.on('stateChanged', update(true, 0));
-  download.on('timeout', update(true, 0));
-  // download.on('progress', ({ progress }) => update(true, progress));
+  download.on('download', update.bind(this, statusType.DOWNLOAD));
+  download.on('end', update.bind(this, statusType.END));
+  download.on('error', update.bind(this, statusType.ERROR));
+  download.on('timeout', update.bind(this, statusType.TIMEOUT));
+  download.on('progress', updateThrottle.bind(this, statusType.PROGRESS));
   download.start();
-  return download;
-  // return { isDownloading: false, downloadProgress: 0 };
 };
 
 const getPersistDownloadStatusChannel: // IpcChannel<Incoming, Outgoing>

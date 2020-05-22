@@ -35,6 +35,7 @@ export type DownloadStatusResponse = {
 
 export type AllowedDownloadDirectories = 'downloads' | 'desktop';
 
+// https://www.npmjs.com/package/node-downloader-helper
 export type DownloadRequest = {
   fileUrl: string,
   destinationDirectoryName?: AllowedDownloadDirectories,
@@ -51,3 +52,26 @@ export type DownloadRequest = {
     httpsRequestOptions?: Object, // Override the https request options, ex: to add SSL Certs
   },
 };
+
+// https://www.npmjs.com/package/node-downloader-helper
+export type DownloadInfo = {
+  fileName?: ?string,
+  filePath?: ?string,
+  downloaded?: ?number,
+  progress?: ?number,
+  error?: ?boolean,
+};
+
+export type DownloadResponse = {
+  ...$Exact<DownloadInfo>,
+  progressStatusType: DownloadProgressStatuses,
+};
+
+export type DownloadProgressStatuses =
+  | 'start'
+  | 'download'
+  | 'end'
+  | 'error'
+  | 'stateChanged'
+  | 'timeout'
+  | 'progress';

@@ -19,6 +19,11 @@ import type {
   DownloadMainResponse,
 } from '../../../common/ipc/api';
 import { ALLOWED_DOWNLOAD_DIRECTORIES } from '../../../common/config/download-manager';
+import type {
+  AllowedDownloadDirectories,
+  DownloadInfo,
+  DownloadProgressStatuses,
+} from '../../../common/types/download-manager.types';
 
 export default class AppUpdateStore extends Store {
   @observable isUpdateAvailable = false;
@@ -106,25 +111,17 @@ export default class AppUpdateStore extends Store {
   };
 
   _requestDownload = async () => {
-    // requestDownloadChannel.onReceive((a, b, c) => {
-    //   console.log('requestDownloadChannel onReceive -----');
-    //   console.log('a', a);
-    //   console.log('b', b);
-    //   console.log('c', c);
-    //   // return {
-    //   //   url: 'https://update-cardano-mainnet.iohk.io/daedalus-1.1.0-mainnet-12849.pkg',
-    //   // }
-    //   return Promise.resolve({ fileUrl: '', });
-    // });
-    const dl = await requestDownloadChannel.request({
-      // url: 'https://i.ytimg.com/vi/_Lf96bZksN0/maxresdefault.jpg',
-      // destinationDirectoryName: ALLOWED_DOWNLOAD_DIRECTORIES.DOWNLOADS,
+    requestDownloadChannel.onReceive(
+      (downloadMainResponse: DownloadMainResponse) => {
+        console.log('downloadMainResponse', downloadMainResponse);
+        return Promise.resolve({ fileUrl: '' });
+      }
+    );
+    await requestDownloadChannel.request({
       fileUrl:
         'https://update-cardano-mainnet.iohk.io/daedalus-1.1.0-mainnet-12849.pkg',
-      destinationDirectoryName: ALLOWED_DOWNLOAD_DIRECTORIES.DESKTOP,
+      destinationDirectoryName: ALLOWED_DOWNLOAD_DIRECTORIES.DOWNLOADS,
     });
-    console.log('dl 1', dl);
-    window.dl = dl;
   };
 
   _getUpdateStatus = async ({
