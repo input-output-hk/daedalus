@@ -1,4 +1,4 @@
-@e2e @skip
+@e2e
 Feature: Node Restart
 
   Background:
