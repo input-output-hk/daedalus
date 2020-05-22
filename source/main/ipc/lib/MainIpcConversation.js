@@ -26,10 +26,6 @@ export class MainIpcConversation<Incoming, Outgoing> extends IpcConversation<
     sender: IpcSender,
     receiver: IpcReceiver = ipcMain
   ): Promise<Incoming> {
-    console.log('MAIN REQUEST CONV');
-    console.log('message', message);
-    console.log('sender', sender);
-    console.log('receiver', receiver);
     return super.request(message, sender, receiver);
   }
 
@@ -37,7 +33,6 @@ export class MainIpcConversation<Incoming, Outgoing> extends IpcConversation<
     handler: (message: Incoming) => Promise<Outgoing>,
     receiver: IpcReceiver = ipcMain
   ): void {
-    console.log('MAIN RECEIVE CONV');
     super.onRequest(handler, receiver);
   }
 
@@ -45,10 +40,6 @@ export class MainIpcConversation<Incoming, Outgoing> extends IpcConversation<
     handler: Incoming => Promise<Outgoing>,
     receiver: IpcReceiver = ipcMain
   ): void {
-    console.log('MAIN REQ CONV');
-    // console.log('onRequest ------');
-    // console.log('handler', handler);
-    // console.log('receiver', receiver);
     super.onRequest(handler, receiver);
   }
 }

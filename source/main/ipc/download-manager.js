@@ -55,25 +55,22 @@ const requestDownload = async (
   const downloadsPath = app.getPath('downloads');
   const { url, destinationFolder = downloadsPath } = downloadRequest;
 
+  const update = (isDownloading: boolean, downloadProgress: number) =>
+    requestDownloadChannel.send(
+      { isDownloading, downloadProgress },
+      window.webContents
+    );
+
   const download = new DownloaderHelper(url, destinationFolder);
-  download.on('start', () =>
-    requestDownloadChannel.send(
-      { isDownloading: true, downloadProgress: 0 },
-      window
-    )
-  );
-  download.on('end', () =>
-    requestDownloadChannel.send(
-      { isDownloading: false, downloadProgress: 100 },
-      window
-    )
-  );
-  // download.on('progress', (a, b, c) => {
-  //   console.log('progress----');
-  //   console.log('a', a);
-  //   console.log('b', b);
-  //   console.log('c', c);
-  // })
+  download.on('start', () => update(true, 0));
+  download.on('end', () => update(false, 100));
+  // download.on('progress', ({ progress }) => update(true, progress));
+  download.on('progress', (a, b, c) => {
+    console.log('progress----');
+    console.log('a', a);
+    console.log('b', b);
+    console.log('c', c);
+  });
   download.start();
   return { isDownloading: false, downloadProgress: 0 };
 };
