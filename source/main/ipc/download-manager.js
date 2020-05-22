@@ -2,12 +2,13 @@
 import { DownloaderHelper } from 'node-downloader-helper';
 import { app } from 'electron';
 import type { BrowserWindow } from 'electron';
-import { MainIpcConversation } from './lib/MainIpcConversation';
+import { MainIpcChannel } from './lib/MainIpcChannel';
 import {
   PERSISTED_DOWNLOAD_STATUS,
   DOWNLOAD_STATUS,
   REQUEST_DOWNLOAD,
 } from '../../common/ipc/api';
+import { ALLOWED_DOWNLOAD_DIRECTORIES } from '../../common/config/download-manager';
 import type {
   PersistedDownloadStatusRendererRequest,
   PersistedDownloadStatusMainResponse,
@@ -16,6 +17,16 @@ import type {
   DownloadRendererRequest,
   DownloadMainResponse,
 } from '../../common/ipc/api';
+import type { AllowedDownloadDirectories } from '../../common/types/download-manager.types';
+
+const getPathFromDirectoryName = (dir: AllowedDownloadDirectories) => {
+  switch (dir) {
+    case ALLOWED_DOWNLOAD_DIRECTORIES.DESKTOP:
+      return app.getPath('desktop');
+    default:
+      return app.getPath('downloads');
+  }
+};
 
 const getPersistDownloadStatus = async ({
   file,
@@ -48,33 +59,6 @@ const getDownloadStatus = async (): Promise<DownloadStatusMainResponse> => {
   };
 };
 
-const requestDownload = async (
-  downloadRequest: DownloadRendererRequest,
-  window: BrowserWindow
-): Promise<DownloadMainResponse> => {
-  const downloadsPath = app.getPath('downloads');
-  const { url, destinationFolder = downloadsPath } = downloadRequest;
-
-  const update = (isDownloading: boolean, downloadProgress: number) =>
-    requestDownloadChannel.send(
-      { isDownloading, downloadProgress },
-      window.webContents
-    );
-
-  const download = new DownloaderHelper(url, destinationFolder);
-  download.on('start', () => update(true, 0));
-  download.on('end', () => update(false, 100));
-  // download.on('progress', ({ progress }) => update(true, progress));
-  download.on('progress', (a, b, c) => {
-    console.log('progress----');
-    console.log('a', a);
-    console.log('b', b);
-    console.log('c', c);
-  });
-  download.start();
-  return { isDownloading: false, downloadProgress: 0 };
-};
-
 const checkisDownloading = async (): Promise<boolean> => false;
 
 const checkdownloadProgress = async (): Promise<number> => 0;
@@ -89,9 +73,9 @@ const checkhasPendingDownload = async ({
     // fileName,
     // fileExtention,
   } = file;
-  console.log('file', file);
-  const path = filePath || app.getPath('downloads');
-  console.log('path', path);
+  const pathName = filePath || ALLOWED_DOWNLOAD_DIRECTORIES.DOWNLOADS;
+  console.log('pathName', pathName);
+  // const path = getPathFromDirectoryName(pathName);
   const hasPendingDownload = false;
   const pendingUpdateFileName = '';
   return {
@@ -100,23 +84,57 @@ const checkhasPendingDownload = async ({
   };
 };
 
+const requestDownload = async (
+  downloadRequest: DownloadRendererRequest,
+  window: BrowserWindow
+): Promise<DownloadMainResponse> => {
+  const defaultDirectoryName = ALLOWED_DOWNLOAD_DIRECTORIES.DOWNLOADS;
+  const {
+    fileUrl,
+    destinationDirectoryName = defaultDirectoryName,
+    options,
+  } = downloadRequest;
+  const destinationPath = getPathFromDirectoryName(destinationDirectoryName);
+  console.log('fileUrl', fileUrl);
+  console.log('destinationPath', destinationPath);
+  console.log('options', options);
+
+  const update = (isDownloading: boolean, downloadProgress: number) =>
+    requestDownloadChannel.send(
+      { isDownloading, downloadProgress },
+      window.webContents
+    );
+
+  const download = new DownloaderHelper(fileUrl, destinationPath, options);
+  download.on('start', update(true, 0));
+  download.on('download', update(true, 0));
+  download.on('end', update(true, 0));
+  download.on('error', update(true, 0));
+  download.on('stateChanged', update(true, 0));
+  download.on('timeout', update(true, 0));
+  // download.on('progress', ({ progress }) => update(true, progress));
+  download.start();
+  return download;
+  // return { isDownloading: false, downloadProgress: 0 };
+};
+
 const getPersistDownloadStatusChannel: // IpcChannel<Incoming, Outgoing>
-MainIpcConversation<
+MainIpcChannel<
   PersistedDownloadStatusRendererRequest,
   PersistedDownloadStatusMainResponse
-> = new MainIpcConversation(PERSISTED_DOWNLOAD_STATUS);
+> = new MainIpcChannel(PERSISTED_DOWNLOAD_STATUS);
 
 const getDownloadStatusChannel: // IpcChannel<Incoming, Outgoing>
-MainIpcConversation<
+MainIpcChannel<
   DownloadStatusRendererRequest,
   DownloadStatusMainResponse
-> = new MainIpcConversation(DOWNLOAD_STATUS);
+> = new MainIpcChannel(DOWNLOAD_STATUS);
 
 const requestDownloadChannel: // IpcChannel<Incoming, Outgoing>
-MainIpcConversation<
+MainIpcChannel<
   DownloadRendererRequest,
   DownloadMainResponse
-> = new MainIpcConversation(REQUEST_DOWNLOAD);
+> = new MainIpcChannel(REQUEST_DOWNLOAD);
 
 export default (window: BrowserWindow) => {
   getPersistDownloadStatusChannel.onRequest(getPersistDownloadStatus);

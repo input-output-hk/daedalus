@@ -35,7 +35,7 @@ export default (window: BrowserWindow) => {
   openExternalUrlChannel;
   // eslint-disable-next-line no-unused-expressions
   openLocalDirectoryChannel;
-  downloadManager();
+  downloadManager(window);
   getRecoveryWalletIdChannel();
   handleElectronStoreChannel();
 };

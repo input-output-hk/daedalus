@@ -33,14 +33,16 @@ export type DownloadStatusResponse = {
   downloadProgress?: ?number,
 };
 
+export type AllowedDownloadDirectories = 'downloads' | 'desktop';
+
 export type DownloadRequest = {
-  url: string,
-  destinationFolder?: string,
+  fileUrl: string,
+  destinationDirectoryName?: AllowedDownloadDirectories,
   options?: ?{
     method?: 'GET' | 'POST', // Request Method Verb
     headers?: Object, // Custom HTTP Header ex: Authorization, User-Agent
     fileName?: string | Function | { name: string, ext: string }, // Custom filename when saved
-    retry?: boolean, // { maxRetries: number, delay: number in ms } or false to disable (default)
+    retry?: Object | boolean, // { maxRetries: number, delay: number in ms } or false to disable (default)
     forceResume?: boolean, // If the server does not return the "accept-ranges" header, can be force if it does support it
     removeOnStop?: boolean, // remove the file when is stopped (default:true)
     removeOnFail?: boolean, // remove the file when fail (default:true)

@@ -26,7 +26,6 @@ export class MainIpcChannel<Incoming, Outgoing> extends IpcChannel<
     sender: IpcSender,
     receiver: IpcReceiver = ipcMain
   ): Promise<Incoming> {
-    console.log('MAIN REQUEST CHANNEL');
     return super.request(message, sender, receiver);
   }
 
@@ -34,7 +33,6 @@ export class MainIpcChannel<Incoming, Outgoing> extends IpcChannel<
     handler: (message: Incoming) => Promise<Outgoing>,
     receiver: IpcReceiver = ipcMain
   ): void {
-    console.log('MAIN RECEIVE CHANNEL');
     super.onReceive(handler, receiver);
   }
 
@@ -42,7 +40,6 @@ export class MainIpcChannel<Incoming, Outgoing> extends IpcChannel<
     handler: Incoming => Promise<Outgoing>,
     receiver: IpcReceiver = ipcMain
   ): void {
-    console.log('MAIN REQ CHANNEL');
     super.onRequest(handler, receiver);
   }
 }

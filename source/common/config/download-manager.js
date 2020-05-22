@@ -1,3 +1,10 @@
-export const ALLOWED_DIRECTORIES = ['downloads'];
+// @flow
 
-export const ALLOWED_FILE_NAME_PATTERNS = ['daedalus-'];
+import type { AllowedDownloadDirectories } from '../types/download-manager.types';
+
+export const ALLOWED_DOWNLOAD_DIRECTORIES: {
+  [key: string]: AllowedDownloadDirectories,
+} = {
+  DOWNLOADS: 'downloads',
+  DESKTOP: 'desktop',
+};

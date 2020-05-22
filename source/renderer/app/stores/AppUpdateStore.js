@@ -18,6 +18,7 @@ import type {
   DownloadRendererRequest,
   DownloadMainResponse,
 } from '../../../common/ipc/api';
+import { ALLOWED_DOWNLOAD_DIRECTORIES } from '../../../common/config/download-manager';
 
 export default class AppUpdateStore extends Store {
   @observable isUpdateAvailable = false;
@@ -89,7 +90,7 @@ export default class AppUpdateStore extends Store {
       }
     );
 
-    console.log('pendingUpdateFileName', typeof pendingUpdateFileName);
+    console.log('pendingUpdateFileName', pendingUpdateFileName);
 
     // if (
     //   hasPendingDownload &&
@@ -105,17 +106,25 @@ export default class AppUpdateStore extends Store {
   };
 
   _requestDownload = async () => {
-    requestDownloadChannel.onReceive((a, b, c) => {
-      console.log('requestDownloadChannel -----');
-      console.log('a', a);
-      console.log('b', b);
-      console.log('c', c);
+    // requestDownloadChannel.onReceive((a, b, c) => {
+    //   console.log('requestDownloadChannel onReceive -----');
+    //   console.log('a', a);
+    //   console.log('b', b);
+    //   console.log('c', c);
+    //   // return {
+    //   //   url: 'https://update-cardano-mainnet.iohk.io/daedalus-1.1.0-mainnet-12849.pkg',
+    //   // }
+    //   return Promise.resolve({ fileUrl: '', });
+    // });
+    const dl = await requestDownloadChannel.request({
+      // url: 'https://i.ytimg.com/vi/_Lf96bZksN0/maxresdefault.jpg',
+      // destinationDirectoryName: ALLOWED_DOWNLOAD_DIRECTORIES.DOWNLOADS,
+      fileUrl:
+        'https://update-cardano-mainnet.iohk.io/daedalus-1.1.0-mainnet-12849.pkg',
+      destinationDirectoryName: ALLOWED_DOWNLOAD_DIRECTORIES.DESKTOP,
     });
-    requestDownloadChannel.request({
-      url: 'https://i.ytimg.com/vi/3zjf3SoGTY4/maxresdefault.jpg',
-      // 'https://update-cardano-mainnet.iohk.io/daedalus-1.1.0-mainnet-12849.pkg',
-      // destinationFolder: 'downloads',
-    });
+    console.log('dl 1', dl);
+    window.dl = dl;
   };
 
   _getUpdateStatus = async ({
