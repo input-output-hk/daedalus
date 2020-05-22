@@ -21,7 +21,6 @@ export default class AppStore extends Store {
   @observable error: ?LocalizableError = null;
   @observable isDownloadNotificationVisible = false;
   @observable gpuStatus: ?GpuStatus = null;
-  @observable previousRoute: string = ROUTES.ROOT;
   @observable activeDialog: ApplicationDialog = null;
   @observable newsFeedIsOpen: boolean = false;
 
@@ -141,14 +140,10 @@ export default class AppStore extends Store {
   };
 
   _updateRouteLocation = (options: { route: string, params?: ?Object }) => {
-    const routePath = buildRoute(options.route, options.params);
-    const currentRoute = this.stores.router.location.pathname;
-    if (currentRoute !== routePath) this.stores.router.push(routePath);
-    this._updatePreviousRoute(currentRoute);
-  };
-
-  @action _updatePreviousRoute = (currentRoute?: string) => {
-    this.previousRoute = currentRoute || ROUTES.ROOT;
+    const newRoutePath = buildRoute(options.route, options.params);
+    if (this.currentRoute !== newRoutePath) {
+      this.stores.router.push(newRoutePath);
+    }
   };
 
   @action _updateActiveDialog = (currentDialog: ApplicationDialog) => {
