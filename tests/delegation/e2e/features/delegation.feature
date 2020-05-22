@@ -20,8 +20,7 @@ Feature: Wallet Delegation
     Then I should see a "Loading stake pools" message until the Stake Pools are loaded
 
   Scenario: "Create rewards wallet" notification when no Rewards wallets
-    Given I am on the wallets root screen
-    And I am on the Delegation "delegation-center" screen
+    Given I am on the Delegation "delegation-center" screen
     And I mark experimental feature as read
     Then I should see a "Create rewards wallet" notification
 
