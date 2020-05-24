@@ -17,7 +17,10 @@ import Wallet, {
 } from '../../../source/renderer/app/domains/Wallet.js';
 import NewsFeedIcon from '../../../source/renderer/app/components/widgets/NewsFeedIcon';
 import type { SidebarMenus } from '../../../source/renderer/app/components/sidebar/Sidebar';
-import type { SidebarWalletType } from '../../../source/renderer/app/types/sidebarTypes';
+import type {
+  SidebarHardwareWalletType,
+  SidebarWalletType,
+} from '../../../source/renderer/app/types/sidebarTypes';
 
 // Empty screen elements
 import TopBar from '../../../source/renderer/app/components/layout/TopBar';
@@ -110,7 +113,9 @@ export default class StoryLayout extends Component<Props> {
   @observable isShowingSubMenus =
     this.props.activeSidebarCategory === '/wallets' && !!this.props.children;
 
-  getSidebarWallets = (wallets: Array<Wallet>): Array<SidebarWalletType> =>
+  getSidebarWallets = (
+    wallets: Array<Wallet>
+  ): Array<SidebarWalletType | SidebarHardwareWalletType> =>
     wallets.map((wallet: Wallet) => ({
       id: wallet.id,
       title: wallet.name,
@@ -129,7 +134,7 @@ export default class StoryLayout extends Component<Props> {
     }));
 
   getSidebarMenus = (
-    items: Array<SidebarWalletType>,
+    items: Array<SidebarWalletType | SidebarHardwareWalletType>,
     activeWalletId: string,
     setActiveWalletId: Function
   ) => ({

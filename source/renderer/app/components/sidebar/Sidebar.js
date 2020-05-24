@@ -33,21 +33,17 @@ type Props = {
 
 export type SidebarMenus = {
   wallets: ?{
-    wallets: {
-      items: Array<SidebarWalletType>,
-      activeWalletId: ?string,
-      actions: {
-        onWalletItemClick: Function,
-      },
+    items: Array<SidebarWalletType>,
+    activeWalletId: ?string,
+    actions: {
+      onWalletItemClick: Function,
     },
   },
   hardwareWallets: ?{
-    wallets: {
-      items: Array<SidebarHardwareWalletType>,
-      activeWalletId: ?string,
-      actions: {
-        onHardwareWalletItemClick: Function,
-      },
+    items: Array<SidebarHardwareWalletType>,
+    activeWalletId: ?string,
+    actions: {
+      onHardwareWalletItemClick: Function,
     },
   },
 };
@@ -83,28 +79,20 @@ export default class Sidebar extends Component<Props> {
     if (
       menus &&
       menus.wallets &&
-      menus.wallets.wallets &&
+      menus.wallets.items &&
       activeSidebarCategory === walletsCategory
     ) {
       subMenu = (
         <SidebarWalletsMenu
-          wallets={
-            menus.wallets && menus.wallets.wallets
-              ? menus.wallets.wallets.items
-              : []
-          }
+          wallets={menus.wallets ? menus.wallets.items : []}
           onAddWallet={onAddWallet}
           onWalletItemClick={
-            menus.wallets && menus.wallets.wallets
-              ? menus.wallets.wallets.actions.onWalletItemClick
-              : null
+            menus.wallets ? menus.wallets.actions.onWalletItemClick : null
           }
           isActiveWallet={id =>
-            id ===
-            (menus.wallets && menus.wallets.wallets
-              ? menus.wallets.wallets.activeWalletId
-              : null)
+            id === (menus.wallets ? menus.wallets.activeWalletId : null)
           }
+          isHardwareWalletsMenu={!!menus.wallets.items}
           isAddWalletButtonActive={pathname === '/wallets/add'}
           isIncentivizedTestnet={isIncentivizedTestnet}
           visible={isShowingSubMenus}
@@ -115,27 +103,25 @@ export default class Sidebar extends Component<Props> {
     if (
       menus &&
       menus.hardwareWallets &&
+      menus.hardwareWallets.items &&
       activeSidebarCategory === hardwareWalletsCategory
     ) {
       subMenu = (
         <SidebarWalletsMenu
-          wallets={
-            menus.hardwareWallets && menus.hardwareWallets.wallets
-              ? menus.hardwareWallets.wallets.items
-              : []
-          }
+          wallets={menus.hardwareWallets ? menus.hardwareWallets.items : []}
           onAddWallet={onAddWallet}
           onWalletItemClick={
-            menus.hardwareWallets && menus.hardwareWallets.wallets
-              ? menus.hardwareWallets.wallets.actions.onHardwareWalletItemClick
+            menus.hardwareWallets
+              ? menus.hardwareWallets.actions.onHardwareWalletItemClick
               : null
           }
           isActiveWallet={id =>
             id ===
-            (menus.hardwareWallets && menus.hardwareWallets.wallets
-              ? menus.hardwareWallets.wallets.activeWalletId
+            (menus.hardwareWallets
+              ? menus.hardwareWallets.activeWalletId
               : null)
           }
+          isHardwareWalletsMenu={!!menus.hardwareWallets.items}
           isAddWalletButtonActive={pathname === '/hardware-wallets/add'}
           isIncentivizedTestnet={isIncentivizedTestnet}
           visible={isShowingSubMenus}

@@ -19,87 +19,86 @@ import {
 } from '../../../source/renderer/app/config/sidebarConfig';
 
 const sidebarMenus = observable({
-  nonHardwareWallets: {
-    wallets: {
-      items: [
-        {
-          id: '1',
-          title: 'First',
-          info: '100 ADA',
-          isNotResponding: false,
-          isConnected: true,
-          isLegacy: false,
-          hasNotification: false,
-        },
-        {
-          id: '2',
-          title: 'Second',
-          info: '200 ADA',
-          isNotResponding: false,
-          isConnected: true,
-          isLegacy: false,
-          hasNotification: false,
-        },
-        {
-          id: '3',
-          title: 'Third',
-          info: '300 ADA',
-          isNotResponding: false,
-          isConnected: true,
-          isLegacy: false,
-          hasNotification: false,
-        },
-      ],
-      activeWalletId: '1',
-      actions: {
-        onAddWallet: action('toggleAddWallet'),
-        onWalletItemClick: (walletId: string) => {
-          runInAction(() => {
-            sidebarMenus.nonHardwareWallets.wallets.activeWalletId = walletId;
-          });
-        },
+  wallets: {
+    items: [
+      {
+        id: '1',
+        title: 'First',
+        info: '100 ADA',
+        isNotResponding: false,
+        isConnected: true,
+        isLegacy: false,
+        hasNotification: false,
+      },
+      {
+        id: '2',
+        title: 'Second',
+        info: '200 ADA',
+        isNotResponding: false,
+        isConnected: true,
+        isLegacy: false,
+        hasNotification: false,
+      },
+      {
+        id: '3',
+        title: 'Third',
+        info: '300 ADA',
+        isNotResponding: false,
+        isConnected: true,
+        isLegacy: false,
+        hasNotification: false,
+      },
+    ],
+    activeWalletId: '1',
+    actions: {
+      onAddWallet: action('toggleAddWallet'),
+      onWalletItemClick: (walletId: string) => {
+        runInAction(() => {
+          sidebarMenus.wallets.activeWalletId = walletId;
+        });
       },
     },
   },
+});
+
+const sidebarMenusHardware = observable({
   hardwareWallets: {
-    wallets: {
-      items: [
-        {
-          id: '1',
-          title: 'First',
-          info: '100 ADA',
-          isNotResponding: false,
-          isConnected: true,
-          isLegacy: false,
-          hasNotification: false,
-        },
-        {
-          id: '2',
-          title: 'Second',
-          info: '200 ADA',
-          isNotResponding: false,
-          isConnected: true,
-          isLegacy: false,
-          hasNotification: false,
-        },
-        {
-          id: '3',
-          title: 'Third',
-          info: '300 ADA',
-          isNotResponding: false,
-          isConnected: true,
-          isLegacy: false,
-          hasNotification: false,
-        },
-      ],
-      activeWalletId: '1',
-      actions: {
-        onAddWallet: action('toggleAddWallet'),
-        onHardwareWalletItemClick: (walletId: string) => {
-          runInAction(() => {
-            sidebarMenus.hardwareWallets.wallets.activeWalletId = walletId;
-          });
-        },
+    items: [
+      {
+        id: '1',
+        title: 'BTC wallet',
+        info: '2.41824 BTC',
+        isNotResponding: false,
+        isConnected: false,
+        isLegacy: false,
+        hasNotification: false,
+      },
+      {
+        id: '2',
+        title: 'ETC wallet',
+        info: '12M ETC',
+        isNotResponding: false,
+        isConnected: false,
+        isLegacy: false,
+        hasNotification: false,
+      },
+      {
+        id: '3',
+        title: 'ADA wallet',
+        info: '9,800 ADA',
+        isNotResponding: false,
+        isConnected: true,
+        isLegacy: false,
+        hasNotification: false,
+      },
+    ],
+    activeWalletId: '3',
+    actions: {
+      onAddWallet: action('toggleAddWallet'),
+      onHardwareWalletItemClick: (walletId: string) => {
+        runInAction(() => {
+          sidebarMenusHardware.hardwareWallets.activeWalletId = walletId;
+        });
       },
     },
   },
@@ -164,7 +163,7 @@ storiesOf('Navigation|Sidebar', module)
     <Sidebar
       categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
       activeSidebarCategory={CATEGORIES_WITH_DELEGATION_COUNTDOWN[1].route}
-      menus={sidebarMenus}
+      menus={sidebarMenusHardware}
       onActivateCategory={action('onActivateCategory')}
       isShowingSubMenus
       isDialogOpen={() => false}
