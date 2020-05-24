@@ -2,8 +2,8 @@
   align-items: center;
   display: flex;
   flex-direction: column;
-  min-height: 100%;
   justify-content: center;
+  min-height: 100%;
   width: 100%;
 
   .hardwareWalletContainer {
@@ -79,16 +79,16 @@
           padding: 20px;
 
           &:first-child {
-            border-radius: 4px 4px 0 0;
             border-left: 1px solid var(--theme-input-border-color);
+            border-radius: 4px 4px 0 0;
             border-right: 1px solid var(--theme-input-border-color);
             border-top: 1px solid var(--theme-input-border-color);
           }
 
           &:nth-child(2) {
-            border-radius: 0 0 4px 4px;
             border-bottom: 1px solid var(--theme-input-border-color);
             border-left: 1px solid var(--theme-input-border-color);
+            border-radius: 0 0 4px 4px;
             border-right: 1px solid var(--theme-input-border-color);
           }
 
