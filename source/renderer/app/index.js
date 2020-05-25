@@ -25,10 +25,10 @@ configure({
 addLocaleData([...en, ...ja]);
 
 const { environment } = global;
-const { isTest, network } = environment;
+const { isTest } = environment;
 
 const initializeDaedalus = () => {
-  const api = setupApi(isTest, String(network));
+  const api = setupApi(isTest);
   const router = new RouterStore();
   const history = syncHistoryWithStore(hashHistory, router);
   const stores = setupStores(api, actions, router);

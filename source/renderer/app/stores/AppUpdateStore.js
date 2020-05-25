@@ -6,28 +6,31 @@ import type { AppInfo, GetLatestAppVersionResponse } from '../api/nodes/types';
 import { APP_UPDATE_POLL_INTERVAL } from '../config/timingConfig';
 import { rebuildApplicationMenu } from '../ipc/rebuild-application-menu';
 import {
-  getPersistedDownloadStatusChannel,
-  getDownloadStatusChannel,
+  // getPersistedDownloadStatusChannel,
+  // getDownloadStatusChannel,
   requestDownloadChannel,
 } from '../ipc/downloadManagerChannel';
 import type {
-  PersistedDownloadStatusRendererRequest,
-  PersistedDownloadStatusMainResponse,
-  DownloadStatusRendererRequest,
-  DownloadStatusMainResponse,
-  DownloadRendererRequest,
+  //   PersistedDownloadStatusRendererRequest,
+  //   PersistedDownloadStatusMainResponse,
+  //   DownloadStatusRendererRequest,
+  //   DownloadStatusMainResponse,
+  //   DownloadRendererRequest,
   DownloadMainResponse,
 } from '../../../common/ipc/api';
-import { ALLOWED_DOWNLOAD_DIRECTORIES } from '../../../common/config/download-manager';
-import type {
-  AllowedDownloadDirectories,
-  DownloadInfo,
-  DownloadProgressStatuses,
-} from '../../../common/types/download-manager.types';
+import {
+  ALLOWED_DOWNLOAD_DIRECTORIES,
+  DOWNLOAD_PROGRESS_STATUSES,
+} from '../../../common/config/download-manager';
+// import type {
+//   AllowedDownloadDirectories,
+//   DownloadInfo,
+//   DownloadProgressStatuses,
+// } from '../../../common/types/download-manager.types';
 
 export default class AppUpdateStore extends Store {
   @observable isUpdateAvailable = false;
-  @observable isDownloading = false;
+  @observable isDownloadingUpdate = false;
   @observable isUpdatePostponed = false;
   @observable isUpdateInstalled = false;
   @observable hasPendingDownload = false;
@@ -70,50 +73,54 @@ export default class AppUpdateStore extends Store {
       );
     }
 
-    this.getPersistedDownloadStatus();
+    // this.getPersistedDownloadStatus();
   }
 
-  // PersistedDownloadStatusRendererRequest,
-  // PersistedDownloadStatusMainResponse,
-  // DownloadStatusRendererRequest,
-  // DownloadStatusMainResponse,
-  // DownloadRendererRequest,
-  // DownloadMainResponse,
-
-  getPersistedDownloadStatus = async () => {
-    const fileToMatch = {
-      fileNamePattern: new RegExp(/daedalus/),
-      fileExtentionPattern: 'pkg',
-    };
-    const {
-      // hasPendingDownload,
-      pendingUpdateFileName,
-    }: // downloadProgress,
-    PersistedDownloadStatusMainResponse = await getPersistedDownloadStatusChannel.request(
-      {
-        file: fileToMatch,
-      }
-    );
-
-    console.log('pendingUpdateFileName', pendingUpdateFileName);
-
-    // if (
-    //   hasPendingDownload &&
-    //   (await this._isUpdateValid(pendingUpdateFileName))
-    // ) {
-    //   runInAction('Set downloading true', () => {
-    //     this.isUpdateAvailable = true;
-    //     this.isDownloading = true;
-    //     // this.downloadProgress = downloadProgress;
-    //   });
-    //   // requestDownloadChannel.send();
-    // }
-  };
+  // getPersistedDownloadStatus = async () => {
+  //   const fileToMatch = {
+  //     fileNamePattern: new RegExp(/daedalus/),
+  //     fileExtentionPattern: 'pkg',
+  //   };
+  //   const {
+  //     // hasPendingDownload,
+  //     pendingUpdateFileName,
+  //   }: // downloadProgress,
+  //   PersistedDownloadStatusMainResponse = await getPersistedDownloadStatusChannel.request(
+  //     {
+  //       file: fileToMatch,
+  //     }
+  //   );
+  // };
 
   _requestDownload = async () => {
     requestDownloadChannel.onReceive(
-      (downloadMainResponse: DownloadMainResponse) => {
-        console.log('downloadMainResponse', downloadMainResponse);
+      ({
+        progressStatusType,
+      }: // fileName,
+      // filePath,
+      // downloaded,
+      // progress,
+      // error,
+      DownloadMainResponse) => {
+        runInAction('updates the download information', () => {
+          if (progressStatusType === DOWNLOAD_PROGRESS_STATUSES.END) {
+            this.isDownloadingUpdate = false;
+          } else {
+            this.isDownloadingUpdate = true;
+          }
+          //   if (fileName) this.fileName = fileName;
+          //   if (filePath) this.filePath = filePath;
+          //   if (downloaded) this.downloaded = downloaded;
+          //   if (progress) this.progress = progress;
+          //   if (error) this.error = error;
+        });
+
+        // switch (progressStatusType) {
+        //   case DownloadProgressStatuses.DOWNLOAD:
+        //     return false;
+        // }
+        // // DownloadProgressStatuses
+        // // console.log('downloadMainResponse', downloadMainResponse);
         return Promise.resolve({ fileUrl: '' });
       }
     );
@@ -124,24 +131,25 @@ export default class AppUpdateStore extends Store {
     });
   };
 
-  _getUpdateStatus = async ({
-    file,
-  }: DownloadStatusRendererRequest): Promise<void> => {
-    const {
-      isDownloading,
-      downloadProgress,
-    } = await getDownloadStatusChannel.request({ file });
+  // _getUpdateStatus = async ({
+  //   file,
+  // // }: DownloadStatusRendererRequest): Promise<void> => {
+  // }: DownloadStatusRendererRequest) => {
+  //   const {
+  //     isDownloadingUpdate,
+  //     downloadProgress,
+  //   } = await getDownloadStatusChannel.request({ file });
 
-    runInAction('Update download status', () => {
-      this.isDownloading = isDownloading;
-      this.downloadProgress = downloadProgress;
-    });
-  };
+  //   runInAction('Update download status', () => {
+  //     this.isDownloadingUpdate = isDownloadingUpdate;
+  //     this.downloadProgress = downloadProgress;
+  //   });
+  // };
 
-  _isUpdateValid = async (fileName: string): Promise<boolean> => {
-    console.log('fileName', fileName);
-    return true;
-  };
+  // _isUpdateValid = async (fileName: string): Promise<boolean> => {
+  //   // console.log('fileName', fileName);
+  //   return true;
+  // };
 
   refreshNextUpdate = async () => {
     if (this.stores.networkStatus.isSynced) {

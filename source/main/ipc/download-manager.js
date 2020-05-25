@@ -3,11 +3,10 @@ import { DownloaderHelper } from 'node-downloader-helper';
 import { throttle } from 'lodash';
 import { app } from 'electron';
 import type { BrowserWindow } from 'electron';
-// import { MainIpcConversation as MainIpcChannel } from './lib/MainIpcConversation';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import {
-  PERSISTED_DOWNLOAD_STATUS,
-  DOWNLOAD_STATUS,
+  // PERSISTED_DOWNLOAD_STATUS,
+  // DOWNLOAD_STATUS,
   REQUEST_DOWNLOAD,
 } from '../../common/ipc/api';
 import {
@@ -15,10 +14,10 @@ import {
   DOWNLOAD_PROGRESS_STATUSES as statusType,
 } from '../../common/config/download-manager';
 import type {
-  PersistedDownloadStatusRendererRequest,
-  PersistedDownloadStatusMainResponse,
-  DownloadStatusRendererRequest,
-  DownloadStatusMainResponse,
+  // PersistedDownloadStatusRendererRequest,
+  // PersistedDownloadStatusMainResponse,
+  // DownloadStatusRendererRequest,
+  // DownloadStatusMainResponse,
   DownloadRendererRequest,
   DownloadMainResponse,
 } from '../../common/ipc/api';
@@ -37,67 +36,67 @@ const getPathFromDirectoryName = (dir: AllowedDownloadDirectories) => {
   }
 };
 
-const getPersistDownloadStatus = async ({
-  file,
-}: PersistedDownloadStatusRendererRequest): Promise<PersistedDownloadStatusMainResponse> => {
-  const {
-    hasPendingDownload,
-    pendingUpdateFileName,
-  } = await checkhasPendingDownload({ file });
+// const getPersistDownloadStatus = async ({
+//   file,
+// }: PersistedDownloadStatusRendererRequest): Promise<PersistedDownloadStatusMainResponse> => {
+//   const {
+//     hasPendingDownload,
+//     pendingUpdateFileName,
+//   } = await checkhasPendingDownload({ file });
 
-  let downloadProgress;
+//   let downloadProgress;
 
-  if (hasPendingDownload) {
-    downloadProgress = await checkdownloadProgress();
-  }
+//   if (hasPendingDownload) {
+//     downloadProgress = await checkdownloadProgress();
+//   }
 
-  downloadProgress = await checkdownloadProgress();
-  return {
-    hasPendingDownload,
-    pendingUpdateFileName,
-    downloadProgress,
-  };
-};
+//   downloadProgress = await checkdownloadProgress();
+//   return {
+//     hasPendingDownload,
+//     pendingUpdateFileName,
+//     downloadProgress,
+//   };
+// };
 
-const getDownloadStatus = async (): Promise<DownloadStatusMainResponse> => {
-  const isDownloading = await checkisDownloading();
-  const downloadProgress = await checkdownloadProgress();
-  return {
-    isDownloading,
-    downloadProgress,
-  };
-};
+// const getDownloadStatus = async (): Promise<DownloadStatusMainResponse> => {
+//   const isDownloading = await checkisDownloading();
+//   const downloadProgress = await checkdownloadProgress();
+//   return {
+//     isDownloading,
+//     downloadProgress,
+//   };
+// };
 
-const checkisDownloading = async (): Promise<boolean> => false;
+// const checkisDownloading = async (): Promise<boolean> => false;
 
-const checkdownloadProgress = async (): Promise<number> => 0;
+// const checkdownloadProgress = async (): Promise<number> => 0;
 
-const checkhasPendingDownload = async ({
-  file,
-}: PersistedDownloadStatusRendererRequest): Promise<PersistedDownloadStatusMainResponse> => {
-  const {
-    // fileNamePattern,
-    // fileExtentionPattern,
-    filePath,
-    // fileName,
-    // fileExtention,
-  } = file;
-  const pathName = filePath || ALLOWED_DOWNLOAD_DIRECTORIES.DOWNLOADS;
-  console.log('pathName', pathName);
-  // const path = getPathFromDirectoryName(pathName);
-  const hasPendingDownload = false;
-  const pendingUpdateFileName = '';
-  return {
-    hasPendingDownload,
-    pendingUpdateFileName,
-  };
-};
+// const checkhasPendingDownload = async ({
+//   file,
+// }: PersistedDownloadStatusRendererRequest): Promise<PersistedDownloadStatusMainResponse> => {
+//   const {
+//     // fileNamePattern,
+//     // fileExtentionPattern,
+//     filePath,
+//     // fileName,
+//     // fileExtention,
+//   } = file;
+//   const pathName = filePath || ALLOWED_DOWNLOAD_DIRECTORIES.DOWNLOADS;
+//   // const path = getPathFromDirectoryName(pathName);
+//   const hasPendingDownload = false;
+//   const pendingUpdateFileName = '';
+//   return {
+//     hasPendingDownload,
+//     pendingUpdateFileName,
+//   };
+// };
 
 const requestDownload = async (
   downloadRequest: DownloadRendererRequest,
   window: BrowserWindow
 ): Promise<any> => {
-  const defaultDirectoryName = ALLOWED_DOWNLOAD_DIRECTORIES.DOWNLOADS;
+  // const defaultDirectoryName = ALLOWED_DOWNLOAD_DIRECTORIES.DOWNLOADS;
+  const defaultDirectoryName = ALLOWED_DOWNLOAD_DIRECTORIES.DESKTOP;
   const {
     fileUrl,
     destinationDirectoryName = defaultDirectoryName,
@@ -109,6 +108,9 @@ const requestDownload = async (
     progressStatusType: DownloadProgressStatuses,
     downloadInfo: DownloadInfo
   ) =>
+    // crdownload
+    // Unconfirmed 242990.crdownload
+    // https://update-cardano-mainnet.iohk.io/daedalus-1.1.0-mainnet-12849.pkg
     requestDownloadChannel.send(
       {
         ...downloadInfo,
@@ -131,17 +133,17 @@ const requestDownload = async (
   download.start();
 };
 
-const getPersistDownloadStatusChannel: // IpcChannel<Incoming, Outgoing>
-MainIpcChannel<
-  PersistedDownloadStatusRendererRequest,
-  PersistedDownloadStatusMainResponse
-> = new MainIpcChannel(PERSISTED_DOWNLOAD_STATUS);
+// const getPersistDownloadStatusChannel: // IpcChannel<Incoming, Outgoing>
+// MainIpcChannel<
+//   PersistedDownloadStatusRendererRequest,
+//   PersistedDownloadStatusMainResponse
+// > = new MainIpcChannel(PERSISTED_DOWNLOAD_STATUS);
 
-const getDownloadStatusChannel: // IpcChannel<Incoming, Outgoing>
-MainIpcChannel<
-  DownloadStatusRendererRequest,
-  DownloadStatusMainResponse
-> = new MainIpcChannel(DOWNLOAD_STATUS);
+// const getDownloadStatusChannel: // IpcChannel<Incoming, Outgoing>
+// MainIpcChannel<
+//   DownloadStatusRendererRequest,
+//   DownloadStatusMainResponse
+// > = new MainIpcChannel(DOWNLOAD_STATUS);
 
 const requestDownloadChannel: // IpcChannel<Incoming, Outgoing>
 MainIpcChannel<
@@ -150,8 +152,8 @@ MainIpcChannel<
 > = new MainIpcChannel(REQUEST_DOWNLOAD);
 
 export default (window: BrowserWindow) => {
-  getPersistDownloadStatusChannel.onRequest(getPersistDownloadStatus);
-  getDownloadStatusChannel.onRequest(getDownloadStatus);
+  // getPersistDownloadStatusChannel.onRequest(getPersistDownloadStatus);
+  // getDownloadStatusChannel.onRequest(getDownloadStatus);
   requestDownloadChannel.onRequest((downloadRequest: DownloadRendererRequest) =>
     requestDownload(downloadRequest, window)
   );
