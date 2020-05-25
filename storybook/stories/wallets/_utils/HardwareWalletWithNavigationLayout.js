@@ -40,7 +40,7 @@ export default class WalletWithNavigationLayout extends Component<Props> {
 
     return (
       <HardwareWalletWithNavigation
-        activeItem={null}
+        activeItem={contextItem}
         isActiveScreen={item => item === contextItem}
         hasPassword={hasPassword}
         hasNotification={false}
@@ -51,6 +51,13 @@ export default class WalletWithNavigationLayout extends Component<Props> {
         onSetWalletPassword={() => {}}
         onOpenExternalLink={() => {}}
         onRestartNode={() => {}}
+        walletNotConnected
+        isDeviceConnected={false}
+        fetchingDevice={false}
+        exportingExtendedPublicKey={false}
+        isExportingPublicKeyAborted={false}
+        isLedger
+        isTrezor={false}
       >
         {Children.map(children, child =>
           React.cloneElement(child, {

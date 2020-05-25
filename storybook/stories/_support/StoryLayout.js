@@ -138,24 +138,20 @@ export default class StoryLayout extends Component<Props> {
     activeWalletId: string,
     setActiveWalletId: Function
   ) => ({
-    nonHardwareWallets: {
-      wallets: {
-        items,
-        activeWalletId,
-        actions: {
-          onAddWallet: action('toggleAddWallet'),
-          onWalletItemClick: setActiveWalletId,
-        },
+    wallets: {
+      items,
+      activeWalletId,
+      actions: {
+        onAddWallet: action('toggleAddWallet'),
+        onWalletItemClick: setActiveWalletId,
       },
     },
     hardwareWallets: {
-      wallets: {
-        items,
-        activeWalletId,
-        actions: {
-          onAddWallet: action('toggleAddWallet'),
-          onHardwareWalletItemClick: setActiveWalletId,
-        },
+      items,
+      activeWalletId,
+      actions: {
+        onAddWallet: action('toggleAddWallet'),
+        onHardwareWalletItemClick: setActiveWalletId,
       },
     },
   });

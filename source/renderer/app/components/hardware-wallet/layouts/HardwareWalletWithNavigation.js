@@ -10,7 +10,7 @@ type Props = {
   children?: Node,
   activeItem: string,
   hasNotification?: boolean,
-  walletNotConnected: boolean,
+  walletNotConnected?: boolean,
   isActiveScreen: Function,
   onOpenExternalLink: Function,
   onWalletNavItemClick: Function,
