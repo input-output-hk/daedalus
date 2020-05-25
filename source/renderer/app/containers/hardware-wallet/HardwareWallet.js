@@ -73,7 +73,7 @@ export default class HardwareWallet extends Component<Props> {
     const { walletNotConnected } = activeHardwareWallet;
 
     // @todo - remove after adding logic from store
-    isLedger = true;
+    const isLedger = true;
 
     return (
       <MainLayout>
