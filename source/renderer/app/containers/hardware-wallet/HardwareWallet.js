@@ -49,7 +49,7 @@ export default class HardwareWallet extends Component<Props> {
     const { actions, stores } = this.props;
     const { app, wallets, walletSettings } = stores;
     const { restartNode } = actions.networkStatus;
-    let { active: activeHardwareWallet, isLedger } = wallets;
+    let { active: activeHardwareWallet } = wallets;
 
     const {
       isDeviceConnected,

@@ -59,9 +59,11 @@ const sidebarMenus = observable({
       },
     },
   },
+  hardwareWallets: null
 });
 
 const sidebarMenusHardware = observable({
+  wallets: null,
   hardwareWallets: {
     items: [
       {

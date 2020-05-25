@@ -169,6 +169,14 @@ export default class WalletsStore extends Store {
   @observable transferFundsStep: number = 0;
   @observable transferFundsFee: ?BigNumber = null;
 
+  /* ----------  Hardware Wallet  ---------- */
+  @observable isExportingPublicKeyAborted = false;
+  @observable exportingExtendedPublicKey = false;
+  @observable isDeviceConnected = false;
+  @observable fetchingDevice = false;
+  @observable isTrezor = false;
+  @observable isLedger = false;
+
   /* ----------  Other  ---------- */
 
   _newWalletDetails: {

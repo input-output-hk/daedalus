@@ -30,7 +30,7 @@ type Props = {
   visible: boolean,
   isAddWalletButtonActive: boolean,
   isIncentivizedTestnet: boolean,
-  isHardwareWalletsMenu: boolean,
+  isHardwareWalletsMenu?: boolean,
 };
 
 @observer

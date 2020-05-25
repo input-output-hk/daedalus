@@ -22,7 +22,7 @@ type Props = {
   isLegacy: boolean,
   isNotResponding: boolean,
   hasNotification: boolean,
-  isHardwareWalletsMenu: boolean,
+  isHardwareWalletsMenu?: boolean,
 };
 
 @observer
