@@ -1,9 +1,19 @@
 // @flow
-import type { StorageKey } from '../types/electron-store.types';
+import type { StorageType, StorageKey } from '../types/electron-store.types';
+
+export const STORAGE_TYPES: {
+  [key: string]: StorageType,
+} = {
+  GET: 'get',
+  SET: 'set',
+  DELETE: 'delete',
+  RESET: 'reset',
+};
 
 export const STORAGE_KEYS: {
   [key: string]: StorageKey,
 } = {
+  RESET: 'RESET',
   USER_LOCALE: 'USER-LOCALE',
   USER_NUMBER_FORMAT: 'USER-NUMBER-FORMAT',
   USER_DATE_FORMAT_ENGLISH: 'USER-DATE-FORMAT-ENGLISH',

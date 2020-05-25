@@ -1,6 +1,9 @@
 // @flow
 
+export type StorageType = 'get' | 'set' | 'delete' | 'reset';
+
 export type StorageKey =
+  | 'RESET'
   | 'USER-LOCALE'
   | 'USER-NUMBER-FORMAT'
   | 'USER-DATE-FORMAT-ENGLISH'
@@ -12,3 +15,10 @@ export type StorageKey =
   | 'READ-NEWS'
   | 'WALLETS'
   | 'WALLET-MIGRATION-STATUS';
+
+export type StoreMessage = {
+  type: StorageType,
+  key: StorageKey,
+  data?: any,
+  id?: string,
+};

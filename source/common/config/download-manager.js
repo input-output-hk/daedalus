@@ -1,5 +1,5 @@
 // @flow
-
+// https://www.npmjs.com/package/node-downloader-helper
 import type {
   AllowedDownloadDirectories,
   DownloadProgressStatuses,
@@ -12,14 +12,18 @@ export const ALLOWED_DOWNLOAD_DIRECTORIES: {
   DESKTOP: 'desktop',
 };
 
+// DH_STATES in 'node-downloader-helper/src';
 export const DOWNLOAD_PROGRESS_STATUSES: {
   [key: string]: DownloadProgressStatuses,
 } = {
-  START: 'start',
-  DOWNLOAD: 'download',
-  END: 'end',
-  ERROR: 'error',
-  STATECHANGED: 'stateChanged',
-  TIMEOUT: 'timeout',
-  PROGRESS: 'progress',
+  IDLE: 'IDLE',
+  SKIPPED: 'SKIPPED',
+  STARTED: 'STARTED',
+  DOWNLOADING: 'DOWNLOADING',
+  RETRY: 'RETRY',
+  PAUSED: 'PAUSED',
+  RESUMED: 'RESUMED',
+  STOPPED: 'STOPPED',
+  FINISHED: 'FINISHED',
+  FAILED: 'FAILED',
 };

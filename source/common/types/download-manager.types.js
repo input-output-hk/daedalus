@@ -68,10 +68,13 @@ export type DownloadResponse = {
 };
 
 export type DownloadProgressStatuses =
-  | 'start'
-  | 'download'
-  | 'end'
-  | 'error'
-  | 'stateChanged'
-  | 'timeout'
-  | 'progress';
+  | 'IDLE'
+  | 'SKIPPED'
+  | 'STARTED'
+  | 'DOWNLOADING'
+  | 'RETRY'
+  | 'PAUSED'
+  | 'RESUMED'
+  | 'STOPPED'
+  | 'FINISHED'
+  | 'FAILED';

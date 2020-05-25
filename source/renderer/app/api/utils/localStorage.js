@@ -5,7 +5,10 @@
 import { includes } from 'lodash';
 import { electronStoreConversation } from '../../ipc/electronStoreConversation';
 import { WalletMigrationStatuses } from '../../stores/WalletMigrationStore';
-import { STORAGE_KEYS as keys } from '../../../../common/config/electron-store.config';
+import {
+  STORAGE_TYPES as types,
+  STORAGE_KEYS as keys,
+} from '../../../../common/config/electron-store.config';
 import type { NewsTimestamp } from '../news/types';
 import type { WalletMigrationStatus } from '../../stores/WalletMigrationStore';
 import type { StorageKey } from '../../../../common/types/electron-store.types';
@@ -15,7 +18,6 @@ export type WalletLocalData = {
   recoveryPhraseVerificationDate?: ?Date,
   creationDate: Date,
 };
-
 export type WalletsLocalData = {
   [key: StorageKey]: WalletLocalData,
 };
@@ -32,7 +34,7 @@ export default class LocalStorageApi {
     id?: string
   ): Promise<any> => {
     const value = await electronStoreConversation.request({
-      type: 'get',
+      type: types.GET,
       key,
       id,
     });
@@ -46,7 +48,7 @@ export default class LocalStorageApi {
     id?: string
   ): Promise<void> => {
     await electronStoreConversation.request({
-      type: 'set',
+      type: types.SET,
       key,
       data,
       id,
@@ -55,9 +57,16 @@ export default class LocalStorageApi {
 
   static unset = async (key: StorageKey, id?: string): Promise<void> => {
     await electronStoreConversation.request({
-      type: 'delete',
+      type: types.DELETE,
       key,
       id,
+    });
+  };
+
+  static reset = async (): Promise<void> => {
+    await electronStoreConversation.request({
+      type: types.RESET,
+      key: keys.RESET,
     });
   };
 
@@ -114,12 +123,12 @@ export default class LocalStorageApi {
   unsetTermsOfUseAcceptance = (): Promise<void> =>
     LocalStorageApi.unset(keys.TERMS_OF_USE_ACCEPTANCE);
 
-  getUserTheme = (): Promise<string> => LocalStorageApi.get(keys.THEME);
+  getUserTheme = (): Promise<string> => LocalStorageApi.get(keys.USER_THEME);
 
   setUserTheme = (theme: string): Promise<void> =>
-    LocalStorageApi.set(keys.THEME, theme);
+    LocalStorageApi.set(keys.USER_THEME, theme);
 
-  unsetUserTheme = (): Promise<void> => LocalStorageApi.unset(keys.THEME);
+  unsetUserTheme = (): Promise<void> => LocalStorageApi.unset(keys.USER_THEME);
 
   getDataLayerMigrationAcceptance = (): Promise<boolean> =>
     LocalStorageApi.get(keys.DATA_LAYER_MIGRATION_ACCEPTANCE, false);
@@ -194,15 +203,6 @@ export default class LocalStorageApi {
     LocalStorageApi.unset(keys.WALLET_MIGRATION_STATUS);
 
   reset = async () => {
-    await this.unsetUserLocale();
-    await this.unsetUserNumberFormat();
-    await this.unsetUserDateFormatEnglish();
-    await this.unsetUserDateFormatJapanese();
-    await this.unsetUserTimeFormat();
-    await this.unsetTermsOfUseAcceptance();
-    await this.unsetUserTheme();
-    await this.unsetDataLayerMigrationAcceptance();
-    await this.unsetReadNews();
-    await this.unsetWalletMigrationStatus();
+    await LocalStorageApi.reset();
   };
 }

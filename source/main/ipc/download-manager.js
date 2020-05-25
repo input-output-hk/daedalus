@@ -2,6 +2,7 @@
 import { DownloaderHelper } from 'node-downloader-helper';
 import { throttle } from 'lodash';
 import { app } from 'electron';
+import fs from 'fs';
 import type { BrowserWindow } from 'electron';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import {
@@ -13,6 +14,7 @@ import {
   ALLOWED_DOWNLOAD_DIRECTORIES,
   DOWNLOAD_PROGRESS_STATUSES as statusType,
 } from '../../common/config/download-manager';
+import { generateFileNameWithTimestamp } from '../../common/utils/files.js';
 import type {
   // PersistedDownloadStatusRendererRequest,
   // PersistedDownloadStatusMainResponse,
@@ -96,6 +98,11 @@ const requestDownload = async (
   window: BrowserWindow
 ): Promise<any> => {
   // const defaultDirectoryName = ALLOWED_DOWNLOAD_DIRECTORIES.DOWNLOADS;
+  const temporaryFilename = generateFileNameWithTimestamp({
+    prefix: 'Unconfirmed',
+    extension: 'crdownload',
+  });
+  let originalFilename = '';
   const defaultDirectoryName = ALLOWED_DOWNLOAD_DIRECTORIES.DESKTOP;
   const {
     fileUrl,
@@ -104,13 +111,25 @@ const requestDownload = async (
   } = downloadRequest;
   const destinationPath = getPathFromDirectoryName(destinationDirectoryName);
 
+  const _options = {
+    ...options,
+    fileName: temporaryFilename,
+  };
+
   const update = (
     progressStatusType: DownloadProgressStatuses,
     downloadInfo: DownloadInfo
-  ) =>
-    // crdownload
-    // Unconfirmed 242990.crdownload
-    // https://update-cardano-mainnet.iohk.io/daedalus-1.1.0-mainnet-12849.pkg
+  ) => {
+    if (progressStatusType === statusType.DOWNLOAD && downloadInfo.fileName) {
+      originalFilename = downloadInfo.fileName;
+    }
+
+    if (progressStatusType === statusType.FINISHED) {
+      const temporaryPath = `${destinationDirectoryName}/${temporaryFilename}`;
+      const newPath = `${destinationDirectoryName}/${originalFilename}`;
+      fs.renameSync(temporaryPath, newPath);
+    }
+
     requestDownloadChannel.send(
       {
         ...downloadInfo,
@@ -118,15 +137,16 @@ const requestDownload = async (
       },
       window.webContents
     );
+  };
 
   const updateThrottle = throttle(update, 1000, {
     leading: true,
     trailing: true,
   });
 
-  const download = new DownloaderHelper(fileUrl, destinationPath, options);
+  const download = new DownloaderHelper(fileUrl, destinationPath, _options);
   download.on('download', update.bind(this, statusType.DOWNLOAD));
-  download.on('end', update.bind(this, statusType.END));
+  download.on('end', update.bind(this, statusType.FINISHED));
   download.on('error', update.bind(this, statusType.ERROR));
   download.on('timeout', update.bind(this, statusType.TIMEOUT));
   download.on('progress', updateThrottle.bind(this, statusType.PROGRESS));

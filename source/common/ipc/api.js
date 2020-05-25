@@ -35,7 +35,7 @@ import type {
   DownloadRequest,
   DownloadResponse,
 } from '../types/download-manager.types';
-import type { StorageKey } from '../types/electron-store.types';
+import type { StoreMessage } from '../types/electron-store.types';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -289,12 +289,7 @@ export type ShowSaveDialogMainResponse = SaveFileDialogResponseParams;
  * Channel for electron-store
  */
 export const ELECTRON_STORE_CHANNEL = 'ELECTRON_STORE_CHANNEL';
-export type ElectronStoreMessage = {
-  type: 'get' | 'set' | 'delete',
-  key: StorageKey,
-  data?: any,
-  id?: string,
-};
+export type ElectronStoreMessage = StoreMessage;
 
 /**
  * Channel for initiating the download manager
