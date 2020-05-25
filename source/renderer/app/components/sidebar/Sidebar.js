@@ -33,16 +33,16 @@ type Props = {
 
 export type SidebarMenus = {
   wallets: ?{
-    items: Array<SidebarWalletType>,
-    activeWalletId: ?string,
-    actions: {
+    items?: Array<SidebarWalletType>,
+    activeWalletId?: ?string,
+    actions?: {
       onWalletItemClick: Function,
     },
   },
   hardwareWallets: ?{
-    items: Array<SidebarHardwareWalletType>,
-    activeWalletId: ?string,
-    actions: {
+    items?: Array<SidebarHardwareWalletType>,
+    activeWalletId?: ?string,
+    actions?: {
       onHardwareWalletItemClick: Function,
     },
   },
@@ -87,7 +87,9 @@ export default class Sidebar extends Component<Props> {
           wallets={menus.wallets ? menus.wallets.items : []}
           onAddWallet={onAddWallet}
           onWalletItemClick={
-            menus.wallets ? menus.wallets.actions.onWalletItemClick : null
+            menus.wallets && menus.wallets.actions
+              ? menus.wallets.actions.onWalletItemClick
+              : null
           }
           isActiveWallet={id =>
             id === (menus.wallets ? menus.wallets.activeWalletId : null)
@@ -111,7 +113,7 @@ export default class Sidebar extends Component<Props> {
           wallets={menus.hardwareWallets ? menus.hardwareWallets.items : []}
           onAddWallet={onAddWallet}
           onWalletItemClick={
-            menus.hardwareWallets
+            menus.hardwareWallets && menus.hardwareWallets.actions
               ? menus.hardwareWallets.actions.onHardwareWalletItemClick
               : null
           }
