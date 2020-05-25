@@ -21,15 +21,15 @@ export default class MainLayout extends Component<InjectedContainerProps> {
 
   render() {
     const { actions, stores } = this.props;
-    const { sidebar, profile, app } = stores;
-    const activeWallet = stores.wallets.active;
+    const { sidebar, profile, app, wallets } = stores;
+    const activeWallet = wallets.active;
     const activeWalletId = activeWallet ? activeWallet.id : null;
     const { currentTheme } = profile;
     const {
       environment: { network },
     } = app;
 
-    const wallets =
+    const appWallets =
       sidebar.wallets.length > 0
         ? {
             wallets: {
@@ -60,7 +60,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
         : null;
 
     const sidebarMenus = {
-      wallets,
+      wallets: appWallets,
       hardwareWallets,
     };
 
