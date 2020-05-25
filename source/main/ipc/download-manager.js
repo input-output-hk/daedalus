@@ -121,12 +121,14 @@ const requestDownload = async (
     downloadInfo: DownloadInfo
   ) => {
     if (progressStatusType === statusType.DOWNLOAD && downloadInfo.fileName) {
-      originalFilename = downloadInfo.fileName;
+      // TODO: retrieve the original name
+      originalFilename = 'original-name';
+      // originalFilename = downloadInfo.fileName;
     }
 
     if (progressStatusType === statusType.FINISHED) {
-      const temporaryPath = `${destinationDirectoryName}/${temporaryFilename}`;
-      const newPath = `${destinationDirectoryName}/${originalFilename}`;
+      const temporaryPath = `${destinationPath}/${temporaryFilename}`;
+      const newPath = `${destinationPath}/${originalFilename}`;
       fs.renameSync(temporaryPath, newPath);
     }
 

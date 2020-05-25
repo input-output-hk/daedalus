@@ -62,6 +62,58 @@ export type DownloadInfo = {
   error?: ?boolean,
 };
 
+// event skip skipInfo object
+
+// {
+//     totalSize:, // total file size got from the server
+//     fileName:, // original file name
+//     filePath:, // original path name
+//     downloadedSize:, // the downloaded amount
+// }
+// event download downloadInfo object
+
+// {
+//     totalSize:, // total file size got from the server
+//     fileName:, // assigned name
+//     filePath:, // download path
+//     isResumed:, // if the download is a resume,
+//     downloadedSize:, // the downloaded amount (only if is resumed otherwise always 0)
+// }
+// event progress or progress.throttled stats object
+
+// {
+//     name:, // file name
+//     total:, // total size that needs to be downloaded in bytes
+//     downloaded:, // downloaded size in bytes
+//     progress:, // progress porcentage 0-100%
+//     speed: // download speed in bytes
+// }
+// event end downloadInfo object
+
+// {
+//     fileName:,
+//     filePath:,
+//     totalSize:, // total file size got from the server
+//     incomplete:, // true/false if the download endend but still incomplete
+//     onDiskSize, // total size of file on the disk
+//     downloadedSize:, // the total size downloaded
+// }
+// event renamed filePaths object
+
+// {
+//     path:, // modified path name
+//     fileName:, // modified file name
+//     prevPath:, // original path name
+//     prevFileName:, // original file name
+// }
+// event error error object
+
+// {
+//     message:, // Error message
+//     status:, // Http status response if available
+//     body:, // Http body response if available
+// }
+
 export type DownloadResponse = {
   ...$Exact<DownloadInfo>,
   progressStatusType: DownloadProgressStatuses,
