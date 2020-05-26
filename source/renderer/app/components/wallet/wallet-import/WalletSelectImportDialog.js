@@ -6,7 +6,6 @@ import {
   FormattedHTMLMessage,
   FormattedMessage,
 } from 'react-intl';
-import ReactModal from 'react-modal';
 import { observer } from 'mobx-react';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Button } from 'react-polymorph/lib/components/Button';
@@ -28,6 +27,7 @@ import InlineEditingSmallInput from '../../widgets/forms/InlineEditingSmallInput
 import checkmarkImage from '../../../assets/images/check-w.inline.svg';
 import { MAX_ADA_WALLETS_COUNT } from '../../../config/numbersConfig';
 import type { ExportedByronWallet } from '../../../types/walletExportTypes';
+import Dialog from '../../widgets/Dialog';
 
 const messages = defineMessages({
   title: {
@@ -120,7 +120,7 @@ type Props = {
   isSubmitting: boolean,
   exportedWallets: Array<ExportedByronWallet>,
   pendingImportWalletsCount: number,
-  onConfirm: Function,
+  onContinue: Function,
   onWalletNameChange: Function,
   onToggleWalletImportSelection: Function,
   onClose: Function,
@@ -294,7 +294,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
       isSubmitting,
       exportedWallets,
       pendingImportWalletsCount,
-      onConfirm,
+      onContinue,
       onClose,
       onOpenExternalLink,
       onWalletNameChange,
@@ -312,11 +312,6 @@ export default class WalletSelectImportDialog extends Component<Props> {
     const onLinkClick = () =>
       onOpenExternalLink(intl.formatMessage(messages.linkUrl));
 
-    const isDisabled = isSubmitting || !pendingImportWalletsCount;
-    const buttonClasses = classNames(styles.actionButton, [
-      isDisabled ? styles.disabled : null,
-    ]);
-
     const walletsWithNames = exportedWallets.filter(
       ({ hasName }: ExportedByronWallet) => hasName
     );
@@ -324,19 +319,31 @@ export default class WalletSelectImportDialog extends Component<Props> {
       ({ hasName }: ExportedByronWallet) => !hasName
     );
 
-    // We use previous wallet id to detect wallet duplicates
     let previousWalletId = '';
     let rowNumber = 1;
 
+    const anyWalletWithoutName = walletsWithoutNames.filter(
+      item =>
+        (!item.name || item.name.length < 3) &&
+        item.import.status === WalletImportStatuses.PENDING
+    );
+
+    const isDisabled =
+      isSubmitting || anyWalletWithoutName.length || !pendingImportWalletsCount;
+
+    const buttonClasses = classNames(styles.actionButton, [
+      isDisabled ? styles.disabled : null,
+    ]);
+
     return (
-      <ReactModal
-        isOpen
+      <Dialog
+        className={styles.dialog}
+        closeOnOverlayClick={false}
+        onClose={onClose}
         onRequestClose={onClose}
         shouldCloseOnOverlayClick={false}
         shouldCloseOnEsc={false}
-        className={styles.dialog}
-        overlayClassName={styles.overlay}
-        ariaHideApp={false}
+        themeOverrides
       >
         <div className={styles.component}>
           <DialogCloseButton
@@ -468,7 +475,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
                 className={buttonClasses}
                 disabled={isDisabled}
                 label={buttonLabel}
-                onClick={onConfirm}
+                onClick={onContinue}
                 skin={ButtonSkin}
               />
               <div>
@@ -490,7 +497,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
             </div>
           </div>
         </div>
-      </ReactModal>
+      </Dialog>
     );
   }
 }
