@@ -1,10 +1,9 @@
 // @flow
 import React from 'react';
-import {storiesOf} from '@storybook/react';
-import {action} from '@storybook/addon-actions';
-import {boolean} from '@storybook/addon-knobs';
-import ConnectHardwareWallet
-  from '../../../../source/renderer/app/components/hardware-wallet/settings/ConnectHardwareWallet';
+import { storiesOf } from '@storybook/react';
+import { action } from '@storybook/addon-actions';
+import { boolean } from '@storybook/addon-knobs';
+import ConnectHardwareWallet from '../../../../source/renderer/app/components/hardware-wallet/settings/ConnectHardwareWallet';
 import HardwareWalletsWrapper from '../_utils/HardwareWalletsWrapper';
 
 storiesOf('Wallets|Hardware Wallets', module)
@@ -64,14 +63,8 @@ storiesOf('Wallets|Hardware Wallets', module)
       isTrezor={boolean('isTrezor', false)}
       isDeviceConnected={boolean('isDeviceConnected', true)}
       fetchingDevice={boolean('fetchingDevice', false)}
-      exportingExtendedPublicKey={boolean(
-        'exportingExtendedPublicKey',
-        false
-      )}
-      isExportingPublicKeyAborted={boolean(
-        'isExportingPublicKeyAborted',
-        true
-      )}
+      exportingExtendedPublicKey={boolean('exportingExtendedPublicKey', false)}
+      isExportingPublicKeyAborted={boolean('isExportingPublicKeyAborted', true)}
     />
   ))
 
@@ -127,13 +120,7 @@ storiesOf('Wallets|Hardware Wallets', module)
       isTrezor={boolean('isTrezor', true)}
       isDeviceConnected={boolean('isDeviceConnected', true)}
       fetchingDevice={boolean('fetchingDevice', false)}
-      exportingExtendedPublicKey={boolean(
-        'exportingExtendedPublicKey',
-        false
-      )}
-      isExportingPublicKeyAborted={boolean(
-        'isExportingPublicKeyAborted',
-        true
-      )}
+      exportingExtendedPublicKey={boolean('exportingExtendedPublicKey', false)}
+      isExportingPublicKeyAborted={boolean('isExportingPublicKeyAborted', true)}
     />
   ));
