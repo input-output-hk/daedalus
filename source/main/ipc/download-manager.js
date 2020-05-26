@@ -4,6 +4,7 @@ import { throttle } from 'lodash';
 import fs from 'fs';
 import type { BrowserWindow } from 'electron';
 import { MainIpcChannel } from './lib/MainIpcChannel';
+import { downloadManagerLocalStorage } from '../utils/mainLocalStorage';
 import {
   getOriginalFilename,
   getPathFromDirectoryName,
@@ -30,6 +31,7 @@ import type {
 import type {
   DownloadInfo,
   DownloadProgressStatuses,
+  DownloadRequestOptions,
 } from '../../common/types/download-manager.types';
 
 // const getPersistDownloadStatus = async ({
@@ -82,10 +84,61 @@ import type {
 //   const hasPendingDownload = false;
 //   const pendingUpdateFileName = '';
 //   return {
-//     hasPendingDownload,
+//     hasPendingDownload,destinationDirectoryName
 //     pendingUpdateFileName,
 //   };
 // };
+
+const downloadUpdateActions = async (
+  fileUrl: string,
+  destinationPath: string,
+  temporaryFilename: string,
+  originalFilename: string,
+  options: DownloadRequestOptions,
+  window: BrowserWindow
+) => {
+  await downloadManagerLocalStorage.set(
+    {
+      fileUrl,
+      originalFilename,
+      temporaryFilename,
+      options,
+      status: statusType.IDLE,
+    },
+    originalFilename
+  );
+  return async (
+    status: DownloadProgressStatuses,
+    downloadInfo: DownloadInfo
+  ) => {
+    await downloadManagerLocalStorage.update(
+      {
+        status,
+        downloadInfo,
+      },
+      originalFilename
+    );
+    if (status === statusType.STARTED) {
+      // STARTED event doesn't have `downloadInfo`` response
+      return;
+    }
+    if (status === statusType.TIMEOUT || status === statusType.ERROR) {
+      throw new Error(downloadInfo.message || '');
+    }
+    if (status === statusType.FINISHED) {
+      const temporaryPath = `${destinationPath}/${temporaryFilename}`;
+      const newPath = `${destinationPath}/${originalFilename}`;
+      fs.renameSync(temporaryPath, newPath);
+    }
+    requestDownloadChannel.send(
+      {
+        downloadInfo,
+        progressStatusType: status,
+      },
+      window.webContents
+    );
+  };
+};
 
 const requestDownload = async (
   downloadRequestPayload: DownloadRendererRequest,
@@ -103,34 +156,22 @@ const requestDownload = async (
     ...options,
     fileName: temporaryFilename,
   };
-  const update = (
-    progressStatusType: DownloadProgressStatuses,
-    downloadInfo: DownloadInfo
-  ) => {
-    if (progressStatusType === statusType.FINISHED) {
-      const temporaryPath = `${destinationPath}/${temporaryFilename}`;
-      const newPath = `${destinationPath}/${originalFilename}`;
-      fs.renameSync(temporaryPath, newPath);
-    }
-    requestDownloadChannel.send(
-      {
-        downloadInfo,
-        progressStatusType,
-      },
-      window.webContents
-    );
-  };
 
-  const updateThrottle = throttle(update, 1000, {
-    leading: true,
-    trailing: true,
-  });
+  const update = await downloadUpdateActions(
+    fileUrl,
+    destinationPath,
+    temporaryFilename,
+    originalFilename,
+    _options,
+    window
+  );
 
   const download = new DownloaderHelper(fileUrl, destinationPath, _options);
+  download.on('start', update.bind(this, statusType.START));
   download.on('download', update.bind(this, statusType.DOWNLOAD));
+  download.on('progress.throttled', update.bind(this, statusType.PROGRESS));
   download.on('end', update.bind(this, statusType.FINISHED));
   download.on('timeout', update.bind(this, statusType.TIMEOUT));
-  download.on('progress', updateThrottle.bind(this, statusType.PROGRESS));
   download.on('error', update.bind(this, statusType.ERROR));
   download.start();
 };

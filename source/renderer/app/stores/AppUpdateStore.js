@@ -94,33 +94,16 @@ export default class AppUpdateStore extends Store {
 
   _requestDownload = async () => {
     requestDownloadChannel.onReceive(
-      ({
-        progressStatusType,
-      }: // fileName,
-      // filePath,
-      // downloaded,
-      // progress,
-      // error,
-      DownloadMainResponse) => {
+      ({ progressStatusType, downloadInfo }: DownloadMainResponse) => {
+        console.log('progressStatusType', progressStatusType);
+        console.log('downloadInfo', downloadInfo);
         runInAction('updates the download information', () => {
           if (progressStatusType === DOWNLOAD_PROGRESS_STATUSES.END) {
             this.isDownloadingUpdate = false;
           } else {
             this.isDownloadingUpdate = true;
           }
-          //   if (fileName) this.fileName = fileName;
-          //   if (filePath) this.filePath = filePath;
-          //   if (downloaded) this.downloaded = downloaded;
-          //   if (progress) this.progress = progress;
-          //   if (error) this.error = error;
         });
-
-        // switch (progressStatusType) {
-        //   case DownloadProgressStatuses.DOWNLOAD:
-        //     return false;
-        // }
-        // // DownloadProgressStatuses
-        // // console.log('downloadMainResponse', downloadMainResponse);
         return Promise.resolve({ fileUrl: '' });
       }
     );

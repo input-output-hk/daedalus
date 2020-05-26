@@ -14,7 +14,8 @@ export type StorageKey =
   | 'DATA-LAYER-MIGRATION-ACCEPTANCE'
   | 'READ-NEWS'
   | 'WALLETS'
-  | 'WALLET-MIGRATION-STATUS';
+  | 'WALLET-MIGRATION-STATUS'
+  | 'DOWNLOAD-MANAGER';
 
 export type StoreMessage = {
   type: StorageType,
