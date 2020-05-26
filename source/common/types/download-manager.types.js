@@ -53,71 +53,12 @@ export type DownloadRequest = {
   },
 };
 
-// https://www.npmjs.com/package/node-downloader-helper
-export type DownloadInfo = {
-  fileName?: ?string,
-  filePath?: ?string,
-  downloaded?: ?number,
-  progress?: ?number,
-  error?: ?boolean,
-};
-
-// event skip skipInfo object
-
-// {
-//     totalSize:, // total file size got from the server
-//     fileName:, // original file name
-//     filePath:, // original path name
-//     downloadedSize:, // the downloaded amount
-// }
-// event download downloadInfo object
-
-// {
-//     totalSize:, // total file size got from the server
-//     fileName:, // assigned name
-//     filePath:, // download path
-//     isResumed:, // if the download is a resume,
-//     downloadedSize:, // the downloaded amount (only if is resumed otherwise always 0)
-// }
-// event progress or progress.throttled stats object
-
-// {
-//     name:, // file name
-//     total:, // total size that needs to be downloaded in bytes
-//     downloaded:, // downloaded size in bytes
-//     progress:, // progress porcentage 0-100%
-//     speed: // download speed in bytes
-// }
-// event end downloadInfo object
-
-// {
-//     fileName:,
-//     filePath:,
-//     totalSize:, // total file size got from the server
-//     incomplete:, // true/false if the download endend but still incomplete
-//     onDiskSize, // total size of file on the disk
-//     downloadedSize:, // the total size downloaded
-// }
-// event renamed filePaths object
-
-// {
-//     path:, // modified path name
-//     fileName:, // modified file name
-//     prevPath:, // original path name
-//     prevFileName:, // original file name
-// }
-// event error error object
-
-// {
-//     message:, // Error message
-//     status:, // Http status response if available
-//     body:, // Http body response if available
-// }
-
 export type DownloadResponse = {
-  ...$Exact<DownloadInfo>,
   progressStatusType: DownloadProgressStatuses,
+  downloadInfo: DownloadInfo,
 };
+
+// https://www.npmjs.com/package/node-downloader-helper
 
 export type DownloadProgressStatuses =
   | 'IDLE'
@@ -130,3 +71,42 @@ export type DownloadProgressStatuses =
   | 'STOPPED'
   | 'FINISHED'
   | 'FAILED';
+
+// https://www.npmjs.com/package/node-downloader-helper
+
+export type DownloadInfo =
+  | DownloadInfoInit
+  | DownloadInfoProgress
+  | DownloadInfoEnd
+  | DownloadInfoError;
+
+export type DownloadInfoInit = {
+  totalSize: number, // total file size got from the server
+  fileName: string, // assigned name
+  filePath: string, // download path
+  isResumed: boolean, // if the download is a resume,
+  downloadedSize: number, // the downloaded amount (only if is resumed otherwise always 0)
+};
+
+export type DownloadInfoProgress = {
+  name: string, // file name
+  total: string, // total size that needs to be downloaded in bytes
+  downloaded: number, // downloaded size in bytes
+  progress: number, // progress porcentage 0-100%
+  speed: number, // download speed in bytes
+};
+
+export type DownloadInfoEnd = {
+  fileName: string,
+  filePath: string,
+  totalSize: number, // total file size got from the server
+  incomplete: boolean, // true/false if the download endend but still incomplete
+  onDiskSize: number, // total size of file on the disk
+  downloadedSize: number, // the total size downloaded
+};
+
+export type DownloadInfoError = {
+  message: string, // Error message
+  status: string, // Http status response if available
+  body: string, // Http body response if available
+};

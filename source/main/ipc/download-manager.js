@@ -114,7 +114,7 @@ const requestDownload = async (
     }
     requestDownloadChannel.send(
       {
-        ...downloadInfo,
+        downloadInfo,
         progressStatusType,
       },
       window.webContents
@@ -129,9 +129,9 @@ const requestDownload = async (
   const download = new DownloaderHelper(fileUrl, destinationPath, _options);
   download.on('download', update.bind(this, statusType.DOWNLOAD));
   download.on('end', update.bind(this, statusType.FINISHED));
-  download.on('error', update.bind(this, statusType.ERROR));
   download.on('timeout', update.bind(this, statusType.TIMEOUT));
   download.on('progress', updateThrottle.bind(this, statusType.PROGRESS));
+  download.on('error', update.bind(this, statusType.ERROR));
   download.start();
 };
 
