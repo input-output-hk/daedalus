@@ -3,7 +3,10 @@ import { action, computed, observable } from 'mobx';
 import Store from './lib/Store';
 import { sidebarConfig } from '../config/sidebarConfig';
 import { formattedWalletAmount } from '../utils/formatters';
-import type { SidebarWalletType } from '../types/sidebarTypes';
+import type {
+  SidebarHardwareWalletType,
+  SidebarWalletType,
+} from '../types/sidebarTypes';
 
 export default class SidebarStore extends Store {
   @observable CATEGORIES: Array<any> = sidebarConfig.CATEGORIES;
@@ -18,6 +21,9 @@ export default class SidebarStore extends Store {
       this._onActivateSidebarCategory
     );
     sidebarActions.walletSelected.listen(this._onWalletSelected);
+    sidebarActions.hardwareWalletSelected.listen(
+      this._onHardwareWalletSelected
+    );
     this.registerReactions([this._syncSidebarRouteWithRouter]);
     this._configureCategories();
   }
@@ -26,6 +32,26 @@ export default class SidebarStore extends Store {
   // for equality instead of idendity (which would always invalidate)
   // https://alexhisen.gitbooks.io/mobx-recipes/content/use-computedstruct-for-computed-objects.html
   @computed.struct get wallets(): Array<SidebarWalletType> {
+    const { networkStatus, wallets, walletSettings } = this.stores;
+    return wallets.all.map(wallet => {
+      const {
+        hasNotification,
+      } = walletSettings.getWalletsRecoveryPhraseVerificationData(wallet.id);
+      return {
+        id: wallet.id,
+        title: wallet.name,
+        info: formattedWalletAmount(wallet.amount, true, false),
+        isConnected: networkStatus.isConnected,
+        isRestoreActive: wallet.isRestoring,
+        restoreProgress: wallet.restorationProgress,
+        isNotResponding: wallet.isNotResponding,
+        isLegacy: wallet.isLegacy,
+        hasNotification,
+      };
+    });
+  }
+
+  @computed.struct get hardwareWallets(): Array<SidebarHardwareWalletType> {
     const { networkStatus, wallets, walletSettings } = this.stores;
     return wallets.all.map(wallet => {
       const {
@@ -75,6 +101,10 @@ export default class SidebarStore extends Store {
 
   @action _onWalletSelected = ({ walletId }: { walletId: string }) => {
     this.stores.wallets.goToWalletRoute(walletId);
+  };
+
+  @action _onHardwareWalletSelected = ({ walletId }: { walletId: string }) => {
+    this.stores.wallets.goToHardwareWalletRoute(walletId);
   };
 
   @action _setActivateSidebarCategory = (category: string) => {
