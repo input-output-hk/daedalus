@@ -26,7 +26,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
     const activeWalletId = activeWallet ? activeWallet.id : null;
     const { currentTheme } = profile;
     const {
-      environment: { network },
+      environment: { network, isDevelopment },
     } = app;
 
     const appWallets =
@@ -36,7 +36,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
             activeWalletId,
             actions: {
               onWalletItemClick: (walletId: string) => {
-                actions.sidebar.hardwareWalletSelected.trigger({ walletId });
+                actions.sidebar.walletSelected.trigger({ walletId });
               },
             },
           }
@@ -49,7 +49,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
             activeWalletId,
             actions: {
               onHardwareWalletItemClick: (walletId: string) => {
-                actions.sidebar.walletSelected.trigger({ walletId });
+                actions.sidebar.hardwareWalletSelected.trigger({ walletId });
               },
             },
           }
@@ -57,7 +57,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
 
     const sidebarMenus = {
       wallets: appWallets,
-      hardwareWallets,
+      hardwareWallets: isDevelopment ? hardwareWallets : null,
     };
 
     const sidebarComponent = (
