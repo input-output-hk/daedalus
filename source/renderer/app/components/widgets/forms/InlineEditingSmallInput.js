@@ -84,6 +84,13 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
         }
         this.input.blur();
       },
+      onError: form => {
+        const { inputField } = form.values();
+        if (!inputField || !form.isValid) {
+          this.setState({ isActive: false });
+          this.props.onSubmit(inputField);
+        }
+      },
     });
   };
 

@@ -1,0 +1,12 @@
+.overlay {
+  background-color: var(--theme-wallet-import-background-color) !important;
+
+  .modal {
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+    height: 100% !important;
+    max-width: 740px !important;
+    width: 100% !important;
+  }
+}

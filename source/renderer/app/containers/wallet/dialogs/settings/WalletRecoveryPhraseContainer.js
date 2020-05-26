@@ -48,10 +48,9 @@ export default class WalletRecoveryPhraseContainer extends Component<Props> {
         : recoveryPhraseVerificationContinue.trigger;
     const onClose = recoveryPhraseVerificationClose.trigger;
 
-    const wordCount =
-      activeWallet.discovery === 'random'
-        ? LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT
-        : WALLET_RECOVERY_PHRASE_WORD_COUNT;
+    const wordCount = activeWallet.isRandom
+      ? LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT
+      : WALLET_RECOVERY_PHRASE_WORD_COUNT;
     const WalletRecoveryPhraseDialog = this.recoveryPhraseComponent;
     return (
       WalletRecoveryPhraseDialog && (

@@ -183,6 +183,14 @@ export default class WalletsStore extends Store {
   @observable transferFundsStep: number = 0;
   @observable transferFundsFee: ?BigNumber = null;
 
+  /* ----------  Hardware Wallet  ---------- */
+  @observable isExportingPublicKeyAborted = false;
+  @observable exportingExtendedPublicKey = false;
+  @observable isDeviceConnected = false;
+  @observable fetchingDevice = false;
+  @observable isTrezor = false;
+  @observable isLedger = false;
+
   /* ----------  Other  ---------- */
 
   _newWalletDetails: {
@@ -539,9 +547,11 @@ export default class WalletsStore extends Store {
     );
   };
 
-  _unscrambleMnemonics = async (): Array<string> => {
+  _getUnscrambledMnemonics = async (
+    mnemonics: Array<string>
+  ): Array<string> => {
     // Split recovery phrase to 18 (scrambled mnemonics) + 9 (mnemonics seed) mnemonics
-    const { passphrase, scrambledInput } = getScrambledInput(this.mnemonics);
+    const { passphrase, scrambledInput } = getScrambledInput(mnemonics);
 
     // Unscramble 18-word wallet certificate mnemonic to 12-word mnemonic
     const unscrambledRecoveryPhrase: Array<string> = await this.getWalletRecoveryPhraseFromCertificateRequest.execute(
@@ -579,7 +589,7 @@ export default class WalletsStore extends Store {
     ) {
       // Reset getWalletRecoveryPhraseFromCertificateRequest to clear previous errors
       this.getWalletRecoveryPhraseFromCertificateRequest.reset();
-      data.recoveryPhrase = await this._unscrambleMnemonics();
+      data.recoveryPhrase = await this._getUnscrambledMnemonics(this.mnemonics);
     }
 
     try {
@@ -777,6 +787,11 @@ export default class WalletsStore extends Store {
     return matchRoute(`${ROUTES.WALLETS.ROOT}(/*rest)`, currentRoute);
   }
 
+  @computed get isHardwareWalletRoute(): boolean {
+    const { currentRoute } = this.stores.app;
+    return matchRoute(`${ROUTES.HARDWARE_WALLETS.ROOT}(/*rest)`, currentRoute);
+  }
+
   @computed get restoreRequest(): Request {
     switch (this.walletKind) {
       case WALLET_KINDS.DAEDALUS:
@@ -807,10 +822,20 @@ export default class WalletsStore extends Store {
   getWalletRoute = (walletId: string, page: string = 'summary'): string =>
     buildRoute(ROUTES.WALLETS.PAGE, { id: walletId, page });
 
+  getHardwareWalletRoute = (
+    walletId: string,
+    page: string = 'summary'
+  ): string => buildRoute(ROUTES.HARDWARE_WALLETS.PAGE, { id: walletId, page });
+
   // ACTIONS
 
   goToWalletRoute(walletId: string) {
     const route = this.getWalletRoute(walletId);
+    this.actions.router.goToRoute.trigger({ route });
+  }
+
+  goToHardwareWalletRoute(walletId: string) {
+    const route = this.getHardwareWalletRoute(walletId);
     this.actions.router.goToRoute.trigger({ route });
   }
 

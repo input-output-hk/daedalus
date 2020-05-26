@@ -42,6 +42,13 @@
   }
 }
 
+.hardwareWalletsIcon {
+  & > svg {
+    height: 44px;
+    width: 44px;
+  }
+}
+
 .paperWalletCreateCertificateIcon {
   & > svg {
     height: 21px;
