@@ -96,6 +96,7 @@ export const restoreLegacyWallet = async (
             if (transferFunds && walletAmount.isZero()) {
               throw new Error(noWalletsErrorMessage);
             }
+            done();
           })
           .catch(error => done(error))
       )
