@@ -21,8 +21,17 @@ export const getContentLength = (content: string) =>
   new TextEncoder().encode(content).length;
 
 // legacy wallet id utils
-const LEGACY_WALLET_ID_PREFIX = 'legacy_';
+const walletIdPrefixes = {
+  LEGACY_WALLET_ID_PREFIX: 'legacy_',
+  HARDWARE_WALLET_ID_PREFIX: 'hw_',
+};
 export const getLegacyWalletId = (rawWalletId: string) =>
-  `${LEGACY_WALLET_ID_PREFIX}${rawWalletId}`;
-export const getRawWalletId = (legacyWalletId: string) =>
-  legacyWalletId.replace(LEGACY_WALLET_ID_PREFIX, '');
+  `${walletIdPrefixes.LEGACY_WALLET_ID_PREFIX}${rawWalletId}`;
+export const getHardwareWalletId = (rawWalletId: string) =>
+  `${walletIdPrefixes.HARDWARE_WALLET_ID_PREFIX}${rawWalletId}`;
+export const getRawWalletId = (walletId: string, prefix?: string) => {
+  const walletIdPrefix = walletIdPrefixes[prefix] || walletIdPrefixes.LEGACY_WALLET_ID_PREFIX;
+  return walletId.replace(walletIdPrefix, '');
+}
+export const isHardwareWallet = (walletId: string) =>
+  walletId.startsWith(walletIdPrefixes.HARDWARE_WALLET_ID_PREFIX);

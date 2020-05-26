@@ -285,3 +285,19 @@ export type ElectronStoreMessage = {
   key: string,
   data?: any,
 };
+
+/**
+ * Channel for tracking connection with Hardware wallet
+ */
+export const GET_HARDWARE_WALLET_TRANSPORT_CHANNEL = 'GET_HARDWARE_WALLET_TRANSPORT_CHANNEL';
+export type getHardwareWalletTransportRendererRequest = void;
+export type getHardwareWalletTransportMainResponse = Object;
+
+export const GET_EXTENDED_PUBLIC_KEY_CHANNEL = 'GET_EXTENDED_PUBLIC_KEY_CHANNEL';
+export type getExtendedPublicKeyRendererRequest = void;
+export type getExtendedPublicKeyMainResponse = Object;
+
+export const GET_CARDANO_ADA_APP_CHANNEL = 'GET_CARDANO_ADA_APP_CHANNEL';
+export type getCardanoAdaAppRendererRequest = void;
+export type getCardanoAdaAppMainResponse = Object;
+

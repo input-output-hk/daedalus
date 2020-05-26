@@ -44,6 +44,7 @@ import type {
   TransferFundsCalculateFeeRequest,
   TransferFundsRequest,
 } from '../api/wallets/types';
+import type { HardwareWallet } from '../api/utils/localStorage';
 /* eslint-disable consistent-return */
 
 /**
@@ -115,6 +116,19 @@ export default class WalletsStore extends Store {
   @observable transferFundsRequest: Request<TransferFundsRequest> = new Request(
     this.api.ada.transferFunds
   );
+  @observable createHardwareWalletRequest: Request<Wallet> = new Request(
+    this.api.ada.createHardwareWallet
+  );
+  @observable setHardwareWalletRequest: Request<HardwareWallet> = new Request(
+    this.api.localStorage.setHardwareWallet
+  );
+  @observable getHardwareWalletRequest: Request<HardwareWallet> = new Request(
+    this.api.localStorage.getHardwareWallet
+  );
+  @observable unsetHardwareWalletRequest: Request<void> = new Request(
+    this.api.localStorage.unsetHardwareWallet
+  );
+
 
   /* ----------  Create Wallet  ---------- */
   @observable createWalletStep = null;
@@ -200,6 +214,7 @@ export default class WalletsStore extends Store {
     walletsActions.createWalletChangeStep.listen(this._createWalletChangeStep);
     walletsActions.createWalletAbort.listen(this._createWalletAbort);
     walletsActions.createWalletClose.listen(this._createWalletClose);
+    walletsActions.createHardwareWallet.listen(this._createHardwareWallet);
     // ---
     // Restore Wallet Actions ---
     walletsActions.restoreWallet.listen(this._restore);
@@ -414,6 +429,30 @@ export default class WalletsStore extends Store {
       this.repeatPassword = value;
     }
   };
+
+  @action _createHardwareWallet = async (params: { walletName: string, extendedPublicKey: string, device: Object }) => {
+    console.debug('>>> PARAMS: ', params);
+    const accountPublicKey = params.extendedPublicKey.publicKeyHex+params.extendedPublicKey.chainCodeHex;
+    try {
+      const wallet = await this.createHardwareWalletRequest.execute({
+        walletName: params.walletName,
+        accountPublicKey,
+      });
+
+      console.debug('>>> WALLET CREATED: ', wallet);
+      const LCData1 = await this.setHardwareWalletRequest.execute({
+        walletId: wallet.id,
+        device: params.device,
+        extendedPublicKey: params.extendedPublicKey,
+      });
+
+      const LCData2 = await this.getHardwareWalletRequest.execute(wallet.id);
+      console.debug('>>> LC data 1: ', LCData1);
+      console.debug('>>> LC data 2: ', LCData2);
+    } catch (error) {
+      throw error;
+    }
+  }
 
   _finishWalletBackup = async () => {
     this._newWalletDetails.mnemonic = this.stores.walletBackup.recoveryPhrase.join(
@@ -704,13 +743,19 @@ export default class WalletsStore extends Store {
 
   @computed get allWallets(): Array<Wallet> {
     return this.walletsRequest.result
-      ? this.walletsRequest.result.filter(({ isLegacy }: Wallet) => !isLegacy)
+      ? this.walletsRequest.result.filter(({ isLegacy, isHardwareWallet }: Wallet) => !isLegacy && !isHardwareWallet)
       : [];
   }
 
   @computed get allLegacyWallets(): Array<Wallet> {
     return this.walletsRequest.result
       ? this.walletsRequest.result.filter(({ isLegacy }: Wallet) => isLegacy)
+      : [];
+  }
+
+  @computed get allHardwareWallets(): Array<Wallet> {
+    return this.walletsRequest.result
+      ? this.walletsRequest.result.filter(({ isHardwareWallet }: Wallet) => isHardwareWallet)
       : [];
   }
 

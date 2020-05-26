@@ -1,5 +1,5 @@
 // @flow
-import { split, get, map, last } from 'lodash';
+import { split, get, map, last, includes } from 'lodash';
 import { action } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
@@ -66,6 +66,7 @@ import { getWallet } from './wallets/requests/getWallet';
 import { getLegacyWallet } from './wallets/requests/getLegacyWallet';
 import { transferFundsCalculateFee } from './wallets/requests/transferFundsCalculateFee';
 import { transferFunds } from './wallets/requests/transferFunds';
+import { createHardwareWallet } from './wallets/requests/createHardwareWallet';
 
 // Staking
 import StakePool from '../domains/StakePool';
@@ -87,7 +88,7 @@ import {
   cardanoFaultInjectionChannel,
 } from '../ipc/cardano.ipc';
 import patchAdaApi from './utils/patchAdaApi';
-import { getLegacyWalletId, utcStringToDate } from './utils';
+import { getLegacyWalletId, getHardwareWalletId, getRawWalletId, utcStringToDate } from './utils';
 import { logger } from '../utils/logging';
 import {
   unscrambleMnemonics,
@@ -148,6 +149,7 @@ import type {
 import type {
   AdaWallet,
   AdaWallets,
+  CreateHardwareWalletRequest,
   LegacyAdaWallet,
   LegacyAdaWallets,
   WalletUtxos,
@@ -194,8 +196,11 @@ import { getNewsHash } from './news/requests/getNewsHash';
 import { deleteTransaction } from './transactions/requests/deleteTransaction';
 import { WALLET_BYRON_KINDS } from '../config/walletRestoreConfig';
 import ApiError from '../domains/ApiError';
+import LocalStorageApi from './utils/localStorage';
 
-const { isIncentivizedTestnet } = global;
+const { isIncentivizedTestnet, environment } = global;
+const { network } = environment;
+const _localStorageApi = new LocalStorageApi(network);
 
 export default class AdaApi {
   config: RequestConfig;
@@ -210,6 +215,12 @@ export default class AdaApi {
   }
 
   getWallets = async (): Promise<Array<Wallet>> => {
+
+    const storedHardwareWallets = await _localStorageApi.getAll();
+    const hwIds = map(storedHardwareWallets, hw =>
+      getRawWalletId(hw.id, 'HARDWARE_WALLET_ID_PREFIX')
+    );
+
     logger.debug('AdaApi::getWallets called');
     try {
       const wallets: AdaWallets = isIncentivizedTestnet
@@ -236,7 +247,13 @@ export default class AdaApi {
         });
       });
 
-      return wallets.map(_createWalletFromServerData);
+      return wallets.map(wallet => {
+        const walletData = {
+          ...wallet,
+          isHardwareWallet: includes(hwIds, wallet.id),
+        }
+        return _createWalletFromServerData(walletData)
+      });
     } catch (error) {
       logger.error('AdaApi::getWallets error', { error });
       throw new ApiError(error);
@@ -873,6 +890,62 @@ export default class AdaApi {
         .result();
     }
   };
+
+
+
+
+
+
+
+
+  createHardwareWallet = async (request: CreateHardwareWalletRequest): Promise<Wallet> => {
+    logger.debug('AdaApi::createHardwareWallet called', {
+      parameters: filterLogData(request),
+    });
+    const { walletName, accountPublicKey } = request;
+    console.debug('>>>> CALL API: ', request)
+    const walletInitData = {
+      name: walletName,
+      account_public_key: accountPublicKey,
+    };
+    console.debug('>>>> CALL API DATA: ', walletInitData);
+
+
+    try {
+      const hardwareWallet: AdaWallet = await createHardwareWallet(this.config, {
+        walletInitData,
+      });
+
+      const { id: walletId } = hardwareWallet;
+
+      const wallet = {
+        ...hardwareWallet,
+        isHardwareWallet: true,
+      };
+      logger.debug('AdaApi::createHardwareWallet success', { wallet });
+
+      console.debug('>>>> RESPONSE: ', wallet);
+      return _createWalletFromServerData(wallet);
+    } catch (error) {
+      logger.error('AdaApi::createHardwareWallet error', { error });
+      console.debug('>>> ERROR occured: ', error);
+      throw new ApiError(error)
+    }
+  };
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   restoreLegacyWallet = async (
     request: RestoreLegacyWalletRequest
@@ -1772,10 +1845,16 @@ const _createWalletFromServerData = action(
       delegation,
       state: syncState,
       isLegacy = false,
+      isHardwareWallet = false,
       discovery,
     } = wallet;
 
-    const id = isLegacy ? getLegacyWalletId(rawWalletId) : rawWalletId;
+    let id = rawWalletId;
+    if (isLegacy)
+      id = getLegacyWalletId(rawWalletId);
+    if (isHardwareWallet)
+      id = getHardwareWalletId(rawWalletId);
+
     const passphraseLastUpdatedAt = get(passphrase, 'last_updated_at', null);
     const walletTotalAmount =
       balance.total.unit === WalletUnits.LOVELACE
@@ -1815,9 +1894,10 @@ const _createWalletFromServerData = action(
       reward: walletRewardAmount,
       passwordUpdateDate:
         passphraseLastUpdatedAt && new Date(passphraseLastUpdatedAt),
-      hasPassword: passphraseLastUpdatedAt !== null,
+      hasPassword: true,
       syncState,
       isLegacy,
+      isHardwareWallet,
       delegatedStakePoolId,
       delegationStakePoolStatus,
       lastDelegationStakePoolId,

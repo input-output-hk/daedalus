@@ -8,6 +8,7 @@ import resizeWindowApi from './resize-window';
 import loadAsset from './load-asset';
 import getGpuStatus from './get-gpu-status';
 import getRecoveryWalletIdChannel from './getRecoveryWalletIdChannel';
+import { handleHardwareWalletRequests } from './getHardwareWalletChannel';
 import { handleBugReportRequests } from './bugReportRequestChannel';
 import { handleFileMetaRequests } from './generateFileMetaChannel';
 import { handlePaperWalletRequests } from './generatePaperWalletChannel';
@@ -36,4 +37,5 @@ export default (window: BrowserWindow) => {
   openLocalDirectoryChannel;
   getRecoveryWalletIdChannel();
   handleElectronStoreChannel();
+  handleHardwareWalletRequests();
 };

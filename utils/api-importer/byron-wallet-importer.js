@@ -2,7 +2,6 @@
 const axios = require('axios');
 const https = require('https');
 const fs = require('fs');
-const TransportNodeHid = require("@ledgerhq/hw-transport-node-hid").default;
 
 const mnemonics = [
   ['craft', 'blade', 'oil', 'fork', 'able', 'math', 'cat', 'kidney', 'clutch', 'menu', 'remind', 'clap'],
@@ -25,24 +24,21 @@ const walletNames = [
 const API_PORT = process.env.API_PORT || 8088;
 
 async function main() {
-  console.debug('>>> START: ');
-  const transport = await TransportNodeHid.create();
-  console.debug('>>> TRANSPORT: ', transport);
-  // const httpsAgent = new https.Agent({
-  //   cert: fs.readFileSync('tls/client/client.pem'),
-  //   key: fs.readFileSync('tls/client/client.key'),
-  //   ca: fs.readFileSync('tls/client/ca.crt'),
-  // });
-  // const request = axios.create({ httpsAgent })
-  // try {
-  //   await Promise.all(mnemonics.map((mnemonic, index) => {
-  //     const name = walletNames[index];
-  //     const data = generateImportPayload(mnemonic, name);
-  //     return request.post(`https://localhost:${API_PORT}/v2/byron-wallets`, data);
-  //   }))
-  // } catch (e) {
-  //   console.log(e);
-  // }
+  const httpsAgent = new https.Agent({
+    cert: fs.readFileSync('tls/client/client.pem'),
+    key: fs.readFileSync('tls/client/client.key'),
+    ca: fs.readFileSync('tls/client/ca.crt'),
+  });
+  const request = axios.create({ httpsAgent })
+  try {
+    await Promise.all(mnemonics.map((mnemonic, index) => {
+      const name = walletNames[index];
+      const data = generateImportPayload(mnemonic, name);
+      return request.post(`https://localhost:${API_PORT}/v2/byron-wallets`, data);
+    }))
+  } catch (e) {
+    console.log(e);
+  }
 }
 
 function generateImportPayload(mnemonic, name) {

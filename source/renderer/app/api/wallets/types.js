@@ -274,3 +274,8 @@ export type TransferFundsResponse = {
   outputs: Array<Output>,
   status: 'pending' | 'in_ledger',
 };
+
+export type CreateHardwareWalletRequest = {
+  walletName: string,
+  accountPublicKey: string,
+};
