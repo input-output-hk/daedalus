@@ -28,7 +28,7 @@ import {
   ImportFromOptions,
 } from '../types/walletExportTypes';
 import { IMPORT_WALLET_STEPS } from '../config/walletRestoreConfig';
-import type {ImportWalletStep} from "../types/walletRestoreTypes";
+import type { ImportWalletStep } from '../types/walletRestoreTypes';
 
 export type WalletMigrationStatus =
   | 'unstarted'

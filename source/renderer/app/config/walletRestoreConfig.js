@@ -19,8 +19,8 @@ export const RESTORE_WALLET_STEPS: Array<RestoreWalletStep> = [
 ];
 
 export const IMPORT_WALLET_STEPS: EnumMap<string, ImportWalletStep> = {
-  WALLET_IMPORT_FILE: 'walletImportFile',
-  WALLET_SELECT_IMPORT: 'walletSelectImport',
+  WALLET_IMPORT_FILE: 'WalletImportFile',
+  WALLET_SELECT_IMPORT: 'WalletSelectImport',
 };
 
 export const WALLET_KINDS: EnumMap<string, WalletKind> = isIncentivizedTestnet

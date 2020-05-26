@@ -6,7 +6,7 @@ export type RestoreWalletStep =
   | 'configuration'
   | 'success';
 
-export type ImportWalletStep = 'walletImportFile' | 'walletSelectImport';
+export type ImportWalletStep = 'WalletImportFile' | 'WalletSelectImport';
 
 export type WalletKind = 'Daedalus' | 'Yoroi' | 'Hardware';
 
