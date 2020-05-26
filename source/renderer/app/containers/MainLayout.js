@@ -32,13 +32,11 @@ export default class MainLayout extends Component<InjectedContainerProps> {
     const appWallets =
       sidebar.wallets.length > 0
         ? {
-            wallets: {
-              items: sidebar.wallets,
-              activeWalletId,
-              actions: {
-                onWalletItemClick: (walletId: string) => {
-                  actions.sidebar.hardwareWalletSelected.trigger({ walletId });
-                },
+            items: sidebar.wallets,
+            activeWalletId,
+            actions: {
+              onWalletItemClick: (walletId: string) => {
+                actions.sidebar.hardwareWalletSelected.trigger({ walletId });
               },
             },
           }
@@ -47,13 +45,11 @@ export default class MainLayout extends Component<InjectedContainerProps> {
     const hardwareWallets =
       sidebar.hardwareWallets.length > 0
         ? {
-            wallets: {
-              items: sidebar.hardwareWallets,
-              activeWalletId,
-              actions: {
-                onHardwareWalletItemClick: (walletId: string) => {
-                  actions.sidebar.walletSelected.trigger({ walletId });
-                },
+            items: sidebar.hardwareWallets,
+            activeWalletId,
+            actions: {
+              onHardwareWalletItemClick: (walletId: string) => {
+                actions.sidebar.walletSelected.trigger({ walletId });
               },
             },
           }
