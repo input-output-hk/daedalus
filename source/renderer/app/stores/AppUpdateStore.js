@@ -127,7 +127,6 @@ export default class AppUpdateStore extends Store {
     await requestDownloadChannel.request({
       fileUrl:
         'https://update-cardano-mainnet.iohk.io/daedalus-1.1.0-mainnet-12849.pkg',
-      destinationDirectoryName: ALLOWED_DOWNLOAD_DIRECTORIES.DOWNLOADS,
     });
   };
 

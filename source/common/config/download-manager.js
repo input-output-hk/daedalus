@@ -27,3 +27,11 @@ export const DOWNLOAD_PROGRESS_STATUSES: {
   FINISHED: 'FINISHED',
   FAILED: 'FAILED',
 };
+
+// export const DEFAULT_DIRECTORY_NAME = ALLOWED_DOWNLOAD_DIRECTORIES.DOWNLOADS;
+export const DEFAULT_DIRECTORY_NAME = ALLOWED_DOWNLOAD_DIRECTORIES.DESKTOP;
+
+export const TEMPORARY_FILENAME = {
+  prefix: 'Unconfirmed',
+  extension: 'crdownload',
+};

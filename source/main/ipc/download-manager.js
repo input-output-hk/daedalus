@@ -1,17 +1,21 @@
 // @flow
 import { DownloaderHelper } from 'node-downloader-helper';
 import { throttle } from 'lodash';
-import { app } from 'electron';
 import fs from 'fs';
 import type { BrowserWindow } from 'electron';
 import { MainIpcChannel } from './lib/MainIpcChannel';
+import {
+  getOriginalFilename,
+  getPathFromDirectoryName,
+} from '../utils/downloadManager';
 import {
   // PERSISTED_DOWNLOAD_STATUS,
   // DOWNLOAD_STATUS,
   REQUEST_DOWNLOAD,
 } from '../../common/ipc/api';
 import {
-  ALLOWED_DOWNLOAD_DIRECTORIES,
+  DEFAULT_DIRECTORY_NAME,
+  TEMPORARY_FILENAME,
   DOWNLOAD_PROGRESS_STATUSES as statusType,
 } from '../../common/config/download-manager';
 import { generateFileNameWithTimestamp } from '../../common/utils/files.js';
@@ -24,19 +28,9 @@ import type {
   DownloadMainResponse,
 } from '../../common/ipc/api';
 import type {
-  AllowedDownloadDirectories,
   DownloadInfo,
   DownloadProgressStatuses,
 } from '../../common/types/download-manager.types';
-
-const getPathFromDirectoryName = (dir: AllowedDownloadDirectories) => {
-  switch (dir) {
-    case ALLOWED_DOWNLOAD_DIRECTORIES.DESKTOP:
-      return app.getPath('desktop');
-    default:
-      return app.getPath('downloads');
-  }
-};
 
 // const getPersistDownloadStatus = async ({
 //   file,
@@ -83,7 +77,7 @@ const getPathFromDirectoryName = (dir: AllowedDownloadDirectories) => {
 //     // fileName,
 //     // fileExtention,
 //   } = file;
-//   const pathName = filePath || ALLOWED_DOWNLOAD_DIRECTORIES.DOWNLOADS;
+//   const pathName = filePath || DEFAULT_DIRECTORY_NAME;
 //   // const path = getPathFromDirectoryName(pathName);
 //   const hasPendingDownload = false;
 //   const pendingUpdateFileName = '';
@@ -94,44 +88,30 @@ const getPathFromDirectoryName = (dir: AllowedDownloadDirectories) => {
 // };
 
 const requestDownload = async (
-  downloadRequest: DownloadRendererRequest,
+  downloadRequestPayload: DownloadRendererRequest,
   window: BrowserWindow
 ): Promise<any> => {
-  // const defaultDirectoryName = ALLOWED_DOWNLOAD_DIRECTORIES.DOWNLOADS;
-  const temporaryFilename = generateFileNameWithTimestamp({
-    prefix: 'Unconfirmed',
-    extension: 'crdownload',
-  });
-  let originalFilename = '';
-  const defaultDirectoryName = ALLOWED_DOWNLOAD_DIRECTORIES.DESKTOP;
+  const temporaryFilename = generateFileNameWithTimestamp(TEMPORARY_FILENAME);
+  const originalFilename = getOriginalFilename(downloadRequestPayload);
   const {
     fileUrl,
-    destinationDirectoryName = defaultDirectoryName,
+    destinationDirectoryName = DEFAULT_DIRECTORY_NAME,
     options,
-  } = downloadRequest;
+  } = downloadRequestPayload;
   const destinationPath = getPathFromDirectoryName(destinationDirectoryName);
-
   const _options = {
     ...options,
     fileName: temporaryFilename,
   };
-
   const update = (
     progressStatusType: DownloadProgressStatuses,
     downloadInfo: DownloadInfo
   ) => {
-    if (progressStatusType === statusType.DOWNLOAD && downloadInfo.fileName) {
-      // TODO: retrieve the original name
-      originalFilename = 'original-name';
-      // originalFilename = downloadInfo.fileName;
-    }
-
     if (progressStatusType === statusType.FINISHED) {
       const temporaryPath = `${destinationPath}/${temporaryFilename}`;
       const newPath = `${destinationPath}/${originalFilename}`;
       fs.renameSync(temporaryPath, newPath);
     }
-
     requestDownloadChannel.send(
       {
         ...downloadInfo,
@@ -176,7 +156,8 @@ MainIpcChannel<
 export default (window: BrowserWindow) => {
   // getPersistDownloadStatusChannel.onRequest(getPersistDownloadStatus);
   // getDownloadStatusChannel.onRequest(getDownloadStatus);
-  requestDownloadChannel.onRequest((downloadRequest: DownloadRendererRequest) =>
-    requestDownload(downloadRequest, window)
+  requestDownloadChannel.onRequest(
+    (downloadRequestPayload: DownloadRendererRequest) =>
+      requestDownload(downloadRequestPayload, window)
   );
 };
