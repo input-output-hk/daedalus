@@ -49,8 +49,7 @@ export default class HardwareWalletPage extends Component<Props> {
     const { actions, stores } = this.props;
     const { app, wallets, walletSettings } = stores;
     const { restartNode } = actions.networkStatus;
-    let { active: activeHardwareWallet } = wallets;
-
+    const { active: activeHardwareWallet } = wallets;
     const {
       isDeviceConnected,
       fetchingDevice,
@@ -58,19 +57,15 @@ export default class HardwareWalletPage extends Component<Props> {
       isExportingPublicKeyAborted,
       isTrezor,
     } = wallets;
-    const {
-      hasNotification,
-    } = walletSettings.getWalletsRecoveryPhraseVerificationData(
+    const walletNotConnected = activeHardwareWallet
+      ? activeHardwareWallet.walletNotConnected
+      : true;
+    const hasNotification =
       activeHardwareWallet && activeHardwareWallet.id
-        ? activeHardwareWallet.id
-        : activeHardwareWallet
-    );
-    if (!activeHardwareWallet) {
-      activeHardwareWallet = {
-        walletNotConnected: true,
-      };
-    }
-    const { walletNotConnected } = activeHardwareWallet;
+        ? walletSettings.getWalletsRecoveryPhraseVerificationData(
+            activeHardwareWallet.id
+          ).hasNotification
+        : false;
 
     // @todo - remove after adding logic from store
     const isLedger = true;
