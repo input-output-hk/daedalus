@@ -21,6 +21,7 @@ import StakingInfoPage from './containers/staking/StakingInfoPage';
 import StakingRewardsPage from './containers/staking/StakingRewardsPage';
 import StakePoolsListPage from './containers/staking/StakePoolsListPage';
 import StakingCountdownPage from './containers/staking/StakingCountdownPage';
+import HardwareWalletPage from './containers/hardware-wallet/HardwareWalletPage';
 import Wallet from './containers/wallet/Wallet';
 import WalletAddPage from './containers/wallet/WalletAddPage';
 import WalletSummaryPage from './containers/wallet/WalletSummaryPage';
@@ -100,6 +101,14 @@ export const Routes = withRouter(() => (
           path={ROUTES.PAPER_WALLET_CREATE_CERTIFICATE}
           component={PaperWalletCreateCertificatePage}
         />
+        <Route path={ROUTES.HARDWARE_WALLETS.ROOT}>
+          <HardwareWalletPage>
+            <Route
+              path={ROUTES.HARDWARE_WALLETS.SUMMARY}
+              component={WalletSummaryPage}
+            />
+          </HardwareWalletPage>
+        </Route>
         <Route path={ROUTES.STAKING.ROOT}>
           <Staking>
             <Route

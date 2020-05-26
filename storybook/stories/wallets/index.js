@@ -11,4 +11,5 @@ import './import/WalletImportFile.stories';
 import './export/WalletExportToFile.stories';
 import './transferFunds/TransferFunds.stories';
 import './paperWallets/PaperWallets.stories';
+import './hardwareWallets/HardwareWallets.stories';
 import './setPassword/SetWalletPassword.stories';

@@ -95,7 +95,7 @@ const { isIncentivizedTestnet } = global;
 type Props = {
   onCreate: Function,
   onRestore: Function,
-  onImportFile: Function,
+  onImport: Function,
   isMaxNumberOfWalletsReached: boolean,
   isMainnet: boolean,
   isTestnet: boolean,
@@ -118,7 +118,7 @@ export default class WalletAdd extends Component<Props> {
     const {
       onCreate,
       onRestore,
-      onImportFile,
+      onImport,
       isMaxNumberOfWalletsReached,
       isMainnet,
       isTestnet,
@@ -169,7 +169,7 @@ export default class WalletAdd extends Component<Props> {
             />
             <BigButtonForDialogs
               className="importWalletButton"
-              onClick={onImportFile}
+              onClick={onImport}
               icon={importIcon}
               label={intl.formatMessage(messages.importLabel)}
               description={intl.formatMessage(messages.importDescription)}

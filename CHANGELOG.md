@@ -3,15 +3,20 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Implemented Hardware wallets connection screens ([PR 2016](https://github.com/input-output-hk/daedalus/pull/2016))
+
 ### Fixes
 
-- Eenabled the Recovery Phrase Verification feature of Shelley wallets on ITN ([PR 2008](https://github.com/input-output-hk/daedalus/pull/2008))
+- Enabled the Recovery Phrase Verification feature of Shelley wallets on ITN ([PR 2008](https://github.com/input-output-hk/daedalus/pull/2008))
 - Disabled button on forms when there is nothing to submit ([PR 1998](https://github.com/input-output-hk/daedalus/pull/1998), [PR 2010](https://github.com/input-output-hk/daedalus/pull/2010))
 - Fixed system locale detection ([PR 2009](https://github.com/input-output-hk/daedalus/pull/2009))
 
 ### Chores
 
 - Updated react, react-router, mobx, mobx-react-router and their related package versions ([PR 1966](https://github.com/input-output-hk/daedalus/pull/1966))
+- Improved wallet import dialogs ([PR 2014](https://github.com/input-output-hk/daedalus/pull/2014))
 - Consolidated Japanese translations ([PR 2003](https://github.com/input-output-hk/daedalus/pull/2003))
 - Prevented import for more than maximum number of wallets ([PR 2012](https://github.com/input-output-hk/daedalus/pull/2012))
 - Implemented automated tests for wallet migration and import features ([PR 2011](https://github.com/input-output-hk/daedalus/pull/2011))

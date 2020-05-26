@@ -236,6 +236,128 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Summary",
+        "description": "Label for the \"Summary\" nav button in the wallet navigation.",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "source/renderer/app/components/hardware-wallet/navigation/HardwareWalletNavigation.js",
+        "id": "wallet.navigation.summary",
+        "start": {
+          "column": 11,
+          "line": 18
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/hardware-wallet/navigation/HardwareWalletNavigation.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Hardware wallet",
+        "description": "Hardware wallet title.",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "source/renderer/app/components/hardware-wallet/settings/ConnectHardwareWallet.js",
+        "id": "wallet.hardware.hardwareWalletTitle",
+        "start": {
+          "column": 23,
+          "line": 18
+        }
+      },
+      {
+        "defaultMessage": "!!!Ledger wallet",
+        "description": "Ledger wallet title.",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/components/hardware-wallet/settings/ConnectHardwareWallet.js",
+        "id": "wallet.hardware.ledgerWalletTitle",
+        "start": {
+          "column": 21,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!Follow instructions to access your wallet",
+        "description": "Follow instructions label",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "source/renderer/app/components/hardware-wallet/settings/ConnectHardwareWallet.js",
+        "id": "wallet.hardware.hardwareWalletInstructions",
+        "start": {
+          "column": 30,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!To begin, connect and unlock your <span>Ledger Device</span>",
+        "description": "Connect device label",
+        "end": {
+          "column": 3,
+          "line": 38
+        },
+        "file": "source/renderer/app/components/hardware-wallet/settings/ConnectHardwareWallet.js",
+        "id": "wallet.hardware.hardwareWalletLedgerBegin",
+        "start": {
+          "column": 29,
+          "line": 33
+        }
+      },
+      {
+        "defaultMessage": "!!!To begin, connect and unlock your <span>Hardware wallet Device</span>",
+        "description": "Connect device label",
+        "end": {
+          "column": 3,
+          "line": 44
+        },
+        "file": "source/renderer/app/components/hardware-wallet/settings/ConnectHardwareWallet.js",
+        "id": "wallet.hardware.hardwareWalletBegin",
+        "start": {
+          "column": 23,
+          "line": 39
+        }
+      },
+      {
+        "defaultMessage": "!!!Export <span>public key</span> on your device",
+        "description": "Export wallet label",
+        "end": {
+          "column": 3,
+          "line": 49
+        },
+        "file": "source/renderer/app/components/hardware-wallet/settings/ConnectHardwareWallet.js",
+        "id": "wallet.hardware.hardwareWalletExport",
+        "start": {
+          "column": 24,
+          "line": 45
+        }
+      },
+      {
+        "defaultMessage": "!!!https://daedaluswallet.io/",
+        "description": "External link URL on the hardware wallet connect screen",
+        "end": {
+          "column": 3,
+          "line": 54
+        },
+        "file": "source/renderer/app/components/hardware-wallet/settings/ConnectHardwareWallet.js",
+        "id": "wallet.select.import.dialog.linkUrl",
+        "start": {
+          "column": 11,
+          "line": 50
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/hardware-wallet/settings/ConnectHardwareWallet.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Software update is available",
         "description": "Title for \"Manual update\" overlay",
         "end": {
@@ -2071,13 +2193,13 @@
         "description": "Label for the \"Add wallet\" button in wallet sidebar menu.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 22
         },
         "file": "source/renderer/app/components/sidebar/wallets/SidebarWalletsMenu.js",
         "id": "sidebar.wallets.addWallet",
         "start": {
           "column": 16,
-          "line": 15
+          "line": 18
         }
       }
     ],
@@ -9203,7 +9325,7 @@
         }
       },
       {
-        "defaultMessage": "!!!These wallets were found in your Daedalus state directory.<pPlease select the wallets you want to import.</p>",
+        "defaultMessage": "!!!These wallets were found in your Daedalus state directory.<p>Please select the wallets you want to import.</p>",
         "description": "These wallets were found in your Daedalus state directory. Please select the wallets you want to import.",
         "end": {
           "column": 3,

@@ -23,7 +23,7 @@ storiesOf('Wallets|Add Wallet', module)
       <WalletAdd
         onCreate={() => {}}
         onRestore={() => {}}
-        onImportFile={() => {}}
+        onImport={() => {}}
         isMainnet={boolean('isMainnet', true)}
         isTestnet={boolean('isTestnet', false)}
         isProduction
