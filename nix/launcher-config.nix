@@ -66,6 +66,7 @@ let
       itn_rewards_v1 = "- Rewards v1";
       staging = "Staging";
       testnet = "Testnet";
+      ff = "Friends and Family";
     };
     unsupported = "Unsupported";
     networkSupported = __hasAttr network supportedNetworks;

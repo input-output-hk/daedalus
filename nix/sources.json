@@ -78,10 +78,10 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "iohk-nix",
-        "rev": "b323e85cb2372e661362f8fdea6eda8002a1527f",
-        "sha256": "081pj2b9ib47la3yfxkn4in42kd3v32lhqkcqrpjcnn1qpp876q2",
+        "rev": "d2cf1f0a452e14a38706ae4655483d679bbddf3a",
+        "sha256": "1ja29zv6mfc40mfgvqfsvm9llavv734illc55410y4nabdfyiyw7",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/iohk-nix/archive/b323e85cb2372e661362f8fdea6eda8002a1527f.tar.gz",
+        "url": "https://github.com/input-output-hk/iohk-nix/archive/d2cf1f0a452e14a38706ae4655483d679bbddf3a.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "js-chain-libs": {
