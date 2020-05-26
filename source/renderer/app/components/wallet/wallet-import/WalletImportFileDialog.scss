@@ -1,25 +1,23 @@
 @import '../../../themes/mixins/link';
 @import '../../../themes/mixins/error-message';
 
-.overlay {
-  background-color: var(--theme-wallet-import-background-color);
-  bottom: 0;
-  display: flex;
-  justify-content: center;
-  left: 0;
-  position: fixed;
-  right: 0;
-  top: 0;
-  z-index: 9999;
-}
-
 .dialog {
-  margin: auto 0;
   max-width: 980px;
-  overflow: hidden;
 
   &:focus {
     outline: none;
+  }
+
+  > div {
+    &::-webkit-scrollbar-thumb {
+      background-color: var(--theme-splash-network-scrollbar-thumb-background);
+
+      &:hover {
+        background-color: var(
+          --theme-splash-network-scrollbar-thumb-background-hover
+        );
+      }
+    }
   }
 }
 
@@ -28,6 +26,11 @@
   flex-direction: column;
   height: 100%;
   padding: 50px 80px;
+
+  @media (max-height: 600px) {
+    height: initial;
+    padding: 0;
+  }
 
   .closeButton {
     cursor: pointer;
@@ -74,6 +77,10 @@
     top: 0;
     width: 100%;
     z-index: 2000;
+
+    @media (max-height: 600px) {
+      position: initial;
+    }
 
     .title {
       color: var(--theme-wallet-import-title-color);
@@ -236,6 +243,7 @@
       color: var(--theme-splash-network-learn-more-color);
       margin-top: 20px;
       opacity: 0.8;
+
       &:after {
         background-color: var(--theme-splash-network-learn-more-color);
       }
