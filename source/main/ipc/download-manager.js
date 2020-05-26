@@ -1,6 +1,5 @@
 // @flow
 import { DownloaderHelper } from 'node-downloader-helper';
-import { throttle } from 'lodash';
 import fs from 'fs';
 import type { BrowserWindow } from 'electron';
 import { MainIpcChannel } from './lib/MainIpcChannel';
@@ -17,6 +16,7 @@ import {
 import {
   DEFAULT_DIRECTORY_NAME,
   TEMPORARY_FILENAME,
+  DOWNLOAD_INFO_DEFAULT,
   DOWNLOAD_PROGRESS_STATUSES as statusType,
 } from '../../common/config/download-manager';
 import { generateFileNameWithTimestamp } from '../../common/utils/files.js';

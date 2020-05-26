@@ -76,7 +76,20 @@ export type DownloadProgressStatuses =
 
 // https://www.npmjs.com/package/node-downloader-helper
 
-export type DownloadInfo =
+export type DownloadInfo = {
+  downloaded: number, // downloaded size in bytes
+  downloadedSize: number, // the total size downloaded
+  fileName: string,
+  incomplete: boolean, // true/false if the download endend but still incomplete
+  isResumed: boolean, // if the download is a resume,
+  onDiskSize: number, // total size of file on the disk
+  progress: number, // progress porcentage 0-100%
+  speed: number, // download speed in bytes
+  remainingSize: string, // total size that needs to be downloaded in bytes
+  totalSize: number, // total file size got from the server
+};
+
+export type DownloadInfoAll =
   | DownloadInfoInit
   | DownloadInfoProgress
   | DownloadInfoEnd

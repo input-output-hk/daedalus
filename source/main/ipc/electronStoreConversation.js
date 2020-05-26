@@ -40,6 +40,7 @@ const reset = async () => {
 };
 
 export const requestElectronStore = (request: ElectronStoreMessage) => {
+  console.log('requestElectronStore request ->', request);
   const { type, key, data, id } = request;
   const keyWithId = id ? `${key}.${id}` : key;
   const networkKey = getNetworkKey(keyWithId);

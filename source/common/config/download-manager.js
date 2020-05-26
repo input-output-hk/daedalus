@@ -35,3 +35,16 @@ export const TEMPORARY_FILENAME = {
   prefix: 'Unconfirmed',
   extension: 'crdownload',
 };
+
+export const DOWNLOAD_INFO_DEFAULT = {
+  downloaded: 0,
+  downloadedSize: 0,
+  fileName: '',
+  incomplete: false,
+  isResumed: false,
+  onDiskSize: 0,
+  progress: 0,
+  remainingSize: 0,
+  speed: 0,
+  totalSize: 0,
+};
