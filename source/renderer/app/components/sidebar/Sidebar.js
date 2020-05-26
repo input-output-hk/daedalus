@@ -32,20 +32,20 @@ type Props = {
 };
 
 export type SidebarMenus = {
-  wallets: ?{
-    items?: Array<SidebarWalletType>,
-    activeWalletId?: ?string,
-    actions?: {
+  wallets: {
+    items: Array<SidebarWalletType>,
+    activeWalletId: ?string,
+    actions: {
       onWalletItemClick: Function,
     },
-  },
-  hardwareWallets: ?{
-    items?: Array<SidebarHardwareWalletType>,
-    activeWalletId?: ?string,
-    actions?: {
+  } | null,
+  hardwareWallets: {
+    items: Array<SidebarHardwareWalletType>,
+    activeWalletId: ?string,
+    actions: {
       onHardwareWalletItemClick: Function,
     },
-  },
+  } | null,
 };
 
 @observer
