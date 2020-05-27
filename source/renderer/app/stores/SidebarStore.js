@@ -77,7 +77,7 @@ export default class SidebarStore extends Store {
       this.CATEGORIES = sidebarConfig.CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN;
     } else if (isFlight) {
       this.CATEGORIES = sidebarConfig.CATEGORIES;
-    } else if (environment.isDevelopment) {
+    } else if (environment.isDev) {
       this.CATEGORIES = sidebarConfig.CATEGORIES_WITH_HARDWARE_WALLETS;
     } else {
       this.CATEGORIES = sidebarConfig.CATEGORIES_WITHOUT_NETWORK_INFO;
