@@ -118,5 +118,6 @@ export type TransactionPaymentData = {
 };
 
 export type TransactionFee = {
-  amount: TransactionFeeAmount,
+  estimated_min: TransactionFeeAmount,
+  estimated_max: TransactionFeeAmount,
 };

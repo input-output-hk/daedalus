@@ -72,9 +72,11 @@ export default class Sidebar extends Component<Props> {
       name: CATEGORIES_BY_NAME.WALLETS.name,
     }).route;
 
-    const hardwareWalletsCategory = find(categories, {
-      name: CATEGORIES_BY_NAME.HARDWARE_WALLETS.name,
-    }).route;
+    const hardwareWalletsCategory =
+      menus.hardwareWallets &&
+      find(categories, {
+        name: CATEGORIES_BY_NAME.HARDWARE_WALLETS.name,
+      }).route;
 
     if (
       menus &&
@@ -94,7 +96,6 @@ export default class Sidebar extends Component<Props> {
           isActiveWallet={id =>
             id === (menus.wallets ? menus.wallets.activeWalletId : null)
           }
-          isHardwareWalletsMenu={!!menus.wallets.items}
           isAddWalletButtonActive={pathname === '/wallets/add'}
           isIncentivizedTestnet={isIncentivizedTestnet}
           visible={isShowingSubMenus}
@@ -123,7 +124,7 @@ export default class Sidebar extends Component<Props> {
               ? menus.hardwareWallets.activeWalletId
               : null)
           }
-          isHardwareWalletsMenu={!!menus.hardwareWallets.items}
+          isHardwareWalletsMenu
           isAddWalletButtonActive={pathname === '/hardware-wallets/add'}
           isIncentivizedTestnet={isIncentivizedTestnet}
           visible={isShowingSubMenus}
