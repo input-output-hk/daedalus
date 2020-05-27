@@ -26,7 +26,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
     const activeWalletId = activeWallet ? activeWallet.id : null;
     const { currentTheme } = profile;
     const {
-      environment: { network, isDevelopment },
+      environment: { network, isDev },
     } = app;
 
     const appWallets =
@@ -57,7 +57,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
 
     const sidebarMenus = {
       wallets: appWallets,
-      hardwareWallets: isDevelopment ? hardwareWallets : null,
+      hardwareWallets: isDev ? hardwareWallets : null,
     };
 
     const sidebarComponent = (
