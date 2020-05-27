@@ -103,9 +103,6 @@ export default class ConnectHardwareWallet extends Component<Props> {
       isExportingPublicKeyAborted ? styles.isErrorExport : null,
     ]);
 
-
-    console.debug('>>> IS DEVICE CONNECTED: ', isDeviceConnected);
-
     return (
       <div className={styles.component}>
         <div className={styles.hardwareWalletContainer}>

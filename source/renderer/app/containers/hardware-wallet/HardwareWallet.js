@@ -17,7 +17,8 @@ export default class HardwareWallet extends Component<Props> {
 
   isActiveScreen = (page: string, item: NavDropdownProps) => {
     const { app, wallets } = this.props.stores;
-    if (!wallets.active) return false;
+    const { activeHardwareWallet } = wallets;
+    if (!activeHardwareWallet) return false;
     const { options } = item;
     if (options && options.length) {
       options.forEach(option => {
@@ -29,8 +30,8 @@ export default class HardwareWallet extends Component<Props> {
         }
       });
     }
-    const screenRoute = buildRoute(ROUTES.WALLETS.PAGE, {
-      id: wallets.active.id,
+    const screenRoute = buildRoute(ROUTES.HARDWARE_WALLETS.PAGE, {
+      id: activeHardwareWallet.id,
       page,
     });
     return app.currentRoute === screenRoute;
@@ -38,10 +39,11 @@ export default class HardwareWallet extends Component<Props> {
 
   handleWalletNavItemClick = (page: string) => {
     const { wallets } = this.props.stores;
-    if (!wallets.active) return;
+    const { activeHardwareWallet } = wallets;
+    if (!activeHardwareWallet) return;
     this.props.actions.router.goToRoute.trigger({
       route: ROUTES.HARDWARE_WALLETS.PAGE,
-      params: { id: wallets.active.id, page },
+      params: { id: activeHardwareWallet.id, page },
     });
   };
 
@@ -52,10 +54,7 @@ export default class HardwareWallet extends Component<Props> {
 
     // const { connectedDevices } = stores.hardwareWallets;
     // console.debug('>>> connectedDevices: ', connectedDevices);
-    const { allHardwareWallets } = wallets
-    let { active: activeHardwareWallet } = wallets;
-
-    console.debug('>>> allHardwareWallets: ', allHardwareWallets);
+    let { activeHardwareWallet } = wallets;
 
     const {
       isDeviceConnected,
@@ -64,6 +63,7 @@ export default class HardwareWallet extends Component<Props> {
       isExportingPublicKeyAborted,
       isTrezor,
     } = wallets;
+
     const {
       hasNotification,
     } = walletSettings.getWalletsRecoveryPhraseVerificationData(
@@ -71,11 +71,14 @@ export default class HardwareWallet extends Component<Props> {
         ? activeHardwareWallet.id
         : activeHardwareWallet
     );
+
     if (!activeHardwareWallet) {
       activeHardwareWallet = {
         isWalletConnected: false,
       };
     }
+
+    console.debug('>>> PAGE: ', activeHardwareWallet);
     const { isWalletConnected } = activeHardwareWallet;
 
     // @todo - remove after adding logic from store

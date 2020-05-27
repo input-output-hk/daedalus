@@ -731,6 +731,10 @@ export default class WalletsStore extends Store {
     return !!this.active;
   }
 
+  @computed get hasActiveHardwareWallet(): boolean {
+    return !!this.activeHardwareWallet;
+  }
+
   @computed get hasLoadedWallets(): boolean {
     return this.walletsRequest.wasExecuted;
   }
@@ -780,6 +784,10 @@ export default class WalletsStore extends Store {
     return this.all.length > 0;
   }
 
+  @computed get hasAnyHardwareWalletLoaded(): boolean {
+    return this.allHardwareWallets.length > 0;
+  }
+
   @computed get activeWalletRoute(): ?string {
     if (!this.active) return null;
     return this.getWalletRoute(this.active.id);
@@ -817,6 +825,11 @@ export default class WalletsStore extends Store {
     }
   }
 
+  @computed get availableHardwareWalletDevices(): Request {
+    console.debug('>>> COMPUTED <<<');
+    return this.getHardwareWalletRequest.result;
+  }
+
   getWalletById = (id: string): ?Wallet => this.all.find(w => w.id === id);
 
   getWalletByName = (name: string): ?Wallet =>
@@ -839,6 +852,9 @@ export default class WalletsStore extends Store {
 
   goToHardwareWalletRoute(walletId: string) {
     const route = this.getHardwareWalletRoute(walletId);
+
+    console.debug('>>>> getHardwareWalletRoute: ', route);
+
     this.actions.router.goToRoute.trigger({ route });
   }
 
@@ -849,6 +865,12 @@ export default class WalletsStore extends Store {
     const isRootRoute = matchRoute(ROUTES.WALLETS.ROOT, currentRoute);
     const isAddWalletRoute = matchRoute(ROUTES.WALLETS.ADD, currentRoute);
     return isRootRoute || isAddWalletRoute;
+  }
+
+  @computed get _canRedirectToHardwareWallet(): boolean {
+    const { currentRoute } = this.stores.app;
+    const isAddWalletRoute = matchRoute(ROUTES.HARDWARE_WALLETS.ROOT, currentRoute);
+    return isAddWalletRoute;
   }
 
   _patchWalletRequestWithNewWallet = async (wallet: Wallet) => {
@@ -878,33 +900,94 @@ export default class WalletsStore extends Store {
   _updateActiveWalletOnRouteChanges = () => {
     const { currentRoute } = this.stores.app;
     const hasAnyWalletLoaded = this.hasAnyLoaded;
+    const hasAnyHardwareWalletLoaded = this.hasAnyHardwareWalletLoaded;
     const isWalletAddPage = matchRoute(ROUTES.WALLETS.ADD, currentRoute);
+    const isHardwareWalletAddPage = matchRoute(ROUTES.HARDWARE_WALLETS.ROOT, currentRoute);
+
+    console.debug('>>> ROUTES::_updateActiveWalletOnRouteChanges: ', {
+      currentRoute,
+      hasAnyWalletLoaded,
+      isWalletAddPage,
+      isHardwareWalletAddPage,
+      isHardwareWalletRoute: this.isHardwareWalletRoute,
+      isWalletRoute: this.isWalletRoute,
+      hasAnyHardwareWalletLoaded,
+      ROUTES,
+    });
+
     runInAction('WalletsStore::_updateActiveWalletOnRouteChanges', () => {
-      // There are not wallets loaded (yet) -> unset active and return
-      if (isWalletAddPage || !hasAnyWalletLoaded)
+      // There are not Wallets loaded (yet) -> unset active and return
+      if (this.isWalletRoute && (isWalletAddPage || !hasAnyWalletLoaded)) {
+        console.debug('>>> ROUTES:: unset active wallet');
         return this._unsetActiveWallet();
-      const match = matchRoute(
+      }
+
+      // There are not Hardware Wallets loaded (yet) -> unset active HW and return
+      if (this.isHardwareWalletRoute && (isHardwareWalletAddPage || !hasAnyHardwareWalletLoaded)) {
+        console.debug('>>> ROUTES:: unset active HW wallet');
+        return this._unsetActiveHardwareWallet();
+      }
+
+      if (this.isHardwareWalletRoute) {
+        console.debug('>>> ROUTES:: is HW route: ', `${ROUTES.HARDWARE_WALLETS.ROOT}/:id(*page)`);
+        const match = matchRoute(
+          `${ROUTES.HARDWARE_WALLETS.ROOT}/:id(*page)`,
+          currentRoute
+        );
+
+        if (match) {
+          // We have a route for a specific wallet -> let's try to find it
+          const walletForCurrentRoute = this.allHardwareWallets
+          .find(w => w.id === match.id);
+          if (walletForCurrentRoute) {
+            // The wallet exists, we are done
+            this._setActiveHardwareWallet({ walletId: walletForCurrentRoute.id });
+          } else if (hasAnyHardwareWalletLoaded) {
+            // There is no wallet with given id -> pick first wallet
+            this._setActiveHardwareWallet({ walletId: this.allHardwareWallets[0].id });
+            if (this.activeHardwareWallet) this.goToHardwareWalletRoute(this.activeHardwareWallet.id);
+          }
+        } else if (this._canRedirectToHardwareWallet) {
+          // The route does not specify any wallet -> pick first wallet
+          if (!this.hasActiveHardwareWallet && hasAnyHardwareWalletLoaded) {
+            console.debug('>>> ROUTES::HAS WALLETS ', this.allHardwareWallets[0].id)
+            this._setActiveHardwareWallet({ walletId: this.allHardwareWallets[0].id });
+          }
+          if (this.activeHardwareWallet) {
+            console.debug('>>> ROUTES:: have active wallet - GO TO ROUTE')
+            this.goToHardwareWalletRoute(this.activeHardwareWallet.id);
+          }
+        }
+      } else {
+        console.debug('>>> ROUTES:: is REGULAR route: ', `${ROUTES.WALLETS.ROOT}/:id(*page)`);
+        const match = matchRoute(
         `${ROUTES.WALLETS.ROOT}/:id(*page)`,
-        currentRoute
-      );
-      if (match) {
-        // We have a route for a specific wallet -> let's try to find it
-        const walletForCurrentRoute = this.all.find(w => w.id === match.id);
-        if (walletForCurrentRoute) {
-          // The wallet exists, we are done
-          this._setActiveWallet({ walletId: walletForCurrentRoute.id });
-        } else if (hasAnyWalletLoaded) {
-          // There is no wallet with given id -> pick first wallet
-          this._setActiveWallet({ walletId: this.all[0].id });
-          if (this.active) this.goToWalletRoute(this.active.id);
-        }
-      } else if (this._canRedirectToWallet) {
-        // The route does not specify any wallet -> pick first wallet
-        if (!this.hasActiveWallet && hasAnyWalletLoaded) {
-          this._setActiveWallet({ walletId: this.all[0].id });
-        }
-        if (this.active) {
-          this.goToWalletRoute(this.active.id);
+          currentRoute
+        );
+
+        console.debug('>>> ROUTES::match', {match, _canRedirectToWallet: this._canRedirectToWallet});
+
+        if (match) {
+          // We have a route for a specific wallet -> let's try to find it
+          const walletForCurrentRoute = this.all.find(w => w.id === match.id);
+          if (walletForCurrentRoute) {
+            // The wallet exists, we are done
+            this._setActiveWallet({ walletId: walletForCurrentRoute.id });
+          } else if (hasAnyWalletLoaded) {
+            // There is no wallet with given id -> pick first wallet
+            this._setActiveWallet({ walletId: this.all[0].id });
+            if (this.active) this.goToWalletRoute(this.active.id);
+          }
+        } else if (this._canRedirectToWallet) {
+          // The route does not specify any wallet -> pick first wallet
+          if (!this.hasActiveWallet && hasAnyWalletLoaded) {
+            console.debug('>>> ROUTES::HAS WALLETS ', this.all[0].id)
+            this._setActiveWallet({ walletId: this.all[0].id });
+          }
+          if (this.active) {
+            console.debug('>>> ROUTES:: have active wallet - GO TO ROUTE')
+            this.goToWalletRoute(this.active.id);
+          }
         }
       }
     });
@@ -944,6 +1027,8 @@ export default class WalletsStore extends Store {
         )
         .map((wallet: Wallet) => wallet.id);
       await this.actions.walletsLocal.refreshWalletsLocalData.trigger();
+      const aa await this.getHardwareWalletRequest.execute();
+      console.debug('>>>>> DONE <<<<: ', aa);
       runInAction('refresh active wallet', () => {
         if (this.active) {
           this._setActiveWallet({ walletId: this.active.id });
@@ -1027,10 +1112,44 @@ export default class WalletsStore extends Store {
     }
   };
 
+  @action _setActiveHardwareWallet = ({ walletId }: { walletId: string }) => {
+    if (this.allHardwareWallets.length > 0) {
+      const activeWalletId = this.activeHardwareWallet ? this.activeHardwareWallet.id : null;
+      const newActiveWallet = this.allHardwareWallets.find(wallet => wallet.id === walletId);
+      if (
+        (!this.activeHardwareWallet || !this.activeHardwareWallet.isNotResponding) &&
+        newActiveWallet &&
+        newActiveWallet.isNotResponding
+      ) {
+        this.actions.router.goToRoute.trigger({
+          route: ROUTES.HARDWARE_WALLETS.PAGE,
+          params: { id: newActiveWallet.id, page: 'summary' },
+        });
+      }
+      const hasActiveWalletBeenChanged = activeWalletId !== walletId;
+      const hasActiveWalletBeenUpdated = !isEqual(this.active, newActiveWallet);
+      if (hasActiveWalletBeenChanged) {
+        // Active wallet has been replaced or removed
+        this.activeHardwareWallet = newActiveWallet || null;
+        if (this.activeHardwareWallet) {
+          this.activeHardwareWalletValue = formattedWalletAmount(this.activeHardwareWallet.amount);
+        }
+      } else if (hasActiveWalletBeenUpdated) {
+        // Active wallet has been updated
+        if (this.activeHardwareWallet && newActiveWallet) this.activeHardwareWallet.update(newActiveWallet);
+      }
+    }
+  };
+
   @action _unsetActiveWallet = () => {
     this.active = null;
     this.activeValue = null;
     this.stores.addresses.lastGeneratedAddress = null;
+  };
+
+  @action _unsetActiveHardwareWallet = () => {
+    this.activeHardwareWallet = null;
+    this.activeHardwareWalletValue = null;
   };
 
   @action _onRouteChange = (options: { route: string, params: ?Object }) => {

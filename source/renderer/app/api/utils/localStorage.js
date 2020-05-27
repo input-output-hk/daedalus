@@ -222,11 +222,18 @@ export default class LocalStorageApi {
   unsetWalletMigrationStatus = (): Promise<void> =>
     LocalStorageApi.unset(this.storageKeys.WALLET_MIGRATION_STATUS);
 
-  getHardwareWallet = (walletId: string): Promise<HardwareWallet> =>
+  getHardwareWallet2 = (walletId: string): Promise<HardwareWallet> =>
     LocalStorageApi.get(`${this.storageKeys.HARDWARE_WALLETS}.${walletId}`, {});
 
-  getAll = (): Promise<HardwareWallet> =>
-    LocalStorageApi.get(this.storageKeys.HARDWARE_WALLETS, null);
+  getHardwareWallet = (): Promise<HardwareWallet> => {
+    console.debug('>>>>> EXECUTE <<<<');
+    return LocalStorageApi.get(this.storageKeys.HARDWARE_WALLETS, null);
+  }
+
+  getAll = (): Promise<HardwareWallet> => {
+    console.debug('>>>>> EXECUTE <<<<');
+    return LocalStorageApi.get(this.storageKeys.HARDWARE_WALLETS, null);
+  }
 
   setHardwareWallet = async (params: {
     walletId: string,
@@ -234,7 +241,7 @@ export default class LocalStorageApi {
     extendedPublicKey: string,
   }): Promise<HardwareWallet> => {
     const { walletId, device, extendedPublicKey } = params;
-    const currentHardwareWalletData = await this.getHardwareWallet(walletId);
+    const currentHardwareWalletData = await this.getHardwareWallet2(walletId);
     console.debug('>>> currentHardwareWalletData: ', currentHardwareWalletData);
     const unmutableData = { id: walletId };
     const hardwareWalletData = Object.assign(

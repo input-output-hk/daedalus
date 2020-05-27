@@ -53,7 +53,8 @@ export default class SidebarStore extends Store {
 
   @computed.struct get hardwareWallets(): Array<SidebarHardwareWalletType> {
     const { networkStatus, wallets, walletSettings } = this.stores;
-    return wallets.all.map(wallet => {
+    return wallets.allHardwareWallets.map(wallet => {
+      console.debug('>>> I HAVE: ', wallet);
       const {
         hasNotification,
       } = walletSettings.getWalletsRecoveryPhraseVerificationData(wallet.id);
@@ -73,7 +74,9 @@ export default class SidebarStore extends Store {
 
   @action _configureCategories = () => {
     const { isIncentivizedTestnet, isFlight, environment } = global;
-    if (isIncentivizedTestnet) {
+    if (environment.isDev) {
+      this.CATEGORIES = sidebarConfig.CATEGORIES_WITH_HARDWARE_WALLETS;
+    } else if (isIncentivizedTestnet) {
       this.CATEGORIES = sidebarConfig.CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN;
     } else if (isFlight) {
       this.CATEGORIES = sidebarConfig.CATEGORIES;
@@ -106,6 +109,7 @@ export default class SidebarStore extends Store {
   };
 
   @action _onHardwareWalletSelected = ({ walletId }: { walletId: string }) => {
+    console.debug('>>> goToHardwareWalletRoute - CALL: ', walletId);
     this.stores.wallets.goToHardwareWalletRoute(walletId);
   };
 

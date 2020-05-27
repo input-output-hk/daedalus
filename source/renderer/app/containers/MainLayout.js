@@ -24,6 +24,12 @@ export default class MainLayout extends Component<InjectedContainerProps> {
     const { sidebar, profile, app, wallets: walletsStore } = stores;
     const activeWallet = walletsStore.active;
     const activeWalletId = activeWallet ? activeWallet.id : null;
+
+    const activeHardwareWallet = walletsStore.activeHardwareWallet;
+    const activeHardwareWalletId = activeHardwareWallet ? activeHardwareWallet.id : null;
+
+    console.debug('>>> activeHardwareWallet: ', activeHardwareWallet);
+
     const { currentTheme } = profile;
     const {
       environment: { network, isDev },
@@ -46,9 +52,10 @@ export default class MainLayout extends Component<InjectedContainerProps> {
       sidebar.hardwareWallets.length > 0
         ? {
             items: sidebar.hardwareWallets,
-            activeWalletId,
+            activeWalletId: activeHardwareWalletId,
             actions: {
               onHardwareWalletItemClick: (walletId: string) => {
+                console.debug('>>> ITEM CLICK: ', walletId);
                 actions.sidebar.hardwareWalletSelected.trigger({ walletId });
               },
             },
