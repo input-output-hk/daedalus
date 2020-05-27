@@ -139,14 +139,21 @@
 
           &.isActiveFetchingDevice,
           &.isActiveExport {
-            border: 1px solid
-              var(--theme-hardware-wallet-step-border-active-color);
+            border: 1px solid var(--theme-hardware-wallet-step-border-active-color);
           }
 
           &.isErrorDevice,
           &.isErrorExport {
             border: 1px solid var(--rp-theme-color-error);
           }
+        }
+      }
+
+      svg > path {
+        stroke: var(--theme-hardware-wallet-title-color);
+
+        > g {
+          fill: var(--theme-hardware-wallet-title-color);
         }
       }
     }
