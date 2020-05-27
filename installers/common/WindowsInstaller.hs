@@ -20,9 +20,9 @@ import           Development.NSIS (Attrib (IconFile, IconIndex, RebootOK, Recurs
                                    constant, constantStr, createDirectory, createShortcut, delete,
                                    deleteRegKey, file, iff_, installDir, installDirRegKey,
                                    name, nsis, onPagePre, onError, outFile, page, readRegStr,
-                                   requestExecutionLevel, rmdir, section, setOutPath, str,
+                                   requestExecutionLevel, rmdir, section, setOutPath, str, Exp,
                                    strLength, uninstall, unsafeInject, unsafeInjectGlobal,
-                                   loadLanguage,
+                                   loadLanguage, addPluginDir, detailPrint, pop, plugin,
                                    writeRegDWORD, writeRegStr, (%/=), fileExists)
 import           Prelude ((!!))
 import qualified System.IO as IO
@@ -70,7 +70,7 @@ writeUninstallerNSIS (Version fullVersion) installerConfig = do
         -- name "$InstallDir $(UninstallName) $Version"
         --unsafeInjectGlobal $ unpack ( "Name \"" <> (installDirectory installerConfig) <> " $(UninstallName) " <> (fullVersion) <> "\"")
         outFile . str . encodeString $ tempDir </> "tempinstaller.exe"
-        unsafeInjectGlobal "!addplugindir \"nsis_plugins\\liteFirewall\\bin\""
+        addPluginDir "nsis_plugins"
         unsafeInjectGlobal "SetCompress off"
 
         _ <- section "" [Required] $ do
@@ -155,7 +155,7 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,inst
         unsafeInjectGlobal $ "VIAddVersionKey \"ProductVersion\" " <> fullVersion
         unsafeInjectGlobal "Unicode true"
         requestExecutionLevel Highest
-        unsafeInjectGlobal "!addplugindir \"nsis_plugins\\liteFirewall\\bin\""
+        addPluginDir "nsis_plugins"
 
         installDir "$PROGRAMFILES64\\$SpacedName"                   -- Default installation directory...
         installDirRegKey HKLM "Software/$SpacedName" "Install_Dir"  -- ...except when already installed.
@@ -185,6 +185,17 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,inst
         _ <- section "" [Required] $ do
                 setOutPath "$INSTDIR"        -- Where to install files in this section
                 unsafeInject "AllowSkipFiles off"
+
+                let
+                  lockFile :: String
+                  lockFile = "$APPDATA\\$InstallDir\\daedalus_lockfile"
+                  lockFileExp :: Exp String
+                  lockFileExp = fromString lockFile
+
+                plugin "flock" "flock" [ lockFileExp ]
+                result <- pop
+                detailPrint $ pure result
+
                 writeRegStr HKLM "Software/$SpacedName" "Install_Dir" "$INSTDIR" -- Used by launcher batch script
                 createDirectory "$APPDATA\\$InstallDir\\Secrets-1.0"
                 createDirectory "$APPDATA\\$InstallDir\\Logs"
@@ -194,6 +205,7 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,inst
                     unsafeInject $ unpack $ "Abort \" " <> installDirectory <> "$(AlreadyRunning)\""
                 iff_ (fileExists "$APPDATA\\$InstallDir\\Wallet-1.0\\open\\*.*") $
                     rmdir [] "$APPDATA\\$InstallDir\\Wallet-1.0\\open"
+                file [] "cardano-launcher.exe"
                 case oBackend of
                   Jormungandr _ -> do
                     file [] "jormungandr.exe"
@@ -210,7 +222,6 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,inst
                     when (clusterName == Selfnode) $ do
                       file [] "signing.key"
                       file [] "delegation.cert"
-                file [] "cardano-launcher.exe"
                 file [] "libffi-6.dll"
                 --file [] "cardano-x509-certificates.exe"
                 --file [] "log-config-prod.yaml"
