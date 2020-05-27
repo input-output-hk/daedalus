@@ -25,7 +25,7 @@ import {
 // import type {
 //   AllowedDownloadDirectories,
 //   DownloadInfo,
-//   DownloadProgressStatuses,
+//   DownloadProgressStatus,
 // } from '../../../common/types/download-manager.types';
 
 export default class AppUpdateStore extends Store {

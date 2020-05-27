@@ -7,6 +7,7 @@ import { downloadManagerLocalStorage } from '../utils/mainLocalStorage';
 import {
   getOriginalFilename,
   getPathFromDirectoryName,
+  formatUpdate,
 } from '../utils/downloadManager';
 import {
   // PERSISTED_DOWNLOAD_STATUS,
@@ -16,7 +17,6 @@ import {
 import {
   DEFAULT_DIRECTORY_NAME,
   TEMPORARY_FILENAME,
-  DOWNLOAD_INFO_DEFAULT,
   DOWNLOAD_PROGRESS_STATUSES as statusType,
 } from '../../common/config/download-manager';
 import { generateFileNameWithTimestamp } from '../../common/utils/files.js';
@@ -30,8 +30,10 @@ import type {
 } from '../../common/ipc/api';
 import type {
   DownloadInfo,
-  DownloadProgressStatuses,
+  DownloadProgressStatus,
   DownloadRequestOptions,
+  DownloadInfoFromEvent,
+  DownloadEventType,
 } from '../../common/types/download-manager.types';
 
 // const getPersistDownloadStatus = async ({
@@ -96,7 +98,7 @@ const downloadUpdateActions = async (
   originalFilename: string,
   options: DownloadRequestOptions,
   window: BrowserWindow
-) => {
+): Promise<Function> => {
   await downloadManagerLocalStorage.set(
     {
       fileUrl,
@@ -108,9 +110,14 @@ const downloadUpdateActions = async (
     originalFilename
   );
   return async (
-    status: DownloadProgressStatuses,
-    downloadInfo: DownloadInfo
+    status: DownloadEventType,
+    downloadInfoFromEvent: DownloadInfoFromEvent
   ) => {
+    const downloadInfo: DownloadInfo = formatUpdate(status)(
+      downloadInfoFromEvent
+    );
+    console.log('downloadInfo', downloadInfo);
+
     await downloadManagerLocalStorage.update(
       {
         status,
@@ -123,7 +130,7 @@ const downloadUpdateActions = async (
       return;
     }
     if (status === statusType.TIMEOUT || status === statusType.ERROR) {
-      throw new Error(downloadInfo.message || '');
+      throw new Error(downloadInfo.message ? downloadInfo.message : '');
     }
     if (status === statusType.FINISHED) {
       const temporaryPath = `${destinationPath}/${temporaryFilename}`;
@@ -167,12 +174,18 @@ const requestDownload = async (
   );
 
   const download = new DownloaderHelper(fileUrl, destinationPath, _options);
-  download.on('start', update.bind(this, statusType.START));
+  download.on('start', update.bind(this, statusType.STARTED));
   download.on('download', update.bind(this, statusType.DOWNLOAD));
   download.on('progress.throttled', update.bind(this, statusType.PROGRESS));
   download.on('end', update.bind(this, statusType.FINISHED));
   download.on('timeout', update.bind(this, statusType.TIMEOUT));
   download.on('error', update.bind(this, statusType.ERROR));
+  download.on('stateChanged', (a, b, c) => {
+    console.log('stateChanged ---');
+    console.log('a', a);
+    console.log('b', b);
+    console.log('c', c);
+  });
   download.start();
 };
 

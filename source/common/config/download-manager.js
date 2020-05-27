@@ -2,7 +2,8 @@
 // https://www.npmjs.com/package/node-downloader-helper
 import type {
   AllowedDownloadDirectories,
-  DownloadProgressStatuses,
+  DownloadProgressStatus,
+  DownloadEventType,
 } from '../types/download-manager.types';
 
 export const ALLOWED_DOWNLOAD_DIRECTORIES: {
@@ -14,7 +15,7 @@ export const ALLOWED_DOWNLOAD_DIRECTORIES: {
 
 // DH_STATES in 'node-downloader-helper/src';
 export const DOWNLOAD_PROGRESS_STATUSES: {
-  [key: string]: DownloadProgressStatuses,
+  [key: string]: DownloadProgressStatus,
 } = {
   IDLE: 'IDLE',
   SKIPPED: 'SKIPPED',
@@ -26,6 +27,17 @@ export const DOWNLOAD_PROGRESS_STATUSES: {
   STOPPED: 'STOPPED',
   FINISHED: 'FINISHED',
   FAILED: 'FAILED',
+};
+
+export const DOWNLOAD_EVENT_TYPES: {
+  [key: string]: DownloadEventType,
+} = {
+  START: 'start',
+  DOWNLOAD: 'download',
+  PROGRESS: 'progress',
+  END: 'end',
+  TIMEOUT: 'timeout',
+  ERROR: 'error',
 };
 
 // export const DEFAULT_DIRECTORY_NAME = ALLOWED_DOWNLOAD_DIRECTORIES.DOWNLOADS;
@@ -47,4 +59,5 @@ export const DOWNLOAD_INFO_DEFAULT = {
   remainingSize: 0,
   speed: 0,
   totalSize: 0,
+  message: null,
 };

@@ -1,12 +1,19 @@
 // @flow
-import { app } from 'electron';
-import { ALLOWED_DOWNLOAD_DIRECTORIES } from '../../common/config/download-manager';
-import type { DownloadRendererRequest } from '../../common/ipc/api';
-import type { AllowedDownloadDirectories } from '../../common/types/download-manager.types';
-import { extractFileNameFromPath } from '../../common/utils/files';
 
-// /Users/danilo/iohk/daedalus/source/common/utils/files.js
-// /Users/danilo/iohk/daedalus/source/main/utils/downloadManager.js
+import { app } from 'electron';
+import {
+  ALLOWED_DOWNLOAD_DIRECTORIES,
+  DOWNLOAD_INFO_DEFAULT,
+  DOWNLOAD_PROGRESS_STATUSES as statuses,
+} from '../../common/config/download-manager';
+import { extractFileNameFromPath } from '../../common/utils/files';
+import type { DownloadRendererRequest } from '../../common/ipc/api';
+import type {
+  AllowedDownloadDirectories,
+  DownloadInfo,
+  DownloadInfoFromEvent,
+  DownloadEventType,
+} from '../../common/types/download-manager.types';
 
 export const getPathFromDirectoryName = (
   directoryName: AllowedDownloadDirectories
@@ -26,3 +33,20 @@ export const getOriginalFilename = ({
   options && typeof options.fileName === 'string'
     ? options.fileName
     : extractFileNameFromPath(fileUrl);
+
+export const formatUpdate = (status: DownloadEventType) => {
+  switch (status) {
+    case statuses.STARTED:
+      return (update: DownloadInfoFromEvent): DownloadInfo =>
+        Object.assign({}, DOWNLOAD_INFO_DEFAULT, update);
+    case statuses.FINISHED:
+      return (update: DownloadInfoFromEvent): DownloadInfo =>
+        Object.assign({}, DOWNLOAD_INFO_DEFAULT, update);
+    case statuses.ERROR:
+      return (update: DownloadInfoFromEvent): DownloadInfo =>
+        Object.assign({}, DOWNLOAD_INFO_DEFAULT, update);
+    default:
+      return (update: DownloadInfoFromEvent): DownloadInfo =>
+        Object.assign({}, DOWNLOAD_INFO_DEFAULT, update);
+  }
+};
