@@ -96,7 +96,7 @@ export default class Sidebar extends Component<Props> {
           isActiveWallet={id =>
             id === (menus.wallets ? menus.wallets.activeWalletId : null)
           }
-          isAddWalletButtonActive={pathname === '/wallets/add'}
+          isAddWalletButtonActive={pathname === ROUTES.WALLETS.ADD}
           isIncentivizedTestnet={isIncentivizedTestnet}
           visible={isShowingSubMenus}
         />
@@ -125,7 +125,7 @@ export default class Sidebar extends Component<Props> {
               : null)
           }
           isHardwareWalletsMenu
-          isAddWalletButtonActive={pathname === '/hardware-wallets/add'}
+          isAddWalletButtonActive={pathname === ROUTES.HARDWARE_WALLETS.ADD}
           isIncentivizedTestnet={isIncentivizedTestnet}
           visible={isShowingSubMenus}
         />
