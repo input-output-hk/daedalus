@@ -1888,14 +1888,14 @@ const _createTransactionFromServerData = action(
 const _createTransactionFeeFromServerData = action(
   'AdaApi::_createTransactionFeeFromServerData',
   (data: TransactionFee) => {
-    const amount = get(data, ['amount', 'quantity'], 0);
+    const amount = get(data, ['estimated_max', 'quantity'], 0);
     return new BigNumber(amount).dividedBy(LOVELACES_PER_ADA);
   }
 );
 
 const _createMigrationFeeFromServerData = action(
-  'AdaApi::_createTransactionFeeFromServerData',
-  (data: TransactionFee) => {
+  'AdaApi::_createMigrationFeeFromServerData',
+  (data: TransferFundsCalculateFeeResponse) => {
     const amount = get(data, ['migration_cost', 'quantity'], 0);
     return new BigNumber(amount).dividedBy(LOVELACES_PER_ADA);
   }

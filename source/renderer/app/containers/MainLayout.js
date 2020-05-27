@@ -21,28 +21,44 @@ export default class MainLayout extends Component<InjectedContainerProps> {
 
   render() {
     const { actions, stores } = this.props;
-    const { sidebar, wallets, profile, app } = stores;
-    const activeWallet = wallets.active;
+    const { sidebar, profile, app, wallets: walletsStore } = stores;
+    const activeWallet = walletsStore.active;
     const activeWalletId = activeWallet ? activeWallet.id : null;
     const { currentTheme } = profile;
     const {
-      environment: { network },
+      environment: { network, isDev },
     } = app;
 
-    const sidebarMenus =
+    const appWallets =
       sidebar.wallets.length > 0
         ? {
-            wallets: {
-              items: sidebar.wallets,
-              activeWalletId,
-              actions: {
-                onWalletItemClick: (walletId: string) => {
-                  actions.sidebar.walletSelected.trigger({ walletId });
-                },
+            items: sidebar.wallets,
+            activeWalletId,
+            actions: {
+              onWalletItemClick: (walletId: string) => {
+                actions.sidebar.walletSelected.trigger({ walletId });
               },
             },
           }
         : null;
+
+    const hardwareWallets =
+      sidebar.hardwareWallets.length > 0
+        ? {
+            items: sidebar.hardwareWallets,
+            activeWalletId,
+            actions: {
+              onHardwareWalletItemClick: (walletId: string) => {
+                actions.sidebar.hardwareWalletSelected.trigger({ walletId });
+              },
+            },
+          }
+        : null;
+
+    const sidebarMenus = {
+      wallets: appWallets,
+      hardwareWallets: isDev ? hardwareWallets : null,
+    };
 
     const sidebarComponent = (
       <Sidebar

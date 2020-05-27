@@ -63,6 +63,7 @@ export type WalletProps = {
   pendingDelegations?: WalletPendingDelegations,
   discovery: Discovery,
   hasPassword: boolean,
+  walletNotConnected?: boolean,
 };
 
 export default class Wallet {
@@ -81,6 +82,7 @@ export default class Wallet {
   @observable pendingDelegations: WalletPendingDelegations;
   @observable discovery: Discovery;
   @observable hasPassword: boolean;
+  @observable walletNotConnected: boolean;
 
   constructor(data: WalletProps) {
     Object.assign(this, data);
@@ -105,6 +107,7 @@ export default class Wallet {
         'pendingDelegations',
         'discovery',
         'hasPassword',
+        'walletNotConnected',
       ])
     );
   }
