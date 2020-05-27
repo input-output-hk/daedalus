@@ -7,13 +7,16 @@ import electronLog from 'electron-log-daedalus';
 import { environment } from './environment';
 import {
   buildLabel,
+  cluster,
   legacyStateDir,
   nodeImplementation,
   isFlight,
 } from './config';
 
 const _process = process;
-const _isIncentivizedTestnet = nodeImplementation === 'jormungandr';
+const _isIncentivizedTestnet =
+  nodeImplementation === 'jormungandr' ||
+  (nodeImplementation === 'cardano' && cluster === 'ff');
 
 process.once('loaded', () => {
   Object.assign(global, {

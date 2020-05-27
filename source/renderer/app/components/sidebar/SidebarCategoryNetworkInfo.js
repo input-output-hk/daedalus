@@ -20,6 +20,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Testnet vx',
     description: 'Label for testnet with version.',
   },
+  ff: {
+    id: 'test.environment.ffLabel',
+    defaultMessage: '!!!Shelley Friends & Family Testnet',
+    description: 'Label for ff with version.',
+  },
   development: {
     id: 'test.environment.developmentLabel',
     defaultMessage: '!!!Development vx',

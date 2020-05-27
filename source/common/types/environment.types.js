@@ -47,6 +47,7 @@ export const MAINNET_FLIGHT = 'mainnet_flight';
 export const SELFNODE = 'selfnode';
 export const STAGING = 'staging';
 export const TESTNET = 'testnet';
+export const FF = 'ff';
 
 // jormungandr networks
 export const ITN_REWARDS_V1 = 'itn_rewards_v1';
@@ -69,6 +70,7 @@ export type Network =
   | 'selfnode'
   | 'staging'
   | 'testnet'
+  | 'ff'
   | 'development'
   | 'itn'
   | 'itn_rewards_v1'
@@ -85,6 +87,7 @@ export const networkPrettyNames = {
   selfnode: 'Selfnode',
   staging: 'Staging',
   testnet: 'Testnet',
+  ff: 'Shelley Friends & Family Testnet',
   development: 'Development',
   itn_rewards_v1: 'Incentivized Testnet v1 - Rewards',
 };
