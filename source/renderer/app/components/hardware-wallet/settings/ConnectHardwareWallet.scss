@@ -26,6 +26,14 @@
           object-fit: contain;
           width: 325.5px;
         }
+
+        svg > path {
+          stroke: var(--theme-hardware-wallet-title-color);
+
+          > g {
+            fill: var(--theme-hardware-wallet-title-color);
+          }
+        }
       }
 
       .hardwareWalletLedger {
@@ -42,6 +50,14 @@
           height: 75px;
           object-fit: contain;
           width: 250px;
+        }
+
+        svg > path {
+          stroke: var(--theme-hardware-wallet-title-color);
+
+          > g {
+            fill: var(--theme-hardware-wallet-title-color);
+          }
         }
       }
 
@@ -127,12 +143,14 @@
 
           .checkIcon {
             height: 16px;
+            margin-top: -5px;
             object-fit: contain;
             width: 16px;
           }
 
           .clearIcon {
             height: 14px;
+            margin-top: -4px;
             object-fit: contain;
             width: 14px;
           }
@@ -147,14 +165,6 @@
           &.isErrorExport {
             border: 1px solid var(--rp-theme-color-error);
           }
-        }
-      }
-
-      svg > path {
-        stroke: var(--theme-hardware-wallet-title-color);
-
-        > g {
-          fill: var(--theme-hardware-wallet-title-color);
         }
       }
     }
