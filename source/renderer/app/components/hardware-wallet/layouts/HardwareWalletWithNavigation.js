@@ -10,7 +10,7 @@ type Props = {
   children?: Node,
   activeItem: string,
   hasNotification?: boolean,
-  walletNotConnected: boolean,
+  isWalletConnected: boolean,
   isActiveScreen: Function,
   onOpenExternalLink: Function,
   onWalletNavItemClick: Function,
@@ -29,7 +29,7 @@ export default class HardwareWalletWithNavigation extends Component<Props> {
       children,
       activeItem,
       hasNotification,
-      walletNotConnected,
+      isWalletConnected,
       isActiveScreen,
       onWalletNavItemClick,
       onOpenExternalLink,
@@ -43,7 +43,7 @@ export default class HardwareWalletWithNavigation extends Component<Props> {
 
     return (
       <div className={styles.component}>
-        {walletNotConnected ? (
+        {!isWalletConnected ? (
           <ConnectHardwareWallet
             onOpenExternalLink={onOpenExternalLink}
             isLedger={isLedger}

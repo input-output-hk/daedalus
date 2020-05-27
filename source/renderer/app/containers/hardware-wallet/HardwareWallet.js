@@ -4,9 +4,9 @@ import { observer, inject } from 'mobx-react';
 import MainLayout from '../MainLayout';
 import { buildRoute } from '../../utils/routing';
 import { ROUTES } from '../../routes-config';
+import HardwareWalletWithNavigation from '../../components/hardware-wallet/layouts/HardwareWalletWithNavigation';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 import type { NavDropdownProps } from '../../components/navigation/Navigation';
-import HardwareWalletWithNavigation from '../../components/hardware-wallet/layouts/HardwareWalletWithNavigation';
 
 type Props = InjectedContainerProps;
 
@@ -49,7 +49,13 @@ export default class HardwareWallet extends Component<Props> {
     const { actions, stores } = this.props;
     const { app, wallets, walletSettings } = stores;
     const { restartNode } = actions.networkStatus;
+
+    // const { connectedDevices } = stores.hardwareWallets;
+    // console.debug('>>> connectedDevices: ', connectedDevices);
+    const { allHardwareWallets } = wallets
     let { active: activeHardwareWallet } = wallets;
+
+    console.debug('>>> allHardwareWallets: ', allHardwareWallets);
 
     const {
       isDeviceConnected,
@@ -67,10 +73,10 @@ export default class HardwareWallet extends Component<Props> {
     );
     if (!activeHardwareWallet) {
       activeHardwareWallet = {
-        walletNotConnected: true,
+        isWalletConnected: false,
       };
     }
-    const { walletNotConnected } = activeHardwareWallet;
+    const { isWalletConnected } = activeHardwareWallet;
 
     // @todo - remove after adding logic from store
     const isLedger = true;
@@ -80,7 +86,7 @@ export default class HardwareWallet extends Component<Props> {
         <HardwareWalletWithNavigation
           activeItem={app.currentPage}
           hasNotification={hasNotification}
-          walletNotConnected={walletNotConnected}
+          isWalletConnected={isWalletConnected}
           isDeviceConnected={isDeviceConnected}
           fetchingDevice={fetchingDevice}
           exportingExtendedPublicKey={exportingExtendedPublicKey}

@@ -438,6 +438,7 @@ export default class WalletsStore extends Store {
     }
   };
 
+  // @TODO - here
   @action _createHardwareWallet = async (params: { walletName: string, extendedPublicKey: string, device: Object }) => {
     console.debug('>>> PARAMS: ', params);
     const accountPublicKey = params.extendedPublicKey.publicKeyHex+params.extendedPublicKey.chainCodeHex;
@@ -457,6 +458,8 @@ export default class WalletsStore extends Store {
       const LCData2 = await this.getHardwareWalletRequest.execute(wallet.id);
       console.debug('>>> LC data 1: ', LCData1);
       console.debug('>>> LC data 2: ', LCData2);
+      this.goToHardwareWalletRoute(wallet.id);
+      this.refreshWalletsData();
     } catch (error) {
       throw error;
     }
