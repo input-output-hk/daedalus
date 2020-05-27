@@ -238,7 +238,8 @@ export const DARK_CARDANO_THEME_OUTPUT = {
   },
   hardwareWallet: {
     '--theme-hardware-wallet-step-background-color': '#1e1f31',
-    '--theme-hardware-wallet-step-border-active-color': 'rgba(255, 255, 255, 0.5)',
+    '--theme-hardware-wallet-step-border-active-color':
+      'rgba(255, 255, 255, 0.5)',
     '--theme-hardware-wallet-step-border-color': '#1e1f31',
     '--theme-hardware-wallet-step-color': '#ffffff',
     '--theme-hardware-wallet-title-color': '#ffffff',

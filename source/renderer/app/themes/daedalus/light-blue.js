@@ -251,7 +251,8 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
   },
   hardwareWallet: {
     '--theme-hardware-wallet-step-background-color': '#fafbfc',
-    '--theme-hardware-wallet-step-border-active-color': 'rgba(94, 96, 102, 0.5)',
+    '--theme-hardware-wallet-step-border-active-color':
+      'rgba(94, 96, 102, 0.5)',
     '--theme-hardware-wallet-step-border-color': '#c6cdd6',
     '--theme-hardware-wallet-step-color': '#5e6066',
     '--theme-hardware-wallet-title-color': '#5e6066',

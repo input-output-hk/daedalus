@@ -139,7 +139,8 @@
 
           &.isActiveFetchingDevice,
           &.isActiveExport {
-            border: 1px solid var(--theme-hardware-wallet-step-border-active-color);
+            border: 1px solid
+              var(--theme-hardware-wallet-step-border-active-color);
           }
 
           &.isErrorDevice,
