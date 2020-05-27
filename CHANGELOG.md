@@ -15,7 +15,7 @@ Changelog
 
 ### Chores
 
-- Updated `cardano-wallet` to revision `03183595` and updated transaction fee estimation Api endpoint implementation ([PR 2021](https://github.com/input-output-hk/daedalus/pull/2021))
+- Updated `cardano-wallet` to revision `03183595` and updated transaction fee estimation Api endpoint implementation ([PR 2021](https://github.com/input-output-hk/daedalus/pull/2021), [PR 2022](https://github.com/input-output-hk/daedalus/pull/2022))
 - Improved wallet import dialogs ([PR 2014](https://github.com/input-output-hk/daedalus/pull/2014))
 - Consolidated Japanese translations ([PR 2003](https://github.com/input-output-hk/daedalus/pull/2003))
 - Prevented import for more than maximum number of wallets ([PR 2012](https://github.com/input-output-hk/daedalus/pull/2012))
