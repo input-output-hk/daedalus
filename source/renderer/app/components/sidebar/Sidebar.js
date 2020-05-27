@@ -10,7 +10,10 @@ import SidebarWalletsMenu from './wallets/SidebarWalletsMenu';
 import InstructionsDialog from '../wallet/paper-wallet-certificate/InstructionsDialog';
 import { CATEGORIES_BY_NAME } from '../../config/sidebarConfig.js';
 import { ROUTES } from '../../routes-config';
-import type { SidebarWalletType } from '../../types/sidebarTypes';
+import type {
+  SidebarHardwareWalletType,
+  SidebarWalletType,
+} from '../../types/sidebarTypes';
 import type { networkType } from '../../types/networkTypes';
 import type { SidebarCategoryInfo } from '../../config/sidebarConfig';
 
@@ -28,12 +31,19 @@ type Props = {
   isIncentivizedTestnet: boolean,
 };
 
-export type SidebarMenus = ?{
-  wallets: {
+export type SidebarMenus = {
+  wallets: ?{
     items: Array<SidebarWalletType>,
     activeWalletId: ?string,
     actions: {
       onWalletItemClick: Function,
+    },
+  },
+  hardwareWallets: ?{
+    items: Array<SidebarHardwareWalletType>,
+    activeWalletId: ?string,
+    actions: {
+      onHardwareWalletItemClick: Function,
     },
   },
 };
@@ -62,14 +72,60 @@ export default class Sidebar extends Component<Props> {
       name: CATEGORIES_BY_NAME.WALLETS.name,
     }).route;
 
-    if (menus && activeSidebarCategory === walletsCategory) {
+    const hardwareWalletsCategory =
+      menus.hardwareWallets &&
+      find(categories, {
+        name: CATEGORIES_BY_NAME.HARDWARE_WALLETS.name,
+      }).route;
+
+    if (
+      menus &&
+      menus.wallets &&
+      menus.wallets.items &&
+      activeSidebarCategory === walletsCategory
+    ) {
       subMenu = (
         <SidebarWalletsMenu
-          wallets={menus.wallets.items}
+          wallets={menus.wallets ? menus.wallets.items : []}
           onAddWallet={onAddWallet}
-          onWalletItemClick={menus.wallets.actions.onWalletItemClick}
-          isActiveWallet={id => id === menus.wallets.activeWalletId}
+          onWalletItemClick={
+            menus.wallets && menus.wallets.actions
+              ? menus.wallets.actions.onWalletItemClick
+              : null
+          }
+          isActiveWallet={id =>
+            id === (menus.wallets ? menus.wallets.activeWalletId : null)
+          }
           isAddWalletButtonActive={pathname === '/wallets/add'}
+          isIncentivizedTestnet={isIncentivizedTestnet}
+          visible={isShowingSubMenus}
+        />
+      );
+    }
+
+    if (
+      menus &&
+      menus.hardwareWallets &&
+      menus.hardwareWallets.items &&
+      activeSidebarCategory === hardwareWalletsCategory
+    ) {
+      subMenu = (
+        <SidebarWalletsMenu
+          wallets={menus.hardwareWallets ? menus.hardwareWallets.items : []}
+          onAddWallet={onAddWallet}
+          onWalletItemClick={
+            menus.hardwareWallets && menus.hardwareWallets.actions
+              ? menus.hardwareWallets.actions.onHardwareWalletItemClick
+              : null
+          }
+          isActiveWallet={id =>
+            id ===
+            (menus.hardwareWallets
+              ? menus.hardwareWallets.activeWalletId
+              : null)
+          }
+          isHardwareWalletsMenu
+          isAddWalletButtonActive={pathname === '/hardware-wallets/add'}
           isIncentivizedTestnet={isIncentivizedTestnet}
           visible={isShowingSubMenus}
         />

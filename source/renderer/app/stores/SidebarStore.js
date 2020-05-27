@@ -3,7 +3,10 @@ import { action, computed, observable } from 'mobx';
 import Store from './lib/Store';
 import { sidebarConfig } from '../config/sidebarConfig';
 import { formattedWalletAmount } from '../utils/formatters';
-import type { SidebarWalletType } from '../types/sidebarTypes';
+import type {
+  SidebarHardwareWalletType,
+  SidebarWalletType,
+} from '../types/sidebarTypes';
 
 export default class SidebarStore extends Store {
   @observable CATEGORIES: Array<any> = sidebarConfig.CATEGORIES;
@@ -18,6 +21,9 @@ export default class SidebarStore extends Store {
       this._onActivateSidebarCategory
     );
     sidebarActions.walletSelected.listen(this._onWalletSelected);
+    sidebarActions.hardwareWalletSelected.listen(
+      this._onHardwareWalletSelected
+    );
     this.registerReactions([this._syncSidebarRouteWithRouter]);
     this._configureCategories();
   }
@@ -45,12 +51,34 @@ export default class SidebarStore extends Store {
     });
   }
 
+  @computed.struct get hardwareWallets(): Array<SidebarHardwareWalletType> {
+    const { networkStatus, wallets, walletSettings } = this.stores;
+    return wallets.all.map(wallet => {
+      const {
+        hasNotification,
+      } = walletSettings.getWalletsRecoveryPhraseVerificationData(wallet.id);
+      return {
+        id: wallet.id,
+        title: wallet.name,
+        info: formattedWalletAmount(wallet.amount, true, false),
+        isConnected: networkStatus.isConnected,
+        isRestoreActive: wallet.isRestoring,
+        restoreProgress: wallet.restorationProgress,
+        isNotResponding: wallet.isNotResponding,
+        isLegacy: wallet.isLegacy,
+        hasNotification,
+      };
+    });
+  }
+
   @action _configureCategories = () => {
-    const { isIncentivizedTestnet, isFlight } = global;
+    const { isIncentivizedTestnet, isFlight, environment } = global;
     if (isIncentivizedTestnet) {
       this.CATEGORIES = sidebarConfig.CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN;
     } else if (isFlight) {
       this.CATEGORIES = sidebarConfig.CATEGORIES;
+    } else if (environment.isDev) {
+      this.CATEGORIES = sidebarConfig.CATEGORIES_WITH_HARDWARE_WALLETS;
     } else {
       this.CATEGORIES = sidebarConfig.CATEGORIES_WITHOUT_NETWORK_INFO;
     }
@@ -75,6 +103,10 @@ export default class SidebarStore extends Store {
 
   @action _onWalletSelected = ({ walletId }: { walletId: string }) => {
     this.stores.wallets.goToWalletRoute(walletId);
+  };
+
+  @action _onHardwareWalletSelected = ({ walletId }: { walletId: string }) => {
+    this.stores.wallets.goToHardwareWalletRoute(walletId);
   };
 
   @action _setActivateSidebarCategory = (category: string) => {

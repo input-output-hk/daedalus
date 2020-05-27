@@ -1,0 +1,29 @@
+.component {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  overflow-y: overlay;
+}
+
+.navigation {
+  flex-shrink: 0;
+  height: 50px;
+  position: relative;
+}
+
+.page {
+  align-items: center;
+  display: flex;
+  height: calc(100% - 50px);
+  justify-content: center;
+  overflow: overlay;
+  position: relative;
+
+  > div {
+    width: 100%;
+  }
+}
+
+.settingsTabPage {
+  overflow: hidden;
+}

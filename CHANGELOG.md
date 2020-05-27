@@ -3,14 +3,20 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Implemented Hardware wallets connection screens ([PR 2016](https://github.com/input-output-hk/daedalus/pull/2016))
+
 ### Fixes
 
-- Eenabled the Recovery Phrase Verification feature of Shelley wallets on ITN ([PR 2008](https://github.com/input-output-hk/daedalus/pull/2008))
+- Enabled the Recovery Phrase Verification feature of Shelley wallets on ITN ([PR 2008](https://github.com/input-output-hk/daedalus/pull/2008))
 - Disabled button on forms when there is nothing to submit ([PR 1998](https://github.com/input-output-hk/daedalus/pull/1998), [PR 2010](https://github.com/input-output-hk/daedalus/pull/2010))
 - Fixed system locale detection ([PR 2009](https://github.com/input-output-hk/daedalus/pull/2009))
 
 ### Chores
 
+- Updated `cardano-wallet` to revision `03183595` and updated transaction fee estimation Api endpoint implementation ([PR 2021](https://github.com/input-output-hk/daedalus/pull/2021))
+- Improved wallet import dialogs ([PR 2014](https://github.com/input-output-hk/daedalus/pull/2014))
 - Consolidated Japanese translations ([PR 2003](https://github.com/input-output-hk/daedalus/pull/2003))
 - Prevented import for more than maximum number of wallets ([PR 2012](https://github.com/input-output-hk/daedalus/pull/2012))
 - Implemented automated tests for wallet migration and import features ([PR 2011](https://github.com/input-output-hk/daedalus/pull/2011))
@@ -92,7 +98,7 @@ Changelog
 - Refactored and improved automated tests setup ([PR 1912](https://github.com/input-output-hk/daedalus/pull/1912))
 - Updated README ([PR 1953](https://github.com/input-output-hk/daedalus/pull/1953))
 - Updated `cardano-wallet` to revision `7140ff08` which includes `cardano-node` 1.10.1 ([PR 1960](https://github.com/input-output-hk/daedalus/pull/1960))
-- Updated `cardano-wallet` to revision `745aaad67004855a84c51e400c6fa1d10aedb910` with fee estimation fix ([PR 1964](https://github.com/input-output-hk/daedalus/pull/1964))
+- Updated `cardano-wallet` to revision `745aaad6` with fee estimation fix ([PR 1964](https://github.com/input-output-hk/daedalus/pull/1964))
 
 ## 1.0.0-FC2
 
