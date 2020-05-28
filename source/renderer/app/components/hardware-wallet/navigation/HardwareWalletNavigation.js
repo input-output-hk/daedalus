@@ -66,7 +66,7 @@ type Props = {
 };
 
 @observer
-export default class WalletNavigation extends Component<Props> {
+export default class HardwareWalletNavigation extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };

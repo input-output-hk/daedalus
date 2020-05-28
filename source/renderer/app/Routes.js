@@ -22,6 +22,7 @@ import StakingRewardsPage from './containers/staking/StakingRewardsPage';
 import StakePoolsListPage from './containers/staking/StakePoolsListPage';
 import StakingCountdownPage from './containers/staking/StakingCountdownPage';
 import HardwareWallet from './containers/hardware-wallet/HardwareWallet';
+import HardwareWalletAddPage from './containers/hardware-wallet/HardwareWalletAddPage';
 import Wallet from './containers/wallet/Wallet';
 import WalletAddPage from './containers/wallet/WalletAddPage';
 import WalletSummaryPage from './containers/wallet/WalletSummaryPage';
@@ -55,6 +56,7 @@ export const Routes = (
       <Route path={ROUTES.WALLETS.SETTINGS} component={WalletSettingsPage} />
       <Route path={ROUTES.WALLETS.UTXO} component={WalletUtxoPage} />
     </Route>
+    <Route path={ROUTES.HARDWARE_WALLETS.ADD} component={HardwareWalletAddPage} />
     <Route path={ROUTES.HARDWARE_WALLETS.ROOT} component={HardwareWallet}>
       <Route
         path={ROUTES.HARDWARE_WALLETS.SUMMARY}

@@ -31,6 +31,7 @@ export const ROUTES = {
   },
   HARDWARE_WALLETS: {
     ROOT: '/hardware-wallets',
+    ADD: '/hardware-wallets/add',
     PAGE: '/hardware-wallets/:id/:page',
     SUMMARY: '/hardware-wallets/:id/summary',
     TRANSACTIONS: '/hardware-wallets/:id/transactions',

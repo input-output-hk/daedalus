@@ -870,8 +870,9 @@ export default class WalletsStore extends Store {
 
   @computed get _canRedirectToHardwareWallet(): boolean {
     const { currentRoute } = this.stores.app;
-    const isAddWalletRoute = matchRoute(ROUTES.HARDWARE_WALLETS.ROOT, currentRoute);
-    return isAddWalletRoute;
+    const isRootRoute = matchRoute(ROUTES.HARDWARE_WALLETS.ROOT, currentRoute);
+    const isAddWalletRoute = matchRoute(ROUTES.HARDWARE_WALLETS.ADD, currentRoute);
+    return isRootRoute || isAddWalletRoute;
   }
 
   _patchWalletRequestWithNewWallet = async (wallet: Wallet) => {
@@ -903,7 +904,7 @@ export default class WalletsStore extends Store {
     const hasAnyWalletLoaded = this.hasAnyLoaded;
     const hasAnyHardwareWalletLoaded = this.hasAnyHardwareWalletLoaded;
     const isWalletAddPage = matchRoute(ROUTES.WALLETS.ADD, currentRoute);
-    const isHardwareWalletAddPage = matchRoute(ROUTES.HARDWARE_WALLETS.ROOT, currentRoute);
+    const isHardwareWalletAddPage = matchRoute(ROUTES.HARDWARE_WALLETS.ADD, currentRoute);
 
     console.debug('>>> ROUTES::_updateActiveWalletOnRouteChanges: ', {
       currentRoute,
@@ -930,13 +931,17 @@ export default class WalletsStore extends Store {
       }
 
       if (this.isHardwareWalletRoute) {
-        console.debug('>>> ROUTES:: is HW route: ', `${ROUTES.HARDWARE_WALLETS.ROOT}/:id(*page)`);
         const match = matchRoute(
           `${ROUTES.HARDWARE_WALLETS.ROOT}/:id(*page)`,
           currentRoute
         );
+        console.debug('>>> ROUTES:: is HW route <<<: ', {
+          _canRedirectToHardwareWallet: this._canRedirectToHardwareWallet,
+          match,
+        });
 
         if (match) {
+          console.debug('>>> MATCH <<<')
           // We have a route for a specific wallet -> let's try to find it
           const walletForCurrentRoute = this.allHardwareWallets
           .find(w => w.id === match.id);
@@ -960,7 +965,7 @@ export default class WalletsStore extends Store {
           }
         }
       } else {
-        console.debug('>>> ROUTES:: is REGULAR route: ', `${ROUTES.WALLETS.ROOT}/:id(*page)`);
+        console.debug('>>> ROUTES:: NOT is REGULAR route: ', `${ROUTES.WALLETS.ROOT}/:id(*page)`);
         const match = matchRoute(
         `${ROUTES.WALLETS.ROOT}/:id(*page)`,
           currentRoute
