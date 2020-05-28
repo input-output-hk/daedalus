@@ -146,6 +146,10 @@
             margin-top: -5px;
             object-fit: contain;
             width: 16px;
+
+            svg > g > path {
+              stroke-width: 5px;
+            }
           }
 
           .clearIcon {
