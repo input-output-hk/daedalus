@@ -22,7 +22,7 @@ export default class TopBarContainer extends Component<Props> {
     const { actions, stores } = this.props;
     const { sidebar, app, networkStatus, wallets, newsFeed } = stores;
     const { isSynced, syncPercentage } = networkStatus;
-    const { isWalletRoute, hasAnyWallets, hasRewardsWallets, isHardwareWalletRoute, activeHardwareWallet } = wallets;
+    const { isWalletRoute, hasAnyWallets, hasRewardsWallets, isHardwareWalletRoute, activeHardwareWallet, hasAnyHardwareWalletLoaded } = wallets;
     const active = isHardwareWalletRoute ? activeHardwareWallet : wallets.active;
 
     const {
@@ -42,7 +42,7 @@ export default class TopBarContainer extends Component<Props> {
         currentRoute
       );
     }
-    const showSubMenuToggle = isWalletRoute && hasAnyWallets;
+    const showSubMenuToggle = (isWalletRoute && hasAnyWallets) || (isHardwareWalletRoute && hasAnyHardwareWalletLoaded);
     const activeWallet = walletRoutesMatch && active != null ? active : null;
     const leftIconSVG = sidebar.isShowingSubMenus
       ? menuIconOpened
