@@ -20,12 +20,12 @@ import type {
 } from '../../../common/ipc/api';
 import {
   ALLOWED_DOWNLOAD_DIRECTORIES,
-  DOWNLOAD_PROGRESS_STATUSES,
+  DOWNLOAD_STATES,
 } from '../../../common/config/download-manager';
 // import type {
 //   AllowedDownloadDirectories,
 //   DownloadInfo,
-//   DownloadProgressStatus,
+//   DownloadState,
 // } from '../../../common/types/download-manager.types';
 
 export default class AppUpdateStore extends Store {
@@ -98,7 +98,7 @@ export default class AppUpdateStore extends Store {
         console.log('progressStatusType', progressStatusType);
         console.log('downloadInfo', downloadInfo);
         runInAction('updates the download information', () => {
-          if (progressStatusType === DOWNLOAD_PROGRESS_STATUSES.END) {
+          if (progressStatusType === DOWNLOAD_STATES.END) {
             this.isDownloadingUpdate = false;
           } else {
             this.isDownloadingUpdate = true;

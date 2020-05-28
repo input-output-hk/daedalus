@@ -2,7 +2,7 @@
 // https://www.npmjs.com/package/node-downloader-helper
 import type {
   AllowedDownloadDirectories,
-  DownloadProgressStatus,
+  DownloadState,
   DownloadEventType,
 } from '../types/download-manager.types';
 
@@ -14,8 +14,8 @@ export const ALLOWED_DOWNLOAD_DIRECTORIES: {
 };
 
 // DH_STATES in 'node-downloader-helper/src';
-export const DOWNLOAD_PROGRESS_STATUSES: {
-  [key: string]: DownloadProgressStatus,
+export const DOWNLOAD_STATES: {
+  [key: string]: DownloadState,
 } = {
   IDLE: 'IDLE',
   SKIPPED: 'SKIPPED',

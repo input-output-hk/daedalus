@@ -17,7 +17,7 @@ import {
 import {
   DEFAULT_DIRECTORY_NAME,
   TEMPORARY_FILENAME,
-  DOWNLOAD_PROGRESS_STATUSES as statusType,
+  DOWNLOAD_STATES as statusType,
 } from '../../common/config/download-manager';
 import { generateFileNameWithTimestamp } from '../../common/utils/files.js';
 import type {
@@ -30,9 +30,9 @@ import type {
 } from '../../common/ipc/api';
 import type {
   DownloadInfo,
-  DownloadProgressStatus,
+  DownloadState,
   DownloadRequestOptions,
-  DownloadInfoFromEvent,
+  DownloadEvent,
   DownloadEventType,
 } from '../../common/types/download-manager.types';
 
@@ -101,23 +101,27 @@ const downloadUpdateActions = async (
 ): Promise<Function> => {
   await downloadManagerLocalStorage.set(
     {
-      fileUrl,
-      originalFilename,
-      temporaryFilename,
-      options,
-      status: statusType.IDLE,
+      downloadInfo: {
+        fileUrl,
+        originalFilename,
+        temporaryFilename,
+        options,
+        status: statusType.IDLE,
+      },
     },
     originalFilename
   );
-  return async (
-    status: DownloadEventType,
-    downloadInfoFromEvent: DownloadInfoFromEvent
-  ) => {
+  return async (status: DownloadEventType, downloadEvent: DownloadEvent) => {
+    const {
+      downloadInfo: localDownloadInfo,
+    } = await downloadManagerLocalStorage.get(originalFilename);
     const downloadInfo: DownloadInfo = formatUpdate(status)(
-      downloadInfoFromEvent
+      downloadEvent,
+      localDownloadInfo
     );
+    console.log('localDownloadInfo', localDownloadInfo);
     console.log('downloadInfo', downloadInfo);
-
+    console.log('originalFilename', originalFilename);
     await downloadManagerLocalStorage.update(
       {
         status,
@@ -130,7 +134,7 @@ const downloadUpdateActions = async (
       return;
     }
     if (status === statusType.TIMEOUT || status === statusType.ERROR) {
-      throw new Error(downloadInfo.message ? downloadInfo.message : '');
+      throw new Error(downloadInfo.message);
     }
     if (status === statusType.FINISHED) {
       const temporaryPath = `${destinationPath}/${temporaryFilename}`;
@@ -187,6 +191,9 @@ const requestDownload = async (
     console.log('c', c);
   });
   download.start();
+
+  console.log('download', download);
+  window.dl = download;
 };
 
 // const getPersistDownloadStatusChannel: // IpcChannel<Incoming, Outgoing>

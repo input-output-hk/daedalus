@@ -55,14 +55,8 @@ export type DownloadRequestOptions = {
   httpsRequestOptions?: Object, // Override the https request options, ex: to add SSL Certs
 };
 
-export type DownloadResponse = {
-  progressStatusType: DownloadEventType,
-  downloadInfo: DownloadInfo,
-};
-
 // https://www.npmjs.com/package/node-downloader-helper
-
-export type DownloadProgressStatus =
+export type DownloadState =
   | 'IDLE'
   | 'SKIPPED'
   | 'STARTED'
@@ -82,71 +76,69 @@ export type DownloadEventType =
   | 'timeout'
   | 'error';
 
+export type DownloadResponse = {
+  eventType: DownloadEventType,
+  data: DownloadData,
+  progress: DownloadProgress,
+};
+
+export type DownloadData = {
+  fileUrl: string,
+  originalFilename: string,
+  temporaryFilename: string,
+  destinationDirectoryName: AllowedDownloadDirectories,
+  destinationPath: string,
+};
+
+export type DownloadProgress = {
+  state: DownloadState,
+  downloaded: number,
+  remainingSize: number,
+  serverFileSize: number,
+  diskFileSize: number,
+  downloadSize: number,
+  progress: number,
+  speed: number,
+  incomplete: boolean,
+  isResumed: boolean,
+  error?: string,
+};
+
 // https://www.npmjs.com/package/node-downloader-helper
 
-export type DownloadInfo = {
-  downloaded: number, // downloaded size in bytes
-  downloadedSize: number, // the total size downloaded
-  fileName: string, // assigned name
-  filePath: string, // download path
-  incomplete: boolean, // true/false if the download endend but still incomplete
-  isResumed: boolean, // if the download is a resume,
-  onDiskSize: number, // total size of file on the disk
-  progress: number, // progress porcentage 0-100%
-  speed: number, // download speed in bytes
-  remainingSize: number, // total size that needs to be downloaded in bytes
-  totalSize: number, // total file size got from the server
-  message: ?string,
-};
-
-export type DownloadInfoFromEvent = {
-  downloaded?: number, // downloaded size in bytes
-  downloadedSize?: number, // the total size downloaded
-  fileName?: string, // assigned name
-  filePath?: string, // download path
-  incomplete?: boolean, // true/false if the download endend but still incomplete
-  isResumed?: boolean, // if the download is a resume,
-  onDiskSize?: number, // total size of file on the disk
-  progress?: number, // progress porcentage 0-100%
-  speed?: number, // download speed in bytes
-  remainingSize?: number, // total size that needs to be downloaded in bytes
-  totalSize?: number, // total file size got from the server
-  message?: ?string,
-};
-
-// export type DownloadInfoFromEvent =
+// export type DownloadEvent =
 //   | DownloadInfoInit
 //   | DownloadInfoProgress
 //   | DownloadInfoEnd
 //   | DownloadInfoError;
 
-// export type DownloadInfoInit = {
-//   totalSize: number, // total file size got from the server
-//   fileName: string, // assigned name
-//   filePath: string, // download path
-//   isResumed: boolean, // if the download is a resume,
-//   downloadedSize: number, // the downloaded amount (only if is resumed otherwise always 0)
-// };
+export type DownloadInfoInit = {
+  totalSize: number, // total file size got from the server
+  fileName: string, // assigned name
+  filePath: string, // download path
+  isResumed: boolean, // if the download is a resume,
+  downloadedSize: number, // the downloaded amount (only if is resumed otherwise always 0)
+};
 
-// export type DownloadInfoProgress = {
-//   name: string, // file name
-//   total: string, // total size that needs to be downloaded in bytes
-//   downloaded: number, // downloaded size in bytes
-//   progress: number, // progress porcentage 0-100%
-//   speed: number, // download speed in bytes
-// };
+export type DownloadInfoProgress = {
+  name: string, // file name
+  total: string, // total size that needs to be downloaded in bytes
+  downloaded: number, // downloaded size in bytes
+  progress: number, // progress porcentage 0-100%
+  speed: number, // download speed in bytes
+};
 
-// export type DownloadInfoEnd = {
-//   fileName: string,
-//   filePath: string,
-//   totalSize: number, // total file size got from the server
-//   incomplete: boolean, // true/false if the download endend but still incomplete
-//   onDiskSize: number, // total size of file on the disk
-//   downloadedSize: number, // the total size downloaded
-// };
+export type DownloadInfoEnd = {
+  fileName: string,
+  filePath: string,
+  totalSize: number, // total file size got from the server
+  incomplete: boolean, // true/false if the download endend but still incomplete
+  onDiskSize: number, // total size of file on the disk
+  downloadedSize: number, // the total size downloaded
+};
 
-// export type DownloadInfoError = {
-//   message: string, // Error message
-//   status: string, // Http status response if available
-//   body: string, // Http body response if available
-// };
+export type DownloadInfoError = {
+  message: string, // Error message
+  status: string, // Http status response if available
+  body: string, // Http body response if available
+};
