@@ -8,6 +8,7 @@ import {
   getOriginalFilename,
   getPathFromDirectoryName,
   formatUpdate,
+  downloadUpdateActions,
 } from '../utils/downloadManager';
 import {
   // PERSISTED_DOWNLOAD_STATUS,
@@ -90,66 +91,6 @@ import type {
 //     pendingUpdateFileName,
 //   };
 // };
-
-const downloadUpdateActions = async (
-  fileUrl: string,
-  destinationPath: string,
-  temporaryFilename: string,
-  originalFilename: string,
-  options: DownloadRequestOptions,
-  window: BrowserWindow
-): Promise<Function> => {
-  await downloadManagerLocalStorage.set(
-    {
-      downloadInfo: {
-        fileUrl,
-        originalFilename,
-        temporaryFilename,
-        options,
-        status: statusType.IDLE,
-      },
-    },
-    originalFilename
-  );
-  return async (status: DownloadEventType, downloadEvent: DownloadEvent) => {
-    const {
-      downloadInfo: localDownloadInfo,
-    } = await downloadManagerLocalStorage.get(originalFilename);
-    const downloadInfo: DownloadInfo = formatUpdate(status)(
-      downloadEvent,
-      localDownloadInfo
-    );
-    console.log('localDownloadInfo', localDownloadInfo);
-    console.log('downloadInfo', downloadInfo);
-    console.log('originalFilename', originalFilename);
-    await downloadManagerLocalStorage.update(
-      {
-        status,
-        downloadInfo,
-      },
-      originalFilename
-    );
-    if (status === statusType.STARTED) {
-      // STARTED event doesn't have `downloadInfo`` response
-      return;
-    }
-    if (status === statusType.TIMEOUT || status === statusType.ERROR) {
-      throw new Error(downloadInfo.message);
-    }
-    if (status === statusType.FINISHED) {
-      const temporaryPath = `${destinationPath}/${temporaryFilename}`;
-      const newPath = `${destinationPath}/${originalFilename}`;
-      fs.renameSync(temporaryPath, newPath);
-    }
-    requestDownloadChannel.send(
-      {
-        downloadInfo,
-        progressStatusType: status,
-      },
-      window.webContents
-    );
-  };
-};
 
 const requestDownload = async (
   downloadRequestPayload: DownloadRendererRequest,

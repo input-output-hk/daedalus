@@ -6,14 +6,11 @@ import type { BrowserWindow } from 'electron';
 import {
   ALLOWED_DOWNLOAD_DIRECTORIES,
   DOWNLOAD_INFO_DEFAULT,
-  DEFAULT_DIRECTORY_NAME,
-  TEMPORARY_FILENAME,
+  // DEFAULT_DIRECTORY_NAME,
+  // TEMPORARY_FILENAME,
   DOWNLOAD_STATES as state,
 } from '../../common/config/download-manager';
-import {
-  extractFileNameFromPath,
-  generateFileNameWithTimestamp,
-} from '../../common/utils/files';
+import { extractFileNameFromPath } from '../../common/utils/files';
 import { downloadManagerLocalStorage } from './mainLocalStorage';
 import type {
   // PersistedDownloadStatusRendererRequest,
@@ -21,7 +18,7 @@ import type {
   // DownloadStatusRendererRequest,
   // DownloadStatusMainResponse,
   DownloadRendererRequest,
-  DownloadMainResponse,
+  // DownloadMainResponse,
 } from '../../common/ipc/api';
 import type {
   AllowedDownloadDirectories,
