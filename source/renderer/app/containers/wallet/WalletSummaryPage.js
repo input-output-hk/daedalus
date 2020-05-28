@@ -59,7 +59,6 @@ export default class WalletSummaryPage extends Component<Props> {
       pendingTransactionsCount,
     } = transactions;
     const wallet = isHardwareWalletRoute ? activeHardwareWallet : active;
-    console.debug('>>> ACTIVE: ', wallet, isHardwareWalletRoute);
     const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
     // Guard against potential null values
     if (!wallet)

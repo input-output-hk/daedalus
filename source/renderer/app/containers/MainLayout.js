@@ -22,9 +22,9 @@ export default class MainLayout extends Component<InjectedContainerProps> {
   render() {
     const { actions, stores } = this.props;
     const { sidebar, profile, app, wallets: walletsStore } = stores;
+    const { isHardwareWalletRoute } = walletsStore;
     const activeWallet = walletsStore.active;
     const activeWalletId = activeWallet ? activeWallet.id : null;
-
     const activeHardwareWallet = walletsStore.activeHardwareWallet;
     const activeHardwareWalletId = activeHardwareWallet ? activeHardwareWallet.id : null;
 
@@ -67,6 +67,8 @@ export default class MainLayout extends Component<InjectedContainerProps> {
       hardwareWallets: isDev ? hardwareWallets : null,
     };
 
+    const addWalletRoute = isHardwareWalletRoute ? ROUTES.HARDWARE_WALLETS.ADD : ROUTES.WALLETS.ADD
+
     const sidebarComponent = (
       <Sidebar
         menus={sidebarMenus}
@@ -79,7 +81,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
         }}
         onOpenDialog={dialog => actions.dialogs.open.trigger({ dialog })}
         onAddWallet={() =>
-          actions.router.goToRoute.trigger({ route: ROUTES.WALLETS.ADD })
+          actions.router.goToRoute.trigger({ route: addWalletRoute })
         }
         onSubmitSupportRequest={() =>
           actions.router.goToRoute.trigger({ route: ROUTES.SETTINGS.SUPPORT })

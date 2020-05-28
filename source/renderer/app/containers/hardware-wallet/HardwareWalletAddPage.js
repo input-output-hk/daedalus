@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import ConnectHardwareWallet from '../../components/hardware-wallet/settings/ConnectHardwareWallet';
+import Layout from '../MainLayout';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 
 @inject('stores')
@@ -24,15 +25,17 @@ export default class HardwareWalletAddPage extends Component<InjectedContainerPr
     const isTrezor = false;
 
     return (
-      <ConnectHardwareWallet
-        onOpenExternalLink={(url: string) => app.openExternalLink(url)}
-        isLedger={isLedger}
-        isTrezor={isTrezor}
-        isDeviceConnected={isDeviceConnected}
-        fetchingDevice={fetchingDevice}
-        exportingExtendedPublicKey={exportingExtendedPublicKey}
-        isExportingPublicKeyAborted={isExportingPublicKeyAborted}
-      />
+      <Layout>
+        <ConnectHardwareWallet
+          onOpenExternalLink={(url: string) => app.openExternalLink(url)}
+          isLedger={isLedger}
+          isTrezor={isTrezor}
+          isDeviceConnected={isDeviceConnected}
+          fetchingDevice={fetchingDevice}
+          exportingExtendedPublicKey={exportingExtendedPublicKey}
+          isExportingPublicKeyAborted={isExportingPublicKeyAborted}
+        />
+      </Layout>
     );
   }
 }
