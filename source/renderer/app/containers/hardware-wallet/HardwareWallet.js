@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
+import { get } from 'lodash';
 import MainLayout from '../MainLayout';
 import { buildRoute } from '../../utils/routing';
 import { ROUTES } from '../../routes-config';
@@ -52,9 +53,8 @@ export default class HardwareWallet extends Component<Props> {
     const { app, wallets, walletSettings } = stores;
     const { restartNode } = actions.networkStatus;
 
-    // const { connectedDevices } = stores.hardwareWallets;
-    // console.debug('>>> connectedDevices: ', connectedDevices);
-    let { activeHardwareWallet } = wallets;
+    const { activeHardwareWallet } = wallets;
+    const activeHardwareWalletId = get(activeHardwareWallet, 'id', null);
 
     const {
       isDeviceConnected,
@@ -62,24 +62,13 @@ export default class HardwareWallet extends Component<Props> {
       exportingExtendedPublicKey,
       isExportingPublicKeyAborted,
       isTrezor,
+      availableHardwareWalletDevices,
     } = wallets;
 
     const {
       hasNotification,
-    } = walletSettings.getWalletsRecoveryPhraseVerificationData(
-      activeHardwareWallet && activeHardwareWallet.id
-        ? activeHardwareWallet.id
-        : activeHardwareWallet
-    );
-
-    if (!activeHardwareWallet) {
-      activeHardwareWallet = {
-        isWalletConnected: false,
-      };
-    }
-
-    console.debug('>>> PAGE: ', activeHardwareWallet);
-    const { isWalletConnected } = activeHardwareWallet;
+    } = walletSettings.getWalletsRecoveryPhraseVerificationData(activeHardwareWalletId);
+    const isWalletDisconnected = get(availableHardwareWalletDevices, [activeHardwareWalletId, 'disconnected'], true);
 
     // @todo - remove after adding logic from store
     const isLedger = true;
@@ -89,7 +78,7 @@ export default class HardwareWallet extends Component<Props> {
         <HardwareWalletWithNavigation
           activeItem={app.currentPage}
           hasNotification={hasNotification}
-          isWalletConnected={isWalletConnected}
+          isWalletConnected={!isWalletDisconnected}
           isDeviceConnected={isDeviceConnected}
           fetchingDevice={fetchingDevice}
           exportingExtendedPublicKey={exportingExtendedPublicKey}

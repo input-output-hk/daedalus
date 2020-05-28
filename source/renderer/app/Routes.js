@@ -60,6 +60,14 @@ export const Routes = (
         path={ROUTES.HARDWARE_WALLETS.SUMMARY}
         component={WalletSummaryPage}
       />
+      <Route
+        path={ROUTES.HARDWARE_WALLETS.TRANSACTIONS}
+        component={WalletTransactionsPage}
+      />
+      <Route path={ROUTES.HARDWARE_WALLETS.SEND} component={WalletSendPage} />
+      <Route path={ROUTES.HARDWARE_WALLETS.RECEIVE} component={WalletReceivePage} />
+      <Route path={ROUTES.HARDWARE_WALLETS.SETTINGS} component={WalletSettingsPage} />
+      <Route path={ROUTES.HARDWARE_WALLETS.UTXO} component={WalletUtxoPage} />
     </Route>
     <Route path={ROUTES.SETTINGS.ROOT} component={Settings}>
       <IndexRedirect to={ROUTES.SETTINGS.GENERAL} />

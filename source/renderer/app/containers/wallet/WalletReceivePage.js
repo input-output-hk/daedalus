@@ -28,7 +28,10 @@ export default class WalletReceivePage extends Component<Props, State> {
   };
 
   get activeWallet() {
-    return this.props.stores.wallets.active;
+    const { wallets } = this.props.stores;
+    const { active, activeHardwareWallet, isHardwareWalletRoute } = wallets;
+    const activeWallet = isHardwareWalletRoute ? activeHardwareWallet : active;
+    return activeWallet;
   }
 
   componentWillUnmount() {

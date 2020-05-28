@@ -55,9 +55,6 @@ export default class SidebarWalletsMenu extends Component<Props> {
       isHardwareWalletsMenu,
     } = this.props;
 
-    console.debug('>>>> SIDEBAR: ', this.props);
-
-
     const addWalletButtonStyles = classNames([
       styles.addWalletButton,
       isAddWalletButtonActive ? styles.active : null,
@@ -86,6 +83,7 @@ export default class SidebarWalletsMenu extends Component<Props> {
                 isLegacy={wallet.isLegacy}
                 isHardwareWalletsMenu={isHardwareWalletsMenu}
                 hasNotification={wallet.hasNotification}
+                isConnected={wallet.isConnected}
               />
             ))}
           </Scrollbars>

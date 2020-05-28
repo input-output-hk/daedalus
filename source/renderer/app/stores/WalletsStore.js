@@ -458,6 +458,7 @@ export default class WalletsStore extends Store {
       const LCData2 = await this.getHardwareWalletRequest.execute(wallet.id);
       console.debug('>>> LC data 1: ', LCData1);
       console.debug('>>> LC data 2: ', LCData2);
+
       this.goToHardwareWalletRoute(wallet.id);
       this.refreshWalletsData();
     } catch (error) {
@@ -1014,6 +1015,7 @@ export default class WalletsStore extends Store {
     this.api.ada.isValidCertificateMnemonic(mnemonic);
 
   @action refreshWalletsData = async () => {
+    console.debug('>>>> REFRESH WALLETS DATA <<<<');
     // Prevent wallets data refresh if polling is blocked
     if (this._pollingBlocked) return;
 
@@ -1027,7 +1029,7 @@ export default class WalletsStore extends Store {
         )
         .map((wallet: Wallet) => wallet.id);
       await this.actions.walletsLocal.refreshWalletsLocalData.trigger();
-      const aa await this.getHardwareWalletRequest.execute();
+      const aa = await this.getHardwareWalletRequest.execute();
       console.debug('>>>>> DONE <<<<: ', aa);
       runInAction('refresh active wallet', () => {
         if (this.active) {
@@ -1113,6 +1115,11 @@ export default class WalletsStore extends Store {
   };
 
   @action _setActiveHardwareWallet = ({ walletId }: { walletId: string }) => {
+    console.debug('>>> _setActiveHardwareWallet: ', {
+      walletId,
+      activeHardwareWallet: this.activeHardwareWallet,
+      allHardwareWallets: this.allHardwareWallets,
+    });
     if (this.allHardwareWallets.length > 0) {
       const activeWalletId = this.activeHardwareWallet ? this.activeHardwareWallet.id : null;
       const newActiveWallet = this.allHardwareWallets.find(wallet => wallet.id === walletId);

@@ -41,6 +41,7 @@ export default class SidebarWalletMenuItem extends Component<Props> {
       isNotResponding,
       hasNotification,
       isHardwareWalletsMenu,
+      isConnected,
     } = this.props;
 
     const componentStyles = classNames([
@@ -57,7 +58,7 @@ export default class SidebarWalletMenuItem extends Component<Props> {
         <div className={styles.meta}>
           <div className={styles.topContainer}>
             <div className={styles.title}>{title}</div>
-            {isHardwareWalletsMenu && (
+            {isHardwareWalletsMenu && !isConnected && (
               <SVGInline
                 svg={disconnectedIcon}
                 className={styles.disconnectedIcon}

@@ -1,5 +1,6 @@
 // @flow
 import { action, computed, observable } from 'mobx';
+import { get } from 'lodash';
 import Store from './lib/Store';
 import { sidebarConfig } from '../config/sidebarConfig';
 import { formattedWalletAmount } from '../utils/formatters';
@@ -53,8 +54,10 @@ export default class SidebarStore extends Store {
 
   @computed.struct get hardwareWallets(): Array<SidebarHardwareWalletType> {
     const { networkStatus, wallets, walletSettings } = this.stores;
+    const { availableHardwareWalletDevices } = wallets;
+
     return wallets.allHardwareWallets.map(wallet => {
-      console.debug('>>> I HAVE: ', wallet);
+      const isWalletDisconnected = get(availableHardwareWalletDevices, [wallet.id, 'disconnected'], true);
       const {
         hasNotification,
       } = walletSettings.getWalletsRecoveryPhraseVerificationData(wallet.id);
@@ -67,6 +70,7 @@ export default class SidebarStore extends Store {
         restoreProgress: wallet.restorationProgress,
         isNotResponding: wallet.isNotResponding,
         isLegacy: wallet.isLegacy,
+        isConnected: !isWalletDisconnected,
         hasNotification,
       };
     });
