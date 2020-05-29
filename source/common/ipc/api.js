@@ -28,10 +28,8 @@ import type {
 } from '../types/logging.types';
 import type { Locale } from '../types/locales.types';
 import type {
-  PersistedDownloadStatusRequest,
-  PersistedDownloadStatusResponse,
-  DownloadStatusRequest,
-  DownloadStatusResponse,
+  DownloadLocalDataRequest,
+  DownloadLocalDataResponse,
   DownloadRequest,
   DownloadResponse,
 } from '../types/download-manager.types';
@@ -294,16 +292,9 @@ export type ElectronStoreMessage = StoreMessage;
 /**
  * Channel for initiating the download manager
  */
-export const PERSISTED_DOWNLOAD_STATUS = 'PERSISTED_DOWNLOAD_STATUS';
-export type PersistedDownloadStatusRendererRequest = PersistedDownloadStatusRequest;
-export type PersistedDownloadStatusMainResponse = PersistedDownloadStatusResponse;
-
-/**
- * Channel for receiving the download manager status
- */
-export const DOWNLOAD_STATUS = 'DOWNLOAD_STATUS';
-export type DownloadStatusRendererRequest = DownloadStatusRequest;
-export type DownloadStatusMainResponse = DownloadStatusResponse;
+export const GET_DOWNLOAD_LOCAL_DATA = 'GET_DOWNLOAD_LOCAL_DATA';
+export type DownloadLocalDataRendererRequest = DownloadLocalDataRequest;
+export type DownloadLocalDataMainResponse = DownloadLocalDataResponse;
 
 /**
  * Channel for receiving the download manager status

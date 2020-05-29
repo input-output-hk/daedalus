@@ -6,11 +6,10 @@ import {
   getOriginalFilename,
   getPathFromDirectoryName,
   getEventActions,
-  getIdFromFilename,
+  getIdFromFileName,
 } from '../utils/downloadManager';
 import {
-  // PERSISTED_DOWNLOAD_STATUS,
-  // DOWNLOAD_STATUS,
+  GET_DOWNLOAD_LOCAL_DATA,
   REQUEST_DOWNLOAD,
 } from '../../common/ipc/api';
 import {
@@ -18,69 +17,13 @@ import {
   TEMPORARY_FILENAME,
 } from '../../common/config/download-manager';
 import { generateFileNameWithTimestamp } from '../../common/utils/files.js';
+import { downloadManagerLocalStorage as localStorage } from '../utils/mainLocalStorage';
 import type {
-  // PersistedDownloadStatusRendererRequest,
-  // PersistedDownloadStatusMainResponse,
-  // DownloadStatusRendererRequest,
-  // DownloadStatusMainResponse,
+  DownloadLocalDataRendererRequest,
+  DownloadLocalDataMainResponse,
   DownloadRendererRequest,
   DownloadMainResponse,
 } from '../../common/ipc/api';
-
-// const getPersistDownloadStatus = async ({
-//   file,
-// }: PersistedDownloadStatusRendererRequest): Promise<PersistedDownloadStatusMainResponse> => {
-//   const {
-//     hasPendingDownload,
-//     pendingUpdateFileName,
-//   } = await checkhasPendingDownload({ file });
-
-//   let downloadProgress;
-
-//   if (hasPendingDownload) {
-//     downloadProgress = await checkdownloadProgress();
-//   }
-
-//   downloadProgress = await checkdownloadProgress();
-//   return {
-//     hasPendingDownload,
-//     pendingUpdateFileName,
-//     downloadProgress,
-//   };
-// };
-
-// const getDownloadStatus = async (): Promise<DownloadStatusMainResponse> => {
-//   const isDownloading = await checkisDownloading();
-//   const downloadProgress = await checkdownloadProgress();
-//   return {
-//     isDownloading,
-//     downloadProgress,
-//   };
-// };
-
-// const checkisDownloading = async (): Promise<boolean> => false;
-
-// const checkdownloadProgress = async (): Promise<number> => 0;
-
-// const checkhasPendingDownload = async ({
-//   file,
-// }: PersistedDownloadStatusRendererRequest): Promise<PersistedDownloadStatusMainResponse> => {
-//   const {
-//     // fileNamePattern,
-//     // fileExtentionPattern,
-//     filePath,
-//     // fileName,
-//     // fileExtention,
-//   } = file;
-//   const pathName = filePath || DEFAULT_DIRECTORY_NAME;
-//   // const path = getPathFromDirectoryName(pathName);
-//   const hasPendingDownload = false;
-//   const pendingUpdateFileName = '';
-//   return {
-//     hasPendingDownload,destinationDirectoryName
-//     pendingUpdateFileName,
-//   };
-// };
 
 const requestDownload = async (
   downloadRequestPayload: DownloadRendererRequest,
@@ -98,7 +41,7 @@ const requestDownload = async (
     ..._options,
     fileName: temporaryFilename,
   };
-  const downloadId = getIdFromFilename(originalFilename);
+  const downloadId = getIdFromFileName(originalFilename);
   const data = {
     downloadId,
     fileUrl,
@@ -113,7 +56,6 @@ const requestDownload = async (
     window,
     requestDownloadChannel
   );
-
   const download = new DownloaderHelper(fileUrl, destinationPath, options);
   download.on('start', eventActions.start);
   download.on('download', eventActions.download);
@@ -123,17 +65,12 @@ const requestDownload = async (
   download.start();
 };
 
-// const getPersistDownloadStatusChannel: // IpcChannel<Incoming, Outgoing>
-// MainIpcChannel<
-//   PersistedDownloadStatusRendererRequest,
-//   PersistedDownloadStatusMainResponse
-// > = new MainIpcChannel(PERSISTED_DOWNLOAD_STATUS);
-
-// const getDownloadStatusChannel: // IpcChannel<Incoming, Outgoing>
-// MainIpcChannel<
-//   DownloadStatusRendererRequest,
-//   DownloadStatusMainResponse
-// > = new MainIpcChannel(DOWNLOAD_STATUS);
+const getDownloadLocalData = async ({
+  fileName,
+}: DownloadLocalDataRendererRequest): Promise<DownloadLocalDataMainResponse> => {
+  const downloadId = getIdFromFileName(fileName);
+  return localStorage.get(downloadId);
+};
 
 const requestDownloadChannel: // IpcChannel<Incoming, Outgoing>
 MainIpcChannel<
@@ -141,11 +78,16 @@ MainIpcChannel<
   DownloadMainResponse
 > = new MainIpcChannel(REQUEST_DOWNLOAD);
 
+const getDownloadLocalDataChannel: // IpcChannel<Incoming, Outgoing>
+MainIpcChannel<
+  DownloadLocalDataRendererRequest,
+  DownloadLocalDataMainResponse
+> = new MainIpcChannel(GET_DOWNLOAD_LOCAL_DATA);
+
 export default (window: BrowserWindow) => {
-  // getPersistDownloadStatusChannel.onRequest(getPersistDownloadStatus);
-  // getDownloadStatusChannel.onRequest(getDownloadStatus);
   requestDownloadChannel.onRequest(
     (downloadRequestPayload: DownloadRendererRequest) =>
       requestDownload(downloadRequestPayload, window)
   );
+  getDownloadLocalDataChannel.onRequest(getDownloadLocalData);
 };

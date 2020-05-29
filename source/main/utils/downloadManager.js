@@ -7,18 +7,12 @@ import { MainIpcChannel } from '../ipc/lib/MainIpcChannel';
 import {
   ALLOWED_DOWNLOAD_DIRECTORIES,
   DOWNLOAD_PROGRESS_DEFAULT,
-  // DEFAULT_DIRECTORY_NAME,
-  // TEMPORARY_FILENAME,
   DOWNLOAD_EVENT_TYPES as types,
   DOWNLOAD_STATES as states,
 } from '../../common/config/download-manager';
 import { extractFileNameFromPath } from '../../common/utils/files';
 import { downloadManagerLocalStorage as localStorage } from './mainLocalStorage';
 import type {
-  // PersistedDownloadStatusRendererRequest,
-  // PersistedDownloadStatusMainResponse,
-  // DownloadStatusRendererRequest,
-  // DownloadStatusMainResponse,
   DownloadRendererRequest,
   DownloadMainResponse,
 } from '../../common/ipc/api';
@@ -32,8 +26,8 @@ import type {
   DownloadProgress,
 } from '../../common/types/download-manager.types';
 
-export const getIdFromFilename = (filename: string): string =>
-  filename.replace(/\./g, '-');
+export const getIdFromFileName = (fileName: string): string =>
+  fileName.replace(/\./g, '-');
 
 export const getPathFromDirectoryName = (
   directoryName: AllowedDownloadDirectories

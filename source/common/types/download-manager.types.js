@@ -1,38 +1,5 @@
 // @flow
 
-export type PathOption = 'download' | 'state';
-
-type FilePatternMatch = {
-  filePath?: PathOption,
-  fileNamePattern: string | RegExp,
-  fileExtentionPattern: string | RegExp,
-};
-
-type FileExactMatch = {
-  filePath?: PathOption,
-  fileName: string,
-  fileExtention: string,
-};
-
-export type PersistedDownloadStatusRequest = {
-  file: FilePatternMatch | FileExactMatch,
-};
-
-export type PersistedDownloadStatusResponse = {
-  hasPendingDownload: boolean,
-  pendingUpdateFileName: ?string,
-  downloadProgress?: ?number,
-};
-
-export type DownloadStatusRequest = {
-  file: FileExactMatch,
-};
-
-export type DownloadStatusResponse = {
-  isDownloading: boolean,
-  downloadProgress?: ?number,
-};
-
 export type AllowedDownloadDirectories = 'downloads' | 'desktop';
 
 // https://www.npmjs.com/package/node-downloader-helper
@@ -141,4 +108,13 @@ export type DownloadInfoError = {
   message: string, // Error message
   status: string, // Http status response if available
   body: string, // Http body response if available
+};
+
+export type DownloadLocalDataRequest = {
+  fileName: string,
+};
+
+export type DownloadLocalDataResponse = {
+  data?: DownloadData,
+  progress?: DownloadProgress,
 };

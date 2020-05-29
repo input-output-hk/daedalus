@@ -5,25 +5,9 @@ import Request from './lib/LocalizedRequest';
 import type { AppInfo, GetLatestAppVersionResponse } from '../api/nodes/types';
 import { APP_UPDATE_POLL_INTERVAL } from '../config/timingConfig';
 import { rebuildApplicationMenu } from '../ipc/rebuild-application-menu';
-import {
-  // getPersistedDownloadStatusChannel,
-  // getDownloadStatusChannel,
-  requestDownloadChannel,
-} from '../ipc/downloadManagerChannel';
-import type {
-  //   PersistedDownloadStatusRendererRequest,
-  //   PersistedDownloadStatusMainResponse,
-  //   DownloadStatusRendererRequest,
-  //   DownloadStatusMainResponse,
-  //   DownloadRendererRequest,
-  DownloadMainResponse,
-} from '../../../common/ipc/api';
+import { requestDownloadChannel } from '../ipc/downloadManagerChannel';
+import type { DownloadMainResponse } from '../../../common/ipc/api';
 import { DOWNLOAD_EVENT_TYPES } from '../../../common/config/download-manager';
-// import type {
-//   AllowedDownloadDirectories,
-//   DownloadInfo,
-//   DownloadState,
-// } from '../../../common/types/download-manager.types';
 
 export default class AppUpdateStore extends Store {
   @observable isUpdateAvailable = false;
@@ -70,10 +54,10 @@ export default class AppUpdateStore extends Store {
       );
     }
 
-    // this.getPersistedDownloadStatus();
+    // this.getDownloadLocalData();
   }
 
-  // getPersistedDownloadStatus = async () => {
+  // getDownloadLocalData = async () => {
   //   const fileToMatch = {
   //     fileNamePattern: new RegExp(/daedalus/),
   //     fileExtentionPattern: 'pkg',
@@ -82,7 +66,7 @@ export default class AppUpdateStore extends Store {
   //     // hasPendingDownload,
   //     pendingUpdateFileName,
   //   }: // downloadProgress,
-  //   PersistedDownloadStatusMainResponse = await getPersistedDownloadStatusChannel.request(
+  //   DownloadLocalDataMainResponse = await getDownloadLocalDataChannel.request(
   //     {
   //       file: fileToMatch,
   //     }
