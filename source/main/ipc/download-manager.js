@@ -1,14 +1,11 @@
 // @flow
 import { DownloaderHelper } from 'node-downloader-helper';
-import fs from 'fs';
 import type { BrowserWindow } from 'electron';
 import { MainIpcChannel } from './lib/MainIpcChannel';
-import { downloadManagerLocalStorage } from '../utils/mainLocalStorage';
 import {
   getOriginalFilename,
   getPathFromDirectoryName,
-  formatUpdate,
-  downloadUpdateActions,
+  getEventActions,
 } from '../utils/downloadManager';
 import {
   // PERSISTED_DOWNLOAD_STATUS,
@@ -18,7 +15,6 @@ import {
 import {
   DEFAULT_DIRECTORY_NAME,
   TEMPORARY_FILENAME,
-  DOWNLOAD_STATES as statusType,
 } from '../../common/config/download-manager';
 import { generateFileNameWithTimestamp } from '../../common/utils/files.js';
 import type {
@@ -29,13 +25,6 @@ import type {
   DownloadRendererRequest,
   DownloadMainResponse,
 } from '../../common/ipc/api';
-import type {
-  DownloadInfo,
-  DownloadState,
-  DownloadRequestOptions,
-  DownloadEvent,
-  DownloadEventType,
-} from '../../common/types/download-manager.types';
 
 // const getPersistDownloadStatus = async ({
 //   file,
@@ -101,40 +90,33 @@ const requestDownload = async (
   const {
     fileUrl,
     destinationDirectoryName = DEFAULT_DIRECTORY_NAME,
-    options,
+    options: _options,
   } = downloadRequestPayload;
   const destinationPath = getPathFromDirectoryName(destinationDirectoryName);
-  const _options = {
-    ...options,
+  const options = {
+    ..._options,
     fileName: temporaryFilename,
   };
-
-  const update = await downloadUpdateActions(
-    fileUrl,
-    destinationPath,
-    temporaryFilename,
-    originalFilename,
-    _options,
-    window
+  const eventActions = await getEventActions(
+    {
+      fileUrl,
+      destinationPath,
+      destinationDirectoryName,
+      temporaryFilename,
+      originalFilename,
+      options,
+    },
+    window,
+    requestDownloadChannel
   );
 
-  const download = new DownloaderHelper(fileUrl, destinationPath, _options);
-  download.on('start', update.bind(this, statusType.STARTED));
-  download.on('download', update.bind(this, statusType.DOWNLOAD));
-  download.on('progress.throttled', update.bind(this, statusType.PROGRESS));
-  download.on('end', update.bind(this, statusType.FINISHED));
-  download.on('timeout', update.bind(this, statusType.TIMEOUT));
-  download.on('error', update.bind(this, statusType.ERROR));
-  download.on('stateChanged', (a, b, c) => {
-    console.log('stateChanged ---');
-    console.log('a', a);
-    console.log('b', b);
-    console.log('c', c);
-  });
+  const download = new DownloaderHelper(fileUrl, destinationPath, options);
+  download.on('start', eventActions.start);
+  download.on('download', eventActions.download);
+  download.on('progress.throttled', eventActions.progress);
+  download.on('end', eventActions.end);
+  download.on('error', eventActions.error);
   download.start();
-
-  console.log('download', download);
-  window.dl = download;
 };
 
 // const getPersistDownloadStatusChannel: // IpcChannel<Incoming, Outgoing>

@@ -51,7 +51,8 @@ export const requestElectronStore = (request: ElectronStoreMessage) => {
     case types.SET:
       return store.set(networkKey, data);
     case types.RESET:
-      return reset();
+      reset();
+      return store.get(networkKey);
     default:
       return Promise.reject(new Error(`Invalid type ${type} provided.`));
   }

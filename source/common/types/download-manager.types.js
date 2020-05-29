@@ -88,11 +88,11 @@ export type DownloadData = {
   temporaryFilename: string,
   destinationDirectoryName: AllowedDownloadDirectories,
   destinationPath: string,
+  options: DownloadRequestOptions,
 };
 
 export type DownloadProgress = {
   state: DownloadState,
-  downloaded: number,
   remainingSize: number,
   serverFileSize: number,
   diskFileSize: number,
@@ -104,14 +104,15 @@ export type DownloadProgress = {
   error?: string,
 };
 
+/**
+ *
+ * Each event has a different response
+ * which is formatted and so the Main IPC
+ * response has always the DownloadProgress shape
+ *
+ */
+
 // https://www.npmjs.com/package/node-downloader-helper
-
-// export type DownloadEvent =
-//   | DownloadInfoInit
-//   | DownloadInfoProgress
-//   | DownloadInfoEnd
-//   | DownloadInfoError;
-
 export type DownloadInfoInit = {
   totalSize: number, // total file size got from the server
   fileName: string, // assigned name
@@ -119,15 +120,13 @@ export type DownloadInfoInit = {
   isResumed: boolean, // if the download is a resume,
   downloadedSize: number, // the downloaded amount (only if is resumed otherwise always 0)
 };
-
 export type DownloadInfoProgress = {
   name: string, // file name
-  total: string, // total size that needs to be downloaded in bytes
+  total: number, // total size that needs to be downloaded in bytes
   downloaded: number, // downloaded size in bytes
   progress: number, // progress porcentage 0-100%
   speed: number, // download speed in bytes
 };
-
 export type DownloadInfoEnd = {
   fileName: string,
   filePath: string,
@@ -136,7 +135,6 @@ export type DownloadInfoEnd = {
   onDiskSize: number, // total size of file on the disk
   downloadedSize: number, // the total size downloaded
 };
-
 export type DownloadInfoError = {
   message: string, // Error message
   status: string, // Http status response if available

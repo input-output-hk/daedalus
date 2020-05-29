@@ -48,16 +48,14 @@ export const TEMPORARY_FILENAME = {
   extension: 'crdownload',
 };
 
-export const DOWNLOAD_INFO_DEFAULT = {
-  downloaded: 0,
-  downloadedSize: 0,
-  fileName: '',
+export const DOWNLOAD_PROGRESS_DEFAULT = {
+  state: DOWNLOAD_STATES.IDLE,
+  remainingSize: 0,
+  serverFileSize: 0,
+  diskFileSize: 0,
+  downloadSize: 0,
+  progress: 0,
+  speed: 0,
   incomplete: false,
   isResumed: false,
-  onDiskSize: 0,
-  progress: 0,
-  remainingSize: 0,
-  speed: 0,
-  totalSize: 0,
-  message: null,
 };

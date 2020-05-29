@@ -18,10 +18,7 @@ import type {
   //   DownloadRendererRequest,
   DownloadMainResponse,
 } from '../../../common/ipc/api';
-import {
-  ALLOWED_DOWNLOAD_DIRECTORIES,
-  DOWNLOAD_STATES,
-} from '../../../common/config/download-manager';
+import { DOWNLOAD_EVENT_TYPES } from '../../../common/config/download-manager';
 // import type {
 //   AllowedDownloadDirectories,
 //   DownloadInfo,
@@ -94,11 +91,9 @@ export default class AppUpdateStore extends Store {
 
   _requestDownload = async () => {
     requestDownloadChannel.onReceive(
-      ({ progressStatusType, downloadInfo }: DownloadMainResponse) => {
-        console.log('progressStatusType', progressStatusType);
-        console.log('downloadInfo', downloadInfo);
+      ({ eventType /* , data, progress */ }: DownloadMainResponse) => {
         runInAction('updates the download information', () => {
-          if (progressStatusType === DOWNLOAD_STATES.END) {
+          if (eventType === DOWNLOAD_EVENT_TYPES.END) {
             this.isDownloadingUpdate = false;
           } else {
             this.isDownloadingUpdate = true;
