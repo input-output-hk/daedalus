@@ -1,5 +1,5 @@
 // @flow
-import { mergeWith } from 'lodash';
+import { mergeWith, omit } from 'lodash';
 import {
   STORAGE_TYPES,
   STORAGE_KEYS,
@@ -50,9 +50,15 @@ export const downloadManagerLocalStorage = {
     });
     return progress;
   },
-  unset: async () =>
-    requestElectronStore({
+  unset: async (id: string) => {
+    const localDownloadsData = await requestElectronStore({
       type: STORAGE_TYPES.GET,
       key: STORAGE_KEYS.DOWNLOAD_MANAGER,
-    }),
+    });
+    await requestElectronStore({
+      type: STORAGE_TYPES.SET,
+      key: STORAGE_KEYS.DOWNLOAD_MANAGER,
+      data: omit(localDownloadsData, id),
+    });
+  },
 };

@@ -32,7 +32,7 @@ import type {
   DownloadProgress,
 } from '../../common/types/download-manager.types';
 
-const getIdFromFilename = (filename: string): string =>
+export const getIdFromFilename = (filename: string): string =>
   filename.replace(/\./g, '-');
 
 export const getPathFromDirectoryName = (
@@ -62,8 +62,8 @@ export const getEventActions = async (
     DownloadMainResponse
   >
 ): Promise<Object> => {
-  const id = getIdFromFilename(data.originalFilename);
-  await localStorage.setData(data, id);
+  const { downloadId } = data;
+  await localStorage.setData(data, downloadId);
   return {
     start: async () => {
       const eventType = types.START;
@@ -90,7 +90,7 @@ export const getEventActions = async (
         },
         state: states.DOWNLOADING,
       };
-      const progress = await localStorage.setProgress(rawProgress, id);
+      const progress = await localStorage.setProgress(rawProgress, downloadId);
       requestDownloadChannel.send(
         {
           eventType: types.DOWNLOAD,
@@ -116,7 +116,10 @@ export const getEventActions = async (
         },
         state: states.DOWNLOADING,
       };
-      const formattedProgress = await localStorage.setProgress(rawProgress, id);
+      const formattedProgress = await localStorage.setProgress(
+        rawProgress,
+        downloadId
+      );
       requestDownloadChannel.send(
         {
           eventType: types.PROGRESS,
@@ -140,7 +143,10 @@ export const getEventActions = async (
         },
         state: states.FINISHED,
       };
-      const formattedProgress = await localStorage.setProgress(rawProgress, id);
+      const formattedProgress = await localStorage.setProgress(
+        rawProgress,
+        downloadId
+      );
       const { destinationPath, temporaryFilename, originalFilename } = data;
       const temporaryPath = `${destinationPath}/${temporaryFilename}`;
       const newPath = `${destinationPath}/${originalFilename}`;
@@ -153,6 +159,8 @@ export const getEventActions = async (
         },
         window.webContents
       );
+      const { persistLocalData } = data;
+      if (!persistLocalData) await localStorage.unset(downloadId);
     },
     error: async ({ message }: DownloadInfoError) => {
       const rawProgress: DownloadProgress = {
@@ -162,7 +170,10 @@ export const getEventActions = async (
         },
         state: states.FAILED,
       };
-      const formattedProgress = await localStorage.setProgress(rawProgress, id);
+      const formattedProgress = await localStorage.setProgress(
+        rawProgress,
+        downloadId
+      );
       requestDownloadChannel.send(
         {
           eventType: types.ERROR,

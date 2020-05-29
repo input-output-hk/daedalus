@@ -83,12 +83,14 @@ export type DownloadResponse = {
 };
 
 export type DownloadData = {
+  downloadId: string,
   fileUrl: string,
   originalFilename: string,
   temporaryFilename: string,
   destinationDirectoryName: AllowedDownloadDirectories,
   destinationPath: string,
   options: DownloadRequestOptions,
+  persistLocalData?: boolean,
 };
 
 export type DownloadProgress = {

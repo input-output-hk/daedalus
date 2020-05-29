@@ -6,6 +6,7 @@ import {
   getOriginalFilename,
   getPathFromDirectoryName,
   getEventActions,
+  getIdFromFilename,
 } from '../utils/downloadManager';
 import {
   // PERSISTED_DOWNLOAD_STATUS,
@@ -97,15 +98,18 @@ const requestDownload = async (
     ..._options,
     fileName: temporaryFilename,
   };
+  const downloadId = getIdFromFilename(originalFilename);
+  const data = {
+    downloadId,
+    fileUrl,
+    destinationPath,
+    destinationDirectoryName,
+    temporaryFilename,
+    originalFilename,
+    options,
+  };
   const eventActions = await getEventActions(
-    {
-      fileUrl,
-      destinationPath,
-      destinationDirectoryName,
-      temporaryFilename,
-      originalFilename,
-      options,
-    },
+    data,
     window,
     requestDownloadChannel
   );

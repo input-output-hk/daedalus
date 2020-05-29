@@ -104,6 +104,7 @@ export default class AppUpdateStore extends Store {
     );
     await requestDownloadChannel.request({
       fileUrl:
+        // 'https://i.ytimg.com/vi/_Lf96bZksN0/maxresdefault.jpg',
         'https://update-cardano-mainnet.iohk.io/daedalus-1.1.0-mainnet-12849.pkg',
     });
   };
