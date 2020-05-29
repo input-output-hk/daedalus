@@ -5,7 +5,10 @@ import Request from './lib/LocalizedRequest';
 import type { AppInfo, GetLatestAppVersionResponse } from '../api/nodes/types';
 import { APP_UPDATE_POLL_INTERVAL } from '../config/timingConfig';
 import { rebuildApplicationMenu } from '../ipc/rebuild-application-menu';
-import { requestDownloadChannel } from '../ipc/downloadManagerChannel';
+import {
+  requestDownloadChannel,
+  getDownloadsLocalDataChannel,
+} from '../ipc/downloadManagerChannel';
 import type { DownloadMainResponse } from '../../../common/ipc/api';
 import { DOWNLOAD_EVENT_TYPES } from '../../../common/config/download-manager';
 
@@ -57,21 +60,11 @@ export default class AppUpdateStore extends Store {
     // this.getDownloadLocalData();
   }
 
-  // getDownloadLocalData = async () => {
-  //   const fileToMatch = {
-  //     fileNamePattern: new RegExp(/daedalus/),
-  //     fileExtentionPattern: 'pkg',
-  //   };
-  //   const {
-  //     // hasPendingDownload,
-  //     pendingUpdateFileName,
-  //   }: // downloadProgress,
-  //   DownloadLocalDataMainResponse = await getDownloadLocalDataChannel.request(
-  //     {
-  //       file: fileToMatch,
-  //     }
-  //   );
-  // };
+  _getPendingUpdate = async () => {
+    const downloadsLocalData = await getDownloadsLocalDataChannel.request();
+    console.log('downloadsLocalData', downloadsLocalData);
+    return downloadsLocalData;
+  };
 
   _requestDownload = async () => {
     requestDownloadChannel.onReceive(
@@ -88,30 +81,9 @@ export default class AppUpdateStore extends Store {
     );
     await requestDownloadChannel.request({
       fileUrl:
-        // 'https://i.ytimg.com/vi/_Lf96bZksN0/maxresdefault.jpg',
         'https://update-cardano-mainnet.iohk.io/daedalus-1.1.0-mainnet-12849.pkg',
     });
   };
-
-  // _getUpdateStatus = async ({
-  //   file,
-  // // }: DownloadStatusRendererRequest): Promise<void> => {
-  // }: DownloadStatusRendererRequest) => {
-  //   const {
-  //     isDownloadingUpdate,
-  //     downloadProgress,
-  //   } = await getDownloadStatusChannel.request({ file });
-
-  //   runInAction('Update download status', () => {
-  //     this.isDownloadingUpdate = isDownloadingUpdate;
-  //     this.downloadProgress = downloadProgress;
-  //   });
-  // };
-
-  // _isUpdateValid = async (fileName: string): Promise<boolean> => {
-  //   // console.log('fileName', fileName);
-  //   return true;
-  // };
 
   refreshNextUpdate = async () => {
     if (this.stores.networkStatus.isSynced) {

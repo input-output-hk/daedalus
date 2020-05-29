@@ -20,6 +20,11 @@ export const downloadManagerLocalStorage = {
     });
     return { data, progress };
   },
+  getAll: async () =>
+    requestElectronStore({
+      type: STORAGE_TYPES.GET,
+      key: STORAGE_KEYS.DOWNLOAD_MANAGER,
+    }),
   setData: async (data: DownloadData, id: string) => {
     const progress: DownloadProgress = DOWNLOAD_PROGRESS_DEFAULT;
     requestElectronStore({

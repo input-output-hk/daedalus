@@ -10,6 +10,7 @@ import {
 } from '../utils/downloadManager';
 import {
   GET_DOWNLOAD_LOCAL_DATA,
+  GET_DOWNLOADS_LOCAL_DATA,
   REQUEST_DOWNLOAD,
 } from '../../common/ipc/api';
 import {
@@ -19,10 +20,12 @@ import {
 import { generateFileNameWithTimestamp } from '../../common/utils/files.js';
 import { downloadManagerLocalStorage as localStorage } from '../utils/mainLocalStorage';
 import type {
-  DownloadLocalDataRendererRequest,
-  DownloadLocalDataMainResponse,
   DownloadRendererRequest,
   DownloadMainResponse,
+  DownloadLocalDataRendererRequest,
+  DownloadLocalDataMainResponse,
+  DownloadsLocalDataRendererRequest,
+  DownloadsLocalDataMainResponse,
 } from '../../common/ipc/api';
 
 const requestDownload = async (
@@ -72,6 +75,9 @@ const getDownloadLocalData = async ({
   return localStorage.get(downloadId);
 };
 
+const getDownloadsLocalData = async (): Promise<DownloadsLocalDataMainResponse> =>
+  localStorage.getAll();
+
 const requestDownloadChannel: // IpcChannel<Incoming, Outgoing>
 MainIpcChannel<
   DownloadRendererRequest,
@@ -84,10 +90,17 @@ MainIpcChannel<
   DownloadLocalDataMainResponse
 > = new MainIpcChannel(GET_DOWNLOAD_LOCAL_DATA);
 
+const getDownloadsLocalDataChannel: // IpcChannel<Incoming, Outgoing>
+MainIpcChannel<
+  DownloadsLocalDataRendererRequest,
+  DownloadsLocalDataMainResponse
+> = new MainIpcChannel(GET_DOWNLOADS_LOCAL_DATA);
+
 export default (window: BrowserWindow) => {
   requestDownloadChannel.onRequest(
     (downloadRequestPayload: DownloadRendererRequest) =>
       requestDownload(downloadRequestPayload, window)
   );
   getDownloadLocalDataChannel.onRequest(getDownloadLocalData);
+  getDownloadsLocalDataChannel.onRequest(getDownloadsLocalData);
 };

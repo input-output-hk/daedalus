@@ -30,6 +30,7 @@ import type { Locale } from '../types/locales.types';
 import type {
   DownloadLocalDataRequest,
   DownloadLocalDataResponse,
+  DownloadsLocalDataResponse,
   DownloadRequest,
   DownloadResponse,
 } from '../types/download-manager.types';
@@ -297,7 +298,14 @@ export type DownloadLocalDataRendererRequest = DownloadLocalDataRequest;
 export type DownloadLocalDataMainResponse = DownloadLocalDataResponse;
 
 /**
- * Channel for receiving the download manager status
+ * Channel for initiating the download manager
+ */
+export const GET_DOWNLOADS_LOCAL_DATA = 'GET_DOWNLOADS_LOCAL_DATA';
+export type DownloadsLocalDataRendererRequest = void;
+export type DownloadsLocalDataMainResponse = DownloadsLocalDataResponse;
+
+/**
+ * Channel for requesting a new download
  */
 export const REQUEST_DOWNLOAD = 'REQUEST_DOWNLOAD';
 export type DownloadRendererRequest = DownloadRequest;

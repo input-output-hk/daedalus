@@ -118,3 +118,7 @@ export type DownloadLocalDataResponse = {
   data?: DownloadData,
   progress?: DownloadProgress,
 };
+
+export type DownloadsLocalDataResponse = {
+  [key: string]: DownloadsLocalDataResponse,
+};
