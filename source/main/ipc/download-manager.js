@@ -28,6 +28,8 @@ import type {
   DownloadsLocalDataMainResponse,
 } from '../../common/ipc/api';
 
+localStorage.setAllStopped();
+
 const requestDownload = async (
   downloadRequestPayload: DownloadRendererRequest,
   window: BrowserWindow

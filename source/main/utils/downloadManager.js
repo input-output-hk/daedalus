@@ -24,6 +24,7 @@ import type {
   DownloadInfoError,
   DownloadData,
   DownloadProgress,
+  DownloadProgressUpdate,
 } from '../../common/types/download-manager.types';
 
 export const getIdFromFileName = (fileName: string): string =>
@@ -75,8 +76,7 @@ export const getEventActions = async (
       totalSize: serverFileSize,
       downloadedSize: diskFileSize,
     }: DownloadInfoInit) => {
-      const rawProgress: DownloadProgress = {
-        ...DOWNLOAD_PROGRESS_DEFAULT,
+      const rawProgress: DownloadProgressUpdate = {
         ...{
           serverFileSize,
           diskFileSize,
@@ -100,8 +100,7 @@ export const getEventActions = async (
       progress,
       speed,
     }: DownloadInfoProgress) => {
-      const rawProgress: DownloadProgress = {
-        ...DOWNLOAD_PROGRESS_DEFAULT,
+      const rawProgress: DownloadProgressUpdate = {
         ...{
           remainingSize: total - downloadSize,
           downloadSize,
@@ -128,8 +127,7 @@ export const getEventActions = async (
       onDiskSize: diskFileSize,
       incomplete,
     }: DownloadInfoEnd) => {
-      const rawProgress: DownloadProgress = {
-        ...DOWNLOAD_PROGRESS_DEFAULT,
+      const rawProgress: DownloadProgressUpdate = {
         ...{
           downloadSize,
           diskFileSize,
@@ -157,8 +155,7 @@ export const getEventActions = async (
       if (!persistLocalData) await localStorage.unset(downloadId);
     },
     error: async ({ message }: DownloadInfoError) => {
-      const rawProgress: DownloadProgress = {
-        ...DOWNLOAD_PROGRESS_DEFAULT,
+      const rawProgress: DownloadProgressUpdate = {
         ...{
           message,
         },

@@ -7,8 +7,12 @@ import {
 import type {
   DownloadData,
   DownloadProgress,
+  DownloadProgressUpdate,
 } from '../../common/types/download-manager.types';
-import { DOWNLOAD_PROGRESS_DEFAULT } from '../../common/config/download-manager';
+import {
+  DOWNLOAD_PROGRESS_DEFAULT,
+  DOWNLOAD_STATES,
+} from '../../common/config/download-manager';
 import { requestElectronStore } from '../ipc/electronStoreConversation';
 
 export const downloadManagerLocalStorage = {
@@ -35,7 +39,7 @@ export const downloadManagerLocalStorage = {
     });
   },
   setProgress: async (
-    newProgres: DownloadProgress,
+    newProgres: DownloadProgressUpdate,
     id: string
   ): Promise<DownloadProgress> => {
     const {
@@ -54,6 +58,18 @@ export const downloadManagerLocalStorage = {
       id,
     });
     return progress;
+  },
+  setAllStopped: async () => {
+    const downloads = await downloadManagerLocalStorage.getAll();
+    const downloadsArray = Object.keys(downloads);
+    for (let index = 0; index < downloadsArray.length; index++) {
+      await downloadManagerLocalStorage.setProgress(
+        {
+          state: DOWNLOAD_STATES.STOPPED,
+        },
+        downloadsArray[index]
+      );
+    }
   },
   unset: async (id: string) => {
     const localDownloadsData = await requestElectronStore({

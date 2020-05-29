@@ -73,6 +73,19 @@ export type DownloadProgress = {
   error?: string,
 };
 
+export type DownloadProgressUpdate = {
+  state?: DownloadState,
+  remainingSize?: number,
+  serverFileSize?: number,
+  diskFileSize?: number,
+  downloadSize?: number,
+  progress?: number,
+  speed?: number,
+  incomplete?: boolean,
+  isResumed?: boolean,
+  error?: string,
+};
+
 /**
  *
  * Each event has a different response
