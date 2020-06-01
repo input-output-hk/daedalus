@@ -7,7 +7,8 @@ import { APP_UPDATE_POLL_INTERVAL } from '../config/timingConfig';
 import { rebuildApplicationMenu } from '../ipc/rebuild-application-menu';
 import {
   requestDownloadChannel,
-  getDownloadsLocalDataChannel,
+  getDownloadLocalDataChannel,
+  requestResumeDownloadChannel,
 } from '../ipc/downloadManagerChannel';
 import type { DownloadMainResponse } from '../../../common/ipc/api';
 import { DOWNLOAD_EVENT_TYPES } from '../../../common/config/download-manager';
@@ -57,16 +58,25 @@ export default class AppUpdateStore extends Store {
       );
     }
 
-    // this.getDownloadLocalData();
+    // this.managePendingUpdate();
   }
 
-  _getPendingUpdate = async () => {
-    const downloadsLocalData = await getDownloadsLocalDataChannel.request();
-    console.log('downloadsLocalData', downloadsLocalData);
-    return downloadsLocalData;
+  managePendingUpdate = async () => {
+    const downloadLocalData = await getDownloadLocalDataChannel.request({
+      id: 'appUpdate',
+    });
+    return downloadLocalData;
   };
 
-  _requestDownload = async () => {
+  requestResumeDownload = async (id: string = 'appUpdate') => {
+    await requestResumeDownloadChannel.request({
+      id,
+    });
+  };
+
+  _requestDownload = async (
+    fileUrl: string = 'https://update-cardano-mainnet.iohk.io/daedalus-1.1.0-mainnet-12849.pkg'
+  ) => {
     requestDownloadChannel.onReceive(
       ({ eventType /* , data, progress */ }: DownloadMainResponse) => {
         runInAction('updates the download information', () => {
@@ -80,8 +90,8 @@ export default class AppUpdateStore extends Store {
       }
     );
     await requestDownloadChannel.request({
-      fileUrl:
-        'https://update-cardano-mainnet.iohk.io/daedalus-1.1.0-mainnet-12849.pkg',
+      id: 'appUpdate',
+      fileUrl,
     });
   };
 

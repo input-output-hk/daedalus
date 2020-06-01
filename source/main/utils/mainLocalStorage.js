@@ -8,6 +8,7 @@ import type {
   DownloadData,
   DownloadProgress,
   DownloadProgressUpdate,
+  DownloadLocalDataResponse,
 } from '../../common/types/download-manager.types';
 import {
   DOWNLOAD_PROGRESS_DEFAULT,
@@ -16,19 +17,23 @@ import {
 import { requestElectronStore } from '../ipc/electronStoreConversation';
 
 export const downloadManagerLocalStorage = {
-  get: async (id: string) => {
-    const { data = {}, progress = {} } = await requestElectronStore({
-      type: STORAGE_TYPES.GET,
-      key: STORAGE_KEYS.DOWNLOAD_MANAGER,
-      id,
-    });
+  get: async (id: string): Promise<DownloadLocalDataResponse> => {
+    const { data, progress } =
+      (await requestElectronStore({
+        type: STORAGE_TYPES.GET,
+        key: STORAGE_KEYS.DOWNLOAD_MANAGER,
+        id,
+      })) || {};
+    if (!data || !progress) throw new Error('Invalid download I');
     return { data, progress };
   },
-  getAll: async () =>
-    requestElectronStore({
+  getAll: async () => {
+    const data = await requestElectronStore({
       type: STORAGE_TYPES.GET,
       key: STORAGE_KEYS.DOWNLOAD_MANAGER,
-    }),
+    });
+    return data || [];
+  },
   setData: async (data: DownloadData, id: string) => {
     const progress: DownloadProgress = DOWNLOAD_PROGRESS_DEFAULT;
     requestElectronStore({

@@ -23,7 +23,6 @@ import type {
   DownloadInfoEnd,
   DownloadInfoError,
   DownloadData,
-  DownloadProgress,
   DownloadProgressUpdate,
 } from '../../common/types/download-manager.types';
 
@@ -100,6 +99,7 @@ export const getEventActions = async (
       progress,
       speed,
     }: DownloadInfoProgress) => {
+      console.log('PROGRESS', `${progress}%`, downloadSize);
       const rawProgress: DownloadProgressUpdate = {
         ...{
           remainingSize: total - downloadSize,

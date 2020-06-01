@@ -4,9 +4,17 @@ export type AllowedDownloadDirectories = 'downloads' | 'desktop';
 
 // https://www.npmjs.com/package/node-downloader-helper
 export type DownloadRequest = {
+  /**
+   *
+   * The ID is optional and can be any string without dots (.)
+   * If not provided, the ID will be the fileName with dots replaced by dashes
+   *
+   */
+  id?: string,
   fileUrl: string,
   destinationDirectoryName?: AllowedDownloadDirectories,
   options?: ?DownloadRequestOptions,
+  resumeDownload?: DownloadLocalDataResponse,
 };
 
 export type DownloadRequestOptions = {
@@ -124,14 +132,26 @@ export type DownloadInfoError = {
 };
 
 export type DownloadLocalDataRequest = {
-  fileName: string,
+  fileName?: string,
+  id?: string,
 };
 
 export type DownloadLocalDataResponse = {
-  data?: DownloadData,
-  progress?: DownloadProgress,
+  data: DownloadData,
+  progress: DownloadProgress,
+};
+
+export type DownloadsLocalDataRequest = {
+  state: DownloadState,
 };
 
 export type DownloadsLocalDataResponse = {
   [key: string]: DownloadsLocalDataResponse,
 };
+
+export type ResumeDownloadRequest = {
+  fileName?: string,
+  id?: string,
+};
+
+export type ResumeDownloadResponse = DownloadResponse | void;
