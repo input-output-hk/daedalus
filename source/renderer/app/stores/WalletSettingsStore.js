@@ -26,14 +26,10 @@ export default class WalletSettingsStore extends Store {
   @observable getWalletUtxosRequest: Request<WalletUtxos> = new Request(
     this.api.ada.getWalletUtxos
   );
-  @observable forceWalletResyncRequest: Request<void> = new Request(
-    this.api.ada.forceWalletResync
-  );
 
   @observable walletFieldBeingEdited = null;
   @observable lastUpdatedWalletField = null;
   @observable walletUtxos: ?WalletUtxos = null;
-  @observable isForcedWalletResyncStarting = false;
   @observable recoveryPhraseStep = 0;
 
   pollingApiInterval: ?IntervalID = null;
@@ -63,7 +59,6 @@ export default class WalletSettingsStore extends Store {
     walletSettingsActions.stopWalletUtxoPolling.listen(
       this._stopWalletUtxoPolling
     );
-    walletSettingsActions.forceWalletResync.listen(this._forceWalletResync);
     walletSettingsActions.recoveryPhraseVerificationContinue.listen(
       this._recoveryPhraseVerificationContinue
     );
@@ -214,7 +209,6 @@ export default class WalletSettingsStore extends Store {
 
   @action _getWalletUtxoApiData = async () => {
     const activeWallet = this.stores.wallets.active;
-    if (!activeWallet || this.isForcedWalletResyncStarting) return;
     const { id: walletId, isLegacy } = activeWallet;
     const walletUtxos = await this.getWalletUtxosRequest.execute({
       walletId,
@@ -229,43 +223,6 @@ export default class WalletSettingsStore extends Store {
 
   @action _onWalletSelected = () => {
     this._updateWalletUtxos(null);
-  };
-
-  @action _forceWalletResync = async ({
-    walletId,
-    isLegacy,
-  }: {
-    walletId: string,
-    isLegacy: boolean,
-  }) => {
-    const {
-      _pausePolling,
-      _resumePolling,
-      refreshWalletsData,
-    } = this.stores.wallets;
-    runInAction('set isForcedWalletResyncStarting', () => {
-      this.isForcedWalletResyncStarting = true;
-    });
-    await _pausePolling();
-    this.forceWalletResyncRequest.reset();
-    try {
-      await this.forceWalletResyncRequest.execute({ walletId, isLegacy });
-    } finally {
-      _resumePolling();
-      await refreshWalletsData();
-      runInAction('reset isForcedWalletResyncStarting', () => {
-        this.isForcedWalletResyncStarting = false;
-        const activeWallet = this.stores.wallets.active;
-        if (
-          this.pollingApiInterval && // Is "true" if UTXO screen is active
-          activeWallet &&
-          activeWallet.id === walletId &&
-          !isLegacy
-        ) {
-          this._getWalletUtxoApiData();
-        }
-      });
-    }
   };
 
   /* ==========================================================

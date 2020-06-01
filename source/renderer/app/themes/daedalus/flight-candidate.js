@@ -937,8 +937,6 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
   walletSettings: {
     '--theme-wallet-settings-section-separator-color':
       'rgba(255, 255, 255, 0.15)',
-    '--theme-wallet-settings-resync-button-label-color':
-      'rgba(255, 255, 255, 1)',
   },
   walletNotRespondingOverlay: {
     '--theme-wallet-not-responding-background-color': '#36374df5',

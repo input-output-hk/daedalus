@@ -220,8 +220,6 @@ export default (props: { currentTheme: string, locale: string }) => {
         type || RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_VERIFIED
       }
       locale={locale}
-      isForcedWalletResyncStarting={false}
-      onResyncWallet={action('onResyncWallet')}
       wordCount={number('wordCount', 12)}
       shouldDisplayRecoveryPhrase={boolean('shouldDisplayRecoveryPhrase', true)}
     />
