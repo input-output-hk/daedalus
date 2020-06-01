@@ -79,7 +79,7 @@ Feature: Wallet Settings
       | name         |
       | Edited       |
     And I click outside "name" input field
-    Then I should see new wallet name "Edited Test Wallet"
+    Then I should see new wallet name "Test Wallet Edited"
 
   Scenario: User renames Wallet to a name which includes non-latin characters
     Given I am on the "Test Wallet" wallet "settings" screen
@@ -88,7 +88,7 @@ Feature: Wallet Settings
       | name     |
       | キュビズム |
     And I click outside "name" input field
-    Then I should see new wallet name "キュビズム Test Wallet"
+    Then I should see new wallet name "Test Wallet キュビズム"
 
   @shelley
   Scenario: User force wallet resync
