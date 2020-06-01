@@ -26,6 +26,14 @@
           object-fit: contain;
           width: 325.5px;
         }
+
+        svg > path {
+          stroke: var(--theme-hardware-wallet-title-color);
+
+          > g {
+            fill: var(--theme-hardware-wallet-title-color);
+          }
+        }
       }
 
       .hardwareWalletLedger {
@@ -42,6 +50,14 @@
           height: 75px;
           object-fit: contain;
           width: 250px;
+        }
+
+        svg > path {
+          stroke: var(--theme-hardware-wallet-title-color);
+
+          > g {
+            fill: var(--theme-hardware-wallet-title-color);
+          }
         }
       }
 
@@ -79,17 +95,17 @@
           padding: 20px;
 
           &:first-child {
-            border-left: 1px solid var(--theme-input-border-color);
+            border-left: 1px solid var(--theme-hardware-wallet-step-border-color);
             border-radius: 4px 4px 0 0;
-            border-right: 1px solid var(--theme-input-border-color);
-            border-top: 1px solid var(--theme-input-border-color);
+            border-right: 1px solid var(--theme-hardware-wallet-step-border-color);
+            border-top: 1px solid var(--theme-hardware-wallet-step-border-color);
           }
 
           &:nth-child(2) {
-            border-bottom: 1px solid var(--theme-input-border-color);
-            border-left: 1px solid var(--theme-input-border-color);
+            border-bottom: 1px solid var(--theme-hardware-wallet-step-border-color);
+            border-left: 1px solid var(--theme-hardware-wallet-step-border-color);
             border-radius: 0 0 4px 4px;
-            border-right: 1px solid var(--theme-input-border-color);
+            border-right: 1px solid var(--theme-hardware-wallet-step-border-color);
           }
 
           .hardwareWalletInnerStep {
@@ -127,12 +143,18 @@
 
           .checkIcon {
             height: 16px;
+            margin-top: -5px;
             object-fit: contain;
             width: 16px;
+
+            svg > g > path {
+              stroke-width: 5px;
+            }
           }
 
           .clearIcon {
             height: 14px;
+            margin-top: -4px;
             object-fit: contain;
             width: 14px;
           }
