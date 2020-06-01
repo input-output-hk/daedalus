@@ -237,12 +237,13 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--font-mono': 'SFMono-Light',
   },
   hardwareWallet: {
-    '--theme-hardware-wallet-step-background-color': '#fafbfc',
-    '--theme-hardware-wallet-step-border-active-color': '#296fd0',
-    '--theme-hardware-wallet-step-border-color': '#c6cdd6',
-    '--theme-hardware-wallet-step-color': '#5e6066',
-    '--theme-hardware-wallet-title-color': '#5e6066',
-    '--theme-hardware-wallet-message-color': '#5e6066',
+    '--theme-hardware-wallet-step-background-color': '#1e1f31',
+    '--theme-hardware-wallet-step-border-active-color':
+      'rgba(255, 255, 255, 0.5)',
+    '--theme-hardware-wallet-step-border-color': '#1e1f31',
+    '--theme-hardware-wallet-step-color': '#ffffff',
+    '--theme-hardware-wallet-title-color': '#ffffff',
+    '--theme-hardware-wallet-message-color': '#ffffff',
   },
   icon: {
     '--theme-icon-nav-color': 'rgba(255, 255, 255, 0.6)',
