@@ -209,6 +209,7 @@ export default class WalletSettingsStore extends Store {
 
   @action _getWalletUtxoApiData = async () => {
     const activeWallet = this.stores.wallets.active;
+    if (!activeWallet) return;
     const { id: walletId, isLegacy } = activeWallet;
     const walletUtxos = await this.getWalletUtxosRequest.execute({
       walletId,
