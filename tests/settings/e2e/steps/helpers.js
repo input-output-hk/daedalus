@@ -41,7 +41,7 @@ export const screenElementSelectors = {
     number: '.SimpleInput_input[name="amount"]',
   },
   'Target Wallet': {
-    number: '//*[@class="SidebarWalletMenuItem_title" and text()="Target Wallet"]//following-sibling::div[@class="SidebarWalletMenuItem_info"]',
+    number: '//*[@class="SidebarWalletMenuItem_title" and text()="Target Wallet"]//parent::div//following-sibling::div[@class="SidebarWalletMenuItem_info"]',
   },
 };
 
