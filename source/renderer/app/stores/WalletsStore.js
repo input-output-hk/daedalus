@@ -472,8 +472,11 @@ export default class WalletsStore extends Store {
     }
   }
 
-  @action _setHardwareWalletConnectionStatus = async (params: { walletId: string, disconnected: boolean }) => {
-    await this.setHardwareWalletConnectionStatusRequest.execute(params);
+  @action _setHardwareWalletConnectionStatus = async (params: { disconnected: boolean }) => {
+    await this.setHardwareWalletConnectionStatusRequest.execute({
+      disconnected: params.disconnected,
+      walletId: this.activeHardwareWallet.id, // @TODO
+    });
   }
 
   _finishWalletBackup = async () => {
@@ -752,9 +755,10 @@ export default class WalletsStore extends Store {
 
   @computed get hasAnyWallets(): boolean {
     if (this.walletsRequest.result == null) return false;
-    return (
-      this.walletsRequest.wasExecuted && this.walletsRequest.result.length > 0
-    );
+    const hasWallets = this.walletsRequest.wasExecuted && this.walletsRequest.result.length > 0;
+    if (!hasWallets) return false;
+    const regularWallets = this.walletsRequest.result.filter(({ isHardwareWallet }: Wallet) => !isHardwareWallet)
+    return regularWallets.length > 0;
   }
 
   @computed get hasRewardsWallets(): boolean {

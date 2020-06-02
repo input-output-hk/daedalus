@@ -4,7 +4,7 @@ import AppAda, { utils } from "@cardano-foundation/ledgerjs-hw-app-cardano"; //"
 import { get } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import { getHardwareWalletTransportChannel, getExtendedPublicKeyChannel, getCardanoAdaAppChannel, /*getHardwareWalletConnectionChannel*/ } from '../ipc/getHardwareWalletChannel';
+import { getHardwareWalletTransportChannel, getExtendedPublicKeyChannel, getCardanoAdaAppChannel, getHardwareWalletConnectionChannel } from '../ipc/getHardwareWalletChannel';
 
 const POLLING_DEVICES_INTERVAL = 1000;
 
@@ -32,11 +32,12 @@ export default class HardwareWalletsStore extends Store {;
     hardwareWalletsActions.getHardwareWalletDevice.listen(
       this._getHardwareWalletDevice
     );
-    // getHardwareWalletConnectionChannel.onReceive(this._checkHardwareWalletConnection);
+    getHardwareWalletConnectionChannel.onReceive(this._checkHardwareWalletConnection);
   }
 
-  @action _checkHardwareWalletConnection = ({ disconnected }) => {
-    console.debug('>>>> C H E C K <<<< ', disconnected);
+  @action _checkHardwareWalletConnection = (params) => {
+    console.debug('>>>> C H E C K <<<< ', params);
+    this.actions.wallets._setHardwareWalletConnectionStatus(params);
   }
 
   @action startDeviceFetchPoller = () => {
@@ -66,7 +67,7 @@ export default class HardwareWalletsStore extends Store {;
       this.stopDeviceFetchPoller(true);
       await this._getExtendedPublicKey();
       await this.actions.wallets.createHardwareWallet.trigger({
-        walletName: 'Ledger Wallet',
+        walletName: 'Hardware Wallet',
         extendedPublicKey: this.extendedPublicKey,
         device,
       });
