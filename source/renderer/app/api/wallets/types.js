@@ -247,7 +247,7 @@ export type TransferFundsCalculateFeeResponse = {
 
 export type TransferFundsRequest = {
   sourceWalletId: string,
-  targetWalletId: string,
+  targetWalletAddresses: ?Array<string>,
   passphrase: string,
 };
 

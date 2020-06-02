@@ -1442,15 +1442,22 @@ export default class AdaApi {
   transferFunds = async (
     request: TransferFundsRequest
   ): Promise<TransferFundsResponse> => {
-    const { sourceWalletId, targetWalletId, passphrase } = request;
+    const { sourceWalletId, targetWalletAddresses, passphrase } = request;
     logger.debug('AdaApi::transferFunds called', {
-      parameters: { sourceWalletId, targetWalletId },
+      parameters: { sourceWalletId, targetWalletAddresses },
     });
+
+    if (!targetWalletAddresses) {
+      throw new ApiError({
+        code: 'no_such_wallet',
+        message: 'Target wallet does not exist',
+      }).result();
+    }
 
     try {
       const response: TransferFundsResponse = await transferFunds(this.config, {
         sourceWalletId,
-        targetWalletId,
+        targetWalletAddresses,
         passphrase,
       });
       logger.debug('AdaApi::transferFunds success', { response });

@@ -6,16 +6,14 @@ import { getRawWalletId } from '../../utils';
 
 export const transferFunds = (
   config: RequestConfig,
-  { sourceWalletId, targetWalletId, passphrase }: TransferFundsRequest
+  { sourceWalletId, targetWalletAddresses, passphrase }: TransferFundsRequest
 ): Promise<TransferFundsResponse> =>
   request(
     {
       method: 'POST',
-      path: `/v2/byron-wallets/${getRawWalletId(
-        sourceWalletId
-      )}/migrations/${targetWalletId}`,
+      path: `/v2/byron-wallets/${getRawWalletId(sourceWalletId)}/migrations`,
       ...config,
     },
     {},
-    { passphrase }
+    { passphrase, addresses: targetWalletAddresses }
   );
