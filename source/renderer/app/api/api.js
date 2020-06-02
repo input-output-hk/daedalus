@@ -302,7 +302,11 @@ export default class AdaApi {
     logger.debug('AdaApi::getAddresses called', {
       parameters: filterLogData(request),
     });
-    const { walletId, queryParams, isLegacy } = request;
+    const { walletId, queryParams, isLegacy, isHardwareWallet } = request;
+    const rawWalletId = isHardwareWallet ? getRawWalletId(walletId, 'HARDWARE_WALLET_ID_PREFIX') : walletId;
+
+    console.debug('>>>> get addresses for wallet ID: ', rawWalletId);
+
     try {
       let response = [];
       if (isLegacy && !isIncentivizedTestnet) {
@@ -312,7 +316,7 @@ export default class AdaApi {
           queryParams
         );
       } else if (!isLegacy) {
-        response = await getAddresses(this.config, walletId, queryParams);
+        response = await getAddresses(this.config, rawWalletId, queryParams);
       }
       logger.debug('AdaApi::getAddresses success', { addresses: response });
       return response.map(_createAddressFromServerData);

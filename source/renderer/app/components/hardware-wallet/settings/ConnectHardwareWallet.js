@@ -47,10 +47,20 @@ const messages = defineMessages({
     defaultMessage: '!!!Export <span>public key</span> on your device',
     description: 'Export wallet label',
   },
+  hardwareWalletExportRejected: {
+    id: 'wallet.hardware.hardwareWalletExportRejected',
+    defaultMessage: '!!!Export rejected',
+    description: 'Export wallet rejected label',
+  },
   linkUrl: {
     id: 'wallet.select.import.dialog.linkUrl',
     defaultMessage: '!!!https://daedaluswallet.io/',
     description: 'External link URL on the hardware wallet connect screen',
+  },
+  deviceConnectedLabel: {
+    id: 'wallet.hardware.deviceConnectedLabel',
+    defaultMessage: '!!!Device accepted',
+    description: 'Connected / Accepted device label',
   },
 });
 
@@ -79,15 +89,19 @@ export default class ConnectHardwareWallet extends Component<Props> {
       isTrezor,
       isDeviceConnected,
       fetchingDevice,
-      exportingExtendedPublicKey,
+      isExportingExtendedPublicKey,
+      isExtendedPublicKeyExported,
       isExportingPublicKeyAborted,
     } = this.props;
 
-    const hardwareTitle = isTrezor
+
+    console.debug('LAYOUT PROPS:', this.props);
+
+    const hardwareTitle = (!isTrezor && !isLedger)
       ? intl.formatMessage(messages.hardwareWalletTitle)
       : intl.formatMessage(messages.ledgerWalletTitle);
 
-    const hardwareConnectLabel = isTrezor
+    const hardwareConnectLabel = (!isTrezor && !isLedger)
       ? messages.hardwareWalletBegin
       : messages.hardwareWalletLedgerBegin;
 
@@ -99,7 +113,7 @@ export default class ConnectHardwareWallet extends Component<Props> {
 
     const secondStepClasses = classnames([
       styles.hardwareWalletStep,
-      exportingExtendedPublicKey ? styles.isActiveExport : null,
+      isExportingExtendedPublicKey ? styles.isActiveExport : null,
       isExportingPublicKeyAborted ? styles.isErrorExport : null,
     ]);
 
@@ -107,7 +121,7 @@ export default class ConnectHardwareWallet extends Component<Props> {
       <div className={styles.component}>
         <div className={styles.hardwareWalletContainer}>
           <div className={styles.hardwareWalletWrapper}>
-            {isTrezor && (
+            {(!isTrezor && !isLedger) && (
               <div className={styles.hardwareWalletTrezor}>
                 <SVGInline svg={trezorIcon} className={styles.trezorIcon} />
               </div>
@@ -129,13 +143,17 @@ export default class ConnectHardwareWallet extends Component<Props> {
                     svg={ledgerSmallIcon}
                     className={styles.ledgerSmallIcon}
                   />
-                  <FormattedHTMLMessage {...hardwareConnectLabel} />
+                  {isDeviceConnected ? (
+                    <FormattedHTMLMessage {...messages.deviceConnectedLabel} />
+                  ) : (
+                    <FormattedHTMLMessage {...hardwareConnectLabel} />
+                  )}
                 </div>
                 {fetchingDevice && <LoadingSpinner />}
                 {isDeviceConnected && (
                   <SVGInline svg={checkIcon} className={styles.checkIcon} />
                 )}
-                {!fetchingDevice && isDeviceConnected === null && (
+                {!fetchingDevice && !isDeviceConnected && (
                   <SVGInline svg={clearIcon} className={styles.clearIcon} />
                 )}
               </div>
@@ -148,15 +166,14 @@ export default class ConnectHardwareWallet extends Component<Props> {
                       onOpenExternalLink(intl.formatMessage(messages.linkUrl))
                     }
                   />
-                  <FormattedHTMLMessage {...messages.hardwareWalletExport} />
+                  {!isExportingPublicKeyAborted && <FormattedHTMLMessage {...messages.hardwareWalletExport} />}
+                  {isExportingPublicKeyAborted && <FormattedHTMLMessage {...messages.hardwareWalletExportRejected} />}
                 </div>
-                {exportingExtendedPublicKey && <LoadingSpinner />}
-                {!isExportingPublicKeyAborted &&
-                  exportingExtendedPublicKey !== true &&
-                  exportingExtendedPublicKey !== null && (
+                {isExportingExtendedPublicKey && <LoadingSpinner />}
+                {isExtendedPublicKeyExported && (
                     <SVGInline svg={checkIcon} className={styles.checkIcon} />
                   )}
-                {!exportingExtendedPublicKey && isExportingPublicKeyAborted && (
+                {isExportingPublicKeyAborted && (
                   <SVGInline svg={clearIcon} className={styles.clearIcon} />
                 )}
               </div>

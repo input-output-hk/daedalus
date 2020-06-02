@@ -10,19 +10,41 @@ import type { InjectedContainerProps } from '../../types/injectedPropsType';
 export default class HardwareWalletAddPage extends Component<InjectedContainerProps> {
   static defaultProps = { stores: null };
 
+  componentDidMount() {
+    console.debug('!!!!!!! INITIATE POLLER - ADD PAGE !!!!!!!!');
+    const { startDeviceFetchPoller } = this.props.stores.hardwareWallets;
+    startDeviceFetchPoller();
+  }
+
+  componentWillUnmount() {
+    const { stopDeviceFetchPoller, resetInitializedConnection, isDeviceConnected, isExtendedPublicKeyExported } = this.props.stores.hardwareWallets;
+    console.debug('!!!!!!! STOP POLLER - ADD PAGE !!!!!!!!', isDeviceConnected, isExtendedPublicKeyExported);
+    stopDeviceFetchPoller();
+    if (!isDeviceConnected || (isDeviceConnected && !isExtendedPublicKeyExported)) {
+      resetInitializedConnection();
+    }
+  }
+
   render() {
     const { stores } = this.props;
-    const { app, wallets } = stores;
-    const {
-      isDeviceConnected,
-      fetchingDevice,
-      exportingExtendedPublicKey,
-      isExportingPublicKeyAborted,
-    } = wallets;
+    const { app, hardwareWallets } = stores;
 
-    // @TODO - add real values
-    const isLedger = true;
-    const isTrezor = false;
+    const {
+      fetchingDevice,
+      isDeviceConnected,
+      isExportingExtendedPublicKey,
+      isExtendedPublicKeyExported,
+      isExportingPublicKeyAborted,
+      isTrezor,
+      isLedger,
+      transport,
+    } = hardwareWallets;
+
+
+    console.debug('>>>> TRANSPORT: ', {
+      transport, isTrezor, isLedger,
+      isExportingExtendedPublicKey,
+    });
 
     return (
       <Layout>
@@ -32,7 +54,7 @@ export default class HardwareWalletAddPage extends Component<InjectedContainerPr
           isTrezor={isTrezor}
           isDeviceConnected={isDeviceConnected}
           fetchingDevice={fetchingDevice}
-          exportingExtendedPublicKey={exportingExtendedPublicKey}
+          isExportingExtendedPublicKey={isExportingExtendedPublicKey}
           isExportingPublicKeyAborted={isExportingPublicKeyAborted}
         />
       </Layout>

@@ -2,7 +2,7 @@
 import TransportNodeHid from "@ledgerhq/hw-transport-node-hid";
 import AppAda, { utils } from "@cardano-foundation/ledgerjs-hw-app-cardano"; //"@cardano-foundation/ledgerjs-hw-app-cardano";
 import { MainIpcChannel } from './lib/MainIpcChannel';
-import { GET_HARDWARE_WALLET_TRANSPORT_CHANNEL, GET_EXTENDED_PUBLIC_KEY_CHANNEL, GET_CARDANO_ADA_APP_CHANNEL } from '../../common/ipc/api';
+import { GET_HARDWARE_WALLET_TRANSPORT_CHANNEL, GET_EXTENDED_PUBLIC_KEY_CHANNEL, GET_CARDANO_ADA_APP_CHANNEL, GET_HARDWARE_WALLET_CONNECTION_CHANNEL } from '../../common/ipc/api';
 import type {
   getHardwareWalletTransportRendererRequest,
   getHardwareWalletTransportMainResponse,
@@ -23,6 +23,11 @@ const getCardanoAdaAppChannel: MainIpcChannel<
   getCardanoAdaAppMainResponse
 > = new MainIpcChannel(GET_CARDANO_ADA_APP_CHANNEL);
 
+const getHardwareWalletConnectionChannel: MainIpcChannel<
+  getHardwareWalletConnectiontMainRequest,
+  getHardwareWalletConnectiontRendererResponse
+> = new MainIpcChannel(GET_HARDWARE_WALLET_CONNECTION_CHANNEL);
+
 
 const connectedDevice = 'xxx';
 class EventObserver {
@@ -37,6 +42,21 @@ class EventObserver {
       console.debug('>>> CURRENT: ', this.connectedDevice);
       this.connectedDevice = eventText.device.productId;
       console.debug('>>>> THIS: ', this);
+      try {
+        console.debug('>>> getHardwareWalletConnectionChannel: ', getHardwareWalletConnectionChannel);
+        getHardwareWalletConnectionChannel.send({ disconnected: true });
+      } catch (e) {
+        console.debug('>>> ERROR - SENDER: ', e)
+      }
+    }
+    if (eventText.type === 'remove') {
+      console.debug('>>> D I S C O N N E C T <<<');
+      try {
+        console.debug('>>> getHardwareWalletConnectionChannel: ', getHardwareWalletConnectionChannel);
+        getHardwareWalletConnectionChannel.send({ disconnected: true });
+      } catch (e) {
+        console.debug('>>> ERROR - SENDER: ', e)
+      }
     }
   }
   error(e) {

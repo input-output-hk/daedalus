@@ -99,28 +99,33 @@ export default class TransactionsStore extends Store {
     this.registerReactions([this._ensureFilterOptionsForActiveWallet]);
   }
 
+  @computed get transactionsWallet(): string {
+    const { isHardwareWalletRoute, active, activeHardwareWallet } = this.stores.wallets;
+    return isHardwareWalletRoute ? activeHardwareWallet : active;
+  }
+
   @computed get recentTransactionsRequest(): Request<GetTransactionsResponse> {
-    const wallet = this.stores.wallets.active;
+    const wallet = this.transactionsWallet;
     // TODO: Do not return new request here
     if (!wallet) return new Request(this.api.ada.getTransactions);
     return this._getTransactionsRecentRequest(wallet.id);
   }
 
   @computed get searchRequest(): Request<GetTransactionsResponse> {
-    const wallet = this.stores.wallets.active;
+    const wallet = this.transactionsWallet;
     // TODO: Do not return new request here
     if (!wallet) return new Request(this.api.ada.getTransactions);
     return this._getTransactionsAllRequest(wallet.id);
   }
 
   @computed get filterOptions(): ?TransactionFilterOptionsType {
-    const wallet = this.stores.wallets.active;
+    const wallet = this.transactionsWallet;
     if (!wallet) return null;
     return this._filterOptionsForWallets[wallet.id];
   }
 
   @computed get all(): Array<WalletTransaction> {
-    const wallet = this.stores.wallets.active;
+    const wallet = this.transactionsWallet;
     if (!wallet) return [];
     const request = this._getTransactionsAllRequest(wallet.id);
 
@@ -146,7 +151,7 @@ export default class TransactionsStore extends Store {
   }
 
   @computed get recent(): Array<WalletTransaction> {
-    const wallet = this.stores.wallets.active;
+    const wallet = this.transactionsWallet;
     if (!wallet) return [];
     const results = this._getTransactionsRecentRequest(wallet.id).result;
     return results ? results.transactions : [];
@@ -159,28 +164,28 @@ export default class TransactionsStore extends Store {
   }
 
   @computed get hasAnyFiltered(): boolean {
-    const wallet = this.stores.wallets.active;
+    const wallet = this.transactionsWallet;
     if (!wallet) return false;
     const results = this._getTransactionsAllRequest(wallet.id).result;
     return results ? results.transactions.length > 0 : false;
   }
 
   @computed get hasAny(): boolean {
-    const wallet = this.stores.wallets.active;
+    const wallet = this.transactionsWallet;
     if (!wallet) return false;
     const results = this._getTransactionsRecentRequest(wallet.id).result;
     return results ? results.total > 0 : false;
   }
 
   @computed get totalAvailable(): number {
-    const wallet = this.stores.wallets.active;
+    const wallet = this.transactionsWallet;
     if (!wallet) return 0;
     const results = this._getTransactionsAllRequest(wallet.id).result;
     return results ? results.total : 0;
   }
 
   @computed get totalFilteredAvailable(): number {
-    const wallet = this.stores.wallets.active;
+    const wallet = this.transactionsWallet;
     if (!wallet) return 0;
     const results = this._getTransactionsAllRequest(wallet.id).result;
     return results ? results.transactions.length : 0;
@@ -280,7 +285,7 @@ export default class TransactionsStore extends Store {
   @action _updateFilterOptions = (
     filterOptions: TransactionFilterOptionsType
   ) => {
-    const wallet = this.stores.wallets.active;
+    const wallet = this.transactionsWallet;
     if (!wallet) return false;
     const currentFilterOptions = this._filterOptionsForWallets[wallet.id];
     this._filterOptionsForWallets[wallet.id] = {
@@ -291,7 +296,7 @@ export default class TransactionsStore extends Store {
   };
 
   @action _clearFilterOptions = () => {
-    const wallet = this.stores.wallets.active;
+    const wallet = this.transactionsWallet;
     if (!wallet) return false;
     this._filterOptionsForWallets[wallet.id] = {
       ...emptyTransactionFilterOptions,
@@ -324,7 +329,7 @@ export default class TransactionsStore extends Store {
    * @private
    */
   _ensureFilterOptionsForActiveWallet = () => {
-    const wallet = this.stores.wallets.active;
+    const wallet = this.transactionsWallet;
     if (!wallet) return false;
     const options = this._filterOptionsForWallets[wallet.id];
     if (!options) {

@@ -128,6 +128,9 @@ export default class WalletsStore extends Store {
   @observable unsetHardwareWalletRequest: Request<void> = new Request(
     this.api.localStorage.unsetHardwareWallet
   );
+  @observable setHardwareWalletConnectionStatusRequest: Request<HardwareWallet> = new Request(
+    this.api.localStorage.setHardwareWalletConnectionStatus
+  );
 
 
   /* ----------  Create Wallet  ---------- */
@@ -459,11 +462,18 @@ export default class WalletsStore extends Store {
       console.debug('>>> LC data 1: ', LCData1);
       console.debug('>>> LC data 2: ', LCData2);
 
-      this.goToHardwareWalletRoute(wallet.id);
+
+      this._setActiveHardwareWallet({ walletId: wallet.id });
+
+      // this.goToHardwareWalletRoute(wallet.id);
       this.refreshWalletsData();
     } catch (error) {
       throw error;
     }
+  }
+
+  @action _setHardwareWalletConnectionStatus = async (params: { walletId: string, disconnected: boolean }) => {
+    await this.setHardwareWalletConnectionStatusRequest.execute(params);
   }
 
   _finishWalletBackup = async () => {
@@ -1034,13 +1044,14 @@ export default class WalletsStore extends Store {
         )
         .map((wallet: Wallet) => wallet.id);
       await this.actions.walletsLocal.refreshWalletsLocalData.trigger();
-      const aa = await this.getHardwareWalletRequest.execute();
-      console.debug('>>>>> DONE <<<<: ', aa);
+      await this.getHardwareWalletRequest.execute();
+
       runInAction('refresh active wallet', () => {
         if (this.active) {
           this._setActiveWallet({ walletId: this.active.id });
         }
       });
+      console.debug('>>>> ids: ', walletIds);
       runInAction('refresh address data', () => {
         this.stores.addresses.addressesRequests = walletIds.map(walletId => ({
           walletId,
@@ -1048,6 +1059,9 @@ export default class WalletsStore extends Store {
         }));
         this.stores.addresses._refreshAddresses();
       });
+
+      console.debug('>>>> addressesRequests(): ', this.stores.addresses.addressesRequests);
+
       runInAction('refresh transaction data', () => {
         this.stores.transactions.transactionsRequests = walletIds.map(
           walletId => ({
@@ -1126,6 +1140,7 @@ export default class WalletsStore extends Store {
       allHardwareWallets: this.allHardwareWallets,
     });
     if (this.allHardwareWallets.length > 0) {
+      console.debug('>>>> PHASE 1');
       const activeWalletId = this.activeHardwareWallet ? this.activeHardwareWallet.id : null;
       const newActiveWallet = this.allHardwareWallets.find(wallet => wallet.id === walletId);
       if (
@@ -1133,20 +1148,28 @@ export default class WalletsStore extends Store {
         newActiveWallet &&
         newActiveWallet.isNotResponding
       ) {
+        console.debug('>>>> PHASE 2');
         this.actions.router.goToRoute.trigger({
           route: ROUTES.HARDWARE_WALLETS.PAGE,
           params: { id: newActiveWallet.id, page: 'summary' },
         });
       }
       const hasActiveWalletBeenChanged = activeWalletId !== walletId;
-      const hasActiveWalletBeenUpdated = !isEqual(this.active, newActiveWallet);
+      const hasActiveWalletBeenUpdated = !isEqual(this.activeHardwareWallet, newActiveWallet);
+      console.debug('>>>> PHASE 3: ', {
+        hasActiveWalletBeenChanged,
+        hasActiveWalletBeenUpdated,
+      });
       if (hasActiveWalletBeenChanged) {
+        console.debug('>>>> PHASE 4.1');
         // Active wallet has been replaced or removed
         this.activeHardwareWallet = newActiveWallet || null;
         if (this.activeHardwareWallet) {
+          console.debug('>>>> PHASE 4.1.1');
           this.activeHardwareWalletValue = formattedWalletAmount(this.activeHardwareWallet.amount);
         }
       } else if (hasActiveWalletBeenUpdated) {
+        console.debug('>>>> PHASE 4.2');
         // Active wallet has been updated
         if (this.activeHardwareWallet && newActiveWallet) this.activeHardwareWallet.update(newActiveWallet);
       }

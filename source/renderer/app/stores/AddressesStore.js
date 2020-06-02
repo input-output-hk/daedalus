@@ -6,6 +6,7 @@ import CachedRequest from './lib/LocalizedCachedRequest';
 import WalletAddress from '../domains/WalletAddress';
 import Request from './lib/LocalizedRequest';
 import LocalizableError from '../i18n/LocalizableError';
+import { getRawWalletId } from '../api/utils';
 import type { Address } from '../api/addresses/types';
 
 export default class AddressesStore extends Store {
@@ -58,22 +59,29 @@ export default class AddressesStore extends Store {
     }
   };
 
+  @computed get addressesWallet(): string {
+    const { isHardwareWalletRoute, active, activeHardwareWallet } = this.stores.wallets;
+    return isHardwareWalletRoute ? activeHardwareWallet : active;
+  }
+
   @computed get all(): Array<WalletAddress> {
-    const wallet = this.stores.wallets.active;
+    const wallet = this.addressesWallet;
+    console.debug('>>> GET ALL Addresses - wallet: ', wallet);
     if (!wallet) return [];
     const addresses = this._getAddressesAllRequest(wallet.id).result;
+    console.debug('>>> GET ALL Addresses - addresses: ', addresses, wallet.id);
     return addresses || [];
   }
 
   @computed get hasAny(): boolean {
-    const wallet = this.stores.wallets.active;
+    const wallet = this.addressesWallet;
     if (!wallet) return false;
     const addresses = this._getAddressesAllRequest(wallet.id).result;
     return addresses ? addresses.length > 0 : false;
   }
 
   @computed get active(): ?WalletAddress {
-    const wallet = this.stores.wallets.active;
+    const wallet = this.addressesWallet;
     if (!wallet) return null;
 
     // If address generated and not used, set as active address
@@ -93,7 +101,7 @@ export default class AddressesStore extends Store {
   }
 
   @computed get totalAvailable(): number {
-    const wallet = this.stores.wallets.active;
+    const wallet = this.addressesWallet;
     if (!wallet) return 0;
     const addresses = this._getAddressesAllRequest(wallet.id).result;
     return addresses ? addresses.length : 0;
@@ -101,12 +109,20 @@ export default class AddressesStore extends Store {
 
   @action _refreshAddresses = () => {
     if (this.stores.networkStatus.isConnected) {
-      const { all } = this.stores.wallets;
+      const { all, allHardwareWallets } = this.stores.wallets;
       for (const wallet of all) {
         const { id: walletId, isLegacy } = wallet;
+        console.debug('>>> REFRESH ADDRESSES: ', walletId);
         const allRequest = this._getAddressesAllRequest(walletId);
         allRequest.invalidate({ immediately: false });
         allRequest.execute({ walletId, isLegacy });
+      }
+
+      for (const hardwareWallet of allHardwareWallets) {
+        const { id: walletId } = hardwareWallet;
+        const allRequest = this._getAddressesAllRequest(walletId);
+        allRequest.invalidate({ immediately: false });
+        allRequest.execute({ walletId, isLegacy: false, isHardwareWallet: true });
       }
     }
   };
@@ -135,6 +151,7 @@ export default class AddressesStore extends Store {
     walletId: string
   ): CachedRequest<Array<WalletAddress>> => {
     const foundRequest = find(this.addressesRequests, { walletId });
+    console.debug('>>>> _getAddressesAllRequest:: FOUNT REQUEST: ', walletId, foundRequest);
     if (foundRequest && foundRequest.allRequest) return foundRequest.allRequest;
     return new CachedRequest(this.api.ada.getAddresses);
   };

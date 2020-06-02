@@ -5,7 +5,10 @@ import { get } from 'lodash';
 import MainLayout from '../MainLayout';
 import { buildRoute } from '../../utils/routing';
 import { ROUTES } from '../../routes-config';
-import HardwareWalletWithNavigation from '../../components/hardware-wallet/layouts/HardwareWalletWithNavigation';
+import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavigation';
+import HardwareWalletAddPage from './HardwareWalletAddPage';
+import ChangeSpendingPasswordDialog from '../../components/wallet/settings/ChangeSpendingPasswordDialog';
+import LoadingSpinner from '../../components/widgets/LoadingSpinner';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 import type { NavDropdownProps } from '../../components/navigation/Navigation';
 
@@ -48,40 +51,73 @@ export default class HardwareWallet extends Component<Props> {
     });
   };
 
+  // componentDidMount() {
+  //   console.debug('!!!!!!! INITIATE POLLER !!!!!!!!');
+  //   const { startDeviceFetchPoller } = this.props.stores.hardwareWallets;
+  //   startDeviceFetchPoller();
+  // }
+
+  // componentWillUnmount() {
+  //   const { stopDeviceFetchPoller, resetInitializedConnection, isDeviceConnected, isExtendedPublicKeyExported } = this.props.stores.hardwareWallets;
+  //   console.debug('!!!!!!! STOP POLLER !!!!!!!!', isDeviceConnected, isExtendedPublicKeyExported);
+  //   stopDeviceFetchPoller();
+  //   if (!isDeviceConnected || (isDeviceConnected && !isExtendedPublicKeyExported)) {
+  //     resetInitializedConnection();
+  //   }
+  // }
+
   render() {
     const { actions, stores } = this.props;
-    const { app, wallets, walletSettings } = stores;
+    const { app, wallets, walletSettings, hardwareWallets, uiDialogs } = stores;
+    const { isOpen: isDialogOpen } = uiDialogs;
     const { restartNode } = actions.networkStatus;
 
     const { activeHardwareWallet } = wallets;
+
+    // if (!activeHardwareWallet) {
+    //   return (
+    //     <MainLayout>
+    //       <LoadingSpinner />
+    //     </MainLayout>
+    //   );
+    // }
+
     const activeHardwareWalletId = get(activeHardwareWallet, 'id', null);
+    const hasPassword = get(activeHardwareWallet, 'hasPassword', null);
 
     const {
-      isDeviceConnected,
-      fetchingDevice,
-      exportingExtendedPublicKey,
-      isExportingPublicKeyAborted,
-      isTrezor,
       availableHardwareWalletDevices,
     } = wallets;
+
+    const {
+      fetchingDevice,
+      isDeviceConnected,
+      isExportingExtendedPublicKey,
+      isExtendedPublicKeyExported,
+      isExportingPublicKeyAborted,
+      isTrezor,
+      isLedger,
+    } = hardwareWallets;
 
     const {
       hasNotification,
     } = walletSettings.getWalletsRecoveryPhraseVerificationData(activeHardwareWalletId);
     const isWalletDisconnected = get(availableHardwareWalletDevices, [activeHardwareWalletId, 'disconnected'], true);
 
-    // @todo - remove after adding logic from store
-    const isLedger = true;
+
+    if (isWalletDisconnected)
+      return <HardwareWalletAddPage />;
 
     return (
       <MainLayout>
-        <HardwareWalletWithNavigation
+        <WalletWithNavigation
           activeItem={app.currentPage}
           hasNotification={hasNotification}
           isWalletConnected={!isWalletDisconnected}
           isDeviceConnected={isDeviceConnected}
           fetchingDevice={fetchingDevice}
-          exportingExtendedPublicKey={exportingExtendedPublicKey}
+          isExportingExtendedPublicKey={isExportingExtendedPublicKey}
+          isExtendedPublicKeyExported={isExtendedPublicKeyExported}
           isExportingPublicKeyAborted={isExportingPublicKeyAborted}
           isLedger={isLedger}
           isTrezor={isTrezor}
@@ -89,9 +125,18 @@ export default class HardwareWallet extends Component<Props> {
           onOpenExternalLink={(url: string) => stores.app.openExternalLink(url)}
           onRestartNode={() => restartNode.trigger()}
           onWalletNavItemClick={this.handleWalletNavItemClick}
+          hasPassword={hasPassword}
+          isSetWalletPasswordDialogOpen={isDialogOpen(
+            ChangeSpendingPasswordDialog
+          )}
+          onSetWalletPassword={() => {
+            actions.dialogs.open.trigger({
+              dialog: ChangeSpendingPasswordDialog,
+            });
+          }}
         >
           {this.props.children}
-        </HardwareWalletWithNavigation>
+        </WalletWithNavigation>
       </MainLayout>
     );
   }

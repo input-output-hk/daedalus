@@ -268,8 +268,38 @@ export default class LocalStorageApi {
     return hardwareWalletData;
   };
 
+  // daedalus.api.localStorage.setHardwareWalletConnectionStatus({walletId: "hw_d5184982ea26e8f6335e04b93c8d64cac7b1f678", disconnected: false})
+  setHardwareWalletConnectionStatus = async (params: { walletId: string, disconnected: boolean }): Promise<HardwareWallet> => {
+    const { walletId, disconnected } = params;
+    console.debug('>>>> setHardwareWalletConnectionStatus: ', params);
+    const currentHardwareWalletData = await this.getHardwareWallet2(walletId);
+    console.debug('>>> currentHardwareWalletData: ', currentHardwareWalletData);
+    const data = {
+      ...currentHardwareWalletData,
+      disconnected,
+    }
+    const unmutableData = { id: walletId };
+    const hardwareWalletData = Object.assign(
+      {},
+      data,
+      unmutableData,
+    );
+
+    await LocalStorageApi.set(
+      `${this.storageKeys.HARDWARE_WALLETS}.${walletId}`,
+      hardwareWalletData,
+    );
+
+    console.debug('>>> setHardwareWalletDisconnected: ', hardwareWalletData);
+
+    return hardwareWalletData;
+  };
+
   unsetHardwareWallet = (walletId: string): Promise<void> =>
     LocalStorageApi.unset(`${this.storageKeys.HARDWARE_WALLETS}.${walletId}`);
+
+  unsetHardwareWalletAll = (): Promise<void> =>
+    LocalStorageApi.unset(this.storageKeys.HARDWARE_WALLETS);
 
   reset = async () => {
     await this.unsetUserLocale();
@@ -282,5 +312,6 @@ export default class LocalStorageApi {
     await this.unsetDataLayerMigrationAcceptance();
     await this.unsetReadNews();
     await this.unsetWalletMigrationStatus();
+    await this.unsetHardwareWalletAll();
   };
 }

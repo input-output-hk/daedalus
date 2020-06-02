@@ -4,7 +4,6 @@ import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import HardwareWalletNavigation from '../navigation/HardwareWalletNavigation';
 import styles from './HardwareWalletWithNavigation.scss';
-import ConnectHardwareWallet from '../settings/ConnectHardwareWallet';
 
 type Props = {
   children?: Node,
@@ -37,33 +36,21 @@ export default class HardwareWalletWithNavigation extends Component<Props> {
       isTrezor,
       isDeviceConnected,
       fetchingDevice,
-      exportingExtendedPublicKey,
+      isExportingExtendedPublicKey,
+      isExtendedPublicKeyExported,
       isExportingPublicKeyAborted,
     } = this.props;
 
     return (
       <div className={styles.component}>
-        {!isWalletConnected ? (
-          <ConnectHardwareWallet
-            onOpenExternalLink={onOpenExternalLink}
-            isLedger={isLedger}
-            isTrezor={isTrezor}
-            isDeviceConnected={isDeviceConnected}
-            fetchingDevice={fetchingDevice}
-            exportingExtendedPublicKey={exportingExtendedPublicKey}
-            isExportingPublicKeyAborted={isExportingPublicKeyAborted}
+        <div className={styles.navigation}>
+          <HardwareWalletNavigation
+            isActiveNavItem={isActiveScreen}
+            onNavItemClick={onWalletNavItemClick}
+            activeItem={activeItem}
+            hasNotification={hasNotification}
           />
-        ) : (
-          <div className={styles.navigation}>
-            <HardwareWalletNavigation
-              isActiveNavItem={isActiveScreen}
-              onNavItemClick={onWalletNavItemClick}
-              activeItem={activeItem}
-              hasNotification={hasNotification}
-            />
-          </div>
-        )}
-
+        </div>
         <div className={styles.page}>{children}</div>
       </div>
     );
