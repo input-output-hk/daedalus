@@ -9737,10 +9737,9 @@ node-dir@^0.1.10:
   dependencies:
     minimatch "^3.0.2"
 
-node-downloader-helper@1.0.13:
-  version "1.0.13"
-  resolved "https://registry.yarnpkg.com/node-downloader-helper/-/node-downloader-helper-1.0.13.tgz#bbed82ba9c5b0722d56cbb8770c0300f7785a400"
-  integrity sha512-HdwSd8tnC06dIWLFBSTGHlcPKXo308815J4m/1e/NkSd6gmdDaO6KSf9JON5fXt3R5Vdw5bgQvSrgSq4GXjYvg==
+node-downloader-helper@1.0.12:
+  version "1.0.12"
+  resolved "https://registry.yarnpkg.com/node-downloader-helper/-/node-downloader-helper-1.0.12.tgz#9b11d5fbde2923d17a662ddc819e36ae262edf71"
 
 node-emoji@^1.10.0:
   version "1.10.0"

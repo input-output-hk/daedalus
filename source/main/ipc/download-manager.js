@@ -79,13 +79,16 @@ const requestDownload = async (
     download.__total = downloadSize;
     download.__filePath = data.destinationPath + data.temporaryFilename;
     download.__progress = progressPerc;
-    download.__isResumed = true;
+    // download.__isResumed = true;
     download.__isResumable = true;
   }
 
   download.on('start', eventActions.start);
   download.on('download', eventActions.download);
-  download.on('progress.throttled', eventActions.progress);
+  download.on('progress.throttled', (...p) => {
+    console.log('progress:', p);
+    eventActions.progress(...p);
+  });
   download.on('end', eventActions.end);
   download.on('error', eventActions.error);
   if (resumeDownload) download.resume();

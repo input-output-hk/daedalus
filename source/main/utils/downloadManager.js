@@ -62,6 +62,7 @@ export const getEventActions = async (
     start: async () => {
       const eventType = types.START;
       const progress = DOWNLOAD_PROGRESS_DEFAULT;
+      console.log('START');
       requestDownloadChannel.send(
         {
           eventType,
@@ -75,6 +76,7 @@ export const getEventActions = async (
       totalSize: serverFileSize,
       downloadedSize: diskFileSize,
     }: DownloadInfoInit) => {
+      console.log('DOWNLOAD', serverFileSize, diskFileSize);
       const rawProgress: DownloadProgressUpdate = {
         ...{
           serverFileSize,
@@ -127,6 +129,7 @@ export const getEventActions = async (
       onDiskSize: diskFileSize,
       incomplete,
     }: DownloadInfoEnd) => {
+      console.log('END', downloadSize, diskFileSize, incomplete);
       const rawProgress: DownloadProgressUpdate = {
         ...{
           downloadSize,
@@ -155,6 +158,7 @@ export const getEventActions = async (
       if (!persistLocalData) await localStorage.unset(downloadId);
     },
     error: async ({ message }: DownloadInfoError) => {
+      console.log('ERROR', message);
       const rawProgress: DownloadProgressUpdate = {
         ...{
           message,
