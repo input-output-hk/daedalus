@@ -6,7 +6,8 @@ import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import ledgerIcon from '../../../assets/images/hardware-wallet/ledger-cropped.inline.svg';
 import ledgerXIcon from '../../../assets/images/hardware-wallet/ledger-x-cropped-outlines.inline.svg';
-import trezorIcon from '../../../assets/images/hardware-wallet/trezor-ledger.inline.svg';
+import trezorIcon from '../../../assets/images/hardware-wallet/trezor.inline.svg';
+import unknownDeviceIcon from '../../../assets/images/hardware-wallet/trezor-ledger.inline.svg';
 import exportIcon from '../../../assets/images/hardware-wallet/export.inline.svg';
 import checkIcon from '../../../assets/images/hardware-wallet/check.inline.svg';
 import clearIcon from '../../../assets/images/hardware-wallet/close-cross-red.inline.svg';
@@ -94,16 +95,17 @@ export default class ConnectHardwareWallet extends Component<Props> {
       isExportingPublicKeyAborted,
     } = this.props;
 
-
     console.debug('LAYOUT PROPS:', this.props);
 
-    const hardwareTitle = (!isTrezor && !isLedger)
-      ? intl.formatMessage(messages.hardwareWalletTitle)
-      : intl.formatMessage(messages.ledgerWalletTitle);
+    const hardwareTitle =
+      !isTrezor && !isLedger
+        ? intl.formatMessage(messages.hardwareWalletTitle)
+        : intl.formatMessage(messages.ledgerWalletTitle);
 
-    const hardwareConnectLabel = (!isTrezor && !isLedger)
-      ? messages.hardwareWalletBegin
-      : messages.hardwareWalletLedgerBegin;
+    const hardwareConnectLabel =
+      !isTrezor && !isLedger
+        ? messages.hardwareWalletBegin
+        : messages.hardwareWalletLedgerBegin;
 
     const firstStepClasses = classnames([
       styles.hardwareWalletStep,
@@ -121,15 +123,23 @@ export default class ConnectHardwareWallet extends Component<Props> {
       <div className={styles.component}>
         <div className={styles.hardwareWalletContainer}>
           <div className={styles.hardwareWalletWrapper}>
-            {(!isTrezor && !isLedger) && (
-              <div className={styles.hardwareWalletTrezor}>
-                <SVGInline svg={trezorIcon} className={styles.trezorIcon} />
+            {!isTrezor && !isLedger && (
+              <div className={styles.hardwareWalletUnknown}>
+                <SVGInline
+                  svg={unknownDeviceIcon}
+                  className={styles.unknownDeviceIcon}
+                />
               </div>
             )}
             {isLedger && (
               <div className={styles.hardwareWalletLedger}>
                 <SVGInline svg={ledgerXIcon} className={styles.ledgerXIcon} />
                 <SVGInline svg={ledgerIcon} className={styles.ledgerIcon} />
+              </div>
+            )}
+            {isTrezor && (
+              <div className={styles.hardwareWalletTrezor}>
+                <SVGInline svg={trezorIcon} className={styles.trezorIcon} />
               </div>
             )}
             <h2 className={styles.hardwareWalletTitle}>{hardwareTitle}</h2>
@@ -166,13 +176,19 @@ export default class ConnectHardwareWallet extends Component<Props> {
                       onOpenExternalLink(intl.formatMessage(messages.linkUrl))
                     }
                   />
-                  {!isExportingPublicKeyAborted && <FormattedHTMLMessage {...messages.hardwareWalletExport} />}
-                  {isExportingPublicKeyAborted && <FormattedHTMLMessage {...messages.hardwareWalletExportRejected} />}
+                  {!isExportingPublicKeyAborted && (
+                    <FormattedHTMLMessage {...messages.hardwareWalletExport} />
+                  )}
+                  {isExportingPublicKeyAborted && (
+                    <FormattedHTMLMessage
+                      {...messages.hardwareWalletExportRejected}
+                    />
+                  )}
                 </div>
                 {isExportingExtendedPublicKey && <LoadingSpinner />}
                 {isExtendedPublicKeyExported && (
-                    <SVGInline svg={checkIcon} className={styles.checkIcon} />
-                  )}
+                  <SVGInline svg={checkIcon} className={styles.checkIcon} />
+                )}
                 {isExportingPublicKeyAborted && (
                   <SVGInline svg={clearIcon} className={styles.clearIcon} />
                 )}

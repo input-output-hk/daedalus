@@ -1,6 +1,5 @@
 // @flow
 import BigNumber from 'bignumber.js';
-import { WalletUnits } from '../../domains/Wallet';
 import StakePool from '../../domains/StakePool';
 
 export type DelegationAction =
@@ -79,13 +78,6 @@ export type JoinStakePoolRequest = {
 
 export type GetDelegationFeeRequest = {
   walletId: string,
-};
-
-export type DelegationFee = {
-  amount: {
-    quantity: number,
-    unit: WalletUnits.LOVELACE,
-  },
 };
 
 export type QuitStakePoolRequest = {

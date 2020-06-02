@@ -3,6 +3,7 @@
 
 .component {
   @include button;
+  align-items: center;
   background-color: var(--theme-sidebar-menu-background-color);
   color: var(--theme-sidebar-menu-item-wallet-name-color);
   display: flex;
