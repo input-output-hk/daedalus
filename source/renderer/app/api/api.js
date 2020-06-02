@@ -182,7 +182,6 @@ import type { GetNewsResponse } from './news/types';
 import type {
   JoinStakePoolRequest,
   GetDelegationFeeRequest,
-  DelegationFee,
   AdaApiStakePools,
   AdaApiStakePool,
   QuitStakePoolRequest,
@@ -1770,7 +1769,7 @@ export default class AdaApi {
       parameters: filterLogData(request),
     });
     try {
-      const response: DelegationFee = await getDelegationFee(this.config, {
+      const response: TransactionFee = await getDelegationFee(this.config, {
         walletId: request.walletId,
       });
       logger.debug('AdaApi::calculateDelegationFee success', { response });
@@ -1985,6 +1984,14 @@ const _createMigrationFeeFromServerData = action(
   }
 );
 
+const _createDelegationFeeFromServerData = action(
+  'AdaApi::_createDelegationFeeFromServerData',
+  (data: TransactionFee) => {
+    const amount = get(data, ['estimated_max', 'quantity'], 0);
+    return new BigNumber(amount).dividedBy(LOVELACES_PER_ADA);
+  }
+);
+
 const _createStakePoolFromServerData = action(
   'AdaApi::_createStakePoolFromServerData',
   (stakePool: AdaApiStakePool, index: number) => {
@@ -2032,13 +2039,5 @@ const _createStakePoolFromServerData = action(
       retiring: null,
       saturation: saturation * 100,
     });
-  }
-);
-
-const _createDelegationFeeFromServerData = action(
-  'AdaApi::_createDelegationFeeFromServerData',
-  (data: DelegationFee) => {
-    const amount = get(data, ['amount', 'quantity'], 0);
-    return new BigNumber(amount).dividedBy(LOVELACES_PER_ADA);
   }
 );
