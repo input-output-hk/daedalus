@@ -31,11 +31,14 @@ const getHardwareWalletConnectionChannel: MainIpcChannel<
 
 const connectedDevice = 'xxx';
 class EventObserver {
-  constructor() {
+  constructor(props) {
+    console.debug('>>> INSTANTIATING: ', props);
     this.observers = [];
     this.connectedDevice = 'aaa';
+    this.test = props;
   }
   next(eventText) {
+    console.debug('>>> THIS: ', this);
     console.log('>> NEXT - EVENT:', eventText.type, eventText.device.productId);
     if (eventText.type === 'add') {
       console.debug('>>> SET CONNECTED DEVICE: ', eventText);
@@ -44,7 +47,7 @@ class EventObserver {
       console.debug('>>>> THIS: ', this);
       try {
         console.debug('>>> getHardwareWalletConnectionChannel: ', getHardwareWalletConnectionChannel);
-        getHardwareWalletConnectionChannel.send({ disconnected: true });
+        // getHardwareWalletConnectionChannel.send({ disconnected: true });
       } catch (e) {
         console.debug('>>> ERROR - SENDER: ', e)
       }
@@ -53,7 +56,8 @@ class EventObserver {
       console.debug('>>> D I S C O N N E C T <<<');
       try {
         console.debug('>>> getHardwareWalletConnectionChannel: ', getHardwareWalletConnectionChannel);
-        getHardwareWalletConnectionChannel.send({ disconnected: true });
+        const mainWindow = this.test;
+        getHardwareWalletConnectionChannel.send({ disconnected: true }, mainWindow);
       } catch (e) {
         console.debug('>>> ERROR - SENDER: ', e)
       }
@@ -67,14 +71,30 @@ class EventObserver {
   }
 }
 
+export const handleHardwareWalletDevices = (
+  mainWindow: BrowserWindow,
+) => {
+  console.debug('>>> HERE');
+  const handleCheckHardwareWalletDevices = async () => {
+    console.debug('>>> START LISTENER: ', mainWindow);
+    const observer = new EventObserver(mainWindow);
+    await TransportNodeHid.listen(observer);
+    console.debug('>>> LISTENING...');
+    // getHardwareWalletConnectionChannel.send({ disconnected: true }, mainWindow);
+  }
+
+  return handleCheckHardwareWalletDevices;
+}
+
 export const handleHardwareWalletRequests = async () => {
   // console.debug('>>> INITIATE START ');
   // const hw = TransportNodeHid.create();
   // console.debug('>>> INITIATE: ', hw);
-  console.debug('>>> observer INSTANCE');
-  const observer = new EventObserver();
-  console.debug('>>> listener INSTANCE');
-  const listener = await TransportNodeHid.listen(observer);
+
+  // console.debug('>>> observer INSTANCE');
+  // const observer = new EventObserver({ddd: 'tomo'});
+  // console.debug('>>> listener INSTANCE');
+  // const listener = await TransportNodeHid.listen(observer);
   let opaa = null;
   getHardwareWalletTransportChannel.onRequest(
     async () => {
@@ -83,9 +103,9 @@ export const handleHardwareWalletRequests = async () => {
       console.debug('>>>> INIT: ', opaa.transport.disconnected);
     }
 
-    console.debug('>>> transport - OBS: ', observer);
-    console.debug('>>> transport - OBS - ID: ', observer.connectedDevice);
-    console.debug('>>> transport - listen: ', listener);
+    // console.debug('>>> transport - OBS: ', observer);
+    // console.debug('>>> transport - OBS - ID: ', observer.connectedDevice);
+    // console.debug('>>> transport - listen: ', listener);
      try {
       const transportList = await TransportNodeHid.list();
       console.debug('>>> GET HW');
@@ -123,7 +143,7 @@ export const handleHardwareWalletRequests = async () => {
        console.debug('>>> APP version: ', appVersion);
        return Promise.resolve({
           ...hw,
-          connectedDeviceId: observer.connectedDevice,
+          // connectedDeviceId: observer.connectedDevice,
        });
     } catch (error) {
        console.debug('>>> IPC::getHardwareWalletTransportChannel - Error()', error);

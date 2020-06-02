@@ -472,11 +472,9 @@ export default class WalletsStore extends Store {
     }
   }
 
-  @action _setHardwareWalletConnectionStatus = async (params: { disconnected: boolean }) => {
-    await this.setHardwareWalletConnectionStatusRequest.execute({
-      disconnected: params.disconnected,
-      walletId: this.activeHardwareWallet.id, // @TODO
-    });
+  @action _setHardwareWalletConnectionStatus = async (params: { disconnected: boolean, walletId: string }) => {
+    console.debug('>>> SET HW STATUS: ', params);
+    await this.setHardwareWalletConnectionStatusRequest.execute(params);
   }
 
   _finishWalletBackup = async () => {

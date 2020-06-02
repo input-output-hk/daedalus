@@ -33,12 +33,24 @@ export default class HardwareWalletsStore extends Store {;
       this._getHardwareWalletDevice
     );
     getHardwareWalletConnectionChannel.onReceive(this._checkHardwareWalletConnection);
-  }
+  };
 
-  @action _checkHardwareWalletConnection = (params) => {
-    console.debug('>>>> C H E C K <<<< ', params);
-    this.actions.wallets._setHardwareWalletConnectionStatus(params);
-  }
+  _checkHardwareWalletConnection = async (params: { disconnected: boolean }) => {
+    const activeHardwareWalletId = get(this.stores, ['wallets', 'activeHardwareWallet', 'id'], null);
+    console.debug('>>>> C H E C K <<<< ', {
+      disconnected: params.disconnected,
+      activeHardwareWalletId,
+      stores: this.stores,
+      FN: this.stores.wallets._setHardwareWalletConnectionStatus,
+    });
+    await this.stores.wallets._setHardwareWalletConnectionStatus({
+      disconnected: params.disconnected,
+      walletId: activeHardwareWalletId,
+    });
+    console.debug('>>>> WALLET DISCONNECTED <<<< ');
+    this.stores.wallets.refreshWalletsData();
+    return activeHardwareWalletId;
+  };
 
   @action startDeviceFetchPoller = () => {
     console.debug('!!!!!!!! STORE:: startDeviceFetchPoller !!!!!!!!');
@@ -47,14 +59,14 @@ export default class HardwareWalletsStore extends Store {;
       this._establishConnection2,
       POLLING_DEVICES_INTERVAL
     );
-  }
+  };
 
   @action stopDeviceFetchPoller = (isConnected) => {
     console.debug('!!!!!!!! STORE:: stopDeviceFetchPoller !!!!!!!!');
     if (this.pollingDeviceInterval) clearInterval(this.pollingDeviceInterval);
     this.fetchingDevice = false;
     this.isDeviceConnected = isConnected;
-  }
+  };
 
   @action _establishConnection2 = async () => {
     console.debug('>>>> POLL');

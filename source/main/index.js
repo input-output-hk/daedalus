@@ -11,6 +11,7 @@ import {
   generateWalletMigrationReport,
 } from './utils/setupLogging';
 import { handleDiskSpace } from './utils/handleDiskSpace';
+import { handleHardwareWalletDevices } from './ipc/getHardwareWalletChannel';
 import { createMainWindow } from './windows/main';
 import { installChromeExtensions } from './utils/installChromeExtensions';
 import { environment } from './environment';
@@ -161,6 +162,10 @@ const onAppReady = async () => {
   };
   mainErrorHandler(onMainError);
   await handleCheckDiskSpace();
+
+  console.debug('>>> TRY to instantiate');
+  const handleCheckHardwareWalletDevices = handleHardwareWalletDevices(mainWindow);
+  await handleCheckHardwareWalletDevices();
 
   cardanoNode = setupCardanoNode(launcherConfig, mainWindow);
 
