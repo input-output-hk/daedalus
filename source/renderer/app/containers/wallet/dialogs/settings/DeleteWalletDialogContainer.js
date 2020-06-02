@@ -16,7 +16,8 @@ export default class DeleteWalletDialogContainer extends Component<Props> {
     const { uiDialogs, wallets, app } = stores;
     const dialogData = uiDialogs.dataForActiveDialog;
     const { updateDataForActiveDialog } = actions.dialogs;
-    const activeWallet = wallets.active;
+    const { isHardwareWalletRoute, active, activeHardwareWallet } = wallets;
+    const activeWallet = isHardwareWalletRoute ? activeHardwareWallet : active;
     const { deleteWalletRequest, isDeleting } = wallets;
     const {
       environment: { isTest },

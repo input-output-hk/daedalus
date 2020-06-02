@@ -579,12 +579,13 @@ export default class AdaApi {
       parameters: filterLogData(request),
     });
     try {
-      const { walletId, isLegacy } = request;
+      const { walletId, isLegacy, isHardwareWallet } = request;
+      const id = isHardwareWallet ? getRawWalletId(walletId, 'HARDWARE_WALLET_ID_PREFIX') : walletId;
       let response;
       if (isLegacy) {
-        response = await deleteLegacyWallet(this.config, { walletId });
+        response = await deleteLegacyWallet(this.config, { walletId: id });
       } else {
-        response = await deleteWallet(this.config, { walletId });
+        response = await deleteWallet(this.config, { walletId: id });
       }
       logger.debug('AdaApi::deleteWallet success', { response });
       return true;

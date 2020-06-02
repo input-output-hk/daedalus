@@ -518,38 +518,50 @@ export default class WalletsStore extends Store {
     });
     await this._pausePolling();
     const walletToDelete = this.getWalletById(params.walletId);
+    const { isHardwareWallet } = walletToDelete;
     if (!walletToDelete) {
       runInAction('AdaWalletsStore::isDeleting reset', () => {
         this.isDeleting = false;
       });
       return;
     }
-    const indexOfWalletToDelete = this.all.indexOf(walletToDelete);
+    const wallets = this.isHardwareWalletRoute ? this.allHardwareWallets : this.all;
+    const indexOfWalletToDelete = wallets.indexOf(walletToDelete);
     await this.deleteWalletRequest.execute({
       walletId: params.walletId,
       isLegacy: params.isLegacy || false,
+      isHardwareWallet,
     });
     await this.walletsRequest.patch(result => {
       result.splice(indexOfWalletToDelete, 1);
     });
+
     runInAction('AdaWalletsStore::_deleteWallet', () => {
       this.isDeleting = false;
-      if (this.hasAnyWallets) {
+      if (!isHardwareWallet && this.hasAnyWallets) {
         const nextIndexInList = Math.max(indexOfWalletToDelete - 1, 0);
         const nextWalletInList = this.all[nextIndexInList];
         this.goToWalletRoute(nextWalletInList.id);
+      } else if (isHardwareWallet && this.hasAnyHardwareWalletLoaded) {
+        const nextIndexInList = Math.max(indexOfWalletToDelete - 1, 0);
+        const nextWalletInList = this.allHardwareWallets[nextIndexInList];
+        this.goToHardwareWalletRoute(nextWalletInList.id);
       } else {
         this.active = null;
         this.activeValue = null;
         this.actions.router.goToRoute.trigger({
-          route: ROUTES.WALLETS.ADD,
+          route: isHardwareWallet ? ROUTES.HARDWARE_WALLETS.ADD : ROUTES.WALLETS.ADD,
         });
       }
     });
     this.actions.dialogs.closeActiveDialog.trigger();
-    this.actions.walletsLocal.unsetWalletLocalData.trigger({
-      walletId: params.walletId,
-    });
+    if (isHardwareWallet) {
+      await this.unsetHardwareWalletRequest.execute(params.walletId);
+    } else {
+      this.actions.walletsLocal.unsetWalletLocalData.trigger({
+        walletId: params.walletId,
+      });
+    }
     this._resumePolling();
     this.deleteWalletRequest.reset();
     this.refreshWalletsData();
@@ -862,10 +874,15 @@ export default class WalletsStore extends Store {
     return this.getHardwareWalletRequest.result;
   }
 
-  getWalletById = (id: string): ?Wallet => this.all.find(w => w.id === id);
+  getWalletById = (id: string): ?Wallet => {
+    const wallets = this.isHardwareWalletRoute ? this.allHardwareWallets : this.all;
+    return wallets.find(w => w.id === id)
+  };
 
-  getWalletByName = (name: string): ?Wallet =>
-    this.all.find(w => w.name === name);
+  getWalletByName = (name: string): ?Wallet => {
+    const wallets = this.isHardwareWalletRoute ? this.allHardwareWallets : this.all;
+    return wallets.find(w => w.name === name)
+  }
 
   getWalletRoute = (walletId: string, page: string = 'summary'): string =>
     buildRoute(ROUTES.WALLETS.PAGE, { id: walletId, page });
@@ -1160,7 +1177,7 @@ export default class WalletsStore extends Store {
       activeHardwareWallet: this.activeHardwareWallet,
       allHardwareWallets: this.allHardwareWallets,
     });
-    if (this.allHardwareWallets.length > 0) {
+    if (this.hasAnyHardwareWalletLoaded) {
       console.debug('>>>> PHASE 1');
       const activeWalletId = this.activeHardwareWallet ? this.activeHardwareWallet.id : null;
       const newActiveWallet = this.allHardwareWallets.find(wallet => wallet.id === walletId);
