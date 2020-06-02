@@ -58,9 +58,14 @@ const messages = defineMessages({
     defaultMessage: '!!!https://daedaluswallet.io/',
     description: 'External link URL on the hardware wallet connect screen',
   },
+  openCardanoAppLabel: {
+    id: 'wallet.hardware.openCardanoAppLabel',
+    defaultMessage: '!!!Open <span>Cardano app</span>',
+    description: 'Connected but Cardano app not launched',
+  },
   deviceConnectedLabel: {
     id: 'wallet.hardware.deviceConnectedLabel',
-    defaultMessage: '!!!Device accepted',
+    defaultMessage: '!!!{deviceType} device',
     description: 'Connected / Accepted device label',
   },
 });
@@ -73,6 +78,7 @@ type Props = {
   fetchingDevice: boolean,
   exportingExtendedPublicKey: boolean | null,
   isExportingPublicKeyAborted: boolean,
+  isCardanoAppLaunched: boolean,
 };
 
 @observer
@@ -93,6 +99,7 @@ export default class ConnectHardwareWallet extends Component<Props> {
       isExportingExtendedPublicKey,
       isExtendedPublicKeyExported,
       isExportingPublicKeyAborted,
+      isCardanoAppLaunched,
     } = this.props;
 
     console.debug('LAYOUT PROPS:', this.props);
@@ -153,20 +160,30 @@ export default class ConnectHardwareWallet extends Component<Props> {
                     svg={ledgerSmallIcon}
                     className={styles.ledgerSmallIcon}
                   />
-                  {isDeviceConnected ? (
-                    <FormattedHTMLMessage {...messages.deviceConnectedLabel} />
-                  ) : (
+                  {(!isDeviceConnected && !isCardanoAppLaunched && fetchingDevice) &&
                     <FormattedHTMLMessage {...hardwareConnectLabel} />
-                  )}
+                  }
+                  {(isDeviceConnected && !isCardanoAppLaunched && fetchingDevice) &&
+                    <FormattedHTMLMessage {...messages.openCardanoAppLabel} />
+                  }
+                  {(isDeviceConnected && isCardanoAppLaunched && !fetchingDevice) &&
+                    <FormattedHTMLMessage
+                      {...messages.deviceConnectedLabel}
+                      values={{
+                        deviceType: isLedger ? 'Ledger' : 'Trezor',
+                      }}
+                    />
+                  }
                 </div>
                 {fetchingDevice && <LoadingSpinner />}
-                {isDeviceConnected && (
+                {(isDeviceConnected && isCardanoAppLaunched && !fetchingDevice) && (
                   <SVGInline svg={checkIcon} className={styles.checkIcon} />
                 )}
                 {!fetchingDevice && !isDeviceConnected && (
                   <SVGInline svg={clearIcon} className={styles.clearIcon} />
                 )}
               </div>
+
               <div className={secondStepClasses}>
                 <div className={styles.hardwareWalletInnerStep}>
                   <SVGInline

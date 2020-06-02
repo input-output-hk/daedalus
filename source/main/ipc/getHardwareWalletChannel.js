@@ -46,7 +46,7 @@ class EventObserver {
       this.connectedDevice = eventText.device.productId;
       console.debug('>>>> THIS: ', this);
       try {
-        console.debug('>>> getHardwareWalletConnectionChannel: ', getHardwareWalletConnectionChannel);
+        // console.debug('>>> getHardwareWalletConnectionChannel: ', getHardwareWalletConnectionChannel);
         // getHardwareWalletConnectionChannel.send({ disconnected: true });
       } catch (e) {
         console.debug('>>> ERROR - SENDER: ', e)
@@ -136,11 +136,11 @@ export const handleHardwareWalletRequests = async () => {
 
 
 
-       console.debug('----- DONE ----: ', connectedDevice);
+       console.debug('----- DONE ----');
 
-       console.debug('>>> getCardanoAdaAppChannel');
-       const appVersion = await opaa.getVersion();
-       console.debug('>>> APP version: ', appVersion);
+       // console.debug('>>> getCardanoAdaAppChannel');
+       // const appVersion = await opaa.getVersion();
+       // console.debug('>>> APP version: ', appVersion);
        return Promise.resolve({
           ...hw,
           // connectedDeviceId: observer.connectedDevice,
@@ -153,10 +153,10 @@ export const handleHardwareWalletRequests = async () => {
   );
   getCardanoAdaAppChannel.onRequest(
     async (params) => {
+      console.debug('>>> PARAMS: ', params);
       const transportList = await TransportNodeHid.list();
       console.debug('>>> transport - OBS appAda: ', opaa);
       console.debug('>>> transport - OBS list: ', transportList);
-      console.debug('>>> PARAMS: ', params);
 
       // If transport is initialized outside Cardano ADA app it is set to disconnected so we need to reconnect same channel
       // if (opaa.transport.disconnected) {

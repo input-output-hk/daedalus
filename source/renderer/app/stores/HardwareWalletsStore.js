@@ -22,6 +22,8 @@ export default class HardwareWalletsStore extends Store {;
   @observable isExportingExtendedPublicKey: boolean = false;
   @observable isExtendedPublicKeyExported: boolean = false;
   @observable isExportingPublicKeyAborted: boolean = false;
+  @observable isCardanoAppLaunched: boolean = false;
+
 
   pollingDeviceInterval: ?IntervalID = null;
 
@@ -43,11 +45,13 @@ export default class HardwareWalletsStore extends Store {;
       stores: this.stores,
       FN: this.stores.wallets._setHardwareWalletConnectionStatus,
     });
+    if (!activeHardwareWalletId) return;
     await this.stores.wallets._setHardwareWalletConnectionStatus({
       disconnected: params.disconnected,
       walletId: activeHardwareWalletId,
     });
     console.debug('>>>> WALLET DISCONNECTED <<<< ');
+    this.resetInitializedConnection();
     this.stores.wallets.refreshWalletsData();
     return activeHardwareWalletId;
   };
@@ -55,10 +59,11 @@ export default class HardwareWalletsStore extends Store {;
   @action startDeviceFetchPoller = () => {
     console.debug('!!!!!!!! STORE:: startDeviceFetchPoller !!!!!!!!');
     this.fetchingDevice = true;
-    this.pollingDeviceInterval = setInterval(
-      this._establishConnection2,
-      POLLING_DEVICES_INTERVAL
-    );
+    // this.pollingDeviceInterval = setInterval(
+    //   this._establishConnection2,
+    //   POLLING_DEVICES_INTERVAL
+    // );
+    this._establishConnection2();
   };
 
   @action stopDeviceFetchPoller = (isConnected) => {
@@ -69,25 +74,34 @@ export default class HardwareWalletsStore extends Store {;
   };
 
   @action _establishConnection2 = async () => {
-    console.debug('>>>> POLL');
+    console.debug('>>>> ESTABLISH CONNECTION');
     try {
-      const device = await this._getHardwareWalletDevice();
-      console.debug('>>> ESTABLISHED <<<', device);
+      await this._getHardwareWalletDevice();
+      console.debug('>>> ESTABLISHED <<<', this.transport);
       /* runInAction('HardwareWalletsStore:: Connection established',() => {
         this.fetchingDevice = false;
       }); */
-      this.stopDeviceFetchPoller(true);
+
+      /* this.stopDeviceFetchPoller(true);
       await this._getExtendedPublicKey();
       await this.actions.wallets.createHardwareWallet.trigger({
         walletName: 'Hardware Wallet',
         extendedPublicKey: this.extendedPublicKey,
-        device,
+        device: this.transport,
       });
       console.debug('OOOOOOOOOO   START  OOOOOOOOO');
       this._setWalletConnected();
-      console.debug('OOOOOOOOOO   DONE  OOOOOOOOO');
+      console.debug('OOOOOOOOOO   DONE  OOOOOOOOO'); */
+
+
+      this.pollingDeviceInterval = setInterval(
+        this._getCardanoAdaApp,
+        POLLING_DEVICES_INTERVAL
+      );
+
     } catch (e) {
-      console.debug('>>> POLL - ERROR: ', e);
+      console.debug('>>> ESTABLISH CONNECTION - ERROR: ', e);
+      this._establishConnection2();
     }
   }
 
@@ -116,13 +130,11 @@ export default class HardwareWalletsStore extends Store {;
 
   @action _getHardwareWalletDevice = async () => {
     console.debug('>>> GET LEDGER <<<');
-    this.fetchingDevice = true;
     let transport = null;
     try {
       transport = await getHardwareWalletTransportChannel.request();
       console.debug('>>> transport: ', transport);
       this._setTransport(transport);
-      return transport;
     } catch (e) {
       console.debug('>>>> TRANSPORT ERROR: ', e);
       if (e.statusCode === 28177) {
@@ -139,16 +151,40 @@ export default class HardwareWalletsStore extends Store {;
     }
 
     runInAction(
-      'HardwareWalletsStore:: HW fetching finished',
+      'HardwareWalletsStore:: HW device connected',
       () => {
-        this.fetchingDevice = false;
+        // this.fetchingDevice = false;
         this.isDeviceConnected = true;
         this.transport = transport;
       }
     );
   };
 
-  @action _getCardanoAdaApp = async (isConnected = false) => {
+  @action _getCardanoAdaApp = async () => {
+    console.debug('>>> GET Cardano APP <<<');
+    try {
+      const cardanoAdaAppVersion = await getCardanoAdaAppChannel.request({
+        isConnected: true
+      });
+      console.debug('>>> GET Cardano APP - DONE <<<: ', cardanoAdaAppVersion);
+      this.stopDeviceFetchPoller(true)
+    } catch (error) {
+      console.debug('>>>> Cardano App error: ', error);
+      throw error;
+    }
+
+    console.debug('HardwareWalletsStore:: HW Cardano App launched');
+    runInAction(
+      'HardwareWalletsStore:: HW Cardano App launched',
+      () => {
+        this.fetchingDevice = false;
+        this.isCardanoAppLaunched = true;
+      }
+    );
+    await this._getExtendedPublicKey();
+  };
+
+  @action _getCardanoAdaApp22 = async (isConnected = false) => {
     try {
       console.debug('>>> isConnected: ', isConnected);
       const getCardanoAdaAppVersion = await getCardanoAdaAppChannel.request({
@@ -182,7 +218,17 @@ export default class HardwareWalletsStore extends Store {;
       });
       console.debug('>>> extendedPublicKey: ', extendedPublicKey);
       this._setExtendedPublicKey(extendedPublicKey);
-      return extendedPublicKey;
+
+
+      await this.actions.wallets.createHardwareWallet.trigger({
+        walletName: 'Hardware Wallet',
+        extendedPublicKey: this.extendedPublicKey,
+        device: this.transport,
+      });
+      console.debug('OOOOOOOOOO   START  OOOOOOOOO');
+      this._setWalletConnected();
+      console.debug('OOOOOOOOOO   DONE  OOOOOOOOO');
+
     } catch (e) {
       console.debug('>>>> extendedPublicKey ERROR: ', e);
       if (e.statusCode === 28169) {
@@ -199,7 +245,6 @@ export default class HardwareWalletsStore extends Store {;
 
   @action _setWalletConnected = () => {
     this.isExtendedPublicKeyExported = true;
-    this.isDeviceConnected = true;
   };
 
   @action setExportingPublicKeyToAborted = () => {
@@ -218,6 +263,7 @@ export default class HardwareWalletsStore extends Store {;
     this.transport = null;
     this.isLedger = false;
     this.isTrezor = false;
+    this.isCardanoAppLaunched = false;
   };
 
   @action _setTransport = (transport) => {

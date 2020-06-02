@@ -66,10 +66,8 @@ export default class AddressesStore extends Store {
 
   @computed get all(): Array<WalletAddress> {
     const wallet = this.addressesWallet;
-    console.debug('>>> GET ALL Addresses - wallet: ', wallet);
     if (!wallet) return [];
     const addresses = this._getAddressesAllRequest(wallet.id).result;
-    console.debug('>>> GET ALL Addresses - addresses: ', addresses, wallet.id);
     return addresses || [];
   }
 
@@ -112,7 +110,6 @@ export default class AddressesStore extends Store {
       const { all, allHardwareWallets } = this.stores.wallets;
       for (const wallet of all) {
         const { id: walletId, isLegacy } = wallet;
-        console.debug('>>> REFRESH ADDRESSES: ', walletId);
         const allRequest = this._getAddressesAllRequest(walletId);
         allRequest.invalidate({ immediately: false });
         allRequest.execute({ walletId, isLegacy });
@@ -151,7 +148,6 @@ export default class AddressesStore extends Store {
     walletId: string
   ): CachedRequest<Array<WalletAddress>> => {
     const foundRequest = find(this.addressesRequests, { walletId });
-    console.debug('>>>> _getAddressesAllRequest:: FOUNT REQUEST: ', walletId, foundRequest);
     if (foundRequest && foundRequest.allRequest) return foundRequest.allRequest;
     return new CachedRequest(this.api.ada.getAddresses);
   };

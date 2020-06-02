@@ -113,7 +113,6 @@ export default class SidebarStore extends Store {
   };
 
   @action _onHardwareWalletSelected = ({ walletId }: { walletId: string }) => {
-    console.debug('>>> goToHardwareWalletRoute - CALL: ', walletId);
     this.stores.wallets.goToHardwareWalletRoute(walletId);
   };
 
