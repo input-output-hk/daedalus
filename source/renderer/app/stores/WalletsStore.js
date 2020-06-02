@@ -445,6 +445,25 @@ export default class WalletsStore extends Store {
   @action _createHardwareWallet = async (params: { walletName: string, extendedPublicKey: string, device: Object }) => {
     console.debug('>>> PARAMS: ', params);
     const accountPublicKey = params.extendedPublicKey.publicKeyHex+params.extendedPublicKey.chainCodeHex;
+
+    // Check if public key matches active hardware wallet public key
+    if (this.activeHardwareWallet) {
+      const activeHardwareWalletId = this.activeHardwareWallet.id;
+      const storedActiveHardwareWallets = await this.getHardwareWalletRequest.execute(activeHardwareWalletId);
+      if (storedActiveHardwareWallets) {
+        const storedActiveHardwareWallet = storedActiveHardwareWallets[activeHardwareWalletId]
+        if (storedActiveHardwareWallet.publicKeyHex === params.extendedPublicKey.publicKeyHex) {
+          this._setHardwareWalletConnectionStatus({
+            disconnected: false,
+            walletId: activeHardwareWalletId,
+          })
+          this.refreshWalletsData();
+          return;
+        }
+        throw new Error('Wrong HW');
+      }
+    }
+
     try {
       const wallet = await this.createHardwareWalletRequest.execute({
         walletName: params.walletName,

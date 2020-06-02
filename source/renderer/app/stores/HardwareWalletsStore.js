@@ -99,8 +99,10 @@ export default class HardwareWalletsStore extends Store {;
 
 
     console.debug('Exporting public key...');
-    const extendedPublicKey = await this._getExtendedPublicKey();
-    console.debug('Extended public key Exported: ', extendedPublicKey);
+    await this._getExtendedPublicKey();
+    console.debug('Extended public key Exported: ', this.extendedPublicKey);
+
+
 
     console.debug('Creating HW...');
     this.actions.wallets.createHardwareWallet.trigger({
