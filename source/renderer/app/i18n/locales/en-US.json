@@ -521,6 +521,7 @@
   "wallet.hardware.hardwareWalletLedgerBegin": "To begin, connect and unlock your <span>Ledger Device</span>",
   "wallet.hardware.hardwareWalletTitle": "Hardware wallet",
   "wallet.hardware.ledgerWalletTitle": "Ledger wallet",
+  "wallet.hardware.tezorWalletTitle": "Trezor wallet",
   "wallet.import.file.dialog.buttonLabel": "Import wallets",
   "wallet.import.file.dialog.description": "<p>This feature enables you to import wallets from the previous version of Daedalus, from the Daedalus state directory, or from a ‘secret.key’ file.</p> <p>It can be used to import wallets quickly without entering the wallet recovery phrase for each wallet, or to import wallets for which you have lost your wallet recovery phrase.</p> <p>After importing a wallet for which you have lost your wallet recovery phrase, please create a new wallet and transfer all funds from the old wallet to the new wallet. <strong>Keep the wallet recovery phrase for your new wallet secure.</strong></p>",
   "wallet.import.file.dialog.importFromLabel": "Import from:",

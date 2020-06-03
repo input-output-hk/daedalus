@@ -26,6 +26,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Ledger wallet',
     description: 'Ledger wallet title.',
   },
+  tezorWalletTitle: {
+    id: 'wallet.hardware.tezorWalletTitle',
+    defaultMessage: '!!!Trezor wallet',
+    description: 'Trezor wallet title.',
+  },
   hardwareWalletInstructions: {
     id: 'wallet.hardware.hardwareWalletInstructions',
     defaultMessage: '!!!Follow instructions to access your wallet',
@@ -104,10 +109,12 @@ export default class ConnectHardwareWallet extends Component<Props> {
 
     console.debug('LAYOUT PROPS:', this.props);
 
-    const hardwareTitle =
-      !isTrezor && !isLedger
-        ? intl.formatMessage(messages.hardwareWalletTitle)
-        : intl.formatMessage(messages.ledgerWalletTitle);
+    const hardwareTitle = intl.formatMessage(messages.hardwareWalletTitle);
+    if (isTrezor) {
+      hardwareTitle = intl.formatMessage(messages.trezorWalletTitle);
+    } else if (isLedger) {
+      intl.formatMessage(messages.ledgerWalletTitle);
+    }
 
     const hardwareConnectLabel =
       !isTrezor && !isLedger
