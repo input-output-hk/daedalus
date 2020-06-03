@@ -1,10 +1,11 @@
 // @flow
 import { observable, action, runInAction, computed } from 'mobx';
-import AppAda, { utils } from "@cardano-foundation/ledgerjs-hw-app-cardano"; //"@cardano-foundation/ledgerjs-hw-app-cardano";
+import AppAda, { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano'; //"@cardano-foundation/ledgerjs-hw-app-cardano";
 import { get } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { getHardwareWalletTransportChannel, getExtendedPublicKeyChannel, getCardanoAdaAppChannel, getHardwareWalletConnectionChannel } from '../ipc/getHardwareWalletChannel';
+import type { WalletStatus } from '../types/walletRestoreTypes';
 
 const POLLING_DEVICES_INTERVAL = 1000;
 
@@ -24,6 +25,7 @@ export default class HardwareWalletsStore extends Store {;
   @observable isExportingPublicKeyAborted: boolean = false;
   @observable isCardanoAppLaunched: boolean = false;
 
+  @observable walletStatus: ?WalletStatus = null;
 
   pollingDeviceInterval: ?IntervalID = null;
 

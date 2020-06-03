@@ -30,15 +30,12 @@ export default class HardwareWalletAddPage extends Component<InjectedContainerPr
     const { app, hardwareWallets } = stores;
 
     const {
-      fetchingDevice,
-      isDeviceConnected,
       isExportingExtendedPublicKey,
-      isExtendedPublicKeyExported,
-      isExportingPublicKeyAborted,
       isCardanoAppLaunched,
       isTrezor,
       isLedger,
       transport,
+      walletStatus,
     } = hardwareWallets;
 
 
@@ -50,13 +47,10 @@ export default class HardwareWalletAddPage extends Component<InjectedContainerPr
     return (
       <Layout>
         <ConnectHardwareWallet
+          walletStatus={walletStatus}
           onOpenExternalLink={(url: string) => app.openExternalLink(url)}
           isLedger={isLedger}
           isTrezor={isTrezor}
-          isDeviceConnected={isDeviceConnected}
-          fetchingDevice={fetchingDevice}
-          isExportingExtendedPublicKey={isExportingExtendedPublicKey}
-          isExportingPublicKeyAborted={isExportingPublicKeyAborted}
           isCardanoAppLaunched={isCardanoAppLaunched}
         />
       </Layout>
