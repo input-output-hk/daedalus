@@ -239,9 +239,9 @@ export const WHITE_THEME_OUTPUT = {
     '--font-mono': 'SFMono-Light',
   },
   hardwareWallet: {
-    '--theme-hardware-wallet-step-background-color': '#fafbfc',
-    '--theme-hardware-wallet-step-border-active-color': '#296fd0',
-    '--theme-hardware-wallet-step-border-color': '#c6cdd6',
+    '--theme-hardware-wallet-step-background-color': '#ffffff',
+    '--theme-hardware-wallet-step-border-active-color': 'rgba(45, 45, 45, 0.5)',
+    '--theme-hardware-wallet-step-border-color': '#ffffff',
     '--theme-hardware-wallet-step-color': '#5e6066',
     '--theme-hardware-wallet-title-color': '#5e6066',
     '--theme-hardware-wallet-message-color': '#5e6066',
@@ -937,7 +937,6 @@ export const WHITE_THEME_OUTPUT = {
   },
   walletSettings: {
     '--theme-wallet-settings-section-separator-color': 'rgba(45, 45, 45, 0.15)',
-    '--theme-wallet-settings-resync-button-label-color': 'rgba(45, 45, 45, 1)',
   },
   walletNotRespondingOverlay: {
     '--theme-wallet-not-responding-background-color': '#fffffff5',

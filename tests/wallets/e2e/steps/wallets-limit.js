@@ -27,7 +27,6 @@ When(
       const walletMenuItems = await this.client.elements(
         '.SidebarWalletMenuItem_component'
       );
-      console.debug('>>> CHECK: ', walletMenuItems.value.length);
       return walletMenuItems.value.length === MAX_ADA_WALLETS_COUNT;
     });
   }
