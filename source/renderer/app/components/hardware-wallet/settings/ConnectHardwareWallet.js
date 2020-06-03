@@ -42,6 +42,12 @@ const messages = defineMessages({
       '!!!To begin, connect and unlock your <span>Ledger Device</span>',
     description: 'Connect device label',
   },
+  hardwareWalletTrezorBegin: {
+    id: 'wallet.hardware.hardwareWalletTrezorBegin',
+    defaultMessage:
+      '!!!To begin, connect and unlock your <span>Trezor Device</span>',
+    description: 'Connect device label',
+  },
   hardwareWalletBegin: {
     id: 'wallet.hardware.hardwareWalletBegin',
     defaultMessage:
@@ -116,10 +122,12 @@ export default class ConnectHardwareWallet extends Component<Props> {
       hardwareTitle = intl.formatMessage(messages.ledgerWalletTitle);
     }
 
-    const hardwareConnectLabel =
-      !isTrezor && !isLedger
-        ? messages.hardwareWalletBegin
-        : messages.hardwareWalletLedgerBegin;
+    let hardwareConnectLabel = intl.formatMessage(messages.hardwareWalletBegin);
+    if (isTrezor) {
+      hardwareConnectLabel = intl.formatMessage(messages.hardwareWalletTrezorBegin);
+    } else if (isLedger) {
+      hardwareConnectLabel = intl.formatMessage(messages.hardwareWalletLedgerBegin);
+    }
 
     const firstStepClasses = classnames([
       styles.hardwareWalletStep,
