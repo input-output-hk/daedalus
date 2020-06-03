@@ -5,11 +5,10 @@ import { get } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { getHardwareWalletTransportChannel, getExtendedPublicKeyChannel, getCardanoAdaAppChannel, getHardwareWalletConnectionChannel } from '../ipc/getHardwareWalletChannel';
-import type { WalletStatus } from '../types/walletRestoreTypes';
 
 const POLLING_DEVICES_INTERVAL = 1000;
 
-export default class HardwareWalletsStore extends Store {;
+export default class HardwareWalletsStore extends Store {
   @observable fetchingDevice: boolean = false;
   @observable transport: ?Object = null;
   @observable extendedPublicKey: string = null;
@@ -24,8 +23,6 @@ export default class HardwareWalletsStore extends Store {;
   @observable isExtendedPublicKeyExported: boolean = false;
   @observable isExportingPublicKeyAborted: boolean = false;
   @observable isCardanoAppLaunched: boolean = false;
-
-  @observable walletStatus: ?WalletStatus = null;
 
   pollingDeviceInterval: ?IntervalID = null;
 
@@ -95,7 +92,6 @@ export default class HardwareWalletsStore extends Store {;
       this._setWalletConnected();
       console.debug('OOOOOOOOOO   DONE  OOOOOOOOO'); */
 
-
       this.pollingDeviceInterval = setInterval(
         this._getCardanoAdaApp,
         POLLING_DEVICES_INTERVAL
@@ -105,7 +101,7 @@ export default class HardwareWalletsStore extends Store {;
       console.debug('>>> ESTABLISH CONNECTION - ERROR: ', e);
       this._establishConnection2();
     }
-  }
+  };
 
   @action _establishConnection = async () => {
     // Object.assign(this._newWalletDetails, params);
@@ -113,12 +109,9 @@ export default class HardwareWalletsStore extends Store {;
     const device = await this._getHardwareWalletDevice();
     console.debug('>>>> HW device found: ', device);
 
-
     console.debug('Exporting public key...');
     await this._getExtendedPublicKey();
     console.debug('Extended public key Exported: ', this.extendedPublicKey);
-
-
 
     console.debug('Creating HW...');
     this.actions.wallets.createHardwareWallet.trigger({
@@ -127,8 +120,7 @@ export default class HardwareWalletsStore extends Store {;
       device,
     });
     console.debug('HW Created!');
-
-  }
+  };
 
   @action _getHardwareWalletDevice = async () => {
     console.debug('>>> GET LEDGER <<<');

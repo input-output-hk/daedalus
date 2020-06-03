@@ -9,7 +9,6 @@ import trezorIcon from '../../../assets/images/hardware-wallet/trezor.inline.svg
 import unknownDeviceIcon from '../../../assets/images/hardware-wallet/trezor-ledger.inline.svg';
 import styles from './ConnectHardwareWallet.scss';
 import HardwareWalletStatus from '../status/HardwareWalletStatus';
-import type {WalletStatus} from '../../../types/walletRestoreTypes';
 
 const messages = defineMessages({
   hardwareWalletTitle: {
@@ -38,8 +37,12 @@ type Props = {
   onOpenExternalLink: Function,
   isLedger: boolean,
   isTrezor: boolean,
+  isDeviceConnected: boolean | null,
+  fetchingDevice: boolean,
+  isExportingExtendedPublicKey: boolean | null,
+  isExportingPublicKeyAborted: boolean,
+  isExtendedPublicKeyExported: boolean,
   isCardanoAppLaunched: boolean,
-  walletStatus: ?WalletStatus,
 };
 
 @observer
@@ -55,8 +58,12 @@ export default class ConnectHardwareWallet extends Component<Props> {
       onOpenExternalLink,
       isLedger,
       isTrezor,
+      isDeviceConnected,
+      fetchingDevice,
+      isExportingExtendedPublicKey,
+      isExportingPublicKeyAborted,
+      isExtendedPublicKeyExported,
       isCardanoAppLaunched,
-      walletStatus,
     } = this.props;
 
     let hardwareTitle = intl.formatMessage(messages.hardwareWalletTitle);
@@ -96,9 +103,13 @@ export default class ConnectHardwareWallet extends Component<Props> {
             <div className={styles.hardwareWalletStepsWrapper}>
               <HardwareWalletStatus
                 onOpenExternalLink={onOpenExternalLink}
+                isDeviceConnected={isDeviceConnected}
+                fetchingDevice={fetchingDevice}
+                isExportingExtendedPublicKey={isExportingExtendedPublicKey}
+                isExportingPublicKeyAborted={isExportingPublicKeyAborted}
+                isExtendedPublicKeyExported={isExtendedPublicKeyExported}
                 isTrezor={isTrezor}
                 isLedger={isLedger}
-                walletStatus={walletStatus}
                 isCardanoAppLaunched={isCardanoAppLaunched}
               />
             </div>

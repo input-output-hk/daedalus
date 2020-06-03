@@ -8,7 +8,6 @@ import checkIcon from '../../../assets/images/hardware-wallet/check.inline.svg';
 import clearIcon from '../../../assets/images/hardware-wallet/close-cross-red.inline.svg';
 import styles from './HardwareWalletStatus.scss';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
-import type { WalletStatus } from '../../../types/walletRestoreTypes';
 
 const messages = defineMessages({
   hardwareWalletInstructions: {
@@ -63,10 +62,14 @@ const messages = defineMessages({
 
 type Props = {
   onOpenExternalLink: Function,
+  isDeviceConnected: boolean,
+  fetchingDevice: boolean,
+  isExportingExtendedPublicKey: boolean,
+  isExportingPublicKeyAborted: boolean,
+  isExtendedPublicKeyExported: boolean,
   isLedger: boolean,
   isTrezor: boolean,
   isCardanoAppLaunched: boolean,
-  walletStatus: WalletStatus,
 };
 
 @observer
@@ -79,10 +82,14 @@ export default class HardwareWalletStatus extends Component<Props> {
     const { intl } = this.context;
 
     const {
+      isDeviceConnected,
+      fetchingDevice,
+      isExportingExtendedPublicKey,
+      isExportingPublicKeyAborted,
+      isExtendedPublicKeyExported,
       isLedger,
       isTrezor,
       isCardanoAppLaunched,
-      walletStatus,
     } = this.props;
 
     let hardwareConnectLabel = intl.formatMessage(messages.hardwareWalletBegin);
@@ -94,54 +101,30 @@ export default class HardwareWalletStatus extends Component<Props> {
 
     const walletStepClasses = classnames([
       styles.hardwareWalletStep,
-      !walletStatus ? styles.isError : null,
-      walletStatus === 'connect' ? styles.isActiveFetching : null,
-      walletStatus === 'export' ? styles.isActiveExport : null,
-      walletStatus === 'verifyTx' ? styles.isVerifyTx : null,
+      fetchingDevice ? styles.isActiveFetching : null,
+      isExportingExtendedPublicKey ? styles.isActiveExport : null,
+      isExportingPublicKeyAborted ? styles.isErrorExport : null,
     ]);
 
     return (
-      <div className={styles.hardwareWalletStepsWrapper}>
-        <div className={walletStepClasses}>
-          <div className={styles.hardwareWalletInnerStep}>
-            {(!isCardanoAppLaunched) &&
-            <FormattedHTMLMessage {...hardwareConnectLabel} />
-            }
-            {(!isCardanoAppLaunched) &&
-            <FormattedHTMLMessage {...messages.openCardanoAppLabel} />
-            }
-            {(isCardanoAppLaunched) &&
-            <FormattedHTMLMessage
-              {...messages.deviceConnectedLabel}
-              values={{
-                deviceType: isLedger ? 'Ledger' : 'Trezor',
-              }}
-            />
-            }
-          </div>
-          {<LoadingSpinner/>}
-          {(isCardanoAppLaunched) && (
-            <SVGInline svg={checkIcon} className={styles.checkIcon}/>
-          )}
-          {(
-            <SVGInline svg={clearIcon} className={styles.clearIcon}/>
-          )}
-          {(
-            <FormattedHTMLMessage {...messages.hardwareWalletExport} />
-          )}
-          {(
-            <FormattedHTMLMessage
-              {...messages.hardwareWalletExportRejected}
-            />
-          )}
-          {<LoadingSpinner/>}
-          {(
-            <SVGInline svg={checkIcon} className={styles.checkIcon}/>
-          )}
-          {(
-            <SVGInline svg={clearIcon} className={styles.clearIcon}/>
-          )}
+      <div className={walletStepClasses}>
+        <div className={styles.hardwareWalletInnerStep}>
+          {!isCardanoAppLaunched && <FormattedHTMLMessage {...messages.openCardanoAppLabel} />}
+          {<FormattedHTMLMessage {...hardwareConnectLabel} />}
+          {<FormattedHTMLMessage
+            {...messages.deviceConnectedLabel}
+            values={{
+              deviceType: isLedger ? 'Ledger' : 'Trezor',
+            }}
+          />}
+          {<FormattedHTMLMessage {...messages.hardwareWalletExport} />}
+          {<FormattedHTMLMessage
+            {...messages.hardwareWalletExportRejected}
+          />}
         </div>
+        {(!isCardanoAppLaunched || (isCardanoAppLaunched && (fetchingDevice || isExportingExtendedPublicKey))) && <LoadingSpinner/>}
+        {(isCardanoAppLaunched && (isDeviceConnected || isExtendedPublicKeyExported)) && <SVGInline svg={checkIcon} className={styles.checkIcon}/>}
+        {(isCardanoAppLaunched && (fetchingDevice === null || isExportingPublicKeyAborted)) && <SVGInline svg={clearIcon} className={styles.clearIcon}/>}
       </div>
     );
   }

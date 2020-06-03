@@ -49,5 +49,3 @@ export type WalletRestoreData = {
   walletName: string,
   spendingPassword: string,
 };
-
-export type WalletStatus = 'connect' | 'launch' | 'export' | 'verifyTx';
