@@ -27,7 +27,7 @@ const messages = defineMessages({
     description: 'Ledger wallet title.',
   },
   trezorWalletTitle: {
-    id: 'wallet.hardware.tezorWalletTitle',
+    id: 'wallet.hardware.trezorWalletTitle',
     defaultMessage: '!!!Trezor wallet',
     description: 'Trezor wallet title.',
   },
