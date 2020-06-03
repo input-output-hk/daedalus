@@ -268,7 +268,6 @@ export default class WalletRecoveryPhraseVerificationWidget extends Component<Pr
             </>
           )}
         </div>
-        <br />
         <div className={statusStyles}>
           <SVGInline svg={icon} className={styles.statusIcon} />
           <FormattedHTMLMessage

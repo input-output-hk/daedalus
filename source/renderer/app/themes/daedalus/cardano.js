@@ -250,9 +250,10 @@ export const CARDANO_THEME_OUTPUT = {
     '--font-mono': 'SFMono-Light',
   },
   hardwareWallet: {
-    '--theme-hardware-wallet-step-background-color': '#fafbfc',
-    '--theme-hardware-wallet-step-border-active-color': '#296fd0',
-    '--theme-hardware-wallet-step-border-color': '#c6cdd6',
+    '--theme-hardware-wallet-step-background-color': '#ffffff',
+    '--theme-hardware-wallet-step-border-active-color':
+      'rgba(94, 96, 102, 0.5)',
+    '--theme-hardware-wallet-step-border-color': '#d2d3d3',
     '--theme-hardware-wallet-step-color': '#5e6066',
     '--theme-hardware-wallet-title-color': '#5e6066',
     '--theme-hardware-wallet-message-color': '#5e6066',
@@ -948,7 +949,6 @@ export const CARDANO_THEME_OUTPUT = {
   walletSettings: {
     '--theme-wallet-settings-section-separator-color':
       'rgba(94, 96, 102, 0.15)',
-    '--theme-wallet-settings-resync-button-label-color': 'rgba(94, 96, 102, 1)',
   },
   walletNotRespondingOverlay: {
     '--theme-wallet-not-responding-background-color': 'rgba(32, 34, 37, 0.96)',
