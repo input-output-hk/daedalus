@@ -62,7 +62,6 @@ export const getEventActions = async (
     start: async () => {
       const eventType = types.START;
       const progress = DOWNLOAD_PROGRESS_DEFAULT;
-      console.log('START');
       requestDownloadChannel.send(
         {
           eventType,
@@ -76,7 +75,6 @@ export const getEventActions = async (
       totalSize: serverFileSize,
       downloadedSize: diskFileSize,
     }: DownloadInfoInit) => {
-      console.log('DOWNLOAD', serverFileSize, diskFileSize);
       const rawProgress: DownloadProgressUpdate = {
         ...{
           serverFileSize,
@@ -101,7 +99,6 @@ export const getEventActions = async (
       progress,
       speed,
     }: DownloadInfoProgress) => {
-      console.log('PROGRESS', `${progress}%`, downloadSize);
       const rawProgress: DownloadProgressUpdate = {
         ...{
           remainingSize: total - downloadSize,
@@ -129,7 +126,6 @@ export const getEventActions = async (
       onDiskSize: diskFileSize,
       incomplete,
     }: DownloadInfoEnd) => {
-      console.log('END', downloadSize, diskFileSize, incomplete);
       const rawProgress: DownloadProgressUpdate = {
         ...{
           downloadSize,
@@ -143,6 +139,10 @@ export const getEventActions = async (
         downloadId
       );
       const { destinationPath, temporaryFilename, originalFilename } = data;
+      console.log('END:');
+      console.log('destinationPath', destinationPath);
+      console.log('temporaryFilename', temporaryFilename);
+      console.log('originalFilename', originalFilename);
       const temporaryPath = `${destinationPath}/${temporaryFilename}`;
       const newPath = `${destinationPath}/${originalFilename}`;
       fs.renameSync(temporaryPath, newPath);
@@ -158,7 +158,6 @@ export const getEventActions = async (
       if (!persistLocalData) await localStorage.unset(downloadId);
     },
     error: async ({ message }: DownloadInfoError) => {
-      console.log('ERROR', message);
       const rawProgress: DownloadProgressUpdate = {
         ...{
           message,

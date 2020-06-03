@@ -73,26 +73,51 @@ const requestDownload = async (
   const download = new DownloaderHelper(fileUrl, destinationPath, options);
 
   if (resumeDownload) {
-    const { data: resumeDownloadData = {}, progress = {} } = resumeDownload;
-    data = resumeDownloadData;
-    const { downloadSize, progress: progressPerc } = progress;
+    const { total: downloadSize } = await download.getTotalSize(); // get the total size from the server
+    const { data: resumeDownloadData = {} } = resumeDownload;
     download.__total = downloadSize;
-    download.__filePath = data.destinationPath + data.temporaryFilename;
-    download.__progress = progressPerc;
-    // download.__isResumed = true;
+    download.__filePath = `${resumeDownloadData.destinationPath}/${resumeDownloadData.temporaryFilename}`;
+    download.__downloaded = download.__getFilesizeInBytes(download.__filePath);
     download.__isResumable = true;
+    console.log('__downloaded', download.__downloaded);
+    console.log(
+      '__filePath given',
+      data.destinationPath + resumeDownloadData.temporaryFilename
+    );
+    console.log('__filePath saven', download.__filePath);
   }
 
   download.on('start', eventActions.start);
   download.on('download', eventActions.download);
   download.on('progress.throttled', (...p) => {
-    console.log('progress:', p);
+    // console.log('progress:', p);
     eventActions.progress(...p);
   });
   download.on('end', eventActions.end);
   download.on('error', eventActions.error);
+  download.on('resume', (a, b, c) => {
+    console.log('RESUME EVENT -----');
+    console.log('a', a);
+    console.log('b', b);
+    console.log('c', c);
+  });
+  download.on('stateChanged', (a, b, c) => {
+    console.log('stateChanged EVENT -----');
+    console.log('a', a);
+    console.log('b', b);
+    console.log('c', c);
+  });
+  download.on('renamed', (a, b, c) => {
+    console.log('renamed EVENT -----');
+    console.log('a', a);
+    console.log('b', b);
+    console.log('c', c);
+  });
+
+  // if (resumeDownload) console.log(download);
   if (resumeDownload) download.resume();
   else download.start();
+  return download;
 };
 
 const getDownloadLocalData = async ({
@@ -124,7 +149,7 @@ const requestResumeDownload = async (
     options,
     resumeDownload: downloadLocalData,
   };
-  requestDownload(
+  return requestDownload(
     {
       ...requestDownloadPayload,
       override: true,

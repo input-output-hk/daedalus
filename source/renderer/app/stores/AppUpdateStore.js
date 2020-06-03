@@ -69,9 +69,11 @@ export default class AppUpdateStore extends Store {
   };
 
   requestResumeDownload = async (id: string = 'appUpdate') => {
-    await requestResumeDownloadChannel.request({
+    const dl = await requestResumeDownloadChannel.request({
       id,
     });
+    console.log('dl', dl);
+    window.dl = dl;
   };
 
   _requestDownload = async (
