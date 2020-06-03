@@ -96,6 +96,8 @@ export default class ConnectHardwareWallet extends Component<Props> {
             <div className={styles.hardwareWalletStepsWrapper}>
               <HardwareWalletStatus
                 onOpenExternalLink={onOpenExternalLink}
+                isTrezor={isTrezor}
+                isLedger={isLedger}
                 walletStatus={walletStatus}
                 isCardanoAppLaunched={isCardanoAppLaunched}
               />

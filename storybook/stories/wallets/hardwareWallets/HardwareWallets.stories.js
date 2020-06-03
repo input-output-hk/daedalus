@@ -16,13 +16,7 @@ storiesOf('Wallets|Hardware Wallets', module)
       onOpenExternalLink={action('onOpenExternalLink')}
       isLedger={boolean('isLedger', true)}
       isTrezor={boolean('isTrezor', false)}
-      isDeviceConnected={boolean('isDeviceConnected', false)}
-      fetchingDevice={boolean('fetchingDevice', true)}
-      exportingExtendedPublicKey={boolean('exportingExtendedPublicKey', null)}
-      isExportingPublicKeyAborted={boolean(
-        'isExportingPublicKeyAborted',
-        false
-      )}
+      isCardanoAppLaunched={boolean('isCardanoAppLaunched', true)}
     />
   ))
 
@@ -31,13 +25,7 @@ storiesOf('Wallets|Hardware Wallets', module)
       onOpenExternalLink={action('onOpenExternalLink')}
       isLedger={boolean('isLedger', true)}
       isTrezor={boolean('isTrezor', false)}
-      isDeviceConnected={boolean('isDeviceConnected', true)}
-      fetchingDevice={boolean('fetchingDevice', false)}
-      exportingExtendedPublicKey={boolean('exportingExtendedPublicKey', true)}
-      isExportingPublicKeyAborted={boolean(
-        'isExportingPublicKeyAborted',
-        false
-      )}
+      isCardanoAppLaunched={boolean('isCardanoAppLaunched', true)}
     />
   ))
 
@@ -46,13 +34,7 @@ storiesOf('Wallets|Hardware Wallets', module)
       onOpenExternalLink={action('onOpenExternalLink')}
       isLedger={boolean('isLedger', true)}
       isTrezor={boolean('isTrezor', false)}
-      isDeviceConnected={boolean('isDeviceConnected', null)}
-      fetchingDevice={boolean('fetchingDevice', false)}
-      exportingExtendedPublicKey={boolean('exportingExtendedPublicKey', null)}
-      isExportingPublicKeyAborted={boolean(
-        'isExportingPublicKeyAborted',
-        false
-      )}
+      isCardanoAppLaunched={boolean('isCardanoAppLaunched', true)}
     />
   ))
 
@@ -61,10 +43,7 @@ storiesOf('Wallets|Hardware Wallets', module)
       onOpenExternalLink={action('onOpenExternalLink')}
       isLedger={boolean('isLedger', true)}
       isTrezor={boolean('isTrezor', false)}
-      isDeviceConnected={boolean('isDeviceConnected', true)}
-      fetchingDevice={boolean('fetchingDevice', false)}
-      exportingExtendedPublicKey={boolean('exportingExtendedPublicKey', false)}
-      isExportingPublicKeyAborted={boolean('isExportingPublicKeyAborted', true)}
+      isCardanoAppLaunched={boolean('isCardanoAppLaunched', true)}
     />
   ))
 
@@ -73,13 +52,7 @@ storiesOf('Wallets|Hardware Wallets', module)
       onOpenExternalLink={action('onOpenExternalLink')}
       isLedger={boolean('isLedger', false)}
       isTrezor={boolean('isTrezor', true)}
-      isDeviceConnected={boolean('isDeviceConnected', false)}
-      fetchingDevice={boolean('fetchingDevice', true)}
-      exportingExtendedPublicKey={boolean('exportingExtendedPublicKey', null)}
-      isExportingPublicKeyAborted={boolean(
-        'isExportingPublicKeyAborted',
-        false
-      )}
+      isCardanoAppLaunched={boolean('isCardanoAppLaunched', true)}
     />
   ))
 
@@ -88,13 +61,7 @@ storiesOf('Wallets|Hardware Wallets', module)
       onOpenExternalLink={action('onOpenExternalLink')}
       isLedger={boolean('isLedger', false)}
       isTrezor={boolean('isTrezor', true)}
-      isDeviceConnected={boolean('isDeviceConnected', true)}
-      fetchingDevice={boolean('fetchingDevice', false)}
-      exportingExtendedPublicKey={boolean('exportingExtendedPublicKey', true)}
-      isExportingPublicKeyAborted={boolean(
-        'isExportingPublicKeyAborted',
-        false
-      )}
+      isCardanoAppLaunched={boolean('isCardanoAppLaunched', true)}
     />
   ))
 
@@ -103,13 +70,7 @@ storiesOf('Wallets|Hardware Wallets', module)
       onOpenExternalLink={action('onOpenExternalLink')}
       isLedger={boolean('isLedger', false)}
       isTrezor={boolean('isTrezor', true)}
-      isDeviceConnected={boolean('isDeviceConnected', null)}
-      fetchingDevice={boolean('fetchingDevice', false)}
-      exportingExtendedPublicKey={boolean('exportingExtendedPublicKey', null)}
-      isExportingPublicKeyAborted={boolean(
-        'isExportingPublicKeyAborted',
-        false
-      )}
+      isCardanoAppLaunched={boolean('isCardanoAppLaunched', true)}
     />
   ))
 
@@ -118,9 +79,6 @@ storiesOf('Wallets|Hardware Wallets', module)
       onOpenExternalLink={action('onOpenExternalLink')}
       isLedger={boolean('isLedger', false)}
       isTrezor={boolean('isTrezor', true)}
-      isDeviceConnected={boolean('isDeviceConnected', true)}
-      fetchingDevice={boolean('fetchingDevice', false)}
-      exportingExtendedPublicKey={boolean('exportingExtendedPublicKey', false)}
-      isExportingPublicKeyAborted={boolean('isExportingPublicKeyAborted', true)}
+      isCardanoAppLaunched={boolean('isCardanoAppLaunched', true)}
     />
   ));

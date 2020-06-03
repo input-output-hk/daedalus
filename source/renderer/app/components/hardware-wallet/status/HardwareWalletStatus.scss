@@ -1,214 +1,103 @@
-.component {
-  align-items: center;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-height: 100%;
+.hardwareWalletStepsWrapper {
+  max-width: 640px;
+  padding-top: 30px;
   width: 100%;
 
-  .hardwareWalletContainer {
-    font-family: var(--font-regular);
-    height: 100%;
-    width: 100%;
+  .hardwareWalletStep {
+    align-items: center;
+    background-color: var(--theme-hardware-wallet-step-background-color);
+    display: flex;
+    height: 72px;
+    justify-content: space-between;
+    padding: 20px;
 
-    .hardwareWalletWrapper {
+    &:first-child {
+      border-left: 1px solid var(--theme-hardware-wallet-step-border-color);
+      border-radius: 4px 4px 0 0;
+      border-right: 1px solid var(--theme-hardware-wallet-step-border-color);
+      border-top: 1px solid var(--theme-hardware-wallet-step-border-color);
+    }
+
+    &:nth-child(2) {
+      border-bottom: 1px solid var(--theme-hardware-wallet-step-border-color);
+      border-left: 1px solid var(--theme-hardware-wallet-step-border-color);
+      border-radius: 0 0 4px 4px;
+      border-right: 1px solid var(--theme-hardware-wallet-step-border-color);
+    }
+
+    .hardwareWalletInnerStep {
       align-items: center;
       display: flex;
-      flex-direction: column;
-      height: 100%;
-      justify-content: center;
 
-      .hardwareWalletUnknown {
-        display: flex;
-
-        .unknownDeviceIcon {
-          height: 138px;
-          object-fit: contain;
-          width: 325.5px;
-        }
-
-        svg > path {
-          stroke: var(--theme-hardware-wallet-title-color);
-
-          > g {
-            fill: var(--theme-hardware-wallet-title-color);
-          }
-        }
+      .ledgerSmallIcon {
+        height: 32px;
+        margin-right: 20px;
+        object-fit: contain;
+        width: 32px;
       }
 
-      .hardwareWalletLedger {
-        display: flex;
-        flex-direction: column;
-
-        .ledgerIcon {
-          height: 78px;
-          object-fit: contain;
-          width: 250px;
-        }
-
-        .ledgerXIcon {
-          height: 75px;
-          object-fit: contain;
-          width: 250px;
-        }
-
-        svg > path {
-          stroke: var(--theme-hardware-wallet-title-color);
-
-          > g {
-            fill: var(--theme-hardware-wallet-title-color);
-          }
-        }
-      }
-
-      .hardwareWalletTrezor {
-        display: flex;
-        flex-direction: column;
-
-        .trezorIcon {
-          height: 138px;
-          object-fit: contain;
-          width: 70.5px;
-        }
-
-        svg > path {
-          stroke: var(--theme-hardware-wallet-title-color);
-
-          > g {
-            fill: var(--theme-hardware-wallet-title-color);
-          }
-        }
-      }
-
-      .hardwareWalletTitle {
-        color: var(--theme-hardware-wallet-title-color);
-        font-size: 20px;
-        font-weight: 500;
-        line-height: 1.4;
-        padding-top: 36px;
-        text-align: center;
-      }
-
-      .hardwareWalletMessage {
-        color: var(--theme-hardware-wallet-message-color);
-        font-size: 16px;
-        font-weight: 300;
-        line-height: 1.38;
-        max-width: 670px;
-        opacity: 0.7;
-        padding-top: 11px;
-        text-align: center;
-      }
-
-      .hardwareWalletStepsWrapper {
-        max-width: 640px;
-        padding-top: 30px;
-        width: 100%;
-
-        .hardwareWalletStep {
-          align-items: center;
-          background-color: var(--theme-hardware-wallet-step-background-color);
-          display: flex;
-          height: 72px;
-          justify-content: space-between;
-          padding: 20px;
-
-          &:first-child {
-            border-left: 1px solid
-              var(--theme-hardware-wallet-step-border-color);
-            border-radius: 4px 4px 0 0;
-            border-right: 1px solid
-              var(--theme-hardware-wallet-step-border-color);
-            border-top: 1px solid var(--theme-hardware-wallet-step-border-color);
-          }
-
-          &:nth-child(2) {
-            border-bottom: 1px solid
-              var(--theme-hardware-wallet-step-border-color);
-            border-left: 1px solid
-              var(--theme-hardware-wallet-step-border-color);
-            border-radius: 0 0 4px 4px;
-            border-right: 1px solid
-              var(--theme-hardware-wallet-step-border-color);
-          }
-
-          .hardwareWalletInnerStep {
-            align-items: center;
-            display: flex;
-
-            .ledgerSmallIcon {
-              height: 32px;
-              margin-right: 20px;
-              object-fit: contain;
-              width: 32px;
-            }
-
-            .exportIcon {
-              cursor: pointer;
-              height: 24px;
-              margin-right: 29px;
-              object-fit: contain;
-              width: 24px;
-            }
-          }
-
-          span {
-            color: var(--theme-hardware-wallet-step-color);
-            font-family: var(--font-light);
-            font-size: 16px;
-            font-weight: 300;
-            line-height: 1.38;
-
-            span {
-              font-family: var(--font-medium);
-              font-weight: 500;
-            }
-          }
-
-          .checkIcon {
-            height: 16px;
-            margin-top: -5px;
-            object-fit: contain;
-            width: 16px;
-
-            svg > g > path {
-              stroke-width: 5px;
-            }
-          }
-
-          .clearIcon {
-            height: 14px;
-            margin-top: -4px;
-            object-fit: contain;
-            width: 14px;
-          }
-
-          &.isActiveFetching,
-          &.isActiveExport,
-          &.isVerifyTx {
-            border: 1px solid
-              var(--theme-hardware-wallet-step-border-active-color);
-          }
-
-          &.isError,
-          &.isErrorExport {
-            border: 1px solid var(--rp-theme-color-error);
-          }
-        }
+      .exportIcon {
+        cursor: pointer;
+        height: 24px;
+        margin-right: 29px;
+        object-fit: contain;
+        width: 24px;
       }
     }
-  }
 
-  :global {
-    .LoadingSpinner_component {
-      height: 24px;
-      margin: initial;
-      width: 24px;
+    span {
+      color: var(--theme-hardware-wallet-step-color);
+      font-family: var(--font-light);
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.38;
 
-      .LoadingSpinner_icon svg path {
-        fill: var(--theme-hardware-wallet-message-color) !important;
-        opacity: 0.5;
+      span {
+        font-family: var(--font-medium);
+        font-weight: 500;
       }
+    }
+
+    .checkIcon {
+      height: 16px;
+      margin-top: -5px;
+      object-fit: contain;
+      width: 16px;
+
+      svg > g > path {
+        stroke-width: 5px;
+      }
+    }
+
+    .clearIcon {
+      height: 14px;
+      margin-top: -4px;
+      object-fit: contain;
+      width: 14px;
+    }
+
+    &.isActiveFetching,
+    &.isActiveExport,
+    &.isVerifyTx {
+      border: 1px solid var(--theme-hardware-wallet-step-border-active-color);
+    }
+
+    &.isError,
+    &.isErrorExport {
+      border: 1px solid var(--rp-theme-color-error);
+    }
+  }
+}
+
+:global {
+  .LoadingSpinner_component {
+    height: 24px;
+    margin: initial;
+    width: 24px;
+
+    .LoadingSpinner_icon svg path {
+      fill: var(--theme-hardware-wallet-message-color) !important;
+      opacity: 0.5;
     }
   }
 }

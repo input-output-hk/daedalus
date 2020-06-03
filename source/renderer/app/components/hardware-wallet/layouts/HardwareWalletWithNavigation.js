@@ -13,12 +13,6 @@ type Props = {
   isActiveScreen: Function,
   onOpenExternalLink: Function,
   onWalletNavItemClick: Function,
-  isLedger: boolean,
-  isTrezor: boolean,
-  isDeviceConnected: boolean,
-  fetchingDevice: boolean,
-  exportingExtendedPublicKey: boolean,
-  isExportingPublicKeyAborted: boolean,
 };
 
 @observer
@@ -28,17 +22,8 @@ export default class HardwareWalletWithNavigation extends Component<Props> {
       children,
       activeItem,
       hasNotification,
-      isWalletConnected,
       isActiveScreen,
       onWalletNavItemClick,
-      onOpenExternalLink,
-      isLedger,
-      isTrezor,
-      isDeviceConnected,
-      fetchingDevice,
-      isExportingExtendedPublicKey,
-      isExtendedPublicKeyExported,
-      isExportingPublicKeyAborted,
     } = this.props;
 
     return (
