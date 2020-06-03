@@ -519,6 +519,7 @@
   "wallet.hardware.hardwareWalletExport": "!!!Export <span>public key</span> on your device",
   "wallet.hardware.hardwareWalletInstructions": "!!!Follow instructions to access your wallet",
   "wallet.hardware.hardwareWalletLedgerBegin": "!!!To begin, connect and unlock your <span>Ledger Device</span>",
+  "wallet.hardware.hardwareWalletTrezorBegin": "!!!To begin, connect and unlock your <span>Trezor Device</span>",
   "wallet.hardware.hardwareWalletTitle": "!!!Hardware wallet",
   "wallet.hardware.ledgerWalletTitle": "!!!Ledger wallet",
   "wallet.hardware.trezorWalletTitle": "!!!Trezor wallet",
