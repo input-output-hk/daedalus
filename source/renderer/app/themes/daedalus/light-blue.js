@@ -947,7 +947,6 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
   walletSettings: {
     '--theme-wallet-settings-section-separator-color':
       'rgba(94, 96, 102, 0.15)',
-    '--theme-wallet-settings-resync-button-label-color': 'rgba(94, 96, 102, 1)',
   },
   walletNotRespondingOverlay: {
     '--theme-wallet-not-responding-background-color': 'rgba(36, 62, 98, 0.96)',

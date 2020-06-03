@@ -95,17 +95,22 @@
           padding: 20px;
 
           &:first-child {
-            border-left: 1px solid var(--theme-hardware-wallet-step-border-color);
+            border-left: 1px solid
+              var(--theme-hardware-wallet-step-border-color);
             border-radius: 4px 4px 0 0;
-            border-right: 1px solid var(--theme-hardware-wallet-step-border-color);
+            border-right: 1px solid
+              var(--theme-hardware-wallet-step-border-color);
             border-top: 1px solid var(--theme-hardware-wallet-step-border-color);
           }
 
           &:nth-child(2) {
-            border-bottom: 1px solid var(--theme-hardware-wallet-step-border-color);
-            border-left: 1px solid var(--theme-hardware-wallet-step-border-color);
+            border-bottom: 1px solid
+              var(--theme-hardware-wallet-step-border-color);
+            border-left: 1px solid
+              var(--theme-hardware-wallet-step-border-color);
             border-radius: 0 0 4px 4px;
-            border-right: 1px solid var(--theme-hardware-wallet-step-border-color);
+            border-right: 1px solid
+              var(--theme-hardware-wallet-step-border-color);
           }
 
           .hardwareWalletInnerStep {
