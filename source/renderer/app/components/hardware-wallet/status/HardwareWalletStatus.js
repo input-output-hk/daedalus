@@ -13,21 +13,6 @@ import LoadingSpinner from '../../widgets/LoadingSpinner';
 import type { WalletStatus } from '../../../types/walletRestoreTypes';
 
 const messages = defineMessages({
-  hardwareWalletTitle: {
-    id: 'wallet.hardware.hardwareWalletTitle',
-    defaultMessage: '!!!Hardware wallet',
-    description: 'Hardware wallet title.',
-  },
-  ledgerWalletTitle: {
-    id: 'wallet.hardware.ledgerWalletTitle',
-    defaultMessage: '!!!Ledger wallet',
-    description: 'Ledger wallet title.',
-  },
-  trezorWalletTitle: {
-    id: 'wallet.hardware.trezorWalletTitle',
-    defaultMessage: '!!!Trezor wallet',
-    description: 'Trezor wallet title.',
-  },
   hardwareWalletInstructions: {
     id: 'wallet.hardware.hardwareWalletInstructions',
     defaultMessage: '!!!Follow instructions to access your wallet',
@@ -112,10 +97,10 @@ export default class HardwareWalletStatus extends Component<Props> {
 
     const walletStepClasses = classnames([
       styles.hardwareWalletStep,
+      !walletStatus ? styles.isError : null,
       walletStatus === 'connect' ? styles.isActiveFetching : null,
-      walletStatus === null ? styles.isErrorDevice : null,
-      isExportingExtendedPublicKey ? styles.isActiveExport : null,
-      isExportingPublicKeyAborted ? styles.isErrorExport : null,
+      walletStatus === 'export' ? styles.isActiveExport : null,
+      walletStatus === 'verifyTx' ? styles.isVerifyTx : null,
     ]);
 
     return (

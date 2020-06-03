@@ -184,12 +184,13 @@
           }
 
           &.isActiveFetching,
-          &.isActiveExport {
+          &.isActiveExport,
+          &.isVerifyTx {
             border: 1px solid
               var(--theme-hardware-wallet-step-border-active-color);
           }
 
-          &.isErrorDevice,
+          &.isError,
           &.isErrorExport {
             border: 1px solid var(--rp-theme-color-error);
           }
