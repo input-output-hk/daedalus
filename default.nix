@@ -73,6 +73,7 @@ let
         cardano-wallet = if self.launcherConfigs.launcherConfig.nodeConfig.kind == "byron"
                          then self.cardano-wallet.cardano-wallet-byron
                          else self.cardano-wallet.cardano-wallet-shelley;
+        cardanoWalletPkgs = self.cardano-wallet.pkgs;
       };
     };
     cardano-wallet = import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; crossSystem = crossSystem walletPkgs.lib; };
