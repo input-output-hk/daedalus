@@ -515,6 +515,7 @@
   "wallet.create.dialog.title.itn": "Create a new Rewards wallet",
   "wallet.create.dialog.validateStep": "Validate",
   "wallet.create.dialog.walletNameHint": "Enter wallet name",
+  "wallet.hardware.deviceConnectedLabel": "{deviceType} device",
   "wallet.hardware.hardwareWalletBegin": "To begin, connect and unlock your <span>Hardware wallet Device</span>",
   "wallet.hardware.hardwareWalletExport": "Export <span>public key</span> on your device",
   "wallet.hardware.hardwareWalletInstructions": "Follow instructions to access your wallet",

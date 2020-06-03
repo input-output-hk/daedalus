@@ -515,6 +515,7 @@
   "wallet.create.dialog.title.itn": "報酬ウォレットを作成する",
   "wallet.create.dialog.validateStep": "!!!Validate",
   "wallet.create.dialog.walletNameHint": "ウォレット名を入力してください",
+  "wallet.hardware.deviceConnectedLabel": "!!!「{deviceType}」 device",
   "wallet.hardware.hardwareWalletBegin": "!!!To begin, connect and unlock your <span>Hardware wallet Device</span>",
   "wallet.hardware.hardwareWalletExport": "!!!Export <span>public key</span> on your device",
   "wallet.hardware.hardwareWalletInstructions": "!!!Follow instructions to access your wallet",
