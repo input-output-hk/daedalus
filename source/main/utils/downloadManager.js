@@ -139,10 +139,6 @@ export const getEventActions = async (
         downloadId
       );
       const { destinationPath, temporaryFilename, originalFilename } = data;
-      console.log('END:');
-      console.log('destinationPath', destinationPath);
-      console.log('temporaryFilename', temporaryFilename);
-      console.log('originalFilename', originalFilename);
       const temporaryPath = `${destinationPath}/${temporaryFilename}`;
       const newPath = `${destinationPath}/${originalFilename}`;
       fs.renameSync(temporaryPath, newPath);

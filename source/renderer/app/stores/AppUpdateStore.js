@@ -69,19 +69,16 @@ export default class AppUpdateStore extends Store {
   };
 
   requestResumeDownload = async (id: string = 'appUpdate') => {
-    const dl = await requestResumeDownloadChannel.request({
+    await requestResumeDownloadChannel.request({
       id,
     });
-    console.log('dl', dl);
-    window.dl = dl;
   };
 
   _requestDownload = async (
     fileUrl: string = 'https://update-cardano-mainnet.iohk.io/daedalus-1.1.0-mainnet-12849.pkg'
   ) => {
     requestDownloadChannel.onReceive(
-      ({ eventType, data, progress }: DownloadMainResponse) => {
-        console.log('progress', progress.progress);
+      ({ eventType /* , data, progress */ }: DownloadMainResponse) => {
         runInAction('updates the download information', () => {
           if (eventType === DOWNLOAD_EVENT_TYPES.END) {
             this.isDownloadingUpdate = false;

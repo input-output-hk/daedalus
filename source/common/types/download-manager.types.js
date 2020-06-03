@@ -14,7 +14,9 @@ export type DownloadRequest = {
   fileUrl: string,
   destinationDirectoryName?: AllowedDownloadDirectories,
   options?: ?DownloadRequestOptions,
-  resumeDownload?: DownloadLocalDataResponse,
+  resumeDownload?: {
+    temporaryFilename: string,
+  },
 };
 
 export type DownloadRequestOptions = {

@@ -44,11 +44,10 @@ const requestDownload = async (
     id,
     resumeDownload,
   } = downloadRequestPayload;
-  console.log('resumeDownload', resumeDownload);
+
   const temporaryFilename = resumeDownload
-    ? resumeDownload.data.temporaryFilename
+    ? resumeDownload.temporaryFilename
     : generateFileNameWithTimestamp(TEMPORARY_FILENAME);
-  console.log('temporaryFilename', temporaryFilename);
   const originalFilename = getOriginalFilename(downloadRequestPayload);
   const destinationPath = getPathFromDirectoryName(destinationDirectoryName);
   const options = {
@@ -56,7 +55,7 @@ const requestDownload = async (
     fileName: temporaryFilename,
   };
   const downloadId = getIdFromFileName(id || originalFilename);
-  let data = {
+  const data = {
     downloadId,
     fileUrl,
     destinationPath,
@@ -74,47 +73,19 @@ const requestDownload = async (
 
   if (resumeDownload) {
     const { total: downloadSize } = await download.getTotalSize(); // get the total size from the server
-    const { data: resumeDownloadData = {} } = resumeDownload;
     download.__total = downloadSize;
-    download.__filePath = `${resumeDownloadData.destinationPath}/${resumeDownloadData.temporaryFilename}`;
+    download.__filePath = `${data.destinationPath}/${data.temporaryFilename}`;
     download.__downloaded = download.__getFilesizeInBytes(download.__filePath);
     download.__isResumable = true;
-    console.log('__downloaded', download.__downloaded);
-    console.log(
-      '__filePath given',
-      data.destinationPath + resumeDownloadData.temporaryFilename
-    );
-    console.log('__filePath saven', download.__filePath);
   }
 
   download.on('start', eventActions.start);
   download.on('download', eventActions.download);
   download.on('progress.throttled', (...p) => {
-    // console.log('progress:', p);
     eventActions.progress(...p);
   });
   download.on('end', eventActions.end);
   download.on('error', eventActions.error);
-  download.on('resume', (a, b, c) => {
-    console.log('RESUME EVENT -----');
-    console.log('a', a);
-    console.log('b', b);
-    console.log('c', c);
-  });
-  download.on('stateChanged', (a, b, c) => {
-    console.log('stateChanged EVENT -----');
-    console.log('a', a);
-    console.log('b', b);
-    console.log('c', c);
-  });
-  download.on('renamed', (a, b, c) => {
-    console.log('renamed EVENT -----');
-    console.log('a', a);
-    console.log('b', b);
-    console.log('c', c);
-  });
-
-  // if (resumeDownload) console.log(download);
   if (resumeDownload) download.resume();
   else download.start();
   return download;
@@ -139,6 +110,7 @@ const requestResumeDownload = async (
   const downloadLocalData = await getDownloadLocalData(
     resumeDownloadRequestPayload
   );
+  const { temporaryFilename } = downloadLocalData.data;
   const { downloadId: id, fileUrl, destinationDirectoryName, options } =
     downloadLocalData.data || {};
   if (!id) throw new Error('Invalid download ID');
@@ -147,7 +119,7 @@ const requestResumeDownload = async (
     fileUrl,
     destinationDirectoryName,
     options,
-    resumeDownload: downloadLocalData,
+    resumeDownload: { temporaryFilename },
   };
   return requestDownload(
     {
