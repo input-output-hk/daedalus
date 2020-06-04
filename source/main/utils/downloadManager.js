@@ -49,10 +49,15 @@ export const getPathFromDirectoryName = (
 export const getOriginalFilename = ({
   fileUrl,
   options,
-}: DownloadRendererRequest) =>
-  options && typeof options.fileName === 'string'
-    ? options.fileName
-    : extractFileNameFromPath(fileUrl);
+  resumeDownload,
+}: DownloadRendererRequest): string => {
+  let name = '';
+  if (resumeDownload) name = resumeDownload.originalFilename;
+  else if (options && typeof options.fileName === 'string')
+    name = options.fileName;
+  else name = extractFileNameFromPath(fileUrl);
+  return name;
+};
 
 export const getEventActions = async (
   data: DownloadData,
@@ -157,7 +162,7 @@ export const getEventActions = async (
         window.webContents
       );
       const { persistLocalData } = data;
-      // if (!persistLocalData) await localStorage.unset(downloadId);
+      if (!persistLocalData) await localStorage.unset(downloadId);
     },
     error: async ({ message }: DownloadInfoError) => {
       const rawProgress: DownloadProgressUpdate = {

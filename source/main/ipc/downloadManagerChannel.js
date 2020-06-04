@@ -40,6 +40,7 @@ const requestDownload = async (
   const {
     fileUrl,
     destinationDirectoryName = DEFAULT_DIRECTORY_NAME,
+    // options,
     options: _options,
     id,
     resumeDownload,
@@ -110,7 +111,7 @@ const requestResumeDownload = async (
   const downloadLocalData = await getDownloadLocalData(
     resumeDownloadRequestPayload
   );
-  const { temporaryFilename } = downloadLocalData.data;
+  const { temporaryFilename, originalFilename } = downloadLocalData.data;
   const { downloadId: id, fileUrl, destinationDirectoryName, options } =
     downloadLocalData.data || {};
   if (!id) throw new Error('Invalid download ID');
@@ -119,7 +120,7 @@ const requestResumeDownload = async (
     fileUrl,
     destinationDirectoryName,
     options,
-    resumeDownload: { temporaryFilename },
+    resumeDownload: { temporaryFilename, originalFilename },
   };
   return requestDownload(
     {

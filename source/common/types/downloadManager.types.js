@@ -19,6 +19,7 @@ export type DownloadRequest = {
   options?: ?DownloadRequestOptions,
   resumeDownload?: {
     temporaryFilename: string,
+    originalFilename: string,
   },
 };
 

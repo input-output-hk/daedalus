@@ -54,6 +54,7 @@ export default class AppUpdateStore extends Store {
     actions.getLatestAvailableAppVersion.listen(
       this._getLatestAvailableAppVersion
     );
+    requestDownloadChannel.onReceive(this._manageUpdateResponse);
 
     const { isIncentivizedTestnet, isFlight } = global;
     if (!isFlight && !isIncentivizedTestnet) {
@@ -62,37 +63,45 @@ export default class AppUpdateStore extends Store {
         APP_UPDATE_POLL_INTERVAL
       );
     }
-
-    // this.managePendingUpdate();
   }
 
-  managePendingUpdate = async () => {
+  _managePendingUpdate = async () => {
     const downloadLocalData = await getDownloadLocalDataChannel.request({
-      id: 'appUpdate',
+      id: APP_UPDATE_DOWNLOAD_ID,
     });
+    console.log('downloadLocalData', downloadLocalData);
     return downloadLocalData;
   };
 
-  requestResumeUpdateDownload = async () => {
+  _manageUpdateResponse = ({
+    eventType,
+    /* data, */
+    progress,
+  }: DownloadMainResponse) => {
+    if (eventType === 'progress') {
+      console.log(
+        '%c Download progress: %s%',
+        'color: darkOrange',
+        parseInt(progress.progress, 10)
+      );
+    }
+    runInAction('updates the download information', () => {
+      if (eventType === DOWNLOAD_EVENT_TYPES.END) {
+        this.isDownloadingUpdate = false;
+      } else {
+        this.isDownloadingUpdate = true;
+      }
+    });
+    return Promise.resolve({ fileUrl: '' });
+  };
+
+  _requestResumeUpdateDownload = async () => {
     await requestResumeDownloadChannel.request({
       id: APP_UPDATE_DOWNLOAD_ID,
     });
   };
 
   _requestUpdateDownload = async () => {
-    requestDownloadChannel.onReceive(
-      // TODO: To be done in a different task
-      ({ eventType /* , data, progress */ }: DownloadMainResponse) => {
-        runInAction('updates the download information', () => {
-          if (eventType === DOWNLOAD_EVENT_TYPES.END) {
-            this.isDownloadingUpdate = false;
-          } else {
-            this.isDownloadingUpdate = true;
-          }
-        });
-        return Promise.resolve({ fileUrl: '' });
-      }
-    );
     if (!this.updateFileUrl) return;
     await requestDownloadChannel.request({
       id: APP_UPDATE_DOWNLOAD_ID,
