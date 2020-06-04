@@ -1,6 +1,9 @@
 // @flow
 
-export type AllowedDownloadDirectories = 'downloads' | 'desktop';
+export type AllowedDownloadDirectories =
+  | 'stateDirectory'
+  | 'downloads'
+  | 'desktop';
 
 // https://www.npmjs.com/package/node-downloader-helper
 export type DownloadRequest = {

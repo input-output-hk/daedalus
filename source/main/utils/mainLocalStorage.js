@@ -9,11 +9,11 @@ import type {
   DownloadProgress,
   DownloadProgressUpdate,
   DownloadLocalDataResponse,
-} from '../../common/types/download-manager.types';
+} from '../../common/types/downloadManager.types';
 import {
   DOWNLOAD_PROGRESS_DEFAULT,
   DOWNLOAD_STATES,
-} from '../../common/config/download-manager';
+} from '../../common/config/downloadManagerConfig';
 import { requestElectronStore } from '../ipc/electronStoreConversation';
 
 export const downloadManagerLocalStorage = {

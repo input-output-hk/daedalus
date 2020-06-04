@@ -36,7 +36,7 @@ import type {
   DownloadResponse,
   ResumeDownloadRequest,
   ResumeDownloadResponse,
-} from '../types/download-manager.types';
+} from '../types/downloadManager.types';
 import type { StoreMessage } from '../types/electron-store.types';
 
 /**

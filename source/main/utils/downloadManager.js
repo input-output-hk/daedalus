@@ -9,7 +9,7 @@ import {
   DOWNLOAD_PROGRESS_DEFAULT,
   DOWNLOAD_EVENT_TYPES as types,
   DOWNLOAD_STATES as states,
-} from '../../common/config/download-manager';
+} from '../../common/config/downloadManagerConfig';
 import { extractFileNameFromPath } from '../../common/utils/files';
 import { downloadManagerLocalStorage as localStorage } from './mainLocalStorage';
 import type {
@@ -24,10 +24,14 @@ import type {
   DownloadInfoError,
   DownloadData,
   DownloadProgressUpdate,
-} from '../../common/types/download-manager.types';
+} from '../../common/types/downloadManager.types';
+import { stateDirectoryPath } from '../config';
 
 export const getIdFromFileName = (fileName: string): string =>
   fileName.replace(/\./g, '-');
+
+const downloadsDirectory = `${stateDirectoryPath}/Downloads`;
+if (!fs.existsSync(downloadsDirectory)) fs.mkdirSync(downloadsDirectory);
 
 export const getPathFromDirectoryName = (
   directoryName: AllowedDownloadDirectories
@@ -35,8 +39,10 @@ export const getPathFromDirectoryName = (
   switch (directoryName) {
     case ALLOWED_DOWNLOAD_DIRECTORIES.DESKTOP:
       return app.getPath('desktop');
-    default:
+    case ALLOWED_DOWNLOAD_DIRECTORIES.DOWLOADS:
       return app.getPath('downloads');
+    default:
+      return downloadsDirectory;
   }
 };
 
@@ -151,7 +157,7 @@ export const getEventActions = async (
         window.webContents
       );
       const { persistLocalData } = data;
-      if (!persistLocalData) await localStorage.unset(downloadId);
+      // if (!persistLocalData) await localStorage.unset(downloadId);
     },
     error: async ({ message }: DownloadInfoError) => {
       const rawProgress: DownloadProgressUpdate = {

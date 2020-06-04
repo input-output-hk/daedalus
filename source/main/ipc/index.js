@@ -7,7 +7,7 @@ import getLogsApi from './get-logs';
 import resizeWindowApi from './resize-window';
 import loadAsset from './load-asset';
 import getGpuStatus from './get-gpu-status';
-import downloadManager from './download-manager';
+import { downloadManagerChannel } from './downloadManagerChannel';
 import getRecoveryWalletIdChannel from './getRecoveryWalletIdChannel';
 import { handleBugReportRequests } from './bugReportRequestChannel';
 import { handleFileMetaRequests } from './generateFileMetaChannel';
@@ -35,7 +35,7 @@ export default (window: BrowserWindow) => {
   openExternalUrlChannel;
   // eslint-disable-next-line no-unused-expressions
   openLocalDirectoryChannel;
-  downloadManager(window);
+  downloadManagerChannel(window);
   getRecoveryWalletIdChannel();
   handleElectronStoreChannel();
 };

@@ -17,7 +17,7 @@ import {
 import {
   DEFAULT_DIRECTORY_NAME,
   TEMPORARY_FILENAME,
-} from '../../common/config/download-manager';
+} from '../../common/config/downloadManagerConfig';
 import { generateFileNameWithTimestamp } from '../../common/utils/files.js';
 import { downloadManagerLocalStorage as localStorage } from '../utils/mainLocalStorage';
 import type {
@@ -154,7 +154,7 @@ MainIpcChannel<
   ResumeDownloadMainResponse
 > = new MainIpcChannel(RESUME_DOWNLOAD);
 
-export default (window: BrowserWindow) => {
+export const downloadManagerChannel = (window: BrowserWindow) => {
   requestDownloadChannel.onRequest(
     (downloadRequestPayload: DownloadRendererRequest) =>
       requestDownload(downloadRequestPayload, window)

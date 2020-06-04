@@ -11,7 +11,9 @@ import {
   requestResumeDownloadChannel,
 } from '../ipc/downloadManagerChannel';
 import type { DownloadMainResponse } from '../../../common/ipc/api';
-import { DOWNLOAD_EVENT_TYPES } from '../../../common/config/download-manager';
+import { DOWNLOAD_EVENT_TYPES } from '../../../common/config/downloadManagerConfig';
+
+const APP_UPDATE_DOWNLOAD_ID = 'appUpdate';
 
 export default class AppUpdateStore extends Store {
   @observable isUpdateAvailable = false;
@@ -24,6 +26,9 @@ export default class AppUpdateStore extends Store {
   @observable nextUpdateVersion: ?string = null;
   @observable applicationVersion: ?number = null;
   @observable downloadProgress: ?number = null;
+  // @observable updateFileUrl: ?string = null;
+  @observable updateFileUrl: ?string =
+    'https://update-cardano-mainnet.iohk.io/daedalus-1.1.0-mainnet-12849.pkg';
 
   // REQUESTS
   @observable nextUpdateRequest: Request<AppInfo> = new Request(
@@ -68,16 +73,15 @@ export default class AppUpdateStore extends Store {
     return downloadLocalData;
   };
 
-  requestResumeDownload = async (id: string = 'appUpdate') => {
+  requestResumeUpdateDownload = async () => {
     await requestResumeDownloadChannel.request({
-      id,
+      id: APP_UPDATE_DOWNLOAD_ID,
     });
   };
 
-  _requestDownload = async (
-    fileUrl: string = 'https://update-cardano-mainnet.iohk.io/daedalus-1.1.0-mainnet-12849.pkg'
-  ) => {
+  _requestUpdateDownload = async () => {
     requestDownloadChannel.onReceive(
+      // TODO: To be done in a different task
       ({ eventType /* , data, progress */ }: DownloadMainResponse) => {
         runInAction('updates the download information', () => {
           if (eventType === DOWNLOAD_EVENT_TYPES.END) {
@@ -89,9 +93,10 @@ export default class AppUpdateStore extends Store {
         return Promise.resolve({ fileUrl: '' });
       }
     );
+    if (!this.updateFileUrl) return;
     await requestDownloadChannel.request({
-      id: 'appUpdate',
-      fileUrl,
+      id: APP_UPDATE_DOWNLOAD_ID,
+      fileUrl: this.updateFileUrl,
     });
   };
 

@@ -4,13 +4,14 @@ import type {
   AllowedDownloadDirectories,
   DownloadState,
   DownloadEventType,
-} from '../types/download-manager.types';
+} from '../types/downloadManager.types';
 
 export const ALLOWED_DOWNLOAD_DIRECTORIES: {
   [key: string]: AllowedDownloadDirectories,
 } = {
   DOWNLOADS: 'downloads',
   DESKTOP: 'desktop',
+  STATE_DIRECTORY: 'stateDirectory',
 };
 
 // DH_STATES in 'node-downloader-helper/src';
@@ -40,8 +41,8 @@ export const DOWNLOAD_EVENT_TYPES: {
   ERROR: 'error',
 };
 
-// export const DEFAULT_DIRECTORY_NAME = ALLOWED_DOWNLOAD_DIRECTORIES.DOWNLOADS;
-export const DEFAULT_DIRECTORY_NAME = ALLOWED_DOWNLOAD_DIRECTORIES.DESKTOP;
+export const DEFAULT_DIRECTORY_NAME =
+  ALLOWED_DOWNLOAD_DIRECTORIES.STATE_DIRECTORY;
 
 export const TEMPORARY_FILENAME = {
   prefix: 'Unconfirmed',
