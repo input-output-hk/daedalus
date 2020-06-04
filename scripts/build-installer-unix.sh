@@ -170,7 +170,7 @@ pushd installers
                          "${test_installer}"
                          "${code_signing_config}"
                          "${signing_config}"
-                         "${BRIDGE_FLAG}-${KIND}"
+                         "${BRIDGE_FLAG}"
                          "  --build-job        ${build_id}"
                          "  --cluster          ${cluster}"
                          "  --out-dir          ${APP_NAME}")
