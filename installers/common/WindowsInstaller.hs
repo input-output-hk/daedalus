@@ -202,7 +202,7 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,inst
                   Cardano kind _ -> do
                     let
                       mainBinary Shelley = "cardano-wallet-shelley.exe"
-                      mainBinary Byron = "cardnao-wallet-byron.exe"
+                      mainBinary Byron = "cardano-wallet-byron.exe"
                     file [] "cardano-node.exe"
                     file [] (mainBinary kind)
                     file [] "export-wallets.exe"
