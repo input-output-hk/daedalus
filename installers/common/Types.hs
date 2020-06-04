@@ -60,7 +60,7 @@ data Cluster
   | Mainnet
   | Mainnet_Flight
   | Staging
-  | ShelleyQA
+  | Shelley_QA
   | FF
   | Testnet
   deriving (Bounded, Enum, Eq, Read, Show)
@@ -118,7 +118,7 @@ clusterNetwork Selfnode = "selfnode"
 clusterNetwork Mainnet = "mainnet"
 clusterNetwork Mainnet_Flight = "mainnet_flight"
 clusterNetwork Staging = "staging"
-clusterNetwork ShelleyQA = "shelley_qa"
+clusterNetwork Shelley_QA = "shelley_qa"
 clusterNetwork FF = "ff"
 clusterNetwork Testnet = "testnet"
 
