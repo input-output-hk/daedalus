@@ -67,6 +67,7 @@ let
       staging = "Staging";
       testnet = "Testnet";
       ff = "Friends and Family";
+      shelley_qa = "Shelley QA";
     };
     unsupported = "Unsupported";
     networkSupported = __hasAttr network supportedNetworks;
