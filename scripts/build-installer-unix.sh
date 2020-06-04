@@ -150,6 +150,7 @@ pushd installers
     for cluster in ${CLUSTERS}
     do
           echo "~~~ Generating installer for cluster ${cluster}.."
+          set -x
           LAUNCHER_CONFIG=$(nix-build --no-out-link -A launcherConfigs.configFiles --argstr cluster ${cluster})/launcher-config.yaml
           KIND=$($nix_shell ../shell.nix -A buildShell --run "jq .nodeConfig.kind < $LAUNCHER_CONFIG ")
 
