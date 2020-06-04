@@ -44,16 +44,15 @@ type Props = {
 
 @observer
 export default class DelegationSetupWizardDialog extends Component<Props> {
-  // eslint-disable-next-line
-  UNSAFE_componentWillReceiveProps(nextProps: Props) {
+  componentDidUpdate(prevProps: Props) {
     // On confirm delegation step, wait for API stake pool "join" endpoint response
     // and redirect to "Ta-Da" step
     if (
-      this.props.isSubmitting &&
-      !nextProps.isSubmitting &&
-      !nextProps.error
+      prevProps.isSubmitting &&
+      !this.props.isSubmitting &&
+      !this.props.error
     ) {
-      this.props.onContinue();
+      prevProps.onContinue();
     }
   }
 

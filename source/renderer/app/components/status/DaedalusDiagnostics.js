@@ -391,15 +391,15 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
     };
   }
 
-  // eslint-disable-next-line
-  UNSAFE_componentWillReceiveProps(nextProps: Props) {
+  componentDidUpdate(prevProps: Props) {
+    const { cardanoNodeState: prevCardanoNodeState } = prevProps;
     const { cardanoNodeState } = this.props;
-    const { cardanoNodeState: nextCardanoNodeState } = nextProps;
+
     if (
-      cardanoNodeState !== nextCardanoNodeState &&
-      includes(FINAL_CARDANO_NODE_STATES, nextCardanoNodeState)
+      cardanoNodeState !== prevCardanoNodeState &&
+      includes(FINAL_CARDANO_NODE_STATES, cardanoNodeState)
     ) {
-      this.setState({ isNodeRestarting: false });
+      this.setState({ isNodeRestarting: false }); // eslint-disable-line
     }
   }
 
