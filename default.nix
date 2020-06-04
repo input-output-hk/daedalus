@@ -183,7 +183,7 @@ let
     '';
 
     nsisFiles = let
-      kind = self.launcherConfigs.launcherConfig.nodeConfig.kind;
+      nodeImplementation' = if nodeImplementation == "jormungandr" then nodeImplementation else "${nodeImplementation}-${self.launcherConfigs.launcherConfig.nodeConfig.kind}";
     in pkgs.runCommand "nsis-files" {
       buildInputs = [ self.daedalus-installer pkgs.glibcLocales ];
     } ''
@@ -195,7 +195,7 @@ let
 
       export LANG=en_US.UTF-8
       cp -v ${self.launcherConfigs.configFiles}/* .
-      make-installer --${nodeImplementation}-${kind} dummy --os win64 -o $out --cluster ${cluster} ${optionalString (buildNum != null) "--build-job ${buildNum}"} buildkite-cross
+      make-installer --${nodeImplementation'} dummy --os win64 -o $out --cluster ${cluster} ${optionalString (buildNum != null) "--build-job ${buildNum}"} buildkite-cross
 
       mkdir $out
       cp -v daedalus.nsi uninstaller.nsi $out/
