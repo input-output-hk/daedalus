@@ -6,7 +6,7 @@ import { generateFileNameWithTimestamp } from '../../../../source/common/utils/f
 import ensureDirectoryExists from '../../../../source/main/utils/ensureDirectoryExists';
 import { DEFAULT_TIMEOUT } from './config';
 
-export const notFoundWalletsErrorMessage = `No wallet(s) found with the given name(s).`;
+export const notFoundWalletsErrorMessage = 'No wallet(s) found with the given name(s).';
 
 export const expectTextInSelector = async (
   client: Object,

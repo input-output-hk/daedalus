@@ -60,7 +60,7 @@ Given(/^the "([^"]*)" wallet was delegated to the first Stake Pool$/, async func
     if (pool && wallet) {
       const { id: stakePoolId } = pool;
       const { id: walletId } = wallet;
-      daedalus.actions.staking.joinStakePool.trigger({ stakePoolId, walletId: walletId || '', passphrase });
+      daedalus.actions.staking.joinStakePool.trigger({ stakePoolId, walletId, passphrase });
     }
     done(pool);
   }, walletName, 'Secret1234');
@@ -122,7 +122,7 @@ Given(/^the "([^"]*)" wallet is undelegated$/, async function(wallet) {
     if (pool && wallet) {
       const { id: stakePoolId } = pool;
       const { id: walletId } = wallet;
-      daedalus.actions.staking.quitStakePool.trigger({ stakePoolId, walletId: walletId || '', passphrase });
+      daedalus.actions.staking.quitStakePool.trigger({ stakePoolId, walletId, passphrase });
     }
     done(pool);
   }, wallet, 'Secret1234');
