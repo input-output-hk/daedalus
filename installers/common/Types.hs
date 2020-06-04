@@ -60,6 +60,7 @@ data Cluster
   | Mainnet
   | Mainnet_Flight
   | Staging
+  | ShelleyQA
   | Testnet
   deriving (Bounded, Enum, Eq, Read, Show)
 
@@ -115,7 +116,7 @@ clusterNetwork ITN_Selfnode = "itn_selfnode"
 clusterNetwork Selfnode = "selfnode"
 clusterNetwork Mainnet = "mainnet"
 clusterNetwork Mainnet_Flight = "mainnet_flight"
-clusterNetwork Staging = "staging"
+clusterNetwork ShelleyQA = "shelley_qa"
 clusterNetwork Testnet = "testnet"
 
 packageFileName :: OS -> Cluster -> Version -> Backend -> Text -> Maybe BuildJob -> FilePath
