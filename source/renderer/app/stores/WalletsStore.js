@@ -1100,7 +1100,7 @@ export default class WalletsStore extends Store {
     }
   }).bind(this);
 
-  @action _getWalletAddress = async (walletId: string) => {
+  _getWalletAddress = async (walletId: string) => {
     const walletAddresses = await this.getWalletAddressesRequest.execute({
       walletId,
     }).promise;
