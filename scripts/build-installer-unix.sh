@@ -150,8 +150,7 @@ pushd installers
     for cluster in ${CLUSTERS}
     do
           echo "~~~ Generating installer for cluster ${cluster}.."
-          set -x
-          LAUNCHER_CONFIG=$(nix-build --no-out-link -A launcherConfigs.configFiles --argstr cluster ${cluster})/launcher-config.yaml
+          LAUNCHER_CONFIG=$(nix-build ../. --no-out-link -A launcherConfigs.configFiles --argstr cluster ${cluster})/launcher-config.yaml
           echo $LAUNCHER_CONFIG
           KIND=$($nix_shell ../shell.nix -A buildShell --run "jq .nodeConfig.kind < $LAUNCHER_CONFIG ")
           echo $KIND
@@ -165,7 +164,7 @@ pushd installers
             BRIDGE_FLAG="--jormungandr ${JORMUNGANDR_BRIDGE}"
           else
             echo "Cluster type: cardano"
-            CARDANO_BRIDGE=$(nix-build --no-out-link -A daedalus-bridge --argstr nodeImplementation cardano --argstr cluster ${cluster})
+            CARDANO_BRIDGE=$(nix-build ../. --no-out-link -A daedalus-bridge --argstr nodeImplementation cardano --argstr cluster ${cluster})
             BRIDGE_FLAG="--cardano ${CARDANO_BRIDGE}"
           fi
 
