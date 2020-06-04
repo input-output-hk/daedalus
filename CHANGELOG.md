@@ -15,6 +15,7 @@ Changelog
 
 ### Chores
 
+- Updated react, react-router, mobx, mobx-react-router and their related package versions ([PR 1966](https://github.com/input-output-hk/daedalus/pull/1966))
 - Removed Resync Wallet feature from the codebase ([PR 2024](https://github.com/input-output-hk/daedalus/pull/2024))
 - Updated Hardware wallet screens for all themes ([PR 2023](https://github.com/input-output-hk/daedalus/pull/2023))
 - Updated `cardano-wallet` to revision `03183595` and updated transaction fee estimation Api endpoint implementation ([PR 2021](https://github.com/input-output-hk/daedalus/pull/2021), [PR 2022](https://github.com/input-output-hk/daedalus/pull/2022))

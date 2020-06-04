@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import vjf from 'mobx-react-form/lib/validators/VJF';
 import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
 import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
 import WalletRestoreDialog from './widgets/WalletRestoreDialog';
@@ -110,6 +111,7 @@ export default class MnemonicsDialog extends Component<Props> {
       },
     },
     {
+      plugins: { vjf: vjf() },
       options: {
         validateOnChange: false,
       },

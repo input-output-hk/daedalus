@@ -626,11 +626,18 @@ export default class WalletsStore extends Store {
     spendingPassword: string,
   }) => {
     const { transferFundsSourceWalletId, transferFundsTargetWalletId } = this;
+    const targetWalletAddresses = await this.getWalletAddressesRequest.execute({
+      walletId: transferFundsTargetWalletId,
+      queryParams: { state: 'unused' },
+    }).promise;
     await this.transferFundsRequest.execute({
       sourceWalletId: transferFundsSourceWalletId,
-      targetWalletId: transferFundsTargetWalletId,
+      targetWalletAddresses: targetWalletAddresses
+        ? targetWalletAddresses.map(address => address.id).slice(0, 20)
+        : null,
       passphrase: spendingPassword,
     });
+
     this.refreshWalletsData();
     this._transferFundsClose();
     this.transferFundsRequest.reset();
@@ -1078,11 +1085,7 @@ export default class WalletsStore extends Store {
       }
 
       // Set wallet certificate address
-      const walletAddress = get(
-        walletAddresses,
-        ['addresses', '0', 'id'],
-        null
-      );
+      const walletAddress = get(walletAddresses, ['0', 'id'], null);
       this.walletCertificateAddress = walletAddress;
 
       // download pdf certificate

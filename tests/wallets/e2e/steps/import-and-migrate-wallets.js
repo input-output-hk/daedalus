@@ -4,7 +4,6 @@ import path from 'path';
 import { When, Then, Given } from 'cucumber';
 import { expect } from 'chai';
 import { difference } from 'lodash';
-import { createWallets } from './helpers';
 import { MAX_ADA_WALLETS_COUNT } from '../../../../source/renderer/app/config/numbersConfig';
 import type { Daedalus } from '../../../types';
 
@@ -24,6 +23,7 @@ const WALLET_CHECKBOXES_SELECTOR = '.WalletSelectImportDialog_walletsRow .Simple
 const IS_CHECKBOX_CHECKDE_SELECTOR = 'SimpleCheckbox_checked';
 const IS_CHECKBOX_DISABLED_SELECTOR = 'SimpleCheckbox_disabled';
 const WALLET_SELECT_IMPORT_ACTION_BUTTON_SELECTOR = '.WalletSelectImportDialog_actionButton';
+const WALLET_SELECT_IMPORT_ACTION_BUTTON_SPINNER_SELECTOR = '.WalletSelectImportDialog_actionButton .LoadingSpinner_component';
 const WALLET_SELECT_IMPORT_ACTION_BUTTON_DISABLED_SELECTOR = '.WalletSelectImportDialog_actionButton.WalletSelectImportDialog_disabled';
 const STATUS_ICON_CHECKMARK_SELECTOR = '.WalletSelectImportDialog_walletsStatusIconCheckmark';
 const WALLET_STATUS_LABEL_SELECTOR = '.WalletSelectImportDialog_walletsStatus';
@@ -85,8 +85,9 @@ When(/^I click "Import wallets" button$/, function() {
   this.waitAndClick(IMPORT_WALLETS_BUTTON_SELECTOR);
 });
 
-When(/^I click "Import selected wallets"$/, function() {
-  this.waitAndClick(WALLET_SELECT_IMPORT_ACTION_BUTTON_SELECTOR);
+When(/^I click "Import selected wallets" button and wait until operation is finished$/, async function() {
+  await this.waitAndClick(WALLET_SELECT_IMPORT_ACTION_BUTTON_SELECTOR);
+  await this.client.waitForExist(WALLET_SELECT_IMPORT_ACTION_BUTTON_SPINNER_SELECTOR, 10000, true);
 });
 
 When(/^I should see wallet select import dialog$/, async function() {

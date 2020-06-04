@@ -19,7 +19,7 @@ Feature: Import wallets
     And "Import selected wallets" button is disabled
     And I select all named wallets for import
     And "Import selected wallets" button is enabled
-    And I click "Import selected wallets"
+    And I click "Import selected wallets" button and wait until operation is finished
     And "Import selected wallets" button is disabled
     Then I should see that all named wallets are imported
     And I close import wallets dialog by clicking on "Close window" button
@@ -42,7 +42,7 @@ Feature: Import wallets
     And I enter random names to all unnamed wallets
     And I select all unnamed wallets for import
     And "Import selected wallets" button is enabled
-    And I click "Import selected wallets"
+    And I click "Import selected wallets" button and wait until operation is finished
     And "Import selected wallets" button is disabled
     Then I should see that all unnamed wallets are imported
     And I close import wallets dialog by clicking on "X" button
@@ -83,7 +83,7 @@ Feature: Import wallets
     And "Import selected wallets" button is disabled
     And I select all named wallets for import
     And "Import selected wallets" button is enabled
-    And I click "Import selected wallets"
+    And I click "Import selected wallets" button and wait until operation is finished
     And "Import selected wallets" button is disabled
     Then I should see that all named wallets are imported
     And I close import wallets dialog by clicking on "Close window" button
@@ -106,7 +106,7 @@ Feature: Import wallets
     And I enter random names to all unnamed wallets
     And I select all unnamed wallets for import
     And "Import selected wallets" button is enabled
-    And I click "Import selected wallets"
+    And I click "Import selected wallets" button and wait until operation is finished
     And "Import selected wallets" button is disabled
     Then I should see that all unnamed wallets are imported
     And I close import wallets dialog by clicking on "X" button
@@ -148,7 +148,7 @@ Feature: Import wallets
     And I edit first wallet name
     And I select all named wallets for import
     And "Import selected wallets" button is enabled
-    And I click "Import selected wallets"
+    And I click "Import selected wallets" button and wait until operation is finished
     And "Import selected wallets" button is disabled
     Then I should see that all named wallets are imported
     And I close import wallets dialog by clicking on "Close window" button
@@ -165,7 +165,7 @@ Feature: Import wallets
     And "Import selected wallets" button is disabled
     And I select all named wallets for import
     And "Import selected wallets" button is enabled
-    And I click "Import selected wallets"
+    And I click "Import selected wallets" button and wait until operation is finished
     And "Import selected wallets" button is disabled
     Then I should see that all named wallets are imported
     And I close import wallets dialog by clicking on "Close window" button
@@ -188,7 +188,7 @@ Feature: Import wallets
     And I enter random names to all unnamed wallets
     And I select all unnamed wallets for import
     And "Import selected wallets" button is enabled
-    And I click "Import selected wallets"
+    And I click "Import selected wallets" button and wait until operation is finished
     And "Import selected wallets" button is disabled
     Then I should see that all unnamed wallets are imported
     And I close import wallets dialog by clicking on "X" button
@@ -232,7 +232,7 @@ Feature: Import wallets
     And I hover import selection checkbox for wallet with index 1
     Then Import selection checkbox for wallet with index 1 is disabled
     And I should see maximum wallets reached tooltip for wallet with index 1
-    And I click "Import selected wallets"
+    And I click "Import selected wallets" button and wait until operation is finished
     And "Import selected wallets" button is disabled
     And I close import wallets dialog by clicking on "Close window" button
     Then I should not see the import wallet dialog anymore

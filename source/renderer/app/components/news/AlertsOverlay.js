@@ -37,7 +37,8 @@ export default class AlertsOverlay extends Component<Props, State> {
 
   localizedDateFormat: 'MM/DD/YYYY';
 
-  componentWillMount() {
+  // eslint-disable-next-line
+  UNSAFE_componentWillMount() {
     this.localizedDateFormat = moment.localeData().longDateFormat('L');
   }
 
