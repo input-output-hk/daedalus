@@ -14,6 +14,7 @@ type Props = InjectedContainerProps;
 @inject('stores', 'actions')
 @observer
 export default class Staking extends Component<Props> {
+  static defaultProps = { actions: null, stores: null };
   // TODO: Uncomment when the we need the countdown logic
   // componentDidMount() {
   //   this.handleDelegationRoute();

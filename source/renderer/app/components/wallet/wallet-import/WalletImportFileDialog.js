@@ -120,7 +120,8 @@ export default class WalletImportFileDialog extends Component<Props, State> {
 
   importPathInput: Input;
 
-  componentWillMount() {
+  // eslint-disable-next-line
+  UNSAFE_componentWillMount() {
     this.props.onOpen();
   }
 

@@ -36,6 +36,11 @@ export default class WalletRestoreContainer extends Component<Props> {
       restoreWalletCancelClose,
       restoreWalletChangeStep,
     } = actions.wallets;
+
+    if (restoreWalletStep === null) {
+      return null;
+    }
+
     const stepId = RESTORE_WALLET_STEPS[restoreWalletStep];
     const CurrentContainer = this.containers[stepId];
     return (

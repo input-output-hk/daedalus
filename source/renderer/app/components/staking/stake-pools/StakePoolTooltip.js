@@ -136,7 +136,8 @@ export default class StakePoolTooltip extends Component<Props, State> {
     tooltipPosition: 'right',
   };
 
-  componentWillReceiveProps(nextProps: Props) {
+  // eslint-disable-next-line
+  UNSAFE_componentWillReceiveProps(nextProps: Props) {
     const { isVisible: nextVisibility, top, left } = nextProps;
     const { isVisible: currentVisibility } = this.props;
     if (nextVisibility !== currentVisibility) this.getTooltipStyle(top, left);
@@ -156,7 +157,8 @@ export default class StakePoolTooltip extends Component<Props, State> {
   containerWidth: number = 0;
   containerHeight: number = 0;
 
-  componentWillMount() {
+  // eslint-disable-next-line
+  UNSAFE_componentWillMount() {
     window.document.addEventListener('click', this.handleOutterClick);
     window.addEventListener('keydown', this.handleInputKeyDown);
   }

@@ -30,11 +30,14 @@ Given('I have {int} generated wallet addresses', async function(numberOfAddresse
     await this.client.executeAsync(
       (done) => {
         const { active } = daedalus.stores.wallets;
-        daedalus.stores.addresses._createByronWalletAddress({
-          walletId: active ? active.id : null,
+        if (!active) {
+          return done();
+        }
+        return daedalus.stores.addresses._createByronWalletAddress({
+          walletId: active.id,
           passphrase: 'Secret1234',
         })
-        .then(done)
+        .then(done);
       }
     );
   }

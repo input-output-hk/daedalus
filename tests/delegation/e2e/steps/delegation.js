@@ -3,7 +3,7 @@ import { Given, Then } from 'cucumber';
 import { expect } from 'chai';
 import BigNumber from 'bignumber.js';
 import { navigateTo } from '../../../navigation/e2e/steps/helpers';
-import { timeout } from '../../../common/e2e/steps/helpers';
+import { timeout, notFoundWalletsErrorMessage } from '../../../common/e2e/steps/helpers';
 import { getCurrentEpoch, getNextEpoch } from './helpers';
 import type { Daedalus } from '../../../types';
 
@@ -55,10 +55,13 @@ Given(/^the "([^"]*)" wallet was delegated to the first Stake Pool$/, async func
     return stakePoolsListIsLoaded;
   });
   const data = await this.client.executeAsync((walletName, passphrase, done) => {
-    const { id: walletId } = daedalus.stores.wallets.getWalletByName(walletName);
     const pool = daedalus.stores.staking.stakePools[0];
-    const { id: stakePoolId } = pool;
-    daedalus.actions.staking.joinStakePool.trigger({ stakePoolId, walletId, passphrase });
+    const wallet = daedalus.stores.wallets.getWalletByName(walletName);
+    if (pool && wallet) {
+      const { id: stakePoolId } = pool;
+      const { id: walletId } = wallet;
+      daedalus.actions.staking.joinStakePool.trigger({ stakePoolId, walletId, passphrase });
+    }
     done(pool);
   }, walletName, 'Secret1234');
   pool = data.value;
@@ -114,11 +117,14 @@ Then(/^the "([^"]*)" wallet should display the delegated Stake Pool ticker$/, as
 
 Given(/^the "([^"]*)" wallet is undelegated$/, async function(wallet) {
   await this.client.executeAsync((walletName, passphrase, done) => {
-    const { id: walletId } = daedalus.stores.wallets.getWalletByName(walletName);
     const pool = daedalus.stores.staking.stakePools[0];
-    const { id: stakePoolId } = pool;
-    daedalus.actions.staking.quitStakePool.trigger({ stakePoolId, walletId, passphrase });
-    done(pool)
+    const wallet = daedalus.stores.wallets.getWalletByName(walletName);
+    if (pool && wallet) {
+      const { id: stakePoolId } = pool;
+      const { id: walletId } = wallet;
+      daedalus.actions.staking.quitStakePool.trigger({ stakePoolId, walletId, passphrase });
+    }
+    done(pool);
   }, wallet, 'Secret1234');
 });
 
@@ -213,7 +219,12 @@ Given('I send {int} ADA from the {string} wallet to the {string} wallet', async 
   await this.client.executeAsync((amount, senderName, receiverName, done) => {
     const walletSender = daedalus.stores.wallets.getWalletByName(senderName);
     const walletReceiver = daedalus.stores.wallets.getWalletByName(receiverName);
-    daedalus.stores.addresses
+
+    if (!walletSender || !walletReceiver || !walletSender.id || !walletReceiver.id) {
+      return done(new Error(notFoundWalletsErrorMessage));
+    }
+
+    return daedalus.stores.addresses
       .getAddressesByWalletId(walletReceiver.id)
       .then(addresses => {
         daedalus.stores.wallets.sendMoneyRequest.execute({
@@ -221,8 +232,8 @@ Given('I send {int} ADA from the {string} wallet to the {string} wallet', async 
           amount: amount * 1000000,
           passphrase: 'Secret1234',
           walletId: walletSender.id,
-        }).then(done)
-      })
+        }).then(done);
+      });
   }, adaAmount, walletFrom, walletTo);
   await this.client.waitForVisible(`//div[@class="WalletRow_title" and text()="${walletTo}"]//following-sibling::div[@class="WalletRow_description"]//span`);
 });

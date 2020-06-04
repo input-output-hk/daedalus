@@ -1,6 +1,7 @@
 // @flow
 import { expect } from 'chai';
-import { expectTextInSelector, waitAndClick } from '../../../common/e2e/steps/helpers';
+import BigNumber from 'bignumber.js';
+import { expectTextInSelector, waitAndClick, notFoundWalletsErrorMessage } from '../../../common/e2e/steps/helpers';
 import { rewardsMnemonics, balanceMnemonics, balanceItnMnemonics, testStorageKeys } from '../../../common/e2e/steps/config';
 import { WalletSyncStateStatuses } from '../../../../source/renderer/app/domains/Wallet';
 import type { Daedalus } from '../../../types';
@@ -86,7 +87,13 @@ export const restoreLegacyWallet = async (
           .refreshWalletsData()
           .then(() => {
             const wallet = daedalus.stores.wallets.getWalletByName(name);
-            if (transferFunds && wallet.amount.isZero()) {
+
+            if (!wallet) {
+              throw new Error(notFoundWalletsErrorMessage);
+            }
+
+            const walletAmount = wallet.amount || new BigNumber(0);
+            if (transferFunds && walletAmount.isZero()) {
               throw new Error(noWalletsErrorMessage);
             }
             done();
@@ -139,8 +146,13 @@ export const getFixedAmountByName = async function(walletName: string) {
   await this.client.waitUntil(async () => {
     const isRestoring = await this.client.execute(
       (walletName) => {
-        const { isRestoring } = daedalus.stores.wallets.getWalletByName(walletName);
-        return isRestoring;
+        const wallet = daedalus.stores.wallets.getWalletByName(walletName);
+
+        if (!wallet) {
+          throw new Error(notFoundWalletsErrorMessage);
+        }
+
+        return wallet.isRestoring;
       },
       walletName,
     );
@@ -149,7 +161,13 @@ export const getFixedAmountByName = async function(walletName: string) {
   const walletAmount =
     await this.client.execute(
       (walletName) => {
-        const { amount } = daedalus.stores.wallets.getWalletByName(walletName);
+        const wallet = daedalus.stores.wallets.getWalletByName(walletName);
+
+        if (!wallet) {
+          throw new Error(notFoundWalletsErrorMessage);
+        }
+
+        const amount = wallet.amount || new BigNumber(0);
         return amount.toFixed();
       },
       walletName,

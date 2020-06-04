@@ -42,8 +42,8 @@ When(/^I click continue button on "Transfer ada" wizard step 2 dialog$/, functio
   return this.waitAndClick('.TransferFundsStep2Dialog_dialog .confirmButton');
 });
 
-When(/^I see "Transfer ada" wizard step 2 transfer funds button disabled and spinner$/, async function() {
-  const isEnabled = await this.client.isEnabled('.TransferFundsStep2Dialog_submitButtonSpinning');
+When(/^I see "Transfer ada" wizard step 2 transfer funds button disabled$/, async function() {
+  const isEnabled = await this.client.isEnabled('.TransferFundsStep2Dialog_dialog .confirmButton');
   expect(isEnabled).to.equal(false);
 });
 
