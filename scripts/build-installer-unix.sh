@@ -140,6 +140,9 @@ CARDANO_BRIDGE=$(nix-build --no-out-link -A daedalus-bridge --argstr nodeImpleme
 echo '~~~ Prebuilding jormungandr bridge'
 JORMUNGANDR_BRIDGE=$(nix-build --no-out-link -A daedalus-bridge --argstr nodeImplementation jormungandr)
 
+LAUNCHER_CONFIG=$(nix-build --no-out-link -A launcherConfigs.configFiles --argstr cluster ${cluster})/launcher-config.yaml
+KIND=$($nix_shell ../shell.nix -A buildShell --run "jq .nodeConfig.kind < $LAUNCHER_CONFIG ")
+
 itnClusters="$(< "$(nix-build --no-out-link -A itnClustersFile)")"
 
 pushd installers
@@ -166,7 +169,7 @@ pushd installers
                          "${test_installer}"
                          "${code_signing_config}"
                          "${signing_config}"
-                         "${BRIDGE_FLAG}"
+                         "${BRIDGE_FLAG}-${KIND}"
                          "  --build-job        ${build_id}"
                          "  --cluster          ${cluster}"
                          "  --out-dir          ${APP_NAME}")

@@ -182,7 +182,9 @@ let
       touch cardano-launcher.exe cardano-node.exe cardano-x509-certificates.exe log-config-prod.yaml configuration.yaml mainnet-genesis.json
     '';
 
-    nsisFiles = pkgs.runCommand "nsis-files" {
+    nsisFiles = let
+      kind = self.launcherConfigs.launcherConfig.nodeConfig.kind;
+    in pkgs.runCommand "nsis-files" {
       buildInputs = [ self.daedalus-installer pkgs.glibcLocales ];
     } ''
       mkdir installers
@@ -193,7 +195,7 @@ let
 
       export LANG=en_US.UTF-8
       cp -v ${self.launcherConfigs.configFiles}/* .
-      make-installer --${nodeImplementation} dummy --os win64 -o $out --cluster ${cluster} ${optionalString (buildNum != null) "--build-job ${buildNum}"} buildkite-cross
+      make-installer --${nodeImplementation}-${kind} dummy --os win64 -o $out --cluster ${cluster} ${optionalString (buildNum != null) "--build-job ${buildNum}"} buildkite-cross
 
       mkdir $out
       cp -v daedalus.nsi uninstaller.nsi $out/
