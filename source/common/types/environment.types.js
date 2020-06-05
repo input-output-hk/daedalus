@@ -47,7 +47,8 @@ export const MAINNET_FLIGHT = 'mainnet_flight';
 export const SELFNODE = 'selfnode';
 export const STAGING = 'staging';
 export const TESTNET = 'testnet';
-export const FF = 'ff';
+export const SHELLEY_FF = 'shelley_ff';
+export const SHELLEY_QA = 'shelley_qa';
 
 // jormungandr networks
 export const ITN_REWARDS_V1 = 'itn_rewards_v1';
@@ -70,7 +71,8 @@ export type Network =
   | 'selfnode'
   | 'staging'
   | 'testnet'
-  | 'ff'
+  | 'shelley_ff'
+  | 'shelley_qa'
   | 'development'
   | 'itn'
   | 'itn_rewards_v1'
@@ -87,7 +89,8 @@ export const networkPrettyNames = {
   selfnode: 'Selfnode',
   staging: 'Staging',
   testnet: 'Testnet',
-  ff: 'Shelley Friends & Family Testnet',
+  shelley_ff: 'Shelley Friends & Family Testnet',
+  shelley_qa: 'Shelley QA',
   development: 'Development',
   itn_rewards_v1: 'Incentivized Testnet v1 - Rewards',
 };

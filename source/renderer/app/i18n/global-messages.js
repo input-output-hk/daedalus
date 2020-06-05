@@ -190,10 +190,15 @@ export default defineMessages({
     defaultMessage: '!!!Testnet',
     description: '"testnet" Cardano network',
   },
-  network_ff: {
-    id: 'environment.network.ff',
+  network_shelley_ff: {
+    id: 'environment.network.shelley_ff',
     defaultMessage: '!!!Shelley Friends & Family Testnet',
     description: '"Shelley Friends & Family Testnet" Cardano network',
+  },
+  network_shelley_qa: {
+    id: 'environment.network.shelley_qa',
+    defaultMessage: '!!!Shelley QA',
+    description: '"Shelley QA" Cardano network',
   },
   network_development: {
     id: 'environment.network.development',

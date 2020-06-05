@@ -16,7 +16,8 @@ import {
 const _process = process;
 const _isIncentivizedTestnet =
   nodeImplementation === 'jormungandr' ||
-  (nodeImplementation === 'cardano' && cluster === 'ff');
+  (nodeImplementation === 'cardano' &&
+    (cluster === 'shelley_ff' || cluster === 'shelley_qa'));
 
 process.once('loaded', () => {
   Object.assign(global, {
