@@ -39,7 +39,7 @@ export default class HardwareWalletsStore extends Store {
   @observable isCardanoAppLaunched: boolean = false;
   @observable derivedAddress: Object = {};
   @observable txSignRequest: Object = {};
-  @observable hwDeviceStatus: ?HwDeviceStatus = null;
+  @observable hwDeviceStatus: HwDeviceStatus = HwDeviceStatuses.CONNECTING;
 
   pollingDeviceInterval: ?IntervalID = null;
 
