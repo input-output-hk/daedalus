@@ -13,6 +13,8 @@ import {
   showAddressChannel,
   signTransactionChannel,
 } from '../ipc/getHardwareWalletChannel';
+import { HwDeviceStatuses } from '../domains/Wallet';
+import type HwDeviceStatus from '../domains/Wallet';
 
 const POLLING_DEVICES_INTERVAL = 1000;
 
@@ -37,10 +39,12 @@ export default class HardwareWalletsStore extends Store {
   @observable isCardanoAppLaunched: boolean = false;
   @observable derivedAddress: Object = {};
   @observable txSignRequest: Object = {};
+  @observable hwDeviceStatus: ?HwDeviceStatus = null;
 
   pollingDeviceInterval: ?IntervalID = null;
 
   setup() {
+    console.debug('>> HwDeviceStatuses: ', HwDeviceStatuses);
     const {
       hardwareWallets: hardwareWalletsActions,
     } = this.actions;
@@ -99,8 +103,13 @@ export default class HardwareWalletsStore extends Store {
       disconnected: params.disconnected,
       walletId: activeHardwareWalletId,
     });
-    console.debug('>>>> WALLET DISCONNECTED <<<< ');
-    this.resetInitializedConnection();
+    if (params.disconnected) {
+      console.debug('>>>> WALLET DISCONNECTED <<<< ');
+      this.resetInitializedConnection();
+      this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
+    } else {
+      this.hwDeviceStatus = HwDeviceStatuses.READY;
+    }
     this.stores.wallets.refreshWalletsData();
     return activeHardwareWalletId;
   };
@@ -108,6 +117,7 @@ export default class HardwareWalletsStore extends Store {
   @action startDeviceFetchPoller = () => {
     console.debug('!!!!!!!! STORE:: startDeviceFetchPoller !!!!!!!!');
     this.fetchingDevice = true;
+    this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
     // this.pollingDeviceInterval = setInterval(
     //   this._establishConnection2,
     //   POLLING_DEVICES_INTERVAL
@@ -206,6 +216,7 @@ export default class HardwareWalletsStore extends Store {
 
   @action _getCardanoAdaApp = async () => {
     console.debug('>>> GET Cardano APP <<<');
+    this.hwDeviceStatus = HwDeviceStatuses.LAUNCHING_CARDANO_APP;
     try {
       const cardanoAdaAppVersion = await getCardanoAdaAppChannel.request({
         isConnected: true
@@ -228,27 +239,10 @@ export default class HardwareWalletsStore extends Store {
     await this._getExtendedPublicKey();
   };
 
-  @action _getCardanoAdaApp22 = async (isConnected = false) => {
-    try {
-      console.debug('>>> isConnected: ', isConnected);
-      const getCardanoAdaAppVersion = await getCardanoAdaAppChannel.request({
-        isConnected
-      });
-      console.debug('>>> getCardanoAdaAppVersion: ', getCardanoAdaAppVersion);
-    } catch (e) {
-      runInAction(
-      'HardwareWalletsStore:: HW Disconnected',
-      () => {
-        this.isDeviceConnected = false;
-      }
-    );
-      console.debug('>>>> getCardanoAdaAppVersion ERROR: ', e);
-    }
-  };
-
   @action _getExtendedPublicKey = async () => {
     console.debug('>>> _getExtendedPublicKey <<<');
-    this.isExportingExtendedPublicKey = true
+    this.isExportingExtendedPublicKey = true;
+    this.hwDeviceStatus = HwDeviceStatuses.EXPORTING_PUBLIC_KEY;
     let extendedPublicKey = null;
     const path = [
       utils.HARDENED + 44,
@@ -316,7 +310,7 @@ export default class HardwareWalletsStore extends Store {
   @action _signTransaction = async () => {
     const { inputs, outputs } = this.txSignRequest;
     console.debug('>>> SIGN TRANSACTION <<< ', {inputs, outputs});
-
+    this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION;
     let inputsData;
     let outputsData;
     // Sign transaction with testing data // @TODO - remove
@@ -377,8 +371,10 @@ export default class HardwareWalletsStore extends Store {
         outputs: outputsData,
       });
       console.debug('>>> SIGN TRANSACTION - DONE <<<: ', signedTransaction);
+      this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED;
     } catch (error) {
       console.debug('>>>> SIGN TRANSACTION error: ', error);
+      this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_FAILED;
       throw error;
     }
   };
@@ -389,15 +385,18 @@ export default class HardwareWalletsStore extends Store {
   };
 
   @action _setWalletConnected = () => {
+    this.hwDeviceStatus = HwDeviceStatuses.READY;
     this.isExtendedPublicKeyExported = true;
   };
 
   @action setExportingPublicKeyToAborted = () => {
+    this.hwDeviceStatus = HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED;
     this.isExportingExtendedPublicKey = false;
     this.isExportingPublicKeyAborted = true;
   };
 
   @action resetInitializedConnection = () => {
+    this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
     this.isDeviceConnected = false;
     this.fetchingDevice = false;
     this.extendedPublicKey = null;
