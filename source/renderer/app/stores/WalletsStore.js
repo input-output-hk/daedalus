@@ -862,7 +862,9 @@ export default class WalletsStore extends Store {
   }
 
   getWalletById = (id: string): ?Wallet => {
+    console.debug('>>> this.isHardwareWalletRoute: ', id, this.isHardwareWalletRoute);
     const wallets = this.isHardwareWalletRoute ? this.allHardwareWallets : this.all;
+    console.debug('>>> wallets: ', wallets);
     return wallets.find(w => w.id === id)
   };
 

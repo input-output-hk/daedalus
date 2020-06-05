@@ -2,10 +2,34 @@
 import TransportNodeHid from "@ledgerhq/hw-transport-node-hid";
 import AppAda, { utils } from "@cardano-foundation/ledgerjs-hw-app-cardano"; //"@cardano-foundation/ledgerjs-hw-app-cardano";
 import { MainIpcChannel } from './lib/MainIpcChannel';
-import { GET_HARDWARE_WALLET_TRANSPORT_CHANNEL, GET_EXTENDED_PUBLIC_KEY_CHANNEL, GET_CARDANO_ADA_APP_CHANNEL, GET_HARDWARE_WALLET_CONNECTION_CHANNEL } from '../../common/ipc/api';
+import {
+  GET_HARDWARE_WALLET_TRANSPORT_CHANNEL,
+  GET_EXTENDED_PUBLIC_KEY_CHANNEL,
+  GET_CARDANO_ADA_APP_CHANNEL,
+  GET_HARDWARE_WALLET_CONNECTION_CHANNEL,
+  DERIVE_ADDRESS_CHANNEL,
+  SHOW_ADDRESS_CHANNEL,
+  ATTEST_UTXO_CHANNEL,
+  SIGN_TRANSACTION_CHANNEL,
+} from '../../common/ipc/api';
+
 import type {
   getHardwareWalletTransportRendererRequest,
   getHardwareWalletTransportMainResponse,
+  getExtendedPublicKeyRendererRequest,
+  getExtendedPublicKeyMainResponse,
+  getCardanoAdaAppRendererRequest,
+  getCardanoAdaAppMainResponse,
+  getHardwareWalletConnectiontMainRequest,
+  getHardwareWalletConnectiontRendererResponse,
+  deriveAddressRendererRequest,
+  deriveAddressMainResponse,
+  showAddressRendererRequest,
+  showAddresMainResponse,
+  attestUtxoRendererRequest,
+  attestUtxoMainResponse,
+  signTransactionRendererRequest,
+  signTransaMainResponse,
 } from '../../common/ipc/api';
 
 const getHardwareWalletTransportChannel: MainIpcChannel<
@@ -28,6 +52,25 @@ const getHardwareWalletConnectionChannel: MainIpcChannel<
   getHardwareWalletConnectiontRendererResponse
 > = new MainIpcChannel(GET_HARDWARE_WALLET_CONNECTION_CHANNEL);
 
+const deriveAddressChannel: MainIpcChannel<
+  deriveAddressRendererRequest,
+  deriveAddressMainResponse
+> = new MainIpcChannel(DERIVE_ADDRESS_CHANNEL);
+
+const showAddressChannel: MainIpcChannel<
+  showAddressRendererRequest,
+  showAddresMainResponse
+> = new MainIpcChannel(SHOW_ADDRESS_CHANNEL);
+
+const attestUtxoChannel: MainIpcChannel<
+  attestUtxoRendererRequest,
+  attestUtxoMainResponse
+> = new MainIpcChannel(ATTEST_UTXO_CHANNEL);
+
+const signTransactionChannel: MainIpcChannel<
+  signTransactionRendererRequest,
+  signTransaMainResponse
+> = new MainIpcChannel(SIGN_TRANSACTION_CHANNEL);
 
 const connectedDevice = 'xxx';
 class EventObserver {
@@ -192,6 +235,7 @@ export const handleHardwareWalletRequests = async () => {
   );
   getExtendedPublicKeyChannel.onRequest(
     async (params) => {
+      const { path } = params;
       console.debug('>>> OPAA 2: ', opaa);
       try {
         // const appAda = new AppAda(opaa);
@@ -206,7 +250,7 @@ export const handleHardwareWalletRequests = async () => {
         // appAda.transport.device.setNonBlocking();
         console.debug('>>> GET getExtendedPublicKey');
         // const extendedPublicKey = appAda.getExtendedPublicKey(params.path);
-        const extendedPublicKey = opaa.getExtendedPublicKey(params.path);
+        const extendedPublicKey = opaa.getExtendedPublicKey(path);
         // const appVersion = await appAda.getVersion();
         console.debug('>>> extendedPublicKey 111: ', extendedPublicKey)
 
@@ -215,6 +259,72 @@ export const handleHardwareWalletRequests = async () => {
         console.debug('>>> IPC::extendedPublicKey - Error()', error);
         return Promise.resolve(error);
         // throw error;
+      }
+    }
+  );
+
+  deriveAddressChannel.onRequest(
+    async (params) => {
+      const derivationPath = params.derivationPath || "44'/1815'/0'/1/0";
+      console.debug('>>> DERIVE ADDRESS <<<: ', {params, opaa, derivationPath});
+      // About address derivation - https://github.com/input-output-hk/cardano-wallet/wiki/About-Address-Derivation
+
+      try {
+        const derivedAddress = await opaa.deriveAddress(utils.str_to_path(derivationPath));
+        console.debug('>>> derivedAddress: ', derivedAddress);
+        return Promise.resolve(derivedAddress);
+      } catch(error) {
+        console.debug('>>> derivedAddress - ERROR: ', error);
+        throw error;
+      }
+    }
+  );
+
+  showAddressChannel.onRequest(
+    async (params) => {
+      const derivationPath = params.derivationPath || "44'/1815'/0'/1/0";
+      console.debug('>>> SHOW ADDRESS <<<: ', {params, opaa, derivationPath});
+
+      try {
+        const address = await opaa.showAddress(utils.str_to_path(derivationPath));
+        console.debug('>>> Address: ', address);
+        return Promise.resolve(address);
+      } catch(error) {
+        console.debug('>>> showAddress - ERROR: ', error);
+        throw error;
+      }
+    }
+  );
+
+  attestUtxoChannel.onRequest(
+    async (params) => {
+      const { txHexData, outputIndex } = params;
+      console.debug('>>> ATTEST UTXO <<<: ', {params, opaa});
+
+      try {
+        const utxo = await opaa.attestUtxo(txHexData, outputIndex);
+        console.debug('>>> ATTEST UTXO - res: ', utxo);
+        return Promise.resolve(utxo);
+      } catch(error) {
+        console.debug('>>> ATTEST UTXO - ERROR: ', error);
+        throw error;
+      }
+    }
+  );
+
+  signTransactionChannel.onRequest(
+    async (params) => {
+      const { inputs, outputs } = params;
+      console.debug('>>> SIGN TRANSACTION inputs <<<: ', inputs);
+      console.debug('>>> SIGN TRANSACTION outputs <<<: ', outputs);
+      try {
+        const signedTransaction = await opaa.signTransaction(inputs, outputs);
+        // console.log(await opaa.signTransaction(inputs, outputs));
+        console.debug('>>> SIGN TRANSACTION - res: ', signedTransaction);
+        return Promise.resolve(signedTransaction);
+      } catch(error) {
+        console.debug('>>> SIGN TRANSACTION - ERROR: ', error);
+        throw error;
       }
     }
   );

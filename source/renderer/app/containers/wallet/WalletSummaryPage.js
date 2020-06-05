@@ -76,17 +76,6 @@ export default class WalletSummaryPage extends Component<Props> {
         currentLocale
       );
 
-
-    console.debug('>>>> TRANSACTIONS: ', {
-      hasAny,
-      totalAvailable,
-      recent,
-      recentTransactionsRequest,
-      deletePendingTransaction,
-      deleteTransactionRequest,
-      pendingTransactionsCount,
-    });
-
     if (
       recentTransactionsRequest.isExecutingFirstTime ||
       hasAny ||

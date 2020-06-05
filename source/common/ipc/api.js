@@ -287,7 +287,7 @@ export type ElectronStoreMessage = {
 };
 
 /**
- * Channel for connection with Hardware wallet
+ * Channels for Hardware wallets
  */
 export const GET_HARDWARE_WALLET_TRANSPORT_CHANNEL = 'GET_HARDWARE_WALLET_TRANSPORT_CHANNEL';
 export type getHardwareWalletTransportRendererRequest = void;
@@ -305,4 +305,19 @@ export const GET_HARDWARE_WALLET_CONNECTION_CHANNEL = 'GET_HARDWARE_WALLET_CONNE
 export type getHardwareWalletConnectiontMainRequest = string;
 export type getHardwareWalletConnectiontRendererResponse = void;
 
+export const DERIVE_ADDRESS_CHANNEL = 'DERIVE_ADDRESS_CHANNEL';
+export type deriveAddressRendererRequest = string;
+export type deriveAddressMainResponse = Object;
+
+export const SHOW_ADDRESS_CHANNEL = 'SHOW_ADDRESS_CHANNEL';
+export type showAddressRendererRequest = string;
+export type showAddresMainResponse = Object;
+
+export const ATTEST_UTXO_CHANNEL = 'ATTEST_UTXO_CHANNEL';
+export type attestUtxoRendererRequest = string;
+export type attestUtxoMainResponse = Object;
+
+export const SIGN_TRANSACTION_CHANNEL = 'SIGN_TRANSACTION_CHANNEL';
+export type signTransactionRendererRequest = string;
+export type signTransaMainResponse = Object;
 

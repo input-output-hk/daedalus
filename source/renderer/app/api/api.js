@@ -40,6 +40,7 @@ import { getLegacyWalletTransactionHistory } from './transactions/requests/getLe
 import { createTransaction } from './transactions/requests/createTransaction';
 import { createByronWalletTransaction } from './transactions/requests/createByronWalletTransaction';
 import { deleteLegacyTransaction } from './transactions/requests/deleteLegacyTransaction';
+import { selectCoins } from './transactions/requests/selectCoins';
 
 // Wallets requests
 import { updateSpendingPassword } from './wallets/requests/updateSpendingPassword';
@@ -143,6 +144,8 @@ import type {
   DeleteTransactionRequest,
   GetTransactionsRequest,
   GetTransactionsResponse,
+  CoinSelectionsRequest,
+  CoinSelectionsResponse,
 } from './transactions/types';
 
 // Wallets Types
@@ -303,8 +306,6 @@ export default class AdaApi {
     });
     const { walletId, queryParams, isLegacy, isHardwareWallet } = request;
     const rawWalletId = isHardwareWallet ? getRawWalletId(walletId, 'HARDWARE_WALLET_ID_PREFIX') : walletId;
-
-    console.debug('>>>> get addresses for wallet ID: ', rawWalletId);
 
     try {
       let response = [];
@@ -728,6 +729,46 @@ export default class AdaApi {
         .where('code', 'bad_request')
         .inc('message', 'Unable to decode Address')
         .result();
+    }
+  };
+
+  // example:
+  // daedalus.stores.hardwareWallets.selectCoins({walletId: "hw_d5184982ea26e8f6335e04b93c8d64cac7b1f678", address: "addr1ssj9c58d76x7v9yulh8wt03t4ksshre2m3wfkul0l43g8pf65ul5u6fal3lnl4y73q8pvvcdt26kp63g8zfsag9edxzjnhx7s6zm82zlt30slw", amount: 42000000})
+  selectCoins = async (
+    request: CoinSelectionsRequest
+  ): Promise<CoinSelectionsResponse> => {
+    logger.debug('AdaApi::selectCoins called', {
+      parameters: filterLogData(request),
+    });
+    const { walletId, address, amount } = request;
+
+    console.debug('>>> API:::: selectCoins REQUEST: ', request);
+
+    try {
+      const data = {
+        payments: [
+          {
+            address,
+            amount: {
+              quantity: amount,
+              unit: WalletUnits.LOVELACE,
+            },
+          },
+        ],
+      };
+
+      const response = await selectCoins(this.config, {
+        walletId: getRawWalletId(walletId, 'HARDWARE_WALLET_ID_PREFIX'),
+        data,
+      });
+
+      console.debug('>>> API:::: selectCoins(): ', response);
+
+      return response;
+    } catch (error) {
+      console.debug('>>> API:::: ERROR: ', error);
+      logger.error('AdaApi::selectCoins error', { error });
+      throw new ApiError(error);
     }
   };
 

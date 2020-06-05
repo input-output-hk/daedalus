@@ -121,3 +121,31 @@ export type TransactionFee = {
   estimated_min: TransactionFeeAmount,
   estimated_max: TransactionFeeAmount,
 };
+
+export type CoinSelectionAmount = {
+  quantity: number,
+  unit: WalletUnits.LOVELACE,
+};
+
+export type CoinSelectionInput = {
+  address: string,
+  amount: CoinSelectionAmount,
+  id: string,
+  index: number,
+};
+
+export type CoinSelectionOutput = {
+  address: string,
+  amount: CoinSelectionAmount,
+};
+
+export type CoinSelectionsRequest = {
+  walletId: string,
+  address: string,
+  amount: number,
+};
+
+export type CoinSelectionsResponse = {
+  inputs: Array<CoinSelectionInput>,
+  outputs: Array<CoinSelectionOutput>,
+};

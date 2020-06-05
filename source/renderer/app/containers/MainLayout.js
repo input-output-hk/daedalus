@@ -27,9 +27,6 @@ export default class MainLayout extends Component<InjectedContainerProps> {
     const activeWalletId = activeWallet ? activeWallet.id : null;
     const activeHardwareWallet = walletsStore.activeHardwareWallet;
     const activeHardwareWalletId = activeHardwareWallet ? activeHardwareWallet.id : null;
-
-    console.debug('>>> activeHardwareWallet: ', activeHardwareWallet);
-
     const { currentTheme } = profile;
     const {
       environment: { network, isDev },
