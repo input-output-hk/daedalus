@@ -58,8 +58,6 @@ import { restoreByronWallet } from './wallets/requests/restoreByronWallet';
 import { restoreExportedByronWallet } from './wallets/requests/restoreExportedByronWallet';
 import { updateWallet } from './wallets/requests/updateWallet';
 import { updateByronWallet } from './wallets/requests/updateByronWallet';
-import { forceWalletResync } from './wallets/requests/forceWalletResync';
-import { forceLegacyWalletResync } from './wallets/requests/forceLegacyWalletResync';
 import { getWalletUtxos } from './wallets/requests/getWalletUtxos';
 import { getByronWalletUtxos } from './wallets/requests/getByronWalletUtxos';
 import { getWallet } from './wallets/requests/getWallet';
@@ -81,7 +79,6 @@ import { joinStakePool } from './staking/requests/joinStakePool';
 import { quitStakePool } from './staking/requests/quitStakePool';
 
 // Utility functions
-import { wait } from './utils/apiHelpers';
 import {
   awaitUpdateChannel,
   cardanoFaultInjectionChannel,
@@ -104,7 +101,6 @@ import {
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
   LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
 } from '../config/cryptoConfig';
-import { FORCED_WALLET_RESYNC_WAIT } from '../config/timingConfig';
 
 // Addresses Types
 import type {
@@ -162,7 +158,6 @@ import type {
   GetWalletRecoveryPhraseFromCertificateRequest,
   ImportWalletFromKeyRequest,
   ImportWalletFromFileRequest,
-  ForceWalletResyncRequest,
   GetWalletUtxosRequest,
   GetWalletRequest,
   TransferFundsCalculateFeeRequest,
@@ -180,7 +175,6 @@ import type { GetNewsResponse } from './news/types';
 import type {
   JoinStakePoolRequest,
   GetDelegationFeeRequest,
-  DelegationFee,
   AdaApiStakePools,
   AdaApiStakePool,
   QuitStakePoolRequest,
@@ -1398,26 +1392,6 @@ export default class AdaApi {
     }
   };
 
-  forceWalletResync = async (
-    request: ForceWalletResyncRequest
-  ): Promise<void> => {
-    await wait(FORCED_WALLET_RESYNC_WAIT); // API request throttling
-    logger.debug('AdaApi::forceWalletResync called', { parameters: request });
-    try {
-      const { walletId, isLegacy } = request;
-      let response;
-      if (isLegacy) {
-        response = await forceLegacyWalletResync(this.config, { walletId });
-      } else {
-        response = await forceWalletResync(this.config, { walletId });
-      }
-      logger.debug('AdaApi::forceWalletResync success', { response });
-    } catch (error) {
-      logger.error('AdaApi::forceWalletResync error', { error });
-      throw new ApiError(error);
-    }
-  };
-
   transferFundsCalculateFee = async (
     request: TransferFundsCalculateFeeRequest
   ): Promise<BigNumber> => {
@@ -1443,15 +1417,22 @@ export default class AdaApi {
   transferFunds = async (
     request: TransferFundsRequest
   ): Promise<TransferFundsResponse> => {
-    const { sourceWalletId, targetWalletId, passphrase } = request;
+    const { sourceWalletId, targetWalletAddresses, passphrase } = request;
     logger.debug('AdaApi::transferFunds called', {
-      parameters: { sourceWalletId, targetWalletId },
+      parameters: { sourceWalletId, targetWalletAddresses },
     });
+
+    if (!targetWalletAddresses) {
+      throw new ApiError({
+        code: 'no_such_wallet',
+        message: 'Target wallet does not exist',
+      }).result();
+    }
 
     try {
       const response: TransferFundsResponse = await transferFunds(this.config, {
         sourceWalletId,
-        targetWalletId,
+        targetWalletAddresses,
         passphrase,
       });
       logger.debug('AdaApi::transferFunds success', { response });
@@ -1693,7 +1674,7 @@ export default class AdaApi {
       parameters: filterLogData(request),
     });
     try {
-      const response: DelegationFee = await getDelegationFee(this.config, {
+      const response: TransactionFee = await getDelegationFee(this.config, {
         walletId: request.walletId,
       });
       logger.debug('AdaApi::calculateDelegationFee success', { response });
@@ -1888,15 +1869,23 @@ const _createTransactionFromServerData = action(
 const _createTransactionFeeFromServerData = action(
   'AdaApi::_createTransactionFeeFromServerData',
   (data: TransactionFee) => {
-    const amount = get(data, ['amount', 'quantity'], 0);
+    const amount = get(data, ['estimated_max', 'quantity'], 0);
     return new BigNumber(amount).dividedBy(LOVELACES_PER_ADA);
   }
 );
 
 const _createMigrationFeeFromServerData = action(
-  'AdaApi::_createTransactionFeeFromServerData',
-  (data: TransactionFee) => {
+  'AdaApi::_createMigrationFeeFromServerData',
+  (data: TransferFundsCalculateFeeResponse) => {
     const amount = get(data, ['migration_cost', 'quantity'], 0);
+    return new BigNumber(amount).dividedBy(LOVELACES_PER_ADA);
+  }
+);
+
+const _createDelegationFeeFromServerData = action(
+  'AdaApi::_createDelegationFeeFromServerData',
+  (data: TransactionFee) => {
+    const amount = get(data, ['estimated_max', 'quantity'], 0);
     return new BigNumber(amount).dividedBy(LOVELACES_PER_ADA);
   }
 );
@@ -1948,13 +1937,5 @@ const _createStakePoolFromServerData = action(
       retiring: null,
       saturation: saturation * 100,
     });
-  }
-);
-
-const _createDelegationFeeFromServerData = action(
-  'AdaApi::_createDelegationFeeFromServerData',
-  (data: DelegationFee) => {
-    const amount = get(data, ['amount', 'quantity'], 0);
-    return new BigNumber(amount).dividedBy(LOVELACES_PER_ADA);
   }
 );

@@ -64,7 +64,8 @@ export default class SyncingConnecting extends Component<Props, State> {
     this._defensivelyStartTimers(this.props.isConnected);
   }
 
-  componentWillReceiveProps(nextProps: Props) {
+  // eslint-disable-next-line
+  UNSAFE_componentWillReceiveProps(nextProps: Props) {
     this._defensivelyStartTimers(nextProps.isConnected);
   }
 

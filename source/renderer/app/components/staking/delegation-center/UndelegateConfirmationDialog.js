@@ -5,6 +5,7 @@ import { observer } from 'mobx-react';
 import { get } from 'lodash';
 import BigNumber from 'bignumber.js';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import vjf from 'mobx-react-form/lib/validators/VJF';
 import classnames from 'classnames';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { Input } from 'react-polymorph/lib/components/Input';
@@ -176,6 +177,7 @@ export default class UndelegateConfirmationDialog extends Component<Props> {
       },
     },
     {
+      plugins: { vjf: vjf() },
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,

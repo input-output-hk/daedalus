@@ -16,6 +16,11 @@ Changelog
 
 ### Chores
 
+- Updated `cardano-wallet` to revision `acc3eb94` ([PR 2027](https://github.com/input-output-hk/daedalus/pull/2027))
+- Updated react, react-router, mobx, mobx-react-router and their related package versions ([PR 1966](https://github.com/input-output-hk/daedalus/pull/1966))
+- Removed Resync Wallet feature from the codebase ([PR 2024](https://github.com/input-output-hk/daedalus/pull/2024))
+- Updated Hardware wallet screens for all themes ([PR 2023](https://github.com/input-output-hk/daedalus/pull/2023))
+- Updated `cardano-wallet` to revision `03183595` and updated transaction fee estimation Api endpoint implementation ([PR 2021](https://github.com/input-output-hk/daedalus/pull/2021), [PR 2022](https://github.com/input-output-hk/daedalus/pull/2022))
 - Improved wallet import dialogs ([PR 2014](https://github.com/input-output-hk/daedalus/pull/2014))
 - Consolidated Japanese translations ([PR 2003](https://github.com/input-output-hk/daedalus/pull/2003))
 - Prevented import for more than maximum number of wallets ([PR 2012](https://github.com/input-output-hk/daedalus/pull/2012))
@@ -98,7 +103,7 @@ Changelog
 - Refactored and improved automated tests setup ([PR 1912](https://github.com/input-output-hk/daedalus/pull/1912))
 - Updated README ([PR 1953](https://github.com/input-output-hk/daedalus/pull/1953))
 - Updated `cardano-wallet` to revision `7140ff08` which includes `cardano-node` 1.10.1 ([PR 1960](https://github.com/input-output-hk/daedalus/pull/1960))
-- Updated `cardano-wallet` to revision `745aaad67004855a84c51e400c6fa1d10aedb910` with fee estimation fix ([PR 1964](https://github.com/input-output-hk/daedalus/pull/1964))
+- Updated `cardano-wallet` to revision `745aaad6` with fee estimation fix ([PR 1964](https://github.com/input-output-hk/daedalus/pull/1964))
 
 ## 1.0.0-FC2
 

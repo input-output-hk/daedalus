@@ -70,18 +70,6 @@ When(/^I click outside "name" input field$/, function() {
   return this.client.click('.WalletSettings_component');
 });
 
-When(/^I click "Resync wallet" button$/, function() {
-  return this.client.click('.ResyncWalletButton_root');
-});
-
-When(/^I see "Resync wallet" button spinner$/, function() {
-  return this.client.waitForVisible('.ResyncWalletButton_isSubmitting');
-});
-
-When(/^I should not see "Resync wallet" button spinner anymore$/, function() {
-  return this.client.waitForVisible('.ResyncWalletButton_isSubmitting', null, true);
-});
-
 Then(/^I should see new wallet name "([^"]*)"$/, async function(walletName) {
   return waitUntilWaletNamesEqual.call(this, walletName);
 });

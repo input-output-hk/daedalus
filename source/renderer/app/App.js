@@ -4,7 +4,7 @@ import { Provider, observer } from 'mobx-react';
 import { ThemeProvider } from 'react-polymorph/lib/components/ThemeProvider';
 import { SimpleSkins } from 'react-polymorph/lib/skins/simple';
 import DevTools from 'mobx-react-devtools';
-import { Router } from 'react-router';
+import { Router } from 'react-router-dom';
 import { IntlProvider } from 'react-intl';
 import { Routes } from './Routes';
 import { daedalusTheme } from './themes/daedalus';
@@ -27,7 +27,8 @@ export default class App extends Component<{
   actions: ActionsMap,
   history: Object,
 }> {
-  componentWillMount() {
+  // eslint-disable-next-line
+  UNSAFE_componentWillMount() {
     // Loads app's global environment variables into AppStore via ipc
     this.props.actions.app.initAppEnvironment.trigger();
   }
@@ -63,7 +64,9 @@ export default class App extends Component<{
               {...{ locale, key: locale, messages: translations[locale] }}
             >
               <Fragment>
-                <Router history={history} routes={Routes} />
+                <Router history={history}>
+                  <Routes />
+                </Router>
                 {mobxDevTools}
                 {showNextUpdate ? (
                   <AutomaticUpdateNotificationDialog />

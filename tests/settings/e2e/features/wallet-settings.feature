@@ -89,12 +89,3 @@ Feature: Wallet Settings
       | キュビズム |
     And I click outside "name" input field
     Then I should see new wallet name "Test Wallet キュビズム"
-
-  @shelley
-  Scenario: User force wallet resync
-    Given I am on the "Test Wallet" wallet "settings" screen
-    When I click "Resync wallet" button
-    And I see "Resync wallet" button spinner
-    Then I should see the restore status notification while restore is running
-    And I should not see the restore status notification once restore is finished
-    And I should not see "Resync wallet" button spinner anymore

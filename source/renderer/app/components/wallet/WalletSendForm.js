@@ -9,6 +9,7 @@ import { NumericInput } from 'react-polymorph/lib/components/NumericInput';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape } from 'react-intl';
+import vjf from 'mobx-react-form/lib/validators/VJF';
 import BigNumber from 'bignumber.js';
 import { get } from 'lodash';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
@@ -239,6 +240,7 @@ export default class WalletSendForm extends Component<Props, State> {
       },
     },
     {
+      plugins: { vjf: vjf() },
       options: {
         validateOnBlur: false,
         validateOnChange: true,

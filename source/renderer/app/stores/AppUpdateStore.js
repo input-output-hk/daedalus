@@ -121,7 +121,7 @@ export default class AppUpdateStore extends Store {
     }
   };
 
-  @action _activateAutomaticUpdate = async (nextUpdateVersion?: string) => {
+  @action _activateAutomaticUpdate = async (nextUpdateVersion: ?number) => {
     if (
       nextUpdateVersion &&
       !this.isUpdateAvailable &&

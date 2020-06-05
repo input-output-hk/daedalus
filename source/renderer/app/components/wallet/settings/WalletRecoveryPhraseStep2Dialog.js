@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { join } from 'lodash';
 import { defineMessages, intlShape } from 'react-intl';
+import vjf from 'mobx-react-form/lib/validators/VJF';
 import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
 import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
 import suggestedMnemonics from '../../../../../common/config/crypto/valid-words.en';
@@ -112,6 +113,7 @@ export default class WalletRecoveryPhraseStep2Dialog extends Component<
       },
     },
     {
+      plugins: { vjf: vjf() },
       options: {
         validateOnChange: true,
       },

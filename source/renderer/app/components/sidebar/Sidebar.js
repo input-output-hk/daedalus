@@ -70,17 +70,23 @@ export default class Sidebar extends Component<Props> {
 
     const walletsCategory = find(categories, {
       name: CATEGORIES_BY_NAME.WALLETS.name,
-    }).route;
+    });
+    const walletsCategoryRoute = walletsCategory ? walletsCategory.route : null;
 
-    const hardwareWalletsCategory = find(categories, {
-      name: CATEGORIES_BY_NAME.HARDWARE_WALLETS.name,
-    }).route;
+    const hardwareWalletsCategory =
+      menus.hardwareWallets &&
+      find(categories, {
+        name: CATEGORIES_BY_NAME.HARDWARE_WALLETS.name,
+      });
+    const hardwareWalletsCategoryRoute = hardwareWalletsCategory
+      ? hardwareWalletsCategory.route
+      : null;
 
     if (
       menus &&
       menus.wallets &&
       menus.wallets.items &&
-      activeSidebarCategory === walletsCategory
+      activeSidebarCategory === walletsCategoryRoute
     ) {
       subMenu = (
         <SidebarWalletsMenu
@@ -94,8 +100,7 @@ export default class Sidebar extends Component<Props> {
           isActiveWallet={id =>
             id === (menus.wallets ? menus.wallets.activeWalletId : null)
           }
-          isHardwareWalletsMenu={!!menus.wallets.items}
-          isAddWalletButtonActive={pathname === '/wallets/add'}
+          isAddWalletButtonActive={pathname === ROUTES.WALLETS.ADD}
           isIncentivizedTestnet={isIncentivizedTestnet}
           visible={isShowingSubMenus}
         />
@@ -106,7 +111,7 @@ export default class Sidebar extends Component<Props> {
       menus &&
       menus.hardwareWallets &&
       menus.hardwareWallets.items &&
-      activeSidebarCategory === hardwareWalletsCategory
+      activeSidebarCategory === hardwareWalletsCategoryRoute
     ) {
       subMenu = (
         <SidebarWalletsMenu
@@ -123,8 +128,8 @@ export default class Sidebar extends Component<Props> {
               ? menus.hardwareWallets.activeWalletId
               : null)
           }
-          isHardwareWalletsMenu={!!menus.hardwareWallets.items}
-          isAddWalletButtonActive={pathname === '/hardware-wallets/add'}
+          isHardwareWalletsMenu
+          isAddWalletButtonActive={pathname === ROUTES.HARDWARE_WALLETS.ADD}
           isIncentivizedTestnet={isIncentivizedTestnet}
           visible={isShowingSubMenus}
         />
