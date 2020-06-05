@@ -14,7 +14,7 @@ import {
   signTransactionChannel,
 } from '../ipc/getHardwareWalletChannel';
 import { HwDeviceStatuses } from '../domains/Wallet';
-import type HwDeviceStatus from '../domains/Wallet';
+import type { HwDeviceStatus } from '../domains/Wallet';
 
 const POLLING_DEVICES_INTERVAL = 1000;
 
@@ -82,7 +82,7 @@ export default class HardwareWalletsStore extends Store {
     console.debug('>>> coinSelection RES: ', coinSelection);
   };
 
-  _checkHardwareWalletConnection = async (params: {
+  @action _checkHardwareWalletConnection = async (params: {
     disconnected: boolean,
   }) => {
     const activeHardwareWalletId = get(
@@ -96,16 +96,19 @@ export default class HardwareWalletsStore extends Store {
       stores: this.stores,
       FN: this.stores.wallets._setHardwareWalletConnectionStatus,
     });
+    if (params.disconnected) {
+      console.debug('>>>> WALLET DISCONNECTED <<<< ');
+      this.resetInitializedConnection();
+      this.stopDeviceFetchPoller(false);
+      // Try to re-establish connection
+      this._establishConnection2();
+    }
     if (!activeHardwareWalletId) return;
     await this.stores.wallets._setHardwareWalletConnectionStatus({
       disconnected: params.disconnected,
       walletId: activeHardwareWalletId,
     });
-    if (params.disconnected) {
-      console.debug('>>>> WALLET DISCONNECTED <<<< ');
-      this.resetInitializedConnection();
-      this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
-    } else {
+    if (!params.disconnected) {
       this.hwDeviceStatus = HwDeviceStatuses.READY;
     }
     this.stores.wallets.refreshWalletsData();
@@ -248,6 +251,7 @@ export default class HardwareWalletsStore extends Store {
   @action _getExtendedPublicKey = async () => {
     console.debug('>>> _getExtendedPublicKey <<<');
     this.isExportingExtendedPublicKey = true;
+    this.hwDeviceStatus = HwDeviceStatuses.EXPORTING_PUBLIC_KEY;
 
     let extendedPublicKey = null;
     const path = [

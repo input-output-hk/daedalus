@@ -29,6 +29,7 @@ export default class WalletSendPage extends Component<Props> {
       transactions,
       app,
       profile,
+      hardwareWallets,
     } = this.props.stores;
     const { actions } = this.props;
     const { calculateTransactionFee, validateAmount } = transactions;
@@ -38,6 +39,7 @@ export default class WalletSendPage extends Component<Props> {
       active,
       isHardwareWalletRoute,
     } = wallets;
+    const { hwDeviceStatus } = hardwareWallets;
     const activeWallet = isHardwareWalletRoute ? activeHardwareWallet : active;
 
     // Guard against potential null values
@@ -64,6 +66,7 @@ export default class WalletSendPage extends Component<Props> {
         openDialogAction={actions.dialogs.open.trigger}
         isRestoreActive={activeWallet.isRestoring}
         onExternalLinkClick={app.openExternalLink}
+        hwDeviceStatus={hwDeviceStatus}
       />
     );
   }

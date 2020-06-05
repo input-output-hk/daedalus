@@ -10,6 +10,7 @@ import unknownDeviceIcon from '../../../assets/images/hardware-wallet/trezor-led
 import styles from './ConnectHardwareWallet.scss';
 import HardwareWalletStatus from '../status/HardwareWalletStatus';
 import { HwDeviceStatuses } from '../../../domains/Wallet';
+import type { HwDeviceStatus } from '../../../domains/Wallet';
 
 const messages = defineMessages({
   hardwareWalletTitle: {
@@ -35,15 +36,9 @@ const messages = defineMessages({
 });
 
 type Props = {
-  onOpenExternalLink: Function,
   isLedger: boolean,
   isTrezor: boolean,
-  isDeviceConnected: boolean | null,
-  fetchingDevice: boolean,
-  isExportingExtendedPublicKey: boolean | null,
-  isExportingPublicKeyAborted: boolean,
-  isExtendedPublicKeyExported: boolean,
-  isCardanoAppLaunched: boolean,
+  hwDeviceStatus: HwDeviceStatus,
 };
 
 @observer
@@ -56,15 +51,9 @@ export default class ConnectHardwareWallet extends Component<Props> {
     const { intl } = this.context;
 
     const {
-      onOpenExternalLink,
       isLedger,
       isTrezor,
-      isDeviceConnected,
-      fetchingDevice,
-      isExportingExtendedPublicKey,
-      isExportingPublicKeyAborted,
-      isExtendedPublicKeyExported,
-      isCardanoAppLaunched,
+      hwDeviceStatus,
     } = this.props;
 
     let hardwareTitle = intl.formatMessage(messages.hardwareWalletTitle);
@@ -102,7 +91,7 @@ export default class ConnectHardwareWallet extends Component<Props> {
               {intl.formatMessage(messages.hardwareWalletInstructions)}
             </p>
             <div className={styles.hardwareWalletStatusWrapper}>
-              <HardwareWalletStatus hwDeviceStatus={HwDeviceStatuses.READY} />
+              <HardwareWalletStatus hwDeviceStatus={hwDeviceStatus} />
             </div>
           </div>
         </div>

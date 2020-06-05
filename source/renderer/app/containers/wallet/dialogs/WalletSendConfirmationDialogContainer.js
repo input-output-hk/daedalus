@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import type { StoresMap } from '../../../stores/index';
 import type { ActionsMap } from '../../../actions/index';
+import type { HwDeviceStatus } from '../../domains/Wallet';
 import WalletSendConfirmationDialog from '../../../components/wallet/WalletSendConfirmationDialog';
 
 type Props = {
@@ -15,6 +16,7 @@ type Props = {
   amountToNaturalUnits: (amountWithFractions: string) => string,
   currencyUnit: string,
   onExternalLinkClick: Function,
+  hwDeviceStatus: HwDeviceStatus,
 };
 
 @inject('actions', 'stores')
@@ -36,6 +38,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
       transactionFee,
       amountToNaturalUnits,
       currencyUnit,
+      hwDeviceStatus,
     } = this.props;
     const { stores } = this.props;
     const { sendMoneyRequest, active: activeWallet } = stores.wallets;
@@ -61,6 +64,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
         error={sendMoneyRequest.error}
         currencyUnit={currencyUnit}
         onExternalLinkClick={onExternalLinkClick}
+        hwDeviceStatus={hwDeviceStatus}
       />
     );
   }

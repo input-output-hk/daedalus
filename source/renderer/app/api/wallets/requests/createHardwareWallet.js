@@ -15,7 +15,7 @@ export const createHardwareWallet = (
   return request(
     {
       method: 'POST',
-      path: '/byron-wallets',
+      path: '/v2/byron-wallets',
       ...config,
     },
     {},

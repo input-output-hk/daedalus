@@ -18,6 +18,7 @@ import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { submitOnEnter } from '../../utils/form';
 import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
 import HardwareWalletStatus from '../hardware-wallet/status/HardwareWalletStatus';
+import type { HwDeviceStatus } from '../../domains/Wallet';
 
 export const messages = defineMessages({
   dialogTitle: {
@@ -108,6 +109,7 @@ type Props = {
   isFlight: boolean,
   error: ?LocalizableError,
   currencyUnit: string,
+  hwDeviceStatus: HwDeviceStatus,
 };
 
 @observer
@@ -190,7 +192,11 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
       error,
       currencyUnit,
       onExternalLinkClick,
+      hwDeviceStatus,
     } = this.props;
+
+
+    console.debug('>>> hwDeviceStatus: ', hwDeviceStatus)
 
     const confirmButtonClasses = classnames([
       'confirmButton',
@@ -287,7 +293,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
 
           {isHardwareWallet ? (
             <div className={styles.hardwareWalletStatusWrapper}>
-              <HardwareWalletStatus hwDeviceStatus="verifying_transaction" />
+              <HardwareWalletStatus hwDeviceStatus={hwDeviceStatus} />
             </div>
           ) : (
             <Input

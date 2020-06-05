@@ -17,61 +17,27 @@ export default class HardwareWalletAddPage extends Component<InjectedContainerPr
   }
 
   componentWillUnmount() {
-    const {
-      stopDeviceFetchPoller,
-      resetInitializedConnection,
-      isDeviceConnected,
-      isExtendedPublicKeyExported,
-    } = this.props.stores.hardwareWallets;
+    const { hwDeviceStatus, stopDeviceFetchPoller, resetInitializedConnection } = this.props.stores.hardwareWallets;
     console.debug(
       '!!!!!!! STOP POLLER - ADD PAGE !!!!!!!!',
-      isDeviceConnected,
-      isExtendedPublicKeyExported
+      hwDeviceStatus,
     );
     stopDeviceFetchPoller();
-    if (
-      !isDeviceConnected ||
-      (isDeviceConnected && !isExtendedPublicKeyExported)
-    ) {
+    if (!hwDeviceStatus.READY) {
       resetInitializedConnection();
     }
   }
 
   render() {
-    const { stores } = this.props;
-    const { app, hardwareWallets } = stores;
-
-    const {
-      fetchingDevice,
-      isDeviceConnected,
-      isExportingExtendedPublicKey,
-      isExtendedPublicKeyExported,
-      isExportingPublicKeyAborted,
-      isCardanoAppLaunched,
-      isTrezor,
-      isLedger,
-      transport,
-    } = hardwareWallets;
-
-    console.debug('>>>> TRANSPORT: ', {
-      transport,
-      isTrezor,
-      isLedger,
-      isExportingExtendedPublicKey,
-    });
+    const { hardwareWallets } = this.props.stores;
+    const { isTrezor, isLedger, hwDeviceStatus } = hardwareWallets;
 
     return (
       <Layout>
         <ConnectHardwareWallet
-          onOpenExternalLink={(url: string) => app.openExternalLink(url)}
           isLedger={isLedger}
           isTrezor={isTrezor}
-          isDeviceConnected={isDeviceConnected}
-          fetchingDevice={fetchingDevice}
-          isExportingExtendedPublicKey={isExportingExtendedPublicKey}
-          isExportingPublicKeyAborted={isExportingPublicKeyAborted}
-          isExtendedPublicKeyExported={isExtendedPublicKeyExported}
-          isCardanoAppLaunched={isCardanoAppLaunched}
+          hwDeviceStatus={hwDeviceStatus}
         />
       </Layout>
     );
