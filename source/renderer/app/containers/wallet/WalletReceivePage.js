@@ -122,8 +122,10 @@ export default class WalletReceivePage extends Component<Props, State> {
       ? addresses.active.used
       : false;
 
-
-    console.debug('>>>> RECEIVE PAGE: ', {activeWallet: this.activeWallet, walletAddresses})
+    console.debug('>>>> RECEIVE PAGE: ', {
+      activeWallet: this.activeWallet,
+      walletAddresses,
+    });
 
     return (
       <Fragment>

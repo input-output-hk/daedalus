@@ -236,36 +236,17 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Summary",
-        "description": "Label for the \"Summary\" nav button in the wallet navigation.",
-        "end": {
-          "column": 3,
-          "line": 22
-        },
-        "file": "source/renderer/app/components/hardware-wallet/navigation/HardwareWalletNavigation.js",
-        "id": "wallet.navigation.summary",
-        "start": {
-          "column": 11,
-          "line": 18
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/hardware-wallet/navigation/HardwareWalletNavigation.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Hardware wallet",
         "description": "Hardware wallet title.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 19
         },
         "file": "source/renderer/app/components/hardware-wallet/settings/ConnectHardwareWallet.js",
         "id": "wallet.hardware.hardwareWalletTitle",
         "start": {
           "column": 23,
-          "line": 18
+          "line": 15
         }
       },
       {
@@ -273,13 +254,27 @@
         "description": "Ledger wallet title.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 24
         },
         "file": "source/renderer/app/components/hardware-wallet/settings/ConnectHardwareWallet.js",
         "id": "wallet.hardware.ledgerWalletTitle",
         "start": {
           "column": 21,
-          "line": 23
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!Trezor wallet",
+        "description": "Trezor wallet title.",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/components/hardware-wallet/settings/ConnectHardwareWallet.js",
+        "id": "wallet.hardware.trezorWalletTitle",
+        "start": {
+          "column": 21,
+          "line": 25
         }
       },
       {
@@ -287,73 +282,148 @@
         "description": "Follow instructions label",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 34
         },
         "file": "source/renderer/app/components/hardware-wallet/settings/ConnectHardwareWallet.js",
         "id": "wallet.hardware.hardwareWalletInstructions",
         "start": {
           "column": 30,
-          "line": 28
-        }
-      },
-      {
-        "defaultMessage": "!!!To begin, connect and unlock your <span>Ledger Device</span>",
-        "description": "Connect device label",
-        "end": {
-          "column": 3,
-          "line": 38
-        },
-        "file": "source/renderer/app/components/hardware-wallet/settings/ConnectHardwareWallet.js",
-        "id": "wallet.hardware.hardwareWalletLedgerBegin",
-        "start": {
-          "column": 29,
-          "line": 33
-        }
-      },
-      {
-        "defaultMessage": "!!!To begin, connect and unlock your <span>Hardware wallet Device</span>",
-        "description": "Connect device label",
-        "end": {
-          "column": 3,
-          "line": 44
-        },
-        "file": "source/renderer/app/components/hardware-wallet/settings/ConnectHardwareWallet.js",
-        "id": "wallet.hardware.hardwareWalletBegin",
-        "start": {
-          "column": 23,
-          "line": 39
-        }
-      },
-      {
-        "defaultMessage": "!!!Export <span>public key</span> on your device",
-        "description": "Export wallet label",
-        "end": {
-          "column": 3,
-          "line": 49
-        },
-        "file": "source/renderer/app/components/hardware-wallet/settings/ConnectHardwareWallet.js",
-        "id": "wallet.hardware.hardwareWalletExport",
-        "start": {
-          "column": 24,
-          "line": 45
-        }
-      },
-      {
-        "defaultMessage": "!!!https://daedaluswallet.io/",
-        "description": "External link URL on the hardware wallet connect screen",
-        "end": {
-          "column": 3,
-          "line": 54
-        },
-        "file": "source/renderer/app/components/hardware-wallet/settings/ConnectHardwareWallet.js",
-        "id": "wallet.select.import.dialog.linkUrl",
-        "start": {
-          "column": 11,
-          "line": 50
+          "line": 30
         }
       }
     ],
     "path": "source/renderer/app/components/hardware-wallet/settings/ConnectHardwareWallet.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Connect your device and enter your PIN to unlock it",
+        "description": "\"Connect your device and enter your PIN to unlock it\" device state",
+        "end": {
+          "column": 3,
+          "line": 19
+        },
+        "file": "source/renderer/app/components/hardware-wallet/status/HardwareWalletStatus.js",
+        "id": "wallet.hardware.deviceStatus.connecting",
+        "start": {
+          "column": 14,
+          "line": 15
+        }
+      },
+      {
+        "defaultMessage": "!!!Launch the Cardano application on your device",
+        "description": "\"Launch the Cardano application on your device\" device state",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/components/hardware-wallet/status/HardwareWalletStatus.js",
+        "id": "wallet.hardware.deviceStatus.launching_cardano_app",
+        "start": {
+          "column": 25,
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!Confirm exporting your public key on your device",
+        "description": "\"Confirm exporting your public key on your device\" device state",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/components/hardware-wallet/status/HardwareWalletStatus.js",
+        "id": "wallet.hardware.deviceStatus.exporting_public_key",
+        "start": {
+          "column": 24,
+          "line": 25
+        }
+      },
+      {
+        "defaultMessage": "!!!Exporting public key failed",
+        "description": "\"Exporting public key failed\" device state",
+        "end": {
+          "column": 3,
+          "line": 34
+        },
+        "file": "source/renderer/app/components/hardware-wallet/status/HardwareWalletStatus.js",
+        "id": "wallet.hardware.deviceStatus.exporting_public_key_failed",
+        "start": {
+          "column": 31,
+          "line": 30
+        }
+      },
+      {
+        "defaultMessage": "!!!Disconnect and reconnect your device to start the process again",
+        "description": "\"Disconnect and reconnect your device to start the process again\" device state",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "source/renderer/app/components/hardware-wallet/status/HardwareWalletStatus.js",
+        "id": "wallet.hardware.deviceStatus.exportingPublicKeyError",
+        "start": {
+          "column": 27,
+          "line": 35
+        }
+      },
+      {
+        "defaultMessage": "!!!Device ready and waiting for commands",
+        "description": "\"Device ready and waiting for commands\" device state",
+        "end": {
+          "column": 3,
+          "line": 44
+        },
+        "file": "source/renderer/app/components/hardware-wallet/status/HardwareWalletStatus.js",
+        "id": "wallet.hardware.deviceStatus.ready",
+        "start": {
+          "column": 9,
+          "line": 40
+        }
+      },
+      {
+        "defaultMessage": "!!!Verify the transaction on your device in order to sign it",
+        "description": "\"Verify the transaction on your device in order to sign it\" device state",
+        "end": {
+          "column": 3,
+          "line": 49
+        },
+        "file": "source/renderer/app/components/hardware-wallet/status/HardwareWalletStatus.js",
+        "id": "wallet.hardware.deviceStatus.verifying_transaction",
+        "start": {
+          "column": 25,
+          "line": 45
+        }
+      },
+      {
+        "defaultMessage": "!!!Transaction verification and signing failed",
+        "description": "\"Transaction verification and signing failed\" device state",
+        "end": {
+          "column": 3,
+          "line": 54
+        },
+        "file": "source/renderer/app/components/hardware-wallet/status/HardwareWalletStatus.js",
+        "id": "wallet.hardware.deviceStatus.verifying_transaction_failed",
+        "start": {
+          "column": 32,
+          "line": 50
+        }
+      },
+      {
+        "defaultMessage": "!!!Transaction verified and signed",
+        "description": "\"Transaction verified and signed\" device state",
+        "end": {
+          "column": 3,
+          "line": 59
+        },
+        "file": "source/renderer/app/components/hardware-wallet/status/HardwareWalletStatus.js",
+        "id": "wallet.hardware.deviceStatus.verifying_transaction_succeeded",
+        "start": {
+          "column": 35,
+          "line": 55
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/hardware-wallet/status/HardwareWalletStatus.json"
   },
   {
     "descriptors": [

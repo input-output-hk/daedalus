@@ -21,4 +21,4 @@ export const createHardwareWallet = (
     {},
     walletInitData
   );
-}
+};

@@ -57,7 +57,11 @@ export default class SidebarStore extends Store {
     const { availableHardwareWalletDevices } = wallets;
 
     return wallets.allHardwareWallets.map(wallet => {
-      const isWalletDisconnected = get(availableHardwareWalletDevices, [wallet.id, 'disconnected'], true);
+      const isWalletDisconnected = get(
+        availableHardwareWalletDevices,
+        [wallet.id, 'disconnected'],
+        true
+      );
       const {
         hasNotification,
       } = walletSettings.getWalletsRecoveryPhraseVerificationData(wallet.id);

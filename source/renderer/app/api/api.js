@@ -86,7 +86,12 @@ import {
   cardanoFaultInjectionChannel,
 } from '../ipc/cardano.ipc';
 import patchAdaApi from './utils/patchAdaApi';
-import { getLegacyWalletId, getHardwareWalletId, getRawWalletId, utcStringToDate } from './utils';
+import {
+  getLegacyWalletId,
+  getHardwareWalletId,
+  getRawWalletId,
+  utcStringToDate,
+} from './utils';
 import { logger } from '../utils/logging';
 import {
   unscrambleMnemonics,
@@ -214,7 +219,6 @@ export default class AdaApi {
   }
 
   getWallets = async (): Promise<Array<Wallet>> => {
-
     const storedHardwareWallets = await _localStorageApi.getAll();
     const hwIds = map(storedHardwareWallets, hw =>
       getRawWalletId(hw.id, 'HARDWARE_WALLET_ID_PREFIX')
@@ -250,8 +254,8 @@ export default class AdaApi {
         const walletData = {
           ...wallet,
           isHardwareWallet: includes(hwIds, wallet.id),
-        }
-        return _createWalletFromServerData(walletData)
+        };
+        return _createWalletFromServerData(walletData);
       });
     } catch (error) {
       logger.error('AdaApi::getWallets error', { error });
@@ -302,7 +306,9 @@ export default class AdaApi {
       parameters: filterLogData(request),
     });
     const { walletId, queryParams, isLegacy, isHardwareWallet } = request;
-    const rawWalletId = isHardwareWallet ? getRawWalletId(walletId, 'HARDWARE_WALLET_ID_PREFIX') : walletId;
+    const rawWalletId = isHardwareWallet
+      ? getRawWalletId(walletId, 'HARDWARE_WALLET_ID_PREFIX')
+      : walletId;
 
     try {
       let response = [];
@@ -577,7 +583,9 @@ export default class AdaApi {
     });
     try {
       const { walletId, isLegacy, isHardwareWallet } = request;
-      const id = isHardwareWallet ? getRawWalletId(walletId, 'HARDWARE_WALLET_ID_PREFIX') : walletId;
+      const id = isHardwareWallet
+        ? getRawWalletId(walletId, 'HARDWARE_WALLET_ID_PREFIX')
+        : walletId;
       let response;
       if (isLegacy) {
         response = await deleteLegacyWallet(this.config, { walletId: id });
@@ -952,30 +960,27 @@ export default class AdaApi {
     }
   };
 
-
-
-
-
-
-
-
-  createHardwareWallet = async (request: CreateHardwareWalletRequest): Promise<Wallet> => {
+  createHardwareWallet = async (
+    request: CreateHardwareWalletRequest
+  ): Promise<Wallet> => {
     logger.debug('AdaApi::createHardwareWallet called', {
       parameters: filterLogData(request),
     });
     const { walletName, accountPublicKey } = request;
-    console.debug('>>>> CALL API: ', request)
+    console.debug('>>>> CALL API: ', request);
     const walletInitData = {
       name: walletName,
       account_public_key: accountPublicKey,
     };
     console.debug('>>>> CALL API DATA: ', walletInitData);
 
-
     try {
-      const hardwareWallet: AdaWallet = await createHardwareWallet(this.config, {
-        walletInitData,
-      });
+      const hardwareWallet: AdaWallet = await createHardwareWallet(
+        this.config,
+        {
+          walletInitData,
+        }
+      );
 
       const { id: walletId } = hardwareWallet;
 
@@ -990,23 +995,9 @@ export default class AdaApi {
     } catch (error) {
       logger.error('AdaApi::createHardwareWallet error', { error });
       console.debug('>>> ERROR occured: ', error);
-      throw new ApiError(error)
+      throw new ApiError(error);
     }
   };
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
   restoreLegacyWallet = async (
     request: RestoreLegacyWalletRequest
@@ -1898,10 +1889,8 @@ const _createWalletFromServerData = action(
     } = wallet;
 
     let id = rawWalletId;
-    if (isLegacy)
-      id = getLegacyWalletId(rawWalletId);
-    if (isHardwareWallet)
-      id = getHardwareWalletId(rawWalletId);
+    if (isLegacy) id = getLegacyWalletId(rawWalletId);
+    if (isHardwareWallet) id = getHardwareWalletId(rawWalletId);
 
     const passphraseLastUpdatedAt = get(passphrase, 'last_updated_at', null);
     const walletTotalAmount =

@@ -69,9 +69,7 @@ export default class HardwareWallet extends Component<Props> {
     const activeHardwareWalletId = get(activeHardwareWallet, 'id', null);
     const hasPassword = get(activeHardwareWallet, 'hasPassword', null);
 
-    const {
-      availableHardwareWalletDevices,
-    } = wallets;
+    const { availableHardwareWalletDevices } = wallets;
 
     const {
       fetchingDevice,
@@ -82,11 +80,18 @@ export default class HardwareWallet extends Component<Props> {
       isTrezor,
       isLedger,
     } = hardwareWallets;
-    const isWalletDisconnected = get(availableHardwareWalletDevices, [activeHardwareWalletId, 'disconnected'], true);
-    const hasNotification = activeHardwareWalletId ? walletSettings.getWalletsRecoveryPhraseVerificationData(activeHardwareWalletId).hasNotification : false;
+    const isWalletDisconnected = get(
+      availableHardwareWalletDevices,
+      [activeHardwareWalletId, 'disconnected'],
+      true
+    );
+    const hasNotification = activeHardwareWalletId
+      ? walletSettings.getWalletsRecoveryPhraseVerificationData(
+          activeHardwareWalletId
+        ).hasNotification
+      : false;
 
-    if (isWalletDisconnected)
-      return <HardwareWalletAddPage />;
+    if (isWalletDisconnected) return <HardwareWalletAddPage />;
 
     return (
       <MainLayout>

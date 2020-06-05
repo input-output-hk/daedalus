@@ -26,7 +26,9 @@ export default class MainLayout extends Component<InjectedContainerProps> {
     const activeWallet = walletsStore.active;
     const activeWalletId = activeWallet ? activeWallet.id : null;
     const activeHardwareWallet = walletsStore.activeHardwareWallet;
-    const activeHardwareWalletId = activeHardwareWallet ? activeHardwareWallet.id : null;
+    const activeHardwareWalletId = activeHardwareWallet
+      ? activeHardwareWallet.id
+      : null;
     const { currentTheme } = profile;
     const {
       environment: { network, isDev },
@@ -64,7 +66,9 @@ export default class MainLayout extends Component<InjectedContainerProps> {
       hardwareWallets: isDev ? hardwareWallets : null,
     };
 
-    const addWalletRoute = isHardwareWalletRoute ? ROUTES.HARDWARE_WALLETS.ADD : ROUTES.WALLETS.ADD
+    const addWalletRoute = isHardwareWalletRoute
+      ? ROUTES.HARDWARE_WALLETS.ADD
+      : ROUTES.WALLETS.ADD;
 
     const sidebarComponent = (
       <Sidebar

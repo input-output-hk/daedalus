@@ -60,7 +60,11 @@ export default class AddressesStore extends Store {
   };
 
   @computed get addressesWallet(): string {
-    const { isHardwareWalletRoute, active, activeHardwareWallet } = this.stores.wallets;
+    const {
+      isHardwareWalletRoute,
+      active,
+      activeHardwareWallet,
+    } = this.stores.wallets;
     return isHardwareWalletRoute ? activeHardwareWallet : active;
   }
 
@@ -119,7 +123,11 @@ export default class AddressesStore extends Store {
         const { id: walletId } = hardwareWallet;
         const allRequest = this._getAddressesAllRequest(walletId);
         allRequest.invalidate({ immediately: false });
-        allRequest.execute({ walletId, isLegacy: false, isHardwareWallet: true });
+        allRequest.execute({
+          walletId,
+          isLegacy: false,
+          isHardwareWallet: true,
+        });
       }
     }
   };

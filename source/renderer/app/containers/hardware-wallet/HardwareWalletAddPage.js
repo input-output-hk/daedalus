@@ -17,10 +17,22 @@ export default class HardwareWalletAddPage extends Component<InjectedContainerPr
   }
 
   componentWillUnmount() {
-    const { stopDeviceFetchPoller, resetInitializedConnection, isDeviceConnected, isExtendedPublicKeyExported } = this.props.stores.hardwareWallets;
-    console.debug('!!!!!!! STOP POLLER - ADD PAGE !!!!!!!!', isDeviceConnected, isExtendedPublicKeyExported);
+    const {
+      stopDeviceFetchPoller,
+      resetInitializedConnection,
+      isDeviceConnected,
+      isExtendedPublicKeyExported,
+    } = this.props.stores.hardwareWallets;
+    console.debug(
+      '!!!!!!! STOP POLLER - ADD PAGE !!!!!!!!',
+      isDeviceConnected,
+      isExtendedPublicKeyExported
+    );
     stopDeviceFetchPoller();
-    if (!isDeviceConnected || (isDeviceConnected && !isExtendedPublicKeyExported)) {
+    if (
+      !isDeviceConnected ||
+      (isDeviceConnected && !isExtendedPublicKeyExported)
+    ) {
       resetInitializedConnection();
     }
   }
@@ -41,9 +53,10 @@ export default class HardwareWalletAddPage extends Component<InjectedContainerPr
       transport,
     } = hardwareWallets;
 
-
     console.debug('>>>> TRANSPORT: ', {
-      transport, isTrezor, isLedger,
+      transport,
+      isTrezor,
+      isLedger,
       isExportingExtendedPublicKey,
     });
 

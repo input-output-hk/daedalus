@@ -81,7 +81,10 @@ storiesOf('Wallets|Hardware Wallets', module)
       isDeviceConnected={boolean('isDeviceConnected', false)}
       fetchingDevice={boolean('fetchingDevice', false)}
       exportingExtendedPublicKey={boolean('exportingExtendedPublicKey', false)}
-      isExportingPublicKeyAborted={boolean('isExportingPublicKeyAborted', false)}
+      isExportingPublicKeyAborted={boolean(
+        'isExportingPublicKeyAborted',
+        false
+      )}
     />
   ))
 
@@ -155,6 +158,9 @@ storiesOf('Wallets|Hardware Wallets', module)
       isDeviceConnected={boolean('isDeviceConnected', false)}
       fetchingDevice={boolean('fetchingDevice', false)}
       exportingExtendedPublicKey={boolean('exportingExtendedPublicKey', false)}
-      isExportingPublicKeyAborted={boolean('isExportingPublicKeyAborted', false)}
+      isExportingPublicKeyAborted={boolean(
+        'isExportingPublicKeyAborted',
+        false
+      )}
     />
   ));
