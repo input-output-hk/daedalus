@@ -39,6 +39,36 @@ export const WalletDelegationStatuses: {
   NOT_DELEGATING: 'not_delegating',
 };
 
+export type HwDeviceStatus =
+  | 'connecting'
+  | 'launching_cardano_app'
+  | 'exporting_public_key'
+  | 'exporting_public_key_failed'
+  | 'ready'
+  | 'verifying_transaction'
+  | 'verifying_transaction_failed'
+  | 'verifying_transaction_succeeded';
+
+export const HwDeviceStatuses: {
+  CONNECTING: HwDeviceStatus,
+  LAUNCHING_CARDANO_APP: HwDeviceStatus,
+  EXPORTING_PUBLIC_KEY: HwDeviceStatus,
+  EXPORTING_PUBLIC_KEY_FAILED: HwDeviceStatus,
+  READY: HwDeviceStatus,
+  VERIFYING_TRANSACTION: HwDeviceStatus,
+  VERIFYING_TRANSACTION_FAILED: HwDeviceStatus,
+  VERIFYING_TRANSACTION_SUCCEEDED: HwDeviceStatus,
+} = {
+  CONNECTING: 'connecting',
+  LAUNCHING_CARDANO_APP: 'launching_cardano_app',
+  EXPORTING_PUBLIC_KEY: 'exporting_public_key',
+  EXPORTING_PUBLIC_KEY_FAILED: 'exporting_public_key_failed',
+  READY: 'ready',
+  VERIFYING_TRANSACTION: 'verifying_transaction',
+  VERIFYING_TRANSACTION_FAILED: 'verifying_transaction_failed',
+  VERIFYING_TRANSACTION_SUCCEEDED: 'verifying_transaction_succeeded',
+};
+
 export const WalletUnits: {
   ADA: WalletUnit,
   LOVELACE: WalletUnit,

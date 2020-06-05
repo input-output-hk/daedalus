@@ -94,9 +94,13 @@ export default class HardwareWalletStatus extends Component<Props> {
 
     let hardwareConnectLabel = intl.formatMessage(messages.hardwareWalletBegin);
     if (isTrezor) {
-      hardwareConnectLabel = intl.formatMessage(messages.hardwareWalletTrezorBegin);
+      hardwareConnectLabel = intl.formatMessage(
+        messages.hardwareWalletTrezorBegin
+      );
     } else if (isLedger) {
-      hardwareConnectLabel = intl.formatMessage(messages.hardwareWalletLedgerBegin);
+      hardwareConnectLabel = intl.formatMessage(
+        messages.hardwareWalletLedgerBegin
+      );
     }
 
     const walletStepClasses = classnames([
@@ -106,25 +110,40 @@ export default class HardwareWalletStatus extends Component<Props> {
       isExportingPublicKeyAborted ? styles.isErrorExport : null,
     ]);
 
+    // TODO: remove
+    return null;
+
     return (
       <div className={walletStepClasses}>
         <div className={styles.hardwareWalletInnerStep}>
-          {!isCardanoAppLaunched && <FormattedHTMLMessage {...messages.openCardanoAppLabel} />}
+          {!isCardanoAppLaunched && (
+            <FormattedHTMLMessage {...messages.openCardanoAppLabel} />
+          )}
           {<FormattedHTMLMessage {...hardwareConnectLabel} />}
-          {<FormattedHTMLMessage
-            {...messages.deviceConnectedLabel}
-            values={{
-              deviceType: isLedger ? 'Ledger' : 'Trezor',
-            }}
-          />}
+          {
+            <FormattedHTMLMessage
+              {...messages.deviceConnectedLabel}
+              values={{
+                deviceType: isLedger ? 'Ledger' : 'Trezor',
+              }}
+            />
+          }
           {<FormattedHTMLMessage {...messages.hardwareWalletExport} />}
-          {<FormattedHTMLMessage
-            {...messages.hardwareWalletExportRejected}
-          />}
+          {<FormattedHTMLMessage {...messages.hardwareWalletExportRejected} />}
         </div>
-        {(!isCardanoAppLaunched || (isCardanoAppLaunched && (fetchingDevice || isExportingExtendedPublicKey))) && <LoadingSpinner/>}
-        {(isCardanoAppLaunched && (isDeviceConnected || isExtendedPublicKeyExported)) && <SVGInline svg={checkIcon} className={styles.checkIcon}/>}
-        {(isCardanoAppLaunched && (fetchingDevice === null || isExportingPublicKeyAborted)) && <SVGInline svg={clearIcon} className={styles.clearIcon}/>}
+        {(!isCardanoAppLaunched ||
+          (isCardanoAppLaunched &&
+            (fetchingDevice || isExportingExtendedPublicKey))) && (
+          <LoadingSpinner />
+        )}
+        {isCardanoAppLaunched &&
+          (isDeviceConnected || isExtendedPublicKeyExported) && (
+            <SVGInline svg={checkIcon} className={styles.checkIcon} />
+          )}
+        {isCardanoAppLaunched &&
+          (fetchingDevice === null || isExportingPublicKeyAborted) && (
+            <SVGInline svg={clearIcon} className={styles.clearIcon} />
+          )}
       </div>
     );
   }
