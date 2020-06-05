@@ -195,9 +195,6 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
       hwDeviceStatus,
     } = this.props;
 
-
-    console.debug('>>> hwDeviceStatus: ', hwDeviceStatus)
-
     const confirmButtonClasses = classnames([
       'confirmButton',
       isSubmitting ? styles.submitButtonSpinning : null,
