@@ -19,6 +19,7 @@ type Props = {
   fetchingDevice: boolean,
   exportingExtendedPublicKey: boolean,
   isExportingPublicKeyAborted: boolean,
+  isExtendedPublicKeyExported: boolean,
 };
 
 @observer

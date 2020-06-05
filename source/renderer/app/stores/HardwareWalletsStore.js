@@ -38,7 +38,6 @@ export default class HardwareWalletsStore extends Store {
   @observable derivedAddress: Object = {};
   @observable txSignRequest: Object = {};
 
-
   pollingDeviceInterval: ?IntervalID = null;
 
   setup() {
@@ -143,7 +142,6 @@ export default class HardwareWalletsStore extends Store {
       this._setWalletConnected();
       console.debug('OOOOOOOOOO   DONE  OOOOOOOOO'); */
 
-
       this.pollingDeviceInterval = setInterval(
         this._getCardanoAdaApp,
         POLLING_DEVICES_INTERVAL
@@ -153,7 +151,7 @@ export default class HardwareWalletsStore extends Store {
       console.debug('>>> ESTABLISH CONNECTION - ERROR: ', e);
       this._establishConnection2();
     }
-  }
+  };
 
   @action _establishConnection = async () => {
     // Object.assign(this._newWalletDetails, params);
@@ -161,12 +159,9 @@ export default class HardwareWalletsStore extends Store {
     const device = await this._getHardwareWalletDevice();
     console.debug('>>>> HW device found: ', device);
 
-
     console.debug('Exporting public key...');
     await this._getExtendedPublicKey();
     console.debug('Extended public key Exported: ', this.extendedPublicKey);
-
-
 
     console.debug('Creating HW...');
     this.actions.wallets.createHardwareWallet.trigger({
@@ -175,7 +170,6 @@ export default class HardwareWalletsStore extends Store {
       device,
     });
     console.debug('HW Created!');
-
   };
 
   @action _getHardwareWalletDevice = async () => {

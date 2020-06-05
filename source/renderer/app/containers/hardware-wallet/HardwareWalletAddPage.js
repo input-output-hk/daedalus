@@ -57,6 +57,7 @@ export default class HardwareWalletAddPage extends Component<InjectedContainerPr
           fetchingDevice={fetchingDevice}
           isExportingExtendedPublicKey={isExportingExtendedPublicKey}
           isExportingPublicKeyAborted={isExportingPublicKeyAborted}
+          isExtendedPublicKeyExported={isExtendedPublicKeyExported}
           isCardanoAppLaunched={isCardanoAppLaunched}
         />
       </Layout>
