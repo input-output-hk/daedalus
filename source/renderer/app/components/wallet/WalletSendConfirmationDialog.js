@@ -17,6 +17,7 @@ import styles from './WalletSendConfirmationDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { submitOnEnter } from '../../utils/form';
 import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
+import HardwareWalletStatus from '../hardware-wallet/status/HardwareWalletStatus';
 
 export const messages = defineMessages({
   dialogTitle: {
@@ -225,6 +226,9 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
       );
     }
 
+    // TODO: remove
+    const isHardwareWallet = true;
+
     return (
       <Dialog
         title={intl.formatMessage(messages.dialogTitle)}
@@ -281,15 +285,21 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
             </div>
           </div>
 
-          <Input
-            type="password"
-            className={styles.passphrase}
-            {...passphraseField.bind()}
-            error={passphraseField.error}
-            skin={InputSkin}
-            onKeyPress={this.handleSubmitOnEnter}
-            autoFocus
-          />
+          {isHardwareWallet ? (
+            <div className={styles.hardwareWalletStatusWrapper}>
+              <HardwareWalletStatus hwDeviceStatus="verifying_transaction" />
+            </div>
+          ) : (
+            <Input
+              type="password"
+              className={styles.passphrase}
+              {...passphraseField.bind()}
+              error={passphraseField.error}
+              skin={InputSkin}
+              onKeyPress={this.handleSubmitOnEnter}
+              autoFocus
+            />
+          )}
         </div>
 
         {isFlight && (

@@ -102,7 +102,10 @@ export const Routes = withRouter(() => (
           path={ROUTES.PAPER_WALLET_CREATE_CERTIFICATE}
           component={PaperWalletCreateCertificatePage}
         />
-        <Route path={ROUTES.HARDWARE_WALLETS.ADD} component={HardwareWalletAddPage} />
+        <Route
+          path={ROUTES.HARDWARE_WALLETS.ADD}
+          component={HardwareWalletAddPage}
+        />
         <Route path={ROUTES.HARDWARE_WALLETS.ROOT}>
           <HardwareWallet>
             <Route
@@ -113,10 +116,22 @@ export const Routes = withRouter(() => (
               path={ROUTES.HARDWARE_WALLETS.TRANSACTIONS}
               component={WalletTransactionsPage}
             />
-            <Route path={ROUTES.HARDWARE_WALLETS.SEND} component={WalletSendPage} />
-            <Route path={ROUTES.HARDWARE_WALLETS.RECEIVE} component={WalletReceivePage} />
-            <Route path={ROUTES.HARDWARE_WALLETS.SETTINGS} component={WalletSettingsPage} />
-            <Route path={ROUTES.HARDWARE_WALLETS.UTXO} component={WalletUtxoPage} />
+            <Route
+              path={ROUTES.HARDWARE_WALLETS.SEND}
+              component={WalletSendPage}
+            />
+            <Route
+              path={ROUTES.HARDWARE_WALLETS.RECEIVE}
+              component={WalletReceivePage}
+            />
+            <Route
+              path={ROUTES.HARDWARE_WALLETS.SETTINGS}
+              component={WalletSettingsPage}
+            />
+            <Route
+              path={ROUTES.HARDWARE_WALLETS.UTXO}
+              component={WalletUtxoPage}
+            />
           </HardwareWallet>
         </Route>
         <Route path={ROUTES.STAKING.ROOT}>

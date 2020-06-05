@@ -6,70 +6,67 @@ import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import checkIcon from '../../../assets/images/hardware-wallet/check.inline.svg';
 import clearIcon from '../../../assets/images/hardware-wallet/close-cross-red.inline.svg';
-import styles from './HardwareWalletStatus.scss';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
+import { HwDeviceStatuses } from '../../../domains/Wallet';
+import type { HwDeviceStatus } from '../../../domains/Wallet';
+import styles from './HardwareWalletStatus.scss';
 
 const messages = defineMessages({
-  hardwareWalletInstructions: {
-    id: 'wallet.hardware.hardwareWalletInstructions',
-    defaultMessage: '!!!Follow instructions to access your wallet',
-    description: 'Follow instructions label',
+  connecting: {
+    id: 'wallet.hardware.deviceStatus.connecting',
+    defaultMessage: '!!!Connect your device and enter your PIN to unlock it',
+    description:
+      '"Connect your device and enter your PIN to unlock it" device state',
   },
-  hardwareWalletLedgerBegin: {
-    id: 'wallet.hardware.hardwareWalletLedgerBegin',
+  launching_cardano_app: {
+    id: 'wallet.hardware.deviceStatus.launching_cardano_app',
+    defaultMessage: '!!!Launch the Cardano application on your device',
+    description: '"Launch the Cardano application on your device" device state',
+  },
+  exporting_public_key: {
+    id: 'wallet.hardware.deviceStatus.exporting_public_key',
+    defaultMessage: '!!!Confirm exporting your public key on your device',
+    description:
+      '"Confirm exporting your public key on your device" device state',
+  },
+  exporting_public_key_failed: {
+    id: 'wallet.hardware.deviceStatus.exporting_public_key_failed',
+    defaultMessage: '!!!Exporting public key failed',
+    description: '"Exporting public key failed" device state',
+  },
+  exportingPublicKeyError: {
+    id: 'wallet.hardware.deviceStatus.exportingPublicKeyError',
     defaultMessage:
-      '!!!To begin, connect and unlock your <span>Ledger Device</span>',
-    description: 'Connect device label',
+      '!!!Disconnect and reconnect your device to start the process again',
+    description:
+      '"Disconnect and reconnect your device to start the process again" device state',
   },
-  hardwareWalletTrezorBegin: {
-    id: 'wallet.hardware.hardwareWalletTrezorBegin',
+  ready: {
+    id: 'wallet.hardware.deviceStatus.ready',
+    defaultMessage: '!!!Device ready and waiting for commands',
+    description: '"Device ready and waiting for commands" device state',
+  },
+  verifying_transaction: {
+    id: 'wallet.hardware.deviceStatus.verifying_transaction',
     defaultMessage:
-      '!!!To begin, connect and unlock your <span>Trezor Device</span>',
-    description: 'Connect device label',
+      '!!!Verify the transaction on your device in order to sign it',
+    description:
+      '"Verify the transaction on your device in order to sign it" device state',
   },
-  hardwareWalletBegin: {
-    id: 'wallet.hardware.hardwareWalletBegin',
-    defaultMessage:
-      '!!!To begin, connect and unlock your <span>Hardware wallet Device</span>',
-    description: 'Connect device label',
+  verifying_transaction_failed: {
+    id: 'wallet.hardware.deviceStatus.verifying_transaction_failed',
+    defaultMessage: '!!!Transaction verification and signing failed',
+    description: '"Transaction verification and signing failed" device state',
   },
-  hardwareWalletExport: {
-    id: 'wallet.hardware.hardwareWalletExport',
-    defaultMessage: '!!!Export <span>public key</span> on your device',
-    description: 'Export wallet label',
-  },
-  hardwareWalletExportRejected: {
-    id: 'wallet.hardware.hardwareWalletExportRejected',
-    defaultMessage: '!!!Export rejected',
-    description: 'Export wallet rejected label',
-  },
-  linkUrl: {
-    id: 'wallet.select.import.dialog.linkUrl',
-    defaultMessage: '!!!https://daedaluswallet.io/',
-    description: 'External link URL on the hardware wallet connect screen',
-  },
-  openCardanoAppLabel: {
-    id: 'wallet.hardware.openCardanoAppLabel',
-    defaultMessage: '!!!Open <span>Cardano app</span>',
-    description: 'Connected but Cardano app not launched',
-  },
-  deviceConnectedLabel: {
-    id: 'wallet.hardware.deviceConnectedLabel',
-    defaultMessage: '!!!{deviceType} device',
-    description: 'Connected / Accepted device label',
+  verifying_transaction_succeeded: {
+    id: 'wallet.hardware.deviceStatus.verifying_transaction_succeeded',
+    defaultMessage: '!!!Transaction verified and signed',
+    description: '"Transaction verified and signed" device state',
   },
 });
 
 type Props = {
-  onOpenExternalLink: Function,
-  isDeviceConnected: boolean,
-  fetchingDevice: boolean,
-  isExportingExtendedPublicKey: boolean,
-  isExportingPublicKeyAborted: boolean,
-  isExtendedPublicKeyExported: boolean,
-  isLedger: boolean,
-  isTrezor: boolean,
-  isCardanoAppLaunched: boolean,
+  hwDeviceStatus: HwDeviceStatus,
 };
 
 @observer
@@ -80,71 +77,48 @@ export default class HardwareWalletStatus extends Component<Props> {
 
   render() {
     const { intl } = this.context;
+    const { hwDeviceStatus } = this.props;
 
-    const {
-      isDeviceConnected,
-      fetchingDevice,
-      isExportingExtendedPublicKey,
-      isExportingPublicKeyAborted,
-      isExtendedPublicKeyExported,
-      isLedger,
-      isTrezor,
-      isCardanoAppLaunched,
-    } = this.props;
+    const isLoading =
+      hwDeviceStatus === HwDeviceStatuses.CONNECTING ||
+      hwDeviceStatus === HwDeviceStatuses.LAUNCHING_CARDANO_APP ||
+      hwDeviceStatus === HwDeviceStatuses.EXPORTING_PUBLIC_KEY ||
+      hwDeviceStatus === HwDeviceStatuses.VERIFYING_TRANSACTION;
 
-    let hardwareConnectLabel = intl.formatMessage(messages.hardwareWalletBegin);
-    if (isTrezor) {
-      hardwareConnectLabel = intl.formatMessage(
-        messages.hardwareWalletTrezorBegin
-      );
-    } else if (isLedger) {
-      hardwareConnectLabel = intl.formatMessage(
-        messages.hardwareWalletLedgerBegin
-      );
-    }
+    const isReady =
+      hwDeviceStatus === HwDeviceStatuses.READY ||
+      hwDeviceStatus === HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED;
 
-    const walletStepClasses = classnames([
-      styles.hardwareWalletStep,
-      fetchingDevice ? styles.isActiveFetching : null,
-      isExportingExtendedPublicKey ? styles.isActiveExport : null,
-      isExportingPublicKeyAborted ? styles.isErrorExport : null,
+    const hasErrored =
+      hwDeviceStatus === HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED ||
+      hwDeviceStatus === HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED;
+
+    const componentClasses = classnames([
+      styles.component,
+      isReady ? styles.isReady : null,
+      hasErrored ? styles.isError : null,
     ]);
 
-    // TODO: remove
-    return null;
-
     return (
-      <div className={walletStepClasses}>
-        <div className={styles.hardwareWalletInnerStep}>
-          {!isCardanoAppLaunched && (
-            <FormattedHTMLMessage {...messages.openCardanoAppLabel} />
-          )}
-          {<FormattedHTMLMessage {...hardwareConnectLabel} />}
-          {
-            <FormattedHTMLMessage
-              {...messages.deviceConnectedLabel}
-              values={{
-                deviceType: isLedger ? 'Ledger' : 'Trezor',
-              }}
-            />
-          }
-          {<FormattedHTMLMessage {...messages.hardwareWalletExport} />}
-          {<FormattedHTMLMessage {...messages.hardwareWalletExportRejected} />}
-        </div>
-        {(!isCardanoAppLaunched ||
-          (isCardanoAppLaunched &&
-            (fetchingDevice || isExportingExtendedPublicKey))) && (
-          <LoadingSpinner />
-        )}
-        {isCardanoAppLaunched &&
-          (isDeviceConnected || isExtendedPublicKeyExported) && (
+      <>
+        <div className={componentClasses}>
+          <div className={styles.message}>
+            {intl.formatMessage(messages[hwDeviceStatus])}
+          </div>
+          {isLoading && <LoadingSpinner />}
+          {isReady && (
             <SVGInline svg={checkIcon} className={styles.checkIcon} />
           )}
-        {isCardanoAppLaunched &&
-          (fetchingDevice === null || isExportingPublicKeyAborted) && (
+          {hasErrored && (
             <SVGInline svg={clearIcon} className={styles.clearIcon} />
           )}
-      </div>
+        </div>
+        {hwDeviceStatus === HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED && (
+          <div className={styles.errorText}>
+            {intl.formatMessage(messages.exportingPublicKeyError)}
+          </div>
+        )}
+      </>
     );
   }
 }

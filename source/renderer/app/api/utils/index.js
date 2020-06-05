@@ -30,8 +30,9 @@ export const getLegacyWalletId = (rawWalletId: string) =>
 export const getHardwareWalletId = (rawWalletId: string) =>
   `${walletIdPrefixes.HARDWARE_WALLET_ID_PREFIX}${rawWalletId}`;
 export const getRawWalletId = (walletId: string, prefix?: string) => {
-  const walletIdPrefix = walletIdPrefixes[prefix] || walletIdPrefixes.LEGACY_WALLET_ID_PREFIX;
+  const walletIdPrefix =
+    walletIdPrefixes[prefix] || walletIdPrefixes.LEGACY_WALLET_ID_PREFIX;
   return walletId.replace(walletIdPrefix, '');
-}
+};
 export const isHardwareWallet = (walletId: string) =>
   walletId.startsWith(walletIdPrefixes.HARDWARE_WALLET_ID_PREFIX);

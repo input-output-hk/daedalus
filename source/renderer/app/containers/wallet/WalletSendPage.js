@@ -32,7 +32,12 @@ export default class WalletSendPage extends Component<Props> {
     } = this.props.stores;
     const { actions } = this.props;
     const { calculateTransactionFee, validateAmount } = transactions;
-    const { isValidAddress, activeHardwareWallet, active, isHardwareWalletRoute } = wallets;
+    const {
+      isValidAddress,
+      activeHardwareWallet,
+      active,
+      isHardwareWalletRoute,
+    } = wallets;
     const activeWallet = isHardwareWalletRoute ? activeHardwareWallet : active;
 
     // Guard against potential null values

@@ -164,7 +164,9 @@ const onAppReady = async () => {
   await handleCheckDiskSpace();
 
   console.debug('>>> TRY to instantiate');
-  const handleCheckHardwareWalletDevices = handleHardwareWalletDevices(mainWindow);
+  const handleCheckHardwareWalletDevices = handleHardwareWalletDevices(
+    mainWindow
+  );
   await handleCheckHardwareWalletDevices();
 
   cardanoNode = setupCardanoNode(launcherConfig, mainWindow);

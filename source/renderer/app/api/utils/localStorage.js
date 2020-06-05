@@ -225,10 +225,10 @@ export default class LocalStorageApi {
     LocalStorageApi.get(`${this.storageKeys.HARDWARE_WALLETS}.${walletId}`, {});
 
   getHardwareWallet = (): Promise<HardwareWallet> =>
-    LocalStorageApi.get(this.storageKeys.HARDWARE_WALLETS, null)
+    LocalStorageApi.get(this.storageKeys.HARDWARE_WALLETS, null);
 
   getAll = (): Promise<HardwareWallet> =>
-    LocalStorageApi.get(this.storageKeys.HARDWARE_WALLETS, null)
+    LocalStorageApi.get(this.storageKeys.HARDWARE_WALLETS, null);
 
   setHardwareWallet = async (params: {
     walletId: string,
@@ -243,34 +243,33 @@ export default class LocalStorageApi {
       currentHardwareWalletData,
       device,
       extendedPublicKey,
-      unmutableData,
+      unmutableData
     );
     await LocalStorageApi.set(
       `${this.storageKeys.HARDWARE_WALLETS}.${walletId}`,
-      hardwareWalletData,
+      hardwareWalletData
     );
 
     return hardwareWalletData;
   };
 
   // daedalus.api.localStorage.setHardwareWalletConnectionStatus({walletId: "hw_d5184982ea26e8f6335e04b93c8d64cac7b1f678", disconnected: false})
-  setHardwareWalletConnectionStatus = async (params: { walletId: string, disconnected: boolean }): Promise<HardwareWallet> => {
+  setHardwareWalletConnectionStatus = async (params: {
+    walletId: string,
+    disconnected: boolean,
+  }): Promise<HardwareWallet> => {
     const { walletId, disconnected } = params;
     const currentHardwareWalletData = await this.getHardwareWallet2(walletId);
     const data = {
       ...currentHardwareWalletData,
       disconnected,
-    }
+    };
     const unmutableData = { id: walletId };
-    const hardwareWalletData = Object.assign(
-      {},
-      data,
-      unmutableData,
-    );
+    const hardwareWalletData = Object.assign({}, data, unmutableData);
 
     await LocalStorageApi.set(
       `${this.storageKeys.HARDWARE_WALLETS}.${walletId}`,
-      hardwareWalletData,
+      hardwareWalletData
     );
 
     return hardwareWalletData;

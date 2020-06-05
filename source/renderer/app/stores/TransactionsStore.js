@@ -100,7 +100,11 @@ export default class TransactionsStore extends Store {
   }
 
   @computed get transactionsWallet(): string {
-    const { isHardwareWalletRoute, active, activeHardwareWallet } = this.stores.wallets;
+    const {
+      isHardwareWalletRoute,
+      active,
+      activeHardwareWallet,
+    } = this.stores.wallets;
     return isHardwareWalletRoute ? activeHardwareWallet : active;
   }
 

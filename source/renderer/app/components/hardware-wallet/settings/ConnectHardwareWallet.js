@@ -9,6 +9,7 @@ import trezorIcon from '../../../assets/images/hardware-wallet/trezor.inline.svg
 import unknownDeviceIcon from '../../../assets/images/hardware-wallet/trezor-ledger.inline.svg';
 import styles from './ConnectHardwareWallet.scss';
 import HardwareWalletStatus from '../status/HardwareWalletStatus';
+import { HwDeviceStatuses } from '../../../domains/Wallet';
 
 const messages = defineMessages({
   hardwareWalletTitle: {
@@ -100,18 +101,8 @@ export default class ConnectHardwareWallet extends Component<Props> {
             <p className={styles.hardwareWalletMessage}>
               {intl.formatMessage(messages.hardwareWalletInstructions)}
             </p>
-            <div className={styles.hardwareWalletStepsWrapper}>
-              <HardwareWalletStatus
-                onOpenExternalLink={onOpenExternalLink}
-                isDeviceConnected={isDeviceConnected}
-                fetchingDevice={fetchingDevice}
-                isExportingExtendedPublicKey={isExportingExtendedPublicKey}
-                isExportingPublicKeyAborted={isExportingPublicKeyAborted}
-                isExtendedPublicKeyExported={isExtendedPublicKeyExported}
-                isTrezor={isTrezor}
-                isLedger={isLedger}
-                isCardanoAppLaunched={isCardanoAppLaunched}
-              />
+            <div className={styles.hardwareWalletStatusWrapper}>
+              <HardwareWalletStatus hwDeviceStatus={HwDeviceStatuses.READY} />
             </div>
           </div>
         </div>
