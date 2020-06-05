@@ -315,7 +315,7 @@ export default class AdaApi {
       if (isLegacy && !isIncentivizedTestnet) {
         response = await getByronWalletAddresses(
           this.config,
-          walletId,
+          rawWalletId,
           queryParams
         );
       } else if (!isLegacy) {

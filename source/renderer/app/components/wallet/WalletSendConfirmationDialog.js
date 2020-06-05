@@ -230,7 +230,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
     }
 
     // TODO: remove
-    const isHardwareWallet = true;
+    const isHardwareWallet = false;
 
     return (
       <Dialog
