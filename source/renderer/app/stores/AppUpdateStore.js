@@ -69,6 +69,7 @@ export default class AppUpdateStore extends Store {
     const downloadLocalData = await getDownloadLocalDataChannel.request({
       id: APP_UPDATE_DOWNLOAD_ID,
     });
+    // eslint-disable-next-line
     console.log('downloadLocalData', downloadLocalData);
     return downloadLocalData;
   };
@@ -79,6 +80,7 @@ export default class AppUpdateStore extends Store {
     progress,
   }: DownloadMainResponse) => {
     if (eventType === 'progress') {
+      // eslint-disable-next-line
       console.log(
         '%c Download progress: %s%',
         'color: darkOrange',
