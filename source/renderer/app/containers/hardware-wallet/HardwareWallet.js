@@ -51,27 +51,11 @@ export default class HardwareWallet extends Component<Props> {
     });
   };
 
-  // componentDidMount() {
-  //   console.debug('!!!!!!! INITIATE POLLER !!!!!!!!');
-  //   const { startDeviceFetchPoller } = this.props.stores.hardwareWallets;
-  //   startDeviceFetchPoller();
-  // }
-
-  // componentWillUnmount() {
-  //   const { stopDeviceFetchPoller, resetInitializedConnection, isDeviceConnected, isExtendedPublicKeyExported } = this.props.stores.hardwareWallets;
-  //   console.debug('!!!!!!! STOP POLLER !!!!!!!!', isDeviceConnected, isExtendedPublicKeyExported);
-  //   stopDeviceFetchPoller();
-  //   if (!isDeviceConnected || (isDeviceConnected && !isExtendedPublicKeyExported)) {
-  //     resetInitializedConnection();
-  //   }
-  // }
-
   render() {
     const { actions, stores } = this.props;
     const { app, wallets, walletSettings, hardwareWallets, uiDialogs } = stores;
     const { isOpen: isDialogOpen } = uiDialogs;
     const { restartNode } = actions.networkStatus;
-
     const { activeHardwareWallet } = wallets;
 
     // if (!activeHardwareWallet) {
@@ -98,12 +82,8 @@ export default class HardwareWallet extends Component<Props> {
       isTrezor,
       isLedger,
     } = hardwareWallets;
-
-    const {
-      hasNotification,
-    } = walletSettings.getWalletsRecoveryPhraseVerificationData(activeHardwareWalletId);
     const isWalletDisconnected = get(availableHardwareWalletDevices, [activeHardwareWalletId, 'disconnected'], true);
-
+    const hasNotification = activeHardwareWalletId ? walletSettings.getWalletsRecoveryPhraseVerificationData(activeHardwareWalletId).hasNotification : false;
 
     if (isWalletDisconnected)
       return <HardwareWalletAddPage />;

@@ -23,7 +23,7 @@ Feature: Transfer funds wizard
       | Secret1234 |
     Then "Transfer ada" wizard step 2 dialog continue button should be disabled
     And I click continue button on "Transfer ada" wizard step 2 dialog
-    And I see "Transfer ada" wizard step 2 transfer funds button disabled and spinner
+    And I see "Transfer ada" wizard step 2 transfer funds button disabled
     Then I should not see "Transfer ada" wizard step 2 wizard dialog anymore
     Then I should see increased rewards wallet balance and 0 ADA in Daedalus Balance wallet
 

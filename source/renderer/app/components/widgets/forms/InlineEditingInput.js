@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import vjf from 'mobx-react-form/lib/validators/VJF';
 import classnames from 'classnames';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
@@ -73,6 +74,7 @@ export default class InlineEditingInput extends Component<Props, State> {
       },
     },
     {
+      plugins: { vjf: vjf() },
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,

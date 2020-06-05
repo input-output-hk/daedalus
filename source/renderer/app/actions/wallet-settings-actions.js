@@ -19,10 +19,6 @@ export default class WalletSettingsActions {
     newPassword: string,
     isLegacy: boolean,
   }> = new Action();
-  forceWalletResync: Action<{
-    walletId: string,
-    isLegacy: boolean,
-  }> = new Action();
   exportToFile: Action<WalletExportToFileParams> = new Action();
 
   /* ----------  UTXO  ---------- */

@@ -33,7 +33,8 @@ export default class WalletCreateDialogContainer extends Component<Props> {
 
   get shouldDisplayAbortAlert() {
     return (
-      this.currentStep < 0 && this.currentStep > CREATE_WALLET_STEPS.length
+      this.currentStep !== null &&
+      (this.currentStep < 0 || this.currentStep > CREATE_WALLET_STEPS.length)
     );
   }
 
@@ -46,10 +47,12 @@ export default class WalletCreateDialogContainer extends Component<Props> {
       createWalletChangeStep,
       createWalletClose,
     } = this.props.actions.wallets;
-    if (this.currentStep < CREATE_WALLET_STEPS.length - 1) {
-      createWalletChangeStep.trigger();
-    } else {
-      createWalletClose.trigger();
+    if (this.currentStep !== null) {
+      if (this.currentStep < CREATE_WALLET_STEPS.length - 1) {
+        createWalletChangeStep.trigger();
+      } else {
+        createWalletClose.trigger();
+      }
     }
   };
 
@@ -73,6 +76,11 @@ export default class WalletCreateDialogContainer extends Component<Props> {
       createWalletStep,
       createWalletShowAbortConfirmation,
     } = this.props.stores.wallets;
+
+    if (createWalletStep === null) {
+      return null;
+    }
+
     const stepId = CREATE_WALLET_STEPS[createWalletStep];
     const CurrentContainer = this.containers[stepId];
     return (

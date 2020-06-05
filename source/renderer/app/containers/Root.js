@@ -12,6 +12,8 @@ type Props = InjectedContainerProps;
 @inject('stores', 'actions')
 @observer
 export default class Root extends Component<Props> {
+  static defaultProps = { actions: null, stores: null };
+
   render() {
     const { stores, actions, children } = this.props;
     const {
@@ -62,7 +64,7 @@ export default class Root extends Component<Props> {
       (isPageThatDoesntNeedWallets && !isNodeInStoppingSequence) ||
       (isProfilePage && (isNotEnoughDiskSpace || !isNodeInStoppingSequence))
     ) {
-      return React.Children.only(children);
+      return <>{children}</>;
     }
 
     if (
@@ -79,6 +81,6 @@ export default class Root extends Component<Props> {
       return <WalletAddPage />;
     }
 
-    return React.Children.only(children);
+    return <>{children}</>;
   }
 }
