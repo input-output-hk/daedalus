@@ -263,7 +263,7 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
     Cardano kind bridge -> do
       let
         mainBinary Shelley = "cardano-wallet-shelley"
-        mainBinary Byron = "cardnao-wallet-byron"
+        mainBinary Byron = "cardano-wallet-byron"
       common bridge
       -- Executables (from daedalus-bridge)
       forM_ [mainBinary kind, "cardano-node", "cardano-cli", "export-wallets" ] $ \f ->
