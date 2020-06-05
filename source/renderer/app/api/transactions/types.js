@@ -149,3 +149,11 @@ export type CoinSelectionsResponse = {
   inputs: Array<CoinSelectionInput>,
   outputs: Array<CoinSelectionOutput>,
 };
+
+export type CreateExternalTransactionRequest = {
+  signedTransactionBlob: string,
+};
+
+export type CreateExternalTransactionResponse = {
+  id: string,
+};

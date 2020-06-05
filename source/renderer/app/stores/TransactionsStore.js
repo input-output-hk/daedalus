@@ -13,6 +13,7 @@ import { WalletTransaction } from '../domains/WalletTransaction';
 import type {
   DeleteTransactionRequest,
   GetTransactionsResponse,
+  CreateExternalTransactionRequest,
 } from '../api/transactions/types';
 import { isValidAmountInLovelaces } from '../utils/validations';
 import {
@@ -84,6 +85,10 @@ export default class TransactionsStore extends Store {
   @observable
   deleteTransactionRequest: Request<DeleteTransactionRequest> = new Request(
     this.api.ada.deleteTransaction
+  );
+  @observable
+  createExternalTransactionRequest: Request<CreateExternalTransactionRequest> = new Request(
+    this.api.ada.createExternalTransaction
   );
 
   @observable _filterOptionsForWallets = {};
@@ -303,6 +308,11 @@ export default class TransactionsStore extends Store {
     };
     return true;
   };
+
+  @action _createExternalTransaction = async (signedTransactionBlob: string) => {
+    await createExternalTransactionRequest.execute({ signedTransactionBlob });
+    this.stores.wallets.refreshWalletsData();
+  }
 
   _getTransactionsRecentRequest = (
     walletId: string

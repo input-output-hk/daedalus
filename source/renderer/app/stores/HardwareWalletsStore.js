@@ -44,7 +44,6 @@ export default class HardwareWalletsStore extends Store {
   pollingDeviceInterval: ?IntervalID = null;
 
   setup() {
-    console.debug('>> HwDeviceStatuses: ', HwDeviceStatuses);
     const {
       hardwareWallets: hardwareWalletsActions,
     } = this.actions;
@@ -63,9 +62,6 @@ export default class HardwareWalletsStore extends Store {
     address: string,
     amount: string,
   }) => {
-
-    console.debug('>>> WALLET ID: ', walletId);
-
     const wallet = this.stores.wallets.getWalletById(walletId);
     if (!wallet) {
       throw new Error(

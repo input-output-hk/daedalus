@@ -142,6 +142,8 @@ import type {
   GetTransactionsResponse,
   CoinSelectionsRequest,
   CoinSelectionsResponse,
+  CreateExternalTransactionRequest,
+  CreateExternalTransactionResponse,
 } from './transactions/types';
 
 // Wallets Types
@@ -763,6 +765,25 @@ export default class AdaApi {
     } catch (error) {
       console.debug('>>> API:::: ERROR: ', error);
       logger.error('AdaApi::selectCoins error', { error });
+      throw new ApiError(error);
+    }
+  };
+
+  createExternalTransaction = async (
+    request: CreateExternalTransactionRequest
+  ): Promise<CreateExternalTransactionResponse> => {
+    logger.debug('AdaApi::createExternalTransaction called', {
+      parameters: filterLogData(request),
+    });
+    const { signedTransactionBlob } = request;
+
+    try {
+      const response = await createExternalTransaction(this.config, {
+        signedTransactionBlob,
+      });
+      return response;
+    } catch (error) {
+      logger.error('AdaApi::createExternalTransaction error', { error });
       throw new ApiError(error);
     }
   };

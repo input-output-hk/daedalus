@@ -12,11 +12,10 @@ export const createHardwareWallet = (
   config: RequestConfig,
   { walletInitData }: { walletInitData: WalletInitData }
 ): Promise<AdaWallet> => {
-  console.debug('>>>> INIT: ', walletInitData);
   return request(
     {
       method: 'POST',
-      path: '/v2/wallets',
+      path: '/byron-wallets',
       ...config,
     },
     {},
