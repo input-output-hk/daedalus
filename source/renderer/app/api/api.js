@@ -333,7 +333,10 @@ export default class AdaApi {
     request: GetTransactionsRequest
   ): Promise<GetTransactionsResponse> => {
     logger.debug('AdaApi::getTransactions called', { parameters: request });
-    const { walletId, order, fromDate, toDate, isLegacy } = request;
+    const { walletId, order, fromDate, toDate, isLegacy, isHardwareWallet } = request;
+    const rawWalletId = isHardwareWallet
+      ? getRawWalletId(walletId, 'HARDWARE_WALLET_ID_PREFIX')
+      : walletId;
 
     const params = Object.assign(
       {},
@@ -351,7 +354,7 @@ export default class AdaApi {
       if (isLegacy) {
         response = await getLegacyWalletTransactionHistory(
           this.config,
-          walletId,
+          rawWalletId,
           params
         );
       } else {

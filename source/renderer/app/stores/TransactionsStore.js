@@ -206,7 +206,7 @@ export default class TransactionsStore extends Store {
 
   @action _refreshTransactionData = async () => {
     if (this.stores.networkStatus.isConnected) {
-      const { all: wallets } = this.stores.wallets;
+      const { all: wallets, allHardwareWallets } = this.stores.wallets;
       for (const wallet of wallets) {
         const recentRequest = this._getTransactionsRecentRequest(wallet.id);
         recentRequest.execute({
@@ -231,6 +231,44 @@ export default class TransactionsStore extends Store {
           fromDate: null,
           toDate: null,
           isLegacy: wallet.isLegacy,
+          // @API TODO - Params "pending" for V2
+          // limit: this.INITIAL_SEARCH_LIMIT,
+          // skip: 0,
+          // searchTerm: '',
+          // isFirstLoad: !allRequest.wasExecuted,
+          // isRestoreActive,
+          // isRestoreCompleted,
+          // cachedTransactions: get(allRequest, 'result.transactions', []),
+        });
+      }
+
+      // Hardware wallet transactions
+      for (const hardwareWallet of allHardwareWallets) {
+        const recentRequest = this._getTransactionsRecentRequest(hardwareWallet.id);
+        recentRequest.execute({
+          walletId: hardwareWallet.id,
+          order: 'descending',
+          fromDate: null,
+          toDate: null,
+          isLegacy: hardwareWallet.isLegacy,
+          isHardwareWallet: true,
+          // @API TODO - Params "pending" for V2
+          // limit: this.RECENT_TRANSACTIONS_LIMIT,
+          // skip: 0,
+          // searchTerm: '',
+          // isFirstLoad: !recentRequest.wasExecuted,
+          // isRestoreActive,
+          // isRestoreCompleted,
+          // cachedTransactions: get(recentRequest, 'result.transactions', []),
+        });
+        const allRequest = this._getTransactionsAllRequest(hardwareWallet.id);
+        allRequest.execute({
+          walletId: hardwareWallet.id,
+          order: 'descending',
+          fromDate: null,
+          toDate: null,
+          isLegacy: hardwareWallet.isLegacy,
+          isHardwareWallet: true,
           // @API TODO - Params "pending" for V2
           // limit: this.INITIAL_SEARCH_LIMIT,
           // skip: 0,
