@@ -749,9 +749,6 @@ export default class AdaApi {
       parameters: filterLogData(request),
     });
     const { walletId, address, amount } = request;
-
-    console.debug('>>> API:::: selectCoins REQUEST: ', request);
-
     try {
       const data = {
         payments: [
@@ -764,17 +761,12 @@ export default class AdaApi {
           },
         ],
       };
-
       const response = await selectCoins(this.config, {
         walletId: getRawWalletId(walletId, 'HARDWARE_WALLET_ID_PREFIX'),
         data,
       });
-
-      console.debug('>>> API:::: selectCoins(): ', response);
-
       return response;
     } catch (error) {
-      console.debug('>>> API:::: ERROR: ', error);
       logger.error('AdaApi::selectCoins error', { error });
       throw new ApiError(error);
     }
@@ -970,12 +962,10 @@ export default class AdaApi {
       parameters: filterLogData(request),
     });
     const { walletName, accountPublicKey } = request;
-    console.debug('>>>> CALL API: ', request);
     const walletInitData = {
       name: walletName,
       account_public_key: accountPublicKey,
     };
-    console.debug('>>>> CALL API DATA: ', walletInitData);
 
     try {
       const hardwareWallet: AdaWallet = await createHardwareWallet(
@@ -992,12 +982,9 @@ export default class AdaApi {
         isHardwareWallet: true,
       };
       logger.debug('AdaApi::createHardwareWallet success', { wallet });
-
-      console.debug('>>>> RESPONSE: ', wallet);
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::createHardwareWallet error', { error });
-      console.debug('>>> ERROR occured: ', error);
       throw new ApiError(error);
     }
   };
@@ -1389,12 +1376,16 @@ export default class AdaApi {
     logger.debug('AdaApi::updateWallet called', {
       parameters: filterLogData(request),
     });
-    const { walletId, name, isLegacy } = request;
+    const { walletId, name, isLegacy, isHardwareWallet } = request;
+    const rawWalletId = isHardwareWallet
+      ? getRawWalletId(walletId, 'HARDWARE_WALLET_ID_PREFIX')
+      : walletId;
+
     try {
       let wallet: AdaWallet;
       if (isLegacy) {
         const response = await updateByronWallet(this.config, {
-          walletId,
+          walletId: rawWalletId,
           name,
         });
         wallet = {
@@ -1409,6 +1400,10 @@ export default class AdaApi {
         };
       } else {
         wallet = await updateWallet(this.config, { walletId, name });
+      }
+      wallet = {
+        ...wallet,
+        isHardwareWallet,
       }
       logger.debug('AdaApi::updateWallet success', { wallet });
       return _createWalletFromServerData(wallet);

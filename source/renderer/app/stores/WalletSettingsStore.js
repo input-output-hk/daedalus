@@ -160,17 +160,19 @@ export default class WalletSettingsStore extends Store {
     field: string,
     value: string,
   }) => {
-    const activeWallet = this.stores.wallets.active;
+    const { isHardwareWalletRoute, active, activeHardwareWallet } = this.stores.wallets;
+    const activeWallet = isHardwareWalletRoute ? activeHardwareWallet : active;
     if (!activeWallet) return;
 
-    const { id: walletId, name, isLegacy } = activeWallet;
-    const walletData = { walletId, name, isLegacy };
+    const { id: walletId, name, isLegacy, isHardwareWallet } = activeWallet;
+    const walletData = { walletId, name, isLegacy, isHardwareWallet };
     walletData[field] = value;
 
     const wallet = await this.updateWalletRequest.execute({
       walletId: walletData.walletId,
       name: walletData.name,
       isLegacy: walletData.isLegacy,
+      isHardwareWallet: walletData.isHardwareWallet,
     }).promise;
 
     if (!wallet) return;
