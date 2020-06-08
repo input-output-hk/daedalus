@@ -16,7 +16,7 @@ import {
 import { getProcess } from '../utils/processes';
 import { safeExitWithCode } from '../utils/safeExitWithCode';
 import type {
-  CardanoNodeImplementation,
+  CardanoNodeImplementations,
   CardanoNodeState,
   CardanoStatus,
   FaultInjection,
@@ -24,7 +24,10 @@ import type {
   FaultInjectionIpcResponse,
   TlsConfig,
 } from '../../common/types/cardano-node.types';
-import { CardanoNodeStates } from '../../common/types/cardano-node.types';
+import {
+  CardanoNodeStates,
+  CardanoNodeImplementationOptions,
+} from '../../common/types/cardano-node.types';
 import { CardanoWalletLauncher } from './CardanoWalletLauncher';
 import { launcherConfig } from '../config';
 import type { NodeConfig } from '../config';
@@ -61,7 +64,7 @@ type CardanoNodeIpcMessage = {
 
 export type CardanoNodeConfig = {
   stateDir: string, // Path to the state directory
-  nodeImplementation: CardanoNodeImplementation,
+  nodeImplementation: CardanoNodeImplementations,
   nodeConfig: NodeConfig,
   logFilePath: string, // Log file path for cardano-sl
   tlsPath: string, // Path to cardano-node TLS folder
@@ -184,7 +187,7 @@ export class CardanoNode {
 
   /**
    * Cardano Node config getter
-   * @returns {CardanoNodeImplementation}
+   * @returns {CardanoNodeImplementations}
    */
   get config(): CardanoNodeConfig {
     return this._config;
@@ -616,7 +619,7 @@ export class CardanoNode {
     const { _actions } = this;
     const { tlsPath } = this._config;
     this._tlsConfig =
-      nodeImplementation === 'jormungandr'
+      nodeImplementation === CardanoNodeImplementationOptions.JORMUNGANDR
         ? {
             ca: ('': any),
             key: ('': any),

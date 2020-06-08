@@ -17,12 +17,13 @@ import {
   NIGHTLY,
   QA,
 } from '../../common/types/environment.types';
+import { CardanoNodeImplementationOptions } from '../../common/types/cardano-node.types';
 import { createSelfnodeConfig } from './utils';
 import { logger } from '../utils/logging';
-import type { CardanoNodeImplementation } from '../../common/types/cardano-node.types';
+import type { CardanoNodeImplementations } from '../../common/types/cardano-node.types';
 
 export type WalletOpts = {
-  nodeImplementation: CardanoNodeImplementation,
+  nodeImplementation: CardanoNodeImplementations,
   nodeConfig: NodeConfig,
   cluster: string,
   stateDir: string,
@@ -84,7 +85,10 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
 
   // Prepare development TLS files
   const { isProduction } = environment;
-  if (!isProduction && nodeImplementation === 'cardano') {
+  if (
+    !isProduction &&
+    nodeImplementation === CardanoNodeImplementationOptions.CARDANO
+  ) {
     await fs.copy('tls', tlsPath);
   }
 
@@ -92,7 +96,7 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
   // configuration, prior to spawning the child process
   logger.info('Node implementation', { nodeImplementation });
   switch (nodeImplementation) {
-    case 'cardano':
+    case CardanoNodeImplementationOptions.CARDANO:
       if (cluster === SELFNODE) {
         const { configFile, genesisFile } = nodeConfig.network;
         const {
@@ -151,7 +155,7 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
       }
       merge(launcherConfig, { nodeConfig, tlsConfiguration });
       break;
-    case 'jormungandr':
+    case CardanoNodeImplementationOptions.JORMUNGANDR:
       if (cluster === ITN_SELFNODE) {
         merge(launcherConfig, {
           apiPort: 8088,

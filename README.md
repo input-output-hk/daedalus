@@ -69,6 +69,16 @@ Daedalus - Cryptocurrency Wallet
 1. Run `yarn nix:staging` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
 
+#### Shelley Friends & Family Testnet
+
+1. Run `yarn nix:shelley_ff` from `daedalus`.
+2. Run `yarn dev` from the subsequent `nix-shell`
+
+#### Shelley QA Testnet
+
+1. Run `yarn nix:shelley_qa` from `daedalus`.
+2. Run `yarn dev` from the subsequent `nix-shell`
+
 ### Running Daedalus with Jormungandr
 
 #### ITN Selfnode
