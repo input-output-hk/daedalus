@@ -12,17 +12,17 @@ import { formattedWalletAmount } from '../../../utils/formatters';
 const messages = defineMessages({
   dialogTitle: {
     id: 'wallet.transferFunds.dialog1.title',
-    defaultMessage: '!!!Transfer funds from the Balance wallet',
+    defaultMessage: '!!!Transfer funds from the legacy wallet',
     description: 'Title  in the transfer funds form.',
   },
   sourceWallet: {
     id: 'wallet.transferFunds.dialog1.sourceWallet',
-    defaultMessage: '!!!From Balance wallet',
+    defaultMessage: '!!!From legacy wallet',
     description: 'sourceWallet in the transfer funds form.',
   },
   targetWallet: {
     id: 'wallet.transferFunds.dialog1.targetWallet',
-    defaultMessage: '!!!To Rewards wallet',
+    defaultMessage: '!!!To Shelley-compatible wallet',
     description: 'targetWallet in the transfer funds form.',
   },
   buttonLabel: {
