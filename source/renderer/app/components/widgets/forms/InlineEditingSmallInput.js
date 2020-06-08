@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { get } from 'lodash';
 import SVGInline from 'react-svg-inline';
+import vjf from 'mobx-react-form/lib/validators/VJF';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
@@ -64,6 +65,7 @@ export default class InlineEditingSmallInput extends Component<Props, State> {
       },
     },
     {
+      plugins: { vjf: vjf() },
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,

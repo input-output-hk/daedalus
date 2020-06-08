@@ -391,7 +391,8 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
     };
   }
 
-  componentWillReceiveProps(nextProps: Props) {
+  // eslint-disable-next-line
+  UNSAFE_componentWillReceiveProps(nextProps: Props) {
     const { cardanoNodeState } = this.props;
     const { cardanoNodeState: nextCardanoNodeState } = nextProps;
     if (
