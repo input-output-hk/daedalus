@@ -150,7 +150,6 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,inst
         unsafeInjectGlobal $ "!define MUI_HEADERIMAGE"
         unsafeInjectGlobal $ "!define MUI_HEADERIMAGE_BITMAP \"icons\\installBanner.bmp\""
         unsafeInjectGlobal $ "!define MUI_HEADERIMAGE_RIGHT"
-        unsafeInjectGlobal $ "!include WinVer.nsh"
         unsafeInjectGlobal $ "VIProductVersion " <> viProductVersion
         unsafeInjectGlobal $ "VIAddVersionKey \"ProductVersion\" " <> fullVersion
         unsafeInjectGlobal "Unicode true"
@@ -165,8 +164,6 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,inst
         mapM_ unsafeInjectGlobal
           [ "LangString AlreadyRunning ${LANG_ENGLISH} \"is running. It needs to be fully shut down before running the installer!\""
           , "LangString AlreadyRunning ${LANG_JAPANESE} \"が起動中です。 インストーラーを実行する前に完全にシャットダウンする必要があります！\""
-          , "LangString TooOld ${LANG_ENGLISH} \"This version of Windows is not supported. Windows 8.1 or above required.\""
-          , "LangString TooOld ${LANG_JAPANESE} \"このWindowsバージョンはサポートされていません。Windows 8.1以降が必要です。\""
           ]
 
         mapM_ unsafeInject [
