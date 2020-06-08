@@ -2,6 +2,7 @@
 import { observable, action, runInAction, computed } from 'mobx';
 import AppAda, { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano'; //"@cardano-foundation/ledgerjs-hw-app-cardano";
 import { get, map } from 'lodash';
+import cbor from 'cbor';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import {
@@ -14,6 +15,7 @@ import {
   signTransactionChannel,
 } from '../ipc/getHardwareWalletChannel';
 import { HwDeviceStatuses } from '../domains/Wallet';
+import { thDataHexGenerator, encodeSignedTransaction } from '../utils/transaction';
 import type { HwDeviceStatus } from '../domains/Wallet';
 
 const POLLING_DEVICES_INTERVAL = 1000;
@@ -38,6 +40,9 @@ export default class HardwareWalletsStore extends Store {
   @observable derivedAddress: Object = {};
   @observable txSignRequest: Object = {};
   @observable hwDeviceStatus: HwDeviceStatus = HwDeviceStatuses.CONNECTING;
+
+  @observable txDataHex: string = null; // @TODO - remove after testing
+  @observable signedTransaction: string = null; // @TODO - remove after testing
 
   pollingDeviceInterval: ?IntervalID = null;
 
@@ -77,6 +82,15 @@ export default class HardwareWalletsStore extends Store {
         inputs: coinSelection.inputs,
         outputs: coinSelection.outputs,
       };
+    });
+
+    console.debug('>> TRY TO CREATE thDataHex: ', thDataHexGenerator);
+    const txDataHex = thDataHexGenerator(coinSelection);
+    console.debug('>> thDataHex: ', txDataHex);
+
+
+    runInAction('HardwareWalletsStore:: set txDataHex', () => {
+      this.txDataHex = txDataHex
     });
 
     console.debug('>>> coinSelection RES: ', coinSelection);
@@ -317,12 +331,13 @@ export default class HardwareWalletsStore extends Store {
   // daedalus.stores.hardwareWallets.selectCoins({walletId: "hw_d5184982ea26e8f6335e04b93c8d64cac7b1f678", address: "addr1ssj9c58d76x7v9yulh8wt03t4ksshre2m3wfkul0l43g8pf65ul5u6fal3lnl4y73q8pvvcdt26kp63g8zfsag9edxzjnhx7s6zm82zlt30slw", amount: 700000})
   @action _signTransaction = async () => {
     const { inputs, outputs } = this.txSignRequest;
-    console.debug('>>> SIGN TRANSACTION <<< ', { inputs, outputs });
+    console.debug('>>> SIGN TRANSACTION <<< ', { inputs, outputs, txDataHex: this.txDataHex });
 
     let inputsData;
     let outputsData;
     // Sign transaction with testing data // @TODO - remove
     if (!inputs && !outputs) {
+      console.debug('!!! SIGN DUMMY DATA !!!');
       // WORKING EXAMPLE
       inputsData = map(inputs, input => {
         return {
@@ -350,22 +365,26 @@ export default class HardwareWalletsStore extends Store {
         },
       ];
     } else {
+      console.debug('!!! SIGN   R E A L    DATA !!!');
       inputsData = map(inputs, input => {
         return {
-          txDataHex: input.id,
+          txDataHex: this.txDataHex,
           outputIndex: input.index,
-          path: utils.str_to_path(`44'/1815'/${input.index}'/0/0`),
+          path: utils.str_to_path(`44'/1815'/0'/0/0`),
         };
       });
 
       outputsData = map(outputs, output => {
-        if (output.address === this.txSignRequest.recieverAddress) {
+        if (output.address !== this.txSignRequest.recieverAddress) {
           // ChangeAddress === true
+          console.debug('>>> CHANGE ADDRESS: ', output);
           return {
-            amountStr: output.amount.quantity.toString(),
+            // amountStr: output.amount.quantity.toString(),
+            amountStr: '10000',
             path: utils.str_to_path("44'/1815'/0'/1/0"), // 4th param can be (0 or 1), 1 will say that address is change address
           };
         }
+        console.debug('>>> SEND ADDRESS: ', output);
         return {
           amountStr: output.amount.quantity.toString(),
           address58: output.address,
@@ -373,16 +392,29 @@ export default class HardwareWalletsStore extends Store {
       });
     }
 
+    console.debug('>>> DATA TO SIGN: ', {
+      inputsData,
+      outputsData,
+    })
+    // AMOUNT: 9 ADA
+    // SEND: 0.7 ADA
+    // OUTPUT_AMOUNT: 871162, = 8.7 ADA
+
     try {
       const signedTransaction = await signTransactionChannel.request({
         inputs: inputsData,
         outputs: outputsData,
       });
       console.debug('>>> SIGN TRANSACTION - DONE <<<: ', signedTransaction);
-      this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED;
+      runInAction('HardwareWalletsStore:: set Transaction verified', () => {
+        this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED;
+        this.signedTransaction = signedTransaction;
+      });
     } catch (error) {
       console.debug('>>>> SIGN TRANSACTION error: ', error);
-      this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_FAILED;
+      runInAction('HardwareWalletsStore:: set Transaction verifying failed', () => {
+        this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_FAILED;
+      });
       throw error;
     }
   };
@@ -427,5 +459,168 @@ export default class HardwareWalletsStore extends Store {
   _resetTxSignRequestData = () => {
     this.selectCoinsRequest.reset();
     this.txSignRequest = {};
+  };
+
+  _getXpub = async (path) => {
+    try {
+      const xPub = await getExtendedPublicKeyChannel.request({
+        transport: this.transport,
+        path,
+      });
+      console.debug('>>> xPub: ', xPub);
+      return xPub;
+    } catch (e) {
+      if (e.statusCode === 28169) {
+        this.setExportingPublicKeyToAborted();
+      }
+      throw e;
+    }
+  };
+
+    // Coin Selections example (from console):
+  // daedalus.stores.hardwareWallets.selectCoins({walletId: "hw_d5184982ea26e8f6335e04b93c8d64cac7b1f678", address: "addr1ssj9c58d76x7v9yulh8wt03t4ksshre2m3wfkul0l43g8pf65ul5u6fal3lnl4y73q8pvvcdt26kp63g8zfsag9edxzjnhx7s6zm82zlt30slw", amount: 700000})
+  @action _signTransaction22 = async () => {
+    console.debug('!!! SIGN   R E A L    DATA !!!');
+
+    const txDataHex =
+      '839f8200d8185824825820918c11e1c041a0cb04baea651b9fb1bdef7ee5295f' +
+      '032307e2e57d109de118b8008200d81858248258208f34e4f719effe82c28c8f' +
+      'f45e426233651fc03686130cb7e1d4bc6de20e689c01ff9f8282d81858218358' +
+      '1cb6f4b193e083530aca83ff03de4a60f4e7a6732b68b4fa6972f42c11a0001a' +
+      '907ab5c71a000f42408282d818584283581cb5bacd405a2dcedce19899f8647a' +
+      '8c4f45d84c06fb532c63f9479a40a101581e581c6b8487e9d22850b7539db255' +
+      'e27dd48dc0a50c7994d678696be64f21001ac5000d871a03dc396fffa0';
+
+    // const inputsData = [
+    //   {
+//
+    //     txDataHex: txDataHex,
+    //     outputIndex: 0,
+    //     path: utils.str_to_path("44'/1815'/0'/0/0")
+    //   }
+    // ];
+
+    const inputsData = [{
+      txDataHex: txDataHex,
+      outputIndex: 0,
+      path: utils.str_to_path("44'/1815'/0'/0/0"),
+    }];
+
+    // const outputsData = [
+    //   {
+    //     amountStr: "4200000",
+    //     // address58: "37btjrVyb4KDR9ZYpYSX3T9btsYgLSpzeoyJXpcoTmo4smbpF4PTp8rV9zarEqVoRM4Q9iYTbgK7AR5eLQmr9cTBYkYWq1EdcU1jCU98XTU88cDoes",
+    //     address58:
+    //       "DdzFFzCqrhsoarXqLakMBEiURCGPCUL7qRvPf2oGknKN2nNix5b9SQKj2YckgXZK6q1Ym7BNLxgEX3RQFjS2C41xt54yJHeE1hhMUfSG"
+    //   },
+    //   {
+    //     amountStr: "4628838",
+    //     path: utils.str_to_path("44'/1815'/0'/1/0")
+    //   }
+    // ];
+
+
+    const outputsData = [
+      {
+        amountStr: "700000",
+        address58: "DdzFFzCqrhsoarXqLakMBEiURCGPCUL7qRvPf2oGknKN2nNix5b9SQKj2YckgXZK6q1Ym7BNLxgEX3RQFjS2C41xt54yJHeE1hhMUfSG"
+      },
+      {
+        amountStr: "100000",
+        path: utils.str_to_path("44'/1815'/0'/1/0")
+      }
+    ];
+
+// 9ADA - AMOUNT
+
+//   8128838 - output from coin selection = 8,128838 ADA
+//    871162 - AMOUNT - OUTPUT = 0.871162 ADA
+//   8828838 - OUTPUT + AMOUT_TO_SEND = 8,828838 ADA
+
+//   1000000 - my output = 1 ADA
+//    700000 - I want to send = 0.7 ADA
+//   2928838 - fee = 2.928838 ADA
+//  11057676 - SUM output + fee = 11.057676 ADA
+
+    try {
+      const signedTransaction = await signTransactionChannel.request({
+        inputs: inputsData,
+        outputs: outputsData,
+      });
+      console.debug('>>> SIGN TRANSACTION - DONE <<<: ', signedTransaction);
+
+// FROM:
+// txHashHex: "a6348c8e40948f2726df3ce523de859d0a307e06622e51354c43b9ea9b5b0b4e"
+// witnesses: [
+//   {
+//     path: [2147483692, 2147485463, 2147483648, 0, 0],
+//     witnessSignatureHex: "c5d786b715e4a9c1fd370ac6c86e4dadddaf6b9b4858432fed0522f9d3ddd2f50ec0c559550170a21b49954c20a77ffa130844af60c6441c0d863d70e2791809",
+//   }
+// ]
+
+
+// --> TO
+
+// {
+//   txHashHex: "a6348c8e40948f2726df3ce523de859d0a307e06622e51354c43b9ea9b5b0b4e",
+//   witnesses: [
+//     {
+//       signature: "c5d786b715e4a9c1fd370ac6c86e4dadddaf6b9b4858432fed0522f9d3ddd2f50ec0c559550170a21b49954c20a77ffa130844af60c6441c0d863d70e2791809",
+//       xpub: {
+//         publicKeyHex: "e3254ba7a2ee9b6bb240913b869931b1476abac70910fd40d9680e0339ff7627",
+//         chainCodeHex: "503e1ced54b8f9fcfc23d126ce4586fa2c9c3be6c5c535f7176e899d8c1c2e8f",
+//       }
+//     }
+//   ],
+// }
+
+// --> TO Uint8Array(173)
+
+//  Request body
+// >>> requestBody:  {"type":"Buffer","data":[130,166,52,140,142,64,148,143,39,38,223,60,229,35,222,133,157,10,48,126,6,98,46,81,53,76,67,185,234,155,91,11,78,129,88,137,130,0,216,24,130,88,64,227,37,75,167,162,238,155,107,178,64,145,59,134,153,49,177,71,106,186,199,9,16,253,64,217,104,14,3,57,255,118,39,80,62,28,237,84,184,249,252,252,35,209,38,206,69,134,250,44,156,59,230,197,197,53,247,23,110,137,157,140,28,46,143,88,64,197,215,134,183,21,228,169,193,253,55,10,198,200,110,77,173,221,175,107,155,72,88,67,47,237,5,34,249,211,221,210,245,14,192,197,89,85,1,112,162,27,73,149,76,32,167,127,250,19,8,68,175,96,198,68,28,13,134,61,112,226,121,24,9]}
+
+
+// ERROR
+//  "code": "malformed_tx_payload",
+//  "message": "I couldn't verify that the payload has the correct binary format. Therefore I couldn't send it to the node. Please check the format and try again."
+
+
+
+      const witnesses = await Promise.all(
+        signedTransaction.witnesses.map(async (witness) => {
+          const xPub = await this._getXpub(witness.path);
+          console.debug('>>> RESOLVED xPub: ', {xPub, witness});
+          return {
+            xpub: xPub,
+            signature: witness.witnessSignatureHex,
+          };
+        })
+      );
+
+
+
+
+      console.debug('>>> witnesses <<<: ', witnesses);
+      const signedTransactionData = {
+        txDataHex: txDataHex,
+        witnesses: witnesses,
+      }
+
+      const encodedSignedTransaction = encodeSignedTransaction(signedTransactionData);
+      const blob = new Blob(encodedSignedTransaction);
+
+      console.debug('>>> signedTransactionData: ', {
+        signedTransactionData,
+        encodedSignedTransaction,
+        blob
+      });
+
+      runInAction('HardwareWalletsStore:: set Transaction verified', () => {
+        this.signedTransaction = encodeSignedTransaction(signedTransactionData);
+      });
+    } catch (error) {
+      console.debug('>>>> SIGN TRANSACTION error: ', error);
+      throw error;
+    }
   };
 }

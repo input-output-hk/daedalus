@@ -9,6 +9,8 @@ import {
 import { formattedWalletAmount } from './formatters';
 import type { TransactionFilterOptionsType } from '../stores/TransactionsStore';
 import { DateRangeTypes } from '../stores/TransactionsStore';
+const cbor = require('cbor');
+const bs58 = require('bs58');
 
 const AMOUNT_RAW_LENGTH_LIMIT = 10;
 
@@ -276,3 +278,79 @@ export const validateFilterForm = (values: {
     invalidFields,
   };
 };
+
+export const thDataHexGenerator = (txData) => {
+  console.debug('>>>> CREATE TX DATA: ', {txData, cbor, bs58});
+  class List {
+    constructor(xs) {
+      this.elems = xs;
+    }
+    encodeCBOR(encoder) {
+      encoder.push(raw("9F")); // Begin Indefinite list
+      this.elems.forEach(el => encoder.pushAny(el));
+      encoder.push(raw("FF")); // Break Indefinite list
+      return true;
+    }
+  }
+  function raw(str) {
+    return Buffer.from(str, "hex");
+  }
+  function encodeTransaction (data) {
+    console.debug('>>>> ENCODE: ', data);
+    return cbor.encode([
+      encodeInputs(data.inputs),
+      encodeOutputs(data.outputs),
+      encodeAttributes(),
+    ]);
+    function encodeInputs(inps) {
+      return new List(inps.map(i => [0, new cbor.Tagged(24, encodeInput(i))]));
+      function encodeInput({ id, index }) {
+        return cbor.encode([raw(id), index])
+      }
+    }
+    function encodeOutputs(outs) {
+      return new List (outs.map(o => [encodeAddress(o.address), o.amount.quantity]));
+      function encodeAddress(addr) {
+        const bytes = bs58.decode(addr);
+        return cbor.decodeFirstSync(bytes);
+      }
+    }
+    function encodeAttributes() {
+      return {}; // always empty in Byron
+    }
+  }
+  const txDataHex = encodeTransaction(txData).toString("hex");
+  console.debug('txDataHex: ', txDataHex);
+  return txDataHex;
+}
+
+export const encodeSignedTransaction = ({ txDataHex, witnesses }) => {
+  //  {
+  //    txDataHex: '01f54c866c778568c01b9e4c0a2cbab29e0af285623404e0ef922c6b63f9b222',
+  //    witnesses: [
+  //      {
+  //        signature: 'f89f0d3e2ad34a29c36d9eebdceb951088b52d33638d0f55d49ba2f8baff6e29056720be55fd2eb7198c05b424ce4308eaeed7195310e5879c41c1743245b000'
+  //        xpub: { // see 'getExtendedPublicKey'
+  //          publicKeyHex: '...', // hex-encoded string
+  //          chainCodeHex: '...', // hex-encoded string
+  //        }
+  //      }
+  //    ]
+  //  }
+  return Buffer.concat([
+    raw("82"),
+    raw(txDataHex),
+    cbor.encode(witnesses.map(encodeWitness))]);
+
+  function raw(str) {
+    return Buffer.from(str, "hex");
+  }
+
+  function encodeWitness({ signature, xpub }) {
+    const witness = [
+      Buffer.concat([raw(xpub.publicKeyHex), raw(xpub.chainCodeHex)]),
+      raw(signature)
+    ];
+    return [0, new cbor.Tagged(24, cbor.encode(witness))];
+  }
+}

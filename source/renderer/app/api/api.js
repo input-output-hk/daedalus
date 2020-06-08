@@ -41,6 +41,7 @@ import { createTransaction } from './transactions/requests/createTransaction';
 import { createByronWalletTransaction } from './transactions/requests/createByronWalletTransaction';
 import { deleteLegacyTransaction } from './transactions/requests/deleteLegacyTransaction';
 import { selectCoins } from './transactions/requests/selectCoins';
+import { createExternalTransaction } from './transactions/requests/createExternalTransaction';
 
 // Wallets requests
 import { updateSpendingPassword } from './wallets/requests/updateSpendingPassword';
@@ -780,12 +781,16 @@ export default class AdaApi {
     });
     const { signedTransactionBlob } = request;
 
+    console.debug('>>> API: createExternalTransaction: ', request);
+
     try {
       const response = await createExternalTransaction(this.config, {
         signedTransactionBlob,
       });
+      console.debug('>>> API: createExternalTransaction - RESPONSE: ', response);
       return response;
     } catch (error) {
+      console.debug('>>> API: createExternalTransaction - ERROR: ', error);
       logger.error('AdaApi::createExternalTransaction error', { error });
       throw new ApiError(error);
     }

@@ -86,8 +86,7 @@ export default class TransactionsStore extends Store {
   deleteTransactionRequest: Request<DeleteTransactionRequest> = new Request(
     this.api.ada.deleteTransaction
   );
-  @observable
-  createExternalTransactionRequest: Request<CreateExternalTransactionRequest> = new Request(
+  @observable createExternalTransactionRequest: Request<CreateExternalTransactionRequest> = new Request(
     this.api.ada.createExternalTransaction
   );
 
@@ -352,7 +351,9 @@ export default class TransactionsStore extends Store {
   };
 
   @action _createExternalTransaction = async (signedTransactionBlob: string) => {
-    await createExternalTransactionRequest.execute({ signedTransactionBlob });
+    console.debug('>>> _createExternalTransaction: ', signedTransactionBlob);
+    const transactionId = await this.createExternalTransactionRequest.execute({ signedTransactionBlob });
+    console.debug('>>> transactionId: ', transactionId);
     this.stores.wallets.refreshWalletsData();
   }
 

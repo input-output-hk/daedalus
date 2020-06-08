@@ -10,9 +10,10 @@ export const createExternalTransaction = (
   request(
     {
       method: 'POST',
-      path: `/proxy/transactions`,
+      path: `/v2/proxy/transactions`,
       ...config,
     },
     {},
-    signedTransactionBlob
+    signedTransactionBlob,
+    { contentType: 'application/octet-stream' },
   );
