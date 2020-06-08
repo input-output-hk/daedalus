@@ -35,7 +35,7 @@ export default class TopBar extends Component<Props> {
       onWalletAdd,
       onLearnMore,
     } = this.props;
-    const { isIncentivizedTestnet } = global;
+    const { isIncentivizedTestnet, environment } = global;
 
     const topBarStyles = classNames([
       styles.topBar,
@@ -60,7 +60,10 @@ export default class TopBar extends Component<Props> {
         <span className={styles.walletName}>
           {activeWallet.name}
           {activeWallet.isLegacy && (
-            <LegacyBadge mode={LEGACY_BADGE_MODES.NATURAL} />
+            <LegacyBadge
+              mode={LEGACY_BADGE_MODES.NATURAL}
+              isFriendsAndFamily={environment.isFriendsAndFamily}
+            />
           )}
         </span>
         <span className={styles.walletAmount}>

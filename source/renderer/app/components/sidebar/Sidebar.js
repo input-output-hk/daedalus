@@ -29,6 +29,7 @@ type Props = {
   onAddWallet: Function,
   onOpenSplashNetwork?: Function,
   isIncentivizedTestnet: boolean,
+  isFriendsAndFamily: boolean,
 };
 
 export type SidebarMenus = {
@@ -64,6 +65,7 @@ export default class Sidebar extends Component<Props> {
       isShowingSubMenus,
       onAddWallet,
       isIncentivizedTestnet,
+      isFriendsAndFamily,
     } = this.props;
 
     let subMenu = null;
@@ -102,6 +104,7 @@ export default class Sidebar extends Component<Props> {
           }
           isAddWalletButtonActive={pathname === ROUTES.WALLETS.ADD}
           isIncentivizedTestnet={isIncentivizedTestnet}
+          isFriendsAndFamily={isFriendsAndFamily}
           visible={isShowingSubMenus}
         />
       );
@@ -130,6 +133,7 @@ export default class Sidebar extends Component<Props> {
           }
           isHardwareWalletsMenu
           isAddWalletButtonActive={pathname === ROUTES.HARDWARE_WALLETS.ADD}
+          isFriendsAndFamily={isFriendsAndFamily}
           isIncentivizedTestnet={isIncentivizedTestnet}
           visible={isShowingSubMenus}
         />

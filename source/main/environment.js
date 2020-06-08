@@ -17,6 +17,7 @@ import {
   checkIsMainnet,
   checkIsStaging,
   checkIsTestnet,
+  checkIsFriendsAndFamily,
   checkIsSelfnode,
   checkIsDevelopment,
   checkIsIncentivizedTestnet,
@@ -43,6 +44,7 @@ const isProduction = checkIsProduction(CURRENT_NODE_ENV);
 const isMainnet = checkIsMainnet(NETWORK);
 const isStaging = checkIsStaging(NETWORK);
 const isTestnet = checkIsTestnet(NETWORK);
+const isFriendsAndFamily = checkIsFriendsAndFamily(NETWORK);
 const isSelfnode = checkIsSelfnode(NETWORK);
 const isIncentivizedTestnet = checkIsIncentivizedTestnet(NETWORK);
 const isIncentivizedTestnetQA = checkIsIncentivizedTestnetQA(RAW_NETWORK);
@@ -91,6 +93,7 @@ export const environment: Environment = Object.assign(
     isMainnet,
     isStaging,
     isTestnet,
+    isFriendsAndFamily,
     isSelfnode,
     isIncentivizedTestnet,
     isIncentivizedTestnetQA,

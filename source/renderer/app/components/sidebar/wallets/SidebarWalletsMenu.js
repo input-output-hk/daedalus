@@ -30,6 +30,7 @@ type Props = {
   visible: boolean,
   isAddWalletButtonActive: boolean,
   isIncentivizedTestnet: boolean,
+  isFriendsAndFamily: boolean,
   isHardwareWalletsMenu?: boolean,
 };
 
@@ -52,6 +53,7 @@ export default class SidebarWalletsMenu extends Component<Props> {
       onWalletItemClick,
       isAddWalletButtonActive,
       isIncentivizedTestnet,
+      isFriendsAndFamily,
       isHardwareWalletsMenu,
     } = this.props;
 
@@ -78,6 +80,7 @@ export default class SidebarWalletsMenu extends Component<Props> {
                 className={`Wallet_${wallet.id}`}
                 isRestoreActive={wallet.isRestoreActive}
                 isIncentivizedTestnet={isIncentivizedTestnet}
+                isFriendsAndFamily={isFriendsAndFamily}
                 restoreProgress={wallet.restoreProgress}
                 isNotResponding={wallet.isNotResponding}
                 isLegacy={wallet.isLegacy}

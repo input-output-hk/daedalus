@@ -182,6 +182,7 @@ export default class StoryLayout extends Component<Props> {
         currentTheme={currentTheme}
         network="testnet"
         isIncentivizedTestnet={isIncentivizedTestnetTheme(currentTheme)}
+        isFriendsAndFamily={false}
       />
     );
   };
