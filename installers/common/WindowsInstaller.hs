@@ -166,13 +166,6 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,inst
           , "LangString AlreadyRunning ${LANG_JAPANESE} \"が起動中です。 インストーラーを実行する前に完全にシャットダウンする必要があります！\""
           ]
 
-        mapM_ unsafeInject [
-            "${IfNot} ${AtLeastWin8.1}"
-          , "  MessageBox MB_OK \"$(TooOld)\""
-          , "  Quit"
-          , "${EndIf}"
-          ]
-
         page Directory                   -- Pick where to install
         _ <- constant "INSTALLEDAT" $ readRegStr HKLM "Software/$SpacedName" "Install_Dir"
         onPagePre Directory (iff_ (strLength "$INSTALLEDAT" %/= 0) $ abort "")
