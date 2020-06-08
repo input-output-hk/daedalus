@@ -39,8 +39,8 @@ const messages = defineMessages({
   },
   actionMove: {
     id: 'wallet.legacy.notification.actionMove',
-    defaultMessage: '!!!Move testnet ada',
-    description: 'Move testnet ada action of legacy notification.',
+    defaultMessage: '!!!Move ada from this wallet',
+    description: 'Move Move ada from this wallet of legacy notification.',
   },
   addWallet: {
     id: 'wallet.legacy.notification.addWallet',

@@ -543,7 +543,7 @@
   "wallet.legacy.notification.addWallet": "報酬ウォレットを作成する",
   "wallet.legacy.notification.addWalletTitle": "報酬ウォレットを作成してください",
   "wallet.legacy.notification.descriptionWithFunds": "!!!\"{transferWalletName}\"\" is a legacy wallet. It does not support Shelley delegation features. To earn ada from delegating your stake, please move all funds from this wallet to a new, Shelley-compatible wallet. You can create a brand new wallet or move funds to one of the existing wallets.",
-  "wallet.legacy.notification.descriptionWithNoFunds": "!!!\"{transferWalletName}\"\" is a legacy wallet. It does not support Shelley delegation features. Move testnet ada to a Rewards wallet to delegate your testnet ada stake and earn rewards.",
+  "wallet.legacy.notification.descriptionWithNoFunds": "!!!\"{transferWalletName}\"\" is a legacy wallet. It does not support Shelley delegation features. Move ada from this wallet to a Rewards wallet to delegate your testnet ada stake and earn rewards.",
   "wallet.legacy.notification.learnMore.url": "https://iohk.zendesk.com/hc/ja/articles/360038726373",
   "wallet.legacy.notification.moveFundsTitle": "「{activeWalletName}」のテストネット用ADAを移し替えてください",
   "wallet.navigation.more": "その他",
