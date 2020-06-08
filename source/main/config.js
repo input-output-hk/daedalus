@@ -4,7 +4,7 @@ import { app, dialog } from 'electron';
 import { environment } from './environment';
 import { readLauncherConfig } from './utils/config';
 import { getBuildLabel } from '../common/utils/environmentCheckers';
-import type { CardanoNodeImplementation } from '../common/types/cardano-node.types';
+import type { CardanoNodeImplementations } from '../common/types/cardano-node.types';
 
 const {
   isTest,
@@ -58,7 +58,7 @@ export type NodeConfig = {
  */
 export type LauncherConfig = {
   stateDir: string,
-  nodeImplementation: CardanoNodeImplementation,
+  nodeImplementation: CardanoNodeImplementations,
   nodeConfig: NodeConfig,
   tlsPath: string,
   logsPrefix: string,

@@ -2087,7 +2087,7 @@
       },
       {
         "defaultMessage": "!!!Shelley Friends & Family Testnet",
-        "description": "Label for shelley_ff with version.",
+        "description": "Label for ff with version.",
         "end": {
           "column": 3,
           "line": 27
@@ -2095,7 +2095,7 @@
         "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
         "id": "test.environment.shelleyFfLabel",
         "start": {
-          "column": 14,
+          "column": 6,
           "line": 23
         }
       },
@@ -11417,7 +11417,7 @@
       },
       {
         "defaultMessage": "!!!Shelley Friends & Family Testnet",
-        "description": "Label for shelley_ff with version.",
+        "description": "Label for ff with version.",
         "end": {
           "column": 3,
           "line": 22
@@ -11425,7 +11425,7 @@
         "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
         "id": "test.environment.shelleyFfLabel",
         "start": {
-          "column": 14,
+          "column": 6,
           "line": 18
         }
       },
@@ -12266,9 +12266,9 @@
           "line": 197
         },
         "file": "source/renderer/app/i18n/global-messages.js",
-        "id": "environment.network.shelley_ff",
+        "id": "environment.network.ff",
         "start": {
-          "column": 22,
+          "column": 14,
           "line": 193
         }
       },

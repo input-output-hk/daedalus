@@ -12,12 +12,14 @@ import {
   nodeImplementation,
   isFlight,
 } from './config';
+import { SHELLEY_FF, SHELLEY_QA } from '../common/types/environment.types';
+import { CardanoNodeImplementationOptions } from '../common/types/cardano-node.types';
 
 const _process = process;
 const _isIncentivizedTestnet =
-  nodeImplementation === 'jormungandr' ||
-  (nodeImplementation === 'cardano' &&
-    (cluster === 'shelley_ff' || cluster === 'shelley_qa'));
+  nodeImplementation === CardanoNodeImplementationOptions.JORMUNGANDR ||
+  (nodeImplementation === CardanoNodeImplementationOptions.CARDANO &&
+    (cluster === SHELLEY_FF || cluster === SHELLEY_QA));
 
 process.once('loaded', () => {
   Object.assign(global, {
