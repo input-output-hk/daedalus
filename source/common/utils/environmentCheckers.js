@@ -11,7 +11,6 @@ import {
   STAGING,
   TEST,
   TESTNET,
-  SHELLEY_FF,
   WINDOWS,
   ITN_REWARDS_V1,
   QA,
@@ -57,8 +56,6 @@ export const checkIsProduction = (currentNodeEnv: string) =>
 export const checkIsMainnet = (network: string) => network === MAINNET;
 export const checkIsStaging = (network: string) => network === STAGING;
 export const checkIsTestnet = (network: string) => network === TESTNET;
-export const checkIsFriendsAndFamily = (network: string) =>
-  network === SHELLEY_FF;
 export const checkIsSelfnode = (network: string) => network === SELFNODE;
 export const checkIsIncentivizedTestnet = (network: string) =>
   network === ITN_REWARDS_V1;

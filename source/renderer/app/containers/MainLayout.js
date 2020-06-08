@@ -65,7 +65,6 @@ export default class MainLayout extends Component<InjectedContainerProps> {
         menus={sidebarMenus}
         isShowingSubMenus={sidebar.isShowingSubMenus}
         isIncentivizedTestnet={global.isIncentivizedTestnet}
-        isFriendsAndFamily={global.environment.isFriendsAndFamily}
         categories={sidebar.CATEGORIES}
         activeSidebarCategory={sidebar.activeSidebarCategory}
         onActivateCategory={category => {

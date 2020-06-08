@@ -20,7 +20,6 @@ type Props = {
   isIncentivizedTestnet: boolean,
   restoreProgress?: number,
   isLegacy: boolean,
-  isFriendsAndFamily: boolean,
   isNotResponding: boolean,
   hasNotification: boolean,
   isHardwareWalletsMenu?: boolean,
@@ -39,7 +38,6 @@ export default class SidebarWalletMenuItem extends Component<Props> {
       isIncentivizedTestnet,
       restoreProgress,
       isLegacy,
-      isFriendsAndFamily,
       isNotResponding,
       hasNotification,
       isHardwareWalletsMenu,
@@ -69,10 +67,7 @@ export default class SidebarWalletMenuItem extends Component<Props> {
           <div className={styles.info}>{info}</div>
           {isRestoreActive ? <ProgressBar progress={restoreProgress} /> : null}
           {isLegacy && isIncentivizedTestnet && (
-            <LegacyBadge
-              mode={LEGACY_BADGE_MODES.FLOATING}
-              isFriendsAndFamily={isFriendsAndFamily}
-            />
+            <LegacyBadge mode={LEGACY_BADGE_MODES.FLOATING} />
           )}
         </div>
       </button>

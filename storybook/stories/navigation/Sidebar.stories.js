@@ -126,7 +126,6 @@ storiesOf('Navigation|Sidebar', module)
       currentTheme={props.currentTheme}
       network="testnet"
       isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
-      isFriendsAndFamily={false}
     />
   ))
   .add('Wallets Category', (props: { currentTheme: string }) => (
@@ -143,7 +142,6 @@ storiesOf('Navigation|Sidebar', module)
       currentTheme={props.currentTheme}
       network="testnet"
       isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
-      isFriendsAndFamily={false}
     />
   ))
   .add('Wallet Selected', (props: { currentTheme: string }) => (
@@ -161,7 +159,6 @@ storiesOf('Navigation|Sidebar', module)
       currentTheme={props.currentTheme}
       network="testnet"
       isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
-      isFriendsAndFamily={false}
     />
   ))
   .add('Hardware Wallet Selected', (props: { currentTheme: string }) => (
@@ -179,7 +176,6 @@ storiesOf('Navigation|Sidebar', module)
       currentTheme={props.currentTheme}
       network="testnet"
       isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
-      isFriendsAndFamily={false}
     />
   ))
   .add('Delegation Category', (props: { currentTheme: string }) => (
@@ -196,7 +192,6 @@ storiesOf('Navigation|Sidebar', module)
       currentTheme={props.currentTheme}
       network="testnet"
       isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
-      isFriendsAndFamily={false}
     />
   ))
   .add(
@@ -215,7 +210,6 @@ storiesOf('Navigation|Sidebar', module)
         currentTheme={props.currentTheme}
         network="testnet"
         isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
-        isFriendsAndFamily={false}
       />
     )
   )
@@ -242,6 +236,5 @@ storiesOf('Navigation|Sidebar', module)
         TESTNET
       )}
       isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
-      isFriendsAndFamily={false}
     />
   ));

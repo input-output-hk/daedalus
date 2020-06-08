@@ -25,7 +25,6 @@ storiesOf('Navigation|Wallets Menu', module)
       isActiveWallet={() => false}
       isAddWalletButtonActive={false}
       isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
-      isFriendsAndFamily={false}
       visible
     />
   ))
@@ -91,7 +90,6 @@ storiesOf('Navigation|Wallets Menu', module)
       onAddWallet={action('addWallet')}
       isAddWalletButtonActive={false}
       isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
-      isFriendsAndFamily={false}
       visible
     />
   ));
