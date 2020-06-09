@@ -870,9 +870,9 @@ export default class WalletsStore extends Store {
 
   isValidAddress = (address: string) => {
     const { app } = this.stores;
-    const { isMainnet, isStaging, isSelfnode } = app.environment;
+    const { isSelfnode, isTestnet } = app.environment;
     const expectedNetworkMagic =
-      isMainnet || isStaging || isIncentivizedTestnet ? null : TESTNET_MAGIC;
+      isTestnet ? TESTNET_MAGIC : null;
     try {
       return isSelfnode
         ? true // Selfnode address validation is missing in cardano-js
