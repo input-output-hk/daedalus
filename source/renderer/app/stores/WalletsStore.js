@@ -3,8 +3,6 @@ import { observable, action, computed, runInAction, flow } from 'mobx';
 import { get, find, findIndex, isEqual } from 'lodash';
 import { BigNumber } from 'bignumber.js';
 import { Address } from 'cardano-js';
-import { AddressGroup } from 'cardano-js/dist/Address/AddressGroup';
-import { ChainSettings } from 'cardano-js/dist/ChainSettings';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import Wallet, { WalletSyncStateStatuses } from '../domains/Wallet';
@@ -871,16 +869,11 @@ export default class WalletsStore extends Store {
 
   isValidAddress = (address: string) => {
     const { app } = this.stores;
-    const { isMainnet, isStaging, isSelfnode } = app.environment;
-    const addressGroup = isIncentivizedTestnet
-      ? AddressGroup.jormungandr
-      : AddressGroup.byron;
-    const chainSettings =
-      isMainnet || isStaging ? ChainSettings.mainnet : ChainSettings.testnet;
+    const { isSelfnode } = app.environment;
     try {
       return isSelfnode
         ? true // Selfnode address validation is missing in cardano-js
-        : Address.Util.isAddress(address, chainSettings, addressGroup);
+        : Address.Util.isAddress(address);
     } catch (error) {
       return false;
     }
