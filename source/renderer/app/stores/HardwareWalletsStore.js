@@ -42,7 +42,8 @@ export default class HardwareWalletsStore extends Store {
   @observable hwDeviceStatus: HwDeviceStatus = HwDeviceStatuses.CONNECTING;
 
   @observable txDataHex: string = null; // @TODO - remove after testing
-  @observable signedTransaction: string = null; // @TODO - remove after testing
+  // @TODO - remove after testing
+  @observable signedTransaction: string = JSON.stringify({type:"Buffer",data:[130,131,159,130,0,216,24,88,36,130,88,32,145,140,17,225,192,65,160,203,4,186,234,101,27,159,177,189,239,126,229,41,95,3,35,7,226,229,125,16,157,225,24,184,0,130,0,216,24,88,36,130,88,32,143,52,228,247,25,239,254,130,194,140,143,244,94,66,98,51,101,31,192,54,134,19,12,183,225,212,188,109,226,14,104,156,1,255,159,130,130,216,24,88,33,131,88,28,182,244,177,147,224,131,83,10,202,131,255,3,222,74,96,244,231,166,115,43,104,180,250,105,114,244,44,17,160,0,26,144,122,181,199,26,0,15,66,64,130,130,216,24,88,66,131,88,28,181,186,205,64,90,45,206,220,225,152,153,248,100,122,140,79,69,216,76,6,251,83,44,99,249,71,154,64,161,1,88,30,88,28,107,132,135,233,210,40,80,183,83,157,178,85,226,125,212,141,192,165,12,121,148,214,120,105,107,230,79,33,0,26,197,0,13,135,26,3,220,57,111,255,160,129,130,0,216,24,88,133,130,88,64,227,37,75,167,162,238,155,107,178,64,145,59,134,153,49,177,71,106,186,199,9,16,253,64,217,104,14,3,57,255,118,39,80,62,28,237,84,184,249,252,252,35,209,38,206,69,134,250,44,156,59,230,197,197,53,247,23,110,137,157,140,28,46,143,88,64,207,249,82,183,163,34,18,75,222,87,255,122,229,229,84,203,230,163,214,222,8,226,33,19,42,201,66,225,29,33,249,137,20,220,44,73,237,26,189,201,108,131,6,123,14,207,109,68,213,130,179,44,211,202,161,160,52,252,172,247,132,176,103,15]});
 
   pollingDeviceInterval: ?IntervalID = null;
 
@@ -491,20 +492,19 @@ export default class HardwareWalletsStore extends Store {
       '8c4f45d84c06fb532c63f9479a40a101581e581c6b8487e9d22850b7539db255' +
       'e27dd48dc0a50c7994d678696be64f21001ac5000d871a03dc396fffa0';
 
-    // const inputsData = [
-    //   {
-//
-    //     txDataHex: txDataHex,
-    //     outputIndex: 0,
-    //     path: utils.str_to_path("44'/1815'/0'/0/0")
-    //   }
-    // ];
+    const inputsData = [
+      {
+        txDataHex: txDataHex,
+        outputIndex: 0,
+        path: utils.str_to_path("44'/1815'/0'/0/0")
+      }
+    ];
 
-    const inputsData = [{
-      txDataHex: txDataHex,
-      outputIndex: 0,
-      path: utils.str_to_path("44'/1815'/0'/0/0"),
-    }];
+    // const inputsData = [{
+    //   txDataHex: this.txDataHex,
+    //   outputIndex: 0,
+    //   path: utils.str_to_path("44'/1815'/0'/0/0"),
+    // }];
 
     // const outputsData = [
     //   {
@@ -523,7 +523,7 @@ export default class HardwareWalletsStore extends Store {
     const outputsData = [
       {
         amountStr: "700000",
-        address58: "DdzFFzCqrhsoarXqLakMBEiURCGPCUL7qRvPf2oGknKN2nNix5b9SQKj2YckgXZK6q1Ym7BNLxgEX3RQFjS2C41xt54yJHeE1hhMUfSG"
+        address58: "DdzFFzCqrhshMav9kXdWuSYDe71zbN625sGXYAeYbUzjzctQB1NDRXrWa8EwbtsGQA4FKQ48H39zsADgdCRJ5g9QZ691Uzr1WXYpteZw"
       },
       {
         amountStr: "100000",
@@ -543,6 +543,10 @@ export default class HardwareWalletsStore extends Store {
 //  11057676 - SUM output + fee = 11.057676 ADA
 
     try {
+      console.debug('>>> SIGN TRANSACTION <<<', {
+        inputsData,
+        outputsData,
+      })
       const signedTransaction = await signTransactionChannel.request({
         inputs: inputsData,
         outputs: outputsData,
@@ -607,16 +611,20 @@ export default class HardwareWalletsStore extends Store {
       }
 
       const encodedSignedTransaction = encodeSignedTransaction(signedTransactionData);
-      const blob = new Blob(encodedSignedTransaction);
+
+      console.debug('>>> ENCODED: ', encodedSignedTransaction);
 
       console.debug('>>> signedTransactionData: ', {
         signedTransactionData,
         encodedSignedTransaction,
-        blob
+        test0: encodedSignedTransaction.buffer,
+        test1: Buffer.from(encodedSignedTransaction.buffer),
+        test2: Buffer.from(encodedSignedTransaction),
       });
 
+
       runInAction('HardwareWalletsStore:: set Transaction verified', () => {
-        this.signedTransaction = encodeSignedTransaction(signedTransactionData);
+        this.signedTransaction = encodedSignedTransaction;
       });
     } catch (error) {
       console.debug('>>>> SIGN TRANSACTION error: ', error);
