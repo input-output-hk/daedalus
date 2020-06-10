@@ -199,9 +199,12 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,inst
                     file [] "jormungandr.exe"
                     file [] "cardano-wallet-jormungandr.exe"
                     file [] "config.yaml"
-                  Cardano _ -> do
+                  Cardano kind _ -> do
+                    let
+                      mainBinary Shelley = "cardano-wallet-shelley.exe"
+                      mainBinary Byron = "cardano-wallet-byron.exe"
                     file [] "cardano-node.exe"
-                    file [] "cardano-wallet-byron.exe"
+                    file [] (mainBinary kind)
                     file [] "export-wallets.exe"
                     file [] "cardano-cli.exe"
                     file [] "config.yaml"

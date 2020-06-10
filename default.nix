@@ -69,12 +69,17 @@ let
     sources = localLib.sources;
     bridgeTable = {
       jormungandr = self.callPackage ./nix/jormungandr-bridge.nix {};
-      cardano = self.callPackage ./nix/cardano-bridge.nix {};
+      cardano = self.callPackage ./nix/cardano-bridge.nix {
+        cardano-wallet = if self.launcherConfigs.launcherConfig.nodeConfig.kind == "byron"
+                         then self.cardano-wallet.cardano-wallet-byron
+                         else self.cardano-wallet.cardano-wallet-shelley;
+        cardanoWalletPkgs = self.cardano-wallet.pkgs;
+      };
     };
     cardano-wallet = import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; crossSystem = crossSystem walletPkgs.lib; };
     cardano-wallet-native = import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; };
     cardano-shell = import self.sources.cardano-shell { inherit system; crossSystem = crossSystem shellPkgs.lib; };
-    cardano-cli = (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).haskellPackages.cardano-node.components.exes.cardano-cli;
+    cardano-cli = (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).haskellPackages.cardano-cli.components.exes.cardano-cli;
     cardano-node = if useLocalNode
                    then (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).haskellPackages.cardano-node.components.exes.cardano-node
                    else self.cardano-wallet.cardano-node;
@@ -177,7 +182,9 @@ let
       touch cardano-launcher.exe cardano-node.exe cardano-x509-certificates.exe log-config-prod.yaml configuration.yaml mainnet-genesis.json
     '';
 
-    nsisFiles = pkgs.runCommand "nsis-files" {
+    nsisFiles = let
+      nodeImplementation' = if nodeImplementation == "jormungandr" then nodeImplementation else "${nodeImplementation}-${self.launcherConfigs.launcherConfig.nodeConfig.kind}";
+    in pkgs.runCommand "nsis-files" {
       buildInputs = [ self.daedalus-installer pkgs.glibcLocales ];
     } ''
       mkdir installers
@@ -188,7 +195,7 @@ let
 
       export LANG=en_US.UTF-8
       cp -v ${self.launcherConfigs.configFiles}/* .
-      make-installer --${nodeImplementation} dummy --os win64 -o $out --cluster ${cluster} ${optionalString (buildNum != null) "--build-job ${buildNum}"} buildkite-cross
+      make-installer --${nodeImplementation'} dummy --os win64 -o $out --cluster ${cluster} ${optionalString (buildNum != null) "--build-job ${buildNum}"} buildkite-cross
 
       mkdir $out
       cp -v daedalus.nsi uninstaller.nsi $out/

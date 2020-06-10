@@ -11,13 +11,14 @@ import type { LauncherConfig } from '../config';
 import type { ExportWalletsMainResponse } from '../../common/ipc/api';
 import type {
   CardanoNodeStorageKeys,
-  CardanoNodeImplementation,
+  CardanoNodeImplementations,
   NetworkNames,
   PlatformNames,
   ProcessNames,
 } from '../../common/types/cardano-node.types';
 import {
   CardanoProcessNameOptions,
+  CardanoNodeImplementationOptions,
   NetworkNameOptions,
 } from '../../common/types/cardano-node.types';
 
@@ -79,11 +80,13 @@ export const deriveStorageKeys = (
 
 export const deriveProcessNames = (
   platform: PlatformNames,
-  nodeImplementation: CardanoNodeImplementation
+  nodeImplementation: CardanoNodeImplementations
 ): ProcessNames => ({
   CARDANO_PROCESS_NAME:
     CardanoProcessNameOptions[nodeImplementation][platform] ||
-    (nodeImplementation === 'jormungandr' ? 'jormungandr' : 'cardano-node'),
+    (nodeImplementation === CardanoNodeImplementationOptions.JORMUNGANDR
+      ? 'jormungandr'
+      : 'cardano-node'),
 });
 
 export const createSelfnodeConfig = async (
