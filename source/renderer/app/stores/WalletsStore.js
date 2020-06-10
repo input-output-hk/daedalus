@@ -42,7 +42,7 @@ import type {
   TransferFundsCalculateFeeRequest,
   TransferFundsRequest,
 } from '../api/wallets/types';
-import {TESTNET_MAGIC} from "../../../main/config";
+import { TESTNET_MAGIC } from '../../../main/config';
 /* eslint-disable consistent-return */
 
 /**
@@ -871,8 +871,7 @@ export default class WalletsStore extends Store {
   isValidAddress = (address: string) => {
     const { app } = this.stores;
     const { isSelfnode, isTestnet } = app.environment;
-    const expectedNetworkMagic =
-      isTestnet ? TESTNET_MAGIC : null;
+    const expectedNetworkMagic = isTestnet ? TESTNET_MAGIC : null;
     try {
       return isSelfnode
         ? true // Selfnode address validation is missing in cardano-js
