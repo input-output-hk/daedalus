@@ -42,7 +42,7 @@ export default class HardwareWalletsStore extends Store {
   @observable hwDeviceStatus: HwDeviceStatus = HwDeviceStatuses.CONNECTING;
 
   @observable txDataHex: string = null; // @TODO - remove after testing
-  @observable signedTransaction: string = null; // @TODO - remove after testing
+  @observable signedTransaction: Buffer = null; // @TODO - remove after testing
 
   pollingDeviceInterval: ?IntervalID = null;
 

@@ -27,15 +27,11 @@ function typedRequest<Response>(
   httpOptions: RequestOptions,
   queryParams?: {},
   rawBodyParams?: any,
-  requestOptions?: { contentType?: string }
+  requestOptions?: { returnMeta: boolean }
 ): Promise<Response> {
-  if (requestOptions) {
-    console.debug('>>> RAW params: ', {rawBodyParams, requestOptions});
-  }
-
   return new Promise((resolve, reject) => {
     const options: RequestOptions = Object.assign({}, httpOptions);
-    // const { returnMeta } = Object.assign({}, requestOptions);
+    const { returnMeta } = Object.assign({}, requestOptions);
     let hasRequestBody = false;
     let requestBody = '';
 
@@ -44,16 +40,21 @@ function typedRequest<Response>(
     }
 
     // Handle raw body params
-    if (rawBodyParams) {
+    if (Buffer.isBuffer(rawBodyParams)) {
       hasRequestBody = true;
-      requestBody =  (requestOptions && requestOptions.contentType) ? rawBodyParams.buffer : JSON.stringify(rawBodyParams);
-      // requestBody = JSON.stringify(rawBodyParams);
-      console.debug('>>> requestBody: ', requestBody);
+      requestBody =  rawBodyParams;
       options.headers = {
-        'Content-Length': (requestOptions && requestOptions.contentType) ? getContentLength(requestBody) : getContentLength(requestBody),
-        'Content-Type': (requestOptions && requestOptions.contentType) ? requestOptions.contentType : 'application/json; charset=utf-8',
+        'Content-Length': requestBody.length,
+        'Content-Type': 'application/octet-stream',
         Accept: 'application/json; charset=utf-8',
-        encoding: null,
+      };
+    } else if (rawBodyParams) {
+      hasRequestBody = true;
+      requestBody = JSON.stringify(rawBodyParams);
+      options.headers = {
+        'Content-Length': getContentLength(requestBody),
+        'Content-Type': 'application/json; charset=utf-8',
+        Accept: 'application/json; charset=utf-8',
       };
     }
 
@@ -63,21 +64,9 @@ function typedRequest<Response>(
       : global.https.request(options);
 
     if (hasRequestBody) {
-      console.debug('>>> Uint: ', rawBodyParams)
-      const blob = Buffer.from(rawBodyParams);
-      console.debug('>>> Buffer: ', blob)
-      try {
-        // httpsRequest.write(blob);
-        httpsRequest.write(rawBodyParams);
-      } catch (e) {
-        console.debug('>>> ERROR writing in body: ', e);
-      }
-      console.debug('>>>> httpsRequest: ', httpsRequest);
+      httpsRequest.write(requestBody);
     }
     httpsRequest.on('response', response => {
-      if (rawBodyParams) {
-        console.debug('>>> RESPONSE: ', response);
-      }
       let body = '';
       // Cardano-sl returns chunked requests, so we need to concat them
       response.on('data', chunk => {
