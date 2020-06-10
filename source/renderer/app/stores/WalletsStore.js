@@ -50,7 +50,7 @@ import type {
  * The base wallet store that contains logic for dealing with wallets
  */
 
-const { isIncentivizedTestnet } = global;
+const { isIncentivizedTestnet, isShelleyTestnet } = global;
 
 export default class WalletsStore extends Store {
   WALLET_REFRESH_INTERVAL = 5000;
@@ -872,6 +872,7 @@ export default class WalletsStore extends Store {
   isValidAddress = (address: string) => {
     const { app } = this.stores;
     const { isMainnet, isStaging, isSelfnode } = app.environment;
+    if (isShelleyTestnet) return true;
     const addressGroup = isIncentivizedTestnet
       ? AddressGroup.jormungandr
       : AddressGroup.byron;
