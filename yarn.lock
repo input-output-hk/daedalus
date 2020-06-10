@@ -3636,7 +3636,6 @@ capture-stack-trace@^1.0.0:
 cardano-js@0.4.6:
   version "0.4.6"
   resolved "https://registry.yarnpkg.com/cardano-js/-/cardano-js-0.4.6.tgz#9c15721dd5bf6a6812e584249d16354eff3d28e4"
-  integrity sha512-gKXKV4zgf77W5R6agv0n3sx2w3S6YeXXO3sqUobZYhcroSvIWP24TajxvYd+VuwiUKJdJLA1PFMWPn9ybgUaVA==
   dependencies:
     bech32 "^1.1.3"
     bignumber.js "^9.0.0"
