@@ -97,10 +97,10 @@ optionsParser detectedOS = Options
   <*> (optional $ optPath       "signing-config"      'k' "the path to the json file describing the product signing config")
 
 backendOptionParser :: Parser Backend
-backendOptionParser = enableJormungandr <|> cardano
+backendOptionParser = enableJormungandr <|> cardanoByron <|> cardanoShelley
   where
-    cardano = Cardano <$> optPath "cardano" 'C'
-      "Use Cardano backend with given Daedalus bridge path"
+    cardanoByron = Cardano Byron <$> optPath "cardano-byron" 'B' "Use Cardano Byron backend with given Daedalus bridge path"
+    cardanoShelley = Cardano Shelley <$> optPath "cardano-shelley" 'S' "Use Cardano Shelley backend with given Daedalus bridge path"
     enableJormungandr = Jormungandr <$> optPath  "jormungandr" 'j' "use Jormungandr backend"
 
 -- | Render a FilePath with POSIX-style forward slashes, which is the

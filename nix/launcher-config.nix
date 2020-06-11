@@ -66,6 +66,8 @@ let
       itn_rewards_v1 = "- Rewards v1";
       staging = "Staging";
       testnet = "Testnet";
+      ff = "Friends and Family";
+      shelley_qa = "Shelley QA";
     };
     unsupported = "Unsupported";
     networkSupported = __hasAttr network supportedNetworks;
@@ -160,7 +162,9 @@ let
   mkConfigByron = let
     filterMonitoring = config: if devShell then config else builtins.removeAttrs config [ "hasPrometheus" "hasEKG" ];
     exportWalletsBin = mkBinPath "export-wallets";
-    walletBin = mkBinPath "cardano-wallet-byron";
+    walletBin = if envCfg.useByronWallet
+                then mkBinPath "cardano-wallet-byron"
+                else mkBinPath "cardano-wallet-shelley";
     nodeBin = mkBinPath "cardano-node";
     cliBin = mkBinPath "cardano-cli";
     nodeConfig = builtins.toJSON (filterMonitoring (envCfg.nodeConfig // (lib.optionalAttrs (!isDevOrLinux) {
@@ -216,12 +220,11 @@ let
         legacySecretKey;
       syncTolerance = "300s";
       nodeConfig = {
-        kind = "byron";
+        kind = if envCfg.useByronWallet then "byron" else "shelley";
         configurationDir = "";
         network = {
           configFile = mkConfigPath nodeConfigFiles "config.yaml";
           genesisFile = mkConfigPath nodeConfigFiles "genesis.json";
-          genesisHash = if (network != "selfnode") then envCfg.genesisHash else "";
           topologyFile = mkConfigPath nodeConfigFiles "topology.yaml";
         };
         socketFile = if os != "windows" then "${dataDir}${dirSep}cardano-node.socket" else "\\\\.\\pipe\\cardano-node-${network}";

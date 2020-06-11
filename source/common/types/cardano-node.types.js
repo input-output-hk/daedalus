@@ -7,7 +7,15 @@ export type TlsConfig = {
   key: Uint8Array,
 };
 
-export type CardanoNodeImplementation = 'jormungandr' | 'cardano';
+export type CardanoNodeImplementations = 'cardano' | 'jormungandr';
+
+export const CardanoNodeImplementationOptions: {
+  CARDANO: CardanoNodeImplementations,
+  JORMUNGANDR: CardanoNodeImplementations,
+} = {
+  CARDANO: 'cardano',
+  JORMUNGANDR: 'jormungandr',
+};
 
 export type NetworkNames =
   | 'mainnet'
@@ -75,7 +83,7 @@ export type ProcessNames = {
 };
 
 export const CardanoProcessNameOptions: {
-  [CardanoNodeImplementation]: {
+  [CardanoNodeImplementations]: {
     win32: CardanoNodeProcessNames,
     linux: CardanoNodeProcessNames,
     darwin: CardanoNodeProcessNames,
