@@ -4,6 +4,8 @@ import { storiesOf } from '@storybook/react';
 import { observable, action as mobxAction } from 'mobx';
 import { action } from '@storybook/addon-actions';
 import StoryDecorator from '../_support/StoryDecorator';
+import StoryProvider from '../_support/StoryProvider';
+import StoryLayout from '../_support/StoryLayout';
 import BigButtonForDialogs from '../../../source/renderer/app/components/widgets/BigButtonForDialogs';
 import MnemonicInputWidget from '../../../source/renderer/app/components/widgets/forms/MnemonicInputWidget';
 import createIcon from '../../../source/renderer/app/assets/images/create-ic.inline.svg';
@@ -14,7 +16,7 @@ import ButtonLink from '../../../source/renderer/app/components/widgets/ButtonLi
 import NormalSwitch from '../../../source/renderer/app/components/widgets/forms/NormalSwitch';
 
 storiesOf('Common|Widgets', module)
-  .addDecorator(story => {
+  .addDecorator((story: any, context: any) => {
     const onChangeAction = action('onChange');
     const state = observable({
       checked: false,
@@ -24,7 +26,15 @@ storiesOf('Common|Widgets', module)
       }),
     });
 
-    return <StoryDecorator propsForChildren={state}>{story()}</StoryDecorator>;
+    return (
+      <StoryDecorator propsForChildren={state}>
+        <StoryProvider>
+          <StoryLayout activeSidebarCategory={null} {...context}>
+            {story()}
+          </StoryLayout>
+        </StoryProvider>
+      </StoryDecorator>
+    );
   })
 
   // ====== Stories ======
