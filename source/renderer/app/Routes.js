@@ -53,6 +53,11 @@ export const Routes = withRouter(() => (
         <Route path={ROUTES.WALLETS.ROOT}>
           <Wallet>
             <Route
+              exact
+              path={ROUTES.WALLETS.ROOT}
+              component={() => <Redirect to={ROUTES.WALLETS.SUMMARY} />}
+            />
+            <Route
               path={ROUTES.WALLETS.SUMMARY}
               component={WalletSummaryPage}
             />

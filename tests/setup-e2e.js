@@ -23,7 +23,7 @@ import {
 } from './common/e2e/steps/helpers';
 import { DEFAULT_TIMEOUT } from './common/e2e/steps/config';
 import { setNewsFeedIsOpen, resetTestNews } from './news/e2e/steps/newsfeed-steps';
-import { refreshClient } from './nodes/e2e/steps/helpers';
+import { refreshClient } from './app/e2e/steps/helpers';
 import { TEST } from '../source/common/types/environment.types';
 import type { Daedalus } from './types';
 

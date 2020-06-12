@@ -399,7 +399,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-news-item-info-background-color': 'rgba(0, 0, 0, 0.1)',
     '--theme-news-item-title-color': '#fafbfc',
   },
-  nodeUpdate: {
+  appUpdate: {
     '--theme-node-update-background-color': '#536370',
     '--theme-node-update-title-color': '#e9f4fe',
     '--theme-node-update-message-color': '#e9f4fe',
