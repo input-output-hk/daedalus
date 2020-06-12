@@ -42,7 +42,7 @@ import type {
   TransferFundsCalculateFeeRequest,
   TransferFundsRequest,
 } from '../api/wallets/types';
-import { TESTNET_MAGIC } from '../../../main/config';
+import { TESTNET_MAGIC } from '../../../common/types/cardano-node.types';
 /* eslint-disable consistent-return */
 
 /**

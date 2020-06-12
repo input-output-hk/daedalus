@@ -4,7 +4,6 @@ import path from 'path';
 import { BrowserWindow, dialog } from 'electron';
 import { spawnSync } from 'child_process';
 import { logger } from '../utils/logging';
-import { TESTNET_MAGIC } from '../config';
 import { getTranslation } from '../utils/getTranslation';
 import ensureDirectoryExists from '../utils/ensureDirectoryExists';
 import type { LauncherConfig } from '../config';
@@ -20,6 +19,7 @@ import {
   CardanoProcessNameOptions,
   CardanoNodeImplementationOptions,
   NetworkNameOptions,
+  TESTNET_MAGIC,
 } from '../../common/types/cardano-node.types';
 
 export type Process = {
