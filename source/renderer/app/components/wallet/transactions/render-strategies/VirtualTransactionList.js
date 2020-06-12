@@ -50,6 +50,14 @@ export class VirtualTransactionList extends Component<Props> {
     }
   }
 
+  componentDidMount() {
+    window.addEventListener('resize', this.onResize);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.onResize);
+  }
+
   list: List;
   rowHeights: RowHeight[] = [];
   txAddressHeight: number = 0;
