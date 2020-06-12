@@ -183,7 +183,7 @@
     "es6-error": "4.1.1",
     "form-data": "3.0.0",
     "fs-extra": "8.1.0",
-    "glob": "^7.1.6",
+    "glob": "7.1.6",
     "graceful-fs": "4.2.3",
     "gulp": "4.0.0",
     "history": "4.10.1",
