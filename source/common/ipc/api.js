@@ -27,6 +27,17 @@ import type {
   WalletMigrationReportData,
 } from '../types/logging.types';
 import type { Locale } from '../types/locales.types';
+import type {
+  DownloadLocalDataRequest,
+  DownloadLocalDataResponse,
+  DownloadsLocalDataRequest,
+  DownloadsLocalDataResponse,
+  DownloadRequest,
+  DownloadResponse,
+  ResumeDownloadRequest,
+  ResumeDownloadResponse,
+} from '../types/downloadManager.types';
+import type { StoreMessage } from '../types/electron-store.types';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -280,8 +291,32 @@ export type ShowSaveDialogMainResponse = SaveFileDialogResponseParams;
  * Channel for electron-store
  */
 export const ELECTRON_STORE_CHANNEL = 'ELECTRON_STORE_CHANNEL';
-export type ElectronStoreMessage = {
-  type: 'get' | 'set' | 'delete',
-  key: string,
-  data?: any,
-};
+export type ElectronStoreMessage = StoreMessage;
+
+/**
+ * Channel for initiating the download manager
+ */
+export const GET_DOWNLOAD_LOCAL_DATA = 'GET_DOWNLOAD_LOCAL_DATA';
+export type DownloadLocalDataRendererRequest = DownloadLocalDataRequest;
+export type DownloadLocalDataMainResponse = DownloadLocalDataResponse;
+
+/**
+ * Channel for initiating the download manager
+ */
+export const GET_DOWNLOADS_LOCAL_DATA = 'GET_DOWNLOADS_LOCAL_DATA';
+export type DownloadsLocalDataRendererRequest = DownloadsLocalDataRequest | void;
+export type DownloadsLocalDataMainResponse = DownloadsLocalDataResponse | void;
+
+/**
+ * Channel for requesting a new download
+ */
+export const REQUEST_DOWNLOAD = 'REQUEST_DOWNLOAD';
+export type DownloadRendererRequest = DownloadRequest;
+export type DownloadMainResponse = DownloadResponse;
+
+/**
+ * Channel for requesting a new download
+ */
+export const RESUME_DOWNLOAD = 'RESUME_DOWNLOAD';
+export type ResumeDownloadRendererRequest = ResumeDownloadRequest;
+export type ResumeDownloadMainResponse = ResumeDownloadResponse | void;
