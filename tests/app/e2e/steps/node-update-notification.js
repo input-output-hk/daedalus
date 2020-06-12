@@ -16,12 +16,12 @@ const SELECTORS = {
     '.AutomaticUpdateNotification_description p span b:nth-child(2)',
   acceptButton: '.AutomaticUpdateNotification_acceptButton',
   postponeButton: '.AutomaticUpdateNotification_postponeButton',
-  nodeUpdateOverlay: '.AutomaticUpdateNotification_dialog',
-  nodeUpdateComponent: '.AutomaticUpdateNotification_overlay',
+  appUpdateOverlay: '.AutomaticUpdateNotification_dialog',
+  appUpdateComponent: '.AutomaticUpdateNotification_overlay',
 };
 
 Then('I should see the node update notification overlay', async function() {
-  return this.client.waitForVisible(SELECTORS.nodeUpdateOverlay);
+  return this.client.waitForVisible(SELECTORS.appUpdateOverlay);
 });
 
 When(/^I set next update version to "([^"]*)"$/, async function(applicationVersion) {
@@ -71,7 +71,7 @@ When(/^I click the accept update button$/, function() {
 
 Then(/^I should not see the notification component anymore$/, function() {
   return this.client.waitForVisible(
-    SELECTORS.nodeUpdateComponent,
+    SELECTORS.appUpdateComponent,
     null,
     true
   );

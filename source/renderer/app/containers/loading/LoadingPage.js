@@ -14,7 +14,7 @@ export default class LoadingPage extends Component<InjectedProps> {
   static defaultProps = { stores: null, actions: null };
 
   get activeOverlay() {
-    const { showManualUpdate } = this.props.stores.nodeUpdate;
+    const { showManualUpdate } = this.props.stores.appUpdate;
     if (this.isNotEnoughDiskSpace) return <NoDiskSpaceErrorPage />;
     if (showManualUpdate) return <ManualUpdatePage />;
     if (this.isSystemTimeError) return <SystemTimeErrorPage />;

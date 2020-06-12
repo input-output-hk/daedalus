@@ -18,8 +18,8 @@ export default class Root extends Component<Props> {
     const { stores, actions, children } = this.props;
     const {
       app,
+      appUpdate,
       networkStatus,
-      nodeUpdate,
       profile,
       staking,
       uiDialogs,
@@ -27,7 +27,7 @@ export default class Root extends Component<Props> {
     } = stores;
     const { isStakingPage } = staking;
     const { isProfilePage, isSettingsPage } = profile;
-    const { showManualUpdate } = nodeUpdate;
+    const { showManualUpdate } = appUpdate;
     const { hasLoadedWallets, isHardwareWalletRoute } = wallets;
     const {
       isConnected,
