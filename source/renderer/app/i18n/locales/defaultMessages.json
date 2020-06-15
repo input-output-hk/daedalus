@@ -2512,8 +2512,8 @@
         }
       },
       {
-        "defaultMessage": "!!!SHELLEY TESTNET",
-        "description": "SHELLEY TESTNET",
+        "defaultMessage": "!!!SHELLEY FRIENDS & FAMILY TESTNET",
+        "description": "SHELLEY FRIENDS & FAMILY TESTNET",
         "end": {
           "column": 3,
           "line": 16
@@ -2526,7 +2526,7 @@
         }
       },
       {
-        "defaultMessage": "!!!This version of Daedalus has been created specifically for the use with the Shelley Testnet.",
+        "defaultMessage": "!!!This version of Daedalus has been created specifically for the use with the Shelley Friends & Family Testnet.",
         "description": "stnDescription on network splash screen",
         "end": {
           "column": 3,
@@ -9942,7 +9942,7 @@
         }
       },
       {
-        "defaultMessage": "!!!12 words <em>(Balance wallet)</em>",
+        "defaultMessage": "!!!12 words <em>(legacy wallet)</em>",
         "description": "Label for the \"labelDaedalusWalletKindBalance12Word\" ITN checkbox.",
         "end": {
           "column": 3,
@@ -9970,7 +9970,7 @@
         }
       },
       {
-        "defaultMessage": "!!!15 words <em>(Rewards wallet)</em>",
+        "defaultMessage": "!!!15 words",
         "description": "Label for the \"labelDaedalusWalletKindReward15Word\" checkbox.",
         "end": {
           "column": 3,
@@ -9984,7 +9984,7 @@
         }
       },
       {
-        "defaultMessage": "!!!27 words - paper wallet <em>(Balance wallet)</em>",
+        "defaultMessage": "!!!27 words - paper wallet <em>(legacy wallet)</em>",
         "description": "Label for the \"labelDaedalusWalletKindBalance27Word\" ITN checkbox.",
         "end": {
           "column": 3,
@@ -10026,7 +10026,7 @@
         }
       },
       {
-        "defaultMessage": "!!!15 words <em>(Balance wallet)</em>",
+        "defaultMessage": "!!!15 words <em>(legacy wallet)</em>",
         "description": "Label for the \"labelDaedalusWalletKindBalance15Word\" checkbox.",
         "end": {
           "column": 3,

@@ -11,13 +11,13 @@ const messages = defineMessages({
   },
   versionName: {
     id: 'static.splash.network.stnVersionName',
-    defaultMessage: '!!!SHELLEY TESTNET',
-    description: 'SHELLEY TESTNET',
+    defaultMessage: '!!!SHELLEY FRIENDS & FAMILY TESTNET',
+    description: 'SHELLEY FRIENDS & FAMILY TESTNET',
   },
   stnDescription: {
     id: 'static.splash.network.stnDescription',
     defaultMessage:
-      '!!!This version of Daedalus has been created specifically for the use with the Shelley Testnet.',
+      '!!!This version of Daedalus has been created specifically for the use with the Shelley Friends & Family Testnet.',
     description: 'stnDescription on network splash screen',
   },
   buttonLabel: {

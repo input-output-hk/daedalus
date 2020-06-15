@@ -13,4 +13,8 @@
       width: 8px;
     }
   }
+
+  &.disabled {
+    opacity: 0.5;
+  }
 }
