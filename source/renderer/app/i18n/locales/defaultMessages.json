@@ -12523,6 +12523,20 @@
           "column": 9,
           "line": 283
         }
+      },
+      {
+        "defaultMessage": "!!!Token",
+        "description": "Token description.",
+        "end": {
+          "column": 3,
+          "line": 292
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.labels.token",
+        "start": {
+          "column": 9,
+          "line": 288
+        }
       }
     ],
     "path": "source/renderer/app/i18n/global-messages.json"
@@ -12815,13 +12829,13 @@
         "description": "Read More button label.",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 37
         },
         "file": "storybook/stories/news/AlertsOverlay.stories.js",
-        "id": "readMore",
+        "id": "global.labels.readMore",
         "start": {
           "column": 12,
-          "line": 41
+          "line": 33
         }
       },
       {
@@ -12829,13 +12843,13 @@
         "description": "Failure Alert title.",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 42
         },
         "file": "storybook/stories/news/AlertsOverlay.stories.js",
-        "id": "failureAlert",
+        "id": "global.errors.failureAlert",
         "start": {
           "column": 16,
-          "line": 46
+          "line": 38
         }
       },
       {
@@ -12843,13 +12857,13 @@
         "description": "Content.",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 47
         },
         "file": "storybook/stories/news/AlertsOverlay.stories.js",
-        "id": "content",
+        "id": "static.dummy.markdown",
         "start": {
           "column": 11,
-          "line": 51
+          "line": 43
         }
       }
     ],
