@@ -15,6 +15,8 @@ in
 , fudgeConfig ? null
 , devShell ? false
 , useLocalNode ? false
+, topologyOverride ? null
+, configOverride ? null
 }:
 
 let
@@ -100,7 +102,7 @@ let
 
     launcherConfigs = self.callPackage ./nix/launcher-config.nix {
       inherit (self) jormungandrLib;
-      inherit devShell;
+      inherit devShell topologyOverride configOverride;
       network = cluster;
       os = ostable.${target};
       backend = nodeImplementation;

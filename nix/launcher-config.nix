@@ -8,6 +8,8 @@
 , devShell ? false
 , cardano-wallet-native
 , runCommandNative
+, topologyOverride ? null
+, configOverride ? null
 }:
 
 # Creates an attr set for a cluster containing:
@@ -167,22 +169,20 @@ let
                 else mkBinPath "cardano-wallet-shelley";
     nodeBin = mkBinPath "cardano-node";
     cliBin = mkBinPath "cardano-cli";
-    nodeConfig = builtins.toJSON (filterMonitoring (envCfg.nodeConfig // (lib.optionalAttrs (!isDevOrLinux) {
+    normalNodeConfig = builtins.toJSON (filterMonitoring (envCfg.nodeConfig // (lib.optionalAttrs (!isDevOrLinux) {
       GenesisFile = "genesis.json";
     })));
+    nodeConfig = if (configOverride == null) then normalNodeConfig else (builtins.readFile configOverride);
     genesisFile = if (network == "selfnode") then ../utils/cardano/selfnode/genesis.json else envCfg.genesisFile;
-    topologyFile = if network == "selfnode" then envCfg.topology else cardanoLib.mkEdgeTopology {
+    normalTopologyFile = if network == "selfnode" then envCfg.topology else cardanoLib.mkEdgeTopology {
       inherit (envCfg) edgePort;
       edgeNodes = [ envCfg.relaysNew ];
     };
+    topologyFile = if (topologyOverride == null) then normalTopologyFile else topologyOverride;
     nodeConfigFiles = let
       genesisFile = if (network == "selfnode") then ../utils/cardano/selfnode/genesis.json else envCfg.genesisFile;
     in runCommand "node-cfg-files" {
-      inherit nodeConfig;
-      topologyFile = if network == "selfnode" then envCfg.topology else cardanoLib.mkEdgeTopology {
-        inherit (envCfg) edgePort;
-        edgeNodes = [ envCfg.relaysNew ];
-      };
+      inherit nodeConfig topologyFile;
       passAsFile = [ "nodeConfig" ];
     } ''
       mkdir $out

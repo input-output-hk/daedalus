@@ -9,10 +9,16 @@
 , walletExtraArgs ? []
 , allowFaultInjection ? false
 , purgeNpmCache ? false
+, topologyOverride ? null
+, configOverride ? null
 }:
 
 let
-  daedalusPkgs = import ./. { inherit nodeImplementation cluster; target = system; devShell = true; };
+  daedalusPkgs = import ./. {
+    inherit nodeImplementation cluster topologyOverride configOverride;
+    target = system;
+    devShell = true;
+  };
   hostPkgs = import pkgs.path { config = {}; overlays = []; };
   fullExtraArgs = walletExtraArgs ++ pkgs.lib.optional allowFaultInjection "--allow-fault-injection";
   launcherConfig' = "${daedalusPkgs.daedalus.cfg}/etc/launcher-config.yaml";
