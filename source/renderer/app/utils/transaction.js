@@ -340,7 +340,8 @@ export const encodeSignedTransaction = ({ txDataHex, witnesses }) => {
   return Buffer.concat([
     raw("82"),
     raw(txDataHex),
-    cbor.encode(witnesses.map(encodeWitness))]);
+    cbor.encode(witnesses.map(encodeWitness))
+  ]).toString('hex');
 
   function raw(str) {
     return Buffer.from(str, "hex");

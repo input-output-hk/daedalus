@@ -151,7 +151,7 @@ export type CoinSelectionsResponse = {
 };
 
 export type CreateExternalTransactionRequest = {
-  signedTransactionBlob: string,
+  signedTransactionBlob: Buffer,
 };
 
 export type CreateExternalTransactionResponse = {

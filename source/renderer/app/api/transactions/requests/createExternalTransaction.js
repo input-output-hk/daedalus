@@ -15,5 +15,5 @@ export const createExternalTransaction = (
     },
     {},
     signedTransactionBlob,
-    { contentType: 'application/octet-stream' },
+    {aa: true}
   );

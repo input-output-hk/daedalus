@@ -43,7 +43,9 @@ export default class HardwareWalletsStore extends Store {
 
   @observable txDataHex: string = null; // @TODO - remove after testing
   // @TODO - remove after testing
-  @observable signedTransaction: string = JSON.stringify({type:"Buffer",data:[130,131,159,130,0,216,24,88,36,130,88,32,145,140,17,225,192,65,160,203,4,186,234,101,27,159,177,189,239,126,229,41,95,3,35,7,226,229,125,16,157,225,24,184,0,130,0,216,24,88,36,130,88,32,143,52,228,247,25,239,254,130,194,140,143,244,94,66,98,51,101,31,192,54,134,19,12,183,225,212,188,109,226,14,104,156,1,255,159,130,130,216,24,88,33,131,88,28,182,244,177,147,224,131,83,10,202,131,255,3,222,74,96,244,231,166,115,43,104,180,250,105,114,244,44,17,160,0,26,144,122,181,199,26,0,15,66,64,130,130,216,24,88,66,131,88,28,181,186,205,64,90,45,206,220,225,152,153,248,100,122,140,79,69,216,76,6,251,83,44,99,249,71,154,64,161,1,88,30,88,28,107,132,135,233,210,40,80,183,83,157,178,85,226,125,212,141,192,165,12,121,148,214,120,105,107,230,79,33,0,26,197,0,13,135,26,3,220,57,111,255,160,129,130,0,216,24,88,133,130,88,64,227,37,75,167,162,238,155,107,178,64,145,59,134,153,49,177,71,106,186,199,9,16,253,64,217,104,14,3,57,255,118,39,80,62,28,237,84,184,249,252,252,35,209,38,206,69,134,250,44,156,59,230,197,197,53,247,23,110,137,157,140,28,46,143,88,64,207,249,82,183,163,34,18,75,222,87,255,122,229,229,84,203,230,163,214,222,8,226,33,19,42,201,66,225,29,33,249,137,20,220,44,73,237,26,189,201,108,131,6,123,14,207,109,68,213,130,179,44,211,202,161,160,52,252,172,247,132,176,103,15]});
+  // @observable signedTransaction: Buffer = Buffer(new Uint8Array([130,131,159,130,0,216,24,88,36,130,88,32,145,140,17,225,192,65,160,203,4,186,234,101,27,159,177,189,239,126,229,41,95,3,35,7,226,229,125,16,157,225,24,184,0,130,0,216,24,88,36,130,88,32,143,52,228,247,25,239,254,130,194,140,143,244,94,66,98,51,101,31,192,54,134,19,12,183,225,212,188,109,226,14,104,156,1,255,159,130,130,216,24,88,33,131,88,28,182,244,177,147,224,131,83,10,202,131,255,3,222,74,96,244,231,166,115,43,104,180,250,105,114,244,44,17,160,0,26,144,122,181,199,26,0,15,66,64,130,130,216,24,88,66,131,88,28,181,186,205,64,90,45,206,220,225,152,153,248,100,122,140,79,69,216,76,6,251,83,44,99,249,71,154,64,161,1,88,30,88,28,107,132,135,233,210,40,80,183,83,157,178,85,226,125,212,141,192,165,12,121,148,214,120,105,107,230,79,33,0,26,197,0,13,135,26,3,220,57,111,255,160,129,130,0,216,24,88,133,130,88,64,227,37,75,167,162,238,155,107,178,64,145,59,134,153,49,177,71,106,186,199,9,16,253,64,217,104,14,3,57,255,118,39,80,62,28,237,84,184,249,252,252,35,209,38,206,69,134,250,44,156,59,230,197,197,53,247,23,110,137,157,140,28,46,143,88,64,207,249,82,183,163,34,18,75,222,87,255,122,229,229,84,203,230,163,214,222,8,226,33,19,42,201,66,225,29,33,249,137,20,220,44,73,237,26,189,201,108,131,6,123,14,207,109,68,213,130,179,44,211,202,161,160,52,252,172,247,132,176,103,15])).toString('hex');
+  // @observable signedTransaction: string = "82839f8200d8185824825820918c11e1c041a0cb04baea651b9fb1bdef7ee5295f032307e2e57d109de118b8008200d81858248258208f34e4f719effe82c28c8ff45e426233651fc03686130cb7e1d4bc6de20e689c01ff9f8282d818582183581cb6f4b193e083530aca83ff03de4a60f4e7a6732b68b4fa6972f42c11a0001a907ab5c71a000f42408282d818584283581cb5bacd405a2dcedce19899f8647a8c4f45d84c06fb532c63f9479a40a101581e581c6b8487e9d22850b7539db255e27dd48dc0a50c7994d678696be64f21001ac5000d871a03dc396fffa0818200d8185885825840e3254ba7a2ee9b6bb240913b869931b1476abac70910fd40d9680e0339ff7627503e1ced54b8f9fcfc23d126ce4586fa2c9c3be6c5c535f7176e899d8c1c2e8f5840cff952b7a322124bde57ff7ae5e554cbe6a3d6de08e221132ac942e11d21f98914dc2c49ed1abdc96c83067b0ecf6d44d582b32cd3caa1a034fcacf784b0670f";
+  @observable signedTransaction: string = null;
 
   pollingDeviceInterval: ?IntervalID = null;
 
@@ -483,64 +485,26 @@ export default class HardwareWalletsStore extends Store {
   @action _signTransaction22 = async () => {
     console.debug('!!! SIGN   R E A L    DATA !!!');
 
-    const txDataHex =
-      '839f8200d8185824825820918c11e1c041a0cb04baea651b9fb1bdef7ee5295f' +
-      '032307e2e57d109de118b8008200d81858248258208f34e4f719effe82c28c8f' +
-      'f45e426233651fc03686130cb7e1d4bc6de20e689c01ff9f8282d81858218358' +
-      '1cb6f4b193e083530aca83ff03de4a60f4e7a6732b68b4fa6972f42c11a0001a' +
-      '907ab5c71a000f42408282d818584283581cb5bacd405a2dcedce19899f8647a' +
-      '8c4f45d84c06fb532c63f9479a40a101581e581c6b8487e9d22850b7539db255' +
-      'e27dd48dc0a50c7994d678696be64f21001ac5000d871a03dc396fffa0';
-
     const inputsData = [
       {
-        txDataHex: txDataHex,
+        // txDataHex: "839f8200d818582482582033dac422ec11356eb967d75ec511375f64fcf9589aa47cf9a21e71ae6b0b9a9500ff9f8282d818582183581c0cd8c07fa576cec66f113b57c30bda0ad96a15b51bfdc44fc5b6ecdaa0001ae9297cbb1a000812d28282d818584283581c2ac18457639628b307e65903e4c740678fe2804dec422785aa7b645ea101581e581c9977e10ad4f9d7f9520ab118cda6df6e12cc6495268a58e8eef8f4dd001af5a7a5271a000493e0ffa0",
+        txDataHex: this.txDataHex,
         outputIndex: 0,
-        path: utils.str_to_path("44'/1815'/0'/0/0")
+        path: utils.str_to_path("44'/1815'/0'/0/19")
       }
     ];
-
-    // const inputsData = [{
-    //   txDataHex: this.txDataHex,
-    //   outputIndex: 0,
-    //   path: utils.str_to_path("44'/1815'/0'/0/0"),
-    // }];
-
-    // const outputsData = [
-    //   {
-    //     amountStr: "4200000",
-    //     // address58: "37btjrVyb4KDR9ZYpYSX3T9btsYgLSpzeoyJXpcoTmo4smbpF4PTp8rV9zarEqVoRM4Q9iYTbgK7AR5eLQmr9cTBYkYWq1EdcU1jCU98XTU88cDoes",
-    //     address58:
-    //       "DdzFFzCqrhsoarXqLakMBEiURCGPCUL7qRvPf2oGknKN2nNix5b9SQKj2YckgXZK6q1Ym7BNLxgEX3RQFjS2C41xt54yJHeE1hhMUfSG"
-    //   },
-    //   {
-    //     amountStr: "4628838",
-    //     path: utils.str_to_path("44'/1815'/0'/1/0")
-    //   }
-    // ];
-
 
     const outputsData = [
       {
-        amountStr: "700000",
-        address58: "DdzFFzCqrhshMav9kXdWuSYDe71zbN625sGXYAeYbUzjzctQB1NDRXrWa8EwbtsGQA4FKQ48H39zsADgdCRJ5g9QZ691Uzr1WXYpteZw"
+        amountStr: "300000",
+        address58: "DdzFFzCqrhsjNfBSQ5NrUDwU7qxGJA4MzFn4MT9L2K3M9KYuJ2kugFCuai4id64Ur86aYNc4ugAi88GMNfTPk4RHDuyrT3nAGshKA7SW"
       },
-      {
-        amountStr: "100000",
-        path: utils.str_to_path("44'/1815'/0'/1/0")
-      }
+      // {
+      //   amountStr: "529106",
+      //   path: utils.str_to_path("44'/1815'/0'/1/19")
+      // }
     ];
 
-// 9ADA - AMOUNT
-
-//   8128838 - output from coin selection = 8,128838 ADA
-//    871162 - AMOUNT - OUTPUT = 0.871162 ADA
-//   8828838 - OUTPUT + AMOUT_TO_SEND = 8,828838 ADA
-
-//   1000000 - my output = 1 ADA
-//    700000 - I want to send = 0.7 ADA
-//   2928838 - fee = 2.928838 ADA
-//  11057676 - SUM output + fee = 11.057676 ADA
 
     try {
       console.debug('>>> SIGN TRANSACTION <<<', {
@@ -552,42 +516,6 @@ export default class HardwareWalletsStore extends Store {
         outputs: outputsData,
       });
       console.debug('>>> SIGN TRANSACTION - DONE <<<: ', signedTransaction);
-
-// FROM:
-// txHashHex: "a6348c8e40948f2726df3ce523de859d0a307e06622e51354c43b9ea9b5b0b4e"
-// witnesses: [
-//   {
-//     path: [2147483692, 2147485463, 2147483648, 0, 0],
-//     witnessSignatureHex: "c5d786b715e4a9c1fd370ac6c86e4dadddaf6b9b4858432fed0522f9d3ddd2f50ec0c559550170a21b49954c20a77ffa130844af60c6441c0d863d70e2791809",
-//   }
-// ]
-
-
-// --> TO
-
-// {
-//   txHashHex: "a6348c8e40948f2726df3ce523de859d0a307e06622e51354c43b9ea9b5b0b4e",
-//   witnesses: [
-//     {
-//       signature: "c5d786b715e4a9c1fd370ac6c86e4dadddaf6b9b4858432fed0522f9d3ddd2f50ec0c559550170a21b49954c20a77ffa130844af60c6441c0d863d70e2791809",
-//       xpub: {
-//         publicKeyHex: "e3254ba7a2ee9b6bb240913b869931b1476abac70910fd40d9680e0339ff7627",
-//         chainCodeHex: "503e1ced54b8f9fcfc23d126ce4586fa2c9c3be6c5c535f7176e899d8c1c2e8f",
-//       }
-//     }
-//   ],
-// }
-
-// --> TO Uint8Array(173)
-
-//  Request body
-// >>> requestBody:  {"type":"Buffer","data":[130,166,52,140,142,64,148,143,39,38,223,60,229,35,222,133,157,10,48,126,6,98,46,81,53,76,67,185,234,155,91,11,78,129,88,137,130,0,216,24,130,88,64,227,37,75,167,162,238,155,107,178,64,145,59,134,153,49,177,71,106,186,199,9,16,253,64,217,104,14,3,57,255,118,39,80,62,28,237,84,184,249,252,252,35,209,38,206,69,134,250,44,156,59,230,197,197,53,247,23,110,137,157,140,28,46,143,88,64,197,215,134,183,21,228,169,193,253,55,10,198,200,110,77,173,221,175,107,155,72,88,67,47,237,5,34,249,211,221,210,245,14,192,197,89,85,1,112,162,27,73,149,76,32,167,127,250,19,8,68,175,96,198,68,28,13,134,61,112,226,121,24,9]}
-
-
-// ERROR
-//  "code": "malformed_tx_payload",
-//  "message": "I couldn't verify that the payload has the correct binary format. Therefore I couldn't send it to the node. Please check the format and try again."
-
 
 
       const witnesses = await Promise.all(
@@ -606,20 +534,15 @@ export default class HardwareWalletsStore extends Store {
 
       console.debug('>>> witnesses <<<: ', witnesses);
       const signedTransactionData = {
-        txDataHex: txDataHex,
+        txDataHex: this.txDataHex,
         witnesses: witnesses,
       }
 
       const encodedSignedTransaction = encodeSignedTransaction(signedTransactionData);
 
-      console.debug('>>> ENCODED: ', encodedSignedTransaction);
-
       console.debug('>>> signedTransactionData: ', {
         signedTransactionData,
         encodedSignedTransaction,
-        test0: encodedSignedTransaction.buffer,
-        test1: Buffer.from(encodedSignedTransaction.buffer),
-        test2: Buffer.from(encodedSignedTransaction),
       });
 
 
