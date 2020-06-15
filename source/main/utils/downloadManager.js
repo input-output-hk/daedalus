@@ -30,18 +30,17 @@ import { stateDirectoryPath } from '../config';
 export const getIdFromFileName = (fileName: string): string =>
   fileName.replace(/\./g, '-');
 
-const downloadsDirectory = `${stateDirectoryPath}/Downloads`;
-if (!fs.existsSync(downloadsDirectory)) fs.mkdirSync(downloadsDirectory);
-
 export const getPathFromDirectoryName = (
   directoryName: AllowedDownloadDirectories
 ) => {
+  const downloadsDirectory = `${stateDirectoryPath}/Downloads`;
   switch (directoryName) {
     case ALLOWED_DOWNLOAD_DIRECTORIES.DESKTOP:
       return app.getPath('desktop');
     case ALLOWED_DOWNLOAD_DIRECTORIES.DOWLOADS:
       return app.getPath('downloads');
     default:
+      if (!fs.existsSync(downloadsDirectory)) fs.mkdirSync(downloadsDirectory);
       return downloadsDirectory;
   }
 };
