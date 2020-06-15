@@ -195,6 +195,7 @@ export default class WalletTypeDialog extends Component<Props, State> {
         }
         return {
           key: kind,
+          disabled: isShelleyTestnet && kind.includes('Balance'),
           label: (
             <FormattedHTMLMessage
               {...messages[

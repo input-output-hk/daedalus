@@ -13,7 +13,7 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
   static defaultProps = { stores: null, actions: null };
 
   render() {
-    const { isIncentivizedTestnet, isFlight } = global;
+    const { isIncentivizedTestnet, isShelleyTestnet, isFlight } = global;
     const { stores } = this.props;
     const {
       cardanoNodeState,
@@ -67,6 +67,7 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
         isNewAppVersionLoading={isNewAppVersionLoading}
         isNewAppVersionLoaded={isNewAppVersionLoaded}
         isIncentivizedTestnet={isIncentivizedTestnet}
+        isShelleyTestnet={isShelleyTestnet}
         onIssueClick={this.handleIssueClick}
         onOpenExternalLink={this.handleOpenExternalLink}
         onGetAvailableVersions={this.handleGetAvailableVersions}

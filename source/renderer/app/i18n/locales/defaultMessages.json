@@ -2498,6 +2498,95 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Daedalus",
+        "description": "Daedalus",
+        "end": {
+          "column": 3,
+          "line": 11
+        },
+        "file": "source/renderer/app/components/splash/SplashNetworkSTN.js",
+        "id": "static.splash.network.title",
+        "start": {
+          "column": 9,
+          "line": 7
+        }
+      },
+      {
+        "defaultMessage": "!!!SHELLEY TESTNET",
+        "description": "SHELLEY TESTNET",
+        "end": {
+          "column": 3,
+          "line": 16
+        },
+        "file": "source/renderer/app/components/splash/SplashNetworkSTN.js",
+        "id": "static.splash.network.stnVersionName",
+        "start": {
+          "column": 15,
+          "line": 12
+        }
+      },
+      {
+        "defaultMessage": "!!!This version of Daedalus has been created specifically for the use with the Shelley Testnet.",
+        "description": "stnDescription on network splash screen",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "source/renderer/app/components/splash/SplashNetworkSTN.js",
+        "id": "static.splash.network.stnDescription",
+        "start": {
+          "column": 18,
+          "line": 17
+        }
+      },
+      {
+        "defaultMessage": "!!!I understand",
+        "description": "I understand",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/components/splash/SplashNetworkSTN.js",
+        "id": "static.splash.network.buttonLabel",
+        "start": {
+          "column": 15,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!Learn more",
+        "description": "Learn more",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "source/renderer/app/components/splash/SplashNetworkSTN.js",
+        "id": "static.splash.network.linkLabel",
+        "start": {
+          "column": 13,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!https://testnets.cardano.org/en/shelley/overview/",
+        "description": "\"Learn more\" link URL on the STN network splash screen",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "source/renderer/app/components/splash/SplashNetworkSTN.js",
+        "id": "static.splash.network.stnLinkUrl",
+        "start": {
+          "column": 11,
+          "line": 33
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/splash/SplashNetworkSTN.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Cardano decentralization",
         "description": "Headline for the Decentralisation notification.",
         "end": {
@@ -8500,17 +8589,31 @@
         }
       },
       {
+        "defaultMessage": "!!!Cardano Explorer link currently unavailable.",
+        "description": "Unresolved Input Addresses link unavailable label.",
+        "end": {
+          "column": 3,
+          "line": 125
+        },
+        "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
+        "id": "wallet.transaction.unresolvedInputAddressesLinkUnavailableLabel",
+        "start": {
+          "column": 48,
+          "line": 121
+        }
+      },
+      {
         "defaultMessage": "!!!Transaction confirmed",
         "description": "Transaction state \"confirmed\"",
         "end": {
           "column": 3,
-          "line": 128
+          "line": 133
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.confirmed",
         "start": {
           "column": 26,
-          "line": 124
+          "line": 129
         }
       },
       {
@@ -8518,13 +8621,13 @@
         "description": "Transaction state \"pending\"",
         "end": {
           "column": 3,
-          "line": 133
+          "line": 138
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.pending",
         "start": {
           "column": 31,
-          "line": 129
+          "line": 134
         }
       }
     ],

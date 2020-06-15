@@ -31,6 +31,7 @@ const messages = defineMessages({
 
 type Props = {
   isFlight: boolean,
+  isShelleyTestnet: boolean,
   isActiveItem: Function,
   onItemClick: Function,
 };
@@ -43,7 +44,12 @@ export default class SettingsMenu extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onItemClick, isActiveItem, isFlight } = this.props;
+    const {
+      onItemClick,
+      isActiveItem,
+      isFlight,
+      isShelleyTestnet,
+    } = this.props;
 
     return (
       <div>
@@ -54,7 +60,7 @@ export default class SettingsMenu extends Component<Props> {
             active={isActiveItem(ROUTES.SETTINGS.GENERAL)}
             className="general"
           />
-          {!isFlight && (
+          {!isFlight && !isShelleyTestnet && (
             <SettingsMenuItem
               label={intl.formatMessage(messages.display)}
               onClick={() => onItemClick(ROUTES.SETTINGS.DISPLAY)}

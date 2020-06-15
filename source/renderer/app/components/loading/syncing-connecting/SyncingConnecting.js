@@ -46,6 +46,7 @@ type Props = {
   disableDownloadLogs: boolean,
   showNewsFeedIcon: boolean,
   isIncentivizedTestnet: boolean,
+  isShelleyTestnet: boolean,
   onIssueClick: Function,
   onOpenExternalLink: Function,
   onDownloadLogs: Function,
@@ -176,6 +177,7 @@ export default class SyncingConnecting extends Component<Props, State> {
       onDownloadLogs,
       disableDownloadLogs,
       isIncentivizedTestnet,
+      isShelleyTestnet,
       isNodeResponding,
       isNodeSyncing,
       isNodeTimeCorrect,
@@ -199,6 +201,7 @@ export default class SyncingConnecting extends Component<Props, State> {
         <SyncingConnectingBackground
           hasLoadedCurrentTheme={hasLoadedCurrentTheme}
           isIncentivizedTestnet={isIncentivizedTestnet}
+          isShelleyTestnet={isShelleyTestnet}
           isConnecting={isConnecting}
           isSyncing={isSyncing}
         />
@@ -219,7 +222,9 @@ export default class SyncingConnecting extends Component<Props, State> {
             />
           )}
           <LogosDisplay isConnected={isConnected} />
-          {isIncentivizedTestnet && <SyncingConnectingTitle />}
+          {isIncentivizedTestnet && !isShelleyTestnet && (
+            <SyncingConnectingTitle />
+          )}
         </div>
         <SyncingConnectingStatus
           cardanoNodeState={cardanoNodeState}

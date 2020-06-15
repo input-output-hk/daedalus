@@ -72,11 +72,16 @@ export default class SidebarStore extends Store {
   }
 
   @action _configureCategories = () => {
-    const { isIncentivizedTestnet, isFlight, environment } = global;
-    if (isIncentivizedTestnet) {
-      this.CATEGORIES = sidebarConfig.CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN;
-    } else if (isFlight) {
+    const {
+      isIncentivizedTestnet,
+      isShelleyTestnet,
+      isFlight,
+      environment,
+    } = global;
+    if (isShelleyTestnet || isFlight) {
       this.CATEGORIES = sidebarConfig.CATEGORIES;
+    } else if (isIncentivizedTestnet) {
+      this.CATEGORIES = sidebarConfig.CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN;
     } else if (environment.isDev) {
       this.CATEGORIES = sidebarConfig.CATEGORIES_WITH_HARDWARE_WALLETS;
     } else {
