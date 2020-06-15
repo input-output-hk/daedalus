@@ -85,16 +85,16 @@ export default (api: AdaApi) => {
   };
 
   api.nextUpdate = async (): Promise<Object> => {
-    let nodeUpdate = null;
+    let appUpdate = null;
 
     if (NEXT_ADA_UPDATE) {
-      nodeUpdate = {
+      appUpdate = {
         version: NEXT_ADA_UPDATE,
       };
     }
 
-    logger.debug('AdaApi::nextUpdate success', { nodeUpdate });
-    return Promise.resolve(nodeUpdate);
+    logger.debug('AdaApi::nextUpdate success', { appUpdate });
+    return Promise.resolve(appUpdate);
   };
 
   api.setNextUpdate = async nextUpdate => {
