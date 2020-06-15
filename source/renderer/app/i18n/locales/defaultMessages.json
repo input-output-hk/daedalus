@@ -1711,13 +1711,13 @@
         "description": "Label for the \"Theme\" selection on the display settings page.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 24
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeLabel",
         "start": {
           "column": 14,
-          "line": 18
+          "line": 19
         }
       },
       {
@@ -1725,13 +1725,13 @@
         "description": "Name of the \"Incentivized Testnet\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 30
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.incentivizedTestnet",
         "start": {
           "column": 28,
-          "line": 24
+          "line": 25
         }
       },
       {
@@ -1739,13 +1739,13 @@
         "description": "Name of the \"Light blue\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 35
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.lightBlue",
         "start": {
           "column": 18,
-          "line": 30
+          "line": 31
         }
       },
       {
@@ -1753,13 +1753,13 @@
         "description": "Name of the \"Cardano\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 40
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.cardano",
         "start": {
           "column": 16,
-          "line": 35
+          "line": 36
         }
       },
       {
@@ -1767,13 +1767,13 @@
         "description": "Name of the \"Dark blue\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 45
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.darkBlue",
         "start": {
           "column": 17,
-          "line": 40
+          "line": 41
         }
       },
       {
@@ -1781,13 +1781,13 @@
         "description": "Name of the \"Dark cardano\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 51
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.darkCardano",
         "start": {
           "column": 20,
-          "line": 45
+          "line": 46
         }
       },
       {
@@ -1795,13 +1795,27 @@
         "description": "Name of the \"Flight Candidate\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 57
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.flightCandidate",
         "start": {
           "column": 24,
-          "line": 51
+          "line": 52
+        }
+      },
+      {
+        "defaultMessage": "!!!Shelley Testnet",
+        "description": "Name of the \"Shelley Testnet\" theme on the display settings page.",
+        "end": {
+          "column": 3,
+          "line": 63
+        },
+        "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
+        "id": "settings.display.themeNames.shelleyTestnet",
+        "start": {
+          "column": 23,
+          "line": 58
         }
       },
       {
@@ -1809,13 +1823,13 @@
         "description": "Name of the \"Yellow\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 68
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.yellow",
         "start": {
           "column": 15,
-          "line": 57
+          "line": 64
         }
       },
       {
@@ -1823,13 +1837,13 @@
         "description": "Name of the \"White\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 73
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.white",
         "start": {
           "column": 14,
-          "line": 62
+          "line": 69
         }
       }
     ],

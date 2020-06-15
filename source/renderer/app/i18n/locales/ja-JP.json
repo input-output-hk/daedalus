@@ -250,6 +250,7 @@
   "settings.display.themeNames.flightCandidate": "Flight候補版",
   "settings.display.themeNames.incentivizedTestnet": "インセンティブ付きテストネット",
   "settings.display.themeNames.lightBlue": "ライトブルー",
+  "settings.display.themeNames.shelleyTestnet": "Shelley Testnet",
   "settings.display.themeNames.white": "ホワイト",
   "settings.display.themeNames.yellow": "イエロー",
   "settings.menu.display.link.label": "テーマ",

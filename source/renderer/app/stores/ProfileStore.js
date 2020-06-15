@@ -168,7 +168,7 @@ export default class ProfileStore extends Store {
     // Default theme handling
     let systemValue;
     if (global.isShelleyTestnet) {
-      systemValue = THEMES.DARK_BLUE;
+      systemValue = THEMES.SHELLEY_TESTNET;
     } else if (global.isIncentivizedTestnet) {
       systemValue = THEMES.INCENTIVIZED_TESTNET;
     } else if (global.isFlight) {
