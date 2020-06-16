@@ -44,8 +44,8 @@ const messages = defineMessages({
   },
   addWallet: {
     id: 'wallet.legacy.notification.addWallet',
-    defaultMessage: '!!!Create a new Rewards wallet',
-    description: 'Create a new Rewards wallet action of legacy notification.',
+    defaultMessage: '!!!Create a new Shelley wallet',
+    description: 'Create a new Shelley wallet action of legacy notification.',
   },
   learnMoreLinkUrl: {
     id: 'wallet.legacy.notification.learnMore.url',
