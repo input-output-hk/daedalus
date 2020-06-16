@@ -11,11 +11,13 @@
 , purgeNpmCache ? false
 , topologyOverride ? null
 , configOverride ? null
+, genesisOverride ? null
+, useLocalNode ? false
 }:
 
 let
   daedalusPkgs = import ./. {
-    inherit nodeImplementation cluster topologyOverride configOverride;
+    inherit nodeImplementation cluster topologyOverride configOverride genesisOverride useLocalNode;
     target = system;
     devShell = true;
   };

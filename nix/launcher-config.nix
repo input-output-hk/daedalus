@@ -10,6 +10,7 @@
 , runCommandNative
 , topologyOverride ? null
 , configOverride ? null
+, genesisOverride ? null
 }:
 
 # Creates an attr set for a cluster containing:
@@ -63,6 +64,7 @@ let
       mainnet_flight = "Flight";
       qa = "QA";
       selfnode = "Selfnode";
+      local = "Local";
       itn_selfnode = "Selfnode - ITN";
       nightly = "Nightly";
       itn_rewards_v1 = "- Rewards v1";
@@ -164,7 +166,7 @@ let
   mkConfigByron = let
     filterMonitoring = config: if devShell then config else builtins.removeAttrs config [ "hasPrometheus" "hasEKG" ];
     exportWalletsBin = mkBinPath "export-wallets";
-    walletBin = if envCfg.useByronWallet
+    walletBin = if network == "local" then mkBinPath "cardano-wallet-shelley" else if envCfg.useByronWallet
                 then mkBinPath "cardano-wallet-byron"
                 else mkBinPath "cardano-wallet-shelley";
     nodeBin = mkBinPath "cardano-node";
@@ -173,15 +175,16 @@ let
       GenesisFile = "genesis.json";
     })));
     nodeConfig = if (configOverride == null) then normalNodeConfig else (builtins.readFile configOverride);
-    genesisFile = if (network == "selfnode") then ../utils/cardano/selfnode/genesis.json else envCfg.genesisFile;
+    genesisFile = let
+      genesisFile'.selfnode = ../utils/cardano/selfnode/genesis.json;
+      genesisFile'.local = (__fromJSON nodeConfig).GenesisFile;
+    in if (genesisOverride != null) then genesisOverride else if (network == "selfnode" || network == "local") then genesisFile'.${network} else envCfg.genesisFile;
     normalTopologyFile = if network == "selfnode" then envCfg.topology else cardanoLib.mkEdgeTopology {
       inherit (envCfg) edgePort;
       edgeNodes = [ envCfg.relaysNew ];
     };
     topologyFile = if (topologyOverride == null) then normalTopologyFile else topologyOverride;
-    nodeConfigFiles = let
-      genesisFile = if (network == "selfnode") then ../utils/cardano/selfnode/genesis.json else envCfg.genesisFile;
-    in runCommand "node-cfg-files" {
+    nodeConfigFiles = runCommand "node-cfg-files" {
       inherit nodeConfig topologyFile;
       passAsFile = [ "nodeConfig" ];
     } ''
@@ -220,7 +223,7 @@ let
         legacySecretKey;
       syncTolerance = "300s";
       nodeConfig = {
-        kind = if envCfg.useByronWallet then "byron" else "shelley";
+        kind = if network == "local" then "shelley" else if envCfg.useByronWallet then "byron" else "shelley";
         configurationDir = "";
         network = {
           configFile = mkConfigPath nodeConfigFiles "config.yaml";
