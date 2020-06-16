@@ -44,6 +44,9 @@ import type {
   TransferFundsCalculateFeeRequest,
   TransferFundsRequest,
 } from '../api/wallets/types';
+import { introspectAddressChannel } from '../ipc/introspect-address.js';
+import type { AddressStyle } from '../../../common/types/address-introspection.types';
+
 /* eslint-disable consistent-return */
 
 /**
@@ -869,22 +872,24 @@ export default class WalletsStore extends Store {
     });
   };
 
-  isValidAddress = (address: string) => {
+  isValidAddress = async (address: string) => {
     const { app } = this.stores;
-    const { isMainnet, isStaging, isSelfnode } = app.environment;
+    const { isMainnet, isStaging } = app.environment;
     if (isShelleyTestnet) return true;
-    const addressGroup = isIncentivizedTestnet
-      ? AddressGroup.jormungandr
-      : AddressGroup.byron;
-    const chainSettings =
-      isMainnet || isStaging ? ChainSettings.mainnet : ChainSettings.testnet;
-    try {
-      return isSelfnode
-        ? true // Selfnode address validation is missing in cardano-js
-        : Address.Util.isAddress(address, chainSettings, addressGroup);
-    } catch (error) {
-      return false;
+    let addressStyle: AddressStyle[]
+    if (isIncentivizedTestnet) {
+      addressStyle = ['Jormungandr'];
     }
+    if (isShelleyTestnet) {
+      addressStyle = ['Shelley'];
+    } else {
+      addressStyle = ['Byron', 'Icarus'];
+    }
+    const introspection = await introspectAddressChannel.send({ input: address })
+    if(introspection === false) {
+      return false
+    }
+    return addressStyle.includes(introspection.addressStyle)
   };
 
   isValidCertificateMnemonic = (mnemonic: string) =>
