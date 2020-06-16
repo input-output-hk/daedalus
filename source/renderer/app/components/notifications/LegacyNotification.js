@@ -18,7 +18,7 @@ import Wallet from '../../domains/Wallet';
 const messages = defineMessages({
   moveFundsTitle: {
     id: 'wallet.byron.notification.moveFundsTitle',
-    defaultMessage: '!!!Move testnet ada from {activeWalletName}',
+    defaultMessage: '!!!Move funds from {activeWalletName}',
     description:
       'Title "Move funds from the legacy wallet" on the legacy notification.',
   },
@@ -63,8 +63,8 @@ const messages = defineMessages({
   },
   actionMove: {
     id: 'wallet.byron.notification.actionMove',
-    defaultMessage: '!!!Move testnet ada',
-    description: 'Move testnet ada action of legacy notification.',
+    defaultMessage: '!!!Move ada from this wallet',
+    description: 'Move Move ada from this wallet of legacy notification.',
   },
   addWallet: {
     id: 'wallet.byron.notification.addWallet',
@@ -169,7 +169,7 @@ export default class LegacyNotification extends Component<Props> {
               />
             ) : (
               <FormattedHTMLMessage
-                {...messages.addWalletDescriptionLine2}
+                {...messages.descriptionWithFunds}
                 values={{
                   activeWalletName: activeWallet.name,
                 }}

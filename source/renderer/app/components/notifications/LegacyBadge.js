@@ -18,7 +18,9 @@ export const LEGACY_BADGE_MODES = {
   NATURAL: 'natural',
 };
 
-type Props = { mode: string };
+type Props = {
+  mode: string,
+};
 
 @observer
 export default class LegacyBadge extends Component<Props> {
