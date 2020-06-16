@@ -2100,7 +2100,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Shelley Friends & Family Testnet",
+        "defaultMessage": "!!!Shelley Testnet",
         "description": "Label for ff with version.",
         "end": {
           "column": 3,
@@ -2526,8 +2526,8 @@
         }
       },
       {
-        "defaultMessage": "!!!SHELLEY FRIENDS & FAMILY TESTNET",
-        "description": "SHELLEY FRIENDS & FAMILY TESTNET",
+        "defaultMessage": "!!!SHELLEY TESTNET",
+        "description": "SHELLEY TESTNET",
         "end": {
           "column": 3,
           "line": 16
@@ -2540,7 +2540,7 @@
         }
       },
       {
-        "defaultMessage": "!!!This version of Daedalus has been created specifically for the use with the Shelley Friends & Family Testnet.",
+        "defaultMessage": "!!!This version of Daedalus has been created specifically for the use with the second phase of the Shelley Testnet.",
         "description": "stnDescription on network splash screen",
         "end": {
           "column": 3,
@@ -11533,7 +11533,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Shelley Friends & Family Testnet",
+        "defaultMessage": "!!!Shelley Testnet",
         "description": "Label for ff with version.",
         "end": {
           "column": 3,
@@ -12376,8 +12376,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Shelley Friends & Family Testnet",
-        "description": "\"Shelley Friends & Family Testnet\" Cardano network",
+        "defaultMessage": "!!!Shelley Testnet",
+        "description": "\"Shelley Testnet\" Cardano network",
         "end": {
           "column": 3,
           "line": 197
