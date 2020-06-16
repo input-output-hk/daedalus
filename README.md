@@ -69,7 +69,7 @@ Daedalus - Cryptocurrency Wallet
 1. Run `yarn nix:staging` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
 
-#### Shelley Friends & Family Testnet
+#### Shelley Testnet
 
 1. Run `yarn nix:shelley_ff` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
