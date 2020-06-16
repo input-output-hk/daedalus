@@ -1402,8 +1402,8 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Balance",
-        "description": "Label \"Balance\" on the legacy badge.",
+        "defaultMessage": "!!!Legacy",
+        "description": "Label \"Legacy\" on the legacy badge.",
         "end": {
           "column": 3,
           "line": 13
@@ -1421,7 +1421,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Move testnet ada from {activeWalletName}",
+        "defaultMessage": "!!!Move funds from {activeWalletName}",
         "description": "Title \"Move funds from the legacy wallet\" on the legacy notification.",
         "end": {
           "column": 3,
@@ -1435,8 +1435,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Create a Rewards wallet",
-        "description": "Title \"Create a Rewards wallet\" on the legacy notification.",
+        "defaultMessage": "!!!Create a new wallet",
+        "description": "Title \"Create a new wallet\" on the legacy notification.",
         "end": {
           "column": 3,
           "line": 22
@@ -1449,59 +1449,31 @@
         }
       },
       {
-        "defaultMessage": "!!!\"{transferWalletName}\"\" is a Balance wallet. It currently holds the testnet ada copied from the mainnet via the balance check snapshot.",
-        "description": "Legacy notification description.",
+        "defaultMessage": "!!!\"{transferWalletName}\"\" is a legacy wallet. It does not support Shelley delegation features. Move testnet ada to a Rewards wallet to delegate your testnet ada stake and earn rewards.",
+        "description": "Legacy notification description WithNoFunds.",
         "end": {
           "column": 3,
           "line": 28
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
-        "id": "wallet.legacy.notification.moveFundsDescription.line1",
+        "id": "wallet.legacy.notification.descriptionWithNoFunds",
         "start": {
-          "column": 29,
+          "column": 26,
           "line": 23
         }
       },
       {
-        "defaultMessage": "!!!Move testnet ada to a Rewards wallet to delegate your testnet ada stake and earn rewards.",
-        "description": "Legacy notification description.",
+        "defaultMessage": "!!!\"{transferWalletName}\"\" is a legacy wallet. It does not support Shelley delegation features. To earn ada from delegating your stake, please move all funds from this wallet to a new, Shelley-compatible wallet. You can create a brand new wallet or move funds to one of the existing wallets.",
+        "description": "Legacy notification description WithFunds.",
         "end": {
           "column": 3,
           "line": 34
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
-        "id": "wallet.legacy.notification.moveFundsDescription.line2",
+        "id": "wallet.legacy.notification.descriptionWithFunds",
         "start": {
-          "column": 29,
+          "column": 24,
           "line": 29
-        }
-      },
-      {
-        "defaultMessage": "!!!\"{activeWalletName}\"\" is a Balance wallet. It currently holds the testnet ada copied from the mainnet via the balance check snapshot.",
-        "description": "Legacy notification description.",
-        "end": {
-          "column": 3,
-          "line": 40
-        },
-        "file": "source/renderer/app/components/notifications/LegacyNotification.js",
-        "id": "wallet.legacy.notification.addWalletDescription.line1",
-        "start": {
-          "column": 29,
-          "line": 35
-        }
-      },
-      {
-        "defaultMessage": "!!!Create a Rewards wallet to delegate your testnet ada stake and earn rewards.",
-        "description": "Legacy notification description.",
-        "end": {
-          "column": 3,
-          "line": 46
-        },
-        "file": "source/renderer/app/components/notifications/LegacyNotification.js",
-        "id": "wallet.legacy.notification.addWalletDescription.line2",
-        "start": {
-          "column": 29,
-          "line": 41
         }
       },
       {
@@ -1509,13 +1481,13 @@
         "description": "Learn more action of legacy notification.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 39
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.actionLearnMore",
         "start": {
           "column": 19,
-          "line": 47
+          "line": 35
         }
       },
       {
@@ -1523,13 +1495,13 @@
         "description": "Move testnet ada action of legacy notification.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 44
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.actionMove",
         "start": {
           "column": 14,
-          "line": 52
+          "line": 40
         }
       },
       {
@@ -1537,13 +1509,13 @@
         "description": "Create a new Rewards wallet action of legacy notification.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 49
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.addWallet",
         "start": {
           "column": 13,
-          "line": 57
+          "line": 45
         }
       },
       {
@@ -1551,13 +1523,13 @@
         "description": "\"Learn more\" link URL",
         "end": {
           "column": 3,
-          "line": 67
+          "line": 55
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.learnMore.url",
         "start": {
           "column": 20,
-          "line": 62
+          "line": 50
         }
       }
     ],
@@ -8711,7 +8683,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Transfer funds from the Balance wallet",
+        "defaultMessage": "!!!Transfer funds from the legacy wallet",
         "description": "Title  in the transfer funds form.",
         "end": {
           "column": 3,
@@ -8725,7 +8697,7 @@
         }
       },
       {
-        "defaultMessage": "!!!From Balance wallet",
+        "defaultMessage": "!!!From legacy wallet",
         "description": "sourceWallet in the transfer funds form.",
         "end": {
           "column": 3,
@@ -8739,7 +8711,7 @@
         }
       },
       {
-        "defaultMessage": "!!!To Rewards wallet",
+        "defaultMessage": "!!!To Shelley-compatible wallet",
         "description": "targetWallet in the transfer funds form.",
         "end": {
           "column": 3,
@@ -8772,7 +8744,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Transfer funds from the Balance wallet",
+        "defaultMessage": "!!!Transfer funds from the legacy wallet",
         "description": "Title in the transfer funds form.",
         "end": {
           "column": 3,
@@ -8786,7 +8758,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Confirm transfer from the {sourceWalletName}wallet to the {targetWalletName} wallet.",
+        "defaultMessage": "!!!Confirm transfer from {sourceWalletName}wallet to the {targetWalletName} wallet.",
         "description": "description in the transfer funds form.",
         "end": {
           "column": 3,
