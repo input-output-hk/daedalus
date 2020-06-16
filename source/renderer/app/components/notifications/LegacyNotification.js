@@ -1,54 +1,78 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import {
+  defineMessages,
+  intlShape,
+  FormattedHTMLMessage,
+  FormattedMessage,
+} from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { Link } from 'react-polymorph/lib/components/Link';
+import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import ButtonLink from '../widgets/ButtonLink';
 import styles from './LegacyNotification.scss';
 import Wallet from '../../domains/Wallet';
 
 const messages = defineMessages({
   moveFundsTitle: {
-    id: 'wallet.legacy.notification.moveFundsTitle',
+    id: 'wallet.byron.notification.moveFundsTitle',
     defaultMessage: '!!!Move funds from {activeWalletName}',
     description:
       'Title "Move funds from the legacy wallet" on the legacy notification.',
   },
   addWalletTitle: {
-    id: 'wallet.legacy.notification.addWalletTitle',
-    defaultMessage: '!!!Create a new wallet',
-    description: 'Title "Create a new wallet" on the legacy notification.',
+    id: 'wallet.byron.notification.addWalletTitle',
+    defaultMessage: '!!!Create a Shelley wallet',
+    description: 'Title "Create a Shelley wallet" on the legacy notification.',
   },
-  descriptionWithNoFunds: {
-    id: 'wallet.legacy.notification.descriptionWithNoFunds',
+  moveFundsDescriptionLine1: {
+    id: 'wallet.byron.notification.moveFundsDescription.line1',
     defaultMessage:
-      '!!!"{transferWalletName}"" is a legacy wallet. It does not support Shelley delegation features. Move testnet ada to a Rewards wallet to delegate your testnet ada stake and earn rewards.',
-    description: 'Legacy notification description WithNoFunds.',
+      '!!!"{transferWalletName}"" is a Byron legacy wallet that does not support Shelley delegation features. To earn ada from delegating your stake, please move all funds from this wallet to a new wallet that is Shelley-compatible.',
+    description: 'Legacy notification description.',
   },
-  descriptionWithFunds: {
-    id: 'wallet.legacy.notification.descriptionWithFunds',
+  moveFundsDescriptionLine2: {
+    id: 'wallet.byron.notification.moveFundsDescription.line2',
     defaultMessage:
-      '!!!"{transferWalletName}"" is a legacy wallet. It does not support Shelley delegation features. To earn ada from delegating your stake, please move all funds from this wallet to a new, Shelley-compatible wallet. You can create a brand new wallet or move funds to one of the existing wallets.',
-    description: 'Legacy notification description WithFunds.',
+      '!!!You can create a brand new wallet or move funds to one of your existing wallets.',
+    description: 'Legacy notification description.',
+  },
+  moveFundsDescriptionLine2LinkLabel: {
+    id: 'wallet.byron.notification.moveFundsDescription.line2.link.label',
+    defaultMessage: '!!!brand new wallet',
+    description: 'Legacy notification link label.',
+  },
+  addWalletDescriptionLine1: {
+    id: 'wallet.byron.notification.addWalletDescription.line1',
+    defaultMessage:
+      '!!!"{activeWalletName}"" is a Byron legacy wallet that does not support Shelley delegation features. To earn ada from delegating your stake, please move all funds from this wallet to a new wallet that is Shelley-compatible.',
+    description: 'Legacy notification description.',
+  },
+  addWalletDescriptionLine2: {
+    id: 'wallet.byron.notification.addWalletDescription.line2',
+    defaultMessage:
+      '!!!Since all of your wallets are Byron legacy wallets you will first need to create a new Shelley wallet.',
+    description: 'Legacy notification description.',
   },
   actionLearnMore: {
-    id: 'wallet.legacy.notification.actionLearnMore',
+    id: 'wallet.byron.notification.actionLearnMore',
     defaultMessage: '!!!Learn more',
     description: 'Learn more action of legacy notification.',
   },
   actionMove: {
-    id: 'wallet.legacy.notification.actionMove',
+    id: 'wallet.byron.notification.actionMove',
     defaultMessage: '!!!Move ada from this wallet',
     description: 'Move Move ada from this wallet of legacy notification.',
   },
   addWallet: {
-    id: 'wallet.legacy.notification.addWallet',
-    defaultMessage: '!!!Create a new Shelley wallet',
-    description: 'Create a new Shelley wallet action of legacy notification.',
+    id: 'wallet.byron.notification.addWallet',
+    defaultMessage: '!!!Create a new wallet',
+    description: 'Create a new wallet action of legacy notification.',
   },
   learnMoreLinkUrl: {
-    id: 'wallet.legacy.notification.learnMore.url',
+    id: 'wallet.byron.notification.learnMore.url',
     defaultMessage:
       '!!!https://iohk.zendesk.com/hc/en-us/articles/360038726373',
     description: '"Learn more" link URL',
@@ -85,6 +109,15 @@ export default class LegacyNotification extends Component<Props> {
     } = this.props;
     const buttonAction = hasRewardsWallets ? onTransferFunds : onWalletAdd;
 
+    const moveFundsDescriptionLine2Link = (
+      <Link
+        className={styles.descriptionLink}
+        onClick={this.onLearnMore}
+        label={intl.formatMessage(messages.moveFundsDescriptionLine2LinkLabel)}
+        skin={LinkSkin}
+      />
+    );
+
     const buttonLabel = hasRewardsWallets
       ? intl.formatMessage(messages.actionMove)
       : intl.formatMessage(messages.addWallet);
@@ -112,9 +145,26 @@ export default class LegacyNotification extends Component<Props> {
           <p>
             {hasRewardsWallets ? (
               <FormattedHTMLMessage
-                {...messages.descriptionWithNoFunds}
+                {...messages.moveFundsDescriptionLine1}
                 values={{
                   activeWalletName: activeWallet.name,
+                }}
+              />
+            ) : (
+              <FormattedHTMLMessage
+                {...messages.addWalletDescriptionLine1}
+                values={{
+                  activeWalletName: activeWallet.name,
+                }}
+              />
+            )}
+          </p>
+          <p>
+            {hasRewardsWallets ? (
+              <FormattedMessage
+                {...messages.moveFundsDescriptionLine2}
+                values={{
+                  link: moveFundsDescriptionLine2Link,
                 }}
               />
             ) : (

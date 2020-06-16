@@ -89,7 +89,8 @@ export default class TopBar extends Component<Props> {
           )}
           {children}
         </div>
-        {hasLegacyNotification && activeWallet && (
+        {
+          /*hasLegacyNotification && activeWallet && (*/
           <LegacyNotification
             activeWallet={activeWallet}
             onLearnMore={onLearnMore}
@@ -97,7 +98,7 @@ export default class TopBar extends Component<Props> {
             hasRewardsWallets={hasRewardsWallets}
             onWalletAdd={onWalletAdd}
           />
-        )}
+        }
       </header>
     );
   }
