@@ -18,6 +18,7 @@ import {
   isValidRepeatPassword,
 } from '../../utils/validations';
 import globalMessages from '../../i18n/global-messages';
+import { PasswordInput } from '../widgets/forms/PasswordInput';
 import styles from './WalletCreateDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { submitOnEnter } from '../../utils/form';
@@ -265,19 +266,16 @@ export default class WalletCreateDialog extends Component<Props, State> {
           </div>
 
           <div className={styles.spendingPasswordFields}>
-            <Input
+            <PasswordInput
               className="spendingPassword"
               onKeyPress={this.handleSubmitOnEnter}
               {...spendingPasswordField.bind()}
-              error={spendingPasswordField.error}
-              skin={InputSkin}
             />
-            <Input
+            <PasswordInput
               className="repeatedPassword"
               onKeyPress={this.handleSubmitOnEnter}
               {...repeatedPasswordField.bind()}
-              error={repeatedPasswordField.error}
-              skin={InputSkin}
+              repeatPassword={spendingPasswordField.value}
             />
             <p className={styles.passwordInstructions}>
               <FormattedHTMLMessage {...globalMessages.passwordInstructions} />

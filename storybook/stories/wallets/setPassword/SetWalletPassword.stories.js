@@ -46,4 +46,18 @@ storiesOf('Wallets|Set Password', module)
         />
       )}
     </>
+  ))
+  .add('Change Wallet Password', () => (
+    <ChangeSpendingPasswordDialog
+      isSpendingPasswordSet
+      currentPasswordValue={''}
+      newPasswordValue={''}
+      repeatedPasswordValue={''}
+      onSave={() => {}}
+      onCancel={() => {}}
+      onDataChange={() => {}}
+      isSubmitting={false}
+      error={undefined}
+      walletName={activeWallet.name}
+    />
   ));

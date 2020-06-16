@@ -122,6 +122,8 @@
   "global.errors.invalidWalletName": "ウォレット名は3文字以上40文字以内に設定してください",
   "global.errors.paperWalletOpenPdfError": "置き換えようとしているファイルが開いています。ファイルを閉じてからもう一度お試しください。",
   "global.errors.rewardsOpenCsvError": "置き換えようとしているファイルが開いています。ファイルを閉じてからもう一度お試しください。",
+  "global.errors.strongSpendingPassword": "!!!Strong",
+  "global.errors.weakSpendingPassword": "!!!Weak",
   "global.labels.all": "すべて",
   "global.labels.cancel": "キャンセル",
   "global.labels.change": "変更",
