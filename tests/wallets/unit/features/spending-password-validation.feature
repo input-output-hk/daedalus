@@ -34,13 +34,5 @@ Feature: Spending password validation
       | PASSWORD       |
       | 2Short         |
       | S p a c 3 s    |
-      | ONLY8UPPERCASE |
-      | only8lowercase |
       | 学年別漢字配当表  |
       | mix学年別漢字配  |
-      | Привет!#$%     |
-      | привет1234     |
-      | mixпривет1     |
-      | 1234567890     |
-      | 123456789!     |
-      | !№;%:?*()_+1   |
