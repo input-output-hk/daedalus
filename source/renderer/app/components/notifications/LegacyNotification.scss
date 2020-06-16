@@ -92,6 +92,14 @@
     letter-spacing: 0.5px;
     line-height: 1.36;
     margin-top: 10px;
+    .descriptionLink {
+      border-color: var(--theme-legacy-notification-description-color);
+      color: var(--theme-legacy-notification-description-color);
+      font-family: var(--font-regular);
+      &:after {
+        background: var(--theme-legacy-notification-description-color);
+      }
+    }
   }
 
   .actions {

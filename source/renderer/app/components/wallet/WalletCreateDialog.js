@@ -25,9 +25,8 @@ import { submitOnEnter } from '../../utils/form';
 const messages = defineMessages({
   dialogTitleItn: {
     id: 'wallet.create.dialog.title.itn',
-    defaultMessage: '!!!Create a new Rewards wallet',
-    description:
-      'Title "Create a new Rewards wallet" in the wallet create form.',
+    defaultMessage: '!!!Create a new wallet',
+    description: 'Title "Create a new wallet" in the wallet create form.',
   },
   dialogTitle: {
     id: 'wallet.create.dialog.title',

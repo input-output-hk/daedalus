@@ -7,9 +7,9 @@ import styles from './LegacyBadge.scss';
 
 const messages = defineMessages({
   label: {
-    id: 'wallet.legacy.badge.label',
-    defaultMessage: '!!!Balance',
-    description: 'Label "Balance" on the legacy badge.',
+    id: 'wallet.byron.badge.label',
+    defaultMessage: '!!!Byron',
+    description: 'Label "Byron" on the legacy badge.',
   },
 });
 
