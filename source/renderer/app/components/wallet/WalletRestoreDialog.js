@@ -211,9 +211,8 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
   recoveryPhraseAutocomplete: Autocomplete;
 
-  // eslint-disable-next-line
-  UNSAFE_componentWillReceiveProps(newProps: Props) {
-    if (newProps.error) {
+  componentDidUpdate() {
+    if (this.props.error) {
       handleFormErrors('.WalletRestoreDialog_error');
     }
   }
