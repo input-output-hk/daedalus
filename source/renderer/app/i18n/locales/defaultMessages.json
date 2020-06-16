@@ -1402,8 +1402,8 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Balance",
-        "description": "Label \"Balance\" on the legacy badge.",
+        "defaultMessage": "!!!Legacy",
+        "description": "Label \"Legacy\" on the legacy badge.",
         "end": {
           "column": 3,
           "line": 13
@@ -1421,7 +1421,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Move testnet ada from {activeWalletName}",
+        "defaultMessage": "!!!Move funds from {activeWalletName}",
         "description": "Title \"Move funds from the legacy wallet\" on the legacy notification.",
         "end": {
           "column": 3,
@@ -1435,8 +1435,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Create a Rewards wallet",
-        "description": "Title \"Create a Rewards wallet\" on the legacy notification.",
+        "defaultMessage": "!!!Create a new wallet",
+        "description": "Title \"Create a new wallet\" on the legacy notification.",
         "end": {
           "column": 3,
           "line": 22
@@ -1449,59 +1449,31 @@
         }
       },
       {
-        "defaultMessage": "!!!\"{transferWalletName}\"\" is a Balance wallet. It currently holds the testnet ada copied from the mainnet via the balance check snapshot.",
-        "description": "Legacy notification description.",
+        "defaultMessage": "!!!\"{transferWalletName}\"\" is a legacy wallet. It does not support Shelley delegation features. Move testnet ada to a Rewards wallet to delegate your testnet ada stake and earn rewards.",
+        "description": "Legacy notification description WithNoFunds.",
         "end": {
           "column": 3,
           "line": 28
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
-        "id": "wallet.legacy.notification.moveFundsDescription.line1",
+        "id": "wallet.legacy.notification.descriptionWithNoFunds",
         "start": {
-          "column": 29,
+          "column": 26,
           "line": 23
         }
       },
       {
-        "defaultMessage": "!!!Move testnet ada to a Rewards wallet to delegate your testnet ada stake and earn rewards.",
-        "description": "Legacy notification description.",
+        "defaultMessage": "!!!\"{transferWalletName}\"\" is a legacy wallet. It does not support Shelley delegation features. To earn ada from delegating your stake, please move all funds from this wallet to a new, Shelley-compatible wallet. You can create a brand new wallet or move funds to one of the existing wallets.",
+        "description": "Legacy notification description WithFunds.",
         "end": {
           "column": 3,
           "line": 34
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
-        "id": "wallet.legacy.notification.moveFundsDescription.line2",
+        "id": "wallet.legacy.notification.descriptionWithFunds",
         "start": {
-          "column": 29,
+          "column": 24,
           "line": 29
-        }
-      },
-      {
-        "defaultMessage": "!!!\"{activeWalletName}\"\" is a Balance wallet. It currently holds the testnet ada copied from the mainnet via the balance check snapshot.",
-        "description": "Legacy notification description.",
-        "end": {
-          "column": 3,
-          "line": 40
-        },
-        "file": "source/renderer/app/components/notifications/LegacyNotification.js",
-        "id": "wallet.legacy.notification.addWalletDescription.line1",
-        "start": {
-          "column": 29,
-          "line": 35
-        }
-      },
-      {
-        "defaultMessage": "!!!Create a Rewards wallet to delegate your testnet ada stake and earn rewards.",
-        "description": "Legacy notification description.",
-        "end": {
-          "column": 3,
-          "line": 46
-        },
-        "file": "source/renderer/app/components/notifications/LegacyNotification.js",
-        "id": "wallet.legacy.notification.addWalletDescription.line2",
-        "start": {
-          "column": 29,
-          "line": 41
         }
       },
       {
@@ -1509,41 +1481,41 @@
         "description": "Learn more action of legacy notification.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 39
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.actionLearnMore",
         "start": {
           "column": 19,
-          "line": 47
+          "line": 35
         }
       },
       {
-        "defaultMessage": "!!!Move testnet ada",
-        "description": "Move testnet ada action of legacy notification.",
+        "defaultMessage": "!!!Move ada from this wallet",
+        "description": "Move Move ada from this wallet of legacy notification.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 44
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.actionMove",
         "start": {
           "column": 14,
-          "line": 52
+          "line": 40
         }
       },
       {
-        "defaultMessage": "!!!Create a new Rewards wallet",
-        "description": "Create a new Rewards wallet action of legacy notification.",
+        "defaultMessage": "!!!Create a new Shelley wallet",
+        "description": "Create a new Shelley wallet action of legacy notification.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 49
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.addWallet",
         "start": {
           "column": 13,
-          "line": 57
+          "line": 45
         }
       },
       {
@@ -1551,13 +1523,13 @@
         "description": "\"Learn more\" link URL",
         "end": {
           "column": 3,
-          "line": 67
+          "line": 55
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.learnMore.url",
         "start": {
           "column": 20,
-          "line": 62
+          "line": 50
         }
       }
     ],
@@ -1711,13 +1683,13 @@
         "description": "Label for the \"Theme\" selection on the display settings page.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 24
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeLabel",
         "start": {
           "column": 14,
-          "line": 18
+          "line": 19
         }
       },
       {
@@ -1725,13 +1697,13 @@
         "description": "Name of the \"Incentivized Testnet\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 30
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.incentivizedTestnet",
         "start": {
           "column": 28,
-          "line": 24
+          "line": 25
         }
       },
       {
@@ -1739,13 +1711,13 @@
         "description": "Name of the \"Light blue\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 35
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.lightBlue",
         "start": {
           "column": 18,
-          "line": 30
+          "line": 31
         }
       },
       {
@@ -1753,13 +1725,13 @@
         "description": "Name of the \"Cardano\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 40
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.cardano",
         "start": {
           "column": 16,
-          "line": 35
+          "line": 36
         }
       },
       {
@@ -1767,13 +1739,13 @@
         "description": "Name of the \"Dark blue\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 45
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.darkBlue",
         "start": {
           "column": 17,
-          "line": 40
+          "line": 41
         }
       },
       {
@@ -1781,13 +1753,13 @@
         "description": "Name of the \"Dark cardano\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 51
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.darkCardano",
         "start": {
           "column": 20,
-          "line": 45
+          "line": 46
         }
       },
       {
@@ -1795,13 +1767,27 @@
         "description": "Name of the \"Flight Candidate\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 57
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.flightCandidate",
         "start": {
           "column": 24,
-          "line": 51
+          "line": 52
+        }
+      },
+      {
+        "defaultMessage": "!!!Shelley Testnet",
+        "description": "Name of the \"Shelley Testnet\" theme on the display settings page.",
+        "end": {
+          "column": 3,
+          "line": 63
+        },
+        "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
+        "id": "settings.display.themeNames.shelleyTestnet",
+        "start": {
+          "column": 23,
+          "line": 58
         }
       },
       {
@@ -1809,13 +1795,13 @@
         "description": "Name of the \"Yellow\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 68
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.yellow",
         "start": {
           "column": 15,
-          "line": 57
+          "line": 64
         }
       },
       {
@@ -1823,13 +1809,13 @@
         "description": "Name of the \"White\" theme on the display settings page.",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 73
         },
         "file": "source/renderer/app/components/settings/categories/DisplaySettings.js",
         "id": "settings.display.themeNames.white",
         "start": {
           "column": 14,
-          "line": 62
+          "line": 69
         }
       }
     ],
@@ -2086,7 +2072,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Shelley Friends & Family Testnet",
+        "defaultMessage": "!!!Shelley Testnet",
         "description": "Label for ff with version.",
         "end": {
           "column": 3,
@@ -2494,6 +2480,95 @@
       }
     ],
     "path": "source/renderer/app/components/splash/SplashNetworkITN.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Daedalus",
+        "description": "Daedalus",
+        "end": {
+          "column": 3,
+          "line": 11
+        },
+        "file": "source/renderer/app/components/splash/SplashNetworkSTN.js",
+        "id": "static.splash.network.title",
+        "start": {
+          "column": 9,
+          "line": 7
+        }
+      },
+      {
+        "defaultMessage": "!!!SHELLEY TESTNET",
+        "description": "SHELLEY TESTNET",
+        "end": {
+          "column": 3,
+          "line": 16
+        },
+        "file": "source/renderer/app/components/splash/SplashNetworkSTN.js",
+        "id": "static.splash.network.stnVersionName",
+        "start": {
+          "column": 15,
+          "line": 12
+        }
+      },
+      {
+        "defaultMessage": "!!!This version of Daedalus has been created specifically for the use with the second phase of the Shelley Testnet.",
+        "description": "stnDescription on network splash screen",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "source/renderer/app/components/splash/SplashNetworkSTN.js",
+        "id": "static.splash.network.stnDescription",
+        "start": {
+          "column": 18,
+          "line": 17
+        }
+      },
+      {
+        "defaultMessage": "!!!I understand",
+        "description": "I understand",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/components/splash/SplashNetworkSTN.js",
+        "id": "static.splash.network.buttonLabel",
+        "start": {
+          "column": 15,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!Learn more",
+        "description": "Learn more",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "source/renderer/app/components/splash/SplashNetworkSTN.js",
+        "id": "static.splash.network.linkLabel",
+        "start": {
+          "column": 13,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!https://testnets.cardano.org/en/shelley/overview/",
+        "description": "\"Learn more\" link URL on the STN network splash screen",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "source/renderer/app/components/splash/SplashNetworkSTN.js",
+        "id": "static.splash.network.stnLinkUrl",
+        "start": {
+          "column": 11,
+          "line": 33
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/splash/SplashNetworkSTN.json"
   },
   {
     "descriptors": [
@@ -8500,17 +8575,31 @@
         }
       },
       {
+        "defaultMessage": "!!!Cardano Explorer link currently unavailable.",
+        "description": "Unresolved Input Addresses link unavailable label.",
+        "end": {
+          "column": 3,
+          "line": 125
+        },
+        "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
+        "id": "wallet.transaction.unresolvedInputAddressesLinkUnavailableLabel",
+        "start": {
+          "column": 48,
+          "line": 121
+        }
+      },
+      {
         "defaultMessage": "!!!Transaction confirmed",
         "description": "Transaction state \"confirmed\"",
         "end": {
           "column": 3,
-          "line": 128
+          "line": 133
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.confirmed",
         "start": {
           "column": 26,
-          "line": 124
+          "line": 129
         }
       },
       {
@@ -8518,13 +8607,13 @@
         "description": "Transaction state \"pending\"",
         "end": {
           "column": 3,
-          "line": 133
+          "line": 138
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.pending",
         "start": {
           "column": 31,
-          "line": 129
+          "line": 134
         }
       }
     ],
@@ -8594,7 +8683,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Transfer funds from the Balance wallet",
+        "defaultMessage": "!!!Transfer funds from the legacy wallet",
         "description": "Title  in the transfer funds form.",
         "end": {
           "column": 3,
@@ -8608,7 +8697,7 @@
         }
       },
       {
-        "defaultMessage": "!!!From Balance wallet",
+        "defaultMessage": "!!!From legacy wallet",
         "description": "sourceWallet in the transfer funds form.",
         "end": {
           "column": 3,
@@ -8622,7 +8711,7 @@
         }
       },
       {
-        "defaultMessage": "!!!To Rewards wallet",
+        "defaultMessage": "!!!To Shelley-compatible wallet",
         "description": "targetWallet in the transfer funds form.",
         "end": {
           "column": 3,
@@ -8655,7 +8744,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Transfer funds from the Balance wallet",
+        "defaultMessage": "!!!Transfer funds from the legacy wallet",
         "description": "Title in the transfer funds form.",
         "end": {
           "column": 3,
@@ -8669,7 +8758,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Confirm transfer from the {sourceWalletName}wallet to the {targetWalletName} wallet.",
+        "defaultMessage": "!!!Confirm transfer from {sourceWalletName}wallet to the {targetWalletName} wallet.",
         "description": "description in the transfer funds form.",
         "end": {
           "column": 3,
@@ -9839,7 +9928,7 @@
         }
       },
       {
-        "defaultMessage": "!!!12 words <em>(Balance wallet)</em>",
+        "defaultMessage": "!!!12 words <em>(legacy wallet)</em>",
         "description": "Label for the \"labelDaedalusWalletKindBalance12Word\" ITN checkbox.",
         "end": {
           "column": 3,
@@ -9867,7 +9956,7 @@
         }
       },
       {
-        "defaultMessage": "!!!15 words <em>(Rewards wallet)</em>",
+        "defaultMessage": "!!!15 words",
         "description": "Label for the \"labelDaedalusWalletKindReward15Word\" checkbox.",
         "end": {
           "column": 3,
@@ -9881,7 +9970,7 @@
         }
       },
       {
-        "defaultMessage": "!!!27 words - paper wallet <em>(Balance wallet)</em>",
+        "defaultMessage": "!!!27 words - paper wallet <em>(legacy wallet)</em>",
         "description": "Label for the \"labelDaedalusWalletKindBalance27Word\" ITN checkbox.",
         "end": {
           "column": 3,
@@ -9923,7 +10012,7 @@
         }
       },
       {
-        "defaultMessage": "!!!15 words <em>(Balance wallet)</em>",
+        "defaultMessage": "!!!15 words <em>(legacy wallet)</em>",
         "description": "Label for the \"labelDaedalusWalletKindBalance15Word\" checkbox.",
         "end": {
           "column": 3,
@@ -10237,8 +10326,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Create a new Rewards wallet",
-        "description": "Description for the \"Create a new Rewards wallet\" button on the wallet add dialog.",
+        "defaultMessage": "!!!Create a new Shelley wallet",
+        "description": "Description for the \"Create a new Shelley wallet\" button on the wallet add dialog.",
         "end": {
           "column": 3,
           "line": 30
@@ -10396,8 +10485,8 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Create a new Rewards wallet",
-        "description": "Title \"Create a new Rewards wallet\" in the wallet create form.",
+        "defaultMessage": "!!!Create a new Shelley wallet",
+        "description": "Title \"Create a new Shelley wallet\" in the wallet create form.",
         "end": {
           "column": 3,
           "line": 31
@@ -10452,8 +10541,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Create Rewards wallet",
-        "description": "Label for the \"Create Rewards wallet\" button on create wallet dialog.",
+        "defaultMessage": "!!!Create Shelley wallet",
+        "description": "Label for the \"Create Shelley wallet\" button on create wallet dialog.",
         "end": {
           "column": 3,
           "line": 54
@@ -11416,7 +11505,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Shelley Friends & Family Testnet",
+        "defaultMessage": "!!!Shelley Testnet",
         "description": "Label for ff with version.",
         "end": {
           "column": 3,
@@ -12259,8 +12348,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Shelley Friends & Family Testnet",
-        "description": "\"Shelley Friends & Family Testnet\" Cardano network",
+        "defaultMessage": "!!!Shelley Testnet",
+        "description": "\"Shelley Testnet\" Cardano network",
         "end": {
           "column": 3,
           "line": 197
@@ -12690,183 +12779,5 @@
       }
     ],
     "path": "source/renderer/app/utils/paperWalletPdfGenerator.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Create",
-        "description": "Create label.",
-        "end": {
-          "column": 3,
-          "line": 36
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "global.labels.create",
-        "start": {
-          "column": 10,
-          "line": 32
-        }
-      },
-      {
-        "defaultMessage": "!!!Create a new wallet",
-        "description": "Create a new wallet description.",
-        "end": {
-          "column": 3,
-          "line": 41
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "wallet.add.dialog.create.description",
-        "start": {
-          "column": 19,
-          "line": 37
-        }
-      },
-      {
-        "defaultMessage": "!!!Join",
-        "description": "Join label.",
-        "end": {
-          "column": 3,
-          "line": 46
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "wallet.add.dialog.join.label",
-        "start": {
-          "column": 8,
-          "line": 42
-        }
-      },
-      {
-        "defaultMessage": "!!!Join a shared wallet",
-        "description": "Join a shared wallet description.",
-        "end": {
-          "column": 3,
-          "line": 51
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "wallet.add.dialog.join.description",
-        "start": {
-          "column": 20,
-          "line": 47
-        }
-      },
-      {
-        "defaultMessage": "!!!Import",
-        "description": "Import label.",
-        "end": {
-          "column": 3,
-          "line": 56
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "wallet.add.dialog.import.label",
-        "start": {
-          "column": 10,
-          "line": 52
-        }
-      },
-      {
-        "defaultMessage": "!!!Import wallets from an earlier version of Daedalus or the Daedalus state directory",
-        "description": "Import wallets from an earlier version of Daedalus or the Daedalus state directory description.",
-        "end": {
-          "column": 3,
-          "line": 63
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "wallet.add.dialog.import.description",
-        "start": {
-          "column": 24,
-          "line": 57
-        }
-      },
-      {
-        "defaultMessage": "!!!Recovery Phrase",
-        "description": "Recovery Phrase description.",
-        "end": {
-          "column": 3,
-          "line": 68
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "wallet.restore.dialog.mnemonicsStep",
-        "start": {
-          "column": 18,
-          "line": 64
-        }
-      },
-      {
-        "defaultMessage": "!!!Save",
-        "description": "Save description.",
-        "end": {
-          "column": 3,
-          "line": 73
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "global.labels.save",
-        "start": {
-          "column": 8,
-          "line": 69
-        }
-      },
-      {
-        "defaultMessage": "!!!Follow instructions and manually update",
-        "description": "Follow instructions and manually update description.",
-        "end": {
-          "column": 3,
-          "line": 78
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "manualUpdate.button.label",
-        "start": {
-          "column": 22,
-          "line": 74
-        }
-      }
-    ],
-    "path": "storybook/stories/common/Widgets.stories.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Read More",
-        "description": "Read More button label.",
-        "end": {
-          "column": 3,
-          "line": 37
-        },
-        "file": "storybook/stories/news/AlertsOverlay.stories.js",
-        "id": "global.labels.readMore",
-        "start": {
-          "column": 12,
-          "line": 33
-        }
-      },
-      {
-        "defaultMessage": "!!!Failure Alert",
-        "description": "Failure Alert title.",
-        "end": {
-          "column": 3,
-          "line": 42
-        },
-        "file": "storybook/stories/news/AlertsOverlay.stories.js",
-        "id": "global.errors.failureAlert",
-        "start": {
-          "column": 16,
-          "line": 38
-        }
-      },
-      {
-        "defaultMessage": "!!!Content",
-        "description": "Content.",
-        "end": {
-          "column": 3,
-          "line": 47
-        },
-        "file": "storybook/stories/news/AlertsOverlay.stories.js",
-        "id": "static.dummy.markdown",
-        "start": {
-          "column": 11,
-          "line": 43
-        }
-      }
-    ],
-    "path": "storybook/stories/news/AlertsOverlay.stories.json"
   }
 ]

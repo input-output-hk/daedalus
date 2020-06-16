@@ -11,38 +11,26 @@ import Wallet from '../../domains/Wallet';
 const messages = defineMessages({
   moveFundsTitle: {
     id: 'wallet.legacy.notification.moveFundsTitle',
-    defaultMessage: '!!!Move testnet ada from {activeWalletName}',
+    defaultMessage: '!!!Move funds from {activeWalletName}',
     description:
       'Title "Move funds from the legacy wallet" on the legacy notification.',
   },
   addWalletTitle: {
     id: 'wallet.legacy.notification.addWalletTitle',
-    defaultMessage: '!!!Create a Rewards wallet',
-    description: 'Title "Create a Rewards wallet" on the legacy notification.',
+    defaultMessage: '!!!Create a new wallet',
+    description: 'Title "Create a new wallet" on the legacy notification.',
   },
-  moveFundsDescriptionLine1: {
-    id: 'wallet.legacy.notification.moveFundsDescription.line1',
+  descriptionWithNoFunds: {
+    id: 'wallet.legacy.notification.descriptionWithNoFunds',
     defaultMessage:
-      '!!!"{transferWalletName}"" is a Balance wallet. It currently holds the testnet ada copied from the mainnet via the balance check snapshot.',
-    description: 'Legacy notification description.',
+      '!!!"{transferWalletName}"" is a legacy wallet. It does not support Shelley delegation features. Move testnet ada to a Rewards wallet to delegate your testnet ada stake and earn rewards.',
+    description: 'Legacy notification description WithNoFunds.',
   },
-  moveFundsDescriptionLine2: {
-    id: 'wallet.legacy.notification.moveFundsDescription.line2',
+  descriptionWithFunds: {
+    id: 'wallet.legacy.notification.descriptionWithFunds',
     defaultMessage:
-      '!!!Move testnet ada to a Rewards wallet to delegate your testnet ada stake and earn rewards.',
-    description: 'Legacy notification description.',
-  },
-  addWalletDescriptionLine1: {
-    id: 'wallet.legacy.notification.addWalletDescription.line1',
-    defaultMessage:
-      '!!!"{activeWalletName}"" is a Balance wallet. It currently holds the testnet ada copied from the mainnet via the balance check snapshot.',
-    description: 'Legacy notification description.',
-  },
-  addWalletDescriptionLine2: {
-    id: 'wallet.legacy.notification.addWalletDescription.line2',
-    defaultMessage:
-      '!!!Create a Rewards wallet to delegate your testnet ada stake and earn rewards.',
-    description: 'Legacy notification description.',
+      '!!!"{transferWalletName}"" is a legacy wallet. It does not support Shelley delegation features. To earn ada from delegating your stake, please move all funds from this wallet to a new, Shelley-compatible wallet. You can create a brand new wallet or move funds to one of the existing wallets.',
+    description: 'Legacy notification description WithFunds.',
   },
   actionLearnMore: {
     id: 'wallet.legacy.notification.actionLearnMore',
@@ -51,13 +39,13 @@ const messages = defineMessages({
   },
   actionMove: {
     id: 'wallet.legacy.notification.actionMove',
-    defaultMessage: '!!!Move testnet ada',
-    description: 'Move testnet ada action of legacy notification.',
+    defaultMessage: '!!!Move ada from this wallet',
+    description: 'Move Move ada from this wallet of legacy notification.',
   },
   addWallet: {
     id: 'wallet.legacy.notification.addWallet',
-    defaultMessage: '!!!Create a new Rewards wallet',
-    description: 'Create a new Rewards wallet action of legacy notification.',
+    defaultMessage: '!!!Create a new Shelley wallet',
+    description: 'Create a new Shelley wallet action of legacy notification.',
   },
   learnMoreLinkUrl: {
     id: 'wallet.legacy.notification.learnMore.url',
@@ -124,31 +112,14 @@ export default class LegacyNotification extends Component<Props> {
           <p>
             {hasRewardsWallets ? (
               <FormattedHTMLMessage
-                {...messages.moveFundsDescriptionLine1}
+                {...messages.descriptionWithNoFunds}
                 values={{
                   activeWalletName: activeWallet.name,
                 }}
               />
             ) : (
               <FormattedHTMLMessage
-                {...messages.addWalletDescriptionLine1}
-                values={{
-                  activeWalletName: activeWallet.name,
-                }}
-              />
-            )}
-          </p>
-          <p>
-            {hasRewardsWallets ? (
-              <FormattedHTMLMessage
-                {...messages.moveFundsDescriptionLine2}
-                values={{
-                  activeWalletName: activeWallet.name,
-                }}
-              />
-            ) : (
-              <FormattedHTMLMessage
-                {...messages.addWalletDescriptionLine2}
+                {...messages.descriptionWithFunds}
                 values={{
                   activeWalletName: activeWallet.name,
                 }}

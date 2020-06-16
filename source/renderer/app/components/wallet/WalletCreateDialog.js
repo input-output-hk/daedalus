@@ -25,9 +25,9 @@ import { submitOnEnter } from '../../utils/form';
 const messages = defineMessages({
   dialogTitleItn: {
     id: 'wallet.create.dialog.title.itn',
-    defaultMessage: '!!!Create a new Rewards wallet',
+    defaultMessage: '!!!Create a new Shelley wallet',
     description:
-      'Title "Create a new Rewards wallet" in the wallet create form.',
+      'Title "Create a new Shelley wallet" in the wallet create form.',
   },
   dialogTitle: {
     id: 'wallet.create.dialog.title',
@@ -48,9 +48,9 @@ const messages = defineMessages({
   },
   createPersonalWalletItn: {
     id: 'wallet.create.dialog.create.personal.wallet.button.label.itn',
-    defaultMessage: '!!!Create Rewards wallet',
+    defaultMessage: '!!!Create Shelley wallet',
     description:
-      'Label for the "Create Rewards wallet" button on create wallet dialog.',
+      'Label for the "Create Shelley wallet" button on create wallet dialog.',
   },
   createPersonalWallet: {
     id: 'wallet.create.dialog.create.personal.wallet.button.label',

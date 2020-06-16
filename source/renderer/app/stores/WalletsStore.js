@@ -49,7 +49,7 @@ import { TESTNET_MAGIC } from '../../../common/types/cardano-node.types';
  * The base wallet store that contains logic for dealing with wallets
  */
 
-const { isIncentivizedTestnet } = global;
+const { isIncentivizedTestnet, isShelleyTestnet } = global;
 
 export default class WalletsStore extends Store {
   WALLET_REFRESH_INTERVAL = 5000;
@@ -879,7 +879,7 @@ export default class WalletsStore extends Store {
       } else if (isSelfnode) {
         result = true;
       } else {
-        result = Address.Util.isAddress(address, expectedNetworkMagic)
+        result = Address.Util.isAddress(address, expectedNetworkMagic);
       }
       return result;
     } catch (error) {
