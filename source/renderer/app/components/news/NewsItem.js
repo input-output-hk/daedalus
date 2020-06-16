@@ -39,15 +39,14 @@ export default class NewsItem extends Component<Props, State> {
     newsItemCollapsible: true,
   };
 
-  // eslint-disable-next-line
-  UNSAFE_componentWillReceiveProps(nextProps: Props) {
+  componentDidUpdate(prevProps: Props) {
     const { newsItemExpanded } = this.state;
     if (
-      this.props.isNewsFeedOpen &&
-      !nextProps.isNewsFeedOpen &&
+      prevProps.isNewsFeedOpen &&
+      !this.props.isNewsFeedOpen &&
       newsItemExpanded
     ) {
-      this.setState({ newsItemExpanded: false });
+      this.setState({ newsItemExpanded: false }); // eslint-disable-line
     }
   }
 

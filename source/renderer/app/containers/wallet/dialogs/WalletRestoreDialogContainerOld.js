@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import WalletRestoreDialog from '../../../components/wallet/WalletRestoreDialog';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
-import validWords from '../../../../../common/crypto/valid-words.en';
-import { isValidMnemonic } from '../../../../../common/crypto/decrypt';
+import validWords from '../../../../../common/config/crypto/valid-words.en';
+import { isValidMnemonic } from '../../../../../common/config/crypto/decrypt';
 
 type Props = InjectedDialogContainerProps;
 

@@ -8,7 +8,7 @@ export type Api = {
   setFaultyNodeSettingsApi?: boolean,
 };
 
-export const setupApi = (isTest: boolean, network: string): Api => ({
+export const setupApi = (isTest: boolean): Api => ({
   ada: new AdaApi(isTest, {
     hostname: 'localhost',
     port: 8090,
@@ -16,5 +16,5 @@ export const setupApi = (isTest: boolean, network: string): Api => ({
     key: Uint8Array.from([]),
     cert: Uint8Array.from([]),
   }),
-  localStorage: new LocalStorageApi(network),
+  localStorage: new LocalStorageApi(),
 });
