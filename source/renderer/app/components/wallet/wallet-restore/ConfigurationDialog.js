@@ -92,9 +92,8 @@ export default class ConfigurationDialog extends Component<Props> {
     error: null,
   };
 
-  // eslint-disable-next-line
-  UNSAFE_componentWillReceiveProps(nextProps: Props) {
-    if (nextProps.error) {
+  componentDidUpdate() {
+    if (this.props.error) {
       handleFormErrors('.ConfigurationDialog_error');
     }
   }

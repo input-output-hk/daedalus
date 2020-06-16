@@ -9,6 +9,7 @@ import styles from './SyncingConnectingBackground.scss';
 type Props = {
   hasLoadedCurrentTheme: boolean,
   isIncentivizedTestnet: boolean,
+  isShelleyTestnet: boolean,
   isConnecting: boolean,
   isSyncing: boolean,
 };
@@ -20,6 +21,7 @@ export default class SyncingConnectingBackground extends Component<Props> {
       isConnecting,
       isSyncing,
       isIncentivizedTestnet,
+      isShelleyTestnet,
       hasLoadedCurrentTheme,
     } = this.props;
     const componentStyles = classNames([
@@ -30,7 +32,7 @@ export default class SyncingConnectingBackground extends Component<Props> {
     ]);
     return (
       <div className={componentStyles}>
-        {isIncentivizedTestnet && (
+        {isIncentivizedTestnet && !isShelleyTestnet && (
           <>
             <div className={styles.backgroundOverlay} />
             <SVGInline

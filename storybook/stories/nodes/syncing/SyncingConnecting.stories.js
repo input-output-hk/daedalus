@@ -23,6 +23,7 @@ export const DefaultSyncingConnectingStory = (props: {
     )}
     hasBeenConnected={boolean('hasBeenConnected', false)}
     isFlight={false}
+    isShelleyTestnet={false}
     isConnected={boolean('isConnected', false)}
     isSynced={boolean('isSynced', false)}
     isConnecting={boolean('isConnecting', true)}
@@ -65,6 +66,7 @@ export const ConnectivityIssuesSyncingConnectingStory = (props: {
     cardanoNodeState={CardanoNodeStates.RUNNING}
     hasBeenConnected
     isFlight={false}
+    isShelleyTestnet={false}
     isSynced={false}
     isConnecting
     isSyncing={false}
@@ -105,6 +107,7 @@ export const LoadingWalletDataSyncingConnectingStory = (props: {
     cardanoNodeState={CardanoNodeStates.RUNNING}
     hasBeenConnected
     isFlight={false}
+    isShelleyTestnet={false}
     isSynced={false}
     isConnecting={false}
     isSyncing

@@ -29,12 +29,11 @@ export default class PaperWalletCreateCertificatePage extends Component<
 > {
   static defaultProps = { actions: null, stores: null };
 
-  // eslint-disable-next-line
-  UNSAFE_componentWillReceiveProps(nextProps: Props) {
+  componentDidUpdate() {
     const stepChanged =
-      nextProps.stores.wallets.certificateStep !== this.state.currentStep;
-    if (nextProps.stores.wallets.certificateStep && stepChanged) {
-      this.onContinue(nextProps.stores.wallets.certificateStep);
+      this.props.stores.wallets.certificateStep !== this.state.currentStep;
+    if (this.props.stores.wallets.certificateStep && stepChanged) {
+      this.onContinue(this.props.stores.wallets.certificateStep);
     }
   }
 

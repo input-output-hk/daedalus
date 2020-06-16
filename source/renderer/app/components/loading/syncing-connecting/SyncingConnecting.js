@@ -46,6 +46,7 @@ type Props = {
   disableDownloadLogs: boolean,
   showNewsFeedIcon: boolean,
   isIncentivizedTestnet: boolean,
+  isShelleyTestnet: boolean,
   onIssueClick: Function,
   onOpenExternalLink: Function,
   onDownloadLogs: Function,
@@ -64,11 +65,6 @@ export default class SyncingConnecting extends Component<Props, State> {
     this._defensivelyStartTimers(this.props.isConnected);
   }
 
-  // eslint-disable-next-line
-  UNSAFE_componentWillReceiveProps(nextProps: Props) {
-    this._defensivelyStartTimers(nextProps.isConnected);
-  }
-
   componentDidUpdate() {
     const { connectingTime } = this.state;
     const {
@@ -82,6 +78,8 @@ export default class SyncingConnecting extends Component<Props, State> {
       isFlight,
     } = this.props;
     const canResetConnecting = this._connectingTimerShouldStop(isConnected);
+
+    this._defensivelyStartTimers(isConnected);
     if (canResetConnecting) {
       this._resetConnectingTime();
     }
@@ -176,6 +174,7 @@ export default class SyncingConnecting extends Component<Props, State> {
       onDownloadLogs,
       disableDownloadLogs,
       isIncentivizedTestnet,
+      isShelleyTestnet,
       isNodeResponding,
       isNodeSyncing,
       isNodeTimeCorrect,
@@ -199,6 +198,7 @@ export default class SyncingConnecting extends Component<Props, State> {
         <SyncingConnectingBackground
           hasLoadedCurrentTheme={hasLoadedCurrentTheme}
           isIncentivizedTestnet={isIncentivizedTestnet}
+          isShelleyTestnet={isShelleyTestnet}
           isConnecting={isConnecting}
           isSyncing={isSyncing}
         />
@@ -219,7 +219,9 @@ export default class SyncingConnecting extends Component<Props, State> {
             />
           )}
           <LogosDisplay isConnected={isConnected} />
-          {isIncentivizedTestnet && <SyncingConnectingTitle />}
+          {isIncentivizedTestnet && !isShelleyTestnet && (
+            <SyncingConnectingTitle />
+          )}
         </div>
         <SyncingConnectingStatus
           cardanoNodeState={cardanoNodeState}
