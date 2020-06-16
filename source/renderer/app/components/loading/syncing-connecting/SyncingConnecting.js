@@ -65,11 +65,6 @@ export default class SyncingConnecting extends Component<Props, State> {
     this._defensivelyStartTimers(this.props.isConnected);
   }
 
-  // eslint-disable-next-line
-  UNSAFE_componentWillReceiveProps(nextProps: Props) {
-    this._defensivelyStartTimers(nextProps.isConnected);
-  }
-
   componentDidUpdate() {
     const { connectingTime } = this.state;
     const {
@@ -83,6 +78,8 @@ export default class SyncingConnecting extends Component<Props, State> {
       isFlight,
     } = this.props;
     const canResetConnecting = this._connectingTimerShouldStop(isConnected);
+
+    this._defensivelyStartTimers(isConnected);
     if (canResetConnecting) {
       this._resetConnectingTime();
     }

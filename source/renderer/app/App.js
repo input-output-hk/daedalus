@@ -27,11 +27,11 @@ export default class App extends Component<{
   actions: ActionsMap,
   history: Object,
 }> {
-  // eslint-disable-next-line
-  UNSAFE_componentWillMount() {
+  componentDidMount() {
     // Loads app's global environment variables into AppStore via ipc
     this.props.actions.app.initAppEnvironment.trigger();
   }
+
   render() {
     const { stores, actions, history } = this.props;
     const { app, appUpdate, networkStatus } = stores;

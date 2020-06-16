@@ -285,4 +285,9 @@ export default defineMessages({
     defaultMessage: '!!!Reset',
     description: 'Reset label.',
   },
+  token: {
+    id: 'global.labels.token',
+    defaultMessage: '!!!Token',
+    description: 'Token description.',
+  },
 });
