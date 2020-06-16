@@ -20,8 +20,7 @@ type Props = {
 export default class IncidentOverlay extends Component<Props> {
   localizedDateFormat: 'MM/DD/YYYY';
 
-  // eslint-disable-next-line
-  UNSAFE_componentWillMount() {
+  componentDidMount() {
     this.localizedDateFormat = moment.localeData().longDateFormat('L');
   }
 
