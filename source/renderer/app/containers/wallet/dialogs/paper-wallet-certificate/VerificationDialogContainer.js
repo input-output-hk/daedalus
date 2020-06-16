@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import validWords from '../../../../../../common/crypto/valid-words.en';
+import validWords from '../../../../../../common/config/crypto/valid-words.en';
 import VerificationDialog from '../../../../components/wallet/paper-wallet-certificate/VerificationDialog';
 import type { InjectedDialogContainerProps } from '../../../../types/injectedPropsType';
 

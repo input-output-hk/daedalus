@@ -13,7 +13,7 @@ export default class ManualUpdatePage extends Component<Props> {
 
   render() {
     const { stores } = this.props;
-    const { availableAppVersion } = stores.nodeUpdate;
+    const { availableAppVersion } = stores.appUpdate;
     const { environment, openExternalLink } = stores.app;
     const { version } = environment;
     return (

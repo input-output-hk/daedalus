@@ -382,7 +382,7 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-news-item-info-background-color': 'rgba(0, 0, 0, 0.05)',
     '--theme-news-item-title-color': '#2d2d2d',
   },
-  nodeUpdate: {
+  appUpdate: {
     '--theme-node-update-background-color': '#f9f9f9',
     '--theme-node-update-title-color': '#2d2d2d',
     '--theme-node-update-message-color': '#2d2d2d',
