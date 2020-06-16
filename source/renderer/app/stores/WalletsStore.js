@@ -873,9 +873,15 @@ export default class WalletsStore extends Store {
     const { isSelfnode, isTestnet } = app.environment;
     const expectedNetworkMagic = isTestnet ? TESTNET_MAGIC : null;
     try {
-      return isSelfnode
-        ? true // Selfnode address validation is missing in cardano-js
-        : Address.Util.isAddress(address, expectedNetworkMagic);
+      let result;
+      if (isIncentivizedTestnet) {
+        result = Address.Util.isJormungandrAddress(address, 'testing');
+      } else if (isSelfnode) {
+        result = true;
+      } else {
+        result = Address.Util.isAddress(address, expectedNetworkMagic)
+      }
+      return result;
     } catch (error) {
       return false;
     }
