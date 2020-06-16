@@ -1505,8 +1505,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Create a new Rewards wallet",
-        "description": "Create a new Rewards wallet action of legacy notification.",
+        "defaultMessage": "!!!Create a new Shelley wallet",
+        "description": "Create a new Shelley wallet action of legacy notification.",
         "end": {
           "column": 3,
           "line": 49
@@ -10326,8 +10326,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Create a new Rewards wallet",
-        "description": "Description for the \"Create a new Rewards wallet\" button on the wallet add dialog.",
+        "defaultMessage": "!!!Create a new Shelley wallet",
+        "description": "Description for the \"Create a new Shelley wallet\" button on the wallet add dialog.",
         "end": {
           "column": 3,
           "line": 30
@@ -10485,8 +10485,8 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Create a new Rewards wallet",
-        "description": "Title \"Create a new Rewards wallet\" in the wallet create form.",
+        "defaultMessage": "!!!Create a new Shelley wallet",
+        "description": "Title \"Create a new Shelley wallet\" in the wallet create form.",
         "end": {
           "column": 3,
           "line": 31
@@ -10541,8 +10541,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Create Rewards wallet",
-        "description": "Label for the \"Create Rewards wallet\" button on create wallet dialog.",
+        "defaultMessage": "!!!Create Shelley wallet",
+        "description": "Label for the \"Create Shelley wallet\" button on create wallet dialog.",
         "end": {
           "column": 3,
           "line": 54
