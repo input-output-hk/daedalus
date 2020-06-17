@@ -89,7 +89,7 @@ export const networkPrettyNames = {
   selfnode: 'Selfnode',
   staging: 'Staging',
   testnet: 'Testnet',
-  ff: 'Shelley Friends & Family Testnet',
+  ff: 'Shelley Testnet',
   shelley_qa: 'Shelley QA',
   development: 'Development',
   itn_rewards_v1: 'Incentivized Testnet v1 - Rewards',

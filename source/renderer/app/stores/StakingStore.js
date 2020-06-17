@@ -39,7 +39,7 @@ export default class StakingStore extends Store {
   _delegationFeeCalculationWalletId: ?string = null;
 
   setup() {
-    if (global.isIncentivizedTestnet) {
+    if (global.isIncentivizedTestnet && !global.isShelleyTestnet) {
       // Set initial fetch interval to 1 second
       this.refreshPolling = setInterval(
         this.getStakePoolsData,
