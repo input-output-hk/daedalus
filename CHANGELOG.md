@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Chores
+
+- Resolved electron deprecation warnings ([PR 2039](https://github.com/input-output-hk/daedalus/pull/2039))
+
 ## 1.0.0-STN1
 
 ### Features
@@ -18,7 +24,6 @@ Changelog
 
 ### Chores
 
-- Resolved electron deprecation warnings ([PR 2039](https://github.com/input-output-hk/daedalus/pull/2039))
 - Eliminate usage of `UNSAFE_XXX` legacy lifecycle methods ([PR 2028](https://github.com/input-output-hk/daedalus/pull/2028))
 - Updated `cardano-wallet` to revision `acc3eb94` ([PR 2027](https://github.com/input-output-hk/daedalus/pull/2027))
 - Updated react, react-router, mobx, mobx-react-router and their related package versions ([PR 1966](https://github.com/input-output-hk/daedalus/pull/1966))
