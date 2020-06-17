@@ -22,6 +22,7 @@ export default (story: Object, context: Object) => {
   const menu = (
     <SettingsMenu
       isFlight={false}
+      isShelleyTestnet={false}
       onItemClick={linkTo(context.kind, item => pageNames[item])}
       isActiveItem={item => {
         const itemName = context.story

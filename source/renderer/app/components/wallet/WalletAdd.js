@@ -24,9 +24,9 @@ const messages = defineMessages({
   },
   createDescriptionItn: {
     id: 'wallet.add.dialog.create.description.itn',
-    defaultMessage: '!!!Create a new Rewards wallet',
+    defaultMessage: '!!!Create a new Shelley wallet',
     description:
-      'Description for the "Create a new Rewards wallet" button on the wallet add dialog.',
+      'Description for the "Create a new Shelley wallet" button on the wallet add dialog.',
   },
   createDescription: {
     id: 'wallet.add.dialog.create.description',

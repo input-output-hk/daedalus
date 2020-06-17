@@ -142,6 +142,7 @@ gulp.task('prepare:themes:daedalus', () =>
       'source/renderer/app/themes/daedalus/incentivized-testnet.js',
       'source/renderer/app/themes/daedalus/index.js',
       'source/renderer/app/themes/daedalus/light-blue.js',
+      'source/renderer/app/themes/daedalus/shelley-testnet.js',
       'source/renderer/app/themes/daedalus/white.js',
       'source/renderer/app/themes/daedalus/yellow.js',
     ])

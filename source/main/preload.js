@@ -16,10 +16,12 @@ import { SHELLEY_FF, SHELLEY_QA } from '../common/types/environment.types';
 import { CardanoNodeImplementationOptions } from '../common/types/cardano-node.types';
 
 const _process = process;
+const _isShelleyTestnet =
+  nodeImplementation === CardanoNodeImplementationOptions.CARDANO &&
+  (cluster === SHELLEY_FF || cluster === SHELLEY_QA);
 const _isIncentivizedTestnet =
   nodeImplementation === CardanoNodeImplementationOptions.JORMUNGANDR ||
-  (nodeImplementation === CardanoNodeImplementationOptions.CARDANO &&
-    (cluster === SHELLEY_FF || cluster === SHELLEY_QA));
+  _isShelleyTestnet;
 
 process.once('loaded', () => {
   Object.assign(global, {
@@ -47,6 +49,7 @@ process.once('loaded', () => {
       error: (...args) => electronLog.error(...args),
       warn: (...args) => electronLog.warn(...args),
     },
+    isShelleyTestnet: _isShelleyTestnet,
     isIncentivizedTestnet: _isIncentivizedTestnet,
     isFlight,
     legacyStateDir,

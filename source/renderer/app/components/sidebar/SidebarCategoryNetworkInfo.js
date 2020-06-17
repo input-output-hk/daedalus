@@ -22,7 +22,7 @@ const messages = defineMessages({
   },
   ff: {
     id: 'test.environment.shelleyFfLabel',
-    defaultMessage: '!!!Shelley Friends & Family Testnet',
+    defaultMessage: '!!!Shelley Testnet',
     description: 'Label for ff with version.',
   },
   shelley_qa: {

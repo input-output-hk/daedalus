@@ -23,13 +23,13 @@ import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 const messages = defineMessages({
   dialogTitle: {
     id: 'wallet.transferFunds.dialog2.title',
-    defaultMessage: '!!!Transfer funds from the Balance wallet',
+    defaultMessage: '!!!Transfer funds from the legacy wallet',
     description: 'Title in the transfer funds form.',
   },
   description: {
     id: 'wallet.transferFunds.dialog2.label.description',
     defaultMessage:
-      '!!!Confirm transfer from the {sourceWalletName}wallet to the {targetWalletName} wallet.',
+      '!!!Confirm transfer from {sourceWalletName}wallet to the {targetWalletName} wallet.',
     description: 'description in the transfer funds form.',
   },
   labelTo: {
@@ -101,9 +101,8 @@ export default class TransferFundsStep2Dialog extends Component<Props, State> {
     amount: null,
   };
 
-  // eslint-disable-next-line
-  UNSAFE_componentWillReceiveProps(nextProps: Props) {
-    const { transferFundsFee, sourceWallet } = nextProps;
+  componentDidUpdate() {
+    const { transferFundsFee, sourceWallet } = this.props;
     // "freezes" the current amounts in the component state
     if (transferFundsFee && !this.state.fees && !this.state.amount) {
       const fees = transferFundsFee.toFormat(DECIMAL_PLACES_IN_ADA);
@@ -111,7 +110,7 @@ export default class TransferFundsStep2Dialog extends Component<Props, State> {
         sourceWallet.amount.minus(transferFundsFee),
         false
       );
-      this.setState({ fees, amount });
+      this.setState({ fees, amount }); // eslint-disable-line
     }
   }
 

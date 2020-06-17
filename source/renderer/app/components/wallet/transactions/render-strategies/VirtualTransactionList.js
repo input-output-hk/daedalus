@@ -39,22 +39,21 @@ export class VirtualTransactionList extends Component<Props> {
     isSyncingSpinnerShown: false,
   };
 
-  // eslint-disable-next-line
-  UNSAFE_componentWillReceiveProps(nextProps: Props) {
-    // Recompute all row heights in case the number of rows has changed
-    const prevNumberOfRows = this.props.rows.length;
-    const nextNumberOfRows = nextProps.rows.length;
-    if (prevNumberOfRows && prevNumberOfRows !== nextNumberOfRows) {
-      this.rowHeights = this.estimateRowHeights(nextProps.rows);
-      this.recomputeVirtualRowHeights();
-    }
-  }
-
   list: List;
   rowHeights: RowHeight[] = [];
   txAddressHeight: number = 0;
   txIdHeight: number = 0;
   visibleExpandedTx: Array<WalletTransaction>;
+
+  componentDidUpdate(prevProps: Props) {
+    // Recompute all row heights in case the number of rows has changed
+    const prevNumberOfRows = prevProps.rows.length;
+    const numberOfRows = this.props.rows.length;
+    if (prevNumberOfRows && prevNumberOfRows !== numberOfRows) {
+      this.rowHeights = this.estimateRowHeights(this.props.rows);
+      this.recomputeVirtualRowHeights();
+    }
+  }
 
   /**
    * Returns the row index of a given tx.

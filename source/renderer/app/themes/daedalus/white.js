@@ -839,7 +839,7 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-transactions-state-ok-background-color': 'rgba(0, 118, 0, 1);',
     '--theme-transactions-state-pending-background-color':
       'rgba(45, 45, 45, 0.5)',
-    '--theme-transactions-state-text-color': '#fafbfc',
+    '--theme-transactions-state-text-color': '#ffffff',
     '--theme-transactions-search-background-color': '#f9f9f9',
     '--theme-transactions-icon-type-expend-background-color': '#84a2d2',
     '--theme-transactions-icon-type-income-background-color': '#2dc06c',
