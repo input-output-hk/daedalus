@@ -69,7 +69,7 @@ const messages = defineMessages({
   },
   actionMove: {
     id: 'wallet.byron.notification.actionMove',
-    defaultMessage: '!!!Move ada from this wallet',
+    defaultMessage: '!!!Move ada to an existing wallet',
     description: 'Move Move ada from this wallet of legacy notification.',
   },
   addWallet: {
@@ -121,6 +121,7 @@ export default class LegacyNotification extends Component<Props> {
         onClick={onWalletAdd}
         label={intl.formatMessage(messages.moveFundsDescriptionLine2LinkLabel)}
         skin={LinkSkin}
+        hasIconAfter={false}
       />
     );
 

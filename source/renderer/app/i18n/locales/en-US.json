@@ -511,7 +511,7 @@
   "wallet.backup.recovery.phrase.entry.dialog.verification.instructions": "Verify your wallet recovery phrase by clicking words in the exact order you wrote them down.",
   "wallet.byron.badge.label": "Byron",
   "wallet.byron.notification.actionLearnMore": "Learn more",
-  "wallet.byron.notification.actionMove": "Move ada from this wallet",
+  "wallet.byron.notification.actionMove": "Move ada to an existing wallet",
   "wallet.byron.notification.addWallet": "Create a new wallet",
   "wallet.byron.notification.addWalletDescription.line1": "<q>{activeWalletName}</q> is a Byron legacy wallet that does not support Shelley delegation features. To earn ada from delegating your stake, please move all funds from this wallet to a new wallet that is Shelley-compatible.",
   "wallet.byron.notification.addWalletDescription.line2": "Since all of your wallets are Byron legacy wallets you will first need to create a new Shelley wallet.",

@@ -511,7 +511,7 @@
   "wallet.backup.recovery.phrase.entry.dialog.verification.instructions": "書き留めた通りの正しい順に単語をクリックして、ウォレットの復元フレーズを検証してください。",
   "wallet.byron.badge.label": "残高",
   "wallet.byron.notification.actionLearnMore": "もっと知る",
-  "wallet.byron.notification.actionMove": "テストネット用ADAを移し替える",
+  "wallet.byron.notification.actionMove": "既存のウォレットにADAを移す",
   "wallet.byron.notification.addWallet": "ウォレットを新規作成する",
   "wallet.byron.notification.addWalletDescription.line1": "「<q>{activeWalletName}</q>」はByronのレガシーウォレットであり、Shelleyの委任機能をサポートしていません。ステークを委任して報酬を得るには、すべての資金をこのウォレットからShelley対応の新ウォレットに移してください。",
   "wallet.byron.notification.addWalletDescription.line2": "既存ウォレットはすべてByronのレガシーウォレットであるため、Shelleyウォレットを新規作成する必要があります。",
