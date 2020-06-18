@@ -50,59 +50,43 @@ const messages = defineMessages({
       '!!!What kind of Daedalus wallet would you like to restore?',
     description: 'Label for the "labelDaedalusWalletKind" checkbox.',
   },
-  labelDaedalusWalletKindBalance12WordItn: {
+  labelDaedalusWalletKind12WordByron: {
     id:
-      'wallet.restore.dialog.step.walletKind.label.daedalusWalletKindBalance12Word.itn',
-    defaultMessage: '!!!12 words <em>(legacy wallet)</em>',
-    description:
-      'Label for the "labelDaedalusWalletKindBalance12Word" ITN checkbox.',
+      'wallet.restore.dialog.step.walletKind.label.daedalusWalletKind12WordByron',
+    defaultMessage: '!!!12 words <em>(Byron legacy wallet)</em>',
+    description: 'Label for the "labelDaedalusWalletKind12WordByron" checkbox.',
   },
-  labelDaedalusWalletKindBalance12Word: {
+  labelDaedalusWalletKind15WordShelley: {
     id:
-      'wallet.restore.dialog.step.walletKind.label.daedalusWalletKindBalance12Word',
-    defaultMessage: '!!!12 words',
+      'wallet.restore.dialog.step.walletKind.label.daedalusWalletKind15WordShelley',
+    defaultMessage: '!!!15 words <em>(Shelley wallet)</em>',
     description:
-      'Label for the "labelDaedalusWalletKindBalance12Word" checkbox.',
+      'Label for the "labelDaedalusWalletKind15WordShelley" checkbox.',
   },
-  labelDaedalusWalletKindReward15Word: {
+  labelDaedalusWalletKind27WordPaper: {
     id:
-      'wallet.restore.dialog.step.walletKind.label.daedalusWalletKindReward15Word',
-    defaultMessage: '!!!15 words',
-    description:
-      'Label for the "labelDaedalusWalletKindReward15Word" checkbox.',
-  },
-  labelDaedalusWalletKindBalance27WordItn: {
-    id:
-      'wallet.restore.dialog.step.walletKind.label.daedalusWalletKindBalance27Word.itn',
-    defaultMessage: '!!!27 words - paper wallet <em>(legacy wallet)</em>',
-    description:
-      'Label for the "labelDaedalusWalletKindBalance27Word" ITN checkbox.',
-  },
-  labelDaedalusWalletKindBalance27Word: {
-    id:
-      'wallet.restore.dialog.step.walletKind.label.daedalusWalletKindBalance27Word',
-    defaultMessage: '!!!27 words - paper wallet</em>',
-    description:
-      'Label for the "labelDaedalusWalletKindBalance27Word" checkbox.',
+      'wallet.restore.dialog.step.walletKind.label.daedalusWalletKind27WordPaper',
+    defaultMessage: '!!!27 words - paper wallet (Byron legacy wallet)</em>',
+    description: 'Label for the "labelDaedalusWalletKind27WordPaper" checkbox.',
   },
   labelYoroiWalletKind: {
     id: 'wallet.restore.dialog.step.walletKind.label.yoroiWalletKind',
     defaultMessage: '!!!What kind of Yoroi wallet would you like to restore?',
     description: 'Label for the "labelYoroiWalletKind" checkbox.',
   },
-  labelYoroiWalletKindBalance15Word: {
+  labelYoroiWalletKindByronLegacy15Word: {
     id:
-      'wallet.restore.dialog.step.walletKind.label.yoroiWalletKindBalance15Word',
-    defaultMessage: '!!!15 words <em>(legacy wallet)</em>',
+      'wallet.restore.dialog.step.walletKind.label.yoroiWalletKindByronLegacy15Word',
+    defaultMessage: '!!!15 words <em>(Byron legacy wallet)</em>',
     description:
       'Label for the "labelDaedalusWalletKindBalance15Word" checkbox.',
   },
-  labelYoroiWalletKindReward15Word: {
+  labelYoroiWalletKindShelley15Word: {
     id:
-      'wallet.restore.dialog.step.walletKind.label.yoroiWalletKindReward15Word',
-    defaultMessage: '!!!15 words <em>(Reward wallet)</em>',
+      'wallet.restore.dialog.step.walletKind.label.yoroiWalletKindShelley15Word',
+    defaultMessage: '!!!15 words <em>(Shelley wallet)</em>',
     description:
-      'Label for the "labelDaedalusWalletKindReward15Word" checkbox.',
+      'Label for the "labelDaedalusWalletKind15WordShelley" checkbox.',
   },
   labelHardwareWalletKind: {
     id: 'wallet.restore.dialog.step.walletKind.label.hardwareWalletKind',
@@ -186,21 +170,12 @@ export default class WalletTypeDialog extends Component<Props, State> {
       items={Object.keys(kinds).map((key: string) => {
         const kind: WalletKinds = kinds[key];
 
-        let kindLabelSufix = kind;
-        if (
-          isIncentivizedTestnet &&
-          (kind === 'Balance12Word' || kind === 'Balance27Word')
-        ) {
-          kindLabelSufix = `${kind}Itn`;
-        }
         return {
           key: kind,
           disabled: isShelleyTestnet && kind.includes('Balance'),
           label: (
             <FormattedHTMLMessage
-              {...messages[
-                `label${kindParam || ''}WalletKind${kindLabelSufix}`
-              ]}
+              {...messages[`label${kindParam || ''}WalletKind${kind}`]}
             />
           ),
           selected: value === kind,
