@@ -518,7 +518,7 @@
   "wallet.byron.notification.addWalletTitle": "Create a Shelley wallet",
   "wallet.byron.notification.learnMore.url": "https://iohk.zendesk.com/hc/en-us/articles/360038726373",
   "wallet.byron.notification.moveFundsDescription.line1": "<q>{activeWalletName}</q> is a Byron legacy wallet that does not support Shelley delegation features. To earn ada from delegating your stake, please move all funds from this wallet to a new wallet that is Shelley-compatible.",
-  "wallet.byron.notification.moveFundsDescription.line2": "You can create a {link} or move funds to one of your existing wallets.",
+  "wallet.byron.notification.moveFundsDescription.line2": "You can create a {moveFundsLink} or move funds to one of your existing wallets.",
   "wallet.byron.notification.moveFundsDescription.line2.link.label": "brand new wallet",
   "wallet.byron.notification.moveFundsTitle": "Move funds from <q>{activeWalletName}</q>",
   "wallet.create.dialog.configStep": "Config",

@@ -1,19 +1,13 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import {
-  defineMessages,
-  intlShape,
-  FormattedHTMLMessage,
-  FormattedMessage,
-} from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import ButtonLink from '../widgets/ButtonLink';
 import styles from './LegacyNotification.scss';
-import Wallet from '../../domains/Wallet';
 
 const messages = defineMessages({
   moveFundsTitle: {
@@ -30,16 +24,16 @@ const messages = defineMessages({
   moveFundsDescriptionLine1: {
     id: 'wallet.byron.notification.moveFundsDescription.line1',
     defaultMessage:
-      '!!!"{transferWalletName}"" is a Byron legacy wallet that does not support Shelley delegation features. To earn ada from delegating your stake, please move all funds from this wallet to a new wallet that is Shelley-compatible.',
+      '!!!"{activeWalletName}"" is a Byron legacy wallet that does not support Shelley delegation features. To earn ada from delegating your stake, please move all funds from this wallet to a new wallet that is Shelley-compatible.',
     description: 'Legacy notification description.',
   },
   moveFundsDescriptionLine2: {
     id: 'wallet.byron.notification.moveFundsDescription.line2',
     defaultMessage:
-      '!!!You can create a brand new wallet or move funds to one of your existing wallets.',
+      '!!!You can create a {moveFundsLink} or move funds to one of your existing wallets.',
     description: 'Legacy notification description.',
   },
-  moveFundsDescriptionLine2LinkLabel: {
+  moveFundsLinkLabel: {
     id: 'wallet.byron.notification.moveFundsDescription.line2.link.label',
     defaultMessage: '!!!brand new wallet',
     description: 'Legacy notification link label.',
@@ -86,11 +80,11 @@ const messages = defineMessages({
 });
 
 type Props = {
-  activeWallet: Wallet,
+  activeWalletName: string,
   onLearnMore: Function,
   onTransferFunds: Function,
   hasRewardsWallets?: boolean,
-  onWalletAdd?: boolean,
+  onWalletAdd?: Function,
 };
 
 @observer
@@ -105,89 +99,63 @@ export default class LegacyNotification extends Component<Props> {
     this.props.onLearnMore(learnMoreLinkUrl);
   };
 
+  getValue = (
+    messageHasRewardsWallets: string,
+    messageNoRewardsWallets: string,
+    _values?: Object
+  ) => {
+    const { hasRewardsWallets, activeWalletName } = this.props;
+    const message = hasRewardsWallets
+      ? messageHasRewardsWallets
+      : messageNoRewardsWallets;
+    const values = {
+      activeWalletName,
+      ..._values,
+    };
+    return <FormattedHTMLMessage {...message} values={values} />;
+  };
+
   render() {
     const { intl } = this.context;
-    const {
-      onTransferFunds,
-      hasRewardsWallets,
-      onWalletAdd,
-      activeWallet,
-    } = this.props;
-    const buttonAction = hasRewardsWallets ? onTransferFunds : onWalletAdd;
+    const { onTransferFunds, hasRewardsWallets, onWalletAdd } = this.props;
+    const { getValue, onLearnMore } = this;
 
-    const moveFundsDescriptionLine2Link = (
+    const moveFundsLink = (
       <Link
         className={styles.descriptionLink}
         onClick={onWalletAdd}
-        label={intl.formatMessage(messages.moveFundsDescriptionLine2LinkLabel)}
+        label={intl.formatMessage(messages.moveFundsLinkLabel)}
         skin={LinkSkin}
         hasIconAfter={false}
       />
     );
 
-    const buttonLabel = hasRewardsWallets
-      ? intl.formatMessage(messages.actionMove)
-      : intl.formatMessage(messages.addWallet);
+    const title = getValue(messages.moveFundsTitle, messages.addWalletTitle);
+    const description1 = getValue(
+      messages.moveFundsDescriptionLine1,
+      messages.addWalletDescriptionLine1
+    );
+    const description2 = getValue(
+      messages.moveFundsDescriptionLine2,
+      messages.addWalletDescriptionLine2,
+      {
+        moveFundsLink,
+      }
+    );
+    const buttonLabel = getValue(messages.actionMove, messages.addWallet);
+    const buttonAction = hasRewardsWallets ? onTransferFunds : onWalletAdd;
 
     return (
       <div className={styles.component}>
-        <div className={styles.title}>
-          {hasRewardsWallets ? (
-            <FormattedHTMLMessage
-              {...messages.moveFundsTitle}
-              values={{
-                activeWalletName: activeWallet.name,
-              }}
-            />
-          ) : (
-            <FormattedHTMLMessage
-              {...messages.addWalletTitle}
-              values={{
-                activeWalletName: activeWallet.name,
-              }}
-            />
-          )}
-        </div>
+        <div className={styles.title}>{title}</div>
         <div className={styles.description}>
-          <p>
-            {hasRewardsWallets ? (
-              <FormattedHTMLMessage
-                {...messages.moveFundsDescriptionLine1}
-                values={{
-                  activeWalletName: activeWallet.name,
-                }}
-              />
-            ) : (
-              <FormattedHTMLMessage
-                {...messages.addWalletDescriptionLine1}
-                values={{
-                  activeWalletName: activeWallet.name,
-                }}
-              />
-            )}
-          </p>
-          <p>
-            {hasRewardsWallets ? (
-              <FormattedMessage
-                {...messages.moveFundsDescriptionLine2}
-                values={{
-                  link: moveFundsDescriptionLine2Link,
-                }}
-              />
-            ) : (
-              <FormattedHTMLMessage
-                {...messages.descriptionWithFunds}
-                values={{
-                  activeWalletName: activeWallet.name,
-                }}
-              />
-            )}
-          </p>
+          <p>{description1}</p>
+          <p>{description2}</p>
         </div>
         <div className={styles.actions}>
           <ButtonLink
             className={styles.actionLearnMore}
-            onClick={this.onLearnMore}
+            onClick={onLearnMore}
             skin={ButtonSkin}
             label={intl.formatMessage(messages.actionLearnMore)}
             linkProps={{
