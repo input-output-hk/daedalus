@@ -14,17 +14,16 @@ export type ChainPointer = {
 
 export type AddressBase = {
   address_style: AddressStyle,
-  network_tag: number | null
+  network_tag: number | null,
+  stake_reference: 'none' | 'by pointer' | 'by value'
 }
 
 export type ByronAddress = AddressBase & {
-  stake_reference: 'none',
   address_root: string,
   derivation_path: string,
 }
 
 export type IcarusAddress = AddressBase & {
-  stake_reference: 'none',
   address_root: string,
 }
 
@@ -32,14 +31,12 @@ export type JormungandrAddress = AddressBase & {
   address_type: 'single' |'group' | 'account' | 'multisig',
   account_key?: string,
   merkle_root?: string,
-  stake_reference: 'by value' | 'none',
   spending_key?: string,
   stake_key?: string,
 }
 
 export type ShelleyAddress = AddressBase & {
   pointer?: ChainPointer,
-  stake_reference: 'by pointer' | 'none',
   script_hash?: string,
   spending_key_hash?: string,
   stake_key_hash?: string,
