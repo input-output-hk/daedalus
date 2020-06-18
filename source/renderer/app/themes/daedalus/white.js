@@ -954,6 +954,9 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-wallet-not-responding-link-text-color': '#2d2d2d',
     '--theme-wallet-not-responding-title-text-color': '#2d2d2d',
   },
+  rpPasswordInput: {
+    '--rp-password-input-tooltip-border-radius': '5px',
+  },
 };
 
 const WHITE_THEME_PARAMS: CreateThemeParams = {

@@ -971,6 +971,9 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-wallet-not-responding-link-text-color': '#e9f4fe',
     '--theme-wallet-not-responding-title-text-color': '#e9f4fe',
   },
+  rpPasswordInput: {
+    '--rp-password-input-tooltip-border-radius': '5px',
+  },
 };
 
 const DARK_BLUE_THEME_PARAMS: CreateThemeParams = {

@@ -962,6 +962,9 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-wallet-not-responding-link-text-color': '#fafbfc',
     '--theme-wallet-not-responding-title-text-color': '#fafbfc',
   },
+  rpPasswordInput: {
+    '--rp-password-input-tooltip-border-radius': '5px',
+  },
 };
 
 const LIGHT_BLUE_THEME_PARAMS: CreateThemeParams = {

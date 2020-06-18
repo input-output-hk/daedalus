@@ -966,6 +966,9 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-wallet-not-responding-link-text-color': '#fafbfc',
     '--theme-wallet-not-responding-title-text-color': '#ffffff',
   },
+  rpPasswordInput: {
+    '--rp-password-input-tooltip-border-radius': '5px',
+  },
 };
 
 const CARDANO_THEME_PARAMS: CreateThemeParams = {

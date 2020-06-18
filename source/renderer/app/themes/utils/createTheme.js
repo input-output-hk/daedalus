@@ -228,6 +228,9 @@ export const createReactPolymorphTheme = (
       '--rp-tooltip-bg-color': `${text.primary}`,
       '--rp-tooltip-text-color': `${text.secondary}`,
     },
+    rpPasswordInput: {
+      '--rp-password-input-tooltip-border-radius': '5px',
+    },
   };
 };
 

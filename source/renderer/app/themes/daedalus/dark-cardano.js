@@ -952,6 +952,9 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-wallet-not-responding-link-text-color': '#ffffff',
     '--theme-wallet-not-responding-title-text-color': '#ffffff',
   },
+  rpPasswordInput: {
+    '--rp-password-input-tooltip-border-radius': '5px',
+  },
 };
 
 const DARK_CARDANO_THEME_PARAMS: CreateThemeParams = {

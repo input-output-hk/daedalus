@@ -954,6 +954,9 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-wallet-not-responding-link-text-color': '#ffffff',
     '--theme-wallet-not-responding-title-text-color': '#ffffff',
   },
+  rpPasswordInput: {
+    '--rp-password-input-tooltip-border-radius': '5px',
+  },
 };
 
 const INCENTIVIZED_TESTNET_THEME_PARAMS: CreateThemeParams = {
