@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { Input } from 'react-polymorph/lib/components/Input';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, FormattedHTMLMessage, intlShape } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -288,6 +288,9 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
               repeatPassword={newPasswordField.value}
             />
           </div>
+          <p className={styles.passwordInstructions}>
+            <FormattedHTMLMessage {...globalMessages.passwordInstructions} />
+          </p>
         </div>
 
         {error ? (
