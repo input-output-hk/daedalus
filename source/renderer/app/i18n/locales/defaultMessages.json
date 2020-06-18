@@ -8739,7 +8739,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Transfer funds from the legacy wallet",
+        "defaultMessage": "!!!Transfer funds from the Byron legacy wallet",
         "description": "Title  in the transfer funds form.",
         "end": {
           "column": 3,
@@ -8753,7 +8753,7 @@
         }
       },
       {
-        "defaultMessage": "!!!From legacy wallet",
+        "defaultMessage": "!!!From Byron legacy wallet",
         "description": "sourceWallet in the transfer funds form.",
         "end": {
           "column": 3,
@@ -8828,31 +8828,17 @@
         }
       },
       {
-        "defaultMessage": "!!!To",
-        "description": "Label To in the transfer funds form",
+        "defaultMessage": "!!!Amount",
+        "description": "Label Amount in the transfer funds form",
         "end": {
           "column": 3,
           "line": 39
         },
         "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep2Dialog.js",
-        "id": "wallet.transferFunds.dialog2.label.to",
-        "start": {
-          "column": 11,
-          "line": 35
-        }
-      },
-      {
-        "defaultMessage": "!!!Amount",
-        "description": "Label Amount in the transfer funds form",
-        "end": {
-          "column": 3,
-          "line": 44
-        },
-        "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep2Dialog.js",
         "id": "wallet.transferFunds.dialog2.label.amount",
         "start": {
           "column": 15,
-          "line": 40
+          "line": 35
         }
       },
       {
@@ -8860,13 +8846,13 @@
         "description": "Label Fees in the transfer funds form",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 44
         },
         "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep2Dialog.js",
         "id": "wallet.transferFunds.dialog2.label.fees",
         "start": {
           "column": 13,
-          "line": 45
+          "line": 40
         }
       },
       {
@@ -8874,13 +8860,13 @@
         "description": "Total Fees in the transfer funds form",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 49
         },
         "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep2Dialog.js",
         "id": "wallet.transferFunds.dialog2.label.total",
         "start": {
           "column": 14,
-          "line": 50
+          "line": 45
         }
       },
       {
@@ -8888,27 +8874,27 @@
         "description": "buttonLabel in the transfer funds form.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 54
         },
         "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep2Dialog.js",
         "id": "wallet.transferFunds.dialog2.label.buttonLabel",
         "start": {
           "column": 15,
-          "line": 55
+          "line": 50
         }
       },
       {
-        "defaultMessage": "!!!Type your spending password",
+        "defaultMessage": "!!!Spending password",
         "description": "passphraseFieldPlaceholder in the transfer funds form.",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 59
         },
         "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep2Dialog.js",
         "id": "wallet.transferFunds.dialog2.passphraseFieldPlaceholder",
         "start": {
           "column": 30,
-          "line": 60
+          "line": 55
         }
       },
       {
@@ -8916,13 +8902,13 @@
         "description": "passphraseLabel in the transfer funds form.",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 64
         },
         "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep2Dialog.js",
         "id": "wallet.transferFunds.dialog2.passphraseLabel",
         "start": {
           "column": 19,
-          "line": 65
+          "line": 60
         }
       }
     ],
