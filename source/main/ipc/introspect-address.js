@@ -14,10 +14,6 @@ export const introspectAddressChannel: MainIpcChannel<
   IntrospectAddressMainResponse
 > = new MainIpcChannel(INTROSPECT_ADDRESS_CHANNEL);
 
-function extractValueFromLine (line) {
-  return line.split(':')[1].trim()
-}
-
 export const handleAddressIntrospectionRequests = () => {
   introspectAddressChannel.onReceive(
     (request: IntrospectAddressRendererRequest) =>
@@ -26,16 +22,7 @@ export const handleAddressIntrospectionRequests = () => {
           if (error) {
             return resolve(false)
           }
-          const lines = stdout.split('\n')
-          if (lines.length === 1) {
-            return resolve({
-              result: lines[0]
-            })
-          }
-          const [addressStyleLine] = lines
-          return resolve({
-            addressStyle: extractValueFromLine(addressStyleLine)
-          })
+          return resolve({ introspection: JSON.parse(stdout) })
         })
       })
   )

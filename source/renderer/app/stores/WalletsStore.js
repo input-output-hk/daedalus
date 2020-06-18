@@ -2,9 +2,6 @@
 import { observable, action, computed, runInAction, flow } from 'mobx';
 import { get, find, findIndex, isEqual } from 'lodash';
 import { BigNumber } from 'bignumber.js';
-import { Address } from 'cardano-js';
-import { AddressGroup } from 'cardano-js/dist/Address/AddressGroup';
-import { ChainSettings } from 'cardano-js/dist/ChainSettings';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import Wallet, { WalletSyncStateStatuses } from '../domains/Wallet';
@@ -874,22 +871,37 @@ export default class WalletsStore extends Store {
 
   isValidAddress = async (address: string) => {
     const { app } = this.stores;
-    const { isMainnet, isStaging } = app.environment;
-    if (isShelleyTestnet) return true;
-    let addressStyle: AddressStyle[]
-    if (isIncentivizedTestnet) {
-      addressStyle = ['Jormungandr'];
-    }
-    if (isShelleyTestnet) {
-      addressStyle = ['Shelley'];
+    const { isMainnet, isSelfnode, isStaging, isTestnet } = app.environment;
+    let expectedNetworkTag: number;
+    let validAddressStyles: AddressStyle[]
+
+    if (isMainnet) {
+      expectedNetworkTag = null;
+      validAddressStyles = ['Byron', 'Icarus']
+    } else if (isStaging) {
+      expectedNetworkTag = 0;
+      validAddressStyles = ['Byron', 'Icarus']
+    } else if (isIncentivizedTestnet) {
+      expectedNetworkTag = 0
+      validAddressStyles = ['Jormungandr'];
+    } else if (isTestnet) {
+      expectedNetworkTag = 1097911063
+      validAddressStyles = ['Byron', 'Icarus'];
+    } else if (isShelleyTestnet) {
+      expectedNetworkTag = 42
+      validAddressStyles = ['Shelley'];
+    } else if (isSelfnode) {
+      expectedNetworkTag = 0
+      validAddressStyles = ['Byron', 'Icarus']
     } else {
-      addressStyle = ['Byron', 'Icarus'];
+      throw new Error('Unexpected environment')
     }
-    const introspection = await introspectAddressChannel.send({ input: address })
-    if(introspection === false) {
+    const response = await introspectAddressChannel.send({ input: address })
+    if(response === 'Invalid') {
       return false
     }
-    return addressStyle.includes(introspection.addressStyle)
+    return validAddressStyles.includes(response.introspection.address_style) &&
+      expectedNetworkTag === response.introspection.network_tag
   };
 
   isValidCertificateMnemonic = (mnemonic: string) =>
