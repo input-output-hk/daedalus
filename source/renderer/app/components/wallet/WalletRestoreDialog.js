@@ -606,10 +606,10 @@ export default class WalletRestoreDialog extends Component<Props, State> {
               {...repeatedPasswordField.bind()}
               repeatPassword={spendingPasswordField.value}
             />
-            <p className={styles.passwordInstructions}>
-              <FormattedHTMLMessage {...globalMessages.passwordInstructions} />
-            </p>
           </div>
+          <p className={styles.passwordInstructions}>
+            <FormattedHTMLMessage {...globalMessages.passwordInstructions} />
+          </p>
         </div>
 
         {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}

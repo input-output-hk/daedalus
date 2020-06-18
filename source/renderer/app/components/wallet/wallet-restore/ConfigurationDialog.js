@@ -267,11 +267,9 @@ export default class ConfigurationDialog extends Component<Props> {
                 {...repeatPasswordField.bind()}
                 repeatPassword={spendingPasswordField.value}
               />
-              <p className={styles.passwordInstructions}>
-                <FormattedHTMLMessage
-                  {...globalMessages.passwordInstructions}
-                />
-              </p>
+            </div>
+            <div className={styles.passwordInstructions}>
+              <FormattedHTMLMessage {...globalMessages.passwordInstructions} />
             </div>
           </div>
 

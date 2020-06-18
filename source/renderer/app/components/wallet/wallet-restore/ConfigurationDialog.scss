@@ -29,6 +29,13 @@
   }
 }
 
+.passwordInstructions {
+  color: var(--theme-dialog-text-color);
+  font-family: var(--font-light);
+  line-height: 1.38;
+  margin-top: 10px;
+}
+
 .error {
   @include error-message;
   font-family: var(--font-regular) !important;

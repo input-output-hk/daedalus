@@ -34,8 +34,6 @@
       width: 275px;
     }
 
-    @include place-form-field-error-below-input;
-
     .passwordInstructions {
       color: var(--theme-dialog-text-color);
       font-family: var(--font-light);
