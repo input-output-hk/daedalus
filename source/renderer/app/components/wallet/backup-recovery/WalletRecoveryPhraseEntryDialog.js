@@ -57,7 +57,7 @@ const messages = defineMessages({
   },
 });
 
-const { isIncentivizedTestnet } = global;
+const { isIncentivizedTestnet, isShelleyTestnet } = global;
 
 type Props = {
   recoveryPhraseShuffled: Array<RecoveryPhraseWord>,
@@ -185,14 +185,18 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
             </div>
             <div className={styles.checkbox}>
               <Checkbox
-                className={!isIncentivizedTestnet ? styles.isBold : ''}
+                className={
+                  isIncentivizedTestnet && !isShelleyTestnet
+                    ? ''
+                    : styles.isBold
+                }
                 label={intl.formatMessage(messages.termRecovery)}
                 onChange={onAcceptTermRecovery}
                 checked={isTermRecoveryAccepted}
                 skin={CheckboxSkin}
               />
             </div>
-            {isIncentivizedTestnet && (
+            {isIncentivizedTestnet && !isShelleyTestnet && (
               <div className={styles.checkbox}>
                 <Checkbox
                   label={<FormattedHTMLMessage {...messages.termRewards} />}
