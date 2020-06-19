@@ -183,7 +183,11 @@ let
       inherit (envCfg) edgePort;
       edgeNodes = [ envCfg.relaysNew ];
     };
-    topologyFile = if (topologyOverride == null) then normalTopologyFile else topologyOverride;
+    localTopology = cardanoLib.mkEdgeTopology {
+      edgePort = 30001;
+      edgeNodes = [ "127.0.0.1" ];
+    };
+    topologyFile = if (topologyOverride == null) then (if network == "local" then localTopology else normalTopologyFile) else topologyOverride;
     nodeConfigFiles = runCommand "node-cfg-files" {
       inherit nodeConfig topologyFile;
       passAsFile = [ "nodeConfig" ];

@@ -65,8 +65,7 @@ let
     ])
     ) ++ (pkgs.lib.optionals (nodeImplementation == "cardano") [
       debug.node
-    ]
-    );
+    ]);
   buildShell = pkgs.stdenv.mkDerivation {
     name = "daedalus-build";
     buildInputs = daedalusShellBuildInputs;
@@ -94,6 +93,7 @@ let
       }
 
       ${localLib.optionalString pkgs.stdenv.isLinux "export XDG_DATA_HOME=$HOME/.local/share"}
+      ${localLib.optionalString (cluster == "local") "export CARDANO_NODE_SOCKET_PATH=$(pwd)/state-cluster/bft1.socket"}
 
       cp -f ${daedalusPkgs.iconPath.small} $DAEDALUS_INSTALL_DIRECTORY/icon.png
 
@@ -134,8 +134,9 @@ let
     name = "devops-shell";
     buildInputs = let
       inherit (localLib.iohkNix) niv;
-    in [ niv ];
+    in [ niv daedalusPkgs.cardano-node-cluster.start daedalusPkgs.cardano-node-cluster.stop ];
     shellHook = ''
+      export CARDANO_NODE_SOCKET_PATH=$(pwd)/state-cluster/bft1.socket
       echo "DevOps Tools" \
       | ${pkgs.figlet}/bin/figlet -f banner -c \
       | ${pkgs.lolcat}/bin/lolcat
@@ -143,6 +144,8 @@ let
       echo "NOTE: you may need to export GITHUB_TOKEN if you hit rate limits with niv"
       echo "Commands:
         * niv update <package> - update package
+        * start-cluster - start a development cluster
+        * stop-cluster - stop a development cluster
 
       "
     '';

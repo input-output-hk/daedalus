@@ -83,6 +83,7 @@ let
     cardano-wallet-native = import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; };
     cardano-shell = import self.sources.cardano-shell { inherit system; crossSystem = crossSystem shellPkgs.lib; };
     cardano-cli = (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).haskellPackages.cardano-cli.components.exes.cardano-cli;
+    cardano-node-cluster = (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).cluster;
     cardano-node = if useLocalNode
                    then (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).haskellPackages.cardano-node.components.exes.cardano-node
                    else self.cardano-wallet.cardano-node;

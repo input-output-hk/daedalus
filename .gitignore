@@ -104,3 +104,7 @@ cardano-node
 
 # JS Launcher
 utils/js-launcher/state
+
+# local development cluster
+
+state-cluster
