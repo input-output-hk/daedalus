@@ -19,7 +19,7 @@ const messages = defineMessages({
   recoveryPhraseInstructions1: {
     id: 'wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions1',
     defaultMessage:
-      '!!!On the following screen, you will be given a list of {walletRecoveryPhraseWordCount}  words to write down on paper and keep in a safe place. This list of words is the wallet recovery phrase for the Rewards wallet you are creating.',
+      '!!!On the following screen, you will be given a list of {walletRecoveryPhraseWordCount}  words to write down on paper and keep in a safe place. This list of words is the wallet recovery phrase for the wallet you are creating.',
     description:
       'Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.',
   },
@@ -58,7 +58,7 @@ const messages = defineMessages({
   },
 });
 
-const { isIncentivizedTestnet } = global;
+const { isIncentivizedTestnet, isShelleyTestnet } = global;
 
 type Props = {
   countdownRemaining: number,
@@ -128,7 +128,7 @@ export default class WalletBackupPrivacyWarningDialog extends Component<Props> {
         />
         <WalletRecoveryInstructions
           instructionsText={
-            isIncentivizedTestnet ? (
+            isIncentivizedTestnet && !isShelleyTestnet ? (
               <FormattedHTMLMessage
                 {...messages.recoveryPhraseInstructions3Itn}
               />

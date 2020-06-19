@@ -74,6 +74,7 @@ export default class Sidebar extends Component<Props> {
     const walletsCategoryRoute = walletsCategory ? walletsCategory.route : null;
 
     const hardwareWalletsCategory =
+      menus &&
       menus.hardwareWallets &&
       find(categories, {
         name: CATEGORIES_BY_NAME.HARDWARE_WALLETS.name,

@@ -26,10 +26,10 @@ import { getNetworkInfo } from './network/requests/getNetworkInfo';
 import { getNetworkClock } from './network/requests/getNetworkClock';
 import { getNetworkParameters } from './network/requests/getNetworkParameters';
 
-// Nodes requests
-import { applyNodeUpdate } from './nodes/requests/applyNodeUpdate';
-// import { getNextNodeUpdate } from './nodes/requests/getNextNodeUpdate';
-import { postponeNodeUpdate } from './nodes/requests/postponeNodeUpdate';
+// App update requests
+import { applyAppUpdate } from './nodes/requests/applyAppUpdate';
+// import { getNextAppUpdate } from './nodes/requests/getNextAppUpdate';
+import { postponeAppUpdate } from './nodes/requests/postponeAppUpdate';
 import { getLatestAppVersion } from './nodes/requests/getLatestAppVersion';
 
 // Transactions requests
@@ -125,7 +125,7 @@ import type {
 // Nodes Types
 import type {
   LatestAppVersionInfoResponse,
-  NodeSoftware,
+  AppInfo,
   GetLatestAppVersionResponse,
 } from './nodes/types';
 
@@ -189,7 +189,7 @@ import { deleteTransaction } from './transactions/requests/deleteTransaction';
 import { WALLET_BYRON_KINDS } from '../config/walletRestoreConfig';
 import ApiError from '../domains/ApiError';
 
-const { isIncentivizedTestnet } = global;
+const { isIncentivizedTestnet, isShelleyTestnet } = global;
 
 export default class AdaApi {
   config: RequestConfig;
@@ -209,9 +209,9 @@ export default class AdaApi {
       const wallets: AdaWallets = isIncentivizedTestnet
         ? await getWallets(this.config)
         : [];
-      const legacyWallets: LegacyAdaWallets = await getLegacyWallets(
-        this.config
-      );
+      const legacyWallets: LegacyAdaWallets = !isShelleyTestnet
+        ? await getLegacyWallets(this.config)
+        : [];
       logger.debug('AdaApi::getWallets success', { wallets, legacyWallets });
 
       map(legacyWallets, legacyAdaWallet => {
@@ -1208,15 +1208,15 @@ export default class AdaApi {
     }
   };
 
-  nextUpdate = async (): Promise<NodeSoftware | null> => {
+  nextUpdate = async (): Promise<AppInfo | null> => {
     logger.debug('AdaApi::nextUpdate called');
 
     /* TODO: Re-enable when API is available
     try {
-      const nodeUpdate = await getNextNodeUpdate(this.config);
-      if (nodeUpdate && nodeUpdate.version) {
-        logger.debug('AdaApi::nextUpdate success', { nodeUpdate });
-        return nodeUpdate;
+      const appUpdate = await getNextAppUpdate(this.config);
+      if (appUpdate && appUpdate.version) {
+        logger.debug('AdaApi::nextUpdate success', { appUpdate });
+        return appUpdate;
       }
       logger.debug('AdaApi::nextUpdate success: No Update Available');
     } catch (error) {
@@ -1231,7 +1231,7 @@ export default class AdaApi {
   postponeUpdate = async (): Promise<void> => {
     logger.debug('AdaApi::postponeUpdate called');
     try {
-      const response: Promise<any> = await postponeNodeUpdate(this.config);
+      const response: Promise<any> = await postponeAppUpdate(this.config);
       logger.debug('AdaApi::postponeUpdate success', { response });
     } catch (error) {
       logger.error('AdaApi::postponeUpdate error', { error });
@@ -1243,7 +1243,7 @@ export default class AdaApi {
     logger.debug('AdaApi::applyUpdate called');
     try {
       await awaitUpdateChannel.send();
-      const response: Promise<any> = await applyNodeUpdate(this.config);
+      const response: Promise<any> = await applyAppUpdate(this.config);
       logger.debug('AdaApi::applyUpdate success', { response });
     } catch (error) {
       logger.error('AdaApi::applyUpdate error', { error });

@@ -13,7 +13,7 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
   static defaultProps = { stores: null, actions: null };
 
   render() {
-    const { isIncentivizedTestnet, isFlight } = global;
+    const { isIncentivizedTestnet, isShelleyTestnet, isFlight } = global;
     const { stores } = this.props;
     const {
       cardanoNodeState,
@@ -34,7 +34,7 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
       isNewAppVersionAvailable,
       isNewAppVersionLoading,
       isNewAppVersionLoaded,
-    } = stores.nodeUpdate;
+    } = stores.appUpdate;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme } = stores.profile;
     const { toggleNewsFeed } = this.props.actions.app;
     const { unread } = stores.newsFeed.newsFeedData;
@@ -67,6 +67,7 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
         isNewAppVersionLoading={isNewAppVersionLoading}
         isNewAppVersionLoaded={isNewAppVersionLoaded}
         isIncentivizedTestnet={isIncentivizedTestnet}
+        isShelleyTestnet={isShelleyTestnet}
         onIssueClick={this.handleIssueClick}
         onOpenExternalLink={this.handleOpenExternalLink}
         onGetAvailableVersions={this.handleGetAvailableVersions}
@@ -101,8 +102,8 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
   };
 
   handleGetAvailableVersions = () => {
-    const { nodeUpdate } = this.props.actions;
-    nodeUpdate.getLatestAvailableAppVersion.trigger();
+    const { appUpdate } = this.props.actions;
+    appUpdate.getLatestAvailableAppVersion.trigger();
   };
 
   openDaedalusDiagnosticsDialog = () => {

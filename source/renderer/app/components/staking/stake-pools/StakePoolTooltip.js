@@ -129,6 +129,10 @@ export default class StakePoolTooltip extends Component<Props, State> {
     intl: intlShape.isRequired,
   };
 
+  tooltipClick: boolean = false;
+  containerWidth: number = 0;
+  containerHeight: number = 0;
+
   state = {
     componentStyle: {},
     arrowStyle: {},
@@ -136,16 +140,12 @@ export default class StakePoolTooltip extends Component<Props, State> {
     tooltipPosition: 'right',
   };
 
-  // eslint-disable-next-line
-  UNSAFE_componentWillReceiveProps(nextProps: Props) {
-    const { isVisible: nextVisibility, top, left } = nextProps;
-    const { isVisible: currentVisibility } = this.props;
-    if (nextVisibility !== currentVisibility) this.getTooltipStyle(top, left);
-  }
-
   componentDidMount() {
     const { top, left, containerClassName } = this.props;
     const container = document.querySelector(`.${containerClassName}`);
+
+    window.document.addEventListener('click', this.handleOutterClick);
+    window.addEventListener('keydown', this.handleInputKeyDown);
     if (container instanceof HTMLElement) {
       this.containerWidth = container.offsetWidth;
       this.containerHeight = container.offsetHeight;
@@ -153,14 +153,12 @@ export default class StakePoolTooltip extends Component<Props, State> {
     this.getTooltipStyle(top, left);
   }
 
-  tooltipClick: boolean = false;
-  containerWidth: number = 0;
-  containerHeight: number = 0;
-
-  // eslint-disable-next-line
-  UNSAFE_componentWillMount() {
-    window.document.addEventListener('click', this.handleOutterClick);
-    window.addEventListener('keydown', this.handleInputKeyDown);
+  componentDidUpdate(prevProps: Props) {
+    const { isVisible: prevVisibility } = prevProps;
+    const { isVisible: currentVisibility, top, left } = this.props;
+    if (currentVisibility !== prevVisibility) {
+      this.getTooltipStyle(top, left);
+    }
   }
 
   componentWillUnmount() {

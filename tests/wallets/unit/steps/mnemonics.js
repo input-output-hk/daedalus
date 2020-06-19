@@ -5,7 +5,7 @@ import { Given, When, Then } from 'cucumber';
 import { range, concat } from 'lodash';
 import { generateAccountMnemonics, generateAdditionalMnemonics, scrambleMnemonics, unscrambleMnemonics } from '../../../../source/renderer/app/api/utils/mnemonics';
 import { mnemonicToSeedHex, getScrambledInput, generateMnemonic } from '../../../../source/renderer/app/utils/crypto';
-import { isValidMnemonic } from '../../../../source/common/crypto/decrypt';
+import { isValidMnemonic } from '../../../../source/common/config/crypto/decrypt';
 import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../../source/renderer/app/config/cryptoConfig';
 
 const isValidWalletRecoveryPhrase = mnemonic =>

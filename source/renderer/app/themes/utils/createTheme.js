@@ -662,7 +662,7 @@ export const createDaedalusComponentsTheme = (
       '--theme-news-item-info-background-color': 'rgba(0, 0, 0, 0.1)',
       '--theme-news-item-title-color': '#fafbfc',
     },
-    nodeUpdate: {
+    appUpdate: {
       '--theme-node-update-background-color': `${background.primary.regular}`,
       '--theme-node-update-title-color': `${text.primary}`,
       '--theme-node-update-message-color': `${text.primary}`,

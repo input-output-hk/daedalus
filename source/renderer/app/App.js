@@ -27,15 +27,15 @@ export default class App extends Component<{
   actions: ActionsMap,
   history: Object,
 }> {
-  // eslint-disable-next-line
-  UNSAFE_componentWillMount() {
+  componentDidMount() {
     // Loads app's global environment variables into AppStore via ipc
     this.props.actions.app.initAppEnvironment.trigger();
   }
+
   render() {
     const { stores, actions, history } = this.props;
-    const { app, nodeUpdate, networkStatus } = stores;
-    const { showManualUpdate, showNextUpdate } = nodeUpdate;
+    const { app, appUpdate, networkStatus } = stores;
+    const { showManualUpdate, showNextUpdate } = appUpdate;
     const { isActiveDialog, isSetupPage } = app;
     const { isNodeStopping, isNodeStopped } = networkStatus;
     const locale = stores.profile.currentLocale;

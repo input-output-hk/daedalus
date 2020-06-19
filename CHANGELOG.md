@@ -3,13 +3,21 @@ Changelog
 
 ## vNext
 
+### Fixes
+
+- Removed ITN message from the "Create Wallet" dialog in Daedalus Shelley Testnet builds ([PR 2040](https://github.com/input-output-hk/daedalus/pull/2040))
+
+## 1.0.0-STN1
+
 ### Features
 
+- Implemented a download manager ([PR 2020](https://github.com/input-output-hk/daedalus/pull/2020))
 - Implemented Hardware wallets connection screens ([PR 2016](https://github.com/input-output-hk/daedalus/pull/2016))
 
 ### Fixes
 
 - Fixed transaction list screen showing data outside the component ([PR 2033](https://github.com/input-output-hk/daedalus/pull/2033))
+- Updated the copy to cover additional Friends & Family screens ([PR 2030](https://github.com/input-output-hk/daedalus/pull/2030))
 - Fixed landing page rendering issue after initial startup of app ([PR 2032](https://github.com/input-output-hk/daedalus/pull/2032))
 - Enabled the Recovery Phrase Verification feature of Shelley wallets on ITN ([PR 2008](https://github.com/input-output-hk/daedalus/pull/2008))
 - Disabled button on forms when there is nothing to submit ([PR 1998](https://github.com/input-output-hk/daedalus/pull/1998), [PR 2010](https://github.com/input-output-hk/daedalus/pull/2010))
@@ -17,6 +25,7 @@ Changelog
 
 ### Chores
 
+- Eliminate usage of `UNSAFE_XXX` legacy lifecycle methods ([PR 2028](https://github.com/input-output-hk/daedalus/pull/2028))
 - Updated `cardano-wallet` to revision `acc3eb94` ([PR 2027](https://github.com/input-output-hk/daedalus/pull/2027))
 - Updated react, react-router, mobx, mobx-react-router and their related package versions ([PR 1966](https://github.com/input-output-hk/daedalus/pull/1966))
 - Removed Resync Wallet feature from the codebase ([PR 2024](https://github.com/input-output-hk/daedalus/pull/2024))
