@@ -166,6 +166,7 @@ let
   mkConfigByron = let
     filterMonitoring = config: if devShell then config else builtins.removeAttrs config [ "hasPrometheus" "hasEKG" ];
     exportWalletsBin = mkBinPath "export-wallets";
+    cardanoAddressBin = mkBinPath "cardano-address";
     walletBin = if network == "local" then mkBinPath "cardano-wallet-shelley" else if envCfg.useByronWallet
                 then mkBinPath "cardano-wallet-byron"
                 else mkBinPath "cardano-wallet-shelley";
@@ -222,6 +223,7 @@ let
         cliBin
         walletBin
         exportWalletsBin
+        cardanoAddressBin
         legacyStateDir
         legacyWalletDB
         legacySecretKey;

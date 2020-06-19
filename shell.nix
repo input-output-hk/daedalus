@@ -94,6 +94,9 @@ let
 
       ${localLib.optionalString pkgs.stdenv.isLinux "export XDG_DATA_HOME=$HOME/.local/share"}
       ${localLib.optionalString (cluster == "local") "export CARDANO_NODE_SOCKET_PATH=$(pwd)/state-cluster/bft1.socket"}
+      source <(cardano-cli --bash-completion-script cardano-cli)
+      source <(cardano-node --bash-completion-script cardano-node)
+      source <(cardano-address --bash-completion-script cardano-address)
 
       cp -f ${daedalusPkgs.iconPath.small} $DAEDALUS_INSTALL_DIRECTORY/icon.png
 
