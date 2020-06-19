@@ -172,10 +172,11 @@ let
                 else mkBinPath "cardano-wallet-shelley";
     nodeBin = mkBinPath "cardano-node";
     cliBin = mkBinPath "cardano-cli";
-    normalNodeConfig = builtins.toJSON (filterMonitoring (envCfg.nodeConfig // (lib.optionalAttrs (!isDevOrLinux) {
+    nodeConfig = let
+      nodeConfigAttrs = if (configOverride == null) then envCfg.nodeConfig else __fromJSON (__readFile configOverride);
+    in builtins.toJSON (filterMonitoring (nodeConfigAttrs // (lib.optionalAttrs (!isDevOrLinux || network == "local") {
       GenesisFile = "genesis.json";
     })));
-    nodeConfig = if (configOverride == null) then normalNodeConfig else (builtins.readFile configOverride);
     genesisFile = let
       genesisFile'.selfnode = ../utils/cardano/selfnode/genesis.json;
       genesisFile'.local = (__fromJSON nodeConfig).GenesisFile;
