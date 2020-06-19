@@ -74,14 +74,13 @@ const messages = defineMessages({
     defaultMessage: '!!!What kind of Yoroi wallet would you like to restore?',
     description: 'Label for the "labelYoroiWalletKind" checkbox.',
   },
-  labelYoroiWalletKindByronLegacy15Word: {
+  labelYoroiWalletKind15WordByron: {
     id:
       'wallet.restore.dialog.step.walletKind.label.yoroiWalletKindByronLegacy15Word',
     defaultMessage: '!!!15 words <em>(Byron legacy wallet)</em>',
-    description:
-      'Label for the "labelDaedalusWalletKindBalance15Word" checkbox.',
+    description: 'Label for the "labelDaedalusWalletKind15WordByron" checkbox.',
   },
-  labelYoroiWalletKindShelley15Word: {
+  labelYoroiWalletKind15WordShelley: {
     id:
       'wallet.restore.dialog.step.walletKind.label.yoroiWalletKindShelley15Word',
     defaultMessage: '!!!15 words <em>(Shelley wallet)</em>',
@@ -169,15 +168,15 @@ export default class WalletTypeDialog extends Component<Props, State> {
       label={this.context.intl.formatMessage(message)}
       items={Object.keys(kinds).map((key: string) => {
         const kind: WalletKinds = kinds[key];
-
+        const messageParam = `label${kindParam || ''}WalletKind${kind}`;
+        const msg = messages[messageParam];
+        if (!msg) {
+          throw new Error(`Missing ${messageParam} message`);
+        }
         return {
           key: kind,
           disabled: isShelleyTestnet && kind.includes('Balance'),
-          label: (
-            <FormattedHTMLMessage
-              {...messages[`label${kindParam || ''}WalletKind${kind}`]}
-            />
-          ),
+          label: <FormattedHTMLMessage {...msg} />,
           selected: value === kind,
           onChange: () => this.props.onSetWalletKind(kind, kindParam),
         };

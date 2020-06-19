@@ -10027,7 +10027,7 @@
       },
       {
         "defaultMessage": "!!!15 words <em>(Byron legacy wallet)</em>",
-        "description": "Label for the \"labelDaedalusWalletKindBalance15Word\" checkbox.",
+        "description": "Label for the \"labelDaedalusWalletKind15WordByron\" checkbox.",
         "end": {
           "column": 3,
           "line": 83
@@ -10035,7 +10035,7 @@
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.yoroiWalletKindByronLegacy15Word",
         "start": {
-          "column": 41,
+          "column": 35,
           "line": 77
         }
       },

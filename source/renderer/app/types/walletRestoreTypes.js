@@ -11,11 +11,11 @@ export type ImportWalletStep = 'WalletImportFile' | 'WalletSelectImport';
 export type WalletKind = 'Daedalus' | 'Yoroi' | 'Hardware';
 
 export type WalletDaedalusKind =
-  | 'Balance12Word'
-  | 'Reward15Word'
-  | 'Balance27Word';
+  | '12WordByron'
+  | '15WordShelley'
+  | '27WordPaper';
 
-export type WalletYoroiKind = 'Balance15Word' | 'Reward15Word';
+export type WalletYoroiKind = '15WordByron' | '15WordShelley';
 
 export type WalletByronKind = 'icarus' | 'ledger' | 'random' | 'trezor';
 
