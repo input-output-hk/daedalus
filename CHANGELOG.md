@@ -10,7 +10,7 @@ Changelog
 
 ### Fixes
 
-- Updated the copy to cover additional Friends & Family screens ([PR 2030](https://github.com/input-output-hk/daedalus/pull/2030))
+- Updated the copy to cover additional Friends & Family screens ([PR 2030](https://github.com/input-output-hk/daedalus/pull/2030), [PR 2037](https://github.com/input-output-hk/daedalus/pull/2037))
 - Fixed landing page rendering issue after initial startup of app ([PR 2032](https://github.com/input-output-hk/daedalus/pull/2032))
 - Enabled the Recovery Phrase Verification feature of Shelley wallets on ITN ([PR 2008](https://github.com/input-output-hk/daedalus/pull/2008))
 - Disabled button on forms when there is nothing to submit ([PR 1998](https://github.com/input-output-hk/daedalus/pull/1998), [PR 2010](https://github.com/input-output-hk/daedalus/pull/2010))
