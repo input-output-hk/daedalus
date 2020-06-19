@@ -22,7 +22,7 @@ export default class WalletBackupDialogContainer extends Component<Props> {
   };
 
   render() {
-    const { isIncentivizedTestnet } = global;
+    const { isIncentivizedTestnet, isShelleyTestnet } = global;
     const { actions, stores } = this.props;
     const {
       recoveryPhraseWords,
@@ -50,14 +50,15 @@ export default class WalletBackupDialogContainer extends Component<Props> {
     } = actions.walletBackup;
     const { createWalletRequest } = stores.wallets;
 
-    const canFinishBackup = isIncentivizedTestnet
-      ? isRecoveryPhraseValid &&
-        isTermOfflineAccepted &&
-        isTermRecoveryAccepted &&
-        isTermRewardsAccepted
-      : isRecoveryPhraseValid &&
-        isTermOfflineAccepted &&
-        isTermRecoveryAccepted;
+    const canFinishBackup =
+      isIncentivizedTestnet && !isShelleyTestnet
+        ? isRecoveryPhraseValid &&
+          isTermOfflineAccepted &&
+          isTermRecoveryAccepted &&
+          isTermRewardsAccepted
+        : isRecoveryPhraseValid &&
+          isTermOfflineAccepted &&
+          isTermRecoveryAccepted;
     return (
       <WalletBackupDialog
         // Global props for all dialogs

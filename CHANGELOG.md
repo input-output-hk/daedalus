@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Fixes
+
+- Removed ITN message from the "Create Wallet" dialog in Daedalus Shelley Testnet builds ([PR 2040](https://github.com/input-output-hk/daedalus/pull/2040))
+
 ## 1.0.0-STN1
 
 ### Features
