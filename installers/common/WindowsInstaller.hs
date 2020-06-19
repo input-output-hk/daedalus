@@ -206,6 +206,7 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,inst
                     file [] "cardano-node.exe"
                     file [] (mainBinary kind)
                     file [] "export-wallets.exe"
+                    file [] "cardano-address.exe"
                     file [] "cardano-cli.exe"
                     file [] "config.yaml"
                     file [] "topology.yaml"

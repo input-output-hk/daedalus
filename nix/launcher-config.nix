@@ -247,7 +247,7 @@ let
       macPackageName = "Daedalus${network}";
       dataDir = dataDir;
       hasBlock0 = false;
-      installerWinBinaries = [ "cardano-launcher.exe" "cardano-node.exe" "cardano-wallet-byron.exe" "export-wallets.exe" "cardano-cli.exe" ];
+      installerWinBinaries = [ "cardano-launcher.exe" "cardano-node.exe" "cardano-wallet-byron.exe" "export-wallets.exe" "cardano-cli.exe" "cardano-address.exe" ];
     };
 
   in {
