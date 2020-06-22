@@ -872,36 +872,37 @@ export default class WalletsStore extends Store {
   isValidAddress = async (address: string) => {
     const { app } = this.stores;
     const { isMainnet, isSelfnode, isStaging, isTestnet } = app.environment;
-    let expectedNetworkTag: number;
-    let validAddressStyles: AddressStyle[]
-
+    let expectedNetworkTag: number | null;
+    let validAddressStyles: AddressStyle[];
     if (isMainnet) {
       expectedNetworkTag = null;
-      validAddressStyles = ['Byron', 'Icarus']
+      validAddressStyles = ['Byron', 'Icarus'];
     } else if (isStaging) {
       expectedNetworkTag = 0;
-      validAddressStyles = ['Byron', 'Icarus']
+      validAddressStyles = ['Byron', 'Icarus'];
     } else if (isIncentivizedTestnet) {
-      expectedNetworkTag = 0
+      expectedNetworkTag = 0;
       validAddressStyles = ['Jormungandr'];
     } else if (isTestnet) {
-      expectedNetworkTag = 1097911063
+      expectedNetworkTag = 1097911063;
       validAddressStyles = ['Byron', 'Icarus'];
     } else if (isShelleyTestnet) {
-      expectedNetworkTag = 42
+      expectedNetworkTag = 42;
       validAddressStyles = ['Shelley'];
     } else if (isSelfnode) {
-      expectedNetworkTag = 0
-      validAddressStyles = ['Byron', 'Icarus']
+      expectedNetworkTag = 0;
+      validAddressStyles = ['Byron', 'Icarus'];
     } else {
-      throw new Error('Unexpected environment')
+      throw new Error('Unexpected environment');
     }
-    const response = await introspectAddressChannel.send({ input: address })
-    if(response === 'Invalid') {
-      return false
+    const response = await introspectAddressChannel.send({ input: address });
+    if (response === 'Invalid') {
+      return false;
     }
-    return validAddressStyles.includes(response.introspection.address_style) &&
+    return (
+      validAddressStyles.includes(response.introspection.address_style) &&
       expectedNetworkTag === response.introspection.network_tag
+    );
   };
 
   isValidCertificateMnemonic = (mnemonic: string) =>
