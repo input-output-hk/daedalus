@@ -874,7 +874,7 @@ export default class WalletsStore extends Store {
     const { app } = this.stores;
     const { isMainnet, isSelfnode, isStaging, isTestnet } = app.environment;
     let expectedNetworkTag: number | null;
-    let validAddressStyles: AddressStyle[];
+    let validAddressStyles: AddressStyle[] = [];
     if (isMainnet) {
       expectedNetworkTag = null;
       validAddressStyles = ['Byron', 'Icarus'];
