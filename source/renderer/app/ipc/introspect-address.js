@@ -10,4 +10,4 @@ import type {
 export const introspectAddressChannel: RendererIpcChannel<
   IntrospectAddressMainResponse,
   IntrospectAddressRendererRequest
-  > = new RendererIpcChannel(INTROSPECT_ADDRESS_CHANNEL);
+> = new RendererIpcChannel(INTROSPECT_ADDRESS_CHANNEL);
