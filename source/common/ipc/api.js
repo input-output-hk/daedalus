@@ -38,7 +38,7 @@ import type {
   ResumeDownloadResponse,
 } from '../types/downloadManager.types';
 import type { StoreMessage } from '../types/electron-store.types';
-import {
+import type {
   IntrospectAddressRequest,
   IntrospectAddressResponse,
 } from '../types/address-introspection.types';

@@ -22,7 +22,7 @@ export const handleAddressIntrospectionRequests = () => {
           `echo ${request.input} | docker run --rm -i cardano-address address`,
           (error, stdout) => {
             if (error) {
-              return resolve(false);
+              return resolve('Invalid');
             }
             return resolve({ introspection: JSON.parse(stdout) });
           }
