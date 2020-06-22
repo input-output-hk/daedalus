@@ -175,7 +175,9 @@ export default class WalletTypeDialog extends Component<Props, State> {
         }
         return {
           key: kind,
-          disabled: isShelleyTestnet && kind.includes('Balance'),
+          disabled:
+            isShelleyTestnet &&
+            (kind.includes('Byron') || kind.includes('Paper')),
           label: <FormattedHTMLMessage {...msg} />,
           selected: value === kind,
           onChange: () => this.props.onSetWalletKind(kind, kindParam),

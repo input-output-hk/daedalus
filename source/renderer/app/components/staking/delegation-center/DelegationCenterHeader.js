@@ -36,7 +36,7 @@ const messages = defineMessages({
   },
   headingLeft: {
     id: 'staking.delegationCenter.headingLeft',
-    defaultMessage: '!!!次のCardanoエポック開始まであと',
+    defaultMessage: '!!!Next Cardano epoch starts in',
     description: 'Headline for the Delegation center.',
   },
   headingRight: {
