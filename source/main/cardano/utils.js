@@ -231,7 +231,7 @@ export const exportWallets = async (
 
   // Cluster flags
   if (cluster === 'testnet') {
-    exportWalletsBinFlags.push('--testnet', TESTNET_MAGIC);
+    exportWalletsBinFlags.push('--testnet', TESTNET_MAGIC.toString());
   } else {
     exportWalletsBinFlags.push('--mainnet');
   }
