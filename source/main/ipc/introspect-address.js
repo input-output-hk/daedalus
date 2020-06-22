@@ -1,5 +1,5 @@
 // @flow
-import { exec } from 'child_process'
+import { exec } from 'child_process';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import { INTROSPECT_ADDRESS_CHANNEL } from '../../common/ipc/api';
 import type {
@@ -17,13 +17,16 @@ export const introspectAddressChannel: MainIpcChannel<
 export const handleAddressIntrospectionRequests = () => {
   introspectAddressChannel.onReceive(
     (request: IntrospectAddressRendererRequest) =>
-      new Promise((resolve) => {
-        exec(`echo ${request.input} | cardano-addresses address inspect`, (error, stdout) => {
-          if (error) {
-            return resolve(false)
+      new Promise(resolve => {
+        exec(
+          `echo ${request.input} | docker run --rm -i cardano-address address`,
+          (error, stdout) => {
+            if (error) {
+              return resolve(false);
+            }
+            return resolve({ introspection: JSON.parse(stdout) });
           }
-          return resolve({ introspection: JSON.parse(stdout) })
-        })
+        );
       })
-  )
-}
+  );
+};

@@ -40,7 +40,7 @@ import type {
 import type { StoreMessage } from '../types/electron-store.types';
 import {
   IntrospectAddressRequest,
-  IntrospectAddressResponse
+  IntrospectAddressResponse,
 } from '../types/address-introspection.types';
 
 /**
