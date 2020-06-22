@@ -19,7 +19,7 @@ export const handleAddressIntrospectionRequests = () => {
     (request: IntrospectAddressRendererRequest) =>
       new Promise(resolve => {
         exec(
-          `echo ${request.input} | docker run --rm -i cardano-address address`,
+          `echo ${request.input} | cardano-addresses address inspect`,
           (error, stdout) => {
             if (error) {
               return resolve('Invalid');
