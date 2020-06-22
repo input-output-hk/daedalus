@@ -134,3 +134,9 @@ export type CardanoStatus = {
   cardanoNodePID: number,
   cardanoWalletPID: number,
 };
+
+// Cardano Byron Testnet network magic
+export const TESTNET_MAGIC = '1097911063';
+
+// Cardano Selfnode network magic
+export const SELFNODE_MAGIC = '459045235';

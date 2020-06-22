@@ -43,6 +43,7 @@ import type {
 } from '../api/wallets/types';
 import { introspectAddressChannel } from '../ipc/introspect-address.js';
 import type { AddressStyle } from '../../../common/types/address-introspection.types';
+import { TESTNET_MAGIC, SELFNODE_MAGIC } from '../../../common/types/cardano-node.types';
 
 /* eslint-disable consistent-return */
 
@@ -884,13 +885,13 @@ export default class WalletsStore extends Store {
       expectedNetworkTag = 0;
       validAddressStyles = ['Jormungandr'];
     } else if (isTestnet) {
-      expectedNetworkTag = 1097911063;
+      expectedNetworkTag = TESTNET_MAGIC;
       validAddressStyles = ['Byron', 'Icarus'];
     } else if (isShelleyTestnet) {
       expectedNetworkTag = 42;
       validAddressStyles = ['Shelley'];
     } else if (isSelfnode) {
-      expectedNetworkTag = 0;
+      expectedNetworkTag = SELFNODE_MAGIC;
       validAddressStyles = ['Byron', 'Icarus'];
     } else {
       throw new Error('Unexpected environment');
