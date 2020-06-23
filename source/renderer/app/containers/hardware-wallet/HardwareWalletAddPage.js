@@ -5,24 +5,19 @@ import ConnectHardwareWallet from '../../components/hardware-wallet/settings/Con
 import Layout from '../MainLayout';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 
-@inject('stores')
+@inject('stores', 'actions')
 @observer
 export default class HardwareWalletAddPage extends Component<InjectedContainerProps> {
-  static defaultProps = { stores: null };
+  static defaultProps = { stores: null, actions: null };
 
   componentDidMount() {
-    console.debug('!!!!!!! INITIATE POLLER - ADD PAGE !!!!!!!!');
-    const { startDeviceFetchPoller } = this.props.stores.hardwareWallets;
-    startDeviceFetchPoller();
+    const { establishHardwareWalletConnection } = this.props.stores.hardwareWallets;
+    establishHardwareWalletConnection();
   }
 
   componentWillUnmount() {
-    const { hwDeviceStatus, stopDeviceFetchPoller, resetInitializedConnection } = this.props.stores.hardwareWallets;
-    console.debug(
-      '!!!!!!! STOP POLLER - ADD PAGE !!!!!!!!',
-      hwDeviceStatus,
-    );
-    stopDeviceFetchPoller();
+    const { hwDeviceStatus, stopCardanoAdaAppFetchPoller, resetInitializedConnection } = this.props.stores.hardwareWallets;
+    stopCardanoAdaAppFetchPoller();
     if (!hwDeviceStatus.READY) {
       resetInitializedConnection();
     }

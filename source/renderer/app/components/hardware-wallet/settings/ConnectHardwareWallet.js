@@ -9,7 +9,6 @@ import trezorIcon from '../../../assets/images/hardware-wallet/trezor.inline.svg
 import unknownDeviceIcon from '../../../assets/images/hardware-wallet/trezor-ledger.inline.svg';
 import styles from './ConnectHardwareWallet.scss';
 import HardwareWalletStatus from '../status/HardwareWalletStatus';
-import { HwDeviceStatuses } from '../../../domains/Wallet';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
 
 const messages = defineMessages({

@@ -44,7 +44,7 @@ import type {
   TransferFundsCalculateFeeRequest,
   TransferFundsRequest,
 } from '../api/wallets/types';
-import type { HardwareWallet } from '../api/utils/localStorage';
+import type { TransportDevice, ExtendedPublicKey } from './HardwareWalletsStore';
 /* eslint-disable consistent-return */
 
 /**
@@ -118,19 +118,6 @@ export default class WalletsStore extends Store {
   );
   @observable createHardwareWalletRequest: Request<Wallet> = new Request(
     this.api.ada.createHardwareWallet
-  );
-  @observable setHardwareWalletRequest: Request<HardwareWallet> = new Request(
-    this.api.localStorage.setHardwareWallet
-  );
-  @observable getHardwareWalletRequest: Request<HardwareWallet> = new Request(
-    this.api.localStorage.getHardwareWallet
-  );
-  @observable unsetHardwareWalletRequest: Request<void> = new Request(
-    this.api.localStorage.unsetHardwareWallet
-  );
-  @observable
-  setHardwareWalletConnectionStatusRequest: Request<HardwareWallet> = new Request(
-    this.api.localStorage.setHardwareWalletConnectionStatus
   );
 
   /* ----------  Create Wallet  ---------- */
@@ -444,59 +431,55 @@ export default class WalletsStore extends Store {
   // @TODO - here
   @action _createHardwareWallet = async (params: {
     walletName: string,
-    extendedPublicKey: string,
-    device: Object,
+    extendedPublicKey: ExtendedPublicKey,
+    device: TransportDevice,
   }) => {
+    const { walletName, extendedPublicKey, device } = params;
     const accountPublicKey =
-      params.extendedPublicKey.publicKeyHex +
-      params.extendedPublicKey.chainCodeHex;
+      extendedPublicKey.publicKeyHex +
+      extendedPublicKey.chainCodeHex;
 
     // Check if public key matches active hardware wallet public key
     if (this.activeHardwareWallet) {
       const activeHardwareWalletId = this.activeHardwareWallet.id;
-      const storedActiveHardwareWallets = await this.getHardwareWalletRequest.execute(
-        activeHardwareWalletId
-      );
-      if (storedActiveHardwareWallets) {
-        const storedActiveHardwareWallet =
-          storedActiveHardwareWallets[activeHardwareWalletId];
+      const { hardwareWalletsConnectionData } = this.stores.hardwareWallets;
+      if (hardwareWalletsConnectionData) {
+        const activeHardwareWalletConnection =
+          hardwareWalletsConnectionData[activeHardwareWalletId];
         if (
-          storedActiveHardwareWallet.publicKeyHex ===
-          params.extendedPublicKey.publicKeyHex
+          activeHardwareWalletConnection.extendedPublicKey.publicKeyHex ===
+          extendedPublicKey.publicKeyHex
         ) {
-          this._setHardwareWalletConnectionStatus({
-            disconnected: false,
+          this.actions.hardwareWallets.setHardwareWalletLocalData.trigger({
             walletId: activeHardwareWalletId,
-          });
-          this.refreshWalletsData();
+            data: {
+              disconnected: false,
+            }
+          })
           return;
         }
-        throw new Error('Wrong HW');
+        throw new Error(`Wrong Hardware Wallet device supplied to "${walletName}" wallet`);
       }
     }
 
     try {
       const wallet = await this.createHardwareWalletRequest.execute({
-        walletName: params.walletName,
+        walletName,
         accountPublicKey,
       });
-      await this.setHardwareWalletRequest.execute({
+      await this.actions.hardwareWallets.setHardwareWalletLocalData.trigger({
         walletId: wallet.id,
-        device: params.device,
-        extendedPublicKey: params.extendedPublicKey,
-      });
+        data: {
+          device,
+          extendedPublicKey,
+          disconnected: false,
+        },
+      })
       this._setActiveHardwareWallet({ walletId: wallet.id });
       this.refreshWalletsData();
     } catch (error) {
       throw error;
     }
-  };
-
-  @action _setHardwareWalletConnectionStatus = async (params: {
-    disconnected: boolean,
-    walletId: string,
-  }) => {
-    await this.setHardwareWalletConnectionStatusRequest.execute(params);
   };
 
   _finishWalletBackup = async () => {
@@ -563,7 +546,9 @@ export default class WalletsStore extends Store {
     });
     this.actions.dialogs.closeActiveDialog.trigger();
     if (isHardwareWallet) {
-      await this.unsetHardwareWalletRequest.execute(params.walletId);
+      await this.actions.hardwareWallets.unsetHardwareWalletLocalData.trigger({
+        walletId: params.walletId
+      })
     } else {
       this.actions.walletsLocal.unsetWalletLocalData.trigger({
         walletId: params.walletId,
@@ -891,20 +876,10 @@ export default class WalletsStore extends Store {
     }
   }
 
-  @computed get availableHardwareWalletDevices(): Request {
-    return this.getHardwareWalletRequest.result;
-  }
-
   getWalletById = (id: string): ?Wallet => {
-    console.debug(
-      '>>> this.isHardwareWalletRoute: ',
-      id,
-      this.isHardwareWalletRoute
-    );
     const wallets = this.isHardwareWalletRoute
       ? this.allHardwareWallets
       : this.all;
-    console.debug('>>> wallets: ', wallets);
     return wallets.find(w => w.id === id);
   };
 
@@ -979,9 +954,9 @@ export default class WalletsStore extends Store {
   };
 
   _updateActiveWalletOnRouteChanges = () => {
+    const { hasAnyHardwareWalletLoaded } = this;
     const { currentRoute } = this.stores.app;
     const hasAnyWalletLoaded = this.hasAnyLoaded;
-    const hasAnyHardwareWalletLoaded = this.hasAnyHardwareWalletLoaded;
     const isWalletAddPage = matchRoute(ROUTES.WALLETS.ADD, currentRoute);
     const isHardwareWalletAddPage = matchRoute(
       ROUTES.HARDWARE_WALLETS.ADD,
@@ -1099,7 +1074,7 @@ export default class WalletsStore extends Store {
         )
         .map((wallet: Wallet) => wallet.id);
       await this.actions.walletsLocal.refreshWalletsLocalData.trigger();
-      await this.getHardwareWalletRequest.execute();
+      await this.actions.hardwareWallets.refreshHardwareWalletsLocalData.trigger();
 
       runInAction('refresh active wallet', () => {
         if (this.active) {

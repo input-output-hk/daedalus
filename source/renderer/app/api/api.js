@@ -92,6 +92,7 @@ import {
   getHardwareWalletId,
   getRawWalletId,
   utcStringToDate,
+  WalletIdPrefixes,
 } from './utils';
 import { logger } from '../utils/logging';
 import {
@@ -220,9 +221,9 @@ export default class AdaApi {
   }
 
   getWallets = async (): Promise<Array<Wallet>> => {
-    const storedHardwareWallets = await _localStorageApi.getAll();
+    const storedHardwareWallets = await _localStorageApi.getHardwareWalletsLocalData();
     const hwIds = map(storedHardwareWallets, hw =>
-      getRawWalletId(hw.id, 'HARDWARE_WALLET_ID_PREFIX')
+      getRawWalletId(hw.id, WalletIdPrefixes.HARDWARE_WALLET)
     );
 
     logger.debug('AdaApi::getWallets called');
@@ -308,7 +309,7 @@ export default class AdaApi {
     });
     const { walletId, queryParams, isLegacy, isHardwareWallet } = request;
     const rawWalletId = isHardwareWallet
-      ? getRawWalletId(walletId, 'HARDWARE_WALLET_ID_PREFIX')
+      ? getRawWalletId(walletId, WalletIdPrefixes.HARDWARE_WALLET)
       : walletId;
 
     try {
@@ -336,7 +337,7 @@ export default class AdaApi {
     logger.debug('AdaApi::getTransactions called', { parameters: request });
     const { walletId, order, fromDate, toDate, isLegacy, isHardwareWallet } = request;
     const rawWalletId = isHardwareWallet
-      ? getRawWalletId(walletId, 'HARDWARE_WALLET_ID_PREFIX')
+      ? getRawWalletId(walletId, WalletIdPrefixes.HARDWARE_WALLET)
       : walletId;
 
     const params = Object.assign(
@@ -588,7 +589,7 @@ export default class AdaApi {
     try {
       const { walletId, isLegacy, isHardwareWallet } = request;
       const id = isHardwareWallet
-        ? getRawWalletId(walletId, 'HARDWARE_WALLET_ID_PREFIX')
+        ? getRawWalletId(walletId, WalletIdPrefixes.HARDWARE_WALLET)
         : walletId;
       let response;
       if (isLegacy) {
@@ -763,7 +764,7 @@ export default class AdaApi {
         ],
       };
       const response = await selectCoins(this.config, {
-        walletId: getRawWalletId(walletId, 'HARDWARE_WALLET_ID_PREFIX'),
+        walletId: getRawWalletId(walletId, WalletIdPrefixes.HARDWARE_WALLET),
         data,
       });
       return response;
@@ -780,17 +781,12 @@ export default class AdaApi {
       parameters: filterLogData(request),
     });
     const { signedTransactionBlob } = request;
-
-    console.debug('>>> API: createExternalTransaction: ', request);
-
     try {
       const response = await createExternalTransaction(this.config, {
         signedTransactionBlob,
       });
-      console.debug('>>> API: createExternalTransaction - RESPONSE: ', response);
       return response;
     } catch (error) {
-      console.debug('>>> API: createExternalTransaction - ERROR: ', error);
       logger.error('AdaApi::createExternalTransaction error', { error });
       throw new ApiError(error);
     }
@@ -979,9 +975,6 @@ export default class AdaApi {
           walletInitData,
         }
       );
-
-      const { id: walletId } = hardwareWallet;
-
       const wallet = {
         ...hardwareWallet,
         isHardwareWallet: true,
@@ -1383,7 +1376,7 @@ export default class AdaApi {
     });
     const { walletId, name, isLegacy, isHardwareWallet } = request;
     const rawWalletId = isHardwareWallet
-      ? getRawWalletId(walletId, 'HARDWARE_WALLET_ID_PREFIX')
+      ? getRawWalletId(walletId, WalletIdPrefixes.HARDWARE_WALLET)
       : walletId;
 
     try {

@@ -25,7 +25,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
     const { isHardwareWalletRoute } = walletsStore;
     const activeWallet = walletsStore.active;
     const activeWalletId = activeWallet ? activeWallet.id : null;
-    const activeHardwareWallet = walletsStore.activeHardwareWallet;
+    const { activeHardwareWallet } = walletsStore;
     const activeHardwareWalletId = activeHardwareWallet
       ? activeHardwareWallet.id
       : null;
@@ -54,7 +54,6 @@ export default class MainLayout extends Component<InjectedContainerProps> {
             activeWalletId: activeHardwareWalletId,
             actions: {
               onHardwareWalletItemClick: (walletId: string) => {
-                console.debug('>>> ITEM CLICK: ', walletId);
                 actions.sidebar.hardwareWalletSelected.trigger({ walletId });
               },
             },

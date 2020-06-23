@@ -15,5 +15,5 @@ export const createExternalTransaction = (
     },
     {},
     signedTransactionBlob,
-    {aa: true}
+    { isOctetStream: true }
   );

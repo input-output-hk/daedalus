@@ -23,6 +23,7 @@ type Props = {
   isNotResponding: boolean,
   hasNotification: boolean,
   isHardwareWalletsMenu?: boolean,
+  isConnected?: boolean,
 };
 
 @observer

@@ -6,7 +6,6 @@ import CachedRequest from './lib/LocalizedCachedRequest';
 import WalletAddress from '../domains/WalletAddress';
 import Request from './lib/LocalizedRequest';
 import LocalizableError from '../i18n/LocalizableError';
-import { getRawWalletId } from '../api/utils';
 import type { Address } from '../api/addresses/types';
 
 export default class AddressesStore extends Store {
@@ -114,7 +113,7 @@ export default class AddressesStore extends Store {
       const { all, allHardwareWallets } = this.stores.wallets;
 
       for (const wallet of all) {
-        const { id: walletId, isLegacy, isHardwareWallet } = wallet;
+        const { id: walletId, isLegacy } = wallet;
         const allRequest = this._getAddressesAllRequest(walletId);
         allRequest.invalidate({ immediately: false });
         allRequest.execute({ walletId, isLegacy });

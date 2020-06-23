@@ -53,12 +53,12 @@ export default class SidebarStore extends Store {
   }
 
   @computed.struct get hardwareWallets(): Array<SidebarHardwareWalletType> {
-    const { networkStatus, wallets, walletSettings } = this.stores;
-    const { availableHardwareWalletDevices } = wallets;
+    const { networkStatus, wallets, walletSettings, hardwareWallets } = this.stores;
+    const { hardwareWalletsConnectionData } = hardwareWallets;
 
     return wallets.allHardwareWallets.map(wallet => {
       const isWalletDisconnected = get(
-        availableHardwareWalletDevices,
+        hardwareWalletsConnectionData,
         [wallet.id, 'disconnected'],
         true
       );
@@ -74,7 +74,7 @@ export default class SidebarStore extends Store {
         restoreProgress: wallet.restorationProgress,
         isNotResponding: wallet.isNotResponding,
         isLegacy: wallet.isLegacy,
-        isConnected: !isWalletDisconnected,
+        isHardwareWalletConnected: !isWalletDisconnected,
         hasNotification,
       };
     });

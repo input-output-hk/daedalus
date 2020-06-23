@@ -163,7 +163,6 @@ const onAppReady = async () => {
   mainErrorHandler(onMainError);
   await handleCheckDiskSpace();
 
-  console.debug('>>> TRY to instantiate');
   const handleCheckHardwareWalletDevices = handleHardwareWalletDevices(
     mainWindow
   );

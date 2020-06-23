@@ -9,6 +9,7 @@ import {
 import { formattedWalletAmount } from './formatters';
 import type { TransactionFilterOptionsType } from '../stores/TransactionsStore';
 import { DateRangeTypes } from '../stores/TransactionsStore';
+
 const cbor = require('cbor');
 const bs58 = require('bs58');
 
@@ -280,7 +281,6 @@ export const validateFilterForm = (values: {
 };
 
 export const thDataHexGenerator = (txData) => {
-  console.debug('>>>> CREATE TX DATA: ', {txData, cbor, bs58});
   class List {
     constructor(xs) {
       this.elems = xs;
@@ -296,7 +296,6 @@ export const thDataHexGenerator = (txData) => {
     return Buffer.from(str, "hex");
   }
   function encodeTransaction (data) {
-    console.debug('>>>> ENCODE: ', data);
     return cbor.encode([
       encodeInputs(data.inputs),
       encodeOutputs(data.outputs),
@@ -320,7 +319,6 @@ export const thDataHexGenerator = (txData) => {
     }
   }
   const txDataHex = encodeTransaction(txData).toString("hex");
-  console.debug('txDataHex: ', txDataHex);
   return txDataHex;
 }
 

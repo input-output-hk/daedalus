@@ -27,11 +27,14 @@ function typedRequest<Response>(
   httpOptions: RequestOptions,
   queryParams?: {},
   rawBodyParams?: any,
-  requestOptions?: { returnMeta: boolean, aa: boolean }
+  requestOptions?: {
+    returnMeta: boolean,
+    isOctetStream: boolean,
+  }
 ): Promise<Response> {
   return new Promise((resolve, reject) => {
     const options: RequestOptions = Object.assign({}, httpOptions);
-    const { returnMeta } = Object.assign({}, requestOptions);
+    // const { returnMeta } = Object.assign({}, requestOptions);
     let hasRequestBody = false;
     let requestBody = '';
 
@@ -39,16 +42,8 @@ function typedRequest<Response>(
       options.path += `?${querystring.stringify(queryParams)}`;
     }
 
-    // console.debug('>>> rawBodyParams: ', Buffer(rawBodyParams));
-    // console.debug('>>> rawBodyParams BUFFER: ', Buffer.isBuffer(Buffer(rawBodyParams)));
-
-    if (requestOptions && requestOptions.aa) {
-      console.debug('>>> rawBodyParams: ', rawBodyParams);
-    }
-
     // Handle raw body params
-    if (requestOptions && requestOptions.aa) {
-      console.debug('>>> OCTET');
+    if (requestOptions && requestOptions.isOctetStream) {
       hasRequestBody = true;
       requestBody =  rawBodyParams;
       options.headers = {
@@ -72,7 +67,7 @@ function typedRequest<Response>(
       : global.https.request(options);
 
     if (hasRequestBody) {
-      if (requestOptions && requestOptions.aa) {
+      if (requestOptions && requestOptions.isOctetStream) {
         httpsRequest.write(requestBody, "hex");
       } else {
         httpsRequest.write(requestBody);
@@ -127,10 +122,7 @@ function typedRequest<Response>(
         }
       });
     });
-    httpsRequest.on('error', error => {
-      console.debug('>>> ERROR: ', error);
-      return reject(error)
-    });
+    httpsRequest.on('error', error => reject(error));
     httpsRequest.end();
   });
 }

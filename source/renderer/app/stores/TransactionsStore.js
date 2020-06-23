@@ -351,9 +351,7 @@ export default class TransactionsStore extends Store {
   };
 
   @action _createExternalTransaction = async (signedTransactionBlob: Buffer) => {
-    console.debug('>>> _createExternalTransaction: ', signedTransactionBlob);
-    const transactionId = await this.createExternalTransactionRequest.execute({ signedTransactionBlob });
-    console.debug('>>> transactionId: ', transactionId);
+    await this.createExternalTransactionRequest.execute({ signedTransactionBlob });
     this.stores.wallets.refreshWalletsData();
   }
 

@@ -8,7 +8,7 @@ import { ROUTES } from '../../routes-config';
 import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavigation';
 import HardwareWalletAddPage from './HardwareWalletAddPage';
 import ChangeSpendingPasswordDialog from '../../components/wallet/settings/ChangeSpendingPasswordDialog';
-import LoadingSpinner from '../../components/widgets/LoadingSpinner';
+// import LoadingSpinner from '../../components/widgets/LoadingSpinner';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 import type { NavDropdownProps } from '../../components/navigation/Navigation';
 
@@ -69,19 +69,13 @@ export default class HardwareWallet extends Component<Props> {
     const activeHardwareWalletId = get(activeHardwareWallet, 'id', null);
     const hasPassword = get(activeHardwareWallet, 'hasPassword', null);
 
-    const { availableHardwareWalletDevices } = wallets;
-
     const {
-      fetchingDevice,
-      isDeviceConnected,
-      isExportingExtendedPublicKey,
-      isExtendedPublicKeyExported,
-      isExportingPublicKeyAborted,
       isTrezor,
       isLedger,
+      hardwareWalletsConnectionData,
     } = hardwareWallets;
     const isWalletDisconnected = get(
-      availableHardwareWalletDevices,
+      hardwareWalletsConnectionData,
       [activeHardwareWalletId, 'disconnected'],
       true
     );
@@ -98,12 +92,6 @@ export default class HardwareWallet extends Component<Props> {
         <WalletWithNavigation
           activeItem={app.currentPage}
           hasNotification={hasNotification}
-          isWalletConnected={!isWalletDisconnected}
-          isDeviceConnected={isDeviceConnected}
-          fetchingDevice={fetchingDevice}
-          isExportingExtendedPublicKey={isExportingExtendedPublicKey}
-          isExtendedPublicKeyExported={isExtendedPublicKeyExported}
-          isExportingPublicKeyAborted={isExportingPublicKeyAborted}
           isLedger={isLedger}
           isTrezor={isTrezor}
           isActiveScreen={this.isActiveScreen}
