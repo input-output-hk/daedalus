@@ -2,6 +2,10 @@
 import Action from './lib/Action';
 import type { WalletExportTypeChoices } from '../types/walletExportTypes';
 import type { CsvRecord } from '../../../common/types/rewards-csv-request.types';
+import type {
+  TransportDevice,
+  ExtendedPublicKey,
+} from '../stores/HardwareWalletsStore';
 
 export type WalletImportFromFileParams = {
   filePath: string,
@@ -89,6 +93,7 @@ export default class WalletsActions {
   transferFunds: Action<{ spendingPassword: string }> = new Action();
   createHardwareWallet: Action<{
     walletName: string,
-    accountPublicKey: string,
+    extendedPublicKey: ExtendedPublicKey,
+    device: TransportDevice,
   }> = new Action();
 }

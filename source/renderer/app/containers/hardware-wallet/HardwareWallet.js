@@ -8,7 +8,7 @@ import { ROUTES } from '../../routes-config';
 import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavigation';
 import HardwareWalletAddPage from './HardwareWalletAddPage';
 import ChangeSpendingPasswordDialog from '../../components/wallet/settings/ChangeSpendingPasswordDialog';
-// import LoadingSpinner from '../../components/widgets/LoadingSpinner';
+import LoadingSpinner from '../../components/widgets/LoadingSpinner';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 import type { NavDropdownProps } from '../../components/navigation/Navigation';
 
@@ -58,17 +58,15 @@ export default class HardwareWallet extends Component<Props> {
     const { restartNode } = actions.networkStatus;
     const { activeHardwareWallet } = wallets;
 
-    // if (!activeHardwareWallet) {
-    //   return (
-    //     <MainLayout>
-    //       <LoadingSpinner />
-    //     </MainLayout>
-    //   );
-    // }
+    if (!activeHardwareWallet) {
+      return (
+        <MainLayout>
+          <LoadingSpinner />
+        </MainLayout>
+      );
+    }
 
-    const activeHardwareWalletId = get(activeHardwareWallet, 'id', null);
-    const hasPassword = get(activeHardwareWallet, 'hasPassword', null);
-
+    const { isLegacy, isNotResponding, id, hasPassword } = activeHardwareWallet;
     const {
       isTrezor,
       isLedger,
@@ -76,14 +74,12 @@ export default class HardwareWallet extends Component<Props> {
     } = hardwareWallets;
     const isWalletDisconnected = get(
       hardwareWalletsConnectionData,
-      [activeHardwareWalletId, 'disconnected'],
+      [id, 'disconnected'],
       true
     );
-    const hasNotification = activeHardwareWalletId
-      ? walletSettings.getWalletsRecoveryPhraseVerificationData(
-          activeHardwareWalletId
-        ).hasNotification
-      : false;
+    const {
+      hasNotification,
+    } = walletSettings.getWalletsRecoveryPhraseVerificationData(id);
 
     if (isWalletDisconnected) return <HardwareWalletAddPage />;
 
@@ -95,6 +91,8 @@ export default class HardwareWallet extends Component<Props> {
           isLedger={isLedger}
           isTrezor={isTrezor}
           isActiveScreen={this.isActiveScreen}
+          isLegacy={isLegacy}
+          isNotResponding={isNotResponding}
           onOpenExternalLink={(url: string) => stores.app.openExternalLink(url)}
           onRestartNode={() => restartNode.trigger()}
           onWalletNavItemClick={this.handleWalletNavItemClick}

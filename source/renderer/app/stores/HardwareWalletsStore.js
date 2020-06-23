@@ -14,11 +14,19 @@ import {
   signTransactionChannel,
 } from '../ipc/getHardwareWalletChannel';
 import { HwDeviceStatuses } from '../domains/Wallet';
-import { thDataHexGenerator, encodeSignedTransaction } from '../utils/transaction';
+import {
+  thDataHexGenerator,
+  encodeSignedTransaction,
+} from '../utils/transaction';
 import { getRawWalletId, WalletIdPrefixes } from '../api/utils';
 import type { HwDeviceStatus } from '../domains/Wallet';
 import type { CoinSelectionsResponse } from '../api/transactions/types';
-import type { HardwareWalletLocalData, HardwareWalletsLocalData, SetHardwareWalletLocalDataRequestType } from '../api/utils/localStorage';
+import type {
+  HardwareWalletLocalData,
+  HardwareWalletsLocalData,
+  SetHardwareWalletLocalDataRequestType,
+} from '../api/utils/localStorage';
+import type { BIP32Path } from '../../../common/ipc/api';
 
 export type DeviceModel = 'nanoS' | 'nanoX' | 'trezor';
 export type DeviceType = 'ledger' | 'trezor';
@@ -35,6 +43,24 @@ export type ExtendedPublicKey = {
   publicKeyHex: string,
   chainCodeHex: string,
 };
+
+export type Witness = {|
+  path: BIP32Path,
+  witnessSignatureHex: string,
+|};
+
+export type SignedTransactionResponse = {|
+  txDataHex: string,
+  witnesses: Array<Witness>,
+|};
+
+export type EncodeSignedTransactionRequest = {|
+  txDataHex: string,
+  witnesses: Array<{
+    signature: string,
+    xpub: ExtendedPublicKey,
+  }>,
+|};
 
 export const DeviceModels: {
   LEDGER_NANO_S: DeviceModel,
@@ -61,10 +87,12 @@ export default class HardwareWalletsStore extends Store {
   @observable selectCoinsRequest: Request<CoinSelectionsResponse> = new Request(
     this.api.ada.selectCoins
   );
-  @observable hardwareWalletsLocalDataRequest: Request<HardwareWalletsLocalData> = new Request(
+  @observable
+  hardwareWalletsLocalDataRequest: Request<HardwareWalletsLocalData> = new Request(
     this.api.localStorage.getHardwareWalletsLocalData
   );
-  @observable setHardwareWalletLocalDataRequest: Request<HardwareWalletLocalData> = new Request(
+  @observable
+  setHardwareWalletLocalDataRequest: Request<HardwareWalletLocalData> = new Request(
     this.api.localStorage.setHardwareWalletLocalData
   );
   @observable unsetHardwareWalletLocalDataRequest: Request<void> = new Request(
@@ -72,34 +100,49 @@ export default class HardwareWalletsStore extends Store {
   );
   @observable hwDeviceStatus: HwDeviceStatus = HwDeviceStatuses.CONNECTING;
   @observable txDataHex: ?string = null;
-  @observable txSignRequest: ?TxSignRequestTypes = null;
+  @observable txSignRequest: TxSignRequestTypes = {};
   @observable extendedPublicKey: ?string = null;
   @observable derivedAddress: ?string = null;
   @observable signedTransaction: ?string = null;
   @observable isTrezor: boolean = false;
   @observable isLedger: boolean = false;
-  @observable transportDevice: ?Object = null;
-  @observable establishedConnections: Array<EstablishedConnection> = [];
+  @observable transportDevice: TransportDevice = {};
 
   cardanoAdaAppPollingInterval: ?IntervalID = null;
 
   setup() {
     const { hardwareWallets: hardwareWalletsActions } = this.actions;
     hardwareWalletsActions.selectCoins.listen(this._selectCoins);
-    hardwareWalletsActions.refreshHardwareWalletsLocalData.listen(this._refreshHardwareWalletsLocalData);
-    hardwareWalletsActions.setHardwareWalletLocalData.listen(this._setHardwareWalletLocalData);
-    hardwareWalletsActions.unsetHardwareWalletLocalData.listen(this._unsetHardwareWalletLocalData);
-    getHardwareWalletConnectionChannel.onReceive(this._changeHardwareWalletConnectionStatus);
+    hardwareWalletsActions.refreshHardwareWalletsLocalData.listen(
+      this._refreshHardwareWalletsLocalData
+    );
+    hardwareWalletsActions.setHardwareWalletLocalData.listen(
+      this._setHardwareWalletLocalData
+    );
+    hardwareWalletsActions.unsetHardwareWalletLocalData.listen(
+      this._unsetHardwareWalletLocalData
+    );
+    getHardwareWalletConnectionChannel.onReceive(
+      this._changeHardwareWalletConnectionStatus
+    );
 
     this.hardwareWalletsLocalDataRequest.execute();
-  };
+  }
 
-  @action _selectCoins = async (params: { walletId: string, address: string, amount: string }) => {
+  @action _selectCoins = async (params: {
+    walletId: string,
+    address: string,
+    amount: string,
+  }) => {
     const { walletId, address, amount } = params;
     const wallet = this.stores.wallets.getWalletById(walletId);
-    if (!wallet) throw new Error('Active wallet required before coin selections.');
+    if (!wallet)
+      throw new Error('Active wallet required before coin selections.');
     try {
-      const rawWalletId = getRawWalletId(walletId, WalletIdPrefixes.HARDWARE_WALLET)
+      const rawWalletId = getRawWalletId(
+        walletId,
+        WalletIdPrefixes.HARDWARE_WALLET
+      );
       const coinSelection = await this.selectCoinsRequest.execute({
         walletId: rawWalletId,
         address,
@@ -115,7 +158,7 @@ export default class HardwareWalletsStore extends Store {
           coinSelection,
         };
       });
-    } catch(error) {
+    } catch (error) {
       throw error;
     }
   };
@@ -148,7 +191,9 @@ export default class HardwareWalletsStore extends Store {
     }
   };
 
-  @action _changeHardwareWalletConnectionStatus = async (params: { disconnected: boolean }) => {
+  @action _changeHardwareWalletConnectionStatus = async (params: {
+    disconnected: boolean,
+  }) => {
     // @TODO - This logic should be changed once we allow multiple hardware wallets
     this.stopCardanoAdaAppFetchPoller();
     this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
@@ -197,17 +242,17 @@ export default class HardwareWalletsStore extends Store {
     ];
 
     try {
-      const extendedPublicKey = await getExtendedPublicKeyChannel.request({ path });
+      const extendedPublicKey = await getExtendedPublicKeyChannel.request({
+        path,
+      });
       await this.actions.wallets.createHardwareWallet.trigger({
         walletName: DEFAULT_HW_NAME,
         extendedPublicKey,
         device: this.transportDevice,
       });
-
       runInAction('HardwareWalletsStore:: set wallet READY', () => {
         this.extendedPublicKey = extendedPublicKey;
         this.hwDeviceStatus = HwDeviceStatuses.READY;
-        this.establishedConnections = {}
       });
     } catch (e) {
       if (e.statusCode === 28169) {
@@ -243,7 +288,8 @@ export default class HardwareWalletsStore extends Store {
   };
 
   @action _signTransaction = async () => {
-    const { inputs, outputs, txDataHex, recieverAddress } = this.txSignRequest;
+    const { coinSelection, txDataHex, recieverAddress } = this.txSignRequest;
+    const { inputs, outputs } = coinSelection;
 
     const inputsData = map(inputs, input => {
       return {
@@ -264,7 +310,7 @@ export default class HardwareWalletsStore extends Store {
       return {
         amountStr: output.amount.quantity.toString(),
         address58: output.address,
-      }
+      };
     });
 
     try {
@@ -274,7 +320,7 @@ export default class HardwareWalletsStore extends Store {
       });
       // get xPub from signed transaction witnesses by exporting extended public key
       const witnesses = await Promise.all(
-        signedTransaction.witnesses.map(async (witness) => {
+        signedTransaction.witnesses.map(async witness => {
           const xPub = await this._getXpub(witness.path);
           return {
             xpub: xPub,
@@ -285,15 +331,18 @@ export default class HardwareWalletsStore extends Store {
       const signedTransactionData = {
         txDataHex,
         witnesses,
-      }
+      };
       runInAction('HardwareWalletsStore:: set Transaction verified', () => {
         this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED;
         this.signedTransaction = encodeSignedTransaction(signedTransactionData);
       });
     } catch (error) {
-      runInAction('HardwareWalletsStore:: set Transaction verifying failed', () => {
-        this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_FAILED;
-      });
+      runInAction(
+        'HardwareWalletsStore:: set Transaction verifying failed',
+        () => {
+          this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED;
+        }
+      );
       throw error;
     }
   };
@@ -301,7 +350,7 @@ export default class HardwareWalletsStore extends Store {
   @action resetInitializedConnection = () => {
     this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
     this.extendedPublicKey = null;
-    this.transportDevice = null;
+    this.transportDevice = {};
     this.isLedger = false;
     this.isTrezor = false;
   };
@@ -314,14 +363,14 @@ export default class HardwareWalletsStore extends Store {
     return this.hardwareWalletsLocalDataRequest.result
       ? this.hardwareWalletsLocalDataRequest.result
       : {};
-  };
+  }
 
   _resetTxSignRequestData = () => {
     this.selectCoinsRequest.reset();
     this.txSignRequest = {};
   };
 
-  _getXpub = async (path) => {
+  _getXpub = async (path: BIP32Path) => {
     try {
       return await getExtendedPublicKeyChannel.request({ path });
     } catch (e) {
@@ -334,9 +383,9 @@ export default class HardwareWalletsStore extends Store {
     }
   };
 
-  _deviceType = (deviceModel) => {
+  _deviceType = (deviceModel: DeviceModel) => {
     let type;
-    switch(deviceModel) {
+    switch (deviceModel) {
       case DeviceModels.LEDGER_NANO_S:
         type = DeviceTypes.LEDGER;
         break;
@@ -352,19 +401,27 @@ export default class HardwareWalletsStore extends Store {
     return type;
   };
 
-  _setHardwareWalletLocalData = async ({ walletId, data } : SetHardwareWalletLocalDataRequestType) => {
+  _setHardwareWalletLocalData = async ({
+    walletId,
+    data,
+  }: SetHardwareWalletLocalDataRequestType) => {
     await this.setHardwareWalletLocalDataRequest.execute(walletId, data);
-    this._refreshHardwareWalletsLocalData()
+    this._refreshHardwareWalletsLocalData();
     this.stores.wallets.refreshWalletsData();
   };
 
-  _unsetHardwareWalletLocalData = async ({ walletId }: { walletId: string }) => {
+  _unsetHardwareWalletLocalData = async ({
+    walletId,
+  }: {
+    walletId: string,
+  }) => {
     await this.unsetHardwareWalletLocalDataRequest.execute(walletId);
-    this._refreshHardwareWalletsLocalData()
+    this._refreshHardwareWalletsLocalData();
     this.stores.wallets.refreshWalletsData();
   };
 
   stopCardanoAdaAppFetchPoller = () => {
-    if (this.cardanoAdaAppPollingInterval) clearInterval(this.cardanoAdaAppPollingInterval);
+    if (this.cardanoAdaAppPollingInterval)
+      clearInterval(this.cardanoAdaAppPollingInterval);
   };
 }

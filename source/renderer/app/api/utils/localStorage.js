@@ -7,7 +7,10 @@ import { electronStoreConversation } from '../../ipc/electronStoreConversation';
 import { WalletMigrationStatuses } from '../../stores/WalletMigrationStore';
 import type { NewsTimestamp } from '../news/types';
 import type { WalletMigrationStatus } from '../../stores/WalletMigrationStore';
-import type { TransportDevice, ExtendedPublicKey } from '../../stores/HardwareWalletsStore';
+import type {
+  TransportDevice,
+  ExtendedPublicKey,
+} from '../../stores/HardwareWalletsStore';
 
 export type WalletLocalData = {
   id: string,
@@ -239,7 +242,9 @@ export default class LocalStorageApi {
   getHardwareWalletsLocalData = (): Promise<HardwareWalletsLocalData> =>
     LocalStorageApi.get(this.storageKeys.HARDWARE_WALLETS, {});
 
-  getHardwareWalletLocalData = (walletId: string): Promise<HardwareWalletLocalData> =>
+  getHardwareWalletLocalData = (
+    walletId: string
+  ): Promise<HardwareWalletLocalData> =>
     LocalStorageApi.get(`${this.storageKeys.HARDWARE_WALLETS}.${walletId}`, {
       id: walletId,
     });

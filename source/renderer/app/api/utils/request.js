@@ -28,8 +28,8 @@ function typedRequest<Response>(
   queryParams?: {},
   rawBodyParams?: any,
   requestOptions?: {
-    returnMeta: boolean,
-    isOctetStream: boolean,
+    returnMeta?: boolean,
+    isOctetStream?: boolean,
   }
 ): Promise<Response> {
   return new Promise((resolve, reject) => {
@@ -43,9 +43,14 @@ function typedRequest<Response>(
     }
 
     // Handle raw body params
-    if (requestOptions && requestOptions.isOctetStream) {
+    if (
+      requestOptions &&
+      requestOptions.isOctetStream &&
+      rawBodyParams &&
+      typeof rawBodyParams === 'string'
+    ) {
       hasRequestBody = true;
-      requestBody =  rawBodyParams;
+      requestBody = rawBodyParams;
       options.headers = {
         'Content-Length': requestBody.length / 2,
         'Content-Type': 'application/octet-stream',
@@ -68,7 +73,7 @@ function typedRequest<Response>(
 
     if (hasRequestBody) {
       if (requestOptions && requestOptions.isOctetStream) {
-        httpsRequest.write(requestBody, "hex");
+        httpsRequest.write(requestBody, 'hex');
       } else {
         httpsRequest.write(requestBody);
       }

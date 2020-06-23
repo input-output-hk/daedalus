@@ -9,6 +9,7 @@ import { promise } from '../../_support/utils';
 // Assets and helpers
 import WalletsWrapper from '../_utils/WalletsWrapper';
 import { NUMBER_OPTIONS } from '../../../../source/renderer/app/config/profileConfig';
+import { HwDeviceStatuses } from '../../../../source/renderer/app/domains/Wallet';
 
 // Screens
 import WalletSendForm from '../../../../source/renderer/app/components/wallet/WalletSendForm';
@@ -28,5 +29,54 @@ storiesOf('Wallets|Send', module)
       isDialogOpen={() => boolean('isDialogOpen', false)}
       isRestoreActive={boolean('isRestoreActive', false)}
       walletAmount={new BigNumber(123)}
+      hwDeviceStatus={HwDeviceStatuses.READY}
+    />
+  ))
+  .add('Send - Hardware wallet verifying transaction', () => (
+    <WalletSendForm
+      currencyUnit="Ada"
+      currencyMaxFractionalDigits={6}
+      currencyMaxIntegerDigits={11}
+      currentNumberFormat={NUMBER_OPTIONS[0].value}
+      validateAmount={promise(true)}
+      calculateTransactionFee={promise(true)}
+      addressValidator={action('addressValidator')}
+      openDialogAction={action('openDialogAction')}
+      isDialogOpen={() => boolean('isDialogOpen', false)}
+      isRestoreActive={boolean('isRestoreActive', false)}
+      walletAmount={new BigNumber(123)}
+      hwDeviceStatus={HwDeviceStatuses.VERIFYING_TRANSACTION}
+    />
+  ))
+  .add('Send - Hardware wallet verifying transaction succeeded', () => (
+    <WalletSendForm
+      currencyUnit="Ada"
+      currencyMaxFractionalDigits={6}
+      currencyMaxIntegerDigits={11}
+      currentNumberFormat={NUMBER_OPTIONS[0].value}
+      validateAmount={promise(true)}
+      calculateTransactionFee={promise(true)}
+      addressValidator={action('addressValidator')}
+      openDialogAction={action('openDialogAction')}
+      isDialogOpen={() => boolean('isDialogOpen', false)}
+      isRestoreActive={boolean('isRestoreActive', false)}
+      walletAmount={new BigNumber(123)}
+      hwDeviceStatus={HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED}
+    />
+  ))
+  .add('Send - Hardware wallet verifying transaction failed', () => (
+    <WalletSendForm
+      currencyUnit="Ada"
+      currencyMaxFractionalDigits={6}
+      currencyMaxIntegerDigits={11}
+      currentNumberFormat={NUMBER_OPTIONS[0].value}
+      validateAmount={promise(true)}
+      calculateTransactionFee={promise(true)}
+      addressValidator={action('addressValidator')}
+      openDialogAction={action('openDialogAction')}
+      isDialogOpen={() => boolean('isDialogOpen', false)}
+      isRestoreActive={boolean('isRestoreActive', false)}
+      walletAmount={new BigNumber(123)}
+      hwDeviceStatus={HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED}
     />
   ));

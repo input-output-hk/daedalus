@@ -14,7 +14,6 @@ type Props = {
   hasPassword: boolean,
   isActiveScreen: Function,
   isLegacy: boolean,
-  isTrezor: boolean,
   isNotResponding: boolean,
   isSetWalletPasswordDialogOpen: boolean,
   onOpenExternalLink: Function,
@@ -33,7 +32,6 @@ export default class WalletWithNavigation extends Component<Props> {
       hasPassword,
       isActiveScreen,
       isLegacy,
-      isTrezor,
       isNotResponding,
       isSetWalletPasswordDialogOpen,
       onOpenExternalLink,
@@ -48,7 +46,6 @@ export default class WalletWithNavigation extends Component<Props> {
           <WalletNavigation
             isActiveNavItem={isActiveScreen}
             isLegacy={isLegacy}
-            isTrezor={isTrezor}
             onNavItemClick={onWalletNavItemClick}
             activeItem={activeItem}
             hasNotification={hasNotification}

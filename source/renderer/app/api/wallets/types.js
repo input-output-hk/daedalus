@@ -48,6 +48,7 @@ export type AdaWallet = {
   state: WalletSyncState,
   discovery: Discovery,
   isLegacy: boolean,
+  isHardwareWallet?: boolean,
 };
 
 export type LegacyAdaWallet = {
@@ -170,6 +171,7 @@ export type UpdateSpendingPasswordRequest = {
 export type DeleteWalletRequest = {
   walletId: string,
   isLegacy: boolean,
+  isHardwareWallet?: boolean,
 };
 
 export type GetWalletUtxosRequest = {
@@ -195,6 +197,7 @@ export type UpdateWalletRequest = {
   walletId: string,
   name: string,
   isLegacy: boolean,
+  isHardwareWallet?: boolean,
 };
 
 export type ImportWalletFromKeyRequest = {

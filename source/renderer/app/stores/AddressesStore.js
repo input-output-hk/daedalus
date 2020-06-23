@@ -6,6 +6,7 @@ import CachedRequest from './lib/LocalizedCachedRequest';
 import WalletAddress from '../domains/WalletAddress';
 import Request from './lib/LocalizedRequest';
 import LocalizableError from '../i18n/LocalizableError';
+import Wallet from '../domains/Wallet';
 import type { Address } from '../api/addresses/types';
 
 export default class AddressesStore extends Store {
@@ -58,7 +59,7 @@ export default class AddressesStore extends Store {
     }
   };
 
-  @computed get addressesWallet(): string {
+  @computed get addressesWallet(): ?Wallet {
     const {
       isHardwareWalletRoute,
       active,

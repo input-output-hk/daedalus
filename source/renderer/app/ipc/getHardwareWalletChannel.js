@@ -14,8 +14,8 @@ import {
 import type {
   getHardwareWalletTransportRendererRequest,
   getHardwareWalletTransportMainResponse,
-  getExtendedPublicKeytRendererRequest,
-  getExtendedPublicKeytMainResponse,
+  getExtendedPublicKeyRendererRequest,
+  getExtendedPublicKeyMainResponse,
   getHardwareWalletConnectiontMainRequest,
   getHardwareWalletConnectiontRendererResponse,
   deriveAddressMainResponse,
@@ -26,6 +26,8 @@ import type {
   attestUtxoRendererRequest,
   signTransaMainResponse,
   signTransactionRendererRequest,
+  getCardanoAdaAppMainResponse,
+  getCardanoAdaAppRendererRequest,
 } from '../../../common/ipc/api';
 
 // IpcChannel<Incoming, Outgoing>
@@ -36,14 +38,14 @@ export const getHardwareWalletTransportChannel: RendererIpcChannel<
 
 // IpcChannel<Incoming, Outgoing>
 export const getExtendedPublicKeyChannel: RendererIpcChannel<
-  getExtendedPublicKeytMainResponse,
-  getExtendedPublicKeytRendererRequest
+  getExtendedPublicKeyMainResponse,
+  getExtendedPublicKeyRendererRequest
 > = new RendererIpcChannel(GET_EXTENDED_PUBLIC_KEY_CHANNEL);
 
 // IpcChannel<Incoming, Outgoing>
 export const getCardanoAdaAppChannel: RendererIpcChannel<
-  getCardanoAdaApptMainResponse,
-  getCardanoAdaApptRendererRequest
+  getCardanoAdaAppMainResponse,
+  getCardanoAdaAppRendererRequest
 > = new RendererIpcChannel(GET_CARDANO_ADA_APP_CHANNEL);
 
 // IpcChannel<Incoming, Outgoing>

@@ -1,6 +1,9 @@
 // @flow
 import type { RequestConfig } from '../../common/types';
-import type { CreateExternalTransactionResponse, CreateExternalTransactionRequest } from '../types';
+import type {
+  CreateExternalTransactionResponse,
+  CreateExternalTransactionRequest,
+} from '../types';
 import { request } from '../../utils/request';
 
 export const createExternalTransaction = (

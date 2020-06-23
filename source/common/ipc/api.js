@@ -37,8 +37,27 @@ import type { Locale } from '../types/locales.types';
  */
 
 export const GET_LOGS_CHANNEL = 'GET_LOGS_CHANNEL';
+export type BIP32Path = Array<number>;
 export type GetLogsRendererRequest = void;
 export type GetLogsMainResponse = LogFiles;
+export type SignTransactionInputType = {|
+  txDataHex: string,
+  outputIndex: number,
+  path: BIP32Path,
+|};
+export type OutputTypeAddress = {|
+  amountStr: string,
+  address58: string,
+|};
+
+export type OutputTypeChange = {|
+  amountStr: string,
+  path: BIP32Path,
+|};
+export type SignTransactionInputsType = Array<SignTransactionInputType>;
+export type SignTransactionOutputsType = Array<
+  OutputTypeAddress | OutputTypeChange
+>;
 
 export const COMPRESS_LOGS_CHANNEL = 'COMPRESS_LOGS_CHANNEL';
 export type CompressLogsRendererRequest = {
@@ -296,7 +315,7 @@ export type getHardwareWalletTransportMainResponse = Object;
 
 export const GET_EXTENDED_PUBLIC_KEY_CHANNEL =
   'GET_EXTENDED_PUBLIC_KEY_CHANNEL';
-export type getExtendedPublicKeyRendererRequest = void;
+export type getExtendedPublicKeyRendererRequest = { path: BIP32Path };
 export type getExtendedPublicKeyMainResponse = Object;
 
 export const GET_CARDANO_ADA_APP_CHANNEL = 'GET_CARDANO_ADA_APP_CHANNEL';
@@ -305,21 +324,27 @@ export type getCardanoAdaAppMainResponse = Object;
 
 export const GET_HARDWARE_WALLET_CONNECTION_CHANNEL =
   'GET_HARDWARE_WALLET_CONNECTION_CHANNEL';
-export type getHardwareWalletConnectiontMainRequest = string;
-export type getHardwareWalletConnectiontRendererResponse = void;
+export type getHardwareWalletConnectiontMainRequest = { disconnected: boolean };
+export type getHardwareWalletConnectiontRendererResponse = Object;
 
 export const DERIVE_ADDRESS_CHANNEL = 'DERIVE_ADDRESS_CHANNEL';
-export type deriveAddressRendererRequest = string;
+export type deriveAddressRendererRequest = { derivationPath: string };
 export type deriveAddressMainResponse = Object;
 
 export const SHOW_ADDRESS_CHANNEL = 'SHOW_ADDRESS_CHANNEL';
-export type showAddressRendererRequest = string;
+export type showAddressRendererRequest = { derivationPath: string };
 export type showAddresMainResponse = Object;
 
 export const ATTEST_UTXO_CHANNEL = 'ATTEST_UTXO_CHANNEL';
-export type attestUtxoRendererRequest = string;
+export type attestUtxoRendererRequest = {
+  txHexData: string,
+  outputIndex: number,
+};
 export type attestUtxoMainResponse = Object;
 
 export const SIGN_TRANSACTION_CHANNEL = 'SIGN_TRANSACTION_CHANNEL';
-export type signTransactionRendererRequest = string;
+export type signTransactionRendererRequest = {
+  inputs: SignTransactionInputsType,
+  outputs: SignTransactionOutputsType,
+};
 export type signTransaMainResponse = Object;

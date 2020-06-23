@@ -49,11 +49,7 @@ export default class ConnectHardwareWallet extends Component<Props> {
   render() {
     const { intl } = this.context;
 
-    const {
-      isLedger,
-      isTrezor,
-      hwDeviceStatus,
-    } = this.props;
+    const { isLedger, isTrezor, hwDeviceStatus } = this.props;
 
     let hardwareTitle = intl.formatMessage(messages.hardwareWalletTitle);
     if (isTrezor) {

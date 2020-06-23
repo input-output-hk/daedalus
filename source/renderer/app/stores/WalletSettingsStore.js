@@ -160,7 +160,11 @@ export default class WalletSettingsStore extends Store {
     field: string,
     value: string,
   }) => {
-    const { isHardwareWalletRoute, active, activeHardwareWallet } = this.stores.wallets;
+    const {
+      isHardwareWalletRoute,
+      active,
+      activeHardwareWallet,
+    } = this.stores.wallets;
     const activeWallet = isHardwareWalletRoute ? activeHardwareWallet : active;
     if (!activeWallet) return;
 

@@ -53,7 +53,12 @@ export default class SidebarStore extends Store {
   }
 
   @computed.struct get hardwareWallets(): Array<SidebarHardwareWalletType> {
-    const { networkStatus, wallets, walletSettings, hardwareWallets } = this.stores;
+    const {
+      networkStatus,
+      wallets,
+      walletSettings,
+      hardwareWallets,
+    } = this.stores;
     const { hardwareWalletsConnectionData } = hardwareWallets;
 
     return wallets.allHardwareWallets.map(wallet => {

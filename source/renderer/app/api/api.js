@@ -335,7 +335,14 @@ export default class AdaApi {
     request: GetTransactionsRequest
   ): Promise<GetTransactionsResponse> => {
     logger.debug('AdaApi::getTransactions called', { parameters: request });
-    const { walletId, order, fromDate, toDate, isLegacy, isHardwareWallet } = request;
+    const {
+      walletId,
+      order,
+      fromDate,
+      toDate,
+      isLegacy,
+      isHardwareWallet,
+    } = request;
     const rawWalletId = isHardwareWallet
       ? getRawWalletId(walletId, WalletIdPrefixes.HARDWARE_WALLET)
       : walletId;
@@ -1402,7 +1409,7 @@ export default class AdaApi {
       wallet = {
         ...wallet,
         isHardwareWallet,
-      }
+      };
       logger.debug('AdaApi::updateWallet success', { wallet });
       return _createWalletFromServerData(wallet);
     } catch (error) {
@@ -1880,7 +1887,7 @@ const _createWalletFromServerData = action(
       delegation,
       state: syncState,
       isLegacy = false,
-      isHardwareWallet = false,
+      isHardwareWallet,
       discovery,
     } = wallet;
 

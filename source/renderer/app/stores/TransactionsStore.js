@@ -20,6 +20,7 @@ import {
   generateFilterOptions,
   isTransactionInFilterRange,
 } from '../utils/transaction';
+import Wallet from '../domains/Wallet';
 
 const INITIAL_SEARCH_LIMIT = null; // 'null' value stands for 'load all'
 const SEARCH_LIMIT_INCREASE = 500; // eslint-disable-line
@@ -86,7 +87,8 @@ export default class TransactionsStore extends Store {
   deleteTransactionRequest: Request<DeleteTransactionRequest> = new Request(
     this.api.ada.deleteTransaction
   );
-  @observable createExternalTransactionRequest: Request<CreateExternalTransactionRequest> = new Request(
+  @observable
+  createExternalTransactionRequest: Request<CreateExternalTransactionRequest> = new Request(
     this.api.ada.createExternalTransaction
   );
 
@@ -103,7 +105,7 @@ export default class TransactionsStore extends Store {
     this.registerReactions([this._ensureFilterOptionsForActiveWallet]);
   }
 
-  @computed get transactionsWallet(): string {
+  @computed get transactionsWallet(): ?Wallet {
     const {
       isHardwareWalletRoute,
       active,
@@ -243,7 +245,9 @@ export default class TransactionsStore extends Store {
 
       // Hardware wallet transactions
       for (const hardwareWallet of allHardwareWallets) {
-        const recentRequest = this._getTransactionsRecentRequest(hardwareWallet.id);
+        const recentRequest = this._getTransactionsRecentRequest(
+          hardwareWallet.id
+        );
         recentRequest.execute({
           walletId: hardwareWallet.id,
           order: 'descending',
@@ -350,10 +354,14 @@ export default class TransactionsStore extends Store {
     return true;
   };
 
-  @action _createExternalTransaction = async (signedTransactionBlob: Buffer) => {
-    await this.createExternalTransactionRequest.execute({ signedTransactionBlob });
+  @action _createExternalTransaction = async (
+    signedTransactionBlob: Buffer
+  ) => {
+    await this.createExternalTransactionRequest.execute({
+      signedTransactionBlob,
+    });
     this.stores.wallets.refreshWalletsData();
-  }
+  };
 
   _getTransactionsRecentRequest = (
     walletId: string

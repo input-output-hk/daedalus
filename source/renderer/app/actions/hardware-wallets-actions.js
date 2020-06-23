@@ -4,7 +4,11 @@ import type { SetHardwareWalletLocalDataRequestType } from '../api/utils/localSt
 
 export default class HardwareWalletsActions {
   /* ----------  Get hardware wallet device  ---------- */
-  selectCoins: Action<{ walletId: string, address: string, amount: string }> = new Action();
+  selectCoins: Action<{
+    walletId: string,
+    address: string,
+    amount: string,
+  }> = new Action();
   refreshHardwareWalletsLocalData: Action<any> = new Action();
   setHardwareWalletLocalData: Action<SetHardwareWalletLocalDataRequestType> = new Action();
   unsetHardwareWalletLocalData: Action<{ walletId: string }> = new Action();

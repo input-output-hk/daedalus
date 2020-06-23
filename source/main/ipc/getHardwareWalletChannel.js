@@ -1,6 +1,7 @@
 // @flow
 import TransportNodeHid from '@ledgerhq/hw-transport-node-hid';
 import AppAda, { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
+import { BrowserWindow } from 'electron';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import {
   GET_HARDWARE_WALLET_TRANSPORT_CHANNEL,
@@ -74,22 +75,22 @@ const signTransactionChannel: MainIpcChannel<
 
 class EventObserver {
   constructor(props) {
-    this.observers = [];
-    this.connectedDevice = null;
-    this.test = props;
+    // $FlowFixMe
+    this.mainWindow = props;
   }
   next(eventText) {
-    if (eventText.type === 'add') {
-      this.connectedDevice = eventText.device.productId;
-    }
     if (eventText.type === 'remove') {
-      const mainWindow = this.test;
       getHardwareWalletConnectionChannel.send(
         { disconnected: true },
-        mainWindow
+        // $FlowFixMe
+        this.mainWindow
       );
     }
   }
+  error(e) {
+    throw e;
+  }
+  complete() {}
 }
 
 export const handleHardwareWalletDevices = (mainWindow: BrowserWindow) => {
@@ -107,19 +108,27 @@ export const handleHardwareWalletRequests = async () => {
     try {
       const transportList = await TransportNodeHid.list();
       let hw;
-      if (!deviceConnection || (deviceConnection && deviceConnection.transport.disconnected)) {
+      // $FlowFixMe
+      if (
+        !deviceConnection ||
+        (deviceConnection &&
+          deviceConnection.transport &&
+          deviceConnection.transport.disconnected)
+      ) {
         if (transportList.length) {
           hw = await TransportNodeHid.create();
         } else {
           hw = await TransportNodeHid.create();
         }
-        const appAda = new AppAda(hw);
-        deviceConnection = appAda;
       } else {
         hw = deviceConnection.transport;
       }
-      const { id, productName } = hw.deviceModel;
-      return Promise.resolve({ id, productName });
+      deviceConnection = new AppAda(hw);
+      if (hw.deviceModel) {
+        const { id, productName } = hw.deviceModel;
+        return Promise.resolve({ id, productName });
+      }
+      throw new Error('Missing device info');
     } catch (error) {
       throw error;
     }
@@ -127,7 +136,6 @@ export const handleHardwareWalletRequests = async () => {
   getCardanoAdaAppChannel.onRequest(async () => {
     const transportList = await TransportNodeHid.list();
     // If transport is initialized outside Cardano ADA app it is set to disconnected so we need to reconnect same channel
-    // if (deviceConnection.transport.disconnected) {
     try {
       const newConnection = await TransportNodeHid.open(transportList[0]);
       deviceConnection = new AppAda(newConnection);
@@ -144,6 +152,9 @@ export const handleHardwareWalletRequests = async () => {
   getExtendedPublicKeyChannel.onRequest(async params => {
     const { path } = params;
     try {
+      if (!deviceConnection) {
+        throw new Error('Device not connected');
+      }
       const extendedPublicKey = deviceConnection.getExtendedPublicKey(path);
       return Promise.resolve(extendedPublicKey);
     } catch (error) {
@@ -155,6 +166,9 @@ export const handleHardwareWalletRequests = async () => {
     // About address derivation - https://github.com/input-output-hk/cardano-wallet/wiki/About-Address-Derivation
     const derivationPath = params.derivationPath || "44'/1815'/0'/1/0";
     try {
+      if (!deviceConnection) {
+        throw new Error('Device not connected');
+      }
       const derivedAddress = await deviceConnection.deriveAddress(
         utils.str_to_path(derivationPath)
       );
@@ -167,7 +181,12 @@ export const handleHardwareWalletRequests = async () => {
   showAddressChannel.onRequest(async params => {
     const derivationPath = params.derivationPath || "44'/1815'/0'/1/0";
     try {
-      const address = await deviceConnection.showAddress(utils.str_to_path(derivationPath));
+      if (!deviceConnection) {
+        throw new Error('Device not connected');
+      }
+      const address = await deviceConnection.showAddress(
+        utils.str_to_path(derivationPath)
+      );
       return Promise.resolve(address);
     } catch (error) {
       throw error;
@@ -177,6 +196,9 @@ export const handleHardwareWalletRequests = async () => {
   attestUtxoChannel.onRequest(async params => {
     const { txHexData, outputIndex } = params;
     try {
+      if (!deviceConnection) {
+        throw new Error('Device not connected');
+      }
       const utxo = await deviceConnection.attestUtxo(txHexData, outputIndex);
       return Promise.resolve(utxo);
     } catch (error) {
@@ -187,7 +209,13 @@ export const handleHardwareWalletRequests = async () => {
   signTransactionChannel.onRequest(async params => {
     const { inputs, outputs } = params;
     try {
-      const signedTransaction = await deviceConnection.signTransaction(inputs, outputs);
+      if (!deviceConnection) {
+        throw new Error('Device not connected');
+      }
+      const signedTransaction = await deviceConnection.signTransaction(
+        inputs,
+        outputs
+      );
       return Promise.resolve(signedTransaction);
     } catch (error) {
       throw error;

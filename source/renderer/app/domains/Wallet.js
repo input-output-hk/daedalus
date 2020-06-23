@@ -113,6 +113,7 @@ export default class Wallet {
   @observable discovery: Discovery;
   @observable hasPassword: boolean;
   @observable walletNotConnected: boolean;
+  @observable isHardwareWallet: boolean;
 
   constructor(data: WalletProps) {
     Object.assign(this, data);
@@ -138,6 +139,7 @@ export default class Wallet {
         'discovery',
         'hasPassword',
         'walletNotConnected',
+        'isHardwareWallet',
       ])
     );
   }

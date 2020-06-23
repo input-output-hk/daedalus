@@ -21,7 +21,7 @@ export const getContentLength = (content: string) =>
   new TextEncoder().encode(content).length;
 
 // legacy wallet ID utils
-export const WalletIdPrefix = 'legacy_' | 'hw_';
+export type WalletIdPrefix = 'legacy_' | 'hw_';
 
 export const WalletIdPrefixes: {
   LEGACY_WALLET: WalletIdPrefix,
