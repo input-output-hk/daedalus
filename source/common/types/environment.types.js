@@ -47,6 +47,7 @@ export const MAINNET_FLIGHT = 'mainnet_flight';
 export const SELFNODE = 'selfnode';
 export const STAGING = 'staging';
 export const TESTNET = 'testnet';
+export const SHELLEY_LOCAL = 'local';
 export const SHELLEY_FF = 'ff';
 export const SHELLEY_QA = 'shelley_qa';
 
