@@ -9,9 +9,8 @@ import {
   intlShape /* FormattedHTMLMessage */,
 } from 'react-intl';
 // import vjf from 'mobx-react-form/lib/validators/VJF';
-// import DialogCloseButton from '../../widgets/DialogCloseButton';
+import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
-// import DialogBackButton from '../../widgets/DialogBackButton';
 import styles from './Step1ConfigurationDialog.scss';
 // import ReactToolboxMobxForm, {
 //   handleFormErrors,
@@ -119,6 +118,7 @@ export default class Step3FailureDialog extends Component<Props> {
         ]}
         onClose={onClose}
         onBack={onBack}
+        closeButton={<DialogCloseButton />}
       >
         {/* <div className={styles.component}>
            {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}

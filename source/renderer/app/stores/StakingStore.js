@@ -51,6 +51,7 @@ export default class StakingStore extends Store {
   setup() {
     const { staking: actions } = this.actions;
     actions.goToRedeemStep.listen(this._goToRedeemStep);
+    actions.closeRedeemDialog.listen(this._closeRedeemDialog);
     if (global.isIncentivizedTestnet && !global.isShelleyTestnet) {
       // Set initial fetch interval to 1 second
       this.refreshPolling = setInterval(
@@ -372,6 +373,9 @@ export default class StakingStore extends Store {
 
   @action _goToRedeemStep = ({ step }: { step: RedeemItnRewardsStep }) => {
     this.redeemStep = step;
+  };
+  @action _closeRedeemDialog = () => {
+    this.redeemStep = null;
   };
 
   _goToStakingInfoPage = () => {

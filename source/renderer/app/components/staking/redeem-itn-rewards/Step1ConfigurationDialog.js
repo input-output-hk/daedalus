@@ -10,9 +10,8 @@ import {
 } from 'react-intl';
 import Wallet from '../../../domains/Wallet';
 // import vjf from 'mobx-react-form/lib/validators/VJF';
-// import DialogCloseButton from '../../widgets/DialogCloseButton';
+import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
-// import DialogBackButton from '../../widgets/DialogBackButton';
 import styles from './Step1ConfigurationDialog.scss';
 // import ReactToolboxMobxForm, {
 //   handleFormErrors,
@@ -37,7 +36,7 @@ const messages = defineMessages({
 
 type Props = {
   wallets: Array<Wallet>,
-  // isSubmitting: boolean,
+  isSubmitting: boolean,
   onContinue: Function,
   onClose: Function,
   // onChange: Function,
@@ -108,14 +107,16 @@ export default class ConfigurationDialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { wallets, onContinue } = this.props;
+    const { wallets, onContinue, onClose, isSubmitting } = this.props;
+    // const canSubmit = !isSubmitting; // && form.isValid;
+    const canSubmit = true;
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
         actions={[
           {
-            // className: isSubmitting ? styles.isSubmitting : null,
-            // disabled: !canSubmit,
+            className: isSubmitting ? styles.isSubmitting : null,
+            disabled: !canSubmit,
             primary: true,
             label: '!!!Continue ->',
             // label: intl.formatMessage(messages.continueButtonLabel),
@@ -123,8 +124,8 @@ export default class ConfigurationDialog extends Component<Props> {
           },
         ]}
         onContinue={onContinue}
-        onClose={() => {}}
-        onBack={() => {}}
+        onClose={onClose}
+        closeButton={<DialogCloseButton />}
       >
         {/* <div className={styles.component}>
            {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
