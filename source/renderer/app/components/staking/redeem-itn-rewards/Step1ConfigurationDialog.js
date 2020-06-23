@@ -37,9 +37,10 @@ const messages = defineMessages({
 type Props = {
   wallets: Array<Wallet>,
   isSubmitting: boolean,
+  isWalletValid: boolean,
   onContinue: Function,
   onClose: Function,
-  // onChange: Function,
+  isWalletValid?: boolean,
   // error?: ?LocalizableError,
 };
 
@@ -107,9 +108,14 @@ export default class ConfigurationDialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { wallets, onContinue, onClose, isSubmitting } = this.props;
-    // const canSubmit = !isSubmitting; // && form.isValid;
-    const canSubmit = true;
+    const {
+      wallets,
+      onContinue,
+      onClose,
+      isSubmitting,
+      isWalletValid,
+    } = this.props;
+    const canSubmit = !isSubmitting && isWalletValid; // && form.isValid;
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
@@ -120,7 +126,11 @@ export default class ConfigurationDialog extends Component<Props> {
             primary: true,
             label: '!!!Continue ->',
             // label: intl.formatMessage(messages.continueButtonLabel),
-            onClick: onContinue,
+            onClick: () =>
+              onContinue({
+                wallet: wallets[0],
+                recoveryPhrase: ['one', 'two'],
+              }),
           },
         ]}
         onContinue={onContinue}

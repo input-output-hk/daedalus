@@ -5,7 +5,6 @@ import ConfigurationContainer from './dialogs/redeem-itn-rewards/Step1Configurat
 import ConfirmationContainer from './dialogs/redeem-itn-rewards/Step2ConfirmationContainer';
 import ResultContainer from './dialogs/redeem-itn-rewards/Step3ResultContainer';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import { REDEEM_ITN_REWARDS_STEPS } from '../../config/stakingConfig';
 
 type Props = InjectedProps;
 
@@ -22,39 +21,36 @@ export default class RedeemItnRewardsContainer extends Component<Props> {
     };
   }
 
-  get nextStep() {
+  get onContinue() {
+    const {
+      onConfigurationContinue,
+      onConfirmationContinue,
+      onResultContinue,
+    } = this.props.actions.staking;
     return {
-      configuration: REDEEM_ITN_REWARDS_STEPS.CONFIRMATION,
-      confirmation: REDEEM_ITN_REWARDS_STEPS.RESULT,
-      result: REDEEM_ITN_REWARDS_STEPS.RESULT,
-    };
-  }
-
-  get prevStep() {
-    return {
-      configuration: REDEEM_ITN_REWARDS_STEPS.CONFIRMATION,
-      confirmation: REDEEM_ITN_REWARDS_STEPS.CONFIGURATION,
-      result: REDEEM_ITN_REWARDS_STEPS.CONFIGURATION,
+      configuration: onConfigurationContinue,
+      confirmation: onConfirmationContinue,
+      result: onResultContinue,
     };
   }
 
   render() {
     const { stores, actions } = this.props;
     const { redeemStep } = stores.staking;
-    const { goToRedeemStep, closeRedeemDialog } = actions.staking;
+    const {
+      // goToNextRedeemStep,
+      goToPrevRedeemStep,
+      closeRedeemDialog,
+    } = actions.staking;
     if (!redeemStep) return null;
+    const onContinue = this.onContinue[redeemStep].trigger;
     const CurrentContainer = this.containers[redeemStep];
-    const onContinue = () =>
-      goToRedeemStep.trigger({ step: this.nextStep[redeemStep] });
-    const onBack = () =>
-      goToRedeemStep.trigger({ step: this.prevStep[redeemStep] });
-    const onClose = closeRedeemDialog.trigger;
     return (
       <Fragment>
         <CurrentContainer
           onContinue={onContinue}
-          onBack={onBack}
-          onClose={onClose}
+          onBack={goToPrevRedeemStep.trigger}
+          onClose={closeRedeemDialog.trigger}
         />
       </Fragment>
     );

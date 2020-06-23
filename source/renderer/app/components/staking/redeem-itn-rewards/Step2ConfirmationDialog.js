@@ -39,7 +39,6 @@ type Props = {
   rewardsTotal: number,
   transactionFees: number,
   finalTotal: number,
-  isSubmitting: boolean,
   onContinue: Function,
   onClose: Function,
   onBack: Function,
@@ -115,7 +114,6 @@ export default class Step2ConfigurationDialog extends Component<Props> {
       rewardsTotal,
       transactionFees,
       finalTotal,
-      isSubmitting,
       onContinue,
       onClose,
       onBack,
@@ -126,7 +124,6 @@ export default class Step2ConfigurationDialog extends Component<Props> {
     console.log('rewardsTotal', rewardsTotal);
     console.log('transactionFees', transactionFees);
     console.log('finalTotal', finalTotal);
-    console.log('isSubmitting', isSubmitting);
     console.log('onContinue', onContinue);
     console.log('onClose', onClose);
     console.log('onBack', onBack);

@@ -5,10 +5,6 @@ import Step1ConfigurationDialog from '../../../../components/staking/redeem-itn-
 import type { InjectedDialogContainerStepProps } from '../../../../types/injectedPropsType';
 import { InjectedDialogContainerStepDefaultProps } from '../../../../types/injectedPropsType';
 // import { isValidMnemonic } from '../../../../../../common/config/crypto/decrypt';
-// import {
-//   getScrambledInput,
-//   unscramblePaperWalletMnemonic,
-// } from '../../../../utils/crypto';
 
 type Props = InjectedDialogContainerStepProps;
 const DefaultProps = InjectedDialogContainerStepDefaultProps;
@@ -21,12 +17,16 @@ export default class Step1ConfigurationContainer extends Component<Props> {
   render() {
     const { onContinue, onClose, onBack, stores } = this.props;
     const { allWallets } = stores.wallets;
+    const isWalletValid = true;
+    const isSubmitting = false;
     return (
       <Step1ConfigurationDialog
         wallets={allWallets}
         onClose={onClose}
         onContinue={onContinue}
         onBack={onBack}
+        isWalletValid={isWalletValid}
+        isSubmitting={isSubmitting}
       />
     );
   }

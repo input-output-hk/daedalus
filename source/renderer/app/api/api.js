@@ -1350,6 +1350,18 @@ export default class AdaApi {
     }
   };
 
+  submitRedeemItnRewards = async (request: any): Promise<any> => {
+    console.log('request', request);
+    const rewardsTotal = 1000;
+    const transactionFees = 1000;
+    const finalTotal = 1000;
+    return {
+      rewardsTotal,
+      transactionFees,
+      finalTotal,
+    };
+  };
+
   exportWalletToFile = async (
     request: ExportWalletToFileRequest
   ): Promise<[]> => {

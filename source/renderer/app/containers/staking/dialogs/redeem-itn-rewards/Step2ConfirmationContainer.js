@@ -25,7 +25,6 @@ export default class Step2ConfirmationContainer extends Component<Props> {
       rewardsTotal,
       transactionFees,
       finalTotal,
-      isSubmitting,
     } = stores.staking;
     return (
       <Step2ConfirmationDialog
@@ -33,7 +32,6 @@ export default class Step2ConfirmationContainer extends Component<Props> {
         rewardsTotal={rewardsTotal}
         transactionFees={transactionFees}
         finalTotal={finalTotal}
-        isSubmitting={isSubmitting}
         error1
         onClose={onClose}
         onContinue={onContinue}

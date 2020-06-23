@@ -21,7 +21,6 @@ export default class Step3ResultContainer extends Component<Props> {
       rewardsTotal,
       transactionFees,
       finalTotal,
-      isSubmitting,
       stakingSuccess,
     } = stores.staking;
 
@@ -32,7 +31,6 @@ export default class Step3ResultContainer extends Component<Props> {
           rewardsTotal={rewardsTotal}
           transactionFees={transactionFees}
           finalTotal={finalTotal}
-          isSubmitting={isSubmitting}
           error1
           onClose={onClose}
           onContinue={onContinue}

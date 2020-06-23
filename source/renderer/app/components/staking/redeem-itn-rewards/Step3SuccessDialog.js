@@ -38,7 +38,6 @@ type Props = {
   rewardsTotal: number,
   transactionFees: number,
   finalTotal: number,
-  isSubmitting: boolean,
   onContinue: Function,
   onClose: Function,
   onBack: Function,

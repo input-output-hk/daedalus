@@ -9,7 +9,6 @@ import InstructionsDialog from '../components/wallet/paper-wallet-certificate/In
 import RedeemItnRewardsContainer from './staking/RedeemItnRewardsContainer';
 import TransferFundsPage from './wallet/TransferFundsPage';
 import type { InjectedContainerProps } from '../types/injectedPropsType';
-import { REDEEM_ITN_REWARDS_STEPS } from '../config/stakingConfig';
 import { ROUTES } from '../routes-config';
 
 @inject('stores', 'actions')
@@ -27,9 +26,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
     if (category === ROUTES.PAPER_WALLET_CREATE_CERTIFICATE) {
       actions.dialogs.open.trigger({ dialog: InstructionsDialog });
     } else if (category === ROUTES.REDEEM_ITN_REWARDS) {
-      actions.staking.goToRedeemStep.trigger({
-        step: REDEEM_ITN_REWARDS_STEPS.CONFIGURATION,
-      });
+      actions.staking.goToNextRedeemStep.trigger();
     } else if (category === ROUTES.NETWORK_INFO) {
       actions.networkStatus.toggleSplash.trigger();
     } else {

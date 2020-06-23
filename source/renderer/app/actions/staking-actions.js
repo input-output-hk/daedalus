@@ -4,7 +4,7 @@ import type {
   JoinStakePoolRequest,
   QuitStakePoolRequest,
 } from '../api/staking/types';
-import type { RedeemItnRewardsStep } from '../types/stakingTypes';
+import Wallet from '../domains/Wallet';
 // ======= STAKING ACTIONS =======
 
 export default class StakingActions {
@@ -14,6 +14,13 @@ export default class StakingActions {
   joinStakePool: Action<JoinStakePoolRequest> = new Action();
   quitStakePool: Action<QuitStakePoolRequest> = new Action();
   /* ----------  Redeem ITN Rewards  ---------- */
-  goToRedeemStep: Action<{ step: RedeemItnRewardsStep }> = new Action();
+  onConfigurationContinue: Action<{
+    wallet: Wallet,
+    recoveryPhrase: Array<string>,
+  }> = new Action();
+  onConfirmationContinue: Action<any> = new Action();
+  onResultContinue: Action<any> = new Action();
+  goToNextRedeemStep: Action<any> = new Action();
+  goToPrevRedeemStep: Action<any> = new Action();
   closeRedeemDialog: Action<any> = new Action();
 }
