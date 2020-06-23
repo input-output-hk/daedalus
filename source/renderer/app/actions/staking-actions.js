@@ -4,6 +4,7 @@ import type {
   JoinStakePoolRequest,
   QuitStakePoolRequest,
 } from '../api/staking/types';
+import type { RedeemItnRewardsStep } from '../types/stakingTypes';
 // ======= STAKING ACTIONS =======
 
 export default class StakingActions {
@@ -12,4 +13,5 @@ export default class StakingActions {
   goToStakingDelegationCenterPage: Action<any> = new Action();
   joinStakePool: Action<JoinStakePoolRequest> = new Action();
   quitStakePool: Action<QuitStakePoolRequest> = new Action();
+  goToRedeemStep: Action<{ step: RedeemItnRewardsStep }> = new Action();
 }

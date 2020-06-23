@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Implemented the Redeem Incentivized testnet rewards feature ([PR 20**](https://github.com/input-output-hk/daedalus/pull/20**))
+
 ### Fixes
 
 - Removed ITN message from the "Create Wallet" dialog in Daedalus Shelley Testnet builds ([PR 2040](https://github.com/input-output-hk/daedalus/pull/2040))

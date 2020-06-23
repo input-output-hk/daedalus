@@ -5,8 +5,11 @@ import Sidebar from '../components/sidebar/Sidebar';
 import TopBarContainer from './TopBarContainer';
 import SidebarLayout from '../components/layout/SidebarLayout';
 import PaperWalletCreateCertificatePage from './wallet/PaperWalletCreateCertificatePage';
+import InstructionsDialog from '../components/wallet/paper-wallet-certificate/InstructionsDialog';
+import RedeemItnRewardsContainer from './staking/RedeemItnRewardsContainer';
 import TransferFundsPage from './wallet/TransferFundsPage';
 import type { InjectedContainerProps } from '../types/injectedPropsType';
+import { REDEEM_ITN_REWARDS_STEPS } from '../config/stakingConfig';
 import { ROUTES } from '../routes-config';
 
 @inject('stores', 'actions')
@@ -17,6 +20,21 @@ export default class MainLayout extends Component<InjectedContainerProps> {
     stores: null,
     children: null,
     onClose: () => {},
+  };
+
+  handleActivateCategory = (category: string) => {
+    const { actions } = this.props;
+    if (category === ROUTES.PAPER_WALLET_CREATE_CERTIFICATE) {
+      actions.dialogs.open.trigger({ dialog: InstructionsDialog });
+    } else if (category === ROUTES.REDEEM_ITN_REWARDS) {
+      actions.staking.goToRedeemStep.trigger({
+        step: REDEEM_ITN_REWARDS_STEPS.CONFIGURATION,
+      });
+    } else if (category === ROUTES.NETWORK_INFO) {
+      actions.networkStatus.toggleSplash.trigger();
+    } else {
+      actions.sidebar.activateSidebarCategory.trigger({ category });
+    }
   };
 
   render() {
@@ -67,17 +85,13 @@ export default class MainLayout extends Component<InjectedContainerProps> {
         isIncentivizedTestnet={global.isIncentivizedTestnet}
         categories={sidebar.CATEGORIES}
         activeSidebarCategory={sidebar.activeSidebarCategory}
-        onActivateCategory={category => {
-          actions.sidebar.activateSidebarCategory.trigger({ category });
-        }}
-        onOpenDialog={dialog => actions.dialogs.open.trigger({ dialog })}
+        onActivateCategory={this.handleActivateCategory}
         onAddWallet={() =>
           actions.router.goToRoute.trigger({ route: ROUTES.WALLETS.ADD })
         }
         onSubmitSupportRequest={() =>
           actions.router.goToRoute.trigger({ route: ROUTES.SETTINGS.SUPPORT })
         }
-        onOpenSplashNetwork={() => actions.networkStatus.toggleSplash.trigger()}
         pathname={this.props.stores.router.location.pathname}
         currentTheme={currentTheme}
         network={network}
@@ -94,6 +108,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
             certificateStep={this.props.stores.wallets.certificateStep}
           />,
           <TransferFundsPage key="TransferFundsPage" />,
+          <RedeemItnRewardsContainer key="RedeemItnRewardsContainer" />,
         ]}
       >
         {this.props.children}

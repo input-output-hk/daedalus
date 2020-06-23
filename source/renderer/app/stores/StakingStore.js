@@ -18,6 +18,7 @@ import type {
   GetDelegationFeeRequest,
   QuitStakePoolRequest,
 } from '../api/staking/types';
+import type { RedeemItnRewardsStep } from '../types/stakingTypes';
 import Wallet from '../domains/Wallet';
 import StakePool from '../domains/StakePool';
 import { TransactionStates } from '../domains/WalletTransaction';
@@ -26,6 +27,9 @@ import REWARDS from '../config/stakingRewards.dummy.json';
 export default class StakingStore extends Store {
   @observable isDelegationTransactionPending = false;
   @observable fetchingStakePoolsFailed = false;
+
+  /* ----------  Redeem ITN Rewards  ---------- */
+  @observable redeemStep: ?RedeemItnRewardsStep = null;
 
   pollingStakePoolsInterval: ?IntervalID = null;
   refreshPolling: ?IntervalID = null;
@@ -39,20 +43,21 @@ export default class StakingStore extends Store {
   _delegationFeeCalculationWalletId: ?string = null;
 
   setup() {
+    const { staking: actions } = this.actions;
+    actions.goToRedeemStep.listen(this._goToRedeemStep);
     if (global.isIncentivizedTestnet && !global.isShelleyTestnet) {
       // Set initial fetch interval to 1 second
       this.refreshPolling = setInterval(
         this.getStakePoolsData,
         STAKE_POOLS_FAST_INTERVAL
       );
-      const { staking } = this.actions;
-      staking.goToStakingInfoPage.listen(this._goToStakingInfoPage);
-      staking.goToStakingDelegationCenterPage.listen(
+      actions.goToStakingInfoPage.listen(this._goToStakingInfoPage);
+      actions.goToStakingDelegationCenterPage.listen(
         this._goToStakingDelegationCenterPage
       );
-      staking.joinStakePool.listen(this._joinStakePool);
-      staking.quitStakePool.listen(this._quitStakePool);
-      staking.fakeStakePoolsLoading.listen(this._setFakePoller);
+      actions.joinStakePool.listen(this._joinStakePool);
+      actions.quitStakePool.listen(this._quitStakePool);
+      actions.fakeStakePoolsLoading.listen(this._setFakePoller);
     }
   }
 
@@ -357,6 +362,10 @@ export default class StakingStore extends Store {
       this.stakePoolsRequest.reset();
       this.stakePoolsRequest.result = newStakePools;
     }
+  };
+
+  @action _goToRedeemStep = ({ step }: { step: RedeemItnRewardsStep }) => {
+    this.redeemStep = step;
   };
 
   _goToStakingInfoPage = () => {
