@@ -134,7 +134,7 @@ export default class WalletsStore extends Store {
   @observable walletKindDaedalus: ?WalletDaedalusKind = null;
   @observable walletKindYoroi: ?WalletYoroiKind = isIncentivizedTestnet
     ? null
-    : WALLET_YOROI_KINDS.BALANCE_15_WORD;
+    : WALLET_YOROI_KINDS.BYRON_15_WORD;
   @observable walletKindHardware: ?WalletHardwareKind = null;
   // STEP: RECOVERY PHRASE
   @observable mnemonics: Array<string> = [];
@@ -384,7 +384,7 @@ export default class WalletsStore extends Store {
     this.walletKindDaedalus = null;
     this.walletKindYoroi = isIncentivizedTestnet
       ? null
-      : WALLET_YOROI_KINDS.BALANCE_15_WORD;
+      : WALLET_YOROI_KINDS.BYRON_15_WORD;
     this.walletKindHardware = null;
     this.mnemonics = [];
     this.walletName = '';
@@ -550,7 +550,7 @@ export default class WalletsStore extends Store {
 
     if (
       this.walletKind === WALLET_KINDS.DAEDALUS &&
-      this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.BALANCE_27_WORD
+      this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.BYRON_27_WORD
     ) {
       // Reset getWalletRecoveryPhraseFromCertificateRequest to clear previous errors
       this.getWalletRecoveryPhraseFromCertificateRequest.reset();
@@ -761,12 +761,12 @@ export default class WalletsStore extends Store {
   @computed get restoreRequest(): Request {
     switch (this.walletKind) {
       case WALLET_KINDS.DAEDALUS:
-        if (this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.REWARD_15_WORD) {
+        if (this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.SHELLEY_15_WORD) {
           return this.restoreDaedalusRequest;
         }
         return this.restoreByronRandomWalletRequest;
       case WALLET_KINDS.YOROI:
-        if (this.walletKindYoroi === WALLET_YOROI_KINDS.BALANCE_15_WORD) {
+        if (this.walletKindYoroi === WALLET_YOROI_KINDS.BYRON_15_WORD) {
           return this.restoreByronIcarusWalletRequest;
         }
         return this.restoreDaedalusRequest;

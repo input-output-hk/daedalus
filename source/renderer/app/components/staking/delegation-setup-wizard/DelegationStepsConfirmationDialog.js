@@ -45,7 +45,7 @@ const messages = defineMessages({
   description: {
     id: 'staking.delegationSetup.confirmation.step.dialog.description',
     defaultMessage:
-      '!!!Confirm your delegation for <span>{selectedWalletName}<span> wallet to <span>[{selectedPoolTicker}]<span> stake pool by posting your delegation preferences on the Cardano blockchain.',
+      '!!!Confirm your delegation choice to <span>[{selectedPoolTicker}]<span> stake pool for your <span>{selectedWalletName}<span> wallet by posting your delegation preferences on the Cardano blockchain.',
     description:
       'Description on the delegation setup "confirmation" step dialog.',
   },

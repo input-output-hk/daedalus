@@ -27,7 +27,7 @@ const messages = defineMessages({
   description: {
     id: 'staking.delegationSetup.chooseWallet.step.dialog.description',
     defaultMessage:
-      '!!!Choose a wallet with funds that you want to delegate. The selected wallet must contain a <span>minimum amount of {minDelegationFunds} ADA</span> for delegation to be available',
+      '!!!Choose a wallet that holds the funds you want to delegate. The selected wallet must contain a <span>minimum amount of {minDelegationFunds} ADA</span> for delegation to be an option.',
     description:
       'Description on the delegation setup "choose wallet" step dialog.',
   },
