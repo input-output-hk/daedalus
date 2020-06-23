@@ -76,14 +76,14 @@ export default class SuccessDialog extends Component<Props> {
 
     const isHardwareWallet = walletKind === WALLET_KINDS.HARDWARE;
     const isDaedalusBalanceWallet =
-      walletKindDaedalus === WALLET_DAEDALUS_KINDS.BALANCE_12_WORD ||
-      walletKindDaedalus === WALLET_DAEDALUS_KINDS.BALANCE_27_WORD;
+      walletKindDaedalus === WALLET_DAEDALUS_KINDS.BYRON_12_WORD ||
+      walletKindDaedalus === WALLET_DAEDALUS_KINDS.BYRON_27_WORD;
     const isDaedalusRewardsWallet =
-      walletKindDaedalus === WALLET_DAEDALUS_KINDS.REWARD_15_WORD;
+      walletKindDaedalus === WALLET_DAEDALUS_KINDS.SHELLEY_15_WORD;
     const isYoroiBalanceWallet =
-      walletKindYoroi === WALLET_YOROI_KINDS.BALANCE_15_WORD;
+      walletKindYoroi === WALLET_YOROI_KINDS.BYRON_15_WORD;
     const isYoroiRewardsWallet =
-      walletKindYoroi === WALLET_YOROI_KINDS.REWARD_15_WORD;
+      walletKindYoroi === WALLET_YOROI_KINDS.SHELLEY_15_WORD;
 
     return (
       <WalletRestoreDialog
