@@ -34,7 +34,7 @@ const messages = defineMessages({
 });
 
 type Props = {
-  walletName: string,
+  walletName?: string,
   rewardsTotal: number,
   transactionFees: number,
   finalTotal: number,

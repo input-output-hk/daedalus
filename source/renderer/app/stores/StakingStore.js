@@ -38,6 +38,7 @@ export default class StakingStore extends Store {
   @observable finalTotal: number = 0;
   @observable isSubmittingReedem: boolean = false;
   @observable stakingSuccess: ?boolean = null;
+  @observable redeemError: ?Error = null;
 
   pollingStakePoolsInterval: ?IntervalID = null;
   refreshPolling: ?IntervalID = null;
@@ -443,11 +444,14 @@ export default class StakingStore extends Store {
         this.redeemStep = steps.CONFIRMATION;
       });
     } catch (error) {
-      this.stakingSuccess = false;
-      this.isSubmittingReedem = false;
-      this.redeemStep = steps.RESULT;
-      this._resetRedeem();
-      throw error;
+      runInAction(() => {
+        this.stakingSuccess = false;
+        this.isSubmittingReedem = false;
+        this.redeemStep = steps.RESULT;
+        this.redeemError = error;
+        this._resetRedeem();
+        throw error;
+      });
     }
   };
 

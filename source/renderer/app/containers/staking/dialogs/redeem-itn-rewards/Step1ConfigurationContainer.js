@@ -4,6 +4,7 @@ import { observer, inject } from 'mobx-react';
 import Step1ConfigurationDialog from '../../../../components/staking/redeem-itn-rewards/Step1ConfigurationDialog';
 import type { InjectedDialogContainerStepProps } from '../../../../types/injectedPropsType';
 import { InjectedDialogContainerStepDefaultProps } from '../../../../types/injectedPropsType';
+import validWords from '../../../../../../common/config/crypto/valid-words.en';
 // import { isValidMnemonic } from '../../../../../../common/config/crypto/decrypt';
 
 type Props = InjectedDialogContainerStepProps;
@@ -17,6 +18,7 @@ export default class Step1ConfigurationContainer extends Component<Props> {
   render() {
     const { onContinue, onClose, onBack, stores } = this.props;
     const { allWallets } = stores.wallets;
+    const { redeemError } = stores.staking;
     const isWalletValid = true;
     const isSubmitting = false;
     return (
@@ -27,6 +29,8 @@ export default class Step1ConfigurationContainer extends Component<Props> {
         onBack={onBack}
         isWalletValid={isWalletValid}
         isSubmitting={isSubmitting}
+        error={redeemError}
+        suggestedMnemonics={validWords}
       />
     );
   }
