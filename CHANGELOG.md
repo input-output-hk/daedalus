@@ -7,6 +7,10 @@ Changelog
 
 - Removed ITN message from the "Create Wallet" dialog in Daedalus Shelley Testnet builds ([PR 2040](https://github.com/input-output-hk/daedalus/pull/2040))
 
+### Chores
+
+- Resolved electron deprecation warnings ([PR 2039](https://github.com/input-output-hk/daedalus/pull/2039))
+
 ## 1.0.0-STN1
 
 ### Features
