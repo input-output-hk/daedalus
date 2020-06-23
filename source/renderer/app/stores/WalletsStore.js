@@ -43,7 +43,10 @@ import type {
 } from '../api/wallets/types';
 import { introspectAddressChannel } from '../ipc/introspect-address.js';
 import type { AddressStyle } from '../../../common/types/address-introspection.types';
-import { TESTNET_MAGIC, SELFNODE_MAGIC } from '../../../common/types/cardano-node.types';
+import {
+  TESTNET_MAGIC,
+  SELFNODE_MAGIC,
+} from '../../../common/types/cardano-node.types';
 
 /* eslint-disable consistent-return */
 
