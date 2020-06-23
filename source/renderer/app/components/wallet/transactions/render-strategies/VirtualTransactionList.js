@@ -65,16 +65,6 @@ export class VirtualTransactionList extends Component<Props> {
   overscanStartIndex: number;
   overscanStopIndex: number;
 
-  componentDidUpdate(prevProps: Props) {
-    // Recompute all row heights in case the number of rows has changed
-    const prevNumberOfRows = prevProps.rows.length;
-    const numberOfRows = this.props.rows.length;
-    if (prevNumberOfRows && prevNumberOfRows !== numberOfRows) {
-      this.rowHeights = this.estimateRowHeights(this.props.rows);
-      this.recomputeVirtualRowHeights();
-    }
-  }
-
   /**
    * Returns the row index of a given tx.
    */
