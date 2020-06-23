@@ -30,13 +30,13 @@ import StakePool from '../../../domains/StakePool';
 const messages = defineMessages({
   title: {
     id: 'staking.delegationSetup.chooseStakePool.step.dialog.title',
-    defaultMessage: '!!!Delegate wallet',
+    defaultMessage: '!!!Choose a stake pool',
     description:
-      'Title "Delegate wallet" on the delegation setup "choose stake pool" dialog.',
+      'Title "Choose a stake pool" on the delegation setup "choose stake pool" dialog.',
   },
   description: {
     id: 'staking.delegationSetup.chooseStakePool.step.dialog.description',
-    defaultMessage: '!!!Currently selected stake pool',
+    defaultMessage: '!!!Currently selected stake pool:',
     description:
       'Description on the delegation setup "choose stake pool" dialog.',
   },
@@ -44,7 +44,7 @@ const messages = defineMessages({
     id:
       'staking.delegationSetup.chooseStakePool.step.dialog.selectStakePoolLabel',
     defaultMessage:
-      '!!!Select a stake pool to delegate to for <span>{selectedWalletName}<span>  wallet.',
+      '!!!Select a stake pool to receive your delegated funds in the <span>{selectedWalletName}<span> wallet.',
     description:
       'Select / Selected pool section label on the delegation setup "choose stake pool" dialog.',
   },
@@ -74,7 +74,7 @@ const messages = defineMessages({
   },
   recentPoolsLabel: {
     id: 'staking.delegationSetup.chooseStakePool.step.dialog.recentPoolsLabel',
-    defaultMessage: '!!!Pick one of your recent stake pool choices:',
+    defaultMessage: '!!!Choose one of your recent stake pool choices:',
     description:
       'Recent "Pool" choice section label on the delegation setup "choose stake pool" dialog.',
   },

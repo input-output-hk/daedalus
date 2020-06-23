@@ -61,7 +61,7 @@ const messages = defineMessages({
   note: {
     id: 'staking.rewards.note',
     defaultMessage:
-      '!!!<p>Rewards earned by delegating your stake are automatically collected into your reward account.</p><p>Rewards earned on the Incentivized Testnet are not added to your Rewards wallet balance. They will be paid to you in real ada on the Cardano mainnet after the end of the Incentivized Testnet.</p><p>If you are using funds from this wallet to operate a stake pool, the rewards displayed here may include your pledged stake, which will not be counted when reward balances are paid out on the Cardano mainnet.</p>',
+      '!!!Rewards earned by delegating your stake are automatically collected into your reward account and added to your wallet balance.',
     description: 'Rewards description text on staking rewards page',
   },
 });

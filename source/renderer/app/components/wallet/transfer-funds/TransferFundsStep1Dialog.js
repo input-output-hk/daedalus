@@ -12,12 +12,12 @@ import { formattedWalletAmount } from '../../../utils/formatters';
 const messages = defineMessages({
   dialogTitle: {
     id: 'wallet.transferFunds.dialog1.title',
-    defaultMessage: '!!!Transfer funds from the legacy wallet',
+    defaultMessage: '!!!Transfer funds from the Byron legacy wallet',
     description: 'Title  in the transfer funds form.',
   },
   sourceWallet: {
     id: 'wallet.transferFunds.dialog1.sourceWallet',
-    defaultMessage: '!!!From legacy wallet',
+    defaultMessage: '!!!From Byron legacy wallet',
     description: 'sourceWallet in the transfer funds form.',
   },
   targetWallet: {

@@ -157,13 +157,13 @@ const walletIdOptions = WALLETS_V2.reduce(
   }),
   {}
 );
-storiesOf('Wallets|Transfer Funds', module)
+storiesOf('Wallets|Legacy Wallets', module)
   .addDecorator(WalletsWrapper)
   .addDecorator(withKnobs)
 
   // ====== Stories ======
 
-  .add('Step1', () => {
+  .add('Transfer Funds - Step1', () => {
     const sourceWalletSelect = select(
       'sourceWallet',
       walletOptions,
@@ -190,7 +190,7 @@ storiesOf('Wallets|Transfer Funds', module)
       />
     );
   })
-  .add('Step2', () => {
+  .add('Transfer Funds - Step2', () => {
     const sourceWalletSelect = select(
       'sourceWallet',
       walletOptions,
