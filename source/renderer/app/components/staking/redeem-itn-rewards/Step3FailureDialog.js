@@ -8,7 +8,6 @@ import {
   defineMessages,
   intlShape /* FormattedHTMLMessage */,
 } from 'react-intl';
-import Wallet from '../../../domains/Wallet';
 // import vjf from 'mobx-react-form/lib/validators/VJF';
 // import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
@@ -24,28 +23,23 @@ import styles from './Step1ConfigurationDialog.scss';
 // } from '../../../utils/validations';
 // import { submitOnEnter } from '../../../utils/form';
 // import globalMessages from '../../../i18n/global-messages';
-// import LocalizableError from '../../../i18n/LocalizableError';
 // import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 
 const messages = defineMessages({
   title: {
-    id: 'staking.redeemItnRewards.step1.title',
-    defaultMessage: '!!!Redeem Incentivized Testnet rewards',
-    description: 'Title for Redeem Incentivized Testnet - Step 1',
+    id: 'staking.redeemItnRewards.step2.title',
+    defaultMessage: '!!!Confirm rewards redemption',
+    description: 'Title for Redeem Incentivized Testnet - Step 2',
   },
 });
 
 type Props = {
-  wallets: Array<Wallet>,
-  // isSubmitting: boolean,
-  onContinue: Function,
   onClose: Function,
-  // onChange: Function,
-  // error?: ?LocalizableError,
+  onBack: Function,
 };
 
 @observer
-export default class ConfigurationDialog extends Component<Props> {
+export default class Step3FailureDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -108,7 +102,8 @@ export default class ConfigurationDialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { wallets, onContinue } = this.props;
+    const { onClose, onBack } = this.props;
+
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
@@ -117,14 +112,13 @@ export default class ConfigurationDialog extends Component<Props> {
             // className: isSubmitting ? styles.isSubmitting : null,
             // disabled: !canSubmit,
             primary: true,
-            label: '!!!Continue ->',
+            label: '!!!Continue',
             // label: intl.formatMessage(messages.continueButtonLabel),
-            onClick: onContinue,
+            // onClick: this.submit,
           },
         ]}
-        onContinue={onContinue}
-        onClose={() => {}}
-        onBack={() => {}}
+        onClose={onClose}
+        onBack={onBack}
       >
         {/* <div className={styles.component}>
            {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}

@@ -2,7 +2,10 @@
 import React, { Component, Fragment } from 'react';
 import { observer, inject } from 'mobx-react';
 import ConfigurationContainer from './dialogs/redeem-itn-rewards/Step1ConfigurationContainer';
+import ConfirmationContainer from './dialogs/redeem-itn-rewards/Step2ConfirmationContainer';
+import ResultContainer from './dialogs/redeem-itn-rewards/Step3ResultContainer';
 import type { InjectedProps } from '../../types/injectedPropsType';
+import { REDEEM_ITN_REWARDS_STEPS } from '../../config/stakingConfig';
 
 type Props = InjectedProps;
 
@@ -14,26 +17,43 @@ export default class RedeemItnRewardsContainer extends Component<Props> {
   get containers() {
     return {
       configuration: ConfigurationContainer,
-      // confirmation: ConfirmationContainer,
-      // success: SuccessContainer,
-      // failure: FailureContainer,
+      confirmation: ConfirmationContainer,
+      result: ResultContainer,
+    };
+  }
+
+  get nextStep() {
+    return {
+      configuration: REDEEM_ITN_REWARDS_STEPS.CONFIRMATION,
+      confirmation: REDEEM_ITN_REWARDS_STEPS.RESULT,
+      result: REDEEM_ITN_REWARDS_STEPS.RESULT,
+    };
+  }
+
+  get prevStep() {
+    return {
+      configuration: REDEEM_ITN_REWARDS_STEPS.CONFIRMATION,
+      confirmation: REDEEM_ITN_REWARDS_STEPS.RESULT,
+      result: REDEEM_ITN_REWARDS_STEPS.RESULT,
     };
   }
 
   render() {
     const { stores, actions } = this.props;
     const { redeemStep } = stores.staking;
-    const { restoreWalletClose, restoreWalletChangeStep } = actions.wallets;
+    const { goToRedeemStep, closeRedeemStep } = actions.staking;
     if (!redeemStep) return null;
-    // const CurrentContainer = this.containers[redeemStep];
-    const CurrentContainer = ConfigurationContainer;
+    const CurrentContainer = this.containers[redeemStep];
+    const nextStep = this.nextStep[redeemStep];
+    const onContinue = () => {
+      console.log('CONTINUE');
+      console.log('nextStep', nextStep);
+      goToRedeemStep.trigger({ step: nextStep });
+    };
+    const onClose = closeRedeemStep.trigger;
     return (
       <Fragment>
-        <CurrentContainer
-          onContinue={() => restoreWalletChangeStep.trigger()}
-          onBack={() => restoreWalletChangeStep.trigger(true)}
-          onClose={() => restoreWalletClose.trigger()}
-        />
+        <CurrentContainer onContinue={onContinue} onClose={onClose} />
       </Fragment>
     );
   }

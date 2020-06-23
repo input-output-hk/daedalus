@@ -30,6 +30,12 @@ export default class StakingStore extends Store {
 
   /* ----------  Redeem ITN Rewards  ---------- */
   @observable redeemStep: ?RedeemItnRewardsStep = null;
+  @observable walletName: string = 'WALLET NAME';
+  @observable rewardsTotal: number = 0;
+  @observable transactionFees: number = 0;
+  @observable finalTotal: number = 0;
+  @observable isSubmitting: boolean = false;
+  @observable stakingSuccess: boolean = true;
 
   pollingStakePoolsInterval: ?IntervalID = null;
   refreshPolling: ?IntervalID = null;

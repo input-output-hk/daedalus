@@ -1,7 +1,3 @@
 // @flow
 
-export type RedeemItnRewardsStep =
-  | 'configuration'
-  | 'confirmation'
-  | 'success'
-  | 'failure';
+export type RedeemItnRewardsStep = 'configuration' | 'confirmation' | 'result';

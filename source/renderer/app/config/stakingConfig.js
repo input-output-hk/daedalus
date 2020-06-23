@@ -37,6 +37,5 @@ export const REDEEM_ITN_REWARDS_STEPS: {
 } = {
   CONFIGURATION: 'configuration',
   CONFIRMATION: 'confirmation',
-  SUCCESS: 'success',
-  FAILURE: 'failure',
+  RESULT: 'result',
 };
