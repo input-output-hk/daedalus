@@ -20,7 +20,6 @@ export default class Step1ConfigurationContainer extends Component<Props> {
 
   render() {
     const { onContinue, onClose, onBack, stores } = this.props;
-    console.log('onContinue -> Step1ConfigurationContainer', onContinue);
     const { allWallets } = stores.wallets;
     return (
       <Step1ConfigurationDialog

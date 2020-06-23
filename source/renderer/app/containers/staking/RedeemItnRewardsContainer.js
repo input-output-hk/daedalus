@@ -33,8 +33,8 @@ export default class RedeemItnRewardsContainer extends Component<Props> {
   get prevStep() {
     return {
       configuration: REDEEM_ITN_REWARDS_STEPS.CONFIRMATION,
-      confirmation: REDEEM_ITN_REWARDS_STEPS.RESULT,
-      result: REDEEM_ITN_REWARDS_STEPS.RESULT,
+      confirmation: REDEEM_ITN_REWARDS_STEPS.CONFIGURATION,
+      result: REDEEM_ITN_REWARDS_STEPS.CONFIGURATION,
     };
   }
 
@@ -44,16 +44,18 @@ export default class RedeemItnRewardsContainer extends Component<Props> {
     const { goToRedeemStep, closeRedeemStep } = actions.staking;
     if (!redeemStep) return null;
     const CurrentContainer = this.containers[redeemStep];
-    const nextStep = this.nextStep[redeemStep];
-    const onContinue = () => {
-      console.log('CONTINUE');
-      console.log('nextStep', nextStep);
-      goToRedeemStep.trigger({ step: nextStep });
-    };
+    const onContinue = () =>
+      goToRedeemStep.trigger({ step: this.nextStep[redeemStep] });
+    const onBack = () =>
+      goToRedeemStep.trigger({ step: this.prevStep[redeemStep] });
     const onClose = closeRedeemStep.trigger;
     return (
       <Fragment>
-        <CurrentContainer onContinue={onContinue} onClose={onClose} />
+        <CurrentContainer
+          onContinue={onContinue}
+          onBack={onBack}
+          onClose={onClose}
+        />
       </Fragment>
     );
   }
