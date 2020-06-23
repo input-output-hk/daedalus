@@ -286,6 +286,7 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
               {...repeatedPasswordField.bind()}
               onKeyPress={this.handleSubmitOnEnter}
               repeatPassword={newPasswordField.value}
+              isPasswordRepeat
             />
           </div>
           <p className={styles.passwordInstructions}>

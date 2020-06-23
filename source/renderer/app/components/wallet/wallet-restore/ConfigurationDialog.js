@@ -266,6 +266,7 @@ export default class ConfigurationDialog extends Component<Props> {
                 onKeyPress={this.handleSubmitOnEnter}
                 {...repeatPasswordField.bind()}
                 repeatPassword={spendingPasswordField.value}
+                isPasswordRepeat
               />
             </div>
             <div className={styles.passwordInstructions}>

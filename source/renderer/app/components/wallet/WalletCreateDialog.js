@@ -276,6 +276,7 @@ export default class WalletCreateDialog extends Component<Props, State> {
               onKeyPress={this.handleSubmitOnEnter}
               {...repeatedPasswordField.bind()}
               repeatPassword={spendingPasswordField.value}
+              isPasswordRepeat
             />
             <p className={styles.passwordInstructions}>
               <FormattedHTMLMessage {...globalMessages.passwordInstructions} />

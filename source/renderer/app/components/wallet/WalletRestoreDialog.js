@@ -605,6 +605,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
               onKeyPress={this.handleSubmitOnEnter}
               {...repeatedPasswordField.bind()}
               repeatPassword={spendingPasswordField.value}
+              isPasswordRepeat
             />
           </div>
           <p className={styles.passwordInstructions}>
