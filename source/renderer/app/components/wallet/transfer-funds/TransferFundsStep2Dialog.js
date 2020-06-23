@@ -32,11 +32,6 @@ const messages = defineMessages({
       '!!!Confirm transfer from {sourceWalletName}wallet to the {targetWalletName} wallet.',
     description: 'description in the transfer funds form.',
   },
-  labelTo: {
-    id: 'wallet.transferFunds.dialog2.label.to',
-    defaultMessage: '!!!To',
-    description: 'Label To in the transfer funds form',
-  },
   labelAmount: {
     id: 'wallet.transferFunds.dialog2.label.amount',
     defaultMessage: '!!!Amount',
@@ -59,7 +54,7 @@ const messages = defineMessages({
   },
   passphraseFieldPlaceholder: {
     id: 'wallet.transferFunds.dialog2.passphraseFieldPlaceholder',
-    defaultMessage: '!!!Type your spending password',
+    defaultMessage: '!!!Spending password',
     description: 'passphraseFieldPlaceholder in the transfer funds form.',
   },
   passphraseLabel: {
@@ -210,12 +205,6 @@ export default class TransferFundsStep2Dialog extends Component<Props, State> {
         >
           {(...content) => <div className={styles.description}>{content}</div>}
         </FormattedMessage>
-        {/* <p className={styles.label}>{intl.formatMessage(messages.labelTo)}</p>
-        <ul className={styles.addresses}>
-          {addresses.map(address => (
-            <li key={address}>{address}</li>
-          ))}
-        </ul> */}
         <div className={styles.amountGroup}>
           <p className={styles.label}>
             {intl.formatMessage(messages.labelAmount)}
