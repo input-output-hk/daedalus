@@ -1402,14 +1402,14 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Legacy",
-        "description": "Label \"Legacy\" on the legacy badge.",
+        "defaultMessage": "!!!Byron",
+        "description": "Label \"Byron\" on the legacy badge.",
         "end": {
           "column": 3,
           "line": 13
         },
         "file": "source/renderer/app/components/notifications/LegacyBadge.js",
-        "id": "wallet.legacy.badge.label",
+        "id": "wallet.byron.badge.label",
         "start": {
           "column": 9,
           "line": 9
@@ -1425,41 +1425,69 @@
         "description": "Title \"Move funds from the legacy wallet\" on the legacy notification.",
         "end": {
           "column": 3,
-          "line": 17
-        },
-        "file": "source/renderer/app/components/notifications/LegacyNotification.js",
-        "id": "wallet.legacy.notification.moveFundsTitle",
-        "start": {
-          "column": 18,
-          "line": 12
-        }
-      },
-      {
-        "defaultMessage": "!!!Create a new wallet",
-        "description": "Title \"Create a new wallet\" on the legacy notification.",
-        "end": {
-          "column": 3,
-          "line": 22
-        },
-        "file": "source/renderer/app/components/notifications/LegacyNotification.js",
-        "id": "wallet.legacy.notification.addWalletTitle",
-        "start": {
-          "column": 18,
           "line": 18
+        },
+        "file": "source/renderer/app/components/notifications/LegacyNotification.js",
+        "id": "wallet.byron.notification.moveFundsTitle",
+        "start": {
+          "column": 18,
+          "line": 13
         }
       },
       {
-        "defaultMessage": "!!!\"{transferWalletName}\"\" is a legacy wallet. It does not support Shelley delegation features. Move testnet ada to a Rewards wallet to delegate your testnet ada stake and earn rewards.",
-        "description": "Legacy notification description WithNoFunds.",
+        "defaultMessage": "!!!Create a Shelley wallet",
+        "description": "Title \"Create a Shelley wallet\" on the legacy notification.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 23
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
-        "id": "wallet.legacy.notification.descriptionWithNoFunds",
+        "id": "wallet.byron.notification.addWalletTitle",
         "start": {
-          "column": 26,
-          "line": 23
+          "column": 18,
+          "line": 19
+        }
+      },
+      {
+        "defaultMessage": "!!!\"{activeWalletName}\"\" is a Byron legacy wallet that does not support Shelley delegation features. To earn ada from delegating your stake, please move all funds from this wallet to a new wallet that is Shelley-compatible.",
+        "description": "Legacy notification description.",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/components/notifications/LegacyNotification.js",
+        "id": "wallet.byron.notification.moveFundsDescription.line1",
+        "start": {
+          "column": 29,
+          "line": 24
+        }
+      },
+      {
+        "defaultMessage": "!!!You can create a {moveFundsLink} or move funds to one of your existing wallets.",
+        "description": "Legacy notification description.",
+        "end": {
+          "column": 3,
+          "line": 35
+        },
+        "file": "source/renderer/app/components/notifications/LegacyNotification.js",
+        "id": "wallet.byron.notification.moveFundsDescription.line2",
+        "start": {
+          "column": 29,
+          "line": 30
+        }
+      },
+      {
+        "defaultMessage": "!!!brand new wallet",
+        "description": "Legacy notification link label.",
+        "end": {
+          "column": 3,
+          "line": 40
+        },
+        "file": "source/renderer/app/components/notifications/LegacyNotification.js",
+        "id": "wallet.byron.notification.moveFundsDescription.line2.link.label",
+        "start": {
+          "column": 22,
+          "line": 36
         }
       },
       {
@@ -1467,13 +1495,41 @@
         "description": "Legacy notification description WithFunds.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 46
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
         "id": "wallet.legacy.notification.descriptionWithFunds",
         "start": {
           "column": 24,
-          "line": 29
+          "line": 41
+        }
+      },
+      {
+        "defaultMessage": "!!!\"{activeWalletName}\"\" is a Byron legacy wallet that does not support Shelley delegation features. To earn ada from delegating your stake, please move all funds from this wallet to a new wallet that is Shelley-compatible.",
+        "description": "Legacy notification description.",
+        "end": {
+          "column": 3,
+          "line": 52
+        },
+        "file": "source/renderer/app/components/notifications/LegacyNotification.js",
+        "id": "wallet.byron.notification.addWalletDescription.line1",
+        "start": {
+          "column": 29,
+          "line": 47
+        }
+      },
+      {
+        "defaultMessage": "!!!Since all of your wallets are Byron legacy wallets you will first need to create a new Shelley wallet.",
+        "description": "Legacy notification description.",
+        "end": {
+          "column": 3,
+          "line": 58
+        },
+        "file": "source/renderer/app/components/notifications/LegacyNotification.js",
+        "id": "wallet.byron.notification.addWalletDescription.line2",
+        "start": {
+          "column": 29,
+          "line": 53
         }
       },
       {
@@ -1481,41 +1537,41 @@
         "description": "Learn more action of legacy notification.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 63
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
-        "id": "wallet.legacy.notification.actionLearnMore",
+        "id": "wallet.byron.notification.actionLearnMore",
         "start": {
           "column": 19,
-          "line": 35
+          "line": 59
         }
       },
       {
-        "defaultMessage": "!!!Move ada from this wallet",
+        "defaultMessage": "!!!Move ada to an existing wallet",
         "description": "Move Move ada from this wallet of legacy notification.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 68
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
-        "id": "wallet.legacy.notification.actionMove",
+        "id": "wallet.byron.notification.actionMove",
         "start": {
           "column": 14,
-          "line": 40
+          "line": 64
         }
       },
       {
-        "defaultMessage": "!!!Create a new Shelley wallet",
-        "description": "Create a new Shelley wallet action of legacy notification.",
+        "defaultMessage": "!!!Create a new wallet",
+        "description": "Create a new wallet action of legacy notification.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 73
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
-        "id": "wallet.legacy.notification.addWallet",
+        "id": "wallet.byron.notification.addWallet",
         "start": {
           "column": 13,
-          "line": 45
+          "line": 69
         }
       },
       {
@@ -1523,13 +1579,13 @@
         "description": "\"Learn more\" link URL",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 79
         },
         "file": "source/renderer/app/components/notifications/LegacyNotification.js",
-        "id": "wallet.legacy.notification.learnMore.url",
+        "id": "wallet.byron.notification.learnMore.url",
         "start": {
           "column": 20,
-          "line": 50
+          "line": 74
         }
       }
     ],
@@ -2709,7 +2765,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Cardano epoch {nextEpochNumber} starts in",
+        "defaultMessage": "!!!Next Cardano epoch starts in",
         "description": "Headline for the Delegation center.",
         "end": {
           "column": 3,
@@ -2756,7 +2812,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!The Delegation Center is not available because you don't have any wallets.",
+        "defaultMessage": "!!!The delegation center is not available because you currently do not have any Shelley-compatible wallets.",
         "description": "\"No wallets\" headLine on the Delegation centre Page.",
         "end": {
           "column": 3,
@@ -2770,7 +2826,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Create a new wallet (or restore an existing one) then come back here to delegate your stake.",
+        "defaultMessage": "!!!Create a new wallet and transfer in a minimum of {minDelegationFunds} ada (or restore an existing wallet with funds), then return here to delegate your stake.",
         "description": "\"No wallets\" instructions on the Delegation centre Page.",
         "end": {
           "column": 3,
@@ -2784,7 +2840,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Create wallet",
+        "defaultMessage": "!!!Create a wallet",
         "description": "Label for \"Create New Wallet\" button on the Delegation centre Page.",
         "end": {
           "column": 3,
@@ -3168,8 +3224,8 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Delegate wallet",
-        "description": "Title \"Delegate wallet\" on the delegation setup \"choose stake pool\" dialog.",
+        "defaultMessage": "!!!Choose a stake pool",
+        "description": "Title \"Choose a stake pool\" on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
           "line": 36
@@ -3182,7 +3238,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Currently selected stake pool",
+        "defaultMessage": "!!!Currently selected stake pool:",
         "description": "Description on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
@@ -3196,7 +3252,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Select a stake pool to delegate to for <span>{selectedWalletName}<span>  wallet.",
+        "defaultMessage": "!!!Select a stake pool to receive your delegated funds in the <span>{selectedWalletName}<span> wallet.",
         "description": "Select / Selected pool section label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
@@ -3252,7 +3308,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Pick one of your recent stake pool choices:",
+        "defaultMessage": "!!!Choose one of your recent stake pool choices:",
         "description": "Recent \"Pool\" choice section label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
@@ -3341,7 +3397,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Choose a wallet with funds that you want to delegate. The selected wallet must contain a <span>minimum amount of {minDelegationFunds} ADA</span> for delegation to be available",
+        "defaultMessage": "!!!Choose a wallet that holds the funds you want to delegate. The selected wallet must contain a <span>minimum amount of {minDelegationFunds} ADA</span> for delegation to be an option.",
         "description": "Description on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
@@ -3472,7 +3528,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Confirm your delegation for <span>{selectedWalletName}<span> wallet to <span>[{selectedPoolTicker}]<span> stake pool by posting your delegation preferences on the Cardano blockchain.",
+        "defaultMessage": "!!!Confirm your delegation choice to <span>[{selectedPoolTicker}]<span> stake pool for your <span>{selectedWalletName}<span> wallet by posting your delegation preferences on the Cardano blockchain.",
         "description": "Description on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
@@ -3692,7 +3748,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Delegation not available",
+        "defaultMessage": "!!!Delegation is not currently available",
         "description": "Title \"Delegation Setup\" on the delegation setup not available dialog.",
         "end": {
           "column": 3,
@@ -3706,7 +3762,7 @@
         }
       },
       {
-        "defaultMessage": "!!!None of your wallets have the <span>minimum amount of {minDelegationFunds} ada</span> required for delegation",
+        "defaultMessage": "!!!None of your wallets currently hold the <span>minimum amount of {minDelegationFunds} that is required for delegation options.",
         "description": "Description on the delegation setup not available dialog.",
         "end": {
           "column": 3,
@@ -3767,7 +3823,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Your new delegation preferences are now posted on the blockchain <strong>and will take effect after both the current and next Cardano epochs have completed in {timeUntilNextEpochStart}</strong>. During this time, your previous delegation preferences are still active.",
+        "defaultMessage": "!!!Your new delegation preferences are now posted on the Cardano blockchain. <strong>These preferences will take effect after both the current and the next Cardano epochs have completed in {timeUntilNextEpochStart}.</strong>. During this time, your previous delegation preferences remain active.",
         "description": "Description \"line 2\" on the delegation setup \"success\" step dialog.",
         "end": {
           "column": 3,
@@ -4222,7 +4278,7 @@
         }
       },
       {
-        "defaultMessage": "!!!<p>Rewards earned by delegating your stake are automatically collected into your reward account.</p><p>Rewards earned on the Incentivized Testnet are not added to your Rewards wallet balance. They will be paid to you in real ada on the Cardano mainnet after the end of the Incentivized Testnet.</p><p>If you are using funds from this wallet to operate a stake pool, the rewards displayed here may include your pledged stake, which will not be counted when reward balances are paid out on the Cardano mainnet.</p>",
+        "defaultMessage": "!!!Rewards earned by delegating your stake are automatically collected into your reward account and added to your wallet balance.",
         "description": "Rewards description text on staking rewards page",
         "end": {
           "column": 3,
@@ -8683,7 +8739,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Transfer funds from the legacy wallet",
+        "defaultMessage": "!!!Transfer funds from the Byron legacy wallet",
         "description": "Title  in the transfer funds form.",
         "end": {
           "column": 3,
@@ -8697,7 +8753,7 @@
         }
       },
       {
-        "defaultMessage": "!!!From legacy wallet",
+        "defaultMessage": "!!!From Byron legacy wallet",
         "description": "sourceWallet in the transfer funds form.",
         "end": {
           "column": 3,
@@ -8772,31 +8828,17 @@
         }
       },
       {
-        "defaultMessage": "!!!To",
-        "description": "Label To in the transfer funds form",
+        "defaultMessage": "!!!Amount",
+        "description": "Label Amount in the transfer funds form",
         "end": {
           "column": 3,
           "line": 39
         },
         "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep2Dialog.js",
-        "id": "wallet.transferFunds.dialog2.label.to",
-        "start": {
-          "column": 11,
-          "line": 35
-        }
-      },
-      {
-        "defaultMessage": "!!!Amount",
-        "description": "Label Amount in the transfer funds form",
-        "end": {
-          "column": 3,
-          "line": 44
-        },
-        "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep2Dialog.js",
         "id": "wallet.transferFunds.dialog2.label.amount",
         "start": {
           "column": 15,
-          "line": 40
+          "line": 35
         }
       },
       {
@@ -8804,13 +8846,13 @@
         "description": "Label Fees in the transfer funds form",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 44
         },
         "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep2Dialog.js",
         "id": "wallet.transferFunds.dialog2.label.fees",
         "start": {
           "column": 13,
-          "line": 45
+          "line": 40
         }
       },
       {
@@ -8818,13 +8860,13 @@
         "description": "Total Fees in the transfer funds form",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 49
         },
         "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep2Dialog.js",
         "id": "wallet.transferFunds.dialog2.label.total",
         "start": {
           "column": 14,
-          "line": 50
+          "line": 45
         }
       },
       {
@@ -8832,27 +8874,27 @@
         "description": "buttonLabel in the transfer funds form.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 54
         },
         "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep2Dialog.js",
         "id": "wallet.transferFunds.dialog2.label.buttonLabel",
         "start": {
           "column": 15,
-          "line": 55
+          "line": 50
         }
       },
       {
-        "defaultMessage": "!!!Type your spending password",
+        "defaultMessage": "!!!Spending password",
         "description": "passphraseFieldPlaceholder in the transfer funds form.",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 59
         },
         "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep2Dialog.js",
         "id": "wallet.transferFunds.dialog2.passphraseFieldPlaceholder",
         "start": {
           "column": 30,
-          "line": 60
+          "line": 55
         }
       },
       {
@@ -8860,13 +8902,13 @@
         "description": "passphraseLabel in the transfer funds form.",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 64
         },
         "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep2Dialog.js",
         "id": "wallet.transferFunds.dialog2.passphraseLabel",
         "start": {
           "column": 19,
-          "line": 65
+          "line": 60
         }
       }
     ],
@@ -9928,73 +9970,45 @@
         }
       },
       {
-        "defaultMessage": "!!!12 words <em>(legacy wallet)</em>",
-        "description": "Label for the \"labelDaedalusWalletKindBalance12Word\" ITN checkbox.",
+        "defaultMessage": "!!!12 words <em>(Byron legacy wallet)</em>",
+        "description": "Label for the \"labelDaedalusWalletKind12WordByron\" checkbox.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 58
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
-        "id": "wallet.restore.dialog.step.walletKind.label.daedalusWalletKindBalance12Word.itn",
+        "id": "wallet.restore.dialog.step.walletKind.label.daedalusWalletKind12WordByron",
         "start": {
-          "column": 43,
+          "column": 38,
           "line": 53
         }
       },
       {
-        "defaultMessage": "!!!12 words",
-        "description": "Label for the \"labelDaedalusWalletKindBalance12Word\" checkbox.",
+        "defaultMessage": "!!!15 words <em>(Shelley wallet)</em>",
+        "description": "Label for the \"labelDaedalusWalletKind15WordShelley\" checkbox.",
         "end": {
           "column": 3,
+          "line": 65
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.walletKind.label.daedalusWalletKind15WordShelley",
+        "start": {
+          "column": 40,
+          "line": 59
+        }
+      },
+      {
+        "defaultMessage": "!!!27 words - paper wallet (Byron legacy wallet)</em>",
+        "description": "Label for the \"labelDaedalusWalletKind27WordPaper\" checkbox.",
+        "end": {
+          "column": 3,
+          "line": 71
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.walletKind.label.daedalusWalletKind27WordPaper",
+        "start": {
+          "column": 38,
           "line": 66
-        },
-        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
-        "id": "wallet.restore.dialog.step.walletKind.label.daedalusWalletKindBalance12Word",
-        "start": {
-          "column": 40,
-          "line": 60
-        }
-      },
-      {
-        "defaultMessage": "!!!15 words",
-        "description": "Label for the \"labelDaedalusWalletKindReward15Word\" checkbox.",
-        "end": {
-          "column": 3,
-          "line": 73
-        },
-        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
-        "id": "wallet.restore.dialog.step.walletKind.label.daedalusWalletKindReward15Word",
-        "start": {
-          "column": 39,
-          "line": 67
-        }
-      },
-      {
-        "defaultMessage": "!!!27 words - paper wallet <em>(legacy wallet)</em>",
-        "description": "Label for the \"labelDaedalusWalletKindBalance27Word\" ITN checkbox.",
-        "end": {
-          "column": 3,
-          "line": 80
-        },
-        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
-        "id": "wallet.restore.dialog.step.walletKind.label.daedalusWalletKindBalance27Word.itn",
-        "start": {
-          "column": 43,
-          "line": 74
-        }
-      },
-      {
-        "defaultMessage": "!!!27 words - paper wallet</em>",
-        "description": "Label for the \"labelDaedalusWalletKindBalance27Word\" checkbox.",
-        "end": {
-          "column": 3,
-          "line": 87
-        },
-        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
-        "id": "wallet.restore.dialog.step.walletKind.label.daedalusWalletKindBalance27Word",
-        "start": {
-          "column": 40,
-          "line": 81
         }
       },
       {
@@ -10002,41 +10016,41 @@
         "description": "Label for the \"labelYoroiWalletKind\" checkbox.",
         "end": {
           "column": 3,
-          "line": 92
+          "line": 76
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.yoroiWalletKind",
         "start": {
           "column": 24,
-          "line": 88
+          "line": 72
         }
       },
       {
-        "defaultMessage": "!!!15 words <em>(legacy wallet)</em>",
-        "description": "Label for the \"labelDaedalusWalletKindBalance15Word\" checkbox.",
+        "defaultMessage": "!!!15 words <em>(Byron legacy wallet)</em>",
+        "description": "Label for the \"labelDaedalusWalletKind15WordByron\" checkbox.",
         "end": {
           "column": 3,
-          "line": 99
+          "line": 82
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
-        "id": "wallet.restore.dialog.step.walletKind.label.yoroiWalletKindBalance15Word",
+        "id": "wallet.restore.dialog.step.walletKind.label.yoroiWalletKindByronLegacy15Word",
+        "start": {
+          "column": 35,
+          "line": 77
+        }
+      },
+      {
+        "defaultMessage": "!!!15 words <em>(Shelley wallet)</em>",
+        "description": "Label for the \"labelDaedalusWalletKind15WordShelley\" checkbox.",
+        "end": {
+          "column": 3,
+          "line": 89
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.walletKind.label.yoroiWalletKindShelley15Word",
         "start": {
           "column": 37,
-          "line": 93
-        }
-      },
-      {
-        "defaultMessage": "!!!15 words <em>(Reward wallet)</em>",
-        "description": "Label for the \"labelDaedalusWalletKindReward15Word\" checkbox.",
-        "end": {
-          "column": 3,
-          "line": 106
-        },
-        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
-        "id": "wallet.restore.dialog.step.walletKind.label.yoroiWalletKindReward15Word",
-        "start": {
-          "column": 36,
-          "line": 100
+          "line": 83
         }
       },
       {
@@ -10044,13 +10058,13 @@
         "description": "Label for the \"labelHardwareWalletKind\" checkbox.",
         "end": {
           "column": 3,
-          "line": 112
+          "line": 95
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.hardwareWalletKind",
         "start": {
           "column": 27,
-          "line": 107
+          "line": 90
         }
       },
       {
@@ -10058,13 +10072,13 @@
         "description": "Label for the \"labelHardwareWalletKindLedger\" checkbox.",
         "end": {
           "column": 3,
-          "line": 117
+          "line": 100
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.hardwareWalletKindLedger",
         "start": {
           "column": 33,
-          "line": 113
+          "line": 96
         }
       },
       {
@@ -10072,13 +10086,13 @@
         "description": "Label for the \"labelHardwareWalletKindTrezor\" checkbox.",
         "end": {
           "column": 3,
-          "line": 122
+          "line": 105
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.hardwareWalletKindTrezor",
         "start": {
           "column": 33,
-          "line": 118
+          "line": 101
         }
       },
       {
@@ -10086,13 +10100,13 @@
         "description": "Label for the \"hardwareWalletDisclaimer1\" disclaimer.",
         "end": {
           "column": 3,
-          "line": 128
+          "line": 111
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.hardwareWalletDisclaimer1",
         "start": {
           "column": 29,
-          "line": 123
+          "line": 106
         }
       },
       {
@@ -10100,13 +10114,13 @@
         "description": "Label for the \"hardwareWalletDisclaimer2\" disclaimer.",
         "end": {
           "column": 3,
-          "line": 134
+          "line": 117
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.hardwareWalletDisclaimer2",
         "start": {
           "column": 29,
-          "line": 129
+          "line": 112
         }
       },
       {
@@ -10114,13 +10128,13 @@
         "description": "Label for the \"hardwareWalletCheckbox1\" disclaimer.",
         "end": {
           "column": 3,
-          "line": 140
+          "line": 123
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.hardwareWalletCheckbox1",
         "start": {
           "column": 27,
-          "line": 135
+          "line": 118
         }
       },
       {
@@ -10128,13 +10142,13 @@
         "description": "Label for the \"hardwareWalletCheckbox2\" disclaimer.",
         "end": {
           "column": 3,
-          "line": 146
+          "line": 129
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.hardwareWalletCheckbox2",
         "start": {
           "column": 27,
-          "line": 141
+          "line": 124
         }
       }
     ],
@@ -10326,8 +10340,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Create a new Shelley wallet",
-        "description": "Description for the \"Create a new Shelley wallet\" button on the wallet add dialog.",
+        "defaultMessage": "!!!Create a new wallet",
+        "description": "Description for the \"Create a new wallet\" button on the wallet add dialog.",
         "end": {
           "column": 3,
           "line": 30
@@ -10485,11 +10499,11 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Create a new Shelley wallet",
-        "description": "Title \"Create a new Shelley wallet\" in the wallet create form.",
+        "defaultMessage": "!!!Create a new wallet",
+        "description": "Title \"Create a new wallet\" in the wallet create form.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 31
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.title.itn",
@@ -10503,13 +10517,13 @@
         "description": "Title \"Create a wallet\" in the wallet create form.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 36
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.title",
         "start": {
           "column": 15,
-          "line": 33
+          "line": 32
         }
       },
       {
@@ -10517,13 +10531,13 @@
         "description": "Label for the \"Wallet Name\" text input in the wallet create form.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 42
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.name.label",
         "start": {
           "column": 14,
-          "line": 38
+          "line": 37
         }
       },
       {
@@ -10531,13 +10545,13 @@
         "description": "Hint for the \"Wallet Name\" text input in the wallet create form.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 48
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.walletNameHint",
         "start": {
           "column": 18,
-          "line": 44
+          "line": 43
         }
       },
       {
@@ -10545,13 +10559,13 @@
         "description": "Label for the \"Create Shelley wallet\" button on create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 54
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.create.personal.wallet.button.label.itn",
         "start": {
           "column": 27,
-          "line": 50
+          "line": 49
         }
       },
       {
@@ -10559,13 +10573,13 @@
         "description": "Label for the \"Create wallet\" button on create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 60
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.create.personal.wallet.button.label",
         "start": {
           "column": 24,
-          "line": 56
+          "line": 55
         }
       },
       {
@@ -10573,13 +10587,13 @@
         "description": "Password creation label.",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 65
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.passwordSectionLabel",
         "start": {
           "column": 24,
-          "line": 62
+          "line": 61
         }
       },
       {
@@ -10587,13 +10601,13 @@
         "description": "Password creation description.",
         "end": {
           "column": 3,
-          "line": 71
+          "line": 70
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.passwordSectionDescription",
         "start": {
           "column": 30,
-          "line": 67
+          "line": 66
         }
       },
       {
@@ -10601,13 +10615,13 @@
         "description": "Label for the \"Wallet password\" input in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 77
+          "line": 76
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 72
+          "line": 71
         }
       },
       {
@@ -10615,13 +10629,13 @@
         "description": "Label for the \"Repeat password\" input in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 82
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.repeatPasswordLabel",
         "start": {
           "column": 23,
-          "line": 78
+          "line": 77
         }
       },
       {
@@ -10629,13 +10643,13 @@
         "description": "Placeholder for the \"Password\" inputs in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 89
+          "line": 88
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.passwordFieldPlaceholder",
         "start": {
           "column": 28,
-          "line": 84
+          "line": 83
         }
       }
     ],
@@ -10648,13 +10662,13 @@
         "description": "Label \"Restore wallet\" on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 43
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.title.label",
         "start": {
           "column": 9,
-          "line": 40
+          "line": 39
         }
       },
       {
@@ -10662,13 +10676,13 @@
         "description": "Label for the wallet name input on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 49
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.wallet.name.input.label",
         "start": {
           "column": 24,
-          "line": 45
+          "line": 44
         }
       },
       {
@@ -10676,13 +10690,13 @@
         "description": "Hint \"Name the wallet you are restoring\" for the wallet name input on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 55
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.wallet.name.input.hint",
         "start": {
           "column": 23,
-          "line": 51
+          "line": 50
         }
       },
       {
@@ -10690,13 +10704,13 @@
         "description": "Label for the recovery phrase type options on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 61
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.recovery.phrase.type.options.label",
         "start": {
           "column": 27,
-          "line": 57
+          "line": 56
         }
       },
       {
@@ -10704,13 +10718,13 @@
         "description": "Word for the recovery phrase type on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 67
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.recovery.phrase.type.word",
         "start": {
           "column": 32,
-          "line": 63
+          "line": 62
         }
       },
       {
@@ -10718,13 +10732,13 @@
         "description": "Label for the recovery phrase type 15-word option on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 74
+          "line": 73
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.recovery.phrase.type.15word.option",
         "start": {
           "column": 34,
-          "line": 69
+          "line": 68
         }
       },
       {
@@ -10732,13 +10746,13 @@
         "description": "Label for the recovery phrase type 12-word option on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 80
+          "line": 79
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.recovery.phrase.type.12word.option",
         "start": {
           "column": 34,
-          "line": 75
+          "line": 74
         }
       },
       {
@@ -10746,13 +10760,13 @@
         "description": "Label for the recovery phrase input on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 86
+          "line": 85
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.recovery.phrase.input.label",
         "start": {
           "column": 28,
-          "line": 81
+          "line": 80
         }
       },
       {
@@ -10760,13 +10774,13 @@
         "description": "Hint \"Enter recovery phrase\" for the recovery phrase input on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 92
+          "line": 91
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.recovery.phrase.input.hint",
         "start": {
           "column": 27,
-          "line": 87
+          "line": 86
         }
       },
       {
@@ -10774,13 +10788,13 @@
         "description": "Label \"new\" on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 97
+          "line": 96
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.recovery.phrase.newLabel",
         "start": {
           "column": 12,
-          "line": 93
+          "line": 92
         }
       },
       {
@@ -10788,13 +10802,13 @@
         "description": "\"No results\" message for the recovery phrase input search results.",
         "end": {
           "column": 3,
-          "line": 103
+          "line": 102
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.recovery.phrase.input.noResults",
         "start": {
           "column": 27,
-          "line": 98
+          "line": 97
         }
       },
       {
@@ -10802,13 +10816,13 @@
         "description": "Label for the \"Restore wallet\" button on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 109
+          "line": 108
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.restore.wallet.button.label",
         "start": {
           "column": 21,
-          "line": 104
+          "line": 103
         }
       },
       {
@@ -10816,13 +10830,13 @@
         "description": "Error message shown when invalid recovery phrase was entered.",
         "end": {
           "column": 3,
-          "line": 115
+          "line": 114
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.form.errors.invalidRecoveryPhrase",
         "start": {
           "column": 25,
-          "line": 110
+          "line": 109
         }
       },
       {
@@ -10830,13 +10844,13 @@
         "description": "Password creation label.",
         "end": {
           "column": 3,
-          "line": 120
+          "line": 119
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.passwordSectionLabel",
         "start": {
           "column": 24,
-          "line": 116
+          "line": 115
         }
       },
       {
@@ -10844,13 +10858,13 @@
         "description": "Password creation description.",
         "end": {
           "column": 3,
-          "line": 126
+          "line": 125
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.passwordSectionDescription",
         "start": {
           "column": 30,
-          "line": 121
+          "line": 120
         }
       },
       {
@@ -10858,13 +10872,13 @@
         "description": "Label for the \"Wallet password\" input in the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 132
+          "line": 131
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 127
+          "line": 126
         }
       },
       {
@@ -10872,13 +10886,13 @@
         "description": "Label for the \"Repeat password\" input in the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 138
+          "line": 137
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.repeatPasswordLabel",
         "start": {
           "column": 23,
-          "line": 133
+          "line": 132
         }
       },
       {
@@ -10886,13 +10900,13 @@
         "description": "Placeholder for the \"Password\" inputs in the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 144
+          "line": 143
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.passwordFieldPlaceholder",
         "start": {
           "column": 28,
-          "line": 139
+          "line": 138
         }
       },
       {
@@ -10900,13 +10914,13 @@
         "description": "Tab title \"Daedalus wallet\" in the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 149
+          "line": 148
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.tab.title.recoveryPhrase",
         "start": {
           "column": 26,
-          "line": 145
+          "line": 144
         }
       },
       {
@@ -10914,13 +10928,13 @@
         "description": "Tab title \"Daedalus paper wallet\" in the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 155
+          "line": 154
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.tab.title.certificate",
         "start": {
           "column": 23,
-          "line": 150
+          "line": 149
         }
       },
       {
@@ -10928,13 +10942,13 @@
         "description": "Tab title \"Yoroi wallet\" in the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 160
+          "line": 159
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.tab.title.yoroi",
         "start": {
           "column": 17,
-          "line": 156
+          "line": 155
         }
       },
       {
@@ -10942,13 +10956,13 @@
         "description": "Label for the shielded recovery phrase input on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 166
+          "line": 165
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.shielded.recovery.phrase.input.label",
         "start": {
           "column": 36,
-          "line": 161
+          "line": 160
         }
       },
       {
@@ -10956,13 +10970,13 @@
         "description": "Hint \"Enter your 27-word paper wallet recovery phrase.\" for the recovery phrase input on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 173
+          "line": 172
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.shielded.recovery.phrase.input.hint",
         "start": {
           "column": 35,
-          "line": 167
+          "line": 166
         }
       },
       {
@@ -10970,13 +10984,13 @@
         "description": "Label for the \"Restore paper wallet\" button on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 179
+          "line": 178
         },
         "file": "source/renderer/app/components/wallet/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.paper.wallet.button.label",
         "start": {
           "column": 33,
-          "line": 174
+          "line": 173
         }
       }
     ],
@@ -12646,13 +12660,13 @@
         "description": "Token description.",
         "end": {
           "column": 3,
-          "line": 292
+          "line": 304
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.token",
         "start": {
           "column": 9,
-          "line": 288
+          "line": 300
         }
       }
     ],
@@ -12807,5 +12821,183 @@
       }
     ],
     "path": "source/renderer/app/utils/paperWalletPdfGenerator.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Create",
+        "description": "Create label.",
+        "end": {
+          "column": 3,
+          "line": 36
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "global.labels.create",
+        "start": {
+          "column": 10,
+          "line": 32
+        }
+      },
+      {
+        "defaultMessage": "!!!Create a new wallet",
+        "description": "Create a new wallet description.",
+        "end": {
+          "column": 3,
+          "line": 41
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "wallet.add.dialog.create.description",
+        "start": {
+          "column": 19,
+          "line": 37
+        }
+      },
+      {
+        "defaultMessage": "!!!Join",
+        "description": "Join label.",
+        "end": {
+          "column": 3,
+          "line": 46
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "wallet.add.dialog.join.label",
+        "start": {
+          "column": 8,
+          "line": 42
+        }
+      },
+      {
+        "defaultMessage": "!!!Join a shared wallet",
+        "description": "Join a shared wallet description.",
+        "end": {
+          "column": 3,
+          "line": 51
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "wallet.add.dialog.join.description",
+        "start": {
+          "column": 20,
+          "line": 47
+        }
+      },
+      {
+        "defaultMessage": "!!!Import",
+        "description": "Import label.",
+        "end": {
+          "column": 3,
+          "line": 56
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "wallet.add.dialog.import.label",
+        "start": {
+          "column": 10,
+          "line": 52
+        }
+      },
+      {
+        "defaultMessage": "!!!Import wallets from an earlier version of Daedalus or the Daedalus state directory",
+        "description": "Import wallets from an earlier version of Daedalus or the Daedalus state directory description.",
+        "end": {
+          "column": 3,
+          "line": 63
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "wallet.add.dialog.import.description",
+        "start": {
+          "column": 24,
+          "line": 57
+        }
+      },
+      {
+        "defaultMessage": "!!!Recovery Phrase",
+        "description": "Recovery Phrase description.",
+        "end": {
+          "column": 3,
+          "line": 68
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "wallet.restore.dialog.mnemonicsStep",
+        "start": {
+          "column": 18,
+          "line": 64
+        }
+      },
+      {
+        "defaultMessage": "!!!Save",
+        "description": "Save description.",
+        "end": {
+          "column": 3,
+          "line": 73
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "global.labels.save",
+        "start": {
+          "column": 8,
+          "line": 69
+        }
+      },
+      {
+        "defaultMessage": "!!!Follow instructions and manually update",
+        "description": "Follow instructions and manually update description.",
+        "end": {
+          "column": 3,
+          "line": 78
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "manualUpdate.button.label",
+        "start": {
+          "column": 22,
+          "line": 74
+        }
+      }
+    ],
+    "path": "storybook/stories/common/Widgets.stories.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Read More",
+        "description": "Read More button label.",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "storybook/stories/news/AlertsOverlay.stories.js",
+        "id": "global.labels.readMore",
+        "start": {
+          "column": 12,
+          "line": 33
+        }
+      },
+      {
+        "defaultMessage": "!!!Failure Alert",
+        "description": "Failure Alert title.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "storybook/stories/news/AlertsOverlay.stories.js",
+        "id": "global.errors.failureAlert",
+        "start": {
+          "column": 16,
+          "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!Content",
+        "description": "Content.",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "storybook/stories/news/AlertsOverlay.stories.js",
+        "id": "static.dummy.markdown",
+        "start": {
+          "column": 11,
+          "line": 43
+        }
+      }
+    ],
+    "path": "storybook/stories/news/AlertsOverlay.stories.json"
   }
 ]
