@@ -11,13 +11,13 @@ const messages = defineMessages({
   },
   versionName: {
     id: 'static.splash.network.stnVersionName',
-    defaultMessage: '!!!SHELLEY TESTNET',
-    description: 'SHELLEY TESTNET',
+    defaultMessage: '!!!SHELLEY BALANCE CHECK',
+    description: 'SHELLEY BALANCE CHECK',
   },
   stnDescription: {
     id: 'static.splash.network.stnDescription',
     defaultMessage:
-      '!!!This version of Daedalus has been created specifically for the use with the second phase of the Shelley Testnet.',
+      '!!!This version of Daedalus has been created specifically for use with the Shelley balance check network. <br>If you participated in the Incentivized Testnet program you can use this version of Daedalus to check your Incentivized Testnet rewards. You can do this by restoring a wallet using the 15-word wallet recovery phrase for your Daedalus Rewards wallet.',
     description: 'stnDescription on network splash screen',
   },
   buttonLabel: {
