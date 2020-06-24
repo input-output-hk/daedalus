@@ -76,6 +76,7 @@ let
         cardanoWalletPkgs = self.cardano-wallet.pkgs;
       };
     };
+    cardano-addresses = (import self.sources.cardano-addresses { inherit system; crossSystem = crossSystem nodePkgs.lib; }).haskellPackages.cardano-addresses.components.exes.cardano-addresses;
     cardano-wallet = import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; crossSystem = crossSystem walletPkgs.lib; };
     cardano-wallet-native = import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; };
     cardano-shell = import self.sources.cardano-shell { inherit system; crossSystem = crossSystem shellPkgs.lib; };
