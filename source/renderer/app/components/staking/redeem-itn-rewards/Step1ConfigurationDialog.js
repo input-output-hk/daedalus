@@ -1,16 +1,15 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import classnames from 'classnames';
+// import classnames from 'classnames';
 import { get } from 'lodash';
+import vjf from 'mobx-react-form/lib/validators/VJF';
 import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
 import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
-import {
-  defineMessages,
-  intlShape /* FormattedHTMLMessage */,
-} from 'react-intl';
+import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
+import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
+import { defineMessages, intlShape } from 'react-intl';
 import Wallet from '../../../domains/Wallet';
-// import vjf from 'mobx-react-form/lib/validators/VJF';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import Dialog from '../../widgets/Dialog';
@@ -21,7 +20,7 @@ import ReactToolboxMobxForm /* ,  {handleFormErrors } */ from '../../../utils/Re
 // import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
-// import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
+import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 
 const messages = defineMessages({
   title: {
@@ -51,7 +50,35 @@ const messages = defineMessages({
     id: 'staking.redeemItnRewards.step1.walletsDropdownError',
     defaultMessage:
       '!!!The selected wallet does not have sufficient ada to cover the necessary transaction fees. Please choose another wallet or add more funds to this one.',
-    description: 'Title for Redeem Incentivized Testnet - Step 1',
+    description:
+      'walletsDropdownError for Redeem Incentivized Testnet - Step 1',
+  },
+  checkbox1Label: {
+    id: 'staking.redeemItnRewards.step1.checkbox1Label',
+    defaultMessage:
+      '!!!I understand that redeeming rewards from the Incentivized Testnet requires paying transaction fees.',
+    description: 'checkbox1Label for Redeem Incentivized Testnet - Step 1',
+  },
+  checkbox2Label: {
+    id: 'staking.redeemItnRewards.step1.checkbox2Label',
+    defaultMessage:
+      '!!!I understand that fees will be paid from the wallet I am redeeming my rewards to.',
+    description: 'checkbox2Label for Redeem Incentivized Testnet - Step 1',
+  },
+  continueButtonLabel: {
+    id: 'staking.redeemItnRewards.step1.continueButton.label',
+    defaultMessage: '!!!Continue',
+    description: 'continueButtonLabel for Redeem Incentivized Testnet - Step 1',
+  },
+  learnMoreLinkLabel: {
+    id: 'staking.redeemItnRewards.step1.learnMoreLink.label',
+    defaultMessage: '!!!Learn More',
+    description: 'learnMoreLinkLabel for Redeem Incentivized Testnet - Step 1',
+  },
+  learnMoreLinkUrl: {
+    id: 'staking.redeemItnRewards.step1.learnMoreLink.url',
+    defaultMessage: '!!!url',
+    description: 'learnMoreLinkUrl for Redeem Incentivized Testnet - Step 1',
   },
 });
 
@@ -59,10 +86,10 @@ type Props = {
   wallets: Array<Wallet>,
   redeemWallet?: Wallet,
   isSubmitting: boolean,
-  isWalletValid: boolean,
   onContinue: Function,
   onClose: Function,
   onSelectWallet: Function,
+  mnemonicValidator: Function,
   isWalletValid?: boolean,
   suggestedMnemonics: Array<string>,
   error?: ?LocalizableError,
@@ -86,41 +113,50 @@ export default class Step1ConfigurationDialog extends Component<Props> {
   //   }
   // }
 
-  form = new ReactToolboxMobxForm({
-    fields: {
-      recoveryPhrase: {
-        value: [],
-        // validators: ({ field }) => {
-        //   console.log('field', field);
-        //   // @REDEEM TODO: validation
-        //   // const { intl } = this.context;
-        //   // const { walletType } = this.state;
-        //   // const enteredWords = field.value;
-        //   // const wordCount = enteredWords.length;
-        //   // const expectedWordCount =
-        //   //   RECOVERY_PHRASE_WORD_COUNT_OPTIONS[walletType];
-        //   // const value = join(enteredWords, ' ');
-        //   // // Regular mnemonics have 12 and paper wallet recovery needs 27 words
-        //   // const isPhraseComplete = wordCount === expectedWordCount;
-        //   // if (!isPhraseComplete) {
-        //   //   return [
-        //   //     false,
-        //   //     intl.formatMessage(globalMessages.incompleteMnemonic, {
-        //   //       expected: expectedWordCount,
-        //   //     }),
-        //   //   ];
-        //   // }
-        //   // return [
-        //   //   // TODO: we should also validate paper wallets mnemonics here!
-        //   //   !this.isCertificate()
-        //   //     ? this.props.mnemonicValidator(value, expectedWordCount)
-        //   //     : true,
-        //   //   this.context.intl.formatMessage(messages.invalidRecoveryPhrase),
-        //   // ];
-        // },
+  form = new ReactToolboxMobxForm(
+    {
+      fields: {
+        recoveryPhrase: {
+          value: [],
+          label: this.context.intl.formatMessage(messages.recoveryPhraseLabel),
+          validators: ({ field }) => {
+            const { intl } = this.context;
+            const enteredWords = field.value;
+            const wordCount = enteredWords.length;
+            const expectedWordCount = WALLET_RECOVERY_PHRASE_WORD_COUNT;
+            const value = enteredWords.join(' ');
+            const isPhraseComplete = wordCount === expectedWordCount;
+            if (!isPhraseComplete) {
+              return [false, 'INCOMPLETE'];
+            }
+            return [
+              this.props.mnemonicValidator(value, expectedWordCount),
+              'this.context.intl.formatMessage(messages.invalidRecoveryPhrase)',
+            ];
+          },
+        },
+        walletsDropdown: {
+          type: 'select',
+          label: this.context.intl.formatMessage(messages.walletsDropdownLabel),
+        },
+        checkboxAcceptance1: {
+          type: 'checkbox',
+          label: this.context.intl.formatMessage(messages.checkbox1Label),
+        },
+        checkboxAcceptance2: {
+          type: 'checkbox',
+          label: this.context.intl.formatMessage(messages.checkbox2Label),
+        },
       },
     },
-  });
+    {
+      plugins: { vjf: vjf() },
+      options: {
+        validateOnChange: true,
+        validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
+      },
+    }
+  );
 
   submit = () => {
     this.form.submit({
@@ -154,6 +190,36 @@ export default class Step1ConfigurationDialog extends Component<Props> {
   //   form.showErrors(false);
   // };
 
+  get walletsDropdownError() {
+    const { intl } = this.context;
+    const { redeemWallet } = this.props;
+    let walletsDropdownError;
+    if (redeemWallet && redeemWallet.amount.isZero())
+      walletsDropdownError = intl.formatMessage(messages.walletsDropdownError);
+    return walletsDropdownError;
+  }
+
+  get canSubmit() {
+    // @REDEEM TODO:
+    // const { isSubmitting, isWalletValid } = this.props;
+    // const { form } = this;
+    // const { checked: checkboxAcceptance1isChecked } = form.$(
+    //   'checkboxAcceptance1'
+    // );
+    // const { checked: checkboxAcceptance2isChecked } = form.$(
+    //   'checkboxAcceptance2'
+    // );
+    return !!this.props.redeemWallet;
+    // return (
+    //   !isSubmitting &&
+    //   isWalletValid &&
+    //   checkboxAcceptance1isChecked &&
+    //   checkboxAcceptance2isChecked &&
+    //   !this.walletsDropdownError &&
+    //   form.isValid
+    // );
+  }
+
   render() {
     const { intl } = this.context;
     const { form } = this;
@@ -163,28 +229,23 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       onContinue,
       onClose,
       isSubmitting,
-      isWalletValid,
       suggestedMnemonics,
       onSelectWallet,
     } = this.props;
-    const canSubmit = !isSubmitting && isWalletValid; // && form.isValid;
     const recoveryPhraseField = form.$('recoveryPhrase');
+    const walletsDropdownField = form.$('walletsDropdown');
+    const checkboxAcceptance1Field = form.$('checkboxAcceptance1');
+    const checkboxAcceptance2Field = form.$('checkboxAcceptance2');
     const redeemWalletId = get(redeemWallet, 'id', null);
-    let walletsDropdownError;
-    if (redeemWallet && redeemWallet.amount.isZero())
-      walletsDropdownError = intl.formatMessage(messages.walletsDropdownError);
-
-    const walletsSelectClasses = classnames([styles.walletSselect]);
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
         actions={[
           {
             className: isSubmitting ? styles.isSubmitting : null,
-            disabled: !canSubmit,
+            disabled: !this.canSubmit,
             primary: true,
-            label: '!!!Continue ->',
-            // label: intl.formatMessage(messages.continueButtonLabel),
+            label: intl.formatMessage(messages.continueButtonLabel),
             onClick: () =>
               onContinue({
                 wallet: wallets[0],
@@ -205,7 +266,6 @@ export default class Step1ConfigurationDialog extends Component<Props> {
             ref={autocomplete => {
               this.recoveryPhraseAutocomplete = autocomplete;
             }}
-            label={intl.formatMessage(messages.recoveryPhraseLabel)}
             options={suggestedMnemonics}
             maxSelections={WALLET_RECOVERY_PHRASE_WORD_COUNT}
             error={recoveryPhraseField.error}
@@ -221,7 +281,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
 
           <WalletsDropdown
             className={styles.walletsDropdown}
-            label={intl.formatMessage(messages.walletsDropdownLabel)}
+            {...walletsDropdownField.bind()}
             numberOfStakePools={4}
             wallets={wallets}
             onChange={onSelectWallet}
@@ -233,38 +293,26 @@ export default class Step1ConfigurationDialog extends Component<Props> {
             }
             value={redeemWalletId}
             getStakePoolById={() => {}}
-            error={walletsDropdownError}
+            error={this.walletsDropdownError}
           />
+
+          <hr />
+
+          <Checkbox
+            {...checkboxAcceptance1Field.bind()}
+            className={styles.checkbox1}
+            skin={CheckboxSkin}
+            error={checkboxAcceptance1Field.error}
+          />
+          <Checkbox
+            {...checkboxAcceptance2Field.bind()}
+            skin={CheckboxSkin}
+            error={checkboxAcceptance2Field.error}
+          />
+
           {/* error && <p className={styles.error}>{intl.formatMessage(error)}</p> */}
         </div>
       </Dialog>
     );
   }
-
-  // render() {
-  //   const { intl } = this.context;
-  //   const { onClose, onBack, error, isSubmitting } = this.props;
-  //   const { form } = this;
-  //   const canSubmit = !isSubmitting && form.isValid;
-  //   return (
-  //     <Dialog
-  //       title={'Redeem Incentivized Testnet rewards'}
-  //       actions={[
-  //         {
-  //           className: isSubmitting ? styles.isSubmitting : null,
-  //           disabled: !canSubmit,
-  //           primary: true,
-  //           label: intl.formatMessage(messages.continueButtonLabel),
-  //           onClick: this.submit,
-  //         },
-  //       ]}
-  //       onClose={onClose}
-  //       onBack={onBack}
-  //     >
-  //       <div className={styles.component}>
-  //         {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
-  //       </div>
-  //     </Dialog>
-  //   );
-  // }
 }

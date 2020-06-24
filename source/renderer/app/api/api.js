@@ -1754,11 +1754,12 @@ export default class AdaApi {
 
 const _createWalletFromServerData = action(
   'AdaApi::_createWalletFromServerData',
-  (wallet: AdaWallet, index) => {
+  (wallet: AdaWallet) => {
     const {
       id: rawWalletId,
       address_pool_gap: addressPoolGap,
-      balance: originalBalance,
+      balance,
+      // balance: originalBalance,
       name,
       passphrase,
       delegation,
@@ -1766,15 +1767,6 @@ const _createWalletFromServerData = action(
       isLegacy = false,
       discovery,
     } = wallet;
-    const bal = {
-      quantity: 1000000000,
-      unit: 'lovelace',
-    };
-    // @REDEEM TODO: REMOVE TEMPORARY CODE!
-    const balance =
-      index === 0
-        ? originalBalance
-        : { reward: bal, total: bal, available: bal };
     const id = isLegacy ? getLegacyWalletId(rawWalletId) : rawWalletId;
     const passphraseLastUpdatedAt = get(passphrase, 'last_updated_at', null);
     const walletTotalAmount =

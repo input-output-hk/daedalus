@@ -5,7 +5,7 @@ import Step1ConfigurationDialog from '../../../../components/staking/redeem-itn-
 import type { InjectedDialogContainerStepProps } from '../../../../types/injectedPropsType';
 import { InjectedDialogContainerStepDefaultProps } from '../../../../types/injectedPropsType';
 import validWords from '../../../../../../common/config/crypto/valid-words.en';
-// import { isValidMnemonic } from '../../../../../../common/config/crypto/decrypt';
+import { isValidMnemonic } from '../../../../../../common/config/crypto/decrypt';
 
 type Props = InjectedDialogContainerStepProps;
 const DefaultProps = InjectedDialogContainerStepDefaultProps;
@@ -31,6 +31,7 @@ export default class Step1ConfigurationContainer extends Component<Props> {
         onBack={onBack}
         isWalletValid={isWalletValid}
         isSubmitting={isSubmitting}
+        mnemonicValidator={isValidMnemonic}
         error={redeemError}
         onSelectWallet={walletId => onSelectRedeemWallet.trigger({ walletId })}
         suggestedMnemonics={validWords}
