@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-// import classnames from 'classnames';
 import { get } from 'lodash';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
@@ -16,7 +15,6 @@ import Dialog from '../../widgets/Dialog';
 // @REDEEM TODO - color variable
 import styles from './Step1ConfigurationDialog.scss';
 import ReactToolboxMobxForm /* ,  {handleFormErrors } */ from '../../../utils/ReactToolboxMobxForm';
-// import { submitOnEnter } from '../../../utils/form';
 // import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
@@ -177,18 +175,6 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       //   handleFormErrors('.ConfigurationDialog_error', { focusElement: true }),
     });
   };
-
-  // handleSubmitOnEnter = submitOnEnter.bind(this, this.submit);
-
-  // resetForm = () => {
-  //   const { form } = this;
-  //   // Cancel all debounced field validations
-  //   form.each(field => {
-  //     field.debouncedValidation.cancel();
-  //   });
-  //   form.reset();
-  //   form.showErrors(false);
-  // };
 
   get walletsDropdownError() {
     const { intl } = this.context;
