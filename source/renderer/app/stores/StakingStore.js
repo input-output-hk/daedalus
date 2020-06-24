@@ -32,6 +32,7 @@ export default class StakingStore extends Store {
 
   /* ----------  Redeem ITN Rewards  ---------- */
   @observable redeemStep: ?RedeemItnRewardsStep = null;
+  @observable redeemWallet: ?Wallet = null;
   @observable walletName: ?string = null;
   @observable rewardsTotal: number = 0;
   @observable transactionFees: number = 0;
@@ -53,10 +54,14 @@ export default class StakingStore extends Store {
 
   setup() {
     const { staking: actions } = this.actions;
+
+    // Redeem ITN Rewards actions
+    actions.onSelectRedeemWallet.listen(this._onSelectRedeemWallet);
     actions.onConfigurationContinue.listen(this._onConfigurationContinue);
     actions.goToNextRedeemStep.listen(this._goToNextRedeemStep);
     actions.goToPrevRedeemStep.listen(this._goToPrevRedeemStep);
     actions.closeRedeemDialog.listen(this._closeRedeemDialog);
+
     if (global.isIncentivizedTestnet && !global.isShelleyTestnet) {
       // Set initial fetch interval to 1 second
       this.refreshPolling = setInterval(
@@ -416,6 +421,14 @@ export default class StakingStore extends Store {
 
   @action _goToResultStep = () => {
     this.redeemStep = steps.RESULT;
+  };
+
+  @action _onSelectRedeemWallet = async ({
+    walletId,
+  }: {
+    walletId: string,
+  }) => {
+    this.redeemWallet = this.stores.wallets.getWalletById(walletId);
   };
 
   @action _onConfigurationContinue = async ({

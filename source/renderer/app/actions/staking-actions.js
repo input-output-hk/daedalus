@@ -14,6 +14,7 @@ export default class StakingActions {
   joinStakePool: Action<JoinStakePoolRequest> = new Action();
   quitStakePool: Action<QuitStakePoolRequest> = new Action();
   /* ----------  Redeem ITN Rewards  ---------- */
+  onSelectRedeemWallet: Action<{ walletId: string }> = new Action();
   onConfigurationContinue: Action<{
     wallet: Wallet,
     recoveryPhrase: Array<string>,

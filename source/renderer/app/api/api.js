@@ -1351,7 +1351,6 @@ export default class AdaApi {
   };
 
   submitRedeemItnRewards = async (request: any): Promise<any> => {
-    console.log('request', request);
     const rewardsTotal = 1000;
     const transactionFees = 1000;
     const finalTotal = 1000;
@@ -1755,11 +1754,11 @@ export default class AdaApi {
 
 const _createWalletFromServerData = action(
   'AdaApi::_createWalletFromServerData',
-  (wallet: AdaWallet) => {
+  (wallet: AdaWallet, index) => {
     const {
       id: rawWalletId,
       address_pool_gap: addressPoolGap,
-      balance,
+      balance: originalBalance,
       name,
       passphrase,
       delegation,
@@ -1767,7 +1766,15 @@ const _createWalletFromServerData = action(
       isLegacy = false,
       discovery,
     } = wallet;
-
+    const bal = {
+      quantity: 1000000000,
+      unit: 'lovelace',
+    };
+    // @REDEEM TODO: REMOVE TEMPORARY CODE!
+    const balance =
+      index === 0
+        ? originalBalance
+        : { reward: bal, total: bal, available: bal };
     const id = isLegacy ? getLegacyWalletId(rawWalletId) : rawWalletId;
     const passphraseLastUpdatedAt = get(passphrase, 'last_updated_at', null);
     const walletTotalAmount =
