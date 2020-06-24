@@ -1595,6 +1595,7 @@ export default class AdaApi {
           this.deleteWallet({
             walletId: wallet.id,
             isLegacy: wallet.isLegacy,
+            isHardwareWallet: wallet.isHardwareWallet,
           })
         )
       );
