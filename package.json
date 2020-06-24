@@ -60,7 +60,8 @@
     "js-launcher": "node utils/js-launcher/index.js",
     "create-news-verification-hashes": "node utils/create-news-verification-hashes/index.js",
     "lockfile:check": "node utils/lockfile-checker/index.js --check",
-    "lockfile:fix": "node utils/lockfile-checker/index.js --fix"
+    "lockfile:fix": "node utils/lockfile-checker/index.js --fix",
+    "postinstall": "electron-rebuild"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"
@@ -163,7 +164,7 @@
     "yarn-lockfile": "1.1.1"
   },
   "dependencies": {
-    "@cardano-foundation/ledgerjs-hw-app-cardano": "^1.0.8",
+    "@cardano-foundation/ledgerjs-hw-app-cardano": "1.0.8",
     "@ledgerhq/hw-transport-node-hid": "5.15.0",
     "aes-js": "3.1.2",
     "bignumber.js": "5.0.0",
@@ -172,7 +173,7 @@
     "bs58": "4.0.1",
     "cardano-js": "0.4.5",
     "cardano-launcher": "0.20200414.1",
-    "cbor": "^5.0.2",
+    "cbor": "5.0.2",
     "check-disk-space": "2.1.0",
     "chroma-js": "2.1.0",
     "classnames": "2.2.6",
@@ -180,7 +181,7 @@
     "cucumber-html-reporter": "5.1.0",
     "electron": "8.2.2",
     "electron-log-daedalus": "2.2.20",
-    "electron-rebuild": "^1.10.1",
+    "electron-rebuild": "1.10.1",
     "electron-store": "5.1.1",
     "es6-error": "4.1.1",
     "form-data": "3.0.0",
