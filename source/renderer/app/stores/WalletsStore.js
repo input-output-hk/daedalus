@@ -178,14 +178,6 @@ export default class WalletsStore extends Store {
   @observable transferFundsStep: number = 0;
   @observable transferFundsFee: ?BigNumber = null;
 
-  /* ----------  Hardware Wallet  ---------- */
-  @observable isExportingPublicKeyAborted = false;
-  @observable exportingExtendedPublicKey = false;
-  @observable isDeviceConnected = false;
-  @observable fetchingDevice = false;
-  @observable isTrezor = false;
-  @observable isLedger = false;
-
   /* ----------  Other  ---------- */
 
   _newWalletDetails: {
@@ -1080,12 +1072,18 @@ export default class WalletsStore extends Store {
             syncState.status !== WalletSyncStateStatuses.NOT_RESPONDING
         )
         .map((wallet: Wallet) => wallet.id);
+
       await this.actions.walletsLocal.refreshWalletsLocalData.trigger();
       await this.actions.hardwareWallets.refreshHardwareWalletsLocalData.trigger();
 
       runInAction('refresh active wallet', () => {
         if (this.active) {
           this._setActiveWallet({ walletId: this.active.id });
+        }
+        if (this.activeHardwareWallet) {
+          this._setActiveHardwareWallet({
+            walletId: this.activeHardwareWallet.id,
+          });
         }
       });
       runInAction('refresh address data', () => {

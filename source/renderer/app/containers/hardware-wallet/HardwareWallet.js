@@ -8,7 +8,6 @@ import { ROUTES } from '../../routes-config';
 import WalletWithNavigation from '../../components/wallet/layouts/WalletWithNavigation';
 import HardwareWalletAddPage from './HardwareWalletAddPage';
 import ChangeSpendingPasswordDialog from '../../components/wallet/settings/ChangeSpendingPasswordDialog';
-import LoadingSpinner from '../../components/widgets/LoadingSpinner';
 import type { InjectedContainerProps } from '../../types/injectedPropsType';
 import type { NavDropdownProps } from '../../components/navigation/Navigation';
 
@@ -57,39 +56,29 @@ export default class HardwareWallet extends Component<Props> {
     const { isOpen: isDialogOpen } = uiDialogs;
     const { restartNode } = actions.networkStatus;
     const { activeHardwareWallet } = wallets;
+    const { hardwareWalletsConnectionData } = hardwareWallets;
 
-    if (!activeHardwareWallet) {
-      return (
-        <MainLayout>
-          <LoadingSpinner />
-        </MainLayout>
-      );
-    }
+    const activeHardwareWalletId = get(activeHardwareWallet, 'id');
+    const isWalletDisconnected = get(
+      hardwareWalletsConnectionData,
+      [activeHardwareWalletId, 'disconnected'],
+      true
+    );
+
+    // Redirect to HW add / connect page if wallet disconnected or there is no active wallets
+    if (!activeHardwareWallet || (activeHardwareWallet && isWalletDisconnected))
+      return <HardwareWalletAddPage />;
 
     const { isLegacy, isNotResponding, id, hasPassword } = activeHardwareWallet;
     const {
-      isTrezor,
-      isLedger,
-      hardwareWalletsConnectionData,
-    } = hardwareWallets;
-    const isWalletDisconnected = get(
-      hardwareWalletsConnectionData,
-      [id, 'disconnected'],
-      true
-    );
-    const {
       hasNotification,
     } = walletSettings.getWalletsRecoveryPhraseVerificationData(id);
-
-    if (isWalletDisconnected) return <HardwareWalletAddPage />;
 
     return (
       <MainLayout>
         <WalletWithNavigation
           activeItem={app.currentPage}
           hasNotification={hasNotification}
-          isLedger={isLedger}
-          isTrezor={isTrezor}
           isActiveScreen={this.isActiveScreen}
           isLegacy={isLegacy}
           isNotResponding={isNotResponding}

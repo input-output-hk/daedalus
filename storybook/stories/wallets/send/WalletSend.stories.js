@@ -30,6 +30,7 @@ storiesOf('Wallets|Send', module)
       isRestoreActive={boolean('isRestoreActive', false)}
       walletAmount={new BigNumber(123)}
       hwDeviceStatus={HwDeviceStatuses.READY}
+      isHardwareWallet={boolean('isHardwareWallet', false)}
     />
   ))
   .add('Send - Hardware wallet verifying transaction', () => (
@@ -46,6 +47,7 @@ storiesOf('Wallets|Send', module)
       isRestoreActive={boolean('isRestoreActive', false)}
       walletAmount={new BigNumber(123)}
       hwDeviceStatus={HwDeviceStatuses.VERIFYING_TRANSACTION}
+      isHardwareWallet={boolean('isHardwareWallet', true)}
     />
   ))
   .add('Send - Hardware wallet verifying transaction succeeded', () => (
@@ -62,6 +64,7 @@ storiesOf('Wallets|Send', module)
       isRestoreActive={boolean('isRestoreActive', false)}
       walletAmount={new BigNumber(123)}
       hwDeviceStatus={HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED}
+      isHardwareWallet={boolean('isHardwareWallet', true)}
     />
   ))
   .add('Send - Hardware wallet verifying transaction failed', () => (
@@ -78,5 +81,6 @@ storiesOf('Wallets|Send', module)
       isRestoreActive={boolean('isRestoreActive', false)}
       walletAmount={new BigNumber(123)}
       hwDeviceStatus={HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED}
+      isHardwareWallet={boolean('isHardwareWallet', true)}
     />
   ));

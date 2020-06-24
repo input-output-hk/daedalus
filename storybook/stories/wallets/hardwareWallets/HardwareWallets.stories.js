@@ -1,10 +1,25 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { boolean } from '@storybook/addon-knobs';
 import ConnectHardwareWallet from '../../../../source/renderer/app/components/hardware-wallet/settings/ConnectHardwareWallet';
 import HardwareWalletsWrapper from '../_utils/HardwareWalletsWrapper';
 import { HwDeviceStatuses } from '../../../../source/renderer/app/domains/Wallet';
+import {
+  DeviceModels,
+  DeviceTypes,
+} from '../../../../source/renderer/app/stores/HardwareWalletsStore';
+
+const ledgerDevice = {
+  id: DeviceModels.LEDGER_NANO_S,
+  productName: 'Ledger Nano S',
+  deviceType: DeviceTypes.LEDGER,
+};
+
+const trezorDevice = {
+  id: DeviceModels.TREZOR,
+  productName: 'Trezor',
+  deviceType: DeviceTypes.TREZOR,
+};
 
 storiesOf('Wallets|Hardware Wallets', module)
   .addDecorator(HardwareWalletsWrapper)
@@ -13,80 +28,70 @@ storiesOf('Wallets|Hardware Wallets', module)
 
   .add('Hardware wallet connect Ledger step 1', () => (
     <ConnectHardwareWallet
-      isLedger={boolean('isLedger', true)}
-      isTrezor={boolean('isTrezor', false)}
+      transportDevice={ledgerDevice}
       hwDeviceStatus={HwDeviceStatuses.CONNECTING}
     />
   ))
 
   .add('Hardware wallet connect Ledger step 2', () => (
     <ConnectHardwareWallet
-      isLedger={boolean('isLedger', true)}
-      isTrezor={boolean('isTrezor', false)}
+      transportDevice={ledgerDevice}
       hwDeviceStatus={HwDeviceStatuses.LAUNCHING_CARDANO_APP}
     />
   ))
 
   .add('Hardware wallet connect Ledger step 3', () => (
     <ConnectHardwareWallet
-      isLedger={boolean('isLedger', true)}
-      isTrezor={boolean('isTrezor', false)}
+      transportDevice={ledgerDevice}
       hwDeviceStatus={HwDeviceStatuses.EXPORTING_PUBLIC_KEY}
     />
   ))
 
   .add('Hardware wallet connect Ledger step 4', () => (
     <ConnectHardwareWallet
-      isLedger={boolean('isLedger', true)}
-      isTrezor={boolean('isTrezor', false)}
+      transportDevice={ledgerDevice}
       hwDeviceStatus={HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED}
     />
   ))
 
   .add('Hardware wallet connect Ledger step 5', () => (
     <ConnectHardwareWallet
-      isLedger={boolean('isLedger', true)}
-      isTrezor={boolean('isTrezor', false)}
+      transportDevice={ledgerDevice}
       hwDeviceStatus={HwDeviceStatuses.READY}
     />
   ))
 
-  .add('Hardware wallet connect Ledger step 1', () => (
+  .add('Hardware wallet connect Trezor step 1', () => (
     <ConnectHardwareWallet
-      isLedger={boolean('isLedger', false)}
-      isTrezor={boolean('isTrezor', true)}
+      transportDevice={trezorDevice}
       hwDeviceStatus={HwDeviceStatuses.CONNECTING}
     />
   ))
 
-  .add('Hardware wallet connect Ledger step 2', () => (
+  .add('Hardware wallet connect Trezor step 2', () => (
     <ConnectHardwareWallet
-      isLedger={boolean('isLedger', false)}
-      isTrezor={boolean('isTrezor', true)}
+      transportDevice={trezorDevice}
       hwDeviceStatus={HwDeviceStatuses.LAUNCHING_CARDANO_APP}
     />
   ))
 
-  .add('Hardware wallet connect Ledger step 3', () => (
+  .add('Hardware wallet connect Trezor step 3', () => (
     <ConnectHardwareWallet
-      isLedger={boolean('isLedger', false)}
-      isTrezor={boolean('isTrezor', true)}
+      transportDevice={trezorDevice}
       hwDeviceStatus={HwDeviceStatuses.EXPORTING_PUBLIC_KEY}
     />
   ))
 
-  .add('Hardware wallet connect Ledger step 4', () => (
+  .add('Hardware wallet connect Trezor step 4', () => (
     <ConnectHardwareWallet
-      isLedger={boolean('isLedger', false)}
-      isTrezor={boolean('isTrezor', true)}
+      transportDevice={trezorDevice}
       hwDeviceStatus={HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED}
     />
   ))
 
-  .add('Hardware wallet connect Ledger step 5', () => (
+  .add('Hardware wallet connect Trezor step 5', () => (
     <ConnectHardwareWallet
-      isLedger={boolean('isLedger', false)}
-      isTrezor={boolean('isTrezor', true)}
+      transportDevice={trezorDevice}
       hwDeviceStatus={HwDeviceStatuses.READY}
     />
   ));

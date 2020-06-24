@@ -9,6 +9,11 @@ import trezorIcon from '../../../assets/images/hardware-wallet/trezor.inline.svg
 import unknownDeviceIcon from '../../../assets/images/hardware-wallet/trezor-ledger.inline.svg';
 import styles from './ConnectHardwareWallet.scss';
 import HardwareWalletStatus from '../status/HardwareWalletStatus';
+import {
+  DeviceModels,
+  DeviceTypes,
+} from '../../../stores/HardwareWalletsStore';
+import type { TransportDevice } from '../../../stores/HardwareWalletsStore';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
 
 const messages = defineMessages({
@@ -35,9 +40,8 @@ const messages = defineMessages({
 });
 
 type Props = {
-  isLedger: boolean,
-  isTrezor: boolean,
   hwDeviceStatus: HwDeviceStatus,
+  transportDevice: TransportDevice,
 };
 
 @observer
@@ -49,7 +53,10 @@ export default class ConnectHardwareWallet extends Component<Props> {
   render() {
     const { intl } = this.context;
 
-    const { isLedger, isTrezor, hwDeviceStatus } = this.props;
+    const { hwDeviceStatus, transportDevice } = this.props;
+
+    const isLedger = transportDevice.deviceType === DeviceTypes.LEDGER;
+    const isTrezor = transportDevice.deviceType === DeviceTypes.TREZOR;
 
     let hardwareTitle = intl.formatMessage(messages.hardwareWalletTitle);
     if (isTrezor) {
@@ -72,8 +79,12 @@ export default class ConnectHardwareWallet extends Component<Props> {
             )}
             {isLedger && (
               <div className={styles.hardwareWalletLedger}>
-                <SVGInline svg={ledgerXIcon} className={styles.ledgerXIcon} />
-                <SVGInline svg={ledgerIcon} className={styles.ledgerIcon} />
+                {transportDevice.id === DeviceModels.LEDGER_NANO_X && (
+                  <SVGInline svg={ledgerXIcon} className={styles.ledgerXIcon} />
+                )}
+                {transportDevice.id === DeviceModels.LEDGER_NANO_S && (
+                  <SVGInline svg={ledgerIcon} className={styles.ledgerIcon} />
+                )}
               </div>
             )}
             {isTrezor && (

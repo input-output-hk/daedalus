@@ -17,6 +17,7 @@ type Props = {
   currencyUnit: string,
   onExternalLinkClick: Function,
   hwDeviceStatus: HwDeviceStatus,
+  isHardwareWallet: boolean,
 };
 
 @inject('actions', 'stores')
@@ -39,6 +40,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
       amountToNaturalUnits,
       currencyUnit,
       hwDeviceStatus,
+      isHardwareWallet,
     } = this.props;
     const { stores } = this.props;
     const { sendMoneyRequest, active: activeWallet } = stores.wallets;
@@ -65,6 +67,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
         currencyUnit={currencyUnit}
         onExternalLinkClick={onExternalLinkClick}
         hwDeviceStatus={hwDeviceStatus}
+        isHardwareWallet={isHardwareWallet}
       />
     );
   }

@@ -110,6 +110,7 @@ type Props = {
   error: ?LocalizableError,
   currencyUnit: string,
   hwDeviceStatus: HwDeviceStatus,
+  isHardwareWallet: boolean,
 };
 
 @observer
@@ -193,6 +194,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
       currencyUnit,
       onExternalLinkClick,
       hwDeviceStatus,
+      isHardwareWallet,
     } = this.props;
 
     const confirmButtonClasses = classnames([
@@ -228,9 +230,6 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
         intl.formatMessage(error)
       );
     }
-
-    // TODO: remove
-    const isHardwareWallet = false;
 
     return (
       <Dialog

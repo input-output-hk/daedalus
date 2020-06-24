@@ -7,7 +7,7 @@ import Wallet from '../domains/Wallet';
 import { WALLET_UTXO_API_REQUEST_INTERVAL } from '../config/timingConfig';
 import { getRecoveryWalletIdChannel } from '../ipc/getRecoveryWalletIdChannel';
 import { getStatusFromWalletData } from '../utils/walletRecoveryPhraseVerificationUtils';
-import { getRawWalletId } from '../api/utils';
+import { getRawWalletId, WalletIdPrefixes } from '../api/utils';
 import type { WalletExportToFileParams } from '../actions/wallet-settings-actions';
 import type { WalletUtxos } from '../api/wallets/types';
 import type { WalletLocalData } from '../api/utils/localStorage';
@@ -214,9 +214,18 @@ export default class WalletSettingsStore extends Store {
   };
 
   @action _getWalletUtxoApiData = async () => {
-    const activeWallet = this.stores.wallets.active;
+    const {
+      active,
+      activeHardwareWallet,
+      isHardwareWalletRoute,
+    } = this.stores.wallets;
+    const activeWallet = isHardwareWalletRoute ? activeHardwareWallet : active;
     if (!activeWallet) return;
-    const { id: walletId, isLegacy } = activeWallet;
+
+    const { id, isLegacy } = activeWallet;
+    const walletId = isHardwareWalletRoute
+      ? getRawWalletId(id, WalletIdPrefixes.HARDWARE_WALLET)
+      : id;
     const walletUtxos = await this.getWalletUtxosRequest.execute({
       walletId,
       isLegacy,

@@ -28,16 +28,10 @@ import type {
 } from '../api/utils/localStorage';
 import type { BIP32Path } from '../../../common/ipc/api';
 
-export type DeviceModel = 'nanoS' | 'nanoX' | 'trezor';
-export type DeviceType = 'ledger' | 'trezor';
 export type TxSignRequestTypes = {
   txDataHex: string,
   recieverAddress: string,
   coinSelection: CoinSelectionsResponse,
-};
-export type TransportDevice = {
-  id: DeviceModel,
-  productName: string,
 };
 export type ExtendedPublicKey = {
   publicKeyHex: string,
@@ -61,6 +55,15 @@ export type EncodeSignedTransactionRequest = {|
     xpub: ExtendedPublicKey,
   }>,
 |};
+
+export type TransportDevice = {
+  id: DeviceModel,
+  productName: string,
+  deviceType: DeviceType,
+};
+
+export type DeviceModel = 'nanoS' | 'nanoX' | 'trezor';
+export type DeviceType = 'ledger' | 'trezor';
 
 export const DeviceModels: {
   LEDGER_NANO_S: DeviceModel,
@@ -104,8 +107,6 @@ export default class HardwareWalletsStore extends Store {
   @observable extendedPublicKey: ?string = null;
   @observable derivedAddress: ?string = null;
   @observable signedTransaction: ?string = null;
-  @observable isTrezor: boolean = false;
-  @observable isLedger: boolean = false;
   @observable transportDevice: TransportDevice = {};
 
   cardanoAdaAppPollingInterval: ?IntervalID = null;
@@ -171,9 +172,10 @@ export default class HardwareWalletsStore extends Store {
       const transportDevice = await getHardwareWalletTransportChannel.request();
       const deviceType = this._deviceType(transportDevice.id);
       runInAction('HardwareWalletsStore:: set HW device connected', () => {
-        this.isLedger = deviceType === DeviceTypes.LEDGER;
-        this.isTrezor = deviceType === DeviceTypes.TREZOR;
-        this.transportDevice = transportDevice;
+        this.transportDevice = {
+          ...transportDevice,
+          deviceType,
+        };
       });
       // Start poller to recognize if Cardano App is launched on device
       this.cardanoAdaAppPollingInterval = setInterval(
@@ -351,8 +353,6 @@ export default class HardwareWalletsStore extends Store {
     this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
     this.extendedPublicKey = null;
     this.transportDevice = {};
-    this.isLedger = false;
-    this.isTrezor = false;
   };
 
   @action _refreshHardwareWalletsLocalData = () => {

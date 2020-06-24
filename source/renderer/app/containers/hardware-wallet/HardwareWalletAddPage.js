@@ -3,14 +3,14 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import ConnectHardwareWallet from '../../components/hardware-wallet/settings/ConnectHardwareWallet';
 import Layout from '../MainLayout';
-import type { InjectedProps } from '../../types/injectedPropsType';
+import type { InjectedStoresProps } from '../../types/injectedPropsType';
 
-type Props = InjectedProps;
+type Props = InjectedStoresProps;
 
-@inject('stores', 'actions')
+@inject('stores')
 @observer
 export default class HardwareWalletAddPage extends Component<Props> {
-  static defaultProps = { stores: null, actions: null };
+  static defaultProps = { stores: null };
 
   componentDidMount() {
     const {
@@ -32,14 +32,15 @@ export default class HardwareWalletAddPage extends Component<Props> {
   }
 
   render() {
-    const { hardwareWallets } = this.props.stores;
-    const { isTrezor, isLedger, hwDeviceStatus } = hardwareWallets;
+    const {
+      hwDeviceStatus,
+      transportDevice,
+    } = this.props.stores.hardwareWallets;
 
     return (
       <Layout>
         <ConnectHardwareWallet
-          isLedger={isLedger}
-          isTrezor={isTrezor}
+          transportDevice={transportDevice}
           hwDeviceStatus={hwDeviceStatus}
         />
       </Layout>

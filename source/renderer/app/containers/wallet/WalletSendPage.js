@@ -67,6 +67,7 @@ export default class WalletSendPage extends Component<Props> {
         isRestoreActive={activeWallet.isRestoring}
         onExternalLinkClick={app.openExternalLink}
         hwDeviceStatus={hwDeviceStatus}
+        isHardwareWallet={activeWallet.isHardwareWallet}
       />
     );
   }

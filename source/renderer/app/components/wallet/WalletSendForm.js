@@ -115,6 +115,7 @@ type Props = {
   onExternalLinkClick?: Function,
   isRestoreActive: boolean,
   hwDeviceStatus: HwDeviceStatus,
+  isHardwareWallet: boolean,
 };
 
 type State = {
@@ -261,6 +262,7 @@ export default class WalletSendForm extends Component<Props, State> {
       isRestoreActive,
       onExternalLinkClick,
       hwDeviceStatus,
+      isHardwareWallet,
     } = this.props;
     const {
       isTransactionFeeCalculated,
@@ -355,6 +357,7 @@ export default class WalletSendForm extends Component<Props, State> {
             currencyUnit={currencyUnit}
             onExternalLinkClick={onExternalLinkClick}
             hwDeviceStatus={hwDeviceStatus}
+            isHardwareWallet={isHardwareWallet}
           />
         ) : null}
       </div>

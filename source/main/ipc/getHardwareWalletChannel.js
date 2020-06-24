@@ -108,11 +108,11 @@ export const handleHardwareWalletRequests = async () => {
     try {
       const transportList = await TransportNodeHid.list();
       let hw;
-      // $FlowFixMe
       if (
         !deviceConnection ||
         (deviceConnection &&
           deviceConnection.transport &&
+          // $FlowFixMe
           deviceConnection.transport.disconnected)
       ) {
         if (transportList.length) {
