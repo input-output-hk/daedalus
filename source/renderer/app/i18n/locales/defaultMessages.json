@@ -4634,6 +4634,20 @@
         }
       },
       {
+        "defaultMessage": "!!!Pledge:",
+        "description": "\"Pledge\" for the Stake Pools Tooltip page.",
+        "end": {
+          "column": 3,
+          "line": 79
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
+        "id": "staking.stakePools.tooltip.pledge",
+        "start": {
+          "column": 10,
+          "line": 75
+        }
+      },
+      {
         "defaultMessage": "!!!Delegate to this pool",
         "description": "\"Delegate to this pool\" Button for the Stake Pools Tooltip page.",
         "end": {

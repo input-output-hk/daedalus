@@ -433,7 +433,7 @@ export const SHELLEY_TESTNET_THEME_OUTPUT = {
   },
   reportIssue: {
     '--theme-report-issue-button-background-color': '#898ee6',
-    '--theme-report-issue-button-background-color-hover': '#ffc64d',
+    '--theme-report-issue-button-background-color-hover': '#abaeed',
     '--theme-report-issue-button-background-color-active': '#e6a009',
     '--theme-report-issue-connecting-background-color':
       'rgba(255, 255, 255, 0.05)',
@@ -708,9 +708,9 @@ export const SHELLEY_TESTNET_THEME_OUTPUT = {
     '--theme-staking-stake-pool-tooltip-delegate-button-background-color':
       '#898ee6',
     '--theme-staking-stake-pool-tooltip-delegate-button-hover-background-color':
-      '#ffc64d',
+      '#abaeed',
     '--theme-staking-stake-pool-tooltip-delegate-button-active-background-color':
-      '#ffc64d',
+      '#abaeed',
     '--theme-staking-stake-pool-tooltip-delegate-button-text-color':
       'rgba(18, 19, 38, 1)',
     '--theme-staking-stake-pool-tooltip-delegate-button-inverse-text-color':

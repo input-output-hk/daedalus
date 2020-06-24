@@ -72,11 +72,11 @@ const messages = defineMessages({
   //  defaultMessage: '!!!Operating Costs:',
   //  description: 'Cost" for the Stake Pools Tooltip page.',
   // },
-  // pledge: {
-  //   id: 'staking.stakePools.tooltip.pledge',
-  //   defaultMessage: '!!!Pledge:',
-  //   description: '"Pledge" for the Stake Pools Tooltip page.',
-  // },
+  pledge: {
+    id: 'staking.stakePools.tooltip.pledge',
+    defaultMessage: '!!!Pledge:',
+    description: '"Pledge" for the Stake Pools Tooltip page.',
+  },
   delegateButton: {
     id: 'staking.stakePools.tooltip.delegateButton',
     defaultMessage: '!!!Delegate to this pool',
@@ -394,6 +394,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
       cost,
       profitMargin,
       saturation,
+      pledge,
     } = stakePool;
 
     const componentClassnames = classnames([
@@ -510,6 +511,10 @@ export default class StakePoolTooltip extends Component<Props, State> {
                 {`${parseFloat(profitMargin.toFixed(2))}%`}
               </span>
             </dd>
+            <dt>{intl.formatMessage(messages.pledge)}</dt>
+            <dd className={styles.defaultColor}>
+              <span>{formattedWalletAmount(pledge)}</span>
+            </dd>
             <dt>{intl.formatMessage(messages.costPerEpoch)}</dt>
             <dd className={styles.cost}>
               <span
@@ -541,19 +546,6 @@ export default class StakePoolTooltip extends Component<Props, State> {
               </span>
             </dd> */}
           </dl>
-          {/* <dt>{intl.formatMessage(messages.pledge)}</dt> */}
-          {/* <dd>
-              <span
-                style={{
-                  background: getColorFromRange(pledge, {
-                    darken,
-                    alpha,
-                  }),
-                }}
-              >
-                {formattedWalletAmount(pledge)}
-              </span>
-            </dd> */}
         </div>
         {onSelect && showWithSelectButton && (
           <Button
