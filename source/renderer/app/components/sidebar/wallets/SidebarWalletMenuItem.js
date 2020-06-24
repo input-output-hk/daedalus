@@ -23,7 +23,7 @@ type Props = {
   isNotResponding: boolean,
   hasNotification: boolean,
   isHardwareWalletsMenu?: boolean,
-  isConnected?: boolean,
+  isHardwareWalletDisconnected?: boolean,
 };
 
 @observer
@@ -42,7 +42,7 @@ export default class SidebarWalletMenuItem extends Component<Props> {
       isNotResponding,
       hasNotification,
       isHardwareWalletsMenu,
-      isConnected,
+      isHardwareWalletDisconnected,
     } = this.props;
 
     const componentStyles = classNames([
@@ -59,7 +59,7 @@ export default class SidebarWalletMenuItem extends Component<Props> {
         <div className={styles.meta}>
           <div className={styles.topContainer}>
             <div className={styles.title}>{title}</div>
-            {isHardwareWalletsMenu && !isConnected && (
+            {isHardwareWalletsMenu && isHardwareWalletDisconnected && (
               <SVGInline
                 svg={disconnectedIcon}
                 className={styles.disconnectedIcon}

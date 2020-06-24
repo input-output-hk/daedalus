@@ -5,6 +5,7 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
 import { Scrollbars } from 'react-custom-scrollbars';
+import { map } from 'lodash';
 import SidebarSubMenu from '../SidebarMenu';
 import styles from './SidebarWalletsMenu.scss';
 import addWalletIcon from '../../../assets/images/sidebar/add-wallet-ic.inline.svg';
@@ -68,7 +69,7 @@ export default class SidebarWalletsMenu extends Component<Props> {
             renderThumbVertical={this.renderThumb}
             hideTracksWhenNotNeeded
           >
-            {wallets.map(wallet => (
+            {map(wallets, wallet => (
               <SidebarWalletMenuItem
                 title={wallet.title}
                 info={wallet.info}
@@ -83,7 +84,9 @@ export default class SidebarWalletsMenu extends Component<Props> {
                 isLegacy={wallet.isLegacy}
                 isHardwareWalletsMenu={isHardwareWalletsMenu}
                 hasNotification={wallet.hasNotification}
-                isConnected={wallet.isConnected}
+                isHardwareWalletDisconnected={
+                  wallet.isHardwareWalletDisconnected
+                }
               />
             ))}
           </Scrollbars>

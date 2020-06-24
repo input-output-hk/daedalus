@@ -62,7 +62,7 @@ export default class SidebarStore extends Store {
     const { hardwareWalletsConnectionData } = hardwareWallets;
 
     return wallets.allHardwareWallets.map(wallet => {
-      const isWalletDisconnected = get(
+      const isHardwareWalletDisconnected = get(
         hardwareWalletsConnectionData,
         [wallet.id, 'disconnected'],
         true
@@ -79,7 +79,7 @@ export default class SidebarStore extends Store {
         restoreProgress: wallet.restorationProgress,
         isNotResponding: wallet.isNotResponding,
         isLegacy: wallet.isLegacy,
-        isHardwareWalletConnected: !isWalletDisconnected,
+        isHardwareWalletDisconnected,
         hasNotification,
       };
     });

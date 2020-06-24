@@ -1,5 +1,5 @@
 // @flow
-import { split, get, map, last, includes } from 'lodash';
+import { split, get, map, last } from 'lodash';
 import { action } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
@@ -8,6 +8,7 @@ import moment from 'moment';
 import Wallet, {
   WalletDelegationStatuses,
   WalletUnits,
+  WalletDiscovery,
 } from '../domains/Wallet';
 import {
   WalletTransaction,
@@ -202,11 +203,8 @@ import { getNewsHash } from './news/requests/getNewsHash';
 import { deleteTransaction } from './transactions/requests/deleteTransaction';
 import { WALLET_BYRON_KINDS } from '../config/walletRestoreConfig';
 import ApiError from '../domains/ApiError';
-import LocalStorageApi from './utils/localStorage';
 
-const { isIncentivizedTestnet, environment } = global;
-const { network } = environment;
-const _localStorageApi = new LocalStorageApi(network);
+const { isIncentivizedTestnet } = global;
 
 export default class AdaApi {
   config: RequestConfig;
@@ -221,11 +219,6 @@ export default class AdaApi {
   }
 
   getWallets = async (): Promise<Array<Wallet>> => {
-    const storedHardwareWallets = await _localStorageApi.getHardwareWalletsLocalData();
-    const hwIds = map(storedHardwareWallets, hw =>
-      getRawWalletId(hw.id, WalletIdPrefixes.HARDWARE_WALLET)
-    );
-
     logger.debug('AdaApi::getWallets called');
     try {
       const wallets: AdaWallets = isIncentivizedTestnet
@@ -252,13 +245,7 @@ export default class AdaApi {
         });
       });
 
-      return wallets.map(wallet => {
-        const walletData = {
-          ...wallet,
-          isHardwareWallet: includes(hwIds, wallet.id),
-        };
-        return _createWalletFromServerData(walletData);
-      });
+      return wallets.map(_createWalletFromServerData);
     } catch (error) {
       logger.error('AdaApi::getWallets error', { error });
       throw new ApiError(error);
@@ -1887,9 +1874,9 @@ const _createWalletFromServerData = action(
       delegation,
       state: syncState,
       isLegacy = false,
-      isHardwareWallet,
       discovery,
     } = wallet;
+    const isHardwareWallet = discovery === WalletDiscovery.SEQUENTIAL;
 
     let id = rawWalletId;
     if (isLegacy) id = getLegacyWalletId(rawWalletId);
