@@ -14,6 +14,7 @@ import Wallet from '../../../domains/Wallet';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import Dialog from '../../widgets/Dialog';
+// @REDEEM TODO - color variable
 import styles from './Step1ConfigurationDialog.scss';
 import ReactToolboxMobxForm /* ,  {handleFormErrors } */ from '../../../utils/ReactToolboxMobxForm';
 // import { submitOnEnter } from '../../../utils/form';
@@ -170,7 +171,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
     const recoveryPhraseField = form.$('recoveryPhrase');
     const redeemWalletId = get(redeemWallet, 'id', null);
     let walletsDropdownError;
-    if (redeemWallet && redeemWallet.amount.isZero)
+    if (redeemWallet && redeemWallet.amount.isZero())
       walletsDropdownError = intl.formatMessage(messages.walletsDropdownError);
 
     const walletsSelectClasses = classnames([styles.walletSselect]);
@@ -196,7 +197,9 @@ export default class Step1ConfigurationDialog extends Component<Props> {
         closeButton={<DialogCloseButton />}
       >
         <div className={styles.component}>
-          <p>{intl.formatMessage(messages.description)}</p>
+          <p className={styles.description}>
+            {intl.formatMessage(messages.description)}
+          </p>
           <Autocomplete
             {...recoveryPhraseField.bind()}
             ref={autocomplete => {
@@ -211,12 +214,13 @@ export default class Step1ConfigurationDialog extends Component<Props> {
               'NO RESULTS LABEL'
               // intl.formatMessage(messages.recoveryPhraseNoResults)
             }
+            className={styles.recoveryPhrase}
             skin={AutocompleteSkin}
             optionHeight={50}
           />
 
           <WalletsDropdown
-            className={walletsSelectClasses}
+            className={styles.walletsDropdown}
             label={intl.formatMessage(messages.walletsDropdownLabel)}
             numberOfStakePools={4}
             wallets={wallets}

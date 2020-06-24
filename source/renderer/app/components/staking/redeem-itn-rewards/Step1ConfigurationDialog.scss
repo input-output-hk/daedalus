@@ -1,3 +1,21 @@
 .component {
-  // background: red;
+}
+
+.description {
+  color: rgba(255, 255, 255, 0.7);
+  font-family: var(--font-regular);
+  font-size: 16px;
+  height: 132px;
+  line-height: 1.38;
+  margin-bottom: 20px;
+  text-align: center;
+  width: 620px;
+}
+
+.recoveryPhrase {
+  margin-bottom: 20px;
+}
+
+.walletsDropdown {
+  margin-bottom: 20px;
 }
