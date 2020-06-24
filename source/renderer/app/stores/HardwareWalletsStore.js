@@ -237,21 +237,40 @@ export default class HardwareWalletsStore extends Store {
 
   @action _getExtendedPublicKey = async () => {
     this.hwDeviceStatus = HwDeviceStatuses.EXPORTING_PUBLIC_KEY;
+    const { activeHardwareWallet } = this.stores.wallets;
     const path = [
       utils.HARDENED + 44,
       utils.HARDENED + 1815,
       utils.HARDENED + 0,
     ];
-
     try {
       const extendedPublicKey = await getExtendedPublicKeyChannel.request({
         path,
       });
+      // Check if public key matches active hardware wallet public key
+      if (activeHardwareWallet && this.hardwareWalletsConnectionData) {
+        const activeHardwareWalletConnection = this.hardwareWalletsConnectionData[activeHardwareWallet.id];
+        const activeHardwareWalletConnectionKeys = get(activeHardwareWalletConnection, 'extendedPublicKey', {});
+        if (activeHardwareWalletConnectionKeys.publicKeyHex === extendedPublicKey.publicKeyHex) {
+          this._setHardwareWalletLocalData({
+            walletId: activeHardwareWallet.id,
+            data: {
+              disconnected: false,
+            },
+          });
+          return;
+        }
+        throw new Error(
+          `Wrong Hardware Wallet device supplied to "${activeHardwareWallet.name}" wallet`
+        );
+      }
+      // Wallet not set, create new one with default name
       await this.actions.wallets.createHardwareWallet.trigger({
         walletName: DEFAULT_HW_NAME,
         extendedPublicKey,
         device: this.transportDevice,
       });
+
       runInAction('HardwareWalletsStore:: set wallet READY', () => {
         this.extendedPublicKey = extendedPublicKey;
         this.hwDeviceStatus = HwDeviceStatuses.READY;
