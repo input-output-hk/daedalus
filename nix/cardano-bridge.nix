@@ -12,13 +12,10 @@ in runCommand "daedalus-cardano-bridge" {
   mkdir -pv $out/bin
   cd $out/bin
   echo ${cardano-wallet.version} > $out/version
-  cp ${cardano-wallet}/bin/* .
-  cp ${cardano-address}/bin/* .
+  cp -f ${cardano-wallet}/bin/* .
+  cp -f ${cardano-address}/bin/* .
   cp -f ${cardano-shell.nix-tools.cexes.cardano-launcher.cardano-launcher}/bin/cardano-launcher* .
   cp -f ${cardano-node}/bin/cardano-node* .
   cp -f ${export-wallets}/bin/export-wallets* .
   cp -f ${cardano-cli}/bin/cardano-cli* .
-  ${pkgs.lib.optionalString (target == "x86_64-windows") ''
-    cp -f ${pkgsCross.libffi}/bin/libffi-6.dll .
-  ''}
 ''
