@@ -9,7 +9,10 @@ import {
 import { formattedWalletAmount } from './formatters';
 import { DateRangeTypes } from '../stores/TransactionsStore';
 import type { TransactionFilterOptionsType } from '../stores/TransactionsStore';
-import type { EncodeSignedTransactionRequest } from '../stores/HardwareWalletsStore';
+import type {
+  EncodeSignedTransactionRequest,
+  SignedTransactionWitnesses,
+} from '../stores/HardwareWalletsStore';
 import type { CoinSelectionsResponse } from '../api/transactions/types';
 
 const cbor = require('cbor');
@@ -282,48 +285,21 @@ export const validateFilterForm = (values: {
   };
 };
 
+class List {
+  constructor(xs) {
+    // $FlowFixMe
+    this.elems = xs;
+  }
+  encodeCBOR(encoder) {
+    encoder.push(rawBuffer('9F')); // Begin Indefinite list
+    // $FlowFixMe
+    this.elems.forEach(el => encoder.pushAny(el));
+    encoder.push(rawBuffer('FF')); // Break Indefinite list
+    return true;
+  }
+}
+
 export const thDataHexGenerator = (txData: CoinSelectionsResponse) => {
-  class List {
-    constructor(xs) {
-      // $FlowFixMe
-      this.elems = xs;
-    }
-    encodeCBOR(encoder) {
-      encoder.push(raw('9F')); // Begin Indefinite list
-      // $FlowFixMe
-      this.elems.forEach(el => encoder.pushAny(el));
-      encoder.push(raw('FF')); // Break Indefinite list
-      return true;
-    }
-  }
-  function raw(str) {
-    return Buffer.from(str, 'hex');
-  }
-  function encodeTransaction(data) {
-    return cbor.encode([
-      encodeInputs(data.inputs),
-      encodeOutputs(data.outputs),
-      encodeAttributes(),
-    ]);
-    function encodeInputs(inps) {
-      return new List(inps.map(i => [0, new cbor.Tagged(24, encodeInput(i))]));
-      function encodeInput({ id, index }) {
-        return cbor.encode([raw(id), index]);
-      }
-    }
-    function encodeOutputs(outs) {
-      return new List(
-        outs.map(o => [encodeAddress(o.address), o.amount.quantity])
-      );
-      function encodeAddress(addr) {
-        const bytes = bs58.decode(addr);
-        return cbor.decodeFirstSync(bytes);
-      }
-    }
-    function encodeAttributes() {
-      return {}; // always empty in Byron
-    }
-  }
   const txDataHex = encodeTransaction(txData).toString('hex');
   return txDataHex;
 };
@@ -345,20 +321,49 @@ export const encodeSignedTransaction = ({
   //    ]
   //  }
   return Buffer.concat([
-    raw('82'),
-    raw(txDataHex),
+    rawBuffer('82'),
+    rawBuffer(txDataHex),
     cbor.encode(witnesses.map(encodeWitness)),
   ]).toString('hex');
+};
 
-  function raw(str) {
-    return Buffer.from(str, 'hex');
-  }
+const rawBuffer = str => {
+  return Buffer.from(str, 'hex');
+};
 
-  function encodeWitness({ signature, xpub }) {
-    const witness = [
-      Buffer.concat([raw(xpub.publicKeyHex), raw(xpub.chainCodeHex)]),
-      raw(signature),
-    ];
-    return [0, new cbor.Tagged(24, cbor.encode(witness))];
-  }
+const encodeWitness = ({ signature, xpub }: SignedTransactionWitnesses) => {
+  const witness = [
+    Buffer.concat([rawBuffer(xpub.publicKeyHex), rawBuffer(xpub.chainCodeHex)]),
+    rawBuffer(signature),
+  ];
+  return [0, new cbor.Tagged(24, cbor.encode(witness))];
+};
+
+const encodeTransaction = data => {
+  return cbor.encode([
+    encodeTransactionInputs(data.inputs),
+    encodeTransactionOutputs(data.outputs),
+    {}, // always empty in Byron
+  ]);
+};
+
+const encodeTransactionInputs = inps => {
+  return new List(
+    inps.map(i => [0, new cbor.Tagged(24, encodeTransactionInput(i))])
+  );
+};
+
+const encodeTransactionInput = ({ id, index }) => {
+  return cbor.encode([rawBuffer(id), index]);
+};
+
+const encodeTransactionOutputs = outs => {
+  return new List(
+    outs.map(o => [encodeTransactionAddress(o.address), o.amount.quantity])
+  );
+};
+
+const encodeTransactionAddress = addr => {
+  const bytes = bs58.decode(addr);
+  return cbor.decodeFirstSync(bytes);
 };

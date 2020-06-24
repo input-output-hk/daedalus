@@ -48,12 +48,14 @@ export type SignedTransactionResponse = {|
   witnesses: Array<Witness>,
 |};
 
+export type SignedTransactionWitnesses = {
+  signature: string,
+  xpub: ExtendedPublicKey,
+};
+
 export type EncodeSignedTransactionRequest = {|
   txDataHex: string,
-  witnesses: Array<{
-    signature: string,
-    xpub: ExtendedPublicKey,
-  }>,
+  witnesses: Array<SignedTransactionWitnesses>,
 |};
 
 export type TransportDevice = {
@@ -249,9 +251,17 @@ export default class HardwareWalletsStore extends Store {
       });
       // Check if public key matches active hardware wallet public key
       if (activeHardwareWallet && this.hardwareWalletsConnectionData) {
-        const activeHardwareWalletConnection = this.hardwareWalletsConnectionData[activeHardwareWallet.id];
-        const activeHardwareWalletConnectionKeys = get(activeHardwareWalletConnection, 'extendedPublicKey', {});
-        if (activeHardwareWalletConnectionKeys.publicKeyHex === extendedPublicKey.publicKeyHex) {
+        const activeHardwareWalletConnection = this
+          .hardwareWalletsConnectionData[activeHardwareWallet.id];
+        const activeHardwareWalletConnectionKeys = get(
+          activeHardwareWalletConnection,
+          'extendedPublicKey',
+          {}
+        );
+        if (
+          activeHardwareWalletConnectionKeys.publicKeyHex ===
+          extendedPublicKey.publicKeyHex
+        ) {
           this._setHardwareWalletLocalData({
             walletId: activeHardwareWallet.id,
             data: {
