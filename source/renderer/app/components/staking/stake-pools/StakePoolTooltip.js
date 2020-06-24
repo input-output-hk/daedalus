@@ -37,8 +37,8 @@ const messages = defineMessages({
     defaultMessage: '!!!Rank:',
     description: '"" for the Stake Pools Tooltip page.',
   },
-  controlledStake: {
-    id: 'staking.stakePools.tooltip.controlledStake',
+  relativeStake: {
+    id: 'staking.stakePools.tooltip.relativeStake',
     defaultMessage: '!!!Controlled stake:',
     description: '"Controlled stake" for the Stake Pools Tooltip page.',
   },
@@ -51,11 +51,6 @@ const messages = defineMessages({
     id: 'staking.stakePools.tooltip.costPerEpoch',
     defaultMessage: '!!!Cost per epoch:',
     description: '"Cost per epoch" for the Stake Pools Tooltip page.',
-  },
-  performance: {
-    id: 'staking.stakePools.tooltip.performance',
-    defaultMessage: '!!!Performance:',
-    description: '"Performance" for the Stake Pools Tooltip page.',
   },
   producedBlocks: {
     id: 'staking.stakePools.tooltip.producedBlocks',
@@ -82,11 +77,6 @@ const messages = defineMessages({
   //   defaultMessage: '!!!Pledge:',
   //   description: '"Pledge" for the Stake Pools Tooltip page.',
   // },
-  pledgeAddressLabel: {
-    id: 'staking.stakePools.tooltip.pledgeAddressLabel',
-    defaultMessage: '!!!Pledge address',
-    description: '"pledgeAddressLabel" for the Stake Pools Tooltip page.',
-  },
   delegateButton: {
     id: 'staking.stakePools.tooltip.delegateButton',
     defaultMessage: '!!!Delegate to this pool',
@@ -106,7 +96,6 @@ type Props = {
   currentTheme: string,
   onClick: Function,
   onOpenExternalLink: Function,
-  getPledgeAddressUrl: Function,
   onSelect?: Function,
   showWithSelectButton?: boolean,
   top: number,
@@ -373,6 +362,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
   };
 
   render() {
+    const { isShelleyTestnet } = global;
     const { intl } = this.context;
     const {
       stakePool,
@@ -380,7 +370,6 @@ export default class StakePoolTooltip extends Component<Props, State> {
       currentTheme,
       onClick,
       onOpenExternalLink,
-      getPledgeAddressUrl,
       onSelect,
       showWithSelectButton,
       numberOfStakePools,
@@ -399,11 +388,9 @@ export default class StakePoolTooltip extends Component<Props, State> {
       ticker,
       homepage,
       ranking,
-      controlledStake,
-      performance,
+      relativeStake,
       producedBlocks,
       retiring,
-      pledgeAddress,
       cost,
       profitMargin,
       saturation,
@@ -421,7 +408,6 @@ export default class StakePoolTooltip extends Component<Props, State> {
 
     const darken = currentTheme === 'dark-blue' ? 1 : 0;
     const alpha = 0.3;
-    const reverse = true;
     const retirementFromNow = retiring ? moment(retiring).fromNow(true) : '';
 
     const saturationBarClassnames = classnames([
@@ -490,24 +476,26 @@ export default class StakePoolTooltip extends Component<Props, State> {
               >
                 {ranking}
               </span>
-              <Tooltip
-                className={styles.experimentalTooltip}
-                key="experimentalTooltip"
-                themeOverrides={experimentalTooltipStyles}
-                skin={TooltipSkin}
-                tip={intl.formatMessage(messages.experimentalTooltipLabel)}
-              >
-                <button className={styles.iconButton}>
-                  <SVGInline
-                    svg={experimentalIcon}
-                    className={styles.experimentalIcon}
-                  />
-                </button>
-              </Tooltip>
+              {!isShelleyTestnet && (
+                <Tooltip
+                  className={styles.experimentalTooltip}
+                  key="experimentalTooltip"
+                  themeOverrides={experimentalTooltipStyles}
+                  skin={TooltipSkin}
+                  tip={intl.formatMessage(messages.experimentalTooltipLabel)}
+                >
+                  <button className={styles.iconButton}>
+                    <SVGInline
+                      svg={experimentalIcon}
+                      className={styles.experimentalIcon}
+                    />
+                  </button>
+                </Tooltip>
+              )}
             </dd>
-            <dt>{intl.formatMessage(messages.controlledStake)}</dt>
+            <dt>{intl.formatMessage(messages.relativeStake)}</dt>
             <dd className={styles.defaultColor}>
-              <span>{formattedWalletAmount(controlledStake, true, false)}</span>
+              <span>{`${parseFloat(relativeStake.toFixed(2))}%`}</span>
             </dd>
             <dt>{intl.formatMessage(messages.profitMargin)}</dt>
             <dd className={styles.profitMargin}>
@@ -534,34 +522,6 @@ export default class StakePoolTooltip extends Component<Props, State> {
               >
                 {`${formattedWalletAmount(cost, true, false)}`}
               </span>
-            </dd>
-            <dt>{intl.formatMessage(messages.performance)}</dt>
-            <dd className={styles.performance}>
-              <span
-                style={{
-                  background: getColorFromRange(performance, {
-                    darken,
-                    alpha,
-                    reverse,
-                  }),
-                }}
-              >
-                {parseFloat(performance.toFixed(2))}%
-              </span>
-              <Tooltip
-                className={styles.experimentalTooltip}
-                key="experimentalTooltip"
-                themeOverrides={experimentalTooltipStyles}
-                skin={TooltipSkin}
-                tip={intl.formatMessage(messages.experimentalTooltipLabel)}
-              >
-                <button className={styles.iconButton}>
-                  <SVGInline
-                    svg={experimentalIcon}
-                    className={styles.experimentalIcon}
-                  />
-                </button>
-              </Tooltip>
             </dd>
             <dt>{intl.formatMessage(messages.producedBlocks)}</dt>
             <dd className={styles.defaultColor}>
@@ -594,13 +554,6 @@ export default class StakePoolTooltip extends Component<Props, State> {
                 {formattedWalletAmount(pledge)}
               </span>
             </dd> */}
-          <Link
-            onClick={() =>
-              onOpenExternalLink(getPledgeAddressUrl(pledgeAddress))
-            }
-            label={intl.formatMessage(messages.pledgeAddressLabel)}
-            skin={LinkSkin}
-          />
         </div>
         {onSelect && showWithSelectButton && (
           <Button
