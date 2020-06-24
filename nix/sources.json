@@ -1,4 +1,16 @@
 {
+    "cardano-addresses": {
+        "branch": "master",
+        "description": "Addresses and mnemonic manipulation & derivations",
+        "homepage": null,
+        "owner": "input-output-hk",
+        "repo": "cardano-addresses",
+        "rev": "9752235147226d3041c1a803b8cd1e026701e5ce",
+        "sha256": "08i1b4srh9dkzfvwvy9ykqm416b90iypv2wncv2jhh3kwg6ly41p",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/cardano-addresses/archive/9752235147226d3041c1a803b8cd1e026701e5ce.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "cardano-node": {
         "branch": "tags/1.13.0",
         "description": null,
