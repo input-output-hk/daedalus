@@ -61,7 +61,7 @@ data Cluster
   | Mainnet_Flight
   | Staging
   | Shelley_QA
-  | FF
+  | Shelley_Testnet
   | Testnet
   deriving (Bounded, Enum, Eq, Read, Show)
 
@@ -119,7 +119,7 @@ clusterNetwork Mainnet = "mainnet"
 clusterNetwork Mainnet_Flight = "mainnet_flight"
 clusterNetwork Staging = "staging"
 clusterNetwork Shelley_QA = "shelley_qa"
-clusterNetwork FF = "ff"
+clusterNetwork Shelley_Testnet = "shelley_testnet"
 clusterNetwork Testnet = "testnet"
 
 packageFileName :: OS -> Cluster -> Version -> Backend -> Text -> Maybe BuildJob -> FilePath

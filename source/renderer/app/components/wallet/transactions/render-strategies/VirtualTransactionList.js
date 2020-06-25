@@ -34,6 +34,14 @@ const TX_ID_SELECTOR = '.Transaction_transactionId';
 
 @observer
 export class VirtualTransactionList extends Component<Props> {
+  list: List;
+  rowHeights: RowHeight[] = [];
+  txAddressHeight: number = 0;
+  txIdHeight: number = 0;
+  visibleExpandedTx: Array<WalletTransaction>;
+  overscanStartIndex: number;
+  overscanStopIndex: number;
+
   static defaultProps = {
     isLoadingSpinnerShown: false,
     isSyncingSpinnerShown: false,
@@ -41,6 +49,10 @@ export class VirtualTransactionList extends Component<Props> {
 
   componentDidMount() {
     window.addEventListener('resize', this.onResize);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.onResize);
   }
 
   componentDidUpdate(prevProps: Props) {
@@ -52,18 +64,6 @@ export class VirtualTransactionList extends Component<Props> {
       this.recomputeVirtualRowHeights();
     }
   }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.onResize);
-  }
-
-  list: List;
-  rowHeights: RowHeight[] = [];
-  txAddressHeight: number = 0;
-  txIdHeight: number = 0;
-  visibleExpandedTx: Array<WalletTransaction>;
-  overscanStartIndex: number;
-  overscanStopIndex: number;
 
   /**
    * Returns the row index of a given tx.

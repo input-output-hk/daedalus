@@ -15,6 +15,7 @@ Changelog
 
 ### Features
 
+- Integrated react-polymorph `PasswordInput` component ([PR 2038](https://github.com/input-output-hk/daedalus/pull/2038)) 
 - Implemented a download manager ([PR 2020](https://github.com/input-output-hk/daedalus/pull/2020))
 - Implemented Hardware wallets connection screens ([PR 2016](https://github.com/input-output-hk/daedalus/pull/2016))
 

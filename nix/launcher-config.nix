@@ -66,7 +66,7 @@ let
       itn_rewards_v1 = "- Rewards v1";
       staging = "Staging";
       testnet = "Testnet";
-      ff = "Shelley Testnet";
+      shelley_testnet = "Shelley Testnet";
       shelley_qa = "Shelley QA";
     };
     unsupported = "Unsupported";

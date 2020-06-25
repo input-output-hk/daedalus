@@ -11511,9 +11511,9 @@ react-onclickoutside@^6.5.0:
   version "6.9.0"
   resolved "https://registry.yarnpkg.com/react-onclickoutside/-/react-onclickoutside-6.9.0.tgz#a54bc317ae8cf6131a5d78acea55a11067f37a1f"
 
-react-polymorph@0.9.4-rc.7:
-  version "0.9.4-rc.7"
-  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-0.9.4-rc.7.tgz#5647acf0e434592c32ddccdc289e3abb88a89805"
+react-polymorph@0.9.4:
+  version "0.9.4"
+  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-0.9.4.tgz#81ddc70ddfd0008665f96763d7856ffcbcd17553"
   dependencies:
     create-react-context "0.2.2"
     create-react-ref "0.1.0"

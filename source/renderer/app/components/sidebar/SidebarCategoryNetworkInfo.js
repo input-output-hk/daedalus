@@ -20,10 +20,10 @@ const messages = defineMessages({
     defaultMessage: '!!!Testnet vx',
     description: 'Label for testnet with version.',
   },
-  ff: {
-    id: 'test.environment.shelleyFfLabel',
+  shelley_testnet: {
+    id: 'test.environment.shelleyTestnetLabel',
     defaultMessage: '!!!Shelley Testnet',
-    description: 'Label for ff with version.',
+    description: 'Label for shelley_testnet with version.',
   },
   shelley_qa: {
     id: 'test.environment.shelleyQaLabel',
