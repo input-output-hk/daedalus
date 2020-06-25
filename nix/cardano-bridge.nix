@@ -18,7 +18,4 @@ in runCommand "daedalus-cardano-bridge" {
   cp -f ${cardano-node}/bin/cardano-node* .
   cp -f ${export-wallets}/bin/export-wallets* .
   cp -f ${cardano-cli}/bin/cardano-cli* .
-  ${pkgs.lib.optionalString (target == "x86_64-windows") ''
-    cp -f ${pkgsCross.libffi}/bin/libffi-6.dll .
-  ''}
 ''
