@@ -13,7 +13,7 @@ in runCommand "daedalus-cardano-bridge" {
   cd $out/bin
   echo ${cardano-wallet.version} > $out/version
   cp ${cardano-wallet}/bin/* .
-  cp ${cardano-address}/bin/* .
+  cp -f ${cardano-address}/bin/cardano-address* .
   cp -f ${cardano-shell.nix-tools.cexes.cardano-launcher.cardano-launcher}/bin/cardano-launcher* .
   cp -f ${cardano-node}/bin/cardano-node* .
   cp -f ${export-wallets}/bin/export-wallets* .
