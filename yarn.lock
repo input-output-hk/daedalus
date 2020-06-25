@@ -1251,6 +1251,7 @@
   dependencies:
     "@storybook/client-logger" "5.3.14"
     "@storybook/theming" "5.3.14"
+    "@types/react-syntax-highlighter" "11.0.2"
     "@types/react-textarea-autosize" "^4.3.3"
     core-js "^3.0.1"
     global "^4.3.2"
@@ -1364,6 +1365,7 @@
   version "5.3.14"
   resolved "https://registry.yarnpkg.com/@storybook/node-logger/-/node-logger-5.3.14.tgz#5e4e02585b37754bbebb8810ffb17c8ce706a1f8"
   dependencies:
+    "@types/npmlog" "^4.1.2"
     chalk "^3.0.0"
     core-js "^3.0.1"
     npmlog "^4.1.2"
@@ -4286,6 +4288,7 @@ cosmiconfig@^6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/cosmiconfig/-/cosmiconfig-6.0.0.tgz#da4fee853c52f6b1e6935f41c1a2fc50bd4a9982"
   dependencies:
+    "@types/parse-json" "^4.0.0"
     import-fresh "^3.1.0"
     parse-json "^5.0.0"
     path-type "^4.0.0"
@@ -5262,9 +5265,10 @@ electron-download@^4.1.1:
     semver "^5.4.1"
     sumchecker "^2.0.2"
 
-electron-log-daedalus@2.2.20:
-  version "2.2.20"
-  resolved "https://registry.yarnpkg.com/electron-log-daedalus/-/electron-log-daedalus-2.2.20.tgz#3b550c9d68393616d528cdcf76eeea1f2d53c30e"
+electron-log-daedalus@2.2.21:
+  version "2.2.21"
+  resolved "https://registry.yarnpkg.com/electron-log-daedalus/-/electron-log-daedalus-2.2.21.tgz#7afc009036306d3466d68decd971d7e1a2f2a5b1"
+  integrity sha512-BKilWrqFstJY6s4L0W3dKkfuZX7bNBakHHglldL2qHuZldAmMFjRB0eOKDeOflB3Ff72dvtO2x9h5z97LDoj6w==
 
 electron-notarize@^0.2.0:
   version "0.2.1"
