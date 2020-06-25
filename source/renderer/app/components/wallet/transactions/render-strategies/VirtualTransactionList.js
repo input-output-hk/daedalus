@@ -51,6 +51,10 @@ export class VirtualTransactionList extends Component<Props> {
     window.addEventListener('resize', this.onResize);
   }
 
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.onResize);
+  }
+
   componentDidUpdate(prevProps: Props) {
     // Recompute all row heights in case the number of rows has changed
     const prevNumberOfRows = prevProps.rows.length;
@@ -59,10 +63,6 @@ export class VirtualTransactionList extends Component<Props> {
       this.rowHeights = this.estimateRowHeights(this.props.rows);
       this.recomputeVirtualRowHeights();
     }
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('resize', this.onResize);
   }
 
   /**
