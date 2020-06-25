@@ -462,7 +462,7 @@ export default class StakingStore extends Store {
         this.isSubmittingReedem = false;
         this.redeemStep = steps.RESULT;
         this.redeemError = error;
-        this._resetRedeem();
+        this._resetRedeemItnRewards();
         throw error;
       });
     }
@@ -482,17 +482,17 @@ export default class StakingStore extends Store {
     return this.redeemActions[prevStep]();
   };
 
-  @action _resetRedeem = () => {
+  @action _resetRedeemItnRewards = () => {
     this.isSubmittingReedem = false;
     this.stakingSuccess = null;
-    this.walletName = null;
+    this.redeemWallet = null;
     this.rewardsTotal = 0;
     this.transactionFees = 0;
     this.finalTotal = 0;
   };
 
   @action _closeRedeemDialog = () => {
-    this._resetRedeem();
+    this._resetRedeemItnRewards();
     this.redeemStep = null;
   };
 

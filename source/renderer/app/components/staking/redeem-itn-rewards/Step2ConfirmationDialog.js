@@ -12,6 +12,7 @@ import styles from './Step2ConfirmationDialog.scss';
 import ReactToolboxMobxForm, {
   handleFormErrors,
 } from '../../../utils/ReactToolboxMobxForm';
+import { formattedWalletAmount } from '../../../utils/formatters';
 import { isValidSpendingPassword } from '../../../utils/validations';
 import { submitOnEnter } from '../../../utils/form';
 import globalMessages from '../../../i18n/global-messages';
@@ -24,15 +25,15 @@ const messages = defineMessages({
     defaultMessage: '!!!Confirm rewards redemption',
     description: 'title for Redeem Incentivized Testnet - Step 2',
   },
-  toLabel: {
-    id: 'staking.redeemItnRewards.step2.toLabel',
+  walletToLabel: {
+    id: 'staking.redeemItnRewards.step2.walletToLabel',
     defaultMessage: '!!!To',
-    description: 'toLabel for Redeem Incentivized Testnet - Step 2',
+    description: 'walletToLabel for Redeem Incentivized Testnet - Step 2',
   },
-  walletFrom: {
-    id: 'staking.redeemItnRewards.step2.walletFrom',
+  walletToName: {
+    id: 'staking.redeemItnRewards.step2.walletToName',
     defaultMessage: '!!!<b>{walletName}</b> wallet',
-    description: 'walletFrom for Redeem Incentivized Testnet - Step 2',
+    description: 'walletToName for Redeem Incentivized Testnet - Step 2',
   },
   rewardsTotal: {
     id: 'staking.redeemItnRewards.step2.rewardsTotal',
@@ -193,6 +194,28 @@ export default class Step2ConfigurationDialog extends Component<Props> {
         closeButton={<DialogCloseButton />}
       >
         <div className={styles.component}>
+          <div className={styles.sectionLabel}>
+            {intl.formatMessage(messages.walletToLabel)}
+          </div>
+          <div className={styles.sectionStringValue}>
+            <FormattedHTMLMessage
+              {...messages.walletToName}
+              values={{
+                walletName,
+              }}
+            />
+          </div>
+
+          <div className={styles.section50wrapper}>
+            <div className={styles.sectionLabel}>
+              {intl.formatMessage(messages.rewardsTotal)}
+            </div>
+            <div className={styles.sectionStringValue}>
+              {/* formattedWalletAmount(rewardsTotal) */}
+              {rewardsTotal}
+            </div>
+          </div>
+
           <Input
             className={styles.spendingPassword}
             {...spendingPasswordField.bind()}
