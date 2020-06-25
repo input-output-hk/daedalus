@@ -14,7 +14,7 @@ import {
 } from './config';
 import {
   SHELLEY_LOCAL,
-  SHELLEY_FF,
+  SHELLEY_TESTNET,
   SHELLEY_QA,
 } from '../common/types/environment.types';
 import { CardanoNodeImplementationOptions } from '../common/types/cardano-node.types';
@@ -23,7 +23,7 @@ const _process = process;
 const _isShelleyTestnet =
   nodeImplementation === CardanoNodeImplementationOptions.CARDANO &&
   (cluster === SHELLEY_LOCAL ||
-    cluster === SHELLEY_FF ||
+    cluster === SHELLEY_TESTNET ||
     cluster === SHELLEY_QA);
 const _isIncentivizedTestnet =
   nodeImplementation === CardanoNodeImplementationOptions.JORMUNGANDR ||

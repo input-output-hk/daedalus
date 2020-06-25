@@ -190,8 +190,8 @@ export default defineMessages({
     defaultMessage: '!!!Testnet',
     description: '"testnet" Cardano network',
   },
-  network_ff: {
-    id: 'environment.network.ff',
+  network_shelley_testnet: {
+    id: 'environment.network.shelley_testnet',
     defaultMessage: '!!!Shelley Testnet',
     description: '"Shelley Testnet" Cardano network',
   },
