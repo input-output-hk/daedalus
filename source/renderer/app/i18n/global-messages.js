@@ -26,9 +26,21 @@ export default defineMessages({
   },
   invalidSpendingPassword: {
     id: 'global.errors.invalidSpendingPassword',
-    defaultMessage: '!!!Invalid password',
+    defaultMessage: '!!!Insecure',
     description:
-      'Error message shown when invalid wallet password was entered in create wallet dialog.',
+      'Error message shown when insecure wallet password was entered in a password input.',
+  },
+  weakSpendingPassword: {
+    id: 'global.errors.weakSpendingPassword',
+    defaultMessage: '!!!Weak',
+    description:
+      'Error message shown when weak wallet password was entered in a password input.',
+  },
+  strongSpendingPassword: {
+    id: 'global.errors.strongSpendingPassword',
+    defaultMessage: '!!!Strong',
+    description:
+      'Error message shown when strong wallet password was entered in a password input.',
   },
   invalidRepeatPassword: {
     id: 'global.errors.invalidRepeatPassword',
@@ -53,7 +65,7 @@ export default defineMessages({
   passwordInstructions: {
     id: 'global.passwordInstructions',
     defaultMessage:
-      '!!!Note that password needs to be at least 7 characters long, and have at least 1 uppercase, 1 lowercase letter and 1 number.',
+      '!!!Note that password needs to be at least 10 characters long.',
     description: 'Password instructions note.',
   },
   cancel: {
