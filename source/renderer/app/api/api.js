@@ -1453,7 +1453,7 @@ export default class AdaApi {
     try {
       const response: AdaApiStakePools = await getStakePools(this.config);
 
-      // TODO: remove
+      // TODO: remove once shelley local metadata fetching is fixed
       const stakePoolsWithDummyData = response.map((pool, index) => {
         const { _cost, _pledge, _profitMargin, metadata } = stakePoolDummyData[
           index
@@ -1466,7 +1466,8 @@ export default class AdaApi {
         });
       });
 
-      const stakePools = stakePoolsWithDummyData // response
+      const { isDev } = global.environment;
+      const stakePools = (isDev ? stakePoolsWithDummyData : response)
         .filter(({ metadata }: AdaApiStakePool) => metadata !== undefined)
         .filter(
           ({ margin }: AdaApiStakePool) =>
