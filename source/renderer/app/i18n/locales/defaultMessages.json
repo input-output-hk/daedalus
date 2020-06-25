@@ -2137,7 +2137,7 @@
         "file": "source/renderer/app/components/sidebar/SidebarCategoryNetworkInfo.js",
         "id": "test.environment.shelleyTestnetLabel",
         "start": {
-          "column": 6,
+          "column": 19,
           "line": 23
         }
       },
@@ -11528,7 +11528,7 @@
         "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
         "id": "test.environment.shelleyTestnetLabel",
         "start": {
-          "column": 6,
+          "column": 19,
           "line": 18
         }
       },
@@ -12371,7 +12371,7 @@
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.shelley_testnet",
         "start": {
-          "column": 14,
+          "column": 27,
           "line": 193
         }
       },

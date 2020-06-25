@@ -71,7 +71,7 @@ Daedalus - Cryptocurrency Wallet
 
 #### Shelley Testnet
 
-1. Run `yarn nix:shelley_ff` from `daedalus`.
+1. Run `yarn nix:shelley_testnet` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
 
 #### Shelley QA Testnet
