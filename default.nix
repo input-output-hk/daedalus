@@ -84,7 +84,19 @@ let
     cardano-address = (import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; crossSystem = crossSystem walletPkgs.lib; }).haskellPackages.cardano-addresses.components.exes.cardano-address;
     cardano-shell = import self.sources.cardano-shell { inherit system; crossSystem = crossSystem shellPkgs.lib; };
     cardano-cli = (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).haskellPackages.cardano-cli.components.exes.cardano-cli;
-    cardano-node-cluster = (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).cluster;
+    cardano-node-cluster = let
+      # Test wallets with known mnemonics
+      walletTestGenesisYaml = (self.sources.cardano-wallet + "/lib/shelley/test/data/cardano-node-shelley/genesis.yaml");
+      walletTestGenesisJson = pkgs.runCommand "yaml-to-json" { buildInputs = [self.yaml2json]; } ''
+        yaml2json ${walletTestGenesisYaml} > $out
+      '';
+      initialFundsAttrs = (__fromJSON (__readFile walletTestGenesisJson)).initialFunds;
+      # Funds required to register pools
+      clusterFunds = import (self.sources.cardano-node + "/nix/supervisord-cluster/initial-funds.nix");
+      customConfig = {
+        initialFunds = clusterFunds // __foldl' (s: x: s // x) {} initialFundsAttrs;
+      };
+    in (import self.sources.cardano-node { inherit system customConfig; crossSystem = crossSystem nodePkgs.lib; }).cluster;
     cardano-node = if useLocalNode
                    then (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).haskellPackages.cardano-node.components.exes.cardano-node
                    else self.cardano-wallet.cardano-node;
