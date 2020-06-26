@@ -215,7 +215,7 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,inst
                       file [] "signing.key"
                       file [] "delegation.cert"
                 file [] "cardano-launcher.exe"
-                file [] "libffi-6.dll"
+                file [] "libffi-7.dll"
                 --file [] "cardano-x509-certificates.exe"
                 --file [] "log-config-prod.yaml"
                 --file [] "wallet-topology.yaml"
