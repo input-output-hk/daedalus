@@ -19,10 +19,10 @@ in
 
 let
   systemTable = {
-    x86_64-w64 = builtins.currentSystem;
+    x86_64-windows = builtins.currentSystem;
   };
   crossSystemTable = lib: {
-    x86_64-w64 = lib.systems.examples.mingwW64;
+    x86_64-windows = lib.systems.examples.mingwW64;
   };
   system = systemTable.${target} or target;
   pkgs = localLib.iohkNix.getPkgsDefault { inherit system config; };
@@ -41,7 +41,7 @@ let
   needSignedBinaries = (signingKeys != null) || (HSMServer != null);
   buildNumSuffix = if buildNum == null then "" else ("-${builtins.toString buildNum}");
   throwSystem = throw "Unsupported system: ${pkgs.stdenv.hostPlatform.system}";
-  ostable.x86_64-w64 = "windows";
+  ostable.x86_64-windows = "windows";
   ostable.x86_64-linux = "linux";
   ostable.x86_64-darwin = "macos64";
   packages = self: {
