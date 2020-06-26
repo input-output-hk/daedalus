@@ -1,5 +1,23 @@
 .root {
   .bubble {
     top: -11px;
+    > div {
+      left: -35px;
+    }
+
+    > span {
+      &:before,
+      &:after {
+        left: calc(
+          50% -
+            calc(
+              var(
+                  --rp-bubble-arrow-width,
+                  calc(2 * var(--rp-bubble-arrow-size, 10px))
+                ) - 2px
+            ) / 2 + 11px
+        ) !important;
+      }
+    }
   }
 }
