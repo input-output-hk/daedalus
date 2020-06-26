@@ -22,7 +22,7 @@ in pkgs.runCommandCC "daedalus-bridge" {
   ${pkgs.lib.optionalString (target == "x86_64-windows") ''
     echo ${cardano-wallet.jormungandr}
     cp ${pkgsCross.libffi}/bin/libffi-7.dll .
-    cp ${pkgsCross.libgmp}/bin/libgmp-10.dll .
+    cp ${pkgsCross.gmp}/bin/libgmp-10.dll .
     #cp {pkgsCross.openssl.out}/lib/libeay32.dll .
   ''}
   ${pkgs.lib.optionalString (target == "x86_64-linux") ''
