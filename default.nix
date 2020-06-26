@@ -31,7 +31,7 @@ let
   walletPkgs = import "${sources.cardano-wallet}/nix" {};
   # only used for CLI, to be removed when upgraded to next node version
   nodePkgs = import "${sources.cardano-node}/nix" {};
-  shellPkgs = (import "${sources.cardano-shell}/nix/iohk-common.nix").getPkgs {};
+  shellPkgs = (import "${sources.cardano-shell}/nix") {};
   inherit (pkgs.lib) optionalString optional concatStringsSep;
   inherit (pkgs) writeTextFile;
   crossSystem = lib: (crossSystemTable lib).${target} or null;
