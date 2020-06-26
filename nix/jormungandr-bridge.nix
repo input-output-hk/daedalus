@@ -11,9 +11,9 @@ in pkgs.runCommandCC "daedalus-bridge" {
 } ''
   mkdir -pv $out/bin
   cd $out/bin
-  cp ${cardano-wallet.haskellPackages.cardano-wallet-jormungandr.components.exes.cardano-wallet-jormungandr}/bin/cardano-wallet-jormungandr* .
-  cp ${cardano-shell.haskellPackages.cardano-launcher.components.exes.cardano-launcher}/bin/cardano-launcher* .
-  cp ${cardano-wallet.jormungandr}/bin/jormungandr* .
+  cp -f ${cardano-wallet.haskellPackages.cardano-wallet-jormungandr.components.exes.cardano-wallet-jormungandr}/bin/cardano-wallet-jormungandr* .
+  cp -f ${cardano-shell.haskellPackages.cardano-launcher.components.exes.cardano-launcher}/bin/cardano-launcher* .
+  cp -f ${cardano-wallet.jormungandr}/bin/jormungandr* .
 
   echo ${cardano-wallet.version} > $out/version
 
