@@ -12,5 +12,5 @@ export const getStakePools = (
       path: '/v2/stake-pools',
       ...config,
     },
-    { stake: 1000000 }
+    { stake: 1000000000 }
   );
