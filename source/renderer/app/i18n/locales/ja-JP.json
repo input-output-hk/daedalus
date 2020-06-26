@@ -279,7 +279,7 @@
   "staking.delegationCenter.bodyTitle": "ウォレット",
   "staking.delegationCenter.currentSlot": "現行スロット",
   "staking.delegationCenter.delegate": "委任する",
-  "staking.delegationCenter.description": "変更した委任設定は、現行の次のCardanoエポックが終了すると有効になります。インセンティブ付きテストネットのエポックの継続時間は1日です。今回の変更はすべて{timeUntilFutureEpoch}後に有効になります。",
+  "staking.delegationCenter.description": "変更した委任設定は、現行の次のCardanoエポックが終了すると有効になります。Shelleyテストネットのエポックの継続時間は6時間です。今回の変更はすべて{timeUntilFutureEpoch}後に有効になります。",
   "staking.delegationCenter.epoch": "エポック",
   "staking.delegationCenter.headingLeft": "次のCardanoエポック開始まであと",
   "staking.delegationCenter.headingRight": "現在のCardanoエポック",
