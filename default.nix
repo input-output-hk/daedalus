@@ -277,7 +277,7 @@ let
     windows-installer = if needSignedBinaries then self.signed-windows-installer else self.unsigned-windows-installer;
 
     ## TODO: move to installers/nix
-    hsDaedalusPkgs = import ./installers {
+    hsDaedalusPkgs = self.callPackage ./installers {
       inherit (self) daedalus-bridge;
       inherit localLib system;
     };
