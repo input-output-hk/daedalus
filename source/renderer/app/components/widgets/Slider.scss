@@ -1,0 +1,69 @@
+.component {
+  :global {
+    .rc-slider {
+      .rc-slider-rail {
+        background-color: var(
+          --theme-staking-progress-stripe-dark-2-background-color
+        );
+        height: 2px;
+        opacity: 0.2;
+      }
+      .rc-slider-track {
+        background-color: var(
+          --theme-staking-progress-stripe-dark-2-background-color
+        );
+        height: 2px;
+      }
+      .rc-slider-step {
+        height: 2px;
+      }
+      .rc-slider-handle {
+        background-color: var(
+          --theme-staking-progress-stripe-dark-2-background-color
+        );
+        border-color: var(
+          --theme-staking-progress-stripe-dark-2-background-color
+        );
+        height: 18px;
+        margin-top: -8px;
+        width: 18px;
+      }
+    }
+  }
+  .upperMarks {
+    display: flex;
+    justify-content: space-between;
+
+    .minMark,
+    .maxMark {
+      color: var(--theme-staking-font-color-regular);
+      font-family: var(--font-regular);
+      font-size: 12px;
+      line-height: 1.33;
+      margin-bottom: 4px;
+    }
+
+    .minMark {
+      transform: translate(-50%);
+    }
+
+    .maxMark {
+      transform: translate(50%);
+    }
+  }
+  .lowerMarks {
+    position: relative;
+    width: 100%;
+
+    .valueMark {
+      color: var(--theme-staking-font-color-regular);
+      display: inline-block;
+      font-family: var(--font-regular);
+      font-size: 12px;
+      line-height: 1.33;
+      margin-top: 3px;
+      position: absolute;
+      transform: translate(-50%);
+    }
+  }
+}

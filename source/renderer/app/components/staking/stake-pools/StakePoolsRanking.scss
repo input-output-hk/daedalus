@@ -1,0 +1,93 @@
+@import '../stakingConfig';
+@import '../../../themes/mixins/link';
+
+.component {
+  @extend %contentBorderAndBackground;
+  margin-top: 20px;
+  padding: 20px;
+
+  .upper {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+
+    .selectWallet {
+      .walletSelector {
+        margin: 0 10px;
+        padding-right: 20px;
+
+        :global {
+          .SimpleInput_input {
+            border: none;
+            padding: 0;
+            height: auto;
+            width: auto;
+          }
+          .SelectOverrides_selectInput:after {
+            bottom: 7.5px;
+            left: auto;
+            right: 0;
+          }
+          .SimpleInput_customValueBlock {
+            height: auto;
+          }
+          .custom-value {
+            font-family: var(--font-semibold);
+
+            &.no-select {
+              color: var(--rp-select-input-placeholder-color);
+            }
+          }
+        }
+      }
+    }
+    .actionLearnMore {
+      height: 36px;
+      line-height: 36px;
+      padding: 0 27px;
+      white-space: nowrap;
+      width: auto;
+    }
+    .externalLink {
+      height: 13px;
+      object-fit: contain;
+      width: 13px;
+    }
+  }
+  .lower {
+    margin-bottom: 18px;
+
+    .outOfSliderRangeStart {
+      border-top: 2px solid
+        var(--theme-staking-progress-stripe-dark-2-background-color);
+      border-style: dotted;
+      height: 0;
+      margin-top: 24px;
+      opacity: 0.3;
+      width: 9px;
+    }
+    .slider {
+      flex: 1;
+    }
+    .outOfRangeMaxAmount {
+      font-size: 12px;
+      line-height: 1.33;
+      margin-bottom: 9px;
+      text-align: right;
+    }
+    .outOfSliderRangeEnd {
+      border-top: 2px solid
+        var(--theme-staking-progress-stripe-dark-2-background-color);
+      border-style: dotted;
+      height: 0;
+      opacity: 0.3;
+      width: 110px;
+    }
+  }
+  .row {
+    display: flex;
+  }
+  .col {
+    @extend %regularText;
+  }
+}
