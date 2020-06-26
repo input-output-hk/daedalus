@@ -12,15 +12,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-shell": {
-        "branch": "master",
+        "branch": "SRE-98_migrate-haskell.nix",
         "description": "Node shell, a thin layer for running the node and it's modules.",
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-shell",
-        "rev": "601bb4324c258e3c8cbd2d532e5696fd09e2582e",
-        "sha256": "0zzd711zgj62l729hyymnv0i6jn3rx8yrww2b4a8l3csf1d9xv7n",
+        "rev": "3c64910533e17d938c96d1eae9f717aee75172e9",
+        "sha256": "1d6nizp732qr4d869np51xnzdr2530j14qalc6wi5dlyaf6kdmwv",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-shell/archive/601bb4324c258e3c8cbd2d532e5696fd09e2582e.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-shell/archive/3c64910533e17d938c96d1eae9f717aee75172e9.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-sl": {
