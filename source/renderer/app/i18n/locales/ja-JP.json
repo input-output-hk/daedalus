@@ -435,7 +435,7 @@
   "static.splash.network.itnNetworkName": "Rewards",
   "static.splash.network.itnVersionName": "INCENTIVIZED TESTNET v1",
   "static.splash.network.linkLabel": "もっと知る",
-  "static.splash.network.stnDescription": "このDaedalusバージョンは、Shelleyテストネット第2フェーズで使用するための専用バージョンです。",
+  "static.splash.network.stnDescription": "<p>このDaedalusバージョンは、Shelleyテストネット第2フェーズで使用するための専用バージョンです。</p><p>インセンティブ付きテストネットプログラムに参加していた場合は、このDaedalusバージョンを使用して、インセンティブ付きテストネットの報酬を確認することができます。15語のウォレット復元フレーズを使用して、Daedalus Rewardsのウォレットを復元してください。</p>",
   "static.splash.network.stnLinkUrl": "https://testnets.cardano.org/en/shelley/overview/",
   "static.splash.network.stnVersionName": "Shelleyテストネット",
   "static.splash.network.title": "Daedalus",
