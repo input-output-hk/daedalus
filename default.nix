@@ -79,6 +79,7 @@ let
                    then (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).haskellPackages.cardano-node.components.exes.cardano-node
                    else self.cardano-wallet.cardano-node;
     cardano-sl = import self.sources.cardano-sl { inherit target; gitrev = self.sources.cardano-sl.rev; };
+    darwin-launcher = self.callPackage ./nix/darwin-launcher.nix {};
 
     # a cross-compiled fastlist for the ps-list package
     fastlist = pkgs.pkgsCross.mingwW64.callPackage ./nix/fastlist.nix {};

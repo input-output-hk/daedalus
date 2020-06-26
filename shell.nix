@@ -41,6 +41,7 @@ let
       daedalusPkgs.yarn
       daedalusPkgs.daedalus-bridge
       daedalusPkgs.daedalus-installer
+      daedalusPkgs.darwin-launcher
     ] ++ (with pkgs; [
       nix bash binutils coreutils curl gnutar
       git python27 curl jq
