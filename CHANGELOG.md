@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## 2.5.0-ITN1
+
+### Chores
+
+- Updated `cardano-wallet` to revision `58d995dc` which includes Jormungandr 0.9.0
+
 ## 2.4.0-ITN1
 
 ### Features
