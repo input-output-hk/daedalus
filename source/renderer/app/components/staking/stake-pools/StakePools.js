@@ -3,10 +3,12 @@ import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import classnames from 'classnames';
+import StakePoolsRanking from './StakePoolsRanking';
 import { StakePoolsList } from './StakePoolsList';
 import { StakePoolsSearch } from './StakePoolsSearch';
 import BackToTopButton from '../../widgets/BackToTopButton';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
+import Wallet from '../../../domains/Wallet';
 import styles from './StakePools.scss';
 import { getFilteredStakePoolsList } from './helpers';
 import StakePool from '../../../domains/StakePool';
@@ -36,10 +38,12 @@ const messages = defineMessages({
 });
 
 type Props = {
+  wallets: Array<Wallet>,
   stakePoolsList: Array<StakePool>,
   onOpenExternalLink: Function,
   getPledgeAddressUrl: Function,
   currentTheme: string,
+  onRank: Function,
   onDelegate: Function,
   isLoading: boolean,
   stakePoolsDelegatingList: Array<StakePool>,
@@ -80,7 +84,9 @@ export default class StakePools extends Component<Props, State> {
   render() {
     const { intl } = this.context;
     const {
+      wallets,
       stakePoolsList,
+      onRank,
       onOpenExternalLink,
       getPledgeAddressUrl,
       currentTheme,
@@ -126,6 +132,12 @@ export default class StakePools extends Component<Props, State> {
               buttonTopPosition={144}
             />
 
+            <StakePoolsRanking
+              wallets={wallets}
+              onOpenExternalLink={onOpenExternalLink}
+              onRank={onRank}
+              isLoading={isLoading}
+            />
             <StakePoolsSearch
               search={search}
               onSearch={this.handleSearch}

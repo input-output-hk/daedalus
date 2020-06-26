@@ -1,6 +1,7 @@
 // @flow
 
 export const MIN_DELEGATION_FUNDS = 10;
+export const STAKE_POOL_RANKING_LEARN_MORE_URL = 'http://www.google.com';
 
 // Dimensions
 

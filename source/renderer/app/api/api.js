@@ -1447,10 +1447,13 @@ export default class AdaApi {
     }
   };
 
-  getStakePools = async (): Promise<Array<StakePool>> => {
+  getStakePools = async (stake: number = 0): Promise<Array<StakePool>> => {
     logger.debug('AdaApi::getStakePools called');
     try {
-      const response: AdaApiStakePools = await getStakePools(this.config);
+      const response: AdaApiStakePools = await getStakePools(
+        this.config,
+        stake
+      );
       const stakePools = response
         .filter(({ metadata }: AdaApiStakePool) => metadata !== undefined)
         .map(_createStakePoolFromServerData);

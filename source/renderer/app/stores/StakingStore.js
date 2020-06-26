@@ -26,6 +26,7 @@ import REWARDS from '../config/stakingRewards.dummy.json';
 export default class StakingStore extends Store {
   @observable isDelegationTransactionPending = false;
   @observable fetchingStakePoolsFailed = false;
+  @observable stake = 0;
 
   pollingStakePoolsInterval: ?IntervalID = null;
   refreshPolling: ?IntervalID = null;
@@ -39,13 +40,13 @@ export default class StakingStore extends Store {
   _delegationFeeCalculationWalletId: ?string = null;
 
   setup() {
+    const { staking } = this.actions;
     if (global.isIncentivizedTestnet && !global.isShelleyTestnet) {
       // Set initial fetch interval to 1 second
       this.refreshPolling = setInterval(
         this.getStakePoolsData,
         STAKE_POOLS_FAST_INTERVAL
       );
-      const { staking } = this.actions;
       staking.goToStakingInfoPage.listen(this._goToStakingInfoPage);
       staking.goToStakingDelegationCenterPage.listen(
         this._goToStakingDelegationCenterPage
@@ -54,6 +55,7 @@ export default class StakingStore extends Store {
       staking.quitStakePool.listen(this._quitStakePool);
       staking.fakeStakePoolsLoading.listen(this._setFakePoller);
     }
+    staking.updateStake.listen(this._setStake);
   }
 
   // REQUESTS
@@ -72,6 +74,11 @@ export default class StakingStore extends Store {
   @observable isStakingExperimentRead: boolean = false;
 
   // =================== PUBLIC API ==================== //
+
+  @action _setStake = async (stake: number) => {
+    this.stake = stake;
+    this.getStakePoolsData();
+  };
 
   @action _joinStakePool = async (request: JoinStakePoolRequest) => {
     const { walletId, stakePoolId, passphrase } = request;
@@ -269,7 +276,7 @@ export default class StakingStore extends Store {
     const { isConnected } = this.stores.networkStatus;
     if (!isConnected) return;
     try {
-      await this.stakePoolsRequest.execute().promise;
+      await this.stakePoolsRequest.execute(this.stake).promise;
       if (this.refreshPolling) this._resetPolling(false);
     } catch (error) {
       if (!this.refreshPolling) {

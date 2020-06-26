@@ -7,6 +7,7 @@ import classnames from 'classnames';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Select } from 'react-polymorph/lib/components/Select';
 import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
+import { STAKE_POOL_RANKING_LEARN_MORE_URL } from '../../../config/stakingConfig';
 import { shortNumber } from '../../../utils/formatters';
 import Wallet from '../../../domains/Wallet';
 import ButtonLink from '../../widgets/ButtonLink';
@@ -71,7 +72,7 @@ const messages = defineMessages({
 
 type Props = {
   wallets: Array<Wallet>,
-  onLearnMore: Function,
+  onOpenExternalLink: Function,
   onRank: Function,
   isLoading: boolean,
 };
@@ -90,18 +91,29 @@ export default class StakePoolsRanking extends Component<Props, State> {
     intl: intlShape.isRequired,
   };
 
+  static defaultProps = {
+    wallets: [],
+  };
+
   state = {
     selectedWalletId: '-1',
     sliderValue: MIN_AMOUNT.toNumber(),
   };
 
-  getAllAvailableAmount = () =>
-    this.props.wallets
-      .map((w: Wallet) => w.availableAmount)
-      .reduce(
-        (acc: BigNumber, cur: BigNumber) => acc.plus(cur),
-        new BigNumber(0)
-      );
+  getAllAvailableAmount = () => {
+    const { wallets } = this.props;
+
+    if (wallets.length) {
+      return wallets
+        .map((w: Wallet) => w.availableAmount)
+        .reduce(
+          (acc: BigNumber, cur: BigNumber) => acc.plus(cur),
+          new BigNumber(0)
+        );
+    }
+
+    return MIN_AMOUNT;
+  };
 
   onSelectedWalletChange = (selectedWalletId: string) => {
     const { wallets } = this.props;
@@ -180,7 +192,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
 
   render() {
     const { intl } = this.context;
-    const { onLearnMore, isLoading } = this.props;
+    const { onOpenExternalLink, isLoading } = this.props;
     const rankingDescription = intl.formatMessage(messages.rankingDescription);
     const learnMoreButtonClasses = classnames(['flat', styles.actionLearnMore]);
     const allAvailableAmount: BigNumber = this.getAllAvailableAmount();
@@ -222,7 +234,9 @@ export default class StakePoolsRanking extends Component<Props, State> {
           </div>
           <ButtonLink
             className={learnMoreButtonClasses}
-            onClick={onLearnMore}
+            onClick={() =>
+              onOpenExternalLink(STAKE_POOL_RANKING_LEARN_MORE_URL)
+            }
             skin={ButtonSkin}
             label={intl.formatMessage(messages.actionLearnMore)}
             linkProps={{
