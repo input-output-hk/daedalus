@@ -83,7 +83,7 @@ type Props = {
 };
 
 @observer
-export default class Step2ConfigurationDialog extends Component<Props> {
+export default class Step2ConfirmationDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -194,25 +194,44 @@ export default class Step2ConfigurationDialog extends Component<Props> {
         closeButton={<DialogCloseButton />}
       >
         <div className={styles.component}>
-          <div className={styles.sectionLabel}>
-            {intl.formatMessage(messages.walletToLabel)}
+          <div className={styles.sectionTo}>
+            <div className={styles.sectionLabel}>
+              {intl.formatMessage(messages.walletToLabel)}
+            </div>
+            <div className={styles.sectionStringValue}>
+              <FormattedHTMLMessage
+                {...messages.walletToName}
+                values={{
+                  walletName,
+                }}
+              />
+            </div>
           </div>
-          <div className={styles.sectionStringValue}>
-            <FormattedHTMLMessage
-              {...messages.walletToName}
-              values={{
-                walletName,
-              }}
-            />
-          </div>
-
-          <div className={styles.section50wrapper}>
+          <div className={styles.sectionRewardsTotal}>
             <div className={styles.sectionLabel}>
               {intl.formatMessage(messages.rewardsTotal)}
             </div>
             <div className={styles.sectionStringValue}>
               {/* formattedWalletAmount(rewardsTotal) */}
               {rewardsTotal}
+            </div>
+          </div>
+          <div className={styles.sectionTransactionFees}>
+            <div className={styles.sectionLabel}>
+              {intl.formatMessage(messages.transactionFees)}
+            </div>
+            <div className={styles.sectionStringValue}>
+              {/* formattedWalletAmount(transactionFees) */}
+              {transactionFees}
+            </div>
+          </div>
+          <div className={styles.sectionFinalTotal}>
+            <div className={styles.sectionLabel}>
+              {intl.formatMessage(messages.finalTotal)}
+            </div>
+            <div className={styles.sectionStringValue}>
+              {/* formattedWalletAmount(finalTotal) */}
+              {finalTotal}
             </div>
           </div>
 

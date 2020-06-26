@@ -82,7 +82,7 @@ const messages = defineMessages({
 
 type Props = {
   wallets: Array<Wallet>,
-  redeemWallet?: Wallet,
+  redeemWallet?: ?Wallet,
   isSubmitting: boolean,
   onContinue: Function,
   onClose: Function,
@@ -90,7 +90,7 @@ type Props = {
   mnemonicValidator: Function,
   isWalletValid?: boolean,
   suggestedMnemonics: Array<string>,
-  error?: ?LocalizableError,
+  error?: ?string,
 };
 
 @observer
@@ -118,7 +118,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
           value: [],
           label: this.context.intl.formatMessage(messages.recoveryPhraseLabel),
           validators: ({ field }) => {
-            const { intl } = this.context;
+            // const { intl } = this.context;
             const enteredWords = field.value;
             const wordCount = enteredWords.length;
             const expectedWordCount = WALLET_RECOVERY_PHRASE_WORD_COUNT;
@@ -186,6 +186,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
   }
 
   get canSubmit() {
+    return true;
     // @REDEEM TODO:
     // const { isSubmitting, isWalletValid } = this.props;
     // const { form } = this;
@@ -195,7 +196,6 @@ export default class Step1ConfigurationDialog extends Component<Props> {
     // const { checked: checkboxAcceptance2isChecked } = form.$(
     //   'checkboxAcceptance2'
     // );
-    return !!this.props.redeemWallet;
     // return (
     //   !isSubmitting &&
     //   isWalletValid &&
