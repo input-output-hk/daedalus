@@ -17,10 +17,10 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-shell",
-        "rev": "4f7dd8e3e03153282e5f397b7072d47d7a328c6d",
-        "sha256": "14s77q6cdx6237nqsnzfqr2r2q09rnfdasgxr4jz71c4yn31vdkh",
+        "rev": "d5d04d4cd3653e8d43ade3a6ba1621ed7ea7aa89",
+        "sha256": "195ri862sqi5yvrc2qw63k21qvckha1n6nmm7z0agysh6azj1if0",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-shell/archive/4f7dd8e3e03153282e5f397b7072d47d7a328c6d.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-shell/archive/d5d04d4cd3653e8d43ade3a6ba1621ed7ea7aa89.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-sl": {
@@ -78,10 +78,10 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "iohk-nix",
-        "rev": "2744051c403165303628c61c8fbb973fa67ab76f",
-        "sha256": "0gxaq42dcyb621av1jy099mjn0ajwng1wwwdkx5mllmbrvl4hfqw",
+        "rev": "b2b9c8e24d694a9c7ccf76ea175eba8493f3ab2a",
+        "sha256": "17bms19x7k12pd009qa8wyyk3sgk7cxpgp6spc7czn0lw3i5ma9f",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/iohk-nix/archive/2744051c403165303628c61c8fbb973fa67ab76f.tar.gz",
+        "url": "https://github.com/input-output-hk/iohk-nix/archive/b2b9c8e24d694a9c7ccf76ea175eba8493f3ab2a.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "js-chain-libs": {
