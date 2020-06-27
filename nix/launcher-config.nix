@@ -165,7 +165,6 @@ let
 
   mkConfigByron = let
     filterMonitoring = config: if devShell then config else builtins.removeAttrs config [ "hasPrometheus" "hasEKG" ];
-    exportWalletsBin = mkBinPath "export-wallets";
     cardanoAddressBin = mkBinPath "cardano-address";
     walletBin = if network == "local" then mkBinPath "cardano-wallet-shelley" else if envCfg.useByronWallet
                 then mkBinPath "cardano-wallet-byron"
@@ -223,7 +222,6 @@ let
         nodeBin
         cliBin
         walletBin
-        exportWalletsBin
         cardanoAddressBin
         legacyStateDir
         legacyWalletDB
@@ -250,7 +248,7 @@ let
       macPackageName = "Daedalus${network}";
       dataDir = dataDir;
       hasBlock0 = false;
-      installerWinBinaries = [ "cardano-launcher.exe" "cardano-node.exe" "cardano-wallet-byron.exe" "export-wallets.exe" "cardano-cli.exe" "cardano-address.exe" ];
+      installerWinBinaries = [ "cardano-launcher.exe" "cardano-node.exe" "cardano-wallet-byron.exe" "cardano-cli.exe" "cardano-address.exe" ];
     };
 
   in {

@@ -23,18 +23,6 @@
         "url": "https://github.com/input-output-hk/cardano-shell/archive/bc645715147bca4739f7ef11f03bc1b914bfe489.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
-    "cardano-sl": {
-        "branch": "KtorZ/export-wallets",
-        "description": "Cryptographic currency implementing Ouroboros PoS protocol",
-        "homepage": "",
-        "owner": "input-output-hk",
-        "repo": "cardano-sl",
-        "rev": "c1815b7dce5fb71d997bd3a94c4c5ccf2c9a9a94",
-        "sha256": "1dzfhv7qhv1498sd8jrac39qd8vgpdahv7dskg1hnfs5rw2gipar",
-        "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-sl/archive/c1815b7dce5fb71d997bd3a94c4c5ccf2c9a9a94.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
     "cardano-wallet": {
         "branch": "master",
         "description": "Official Wallet Backend & API for Cardano decentralized",
