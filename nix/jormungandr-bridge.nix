@@ -11,19 +11,14 @@ in pkgs.runCommandCC "daedalus-bridge" {
 } ''
   mkdir -pv $out/bin
   cd $out/bin
-  cp ${cardano-wallet.haskellPackages.cardano-wallet-jormungandr.components.exes.cardano-wallet-jormungandr}/bin/cardano-wallet-jormungandr* .
-  cp ${cardano-shell.nix-tools.cexes.cardano-launcher.cardano-launcher}/bin/cardano-launcher* .
-  cp ${cardano-wallet.jormungandr}/bin/jormungandr* .
+  cp -f ${cardano-wallet.haskellPackages.cardano-wallet-jormungandr.components.exes.cardano-wallet-jormungandr}/bin/* .
+  cp -f ${cardano-shell.haskellPackages.cardano-launcher.components.exes.cardano-launcher}/bin/cardano-launcher* .
+  cp -f ${cardano-wallet.jormungandr}/bin/* .
 
   echo ${cardano-wallet.version} > $out/version
 
   chmod +w -R .
 
-  ${pkgs.lib.optionalString (target == "x86_64-windows") ''
-    echo ${cardano-wallet.jormungandr}
-    cp ${pkgsCross.libffi}/bin/libffi-6.dll .
-    #cp {pkgsCross.openssl.out}/lib/libeay32.dll .
-  ''}
   ${pkgs.lib.optionalString (target == "x86_64-linux") ''
     for bin in cardano-launcher cardano-wallet-jormungandr; do
       ${pkgs.binutils-unwrapped}/bin/strip $bin

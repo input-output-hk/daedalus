@@ -34,7 +34,7 @@ let
   walletPkgs = import "${sources.cardano-wallet}/nix" {};
   # only used for CLI, to be removed when upgraded to next node version
   nodePkgs = import "${sources.cardano-node}/nix" {};
-  shellPkgs = (import "${sources.cardano-shell}/nix/iohk-common.nix").getPkgs {};
+  shellPkgs = (import "${sources.cardano-shell}/nix") {};
   inherit (pkgs.lib) optionalString optional concatStringsSep;
   inherit (pkgs) writeTextFile;
   crossSystem = lib: (crossSystemTable lib).${target} or null;
@@ -101,6 +101,7 @@ let
                    then (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).haskellPackages.cardano-node.components.exes.cardano-node
                    else self.cardano-wallet.cardano-node;
     cardano-sl = import self.sources.cardano-sl { inherit target; gitrev = self.sources.cardano-sl.rev; };
+    darwin-launcher = self.callPackage ./nix/darwin-launcher.nix {};
 
     # a cross-compiled fastlist for the ps-list package
     fastlist = pkgs.pkgsCross.mingwW64.callPackage ./nix/fastlist.nix {};
@@ -301,7 +302,7 @@ let
     windows-installer = if needSignedBinaries then self.signed-windows-installer else self.unsigned-windows-installer;
 
     ## TODO: move to installers/nix
-    hsDaedalusPkgs = import ./installers {
+    hsDaedalusPkgs = self.callPackage ./installers {
       inherit (self) daedalus-bridge;
       inherit localLib system;
     };
