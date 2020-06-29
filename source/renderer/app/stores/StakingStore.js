@@ -31,7 +31,7 @@ export default class StakingStore extends Store {
   @observable isStakingExperimentRead: boolean = false;
 
   /* ----------  Redeem ITN Rewards  ---------- */
-  @observable redeemStep: ?RedeemItnRewardsStep = 'confirmation';
+  @observable redeemStep: ?RedeemItnRewardsStep = 'configuration';
   // @observable redeemStep: ?RedeemItnRewardsStep = null;
   @observable redeemWallet: ?Wallet = null;
   @observable walletName: ?string = null;

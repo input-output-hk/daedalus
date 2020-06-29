@@ -14,14 +14,22 @@
   width: 20px;
 }
 
+.sectionValue {
+}
 .section {
-  color: rgba(255, 255, 255, 0.5);
+  color: rgb(255, 255, 255);
   font-family: var(--font-regular);
   font-size: 16px;
   line-height: 1.38;
   margin-bottom: 20px;
+  span {
+    font-family: var(--font-light);
+  }
   b {
-    font-family: var(--font-medium);
+    font-family: var(--font-regular);
+  }
+  > div:last-child {
+    @extend .sectionValue;
   }
 }
 .sectionHalf {
@@ -29,25 +37,42 @@
   width: 50%;
 }
 .sectionAccent {
-  > div:last-child {
+  .sectionValue {
     color: #ea4c5b;
   }
 }
+.sectionOpacity {
+  .sectionValue {
+    opacity: 0.5;
+  }
+}
 
-.sectionTo {
+.to {
   @extend .section;
+  @extend .sectionOpacity;
 }
-.sectionRewardsTotal {
+.rewardsTotal {
   @extend .section;
   @extend .sectionHalf;
   @extend .sectionAccent;
 }
-.sectionTransactionFees {
+.transactionFees {
   @extend .section;
   @extend .sectionHalf;
   @extend .sectionAccent;
+  @extend .sectionOpacity;
 }
-.sectionFinalTotal {
+.finalTotal {
   @extend .section;
   @extend .sectionAccent;
+}
+.spendingPassword {
+  @extend .section;
+  span {
+    font-family: var(--font-regular);
+    em {
+      font-family: var(--font-light);
+      opacity: 0.5;
+    }
+  }
 }

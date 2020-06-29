@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-// import classnames from 'classnames';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
@@ -32,7 +31,7 @@ const messages = defineMessages({
   },
   walletToName: {
     id: 'staking.redeemItnRewards.step2.walletToName',
-    defaultMessage: '!!!<b>{walletName}</b> wallet',
+    defaultMessage: '!!!{walletName} <span>wallet</span>',
     description: 'walletToName for Redeem Incentivized Testnet - Step 2',
   },
   rewardsTotal: {
@@ -53,19 +52,19 @@ const messages = defineMessages({
   spendingPasswordLabel: {
     id: 'staking.redeemItnRewards.step2.spendingPasswordLabel',
     defaultMessage:
-      '<span>Wallet spending password</span> (<b>{walletName}</b> wallet)',
+      '!!!Wallet spending password <em>(<b>{walletName}</b> wallet)</em>',
     description:
       'spendingPasswordLabel for Redeem Incentivized Testnet - Step 2',
   },
   spendingPasswordPlaceholder: {
     id: 'staking.redeemItnRewards.step2.spendingPasswordPlaceholder',
-    defaultMessage: 'Password',
+    defaultMessage: '!!!Password',
     description:
       'spendingPasswordPlaceholder for Redeem Incentivized Testnet - Step 2',
   },
   continueButtonLabel: {
     id: 'staking.redeemItnRewards.step2.continueButtonLabel',
-    defaultMessage: 'Confirm rewards redemption',
+    defaultMessage: '!!!Confirm rewards redemption',
     description: 'continueButtonLabel for Redeem Incentivized Testnet - Step 2',
   },
 });
@@ -92,12 +91,6 @@ export default class Step2ConfirmationDialog extends Component<Props> {
     error: null,
   };
 
-  // componentDidUpdate() {
-  //   if (this.props.error) {
-  //     handleFormErrors('.ConfigurationDialog_error');
-  //   }
-  // }
-
   form = new ReactToolboxMobxForm(
     {
       fields: {
@@ -115,16 +108,17 @@ export default class Step2ConfirmationDialog extends Component<Props> {
             messages.spendingPasswordPlaceholder
           ),
           value: '',
-          validators: [
-            ({ field }) => {
-              return [
-                isValidSpendingPassword(field.value),
-                this.context.intl.formatMessage(
-                  globalMessages.invalidSpendingPassword
-                ),
-              ];
-            },
-          ],
+          // @REDEEM TODO - Simply uncomment
+          // validators: [
+          //   ({ field }) => {
+          //     return [
+          //       isValidSpendingPassword(field.value),
+          //       this.context.intl.formatMessage(
+          //         globalMessages.invalidSpendingPassword
+          //       ),
+          //     ];
+          //   },
+          // ],
         },
       },
     },
@@ -176,6 +170,7 @@ export default class Step2ConfirmationDialog extends Component<Props> {
         actions={[
           {
             className: isSubmitting ? styles.isSubmitting : null,
+            // @REDEEM TODO
             disabled: !form.isValid,
             primary: true,
             label: intl.formatMessage(messages.continueButtonLabel),
@@ -188,11 +183,9 @@ export default class Step2ConfirmationDialog extends Component<Props> {
         closeButton={<DialogCloseButton />}
       >
         <div className={styles.component}>
-          <div className={styles.sectionTo}>
-            <div className={styles.sectionLabel}>
-              {intl.formatMessage(messages.walletToLabel)}
-            </div>
-            <div className={styles.sectionStringValue}>
+          <div className={styles.to}>
+            <div>{intl.formatMessage(messages.walletToLabel)}</div>
+            <div>
               <FormattedHTMLMessage
                 {...messages.walletToName}
                 values={{
@@ -201,29 +194,25 @@ export default class Step2ConfirmationDialog extends Component<Props> {
               />
             </div>
           </div>
-          <div className={styles.sectionRewardsTotal}>
-            <div className={styles.sectionLabel}>
-              {intl.formatMessage(messages.rewardsTotal)}
-            </div>
-            <div className={styles.sectionStringValue}>
-              {formattedWalletAmount(rewardsTotal)}
-            </div>
-          </div>
-          <div className={styles.sectionTransactionFees}>
-            <div className={styles.sectionLabel}>
-              {intl.formatMessage(messages.transactionFees)}
-            </div>
-            <div className={styles.sectionStringValue}>
-              {formattedWalletAmount(transactionFees)}
+          <div className={styles.rewardsTotal}>
+            <div>{intl.formatMessage(messages.rewardsTotal)}</div>
+            <div>
+              <b>{formattedWalletAmount(rewardsTotal, false)}&nbsp;</b>
+              {intl.formatMessage(globalMessages.unitAda)}
             </div>
           </div>
-          <div className={styles.sectionFinalTotal}>
-            <div className={styles.sectionLabel}>
-              {intl.formatMessage(messages.finalTotal)}
+          <div className={styles.transactionFees}>
+            <div>{intl.formatMessage(messages.transactionFees)}</div>
+            <div>
+              <b>{formattedWalletAmount(transactionFees, false)}&nbsp;</b>
+              {intl.formatMessage(globalMessages.unitAda)}
             </div>
-            <div className={styles.sectionStringValue}>
-              {formattedWalletAmount(finalTotal)}
-              {finalTotal}
+          </div>
+          <div className={styles.finalTotal}>
+            <div>{intl.formatMessage(messages.finalTotal)}</div>
+            <div>
+              <b>{formattedWalletAmount(finalTotal, false)}&nbsp;</b>
+              {intl.formatMessage(globalMessages.unitAda)}
             </div>
           </div>
 

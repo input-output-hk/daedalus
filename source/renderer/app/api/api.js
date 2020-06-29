@@ -1350,10 +1350,12 @@ export default class AdaApi {
     }
   };
 
+  // @REDEEM TODO:
+  // eslint-disable-next-line
   submitRedeemItnRewards = async (request: any): Promise<any> => {
-    const rewardsTotal = 1000;
-    const transactionFees = 1000;
-    const finalTotal = 1000;
+    const rewardsTotal = new BigNumber(1000);
+    const transactionFees = new BigNumber(1000);
+    const finalTotal = new BigNumber(1000);
     return {
       rewardsTotal,
       transactionFees,

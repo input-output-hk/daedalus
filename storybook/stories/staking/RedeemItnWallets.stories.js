@@ -52,18 +52,16 @@ export const Step1ConfigurationDialogStory = () => {
 export const Step2ConfirmationDialogStory = () => {
   const walletName = select(
     'Redeem Wallet',
-    WALLETS.reduce((obj, wallet, index) => {
-      // obj[wallet.name] = wallet
-      obj[`WALLET - ${index}`] = wallet.name;
+    WALLETS.reduce((obj, { name }) => {
+      obj[name] = name;
       return obj;
     }, {}),
     WALLETS[0]
   );
-  console.log('walletName', walletName);
   return (
     <Step2ConfirmationDialog
       key="Step2ConfirmationDialog"
-      walletName="a"
+      walletName={walletName}
       rewardsTotal={new BigNumber(number('rewardsTotal', 100000))}
       transactionFees={new BigNumber(number('transactionFees', 100000))}
       finalTotal={new BigNumber(number('finalTotal', 100000))}

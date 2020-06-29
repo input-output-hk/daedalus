@@ -20,7 +20,7 @@ export default class Step2ConfirmationContainer extends Component<Props> {
       rewardsTotal,
       transactionFees,
       finalTotal,
-      isSubmitting,
+      isSubmittingReedem,
     } = stores.staking;
     if (!walletName) return null;
     return (
@@ -29,7 +29,7 @@ export default class Step2ConfirmationContainer extends Component<Props> {
         rewardsTotal={rewardsTotal}
         transactionFees={transactionFees}
         finalTotal={finalTotal}
-        isSubmitting={isSubmitting}
+        isSubmitting={isSubmittingReedem}
         error1
         onClose={onClose}
         onContinue={onContinue}
