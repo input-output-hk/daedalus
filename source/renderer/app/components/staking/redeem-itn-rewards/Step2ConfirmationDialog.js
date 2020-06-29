@@ -11,6 +11,7 @@ import styles from './Step2ConfirmationDialog.scss';
 import ReactToolboxMobxForm, {
   handleFormErrors,
 } from '../../../utils/ReactToolboxMobxForm';
+import Wallet from '../../../domains/Wallet';
 import { formattedWalletAmount } from '../../../utils/formatters';
 import { isValidSpendingPassword } from '../../../utils/validations';
 import { submitOnEnter } from '../../../utils/form';
@@ -70,7 +71,7 @@ const messages = defineMessages({
 });
 
 type Props = {
-  walletName: string,
+  wallet: Wallet,
   rewardsTotal: number,
   transactionFees: number,
   finalTotal: number,
@@ -100,7 +101,7 @@ export default class Step2ConfirmationDialog extends Component<Props> {
             <FormattedHTMLMessage
               {...messages.spendingPasswordLabel}
               values={{
-                walletName: this.props.walletName,
+                walletName: this.props.wallet.name,
               }}
             />
           ),
@@ -151,7 +152,7 @@ export default class Step2ConfirmationDialog extends Component<Props> {
     const { intl } = this.context;
     const { form } = this;
     const {
-      walletName,
+      wallet,
       rewardsTotal,
       transactionFees,
       finalTotal,
@@ -161,6 +162,8 @@ export default class Step2ConfirmationDialog extends Component<Props> {
       isSubmitting,
       error,
     } = this.props;
+
+    const { name: walletName } = wallet;
 
     const spendingPasswordField = form.$('spendingPassword');
 

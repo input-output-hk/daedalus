@@ -14,25 +14,26 @@ export default class Step2ConfirmationContainer extends Component<Props> {
   static defaultProps = DefaultProps;
 
   render() {
-    const { onContinue, onClose, onBack, stores } = this.props;
+    const { onClose, onBack, stores, actions } = this.props;
     const {
-      walletName,
+      redeemWallet,
       rewardsTotal,
       transactionFees,
       finalTotal,
       isSubmittingReedem,
     } = stores.staking;
-    if (!walletName) return null;
+    const { onConfirmationContinue } = actions.staking;
+    if (!redeemWallet) return null;
     return (
       <Step2ConfirmationDialog
-        walletName={walletName}
         rewardsTotal={rewardsTotal}
+        wallet={redeemWallet}
         transactionFees={transactionFees}
         finalTotal={finalTotal}
         isSubmitting={isSubmittingReedem}
         error1
         onClose={onClose}
-        onContinue={onContinue}
+        onContinue={onConfirmationContinue.trigger}
         onBack={onBack}
       />
     );

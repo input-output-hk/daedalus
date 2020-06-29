@@ -59,6 +59,8 @@ export default class StakingStore extends Store {
     // Redeem ITN Rewards actions
     actions.onSelectRedeemWallet.listen(this._onSelectRedeemWallet);
     actions.onConfigurationContinue.listen(this._onConfigurationContinue);
+    actions.onConfirmationContinue.listen(this._onConfirmationContinue);
+    actions.onResultContinue.listen(this._onResultContinuee);
     actions.goToNextRedeemStep.listen(this._goToNextRedeemStep);
     actions.goToPrevRedeemStep.listen(this._goToPrevRedeemStep);
     actions.closeRedeemDialog.listen(this._closeRedeemDialog);
@@ -451,7 +453,7 @@ export default class StakingStore extends Store {
       runInAction('Go to the Confirmation step', () => {
         this.isSubmittingReedem = false;
         this.stakingSuccess = true;
-        this.walletName = wallet.name;
+        this.redeemWallet = wallet;
         this.rewardsTotal = rewardsTotal;
         this.transactionFees = transactionFees;
         this.finalTotal = finalTotal;
@@ -467,6 +469,15 @@ export default class StakingStore extends Store {
         throw error;
       });
     }
+  };
+
+  @action _onConfirmationContinue = () => {
+    this.redeemStep = steps.RESULT;
+  };
+
+  @action _onResultContinue = () => {
+    this.redeemStep = null;
+    // @REDEEM TODO -  OPEN WALLET;
   };
 
   @action _goToNextRedeemStep = () => {

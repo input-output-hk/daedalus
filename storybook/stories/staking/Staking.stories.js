@@ -25,6 +25,8 @@ import { StakingDelegationSteps } from './DelegationSteps.stories';
 import {
   Step1ConfigurationDialogStory,
   Step2ConfirmationDialogStory,
+  Step3SuccessDialogStory,
+  Step3FailureDialogStory,
 } from './RedeemItnWallets.stories';
 import {
   StakingUndelegateConfirmationStory,
@@ -230,5 +232,11 @@ storiesOf('Decentralization | Redeem ITN Rewards', module)
     id: 'redeem-itn-wallets-story',
   })
   .add('Step 2', Step2ConfirmationDialogStory, {
+    id: 'redeem-itn-wallets-story',
+  })
+  .add('Step 3 - Success', Step3SuccessDialogStory, {
+    id: 'redeem-itn-wallets-story',
+  })
+  .add('Step 3 - Failure', Step3FailureDialogStory, {
     id: 'redeem-itn-wallets-story',
   });

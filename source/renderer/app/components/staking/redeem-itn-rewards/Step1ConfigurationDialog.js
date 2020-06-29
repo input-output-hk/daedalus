@@ -81,16 +81,16 @@ const messages = defineMessages({
 });
 
 type Props = {
-  wallets: Array<Wallet>,
-  redeemWallet?: ?Wallet,
-  isSubmitting: boolean,
-  onContinue: Function,
-  onClose: Function,
-  onSelectWallet: Function,
-  mnemonicValidator: Function,
-  isWalletValid?: boolean,
-  suggestedMnemonics: Array<string>,
   error?: ?string,
+  isSubmitting: boolean,
+  isWalletValid?: boolean,
+  mnemonicValidator: Function,
+  onClose: Function,
+  onContinue: Function,
+  onSelectWallet: Function,
+  redeemWallet?: ?Wallet,
+  suggestedMnemonics: Array<string>,
+  wallets: Array<Wallet>,
 };
 
 @observer
@@ -210,13 +210,13 @@ export default class Step1ConfigurationDialog extends Component<Props> {
     const { intl } = this.context;
     const { form } = this;
     const {
-      wallets,
-      redeemWallet,
-      onContinue,
-      onClose,
       isSubmitting,
-      suggestedMnemonics,
+      onClose,
+      onContinue,
       onSelectWallet,
+      redeemWallet,
+      suggestedMnemonics,
+      wallets,
     } = this.props;
     const recoveryPhraseField = form.$('recoveryPhrase');
     const walletsDropdownField = form.$('walletsDropdown');

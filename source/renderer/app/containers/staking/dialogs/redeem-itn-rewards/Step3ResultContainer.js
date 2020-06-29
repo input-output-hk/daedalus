@@ -15,7 +15,7 @@ export default class Step3ResultContainer extends Component<Props> {
   static defaultProps = DefaultProps;
 
   render() {
-    const { onBack, onContinue, onClose, stores } = this.props;
+    const { onBack, onClose, stores, actions } = this.props;
     const {
       walletName,
       rewardsTotal,
@@ -23,7 +23,7 @@ export default class Step3ResultContainer extends Component<Props> {
       finalTotal,
       stakingSuccess,
     } = stores.staking;
-
+    const { onResultContinue } = actions.staking;
     if (stakingSuccess) {
       return (
         <Step3SuccessDialog
@@ -33,7 +33,7 @@ export default class Step3ResultContainer extends Component<Props> {
           finalTotal={finalTotal}
           error1
           onClose={onClose}
-          onContinue={onContinue}
+          onContinue={onResultContinue.trigger}
           onBack={onBack}
         />
       );

@@ -19,22 +19,22 @@ export default class Step1ConfigurationContainer extends Component<Props> {
     const { onContinue, onClose, onBack, stores, actions } = this.props;
     const { allWallets } = stores.wallets;
     const { redeemWallet, redeemError } = stores.staking;
-    const { onSelectRedeemWallet } = actions.staking;
+    const { onConfigurationContinue, onSelectRedeemWallet } = actions.staking;
     const isWalletValid = true;
     const isSubmitting = false;
     return (
       <Step1ConfigurationDialog
-        wallets={allWallets}
-        redeemWallet={redeemWallet}
-        onClose={onClose}
-        onContinue={onContinue}
-        onBack={onBack}
-        isWalletValid={isWalletValid}
-        isSubmitting={isSubmitting}
-        mnemonicValidator={isValidMnemonic}
         error={redeemError}
+        isSubmitting={isSubmitting}
+        isWalletValid={isWalletValid}
+        mnemonicValidator={isValidMnemonic}
+        onBack={onBack}
+        onClose={onClose}
+        onContinue={onConfigurationContinue.trigger}
         onSelectWallet={walletId => onSelectRedeemWallet.trigger({ walletId })}
         suggestedMnemonics={validWords}
+        wallet={redeemWallet}
+        wallets={allWallets}
       />
     );
   }

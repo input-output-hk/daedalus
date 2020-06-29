@@ -25,19 +25,16 @@ export const Step1ConfigurationDialogStory = () => {
   const redeemWallet = select(
     'Redeem Wallet',
     WALLETS.reduce((obj, wallet, index) => {
-      // obj[wallet.name] = wallet
-      obj[`WALLET - ${index}`] = wallet;
+      obj[wallet.name] = wallet;
       return obj;
     }, {}),
     WALLETS[0]
   );
-  console.log('redeemWallet', redeemWallet);
-  console.log('WALLETS[0]', WALLETS[0]);
   return (
     <Step1ConfigurationDialog
       key="Step1ConfigurationDialog"
       wallets={WALLETS}
-      redeemWallet={WALLETS[0]}
+      wallet={redeemWallet}
       isWalletValid={boolean('isWalletValid')}
       isSubmitting={boolean('isSubmitting')}
       mnemonicValidator={isValidMnemonic}
@@ -50,10 +47,10 @@ export const Step1ConfigurationDialogStory = () => {
   );
 };
 export const Step2ConfirmationDialogStory = () => {
-  const walletName = select(
+  const redeemWallet = select(
     'Redeem Wallet',
-    WALLETS.reduce((obj, { name }) => {
-      obj[name] = name;
+    WALLETS.reduce((obj, wallet, index) => {
+      obj[wallet.name] = wallet;
       return obj;
     }, {}),
     WALLETS[0]
@@ -61,7 +58,7 @@ export const Step2ConfirmationDialogStory = () => {
   return (
     <Step2ConfirmationDialog
       key="Step2ConfirmationDialog"
-      walletName={walletName}
+      wallet={redeemWallet}
       rewardsTotal={new BigNumber(number('rewardsTotal', 100000))}
       transactionFees={new BigNumber(number('transactionFees', 100000))}
       finalTotal={new BigNumber(number('finalTotal', 100000))}
@@ -72,3 +69,5 @@ export const Step2ConfirmationDialogStory = () => {
     />
   );
 };
+export const Step3SuccessDialogStory = () => <div>Step3SuccessDialogStory</div>;
+export const Step3FailureDialogStory = () => <div>Step3FailureDialogStory</div>;
