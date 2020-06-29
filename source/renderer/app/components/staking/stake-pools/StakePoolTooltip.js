@@ -513,7 +513,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
             </dd>
             <dt>{intl.formatMessage(messages.pledge)}</dt>
             <dd className={styles.defaultColor}>
-              <span>{formattedWalletAmount(pledge)}</span>
+              <span>{formattedWalletAmount(pledge, true, false)}</span>
             </dd>
             <dt>{intl.formatMessage(messages.costPerEpoch)}</dt>
             <dd className={styles.cost}>
