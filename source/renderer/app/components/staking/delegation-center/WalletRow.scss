@@ -11,6 +11,7 @@
     .SimpleBubble_root {
       .SimpleBubble_bubble {
         margin-left: -50px;
+        right: -20px;
       }
     }
   }
@@ -198,7 +199,7 @@
 
   .arrow {
     height: 7px;
-    margin: -2px 6px 0;
+    margin: 2px 6px 0;
     opacity: 0.3;
     position: relative;
     width: 3.5px;
