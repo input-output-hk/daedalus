@@ -68,6 +68,7 @@ import { transferFunds } from './wallets/requests/transferFunds';
 // Staking
 import StakePool from '../domains/StakePool';
 import { EPOCH_LENGTH_ITN } from '../config/epochsConfig';
+import stakePoolDummyData from '../config/stakingStakePoolsMissingApiData.dummy.json';
 
 // News requests
 import { getNews } from './news/requests/getNews';
@@ -1451,12 +1452,32 @@ export default class AdaApi {
     logger.debug('AdaApi::getStakePools called');
     try {
       const response: AdaApiStakePools = await getStakePools(this.config);
-      const stakePools = response
+
+      // TODO: remove once shelley local metadata fetching is fixed
+      const stakePoolsWithDummyData = response.map((pool, index) => {
+        const { _cost, _pledge, _profitMargin, metadata } = stakePoolDummyData[
+          index
+        ];
+        return Object.assign(pool, {
+          cost: pool.cost || { quantity: _cost, unit: 'lovelace' },
+          margin: pool.margin || { quantity: _profitMargin, unit: 'percent' },
+          metadata: pool.metadata || metadata,
+          pledge: pool.pledge || { quantity: _pledge, unit: 'lovelace' },
+        });
+      });
+
+      const { isDev } = global.environment;
+      const stakePools = (isDev ? stakePoolsWithDummyData : response)
         .filter(({ metadata }: AdaApiStakePool) => metadata !== undefined)
+        .filter(
+          ({ margin }: AdaApiStakePool) =>
+            margin !== undefined && margin.quantity < 100
+        )
         .map(_createStakePoolFromServerData);
       logger.debug('AdaApi::getStakePools success', {
         stakePoolsTotal: response.length,
         stakePoolsWithMetadata: stakePools.length,
+        unfilteredStakePools: response,
       });
       return stakePools;
     } catch (error) {
@@ -1896,42 +1917,33 @@ const _createStakePoolFromServerData = action(
     const {
       id,
       metrics,
-      apparent_performance: performance,
       cost,
       margin: profitMargin,
       metadata,
-      saturation,
+      pledge,
     } = stakePool;
     const {
-      controlled_stake: controlledStake,
+      relative_stake: relativeStake,
       produced_blocks: producedBlocks,
+      saturation,
     } = metrics; // eslint-disable-line
-    const {
-      name,
-      description = '',
-      ticker,
-      homepage,
-      pledge_address: pledgeAddress,
-    } = metadata;
-    const controlledStakeQuantity = get(controlledStake, 'quantity', 0);
+    const { name, description = '', ticker, homepage } = metadata;
+    const relativeStakePercentage = get(relativeStake, 'quantity', 0);
     const producedBlocksCount = get(producedBlocks, 'quantity', 0);
     const costQuantity = get(cost, 'quantity', 0);
+    const pledgeQuantity = get(pledge, 'quantity', 0);
     const profitMarginPercentage = get(profitMargin, 'quantity', 0);
     return new StakePool({
       id,
-      performance: performance * 100,
-      controlledStake: new BigNumber(controlledStakeQuantity).dividedBy(
-        LOVELACES_PER_ADA
-      ),
+      relativeStake: relativeStakePercentage,
       producedBlocks: producedBlocksCount,
       ticker,
       homepage,
-      pledgeAddress,
       cost: new BigNumber(costQuantity).dividedBy(LOVELACES_PER_ADA),
       description,
       isCharity: false,
       name,
-      // pledge: new BigNumber(pledge).dividedBy(LOVELACES_PER_ADA),
+      pledge: new BigNumber(pledgeQuantity).dividedBy(LOVELACES_PER_ADA),
       profitMargin: profitMarginPercentage,
       ranking: index + 1,
       retiring: null,

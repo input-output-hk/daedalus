@@ -10,16 +10,20 @@ export type DelegationAction =
 export type AdaApiStakePool = {
   id: string,
   metrics: {
-    controlled_stake: {
+    non_myopic_member_rewards: {
       quantity: number,
-      unit: 'lovelace',
+      unit: 'block',
     },
     produced_blocks: {
       quantity: number,
       unit: 'block',
     },
+    relative_stake: {
+      quantity: number,
+      unit: 'percent',
+    },
+    saturation: number,
   },
-  apparent_performance: number,
   cost: {
     quantity: number,
     unit: 'lovelace',
@@ -29,15 +33,15 @@ export type AdaApiStakePool = {
     unit: 'percent',
   },
   metadata: {
-    owner: string,
     ticker: string, // [3 .. 5] characters
     name: string, // [1 .. 50] characters
     description?: string, // <= 255 characters
     homepage: string,
-    pledge_address: string,
   },
-  saturation: number,
-  desirability: number,
+  pledge: {
+    quantity: number,
+    unit: 'lovelace',
+  },
 };
 export type AdaApiStakePools = Array<AdaApiStakePool>;
 

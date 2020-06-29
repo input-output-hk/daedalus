@@ -26,10 +26,9 @@ let
     );
   rustPkgs = iohkNix.rust-packages.pkgs;
   isDaedalus = name: false;
-  cardanoSL = { target }: import sources.cardano-sl { gitrev = sources.cardano-sl.rev; };
   pkgs = iohkNix.pkgs;
   lib = pkgs.lib;
 in
 lib // {
-  inherit sources iohkNix pkgs cardanoSL isDaedalus cleanSourceFilter;
+  inherit sources iohkNix pkgs isDaedalus cleanSourceFilter;
 }

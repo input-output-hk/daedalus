@@ -114,7 +114,6 @@ type Props = {
   stakePoolsList: Array<StakePool>,
   selectedWallet: ?Wallet,
   onOpenExternalLink: Function,
-  getPledgeAddressUrl: Function,
   currentTheme: string,
   selectedPool: ?StakePool,
   onClose: Function,
@@ -165,7 +164,6 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
       recentStakePools,
       stakePoolsList,
       onOpenExternalLink,
-      getPledgeAddressUrl,
       currentTheme,
       selectedWallet,
       onClose,
@@ -377,7 +375,6 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
               listName="recentStakePools"
               stakePoolsList={recentStakePools}
               onOpenExternalLink={onOpenExternalLink}
-              getPledgeAddressUrl={getPledgeAddressUrl}
               currentTheme={currentTheme}
               isListActive={selectedList === 'recentStakePools'}
               setListActive={this.handleSetListActive}
@@ -408,7 +405,6 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
               listName="selectedIndexList"
               stakePoolsList={filteredStakePoolsList}
               onOpenExternalLink={onOpenExternalLink}
-              getPledgeAddressUrl={getPledgeAddressUrl}
               currentTheme={currentTheme}
               isListActive={selectedList === 'selectedIndexList'}
               setListActive={this.handleSetListActive}

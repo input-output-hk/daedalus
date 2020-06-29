@@ -11,10 +11,10 @@ export const SLOT_DURATION_MAINNET = 20; // unit: seconds
 export const SLOT_DURATION_STAGING = 20; // unit: seconds
 export const SLOT_DURATION_TESTNET = 20; // unit: seconds
 export const SLOT_DURATION_DEVELOPMENT = 7; // unit: seconds
-export const SLOT_DURATION_ITN = 2; // unit: seconds
+export const SLOT_DURATION_ITN = isDev || isTest ? 0.2 : 1; // ITN: 2 | unit: seconds
 
 export const SLOTS_TOTAL =
-  isDev || isTest || isIncentivizedTestnetSelfnode ? 150 : 43200;
+  isDev || isTest || isIncentivizedTestnetSelfnode ? 1500 : 21600; // ITN: 150 : 43200
 
 export const EPOCH_LENGTH_BASE_MAINNET = 2160;
 export const EPOCH_LENGTH_BASE_STAGING = 2160;

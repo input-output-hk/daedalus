@@ -4557,9 +4557,9 @@
           "line": 44
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
-        "id": "staking.stakePools.tooltip.controlledStake",
+        "id": "staking.stakePools.tooltip.relativeStake",
         "start": {
-          "column": 19,
+          "column": 17,
           "line": 40
         }
       },
@@ -4592,31 +4592,17 @@
         }
       },
       {
-        "defaultMessage": "!!!Performance:",
-        "description": "\"Performance\" for the Stake Pools Tooltip page.",
+        "defaultMessage": "!!!Produced blocks:",
+        "description": "\"Produced blocks\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
           "line": 59
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
-        "id": "staking.stakePools.tooltip.performance",
-        "start": {
-          "column": 15,
-          "line": 55
-        }
-      },
-      {
-        "defaultMessage": "!!!Produced blocks:",
-        "description": "\"Produced blocks\" for the Stake Pools Tooltip page.",
-        "end": {
-          "column": 3,
-          "line": 64
-        },
-        "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.producedBlocks",
         "start": {
           "column": 18,
-          "line": 60
+          "line": 55
         }
       },
       {
@@ -4624,13 +4610,13 @@
         "description": "\"Retirement\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 64
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.retirement",
         "start": {
           "column": 14,
-          "line": 65
+          "line": 60
         }
       },
       {
@@ -4638,27 +4624,27 @@
         "description": "\"Saturation\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 74
+          "line": 69
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.saturation",
         "start": {
           "column": 14,
-          "line": 70
+          "line": 65
         }
       },
       {
-        "defaultMessage": "!!!Pledge address",
-        "description": "\"pledgeAddressLabel\" for the Stake Pools Tooltip page.",
+        "defaultMessage": "!!!Pledge:",
+        "description": "\"Pledge\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 89
+          "line": 79
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
-        "id": "staking.stakePools.tooltip.pledgeAddressLabel",
+        "id": "staking.stakePools.tooltip.pledge",
         "start": {
-          "column": 22,
-          "line": 85
+          "column": 10,
+          "line": 75
         }
       },
       {
@@ -4666,13 +4652,13 @@
         "description": "\"Delegate to this pool\" Button for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 95
+          "line": 85
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.delegateButton",
         "start": {
           "column": 18,
-          "line": 90
+          "line": 80
         }
       },
       {
@@ -4680,13 +4666,13 @@
         "description": "Experimental tooltip label",
         "end": {
           "column": 3,
-          "line": 100
+          "line": 90
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
         "id": "staking.stakePools.tooltip.experimentalTooltipLabel",
         "start": {
           "column": 28,
-          "line": 96
+          "line": 86
         }
       }
     ],
@@ -11734,13 +11720,13 @@
         "description": "\"Learn more\" link URL on the delegation setup \"intro\" dialog.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 20
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.intro.step.dialog.learnMore.url",
         "start": {
           "column": 20,
-          "line": 16
+          "line": 15
         }
       },
       {
@@ -11748,13 +11734,13 @@
         "description": "Step 1 label text on delegation steps dialog.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 25
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.steps.step.1.label",
         "start": {
           "column": 29,
-          "line": 22
+          "line": 21
         }
       },
       {
@@ -11762,13 +11748,13 @@
         "description": "Step 2 label text on delegation steps dialog.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 30
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.steps.step.2.label",
         "start": {
           "column": 29,
-          "line": 27
+          "line": 26
         }
       },
       {
@@ -11776,13 +11762,13 @@
         "description": "Step 3 label text on delegation steps dialog.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 35
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.steps.step.3.label",
         "start": {
           "column": 29,
-          "line": 32
+          "line": 31
         }
       }
     ],

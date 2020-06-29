@@ -69,6 +69,14 @@ Daedalus - Cryptocurrency Wallet
 1. Run `yarn nix:staging` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
 
+#### Shelley Local
+
+1. Run `nix-shell -A devops` from `daedalus`.
+2. Run `start-cluster` to launch the cluster (run `stop-cluster` to stop it).
+3. Run `yarn nix:shelley_local` from `daedalus` in a separate Terminal window.
+4. Run `yarn dev` from the subsequent `nix-shell`
+5. Once Daedalus has started, and has gotten past the loading screen, run `yarn shelley:wallet:importer` from a new terminal window. This is only required if you wish to import some funded wallets.
+
 #### Shelley Testnet
 
 1. Run `yarn nix:shelley_testnet` from `daedalus`.

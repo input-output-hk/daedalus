@@ -1,7 +1,7 @@
 {
   "name": "daedalus",
   "productName": "Daedalus",
-  "version": "1.0.0-STN1",
+  "version": "1.1.0-STN1",
   "description": "Cryptocurrency Wallet",
   "main": "./dist/main/index.js",
   "scripts": {
@@ -51,11 +51,13 @@
     "nix:mainnet": "NETWORK=mainnet nix-shell --argstr nodeImplementation cardano --argstr cluster mainnet",
     "nix:flight": "NETWORK=mainnet nix-shell --argstr nodeImplementation cardano --argstr cluster mainnet_flight",
     "nix:selfnode": "NETWORK=selfnode nix-shell --argstr nodeImplementation cardano --argstr cluster selfnode",
+    "nix:shelley_local": "NETWORK=shelley_testnet nix-shell --arg configOverride state-cluster/config.json --arg genesisOverride state-cluster/keys/genesis.json --argstr nodeImplementation cardano --argstr cluster local --arg useLocalNode true",
     "nix:shelley_testnet": "NETWORK=shelley_testnet nix-shell --argstr nodeImplementation cardano --argstr cluster shelley_testnet",
     "nix:shelley_qa": "NETWORK=shelley_qa nix-shell --argstr nodeImplementation cardano --argstr cluster shelley_qa",
     "nix:staging": "NETWORK=staging nix-shell --argstr nodeImplementation cardano --argstr cluster staging",
     "nix:testnet": "NETWORK=testnet nix-shell --argstr nodeImplementation cardano --argstr cluster testnet",
     "byron:wallet:importer": "node utils/api-importer/byron-wallet-importer.js",
+    "shelley:wallet:importer": "node utils/api-importer/shelley-wallet-importer.js",
     "itn:byron:wallet:importer": "node utils/api-importer/itn-byron-wallet-importer.js",
     "itn:shelley:wallet:importer": "node utils/api-importer/itn-shelley-wallet-importer.js",
     "yoroi:wallet:importer": "node utils/api-importer/yoroi-wallet-importer.js",

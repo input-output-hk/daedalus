@@ -12060,7 +12060,7 @@
                                 <name>tooltip</name>
                                 <children>
                                     <concept_node>
-                                        <name>controlledStake</name>
+                                        <name>relativeStake</name>
                                         <definition_loaded>false</definition_loaded>
                                         <description></description>
                                         <comment></comment>
@@ -12129,23 +12129,6 @@
                                     </concept_node>
                                     <concept_node>
                                         <name>performance</name>
-                                        <definition_loaded>false</definition_loaded>
-                                        <description></description>
-                                        <comment></comment>
-                                        <default_text></default_text>
-                                        <translations>
-                                            <translation>
-                                                <language>en-US</language>
-                                                <approved>false</approved>
-                                            </translation>
-                                            <translation>
-                                                <language>ja-JP</language>
-                                                <approved>false</approved>
-                                            </translation>
-                                        </translations>
-                                    </concept_node>
-                                    <concept_node>
-                                        <name>pledgeAddressLabel</name>
                                         <definition_loaded>false</definition_loaded>
                                         <description></description>
                                         <comment></comment>
@@ -14378,7 +14361,7 @@
                 </translations>
             </concept_node>
             <concept_node>
-                <name>staking.stakePools.tooltip.controlledStake</name>
+                <name>staking.stakePools.tooltip.relativeStake</name>
                 <definition_loaded>false</definition_loaded>
                 <description></description>
                 <comment></comment>
@@ -14447,23 +14430,6 @@
             </concept_node>
             <concept_node>
                 <name>staking.stakePools.tooltip.performance</name>
-                <definition_loaded>false</definition_loaded>
-                <description></description>
-                <comment></comment>
-                <default_text></default_text>
-                <translations>
-                    <translation>
-                        <language>en-US</language>
-                        <approved>false</approved>
-                    </translation>
-                    <translation>
-                        <language>ja-JP</language>
-                        <approved>true</approved>
-                    </translation>
-                </translations>
-            </concept_node>
-            <concept_node>
-                <name>staking.stakePools.tooltip.pledgeAddressLabel</name>
                 <definition_loaded>false</definition_loaded>
                 <description></description>
                 <comment></comment>
