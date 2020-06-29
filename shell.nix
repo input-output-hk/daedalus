@@ -9,10 +9,18 @@
 , walletExtraArgs ? []
 , allowFaultInjection ? false
 , purgeNpmCache ? false
+, topologyOverride ? null
+, configOverride ? null
+, genesisOverride ? null
+, useLocalNode ? false
 }:
 
 let
-  daedalusPkgs = import ./. { inherit nodeImplementation cluster; target = system; devShell = true; };
+  daedalusPkgs = import ./. {
+    inherit nodeImplementation cluster topologyOverride configOverride genesisOverride useLocalNode;
+    target = system;
+    devShell = true;
+  };
   hostPkgs = import pkgs.path { config = {}; overlays = []; };
   fullExtraArgs = walletExtraArgs ++ pkgs.lib.optional allowFaultInjection "--allow-fault-injection";
   launcherConfig' = "${daedalusPkgs.daedalus.cfg}/etc/launcher-config.yaml";
@@ -41,6 +49,7 @@ let
       daedalusPkgs.yarn
       daedalusPkgs.daedalus-bridge
       daedalusPkgs.daedalus-installer
+      daedalusPkgs.darwin-launcher
     ] ++ (with pkgs; [
       nix bash binutils coreutils curl gnutar
       git python27 curl jq
@@ -57,8 +66,7 @@ let
     ])
     ) ++ (pkgs.lib.optionals (nodeImplementation == "cardano") [
       debug.node
-    ]
-    );
+    ]);
   buildShell = pkgs.stdenv.mkDerivation {
     name = "daedalus-build";
     buildInputs = daedalusShellBuildInputs;
@@ -86,9 +94,12 @@ let
       }
 
       ${localLib.optionalString pkgs.stdenv.isLinux "export XDG_DATA_HOME=$HOME/.local/share"}
+      ${localLib.optionalString (cluster == "local") "export CARDANO_NODE_SOCKET_PATH=$(pwd)/state-cluster/bft1.socket"}
       source <(cardano-cli --bash-completion-script cardano-cli)
       source <(cardano-node --bash-completion-script cardano-node)
       source <(cardano-address --bash-completion-script cardano-address)
+      [[ $(type -P cardano-wallet-shelley) ]] && source <(cardano-wallet-shelley --bash-completion-script cardano-wallet-shelley)
+      [[ $(type -P cardano-wallet-byron) ]] && source <(cardano-wallet-byron --bash-completion-script cardano-wallet-byron)
 
       cp -f ${daedalusPkgs.iconPath.small} $DAEDALUS_INSTALL_DIRECTORY/icon.png
 
@@ -129,8 +140,9 @@ let
     name = "devops-shell";
     buildInputs = let
       inherit (localLib.iohkNix) niv;
-    in [ niv ];
+    in [ niv daedalusPkgs.cardano-node-cluster.start daedalusPkgs.cardano-node-cluster.stop ];
     shellHook = ''
+      export CARDANO_NODE_SOCKET_PATH=$(pwd)/state-cluster/bft1.socket
       echo "DevOps Tools" \
       | ${pkgs.figlet}/bin/figlet -f banner -c \
       | ${pkgs.lolcat}/bin/lolcat
@@ -138,6 +150,8 @@ let
       echo "NOTE: you may need to export GITHUB_TOKEN if you hit rate limits with niv"
       echo "Commands:
         * niv update <package> - update package
+        * start-cluster - start a development cluster
+        * stop-cluster - stop a development cluster
 
       "
     '';

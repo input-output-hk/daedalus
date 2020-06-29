@@ -1,6 +1,6 @@
 [
   {
-    "controlledStake": 2958251175005,
+    "relativeStake": 29,
     "cost": "48",
     "createdAt": "2020-01-20T23:21:09.393Z",
     "description": "dolor quo neque",
@@ -10,7 +10,6 @@
     "name": "Ila Hickle",
     "performance": 28,
     "pledge": "34",
-    "pledgeAddress": "https://russel.net",
     "producedBlocks": 7001674,
     "profitMargin": 3,
     "ranking": 1,
@@ -19,7 +18,7 @@
     "ticker": "CXGN"
   },
   {
-    "controlledStake": 3443618570454,
+    "relativeStake": 34,
     "cost": "55",
     "createdAt": "2020-01-21T01:06:01.934Z",
     "description": "et voluptas reprehenderit",
@@ -29,7 +28,6 @@
     "name": "Adrain Funk",
     "performance": 87,
     "pledge": "62",
-    "pledgeAddress": "http://shawn.org",
     "producedBlocks": 8761312,
     "profitMargin": 47,
     "ranking": 2,
@@ -38,7 +36,7 @@
     "ticker": "BKNQ"
   },
   {
-    "controlledStake": 6505921958015,
+    "relativeStake": 65,
     "cost": "48",
     "createdAt": "2020-01-21T14:40:08.629Z",
     "description": "voluptatem qui et",
@@ -48,7 +46,6 @@
     "name": "Buck Abshire",
     "performance": 42,
     "pledge": "60",
-    "pledgeAddress": "http://terrill.name",
     "producedBlocks": 5718810,
     "profitMargin": 16,
     "ranking": 3,
@@ -57,7 +54,7 @@
     "ticker": "PZPA"
   },
   {
-    "controlledStake": 9035314940848,
+    "relativeStake": 90,
     "cost": "36",
     "createdAt": "2020-01-20T21:12:02.538Z",
     "description": "sit eaque eligendi",
@@ -67,7 +64,6 @@
     "name": "Ms. Libbie Labadie",
     "performance": 13,
     "pledge": "92",
-    "pledgeAddress": "http://rogelio.net",
     "producedBlocks": 5974301,
     "profitMargin": 54,
     "ranking": 4,
@@ -76,7 +72,7 @@
     "ticker": "VRKJ"
   },
   {
-    "controlledStake": 8873647884466,
+    "relativeStake": 88,
     "cost": "32",
     "createdAt": "2020-01-21T12:32:14.828Z",
     "description": "nemo alias voluptate",
@@ -86,7 +82,6 @@
     "name": "Katelynn Kuhlman",
     "performance": 16,
     "pledge": "81",
-    "pledgeAddress": "https://dora.com",
     "producedBlocks": 7433654,
     "profitMargin": 61,
     "ranking": 5,
@@ -95,7 +90,7 @@
     "ticker": "IUJV"
   },
   {
-    "controlledStake": 9588105508592,
+    "relativeStake": 95,
     "cost": "57",
     "createdAt": "2020-01-20T18:10:50.294Z",
     "description": "molestiae autem corrupti",
@@ -105,7 +100,6 @@
     "name": "Elaina Keeling",
     "performance": 100,
     "pledge": "21",
-    "pledgeAddress": "https://arnaldo.com",
     "producedBlocks": 3845638,
     "profitMargin": 38,
     "ranking": 6,
@@ -114,7 +108,7 @@
     "ticker": "GBBT"
   },
   {
-    "controlledStake": 8368913796731,
+    "relativeStake": 83,
     "cost": "96",
     "createdAt": "2020-01-21T05:59:31.082Z",
     "description": "at rem tempora",
@@ -124,7 +118,6 @@
     "name": "Destiney Champlin",
     "performance": 14,
     "pledge": "75",
-    "pledgeAddress": "http://alize.name",
     "producedBlocks": 4839317,
     "profitMargin": 86,
     "ranking": 7,
@@ -133,7 +126,7 @@
     "ticker": "IBJT"
   },
   {
-    "controlledStake": 2292280038818,
+    "relativeStake": 22,
     "cost": "78",
     "createdAt": "2020-01-20T16:18:55.972Z",
     "description": "molestiae voluptatem maxime",
@@ -143,7 +136,6 @@
     "name": "Pauline Hauck",
     "performance": 56,
     "pledge": "16",
-    "pledgeAddress": "https://megane.name",
     "producedBlocks": 5456740,
     "profitMargin": 8,
     "ranking": 8,
@@ -152,7 +144,7 @@
     "ticker": "CNMR"
   },
   {
-    "controlledStake": 9723791126162,
+    "relativeStake": 97,
     "cost": "43",
     "createdAt": "2020-01-20T18:50:43.357Z",
     "description": "tempora dolore quia",
@@ -162,7 +154,6 @@
     "name": "Chad Jerde",
     "performance": 0,
     "pledge": "75",
-    "pledgeAddress": "http://darion.net",
     "producedBlocks": 8275175,
     "profitMargin": 7,
     "ranking": 9,
@@ -171,7 +162,7 @@
     "ticker": "CLXR"
   },
   {
-    "controlledStake": 2965409443714,
+    "relativeStake": 29,
     "cost": "27",
     "createdAt": "2020-01-21T03:44:07.917Z",
     "description": "assumenda dolores et",
@@ -181,7 +172,6 @@
     "name": "Eric Kuvalis",
     "performance": 47,
     "pledge": "61",
-    "pledgeAddress": "https://hermann.biz",
     "producedBlocks": 8155418,
     "profitMargin": 11,
     "ranking": 10,
@@ -190,7 +180,7 @@
     "ticker": "MIEF"
   },
   {
-    "controlledStake": 9301401418634,
+    "relativeStake": 98,
     "cost": "56",
     "createdAt": "2020-01-21T03:00:12.831Z",
     "description": "at voluptates quisquam",
@@ -200,7 +190,6 @@
     "name": "Ruby Abshire",
     "performance": 6,
     "pledge": "8",
-    "pledgeAddress": "https://lilla.com",
     "producedBlocks": 7370918,
     "profitMargin": 72,
     "ranking": 11,
@@ -209,7 +198,7 @@
     "ticker": "IPIJ"
   },
   {
-    "controlledStake": 3233726525213,
+    "relativeStake": 32,
     "cost": "5",
     "createdAt": "2020-01-20T16:17:37.144Z",
     "description": "doloremque illo quia",
@@ -219,7 +208,6 @@
     "name": "Felicity Hessel",
     "performance": 12,
     "pledge": "99",
-    "pledgeAddress": "https://bart.name",
     "producedBlocks": 9973231,
     "profitMargin": 12,
     "ranking": 12,
@@ -228,7 +216,7 @@
     "ticker": "QYUY"
   },
   {
-    "controlledStake": 447471630759,
+    "relativeStake": 44,
     "cost": "69",
     "createdAt": "2020-01-21T09:47:00.108Z",
     "description": "voluptatibus ut ullam",
@@ -238,7 +226,6 @@
     "name": "Hailee Douglas",
     "performance": 17,
     "pledge": "37",
-    "pledgeAddress": "http://elyssa.net",
     "producedBlocks": 3397094,
     "profitMargin": 56,
     "ranking": 13,
@@ -247,7 +234,7 @@
     "ticker": "TQLL"
   },
   {
-    "controlledStake": 5233618135098,
+    "relativeStake": 52,
     "cost": "58",
     "createdAt": "2020-01-21T04:30:27.277Z",
     "description": "quae veritatis sed",
@@ -257,7 +244,6 @@
     "name": "Bobby Gleichner IV",
     "performance": 70,
     "pledge": "31",
-    "pledgeAddress": "https://russel.org",
     "producedBlocks": 3354391,
     "profitMargin": 61,
     "ranking": 14,
@@ -266,7 +252,7 @@
     "ticker": "IFGL"
   },
   {
-    "controlledStake": 9454649318941,
+    "relativeStake": 94,
     "cost": "82",
     "createdAt": "2020-01-21T13:59:16.888Z",
     "description": "vel odit exercitationem",
@@ -276,7 +262,6 @@
     "name": "Graham Effertz",
     "performance": 2,
     "pledge": "3",
-    "pledgeAddress": "https://rozella.net",
     "producedBlocks": 9104916,
     "profitMargin": 73,
     "ranking": 15,
@@ -285,7 +270,7 @@
     "ticker": "QAMK"
   },
   {
-    "controlledStake": 1606355644762,
+    "relativeStake": 16,
     "cost": "15",
     "createdAt": "2020-01-21T12:57:28.706Z",
     "description": "in mollitia pariatur",
@@ -295,7 +280,6 @@
     "name": "Cassandra Streich III",
     "performance": 0,
     "pledge": "64",
-    "pledgeAddress": "http://tristin.com",
     "producedBlocks": 4797319,
     "profitMargin": 40,
     "ranking": 16,
@@ -304,7 +288,7 @@
     "ticker": "KMNC"
   },
   {
-    "controlledStake": 337200602516,
+    "relativeStake": 33,
     "cost": "86",
     "createdAt": "2020-01-20T21:54:17.575Z",
     "description": "est aut enim",
@@ -314,7 +298,6 @@
     "name": "Carolyn Maggio",
     "performance": 12,
     "pledge": "10",
-    "pledgeAddress": "http://allie.net",
     "producedBlocks": 2052058,
     "profitMargin": 75,
     "ranking": 17,
@@ -323,7 +306,7 @@
     "ticker": "YMQC"
   },
   {
-    "controlledStake": 5967216638383,
+    "relativeStake": 59,
     "cost": "9",
     "createdAt": "2020-01-20T21:15:27.431Z",
     "description": "exercitationem eos earum",
@@ -333,7 +316,6 @@
     "name": "Ara Lesch",
     "performance": 59,
     "pledge": "73",
-    "pledgeAddress": "https://enola.com",
     "producedBlocks": 5610402,
     "profitMargin": 79,
     "ranking": 18,
@@ -342,7 +324,7 @@
     "ticker": "UADF"
   },
   {
-    "controlledStake": 2523316361475,
+    "relativeStake": 25,
     "cost": "97",
     "createdAt": "2020-01-20T20:41:04.312Z",
     "description": "sit iste est",
@@ -352,7 +334,6 @@
     "name": "Wayne Fritsch",
     "performance": 24,
     "pledge": "47",
-    "pledgeAddress": "https://darrell.name",
     "producedBlocks": 8873896,
     "profitMargin": 51,
     "ranking": 19,
@@ -361,7 +342,7 @@
     "ticker": "AIJQ"
   },
   {
-    "controlledStake": 6167274902109,
+    "relativeStake": 61,
     "cost": "68",
     "createdAt": "2020-01-20T22:17:35.880Z",
     "description": "dicta harum sequi",
@@ -371,7 +352,6 @@
     "name": "Trent Hettinger",
     "performance": 39,
     "pledge": "74",
-    "pledgeAddress": "http://tatum.net",
     "producedBlocks": 9899136,
     "profitMargin": 5,
     "ranking": 20,
@@ -380,7 +360,7 @@
     "ticker": "OBGW"
   },
   {
-    "controlledStake": 484484713524,
+    "relativeStake": 48,
     "cost": "55",
     "createdAt": "2020-01-20T22:58:34.098Z",
     "description": "consectetur assumenda dolorem",
@@ -390,7 +370,6 @@
     "name": "Myriam Swaniawski",
     "performance": 19,
     "pledge": "10",
-    "pledgeAddress": "https://dusty.name",
     "producedBlocks": 9164434,
     "profitMargin": 42,
     "ranking": 21,
@@ -399,7 +378,7 @@
     "ticker": "PCHW"
   },
   {
-    "controlledStake": 8888757303358,
+    "relativeStake": 88,
     "cost": "89",
     "createdAt": "2020-01-21T03:57:15.933Z",
     "description": "dolorem illum eos",
@@ -409,7 +388,6 @@
     "name": "Haley Champlin DDS",
     "performance": 96,
     "pledge": "37",
-    "pledgeAddress": "https://monserrate.org",
     "producedBlocks": 5629679,
     "profitMargin": 59,
     "ranking": 22,
@@ -418,7 +396,7 @@
     "ticker": "BQKJ"
   },
   {
-    "controlledStake": 8213078579866,
+    "relativeStake": 82,
     "cost": "9",
     "createdAt": "2020-01-21T04:04:31.006Z",
     "description": "vero commodi nesciunt",
@@ -428,7 +406,6 @@
     "name": "Alvena Luettgen",
     "performance": 98,
     "pledge": "45",
-    "pledgeAddress": "http://tatyana.org",
     "producedBlocks": 417510,
     "profitMargin": 16,
     "ranking": 23,
@@ -437,7 +414,7 @@
     "ticker": "SZXL"
   },
   {
-    "controlledStake": 754923343192,
+    "relativeStake": 75,
     "cost": "59",
     "createdAt": "2020-01-21T12:42:43.085Z",
     "description": "est aliquid esse",
@@ -447,7 +424,6 @@
     "name": "Brennan Kilback Sr.",
     "performance": 77,
     "pledge": "30",
-    "pledgeAddress": "http://devan.name",
     "producedBlocks": 8062712,
     "profitMargin": 21,
     "ranking": 24,
@@ -456,7 +432,7 @@
     "ticker": "HWZZ"
   },
   {
-    "controlledStake": 2799253764096,
+    "relativeStake": 27,
     "cost": "19",
     "createdAt": "2020-01-20T17:22:06.209Z",
     "description": "rerum non est",
@@ -466,7 +442,6 @@
     "name": "Emmett Boyer",
     "performance": 87,
     "pledge": "84",
-    "pledgeAddress": "https://devon.net",
     "producedBlocks": 3781472,
     "profitMargin": 20,
     "ranking": 25,
@@ -475,7 +450,7 @@
     "ticker": "VQPY"
   },
   {
-    "controlledStake": 4277821979485,
+    "relativeStake": 42,
     "cost": "9",
     "createdAt": "2020-01-20T15:58:52.964Z",
     "description": "explicabo harum quos",
@@ -485,7 +460,6 @@
     "name": "Taya Wintheiser",
     "performance": 90,
     "pledge": "87",
-    "pledgeAddress": "http://irwin.org",
     "producedBlocks": 1958707,
     "profitMargin": 19,
     "ranking": 26,
@@ -494,7 +468,7 @@
     "ticker": "DNSE"
   },
   {
-    "controlledStake": 8063275027089,
+    "relativeStake": 80,
     "cost": "88",
     "createdAt": "2020-01-20T15:41:23.128Z",
     "description": "iste nam qui",
@@ -504,7 +478,6 @@
     "name": "Dangelo Harris",
     "performance": 83,
     "pledge": "28",
-    "pledgeAddress": "https://halle.info",
     "producedBlocks": 4211039,
     "profitMargin": 60,
     "ranking": 27,
@@ -513,7 +486,7 @@
     "ticker": "MVFY"
   },
   {
-    "controlledStake": 2176205518190,
+    "relativeStake": 21,
     "cost": "30",
     "createdAt": "2020-01-21T04:30:27.946Z",
     "description": "sunt nihil commodi",
@@ -523,7 +496,6 @@
     "name": "Haley Christiansen",
     "performance": 56,
     "pledge": "88",
-    "pledgeAddress": "http://osbaldo.net",
     "producedBlocks": 5081022,
     "profitMargin": 10,
     "ranking": 28,
@@ -532,7 +504,7 @@
     "ticker": "RPED"
   },
   {
-    "controlledStake": 330846686847,
+    "relativeStake": 33,
     "cost": "28",
     "createdAt": "2020-01-20T14:43:08.911Z",
     "description": "possimus quos et",
@@ -542,7 +514,6 @@
     "name": "Roxanne Nikolaus",
     "performance": 58,
     "pledge": "72",
-    "pledgeAddress": "https://felicita.info",
     "producedBlocks": 8751100,
     "profitMargin": 77,
     "ranking": 29,
@@ -551,7 +522,7 @@
     "ticker": "XDTC"
   },
   {
-    "controlledStake": 6004284564406,
+    "relativeStake": 60,
     "cost": "60",
     "createdAt": "2020-01-21T13:00:21.436Z",
     "description": "voluptas culpa quia",
@@ -561,7 +532,6 @@
     "name": "Maudie Jacobs",
     "performance": 22,
     "pledge": "10",
-    "pledgeAddress": "https://mariam.org",
     "producedBlocks": 6563623,
     "profitMargin": 43,
     "ranking": 30,
@@ -570,7 +540,7 @@
     "ticker": "IFLR"
   },
   {
-    "controlledStake": 7653603572399,
+    "relativeStake": 76,
     "cost": "72",
     "createdAt": "2020-01-21T04:52:30.973Z",
     "description": "consequatur aut beatae",
@@ -580,7 +550,6 @@
     "name": "Ashlynn Monahan",
     "performance": 45,
     "pledge": "8",
-    "pledgeAddress": "http://kian.com",
     "producedBlocks": 2845413,
     "profitMargin": 46,
     "ranking": 31,
@@ -589,7 +558,7 @@
     "ticker": "VPWM"
   },
   {
-    "controlledStake": 2181910555809,
+    "relativeStake": 21,
     "cost": "28",
     "createdAt": "2020-01-21T03:42:50.853Z",
     "description": "consequatur qui praesentium",
@@ -599,7 +568,6 @@
     "name": "Isabelle Russel",
     "performance": 54,
     "pledge": "88",
-    "pledgeAddress": "https://madilyn.info",
     "producedBlocks": 8624801,
     "profitMargin": 43,
     "ranking": 32,
@@ -608,7 +576,7 @@
     "ticker": "ARKQ"
   },
   {
-    "controlledStake": 9951398982667,
+    "relativeStake": 99,
     "cost": "17",
     "createdAt": "2020-01-21T03:17:57.065Z",
     "description": "placeat facere reiciendis",
@@ -618,7 +586,6 @@
     "name": "Willow Hoeger",
     "performance": 85,
     "pledge": "16",
-    "pledgeAddress": "http://rosalind.org",
     "producedBlocks": 9043368,
     "profitMargin": 47,
     "ranking": 33,
@@ -627,7 +594,7 @@
     "ticker": "WOCL"
   },
   {
-    "controlledStake": 3002539169974,
+    "relativeStake": 30,
     "cost": "0",
     "createdAt": "2020-01-21T01:35:40.544Z",
     "description": "excepturi et nobis",
@@ -637,7 +604,6 @@
     "name": "Russel Homenick Jr.",
     "performance": 52,
     "pledge": "83",
-    "pledgeAddress": "http://lincoln.info",
     "producedBlocks": 3114914,
     "profitMargin": 31,
     "ranking": 34,
@@ -646,7 +612,7 @@
     "ticker": "NEUY"
   },
   {
-    "controlledStake": 3208043228369,
+    "relativeStake": 32,
     "cost": "74",
     "createdAt": "2020-01-21T07:19:52.765Z",
     "description": "tempore molestiae eveniet",
@@ -656,7 +622,6 @@
     "name": "Athena Johnson",
     "performance": 7,
     "pledge": "37",
-    "pledgeAddress": "https://carol.net",
     "producedBlocks": 1048066,
     "profitMargin": 28,
     "ranking": 35,
@@ -665,7 +630,7 @@
     "ticker": "QMED"
   },
   {
-    "controlledStake": 3857207843102,
+    "relativeStake": 38,
     "cost": "47",
     "createdAt": "2020-01-21T04:05:46.533Z",
     "description": "distinctio minus blanditiis",
@@ -675,7 +640,6 @@
     "name": "Mr. Natalia Morissette",
     "performance": 17,
     "pledge": "52",
-    "pledgeAddress": "http://cassidy.net",
     "producedBlocks": 1674357,
     "profitMargin": 48,
     "ranking": 36,
@@ -684,7 +648,7 @@
     "ticker": "XIUQ"
   },
   {
-    "controlledStake": 5514564542100,
+    "relativeStake": 55,
     "cost": "71",
     "createdAt": "2020-01-20T17:52:38.901Z",
     "description": "neque laudantium quo",
@@ -694,7 +658,6 @@
     "name": "Valentine Daugherty",
     "performance": 97,
     "pledge": "50",
-    "pledgeAddress": "http://dulce.biz",
     "producedBlocks": 6823282,
     "profitMargin": 9,
     "ranking": 37,
@@ -703,7 +666,7 @@
     "ticker": "VDWB"
   },
   {
-    "controlledStake": 1496151112951,
+    "relativeStake": 14,
     "cost": "38",
     "createdAt": "2020-01-21T14:06:02.559Z",
     "description": "qui repellendus odio",
@@ -713,7 +676,6 @@
     "name": "Erwin Gusikowski",
     "performance": 97,
     "pledge": "6",
-    "pledgeAddress": "https://ernestina.info",
     "producedBlocks": 5151241,
     "profitMargin": 88,
     "ranking": 38,
@@ -722,7 +684,7 @@
     "ticker": "KFSK"
   },
   {
-    "controlledStake": 4976014529821,
+    "relativeStake": 49,
     "cost": "82",
     "createdAt": "2020-01-21T12:53:10.001Z",
     "description": "quis corrupti iusto",
@@ -732,7 +694,6 @@
     "name": "Keanu Schneider",
     "performance": 34,
     "pledge": "95",
-    "pledgeAddress": "http://ozella.info",
     "producedBlocks": 5499523,
     "profitMargin": 93,
     "ranking": 39,
@@ -741,7 +702,7 @@
     "ticker": "SWCR"
   },
   {
-    "controlledStake": 6117835552432,
+    "relativeStake": 61,
     "cost": "63",
     "createdAt": "2020-01-20T22:53:35.555Z",
     "description": "non eos quo",
@@ -751,7 +712,6 @@
     "name": "Carmen White",
     "performance": 62,
     "pledge": "70",
-    "pledgeAddress": "http://margot.com",
     "producedBlocks": 5954878,
     "profitMargin": 31,
     "ranking": 40,
@@ -760,7 +720,7 @@
     "ticker": "MERV"
   },
   {
-    "controlledStake": 6867743188050,
+    "relativeStake": 68,
     "cost": "29",
     "createdAt": "2020-01-20T19:31:53.801Z",
     "description": "enim esse officiis",
@@ -770,7 +730,6 @@
     "name": "Saige Dickens",
     "performance": 37,
     "pledge": "100",
-    "pledgeAddress": "http://liam.name",
     "producedBlocks": 4216762,
     "profitMargin": 24,
     "ranking": 41,
@@ -779,7 +738,7 @@
     "ticker": "AJPG"
   },
   {
-    "controlledStake": 2782069575041,
+    "relativeStake": 27,
     "cost": "58",
     "createdAt": "2020-01-21T10:48:56.097Z",
     "description": "et illo tenetur",
@@ -789,7 +748,6 @@
     "name": "Jayne McGlynn II",
     "performance": 29,
     "pledge": "85",
-    "pledgeAddress": "http://toby.net",
     "producedBlocks": 3808831,
     "profitMargin": 84,
     "ranking": 42,
@@ -798,7 +756,7 @@
     "ticker": "GOZJ"
   },
   {
-    "controlledStake": 611617651302,
+    "relativeStake": 61,
     "cost": "29",
     "createdAt": "2020-01-21T12:00:23.280Z",
     "description": "occaecati quis nostrum",
@@ -808,7 +766,6 @@
     "name": "Alexzander Hartmann",
     "performance": 36,
     "pledge": "77",
-    "pledgeAddress": "https://marquis.info",
     "producedBlocks": 1452386,
     "profitMargin": 68,
     "ranking": 43,
@@ -817,7 +774,7 @@
     "ticker": "QUJG"
   },
   {
-    "controlledStake": 8453563507647,
+    "relativeStake": 11,
     "cost": "63",
     "createdAt": "2020-01-21T13:03:44.952Z",
     "description": "perferendis rerum harum",
@@ -827,7 +784,6 @@
     "name": "Sheila Labadie",
     "performance": 17,
     "pledge": "46",
-    "pledgeAddress": "https://leila.biz",
     "producedBlocks": 7256292,
     "profitMargin": 70,
     "ranking": 44,
@@ -836,7 +792,7 @@
     "ticker": "IVHG"
   },
   {
-    "controlledStake": 943069725763,
+    "relativeStake": 42,
     "cost": "21",
     "createdAt": "2020-01-21T02:28:16.130Z",
     "description": "et nisi ratione",
@@ -846,7 +802,6 @@
     "name": "Mr. Verdie Lakin",
     "performance": 70,
     "pledge": "69",
-    "pledgeAddress": "https://claire.com",
     "producedBlocks": 5482962,
     "profitMargin": 79,
     "ranking": 45,
@@ -855,7 +810,7 @@
     "ticker": "BLFN"
   },
   {
-    "controlledStake": 4916755014565,
+    "relativeStake": 33,
     "cost": "45",
     "createdAt": "2020-01-20T15:50:17.430Z",
     "description": "et fugiat sit",
@@ -865,7 +820,6 @@
     "name": "Chaya Schowalter",
     "performance": 45,
     "pledge": "7",
-    "pledgeAddress": "http://june.biz",
     "producedBlocks": 9972560,
     "profitMargin": 91,
     "ranking": 46,
@@ -874,7 +828,7 @@
     "ticker": "LYVY"
   },
   {
-    "controlledStake": 4721148058306,
+    "relativeStake": 88,
     "cost": "31",
     "createdAt": "2020-01-21T08:04:25.855Z",
     "description": "mollitia corporis velit",
@@ -884,7 +838,6 @@
     "name": "Joanny Goldner",
     "performance": 22,
     "pledge": "44",
-    "pledgeAddress": "https://issac.net",
     "producedBlocks": 9527475,
     "profitMargin": 64,
     "ranking": 47,
@@ -893,7 +846,7 @@
     "ticker": "AYAT"
   },
   {
-    "controlledStake": 6971793277189,
+    "relativeStake": 76,
     "cost": "18",
     "createdAt": "2020-01-21T04:17:54.282Z",
     "description": "quasi labore dolore",
@@ -903,7 +856,6 @@
     "name": "Breana Crooks",
     "performance": 89,
     "pledge": "22",
-    "pledgeAddress": "https://milan.name",
     "producedBlocks": 8529744,
     "profitMargin": 36,
     "ranking": 48,
@@ -912,7 +864,7 @@
     "ticker": "HOYA"
   },
   {
-    "controlledStake": 5106858285144,
+    "relativeStake": 54,
     "cost": "92",
     "createdAt": "2020-01-21T00:22:13.631Z",
     "description": "nisi consectetur necessitatibus",
@@ -922,7 +874,6 @@
     "name": "Johnpaul Wiegand",
     "performance": 18,
     "pledge": "7",
-    "pledgeAddress": "http://phyllis.net",
     "producedBlocks": 976292,
     "profitMargin": 44,
     "ranking": 49,
@@ -931,7 +882,7 @@
     "ticker": "CTMH"
   },
   {
-    "controlledStake": 8776036316995,
+    "relativeStake": 67,
     "cost": "97",
     "createdAt": "2020-01-21T09:40:38.976Z",
     "description": "aliquid voluptates quia",
@@ -941,7 +892,6 @@
     "name": "Reid Mayer",
     "performance": 45,
     "pledge": "13",
-    "pledgeAddress": "https://elta.org",
     "producedBlocks": 2282400,
     "profitMargin": 32,
     "ranking": 50,
@@ -950,7 +900,7 @@
     "ticker": "CQTT"
   },
   {
-    "controlledStake": 7914083714132,
+    "relativeStake": 1,
     "cost": "95",
     "createdAt": "2020-01-20T23:39:46.483Z",
     "description": "a ea optio",
@@ -960,7 +910,6 @@
     "name": "Seamus Trantow",
     "performance": 17,
     "pledge": "100",
-    "pledgeAddress": "https://davin.org",
     "producedBlocks": 1223304,
     "profitMargin": 84,
     "ranking": 51,
@@ -969,7 +918,7 @@
     "ticker": "UDET"
   },
   {
-    "controlledStake": 8108027020935,
+    "relativeStake": 7,
     "cost": "48",
     "createdAt": "2020-01-21T03:27:24.242Z",
     "description": "ad iure veniam",
@@ -979,7 +928,6 @@
     "name": "Mohammed Feest",
     "performance": 81,
     "pledge": "71",
-    "pledgeAddress": "http://reginald.com",
     "producedBlocks": 4665614,
     "profitMargin": 61,
     "ranking": 52,
@@ -988,7 +936,7 @@
     "ticker": "QYOM"
   },
   {
-    "controlledStake": 506783945020,
+    "relativeStake": 6,
     "cost": "45",
     "createdAt": "2020-01-21T00:53:00.096Z",
     "description": "inventore exercitationem placeat",
@@ -998,7 +946,6 @@
     "name": "Ova Ankunding V",
     "performance": 46,
     "pledge": "31",
-    "pledgeAddress": "http://rodolfo.org",
     "producedBlocks": 1173000,
     "profitMargin": 39,
     "ranking": 53,
@@ -1007,7 +954,7 @@
     "ticker": "DIYL"
   },
   {
-    "controlledStake": 7966941439081,
+    "relativeStake": 75,
     "cost": "24",
     "createdAt": "2020-01-20T18:18:02.316Z",
     "description": "necessitatibus praesentium mollitia",
@@ -1017,7 +964,6 @@
     "name": "Judy Tremblay",
     "performance": 46,
     "pledge": "99",
-    "pledgeAddress": "https://bertha.org",
     "producedBlocks": 3117783,
     "profitMargin": 23,
     "ranking": 54,
@@ -1026,7 +972,7 @@
     "ticker": "YHQI"
   },
   {
-    "controlledStake": 3202143572271,
+    "relativeStake": 46,
     "cost": "96",
     "createdAt": "2020-01-20T22:01:56.557Z",
     "description": "veritatis accusamus sit",
@@ -1036,7 +982,6 @@
     "name": "Jennyfer Willms",
     "performance": 44,
     "pledge": "83",
-    "pledgeAddress": "https://flavio.org",
     "producedBlocks": 3632119,
     "profitMargin": 95,
     "ranking": 55,
@@ -1045,7 +990,7 @@
     "ticker": "FELW"
   },
   {
-    "controlledStake": 7969072544948,
+    "relativeStake": 32,
     "cost": "65",
     "createdAt": "2020-01-20T21:28:16.234Z",
     "description": "quos provident quam",
@@ -1055,7 +1000,6 @@
     "name": "Raoul Green",
     "performance": 52,
     "pledge": "46",
-    "pledgeAddress": "https://sarina.org",
     "producedBlocks": 2572315,
     "profitMargin": 65,
     "ranking": 56,
@@ -1064,7 +1008,7 @@
     "ticker": "MWOS"
   },
   {
-    "controlledStake": 27287933044,
+    "relativeStake": 36,
     "cost": "37",
     "createdAt": "2020-01-21T01:55:02.919Z",
     "description": "similique facere velit",
@@ -1074,7 +1018,6 @@
     "name": "Pete Bernier",
     "performance": 12,
     "pledge": "86",
-    "pledgeAddress": "https://shany.biz",
     "producedBlocks": 5772816,
     "profitMargin": 20,
     "ranking": 57,
@@ -1083,7 +1026,7 @@
     "ticker": "ODGS"
   },
   {
-    "controlledStake": 6760207300540,
+    "relativeStake": 97,
     "cost": "83",
     "createdAt": "2020-01-20T19:24:26.216Z",
     "description": "et aut debitis",
@@ -1093,7 +1036,6 @@
     "name": "Kianna Kunde",
     "performance": 97,
     "pledge": "82",
-    "pledgeAddress": "http://nathanael.com",
     "producedBlocks": 5189150,
     "profitMargin": 74,
     "ranking": 58,
@@ -1102,7 +1044,7 @@
     "ticker": "AFPQ"
   },
   {
-    "controlledStake": 7230781912804,
+    "relativeStake": 11,
     "cost": "50",
     "createdAt": "2020-01-20T17:26:41.728Z",
     "description": "maiores eveniet pariatur",
@@ -1112,7 +1054,6 @@
     "name": "Delphia Hickle",
     "performance": 65,
     "pledge": "16",
-    "pledgeAddress": "https://ross.biz",
     "producedBlocks": 4925545,
     "profitMargin": 55,
     "ranking": 59,
@@ -1121,7 +1062,7 @@
     "ticker": "TROO"
   },
   {
-    "controlledStake": 1007895094808,
+    "relativeStake": 14,
     "cost": "17",
     "createdAt": "2020-01-20T18:46:33.135Z",
     "description": "quia fugiat ipsum",
@@ -1131,7 +1072,6 @@
     "name": "Miss Josiah Block",
     "performance": 74,
     "pledge": "77",
-    "pledgeAddress": "https://sydney.net",
     "producedBlocks": 4509773,
     "profitMargin": 42,
     "ranking": 60,
@@ -1140,7 +1080,7 @@
     "ticker": "LHMI"
   },
   {
-    "controlledStake": 45916768722,
+    "relativeStake": 16,
     "cost": "61",
     "createdAt": "2020-01-20T18:06:13.263Z",
     "description": "tempore totam rem",
@@ -1150,7 +1090,6 @@
     "name": "Kelsi Welch",
     "performance": 57,
     "pledge": "26",
-    "pledgeAddress": "http://retha.org",
     "producedBlocks": 2140441,
     "profitMargin": 71,
     "ranking": 61,
@@ -1159,7 +1098,7 @@
     "ticker": "FEGG"
   },
   {
-    "controlledStake": 2330835820175,
+    "relativeStake": 42,
     "cost": "98",
     "createdAt": "2020-01-20T16:14:58.955Z",
     "description": "voluptatem cumque veritatis",
@@ -1169,7 +1108,6 @@
     "name": "Janae Wiza",
     "performance": 65,
     "pledge": "48",
-    "pledgeAddress": "https://art.org",
     "producedBlocks": 4573146,
     "profitMargin": 87,
     "ranking": 62,
@@ -1178,7 +1116,7 @@
     "ticker": "RIQF"
   },
   {
-    "controlledStake": 7359121122863,
+    "relativeStake": 85,
     "cost": "33",
     "createdAt": "2020-01-21T09:09:52.293Z",
     "description": "blanditiis rerum voluptas",
@@ -1188,7 +1126,6 @@
     "name": "Camylle O'Conner",
     "performance": 36,
     "pledge": "10",
-    "pledgeAddress": "https://tom.biz",
     "producedBlocks": 6889771,
     "profitMargin": 30,
     "ranking": 63,
@@ -1197,7 +1134,7 @@
     "ticker": "WSOA"
   },
   {
-    "controlledStake": 6086544645950,
+    "relativeStake": 32,
     "cost": "71",
     "createdAt": "2020-01-21T07:19:51.929Z",
     "description": "minus non corrupti",
@@ -1207,7 +1144,6 @@
     "name": "Ms. Gabriel Schulist",
     "performance": 72,
     "pledge": "27",
-    "pledgeAddress": "https://wilhelmine.name",
     "producedBlocks": 563673,
     "profitMargin": 7,
     "ranking": 64,
@@ -1216,7 +1152,7 @@
     "ticker": "HYJT"
   },
   {
-    "controlledStake": 254714319016,
+    "relativeStake": 21,
     "cost": "98",
     "createdAt": "2020-01-21T02:36:08.604Z",
     "description": "ut quo qui",
@@ -1226,7 +1162,6 @@
     "name": "Junius Daniel",
     "performance": 95,
     "pledge": "20",
-    "pledgeAddress": "http://ora.name",
     "producedBlocks": 3908848,
     "profitMargin": 69,
     "ranking": 65,
@@ -1235,7 +1170,7 @@
     "ticker": "WWQN"
   },
   {
-    "controlledStake": 1453055187594,
+    "relativeStake": 20,
     "cost": "27",
     "createdAt": "2020-01-21T00:06:56.277Z",
     "description": "necessitatibus iste sit",
@@ -1245,7 +1180,6 @@
     "name": "Emmanuel Abernathy",
     "performance": 87,
     "pledge": "35",
-    "pledgeAddress": "https://santina.net",
     "producedBlocks": 7532799,
     "profitMargin": 79,
     "ranking": 66,
@@ -1254,7 +1188,7 @@
     "ticker": "EOQG"
   },
   {
-    "controlledStake": 916335252113,
+    "relativeStake": 11,
     "cost": "27",
     "createdAt": "2020-01-21T10:44:29.236Z",
     "description": "et qui aperiam",
@@ -1264,7 +1198,6 @@
     "name": "Rose Mayer",
     "performance": 4,
     "pledge": "16",
-    "pledgeAddress": "http://gust.net",
     "producedBlocks": 4558934,
     "profitMargin": 51,
     "ranking": 67,
@@ -1273,7 +1206,7 @@
     "ticker": "YDFV"
   },
   {
-    "controlledStake": 9640830266290,
+    "relativeStake": 15,
     "cost": "98",
     "createdAt": "2020-01-21T02:23:29.386Z",
     "description": "occaecati iusto occaecati",
@@ -1283,7 +1216,6 @@
     "name": "Anais Rogahn PhD",
     "performance": 27,
     "pledge": "86",
-    "pledgeAddress": "https://melody.com",
     "producedBlocks": 6199773,
     "profitMargin": 25,
     "ranking": 68,
@@ -1292,7 +1224,7 @@
     "ticker": "BTSD"
   },
   {
-    "controlledStake": 4341927377973,
+    "relativeStake": 36,
     "cost": "21",
     "createdAt": "2020-01-21T12:12:23.580Z",
     "description": "consequatur voluptas eveniet",
@@ -1302,7 +1234,6 @@
     "name": "Edgar White",
     "performance": 63,
     "pledge": "75",
-    "pledgeAddress": "http://dortha.net",
     "producedBlocks": 7786045,
     "profitMargin": 100,
     "ranking": 69,
@@ -1311,7 +1242,7 @@
     "ticker": "PGSS"
   },
   {
-    "controlledStake": 1578597247135,
+    "relativeStake": 76,
     "cost": "74",
     "createdAt": "2020-01-21T11:12:16.878Z",
     "description": "et quidem veniam",
@@ -1321,7 +1252,6 @@
     "name": "Leif Dickens",
     "performance": 45,
     "pledge": "95",
-    "pledgeAddress": "http://toby.net",
     "producedBlocks": 5430603,
     "profitMargin": 11,
     "ranking": 70,
@@ -1330,7 +1260,7 @@
     "ticker": "PTAB"
   },
   {
-    "controlledStake": 6508929152042,
+    "relativeStake": 24,
     "cost": "65",
     "createdAt": "2020-01-20T17:21:43.548Z",
     "description": "in vel molestias",
@@ -1340,7 +1270,6 @@
     "name": "Lauren Waelchi",
     "performance": 84,
     "pledge": "86",
-    "pledgeAddress": "https://timothy.name",
     "producedBlocks": 7232609,
     "profitMargin": 17,
     "ranking": 71,
@@ -1349,7 +1278,7 @@
     "ticker": "WERO"
   },
   {
-    "controlledStake": 9489393406548,
+    "relativeStake": 51,
     "cost": "69",
     "createdAt": "2020-01-21T05:03:51.218Z",
     "description": "consequatur velit placeat",
@@ -1359,7 +1288,6 @@
     "name": "Joshua Grimes",
     "performance": 22,
     "pledge": "66",
-    "pledgeAddress": "http://napoleon.com",
     "producedBlocks": 1339934,
     "profitMargin": 8,
     "ranking": 72,
@@ -1368,7 +1296,7 @@
     "ticker": "OAXK"
   },
   {
-    "controlledStake": 2480361899361,
+    "relativeStake": 10,
     "cost": "46",
     "createdAt": "2020-01-21T13:30:45.317Z",
     "description": "suscipit magnam dolor",
@@ -1378,7 +1306,6 @@
     "name": "Kirstin Fadel",
     "performance": 90,
     "pledge": "67",
-    "pledgeAddress": "https://zakary.biz",
     "producedBlocks": 3062897,
     "profitMargin": 9,
     "ranking": 73,
@@ -1387,7 +1314,7 @@
     "ticker": "YYNN"
   },
   {
-    "controlledStake": 6299435766414,
+    "relativeStake": 5,
     "cost": "74",
     "createdAt": "2020-01-21T12:52:55.026Z",
     "description": "consequatur autem ducimus",
@@ -1397,7 +1324,6 @@
     "name": "Adela Fay",
     "performance": 67,
     "pledge": "32",
-    "pledgeAddress": "https://eulah.com",
     "producedBlocks": 578199,
     "profitMargin": 30,
     "ranking": 74,
@@ -1406,7 +1332,7 @@
     "ticker": "FLGA"
   },
   {
-    "controlledStake": 2026301091537,
+    "relativeStake": 2,
     "cost": "39",
     "createdAt": "2020-01-21T07:17:08.637Z",
     "description": "beatae et tempora",
@@ -1416,7 +1342,6 @@
     "name": "Columbus Schulist",
     "performance": 72,
     "pledge": "83",
-    "pledgeAddress": "https://antonetta.info",
     "producedBlocks": 6848909,
     "profitMargin": 71,
     "ranking": 75,
@@ -1425,7 +1350,7 @@
     "ticker": "WLUO"
   },
   {
-    "controlledStake": 6097791590728,
+    "relativeStake": 21,
     "cost": "58",
     "createdAt": "2020-01-21T12:28:31.399Z",
     "description": "placeat soluta quisquam",
@@ -1435,7 +1360,6 @@
     "name": "Lexi Trantow",
     "performance": 87,
     "pledge": "70",
-    "pledgeAddress": "http://jeremie.net",
     "producedBlocks": 9631629,
     "profitMargin": 53,
     "ranking": 76,
@@ -1444,7 +1368,7 @@
     "ticker": "DKJT"
   },
   {
-    "controlledStake": 9025476796087,
+    "relativeStake": 56,
     "cost": "100",
     "createdAt": "2020-01-21T03:48:33.644Z",
     "description": "nobis molestiae fugit",
@@ -1454,7 +1378,6 @@
     "name": "Melissa Runolfsdottir",
     "performance": 44,
     "pledge": "14",
-    "pledgeAddress": "http://arno.biz",
     "producedBlocks": 7341190,
     "profitMargin": 42,
     "ranking": 77,
@@ -1463,7 +1386,7 @@
     "ticker": "VEPB"
   },
   {
-    "controlledStake": 7328383135610,
+    "relativeStake": 55,
     "cost": "53",
     "createdAt": "2020-01-21T05:31:23.707Z",
     "description": "rerum molestiae animi",
@@ -1473,7 +1396,6 @@
     "name": "Vergie Kshlerin",
     "performance": 19,
     "pledge": "1",
-    "pledgeAddress": "https://lina.org",
     "producedBlocks": 831367,
     "profitMargin": 36,
     "ranking": 78,
@@ -1482,7 +1404,7 @@
     "ticker": "QJRV"
   },
   {
-    "controlledStake": 4115051701665,
+    "relativeStake": 33,
     "cost": "41",
     "createdAt": "2020-01-21T14:20:47.277Z",
     "description": "minus id voluptas",
@@ -1492,7 +1414,6 @@
     "name": "Brenda Borer",
     "performance": 85,
     "pledge": "63",
-    "pledgeAddress": "https://giuseppe.net",
     "producedBlocks": 7399360,
     "profitMargin": 60,
     "ranking": 79,
@@ -1501,7 +1422,7 @@
     "ticker": "OORQ"
   },
   {
-    "controlledStake": 3162746252492,
+    "relativeStake": 22,
     "cost": "33",
     "createdAt": "2020-01-20T21:52:11.470Z",
     "description": "consequatur reiciendis quia",
@@ -1511,7 +1432,6 @@
     "name": "Ariel Treutel MD",
     "performance": 45,
     "pledge": "63",
-    "pledgeAddress": "http://casimer.com",
     "producedBlocks": 4606186,
     "profitMargin": 84,
     "ranking": 80,
@@ -1520,7 +1440,7 @@
     "ticker": "YHZC"
   },
   {
-    "controlledStake": 9780614597258,
+    "relativeStake": 1,
     "cost": "58",
     "createdAt": "2020-01-20T18:20:54.260Z",
     "description": "eum qui eaque",
@@ -1530,7 +1450,6 @@
     "name": "Norval Hansen",
     "performance": 63,
     "pledge": "21",
-    "pledgeAddress": "https://joelle.name",
     "producedBlocks": 8022616,
     "profitMargin": 58,
     "ranking": 81,
@@ -1539,7 +1458,7 @@
     "ticker": "OPPH"
   },
   {
-    "controlledStake": 1740489869844,
+    "relativeStake": 0,
     "cost": "18",
     "createdAt": "2020-01-20T20:53:27.814Z",
     "description": "iure et ex",
@@ -1549,7 +1468,6 @@
     "name": "Grady Schulist",
     "performance": 8,
     "pledge": "14",
-    "pledgeAddress": "http://oswald.com",
     "producedBlocks": 6806213,
     "profitMargin": 21,
     "ranking": 82,
@@ -1558,7 +1476,7 @@
     "ticker": "ELOD"
   },
   {
-    "controlledStake": 4980756607838,
+    "relativeStake": 15,
     "cost": "55",
     "createdAt": "2020-01-20T21:43:58.812Z",
     "description": "amet cum rerum",
@@ -1568,7 +1486,6 @@
     "name": "Darian Swaniawski",
     "performance": 53,
     "pledge": "56",
-    "pledgeAddress": "https://gilberto.name",
     "producedBlocks": 8633892,
     "profitMargin": 12,
     "ranking": 83,
@@ -1577,7 +1494,7 @@
     "ticker": "AOVS"
   },
   {
-    "controlledStake": 2172146707307,
+    "relativeStake": 47,
     "cost": "43",
     "createdAt": "2020-01-20T18:05:05.673Z",
     "description": "commodi ut nostrum",
@@ -1587,7 +1504,6 @@
     "name": "Earnest Daniel",
     "performance": 3,
     "pledge": "75",
-    "pledgeAddress": "http://christian.info",
     "producedBlocks": 2076426,
     "profitMargin": 15,
     "ranking": 84,
@@ -1596,7 +1512,7 @@
     "ticker": "BAGU"
   },
   {
-    "controlledStake": 6342012691312,
+    "relativeStake": 74,
     "cost": "70",
     "createdAt": "2020-01-20T22:12:24.331Z",
     "description": "totam similique doloribus",
@@ -1606,7 +1522,6 @@
     "name": "Patrick Weimann",
     "performance": 21,
     "pledge": "16",
-    "pledgeAddress": "http://isabell.com",
     "producedBlocks": 1442379,
     "profitMargin": 93,
     "ranking": 85,
@@ -1615,7 +1530,7 @@
     "ticker": "RYKE"
   },
   {
-    "controlledStake": 1542987902648,
+    "relativeStake": 33,
     "cost": "81",
     "createdAt": "2020-01-21T10:02:51.345Z",
     "description": "ratione provident magnam",
@@ -1625,7 +1540,6 @@
     "name": "Savion Upton I",
     "performance": 47,
     "pledge": "12",
-    "pledgeAddress": "https://natalia.info",
     "producedBlocks": 2659298,
     "profitMargin": 87,
     "ranking": 86,
@@ -1634,7 +1548,7 @@
     "ticker": "EBDS"
   },
   {
-    "controlledStake": 7380928203929,
+    "relativeStake": 2,
     "cost": "75",
     "createdAt": "2020-01-20T17:01:14.695Z",
     "description": "ipsam et veniam",
@@ -1644,7 +1558,6 @@
     "name": "Lambert Cummings",
     "performance": 95,
     "pledge": "81",
-    "pledgeAddress": "http://catharine.org",
     "producedBlocks": 5085715,
     "profitMargin": 24,
     "ranking": 87,
@@ -1653,7 +1566,7 @@
     "ticker": "ECPS"
   },
   {
-    "controlledStake": 5784329602029,
+    "relativeStake": 4,
     "cost": "28",
     "createdAt": "2020-01-20T21:52:05.059Z",
     "description": "repellendus commodi sint",
@@ -1663,7 +1576,6 @@
     "name": "Nona Deckow",
     "performance": 38,
     "pledge": "11",
-    "pledgeAddress": "https://carlie.com",
     "producedBlocks": 4192081,
     "profitMargin": 48,
     "ranking": 88,
@@ -1672,7 +1584,7 @@
     "ticker": "IJAF"
   },
   {
-    "controlledStake": 6700678719208,
+    "relativeStake": 5,
     "cost": "52",
     "createdAt": "2020-01-20T19:24:12.470Z",
     "description": "sint distinctio dicta",
@@ -1682,7 +1594,6 @@
     "name": "Gerald Miller",
     "performance": 3,
     "pledge": "72",
-    "pledgeAddress": "https://sage.com",
     "producedBlocks": 168557,
     "profitMargin": 33,
     "ranking": 89,
@@ -1691,7 +1602,7 @@
     "ticker": "QUCT"
   },
   {
-    "controlledStake": 8925471291878,
+    "relativeStake": 43,
     "cost": "5",
     "createdAt": "2020-01-20T17:46:48.808Z",
     "description": "repudiandae maiores nobis",
@@ -1701,7 +1612,6 @@
     "name": "Dorothea Huel",
     "performance": 82,
     "pledge": "36",
-    "pledgeAddress": "https://devan.biz",
     "producedBlocks": 7422185,
     "profitMargin": 3,
     "ranking": 90,
@@ -1710,7 +1620,7 @@
     "ticker": "JDLR"
   },
   {
-    "controlledStake": 2454287856817,
+    "relativeStake": 42,
     "cost": "96",
     "createdAt": "2020-01-21T00:08:45.093Z",
     "description": "voluptatem consequatur iste",
@@ -1720,7 +1630,6 @@
     "name": "Dianna Haley",
     "performance": 6,
     "pledge": "32",
-    "pledgeAddress": "http://joana.net",
     "producedBlocks": 1213112,
     "profitMargin": 1,
     "ranking": 91,
@@ -1729,7 +1638,7 @@
     "ticker": "KQIQ"
   },
   {
-    "controlledStake": 848618187010,
+    "relativeStake": 77,
     "cost": "78",
     "createdAt": "2020-01-21T02:10:35.893Z",
     "description": "temporibus velit officia",
@@ -1739,7 +1648,6 @@
     "name": "Tevin Howe",
     "performance": 49,
     "pledge": "52",
-    "pledgeAddress": "https://bud.net",
     "producedBlocks": 7188630,
     "profitMargin": 50,
     "ranking": 92,
@@ -1748,7 +1656,7 @@
     "ticker": "BESR"
   },
   {
-    "controlledStake": 8673998711165,
+    "relativeStake": 71,
     "cost": "30",
     "createdAt": "2020-01-21T03:06:58.500Z",
     "description": "et odio sequi",
@@ -1758,7 +1666,6 @@
     "name": "Deondre Willms III",
     "performance": 56,
     "pledge": "38",
-    "pledgeAddress": "http://kaleb.biz",
     "producedBlocks": 7373325,
     "profitMargin": 47,
     "ranking": 93,
@@ -1767,7 +1674,7 @@
     "ticker": "TDEO"
   },
   {
-    "controlledStake": 3896969140042,
+    "relativeStake": 61,
     "cost": "73",
     "createdAt": "2020-01-21T00:19:42.468Z",
     "description": "deleniti voluptatem dicta",
@@ -1777,7 +1684,6 @@
     "name": "Lorenza Bruen",
     "performance": 47,
     "pledge": "77",
-    "pledgeAddress": "https://eden.com",
     "producedBlocks": 4057911,
     "profitMargin": 69,
     "ranking": 94,
@@ -1786,7 +1692,7 @@
     "ticker": "ENOO"
   },
   {
-    "controlledStake": 3172684742603,
+    "relativeStake": 46,
     "cost": "49",
     "createdAt": "2020-01-21T08:59:30.076Z",
     "description": "veniam quis voluptatem",
@@ -1796,7 +1702,6 @@
     "name": "Mr. Gudrun Macejkovic",
     "performance": 38,
     "pledge": "81",
-    "pledgeAddress": "http://jaylan.com",
     "producedBlocks": 7039184,
     "profitMargin": 1,
     "ranking": 95,
@@ -1805,7 +1710,7 @@
     "ticker": "ESIO"
   },
   {
-    "controlledStake": 3853837365750,
+    "relativeStake": 64,
     "cost": "25",
     "createdAt": "2020-01-21T13:25:08.530Z",
     "description": "cupiditate perspiciatis assumenda",
@@ -1815,7 +1720,6 @@
     "name": "Patrick Rau",
     "performance": 68,
     "pledge": "74",
-    "pledgeAddress": "http://dejuan.biz",
     "producedBlocks": 3452524,
     "profitMargin": 16,
     "ranking": 96,
@@ -1824,7 +1728,7 @@
     "ticker": "TENW"
   },
   {
-    "controlledStake": 1947827751282,
+    "relativeStake": 84,
     "cost": "34",
     "createdAt": "2020-01-21T07:39:17.251Z",
     "description": "maxime distinctio sit",
@@ -1834,7 +1738,6 @@
     "name": "Martina Abshire",
     "performance": 28,
     "pledge": "63",
-    "pledgeAddress": "https://anibal.org",
     "producedBlocks": 9455910,
     "profitMargin": 17,
     "ranking": 97,
@@ -1843,7 +1746,7 @@
     "ticker": "SAPU"
   },
   {
-    "controlledStake": 7116455789656,
+    "relativeStake": 22,
     "cost": "59",
     "createdAt": "2020-01-21T00:56:18.811Z",
     "description": "ea veniam consequatur",
@@ -1853,7 +1756,6 @@
     "name": "Freda Gaylord",
     "performance": 100,
     "pledge": "13",
-    "pledgeAddress": "http://assunta.name",
     "producedBlocks": 3825482,
     "profitMargin": 59,
     "ranking": 98,
@@ -1862,7 +1764,7 @@
     "ticker": "XNTE"
   },
   {
-    "controlledStake": 6262893837411,
+    "relativeStake": 33,
     "cost": "87",
     "createdAt": "2020-01-20T20:21:22.489Z",
     "description": "quaerat doloribus non",
@@ -1872,7 +1774,6 @@
     "name": "Lelia Bashirian",
     "performance": 95,
     "pledge": "12",
-    "pledgeAddress": "https://sean.biz",
     "producedBlocks": 7056819,
     "profitMargin": 91,
     "ranking": 99,
@@ -1881,7 +1782,7 @@
     "ticker": "IOME"
   },
   {
-    "controlledStake": 8235966777429,
+    "relativeStake": 2,
     "cost": "77",
     "createdAt": "2020-01-20T15:13:04.102Z",
     "description": "nostrum natus blanditiis",
@@ -1891,7 +1792,6 @@
     "name": "Herminia Homenick",
     "performance": 67,
     "pledge": "90",
-    "pledgeAddress": "https://rigoberto.net",
     "producedBlocks": 3939868,
     "profitMargin": 21,
     "ranking": 100,
@@ -1900,7 +1800,7 @@
     "ticker": "EEOI"
   },
   {
-    "controlledStake": 8603561657947,
+    "relativeStake": 1,
     "cost": "95",
     "createdAt": "2020-01-21T08:19:56.126Z",
     "description": "minima sed eos",
@@ -1910,7 +1810,6 @@
     "name": "Reymundo Grady",
     "performance": 41,
     "pledge": "5",
-    "pledgeAddress": "https://devin.com",
     "producedBlocks": 419290,
     "profitMargin": 23,
     "ranking": 101,
@@ -1919,7 +1818,7 @@
     "ticker": "LWSM"
   },
   {
-    "controlledStake": 2292351711075,
+    "relativeStake": 17,
     "cost": "47",
     "createdAt": "2020-01-21T09:53:21.200Z",
     "description": "officia quo animi",
@@ -1929,7 +1828,6 @@
     "name": "Madge Beahan",
     "performance": 33,
     "pledge": "0",
-    "pledgeAddress": "http://larissa.org",
     "producedBlocks": 9507608,
     "profitMargin": 97,
     "ranking": 102,
@@ -1938,7 +1836,7 @@
     "ticker": "CVED"
   },
   {
-    "controlledStake": 3099486881401,
+    "relativeStake": 3,
     "cost": "53",
     "createdAt": "2020-01-21T09:58:23.851Z",
     "description": "porro ut qui",
@@ -1948,7 +1846,6 @@
     "name": "Earl Jaskolski",
     "performance": 34,
     "pledge": "23",
-    "pledgeAddress": "http://jamie.com",
     "producedBlocks": 1866360,
     "profitMargin": 22,
     "ranking": 103,
@@ -1957,7 +1854,7 @@
     "ticker": "GKZU"
   },
   {
-    "controlledStake": 9877800175455,
+    "relativeStake": 12,
     "cost": "26",
     "createdAt": "2020-01-21T04:38:30.100Z",
     "description": "sequi veritatis ut",
@@ -1967,7 +1864,6 @@
     "name": "Myah Rodriguez",
     "performance": 27,
     "pledge": "9",
-    "pledgeAddress": "https://lavon.name",
     "producedBlocks": 9059044,
     "profitMargin": 87,
     "ranking": 104,
@@ -1976,7 +1872,7 @@
     "ticker": "DDBK"
   },
   {
-    "controlledStake": 2965680607594,
+    "relativeStake": 5,
     "cost": "95",
     "createdAt": "2020-01-21T01:03:04.773Z",
     "description": "omnis ea blanditiis",
@@ -1986,7 +1882,6 @@
     "name": "Jon Brakus",
     "performance": 43,
     "pledge": "2",
-    "pledgeAddress": "https://wilber.biz",
     "producedBlocks": 6831062,
     "profitMargin": 79,
     "ranking": 105,
@@ -1995,7 +1890,7 @@
     "ticker": "BTTI"
   },
   {
-    "controlledStake": 7171026561409,
+    "relativeStake": 34,
     "cost": "98",
     "createdAt": "2020-01-21T08:31:10.263Z",
     "description": "eaque sint voluptatem",
@@ -2005,7 +1900,6 @@
     "name": "Bonita Gerhold PhD",
     "performance": 74,
     "pledge": "88",
-    "pledgeAddress": "http://arne.name",
     "producedBlocks": 3194167,
     "profitMargin": 68,
     "ranking": 106,
@@ -2014,7 +1908,7 @@
     "ticker": "QHPS"
   },
   {
-    "controlledStake": 1546139004640,
+    "relativeStake": 22,
     "cost": "24",
     "createdAt": "2020-01-21T10:15:03.637Z",
     "description": "id eveniet dolorum",
@@ -2024,7 +1918,6 @@
     "name": "Caleb White",
     "performance": 41,
     "pledge": "72",
-    "pledgeAddress": "http://maryse.name",
     "producedBlocks": 3286568,
     "profitMargin": 91,
     "ranking": 107,
@@ -2033,7 +1926,7 @@
     "ticker": "SKRQ"
   },
   {
-    "controlledStake": 6725287768059,
+    "relativeStake": 21,
     "cost": "55",
     "createdAt": "2020-01-21T02:36:35.994Z",
     "description": "molestiae velit nulla",
@@ -2043,7 +1936,6 @@
     "name": "Guillermo Feest",
     "performance": 32,
     "pledge": "12",
-    "pledgeAddress": "http://rollin.name",
     "producedBlocks": 6680995,
     "profitMargin": 19,
     "ranking": 108,
@@ -2052,7 +1944,7 @@
     "ticker": "DSMZ"
   },
   {
-    "controlledStake": 889318436384,
+    "relativeStake": 41,
     "cost": "9",
     "createdAt": "2020-01-21T08:31:05.702Z",
     "description": "et dolor molestiae",
@@ -2062,7 +1954,6 @@
     "name": "Danial Howell",
     "performance": 50,
     "pledge": "89",
-    "pledgeAddress": "http://maynard.info",
     "producedBlocks": 8893379,
     "profitMargin": 5,
     "ranking": 109,
@@ -2071,7 +1962,7 @@
     "ticker": "DTZI"
   },
   {
-    "controlledStake": 6873783217743,
+    "relativeStake": 68,
     "cost": "28",
     "createdAt": "2020-01-20T20:03:47.320Z",
     "description": "et consectetur tempore",
@@ -2081,7 +1972,6 @@
     "name": "Ms. Dante Gulgowski",
     "performance": 47,
     "pledge": "15",
-    "pledgeAddress": "http://elinor.net",
     "producedBlocks": 90623,
     "profitMargin": 97,
     "ranking": 110,
@@ -2090,7 +1980,7 @@
     "ticker": "WRCO"
   },
   {
-    "controlledStake": 6148823520634,
+    "relativeStake": 84,
     "cost": "74",
     "createdAt": "2020-01-21T00:31:56.336Z",
     "description": "nobis fuga ut",
@@ -2100,7 +1990,6 @@
     "name": "Santina Cassin",
     "performance": 72,
     "pledge": "82",
-    "pledgeAddress": "http://johnathan.org",
     "producedBlocks": 6378096,
     "profitMargin": 48,
     "ranking": 111,
@@ -2109,7 +1998,7 @@
     "ticker": "DSWX"
   },
   {
-    "controlledStake": 7960813103710,
+    "relativeStake": 67,
     "cost": "40",
     "createdAt": "2020-01-21T11:46:36.271Z",
     "description": "ducimus totam voluptatibus",
@@ -2119,7 +2008,6 @@
     "name": "Miss Aaron Gulgowski",
     "performance": 75,
     "pledge": "24",
-    "pledgeAddress": "https://antonio.biz",
     "producedBlocks": 8010837,
     "profitMargin": 12,
     "ranking": 112,
@@ -2128,7 +2016,7 @@
     "ticker": "CLML"
   },
   {
-    "controlledStake": 398066884372,
+    "relativeStake": 66,
     "cost": "62",
     "createdAt": "2020-01-20T15:38:14.084Z",
     "description": "dolor doloremque aut",
@@ -2138,7 +2026,6 @@
     "name": "Mrs. Christelle Witting",
     "performance": 51,
     "pledge": "13",
-    "pledgeAddress": "http://alanis.info",
     "producedBlocks": 4945175,
     "profitMargin": 47,
     "ranking": 113,
@@ -2147,7 +2034,7 @@
     "ticker": "SMLT"
   },
   {
-    "controlledStake": 9290328663774,
+    "relativeStake": 5,
     "cost": "19",
     "createdAt": "2020-01-21T14:27:28.494Z",
     "description": "consectetur qui qui",
@@ -2157,7 +2044,6 @@
     "name": "Jessy Stamm",
     "performance": 100,
     "pledge": "69",
-    "pledgeAddress": "http://kyla.biz",
     "producedBlocks": 1307518,
     "profitMargin": 0,
     "ranking": 114,
@@ -2166,7 +2052,7 @@
     "ticker": "QFQH"
   },
   {
-    "controlledStake": 8503500029911,
+    "relativeStake": 2,
     "cost": "100",
     "createdAt": "2020-01-21T12:21:51.180Z",
     "description": "quam voluptatem quia",
@@ -2176,7 +2062,6 @@
     "name": "Ms. Stanton Beatty",
     "performance": 67,
     "pledge": "63",
-    "pledgeAddress": "https://idell.info",
     "producedBlocks": 8964290,
     "profitMargin": 90,
     "ranking": 115,
@@ -2185,7 +2070,7 @@
     "ticker": "OROV"
   },
   {
-    "controlledStake": 8028218222317,
+    "relativeStake": 31,
     "cost": "38",
     "createdAt": "2020-01-21T03:05:20.883Z",
     "description": "eum maxime nemo",
@@ -2195,7 +2080,6 @@
     "name": "Dillon Renner",
     "performance": 0,
     "pledge": "86",
-    "pledgeAddress": "http://una.name",
     "producedBlocks": 3302195,
     "profitMargin": 22,
     "ranking": 116,
@@ -2204,7 +2088,7 @@
     "ticker": "WFIB"
   },
   {
-    "controlledStake": 8443845331204,
+    "relativeStake": 11,
     "cost": "67",
     "createdAt": "2020-01-21T02:16:09.518Z",
     "description": "rerum numquam excepturi",
@@ -2214,7 +2098,6 @@
     "name": "Corine Flatley",
     "performance": 30,
     "pledge": "90",
-    "pledgeAddress": "https://lauren.info",
     "producedBlocks": 5964492,
     "profitMargin": 45,
     "ranking": 117,
@@ -2223,7 +2106,7 @@
     "ticker": "PZJU"
   },
   {
-    "controlledStake": 4846305297688,
+    "relativeStake": 53,
     "cost": "66",
     "createdAt": "2020-01-21T11:29:25.795Z",
     "description": "cumque veniam qui",
@@ -2233,7 +2116,6 @@
     "name": "Anjali Wuckert",
     "performance": 26,
     "pledge": "2",
-    "pledgeAddress": "http://elena.net",
     "producedBlocks": 89621,
     "profitMargin": 6,
     "ranking": 118,
@@ -2242,7 +2124,7 @@
     "ticker": "VHKK"
   },
   {
-    "controlledStake": 3950861990452,
+    "relativeStake": 35,
     "cost": "76",
     "createdAt": "2020-01-20T21:57:27.898Z",
     "description": "quia minima dignissimos",
@@ -2252,7 +2134,6 @@
     "name": "Adolph Kihn",
     "performance": 77,
     "pledge": "44",
-    "pledgeAddress": "https://robert.biz",
     "producedBlocks": 6839500,
     "profitMargin": 48,
     "ranking": 119,
@@ -2261,7 +2142,7 @@
     "ticker": "CLOU"
   },
   {
-    "controlledStake": 4475514693186,
+    "relativeStake": 44,
     "cost": "26",
     "createdAt": "2020-01-20T19:08:51.604Z",
     "description": "minima ut eos",
@@ -2271,7 +2152,6 @@
     "name": "Laverna Daniel",
     "performance": 79,
     "pledge": "32",
-    "pledgeAddress": "http://judd.info",
     "producedBlocks": 8341922,
     "profitMargin": 16,
     "ranking": 120,
@@ -2280,7 +2160,7 @@
     "ticker": "FADK"
   },
   {
-    "controlledStake": 3356612049974,
+    "relativeStake": 3,
     "cost": "82",
     "createdAt": "2020-01-20T22:39:19.535Z",
     "description": "molestiae ab non",
@@ -2290,7 +2170,6 @@
     "name": "Ms. Christina Homenick",
     "performance": 69,
     "pledge": "82",
-    "pledgeAddress": "http://dante.biz",
     "producedBlocks": 4781520,
     "profitMargin": 25,
     "ranking": 121,
@@ -2299,7 +2178,7 @@
     "ticker": "XXYH"
   },
   {
-    "controlledStake": 9215322416276,
+    "relativeStake": 7,
     "cost": "4",
     "createdAt": "2020-01-21T14:35:25.258Z",
     "description": "incidunt excepturi voluptates",
@@ -2309,7 +2188,6 @@
     "name": "Adrienne Gerlach Jr.",
     "performance": 23,
     "pledge": "49",
-    "pledgeAddress": "http://kody.info",
     "producedBlocks": 5603309,
     "profitMargin": 67,
     "ranking": 122,
@@ -2318,7 +2196,7 @@
     "ticker": "EQRV"
   },
   {
-    "controlledStake": 9778088906315,
+    "relativeStake": 9,
     "cost": "79",
     "createdAt": "2020-01-21T04:08:04.529Z",
     "description": "accusamus ipsa nihil",
@@ -2328,7 +2206,6 @@
     "name": "Delbert Altenwerth",
     "performance": 46,
     "pledge": "58",
-    "pledgeAddress": "http://katherine.net",
     "producedBlocks": 4258397,
     "profitMargin": 12,
     "ranking": 123,
@@ -2337,7 +2214,7 @@
     "ticker": "NQKM"
   },
   {
-    "controlledStake": 9924147934653,
+    "relativeStake": 0,
     "cost": "23",
     "createdAt": "2020-01-20T21:49:27.733Z",
     "description": "deleniti aut itaque",
@@ -2347,7 +2224,6 @@
     "name": "Christopher Hauck",
     "performance": 63,
     "pledge": "51",
-    "pledgeAddress": "https://jairo.com",
     "producedBlocks": 2894856,
     "profitMargin": 45,
     "ranking": 124,
@@ -2356,7 +2232,7 @@
     "ticker": "SPBV"
   },
   {
-    "controlledStake": 9068264104426,
+    "relativeStake": 90,
     "cost": "32",
     "createdAt": "2020-01-21T04:42:54.139Z",
     "description": "ea hic sed",
@@ -2366,7 +2242,6 @@
     "name": "Cyrus Bahringer",
     "performance": 33,
     "pledge": "90",
-    "pledgeAddress": "http://gaston.org",
     "producedBlocks": 3910698,
     "profitMargin": 63,
     "ranking": 125,
@@ -2375,7 +2250,7 @@
     "ticker": "KEAL"
   },
   {
-    "controlledStake": 9054480218329,
+    "relativeStake": 4,
     "cost": "89",
     "createdAt": "2020-01-21T03:42:01.887Z",
     "description": "qui atque numquam",
@@ -2385,7 +2260,6 @@
     "name": "Toni Tromp",
     "performance": 92,
     "pledge": "27",
-    "pledgeAddress": "https://grayce.biz",
     "producedBlocks": 5718024,
     "profitMargin": 55,
     "ranking": 126,
@@ -2394,7 +2268,7 @@
     "ticker": "AMWD"
   },
   {
-    "controlledStake": 9998369000387,
+    "relativeStake": 2,
     "cost": "75",
     "createdAt": "2020-01-20T15:02:01.431Z",
     "description": "repellat et expedita",
@@ -2404,7 +2278,6 @@
     "name": "Cierra O'Reilly",
     "performance": 87,
     "pledge": "85",
-    "pledgeAddress": "http://burley.net",
     "producedBlocks": 7127116,
     "profitMargin": 49,
     "ranking": 127,
@@ -2413,7 +2286,7 @@
     "ticker": "FOIA"
   },
   {
-    "controlledStake": 4355414998718,
+    "relativeStake": 1,
     "cost": "38",
     "createdAt": "2020-01-21T12:24:45.043Z",
     "description": "magni hic voluptas",
@@ -2423,7 +2296,6 @@
     "name": "Denis Dare",
     "performance": 35,
     "pledge": "22",
-    "pledgeAddress": "https://norwood.net",
     "producedBlocks": 8083931,
     "profitMargin": 76,
     "ranking": 128,
@@ -2432,7 +2304,7 @@
     "ticker": "TRJM"
   },
   {
-    "controlledStake": 1015835055150,
+    "relativeStake": 4,
     "cost": "58",
     "createdAt": "2020-01-21T09:15:58.799Z",
     "description": "consectetur id in",
@@ -2442,7 +2314,6 @@
     "name": "Deanna Nikolaus",
     "performance": 45,
     "pledge": "45",
-    "pledgeAddress": "http://clair.name",
     "producedBlocks": 9530471,
     "profitMargin": 27,
     "ranking": 129,
@@ -2451,7 +2322,7 @@
     "ticker": "ORQU"
   },
   {
-    "controlledStake": 3160527471918,
+    "relativeStake": 44,
     "cost": "15",
     "createdAt": "2020-01-21T09:52:30.963Z",
     "description": "quas sapiente eveniet",
@@ -2461,7 +2332,6 @@
     "name": "Candice Sauer",
     "performance": 10,
     "pledge": "4",
-    "pledgeAddress": "https://sylvan.name",
     "producedBlocks": 5560054,
     "profitMargin": 55,
     "ranking": 130,
@@ -2470,7 +2340,7 @@
     "ticker": "IVBC"
   },
   {
-    "controlledStake": 6072445835453,
+    "relativeStake": 52,
     "cost": "8",
     "createdAt": "2020-01-21T02:52:30.020Z",
     "description": "blanditiis nisi fugit",
@@ -2480,7 +2350,6 @@
     "name": "Brielle Glover",
     "performance": 75,
     "pledge": "97",
-    "pledgeAddress": "https://jerel.com",
     "producedBlocks": 7710349,
     "profitMargin": 41,
     "ranking": 131,
@@ -2489,7 +2358,7 @@
     "ticker": "EGML"
   },
   {
-    "controlledStake": 5204681444448,
+    "relativeStake": 31,
     "cost": "55",
     "createdAt": "2020-01-20T19:47:36.692Z",
     "description": "delectus sit laudantium",
@@ -2499,7 +2368,6 @@
     "name": "Raheem Haag",
     "performance": 75,
     "pledge": "76",
-    "pledgeAddress": "https://sister.org",
     "producedBlocks": 8877780,
     "profitMargin": 73,
     "ranking": 132,
@@ -2508,7 +2376,7 @@
     "ticker": "BZAA"
   },
   {
-    "controlledStake": 9498655942735,
+    "relativeStake": 33,
     "cost": "35",
     "createdAt": "2020-01-20T21:35:02.226Z",
     "description": "nulla cum sunt",
@@ -2518,7 +2386,6 @@
     "name": "Ezequiel Pacocha",
     "performance": 33,
     "pledge": "91",
-    "pledgeAddress": "https://kaitlyn.org",
     "producedBlocks": 460710,
     "profitMargin": 92,
     "ranking": 133,
@@ -2527,7 +2394,7 @@
     "ticker": "HUVF"
   },
   {
-    "controlledStake": 1084806153085,
+    "relativeStake": 6,
     "cost": "34",
     "createdAt": "2020-01-20T15:35:30.714Z",
     "description": "et cumque eveniet",
@@ -2537,7 +2404,6 @@
     "name": "Petra Reichert",
     "performance": 65,
     "pledge": "54",
-    "pledgeAddress": "https://brando.net",
     "producedBlocks": 8219837,
     "profitMargin": 44,
     "ranking": 134,
@@ -2546,7 +2412,7 @@
     "ticker": "QQBP"
   },
   {
-    "controlledStake": 5333883021958,
+    "relativeStake": 31,
     "cost": "50",
     "createdAt": "2020-01-21T12:28:24.400Z",
     "description": "minima quis labore",
@@ -2556,7 +2422,6 @@
     "name": "Stanton Cummings",
     "performance": 73,
     "pledge": "21",
-    "pledgeAddress": "https://gideon.org",
     "producedBlocks": 1556183,
     "profitMargin": 28,
     "ranking": 135,
@@ -2565,7 +2430,7 @@
     "ticker": "JXGC"
   },
   {
-    "controlledStake": 1634769921656,
+    "relativeStake": 22,
     "cost": "93",
     "createdAt": "2020-01-21T07:48:24.082Z",
     "description": "quod dolores iusto",
@@ -2575,7 +2440,6 @@
     "name": "Ed Purdy",
     "performance": 45,
     "pledge": "10",
-    "pledgeAddress": "http://kiarra.name",
     "producedBlocks": 6444258,
     "profitMargin": 52,
     "ranking": 136,
@@ -2584,7 +2448,7 @@
     "ticker": "QLRY"
   },
   {
-    "controlledStake": 1914092153310,
+    "relativeStake": 61,
     "cost": "36",
     "createdAt": "2020-01-20T16:40:54.881Z",
     "description": "animi dolore dolore",
@@ -2594,7 +2458,6 @@
     "name": "Ms. Kaycee Wintheiser",
     "performance": 54,
     "pledge": "2",
-    "pledgeAddress": "http://cleveland.net",
     "producedBlocks": 4396991,
     "profitMargin": 40,
     "ranking": 137,
@@ -2603,7 +2466,7 @@
     "ticker": "OZDO"
   },
   {
-    "controlledStake": 5958212073892,
+    "relativeStake": 3,
     "cost": "93",
     "createdAt": "2020-01-20T15:28:24.218Z",
     "description": "expedita quia sit",
@@ -2613,7 +2476,6 @@
     "name": "Uriah Connelly",
     "performance": 33,
     "pledge": "11",
-    "pledgeAddress": "http://ellen.org",
     "producedBlocks": 9188815,
     "profitMargin": 39,
     "ranking": 138,
@@ -2622,7 +2484,7 @@
     "ticker": "RMAH"
   },
   {
-    "controlledStake": 7323536176700,
+    "relativeStake": 1,
     "cost": "55",
     "createdAt": "2020-01-21T10:03:52.407Z",
     "description": "culpa id vel",
@@ -2632,7 +2494,6 @@
     "name": "Piper Strosin",
     "performance": 93,
     "pledge": "72",
-    "pledgeAddress": "https://stuart.biz",
     "producedBlocks": 3799908,
     "profitMargin": 96,
     "ranking": 139,
@@ -2641,7 +2502,7 @@
     "ticker": "DFKS"
   },
   {
-    "controlledStake": 9481263670605,
+    "relativeStake": 4,
     "cost": "76",
     "createdAt": "2020-01-21T08:52:35.746Z",
     "description": "praesentium modi consequuntur",
@@ -2651,7 +2512,6 @@
     "name": "Bernita Brown",
     "performance": 44,
     "pledge": "1",
-    "pledgeAddress": "http://alexandra.net",
     "producedBlocks": 9767748,
     "profitMargin": 15,
     "ranking": 140,
@@ -2660,7 +2520,7 @@
     "ticker": "KKTV"
   },
   {
-    "controlledStake": 3764137085527,
+    "relativeStake": 35,
     "cost": "85",
     "createdAt": "2020-01-20T18:34:20.838Z",
     "description": "animi ut recusandae",
@@ -2670,7 +2530,6 @@
     "name": "Deonte Dibbert",
     "performance": 41,
     "pledge": "66",
-    "pledgeAddress": "http://jeremy.com",
     "producedBlocks": 540185,
     "profitMargin": 26,
     "ranking": 141,
@@ -2679,7 +2538,7 @@
     "ticker": "JPIL"
   },
   {
-    "controlledStake": 6889487162698,
+    "relativeStake": 53,
     "cost": "9",
     "createdAt": "2020-01-21T08:51:03.816Z",
     "description": "aspernatur nulla architecto",
@@ -2689,7 +2548,6 @@
     "name": "Marques Purdy PhD",
     "performance": 72,
     "pledge": "3",
-    "pledgeAddress": "https://keon.biz",
     "producedBlocks": 3531609,
     "profitMargin": 47,
     "ranking": 142,
@@ -2698,7 +2556,7 @@
     "ticker": "LAPY"
   },
   {
-    "controlledStake": 8776236055419,
+    "relativeStake": 14,
     "cost": "22",
     "createdAt": "2020-01-21T00:23:08.220Z",
     "description": "dicta odit laboriosam",
@@ -2708,7 +2566,6 @@
     "name": "Alden Franecki",
     "performance": 90,
     "pledge": "69",
-    "pledgeAddress": "http://alec.name",
     "producedBlocks": 484831,
     "profitMargin": 48,
     "ranking": 143,
@@ -2717,7 +2574,7 @@
     "ticker": "FKWN"
   },
   {
-    "controlledStake": 6119448249228,
+    "relativeStake": 44,
     "cost": "2",
     "createdAt": "2020-01-21T09:02:11.538Z",
     "description": "deleniti omnis et",
@@ -2727,7 +2584,6 @@
     "name": "Lucas Cummerata",
     "performance": 93,
     "pledge": "4",
-    "pledgeAddress": "https://anita.biz",
     "producedBlocks": 5713960,
     "profitMargin": 8,
     "ranking": 144,
@@ -2736,7 +2592,7 @@
     "ticker": "CIRD"
   },
   {
-    "controlledStake": 6887253045570,
+    "relativeStake": 78,
     "cost": "62",
     "createdAt": "2020-01-21T09:45:08.462Z",
     "description": "id laboriosam magnam",
@@ -2746,7 +2602,6 @@
     "name": "Mrs. Vladimir Kassulke",
     "performance": 55,
     "pledge": "29",
-    "pledgeAddress": "http://velma.org",
     "producedBlocks": 8130632,
     "profitMargin": 35,
     "ranking": 145,
@@ -2755,7 +2610,7 @@
     "ticker": "XTOK"
   },
   {
-    "controlledStake": 5137558940332,
+    "relativeStake": 8,
     "cost": "27",
     "createdAt": "2020-01-21T00:55:28.191Z",
     "description": "architecto dolor quos",
@@ -2765,7 +2620,6 @@
     "name": "Orrin Rohan",
     "performance": 62,
     "pledge": "1",
-    "pledgeAddress": "http://catalina.net",
     "producedBlocks": 620525,
     "profitMargin": 35,
     "ranking": 146,
@@ -2774,7 +2628,7 @@
     "ticker": "RPQE"
   },
   {
-    "controlledStake": 5774202973116,
+    "relativeStake": 3,
     "cost": "64",
     "createdAt": "2020-01-20T14:54:10.012Z",
     "description": "voluptatem est ea",
@@ -2784,7 +2638,6 @@
     "name": "Bennett Harris",
     "performance": 52,
     "pledge": "34",
-    "pledgeAddress": "http://randi.org",
     "producedBlocks": 6160552,
     "profitMargin": 96,
     "ranking": 147,
@@ -2793,7 +2646,7 @@
     "ticker": "ZZRK"
   },
   {
-    "controlledStake": 1221380706410,
+    "relativeStake": 4,
     "cost": "78",
     "createdAt": "2020-01-21T02:55:29.347Z",
     "description": "ipsum veritatis nemo",
@@ -2803,7 +2656,6 @@
     "name": "Sarah Mante III",
     "performance": 44,
     "pledge": "78",
-    "pledgeAddress": "http://eleanore.biz",
     "producedBlocks": 2810246,
     "profitMargin": 96,
     "ranking": 148,
@@ -2812,7 +2664,7 @@
     "ticker": "WZNT"
   },
   {
-    "controlledStake": 2102555381134,
+    "relativeStake": 5,
     "cost": "1",
     "createdAt": "2020-01-20T23:37:59.528Z",
     "description": "voluptatum minus distinctio",
@@ -2822,7 +2674,6 @@
     "name": "Alexander King",
     "performance": 39,
     "pledge": "7",
-    "pledgeAddress": "http://bennett.com",
     "producedBlocks": 4988316,
     "profitMargin": 99,
     "ranking": 149,
@@ -2831,7 +2682,7 @@
     "ticker": "WKPO"
   },
   {
-    "controlledStake": 890989995095,
+    "relativeStake": 1,
     "cost": "52",
     "createdAt": "2020-01-20T23:37:20.449Z",
     "description": "possimus magni quae",
@@ -2841,7 +2692,6 @@
     "name": "Rosanna Beatty IV",
     "performance": 76,
     "pledge": "83",
-    "pledgeAddress": "https://donato.com",
     "producedBlocks": 4120849,
     "profitMargin": 88,
     "ranking": 150,
@@ -2850,7 +2700,7 @@
     "ticker": "AEJL"
   },
   {
-    "controlledStake": 6732529925648,
+    "relativeStake": 33,
     "cost": "73",
     "createdAt": "2020-01-21T00:56:27.642Z",
     "description": "cumque error ipsa",
@@ -2860,7 +2710,6 @@
     "name": "Neoma Corkery",
     "performance": 15,
     "pledge": "79",
-    "pledgeAddress": "https://jabari.name",
     "producedBlocks": 8119036,
     "profitMargin": 95,
     "ranking": 151,
@@ -2869,7 +2718,7 @@
     "ticker": "DZKE"
   },
   {
-    "controlledStake": 9615031538997,
+    "relativeStake": 44,
     "cost": "42",
     "createdAt": "2020-01-21T09:58:47.909Z",
     "description": "veritatis in est",
@@ -2879,7 +2728,6 @@
     "name": "Jaydon McLaughlin",
     "performance": 44,
     "pledge": "34",
-    "pledgeAddress": "http://stevie.com",
     "producedBlocks": 5609585,
     "profitMargin": 65,
     "ranking": 152,
@@ -2888,7 +2736,7 @@
     "ticker": "IQEE"
   },
   {
-    "controlledStake": 6746342412662,
+    "relativeStake": 34,
     "cost": "20",
     "createdAt": "2020-01-21T04:44:34.275Z",
     "description": "deserunt vel rerum",
@@ -2898,7 +2746,6 @@
     "name": "Macie Wyman",
     "performance": 7,
     "pledge": "26",
-    "pledgeAddress": "http://alisa.biz",
     "producedBlocks": 6877817,
     "profitMargin": 37,
     "ranking": 153,
@@ -2907,7 +2754,7 @@
     "ticker": "CSFE"
   },
   {
-    "controlledStake": 6780490321107,
+    "relativeStake": 16,
     "cost": "82",
     "createdAt": "2020-01-20T19:20:06.401Z",
     "description": "magni vero eligendi",
@@ -2917,7 +2764,6 @@
     "name": "Arvilla Eichmann",
     "performance": 48,
     "pledge": "21",
-    "pledgeAddress": "http://fredy.info",
     "producedBlocks": 3318696,
     "profitMargin": 54,
     "ranking": 154,
@@ -2926,7 +2772,7 @@
     "ticker": "WJER"
   },
   {
-    "controlledStake": 1310288885142,
+    "relativeStake": 44,
     "cost": "85",
     "createdAt": "2020-01-21T04:51:23.798Z",
     "description": "debitis soluta autem",
@@ -2936,7 +2782,6 @@
     "name": "Katelynn Walsh",
     "performance": 77,
     "pledge": "48",
-    "pledgeAddress": "http://maria.name",
     "producedBlocks": 9470415,
     "profitMargin": 44,
     "ranking": 155,
@@ -2945,7 +2790,7 @@
     "ticker": "BQRL"
   },
   {
-    "controlledStake": 9289330819156,
+    "relativeStake": 55,
     "cost": "88",
     "createdAt": "2020-01-21T00:23:25.460Z",
     "description": "quaerat numquam recusandae",
@@ -2955,7 +2800,6 @@
     "name": "Deion Quigley",
     "performance": 51,
     "pledge": "16",
-    "pledgeAddress": "http://saul.org",
     "producedBlocks": 174869,
     "profitMargin": 85,
     "ranking": 156,
@@ -2964,7 +2808,7 @@
     "ticker": "HCDJ"
   },
   {
-    "controlledStake": 7646512535867,
+    "relativeStake": 87,
     "cost": "73",
     "createdAt": "2020-01-21T02:30:45.402Z",
     "description": "ullam mollitia dolores",
@@ -2974,7 +2818,6 @@
     "name": "Ms. Samara Schmeler",
     "performance": 93,
     "pledge": "9",
-    "pledgeAddress": "http://sydnee.net",
     "producedBlocks": 8346649,
     "profitMargin": 6,
     "ranking": 157,
@@ -2983,7 +2826,7 @@
     "ticker": "NRAC"
   },
   {
-    "controlledStake": 7461500663776,
+    "relativeStake": 78,
     "cost": "65",
     "createdAt": "2020-01-21T04:38:32.642Z",
     "description": "nemo et et",
@@ -2993,7 +2836,6 @@
     "name": "Jennie Abbott",
     "performance": 79,
     "pledge": "44",
-    "pledgeAddress": "https://leone.biz",
     "producedBlocks": 205003,
     "profitMargin": 11,
     "ranking": 158,
@@ -3002,7 +2844,7 @@
     "ticker": "PSTV"
   },
   {
-    "controlledStake": 4964288957417,
+    "relativeStake": 45,
     "cost": "81",
     "createdAt": "2020-01-20T20:01:07.349Z",
     "description": "quo id recusandae",
@@ -3012,7 +2854,6 @@
     "name": "Braeden Cartwright",
     "performance": 75,
     "pledge": "10",
-    "pledgeAddress": "http://hassie.info",
     "producedBlocks": 6796945,
     "profitMargin": 65,
     "ranking": 159,
@@ -3021,7 +2862,7 @@
     "ticker": "YQGH"
   },
   {
-    "controlledStake": 6004627270158,
+    "relativeStake": 51,
     "cost": "20",
     "createdAt": "2020-01-20T18:43:27.501Z",
     "description": "maiores vitae enim",
@@ -3031,7 +2872,6 @@
     "name": "Marcellus Spencer",
     "performance": 74,
     "pledge": "6",
-    "pledgeAddress": "http://rick.name",
     "producedBlocks": 252708,
     "profitMargin": 9,
     "ranking": 160,
@@ -3040,7 +2880,7 @@
     "ticker": "EPMP"
   },
   {
-    "controlledStake": 6073119069915,
+    "relativeStake": 61,
     "cost": "3",
     "createdAt": "2020-01-20T22:30:10.656Z",
     "description": "sed dolores quam",
@@ -3050,7 +2890,6 @@
     "name": "Mitchel Block Sr.",
     "performance": 53,
     "pledge": "23",
-    "pledgeAddress": "http://alena.com",
     "producedBlocks": 1849806,
     "profitMargin": 35,
     "ranking": 161,
@@ -3059,7 +2898,7 @@
     "ticker": "ZWQQ"
   },
   {
-    "controlledStake": 3228626605123,
+    "relativeStake": 1,
     "cost": "68",
     "createdAt": "2020-01-20T18:34:00.006Z",
     "description": "et voluptas quis",
@@ -3069,7 +2908,6 @@
     "name": "Saul Botsford PhD",
     "performance": 18,
     "pledge": "3",
-    "pledgeAddress": "https://nayeli.info",
     "producedBlocks": 7197214,
     "profitMargin": 20,
     "ranking": 162,
@@ -3078,7 +2916,7 @@
     "ticker": "ZHAE"
   },
   {
-    "controlledStake": 2565552331507,
+    "relativeStake": 6,
     "cost": "49",
     "createdAt": "2020-01-21T06:59:12.418Z",
     "description": "non eos error",
@@ -3088,7 +2926,6 @@
     "name": "Bettie Koss DVM",
     "performance": 55,
     "pledge": "44",
-    "pledgeAddress": "http://ervin.name",
     "producedBlocks": 1651301,
     "profitMargin": 5,
     "ranking": 163,
@@ -3097,7 +2934,7 @@
     "ticker": "DTJD"
   },
   {
-    "controlledStake": 9961621265393,
+    "relativeStake": 5,
     "cost": "75",
     "createdAt": "2020-01-21T09:33:08.881Z",
     "description": "sed qui repellat",
@@ -3107,7 +2944,6 @@
     "name": "Dr. Lindsey Lebsack",
     "performance": 83,
     "pledge": "99",
-    "pledgeAddress": "http://jesus.com",
     "producedBlocks": 5605459,
     "profitMargin": 96,
     "ranking": 164,
@@ -3116,7 +2952,7 @@
     "ticker": "VOEN"
   },
   {
-    "controlledStake": 6552890231833,
+    "relativeStake": 35,
     "cost": "65",
     "createdAt": "2020-01-21T01:56:31.404Z",
     "description": "asperiores adipisci quis",
@@ -3126,7 +2962,6 @@
     "name": "Cameron Legros",
     "performance": 69,
     "pledge": "27",
-    "pledgeAddress": "http://noe.org",
     "producedBlocks": 8057804,
     "profitMargin": 16,
     "ranking": 165,
@@ -3135,7 +2970,7 @@
     "ticker": "JEPP"
   },
   {
-    "controlledStake": 3981104718987,
+    "relativeStake": 72,
     "cost": "85",
     "createdAt": "2020-01-21T04:21:59.447Z",
     "description": "autem iure dolorem",
@@ -3145,7 +2980,6 @@
     "name": "Camylle Hyatt",
     "performance": 30,
     "pledge": "81",
-    "pledgeAddress": "http://owen.net",
     "producedBlocks": 1429257,
     "profitMargin": 88,
     "ranking": 166,
@@ -3154,7 +2988,7 @@
     "ticker": "ZQWB"
   },
   {
-    "controlledStake": 8201813523192,
+    "relativeStake": 82,
     "cost": "5",
     "createdAt": "2020-01-21T11:25:22.335Z",
     "description": "atque ut saepe",
@@ -3164,7 +2998,6 @@
     "name": "Bryce Champlin",
     "performance": 75,
     "pledge": "4",
-    "pledgeAddress": "https://jasmin.com",
     "producedBlocks": 5422899,
     "profitMargin": 64,
     "ranking": 167,
@@ -3173,7 +3006,7 @@
     "ticker": "DHKB"
   },
   {
-    "controlledStake": 911373922135,
+    "relativeStake": 61,
     "cost": "81",
     "createdAt": "2020-01-21T09:08:01.282Z",
     "description": "sint doloribus omnis",
@@ -3183,7 +3016,6 @@
     "name": "Bianka Koss",
     "performance": 27,
     "pledge": "24",
-    "pledgeAddress": "https://pablo.biz",
     "producedBlocks": 4476196,
     "profitMargin": 20,
     "ranking": 168,
@@ -3192,7 +3024,7 @@
     "ticker": "WFVQ"
   },
   {
-    "controlledStake": 2625193258282,
+    "relativeStake": 71,
     "cost": "30",
     "createdAt": "2020-01-20T14:59:48.071Z",
     "description": "laudantium eaque officiis",
@@ -3202,7 +3034,6 @@
     "name": "Margarett Kozey",
     "performance": 2,
     "pledge": "49",
-    "pledgeAddress": "https://loyce.info",
     "producedBlocks": 4445911,
     "profitMargin": 19,
     "ranking": 169,
@@ -3211,7 +3042,7 @@
     "ticker": "WZVT"
   },
   {
-    "controlledStake": 4696300765499,
+    "relativeStake": 7,
     "cost": "30",
     "createdAt": "2020-01-20T22:55:43.449Z",
     "description": "eius atque incidunt",
@@ -3221,7 +3052,6 @@
     "name": "Gennaro Gleichner MD",
     "performance": 13,
     "pledge": "37",
-    "pledgeAddress": "https://delilah.name",
     "producedBlocks": 72420,
     "profitMargin": 13,
     "ranking": 170,
@@ -3230,7 +3060,7 @@
     "ticker": "GJXH"
   },
   {
-    "controlledStake": 7964898045175,
+    "relativeStake": 24,
     "cost": "100",
     "createdAt": "2020-01-20T19:36:22.422Z",
     "description": "odit qui nihil",
@@ -3240,7 +3070,6 @@
     "name": "Callie Schuster",
     "performance": 97,
     "pledge": "77",
-    "pledgeAddress": "http://lilliana.net",
     "producedBlocks": 8013590,
     "profitMargin": 23,
     "ranking": 171,
@@ -3249,7 +3078,7 @@
     "ticker": "OYQR"
   },
   {
-    "controlledStake": 9366104765796,
+    "relativeStake": 41,
     "cost": "36",
     "createdAt": "2020-01-20T23:30:53.232Z",
     "description": "aut qui maxime",
@@ -3259,7 +3088,6 @@
     "name": "Melba Cassin",
     "performance": 25,
     "pledge": "52",
-    "pledgeAddress": "http://tremayne.com",
     "producedBlocks": 3292271,
     "profitMargin": 59,
     "ranking": 172,
@@ -3268,7 +3096,7 @@
     "ticker": "AZJQ"
   },
   {
-    "controlledStake": 4764541704208,
+    "relativeStake": 55,
     "cost": "84",
     "createdAt": "2020-01-21T01:55:20.460Z",
     "description": "dolores ut aliquid",
@@ -3278,7 +3106,6 @@
     "name": "Nicholas Kemmer DDS",
     "performance": 47,
     "pledge": "44",
-    "pledgeAddress": "https://emmie.org",
     "producedBlocks": 3351247,
     "profitMargin": 46,
     "ranking": 173,
@@ -3287,7 +3114,7 @@
     "ticker": "TOFK"
   },
   {
-    "controlledStake": 1545443565119,
+    "relativeStake": 61,
     "cost": "86",
     "createdAt": "2020-01-20T16:14:03.410Z",
     "description": "fugiat ipsum reprehenderit",
@@ -3297,7 +3124,6 @@
     "name": "Alexys Marquardt",
     "performance": 15,
     "pledge": "83",
-    "pledgeAddress": "https://delia.info",
     "producedBlocks": 9957597,
     "profitMargin": 83,
     "ranking": 174,
@@ -3306,7 +3132,7 @@
     "ticker": "BJZN"
   },
   {
-    "controlledStake": 5157610464375,
+    "relativeStake": 5,
     "cost": "2",
     "createdAt": "2020-01-21T06:06:16.986Z",
     "description": "eveniet velit quidem",
@@ -3316,7 +3142,6 @@
     "name": "Merle O'Reilly",
     "performance": 78,
     "pledge": "32",
-    "pledgeAddress": "https://isobel.net",
     "producedBlocks": 8900078,
     "profitMargin": 13,
     "ranking": 175,
@@ -3325,7 +3150,7 @@
     "ticker": "UXKW"
   },
   {
-    "controlledStake": 1584099377505,
+    "relativeStake": 4,
     "cost": "69",
     "createdAt": "2020-01-20T23:28:47.165Z",
     "description": "non corrupti et",
@@ -3335,7 +3160,6 @@
     "name": "Tanya Hilpert",
     "performance": 36,
     "pledge": "45",
-    "pledgeAddress": "http://kenyatta.net",
     "producedBlocks": 6273672,
     "profitMargin": 88,
     "ranking": 176,
@@ -3344,7 +3168,7 @@
     "ticker": "GEGT"
   },
   {
-    "controlledStake": 3279276553076,
+    "relativeStake": 3,
     "cost": "64",
     "createdAt": "2020-01-21T06:34:46.104Z",
     "description": "quas assumenda explicabo",
@@ -3354,7 +3178,6 @@
     "name": "Mrs. Kevin Boyle",
     "performance": 96,
     "pledge": "70",
-    "pledgeAddress": "http://bernardo.net",
     "producedBlocks": 4027,
     "profitMargin": 4,
     "ranking": 177,
@@ -3363,7 +3186,7 @@
     "ticker": "ZVBC"
   },
   {
-    "controlledStake": 1423601845745,
+    "relativeStake": 1,
     "cost": "12",
     "createdAt": "2020-01-21T13:25:44.643Z",
     "description": "reiciendis voluptates blanditiis",
@@ -3373,7 +3196,6 @@
     "name": "Joesph Stroman",
     "performance": 16,
     "pledge": "6",
-    "pledgeAddress": "http://tressa.name",
     "producedBlocks": 4797794,
     "profitMargin": 72,
     "ranking": 178,
@@ -3382,7 +3204,7 @@
     "ticker": "KOYX"
   },
   {
-    "controlledStake": 8932715442498,
+    "relativeStake": 4,
     "cost": "65",
     "createdAt": "2020-01-21T02:12:07.172Z",
     "description": "nam dolorum laboriosam",
@@ -3392,7 +3214,6 @@
     "name": "Juwan Fahey",
     "performance": 30,
     "pledge": "16",
-    "pledgeAddress": "https://mafalda.org",
     "producedBlocks": 2271980,
     "profitMargin": 19,
     "ranking": 179,
@@ -3401,7 +3222,7 @@
     "ticker": "KKDU"
   },
   {
-    "controlledStake": 3096500765532,
+    "relativeStake": 5,
     "cost": "65",
     "createdAt": "2020-01-21T08:28:38.600Z",
     "description": "voluptas nemo et",
@@ -3411,7 +3232,6 @@
     "name": "Jadon Armstrong",
     "performance": 30,
     "pledge": "89",
-    "pledgeAddress": "http://dianna.info",
     "producedBlocks": 7597877,
     "profitMargin": 100,
     "ranking": 180,
@@ -3420,7 +3240,7 @@
     "ticker": "OHDP"
   },
   {
-    "controlledStake": 2375576768536,
+    "relativeStake": 77,
     "cost": "14",
     "createdAt": "2020-01-21T05:43:43.505Z",
     "description": "et aperiam aut",
@@ -3430,7 +3250,6 @@
     "name": "Lorenza Koelpin Sr.",
     "performance": 54,
     "pledge": "17",
-    "pledgeAddress": "https://randall.net",
     "producedBlocks": 5753281,
     "profitMargin": 63,
     "ranking": 181,
@@ -3439,7 +3258,7 @@
     "ticker": "VXLH"
   },
   {
-    "controlledStake": 5196917445865,
+    "relativeStake": 63,
     "cost": "74",
     "createdAt": "2020-01-20T19:36:44.119Z",
     "description": "eligendi adipisci similique",
@@ -3449,7 +3268,6 @@
     "name": "Virgil Stroman",
     "performance": 78,
     "pledge": "19",
-    "pledgeAddress": "https://friedrich.org",
     "producedBlocks": 2904949,
     "profitMargin": 19,
     "ranking": 182,
@@ -3458,7 +3276,7 @@
     "ticker": "ZCYY"
   },
   {
-    "controlledStake": 5688013071194,
+    "relativeStake": 51,
     "cost": "42",
     "createdAt": "2020-01-20T23:13:12.307Z",
     "description": "maxime nihil ex",
@@ -3468,7 +3286,6 @@
     "name": "Quinton Ryan",
     "performance": 98,
     "pledge": "86",
-    "pledgeAddress": "http://dameon.com",
     "producedBlocks": 3873002,
     "profitMargin": 100,
     "ranking": 183,
@@ -3477,7 +3294,7 @@
     "ticker": "DQUG"
   },
   {
-    "controlledStake": 3916173828766,
+    "relativeStake": 11,
     "cost": "89",
     "createdAt": "2020-01-20T17:06:30.080Z",
     "description": "delectus sed adipisci",
@@ -3487,7 +3304,6 @@
     "name": "Josh O'Conner",
     "performance": 38,
     "pledge": "60",
-    "pledgeAddress": "http://danielle.info",
     "producedBlocks": 2177361,
     "profitMargin": 28,
     "ranking": 184,
@@ -3496,7 +3312,7 @@
     "ticker": "QTTZ"
   },
   {
-    "controlledStake": 5920859822072,
+    "relativeStake": 12,
     "cost": "24",
     "createdAt": "2020-01-20T20:37:02.973Z",
     "description": "ut qui aspernatur",
@@ -3506,7 +3322,6 @@
     "name": "Tre Morissette",
     "performance": 89,
     "pledge": "6",
-    "pledgeAddress": "http://lysanne.biz",
     "producedBlocks": 2521025,
     "profitMargin": 10,
     "ranking": 185,
@@ -3515,7 +3330,7 @@
     "ticker": "NBIH"
   },
   {
-    "controlledStake": 5331387519836,
+    "relativeStake": 31,
     "cost": "67",
     "createdAt": "2020-01-21T01:38:19.471Z",
     "description": "dolorem nulla qui",
@@ -3525,7 +3340,6 @@
     "name": "Lamont Prohaska",
     "performance": 47,
     "pledge": "75",
-    "pledgeAddress": "http://garfield.biz",
     "producedBlocks": 6155824,
     "profitMargin": 96,
     "ranking": 186,
@@ -3534,7 +3348,7 @@
     "ticker": "YBDD"
   },
   {
-    "controlledStake": 9277561758645,
+    "relativeStake": 31,
     "cost": "66",
     "createdAt": "2020-01-21T14:37:37.991Z",
     "description": "exercitationem quisquam itaque",
@@ -3544,7 +3358,6 @@
     "name": "Maribel Emard MD",
     "performance": 31,
     "pledge": "64",
-    "pledgeAddress": "http://fern.net",
     "producedBlocks": 9225293,
     "profitMargin": 55,
     "ranking": 187,
@@ -3553,7 +3366,7 @@
     "ticker": "CNPK"
   },
   {
-    "controlledStake": 4853983786888,
+    "relativeStake": 55,
     "cost": "73",
     "createdAt": "2020-01-20T18:46:24.818Z",
     "description": "sit illum reprehenderit",
@@ -3563,7 +3376,6 @@
     "name": "Viviane Nicolas",
     "performance": 0,
     "pledge": "88",
-    "pledgeAddress": "https://cullen.net",
     "producedBlocks": 868802,
     "profitMargin": 57,
     "ranking": 188,
@@ -3572,7 +3384,7 @@
     "ticker": "MMRM"
   },
   {
-    "controlledStake": 7756412283052,
+    "relativeStake": 66,
     "cost": "29",
     "createdAt": "2020-01-20T16:54:39.995Z",
     "description": "repellendus nostrum iusto",
@@ -3582,7 +3394,6 @@
     "name": "Eldred Wolff",
     "performance": 57,
     "pledge": "48",
-    "pledgeAddress": "http://caroline.org",
     "producedBlocks": 9301346,
     "profitMargin": 8,
     "ranking": 189,
@@ -3591,7 +3402,7 @@
     "ticker": "JQRQ"
   },
   {
-    "controlledStake": 3303674228955,
+    "relativeStake": 54,
     "cost": "29",
     "createdAt": "2020-01-20T22:31:11.529Z",
     "description": "sed tempore corporis",
@@ -3601,7 +3412,6 @@
     "name": "Estefania Ankunding",
     "performance": 82,
     "pledge": "51",
-    "pledgeAddress": "http://arvilla.info",
     "producedBlocks": 3481071,
     "profitMargin": 34,
     "ranking": 190,
@@ -3610,7 +3420,7 @@
     "ticker": "MVDJ"
   },
   {
-    "controlledStake": 95113220158,
+    "relativeStake": 45,
     "cost": "87",
     "createdAt": "2020-01-21T05:54:50.656Z",
     "description": "qui dolorum voluptatem",
@@ -3620,7 +3430,6 @@
     "name": "Rosalyn Bashirian",
     "performance": 39,
     "pledge": "86",
-    "pledgeAddress": "http://otis.org",
     "producedBlocks": 2843698,
     "profitMargin": 2,
     "ranking": 191,
@@ -3629,7 +3438,7 @@
     "ticker": "GJTH"
   },
   {
-    "controlledStake": 1469080809038,
+    "relativeStake": 61,
     "cost": "68",
     "createdAt": "2020-01-21T03:34:04.347Z",
     "description": "aut eius iure",
@@ -3639,7 +3448,6 @@
     "name": "Raymond Langosh DDS",
     "performance": 46,
     "pledge": "26",
-    "pledgeAddress": "http://sheldon.biz",
     "producedBlocks": 1484618,
     "profitMargin": 84,
     "ranking": 192,
@@ -3648,7 +3456,7 @@
     "ticker": "WJTY"
   },
   {
-    "controlledStake": 8373284437694,
+    "relativeStake": 51,
     "cost": "51",
     "createdAt": "2020-01-21T05:43:57.151Z",
     "description": "eaque consequatur sint",
@@ -3658,7 +3466,6 @@
     "name": "Verna Jerde",
     "performance": 17,
     "pledge": "87",
-    "pledgeAddress": "http://lina.net",
     "producedBlocks": 3851745,
     "profitMargin": 31,
     "ranking": 193,
@@ -3667,7 +3474,7 @@
     "ticker": "VMEB"
   },
   {
-    "controlledStake": 9035973460414,
+    "relativeStake": 3,
     "cost": "35",
     "createdAt": "2020-01-20T16:17:55.102Z",
     "description": "quia sit illum",
@@ -3677,7 +3484,6 @@
     "name": "Chelsey Batz",
     "performance": 79,
     "pledge": "66",
-    "pledgeAddress": "https://stuart.name",
     "producedBlocks": 4883273,
     "profitMargin": 43,
     "ranking": 194,
@@ -3686,7 +3492,7 @@
     "ticker": "MRWK"
   },
   {
-    "controlledStake": 2851051632315,
+    "relativeStake": 1,
     "cost": "58",
     "createdAt": "2020-01-21T02:06:12.543Z",
     "description": "quam sit ea",
@@ -3696,7 +3502,6 @@
     "name": "Jarvis Cremin",
     "performance": 57,
     "pledge": "0",
-    "pledgeAddress": "http://ardith.name",
     "producedBlocks": 5985464,
     "profitMargin": 57,
     "ranking": 195,
@@ -3705,7 +3510,7 @@
     "ticker": "MQIX"
   },
   {
-    "controlledStake": 6435974249616,
+    "relativeStake": 33,
     "cost": "72",
     "createdAt": "2020-01-21T11:16:09.752Z",
     "description": "aliquam qui qui",
@@ -3715,7 +3520,6 @@
     "name": "Alexzander Armstrong",
     "performance": 79,
     "pledge": "96",
-    "pledgeAddress": "http://graciela.net",
     "producedBlocks": 4374880,
     "profitMargin": 41,
     "ranking": 196,
@@ -3724,7 +3528,7 @@
     "ticker": "BRHY"
   },
   {
-    "controlledStake": 4095761855133,
+    "relativeStake": 24,
     "cost": "88",
     "createdAt": "2020-01-20T23:11:47.951Z",
     "description": "nemo quaerat molestias",
@@ -3734,7 +3538,6 @@
     "name": "Mr. Peyton Thompson",
     "performance": 65,
     "pledge": "76",
-    "pledgeAddress": "http://delphine.com",
     "producedBlocks": 1588578,
     "profitMargin": 56,
     "ranking": 197,
@@ -3743,7 +3546,7 @@
     "ticker": "SNWB"
   },
   {
-    "controlledStake": 5842053282540,
+    "relativeStake": 25,
     "cost": "22",
     "createdAt": "2020-01-20T21:21:48.200Z",
     "description": "facilis tempora aperiam",
@@ -3753,7 +3556,6 @@
     "name": "Tre Prohaska",
     "performance": 56,
     "pledge": "6",
-    "pledgeAddress": "https://kayleigh.net",
     "producedBlocks": 1647236,
     "profitMargin": 46,
     "ranking": 198,
@@ -3762,7 +3564,7 @@
     "ticker": "BBNC"
   },
   {
-    "controlledStake": 2426612896379,
+    "relativeStake": 24,
     "cost": "46",
     "createdAt": "2020-01-21T10:30:17.047Z",
     "description": "fugit provident et",
@@ -3772,7 +3574,6 @@
     "name": "Myah Koelpin",
     "performance": 93,
     "pledge": "5",
-    "pledgeAddress": "http://alek.net",
     "producedBlocks": 9909764,
     "profitMargin": 52,
     "ranking": 199,
@@ -3781,7 +3582,7 @@
     "ticker": "RRXU"
   },
   {
-    "controlledStake": 350429743994,
+    "relativeStake": 51,
     "cost": "75",
     "createdAt": "2020-01-20T18:29:09.872Z",
     "description": "ea necessitatibus ut",
@@ -3791,7 +3592,6 @@
     "name": "Willa Tremblay",
     "performance": 74,
     "pledge": "46",
-    "pledgeAddress": "http://walker.biz",
     "producedBlocks": 3724572,
     "profitMargin": 37,
     "ranking": 200,
@@ -3800,7 +3600,7 @@
     "ticker": "UGAQ"
   },
   {
-    "controlledStake": 5994646628387,
+    "relativeStake": 44,
     "cost": "95",
     "createdAt": "2020-01-21T10:07:51.933Z",
     "description": "ab qui sapiente",
@@ -3810,7 +3610,6 @@
     "name": "Miss Christian Johnson",
     "performance": 25,
     "pledge": "83",
-    "pledgeAddress": "https://sydnee.com",
     "producedBlocks": 783110,
     "profitMargin": 3,
     "ranking": 201,
@@ -3819,7 +3618,7 @@
     "ticker": "HYUP"
   },
   {
-    "controlledStake": 9110849420540,
+    "relativeStake": 71,
     "cost": "75",
     "createdAt": "2020-01-21T13:51:53.802Z",
     "description": "omnis autem ea",
@@ -3829,7 +3628,6 @@
     "name": "Natalia Erdman",
     "performance": 29,
     "pledge": "24",
-    "pledgeAddress": "https://alba.name",
     "producedBlocks": 9724212,
     "profitMargin": 83,
     "ranking": 202,
@@ -3838,7 +3636,7 @@
     "ticker": "GODZ"
   },
   {
-    "controlledStake": 724847256206,
+    "relativeStake": 1,
     "cost": "45",
     "createdAt": "2020-01-21T07:54:21.791Z",
     "description": "facilis natus qui",
@@ -3848,7 +3646,6 @@
     "name": "Sophie Rodriguez",
     "performance": 54,
     "pledge": "49",
-    "pledgeAddress": "https://raphael.org",
     "producedBlocks": 3716378,
     "profitMargin": 23,
     "ranking": 203,
@@ -3857,7 +3654,7 @@
     "ticker": "QFHT"
   },
   {
-    "controlledStake": 3593961624428,
+    "relativeStake": 16,
     "cost": "53",
     "createdAt": "2020-01-21T10:27:13.880Z",
     "description": "odio id id",
@@ -3867,7 +3664,6 @@
     "name": "Candelario Leffler",
     "performance": 90,
     "pledge": "77",
-    "pledgeAddress": "http://angelita.name",
     "producedBlocks": 3043708,
     "profitMargin": 74,
     "ranking": 204,
@@ -3876,7 +3672,7 @@
     "ticker": "MDQZ"
   },
   {
-    "controlledStake": 5750997520518,
+    "relativeStake": 31,
     "cost": "33",
     "createdAt": "2020-01-21T11:40:33.858Z",
     "description": "quia quisquam et",
@@ -3886,7 +3682,6 @@
     "name": "Mrs. Jarrod Mueller",
     "performance": 94,
     "pledge": "54",
-    "pledgeAddress": "https://alyce.biz",
     "producedBlocks": 7106018,
     "profitMargin": 79,
     "ranking": 205,
@@ -3895,7 +3690,7 @@
     "ticker": "JKSA"
   },
   {
-    "controlledStake": 3936709000263,
+    "relativeStake": 33,
     "cost": "28",
     "createdAt": "2020-01-21T03:21:50.058Z",
     "description": "iste voluptatem aliquid",
@@ -3905,7 +3700,6 @@
     "name": "Stuart Koepp",
     "performance": 9,
     "pledge": "43",
-    "pledgeAddress": "http://carmelo.org",
     "producedBlocks": 8827497,
     "profitMargin": 51,
     "ranking": 206,
@@ -3914,7 +3708,7 @@
     "ticker": "ROKU"
   },
   {
-    "controlledStake": 4141031401232,
+    "relativeStake": 55,
     "cost": "63",
     "createdAt": "2020-01-20T20:20:15.798Z",
     "description": "eum sunt fuga",
@@ -3924,7 +3718,6 @@
     "name": "Marjolaine Sporer",
     "performance": 26,
     "pledge": "19",
-    "pledgeAddress": "https://ray.com",
     "producedBlocks": 9091051,
     "profitMargin": 76,
     "ranking": 207,
@@ -3933,7 +3726,7 @@
     "ticker": "GZGD"
   },
   {
-    "controlledStake": 5963727100752,
+    "relativeStake": 63,
     "cost": "45",
     "createdAt": "2020-01-20T18:24:56.889Z",
     "description": "voluptatem illo ut",
@@ -3943,7 +3736,6 @@
     "name": "Shea Ferry",
     "performance": 24,
     "pledge": "86",
-    "pledgeAddress": "https://samson.biz",
     "producedBlocks": 3670948,
     "profitMargin": 31,
     "ranking": 208,
@@ -3952,7 +3744,7 @@
     "ticker": "AFLR"
   },
   {
-    "controlledStake": 9783360529691,
+    "relativeStake": 5,
     "cost": "78",
     "createdAt": "2020-01-21T11:36:30.642Z",
     "description": "expedita provident non",
@@ -3962,7 +3754,6 @@
     "name": "Bart Kunze",
     "performance": 37,
     "pledge": "64",
-    "pledgeAddress": "http://bernadine.biz",
     "producedBlocks": 677897,
     "profitMargin": 78,
     "ranking": 209,
@@ -3971,7 +3762,7 @@
     "ticker": "HLFO"
   },
   {
-    "controlledStake": 548528134822,
+    "relativeStake": 0,
     "cost": "22",
     "createdAt": "2020-01-21T03:11:11.669Z",
     "description": "et assumenda tempore",
@@ -3981,7 +3772,6 @@
     "name": "Micaela Prohaska",
     "performance": 37,
     "pledge": "38",
-    "pledgeAddress": "https://johnathon.biz",
     "producedBlocks": 4584777,
     "profitMargin": 83,
     "ranking": 210,
@@ -3990,7 +3780,7 @@
     "ticker": "HMFQ"
   },
   {
-    "controlledStake": 7628509877250,
+    "relativeStake": 1,
     "cost": "90",
     "createdAt": "2020-01-21T06:39:05.281Z",
     "description": "in quo suscipit",
@@ -4000,7 +3790,6 @@
     "name": "Laurine Wiegand",
     "performance": 4,
     "pledge": "94",
-    "pledgeAddress": "http://reece.name",
     "producedBlocks": 4152645,
     "profitMargin": 41,
     "ranking": 211,
@@ -4009,7 +3798,7 @@
     "ticker": "QCFD"
   },
   {
-    "controlledStake": 1686887084506,
+    "relativeStake": 41,
     "cost": "10",
     "createdAt": "2020-01-21T11:28:06.884Z",
     "description": "magni laboriosam ut",
@@ -4019,7 +3808,6 @@
     "name": "Emmet Green",
     "performance": 11,
     "pledge": "70",
-    "pledgeAddress": "http://ressie.info",
     "producedBlocks": 8657511,
     "profitMargin": 55,
     "ranking": 212,
@@ -4028,7 +3816,7 @@
     "ticker": "WPLT"
   },
   {
-    "controlledStake": 55541114415,
+    "relativeStake": 31,
     "cost": "5",
     "createdAt": "2020-01-21T13:52:38.211Z",
     "description": "libero doloribus quae",
@@ -4038,7 +3826,6 @@
     "name": "Max Hermiston I",
     "performance": 7,
     "pledge": "75",
-    "pledgeAddress": "http://nicholas.name",
     "producedBlocks": 8617557,
     "profitMargin": 54,
     "ranking": 213,
@@ -4047,7 +3834,7 @@
     "ticker": "VIGR"
   },
   {
-    "controlledStake": 1579527435824,
+    "relativeStake": 11,
     "cost": "50",
     "createdAt": "2020-01-21T11:28:31.154Z",
     "description": "vitae quam quae",
@@ -4057,7 +3844,6 @@
     "name": "Mr. Axel Keeling",
     "performance": 41,
     "pledge": "98",
-    "pledgeAddress": "https://vivien.biz",
     "producedBlocks": 3647723,
     "profitMargin": 64,
     "ranking": 214,
@@ -4066,7 +3852,7 @@
     "ticker": "HGAW"
   },
   {
-    "controlledStake": 1036456734873,
+    "relativeStake": 33,
     "cost": "71",
     "createdAt": "2020-01-20T23:25:43.156Z",
     "description": "eaque qui quia",
@@ -4076,7 +3862,6 @@
     "name": "Mrs. Elvera Klein",
     "performance": 60,
     "pledge": "88",
-    "pledgeAddress": "https://stacy.net",
     "producedBlocks": 2427494,
     "profitMargin": 3,
     "ranking": 215,
@@ -4085,7 +3870,7 @@
     "ticker": "RQJN"
   },
   {
-    "controlledStake": 4866558948997,
+    "relativeStake": 88,
     "cost": "5",
     "createdAt": "2020-01-21T13:18:41.132Z",
     "description": "cupiditate repudiandae sint",
@@ -4095,7 +3880,6 @@
     "name": "Kip Stanton",
     "performance": 12,
     "pledge": "87",
-    "pledgeAddress": "https://ila.net",
     "producedBlocks": 111308,
     "profitMargin": 90,
     "ranking": 216,
@@ -4104,7 +3888,7 @@
     "ticker": "PDHC"
   },
   {
-    "controlledStake": 1715370323509,
+    "relativeStake": 75,
     "cost": "27",
     "createdAt": "2020-01-21T05:35:40.496Z",
     "description": "ut quas vero",
@@ -4114,7 +3898,6 @@
     "name": "Felicia Rodriguez",
     "performance": 88,
     "pledge": "59",
-    "pledgeAddress": "https://jalen.net",
     "producedBlocks": 4475100,
     "profitMargin": 1,
     "ranking": 217,
@@ -4123,7 +3906,7 @@
     "ticker": "FBTZ"
   },
   {
-    "controlledStake": 6384163063485,
+    "relativeStake": 6,
     "cost": "86",
     "createdAt": "2020-01-20T23:55:52.705Z",
     "description": "error aut ut",
@@ -4133,7 +3916,6 @@
     "name": "Adolf Schumm",
     "performance": 88,
     "pledge": "50",
-    "pledgeAddress": "http://mara.biz",
     "producedBlocks": 5193829,
     "profitMargin": 60,
     "ranking": 218,
@@ -4142,7 +3924,7 @@
     "ticker": "BTMK"
   },
   {
-    "controlledStake": 616788414772,
+    "relativeStake": 5,
     "cost": "37",
     "createdAt": "2020-01-21T11:27:46.282Z",
     "description": "quia iusto rerum",
@@ -4152,7 +3934,6 @@
     "name": "Lauretta Wiegand",
     "performance": 59,
     "pledge": "75",
-    "pledgeAddress": "https://nathanial.info",
     "producedBlocks": 5223556,
     "profitMargin": 85,
     "ranking": 219,
@@ -4161,7 +3942,7 @@
     "ticker": "ULKK"
   },
   {
-    "controlledStake": 6595543690492,
+    "relativeStake": 4,
     "cost": "47",
     "createdAt": "2020-01-20T21:01:35.842Z",
     "description": "autem perspiciatis aut",
@@ -4171,7 +3952,6 @@
     "name": "Joshuah Cole",
     "performance": 10,
     "pledge": "63",
-    "pledgeAddress": "http://pedro.net",
     "producedBlocks": 1547415,
     "profitMargin": 65,
     "ranking": 220,
@@ -4180,7 +3960,7 @@
     "ticker": "RSXU"
   },
   {
-    "controlledStake": 8302107818891,
+    "relativeStake": 3,
     "cost": "67",
     "createdAt": "2020-01-20T16:05:23.961Z",
     "description": "sit sint cumque",
@@ -4190,7 +3970,6 @@
     "name": "Nicklaus Lowe DDS",
     "performance": 1,
     "pledge": "17",
-    "pledgeAddress": "https://lacey.name",
     "producedBlocks": 4709154,
     "profitMargin": 94,
     "ranking": 221,
@@ -4199,7 +3978,7 @@
     "ticker": "SSZT"
   },
   {
-    "controlledStake": 4553019218147,
+    "relativeStake": 2,
     "cost": "11",
     "createdAt": "2020-01-21T05:51:46.042Z",
     "description": "dolores nesciunt sint",
@@ -4209,7 +3988,6 @@
     "name": "Maya Welch",
     "performance": 24,
     "pledge": "96",
-    "pledgeAddress": "https://monty.biz",
     "producedBlocks": 4059755,
     "profitMargin": 64,
     "ranking": 222,
@@ -4218,7 +3996,7 @@
     "ticker": "MXZE"
   },
   {
-    "controlledStake": 108058415353,
+    "relativeStake": 1,
     "cost": "35",
     "createdAt": "2020-01-21T06:39:05.924Z",
     "description": "aliquam molestias pariatur",
@@ -4228,7 +4006,6 @@
     "name": "Harley Johns",
     "performance": 85,
     "pledge": "38",
-    "pledgeAddress": "https://louisa.name",
     "producedBlocks": 475725,
     "profitMargin": 56,
     "ranking": 223,
@@ -4237,7 +4014,7 @@
     "ticker": "OGXL"
   },
   {
-    "controlledStake": 6404432656709,
+    "relativeStake": 66,
     "cost": "73",
     "createdAt": "2020-01-21T03:03:30.023Z",
     "description": "nemo ab ipsa",
@@ -4247,7 +4024,6 @@
     "name": "Axel Weber",
     "performance": 5,
     "pledge": "18",
-    "pledgeAddress": "http://dillon.com",
     "producedBlocks": 4100590,
     "profitMargin": 99,
     "ranking": 224,
@@ -4256,7 +4032,7 @@
     "ticker": "ZDYA"
   },
   {
-    "controlledStake": 3256694851443,
+    "relativeStake": 61,
     "cost": "75",
     "createdAt": "2020-01-21T10:11:40.018Z",
     "description": "itaque et et",
@@ -4266,7 +4042,6 @@
     "name": "Duane Muller",
     "performance": 29,
     "pledge": "12",
-    "pledgeAddress": "https://chris.org",
     "producedBlocks": 6747089,
     "profitMargin": 36,
     "ranking": 225,
@@ -4275,7 +4050,7 @@
     "ticker": "QDDR"
   },
   {
-    "controlledStake": 2759349518455,
+    "relativeStake": 34,
     "cost": "89",
     "createdAt": "2020-01-21T07:14:24.511Z",
     "description": "rerum quasi occaecati",
@@ -4285,7 +4060,6 @@
     "name": "Lorna Kautzer",
     "performance": 51,
     "pledge": "7",
-    "pledgeAddress": "http://clemens.name",
     "producedBlocks": 4915404,
     "profitMargin": 57,
     "ranking": 226,
@@ -4294,7 +4068,7 @@
     "ticker": "QIVF"
   },
   {
-    "controlledStake": 2268495806493,
+    "relativeStake": 53,
     "cost": "41",
     "createdAt": "2020-01-21T12:34:32.267Z",
     "description": "veniam dicta dolor",
@@ -4304,7 +4078,6 @@
     "name": "Gudrun Olson",
     "performance": 70,
     "pledge": "40",
-    "pledgeAddress": "https://loraine.net",
     "producedBlocks": 4255862,
     "profitMargin": 58,
     "ranking": 227,
@@ -4313,7 +4086,7 @@
     "ticker": "ECPT"
   },
   {
-    "controlledStake": 9974702741020,
+    "relativeStake": 33,
     "cost": "23",
     "createdAt": "2020-01-21T14:34:08.987Z",
     "description": "iste ratione deserunt",
@@ -4323,7 +4096,6 @@
     "name": "Chloe Lindgren",
     "performance": 3,
     "pledge": "44",
-    "pledgeAddress": "https://chanelle.org",
     "producedBlocks": 6631849,
     "profitMargin": 47,
     "ranking": 228,
@@ -4332,7 +4104,7 @@
     "ticker": "WDBZ"
   },
   {
-    "controlledStake": 836978515144,
+    "relativeStake": 61,
     "cost": "35",
     "createdAt": "2020-01-20T18:01:41.709Z",
     "description": "accusamus voluptates ipsum",
@@ -4342,7 +4114,6 @@
     "name": "Christopher Hegmann",
     "performance": 74,
     "pledge": "8",
-    "pledgeAddress": "http://alfredo.org",
     "producedBlocks": 7377999,
     "profitMargin": 32,
     "ranking": 229,
@@ -4351,7 +4122,7 @@
     "ticker": "RGTI"
   },
   {
-    "controlledStake": 4680525397416,
+    "relativeStake": 51,
     "cost": "91",
     "createdAt": "2020-01-20T16:29:31.607Z",
     "description": "sint alias eos",
@@ -4361,7 +4132,6 @@
     "name": "Clement Schaden",
     "performance": 11,
     "pledge": "31",
-    "pledgeAddress": "https://luigi.name",
     "producedBlocks": 3199577,
     "profitMargin": 5,
     "ranking": 230,
@@ -4370,7 +4140,7 @@
     "ticker": "BRFF"
   },
   {
-    "controlledStake": 5587614632677,
+    "relativeStake": 33,
     "cost": "88",
     "createdAt": "2020-01-21T02:51:56.631Z",
     "description": "eveniet fuga voluptas",
@@ -4380,7 +4150,6 @@
     "name": "Trey Willms",
     "performance": 63,
     "pledge": "31",
-    "pledgeAddress": "http://frida.info",
     "producedBlocks": 2117667,
     "profitMargin": 51,
     "ranking": 231,
@@ -4389,7 +4158,7 @@
     "ticker": "CLYK"
   },
   {
-    "controlledStake": 6006459675264,
+    "relativeStake": 13,
     "cost": "42",
     "createdAt": "2020-01-20T22:15:30.968Z",
     "description": "rerum pariatur ut",
@@ -4399,7 +4168,6 @@
     "name": "Deontae Muller",
     "performance": 2,
     "pledge": "63",
-    "pledgeAddress": "http://hettie.info",
     "producedBlocks": 8402886,
     "profitMargin": 50,
     "ranking": 232,
@@ -4408,7 +4176,7 @@
     "ticker": "KMTU"
   },
   {
-    "controlledStake": 6213323650882,
+    "relativeStake": 12,
     "cost": "47",
     "createdAt": "2020-01-21T10:53:23.209Z",
     "description": "quas provident qui",
@@ -4418,7 +4186,6 @@
     "name": "Jess Oberbrunner",
     "performance": 65,
     "pledge": "35",
-    "pledgeAddress": "https://lenore.net",
     "producedBlocks": 7585744,
     "profitMargin": 22,
     "ranking": 233,
@@ -4427,7 +4194,7 @@
     "ticker": "BNLW"
   },
   {
-    "controlledStake": 7755017611198,
+    "relativeStake": 7,
     "cost": "78",
     "createdAt": "2020-01-21T12:49:28.676Z",
     "description": "sunt consequatur est",
@@ -4437,7 +4204,6 @@
     "name": "Tina Murphy",
     "performance": 86,
     "pledge": "1",
-    "pledgeAddress": "http://shyanne.net",
     "producedBlocks": 3396848,
     "profitMargin": 41,
     "ranking": 234,
@@ -4446,7 +4212,7 @@
     "ticker": "NOGA"
   },
   {
-    "controlledStake": 6995966800023,
+    "relativeStake": 6,
     "cost": "62",
     "createdAt": "2020-01-21T11:50:32.750Z",
     "description": "molestias distinctio ut",
@@ -4456,7 +4222,6 @@
     "name": "Wilson Mills",
     "performance": 41,
     "pledge": "53",
-    "pledgeAddress": "http://shayne.name",
     "producedBlocks": 8325154,
     "profitMargin": 18,
     "ranking": 235,
@@ -4465,7 +4230,7 @@
     "ticker": "QNSQ"
   },
   {
-    "controlledStake": 4194586614612,
+    "relativeStake": 5,
     "cost": "94",
     "createdAt": "2020-01-20T22:53:40.493Z",
     "description": "sit iusto possimus",
@@ -4475,7 +4240,6 @@
     "name": "Dr. Quincy Abernathy",
     "performance": 89,
     "pledge": "76",
-    "pledgeAddress": "https://anna.info",
     "producedBlocks": 9414158,
     "profitMargin": 11,
     "ranking": 236,
@@ -4484,7 +4248,7 @@
     "ticker": "LWYD"
   },
   {
-    "controlledStake": 6237453790382,
+    "relativeStake": 4,
     "cost": "11",
     "createdAt": "2020-01-21T06:19:46.219Z",
     "description": "minima et velit",
@@ -4494,7 +4258,6 @@
     "name": "Dr. Queenie Murray",
     "performance": 0,
     "pledge": "71",
-    "pledgeAddress": "http://dahlia.name",
     "producedBlocks": 9852531,
     "profitMargin": 22,
     "ranking": 237,
@@ -4503,7 +4266,7 @@
     "ticker": "THOP"
   },
   {
-    "controlledStake": 4561842076946,
+    "relativeStake": 3,
     "cost": "53",
     "createdAt": "2020-01-21T07:46:59.520Z",
     "description": "possimus tempore tempora",
@@ -4513,7 +4276,6 @@
     "name": "Mikayla Willms",
     "performance": 99,
     "pledge": "62",
-    "pledgeAddress": "https://jazlyn.net",
     "producedBlocks": 950819,
     "profitMargin": 8,
     "ranking": 238,
@@ -4522,7 +4284,7 @@
     "ticker": "PVJW"
   },
   {
-    "controlledStake": 6103981235065,
+    "relativeStake": 2,
     "cost": "80",
     "createdAt": "2020-01-21T13:10:16.372Z",
     "description": "optio enim natus",
@@ -4532,7 +4294,6 @@
     "name": "Taylor Marvin",
     "performance": 39,
     "pledge": "8",
-    "pledgeAddress": "http://jensen.com",
     "producedBlocks": 6208567,
     "profitMargin": 96,
     "ranking": 239,
@@ -4541,7 +4302,7 @@
     "ticker": "TXBJ"
   },
   {
-    "controlledStake": 7140570336487,
+    "relativeStake": 1,
     "cost": "8",
     "createdAt": "2020-01-20T21:31:25.623Z",
     "description": "animi laboriosam nemo",
@@ -4551,7 +4312,6 @@
     "name": "Justina Daniel",
     "performance": 39,
     "pledge": "77",
-    "pledgeAddress": "https://lyda.info",
     "producedBlocks": 7033409,
     "profitMargin": 61,
     "ranking": 240,
@@ -4560,7 +4320,7 @@
     "ticker": "GSUL"
   },
   {
-    "controlledStake": 9058871536982,
+    "relativeStake": 0,
     "cost": "44",
     "createdAt": "2020-01-20T20:31:39.054Z",
     "description": "voluptatem laboriosam vel",
@@ -4570,7 +4330,6 @@
     "name": "Gunner Goodwin",
     "performance": 67,
     "pledge": "6",
-    "pledgeAddress": "http://eve.org",
     "producedBlocks": 7399160,
     "profitMargin": 55,
     "ranking": 241,
@@ -4579,7 +4338,7 @@
     "ticker": "MSSL"
   },
   {
-    "controlledStake": 4951562895440,
+    "relativeStake": 5,
     "cost": "75",
     "createdAt": "2020-01-20T18:11:08.440Z",
     "description": "dolores qui consectetur",
@@ -4589,7 +4348,6 @@
     "name": "Palma Lockman",
     "performance": 30,
     "pledge": "73",
-    "pledgeAddress": "https://adolphus.biz",
     "producedBlocks": 9651385,
     "profitMargin": 71,
     "ranking": 242,
@@ -4598,7 +4356,7 @@
     "ticker": "YXVN"
   },
   {
-    "controlledStake": 8854008892086,
+    "relativeStake": 37,
     "cost": "18",
     "createdAt": "2020-01-20T15:02:58.607Z",
     "description": "laudantium dolorem non",
@@ -4608,7 +4366,6 @@
     "name": "Krista Mann IV",
     "performance": 56,
     "pledge": "19",
-    "pledgeAddress": "http://cecilia.net",
     "producedBlocks": 900362,
     "profitMargin": 31,
     "ranking": 243,
@@ -4617,7 +4374,7 @@
     "ticker": "UDPS"
   },
   {
-    "controlledStake": 5051820001099,
+    "relativeStake": 27,
     "cost": "28",
     "createdAt": "2020-01-21T07:36:31.401Z",
     "description": "voluptas beatae soluta",
@@ -4627,7 +4384,6 @@
     "name": "Arthur Predovic",
     "performance": 31,
     "pledge": "2",
-    "pledgeAddress": "https://bud.biz",
     "producedBlocks": 2862895,
     "profitMargin": 5,
     "ranking": 244,
@@ -4636,7 +4392,7 @@
     "ticker": "XWDP"
   },
   {
-    "controlledStake": 662647590506,
+    "relativeStake": 6,
     "cost": "23",
     "createdAt": "2020-01-21T07:12:00.375Z",
     "description": "voluptas voluptates voluptatem",
@@ -4646,7 +4402,6 @@
     "name": "Joshuah Kautzer",
     "performance": 0,
     "pledge": "13",
-    "pledgeAddress": "http://adolfo.biz",
     "producedBlocks": 748900,
     "profitMargin": 75,
     "ranking": 245,
@@ -4655,7 +4410,7 @@
     "ticker": "SJXV"
   },
   {
-    "controlledStake": 3250508694909,
+    "relativeStake": 51,
     "cost": "76",
     "createdAt": "2020-01-21T03:59:19.705Z",
     "description": "rem eius nihil",
@@ -4665,7 +4420,6 @@
     "name": "Javon Heathcote",
     "performance": 21,
     "pledge": "47",
-    "pledgeAddress": "http://jedidiah.org",
     "producedBlocks": 2912507,
     "profitMargin": 77,
     "ranking": 246,
@@ -4674,7 +4428,7 @@
     "ticker": "JTGG"
   },
   {
-    "controlledStake": 6294221121352,
+    "relativeStake": 33,
     "cost": "74",
     "createdAt": "2020-01-20T20:26:14.802Z",
     "description": "porro culpa dolore",
@@ -4684,7 +4438,6 @@
     "name": "Alessia Feeney",
     "performance": 96,
     "pledge": "92",
-    "pledgeAddress": "http://dee.com",
     "producedBlocks": 1540018,
     "profitMargin": 22,
     "ranking": 247,
@@ -4693,7 +4446,7 @@
     "ticker": "JZWE"
   },
   {
-    "controlledStake": 7337248164695,
+    "relativeStake": 10,
     "cost": "82",
     "createdAt": "2020-01-20T16:53:20.151Z",
     "description": "quo doloremque rerum",
@@ -4703,7 +4456,6 @@
     "name": "Dr. Michaela Hoeger",
     "performance": 56,
     "pledge": "60",
-    "pledgeAddress": "http://lexus.net",
     "producedBlocks": 2912513,
     "profitMargin": 94,
     "ranking": 248,
@@ -4712,7 +4464,7 @@
     "ticker": "ZSGF"
   },
   {
-    "controlledStake": 6489827884361,
+    "relativeStake": 11,
     "cost": "58",
     "createdAt": "2020-01-20T16:46:57.630Z",
     "description": "error dolorem maxime",
@@ -4722,7 +4474,6 @@
     "name": "Rusty Connelly III",
     "performance": 82,
     "pledge": "2",
-    "pledgeAddress": "https://hortense.info",
     "producedBlocks": 6485847,
     "profitMargin": 20,
     "ranking": 249,
@@ -4731,7 +4482,7 @@
     "ticker": "APIS"
   },
   {
-    "controlledStake": 1261689902749,
+    "relativeStake": 31,
     "cost": "90",
     "createdAt": "2020-01-21T04:56:07.155Z",
     "description": "et omnis facilis",
@@ -4741,7 +4492,6 @@
     "name": "Precious Heaney",
     "performance": 82,
     "pledge": "6",
-    "pledgeAddress": "https://renee.com",
     "producedBlocks": 6320872,
     "profitMargin": 64,
     "ranking": 250,
@@ -4750,7 +4500,7 @@
     "ticker": "WZLU"
   },
   {
-    "controlledStake": 473578122910,
+    "relativeStake": 33,
     "cost": "13",
     "createdAt": "2020-01-20T20:33:40.642Z",
     "description": "blanditiis architecto accusamus",
@@ -4760,7 +4510,6 @@
     "name": "Akeem Rau V",
     "performance": 85,
     "pledge": "29",
-    "pledgeAddress": "https://nakia.net",
     "producedBlocks": 7967327,
     "profitMargin": 24,
     "ranking": 251,
@@ -4769,7 +4518,7 @@
     "ticker": "OCCM"
   },
   {
-    "controlledStake": 5567043670453,
+    "relativeStake": 18,
     "cost": "11",
     "createdAt": "2020-01-21T03:54:56.103Z",
     "description": "nesciunt aspernatur eos",
@@ -4779,7 +4528,6 @@
     "name": "Sincere Grimes",
     "performance": 79,
     "pledge": "91",
-    "pledgeAddress": "http://earnest.net",
     "producedBlocks": 6568498,
     "profitMargin": 55,
     "ranking": 252,
@@ -4788,7 +4536,7 @@
     "ticker": "HWIH"
   },
   {
-    "controlledStake": 2329802496824,
+    "relativeStake": 21,
     "cost": "63",
     "createdAt": "2020-01-21T03:56:46.635Z",
     "description": "nemo autem nulla",
@@ -4798,7 +4546,6 @@
     "name": "Myrna Gerhold",
     "performance": 61,
     "pledge": "95",
-    "pledgeAddress": "http://vincent.name",
     "producedBlocks": 5766711,
     "profitMargin": 32,
     "ranking": 253,
@@ -4807,7 +4554,7 @@
     "ticker": "ZDDD"
   },
   {
-    "controlledStake": 8129471549765,
+    "relativeStake": 61,
     "cost": "54",
     "createdAt": "2020-01-21T02:44:05.130Z",
     "description": "reprehenderit facilis libero",
@@ -4817,7 +4564,6 @@
     "name": "Dr. Krystina Robel",
     "performance": 84,
     "pledge": "23",
-    "pledgeAddress": "https://ahmad.info",
     "producedBlocks": 1641597,
     "profitMargin": 11,
     "ranking": 254,
@@ -4826,7 +4572,7 @@
     "ticker": "AVRC"
   },
   {
-    "controlledStake": 8525385295507,
+    "relativeStake": 55,
     "cost": "34",
     "createdAt": "2020-01-20T22:30:49.040Z",
     "description": "voluptate velit rem",
@@ -4836,7 +4582,6 @@
     "name": "Abagail Bashirian",
     "performance": 71,
     "pledge": "24",
-    "pledgeAddress": "https://jayde.info",
     "producedBlocks": 4869513,
     "profitMargin": 98,
     "ranking": 255,
@@ -4845,7 +4590,7 @@
     "ticker": "YHXK"
   },
   {
-    "controlledStake": 5218535242602,
+    "relativeStake": 33,
     "cost": "37",
     "createdAt": "2020-01-21T14:31:50.278Z",
     "description": "necessitatibus eos ut",
@@ -4855,7 +4600,6 @@
     "name": "Chase Beier",
     "performance": 4,
     "pledge": "71",
-    "pledgeAddress": "http://rey.org",
     "producedBlocks": 657555,
     "profitMargin": 69,
     "ranking": 256,
@@ -4864,7 +4608,7 @@
     "ticker": "RLHD"
   },
   {
-    "controlledStake": 7365507825744,
+    "relativeStake": 6,
     "cost": "45",
     "createdAt": "2020-01-21T13:49:59.427Z",
     "description": "expedita et qui",
@@ -4874,7 +4618,6 @@
     "name": "Mr. Ignatius Kuhlman",
     "performance": 35,
     "pledge": "24",
-    "pledgeAddress": "http://guiseppe.biz",
     "producedBlocks": 5416577,
     "profitMargin": 89,
     "ranking": 257,
@@ -4883,7 +4626,7 @@
     "ticker": "DEIQ"
   },
   {
-    "controlledStake": 1316652521491,
+    "relativeStake": 15,
     "cost": "44",
     "createdAt": "2020-01-20T16:21:09.729Z",
     "description": "dolorum et et",
@@ -4893,7 +4636,6 @@
     "name": "Caden Harris",
     "performance": 80,
     "pledge": "60",
-    "pledgeAddress": "http://colby.name",
     "producedBlocks": 7480976,
     "profitMargin": 80,
     "ranking": 258,
@@ -4902,7 +4644,7 @@
     "ticker": "ALXC"
   },
   {
-    "controlledStake": 8489326187410,
+    "relativeStake": 4,
     "cost": "27",
     "createdAt": "2020-01-20T19:14:55.574Z",
     "description": "animi corrupti nostrum",
@@ -4912,7 +4654,6 @@
     "name": "Jerald Jacobson II",
     "performance": 18,
     "pledge": "66",
-    "pledgeAddress": "https://shawna.org",
     "producedBlocks": 5835305,
     "profitMargin": 94,
     "ranking": 259,
@@ -4921,7 +4662,7 @@
     "ticker": "UZIQ"
   },
   {
-    "controlledStake": 3768698489293,
+    "relativeStake": 14,
     "cost": "44",
     "createdAt": "2020-01-21T10:14:11.912Z",
     "description": "consequatur rem saepe",
@@ -4931,7 +4672,6 @@
     "name": "Gideon Runolfsson",
     "performance": 74,
     "pledge": "69",
-    "pledgeAddress": "https://shaun.biz",
     "producedBlocks": 4708691,
     "profitMargin": 29,
     "ranking": 260,
@@ -4940,7 +4680,7 @@
     "ticker": "CMDV"
   },
   {
-    "controlledStake": 8885063172784,
+    "relativeStake": 82,
     "cost": "27",
     "createdAt": "2020-01-20T20:14:13.281Z",
     "description": "accusantium provident neque",
@@ -4950,7 +4690,6 @@
     "name": "Deontae Adams V",
     "performance": 58,
     "pledge": "46",
-    "pledgeAddress": "http://eugenia.com",
     "producedBlocks": 9085214,
     "profitMargin": 6,
     "ranking": 261,
@@ -4959,7 +4698,7 @@
     "ticker": "QAJZ"
   },
   {
-    "controlledStake": 1851428791415,
+    "relativeStake": 19,
     "cost": "94",
     "createdAt": "2020-01-20T22:49:43.425Z",
     "description": "assumenda dolorem nesciunt",
@@ -4969,7 +4708,6 @@
     "name": "Benjamin Hermann",
     "performance": 29,
     "pledge": "74",
-    "pledgeAddress": "https://malvina.info",
     "producedBlocks": 9924986,
     "profitMargin": 41,
     "ranking": 262,
@@ -4978,7 +4716,7 @@
     "ticker": "LLDN"
   },
   {
-    "controlledStake": 5675616194494,
+    "relativeStake": 3,
     "cost": "100",
     "createdAt": "2020-01-21T03:25:01.831Z",
     "description": "ex non quae",
@@ -4988,7 +4726,6 @@
     "name": "Kayla Raynor",
     "performance": 44,
     "pledge": "45",
-    "pledgeAddress": "http://gardner.info",
     "producedBlocks": 4798422,
     "profitMargin": 0,
     "ranking": 263,
@@ -4997,7 +4734,7 @@
     "ticker": "IWEM"
   },
   {
-    "controlledStake": 5007492364384,
+    "relativeStake": 31,
     "cost": "39",
     "createdAt": "2020-01-20T21:07:42.728Z",
     "description": "omnis incidunt nobis",
@@ -5007,7 +4744,6 @@
     "name": "Niko Barrows",
     "performance": 9,
     "pledge": "27",
-    "pledgeAddress": "https://etha.info",
     "producedBlocks": 1217660,
     "profitMargin": 4,
     "ranking": 264,
@@ -5016,7 +4752,7 @@
     "ticker": "QZAG"
   },
   {
-    "controlledStake": 5353787932545,
+    "relativeStake": 12,
     "cost": "67",
     "createdAt": "2020-01-21T08:29:34.934Z",
     "description": "numquam eius optio",
@@ -5026,7 +4762,6 @@
     "name": "Bonita Kilback",
     "performance": 21,
     "pledge": "47",
-    "pledgeAddress": "http://raul.biz",
     "producedBlocks": 8711122,
     "profitMargin": 16,
     "ranking": 265,
@@ -5035,7 +4770,7 @@
     "ticker": "LHWX"
   },
   {
-    "controlledStake": 6985514722765,
+    "relativeStake": 0,
     "cost": "0",
     "createdAt": "2020-01-20T17:02:04.449Z",
     "description": "rerum vero omnis",
@@ -5045,7 +4780,6 @@
     "name": "Prince Bogisich",
     "performance": 28,
     "pledge": "21",
-    "pledgeAddress": "https://jaleel.org",
     "producedBlocks": 9877767,
     "profitMargin": 29,
     "ranking": 266,
@@ -5054,7 +4788,7 @@
     "ticker": "SPNZ"
   },
   {
-    "controlledStake": 7332407068461,
+    "relativeStake": 3,
     "cost": "79",
     "createdAt": "2020-01-20T22:51:45.794Z",
     "description": "excepturi ex blanditiis",
@@ -5064,7 +4798,6 @@
     "name": "Alexane Ferry I",
     "performance": 5,
     "pledge": "86",
-    "pledgeAddress": "http://tiara.org",
     "producedBlocks": 9420105,
     "profitMargin": 92,
     "ranking": 267,
@@ -5073,7 +4806,7 @@
     "ticker": "LZGG"
   },
   {
-    "controlledStake": 9817347461358,
+    "relativeStake": 51,
     "cost": "52",
     "createdAt": "2020-01-21T09:00:32.127Z",
     "description": "minima eos dignissimos",
@@ -5083,7 +4816,6 @@
     "name": "Talia Breitenberg",
     "performance": 60,
     "pledge": "97",
-    "pledgeAddress": "https://velma.org",
     "producedBlocks": 1832161,
     "profitMargin": 97,
     "ranking": 268,
@@ -5092,7 +4824,7 @@
     "ticker": "XHWR"
   },
   {
-    "controlledStake": 6727649448440,
+    "relativeStake": 51,
     "cost": "57",
     "createdAt": "2020-01-21T13:00:21.403Z",
     "description": "occaecati et minus",
@@ -5102,7 +4834,6 @@
     "name": "Hoyt Prohaska",
     "performance": 98,
     "pledge": "79",
-    "pledgeAddress": "http://margarete.org",
     "producedBlocks": 4273647,
     "profitMargin": 76,
     "ranking": 269,
@@ -5111,7 +4842,7 @@
     "ticker": "KEAB"
   },
   {
-    "controlledStake": 1323574925772,
+    "relativeStake": 35,
     "cost": "93",
     "createdAt": "2020-01-21T09:20:08.704Z",
     "description": "doloremque tempora libero",
@@ -5121,7 +4852,6 @@
     "name": "Aidan Walker",
     "performance": 60,
     "pledge": "88",
-    "pledgeAddress": "http://allene.org",
     "producedBlocks": 2640062,
     "profitMargin": 91,
     "ranking": 270,
@@ -5130,7 +4860,7 @@
     "ticker": "HEIR"
   },
   {
-    "controlledStake": 8978185877204,
+    "relativeStake": 40,
     "cost": "46",
     "createdAt": "2020-01-20T17:29:20.500Z",
     "description": "qui voluptate ipsa",
@@ -5140,7 +4870,6 @@
     "name": "Myrl Gleason",
     "performance": 0,
     "pledge": "57",
-    "pledgeAddress": "http://triston.biz",
     "producedBlocks": 2999729,
     "profitMargin": 46,
     "ranking": 271,
@@ -5149,7 +4878,7 @@
     "ticker": "LMIC"
   },
   {
-    "controlledStake": 1768162553198,
+    "relativeStake": 47,
     "cost": "16",
     "createdAt": "2020-01-21T13:10:35.370Z",
     "description": "nemo reprehenderit qui",
@@ -5159,7 +4888,6 @@
     "name": "Rafaela Williamson",
     "performance": 91,
     "pledge": "88",
-    "pledgeAddress": "https://kenya.name",
     "producedBlocks": 1791845,
     "profitMargin": 17,
     "ranking": 272,
@@ -5168,7 +4896,7 @@
     "ticker": "CCME"
   },
   {
-    "controlledStake": 1723340475000,
+    "relativeStake": 24,
     "cost": "23",
     "createdAt": "2020-01-20T19:45:59.256Z",
     "description": "praesentium saepe et",
@@ -5178,7 +4906,6 @@
     "name": "Miss Savannah Ullrich",
     "performance": 65,
     "pledge": "18",
-    "pledgeAddress": "http://dax.com",
     "producedBlocks": 7540804,
     "profitMargin": 60,
     "ranking": 273,
@@ -5187,7 +4914,7 @@
     "ticker": "WPIG"
   },
   {
-    "controlledStake": 3208261902910,
+    "relativeStake": 15,
     "cost": "42",
     "createdAt": "2020-01-21T12:05:27.294Z",
     "description": "id est nostrum",
@@ -5197,7 +4924,6 @@
     "name": "Ludie Pfeffer",
     "performance": 0,
     "pledge": "16",
-    "pledgeAddress": "http://colton.org",
     "producedBlocks": 6771281,
     "profitMargin": 15,
     "ranking": 274,
@@ -5206,7 +4932,7 @@
     "ticker": "WUKJ"
   },
   {
-    "controlledStake": 7459315517918,
+    "relativeStake": 4,
     "cost": "98",
     "createdAt": "2020-01-20T21:49:51.399Z",
     "description": "officiis quos impedit",
@@ -5216,7 +4942,6 @@
     "name": "Idell Shields",
     "performance": 50,
     "pledge": "43",
-    "pledgeAddress": "https://ashlee.name",
     "producedBlocks": 6265201,
     "profitMargin": 28,
     "ranking": 275,
@@ -5225,7 +4950,7 @@
     "ticker": "JFEI"
   },
   {
-    "controlledStake": 4732277826406,
+    "relativeStake": 15,
     "cost": "15",
     "createdAt": "2020-01-21T12:10:45.544Z",
     "description": "minima qui numquam",
@@ -5235,7 +4960,6 @@
     "name": "Willard Nitzsche",
     "performance": 16,
     "pledge": "33",
-    "pledgeAddress": "https://vernon.org",
     "producedBlocks": 713449,
     "profitMargin": 84,
     "ranking": 276,
@@ -5244,7 +4968,7 @@
     "ticker": "SLZH"
   },
   {
-    "controlledStake": 3094553099945,
+    "relativeStake": 51,
     "cost": "72",
     "createdAt": "2020-01-20T22:47:19.810Z",
     "description": "sed atque cum",
@@ -5254,7 +4978,6 @@
     "name": "Mylene Murphy DDS",
     "performance": 60,
     "pledge": "54",
-    "pledgeAddress": "http://amari.biz",
     "producedBlocks": 19393,
     "profitMargin": 79,
     "ranking": 277,
@@ -5263,7 +4986,7 @@
     "ticker": "IMDI"
   },
   {
-    "controlledStake": 5826706734952,
+    "relativeStake": 12,
     "cost": "48",
     "createdAt": "2020-01-21T04:53:23.005Z",
     "description": "ea at officia",
@@ -5273,7 +4996,6 @@
     "name": "Edd Cole",
     "performance": 77,
     "pledge": "39",
-    "pledgeAddress": "http://holden.org",
     "producedBlocks": 5773463,
     "profitMargin": 4,
     "ranking": 278,
@@ -5282,7 +5004,7 @@
     "ticker": "CKFJ"
   },
   {
-    "controlledStake": 7982549832668,
+    "relativeStake": 21,
     "cost": "37",
     "createdAt": "2020-01-21T08:19:06.566Z",
     "description": "suscipit libero dolores",
@@ -5292,7 +5014,6 @@
     "name": "Mitchell Christiansen",
     "performance": 70,
     "pledge": "56",
-    "pledgeAddress": "https://eladio.com",
     "producedBlocks": 9364639,
     "profitMargin": 66,
     "ranking": 279,
@@ -5301,7 +5022,7 @@
     "ticker": "KBOI"
   },
   {
-    "controlledStake": 6328963059932,
+    "relativeStake": 0,
     "cost": "29",
     "createdAt": "2020-01-21T09:13:14.689Z",
     "description": "rerum dicta non",
@@ -5311,7 +5032,6 @@
     "name": "Ceasar Hane",
     "performance": 57,
     "pledge": "93",
-    "pledgeAddress": "http://lolita.com",
     "producedBlocks": 2410369,
     "profitMargin": 2,
     "ranking": 280,
@@ -5320,7 +5040,7 @@
     "ticker": "WBJL"
   },
   {
-    "controlledStake": 1818020571954,
+    "relativeStake": 2,
     "cost": "66",
     "createdAt": "2020-01-21T06:34:19.713Z",
     "description": "corporis repellat et",
@@ -5330,7 +5050,6 @@
     "name": "Erich Lynch",
     "performance": 48,
     "pledge": "37",
-    "pledgeAddress": "http://russ.info",
     "producedBlocks": 3141409,
     "profitMargin": 98,
     "ranking": 281,
@@ -5339,7 +5058,7 @@
     "ticker": "ZPQX"
   },
   {
-    "controlledStake": 3728938454296,
+    "relativeStake": 4,
     "cost": "55",
     "createdAt": "2020-01-21T07:32:40.120Z",
     "description": "libero asperiores ipsam",
@@ -5349,7 +5068,6 @@
     "name": "Valentina Lemke",
     "performance": 5,
     "pledge": "79",
-    "pledgeAddress": "http://alvina.info",
     "producedBlocks": 8525633,
     "profitMargin": 83,
     "ranking": 282,
@@ -5358,7 +5076,7 @@
     "ticker": "PKXD"
   },
   {
-    "controlledStake": 4951230012812,
+    "relativeStake": 72,
     "cost": "89",
     "createdAt": "2020-01-21T05:39:37.178Z",
     "description": "amet dolore neque",
@@ -5368,7 +5086,6 @@
     "name": "Wilfrid Vandervort",
     "performance": 69,
     "pledge": "50",
-    "pledgeAddress": "https://vernie.net",
     "producedBlocks": 5476979,
     "profitMargin": 82,
     "ranking": 283,
@@ -5377,7 +5094,7 @@
     "ticker": "BDAP"
   },
   {
-    "controlledStake": 212586622219,
+    "relativeStake": 66,
     "cost": "19",
     "createdAt": "2020-01-21T10:33:28.051Z",
     "description": "fugit dolores molestiae",
@@ -5387,7 +5104,6 @@
     "name": "Bradford Russel",
     "performance": 9,
     "pledge": "12",
-    "pledgeAddress": "https://camren.net",
     "producedBlocks": 3421913,
     "profitMargin": 76,
     "ranking": 284,
@@ -5396,7 +5112,7 @@
     "ticker": "CPCK"
   },
   {
-    "controlledStake": 5181793293450,
+    "relativeStake": 36,
     "cost": "28",
     "createdAt": "2020-01-20T22:08:36.820Z",
     "description": "quis vel qui",
@@ -5406,7 +5122,6 @@
     "name": "Orland Erdman",
     "performance": 81,
     "pledge": "82",
-    "pledgeAddress": "https://thad.com",
     "producedBlocks": 6868988,
     "profitMargin": 7,
     "ranking": 285,
@@ -5415,7 +5130,7 @@
     "ticker": "QSHI"
   },
   {
-    "controlledStake": 6355818950106,
+    "relativeStake": 23,
     "cost": "51",
     "createdAt": "2020-01-21T13:53:10.628Z",
     "description": "sed voluptatibus quo",
@@ -5425,7 +5140,6 @@
     "name": "Alphonso Oberbrunner",
     "performance": 92,
     "pledge": "21",
-    "pledgeAddress": "http://creola.net",
     "producedBlocks": 269916,
     "profitMargin": 30,
     "ranking": 286,
@@ -5434,7 +5148,7 @@
     "ticker": "FAFG"
   },
   {
-    "controlledStake": 7652822833043,
+    "relativeStake": 94,
     "cost": "19",
     "createdAt": "2020-01-20T16:43:15.721Z",
     "description": "sint sint distinctio",
@@ -5444,7 +5158,6 @@
     "name": "Margarete Halvorson",
     "performance": 99,
     "pledge": "75",
-    "pledgeAddress": "http://janie.biz",
     "producedBlocks": 5216413,
     "profitMargin": 0,
     "ranking": 287,
@@ -5453,7 +5166,7 @@
     "ticker": "HLGC"
   },
   {
-    "controlledStake": 1731437477283,
+    "relativeStake": 88,
     "cost": "94",
     "createdAt": "2020-01-21T10:43:23.305Z",
     "description": "provident consequatur voluptas",
@@ -5463,7 +5176,6 @@
     "name": "Kali Harber",
     "performance": 38,
     "pledge": "87",
-    "pledgeAddress": "https://logan.com",
     "producedBlocks": 9807949,
     "profitMargin": 64,
     "ranking": 288,
@@ -5472,7 +5184,7 @@
     "ticker": "OCSL"
   },
   {
-    "controlledStake": 9142122622580,
+    "relativeStake": 66,
     "cost": "0",
     "createdAt": "2020-01-21T04:14:51.906Z",
     "description": "voluptatibus temporibus exercitationem",
@@ -5482,7 +5194,6 @@
     "name": "Chris Stehr",
     "performance": 4,
     "pledge": "56",
-    "pledgeAddress": "https://golda.info",
     "producedBlocks": 6184855,
     "profitMargin": 40,
     "ranking": 289,
@@ -5491,7 +5202,7 @@
     "ticker": "RFDF"
   },
   {
-    "controlledStake": 8005498505663,
+    "relativeStake": 41,
     "cost": "82",
     "createdAt": "2020-01-21T00:05:25.885Z",
     "description": "delectus est consequuntur",
@@ -5501,7 +5212,6 @@
     "name": "Jessie Okuneva",
     "performance": 23,
     "pledge": "70",
-    "pledgeAddress": "https://mia.org",
     "producedBlocks": 7419496,
     "profitMargin": 77,
     "ranking": 290,
@@ -5510,7 +5220,7 @@
     "ticker": "SKGQ"
   },
   {
-    "controlledStake": 3186454458628,
+    "relativeStake": 31,
     "cost": "80",
     "createdAt": "2020-01-20T20:14:42.813Z",
     "description": "autem accusantium velit",
@@ -5520,7 +5230,6 @@
     "name": "Eudora Zieme",
     "performance": 37,
     "pledge": "42",
-    "pledgeAddress": "https://ova.info",
     "producedBlocks": 467010,
     "profitMargin": 75,
     "ranking": 291,
@@ -5529,7 +5238,7 @@
     "ticker": "EWZG"
   },
   {
-    "controlledStake": 593376597389,
+    "relativeStake": 53,
     "cost": "38",
     "createdAt": "2020-01-21T05:20:15.685Z",
     "description": "omnis eius quia",
@@ -5539,7 +5248,6 @@
     "name": "Graciela Schumm",
     "performance": 70,
     "pledge": "39",
-    "pledgeAddress": "http://opal.name",
     "producedBlocks": 7514979,
     "profitMargin": 41,
     "ranking": 292,
@@ -5548,7 +5256,7 @@
     "ticker": "MNZQ"
   },
   {
-    "controlledStake": 6461504010949,
+    "relativeStake": 90,
     "cost": "42",
     "createdAt": "2020-01-20T14:49:25.982Z",
     "description": "quidem enim labore",
@@ -5558,7 +5266,6 @@
     "name": "Charley Beer",
     "performance": 30,
     "pledge": "0",
-    "pledgeAddress": "http://warren.name",
     "producedBlocks": 2593286,
     "profitMargin": 45,
     "ranking": 293,
@@ -5567,7 +5274,7 @@
     "ticker": "AKPF"
   },
   {
-    "controlledStake": 8704851835501,
+    "relativeStake": 0,
     "cost": "11",
     "createdAt": "2020-01-20T18:20:29.673Z",
     "description": "beatae placeat est",
@@ -5577,7 +5284,6 @@
     "name": "Stephon Ledner",
     "performance": 77,
     "pledge": "39",
-    "pledgeAddress": "https://tyra.info",
     "producedBlocks": 1000283,
     "profitMargin": 67,
     "ranking": 294,
@@ -5586,7 +5292,7 @@
     "ticker": "UUHL"
   },
   {
-    "controlledStake": 8720776962582,
+    "relativeStake": 1,
     "cost": "41",
     "createdAt": "2020-01-20T16:04:02.299Z",
     "description": "maiores optio eveniet",
@@ -5596,7 +5302,6 @@
     "name": "Kenya Braun",
     "performance": 66,
     "pledge": "61",
-    "pledgeAddress": "http://llewellyn.biz",
     "producedBlocks": 929715,
     "profitMargin": 57,
     "ranking": 295,
@@ -5605,7 +5310,7 @@
     "ticker": "GNAO"
   },
   {
-    "controlledStake": 4475678650197,
+    "relativeStake": 3,
     "cost": "29",
     "createdAt": "2020-01-20T16:22:00.759Z",
     "description": "quod ipsa molestias",
@@ -5615,7 +5320,6 @@
     "name": "Albertha Rogahn",
     "performance": 88,
     "pledge": "64",
-    "pledgeAddress": "https://megane.name",
     "producedBlocks": 8595547,
     "profitMargin": 34,
     "ranking": 296,
@@ -5624,7 +5328,7 @@
     "ticker": "JDUG"
   },
   {
-    "controlledStake": 2463652777951,
+    "relativeStake": 5,
     "cost": "53",
     "createdAt": "2020-01-21T02:47:13.785Z",
     "description": "officia quo quas",
@@ -5634,7 +5338,6 @@
     "name": "Jaylen Dickinson",
     "performance": 90,
     "pledge": "51",
-    "pledgeAddress": "https://trycia.biz",
     "producedBlocks": 4674945,
     "profitMargin": 92,
     "ranking": 297,
@@ -5643,7 +5346,7 @@
     "ticker": "GUEO"
   },
   {
-    "controlledStake": 7272624655161,
+    "relativeStake": 72,
     "cost": "61",
     "createdAt": "2020-01-21T08:19:40.815Z",
     "description": "ducimus at possimus",
@@ -5653,7 +5356,6 @@
     "name": "Dr. Cyrus Jakubowski",
     "performance": 8,
     "pledge": "16",
-    "pledgeAddress": "http://wilson.com",
     "producedBlocks": 3790476,
     "profitMargin": 20,
     "ranking": 298,
@@ -5662,7 +5364,7 @@
     "ticker": "BXQE"
   },
   {
-    "controlledStake": 761052630841,
+    "relativeStake": 76,
     "cost": "97",
     "createdAt": "2020-01-21T07:43:31.508Z",
     "description": "sit soluta quod",
@@ -5672,7 +5374,6 @@
     "name": "Lottie Abernathy",
     "performance": 76,
     "pledge": "74",
-    "pledgeAddress": "http://albertha.name",
     "producedBlocks": 2169895,
     "profitMargin": 10,
     "ranking": 299,
@@ -5681,7 +5382,7 @@
     "ticker": "LRFS"
   },
   {
-    "controlledStake": 5409800864290,
+    "relativeStake": 54,
     "cost": "63",
     "createdAt": "2020-01-20T22:40:54.464Z",
     "description": "ut quibusdam dignissimos",
@@ -5691,7 +5392,6 @@
     "name": "Jade Lockman",
     "performance": 18,
     "pledge": "37",
-    "pledgeAddress": "https://zane.org",
     "producedBlocks": 2505580,
     "profitMargin": 53,
     "ranking": 300,

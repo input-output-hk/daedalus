@@ -80,6 +80,7 @@ executable make-installer
 executable darwin-launcher
   main-is:             DarwinLauncher.hs
   default-language:    Haskell2010
+  buildable:           False
   build-depends:       base
                      , turtle
                      , unix

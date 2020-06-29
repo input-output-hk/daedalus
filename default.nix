@@ -15,6 +15,9 @@ in
 , fudgeConfig ? null
 , devShell ? false
 , useLocalNode ? false
+, topologyOverride ? null
+, configOverride ? null
+, genesisOverride ? null
 }:
 
 let
@@ -31,7 +34,7 @@ let
   walletPkgs = import "${sources.cardano-wallet}/nix" {};
   # only used for CLI, to be removed when upgraded to next node version
   nodePkgs = import "${sources.cardano-node}/nix" {};
-  shellPkgs = (import "${sources.cardano-shell}/nix/iohk-common.nix").getPkgs {};
+  shellPkgs = (import "${sources.cardano-shell}/nix") {};
   inherit (pkgs.lib) optionalString optional concatStringsSep;
   inherit (pkgs) writeTextFile;
   crossSystem = lib: (crossSystemTable lib).${target} or null;
@@ -49,7 +52,6 @@ let
     jormungandrLib = localLib.iohkNix.jormungandrLib;
     cardanoLib = localLib.iohkNix.cardanoLib;
     daedalus-bridge = self.bridgeTable.${nodeImplementation};
-    export-wallets = self.cardano-sl.nix-tools.cexes.cardano-wallet.export-wallets;
 
     nodejs = pkgs.nodejs-12_x;
     yarnInfo = {
@@ -81,10 +83,24 @@ let
     cardano-address = (import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; crossSystem = crossSystem walletPkgs.lib; }).haskellPackages.cardano-addresses.components.exes.cardano-address;
     cardano-shell = import self.sources.cardano-shell { inherit system; crossSystem = crossSystem shellPkgs.lib; };
     cardano-cli = (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).haskellPackages.cardano-cli.components.exes.cardano-cli;
+    cardano-node-cluster = let
+      # Test wallets with known mnemonics
+      walletTestGenesisYaml = (self.sources.cardano-wallet + "/lib/shelley/test/data/cardano-node-shelley/genesis.yaml");
+      walletTestGenesisJson = pkgs.runCommand "yaml-to-json" { buildInputs = [self.yaml2json]; } ''
+        yaml2json ${walletTestGenesisYaml} > $out
+      '';
+      initialFundsAttrs = (__fromJSON (__readFile walletTestGenesisJson)).initialFunds;
+      # Funds required to register pools
+      clusterFunds = import (self.sources.cardano-node + "/nix/supervisord-cluster/initial-funds.nix");
+      customConfig = {
+        initialFunds = clusterFunds // __foldl' (s: x: s // x) {} initialFundsAttrs;
+      };
+    in (import self.sources.cardano-node { inherit system customConfig; crossSystem = crossSystem nodePkgs.lib; }).cluster;
     cardano-node = if useLocalNode
                    then (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).haskellPackages.cardano-node.components.exes.cardano-node
                    else self.cardano-wallet.cardano-node;
     cardano-sl = import self.sources.cardano-sl { inherit target; gitrev = self.sources.cardano-sl.rev; };
+    darwin-launcher = self.callPackage ./nix/darwin-launcher.nix {};
 
     # a cross-compiled fastlist for the ps-list package
     fastlist = pkgs.pkgsCross.mingwW64.callPackage ./nix/fastlist.nix {};
@@ -101,7 +117,7 @@ let
 
     launcherConfigs = self.callPackage ./nix/launcher-config.nix {
       inherit (self) jormungandrLib;
-      inherit devShell;
+      inherit devShell topologyOverride configOverride genesisOverride;
       network = cluster;
       os = ostable.${target};
       backend = nodeImplementation;
@@ -285,7 +301,7 @@ let
     windows-installer = if needSignedBinaries then self.signed-windows-installer else self.unsigned-windows-installer;
 
     ## TODO: move to installers/nix
-    hsDaedalusPkgs = import ./installers {
+    hsDaedalusPkgs = self.callPackage ./installers {
       inherit (self) daedalus-bridge;
       inherit localLib system;
     };

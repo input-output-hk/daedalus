@@ -10,7 +10,7 @@
   :global {
     .SimpleBubble_root {
       .SimpleBubble_bubble {
-        margin-left: 0;
+        margin-left: -50px;
       }
     }
   }
@@ -88,6 +88,12 @@
             }
           }
         }
+      }
+
+      > span:first-child {
+        height: 21px;
+        line-height: initial !important;
+        margin-top: 3px;
       }
 
       .tooltipLabelWrapper {
