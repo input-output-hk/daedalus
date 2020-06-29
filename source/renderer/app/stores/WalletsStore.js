@@ -46,7 +46,6 @@ import type { AddressStyle } from '../../../common/types/address-introspection.t
 import {
   TESTNET_MAGIC,
   SELFNODE_MAGIC,
-  SHELLEY_TESTNET_MAGIC,
 } from '../../../common/types/cardano-node.types';
 
 /* eslint-disable consistent-return */
@@ -885,14 +884,14 @@ export default class WalletsStore extends Store {
     } else if (isStaging) {
       expectedNetworkTag = 0;
       validAddressStyles = ['Byron', 'Icarus'];
-    } else if (isIncentivizedTestnet) {
+    } else if (isIncentivizedTestnet && !isShelleyTestnet) {
       expectedNetworkTag = 0;
       validAddressStyles = ['Jormungandr'];
     } else if (isTestnet) {
       expectedNetworkTag = TESTNET_MAGIC;
       validAddressStyles = ['Byron', 'Icarus'];
     } else if (isShelleyTestnet) {
-      expectedNetworkTag = SHELLEY_TESTNET_MAGIC;
+      expectedNetworkTag = 0;
       validAddressStyles = ['Shelley'];
     } else if (isSelfnode) {
       expectedNetworkTag = SELFNODE_MAGIC;
