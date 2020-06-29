@@ -170,12 +170,6 @@ export default class Step2ConfirmationDialog extends Component<Props> {
 
     const spendingPasswordField = form.$('spendingPassword');
 
-    console.log('walletName', walletName);
-    console.log('rewardsTotal', rewardsTotal);
-    console.log('transactionFees', transactionFees);
-    console.log('finalTotal', finalTotal);
-    console.log('error', error);
-
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
@@ -212,8 +206,7 @@ export default class Step2ConfirmationDialog extends Component<Props> {
               {intl.formatMessage(messages.rewardsTotal)}
             </div>
             <div className={styles.sectionStringValue}>
-              {/* formattedWalletAmount(rewardsTotal) */}
-              {rewardsTotal}
+              {formattedWalletAmount(rewardsTotal)}
             </div>
           </div>
           <div className={styles.sectionTransactionFees}>
@@ -221,8 +214,7 @@ export default class Step2ConfirmationDialog extends Component<Props> {
               {intl.formatMessage(messages.transactionFees)}
             </div>
             <div className={styles.sectionStringValue}>
-              {/* formattedWalletAmount(transactionFees) */}
-              {transactionFees}
+              {formattedWalletAmount(transactionFees)}
             </div>
           </div>
           <div className={styles.sectionFinalTotal}>
@@ -230,7 +222,7 @@ export default class Step2ConfirmationDialog extends Component<Props> {
               {intl.formatMessage(messages.finalTotal)}
             </div>
             <div className={styles.sectionStringValue}>
-              {/* formattedWalletAmount(finalTotal) */}
+              {formattedWalletAmount(finalTotal)}
               {finalTotal}
             </div>
           </div>

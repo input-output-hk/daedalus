@@ -1,6 +1,5 @@
 .component {
 }
-
 .walletToLabel {
   color: #ffffff;
   font-family: var(--font-medium);
@@ -14,38 +13,41 @@
   margin-bottom: 6px;
   width: 20px;
 }
+
 .section {
   color: rgba(255, 255, 255, 0.5);
   font-family: var(--font-regular);
   font-size: 16px;
-  font-stretch: normal;
-  font-style: normal;
-  font-weight: 500;
-  height: 22px;
-  letter-spacing: normal;
   line-height: 1.38;
-  width: 540px;
+  margin-bottom: 20px;
   b {
     font-family: var(--font-medium);
   }
 }
-
 .sectionHalf {
+  display: inline-block;
   width: 50%;
+}
+.sectionAccent {
+  > div:last-child {
+    color: #ea4c5b;
+  }
 }
 
 .sectionTo {
   @extend .section;
 }
-
 .sectionRewardsTotal {
   @extend .section;
   @extend .sectionHalf;
+  @extend .sectionAccent;
 }
 .sectionTransactionFees {
   @extend .section;
   @extend .sectionHalf;
+  @extend .sectionAccent;
 }
 .sectionFinalTotal {
   @extend .section;
+  @extend .sectionAccent;
 }

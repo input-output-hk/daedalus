@@ -23,6 +23,10 @@ import { StakingDelegationCenterStory } from './DelegationCenter.stories';
 import { StakingEpochsStory } from './Epochs.stories';
 import { StakingDelegationSteps } from './DelegationSteps.stories';
 import {
+  Step1ConfigurationDialogStory,
+  Step2ConfirmationDialogStory,
+} from './RedeemItnWallets.stories';
+import {
   StakingUndelegateConfirmationStory,
   StakingUndelegateConfirmationResultStory,
 } from './Undelegate.stories';
@@ -217,3 +221,14 @@ storiesOf('Decentralization | Staking', module)
       id: 'undelegate-confirmation-result',
     }
   );
+
+storiesOf('Decentralization | Redeem ITN Rewards', module)
+  .addDecorator(decorator)
+  // ====== Stories ======
+
+  .add('Step 1', Step1ConfigurationDialogStory, {
+    id: 'redeem-itn-wallets-story',
+  })
+  .add('Step 2', Step2ConfirmationDialogStory, {
+    id: 'redeem-itn-wallets-story',
+  });
