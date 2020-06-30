@@ -33,5 +33,7 @@ export const StakePoolsStory = (props: Props) => (
     currentTheme={props.currentTheme}
     onDelegate={action('onDelegate')}
     isLoading={props.isLoading}
+    onRank={() => null}
+    wallets={[]}
   />
 );

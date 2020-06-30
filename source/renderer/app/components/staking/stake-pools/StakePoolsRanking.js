@@ -125,10 +125,13 @@ export default class StakePoolsRanking extends Component<Props, State> {
     if (selectedWalletId === '-1') {
       sliderValue = MIN_AMOUNT.toNumber();
     } else if (selectedWalletId === '0') {
-      sliderValue = this.getAllAvailableAmount().toNumber();
+      sliderValue = Math.floor(this.getAllAvailableAmount().toNumber());
+    } else if (selectedWallet) {
+      sliderValue = Math.floor(selectedWallet.availableAmount.toNumber());
     } else {
-      sliderValue = selectedWallet.availableAmount.toNumber();
+      sliderValue = MIN_AMOUNT.toNumber();
     }
+
     this.setState({ selectedWalletId, sliderValue });
   };
 
@@ -254,7 +257,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
             <div className={styles.slider}>
               <Slider
                 min={MIN_AMOUNT.toNumber()}
-                max={allAvailableAmount.toNumber()}
+                max={Math.floor(allAvailableAmount.toNumber())}
                 value={sliderValue}
                 onChange={this.onSliderChange}
                 disabled={isLoading}
