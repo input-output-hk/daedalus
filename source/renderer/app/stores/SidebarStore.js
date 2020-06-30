@@ -78,9 +78,9 @@ export default class SidebarStore extends Store {
       isFlight,
       environment,
     } = global;
-    if (isFlight) {
+    if (isFlight || isShelleyTestnet) {
       this.CATEGORIES = sidebarConfig.CATEGORIES;
-    } else if (isIncentivizedTestnet || isShelleyTestnet) {
+    } else if (isIncentivizedTestnet) {
       this.CATEGORIES = sidebarConfig.CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN;
     } else if (environment.isDev) {
       this.CATEGORIES = sidebarConfig.CATEGORIES_WITH_HARDWARE_WALLETS;
