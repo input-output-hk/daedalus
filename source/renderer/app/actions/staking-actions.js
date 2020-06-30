@@ -14,14 +14,13 @@ export default class StakingActions {
   joinStakePool: Action<JoinStakePoolRequest> = new Action();
   quitStakePool: Action<QuitStakePoolRequest> = new Action();
   /* ----------  Redeem ITN Rewards  ---------- */
-  onSelectRedeemWallet: Action<{ walletId: string }> = new Action();
+  onRedeemStart: Action<any> = new Action();
   onConfigurationContinue: Action<{
     wallet: Wallet,
     recoveryPhrase: Array<string>,
   }> = new Action();
-  onConfirmationContinue: Action<any> = new Action();
+  onSelectRedeemWallet: Action<{ walletId: string }> = new Action();
+  onConfirmationContinue: Action<{ spendingPassword: string }> = new Action();
   onResultContinue: Action<any> = new Action();
-  goToNextRedeemStep: Action<any> = new Action();
-  goToPrevRedeemStep: Action<any> = new Action();
   closeRedeemDialog: Action<any> = new Action();
 }

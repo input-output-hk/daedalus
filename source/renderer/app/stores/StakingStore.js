@@ -31,8 +31,8 @@ export default class StakingStore extends Store {
   @observable isStakingExperimentRead: boolean = false;
 
   /* ----------  Redeem ITN Rewards  ---------- */
-  @observable redeemStep: ?RedeemItnRewardsStep = 'configuration';
-  // @observable redeemStep: ?RedeemItnRewardsStep = null;
+  // @observable redeemStep: ?RedeemItnRewardsStep = 'configuration';
+  @observable redeemStep: ?RedeemItnRewardsStep = null;
   @observable redeemWallet: ?Wallet = null;
   @observable walletName: ?string = null;
   @observable rewardsTotal: number = 0;
@@ -57,12 +57,11 @@ export default class StakingStore extends Store {
     const { staking: actions } = this.actions;
 
     // Redeem ITN Rewards actions
-    actions.onSelectRedeemWallet.listen(this._onSelectRedeemWallet);
+    actions.onRedeemStart.listen(this._onRedeemStart);
     actions.onConfigurationContinue.listen(this._onConfigurationContinue);
+    actions.onSelectRedeemWallet.listen(this._onSelectRedeemWallet);
     actions.onConfirmationContinue.listen(this._onConfirmationContinue);
-    actions.onResultContinue.listen(this._onResultContinuee);
-    actions.goToNextRedeemStep.listen(this._goToNextRedeemStep);
-    actions.goToPrevRedeemStep.listen(this._goToPrevRedeemStep);
+    actions.onResultContinue.listen(this._onResultContinue);
     actions.closeRedeemDialog.listen(this._closeRedeemDialog);
 
     if (global.isIncentivizedTestnet && !global.isShelleyTestnet) {
@@ -434,6 +433,10 @@ export default class StakingStore extends Store {
     this.redeemWallet = this.stores.wallets.getWalletById(walletId);
   };
 
+  @action _onRedeemStart = () => {
+    this.redeemStep = steps.CONFIGURATION;
+  };
+
   @action _onConfigurationContinue = async ({
     wallet,
     recoveryPhrase,
@@ -471,27 +474,19 @@ export default class StakingStore extends Store {
     }
   };
 
-  @action _onConfirmationContinue = () => {
+  @action _onConfirmationContinue = ({
+    spendingPassword,
+  }: {
+    spendingPassword: string,
+  }) => {
+    if (spendingPassword === 'ShowMeSomeFailure500')
+      this.stakingSuccess = false;
     this.redeemStep = steps.RESULT;
   };
 
   @action _onResultContinue = () => {
     this.redeemStep = null;
     // @REDEEM TODO -  OPEN WALLET;
-  };
-
-  @action _goToNextRedeemStep = () => {
-    const { redeemStep } = this;
-    if (!redeemStep) return this._goToConfigurationStep();
-    const nextStep = this.nextStep[redeemStep];
-    return this.redeemActions[nextStep]();
-  };
-
-  @action _goToPrevRedeemStep = () => {
-    const { redeemStep } = this;
-    if (!redeemStep) return this._goToConfigurationStep();
-    const prevStep = this.prevStep[redeemStep];
-    return this.redeemActions[prevStep]();
   };
 
   @action _resetRedeemItnRewards = () => {

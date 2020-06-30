@@ -7,6 +7,8 @@ import { action } from '@storybook/addon-actions';
 // Screens
 import Step1ConfigurationDialog from '../../../source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog';
 import Step2ConfirmationDialog from '../../../source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog';
+import Step3SuccessDialog from '../../../source/renderer/app/components/staking/redeem-itn-rewards/Step3SuccessDialog';
+import Step3FailureDialog from '../../../source/renderer/app/components/staking/redeem-itn-rewards/Step3FailureDialog';
 
 // Helpers
 import { isValidMnemonic } from '../../../source/common/config/crypto/decrypt';
@@ -24,7 +26,7 @@ const WALLETS = [
 export const Step1ConfigurationDialogStory = () => {
   const redeemWallet = select(
     'Redeem Wallet',
-    WALLETS.reduce((obj, wallet, index) => {
+    WALLETS.reduce((obj, wallet) => {
       obj[wallet.name] = wallet;
       return obj;
     }, {}),
@@ -49,7 +51,7 @@ export const Step1ConfigurationDialogStory = () => {
 export const Step2ConfirmationDialogStory = () => {
   const redeemWallet = select(
     'Redeem Wallet',
-    WALLETS.reduce((obj, wallet, index) => {
+    WALLETS.reduce((obj, wallet) => {
       obj[wallet.name] = wallet;
       return obj;
     }, {}),
@@ -69,5 +71,9 @@ export const Step2ConfirmationDialogStory = () => {
     />
   );
 };
-export const Step3SuccessDialogStory = () => <div>Step3SuccessDialogStory</div>;
-export const Step3FailureDialogStory = () => <div>Step3FailureDialogStory</div>;
+export const Step3SuccessDialogStory = () => {
+  return <Step3SuccessDialog />;
+};
+export const Step3FailureDialogStory = () => {
+  return <Step3FailureDialog />;
+};

@@ -27,7 +27,8 @@ type Props = {
   closeButton?: ?Element<any>,
   backButton?: Node,
   className?: string,
-  themeOverrides?: boolean,
+  defaultThemeOverrides?: boolean,
+  customThemeOverrides?: Object,
   onClose?: Function,
   closeOnOverlayClick?: boolean,
   primaryButtonAutoFocus?: boolean,
@@ -46,8 +47,13 @@ export default class Dialog extends Component<Props> {
       closeButton,
       backButton,
       primaryButtonAutoFocus,
-      themeOverrides,
+      defaultThemeOverrides,
+      customThemeOverrides,
     } = this.props;
+
+    const themeOverrides = defaultThemeOverrides
+      ? dialogOverridesStyles
+      : customThemeOverrides || '';
 
     return (
       <Modal
@@ -55,7 +61,7 @@ export default class Dialog extends Component<Props> {
         triggerCloseOnOverlayClick={closeOnOverlayClick}
         onClose={onClose}
         skin={ModalSkin}
-        themeOverrides={themeOverrides ? dialogOverridesStyles : ''}
+        themeOverrides={themeOverrides}
       >
         <div className={classnames([styles.dialogWrapper, className])}>
           {title && (

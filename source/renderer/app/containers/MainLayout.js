@@ -6,7 +6,6 @@ import TopBarContainer from './TopBarContainer';
 import SidebarLayout from '../components/layout/SidebarLayout';
 import PaperWalletCreateCertificatePage from './wallet/PaperWalletCreateCertificatePage';
 import InstructionsDialog from '../components/wallet/paper-wallet-certificate/InstructionsDialog';
-import RedeemItnRewardsContainer from './staking/RedeemItnRewardsContainer';
 import TransferFundsPage from './wallet/TransferFundsPage';
 import type { InjectedContainerProps } from '../types/injectedPropsType';
 import { ROUTES } from '../routes-config';
@@ -26,7 +25,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
     if (category === ROUTES.PAPER_WALLET_CREATE_CERTIFICATE) {
       actions.dialogs.open.trigger({ dialog: InstructionsDialog });
     } else if (category === ROUTES.REDEEM_ITN_REWARDS) {
-      actions.staking.goToNextRedeemStep.trigger();
+      actions.staking.onRedeemStart.trigger();
     } else if (category === ROUTES.NETWORK_INFO) {
       actions.networkStatus.toggleSplash.trigger();
     } else {
@@ -105,7 +104,6 @@ export default class MainLayout extends Component<InjectedContainerProps> {
             certificateStep={this.props.stores.wallets.certificateStep}
           />,
           <TransferFundsPage key="TransferFundsPage" />,
-          <RedeemItnRewardsContainer key="RedeemItnRewardsContainer" />,
         ]}
       >
         {this.props.children}

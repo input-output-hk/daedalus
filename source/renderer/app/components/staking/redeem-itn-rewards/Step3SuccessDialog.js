@@ -1,47 +1,47 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-// import classnames from 'classnames';
-// import { Input } from 'react-polymorph/lib/components/Input';
-// import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
-import {
-  defineMessages,
-  intlShape /* FormattedHTMLMessage */,
-} from 'react-intl';
-// import vjf from 'mobx-react-form/lib/validators/VJF';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import SVGInline from 'react-svg-inline';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
-import styles from './Step1ConfigurationDialog.scss';
-// import ReactToolboxMobxForm, {
-//   handleFormErrors,
-// } from '../../../utils/ReactToolboxMobxForm';
-// import {
-//   isValidWalletName,
-//   isValidSpendingPassword,
-//   isValidRepeatPassword,
-// } from '../../../utils/validations';
-// import { submitOnEnter } from '../../../utils/form';
-// import globalMessages from '../../../i18n/global-messages';
-import LocalizableError from '../../../i18n/LocalizableError';
-// import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
+import styles from './Step3SuccessDialog.scss';
+import redeemDialogOverride from './RedeemDialogOverride.scss';
+import Wallet from '../../../domains/Wallet';
+import { formattedWalletAmount } from '../../../utils/formatters';
+import tadaImage from '../../../assets/images/tada-ic.inline.svg';
 
 const messages = defineMessages({
   title: {
     id: 'staking.redeemItnRewards.step3.success.title',
     defaultMessage: '!!!Incentivized Testnet rewards redeemed!',
-    description: 'Title for Redeem Incentivized Testnet - Step 2',
+    description: 'title for Redeem Incentivized Testnet - Step 3',
+  },
+  description: {
+    id: 'staking.redeemItnRewards.step3.success.description',
+    defaultMessage:
+      '!!!You have successfully redeemed <b>{finalTotal}</b> ADA to your <b>{walletName}</b> wallet. This transaction incurred <b>{transactionFees}</b> in transaction fees',
+    description: 'description for Redeem Incentivized Testnet - Step 3',
+  },
+  openWalletButtonLabel: {
+    id: 'staking.redeemItnRewards.step3.success.openWalletButtonLabel',
+    defaultMessage: '!!!Open the wallet',
+    description: 'description for Redeem Incentivized Testnet - Step 3',
+  },
+  downloadPDFButtonLabel: {
+    id: 'staking.redeemItnRewards.step3.success.downloadPDFButtonLabel',
+    defaultMessage: '!!!Download PDF certificate',
+    description: 'description for Redeem Incentivized Testnet - Step 3',
   },
 });
 
 type Props = {
-  walletName?: string,
-  rewardsTotal: number,
+  wallet: Wallet,
   transactionFees: number,
   finalTotal: number,
   onContinue: Function,
   onClose: Function,
-  onBack: Function,
-  error?: ?LocalizableError,
+  onPDFDownload: Function,
 };
 
 @observer
@@ -50,54 +50,50 @@ export default class Step3SuccessDialog extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
-  static defaultProps = {
-    error: null,
-  };
-
   render() {
     const { intl } = this.context;
     const {
-      walletName,
-      rewardsTotal,
+      wallet,
       transactionFees,
       finalTotal,
-      isSubmitting,
       onContinue,
+      onPDFDownload,
       onClose,
-      onBack,
-      error,
     } = this.props;
 
-    console.log('walletName', walletName);
-    console.log('rewardsTotal', rewardsTotal);
-    console.log('transactionFees', transactionFees);
-    console.log('finalTotal', finalTotal);
-    console.log('isSubmitting', isSubmitting);
-    console.log('onContinue', onContinue);
-    console.log('onClose', onClose);
-    console.log('onBack', onBack);
-    console.log('error', error);
+    const { name: walletName } = wallet;
 
     return (
       <Dialog
-        title={intl.formatMessage(messages.title)}
+        onClose={onClose}
         actions={[
           {
-            // className: isSubmitting ? styles.isSubmitting : null,
-            // disabled: !canSubmit,
             primary: true,
-            label: '!!!Continue',
-            // label: intl.formatMessage(messages.continueButtonLabel),
-            // onClick: this.submit,
+            label: intl.formatMessage(messages.openWalletButtonLabel),
+            onClick: onContinue,
+          },
+          {
+            primary: true,
+            label: intl.formatMessage(messages.downloadPDFButtonLabel),
+            onClick: onPDFDownload,
           },
         ]}
-        onClose={onClose}
-        onBack={onBack}
         closeButton={<DialogCloseButton />}
+        customThemeOverrides={redeemDialogOverride}
+        closeOnOverlayClick={false}
       >
-        {/* <div className={styles.component}>
-           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
-         </div> */}
+        <div className={styles.title}>{intl.formatMessage(messages.title)}</div>
+        <SVGInline svg={tadaImage} className={styles.tadaImage} />
+        <div className={styles.description}>
+          <FormattedHTMLMessage
+            {...messages.description}
+            values={{
+              walletName,
+              transactionFees: formattedWalletAmount(transactionFees),
+              finalTotal: formattedWalletAmount(finalTotal),
+            }}
+          />
+        </div>
       </Dialog>
     );
   }

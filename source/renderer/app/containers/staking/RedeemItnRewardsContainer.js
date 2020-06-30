@@ -23,13 +23,13 @@ export default class RedeemItnRewardsContainer extends Component<Props> {
   render() {
     const { stores, actions } = this.props;
     const { redeemStep } = stores.staking;
-    const { goToPrevRedeemStep, closeRedeemDialog } = actions.staking;
+    const { onRedeemStart, closeRedeemDialog } = actions.staking;
     if (!redeemStep) return null;
     const CurrentContainer = this.containers[redeemStep];
     return (
       <Fragment>
         <CurrentContainer
-          onBack={goToPrevRedeemStep.trigger}
+          onBack={onRedeemStart.trigger}
           onClose={closeRedeemDialog.trigger}
         />
       </Fragment>

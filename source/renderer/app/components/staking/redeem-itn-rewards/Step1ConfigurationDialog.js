@@ -14,6 +14,7 @@ import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import Dialog from '../../widgets/Dialog';
 // @REDEEM TODO - color variable
 import styles from './Step1ConfigurationDialog.scss';
+import redeemDialogOverride from './RedeemDialogOverride.scss';
 import ReactToolboxMobxForm /* ,  {handleFormErrors } */ from '../../../utils/ReactToolboxMobxForm';
 // import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
@@ -223,6 +224,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
     const checkboxAcceptance1Field = form.$('checkboxAcceptance1');
     const checkboxAcceptance2Field = form.$('checkboxAcceptance2');
     const redeemWalletId = get(redeemWallet, 'id', null);
+
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
@@ -242,62 +244,62 @@ export default class Step1ConfigurationDialog extends Component<Props> {
         onContinue={onContinue}
         onClose={onClose}
         closeButton={<DialogCloseButton />}
+        customThemeOverrides={redeemDialogOverride}
+        closeOnOverlayClick={false}
       >
-        <div className={styles.component}>
-          <p className={styles.description}>
-            {intl.formatMessage(messages.description)}
-          </p>
-          <Autocomplete
-            {...recoveryPhraseField.bind()}
-            ref={autocomplete => {
-              this.recoveryPhraseAutocomplete = autocomplete;
-            }}
-            options={suggestedMnemonics}
-            maxSelections={WALLET_RECOVERY_PHRASE_WORD_COUNT}
-            error={recoveryPhraseField.error}
-            maxVisibleOptions={5}
-            noResultsMessage={
-              'NO RESULTS LABEL'
-              // intl.formatMessage(messages.recoveryPhraseNoResults)
-            }
-            className={styles.recoveryPhrase}
-            skin={AutocompleteSkin}
-            optionHeight={50}
-          />
+        <p className={styles.description}>
+          {intl.formatMessage(messages.description)}
+        </p>
+        <Autocomplete
+          {...recoveryPhraseField.bind()}
+          ref={autocomplete => {
+            this.recoveryPhraseAutocomplete = autocomplete;
+          }}
+          options={suggestedMnemonics}
+          maxSelections={WALLET_RECOVERY_PHRASE_WORD_COUNT}
+          error={recoveryPhraseField.error}
+          maxVisibleOptions={5}
+          noResultsMessage={
+            'NO RESULTS LABEL'
+            // intl.formatMessage(messages.recoveryPhraseNoResults)
+          }
+          className={styles.recoveryPhrase}
+          skin={AutocompleteSkin}
+          optionHeight={50}
+        />
 
-          <WalletsDropdown
-            className={styles.walletsDropdown}
-            {...walletsDropdownField.bind()}
-            numberOfStakePools={4}
-            wallets={wallets}
-            onChange={onSelectWallet}
-            placeholder={
-              'WalletsDropdown Placeholder'
-              /* intl.formatMessage(
+        <WalletsDropdown
+          className={styles.walletsDropdown}
+          {...walletsDropdownField.bind()}
+          numberOfStakePools={4}
+          wallets={wallets}
+          onChange={onSelectWallet}
+          placeholder={
+            'WalletsDropdown Placeholder'
+            /* intl.formatMessage(
               messages.selectWalletInputPlaceholder
             ) */
-            }
-            value={redeemWalletId}
-            getStakePoolById={() => {}}
-            error={this.walletsDropdownError}
-          />
+          }
+          value={redeemWalletId}
+          getStakePoolById={() => {}}
+          error={this.walletsDropdownError}
+        />
 
-          <hr />
+        <hr />
 
-          <Checkbox
-            {...checkboxAcceptance1Field.bind()}
-            className={styles.checkbox1}
-            skin={CheckboxSkin}
-            error={checkboxAcceptance1Field.error}
-          />
-          <Checkbox
-            {...checkboxAcceptance2Field.bind()}
-            skin={CheckboxSkin}
-            error={checkboxAcceptance2Field.error}
-          />
+        <Checkbox
+          {...checkboxAcceptance1Field.bind()}
+          className={styles.checkbox1}
+          skin={CheckboxSkin}
+          error={checkboxAcceptance1Field.error}
+        />
+        <Checkbox
+          {...checkboxAcceptance2Field.bind()}
+          skin={CheckboxSkin}
+          error={checkboxAcceptance2Field.error}
+        />
 
-          {/* error && <p className={styles.error}>{intl.formatMessage(error)}</p> */}
-        </div>
+        {/* error && <p className={styles.error}>{intl.formatMessage(error)}</p> */}
       </Dialog>
     );
   }

@@ -8,6 +8,7 @@ import vjf from 'mobx-react-form/lib/validators/VJF';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import styles from './Step2ConfirmationDialog.scss';
+import redeemDialogOverride from './RedeemDialogOverride.scss';
 import ReactToolboxMobxForm, {
   handleFormErrors,
 } from '../../../utils/ReactToolboxMobxForm';
@@ -109,17 +110,16 @@ export default class Step2ConfirmationDialog extends Component<Props> {
             messages.spendingPasswordPlaceholder
           ),
           value: '',
-          // @REDEEM TODO - Simply uncomment
-          // validators: [
-          //   ({ field }) => {
-          //     return [
-          //       isValidSpendingPassword(field.value),
-          //       this.context.intl.formatMessage(
-          //         globalMessages.invalidSpendingPassword
-          //       ),
-          //     ];
-          //   },
-          // ],
+          validators: [
+            ({ field }) => {
+              return [
+                isValidSpendingPassword(field.value),
+                this.context.intl.formatMessage(
+                  globalMessages.invalidSpendingPassword
+                ),
+              ];
+            },
+          ],
         },
       },
     },
@@ -173,7 +173,6 @@ export default class Step2ConfirmationDialog extends Component<Props> {
         actions={[
           {
             className: isSubmitting ? styles.isSubmitting : null,
-            // @REDEEM TODO
             disabled: !form.isValid,
             primary: true,
             label: intl.formatMessage(messages.continueButtonLabel),
@@ -184,50 +183,50 @@ export default class Step2ConfirmationDialog extends Component<Props> {
         onClose={onClose}
         onBack={onBack}
         closeButton={<DialogCloseButton />}
+        customThemeOverrides={redeemDialogOverride}
+        closeOnOverlayClick={false}
       >
-        <div className={styles.component}>
-          <div className={styles.to}>
-            <div>{intl.formatMessage(messages.walletToLabel)}</div>
-            <div>
-              <FormattedHTMLMessage
-                {...messages.walletToName}
-                values={{
-                  walletName,
-                }}
-              />
-            </div>
+        <div className={styles.to}>
+          <div>{intl.formatMessage(messages.walletToLabel)}</div>
+          <div>
+            <FormattedHTMLMessage
+              {...messages.walletToName}
+              values={{
+                walletName,
+              }}
+            />
           </div>
-          <div className={styles.rewardsTotal}>
-            <div>{intl.formatMessage(messages.rewardsTotal)}</div>
-            <div>
-              <b>{formattedWalletAmount(rewardsTotal, false)}&nbsp;</b>
-              {intl.formatMessage(globalMessages.unitAda)}
-            </div>
-          </div>
-          <div className={styles.transactionFees}>
-            <div>{intl.formatMessage(messages.transactionFees)}</div>
-            <div>
-              <b>{formattedWalletAmount(transactionFees, false)}&nbsp;</b>
-              {intl.formatMessage(globalMessages.unitAda)}
-            </div>
-          </div>
-          <div className={styles.finalTotal}>
-            <div>{intl.formatMessage(messages.finalTotal)}</div>
-            <div>
-              <b>{formattedWalletAmount(finalTotal, false)}&nbsp;</b>
-              {intl.formatMessage(globalMessages.unitAda)}
-            </div>
-          </div>
-
-          <Input
-            className={styles.spendingPassword}
-            {...spendingPasswordField.bind()}
-            skin={InputSkin}
-            error={spendingPasswordField.error}
-            onKeyPress={this.handleSubmitOnEnter}
-          />
-          {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
         </div>
+        <div className={styles.rewardsTotal}>
+          <div>{intl.formatMessage(messages.rewardsTotal)}</div>
+          <div>
+            <b>{formattedWalletAmount(rewardsTotal, false)}&nbsp;</b>
+            {intl.formatMessage(globalMessages.unitAda)}
+          </div>
+        </div>
+        <div className={styles.transactionFees}>
+          <div>{intl.formatMessage(messages.transactionFees)}</div>
+          <div>
+            <b>{formattedWalletAmount(transactionFees, false)}&nbsp;</b>
+            {intl.formatMessage(globalMessages.unitAda)}
+          </div>
+        </div>
+        <div className={styles.finalTotal}>
+          <div>{intl.formatMessage(messages.finalTotal)}</div>
+          <div>
+            <b>{formattedWalletAmount(finalTotal, false)}&nbsp;</b>
+            {intl.formatMessage(globalMessages.unitAda)}
+          </div>
+        </div>
+
+        <Input
+          className={styles.spendingPassword}
+          {...spendingPasswordField.bind()}
+          skin={InputSkin}
+          error={spendingPasswordField.error}
+          onKeyPress={this.handleSubmitOnEnter}
+        />
+        {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
       </Dialog>
     );
   }

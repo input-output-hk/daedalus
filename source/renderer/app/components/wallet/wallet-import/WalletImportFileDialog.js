@@ -199,7 +199,7 @@ export default class WalletImportFileDialog extends Component<Props, State> {
         shouldCloseOnOverlayClick={false}
         shouldCloseOnEsc={false}
         ariaHideApp={false}
-        themeOverrides
+        defaultThemeOverrides
       >
         <div className={styles.component}>
           <DialogCloseButton
