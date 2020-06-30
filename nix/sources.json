@@ -5,10 +5,10 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-node",
-        "rev": "ff88dea212f0282e9ee20401d8211a48ff33d640",
-        "sha256": "0980kz175qjp8ky77km4wd2w52r9yad5x20pb8c8yyq9sd92961k",
+        "rev": "3ea3a77ff5b4bc66d5761326d6f169ba94d722b6",
+        "sha256": "1c2a591khrvyb0kxdrpk1kxg6r6jmdj2jdzfvsknvjrm7w67ynl2",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-node/archive/ff88dea212f0282e9ee20401d8211a48ff33d640.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-node/archive/3ea3a77ff5b4bc66d5761326d6f169ba94d722b6.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-shell": {
@@ -24,15 +24,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-wallet": {
-        "branch": "master",
+        "branch": "rvl/adp-302/db-reward-balance",
         "description": "Official Wallet Backend & API for Cardano decentralized",
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-wallet",
-        "rev": "f6d5a80173fd93cc6a08baf3ba841fd9be95207f",
-        "sha256": "14l1k902h97wbc6xv340z4c6d2a74yg9zm8nsy2x3np5ggd68d0s",
+        "rev": "0a43be6db563b48cb5da76cf22dbd419df4f1011",
+        "sha256": "085fcksbah203x8a9j8dcjm2mwbw2hlcr3rq0p2rnqng6n05g79r",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-wallet/archive/f6d5a80173fd93cc6a08baf3ba841fd9be95207f.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-wallet/archive/0a43be6db563b48cb5da76cf22dbd419df4f1011.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz",
         "version": "v2020-04-28"
     },
