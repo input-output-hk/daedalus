@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Ranked stake pools based on delegated amount configured by slider ([PR 2051](https://github.com/input-output-hk/daedalus/pull/2051))
+
 ### Fixes
 
 - Removed ITN message from the "Create Wallet" dialog in Daedalus Shelley Testnet builds ([PR 2040](https://github.com/input-output-hk/daedalus/pull/2040))
@@ -15,7 +19,7 @@ Changelog
 
 ### Features
 
-- Integrated react-polymorph `PasswordInput` component ([PR 2038](https://github.com/input-output-hk/daedalus/pull/2038)) 
+- Integrated react-polymorph `PasswordInput` component ([PR 2038](https://github.com/input-output-hk/daedalus/pull/2038))
 - Implemented a download manager ([PR 2020](https://github.com/input-output-hk/daedalus/pull/2020))
 - Implemented Hardware wallets connection screens ([PR 2016](https://github.com/input-output-hk/daedalus/pull/2016))
 
