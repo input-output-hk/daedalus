@@ -22,11 +22,20 @@
 
   .content {
     color: var(--theme-delegation-steps-choose-stake-pool-title-color);
+    margin-bottom: 30px;
 
     .description {
       font-family: var(--font-medium);
       line-height: 1.38;
       margin: 0 auto 10px;
+    }
+
+    .searchStakePoolsWrapper {
+      :global {
+        .StakePoolsSearch_clearSearch {
+          margin-top: 0;
+        }
+      }
     }
 
     .selectStakePoolWrapper {

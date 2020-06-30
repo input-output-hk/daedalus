@@ -3,9 +3,9 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { Input } from 'react-polymorph/lib/components/Input';
-import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
+import { PasswordInput } from '../../widgets/forms/PasswordInput';
 import WalletRestoreDialog from './widgets/WalletRestoreDialog';
 import styles from './ConfigurationDialog.scss';
 import ReactToolboxMobxForm, {
@@ -212,14 +212,15 @@ export default class ConfigurationDialog extends Component<Props> {
     const spendingPasswordField = form.$('spendingPassword');
     const repeatPasswordField = form.$('repeatPassword');
 
-    const walletNameFieldClasses = classnames([styles.input, 'walletName']);
+    const walletNameFieldClasses = classnames([
+      styles.walletName,
+      'walletName',
+    ]);
     const spendingPasswordFieldClasses = classnames([
-      styles.input,
       styles.spendingPasswordField,
       'spendingPassword',
     ]);
     const repeatPasswordFieldClasses = classnames([
-      styles.input,
       styles.spendingPasswordField,
       'repeatPassword',
     ]);
@@ -251,30 +252,25 @@ export default class ConfigurationDialog extends Component<Props> {
             onKeyPress={this.handleSubmitOnEnter}
             {...walletNameField.bind()}
             error={walletNameField.error}
-            skin={InputSkin}
           />
 
           <div className={styles.spendingPasswordWrapper}>
             <div className={styles.spendingPasswordFields}>
-              <Input
+              <PasswordInput
                 className={spendingPasswordFieldClasses}
                 onKeyPress={this.handleSubmitOnEnter}
                 {...spendingPasswordField.bind()}
-                error={spendingPasswordField.error}
-                skin={InputSkin}
               />
-              <Input
+              <PasswordInput
                 className={repeatPasswordFieldClasses}
                 onKeyPress={this.handleSubmitOnEnter}
                 {...repeatPasswordField.bind()}
-                error={repeatPasswordField.error}
-                skin={InputSkin}
+                repeatPassword={spendingPasswordField.value}
+                isPasswordRepeat
               />
-              <p className={styles.passwordInstructions}>
-                <FormattedHTMLMessage
-                  {...globalMessages.passwordInstructions}
-                />
-              </p>
+            </div>
+            <div className={styles.passwordInstructions}>
+              <FormattedHTMLMessage {...globalMessages.passwordInstructions} />
             </div>
           </div>
 

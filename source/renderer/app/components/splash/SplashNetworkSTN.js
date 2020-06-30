@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import Splash from '../widgets/splash/Splash';
 
 const messages = defineMessages({
@@ -53,7 +53,7 @@ export default class SplashNetworkSTN extends Component<Props> {
     const { onClose, openExternalLink, currentLocale } = this.props;
     const title = intl.formatMessage(messages.title);
     const subTitle1 = intl.formatMessage(messages.versionName);
-    const description = <p>{intl.formatMessage(messages.stnDescription)}</p>;
+    const description = <FormattedHTMLMessage {...messages.stnDescription} />;
     const buttonLabel = intl.formatMessage(messages.buttonLabel);
     const linkLabel = intl.formatMessage(messages.linkLabel);
     const onLinkClick = () =>

@@ -12,7 +12,7 @@
         "name": "Repellendus",
         "description": "Lorem ipsum dolor sit amet, consectetur.",
         "url": "https://technorati.com",
-        "controlledStake": 65,
+        "relativeStake": 65,
         "profitMargin": 43,
         "performance": 9,
         "retiring": null
@@ -27,7 +27,7 @@
         "name": "Dolorem",
         "description": "Lorem ipsum dolor sit amet, consectetur.",
         "url": "https://amazon.de",
-        "controlledStake": 47,
+        "relativeStake": 47,
         "profitMargin": 62,
         "performance": 90,
         "retiring": null
@@ -42,7 +42,7 @@
         "name": "Suscipit",
         "description": "Lorem ipsum dolor sit amet, consectetur.",
         "url": "https://springer.com",
-        "controlledStake": 63,
+        "relativeStake": 63,
         "profitMargin": 63,
         "performance": 40,
         "retiring": null
@@ -57,7 +57,7 @@
         "name": "Prednisone",
         "description": "Lorem ipsum dolor sit amet, consectetur.",
         "url": "http://cisco.com",
-        "controlledStake": 69,
+        "relativeStake": 69,
         "profitMargin": 76,
         "performance": 40,
         "retiring": null
@@ -72,7 +72,7 @@
         "name": "Accusantium",
         "description": "Lorem ipsum dolor sit amet, consectetur.",
         "url": "http://stumbleupon.com",
-        "controlledStake": 75,
+        "relativeStake": 75,
         "profitMargin": 86,
         "performance": 67,
         "retiring": null
@@ -87,7 +87,7 @@
         "name": "Molestias",
         "description": "Lorem ipsum dolor sit amet, consectetur.",
         "url": "http://soundcloud.com",
-        "controlledStake": 69,
+        "relativeStake": 69,
         "profitMargin": 89,
         "performance": 79,
         "retiring": null

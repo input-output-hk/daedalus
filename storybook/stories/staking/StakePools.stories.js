@@ -29,7 +29,6 @@ export const StakePoolsStory = (props: Props) => (
       STAKE_POOLS[36],
     ]}
     onOpenExternalLink={action('onOpenExternalLink')}
-    getPledgeAddressUrl={action('getPledgeAddressUrl')}
     currentTheme={props.currentTheme}
     onDelegate={action('onDelegate')}
     isLoading={props.isLoading}

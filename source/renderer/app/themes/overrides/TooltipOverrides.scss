@@ -1,17 +1,6 @@
 .root {
-  display: flex;
-  margin-right: 12px;
-  &:last-child {
-    margin-right: 0;
-  }
   .bubble {
     font-size: 14px;
-    > div {
-      border-radius: 5px;
-      margin-left: 10px;
-      padding-bottom: 7px;
-      transform: translateX(-45%);
-    }
   }
   b {
     font-weight: bold;

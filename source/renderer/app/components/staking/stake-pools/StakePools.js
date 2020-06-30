@@ -41,7 +41,6 @@ type Props = {
   wallets: Array<Wallet>,
   stakePoolsList: Array<StakePool>,
   onOpenExternalLink: Function,
-  getPledgeAddressUrl: Function,
   currentTheme: string,
   onRank: Function,
   onDelegate: Function,
@@ -88,7 +87,6 @@ export default class StakePools extends Component<Props, State> {
       stakePoolsList,
       onRank,
       onOpenExternalLink,
-      getPledgeAddressUrl,
       currentTheme,
       isLoading,
       stakePoolsDelegatingList,
@@ -154,7 +152,6 @@ export default class StakePools extends Component<Props, State> {
                   listName="stakePoolsDelegatingList"
                   stakePoolsList={stakePoolsDelegatingList}
                   onOpenExternalLink={onOpenExternalLink}
-                  getPledgeAddressUrl={getPledgeAddressUrl}
                   currentTheme={currentTheme}
                   isListActive={selectedList === 'stakePoolsDelegatingList'}
                   setListActive={this.handleSetListActive}
@@ -180,7 +177,6 @@ export default class StakePools extends Component<Props, State> {
               listName="selectedIndexList"
               stakePoolsList={filteredStakePoolsList}
               onOpenExternalLink={onOpenExternalLink}
-              getPledgeAddressUrl={getPledgeAddressUrl}
               currentTheme={currentTheme}
               isListActive={selectedList === 'selectedIndexList'}
               setListActive={this.handleSetListActive}

@@ -30,7 +30,6 @@ type Props = {
   recentStakePools: Array<StakePool>,
   stakePoolsList: Array<StakePool>,
   onOpenExternalLink: Function,
-  getPledgeAddressUrl: Function,
   currentTheme: string,
   selectedWallet: ?Wallet,
   selectedPool: ?StakePool,
@@ -73,7 +72,6 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       recentStakePools,
       stakePoolsList,
       onOpenExternalLink,
-      getPledgeAddressUrl,
       currentTheme,
       selectedWallet,
       selectedPool,
@@ -123,7 +121,6 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
             stakePoolsList={stakePoolsList}
             selectedWallet={selectedWallet}
             onOpenExternalLink={onOpenExternalLink}
-            getPledgeAddressUrl={getPledgeAddressUrl}
             currentTheme={currentTheme}
             selectedPool={selectedPool}
             onClose={onClose}

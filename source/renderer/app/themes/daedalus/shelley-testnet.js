@@ -433,7 +433,7 @@ export const SHELLEY_TESTNET_THEME_OUTPUT = {
   },
   reportIssue: {
     '--theme-report-issue-button-background-color': '#898ee6',
-    '--theme-report-issue-button-background-color-hover': '#ffc64d',
+    '--theme-report-issue-button-background-color-hover': '#abaeed',
     '--theme-report-issue-button-background-color-active': '#e6a009',
     '--theme-report-issue-connecting-background-color':
       'rgba(255, 255, 255, 0.05)',
@@ -708,9 +708,9 @@ export const SHELLEY_TESTNET_THEME_OUTPUT = {
     '--theme-staking-stake-pool-tooltip-delegate-button-background-color':
       '#898ee6',
     '--theme-staking-stake-pool-tooltip-delegate-button-hover-background-color':
-      '#ffc64d',
+      '#abaeed',
     '--theme-staking-stake-pool-tooltip-delegate-button-active-background-color':
-      '#ffc64d',
+      '#abaeed',
     '--theme-staking-stake-pool-tooltip-delegate-button-text-color':
       'rgba(18, 19, 38, 1)',
     '--theme-staking-stake-pool-tooltip-delegate-button-inverse-text-color':
@@ -951,6 +951,16 @@ export const SHELLEY_TESTNET_THEME_OUTPUT = {
     '--theme-wallet-not-responding-icon-color': '#ffffff',
     '--theme-wallet-not-responding-link-text-color': '#ffffff',
     '--theme-wallet-not-responding-title-text-color': '#ffffff',
+  },
+  rpPasswordInput: {
+    '--rp-password-input-tooltip-border-radius': '5px',
+    '--rp-password-input-error-score-color': '#ea4c5b',
+    '--rp-password-input-error-bg-color': 'rgba(234, 76, 91, 0.4)',
+    '--rp-password-input-warning-score-color': '#f2a218',
+    '--rp-password-input-warning-bg-color': 'rgba(242, 162, 24, 0.4)',
+    '--rp-password-input-success-score-color': '#2dc06c',
+    '--rp-password-input-success-bg-color': 'rgba(45, 192, 108, 0.4)',
+    '--rp-password-input-tooltip-font-family': 'var(--rp-theme-font-medium)',
   },
 };
 

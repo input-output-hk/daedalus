@@ -34,11 +34,6 @@ const TX_ID_SELECTOR = '.Transaction_transactionId';
 
 @observer
 export class VirtualTransactionList extends Component<Props> {
-  static defaultProps = {
-    isLoadingSpinnerShown: false,
-    isSyncingSpinnerShown: false,
-  };
-
   list: List;
   rowHeights: RowHeight[] = [];
   txAddressHeight: number = 0;
@@ -46,6 +41,11 @@ export class VirtualTransactionList extends Component<Props> {
   visibleExpandedTx: Array<WalletTransaction>;
   overscanStartIndex: number;
   overscanStopIndex: number;
+
+  static defaultProps = {
+    isLoadingSpinnerShown: false,
+    isSyncingSpinnerShown: false,
+  };
 
   componentDidMount() {
     window.addEventListener('resize', this.onResize);
@@ -58,8 +58,8 @@ export class VirtualTransactionList extends Component<Props> {
   componentDidUpdate(prevProps: Props) {
     // Recompute all row heights in case the number of rows has changed
     const prevNumberOfRows = prevProps.rows.length;
-    const numberOfRows = this.props.rows.length;
-    if (prevNumberOfRows && prevNumberOfRows !== numberOfRows) {
+    const nextNumberOfRows = this.props.rows.length;
+    if (prevNumberOfRows && prevNumberOfRows !== nextNumberOfRows) {
       this.rowHeights = this.estimateRowHeights(this.props.rows);
       this.recomputeVirtualRowHeights();
     }

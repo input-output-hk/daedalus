@@ -43,7 +43,7 @@ async function main() {
       const name = walletNames[index];
       const data = generateImportPayload(mnemonic, name);
       return request.post(`https://localhost:${API_PORT}/v2/byron-wallets`, data);
-    }))
+    }));
   } catch (e) {
     console.log(e);
   }

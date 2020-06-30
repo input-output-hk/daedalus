@@ -40,8 +40,10 @@ export default class StakingStore extends Store {
   _delegationFeeCalculationWalletId: ?string = null;
 
   setup() {
+    const { isIncentivizedTestnet, isShelleyTestnet } = global;
     const { staking } = this.actions;
-    if (global.isIncentivizedTestnet && !global.isShelleyTestnet) {
+
+    if (isIncentivizedTestnet || isShelleyTestnet) {
       // Set initial fetch interval to 1 second
       this.refreshPolling = setInterval(
         this.getStakePoolsData,
@@ -54,8 +56,8 @@ export default class StakingStore extends Store {
       staking.joinStakePool.listen(this._joinStakePool);
       staking.quitStakePool.listen(this._quitStakePool);
       staking.fakeStakePoolsLoading.listen(this._setFakePoller);
+      staking.updateStake.listen(this._setStake);
     }
-    staking.updateStake.listen(this._setStake);
   }
 
   // REQUESTS

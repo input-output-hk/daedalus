@@ -8,6 +8,9 @@
 , devShell ? false
 , cardano-wallet-native
 , runCommandNative
+, topologyOverride ? null
+, configOverride ? null
+, genesisOverride ? null
 }:
 
 # Creates an attr set for a cluster containing:
@@ -61,12 +64,13 @@ let
       mainnet_flight = "Flight";
       qa = "QA";
       selfnode = "Selfnode";
+      local = "Local";
       itn_selfnode = "Selfnode - ITN";
       nightly = "Nightly";
       itn_rewards_v1 = "- Rewards v1";
       staging = "Staging";
       testnet = "Testnet";
-      ff = "Shelley Testnet";
+      shelley_testnet = "Shelley Testnet";
       shelley_qa = "Shelley QA";
     };
     unsupported = "Unsupported";
@@ -161,28 +165,32 @@ let
 
   mkConfigByron = let
     filterMonitoring = config: if devShell then config else builtins.removeAttrs config [ "hasPrometheus" "hasEKG" ];
-    exportWalletsBin = mkBinPath "export-wallets";
-    walletBin = if envCfg.useByronWallet
+    cardanoAddressBin = mkBinPath "cardano-address";
+    walletBin = if network == "local" then mkBinPath "cardano-wallet-shelley" else if envCfg.useByronWallet
                 then mkBinPath "cardano-wallet-byron"
                 else mkBinPath "cardano-wallet-shelley";
     nodeBin = mkBinPath "cardano-node";
     cliBin = mkBinPath "cardano-cli";
-    nodeConfig = builtins.toJSON (filterMonitoring (envCfg.nodeConfig // (lib.optionalAttrs (!isDevOrLinux) {
+    nodeConfig = let
+      nodeConfigAttrs = if (configOverride == null) then envCfg.nodeConfig else __fromJSON (__readFile configOverride);
+    in builtins.toJSON (filterMonitoring (nodeConfigAttrs // (lib.optionalAttrs (!isDevOrLinux || network == "local") {
       GenesisFile = "genesis.json";
     })));
-    genesisFile = if (network == "selfnode") then ../utils/cardano/selfnode/genesis.json else envCfg.genesisFile;
-    topologyFile = if network == "selfnode" then envCfg.topology else cardanoLib.mkEdgeTopology {
+    genesisFile = let
+      genesisFile'.selfnode = ../utils/cardano/selfnode/genesis.json;
+      genesisFile'.local = (__fromJSON nodeConfig).GenesisFile;
+    in if (genesisOverride != null) then genesisOverride else if (network == "selfnode" || network == "local") then genesisFile'.${network} else envCfg.genesisFile;
+    normalTopologyFile = if network == "selfnode" then envCfg.topology else cardanoLib.mkEdgeTopology {
       inherit (envCfg) edgePort;
       edgeNodes = [ envCfg.relaysNew ];
     };
-    nodeConfigFiles = let
-      genesisFile = if (network == "selfnode") then ../utils/cardano/selfnode/genesis.json else envCfg.genesisFile;
-    in runCommand "node-cfg-files" {
-      inherit nodeConfig;
-      topologyFile = if network == "selfnode" then envCfg.topology else cardanoLib.mkEdgeTopology {
-        inherit (envCfg) edgePort;
-        edgeNodes = [ envCfg.relaysNew ];
-      };
+    localTopology = cardanoLib.mkEdgeTopology {
+      edgePort = 30001;
+      edgeNodes = [ "127.0.0.1" ];
+    };
+    topologyFile = if (topologyOverride == null) then (if network == "local" then localTopology else normalTopologyFile) else topologyOverride;
+    nodeConfigFiles = runCommand "node-cfg-files" {
+      inherit nodeConfig topologyFile;
       passAsFile = [ "nodeConfig" ];
     } ''
       mkdir $out
@@ -214,13 +222,13 @@ let
         nodeBin
         cliBin
         walletBin
-        exportWalletsBin
+        cardanoAddressBin
         legacyStateDir
         legacyWalletDB
         legacySecretKey;
       syncTolerance = "300s";
       nodeConfig = {
-        kind = if envCfg.useByronWallet then "byron" else "shelley";
+        kind = if network == "local" then "shelley" else if envCfg.useByronWallet then "byron" else "shelley";
         configurationDir = "";
         network = {
           configFile = mkConfigPath nodeConfigFiles "config.yaml";
@@ -240,7 +248,7 @@ let
       macPackageName = "Daedalus${network}";
       dataDir = dataDir;
       hasBlock0 = false;
-      installerWinBinaries = [ "cardano-launcher.exe" "cardano-node.exe" "cardano-wallet-byron.exe" "export-wallets.exe" "cardano-cli.exe" ];
+      installerWinBinaries = [ "cardano-launcher.exe" "cardano-node.exe" "cardano-wallet-byron.exe" "cardano-cli.exe" "cardano-address.exe" ];
     };
 
   in {
