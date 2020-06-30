@@ -226,81 +226,84 @@ export default class Step1ConfigurationDialog extends Component<Props> {
     const redeemWalletId = get(redeemWallet, 'id', null);
 
     return (
-      <Dialog
-        title={intl.formatMessage(messages.title)}
-        actions={[
-          {
-            className: isSubmitting ? styles.isSubmitting : null,
-            disabled: !this.canSubmit,
-            primary: true,
-            label: intl.formatMessage(messages.continueButtonLabel),
-            onClick: () =>
-              onContinue({
-                wallet: wallets[0],
-                recoveryPhrase: ['one', 'two'],
-              }),
-          },
-        ]}
-        onContinue={onContinue}
-        onClose={onClose}
-        closeButton={<DialogCloseButton />}
-        customThemeOverrides={redeemDialogOverride}
-        closeOnOverlayClick={false}
-      >
-        <p className={styles.description}>
-          {intl.formatMessage(messages.description)}
-        </p>
-        <Autocomplete
-          {...recoveryPhraseField.bind()}
-          ref={autocomplete => {
-            this.recoveryPhraseAutocomplete = autocomplete;
-          }}
-          options={suggestedMnemonics}
-          maxSelections={WALLET_RECOVERY_PHRASE_WORD_COUNT}
-          error={recoveryPhraseField.error}
-          maxVisibleOptions={5}
-          noResultsMessage={
-            'NO RESULTS LABEL'
-            // intl.formatMessage(messages.recoveryPhraseNoResults)
-          }
-          className={styles.recoveryPhrase}
-          skin={AutocompleteSkin}
-          optionHeight={50}
-        />
+      <>
+        <DialogCloseButton className={redeemDialogOverride.closeButton} />
+        <Dialog
+          title={intl.formatMessage(messages.title)}
+          actions={[
+            {
+              className: isSubmitting ? styles.isSubmitting : null,
+              disabled: !this.canSubmit,
+              primary: true,
+              label: intl.formatMessage(messages.continueButtonLabel),
+              onClick: () =>
+                onContinue({
+                  wallet: wallets[0],
+                  recoveryPhrase: ['one', 'two'],
+                }),
+            },
+          ]}
+          onContinue={onContinue}
+          onClose={onClose}
+          closeButton1={<DialogCloseButton />}
+          customThemeOverrides={redeemDialogOverride}
+          closeOnOverlayClick={false}
+        >
+          <p className={styles.description}>
+            {intl.formatMessage(messages.description)}
+          </p>
+          <Autocomplete
+            {...recoveryPhraseField.bind()}
+            ref={autocomplete => {
+              this.recoveryPhraseAutocomplete = autocomplete;
+            }}
+            options={suggestedMnemonics}
+            maxSelections={WALLET_RECOVERY_PHRASE_WORD_COUNT}
+            error={recoveryPhraseField.error}
+            maxVisibleOptions={5}
+            noResultsMessage={
+              'NO RESULTS LABEL'
+              // intl.formatMessage(messages.recoveryPhraseNoResults)
+            }
+            className={styles.recoveryPhrase}
+            skin={AutocompleteSkin}
+            optionHeight={50}
+          />
 
-        <WalletsDropdown
-          className={styles.walletsDropdown}
-          {...walletsDropdownField.bind()}
-          numberOfStakePools={4}
-          wallets={wallets}
-          onChange={onSelectWallet}
-          placeholder={
-            'WalletsDropdown Placeholder'
-            /* intl.formatMessage(
+          <WalletsDropdown
+            className={styles.walletsDropdown}
+            {...walletsDropdownField.bind()}
+            numberOfStakePools={4}
+            wallets={wallets}
+            onChange={onSelectWallet}
+            placeholder={
+              'WalletsDropdown Placeholder'
+              /* intl.formatMessage(
               messages.selectWalletInputPlaceholder
             ) */
-          }
-          value={redeemWalletId}
-          getStakePoolById={() => {}}
-          error={this.walletsDropdownError}
-        />
+            }
+            value={redeemWalletId}
+            getStakePoolById={() => {}}
+            error={this.walletsDropdownError}
+          />
 
-        <hr />
+          <hr />
 
-        <Checkbox
-          {...checkboxAcceptance1Field.bind()}
-          className={styles.checkbox1}
-          skin={CheckboxSkin}
-          error={checkboxAcceptance1Field.error}
-        />
-        <Checkbox
-          {...checkboxAcceptance2Field.bind()}
-          skin={CheckboxSkin}
-          error={checkboxAcceptance2Field.error}
-        />
+          <Checkbox
+            {...checkboxAcceptance1Field.bind()}
+            className={styles.checkbox1}
+            skin={CheckboxSkin}
+            error={checkboxAcceptance1Field.error}
+          />
+          <Checkbox
+            {...checkboxAcceptance2Field.bind()}
+            skin={CheckboxSkin}
+            error={checkboxAcceptance2Field.error}
+          />
 
-        {/* error && <p className={styles.error}>{intl.formatMessage(error)}</p> */}
-      </Dialog>
+          {/* error && <p className={styles.error}>{intl.formatMessage(error)}</p> */}
+        </Dialog>
+      </>
     );
   }
 }

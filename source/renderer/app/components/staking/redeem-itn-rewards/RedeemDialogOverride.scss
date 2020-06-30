@@ -10,3 +10,17 @@
     width: 100% !important;
   }
 }
+
+.closeButton {
+  background-color: var(--rp-autocomplete-bg-color, #fafbfc);
+  border-radius: 50%;
+  height: 44px;
+  opacity: 0.5;
+  right: 10px;
+  top: 10px;
+  width: 44px;
+  z-index: 999;
+  &:hover {
+    opacity: 0.8;
+  }
+}
