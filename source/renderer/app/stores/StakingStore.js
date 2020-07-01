@@ -40,7 +40,7 @@ export default class StakingStore extends Store {
 
   setup() {
     const { isIncentivizedTestnet, isShelleyTestnet } = global;
-    if (isIncentivizedTestnet && !isShelleyTestnet) {
+    if (isIncentivizedTestnet || isShelleyTestnet) {
       // Set initial fetch interval to 1 second
       this.refreshPolling = setInterval(
         this.getStakePoolsData,
