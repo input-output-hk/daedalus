@@ -5,6 +5,7 @@ import { orderBy, find, map, get } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { ROUTES } from '../routes-config';
+import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 import {
   STAKE_POOL_TRANSACTION_CHECK_INTERVAL,
   STAKE_POOL_TRANSACTION_CHECKER_TIMEOUT,
@@ -77,8 +78,8 @@ export default class StakingStore extends Store {
 
   // =================== PUBLIC API ==================== //
 
-  @action _setStake = async (stake: number) => {
-    this.stake = stake;
+  @action _setStake = (stake: number) => {
+    this.stake = stake * LOVELACES_PER_ADA;
     this.getStakePoolsData();
   };
 
