@@ -2,11 +2,16 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { get } from 'lodash';
+import classnames from 'classnames';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
 import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
+import { Button } from 'react-polymorph/lib/components/Button';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { Link } from 'react-polymorph/lib/components/Link';
+import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import Wallet from '../../../domains/Wallet';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -167,11 +172,8 @@ export default class Step1ConfigurationDialog extends Component<Props> {
           recoveryPhrase,
         });
       },
-      onError: (a, b, c) => {
-        console.log('ERROR');
-        console.log('a', a);
-        console.log('b', b);
-        console.log('c', c);
+      onError: (err: Error) => {
+        throw new Error(err);
       },
       //   handleFormErrors('.ConfigurationDialog_error', { focusElement: true }),
     });
@@ -225,12 +227,18 @@ export default class Step1ConfigurationDialog extends Component<Props> {
     const checkboxAcceptance2Field = form.$('checkboxAcceptance2');
     const redeemWalletId = get(redeemWallet, 'id', null);
 
+    const buttonClasses = classnames([
+      'primary',
+      styles.buttonContinue,
+      isSubmitting ? styles.isSubmitting : null,
+    ]);
+
     return (
       <>
         <DialogCloseButton className={redeemDialogOverride.closeButton} />
         <Dialog
           title={intl.formatMessage(messages.title)}
-          actions={[
+          actions1={[
             {
               className: isSubmitting ? styles.isSubmitting : null,
               disabled: !this.canSubmit,
@@ -249,59 +257,75 @@ export default class Step1ConfigurationDialog extends Component<Props> {
           customThemeOverrides={redeemDialogOverride}
           closeOnOverlayClick={false}
         >
-          <p className={styles.description}>
-            {intl.formatMessage(messages.description)}
-          </p>
-          <Autocomplete
-            {...recoveryPhraseField.bind()}
-            ref={autocomplete => {
-              this.recoveryPhraseAutocomplete = autocomplete;
-            }}
-            options={suggestedMnemonics}
-            maxSelections={WALLET_RECOVERY_PHRASE_WORD_COUNT}
-            error={recoveryPhraseField.error}
-            maxVisibleOptions={5}
-            noResultsMessage={
-              'NO RESULTS LABEL'
-              // intl.formatMessage(messages.recoveryPhraseNoResults)
-            }
-            className={styles.recoveryPhrase}
-            skin={AutocompleteSkin}
-            optionHeight={50}
-          />
+          <div className={styles.component}>
+            <p className={styles.description}>
+              {intl.formatMessage(messages.description)}
+            </p>
+            <Autocomplete
+              {...recoveryPhraseField.bind()}
+              ref={autocomplete => {
+                this.recoveryPhraseAutocomplete = autocomplete;
+              }}
+              options={suggestedMnemonics}
+              maxSelections={WALLET_RECOVERY_PHRASE_WORD_COUNT}
+              error={recoveryPhraseField.error}
+              maxVisibleOptions={5}
+              noResultsMessage={
+                'NO RESULTS LABEL'
+                // intl.formatMessage(messages.recoveryPhraseNoResults)
+              }
+              className={styles.recoveryPhrase}
+              skin={AutocompleteSkin}
+              optionHeight={50}
+            />
 
-          <WalletsDropdown
-            className={styles.walletsDropdown}
-            {...walletsDropdownField.bind()}
-            numberOfStakePools={4}
-            wallets={wallets}
-            onChange={onSelectWallet}
-            placeholder={
-              'WalletsDropdown Placeholder'
-              /* intl.formatMessage(
-              messages.selectWalletInputPlaceholder
-            ) */
-            }
-            value={redeemWalletId}
-            getStakePoolById={() => {}}
-            error={this.walletsDropdownError}
-          />
+            <WalletsDropdown
+              className={styles.walletsDropdown}
+              {...walletsDropdownField.bind()}
+              numberOfStakePools={4}
+              wallets={wallets}
+              onChange={onSelectWallet}
+              placeholder={
+                'WalletsDropdown Placeholder'
+                /* intl.formatMessage(
+                      messages.selectWalletInputPlaceholder
+                    ) */
+              }
+              value={redeemWalletId}
+              getStakePoolById={() => {}}
+              error={this.walletsDropdownError}
+            />
 
-          <hr />
+            <hr />
 
-          <Checkbox
-            {...checkboxAcceptance1Field.bind()}
-            className={styles.checkbox1}
-            skin={CheckboxSkin}
-            error={checkboxAcceptance1Field.error}
-          />
-          <Checkbox
-            {...checkboxAcceptance2Field.bind()}
-            skin={CheckboxSkin}
-            error={checkboxAcceptance2Field.error}
-          />
-
-          {/* error && <p className={styles.error}>{intl.formatMessage(error)}</p> */}
+            <Checkbox
+              {...checkboxAcceptance1Field.bind()}
+              className={styles.checkbox}
+              skin={CheckboxSkin}
+              error={checkboxAcceptance1Field.error}
+            />
+            <Checkbox
+              {...checkboxAcceptance2Field.bind()}
+              className={styles.checkbox}
+              skin={CheckboxSkin}
+              error={checkboxAcceptance2Field.error}
+            />
+            <div className={styles.action}>
+              <Button
+                className={buttonClasses}
+                label={intl.formatMessage(messages.continueButtonLabel)}
+                onClick={this.submit}
+                skin={ButtonSkin}
+              />
+              <Link
+                className={styles.learnMoreLink}
+                onClick={() => {}}
+                label={intl.formatMessage(messages.learnMoreLinkLabel)}
+                skin={LinkSkin}
+              />
+            </div>
+            {/* error && <p className={styles.error}>{intl.formatMessage(error)}</p> */}
+          </div>
         </Dialog>
       </>
     );
