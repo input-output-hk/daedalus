@@ -68,7 +68,6 @@ import { transferFunds } from './wallets/requests/transferFunds';
 // Staking
 import StakePool from '../domains/StakePool';
 import { EPOCH_LENGTH_ITN } from '../config/epochsConfig';
-import stakePoolDummyData from '../config/stakingStakePoolsMissingApiData.dummy.json';
 
 // News requests
 import { getNews } from './news/requests/getNews';
@@ -1452,22 +1451,7 @@ export default class AdaApi {
     logger.debug('AdaApi::getStakePools called');
     try {
       const response: AdaApiStakePools = await getStakePools(this.config);
-
-      // TODO: remove once shelley local metadata fetching is fixed
-      const stakePoolsWithDummyData = response.map((pool, index) => {
-        const { _cost, _pledge, _profitMargin, metadata } = stakePoolDummyData[
-          index
-        ];
-        return Object.assign(pool, {
-          cost: pool.cost || { quantity: _cost, unit: 'lovelace' },
-          margin: pool.margin || { quantity: _profitMargin, unit: 'percent' },
-          metadata: pool.metadata || metadata,
-          pledge: pool.pledge || { quantity: _pledge, unit: 'lovelace' },
-        });
-      });
-
-      const { isDev } = global.environment;
-      const stakePools = (isDev ? stakePoolsWithDummyData : response)
+      const stakePools = response
         .filter(({ metadata }: AdaApiStakePool) => metadata !== undefined)
         .filter(
           ({ margin }: AdaApiStakePool) =>
