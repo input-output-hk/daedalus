@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## vNext
+## 1.1.0-STN1
 
 ### Features
 
