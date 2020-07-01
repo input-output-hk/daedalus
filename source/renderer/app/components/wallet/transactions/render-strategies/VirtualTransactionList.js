@@ -34,21 +34,18 @@ const TX_ID_SELECTOR = '.Transaction_transactionId';
 
 @observer
 export class VirtualTransactionList extends Component<Props> {
+  list: List;
+  rowHeights: RowHeight[] = [];
+  txAddressHeight: number = 0;
+  txIdHeight: number = 0;
+  visibleExpandedTx: Array<WalletTransaction>;
+  overscanStartIndex: number;
+  overscanStopIndex: number;
+
   static defaultProps = {
     isLoadingSpinnerShown: false,
     isSyncingSpinnerShown: false,
   };
-
-  // eslint-disable-next-line
-  UNSAFE_componentWillReceiveProps(nextProps: Props) {
-    // Recompute all row heights in case the number of rows has changed
-    const prevNumberOfRows = this.props.rows.length;
-    const nextNumberOfRows = nextProps.rows.length;
-    if (prevNumberOfRows && prevNumberOfRows !== nextNumberOfRows) {
-      this.rowHeights = this.estimateRowHeights(nextProps.rows);
-      this.recomputeVirtualRowHeights();
-    }
-  }
 
   componentDidMount() {
     window.addEventListener('resize', this.onResize);
@@ -58,19 +55,11 @@ export class VirtualTransactionList extends Component<Props> {
     window.removeEventListener('resize', this.onResize);
   }
 
-  list: List;
-  rowHeights: RowHeight[] = [];
-  txAddressHeight: number = 0;
-  txIdHeight: number = 0;
-  visibleExpandedTx: Array<WalletTransaction>;
-  overscanStartIndex: number;
-  overscanStopIndex: number;
-
   componentDidUpdate(prevProps: Props) {
     // Recompute all row heights in case the number of rows has changed
     const prevNumberOfRows = prevProps.rows.length;
-    const numberOfRows = this.props.rows.length;
-    if (prevNumberOfRows && prevNumberOfRows !== numberOfRows) {
+    const nextNumberOfRows = this.props.rows.length;
+    if (prevNumberOfRows && prevNumberOfRows !== nextNumberOfRows) {
       this.rowHeights = this.estimateRowHeights(this.props.rows);
       this.recomputeVirtualRowHeights();
     }

@@ -59,6 +59,8 @@ if (isBlankScreenFixActive) {
   app.disableHardwareAcceleration();
 }
 
+app.allowRendererProcessReuse = true;
+
 const safeExit = async () => {
   if (!cardanoNode || cardanoNode.state === CardanoNodeStates.STOPPED) {
     logger.info('Daedalus:safeExit: exiting Daedalus with code 0', { code: 0 });

@@ -64,7 +64,8 @@ export default class StakingStore extends Store {
     actions.onResultContinue.listen(this._onResultContinue);
     actions.closeRedeemDialog.listen(this._closeRedeemDialog);
 
-    if (global.isIncentivizedTestnet && !global.isShelleyTestnet) {
+    const { isIncentivizedTestnet, isShelleyTestnet } = global;
+    if (isIncentivizedTestnet || isShelleyTestnet) {
       // Set initial fetch interval to 1 second
       this.refreshPolling = setInterval(
         this.getStakePoolsData,

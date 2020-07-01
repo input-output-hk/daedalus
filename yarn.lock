@@ -5262,9 +5262,9 @@ electron-download@^4.1.1:
     semver "^5.4.1"
     sumchecker "^2.0.2"
 
-electron-log-daedalus@2.2.20:
-  version "2.2.20"
-  resolved "https://registry.yarnpkg.com/electron-log-daedalus/-/electron-log-daedalus-2.2.20.tgz#3b550c9d68393616d528cdcf76eeea1f2d53c30e"
+electron-log-daedalus@2.2.21:
+  version "2.2.21"
+  resolved "https://registry.yarnpkg.com/electron-log-daedalus/-/electron-log-daedalus-2.2.21.tgz#7afc009036306d3466d68decd971d7e1a2f2a5b1"
 
 electron-notarize@^0.2.0:
   version "0.2.1"
@@ -6084,6 +6084,10 @@ fast-json-stable-stringify@^2.0.0:
 fast-levenshtein@~2.0.6:
   version "2.0.6"
   resolved "https://registry.yarnpkg.com/fast-levenshtein/-/fast-levenshtein-2.0.6.tgz#3d8a5c66883a16a30ca8643e851f19baa7797917"
+
+fast-password-entropy@1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/fast-password-entropy/-/fast-password-entropy-1.1.1.tgz#47ba9933095fd5a32fb184915fc8e76ee19cf429"
 
 fast-sass-loader@1.5.0:
   version "1.5.0"
@@ -11507,12 +11511,13 @@ react-onclickoutside@^6.5.0:
   version "6.9.0"
   resolved "https://registry.yarnpkg.com/react-onclickoutside/-/react-onclickoutside-6.9.0.tgz#a54bc317ae8cf6131a5d78acea55a11067f37a1f"
 
-react-polymorph@0.9.3-rc.1:
-  version "0.9.3-rc.1"
-  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-0.9.3-rc.1.tgz#eccbe47cc231980b3fc31578044ee58c96588ae0"
+react-polymorph@0.9.4:
+  version "0.9.4"
+  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-0.9.4.tgz#81ddc70ddfd0008665f96763d7856ffcbcd17553"
   dependencies:
     create-react-context "0.2.2"
     create-react-ref "0.1.0"
+    fast-password-entropy "1.1.1"
     filter-react-dom-props "0.0.2"
     postinstall-build "5.0.1"
     react-modal "3.1.12"

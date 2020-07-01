@@ -40,7 +40,11 @@ export default class SidebarStore extends Store {
       return {
         id: wallet.id,
         title: wallet.name,
-        info: formattedWalletAmount(wallet.amount, true, false),
+        info: formattedWalletAmount(
+          wallet.amount.add(wallet.reward),
+          true,
+          false
+        ),
         isConnected: networkStatus.isConnected,
         isRestoreActive: wallet.isRestoring,
         restoreProgress: wallet.restorationProgress,
@@ -60,7 +64,11 @@ export default class SidebarStore extends Store {
       return {
         id: wallet.id,
         title: wallet.name,
-        info: formattedWalletAmount(wallet.amount, true, false),
+        info: formattedWalletAmount(
+          wallet.amount.add(wallet.reward),
+          true,
+          false
+        ),
         isConnected: networkStatus.isConnected,
         isRestoreActive: wallet.isRestoring,
         restoreProgress: wallet.restorationProgress,
@@ -78,9 +86,9 @@ export default class SidebarStore extends Store {
       isFlight,
       environment,
     } = global;
-    if (isShelleyTestnet || isFlight) {
+    if (isFlight) {
       this.CATEGORIES = sidebarConfig.CATEGORIES;
-    } else if (isIncentivizedTestnet) {
+    } else if (isIncentivizedTestnet || isShelleyTestnet) {
       this.CATEGORIES = sidebarConfig.CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN;
     } else if (environment.isDev) {
       this.CATEGORIES = sidebarConfig.CATEGORIES_WITH_HARDWARE_WALLETS;

@@ -5,10 +5,9 @@ import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
 import { Input } from 'react-polymorph/lib/components/Input';
-import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
-import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
+import { PasswordInput } from '../widgets/forms/PasswordInput';
 import RadioSet from '../widgets/RadioSet';
 import ReactToolboxMobxForm, {
   handleFormErrors,
@@ -451,7 +450,6 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           onKeyPress={this.handleSubmitOnEnter}
           {...walletNameField.bind()}
           error={walletNameField.error}
-          skin={InputSkin}
         />
 
         {(this.isRegular() || this.isLegacy()) && (
@@ -584,7 +582,6 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           noResultsMessage={intl.formatMessage(
             messages.recoveryPhraseNoResults
           )}
-          skin={AutocompleteSkin}
           optionHeight={50}
         />
 
@@ -598,24 +595,22 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           </div>
 
           <div className={styles.spendingPasswordFields}>
-            <Input
+            <PasswordInput
               className="spendingPassword"
               onKeyPress={this.handleSubmitOnEnter}
               {...spendingPasswordField.bind()}
-              error={spendingPasswordField.error}
-              skin={InputSkin}
             />
-            <Input
+            <PasswordInput
               className="repeatedPassword"
               onKeyPress={this.handleSubmitOnEnter}
               {...repeatedPasswordField.bind()}
-              error={repeatedPasswordField.error}
-              skin={InputSkin}
+              repeatPassword={spendingPasswordField.value}
+              isPasswordRepeat
             />
-            <p className={styles.passwordInstructions}>
-              <FormattedHTMLMessage {...globalMessages.passwordInstructions} />
-            </p>
           </div>
+          <p className={styles.passwordInstructions}>
+            <FormattedHTMLMessage {...globalMessages.passwordInstructions} />
+          </p>
         </div>
 
         {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}

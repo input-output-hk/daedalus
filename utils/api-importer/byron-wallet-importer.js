@@ -29,13 +29,13 @@ async function main() {
     key: fs.readFileSync('tls/client/client.key'),
     ca: fs.readFileSync('tls/client/ca.crt'),
   });
-  const request = axios.create({ httpsAgent })
+  const request = axios.create({ httpsAgent });
   try {
     await Promise.all(mnemonics.map((mnemonic, index) => {
       const name = walletNames[index];
       const data = generateImportPayload(mnemonic, name);
       return request.post(`https://localhost:${API_PORT}/v2/byron-wallets`, data);
-    }))
+    }));
   } catch (e) {
     console.log(e);
   }

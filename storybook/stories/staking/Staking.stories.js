@@ -156,6 +156,7 @@ storiesOf('Decentralization | Staking', module)
   .add('Delegation Center - No Wallets', () => (
     <DelegationCenterNoWallets
       onGoToCreateWalletClick={action('onGoToCreateWalletClick')}
+      minDelegationFunds={number('minDelegationFunds', 10)}
     />
   ))
 

@@ -66,5 +66,4 @@ in {
     cardano = [ "x86_64-linux" "x86_64-darwin" "x86_64-windows" ];
   };
   cardano-node = [ "x86_64-linux" "x86_64-darwin" "x86_64-windows" ];
-  export-wallets = [ "x86_64-linux" "x86_64-darwin" "x86_64-windows" ];
 })

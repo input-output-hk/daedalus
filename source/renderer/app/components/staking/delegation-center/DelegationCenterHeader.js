@@ -36,7 +36,7 @@ const messages = defineMessages({
   },
   headingLeft: {
     id: 'staking.delegationCenter.headingLeft',
-    defaultMessage: '!!!Cardano epoch {nextEpochNumber} starts in',
+    defaultMessage: '!!!Next Cardano epoch starts in',
     description: 'Headline for the Delegation center.',
   },
   headingRight: {
@@ -133,9 +133,7 @@ export default class DelegationCenterHeader extends Component<Props, State> {
     const slot = get(networkTip, 'slot', '-');
     const totalSlots = SLOTS_TOTAL;
     const headingFirst = intl.formatMessage(messages.headingRight);
-    const headingSecond = intl.formatMessage(messages.headingLeft, {
-      nextEpochNumber,
-    });
+    const headingSecond = intl.formatMessage(messages.headingLeft);
     const timeUntilFutureEpoch = humanizeDurationByLocale(
       this.state.timeUntilFutureEpoch,
       currentLocale

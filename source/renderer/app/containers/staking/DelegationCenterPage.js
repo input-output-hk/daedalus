@@ -8,6 +8,7 @@ import UndelegateConfirmationDialog from '../../components/staking/delegation-ce
 import DelegationSetupWizardDialog from '../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
 import DelegationCenterNoWallets from '../../components/staking/delegation-center/DelegationCenterNoWallets';
 import { ROUTES } from '../../routes-config';
+import { MIN_DELEGATION_FUNDS } from '../../config/stakingConfig';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 type Props = InjectedProps;
@@ -70,6 +71,7 @@ export default class DelegationCenterPage extends Component<Props> {
       return (
         <DelegationCenterNoWallets
           onGoToCreateWalletClick={this.handleGoToCreateWalletClick}
+          minDelegationFunds={MIN_DELEGATION_FUNDS}
         />
       );
     }

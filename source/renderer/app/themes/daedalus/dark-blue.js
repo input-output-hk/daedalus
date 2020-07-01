@@ -971,6 +971,16 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-wallet-not-responding-link-text-color': '#e9f4fe',
     '--theme-wallet-not-responding-title-text-color': '#e9f4fe',
   },
+  rpPasswordInput: {
+    '--rp-password-input-tooltip-border-radius': '5px',
+    '--rp-password-input-error-score-color': '#ea4c5b',
+    '--rp-password-input-error-bg-color': 'rgba(234, 76, 91, 0.4)',
+    '--rp-password-input-warning-score-color': '#f2a218',
+    '--rp-password-input-warning-bg-color': 'rgba(242, 162, 24, 0.4)',
+    '--rp-password-input-success-score-color': '#2dc06c',
+    '--rp-password-input-success-bg-color': 'rgba(45, 192, 108, 0.4)',
+    '--rp-password-input-tooltip-font-family': 'var(--rp-theme-font-medium)',
+  },
 };
 
 const DARK_BLUE_THEME_PARAMS: CreateThemeParams = {

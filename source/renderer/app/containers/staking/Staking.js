@@ -78,11 +78,12 @@ export default class Staking extends Component<Props> {
       stores: { app, staking },
       children,
     } = this.props;
+    const { isShelleyTestnet } = global;
     const { isStakingExperimentRead, isStakingDelegationCountdown } = staking;
 
     return (
       <MainLayout>
-        {!isStakingExperimentRead && (
+        {!isShelleyTestnet && !isStakingExperimentRead && (
           <ExperimentalDataOverlay
             onClose={this.handleCloseExperimentalDataOverlay}
           />

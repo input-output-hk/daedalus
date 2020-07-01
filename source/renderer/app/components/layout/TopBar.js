@@ -65,7 +65,7 @@ export default class TopBar extends Component<Props> {
         </span>
         <span className={styles.walletAmount}>
           {// show currency and use long format
-          formattedWalletAmount(activeWallet.amount)}
+          formattedWalletAmount(activeWallet.amount.add(activeWallet.reward))}
         </span>
       </span>
     ) : null;
@@ -91,7 +91,7 @@ export default class TopBar extends Component<Props> {
         </div>
         {hasLegacyNotification && activeWallet && (
           <LegacyNotification
-            activeWallet={activeWallet}
+            activeWalletName={activeWallet.name}
             onLearnMore={onLearnMore}
             onTransferFunds={onTransferFundsFn}
             hasRewardsWallets={hasRewardsWallets}
