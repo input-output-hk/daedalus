@@ -2,11 +2,13 @@
 Changelog
 =========
 
-## 1.1.0-STN1
+## vNext
 
 ### Features
 
 - Implemented the Redeem Incentivized testnet rewards feature ([PR 2042](https://github.com/input-output-hk/daedalus/pull/2042))
+
+## 1.1.0-STN1
 
 ### Fixes
 
