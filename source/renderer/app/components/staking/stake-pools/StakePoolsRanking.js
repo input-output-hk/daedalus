@@ -84,6 +84,7 @@ type State = {
 
 const OUT_OF_RANGE_MAX_AMOUNT = new BigNumber('31000000000');
 const MIN_AMOUNT = new BigNumber('10');
+const MAX_AMOUNT = new BigNumber('207000000');
 
 @observer
 export default class StakePoolsRanking extends Component<Props, State> {
@@ -99,6 +100,10 @@ export default class StakePoolsRanking extends Component<Props, State> {
     selectedWalletId: '-1',
     sliderValue: MIN_AMOUNT.toNumber(),
   };
+
+  componentDidMount() {
+    this.onSelectedWalletChange('0');
+  }
 
   getAllAvailableAmount = () => {
     const { wallets } = this.props;
@@ -198,7 +203,6 @@ export default class StakePoolsRanking extends Component<Props, State> {
     const { onOpenExternalLink, isLoading } = this.props;
     const rankingDescription = intl.formatMessage(messages.rankingDescription);
     const learnMoreButtonClasses = classnames(['flat', styles.actionLearnMore]);
-    const allAvailableAmount: BigNumber = this.getAllAvailableAmount();
     const {
       selectedWalletId,
       walletSelectorOptions,
@@ -257,7 +261,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
             <div className={styles.slider}>
               <Slider
                 min={MIN_AMOUNT.toNumber()}
-                max={Math.floor(allAvailableAmount.toNumber())}
+                max={MAX_AMOUNT.toNumber()}
                 value={sliderValue}
                 onChange={this.onSliderChange}
                 disabled={isLoading}
