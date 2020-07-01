@@ -7,7 +7,8 @@ import classnames from 'classnames';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Select } from 'react-polymorph/lib/components/Select';
 import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
-import { STAKE_POOL_RANKING_LEARN_MORE_URL } from '../../../config/stakingConfig';
+import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
+import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
 import { shortNumber } from '../../../utils/formatters';
 import Wallet from '../../../domains/Wallet';
 import ButtonLink from '../../widgets/ButtonLink';
@@ -50,7 +51,7 @@ const messages = defineMessages({
   },
   rankingSelectWallet: {
     id: 'staking.stakePools.rankingSelectWallet',
-    defaultMessage: '!!!select a wallet',
+    defaultMessage: '!!!a wallet',
     description: 'Select wallet item of dropdown.',
   },
   rankingSelectWalletEnd: {
@@ -63,6 +64,21 @@ const messages = defineMessages({
     defaultMessage: '!!!Or choose',
     description: 'Select wallet description before dropdown.',
   },
+  rankingExtraTooltip: {
+    id: 'staking.stakePools.rankingExtraTooltip',
+    defaultMessage: '!!!Circulating supply',
+    description: 'Circulating supply slider tooltip.',
+  },
+  rankingMaxTooltip: {
+    id: 'staking.stakePools.rankingMaxTooltip',
+    defaultMessage: '!!!Saturation point',
+    description: 'Saturation point slider tooltip.',
+  },
+  rankingMinTooltip: {
+    id: 'staking.stakePools.rankingMinTooltip',
+    defaultMessage: '!!!Minimum ADA required for staking',
+    description: 'Minimum ADA required for staking slider tooltip.',
+  },
   actionLearnMore: {
     id: 'staking.stakePools.learnMore',
     defaultMessage: '!!!Learn more',
@@ -73,18 +89,19 @@ const messages = defineMessages({
 type Props = {
   wallets: Array<Wallet>,
   onOpenExternalLink: Function,
+  learnMoreUrl: string,
   onRank: Function,
   isLoading: boolean,
 };
 
 type State = {
-  selectedWalletId: string,
+  selectedWalletId: ?string,
   sliderValue: number,
 };
 
-const OUT_OF_RANGE_MAX_AMOUNT = new BigNumber('31000000000');
+const OUT_OF_RANGE_MAX_AMOUNT = new BigNumber('11000000000');
 const MIN_AMOUNT = new BigNumber('10');
-const MAX_AMOUNT = new BigNumber('207000000');
+const MAX_AMOUNT = new BigNumber('44000000');
 
 @observer
 export default class StakePoolsRanking extends Component<Props, State> {
@@ -97,7 +114,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
   };
 
   state = {
-    selectedWalletId: '-1',
+    selectedWalletId: null,
     sliderValue: MIN_AMOUNT.toNumber(),
   };
 
@@ -127,53 +144,52 @@ export default class StakePoolsRanking extends Component<Props, State> {
     );
     let sliderValue = null;
 
-    if (selectedWalletId === '-1') {
-      sliderValue = MIN_AMOUNT.toNumber();
-    } else if (selectedWalletId === '0') {
-      sliderValue = Math.floor(this.getAllAvailableAmount().toNumber());
+    if (selectedWalletId === '0') {
+      sliderValue = Math.min(
+        Math.floor(this.getAllAvailableAmount().toNumber()),
+        MAX_AMOUNT.toNumber()
+      );
     } else if (selectedWallet) {
       sliderValue = Math.floor(selectedWallet.availableAmount.toNumber());
     } else {
       sliderValue = MIN_AMOUNT.toNumber();
     }
 
-    this.setState({ selectedWalletId, sliderValue });
+    this.setState({
+      selectedWalletId,
+      sliderValue: Math.max(sliderValue, MIN_AMOUNT.toNumber()),
+    });
   };
 
   onSliderChange = (sliderValue: number) => {
     this.props.onRank(sliderValue);
-    this.setState({ sliderValue, selectedWalletId: '-1' });
+    this.setState({ sliderValue, selectedWalletId: null });
   };
 
   generateInfo = () => {
     const { intl } = this.context;
     const { wallets } = this.props;
     const { selectedWalletId, sliderValue } = this.state;
-    const selectWalletItem = {
-      label: intl.formatMessage(messages.rankingSelectWallet),
-      value: '-1',
-    };
     const allWalletsItem = {
       label: intl.formatMessage(messages.rankingAllWallets),
       value: '0',
     };
     const walletSelectorOptions = [
-      selectWalletItem,
       allWalletsItem,
       ...wallets.map((w: Wallet) => ({
         label: w.name,
         value: w.id,
       })),
     ];
-    const selectionRendererClasses = classnames([
-      'custom-value',
-      selectedWalletId === '-1' ? 'no-select' : null,
+    const walletSelectorClasses = classnames([
+      styles.walletSelector,
+      selectedWalletId === null ? 'no-value-selected' : null,
     ]);
 
     let walletSelectionStart = null;
     let walletSelectionEnd = null;
 
-    if (selectedWalletId === '-1') {
+    if (selectedWalletId === null) {
       walletSelectionStart = intl.formatMessage(
         messages.rankingSelectWalletStart
       );
@@ -191,7 +207,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
     return {
       selectedWalletId,
       walletSelectorOptions,
-      selectionRendererClasses,
+      walletSelectorClasses,
       walletSelectionStart,
       walletSelectionEnd,
       sliderValue,
@@ -200,13 +216,13 @@ export default class StakePoolsRanking extends Component<Props, State> {
 
   render() {
     const { intl } = this.context;
-    const { onOpenExternalLink, isLoading } = this.props;
+    const { onOpenExternalLink, learnMoreUrl, isLoading } = this.props;
     const rankingDescription = intl.formatMessage(messages.rankingDescription);
     const learnMoreButtonClasses = classnames(['flat', styles.actionLearnMore]);
     const {
       selectedWalletId,
       walletSelectorOptions,
-      selectionRendererClasses,
+      walletSelectorClasses,
       walletSelectionStart,
       walletSelectionEnd,
       sliderValue,
@@ -223,15 +239,14 @@ export default class StakePoolsRanking extends Component<Props, State> {
               <div className={styles.col}>{walletSelectionStart}</div>
               <div className={styles.col}>
                 <Select
-                  className={styles.walletSelector}
+                  className={walletSelectorClasses}
                   options={walletSelectorOptions}
                   value={selectedWalletId}
+                  placeholder={intl.formatMessage(messages.rankingSelectWallet)}
                   onChange={this.onSelectedWalletChange}
                   skin={SelectSkin}
                   selectionRenderer={option => (
-                    <div className={selectionRendererClasses}>
-                      {option.label}
-                    </div>
+                    <div className="custom-value">{option.label}</div>
                   )}
                   optionHeight={50}
                 />
@@ -241,9 +256,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
           </div>
           <ButtonLink
             className={learnMoreButtonClasses}
-            onClick={() =>
-              onOpenExternalLink(STAKE_POOL_RANKING_LEARN_MORE_URL)
-            }
+            onClick={() => onOpenExternalLink(learnMoreUrl)}
             skin={ButtonSkin}
             label={intl.formatMessage(messages.actionLearnMore)}
             linkProps={{
@@ -265,11 +278,19 @@ export default class StakePoolsRanking extends Component<Props, State> {
                 value={sliderValue}
                 onChange={this.onSliderChange}
                 disabled={isLoading}
+                showTooltip
+                minTooltip={intl.formatMessage(messages.rankingMinTooltip)}
+                maxTooltip={intl.formatMessage(messages.rankingMaxTooltip)}
               />
             </div>
             <div className={styles.col}>
               <div className={styles.outOfRangeMaxAmount}>
-                {shortNumber(OUT_OF_RANGE_MAX_AMOUNT)}
+                <Tooltip
+                  skin={TooltipSkin}
+                  tip={intl.formatMessage(messages.rankingExtraTooltip)}
+                >
+                  {shortNumber(OUT_OF_RANGE_MAX_AMOUNT)}
+                </Tooltip>
               </div>
               <div className={styles.outOfSliderRangeEnd} />
             </div>

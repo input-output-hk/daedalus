@@ -12,6 +12,16 @@
     margin-bottom: 20px;
 
     .selectWallet {
+      :global {
+        .no-value-selected {
+          .SimpleInput_customValueBlock {
+            width: 55px;
+          }
+          .SelectOverrides_selectInput::after {
+            bottom: -14.5px !important;
+          }
+        }
+      }
       .walletSelector {
         margin: 0 10px;
         padding-right: 20px;
@@ -19,11 +29,11 @@
         :global {
           .SimpleInput_input {
             border: none;
-            padding: 0;
             height: auto;
+            padding: 0;
             width: auto;
           }
-          .SelectOverrides_selectInput:after {
+          .SelectOverrides_selectInput::after {
             bottom: 7.5px;
             left: auto;
             right: 0;
@@ -33,10 +43,6 @@
           }
           .custom-value {
             font-family: var(--font-semibold);
-
-            &.no-select {
-              color: var(--rp-select-input-placeholder-color);
-            }
           }
         }
       }
@@ -58,8 +64,7 @@
     margin-bottom: 18px;
 
     .outOfSliderRangeStart {
-      border-top: 2px solid
-        var(--theme-staking-progress-stripe-dark-2-background-color);
+      border-top: 2px solid var(--theme-staking-slider-background-color-2);
       border-style: dotted;
       height: 0;
       margin-top: 24px;
@@ -68,16 +73,55 @@
     }
     .slider {
       flex: 1;
+
+      :global {
+        .SimpleTooltip_bubble {
+          .SimpleBubble_bubble {
+            border-radius: 6px;
+            font-family: var(--font-regular);
+            font-size: 13px;
+            line-height: 1.15;
+          }
+        }
+        .Slider_minMark {
+          .SimpleTooltip_bubble {
+            .SimpleBubble_bubble {
+              left: -15px;
+              right: auto;
+            }
+          }
+        }
+        .Slider_maxMark {
+          .SimpleTooltip_bubble {
+            .SimpleBubble_bubble {
+              left: -50px;
+              right: auto;
+            }
+          }
+        }
+      }
     }
     .outOfRangeMaxAmount {
       font-size: 12px;
       line-height: 1.33;
       margin-bottom: 9px;
       text-align: right;
+
+      :global {
+        .SimpleTooltip_bubble {
+          .SimpleBubble_bubble {
+            border-radius: 6px;
+            font-family: var(--font-regular);
+            font-size: 13px;
+            left: auto;
+            line-height: 1.15;
+            right: -10px;
+          }
+        }
+      }
     }
     .outOfSliderRangeEnd {
-      border-top: 2px solid
-        var(--theme-staking-progress-stripe-dark-2-background-color);
+      border-top: 2px solid var(--theme-staking-slider-background-color-2);
       border-style: dotted;
       height: 0;
       opacity: 0.3;

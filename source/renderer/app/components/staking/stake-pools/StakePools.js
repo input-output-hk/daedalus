@@ -41,6 +41,7 @@ type Props = {
   wallets: Array<Wallet>,
   stakePoolsList: Array<StakePool>,
   onOpenExternalLink: Function,
+  learnMoreUrl: string,
   currentTheme: string,
   onRank: Function,
   onDelegate: Function,
@@ -87,6 +88,7 @@ export default class StakePools extends Component<Props, State> {
       stakePoolsList,
       onRank,
       onOpenExternalLink,
+      learnMoreUrl,
       currentTheme,
       isLoading,
       stakePoolsDelegatingList,
@@ -133,6 +135,7 @@ export default class StakePools extends Component<Props, State> {
             <StakePoolsRanking
               wallets={wallets}
               onOpenExternalLink={onOpenExternalLink}
+              learnMoreUrl={learnMoreUrl}
               onRank={onRank}
               isLoading={isLoading}
             />

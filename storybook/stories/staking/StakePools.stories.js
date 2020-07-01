@@ -5,6 +5,7 @@ import { action } from '@storybook/addon-actions';
 
 import StakePools from '../../../source/renderer/app/components/staking/stake-pools/StakePools';
 import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
+import DUMMY_WALLETS from '../../../source/renderer/app/config/wallets.dummy';
 
 type Props = {
   currentTheme: string,
@@ -29,10 +30,11 @@ export const StakePoolsStory = (props: Props) => (
       STAKE_POOLS[36],
     ]}
     onOpenExternalLink={action('onOpenExternalLink')}
+    learnMoreUrl="https://iohk.zendesk.com/hc/en-us"
     currentTheme={props.currentTheme}
     onDelegate={action('onDelegate')}
     isLoading={props.isLoading}
     onRank={() => null}
-    wallets={[]}
+    wallets={DUMMY_WALLETS}
   />
 );

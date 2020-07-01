@@ -769,6 +769,8 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-staking-progress-bar-background-color': 'rgba(233, 244, 254, 0.1)',
     '--theme-staking-progress-stripe-dark-1-background-color': '#3c4852',
     '--theme-staking-progress-stripe-dark-2-background-color': '#536370',
+    '--theme-staking-slider-background-color': '#e9f4fe',
+    '--theme-staking-slider-box-shadow-color': 'rgba(0, 0, 0, 0.24)',
     '--theme-staking-table-body-highlighted-text-color': '#2ab467',
     '--theme-staking-donut-ring-completed-color': 'rgba(234, 76, 91, 0.2)',
     '--theme-staking-donut-ring-remaining-color': '#ea4c5b',

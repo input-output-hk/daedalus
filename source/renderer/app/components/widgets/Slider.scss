@@ -2,28 +2,24 @@
   :global {
     .rc-slider {
       .rc-slider-rail {
-        background-color: var(
-          --theme-staking-progress-stripe-dark-2-background-color
-        );
+        background-color: var(--theme-staking-slider-background-color-2);
+        border-radius: 1px;
         height: 2px;
         opacity: 0.2;
       }
       .rc-slider-track {
-        background-color: var(
-          --theme-staking-progress-stripe-dark-2-background-color
-        );
+        background-color: var(--theme-staking-slider-background-color-1);
+        border-radius: 1px;
         height: 2px;
+        opacity: 0.6;
       }
       .rc-slider-step {
         height: 2px;
       }
       .rc-slider-handle {
-        background-color: var(
-          --theme-staking-progress-stripe-dark-2-background-color
-        );
-        border-color: var(
-          --theme-staking-progress-stripe-dark-2-background-color
-        );
+        background-color: var(--theme-staking-slider-background-color-1);
+        border-color: var(--theme-staking-slider-background-color-1);
+        box-shadow: 0 1px 2px 0 var(--theme-staking-slider-box-shadow-color);
         height: 18px;
         margin-top: -8px;
         width: 18px;
@@ -64,6 +60,7 @@
       margin-top: 3px;
       position: absolute;
       transform: translate(-50%);
+      white-space: nowrap;
     }
   }
 }
