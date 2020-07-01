@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Fixes
+
+- Fixed tooltip position on "Delegation center" and "Rewards" screens ([PR 2049](https://github.com/input-output-hk/daedalus/pull/2049))
+
 ## 1.1.0-STN1
 
 ### Fixes
