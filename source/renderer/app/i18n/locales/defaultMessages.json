@@ -8170,6 +8170,20 @@
           "column": 13,
           "line": 9
         }
+      },
+      {
+        "defaultMessage": "!!!Calculating fees",
+        "description": "Label for the \"Calculating fees\" message above amount input field.",
+        "end": {
+          "column": 3,
+          "line": 20
+        },
+        "file": "source/renderer/app/components/wallet/skins/AmountInputSkin.js",
+        "id": "wallet.amountInput.calculatingFeesLabel",
+        "start": {
+          "column": 24,
+          "line": 15
+        }
       }
     ],
     "path": "source/renderer/app/components/wallet/skins/AmountInputSkin.json"
@@ -8181,13 +8195,13 @@
         "description": "\"Number of transactions\" label on Wallet summary page",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 19
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
         "id": "wallet.summary.page.transactionsLabel",
         "start": {
           "column": 21,
-          "line": 14
+          "line": 15
         }
       },
       {
@@ -8195,13 +8209,41 @@
         "description": "\"Number of pending transactions\" label on Wallet summary page",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 25
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
         "id": "wallet.summary.page.pendingTransactionsLabel",
         "start": {
           "column": 28,
-          "line": 19
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!Wallet balance",
+        "description": "\"Wallet amount\" label on Wallet summary page",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
+        "id": "wallet.summary.page.walletBalancelabel",
+        "start": {
+          "column": 22,
+          "line": 26
+        }
+      },
+      {
+        "defaultMessage": "!!!Rewards account balance",
+        "description": "\"Rewards account balance\" label on Wallet summary page",
+        "end": {
+          "column": 3,
+          "line": 35
+        },
+        "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
+        "id": "wallet.summary.page.rewardsAccountBalancelabel",
+        "start": {
+          "column": 30,
+          "line": 31
         }
       }
     ],

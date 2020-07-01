@@ -7,6 +7,8 @@ Changelog
 
 - Ranked stake pools based on delegated amount configured by slider ([PR 2051](https://github.com/input-output-hk/daedalus/pull/2051))
 
+## 1.1.0-STN1
+
 ### Fixes
 
 - Removed ITN message from the "Create Wallet" dialog in Daedalus Shelley Testnet builds ([PR 2040](https://github.com/input-output-hk/daedalus/pull/2040))
