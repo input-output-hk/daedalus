@@ -116,6 +116,7 @@ type Props = {
 };
 
 type State = {
+  isCalculatingTransactionFee: boolean,
   isTransactionFeeCalculated: boolean,
   transactionFee: BigNumber,
   transactionFeeError: ?string | ?Node,
@@ -128,6 +129,7 @@ export default class WalletSendForm extends Component<Props, State> {
   };
 
   state = {
+    isCalculatingTransactionFee: false,
     isTransactionFeeCalculated: false,
     transactionFee: new BigNumber(0),
     transactionFeeError: null,
@@ -260,6 +262,7 @@ export default class WalletSendForm extends Component<Props, State> {
       onExternalLinkClick,
     } = this.props;
     const {
+      isCalculatingTransactionFee,
       isTransactionFeeCalculated,
       transactionFee,
       transactionFeeError,
@@ -328,6 +331,7 @@ export default class WalletSendForm extends Component<Props, State> {
                   skin={AmountInputSkin}
                   onKeyPress={this.handleSubmitOnEnter}
                   allowSigns={false}
+                  isCalculatingFees={isCalculatingTransactionFee}
                 />
               </div>
 
@@ -369,7 +373,12 @@ export default class WalletSendForm extends Component<Props, State> {
 
   async _calculateTransactionFee(address: string, amountValue: string) {
     const amount = formattedAmountToLovelace(amountValue);
-
+    this.setState({
+      isCalculatingTransactionFee: true,
+      isTransactionFeeCalculated: false,
+      transactionFee: new BigNumber(0),
+      transactionFeeError: null,
+    });
     try {
       const fee = await this.props.calculateTransactionFee(address, amount);
       if (this._isMounted) {
@@ -398,6 +407,8 @@ export default class WalletSendForm extends Component<Props, State> {
           transactionFeeError,
         });
       }
+    } finally {
+      this.setState({ isCalculatingTransactionFee: false });
     }
   }
 

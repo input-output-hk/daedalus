@@ -50,6 +50,25 @@
   }
 }
 
+.balancesWrapper {
+  .walletBalance,
+  .rewardsAccountBalance {
+    @extend %smallText;
+
+    .currencySymbol {
+      display: inline-block;
+      margin-left: 4px;
+      & > svg {
+        height: 12px;
+        width: 12px;
+        & > g > g {
+          stroke: var(--theme-icon-ada-summary-wallet-amount-symbol-color);
+        }
+      }
+    }
+  }
+}
+
 .transactionsCountWrapper {
   .numberOfTransactions,
   .numberOfPendingTransactions {
