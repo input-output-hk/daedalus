@@ -4573,7 +4573,7 @@
         }
       },
       {
-        "defaultMessage": "!!!a wallet",
+        "defaultMessage": "!!!select a wallet",
         "description": "Select wallet item of dropdown.",
         "end": {
           "column": 3,
@@ -4601,7 +4601,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Or choose",
+        "defaultMessage": "!!!Or",
         "description": "Select wallet description before dropdown.",
         "end": {
           "column": 3,
