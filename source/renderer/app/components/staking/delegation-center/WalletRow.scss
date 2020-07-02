@@ -12,6 +12,7 @@
       .SimpleBubble_bubble {
         left: initial;
         right: -10px;
+        line-height: initial;
       }
     }
   }
@@ -31,6 +32,7 @@
       @extend %accentText;
       margin-bottom: 3px;
     }
+
     .description {
       @extend %regularText;
       align-items: center;
@@ -101,6 +103,12 @@
       > span:last-child > span {
         padding-bottom: 4px;
         padding-top: 3px;
+      }
+
+      > span :global {
+        .SimpleTooltip_root > div {
+          right: -80px;
+        }
       }
 
       .tooltipLabelWrapper {
