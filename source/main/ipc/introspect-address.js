@@ -17,12 +17,20 @@ export const introspectAddressChannel: MainIpcChannel<
 export const handleAddressIntrospectionRequests = () => {
   introspectAddressChannel.onReceive(
     (request: IntrospectAddressRendererRequest) =>
-      new Promise(resolve => {
+      new Promise((resolve, reject) => {
         exec(
           `echo ${request.input} | cardano-address address inspect`,
           (error, stdout) => {
-            if (error) {
+            if (
+              error &&
+              error.message.match(
+                /user error \(Unrecognized address on standard input\)/g
+              ) !== null
+            ) {
               return resolve('Invalid');
+            }
+            if (error) {
+              reject(error);
             }
             return resolve({ introspection: JSON.parse(stdout) });
           }
