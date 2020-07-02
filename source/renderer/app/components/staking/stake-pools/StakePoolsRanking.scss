@@ -39,7 +39,7 @@
             border: none;
             height: auto;
             padding: 0;
-            width: auto;
+            width: calc(100% + 20px);
           }
           .SelectOverrides_selectInput::after {
             bottom: 7.5px;
