@@ -28,7 +28,7 @@ export default class Staking extends Component<Props> {
 
   //   if (staking.showCountdown() && !staking.isStakingDelegationCountdown) {
   //     return actions.router.goToRoute.trigger({
-  //       route: ROUTES.STAKING.DELEGATION_COUNTDOWN,
+  //       route: ROUTES.STAKING.COUNTDOWN,
   //     });
   //   }
 
@@ -96,6 +96,7 @@ export default class Staking extends Component<Props> {
             onNavItemClick={this.handleNavItemClick}
             activeItem={app.currentPage}
             isIncentivizedTestnet={global.isIncentivizedTestnet}
+            isShelleyTestnet={global.isShelleyTestnet}
           >
             {children}
           </StakingWithNavigation>

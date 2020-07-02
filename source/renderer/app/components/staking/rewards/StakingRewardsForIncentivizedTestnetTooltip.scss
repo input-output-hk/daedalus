@@ -1,8 +1,9 @@
 .root {
   .bubble {
-    top: -11px;
+    top: -12px;
     > div {
-      left: -60px;
+      left: auto;
+      right: -33px;
     }
 
     > span {
