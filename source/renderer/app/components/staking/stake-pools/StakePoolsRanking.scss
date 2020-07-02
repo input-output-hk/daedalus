@@ -22,8 +22,16 @@
           }
         }
       }
+      .row {
+        .col {
+          margin-right: 10px;
+
+          &:last-child {
+            margin-right: 0;
+          }
+        }
+      }
       .walletSelector {
-        margin: 0 10px;
         padding-right: 20px;
 
         :global {
@@ -130,6 +138,7 @@
   }
   .row {
     display: flex;
+    flex-wrap: wrap;
   }
   .col {
     @extend %regularText;
