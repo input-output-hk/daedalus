@@ -1776,7 +1776,7 @@ const _createWalletFromServerData = action(
       balance.available.unit === WalletUnits.LOVELACE
         ? new BigNumber(balance.available.quantity).dividedBy(LOVELACES_PER_ADA)
         : new BigNumber(balance.available.quantity);
-    let walletRewardAmount = 0;
+    let walletRewardAmount = new BigNumber(0);
     if (!isLegacy) {
       walletRewardAmount =
         balance.reward.unit === WalletUnits.LOVELACE

@@ -20,7 +20,7 @@ import type {
 const walletSyncedStateReady = { status: 'ready' };
 
 const walletSyncedStateRestoring = {
-  status: 'restoring',
+  status: 'syncing',
   progress: {
     quantity: 25,
     unit: 'percentage',
