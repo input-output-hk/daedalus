@@ -51,7 +51,7 @@ const messages = defineMessages({
   },
   rankingSelectWallet: {
     id: 'staking.stakePools.rankingSelectWallet',
-    defaultMessage: '!!!a wallet',
+    defaultMessage: '!!!select a wallet',
     description: 'Select wallet item of dropdown.',
   },
   rankingSelectWalletEnd: {
@@ -61,7 +61,7 @@ const messages = defineMessages({
   },
   rankingSelectWalletStart: {
     id: 'staking.stakePools.rankingSelectWalletStart',
-    defaultMessage: '!!!Or choose',
+    defaultMessage: '!!!Or',
     description: 'Select wallet description before dropdown.',
   },
   rankingExtraTooltip: {

@@ -15,7 +15,7 @@
       :global {
         .no-value-selected {
           .SimpleInput_customValueBlock {
-            width: 55px;
+            width: 110px;
           }
           .SelectOverrides_selectInput::after {
             bottom: -14.5px !important;
@@ -42,6 +42,7 @@
             width: calc(100% + 20px);
           }
           .SelectOverrides_selectInput::after {
+            background-color: var(--theme-staking-font-color-regular);
             bottom: 7.5px;
             left: auto;
             right: 0;
@@ -51,10 +52,33 @@
           }
           .custom-value {
             font-family: var(--font-semibold);
+            overflow: hidden;
+            text-overflow: ellipsis;
+          }
+          .SimpleSelect_selectInput {
+            max-width: 380px;
           }
           .SimpleOptions_options {
             min-width: 180px;
+            max-width: 400px;
+
+            .SimpleOptions_option {
+              span {
+                display: block;
+                overflow: hidden;
+                text-overflow: ellipsis;
+              }
+            }
           }
+        }
+
+        ::-webkit-input-placeholder {
+          color: var(--theme-staking-font-color-regular);
+          font-family: var(--font-semibold);
+        }
+        ::placeholder {
+          color: var(--theme-staking-font-color-regular);
+          font-family: var(--font-semibold);
         }
       }
     }
