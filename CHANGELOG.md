@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## vNext
+## 1.2.0-STN1
 
 ### Fixes
 
