@@ -41,7 +41,7 @@ type Props = {
   finalTotal: number,
   onContinue: Function,
   onClose: Function,
-  onPDFDownload: Function,
+  onPDFDownload?: Function,
 };
 
 @observer
@@ -63,21 +63,25 @@ export default class Step3SuccessDialog extends Component<Props> {
 
     const { name: walletName } = wallet;
 
+    const actions = [
+      {
+        primary: true,
+        label: intl.formatMessage(messages.openWalletButtonLabel),
+        onClick: onContinue,
+      },
+    ];
+
+    if (onPDFDownload)
+      actions.push({
+        primary: true,
+        label: intl.formatMessage(messages.downloadPDFButtonLabel),
+        onClick: onPDFDownload,
+      });
+
     return (
       <Dialog
         onClose={onClose}
-        actions={[
-          {
-            primary: true,
-            label: intl.formatMessage(messages.openWalletButtonLabel),
-            onClick: onContinue,
-          },
-          {
-            primary: true,
-            label: intl.formatMessage(messages.downloadPDFButtonLabel),
-            onClick: onPDFDownload,
-          },
-        ]}
+        actions={actions}
         closeButton={<DialogCloseButton />}
         customThemeOverrides={redeemDialogOverride}
         closeOnOverlayClick={false}

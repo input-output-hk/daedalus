@@ -16,9 +16,10 @@ export default class Step1ConfigurationContainer extends Component<Props> {
   static defaultProps = DefaultProps;
 
   render() {
-    const { onContinue, onClose, onBack, stores, actions } = this.props;
+    const { onClose, onBack, stores, actions } = this.props;
     const { allWallets } = stores.wallets;
     const { redeemWallet, redeemError } = stores.staking;
+    const { openExternalLink } = stores.app;
     const { onConfigurationContinue, onSelectRedeemWallet } = actions.staking;
     const isWalletValid = true;
     const isSubmitting = false;
@@ -35,6 +36,7 @@ export default class Step1ConfigurationContainer extends Component<Props> {
         suggestedMnemonics={validWords}
         wallet={redeemWallet}
         wallets={allWallets}
+        onLearnMoreClick={openExternalLink}
       />
     );
   }

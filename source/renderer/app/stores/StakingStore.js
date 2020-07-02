@@ -35,6 +35,7 @@ export default class StakingStore extends Store {
   @observable redeemStep: ?RedeemItnRewardsStep = null;
   @observable redeemWallet: ?Wallet = null;
   @observable walletName: ?string = null;
+  @observable redeemError: ?string = null;
   @observable rewardsTotal: number = 0;
   @observable transactionFees: number = 0;
   @observable finalTotal: number = 0;
@@ -439,12 +440,11 @@ export default class StakingStore extends Store {
   };
 
   @action _onConfigurationContinue = async ({
-    wallet,
     recoveryPhrase,
   }: {
-    wallet: Wallet,
     recoveryPhrase: Array<string>,
   }) => {
+    console.log('_onConfigurationContinue recoveryPhrase', recoveryPhrase);
     this.isSubmittingReedem = true;
     try {
       const {
@@ -457,7 +457,6 @@ export default class StakingStore extends Store {
       runInAction('Go to the Confirmation step', () => {
         this.isSubmittingReedem = false;
         this.stakingSuccess = true;
-        this.redeemWallet = wallet;
         this.rewardsTotal = rewardsTotal;
         this.transactionFees = transactionFees;
         this.finalTotal = finalTotal;

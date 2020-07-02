@@ -6,24 +6,36 @@ import type { Node, Element } from 'react';
 import { Modal } from 'react-polymorph/lib/components/Modal';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { Link } from 'react-polymorph/lib/components/Link';
+import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import { ModalSkin } from 'react-polymorph/lib/skins/simple/ModalSkin';
 import styles from './Dialog.scss';
 import dialogOverridesStyles from './DialogOverride.scss';
 
-export type DialogAction = {
+export type DialogActionItems = Array<DialogActionItem>;
+
+export type DialogActionItem = {
   className?: ?string,
   label: string,
   primary?: boolean,
   disabled?: boolean,
   onClick?: Function,
   onDisabled?: Function,
+  isLink?: boolean,
+};
+
+type ActionDirection = 'row' | 'column';
+
+export type DialogActionOptions = {
+  items: DialogActionItems,
+  direction?: ActionDirection,
 };
 
 type Props = {
   title?: string,
   subtitle?: string | Node,
   children?: Node,
-  actions?: Array<DialogAction>,
+  actions?: DialogActionItems | DialogActionOptions,
   closeButton?: ?Element<any>,
   backButton?: Node,
   className?: string,
@@ -32,6 +44,11 @@ type Props = {
   onClose?: Function,
   closeOnOverlayClick?: boolean,
   primaryButtonAutoFocus?: boolean,
+};
+
+const defaultActionOptions = {
+  direction: 'row',
+  items: [],
 };
 
 export default class Dialog extends Component<Props> {
@@ -51,9 +68,24 @@ export default class Dialog extends Component<Props> {
       customThemeOverrides,
     } = this.props;
 
+    const { items, direction } = Array.isArray(actions)
+      ? {
+          ...defaultActionOptions,
+          items: actions,
+        }
+      : {
+          ...defaultActionOptions,
+          ...actions,
+        };
+
     const themeOverrides = defaultThemeOverrides
       ? dialogOverridesStyles
       : customThemeOverrides || '';
+
+    const classActionsClasses = classnames([
+      styles.actions,
+      styles[`${direction}Direction`],
+    ]);
 
     return (
       <Modal
@@ -78,14 +110,14 @@ export default class Dialog extends Component<Props> {
 
           {children && <div className={styles.content}>{children}</div>}
 
-          {actions && (
-            <div className={styles.actions}>
-              {map(actions, (action, key) => {
+          {items && (
+            <div className={classActionsClasses}>
+              {map(items, (action, key) => {
                 const buttonClasses = classnames([
                   action.className ? action.className : null,
                   action.primary ? 'primary' : 'flat',
                 ]);
-                return (
+                return !action.isLink ? (
                   <Button
                     key={key}
                     className={buttonClasses}
@@ -94,6 +126,13 @@ export default class Dialog extends Component<Props> {
                     disabled={action.disabled}
                     skin={ButtonSkin}
                     autoFocus={action.primary ? primaryButtonAutoFocus : false}
+                  />
+                ) : (
+                  <Link
+                    className={action.className}
+                    onClick={action.onClick}
+                    label={action.label}
+                    skin={LinkSkin}
                   />
                 );
               })}

@@ -8,10 +8,6 @@ import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
 import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
-import { Button } from 'react-polymorph/lib/components/Button';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import { Link } from 'react-polymorph/lib/components/Link';
-import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import Wallet from '../../../domains/Wallet';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -20,8 +16,10 @@ import Dialog from '../../widgets/Dialog';
 // @REDEEM TODO - color variable
 import styles from './Step1ConfigurationDialog.scss';
 import redeemDialogOverride from './RedeemDialogOverride.scss';
-import ReactToolboxMobxForm /* ,  {handleFormErrors } */ from '../../../utils/ReactToolboxMobxForm';
-// import globalMessages from '../../../i18n/global-messages';
+import ReactToolboxMobxForm, {
+  handleFormErrors,
+} from '../../../utils/ReactToolboxMobxForm';
+import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
@@ -79,10 +77,35 @@ const messages = defineMessages({
     defaultMessage: '!!!Learn More',
     description: 'learnMoreLinkLabel for Redeem Incentivized Testnet - Step 1',
   },
+  // @REDEEM TODO - Learn More link
   learnMoreLinkUrl: {
     id: 'staking.redeemItnRewards.step1.learnMoreLink.url',
-    defaultMessage: '!!!url',
+    defaultMessage: '!!!http://',
     description: 'learnMoreLinkUrl for Redeem Incentivized Testnet - Step 1',
+  },
+  recoveryPhraseInputHint: {
+    id: 'staking.redeemItnRewards.step1.recoveryPhraseInputHint',
+    defaultMessage: '!!!Enter recovery phrase',
+    description:
+      'Hint "Enter recovery phrase" for the recovery phrase input on the wallet restore dialog.',
+  },
+  selectWalletInputPlaceholder: {
+    id: 'staking.redeemItnRewards.step1.selectWalletInputPlaceholder',
+    defaultMessage: '!!!Select Wallet',
+    description:
+      'Placeholder "Select Wallet" for select input on the delegation setup "choose wallet" step dialog.',
+  },
+  noResults: {
+    id: 'staking.redeemItnRewards.step1.noResults',
+    defaultMessage: '!!!No results',
+    description:
+      '"No results" message for the recovery phrase input search results.',
+  },
+  invalidRecoveryPhrase: {
+    id: 'staking.redeemItnRewards.step1.invalidRecoveryPhrase',
+    defaultMessage: '!!!Invalid recovery phrase',
+    description:
+      'Error message shown when invalid recovery phrase was entered.',
   },
 });
 
@@ -94,6 +117,7 @@ type Props = {
   onClose: Function,
   onContinue: Function,
   onSelectWallet: Function,
+  onLearnMoreClick: Function,
   redeemWallet?: ?Wallet,
   suggestedMnemonics: Array<string>,
   wallets: Array<Wallet>,
@@ -111,11 +135,11 @@ export default class Step1ConfigurationDialog extends Component<Props> {
 
   recoveryPhraseAutocomplete: Autocomplete;
 
-  // componentDidUpdate() {
-  //   if (this.props.error) {
-  //     handleFormErrors('.ConfigurationDialog_error');
-  //   }
-  // }
+  componentDidUpdate() {
+    if (this.props.error) {
+      handleFormErrors('.ConfigurationDialog_error');
+    }
+  }
 
   form = new ReactToolboxMobxForm(
     {
@@ -123,21 +147,27 @@ export default class Step1ConfigurationDialog extends Component<Props> {
         recoveryPhrase: {
           value: [],
           label: this.context.intl.formatMessage(messages.recoveryPhraseLabel),
-          validators: ({ field }) => {
-            // const { intl } = this.context;
-            const enteredWords = field.value;
-            const wordCount = enteredWords.length;
-            const expectedWordCount = WALLET_RECOVERY_PHRASE_WORD_COUNT;
-            const value = enteredWords.join(' ');
-            const isPhraseComplete = wordCount === expectedWordCount;
-            if (!isPhraseComplete) {
-              return [false, 'INCOMPLETE'];
-            }
-            return [
-              this.props.mnemonicValidator(value, expectedWordCount),
-              'this.context.intl.formatMessage(messages.invalidRecoveryPhrase)',
-            ];
-          },
+          // // @REDEEM TODO - re-enable validation
+          // validators: ({ field }) => {
+          //   const { intl } = this.context;
+          //   const enteredWords = field.value;
+          //   const wordCount = enteredWords.length;
+          //   const expectedWordCount = WALLET_RECOVERY_PHRASE_WORD_COUNT;
+          //   const value = enteredWords.join(' ');
+          //   const isPhraseComplete = wordCount === expectedWordCount;
+          //   if (!isPhraseComplete) {
+          //     return [
+          //       false,
+          //       intl.formatMessage(globalMessages.incompleteMnemonic, {
+          //         expected: expectedWordCount,
+          //       }),
+          //     ];
+          //   }
+          //   return [
+          //     this.props.mnemonicValidator(value, expectedWordCount),
+          //     this.context.intl.formatMessage(messages.invalidRecoveryPhrase),
+          //   ];
+          // },
         },
         walletsDropdown: {
           type: 'select',
@@ -163,19 +193,41 @@ export default class Step1ConfigurationDialog extends Component<Props> {
   );
 
   submit = () => {
+    console.log('ON submit');
     this.form.submit({
       onSuccess: form => {
         const { onContinue } = this.props;
-        const { recoveryPhrase /* walletName */ } = form.values();
+        // @REDEEM TODO:
+        // const { recoveryPhrase } = form.values();
+        const recoveryPhrase = [
+          'joy',
+          'dentist',
+          'general',
+          'raccoon',
+          'cart',
+          'pelican',
+          'morning',
+          'tube',
+          'hour',
+          'glue',
+          'mesh',
+          'assault',
+          'liquid',
+          'vocal',
+          'ridge',
+        ];
+        console.log('recoveryPhrase', recoveryPhrase);
         onContinue({
-          wallet: this.props.wallets[0],
           recoveryPhrase,
         });
       },
-      onError: (err: Error) => {
-        throw new Error(err);
+      onError: (a, b, c) => {
+        console.log('ERR');
+        console.log('a', a);
+        console.log('b', b);
+        console.log('c', c);
       },
-      //   handleFormErrors('.ConfigurationDialog_error', { focusElement: true }),
+      // onError: () => handleFormErrors('.ConfigurationDialog_error', { focusElement: true }),
     });
   };
 
@@ -189,8 +241,8 @@ export default class Step1ConfigurationDialog extends Component<Props> {
   }
 
   get canSubmit() {
-    return true;
     // @REDEEM TODO:
+    return true;
     // const { isSubmitting, isWalletValid } = this.props;
     // const { form } = this;
     // const { checked: checkboxAcceptance1isChecked } = form.$(
@@ -219,7 +271,9 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       onSelectWallet,
       redeemWallet,
       suggestedMnemonics,
+      onLearnMoreClick,
       wallets,
+      error,
     } = this.props;
     const recoveryPhraseField = form.$('recoveryPhrase');
     const walletsDropdownField = form.$('walletsDropdown');
@@ -229,28 +283,37 @@ export default class Step1ConfigurationDialog extends Component<Props> {
 
     const buttonClasses = classnames([
       'primary',
-      styles.buttonContinue,
+      // styles.buttonContinue,
       isSubmitting ? styles.isSubmitting : null,
     ]);
+
+    const actions = {
+      direction: 'column',
+      items: [
+        {
+          className: buttonClasses,
+          disabled: !this.canSubmit,
+          primary: true,
+          label: intl.formatMessage(messages.continueButtonLabel),
+          onClick: this.submit,
+        },
+        {
+          onClick: (event: MouseEvent) =>
+            onLearnMoreClick(
+              intl.formatMessage(messages.learnMoreLinkUrl, event)
+            ),
+          label: intl.formatMessage(messages.learnMoreLinkLabel),
+          isLink: true,
+        },
+      ],
+    };
 
     return (
       <>
         <DialogCloseButton className={redeemDialogOverride.closeButton} />
         <Dialog
           title={intl.formatMessage(messages.title)}
-          actions1={[
-            {
-              className: isSubmitting ? styles.isSubmitting : null,
-              disabled: !this.canSubmit,
-              primary: true,
-              label: intl.formatMessage(messages.continueButtonLabel),
-              onClick: () =>
-                onContinue({
-                  wallet: wallets[0],
-                  recoveryPhrase: ['one', 'two'],
-                }),
-            },
-          ]}
+          actions={actions}
           onContinue={onContinue}
           onClose={onClose}
           closeButton1={<DialogCloseButton />}
@@ -270,34 +333,25 @@ export default class Step1ConfigurationDialog extends Component<Props> {
               maxSelections={WALLET_RECOVERY_PHRASE_WORD_COUNT}
               error={recoveryPhraseField.error}
               maxVisibleOptions={5}
-              noResultsMessage={
-                'NO RESULTS LABEL'
-                // intl.formatMessage(messages.recoveryPhraseNoResults)
-              }
+              noResultsMessage={intl.formatMessage(messages.noResults)}
               className={styles.recoveryPhrase}
               skin={AutocompleteSkin}
               optionHeight={50}
             />
-
             <WalletsDropdown
               className={styles.walletsDropdown}
               {...walletsDropdownField.bind()}
               numberOfStakePools={4}
               wallets={wallets}
               onChange={onSelectWallet}
-              placeholder={
-                'WalletsDropdown Placeholder'
-                /* intl.formatMessage(
-                      messages.selectWalletInputPlaceholder
-                    ) */
-              }
+              placeholder={intl.formatMessage(
+                messages.selectWalletInputPlaceholder
+              )}
               value={redeemWalletId}
               getStakePoolById={() => {}}
               error={this.walletsDropdownError}
             />
-
             <hr />
-
             <Checkbox
               {...checkboxAcceptance1Field.bind()}
               className={styles.checkbox}
@@ -310,21 +364,9 @@ export default class Step1ConfigurationDialog extends Component<Props> {
               skin={CheckboxSkin}
               error={checkboxAcceptance2Field.error}
             />
-            <div className={styles.action}>
-              <Button
-                className={buttonClasses}
-                label={intl.formatMessage(messages.continueButtonLabel)}
-                onClick={this.submit}
-                skin={ButtonSkin}
-              />
-              <Link
-                className={styles.learnMoreLink}
-                onClick={() => {}}
-                label={intl.formatMessage(messages.learnMoreLinkLabel)}
-                skin={LinkSkin}
-              />
-            </div>
-            {/* error && <p className={styles.error}>{intl.formatMessage(error)}</p> */}
+            {error && (
+              <p className={styles.error}>{/* intl.formatMessage(error) */}</p>
+            )}
           </div>
         </Dialog>
       </>

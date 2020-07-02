@@ -44,6 +44,7 @@ export const Step1ConfigurationDialogStory = () => {
       onClose={action('onClose')}
       onContinue={action('onContinue')}
       onBack={action('onBack')}
+      onLearnMoreClick={action('onLearnMoreClick')}
       suggestedMnemonics={validWords}
     />
   );
