@@ -59,7 +59,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
   },
   button: {
     '--theme-button-spinner-color': '#fafbfc',
-    '--theme-label-button-color': 'rgba(233, 244, 254, 0.5)',
+    '--theme-label-button-color': 'rgba(233, 244, 254, 1)',
   },
   buttonAttention: {
     '--theme-button-attention-background-color': '#ea4c5b',
