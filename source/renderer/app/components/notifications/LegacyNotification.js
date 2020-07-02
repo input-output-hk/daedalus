@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Link } from 'react-polymorph/lib/components/Link';
@@ -112,7 +112,7 @@ export default class LegacyNotification extends Component<Props> {
       activeWalletName,
       ..._values,
     };
-    return <FormattedHTMLMessage {...message} values={values} />;
+    return <FormattedMessage {...message} values={values} />;
   };
 
   render() {

@@ -18,6 +18,7 @@ export const WALLETS = [
     id: '0',
     name: 'With Password',
     amount: new BigNumber(0),
+    reward: new BigNumber(0),
     hasPassword: true,
     passwordUpdateDate: moment()
       .subtract(1, 'month')
@@ -33,6 +34,7 @@ export const WALLETS = [
     id: '1',
     name: 'No Password',
     amount: new BigNumber(66.998),
+    reward: new BigNumber(0),
     hasPassword: false,
     passwordUpdateDate: new Date(),
     syncState: { status: WalletSyncStateStatuses.READY },
@@ -46,6 +48,7 @@ export const WALLETS = [
     id: '2',
     name: 'Legacy with funds',
     amount: new BigNumber(55.555),
+    reward: new BigNumber(0),
     hasPassword: true,
     passwordUpdateDate: moment()
       .subtract(1, 'month')
@@ -63,6 +66,7 @@ export const WALLETS = [
     id: '3',
     name: 'Legacy with no funds',
     amount: new BigNumber(0),
+    reward: new BigNumber(0),
     hasPassword: true,
     passwordUpdateDate: moment()
       .subtract(1, 'month')
@@ -79,6 +83,7 @@ export const WALLETS = [
     id: '4',
     name: 'Restoring',
     amount: new BigNumber(12.345),
+    reward: new BigNumber(0),
     hasPassword: true,
     passwordUpdateDate: moment()
       .subtract(1, 'month')
@@ -101,6 +106,7 @@ export const WALLETS = [
     id: '5',
     name: 'Not responding',
     amount: new BigNumber(66.998),
+    reward: new BigNumber(0),
     hasPassword: true,
     passwordUpdateDate: moment()
       .subtract(1, 'month')
@@ -119,30 +125,35 @@ export const WALLETS_V2 = [
     id: '1',
     name: 'Wallet 1',
     amount: new BigNumber(faker.finance.amount()),
+    reward: new BigNumber(faker.finance.amount()),
     delegatedStakePoolId: 'kfhdsdkhfskdjfhskdhf',
   },
   {
     id: '2',
     name: 'Wallet 2',
     amount: new BigNumber(faker.finance.amount()),
+    reward: new BigNumber(faker.finance.amount()),
     delegatedStakePoolId: 'kfhdsdkhfskdjfhskdhf',
   },
   {
     id: '3',
     name: 'Wallet 3',
     amount: new BigNumber(faker.finance.amount()),
+    reward: new BigNumber(faker.finance.amount()),
     delegatedStakePoolId: 'kfhdsdkhfskdjfhskdhf',
   },
   {
     id: '4',
     name: 'Wallet 4',
     amount: new BigNumber(faker.finance.amount()),
+    reward: new BigNumber(faker.finance.amount()),
     delegatedStakePoolId: 'kfhdsdkhfskdjfhskdhf',
   },
   {
     id: '5',
     name: 'Wallet 5',
     amount: new BigNumber(faker.finance.amount()),
+    reward: new BigNumber(faker.finance.amount()),
   },
 ];
 
