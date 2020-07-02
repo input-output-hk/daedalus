@@ -746,7 +746,7 @@ export const SHELLEY_TESTNET_THEME_OUTPUT = {
     '--theme-staking-progress-bar-background-color':
       'rgba(255, 255, 255, 0.07)',
     '--theme-staking-progress-stripe-dark-1-background-color': '#898ee6',
-    '--theme-staking-progress-stripe-dark-2-background-color': '#0da2a4',
+    '--theme-staking-progress-stripe-dark-2-background-color': '#676ddf',
     '--theme-staking-table-body-highlighted-text-color': '#313245',
     '--theme-staking-info-learn-more-button-text-color': 'rgba(18, 19, 38, 1)',
     '--theme-staking-info-learn-more-icon-color': 'rgba(18, 19, 38, 1)',

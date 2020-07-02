@@ -182,7 +182,10 @@
     }
 
     :global {
-      .LoadingSpinner_component.LoadingSpinner_medium .LoadingSpinner_icon svg path {
+      .LoadingSpinner_component.LoadingSpinner_medium
+        .LoadingSpinner_icon
+        svg
+        path {
         fill: var(--theme-loading-spinner-color);
       }
     }
