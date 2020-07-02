@@ -39,6 +39,7 @@ type Props = {
   onNavItemClick: Function,
   isActiveNavItem: Function,
   isIncentivizedTestnet: boolean,
+  isShelleyTestnet: boolean,
 };
 
 @observer
@@ -53,6 +54,7 @@ export default class StakingNavigation extends Component<Props> {
       activeItem,
       isActiveNavItem,
       isIncentivizedTestnet,
+      isShelleyTestnet,
     } = this.props;
     const { intl } = this.context;
     const navigationItems = [
@@ -69,17 +71,17 @@ export default class StakingNavigation extends Component<Props> {
         label: intl.formatMessage(messages.rewards),
       },
     ];
+    if (!isIncentivizedTestnet && !isShelleyTestnet) {
+      navigationItems.push({
+        id: 'epochs',
+        label: intl.formatMessage(messages.epochs),
+      });
+    }
     if (!isIncentivizedTestnet) {
-      navigationItems.push(
-        {
-          id: 'epochs',
-          label: intl.formatMessage(messages.epochs),
-        },
-        {
-          id: 'info',
-          label: intl.formatMessage(messages.info),
-        }
-      );
+      navigationItems.push({
+        id: 'info',
+        label: intl.formatMessage(messages.info),
+      });
     }
 
     return (

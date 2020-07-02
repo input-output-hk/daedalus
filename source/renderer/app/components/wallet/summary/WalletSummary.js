@@ -77,18 +77,20 @@ export default class WalletSummary extends Component<Props> {
             />
           </div>
 
-          <div className={styles.balancesWrapper}>
-            <div className={styles.walletBalance}>
-              {intl.formatMessage(messages.walletBalancelabel)}:&nbsp;
-              {wallet.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
-              <SVGInline svg={adaSymbol} className={styles.currencySymbol} />
+          {!wallet.isLegacy && (
+            <div className={styles.balancesWrapper}>
+              <div className={styles.walletBalance}>
+                {intl.formatMessage(messages.walletBalancelabel)}:&nbsp;
+                {wallet.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
+                <SVGInline svg={adaSymbol} className={styles.currencySymbol} />
+              </div>
+              <div className={styles.rewardsAccountBalance}>
+                {intl.formatMessage(messages.rewardsAccountBalancelabel)}:&nbsp;
+                {wallet.reward.toFormat(DECIMAL_PLACES_IN_ADA)}
+                <SVGInline svg={adaSymbol} className={styles.currencySymbol} />
+              </div>
             </div>
-            <div className={styles.rewardsAccountBalance}>
-              {intl.formatMessage(messages.rewardsAccountBalancelabel)}:&nbsp;
-              {wallet.reward.toFormat(DECIMAL_PLACES_IN_ADA)}
-              <SVGInline svg={adaSymbol} className={styles.currencySymbol} />
-            </div>
-          </div>
+          )}
 
           {!isLoadingTransactions ? (
             <div className={styles.transactionsCountWrapper}>
