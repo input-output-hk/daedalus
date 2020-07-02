@@ -39,9 +39,9 @@ const messages = defineMessages({
 
 type Props = {
   wallets: Array<Wallet>,
+  currentLocale: string,
   stakePoolsList: Array<StakePool>,
   onOpenExternalLink: Function,
-  learnMoreUrl: string,
   currentTheme: string,
   onRank: Function,
   onDelegate: Function,
@@ -85,10 +85,10 @@ export default class StakePools extends Component<Props, State> {
     const { intl } = this.context;
     const {
       wallets,
+      currentLocale,
       stakePoolsList,
       onRank,
       onOpenExternalLink,
-      learnMoreUrl,
       currentTheme,
       isLoading,
       stakePoolsDelegatingList,
@@ -134,8 +134,8 @@ export default class StakePools extends Component<Props, State> {
 
             <StakePoolsRanking
               wallets={wallets}
+              currentLocale={currentLocale}
               onOpenExternalLink={onOpenExternalLink}
-              learnMoreUrl={learnMoreUrl}
               onRank={onRank}
               isLoading={isLoading}
             />

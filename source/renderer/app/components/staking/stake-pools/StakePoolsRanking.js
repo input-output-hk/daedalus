@@ -86,10 +86,20 @@ const messages = defineMessages({
   },
 });
 
+const learnMoreUrlMap = {
+  'en-US': 'https://iohk.zendesk.com/hc/en-us',
+  'ja-JP': 'https://iohk.zendesk.com/hc/ja',
+};
+
+const walletSelectorLanguageMap = {
+  'en-US': 'en-selector',
+  'ja-JP': 'ja-selector',
+};
+
 type Props = {
   wallets: Array<Wallet>,
+  currentLocale: string,
   onOpenExternalLink: Function,
-  learnMoreUrl: string,
   onRank: Function,
   isLoading: boolean,
 };
@@ -168,7 +178,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
 
   generateInfo = () => {
     const { intl } = this.context;
-    const { wallets } = this.props;
+    const { wallets, currentLocale } = this.props;
     const { selectedWalletId, sliderValue } = this.state;
     const allWalletsItem = {
       label: intl.formatMessage(messages.rankingAllWallets),
@@ -183,8 +193,10 @@ export default class StakePoolsRanking extends Component<Props, State> {
     ];
     const walletSelectorClasses = classnames([
       styles.walletSelector,
+      walletSelectorLanguageMap[currentLocale],
       selectedWalletId === null ? 'no-value-selected' : null,
     ]);
+    const learnMoreUrl = learnMoreUrlMap[currentLocale];
 
     let walletSelectionStart = null;
     let walletSelectionEnd = null;
@@ -211,12 +223,13 @@ export default class StakePoolsRanking extends Component<Props, State> {
       walletSelectionStart,
       walletSelectionEnd,
       sliderValue,
+      learnMoreUrl,
     };
   };
 
   render() {
     const { intl } = this.context;
-    const { onOpenExternalLink, learnMoreUrl, isLoading } = this.props;
+    const { onOpenExternalLink, isLoading } = this.props;
     const rankingDescription = intl.formatMessage(messages.rankingDescription);
     const learnMoreButtonClasses = classnames(['flat', styles.actionLearnMore]);
     const {
@@ -226,6 +239,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
       walletSelectionStart,
       walletSelectionEnd,
       sliderValue,
+      learnMoreUrl,
     } = this.generateInfo();
 
     return (

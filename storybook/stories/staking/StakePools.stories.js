@@ -9,6 +9,7 @@ import DUMMY_WALLETS from '../../../source/renderer/app/config/wallets.dummy';
 
 type Props = {
   currentTheme: string,
+  locale: string,
   isLoading: boolean,
 };
 
@@ -30,8 +31,8 @@ export const StakePoolsStory = (props: Props) => (
       STAKE_POOLS[36],
     ]}
     onOpenExternalLink={action('onOpenExternalLink')}
-    learnMoreUrl="https://iohk.zendesk.com/hc/en-us"
     currentTheme={props.currentTheme}
+    currentLocale={props.locale}
     onDelegate={action('onDelegate')}
     isLoading={props.isLoading}
     onRank={() => null}

@@ -8,11 +8,6 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 
 type Props = InjectedProps;
 
-const learnMoreUrlMap = {
-  'en-US': 'https://iohk.zendesk.com/hc/en-us',
-  'ja-JP': 'https://iohk.zendesk.com/hc/ja',
-};
-
 @inject('stores', 'actions')
 @observer
 export default class StakePoolsListPage extends Component<Props> {
@@ -47,16 +42,15 @@ export default class StakePoolsListPage extends Component<Props> {
     const { currentTheme } = profile;
     const { stakePools, fetchingStakePoolsFailed, recentStakePools } = staking;
     const { all } = wallets;
-    const learnMoreUrl = learnMoreUrlMap[profile.currentLocale];
 
     return (
       <Fragment>
         <StakePools
           wallets={all}
+          currentLocale={profile.currentLocale}
           stakePoolsList={stakePools}
           stakePoolsDelegatingList={recentStakePools}
           onOpenExternalLink={app.openExternalLink}
-          learnMoreUrl={learnMoreUrl}
           currentTheme={currentTheme}
           onRank={this.onRank}
           onDelegate={this.handleDelegate}

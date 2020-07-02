@@ -14,9 +14,17 @@
     .selectWallet {
       :global {
         .no-value-selected {
-          .SimpleInput_customValueBlock {
-            width: 110px;
+          &.en-selector {
+            .SimpleInput_customValueBlock {
+              width: 110px;
+            }
           }
+          &.ja-selector {
+            .SimpleInput_customValueBlock {
+              width: 160px;
+            }
+          }
+
           .SelectOverrides_selectInput::after {
             bottom: -14.5px !important;
           }
@@ -59,7 +67,7 @@
             max-width: 380px;
           }
           .SimpleOptions_options {
-            min-width: 180px;
+            min-width: 200px;
             max-width: 400px;
 
             .SimpleOptions_option {
