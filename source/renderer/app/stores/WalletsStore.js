@@ -899,14 +899,18 @@ export default class WalletsStore extends Store {
     } else {
       throw new Error('Unexpected environment');
     }
-    const response = await introspectAddressChannel.send({ input: address });
-    if (response === 'Invalid') {
+    try {
+      const response = await introspectAddressChannel.send({ input: address });
+      if (response === 'Invalid') {
+        return false;
+      }
+      return (
+        validAddressStyles.includes(response.introspection.address_style) &&
+        expectedNetworkTag === response.introspection.network_tag
+      );
+    } catch (error) {
       return false;
     }
-    return (
-      validAddressStyles.includes(response.introspection.address_style) &&
-      expectedNetworkTag === response.introspection.network_tag
-    );
   };
 
   isValidCertificateMnemonic = (mnemonic: string) =>
