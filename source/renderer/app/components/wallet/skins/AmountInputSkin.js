@@ -12,6 +12,12 @@ export const messages = defineMessages({
     description:
       'Label for the "+ 12.042481 of fees" message above amount input field.',
   },
+  calculatingFeesLabel: {
+    id: 'wallet.amountInput.calculatingFeesLabel',
+    defaultMessage: '!!!Calculating fees',
+    description:
+      'Label for the "Calculating fees" message above amount input field.',
+  },
 });
 
 type Props = {
@@ -19,6 +25,7 @@ type Props = {
   fees: ?BigNumber,
   total: ?BigNumber,
   error: boolean,
+  isCalculatingFees: boolean,
 };
 
 export default class AmountInputSkin extends Component<Props> {
@@ -27,13 +34,18 @@ export default class AmountInputSkin extends Component<Props> {
   };
 
   render() {
-    const { error, fees, total, currency } = this.props;
+    const { error, fees, total, currency, isCalculatingFees } = this.props;
     const { intl } = this.context;
 
     return (
       <div className={styles.root}>
         <InputSkin {...this.props} />
-        {fees && !error && (
+        {isCalculatingFees && (
+          <span className={styles.calculatingFees}>
+            {intl.formatMessage(messages.calculatingFeesLabel)}
+          </span>
+        )}
+        {fees && !error && !isCalculatingFees && (
           <span className={styles.fees}>
             {intl.formatMessage(messages.feesLabel, { amount: fees })}
           </span>
