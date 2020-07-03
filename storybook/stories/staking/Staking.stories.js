@@ -100,6 +100,7 @@ const decorator = (story, context) => {
                   isIncentivizedTestnet={isIncentivizedTestnetTheme(
                     context.currentTheme
                   )}
+                  isShelleyTestnet={false}
                 >
                   {storyWithKnobs}
                 </StakingWithNavigation>,
