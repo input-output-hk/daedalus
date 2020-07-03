@@ -9,6 +9,13 @@
     margin-bottom: 20px;
     text-align: center;
     width: 620px;
+    .itnLink {
+      @extend .description;
+      border-bottom: 1px solid var(--theme-staking-redeemItnRewards-text-color);
+      &:after {
+        background: var(--theme-staking-redeemItnRewards-text-color);
+      }
+    }
   }
   .recoveryPhrase {
     margin-bottom: 20px;

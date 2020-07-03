@@ -34,7 +34,7 @@ export default class Step1ConfigurationContainer extends Component<Props> {
         suggestedMnemonics={validWords}
         wallet={redeemWallet}
         wallets={allWallets}
-        onLearnMoreClick={openExternalLink}
+        openExternalLink={openExternalLink}
       />
     );
   }

@@ -8,12 +8,13 @@ import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
 import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
-import { defineMessages, intlShape } from 'react-intl';
+import { Link } from 'react-polymorph/lib/components/Link';
+import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
+import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import Wallet from '../../../domains/Wallet';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import Dialog from '../../widgets/Dialog';
-// @REDEEM TODO - color variable
 import styles from './Step1ConfigurationDialog.scss';
 import redeemDialogOverride from './RedeemDialogOverride.scss';
 import ReactToolboxMobxForm, {
@@ -33,8 +34,20 @@ const messages = defineMessages({
   description: {
     id: 'staking.redeemItnRewards.step1.description',
     defaultMessage:
-      '!!!If you participated in the Incentivized Testnet and earned rewards by running a stake pool or delegating your stake, you can use this feature to redeem your rewards as ada on the Cardano mainnet. You will need the wallet recovery phrase for the Incentivized Testnet wallet used to earn rewards and an existing mainnet wallet in Daedalus to which the rewards will be transferred. This wallet will also be used to pay any applicable transaction fees.',
+      '!!!If you participated in the { itnLink } and earned rewards by running a stake pool or delegating your stake, you can use this feature to redeem your rewards as ada on the Cardano mainnet. You will need the wallet recovery phrase for the Incentivized Testnet wallet used to earn rewards and an existing mainnet wallet in Daedalus to which the rewards will be transferred. This wallet will also be used to pay any applicable transaction fees.',
     description: 'description for Redeem Incentivized Testnet - Step 1',
+  },
+  descriptionItnLinkLabel: {
+    id: 'staking.redeemItnRewards.step1.descriptionItnLinkLabel',
+    defaultMessage: '!!!Incentivized Testnet',
+    description:
+      'descriptionItnLinkLabel for Redeem Incentivized Testnet - Step 1',
+  },
+  descriptionItnLinkUrl: {
+    id: 'staking.redeemItnRewards.step1.descriptionItnLinkUrl',
+    defaultMessage: '!!!https://staking.cardano.org/',
+    description:
+      'descriptionItnLinkUrl for Redeem Incentivized Testnet - Step 1',
   },
   recoveryPhraseLabel: {
     id: 'staking.redeemItnRewards.step1.recoveryPhraseLabel',
@@ -116,7 +129,7 @@ type Props = {
   onClose: Function,
   onContinue: Function,
   onSelectWallet: Function,
-  onLearnMoreClick: Function,
+  openExternalLink: Function,
   wallet: ?Wallet,
   suggestedMnemonics: Array<string>,
   wallets: Array<Wallet>,
@@ -248,7 +261,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       onSelectWallet,
       wallet,
       suggestedMnemonics,
-      onLearnMoreClick,
+      openExternalLink,
       wallets,
       error,
     } = this.props;
@@ -275,7 +288,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
         },
         {
           onClick: (event: MouseEvent) =>
-            onLearnMoreClick(
+            openExternalLink(
               intl.formatMessage(messages.learnMoreLinkUrl, event)
             ),
           label: intl.formatMessage(messages.learnMoreLinkLabel),
@@ -283,6 +296,19 @@ export default class Step1ConfigurationDialog extends Component<Props> {
         },
       ],
     };
+
+    const itnLink = (
+      <Link
+        className={styles.itnLink}
+        onClick={(event: MouseEvent) =>
+          openExternalLink(
+            intl.formatMessage(messages.descriptionItnLinkUrl, event)
+          )
+        }
+        label={intl.formatMessage(messages.descriptionItnLinkLabel)}
+        skin={LinkSkin}
+      />
+    );
 
     return (
       <>
@@ -300,7 +326,12 @@ export default class Step1ConfigurationDialog extends Component<Props> {
         >
           <div className={styles.component}>
             <p className={styles.description}>
-              {intl.formatMessage(messages.description)}
+              <FormattedMessage
+                {...messages.description}
+                values={{
+                  itnLink,
+                }}
+              />
             </p>
             <Autocomplete
               {...recoveryPhraseField.bind()}

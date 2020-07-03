@@ -10,10 +10,22 @@ import redeemDialogOverride from './RedeemDialogOverride.scss';
 import sadWalletImage from '../../../assets/images/sad-wallet.inline.svg';
 
 const messages = defineMessages({
-  description: {
-    id: 'staking.redeemItnRewards.step3.failure.description',
+  description1NoRewards: {
+    id: 'staking.redeemItnRewards.step3.failure.description1NoRewards',
     defaultMessage:
       '!!!No rewards were found in your Incentivized Testnet Rewards wallet. Please make sure that you have entered the correct wallet recovery phrase.',
+    description: 'description for Redeem Incentivized Testnet - Step 3',
+  },
+  description2InvalidWallet: {
+    id: 'staking.redeemItnRewards.step3.failure.description2InvalidWallet',
+    defaultMessage:
+      '!!!Rewards from the wallet corresponding to the recovery phrase you have provided have already been redeemed.',
+    description: 'description for Redeem Incentivized Testnet - Step 3',
+  },
+  description3Generic: {
+    id: 'staking.redeemItnRewards.step3.failure.description3Generic',
+    defaultMessage:
+      '!!!No rewards were found in your Incentivized Testnet Rewards wallet. Please make sure that you have entered the correct wallet recovery phrase and that rewards have not already been redeemed.',
     description: 'description for Redeem Incentivized Testnet - Step 3',
   },
   backButtonLabel: {
@@ -32,6 +44,8 @@ const messages = defineMessages({
 type Props = {
   onClose: Function,
   onBack: Function,
+  // @REDEEM TODO: Remove when the API endpoint is implemented
+  stakingFailure: number,
 };
 
 @observer
@@ -42,7 +56,7 @@ export default class Step3FailureDialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onClose, onBack } = this.props;
+    const { onClose, onBack, stakingFailure } = this.props;
 
     const actions = {
       direction: 'column',
@@ -61,6 +75,11 @@ export default class Step3FailureDialog extends Component<Props> {
       ],
     };
 
+    // #REDEEM TODO: remove when the API is ready
+    let description = messages.description1NoRewards;
+    if (stakingFailure === 2) description = messages.description2InvalidWallet;
+    if (stakingFailure === 3) description = messages.description3Generic;
+
     return (
       <>
         <DialogCloseButton
@@ -75,7 +94,7 @@ export default class Step3FailureDialog extends Component<Props> {
         >
           <SVGInline svg={sadWalletImage} className={styles.sadWalletImage} />
           <div className={styles.description}>
-            {intl.formatMessage(messages.description)}
+            {intl.formatMessage(description)}
           </div>
         </Dialog>
       </>

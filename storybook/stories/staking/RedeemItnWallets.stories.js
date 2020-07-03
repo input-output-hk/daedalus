@@ -44,7 +44,7 @@ export const Step1ConfigurationDialogStory = () => {
       onClose={action('onClose')}
       onContinue={action('onContinue')}
       onBack={action('onBack')}
-      onLearnMoreClick={action('onLearnMoreClick')}
+      openExternalLink={action('openExternalLink')}
       suggestedMnemonics={validWords}
     />
   );
@@ -93,7 +93,20 @@ export const Step3SuccessDialogStory = () => {
   );
 };
 export const Step3FailureDialogStory = () => {
+  const stakingFailure = select(
+    'Error type',
+    {
+      'No rewards found': 1,
+      'Invalid recovery phrase': 2,
+      Generic: 3,
+    },
+    1
+  );
   return (
-    <Step3FailureDialog onClose={action('onClose')} onBack={action('onBack')} />
+    <Step3FailureDialog
+      onClose={action('onClose')}
+      onBack={action('onBack')}
+      stakingFailure={stakingFailure}
+    />
   );
 };

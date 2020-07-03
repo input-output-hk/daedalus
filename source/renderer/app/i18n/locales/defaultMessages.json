@@ -4166,6 +4166,549 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Redemption of Incentivized Testnet rewards is not available as you currently do not have any Shelley-compatible wallets.",
+        "description": "description for Redeem Incentivized Testnet - Step 3",
+        "end": {
+          "column": 3,
+          "line": 18
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/NoWalletsDialog.js",
+        "id": "staking.redeemItnRewards.noWallets.description",
+        "start": {
+          "column": 15,
+          "line": 13
+        }
+      },
+      {
+        "defaultMessage": "!!!Add wallet",
+        "description": "addWalletButtonLabel for Redeem Incentivized Testnet - Step 3",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/NoWalletsDialog.js",
+        "id": "staking.redeemItnRewards.noWallets.addWalletButtonLabel",
+        "start": {
+          "column": 24,
+          "line": 19
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/staking/redeem-itn-rewards/NoWalletsDialog.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Redeem Incentivized Testnet rewards",
+        "description": "Title for Redeem Incentivized Testnet - Step 1",
+        "end": {
+          "column": 3,
+          "line": 33
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
+        "id": "staking.redeemItnRewards.step1.title",
+        "start": {
+          "column": 9,
+          "line": 29
+        }
+      },
+      {
+        "defaultMessage": "!!!If you participated in the {itnLink} and earned rewards by running a stake pool or delegating your stake, you can use this feature to redeem your rewards as ada on the Cardano mainnet. You will need the wallet recovery phrase for the Incentivized Testnet wallet used to earn rewards and an existing mainnet wallet in Daedalus to which the rewards will be transferred. This wallet will also be used to pay any applicable transaction fees.",
+        "description": "description for Redeem Incentivized Testnet - Step 1",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
+        "id": "staking.redeemItnRewards.step1.description",
+        "start": {
+          "column": 15,
+          "line": 34
+        }
+      },
+      {
+        "defaultMessage": "!!!Incentivized Testnet",
+        "description": "descriptionItnLinkLabel for Redeem Incentivized Testnet - Step 1",
+        "end": {
+          "column": 3,
+          "line": 45
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
+        "id": "staking.redeemItnRewards.step1.descriptionItnLinkLabel",
+        "start": {
+          "column": 27,
+          "line": 40
+        }
+      },
+      {
+        "defaultMessage": "!!!https://staking.cardano.org/",
+        "description": "descriptionItnLinkUrl for Redeem Incentivized Testnet - Step 1",
+        "end": {
+          "column": 3,
+          "line": 51
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
+        "id": "staking.redeemItnRewards.step1.descriptionItnLinkUrl",
+        "start": {
+          "column": 25,
+          "line": 46
+        }
+      },
+      {
+        "defaultMessage": "!!!Wallet recovery phrase for your Incentivized Testnet Rewards wallet:",
+        "description": "recoveryPhraseLabel for Redeem Incentivized Testnet - Step 1",
+        "end": {
+          "column": 3,
+          "line": 57
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
+        "id": "staking.redeemItnRewards.step1.recoveryPhraseLabel",
+        "start": {
+          "column": 23,
+          "line": 52
+        }
+      },
+      {
+        "defaultMessage": "!!!Redeem rewards to:",
+        "description": "walletsDropdownLabel for Redeem Incentivized Testnet - Step 1",
+        "end": {
+          "column": 3,
+          "line": 63
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
+        "id": "staking.redeemItnRewards.step1.walletsDropdownLabel",
+        "start": {
+          "column": 24,
+          "line": 58
+        }
+      },
+      {
+        "defaultMessage": "!!!The selected wallet does not have sufficient ada to cover the necessary transaction fees. Please choose another wallet or add more funds to this one.",
+        "description": "walletsDropdownError for Redeem Incentivized Testnet - Step 1",
+        "end": {
+          "column": 3,
+          "line": 70
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
+        "id": "staking.redeemItnRewards.step1.walletsDropdownError",
+        "start": {
+          "column": 24,
+          "line": 64
+        }
+      },
+      {
+        "defaultMessage": "!!!I understand that redeeming rewards from the Incentivized Testnet requires paying transaction fees.",
+        "description": "checkbox1Label for Redeem Incentivized Testnet - Step 1",
+        "end": {
+          "column": 3,
+          "line": 76
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
+        "id": "staking.redeemItnRewards.step1.checkbox1Label",
+        "start": {
+          "column": 18,
+          "line": 71
+        }
+      },
+      {
+        "defaultMessage": "!!!I understand that fees will be paid from the wallet I am redeeming my rewards to.",
+        "description": "checkbox2Label for Redeem Incentivized Testnet - Step 1",
+        "end": {
+          "column": 3,
+          "line": 82
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
+        "id": "staking.redeemItnRewards.step1.checkbox2Label",
+        "start": {
+          "column": 18,
+          "line": 77
+        }
+      },
+      {
+        "defaultMessage": "!!!Continue",
+        "description": "continueButtonLabel for Redeem Incentivized Testnet - Step 1",
+        "end": {
+          "column": 3,
+          "line": 87
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
+        "id": "staking.redeemItnRewards.step1.continueButton.label",
+        "start": {
+          "column": 23,
+          "line": 83
+        }
+      },
+      {
+        "defaultMessage": "!!!Learn More",
+        "description": "learnMoreLinkLabel for Redeem Incentivized Testnet - Step 1",
+        "end": {
+          "column": 3,
+          "line": 92
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
+        "id": "staking.redeemItnRewards.step1.learnMoreLink.label",
+        "start": {
+          "column": 22,
+          "line": 88
+        }
+      },
+      {
+        "defaultMessage": "!!!http://",
+        "description": "learnMoreLinkUrl for Redeem Incentivized Testnet - Step 1",
+        "end": {
+          "column": 3,
+          "line": 98
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
+        "id": "staking.redeemItnRewards.step1.learnMoreLink.url",
+        "start": {
+          "column": 20,
+          "line": 94
+        }
+      },
+      {
+        "defaultMessage": "!!!Enter recovery phrase",
+        "description": "Hint \"Enter recovery phrase\" for the recovery phrase input on the wallet restore dialog.",
+        "end": {
+          "column": 3,
+          "line": 104
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
+        "id": "staking.redeemItnRewards.step1.recoveryPhraseInputHint",
+        "start": {
+          "column": 27,
+          "line": 99
+        }
+      },
+      {
+        "defaultMessage": "!!!Select Wallet",
+        "description": "Placeholder \"Select Wallet\" for select input on the delegation setup \"choose wallet\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 110
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
+        "id": "staking.redeemItnRewards.step1.selectWalletInputPlaceholder",
+        "start": {
+          "column": 32,
+          "line": 105
+        }
+      },
+      {
+        "defaultMessage": "!!!No results",
+        "description": "\"No results\" message for the recovery phrase input search results.",
+        "end": {
+          "column": 3,
+          "line": 116
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
+        "id": "staking.redeemItnRewards.step1.noResults",
+        "start": {
+          "column": 13,
+          "line": 111
+        }
+      },
+      {
+        "defaultMessage": "!!!Invalid recovery phrase",
+        "description": "Error message shown when invalid recovery phrase was entered.",
+        "end": {
+          "column": 3,
+          "line": 122
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
+        "id": "staking.redeemItnRewards.step1.invalidRecoveryPhrase",
+        "start": {
+          "column": 25,
+          "line": 117
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Confirm rewards redemption",
+        "description": "title for Redeem Incentivized Testnet - Step 2",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog.js",
+        "id": "staking.redeemItnRewards.step2.title",
+        "start": {
+          "column": 9,
+          "line": 24
+        }
+      },
+      {
+        "defaultMessage": "!!!To",
+        "description": "walletToLabel for Redeem Incentivized Testnet - Step 2",
+        "end": {
+          "column": 3,
+          "line": 33
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog.js",
+        "id": "staking.redeemItnRewards.step2.walletToLabel",
+        "start": {
+          "column": 17,
+          "line": 29
+        }
+      },
+      {
+        "defaultMessage": "!!!{walletName} <span>wallet</span>",
+        "description": "walletToName for Redeem Incentivized Testnet - Step 2",
+        "end": {
+          "column": 3,
+          "line": 38
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog.js",
+        "id": "staking.redeemItnRewards.step2.walletToName",
+        "start": {
+          "column": 16,
+          "line": 34
+        }
+      },
+      {
+        "defaultMessage": "!!!Rewards total",
+        "description": "rewardsTotal for Redeem Incentivized Testnet - Step 2",
+        "end": {
+          "column": 3,
+          "line": 43
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog.js",
+        "id": "staking.redeemItnRewards.step2.rewardsTotal",
+        "start": {
+          "column": 16,
+          "line": 39
+        }
+      },
+      {
+        "defaultMessage": "!!!Transaction fees",
+        "description": "transactionFees for Redeem Incentivized Testnet - Step 2",
+        "end": {
+          "column": 3,
+          "line": 48
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog.js",
+        "id": "staking.redeemItnRewards.step2.transactionFees",
+        "start": {
+          "column": 19,
+          "line": 44
+        }
+      },
+      {
+        "defaultMessage": "!!!Final total",
+        "description": "finalTotal for Redeem Incentivized Testnet - Step 2",
+        "end": {
+          "column": 3,
+          "line": 53
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog.js",
+        "id": "staking.redeemItnRewards.step2.finalTotal",
+        "start": {
+          "column": 14,
+          "line": 49
+        }
+      },
+      {
+        "defaultMessage": "!!!Wallet spending password <em>(<b>{walletName}</b> wallet)</em>",
+        "description": "spendingPasswordLabel for Redeem Incentivized Testnet - Step 2",
+        "end": {
+          "column": 3,
+          "line": 60
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog.js",
+        "id": "staking.redeemItnRewards.step2.spendingPasswordLabel",
+        "start": {
+          "column": 25,
+          "line": 54
+        }
+      },
+      {
+        "defaultMessage": "!!!Password",
+        "description": "spendingPasswordPlaceholder for Redeem Incentivized Testnet - Step 2",
+        "end": {
+          "column": 3,
+          "line": 66
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog.js",
+        "id": "staking.redeemItnRewards.step2.spendingPasswordPlaceholder",
+        "start": {
+          "column": 31,
+          "line": 61
+        }
+      },
+      {
+        "defaultMessage": "!!!Confirm rewards redemption",
+        "description": "continueButtonLabel for Redeem Incentivized Testnet - Step 2",
+        "end": {
+          "column": 3,
+          "line": 71
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog.js",
+        "id": "staking.redeemItnRewards.step2.continueButtonLabel",
+        "start": {
+          "column": 23,
+          "line": 67
+        }
+      },
+      {
+        "defaultMessage": "!!!Back",
+        "description": "Label for the back button in the wallet send confirmation dialog.",
+        "end": {
+          "column": 3,
+          "line": 77
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog.js",
+        "id": "staking.redeemItnRewards.step2.backButtonLabel",
+        "start": {
+          "column": 19,
+          "line": 72
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!No rewards were found in your Incentivized Testnet Rewards wallet. Please make sure that you have entered the correct wallet recovery phrase.",
+        "description": "description for Redeem Incentivized Testnet - Step 3",
+        "end": {
+          "column": 3,
+          "line": 18
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step3FailureDialog.js",
+        "id": "staking.redeemItnRewards.step3.failure.description1NoRewards",
+        "start": {
+          "column": 16,
+          "line": 13
+        }
+      },
+      {
+        "defaultMessage": "!!!Rewards from the wallet corresponding to the recovery phrase you have provided have already been redeemed.",
+        "description": "description for Redeem Incentivized Testnet - Step 3",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step3FailureDialog.js",
+        "id": "staking.redeemItnRewards.step3.failure.description2InvalidWallet",
+        "start": {
+          "column": 16,
+          "line": 19
+        }
+      },
+      {
+        "defaultMessage": "!!!No rewards were found in your Incentivized Testnet Rewards wallet. Please make sure that you have entered the correct wallet recovery phrase and that rewards have not already been redeemed.",
+        "description": "description for Redeem Incentivized Testnet - Step 3",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step3FailureDialog.js",
+        "id": "staking.redeemItnRewards.step3.failure.description3Generic",
+        "start": {
+          "column": 16,
+          "line": 25
+        }
+      },
+      {
+        "defaultMessage": "!!!Back",
+        "description": "backButtonLabel for Redeem Incentivized Testnet - Step 3",
+        "end": {
+          "column": 3,
+          "line": 35
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step3FailureDialog.js",
+        "id": "staking.redeemItnRewards.step3.failure.backButtonLabel",
+        "start": {
+          "column": 19,
+          "line": 31
+        }
+      },
+      {
+        "defaultMessage": "!!!Close window",
+        "description": "closeWindowLinkLabel for Redeem Incentivized Testnet - Step 3",
+        "end": {
+          "column": 3,
+          "line": 41
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step3FailureDialog.js",
+        "id": "staking.redeemItnRewards.step3.failure.closeWindowLinkLabel",
+        "start": {
+          "column": 24,
+          "line": 36
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/staking/redeem-itn-rewards/Step3FailureDialog.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Incentivized Testnet rewards redeemed!",
+        "description": "title for Redeem Incentivized Testnet - Step 3",
+        "end": {
+          "column": 3,
+          "line": 19
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step3SuccessDialog.js",
+        "id": "staking.redeemItnRewards.step3.success.title",
+        "start": {
+          "column": 9,
+          "line": 15
+        }
+      },
+      {
+        "defaultMessage": "!!!You have successfully redeemed <b>{finalTotal}</b> ADA to your <b>{walletName}</b> wallet. This transaction incurred <b>{transactionFees}</b> in transaction fees",
+        "description": "description for Redeem Incentivized Testnet - Step 3",
+        "end": {
+          "column": 3,
+          "line": 25
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step3SuccessDialog.js",
+        "id": "staking.redeemItnRewards.step3.success.description",
+        "start": {
+          "column": 15,
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!Open the wallet",
+        "description": "description for Redeem Incentivized Testnet - Step 3",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step3SuccessDialog.js",
+        "id": "staking.redeemItnRewards.step3.success.openWalletButtonLabel",
+        "start": {
+          "column": 25,
+          "line": 26
+        }
+      },
+      {
+        "defaultMessage": "!!!Download PDF certificate",
+        "description": "description for Redeem Incentivized Testnet - Step 3",
+        "end": {
+          "column": 3,
+          "line": 35
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step3SuccessDialog.js",
+        "id": "staking.redeemItnRewards.step3.success.downloadPDFButtonLabel",
+        "start": {
+          "column": 26,
+          "line": 31
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/staking/redeem-itn-rewards/Step3SuccessDialog.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Earned delegation rewards",
         "description": "Title \"Earned delegation rewards\" label on the staking rewards page.",
         "end": {

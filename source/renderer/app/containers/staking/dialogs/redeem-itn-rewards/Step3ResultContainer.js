@@ -22,6 +22,7 @@ export default class Step3ResultContainer extends Component<Props> {
       transactionFees,
       finalTotal,
       stakingSuccess,
+      stakingFailure,
     } = stores.staking;
     const { onResultContinue } = actions.staking;
     if (!redeemWallet) throw new Error('Redeem wallet required');
@@ -39,6 +40,12 @@ export default class Step3ResultContainer extends Component<Props> {
         />
       );
     }
-    return <Step3FailureDialog onClose={onClose} onBack={onBack} />;
+    return (
+      <Step3FailureDialog
+        onClose={onClose}
+        onBack={onBack}
+        stakingFailure={stakingFailure}
+      />
+    );
   }
 }
