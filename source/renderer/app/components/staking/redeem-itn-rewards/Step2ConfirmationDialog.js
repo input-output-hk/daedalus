@@ -110,16 +110,17 @@ export default class Step2ConfirmationDialog extends Component<Props> {
             messages.spendingPasswordPlaceholder
           ),
           value: '',
-          validators: [
-            ({ field }) => {
-              return [
-                isValidSpendingPassword(field.value),
-                this.context.intl.formatMessage(
-                  globalMessages.invalidSpendingPassword
-                ),
-              ];
-            },
-          ],
+          // @REDEEM TODO:
+          // validators: [
+          //   ({ field }) => {
+          //     return [
+          //       isValidSpendingPassword(field.value),
+          //       this.context.intl.formatMessage(
+          //         globalMessages.invalidSpendingPassword
+          //       ),
+          //     ];
+          //   },
+          // ],
         },
       },
     },

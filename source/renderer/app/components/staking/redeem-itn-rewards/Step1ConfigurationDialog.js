@@ -110,7 +110,7 @@ const messages = defineMessages({
 });
 
 type Props = {
-  error?: ?Error,
+  error?: ?LocalizableError,
   isSubmitting: boolean,
   mnemonicValidator: Function,
   onClose: Function,
@@ -196,24 +196,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       onSuccess: form => {
         const { onContinue } = this.props;
         // @REDEEM TODO:
-        // const { recoveryPhrase } = form.values();
-        const recoveryPhrase = [
-          'joy',
-          'dentist',
-          'general',
-          'raccoon',
-          'cart',
-          'pelican',
-          'morning',
-          'tube',
-          'hour',
-          'glue',
-          'mesh',
-          'assault',
-          'liquid',
-          'vocal',
-          'ridge',
-        ];
+        const { recoveryPhrase } = form.values();
         onContinue({
           recoveryPhrase,
         });
@@ -240,10 +223,9 @@ export default class Step1ConfigurationDialog extends Component<Props> {
   get canSubmit() {
     // @REDEEM TODO:
     const { isSubmitting, wallet } = this.props;
-    return !isSubmitting && wallet !== null;
-
+    return !isSubmitting && wallet && !wallet.amount.isZero();
     // return true;
-    // const { isSubmitting, isWalletValid } = this.props;
+    // const { isSubmitting } = this.props;
     // const { form } = this;
     // const { checked: checkboxAcceptance1isChecked } = form.$(
     //   'checkboxAcceptance1'
@@ -253,7 +235,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
     // );
     // return (
     //   !isSubmitting &&
-    //   isWalletValid &&
+    //   wallet && !wallet.amount.isZero()
     //   checkboxAcceptance1isChecked &&
     //   checkboxAcceptance2isChecked &&
     //   !this.walletsDropdownError &&
@@ -281,9 +263,13 @@ export default class Step1ConfigurationDialog extends Component<Props> {
     const checkboxAcceptance2Field = form.$('checkboxAcceptance2');
     const walletId = get(wallet, 'id', null);
 
+    if (error) {
+      console.log('error', error);
+      console.log('typeof error', typeof error);
+    }
+
     const buttonClasses = classnames([
       'primary',
-      // styles.buttonContinue,
       isSubmitting ? styles.isSubmitting : null,
     ]);
 
@@ -367,7 +353,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
               error={checkboxAcceptance2Field.error}
             />
             {error && (
-              <p className={styles.error}>{/* intl.formatMessage(error) */}</p>
+              <p className={styles.error}>{intl.formatMessage(error)}</p>
             )}
           </div>
         </Dialog>

@@ -24,6 +24,7 @@ export default class Step3ResultContainer extends Component<Props> {
       stakingSuccess,
     } = stores.staking;
     const { onResultContinue } = actions.staking;
+    if (!redeemWallet) throw new Error('Redeem wallet required');
     if (stakingSuccess) {
       return (
         <Step3SuccessDialog

@@ -445,12 +445,15 @@ export default class StakingStore extends Store {
     recoveryPhrase: Array<string>,
   }) => {
     this.isSubmittingReedem = true;
+    const { redeemWallet } = this;
+    if (!redeemWallet) throw new Error('Redeem wallet required');
     try {
       const {
         rewardsTotal,
         transactionFees,
         finalTotal,
       }: any = await this.submitRedeemItnRewardsRequest.execute({
+        walletId: redeemWallet.id,
         recoveryPhrase,
       });
       runInAction('Go to the Confirmation step', () => {
@@ -462,14 +465,10 @@ export default class StakingStore extends Store {
         this.redeemStep = steps.CONFIRMATION;
       });
     } catch (error) {
-      console.log('error', error);
       runInAction(() => {
+        this._resetRedeemItnRewards();
         this.stakingSuccess = false;
-        this.isSubmittingReedem = false;
-        this.redeemStep = steps.RESULT;
         this.redeemError = error;
-        console.log('ERROR STOPS HERE');
-        // this._resetRedeemItnRewards();
         throw error;
       });
     }
