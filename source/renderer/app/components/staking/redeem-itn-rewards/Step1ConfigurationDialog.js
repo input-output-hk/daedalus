@@ -159,27 +159,26 @@ export default class Step1ConfigurationDialog extends Component<Props> {
         recoveryPhrase: {
           value: [],
           label: this.context.intl.formatMessage(messages.recoveryPhraseLabel),
-          // // @REDEEM TODO - re-enable validation
-          // validators: ({ field }) => {
-          //   const { intl } = this.context;
-          //   const enteredWords = field.value;
-          //   const wordCount = enteredWords.length;
-          //   const expectedWordCount = WALLET_RECOVERY_PHRASE_WORD_COUNT;
-          //   const value = enteredWords.join(' ');
-          //   const isPhraseComplete = wordCount === expectedWordCount;
-          //   if (!isPhraseComplete) {
-          //     return [
-          //       false,
-          //       intl.formatMessage(globalMessages.incompleteMnemonic, {
-          //         expected: expectedWordCount,
-          //       }),
-          //     ];
-          //   }
-          //   return [
-          //     this.props.mnemonicValidator(value, expectedWordCount),
-          //     this.context.intl.formatMessage(messages.invalidRecoveryPhrase),
-          //   ];
-          // },
+          validators: ({ field }) => {
+            const { intl } = this.context;
+            const enteredWords = field.value;
+            const wordCount = enteredWords.length;
+            const expectedWordCount = WALLET_RECOVERY_PHRASE_WORD_COUNT;
+            const value = enteredWords.join(' ');
+            const isPhraseComplete = wordCount === expectedWordCount;
+            if (!isPhraseComplete) {
+              return [
+                false,
+                intl.formatMessage(globalMessages.incompleteMnemonic, {
+                  expected: expectedWordCount,
+                }),
+              ];
+            }
+            return [
+              this.props.mnemonicValidator(value, expectedWordCount),
+              this.context.intl.formatMessage(messages.invalidRecoveryPhrase),
+            ];
+          },
         },
         walletsDropdown: {
           type: 'select',
