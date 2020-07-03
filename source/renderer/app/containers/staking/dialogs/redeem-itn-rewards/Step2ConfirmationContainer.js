@@ -23,7 +23,8 @@ export default class Step2ConfirmationContainer extends Component<Props> {
       isSubmittingReedem,
     } = stores.staking;
     const { onConfirmationContinue } = actions.staking;
-    if (!redeemWallet) return null;
+    if (!redeemWallet) throw new Error('Redeem wallet required');
+
     return (
       <Step2ConfirmationDialog
         rewardsTotal={rewardsTotal}

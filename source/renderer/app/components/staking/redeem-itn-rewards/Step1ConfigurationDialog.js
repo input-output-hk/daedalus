@@ -110,15 +110,14 @@ const messages = defineMessages({
 });
 
 type Props = {
-  error?: ?string,
+  error?: ?Error,
   isSubmitting: boolean,
-  isWalletValid?: boolean,
   mnemonicValidator: Function,
   onClose: Function,
   onContinue: Function,
   onSelectWallet: Function,
   onLearnMoreClick: Function,
-  redeemWallet?: ?Wallet,
+  wallet?: Wallet,
   suggestedMnemonics: Array<string>,
   wallets: Array<Wallet>,
 };
@@ -193,7 +192,6 @@ export default class Step1ConfigurationDialog extends Component<Props> {
   );
 
   submit = () => {
-    console.log('ON submit');
     this.form.submit({
       onSuccess: form => {
         const { onContinue } = this.props;
@@ -216,7 +214,6 @@ export default class Step1ConfigurationDialog extends Component<Props> {
           'vocal',
           'ridge',
         ];
-        console.log('recoveryPhrase', recoveryPhrase);
         onContinue({
           recoveryPhrase,
         });
@@ -233,16 +230,19 @@ export default class Step1ConfigurationDialog extends Component<Props> {
 
   get walletsDropdownError() {
     const { intl } = this.context;
-    const { redeemWallet } = this.props;
+    const { wallet } = this.props;
     let walletsDropdownError;
-    if (redeemWallet && redeemWallet.amount.isZero())
+    if (wallet && wallet.amount.isZero())
       walletsDropdownError = intl.formatMessage(messages.walletsDropdownError);
     return walletsDropdownError;
   }
 
   get canSubmit() {
     // @REDEEM TODO:
-    return true;
+    const { isSubmitting, wallet } = this.props;
+    return !isSubmitting && wallet !== null;
+
+    // return true;
     // const { isSubmitting, isWalletValid } = this.props;
     // const { form } = this;
     // const { checked: checkboxAcceptance1isChecked } = form.$(
@@ -269,7 +269,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       onClose,
       onContinue,
       onSelectWallet,
-      redeemWallet,
+      wallet,
       suggestedMnemonics,
       onLearnMoreClick,
       wallets,
@@ -279,7 +279,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
     const walletsDropdownField = form.$('walletsDropdown');
     const checkboxAcceptance1Field = form.$('checkboxAcceptance1');
     const checkboxAcceptance2Field = form.$('checkboxAcceptance2');
-    const redeemWalletId = get(redeemWallet, 'id', null);
+    const walletId = get(wallet, 'id', null);
 
     const buttonClasses = classnames([
       'primary',
@@ -310,13 +310,15 @@ export default class Step1ConfigurationDialog extends Component<Props> {
 
     return (
       <>
-        <DialogCloseButton className={redeemDialogOverride.closeButton} />
+        <DialogCloseButton
+          className={redeemDialogOverride.closeButton}
+          onClose={onClose}
+        />
         <Dialog
           title={intl.formatMessage(messages.title)}
           actions={actions}
           onContinue={onContinue}
           onClose={onClose}
-          closeButton1={<DialogCloseButton />}
           customThemeOverrides={redeemDialogOverride}
           closeOnOverlayClick={false}
         >
@@ -347,7 +349,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
               placeholder={intl.formatMessage(
                 messages.selectWalletInputPlaceholder
               )}
-              value={redeemWalletId}
+              value={walletId}
               getStakePoolById={() => {}}
               error={this.walletsDropdownError}
             />

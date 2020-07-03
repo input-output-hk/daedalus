@@ -39,24 +39,29 @@ export default class Step3FailureDialog extends Component<Props> {
     const { onClose, onBack } = this.props;
 
     return (
-      <Dialog
-        actions={[
-          {
-            primary: true,
-            label: intl.formatMessage(messages.backButtonLabel),
-            onClick: onBack,
-          },
-        ]}
-        onClose={onClose}
-        closeButton={<DialogCloseButton />}
-        customThemeOverrides={redeemDialogOverride}
-        closeOnOverlayClick={false}
-      >
-        <SVGInline svg={sadWalletImage} className={styles.sadWalletImage} />
-        <div className={styles.description}>
-          {intl.formatMessage(messages.description)}
-        </div>
-      </Dialog>
+      <>
+        <DialogCloseButton
+          className={redeemDialogOverride.closeButton}
+          onClose={onClose}
+        />
+        <Dialog
+          actions={[
+            {
+              primary: true,
+              label: intl.formatMessage(messages.backButtonLabel),
+              onClick: onBack,
+            },
+          ]}
+          onClose={onClose}
+          customThemeOverrides={redeemDialogOverride}
+          closeOnOverlayClick={false}
+        >
+          <SVGInline svg={sadWalletImage} className={styles.sadWalletImage} />
+          <div className={styles.description}>
+            {intl.formatMessage(messages.description)}
+          </div>
+        </Dialog>
+      </>
     );
   }
 }

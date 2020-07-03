@@ -79,26 +79,33 @@ export default class Step3SuccessDialog extends Component<Props> {
       });
 
     return (
-      <Dialog
-        onClose={onClose}
-        actions={actions}
-        closeButton={<DialogCloseButton />}
-        customThemeOverrides={redeemDialogOverride}
-        closeOnOverlayClick={false}
-      >
-        <div className={styles.title}>{intl.formatMessage(messages.title)}</div>
-        <SVGInline svg={tadaImage} className={styles.tadaImage} />
-        <div className={styles.description}>
-          <FormattedHTMLMessage
-            {...messages.description}
-            values={{
-              walletName,
-              transactionFees: formattedWalletAmount(transactionFees),
-              finalTotal: formattedWalletAmount(finalTotal),
-            }}
-          />
-        </div>
-      </Dialog>
+      <>
+        <DialogCloseButton
+          className={redeemDialogOverride.closeButton}
+          onClose={onClose}
+        />
+        <Dialog
+          onClose={onClose}
+          actions={actions}
+          customThemeOverrides={redeemDialogOverride}
+          closeOnOverlayClick={false}
+        >
+          <div className={styles.title}>
+            {intl.formatMessage(messages.title)}
+          </div>
+          <SVGInline svg={tadaImage} className={styles.tadaImage} />
+          <div className={styles.description}>
+            <FormattedHTMLMessage
+              {...messages.description}
+              values={{
+                walletName,
+                transactionFees: formattedWalletAmount(transactionFees),
+                finalTotal: formattedWalletAmount(finalTotal),
+              }}
+            />
+          </div>
+        </Dialog>
+      </>
     );
   }
 }

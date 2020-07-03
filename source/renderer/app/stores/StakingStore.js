@@ -444,7 +444,6 @@ export default class StakingStore extends Store {
   }: {
     recoveryPhrase: Array<string>,
   }) => {
-    console.log('_onConfigurationContinue recoveryPhrase', recoveryPhrase);
     this.isSubmittingReedem = true;
     try {
       const {
@@ -463,12 +462,14 @@ export default class StakingStore extends Store {
         this.redeemStep = steps.CONFIRMATION;
       });
     } catch (error) {
+      console.log('error', error);
       runInAction(() => {
         this.stakingSuccess = false;
         this.isSubmittingReedem = false;
         this.redeemStep = steps.RESULT;
         this.redeemError = error;
-        this._resetRedeemItnRewards();
+        console.log('ERROR STOPS HERE');
+        // this._resetRedeemItnRewards();
         throw error;
       });
     }
@@ -479,14 +480,16 @@ export default class StakingStore extends Store {
   }: {
     spendingPassword: string,
   }) => {
-    if (spendingPassword === 'ShowMeSomeFailure500')
-      this.stakingSuccess = false;
+    if (spendingPassword === 'fail') this.stakingSuccess = false;
     this.redeemStep = steps.RESULT;
   };
 
   @action _onResultContinue = () => {
+    if (!this.redeemWallet) throw new Error('Redeem wallet require');
+    const { id } = this.redeemWallet;
+    this.stores.wallets.goToWalletRoute(id);
     this.redeemStep = null;
-    // @REDEEM TODO -  OPEN WALLET;
+    this._resetRedeemItnRewards();
   };
 
   @action _resetRedeemItnRewards = () => {

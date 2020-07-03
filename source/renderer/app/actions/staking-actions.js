@@ -4,7 +4,6 @@ import type {
   JoinStakePoolRequest,
   QuitStakePoolRequest,
 } from '../api/staking/types';
-import Wallet from '../domains/Wallet';
 // ======= STAKING ACTIONS =======
 
 export default class StakingActions {
