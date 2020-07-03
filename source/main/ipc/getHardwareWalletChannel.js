@@ -2,6 +2,7 @@
 import TransportNodeHid from '@ledgerhq/hw-transport-node-hid';
 import AppAda, { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { BrowserWindow } from 'electron';
+import { DEVICE_EVENT, DEVICE, TRANSPORT_EVENT, UI_EVENT } from 'trezor-connect';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import {
   GET_HARDWARE_WALLET_TRANSPORT_CHANNEL,
@@ -13,6 +14,8 @@ import {
   ATTEST_UTXO_CHANNEL,
   SIGN_TRANSACTION_CHANNEL,
 } from '../../common/ipc/api';
+
+const TrezorConnect = require('trezor-connect').default;
 
 import type {
   getHardwareWalletTransportRendererRequest,
@@ -93,6 +96,79 @@ class EventObserver {
   complete() {}
 }
 
+// SETUP trezor-connect
+export const handleInitTrezorConnect = (sender) => {
+  console.debug('>>> INIT');
+  const initTrezorConnect = async () => {
+
+    TrezorConnect.on(TRANSPORT_EVENT, event => {
+      console.debug('>>> TRANSPORT_EVENT: ', event);
+    });
+    TrezorConnect.on(DEVICE_EVENT, event => {
+      console.debug('>>> DEVICE_EVENT: ', event);
+    });
+    TrezorConnect.on(UI_EVENT, event => {
+      console.debug('>>> UI_EVENT: ', event);
+    });
+    // TrezorConnect.init({
+    //     popup: false, // render your own UI
+    //     webusb: false, // webusb is not supported in electron
+    //     debug: false, // see what's going on inside connect
+    //     // lazyLoad: true, // set to "false" (default) if you want to start communication with bridge on application start (and detect connected device right away)
+    //     // set it to "true", then trezor-connect will not be initialized until you call some TrezorConnect.method()
+    //     // this is useful when you don't know if you are dealing with Trezor user
+    //     manifest: {
+    //         email: 'email@developer.com',
+    //         appUrl: 'electron-app-boilerplate',
+    //     },
+    // });
+    TrezorConnect.manifest({
+      email: 'email@developer.com',
+      appUrl: 'http://your.application.com'
+    })
+    TrezorConnect.init({
+        popup: false, // render your own UI
+        webusb: false, // webusb is not supported in electron
+        debug: true, // see what's going on inside connect
+        // lazyLoad: true, // set to "false" (default) if you want to start communication with bridge on application start (and detect connected device right away)
+        // set it to "true", then trezor-connect will not be initialized until you call some TrezorConnect.method()
+        // this is useful when you don't know if you are dealing with Trezor user
+        manifest: {
+            email: 'email@developer.com',
+            appUrl: 'http://your.application.com',
+        },
+    }).then(() => {
+      console.debug('>>> SUCCESS');
+        sender.send('trezor-connect', 'TrezorConnect is ready!');
+    }).catch(error => {
+      console.debug('>>> ERROR: ', error);
+        sender.send('trezor-connect', 'TrezorConnect init error:' + error);
+    });
+  }
+
+  return initTrezorConnect;
+
+ //  TrezorConnect.init({
+ //      popup: false, // render your own UI
+ //      webusb: false, // webusb is not supported in electron
+ //      debug: false, // see what's going on inside connect
+ //      // lazyLoad: true, // set to "false" (default) if you want to start communication with bridge on application start (and detect connected device right away)
+ //      // set it to "true", then trezor-connect will not be initialized until you call some TrezorConnect.method()
+ //      // this is useful when you don't know if you are dealing with Trezor user
+ //      manifest: {
+ //          email: 'email@developer.com',
+ //          appUrl: 'electron-app-boilerplate',
+ //      },
+ //  }).then(() => {
+ //    console.debug('>>> INIT TREZOR success <<<');
+ //      // sender.send('trezor-connect', 'TrezorConnect is ready!');
+ //  }).catch(error => {
+ //    console.debug('>>> INIT TREZOR error <<<: ', error);
+ //      // sender.send('trezor-connect', 'TrezorConnect init error:' + error);
+ //  });
+ //  console.debug('>>> INIT TREZOR DONE');
+}
+
 export const handleHardwareWalletDevices = (mainWindow: BrowserWindow) => {
   const handleCheckHardwareWalletDevices = async () => {
     const observer = new EventObserver(mainWindow);
@@ -105,6 +181,40 @@ export const handleHardwareWalletDevices = (mainWindow: BrowserWindow) => {
 export const handleHardwareWalletRequests = async () => {
   let deviceConnection = null;
   getHardwareWalletTransportChannel.onRequest(async () => {
+    console.debug('>>> Trezor Connect: ', JSON.stringify(TrezorConnect))
+    console.debug('>>> Trezor Connect2: ', TrezorConnect)
+    console.debug('>>> Trezor Connect FN: ', TrezorConnect.init)
+    try {
+      const trezor = await TrezorConnect.init({
+         //  connectSrc: 'https://localhost:8088/',
+         //  // popup: false, // render your own UI
+         //  // webusb: false, // webusb is not supported in electron
+         debug: true, // see what's going on inside connect
+         lazyLoad: true, // set to "false" (default) if you want to start communication with bridge on application start (and detect connected device right away)
+         //  // set it to "true", then trezor-connect will not be initialized until you call some TrezorConnect.method()
+         //  // this is useful when you don't know if you are dealing with Trezor user
+         manifest: {
+             email: 'email@developer.com',
+             appUrl: 'electron-app-boilerplate',
+         },
+      });
+      console.debug('>>> DONE: ', trezor);
+    } catch (e) {
+      console.debug('>>> FN: ', JSON.stringify(TrezorConnect.init))
+      console.debug('>>> INIT ERROR: ', e);
+    }
+
+    TrezorConnect.on(TRANSPORT_EVENT, event => {
+      console.debug('>>> TRANSPORT_EVENT: ', event);
+    });
+    TrezorConnect.on(DEVICE_EVENT, event => {
+      console.debug('>>> DEVICE_EVENT: ', event);
+    });
+    TrezorConnect.on(UI_EVENT, event => {
+      console.debug('>>> UI_EVENT: ', event);
+    });
+    return;
+
     try {
       const transportList = await TransportNodeHid.list();
       let hw;

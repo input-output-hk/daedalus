@@ -11,7 +11,7 @@ import {
   generateWalletMigrationReport,
 } from './utils/setupLogging';
 import { handleDiskSpace } from './utils/handleDiskSpace';
-import { handleHardwareWalletDevices } from './ipc/getHardwareWalletChannel';
+import { handleHardwareWalletDevices, handleInitTrezorConnect } from './ipc/getHardwareWalletChannel';
 import { createMainWindow } from './windows/main';
 import { installChromeExtensions } from './utils/installChromeExtensions';
 import { environment } from './environment';
@@ -163,10 +163,13 @@ const onAppReady = async () => {
   mainErrorHandler(onMainError);
   await handleCheckDiskSpace();
 
-  const handleCheckHardwareWalletDevices = handleHardwareWalletDevices(
-    mainWindow
-  );
-  await handleCheckHardwareWalletDevices();
+ const handleCheckHardwareWalletDevices = handleHardwareWalletDevices(
+   mainWindow
+ );
+ await handleCheckHardwareWalletDevices();
+
+  const initTrezorConnect = handleInitTrezorConnect(mainWindow.webContents);
+  await initTrezorConnect();
 
   cardanoNode = setupCardanoNode(launcherConfig, mainWindow);
 

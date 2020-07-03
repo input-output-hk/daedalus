@@ -227,6 +227,7 @@
     "semver": "7.1.3",
     "source-map-support": "0.5.16",
     "spectron-fake-dialog": "0.0.1",
+    "trezor-connect": "8.1.5-extended",
     "unorm": "1.6.0",
     "validator": "12.2.0"
   },
