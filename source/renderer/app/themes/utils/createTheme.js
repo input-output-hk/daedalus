@@ -968,6 +968,13 @@ export const createDaedalusComponentsTheme = (
         background.primary.regular
       ).alpha(0.18)}`,
       '--theme-staking-export-button-color': `${background.primary.lightest}`,
+      '--theme-staking-redeemItnRewards-text-color': `${text.secondary}`,
+      '--theme-staking-redeemItnRewards-separator-color': `${`${background.secondary.dark}`}`,
+      '--theme-staking-redeemItnRewards-attention-text-color': `${error.regular}`,
+      '--theme-staking-redeemItnRewards-description-text-color': `${chroma(
+        background.primary.light
+      ).alpha(0.7)}`,
+      '--theme-staking-redeemItnRewards-icon-color': `${text.primary}`,
     },
     support: {
       '--theme-support-settings-item-color': `${text.primary}`,

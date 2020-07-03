@@ -73,8 +73,27 @@ export const Step2ConfirmationDialogStory = () => {
   );
 };
 export const Step3SuccessDialogStory = () => {
-  return <Step3SuccessDialog />;
+  const redeemWallet = select(
+    'Redeem Wallet',
+    WALLETS.reduce((obj, wallet) => {
+      obj[wallet.name] = wallet;
+      return obj;
+    }, {}),
+    WALLETS[0]
+  );
+  return (
+    <Step3SuccessDialog
+      key="Step2ConfirmationDialog"
+      wallet={redeemWallet}
+      transactionFees={new BigNumber(number('transactionFees', 100000))}
+      finalTotal={new BigNumber(number('finalTotal', 100000))}
+      onContinue={action('onContinue')}
+      onClose={action('onClose')}
+    />
+  );
 };
 export const Step3FailureDialogStory = () => {
-  return <Step3FailureDialog />;
+  return (
+    <Step3FailureDialog onClose={action('onClose')} onBack={action('onBack')} />
+  );
 };

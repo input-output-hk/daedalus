@@ -117,7 +117,7 @@ type Props = {
   onContinue: Function,
   onSelectWallet: Function,
   onLearnMoreClick: Function,
-  wallet?: Wallet,
+  wallet: ?Wallet,
   suggestedMnemonics: Array<string>,
   wallets: Array<Wallet>,
 };

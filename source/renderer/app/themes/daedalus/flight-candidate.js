@@ -780,6 +780,11 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.07)',
     '--theme-staking-wallet-row-ticker-text-color': '#ffffff',
     '--theme-staking-wallet-row-ticker-ada-icon-fill-color': '#ffffff80',
+    '--theme-staking-redeemItnRewards-text-color': '#ffffff',
+    '--theme-staking-redeemItnRewards-separator-color': '#313245',
+    '--theme-staking-redeemItnRewards-attention-text-color': '#ea4c5b',
+    '--theme-staking-redeemItnRewards-description-text-color': '#414251b3',
+    '--theme-staking-redeemItnRewards-icon-color': '#ffffff',
   },
   support: {
     '--theme-support-settings-item-color': '#ffffff',

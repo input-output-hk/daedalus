@@ -4,16 +4,16 @@
   text-align: center;
   svg {
     height: 71px;
-    stroke: var(--theme-delegation-steps-success-tada-color);
+    stroke: var(--theme-staking-redeemItnRewards-icon-color);
     path {
-      stroke: var(--theme-delegation-steps-success-tada-color);
+      stroke: var(--theme-staking-redeemItnRewards-icon-color);
     }
     g {
       ellipse {
         &:nth-child(7),
         &:nth-child(8),
         &:nth-child(9) {
-          stroke: var(--theme-delegation-steps-success-tada-color);
+          stroke: var(--theme-staking-redeemItnRewards-icon-color);
         }
 
         &:nth-child(11),
@@ -22,7 +22,7 @@
         &:nth-child(14),
         &:nth-child(15),
         &:nth-child(16) {
-          fill: var(--theme-delegation-steps-success-tada-color);
+          fill: var(--theme-staking-redeemItnRewards-icon-color);
         }
       }
     }
@@ -36,7 +36,7 @@
   margin-bottom: 30px;
   text-align: center;
   b {
-    color: #ffffff;
+    color: var(--theme-staking-redeemItnRewards-text-color);
     font-family: var(--font-semibold);
   }
 }

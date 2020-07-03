@@ -1,7 +1,7 @@
 @import '../../../themes/mixins/error-message';
 .component {
   .description {
-    color: rgba(255, 255, 255, 0.7);
+    color: var(--theme-staking-redeemItnRewards-text-color);
     font-family: var(--font-regular);
     font-size: 16px;
     height: 132px;
@@ -17,7 +17,7 @@
     margin-bottom: 20px;
   }
   hr {
-    background-color: rgba(36, 62, 98, 0.96);
+    background-color: var(--theme-staking-redeemItnRewards-separator-color);
     border: none;
     height: 1px;
     margin-bottom: 17px;

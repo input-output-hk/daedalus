@@ -1,5 +1,5 @@
 .walletToLabel {
-  color: #ffffff;
+  color: var(--theme-staking-redeemItnRewards-text-color);
   font-family: var(--font-medium);
   font-size: 16px;
   font-stretch: normal;
@@ -15,7 +15,7 @@
 .sectionValue {
 }
 .section {
-  color: rgb(255, 255, 255);
+  color: var(--theme-staking-redeemItnRewards-text-color);
   font-family: var(--font-regular);
   font-size: 16px;
   line-height: 1.38;
@@ -36,7 +36,7 @@
 }
 .sectionAccent {
   .sectionValue {
-    color: #ea4c5b;
+    color: var(--theme-staking-redeemItnRewards-attention-text-color);
   }
 }
 .sectionOpacity {

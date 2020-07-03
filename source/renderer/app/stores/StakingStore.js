@@ -23,6 +23,7 @@ import type { RedeemItnRewardsStep } from '../types/stakingTypes';
 import Wallet from '../domains/Wallet';
 import StakePool from '../domains/StakePool';
 import { TransactionStates } from '../domains/WalletTransaction';
+import LocalizableError from '../i18n/LocalizableError';
 import REWARDS from '../config/stakingRewards.dummy.json';
 
 export default class StakingStore extends Store {
@@ -35,13 +36,12 @@ export default class StakingStore extends Store {
   @observable redeemStep: ?RedeemItnRewardsStep = null;
   @observable redeemWallet: ?Wallet = null;
   @observable walletName: ?string = null;
-  @observable redeemError: ?string = null;
+  @observable redeemError: ?LocalizableError = null;
   @observable rewardsTotal: number = 0;
   @observable transactionFees: number = 0;
   @observable finalTotal: number = 0;
   @observable isSubmittingReedem: boolean = false;
   @observable stakingSuccess: ?boolean = null;
-  @observable redeemError: ?Error = null;
 
   pollingStakePoolsInterval: ?IntervalID = null;
   refreshPolling: ?IntervalID = null;
