@@ -482,8 +482,12 @@ export default class StakingStore extends Store {
   }) => {
     // @REDEEM TODO: Remove when the API endpoint is implemented
     if (spendingPassword === 'FailureErr1') this.stakingFailure = 1;
-    if (spendingPassword === 'FailureErr2') this.stakingFailure = 2;
-    if (spendingPassword === 'FailureErr3') this.stakingFailure = 3;
+    else if (spendingPassword === 'FailureErr2') this.stakingFailure = 2;
+    else if (spendingPassword === 'FailureErr3') this.stakingFailure = 3;
+    else {
+      this.stakingFailure = 0;
+      this.stakingSuccess = true;
+    }
     if (this.stakingFailure > 0) {
       this.stakingSuccess = false;
     }
@@ -506,6 +510,7 @@ export default class StakingStore extends Store {
     this.rewardsTotal = 0;
     this.transactionFees = 0;
     this.finalTotal = 0;
+    this.stakingFailure = 0;
   };
 
   @action _closeRedeemDialog = () => {

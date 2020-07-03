@@ -1372,7 +1372,7 @@ export default class AdaApi {
           recoveryPhrase,
         }
       );
-      logger.error('AdaApi::submitRedeemItnRewards success', { response });
+      logger.debug('AdaApi::submitRedeemItnRewards success', { response });
       return _createRedeemItnRewardsFromServerData(response);
     } catch (error) {
       logger.error('AdaApi::submitRedeemItnRewards error', { error });
