@@ -479,7 +479,7 @@ export default class StakingStore extends Store {
   }: {
     spendingPassword: string,
   }) => {
-    if (spendingPassword === 'fail') this.stakingSuccess = false;
+    if (spendingPassword === 'Failure1234') this.stakingSuccess = false;
     this.redeemStep = steps.RESULT;
   };
 

@@ -201,13 +201,8 @@ export default class Step1ConfigurationDialog extends Component<Props> {
           recoveryPhrase,
         });
       },
-      onError: (a, b, c) => {
-        console.log('ERR');
-        console.log('a', a);
-        console.log('b', b);
-        console.log('c', c);
-      },
-      // onError: () => handleFormErrors('.ConfigurationDialog_error', { focusElement: true }),
+      onError: () =>
+        handleFormErrors('.ConfigurationDialog_error', { focusElement: true }),
     });
   };
 
@@ -262,11 +257,6 @@ export default class Step1ConfigurationDialog extends Component<Props> {
     const checkboxAcceptance1Field = form.$('checkboxAcceptance1');
     const checkboxAcceptance2Field = form.$('checkboxAcceptance2');
     const walletId = get(wallet, 'id', null);
-
-    if (error) {
-      console.log('error', error);
-      console.log('typeof error', typeof error);
-    }
 
     const buttonClasses = classnames([
       'primary',

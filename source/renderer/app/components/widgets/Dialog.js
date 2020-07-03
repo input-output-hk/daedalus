@@ -22,6 +22,8 @@ export type DialogActionItem = {
   onClick?: Function,
   onDisabled?: Function,
   isLink?: boolean,
+  hasIconAfter?: boolean,
+  hasIconBefore?: boolean,
 };
 
 type ActionDirection = 'row' | 'column';
@@ -133,6 +135,8 @@ export default class Dialog extends Component<Props> {
                     onClick={action.onClick}
                     label={action.label}
                     skin={LinkSkin}
+                    hasIconAfter={action.hasIconAfter}
+                    hasIconBefore={action.hasIconBefore}
                   />
                 );
               })}

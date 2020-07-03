@@ -69,6 +69,12 @@ const messages = defineMessages({
     defaultMessage: '!!!Confirm rewards redemption',
     description: 'continueButtonLabel for Redeem Incentivized Testnet - Step 2',
   },
+  backButtonLabel: {
+    id: 'staking.redeemItnRewards.step2.backButtonLabel',
+    defaultMessage: '!!!Back',
+    description:
+      'Label for the back button in the wallet send confirmation dialog.',
+  },
 });
 
 type Props = {
@@ -110,17 +116,16 @@ export default class Step2ConfirmationDialog extends Component<Props> {
             messages.spendingPasswordPlaceholder
           ),
           value: '',
-          // @REDEEM TODO:
-          // validators: [
-          //   ({ field }) => {
-          //     return [
-          //       isValidSpendingPassword(field.value),
-          //       this.context.intl.formatMessage(
-          //         globalMessages.invalidSpendingPassword
-          //       ),
-          //     ];
-          //   },
-          // ],
+          validators: [
+            ({ field }) => {
+              return [
+                isValidSpendingPassword(field.value),
+                this.context.intl.formatMessage(
+                  globalMessages.invalidSpendingPassword
+                ),
+              ];
+            },
+          ],
         },
       },
     },
@@ -168,6 +173,25 @@ export default class Step2ConfirmationDialog extends Component<Props> {
 
     const spendingPasswordField = form.$('spendingPassword');
 
+    const actions = {
+      direction: 'column',
+      items: [
+        {
+          className: isSubmitting ? styles.isSubmitting : null,
+          disabled: !form.isValid,
+          primary: true,
+          label: intl.formatMessage(messages.continueButtonLabel),
+          onClick: this.submit,
+        },
+        {
+          onClick: onBack,
+          label: intl.formatMessage(messages.backButtonLabel),
+          isLink: true,
+          hasIconAfter: false,
+        },
+      ],
+    };
+
     return (
       <>
         <DialogCloseButton
@@ -176,15 +200,7 @@ export default class Step2ConfirmationDialog extends Component<Props> {
         />
         <Dialog
           title={intl.formatMessage(messages.title)}
-          actions={[
-            {
-              className: isSubmitting ? styles.isSubmitting : null,
-              disabled: !form.isValid,
-              primary: true,
-              label: intl.formatMessage(messages.continueButtonLabel),
-              onClick: this.submit,
-            },
-          ]}
+          actions={actions}
           onContinue={onContinue}
           onClose={onClose}
           onBack={onBack}

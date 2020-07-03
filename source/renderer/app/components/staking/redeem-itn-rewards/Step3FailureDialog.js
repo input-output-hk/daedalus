@@ -21,6 +21,12 @@ const messages = defineMessages({
     defaultMessage: '!!!Back',
     description: 'backButtonLabel for Redeem Incentivized Testnet - Step 3',
   },
+  closeWindowLinkLabel: {
+    id: 'staking.redeemItnRewards.step3.failure.closeWindowLinkLabel',
+    defaultMessage: '!!!Close window',
+    description:
+      'closeWindowLinkLabel for Redeem Incentivized Testnet - Step 3',
+  },
 });
 
 type Props = {
@@ -38,6 +44,23 @@ export default class Step3FailureDialog extends Component<Props> {
     const { intl } = this.context;
     const { onClose, onBack } = this.props;
 
+    const actions = {
+      direction: 'column',
+      items: [
+        {
+          primary: true,
+          label: intl.formatMessage(messages.backButtonLabel),
+          onClick: onBack,
+        },
+        {
+          onClick: onClose,
+          label: intl.formatMessage(messages.closeWindowLinkLabel),
+          isLink: true,
+          hasIconAfter: false,
+        },
+      ],
+    };
+
     return (
       <>
         <DialogCloseButton
@@ -45,13 +68,7 @@ export default class Step3FailureDialog extends Component<Props> {
           onClose={onClose}
         />
         <Dialog
-          actions={[
-            {
-              primary: true,
-              label: intl.formatMessage(messages.backButtonLabel),
-              onClick: onBack,
-            },
-          ]}
+          actions={actions}
           onClose={onClose}
           customThemeOverrides={redeemDialogOverride}
           closeOnOverlayClick={false}
