@@ -68,7 +68,7 @@ export default class Slider extends Component<Props> {
                 {shortNumber(min)}
               </Tooltip>
             ) : (
-              <>{shortNumber(min)}</>
+              shortNumber(min)
             )}
           </div>
           <div className={styles.maxMark}>
@@ -77,7 +77,7 @@ export default class Slider extends Component<Props> {
                 {shortNumber(max)}
               </Tooltip>
             ) : (
-              <>{shortNumber(max)}</>
+              shortNumber(max)
             )}
           </div>
         </div>

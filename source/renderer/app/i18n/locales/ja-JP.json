@@ -404,6 +404,7 @@
   "staking.stakePools.rankingAllWalletsStart": "ステークプールは現在",
   "staking.stakePools.rankingDescription": "スライダーを使用して、委任する量を基にステークプールをランク付けします。",
   "staking.stakePools.rankingExtraTooltip": "!!!Circulating supply",
+  "staking.stakePools.rankingLearnMoreUrl": "https://iohk.zendesk.com/hc/ja",
   "staking.stakePools.rankingMaxTooltip": "!!!Saturation point",
   "staking.stakePools.rankingMinTooltip": "!!!Minimum ADA required for staking",
   "staking.stakePools.rankingOneWalletEnd": "ウォレットの量を基にランク付けされています。",

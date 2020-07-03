@@ -5,7 +5,12 @@ import { action } from '@storybook/addon-actions';
 
 import StakePools from '../../../source/renderer/app/components/staking/stake-pools/StakePools';
 import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
-import DUMMY_WALLETS from '../../../source/renderer/app/config/wallets.dummy';
+import { generateWallet } from '../_support/utils';
+
+const dummyWallets = [
+  generateWallet('Dummy1', '1000000'),
+  generateWallet('Dummy2', '2000000'),
+];
 
 type Props = {
   currentTheme: string,
@@ -36,6 +41,6 @@ export const StakePoolsStory = (props: Props) => (
     onDelegate={action('onDelegate')}
     isLoading={props.isLoading}
     onRank={() => null}
-    wallets={DUMMY_WALLETS}
+    wallets={dummyWallets}
   />
 );

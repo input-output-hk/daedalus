@@ -4545,17 +4545,31 @@
         }
       },
       {
-        "defaultMessage": "!!!wallet.",
-        "description": "One wallet description after dropdown.",
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us",
+        "description": "Ranking learn more url.",
         "end": {
           "column": 3,
           "line": 45
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
-        "id": "staking.stakePools.rankingOneWalletEnd",
+        "id": "staking.stakePools.rankingLearnMoreUrl",
         "start": {
           "column": 23,
           "line": 41
+        }
+      },
+      {
+        "defaultMessage": "!!!wallet.",
+        "description": "One wallet description after dropdown.",
+        "end": {
+          "column": 3,
+          "line": 50
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
+        "id": "staking.stakePools.rankingOneWalletEnd",
+        "start": {
+          "column": 23,
+          "line": 46
         }
       },
       {
@@ -4563,13 +4577,13 @@
         "description": "One wallet description before dropdown.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 56
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingOneWalletStart",
         "start": {
           "column": 25,
-          "line": 46
+          "line": 51
         }
       },
       {
@@ -4577,13 +4591,13 @@
         "description": "Select wallet item of dropdown.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 61
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingSelectWallet",
         "start": {
           "column": 23,
-          "line": 52
+          "line": 57
         }
       },
       {
@@ -4591,13 +4605,13 @@
         "description": "Select wallet description after dropdown.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 66
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingSelectWalletEnd",
         "start": {
           "column": 26,
-          "line": 57
+          "line": 62
         }
       },
       {
@@ -4605,13 +4619,13 @@
         "description": "Select wallet description before dropdown.",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 71
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingSelectWalletStart",
         "start": {
           "column": 28,
-          "line": 62
+          "line": 67
         }
       },
       {
@@ -4619,13 +4633,13 @@
         "description": "Circulating supply slider tooltip.",
         "end": {
           "column": 3,
-          "line": 71
+          "line": 76
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingExtraTooltip",
         "start": {
           "column": 23,
-          "line": 67
+          "line": 72
         }
       },
       {
@@ -4633,13 +4647,13 @@
         "description": "Saturation point slider tooltip.",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 81
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingMaxTooltip",
         "start": {
           "column": 21,
-          "line": 72
+          "line": 77
         }
       },
       {
@@ -4647,13 +4661,13 @@
         "description": "Minimum ADA required for staking slider tooltip.",
         "end": {
           "column": 3,
-          "line": 81
+          "line": 86
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingMinTooltip",
         "start": {
           "column": 21,
-          "line": 77
+          "line": 82
         }
       },
       {
@@ -4661,13 +4675,13 @@
         "description": "Learn more action of ranking panel.",
         "end": {
           "column": 3,
-          "line": 86
+          "line": 91
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.learnMore",
         "start": {
           "column": 19,
-          "line": 82
+          "line": 87
         }
       }
     ],

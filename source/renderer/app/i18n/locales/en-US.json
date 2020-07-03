@@ -404,6 +404,7 @@
   "staking.stakePools.rankingAllWalletsStart": "Stake pools are currently ranked based on the combined amount in",
   "staking.stakePools.rankingDescription": "Use the slider to rank the stake pools based on the amount you intend to delegate.",
   "staking.stakePools.rankingExtraTooltip": "Circulating supply",
+  "staking.stakePools.rankingLearnMoreUrl": "https://iohk.zendesk.com/hc/en-us",
   "staking.stakePools.rankingMaxTooltip": "Saturation point",
   "staking.stakePools.rankingMinTooltip": "Minimum ADA required for staking",
   "staking.stakePools.rankingOneWalletEnd": "wallet.",

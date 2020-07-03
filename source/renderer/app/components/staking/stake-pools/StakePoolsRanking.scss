@@ -13,13 +13,13 @@
 
     .selectWallet {
       :global {
-        .no-value-selected {
-          &.en-selector {
+        .noValueSelected {
+          &.enSelector {
             .SimpleInput_customValueBlock {
               width: 110px;
             }
           }
-          &.ja-selector {
+          &.jaSelector {
             .SimpleInput_customValueBlock {
               width: 160px;
             }
@@ -58,7 +58,7 @@
           .SimpleInput_customValueBlock {
             height: auto;
           }
-          .custom-value {
+          .customValue {
             font-family: var(--font-semibold);
             overflow: hidden;
             text-overflow: ellipsis;

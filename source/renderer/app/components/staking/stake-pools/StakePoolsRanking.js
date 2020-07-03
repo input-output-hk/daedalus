@@ -38,6 +38,11 @@ const messages = defineMessages({
       '!!!Use the slider to rank the stake pools based on the amount you intend to delegate.',
     description: 'Ranking description.',
   },
+  rankingLearnMoreUrl: {
+    id: 'staking.stakePools.rankingLearnMoreUrl',
+    defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us',
+    description: 'Ranking learn more url.',
+  },
   rankingOneWalletEnd: {
     id: 'staking.stakePools.rankingOneWalletEnd',
     defaultMessage: '!!!wallet.',
@@ -86,14 +91,9 @@ const messages = defineMessages({
   },
 });
 
-const learnMoreUrlMap = {
-  'en-US': 'https://iohk.zendesk.com/hc/en-us',
-  'ja-JP': 'https://iohk.zendesk.com/hc/ja',
-};
-
 const walletSelectorLanguageMap = {
-  'en-US': 'en-selector',
-  'ja-JP': 'ja-selector',
+  'en-US': 'enSelector',
+  'ja-JP': 'jaSelector',
 };
 
 type Props = {
@@ -194,9 +194,9 @@ export default class StakePoolsRanking extends Component<Props, State> {
     const walletSelectorClasses = classnames([
       styles.walletSelector,
       walletSelectorLanguageMap[currentLocale],
-      selectedWalletId === null ? 'no-value-selected' : null,
+      selectedWalletId === null ? 'noValueSelected' : null,
     ]);
-    const learnMoreUrl = learnMoreUrlMap[currentLocale];
+    const learnMoreUrl = intl.formatMessage(messages.rankingLearnMoreUrl);
 
     let walletSelectionStart = null;
     let walletSelectionEnd = null;
@@ -260,7 +260,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
                   onChange={this.onSelectedWalletChange}
                   skin={SelectSkin}
                   selectionRenderer={option => (
-                    <div className="custom-value">{option.label}</div>
+                    <div className="customValue">{option.label}</div>
                   )}
                   optionHeight={50}
                 />
