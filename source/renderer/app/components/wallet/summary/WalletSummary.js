@@ -70,7 +70,7 @@ export default class WalletSummary extends Component<Props> {
         <BorderedBox>
           <div className={styles.walletName}>{wallet.name}</div>
           <div className={styles.walletAmount}>
-            {wallet.amount.add(wallet.reward).toFormat(DECIMAL_PLACES_IN_ADA)}
+            {wallet.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
             <SVGInline
               svg={adaSymbolBig}
               className={styles.currencySymbolBig}
