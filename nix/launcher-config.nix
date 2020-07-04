@@ -158,8 +158,8 @@ let
     workingDir = dataDir;
     stateDir = dataDir;
     tlsPath = "${dataDir}${dirSep}tls";
-    cluster = if __hasAttr network clusterOverrides then clusterOVerrides.${network}.cluster else network;
-    networkName = if __hasAttr network clusterOverrides then clusterOVerrides.${network}.clusterName else network;
+    cluster = if __hasAttr network clusterOverrides then clusterOverrides.${network}.cluster else network;
+    networkName = if __hasAttr network clusterOverrides then clusterOverrides.${network}.networkName else network;
     isFlight = network == "mainnet_flight";
     nodeImplementation = backend;
   };
