@@ -49,6 +49,7 @@ export const STAGING = 'staging';
 export const TESTNET = 'testnet';
 export const SHELLEY_LOCAL = 'local';
 export const SHELLEY_TESTNET = 'shelley_testnet';
+export const SHELLEY_TESTNET_V2 = 'shelley_testnet_v2';
 export const SHELLEY_QA = 'shelley_qa';
 
 // jormungandr networks

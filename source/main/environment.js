@@ -8,6 +8,8 @@ import {
   OS_NAMES,
   MAINNET,
   MAINNET_FLIGHT,
+  SHELLEY_TESTNET,
+  SHELLEY_TESTNET_V2,
 } from '../common/types/environment.types';
 import {
   evaluateNetwork,
@@ -34,8 +36,11 @@ import {
 
 // environment variables
 const CURRENT_NODE_ENV = process.env.NODE_ENV || DEVELOPMENT;
-const RAW_NETWORK =
+let RAW_NETWORK =
   process.env.NETWORK === MAINNET_FLIGHT ? MAINNET : process.env.NETWORK || '';
+if (process.env.NETWORK === SHELLEY_TESTNET_V2) {
+  RAW_NETWORK = SHELLEY_TESTNET;
+}
 const NETWORK = evaluateNetwork(process.env.NETWORK);
 const isDev = checkIsDev(CURRENT_NODE_ENV);
 const isTest = checkIsTest(CURRENT_NODE_ENV);

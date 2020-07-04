@@ -7,6 +7,8 @@ import {
   MAINNET,
   MAINNET_FLIGHT,
   PRODUCTION,
+  SHELLEY_TESTNET,
+  SHELLEY_TESTNET_V2,
   SELFNODE,
   STAGING,
   TEST,
@@ -30,6 +32,9 @@ export const evaluateNetwork = (network: ?string) => {
   }
   if (network === MAINNET_FLIGHT) {
     currentNetwork = MAINNET;
+  }
+  if (network === SHELLEY_TESTNET_V2) {
+    currentNetwork = SHELLEY_TESTNET;
   }
   return currentNetwork;
 };
