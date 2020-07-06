@@ -38,7 +38,7 @@ export default class WalletSettingsPage extends Component<Props> {
 
     return (
       <WalletUtxo
-        walletAmount={activeWallet.amount}
+        walletAmount={activeWallet.availableAmount}
         walletUtxosAmount={walletUtxosAmount}
         chartData={chartData}
         onExternalLinkClick={app.openExternalLink}

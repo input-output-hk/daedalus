@@ -113,7 +113,7 @@ export default class Wallet {
   }
 
   @computed get hasFunds(): boolean {
-    return this.amount.gt(0);
+    return this.availableAmount.gt(0);
   }
 
   @computed get isRestoring(): boolean {

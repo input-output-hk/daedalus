@@ -2,7 +2,7 @@
 
 %smallText {
   color: var(--theme-bordered-box-text-color);
-  font-family: var(--font-regular);
+  font-family: var(--font-medium);
   font-size: 14px;
   height: 19px;
   letter-spacing: 0.5px;
@@ -52,20 +52,29 @@
 
 .balancesWrapper {
   .walletBalance,
-  .rewardsAccountBalance {
+  .rewardsAccountBalance,
+  .walletAvailableBalance {
     @extend %smallText;
 
     .currencySymbol {
       display: inline-block;
       margin-left: 4px;
       & > svg {
-        height: 12px;
-        width: 12px;
+        height: 10px;
+        opacity: 0.8;
         & > g > g {
           stroke: var(--theme-icon-ada-summary-wallet-amount-symbol-color);
         }
       }
     }
+
+    span {
+      font-family: var(--font-light);
+    }
+  }
+  .rewardsAccountBalance,
+  .walletAvailableBalance {
+    opacity: 0.5;
   }
 }
 
@@ -76,5 +85,18 @@
     &.isLoadingNumberOfTransactions {
       @include animated-ellipsis($width: 16px);
     }
+    opacity: 0.5;
+    span {
+      font-family: var(--font-light);
+    }
   }
+}
+
+.rewardsSpendingNote {
+  color: var(--theme-bordered-box-text-color);
+  font-family: var(--font-light);
+  font-size: 14px;
+  line-height: 1.36;
+  margin-top: 8px;
+  opacity: 0.5;
 }

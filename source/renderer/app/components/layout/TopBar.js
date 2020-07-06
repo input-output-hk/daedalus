@@ -46,7 +46,7 @@ export default class TopBar extends Component<Props> {
       activeWallet &&
       activeWallet.isLegacy &&
       isIncentivizedTestnet &&
-      activeWallet.amount.gt(0) &&
+      activeWallet.availableAmount.gt(0) &&
       !activeWallet.isRestoring &&
       ((hasRewardsWallets && onTransferFunds) || onWalletAdd);
 
@@ -65,7 +65,7 @@ export default class TopBar extends Component<Props> {
         </span>
         <span className={styles.walletAmount}>
           {// show currency and use long format
-          formattedWalletAmount(activeWallet.amount)}
+          formattedWalletAmount(activeWallet.availableAmount)}
         </span>
       </span>
     ) : null;

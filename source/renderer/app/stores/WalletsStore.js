@@ -978,7 +978,7 @@ export default class WalletsStore extends Store {
         this.active = newActiveWallet || null;
         this.stores.addresses.lastGeneratedAddress = null;
         if (this.active) {
-          this.activeValue = formattedWalletAmount(this.active.amount);
+          this.activeValue = formattedWalletAmount(this.active.availableAmount);
         }
       } else if (hasActiveWalletBeenUpdated) {
         // Active wallet has been updated

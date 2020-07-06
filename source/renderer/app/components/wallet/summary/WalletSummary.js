@@ -25,13 +25,24 @@ const messages = defineMessages({
   },
   walletBalancelabel: {
     id: 'wallet.summary.page.walletBalancelabel',
-    defaultMessage: '!!!Wallet balance',
+    defaultMessage: '!!!Total balance',
+    description: '"Wallet amount" label on Wallet summary page',
+  },
+  walletAvailableBalanceLabel: {
+    id: 'wallet.summary.page.walletAvailableBalanceLabel',
+    defaultMessage: '!!!Available balance',
     description: '"Wallet amount" label on Wallet summary page',
   },
   rewardsAccountBalancelabel: {
     id: 'wallet.summary.page.rewardsAccountBalancelabel',
-    defaultMessage: '!!!Rewards account balance',
+    defaultMessage: '!!!Rewards balance',
     description: '"Rewards account balance" label on Wallet summary page',
+  },
+  rewardsSpendingNote: {
+    id: 'wallet.summary.page.rewardsSpendingNote',
+    defaultMessage:
+      '!!!Temporary Daedalus limitations prevent reward spending.',
+    description: '"Rewards account balance" spending note',
   },
 });
 
@@ -70,7 +81,7 @@ export default class WalletSummary extends Component<Props> {
         <BorderedBox>
           <div className={styles.walletName}>{wallet.name}</div>
           <div className={styles.walletAmount}>
-            {wallet.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
+            {wallet.availableAmount.toFormat(DECIMAL_PLACES_IN_ADA)}
             <SVGInline
               svg={adaSymbolBig}
               className={styles.currencySymbolBig}
@@ -81,12 +92,20 @@ export default class WalletSummary extends Component<Props> {
             <div className={styles.balancesWrapper}>
               <div className={styles.walletBalance}>
                 {intl.formatMessage(messages.walletBalancelabel)}:&nbsp;
-                {wallet.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
+                <span>{wallet.amount.toFormat(DECIMAL_PLACES_IN_ADA)}</span>
+                <SVGInline svg={adaSymbol} className={styles.currencySymbol} />
+              </div>
+              <div className={styles.walletAvailableBalance}>
+                {intl.formatMessage(messages.walletAvailableBalanceLabel)}
+                :&nbsp;
+                <span>
+                  {wallet.availableAmount.toFormat(DECIMAL_PLACES_IN_ADA)}
+                </span>
                 <SVGInline svg={adaSymbol} className={styles.currencySymbol} />
               </div>
               <div className={styles.rewardsAccountBalance}>
                 {intl.formatMessage(messages.rewardsAccountBalancelabel)}:&nbsp;
-                {wallet.reward.toFormat(DECIMAL_PLACES_IN_ADA)}
+                <span>{wallet.reward.toFormat(DECIMAL_PLACES_IN_ADA)}</span>
                 <SVGInline svg={adaSymbol} className={styles.currencySymbol} />
               </div>
             </div>
@@ -96,14 +115,19 @@ export default class WalletSummary extends Component<Props> {
             <div className={styles.transactionsCountWrapper}>
               <div className={styles.numberOfPendingTransactions}>
                 {intl.formatMessage(messages.pendingTransactionsLabel)}:&nbsp;
-                {numberOfPendingTransactions}
+                <span>{numberOfPendingTransactions}</span>
               </div>
               <div className={numberOfTransactionsStyles}>
                 {intl.formatMessage(messages.transactionsLabel)}:&nbsp;
-                {numberOfTransactions || numberOfRecentTransactions}
+                <span>
+                  {numberOfTransactions || numberOfRecentTransactions}
+                </span>
               </div>
             </div>
           ) : null}
+          <p className={styles.rewardsSpendingNote}>
+            {intl.formatMessage(messages.rewardsSpendingNote)}
+          </p>
         </BorderedBox>
       </div>
     );

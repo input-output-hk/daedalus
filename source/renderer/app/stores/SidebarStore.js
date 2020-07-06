@@ -40,7 +40,7 @@ export default class SidebarStore extends Store {
       return {
         id: wallet.id,
         title: wallet.name,
-        info: formattedWalletAmount(wallet.amount, true, false),
+        info: formattedWalletAmount(wallet.availableAmount, true, false),
         isConnected: networkStatus.isConnected,
         isRestoreActive: wallet.isRestoring,
         restoreProgress: wallet.restorationProgress,
@@ -60,7 +60,7 @@ export default class SidebarStore extends Store {
       return {
         id: wallet.id,
         title: wallet.name,
-        info: formattedWalletAmount(wallet.amount, true, false),
+        info: formattedWalletAmount(wallet.availableAmount, true, false),
         isConnected: networkStatus.isConnected,
         isRestoreActive: wallet.isRestoring,
         restoreProgress: wallet.restorationProgress,

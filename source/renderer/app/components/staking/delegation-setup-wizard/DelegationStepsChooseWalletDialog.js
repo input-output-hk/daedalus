@@ -130,7 +130,7 @@ export default class DelegationStepsChooseWalletDialog extends Component<
       wallets.find(
         (wallet: Wallet) => wallet && wallet.id === selectedWalletId
       ) || null;
-    const amount = selectedWallet ? selectedWallet.amount : null;
+    const amount = selectedWallet ? selectedWallet.availableAmount : null;
     const isAcceptableSetupWallet = amount && isWalletAcceptable(amount);
 
     const dialogClassName = classNames([
