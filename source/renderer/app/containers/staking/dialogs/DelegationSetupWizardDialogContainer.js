@@ -163,7 +163,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     );
 
     const acceptableWallets = find(wallets.allWallets, wallet =>
-      this.handleIsWalletAcceptable(wallet.availableAmount)
+      this.handleIsWalletAcceptable(wallet.amount)
     );
 
     return (

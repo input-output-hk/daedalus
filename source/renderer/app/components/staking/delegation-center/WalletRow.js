@@ -96,7 +96,7 @@ export default class WalletRow extends Component<Props> {
     const {
       wallet: {
         name,
-        availableAmount,
+        amount,
         isRestoring,
         syncState,
         delegatedStakePoolId,
@@ -110,6 +110,8 @@ export default class WalletRow extends Component<Props> {
       onDelegate,
       onUndelegate,
     } = this.props;
+    // @TODO - remove once quite stake pool delegation is connected with rewards balance
+    const isUndelegateBlocked = true;
 
     const syncingProgress = get(syncState, 'progress.quantity', '');
     const notDelegatedText = intl.formatMessage(messages.notDelegated);
@@ -157,7 +159,7 @@ export default class WalletRow extends Component<Props> {
             <FormattedMessage
               {...messages.walletAmount}
               values={{
-                amount: availableAmount.toFormat(DECIMAL_PLACES_IN_ADA),
+                amount: amount.toFormat(DECIMAL_PLACES_IN_ADA),
               }}
             />
           </div>
@@ -291,17 +293,18 @@ export default class WalletRow extends Component<Props> {
 
                 {/* Actions */}
                 <div className={actionStyles}>
-                  {isLastDelegationDelegating && [
-                    <span
-                      className={styles.actionUndelegate}
-                      role="presentation"
-                      onClick={onUndelegate}
-                      key="undelegate"
-                    >
-                      {removeDelegationText}
-                    </span>,
-                    <span key="or"> {orText} </span>,
-                  ]}
+                  {isLastDelegationDelegating &&
+                    !isUndelegateBlocked && [
+                      <span
+                        className={styles.actionUndelegate}
+                        role="presentation"
+                        onClick={onUndelegate}
+                        key="undelegate"
+                      >
+                        {removeDelegationText}
+                      </span>,
+                      <span key="or"> {orText} </span>,
+                    ]}
                   <span
                     className={styles.actionDelegate}
                     role="presentation"

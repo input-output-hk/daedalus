@@ -90,7 +90,7 @@ export default class WalletsDropdown extends Component<Props> {
       ({
         name: label,
         id: value,
-        availableAmount,
+        amount,
         delegatedStakePoolId,
         lastDelegationStakePoolId,
         pendingDelegations,
@@ -102,7 +102,7 @@ export default class WalletsDropdown extends Component<Props> {
           currentStakePoolId = lastDelegationStakePoolId;
         }
         const delegatedStakePool = getStakePoolById(currentStakePoolId);
-        const detail = formattedWalletAmount(availableAmount);
+        const detail = formattedWalletAmount(amount);
         return {
           detail,
           label,

@@ -91,10 +91,7 @@ export default class TransferFundsStep2Dialog extends Component<Props, State> {
   };
 
   state = {
-    total: formattedWalletAmount(
-      this.props.sourceWallet.availableAmount,
-      false
-    ),
+    total: formattedWalletAmount(this.props.sourceWallet.amount, false),
     fees: null,
     amount: null,
   };
@@ -105,7 +102,7 @@ export default class TransferFundsStep2Dialog extends Component<Props, State> {
     if (transferFundsFee && !this.state.fees && !this.state.amount) {
       const fees = transferFundsFee.toFormat(DECIMAL_PLACES_IN_ADA);
       const amount = formattedWalletAmount(
-        sourceWallet.availableAmount.minus(transferFundsFee),
+        sourceWallet.amount.minus(transferFundsFee),
         false
       );
       this.setState({ fees, amount }); // eslint-disable-line
