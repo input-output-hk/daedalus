@@ -1,10 +1,11 @@
 // @flow
-import { action, computed, observable, runInAction } from 'mobx';
+import { action, computed, observable, runInAction, autorun } from 'mobx';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import type { AppInfo, GetLatestAppVersionResponse } from '../api/nodes/types';
 import { APP_UPDATE_POLL_INTERVAL } from '../config/timingConfig';
 import { rebuildApplicationMenu } from '../ipc/rebuild-application-menu';
+import NewsDomains from '../domains/News';
 import {
   requestDownloadChannel,
   getDownloadLocalDataChannel,
@@ -12,6 +13,8 @@ import {
 } from '../ipc/downloadManagerChannel';
 import type { DownloadMainResponse } from '../../../common/ipc/api';
 import { DOWNLOAD_EVENT_TYPES } from '../../../common/config/downloadManagerConfig';
+
+const { News } = NewsDomains;
 
 const APP_UPDATE_DOWNLOAD_ID = 'appUpdate';
 
@@ -26,6 +29,8 @@ export default class AppUpdateStore extends Store {
   @observable nextUpdateVersion: ?string = null;
   @observable applicationVersion: ?number = null;
   @observable downloadProgress: ?number = null;
+  @observable availableUpdates: Array<any> = [];
+
   // @observable updateFileUrl: ?string = null;
   @observable updateFileUrl: ?string =
     'https://update-cardano-mainnet.iohk.io/daedalus-1.1.0-mainnet-12849.pkg';
@@ -63,16 +68,30 @@ export default class AppUpdateStore extends Store {
         APP_UPDATE_POLL_INTERVAL
       );
     }
+
+    // const availableUpdates = this.checkAvailableUpdates;
+    // console.log('availableUpdates ...', availableUpdates);
+
+    // this.watchAppUpdate();
+    // console.log('this._disposer', this._disposer);
   }
 
-  _managePendingUpdate = async () => {
+  @computed get checkAvailableUpdates(): Array<News> {
+    const { updates } = this.stores.newsFeed.newsFeedData;
+    return updates.filter(
+      update =>
+        !this.availableUpdates.find(
+          availableUpdate => availableUpdate.id === update.id
+        )
+    );
+  }
+
+  checkUpdate = autorun(async () => {
+    const updates = this.checkAvailableUpdates;
     const downloadLocalData = await getDownloadLocalDataChannel.request({
       id: APP_UPDATE_DOWNLOAD_ID,
     });
-    // eslint-disable-next-line
-    console.log('downloadLocalData', downloadLocalData);
-    return downloadLocalData;
-  };
+  });
 
   _manageUpdateResponse = ({
     eventType,

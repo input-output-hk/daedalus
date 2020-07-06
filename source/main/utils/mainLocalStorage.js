@@ -24,7 +24,7 @@ export const downloadManagerLocalStorage = {
         key: STORAGE_KEYS.DOWNLOAD_MANAGER,
         id,
       })) || {};
-    if (!data || !progress) throw new Error('Invalid download Id');
+    // if (!data || !progress) return {};
     return { data, progress };
   },
   getAll: async () => {

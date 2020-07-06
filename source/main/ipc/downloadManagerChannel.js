@@ -111,10 +111,10 @@ const requestResumeDownload = async (
   const downloadLocalData = await getDownloadLocalData(
     resumeDownloadRequestPayload
   );
-  const { temporaryFilename, originalFilename } = downloadLocalData.data;
+  const { temporaryFilename, originalFilename } = downloadLocalData.data || {};
   const { downloadId: id, fileUrl, destinationDirectoryName, options } =
     downloadLocalData.data || {};
-  if (!id) throw new Error('Invalid download ID');
+  if (!id) throw new Error('Invalid download ID 2');
   const requestDownloadPayload = {
     id,
     fileUrl,

@@ -234,6 +234,7 @@ export default class NewsFeedStore extends Store {
         };
       });
     }
+
     return new News.NewsCollection(news);
   }
 

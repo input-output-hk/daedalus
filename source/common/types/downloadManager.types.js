@@ -143,8 +143,8 @@ export type DownloadLocalDataRequest = {
 };
 
 export type DownloadLocalDataResponse = {
-  data: DownloadData,
-  progress: DownloadProgress,
+  data?: DownloadData,
+  progress?: DownloadProgress,
 };
 
 export type DownloadsLocalDataRequest = {

@@ -16,11 +16,13 @@ export const NewsTypes: {
   ALERT: NewsType,
   ANNOUNCEMENT: NewsType,
   INFO: NewsType,
+  UPDATE: NewsType,
 } = {
   INCIDENT: 'incident',
   ALERT: 'alert',
   ANNOUNCEMENT: 'announcement',
   INFO: 'info',
+  UPDATE: 'update',
 };
 
 export type NewsTypesStateType = {
@@ -67,6 +69,7 @@ class NewsCollection {
         ''
       );
       const targetPlatforms = get(newsItem, ['target', 'platforms']);
+
       return (
         (!availableTargetVersionRange ||
           (availableTargetVersionRange &&
@@ -153,6 +156,10 @@ class NewsCollection {
     const read = filter(this.all, item => item.read);
     // Order read from newest to oldest
     return orderBy(read, 'date', 'asc');
+  }
+
+  @computed get updates(): Array<News> {
+    return this.unread.filter(item => item.type === NewsTypes.UPDATE);
   }
 }
 

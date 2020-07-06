@@ -189,6 +189,9 @@ import { deleteTransaction } from './transactions/requests/deleteTransaction';
 import { WALLET_BYRON_KINDS } from '../config/walletRestoreConfig';
 import ApiError from '../domains/ApiError';
 
+// @UPDATE TODO
+import dummyUpdate from './news/dummy-update.json';
+
 const { isIncentivizedTestnet, isShelleyTestnet } = global;
 
 export default class AdaApi {
@@ -1649,6 +1652,8 @@ export default class AdaApi {
       logger.error('AdaApi::getNews error', { error });
       throw new Error('Unable to fetch news');
     }
+
+    news.items.push(dummyUpdate);
 
     // Fetch news verification hash
     let newsHash: string;

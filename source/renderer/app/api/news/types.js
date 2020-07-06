@@ -17,7 +17,12 @@ export type NewsTarget = {
   platform: string,
 };
 
-export type NewsType = 'incident' | 'alert' | 'announcement' | 'info';
+export type NewsType =
+  | 'incident'
+  | 'alert'
+  | 'announcement'
+  | 'info'
+  | 'update';
 
 export type NewsTimestamp = number;
 
