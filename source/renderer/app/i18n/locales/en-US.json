@@ -533,6 +533,7 @@
   "wallet.create.dialog.passwordFieldPlaceholder": "Password",
   "wallet.create.dialog.passwordSectionDescription": "Keep your wallet secure by setting a spending password",
   "wallet.create.dialog.passwordSectionLabel": "Spending password",
+  "wallet.create.dialog.passwordTooltip": "!!!It is really good to use Password Manager apps to improve security. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris mattis diam non nulla sollicitudin, ac ultrices purus luctus.",
   "wallet.create.dialog.repeatPasswordLabel": "Repeat password",
   "wallet.create.dialog.spendingPasswordLabel": "Enter password",
   "wallet.create.dialog.stepsCounter": "Step {currentStep} of {totalSteps}",

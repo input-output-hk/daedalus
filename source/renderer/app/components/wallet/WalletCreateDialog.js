@@ -7,6 +7,9 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
+import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
+import SVGInline from 'react-svg-inline';
+import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import ReactToolboxMobxForm, {
   handleFormErrors,
 } from '../../utils/ReactToolboxMobxForm';
@@ -22,6 +25,8 @@ import { PasswordInput } from '../widgets/forms/PasswordInput';
 import styles from './WalletCreateDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { submitOnEnter } from '../../utils/form';
+import tooltipStyles from '../widgets/forms/InlineEditingDropdown-tooltip.scss';
+import infoIconInline from '../../assets/images/info-icon.inline.svg';
 
 const messages = defineMessages({
   dialogTitleItn: {
@@ -85,6 +90,12 @@ const messages = defineMessages({
     defaultMessage: '!!!Password',
     description:
       'Placeholder for the "Password" inputs in the create wallet dialog.',
+  },
+  passwordTooltip: {
+    id: 'wallet.create.dialog.passwordTooltip',
+    defaultMessage: '!!!It is really good to use Password Manager apps to improve security. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris mattis diam non nulla sollicitudin, ac ultrices purus luctus.',
+    description:
+      'Tooltip for the password input in the create wallet dialog.',
   },
 });
 
@@ -266,18 +277,35 @@ export default class WalletCreateDialog extends Component<Props, State> {
           </div>
 
           <div className={styles.spendingPasswordFields}>
-            <PasswordInput
-              className="spendingPassword"
-              onKeyPress={this.handleSubmitOnEnter}
-              {...spendingPasswordField.bind()}
-            />
-            <PasswordInput
-              className="repeatedPassword"
-              onKeyPress={this.handleSubmitOnEnter}
-              {...repeatedPasswordField.bind()}
-              repeatPassword={spendingPasswordField.value}
-              isPasswordRepeat
-            />
+            <div className={styles.spendingPasswordField}>
+              <PasswordInput
+                className="spendingPassword"
+                onKeyPress={this.handleSubmitOnEnter}
+                {...spendingPasswordField.bind()}
+              />
+              <Tooltip
+                skin={TooltipSkin}
+                themeOverrides={tooltipStyles}
+                tip={intl.formatMessage(messages.passwordTooltip)}
+                key="tooltip"
+                className={styles.tooltip}
+                arrowRelativeToTip
+              >
+                <SVGInline
+                  svg={infoIconInline}
+                  className={styles.infoIcon}
+                />
+              </Tooltip>
+            </div>
+            <div className={styles.spendingPasswordField}>
+              <PasswordInput
+                className="repeatedPassword"
+                onKeyPress={this.handleSubmitOnEnter}
+                {...repeatedPasswordField.bind()}
+                repeatPassword={spendingPasswordField.value}
+                isPasswordRepeat
+              />
+            </div>
             <p className={styles.passwordInstructions}>
               <FormattedHTMLMessage {...globalMessages.passwordInstructions} />
             </p>

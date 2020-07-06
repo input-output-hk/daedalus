@@ -10531,13 +10531,13 @@
         "description": "Title \"Create a new wallet\" in the wallet create form.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 36
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.title.itn",
         "start": {
           "column": 18,
-          "line": 27
+          "line": 32
         }
       },
       {
@@ -10545,13 +10545,13 @@
         "description": "Title \"Create a wallet\" in the wallet create form.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 41
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.title",
         "start": {
           "column": 15,
-          "line": 32
+          "line": 37
         }
       },
       {
@@ -10559,13 +10559,13 @@
         "description": "Label for the \"Wallet Name\" text input in the wallet create form.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 47
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.name.label",
         "start": {
           "column": 14,
-          "line": 37
+          "line": 42
         }
       },
       {
@@ -10573,13 +10573,13 @@
         "description": "Hint for the \"Wallet Name\" text input in the wallet create form.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 53
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.walletNameHint",
         "start": {
           "column": 18,
-          "line": 43
+          "line": 48
         }
       },
       {
@@ -10587,13 +10587,13 @@
         "description": "Label for the \"Create Shelley wallet\" button on create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 59
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.create.personal.wallet.button.label.itn",
         "start": {
           "column": 27,
-          "line": 49
+          "line": 54
         }
       },
       {
@@ -10601,13 +10601,13 @@
         "description": "Label for the \"Create wallet\" button on create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 65
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.create.personal.wallet.button.label",
         "start": {
           "column": 24,
-          "line": 55
+          "line": 60
         }
       },
       {
@@ -10615,13 +10615,13 @@
         "description": "Password creation label.",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 70
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.passwordSectionLabel",
         "start": {
           "column": 24,
-          "line": 61
+          "line": 66
         }
       },
       {
@@ -10629,13 +10629,13 @@
         "description": "Password creation description.",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 75
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.passwordSectionDescription",
         "start": {
           "column": 30,
-          "line": 66
+          "line": 71
         }
       },
       {
@@ -10643,13 +10643,13 @@
         "description": "Label for the \"Wallet password\" input in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 81
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 71
+          "line": 76
         }
       },
       {
@@ -10657,13 +10657,13 @@
         "description": "Label for the \"Repeat password\" input in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 82
+          "line": 87
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.repeatPasswordLabel",
         "start": {
           "column": 23,
-          "line": 77
+          "line": 82
         }
       },
       {
@@ -10671,13 +10671,27 @@
         "description": "Placeholder for the \"Password\" inputs in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 88
+          "line": 93
         },
         "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
         "id": "wallet.create.dialog.passwordFieldPlaceholder",
         "start": {
           "column": 28,
-          "line": 83
+          "line": 88
+        }
+      },
+      {
+        "defaultMessage": "!!!It is really good to use Password Manager apps to improve security. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris mattis diam non nulla sollicitudin, ac ultrices purus luctus.",
+        "description": "Tooltip for the password input in the create wallet dialog.",
+        "end": {
+          "column": 3,
+          "line": 99
+        },
+        "file": "source/renderer/app/components/wallet/WalletCreateDialog.js",
+        "id": "wallet.create.dialog.passwordTooltip",
+        "start": {
+          "column": 19,
+          "line": 94
         }
       }
     ],
