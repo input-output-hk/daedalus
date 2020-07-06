@@ -90,10 +90,10 @@ const messages = defineMessages({
     defaultMessage: '!!!Learn More',
     description: 'learnMoreLinkLabel for Redeem Incentivized Testnet - Step 1',
   },
-  // @REDEEM TODO - Learn More link
   learnMoreLinkUrl: {
     id: 'staking.redeemItnRewards.step1.learnMoreLink.url',
-    defaultMessage: '!!!http://',
+    defaultMessage:
+      '!!!https://iohk.zendesk.com/hc/en-us/articles/900001656586',
     description: 'learnMoreLinkUrl for Redeem Incentivized Testnet - Step 1',
   },
   recoveryPhraseInputHint: {
@@ -159,27 +159,26 @@ export default class Step1ConfigurationDialog extends Component<Props> {
         recoveryPhrase: {
           value: [],
           label: this.context.intl.formatMessage(messages.recoveryPhraseLabel),
-          // // @REDEEM TODO - re-enable validation
-          // validators: ({ field }) => {
-          //   const { intl } = this.context;
-          //   const enteredWords = field.value;
-          //   const wordCount = enteredWords.length;
-          //   const expectedWordCount = WALLET_RECOVERY_PHRASE_WORD_COUNT;
-          //   const value = enteredWords.join(' ');
-          //   const isPhraseComplete = wordCount === expectedWordCount;
-          //   if (!isPhraseComplete) {
-          //     return [
-          //       false,
-          //       intl.formatMessage(globalMessages.incompleteMnemonic, {
-          //         expected: expectedWordCount,
-          //       }),
-          //     ];
-          //   }
-          //   return [
-          //     this.props.mnemonicValidator(value, expectedWordCount),
-          //     this.context.intl.formatMessage(messages.invalidRecoveryPhrase),
-          //   ];
-          // },
+          validators: ({ field }) => {
+            const { intl } = this.context;
+            const enteredWords = field.value;
+            const wordCount = enteredWords.length;
+            const expectedWordCount = WALLET_RECOVERY_PHRASE_WORD_COUNT;
+            const value = enteredWords.join(' ');
+            const isPhraseComplete = wordCount === expectedWordCount;
+            if (!isPhraseComplete) {
+              return [
+                false,
+                intl.formatMessage(globalMessages.incompleteMnemonic, {
+                  expected: expectedWordCount,
+                }),
+              ];
+            }
+            return [
+              this.props.mnemonicValidator(value, expectedWordCount),
+              this.context.intl.formatMessage(messages.invalidRecoveryPhrase),
+            ];
+          },
         },
         walletsDropdown: {
           type: 'select',
@@ -208,7 +207,6 @@ export default class Step1ConfigurationDialog extends Component<Props> {
     this.form.submit({
       onSuccess: form => {
         const { onContinue } = this.props;
-        // @REDEEM TODO:
         const { recoveryPhrase } = form.values();
         onContinue({
           recoveryPhrase,
@@ -229,26 +227,23 @@ export default class Step1ConfigurationDialog extends Component<Props> {
   }
 
   get canSubmit() {
-    // @REDEEM TODO:
     const { isSubmitting, wallet } = this.props;
-    return !isSubmitting && wallet && !wallet.amount.isZero();
-    // return true;
-    // const { isSubmitting } = this.props;
-    // const { form } = this;
-    // const { checked: checkboxAcceptance1isChecked } = form.$(
-    //   'checkboxAcceptance1'
-    // );
-    // const { checked: checkboxAcceptance2isChecked } = form.$(
-    //   'checkboxAcceptance2'
-    // );
-    // return (
-    //   !isSubmitting &&
-    //   wallet && !wallet.amount.isZero()
-    //   checkboxAcceptance1isChecked &&
-    //   checkboxAcceptance2isChecked &&
-    //   !this.walletsDropdownError &&
-    //   form.isValid
-    // );
+    const { form } = this;
+    const { checked: checkboxAcceptance1isChecked } = form.$(
+      'checkboxAcceptance1'
+    );
+    const { checked: checkboxAcceptance2isChecked } = form.$(
+      'checkboxAcceptance2'
+    );
+    return (
+      !isSubmitting &&
+      wallet &&
+      !wallet.amount.isZero() &&
+      checkboxAcceptance1isChecked &&
+      checkboxAcceptance2isChecked &&
+      !this.walletsDropdownError &&
+      form.isValid
+    );
   }
 
   render() {

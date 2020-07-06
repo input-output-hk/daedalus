@@ -394,7 +394,7 @@
   "staking.redeemItnRewards.step1.descriptionItnLinkUrl": "https://staking.cardano.org/ja/",
   "staking.redeemItnRewards.step1.invalidRecoveryPhrase": "無効な復元フレーズ",
   "staking.redeemItnRewards.step1.learnMoreLink.label": "もっと知る",
-  "staking.redeemItnRewards.step1.learnMoreLink.url": "https://staking.cardano.org/ja/",
+  "staking.redeemItnRewards.step1.learnMoreLink.url": "https://iohk.zendesk.com/hc/ja/articles/900001656586",
   "staking.redeemItnRewards.step1.noResults": "検索結果はありません",
   "staking.redeemItnRewards.step1.recoveryPhraseInputHint": "復元フレーズを入力してください",
   "staking.redeemItnRewards.step1.recoveryPhraseLabel": "インセンティブ付きテストネット用ウォレットのウォレット復元フレーズ：",

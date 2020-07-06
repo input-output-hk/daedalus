@@ -1,5 +1,5 @@
 // @flow
-// @REDEEM TODO:
+// @REDEEM TODO: Remove when the API endpoint is implemented
 /* eslint-disable */
 import type { RequestConfig } from '../../common/types';
 import type {
