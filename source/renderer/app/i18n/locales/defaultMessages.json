@@ -4582,7 +4582,7 @@
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step3FailureDialog.js",
         "id": "staking.redeemItnRewards.step3.failure.description1NoRewards",
         "start": {
-          "column": 16,
+          "column": 25,
           "line": 13
         }
       },
@@ -4596,7 +4596,7 @@
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step3FailureDialog.js",
         "id": "staking.redeemItnRewards.step3.failure.description2InvalidWallet",
         "start": {
-          "column": 16,
+          "column": 29,
           "line": 19
         }
       },
@@ -4610,7 +4610,7 @@
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step3FailureDialog.js",
         "id": "staking.redeemItnRewards.step3.failure.description3Generic",
         "start": {
-          "column": 16,
+          "column": 23,
           "line": 25
         }
       },

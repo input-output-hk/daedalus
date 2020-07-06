@@ -385,7 +385,7 @@
   "staking.navigation.rewards": "報酬",
   "staking.navigation.stake_pools": "ステークプール",
   "staking.redeemItnRewards.noWallets.addWalletButtonLabel": "ウォレット追加",
-  "staking.redeemItnRewards.noWallets.description": "!!!Redemption of Incentivized Testnet rewards is not available as you currently do not have any Shelley-compatible wallets.",
+  "staking.redeemItnRewards.noWallets.description": "インセンティブ付きテストネットの還元機能はShelley対応のウォレットがないため利用できません。",
   "staking.redeemItnRewards.step1.checkbox1Label": "インセンティブ付きテストネットで獲得した報酬の還元には、トランザクション手数料を支払う必要があることを理解しました。",
   "staking.redeemItnRewards.step1.checkbox2Label": "手数料は報酬の振込先ウォレットから支払われることを理解しました。",
   "staking.redeemItnRewards.step1.continueButton.label": "続ける",
