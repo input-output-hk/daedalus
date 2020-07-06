@@ -1,6 +1,13 @@
 Changelog
 =========
 
+
+## vNext
+
+### Features
+
+- Implemented Daedalus app automatic update ([PR 2056](https://github.com/input-output-hk/daedalus/pull/2056))
+
 ## 1.2.0-STN1
 
 ### Fixes
