@@ -96,7 +96,7 @@ export default class WalletRow extends Component<Props> {
     const {
       wallet: {
         name,
-        amount,
+        availableAmount,
         isRestoring,
         syncState,
         delegatedStakePoolId,
@@ -157,7 +157,7 @@ export default class WalletRow extends Component<Props> {
             <FormattedMessage
               {...messages.walletAmount}
               values={{
-                amount: amount.toFormat(DECIMAL_PLACES_IN_ADA),
+                amount: availableAmount.toFormat(DECIMAL_PLACES_IN_ADA),
               }}
             />
           </div>

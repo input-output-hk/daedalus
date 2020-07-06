@@ -1927,7 +1927,9 @@ const _createStakePoolFromServerData = action(
       description,
       isCharity: false,
       name,
-      pledge: new BigNumber(pledgeQuantity).dividedBy(LOVELACES_PER_ADA),
+      pledge: new BigNumber(pledgeQuantity.toString()).dividedBy(
+        LOVELACES_PER_ADA
+      ),
       profitMargin: profitMarginPercentage,
       ranking: index + 1,
       retiring: null,
