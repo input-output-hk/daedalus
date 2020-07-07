@@ -62,9 +62,10 @@
             font-family: var(--font-semibold);
             overflow: hidden;
             text-overflow: ellipsis;
+            white-space: nowrap;
           }
           .SimpleSelect_selectInput {
-            max-width: 380px;
+            max-width: 350px;
           }
           .SimpleOptions_options {
             min-width: 200px;
@@ -75,6 +76,17 @@
                 display: block;
                 overflow: hidden;
                 text-overflow: ellipsis;
+              }
+              .WalletsDropdownOption_component {
+                max-width: 100%;
+
+                .WalletsDropdownOption_label,
+                .WalletsDropdownOption_detail {
+                  max-width: 100%;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                  white-space: nowrap;
+                }
               }
             }
           }
