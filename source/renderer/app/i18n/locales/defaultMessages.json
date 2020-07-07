@@ -8251,13 +8251,13 @@
         "description": "\"Number of transactions\" label on Wallet summary page",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 18
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
         "id": "wallet.summary.page.transactionsLabel",
         "start": {
           "column": 21,
-          "line": 15
+          "line": 14
         }
       },
       {
@@ -8265,41 +8265,13 @@
         "description": "\"Number of pending transactions\" label on Wallet summary page",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 24
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
         "id": "wallet.summary.page.pendingTransactionsLabel",
         "start": {
           "column": 28,
-          "line": 20
-        }
-      },
-      {
-        "defaultMessage": "!!!Wallet balance",
-        "description": "\"Wallet amount\" label on Wallet summary page",
-        "end": {
-          "column": 3,
-          "line": 30
-        },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
-        "id": "wallet.summary.page.walletBalancelabel",
-        "start": {
-          "column": 22,
-          "line": 26
-        }
-      },
-      {
-        "defaultMessage": "!!!Rewards account balance",
-        "description": "\"Rewards account balance\" label on Wallet summary page",
-        "end": {
-          "column": 3,
-          "line": 35
-        },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
-        "id": "wallet.summary.page.rewardsAccountBalancelabel",
-        "start": {
-          "column": 30,
-          "line": 31
+          "line": 19
         }
       }
     ],
