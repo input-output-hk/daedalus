@@ -34,7 +34,7 @@ export default class StakePoolsListPage extends Component<Props> {
       } = this.props;
       stakingActions.updateStake.trigger(sliderValue);
       this.rankTimeoutHandler = null;
-    }, 2000);
+    }, 4000);
   };
 
   render() {
