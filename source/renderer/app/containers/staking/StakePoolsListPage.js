@@ -40,7 +40,12 @@ export default class StakePoolsListPage extends Component<Props> {
   render() {
     const { uiDialogs, staking, app, profile, wallets } = this.props.stores;
     const { currentTheme } = profile;
-    const { stakePools, fetchingStakePoolsFailed, recentStakePools } = staking;
+    const {
+      stakePools,
+      fetchingStakePoolsFailed,
+      recentStakePools,
+      getStakePoolById,
+    } = staking;
     const { all } = wallets;
 
     return (
@@ -55,6 +60,7 @@ export default class StakePoolsListPage extends Component<Props> {
           onRank={this.onRank}
           onDelegate={this.handleDelegate}
           isLoading={fetchingStakePoolsFailed || !stakePools.length}
+          getStakePoolById={getStakePoolById}
         />
         {uiDialogs.isOpen(DelegationSetupWizardDialog) ? (
           <DelegationSetupWizardDialogContainer />

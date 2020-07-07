@@ -5,12 +5,11 @@ import { defineMessages, intlShape } from 'react-intl';
 import BigNumber from 'bignumber.js';
 import classnames from 'classnames';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import { Select } from 'react-polymorph/lib/components/Select';
-import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
 import { shortNumber } from '../../../utils/formatters';
 import Wallet from '../../../domains/Wallet';
+import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import ButtonLink from '../../widgets/ButtonLink';
 import Slider from '../../widgets/Slider';
 import styles from './StakePoolsRanking.scss';
@@ -102,6 +101,8 @@ type Props = {
   onOpenExternalLink: Function,
   onRank: Function,
   isLoading: boolean,
+  numberOfStakePools: number,
+  getStakePoolById: Function,
 };
 
 type State = {
@@ -132,12 +133,12 @@ export default class StakePoolsRanking extends Component<Props, State> {
     this.onSelectedWalletChange('0');
   }
 
-  getAllAvailableAmount = () => {
+  getAllAmounts = () => {
     const { wallets } = this.props;
 
     if (wallets.length) {
       return wallets
-        .map((w: Wallet) => w.availableAmount)
+        .map((w: Wallet) => w.amount)
         .reduce(
           (acc: BigNumber, cur: BigNumber) => acc.plus(cur),
           new BigNumber(0)
@@ -156,11 +157,11 @@ export default class StakePoolsRanking extends Component<Props, State> {
 
     if (selectedWalletId === '0') {
       sliderValue = Math.min(
-        Math.floor(this.getAllAvailableAmount().toNumber()),
+        Math.floor(this.getAllAmounts().toNumber()),
         MAX_AMOUNT.toNumber()
       );
     } else if (selectedWallet) {
-      sliderValue = Math.floor(selectedWallet.availableAmount.toNumber());
+      sliderValue = Math.floor(selectedWallet.amount.toNumber());
     } else {
       sliderValue = MIN_AMOUNT.toNumber();
     }
@@ -181,16 +182,11 @@ export default class StakePoolsRanking extends Component<Props, State> {
     const { wallets, currentLocale } = this.props;
     const { selectedWalletId, sliderValue } = this.state;
     const allWalletsItem = {
-      label: intl.formatMessage(messages.rankingAllWallets),
-      value: '0',
+      id: '0',
+      name: intl.formatMessage(messages.rankingAllWallets),
+      amount: this.getAllAmounts(),
     };
-    const walletSelectorOptions = [
-      allWalletsItem,
-      ...wallets.map((w: Wallet) => ({
-        label: w.name,
-        value: w.id,
-      })),
-    ];
+    const walletSelectorWallets = [allWalletsItem, ...wallets];
     const walletSelectorClasses = classnames([
       styles.walletSelector,
       walletSelectorLanguageMap[currentLocale],
@@ -218,7 +214,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
 
     return {
       selectedWalletId,
-      walletSelectorOptions,
+      walletSelectorWallets,
       walletSelectorClasses,
       walletSelectionStart,
       walletSelectionEnd,
@@ -229,12 +225,17 @@ export default class StakePoolsRanking extends Component<Props, State> {
 
   render() {
     const { intl } = this.context;
-    const { onOpenExternalLink, isLoading } = this.props;
+    const {
+      onOpenExternalLink,
+      isLoading,
+      numberOfStakePools,
+      getStakePoolById,
+    } = this.props;
     const rankingDescription = intl.formatMessage(messages.rankingDescription);
     const learnMoreButtonClasses = classnames(['flat', styles.actionLearnMore]);
     const {
       selectedWalletId,
-      walletSelectorOptions,
+      walletSelectorWallets,
       walletSelectorClasses,
       walletSelectionStart,
       walletSelectionEnd,
@@ -252,17 +253,17 @@ export default class StakePoolsRanking extends Component<Props, State> {
             <div className={styles.row}>
               <div className={styles.col}>{walletSelectionStart}</div>
               <div className={styles.col}>
-                <Select
+                <WalletsDropdown
                   className={walletSelectorClasses}
-                  options={walletSelectorOptions}
-                  value={selectedWalletId}
                   placeholder={intl.formatMessage(messages.rankingSelectWallet)}
+                  wallets={walletSelectorWallets}
                   onChange={this.onSelectedWalletChange}
-                  skin={SelectSkin}
+                  value={selectedWalletId}
                   selectionRenderer={option => (
                     <div className="customValue">{option.label}</div>
                   )}
-                  optionHeight={50}
+                  numberOfStakePools={numberOfStakePools}
+                  getStakePoolById={getStakePoolById}
                 />
               </div>
               <div className={styles.col}>{walletSelectionEnd}</div>

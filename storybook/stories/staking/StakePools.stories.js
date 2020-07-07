@@ -8,8 +8,8 @@ import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.d
 import { generateWallet } from '../_support/utils';
 
 const dummyWallets = [
-  generateWallet('Dummy1', '1000000'),
-  generateWallet('Dummy2', '2000000'),
+  generateWallet('Dummy1', '1000000000000'),
+  generateWallet('Dummy2', '2000000000000'),
 ];
 
 type Props = {
@@ -42,5 +42,6 @@ export const StakePoolsStory = (props: Props) => (
     isLoading={props.isLoading}
     onRank={() => null}
     wallets={dummyWallets}
+    getStakePoolById={() => null}
   />
 );
