@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import AlertsOverlay from '../../components/news/AlertsOverlay';
 import IncidentOverlay from '../../components/news/IncidentOverlay';
+import UpdateOverlay from '../../components/news/UpdateOverlay';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 @inject('stores', 'actions')
@@ -11,7 +12,7 @@ export default class NewsOverlayContainer extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
 
   render() {
-    const { app, newsFeed, profile } = this.props.stores;
+    const { app, newsFeed, profile, appUpdate } = this.props.stores;
     const { openExternalLink } = app;
     const {
       closeOpenedAlert,
@@ -19,7 +20,10 @@ export default class NewsOverlayContainer extends Component<InjectedProps> {
       newsFeedData,
       openedAlert,
       proceedNewsAction,
+      onCloseUpdate,
+      openedUpdate,
     } = newsFeed;
+    const { downloadProgress } = appUpdate;
     const { incident, alerts } = newsFeedData;
     const unreadAlerts = alerts.unread;
     const allAlertsCount = alerts.all ? alerts.all.length : 0;
@@ -62,6 +66,16 @@ export default class NewsOverlayContainer extends Component<InjectedProps> {
           onProceedNewsAction={proceedNewsAction}
           currentDateFormat={currentDateFormat}
           hideCounter
+        />
+      );
+    }
+    if (openedUpdate) {
+      return (
+        <UpdateOverlay
+          currentDateFormat={currentDateFormat}
+          update={openedUpdate}
+          onCloseUpdate={onCloseUpdate}
+          downloadProgress={downloadProgress}
         />
       );
     }

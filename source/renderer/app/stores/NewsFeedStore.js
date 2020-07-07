@@ -38,6 +38,7 @@ export default class NewsFeedStore extends Store {
     this.api.localStorage.markNewsAsRead
   );
   @observable openedAlert: ?News.News = null;
+  @observable openedUpdate: ?News.News = null;
   @observable fetchLocalNews: boolean = false;
 
   pollingNewsIntervalId: ?IntervalID = null;
@@ -195,6 +196,14 @@ export default class NewsFeedStore extends Store {
           break;
       }
     }
+  };
+
+  @action onOpenUpdate = (update: News.News) => {
+    this.openedUpdate = update;
+  };
+
+  @action onCloseUpdate = () => {
+    this.openedUpdate = null;
   };
 
   @action setFakedNewsfeed = () => {

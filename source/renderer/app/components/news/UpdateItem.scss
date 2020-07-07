@@ -1,7 +1,9 @@
 .component,
 .isRead,
 .info {
-  background-color: var(--theme-news-item-info-background-color);
+  // background-color: var(--theme-news-item-info-background-color);
+  // @UPDATE TODO
+  background-color: rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   cursor: pointer;
   padding: 20px;
@@ -26,7 +28,7 @@
 
       .badge {
         // @UPDATE TODO
-        background-color: red;
+        background-color: green;
         border-radius: 12.5px;
         display: inline-block;
         height: 8px;
@@ -46,96 +48,6 @@
     opacity: 0.7;
   }
 
-  .contentContainer {
-    color: var(--theme-news-item-title-color);
-    line-height: 1.36;
-    margin-top: 6px;
-    opacity: 0.7;
-
-    h1,
-    h2 {
-      font-family: var(--font-medium);
-      margin-bottom: 3px;
-    }
-
-    h1 {
-      font-size: 16px;
-    }
-
-    h2 {
-      font-size: 15px;
-    }
-
-    * + h2 {
-      margin-top: 8px;
-    }
-
-    ol,
-    ul {
-      list-style: disc;
-      margin-left: 20px;
-    }
-
-    ol {
-      list-style-type: decimal;
-    }
-
-    p,
-    li {
-      font-family: var(--font-regular);
-      font-size: 14px;
-      margin-bottom: 3px;
-
-      strong {
-        font-weight: 500;
-      }
-    }
-
-    a {
-      color: var(--theme-news-item-content-link-color);
-      text-decoration: underline;
-    }
-
-    em {
-      font-style: italic;
-    }
-  }
-
-  .actionBtn {
-    background-color: var(--theme-news-item-action-button-background-color);
-    border: solid 1px var(--theme-news-item-action-button-border-color);
-    border-radius: 2px;
-    cursor: pointer;
-    height: 32px;
-    line-height: 20px;
-    margin: 20px 0 0 0;
-    padding: 5px 10px;
-    text-align: center;
-    width: 100%;
-
-    .externalLink {
-      color: var(--theme-news-item-action-button-color);
-      font-family: var(--font-medium);
-      &:after {
-        background-color: var(--theme-news-item-action-button-color);
-      }
-    }
-
-    &:hover {
-      background-color: var(
-        --theme-news-item-action-button-background-color-hover
-      );
-      .externalLink {
-        color: var(--theme-news-item-action-button-color-hover);
-        &:after {
-          background-color: var(--theme-news-item-action-button-color-hover);
-        }
-      }
-    }
-  }
-  &.expanded {
-    opacity: 1;
-  }
   .downloadProgress {
     // @UPDATE TODO
     background: rgba(255, 255, 255, 0.5);

@@ -8,7 +8,7 @@ import styles from './UpdateItem.scss';
 
 type Props = {
   updateItem: News.News,
-  onOpenExternalLink: Function,
+  onOpenUpdate: Function,
   currentDateFormat: string,
   downloadProgress: number,
 };
@@ -19,11 +19,6 @@ export default class UpdateItem extends Component<Props> {
     onupdateItemActionClick: null,
     expandWithoutTransition: false,
   };
-
-  onProceedNewsAction(event: SyntheticMouseEvent<HTMLElement>) {
-    const { updateItem, onProceedNewsAction } = this.props;
-    onProceedNewsAction(updateItem, event);
-  }
 
   generateTitleWithBadge = (title: string) => {
     const wordsArray = title.split(' ');
@@ -50,7 +45,7 @@ export default class UpdateItem extends Component<Props> {
     const {
       updateItem,
       currentDateFormat,
-      onOpenExternalLink,
+      onOpenUpdate,
       downloadProgress,
     } = this.props;
     const componentClasses = classNames([
@@ -63,7 +58,7 @@ export default class UpdateItem extends Component<Props> {
       <div
         className={componentClasses}
         role="presentation"
-        onClick={onOpenExternalLink}
+        onClick={() => onOpenUpdate(updateItem)}
       >
         {title}
         <div className={styles.date}>

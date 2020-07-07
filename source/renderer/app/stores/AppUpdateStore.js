@@ -23,6 +23,7 @@ export default class AppUpdateStore extends Store {
 
   @observable isDownloadingUpdate: boolean = true;
   // @observable isDownloadingUpdate: boolean = false;
+
   @observable isUpdatePostponed: boolean = false;
   @observable isUpdateInstalled: boolean = false;
   @observable hasPendingDownload: boolean = false;
@@ -31,7 +32,8 @@ export default class AppUpdateStore extends Store {
   @observable isNewAppVersionAvailable: boolean = false;
   @observable nextUpdateVersion: ?string = null;
   @observable applicationVersion: ?number = null;
-  @observable downloadProgress: ?number = null;
+  @observable downloadProgress: ?number = 45;
+  // @observable downloadProgress: ?number = null;
   @observable availableUpdates: Array<any> = [];
 
   // @observable updateFileUrl: ?string = null;
