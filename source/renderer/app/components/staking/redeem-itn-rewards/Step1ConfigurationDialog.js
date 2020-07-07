@@ -10,7 +10,12 @@ import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
-import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
+import {
+  defineMessages,
+  intlShape,
+  FormattedMessage,
+  FormattedHTMLMessage,
+} from 'react-intl';
 import Wallet from '../../../domains/Wallet';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
@@ -34,7 +39,7 @@ const messages = defineMessages({
   description: {
     id: 'staking.redeemItnRewards.step1.description',
     defaultMessage:
-      '!!!If you participated in the { itnLink } and earned rewards by running a stake pool or delegating your stake, you can use this feature to redeem your rewards as ada on the Cardano mainnet. You will need the wallet recovery phrase for the Incentivized Testnet wallet used to earn rewards and an existing mainnet wallet in Daedalus to which the rewards will be transferred. This wallet will also be used to pay any applicable transaction fees.',
+      '!!!If you participated in the { itnLink } and earned rewards by running a stake pool or delegating your stake, you can use this feature to redeem your rewards as ada on the Cardano mainnet. You will need the <b>wallet recovery phrase for the Incentivized Testnet wallet</b> used to earn rewards and an existing mainnet wallet in Daedalus to which the rewards will be transferred. This wallet will also be used to pay any applicable transaction fees.',
     description: 'description for Redeem Incentivized Testnet - Step 1',
   },
   descriptionItnLinkLabel: {
@@ -51,8 +56,7 @@ const messages = defineMessages({
   },
   recoveryPhraseLabel: {
     id: 'staking.redeemItnRewards.step1.recoveryPhraseLabel',
-    defaultMessage:
-      '!!!Wallet recovery phrase for your Incentivized Testnet Rewards wallet:',
+    defaultMessage: '!!!Wallet recovery phrase:',
     description: 'recoveryPhraseLabel for Redeem Incentivized Testnet - Step 1',
   },
   walletsDropdownLabel: {
@@ -300,7 +304,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
             intl.formatMessage(messages.descriptionItnLinkUrl, event)
           )
         }
-        label={intl.formatMessage(messages.descriptionItnLinkLabel)}
+        label={<FormattedHTMLMessage {...messages.descriptionItnLinkLabel} />}
         skin={LinkSkin}
       />
     );
