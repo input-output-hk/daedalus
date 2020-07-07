@@ -4,7 +4,6 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
-import adaSymbol from '../../../assets/images/ada-symbol.inline.svg';
 import adaSymbolBig from '../../../assets/images/ada-symbol-big-dark.inline.svg';
 import BorderedBox from '../../widgets/BorderedBox';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
@@ -22,16 +21,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Number of pending transactions',
     description:
       '"Number of pending transactions" label on Wallet summary page',
-  },
-  walletBalancelabel: {
-    id: 'wallet.summary.page.walletBalancelabel',
-    defaultMessage: '!!!Wallet balance',
-    description: '"Wallet amount" label on Wallet summary page',
-  },
-  rewardsAccountBalancelabel: {
-    id: 'wallet.summary.page.rewardsAccountBalancelabel',
-    defaultMessage: '!!!Rewards account balance',
-    description: '"Rewards account balance" label on Wallet summary page',
   },
 });
 
@@ -70,27 +59,12 @@ export default class WalletSummary extends Component<Props> {
         <BorderedBox>
           <div className={styles.walletName}>{wallet.name}</div>
           <div className={styles.walletAmount}>
-            {wallet.amount.add(wallet.reward).toFormat(DECIMAL_PLACES_IN_ADA)}
+            {wallet.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
             <SVGInline
               svg={adaSymbolBig}
               className={styles.currencySymbolBig}
             />
           </div>
-
-          {!wallet.isLegacy && (
-            <div className={styles.balancesWrapper}>
-              <div className={styles.walletBalance}>
-                {intl.formatMessage(messages.walletBalancelabel)}:&nbsp;
-                {wallet.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
-                <SVGInline svg={adaSymbol} className={styles.currencySymbol} />
-              </div>
-              <div className={styles.rewardsAccountBalance}>
-                {intl.formatMessage(messages.rewardsAccountBalancelabel)}:&nbsp;
-                {wallet.reward.toFormat(DECIMAL_PLACES_IN_ADA)}
-                <SVGInline svg={adaSymbol} className={styles.currencySymbol} />
-              </div>
-            </div>
-          )}
 
           {!isLoadingTransactions ? (
             <div className={styles.transactionsCountWrapper}>

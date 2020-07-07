@@ -111,6 +111,9 @@ export default class WalletRow extends Component<Props> {
       onUndelegate,
     } = this.props;
 
+    // @TODO - remove once quit stake pool delegation is connected with rewards balance
+    const isUndelegateBlocked = true;
+
     const syncingProgress = get(syncState, 'progress.quantity', '');
     const notDelegatedText = intl.formatMessage(messages.notDelegated);
     const removeDelegationText = intl.formatMessage(messages.removeDelegation);
@@ -291,17 +294,18 @@ export default class WalletRow extends Component<Props> {
 
                 {/* Actions */}
                 <div className={actionStyles}>
-                  {isLastDelegationDelegating && [
-                    <span
-                      className={styles.actionUndelegate}
-                      role="presentation"
-                      onClick={onUndelegate}
-                      key="undelegate"
-                    >
-                      {removeDelegationText}
-                    </span>,
-                    <span key="or"> {orText} </span>,
-                  ]}
+                  {isLastDelegationDelegating &&
+                    !isUndelegateBlocked && [
+                      <span
+                        className={styles.actionUndelegate}
+                        role="presentation"
+                        onClick={onUndelegate}
+                        key="undelegate"
+                      >
+                        {removeDelegationText}
+                      </span>,
+                      <span key="or"> {orText} </span>,
+                    ]}
                   <span
                     className={styles.actionDelegate}
                     role="presentation"
