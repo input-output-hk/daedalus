@@ -1944,8 +1944,8 @@ const _createStakePoolFromServerData = action(
     const { name, description = '', ticker, homepage } = metadata;
     const relativeStakePercentage = get(relativeStake, 'quantity', 0);
     const producedBlocksCount = get(producedBlocks, 'quantity', 0);
-    const costQuantity = get(cost, 'quantity', 0);
-    const pledgeQuantity = get(pledge, 'quantity', 0);
+    const costQuantity = get(cost, 'quantity', 0).toString();
+    const pledgeQuantity = get(pledge, 'quantity', 0).toString();
     const profitMarginPercentage = get(profitMargin, 'quantity', 0);
     return new StakePool({
       id,
