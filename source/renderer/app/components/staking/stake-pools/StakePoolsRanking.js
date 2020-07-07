@@ -135,9 +135,12 @@ export default class StakePoolsRanking extends Component<Props, State> {
 
   getAllAmounts = () => {
     const { wallets } = this.props;
+    const filteredWallets = wallets.filter(
+      (w: Wallet) => w.amount.greaterThanOrEqualTo(MIN_AMOUNT) && !w.isLegacy
+    );
 
-    if (wallets.length) {
-      return wallets
+    if (filteredWallets.length) {
+      return filteredWallets
         .map((w: Wallet) => w.amount)
         .reduce(
           (acc: BigNumber, cur: BigNumber) => acc.plus(cur),
@@ -186,7 +189,10 @@ export default class StakePoolsRanking extends Component<Props, State> {
       name: intl.formatMessage(messages.rankingAllWallets),
       amount: this.getAllAmounts(),
     };
-    const walletSelectorWallets = [allWalletsItem, ...wallets];
+    const filteredWallets = wallets.filter(
+      (w: Wallet) => w.amount.greaterThanOrEqualTo(MIN_AMOUNT) && !w.isLegacy
+    );
+    const walletSelectorWallets = [allWalletsItem, ...filteredWallets];
     const walletSelectorClasses = classnames([
       styles.walletSelector,
       walletSelectorLanguageMap[currentLocale],
