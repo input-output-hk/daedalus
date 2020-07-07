@@ -258,17 +258,13 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       suggestedMnemonics,
       openExternalLink,
       wallets,
-      error: serverError,
+      error,
     } = this.props;
     const recoveryPhraseField = form.$('recoveryPhrase');
     const walletsDropdownField = form.$('walletsDropdown');
     const checkboxAcceptance1Field = form.$('checkboxAcceptance1');
     const checkboxAcceptance2Field = form.$('checkboxAcceptance2');
     const walletId = get(wallet, 'id', null);
-
-    let error;
-    if (serverError) error = intl.formatMessage(serverError);
-    else if (recoveryPhraseField.error) error = recoveryPhraseField.error;
 
     const buttonClasses = classnames([
       'primary',
@@ -339,7 +335,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
               }}
               options={suggestedMnemonics}
               maxSelections={WALLET_RECOVERY_PHRASE_WORD_COUNT}
-              error={recoveryPhraseField.error ? ' ' : null}
+              error={recoveryPhraseField.error}
               maxVisibleOptions={5}
               noResultsMessage={intl.formatMessage(messages.noResults)}
               className={styles.recoveryPhrase}
@@ -372,7 +368,9 @@ export default class Step1ConfigurationDialog extends Component<Props> {
               skin={CheckboxSkin}
               error={checkboxAcceptance2Field.error}
             />
-            {error && <p className={styles.error}>{error}</p>}
+            {error && (
+              <p className={styles.error}>{intl.formatMessage(error)}</p>
+            )}
           </div>
         </Dialog>
       </>
