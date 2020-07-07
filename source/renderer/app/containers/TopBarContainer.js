@@ -20,7 +20,14 @@ export default class TopBarContainer extends Component<Props> {
 
   render() {
     const { actions, stores } = this.props;
-    const { sidebar, app, networkStatus, wallets, newsFeed } = stores;
+    const {
+      sidebar,
+      app,
+      networkStatus,
+      wallets,
+      newsFeed,
+      appUpdate,
+    } = stores;
     const { isSynced, syncPercentage } = networkStatus;
     const { active, isWalletRoute, hasAnyWallets, hasRewardsWallets } = wallets;
     const {
@@ -54,6 +61,8 @@ export default class TopBarContainer extends Component<Props> {
       });
 
     const { unread } = newsFeed.newsFeedData;
+    const { isDownloadingUpdate } = appUpdate;
+
     const hasUnreadNews = unread.length > 0;
 
     return (
@@ -73,7 +82,8 @@ export default class TopBarContainer extends Component<Props> {
         />
         <NewsFeedIcon
           onNewsFeedIconClick={actions.app.toggleNewsFeed.trigger}
-          showDot={hasUnreadNews}
+          hasNotification={hasUnreadNews}
+          hasUpdate={isDownloadingUpdate}
         />
       </TopBar>
     );

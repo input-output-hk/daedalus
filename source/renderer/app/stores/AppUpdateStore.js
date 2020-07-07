@@ -19,11 +19,14 @@ const { News } = NewsDomains;
 const APP_UPDATE_DOWNLOAD_ID = 'appUpdate';
 
 export default class AppUpdateStore extends Store {
-  @observable isUpdateAvailable = false;
-  @observable isDownloadingUpdate = false;
-  @observable isUpdatePostponed = false;
-  @observable isUpdateInstalled = false;
-  @observable hasPendingDownload = false;
+  @observable isUpdateAvailable: boolean = false;
+
+  @observable isDownloadingUpdate: boolean = true;
+  // @observable isDownloadingUpdate: boolean = false;
+  @observable isUpdatePostponed: boolean = false;
+  @observable isUpdateInstalled: boolean = false;
+  @observable hasPendingDownload: boolean = false;
+
   @observable availableAppVersion: ?string = null;
   @observable isNewAppVersionAvailable: boolean = false;
   @observable nextUpdateVersion: ?string = null;

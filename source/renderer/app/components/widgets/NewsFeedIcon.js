@@ -8,15 +8,22 @@ import styles from './NewsFeedIcon.scss';
 type Props = {
   onNewsFeedIconClick: Function,
   newsFeedIconClass?: string,
-  showDot: boolean,
+  hasNotification: boolean,
+  hasUpdate: boolean,
 };
 
 export default class NewsFeedIcon extends Component<Props> {
   render() {
-    const { onNewsFeedIconClick, newsFeedIconClass, showDot } = this.props;
+    const {
+      onNewsFeedIconClick,
+      newsFeedIconClass,
+      hasNotification,
+      hasUpdate,
+    } = this.props;
     const componentClasses = classNames([
       styles.component,
-      showDot ? styles.withDot : null,
+      hasNotification && !hasUpdate ? styles.notificationDot : null,
+      hasUpdate ? styles.updateDot : null,
       newsFeedIconClass,
     ]);
     return (

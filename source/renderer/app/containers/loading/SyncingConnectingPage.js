@@ -14,7 +14,13 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
 
   render() {
     const { isIncentivizedTestnet, isShelleyTestnet, isFlight } = global;
-    const { stores } = this.props;
+    const {
+      newsFeed,
+      appUpdate,
+      networkStatus,
+      profile,
+      app,
+    } = this.props.stores;
     const {
       cardanoNodeState,
       isNodeResponding,
@@ -29,16 +35,17 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
       isNodeStopped,
       isNotEnoughDiskSpace,
       isTlsCertInvalid,
-    } = stores.networkStatus;
+    } = networkStatus;
     const {
       isNewAppVersionAvailable,
       isNewAppVersionLoading,
       isNewAppVersionLoaded,
-    } = stores.appUpdate;
-    const { hasLoadedCurrentLocale, hasLoadedCurrentTheme } = stores.profile;
+      isDownloadingUpdate,
+    } = appUpdate;
+    const { hasLoadedCurrentLocale, hasLoadedCurrentTheme } = profile;
     const { toggleNewsFeed } = this.props.actions.app;
-    const { unread } = stores.newsFeed.newsFeedData;
-    const hasUnreadNews = unread.length > 0;
+    const { unread } = newsFeed.newsFeedData;
+    const hasNotification = unread.length > 0;
 
     return (
       <SyncingConnecting
@@ -54,7 +61,8 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
         isNodeStopped={isNodeStopped}
         isNotEnoughDiskSpace={isNotEnoughDiskSpace}
         isTlsCertInvalid={isTlsCertInvalid}
-        hasUnreadNews={hasUnreadNews}
+        hasNotification={hasNotification}
+        hasUpdate={isDownloadingUpdate}
         hasLoadedCurrentLocale={hasLoadedCurrentLocale}
         hasLoadedCurrentTheme={hasLoadedCurrentTheme}
         isCheckingSystemTime={
@@ -74,7 +82,7 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
         onStatusIconClick={this.openDaedalusDiagnosticsDialog}
         onDownloadLogs={this.handleDownloadLogs}
         onToggleNewsFeedIconClick={toggleNewsFeed.trigger}
-        disableDownloadLogs={stores.app.isDownloadNotificationVisible}
+        disableDownloadLogs={app.isDownloadNotificationVisible}
         showNewsFeedIcon={!isNodeStopping && !isNodeStopped}
       />
     );

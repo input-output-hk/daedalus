@@ -2,9 +2,11 @@
   position: absolute;
   right: 29px;
   top: 20px;
+}
 
-  &.withDot:after {
-    background: var(--theme-news-feed-icon-dot-background-color);
+.dot {
+  &:after {
+    background: green;
     border-radius: 12.5px;
     content: '';
     display: block;
@@ -15,6 +17,16 @@
     top: 7px;
     width: 8px;
   }
+}
+
+.notificationDot {
+  @extend .dot;
+  &:after {
+    background: var(--theme-news-feed-icon-dot-background-color);
+  }
+}
+.updateDot {
+  @extend .dot;
 }
 
 .icon {

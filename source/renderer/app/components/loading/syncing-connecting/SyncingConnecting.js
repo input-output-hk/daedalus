@@ -35,7 +35,8 @@ type Props = {
   isTlsCertInvalid: boolean,
   hasLoadedCurrentLocale: boolean,
   hasLoadedCurrentTheme: boolean,
-  hasUnreadNews: boolean,
+  hasNotification: boolean,
+  hasUpdate: boolean,
   isCheckingSystemTime: boolean,
   isNodeResponding: boolean,
   isNodeSyncing: boolean,
@@ -168,7 +169,8 @@ export default class SyncingConnecting extends Component<Props, State> {
       isSyncing,
       hasLoadedCurrentLocale,
       hasLoadedCurrentTheme,
-      hasUnreadNews,
+      hasNotification,
+      hasUpdate,
       onIssueClick,
       onOpenExternalLink,
       onDownloadLogs,
@@ -215,7 +217,8 @@ export default class SyncingConnecting extends Component<Props, State> {
             <NewsFeedIcon
               onNewsFeedIconClick={onToggleNewsFeedIconClick}
               newsFeedIconClass={newsFeedIconStyles}
-              showDot={hasUnreadNews}
+              hasNotification={hasNotification}
+              hasUpdate={hasUpdate}
             />
           )}
           <LogosDisplay isConnected={isConnected} />
