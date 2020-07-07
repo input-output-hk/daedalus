@@ -7,8 +7,9 @@ import SVGInline from 'react-svg-inline';
 import { get } from 'lodash';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import styles from './NewsFeed.scss';
-import News from '../../domains/News';
+import News, { NewsTypes } from '../../domains/News';
 import NewsItem from './NewsItem';
+import UpdateItem from './UpdateItem';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 
 const messages = defineMessages({
@@ -112,8 +113,11 @@ export default class NewsFeed extends Component<Props, State> {
     } = this.props;
     const { hasShadow } = this.state;
 
-    const totalNewsItems = get(news, 'all', []).length;
-    const totalUnreadNewsItems = get(news, 'unread', []).length;
+    const items = get(news, 'all', []);
+    const newsItems = items.filter(item => item.type !== NewsTypes.UPDATE);
+    const updateItems = items.filter(item => item.type === NewsTypes.UPDATE);
+    // const items.length = items.length;
+    const totalUnreadNewsItems = get(newsItems, 'unread', []).length;
     const componentClasses = classNames([
       styles.component,
       isNewsFeedOpen ? styles.show : null,
@@ -141,9 +145,27 @@ export default class NewsFeed extends Component<Props, State> {
           </button>
         </div>
         <div className={styles.newsFeedList}>
-          {news && totalNewsItems > 0 && (
+          {updateItems.length && (
             <div className={styles.newsFeedItemsContainer}>
-              {news.all.map(newsItem => (
+              {updateItems.map(updateItem => (
+                <UpdateItem
+                  key={updateItem.id}
+                  updateItem={updateItem}
+                  isNewsFeedOpen={isNewsFeedOpen}
+                  onMarkNewsAsRead={onMarkNewsAsRead}
+                  onOpenAlert={onOpenAlert}
+                  onProceedNewsAction={onProceedNewsAction}
+                  onOpenExternalLink={onOpenExternalLink}
+                  currentDateFormat={currentDateFormat}
+                  downloadProgress={50}
+                />
+              ))}
+              <hr className={styles.separator} />
+            </div>
+          )}
+          {newsItems.length && (
+            <div className={styles.newsFeedItemsContainer}>
+              {newsItems.map(newsItem => (
                 <NewsItem
                   key={newsItem.id}
                   newsItem={newsItem}
@@ -157,14 +179,14 @@ export default class NewsFeed extends Component<Props, State> {
               ))}
             </div>
           )}
-          {news && totalNewsItems === 0 && !isLoadingNews && (
+          {news && items.length === 0 && !isLoadingNews && (
             <div className={styles.newsFeedEmptyContainer}>
               <p className={styles.newsFeedEmpty}>
                 {intl.formatMessage(messages.newsFeedEmpty)}
               </p>
             </div>
           )}
-          {(!news || totalNewsItems === 0) && isLoadingNews && (
+          {(!news || items.length === 0) && isLoadingNews && (
             <div className={styles.newsFeedNoFetchContainer}>
               <p className={styles.newsFeedNoFetch}>
                 {intl.formatMessage(messages.newsFeedNoFetch)}
