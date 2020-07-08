@@ -418,7 +418,7 @@
   "staking.redeemItnRewards.step3.failure.description1NoRewards": "No rewards were found in your Incentivized Testnet Rewards wallet. Please make sure that you have entered the correct wallet recovery phrase.",
   "staking.redeemItnRewards.step3.failure.description2InvalidWallet": "Rewards from the wallet corresponding to the recovery phrase you have provided have already been redeemed.",
   "staking.redeemItnRewards.step3.failure.description3Generic": "No rewards were found in your Incentivized Testnet Rewards wallet. Please make sure that you have entered the correct wallet recovery phrase and that rewards have not already been redeemed.",
-  "staking.redeemItnRewards.step3.success.description": "You have successfully redeemed <b>{finalTotal}</b> ada to your <b>{walletName}</b> wallet. This transaction incurred <b>{transactionFees}</b> ada in transaction fees.",
+  "staking.redeemItnRewards.step3.success.description": "You have successfully redeemed <b>{finalTotal}</b> to your <b>{walletName}</b> wallet. This transaction incurred <b>{transactionFees}</b> in transaction fees.",
   "staking.redeemItnRewards.step3.success.downloadPDFButtonLabel": "Download PDF certificate",
   "staking.redeemItnRewards.step3.success.openWalletButtonLabel": "Open the wallet",
   "staking.redeemItnRewards.step3.success.title": "Incentivized Testnet rewards redeemed!",

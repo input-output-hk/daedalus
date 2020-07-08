@@ -4676,7 +4676,7 @@
         }
       },
       {
-        "defaultMessage": "!!!You have successfully redeemed <b>{finalTotal}</b> ADA to your <b>{walletName}</b> wallet. This transaction incurred <b>{transactionFees}</b> in transaction fees",
+        "defaultMessage": "!!!You have successfully redeemed <b>{finalTotal}</b> to your <b>{walletName}</b> wallet. This transaction incurred <b>{transactionFees}</b> in transaction fees",
         "description": "description for Redeem Incentivized Testnet - Step 3",
         "end": {
           "column": 3,

@@ -20,7 +20,7 @@ const messages = defineMessages({
   description: {
     id: 'staking.redeemItnRewards.step3.success.description',
     defaultMessage:
-      '!!!You have successfully redeemed <b>{finalTotal}</b> ADA to your <b>{walletName}</b> wallet. This transaction incurred <b>{transactionFees}</b> in transaction fees',
+      '!!!You have successfully redeemed <b>{finalTotal}</b> to your <b>{walletName}</b> wallet. This transaction incurred <b>{transactionFees}</b> in transaction fees',
     description: 'description for Redeem Incentivized Testnet - Step 3',
   },
   openWalletButtonLabel: {
