@@ -168,11 +168,13 @@ export default class StakePoolsRanking extends Component<Props, State> {
     } else {
       sliderValue = MIN_AMOUNT.toNumber();
     }
+    sliderValue = Math.max(sliderValue, MIN_AMOUNT.toNumber());
 
     this.setState({
       selectedWalletId,
-      sliderValue: Math.max(sliderValue, MIN_AMOUNT.toNumber()),
+      sliderValue,
     });
+    this.props.onRank(sliderValue);
   };
 
   onSliderChange = (sliderValue: number) => {
