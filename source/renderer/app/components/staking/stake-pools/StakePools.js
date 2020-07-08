@@ -146,7 +146,11 @@ export default class StakePools extends Component<Props, State> {
               numberOfStakePools={stakePoolsList.length}
               getStakePoolById={getStakePoolById}
             />
-            {isRanking && loadingSpinner}
+            {isRanking && (
+              <div className={styles.rankingLoaderWrapper}>
+                {loadingSpinner}
+              </div>
+            )}
             <StakePoolsSearch
               search={search}
               onSearch={this.handleSearch}
