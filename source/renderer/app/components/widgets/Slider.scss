@@ -26,6 +26,9 @@
         z-index: 10;
       }
     }
+    .rc-slider-disabled {
+      background-color: transparent;
+    }
   }
   .upperMarks {
     display: flex;

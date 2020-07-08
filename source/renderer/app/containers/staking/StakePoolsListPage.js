@@ -34,13 +34,14 @@ export default class StakePoolsListPage extends Component<Props> {
       } = this.props;
       stakingActions.updateStake.trigger(sliderValue);
       this.rankTimeoutHandler = null;
-    }, 4000);
+    }, 1000);
   };
 
   render() {
     const { uiDialogs, staking, app, profile, wallets } = this.props.stores;
     const { currentTheme } = profile;
     const {
+      stakePoolsRequest,
       stakePools,
       fetchingStakePoolsFailed,
       recentStakePools,
@@ -60,6 +61,7 @@ export default class StakePoolsListPage extends Component<Props> {
           onRank={this.onRank}
           onDelegate={this.handleDelegate}
           isLoading={fetchingStakePoolsFailed || !stakePools.length}
+          isRanking={stakePoolsRequest.isExecuting}
           getStakePoolById={getStakePoolById}
         />
         {uiDialogs.isOpen(DelegationSetupWizardDialog) ? (

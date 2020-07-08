@@ -46,6 +46,7 @@ type Props = {
   onRank: Function,
   onDelegate: Function,
   isLoading: boolean,
+  isRanking: boolean,
   stakePoolsDelegatingList: Array<StakePool>,
   getStakePoolById: Function,
 };
@@ -92,6 +93,7 @@ export default class StakePools extends Component<Props, State> {
       onOpenExternalLink,
       currentTheme,
       isLoading,
+      isRanking,
       stakePoolsDelegatingList,
       getStakePoolById,
     } = this.props;
@@ -140,9 +142,11 @@ export default class StakePools extends Component<Props, State> {
               onOpenExternalLink={onOpenExternalLink}
               onRank={onRank}
               isLoading={isLoading}
+              isRanking={isRanking}
               numberOfStakePools={stakePoolsList.length}
               getStakePoolById={getStakePoolById}
             />
+            {isRanking && loadingSpinner}
             <StakePoolsSearch
               search={search}
               onSearch={this.handleSearch}

@@ -40,6 +40,7 @@ export const StakePoolsStory = (props: Props) => (
     currentLocale={props.locale}
     onDelegate={action('onDelegate')}
     isLoading={props.isLoading}
+    isRanking={false}
     onRank={() => null}
     wallets={dummyWallets}
     getStakePoolById={() => null}

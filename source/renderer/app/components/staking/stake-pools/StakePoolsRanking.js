@@ -101,6 +101,7 @@ type Props = {
   onOpenExternalLink: Function,
   onRank: Function,
   isLoading: boolean,
+  isRanking: boolean,
   numberOfStakePools: number,
   getStakePoolById: Function,
 };
@@ -236,6 +237,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
     const {
       onOpenExternalLink,
       isLoading,
+      isRanking,
       numberOfStakePools,
       getStakePoolById,
     } = this.props;
@@ -266,6 +268,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
                   placeholder={intl.formatMessage(messages.rankingSelectWallet)}
                   wallets={walletSelectorWallets}
                   onChange={this.onSelectedWalletChange}
+                  disabled={isLoading || isRanking}
                   value={selectedWalletId}
                   selectionRenderer={option => (
                     <div className="customValue">{option.label}</div>
@@ -300,7 +303,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
                 max={MAX_AMOUNT.toNumber()}
                 value={sliderValue}
                 onChange={this.onSliderChange}
-                disabled={isLoading}
+                disabled={isLoading || isRanking}
                 showTooltip
                 minTooltip={intl.formatMessage(messages.rankingMinTooltip)}
                 maxTooltip={intl.formatMessage(messages.rankingMaxTooltip)}
