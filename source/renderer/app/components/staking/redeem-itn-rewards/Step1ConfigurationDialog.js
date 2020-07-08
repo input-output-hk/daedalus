@@ -36,10 +36,16 @@ const messages = defineMessages({
     defaultMessage: '!!!Redeem Incentivized Testnet rewards',
     description: 'Title for Redeem Incentivized Testnet - Step 1',
   },
-  description: {
-    id: 'staking.redeemItnRewards.step1.description',
+  description1: {
+    id: 'staking.redeemItnRewards.step1.description1',
     defaultMessage:
-      '!!!If you participated in the { itnLink } and earned rewards by running a stake pool or delegating your stake, you can use this feature to redeem your rewards as ada on the Cardano mainnet. You will need the <b>wallet recovery phrase for the Incentivized Testnet wallet</b> used to earn rewards and an existing mainnet wallet in Daedalus to which the rewards will be transferred. This wallet will also be used to pay any applicable transaction fees.',
+      '!!!If you participated in the { itnLink } and earned rewards by running a stake pool or delegating your stake, you can use this feature to redeem your rewards as ada on the Cardano mainnet.',
+    description: 'description for Redeem Incentivized Testnet - Step 1',
+  },
+  description2: {
+    id: 'staking.redeemItnRewards.step1.description2',
+    defaultMessage:
+      '!!!You will need the <b>wallet recovery phrase for the Incentivized Testnet wallet</b> used to earn rewards and an existing mainnet wallet in Daedalus to which the rewards will be transferred. This wallet will also be used to pay any applicable transaction fees.',
     description: 'description for Redeem Incentivized Testnet - Step 1',
   },
   descriptionItnLinkLabel: {
@@ -304,7 +310,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
             intl.formatMessage(messages.descriptionItnLinkUrl, event)
           )
         }
-        label={<FormattedHTMLMessage {...messages.descriptionItnLinkLabel} />}
+        label={intl.formatMessage(messages.descriptionItnLinkLabel)}
         skin={LinkSkin}
       />
     );
@@ -326,11 +332,12 @@ export default class Step1ConfigurationDialog extends Component<Props> {
           <div className={styles.component}>
             <p className={styles.description}>
               <FormattedMessage
-                {...messages.description}
+                {...messages.description1}
                 values={{
                   itnLink,
                 }}
               />
+              <FormattedHTMLMessage {...messages.description2} />
             </p>
             <Autocomplete
               {...recoveryPhraseField.bind()}
