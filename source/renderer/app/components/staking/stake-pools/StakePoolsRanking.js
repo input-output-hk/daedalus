@@ -100,6 +100,7 @@ type Props = {
   currentLocale: string,
   onOpenExternalLink: Function,
   onRank: Function,
+  selectedDelegationWalletId?: ?string,
   isLoading: boolean,
   isRanking: boolean,
   numberOfStakePools: number,
@@ -134,6 +135,14 @@ export default class StakePoolsRanking extends Component<Props, State> {
     this.onSelectedWalletChange('0');
   }
 
+  componentDidUpdate(prevProps: Props) {
+    const { selectedDelegationWalletId: prevWalletId } = prevProps;
+    const { selectedDelegationWalletId: currentWalletId } = this.props;
+    if (prevWalletId !== currentWalletId && currentWalletId) {
+      this.onSelectedWalletChange(currentWalletId);
+    }
+  }
+
   getAllAmounts = () => {
     const { wallets } = this.props;
     const filteredWallets = wallets.filter(
@@ -157,8 +166,12 @@ export default class StakePoolsRanking extends Component<Props, State> {
     const selectedWallet = wallets.find(
       wallet => wallet.id === selectedWalletId
     );
-    let sliderValue = null;
 
+    if (selectedWalletId !== '0' && !selectedWallet) {
+      return;
+    }
+
+    let sliderValue = MIN_AMOUNT.toNumber();
     if (selectedWalletId === '0') {
       sliderValue = Math.min(
         Math.floor(this.getAllAmounts().toNumber()),
@@ -166,8 +179,6 @@ export default class StakePoolsRanking extends Component<Props, State> {
       );
     } else if (selectedWallet) {
       sliderValue = Math.floor(selectedWallet.amount.toNumber());
-    } else {
-      sliderValue = MIN_AMOUNT.toNumber();
     }
     sliderValue = Math.max(sliderValue, MIN_AMOUNT.toNumber());
 

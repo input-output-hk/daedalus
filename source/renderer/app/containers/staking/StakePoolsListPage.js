@@ -43,6 +43,8 @@ export default class StakePoolsListPage extends Component<Props> {
     const {
       stakePoolsRequest,
       stakePools,
+      isRanking,
+      selectedDelegationWalletId,
       fetchingStakePoolsFailed,
       recentStakePools,
       getStakePoolById,
@@ -59,9 +61,10 @@ export default class StakePoolsListPage extends Component<Props> {
           onOpenExternalLink={app.openExternalLink}
           currentTheme={currentTheme}
           onRank={this.onRank}
+          selectedDelegationWalletId={selectedDelegationWalletId}
           onDelegate={this.handleDelegate}
-          isLoading={fetchingStakePoolsFailed || !stakePools.length}
-          isRanking={stakePoolsRequest.isExecuting}
+          isLoading={fetchingStakePoolsFailed}
+          isRanking={isRanking && stakePoolsRequest.isExecuting}
           getStakePoolById={getStakePoolById}
         />
         {uiDialogs.isOpen(DelegationSetupWizardDialog) ? (

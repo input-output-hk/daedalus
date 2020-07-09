@@ -28,6 +28,8 @@ export default class StakingStore extends Store {
   @observable isDelegationTransactionPending = false;
   @observable fetchingStakePoolsFailed = false;
   @observable stake = 0;
+  @observable selectedDelegationWalletId = null;
+  @observable isRanking = false;
 
   pollingStakePoolsInterval: ?IntervalID = null;
   refreshPolling: ?IntervalID = null;
@@ -45,11 +47,6 @@ export default class StakingStore extends Store {
     const { staking } = this.actions;
 
     if (isIncentivizedTestnet || isShelleyTestnet) {
-      // Set initial fetch interval to 1 second
-      this.refreshPolling = setInterval(
-        this.getStakePoolsData,
-        STAKE_POOLS_FAST_INTERVAL
-      );
       staking.goToStakingInfoPage.listen(this._goToStakingInfoPage);
       staking.goToStakingDelegationCenterPage.listen(
         this._goToStakingDelegationCenterPage
@@ -58,6 +55,9 @@ export default class StakingStore extends Store {
       staking.quitStakePool.listen(this._quitStakePool);
       staking.fakeStakePoolsLoading.listen(this._setFakePoller);
       staking.updateStake.listen(this._setStake);
+      staking.selectDelegationWallet.listen(
+        this._setSelectedDelegationWalletId
+      );
     }
   }
 
@@ -80,7 +80,12 @@ export default class StakingStore extends Store {
 
   @action _setStake = (stake: number) => {
     this.stake = stake * LOVELACES_PER_ADA;
+    this.isRanking = true;
     this.getStakePoolsData();
+  };
+
+  @action _setSelectedDelegationWalletId = (walletId: string) => {
+    this.selectedDelegationWalletId = walletId;
   };
 
   @action _joinStakePool = async (request: JoinStakePoolRequest) => {
@@ -277,30 +282,39 @@ export default class StakingStore extends Store {
 
   @action getStakePoolsData = async () => {
     const { isConnected } = this.stores.networkStatus;
-    if (!isConnected) return;
+    if (!isConnected) {
+      this._resetIsRanking();
+      return;
+    }
+
     try {
       await this.stakePoolsRequest.execute(this.stake).promise;
-      if (this.refreshPolling) this._resetPolling(false);
+      this._resetPolling(false);
     } catch (error) {
-      if (!this.refreshPolling) {
-        this._resetPolling(true);
-      }
+      this._resetPolling(true);
     }
+    this._resetIsRanking();
   };
 
   @action _resetPolling = (fetchFailed: boolean) => {
     if (fetchFailed) {
       this.fetchingStakePoolsFailed = true;
-      clearInterval(this.pollingStakePoolsInterval);
-      this.pollingStakePoolsInterval = null;
-      this.refreshPolling = setInterval(
-        this.getStakePoolsData,
-        STAKE_POOLS_FAST_INTERVAL
-      );
+      if (this.pollingStakePoolsInterval) {
+        clearInterval(this.pollingStakePoolsInterval);
+        this.pollingStakePoolsInterval = null;
+      }
+      if (!this.refreshPolling) {
+        this.refreshPolling = setInterval(
+          this.getStakePoolsData,
+          STAKE_POOLS_FAST_INTERVAL
+        );
+      }
     } else {
       this.fetchingStakePoolsFailed = false;
-      clearInterval(this.refreshPolling);
-      this.refreshPolling = null;
+      if (this.refreshPolling) {
+        clearInterval(this.refreshPolling);
+        this.refreshPolling = null;
+      }
       if (!this.pollingStakePoolsInterval) {
         this.pollingStakePoolsInterval = setInterval(
           this.getStakePoolsData,
@@ -308,6 +322,10 @@ export default class StakingStore extends Store {
         );
       }
     }
+  };
+
+  @action _resetIsRanking = () => {
+    this.isRanking = false;
   };
 
   // For testing only

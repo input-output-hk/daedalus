@@ -78,7 +78,7 @@
                 text-overflow: ellipsis;
               }
               .WalletsDropdownOption_component {
-                max-width: 100%;
+                max-width: calc(100% - 20px);
 
                 .WalletsDropdownOption_label,
                 .WalletsDropdownOption_detail {
