@@ -5,6 +5,7 @@ import { Select } from 'react-polymorph/lib/components/Select';
 import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import { omit } from 'lodash';
 import WalletsDropdownOption from './WalletsDropdownOption';
+import styles from './WalletsDropdown.scss';
 
 import { formattedWalletAmount } from '../../../utils/formatters';
 import Wallet from '../../../domains/Wallet';
@@ -16,6 +17,7 @@ type SelectProps = {
   className?: string,
   context?: any,
   error?: string | Element<any>,
+  errorPosition?: 'top' | 'bottom',
   label?: string | Element<any>,
   isOpeningUpward?: boolean,
   onBlur?: Function,
@@ -77,6 +79,7 @@ export default class WalletsDropdown extends Component<Props> {
       />
     ),
     skin: SelectSkin,
+    errorPosition: 'top',
   };
 
   render() {
@@ -84,6 +87,8 @@ export default class WalletsDropdown extends Component<Props> {
       wallets,
       numberOfStakePools,
       getStakePoolById,
+      error,
+      errorPosition,
       ...props
     } = this.props;
     const walletsData = wallets.map(
@@ -112,9 +117,16 @@ export default class WalletsDropdown extends Component<Props> {
         };
       }
     );
-    const selectOptions = omit(props, 'options');
+    let topError;
+    let bottomError;
+    if (errorPosition === 'bottom') bottomError = error;
+    else topError = error;
+    const selectOptions = omit({ ...props, topError }, 'options');
     return (
-      <Select options={walletsData} {...selectOptions} optionHeight={62} />
+      <>
+        <Select options={walletsData} {...selectOptions} optionHeight={62} />
+        <div className={styles.error}>{bottomError}</div>
+      </>
     );
   }
 }

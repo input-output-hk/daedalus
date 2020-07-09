@@ -365,6 +365,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
               value={walletId}
               getStakePoolById={() => {}}
               error={this.walletsDropdownError}
+              errorPosition="bottom"
             />
             <hr />
             <Checkbox
