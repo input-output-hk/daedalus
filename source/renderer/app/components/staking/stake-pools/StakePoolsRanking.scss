@@ -48,6 +48,7 @@
             height: auto;
             padding: 0;
             width: calc(100% + 20px);
+            z-index: 0;
           }
           .SelectOverrides_selectInput::after {
             background-color: var(--theme-staking-font-color-regular);
