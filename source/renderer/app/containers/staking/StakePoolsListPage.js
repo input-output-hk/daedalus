@@ -2,6 +2,7 @@
 import React, { Component, Fragment } from 'react';
 import { observer, inject } from 'mobx-react';
 import StakePools from '../../components/staking/stake-pools/StakePools';
+import StakePoolsRankingLoader from '../../components/staking/stake-pools/StakePoolsRankingLoader';
 import DelegationSetupWizardDialogContainer from './dialogs/DelegationSetupWizardDialogContainer';
 import DelegationSetupWizardDialog from '../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
 import type { InjectedProps } from '../../types/injectedPropsType';
@@ -67,6 +68,9 @@ export default class StakePoolsListPage extends Component<Props> {
           isRanking={isRanking && stakePoolsRequest.isExecuting}
           getStakePoolById={getStakePoolById}
         />
+        {isRanking && stakePoolsRequest.isExecuting && (
+          <StakePoolsRankingLoader />
+        )}
         {uiDialogs.isOpen(DelegationSetupWizardDialog) ? (
           <DelegationSetupWizardDialogContainer />
         ) : null}
