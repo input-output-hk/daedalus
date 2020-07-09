@@ -141,7 +141,6 @@ export type DownloadLocalDataRequest = {
   fileName?: string,
   id?: string,
 };
-
 export type DownloadLocalDataResponse = {
   data?: DownloadData,
   progress?: DownloadProgress,
@@ -150,14 +149,12 @@ export type DownloadLocalDataResponse = {
 export type DownloadsLocalDataRequest = {
   state: DownloadState,
 };
-
 export type DownloadsLocalDataResponse = {
   [key: string]: DownloadsLocalDataResponse,
 };
 
-export type ResumeDownloadRequest = {
-  fileName?: string,
-  id?: string,
-};
-
+export type ResumeDownloadRequest = DownloadLocalDataRequest;
 export type ResumeDownloadResponse = DownloadResponse | void;
+
+export type ClearDownloadLocalDataRequest = DownloadLocalDataRequest;
+export type ClearDownloadLocalDataResponse = void;

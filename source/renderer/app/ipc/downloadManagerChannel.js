@@ -4,6 +4,7 @@ import {
   GET_DOWNLOAD_LOCAL_DATA,
   GET_DOWNLOADS_LOCAL_DATA,
   RESUME_DOWNLOAD,
+  CLEAR_DOWNLOAD_LOCAL_DATA,
 } from '../../../common/ipc/api';
 import type {
   DownloadRendererRequest,
@@ -14,6 +15,8 @@ import type {
   DownloadsLocalDataMainResponse,
   ResumeDownloadRendererRequest,
   ResumeDownloadMainResponse,
+  ClearDownloadLocalDataRendererRequest,
+  ClearDownloadLocalDataMainResponse,
 } from '../../../common/ipc/api';
 import { RendererIpcChannel } from './lib/RendererIpcChannel';
 
@@ -40,3 +43,9 @@ RendererIpcChannel<
   ResumeDownloadMainResponse,
   ResumeDownloadRendererRequest
 > = new RendererIpcChannel(RESUME_DOWNLOAD);
+
+export const clearDownloadDataChannel: // IpcChannel<Incoming, Outgoing>
+RendererIpcChannel<
+  ClearDownloadLocalDataMainResponse,
+  ClearDownloadLocalDataRendererRequest
+> = new RendererIpcChannel(CLEAR_DOWNLOAD_LOCAL_DATA);

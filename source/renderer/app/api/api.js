@@ -28,7 +28,6 @@ import { getNetworkParameters } from './network/requests/getNetworkParameters';
 
 // App update requests
 import { applyAppUpdate } from './nodes/requests/applyAppUpdate';
-// import { getNextAppUpdate } from './nodes/requests/getNextAppUpdate';
 import { postponeAppUpdate } from './nodes/requests/postponeAppUpdate';
 import { getLatestAppVersion } from './nodes/requests/getLatestAppVersion';
 
@@ -190,7 +189,7 @@ import { WALLET_BYRON_KINDS } from '../config/walletRestoreConfig';
 import ApiError from '../domains/ApiError';
 
 // @UPDATE TODO
-import dummyUpdate from './news/dummy-update.json';
+import dummyUpdates from './news/dummy-update.json';
 
 const { isIncentivizedTestnet, isShelleyTestnet } = global;
 
@@ -1211,26 +1210,6 @@ export default class AdaApi {
     }
   };
 
-  nextUpdate = async (): Promise<AppInfo | null> => {
-    logger.debug('AdaApi::nextUpdate called');
-
-    /* TODO: Re-enable when API is available
-    try {
-      const appUpdate = await getNextAppUpdate(this.config);
-      if (appUpdate && appUpdate.version) {
-        logger.debug('AdaApi::nextUpdate success', { appUpdate });
-        return appUpdate;
-      }
-      logger.debug('AdaApi::nextUpdate success: No Update Available');
-    } catch (error) {
-      logger.error('AdaApi::nextUpdate error', { error });
-      throw new GenericApiError(error);
-    }
-    */
-
-    return null;
-  };
-
   postponeUpdate = async (): Promise<void> => {
     logger.debug('AdaApi::postponeUpdate called');
     try {
@@ -1653,7 +1632,8 @@ export default class AdaApi {
       throw new Error('Unable to fetch news');
     }
 
-    news.items.push(dummyUpdate);
+    // news.items.push(dummyUpdate);
+    news.items = [...news.items, ...dummyUpdates];
 
     // Fetch news verification hash
     let newsHash: string;

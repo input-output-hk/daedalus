@@ -1,17 +1,21 @@
 // @flow
-import { action, computed, observable, runInAction, autorun } from 'mobx';
+import { action, computed, observable, runInAction } from 'mobx';
+import { get } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import type { AppInfo, GetLatestAppVersionResponse } from '../api/nodes/types';
-import { APP_UPDATE_POLL_INTERVAL } from '../config/timingConfig';
+import type { GetLatestAppVersionResponse } from '../api/nodes/types';
 import { rebuildApplicationMenu } from '../ipc/rebuild-application-menu';
 import NewsDomains from '../domains/News';
 import {
   requestDownloadChannel,
   getDownloadLocalDataChannel,
   requestResumeDownloadChannel,
+  clearDownloadDataChannel,
 } from '../ipc/downloadManagerChannel';
-import type { DownloadMainResponse } from '../../../common/ipc/api';
+import type {
+  DownloadMainResponse,
+  DownloadsLocalDataMainResponse,
+} from '../../../common/ipc/api';
 import { DOWNLOAD_EVENT_TYPES } from '../../../common/config/downloadManagerConfig';
 
 const { News } = NewsDomains;
@@ -19,10 +23,13 @@ const { News } = NewsDomains;
 const APP_UPDATE_DOWNLOAD_ID = 'appUpdate';
 
 export default class AppUpdateStore extends Store {
+  @observable availableUpdate: ?News = null;
+
+  @observable isDownloadingUpdate: boolean = false;
+
   @observable isUpdateAvailable: boolean = false;
 
-  @observable isDownloadingUpdate: boolean = true;
-  // @observable isDownloadingUpdate: boolean = false;
+  // @observable isDownloadingUpdate: boolean = true;
 
   @observable isUpdatePostponed: boolean = false;
   @observable isUpdateInstalled: boolean = false;
@@ -30,7 +37,6 @@ export default class AppUpdateStore extends Store {
 
   @observable availableAppVersion: ?string = null;
   @observable isNewAppVersionAvailable: boolean = false;
-  @observable nextUpdateVersion: ?string = null;
   @observable applicationVersion: ?number = null;
   @observable downloadProgress: ?number = 45;
   // @observable downloadProgress: ?number = null;
@@ -40,10 +46,6 @@ export default class AppUpdateStore extends Store {
   @observable updateFileUrl: ?string =
     'https://update-cardano-mainnet.iohk.io/daedalus-1.1.0-mainnet-12849.pkg';
 
-  // REQUESTS
-  @observable nextUpdateRequest: Request<AppInfo> = new Request(
-    this.api.ada.nextUpdate
-  );
   @observable postponeUpdateRequest: Request<Promise<void>> = new Request(
     this.api.ada.postponeUpdate
   );
@@ -66,37 +68,70 @@ export default class AppUpdateStore extends Store {
     );
     requestDownloadChannel.onReceive(this._manageUpdateResponse);
 
-    const { isIncentivizedTestnet, isFlight } = global;
-    if (!isFlight && !isIncentivizedTestnet) {
-      this.nextUpdateInterval = setInterval(
-        this.refreshNextUpdate,
-        APP_UPDATE_POLL_INTERVAL
-      );
+    // ========== MOBX REACTIONS =========== //
+    this.registerReactions([this._watchForNewsfeedUpdates]);
+
+    // this._init();
+  }
+
+  // ================= REACTIONS ==================
+
+  _watchForNewsfeedUpdates = () => {
+    const { update } = this.stores.newsFeed.newsFeedData;
+    if (update) this._checkNewAppUpdate(update);
+  };
+
+  // =============== PRIVATE ===============
+
+  _checkNewAppUpdate = async (update: News) => {
+    // Is the update valid?
+    const isValidUpdate = await this._isUpdateValid(update);
+    if (!isValidUpdate) {
+      this._removeLocalDataInfo();
+      return;
     }
 
-    // const availableUpdates = this.checkAvailableUpdates;
-    // console.log('availableUpdates ...', availableUpdates);
+    runInAction(() => {
+      this.availableUpdate = update;
+    });
 
-    // this.watchAppUpdate();
-    // console.log('this._disposer', this._disposer);
-  }
+    // Is there a pending / resumable download?
+    const unfinishedDownload = await this._getUpdateDownloadLocalData();
+    if (unfinishedDownload) {
+      if (this._isUnfinishedDownloadValid(unfinishedDownload)) {
+        this._requestResumeUpdateDownload();
+        return;
+      }
+    }
 
-  @computed get checkAvailableUpdates(): Array<News> {
-    const { updates } = this.stores.newsFeed.newsFeedData;
-    return updates.filter(
-      update =>
-        !this.availableUpdates.find(
-          availableUpdate => availableUpdate.id === update.id
-        )
-    );
-  }
+    await this._removeLocalDataInfo();
+    this._requestUpdateDownload(update);
+  };
 
-  checkUpdate = autorun(async () => {
-    const updates = this.checkAvailableUpdates;
-    const downloadLocalData = await getDownloadLocalDataChannel.request({
+  _isUpdateValid = async (update: News) => {
+    // eslint-disable-next-line
+    console.log('update', update);
+    return true;
+  };
+
+  _isUnfinishedDownloadValid = async (
+    unfinishedDownload: DownloadsLocalDataMainResponse
+  ) => {
+    // eslint-disable-next-line
+    console.log('unfinishedDownload', unfinishedDownload);
+    return true;
+  };
+
+  _removeLocalDataInfo = () => {
+    clearDownloadDataChannel.request({
       id: APP_UPDATE_DOWNLOAD_ID,
     });
-  });
+  };
+
+  _getUpdateDownloadLocalData = async (): Promise<DownloadsLocalDataMainResponse> =>
+    getDownloadLocalDataChannel.request({
+      id: APP_UPDATE_DOWNLOAD_ID,
+    });
 
   _manageUpdateResponse = ({
     eventType,
@@ -127,52 +162,17 @@ export default class AppUpdateStore extends Store {
     });
   };
 
-  _requestUpdateDownload = async () => {
-    if (!this.updateFileUrl) return;
+  _requestUpdateDownload = async (update: News) => {
+    console.log('update', update);
+    const fileUrl = get(update, 'download.darwin');
+    if (!fileUrl) return;
     await requestDownloadChannel.request({
       id: APP_UPDATE_DOWNLOAD_ID,
-      fileUrl: this.updateFileUrl,
+      fileUrl,
     });
   };
 
-  refreshNextUpdate = async () => {
-    if (this.stores.networkStatus.isSynced) {
-      await this.nextUpdateRequest.execute();
-      const { result } = this.nextUpdateRequest;
-      // If nextUpdate is available, fetch additional Daedalus info
-      if (result) {
-        await this._getLatestAvailableAppVersion();
-        this._activateAutomaticUpdate(result.version);
-      }
-    }
-  };
-
-  @action _activateAutomaticUpdate = async (nextUpdateVersion: ?number) => {
-    if (
-      nextUpdateVersion &&
-      !this.isUpdateAvailable &&
-      !this.isUpdatePostponed &&
-      !this.isUpdateInstalled
-    ) {
-      this.isUpdateAvailable = true;
-      // If next update version matches applicationVersion (fetched from latestAppVersion json)
-      // then set next update version to latest availableAppVersion
-      this.nextUpdateVersion =
-        nextUpdateVersion === this.applicationVersion
-          ? this.availableAppVersion
-          : null;
-
-      // Close all active dialogs
-      this.stores.app._closeActiveDialog();
-      this.actions.app.closeAboutDialog.trigger();
-
-      // Rebuild app menu
-      await rebuildApplicationMenu.send({
-        isUpdateAvailable: this.isUpdateAvailable,
-      });
-    }
-  };
-
+  // eslint-disable-next-line
   @action _postponeAppUpdate = async () => {
     this.postponeUpdateRequest.execute();
     this.isUpdatePostponed = true;

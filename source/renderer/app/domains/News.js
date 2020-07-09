@@ -59,6 +59,7 @@ class News {
 
 class NewsCollection {
   @observable all: Array<News> = [];
+  @observable update: ?News = null;
 
   constructor(data: Array<News>) {
     // Filter news by platform and versions
@@ -77,6 +78,7 @@ class NewsCollection {
               includePrerelease: true,
             }))) &&
         (platform === 'browser' || includes(targetPlatforms, platform)) &&
+        newsItem.type !== NewsTypes.UPDATE &&
         newsItem.id &&
         newsItem.title &&
         newsItem.content &&
@@ -84,11 +86,12 @@ class NewsCollection {
         newsItem.date
       );
     });
-
     const orderedNews = orderBy(filteredNews, 'date', 'desc');
+    const update = data.filter(item => item.type === NewsTypes.UPDATE)[0];
 
     runInAction(() => {
       this.all = orderedNews;
+      this.update = update;
     });
   }
 
@@ -158,9 +161,9 @@ class NewsCollection {
     return orderBy(read, 'date', 'asc');
   }
 
-  @computed get updates(): Array<News> {
-    return this.unread.filter(item => item.type === NewsTypes.UPDATE);
-  }
+  // @computed get update(): News | null {
+  //   return this.all.filter(item => item.type === NewsTypes.UPDATE)[0];
+  // }
 }
 
 export default {

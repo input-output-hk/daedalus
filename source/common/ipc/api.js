@@ -36,6 +36,8 @@ import type {
   DownloadResponse,
   ResumeDownloadRequest,
   ResumeDownloadResponse,
+  ClearDownloadLocalDataRequest,
+  ClearDownloadLocalDataResponse,
 } from '../types/downloadManager.types';
 import type { StoreMessage } from '../types/electron-store.types';
 
@@ -320,3 +322,10 @@ export type DownloadMainResponse = DownloadResponse;
 export const RESUME_DOWNLOAD = 'RESUME_DOWNLOAD';
 export type ResumeDownloadRendererRequest = ResumeDownloadRequest;
 export type ResumeDownloadMainResponse = ResumeDownloadResponse | void;
+
+/**
+ * Channel for initiating the download manager
+ */
+export const CLEAR_DOWNLOAD_LOCAL_DATA = 'CLEAR_DOWNLOAD_LOCAL_DATA';
+export type ClearDownloadLocalDataRendererRequest = ClearDownloadLocalDataRequest;
+export type ClearDownloadLocalDataMainResponse = ClearDownloadLocalDataResponse;
