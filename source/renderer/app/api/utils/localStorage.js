@@ -11,6 +11,7 @@ import {
 } from '../../../../common/config/electron-store.config';
 import type { NewsTimestamp } from '../news/types';
 import type { WalletMigrationStatus } from '../../stores/WalletMigrationStore';
+import type { AppUpdateStatus } from '../../stores/AppUpdateStore';
 import type { StorageKey } from '../../../../common/types/electron-store.types';
 
 export type WalletLocalData = {
@@ -201,6 +202,15 @@ export default class LocalStorageApi {
 
   unsetWalletMigrationStatus = (): Promise<void> =>
     LocalStorageApi.unset(keys.WALLET_MIGRATION_STATUS);
+
+  getAppUpdateStatus = (): Promise<AppUpdateStatus> =>
+    LocalStorageApi.get(keys.APP_UPDATE_STATUS);
+
+  setAppUpdateStatus = (status: AppUpdateStatus): Promise<void> =>
+    LocalStorageApi.set(keys.APP_UPDATE_STATUS, status);
+
+  unsetAppUpdateStatus = (): Promise<void> =>
+    LocalStorageApi.unset(keys.APP_UPDATE_STATUS);
 
   reset = async () => {
     await LocalStorageApi.reset();

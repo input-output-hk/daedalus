@@ -10,7 +10,7 @@
     },
     "target": {
       "daedalusVersion": "1.2.0-STN1",
-      "platforms": ["darwin", "win32", "linux"]
+      "platforms": ["win32", "linux"]
     },
     "action": {
       "label": {

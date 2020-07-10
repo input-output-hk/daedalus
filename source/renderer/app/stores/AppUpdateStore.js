@@ -20,6 +20,11 @@ import { DOWNLOAD_EVENT_TYPES } from '../../../common/config/downloadManagerConf
 
 const { News } = NewsDomains;
 
+export type AppUpdateStatus = {
+  update: News,
+  downloadProgress: number,
+};
+
 const APP_UPDATE_DOWNLOAD_ID = 'appUpdate';
 
 export default class AppUpdateStore extends Store {
@@ -32,12 +37,11 @@ export default class AppUpdateStore extends Store {
 
   @observable isUpdatePostponed: boolean = false;
   @observable isUpdateInstalled: boolean = false;
-  @observable hasPendingDownload: boolean = false;
+  // @observable hasPendingDownload: boolean = false;
 
   @observable availableAppVersion: ?string = null;
   @observable isNewAppVersionAvailable: boolean = false;
   @observable applicationVersion: ?number = null;
-  // @observable downloadProgress: ?number = null;
   @observable availableUpdates: Array<any> = [];
 
   // @observable updateFileUrl: ?string = null;
@@ -68,8 +72,6 @@ export default class AppUpdateStore extends Store {
 
     // ========== MOBX REACTIONS =========== //
     this.registerReactions([this._watchForNewsfeedUpdates]);
-
-    // this._init();
   }
 
   // ================= REACTIONS ==================
@@ -95,18 +97,14 @@ export default class AppUpdateStore extends Store {
 
     // Is there a pending / resumable download?
     const unfinishedDownload = await this._getUpdateDownloadLocalData();
-    if (unfinishedDownload.data && unfinishedDownload.progress) {
+    if (unfinishedDownload.data) {
       if (this._isUnfinishedDownloadValid(unfinishedDownload)) {
-        console.log('---> RESUME!', unfinishedDownload);
-        // this._requestResumeUpdateDownload();
+        this._requestResumeUpdateDownload();
         return;
       }
     }
-
-    console.log('---> NEW ONE!');
-
-    // await this._removeLocalDataInfo();
-    // this._requestUpdateDownload(update);
+    await this._removeLocalDataInfo();
+    this._requestUpdateDownload(update);
   };
 
   _isUpdateValid = async (update: News) => {
