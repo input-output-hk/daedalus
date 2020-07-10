@@ -139,13 +139,11 @@ export default class AppUpdateStore extends Store {
     /* data, */
     progress: progressData,
   }: DownloadMainResponse) => {
-    if (eventType === 'progress') {
+    if (eventType === DOWNLOAD_EVENT_TYPES.PROGRESS) {
       const progress = parseInt(progressData.progress, 10);
       runInAction(() => {
         this.downloadProgress = progress;
       });
-      // eslint-disable-next-line
-      console.log('%c Download progress: %s%', 'color: darkOrange', progress);
     }
     runInAction('updates the download information', () => {
       if (eventType === DOWNLOAD_EVENT_TYPES.END) {
@@ -160,22 +158,21 @@ export default class AppUpdateStore extends Store {
   _requestResumeUpdateDownload = async () => {
     await requestResumeDownloadChannel.request({
       id: APP_UPDATE_DOWNLOAD_ID,
-      // options: {
-      //   progressIsThrottled: false,
-      // },
+      options: {
+        progressIsThrottled: false,
+      },
     });
   };
 
   _requestUpdateDownload = async (update: News) => {
-    console.log('update', update);
     const fileUrl = get(update, 'download.darwin');
     if (!fileUrl) return;
     await requestDownloadChannel.request({
       id: APP_UPDATE_DOWNLOAD_ID,
       fileUrl,
-      // options: {
-      //   progressIsThrottled: false,
-      // },
+      options: {
+        progressIsThrottled: false,
+      },
     });
   };
 

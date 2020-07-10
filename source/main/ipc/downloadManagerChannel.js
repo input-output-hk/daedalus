@@ -65,7 +65,6 @@ const requestDownload = async (
     originalFilename,
     options,
   };
-  console.log('options', options);
   const eventActions = await getEventActions(
     data,
     window,
@@ -81,14 +80,17 @@ const requestDownload = async (
     download.__isResumable = true;
   }
 
+  let currentDownloadProgress = 0;
+
   const progressType =
     options.progressIsThrottled === false ? 'progress' : 'progress.throttled';
-  console.log('progressType', progressType);
 
   download.on('start', eventActions.start);
   download.on('download', eventActions.download);
-  download.on(progressType, (...p) => {
-    eventActions.progress(...p);
+  download.on(progressType, evt => {
+    if (!evt || parseInt(evt.progress, 10) === currentDownloadProgress) return;
+    currentDownloadProgress++;
+    eventActions.progress(evt);
   });
   download.on('end', eventActions.end);
   download.on('error', eventActions.error);
