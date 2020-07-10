@@ -78,17 +78,6 @@
                 overflow: hidden;
                 text-overflow: ellipsis;
               }
-              .WalletsDropdownOption_component {
-                max-width: calc(100% - 20px);
-
-                .WalletsDropdownOption_label,
-                .WalletsDropdownOption_detail {
-                  max-width: 100%;
-                  overflow: hidden;
-                  text-overflow: ellipsis;
-                  white-space: nowrap;
-                }
-              }
             }
           }
         }
