@@ -1,5 +1,5 @@
 // @flow
-import { exec } from 'child_process';
+import { spawn } from 'child_process';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import { INTROSPECT_ADDRESS_CHANNEL } from '../../common/ipc/api';
 import type {
@@ -18,23 +18,25 @@ export const handleAddressIntrospectionRequests = () => {
   introspectAddressChannel.onReceive(
     (request: IntrospectAddressRendererRequest) =>
       new Promise((resolve, reject) => {
-        exec(
-          `echo ${request.input} | cardano-address address inspect`,
-          (error, stdout) => {
-            if (
-              error &&
-              error.message.match(
-                /user error \(Unrecognized address on standard input\)/g
-              ) !== null
-            ) {
-              return resolve('Invalid');
-            }
-            if (error) {
-              reject(error);
-            }
-            return resolve({ introspection: JSON.parse(stdout) });
+        const introspect = spawn('cardano-address', ['address', 'inspect']);
+
+        introspect.stderr.on('error', (error) => {
+          if (
+            error &&
+            error.message.match(
+              /user error \(Unrecognized address on standard input\)/g
+            ) !== null
+          ) {
+            return resolve('Invalid');
           }
-        );
+          return reject(error)
+        });
+
+        introspect.stdout.on('data', (data) => {
+          return resolve({ introspection: JSON.parse(data) })
+        });
+
+        introspect.stdin.write(request.input)
       })
   );
 };
