@@ -26,10 +26,9 @@ export default class AppUpdateStore extends Store {
   @observable availableUpdate: ?News = null;
 
   @observable isDownloadingUpdate: boolean = false;
+  @observable downloadProgress: number = 0;
 
   @observable isUpdateAvailable: boolean = false;
-
-  // @observable isDownloadingUpdate: boolean = true;
 
   @observable isUpdatePostponed: boolean = false;
   @observable isUpdateInstalled: boolean = false;
@@ -38,7 +37,6 @@ export default class AppUpdateStore extends Store {
   @observable availableAppVersion: ?string = null;
   @observable isNewAppVersionAvailable: boolean = false;
   @observable applicationVersion: ?number = null;
-  @observable downloadProgress: ?number = 45;
   // @observable downloadProgress: ?number = null;
   @observable availableUpdates: Array<any> = [];
 
@@ -97,15 +95,18 @@ export default class AppUpdateStore extends Store {
 
     // Is there a pending / resumable download?
     const unfinishedDownload = await this._getUpdateDownloadLocalData();
-    if (unfinishedDownload) {
+    if (unfinishedDownload.data && unfinishedDownload.progress) {
       if (this._isUnfinishedDownloadValid(unfinishedDownload)) {
-        this._requestResumeUpdateDownload();
+        console.log('---> RESUME!', unfinishedDownload);
+        // this._requestResumeUpdateDownload();
         return;
       }
     }
 
-    await this._removeLocalDataInfo();
-    this._requestUpdateDownload(update);
+    console.log('---> NEW ONE!');
+
+    // await this._removeLocalDataInfo();
+    // this._requestUpdateDownload(update);
   };
 
   _isUpdateValid = async (update: News) => {
@@ -136,15 +137,15 @@ export default class AppUpdateStore extends Store {
   _manageUpdateResponse = ({
     eventType,
     /* data, */
-    progress,
+    progress: progressData,
   }: DownloadMainResponse) => {
     if (eventType === 'progress') {
+      const progress = parseInt(progressData.progress, 10);
+      runInAction(() => {
+        this.downloadProgress = progress;
+      });
       // eslint-disable-next-line
-      console.log(
-        '%c Download progress: %s%',
-        'color: darkOrange',
-        parseInt(progress.progress, 10)
-      );
+      console.log('%c Download progress: %s%', 'color: darkOrange', progress);
     }
     runInAction('updates the download information', () => {
       if (eventType === DOWNLOAD_EVENT_TYPES.END) {
@@ -159,6 +160,9 @@ export default class AppUpdateStore extends Store {
   _requestResumeUpdateDownload = async () => {
     await requestResumeDownloadChannel.request({
       id: APP_UPDATE_DOWNLOAD_ID,
+      // options: {
+      //   progressIsThrottled: false,
+      // },
     });
   };
 
@@ -169,6 +173,9 @@ export default class AppUpdateStore extends Store {
     await requestDownloadChannel.request({
       id: APP_UPDATE_DOWNLOAD_ID,
       fileUrl,
+      // options: {
+      //   progressIsThrottled: false,
+      // },
     });
   };
 

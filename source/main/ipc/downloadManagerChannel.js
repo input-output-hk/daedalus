@@ -65,6 +65,7 @@ const requestDownload = async (
     originalFilename,
     options,
   };
+  console.log('options', options);
   const eventActions = await getEventActions(
     data,
     window,
@@ -80,9 +81,13 @@ const requestDownload = async (
     download.__isResumable = true;
   }
 
+  const progressType =
+    options.progressIsThrottled === false ? 'progress' : 'progress.throttled';
+  console.log('progressType', progressType);
+
   download.on('start', eventActions.start);
   download.on('download', eventActions.download);
-  download.on('progress.throttled', (...p) => {
+  download.on(progressType, (...p) => {
     eventActions.progress(...p);
   });
   download.on('end', eventActions.end);

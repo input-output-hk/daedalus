@@ -17,13 +17,14 @@ export default class NewsFeedContainer extends Component<InjectedProps> {
 
   render() {
     const { stores, actions } = this.props;
-    const { app, profile } = stores;
+    const { app, profile, appUpdate, newsFeed } = stores;
     const {
       newsFeedData,
       isLoadingNews,
       proceedNewsAction,
       onOpenUpdate,
-    } = stores.newsFeed;
+    } = newsFeed;
+    const { downloadProgress, isDownloadingUpdate } = appUpdate;
     const { toggleNewsFeed } = actions.app;
     const { openExternalLink, newsFeedIsOpen } = app;
     const { currentDateFormat } = profile;
@@ -34,13 +35,15 @@ export default class NewsFeedContainer extends Component<InjectedProps> {
         isNewsFeedOpen={newsFeedIsOpen}
         isLoadingNews={isLoadingNews}
         onClose={toggleNewsFeed.trigger}
-        onOpenAlert={stores.newsFeed.openAlert}
+        onOpenAlert={newsFeed.openAlert}
         onMarkNewsAsRead={this.handleMarkNewsAsRead}
         openWithoutTransition={stores.networkStatus.environment.isTest}
         onProceedNewsAction={proceedNewsAction}
         onOpenExternalLink={openExternalLink}
         onOpenUpdate={onOpenUpdate}
         currentDateFormat={currentDateFormat}
+        updateDownloadProgress={downloadProgress}
+        isDownloadingUpdate={isDownloadingUpdate}
       />
     );
   }

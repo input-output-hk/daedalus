@@ -7,7 +7,7 @@ import SVGInline from 'react-svg-inline';
 import { get } from 'lodash';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import styles from './NewsFeed.scss';
-import News, { NewsTypes } from '../../domains/News';
+import News from '../../domains/News';
 import NewsItem from './NewsItem';
 import UpdateItem from './UpdateItem';
 import LoadingSpinner from '../widgets/LoadingSpinner';
@@ -42,6 +42,8 @@ type Props = {
   onOpenExternalLink: Function,
   onProceedNewsAction: Function,
   onOpenUpdate: Function,
+  updateDownloadProgress: number,
+  isDownloadingUpdate: boolean,
 };
 
 type State = {
@@ -112,14 +114,14 @@ export default class NewsFeed extends Component<Props, State> {
       onOpenExternalLink,
       currentDateFormat,
       onOpenUpdate,
+      updateDownloadProgress,
+      isDownloadingUpdate,
     } = this.props;
     const { hasShadow } = this.state;
 
     const items = get(news, 'all', []);
-    const newsItems = items.filter(item => item.type !== NewsTypes.UPDATE);
-    const updateItems = items.filter(item => item.type === NewsTypes.UPDATE);
-    // const items.length = items.length;
-    const totalUnreadNewsItems = get(newsItems, 'unread', []).length;
+    const { update } = news;
+    const totalUnreadNewsItems = get(items, 'unread', []).length;
     const componentClasses = classNames([
       styles.component,
       isNewsFeedOpen ? styles.show : null,
@@ -147,27 +149,27 @@ export default class NewsFeed extends Component<Props, State> {
           </button>
         </div>
         <div className={styles.newsFeedList}>
-          {updateItems.length && (
+          {isDownloadingUpdate && update && (
             <div className={styles.newsFeedItemsContainer}>
-              {updateItems.map(updateItem => (
+              {
                 <UpdateItem
-                  key={updateItem.id}
-                  updateItem={updateItem}
+                  key={update.id}
+                  updateItem={update}
                   isNewsFeedOpen={isNewsFeedOpen}
                   onMarkNewsAsRead={onMarkNewsAsRead}
                   onOpenAlert={onOpenAlert}
                   onProceedNewsAction={onProceedNewsAction}
                   onOpenUpdate={onOpenUpdate}
                   currentDateFormat={currentDateFormat}
-                  downloadProgress={50}
+                  downloadProgress={updateDownloadProgress}
                 />
-              ))}
+              }
               <hr className={styles.separator} />
             </div>
           )}
-          {newsItems.length && (
+          {items.length && (
             <div className={styles.newsFeedItemsContainer}>
-              {newsItems.map(newsItem => (
+              {items.map(newsItem => (
                 <NewsItem
                   key={newsItem.id}
                   newsItem={newsItem}

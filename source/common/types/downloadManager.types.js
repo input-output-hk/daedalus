@@ -34,6 +34,7 @@ export type DownloadRequestOptions = {
   override?: boolean, // if true it will override the file, otherwise will append '(number)' to the end of file
   httpRequestOptions?: Object, // Override the http request options
   httpsRequestOptions?: Object, // Override the https request options, ex: to add SSL Certs
+  progressIsThrottled?: boolean, // by default, the progress is sent every second. if `false` it will be sent every milisecond
 };
 
 // https://www.npmjs.com/package/node-downloader-helper
