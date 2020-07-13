@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import ConfigurationContainer from './dialogs/redeem-itn-rewards/Step1ConfigurationContainer';
 import ConfirmationContainer from './dialogs/redeem-itn-rewards/Step2ConfirmationContainer';
@@ -31,12 +31,10 @@ export default class RedeemItnRewardsContainer extends Component<Props> {
       return <NoWalletsContainer onClose={closeRedeemDialog.trigger} />;
     const CurrentContainer = this.containers[redeemStep];
     return (
-      <Fragment>
-        <CurrentContainer
-          onBack={onRedeemStart.trigger}
-          onClose={closeRedeemDialog.trigger}
-        />
-      </Fragment>
+      <CurrentContainer
+        onBack={onRedeemStart.trigger}
+        onClose={closeRedeemDialog.trigger}
+      />
     );
   }
 }
