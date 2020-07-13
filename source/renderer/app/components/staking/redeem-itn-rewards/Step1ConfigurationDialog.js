@@ -284,7 +284,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       items: [
         {
           className: buttonClasses,
-          // disabled: !this.canSubmit,
+          disabled: !this.canSubmit,
           primary: true,
           label: intl.formatMessage(messages.continueButtonLabel),
           onClick: this.submit,
