@@ -40,7 +40,7 @@
         }
       }
       .walletSelector {
-        padding-right: 20px;
+        padding-right: 15px;
 
         :global {
           .SimpleInput_input {
@@ -66,11 +66,11 @@
             white-space: nowrap;
           }
           .SimpleSelect_selectInput {
-            max-width: 350px;
+            max-width: 400px;
           }
           .SimpleOptions_options {
-            min-width: 200px;
-            max-width: 400px;
+            min-width: 250px;
+            max-width: 450px;
 
             .SimpleOptions_option {
               span {
