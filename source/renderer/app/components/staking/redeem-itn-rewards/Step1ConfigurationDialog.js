@@ -218,9 +218,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       onSuccess: form => {
         const { onContinue } = this.props;
         const { recoveryPhrase } = form.values();
-        onContinue({
-          recoveryPhrase,
-        });
+        onContinue({ recoveryPhrase });
       },
       onError: () =>
         handleFormErrors('.ConfigurationDialog_error', { focusElement: true }),
