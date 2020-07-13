@@ -315,77 +315,77 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       />
     );
 
+    const closeButton = (
+      <DialogCloseButton
+        className={redeemDialogOverride.closeButton}
+        onClose={onClose}
+      />
+    );
+
     return (
-      <>
-        <DialogCloseButton
-          className={redeemDialogOverride.closeButton}
-          onClose={onClose}
-        />
-        <Dialog
-          title={intl.formatMessage(messages.title)}
-          actions={actions}
-          onContinue={onContinue}
-          onClose={onClose}
-          customThemeOverrides={redeemDialogOverride}
-          closeOnOverlayClick={false}
-        >
-          <div className={styles.component}>
-            <p className={styles.description}>
-              <FormattedMessage
-                {...messages.description1}
-                values={{
-                  itnLink,
-                }}
-              />
-              <FormattedHTMLMessage {...messages.description2} />
-            </p>
-            <Autocomplete
-              {...recoveryPhraseField.bind()}
-              ref={autocomplete => {
-                this.recoveryPhraseAutocomplete = autocomplete;
+      <Dialog
+        title={intl.formatMessage(messages.title)}
+        actions={actions}
+        onContinue={onContinue}
+        onClose={onClose}
+        closeButton={closeButton}
+        customThemeOverrides={redeemDialogOverride}
+        closeOnOverlayClick={false}
+      >
+        <div className={styles.component}>
+          <p className={styles.description}>
+            <FormattedMessage
+              {...messages.description1}
+              values={{
+                itnLink,
               }}
-              options={suggestedMnemonics}
-              maxSelections={WALLET_RECOVERY_PHRASE_WORD_COUNT}
-              error={recoveryPhraseField.error}
-              maxVisibleOptions={5}
-              noResultsMessage={intl.formatMessage(messages.noResults)}
-              className={styles.recoveryPhrase}
-              skin={AutocompleteSkin}
-              optionHeight={50}
             />
-            <WalletsDropdown
-              className={styles.walletsDropdown}
-              {...walletsDropdownField.bind()}
-              numberOfStakePools={4}
-              wallets={wallets}
-              onChange={onSelectWallet}
-              placeholder={intl.formatMessage(
-                messages.selectWalletInputPlaceholder
-              )}
-              value={walletId}
-              getStakePoolById={() => {}}
-              error={this.walletsDropdownError}
-              errorPosition="bottom"
-            />
-            <hr />
-            <Checkbox
-              {...checkboxAcceptance1Field.bind()}
-              className={styles.checkbox}
-              skin={CheckboxSkin}
-              error={checkboxAcceptance1Field.error}
-            />
-            <Checkbox
-              {...checkboxAcceptance2Field.bind()}
-              className={styles.checkbox}
-              skin={CheckboxSkin}
-              error={checkboxAcceptance2Field.error}
-            />
-            {error && (
-              <p className={styles.error}>{intl.formatMessage(error)}</p>
+            <FormattedHTMLMessage {...messages.description2} />
+          </p>
+          <Autocomplete
+            {...recoveryPhraseField.bind()}
+            ref={autocomplete => {
+              this.recoveryPhraseAutocomplete = autocomplete;
+            }}
+            options={suggestedMnemonics}
+            maxSelections={WALLET_RECOVERY_PHRASE_WORD_COUNT}
+            error={recoveryPhraseField.error}
+            maxVisibleOptions={5}
+            noResultsMessage={intl.formatMessage(messages.noResults)}
+            className={styles.recoveryPhrase}
+            skin={AutocompleteSkin}
+            optionHeight={50}
+          />
+          <WalletsDropdown
+            className={styles.walletsDropdown}
+            {...walletsDropdownField.bind()}
+            numberOfStakePools={4}
+            wallets={wallets}
+            onChange={onSelectWallet}
+            placeholder={intl.formatMessage(
+              messages.selectWalletInputPlaceholder
             )}
-          </div>
-        </Dialog>
-      </>
+            value={walletId}
+            getStakePoolById={() => {}}
+            error={this.walletsDropdownError}
+            errorPosition="bottom"
+          />
+          <hr />
+          <Checkbox
+            {...checkboxAcceptance1Field.bind()}
+            className={styles.checkbox}
+            skin={CheckboxSkin}
+            error={checkboxAcceptance1Field.error}
+          />
+          <Checkbox
+            {...checkboxAcceptance2Field.bind()}
+            className={styles.checkbox}
+            skin={CheckboxSkin}
+            error={checkboxAcceptance2Field.error}
+          />
+          {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
+        </div>
+      </Dialog>
     );
   }
 }

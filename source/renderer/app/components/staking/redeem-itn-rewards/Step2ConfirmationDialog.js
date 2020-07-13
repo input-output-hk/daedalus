@@ -192,64 +192,66 @@ export default class Step2ConfirmationDialog extends Component<Props> {
       ],
     };
 
-    return (
-      <>
-        <DialogCloseButton
-          className={redeemDialogOverride.closeButton}
-          onClose={onClose}
-        />
-        <Dialog
-          title={intl.formatMessage(messages.title)}
-          actions={actions}
-          onContinue={onContinue}
-          onClose={onClose}
-          onBack={onBack}
-          customThemeOverrides={redeemDialogOverride}
-          closeOnOverlayClick={false}
-        >
-          <div className={styles.to}>
-            <div>{intl.formatMessage(messages.walletToLabel)}</div>
-            <div>
-              <FormattedHTMLMessage
-                {...messages.walletToName}
-                values={{
-                  walletName,
-                }}
-              />
-            </div>
-          </div>
-          <div className={styles.rewardsTotal}>
-            <div>{intl.formatMessage(messages.rewardsTotal)}</div>
-            <div>
-              <b>{formattedWalletAmount(rewardsTotal, false)}&nbsp;</b>
-              {intl.formatMessage(globalMessages.unitAda)}
-            </div>
-          </div>
-          <div className={styles.transactionFees}>
-            <div>{intl.formatMessage(messages.transactionFees)}</div>
-            <div>
-              <b>{formattedWalletAmount(transactionFees, false)}&nbsp;</b>
-              {intl.formatMessage(globalMessages.unitAda)}
-            </div>
-          </div>
-          <div className={styles.finalTotal}>
-            <div>{intl.formatMessage(messages.finalTotal)}</div>
-            <div>
-              <b>{formattedWalletAmount(finalTotal, false)}&nbsp;</b>
-              {intl.formatMessage(globalMessages.unitAda)}
-            </div>
-          </div>
+    const closeButton = (
+      <DialogCloseButton
+        className={redeemDialogOverride.closeButton}
+        onClose={onClose}
+      />
+    );
 
-          <Input
-            className={styles.spendingPassword}
-            {...spendingPasswordField.bind()}
-            skin={InputSkin}
-            error={spendingPasswordField.error}
-            onKeyPress={this.handleSubmitOnEnter}
-          />
-          {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
-        </Dialog>
-      </>
+    return (
+      <Dialog
+        title={intl.formatMessage(messages.title)}
+        actions={actions}
+        onContinue={onContinue}
+        onClose={onClose}
+        closeButton={closeButton}
+        onBack={onBack}
+        customThemeOverrides={redeemDialogOverride}
+        closeOnOverlayClick={false}
+      >
+        <div className={styles.to}>
+          <div>{intl.formatMessage(messages.walletToLabel)}</div>
+          <div>
+            <FormattedHTMLMessage
+              {...messages.walletToName}
+              values={{
+                walletName,
+              }}
+            />
+          </div>
+        </div>
+        <div className={styles.rewardsTotal}>
+          <div>{intl.formatMessage(messages.rewardsTotal)}</div>
+          <div>
+            <b>{formattedWalletAmount(rewardsTotal, false)}&nbsp;</b>
+            {intl.formatMessage(globalMessages.unitAda)}
+          </div>
+        </div>
+        <div className={styles.transactionFees}>
+          <div>{intl.formatMessage(messages.transactionFees)}</div>
+          <div>
+            <b>{formattedWalletAmount(transactionFees, false)}&nbsp;</b>
+            {intl.formatMessage(globalMessages.unitAda)}
+          </div>
+        </div>
+        <div className={styles.finalTotal}>
+          <div>{intl.formatMessage(messages.finalTotal)}</div>
+          <div>
+            <b>{formattedWalletAmount(finalTotal, false)}&nbsp;</b>
+            {intl.formatMessage(globalMessages.unitAda)}
+          </div>
+        </div>
+
+        <Input
+          className={styles.spendingPassword}
+          {...spendingPasswordField.bind()}
+          skin={InputSkin}
+          error={spendingPasswordField.error}
+          onKeyPress={this.handleSubmitOnEnter}
+        />
+        {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
+      </Dialog>
     );
   }
 }

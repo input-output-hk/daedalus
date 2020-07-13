@@ -80,24 +80,26 @@ export default class Step3FailureDialog extends Component<Props> {
     if (stakingFailure === 2) description = messages.description2InvalidWallet;
     if (stakingFailure === 3) description = messages.description3Generic;
 
+    const closeButton = (
+      <DialogCloseButton
+        className={redeemDialogOverride.closeButton}
+        onClose={onClose}
+      />
+    );
+
     return (
-      <>
-        <DialogCloseButton
-          className={redeemDialogOverride.closeButton}
-          onClose={onClose}
-        />
-        <Dialog
-          actions={actions}
-          onClose={onClose}
-          customThemeOverrides={redeemDialogOverride}
-          closeOnOverlayClick={false}
-        >
-          <SVGInline svg={sadWalletImage} className={styles.sadWalletImage} />
-          <div className={styles.description}>
-            {intl.formatMessage(description)}
-          </div>
-        </Dialog>
-      </>
+      <Dialog
+        actions={actions}
+        onClose={onClose}
+        closeButton={closeButton}
+        customThemeOverrides={redeemDialogOverride}
+        closeOnOverlayClick={false}
+      >
+        <SVGInline svg={sadWalletImage} className={styles.sadWalletImage} />
+        <div className={styles.description}>
+          {intl.formatMessage(description)}
+        </div>
+      </Dialog>
     );
   }
 }
