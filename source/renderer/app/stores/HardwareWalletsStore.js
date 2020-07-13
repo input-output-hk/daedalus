@@ -59,22 +59,25 @@ export type EncodeSignedTransactionRequest = {|
 |};
 
 export type TransportDevice = {
-  id: DeviceModel,
-  productName: string,
+  deviceID: ?string,
   deviceType: DeviceType,
+  deviceModel: DeviceModel,
+  deviceName: string,
 };
 
-export type DeviceModel = 'nanoS' | 'nanoX' | 'trezor';
+export type LedgerModel = 'nanoS' | 'nanoX';
+export type TrezorModel = '1' | 'T';
 export type DeviceType = 'ledger' | 'trezor';
 
 export const DeviceModels: {
-  LEDGER_NANO_S: DeviceModel,
-  LEDGER_NANO_X: DeviceModel,
-  TREZOR: DeviceModel,
+  LEDGER_NANO_S: LedgerModel,
+  LEDGER_NANO_X: LedgerModel,
+  TREZOR: TrezorModel,
 } = {
   LEDGER_NANO_S: 'nanoS',
   LEDGER_NANO_X: 'nanoX',
-  TREZOR: 'trezor',
+  TREZOR_ONE: '1',
+  TREZOR_T: 'T',
 };
 
 export const DeviceTypes: {
@@ -172,18 +175,23 @@ export default class HardwareWalletsStore extends Store {
     });
     try {
       const transportDevice = await getHardwareWalletTransportChannel.request();
-      const deviceType = this._deviceType(transportDevice.id);
+      // const deviceType = this._deviceType(transportDevice.deviceModel);
+      const deviceType = transportDevice.deviceType;
       runInAction('HardwareWalletsStore:: set HW device connected', () => {
         this.transportDevice = {
           ...transportDevice,
           deviceType,
         };
       });
-      // Start poller to recognize if Cardano App is launched on device
-      this.cardanoAdaAppPollingInterval = setInterval(
-        this.getCardanoAdaApp,
-        CARDANO_ADA_APP_POLLING_INTERVAL
-      );
+      if (deviceType === DeviceTypes.TREZOR) {
+        await this._getExtendedPublicKey();
+      } else {
+        // Start poller to recognize if Cardano App is launched on device
+        this.cardanoAdaAppPollingInterval = setInterval(
+          this.getCardanoAdaApp,
+          CARDANO_ADA_APP_POLLING_INTERVAL
+        );
+      }
     } catch (e) {
       if (e.statusCode === 28177) {
         throw new Error('Device is locked');
@@ -238,6 +246,7 @@ export default class HardwareWalletsStore extends Store {
   };
 
   @action _getExtendedPublicKey = async () => {
+    const isTrezor = true; // @TODO - add active device recognizing logic
     this.hwDeviceStatus = HwDeviceStatuses.EXPORTING_PUBLIC_KEY;
     const { activeHardwareWallet } = this.stores.wallets;
     const path = [
@@ -248,7 +257,9 @@ export default class HardwareWalletsStore extends Store {
     try {
       const extendedPublicKey = await getExtendedPublicKeyChannel.request({
         path,
+        isTrezor,
       });
+      console.debug('>>> extendedPublicKey: ', extendedPublicKey);
       // Check if public key matches active hardware wallet public key
       if (activeHardwareWallet && this.hardwareWalletsConnectionData) {
         const activeHardwareWalletConnection = this
@@ -274,6 +285,7 @@ export default class HardwareWalletsStore extends Store {
           `Wrong Hardware Wallet device supplied to "${activeHardwareWallet.name}" wallet`
         );
       }
+      console.debug('>>> CONTINUE');
       // Wallet not set, create new one with default name
       await this.actions.wallets.createHardwareWallet.trigger({
         walletName: DEFAULT_HW_NAME,
@@ -281,16 +293,22 @@ export default class HardwareWalletsStore extends Store {
         device: this.transportDevice,
       });
 
+      console.debug('>>> HardwareWalletsStore:: set wallet READY');
       runInAction('HardwareWalletsStore:: set wallet READY', () => {
         this.extendedPublicKey = extendedPublicKey;
         this.hwDeviceStatus = HwDeviceStatuses.READY;
       });
     } catch (e) {
+      console.debug('>>> extendedPublicKey - ERROR: ', e);
       if (e.statusCode === 28169) {
         runInAction('HardwareWalletsStore:: exporting key aborted', () => {
           this.hwDeviceStatus = HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED;
         });
       }
+      // @TODO - Decide what error we need to show if exporting error occure and exporting not aborted by user
+      runInAction('HardwareWalletsStore:: exporting key aborted', () => {
+        this.hwDeviceStatus = HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED;
+      });
       throw e;
     }
   };
@@ -421,8 +439,11 @@ export default class HardwareWalletsStore extends Store {
       case DeviceModels.LEDGER_NANO_X:
         type = DeviceTypes.LEDGER;
         break;
-      case DeviceModels.TREZOR:
+      case DeviceModels.TREZOR_ONE:
         type = DeviceTypes.TREZOR;
+        break;
+      case DeviceModels.TREZOR_T:
+        type = DeviceTypes.TREZOR_T;
         break;
       default:
         type = null;
