@@ -61,8 +61,7 @@
     "create-news-verification-hashes": "node utils/create-news-verification-hashes/index.js",
     "lockfile:check": "node utils/lockfile-checker/index.js --check",
     "lockfile:fix": "node utils/lockfile-checker/index.js --fix",
-    "rebuild": "yarn electron-rebuild",
-    "postinstall": "./node_modules/.bin/electron-rebuild"
+    "postinstall": "electron-rebuild"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"
@@ -106,6 +105,7 @@
     "electron-connect": "0.6.3",
     "electron-devtools-installer": "2.2.4",
     "electron-packager": "14.2.1",
+    "electron-rebuild": "1.11.0",
     "eslint": "6.8.0",
     "eslint-config-airbnb": "18.0.1",
     "eslint-config-prettier": "6.10.0",
@@ -162,8 +162,7 @@
     "webpack-stream": "5.2.1",
     "ws": "7.2.3",
     "yamljs": "0.3.0",
-    "yarn-lockfile": "1.1.1",
-    "electron-rebuild": "1.11.0"
+    "yarn-lockfile": "1.1.1"
   },
   "dependencies": {
     "@cardano-foundation/ledgerjs-hw-app-cardano": "1.0.8",
