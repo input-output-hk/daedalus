@@ -38,30 +38,33 @@ export default class NoWalletsDialog extends Component<Props> {
   render() {
     const { intl } = this.context;
     const { onClose, onAddWallet } = this.props;
+
+    const closeButton = (
+      <DialogCloseButton
+        className={redeemDialogOverride.closeButton}
+        onClose={onClose}
+      />
+    );
+
     return (
-      <>
-        <DialogCloseButton
-          className={redeemDialogOverride.closeButton}
-          onClose={onClose}
-        />
-        <Dialog
-          actions={[
-            {
-              primary: true,
-              label: intl.formatMessage(messages.addWalletButtonLabel),
-              onClick: onAddWallet,
-            },
-          ]}
-          onClose={onClose}
-          customThemeOverrides={redeemDialogOverride}
-          closeOnOverlayClick={false}
-        >
-          <SVGInline svg={sadWalletImage} className={styles.sadWalletImage} />
-          <div className={styles.description}>
-            {intl.formatMessage(messages.description)}
-          </div>
-        </Dialog>
-      </>
+      <Dialog
+        actions={[
+          {
+            primary: true,
+            label: intl.formatMessage(messages.addWalletButtonLabel),
+            onClick: onAddWallet,
+          },
+        ]}
+        closeButton={closeButton}
+        onClose={onClose}
+        customThemeOverrides={redeemDialogOverride}
+        closeOnOverlayClick={false}
+      >
+        <SVGInline svg={sadWalletImage} className={styles.sadWalletImage} />
+        <div className={styles.description}>
+          {intl.formatMessage(messages.description)}
+        </div>
+      </Dialog>
     );
   }
 }
