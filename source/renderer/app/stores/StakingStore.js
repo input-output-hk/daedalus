@@ -95,7 +95,7 @@ export default class StakingStore extends Store {
   @observable calculateDelegationFeeRequest: Request<BigNumber> = new Request(
     this.api.ada.calculateDelegationFee
   );
-  // @REDEEM TODO: Proper type it when the API endpoint is implemented
+  // @REDEEM TODO: Proper type it when the API endpoint is implemented.
   @observable submitRedeemItnRewardsRequest: Request<any> = new Request(
     this.api.ada.submitRedeemItnRewards
   );
