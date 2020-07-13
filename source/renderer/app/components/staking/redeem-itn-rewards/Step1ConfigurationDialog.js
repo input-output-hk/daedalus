@@ -284,7 +284,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       items: [
         {
           className: buttonClasses,
-          disabled: !this.canSubmit,
+          // disabled: !this.canSubmit,
           primary: true,
           label: intl.formatMessage(messages.continueButtonLabel),
           onClick: this.submit,
@@ -354,21 +354,22 @@ export default class Step1ConfigurationDialog extends Component<Props> {
             skin={AutocompleteSkin}
             optionHeight={50}
           />
-          <WalletsDropdown
-            className={styles.walletsDropdown}
-            {...walletsDropdownField.bind()}
-            numberOfStakePools={4}
-            wallets={wallets}
-            onChange={onSelectWallet}
-            placeholder={intl.formatMessage(
-              messages.selectWalletInputPlaceholder
-            )}
-            value={walletId}
-            getStakePoolById={() => {}}
-            error={this.walletsDropdownError}
-            errorPosition="bottom"
-          />
-          <hr />
+          <div className={styles.walletsDropdownWrapper}>
+            <WalletsDropdown
+              className={styles.walletsDropdown}
+              {...walletsDropdownField.bind()}
+              numberOfStakePools={4}
+              wallets={wallets}
+              onChange={onSelectWallet}
+              placeholder={intl.formatMessage(
+                messages.selectWalletInputPlaceholder
+              )}
+              value={walletId}
+              getStakePoolById={() => {}}
+              error={this.walletsDropdownError}
+              errorPosition="bottom"
+            />
+          </div>
           <Checkbox
             {...checkboxAcceptance1Field.bind()}
             className={styles.checkbox}

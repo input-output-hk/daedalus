@@ -23,6 +23,11 @@
   .recoveryPhrase {
     margin-bottom: 20px;
   }
+  .walletsDropdownWrapper {
+    border-bottom: 1px solid
+      var(--theme-staking-redeemItnRewards-separator-color);
+    margin-bottom: 17px;
+  }
   .walletsDropdown {
     margin-bottom: 20px;
   }
