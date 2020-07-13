@@ -282,7 +282,19 @@ export default class StakePoolsRanking extends Component<Props, State> {
                   disabled={isLoading || isRanking}
                   value={selectedWalletId}
                   selectionRenderer={option => (
-                    <div className="customValue">{option.label}</div>
+                    <button
+                      className="customValue"
+                      onClick={() => {
+                        const selectionInput = document.querySelector(
+                          '.StakePoolsRanking_walletSelector .SimpleInput_input'
+                        );
+                        if (selectionInput) {
+                          selectionInput.click();
+                        }
+                      }}
+                    >
+                      {option.label}
+                    </button>
                   )}
                   numberOfStakePools={numberOfStakePools}
                   getStakePoolById={getStakePoolById}

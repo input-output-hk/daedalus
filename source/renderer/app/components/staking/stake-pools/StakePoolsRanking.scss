@@ -60,7 +60,10 @@
             height: auto;
           }
           .customValue {
+            color: var(--theme-staking-font-color-regular);
+            cursor: pointer;
             font-family: var(--font-semibold);
+            font-size: 16px;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
