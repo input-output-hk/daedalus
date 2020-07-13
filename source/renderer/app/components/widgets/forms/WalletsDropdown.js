@@ -125,7 +125,7 @@ export default class WalletsDropdown extends Component<Props> {
     return (
       <>
         <Select options={walletsData} {...selectOptions} optionHeight={62} />
-        <div className={styles.error}>{bottomError}</div>
+        {bottomError && <div className={styles.error}>{bottomError}</div>}
       </>
     );
   }
