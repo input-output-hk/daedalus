@@ -1776,7 +1776,6 @@ const _createWalletFromServerData = action(
       id: rawWalletId,
       address_pool_gap: addressPoolGap,
       balance,
-      // balance: originalBalance,
       name,
       passphrase,
       delegation,
@@ -1784,6 +1783,7 @@ const _createWalletFromServerData = action(
       isLegacy = false,
       discovery,
     } = wallet;
+
     const id = isLegacy ? getLegacyWalletId(rawWalletId) : rawWalletId;
     const passphraseLastUpdatedAt = get(passphrase, 'last_updated_at', null);
     const walletTotalAmount =
