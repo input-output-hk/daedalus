@@ -16,8 +16,6 @@ import {
 } from '../domains/WalletTransaction';
 import WalletAddress from '../domains/WalletAddress';
 
-// import { generateWallet } from '../../../../storybook/stories/_support/utils';
-
 // Addresses requests
 import { getAddresses } from './addresses/requests/getAddresses';
 import { getByronWalletAddresses } from './addresses/requests/getByronWalletAddresses';
@@ -195,9 +193,6 @@ import { deleteTransaction } from './transactions/requests/deleteTransaction';
 import { WALLET_BYRON_KINDS } from '../config/walletRestoreConfig';
 import ApiError from '../domains/ApiError';
 
-// @REDEEM TODO
-/* eslint-disable */
-
 const { isIncentivizedTestnet, isShelleyTestnet } = global;
 
 export default class AdaApi {
@@ -212,87 +207,38 @@ export default class AdaApi {
     this.config = config;
   }
 
-  /* eslint-disable */
-  getWallets = async () => {
+  getWallets = async (): Promise<Array<Wallet>> => {
     logger.debug('AdaApi::getWallets called');
+    try {
+      const wallets: AdaWallets = isIncentivizedTestnet
+        ? await getWallets(this.config)
+        : [];
+      const legacyWallets: LegacyAdaWallets = !isShelleyTestnet
+        ? await getLegacyWallets(this.config)
+        : [];
+      logger.debug('AdaApi::getWallets success', { wallets, legacyWallets });
 
-    // let formattedWallets;
-    // try {
-    //   // const wallets: AdaWallets = isIncentivizedTestnet
-    //   const wallets: AdaWallets = isIncentivizedTestnet
-    //     ? await getWallets(this.config)
-    //     : [];
-    //   const legacyWallets: LegacyAdaWallets = !isShelleyTestnet
-    //     ? await getLegacyWallets(this.config)
-    //     : [];
-    //   logger.debug('AdaApi::getWallets success', { wallets, legacyWallets });
+      map(legacyWallets, legacyAdaWallet => {
+        const extraLegacyWalletProps = {
+          address_pool_gap: 0, // Not needed for legacy wallets
+          delegation: {
+            active: {
+              status: WalletDelegationStatuses.NOT_DELEGATING,
+            },
+          },
+          isLegacy: true,
+        };
+        wallets.push({
+          ...legacyAdaWallet,
+          ...extraLegacyWalletProps,
+        });
+      });
 
-    //   map(legacyWallets, legacyAdaWallet => {
-    //     const extraLegacyWalletProps = {
-    //       address_pool_gap: 0, // Not needed for legacy wallets
-    //       delegation: {
-    //         active: {
-    //           status: WalletDelegationStatuses.NOT_DELEGATING,
-    //         },
-    //       },
-    //       isLegacy: true,
-    //     };
-    //     wallets.push({
-    //       ...legacyAdaWallet,
-    //       ...extraLegacyWalletProps,
-    //     });
-    //   });
-    //   formattedWallets = wallets.map(_createWalletFromServerData);
-    // } catch (error) {
-    // logger.error('AdaApi::getWallets error', { error });
-    // throw new ApiError(error);
-    const generateWallet = (id, name, amount) => ({
-      id,
-      addressPoolGap: 20,
-      amount: new BigNumber(amount).dividedBy(LOVELACES_PER_ADA),
-      balance: {
-        available: { quantity: amount, unit: 'ada' },
-        total: { quantity: amount, unit: 'ada' },
-        reward: { quantity: amount, unit: 'ada' },
-      },
-      state: {
-        status: 'ready',
-      },
-      availableAmount: new BigNumber(amount).dividedBy(LOVELACES_PER_ADA),
-      reward: new BigNumber(0).dividedBy(LOVELACES_PER_ADA),
-      createdAt: new Date(),
-      name,
-      hasPassword: true,
-      passwordUpdateDate: new Date(),
-      passphrase: {
-        last_updated_at: '7/6/2020, 12:04:32 PM',
-      },
-      syncState: { status: 'ready' },
-      isLegacy: false,
-      discovery: 'random',
-      recoveryPhraseVerificationDate: new Date(),
-      recoveryPhraseVerificationStatus: 'ok',
-      recoveryPhraseVerificationStatusType: 'verified',
-      delegatedStakePoolId: 'ksdhjfksdjhfksdhfk',
-    });
-
-    const walletWithFunds = generateWallet(
-      'wallet1',
-      'walletWithFunds',
-      '10101010101010'
-    );
-
-    const walletWithNoFunds = generateWallet(
-      'wallet2',
-      'walletWithNoFunds',
-      '0'
-    );
-
-    const wallets = [walletWithFunds, walletWithNoFunds];
-    const formattedWallets = wallets.map(_createWalletFromServerData);
-    // }
-
-    return formattedWallets;
+      return wallets.map(_createWalletFromServerData);
+    } catch (error) {
+      logger.error('AdaApi::getWallets error', { error });
+      throw new ApiError(error);
+    }
   };
 
   getWallet = async (request: GetWalletRequest): Promise<Wallet> => {
@@ -1413,13 +1359,6 @@ export default class AdaApi {
   ): Promise<SubmitRedeemItnRewardsApiResponse> => {
     const { walletId, recoveryPhrase } = request;
     try {
-      // if (
-      //   recoveryPhrase.join('') ===
-      //     'joy,dentist,general,raccoon,cart,pelican,morning,tube,hour,glue,mesh,assault,liquid,vocal,ridge' ||
-      //   recoveryPhrase.join('') === 'error'
-      // ) {
-      //   throw new Error('-');
-      // }
       const response: SubmitRedeemItnRewardsResponse = await submitRedeemItnRewards(
         {
           walletId,
