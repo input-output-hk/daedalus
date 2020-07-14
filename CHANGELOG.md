@@ -1,11 +1,15 @@
 Changelog
 =========
 
-## vNext
+## 1.3.0-STN2
 
 ### Features
 
 - Ranked stake pools based on delegated amount configured by slider ([PR 2051](https://github.com/input-output-hk/daedalus/pull/2051))
+
+### Chores
+
+- New Shelley Testnet genesis
 
 ## 1.2.0-STN1
 
