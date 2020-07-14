@@ -5,6 +5,7 @@ import { orderBy, find, map, get } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { ROUTES } from '../routes-config';
+import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 import {
   STAKE_POOL_TRANSACTION_CHECK_INTERVAL,
   STAKE_POOL_TRANSACTION_CHECKER_TIMEOUT,
@@ -30,6 +31,9 @@ export default class StakingStore extends Store {
   @observable isDelegationTransactionPending = false;
   @observable fetchingStakePoolsFailed = false;
   @observable isStakingExperimentRead: boolean = false;
+  @observable stake = 0;
+  @observable selectedDelegationWalletId = null;
+  @observable isRanking = false;
 
   /* ----------  Redeem ITN Rewards  ---------- */
   @observable redeemStep: ?RedeemItnRewardsStep = null;
@@ -66,19 +70,20 @@ export default class StakingStore extends Store {
     actions.closeRedeemDialog.listen(this._closeRedeemDialog);
 
     const { isIncentivizedTestnet, isShelleyTestnet } = global;
+    const { staking } = this.actions;
+
     if (isIncentivizedTestnet || isShelleyTestnet) {
-      // Set initial fetch interval to 1 second
-      this.refreshPolling = setInterval(
-        this.getStakePoolsData,
-        STAKE_POOLS_FAST_INTERVAL
-      );
-      actions.goToStakingInfoPage.listen(this._goToStakingInfoPage);
-      actions.goToStakingDelegationCenterPage.listen(
+      staking.goToStakingInfoPage.listen(this._goToStakingInfoPage);
+      staking.goToStakingDelegationCenterPage.listen(
         this._goToStakingDelegationCenterPage
       );
-      actions.joinStakePool.listen(this._joinStakePool);
-      actions.quitStakePool.listen(this._quitStakePool);
-      actions.fakeStakePoolsLoading.listen(this._setFakePoller);
+      staking.joinStakePool.listen(this._joinStakePool);
+      staking.quitStakePool.listen(this._quitStakePool);
+      staking.fakeStakePoolsLoading.listen(this._setFakePoller);
+      staking.updateStake.listen(this._setStake);
+      staking.selectDelegationWallet.listen(
+        this._setSelectedDelegationWalletId
+      );
     }
   }
 
@@ -101,6 +106,16 @@ export default class StakingStore extends Store {
   );
 
   // =================== PUBLIC API ==================== //
+
+  @action _setStake = (stake: number) => {
+    this.stake = stake * LOVELACES_PER_ADA;
+    this.isRanking = true;
+    this.getStakePoolsData();
+  };
+
+  @action _setSelectedDelegationWalletId = (walletId: string) => {
+    this.selectedDelegationWalletId = walletId;
+  };
 
   @action _joinStakePool = async (request: JoinStakePoolRequest) => {
     const { walletId, stakePoolId, passphrase } = request;
@@ -296,30 +311,39 @@ export default class StakingStore extends Store {
 
   @action getStakePoolsData = async () => {
     const { isConnected } = this.stores.networkStatus;
-    if (!isConnected) return;
-    try {
-      await this.stakePoolsRequest.execute().promise;
-      if (this.refreshPolling) this._resetPolling(false);
-    } catch (error) {
-      if (!this.refreshPolling) {
-        this._resetPolling(true);
-      }
+    if (!isConnected) {
+      this._resetIsRanking();
+      return;
     }
+
+    try {
+      await this.stakePoolsRequest.execute(this.stake).promise;
+      this._resetPolling(false);
+    } catch (error) {
+      this._resetPolling(true);
+    }
+    this._resetIsRanking();
   };
 
   @action _resetPolling = (fetchFailed: boolean) => {
     if (fetchFailed) {
       this.fetchingStakePoolsFailed = true;
-      clearInterval(this.pollingStakePoolsInterval);
-      this.pollingStakePoolsInterval = null;
-      this.refreshPolling = setInterval(
-        this.getStakePoolsData,
-        STAKE_POOLS_FAST_INTERVAL
-      );
+      if (this.pollingStakePoolsInterval) {
+        clearInterval(this.pollingStakePoolsInterval);
+        this.pollingStakePoolsInterval = null;
+      }
+      if (!this.refreshPolling) {
+        this.refreshPolling = setInterval(
+          this.getStakePoolsData,
+          STAKE_POOLS_FAST_INTERVAL
+        );
+      }
     } else {
       this.fetchingStakePoolsFailed = false;
-      clearInterval(this.refreshPolling);
-      this.refreshPolling = null;
+      if (this.refreshPolling) {
+        clearInterval(this.refreshPolling);
+        this.refreshPolling = null;
+      }
       if (!this.pollingStakePoolsInterval) {
         this.pollingStakePoolsInterval = setInterval(
           this.getStakePoolsData,
@@ -327,6 +351,10 @@ export default class StakingStore extends Store {
         );
       }
     }
+  };
+
+  @action _resetIsRanking = () => {
+    this.isRanking = false;
   };
 
   // For testing only

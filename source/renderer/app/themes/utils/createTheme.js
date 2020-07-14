@@ -931,6 +931,11 @@ export const createDaedalusComponentsTheme = (
       '--theme-staking-progress-bar-background-color': `${background.primary.regular}`,
       '--theme-staking-progress-stripe-dark-1-background-color': `${background.secondary.dark}`,
       '--theme-staking-progress-stripe-dark-2-background-color': `${background.secondary.regular}`,
+      '--theme-staking-slider-background-color-1': `${background.secondary.dark}`,
+      '--theme-staking-slider-background-color-2': `${background.secondary.regular}`,
+      '--theme-staking-slider-box-shadow-color': `${chroma(
+        background.primary.regular
+      ).alpha(0.25)}`,
       '--theme-staking-table-body-highlighted-text-color': `${background.secondary.dark}`,
       '--theme-staking-info-learn-more-button-text-color': `${background.primary.lightest}`,
       '--theme-staking-info-learn-more-icon-color': `${text.secondary}`,

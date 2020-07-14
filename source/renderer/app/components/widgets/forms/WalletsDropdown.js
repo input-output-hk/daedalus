@@ -16,6 +16,7 @@ type SelectProps = {
   autoFocus?: boolean,
   className?: string,
   context?: any,
+  disabled?: boolean,
   error?: string | Element<any>,
   errorPosition?: 'top' | 'bottom',
   label?: string | Element<any>,
