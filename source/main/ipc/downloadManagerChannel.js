@@ -9,10 +9,12 @@ import {
   getIdFromFileName,
 } from '../utils/downloadManager';
 import {
-  GET_DOWNLOAD_LOCAL_DATA,
-  GET_DOWNLOADS_LOCAL_DATA,
   REQUEST_DOWNLOAD,
   RESUME_DOWNLOAD,
+  DELETE_DOWNLOADED_FILE,
+  GET_DOWNLOAD_LOCAL_DATA,
+  GET_DOWNLOADS_LOCAL_DATA,
+  CLEAR_DOWNLOAD_LOCAL_DATA,
 } from '../../common/ipc/api';
 import {
   DEFAULT_DIRECTORY_NAME,
@@ -23,12 +25,16 @@ import { downloadManagerLocalStorage as localStorage } from '../utils/mainLocalS
 import type {
   DownloadRendererRequest,
   DownloadMainResponse,
+  ResumeDownloadRendererRequest,
+  ResumeDownloadMainResponse,
+  DeleteDownloadedFileRendererRequest,
+  DeleteDownloadedFileMainResponse,
   DownloadLocalDataRendererRequest,
   DownloadLocalDataMainResponse,
   DownloadsLocalDataRendererRequest,
   DownloadsLocalDataMainResponse,
-  ResumeDownloadRendererRequest,
-  ResumeDownloadMainResponse,
+  ClearDownloadLocalDataRendererRequest,
+  ClearDownloadLocalDataMainResponse,
 } from '../../common/ipc/api';
 
 localStorage.setAllStopped();
@@ -99,18 +105,6 @@ const requestDownload = async (
   return download;
 };
 
-const getDownloadLocalData = async ({
-  fileName,
-  id = fileName,
-}: DownloadLocalDataRendererRequest): Promise<DownloadLocalDataMainResponse> => {
-  if (!id) throw new Error('Requires `id` or `fileName`');
-  const downloadId: string = getIdFromFileName(String(id));
-  return localStorage.get(downloadId);
-};
-
-const getDownloadsLocalData = async (): Promise<DownloadsLocalDataMainResponse> =>
-  localStorage.getAll();
-
 const requestResumeDownload = async (
   resumeDownloadRequestPayload: ResumeDownloadRendererRequest,
   window: BrowserWindow
@@ -118,10 +112,15 @@ const requestResumeDownload = async (
   const downloadLocalData = await getDownloadLocalData(
     resumeDownloadRequestPayload
   );
-  const { temporaryFilename, originalFilename } = downloadLocalData.data || {};
-  const { downloadId: id, fileUrl, destinationDirectoryName, options } =
-    downloadLocalData.data || {};
-  if (!id) throw new Error('Invalid download ID 2');
+  const {
+    temporaryFilename,
+    originalFilename,
+    downloadId: id,
+    fileUrl,
+    destinationDirectoryName,
+    options,
+  } = downloadLocalData.data || {};
+  if (!id) throw new Error('Invalid download ID');
   const requestDownloadPayload = {
     id,
     fileUrl,
@@ -138,29 +137,72 @@ const requestResumeDownload = async (
   );
 };
 
+const deleteDownloadedFile = async ({
+  id,
+}: DeleteDownloadedFileRendererRequest): Promise<DeleteDownloadedFileMainResponse> => {
+  const downloadLocalData = await getDownloadLocalData({ id });
+  const { originalFilename, fileUrl, destinationDirectoryName, options } =
+    downloadLocalData.data || {};
+  console.log('originalFilename', originalFilename);
+  console.log('fileUrl', fileUrl);
+  console.log('destinationDirectoryName', destinationDirectoryName);
+  console.log('options', options);
+};
+
+const getDownloadLocalData = async ({
+  fileName,
+  id = fileName,
+}: DownloadLocalDataRendererRequest): Promise<DownloadLocalDataMainResponse> => {
+  if (!id) throw new Error('Requires `id` or `fileName`');
+  const downloadId: string = getIdFromFileName(String(id));
+  return localStorage.get(downloadId);
+};
+
+const getDownloadsLocalData = async (): Promise<DownloadsLocalDataMainResponse> =>
+  localStorage.getAll();
+
+const clearDownloadLocalData = async ({
+  fileName,
+  id = fileName,
+}: ClearDownloadLocalDataRendererRequest): Promise<ClearDownloadLocalDataMainResponse> => {
+  if (!id) throw new Error('Requires `id` or `fileName`');
+  const downloadId: string = getIdFromFileName(String(id));
+  console.log('downloadId', downloadId);
+  return localStorage.unset(downloadId);
+};
+
 const requestDownloadChannel: // IpcChannel<Incoming, Outgoing>
 MainIpcChannel<
   DownloadRendererRequest,
   DownloadMainResponse
 > = new MainIpcChannel(REQUEST_DOWNLOAD);
+const requestResumeDownloadChannel: // IpcChannel<Incoming, Outgoing>
+MainIpcChannel<
+  ResumeDownloadRendererRequest,
+  ResumeDownloadMainResponse
+> = new MainIpcChannel(RESUME_DOWNLOAD);
+
+const deleteDownloadedFileChannel: // IpcChannel<Incoming, Outgoing>
+MainIpcChannel<
+  DeleteDownloadedFileRendererRequest,
+  DeleteDownloadedFileMainResponse
+> = new MainIpcChannel(DELETE_DOWNLOADED_FILE);
 
 const getDownloadLocalDataChannel: // IpcChannel<Incoming, Outgoing>
 MainIpcChannel<
   DownloadLocalDataRendererRequest,
   DownloadLocalDataMainResponse
 > = new MainIpcChannel(GET_DOWNLOAD_LOCAL_DATA);
-
 const getDownloadsLocalDataChannel: // IpcChannel<Incoming, Outgoing>
 MainIpcChannel<
   DownloadsLocalDataRendererRequest,
   DownloadsLocalDataMainResponse
 > = new MainIpcChannel(GET_DOWNLOADS_LOCAL_DATA);
-
-const requestResumeDownloadChannel: // IpcChannel<Incoming, Outgoing>
+const clearDownloadLocalDataChannel: // IpcChannel<Incoming, Outgoing>
 MainIpcChannel<
-  ResumeDownloadRendererRequest,
-  ResumeDownloadMainResponse
-> = new MainIpcChannel(RESUME_DOWNLOAD);
+  ClearDownloadLocalDataRendererRequest,
+  ClearDownloadLocalDataMainResponse
+> = new MainIpcChannel(CLEAR_DOWNLOAD_LOCAL_DATA);
 
 export const downloadManagerChannel = (window: BrowserWindow) => {
   requestDownloadChannel.onRequest(
@@ -171,6 +213,9 @@ export const downloadManagerChannel = (window: BrowserWindow) => {
     (resumeDownloadRequestPayload: ResumeDownloadRendererRequest) =>
       requestResumeDownload(resumeDownloadRequestPayload, window)
   );
+  deleteDownloadedFileChannel.onRequest(deleteDownloadedFile);
+
   getDownloadLocalDataChannel.onRequest(getDownloadLocalData);
   getDownloadsLocalDataChannel.onRequest(getDownloadsLocalData);
+  clearDownloadLocalDataChannel.onRequest(clearDownloadLocalData);
 };

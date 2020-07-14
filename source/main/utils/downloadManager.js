@@ -160,7 +160,7 @@ export const getEventActions = async (
         },
         window.webContents
       );
-      const { persistLocalData } = data;
+      const { persistLocalData } = data.options;
       if (!persistLocalData) await localStorage.unset(downloadId);
     },
     error: async ({ message }: DownloadInfoError) => {

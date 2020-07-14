@@ -8,9 +8,10 @@ import { rebuildApplicationMenu } from '../ipc/rebuild-application-menu';
 import NewsDomains from '../domains/News';
 import {
   requestDownloadChannel,
-  getDownloadLocalDataChannel,
   requestResumeDownloadChannel,
-  clearDownloadDataChannel,
+  deleteDownloadedFile,
+  getDownloadLocalDataChannel,
+  clearDownloadLocalDataChannel,
 } from '../ipc/downloadManagerChannel';
 import type {
   DownloadMainResponse,
@@ -78,7 +79,7 @@ export default class AppUpdateStore extends Store {
     );
     requestDownloadChannel.onReceive(this._manageUpdateResponse);
 
-    // ========== MOBX REACTIONS =========== //
+    // ============== MOBX REACTIONS ==============
     this.registerReactions([this._watchForNewsfeedUpdates]);
   }
 
@@ -89,15 +90,65 @@ export default class AppUpdateStore extends Store {
     if (update) this._checkNewAppUpdate(update);
   };
 
-  // =============== PRIVATE ===============
+  // ==================== PUBLIC ==================
+
+  @computed get isNewAppVersionLoading(): boolean {
+    return this.getLatestAppVersionRequest.isExecuting;
+  }
+
+  @computed get isNewAppVersionLoaded(): boolean {
+    return (
+      this.getLatestAppVersionRequest.wasExecuted &&
+      (this.getLatestAppVersionRequest.result !== null ||
+        this.getLatestAppVersionRequest.error !== null)
+    );
+  }
+
+  @computed get showNextUpdate(): boolean {
+    return (
+      this.isUpdateAvailable &&
+      !this.isUpdatePostponed &&
+      !this.isUpdateInstalled &&
+      !global.isIncentivizedTestnet &&
+      !global.isFlight
+    );
+  }
+
+  @computed get showManualUpdate(): boolean {
+    return (
+      this.isNewAppVersionAvailable &&
+      !this.isUpdatePostponed &&
+      !this.isUpdateAvailable &&
+      !global.isIncentivizedTestnet &&
+      !global.isFlight
+    );
+  }
+
+  getUpdateInfo(update: News): SoftwareUpdateInfo {
+    const softwareUpdate = get(update, 'softwareUpdate', {});
+    const { version, hash, url } = softwareUpdate[platform] || {};
+    return { version, hash, url };
+  }
+
+  isUpdateValid = (update: News) => {
+    const { version: updateVersion } = this.getUpdateInfo(update);
+    return semver.lt(currentVersion, updateVersion);
+  };
+
+  isUnfinishedDownloadValid = async (
+    unfinishedDownload: DownloadsLocalDataMainResponse
+  ) => {
+    return true;
+  };
+
+  // =================== PRIVATE ==================
 
   // @UPDATE TODO: Commenting the trigger to avoid automatic download
   _checkNewAppUpdate = async (update: News) => {
     // Is the update valid?
-    const isValidUpdate = await this._isUpdateValid(update);
-    console.log('isValidUpdate', isValidUpdate);
-    if (!isValidUpdate) {
-      this._removeLocalDataInfo();
+    if (!this.isUpdateValid(update)) {
+      await this._removeUpdateFile();
+      await this._removeLocalDataInfo();
       return;
     }
 
@@ -108,7 +159,7 @@ export default class AppUpdateStore extends Store {
     // Is there a pending / resumable download?
     const unfinishedDownload = await this._getUpdateDownloadLocalData();
     if (unfinishedDownload.data) {
-      if (this._isUnfinishedDownloadValid(unfinishedDownload)) {
+      if (this.isUnfinishedDownloadValid(unfinishedDownload)) {
         // this._requestResumeUpdateDownload();
         return;
       }
@@ -117,20 +168,14 @@ export default class AppUpdateStore extends Store {
     // this._requestUpdateDownload(update);
   };
 
-  _isUpdateValid = async (update: News) => {
-    const { version: updateVersion } = this.updateInfo;
-    return semver.lt(currentVersion, updateVersion);
+  _removeLocalDataInfo = async () => {
+    clearDownloadLocalDataChannel.request({
+      id: APP_UPDATE_DOWNLOAD_ID,
+    });
   };
 
-  _isUnfinishedDownloadValid = async (
-    unfinishedDownload: DownloadsLocalDataMainResponse
-  ) => {
-    console.log('unfinishedDownload', unfinishedDownload);
-    return true;
-  };
-
-  _removeLocalDataInfo = () => {
-    clearDownloadDataChannel.request({
+  _removeUpdateFile = () => {
+    deleteDownloadedFile.request({
       id: APP_UPDATE_DOWNLOAD_ID,
     });
   };
@@ -142,7 +187,7 @@ export default class AppUpdateStore extends Store {
 
   _manageUpdateResponse = ({
     eventType,
-    /* data, */
+    data,
     progress: progressData,
   }: DownloadMainResponse) => {
     if (eventType === DOWNLOAD_EVENT_TYPES.PROGRESS) {
@@ -150,9 +195,14 @@ export default class AppUpdateStore extends Store {
       runInAction(() => {
         this.downloadProgress = progress;
       });
+      // @UPDATE TODO
+      console.log('%c Download progress: %s%', 'color: darkOrange', progress);
     }
     runInAction('updates the download information', () => {
       if (eventType === DOWNLOAD_EVENT_TYPES.END) {
+        console.log('END!');
+        console.log('data --> ', data);
+        console.log('progress', progressData);
         this.isDownloadingUpdate = false;
       } else {
         this.isDownloadingUpdate = true;
@@ -166,18 +216,20 @@ export default class AppUpdateStore extends Store {
       id: APP_UPDATE_DOWNLOAD_ID,
       options: {
         progressIsThrottled: false,
+        persistLocalData: true,
       },
     });
   };
 
   _requestUpdateDownload = async (update: News) => {
-    const fileUrl = get(update, 'download.darwin');
+    const { url: fileUrl } = this.getUpdateInfo(update);
     if (!fileUrl) return;
     await requestDownloadChannel.request({
       id: APP_UPDATE_DOWNLOAD_ID,
       fileUrl,
       options: {
         progressIsThrottled: false,
+        persistLocalData: true,
       },
     });
   };
@@ -246,44 +298,4 @@ export default class AppUpdateStore extends Store {
     this.availableAppVersion = latestAppVersion;
     this.applicationVersion = applicationVersion;
   };
-
-  // GETTERS
-
-  @computed get updateInfo(): SoftwareUpdateInfo {
-    const softwareUpdate = get(this, 'availableUpdate.softwareUpdate', {});
-    const { version, hash, url } = softwareUpdate[platform] || {};
-    return { version, hash, url };
-  }
-
-  @computed get isNewAppVersionLoading(): boolean {
-    return this.getLatestAppVersionRequest.isExecuting;
-  }
-
-  @computed get isNewAppVersionLoaded(): boolean {
-    return (
-      this.getLatestAppVersionRequest.wasExecuted &&
-      (this.getLatestAppVersionRequest.result !== null ||
-        this.getLatestAppVersionRequest.error !== null)
-    );
-  }
-
-  @computed get showNextUpdate(): boolean {
-    return (
-      this.isUpdateAvailable &&
-      !this.isUpdatePostponed &&
-      !this.isUpdateInstalled &&
-      !global.isIncentivizedTestnet &&
-      !global.isFlight
-    );
-  }
-
-  @computed get showManualUpdate(): boolean {
-    return (
-      this.isNewAppVersionAvailable &&
-      !this.isUpdatePostponed &&
-      !this.isUpdateAvailable &&
-      !global.isIncentivizedTestnet &&
-      !global.isFlight
-    );
-  }
 }

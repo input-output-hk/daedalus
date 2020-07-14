@@ -77,10 +77,16 @@ export const downloadManagerLocalStorage = {
     }
   },
   unset: async (id: string) => {
+    console.log('UNSET -------');
     const localDownloadsData = await requestElectronStore({
       type: STORAGE_TYPES.GET,
       key: STORAGE_KEYS.DOWNLOAD_MANAGER,
     });
+    console.log('type', STORAGE_TYPES.GET);
+    console.log('key', STORAGE_KEYS.DOWNLOAD_MANAGER);
+    console.log('localDownloadsData', localDownloadsData);
+    console.log('data', omit(localDownloadsData, id));
+
     await requestElectronStore({
       type: STORAGE_TYPES.SET,
       key: STORAGE_KEYS.DOWNLOAD_MANAGER,

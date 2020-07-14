@@ -38,6 +38,8 @@ import type {
   ResumeDownloadResponse,
   ClearDownloadLocalDataRequest,
   ClearDownloadLocalDataResponse,
+  DeleteDownloadedFileRequest,
+  DeleteDownloadedFileResponse,
 } from '../types/downloadManager.types';
 import type { StoreMessage } from '../types/electron-store.types';
 
@@ -296,6 +298,27 @@ export const ELECTRON_STORE_CHANNEL = 'ELECTRON_STORE_CHANNEL';
 export type ElectronStoreMessage = StoreMessage;
 
 /**
+ * Channel for requesting a new download
+ */
+export const REQUEST_DOWNLOAD = 'REQUEST_DOWNLOAD';
+export type DownloadRendererRequest = DownloadRequest;
+export type DownloadMainResponse = DownloadResponse;
+
+/**
+ * Channel for resuming an existing download
+ */
+export const RESUME_DOWNLOAD = 'RESUME_DOWNLOAD';
+export type ResumeDownloadRendererRequest = ResumeDownloadRequest;
+export type ResumeDownloadMainResponse = ResumeDownloadResponse | void;
+
+/**
+ * Channel for resuming an existing download
+ */
+export const DELETE_DOWNLOADED_FILE = 'DELETE_DOWNLOADED_FILE';
+export type DeleteDownloadedFileRendererRequest = DeleteDownloadedFileRequest;
+export type DeleteDownloadedFileMainResponse = DeleteDownloadedFileResponse | void;
+
+/**
  * Channel for initiating the download manager
  */
 export const GET_DOWNLOAD_LOCAL_DATA = 'GET_DOWNLOAD_LOCAL_DATA';
@@ -308,20 +331,6 @@ export type DownloadLocalDataMainResponse = DownloadLocalDataResponse;
 export const GET_DOWNLOADS_LOCAL_DATA = 'GET_DOWNLOADS_LOCAL_DATA';
 export type DownloadsLocalDataRendererRequest = DownloadsLocalDataRequest | void;
 export type DownloadsLocalDataMainResponse = DownloadsLocalDataResponse | void;
-
-/**
- * Channel for requesting a new download
- */
-export const REQUEST_DOWNLOAD = 'REQUEST_DOWNLOAD';
-export type DownloadRendererRequest = DownloadRequest;
-export type DownloadMainResponse = DownloadResponse;
-
-/**
- * Channel for requesting a new download
- */
-export const RESUME_DOWNLOAD = 'RESUME_DOWNLOAD';
-export type ResumeDownloadRendererRequest = ResumeDownloadRequest;
-export type ResumeDownloadMainResponse = ResumeDownloadResponse | void;
 
 /**
  * Channel for initiating the download manager

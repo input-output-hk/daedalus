@@ -35,6 +35,7 @@ export type DownloadRequestOptions = {
   httpRequestOptions?: Object, // Override the http request options
   httpsRequestOptions?: Object, // Override the https request options, ex: to add SSL Certs
   progressIsThrottled?: boolean, // by default, the progress is sent every second. if `false` it will be sent every milisecond
+  persistLocalData?: boolean, // by default, the localdata information is deleted after the end of the download
 };
 
 // https://www.npmjs.com/package/node-downloader-helper
@@ -72,7 +73,6 @@ export type DownloadData = {
   destinationDirectoryName: AllowedDownloadDirectories,
   destinationPath: string,
   options: DownloadRequestOptions,
-  persistLocalData?: boolean,
 };
 
 export type DownloadProgress = {
@@ -159,3 +159,8 @@ export type ResumeDownloadResponse = DownloadResponse | void;
 
 export type ClearDownloadLocalDataRequest = DownloadLocalDataRequest;
 export type ClearDownloadLocalDataResponse = void;
+
+export type DeleteDownloadedFileRequest = {
+  id?: string,
+};
+export type DeleteDownloadedFileResponse = void;

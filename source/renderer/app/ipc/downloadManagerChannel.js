@@ -1,20 +1,23 @@
 // @flow
 import {
   REQUEST_DOWNLOAD,
+  RESUME_DOWNLOAD,
+  DELETE_DOWNLOADED_FILE,
   GET_DOWNLOAD_LOCAL_DATA,
   GET_DOWNLOADS_LOCAL_DATA,
-  RESUME_DOWNLOAD,
   CLEAR_DOWNLOAD_LOCAL_DATA,
 } from '../../../common/ipc/api';
 import type {
   DownloadRendererRequest,
   DownloadMainResponse,
+  ResumeDownloadRendererRequest,
+  ResumeDownloadMainResponse,
+  DeleteDownloadedFileRendererRequest,
+  DeleteDownloadedFileMainResponse,
   DownloadLocalDataRendererRequest,
   DownloadLocalDataMainResponse,
   DownloadsLocalDataRendererRequest,
   DownloadsLocalDataMainResponse,
-  ResumeDownloadRendererRequest,
-  ResumeDownloadMainResponse,
   ClearDownloadLocalDataRendererRequest,
   ClearDownloadLocalDataMainResponse,
 } from '../../../common/ipc/api';
@@ -25,26 +28,29 @@ RendererIpcChannel<
   DownloadMainResponse,
   DownloadRendererRequest
 > = new RendererIpcChannel(REQUEST_DOWNLOAD);
-
-export const getDownloadLocalDataChannel: // IpcChannel<Incoming, Outgoing>
-RendererIpcChannel<
-  DownloadLocalDataMainResponse,
-  DownloadLocalDataRendererRequest
-> = new RendererIpcChannel(GET_DOWNLOAD_LOCAL_DATA);
-
-export const getDownloadsLocalDataChannel: // IpcChannel<Incoming, Outgoing>
-RendererIpcChannel<
-  DownloadsLocalDataMainResponse,
-  DownloadsLocalDataRendererRequest
-> = new RendererIpcChannel(GET_DOWNLOADS_LOCAL_DATA);
-
 export const requestResumeDownloadChannel: // IpcChannel<Incoming, Outgoing>
 RendererIpcChannel<
   ResumeDownloadMainResponse,
   ResumeDownloadRendererRequest
 > = new RendererIpcChannel(RESUME_DOWNLOAD);
 
-export const clearDownloadDataChannel: // IpcChannel<Incoming, Outgoing>
+export const deleteDownloadedFile: // IpcChannel<Incoming, Outgoing>
+RendererIpcChannel<
+  DeleteDownloadedFileMainResponse,
+  DeleteDownloadedFileRendererRequest
+> = new RendererIpcChannel(DELETE_DOWNLOADED_FILE);
+
+export const getDownloadLocalDataChannel: // IpcChannel<Incoming, Outgoing>
+RendererIpcChannel<
+  DownloadLocalDataMainResponse,
+  DownloadLocalDataRendererRequest
+> = new RendererIpcChannel(GET_DOWNLOAD_LOCAL_DATA);
+export const getDownloadsLocalDataChannel: // IpcChannel<Incoming, Outgoing>
+RendererIpcChannel<
+  DownloadsLocalDataMainResponse,
+  DownloadsLocalDataRendererRequest
+> = new RendererIpcChannel(GET_DOWNLOADS_LOCAL_DATA);
+export const clearDownloadLocalDataChannel: // IpcChannel<Incoming, Outgoing>
 RendererIpcChannel<
   ClearDownloadLocalDataMainResponse,
   ClearDownloadLocalDataRendererRequest
