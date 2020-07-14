@@ -12,4 +12,6 @@ export default class StakingActions {
   goToStakingDelegationCenterPage: Action<any> = new Action();
   joinStakePool: Action<JoinStakePoolRequest> = new Action();
   quitStakePool: Action<QuitStakePoolRequest> = new Action();
+  updateStake: Action<number> = new Action();
+  selectDelegationWallet: Action<string> = new Action();
 }

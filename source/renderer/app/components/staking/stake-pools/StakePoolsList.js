@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { debounce } from 'lodash';
 import classNames from 'classnames';
+import FlipMove from 'react-flip-move';
 import styles from './StakePoolsList.scss';
 import StakePool from '../../../domains/StakePool';
 import { StakePoolThumbnail } from './StakePoolThumbnail';
@@ -109,30 +110,33 @@ export class StakePoolsList extends Component<Props, State> {
 
     return (
       <div className={componentClasses}>
-        {stakePoolsList.map(stakePool => {
-          const isHighlighted = this.getIsHighlighted(stakePool.id);
-          const isSelected = selectedPoolId && stakePool.id === selectedPoolId;
+        <FlipMove>
+          {stakePoolsList.map(stakePool => {
+            const isHighlighted = this.getIsHighlighted(stakePool.id);
+            const isSelected =
+              selectedPoolId && stakePool.id === selectedPoolId;
 
-          return (
-            <StakePoolThumbnail
-              stakePool={stakePool}
-              key={stakePool.id + stakePool.ranking}
-              onOpenExternalLink={onOpenExternalLink}
-              isHighlighted={isHighlighted}
-              onClose={this.handleClose}
-              onClick={!highlightOnHover && this.handleOpenThumbnail}
-              onHover={highlightOnHover && this.handleOpenThumbnail}
-              onSelect={this.handleSelect}
-              showWithSelectButton={showWithSelectButton}
-              currentTheme={currentTheme}
-              isSelected={isSelected}
-              showSelected={showSelected}
-              containerClassName={containerClassName}
-              numberOfStakePools={numberOfStakePools}
-              disabledStakePoolId={disabledStakePoolId}
-            />
-          );
-        })}
+            return (
+              <StakePoolThumbnail
+                stakePool={stakePool}
+                key={stakePool.id + stakePool.ranking}
+                onOpenExternalLink={onOpenExternalLink}
+                isHighlighted={isHighlighted}
+                onClose={this.handleClose}
+                onClick={!highlightOnHover && this.handleOpenThumbnail}
+                onHover={highlightOnHover && this.handleOpenThumbnail}
+                onSelect={this.handleSelect}
+                showWithSelectButton={showWithSelectButton}
+                currentTheme={currentTheme}
+                isSelected={isSelected}
+                showSelected={showSelected}
+                containerClassName={containerClassName}
+                numberOfStakePools={numberOfStakePools}
+                disabledStakePoolId={disabledStakePoolId}
+              />
+            );
+          })}
+        </FlipMove>
       </div>
     );
   }
