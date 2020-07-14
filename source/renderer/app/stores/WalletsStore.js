@@ -14,6 +14,7 @@ import { paperWalletPdfGenerator } from '../utils/paperWalletPdfGenerator';
 import { addressPDFGenerator } from '../utils/addressPDFGenerator';
 import { downloadRewardsCsv } from '../utils/rewardsCsvGenerator';
 import { buildRoute, matchRoute } from '../utils/routing';
+import { logger } from '../utils/logging';
 import { ROUTES } from '../routes-config';
 import { formattedWalletAmount } from '../utils/formatters';
 import {
@@ -899,14 +900,18 @@ export default class WalletsStore extends Store {
     } else {
       throw new Error('Unexpected environment');
     }
-    const response = await introspectAddressChannel.send({ input: address });
-    if (response === 'Invalid') {
-      return false;
+    try {
+      const response = await introspectAddressChannel.send({ input: address });
+      if (response === 'Invalid') {
+        return false;
+      }
+      return (
+        validAddressStyles.includes(response.introspection.address_style) &&
+        expectedNetworkTag === response.introspection.network_tag
+      );
+    } catch (error) {
+      logger.error(error)
     }
-    return (
-      validAddressStyles.includes(response.introspection.address_style) &&
-      expectedNetworkTag === response.introspection.network_tag
-    );
   };
 
   isValidCertificateMnemonic = (mnemonic: string) =>
