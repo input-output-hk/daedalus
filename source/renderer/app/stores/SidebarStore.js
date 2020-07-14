@@ -91,23 +91,25 @@ export default class SidebarStore extends Store {
       [categories.WALLETS.name]: true,
       [categories.HARDWARE_WALLETS.name]: isDev,
       [categories.PAPER_WALLET_CREATE_CERTIFICATE.name]: false,
-      [categories.STAKING_DELEGATION_COUNTDOWN.name]:
+      [categories.STAKING_DELEGATION_COUNTDOWN.name]: () =>
         !isIncentivizedTestnet && !isShelleyTestnet,
       [categories.STAKING.name]: isIncentivizedTestnet || isShelleyTestnet,
-      [categories.REDEEM_ITN_REWARDS.name]: isDev,
+      [categories.REDEEM_ITN_REWARDS.name]: !isDev,
       [categories.SETTINGS.name]: true,
       [categories.NETWORK_INFO.name]: !isFlight,
     };
 
     const categoriesFilteredList: Array<SidebarCategoryInfo> = list.filter(
       ({ name }: SidebarCategoryInfo): boolean => {
-        const validator = categoryValidation[name];
-        if (typeof validator === 'function') return validator();
+        let validator = categoryValidation[name];
+        if (typeof validator === 'function') {
+          validator = validator();
+        }
         return validator;
       }
     );
 
-    return categoriesFilteredList;
+    this.CATEGORIES = categoriesFilteredList;
   };
 
   @action _onActivateSidebarCategory = (params: {
