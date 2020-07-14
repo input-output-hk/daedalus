@@ -22,7 +22,7 @@ export const NewsTypes: {
   ALERT: 'alert',
   ANNOUNCEMENT: 'announcement',
   INFO: 'info',
-  UPDATE: 'update',
+  UPDATE: 'software-update',
 };
 
 export type NewsTypesStateType = {

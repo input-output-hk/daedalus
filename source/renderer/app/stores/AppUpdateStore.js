@@ -1,9 +1,9 @@
 // @flow
 import { action, computed, observable, runInAction } from 'mobx';
 import { get } from 'lodash';
+import semver from 'semver';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import type { GetLatestAppVersionResponse } from '../api/nodes/types';
 import { rebuildApplicationMenu } from '../ipc/rebuild-application-menu';
 import NewsDomains from '../domains/News';
 import {
@@ -17,6 +17,14 @@ import type {
   DownloadsLocalDataMainResponse,
 } from '../../../common/ipc/api';
 import { DOWNLOAD_EVENT_TYPES } from '../../../common/config/downloadManagerConfig';
+import type { GetLatestAppVersionResponse } from '../api/nodes/types';
+import type { SoftwareUpdateInfo } from '../api/news/types';
+
+const { version: currentVersion, platform } = global.environment;
+
+// @UPDATE TODO: Dev utils:
+/* eslint-disable */
+window.semver = semver;
 
 const { News } = NewsDomains;
 
@@ -83,9 +91,11 @@ export default class AppUpdateStore extends Store {
 
   // =============== PRIVATE ===============
 
+  // @UPDATE TODO: Commenting the trigger to avoid automatic download
   _checkNewAppUpdate = async (update: News) => {
     // Is the update valid?
     const isValidUpdate = await this._isUpdateValid(update);
+    console.log('isValidUpdate', isValidUpdate);
     if (!isValidUpdate) {
       this._removeLocalDataInfo();
       return;
@@ -99,24 +109,22 @@ export default class AppUpdateStore extends Store {
     const unfinishedDownload = await this._getUpdateDownloadLocalData();
     if (unfinishedDownload.data) {
       if (this._isUnfinishedDownloadValid(unfinishedDownload)) {
-        this._requestResumeUpdateDownload();
+        // this._requestResumeUpdateDownload();
         return;
       }
     }
-    await this._removeLocalDataInfo();
-    this._requestUpdateDownload(update);
+    // await this._removeLocalDataInfo();
+    // this._requestUpdateDownload(update);
   };
 
   _isUpdateValid = async (update: News) => {
-    // eslint-disable-next-line
-    console.log('update', update);
-    return true;
+    const { version: updateVersion } = this.updateInfo;
+    return semver.lt(currentVersion, updateVersion);
   };
 
   _isUnfinishedDownloadValid = async (
     unfinishedDownload: DownloadsLocalDataMainResponse
   ) => {
-    // eslint-disable-next-line
     console.log('unfinishedDownload', unfinishedDownload);
     return true;
   };
@@ -238,6 +246,14 @@ export default class AppUpdateStore extends Store {
     this.availableAppVersion = latestAppVersion;
     this.applicationVersion = applicationVersion;
   };
+
+  // GETTERS
+
+  @computed get updateInfo(): SoftwareUpdateInfo {
+    const softwareUpdate = get(this, 'availableUpdate.softwareUpdate', {});
+    const { version, hash, url } = softwareUpdate[platform] || {};
+    return { version, hash, url };
+  }
 
   @computed get isNewAppVersionLoading(): boolean {
     return this.getLatestAppVersionRequest.isExecuting;
