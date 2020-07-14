@@ -128,6 +128,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
 
   handleSelectWallet = (walletId: string) => {
     this.setState({ selectedWalletId: walletId });
+    this.props.actions.staking.selectDelegationWallet.trigger(walletId);
     this.handleContinue();
   };
 

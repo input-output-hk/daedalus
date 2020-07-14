@@ -1,0 +1,12 @@
+.component {
+  align-items: center;
+  background-color: var(--rp-modal-overlay-bg-color);
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  left: 84px;
+  position: fixed;
+  right: 0;
+  top: 134px;
+  z-index: 5000;
+}

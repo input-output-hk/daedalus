@@ -1447,10 +1447,15 @@ export default class AdaApi {
     }
   };
 
-  getStakePools = async (): Promise<Array<StakePool>> => {
-    logger.debug('AdaApi::getStakePools called');
+  getStakePools = async (stake: number = 0): Promise<Array<StakePool>> => {
+    logger.debug('AdaApi::getStakePools called', {
+      parameters: { stake },
+    });
     try {
-      const response: AdaApiStakePools = await getStakePools(this.config);
+      const response: AdaApiStakePools = await getStakePools(
+        this.config,
+        stake
+      );
       const stakePools = response
         .filter(({ metadata }: AdaApiStakePool) => metadata !== undefined)
         .filter(
@@ -1914,8 +1919,8 @@ const _createStakePoolFromServerData = action(
     const { name, description = '', ticker, homepage } = metadata;
     const relativeStakePercentage = get(relativeStake, 'quantity', 0);
     const producedBlocksCount = get(producedBlocks, 'quantity', 0);
-    const costQuantity = get(cost, 'quantity', 0);
-    const pledgeQuantity = get(pledge, 'quantity', 0);
+    const costQuantity = get(cost, 'quantity', 0).toString();
+    const pledgeQuantity = get(pledge, 'quantity', 0).toString();
     const profitMarginPercentage = get(profitMargin, 'quantity', 0);
     return new StakePool({
       id,

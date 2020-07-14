@@ -15,6 +15,7 @@ type SelectProps = {
   autoFocus?: boolean,
   className?: string,
   context?: any,
+  disabled?: boolean,
   error?: string | Element<any>,
   label?: string | Element<any>,
   isOpeningUpward?: boolean,

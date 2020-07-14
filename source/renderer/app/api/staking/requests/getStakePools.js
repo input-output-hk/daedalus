@@ -4,7 +4,8 @@ import type { AdaApiStakePools } from '../types';
 import { request } from '../../utils/request';
 
 export const getStakePools = (
-  config: RequestConfig
+  config: RequestConfig,
+  stake: number
 ): Promise<AdaApiStakePools> =>
   request(
     {
@@ -12,5 +13,5 @@ export const getStakePools = (
       path: '/v2/stake-pools',
       ...config,
     },
-    { stake: 1000000000 }
+    { stake }
   );
