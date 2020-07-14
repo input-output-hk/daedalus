@@ -4432,13 +4432,13 @@
         "description": "\"delegatingListTitle\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 21
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.delegatingListTitle",
         "start": {
           "column": 23,
-          "line": 15
+          "line": 17
         }
       },
       {
@@ -4446,13 +4446,13 @@
         "description": "\"listTitle\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 26
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.listTitle",
         "start": {
           "column": 13,
-          "line": 20
+          "line": 22
         }
       },
       {
@@ -4460,13 +4460,13 @@
         "description": "\"listTitle\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 31
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.listTitleWithSearch",
         "start": {
           "column": 23,
-          "line": 25
+          "line": 27
         }
       },
       {
@@ -4474,17 +4474,218 @@
         "description": "Loading stake pool message for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 37
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.loadingStakePoolsMessage",
         "start": {
           "column": 28,
-          "line": 30
+          "line": 32
         }
       }
     ],
     "path": "source/renderer/app/components/staking/stake-pools/StakePools.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!all your wallets",
+        "description": "All wallets item of dropdown.",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
+        "id": "staking.stakePools.rankingAllWallets",
+        "start": {
+          "column": 21,
+          "line": 18
+        }
+      },
+      {
+        "defaultMessage": "!!!.",
+        "description": "All wallets description after dropdown.",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
+        "id": "staking.stakePools.rankingAllWalletsEnd",
+        "start": {
+          "column": 24,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!Stake pools are currently ranked based on the combined amount in",
+        "description": "All wallets description before dropdown.",
+        "end": {
+          "column": 3,
+          "line": 33
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
+        "id": "staking.stakePools.rankingAllWalletsStart",
+        "start": {
+          "column": 26,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!Use the slider to rank the stake pools based on the amount you intend to delegate.",
+        "description": "Ranking description.",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
+        "id": "staking.stakePools.rankingDescription",
+        "start": {
+          "column": 22,
+          "line": 34
+        }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us",
+        "description": "Ranking learn more url.",
+        "end": {
+          "column": 3,
+          "line": 44
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
+        "id": "staking.stakePools.rankingLearnMoreUrl",
+        "start": {
+          "column": 23,
+          "line": 40
+        }
+      },
+      {
+        "defaultMessage": "!!!wallet.",
+        "description": "One wallet description after dropdown.",
+        "end": {
+          "column": 3,
+          "line": 49
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
+        "id": "staking.stakePools.rankingOneWalletEnd",
+        "start": {
+          "column": 23,
+          "line": 45
+        }
+      },
+      {
+        "defaultMessage": "!!!Stake pools are currently ranked based on the amount in",
+        "description": "One wallet description before dropdown.",
+        "end": {
+          "column": 3,
+          "line": 55
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
+        "id": "staking.stakePools.rankingOneWalletStart",
+        "start": {
+          "column": 25,
+          "line": 50
+        }
+      },
+      {
+        "defaultMessage": "!!!select a wallet",
+        "description": "Select wallet item of dropdown.",
+        "end": {
+          "column": 3,
+          "line": 60
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
+        "id": "staking.stakePools.rankingSelectWallet",
+        "start": {
+          "column": 23,
+          "line": 56
+        }
+      },
+      {
+        "defaultMessage": "!!!to set the amount you intend to delegate.",
+        "description": "Select wallet description after dropdown.",
+        "end": {
+          "column": 3,
+          "line": 65
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
+        "id": "staking.stakePools.rankingSelectWalletEnd",
+        "start": {
+          "column": 26,
+          "line": 61
+        }
+      },
+      {
+        "defaultMessage": "!!!Or",
+        "description": "Select wallet description before dropdown.",
+        "end": {
+          "column": 3,
+          "line": 70
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
+        "id": "staking.stakePools.rankingSelectWalletStart",
+        "start": {
+          "column": 28,
+          "line": 66
+        }
+      },
+      {
+        "defaultMessage": "!!!Circulating supply",
+        "description": "Circulating supply slider tooltip.",
+        "end": {
+          "column": 3,
+          "line": 75
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
+        "id": "staking.stakePools.rankingExtraTooltip",
+        "start": {
+          "column": 23,
+          "line": 71
+        }
+      },
+      {
+        "defaultMessage": "!!!Saturation point",
+        "description": "Saturation point slider tooltip.",
+        "end": {
+          "column": 3,
+          "line": 80
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
+        "id": "staking.stakePools.rankingMaxTooltip",
+        "start": {
+          "column": 21,
+          "line": 76
+        }
+      },
+      {
+        "defaultMessage": "!!!Minimum ADA required for staking",
+        "description": "Minimum ADA required for staking slider tooltip.",
+        "end": {
+          "column": 3,
+          "line": 85
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
+        "id": "staking.stakePools.rankingMinTooltip",
+        "start": {
+          "column": 21,
+          "line": 81
+        }
+      },
+      {
+        "defaultMessage": "!!!Learn more",
+        "description": "Learn more action of ranking panel.",
+        "end": {
+          "column": 3,
+          "line": 90
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
+        "id": "staking.stakePools.learnMore",
+        "start": {
+          "column": 19,
+          "line": 86
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.json"
   },
   {
     "descriptors": [
