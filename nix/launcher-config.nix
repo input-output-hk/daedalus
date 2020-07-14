@@ -21,6 +21,18 @@
 
 
 let
+  clusterOverrides = {
+    mainnet_flight = {
+      cardanoEnv = cardanoLib.environments.mainnet;
+      cluster = "mainnet";
+      networkName = "mainnet";
+    };
+    shelley_testnet_v3 = {
+      cardanoEnv = cardanoLib.environments.shelley_testnet;
+      cluster = "shelley_testnet";
+      networkName = "shelley_testnet";
+    };
+  };
   dirSep = if os == "windows" then "\\" else "/";
   configDir = configFilesSource: {
     linux = configFilesSource;
@@ -52,8 +64,8 @@ let
   mkConfigPath = configSrc: configPath: "${(configDir configSrc).${os}}${dirSep}${configPath}";
 
   envCfg = let
-    cardanoEnv = if network == "mainnet_flight"
-                 then cardanoLib.environments.mainnet
+    cardanoEnv = if __hasAttr network clusterOverrides
+                 then clusterOverrides.${network}.cardanoEnv
                  else cardanoLib.environments.${network};
     jormungandrEnv = jormungandrLib.environments.${network};
   in if (backend == "cardano") then cardanoEnv else jormungandrEnv;
@@ -71,6 +83,7 @@ let
       staging = "Staging";
       testnet = "Testnet";
       shelley_testnet = "Shelley Testnet";
+      shelley_testnet_v3 = "Shelley Testnet v3";
       shelley_qa = "Shelley QA";
     };
     unsupported = "Unsupported";
@@ -145,8 +158,8 @@ let
     workingDir = dataDir;
     stateDir = dataDir;
     tlsPath = "${dataDir}${dirSep}tls";
-    cluster = if network == "mainnet_flight" then "mainnet" else network;
-    networkName = if network == "mainnet_flight" then "mainnet" else network;
+    cluster = if __hasAttr network clusterOverrides then clusterOverrides.${network}.cluster else network;
+    networkName = if __hasAttr network clusterOverrides then clusterOverrides.${network}.networkName else network;
     isFlight = network == "mainnet_flight";
     nodeImplementation = backend;
   };
