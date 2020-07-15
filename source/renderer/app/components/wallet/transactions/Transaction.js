@@ -422,7 +422,7 @@ export default class Transaction extends Component<Props, State> {
                 <h2>{intl.formatMessage(messages.fromAddresses)}</h2>
                 {fromAddresses(data.addresses.from, data.id)}
 
-                {data.addresses.withdrawals.length && (
+                {data.addresses.withdrawals.length ? (
                   <>
                     <h2>{intl.formatMessage(messages.fromRewards)}</h2>
                     {data.addresses.withdrawals.map((address, addressIndex) => (
@@ -448,7 +448,7 @@ export default class Transaction extends Component<Props, State> {
                       </div>
                     ))}
                   </>
-                )}
+                ) : null}
 
                 <h2>{intl.formatMessage(messages.toAddresses)}</h2>
                 {data.addresses.to.map((address, addressIndex) => (
