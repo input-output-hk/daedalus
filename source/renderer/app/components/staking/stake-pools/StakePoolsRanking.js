@@ -249,6 +249,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
       onOpenExternalLink,
       isLoading,
       isRanking,
+      wallets,
       numberOfStakePools,
       getStakePoolById,
     } = this.props;
@@ -271,37 +272,44 @@ export default class StakePoolsRanking extends Component<Props, State> {
             <div className={styles.row}>
               <div className={styles.col}>{rankingDescription}</div>
             </div>
-            <div className={styles.row}>
-              <div className={styles.col}>{walletSelectionStart}</div>
-              <div className={styles.col}>
-                <WalletsDropdown
-                  className={walletSelectorClasses}
-                  placeholder={intl.formatMessage(messages.rankingSelectWallet)}
-                  wallets={walletSelectorWallets}
-                  onChange={this.onSelectedWalletChange}
-                  disabled={isLoading || isRanking}
-                  value={selectedWalletId}
-                  selectionRenderer={option => (
-                    <button
-                      className="customValue"
-                      onClick={() => {
-                        const selectionInput = document.querySelector(
-                          '.StakePoolsRanking_walletSelector .SimpleInput_input'
-                        );
-                        if (selectionInput) {
-                          selectionInput.click();
-                        }
-                      }}
-                    >
-                      {option.label}
-                    </button>
-                  )}
-                  numberOfStakePools={numberOfStakePools}
-                  getStakePoolById={getStakePoolById}
-                />
+            {wallets.filter(
+              (w: Wallet) =>
+                w.amount.greaterThanOrEqualTo(MIN_AMOUNT) && !w.isLegacy
+            ).length > 0 ? (
+              <div className={styles.row}>
+                <div className={styles.col}>{walletSelectionStart}</div>
+                <div className={styles.col}>
+                  <WalletsDropdown
+                    className={walletSelectorClasses}
+                    placeholder={intl.formatMessage(
+                      messages.rankingSelectWallet
+                    )}
+                    wallets={walletSelectorWallets}
+                    onChange={this.onSelectedWalletChange}
+                    disabled={isLoading || isRanking}
+                    value={selectedWalletId}
+                    selectionRenderer={option => (
+                      <button
+                        className="customValue"
+                        onClick={() => {
+                          const selectionInput = document.querySelector(
+                            '.StakePoolsRanking_walletSelector .SimpleInput_input'
+                          );
+                          if (selectionInput) {
+                            selectionInput.click();
+                          }
+                        }}
+                      >
+                        {option.label}
+                      </button>
+                    )}
+                    numberOfStakePools={numberOfStakePools}
+                    getStakePoolById={getStakePoolById}
+                  />
+                </div>
+                <div className={styles.col}>{walletSelectionEnd}</div>
               </div>
-              <div className={styles.col}>{walletSelectionEnd}</div>
-            </div>
+            ) : null}
           </div>
           <ButtonLink
             className={learnMoreButtonClasses}
