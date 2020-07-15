@@ -866,6 +866,7 @@
   "wallet.transaction.pending.supportArticleLink": "Why should I cancel this transaction?",
   "wallet.transaction.pending.supportArticleUrl": "https://iohk.zendesk.com/hc/en-us/articles/360038113814",
   "wallet.transaction.received": "{currency} received",
+  "wallet.transaction.rewards.from": "From rewards",
   "wallet.transaction.sent": "{currency} sent",
   "wallet.transaction.state.confirmed": "Transaction confirmed",
   "wallet.transaction.state.pending": "Transaction pending",

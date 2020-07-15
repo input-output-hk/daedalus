@@ -9263,17 +9263,31 @@
         }
       },
       {
-        "defaultMessage": "!!!To address",
-        "description": "To address",
+        "defaultMessage": "!!!From rewards",
+        "description": "From rewards",
         "end": {
           "column": 3,
           "line": 78
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
+        "id": "wallet.transaction.rewards.from",
+        "start": {
+          "column": 15,
+          "line": 74
+        }
+      },
+      {
+        "defaultMessage": "!!!To address",
+        "description": "To address",
+        "end": {
+          "column": 3,
+          "line": 83
+        },
+        "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.address.to",
         "start": {
           "column": 13,
-          "line": 74
+          "line": 79
         }
       },
       {
@@ -9281,13 +9295,13 @@
         "description": "To addresses",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 88
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.addresses.to",
         "start": {
           "column": 15,
-          "line": 79
+          "line": 84
         }
       },
       {
@@ -9295,13 +9309,13 @@
         "description": "Transaction amount.",
         "end": {
           "column": 3,
-          "line": 88
+          "line": 93
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.transactionAmount",
         "start": {
           "column": 21,
-          "line": 84
+          "line": 89
         }
       },
       {
@@ -9309,13 +9323,13 @@
         "description": "Note to cancel a transaction that has been pending too long",
         "end": {
           "column": 3,
-          "line": 94
+          "line": 99
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.pending.cancelPendingTxnNote",
         "start": {
           "column": 24,
-          "line": 89
+          "line": 94
         }
       },
       {
@@ -9323,13 +9337,13 @@
         "description": "Link to support article for canceling a pending transaction",
         "end": {
           "column": 3,
-          "line": 99
+          "line": 104
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.pending.supportArticleLink",
         "start": {
           "column": 22,
-          "line": 95
+          "line": 100
         }
       },
       {
@@ -9337,13 +9351,13 @@
         "description": "Url to support article for canceling a pending transaction",
         "end": {
           "column": 3,
-          "line": 105
+          "line": 110
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.pending.supportArticleUrl",
         "start": {
           "column": 21,
-          "line": 100
+          "line": 105
         }
       },
       {
@@ -9351,13 +9365,13 @@
         "description": "Input Addresses label.",
         "end": {
           "column": 3,
-          "line": 110
+          "line": 115
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.noInputAddressesLabel",
         "start": {
           "column": 25,
-          "line": 106
+          "line": 111
         }
       },
       {
@@ -9365,13 +9379,13 @@
         "description": "Unresolved Input Addresses link label.",
         "end": {
           "column": 3,
-          "line": 115
+          "line": 120
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.unresolvedInputAddressesLinkLabel",
         "start": {
           "column": 37,
-          "line": 111
+          "line": 116
         }
       },
       {
@@ -9379,13 +9393,13 @@
         "description": "Unresolved Input Addresses additional label.",
         "end": {
           "column": 3,
-          "line": 120
+          "line": 125
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.unresolvedInputAddressesAdditionalLabel",
         "start": {
           "column": 43,
-          "line": 116
+          "line": 121
         }
       },
       {
@@ -9393,13 +9407,13 @@
         "description": "Unresolved Input Addresses link unavailable label.",
         "end": {
           "column": 3,
-          "line": 125
+          "line": 130
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.unresolvedInputAddressesLinkUnavailableLabel",
         "start": {
           "column": 48,
-          "line": 121
+          "line": 126
         }
       },
       {
@@ -9407,13 +9421,13 @@
         "description": "Transaction state \"confirmed\"",
         "end": {
           "column": 3,
-          "line": 133
+          "line": 138
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.confirmed",
         "start": {
           "column": 26,
-          "line": 129
+          "line": 134
         }
       },
       {
@@ -9421,13 +9435,13 @@
         "description": "Transaction state \"pending\"",
         "end": {
           "column": 3,
-          "line": 138
+          "line": 143
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.pending",
         "start": {
           "column": 31,
-          "line": 134
+          "line": 139
         }
       }
     ],
