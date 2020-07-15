@@ -561,7 +561,15 @@ export default class StakingStore extends Store {
   };
 
   _transformWalletToRewardForIncentivizedTestnet = (inputWallet: Wallet) => {
-    const { name: wallet, isRestoring, reward, syncState } = inputWallet;
+    const {
+      id: walletId,
+      name: wallet,
+      isRestoring,
+      reward: rewards,
+      syncState,
+    } = inputWallet;
+    const withdrawals = this.stores.transactions.withdrawals;
+    const reward = rewards.add(withdrawals);
     const syncingProgress = get(syncState, 'progress.quantity', '');
     return { wallet, reward, isRestoring, syncingProgress };
   };

@@ -7,12 +7,14 @@ import {
   runInAction,
 } from 'mobx';
 import { find } from 'lodash';
+import BigNumber from 'bignumber.js';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { WalletTransaction } from '../domains/WalletTransaction';
 import type {
   DeleteTransactionRequest,
   GetTransactionsResponse,
+  GetWithdrawalsResponse,
 } from '../api/transactions/types';
 import { isValidAmountInLovelaces } from '../utils/validations';
 import {
@@ -79,6 +81,7 @@ export default class TransactionsStore extends Store {
     isLegacy: boolean,
     recentRequest: Request<GetTransactionsResponse>,
     allRequest: Request<GetTransactionsResponse>,
+    withdrawalsRequest: Request<GetWithdrawalsResponse>,
   }> = [];
 
   @observable
@@ -117,6 +120,12 @@ export default class TransactionsStore extends Store {
     const wallet = this.stores.wallets.active;
     if (!wallet) return null;
     return this._filterOptionsForWallets[wallet.id];
+  }
+
+  @computed get withdrawals(): BigNumber {
+    const request = this._getWithdrawalsRequest('0');
+    if (!request.result) return new BigNumber(0);
+    return request.result.withdrawals;
   }
 
   @computed get all(): Array<WalletTransaction> {
@@ -226,6 +235,8 @@ export default class TransactionsStore extends Store {
           // isRestoreCompleted,
           // cachedTransactions: get(allRequest, 'result.transactions', []),
         });
+        const withdrawalsRequest = this._getWithdrawalsRequest(wallet.id);
+        withdrawalsRequest.execute({ walletId: wallet.id });
       }
     }
   };
@@ -314,6 +325,15 @@ export default class TransactionsStore extends Store {
     const foundRequest = find(this.transactionsRequests, { walletId });
     if (foundRequest && foundRequest.allRequest) return foundRequest.allRequest;
     return new Request(this.api.ada.getTransactions);
+  };
+
+  _getWithdrawalsRequest = (
+    walletId: string
+  ): Request<GetWithdrawalsResponse> => {
+    const foundRequest = find(this.transactionsRequests, { walletId });
+    if (foundRequest && foundRequest.withdrawalsRequest)
+      return foundRequest.withdrawalsRequest;
+    return new Request(this.api.ada.getWithdrawals);
   };
 
   // ======================= REACTIONS ========================== //

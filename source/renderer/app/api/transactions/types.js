@@ -39,6 +39,7 @@ export type Transaction = {
   direction: 'outgoing' | 'incoming',
   inputs: Array<TransactionInputs>,
   outputs: Array<TransactionOutputs>,
+  withdrawals: Array<TransactionWithdrawals>,
   status: TransactionState,
 };
 
@@ -52,6 +53,11 @@ export type TransactionInputs = {
 };
 
 export type TransactionOutputs = {
+  address: string,
+  amount: TransactionAmount,
+};
+
+export type TransactionWithdrawals = {
   address: string,
   amount: TransactionAmount,
 };
@@ -120,4 +126,12 @@ export type TransactionPaymentData = {
 export type TransactionFee = {
   estimated_min: TransactionFeeAmount,
   estimated_max: TransactionFeeAmount,
+};
+
+export type GetWithdrawalsRequest = {
+  walletId: string,
+};
+
+export type GetWithdrawalsResponse = {
+  withdrawals: BigNumber,
 };
