@@ -2,6 +2,7 @@
 import { action, computed, observable } from 'mobx';
 import Store from './lib/Store';
 import { sidebarConfig } from '../config/sidebarConfig';
+import type { SidebarCategoryInfo } from '../config/sidebarConfig';
 import { formattedWalletAmount } from '../utils/formatters';
 import type {
   SidebarHardwareWalletType,
@@ -9,7 +10,7 @@ import type {
 } from '../types/sidebarTypes';
 
 export default class SidebarStore extends Store {
-  @observable CATEGORIES: Array<any> = sidebarConfig.CATEGORIES;
+  @observable CATEGORIES: Array<any> = sidebarConfig.CATEGORIES_LIST;
   @observable activeSidebarCategory: string = this.CATEGORIES[0].route;
   @observable isShowingSubMenus: boolean = true;
 
@@ -76,17 +77,39 @@ export default class SidebarStore extends Store {
       isIncentivizedTestnet,
       isShelleyTestnet,
       isFlight,
-      environment,
+      environment: { isDev },
     } = global;
-    if (isFlight) {
-      this.CATEGORIES = sidebarConfig.CATEGORIES;
-    } else if (isIncentivizedTestnet || isShelleyTestnet) {
-      this.CATEGORIES = sidebarConfig.CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN;
-    } else if (environment.isDev) {
-      this.CATEGORIES = sidebarConfig.CATEGORIES_WITH_HARDWARE_WALLETS;
-    } else {
-      this.CATEGORIES = sidebarConfig.CATEGORIES_WITHOUT_NETWORK_INFO;
-    }
+
+    const {
+      CATEGORIES_BY_NAME: categories,
+      CATEGORIES_LIST: list,
+    } = sidebarConfig;
+
+    const categoryValidation: {
+      [key: string]: boolean | Function,
+    } = {
+      [categories.WALLETS.name]: true,
+      [categories.HARDWARE_WALLETS.name]: isDev,
+      [categories.PAPER_WALLET_CREATE_CERTIFICATE.name]: false,
+      [categories.STAKING_DELEGATION_COUNTDOWN.name]: () =>
+        !isIncentivizedTestnet && !isShelleyTestnet,
+      [categories.STAKING.name]: isIncentivizedTestnet || isShelleyTestnet,
+      [categories.REDEEM_ITN_REWARDS.name]: !isDev,
+      [categories.SETTINGS.name]: true,
+      [categories.NETWORK_INFO.name]: !isFlight,
+    };
+
+    const categoriesFilteredList: Array<SidebarCategoryInfo> = list.filter(
+      ({ name }: SidebarCategoryInfo): boolean => {
+        let validator = categoryValidation[name];
+        if (typeof validator === 'function') {
+          validator = validator();
+        }
+        return validator;
+      }
+    );
+
+    this.CATEGORIES = categoriesFilteredList;
   };
 
   @action _onActivateSidebarCategory = (params: {

@@ -7,7 +7,7 @@ import Dialog from '../../../widgets/Dialog';
 import DialogBackButton from '../../../widgets/DialogBackButton';
 import WalletRestoreSteps from './WalletRestoreSteps';
 import styles from './WalletRestoreDialog.scss';
-import type { DialogAction } from '../../../widgets/Dialog';
+import type { DialogActionItems } from '../../../widgets/Dialog';
 
 const messages = defineMessages({
   dialogTitle: {
@@ -24,7 +24,7 @@ const messages = defineMessages({
 
 type Props = {
   stepNumber?: number,
-  actions?: Array<DialogAction>,
+  actions?: DialogActionItems,
   onClose?: Function,
   onBack?: Function,
   children: Node,

@@ -791,6 +791,11 @@ export const YELLOW_THEME_OUTPUT = {
       'rgba(45, 45, 45, 0.07)',
     '--theme-staking-wallet-row-ticker-text-color': '#2d2d2d',
     '--theme-staking-wallet-row-ticker-ada-icon-fill-color': '#2d2d2d80',
+    '--theme-staking-redeemItnRewards-text-color': '#2d2d2d',
+    '--theme-staking-redeemItnRewards-separator-color': '#e4b95e',
+    '--theme-staking-redeemItnRewards-attention-text-color': '#ea4c5b',
+    '--theme-staking-redeemItnRewards-description-text-color': '#f9f5f1b3',
+    '--theme-staking-redeemItnRewards-icon-color': '#2d2d2d',
   },
   support: {
     '--theme-support-settings-item-color': '#2d2d2d',

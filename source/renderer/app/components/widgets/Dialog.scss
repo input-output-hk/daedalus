@@ -38,6 +38,18 @@
     display: flex;
     flex-shrink: 0;
 
+    &.columnDirection {
+      align-items: center;
+      flex-direction: column;
+      > *:first-child {
+        margin-bottom: 20px;
+      }
+    }
+
+    &.rowDirection {
+      flex-direction: row;
+    }
+
     button {
       width: 50%;
 
