@@ -6,7 +6,7 @@ import {
   extendObservable,
   runInAction,
 } from 'mobx';
-import { find } from 'lodash';
+import { find, get } from 'lodash';
 import BigNumber from 'bignumber.js';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
@@ -122,10 +122,16 @@ export default class TransactionsStore extends Store {
     return this._filterOptionsForWallets[wallet.id];
   }
 
-  @computed get withdrawals(): BigNumber {
-    const request = this._getWithdrawalsRequest('0');
-    if (!request.result) return new BigNumber(0);
-    return request.result.withdrawals;
+  @computed get withdrawals(): { [string]: BigNumber } {
+    const withdrawals = {};
+    const { allWallets: wallets } = this.stores.wallets;
+    for (const wallet of wallets) {
+      const { id: walletId } = wallet;
+      const request = this._getWithdrawalsRequest(walletId);
+      withdrawals[walletId] =
+        get(request, 'result.withdrawals') || new BigNumber(0);
+    }
+    return withdrawals;
   }
 
   @computed get all(): Array<WalletTransaction> {
@@ -235,8 +241,10 @@ export default class TransactionsStore extends Store {
           // isRestoreCompleted,
           // cachedTransactions: get(allRequest, 'result.transactions', []),
         });
-        const withdrawalsRequest = this._getWithdrawalsRequest(wallet.id);
-        withdrawalsRequest.execute({ walletId: wallet.id });
+        if (!wallet.isLegacy) {
+          const withdrawalsRequest = this._getWithdrawalsRequest(wallet.id);
+          withdrawalsRequest.execute({ walletId: wallet.id });
+        }
       }
     }
   };

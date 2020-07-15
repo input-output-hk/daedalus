@@ -518,7 +518,7 @@ export default class AdaApi {
           withdrawals.add(withdrawal);
         });
       });
-      return { withdrawals: new BigNumber(100) };
+      return { withdrawals };
     } catch (error) {
       logger.error('AdaApi::getWithdrawals error', { error });
       throw new ApiError(error);
