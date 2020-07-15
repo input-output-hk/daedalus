@@ -24,7 +24,7 @@ export default class NewsFeedContainer extends Component<InjectedProps> {
       proceedNewsAction,
       onOpenUpdate,
     } = newsFeed;
-    const { downloadProgress, isDownloadingUpdate } = appUpdate;
+    const { downloadProgress, isUpdateDownloading } = appUpdate;
     const { toggleNewsFeed } = actions.app;
     const { openExternalLink, newsFeedIsOpen } = app;
     const { currentDateFormat } = profile;
@@ -43,7 +43,7 @@ export default class NewsFeedContainer extends Component<InjectedProps> {
         onOpenUpdate={onOpenUpdate}
         currentDateFormat={currentDateFormat}
         updateDownloadProgress={downloadProgress}
-        isDownloadingUpdate={isDownloadingUpdate}
+        isUpdateDownloading={isUpdateDownloading}
       />
     );
   }

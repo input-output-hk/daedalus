@@ -13,6 +13,7 @@ type Props = {
   currentDateFormat: string,
   onCloseUpdate: Function,
   downloadProgress?: number,
+  isUpdateDownloaded: boolean,
 };
 
 @observer
@@ -29,15 +30,16 @@ export default class UpdateOverlay extends Component<Props> {
       currentDateFormat,
       onCloseUpdate,
       downloadProgress,
+      isUpdateDownloaded,
     } = this.props;
     const { content, date, title } = update;
     return (
       <div
         className={styles.component}
         role="presentation"
-        onClick={onCloseUpdate}
+        onClick={!isUpdateDownloaded ? onCloseUpdate : () => {}}
       >
-        <DialogCloseButton onClose={onCloseUpdate} />
+        {!isUpdateDownloaded && <DialogCloseButton onClose={onCloseUpdate} />}
         <h1 className={styles.title}>{title}</h1>
         <span className={styles.date}>
           {moment(date).format(currentDateFormat)}
@@ -45,9 +47,13 @@ export default class UpdateOverlay extends Component<Props> {
         <div className={styles.content}>
           <ReactMarkdown escapeHtml={false} source={content} />
         </div>
-        <div className={styles.downloadProgress}>
-          <ProgressBarLarge progress={downloadProgress} />
-        </div>
+        {!isUpdateDownloaded ? (
+          <div className={styles.downloadProgress}>
+            <ProgressBarLarge progress={downloadProgress} />
+          </div>
+        ) : (
+          <div>INSTALL IT NOW!</div>
+        )}
       </div>
     );
   }

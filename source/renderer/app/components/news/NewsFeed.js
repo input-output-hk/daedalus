@@ -43,7 +43,7 @@ type Props = {
   onProceedNewsAction: Function,
   onOpenUpdate: Function,
   updateDownloadProgress: number,
-  isDownloadingUpdate: boolean,
+  isUpdateDownloading: boolean,
 };
 
 type State = {
@@ -115,7 +115,7 @@ export default class NewsFeed extends Component<Props, State> {
       currentDateFormat,
       onOpenUpdate,
       updateDownloadProgress,
-      isDownloadingUpdate,
+      isUpdateDownloading,
     } = this.props;
     const { hasShadow } = this.state;
 
@@ -149,7 +149,7 @@ export default class NewsFeed extends Component<Props, State> {
           </button>
         </div>
         <div className={styles.newsFeedList}>
-          {isDownloadingUpdate && update && (
+          {isUpdateDownloading && update && (
             <div className={styles.newsFeedItemsContainer}>
               {
                 <UpdateItem

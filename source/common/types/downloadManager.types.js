@@ -151,7 +151,7 @@ export type DownloadsLocalDataRequest = {
   state: DownloadState,
 };
 export type DownloadsLocalDataResponse = {
-  [key: string]: DownloadsLocalDataResponse,
+  [key: string]: DownloadLocalDataResponse,
 };
 
 export type ResumeDownloadRequest = DownloadLocalDataRequest;

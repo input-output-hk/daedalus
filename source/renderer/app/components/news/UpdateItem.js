@@ -58,7 +58,7 @@ export default class UpdateItem extends Component<Props> {
       <div
         className={componentClasses}
         role="presentation"
-        onClick={() => onOpenUpdate(updateItem)}
+        onClick={onOpenUpdate}
       >
         {title}
         <div className={styles.date}>

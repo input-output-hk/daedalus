@@ -61,7 +61,7 @@ export default class TopBarContainer extends Component<Props> {
       });
 
     const { unread } = newsFeed.newsFeedData;
-    const { isDownloadingUpdate } = appUpdate;
+    const { isUpdateDownloading } = appUpdate;
 
     const hasUnreadNews = unread.length > 0;
 
@@ -83,7 +83,7 @@ export default class TopBarContainer extends Component<Props> {
         <NewsFeedIcon
           onNewsFeedIconClick={actions.app.toggleNewsFeed.trigger}
           hasNotification={hasUnreadNews}
-          hasUpdate={isDownloadingUpdate}
+          hasUpdate={isUpdateDownloading}
         />
       </TopBar>
     );

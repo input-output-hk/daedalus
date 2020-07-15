@@ -15,7 +15,7 @@ import {
 } from '../ipc/downloadManagerChannel';
 import type {
   DownloadMainResponse,
-  DownloadsLocalDataMainResponse,
+  DownloadLocalDataMainResponse,
 } from '../../../common/ipc/api';
 import { DOWNLOAD_EVENT_TYPES } from '../../../common/config/downloadManagerConfig';
 import type { GetLatestAppVersionResponse } from '../api/nodes/types';
@@ -38,20 +38,16 @@ const APP_UPDATE_DOWNLOAD_ID = 'appUpdate';
 
 export default class AppUpdateStore extends Store {
   @observable availableUpdate: ?News = null;
-
-  @observable isDownloadingUpdate: boolean = false;
+  @observable isUpdateDownloading: boolean = false;
+  @observable isUpdateDownloaded: boolean = false;
   @observable downloadProgress: number = 0;
 
   @observable isUpdateAvailable: boolean = false;
-
   @observable isUpdatePostponed: boolean = false;
   @observable isUpdateInstalled: boolean = false;
-  // @observable hasPendingDownload: boolean = false;
-
   @observable availableAppVersion: ?string = null;
   @observable isNewAppVersionAvailable: boolean = false;
   @observable applicationVersion: ?number = null;
-  @observable availableUpdates: Array<any> = [];
 
   // @observable updateFileUrl: ?string = null;
   @observable updateFileUrl: ?string =
@@ -136,7 +132,7 @@ export default class AppUpdateStore extends Store {
   };
 
   isUnfinishedDownloadValid = async (
-    unfinishedDownload: DownloadsLocalDataMainResponse
+    unfinishedDownload: DownloadLocalDataMainResponse
   ) => {
     return true;
   };
@@ -157,9 +153,18 @@ export default class AppUpdateStore extends Store {
     });
 
     // Is there a pending / resumable download?
-    const unfinishedDownload = await this._getUpdateDownloadLocalData();
-    if (unfinishedDownload.data) {
-      if (this.isUnfinishedDownloadValid(unfinishedDownload)) {
+    const downloadLocaldata = await this._getUpdateDownloadLocalData();
+    const { progress } = downloadLocaldata;
+    console.log('progress', downloadLocaldata.progress);
+    if (downloadLocaldata.progress) {
+      if (progress.state === 'FINISHED') {
+        runInAction(() => {
+          this.isUpdateDownloaded = true;
+        });
+        return;
+      }
+
+      if (this.isUnfinishedDownloadValid(downloadLocaldata)) {
         // this._requestResumeUpdateDownload();
         return;
       }
@@ -180,7 +185,7 @@ export default class AppUpdateStore extends Store {
     });
   };
 
-  _getUpdateDownloadLocalData = async (): Promise<DownloadsLocalDataMainResponse> =>
+  _getUpdateDownloadLocalData = async (): Promise<DownloadLocalDataMainResponse> =>
     getDownloadLocalDataChannel.request({
       id: APP_UPDATE_DOWNLOAD_ID,
     });
@@ -200,12 +205,10 @@ export default class AppUpdateStore extends Store {
     }
     runInAction('updates the download information', () => {
       if (eventType === DOWNLOAD_EVENT_TYPES.END) {
-        console.log('END!');
-        console.log('data --> ', data);
-        console.log('progress', progressData);
-        this.isDownloadingUpdate = false;
+        this.isUpdateDownloading = false;
+        this.isUpdateDownloaded = true;
       } else {
-        this.isDownloadingUpdate = true;
+        this.isUpdateDownloading = true;
       }
     });
     return Promise.resolve({ fileUrl: '' });

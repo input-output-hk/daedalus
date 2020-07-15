@@ -40,7 +40,7 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
       isNewAppVersionAvailable,
       isNewAppVersionLoading,
       isNewAppVersionLoaded,
-      isDownloadingUpdate,
+      isUpdateDownloading,
     } = appUpdate;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme } = profile;
     const { toggleNewsFeed } = this.props.actions.app;
@@ -62,7 +62,7 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
         isNotEnoughDiskSpace={isNotEnoughDiskSpace}
         isTlsCertInvalid={isTlsCertInvalid}
         hasNotification={hasNotification}
-        hasUpdate={isDownloadingUpdate}
+        hasUpdate={isUpdateDownloading}
         hasLoadedCurrentLocale={hasLoadedCurrentLocale}
         hasLoadedCurrentTheme={hasLoadedCurrentTheme}
         isCheckingSystemTime={
