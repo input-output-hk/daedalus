@@ -19,8 +19,8 @@ export const handleAddressIntrospectionRequests = () => {
     ({  input }: IntrospectAddressRendererRequest) =>
       new Promise((resolve, reject) => {
         const { stdout, stderr } = spawnSync('cardano-address', ['address', 'inspect'], { input });
-        if (stderr !== undefined) {
-          if (stderr.toString().match(/user error \(Unrecognized address on standard input\)/g) !== null) {
+        if (stderr.toString() !== '') {
+          if (stderr.toString().match(/user error/g) !== null) {
             return resolve('Invalid');
           }
           return reject(new Error(stderr.toString()));
