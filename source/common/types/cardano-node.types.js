@@ -138,5 +138,8 @@ export type CardanoStatus = {
 // Cardano Byron Testnet network magic
 export const TESTNET_MAGIC = 1097911063;
 
+// Cardano Staging network magic
+export const STAGING_MAGIC = 633343913;
+
 // Cardano Selfnode network magic
 export const SELFNODE_MAGIC = 459045235;

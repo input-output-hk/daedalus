@@ -47,6 +47,7 @@ import type { AddressStyle } from '../../../common/types/address-introspection.t
 import {
   TESTNET_MAGIC,
   SELFNODE_MAGIC,
+  STAGING_MAGIC,
 } from '../../../common/types/cardano-node.types';
 
 /* eslint-disable consistent-return */
@@ -883,7 +884,7 @@ export default class WalletsStore extends Store {
       expectedNetworkTag = null;
       validAddressStyles = ['Byron', 'Icarus'];
     } else if (isStaging) {
-      expectedNetworkTag = 0;
+      expectedNetworkTag = STAGING_MAGIC;
       validAddressStyles = ['Byron', 'Icarus'];
     } else if (isIncentivizedTestnet && !isShelleyTestnet) {
       expectedNetworkTag = 0;
