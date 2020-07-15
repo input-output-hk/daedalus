@@ -193,7 +193,7 @@ import { deleteTransaction } from './transactions/requests/deleteTransaction';
 import { WALLET_BYRON_KINDS } from '../config/walletRestoreConfig';
 import ApiError from '../domains/ApiError';
 
-const { isIncentivizedTestnet, isShelleyTestnet } = global;
+const { isIncentivizedTestnet } = global;
 
 export default class AdaApi {
   config: RequestConfig;
@@ -213,9 +213,9 @@ export default class AdaApi {
       const wallets: AdaWallets = isIncentivizedTestnet
         ? await getWallets(this.config)
         : [];
-      const legacyWallets: LegacyAdaWallets = !isShelleyTestnet
-        ? await getLegacyWallets(this.config)
-        : [];
+      const legacyWallets: LegacyAdaWallets = await getLegacyWallets(
+        this.config
+      );
       logger.debug('AdaApi::getWallets success', { wallets, legacyWallets });
 
       map(legacyWallets, legacyAdaWallet => {

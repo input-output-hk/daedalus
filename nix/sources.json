@@ -5,10 +5,10 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-node",
-        "rev": "a2161bac700fac55d2400b37f9935ed8ea527550",
-        "sha256": "1yjfh82ikp9g5prxdcfgg0ni8lgy1k45p8hxk8dc736qgbc495pm",
+        "rev": "712a287602797e8fd889fbf73e56a08c3d8b004a",
+        "sha256": "1lg1g702x5q6m8n61bfyji7pmj2gsw44mm41nxhc5rv2wk4g996c",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-node/archive/a2161bac700fac55d2400b37f9935ed8ea527550.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-node/archive/712a287602797e8fd889fbf73e56a08c3d8b004a.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-shell": {
@@ -29,10 +29,10 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-wallet",
-        "rev": "52966c3dc86863aca7f7a2dc78055fb44aa5d7fd",
-        "sha256": "0yxw2hnnckviyfr9r2pdklhp0c7gw68xjx5hfb0pawqnm080cwdz",
+        "rev": "23981129b8bb04e9af2f9edb16fd9b3d8fbcdfec",
+        "sha256": "1aqn81jyy2dbrjgaf2hi4ajp2bh0ji1pqad9qsajh5j565vhf73k",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-wallet/archive/52966c3dc86863aca7f7a2dc78055fb44aa5d7fd.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-wallet/archive/23981129b8bb04e9af2f9edb16fd9b3d8fbcdfec.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz",
         "version": "v2020-04-28"
     },

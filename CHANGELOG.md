@@ -7,9 +7,11 @@ Changelog
 
 - Implemented the Redeem Incentivized testnet rewards feature ([PR 2042](https://github.com/input-output-hk/daedalus/pull/2042))
 - Ranked stake pools based on delegated amount configured by slider ([PR 2051](https://github.com/input-output-hk/daedalus/pull/2051), [PR 2063](https://github.com/input-output-hk/daedalus/pull/2063))
+- Enabled Byron wallets ([PR 2062](https://github.com/input-output-hk/daedalus/pull/2062))
 
 ### Chores
 
+- Updated `cardano-wallet` to revision `23981129` which includes `cardano-node` 1.15.1 ([PR 2064](https://github.com/input-output-hk/daedalus/pull/2064))
 - Updated `cardano-wallet` to revision `52966c3d` which includes `cardano-node` 1.15.0 ([PR 2062](https://github.com/input-output-hk/daedalus/pull/2062))
 
 ## 1.2.0-STN1
