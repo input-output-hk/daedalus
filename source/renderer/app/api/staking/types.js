@@ -88,3 +88,20 @@ export type QuitStakePoolRequest = {
   walletId: string,
   passphrase: string,
 };
+
+export type SubmitRedeemItnRewardsRequest = {
+  walletId: string,
+  recoveryPhrase: Array<string>,
+};
+
+export type SubmitRedeemItnRewardsResponse = {
+  rewardsTotal: number,
+  transactionFees: number,
+  finalTotal: number,
+};
+
+export type SubmitRedeemItnRewardsApiResponse = {
+  rewardsTotal: BigNumber,
+  transactionFees: BigNumber,
+  finalTotal: BigNumber,
+};

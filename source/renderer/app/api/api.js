@@ -77,6 +77,7 @@ import { getStakePools } from './staking/requests/getStakePools';
 import { getDelegationFee } from './staking/requests/getDelegationFee';
 import { joinStakePool } from './staking/requests/joinStakePool';
 import { quitStakePool } from './staking/requests/quitStakePool';
+import { submitRedeemItnRewards } from './staking/requests/submitRedeemItnRewards';
 
 // Utility functions
 import {
@@ -178,6 +179,9 @@ import type {
   AdaApiStakePools,
   AdaApiStakePool,
   QuitStakePoolRequest,
+  SubmitRedeemItnRewardsRequest,
+  SubmitRedeemItnRewardsResponse,
+  SubmitRedeemItnRewardsApiResponse,
 } from './staking/types';
 import type { StakePoolProps } from '../domains/StakePool';
 import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-node.types';
@@ -1350,6 +1354,25 @@ export default class AdaApi {
     }
   };
 
+  submitRedeemItnRewards = async (
+    request: SubmitRedeemItnRewardsRequest
+  ): Promise<SubmitRedeemItnRewardsApiResponse> => {
+    const { walletId, recoveryPhrase } = request;
+    try {
+      const response: SubmitRedeemItnRewardsResponse = await submitRedeemItnRewards(
+        {
+          walletId,
+          recoveryPhrase,
+        }
+      );
+      logger.debug('AdaApi::submitRedeemItnRewards success', { response });
+      return _createRedeemItnRewardsFromServerData(response);
+    } catch (error) {
+      logger.error('AdaApi::submitRedeemItnRewards error', { error });
+      throw new ApiError(error);
+    }
+  };
+
   exportWalletToFile = async (
     request: ExportWalletToFileRequest
   ): Promise<[]> => {
@@ -1939,4 +1962,17 @@ const _createStakePoolFromServerData = action(
       saturation: saturation * 100,
     });
   }
+);
+
+const _createRedeemItnRewardsFromServerData = action(
+  'AdaApi::_createRedeemItnRewardsFromServerData',
+  ({
+    rewardsTotal,
+    transactionFees,
+    finalTotal,
+  }: SubmitRedeemItnRewardsResponse) => ({
+    rewardsTotal: new BigNumber(rewardsTotal),
+    transactionFees: new BigNumber(transactionFees),
+    finalTotal: new BigNumber(finalTotal),
+  })
 );

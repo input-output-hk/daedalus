@@ -46,7 +46,6 @@ export const InjectedDialogContainerStepDefaultProps = {
   actions: null,
   stores: null,
   children: null,
-  isVideoWatch: false,
   onClose: () => {},
   onContinue: () => {},
   onBack: () => {},

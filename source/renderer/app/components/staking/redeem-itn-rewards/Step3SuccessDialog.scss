@@ -1,0 +1,50 @@
+.title {
+  color: var(--theme-staking-redeemItnRewards-text-color);
+  font-family: var(--font-regular);
+  font-size: 20px;
+  line-height: 1.2;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.tadaImage {
+  display: block;
+  margin-bottom: 20px;
+  text-align: center;
+  svg {
+    height: 90px;
+    stroke: var(--theme-staking-redeemItnRewards-icon-color);
+    path {
+      stroke: var(--theme-staking-redeemItnRewards-icon-color);
+    }
+    g {
+      ellipse {
+        &:nth-child(7),
+        &:nth-child(8),
+        &:nth-child(9) {
+          stroke: var(--theme-staking-redeemItnRewards-icon-color);
+        }
+
+        &:nth-child(11),
+        &:nth-child(12),
+        &:nth-child(13),
+        &:nth-child(14),
+        &:nth-child(15),
+        &:nth-child(16) {
+          fill: var(--theme-staking-redeemItnRewards-icon-color);
+        }
+      }
+    }
+  }
+}
+.description {
+  color: var(--theme-staking-redeemItnRewards-description-text-color);
+  font-family: var(--font-regular);
+  font-size: 16px;
+  line-height: 1.38;
+  margin-bottom: 30px;
+  text-align: center;
+  b {
+    color: var(--theme-staking-redeemItnRewards-text-color);
+    font-family: var(--font-semibold);
+  }
+}

@@ -5,7 +5,8 @@ Changelog
 
 ### Features
 
-- Ranked stake pools based on delegated amount configured by slider ([PR 2051](https://github.com/input-output-hk/daedalus/pull/2051))
+- Implemented the Redeem Incentivized testnet rewards feature ([PR 2042](https://github.com/input-output-hk/daedalus/pull/2042))
+- Ranked stake pools based on delegated amount configured by slider ([PR 2051](https://github.com/input-output-hk/daedalus/pull/2051), [PR 2063](https://github.com/input-output-hk/daedalus/pull/2063))
 
 ### Chores
 
