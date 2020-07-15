@@ -12,7 +12,8 @@ Changelog
 
 ### Chores
 
-- Updated `cardano-wallet` to revision `23981129` which includes `cardano-node` 1.15.1 ([PR 2064](https://github.com/input-output-hk/daedalus/pull/2064))
+- Updated `cardano-wallet` to revision `c90fe652` which includes `cardano-node` 1.15.1 ([PR 2065](https://github.com/input-output-hk/daedalus/pull/2065))
+- Updated `cardano-wallet` to revision `23981129` ([PR 2064](https://github.com/input-output-hk/daedalus/pull/2064))
 - Updated `cardano-wallet` to revision `52966c3d` which includes `cardano-node` 1.15.0 ([PR 2062](https://github.com/input-output-hk/daedalus/pull/2062))
 
 ## 1.2.0-STN1
