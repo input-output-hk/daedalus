@@ -53,6 +53,14 @@ const messages = defineMessages({
     description:
       '"Selected Pools" Selected pool label on the delegation setup "choose stake pool" dialog.',
   },
+  selectedStakePoolLabelRetiring: {
+    id:
+      'staking.delegationSetup.chooseStakePool.step.dialog.selectedStakePoolLabelRetiring',
+    defaultMessage:
+      '!!!The [{selectedPoolTicker}] stake pool which you have selected to delegate your <span>{selectedWalletName}</span> wallet funds is about to retire.',
+    description:
+      '"Selected Pools" Selected pool label on the delegation setup "choose stake pool" dialog.',
+  },
   delegatedStakePoolLabel: {
     id:
       'staking.delegationSetup.chooseStakePool.step.dialog.delegatedStakePoolLabel',
@@ -259,9 +267,12 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
         );
       } else if (selectedPoolId) {
         // Stake pool selected and selected wallet are not delegated to it
+        const message = !selectedPool.retiring
+          ? messages.selectedStakePoolLabel
+          : messages.selectedStakePoolLabelRetiring;
         label = (
           <FormattedHTMLMessage
-            {...messages.selectedStakePoolLabel}
+            {...message}
             values={{
               selectedWalletName,
               selectedPoolTicker,
