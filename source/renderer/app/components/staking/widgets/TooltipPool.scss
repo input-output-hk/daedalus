@@ -177,13 +177,56 @@
 
 .id {
   color: var(--theme-staking-stake-pool-tooltip-text-color);
+  cursor: default;
   font-family: var(--font-medium);
   font-size: 10px;
+  height: 14px;
   line-height: 14px;
   margin: -2px 0 6px;
-  opacity: 0.5;
   padding: 3px 0;
   word-break: break-all;
+
+  .hoverContent {
+    background: var(--theme-staking-stake-pool-tooltip-id-background-color);
+    display: none;
+    left: 0;
+    padding: 3px 20px;
+    position: absolute;
+    right: 0;
+
+    svg {
+      height: 9.5px;
+      margin-left: 3px;
+      width: 8px;
+      path {
+        fill: var(--theme-staking-stake-pool-tooltip-text-color);
+      }
+    }
+
+    &:after {
+      background: linear-gradient(
+        to bottom,
+        var(--theme-staking-stake-pool-tooltip-id-shadow-1),
+        var(--theme-staking-stake-pool-tooltip-id-shadow-2)
+      );
+      content: '';
+      display: block;
+      height: 70px;
+      left: 0;
+      margin-top: 3px;
+      position: absolute;
+      width: 100%;
+    }
+  }
+
+  &:hover {
+    .ellipsisContent {
+      display: none;
+    }
+    .hoverContent {
+      display: block;
+    }
+  }
 }
 
 .name {

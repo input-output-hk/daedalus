@@ -5,6 +5,7 @@ import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
 import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
+import CopyToClipboard from 'react-copy-to-clipboard';
 import classnames from 'classnames';
 import { capitalize } from 'lodash';
 import moment from 'moment';
@@ -17,9 +18,11 @@ import experimentalTooltipStyles from './TooltipPool-experimental-tooltip.scss';
 import StakePool from '../../../domains/StakePool';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
 import experimentalIcon from '../../../assets/images/experiment-icon.inline.svg';
+import copyIcon from '../../../assets/images/clipboard-ic.inline.svg';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
 import { formattedWalletAmount, shortNumber } from '../../../utils/formatters';
 import { rangeMap } from '../../../utils/numbers';
+import { ellipsis } from '../../../utils/strings';
 import {
   THUMBNAIL_HEIGHT,
   THUMBNAIL_OFFSET_WIDTH,
@@ -445,7 +448,14 @@ export default class TooltipPool extends Component<Props, State> {
               />
             </div>
           )}
-          <div className={styles.id}>{id}</div>
+          <div className={styles.id}>
+            <p className={styles.ellipsisContent}>{ellipsis(id, 20, 20)}</p>
+            <CopyToClipboard text={id}>
+              <p className={styles.hoverContent}>
+                {id} <SVGInline svg={copyIcon} className={styles.copyIcon} />
+              </p>
+            </CopyToClipboard>
+          </div>
           <div className={styles.description}>{description}</div>
           <Link
             onClick={() => onOpenExternalLink(homepage)}
