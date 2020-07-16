@@ -49,6 +49,7 @@ import {
   SELFNODE_MAGIC,
   STAGING_MAGIC,
   SHELLEY_TESTNET_MAGIC,
+  ITN_MAGIC,
 } from '../../../common/types/cardano-node.types';
 
 /* eslint-disable consistent-return */
@@ -888,7 +889,7 @@ export default class WalletsStore extends Store {
       expectedNetworkTag = STAGING_MAGIC;
       validAddressStyles = ['Byron', 'Icarus'];
     } else if (isIncentivizedTestnet && !isShelleyTestnet) {
-      expectedNetworkTag = 0;
+      expectedNetworkTag = ITN_MAGIC;
       validAddressStyles = ['Jormungandr'];
     } else if (isTestnet) {
       expectedNetworkTag = TESTNET_MAGIC;
