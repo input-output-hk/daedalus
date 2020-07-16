@@ -58,13 +58,17 @@ export type TransactionOutputs = {
 };
 
 export type TransactionWithdrawals = {
-  address: string,
+  stake_address: string,
   amount: TransactionAmount,
 };
 
 export type TransactionState = 'pending' | 'in_ledger';
 
-export type TrasactionAddresses = { from: Array<?string>, to: Array<string> };
+export type TrasactionAddresses = {
+  from: Array<?string>,
+  to: Array<string>,
+  withdrawals: Array<string>,
+};
 
 export type TransactionType = 'card' | 'expend' | 'income' | 'exchange';
 

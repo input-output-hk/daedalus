@@ -1896,6 +1896,7 @@ const _createTransactionFromServerData = action(
       direction,
       inputs,
       outputs,
+      withdrawals,
       status,
     } = data;
     const state = _conditionToTxState(status);
@@ -1922,6 +1923,7 @@ const _createTransactionFromServerData = action(
       addresses: {
         from: inputs.map(({ address }) => address || null),
         to: outputs.map(({ address }) => address),
+        withdrawals: withdrawals.map(({ stake_address: address }) => address),
       },
       state,
     });
