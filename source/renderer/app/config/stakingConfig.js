@@ -3,6 +3,9 @@
 import type { RedeemItnRewardsStep } from '../types/stakingTypes';
 
 export const MIN_DELEGATION_FUNDS = 10;
+export const MAX_DELEGATION_FUNDS = 44000000;
+export const OUT_OF_RANGE_MAX_DELEGATION_FUNDS = 11000000000;
+export const ALL_WALLETS_SELECTION_ID = '0';
 
 // Dimensions
 

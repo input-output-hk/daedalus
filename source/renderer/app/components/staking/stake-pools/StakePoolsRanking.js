@@ -2,13 +2,22 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import BigNumber from 'bignumber.js';
 import classnames from 'classnames';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
 import { shortNumber } from '../../../utils/formatters';
+import {
+  getFilteredWallets,
+  getAllAmounts,
+} from '../../../utils/walletsForStakePoolsRanking';
 import Wallet from '../../../domains/Wallet';
+import {
+  MIN_DELEGATION_FUNDS,
+  MAX_DELEGATION_FUNDS,
+  OUT_OF_RANGE_MAX_DELEGATION_FUNDS,
+  ALL_WALLETS_SELECTION_ID,
+} from '../../../config/stakingConfig';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import ButtonLink from '../../widgets/ButtonLink';
 import Slider from '../../widgets/Slider';
@@ -108,10 +117,6 @@ type Props = {
   getStakePoolById: Function,
 };
 
-const OUT_OF_RANGE_MAX_AMOUNT = new BigNumber('11000000000');
-const MIN_AMOUNT = new BigNumber('10');
-const MAX_AMOUNT = new BigNumber('44000000');
-
 @observer
 export default class StakePoolsRanking extends Component<Props> {
   static contextTypes = {
@@ -122,14 +127,6 @@ export default class StakePoolsRanking extends Component<Props> {
     wallets: [],
   };
 
-  componentDidMount() {
-    const { selectedDelegationWalletId, stake } = this.props;
-
-    if (!selectedDelegationWalletId && !stake) {
-      this.onSelectedWalletChange('0');
-    }
-  }
-
   componentDidUpdate(prevProps: Props) {
     const { selectedDelegationWalletId: prevWalletId } = prevProps;
     const { selectedDelegationWalletId: currentWalletId } = this.props;
@@ -137,24 +134,6 @@ export default class StakePoolsRanking extends Component<Props> {
       this.onSelectedWalletChange(currentWalletId);
     }
   }
-
-  getAllAmounts = () => {
-    const { wallets } = this.props;
-    const filteredWallets = wallets.filter(
-      (w: Wallet) => w.amount.greaterThanOrEqualTo(MIN_AMOUNT) && !w.isLegacy
-    );
-
-    if (filteredWallets.length) {
-      return filteredWallets
-        .map((w: Wallet) => w.amount)
-        .reduce(
-          (acc: BigNumber, cur: BigNumber) => acc.plus(cur),
-          new BigNumber(0)
-        );
-    }
-
-    return MIN_AMOUNT;
-  };
 
   onSelectedWalletChange = (selectedWalletId: string) => {
     const { wallets, onRank, selectedDelegationWalletId } = this.props;
@@ -164,21 +143,21 @@ export default class StakePoolsRanking extends Component<Props> {
 
     if (
       selectedWalletId === selectedDelegationWalletId ||
-      (selectedWalletId !== '0' && !selectedWallet)
+      (selectedWalletId !== ALL_WALLETS_SELECTION_ID && !selectedWallet)
     ) {
       return;
     }
 
-    let sliderValue = MIN_AMOUNT.toNumber();
-    if (selectedWalletId === '0') {
+    let sliderValue = MIN_DELEGATION_FUNDS;
+    if (selectedWalletId === ALL_WALLETS_SELECTION_ID) {
       sliderValue = Math.min(
-        Math.floor(this.getAllAmounts().toNumber()),
-        MAX_AMOUNT.toNumber()
+        Math.floor(getAllAmounts(wallets).toNumber()),
+        MAX_DELEGATION_FUNDS
       );
     } else if (selectedWallet) {
       sliderValue = Math.floor(selectedWallet.amount.toNumber());
     }
-    sliderValue = Math.max(sliderValue, MIN_AMOUNT.toNumber());
+    sliderValue = Math.max(sliderValue, MIN_DELEGATION_FUNDS);
 
     onRank(selectedWalletId, sliderValue);
   };
@@ -191,13 +170,11 @@ export default class StakePoolsRanking extends Component<Props> {
     const { intl } = this.context;
     const { wallets, currentLocale, selectedDelegationWalletId } = this.props;
     const allWalletsItem = {
-      id: '0',
+      id: ALL_WALLETS_SELECTION_ID,
       name: intl.formatMessage(messages.rankingAllWallets),
-      amount: this.getAllAmounts(),
+      amount: getAllAmounts(wallets),
     };
-    const filteredWallets = wallets.filter(
-      (w: Wallet) => w.amount.greaterThanOrEqualTo(MIN_AMOUNT) && !w.isLegacy
-    );
+    const filteredWallets = getFilteredWallets(wallets);
     const walletSelectorWallets = [allWalletsItem, ...filteredWallets];
     const walletSelectorClasses = classnames([
       styles.walletSelector,
@@ -214,7 +191,7 @@ export default class StakePoolsRanking extends Component<Props> {
         messages.rankingSelectWalletStart
       );
       walletSelectionEnd = intl.formatMessage(messages.rankingSelectWalletEnd);
-    } else if (selectedDelegationWalletId === '0') {
+    } else if (selectedDelegationWalletId === ALL_WALLETS_SELECTION_ID) {
       walletSelectionStart = intl.formatMessage(
         messages.rankingAllWalletsStart
       );
@@ -262,10 +239,7 @@ export default class StakePoolsRanking extends Component<Props> {
             <div className={styles.row}>
               <div className={styles.col}>{rankingDescription}</div>
             </div>
-            {wallets.filter(
-              (w: Wallet) =>
-                w.amount.greaterThanOrEqualTo(MIN_AMOUNT) && !w.isLegacy
-            ).length > 0 ? (
+            {getFilteredWallets(wallets).length > 0 ? (
               <div className={styles.row}>
                 <div className={styles.col}>{walletSelectionStart}</div>
                 <div className={styles.col}>
@@ -301,17 +275,19 @@ export default class StakePoolsRanking extends Component<Props> {
               </div>
             ) : null}
           </div>
-          <ButtonLink
-            className={learnMoreButtonClasses}
-            onClick={() => onOpenExternalLink(learnMoreUrl)}
-            skin={ButtonSkin}
-            label={intl.formatMessage(messages.actionLearnMore)}
-            linkProps={{
-              className: styles.externalLink,
-              hasIconBefore: false,
-              hasIconAfter: true,
-            }}
-          />
+          {false ? ( // eslint-disable-line
+            <ButtonLink
+              className={learnMoreButtonClasses}
+              onClick={() => onOpenExternalLink(learnMoreUrl)}
+              skin={ButtonSkin}
+              label={intl.formatMessage(messages.actionLearnMore)}
+              linkProps={{
+                className: styles.externalLink,
+                hasIconBefore: false,
+                hasIconAfter: true,
+              }}
+            />
+          ) : null}
         </div>
         <div className={styles.lower}>
           <div className={styles.row}>
@@ -320,9 +296,9 @@ export default class StakePoolsRanking extends Component<Props> {
             </div>
             <div className={styles.slider}>
               <Slider
-                min={MIN_AMOUNT.toNumber()}
-                max={MAX_AMOUNT.toNumber()}
-                value={stake || MIN_AMOUNT.toNumber()}
+                min={MIN_DELEGATION_FUNDS}
+                max={MAX_DELEGATION_FUNDS}
+                value={stake || MIN_DELEGATION_FUNDS}
                 onChange={this.onSliderChange}
                 disabled={isLoading || isRanking}
                 showTooltip
@@ -336,7 +312,7 @@ export default class StakePoolsRanking extends Component<Props> {
                   skin={TooltipSkin}
                   tip={intl.formatMessage(messages.rankingExtraTooltip)}
                 >
-                  {shortNumber(OUT_OF_RANGE_MAX_AMOUNT)}
+                  {shortNumber(OUT_OF_RANGE_MAX_DELEGATION_FUNDS)}
                 </Tooltip>
               </div>
               <div className={styles.outOfSliderRangeEnd} />

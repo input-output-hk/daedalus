@@ -12,6 +12,8 @@ import {
   STAKE_POOLS_INTERVAL,
   STAKE_POOLS_FAST_INTERVAL,
   REDEEM_ITN_REWARDS_STEPS as steps,
+  MAX_DELEGATION_FUNDS,
+  ALL_WALLETS_SELECTION_ID,
 } from '../config/stakingConfig';
 import type {
   Reward,
@@ -24,6 +26,7 @@ import type { RedeemItnRewardsStep } from '../types/stakingTypes';
 import Wallet from '../domains/Wallet';
 import StakePool from '../domains/StakePool';
 import { TransactionStates } from '../domains/WalletTransaction';
+import { getAllAmounts } from '../utils/walletsForStakePoolsRanking';
 import LocalizableError from '../i18n/LocalizableError';
 import REWARDS from '../config/stakingRewards.dummy.json';
 
@@ -31,7 +34,7 @@ export default class StakingStore extends Store {
   @observable isDelegationTransactionPending = false;
   @observable fetchingStakePoolsFailed = false;
   @observable isStakingExperimentRead: boolean = false;
-  @observable selectedDelegationWalletId = null;
+  @observable selectedDelegationWalletId = ALL_WALLETS_SELECTION_ID;
   @observable stake = 0;
   @observable isRanking = false;
 
@@ -59,29 +62,38 @@ export default class StakingStore extends Store {
   _delegationFeeCalculationWalletId: ?string = null;
 
   setup() {
-    const { staking: actions } = this.actions;
+    const { isIncentivizedTestnet, isShelleyTestnet } = global;
+    const { staking: stakingActions } = this.actions;
+    const { wallets: walletsStore } = this.stores;
+    this.stake = Math.min(
+      Math.floor(getAllAmounts(walletsStore.all).toNumber()),
+      MAX_DELEGATION_FUNDS
+    );
+    this.refreshPolling = setInterval(
+      this.getStakePoolsData,
+      STAKE_POOLS_FAST_INTERVAL
+    );
 
     // Redeem ITN Rewards actions
-    actions.onRedeemStart.listen(this._onRedeemStart);
-    actions.onConfigurationContinue.listen(this._onConfigurationContinue);
-    actions.onSelectRedeemWallet.listen(this._onSelectRedeemWallet);
-    actions.onConfirmationContinue.listen(this._onConfirmationContinue);
-    actions.onResultContinue.listen(this._onResultContinue);
-    actions.closeRedeemDialog.listen(this._closeRedeemDialog);
-
-    const { isIncentivizedTestnet, isShelleyTestnet } = global;
-    const { staking } = this.actions;
+    stakingActions.onRedeemStart.listen(this._onRedeemStart);
+    stakingActions.onConfigurationContinue.listen(
+      this._onConfigurationContinue
+    );
+    stakingActions.onSelectRedeemWallet.listen(this._onSelectRedeemWallet);
+    stakingActions.onConfirmationContinue.listen(this._onConfirmationContinue);
+    stakingActions.onResultContinue.listen(this._onResultContinue);
+    stakingActions.closeRedeemDialog.listen(this._closeRedeemDialog);
 
     if (isIncentivizedTestnet || isShelleyTestnet) {
-      staking.goToStakingInfoPage.listen(this._goToStakingInfoPage);
-      staking.goToStakingDelegationCenterPage.listen(
+      stakingActions.goToStakingInfoPage.listen(this._goToStakingInfoPage);
+      stakingActions.goToStakingDelegationCenterPage.listen(
         this._goToStakingDelegationCenterPage
       );
-      staking.joinStakePool.listen(this._joinStakePool);
-      staking.quitStakePool.listen(this._quitStakePool);
-      staking.fakeStakePoolsLoading.listen(this._setFakePoller);
-      staking.updateStake.listen(this._setStake);
-      staking.selectDelegationWallet.listen(
+      stakingActions.joinStakePool.listen(this._joinStakePool);
+      stakingActions.quitStakePool.listen(this._quitStakePool);
+      stakingActions.fakeStakePoolsLoading.listen(this._setFakePoller);
+      stakingActions.updateStake.listen(this._setStake);
+      stakingActions.selectDelegationWallet.listen(
         this._setSelectedDelegationWalletId
       );
 
@@ -313,8 +325,8 @@ export default class StakingStore extends Store {
   }
 
   @action getStakePoolsData = async () => {
-    const { isConnected } = this.stores.networkStatus;
-    if (!isConnected) {
+    const { isConnected, isSynced } = this.stores.networkStatus;
+    if (!isConnected || !isSynced) {
       this._resetIsRanking();
       return;
     }
@@ -566,7 +578,7 @@ export default class StakingStore extends Store {
 
   _pollOnSync = () => {
     if (this.stores.networkStatus.isSynced) {
-      this._setStake(10);
+      this._setStake(this.stake);
     } else {
       this._resetIsRanking();
       this._resetPolling(true, true);

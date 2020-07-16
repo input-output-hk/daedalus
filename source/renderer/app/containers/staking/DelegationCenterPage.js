@@ -18,13 +18,6 @@ type Props = InjectedProps;
 export default class DelegationCenterPage extends Component<Props> {
   static defaultProps = { stores: null };
 
-  componentDidMount() {
-    const {
-      actions: { staking: stakingActions },
-    } = this.props;
-    stakingActions.updateStake.trigger(10);
-  }
-
   handleDelegate = (walletId: string) => {
     const { actions } = this.props;
     const { updateDataForActiveDialog } = actions.dialogs;
