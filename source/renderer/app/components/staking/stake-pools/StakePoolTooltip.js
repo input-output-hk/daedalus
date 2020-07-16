@@ -17,9 +17,11 @@ import experimentalTooltipStyles from './StakePoolTooltip-experimental-tooltip.s
 import StakePool from '../../../domains/StakePool';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
 import experimentalIcon from '../../../assets/images/experiment-icon.inline.svg';
+import copyIcon from '../../../assets/images/clipboard-ic.inline.svg';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
 import { formattedWalletAmount, shortNumber } from '../../../utils/formatters';
 import { rangeMap } from '../../../utils/numbers';
+import { ellipsis } from '../../../utils/strings';
 import {
   THUMBNAIL_HEIGHT,
   THUMBNAIL_OFFSET_WIDTH,
@@ -441,7 +443,12 @@ export default class StakePoolTooltip extends Component<Props, State> {
               />
             </div>
           )}
-          <div className={styles.id}>{id}</div>
+          <div className={styles.id}>
+            <p className={styles.ellipsisContent}>{ellipsis(id, 20, 20)}</p>
+            <p className={styles.hoverContent}>
+              {id} <SVGInline svg={copyIcon} className={styles.copyIcon} />
+            </p>
+          </div>
           <div className={styles.description}>{description}</div>
           <Link
             onClick={() => onOpenExternalLink(homepage)}

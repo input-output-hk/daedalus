@@ -741,6 +741,7 @@ export const YELLOW_THEME_OUTPUT = {
       'rgba(45, 45, 45, .1)',
     '--theme-staking-stake-pool-tooltip-neutral-text-color': '#2d2d2d',
     '--theme-staking-stake-pool-tooltip-experimental-icon-color': '#2d2d2d',
+    '--theme-staking-stake-pool-tooltip-id-background-color': '#fafbfc',
   },
   staking: {
     '--theme-staking-content-background-color': '#ffffff',
