@@ -17,6 +17,7 @@ import {
   MAX_DELEGATION_FUNDS,
   OUT_OF_RANGE_MAX_DELEGATION_FUNDS,
   ALL_WALLETS_SELECTION_ID,
+  INITIAL_DELEGATION_FUNDS,
 } from '../../../config/stakingConfig';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import ButtonLink from '../../widgets/ButtonLink';
@@ -117,8 +118,12 @@ type Props = {
   getStakePoolById: Function,
 };
 
+type State = {
+  sliderValue: number,
+};
+
 @observer
-export default class StakePoolsRanking extends Component<Props> {
+export default class StakePoolsRanking extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -126,6 +131,18 @@ export default class StakePoolsRanking extends Component<Props> {
   static defaultProps = {
     wallets: [],
   };
+
+  state = {
+    sliderValue: INITIAL_DELEGATION_FUNDS,
+  };
+
+  componentDidMount() {
+    const { stake } = this.props;
+
+    if (stake) {
+      this.setState({ sliderValue: stake });
+    }
+  }
 
   componentDidUpdate(prevProps: Props) {
     const { selectedDelegationWalletId: prevWalletId } = prevProps;
@@ -159,10 +176,12 @@ export default class StakePoolsRanking extends Component<Props> {
     }
     sliderValue = Math.max(sliderValue, MIN_DELEGATION_FUNDS);
 
+    this.setState({ sliderValue });
     onRank(selectedWalletId, sliderValue);
   };
 
   onSliderChange = (sliderValue: number) => {
+    this.setState({ sliderValue });
     this.props.onRank(null, sliderValue);
   };
 
@@ -217,11 +236,11 @@ export default class StakePoolsRanking extends Component<Props> {
       isLoading,
       isRanking,
       selectedDelegationWalletId,
-      stake,
       wallets,
       numberOfStakePools,
       getStakePoolById,
     } = this.props;
+    const { sliderValue } = this.state;
     const rankingDescription = intl.formatMessage(messages.rankingDescription);
     const learnMoreButtonClasses = classnames(['flat', styles.actionLearnMore]);
     const {
@@ -298,7 +317,7 @@ export default class StakePoolsRanking extends Component<Props> {
               <Slider
                 min={MIN_DELEGATION_FUNDS}
                 max={MAX_DELEGATION_FUNDS}
-                value={stake || MIN_DELEGATION_FUNDS}
+                value={sliderValue}
                 onChange={this.onSliderChange}
                 disabled={isLoading || isRanking}
                 showTooltip
