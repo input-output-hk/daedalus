@@ -12,6 +12,7 @@ import {
   STAKE_POOLS_INTERVAL,
   STAKE_POOLS_FAST_INTERVAL,
   REDEEM_ITN_REWARDS_STEPS as steps,
+  INITIAL_DELEGATION_FUNDS,
 } from '../config/stakingConfig';
 import type {
   Reward,
@@ -31,8 +32,8 @@ export default class StakingStore extends Store {
   @observable isDelegationTransactionPending = false;
   @observable fetchingStakePoolsFailed = false;
   @observable isStakingExperimentRead: boolean = false;
-  @observable stake = 0;
   @observable selectedDelegationWalletId = null;
+  @observable stake = INITIAL_DELEGATION_FUNDS;
   @observable isRanking = false;
 
   /* ----------  Redeem ITN Rewards  ---------- */
@@ -59,31 +60,39 @@ export default class StakingStore extends Store {
   _delegationFeeCalculationWalletId: ?string = null;
 
   setup() {
-    const { staking: actions } = this.actions;
+    const { isIncentivizedTestnet, isShelleyTestnet } = global;
+    const { staking: stakingActions } = this.actions;
+
+    this.refreshPolling = setInterval(
+      this.getStakePoolsData,
+      STAKE_POOLS_FAST_INTERVAL
+    );
 
     // Redeem ITN Rewards actions
-    actions.onRedeemStart.listen(this._onRedeemStart);
-    actions.onConfigurationContinue.listen(this._onConfigurationContinue);
-    actions.onSelectRedeemWallet.listen(this._onSelectRedeemWallet);
-    actions.onConfirmationContinue.listen(this._onConfirmationContinue);
-    actions.onResultContinue.listen(this._onResultContinue);
-    actions.closeRedeemDialog.listen(this._closeRedeemDialog);
-
-    const { isIncentivizedTestnet, isShelleyTestnet } = global;
-    const { staking } = this.actions;
+    stakingActions.onRedeemStart.listen(this._onRedeemStart);
+    stakingActions.onConfigurationContinue.listen(
+      this._onConfigurationContinue
+    );
+    stakingActions.onSelectRedeemWallet.listen(this._onSelectRedeemWallet);
+    stakingActions.onConfirmationContinue.listen(this._onConfirmationContinue);
+    stakingActions.onResultContinue.listen(this._onResultContinue);
+    stakingActions.closeRedeemDialog.listen(this._closeRedeemDialog);
 
     if (isIncentivizedTestnet || isShelleyTestnet) {
-      staking.goToStakingInfoPage.listen(this._goToStakingInfoPage);
-      staking.goToStakingDelegationCenterPage.listen(
+      stakingActions.goToStakingInfoPage.listen(this._goToStakingInfoPage);
+      stakingActions.goToStakingDelegationCenterPage.listen(
         this._goToStakingDelegationCenterPage
       );
-      staking.joinStakePool.listen(this._joinStakePool);
-      staking.quitStakePool.listen(this._quitStakePool);
-      staking.fakeStakePoolsLoading.listen(this._setFakePoller);
-      staking.updateStake.listen(this._setStake);
-      staking.selectDelegationWallet.listen(
+      stakingActions.joinStakePool.listen(this._joinStakePool);
+      stakingActions.quitStakePool.listen(this._quitStakePool);
+      stakingActions.fakeStakePoolsLoading.listen(this._setFakePoller);
+      stakingActions.updateStake.listen(this._setStake);
+      stakingActions.selectDelegationWallet.listen(
         this._setSelectedDelegationWalletId
       );
+
+      // ========== MOBX REACTIONS =========== //
+      this.registerReactions([this._pollOnSync]);
     }
   }
 
@@ -107,14 +116,14 @@ export default class StakingStore extends Store {
 
   // =================== PUBLIC API ==================== //
 
-  @action _setStake = (stake: number) => {
-    this.stake = stake * LOVELACES_PER_ADA;
-    this.isRanking = true;
-    this.getStakePoolsData();
-  };
-
   @action _setSelectedDelegationWalletId = (walletId: string) => {
     this.selectedDelegationWalletId = walletId;
+  };
+
+  @action _setStake = (stake: number) => {
+    this.stake = stake;
+    this.isRanking = true;
+    this.getStakePoolsData();
   };
 
   @action _joinStakePool = async (request: JoinStakePoolRequest) => {
@@ -310,14 +319,15 @@ export default class StakingStore extends Store {
   }
 
   @action getStakePoolsData = async () => {
-    const { isConnected } = this.stores.networkStatus;
-    if (!isConnected) {
+    const { isConnected, isSynced } = this.stores.networkStatus;
+    if (!isConnected || !isSynced) {
       this._resetIsRanking();
       return;
     }
 
     try {
-      await this.stakePoolsRequest.execute(this.stake).promise;
+      await this.stakePoolsRequest.execute(this.stake * LOVELACES_PER_ADA)
+        .promise;
       this._resetPolling(false);
     } catch (error) {
       this._resetPolling(true);
@@ -325,7 +335,19 @@ export default class StakingStore extends Store {
     this._resetIsRanking();
   };
 
-  @action _resetPolling = (fetchFailed: boolean) => {
+  @action _resetPolling = (fetchFailed: boolean, kill?: boolean) => {
+    if (kill) {
+      this.fetchingStakePoolsFailed = fetchFailed;
+      if (this.pollingStakePoolsInterval) {
+        clearInterval(this.pollingStakePoolsInterval);
+        this.pollingStakePoolsInterval = null;
+      }
+      if (this.refreshPolling) {
+        clearInterval(this.refreshPolling);
+        this.refreshPolling = null;
+      }
+      return;
+    }
     if (fetchFailed) {
       this.fetchingStakePoolsFailed = true;
       if (this.pollingStakePoolsInterval) {
@@ -544,6 +566,17 @@ export default class StakingStore extends Store {
   @action _closeRedeemDialog = () => {
     this._resetRedeemItnRewards();
     this.redeemStep = null;
+  };
+
+  // ================= REACTIONS ==================
+
+  _pollOnSync = () => {
+    if (this.stores.networkStatus.isSynced) {
+      this._setStake(this.stake);
+    } else {
+      this._resetIsRanking();
+      this._resetPolling(true, true);
+    }
   };
 
   /* ====  End of Redeem ITN Rewards  ===== */

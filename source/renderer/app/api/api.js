@@ -1969,6 +1969,7 @@ const _createStakePoolFromServerData = action(
       margin: profitMargin,
       metadata,
       pledge,
+      retirement,
     } = stakePool;
     const {
       relative_stake: relativeStake,
@@ -1981,6 +1982,7 @@ const _createStakePoolFromServerData = action(
     const costQuantity = get(cost, 'quantity', 0).toString();
     const pledgeQuantity = get(pledge, 'quantity', 0).toString();
     const profitMarginPercentage = get(profitMargin, 'quantity', 0);
+    const retiringAt = get(retirement, 'epoch_start_time', null);
     return new StakePool({
       id,
       relativeStake: relativeStakePercentage,
@@ -1994,7 +1996,7 @@ const _createStakePoolFromServerData = action(
       pledge: new BigNumber(pledgeQuantity).dividedBy(LOVELACES_PER_ADA),
       profitMargin: profitMarginPercentage,
       ranking: index + 1,
-      retiring: null,
+      retiring: retiringAt ? new Date(retiringAt) : null,
       saturation: saturation * 100,
     });
   }

@@ -3142,9 +3142,9 @@
           "line": 48
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
-        "id": "staking.delegationCenter.stakePoolTooltipTickerEpoch",
+        "id": "staking.delegationCenter.TooltipPoolTickerEpoch",
         "start": {
-          "column": 31,
+          "column": 26,
           "line": 43
         }
       },
@@ -3156,9 +3156,9 @@
           "line": 54
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
-        "id": "staking.delegationCenter.stakePoolTooltipTickerEarningRewards",
+        "id": "staking.delegationCenter.TooltipPoolTickerEarningRewards",
         "start": {
-          "column": 40,
+          "column": 35,
           "line": 49
         }
       },
@@ -3228,13 +3228,13 @@
         "description": "Title \"Choose a stake pool\" on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 33
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.title",
         "start": {
           "column": 9,
-          "line": 31
+          "line": 28
         }
       },
       {
@@ -3242,13 +3242,13 @@
         "description": "Description on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 39
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.description",
         "start": {
           "column": 15,
-          "line": 37
+          "line": 34
         }
       },
       {
@@ -3256,13 +3256,13 @@
         "description": "Select / Selected pool section label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 47
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.selectStakePoolLabel",
         "start": {
           "column": 24,
-          "line": 43
+          "line": 40
         }
       },
       {
@@ -3270,13 +3270,27 @@
         "description": "\"Selected Pools\" Selected pool label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 55
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.selectedStakePoolLabel",
         "start": {
           "column": 26,
-          "line": 51
+          "line": 48
+        }
+      },
+      {
+        "defaultMessage": "!!!The [{selectedPoolTicker}] stake pool which you have selected to delegate your <span>{selectedWalletName}</span> wallet funds is about to retire.",
+        "description": "\"Selected Pools\" Selected pool label on the delegation setup \"choose stake pool\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 63
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "id": "staking.delegationSetup.chooseStakePool.step.dialog.selectedStakePoolLabelRetiring",
+        "start": {
+          "column": 34,
+          "line": 56
         }
       },
       {
@@ -3284,13 +3298,13 @@
         "description": "\"You are already delegating to stake pool\" label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 71
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.delegatedStakePoolLabel",
         "start": {
           "column": 27,
-          "line": 59
+          "line": 64
         }
       },
       {
@@ -3298,13 +3312,13 @@
         "description": "\"You are already delegating to stake pool\" label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 74
+          "line": 79
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.delegatedStakePoolNextLabel",
         "start": {
           "column": 31,
-          "line": 67
+          "line": 72
         }
       },
       {
@@ -3312,13 +3326,13 @@
         "description": "Recent \"Pool\" choice section label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 80
+          "line": 85
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.recentPoolsLabel",
         "start": {
           "column": 20,
-          "line": 75
+          "line": 80
         }
       },
       {
@@ -3326,13 +3340,13 @@
         "description": "Search \"Pools\" input label on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 87
+          "line": 92
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.searchInput.label",
         "start": {
           "column": 20,
-          "line": 81
+          "line": 86
         }
       },
       {
@@ -3340,13 +3354,13 @@
         "description": "Search \"Pools\" input placeholder on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 94
+          "line": 99
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.searchInput.placeholder",
         "start": {
           "column": 26,
-          "line": 88
+          "line": 93
         }
       },
       {
@@ -3354,13 +3368,13 @@
         "description": "Label for continue button on the delegation setup \"choose stake pool\" dialog.",
         "end": {
           "column": 3,
-          "line": 101
+          "line": 106
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.continueButtonLabel",
         "start": {
           "column": 23,
-          "line": 95
+          "line": 100
         }
       },
       {
@@ -3368,13 +3382,27 @@
         "description": "Step indicator label on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 108
+          "line": 113
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
         "id": "staking.delegationSetup.chooseStakePool.step.dialog.stepIndicatorLabel",
         "start": {
           "column": 22,
-          "line": 102
+          "line": 107
+        }
+      },
+      {
+        "defaultMessage": "!!!The stake pool you have selected is about to be retired. If you continue the delegation process, you will need to delegate your stake to another pool at least one complete epoch before the current pool’s retirement date to avoid losing rewards.",
+        "description": "Retiring Pool Footer label on the delegation setup \"choose wallet\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 121
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseStakePoolDialog.js",
+        "id": "staking.delegationSetup.chooseStakePool.step.dialog.retiringPoolFooter",
+        "start": {
+          "column": 22,
+          "line": 114
         }
       }
     ],
@@ -5050,13 +5078,13 @@
         "description": "All wallets item of dropdown.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 32
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingAllWallets",
         "start": {
           "column": 21,
-          "line": 18
+          "line": 28
         }
       },
       {
@@ -5064,13 +5092,13 @@
         "description": "All wallets description after dropdown.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 37
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingAllWalletsEnd",
         "start": {
           "column": 24,
-          "line": 23
+          "line": 33
         }
       },
       {
@@ -5078,13 +5106,13 @@
         "description": "All wallets description before dropdown.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 43
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingAllWalletsStart",
         "start": {
           "column": 26,
-          "line": 28
+          "line": 38
         }
       },
       {
@@ -5092,13 +5120,13 @@
         "description": "Ranking description.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 49
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingDescription",
         "start": {
           "column": 22,
-          "line": 34
+          "line": 44
         }
       },
       {
@@ -5106,13 +5134,13 @@
         "description": "Ranking learn more url.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 54
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingLearnMoreUrl",
         "start": {
           "column": 23,
-          "line": 40
+          "line": 50
         }
       },
       {
@@ -5120,13 +5148,13 @@
         "description": "One wallet description after dropdown.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 59
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingOneWalletEnd",
         "start": {
           "column": 23,
-          "line": 45
+          "line": 55
         }
       },
       {
@@ -5134,13 +5162,13 @@
         "description": "One wallet description before dropdown.",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 65
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingOneWalletStart",
         "start": {
           "column": 25,
-          "line": 50
+          "line": 60
         }
       },
       {
@@ -5148,13 +5176,13 @@
         "description": "Select wallet item of dropdown.",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 70
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingSelectWallet",
         "start": {
           "column": 23,
-          "line": 56
+          "line": 66
         }
       },
       {
@@ -5162,13 +5190,13 @@
         "description": "Select wallet description after dropdown.",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 75
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingSelectWalletEnd",
         "start": {
           "column": 26,
-          "line": 61
+          "line": 71
         }
       },
       {
@@ -5176,13 +5204,13 @@
         "description": "Select wallet description before dropdown.",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 80
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingSelectWalletStart",
         "start": {
           "column": 28,
-          "line": 66
+          "line": 76
         }
       },
       {
@@ -5190,13 +5218,13 @@
         "description": "Circulating supply slider tooltip.",
         "end": {
           "column": 3,
-          "line": 75
+          "line": 85
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingExtraTooltip",
         "start": {
           "column": 23,
-          "line": 71
+          "line": 81
         }
       },
       {
@@ -5204,13 +5232,13 @@
         "description": "Saturation point slider tooltip.",
         "end": {
           "column": 3,
-          "line": 80
+          "line": 90
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingMaxTooltip",
         "start": {
           "column": 21,
-          "line": 76
+          "line": 86
         }
       },
       {
@@ -5218,13 +5246,13 @@
         "description": "Minimum ADA required for staking slider tooltip.",
         "end": {
           "column": 3,
-          "line": 85
+          "line": 95
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingMinTooltip",
         "start": {
           "column": 21,
-          "line": 81
+          "line": 91
         }
       },
       {
@@ -5232,13 +5260,13 @@
         "description": "Learn more action of ranking panel.",
         "end": {
           "column": 3,
-          "line": 90
+          "line": 100
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.learnMore",
         "start": {
           "column": 19,
-          "line": 86
+          "line": 96
         }
       }
     ],
@@ -5300,7 +5328,7 @@
           "column": 3,
           "line": 39
         },
-        "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
+        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.ranking",
         "start": {
           "column": 11,
@@ -5314,7 +5342,7 @@
           "column": 3,
           "line": 44
         },
-        "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
+        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.relativeStake",
         "start": {
           "column": 17,
@@ -5328,7 +5356,7 @@
           "column": 3,
           "line": 49
         },
-        "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
+        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.profitMargin",
         "start": {
           "column": 16,
@@ -5342,7 +5370,7 @@
           "column": 3,
           "line": 54
         },
-        "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
+        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.costPerEpoch",
         "start": {
           "column": 16,
@@ -5356,7 +5384,7 @@
           "column": 3,
           "line": 59
         },
-        "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
+        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.producedBlocks",
         "start": {
           "column": 18,
@@ -5370,7 +5398,7 @@
           "column": 3,
           "line": 64
         },
-        "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
+        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.retirement",
         "start": {
           "column": 14,
@@ -5384,7 +5412,7 @@
           "column": 3,
           "line": 69
         },
-        "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
+        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.saturation",
         "start": {
           "column": 14,
@@ -5398,7 +5426,7 @@
           "column": 3,
           "line": 79
         },
-        "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
+        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.pledge",
         "start": {
           "column": 10,
@@ -5412,7 +5440,7 @@
           "column": 3,
           "line": 85
         },
-        "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
+        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.delegateButton",
         "start": {
           "column": 18,
@@ -5426,7 +5454,7 @@
           "column": 3,
           "line": 90
         },
-        "file": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.js",
+        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.experimentalTooltipLabel",
         "start": {
           "column": 28,
@@ -5434,7 +5462,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/staking/stake-pools/StakePoolTooltip.json"
+    "path": "source/renderer/app/components/staking/widgets/TooltipPool.json"
   },
   {
     "descriptors": [

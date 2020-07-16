@@ -42,6 +42,10 @@ export type AdaApiStakePool = {
     quantity: number,
     unit: 'lovelace',
   },
+  retirement: {
+    epoch_number: number,
+    epoch_start_time: string,
+  },
 };
 export type AdaApiStakePools = Array<AdaApiStakePool>;
 

@@ -187,7 +187,7 @@ Given(/^I sucessfully delegate my "([^"]*)" wallet$/, { timeout: 60000 }, async 
   await this.client.click(continueButtonSelector);
 
   // Select pool step
-  await this.waitAndClick('.StakePoolThumbnail_component');
+  await this.waitAndClick('.ThumbPool_component');
   await this.client.waitForVisible(continueButtonSelector);
   await this.client.waitForEnabled(continueButtonSelector);
   await this.client.click(continueButtonSelector);
@@ -248,7 +248,7 @@ Then(/^I choose the "([^"]*)" wallet$/, async function(walletName) {
 });
 
 Then(/^I choose the first stake pool$/, async function() {
-  await this.waitAndClick('.StakePoolThumbnail_component');
+  await this.waitAndClick('.ThumbPool_component');
   const selector = '//button[text()="Continue"]';
   await this.client.waitForEnabled(selector);
   await this.waitAndClick(selector);
