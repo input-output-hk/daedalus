@@ -136,7 +136,6 @@ export default class TooltipPool extends Component<Props, State> {
     colorBandStyle: {},
     tooltipPosition: 'right',
     idCopyFeedback: false,
-    // idCopyFeedback: true,
   };
 
   componentDidMount() {
