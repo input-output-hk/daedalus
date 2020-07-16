@@ -58,7 +58,7 @@ export type TransactionOutputs = {
 };
 
 export type TransactionWithdrawals = {
-  address: string,
+  stake_address: string,
   amount: TransactionAmount,
 };
 

@@ -1894,7 +1894,7 @@ const _createTransactionFromServerData = action(
       addresses: {
         from: inputs.map(({ address }) => address || null),
         to: outputs.map(({ address }) => address),
-        withdrawals: withdrawals.map(({ address }) => address),
+        withdrawals: withdrawals.map(({ stake_address: address }) => address),
       },
       state,
     });
