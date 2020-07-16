@@ -329,7 +329,19 @@ export default class StakingStore extends Store {
     this._resetIsRanking();
   };
 
-  @action _resetPolling = (fetchFailed: boolean) => {
+  @action _resetPolling = (fetchFailed: boolean, kill?: boolean) => {
+    if (kill) {
+      this.fetchingStakePoolsFailed = fetchFailed;
+      if (this.pollingStakePoolsInterval) {
+        clearInterval(this.pollingStakePoolsInterval);
+        this.pollingStakePoolsInterval = null;
+      }
+      if (this.refreshPolling) {
+        clearInterval(this.refreshPolling);
+        this.refreshPolling = null;
+      }
+      return;
+    }
     if (fetchFailed) {
       this.fetchingStakePoolsFailed = true;
       if (this.pollingStakePoolsInterval) {
@@ -555,6 +567,9 @@ export default class StakingStore extends Store {
   _pollOnSync = () => {
     if (this.stores.networkStatus.isSynced) {
       this._setStake(10);
+    } else {
+      this._resetIsRanking();
+      this._resetPolling(true, true);
     }
   };
 
