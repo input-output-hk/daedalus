@@ -1,16 +1,15 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
-import clockIcon from '../../../assets/images/clock.inline.svg';
-import styles from './StakePoolThumbnail.scss';
-import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
-import StakePoolTooltip from './StakePoolTooltip';
-import checkmarkImage from '../../../assets/images/check-w.inline.svg';
+import styles from './ThumbPool.scss';
+import { getColorFromRange } from '../../../utils/colors';
+import TooltipPool from './TooltipPool';
 import StakePool from '../../../domains/StakePool';
 import { STAKE_POOL_TOOLTIP_HOVER_WAIT } from '../../../config/timingConfig';
 import { getRelativePosition } from '../../../utils/domManipulation';
+import ThumbSelectedPool from './ThumbSelectedPool';
+import ThumbPoolContent from './ThumbPoolContent';
 
 type Props = {
   currentTheme: string,
@@ -35,7 +34,7 @@ type State = {
 };
 
 @observer
-export class StakePoolThumbnail extends Component<Props, State> {
+export class ThumbPool extends Component<Props, State> {
   state = {
     top: 0,
     left: 0,
@@ -103,8 +102,8 @@ export class StakePoolThumbnail extends Component<Props, State> {
       disabledStakePoolId,
     } = this.props;
     const { top, left } = this.state;
-    const showSaturation = false;
-    const { ranking, ticker, retiring, id, saturation } = stakePool;
+
+    const { ranking, id } = stakePool;
     const color = getColorFromRange(ranking, numberOfStakePools);
     const isDisabled = disabledStakePoolId === id;
 
@@ -121,10 +120,18 @@ export class StakePoolThumbnail extends Component<Props, State> {
       !showSaturation ? styles.hideSaturation : null,
     ]);
 
-    const saturationClassnames = classnames([
-      styles.saturationBar,
-      styles[getSaturationColor(saturation)],
-    ]);
+    const content =
+      isSelected && showSelected ? (
+        <ThumbSelectedPool
+          stakePool={stakePool}
+          numberOfStakePools={numberOfStakePools}
+        />
+      ) : (
+        <ThumbPoolContent
+          stakePool={stakePool}
+          numberOfStakePools={numberOfStakePools}
+        />
+      );
 
     return (
       <div
@@ -135,52 +142,9 @@ export class StakePoolThumbnail extends Component<Props, State> {
           onMouseEnter={onHover ? this.handleOpen : null}
           onClick={!onHover ? this.handleOpen : this.handleSelect}
         />
-        <div
-          className={contentClassnames}
-          style={{
-            background: isSelected && showSelected && color,
-          }}
-        >
-          <div className={styles.ticker}>{ticker}</div>
-
-          {isSelected && showSelected ? (
-            <div className={styles.checkmarkWrapper}>
-              <SVGInline
-                svg={checkmarkImage}
-                className={styles.checkmarkImage}
-              />
-            </div>
-          ) : (
-            <>
-              <div className={styles.ranking} style={{ color }}>
-                {ranking}
-              </div>
-              {showSaturation && (
-                <div className={saturationClassnames}>
-                  <span
-                    style={{
-                      width: `${parseFloat(saturation.toFixed(2))}%`,
-                    }}
-                  />
-                </div>
-              )}
-            </>
-          )}
-
-          {retiring && (
-            <div className={styles.clock}>
-              <SVGInline svg={clockIcon} className={styles.clockIcon} />
-            </div>
-          )}
-          <div
-            className={styles.colorBand}
-            style={{
-              background: color,
-            }}
-          />
-        </div>
+        <div className={contentClassnames}>{content}</div>
         {isHighlighted && (
-          <StakePoolTooltip
+          <TooltipPool
             stakePool={stakePool}
             className={styles.tooltip}
             isVisible

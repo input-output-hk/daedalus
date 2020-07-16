@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Added stake pool retirement info ([PR 2068](https://github.com/input-output-hk/daedalus/pull/2068))
 - Removed stake pool saturation info ([PR 2067](https://github.com/input-output-hk/daedalus/pull/2067))
 - Implemented calculation of wallet's total rewards ([PR 2066](https://github.com/input-output-hk/daedalus/pull/2066))
 - Added display of transaction withdrawals within transaction details ([PR 2065](https://github.com/input-output-hk/daedalus/pull/2065))
