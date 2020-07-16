@@ -190,7 +190,7 @@
     "gulp": "4.0.0",
     "history": "4.10.1",
     "humanize-duration": "3.22.0",
-    "lodash": "4.17.15",
+    "lodash": "4.17.19",
     "lodash-es": "4.17.15",
     "mime-types": "2.1.26",
     "mkdirp": "0.5.1",
