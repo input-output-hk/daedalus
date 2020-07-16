@@ -103,7 +103,7 @@ export class StakePoolThumbnail extends Component<Props, State> {
       disabledStakePoolId,
     } = this.props;
     const { top, left } = this.state;
-
+    const showSaturation = false;
     const { ranking, ticker, retiring, id, saturation } = stakePool;
     const color = getColorFromRange(ranking, numberOfStakePools);
     const isDisabled = disabledStakePoolId === id;
@@ -118,6 +118,7 @@ export class StakePoolThumbnail extends Component<Props, State> {
       isHighlighted ? styles.isHighlighted : null,
       onHover ? styles.isOnHover : null,
       isDisabled ? styles.disabled : null,
+      !showSaturation ? styles.hideSaturation : null,
     ]);
 
     const saturationClassnames = classnames([
@@ -154,13 +155,15 @@ export class StakePoolThumbnail extends Component<Props, State> {
               <div className={styles.ranking} style={{ color }}>
                 {ranking}
               </div>
-              <div className={saturationClassnames}>
-                <span
-                  style={{
-                    width: `${parseFloat(saturation.toFixed(2))}%`,
-                  }}
-                />
-              </div>
+              {showSaturation && (
+                <div className={saturationClassnames}>
+                  <span
+                    style={{
+                      width: `${parseFloat(saturation.toFixed(2))}%`,
+                    }}
+                  />
+                </div>
+              )}
             </>
           )}
 

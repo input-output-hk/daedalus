@@ -27,6 +27,18 @@
   &.isOnHover:hover {
     @extend .isHighlighted;
   }
+
+  &.hideSaturation {
+    padding-top: 11px;
+
+    .ticker {
+      margin-bottom: 5px;
+    }
+
+    .checkmarkWrapper {
+      margin-top: 7px;
+    }
+  }
 }
 
 .isHighlighted {
