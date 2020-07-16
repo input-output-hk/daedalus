@@ -135,6 +135,7 @@ import type {
 import type {
   Transaction,
   TransactionFee,
+  TransactionWithdrawals,
   GetTransactionFeeRequest,
   CreateTransactionRequest,
   DeleteTransactionRequest,
@@ -509,13 +510,16 @@ export default class AdaApi {
       logger.debug('AdaApi::getWithdrawals success', {
         transactions: response,
       });
-      const withdrawals = new BigNumber(0);
-      response.forEach(tx => {
-        tx.withdrawals.forEach(w => {
+      let withdrawals = new BigNumber(0);
+      const outgoingTransactions = response.filter(
+        (tx: Transaction) => tx.direction === 'outgoing'
+      );
+      outgoingTransactions.forEach((tx: Transaction) => {
+        tx.withdrawals.forEach((w: TransactionWithdrawals) => {
           const withdrawal = new BigNumber(w.amount.quantity).dividedBy(
             LOVELACES_PER_ADA
           );
-          withdrawals.add(withdrawal);
+          withdrawals = withdrawals.add(withdrawal);
         });
       });
       return { withdrawals };
