@@ -37,6 +37,7 @@ type Props = {
   title?: string,
   subtitle?: string | Node,
   children?: Node,
+  footer?: Node,
   actions?: DialogActionItems | DialogActionOptions,
   closeButton?: ?Element<any>,
   backButton?: Node,
@@ -59,6 +60,7 @@ export default class Dialog extends Component<Props> {
       title,
       subtitle,
       children,
+      footer,
       actions,
       closeOnOverlayClick,
       onClose,
@@ -111,6 +113,7 @@ export default class Dialog extends Component<Props> {
           )}
 
           {children && <div className={styles.content}>{children}</div>}
+          {footer && <div className={styles.footer}>{footer}</div>}
 
           {items && (
             <div className={classActionsClasses}>

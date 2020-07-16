@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
-import clockIcon from '../../../assets/images/clock.inline.svg';
+import clockIcon from '../../../assets/images/clock-corner.inline.svg';
 import styles from './StakePoolThumbnail.scss';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
 import StakePoolTooltip from './StakePoolTooltip';
