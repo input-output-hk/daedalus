@@ -64,11 +64,8 @@ export default class StakingStore extends Store {
   setup() {
     const { isIncentivizedTestnet, isShelleyTestnet } = global;
     const { staking: stakingActions } = this.actions;
-    const { wallets: walletsStore } = this.stores;
-    this.stake = Math.min(
-      Math.floor(getAllAmounts(walletsStore.all).toNumber()),
-      MAX_DELEGATION_FUNDS
-    );
+
+    this._initializeStake();
     this.refreshPolling = setInterval(
       this.getStakePoolsData,
       STAKE_POOLS_FAST_INTERVAL
@@ -121,6 +118,15 @@ export default class StakingStore extends Store {
   );
 
   // =================== PUBLIC API ==================== //
+
+  @action _initializeStake = () => {
+    const { wallets: walletsStore } = this.stores;
+
+    this.stake = Math.min(
+      Math.floor(getAllAmounts(walletsStore.all).toNumber()),
+      MAX_DELEGATION_FUNDS
+    );
+  };
 
   @action _setSelectedDelegationWalletId = (walletId: string) => {
     this.selectedDelegationWalletId = walletId;
