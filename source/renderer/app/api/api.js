@@ -77,6 +77,7 @@ import { getStakePools } from './staking/requests/getStakePools';
 import { getDelegationFee } from './staking/requests/getDelegationFee';
 import { joinStakePool } from './staking/requests/joinStakePool';
 import { quitStakePool } from './staking/requests/quitStakePool';
+import { submitRedeemItnRewards } from './staking/requests/submitRedeemItnRewards';
 
 // Utility functions
 import {
@@ -178,6 +179,9 @@ import type {
   AdaApiStakePools,
   AdaApiStakePool,
   QuitStakePoolRequest,
+  SubmitRedeemItnRewardsRequest,
+  SubmitRedeemItnRewardsResponse,
+  SubmitRedeemItnRewardsApiResponse,
 } from './staking/types';
 import type { StakePoolProps } from '../domains/StakePool';
 import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-node.types';
@@ -189,7 +193,7 @@ import { deleteTransaction } from './transactions/requests/deleteTransaction';
 import { WALLET_BYRON_KINDS } from '../config/walletRestoreConfig';
 import ApiError from '../domains/ApiError';
 
-const { isIncentivizedTestnet, isShelleyTestnet } = global;
+const { isIncentivizedTestnet } = global;
 
 export default class AdaApi {
   config: RequestConfig;
@@ -209,9 +213,9 @@ export default class AdaApi {
       const wallets: AdaWallets = isIncentivizedTestnet
         ? await getWallets(this.config)
         : [];
-      const legacyWallets: LegacyAdaWallets = !isShelleyTestnet
-        ? await getLegacyWallets(this.config)
-        : [];
+      const legacyWallets: LegacyAdaWallets = await getLegacyWallets(
+        this.config
+      );
       logger.debug('AdaApi::getWallets success', { wallets, legacyWallets });
 
       map(legacyWallets, legacyAdaWallet => {
@@ -1350,6 +1354,25 @@ export default class AdaApi {
     }
   };
 
+  submitRedeemItnRewards = async (
+    request: SubmitRedeemItnRewardsRequest
+  ): Promise<SubmitRedeemItnRewardsApiResponse> => {
+    const { walletId, recoveryPhrase } = request;
+    try {
+      const response: SubmitRedeemItnRewardsResponse = await submitRedeemItnRewards(
+        {
+          walletId,
+          recoveryPhrase,
+        }
+      );
+      logger.debug('AdaApi::submitRedeemItnRewards success', { response });
+      return _createRedeemItnRewardsFromServerData(response);
+    } catch (error) {
+      logger.error('AdaApi::submitRedeemItnRewards error', { error });
+      throw new ApiError(error);
+    }
+  };
+
   exportWalletToFile = async (
     request: ExportWalletToFileRequest
   ): Promise<[]> => {
@@ -1844,6 +1867,7 @@ const _createTransactionFromServerData = action(
       direction,
       inputs,
       outputs,
+      withdrawals,
       status,
     } = data;
     const state = _conditionToTxState(status);
@@ -1870,6 +1894,7 @@ const _createTransactionFromServerData = action(
       addresses: {
         from: inputs.map(({ address }) => address || null),
         to: outputs.map(({ address }) => address),
+        withdrawals: withdrawals.map(({ stake_address: address }) => address),
       },
       state,
     });
@@ -1939,4 +1964,17 @@ const _createStakePoolFromServerData = action(
       saturation: saturation * 100,
     });
   }
+);
+
+const _createRedeemItnRewardsFromServerData = action(
+  'AdaApi::_createRedeemItnRewardsFromServerData',
+  ({
+    rewardsTotal,
+    transactionFees,
+    finalTotal,
+  }: SubmitRedeemItnRewardsResponse) => ({
+    rewardsTotal: new BigNumber(rewardsTotal),
+    transactionFees: new BigNumber(transactionFees),
+    finalTotal: new BigNumber(finalTotal),
+  })
 );
