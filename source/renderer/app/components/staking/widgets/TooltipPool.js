@@ -409,7 +409,11 @@ export default class TooltipPool extends Component<Props, State> {
 
     const darken = currentTheme === 'dark-blue' ? 1 : 0;
     const alpha = 0.3;
-    const retirementFromNow = retiring ? moment(retiring).fromNow(true) : '';
+    const retirementFromNow = retiring
+      ? moment(retiring)
+          .locale(intl.locale)
+          .fromNow(true)
+      : '';
 
     const saturationBarClassnames = classnames([
       styles.saturationBar,
