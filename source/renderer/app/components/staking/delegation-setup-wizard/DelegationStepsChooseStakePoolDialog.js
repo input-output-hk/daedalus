@@ -20,7 +20,7 @@ import BackToTopButton from '../../widgets/BackToTopButton';
 import commonStyles from './DelegationSteps.scss';
 import styles from './DelegationStepsChooseStakePoolDialog.scss';
 import Wallet from '../../../domains/Wallet';
-import SelectedStakePoolThumbnail from '../stake-pools/SelectedStakePoolThumbnail';
+import ThumbSelectedPool from '../widgets/ThumbSelectedPool';
 
 import StakePool from '../../../domains/StakePool';
 
@@ -330,9 +330,9 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
           </p>
 
           <div className={styles.selectStakePoolWrapper}>
-            <SelectedStakePoolThumbnail
+            <ThumbSelectedPool
               stakePool={selectedPool}
-              stakePoolsLength={stakePoolsList.length}
+              numberOfStakePools={stakePoolsList.length}
               alreadyDelegated={selectedPool && !canSubmit}
             />
 

@@ -40,14 +40,14 @@ const messages = defineMessages({
     defaultMessage: '!!!or',
     description: '"or" text for the Delegation center body section.',
   },
-  stakePoolTooltipTickerEpoch: {
-    id: 'staking.delegationCenter.stakePoolTooltipTickerEpoch',
+  TooltipPoolTickerEpoch: {
+    id: 'staking.delegationCenter.TooltipPoolTickerEpoch',
     defaultMessage: '!!!From epoch {fromEpoch}',
     description:
       'Delegated stake pool tooltip ticker for the Delegation center body section.',
   },
-  stakePoolTooltipTickerEarningRewards: {
-    id: 'staking.delegationCenter.stakePoolTooltipTickerEarningRewards',
+  TooltipPoolTickerEarningRewards: {
+    id: 'staking.delegationCenter.TooltipPoolTickerEarningRewards',
     defaultMessage: '!!!Earning rewards',
     description:
       'Delegated stake pool tooltip ticker for the Delegation center body section.',
@@ -185,7 +185,7 @@ export default class WalletRow extends Component<Props> {
                           <div className={styles.tooltipLabelWrapper}>
                             <span>
                               {intl.formatMessage(
-                                messages.stakePoolTooltipTickerEarningRewards
+                                messages.TooltipPoolTickerEarningRewards
                               )}
                             </span>
                           </div>
@@ -258,7 +258,7 @@ export default class WalletRow extends Component<Props> {
                           tip={
                             <div className={styles.tooltipLabelWrapper}>
                               <FormattedMessage
-                                {...messages.stakePoolTooltipTickerEpoch}
+                                {...messages.TooltipPoolTickerEpoch}
                                 values={{
                                   fromEpoch,
                                 }}

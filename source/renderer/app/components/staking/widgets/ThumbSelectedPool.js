@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
-import styles from './SelectedStakePoolThumbnail.scss';
+import styles from './ThumbSelectedPool.scss';
 import { getColorFromRange } from '../../../utils/colors';
 import checkmarkImage from '../../../assets/images/check-w.inline.svg';
 import questionmarkImage from '../../../assets/images/questionmark.inline.svg';
@@ -13,22 +13,23 @@ import StakePool from '../../../domains/StakePool';
 type Props = {
   stakePool?: StakePool,
   alreadyDelegated?: boolean,
-  stakePoolsLength: number,
+  numberOfStakePools: number,
 };
 
 @observer
-export default class StakePoolThumbnail extends Component<Props> {
+export default class ThumbSelectedPool extends Component<Props> {
   render() {
-    const { stakePool, alreadyDelegated, stakePoolsLength } = this.props;
+    const { stakePool, alreadyDelegated, numberOfStakePools } = this.props;
 
     const { ticker, retiring, ranking } = stakePool || {};
 
     const rankColor =
       stakePool && !retiring
-        ? getColorFromRange(ranking, stakePoolsLength)
+        ? getColorFromRange(ranking, numberOfStakePools)
         : 'transparent';
 
     const selectedPoolBlockClasses = classnames([
+      styles.component,
       stakePool ? styles.selectedPoolBlock : styles.selectPoolBlockPlaceholder,
       retiring ? styles.retiring : null,
       alreadyDelegated ? styles.alreadyDelegated : null,
@@ -40,7 +41,6 @@ export default class StakePoolThumbnail extends Component<Props> {
 
     return (
       <div
-        role="presentation"
         className={selectedPoolBlockClasses}
         style={{
           background: rankColor,

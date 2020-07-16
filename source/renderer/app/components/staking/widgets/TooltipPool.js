@@ -12,8 +12,8 @@ import SVGInline from 'react-svg-inline';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
-import styles from './StakePoolTooltip.scss';
-import experimentalTooltipStyles from './StakePoolTooltip-experimental-tooltip.scss';
+import styles from './TooltipPool.scss';
+import experimentalTooltipStyles from './TooltipPool-experimental-tooltip.scss';
 import StakePool from '../../../domains/StakePool';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
 import experimentalIcon from '../../../assets/images/experiment-icon.inline.svg';
@@ -113,7 +113,7 @@ type State = {
 };
 
 @observer
-export default class StakePoolTooltip extends Component<Props, State> {
+export default class TooltipPool extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };

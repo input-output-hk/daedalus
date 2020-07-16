@@ -1,36 +1,7 @@
 .component {
-  position: relative;
-  > button {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    height: 100%;
-    position: absolute;
-    width: 100%;
-    z-index: 1;
-  }
-}
-
-.content {
-  background-color: var(--theme-staking-stake-pool-background-color);
-  border: solid 1px var(--theme-staking-stake-pool-border-color);
-  border-radius: 4px;
-  cursor: pointer;
   height: 71px;
   padding: 9px 0 0;
-  width: 80px;
-
-  &.disabled {
-    opacity: 0.3;
-  }
-
-  &.isOnHover:hover {
-    @extend .isHighlighted;
-  }
-}
-
-.isHighlighted {
-  box-shadow: 0 0 4px 2px var(--theme-staking-stake-pool-glow-color);
+  position: relative;
 }
 
 .ticker {
@@ -84,19 +55,6 @@
   }
 }
 
-.checkmarkWrapper {
-  margin-top: 10px;
-  text-align: center;
-  .checkmarkImage {
-    svg {
-      width: 15.5px;
-      path {
-        stroke: var(--theme-staking-stake-pool-selected-checkmark-icon-color);
-      }
-    }
-  }
-}
-
 .clock {
   background: var(--theme-staking-stake-pool-retirement-background-color);
   border-radius: 0 2px 0 4px;
@@ -130,13 +88,13 @@
   width: 100%;
 }
 
-.isSelected,
-.isNextSelected {
-  .colorBand,
-  .ranking {
-    visibility: hidden;
-  }
-  .ticker {
-    color: var(--theme-staking-stake-pool-selected-ticker-color);
-  }
-}
+// .isSelected,
+// .isNextSelected {
+//   .colorBand,
+//   .ranking {
+//     visibility: hidden;
+//   }
+//   .ticker {
+//     color: var(--theme-staking-stake-pool-selected-ticker-color);
+//   }
+// }
