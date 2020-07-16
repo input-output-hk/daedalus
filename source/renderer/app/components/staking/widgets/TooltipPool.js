@@ -374,7 +374,7 @@ export default class TooltipPool extends Component<Props, State> {
       showWithSelectButton,
       numberOfStakePools,
     } = this.props;
-
+    const showSaturation = false;
     const {
       componentStyle,
       arrowStyle,
@@ -453,21 +453,25 @@ export default class TooltipPool extends Component<Props, State> {
           />
 
           <dl className={styles.table}>
-            <dt className={styles.saturationLabel}>
-              {intl.formatMessage(messages.saturation)}
-            </dt>
-            <dd className={styles.saturationValue}>
-              <span>
-                <span className={saturationBarClassnames}>
-                  <span
-                    style={{
-                      width: `${parseFloat(saturation.toFixed(2))}%`,
-                    }}
-                  />
-                </span>
-                {`${parseFloat(saturation.toFixed(2))}%`}
-              </span>
-            </dd>
+            {showSaturation && (
+              <>
+                <dt className={styles.saturationLabel}>
+                  {intl.formatMessage(messages.saturation)}
+                </dt>
+                <dd className={styles.saturationValue}>
+                  <span>
+                    <span className={saturationBarClassnames}>
+                      <span
+                        style={{
+                          width: `${parseFloat(saturation.toFixed(2))}%`,
+                        }}
+                      />
+                    </span>
+                    {`${parseFloat(saturation.toFixed(2))}%`}
+                  </span>
+                </dd>
+              </>
+            )}
             <dt>{intl.formatMessage(messages.ranking)}</dt>
             <dd className={styles.ranking}>
               <span

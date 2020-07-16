@@ -2,6 +2,31 @@
   height: 71px;
   padding: 9px 0 0;
   position: relative;
+  width: 80px;
+
+  &.disabled {
+    opacity: 0.3;
+  }
+
+  &.isOnHover:hover {
+    @extend .isHighlighted;
+  }
+
+  &.hideSaturation {
+    padding-top: 11px;
+
+    .ticker {
+      margin-bottom: 5px;
+    }
+
+    .checkmarkWrapper {
+      margin-top: 7px;
+    }
+  }
+}
+
+.isHighlighted {
+  box-shadow: 0 0 4px 2px var(--theme-staking-stake-pool-glow-color);
 }
 
 .ticker {
