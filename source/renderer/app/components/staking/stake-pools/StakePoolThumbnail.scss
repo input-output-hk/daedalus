@@ -29,10 +29,14 @@
   }
 
   &.hideSaturation {
-    padding-top: 14px;
+    padding-top: 11px;
+
+    .ticker {
+      margin-bottom: 5px;
+    }
 
     .checkmarkWrapper {
-      margin-top: 5px;
+      margin-top: 7px;
     }
   }
 }
