@@ -41,13 +41,13 @@ const messages = defineMessages({
     description: '"or" text for the Delegation center body section.',
   },
   TooltipPoolTickerEpoch: {
-    id: 'staking.delegationCenter.TooltipPoolTickerEpoch',
+    id: 'staking.delegationCenter.stakePoolTooltipTickerEpoch',
     defaultMessage: '!!!From epoch {fromEpoch}',
     description:
       'Delegated stake pool tooltip ticker for the Delegation center body section.',
   },
   TooltipPoolTickerEarningRewards: {
-    id: 'staking.delegationCenter.TooltipPoolTickerEarningRewards',
+    id: 'staking.delegationCenter.stakePoolTooltipTickerEarningRewards',
     defaultMessage: '!!!Earning rewards',
     description:
       'Delegated stake pool tooltip ticker for the Delegation center body section.',

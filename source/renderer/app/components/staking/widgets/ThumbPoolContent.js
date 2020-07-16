@@ -21,24 +21,33 @@ export default class ThumbPoolContent extends Component<Props> {
     const { ranking, ticker, retiring, saturation } = stakePool;
     const color = getColorFromRange(ranking, numberOfStakePools);
 
+    const showSaturation = false;
+
+    const componentClassnames = classnames([
+      styles.component,
+      !showSaturation ? styles.hideSaturation : null,
+    ]);
+
     const saturationClassnames = classnames([
       styles.saturationBar,
       styles[getSaturationColor(saturation)],
     ]);
 
     return (
-      <div className={styles.component}>
+      <div className={componentClassnames}>
         <div className={styles.ticker}>{ticker}</div>
         <div className={styles.ranking} style={{ color }}>
           {ranking}
         </div>
-        <div className={saturationClassnames}>
-          <span
-            style={{
-              width: `${parseFloat(saturation.toFixed(2))}%`,
-            }}
-          />
-        </div>
+        {showSaturation && (
+          <div className={saturationClassnames}>
+            <span
+              style={{
+                width: `${parseFloat(saturation.toFixed(2))}%`,
+              }}
+            />
+          </div>
+        )}
 
         {retiring && (
           <div className={styles.clock}>

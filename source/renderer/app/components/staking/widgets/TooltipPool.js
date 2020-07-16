@@ -5,6 +5,7 @@ import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
 import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
+import CopyToClipboard from 'react-copy-to-clipboard';
 import classnames from 'classnames';
 import { capitalize } from 'lodash';
 import moment from 'moment';
@@ -449,9 +450,11 @@ export default class TooltipPool extends Component<Props, State> {
           )}
           <div className={styles.id}>
             <p className={styles.ellipsisContent}>{ellipsis(id, 20, 20)}</p>
-            <p className={styles.hoverContent}>
-              {id} <SVGInline svg={copyIcon} className={styles.copyIcon} />
-            </p>
+            <CopyToClipboard text={id}>
+              <p className={styles.hoverContent}>
+                {id} <SVGInline svg={copyIcon} className={styles.copyIcon} />
+              </p>
+            </CopyToClipboard>
           </div>
           <div className={styles.description}>{description}</div>
           <Link

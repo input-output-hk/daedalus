@@ -103,6 +103,8 @@ export class ThumbPool extends Component<Props, State> {
     } = this.props;
     const { top, left } = this.state;
 
+    const showSaturation = false;
+
     const { ranking, id } = stakePool;
     const color = getColorFromRange(ranking, numberOfStakePools);
     const isDisabled = disabledStakePoolId === id;
