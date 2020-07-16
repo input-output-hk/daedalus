@@ -94,7 +94,7 @@ export default class SidebarStore extends Store {
       [categories.STAKING_DELEGATION_COUNTDOWN.name]: () =>
         !isIncentivizedTestnet && !isShelleyTestnet,
       [categories.STAKING.name]: isIncentivizedTestnet || isShelleyTestnet,
-      [categories.REDEEM_ITN_REWARDS.name]: !isDev,
+      [categories.REDEEM_ITN_REWARDS.name]: isDev,
       [categories.SETTINGS.name]: true,
       [categories.NETWORK_INFO.name]: !isFlight,
     };
