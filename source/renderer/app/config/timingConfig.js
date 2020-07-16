@@ -22,3 +22,4 @@ export const COPY_STATE_DIRECTORY_PATH_NOTIFICATION_DURATION = 10; // unit: seco
 export const NEWS_POLL_INTERVAL = 30 * 60 * 1000; // 30 minutes | unit: milliseconds
 export const NEWS_POLL_INTERVAL_ON_ERROR = 1 * 60 * 1000; // 1 minute | unit: milliseconds
 export const NEWS_POLL_INTERVAL_ON_INCIDENT = 10 * 60 * 1000; // 10 minutes | unit: milliseconds
+export const STAKE_POOL_ID_COPY_FEEDBACK = 1500; // 1.5 second | unit: milliseconds

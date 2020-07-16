@@ -182,24 +182,44 @@
   font-size: 10px;
   height: 14px;
   line-height: 14px;
-  margin: -2px 0 6px;
+  margin: -8px 0 8px;
   padding: 3px 0;
   word-break: break-all;
+
+  .ellipsisContent {
+    opacity: 0.5;
+    overflow: hidden;
+    padding-top: 3px;
+    white-space: nowrap;
+  }
 
   .hoverContent {
     background: var(--theme-staking-stake-pool-tooltip-id-background-color);
     display: none;
     left: 0;
-    padding: 3px 20px;
+    padding: 3px 20px 5px;
     position: absolute;
     right: 0;
+    user-select: none;
 
     svg {
-      height: 9.5px;
       margin-left: 3px;
-      width: 8px;
-      path {
-        fill: var(--theme-staking-stake-pool-tooltip-text-color);
+    }
+
+    &.copyIcon {
+      svg {
+        height: 9.5px;
+        width: 8px;
+        path {
+          fill: var(--theme-staking-stake-pool-tooltip-text-color);
+        }
+      }
+    }
+
+    &.checkIcon {
+      svg {
+        height: 8px;
+        width: auto;
       }
     }
 
@@ -213,7 +233,7 @@
       display: block;
       height: 70px;
       left: 0;
-      margin-top: 3px;
+      margin-top: 5px;
       position: absolute;
       width: 100%;
     }

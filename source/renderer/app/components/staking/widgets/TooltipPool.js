@@ -19,10 +19,13 @@ import StakePool from '../../../domains/StakePool';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
 import experimentalIcon from '../../../assets/images/experiment-icon.inline.svg';
 import copyIcon from '../../../assets/images/clipboard-ic.inline.svg';
+import copyCheckmarkIcon from '../../../assets/images/check-w.inline.svg';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
 import { formattedWalletAmount, shortNumber } from '../../../utils/formatters';
 import { rangeMap } from '../../../utils/numbers';
 import { ellipsis } from '../../../utils/strings';
+import { STAKE_POOL_ID_COPY_FEEDBACK } from '../../../config/timingConfig';
+
 import {
   THUMBNAIL_HEIGHT,
   THUMBNAIL_OFFSET_WIDTH,
@@ -113,6 +116,7 @@ type State = {
   componentStyle: Object,
   arrowStyle: Object,
   colorBandStyle: Object,
+  idCopyFeedback: boolean,
 };
 
 @observer
@@ -124,12 +128,15 @@ export default class TooltipPool extends Component<Props, State> {
   tooltipClick: boolean = false;
   containerWidth: number = 0;
   containerHeight: number = 0;
+  idCopyFeedbackTimeout: TimeoutID;
 
   state = {
     componentStyle: {},
     arrowStyle: {},
     colorBandStyle: {},
     tooltipPosition: 'right',
+    idCopyFeedback: false,
+    // idCopyFeedback: true,
   };
 
   componentDidMount() {
@@ -364,6 +371,16 @@ export default class TooltipPool extends Component<Props, State> {
     };
   };
 
+  onCopyId = () => {
+    clearTimeout(this.idCopyFeedbackTimeout);
+    this.setState({
+      idCopyFeedback: true,
+    });
+    this.idCopyFeedbackTimeout = setTimeout(() => {
+      this.setState({ idCopyFeedback: false });
+    }, STAKE_POOL_ID_COPY_FEEDBACK);
+  };
+
   render() {
     const { isShelleyTestnet } = global;
     const { intl } = this.context;
@@ -383,6 +400,7 @@ export default class TooltipPool extends Component<Props, State> {
       arrowStyle,
       colorBandStyle,
       tooltipPosition,
+      idCopyFeedback,
     } = this.state;
 
     const {
@@ -424,6 +442,12 @@ export default class TooltipPool extends Component<Props, State> {
       styles[getSaturationColor(saturation)],
     ]);
 
+    const idCopyIcon = idCopyFeedback ? copyCheckmarkIcon : copyIcon;
+    const hoverContentStyles = classnames([
+      styles.hoverContent,
+      idCopyFeedback ? styles.checkIcon : styles.copyIcon,
+    ]);
+
     return (
       <div
         className={componentClassnames}
@@ -450,9 +474,9 @@ export default class TooltipPool extends Component<Props, State> {
           )}
           <div className={styles.id}>
             <p className={styles.ellipsisContent}>{ellipsis(id, 20, 20)}</p>
-            <CopyToClipboard text={id}>
-              <p className={styles.hoverContent}>
-                {id} <SVGInline svg={copyIcon} className={styles.copyIcon} />
+            <CopyToClipboard text={id} onCopy={this.onCopyId}>
+              <p className={hoverContentStyles}>
+                {id} <SVGInline svg={idCopyIcon} />
               </p>
             </CopyToClipboard>
           </div>
