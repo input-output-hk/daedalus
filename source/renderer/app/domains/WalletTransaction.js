@@ -28,7 +28,11 @@ export class WalletTransaction {
   @observable amount: BigNumber;
   @observable date: ?Date;
   @observable description: string = '';
-  @observable addresses: TrasactionAddresses = { from: [], to: [] };
+  @observable addresses: TrasactionAddresses = {
+    from: [],
+    to: [],
+    withdrawals: [],
+  };
   @observable state: TransactionState;
   @observable depth: TransactionDepth;
   @observable slotNumber: ?number;

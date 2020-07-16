@@ -39,6 +39,7 @@ export type Transaction = {
   direction: 'outgoing' | 'incoming',
   inputs: Array<TransactionInputs>,
   outputs: Array<TransactionOutputs>,
+  withdrawals: Array<TransactionWithdrawals>,
   status: TransactionState,
 };
 
@@ -56,9 +57,18 @@ export type TransactionOutputs = {
   amount: TransactionAmount,
 };
 
+export type TransactionWithdrawals = {
+  stake_address: string,
+  amount: TransactionAmount,
+};
+
 export type TransactionState = 'pending' | 'in_ledger';
 
-export type TrasactionAddresses = { from: Array<?string>, to: Array<string> };
+export type TrasactionAddresses = {
+  from: Array<?string>,
+  to: Array<string>,
+  withdrawals: Array<string>,
+};
 
 export type TransactionType = 'card' | 'expend' | 'income' | 'exchange';
 
