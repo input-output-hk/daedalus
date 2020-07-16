@@ -12,8 +12,7 @@ import {
   STAKE_POOLS_INTERVAL,
   STAKE_POOLS_FAST_INTERVAL,
   REDEEM_ITN_REWARDS_STEPS as steps,
-  MAX_DELEGATION_FUNDS,
-  ALL_WALLETS_SELECTION_ID,
+  INITIAL_DELEGATION_FUNDS,
 } from '../config/stakingConfig';
 import type {
   Reward,
@@ -26,7 +25,6 @@ import type { RedeemItnRewardsStep } from '../types/stakingTypes';
 import Wallet from '../domains/Wallet';
 import StakePool from '../domains/StakePool';
 import { TransactionStates } from '../domains/WalletTransaction';
-import { getAllAmounts } from '../utils/walletsForStakePoolsRanking';
 import LocalizableError from '../i18n/LocalizableError';
 import REWARDS from '../config/stakingRewards.dummy.json';
 
@@ -34,8 +32,8 @@ export default class StakingStore extends Store {
   @observable isDelegationTransactionPending = false;
   @observable fetchingStakePoolsFailed = false;
   @observable isStakingExperimentRead: boolean = false;
-  @observable selectedDelegationWalletId = ALL_WALLETS_SELECTION_ID;
-  @observable stake = 0;
+  @observable selectedDelegationWalletId = null;
+  @observable stake = INITIAL_DELEGATION_FUNDS;
   @observable isRanking = false;
 
   /* ----------  Redeem ITN Rewards  ---------- */
@@ -65,7 +63,6 @@ export default class StakingStore extends Store {
     const { isIncentivizedTestnet, isShelleyTestnet } = global;
     const { staking: stakingActions } = this.actions;
 
-    this._initializeStake();
     this.refreshPolling = setInterval(
       this.getStakePoolsData,
       STAKE_POOLS_FAST_INTERVAL
@@ -118,17 +115,6 @@ export default class StakingStore extends Store {
   );
 
   // =================== PUBLIC API ==================== //
-
-  @action _initializeStake = () => {
-    const { wallets: walletsStore } = this.stores;
-
-    runInAction('Initialize stake', () => {
-      this.stake = Math.min(
-        Math.floor(getAllAmounts(walletsStore.all).toNumber()),
-        MAX_DELEGATION_FUNDS
-      );
-    });
-  };
 
   @action _setSelectedDelegationWalletId = (walletId: string) => {
     this.selectedDelegationWalletId = walletId;
