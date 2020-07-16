@@ -512,7 +512,8 @@ export default class AdaApi {
       });
       let withdrawals = new BigNumber(0);
       const outgoingTransactions = response.filter(
-        (tx: Transaction) => tx.direction === 'outgoing'
+        (tx: Transaction) =>
+          tx.direction === 'outgoing' && tx.status === 'in_ledger'
       );
       outgoingTransactions.forEach((tx: Transaction) => {
         tx.withdrawals.forEach((w: TransactionWithdrawals) => {
