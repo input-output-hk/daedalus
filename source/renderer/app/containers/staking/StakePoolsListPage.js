@@ -25,7 +25,7 @@ export default class StakePoolsListPage extends Component<Props> {
     });
   };
 
-  onRank = (sliderValue: number) => {
+  onRank = (selectedWalletId: string, sliderValue: number) => {
     if (this.rankTimeoutHandler) {
       clearTimeout(this.rankTimeoutHandler);
     }
@@ -33,6 +33,7 @@ export default class StakePoolsListPage extends Component<Props> {
       const {
         actions: { staking: stakingActions },
       } = this.props;
+      stakingActions.selectDelegationWallet.trigger(selectedWalletId);
       stakingActions.updateStake.trigger(sliderValue);
       this.rankTimeoutHandler = null;
     }, 1000);
@@ -46,6 +47,7 @@ export default class StakePoolsListPage extends Component<Props> {
       stakePools,
       isRanking,
       selectedDelegationWalletId,
+      stake,
       fetchingStakePoolsFailed,
       recentStakePools,
       getStakePoolById,
@@ -63,6 +65,7 @@ export default class StakePoolsListPage extends Component<Props> {
           currentTheme={currentTheme}
           onRank={this.onRank}
           selectedDelegationWalletId={selectedDelegationWalletId}
+          stake={stake}
           onDelegate={this.handleDelegate}
           isLoading={fetchingStakePoolsFailed}
           isRanking={isRanking && stakePoolsRequest.isExecuting}

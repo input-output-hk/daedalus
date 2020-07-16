@@ -101,15 +101,11 @@ type Props = {
   onOpenExternalLink: Function,
   onRank: Function,
   selectedDelegationWalletId?: ?string,
+  stake?: ?number,
   isLoading: boolean,
   isRanking: boolean,
   numberOfStakePools: number,
   getStakePoolById: Function,
-};
-
-type State = {
-  selectedWalletId: ?string,
-  sliderValue: number,
 };
 
 const OUT_OF_RANGE_MAX_AMOUNT = new BigNumber('11000000000');
@@ -117,7 +113,7 @@ const MIN_AMOUNT = new BigNumber('10');
 const MAX_AMOUNT = new BigNumber('44000000');
 
 @observer
-export default class StakePoolsRanking extends Component<Props, State> {
+export default class StakePoolsRanking extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -126,13 +122,12 @@ export default class StakePoolsRanking extends Component<Props, State> {
     wallets: [],
   };
 
-  state = {
-    selectedWalletId: null,
-    sliderValue: MIN_AMOUNT.toNumber(),
-  };
-
   componentDidMount() {
-    this.onSelectedWalletChange('0');
+    const { selectedDelegationWalletId, stake } = this.props;
+
+    if (!selectedDelegationWalletId && !stake) {
+      this.onSelectedWalletChange('0');
+    }
   }
 
   componentDidUpdate(prevProps: Props) {
@@ -162,12 +157,15 @@ export default class StakePoolsRanking extends Component<Props, State> {
   };
 
   onSelectedWalletChange = (selectedWalletId: string) => {
-    const { wallets } = this.props;
+    const { wallets, onRank, selectedDelegationWalletId } = this.props;
     const selectedWallet = wallets.find(
       wallet => wallet.id === selectedWalletId
     );
 
-    if (selectedWalletId !== '0' && !selectedWallet) {
+    if (
+      selectedWalletId === selectedDelegationWalletId ||
+      (selectedWalletId !== '0' && !selectedWallet)
+    ) {
       return;
     }
 
@@ -182,22 +180,16 @@ export default class StakePoolsRanking extends Component<Props, State> {
     }
     sliderValue = Math.max(sliderValue, MIN_AMOUNT.toNumber());
 
-    this.setState({
-      selectedWalletId,
-      sliderValue,
-    });
-    this.props.onRank(sliderValue);
+    onRank(selectedWalletId, sliderValue);
   };
 
   onSliderChange = (sliderValue: number) => {
-    this.props.onRank(sliderValue);
-    this.setState({ sliderValue, selectedWalletId: null });
+    this.props.onRank(null, sliderValue);
   };
 
   generateInfo = () => {
     const { intl } = this.context;
-    const { wallets, currentLocale } = this.props;
-    const { selectedWalletId, sliderValue } = this.state;
+    const { wallets, currentLocale, selectedDelegationWalletId } = this.props;
     const allWalletsItem = {
       id: '0',
       name: intl.formatMessage(messages.rankingAllWallets),
@@ -210,19 +202,19 @@ export default class StakePoolsRanking extends Component<Props, State> {
     const walletSelectorClasses = classnames([
       styles.walletSelector,
       walletSelectorLanguageMap[currentLocale],
-      selectedWalletId === null ? 'noValueSelected' : null,
+      selectedDelegationWalletId === null ? 'noValueSelected' : null,
     ]);
     const learnMoreUrl = intl.formatMessage(messages.rankingLearnMoreUrl);
 
     let walletSelectionStart = null;
     let walletSelectionEnd = null;
 
-    if (selectedWalletId === null) {
+    if (selectedDelegationWalletId === null) {
       walletSelectionStart = intl.formatMessage(
         messages.rankingSelectWalletStart
       );
       walletSelectionEnd = intl.formatMessage(messages.rankingSelectWalletEnd);
-    } else if (selectedWalletId === '0') {
+    } else if (selectedDelegationWalletId === '0') {
       walletSelectionStart = intl.formatMessage(
         messages.rankingAllWalletsStart
       );
@@ -233,12 +225,10 @@ export default class StakePoolsRanking extends Component<Props, State> {
     }
 
     return {
-      selectedWalletId,
       walletSelectorWallets,
       walletSelectorClasses,
       walletSelectionStart,
       walletSelectionEnd,
-      sliderValue,
       learnMoreUrl,
     };
   };
@@ -249,6 +239,8 @@ export default class StakePoolsRanking extends Component<Props, State> {
       onOpenExternalLink,
       isLoading,
       isRanking,
+      selectedDelegationWalletId,
+      stake,
       wallets,
       numberOfStakePools,
       getStakePoolById,
@@ -256,12 +248,10 @@ export default class StakePoolsRanking extends Component<Props, State> {
     const rankingDescription = intl.formatMessage(messages.rankingDescription);
     const learnMoreButtonClasses = classnames(['flat', styles.actionLearnMore]);
     const {
-      selectedWalletId,
       walletSelectorWallets,
       walletSelectorClasses,
       walletSelectionStart,
       walletSelectionEnd,
-      sliderValue,
       learnMoreUrl,
     } = this.generateInfo();
 
@@ -287,7 +277,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
                     wallets={walletSelectorWallets}
                     onChange={this.onSelectedWalletChange}
                     disabled={isLoading || isRanking}
-                    value={selectedWalletId}
+                    value={selectedDelegationWalletId}
                     selectionRenderer={option => (
                       <button
                         className="customValue"
@@ -332,7 +322,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
               <Slider
                 min={MIN_AMOUNT.toNumber()}
                 max={MAX_AMOUNT.toNumber()}
-                value={sliderValue}
+                value={stake || MIN_AMOUNT.toNumber()}
                 onChange={this.onSliderChange}
                 disabled={isLoading || isRanking}
                 showTooltip

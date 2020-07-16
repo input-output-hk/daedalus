@@ -31,8 +31,8 @@ export default class StakingStore extends Store {
   @observable isDelegationTransactionPending = false;
   @observable fetchingStakePoolsFailed = false;
   @observable isStakingExperimentRead: boolean = false;
-  @observable stake = 0;
   @observable selectedDelegationWalletId = null;
+  @observable stake = 0;
   @observable isRanking = false;
 
   /* ----------  Redeem ITN Rewards  ---------- */
@@ -84,6 +84,9 @@ export default class StakingStore extends Store {
       staking.selectDelegationWallet.listen(
         this._setSelectedDelegationWalletId
       );
+
+      // ========== MOBX REACTIONS =========== //
+      this.registerReactions([this._pollOnSync]);
     }
   }
 
@@ -107,14 +110,14 @@ export default class StakingStore extends Store {
 
   // =================== PUBLIC API ==================== //
 
-  @action _setStake = (stake: number) => {
-    this.stake = stake * LOVELACES_PER_ADA;
-    this.isRanking = true;
-    this.getStakePoolsData();
-  };
-
   @action _setSelectedDelegationWalletId = (walletId: string) => {
     this.selectedDelegationWalletId = walletId;
+  };
+
+  @action _setStake = (stake: number) => {
+    this.stake = stake;
+    this.isRanking = true;
+    this.getStakePoolsData();
   };
 
   @action _joinStakePool = async (request: JoinStakePoolRequest) => {
@@ -317,7 +320,8 @@ export default class StakingStore extends Store {
     }
 
     try {
-      await this.stakePoolsRequest.execute(this.stake).promise;
+      await this.stakePoolsRequest.execute(this.stake * LOVELACES_PER_ADA)
+        .promise;
       this._resetPolling(false);
     } catch (error) {
       this._resetPolling(true);
@@ -544,6 +548,14 @@ export default class StakingStore extends Store {
   @action _closeRedeemDialog = () => {
     this._resetRedeemItnRewards();
     this.redeemStep = null;
+  };
+
+  // ================= REACTIONS ==================
+
+  _pollOnSync = () => {
+    if (this.stores.networkStatus.isSynced) {
+      this._setStake(10);
+    }
   };
 
   /* ====  End of Redeem ITN Rewards  ===== */
