@@ -131,3 +131,11 @@ export type TransactionFee = {
   estimated_min: TransactionFeeAmount,
   estimated_max: TransactionFeeAmount,
 };
+
+export type GetWithdrawalsRequest = {
+  walletId: string,
+};
+
+export type GetWithdrawalsResponse = {
+  withdrawals: BigNumber,
+};

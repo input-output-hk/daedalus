@@ -926,6 +926,9 @@ export default class WalletsStore extends Store {
             allRequest: this.stores.transactions._getTransactionsAllRequest(
               walletId
             ),
+            withdrawalsRequest: this.stores.transactions._getWithdrawalsRequest(
+              walletId
+            ),
           })
         );
         this.stores.transactions._refreshTransactionData();

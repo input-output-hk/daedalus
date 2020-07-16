@@ -37,6 +37,7 @@ import { getTransactionFee } from './transactions/requests/getTransactionFee';
 import { getByronWalletTransactionFee } from './transactions/requests/getByronWalletTransactionFee';
 import { getTransactionHistory } from './transactions/requests/getTransactionHistory';
 import { getLegacyWalletTransactionHistory } from './transactions/requests/getLegacyWalletTransactionHistory';
+import { getWithdrawalHistory } from './transactions/requests/getWithdrawalHistory';
 import { createTransaction } from './transactions/requests/createTransaction';
 import { createByronWalletTransaction } from './transactions/requests/createByronWalletTransaction';
 import { deleteLegacyTransaction } from './transactions/requests/deleteLegacyTransaction';
@@ -134,11 +135,14 @@ import type {
 import type {
   Transaction,
   TransactionFee,
+  TransactionWithdrawals,
   GetTransactionFeeRequest,
   CreateTransactionRequest,
   DeleteTransactionRequest,
   GetTransactionsRequest,
   GetTransactionsResponse,
+  GetWithdrawalsRequest,
+  GetWithdrawalsResponse,
 } from './transactions/types';
 
 // Wallets Types
@@ -494,6 +498,36 @@ export default class AdaApi {
     //   logger.error('AdaApi::searchHistory error', { error });
     //   throw new GenericApiError(error);
     // }
+  };
+
+  getWithdrawals = async (
+    request: GetWithdrawalsRequest
+  ): Promise<GetWithdrawalsResponse> => {
+    logger.debug('AdaApi::getWithdrawals called', { parameters: request });
+    const { walletId } = request;
+    try {
+      const response = await getWithdrawalHistory(this.config, walletId);
+      logger.debug('AdaApi::getWithdrawals success', {
+        transactions: response,
+      });
+      let withdrawals = new BigNumber(0);
+      const outgoingTransactions = response.filter(
+        (tx: Transaction) =>
+          tx.direction === 'outgoing' && tx.status === 'in_ledger'
+      );
+      outgoingTransactions.forEach((tx: Transaction) => {
+        tx.withdrawals.forEach((w: TransactionWithdrawals) => {
+          const withdrawal = new BigNumber(w.amount.quantity).dividedBy(
+            LOVELACES_PER_ADA
+          );
+          withdrawals = withdrawals.add(withdrawal);
+        });
+      });
+      return { withdrawals };
+    } catch (error) {
+      logger.error('AdaApi::getWithdrawals error', { error });
+      throw new ApiError(error);
+    }
   };
 
   createWallet = async (request: CreateWalletRequest): Promise<Wallet> => {

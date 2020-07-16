@@ -64,7 +64,7 @@ export default class DelegationCenterPage extends Component<Props> {
     const { stores } = this.props;
     const { app, uiDialogs, staking, wallets, networkStatus, profile } = stores;
     const { stakePools, getStakePoolById, fetchingStakePoolsFailed } = staking;
-    const { networkTip, nextEpoch, futureEpoch } = networkStatus;
+    const { isSynced, networkTip, nextEpoch, futureEpoch } = networkStatus;
     const { currentLocale } = profile;
 
     if (!wallets.allWallets.length) {
@@ -87,7 +87,9 @@ export default class DelegationCenterPage extends Component<Props> {
           nextEpoch={nextEpoch}
           futureEpoch={futureEpoch}
           getStakePoolById={getStakePoolById}
-          isLoading={fetchingStakePoolsFailed || !stakePools.length}
+          isLoading={
+            !isSynced || fetchingStakePoolsFailed || !stakePools.length
+          }
           currentLocale={currentLocale}
         />
         {uiDialogs.isOpen(UndelegateConfirmationDialog) ? (
