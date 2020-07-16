@@ -122,10 +122,12 @@ export default class StakingStore extends Store {
   @action _initializeStake = () => {
     const { wallets: walletsStore } = this.stores;
 
-    this.stake = Math.min(
-      Math.floor(getAllAmounts(walletsStore.all).toNumber()),
-      MAX_DELEGATION_FUNDS
-    );
+    runInAction('Initialize stake', () => {
+      this.stake = Math.min(
+        Math.floor(getAllAmounts(walletsStore.all).toNumber()),
+        MAX_DELEGATION_FUNDS
+      );
+    });
   };
 
   @action _setSelectedDelegationWalletId = (walletId: string) => {
