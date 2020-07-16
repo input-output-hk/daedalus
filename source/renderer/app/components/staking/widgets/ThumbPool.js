@@ -117,7 +117,6 @@ export class ThumbPool extends Component<Props, State> {
       isHighlighted ? styles.isHighlighted : null,
       onHover ? styles.isOnHover : null,
       isDisabled ? styles.disabled : null,
-      !showSaturation ? styles.hideSaturation : null,
     ]);
 
     const content =

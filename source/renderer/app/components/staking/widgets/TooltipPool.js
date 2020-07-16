@@ -383,6 +383,7 @@ export default class TooltipPool extends Component<Props, State> {
     } = this.state;
 
     const {
+      id,
       name,
       description,
       ticker,
@@ -444,6 +445,7 @@ export default class TooltipPool extends Component<Props, State> {
               />
             </div>
           )}
+          <div className={styles.id}>{id}</div>
           <div className={styles.description}>{description}</div>
           <Link
             onClick={() => onOpenExternalLink(homepage)}

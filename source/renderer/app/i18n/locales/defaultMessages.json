@@ -3142,7 +3142,7 @@
           "line": 48
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
-        "id": "staking.delegationCenter.TooltipPoolTickerEpoch",
+        "id": "staking.delegationCenter.stakePoolTooltipTickerEpoch",
         "start": {
           "column": 26,
           "line": 43
@@ -3156,7 +3156,7 @@
           "line": 54
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
-        "id": "staking.delegationCenter.TooltipPoolTickerEarningRewards",
+        "id": "staking.delegationCenter.stakePoolTooltipTickerEarningRewards",
         "start": {
           "column": 35,
           "line": 49
