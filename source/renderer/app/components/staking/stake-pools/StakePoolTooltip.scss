@@ -175,6 +175,16 @@
   display: block;
 }
 
+.id {
+  color: var(--theme-staking-stake-pool-tooltip-text-color);
+  font-family: var(--font-medium);
+  font-size: 10px;
+  line-height: 14px;
+  margin: -2px 0 6px;
+  opacity: 0.6;
+  word-break: break-all;
+}
+
 .name {
   color: var(--theme-staking-stake-pool-tooltip-text-color);
   font-family: var(--font-semibold);
