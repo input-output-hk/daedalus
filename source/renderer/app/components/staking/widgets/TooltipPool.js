@@ -18,7 +18,7 @@ import experimentalTooltipStyles from './TooltipPool-experimental-tooltip.scss';
 import StakePool from '../../../domains/StakePool';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
 import experimentalIcon from '../../../assets/images/experiment-icon.inline.svg';
-import copyIcon from '../../../assets/images/clipboard-ic.inline.svg';
+import copyIcon from '../../../assets/images/clipboard-small-ic.inline.svg';
 import copyCheckmarkIcon from '../../../assets/images/check-w.inline.svg';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
 import { formattedWalletAmount, shortNumber } from '../../../utils/formatters';
