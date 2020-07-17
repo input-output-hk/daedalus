@@ -201,13 +201,15 @@
     box-shadow: 1px 6px 6px var(--theme-staking-stake-pool-tooltip-id-shadow-1);
     height: 20px;
     left: 0;
+    margin-left: -20px;
     opacity: 0;
     padding: 3px 20px 5px;
     position: absolute;
     right: 0;
-    transition: opacity 0s, height 0.25s;
+    transition: opacity 0.25s, height 0.25s;
     transition-delay: 0s;
     user-select: none;
+    width: 280px;
 
     svg {
       margin-left: 3px;
@@ -239,6 +241,7 @@
     .hoverContent {
       height: 36px;
       opacity: 1;
+      transition: opacity 0s, height 0.25s;
       transition-delay: 0.25s;
     }
   }

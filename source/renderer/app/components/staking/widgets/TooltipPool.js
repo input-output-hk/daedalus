@@ -15,6 +15,7 @@ import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import styles from './TooltipPool.scss';
 import experimentalTooltipStyles from './TooltipPool-experimental-tooltip.scss';
+import isTooltipStyles from './TooltipPool-copyId-tooltip.scss';
 import StakePool from '../../../domains/StakePool';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
 import experimentalIcon from '../../../assets/images/experiment-icon.inline.svg';
@@ -73,11 +74,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Saturation:',
     description: '"Saturation" for the Stake Pools Tooltip page.',
   },
-  // cost: {
-  //  id: 'staking.stakePools.tooltip.cost',
-  //  defaultMessage: '!!!Operating Costs:',
-  //  description: 'Cost" for the Stake Pools Tooltip page.',
-  // },
   pledge: {
     id: 'staking.stakePools.tooltip.pledge',
     defaultMessage: '!!!Pledge:',
@@ -93,6 +89,11 @@ const messages = defineMessages({
     id: 'staking.stakePools.tooltip.experimentalTooltipLabel',
     defaultMessage: '!!!Experimental feature, data may be inaccurate.',
     description: 'Experimental tooltip label',
+  },
+  copyIdTooltipLabel: {
+    id: 'staking.stakePools.tooltip.copyIdTooltipLabel',
+    defaultMessage: '!!!Copy the stake pool ID',
+    description: 'copyId tooltip label',
   },
 });
 
@@ -380,6 +381,10 @@ export default class TooltipPool extends Component<Props, State> {
     }, STAKE_POOL_ID_COPY_FEEDBACK);
   };
 
+  onIdMouseOut = () => {
+    this.setState({ idCopyFeedback: false });
+  };
+
   render() {
     const { isShelleyTestnet } = global;
     const { intl } = this.context;
@@ -471,12 +476,24 @@ export default class TooltipPool extends Component<Props, State> {
               />
             </div>
           )}
-          <div className={styles.id}>
+          <div
+            className={styles.id}
+            onMouseOut={this.onIdMouseOut}
+            onBlur={() => {}}
+          >
             <p className={styles.ellipsisContent}>{ellipsis(id, 20, 20)}</p>
             <CopyToClipboard text={id} onCopy={this.onCopyId}>
-              <p className={hoverContentStyles}>
-                {id} <SVGInline svg={idCopyIcon} />
-              </p>
+              <Tooltip
+                className={styles.idTooltip}
+                key="id"
+                themeOverrides={isTooltipStyles}
+                skin={TooltipSkin}
+                tip={intl.formatMessage(messages.copyIdTooltipLabel)}
+              >
+                <p className={hoverContentStyles}>
+                  {id} <SVGInline svg={idCopyIcon} />
+                </p>
+              </Tooltip>
             </CopyToClipboard>
           </div>
           <div className={styles.description}>{description}</div>

@@ -455,6 +455,7 @@
   "staking.stakePools.search.delegatingListTitle": "Staking pools you are delegating to",
   "staking.stakePools.search.listTitle": "Stake pools ({pools})",
   "staking.stakePools.search.searchInputPlaceholder": "Search stake pools",
+  "staking.stakePools.tooltip.copyIdTooltipLabel": "Copy the stake pool ID",
   "staking.stakePools.tooltip.costPerEpoch": "Cost per epoch:",
   "staking.stakePools.tooltip.delegateButton": "Delegate to this pool",
   "staking.stakePools.tooltip.experimentalTooltipLabel": "Experimental feature, data may be inaccurate.",

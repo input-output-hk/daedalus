@@ -455,6 +455,7 @@
   "staking.stakePools.search.delegatingListTitle": "現在委任しているステークプール",
   "staking.stakePools.search.listTitle": "ステークプール ({pools})",
   "staking.stakePools.search.searchInputPlaceholder": "ステークプールを検索する",
+  "staking.stakePools.tooltip.copyIdTooltipLabel": "ステークプールIDをコピーする",
   "staking.stakePools.tooltip.costPerEpoch": "エポックごとのコスト：",
   "staking.stakePools.tooltip.delegateButton": "このプールに委任する",
   "staking.stakePools.tooltip.experimentalTooltipLabel": "実験的機能データは不正確な場合があります",
