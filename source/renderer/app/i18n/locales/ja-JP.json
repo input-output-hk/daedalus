@@ -489,7 +489,7 @@
   "static.splash.network.itnNetworkName": "Rewards",
   "static.splash.network.itnVersionName": "INCENTIVIZED TESTNET v1",
   "static.splash.network.linkLabel": "もっと知る",
-  "static.splash.network.stnDescription": "<p>このDaedalusバージョンは、Shelleyテストネット第2フェーズで使用するための専用バージョンです。</p><p>インセンティブ付きテストネットプログラムに参加していた場合は、このDaedalusバージョンを使用して、インセンティブ付きテストネットの報酬を確認することができます。15語のウォレット復元フレーズを使用して、Daedalus Rewardsのウォレットを復元してください。</p>",
+  "static.splash.network.stnDescription": "<p>このDaedalusバージョンは、Shelleyテストネットネットワーク第2イテレーションで使用するための専用バージョンです。</p><p>本バージョンにより、今夏委任機能がCardanoメインネットで使用可能となる前に、テストネットADAを使用してそのメカニズムを体験し、報酬の仕組みを理解することができます。</p>",
   "static.splash.network.stnLinkUrl": "https://testnets.cardano.org/en/shelley/overview/",
   "static.splash.network.stnVersionName": "Shelleyテストネット",
   "static.splash.network.title": "Daedalus",
