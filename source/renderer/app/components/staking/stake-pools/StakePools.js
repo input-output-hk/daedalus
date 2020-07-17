@@ -3,10 +3,12 @@ import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import classnames from 'classnames';
+import StakePoolsRanking from './StakePoolsRanking';
 import { StakePoolsList } from './StakePoolsList';
 import { StakePoolsSearch } from './StakePoolsSearch';
 import BackToTopButton from '../../widgets/BackToTopButton';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
+import Wallet from '../../../domains/Wallet';
 import styles from './StakePools.scss';
 import { getFilteredStakePoolsList } from './helpers';
 import StakePool from '../../../domains/StakePool';
@@ -36,12 +38,19 @@ const messages = defineMessages({
 });
 
 type Props = {
+  wallets: Array<Wallet>,
+  currentLocale: string,
   stakePoolsList: Array<StakePool>,
   onOpenExternalLink: Function,
   currentTheme: string,
+  onRank: Function,
+  selectedDelegationWalletId?: ?string,
+  stake?: ?number,
   onDelegate: Function,
   isLoading: boolean,
+  isRanking: boolean,
   stakePoolsDelegatingList: Array<StakePool>,
+  getStakePoolById: Function,
 };
 
 type State = {
@@ -79,11 +88,18 @@ export default class StakePools extends Component<Props, State> {
   render() {
     const { intl } = this.context;
     const {
+      wallets,
+      currentLocale,
       stakePoolsList,
+      onRank,
+      selectedDelegationWalletId,
+      stake,
       onOpenExternalLink,
       currentTheme,
       isLoading,
+      isRanking,
       stakePoolsDelegatingList,
+      getStakePoolById,
     } = this.props;
     const { search, selectedList } = this.state;
 
@@ -124,6 +140,18 @@ export default class StakePools extends Component<Props, State> {
               buttonTopPosition={144}
             />
 
+            <StakePoolsRanking
+              wallets={wallets}
+              currentLocale={currentLocale}
+              onOpenExternalLink={onOpenExternalLink}
+              onRank={onRank}
+              selectedDelegationWalletId={selectedDelegationWalletId}
+              stake={stake}
+              isLoading={isLoading}
+              isRanking={isRanking}
+              numberOfStakePools={stakePoolsList.length}
+              getStakePoolById={getStakePoolById}
+            />
             <StakePoolsSearch
               search={search}
               onSearch={this.handleSearch}

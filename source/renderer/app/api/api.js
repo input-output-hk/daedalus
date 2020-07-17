@@ -36,6 +36,7 @@ import { getTransactionFee } from './transactions/requests/getTransactionFee';
 import { getByronWalletTransactionFee } from './transactions/requests/getByronWalletTransactionFee';
 import { getTransactionHistory } from './transactions/requests/getTransactionHistory';
 import { getLegacyWalletTransactionHistory } from './transactions/requests/getLegacyWalletTransactionHistory';
+import { getWithdrawalHistory } from './transactions/requests/getWithdrawalHistory';
 import { createTransaction } from './transactions/requests/createTransaction';
 import { createByronWalletTransaction } from './transactions/requests/createByronWalletTransaction';
 import { deleteLegacyTransaction } from './transactions/requests/deleteLegacyTransaction';
@@ -76,6 +77,7 @@ import { getStakePools } from './staking/requests/getStakePools';
 import { getDelegationFee } from './staking/requests/getDelegationFee';
 import { joinStakePool } from './staking/requests/joinStakePool';
 import { quitStakePool } from './staking/requests/quitStakePool';
+import { submitRedeemItnRewards } from './staking/requests/submitRedeemItnRewards';
 
 // Utility functions
 import {
@@ -132,11 +134,14 @@ import type {
 import type {
   Transaction,
   TransactionFee,
+  TransactionWithdrawals,
   GetTransactionFeeRequest,
   CreateTransactionRequest,
   DeleteTransactionRequest,
   GetTransactionsRequest,
   GetTransactionsResponse,
+  GetWithdrawalsRequest,
+  GetWithdrawalsResponse,
 } from './transactions/types';
 
 // Wallets Types
@@ -177,6 +182,9 @@ import type {
   AdaApiStakePools,
   AdaApiStakePool,
   QuitStakePoolRequest,
+  SubmitRedeemItnRewardsRequest,
+  SubmitRedeemItnRewardsResponse,
+  SubmitRedeemItnRewardsApiResponse,
 } from './staking/types';
 import type { StakePoolProps } from '../domains/StakePool';
 import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-node.types';
@@ -191,7 +199,7 @@ import ApiError from '../domains/ApiError';
 // @UPDATE TODO
 import dummyUpdates from './news/dummy-update.json';
 
-const { isIncentivizedTestnet, isShelleyTestnet } = global;
+const { isIncentivizedTestnet } = global;
 
 export default class AdaApi {
   config: RequestConfig;
@@ -211,9 +219,9 @@ export default class AdaApi {
       const wallets: AdaWallets = isIncentivizedTestnet
         ? await getWallets(this.config)
         : [];
-      const legacyWallets: LegacyAdaWallets = !isShelleyTestnet
-        ? await getLegacyWallets(this.config)
-        : [];
+      const legacyWallets: LegacyAdaWallets = await getLegacyWallets(
+        this.config
+      );
       logger.debug('AdaApi::getWallets success', { wallets, legacyWallets });
 
       map(legacyWallets, legacyAdaWallet => {
@@ -492,6 +500,36 @@ export default class AdaApi {
     //   logger.error('AdaApi::searchHistory error', { error });
     //   throw new GenericApiError(error);
     // }
+  };
+
+  getWithdrawals = async (
+    request: GetWithdrawalsRequest
+  ): Promise<GetWithdrawalsResponse> => {
+    logger.debug('AdaApi::getWithdrawals called', { parameters: request });
+    const { walletId } = request;
+    try {
+      const response = await getWithdrawalHistory(this.config, walletId);
+      logger.debug('AdaApi::getWithdrawals success', {
+        transactions: response,
+      });
+      let withdrawals = new BigNumber(0);
+      const outgoingTransactions = response.filter(
+        (tx: Transaction) =>
+          tx.direction === 'outgoing' && tx.status === 'in_ledger'
+      );
+      outgoingTransactions.forEach((tx: Transaction) => {
+        tx.withdrawals.forEach((w: TransactionWithdrawals) => {
+          const withdrawal = new BigNumber(w.amount.quantity).dividedBy(
+            LOVELACES_PER_ADA
+          );
+          withdrawals = withdrawals.add(withdrawal);
+        });
+      });
+      return { withdrawals };
+    } catch (error) {
+      logger.error('AdaApi::getWithdrawals error', { error });
+      throw new ApiError(error);
+    }
   };
 
   createWallet = async (request: CreateWalletRequest): Promise<Wallet> => {
@@ -1332,6 +1370,25 @@ export default class AdaApi {
     }
   };
 
+  submitRedeemItnRewards = async (
+    request: SubmitRedeemItnRewardsRequest
+  ): Promise<SubmitRedeemItnRewardsApiResponse> => {
+    const { walletId, recoveryPhrase } = request;
+    try {
+      const response: SubmitRedeemItnRewardsResponse = await submitRedeemItnRewards(
+        {
+          walletId,
+          recoveryPhrase,
+        }
+      );
+      logger.debug('AdaApi::submitRedeemItnRewards success', { response });
+      return _createRedeemItnRewardsFromServerData(response);
+    } catch (error) {
+      logger.error('AdaApi::submitRedeemItnRewards error', { error });
+      throw new ApiError(error);
+    }
+  };
+
   exportWalletToFile = async (
     request: ExportWalletToFileRequest
   ): Promise<[]> => {
@@ -1429,10 +1486,15 @@ export default class AdaApi {
     }
   };
 
-  getStakePools = async (): Promise<Array<StakePool>> => {
-    logger.debug('AdaApi::getStakePools called');
+  getStakePools = async (stake: number = 0): Promise<Array<StakePool>> => {
+    logger.debug('AdaApi::getStakePools called', {
+      parameters: { stake },
+    });
     try {
-      const response: AdaApiStakePools = await getStakePools(this.config);
+      const response: AdaApiStakePools = await getStakePools(
+        this.config,
+        stake
+      );
       const stakePools = response
         .filter(({ metadata }: AdaApiStakePool) => metadata !== undefined)
         .filter(
@@ -1824,6 +1886,7 @@ const _createTransactionFromServerData = action(
       direction,
       inputs,
       outputs,
+      withdrawals,
       status,
     } = data;
     const state = _conditionToTxState(status);
@@ -1850,6 +1913,7 @@ const _createTransactionFromServerData = action(
       addresses: {
         from: inputs.map(({ address }) => address || null),
         to: outputs.map(({ address }) => address),
+        withdrawals: withdrawals.map(({ stake_address: address }) => address),
       },
       state,
     });
@@ -1890,6 +1954,7 @@ const _createStakePoolFromServerData = action(
       margin: profitMargin,
       metadata,
       pledge,
+      retirement,
     } = stakePool;
     const {
       relative_stake: relativeStake,
@@ -1902,6 +1967,7 @@ const _createStakePoolFromServerData = action(
     const costQuantity = get(cost, 'quantity', 0).toString();
     const pledgeQuantity = get(pledge, 'quantity', 0).toString();
     const profitMarginPercentage = get(profitMargin, 'quantity', 0);
+    const retiringAt = get(retirement, 'epoch_start_time', null);
     return new StakePool({
       id,
       relativeStake: relativeStakePercentage,
@@ -1915,8 +1981,21 @@ const _createStakePoolFromServerData = action(
       pledge: new BigNumber(pledgeQuantity).dividedBy(LOVELACES_PER_ADA),
       profitMargin: profitMarginPercentage,
       ranking: index + 1,
-      retiring: null,
+      retiring: retiringAt ? new Date(retiringAt) : null,
       saturation: saturation * 100,
     });
   }
+);
+
+const _createRedeemItnRewardsFromServerData = action(
+  'AdaApi::_createRedeemItnRewardsFromServerData',
+  ({
+    rewardsTotal,
+    transactionFees,
+    finalTotal,
+  }: SubmitRedeemItnRewardsResponse) => ({
+    rewardsTotal: new BigNumber(rewardsTotal),
+    transactionFees: new BigNumber(transactionFees),
+    finalTotal: new BigNumber(finalTotal),
+  })
 );

@@ -5,10 +5,10 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-node",
-        "rev": "7681539f4afba9a26e18866defa9f866ab12f494",
-        "sha256": "0bi1vwmb1w6wc2szpr8v1nbsci9y36lnjr4v5pli1wvll1hhpw3c",
+        "rev": "712a287602797e8fd889fbf73e56a08c3d8b004a",
+        "sha256": "1lg1g702x5q6m8n61bfyji7pmj2gsw44mm41nxhc5rv2wk4g996c",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-node/archive/7681539f4afba9a26e18866defa9f866ab12f494.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-node/archive/712a287602797e8fd889fbf73e56a08c3d8b004a.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-shell": {
@@ -29,10 +29,10 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-wallet",
-        "rev": "9a910f3af3b9a22286cd8e106ab1e62f67a36264",
-        "sha256": "1pl1vqmdyjx8ly3vy48j211hh59w7ikksmzv7r4y1cpjyi0ajjsa",
+        "rev": "c90fe652ffc9d72ee0257f40150c13d458739355",
+        "sha256": "16ri5slbig4v1166d2jvb0gf5qs9l671zfkz0zmg6vj9a2dlshf2",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-wallet/archive/9a910f3af3b9a22286cd8e106ab1e62f67a36264.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-wallet/archive/c90fe652ffc9d72ee0257f40150c13d458739355.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz",
         "version": "v2020-04-28"
     },
@@ -66,10 +66,10 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "iohk-nix",
-        "rev": "0de0af2ed1b2d8f563e4f10e4e1fb386a5ffe683",
-        "sha256": "04pndv5vmhd2qhlrv086cz6dblzkr0nbxrq3k99n970121hjbi0k",
+        "rev": "d530a70491c2a3d59462724d76bf8a2c8b379eb2",
+        "sha256": "11hm4z07hpy7jjp0qgi6p2jvwgiyqqfhl7iz5v1vl57bp8qmszzc",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/iohk-nix/archive/0de0af2ed1b2d8f563e4f10e4e1fb386a5ffe683.tar.gz",
+        "url": "https://github.com/input-output-hk/iohk-nix/archive/d530a70491c2a3d59462724d76bf8a2c8b379eb2.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "js-chain-libs": {

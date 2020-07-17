@@ -5,6 +5,8 @@
   flex-direction: column;
   font-family: var(--font-regular);
   justify-content: flex-start;
+  max-width: calc(100% - 20px);
+
   :global {
     .SimpleOptions_option {
       padding: 8px 20px;
@@ -15,6 +17,10 @@
 .label {
   font-size: 14px;
   line-height: 18px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .topRow {
@@ -22,6 +28,9 @@
   display: flex;
   flex-direction: row;
   justify-content: flex-start;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 
   .ticker {
     font-size: 14px;
@@ -34,7 +43,11 @@
 .detail {
   font-size: 12px;
   line-height: 16px;
+  max-width: 100%;
   opacity: 0.5;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .selected {

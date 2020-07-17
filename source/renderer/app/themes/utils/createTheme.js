@@ -894,6 +894,7 @@ export const createDaedalusComponentsTheme = (
       '--theme-staking-stake-pool-tooltip-border-color': `${border}`,
       '--theme-staking-stake-pool-tooltip-shadow-color': 'rgba(0, 0, 0, 0.25)',
       '--theme-staking-stake-pool-tooltip-text-color': `${text.primary}`,
+      '--theme-staking-stake-pool-tooltip-id-background-color': `${text.secondary}`,
       '--theme-staking-stake-pool-tooltip-link-color': `${background.secondary.dark}`,
       '--theme-staking-stake-pool-tooltip-neutral-background-color': `${chroma(
         background.secondary.regular
@@ -931,6 +932,11 @@ export const createDaedalusComponentsTheme = (
       '--theme-staking-progress-bar-background-color': `${background.primary.regular}`,
       '--theme-staking-progress-stripe-dark-1-background-color': `${background.secondary.dark}`,
       '--theme-staking-progress-stripe-dark-2-background-color': `${background.secondary.regular}`,
+      '--theme-staking-slider-background-color-1': `${background.secondary.dark}`,
+      '--theme-staking-slider-background-color-2': `${background.secondary.regular}`,
+      '--theme-staking-slider-box-shadow-color': `${chroma(
+        background.primary.regular
+      ).alpha(0.25)}`,
       '--theme-staking-table-body-highlighted-text-color': `${background.secondary.dark}`,
       '--theme-staking-info-learn-more-button-text-color': `${background.primary.lightest}`,
       '--theme-staking-info-learn-more-icon-color': `${text.secondary}`,
@@ -968,6 +974,13 @@ export const createDaedalusComponentsTheme = (
         background.primary.regular
       ).alpha(0.18)}`,
       '--theme-staking-export-button-color': `${background.primary.lightest}`,
+      '--theme-staking-redeemItnRewards-text-color': `${text.secondary}`,
+      '--theme-staking-redeemItnRewards-separator-color': `${`${background.secondary.dark}`}`,
+      '--theme-staking-redeemItnRewards-attention-text-color': `${error.regular}`,
+      '--theme-staking-redeemItnRewards-description-text-color': `${chroma(
+        background.primary.light
+      ).alpha(0.7)}`,
+      '--theme-staking-redeemItnRewards-icon-color': `${text.primary}`,
     },
     support: {
       '--theme-support-settings-item-color': `${text.primary}`,

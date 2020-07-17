@@ -6,7 +6,7 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import WalletCreateSteps from './WalletCreateSteps';
 import styles from './WalletCreateDialog.scss';
-import type { DialogAction } from '../../widgets/Dialog';
+import type { DialogActionItems } from '../../widgets/Dialog';
 
 const messages = defineMessages({
   dialogTitle: {
@@ -18,7 +18,7 @@ const messages = defineMessages({
 
 type Props = {
   stepNumber: number,
-  actions?: Array<DialogAction>,
+  actions?: DialogActionItems,
   onClose?: Function,
   children: Node,
 };

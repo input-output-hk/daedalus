@@ -1,12 +1,31 @@
 Changelog
 =========
 
-
 ## vNext
 
 ### Features
 
 - Implemented Daedalus app automatic update ([PR 2056](https://github.com/input-output-hk/daedalus/pull/2056))
+
+## 1.3.0-STN2
+
+### Features
+
+- Added display of stake pool id on the stake pool tooltip ([PR 2071](https://github.com/input-output-hk/daedalus/pull/2071))
+- Added stake pool retirement info ([PR 2068](https://github.com/input-output-hk/daedalus/pull/2068))
+- Removed stake pool saturation info ([PR 2067](https://github.com/input-output-hk/daedalus/pull/2067))
+- Implemented calculation of wallet's total rewards ([PR 2066](https://github.com/input-output-hk/daedalus/pull/2066))
+- Added display of transaction withdrawals within transaction details ([PR 2065](https://github.com/input-output-hk/daedalus/pull/2065))
+- Implemented the Redeem Incentivized testnet rewards feature ([PR 2042](https://github.com/input-output-hk/daedalus/pull/2042))
+- Ranked stake pools based on delegated amount configured by slider ([PR 2051](https://github.com/input-output-hk/daedalus/pull/2051), [PR 2063](https://github.com/input-output-hk/daedalus/pull/2063), [PR 2072](https://github.com/input-output-hk/daedalus/pull/2072))
+- Enabled Byron wallets ([PR 2062](https://github.com/input-output-hk/daedalus/pull/2062))
+
+### Chores
+
+- Removed 'ITN rewards redemption' icon from the sidebar ([PR 2070](https://github.com/input-output-hk/daedalus/pull/2070))
+- Updated `cardano-wallet` to revision `c90fe652` which includes `cardano-node` 1.15.1 ([PR 2065](https://github.com/input-output-hk/daedalus/pull/2065))
+- Updated `cardano-wallet` to revision `23981129` ([PR 2064](https://github.com/input-output-hk/daedalus/pull/2064))
+- Updated `cardano-wallet` to revision `52966c3d` which includes `cardano-node` 1.15.0 ([PR 2062](https://github.com/input-output-hk/daedalus/pull/2062))
 
 ## 1.2.0-STN1
 

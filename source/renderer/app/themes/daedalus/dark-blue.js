@@ -59,7 +59,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
   },
   button: {
     '--theme-button-spinner-color': '#fafbfc',
-    '--theme-label-button-color': 'rgba(233, 244, 254, 0.5)',
+    '--theme-label-button-color': 'rgba(233, 244, 254, 1)',
   },
   buttonAttention: {
     '--theme-button-attention-background-color': '#ea4c5b',
@@ -754,6 +754,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
       'rgba(233, 244, 254, .1)',
     '--theme-staking-stake-pool-tooltip-neutral-text-color': '#e9f4fe',
     '--theme-staking-stake-pool-tooltip-experimental-icon-color': '#e9f4fe',
+    '--theme-staking-stake-pool-tooltip-id-background-color': '#fafbfc',
   },
   staking: {
     '--theme-staking-content-background-color': '#263345',
@@ -769,6 +770,9 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-staking-progress-bar-background-color': 'rgba(233, 244, 254, 0.1)',
     '--theme-staking-progress-stripe-dark-1-background-color': '#3c4852',
     '--theme-staking-progress-stripe-dark-2-background-color': '#536370',
+    '--theme-staking-slider-background-color-1': '#e9f4fe',
+    '--theme-staking-slider-background-color-2': '#e9f4fe',
+    '--theme-staking-slider-box-shadow-color': 'rgba(0, 0, 0, 0.24)',
     '--theme-staking-table-body-highlighted-text-color': '#2ab467',
     '--theme-staking-donut-ring-completed-color': 'rgba(234, 76, 91, 0.2)',
     '--theme-staking-donut-ring-remaining-color': '#ea4c5b',
@@ -801,6 +805,11 @@ export const DARK_BLUE_THEME_OUTPUT = {
       'rgba(233, 244, 254, 0.07)',
     '--theme-staking-wallet-row-ticker-text-color': '#e9f4fe',
     '--theme-staking-wallet-row-ticker-ada-icon-fill-color': '#e9f4fe80',
+    '--theme-staking-redeemItnRewards-text-color': '#e9f4fe',
+    '--theme-staking-redeemItnRewards-separator-color': '#4b5965',
+    '--theme-staking-redeemItnRewards-attention-text-color': '#ea4c5b',
+    '--theme-staking-redeemItnRewards-description-text-color': '#515c6ab3',
+    '--theme-staking-redeemItnRewards-icon-color': '#e9f4fe',
   },
   support: {
     '--theme-support-settings-item-color': 'rgba(233, 244, 254, 0.5)',

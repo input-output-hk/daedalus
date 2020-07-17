@@ -2,6 +2,7 @@
 import React, { Component, Fragment } from 'react';
 import { observer, inject } from 'mobx-react';
 import StakePools from '../../components/staking/stake-pools/StakePools';
+import StakePoolsRankingLoader from '../../components/staking/stake-pools/StakePoolsRankingLoader';
 import DelegationSetupWizardDialogContainer from './dialogs/DelegationSetupWizardDialogContainer';
 import DelegationSetupWizardDialog from '../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
 import type { InjectedProps } from '../../types/injectedPropsType';
@@ -13,6 +14,8 @@ type Props = InjectedProps;
 export default class StakePoolsListPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
+  rankTimeoutHandler = null;
+
   handleDelegate = (poolId: string) => {
     const { actions } = this.props;
     const { updateDataForActiveDialog } = actions.dialogs;
@@ -22,21 +25,63 @@ export default class StakePoolsListPage extends Component<Props> {
     });
   };
 
+  onRank = (selectedWalletId: string, sliderValue: number) => {
+    if (this.rankTimeoutHandler) {
+      clearTimeout(this.rankTimeoutHandler);
+    }
+    this.rankTimeoutHandler = setTimeout(() => {
+      const {
+        actions: { staking: stakingActions },
+      } = this.props;
+      stakingActions.selectDelegationWallet.trigger(selectedWalletId);
+      stakingActions.updateStake.trigger(sliderValue);
+      this.rankTimeoutHandler = null;
+    }, 1000);
+  };
+
   render() {
-    const { uiDialogs, staking, app, profile } = this.props.stores;
+    const {
+      uiDialogs,
+      staking,
+      app,
+      networkStatus,
+      profile,
+      wallets,
+    } = this.props.stores;
     const { currentTheme } = profile;
-    const { stakePools, fetchingStakePoolsFailed, recentStakePools } = staking;
+    const { isSynced } = networkStatus;
+    const {
+      stakePoolsRequest,
+      stakePools,
+      isRanking,
+      selectedDelegationWalletId,
+      stake,
+      fetchingStakePoolsFailed,
+      recentStakePools,
+      getStakePoolById,
+    } = staking;
+    const { all } = wallets;
 
     return (
       <Fragment>
         <StakePools
+          wallets={all}
+          currentLocale={profile.currentLocale}
           stakePoolsList={stakePools}
           stakePoolsDelegatingList={recentStakePools}
           onOpenExternalLink={app.openExternalLink}
           currentTheme={currentTheme}
+          onRank={this.onRank}
+          selectedDelegationWalletId={selectedDelegationWalletId}
+          stake={stake}
           onDelegate={this.handleDelegate}
-          isLoading={fetchingStakePoolsFailed || !stakePools.length}
+          isLoading={!isSynced || fetchingStakePoolsFailed}
+          isRanking={isRanking && stakePoolsRequest.isExecuting}
+          getStakePoolById={getStakePoolById}
         />
+        {isRanking && stakePoolsRequest.isExecuting && (
+          <StakePoolsRankingLoader />
+        )}
         {uiDialogs.isOpen(DelegationSetupWizardDialog) ? (
           <DelegationSetupWizardDialogContainer />
         ) : null}
