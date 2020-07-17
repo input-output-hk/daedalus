@@ -489,7 +489,7 @@
   "static.splash.network.itnNetworkName": "Rewards",
   "static.splash.network.itnVersionName": "INCENTIVIZED TESTNET v1",
   "static.splash.network.linkLabel": "Learn more",
-  "static.splash.network.stnDescription": "<p>This version of Daedalus has been created specifically for the use with the second phase of the Shelley Testnet.</p><p>If you participated in the Incentivized Testnet program you can use this version of Daedalus to check your Incentivized Testnet rewards. You can do this by restoring a wallet using the 15-word wallet recovery phrase for your Daedalus Rewards wallet.</p>",
+  "static.splash.network.stnDescription": "<p>This version of Daedalus has been created specifically for the use with the second iteration of the Shelley testnet network.</p><p>You can use it to experience the delegation mechanics and understand how the rewards work, using testnet ada before this becomes available on the Cardano mainnet later this summer.</p>",
   "static.splash.network.stnLinkUrl": "https://testnets.cardano.org/en/shelley/overview/",
   "static.splash.network.stnVersionName": "SHELLEY TESTNET",
   "static.splash.network.title": "Daedalus",
