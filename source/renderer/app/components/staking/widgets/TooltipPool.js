@@ -12,8 +12,8 @@ import SVGInline from 'react-svg-inline';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
-import styles from './StakePoolTooltip.scss';
-import experimentalTooltipStyles from './StakePoolTooltip-experimental-tooltip.scss';
+import styles from './TooltipPool.scss';
+import experimentalTooltipStyles from './TooltipPool-experimental-tooltip.scss';
 import StakePool from '../../../domains/StakePool';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
 import experimentalIcon from '../../../assets/images/experiment-icon.inline.svg';
@@ -113,7 +113,7 @@ type State = {
 };
 
 @observer
-export default class StakePoolTooltip extends Component<Props, State> {
+export default class TooltipPool extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -374,7 +374,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
       showWithSelectButton,
       numberOfStakePools,
     } = this.props;
-
+    const showSaturation = false;
     const {
       componentStyle,
       arrowStyle,
@@ -383,6 +383,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
     } = this.state;
 
     const {
+      id,
       name,
       description,
       ticker,
@@ -409,7 +410,11 @@ export default class StakePoolTooltip extends Component<Props, State> {
 
     const darken = currentTheme === 'dark-blue' ? 1 : 0;
     const alpha = 0.3;
-    const retirementFromNow = retiring ? moment(retiring).fromNow(true) : '';
+    const retirementFromNow = retiring
+      ? moment(retiring)
+          .locale(intl.locale)
+          .fromNow(true)
+      : '';
 
     const saturationBarClassnames = classnames([
       styles.saturationBar,
@@ -440,6 +445,7 @@ export default class StakePoolTooltip extends Component<Props, State> {
               />
             </div>
           )}
+          <div className={styles.id}>{id}</div>
           <div className={styles.description}>{description}</div>
           <Link
             onClick={() => onOpenExternalLink(homepage)}
@@ -449,21 +455,25 @@ export default class StakePoolTooltip extends Component<Props, State> {
           />
 
           <dl className={styles.table}>
-            <dt className={styles.saturationLabel}>
-              {intl.formatMessage(messages.saturation)}
-            </dt>
-            <dd className={styles.saturationValue}>
-              <span>
-                <span className={saturationBarClassnames}>
-                  <span
-                    style={{
-                      width: `${parseFloat(saturation.toFixed(2))}%`,
-                    }}
-                  />
-                </span>
-                {`${parseFloat(saturation.toFixed(2))}%`}
-              </span>
-            </dd>
+            {showSaturation && (
+              <>
+                <dt className={styles.saturationLabel}>
+                  {intl.formatMessage(messages.saturation)}
+                </dt>
+                <dd className={styles.saturationValue}>
+                  <span>
+                    <span className={saturationBarClassnames}>
+                      <span
+                        style={{
+                          width: `${parseFloat(saturation.toFixed(2))}%`,
+                        }}
+                      />
+                    </span>
+                    {`${parseFloat(saturation.toFixed(2))}%`}
+                  </span>
+                </dd>
+              </>
+            )}
             <dt>{intl.formatMessage(messages.ranking)}</dt>
             <dd className={styles.ranking}>
               <span

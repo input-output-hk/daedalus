@@ -754,6 +754,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
       'rgba(233, 244, 254, .1)',
     '--theme-staking-stake-pool-tooltip-neutral-text-color': '#e9f4fe',
     '--theme-staking-stake-pool-tooltip-experimental-icon-color': '#e9f4fe',
+    '--theme-staking-stake-pool-tooltip-id-background-color': '#fafbfc',
   },
   staking: {
     '--theme-staking-content-background-color': '#263345',
@@ -804,6 +805,11 @@ export const DARK_BLUE_THEME_OUTPUT = {
       'rgba(233, 244, 254, 0.07)',
     '--theme-staking-wallet-row-ticker-text-color': '#e9f4fe',
     '--theme-staking-wallet-row-ticker-ada-icon-fill-color': '#e9f4fe80',
+    '--theme-staking-redeemItnRewards-text-color': '#e9f4fe',
+    '--theme-staking-redeemItnRewards-separator-color': '#4b5965',
+    '--theme-staking-redeemItnRewards-attention-text-color': '#ea4c5b',
+    '--theme-staking-redeemItnRewards-description-text-color': '#515c6ab3',
+    '--theme-staking-redeemItnRewards-icon-color': '#e9f4fe',
   },
   support: {
     '--theme-support-settings-item-color': 'rgba(233, 244, 254, 0.5)',

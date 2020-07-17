@@ -25,7 +25,7 @@ export default class StakePoolsListPage extends Component<Props> {
     });
   };
 
-  onRank = (sliderValue: number) => {
+  onRank = (selectedWalletId: string, sliderValue: number) => {
     if (this.rankTimeoutHandler) {
       clearTimeout(this.rankTimeoutHandler);
     }
@@ -33,19 +33,29 @@ export default class StakePoolsListPage extends Component<Props> {
       const {
         actions: { staking: stakingActions },
       } = this.props;
+      stakingActions.selectDelegationWallet.trigger(selectedWalletId);
       stakingActions.updateStake.trigger(sliderValue);
       this.rankTimeoutHandler = null;
     }, 1000);
   };
 
   render() {
-    const { uiDialogs, staking, app, profile, wallets } = this.props.stores;
+    const {
+      uiDialogs,
+      staking,
+      app,
+      networkStatus,
+      profile,
+      wallets,
+    } = this.props.stores;
     const { currentTheme } = profile;
+    const { isSynced } = networkStatus;
     const {
       stakePoolsRequest,
       stakePools,
       isRanking,
       selectedDelegationWalletId,
+      stake,
       fetchingStakePoolsFailed,
       recentStakePools,
       getStakePoolById,
@@ -63,8 +73,9 @@ export default class StakePoolsListPage extends Component<Props> {
           currentTheme={currentTheme}
           onRank={this.onRank}
           selectedDelegationWalletId={selectedDelegationWalletId}
+          stake={stake}
           onDelegate={this.handleDelegate}
-          isLoading={fetchingStakePoolsFailed}
+          isLoading={!isSynced || fetchingStakePoolsFailed}
           isRanking={isRanking && stakePoolsRequest.isExecuting}
           getStakePoolById={getStakePoolById}
         />
