@@ -59,14 +59,11 @@
         width: 12px;
       }
 
-      :global .SimpleTooltip_bubble {
+      :global .InlineEditingDropdown-tooltip_bubble {
         border-radius: 10px;
+        height: 87px;
         left: 125px;
         top: 54px;
-      }
-
-      :global .SimpleBubble_bubble {
-        height: 87px;
         white-space: normal;
         width: 291.5px;
 

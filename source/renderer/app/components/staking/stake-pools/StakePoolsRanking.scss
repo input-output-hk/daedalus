@@ -19,6 +19,7 @@
               width: 110px;
             }
           }
+
           &.jaSelector {
             .SimpleInput_customValueBlock {
               width: 160px;
@@ -30,6 +31,7 @@
           }
         }
       }
+
       .row {
         .col {
           margin-right: 5px;
@@ -39,6 +41,7 @@
           }
         }
       }
+
       .walletSelector {
         padding-right: 15px;
 
@@ -50,15 +53,18 @@
             width: calc(100% + 20px);
             z-index: 0;
           }
+
           .SelectOverrides_selectInput::after {
             background-color: var(--theme-staking-font-color-regular);
             bottom: 7.5px;
             left: auto;
             right: 0;
           }
+
           .SimpleInput_customValueBlock {
             height: auto;
           }
+
           .customValue {
             color: var(--theme-staking-font-color-regular);
             cursor: pointer;
@@ -68,12 +74,14 @@
             text-overflow: ellipsis;
             white-space: nowrap;
           }
+
           .SimpleSelect_selectInput {
             max-width: 400px;
           }
+
           .SimpleOptions_options {
-            min-width: 250px;
             max-width: 450px;
+            min-width: 250px;
 
             .SimpleOptions_option {
               span {
@@ -95,6 +103,7 @@
         }
       }
     }
+
     .actionLearnMore {
       height: 36px;
       line-height: 36px;
@@ -102,23 +111,26 @@
       white-space: nowrap;
       width: auto;
     }
+
     .externalLink {
       height: 13px;
       object-fit: contain;
       width: 13px;
     }
   }
+
   .lower {
     margin-bottom: 18px;
 
     .outOfSliderRangeStart {
-      border-top: 2px solid var(--theme-staking-slider-background-color-2);
       border-style: dotted;
+      border-top: 2px solid var(--theme-staking-slider-background-color-2);
       height: 0;
       margin-top: 24px;
       opacity: 0.3;
       width: 9px;
     }
+
     .slider {
       flex: 1;
 
@@ -131,6 +143,7 @@
             line-height: 1.15;
           }
         }
+
         .Slider_minMark {
           .SimpleTooltip_bubble {
             .SimpleBubble_bubble {
@@ -139,6 +152,7 @@
             }
           }
         }
+
         .Slider_maxMark {
           .SimpleTooltip_bubble {
             .SimpleBubble_bubble {
@@ -149,6 +163,7 @@
         }
       }
     }
+
     .outOfRangeMaxAmount {
       font-size: 12px;
       line-height: 1.33;
@@ -168,18 +183,21 @@
         }
       }
     }
+
     .outOfSliderRangeEnd {
-      border-top: 2px solid var(--theme-staking-slider-background-color-2);
       border-style: dotted;
+      border-top: 2px solid var(--theme-staking-slider-background-color-2);
       height: 0;
       opacity: 0.3;
       width: 110px;
     }
   }
+
   .row {
     display: flex;
     flex-wrap: wrap;
   }
+
   .col {
     @extend %regularText;
   }
