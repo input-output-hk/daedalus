@@ -25,15 +25,8 @@
 
     &:hover {
       background-color: #fff;
-      color: #ab1700;
+      color: #5e6066;
       cursor: pointer;
-      svg {
-        g {
-          path {
-            stroke: #ab1700;
-          }
-        }
-      }
     }
 
     .externalLink {
@@ -47,10 +40,7 @@
     &:hover {
       background-color: #fff;
       .externalLink {
-        color: #ab1700;
-        &:after {
-          background-color: #ab1700;
-        }
+        color: #5e6066;
       }
     }
   }
@@ -130,19 +120,23 @@
     }
   }
 
-  .date {
-    font-family: var(--font-medium);
-    font-size: 14px;
-    line-height: 1.43;
-    margin-bottom: 16px;
-    opacity: 0.5;
+  .button {
+    &:hover {
+    }
   }
 
   .title {
     font-size: 20px;
     line-height: 1.2;
-    margin-bottom: 0;
+    margin-bottom: 16px;
     margin-top: 22.5px;
+  }
+
+  .subtitle {
+    font-family: var(--font-medium);
+    line-height: 1.38;
+    margin-bottom: 16px;
+    opacity: 0.5;
   }
 
   .downloadProgress {

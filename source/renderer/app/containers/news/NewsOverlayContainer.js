@@ -1,4 +1,8 @@
 // @flow
+
+// @UPDATE TODO
+/* eslint-disable */
+
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import AlertsOverlay from '../../components/news/AlertsOverlay';
@@ -21,9 +25,9 @@ export default class NewsOverlayContainer extends Component<InjectedProps> {
       openedAlert,
       proceedNewsAction,
       onCloseUpdate,
-      openedUpdate,
+      isUpdateOpen,
     } = newsFeed;
-    const { downloadProgress } = appUpdate;
+    const { downloadProgress, isUpdateDownloaded, availableUpdate } = appUpdate;
     const { incident, alerts } = newsFeedData;
     const unreadAlerts = alerts.unread;
     const allAlertsCount = alerts.all ? alerts.all.length : 0;
@@ -69,13 +73,14 @@ export default class NewsOverlayContainer extends Component<InjectedProps> {
         />
       );
     }
-    if (openedUpdate) {
+    if (availableUpdate && (isUpdateOpen || isUpdateDownloaded)) {
       return (
         <UpdateOverlay
-          currentDateFormat={currentDateFormat}
-          update={openedUpdate}
+          update={availableUpdate}
           onCloseUpdate={onCloseUpdate}
           downloadProgress={downloadProgress}
+          isUpdateDownloaded={isUpdateDownloaded}
+          onInstallUpdate={() => {}}
         />
       );
     }

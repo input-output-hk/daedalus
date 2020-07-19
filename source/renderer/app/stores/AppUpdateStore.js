@@ -226,7 +226,7 @@ export default class AppUpdateStore extends Store {
 
   _requestUpdateDownload = async (update: News) => {
     const { url: fileUrl } = this.getUpdateInfo(update);
-    if (!fileUrl) return;
+    if (!fileUrl) return console.warn('File not found');
     await requestDownloadChannel.request({
       id: APP_UPDATE_DOWNLOAD_ID,
       fileUrl,

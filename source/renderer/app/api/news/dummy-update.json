@@ -25,7 +25,7 @@
     "date": 1594043606135,
     "softwareUpdate": {
       "darwin": {
-        "version": "1.2.0-STN2",
+        "version": "4.0.0-STN2",
         "hash": "73c69357b568438b37c83a77eb9e5f79f683255de4d49bc9d0f84a3b4183ab34",
         "url": "https://update-cardano-mainnet.iohk.io/daedalus-1.1.0-mainnet-12849.pkg"
       },
