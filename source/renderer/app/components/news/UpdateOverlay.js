@@ -2,9 +2,9 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import { Button } from 'react-polymorph/lib/components/Button';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
-import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import ReactMarkdown from 'react-markdown';
 import News from '../../domains/News';
@@ -14,22 +14,42 @@ import ProgressBarLarge from '../widgets/ProgressBarLarge';
 import ButtonLink from '../widgets/ButtonLink';
 
 const messages = defineMessages({
-  checkboxLabel: {
-    id: 'profile.termsOfUse.checkboxLabel',
-    defaultMessage: '!!!I agree with terms of service',
-    description: 'Label for the "I agree with terms of service" checkbox.',
+  title: {
+    id: 'news.updateOverlay.title',
+    defaultMessage: '!!!Software update available!',
+    description: 'title for the Update Overlay',
   },
-  checkboxLabelWithDisclaimer: {
-    id: 'profile.termsOfUse.checkboxLabelWithDisclaimer',
+  subtitle: {
+    id: 'news.updateOverlay.subtitle',
     defaultMessage:
-      '!!!I understand that the terms of use are only available in English and agree to the terms of use',
-    description:
-      'Label for the "I agree with terms of service" checkbox when terms of use are not translated.',
+      '!!!You are currently running Daedalus version {currentVersion}. Daedalus version {availableVersion} is now available to download.',
+    description: 'subtitle for the Update Overlay',
   },
-  submitLabel: {
-    id: 'profile.termsOfUse.submitLabel',
-    defaultMessage: '!!!Continue',
-    description: 'Label for the "Terms of service" form submit button.',
+  checkboxLabel: {
+    id: 'news.updateOverlay.checkboxLabel',
+    defaultMessage:
+      '!!!I understand that I need to complete the installation before restarting Daedalus.',
+    description: 'checkboxLabel for the Update Overlay',
+  },
+  buttonLabel: {
+    id: 'news.updateOverlay.buttonLabel',
+    defaultMessage: '!!!Quit Daedalus and start the installation',
+    description: 'buttonLabel for the Update Overlay',
+  },
+  downloadInProgressLabel: {
+    id: 'news.updateOverlay.downloadInProgressLabel',
+    defaultMessage: '!!!Download in progress',
+    description: 'downloadInProgressLabel for the Update Overlay',
+  },
+  // timeLeft: {
+  //   id: 'news.updateOverlay.timeLeft',
+  //   defaultMessage: '!!!',
+  //   description: 'timeLeft for the Update Overlay',
+  // },
+  downloadProgress: {
+    id: 'news.updateOverlay.downloadProgress',
+    defaultMessage: '!!!({downloaded} MB of {total} MB downloaded)',
+    description: 'downloadProgress for the Update Overlay',
   },
 });
 
@@ -71,7 +91,9 @@ export default class UpdateOverlay extends Component<Props, State> {
       onInstallUpdate,
     } = this.props;
     const { areTermsOfUseAccepted } = this.state;
-    const { content, title } = update;
+    const { content } = update;
+    const currentVersion = '1.1.0';
+    const availableVersion = '21.1.0';
     return (
       <div
         className={styles.component}
@@ -79,9 +101,12 @@ export default class UpdateOverlay extends Component<Props, State> {
         onClick={!isUpdateDownloaded ? onCloseUpdate : () => {}}
       >
         {!isUpdateDownloaded && <DialogCloseButton onClose={onCloseUpdate} />}
-        <h1 className={styles.title}>{title}</h1>
+        <h1 className={styles.title}>{intl.formatMessage(messages.title)}</h1>
         <span className={styles.subtitle}>
-          You are currently running Daedalus v 0.14.7 and v 0.15.1 is available.
+          {intl.formatMessage(messages.subtitle, {
+            currentVersion,
+            availableVersion,
+          })}
         </span>
         <div className={styles.content}>
           <ReactMarkdown escapeHtml={false} source={content} />
@@ -91,21 +116,24 @@ export default class UpdateOverlay extends Component<Props, State> {
             <ProgressBarLarge progress={downloadProgress} />
           </div>
         ) : (
-          <div>
+          <div className={styles.actions}>
             <Checkbox
               label={intl.formatMessage(messages.checkboxLabel)}
               onChange={this.toggleAcceptance}
+              className={styles.checkbox}
               checked={areTermsOfUseAccepted}
               skin={CheckboxSkin}
+              themeOverrides={styles.checkbox}
             />
             <ButtonLink
               className={styles.actionBtn}
               onClick={onInstallUpdate}
               skin={ButtonSkin}
-              label={'Restart Daedalus and Update'}
+              label={intl.formatMessage(messages.buttonLabel)}
               linkProps={{
                 hasIconBefore: false,
                 className: styles.externalLink,
+                disabled: !areTermsOfUseAccepted,
               }}
             />
           </div>

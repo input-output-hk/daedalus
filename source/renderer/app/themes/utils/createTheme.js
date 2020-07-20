@@ -672,6 +672,11 @@ export const createDaedalusComponentsTheme = (
       '--theme-news-item-info-background-color': 'rgba(0, 0, 0, 0.1)',
       '--theme-news-item-title-color': '#fafbfc',
     },
+    newsOverlay: {
+      '--theme-news-overlay-update-background-color': `${background.primary}`,
+      '--theme-news-overlay-update-title-text-color': `${background.primary}`,
+      '--theme-news-overlay-update-subtitle-text-color': `${background.secondary}`,
+    },
     appUpdate: {
       '--theme-node-update-background-color': `${background.primary.regular}`,
       '--theme-node-update-title-color': `${text.primary}`,

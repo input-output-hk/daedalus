@@ -139,6 +139,10 @@ export default class AppUpdateStore extends Store {
 
   // =================== PRIVATE ==================
 
+  // @UPDATE TODO: Remove it
+  @action _toggleUsUpdateDownloaded = () =>
+    (this.isUpdateDownloaded = !this.isUpdateDownloaded);
+
   // @UPDATE TODO: Commenting the trigger to avoid automatic download
   _checkNewAppUpdate = async (update: News) => {
     // Is the update valid?
@@ -157,7 +161,7 @@ export default class AppUpdateStore extends Store {
     const { progress } = downloadLocaldata;
     console.log('progress', downloadLocaldata.progress);
     if (downloadLocaldata.progress) {
-      if (progress.state === 'FINISHED') {
+      if (progress.progress === 100) {
         runInAction(() => {
           this.isUpdateDownloaded = true;
         });

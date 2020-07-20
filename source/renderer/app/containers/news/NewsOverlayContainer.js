@@ -38,15 +38,15 @@ export default class NewsOverlayContainer extends Component<InjectedProps> {
       alertToOpen.push(openedAlert);
     }
 
-    if (incident)
-      return (
-        <IncidentOverlay
-          incident={incident}
-          onOpenExternalLink={openExternalLink}
-          onProceedNewsAction={proceedNewsAction}
-          currentDateFormat={currentDateFormat}
-        />
-      );
+    // if (incident)
+    //   return (
+    //     <IncidentOverlay
+    //       incident={incident}
+    //       onOpenExternalLink={openExternalLink}
+    //       onProceedNewsAction={proceedNewsAction}
+    //       currentDateFormat={currentDateFormat}
+    //     />
+    //   );
     if (unreadAlerts.length > 0)
       return (
         <AlertsOverlay

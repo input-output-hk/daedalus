@@ -5,7 +5,7 @@
       "ja-JP": "Daedalus Shelley Testnet 1.1.0-STN1"
     },
     "content": {
-      "en-US": "This second Daedalus release for the Shelley Testnet brings balance check functionality to those who participated in and earned rewards during the Incentivized Testnet program. It allows these users to check their rewards balance on the Shelley Testnet network, prior to claiming actual rewards on the Cardano mainnet following the Shelley hard fork later this summer. \n\nYou can find instructions on how to do this in the [release notes](https://iohk.zendesk.com/hc/en-us/articles/900001606746).",
+      "en-US": "This second **Daedalus release for the Shelley Testnet** brings *balance check* functionality to those who participated in and earned rewards during the Incentivized Testnet program. It allows these users to check their rewards balance on the Shelley Testnet network, prior to claiming actual rewards on the Cardano mainnet following the Shelley hard fork later this summer. \n\nYou can find instructions on how to do this in the [release notes](https://iohk.zendesk.com/hc/en-us/articles/900001606746).",
       "ja-JP": "このShelleyテストネット用Daedalusリリース第2弾は、インセンティブ付きテストネットプログラムに参加し、報酬を獲得したユーザー向けに残高チェック機能を搭載しています。対象ユーザーは、今夏実施されるShelleyハードフォーク後に可能となるCardanoメインネットにおける報酬申請に先立ち、報酬残高をShelleyテストネットネットワークで確認できます。\n\n確認方法の詳細は[リリースノート](https://iohk.zendesk.com/hc/ja/articles/900001606746)をご覧ください。"
     },
     "target": {

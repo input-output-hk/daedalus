@@ -1,7 +1,7 @@
 .component {
   align-items: center;
   // @UPDATE TODO
-  background-color: rgba(36, 62, 98, 0.96);
+  background-color: var(--theme-splash-network-background-color);
   color: #fff;
   display: flex;
   flex-direction: column;
@@ -12,38 +12,6 @@
   top: 0;
   width: 100vw;
   z-index: 22;
-
-  .actionBtn {
-    background-color: rgba(0, 0, 0, 0.1);
-    border: 1px solid #fff;
-    border-radius: 5px;
-    box-sizing: border-box;
-    line-height: 1.36;
-    margin-bottom: 22.5px;
-    min-height: 50px;
-    width: 360px;
-
-    &:hover {
-      background-color: #fff;
-      color: #5e6066;
-      cursor: pointer;
-    }
-
-    .externalLink {
-      color: #fff;
-      font-family: var(--font-medium);
-      &:after {
-        background-color: #fff;
-      }
-    }
-
-    &:hover {
-      background-color: #fff;
-      .externalLink {
-        color: #5e6066;
-      }
-    }
-  }
 
   .content {
     background-color: rgba(0, 0, 0, 0.1);
@@ -141,5 +109,52 @@
 
   .downloadProgress {
     width: 610px;
+  }
+
+  .actions {
+    text-align: center;
+    width: 540px;
+    .checkbox {
+      margin-bottom: 30px;
+      :global {
+        .SimpleCheckbox_label {
+          font-family: var(--font-medium);
+          text-align: left;
+        }
+      }
+    }
+    .actionBtn {
+      background-color: var(
+        --theme-splash-network-overlay-button-background-color
+      );
+      border: 1px solid #fff;
+      border-radius: 5px;
+      box-sizing: border-box;
+      line-height: 1.36;
+      margin-bottom: 22.5px;
+      min-height: 50px;
+      width: 360px;
+
+      &:hover {
+        background-color: #fff;
+        color: #5e6066;
+        cursor: pointer;
+      }
+
+      .externalLink {
+        color: #fff;
+        font-family: var(--font-medium);
+        &:after {
+          background-color: #fff;
+        }
+      }
+
+      &:hover {
+        background-color: #fff;
+        .externalLink {
+          color: #5e6066;
+        }
+      }
+    }
   }
 }
