@@ -1,11 +1,17 @@
 Changelog
 =========
 
+## vNext
+
+### Features
+
+- Added UX improvements for the display of stake pool ID ([PR 2074](https://github.com/input-output-hk/daedalus/pull/2074))
+
 ## 1.3.0-STN2
 
 ### Features
 
-- Added display of stake pool id on the stake pool tooltip ([PR 2071](https://github.com/input-output-hk/daedalus/pull/2071), [PR 2074](https://github.com/input-output-hk/daedalus/pull/2074))
+- Added display of stake pool id on the stake pool tooltip ([PR 2071](https://github.com/input-output-hk/daedalus/pull/2071))
 - Added stake pool retirement info ([PR 2068](https://github.com/input-output-hk/daedalus/pull/2068))
 - Removed stake pool saturation info ([PR 2067](https://github.com/input-output-hk/daedalus/pull/2067))
 - Implemented calculation of wallet's total rewards ([PR 2066](https://github.com/input-output-hk/daedalus/pull/2066))
