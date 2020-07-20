@@ -2,6 +2,7 @@
 export const ROUTES = {
   ROOT: '/',
   PAPER_WALLET_CREATE_CERTIFICATE: '/paper-wallet/create-certificate',
+  REDEEM_ITN_REWARDS: '/redeem-itn-wallets',
   NETWORK_INFO: '/network-info',
   STAKING: {
     ROOT: '/staking',

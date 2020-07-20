@@ -6,7 +6,7 @@ import classNames from 'classnames';
 import FlipMove from 'react-flip-move';
 import styles from './StakePoolsList.scss';
 import StakePool from '../../../domains/StakePool';
-import { StakePoolThumbnail } from './StakePoolThumbnail';
+import { ThumbPool } from '../widgets/ThumbPool';
 
 type Props = {
   stakePoolsList: Array<StakePool>,
@@ -18,6 +18,8 @@ type Props = {
   showSelected?: boolean,
   containerClassName: string,
   numberOfStakePools: number,
+  selectedPoolId?: ?number,
+  disabledStakePoolId?: ?string,
   /**
    *
    * If the parent component has more than one <StakePoolsList />
@@ -28,8 +30,6 @@ type Props = {
   listName?: string,
   isListActive?: boolean,
   setListActive?: Function,
-  selectedPoolId?: ?number,
-  disabledStakePoolId?: ?string,
 };
 
 type State = {
@@ -117,7 +117,7 @@ export class StakePoolsList extends Component<Props, State> {
               selectedPoolId && stakePool.id === selectedPoolId;
 
             return (
-              <StakePoolThumbnail
+              <ThumbPool
                 stakePool={stakePool}
                 key={stakePool.id + stakePool.ranking}
                 onOpenExternalLink={onOpenExternalLink}

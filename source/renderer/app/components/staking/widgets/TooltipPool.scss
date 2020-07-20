@@ -175,6 +175,78 @@
   display: block;
 }
 
+.id {
+  color: var(--theme-staking-stake-pool-tooltip-text-color);
+  cursor: pointer;
+  font-family: var(--font-medium);
+  font-size: 10px;
+  height: 14px;
+  line-height: 14px;
+  margin: -8px 0 12px;
+  padding: 3px 0;
+  word-break: break-all;
+
+  .ellipsisContent {
+    opacity: 0.5;
+    overflow: hidden;
+    padding-top: 3px;
+    position: absolute;
+    transition: opacity 0s;
+    transition-delay: 0s;
+    white-space: nowrap;
+  }
+
+  .hoverContent {
+    background: var(--theme-staking-stake-pool-tooltip-id-background-color);
+    box-shadow: 1px 6px 6px var(--theme-staking-stake-pool-tooltip-id-shadow-1);
+    height: 20px;
+    left: 0;
+    margin-left: -20px;
+    opacity: 0;
+    padding: 3px 20px 5px;
+    position: absolute;
+    right: 0;
+    transition: opacity 0.25s, height 0.25s;
+    transition-delay: 0s;
+    user-select: none;
+    width: 280px;
+
+    svg {
+      margin-left: 3px;
+    }
+
+    &.copyIcon {
+      svg {
+        height: 9.5px;
+        width: 8px;
+        path {
+          fill: var(--theme-staking-stake-pool-tooltip-text-color);
+        }
+      }
+    }
+
+    &.checkIcon {
+      svg {
+        height: 8px;
+        width: auto;
+      }
+    }
+  }
+
+  &:hover {
+    .ellipsisContent {
+      opacity: 0;
+      transition-delay: 0.25s;
+    }
+    .hoverContent {
+      height: 36px;
+      opacity: 1;
+      transition: opacity 0s, height 0.25s;
+      transition-delay: 0.25s;
+    }
+  }
+}
+
 .name {
   color: var(--theme-staking-stake-pool-tooltip-text-color);
   font-family: var(--font-semibold);

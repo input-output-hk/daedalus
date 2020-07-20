@@ -1,5 +1,5 @@
 // @flow
-import { computed, action, observable } from 'mobx';
+import { computed, action, observable, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
 import { orderBy, find, map, get } from 'lodash';
 import Store from './lib/Store';
@@ -11,6 +11,8 @@ import {
   STAKE_POOL_TRANSACTION_CHECKER_TIMEOUT,
   STAKE_POOLS_INTERVAL,
   STAKE_POOLS_FAST_INTERVAL,
+  REDEEM_ITN_REWARDS_STEPS as steps,
+  INITIAL_DELEGATION_FUNDS,
 } from '../config/stakingConfig';
 import type {
   Reward,
@@ -19,17 +21,32 @@ import type {
   GetDelegationFeeRequest,
   QuitStakePoolRequest,
 } from '../api/staking/types';
+import type { RedeemItnRewardsStep } from '../types/stakingTypes';
 import Wallet from '../domains/Wallet';
 import StakePool from '../domains/StakePool';
 import { TransactionStates } from '../domains/WalletTransaction';
+import LocalizableError from '../i18n/LocalizableError';
 import REWARDS from '../config/stakingRewards.dummy.json';
 
 export default class StakingStore extends Store {
   @observable isDelegationTransactionPending = false;
   @observable fetchingStakePoolsFailed = false;
-  @observable stake = 0;
+  @observable isStakingExperimentRead: boolean = false;
   @observable selectedDelegationWalletId = null;
+  @observable stake = INITIAL_DELEGATION_FUNDS;
   @observable isRanking = false;
+
+  /* ----------  Redeem ITN Rewards  ---------- */
+  @observable redeemStep: ?RedeemItnRewardsStep = null;
+  @observable redeemWallet: ?Wallet = null;
+  @observable walletName: ?string = null;
+  @observable redeemError: ?LocalizableError = null;
+  @observable rewardsTotal: number = 0;
+  @observable transactionFees: number = 0;
+  @observable finalTotal: number = 0;
+  @observable isSubmittingReedem: boolean = false;
+  @observable stakingSuccess: ?boolean = null;
+  @observable stakingFailure: number = 0;
 
   pollingStakePoolsInterval: ?IntervalID = null;
   refreshPolling: ?IntervalID = null;
@@ -44,20 +61,38 @@ export default class StakingStore extends Store {
 
   setup() {
     const { isIncentivizedTestnet, isShelleyTestnet } = global;
-    const { staking } = this.actions;
+    const { staking: stakingActions } = this.actions;
+
+    this.refreshPolling = setInterval(
+      this.getStakePoolsData,
+      STAKE_POOLS_FAST_INTERVAL
+    );
+
+    // Redeem ITN Rewards actions
+    stakingActions.onRedeemStart.listen(this._onRedeemStart);
+    stakingActions.onConfigurationContinue.listen(
+      this._onConfigurationContinue
+    );
+    stakingActions.onSelectRedeemWallet.listen(this._onSelectRedeemWallet);
+    stakingActions.onConfirmationContinue.listen(this._onConfirmationContinue);
+    stakingActions.onResultContinue.listen(this._onResultContinue);
+    stakingActions.closeRedeemDialog.listen(this._closeRedeemDialog);
 
     if (isIncentivizedTestnet || isShelleyTestnet) {
-      staking.goToStakingInfoPage.listen(this._goToStakingInfoPage);
-      staking.goToStakingDelegationCenterPage.listen(
+      stakingActions.goToStakingInfoPage.listen(this._goToStakingInfoPage);
+      stakingActions.goToStakingDelegationCenterPage.listen(
         this._goToStakingDelegationCenterPage
       );
-      staking.joinStakePool.listen(this._joinStakePool);
-      staking.quitStakePool.listen(this._quitStakePool);
-      staking.fakeStakePoolsLoading.listen(this._setFakePoller);
-      staking.updateStake.listen(this._setStake);
-      staking.selectDelegationWallet.listen(
+      stakingActions.joinStakePool.listen(this._joinStakePool);
+      stakingActions.quitStakePool.listen(this._quitStakePool);
+      stakingActions.fakeStakePoolsLoading.listen(this._setFakePoller);
+      stakingActions.updateStake.listen(this._setStake);
+      stakingActions.selectDelegationWallet.listen(
         this._setSelectedDelegationWalletId
       );
+
+      // ========== MOBX REACTIONS =========== //
+      this.registerReactions([this._pollOnSync]);
     }
   }
 
@@ -74,18 +109,21 @@ export default class StakingStore extends Store {
   @observable calculateDelegationFeeRequest: Request<BigNumber> = new Request(
     this.api.ada.calculateDelegationFee
   );
-  @observable isStakingExperimentRead: boolean = false;
+  // @REDEEM TODO: Proper type it when the API endpoint is implemented.
+  @observable submitRedeemItnRewardsRequest: Request<any> = new Request(
+    this.api.ada.submitRedeemItnRewards
+  );
 
   // =================== PUBLIC API ==================== //
 
-  @action _setStake = (stake: number) => {
-    this.stake = stake * LOVELACES_PER_ADA;
-    this.isRanking = true;
-    this.getStakePoolsData();
-  };
-
   @action _setSelectedDelegationWalletId = (walletId: string) => {
     this.selectedDelegationWalletId = walletId;
+  };
+
+  @action _setStake = (stake: number) => {
+    this.stake = stake;
+    this.isRanking = true;
+    this.getStakePoolsData();
   };
 
   @action _joinStakePool = async (request: JoinStakePoolRequest) => {
@@ -281,14 +319,15 @@ export default class StakingStore extends Store {
   }
 
   @action getStakePoolsData = async () => {
-    const { isConnected } = this.stores.networkStatus;
-    if (!isConnected) {
+    const { isConnected, isSynced } = this.stores.networkStatus;
+    if (!isConnected || !isSynced) {
       this._resetIsRanking();
       return;
     }
 
     try {
-      await this.stakePoolsRequest.execute(this.stake).promise;
+      await this.stakePoolsRequest.execute(this.stake * LOVELACES_PER_ADA)
+        .promise;
       this._resetPolling(false);
     } catch (error) {
       this._resetPolling(true);
@@ -296,7 +335,19 @@ export default class StakingStore extends Store {
     this._resetIsRanking();
   };
 
-  @action _resetPolling = (fetchFailed: boolean) => {
+  @action _resetPolling = (fetchFailed: boolean, kill?: boolean) => {
+    if (kill) {
+      this.fetchingStakePoolsFailed = fetchFailed;
+      if (this.pollingStakePoolsInterval) {
+        clearInterval(this.pollingStakePoolsInterval);
+        this.pollingStakePoolsInterval = null;
+      }
+      if (this.refreshPolling) {
+        clearInterval(this.refreshPolling);
+        this.refreshPolling = null;
+      }
+      return;
+    }
     if (fetchFailed) {
       this.fetchingStakePoolsFailed = true;
       if (this.pollingStakePoolsInterval) {
@@ -387,6 +438,149 @@ export default class StakingStore extends Store {
     }
   };
 
+  /* =================================================
+  =            Redeem ITN Rewards - Begin            =
+  ================================================= */
+
+  get nextStep() {
+    return {
+      configuration: steps.CONFIRMATION,
+      confirmation: steps.RESULT,
+      result: steps.RESULT,
+    };
+  }
+
+  get prevStep() {
+    return {
+      configuration: steps.CONFIRMATION,
+      confirmation: steps.CONFIGURATION,
+      result: steps.CONFIGURATION,
+    };
+  }
+
+  get redeemActions() {
+    return {
+      configuration: this._goToConfigurationStep,
+      confirmation: this._goToConfirmationStep,
+      result: this._goToResultStep,
+    };
+  }
+
+  @action _goToConfigurationStep = () => {
+    this.redeemStep = steps.CONFIGURATION;
+  };
+
+  @action _goToConfirmationStep = () => {
+    this.redeemStep = steps.CONFIRMATION;
+  };
+
+  @action _goToResultStep = () => {
+    this.redeemStep = steps.RESULT;
+  };
+
+  @action _onSelectRedeemWallet = async ({
+    walletId,
+  }: {
+    walletId: string,
+  }) => {
+    this.redeemWallet = this.stores.wallets.getWalletById(walletId);
+  };
+
+  @action _onRedeemStart = () => {
+    this.redeemStep = steps.CONFIGURATION;
+  };
+
+  @action _onConfigurationContinue = async ({
+    recoveryPhrase,
+  }: {
+    recoveryPhrase: Array<string>,
+  }) => {
+    this.isSubmittingReedem = true;
+    const { redeemWallet } = this;
+    if (!redeemWallet) throw new Error('Redeem wallet required');
+    try {
+      const {
+        rewardsTotal,
+        transactionFees,
+        finalTotal,
+      }: any = await this.submitRedeemItnRewardsRequest.execute({
+        walletId: redeemWallet.id,
+        recoveryPhrase,
+      });
+      runInAction('Go to the Confirmation step', () => {
+        this.isSubmittingReedem = false;
+        this.stakingSuccess = true;
+        this.rewardsTotal = rewardsTotal;
+        this.transactionFees = transactionFees;
+        this.finalTotal = finalTotal;
+        this.redeemStep = steps.CONFIRMATION;
+      });
+    } catch (error) {
+      runInAction(() => {
+        this._resetRedeemItnRewards();
+        this.stakingSuccess = false;
+        this.redeemError = error;
+        throw error;
+      });
+    }
+  };
+
+  @action _onConfirmationContinue = ({
+    spendingPassword,
+  }: {
+    spendingPassword: string,
+  }) => {
+    // @REDEEM TODO: Remove when the API endpoint is implemented
+    if (spendingPassword === 'FailureErr1') this.stakingFailure = 1;
+    else if (spendingPassword === 'FailureErr2') this.stakingFailure = 2;
+    else if (spendingPassword === 'FailureErr3') this.stakingFailure = 3;
+    else {
+      this.stakingFailure = 0;
+      this.stakingSuccess = true;
+    }
+    if (this.stakingFailure > 0) {
+      this.stakingSuccess = false;
+    }
+
+    this.redeemStep = steps.RESULT;
+  };
+
+  @action _onResultContinue = () => {
+    if (!this.redeemWallet) throw new Error('Redeem wallet require');
+    const { id } = this.redeemWallet;
+    this.stores.wallets.goToWalletRoute(id);
+    this.redeemStep = null;
+    this._resetRedeemItnRewards();
+  };
+
+  @action _resetRedeemItnRewards = () => {
+    this.isSubmittingReedem = false;
+    this.stakingSuccess = null;
+    this.redeemWallet = null;
+    this.rewardsTotal = 0;
+    this.transactionFees = 0;
+    this.finalTotal = 0;
+    this.stakingFailure = 0;
+  };
+
+  @action _closeRedeemDialog = () => {
+    this._resetRedeemItnRewards();
+    this.redeemStep = null;
+  };
+
+  // ================= REACTIONS ==================
+
+  _pollOnSync = () => {
+    if (this.stores.networkStatus.isSynced) {
+      this._setStake(this.stake);
+    } else {
+      this._resetIsRanking();
+      this._resetPolling(true, true);
+    }
+  };
+
+  /* ====  End of Redeem ITN Rewards  ===== */
+
   _goToStakingInfoPage = () => {
     this.actions.router.goToRoute.trigger({
       route: ROUTES.STAKING.INFO,
@@ -400,7 +594,15 @@ export default class StakingStore extends Store {
   };
 
   _transformWalletToRewardForIncentivizedTestnet = (inputWallet: Wallet) => {
-    const { name: wallet, isRestoring, reward, syncState } = inputWallet;
+    const {
+      id: walletId,
+      name: wallet,
+      isRestoring,
+      reward: rewards,
+      syncState,
+    } = inputWallet;
+    const { withdrawals } = this.stores.transactions;
+    const reward = rewards.add(withdrawals[walletId]);
     const syncingProgress = get(syncState, 'progress.quantity', '');
     return { wallet, reward, isRestoring, syncingProgress };
   };
