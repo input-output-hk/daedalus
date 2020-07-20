@@ -63,7 +63,8 @@ export const generateTransaction = (
   amount: BigNumber = new BigNumber(faker.finance.amount()),
   state: TransactionState = TransactionStates.OK,
   hasUnresolvedIncomeAddresses: boolean = false,
-  noIncomeAddresses: boolean = false
+  noIncomeAddresses: boolean = false,
+  noWithdrawals: boolean = true
 ) =>
   new WalletTransaction({
     id: faker.random.uuid(),
@@ -91,6 +92,12 @@ export const generateTransaction = (
         faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100),
         faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100),
       ],
+      withdrawals: noWithdrawals
+        ? []
+        : [
+            faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100),
+            faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100),
+          ],
     },
   });
 

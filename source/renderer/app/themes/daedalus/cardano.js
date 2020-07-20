@@ -749,6 +749,7 @@ export const CARDANO_THEME_OUTPUT = {
       'rgba(32, 34, 37, .1)',
     '--theme-staking-stake-pool-tooltip-neutral-text-color': '#5e6066',
     '--theme-staking-stake-pool-tooltip-experimental-icon-color': '#5e6066',
+    '--theme-staking-stake-pool-tooltip-id-background-color': '#fafbfc',
   },
   staking: {
     '--theme-staking-content-background-color': '#ffffff',
@@ -798,6 +799,11 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-staking-wallet-row-ticker-background-color': '#efefef',
     '--theme-staking-wallet-row-ticker-text-color': '#5e6066',
     '--theme-staking-wallet-row-ticker-ada-icon-fill-color': '#5e606680',
+    '--theme-staking-redeemItnRewards-text-color': '#5e6066',
+    '--theme-staking-redeemItnRewards-separator-color': '#28a85f',
+    '--theme-staking-redeemItnRewards-attention-text-color': '#ea4c5b',
+    '--theme-staking-redeemItnRewards-description-text-color': '#f2f2f2b3',
+    '--theme-staking-redeemItnRewards-icon-color': '#5e6066',
   },
   support: {
     '--theme-support-settings-item-color': 'rgba(94, 96, 102, 0.5)',

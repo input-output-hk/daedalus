@@ -913,7 +913,7 @@ export default class WalletsStore extends Store {
         expectedNetworkTag === response.introspection.network_tag
       );
     } catch (error) {
-      logger.error(error)
+      logger.error(error);
     }
   };
 
@@ -954,6 +954,9 @@ export default class WalletsStore extends Store {
               walletId
             ),
             allRequest: this.stores.transactions._getTransactionsAllRequest(
+              walletId
+            ),
+            withdrawalsRequest: this.stores.transactions._getWithdrawalsRequest(
               walletId
             ),
           })

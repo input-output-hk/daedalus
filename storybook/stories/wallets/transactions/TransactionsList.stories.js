@@ -226,4 +226,46 @@ storiesOf('Wallets|Transactions', module)
         currentTimeFormat={TIME_OPTIONS[0].value}
       />
     )
+  )
+
+  .add(
+    'Transactions - With withdrawal addresses',
+    ({ locale }: { locale: string }) => (
+      <WalletTransactionsList
+        onOpenExternalLink={action('onOpenExternalLink')}
+        getUrlByType={action('getUrlByType')}
+        currentLocale={locale}
+        isRenderingAsVirtualList
+        deletePendingTransaction={() => {}}
+        isRestoreActive={false}
+        transactions={[
+          generateTransaction(
+            TransactionTypes.INCOME,
+            new Date(),
+            new BigNumber(1),
+            TransactionStates.OK,
+            false,
+            false,
+            false
+          ),
+          generateTransaction(
+            TransactionTypes.INCOME,
+            new Date(),
+            new BigNumber(1),
+            TransactionStates.OK,
+            false,
+            false,
+            false
+          ),
+        ]}
+        isLoadingTransactions={false}
+        hasMoreToLoad={false}
+        walletId="test-wallet"
+        isDeletingTransaction={false}
+        formattedWalletAmount={formattedWalletAmount}
+        totalAvailable={3}
+        currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
+        currentTimeFormat={TIME_OPTIONS[0].value}
+      />
+    )
   );
