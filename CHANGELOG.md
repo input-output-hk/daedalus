@@ -7,6 +7,10 @@ Changelog
 
 - Added UX improvements for the display of stake pool ID ([PR 2074](https://github.com/input-output-hk/daedalus/pull/2074))
 
+### Fixes
+
+- Fixed double punctuation on delegation dialog ([PR 2049](https://github.com/input-output-hk/daedalus/pull/2049))
+
 ## 1.3.0-STN2
 
 ### Features
