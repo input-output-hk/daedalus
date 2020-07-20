@@ -9,7 +9,7 @@ Changelog
 
 ### Fixes
 
-- Fixed double punctuation on delegation dialog ([PR 2049](https://github.com/input-output-hk/daedalus/pull/2049))
+- Fixed double punctuation on delegation dialog ([PR 2077](https://github.com/input-output-hk/daedalus/pull/2077))
 
 ## 1.3.0-STN2
 
