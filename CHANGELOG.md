@@ -12,6 +12,10 @@ Changelog
 
 - Fixed double punctuation on delegation dialog ([PR 2077](https://github.com/input-output-hk/daedalus/pull/2077))
 
+### Chores
+
+- Updated `cardano-wallet` to revision `c01efcfe` ([PR 2078](https://github.com/input-output-hk/daedalus/pull/2078))
+
 ## 1.3.0-STN2
 
 ### Features
