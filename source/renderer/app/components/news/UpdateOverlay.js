@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
@@ -11,7 +11,6 @@ import News from '../../domains/News';
 import styles from './UpdateOverlay.scss';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import ProgressBarLarge from '../widgets/ProgressBarLarge';
-import ButtonLink from '../widgets/ButtonLink';
 
 const messages = defineMessages({
   title: {
@@ -28,7 +27,7 @@ const messages = defineMessages({
   checkboxLabel: {
     id: 'news.updateOverlay.checkboxLabel',
     defaultMessage:
-      '!!!I understand that I need to complete the installation before restarting Daedalus.',
+      '!!!I understand that I need to complete the installation before starting Daedalus.',
     description: 'checkboxLabel for the Update Overlay',
   },
   buttonLabel: {
@@ -103,10 +102,13 @@ export default class UpdateOverlay extends Component<Props, State> {
         {!isUpdateDownloaded && <DialogCloseButton onClose={onCloseUpdate} />}
         <h1 className={styles.title}>{intl.formatMessage(messages.title)}</h1>
         <span className={styles.subtitle}>
-          {intl.formatMessage(messages.subtitle, {
-            currentVersion,
-            availableVersion,
-          })}
+          <FormattedHTMLMessage
+            {...messages.subtitle}
+            values={{
+              currentVersion,
+              availableVersion,
+            }}
+          />
         </span>
         <div className={styles.content}>
           <ReactMarkdown escapeHtml={false} source={content} />
@@ -125,16 +127,12 @@ export default class UpdateOverlay extends Component<Props, State> {
               skin={CheckboxSkin}
               themeOverrides={styles.checkbox}
             />
-            <ButtonLink
-              className={styles.actionBtn}
+            <Button
+              className={styles.button}
               onClick={onInstallUpdate}
               skin={ButtonSkin}
               label={intl.formatMessage(messages.buttonLabel)}
-              linkProps={{
-                hasIconBefore: false,
-                className: styles.externalLink,
-                disabled: !areTermsOfUseAccepted,
-              }}
+              disabled={!areTermsOfUseAccepted}
             />
           </div>
         )}

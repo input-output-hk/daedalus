@@ -1,8 +1,8 @@
 .component {
   align-items: center;
   // @UPDATE TODO
-  background-color: var(--theme-splash-network-background-color);
-  color: #fff;
+  background-color: var(--theme-news-overlay-update-background-color);
+  color: var(--theme-news-overlay-update-text-color);
   display: flex;
   flex-direction: column;
   font-family: var(--font-regular);
@@ -14,7 +14,7 @@
   z-index: 22;
 
   .content {
-    background-color: rgba(0, 0, 0, 0.1);
+    background-color: var(--theme-news-overlay-update-content-background-color);
     font-size: 16px;
     line-height: 1.2;
     margin-bottom: 30px;
@@ -26,12 +26,16 @@
     padding: 12px 20px;
     word-break: break-word;
     &::-webkit-scrollbar-thumb {
-      background-color: rgba(255, 255, 255, 0.3);
+      background-color: var(
+        --theme-news-overlay-update-content-scroll-background-color
+      );
       outline: none;
       width: 4px;
 
       &:hover {
-        background-color: rgba(255, 255, 255, 0.5);
+        background-color: var(
+          --theme-news-overlay-update-content-scroll-hover-background-color
+        );
       }
     }
 
@@ -101,10 +105,13 @@
   }
 
   .subtitle {
+    color: var(--theme-news-overlay-update-subtitle-text-color);
     font-family: var(--font-medium);
     line-height: 1.38;
     margin-bottom: 16px;
-    opacity: 0.5;
+    b {
+      color: var(--theme-news-overlay-update-text-color);
+    }
   }
 
   .downloadProgress {
@@ -117,43 +124,36 @@
     .checkbox {
       margin-bottom: 30px;
       :global {
+        .SimpleCheckbox_check {
+          border: 2px solid
+            var(--theme-news-overlay-update-checkbox-background-color);
+        }
+        .SimpleCheckbox_checked {
+          background: var(
+            --theme-news-overlay-update-checkbox-background-color
+          );
+          &:after {
+            border-color: 2px solid
+              var(--theme-news-overlay-update-checkbox-check-color);
+          }
+        }
         .SimpleCheckbox_label {
+          color: var(--theme-news-overlay-update-checkbox-text-color);
           font-family: var(--font-medium);
           text-align: left;
         }
       }
     }
-    .actionBtn {
+    .button {
       background-color: var(
-        --theme-splash-network-overlay-button-background-color
+        --theme-news-overlay-update-button-background-color
       );
-      border: 1px solid #fff;
-      border-radius: 5px;
-      box-sizing: border-box;
-      line-height: 1.36;
-      margin-bottom: 22.5px;
-      min-height: 50px;
-      width: 360px;
-
+      border: 1px solid var(--theme-news-overlay-update-button-text-color);
+      color: var(--theme-news-overlay-update-button-text-color);
       &:hover {
-        background-color: #fff;
-        color: #5e6066;
+        background-color: var(--theme-news-overlay-update-button-text-color);
+        color: var(--theme-news-overlay-update-button-hover-text-color);
         cursor: pointer;
-      }
-
-      .externalLink {
-        color: #fff;
-        font-family: var(--font-medium);
-        &:after {
-          background-color: #fff;
-        }
-      }
-
-      &:hover {
-        background-color: #fff;
-        .externalLink {
-          color: #5e6066;
-        }
       }
     }
   }

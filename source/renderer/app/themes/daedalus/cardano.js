@@ -985,6 +985,27 @@ export const CARDANO_THEME_OUTPUT = {
     '--rp-password-input-success-bg-color': 'rgba(45, 192, 108, 0.4)',
     '--rp-password-input-tooltip-font-family': 'var(--rp-theme-font-medium)',
   },
+  newsUpdateOverlay: {
+    '--theme-news-overlay-update-background-color': 'rgba(36, 62, 98, 0.96)',
+    '--theme-news-overlay-update-text-color': '#fafbfc',
+    '--theme-news-overlay-update-opacity-text-color':
+      'rgba(250, 251, 252, 0.7)',
+    '--theme-news-overlay-update-content-background-color':
+      'rgba(0, 0, 0, 0.1)',
+    '--theme-news-overlay-update-content-text-color': '#fafbfc',
+    '--theme-news-overlay-update-content-scroll-background-color':
+      'rgba(255, 255, 255, 0.3)',
+    '--theme-news-overlay-update-content-scroll-hover-background-color':
+      'rgba(255, 255, 255, 0.5)',
+    '--theme-news-overlay-update-button-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-news-overlay-update-button-text-color': '#fafbfc',
+    '--theme-news-overlay-update-button-hover-text-color': '#5e6066',
+    '--theme-news-overlay-update-checkbox-background-color': '#fafbfc',
+    '--theme-news-overlay-update-checkbox-check-color': '#5e6066',
+    '--theme-news-overlay-update-checkbox-text-color': '#fafbfc',
+    '--theme-news-overlay-update-subtitle-text-color':
+      'rgba(250, 251, 252, 0.7)',
+  },
 };
 
 const CARDANO_THEME_PARAMS: CreateThemeParams = {
