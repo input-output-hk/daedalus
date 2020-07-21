@@ -175,6 +175,8 @@ let
       cp ${nodeConfigFiles}/* $out/
       cp $launcherConfigPath $out/launcher-config.yaml
       cp $installerConfigPath $out/installer-config.json
+      ${lib.optionalString (envCfg.nodeConfig ? ByronGenesisFile) "cp ${envCfg.nodeConfig.ByronGenesisFile} $out/genesis-byron.json"}
+      ${lib.optionalString (envCfg.nodeConfig ? ShelleyGenesisFile) "cp ${envCfg.nodeConfig.ShelleyGenesisFile} $out/genesis-shelley.json"}
     '';
 
   mkConfigByron = let
@@ -188,7 +190,8 @@ let
     nodeConfig = let
       nodeConfigAttrs = if (configOverride == null) then envCfg.nodeConfig else __fromJSON (__readFile configOverride);
     in builtins.toJSON (filterMonitoring (nodeConfigAttrs // (lib.optionalAttrs (!isDevOrLinux || network == "local") {
-      GenesisFile = "genesis.json";
+      ByronGenesisFile = "genesis-byron.json";
+      ShelleyGenesisFile = "genesis-shelley.json";
     })));
     genesisFile = let
       genesisFile'.selfnode = ../utils/cardano/selfnode/genesis.json;

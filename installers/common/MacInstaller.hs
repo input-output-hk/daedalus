@@ -268,7 +268,7 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
       -- Executables (from daedalus-bridge)
       forM_ [mainBinary kind, "cardano-node", "cardano-cli", "cardano-address" ] $ \f ->
         cp (bridge </> "bin" </> f) (dir </> f)
-      forM_ ["config.yaml", "genesis.json", "topology.yaml" ] $ \f ->
+      forM_ ["config.yaml", "genesis.json", "genesis-byron.json", "genesis-shelley.json", "topology.yaml" ] $ \f ->
         cp f (dataDir </> f)
 
       when (oCluster == Selfnode) $ do
