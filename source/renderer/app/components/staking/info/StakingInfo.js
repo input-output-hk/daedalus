@@ -88,7 +88,7 @@ export default class StakingInfo extends Component<Props, State> {
     const heading = intl.formatMessage(messages.heading);
     const description = intl.formatMessage(messages.description);
     const buttonLabel = intl.formatMessage(messages.buttonLabel);
-
+    const showLearnMoreButton = false;
     return (
       <div className={styles.component}>
         <div className={styles.mainContent}>
@@ -111,15 +111,17 @@ export default class StakingInfo extends Component<Props, State> {
               </div>
             </div>
           </div>
-          <ButtonLink
-            className={styles.learnMoreButton}
-            onClick={onLearnMoreClick}
-            skin={ButtonSkin}
-            label={buttonLabel}
-            linkProps={{
-              className: styles.externalLinkIcon,
-            }}
-          />
+          {showLearnMoreButton && (
+            <ButtonLink
+              className={styles.learnMoreButton}
+              onClick={onLearnMoreClick}
+              skin={ButtonSkin}
+              label={buttonLabel}
+              linkProps={{
+                className: styles.externalLinkIcon,
+              }}
+            />
+          )}
         </div>
       </div>
     );
