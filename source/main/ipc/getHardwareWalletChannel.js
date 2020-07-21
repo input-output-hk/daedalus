@@ -3,6 +3,7 @@ import TransportNodeHid from '@ledgerhq/hw-transport-node-hid';
 import AppAda, { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { BrowserWindow } from 'electron';
 import { DEVICE_EVENT, DEVICE, TRANSPORT_EVENT, UI_EVENT } from 'trezor-connect';
+import { get } from 'lodash';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import {
   GET_HARDWARE_WALLET_TRANSPORT_CHANNEL,
@@ -129,7 +130,7 @@ export const handleInitTrezorConnect = (sender) => {
     TrezorConnect.init({
         popup: false, // render your own UI
         webusb: false, // webusb is not supported in electron
-        debug: true, // see what's going on inside connect
+        debug: false, // see what's going on inside connect
         // lazyLoad: true, // set to "false" (default) if you want to start communication with bridge on application start (and detect connected device right away)
         // set it to "true", then trezor-connect will not be initialized until you call some TrezorConnect.method()
         // this is useful when you don't know if you are dealing with Trezor user
@@ -180,13 +181,15 @@ export const handleHardwareWalletDevices = (mainWindow: BrowserWindow) => {
 
 export const handleHardwareWalletRequests = async () => {
   let deviceConnection = null;
-  getHardwareWalletTransportChannel.onRequest(async () => {
-
-    console.debug('>>> TRY with TREZOR: ', TrezorConnect);
+  getHardwareWalletTransportChannel.onRequest(async (isTrezor) => {
+    console.debug('>>> ESTABLISH CONNECTION <<<');
+    // console.debug('>>> TRY with TREZOR: ', TrezorConnect);
 
     // Connected Trezor device info
-    const deviceFeatures = await TrezorConnect.getFeatures();
-    console.debug('>>> Features: ', deviceFeatures);
+    let deviceFeatures;
+    if (isTrezor) {
+      deviceFeatures = await TrezorConnect.getFeatures();
+    }
 
     if (deviceFeatures && deviceFeatures.success) {
       return Promise.resolve({
@@ -270,9 +273,10 @@ export const handleHardwareWalletRequests = async () => {
       }
       let extendedPublicKey;
       if (trezorConnected && isTrezor) {
-        console.debug('>>> EXPORT TREZOR KEY: ', TrezorConnect);
+        console.debug('>>> EXPORT TREZOR KEY <<< ');
         const extendedPublicKeyResponse = await TrezorConnect.cardanoGetPublicKey({
           path: "m/44'/1815'/0'",
+          showOnTrezor: true,
         });
         console.debug('>>> EXPORT RES: ', extendedPublicKeyResponse);
         if (!extendedPublicKeyResponse.success) {
@@ -280,14 +284,14 @@ export const handleHardwareWalletRequests = async () => {
           throw extendedPublicKeyResponse.payload;
         }
         console.debug('>>> SUCCESS: ', extendedPublicKeyResponse.payload);
-        extendedPublicKey = extendedPublicKeyResponse.payload;
+        extendedPublicKey = get(extendedPublicKeyResponse, ['payload', 'node'], {});
       } else {
-        extendedPublicKey = deviceConnection.getExtendedPublicKey(path);
+        extendedPublicKey = await deviceConnection.getExtendedPublicKey(path);
       }
       console.debug('>>> KEY: ', extendedPublicKey);
       return Promise.resolve({
-        publicKeyHex: isTrezor ? extendedPublicKey.publicKey : extendedPublicKey.publicKeyHex,
-        chainCodeHex: isTrezor ? extendedPublicKey.chainCode : extendedPublicKey.chainCodeHex,
+        publicKeyHex: isTrezor ? extendedPublicKey.public_key : extendedPublicKey.publicKeyHex,
+        chainCodeHex: isTrezor ? extendedPublicKey.chain_code : extendedPublicKey.chainCodeHex,
       });
     } catch (error) {
       // return Promise.resolve(error);
@@ -340,7 +344,24 @@ export const handleHardwareWalletRequests = async () => {
   });
 
   signTransactionChannel.onRequest(async params => {
-    const { inputs, outputs } = params;
+    const { inputs, outputs, transactions, protocolMagic, isTrezor } = params;
+    if (isTrezor) {
+      console.debug('>>> Sign Transaction with >>> Trezor <<<: ', params);
+      try {
+        const signedTransaction = await TrezorConnect.cardanoSignTransaction({
+          inputs,
+          outputs,
+          transactions,
+          protocol_magic: protocolMagic,
+        });
+        console.debug('>>> SUCC: ', signedTransaction);
+      } catch (e) {
+        console.debug('>>> ERR: ', e);
+      }
+    }
+    return;
+
+
     try {
       if (!deviceConnection) {
         throw new Error('Device not connected');

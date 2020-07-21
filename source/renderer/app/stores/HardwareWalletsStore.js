@@ -154,6 +154,7 @@ export default class HardwareWalletsStore extends Store {
         address,
         amount,
       });
+      console.debug('>>> COIN SELECTION :', coinSelection);
       const txDataHex = thDataHexGenerator(coinSelection);
       runInAction('HardwareWalletsStore:: set coin selections', () => {
         this.txSignRequest = {
@@ -183,6 +184,7 @@ export default class HardwareWalletsStore extends Store {
           deviceType,
         };
       });
+      console.debug('>>> deviceType: ', deviceType);
       if (deviceType === DeviceTypes.TREZOR) {
         await this._getExtendedPublicKey();
       } else {
@@ -246,7 +248,7 @@ export default class HardwareWalletsStore extends Store {
   };
 
   @action _getExtendedPublicKey = async () => {
-    const isTrezor = true; // @TODO - add active device recognizing logic
+    const isTrezor = false; // @TODO - add active device recognizing logic
     this.hwDeviceStatus = HwDeviceStatuses.EXPORTING_PUBLIC_KEY;
     const { activeHardwareWallet } = this.stores.wallets;
     const path = [
@@ -337,6 +339,131 @@ export default class HardwareWalletsStore extends Store {
   };
 
   @action _signTransaction = async () => {
+    const { coinSelection, txDataHex, recieverAddress } = this.txSignRequest;
+    const { inputs, outputs } = coinSelection;
+
+    const inputsData = map(inputs, input => {
+      return {
+        path: "m/44'/1815'/0'/0/1",
+        prev_hash: txDataHex,
+        prev_index: 1,
+        type: 1
+      };
+    });
+
+    const outputsData = map(outputs, output => {
+      if (output.address !== recieverAddress) {
+        // ChangeAddress
+        return {
+          path: "m/44'/1815'/0'/0/1",
+          amount: output.amount.quantity.toString(),
+          // path: utils.str_to_path("44'/1815'/0'/1/0"), // 4th param can be (0 or 1), 1 will say that address is change address
+        };
+      }
+      return {
+        address: output.address,
+        amount: output.amount.quantity.toString(),
+      };
+    });
+
+    // Example
+    // const data = {
+    //   inputs: [
+    //     {
+    //         path: "m/44'/1815'/0'/0/1",
+    //         prev_hash: "1af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc",
+    //         prev_index: 0,
+    //         type: 0
+    //     }
+    //   ],
+    //   outputs: [
+    //       {
+    //           address: "Ae2tdPwUPEZCanmBz5g2GEwFqKTKpNJcGYPKfDxoNeKZ8bRHr8366kseiK2",
+    //           amount: "3003112"
+    //       },
+    //       {
+    //           path: "m/44'/1815'/0'/0/1",
+    //           amount: "7120787"
+    //       }
+    //   ],
+    //   transactions: [
+    //       "839f8200d818582482582008abb575fac4c39d5bf80683f7f0c37e48f4e3d96e37d1f6611919a7241b456600ff9f8282d818582183581cda4da43db3fca93695e71dab839e72271204d28b9d964d306b8800a8a0001a7a6916a51a00305becffa0",
+    //       "839f8200d818582482582008abb575fac4c39d5bf80683f7f0c37e48f4e3d96e37d1f6611919a7241b456600ff9f8282d818582183581cda4da43db3fca93695e71dab839e72271204d28b9d964d306b8800a8a0001a7a6916a51a00305becffa0",
+    //       "839f8200d818582482582008abb575fac4c39d5bf80683f7f0c37e48f4e3d96e37d1f6611919a7241b456600ff9f8282d818582183581cda4da43db3fca93695e71dab839e72271204d28b9d964d306b8800a8a0001a7a6916a51a00305becffa0",
+    //       "839f8200d818582482582008abb575fac4c39d5bf80683f7f0c37e48f4e3d96e37d1f6611919a7241b456600ff9f8282d818582183581cda4da43db3fca93695e71dab839e72271204d28b9d964d306b8800a8a0001a7a6916a51a00305becffa0",
+    //       "839f8200d818582482582008abb575fac4c39d5bf80683f7f0c37e48f4e3d96e37d1f6611919a7241b456600ff9f8282d818582183581cda4da43db3fca93695e71dab839e72271204d28b9d964d306b8800a8a0001a7a6916a51a00305becffa0",
+    //       "839f8200d818582482582008abb575fac4c39d5bf80683f7f0c37e48f4e3d96e37d1f6611919a7241b456600ff9f8282d818582183581cda4da43db3fca93695e71dab839e72271204d28b9d964d306b8800a8a0001a7a6916a51a00305becffa0",
+    //   ],
+    //   protocol_magic: 764824073
+    // }
+
+    console.debug('>>> Sign START: ', { inputsData, outputsData });
+    console.debug('>>> TEST: ', inputs[0].id);
+    try {
+      const signedTransaction = await signTransactionChannel.request({
+        //inputs: inputsData,
+        // outputs: outputsData,
+      inputs: [
+         {
+             path: "m/44'/1815'/0'/0/1",
+             prev_hash: "1af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc",
+             prev_index: 0,
+             type: 0
+         }
+       ],
+       outputs: [
+           {
+               address: "DdzFFzCqrhshMav9kXdWuSYDe71zbN625sGXYAeYbUzjzctQB1NDRXrWa8EwbtsGQA4FKQ48H39zsADgdCRJ5g9QZ691Uzr1WXYpteZw",
+               amount: "100000"
+           },
+           {
+               path: "m/44'/1815'/0'/0/1",
+               amount: "729106"
+           }
+       ],
+        transactions: [
+            "839f8200d818582482582008abb575fac4c39d5bf80683f7f0c37e48f4e3d96e37d1f6611919a7241b456600ff9f8282d818582183581cda4da43db3fca93695e71dab839e72271204d28b9d964d306b8800a8a0001a7a6916a51a00305becffa0",
+            "839f8200d818582482582008abb575fac4c39d5bf80683f7f0c37e48f4e3d96e37d1f6611919a7241b456600ff9f8282d818582183581cda4da43db3fca93695e71dab839e72271204d28b9d964d306b8800a8a0001a7a6916a51a00305becffa0",
+            "839f8200d818582482582008abb575fac4c39d5bf80683f7f0c37e48f4e3d96e37d1f6611919a7241b456600ff9f8282d818582183581cda4da43db3fca93695e71dab839e72271204d28b9d964d306b8800a8a0001a7a6916a51a00305becffa0",
+            "839f8200d818582482582008abb575fac4c39d5bf80683f7f0c37e48f4e3d96e37d1f6611919a7241b456600ff9f8282d818582183581cda4da43db3fca93695e71dab839e72271204d28b9d964d306b8800a8a0001a7a6916a51a00305becffa0",
+            "839f8200d818582482582008abb575fac4c39d5bf80683f7f0c37e48f4e3d96e37d1f6611919a7241b456600ff9f8282d818582183581cda4da43db3fca93695e71dab839e72271204d28b9d964d306b8800a8a0001a7a6916a51a00305becffa0",
+            "839f8200d818582482582008abb575fac4c39d5bf80683f7f0c37e48f4e3d96e37d1f6611919a7241b456600ff9f8282d818582183581cda4da43db3fca93695e71dab839e72271204d28b9d964d306b8800a8a0001a7a6916a51a00305becffa0",
+        ],
+        protocolMagic: 764824073,
+        isTrezor: true,
+      });
+      console.debug('>>> Sign SUCCESS: ', signedTransaction);
+      // get xPub from signed transaction witnesses by exporting extended public key
+      // const witnesses = await Promise.all(
+      //   signedTransaction.witnesses.map(async witness => {
+      //     const xPub = await this._getXpub(witness.path);
+      //     return {
+      //       xpub: xPub,
+      //       signature: witness.witnessSignatureHex,
+      //     };
+      //   })
+      // );
+      // const signedTransactionData = {
+      //   txDataHex,
+      //   witnesses,
+      // };
+      // runInAction('HardwareWalletsStore:: set Transaction verified', () => {
+      //   this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED;
+      //   this.signedTransaction = encodeSignedTransaction(signedTransactionData);
+      // });
+    } catch (error) {
+      // runInAction(
+      //   'HardwareWalletsStore:: set Transaction verifying failed',
+      //   () => {
+      //     this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED;
+      //   }
+      // );
+      console.debug('>>> SIGN error: ', error);
+      throw error;
+    }
+  };
+
+  @action _signTransaction22 = async () => {
     const { coinSelection, txDataHex, recieverAddress } = this.txSignRequest;
     const { inputs, outputs } = coinSelection;
 
