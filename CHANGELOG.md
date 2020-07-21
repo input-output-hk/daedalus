@@ -6,7 +6,7 @@ Changelog
 ### Features
 
 - Added UX improvements for the display of stake pool ID ([PR 2074](https://github.com/input-output-hk/daedalus/pull/2074))
-- Updated application name and network identifiers ([PR ]())
+- Updated application name and network identifiers for the Shelley Testnet Mainnet candidate network ([PR 2078](https://github.com/input-output-hk/daedalus/pull/2078))
 
 ## 1.3.0-STN2
 
