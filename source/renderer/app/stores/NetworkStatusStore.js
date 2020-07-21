@@ -96,7 +96,7 @@ export default class NetworkStatusStore extends Store {
   @observable futureEpoch: ?FutureEpoch = null;
   @observable lastSyncProgressChangeTimestamp = 0; // milliseconds
   @observable localTimeDifference: ?number = 0; // microseconds
-  @observable decentralizationProgress: number = 10; // percentage
+  @observable decentralizationProgress: number = 0; // percentage
   @observable
   getNetworkInfoRequest: Request<GetNetworkInfoResponse> = new Request(
     this.api.ada.getNetworkInfo
