@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Added Byron to Shelley transition ([PR 2079](https://github.com/input-output-hk/daedalus/pull/2079))
 - Added UX improvements for the display of stake pool ID ([PR 2074](https://github.com/input-output-hk/daedalus/pull/2074))
 
 ### Fixes

@@ -487,7 +487,7 @@
   "static.splash.network.itnNetworkName": "Rewards",
   "static.splash.network.itnVersionName": "INCENTIVIZED TESTNET v1",
   "static.splash.network.linkLabel": "もっと知る",
-  "static.splash.network.stnDescription": "<p>このDaedalusバージョンは、Shelleyテストネットネットワーク第2イテレーションで使用するための専用バージョンです。</p><p>本バージョンにより、今夏委任機能がCardanoメインネットで使用可能となる前に、テストネットADAを使用してそのメカニズムを体験し、報酬の仕組みを理解することができます。</p>",
+  "static.splash.network.stnDescription": "<p>このDaedalusバージョンは、Shelleyテストネットネットワーク第3イテレーションで使用するための専用バージョンです。</p><p> 本バージョンにより、今夏委任機能がCardanoメインネットで使用可能となる前に、テストネットADAを使用してそのメカニズムを体験し、報酬の仕組みを理解することができます。</p><p> 日本時間7月20日午前9時にCardanoメインネットのADA残高スナップショットが実施され、この残高がCardanoテストネットのテストADAとして利用可能となりました。このスナップショットの時点でCardanoメインネットにADAを保有していた場合、このDaedalusバージョンを使用してメインネットのByronウォレットをShelleyテストネットで復元することができます。</p><p><b> このDaedalusバージョンはByronウォレットの送金機能をサポートしていません。この機能は今後まもなく予定されている更新で可能となります。</b></p><p> インセンティブ付きテストネットプログラムに参加していた場合は、Daedalus最新バージョンでインセンティブ付きテストネットの報酬を確認することができます。その際は、15語のウォレット復元フレーズを使用して、Daedalus RewardsまたはYoroiのウォレットを復元してください。</p>",
   "static.splash.network.stnLinkUrl": "https://testnets.cardano.org/en/shelley/overview/",
   "static.splash.network.stnVersionName": "Shelleyテストネット",
   "static.splash.network.title": "Daedalus",
