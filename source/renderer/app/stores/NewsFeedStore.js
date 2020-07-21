@@ -38,7 +38,8 @@ export default class NewsFeedStore extends Store {
     this.api.localStorage.markNewsAsRead
   );
   @observable openedAlert: ?News.News = null;
-  @observable isUpdateOpen: boolean = false;
+  // @UPDATE TODO:
+  @observable isUpdateOpen: boolean = true; // false;
   @observable fetchLocalNews: boolean = false;
 
   pollingNewsIntervalId: ?IntervalID = null;

@@ -3,7 +3,7 @@
 }
 
 .progressBarContainer {
-  background-color: var(--theme-staking-progress-bar-background-color);
+  background-color: var(--theme-progress-bar-large-background-color);
   border-radius: 5px;
   height: 100%;
   width: 100%;
@@ -13,10 +13,10 @@
   align-items: center;
   background: repeating-linear-gradient(
     -63deg,
-    var(--theme-staking-progress-stripe-dark-1-background-color),
-    var(--theme-staking-progress-stripe-dark-1-background-color) 10px,
-    var(--theme-staking-progress-stripe-dark-2-background-color) 10px,
-    var(--theme-staking-progress-stripe-dark-2-background-color) 20px
+    var(--theme-progress-bar-large-progress-stripe1),
+    var(--theme-progress-bar-large-progress-stripe1) 10px,
+    var(--theme-progress-bar-large-progress-stripe2) 10px,
+    var(--theme-progress-bar-large-progress-stripe2) 20px
   );
   border-radius: 5px;
   display: flex;

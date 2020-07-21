@@ -426,6 +426,9 @@ export const SHELLEY_TESTNET_THEME_OUTPUT = {
   progressBar: {
     '--theme-progress-bar-background-color': 'rgba(255, 255, 255, 0.3)',
     '--theme-progress-bar-foreground-color': 'rgba(255, 255, 255, 0.7)',
+    '--theme-progress-bar-large-progress-stripe1': '#e0e5eb',
+    '--theme-progress-bar-large-progress-stripe2': '#fafbfc',
+    '--theme-progress-bar-large-background-color': 'rgba(0, 0, 0, 0.1)',
   },
   receiveQRCode: {
     '--theme-receive-qr-code-background-color': '#fff',
@@ -974,25 +977,20 @@ export const SHELLEY_TESTNET_THEME_OUTPUT = {
     '--rp-password-input-tooltip-font-family': 'var(--rp-theme-font-medium)',
   },
   newsUpdateOverlay: {
-    '--theme-news-overlay-update-background-color': 'rgba(36, 62, 98, 0.96)',
-    '--theme-news-overlay-update-text-color': '#fafbfc',
-    '--theme-news-overlay-update-opacity-text-color':
+    '--theme-news-overlay-update-background-color': 'rgba(42, 43, 60, 0.96)',
+    '--theme-news-overlay-update-text-color': '#fff',
+    '--theme-news-overlay-update-subtitle-text-color':
       'rgba(250, 251, 252, 0.7)',
+    '--theme-news-overlay-update-subtitle-text-color1': '#898ee6',
     '--theme-news-overlay-update-content-background-color':
       'rgba(0, 0, 0, 0.1)',
-    '--theme-news-overlay-update-content-text-color': '#fafbfc',
     '--theme-news-overlay-update-content-scroll-background-color':
       'rgba(255, 255, 255, 0.3)',
     '--theme-news-overlay-update-content-scroll-hover-background-color':
       'rgba(255, 255, 255, 0.5)',
     '--theme-news-overlay-update-button-background-color': 'rgba(0, 0, 0, 0.1)',
-    '--theme-news-overlay-update-button-text-color': '#fafbfc',
-    '--theme-news-overlay-update-button-hover-text-color': '#5e6066',
-    '--theme-news-overlay-update-checkbox-background-color': '#fafbfc',
-    '--theme-news-overlay-update-checkbox-check-color': '#5e6066',
-    '--theme-news-overlay-update-checkbox-text-color': '#fafbfc',
-    '--theme-news-overlay-update-subtitle-text-color':
-      'rgba(250, 251, 252, 0.7)',
+    '--theme-news-overlay-update-button-text-color': '#fff',
+    '--theme-news-overlay-update-button-hover-text-color': '#2a2b3c',
   },
 };
 

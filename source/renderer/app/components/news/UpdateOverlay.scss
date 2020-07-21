@@ -19,11 +19,10 @@
     line-height: 1.2;
     margin-bottom: 30px;
     max-height: 464px;
-    max-width: 600px;
-    min-width: 600px;
     opacity: 0.8;
     overflow-y: scroll;
     padding: 12px 20px;
+    width: 608px;
     word-break: break-word;
     &::-webkit-scrollbar-thumb {
       background-color: var(
@@ -92,11 +91,6 @@
     }
   }
 
-  .button {
-    &:hover {
-    }
-  }
-
   .title {
     font-size: 20px;
     line-height: 1.2;
@@ -115,7 +109,15 @@
   }
 
   .downloadProgress {
-    width: 610px;
+    width: 608px;
+  }
+  .downloadProgressContent {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+    p {
+      font-size: 14px;
+    }
   }
 
   .actions {
@@ -125,20 +127,16 @@
       margin-bottom: 30px;
       :global {
         .SimpleCheckbox_check {
-          border: 2px solid
-            var(--theme-news-overlay-update-checkbox-background-color);
+          border: 2px solid var(--theme-news-overlay-update-text-color);
         }
         .SimpleCheckbox_checked {
-          background: var(
-            --theme-news-overlay-update-checkbox-background-color
-          );
+          background: var(--theme-news-overlay-update-button-text-color);
           &:after {
-            border-color: 2px solid
-              var(--theme-news-overlay-update-checkbox-check-color);
+            border-color: var(--theme-news-overlay-update-background-color);
           }
         }
         .SimpleCheckbox_label {
-          color: var(--theme-news-overlay-update-checkbox-text-color);
+          color: var(--theme-news-overlay-update-text-color);
           font-family: var(--font-medium);
           text-align: left;
         }
@@ -155,6 +153,20 @@
         color: var(--theme-news-overlay-update-button-hover-text-color);
         cursor: pointer;
       }
+    }
+  }
+
+  .closeButton {
+    background-color: var(--theme-news-overlay-update-content-background-color);
+    border-radius: 50%;
+    height: 44px;
+    opacity: 0.5;
+    right: 10px;
+    top: 10px;
+    width: 44px;
+    z-index: 999;
+    &:hover {
+      opacity: 0.8;
     }
   }
 }

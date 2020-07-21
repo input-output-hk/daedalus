@@ -38,9 +38,9 @@ const APP_UPDATE_DOWNLOAD_ID = 'appUpdate';
 
 export default class AppUpdateStore extends Store {
   @observable availableUpdate: ?News = null;
-  @observable isUpdateDownloading: boolean = false;
+  @observable isUpdateDownloading: boolean = true; //false;
   @observable isUpdateDownloaded: boolean = false;
-  @observable downloadProgress: number = 0;
+  @observable downloadProgress: number = 75;
 
   @observable isUpdateAvailable: boolean = false;
   @observable isUpdatePostponed: boolean = false;
@@ -48,10 +48,6 @@ export default class AppUpdateStore extends Store {
   @observable availableAppVersion: ?string = null;
   @observable isNewAppVersionAvailable: boolean = false;
   @observable applicationVersion: ?number = null;
-
-  // @observable updateFileUrl: ?string = null;
-  @observable updateFileUrl: ?string =
-    'https://update-cardano-mainnet.iohk.io/daedalus-1.1.0-mainnet-12849.pkg';
 
   @observable postponeUpdateRequest: Request<Promise<void>> = new Request(
     this.api.ada.postponeUpdate
@@ -156,14 +152,13 @@ export default class AppUpdateStore extends Store {
       this.availableUpdate = update;
     });
 
-    // Is there a pending / resumable download?
+    // Is there a pending / resumabl\e download?
     const downloadLocaldata = await this._getUpdateDownloadLocalData();
     const { progress } = downloadLocaldata;
-    console.log('progress', downloadLocaldata.progress);
     if (downloadLocaldata.progress) {
       if (progress.progress === 100) {
         runInAction(() => {
-          this.isUpdateDownloaded = true;
+          // this.isUpdateDownloaded = true;
         });
         return;
       }

@@ -35,20 +35,20 @@ const messages = defineMessages({
     defaultMessage: '!!!Quit Daedalus and start the installation',
     description: 'buttonLabel for the Update Overlay',
   },
-  downloadInProgressLabel: {
-    id: 'news.updateOverlay.downloadInProgressLabel',
+  downloadProgressLabel: {
+    id: 'news.updateOverlay.downloadProgressLabel',
     defaultMessage: '!!!Download in progress',
-    description: 'downloadInProgressLabel for the Update Overlay',
+    description: 'downloadProgressLabel for the Update Overlay',
   },
   // timeLeft: {
   //   id: 'news.updateOverlay.timeLeft',
   //   defaultMessage: '!!!',
   //   description: 'timeLeft for the Update Overlay',
   // },
-  downloadProgress: {
-    id: 'news.updateOverlay.downloadProgress',
+  downloadProgressData: {
+    id: 'news.updateOverlay.downloadProgressData',
     defaultMessage: '!!!({downloaded} MB of {total} MB downloaded)',
-    description: 'downloadProgress for the Update Overlay',
+    description: 'downloadProgressData for the Update Overlay',
   },
 });
 
@@ -93,13 +93,20 @@ export default class UpdateOverlay extends Component<Props, State> {
     const { content } = update;
     const currentVersion = '1.1.0';
     const availableVersion = '21.1.0';
+    const downloaded = 100;
+    const total = 100;
     return (
       <div
         className={styles.component}
         role="presentation"
         onClick={!isUpdateDownloaded ? onCloseUpdate : () => {}}
       >
-        {!isUpdateDownloaded && <DialogCloseButton onClose={onCloseUpdate} />}
+        {!isUpdateDownloaded && (
+          <DialogCloseButton
+            onClose={onCloseUpdate}
+            className={styles.closeButton}
+          />
+        )}
         <h1 className={styles.title}>{intl.formatMessage(messages.title)}</h1>
         <span className={styles.subtitle}>
           <FormattedHTMLMessage
@@ -115,6 +122,18 @@ export default class UpdateOverlay extends Component<Props, State> {
         </div>
         {!isUpdateDownloaded ? (
           <div className={styles.downloadProgress}>
+            <div className={styles.downloadProgressContent}>
+              <p className={styles.downloadProgressLabel}>
+                {intl.formatMessage(messages.downloadProgressLabel)}
+              </p>
+              <p className={styles.downloadProgressData}>
+                <b>21 minutes left</b>{' '}
+                {intl.formatMessage(messages.downloadProgressData, {
+                  downloaded,
+                  total,
+                })}
+              </p>
+            </div>
             <ProgressBarLarge progress={downloadProgress} />
           </div>
         ) : (
