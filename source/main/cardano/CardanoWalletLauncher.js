@@ -11,7 +11,7 @@ import { STAKE_POOL_REGISTRY_URL } from '../config';
 import {
   MAINNET,
   SELFNODE,
-  TESTNET,
+  STAGING,
   ITN_REWARDS_V1,
   ITN_SELFNODE,
   NIGHTLY,
@@ -150,8 +150,8 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
         }
       }
       if (cluster !== MAINNET) {
-        // All clusters except for Mainnet are treated as "Testnets"
-        launcherConfig.networkName = TESTNET;
+        // All clusters except for Mainnet are treated as "Stagings"
+        launcherConfig.networkName = STAGING;
       }
       merge(launcherConfig, { nodeConfig, tlsConfiguration });
       break;
