@@ -3656,12 +3656,12 @@ cardano-js@0.4.5:
     js-chain-libs-node "^0.3.0"
     ts-custom-error "^3.1.1"
 
-cardano-launcher@0.20200529.0:
-  version "0.20200529.0"
-  resolved "https://registry.yarnpkg.com/cardano-launcher/-/cardano-launcher-0.20200529.0.tgz#48d90e7b28744737fccace1c2e107fba74d5c411"
+cardano-launcher-stn@0.20200721.0:
+  version "0.20200721.0"
+  resolved "https://registry.yarnpkg.com/cardano-launcher-stn/-/cardano-launcher-stn-0.20200721.0.tgz#ae1e93396769690005d5bf0c3f9258144c8a89ad"
   dependencies:
     get-port "^5.1.1"
-    lodash "^4.17.15"
+    lodash "^4.17.19"
     mkdirp "^1.0.3"
     tsee "^1.3.0"
 
@@ -9043,7 +9043,7 @@ lodash.zip@^4.2.0:
   version "4.2.0"
   resolved "https://registry.yarnpkg.com/lodash.zip/-/lodash.zip-4.2.0.tgz#ec6662e4896408ed4ab6c542a3990b72cc080020"
 
-lodash@4.17.15, lodash@^4.0.0, lodash@^4.0.1, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.12, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.3.0, lodash@^4.8.0, lodash@~1.0.1, lodash@~4.17.12, lodash@~4.17.4:
+lodash@4.17.15, lodash@^4.0.0, lodash@^4.0.1, lodash@^4.17.10, lodash@^4.17.11, lodash@^4.17.12, lodash@^4.17.13, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.4, lodash@^4.17.5, lodash@^4.3.0, lodash@^4.8.0, lodash@~1.0.1, lodash@~4.17.12, lodash@~4.17.4:
   version "4.17.15"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.15.tgz#b447f6670a0455bbfeedd11392eff330ea097548"
 
