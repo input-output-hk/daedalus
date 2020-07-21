@@ -251,6 +251,7 @@ export default class WalletTypeDialog extends Component<Props, State> {
         <div>
           {walletKind === WALLET_KINDS.DAEDALUS &&
             this.getWalletKind(
+              isShelleyActivated,
               WALLET_DAEDALUS_KINDS,
               messages.labelDaedalusWalletKind,
               walletKindDaedalus,
@@ -259,6 +260,7 @@ export default class WalletTypeDialog extends Component<Props, State> {
           {isIncentivizedTestnet &&
             walletKind === WALLET_KINDS.YOROI &&
             this.getWalletKind(
+              isShelleyActivated,
               WALLET_YOROI_KINDS,
               messages.labelYoroiWalletKind,
               walletKindYoroi,
@@ -269,6 +271,7 @@ export default class WalletTypeDialog extends Component<Props, State> {
             walletKind === WALLET_KINDS.HARDWARE && (
               <Fragment>
                 {this.getWalletKind(
+                  isShelleyActivated,
                   WALLET_HARDWARE_KINDS,
                   messages.labelHardwareWalletKind,
                   walletKindHardware,
