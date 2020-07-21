@@ -54,7 +54,7 @@ export default class StakingCountdown extends Component<Props> {
     const description = intl.formatMessage(messages.description);
     const timeLeftDesc = intl.formatMessage(messages.timeLeftDesc);
     const buttonLabel = intl.formatMessage(messages.buttonLabel);
-
+    const showLearnMoreButton = false;
     return (
       <div className={styles.component}>
         <div className={styles.mainContent}>
@@ -65,15 +65,17 @@ export default class StakingCountdown extends Component<Props> {
             startDateTime={startDateTime}
             redirectOnEnd={redirectToStakingInfo}
           />
-          <ButtonLink
-            className={styles.learnMoreButton}
-            onClick={onLearnMoreClick}
-            skin={ButtonSkin}
-            label={buttonLabel}
-            linkProps={{
-              className: styles.externalLinkIcon,
-            }}
-          />
+          {showLearnMoreButton && (
+            <ButtonLink
+              className={styles.learnMoreButton}
+              onClick={onLearnMoreClick}
+              skin={ButtonSkin}
+              label={buttonLabel}
+              linkProps={{
+                className: styles.externalLinkIcon,
+              }}
+            />
+          )}
         </div>
       </div>
     );

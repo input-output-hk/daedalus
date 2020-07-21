@@ -338,7 +338,7 @@ export default class StakingStore extends Store {
 
   @action getStakePoolsData = async () => {
     const { isConnected, isSynced } = this.stores.networkStatus;
-    if (!isConnected || !isSynced) {
+    if (!this.isShelleyActivated || !isConnected || !isSynced) {
       this._resetIsRanking();
       return;
     }

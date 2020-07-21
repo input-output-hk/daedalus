@@ -363,7 +363,7 @@
   "staking.delegationSetup.steps.step.3.label": "Confirmation",
   "staking.delegationSetup.success.step.dialog.closeButtonLabel": "Close",
   "staking.delegationSetup.success.step.dialog.description.line1": "The stake from your wallet <span>{delegatedWalletName}</span> is now delegated to the <span>[{delegatedStakePoolTicker}] {delegatedStakePoolName}</span> stake pool.",
-  "staking.delegationSetup.success.step.dialog.description.line2": "Your new delegation preferences are now posted on the Cardano blockchain. <strong>These preferences will take effect after both the current and the next Cardano epochs have completed in {timeUntilNextEpochStart}.</strong>. During this time, your previous delegation preferences remain active.",
+  "staking.delegationSetup.success.step.dialog.description.line2": "Your new delegation preferences are now posted on the Cardano blockchain. <strong>These preferences will take effect after both the current and the next Cardano epochs have completed in {timeUntilNextEpochStart}.</strong> During this time, your previous delegation preferences remain active.",
   "staking.delegationSetup.success.step.dialog.title": "Wallet Delegated",
   "staking.epochs.currentEpoch.tableHeader.pool": "Stake pool",
   "staking.epochs.currentEpoch.tableHeader.slotsElected": "Slots elected",
