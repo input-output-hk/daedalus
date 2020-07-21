@@ -132,3 +132,6 @@ export const promise = (returnValue: any): (() => Promise<any>) => () =>
 
 export const isIncentivizedTestnetTheme = (currentTheme: string) =>
   currentTheme === 'incentivized-testnet';
+
+export const isShelleyTestnetTheme = (currentTheme: string) =>
+  currentTheme === 'shelley-testnet';

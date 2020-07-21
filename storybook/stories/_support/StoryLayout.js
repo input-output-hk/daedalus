@@ -6,7 +6,7 @@ import { observer, inject } from 'mobx-react';
 import { get } from 'lodash';
 import { action } from '@storybook/addon-actions';
 import { boolean } from '@storybook/addon-knobs';
-import { isIncentivizedTestnetTheme } from './utils';
+import { isIncentivizedTestnetTheme, isShelleyTestnetTheme } from './utils';
 
 // Assets and helpers
 import { CATEGORIES_BY_NAME } from '../../../source/renderer/app/config/sidebarConfig';
@@ -182,6 +182,8 @@ export default class StoryLayout extends Component<Props> {
         currentTheme={currentTheme}
         network="testnet"
         isIncentivizedTestnet={isIncentivizedTestnetTheme(currentTheme)}
+        isShelleyTestnet={isShelleyTestnetTheme(currentTheme)}
+        isShelleyActivated={isShelleyTestnetTheme(currentTheme)}
       />
     );
   };

@@ -35,9 +35,10 @@ export default class MainLayout extends Component<InjectedContainerProps> {
 
   render() {
     const { actions, stores } = this.props;
-    const { sidebar, profile, app, wallets: walletsStore } = stores;
+    const { sidebar, profile, app, wallets: walletsStore, staking } = stores;
     const activeWallet = walletsStore.active;
     const activeWalletId = activeWallet ? activeWallet.id : null;
+    const { isShelleyActivated } = staking;
     const { currentTheme } = profile;
     const {
       environment: { network, isDev },
@@ -79,6 +80,8 @@ export default class MainLayout extends Component<InjectedContainerProps> {
         menus={sidebarMenus}
         isShowingSubMenus={sidebar.isShowingSubMenus}
         isIncentivizedTestnet={global.isIncentivizedTestnet}
+        isShelleyTestnet={global.isShelleyTestnet}
+        isShelleyActivated={isShelleyActivated}
         categories={sidebar.CATEGORIES}
         activeSidebarCategory={sidebar.activeSidebarCategory}
         onActivateCategory={this.handleActivateCategory}
