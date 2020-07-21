@@ -588,7 +588,7 @@ export default class StakingStore extends Store {
   // ================= REACTIONS ==================
 
   _pollOnSync = () => {
-    if (this.stores.networkStatus.isSynced) {
+    if (this.stores.networkStatus.isSynced && this.isShelleyActivated) {
       this._setStake(this.stake);
     } else {
       this._resetIsRanking();
