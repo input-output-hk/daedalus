@@ -1,16 +1,21 @@
 Changelog
 =========
 
-## vNext
+## 1.4.0-STN3
 
 ### Features
 
 - Added Byron to Shelley transition ([PR 2079](https://github.com/input-output-hk/daedalus/pull/2079))
 - Added UX improvements for the display of stake pool ID ([PR 2074](https://github.com/input-output-hk/daedalus/pull/2074))
+- Updated application name and network identifiers for the Shelley Testnet Mainnet candidate network ([PR 2078](https://github.com/input-output-hk/daedalus/pull/2078))
 
 ### Fixes
 
 - Fixed double punctuation on delegation dialog ([PR 2077](https://github.com/input-output-hk/daedalus/pull/2077))
+
+### Chores
+
+- Updated `cardano-wallet` to revision `c01efcfe` ([PR 2078](https://github.com/input-output-hk/daedalus/pull/2078))
 
 ## 1.3.0-STN2
 

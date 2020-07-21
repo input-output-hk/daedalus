@@ -27,7 +27,7 @@ let
       cluster = "mainnet";
       networkName = "mainnet";
     };
-    shelley_testnet_v3 = {
+    shelley_testnet_v4 = {
       cardanoEnv = cardanoLib.environments.shelley_testnet;
       cluster = "shelley_testnet";
       networkName = "shelley_testnet";
@@ -83,7 +83,7 @@ let
       staging = "Staging";
       testnet = "Testnet";
       shelley_testnet = "Shelley Testnet";
-      shelley_testnet_v3 = "Shelley Testnet v3";
+      shelley_testnet_v4 = "Shelley Testnet v4";
       shelley_qa = "Shelley QA";
     };
     unsupported = "Unsupported";
