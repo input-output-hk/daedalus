@@ -56,7 +56,6 @@ export default class StakingStore extends Store {
   delegationCheckTimeInterval: ?IntervalID = null;
 
   startDateTime: string = '2020-07-29T00:00:00.161Z';
-  decentralizationProgress: number = 10;
   adaValue: BigNumber = new BigNumber(82650.15);
   percentage: number = 14;
 

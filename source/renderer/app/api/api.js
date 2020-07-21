@@ -121,7 +121,7 @@ import type {
   GetNetworkClockResponse,
   NetworkClockResponse,
   GetNetworkParametersResponse,
-  NetworkParametersResponse,
+  GetNetworkParametersApiResponse,
 } from './network/types';
 
 // Nodes Types
@@ -1636,13 +1636,10 @@ export default class AdaApi {
     }
   };
 
-  getNetworkParameters = async (
-    epochId: number
-  ): Promise<GetNetworkParametersResponse> => {
+  getNetworkParameters = async (): Promise<GetNetworkParametersResponse> => {
     logger.debug('AdaApi::getNetworkParameters called');
     try {
-      const networkParameters: NetworkParametersResponse = await getNetworkParameters(
-        epochId,
+      const networkParameters: GetNetworkParametersApiResponse = await getNetworkParameters(
         this.config
       );
       logger.debug('AdaApi::getNetworkParameters success', {
@@ -1656,6 +1653,9 @@ export default class AdaApi {
         epoch_length: epochLength,
         epoch_stability: epochStability,
         active_slot_coefficient: activeSlotCoefficient,
+        decentralization_level: decentralizationLevel,
+        desired_pool_number: desiredPoolNumber,
+        minimum_utxo_value: minimumUtxoValue,
       } = networkParameters;
       const blockchainStartTime = moment(blockchain_start_time).valueOf();
 
@@ -1666,6 +1666,9 @@ export default class AdaApi {
         epochLength,
         epochStability,
         activeSlotCoefficient,
+        decentralizationLevel,
+        desiredPoolNumber,
+        minimumUtxoValue,
       };
     } catch (error) {
       logger.error('AdaApi::getNetworkParameters error', { error });
