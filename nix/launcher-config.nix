@@ -28,7 +28,7 @@ let
       networkName = "mainnet";
     };
     shelley_testnet_v4 = {
-      cardanoEnv = cardanoLib.environments.shelley_testnet;
+      cardanoEnv = cardanoLib.environments.mainnet_candidate;
       cluster = "shelley_testnet";
       networkName = "shelley_testnet";
     };
@@ -192,7 +192,7 @@ let
     genesisFile = let
       genesisFile'.selfnode = ../utils/cardano/selfnode/genesis.json;
       genesisFile'.local = (__fromJSON nodeConfig).GenesisFile;
-    in if (genesisOverride != null) then genesisOverride else if (network == "selfnode" || network == "local") then genesisFile'.${network} else envCfg.genesisFile;
+    in if (genesisOverride != null) then genesisOverride else if (network == "selfnode" || network == "local") then genesisFile'.${network} else envCfg.nodeConfig.ByronGenesisFile;
     normalTopologyFile = if network == "selfnode" then envCfg.topology else cardanoLib.mkEdgeTopology {
       inherit (envCfg) edgePort;
       edgeNodes = [ envCfg.relaysNew ];
