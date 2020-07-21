@@ -161,6 +161,7 @@ let
     cluster = if __hasAttr network clusterOverrides then clusterOverrides.${network}.cluster else network;
     networkName = if __hasAttr network clusterOverrides then clusterOverrides.${network}.networkName else network;
     isFlight = network == "mainnet_flight";
+    isStaging = (envCfg.nodeConfig.RequiresNetworkMagic == "RequiresNoMagic");
     nodeImplementation = backend;
   };
 
