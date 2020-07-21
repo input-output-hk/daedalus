@@ -31,7 +31,7 @@ export default class StakingInfoPage extends Component<Props> {
       },
     } = this.props;
 
-    if (global.isIncentivizedTestnet) {
+    if (global.isIncentivizedTestnet && !global.isShelleyTestnet) {
       goToStakingDelegationCenterPage.trigger();
     }
   }
@@ -44,9 +44,10 @@ export default class StakingInfoPage extends Component<Props> {
   };
 
   render() {
+    const { decentralizationProgress } = this.props.stores.networkStatus;
     return (
       <StakingInfo
-        percentage={this.props.stores.staking.decentralizationProgress}
+        percentage={decentralizationProgress}
         onLearnMoreClick={this.handleLearnMoreClick}
       />
     );

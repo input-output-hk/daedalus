@@ -64,6 +64,7 @@ type Props = {
   countdownRemaining: number,
   canPhraseBeShown: boolean,
   isPrivacyNoticeAccepted: boolean,
+  isShelleyActivated: boolean,
   onAcceptPrivacyNotice: Function,
   onContinue: Function,
   onCancelBackup: Function,
@@ -80,6 +81,7 @@ export default class WalletBackupPrivacyWarningDialog extends Component<Props> {
     const {
       countdownRemaining,
       canPhraseBeShown,
+      isShelleyActivated,
       onAcceptPrivacyNotice,
       onCancelBackup,
       isPrivacyNoticeAccepted,
@@ -115,9 +117,11 @@ export default class WalletBackupPrivacyWarningDialog extends Component<Props> {
           instructionsText={intl.formatMessage(
             messages.recoveryPhraseInstructions1,
             {
-              walletRecoveryPhraseWordCount: isIncentivizedTestnet
-                ? WALLET_RECOVERY_PHRASE_WORD_COUNT
-                : LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
+              walletRecoveryPhraseWordCount:
+                (isIncentivizedTestnet && !isShelleyTestnet) ||
+                isShelleyActivated
+                  ? WALLET_RECOVERY_PHRASE_WORD_COUNT
+                  : LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
             }
           )}
         />
