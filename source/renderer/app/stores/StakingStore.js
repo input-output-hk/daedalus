@@ -128,8 +128,9 @@ export default class StakingStore extends Store {
     const currentTimeStamp = new Date().getTime();
     const startTimeStamp = new Date(this.startDateTime).getTime();
     this.isShelleyActivated = currentTimeStamp >= startTimeStamp;
-    if (this.isShelleyActivated) {
+    if (this.isShelleyActivated && this.pollingShelleyActivationCheck) {
       clearInterval(this.pollingShelleyActivationCheck);
+      this.pollingShelleyActivationCheck = null;
     }
   };
 
