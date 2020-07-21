@@ -49,6 +49,7 @@ storiesOf('Wallets|Add Wallet', module)
         onContinue={action('onContinue')}
         onClose={action('onClose')}
         onSetWalletKind={action('onSetWalletKind')}
+        isShelleyActivated
         walletKind={walletKindSelect}
         walletKindDaedalus={walletKindSpecificSelect}
         walletKindYoroi={walletKindSpecificSelect}

@@ -133,6 +133,7 @@ type Props = {
   onContinue: Function,
   onClose: Function,
   onSetWalletKind: Function,
+  isShelleyActivated: boolean,
   walletKind: ?WalletKind,
   walletKindDaedalus: ?WalletDaedalusKind,
   walletKindYoroi: ?WalletYoroiKind,
@@ -159,6 +160,7 @@ export default class WalletTypeDialog extends Component<Props, State> {
     this.setState(currentState => set({}, param, !currentState[param]));
 
   getWalletKind = (
+    isShelleyActivated: boolean,
     kinds: Object,
     message: string,
     value: ?string,
@@ -175,7 +177,7 @@ export default class WalletTypeDialog extends Component<Props, State> {
         }
         return {
           key: kind,
-          disabled: false,
+          disabled: !isShelleyActivated && kind.includes('Shelley'),
           label: <FormattedHTMLMessage {...msg} />,
           selected: value === kind,
           onChange: () => this.props.onSetWalletKind(kind, kindParam),
@@ -218,6 +220,7 @@ export default class WalletTypeDialog extends Component<Props, State> {
     const {
       onClose,
       onContinue,
+      isShelleyActivated,
       walletKind,
       walletKindDaedalus,
       walletKindYoroi,
@@ -239,6 +242,7 @@ export default class WalletTypeDialog extends Component<Props, State> {
       >
         <div className={styles.component}>
           {this.getWalletKind(
+            isShelleyActivated,
             WALLET_KINDS,
             messages.labelWalletKind,
             walletKind
