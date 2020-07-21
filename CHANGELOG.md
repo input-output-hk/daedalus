@@ -1,11 +1,12 @@
 Changelog
 =========
 
-## vNext
+## 1.4.0-STN3
 
 ### Features
 
 - Added UX improvements for the display of stake pool ID ([PR 2074](https://github.com/input-output-hk/daedalus/pull/2074))
+- Updated application name and network identifiers ([PR ]())
 
 ## 1.3.0-STN2
 
