@@ -10,13 +10,13 @@ import ButtonLink from '../../widgets/ButtonLink';
 const messages = defineMessages({
   heading: {
     id: 'staking.delegationCountdown.heading',
-    defaultMessage: '!!!Cardano decentralization',
+    defaultMessage: '!!!Shelley upgrade',
     description: 'Headline for the Decentralisation notification.',
   },
   description: {
     id: 'staking.delegationCountdown.description',
     defaultMessage:
-      '!!!Cardano will soon start its transition from a federated to a decentralized system. This will mark the start of stakeholders being able to earn rewards for participating in the running of the network. They will be able to participate directly in the process of staking or can delegate their stake to stake pools to earn rewards in ada.',
+      '!!!Cardano will soon start transitioning from a federated to a decentralized system. The first step is the activation of the Shelley upgrade. Once the upgrade is complete, stake pools will start registering and users will be able to delegate their wallets. Two epochs (12 hours) later, stake pools will begin producing blocks and users could start earning rewards from delegating their stakes. The first rewards, where due, will be distributed two more epochs later (12 hours).',
     description: 'Info for the Decentralisation notification.',
   },
   timeLeftDesc: {

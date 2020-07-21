@@ -9,20 +9,20 @@ import styles from './StakingInfo.scss';
 const messages = defineMessages({
   heading: {
     id: 'staking.info.heading',
-    defaultMessage: '!!!Cardano is transitioning to a decentralized system',
+    defaultMessage: '!!!Cardano is transitioning into a decentralized system',
     description: 'Headline for the Decentralization progress notification.',
   },
   description: {
     id: 'staking.info.description',
     defaultMessage:
-      '!!!Cardano is transitioning from a federated to a decentralized system. During this transition, some new blocks will be produced by nodes operated in a federated way and some by nodes run by ada stakeholders. All rewards will be distributed to ada stakeholders and none to operators of federated nodes.',
+      '!!!Cardano is transitioning from a federated system operated by its creators to a decentralized system operated by a community of stake pool operators. During this transition, blocks will be produced both by the federated nodes and by stake pools. The percentage of blocks produced by stake pools will increase every epoch until block production in the Cardano network becomes fully decentralized.',
     description:
       'Info description for the Decentralization progress notification.',
   },
   percentage: {
     id: 'staking.info.percentage',
     defaultMessage:
-      '!!!Currently, {percentage}% of the system is decentralized and operated by stake pools.',
+      '!!!Currently, {percentage}% of the blocks are produced by the stake pools.',
     description:
       'Percentage info description for the Decentralization progress notification.',
   },
