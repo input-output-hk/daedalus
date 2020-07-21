@@ -429,9 +429,10 @@ export default class WalletsStore extends Store {
     this._newWalletDetails.mnemonic = this.stores.walletBackup.recoveryPhrase.join(
       ' '
     );
+    const { isShelleyActivated } = this.stores.staking;
     const wallet = await this.createWalletRequest.execute({
       walletDetails: this._newWalletDetails,
-      isShelleyActivated: this.stores.staking.isShelleyActivated,
+      isShelleyActivated,
     }).promise;
     if (wallet) {
       await this._patchWalletRequestWithNewWallet(wallet);
@@ -898,7 +899,9 @@ export default class WalletsStore extends Store {
     if (this._pollingBlocked) return;
 
     if (this.stores.networkStatus.isConnected) {
-      const result = await this.walletsRequest.execute().promise;
+      const { isShelleyActivated } = this.stores.staking;
+      const result = await this.walletsRequest.execute({ isShelleyActivated })
+        .promise;
       if (!result) return;
       const walletIds = result
         .filter(

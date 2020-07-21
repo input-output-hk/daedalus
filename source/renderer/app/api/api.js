@@ -211,12 +211,16 @@ export default class AdaApi {
     this.config = config;
   }
 
-  getWallets = async (): Promise<Array<Wallet>> => {
+  getWallets = async (request: {
+    isShelleyActivated: boolean,
+  }): Promise<Array<Wallet>> => {
     logger.debug('AdaApi::getWallets called');
+    const { isShelleyActivated } = request;
     try {
-      const wallets: AdaWallets = isIncentivizedTestnet
-        ? await getWallets(this.config)
-        : [];
+      const wallets: AdaWallets =
+        (isIncentivizedTestnet && !isShelleyTestnet) || isShelleyActivated
+          ? await getWallets(this.config)
+          : [];
       const legacyWallets: LegacyAdaWallets = await getLegacyWallets(
         this.config
       );
@@ -1542,7 +1546,8 @@ export default class AdaApi {
   testReset = async (): Promise<void> => {
     logger.debug('AdaApi::testReset called');
     try {
-      const wallets = await this.getWallets();
+      // @TODO - pass isShelleyActivated parameter from E2E tests
+      const wallets = await this.getWallets({ isShelleyActivated: false });
       await Promise.all(
         wallets.map(wallet =>
           this.deleteWallet({
