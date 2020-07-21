@@ -197,7 +197,7 @@ import { deleteTransaction } from './transactions/requests/deleteTransaction';
 import { WALLET_BYRON_KINDS } from '../config/walletRestoreConfig';
 import ApiError from '../domains/ApiError';
 
-const { isIncentivizedTestnet } = global;
+const { isIncentivizedTestnet, isShelleyTestnet } = global;
 
 export default class AdaApi {
   config: RequestConfig;
@@ -530,11 +530,15 @@ export default class AdaApi {
     }
   };
 
-  createWallet = async (request: CreateWalletRequest): Promise<Wallet> => {
+  createWallet = async (request: {
+    walletDetails: CreateWalletRequest,
+    isShelleyActivated: boolean,
+  }): Promise<Wallet> => {
     logger.debug('AdaApi::createWallet called', {
       parameters: filterLogData(request),
     });
-    const { name, mnemonic, spendingPassword } = request;
+    const { walletDetails, isShelleyActivated } = request;
+    const { name, mnemonic, spendingPassword } = walletDetails;
     try {
       let wallet: AdaWallet;
       const walletInitData = {
@@ -543,7 +547,7 @@ export default class AdaApi {
         passphrase: spendingPassword,
       };
 
-      if (isIncentivizedTestnet) {
+      if ((isIncentivizedTestnet && !isShelleyTestnet) || isShelleyActivated) {
         wallet = await createWallet(this.config, {
           walletInitData,
         });
@@ -799,13 +803,16 @@ export default class AdaApi {
   isValidCertificateMnemonic = (mnemonic: string): boolean =>
     mnemonic.split(' ').length === ADA_CERTIFICATE_MNEMONIC_LENGTH;
 
-  getWalletRecoveryPhrase(): Promise<Array<string>> {
+  getWalletRecoveryPhrase(request: {
+    isShelleyActivated: string,
+  }): Promise<Array<string>> {
+    const { isShelleyActivated } = request;
     logger.debug('AdaApi::getWalletRecoveryPhrase called');
     try {
       const response: Promise<Array<string>> = new Promise(resolve =>
         resolve(
           generateAccountMnemonics(
-            isIncentivizedTestnet
+            (isIncentivizedTestnet && !isShelleyTestnet) || isShelleyActivated
               ? WALLET_RECOVERY_PHRASE_WORD_COUNT
               : LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT
           )
