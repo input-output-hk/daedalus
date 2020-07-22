@@ -29,17 +29,23 @@ export default class InitialSettingsPage extends Component<InjectedProps> {
   };
 
   render() {
-    const { currentRoute } = this.props.stores.app;
+    const { app, profile, staking } = this.props.stores;
+    const { currentRoute } = app;
     const {
       setProfileLocaleRequest,
       currentLocale,
       currentNumberFormat,
       currentDateFormat,
       currentTimeFormat,
-    } = this.props.stores.profile;
+    } = profile;
     const isSubmitting = setProfileLocaleRequest.isExecuting;
+    const { isShelleyActivated } = staking;
     const topbar = (
-      <TopBar currentRoute={currentRoute} showSubMenuToggle={false} />
+      <TopBar
+        currentRoute={currentRoute}
+        showSubMenuToggle={false}
+        isShelleyActivated={isShelleyActivated}
+      />
     );
     return (
       <TopBarLayout topbar={topbar}>
