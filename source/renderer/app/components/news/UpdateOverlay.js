@@ -21,7 +21,7 @@ const messages = defineMessages({
   subtitle: {
     id: 'news.updateOverlay.subtitle',
     defaultMessage:
-      '!!!You are currently running Daedalus version {currentVersion}. Daedalus version {availableVersion} is now available to download.',
+      '!!!You are currently running Daedalus version {currentVersion}.<br />Daedalus version {availableVersion} is now available to download.',
     description: 'subtitle for the Update Overlay',
   },
   checkboxLabel: {
@@ -55,7 +55,7 @@ const messages = defineMessages({
 type Props = {
   update: News.News,
   onCloseUpdate: Function,
-  downloadProgress?: number,
+  downloadProgress: DownloadProgress,
   isUpdateDownloaded: boolean,
   onInstallUpdate: Function,
 };
@@ -93,8 +93,6 @@ export default class UpdateOverlay extends Component<Props, State> {
     const { content } = update;
     const currentVersion = '1.1.0';
     const availableVersion = '21.1.0';
-    const downloaded = 100;
-    const total = 100;
     return (
       <div
         className={styles.component}
@@ -127,7 +125,7 @@ export default class UpdateOverlay extends Component<Props, State> {
                 {intl.formatMessage(messages.downloadProgressLabel)}
               </p>
               <p className={styles.downloadProgressData}>
-                <b>21 minutes left</b>{' '}
+                <b>{this.timeLeft}</b>{' '}
                 {intl.formatMessage(messages.downloadProgressData, {
                   downloaded,
                   total,

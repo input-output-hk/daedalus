@@ -181,7 +181,7 @@
   "news.newsfeed.noFetch": "Trying to fetch the newsfeed...",
   "news.newsfeed.title": "Newsfeed",
   "news.updateOverlay.title": "Software update available!",
-  "news.updateOverlay.subtitle": "You are currently running Daedalus version <b>{currentVersion}</b>. Daedalus version <b>{availableVersion}</b> is now available to download.",
+  "news.updateOverlay.subtitle": "You are currently running Daedalus version <b>{currentVersion}</b>.<br />Daedalus version <b>{availableVersion}</b> is now available to download.",
   "news.updateOverlay.checkboxLabel": "I understand that I need to complete the installation before starting Daedalus.",
   "news.updateOverlay.buttonLabel": "Quit Daedalus and start the installation",
   "news.updateOverlay.downloadProgressLabel": "Download in progress",

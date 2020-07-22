@@ -181,7 +181,7 @@
   "news.newsfeed.noFetch": "ニュースフィードを読み込んでいます…",
   "news.newsfeed.title": "ニュースフィード",
   "news.updateOverlay.title": "ソフトウェアが更新できます!",
-  "news.updateOverlay.subtitle": "このDaedalusはバージョン<b>{currentVersion}</b>です。現在Daedalus <b>{availableVersion}</b>がダウンロード可能です",
+  "news.updateOverlay.subtitle": "このDaedalusはバージョン<b>{currentVersion}</b>です。<br />現在Daedalus <b>{availableVersion}</b>がダウンロード可能です",
   "news.updateOverlay.checkboxLabel": "Daedalusを起動する前に、インストールを完了する必要があることを理解しました。",
   "news.updateOverlay.buttonLabel": "Daedalusを終了してインストールを開始する",
   "news.updateOverlay.downloadProgressLabel": "ダウンロードしています",

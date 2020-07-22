@@ -103,6 +103,7 @@
     font-family: var(--font-medium);
     line-height: 1.38;
     margin-bottom: 16px;
+    text-align: center;
     b {
       color: var(--theme-news-overlay-update-text-color);
     }
@@ -117,6 +118,12 @@
     margin-bottom: 4px;
     p {
       font-size: 14px;
+    }
+  }
+  .downloadProgressData {
+    color: var(--theme-news-overlay-update-subtitle-text-color);
+    b {
+      font-family: var(--font-bold);
     }
   }
 

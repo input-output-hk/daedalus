@@ -24,7 +24,6 @@ export const downloadManagerLocalStorage = {
         key: STORAGE_KEYS.DOWNLOAD_MANAGER,
         id,
       })) || {};
-    // if (!data || !progress) return {};
     return { data, progress };
   },
   getAll: async () => {

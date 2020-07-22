@@ -2,6 +2,7 @@
 import { action, computed, observable, runInAction } from 'mobx';
 import { get } from 'lodash';
 import semver from 'semver';
+import moment from 'moment';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { rebuildApplicationMenu } from '../ipc/rebuild-application-menu';
@@ -17,9 +18,14 @@ import type {
   DownloadMainResponse,
   DownloadLocalDataMainResponse,
 } from '../../../common/ipc/api';
+import { formattedBytesToSize } from '../utils/formatters.js';
 import { DOWNLOAD_EVENT_TYPES } from '../../../common/config/downloadManagerConfig';
 import type { GetLatestAppVersionResponse } from '../api/nodes/types';
 import type { SoftwareUpdateInfo } from '../api/news/types';
+import type {
+  DownloadData,
+  DownloadProgress,
+} from '../../../common/types/downloadManager.types';
 
 const { version: currentVersion, platform } = global.environment;
 
@@ -33,14 +39,41 @@ export type AppUpdateStatus = {
   update: News,
   downloadProgress: number,
 };
+const dummyData: DownloadData = {
+  downloadId: 'appUpdate',
+  fileUrl:
+    'https://update-cardano-mainnet.iohk.io/daedalus-1.1.0-mainnet-12849.pkg',
+  destinationPath:
+    '/Users/danilo/Library/Application Support/Daedalus Shelley Testnet v4/Downloads',
+  destinationDirectoryName: 'stateDirectory',
+  temporaryFilename: 'Unconfirmed-2020-07-22T180223.0689Z.crdownload',
+  originalFilename: 'daedalus-1.1.0-mainnet-12849.pkg',
+  options: {
+    progressIsThrottled: false,
+    persistLocalData: true,
+    fileName: 'Unconfirmed-2020-07-22T180223.0689Z.crdownload',
+  },
+};
+const dummyProgress: DownloadProgress = {
+  state: 'DOWNLOADING',
+  remainingSize: 130699883,
+  serverFileSize: 229305198,
+  diskFileSize: 0,
+  downloadSize: 98605315,
+  progress: 43.00177922700208,
+  speed: 3751936,
+  incomplete: false,
+  isResumed: false,
+};
 
 const APP_UPDATE_DOWNLOAD_ID = 'appUpdate';
 
 export default class AppUpdateStore extends Store {
   @observable availableUpdate: ?News = null;
-  @observable isUpdateDownloading: boolean = true; //false;
+  @observable isUpdateDownloading: boolean = true; // false;
   @observable isUpdateDownloaded: boolean = false;
-  @observable downloadProgress: number = 75;
+  @observable downloadData: ?DownloadData = dummyData; // null;
+  @observable downloadProgress: ?DownloadProgress = dummyProgress; // null;
 
   @observable isUpdateAvailable: boolean = false;
   @observable isUpdatePostponed: boolean = false;
@@ -83,6 +116,8 @@ export default class AppUpdateStore extends Store {
   };
 
   // ==================== PUBLIC ==================
+
+  // @computed get downloadProgress
 
   @computed get isNewAppVersionLoading(): boolean {
     return this.getLatestAppVersionRequest.isExecuting;
@@ -192,11 +227,11 @@ export default class AppUpdateStore extends Store {
   _manageUpdateResponse = ({
     eventType,
     data,
-    progress: progressData,
+    progress,
   }: DownloadMainResponse) => {
     if (eventType === DOWNLOAD_EVENT_TYPES.PROGRESS) {
-      const progress = parseInt(progressData.progress, 10);
       runInAction(() => {
+        this.downloadData = data;
         this.downloadProgress = progress;
       });
       // @UPDATE TODO
