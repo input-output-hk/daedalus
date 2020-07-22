@@ -78,7 +78,6 @@ export default class AppUpdateStore extends Store {
   @observable downloadData: ?DownloadData = null;
 
   @observable isUpdateAvailable: boolean = false;
-  @observable isUpdatePostponed: boolean = false;
   @observable isUpdateInstalled: boolean = false;
   @observable availableAppVersion: ?string = null;
   @observable isNewAppVersionAvailable: boolean = false;
@@ -95,12 +94,8 @@ export default class AppUpdateStore extends Store {
     this.api.ada.getLatestAppVersion
   );
 
-  nextUpdateInterval: ?IntervalID = null;
-
   setup() {
     const actions = this.actions.appUpdate;
-    actions.acceptAppUpdate.listen(this._acceptAppUpdate);
-    actions.postponeAppUpdate.listen(this._postponeAppUpdate);
     actions.getLatestAvailableAppVersion.listen(
       this._getLatestAvailableAppVersion
     );
@@ -151,20 +146,9 @@ export default class AppUpdateStore extends Store {
     );
   }
 
-  @computed get showNextUpdate(): boolean {
-    return (
-      this.isUpdateAvailable &&
-      !this.isUpdatePostponed &&
-      !this.isUpdateInstalled &&
-      !global.isIncentivizedTestnet &&
-      !global.isFlight
-    );
-  }
-
   @computed get showManualUpdate(): boolean {
     return (
       this.isNewAppVersionAvailable &&
-      !this.isUpdatePostponed &&
       !this.isUpdateAvailable &&
       !global.isIncentivizedTestnet &&
       !global.isFlight
@@ -289,25 +273,6 @@ export default class AppUpdateStore extends Store {
         persistLocalData: true,
       },
     });
-  };
-
-  // eslint-disable-next-line
-  @action _postponeAppUpdate = async () => {
-    this.postponeUpdateRequest.execute();
-    this.isUpdatePostponed = true;
-    this.isUpdateAvailable = false;
-    await rebuildApplicationMenu.send({
-      isUpdateAvailable: this.isUpdateAvailable,
-    });
-  };
-
-  @action _acceptAppUpdate = async () => {
-    this.applyUpdateRequest.execute();
-  };
-
-  @action hideUpdateDialog = async () => {
-    this.isUpdateInstalled = true;
-    this.isUpdateAvailable = false;
   };
 
   @action _getLatestAvailableAppVersion = async () => {

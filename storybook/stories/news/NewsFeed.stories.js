@@ -3,7 +3,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import { boolean, select, withKnobs } from '@storybook/addon-knobs';
+import { boolean, select, number, withKnobs } from '@storybook/addon-knobs';
 import StoryDecorator from '../_support/StoryDecorator';
 import NewsFeed from '../../../source/renderer/app/components/news/NewsFeed';
 import News from '../../../source/renderer/app/domains/News';
@@ -121,6 +121,13 @@ const news = [
   }),
 ];
 
+const updateDownloadProgressOptions = {
+  range: true,
+  min: 0,
+  max: 100,
+  step: 1,
+};
+
 const newsCollection = new News.NewsCollection(news);
 
 storiesOf('News|NewsFeed', module)
@@ -143,6 +150,13 @@ storiesOf('News|NewsFeed', module)
         onOpenExternalLink={action('onOpenExternalLink')}
         onOpenAlert={action('onOpenAlert')}
         onProceedNewsAction={action('onOpenExternalLink')}
+        isUpdateDownloading={boolean('isUpdateDownloading', false)}
+        updateDownloadProgress={number(
+          'updateDownloadProgress',
+          0,
+          updateDownloadProgressOptions
+        )}
+        onOpenUpdate={action('onOpenUpdate')}
         currentDateFormat=" "
       />
     </div>
@@ -161,6 +175,14 @@ storiesOf('News|NewsFeed', module)
         onOpenExternalLink={action('onOpenExternalLink')}
         onOpenAlert={action('onOpenAlert')}
         onProceedNewsAction={action('onOpenExternalLink')}
+        onOpenUpdate={action('onOpenUpdate')}
+        isUpdateDownloading={boolean('isUpdateDownloading', false)}
+        updateDownloadProgress={number(
+          'updateDownloadProgress',
+          0,
+          updateDownloadProgressOptions
+        )}
+        onOpenUpdate={action('onOpenUpdate')}
         currentDateFormat=" "
       />
     </div>
@@ -179,6 +201,13 @@ storiesOf('News|NewsFeed', module)
         onOpenExternalLink={action('onOpenExternalLink')}
         onOpenAlert={action('onOpenAlert')}
         onProceedNewsAction={action('onOpenExternalLink')}
+        isUpdateDownloading={boolean('isUpdateDownloading', false)}
+        updateDownloadProgress={number(
+          'updateDownloadProgress',
+          0,
+          updateDownloadProgressOptions
+        )}
+        onOpenUpdate={action('onOpenUpdate')}
         currentDateFormat={select(
           'currentDateFormat',
           dateOptions,

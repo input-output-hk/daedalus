@@ -28,7 +28,6 @@ import { EPOCH_LENGTH_ITN } from '../../config/epochsConfig';
 let LATEST_APP_VERSION = null;
 let LOCAL_TIME_DIFFERENCE = 0;
 let SYNC_PROGRESS = null;
-let NEXT_ADA_UPDATE = null;
 let APPLICATION_VERSION = null;
 let TESTING_NEWSFEED_JSON: ?GetNewsResponse;
 let TESTING_WALLETS_DATA: Object = {};
@@ -82,23 +81,6 @@ export default (api: AdaApi) => {
 
   api.setSyncProgress = async syncProgress => {
     SYNC_PROGRESS = syncProgress;
-  };
-
-  api.nextUpdate = async (): Promise<Object> => {
-    let appUpdate = null;
-
-    if (NEXT_ADA_UPDATE) {
-      appUpdate = {
-        version: NEXT_ADA_UPDATE,
-      };
-    }
-
-    logger.debug('AdaApi::nextUpdate success', { appUpdate });
-    return Promise.resolve(appUpdate);
-  };
-
-  api.setNextUpdate = async nextUpdate => {
-    NEXT_ADA_UPDATE = nextUpdate;
   };
 
   api.getLatestAppVersion = async (): Promise<GetLatestAppVersionResponse> => {
@@ -250,7 +232,6 @@ export default (api: AdaApi) => {
     TESTING_WALLETS_DATA = {};
     SYNC_PROGRESS = null;
     LATEST_APP_VERSION = null;
-    NEXT_ADA_UPDATE = null;
     APPLICATION_VERSION = null;
     LOCAL_TIME_DIFFERENCE = 0;
   };
