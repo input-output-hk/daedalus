@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import classnames from 'classnames';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
@@ -58,6 +59,8 @@ type Props = {
   downloadTimeLeft: string,
   totalDownloaded: string,
   totalDownloadSize: string,
+  currentVersion: string,
+  availableVersion: string,
   downloadProgress: number,
   isUpdateDownloaded: boolean,
   onInstallUpdate: Function,
@@ -94,11 +97,15 @@ export default class UpdateOverlay extends Component<Props, State> {
       downloadProgress,
       isUpdateDownloaded,
       onInstallUpdate,
+      currentVersion,
+      availableVersion,
     } = this.props;
     const { areTermsOfUseAccepted } = this.state;
     const { content } = update;
-    const currentVersion = '1.1.0';
-    const availableVersion = '21.1.0';
+    const buttonStyles = [
+      styles.button,
+      !areTermsOfUseAccepted ? styles.disabled : null,
+    ];
     return (
       <div
         className={styles.component}
@@ -155,7 +162,7 @@ export default class UpdateOverlay extends Component<Props, State> {
               themeOverrides={styles.checkbox}
             />
             <Button
-              className={styles.button}
+              className={buttonStyles}
               onClick={onInstallUpdate}
               skin={ButtonSkin}
               label={intl.formatMessage(messages.buttonLabel)}

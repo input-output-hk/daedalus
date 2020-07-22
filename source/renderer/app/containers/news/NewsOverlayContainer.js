@@ -16,8 +16,10 @@ export default class NewsOverlayContainer extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
 
   render() {
-    const { app, newsFeed, profile, appUpdate } = this.props.stores;
-    const { openExternalLink } = app;
+    const { stores, actions } = this.props;
+    const { app, newsFeed, profile, appUpdate } = stores;
+    const { environment, openExternalLink } = stores.app;
+    const { version } = environment;
     const {
       closeOpenedAlert,
       markNewsAsRead,
@@ -34,7 +36,9 @@ export default class NewsOverlayContainer extends Component<InjectedProps> {
       downloadTimeLeft,
       totalDownloaded,
       totalDownloadSize,
+      availableUpdateVersion,
     } = appUpdate;
+    const { onInstallUpdate } = actions.appUpdate;
     const { incident, alerts } = newsFeedData;
     const unreadAlerts = alerts.unread;
     const allAlertsCount = alerts.all ? alerts.all.length : 0;
@@ -90,7 +94,9 @@ export default class NewsOverlayContainer extends Component<InjectedProps> {
           downloadTimeLeft={downloadTimeLeft}
           totalDownloaded={totalDownloaded}
           totalDownloadSize={totalDownloadSize}
-          onInstallUpdate={() => {}}
+          onInstallUpdate={onInstallUpdate.trigger}
+          currentVersion={version}
+          availableVersion={availableUpdateVersion}
         />
       );
     }

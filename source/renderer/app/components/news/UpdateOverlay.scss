@@ -160,6 +160,13 @@
         color: var(--theme-news-overlay-update-button-hover-text-color);
         cursor: pointer;
       }
+      &.disabled {
+        border-color: var(--theme-news-overlay-update-subtitle-text-color);
+        color: var(--theme-news-overlay-update-subtitle-text-color);
+        cursor: default;
+        opacity: 0.8;
+        text-decoration: none;
+      }
     }
   }
 

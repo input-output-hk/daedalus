@@ -32,6 +32,7 @@ import type {
   DownloadLocalDataResponse,
   DownloadsLocalDataRequest,
   DownloadsLocalDataResponse,
+  DownloadInfo,
   DownloadRequest,
   DownloadResponse,
   ResumeDownloadRequest,
@@ -338,3 +339,10 @@ export type DownloadsLocalDataMainResponse = DownloadsLocalDataResponse | void;
 export const CLEAR_DOWNLOAD_LOCAL_DATA = 'CLEAR_DOWNLOAD_LOCAL_DATA';
 export type ClearDownloadLocalDataRendererRequest = ClearDownloadLocalDataRequest;
 export type ClearDownloadLocalDataMainResponse = ClearDownloadLocalDataResponse;
+
+/**
+ * Channel for quitting Daedalus and installing update
+ */
+export const QUIT_APP_INSTALL_UPDATE = 'QUIT_APP_INSTALL_UPDATE';
+export type QuitAppInstallUpdateRendererRequest = string;
+export type QuitAppInstallUpdateMainResponse = void;

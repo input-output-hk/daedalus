@@ -28,11 +28,13 @@ import { getLocale } from './utils/getLocale';
 import { detectSystemLocale } from './utils/detectSystemLocale';
 import { ensureXDGDataIsSet } from './cardano/config';
 import { rebuildApplicationMenu } from './ipc/rebuild-application-menu';
+import { quitAppInstallUpdateChannel } from './ipc/quitAppInstallUpdateChannel';
 import { getStateDirectoryPathChannel } from './ipc/getStateDirectoryPathChannel';
 import { getDesktopDirectoryPathChannel } from './ipc/getDesktopDirectoryPathChannel';
 import { getSystemLocaleChannel } from './ipc/getSystemLocaleChannel';
 import { CardanoNodeStates } from '../common/types/cardano-node.types';
 import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types';
+import type { QuitAppInstallUpdateRendererRequest } from '../common/ipc/api';
 import { logUsedVersion } from './utils/logUsedVersion';
 import { setStateSnapshotLogChannel } from './ipc/set-log-state-snapshot';
 import { generateWalletMigrationReportChannel } from './ipc/generateWalletMigrationReportChannel';
@@ -195,6 +197,15 @@ const onAppReady = async () => {
     );
     event.preventDefault();
     await safeExit();
+  });
+
+  quitAppInstallUpdateChannel.onRequest(filePath => {
+    logger.info(
+      'QuitAppInstallUpdateRendererRequest received <close> event. Safe exiting Daedalus now.'
+    );
+    shell.openItem(filePath);
+    app.quit();
+    return Promise.resolve();
   });
 
   buildAppMenus(mainWindow, cardanoNode, locale, { isUpdateAvailable: false });

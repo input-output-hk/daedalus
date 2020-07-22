@@ -4,7 +4,6 @@ import { get } from 'lodash';
 import semver from 'semver';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import { rebuildApplicationMenu } from '../ipc/rebuild-application-menu';
 import NewsDomains from '../domains/News';
 import {
   requestDownloadChannel,
@@ -13,12 +12,16 @@ import {
   getDownloadLocalDataChannel,
   clearDownloadLocalDataChannel,
 } from '../ipc/downloadManagerChannel';
+import { quitAppInstallUpdateChannel } from '../ipc/quitAppInstallUpdateChannel';
 import type {
   DownloadMainResponse,
   DownloadLocalDataMainResponse,
 } from '../../../common/ipc/api';
 import { formattedDownloadData } from '../utils/formatters.js';
-import { DOWNLOAD_EVENT_TYPES } from '../../../common/config/downloadManagerConfig';
+import {
+  DOWNLOAD_EVENT_TYPES,
+  DOWNLOAD_STATES,
+} from '../../../common/config/downloadManagerConfig';
 import type { GetLatestAppVersionResponse } from '../api/nodes/types';
 import type { SoftwareUpdateInfo } from '../api/news/types';
 import type {
@@ -66,6 +69,7 @@ const APP_UPDATE_DOWNLOAD_ID = 'appUpdate';
 
 export default class AppUpdateStore extends Store {
   @observable availableUpdate: ?News = null;
+  @observable availableUpdateVersion: string = '';
   // @UPDATE TODO
   // @observable isUpdateDownloading: boolean = true;
   @observable isUpdateDownloading: boolean = false;
@@ -99,6 +103,8 @@ export default class AppUpdateStore extends Store {
     actions.getLatestAvailableAppVersion.listen(
       this._getLatestAvailableAppVersion
     );
+    actions.onInstallUpdate.listen(this._onInstallUpdate);
+
     requestDownloadChannel.onReceive(this._manageUpdateResponse);
 
     // ============== MOBX REACTIONS ==============
@@ -187,17 +193,22 @@ export default class AppUpdateStore extends Store {
       return;
     }
 
+    const { version } = this.getUpdateInfo(update);
+
     runInAction(() => {
       this.availableUpdate = update;
+      this.availableUpdateVersion = version;
     });
 
     // Is there a pending / resumabl\e download?
     const downloadLocalData = await this._getUpdateDownloadLocalData();
-    const { data } = downloadLocalData;
-    if (data) {
-      if (data.progress === 100) {
+    const { info, data } = downloadLocalData;
+    if (info && data) {
+      if (data.state === DOWNLOAD_STATES.FINISHED && data.progress === 100) {
         runInAction(() => {
-          // this.isUpdateDownloaded = true;
+          this.downloadInfo = info;
+          this.downloadData = data;
+          this.isUpdateDownloaded = true;
         });
         return;
       }
@@ -217,6 +228,7 @@ export default class AppUpdateStore extends Store {
     });
   };
 
+  // @UPDATE TODO: Implement this method
   _removeUpdateFile = () => {
     deleteDownloadedFile.request({
       id: APP_UPDATE_DOWNLOAD_ID,
@@ -234,12 +246,6 @@ export default class AppUpdateStore extends Store {
         this.downloadInfo = info;
         this.downloadData = data;
       });
-      // @UPDATE TODO
-      console.log(
-        '%c Download progress: %s%',
-        'color: darkOrange',
-        data.progress
-      );
     }
     runInAction('updates the download information', () => {
       if (eventType === DOWNLOAD_EVENT_TYPES.END) {
@@ -273,6 +279,24 @@ export default class AppUpdateStore extends Store {
         persistLocalData: true,
       },
     });
+  };
+
+  @action _onInstallUpdate = async () => {
+    if (
+      !this.availableUpdate ||
+      this.isUpdateDownloading ||
+      !this.isUpdateDownloaded ||
+      !this.downloadInfo
+    ) {
+      console.log('!this.availableUpdate', !this.availableUpdate);
+      console.log('this.isUpdateDownloading', this.isUpdateDownloading);
+      console.log('!this.isUpdateDownloaded', !this.isUpdateDownloaded);
+      console.log('!this.downloadInfo', !this.downloadInfo);
+      return;
+    }
+    const { destinationPath, originalFilename } = this.downloadInfo;
+    const filePath = `${destinationPath}/${originalFilename}`;
+    quitAppInstallUpdateChannel.request(filePath);
   };
 
   @action _getLatestAvailableAppVersion = async () => {
