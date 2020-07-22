@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## 1.4.1-STN3
+
+### Fixes
+
+- Fixed wallet restoration success message text
+
 ## 1.4.0-STN3
 
 ### Features

@@ -11,7 +11,6 @@ import { STAKE_POOL_REGISTRY_URL } from '../config';
 import {
   MAINNET,
   SELFNODE,
-  STAGING,
   ITN_REWARDS_V1,
   ITN_SELFNODE,
   NIGHTLY,
@@ -36,7 +35,7 @@ export type WalletOpts = {
   nodeLogFile: WriteStream,
   walletLogFile: WriteStream,
   cliBin: string,
-  isStaging: boolean
+  isStaging: boolean,
 };
 
 export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
@@ -116,16 +115,16 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
         nodeConfig.network.genesisHash = selfnodeGenesisHash;
         merge(launcherConfig, { apiPort: 8088 });
       }
-      if (cluster == MAINNET) {
-        launcherConfig.networkName = "mainnet";
-        logger.info(`Launching Wallet with --mainnet flag`)
+      if (cluster === MAINNET) {
+        launcherConfig.networkName = 'mainnet';
+        logger.info('Launching Wallet with --mainnet flag');
       } else if (isStaging) {
-        launcherConfig.networkName = "staging";
-        logger.info(`Launching Wallet with --staging flag`)
+        launcherConfig.networkName = 'staging';
+        logger.info('Launching Wallet with --staging flag');
       } else {
         // All clusters not flagged as staging except for Mainnet are treated as "Testnets"
-        launcherConfig.networkName = "testnet";
-        logger.info(`Launching Wallet with --testnet flag`)
+        launcherConfig.networkName = 'testnet';
+        logger.info('Launching Wallet with --testnet flag');
       }
       merge(launcherConfig, { nodeConfig, tlsConfiguration });
       break;

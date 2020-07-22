@@ -74,6 +74,7 @@ export type LauncherConfig = {
   legacySecretKey: string,
   legacyWalletDB: string,
   isFlight: boolean,
+  isStaging: boolean,
 };
 
 type WindowOptionsType = {
