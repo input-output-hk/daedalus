@@ -36,7 +36,7 @@ export default class TopBar extends Component<Props> {
       onLearnMore,
     } = this.props;
     const { isIncentivizedTestnet } = global;
-
+    const showLegacyNotification = false;
     const topBarStyles = classNames([
       styles.topBar,
       activeWallet ? styles.withWallet : styles.withoutWallet,
@@ -89,7 +89,7 @@ export default class TopBar extends Component<Props> {
           )}
           {children}
         </div>
-        {hasLegacyNotification && activeWallet && (
+        {showLegacyNotification && hasLegacyNotification && activeWallet && (
           <LegacyNotification
             activeWalletName={activeWallet.name}
             onLearnMore={onLearnMore}

@@ -2568,7 +2568,7 @@
         }
       },
       {
-        "defaultMessage": "!!!This version of Daedalus has been created specifically for the use with the second phase of the Shelley Testnet.",
+        "defaultMessage": "!!!This version of Daedalus has been created to be used specifically with the third iteration of the Shelley testnet network.",
         "description": "stnDescription on network splash screen",
         "end": {
           "column": 3,
@@ -2629,7 +2629,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Cardano decentralization",
+        "defaultMessage": "!!!Shelley upgrade",
         "description": "Headline for the Decentralisation notification.",
         "end": {
           "column": 3,
@@ -2643,7 +2643,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Cardano will soon start its transition from a federated to a decentralized system. This will mark the start of stakeholders being able to earn rewards for participating in the running of the network. They will be able to participate directly in the process of staking or can delegate their stake to stake pools to earn rewards in ada.",
+        "defaultMessage": "!!!Cardano will soon start transitioning from a federated to a decentralized system. The first step is the activation of the Shelley upgrade. Once the upgrade is complete, stake pools will start registering and users will be able to delegate their wallets. Two epochs (12 hours) later, stake pools will begin producing blocks and users could start earning rewards from delegating their stakes. The first rewards, where due, will be distributed two more epochs later (12 hours).",
         "description": "Info for the Decentralisation notification.",
         "end": {
           "column": 3,
@@ -3851,7 +3851,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Your new delegation preferences are now posted on the Cardano blockchain. <strong>These preferences will take effect after both the current and the next Cardano epochs have completed in {timeUntilNextEpochStart}.</strong>. During this time, your previous delegation preferences remain active.",
+        "defaultMessage": "!!!Your new delegation preferences are now posted on the Cardano blockchain. <strong>These preferences will take effect after both the current and the next Cardano epochs have completed in {timeUntilNextEpochStart}.</strong> During this time, your previous delegation preferences remain active.",
         "description": "Description \"line 2\" on the delegation setup \"success\" step dialog.",
         "end": {
           "column": 3,
@@ -4058,7 +4058,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Cardano is transitioning to a decentralized system",
+        "defaultMessage": "!!!Cardano is transitioning into a decentralized system",
         "description": "Headline for the Decentralization progress notification.",
         "end": {
           "column": 3,
@@ -4072,7 +4072,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Cardano is transitioning from a federated to a decentralized system. During this transition, some new blocks will be produced by nodes operated in a federated way and some by nodes run by ada stakeholders. All rewards will be distributed to ada stakeholders and none to operators of federated nodes.",
+        "defaultMessage": "!!!Cardano is transitioning from a federated system operated by its creators to a decentralized system operated by a community of stake pool operators. During this transition, blocks will be produced both by the federated nodes and by stake pools. The percentage of blocks produced by stake pools will increase every epoch until block production in the Cardano network becomes fully decentralized.",
         "description": "Info description for the Decentralization progress notification.",
         "end": {
           "column": 3,
@@ -4086,7 +4086,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Currently, {percentage}% of the system is decentralized and operated by stake pools.",
+        "defaultMessage": "!!!Currently, {percentage}% of the blocks are produced by the stake pools.",
         "description": "Percentage info description for the Decentralization progress notification.",
         "end": {
           "column": 3,
@@ -5326,13 +5326,13 @@
         "description": "\"\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 46
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.ranking",
         "start": {
           "column": 11,
-          "line": 35
+          "line": 42
         }
       },
       {
@@ -5340,13 +5340,13 @@
         "description": "\"Controlled stake\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 51
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.relativeStake",
         "start": {
           "column": 17,
-          "line": 40
+          "line": 47
         }
       },
       {
@@ -5354,13 +5354,13 @@
         "description": "\"Profit margin\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 56
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.profitMargin",
         "start": {
           "column": 16,
-          "line": 45
+          "line": 52
         }
       },
       {
@@ -5368,13 +5368,13 @@
         "description": "\"Cost per epoch\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 61
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.costPerEpoch",
         "start": {
           "column": 16,
-          "line": 50
+          "line": 57
         }
       },
       {
@@ -5382,13 +5382,13 @@
         "description": "\"Produced blocks\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 66
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.producedBlocks",
         "start": {
           "column": 18,
-          "line": 55
+          "line": 62
         }
       },
       {
@@ -5396,13 +5396,13 @@
         "description": "\"Retirement\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 71
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.retirement",
         "start": {
           "column": 14,
-          "line": 60
+          "line": 67
         }
       },
       {
@@ -5410,13 +5410,13 @@
         "description": "\"Saturation\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 76
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.saturation",
         "start": {
           "column": 14,
-          "line": 65
+          "line": 72
         }
       },
       {
@@ -5424,13 +5424,13 @@
         "description": "\"Pledge\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 79
+          "line": 81
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.pledge",
         "start": {
           "column": 10,
-          "line": 75
+          "line": 77
         }
       },
       {
@@ -5438,13 +5438,13 @@
         "description": "\"Delegate to this pool\" Button for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 85
+          "line": 87
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.delegateButton",
         "start": {
           "column": 18,
-          "line": 80
+          "line": 82
         }
       },
       {
@@ -5452,13 +5452,27 @@
         "description": "Experimental tooltip label",
         "end": {
           "column": 3,
-          "line": 90
+          "line": 92
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.experimentalTooltipLabel",
         "start": {
           "column": 28,
-          "line": 86
+          "line": 88
+        }
+      },
+      {
+        "defaultMessage": "!!!Copy the stake pool ID",
+        "description": "copyId tooltip label",
+        "end": {
+          "column": 3,
+          "line": 97
+        },
+        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
+        "id": "staking.stakePools.tooltip.copyIdTooltipLabel",
+        "start": {
+          "column": 22,
+          "line": 93
         }
       }
     ],

@@ -6,7 +6,10 @@ import { action } from '@storybook/addon-actions';
 import StoryLayout from '../_support/StoryLayout';
 import StoryProvider from '../_support/StoryProvider';
 import StoryDecorator from '../_support/StoryDecorator';
-import { isIncentivizedTestnetTheme } from '../_support/utils';
+import {
+  isIncentivizedTestnetTheme,
+  isShelleyTestnetTheme,
+} from '../_support/utils';
 
 import { CATEGORIES_BY_NAME } from '../../../source/renderer/app/config/sidebarConfig';
 
@@ -100,7 +103,7 @@ const decorator = (story, context) => {
                   isIncentivizedTestnet={isIncentivizedTestnetTheme(
                     context.currentTheme
                   )}
-                  isShelleyTestnet={false}
+                  isShelleyTestnet={isShelleyTestnetTheme(context.currentTheme)}
                 >
                   {storyWithKnobs}
                 </StakingWithNavigation>,

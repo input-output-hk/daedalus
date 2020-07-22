@@ -18,6 +18,8 @@ type Props = {
   onClick: Function,
   isRestoreActive?: boolean,
   isIncentivizedTestnet: boolean,
+  isShelleyTestnet: boolean,
+  isShelleyActivated: boolean,
   restoreProgress?: number,
   isLegacy: boolean,
   isNotResponding: boolean,
@@ -36,6 +38,8 @@ export default class SidebarWalletMenuItem extends Component<Props> {
       onClick,
       isRestoreActive,
       isIncentivizedTestnet,
+      isShelleyTestnet,
+      isShelleyActivated,
       restoreProgress,
       isLegacy,
       isNotResponding,
@@ -43,10 +47,14 @@ export default class SidebarWalletMenuItem extends Component<Props> {
       isHardwareWalletsMenu,
     } = this.props;
 
+    const showLegacyBadge =
+      isLegacy &&
+      ((isIncentivizedTestnet && !isShelleyTestnet) || isShelleyActivated);
+
     const componentStyles = classNames([
       styles.component,
       active ? styles.active : null,
-      isLegacy && isIncentivizedTestnet ? styles.legacyItem : null,
+      showLegacyBadge ? styles.legacyItem : null,
       className,
       !isIncentivizedTestnet && hasNotification ? styles.notification : null,
       isNotResponding ? styles.notResponding : null,
@@ -66,7 +74,7 @@ export default class SidebarWalletMenuItem extends Component<Props> {
           </div>
           <div className={styles.info}>{info}</div>
           {isRestoreActive ? <ProgressBar progress={restoreProgress} /> : null}
-          {isLegacy && isIncentivizedTestnet && (
+          {showLegacyBadge && (
             <LegacyBadge mode={LEGACY_BADGE_MODES.FLOATING} />
           )}
         </div>

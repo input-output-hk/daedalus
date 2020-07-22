@@ -120,7 +120,7 @@ import type {
   GetNetworkClockResponse,
   NetworkClockResponse,
   GetNetworkParametersResponse,
-  NetworkParametersResponse,
+  GetNetworkParametersApiResponse,
 } from './network/types';
 
 // Nodes Types
@@ -199,7 +199,7 @@ import ApiError from '../domains/ApiError';
 // @UPDATE TODO
 import dummyUpdates from './news/dummy-update.json';
 
-const { isIncentivizedTestnet } = global;
+const { isIncentivizedTestnet, isShelleyTestnet } = global;
 
 export default class AdaApi {
   config: RequestConfig;
@@ -213,12 +213,16 @@ export default class AdaApi {
     this.config = config;
   }
 
-  getWallets = async (): Promise<Array<Wallet>> => {
+  getWallets = async (request: {
+    isShelleyActivated: boolean,
+  }): Promise<Array<Wallet>> => {
     logger.debug('AdaApi::getWallets called');
+    const { isShelleyActivated } = request;
     try {
-      const wallets: AdaWallets = isIncentivizedTestnet
-        ? await getWallets(this.config)
-        : [];
+      const wallets: AdaWallets =
+        (isIncentivizedTestnet && !isShelleyTestnet) || isShelleyActivated
+          ? await getWallets(this.config)
+          : [];
       const legacyWallets: LegacyAdaWallets = await getLegacyWallets(
         this.config
       );
@@ -532,11 +536,15 @@ export default class AdaApi {
     }
   };
 
-  createWallet = async (request: CreateWalletRequest): Promise<Wallet> => {
+  createWallet = async (request: {
+    walletDetails: CreateWalletRequest,
+    isShelleyActivated: boolean,
+  }): Promise<Wallet> => {
     logger.debug('AdaApi::createWallet called', {
       parameters: filterLogData(request),
     });
-    const { name, mnemonic, spendingPassword } = request;
+    const { walletDetails, isShelleyActivated } = request;
+    const { name, mnemonic, spendingPassword } = walletDetails;
     try {
       let wallet: AdaWallet;
       const walletInitData = {
@@ -545,7 +553,7 @@ export default class AdaApi {
         passphrase: spendingPassword,
       };
 
-      if (isIncentivizedTestnet) {
+      if ((isIncentivizedTestnet && !isShelleyTestnet) || isShelleyActivated) {
         wallet = await createWallet(this.config, {
           walletInitData,
         });
@@ -801,13 +809,16 @@ export default class AdaApi {
   isValidCertificateMnemonic = (mnemonic: string): boolean =>
     mnemonic.split(' ').length === ADA_CERTIFICATE_MNEMONIC_LENGTH;
 
-  getWalletRecoveryPhrase(): Promise<Array<string>> {
+  getWalletRecoveryPhrase(request: {
+    isShelleyActivated: string,
+  }): Promise<Array<string>> {
+    const { isShelleyActivated } = request;
     logger.debug('AdaApi::getWalletRecoveryPhrase called');
     try {
       const response: Promise<Array<string>> = new Promise(resolve =>
         resolve(
           generateAccountMnemonics(
-            isIncentivizedTestnet
+            (isIncentivizedTestnet && !isShelleyTestnet) || isShelleyActivated
               ? WALLET_RECOVERY_PHRASE_WORD_COUNT
               : LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT
           )
@@ -1517,7 +1528,8 @@ export default class AdaApi {
   testReset = async (): Promise<void> => {
     logger.debug('AdaApi::testReset called');
     try {
-      const wallets = await this.getWallets();
+      // @TODO - pass isShelleyActivated parameter from E2E tests
+      const wallets = await this.getWallets({ isShelleyActivated: false });
       await Promise.all(
         wallets.map(wallet =>
           this.deleteWallet({
@@ -1606,13 +1618,10 @@ export default class AdaApi {
     }
   };
 
-  getNetworkParameters = async (
-    epochId: number
-  ): Promise<GetNetworkParametersResponse> => {
+  getNetworkParameters = async (): Promise<GetNetworkParametersResponse> => {
     logger.debug('AdaApi::getNetworkParameters called');
     try {
-      const networkParameters: NetworkParametersResponse = await getNetworkParameters(
-        epochId,
+      const networkParameters: GetNetworkParametersApiResponse = await getNetworkParameters(
         this.config
       );
       logger.debug('AdaApi::getNetworkParameters success', {
@@ -1626,6 +1635,9 @@ export default class AdaApi {
         epoch_length: epochLength,
         epoch_stability: epochStability,
         active_slot_coefficient: activeSlotCoefficient,
+        decentralization_level: decentralizationLevel,
+        desired_pool_number: desiredPoolNumber,
+        minimum_utxo_value: minimumUtxoValue,
       } = networkParameters;
       const blockchainStartTime = moment(blockchain_start_time).valueOf();
 
@@ -1636,6 +1648,9 @@ export default class AdaApi {
         epochLength,
         epochStability,
         activeSlotCoefficient,
+        decentralizationLevel,
+        desiredPoolNumber,
+        minimumUtxoValue,
       };
     } catch (error) {
       logger.error('AdaApi::getNetworkParameters error', { error });

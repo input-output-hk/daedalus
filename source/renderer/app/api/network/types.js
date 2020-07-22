@@ -39,6 +39,16 @@ export type ActiveSlotCoefficient = {
   unit: string,
 };
 
+export type DecentralizationLevel = {
+  quantity: number,
+  unit: string,
+};
+
+export type MinimumUtxoValue = {
+  quantity: number,
+  unit: string,
+};
+
 export type GetNetworkInfoResponse = {
   syncProgress: number,
   localTip: TipInfo,
@@ -90,13 +100,19 @@ export type GetNetworkParametersResponse = {
   epochLength: EpochLength,
   epochStability: EpochStability,
   activeSlotCoefficient: ActiveSlotCoefficient,
+  decentralizationLevel: DecentralizationLevel,
+  desiredPoolNumber: number,
+  minimumUtxoValue: MinimumUtxoValue,
 };
 
-export type NetworkParametersResponse = {
+export type GetNetworkParametersApiResponse = {
   genesis_block_hash: string,
   blockchain_start_time: string,
   slot_length: SlotLength,
   epoch_length: EpochLength,
   epoch_stability: EpochStability,
   active_slot_coefficient: ActiveSlotCoefficient,
+  decentralization_level: DecentralizationLevel,
+  desired_pool_number: number,
+  minimum_utxo_value: MinimumUtxoValue,
 };

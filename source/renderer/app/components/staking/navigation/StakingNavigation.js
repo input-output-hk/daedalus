@@ -77,7 +77,7 @@ export default class StakingNavigation extends Component<Props> {
         label: intl.formatMessage(messages.epochs),
       });
     }
-    if (!isIncentivizedTestnet) {
+    if (isShelleyTestnet) {
       navigationItems.push({
         id: 'info',
         label: intl.formatMessage(messages.info),

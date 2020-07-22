@@ -271,10 +271,12 @@ export default class WalletsStore extends Store {
   }
 
   _create = async (params: { name: string, spendingPassword: string }) => {
+    const { isShelleyActivated } = this.stores.staking;
     Object.assign(this._newWalletDetails, params);
     try {
-      const recoveryPhrase: ?Array<string> = await this.getWalletRecoveryPhraseRequest.execute()
-        .promise;
+      const recoveryPhrase: ?Array<string> = await this.getWalletRecoveryPhraseRequest.execute(
+        { isShelleyActivated }
+      ).promise;
       if (recoveryPhrase != null) {
         this.actions.walletBackup.initiateWalletBackup.trigger({
           recoveryPhrase,
@@ -427,9 +429,11 @@ export default class WalletsStore extends Store {
     this._newWalletDetails.mnemonic = this.stores.walletBackup.recoveryPhrase.join(
       ' '
     );
-    const wallet = await this.createWalletRequest.execute(
-      this._newWalletDetails
-    ).promise;
+    const { isShelleyActivated } = this.stores.staking;
+    const wallet = await this.createWalletRequest.execute({
+      walletDetails: this._newWalletDetails,
+      isShelleyActivated,
+    }).promise;
     if (wallet) {
       await this._patchWalletRequestWithNewWallet(wallet);
       this.actions.dialogs.closeActiveDialog.trigger();
@@ -895,7 +899,9 @@ export default class WalletsStore extends Store {
     if (this._pollingBlocked) return;
 
     if (this.stores.networkStatus.isConnected) {
-      const result = await this.walletsRequest.execute().promise;
+      const { isShelleyActivated } = this.stores.staking;
+      const result = await this.walletsRequest.execute({ isShelleyActivated })
+        .promise;
       if (!result) return;
       const walletIds = result
         .filter(

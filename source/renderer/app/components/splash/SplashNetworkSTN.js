@@ -17,7 +17,7 @@ const messages = defineMessages({
   stnDescription: {
     id: 'static.splash.network.stnDescription',
     defaultMessage:
-      '!!!This version of Daedalus has been created specifically for the use with the second phase of the Shelley Testnet.',
+      '!!!This version of Daedalus has been created to be used specifically with the third iteration of the Shelley testnet network.',
     description: 'stnDescription on network splash screen',
   },
   buttonLabel: {

@@ -11,6 +11,7 @@ import {
   STAKE_POOL_TRANSACTION_CHECKER_TIMEOUT,
   STAKE_POOLS_INTERVAL,
   STAKE_POOLS_FAST_INTERVAL,
+  SHELLEY_ACTIVATION_CHECK_INTERVAL,
   REDEEM_ITN_REWARDS_STEPS as steps,
   INITIAL_DELEGATION_FUNDS,
 } from '../config/stakingConfig';
@@ -47,13 +48,14 @@ export default class StakingStore extends Store {
   @observable isSubmittingReedem: boolean = false;
   @observable stakingSuccess: ?boolean = null;
   @observable stakingFailure: number = 0;
+  @observable isShelleyActivated: boolean = false;
 
+  pollingShelleyActivationCheck: ?IntervalID = null;
   pollingStakePoolsInterval: ?IntervalID = null;
   refreshPolling: ?IntervalID = null;
   delegationCheckTimeInterval: ?IntervalID = null;
 
   startDateTime: string = '2020-07-29T00:00:00.161Z';
-  decentralizationProgress: number = 10;
   adaValue: BigNumber = new BigNumber(82650.15);
   percentage: number = 14;
 
@@ -62,6 +64,11 @@ export default class StakingStore extends Store {
   setup() {
     const { isIncentivizedTestnet, isShelleyTestnet } = global;
     const { staking: stakingActions } = this.actions;
+
+    this.pollingShelleyActivationCheck = setInterval(
+      this.checkShelleyActivation,
+      SHELLEY_ACTIVATION_CHECK_INTERVAL
+    );
 
     this.refreshPolling = setInterval(
       this.getStakePoolsData,
@@ -115,6 +122,16 @@ export default class StakingStore extends Store {
   );
 
   // =================== PUBLIC API ==================== //
+
+  @action checkShelleyActivation = () => {
+    const currentTimeStamp = new Date().getTime();
+    const startTimeStamp = new Date(this.startDateTime).getTime();
+    this.isShelleyActivated = currentTimeStamp >= startTimeStamp;
+    if (this.isShelleyActivated && this.pollingShelleyActivationCheck) {
+      clearInterval(this.pollingShelleyActivationCheck);
+      this.pollingShelleyActivationCheck = null;
+    }
+  };
 
   @action _setSelectedDelegationWalletId = (walletId: string) => {
     this.selectedDelegationWalletId = walletId;
@@ -320,7 +337,7 @@ export default class StakingStore extends Store {
 
   @action getStakePoolsData = async () => {
     const { isConnected, isSynced } = this.stores.networkStatus;
-    if (!isConnected || !isSynced) {
+    if (!this.isShelleyActivated || !isConnected || !isSynced) {
       this._resetIsRanking();
       return;
     }
@@ -571,7 +588,7 @@ export default class StakingStore extends Store {
   // ================= REACTIONS ==================
 
   _pollOnSync = () => {
-    if (this.stores.networkStatus.isSynced) {
+    if (this.stores.networkStatus.isSynced && this.isShelleyActivated) {
       this._setStake(this.stake);
     } else {
       this._resetIsRanking();
