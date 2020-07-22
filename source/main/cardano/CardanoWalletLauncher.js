@@ -10,6 +10,8 @@ import { environment } from '../environment';
 import { STAKE_POOL_REGISTRY_URL } from '../config';
 import {
   MAINNET,
+  STAGING,
+  TESTNET,
   SELFNODE,
   ITN_REWARDS_V1,
   ITN_SELFNODE,
@@ -116,14 +118,14 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
         merge(launcherConfig, { apiPort: 8088 });
       }
       if (cluster === MAINNET) {
-        launcherConfig.networkName = 'mainnet';
+        launcherConfig.networkName = MAINNET;
         logger.info('Launching Wallet with --mainnet flag');
       } else if (isStaging) {
-        launcherConfig.networkName = 'staging';
+        launcherConfig.networkName = STAGING;
         logger.info('Launching Wallet with --staging flag');
       } else {
         // All clusters not flagged as staging except for Mainnet are treated as "Testnets"
-        launcherConfig.networkName = 'testnet';
+        launcherConfig.networkName = TESTNET;
         logger.info('Launching Wallet with --testnet flag');
       }
       merge(launcherConfig, { nodeConfig, tlsConfiguration });

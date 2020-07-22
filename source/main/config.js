@@ -43,7 +43,7 @@ if (!isStartedByLauncher) {
 export type NodeConfig = {
   configurationDir: string,
   delegationCertificate?: string,
-  kind: 'byron',
+  kind: 'byron' | 'shelley',
   network: {
     configFile: string,
     genesisFile: string,
