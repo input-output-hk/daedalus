@@ -40,14 +40,14 @@ const messages = defineMessages({
     defaultMessage: '!!!Download in progress',
     description: 'downloadProgressLabel for the Update Overlay',
   },
-  // timeLeft: {
-  //   id: 'news.updateOverlay.timeLeft',
-  //   defaultMessage: '!!!',
-  //   description: 'timeLeft for the Update Overlay',
-  // },
+  downloadTimeLeft: {
+    id: 'news.updateOverlay.downloadTimeLeft',
+    defaultMessage: '!!!{downloadTimeLeft} left',
+    description: 'downloadTimeLeft for the Update Overlay',
+  },
   downloadProgressData: {
     id: 'news.updateOverlay.downloadProgressData',
-    defaultMessage: '!!!({downloaded} MB of {total} MB downloaded)',
+    defaultMessage: '!!!({totalDownloaded} of {totalDownloadSize} downloaded)',
     description: 'downloadProgressData for the Update Overlay',
   },
 });
@@ -55,7 +55,10 @@ const messages = defineMessages({
 type Props = {
   update: News.News,
   onCloseUpdate: Function,
-  downloadProgress: DownloadData,
+  downloadTimeLeft: string,
+  totalDownloaded: string,
+  totalDownloadSize: string,
+  downloadProgress: number,
   isUpdateDownloaded: boolean,
   onInstallUpdate: Function,
 };
@@ -85,6 +88,9 @@ export default class UpdateOverlay extends Component<Props, State> {
     const {
       update,
       onCloseUpdate,
+      downloadTimeLeft,
+      totalDownloaded,
+      totalDownloadSize,
       downloadProgress,
       isUpdateDownloaded,
       onInstallUpdate,
@@ -125,10 +131,14 @@ export default class UpdateOverlay extends Component<Props, State> {
                 {intl.formatMessage(messages.downloadProgressLabel)}
               </p>
               <p className={styles.downloadProgressData}>
-                <b>{this.timeLeft}</b>{' '}
+                <b>
+                  {intl.formatMessage(messages.downloadTimeLeft, {
+                    downloadTimeLeft,
+                  })}
+                </b>{' '}
                 {intl.formatMessage(messages.downloadProgressData, {
-                  downloaded,
-                  total,
+                  totalDownloaded,
+                  totalDownloadSize,
                 })}
               </p>
             </div>

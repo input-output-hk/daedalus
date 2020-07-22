@@ -38,7 +38,7 @@ export const downloadManagerLocalStorage = {
     requestElectronStore({
       type: STORAGE_TYPES.SET,
       key: STORAGE_KEYS.DOWNLOAD_MANAGER,
-      info: { info, data },
+      data: { info, data },
       id,
     });
   },
@@ -55,7 +55,7 @@ export const downloadManagerLocalStorage = {
     await requestElectronStore({
       type: STORAGE_TYPES.SET,
       key: STORAGE_KEYS.DOWNLOAD_MANAGER,
-      info: { info, data },
+      data: { info, data },
       id,
     });
     return data;
@@ -64,12 +64,17 @@ export const downloadManagerLocalStorage = {
     const downloads = await downloadManagerLocalStorage.getAll();
     const downloadsArray = Object.keys(downloads);
     for (let index = 0; index < downloadsArray.length; index++) {
-      await downloadManagerLocalStorage.setData(
-        {
-          state: DOWNLOAD_STATES.STOPPED,
-        },
-        downloadsArray[index]
-      );
+      const downloadId = downloadsArray[index];
+      const { data } = downloads[downloadId];
+      const { state, progress } = data;
+      if (state === DOWNLOAD_STATES.DOWNLOADING && progress < 100) {
+        await downloadManagerLocalStorage.setData(
+          {
+            state: DOWNLOAD_STATES.STOPPED,
+          },
+          downloadId
+        );
+      }
     }
   },
   unset: async (id: string) => {
@@ -80,7 +85,7 @@ export const downloadManagerLocalStorage = {
     await requestElectronStore({
       type: STORAGE_TYPES.SET,
       key: STORAGE_KEYS.DOWNLOAD_MANAGER,
-      info: omit(localDownloadsData, id),
+      data: omit(localDownloadsData, id),
     });
   },
 };

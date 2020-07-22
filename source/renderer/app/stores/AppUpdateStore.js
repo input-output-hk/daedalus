@@ -2,7 +2,6 @@
 import { action, computed, observable, runInAction } from 'mobx';
 import { get } from 'lodash';
 import semver from 'semver';
-import moment from 'moment';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { rebuildApplicationMenu } from '../ipc/rebuild-application-menu';
@@ -18,7 +17,7 @@ import type {
   DownloadMainResponse,
   DownloadLocalDataMainResponse,
 } from '../../../common/ipc/api';
-import { formattedBytesToSize } from '../utils/formatters.js';
+import { formattedDownloadData } from '../utils/formatters.js';
 import { DOWNLOAD_EVENT_TYPES } from '../../../common/config/downloadManagerConfig';
 import type { GetLatestAppVersionResponse } from '../api/nodes/types';
 import type { SoftwareUpdateInfo } from '../api/news/types';
@@ -26,6 +25,7 @@ import type {
   DownloadInfo,
   DownloadData,
 } from '../../../common/types/downloadManager.types';
+import type { FormattedDownloadData } from '../utils/formatters.js';
 
 const { version: currentVersion, platform } = global.environment;
 
@@ -66,10 +66,16 @@ const APP_UPDATE_DOWNLOAD_ID = 'appUpdate';
 
 export default class AppUpdateStore extends Store {
   @observable availableUpdate: ?News = null;
-  @observable isUpdateDownloading: boolean = true; // false;
+  // @UPDATE TODO
+  // @observable isUpdateDownloading: boolean = true;
+  @observable isUpdateDownloading: boolean = false;
   @observable isUpdateDownloaded: boolean = false;
-  @observable downloadInfo: ?DownloadInfo = dummyInfo; // null;
-  @observable downloadData: ?DownloadData = dummyData; // null;
+  // @UPDATE TODO
+  // @observable downloadInfo: ?DownloadInfo = dummyInfo;
+  @observable downloadInfo: ?DownloadInfo = null;
+  // @UPDATE TODO
+  // @observable downloadData: ?DownloadData = dummyData;
+  @observable downloadData: ?DownloadData = null;
 
   @observable isUpdateAvailable: boolean = false;
   @observable isUpdatePostponed: boolean = false;
@@ -113,9 +119,24 @@ export default class AppUpdateStore extends Store {
 
   // ==================== PUBLIC ==================
 
+  @computed get formattedDownloadData(): FormattedDownloadData {
+    return formattedDownloadData(this.downloadData);
+  }
+
+  @computed get downloadTimeLeft(): string {
+    return this.formattedDownloadData.timeLeft;
+  }
+
+  @computed get totalDownloaded(): string {
+    return this.formattedDownloadData.downloaded;
+  }
+
+  @computed get totalDownloadSize(): string {
+    return this.formattedDownloadData.total;
+  }
+
   @computed get downloadProgress(): number {
-    const { progress = 0 } = this.downloadData || {};
-    return parseInt(progress, 10);
+    return this.formattedDownloadData.progress;
   }
 
   @computed get isNewAppVersionLoading(): boolean {
@@ -230,7 +251,11 @@ export default class AppUpdateStore extends Store {
         this.downloadData = data;
       });
       // @UPDATE TODO
-      console.log('%c Download data: %s%', 'color: darkOrange', data);
+      console.log(
+        '%c Download progress: %s%',
+        'color: darkOrange',
+        data.progress
+      );
     }
     runInAction('updates the download information', () => {
       if (eventType === DOWNLOAD_EVENT_TYPES.END) {

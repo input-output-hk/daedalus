@@ -27,7 +27,14 @@ export default class NewsOverlayContainer extends Component<InjectedProps> {
       onCloseUpdate,
       isUpdateOpen,
     } = newsFeed;
-    const { downloadProgress, isUpdateDownloaded, availableUpdate } = appUpdate;
+    const {
+      downloadProgress,
+      isUpdateDownloaded,
+      availableUpdate,
+      downloadTimeLeft,
+      totalDownloaded,
+      totalDownloadSize,
+    } = appUpdate;
     const { incident, alerts } = newsFeedData;
     const unreadAlerts = alerts.unread;
     const allAlertsCount = alerts.all ? alerts.all.length : 0;
@@ -80,6 +87,9 @@ export default class NewsOverlayContainer extends Component<InjectedProps> {
           onCloseUpdate={onCloseUpdate}
           downloadProgress={downloadProgress}
           isUpdateDownloaded={isUpdateDownloaded}
+          downloadTimeLeft={downloadTimeLeft}
+          totalDownloaded={totalDownloaded}
+          totalDownloadSize={totalDownloadSize}
           onInstallUpdate={() => {}}
         />
       );

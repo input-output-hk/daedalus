@@ -120,7 +120,7 @@ export default class NewsFeed extends Component<Props, State> {
     const { hasShadow } = this.state;
 
     const items = get(news, 'all', []);
-    const { update } = news;
+    const update = get(news, 'update');
     const totalUnreadNewsItems = get(items, 'unread', []).length;
     const componentClasses = classNames([
       styles.component,
@@ -167,7 +167,7 @@ export default class NewsFeed extends Component<Props, State> {
               <hr className={styles.separator} />
             </div>
           )}
-          {items.length && (
+          {items.length > 0 && (
             <div className={styles.newsFeedItemsContainer}>
               {items.map(newsItem => (
                 <NewsItem
