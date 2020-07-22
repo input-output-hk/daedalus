@@ -22,7 +22,7 @@ import type {
   DownloadInfoProgress,
   DownloadInfoEnd,
   DownloadInfoError,
-  DownloadData,
+  DownloadInfo,
   DownloadProgressUpdate,
 } from '../../common/types/downloadManager.types';
 import { stateDirectoryPath } from '../config';
@@ -59,15 +59,15 @@ export const getOriginalFilename = ({
 };
 
 export const getEventActions = async (
-  data: DownloadData,
+  info: DownloadInfo,
   window: BrowserWindow,
   requestDownloadChannel: MainIpcChannel<
     DownloadRendererRequest,
     DownloadMainResponse
   >
 ): Promise<Object> => {
-  const { downloadId } = data;
-  await localStorage.setData(data, downloadId);
+  const { downloadId } = info;
+  await localStorage.setInfo(info, downloadId);
   return {
     start: async () => {
       const eventType = types.START;
@@ -75,7 +75,7 @@ export const getEventActions = async (
       requestDownloadChannel.send(
         {
           eventType,
-          data,
+          info,
           progress,
         },
         window.webContents
@@ -97,7 +97,7 @@ export const getEventActions = async (
       requestDownloadChannel.send(
         {
           eventType: types.DOWNLOAD,
-          data,
+          info,
           progress,
         },
         window.webContents
@@ -125,7 +125,7 @@ export const getEventActions = async (
       requestDownloadChannel.send(
         {
           eventType: types.PROGRESS,
-          data,
+          info,
           progress: formattedProgress,
         },
         window.webContents
@@ -148,19 +148,19 @@ export const getEventActions = async (
         rawProgress,
         downloadId
       );
-      const { destinationPath, temporaryFilename, originalFilename } = data;
+      const { destinationPath, temporaryFilename, originalFilename } = info;
       const temporaryPath = `${destinationPath}/${temporaryFilename}`;
       const newPath = `${destinationPath}/${originalFilename}`;
       fs.renameSync(temporaryPath, newPath);
       requestDownloadChannel.send(
         {
           eventType: types.END,
-          data,
+          info,
           progress: formattedProgress,
         },
         window.webContents
       );
-      const { persistLocalData } = data.options;
+      const { persistLocalData } = info.options;
       if (!persistLocalData) await localStorage.unset(downloadId);
     },
     error: async ({ message }: DownloadInfoError) => {
@@ -177,7 +177,7 @@ export const getEventActions = async (
       requestDownloadChannel.send(
         {
           eventType: types.ERROR,
-          data,
+          info,
           progress: formattedProgress,
         },
         window.webContents

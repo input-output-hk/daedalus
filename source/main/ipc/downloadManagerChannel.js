@@ -62,7 +62,7 @@ const requestDownload = async (
     fileName: temporaryFilename,
   };
   const downloadId = getIdFromFileName(id || originalFilename);
-  const data = {
+  const info = {
     downloadId,
     fileUrl,
     destinationPath,
@@ -72,7 +72,7 @@ const requestDownload = async (
     options,
   };
   const eventActions = await getEventActions(
-    data,
+    info,
     window,
     requestDownloadChannel
   );
@@ -81,7 +81,7 @@ const requestDownload = async (
   if (resumeDownload) {
     const { total: downloadSize } = await download.getTotalSize(); // get the total size from the server
     download.__total = downloadSize;
-    download.__filePath = `${data.destinationPath}/${data.temporaryFilename}`;
+    download.__filePath = `${info.destinationPath}/${info.temporaryFilename}`;
     download.__downloaded = download.__getFilesizeInBytes(download.__filePath);
     download.__isResumable = true;
   }
@@ -119,7 +119,7 @@ const requestResumeDownload = async (
     fileUrl,
     destinationDirectoryName,
     options,
-  } = downloadLocalData.data || {};
+  } = downloadLocalData.info || {};
   if (!id) throw new Error('Invalid download ID');
   const requestDownloadPayload = {
     id,
@@ -142,7 +142,7 @@ const deleteDownloadedFile = async ({
 }: DeleteDownloadedFileRendererRequest): Promise<DeleteDownloadedFileMainResponse> => {
   const downloadLocalData = await getDownloadLocalData({ id });
   const { originalFilename, fileUrl, destinationDirectoryName, options } =
-    downloadLocalData.data || {};
+    downloadLocalData.info || {};
   console.log('originalFilename', originalFilename);
   console.log('fileUrl', fileUrl);
   console.log('destinationDirectoryName', destinationDirectoryName);

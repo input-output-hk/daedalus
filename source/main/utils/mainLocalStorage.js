@@ -5,7 +5,7 @@ import {
   STORAGE_KEYS,
 } from '../../common/config/electron-store.config';
 import type {
-  DownloadData,
+  DownloadInfo,
   DownloadProgress,
   DownloadProgressUpdate,
   DownloadLocalDataResponse,
@@ -18,27 +18,27 @@ import { requestElectronStore } from '../ipc/electronStoreConversation';
 
 export const downloadManagerLocalStorage = {
   get: async (id: string): Promise<DownloadLocalDataResponse> => {
-    const { data, progress } =
+    const { info, progress } =
       (await requestElectronStore({
         type: STORAGE_TYPES.GET,
         key: STORAGE_KEYS.DOWNLOAD_MANAGER,
         id,
       })) || {};
-    return { data, progress };
+    return { info, progress };
   },
   getAll: async () => {
-    const data = await requestElectronStore({
+    const info = await requestElectronStore({
       type: STORAGE_TYPES.GET,
       key: STORAGE_KEYS.DOWNLOAD_MANAGER,
     });
-    return data || [];
+    return info || [];
   },
-  setData: async (data: DownloadData, id: string) => {
+  setInfo: async (info: DownloadInfo, id: string) => {
     const progress: DownloadProgress = DOWNLOAD_PROGRESS_DEFAULT;
     requestElectronStore({
       type: STORAGE_TYPES.SET,
       key: STORAGE_KEYS.DOWNLOAD_MANAGER,
-      data: { data, progress },
+      info: { info, progress },
       id,
     });
   },
@@ -48,7 +48,7 @@ export const downloadManagerLocalStorage = {
   ): Promise<DownloadProgress> => {
     const {
       progress: oldProgress,
-      data,
+      info,
     } = await downloadManagerLocalStorage.get(id);
     const progress = mergeWith(oldProgress, newProgres, (o, n, key) => {
       if (typeof n === 'number' && key !== 'remainingSize')
@@ -58,7 +58,7 @@ export const downloadManagerLocalStorage = {
     await requestElectronStore({
       type: STORAGE_TYPES.SET,
       key: STORAGE_KEYS.DOWNLOAD_MANAGER,
-      data: { data, progress },
+      info: { info, progress },
       id,
     });
     return progress;
@@ -76,20 +76,14 @@ export const downloadManagerLocalStorage = {
     }
   },
   unset: async (id: string) => {
-    console.log('UNSET -------');
     const localDownloadsData = await requestElectronStore({
       type: STORAGE_TYPES.GET,
       key: STORAGE_KEYS.DOWNLOAD_MANAGER,
     });
-    console.log('type', STORAGE_TYPES.GET);
-    console.log('key', STORAGE_KEYS.DOWNLOAD_MANAGER);
-    console.log('localDownloadsData', localDownloadsData);
-    console.log('data', omit(localDownloadsData, id));
-
     await requestElectronStore({
       type: STORAGE_TYPES.SET,
       key: STORAGE_KEYS.DOWNLOAD_MANAGER,
-      data: omit(localDownloadsData, id),
+      info: omit(localDownloadsData, id),
     });
   },
 };

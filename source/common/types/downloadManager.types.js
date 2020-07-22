@@ -61,11 +61,11 @@ export type DownloadEventType =
 
 export type DownloadResponse = {
   eventType: DownloadEventType,
-  data: DownloadData,
+  info: DownloadInfo,
   progress: DownloadProgress,
 };
 
-export type DownloadData = {
+export type DownloadInfo = {
   downloadId: string,
   fileUrl: string,
   originalFilename: string,
@@ -143,7 +143,7 @@ export type DownloadLocalDataRequest = {
   id?: string,
 };
 export type DownloadLocalDataResponse = {
-  data?: DownloadData,
+  info?: DownloadInfo,
   progress?: DownloadProgress,
 };
 

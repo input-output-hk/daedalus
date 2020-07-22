@@ -15,6 +15,8 @@ export const DefaultSyncingConnectingStory = (props: {
   currentTheme: string,
 }) => (
   <SyncingConnecting
+    hasNotification={false}
+    hasUpdate={false}
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}
     hasUnreadNews={false}
@@ -60,6 +62,8 @@ export const ConnectivityIssuesSyncingConnectingStory = (props: {
   currentTheme: string,
 }) => (
   <SyncingConnecting
+    hasNotification={false}
+    hasUpdate={false}
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}
     hasUnreadNews={false}
@@ -102,6 +106,8 @@ export const LoadingWalletDataSyncingConnectingStory = (props: {
   currentTheme: string,
 }) => (
   <SyncingConnecting
+    hasNotification={false}
+    hasUpdate={false}
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}
     hasUnreadNews={false}

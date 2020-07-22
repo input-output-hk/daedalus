@@ -1,6 +1,6 @@
 // @flow
 
-import { Platform } from '../../../../common/types/environment.types';
+import type { Platform } from '../../../../common/types/environment.types';
 
 export type NewsTranslations = {
   'en-US': string,

@@ -221,7 +221,8 @@ export default class StoryLayout extends Component<Props> {
       />
       <NewsFeedIcon
         onNewsFeedIconClick={action('onNewsFeedIconClick')}
-        showDot={false}
+        hasNotification={false}
+        hasUpdate={false}
       />
     </TopBar>
   );

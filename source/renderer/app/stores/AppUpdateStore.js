@@ -23,7 +23,7 @@ import { DOWNLOAD_EVENT_TYPES } from '../../../common/config/downloadManagerConf
 import type { GetLatestAppVersionResponse } from '../api/nodes/types';
 import type { SoftwareUpdateInfo } from '../api/news/types';
 import type {
-  DownloadData,
+  DownloadInfo,
   DownloadProgress,
 } from '../../../common/types/downloadManager.types';
 
@@ -39,7 +39,7 @@ export type AppUpdateStatus = {
   update: News,
   downloadProgress: number,
 };
-const dummyData: DownloadData = {
+const dummyInfo: DownloadInfo = {
   downloadId: 'appUpdate',
   fileUrl:
     'https://update-cardano-mainnet.iohk.io/daedalus-1.1.0-mainnet-12849.pkg',
@@ -72,7 +72,7 @@ export default class AppUpdateStore extends Store {
   @observable availableUpdate: ?News = null;
   @observable isUpdateDownloading: boolean = true; // false;
   @observable isUpdateDownloaded: boolean = false;
-  @observable downloadData: ?DownloadData = dummyData; // null;
+  @observable downloadInfo: ?DownloadInfo = dummyInfo; // null;
   @observable downloadProgress: ?DownloadProgress = dummyProgress; // null;
 
   @observable isUpdateAvailable: boolean = false;
@@ -188,9 +188,9 @@ export default class AppUpdateStore extends Store {
     });
 
     // Is there a pending / resumabl\e download?
-    const downloadLocaldata = await this._getUpdateDownloadLocalData();
-    const { progress } = downloadLocaldata;
-    if (downloadLocaldata.progress) {
+    const downloadLocalData = await this._getUpdateDownloadLocalData();
+    const { progress } = downloadLocalData;
+    if (downloadLocalData.progress) {
       if (progress.progress === 100) {
         runInAction(() => {
           // this.isUpdateDownloaded = true;
@@ -198,7 +198,7 @@ export default class AppUpdateStore extends Store {
         return;
       }
 
-      if (this.isUnfinishedDownloadValid(downloadLocaldata)) {
+      if (this.isUnfinishedDownloadValid(downloadLocalData)) {
         // this._requestResumeUpdateDownload();
         return;
       }
@@ -226,12 +226,12 @@ export default class AppUpdateStore extends Store {
 
   _manageUpdateResponse = ({
     eventType,
-    data,
+    info,
     progress,
   }: DownloadMainResponse) => {
     if (eventType === DOWNLOAD_EVENT_TYPES.PROGRESS) {
       runInAction(() => {
-        this.downloadData = data;
+        this.downloadInfo = info;
         this.downloadProgress = progress;
       });
       // @UPDATE TODO
