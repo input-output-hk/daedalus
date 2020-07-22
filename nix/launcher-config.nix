@@ -69,6 +69,7 @@ let
                  else cardanoLib.environments.${network};
     jormungandrEnv = jormungandrLib.environments.${network};
   in if (backend == "cardano") then cardanoEnv else jormungandrEnv;
+  kind = if network == "local" then "shelley" else if (envCfg.nodeConfig.Protocol == "RealPBFT" || envCfg.nodeConfig.Protocol == "Byron") then "byron" else "shelley";
 
   installDirectorySuffix = let
     supportedNetworks = {
@@ -182,9 +183,7 @@ let
   mkConfigByron = let
     filterMonitoring = config: if devShell then config else builtins.removeAttrs config [ "hasPrometheus" "hasEKG" ];
     cardanoAddressBin = mkBinPath "cardano-address";
-    walletBin = if network == "local" then mkBinPath "cardano-wallet-shelley" else if envCfg.useByronWallet
-                then mkBinPath "cardano-wallet-byron"
-                else mkBinPath "cardano-wallet-shelley";
+    walletBin = mkBinPath "cardano-wallet-${kind}";
     nodeBin = mkBinPath "cardano-node";
     cliBin = mkBinPath "cardano-cli";
     nodeConfig = let
@@ -245,7 +244,7 @@ let
         legacySecretKey;
       syncTolerance = "300s";
       nodeConfig = {
-        kind = if network == "local" then "shelley" else if envCfg.useByronWallet then "byron" else "shelley";
+        inherit kind;
         configurationDir = "";
         network = {
           configFile = mkConfigPath nodeConfigFiles "config.yaml";
@@ -265,11 +264,13 @@ let
       macPackageName = "Daedalus${network}";
       dataDir = dataDir;
       hasBlock0 = false;
-      installerWinBinaries = let
-        walletExe = if network == "local" then "cardano-wallet-shelley.exe" else if envCfg.useByronWallet
-                    then "cardano-wallet-byron.exe"
-                    else "cardano-wallet-shelley.exe";
-      in [ "cardano-launcher.exe" "cardano-node.exe" walletExe "cardano-cli.exe" "cardano-address.exe" ];
+      installerWinBinaries = [
+        "cardano-launcher.exe"
+        "cardano-node.exe"
+        "cardano-wallet-${kind}.exe"
+        "cardano-cli.exe"
+        "cardano-address.exe"
+      ];
     };
 
   in {
