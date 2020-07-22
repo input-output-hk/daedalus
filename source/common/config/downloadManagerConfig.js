@@ -49,7 +49,7 @@ export const TEMPORARY_FILENAME = {
   extension: 'crdownload',
 };
 
-export const DOWNLOAD_PROGRESS_DEFAULT = {
+export const DOWNLOAD_DATA_DEFAULT = {
   state: DOWNLOAD_STATES.IDLE,
   remainingSize: 0,
   serverFileSize: 0,

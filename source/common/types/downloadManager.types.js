@@ -62,7 +62,7 @@ export type DownloadEventType =
 export type DownloadResponse = {
   eventType: DownloadEventType,
   info: DownloadInfo,
-  progress: DownloadProgress,
+  data: DownloadData,
 };
 
 export type DownloadInfo = {
@@ -75,7 +75,7 @@ export type DownloadInfo = {
   options: DownloadRequestOptions,
 };
 
-export type DownloadProgress = {
+export type DownloadData = {
   state: DownloadState,
   remainingSize: number,
   serverFileSize: number,
@@ -88,7 +88,7 @@ export type DownloadProgress = {
   error?: string,
 };
 
-export type DownloadProgressUpdate = {
+export type DownloadDataUpdate = {
   state?: DownloadState,
   remainingSize?: number,
   serverFileSize?: number,
@@ -105,7 +105,7 @@ export type DownloadProgressUpdate = {
  *
  * Each event has a different response
  * which is formatted and so the Main IPC
- * response has always the DownloadProgress shape
+ * response has always the DownloadData shape
  *
  */
 
@@ -144,7 +144,7 @@ export type DownloadLocalDataRequest = {
 };
 export type DownloadLocalDataResponse = {
   info?: DownloadInfo,
-  progress?: DownloadProgress,
+  data?: DownloadData,
 };
 
 export type DownloadsLocalDataRequest = {

@@ -42,7 +42,7 @@ export default class NewsFeedContainer extends Component<InjectedProps> {
         onOpenExternalLink={openExternalLink}
         onOpenUpdate={onOpenUpdate}
         currentDateFormat={currentDateFormat}
-        updateDownloadProgress={downloadProgress}
+        updateDownloadData={downloadProgress}
         isUpdateDownloading={isUpdateDownloading}
       />
     );

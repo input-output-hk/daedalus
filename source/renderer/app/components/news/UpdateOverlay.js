@@ -55,7 +55,7 @@ const messages = defineMessages({
 type Props = {
   update: News.News,
   onCloseUpdate: Function,
-  downloadProgress: DownloadProgress,
+  downloadProgress: DownloadData,
   isUpdateDownloaded: boolean,
   onInstallUpdate: Function,
 };

@@ -86,7 +86,7 @@ const requestDownload = async (
     download.__isResumable = true;
   }
 
-  let currentDownloadProgress = 0;
+  let currentDownloadData = 0;
 
   const progressType =
     options.progressIsThrottled === false ? 'progress' : 'progress.throttled';
@@ -94,8 +94,8 @@ const requestDownload = async (
   download.on('start', eventActions.start);
   download.on('download', eventActions.download);
   download.on(progressType, evt => {
-    if (!evt || parseInt(evt.progress, 10) === currentDownloadProgress) return;
-    currentDownloadProgress++;
+    if (!evt || parseInt(evt.progress, 10) === currentDownloadData) return;
+    currentDownloadData++;
     eventActions.progress(evt);
   });
   download.on('end', eventActions.end);

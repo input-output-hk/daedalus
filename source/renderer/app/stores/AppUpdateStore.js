@@ -24,7 +24,7 @@ import type { GetLatestAppVersionResponse } from '../api/nodes/types';
 import type { SoftwareUpdateInfo } from '../api/news/types';
 import type {
   DownloadInfo,
-  DownloadProgress,
+  DownloadData,
 } from '../../../common/types/downloadManager.types';
 
 const { version: currentVersion, platform } = global.environment;
@@ -35,10 +35,6 @@ window.semver = semver;
 
 const { News } = NewsDomains;
 
-export type AppUpdateStatus = {
-  update: News,
-  downloadProgress: number,
-};
 const dummyInfo: DownloadInfo = {
   downloadId: 'appUpdate',
   fileUrl:
@@ -54,7 +50,7 @@ const dummyInfo: DownloadInfo = {
     fileName: 'Unconfirmed-2020-07-22T180223.0689Z.crdownload',
   },
 };
-const dummyProgress: DownloadProgress = {
+const dummyData: DownloadData = {
   state: 'DOWNLOADING',
   remainingSize: 130699883,
   serverFileSize: 229305198,
@@ -73,7 +69,7 @@ export default class AppUpdateStore extends Store {
   @observable isUpdateDownloading: boolean = true; // false;
   @observable isUpdateDownloaded: boolean = false;
   @observable downloadInfo: ?DownloadInfo = dummyInfo; // null;
-  @observable downloadProgress: ?DownloadProgress = dummyProgress; // null;
+  @observable downloadData: ?DownloadData = dummyData; // null;
 
   @observable isUpdateAvailable: boolean = false;
   @observable isUpdatePostponed: boolean = false;
@@ -117,7 +113,10 @@ export default class AppUpdateStore extends Store {
 
   // ==================== PUBLIC ==================
 
-  // @computed get downloadProgress
+  @computed get downloadProgress(): number {
+    const { progress = 0 } = this.downloadData || {};
+    return parseInt(progress, 10);
+  }
 
   @computed get isNewAppVersionLoading(): boolean {
     return this.getLatestAppVersionRequest.isExecuting;
@@ -189,9 +188,9 @@ export default class AppUpdateStore extends Store {
 
     // Is there a pending / resumabl\e download?
     const downloadLocalData = await this._getUpdateDownloadLocalData();
-    const { progress } = downloadLocalData;
-    if (downloadLocalData.progress) {
-      if (progress.progress === 100) {
+    const { data } = downloadLocalData;
+    if (data) {
+      if (data.progress === 100) {
         runInAction(() => {
           // this.isUpdateDownloaded = true;
         });
@@ -224,18 +223,14 @@ export default class AppUpdateStore extends Store {
       id: APP_UPDATE_DOWNLOAD_ID,
     });
 
-  _manageUpdateResponse = ({
-    eventType,
-    info,
-    progress,
-  }: DownloadMainResponse) => {
+  _manageUpdateResponse = ({ eventType, info, data }: DownloadMainResponse) => {
     if (eventType === DOWNLOAD_EVENT_TYPES.PROGRESS) {
       runInAction(() => {
         this.downloadInfo = info;
-        this.downloadProgress = progress;
+        this.downloadData = data;
       });
       // @UPDATE TODO
-      console.log('%c Download progress: %s%', 'color: darkOrange', progress);
+      console.log('%c Download data: %s%', 'color: darkOrange', data);
     }
     runInAction('updates the download information', () => {
       if (eventType === DOWNLOAD_EVENT_TYPES.END) {

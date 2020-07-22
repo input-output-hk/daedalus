@@ -42,7 +42,7 @@ type Props = {
   onOpenExternalLink: Function,
   onProceedNewsAction: Function,
   onOpenUpdate: Function,
-  updateDownloadProgress: number,
+  updateDownloadData: number,
   isUpdateDownloading: boolean,
 };
 
@@ -114,7 +114,7 @@ export default class NewsFeed extends Component<Props, State> {
       onOpenExternalLink,
       currentDateFormat,
       onOpenUpdate,
-      updateDownloadProgress,
+      updateDownloadData,
       isUpdateDownloading,
     } = this.props;
     const { hasShadow } = this.state;
@@ -161,7 +161,7 @@ export default class NewsFeed extends Component<Props, State> {
                   onProceedNewsAction={onProceedNewsAction}
                   onOpenUpdate={onOpenUpdate}
                   currentDateFormat={currentDateFormat}
-                  downloadProgress={updateDownloadProgress}
+                  downloadProgress={updateDownloadData}
                 />
               }
               <hr className={styles.separator} />
