@@ -84,7 +84,7 @@ let
       staging = "Staging";
       testnet = "Testnet";
       shelley_testnet = "Shelley Testnet";
-      shelley_testnet_v5 = "Shelley Testnet v4";
+      shelley_testnet_v5 = "Shelley Testnet v5";
       shelley_qa = "Shelley QA";
     };
     unsupported = "Unsupported";
