@@ -28,7 +28,7 @@ let
       networkName = "mainnet";
     };
     shelley_testnet_v5 = {
-      cardanoEnv = cardanoLib.environments.mainnet_candidate;
+      cardanoEnv = cardanoLib.environments.mainnet_candidate_3;
       cluster = "shelley_testnet";
       networkName = "shelley_testnet";
     };
