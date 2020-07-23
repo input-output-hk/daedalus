@@ -99,7 +99,8 @@ export default class StoryLayout extends Component<Props> {
           topbar={this.getTopbar(
             activeSidebarCategory,
             activeWallet,
-            activeNavItem
+            activeNavItem,
+            currentTheme
           )}
         >
           {Children.map(children, child =>
@@ -191,7 +192,8 @@ export default class StoryLayout extends Component<Props> {
   getTopbar = (
     activeSidebarCategory: string,
     activeWallet: Wallet,
-    activeNavItem: string
+    activeNavItem: string,
+    currentTheme: string
   ) => (
     <TopBar
       onToggleSidebar={() => {
@@ -212,6 +214,7 @@ export default class StoryLayout extends Component<Props> {
       onTransferFunds={action('onTransferFunds')}
       onWalletAdd={action('onWalletAdd')}
       hasRewardsWallets={boolean('hasRewardsWallets', true)}
+      isShelleyActivated={isShelleyTestnetTheme(currentTheme)}
     >
       <NodeSyncStatusIcon
         isSynced

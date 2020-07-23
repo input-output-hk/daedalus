@@ -65,7 +65,7 @@ export default class SuccessDialog extends Component<Props> {
   };
 
   render() {
-    const { isIncentivizedTestnet } = global;
+    const { isIncentivizedTestnet, isShelleyTestnet } = global;
     const { intl } = this.context;
     const {
       onClose,
@@ -114,7 +114,8 @@ export default class SuccessDialog extends Component<Props> {
           {(isDaedalusBalanceWallet ||
             isYoroiBalanceWallet ||
             isHardwareWallet) &&
-            isIncentivizedTestnet && (
+            isIncentivizedTestnet &&
+            !isShelleyTestnet && (
               <div className={styles.description5}>
                 <FormattedHTMLMessage {...messages.descriptionLine4} />
               </div>

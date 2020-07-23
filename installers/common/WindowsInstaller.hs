@@ -210,6 +210,8 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,inst
                     file [] "config.yaml"
                     file [] "topology.yaml"
                     file [] "genesis.json"
+                    file [] "genesis-byron.json"
+                    file [] "genesis-shelley.json"
                     file [] "libsodium-23.dll"
                     when (clusterName == Selfnode) $ do
                       file [] "signing.key"

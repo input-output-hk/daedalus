@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## 1.4.1-STN3
+
+### Fixes
+
+- Fixed wallet restoration success message text ([PR 2080](https://github.com/input-output-hk/daedalus/pull/2080))
+
+### Chores
+
+- Re-enabled Byron wallet "Transfer funds" wizard ([PR 2080](https://github.com/input-output-hk/daedalus/pull/2080))
+- Updated "Splash" screen text copy ([PR 2080](https://github.com/input-output-hk/daedalus/pull/2080))
+
 ## 1.4.0-STN3
 
 ### Features

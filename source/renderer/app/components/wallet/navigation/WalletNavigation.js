@@ -128,10 +128,9 @@ export default class WalletNavigation extends Component<Props> {
     ].filter(
       item =>
         !(
-          (isIncentivizedTestnet &&
-            isLegacy &&
-            includes(ITN_LEGACY_WALLET_EXCLUDED_NAV_ITEMS, item.id)) ||
-          item.id === WALLET_NAV_IDS.SEND
+          isIncentivizedTestnet &&
+          isLegacy &&
+          includes(ITN_LEGACY_WALLET_EXCLUDED_NAV_ITEMS, item.id)
         )
     );
     return (

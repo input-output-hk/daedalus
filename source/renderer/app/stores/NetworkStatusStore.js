@@ -577,6 +577,9 @@ export default class NetworkStatusStore extends Store {
   };
 
   @action _getNetworkParameters = async () => {
+    // Skip checking network parameters if we are not connected
+    if (!this.isNodeResponding) return;
+
     try {
       const networkParameters: GetNetworkParametersResponse = await this.getNetworkParametersRequest.execute()
         .promise;
