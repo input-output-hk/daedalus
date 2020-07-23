@@ -202,6 +202,15 @@ export default class LocalStorageApi {
   unsetWalletMigrationStatus = (): Promise<void> =>
     LocalStorageApi.unset(keys.WALLET_MIGRATION_STATUS);
 
+  getAppAutomaticUpdateFailed = (): Promise<boolean> =>
+    LocalStorageApi.get(keys.APP_AUTOMATIC_UPDATE_FAILED, false);
+
+  setAppAutomaticUpdateFailed = (): Promise<void> =>
+    LocalStorageApi.set(keys.APP_AUTOMATIC_UPDATE_FAILED, true);
+
+  unsetAppAutomaticUpdateFailed = (): Promise<void> =>
+    LocalStorageApi.unset(keys.APP_AUTOMATIC_UPDATE_FAILED);
+
   reset = async () => {
     await LocalStorageApi.reset();
   };

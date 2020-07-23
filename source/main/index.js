@@ -203,9 +203,9 @@ const onAppReady = async () => {
     logger.info(
       'QuitAppInstallUpdateRendererRequest received <close> event. Safe exiting Daedalus now.'
     );
-    shell.openItem(filePath);
-    app.quit();
-    return Promise.resolve();
+    const openInstaller: boolean = shell.openItem(filePath);
+    // if (openInstaller) app.quit();
+    return Promise.resolve(openInstaller);
   });
 
   buildAppMenus(mainWindow, cardanoNode, locale, { isUpdateAvailable: false });

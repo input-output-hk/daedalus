@@ -42,7 +42,6 @@ type Props = {
   isNodeSyncing: boolean,
   isNodeTimeCorrect: boolean,
   isNewAppVersionAvailable: boolean,
-  isNewAppVersionLoading: boolean,
   isNewAppVersionLoaded: boolean,
   disableDownloadLogs: boolean,
   showNewsFeedIcon: boolean,
@@ -73,7 +72,6 @@ export default class SyncingConnecting extends Component<Props, State> {
       cardanoNodeState,
       isSyncProgressStalling,
       onGetAvailableVersions,
-      isNewAppVersionLoading,
       isNewAppVersionLoaded,
       isIncentivizedTestnet,
       isFlight,
@@ -93,7 +91,6 @@ export default class SyncingConnecting extends Component<Props, State> {
     if (
       isAppLoadingStuck &&
       !isNewAppVersionLoaded &&
-      !isNewAppVersionLoading &&
       !isIncentivizedTestnet &&
       !isFlight
     ) {

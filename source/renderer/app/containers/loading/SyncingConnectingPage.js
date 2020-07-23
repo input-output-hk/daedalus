@@ -38,7 +38,6 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
     } = networkStatus;
     const {
       isNewAppVersionAvailable,
-      isNewAppVersionLoading,
       isNewAppVersionLoaded,
       isUpdateDownloading,
     } = appUpdate;
@@ -72,7 +71,6 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
         isNodeSyncing={isNodeSyncing}
         isNodeTimeCorrect={isNodeTimeCorrect}
         isNewAppVersionAvailable={isNewAppVersionAvailable}
-        isNewAppVersionLoading={isNewAppVersionLoading}
         isNewAppVersionLoaded={isNewAppVersionLoaded}
         isIncentivizedTestnet={isIncentivizedTestnet}
         isShelleyTestnet={isShelleyTestnet}

@@ -345,4 +345,4 @@ export type ClearDownloadLocalDataMainResponse = ClearDownloadLocalDataResponse;
  */
 export const QUIT_APP_INSTALL_UPDATE = 'QUIT_APP_INSTALL_UPDATE';
 export type QuitAppInstallUpdateRendererRequest = string;
-export type QuitAppInstallUpdateMainResponse = void;
+export type QuitAppInstallUpdateMainResponse = boolean;

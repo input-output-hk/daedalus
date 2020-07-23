@@ -31,54 +31,17 @@ import type {
 import type { FormattedDownloadData } from '../utils/formatters.js';
 
 const { version: currentVersion, platform } = global.environment;
-
-// @UPDATE TODO: Dev utils:
-/* eslint-disable */
-window.semver = semver;
-
 const { News } = NewsDomains;
-
-const dummyInfo: DownloadInfo = {
-  downloadId: 'appUpdate',
-  fileUrl:
-    'https://update-cardano-mainnet.iohk.io/daedalus-1.1.0-mainnet-12849.pkg',
-  destinationPath:
-    '/Users/danilo/Library/Application Support/Daedalus Shelley Testnet v4/Downloads',
-  destinationDirectoryName: 'stateDirectory',
-  temporaryFilename: 'Unconfirmed-2020-07-22T180223.0689Z.crdownload',
-  originalFilename: 'daedalus-1.1.0-mainnet-12849.pkg',
-  options: {
-    progressIsThrottled: false,
-    persistLocalData: true,
-    fileName: 'Unconfirmed-2020-07-22T180223.0689Z.crdownload',
-  },
-};
-const dummyData: DownloadData = {
-  state: 'DOWNLOADING',
-  remainingSize: 130699883,
-  serverFileSize: 229305198,
-  diskFileSize: 0,
-  downloadSize: 98605315,
-  progress: 43.00177922700208,
-  speed: 3751936,
-  incomplete: false,
-  isResumed: false,
-};
-
 const APP_UPDATE_DOWNLOAD_ID = 'appUpdate';
 
 export default class AppUpdateStore extends Store {
   @observable availableUpdate: ?News = null;
   @observable availableUpdateVersion: string = '';
-  // @UPDATE TODO
-  // @observable isUpdateDownloading: boolean = true;
   @observable isUpdateDownloading: boolean = false;
   @observable isUpdateDownloaded: boolean = false;
-  // @UPDATE TODO
-  // @observable downloadInfo: ?DownloadInfo = dummyInfo;
+  @observable automaticUpdateFailed: boolean = false;
+
   @observable downloadInfo: ?DownloadInfo = null;
-  // @UPDATE TODO
-  // @observable downloadData: ?DownloadData = dummyData;
   @observable downloadData: ?DownloadData = null;
 
   @observable isUpdateAvailable: boolean = false;
@@ -97,6 +60,16 @@ export default class AppUpdateStore extends Store {
   getLatestAppVersionRequest: Request<GetLatestAppVersionResponse> = new Request(
     this.api.ada.getLatestAppVersion
   );
+
+  @observable getAppAutomaticUpdateFailedRequest: Request<
+    Promise<boolean>
+  > = new Request(this.api.localStorage.getAppAutomaticUpdateFailed);
+  @observable setAppAutomaticUpdateFailedRequest: Request<
+    Promise<void>
+  > = new Request(this.api.localStorage.setAppAutomaticUpdateFailed);
+  @observable unsetAppAutomaticUpdateFailedRequest: Request<
+    Promise<void>
+  > = new Request(this.api.localStorage.unsetAppAutomaticUpdateFailed);
 
   setup() {
     const actions = this.actions.appUpdate;
@@ -153,12 +126,11 @@ export default class AppUpdateStore extends Store {
   }
 
   @computed get showManualUpdate(): boolean {
-    return (
-      this.isNewAppVersionAvailable &&
-      !this.isUpdateAvailable &&
-      !global.isIncentivizedTestnet &&
-      !global.isFlight
-    );
+    return this.automaticUpdateFailed;
+    // this.isNewAppVersionAvailable &&
+    // !this.isUpdateAvailable &&
+    // !global.isIncentivizedTestnet &&
+    // !global.isFlight
   }
 
   getUpdateInfo(update: News): SoftwareUpdateInfo {
@@ -175,17 +147,27 @@ export default class AppUpdateStore extends Store {
   isUnfinishedDownloadValid = async (
     unfinishedDownload: DownloadLocalDataMainResponse
   ) => {
+    console.log('unfinishedDownload', unfinishedDownload);
     return true;
   };
 
   // =================== PRIVATE ==================
 
   // @UPDATE TODO: Remove it
-  @action _toggleUsUpdateDownloaded = () =>
-    (this.isUpdateDownloaded = !this.isUpdateDownloaded);
+  @action _toggleUsUpdateDownloaded = () => {
+    this.isUpdateDownloaded = !this.isUpdateDownloaded;
+  };
 
   // @UPDATE TODO: Commenting the trigger to avoid automatic download
   _checkNewAppUpdate = async (update: News) => {
+    // Is there an 'Automatic Update Failed' flag?
+    const automaticUpdateFailed = await this.getAppAutomaticUpdateFailedRequest.execute();
+    if (automaticUpdateFailed) {
+      runInAction(() => {
+        this.automaticUpdateFailed = true;
+      });
+    }
+
     // Is the update valid?
     if (!this.isUpdateValid(update)) {
       await this._removeUpdateFile();
@@ -249,6 +231,9 @@ export default class AppUpdateStore extends Store {
     }
     runInAction('updates the download information', () => {
       if (eventType === DOWNLOAD_EVENT_TYPES.END) {
+        console.log('eventType', eventType);
+        console.log('info', info);
+        console.log('data', data);
         this.isUpdateDownloading = false;
         this.isUpdateDownloaded = true;
       } else {
@@ -296,7 +281,14 @@ export default class AppUpdateStore extends Store {
     }
     const { destinationPath, originalFilename } = this.downloadInfo;
     const filePath = `${destinationPath}/${originalFilename}`;
-    quitAppInstallUpdateChannel.request(filePath);
+    const openInstaller = await quitAppInstallUpdateChannel.request(filePath);
+    if (!openInstaller) {
+      await this.setAppAutomaticUpdateFailedRequest.execute();
+      runInAction(() => {
+        this.automaticUpdateFailed = true;
+      });
+    }
+    console.log('openInstaller', openInstaller);
   };
 
   @action _getLatestAvailableAppVersion = async () => {
