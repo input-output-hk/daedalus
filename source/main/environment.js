@@ -9,7 +9,7 @@ import {
   MAINNET,
   MAINNET_FLIGHT,
   SHELLEY_TESTNET,
-  SHELLEY_TESTNET_V4,
+  SHELLEY_TESTNET_V5,
 } from '../common/types/environment.types';
 import {
   evaluateNetwork,
@@ -38,7 +38,7 @@ import {
 const CURRENT_NODE_ENV = process.env.NODE_ENV || DEVELOPMENT;
 let RAW_NETWORK =
   process.env.NETWORK === MAINNET_FLIGHT ? MAINNET : process.env.NETWORK || '';
-if (process.env.NETWORK === SHELLEY_TESTNET_V4) {
+if (process.env.NETWORK === SHELLEY_TESTNET_V5) {
   RAW_NETWORK = SHELLEY_TESTNET;
 }
 const NETWORK = evaluateNetwork(process.env.NETWORK);
