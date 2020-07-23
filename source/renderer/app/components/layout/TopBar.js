@@ -20,6 +20,7 @@ type Props = {
   onWalletAdd?: Function,
   hasRewardsWallets?: boolean,
   onLearnMore?: Function,
+  isShelleyActivated: boolean,
 };
 
 @observer
@@ -34,9 +35,9 @@ export default class TopBar extends Component<Props> {
       onTransferFunds,
       onWalletAdd,
       onLearnMore,
+      isShelleyActivated,
     } = this.props;
-    const { isIncentivizedTestnet } = global;
-    const showLegacyNotification = false;
+    const { isIncentivizedTestnet, isShelleyTestnet } = global;
     const topBarStyles = classNames([
       styles.topBar,
       activeWallet ? styles.withWallet : styles.withoutWallet,
@@ -45,7 +46,7 @@ export default class TopBar extends Component<Props> {
     const hasLegacyNotification =
       activeWallet &&
       activeWallet.isLegacy &&
-      isIncentivizedTestnet &&
+      ((isIncentivizedTestnet && !isShelleyTestnet) || isShelleyActivated) &&
       activeWallet.amount.gt(0) &&
       !activeWallet.isRestoring &&
       ((hasRewardsWallets && onTransferFunds) || onWalletAdd);
@@ -89,7 +90,7 @@ export default class TopBar extends Component<Props> {
           )}
           {children}
         </div>
-        {showLegacyNotification && hasLegacyNotification && activeWallet && (
+        {hasLegacyNotification && activeWallet && (
           <LegacyNotification
             activeWalletName={activeWallet.name}
             onLearnMore={onLearnMore}

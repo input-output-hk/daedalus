@@ -9,7 +9,7 @@ type Props = InjectedProps;
 
 @inject('actions', 'stores')
 @observer
-export default class PaperWalletCreateCertificatePage extends Component<Props> {
+export default class TransferFundsPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   render() {
