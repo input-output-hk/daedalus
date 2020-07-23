@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## 1.5.1-STN4
+
+### Fixes
+
+- Fixed genesis file
+
 ## 1.5.0-STN4
 
 ### Chores
