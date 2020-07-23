@@ -55,7 +55,7 @@ export default class StakingStore extends Store {
   refreshPolling: ?IntervalID = null;
   delegationCheckTimeInterval: ?IntervalID = null;
 
-  startDateTime: string = '2020-07-23T13:00:00.000Z';
+  startDateTime: string = '2020-07-23T19:00:00.000Z';
   adaValue: BigNumber = new BigNumber(82650.15);
   percentage: number = 14;
 
