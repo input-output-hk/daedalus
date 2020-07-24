@@ -1,6 +1,18 @@
 Changelog
 =========
 
+## 1.5.1-STN4
+
+### Fixes
+
+- Fixed genesis file
+
+## 1.5.0-STN4
+
+### Chores
+
+- Updated `cardano-wallet` to revision `cb6fae7b` which includes `cardano-node` 1.17.0
+
 ## 1.4.1-STN3
 
 ### Fixes
