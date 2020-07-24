@@ -3,6 +3,10 @@ Changelog
 
 ## 1.5.1-STN4
 
+### Features
+
+- Added restoration of legacy Byron hardware wallets ([PR 2082](https://github.com/input-output-hk/daedalus/pull/2082))
+
 ### Fixes
 
 - Fixed genesis file
