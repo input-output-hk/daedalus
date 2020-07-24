@@ -106,14 +106,20 @@ const messages = defineMessages({
   hardwareWalletDisclaimer1: {
     id: 'wallet.restore.dialog.step.walletKind.hardwareWalletDisclaimer1',
     defaultMessage:
-      '!!!Hardware wallets store your private keys securely on a physical device so they are immune to common computer threats such as viruses and software bugs. Recovery phrases for hardware wallets should always be kept offline. By entering your hardware wallet recovery phrase in Daedalus, you expose your hardware wallet private keys to the security risks associated with computers and software. All of your assets held on your hardware wallet device are associated with the same wallet recovery phrase and its corresponding private key. If you hold assets other than ada on your hardware wallet device, you expose all of those assets to security risks.',
+      '!!!Hardware wallets store your private keys securely on a physical device so they are immune to common computer threats such as viruses and software bugs. Recovery phrases for hardware wallets should always be kept offline. By entering your hardware wallet recovery phrase in Daedalus, you expose your hardware wallet private keys to the security risks associated with computers and software.',
     description: 'Label for the "hardwareWalletDisclaimer1" disclaimer.',
   },
   hardwareWalletDisclaimer2: {
     id: 'wallet.restore.dialog.step.walletKind.hardwareWalletDisclaimer2',
     defaultMessage:
-      '!!!We strongly recommend that you delete the Byron legacy wallet that was restored from your hardware wallet once you have moved funds into a Shelley wallet.',
+      '!!!All of your assets held on your hardware wallet device are associated with the same wallet recovery phrase and its corresponding private key. If you hold assets other than ada on your hardware wallet device, you expose all of those assets to security risks.',
     description: 'Label for the "hardwareWalletDisclaimer2" disclaimer.',
+  },
+  hardwareWalletDisclaimer3: {
+    id: 'wallet.restore.dialog.step.walletKind.hardwareWalletDisclaimer3',
+    defaultMessage:
+      '!!!We strongly recommend that you delete the Byron legacy wallet that was restored from your hardware wallet once you have moved funds into a Shelley wallet.',
+    description: 'Label for the "hardwareWalletDisclaimer3" disclaimer.',
   },
   hardwareWalletCheckbox1: {
     id: 'wallet.restore.dialog.step.walletKind.hardwareWalletCheckbox1',
@@ -283,7 +289,10 @@ export default class WalletTypeDialog extends Component<Props, State> {
                 {intl.formatMessage(messages.hardwareWalletDisclaimer1)}
               </p>
               <p className={styles.hardwareWalletAcceptance}>
-                <b>{intl.formatMessage(messages.hardwareWalletDisclaimer2)}</b>
+                {intl.formatMessage(messages.hardwareWalletDisclaimer2)}
+              </p>
+              <p className={styles.hardwareWalletAcceptance}>
+                <b>{intl.formatMessage(messages.hardwareWalletDisclaimer3)}</b>
               </p>
               <Checkbox
                 className="walletSecurityRisk"
