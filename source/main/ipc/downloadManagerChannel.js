@@ -1,5 +1,6 @@
 // @flow
 import { DownloaderHelper } from 'node-downloader-helper';
+import fs from 'fs';
 import type { BrowserWindow } from 'electron';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import {
@@ -51,7 +52,6 @@ const requestDownload = async (
     id,
     resumeDownload,
   } = downloadRequestPayload;
-
   const temporaryFilename = resumeDownload
     ? resumeDownload.temporaryFilename
     : generateFileNameWithTimestamp(TEMPORARY_FILENAME);
@@ -118,16 +118,25 @@ const requestResumeDownload = async (
     downloadId: id,
     fileUrl,
     destinationDirectoryName,
+    destinationPath,
     options,
   } = downloadLocalData.info || {};
   if (!id) throw new Error('Invalid download ID');
-  const requestDownloadPayload = {
+  const filePath = `${destinationPath}/${temporaryFilename}`;
+  let requestDownloadPayload = {
     id,
     fileUrl,
     destinationDirectoryName,
     options,
-    resumeDownload: { temporaryFilename, originalFilename },
   };
+  // Check if the file to be resumed still exists
+  // Otherwise it's a new download request
+  if (fs.existsSync(filePath)) {
+    requestDownloadPayload = {
+      ...requestDownloadPayload,
+      resumeDownload: { temporaryFilename, originalFilename },
+    };
+  }
   return requestDownload(
     {
       ...requestDownloadPayload,

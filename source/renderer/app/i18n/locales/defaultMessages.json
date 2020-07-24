@@ -236,6 +236,184 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Software update is available",
+        "description": "Title for \"Manual update\" overlay",
+        "end": {
+          "column": 3,
+          "line": 15
+        },
+        "file": "source/renderer/app/components/appUpdate/AppManualUpdateOverlay.js",
+        "id": "appUpdate.manualUpdateOverlay.title",
+        "start": {
+          "column": 9,
+          "line": 11
+        }
+      },
+      {
+        "defaultMessage": "!!!You are experiencing network connection issues, and you are not running the latest Daedalus version. Automatic updates are unavailable while Daedalus is not connected to Cardano network.",
+        "description": "Description line 1 of \"Manual update\" overlay",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "source/renderer/app/components/appUpdate/AppManualUpdateOverlay.js",
+        "id": "appUpdate.manualUpdateOverlay.description1",
+        "start": {
+          "column": 20,
+          "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!You are currently running <b>{currentAppVersion}</b> version of Daedalus, and <b>{availableAppVersion}</b> version is available. Please manually update to that version since it may resolve your connecting issues.",
+        "description": "Description line 2 of \"Manual update\" overlay",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/components/appUpdate/AppManualUpdateOverlay.js",
+        "id": "appUpdate.manualUpdateOverlay.description2",
+        "start": {
+          "column": 20,
+          "line": 22
+        }
+      },
+      {
+        "defaultMessage": "!!!Follow instructions and manually update",
+        "description": "Label for \"Follow instructions and manually update\" action button on \"Manual update\" overlay",
+        "end": {
+          "column": 3,
+          "line": 33
+        },
+        "file": "source/renderer/app/components/appUpdate/AppManualUpdateOverlay.js",
+        "id": "appUpdate.manualUpdateOverlay.button.label",
+        "start": {
+          "column": 21,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360023850634",
+        "description": "Follow instructions and manually update link on \"Manual update\" overlay",
+        "end": {
+          "column": 3,
+          "line": 40
+        },
+        "file": "source/renderer/app/components/appUpdate/AppManualUpdateOverlay.js",
+        "id": "appUpdate.manualUpdateOverlay.button.url",
+        "start": {
+          "column": 25,
+          "line": 34
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/appUpdate/AppManualUpdateOverlay.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Software update available!",
+        "description": "title for the Update Overlay",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
+        "id": "appUpdate.overlay.title",
+        "start": {
+          "column": 9,
+          "line": 17
+        }
+      },
+      {
+        "defaultMessage": "!!!You are currently running Daedalus version {currentAppVersion}.<br />Daedalus version {availableAppVersion} is now available to download.",
+        "description": "subtitle for the Update Overlay",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
+        "id": "appUpdate.overlay.subtitle",
+        "start": {
+          "column": 12,
+          "line": 22
+        }
+      },
+      {
+        "defaultMessage": "!!!I understand that I need to complete the installation before starting Daedalus.",
+        "description": "checkboxLabel for the Update Overlay",
+        "end": {
+          "column": 3,
+          "line": 33
+        },
+        "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
+        "id": "appUpdate.overlay.checkboxLabel",
+        "start": {
+          "column": 17,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!Quit Daedalus and start the installation",
+        "description": "buttonLabel for the Update Overlay",
+        "end": {
+          "column": 3,
+          "line": 38
+        },
+        "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
+        "id": "appUpdate.overlay.buttonLabel",
+        "start": {
+          "column": 15,
+          "line": 34
+        }
+      },
+      {
+        "defaultMessage": "!!!Download in progress",
+        "description": "downloadProgressLabel for the Update Overlay",
+        "end": {
+          "column": 3,
+          "line": 43
+        },
+        "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
+        "id": "appUpdate.overlay.downloadProgressLabel",
+        "start": {
+          "column": 25,
+          "line": 39
+        }
+      },
+      {
+        "defaultMessage": "!!!{downloadTimeLeft} left",
+        "description": "downloadTimeLeft for the Update Overlay",
+        "end": {
+          "column": 3,
+          "line": 48
+        },
+        "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
+        "id": "appUpdate.overlay.downloadTimeLeft",
+        "start": {
+          "column": 20,
+          "line": 44
+        }
+      },
+      {
+        "defaultMessage": "!!!({totalDownloaded} of {totalDownloadSize} downloaded)",
+        "description": "downloadProgressData for the Update Overlay",
+        "end": {
+          "column": 3,
+          "line": 53
+        },
+        "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
+        "id": "appUpdate.overlay.downloadProgressData",
+        "start": {
+          "column": 24,
+          "line": 49
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/appUpdate/AppUpdateOverlay.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Summary",
         "description": "Label for the \"Summary\" nav button in the wallet navigation.",
         "end": {
@@ -354,81 +532,6 @@
       }
     ],
     "path": "source/renderer/app/components/hardware-wallet/settings/ConnectHardwareWallet.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Software update is available",
-        "description": "Title for \"Manual update\" overlay",
-        "end": {
-          "column": 3,
-          "line": 15
-        },
-        "file": "source/renderer/app/components/loading/manual-update/ManualUpdate.js",
-        "id": "manualUpdate.title",
-        "start": {
-          "column": 9,
-          "line": 11
-        }
-      },
-      {
-        "defaultMessage": "!!!You are experiencing network connection issues, and you are not running the latest Daedalus version. Automatic updates are unavailable while Daedalus is not connected to Cardano network.",
-        "description": "Description line 1 of \"Manual update\" overlay",
-        "end": {
-          "column": 3,
-          "line": 21
-        },
-        "file": "source/renderer/app/components/loading/manual-update/ManualUpdate.js",
-        "id": "manualUpdate.description1",
-        "start": {
-          "column": 20,
-          "line": 16
-        }
-      },
-      {
-        "defaultMessage": "!!!You are currently running <b>{currentAppVersion}</b> version of Daedalus, and <b>{availableAppVersion}</b> version is available. Please manually update to that version since it may resolve your connecting issues.",
-        "description": "Description line 2 of \"Manual update\" overlay",
-        "end": {
-          "column": 3,
-          "line": 27
-        },
-        "file": "source/renderer/app/components/loading/manual-update/ManualUpdate.js",
-        "id": "manualUpdate.description2",
-        "start": {
-          "column": 20,
-          "line": 22
-        }
-      },
-      {
-        "defaultMessage": "!!!Follow instructions and manually update",
-        "description": "Label for \"Follow instructions and manually update\" action button on \"Manual update\" overlay",
-        "end": {
-          "column": 3,
-          "line": 33
-        },
-        "file": "source/renderer/app/components/loading/manual-update/ManualUpdate.js",
-        "id": "manualUpdate.button.label",
-        "start": {
-          "column": 21,
-          "line": 28
-        }
-      },
-      {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360023850634",
-        "description": "Follow instructions and manually update link on \"Manual update\" overlay",
-        "end": {
-          "column": 3,
-          "line": 40
-        },
-        "file": "source/renderer/app/components/loading/manual-update/ManualUpdate.js",
-        "id": "manualUpdate.button.url",
-        "start": {
-          "column": 25,
-          "line": 34
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/loading/manual-update/ManualUpdate.json"
   },
   {
     "descriptors": [
@@ -1223,13 +1326,13 @@
         "description": "Newsfeed is empty",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 20
         },
         "file": "source/renderer/app/components/news/NewsFeed.js",
         "id": "news.newsfeed.empty",
         "start": {
           "column": 17,
-          "line": 15
+          "line": 16
         }
       },
       {
@@ -1237,13 +1340,13 @@
         "description": "Trying to fetch the newsfeed...",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 25
         },
         "file": "source/renderer/app/components/news/NewsFeed.js",
         "id": "news.newsfeed.noFetch",
         "start": {
           "column": 19,
-          "line": 20
+          "line": 21
         }
       },
       {
@@ -1251,106 +1354,17 @@
         "description": "Newsfeed",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 30
         },
         "file": "source/renderer/app/components/news/NewsFeed.js",
         "id": "news.newsfeed.title",
         "start": {
           "column": 17,
-          "line": 25
+          "line": 26
         }
       }
     ],
     "path": "source/renderer/app/components/news/NewsFeed.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Software update is available",
-        "description": "Title for \"Automatic update\" overlay",
-        "end": {
-          "column": 3,
-          "line": 15
-        },
-        "file": "source/renderer/app/components/notifications/AutomaticUpdateNotification.js",
-        "id": "automaticUpdate.title",
-        "start": {
-          "column": 9,
-          "line": 11
-        }
-      },
-      {
-        "defaultMessage": "!!!You are currently running Daedalus <b>{currentAppVersion}</b> and <b>{nextAppVersion}</b> is available.",
-        "description": "First description line of \"Automatic update\" overlay",
-        "end": {
-          "column": 3,
-          "line": 21
-        },
-        "file": "source/renderer/app/components/notifications/AutomaticUpdateNotification.js",
-        "id": "automaticUpdate.description1",
-        "start": {
-          "column": 20,
-          "line": 16
-        }
-      },
-      {
-        "defaultMessage": "!!!Would you like to install the update? If choose to postpone, the update will be installed automatically on the next Daedalus launch.",
-        "description": "Second description line of \"Automatic update\" overlay",
-        "end": {
-          "column": 3,
-          "line": 27
-        },
-        "file": "source/renderer/app/components/notifications/AutomaticUpdateNotification.js",
-        "id": "automaticUpdate.description2",
-        "start": {
-          "column": 20,
-          "line": 22
-        }
-      },
-      {
-        "defaultMessage": "!!!Restart Daedalus and Update",
-        "description": "Label for \"Restart Daedalus and Update\" action button on \"Automatic update\" overlay",
-        "end": {
-          "column": 3,
-          "line": 33
-        },
-        "file": "source/renderer/app/components/notifications/AutomaticUpdateNotification.js",
-        "id": "automaticUpdate.accept.button.label",
-        "start": {
-          "column": 21,
-          "line": 28
-        }
-      },
-      {
-        "defaultMessage": "!!!Postpone until Daedalus restart",
-        "description": "Label for \"Postpone\" action button on \"Automatic update\" overlay",
-        "end": {
-          "column": 3,
-          "line": 39
-        },
-        "file": "source/renderer/app/components/notifications/AutomaticUpdateNotification.js",
-        "id": "automaticUpdate.postpone.button.label",
-        "start": {
-          "column": 23,
-          "line": 34
-        }
-      },
-      {
-        "defaultMessage": "!!!a newer version",
-        "description": "Label for \"newer version\" on \"Automatic update\" overlay",
-        "end": {
-          "column": 3,
-          "line": 44
-        },
-        "file": "source/renderer/app/components/notifications/AutomaticUpdateNotification.js",
-        "id": "automaticUpdate.newerVersion.label",
-        "start": {
-          "column": 21,
-          "line": 40
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/notifications/AutomaticUpdateNotification.json"
   },
   {
     "descriptors": [

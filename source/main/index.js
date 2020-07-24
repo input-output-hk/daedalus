@@ -34,7 +34,6 @@ import { getDesktopDirectoryPathChannel } from './ipc/getDesktopDirectoryPathCha
 import { getSystemLocaleChannel } from './ipc/getSystemLocaleChannel';
 import { CardanoNodeStates } from '../common/types/cardano-node.types';
 import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types';
-import type { QuitAppAndAppInstallUpdateRendererRequest } from '../common/ipc/api';
 import { logUsedVersion } from './utils/logUsedVersion';
 import { setStateSnapshotLogChannel } from './ipc/set-log-state-snapshot';
 import { generateWalletMigrationReportChannel } from './ipc/generateWalletMigrationReportChannel';
@@ -204,7 +203,7 @@ const onAppReady = async () => {
       'QuitAppAndAppInstallUpdateRendererRequest received <close> event. Safe exiting Daedalus now.'
     );
     const openInstaller: boolean = shell.openItem(filePath);
-    // if (openInstaller) app.quit();
+    if (openInstaller) app.quit();
     return Promise.resolve(openInstaller);
   });
 

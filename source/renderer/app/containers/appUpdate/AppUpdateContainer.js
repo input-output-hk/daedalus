@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import AppUpdateOverlay from '../../components/appUpdate/AppUpdateOverlay';
+import AppManualUpdateOverlay from '../../components/appUpdate/AppManualUpdateOverlay';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 @inject('stores', 'actions')
@@ -12,7 +13,7 @@ export default class AppUpdateContainer extends Component<InjectedProps> {
   render() {
     const { stores, actions } = this.props;
     const { appUpdate } = stores;
-    const { environment } = stores.app;
+    const { environment, openExternalLink } = stores.app;
     const { version } = environment;
     const {
       downloadProgress,
@@ -22,8 +23,19 @@ export default class AppUpdateContainer extends Component<InjectedProps> {
       totalDownloaded,
       totalDownloadSize,
       availableUpdateVersion,
+      isAutomaticUpdateFailed,
     } = appUpdate;
     const { installUpdate, closeAppUpdateOverlay } = actions.appUpdate;
+
+    if (isAutomaticUpdateFailed) {
+      return (
+        <AppManualUpdateOverlay
+          currentAppVersion={version}
+          availableAppVersion={availableUpdateVersion}
+          onExternalLinkClick={openExternalLink}
+        />
+      );
+    }
 
     if (!availableUpdate) return null;
 
@@ -37,8 +49,8 @@ export default class AppUpdateContainer extends Component<InjectedProps> {
         totalDownloaded={totalDownloaded}
         totalDownloadSize={totalDownloadSize}
         onInstallUpdate={installUpdate.trigger}
-        currentVersion={version}
-        availableVersion={availableUpdateVersion}
+        currentAppVersion={version}
+        availableAppVersion={availableUpdateVersion}
       />
     );
   }

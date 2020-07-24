@@ -16,7 +16,7 @@ const nextAppVersion = [
   currentAppVersionChunks[2],
 ].join('.');
 const SELECTORS = {
-  DESCRIPTION: 'manualUpdate.description2',
+  DESCRIPTION: 'appUpdate.manualUpdateOverlay.description2',
   OVERLAY: '.ManualUpdate_content',
   VERSION_INFO: '.ManualUpdate_content .ManualUpdate_description p:nth-child(2)',
 };

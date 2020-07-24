@@ -72,7 +72,7 @@ const messages = defineMessages({
     description: 'Save description.',
   },
   followInstructions: {
-    id: 'manualUpdate.button.label',
+    id: 'appUpdate.manualUpdateOverlay.button.label',
     defaultMessage: '!!!Follow instructions and manually update',
     description: 'Follow instructions and manually update description.',
   },

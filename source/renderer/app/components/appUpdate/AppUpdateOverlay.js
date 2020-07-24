@@ -15,39 +15,39 @@ import ProgressBarLarge from '../widgets/ProgressBarLarge';
 
 const messages = defineMessages({
   title: {
-    id: 'news.updateOverlay.title',
+    id: 'appUpdate.overlay.title',
     defaultMessage: '!!!Software update available!',
     description: 'title for the Update Overlay',
   },
   subtitle: {
-    id: 'news.updateOverlay.subtitle',
+    id: 'appUpdate.overlay.subtitle',
     defaultMessage:
-      '!!!You are currently running Daedalus version {currentVersion}.<br />Daedalus version {availableVersion} is now available to download.',
+      '!!!You are currently running Daedalus version {currentAppVersion}.<br />Daedalus version {availableAppVersion} is now available to download.',
     description: 'subtitle for the Update Overlay',
   },
   checkboxLabel: {
-    id: 'news.updateOverlay.checkboxLabel',
+    id: 'appUpdate.overlay.checkboxLabel',
     defaultMessage:
       '!!!I understand that I need to complete the installation before starting Daedalus.',
     description: 'checkboxLabel for the Update Overlay',
   },
   buttonLabel: {
-    id: 'news.updateOverlay.buttonLabel',
+    id: 'appUpdate.overlay.buttonLabel',
     defaultMessage: '!!!Quit Daedalus and start the installation',
     description: 'buttonLabel for the Update Overlay',
   },
   downloadProgressLabel: {
-    id: 'news.updateOverlay.downloadProgressLabel',
+    id: 'appUpdate.overlay.downloadProgressLabel',
     defaultMessage: '!!!Download in progress',
     description: 'downloadProgressLabel for the Update Overlay',
   },
   downloadTimeLeft: {
-    id: 'news.updateOverlay.downloadTimeLeft',
+    id: 'appUpdate.overlay.downloadTimeLeft',
     defaultMessage: '!!!{downloadTimeLeft} left',
     description: 'downloadTimeLeft for the Update Overlay',
   },
   downloadProgressData: {
-    id: 'news.updateOverlay.downloadProgressData',
+    id: 'appUpdate.overlay.downloadProgressData',
     defaultMessage: '!!!({totalDownloaded} of {totalDownloadSize} downloaded)',
     description: 'downloadProgressData for the Update Overlay',
   },
@@ -59,8 +59,8 @@ type Props = {
   downloadTimeLeft: string,
   totalDownloaded: string,
   totalDownloadSize: string,
-  currentVersion: string,
-  availableVersion: string,
+  availableAppVersion: string,
+  currentAppVersion: string,
   downloadProgress: number,
   isUpdateDownloaded: boolean,
   onInstallUpdate: Function,
@@ -97,8 +97,8 @@ export default class AppUpdateOverlay extends Component<Props, State> {
       downloadProgress,
       isUpdateDownloaded,
       onInstallUpdate,
-      currentVersion,
-      availableVersion,
+      availableAppVersion,
+      currentAppVersion,
     } = this.props;
     const { areTermsOfUseAccepted } = this.state;
     const { content } = update;
@@ -120,8 +120,8 @@ export default class AppUpdateOverlay extends Component<Props, State> {
           <FormattedHTMLMessage
             {...messages.subtitle}
             values={{
-              currentVersion,
-              availableVersion,
+              availableAppVersion,
+              currentAppVersion,
             }}
           />
         </span>
