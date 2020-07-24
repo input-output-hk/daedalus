@@ -3,6 +3,10 @@ Changelog
 
 ## 1.5.1-STN4
 
+### Features
+
+- Added restoration of legacy Byron hardware wallets ([PR 2082](https://github.com/input-output-hk/daedalus/pull/2082))
+
 ### Fixes
 
 - Fixed genesis file
@@ -11,7 +15,7 @@ Changelog
 
 ### Chores
 
-- Updated `cardano-wallet` to revision `?????????` which includes `cardano-node` 1.17.0
+- Updated `cardano-wallet` to revision `cb6fae7b` which includes `cardano-node` 1.17.0
 
 ## 1.4.1-STN3
 
