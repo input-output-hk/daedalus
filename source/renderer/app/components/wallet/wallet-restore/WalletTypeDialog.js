@@ -266,45 +266,41 @@ export default class WalletTypeDialog extends Component<Props, State> {
               walletKindYoroi,
               WALLET_KINDS.YOROI
             )}
-          {isIncentivizedTestnet &&
-            !isShelleyTestnet &&
-            walletKind === WALLET_KINDS.HARDWARE && (
-              <Fragment>
-                {this.getWalletKind(
-                  isShelleyActivated,
-                  WALLET_HARDWARE_KINDS,
-                  messages.labelHardwareWalletKind,
-                  walletKindHardware,
-                  WALLET_KINDS.HARDWARE
-                )}
-                <p className={styles.hardwareWalletAcceptance}>
-                  {intl.formatMessage(messages.hardwareWalletDisclaimer1)}
-                </p>
-                <p className={styles.hardwareWalletAcceptance}>
-                  <b>
-                    {intl.formatMessage(messages.hardwareWalletDisclaimer2)}
-                  </b>
-                </p>
-                <Checkbox
-                  className="restoreSecurityNote"
-                  label={intl.formatMessage(messages.hardwareWalletCheckbox1)}
-                  onChange={() =>
-                    this.toggleAcceptance('hardwareWalletAcceptance1')
-                  }
-                  checked={hardwareWalletAcceptance1}
-                  skin={CheckboxSkin}
-                />
-                <Checkbox
-                  className="walletDeleteNote"
-                  label={intl.formatMessage(messages.hardwareWalletCheckbox2)}
-                  onChange={() =>
-                    this.toggleAcceptance('hardwareWalletAcceptance2')
-                  }
-                  checked={hardwareWalletAcceptance2}
-                  skin={CheckboxSkin}
-                />
-              </Fragment>
-            )}
+          {isShelleyTestnet && walletKind === WALLET_KINDS.HARDWARE && (
+            <Fragment>
+              {this.getWalletKind(
+                isShelleyActivated,
+                WALLET_HARDWARE_KINDS,
+                messages.labelHardwareWalletKind,
+                walletKindHardware,
+                WALLET_KINDS.HARDWARE
+              )}
+              <p className={styles.hardwareWalletAcceptance}>
+                {intl.formatMessage(messages.hardwareWalletDisclaimer1)}
+              </p>
+              <p className={styles.hardwareWalletAcceptance}>
+                <b>{intl.formatMessage(messages.hardwareWalletDisclaimer2)}</b>
+              </p>
+              <Checkbox
+                className="restoreSecurityNote"
+                label={intl.formatMessage(messages.hardwareWalletCheckbox1)}
+                onChange={() =>
+                  this.toggleAcceptance('hardwareWalletAcceptance1')
+                }
+                checked={hardwareWalletAcceptance1}
+                skin={CheckboxSkin}
+              />
+              <Checkbox
+                className="walletDeleteNote"
+                label={intl.formatMessage(messages.hardwareWalletCheckbox2)}
+                onChange={() =>
+                  this.toggleAcceptance('hardwareWalletAcceptance2')
+                }
+                checked={hardwareWalletAcceptance2}
+                skin={CheckboxSkin}
+              />
+            </Fragment>
+          )}
         </div>
       </WalletRestoreDialog>
     );
