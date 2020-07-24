@@ -95,7 +95,7 @@ const messages = defineMessages({
   },
   labelHardwareWalletKindLedger: {
     id: 'wallet.restore.dialog.step.walletKind.label.hardwareWalletKindLedger',
-    defaultMessage: '!!!24 words - Ledger Nano S or Nano X (Byron legacy wallet)',
+    defaultMessage: '!!!24 words - Ledger (Byron legacy wallet)',
     description: 'Label for the "labelHardwareWalletKindLedger" checkbox.',
   },
   labelHardwareWalletKindTrezor: {

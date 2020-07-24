@@ -704,7 +704,7 @@
   "wallet.restore.dialog.step.walletKind.label.daedalusWalletKind15WordShelley": "15語 <em>（Shelleyウォレット）</em>",
   "wallet.restore.dialog.step.walletKind.label.daedalusWalletKind27WordPaper": "27語 - ペーパーウォレット <em>（Byronレガシーウォレット）</em>",
   "wallet.restore.dialog.step.walletKind.label.hardwareWalletKind": "どのタイプのハードウェアウォレットを復元しますか",
-  "wallet.restore.dialog.step.walletKind.label.hardwareWalletKindLedger": "12語、18語、または24語 - Ledger Nano SまたはNano X (Byronレガシーウォレット)",
+  "wallet.restore.dialog.step.walletKind.label.hardwareWalletKindLedger": "12語、18語、または24語 - Ledger (Byronレガシーウォレット)",
   "wallet.restore.dialog.step.walletKind.label.hardwareWalletKindTrezor": "12語、18語、または24語 - Trezor (Byronレガシーウォレット)",
   "wallet.restore.dialog.step.walletKind.label.walletKind": "どのウォレットを復元しますか",
   "wallet.restore.dialog.step.walletKind.label.walletKindDaedalus": "Daedalusウォレット",
