@@ -41,8 +41,6 @@ type Props = {
   isNodeResponding: boolean,
   isNodeSyncing: boolean,
   isNodeTimeCorrect: boolean,
-  isNewAppVersionAvailable: boolean,
-  isNewAppVersionLoaded: boolean,
   disableDownloadLogs: boolean,
   showNewsFeedIcon: boolean,
   isIncentivizedTestnet: boolean,
@@ -50,7 +48,6 @@ type Props = {
   onIssueClick: Function,
   onOpenExternalLink: Function,
   onDownloadLogs: Function,
-  onGetAvailableVersions: Function,
   onStatusIconClick: Function,
   onToggleNewsFeedIconClick: Function,
 };
@@ -66,35 +63,12 @@ export default class SyncingConnecting extends Component<Props, State> {
   }
 
   componentDidUpdate() {
-    const { connectingTime } = this.state;
-    const {
-      isConnected,
-      cardanoNodeState,
-      isSyncProgressStalling,
-      onGetAvailableVersions,
-      isNewAppVersionLoaded,
-      isIncentivizedTestnet,
-      isFlight,
-    } = this.props;
+    const { isConnected } = this.props;
     const canResetConnecting = this._connectingTimerShouldStop(isConnected);
 
     this._defensivelyStartTimers(isConnected);
     if (canResetConnecting) {
       this._resetConnectingTime();
-    }
-    const isAppLoadingStuck =
-      isSyncProgressStalling ||
-      (!isConnected &&
-        (connectingTime >= REPORT_ISSUE_TIME_TRIGGER ||
-          cardanoNodeState === CardanoNodeStates.UNRECOVERABLE));
-    // If app loading is stuck, check if a newer version is available and set flag (state)
-    if (
-      isAppLoadingStuck &&
-      !isNewAppVersionLoaded &&
-      !isIncentivizedTestnet &&
-      !isFlight
-    ) {
-      onGetAvailableVersions();
     }
   }
 
@@ -135,8 +109,6 @@ export default class SyncingConnecting extends Component<Props, State> {
       isConnected,
       isSyncProgressStalling,
       cardanoNodeState,
-      isNewAppVersionLoaded,
-      isNewAppVersionAvailable,
       isIncentivizedTestnet,
       forceConnectivityIssue,
     } = this.props;
@@ -150,11 +122,7 @@ export default class SyncingConnecting extends Component<Props, State> {
     if (isFlight || isIncentivizedTestnet) {
       return canReportConnectingIssue;
     }
-    return (
-      isNewAppVersionLoaded &&
-      !isNewAppVersionAvailable &&
-      canReportConnectingIssue
-    );
+    return canReportConnectingIssue;
   }
 
   render() {

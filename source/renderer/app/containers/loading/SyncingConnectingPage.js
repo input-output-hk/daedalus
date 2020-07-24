@@ -36,11 +36,7 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
       isNotEnoughDiskSpace,
       isTlsCertInvalid,
     } = networkStatus;
-    const {
-      isNewAppVersionAvailable,
-      isNewAppVersionLoaded,
-      displayAppUpdateNewsItem,
-    } = appUpdate;
+    const { displayAppUpdateNewsItem } = appUpdate;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme } = profile;
     const { toggleNewsFeed } = this.props.actions.app;
     const { unread } = newsFeed.newsFeedData;
@@ -70,13 +66,10 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
         isNodeResponding={isNodeResponding}
         isNodeSyncing={isNodeSyncing}
         isNodeTimeCorrect={isNodeTimeCorrect}
-        isNewAppVersionAvailable={isNewAppVersionAvailable}
-        isNewAppVersionLoaded={isNewAppVersionLoaded}
         isIncentivizedTestnet={isIncentivizedTestnet}
         isShelleyTestnet={isShelleyTestnet}
         onIssueClick={this.handleIssueClick}
         onOpenExternalLink={this.handleOpenExternalLink}
-        onGetAvailableVersions={this.handleGetAvailableVersions}
         onStatusIconClick={this.openDaedalusDiagnosticsDialog}
         onDownloadLogs={this.handleDownloadLogs}
         onToggleNewsFeedIconClick={toggleNewsFeed.trigger}
@@ -105,11 +98,6 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
     const { app } = this.props.actions;
     app.downloadLogs.trigger();
     app.setIsDownloadingLogs.trigger(true);
-  };
-
-  handleGetAvailableVersions = () => {
-    const { appUpdate } = this.props.actions;
-    appUpdate.getLatestAvailableAppVersion.trigger();
   };
 
   openDaedalusDiagnosticsDialog = () => {

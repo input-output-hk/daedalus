@@ -5,7 +5,6 @@ import { action } from 'mobx';
 import BigNumber from 'bignumber.js/bignumber';
 import AdaApi from '../api';
 import { getNetworkInfo } from '../network/requests/getNetworkInfo';
-import { getLatestAppVersion } from '../nodes/requests/getLatestAppVersion';
 import { logger } from '../../utils/logging';
 import packageJson from '../../../../../package.json';
 import ApiError from '../../domains/ApiError';
@@ -18,10 +17,6 @@ import type {
   GetNetworkInfoResponse,
   NetworkInfoResponse,
 } from '../network/types';
-import type {
-  LatestAppVersionInfoResponse,
-  GetLatestAppVersionResponse,
-} from '../nodes/types';
 import type { GetNewsResponse } from '../news/types';
 import { EPOCH_LENGTH_ITN } from '../../config/epochsConfig';
 
@@ -81,55 +76,6 @@ export default (api: AdaApi) => {
 
   api.setSyncProgress = async syncProgress => {
     SYNC_PROGRESS = syncProgress;
-  };
-
-  api.getLatestAppVersion = async (): Promise<GetLatestAppVersionResponse> => {
-    logger.debug('AdaApi::getLatestAppVersion (PATCHED) called');
-    try {
-      const { isWindows, platform } = global.environment;
-      const latestAppVersionInfo: LatestAppVersionInfoResponse = await getLatestAppVersion();
-      const latestAppVersionPath = `platforms.${
-        isWindows ? 'windows' : platform
-      }.version`;
-
-      const applicationVersionPath = `platforms.${
-        isWindows ? 'windows' : platform
-      }.applicationVersion`;
-
-      const latestAppVersion = get(
-        latestAppVersionInfo,
-        latestAppVersionPath,
-        null
-      );
-
-      const applicationVersion = get(
-        latestAppVersionInfo,
-        applicationVersionPath,
-        null
-      );
-
-      logger.debug('AdaApi::getLatestAppVersion success', {
-        latestAppVersion,
-        latestAppVersionInfo,
-        applicationVersion,
-      });
-
-      return {
-        latestAppVersion: LATEST_APP_VERSION || latestAppVersion,
-        applicationVersion: APPLICATION_VERSION || applicationVersion,
-      };
-    } catch (error) {
-      logger.error('AdaApi::getLatestAppVersion (PATCHED) error', { error });
-      throw new ApiError();
-    }
-  };
-
-  api.setLatestAppVersion = async (latestAppVersion: ?string) => {
-    LATEST_APP_VERSION = latestAppVersion;
-  };
-
-  api.setApplicationVersion = async (applicationVersion: number) => {
-    APPLICATION_VERSION = applicationVersion;
   };
 
   api.setTestingNewsFeed = (testingNewsFeedData: ?GetNewsResponse) => {

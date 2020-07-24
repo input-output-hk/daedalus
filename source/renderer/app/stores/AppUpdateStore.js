@@ -22,7 +22,6 @@ import {
   DOWNLOAD_EVENT_TYPES,
   DOWNLOAD_STATES,
 } from '../../../common/config/downloadManagerConfig';
-import type { GetLatestAppVersionResponse } from '../api/nodes/types';
 import type { SoftwareUpdateInfo } from '../api/news/types';
 import type {
   DownloadInfo,
@@ -51,17 +50,6 @@ export default class AppUpdateStore extends Store {
   @observable isNewAppVersionAvailable: boolean = false;
   @observable applicationVersion: ?number = null;
 
-  @observable postponeUpdateRequest: Request<Promise<void>> = new Request(
-    this.api.ada.postponeUpdate
-  );
-  @observable applyUpdateRequest: Request<Promise<void>> = new Request(
-    this.api.ada.applyUpdate
-  );
-  @observable
-  getLatestAppVersionRequest: Request<GetLatestAppVersionResponse> = new Request(
-    this.api.ada.getLatestAppVersion
-  );
-
   @observable getAppAutomaticUpdateFailedRequest: Request<
     Promise<boolean>
   > = new Request(this.api.localStorage.getAppAutomaticUpdateFailed);
@@ -74,9 +62,6 @@ export default class AppUpdateStore extends Store {
 
   setup() {
     const actions = this.actions.appUpdate;
-    actions.getLatestAvailableAppVersion.listen(
-      this._getLatestAvailableAppVersion
-    );
     actions.installUpdate.listen(this._installUpdate);
     actions.openAppUpdateOverlay.listen(this._openAppUpdateOverlay);
     actions.closeAppUpdateOverlay.listen(this._closeAppUpdateOverlay);
@@ -124,18 +109,6 @@ export default class AppUpdateStore extends Store {
 
   @computed get downloadProgress(): number {
     return this.formattedDownloadData.progress;
-  }
-
-  @computed get isNewAppVersionLoading(): boolean {
-    return this.getLatestAppVersionRequest.isExecuting;
-  }
-
-  @computed get isNewAppVersionLoaded(): boolean {
-    return (
-      this.getLatestAppVersionRequest.wasExecuted &&
-      (this.getLatestAppVersionRequest.result !== null ||
-        this.getLatestAppVersionRequest.error !== null)
-    );
   }
 
   @computed get showManualUpdate(): boolean {
@@ -244,9 +217,6 @@ export default class AppUpdateStore extends Store {
     }
     runInAction('updates the download information', () => {
       if (eventType === DOWNLOAD_EVENT_TYPES.END) {
-        console.log('eventType', eventType);
-        console.log('info', info);
-        console.log('data', data);
         this.isUpdateDownloading = false;
         this.isUpdateDownloaded = true;
       } else {
@@ -268,8 +238,8 @@ export default class AppUpdateStore extends Store {
 
   _requestUpdateDownload = async (update: News) => {
     const { url: fileUrl } = this.getUpdateInfo(update);
-    if (!fileUrl) return console.warn('File not found');
-    await requestDownloadChannel.request({
+    if (!fileUrl) return null;
+    return requestDownloadChannel.request({
       id: APP_UPDATE_DOWNLOAD_ID,
       fileUrl,
       options: {
@@ -310,51 +280,5 @@ export default class AppUpdateStore extends Store {
   };
   @action _closeAppUpdateOverlay = () => {
     this.isUpdateProgressOpen = false;
-  };
-
-  @action _getLatestAvailableAppVersion = async () => {
-    // Manual update notification is not available for Daedalus Flight and ITN builds
-    const { isIncentivizedTestnet, isFlight } = global;
-    if (isFlight || isIncentivizedTestnet) {
-      return;
-    }
-
-    const {
-      latestAppVersion,
-      applicationVersion,
-    } = await this.getLatestAppVersionRequest.execute().promise;
-    this.setLatestAvailableAppVersion(latestAppVersion, applicationVersion);
-  };
-
-  @action setLatestAvailableAppVersion = (
-    latestAppVersion: ?string,
-    applicationVersion: ?number
-  ) => {
-    let isNewAppVersionAvailable = false;
-
-    if (latestAppVersion) {
-      const { version: currentVersion } = this.environment;
-      const chunkedCurrentVersion = currentVersion.split('.').map(Number);
-      const chunkedLatestVersion = latestAppVersion.split('.').map(Number);
-
-      // Main version changed
-      const isMainVersionChanged =
-        chunkedCurrentVersion[0] < chunkedLatestVersion[0];
-      // Middle version changed
-      const isMiddleVersionChanged =
-        chunkedCurrentVersion[0] === chunkedLatestVersion[0] &&
-        chunkedCurrentVersion[1] < chunkedLatestVersion[1];
-      // Minor version changed
-      const isMinorVersionChanged =
-        chunkedCurrentVersion[0] === chunkedLatestVersion[0] &&
-        chunkedCurrentVersion[1] === chunkedLatestVersion[1] &&
-        chunkedCurrentVersion[2] < chunkedLatestVersion[2];
-      isNewAppVersionAvailable =
-        isMainVersionChanged || isMiddleVersionChanged || isMinorVersionChanged;
-    }
-
-    this.isNewAppVersionAvailable = isNewAppVersionAvailable;
-    this.availableAppVersion = latestAppVersion;
-    this.applicationVersion = applicationVersion;
   };
 }
