@@ -30,7 +30,8 @@ export type WalletKinds = WalletKind | WalletSubKind;
 
 export type HardwareWalletAcceptance =
   | 'hardwareWalletAcceptance1'
-  | 'hardwareWalletAcceptance2';
+  | 'hardwareWalletAcceptance2'
+  | 'hardwareWalletAcceptance3';
 
 export type WalletRestoreDataParam =
   | 'walletKind'
