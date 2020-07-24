@@ -16,6 +16,7 @@ Changelog
 ### Chores
 
 - Updated `cardano-wallet` to revision `cb6fae7b` which includes `cardano-node` 1.17.0
+- Updated `cardano-wallet` to revision `91db88f9` 
 
 ## 1.4.1-STN3
 
