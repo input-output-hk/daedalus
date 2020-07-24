@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Added restoration of 24-word Shelley wallets and 15-word ITN wallets ([PR 2083](https://github.com/input-output-hk/daedalus/pull/2083))
 - Added restoration of legacy Byron hardware wallets ([PR 2082](https://github.com/input-output-hk/daedalus/pull/2082))
 
 ### Fixes
