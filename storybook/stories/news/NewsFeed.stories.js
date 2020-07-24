@@ -119,6 +119,42 @@ const news = [
     type: 'alert',
     read: false,
   }),
+  new News.News({
+    id: 9,
+    title: 'Some title 9 in English',
+    content: 'Some title 9 in English',
+    target: { daedalusVersion: null, platform: 'darwin' },
+    action: {
+      label: 'Visit https://markdown-it.github.io/',
+      url: 'https://markdown-it.github.io/',
+    },
+    date: 1569255298794965,
+    type: 'software-update',
+    softwareUpdate: {
+      darwin: {
+        version: '2.3.0',
+        hash:
+          '73c69357b568438b37c83a77eb9e5f79f683255de4d49bc9d0f84a3b4183ab34',
+        url:
+          'https://update-cardano-mainnet.iohk.io/daedalus-1.1.0-mainnet-12849.pkg',
+      },
+      win32: {
+        version: '2.3.0-STN4',
+        hash:
+          '73c69357b568438b37c83a77eb9e5f79f683255de4d49bc9d0f84a3b4183ab34',
+        url:
+          'https://update-cardano-mainnet.iohk.io/daedalus-1.1.0-mainnet-12849.exe',
+      },
+      linux: {
+        version: '2.3.0-STN4',
+        hash:
+          '73c69357b568438b37c83a77eb9e5f79f683255de4d49bc9d0f84a3b4183ab34',
+        url:
+          'https://update-cardano-mainnet.iohk.io/daedalus-1.1.0-mainnet-12849.bin',
+      },
+    },
+    read: false,
+  }),
 ];
 
 const updateDownloadProgressOptions = {
@@ -150,13 +186,13 @@ storiesOf('News|NewsFeed', module)
         onOpenExternalLink={action('onOpenExternalLink')}
         onOpenAlert={action('onOpenAlert')}
         onProceedNewsAction={action('onOpenExternalLink')}
-        isUpdateDownloading={boolean('isUpdateDownloading', false)}
+        displayAppUpdateNewsItem={boolean('displayAppUpdateNewsItem', false)}
         updateDownloadProgress={number(
           'updateDownloadProgress',
           0,
           updateDownloadProgressOptions
         )}
-        onOpenUpdate={action('onOpenUpdate')}
+        onOpenAppUpdate={action('onOpenAppUpdate')}
         currentDateFormat=" "
       />
     </div>
@@ -175,14 +211,14 @@ storiesOf('News|NewsFeed', module)
         onOpenExternalLink={action('onOpenExternalLink')}
         onOpenAlert={action('onOpenAlert')}
         onProceedNewsAction={action('onOpenExternalLink')}
-        onOpenUpdate={action('onOpenUpdate')}
-        isUpdateDownloading={boolean('isUpdateDownloading', false)}
+        onOpenAppUpdate={action('onOpenAppUpdate')}
+        displayAppUpdateNewsItem={boolean('displayAppUpdateNewsItem', false)}
         updateDownloadProgress={number(
           'updateDownloadProgress',
           0,
           updateDownloadProgressOptions
         )}
-        onOpenUpdate={action('onOpenUpdate')}
+        onOpenAppUpdate={action('onOpenAppUpdate')}
         currentDateFormat=" "
       />
     </div>
@@ -201,13 +237,13 @@ storiesOf('News|NewsFeed', module)
         onOpenExternalLink={action('onOpenExternalLink')}
         onOpenAlert={action('onOpenAlert')}
         onProceedNewsAction={action('onOpenExternalLink')}
-        isUpdateDownloading={boolean('isUpdateDownloading', false)}
+        displayAppUpdateNewsItem={boolean('displayAppUpdateNewsItem', false)}
         updateDownloadProgress={number(
           'updateDownloadProgress',
           0,
           updateDownloadProgressOptions
         )}
-        onOpenUpdate={action('onOpenUpdate')}
+        onOpenAppUpdate={action('onOpenAppUpdate')}
         currentDateFormat={select(
           'currentDateFormat',
           dateOptions,

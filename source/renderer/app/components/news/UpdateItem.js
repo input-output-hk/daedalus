@@ -8,7 +8,7 @@ import styles from './UpdateItem.scss';
 
 type Props = {
   updateItem: News.News,
-  onOpenUpdate: Function,
+  onOpenAppUpdate: Function,
   currentDateFormat: string,
   downloadProgress: number,
 };
@@ -45,7 +45,7 @@ export default class UpdateItem extends Component<Props> {
     const {
       updateItem,
       currentDateFormat,
-      onOpenUpdate,
+      onOpenAppUpdate,
       downloadProgress,
     } = this.props;
     const componentClasses = classNames([
@@ -58,7 +58,7 @@ export default class UpdateItem extends Component<Props> {
       <div
         className={componentClasses}
         role="presentation"
-        onClick={onOpenUpdate}
+        onClick={onOpenAppUpdate}
       >
         {title}
         <div className={styles.date}>

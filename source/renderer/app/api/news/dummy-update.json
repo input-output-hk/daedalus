@@ -25,17 +25,17 @@
     "date": 1594043606135,
     "softwareUpdate": {
       "darwin": {
-        "version": "1.4.0-STN4",
+        "version": "2.0.0-STN4",
         "hash": "73c69357b568438b37c83a77eb9e5f79f683255de4d49bc9d0f84a3b4183ab34",
         "url": "https://update-cardano-mainnet.iohk.io/daedalus-1.1.0-mainnet-12849.pkg"
       },
       "win32": {
-        "version": "1.4.0-STN4",
+        "version": "2.0.0-STN4",
         "hash": "73c69357b568438b37c83a77eb9e5f79f683255de4d49bc9d0f84a3b4183ab34",
         "url": "https://update-cardano-mainnet.iohk.io/daedalus-1.1.0-mainnet-12849.exe"
       },
       "linux": {
-        "version": "1.4.0-STN4",
+        "version": "2.0.0-STN4",
         "hash": "73c69357b568438b37c83a77eb9e5f79f683255de4d49bc9d0f84a3b4183ab34",
         "url": "https://update-cardano-mainnet.iohk.io/daedalus-1.1.0-mainnet-12849.bin"
       }

@@ -5,5 +5,7 @@ import Action from './lib/Action';
 
 export default class AppUpdateActions {
   getLatestAvailableAppVersion: Action<any> = new Action();
-  onInstallUpdate: Action<any> = new Action();
+  installUpdate: Action<any> = new Action();
+  openAppUpdateOverlay: Action<any> = new Action();
+  closeAppUpdateOverlay: Action<any> = new Action();
 }

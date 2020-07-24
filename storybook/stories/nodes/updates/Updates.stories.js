@@ -7,7 +7,6 @@ import { withKnobs } from '@storybook/addon-knobs';
 import StoryDecorator from '../../_support/StoryDecorator';
 
 // Stories
-import { ManualUpdateStory } from './ManualUpdate.stories';
 import { DataLayerMigrationStory } from './DataLayerMigration.stories';
 
 storiesOf('Nodes|Updates', module)
@@ -15,5 +14,4 @@ storiesOf('Nodes|Updates', module)
     <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
   ))
   // ====== Stories ======
-  .add('Manual Update', ManualUpdateStory)
   .add('Data Layer Migration', DataLayerMigrationStory);

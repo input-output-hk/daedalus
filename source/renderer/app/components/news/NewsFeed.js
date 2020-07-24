@@ -41,9 +41,9 @@ type Props = {
   currentDateFormat: string,
   onOpenExternalLink: Function,
   onProceedNewsAction: Function,
-  onOpenUpdate: Function,
+  onOpenAppUpdate: Function,
   updateDownloadProgress: number,
-  isUpdateDownloading: boolean,
+  displayAppUpdateNewsItem: boolean,
 };
 
 type State = {
@@ -113,9 +113,9 @@ export default class NewsFeed extends Component<Props, State> {
       onProceedNewsAction,
       onOpenExternalLink,
       currentDateFormat,
-      onOpenUpdate,
+      onOpenAppUpdate,
       updateDownloadProgress,
-      isUpdateDownloading,
+      displayAppUpdateNewsItem,
     } = this.props;
     const { hasShadow } = this.state;
 
@@ -149,7 +149,7 @@ export default class NewsFeed extends Component<Props, State> {
           </button>
         </div>
         <div className={styles.newsFeedList}>
-          {isUpdateDownloading && update && (
+          {displayAppUpdateNewsItem && update && (
             <div className={styles.newsFeedItemsContainer}>
               {
                 <UpdateItem
@@ -159,7 +159,7 @@ export default class NewsFeed extends Component<Props, State> {
                   onMarkNewsAsRead={onMarkNewsAsRead}
                   onOpenAlert={onOpenAlert}
                   onProceedNewsAction={onProceedNewsAction}
-                  onOpenUpdate={onOpenUpdate}
+                  onOpenAppUpdate={onOpenAppUpdate}
                   currentDateFormat={currentDateFormat}
                   downloadProgress={updateDownloadProgress}
                 />

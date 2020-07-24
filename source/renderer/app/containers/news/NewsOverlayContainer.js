@@ -1,13 +1,8 @@
 // @flow
-
-// @UPDATE TODO
-/* eslint-disable */
-
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import AlertsOverlay from '../../components/news/AlertsOverlay';
 import IncidentOverlay from '../../components/news/IncidentOverlay';
-import UpdateOverlay from '../../components/news/UpdateOverlay';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 @inject('stores', 'actions')
@@ -16,29 +11,16 @@ export default class NewsOverlayContainer extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
 
   render() {
-    const { stores, actions } = this.props;
-    const { app, newsFeed, profile, appUpdate } = stores;
-    const { environment, openExternalLink } = stores.app;
-    const { version } = environment;
+    const { stores } = this.props;
+    const { newsFeed, profile } = stores;
+    const { openExternalLink } = stores.app;
     const {
       closeOpenedAlert,
       markNewsAsRead,
       newsFeedData,
       openedAlert,
       proceedNewsAction,
-      onCloseUpdate,
-      isUpdateOpen,
     } = newsFeed;
-    const {
-      downloadProgress,
-      isUpdateDownloaded,
-      availableUpdate,
-      downloadTimeLeft,
-      totalDownloaded,
-      totalDownloadSize,
-      availableUpdateVersion,
-    } = appUpdate;
-    const { onInstallUpdate } = actions.appUpdate;
     const { incident, alerts } = newsFeedData;
     const unreadAlerts = alerts.unread;
     const allAlertsCount = alerts.all ? alerts.all.length : 0;
@@ -81,22 +63,6 @@ export default class NewsOverlayContainer extends Component<InjectedProps> {
           onProceedNewsAction={proceedNewsAction}
           currentDateFormat={currentDateFormat}
           hideCounter
-        />
-      );
-    }
-    if (availableUpdate && (isUpdateOpen || isUpdateDownloaded)) {
-      return (
-        <UpdateOverlay
-          update={availableUpdate}
-          onCloseUpdate={onCloseUpdate}
-          downloadProgress={downloadProgress}
-          isUpdateDownloaded={isUpdateDownloaded}
-          downloadTimeLeft={downloadTimeLeft}
-          totalDownloaded={totalDownloaded}
-          totalDownloadSize={totalDownloadSize}
-          onInstallUpdate={onInstallUpdate.trigger}
-          currentVersion={version}
-          availableVersion={availableUpdateVersion}
         />
       );
     }

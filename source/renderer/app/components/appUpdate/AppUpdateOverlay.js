@@ -9,7 +9,7 @@ import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import ReactMarkdown from 'react-markdown';
 import News from '../../domains/News';
-import styles from './UpdateOverlay.scss';
+import styles from './AppUpdateOverlay.scss';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import ProgressBarLarge from '../widgets/ProgressBarLarge';
 
@@ -55,7 +55,7 @@ const messages = defineMessages({
 
 type Props = {
   update: News.News,
-  onCloseUpdate: Function,
+  onClose: Function,
   downloadTimeLeft: string,
   totalDownloaded: string,
   totalDownloadSize: string,
@@ -71,7 +71,7 @@ type State = {
 };
 
 @observer
-export default class UpdateOverlay extends Component<Props, State> {
+export default class AppUpdateOverlay extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -90,7 +90,7 @@ export default class UpdateOverlay extends Component<Props, State> {
     const { intl } = this.context;
     const {
       update,
-      onCloseUpdate,
+      onClose,
       downloadTimeLeft,
       totalDownloaded,
       totalDownloadSize,
@@ -102,21 +102,18 @@ export default class UpdateOverlay extends Component<Props, State> {
     } = this.props;
     const { areTermsOfUseAccepted } = this.state;
     const { content } = update;
-    const buttonStyles = [
+    const buttonStyles = classnames([
       styles.button,
       !areTermsOfUseAccepted ? styles.disabled : null,
-    ];
+    ]);
     return (
       <div
         className={styles.component}
         role="presentation"
-        onClick={!isUpdateDownloaded ? onCloseUpdate : () => {}}
+        onClick={!isUpdateDownloaded ? onClose : () => {}}
       >
         {!isUpdateDownloaded && (
-          <DialogCloseButton
-            onClose={onCloseUpdate}
-            className={styles.closeButton}
-          />
+          <DialogCloseButton onClose={onClose} className={styles.closeButton} />
         )}
         <h1 className={styles.title}>{intl.formatMessage(messages.title)}</h1>
         <span className={styles.subtitle}>

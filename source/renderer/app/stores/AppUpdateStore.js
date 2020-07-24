@@ -12,7 +12,7 @@ import {
   getDownloadLocalDataChannel,
   clearDownloadLocalDataChannel,
 } from '../ipc/downloadManagerChannel';
-import { quitAppInstallUpdateChannel } from '../ipc/quitAppInstallUpdateChannel';
+import { quitAppAndAppInstallUpdateChannel } from '../ipc/quitAppAndAppInstallUpdateChannel';
 import type {
   DownloadMainResponse,
   DownloadLocalDataMainResponse,
@@ -39,13 +39,14 @@ export default class AppUpdateStore extends Store {
   @observable availableUpdateVersion: string = '';
   @observable isUpdateDownloading: boolean = false;
   @observable isUpdateDownloaded: boolean = false;
-  @observable automaticUpdateFailed: boolean = false;
+  @observable isUpdateInstalled: boolean = false;
+  @observable isAutomaticUpdateFailed: boolean = false;
+  @observable isUpdateProgressOpen: boolean = false;
 
   @observable downloadInfo: ?DownloadInfo = null;
   @observable downloadData: ?DownloadData = null;
 
-  @observable isUpdateAvailable: boolean = false;
-  @observable isUpdateInstalled: boolean = false;
+  @observable isUpdateAvailable: boolean = true;
   @observable availableAppVersion: ?string = null;
   @observable isNewAppVersionAvailable: boolean = false;
   @observable applicationVersion: ?number = null;
@@ -76,7 +77,9 @@ export default class AppUpdateStore extends Store {
     actions.getLatestAvailableAppVersion.listen(
       this._getLatestAvailableAppVersion
     );
-    actions.onInstallUpdate.listen(this._onInstallUpdate);
+    actions.installUpdate.listen(this._installUpdate);
+    actions.openAppUpdateOverlay.listen(this._openAppUpdateOverlay);
+    actions.closeAppUpdateOverlay.listen(this._closeAppUpdateOverlay);
 
     requestDownloadChannel.onReceive(this._manageUpdateResponse);
 
@@ -92,6 +95,16 @@ export default class AppUpdateStore extends Store {
   };
 
   // ==================== PUBLIC ==================
+
+  @computed get displayAppUpdateOverlay(): boolean {
+    return (
+      !!this.availableUpdate &&
+      (this.isUpdateProgressOpen || this.isUpdateDownloaded)
+    );
+  }
+  @computed get displayAppUpdateNewsItem(): boolean {
+    return this.isUpdateDownloading;
+  }
 
   @computed get formattedDownloadData(): FormattedDownloadData {
     return formattedDownloadData(this.downloadData);
@@ -126,7 +139,7 @@ export default class AppUpdateStore extends Store {
   }
 
   @computed get showManualUpdate(): boolean {
-    return this.automaticUpdateFailed;
+    return this.isAutomaticUpdateFailed;
     // this.isNewAppVersionAvailable &&
     // !this.isUpdateAvailable &&
     // !global.isIncentivizedTestnet &&
@@ -161,10 +174,10 @@ export default class AppUpdateStore extends Store {
   // @UPDATE TODO: Commenting the trigger to avoid automatic download
   _checkNewAppUpdate = async (update: News) => {
     // Is there an 'Automatic Update Failed' flag?
-    const automaticUpdateFailed = await this.getAppAutomaticUpdateFailedRequest.execute();
-    if (automaticUpdateFailed) {
+    const isAutomaticUpdateFailed = await this.getAppAutomaticUpdateFailedRequest.execute();
+    if (isAutomaticUpdateFailed) {
       runInAction(() => {
-        this.automaticUpdateFailed = true;
+        this.isAutomaticUpdateFailed = true;
       });
     }
 
@@ -266,7 +279,7 @@ export default class AppUpdateStore extends Store {
     });
   };
 
-  @action _onInstallUpdate = async () => {
+  @action _installUpdate = async () => {
     if (
       !this.availableUpdate ||
       this.isUpdateDownloading ||
@@ -281,14 +294,22 @@ export default class AppUpdateStore extends Store {
     }
     const { destinationPath, originalFilename } = this.downloadInfo;
     const filePath = `${destinationPath}/${originalFilename}`;
-    const openInstaller = await quitAppInstallUpdateChannel.request(filePath);
+    const openInstaller = await quitAppAndAppInstallUpdateChannel.request(
+      filePath
+    );
     if (!openInstaller) {
       await this.setAppAutomaticUpdateFailedRequest.execute();
       runInAction(() => {
-        this.automaticUpdateFailed = true;
+        this.isAutomaticUpdateFailed = true;
       });
     }
-    console.log('openInstaller', openInstaller);
+  };
+
+  @action _openAppUpdateOverlay = () => {
+    this.isUpdateProgressOpen = true;
+  };
+  @action _closeAppUpdateOverlay = () => {
+    this.isUpdateProgressOpen = false;
   };
 
   @action _getLatestAvailableAppVersion = async () => {

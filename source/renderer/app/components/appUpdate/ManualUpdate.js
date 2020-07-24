@@ -5,7 +5,7 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import ReactModal from 'react-modal';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import styles from './ManualUpdate.scss';
-import ButtonLink from '../../widgets/ButtonLink';
+import ButtonLink from '../widgets/ButtonLink';
 
 const messages = defineMessages({
   title: {

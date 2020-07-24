@@ -5,6 +5,7 @@ import WalletAddPage from './wallet/WalletAddPage';
 import LoadingPage from './loading/LoadingPage';
 import SplashNetworkPage from './splash/SplashNetworkPage';
 import RedeemItnRewardsContainer from './staking/RedeemItnRewardsContainer';
+import AppUpdateContainer from './appUpdate/AppUpdateContainer';
 import WalletImportFileDialog from '../components/wallet/wallet-import/WalletImportFileDialog';
 import type { InjectedContainerProps } from '../types/injectedPropsType';
 
@@ -28,7 +29,7 @@ export default class Root extends Component<Props> {
     } = stores;
     const { isStakingPage, redeemStep } = staking;
     const { isProfilePage, isSettingsPage } = profile;
-    const { showManualUpdate } = appUpdate;
+    const { displayAppUpdateOverlay } = appUpdate;
     const { hasLoadedWallets, isHardwareWalletRoute } = wallets;
     const {
       isConnected,
@@ -61,7 +62,11 @@ export default class Root extends Component<Props> {
     }
 
     if (redeemStep !== null) {
-      return <RedeemItnRewardsContainer key="RedeemItnRewardsContainer" />;
+      return <RedeemItnRewardsContainer />;
+    }
+
+    if (displayAppUpdateOverlay) {
+      return <AppUpdateContainer />;
     }
 
     // Just render any page that doesn't require wallets to be loaded or node to be connected
@@ -69,7 +74,7 @@ export default class Root extends Component<Props> {
       (isPageThatDoesntNeedWallets && !isNodeInStoppingSequence) ||
       (isProfilePage && (isNotEnoughDiskSpace || !isNodeInStoppingSequence))
     ) {
-      return <>{children}</>;
+      return children;
     }
 
     if (
@@ -77,7 +82,7 @@ export default class Root extends Component<Props> {
       !hasLoadedWallets ||
       isNotEnoughDiskSpace ||
       !isSystemTimeCorrect ||
-      showManualUpdate
+      displayAppUpdateOverlay
     ) {
       return <LoadingPage stores={stores} actions={actions} />;
     }
@@ -86,6 +91,6 @@ export default class Root extends Component<Props> {
       return <WalletAddPage />;
     }
 
-    return <>{children}</>;
+    return children;
   }
 }
