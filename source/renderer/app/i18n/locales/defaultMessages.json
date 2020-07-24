@@ -10798,11 +10798,11 @@
         }
       },
       {
-        "defaultMessage": "!!!15 words <em>(Shelley wallet)</em>",
+        "defaultMessage": "!!!15 words <em>(Incentivized Testnet Rewards wallet)</em>",
         "description": "Label for the \"labelDaedalusWalletKind15WordShelley\" checkbox.",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 66
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.daedalusWalletKind15WordShelley",
@@ -10812,17 +10812,31 @@
         }
       },
       {
+        "defaultMessage": "!!!24 words <em>(Shelley wallet)</em>",
+        "description": "Label for the \"labelDaedalusWalletKind24WordShelley\" checkbox.",
+        "end": {
+          "column": 3,
+          "line": 73
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.walletKind.label.daedalusWalletKind24WordShelley",
+        "start": {
+          "column": 40,
+          "line": 67
+        }
+      },
+      {
         "defaultMessage": "!!!27 words - paper wallet (Byron legacy wallet)</em>",
         "description": "Label for the \"labelDaedalusWalletKind27WordPaper\" checkbox.",
         "end": {
           "column": 3,
-          "line": 71
+          "line": 79
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.daedalusWalletKind27WordPaper",
         "start": {
           "column": 38,
-          "line": 66
+          "line": 74
         }
       },
       {
@@ -10830,13 +10844,13 @@
         "description": "Label for the \"labelYoroiWalletKind\" checkbox.",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 84
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.yoroiWalletKind",
         "start": {
           "column": 24,
-          "line": 72
+          "line": 80
         }
       },
       {
@@ -10844,27 +10858,27 @@
         "description": "Label for the \"labelDaedalusWalletKind15WordByron\" checkbox.",
         "end": {
           "column": 3,
-          "line": 82
+          "line": 90
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.yoroiWalletKindByronLegacy15Word",
         "start": {
           "column": 35,
-          "line": 77
+          "line": 85
         }
       },
       {
-        "defaultMessage": "!!!15 words <em>(Shelley wallet)</em>",
+        "defaultMessage": "!!!15 words <em>(Incentivized Testnet wallet)</em>",
         "description": "Label for the \"labelDaedalusWalletKind15WordShelley\" checkbox.",
         "end": {
           "column": 3,
-          "line": 89
+          "line": 97
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.yoroiWalletKindShelley15Word",
         "start": {
           "column": 37,
-          "line": 83
+          "line": 91
         }
       },
       {
@@ -10872,13 +10886,13 @@
         "description": "Label for the \"labelHardwareWalletKind\" checkbox.",
         "end": {
           "column": 3,
-          "line": 95
+          "line": 103
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.hardwareWalletKind",
         "start": {
           "column": 27,
-          "line": 90
+          "line": 98
         }
       },
       {
@@ -10886,13 +10900,13 @@
         "description": "Label for the \"labelHardwareWalletKindLedger\" checkbox.",
         "end": {
           "column": 3,
-          "line": 100
+          "line": 108
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.hardwareWalletKindLedger",
         "start": {
           "column": 33,
-          "line": 96
+          "line": 104
         }
       },
       {
@@ -10900,13 +10914,13 @@
         "description": "Label for the \"labelHardwareWalletKindTrezor\" checkbox.",
         "end": {
           "column": 3,
-          "line": 105
+          "line": 113
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.hardwareWalletKindTrezor",
         "start": {
           "column": 33,
-          "line": 101
+          "line": 109
         }
       },
       {
@@ -10914,13 +10928,13 @@
         "description": "Label for the \"hardwareWalletDisclaimer1\" disclaimer.",
         "end": {
           "column": 3,
-          "line": 111
+          "line": 119
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.hardwareWalletDisclaimer1",
         "start": {
           "column": 29,
-          "line": 106
+          "line": 114
         }
       },
       {
@@ -10928,13 +10942,13 @@
         "description": "Label for the \"hardwareWalletDisclaimer2\" disclaimer.",
         "end": {
           "column": 3,
-          "line": 117
+          "line": 125
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.hardwareWalletDisclaimer2",
         "start": {
           "column": 29,
-          "line": 112
+          "line": 120
         }
       },
       {
@@ -10942,13 +10956,13 @@
         "description": "Label for the \"hardwareWalletDisclaimer3\" disclaimer.",
         "end": {
           "column": 3,
-          "line": 123
+          "line": 131
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.hardwareWalletDisclaimer3",
         "start": {
           "column": 29,
-          "line": 118
+          "line": 126
         }
       },
       {
@@ -10956,13 +10970,13 @@
         "description": "Label for the \"hardwareWalletCheckbox1\" disclaimer.",
         "end": {
           "column": 3,
-          "line": 129
+          "line": 137
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.hardwareWalletCheckbox1",
         "start": {
           "column": 27,
-          "line": 124
+          "line": 132
         }
       },
       {
@@ -10970,13 +10984,13 @@
         "description": "Label for the \"hardwareWalletCheckbox2\" disclaimer.",
         "end": {
           "column": 3,
-          "line": 135
+          "line": 143
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.hardwareWalletCheckbox2",
         "start": {
           "column": 27,
-          "line": 130
+          "line": 138
         }
       },
       {
@@ -10984,13 +10998,13 @@
         "description": "Label for the \"hardwareWalletCheckbox2\" disclaimer.",
         "end": {
           "column": 3,
-          "line": 141
+          "line": 149
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.hardwareWalletCheckbox3",
         "start": {
           "column": 27,
-          "line": 136
+          "line": 144
         }
       }
     ],
