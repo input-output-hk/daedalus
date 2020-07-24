@@ -2568,7 +2568,7 @@
         }
       },
       {
-        "defaultMessage": "!!!This version of Daedalus has been created to be used specifically with the third iteration of the Shelley testnet network.",
+        "defaultMessage": "!!!This version of Daedalus has been created to be used specifically with the Shelley testnet network.",
         "description": "stnDescription on network splash screen",
         "end": {
           "column": 3,
@@ -5378,8 +5378,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Produced blocks:",
-        "description": "\"Produced blocks\" for the Stake Pools Tooltip page.",
+        "defaultMessage": "!!!Blocks (current epoch):",
+        "description": "\"Blocks\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
           "line": 66
