@@ -24,15 +24,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-wallet": {
-        "branch": "rvl/1870/bump-deps",
+        "branch": "icarus-wallet-gap-hack",
         "description": "Official Wallet Backend & API for Cardano decentralized",
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-wallet",
-        "rev": "cb6fae7bc33d8ba69ce0822e6e77d2f166ffbff0",
-        "sha256": "0ypm4hdpkf1zsq1k9ylij6x97pmgmgfm6wgg1inghw4qpnv7v66b",
+        "rev": "f580554a93241fa0f22adaf43f6d478436bfe3b8",
+        "sha256": "1c676hcgi1v69c5sqpbhb3529vfp8cswq5xp8r503iilcxbl1vzx",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-wallet/archive/cb6fae7bc33d8ba69ce0822e6e77d2f166ffbff0.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-wallet/archive/f580554a93241fa0f22adaf43f6d478436bfe3b8.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz",
         "version": "v2020-04-28"
     },

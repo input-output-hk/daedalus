@@ -207,7 +207,11 @@ export default class WalletTypeDialog extends Component<Props, State> {
       walletKindYoroi,
       walletKindHardware,
     } = this.props;
-    const { hardwareWalletAcceptance1, hardwareWalletAcceptance2, hardwareWalletAcceptance3 } = this.state;
+    const {
+      hardwareWalletAcceptance1,
+      hardwareWalletAcceptance2,
+      hardwareWalletAcceptance3,
+    } = this.state;
     if (!walletKind) return true;
     if (walletKind === WALLET_KINDS.DAEDALUS && !walletKindDaedalus)
       return true;
@@ -217,12 +221,13 @@ export default class WalletTypeDialog extends Component<Props, State> {
       isIncentivizedTestnet
     )
       return true;
-    return walletKind === WALLET_KINDS.HARDWARE &&
+    return (
+      walletKind === WALLET_KINDS.HARDWARE &&
       (!walletKindHardware ||
         !hardwareWalletAcceptance1 ||
         !hardwareWalletAcceptance2 ||
-        !hardwareWalletAcceptance3);
-
+        !hardwareWalletAcceptance3)
+    );
   }
 
   render() {
@@ -236,7 +241,11 @@ export default class WalletTypeDialog extends Component<Props, State> {
       walletKindYoroi,
       walletKindHardware,
     } = this.props;
-    const { hardwareWalletAcceptance1, hardwareWalletAcceptance2, hardwareWalletAcceptance3 } = this.state;
+    const {
+      hardwareWalletAcceptance1,
+      hardwareWalletAcceptance2,
+      hardwareWalletAcceptance3,
+    } = this.state;
     return (
       <WalletRestoreDialog
         stepNumber={0}
