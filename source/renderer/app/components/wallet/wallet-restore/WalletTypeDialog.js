@@ -59,9 +59,17 @@ const messages = defineMessages({
   labelDaedalusWalletKind15WordShelley: {
     id:
       'wallet.restore.dialog.step.walletKind.label.daedalusWalletKind15WordShelley',
-    defaultMessage: '!!!15 words <em>(Shelley wallet)</em>',
+    defaultMessage:
+      '!!!15 words <em>(Incentivized Testnet Rewards wallet)</em>',
     description:
       'Label for the "labelDaedalusWalletKind15WordShelley" checkbox.',
+  },
+  labelDaedalusWalletKind24WordShelley: {
+    id:
+      'wallet.restore.dialog.step.walletKind.label.daedalusWalletKind24WordShelley',
+    defaultMessage: '!!!24 words <em>(Shelley wallet)</em>',
+    description:
+      'Label for the "labelDaedalusWalletKind24WordShelley" checkbox.',
   },
   labelDaedalusWalletKind27WordPaper: {
     id:
@@ -83,7 +91,7 @@ const messages = defineMessages({
   labelYoroiWalletKind15WordShelley: {
     id:
       'wallet.restore.dialog.step.walletKind.label.yoroiWalletKindShelley15Word',
-    defaultMessage: '!!!15 words <em>(Shelley wallet)</em>',
+    defaultMessage: '!!!15 words <em>(Incentivized Testnet wallet)</em>',
     description:
       'Label for the "labelDaedalusWalletKind15WordShelley" checkbox.',
   },

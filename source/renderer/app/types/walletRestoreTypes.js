@@ -13,6 +13,7 @@ export type WalletKind = 'Daedalus' | 'Yoroi' | 'Hardware';
 export type WalletDaedalusKind =
   | '12WordByron'
   | '15WordShelley'
+  | '24WordShelley'
   | '27WordPaper';
 
 export type WalletYoroiKind = '15WordByron' | '15WordShelley';
