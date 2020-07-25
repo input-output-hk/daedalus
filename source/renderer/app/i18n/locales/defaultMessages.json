@@ -249,7 +249,7 @@
         "description": "\"Funds cannot be transferred from this wallet because it contains some unspent transaction outputs (UTXOs), with amounts of ada that are too small to be migrated.\" error message",
         "end": {
           "column": 3,
-          "line": 99
+          "line": 101
         },
         "file": "source/renderer/app/api/errors.js",
         "id": "api.errors.nothingToMigrate",
@@ -9627,13 +9627,13 @@
         "description": "Title  in the transfer funds form.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 19
         },
         "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep1Dialog.js",
         "id": "wallet.transferFunds.dialog1.title",
         "start": {
           "column": 15,
-          "line": 13
+          "line": 15
         }
       },
       {
@@ -9641,13 +9641,13 @@
         "description": "sourceWallet in the transfer funds form.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 24
         },
         "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep1Dialog.js",
         "id": "wallet.transferFunds.dialog1.sourceWallet",
         "start": {
           "column": 16,
-          "line": 18
+          "line": 20
         }
       },
       {
@@ -9655,13 +9655,13 @@
         "description": "targetWallet in the transfer funds form.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 29
         },
         "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep1Dialog.js",
         "id": "wallet.transferFunds.dialog1.targetWallet",
         "start": {
           "column": 16,
-          "line": 23
+          "line": 25
         }
       },
       {
@@ -9669,13 +9669,13 @@
         "description": "buttonLabel in the transfer funds form.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 34
         },
         "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep1Dialog.js",
         "id": "wallet.transferFunds.dialog1.continueLabel",
         "start": {
           "column": 15,
-          "line": 28
+          "line": 30
         }
       }
     ],

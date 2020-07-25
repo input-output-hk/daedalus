@@ -187,6 +187,8 @@ storiesOf('Wallets|Legacy Wallets', module)
         wallets={WALLETS_V2}
         numberOfStakePools={STAKE_POOLS}
         getStakePoolById={action('getStakePoolById')}
+        isSubmitting={false}
+        error={null}
       />
     );
   })
