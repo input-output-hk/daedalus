@@ -65,7 +65,7 @@ export const messages = defineMessages({
   },
   notEnoughFundsForTransaction: {
     id: 'api.errors.NotEnoughFundsForTransactionError',
-    defaultMessage: '!!!Not enough ada . Try sending a smaller amount.',
+    defaultMessage: '!!!Not enough ada. Try sending a smaller amount.',
     description:
       '"Not enough ada . Try sending a smaller amount." error message',
   },
@@ -86,5 +86,17 @@ export const messages = defineMessages({
       '!!!https://iohk.zendesk.com/hc/en-us/articles/360017733353',
     description:
       '"Transaction too big due to too many inputs." error link URL.',
+  },
+  utxoTooSmall: {
+    id: 'api.errors.utxoTooSmall',
+    defaultMessage: '!!!Invalid transaction.',
+    description: '"Invalid transaction." error message',
+  },
+  nothingToMigrate: {
+    id: 'api.errors.nothingToMigrate',
+    defaultMessage:
+      '!!!Funds cannot be transferred from this wallet because it contains some unspent transaction outputs (UTXOs), with amounts of ada that are too small to be migrated.',
+    description:
+      '"Funds cannot be transferred from this wallet because it contains some unspent transaction outputs (UTXOs), with amounts of ada that are too small to be migrated." error message',
   },
 });

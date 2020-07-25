@@ -175,7 +175,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Not enough ada . Try sending a smaller amount.",
+        "defaultMessage": "!!!Not enough ada. Try sending a smaller amount.",
         "description": "\"Not enough ada . Try sending a smaller amount.\" error message",
         "end": {
           "column": 3,
@@ -228,6 +228,34 @@
         "start": {
           "column": 33,
           "line": 83
+        }
+      },
+      {
+        "defaultMessage": "!!!Invalid transaction.",
+        "description": "\"Invalid transaction.\" error message",
+        "end": {
+          "column": 3,
+          "line": 94
+        },
+        "file": "source/renderer/app/api/errors.js",
+        "id": "api.errors.utxoTooSmall",
+        "start": {
+          "column": 16,
+          "line": 90
+        }
+      },
+      {
+        "defaultMessage": "!!!Funds cannot be transferred from this wallet because it contains some unspent transaction outputs (UTXOs), with amounts of ada that are too small to be migrated.",
+        "description": "\"Funds cannot be transferred from this wallet because it contains some unspent transaction outputs (UTXOs), with amounts of ada that are too small to be migrated.\" error message",
+        "end": {
+          "column": 3,
+          "line": 99
+        },
+        "file": "source/renderer/app/api/errors.js",
+        "id": "api.errors.nothingToMigrate",
+        "start": {
+          "column": 20,
+          "line": 95
         }
       }
     ],
