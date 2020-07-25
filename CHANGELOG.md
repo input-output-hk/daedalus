@@ -13,6 +13,10 @@ Changelog
 
 - Fixed genesis file
 
+### Chores
+
+- Added handlers for new error messages ([PR 2090](https://github.com/input-output-hk/daedalus/pull/2090))
+
 ## 1.5.0-STN4
 
 ### Chores

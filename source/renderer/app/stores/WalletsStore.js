@@ -595,7 +595,7 @@ export default class WalletsStore extends Store {
     this.goToWalletRoute(wallet.id);
   };
 
-  @action _transferFundsNextStep = () => {
+  @action _transferFundsNextStep = async () => {
     const {
       transferFundsStep,
       transferFundsSourceWalletId,
@@ -611,7 +611,7 @@ export default class WalletsStore extends Store {
       transferFundsTargetWalletId
     ) {
       nextStep = 2;
-      this._transferFundsCalculateFee({
+      await this._transferFundsCalculateFee({
         sourceWalletId: transferFundsSourceWalletId,
       });
     }
@@ -677,6 +677,7 @@ export default class WalletsStore extends Store {
   @action _transferFundsClose = () => {
     this.transferFundsStep = 0;
     this.transferFundsFee = null;
+    this.transferFundsCalculateFeeRequest.reset();
   };
 
   @action _transferFundsCalculateFee = async ({
