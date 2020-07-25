@@ -6607,17 +6607,73 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Verify your wallet recovery phrase by clicking words in the exact order you wrote them down.",
+        "defaultMessage": "!!!Please enter your {wordCount}-word wallet recovery phrase. Make sure you enter the words in the correct order.",
         "description": "Instructions for verifying wallet recovery phrase on dialog for entering wallet recovery phrase.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 31
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.verification.instructions",
         "start": {
           "column": 28,
-          "line": 19
+          "line": 25
+        }
+      },
+      {
+        "defaultMessage": "!!!Verify your recovery phrase",
+        "description": "Label for the recovery phrase input on dialog for entering wallet recovery phrase.",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
+        "id": "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInputLabel",
+        "start": {
+          "column": 28,
+          "line": 32
+        }
+      },
+      {
+        "defaultMessage": "!!!Enter your {numberOfWords}-word recovery phrase",
+        "description": "Placeholder for the mnemonics autocomplete.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
+        "id": "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInputHint",
+        "start": {
+          "column": 27,
+          "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!No results",
+        "description": "\"No results\" message for the recovery phrase input search results.",
+        "end": {
+          "column": 3,
+          "line": 49
+        },
+        "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
+        "id": "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInputNoResults",
+        "start": {
+          "column": 27,
+          "line": 43
+        }
+      },
+      {
+        "defaultMessage": "!!!Invalid recovery phrase",
+        "description": "Error message shown when invalid recovery phrase was entered.",
+        "end": {
+          "column": 3,
+          "line": 56
+        },
+        "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
+        "id": "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInvalidMnemonics",
+        "start": {
+          "column": 34,
+          "line": 50
         }
       },
       {
@@ -6625,27 +6681,13 @@
         "description": "Label for button \"Confirm\" on wallet backup dialog",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 61
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.recovery.phrase.show.entry.dialog.button.labelConfirm",
         "start": {
           "column": 22,
-          "line": 26
-        }
-      },
-      {
-        "defaultMessage": "!!!Clear",
-        "description": "Label for button \"Clear\" on wallet backup dialog",
-        "end": {
-          "column": 3,
-          "line": 35
-        },
-        "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
-        "id": "wallet.recovery.phrase.show.entry.dialog.button.labelClear",
-        "start": {
-          "column": 20,
-          "line": 31
+          "line": 57
         }
       },
       {
@@ -6653,13 +6695,13 @@
         "description": "Term on wallet creation to store recovery phrase offline",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 68
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.offline",
         "start": {
           "column": 15,
-          "line": 36
+          "line": 62
         }
       },
       {
@@ -6667,13 +6709,13 @@
         "description": "Term and condition on wallet backup dialog describing that wallet can only be recovered with a security phrase",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 76
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.recovery",
         "start": {
           "column": 16,
-          "line": 43
+          "line": 69
         }
       },
       {
@@ -6681,13 +6723,13 @@
         "description": "Term and condition on wallet backup dialog describing that wallet can only be recovered with a security phrase",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 83
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.rewards",
         "start": {
           "column": 15,
-          "line": 51
+          "line": 77
         }
       }
     ],

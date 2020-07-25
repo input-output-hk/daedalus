@@ -3,18 +3,12 @@ import { observable, action, computed } from 'mobx';
 import Store from './lib/Store';
 import WalletBackupDialog from '../components/wallet/WalletBackupDialog';
 import { WALLET_BACKUP_STEPS } from '../types/walletBackupTypes';
-
-import type {
-  RecoveryPhraseWord,
-  walletBackupStep,
-} from '../types/walletBackupTypes';
+import type { walletBackupStep } from '../types/walletBackupTypes';
 
 export default class WalletBackupStore extends Store {
   @observable inProgress = false;
   @observable currentStep: walletBackupStep = WALLET_BACKUP_STEPS.NOT_INITIATED;
   @observable recoveryPhrase = [];
-  @observable recoveryPhraseWords: Array<RecoveryPhraseWord> = [];
-  @observable recoveryPhraseShuffled: Array<RecoveryPhraseWord> = [];
   @observable completed = false;
   @observable enteredPhrase = [];
   @observable isPrivacyNoticeAccepted = false;
@@ -36,10 +30,9 @@ export default class WalletBackupStore extends Store {
       this._continueToRecoveryPhraseForWalletBackup
     );
     a.startWalletBackup.listen(this._startWalletBackup);
-    a.addWordToWalletBackupVerification.listen(
-      this._addWordToWalletBackupVerification
+    a.updateWalletBackupVerificationPhrase.listen(
+      this._updateWalletBackupVerificationPhrase
     );
-    a.clearEnteredRecoveryPhrase.listen(this._clearEnteredRecoveryPhrase);
     a.acceptWalletBackupTermOffline.listen(this._acceptWalletBackupTermOffline);
     a.acceptWalletBackupTermRecovery.listen(
       this._acceptWalletBackupTermRecovery
@@ -57,12 +50,6 @@ export default class WalletBackupStore extends Store {
     this.recoveryPhrase = params.recoveryPhrase;
     this.inProgress = true;
     this.currentStep = WALLET_BACKUP_STEPS.PRIVACY_WARNING;
-    this.recoveryPhraseWords = this.recoveryPhrase.map((word: string) => ({
-      word,
-    }));
-    this.recoveryPhraseShuffled = this.recoveryPhrase
-      .sort(() => 0.5 - Math.random())
-      .map(w => ({ word: w, isActive: true }));
     this.completed = false;
     this.enteredPhrase = [];
     this.isPrivacyNoticeAccepted = false;
@@ -96,28 +83,19 @@ export default class WalletBackupStore extends Store {
     this.currentStep = WALLET_BACKUP_STEPS.RECOVERY_PHRASE_ENTRY;
   };
 
-  @action _addWordToWalletBackupVerification = (params: {
-    word: string,
-    index: number,
+  @action _updateWalletBackupVerificationPhrase = (params: {
+    verificationPhrase: Array<string>,
   }) => {
-    const { word, index } = params;
-    this.enteredPhrase.push({ word });
-    const pickedWord = this.recoveryPhraseShuffled[index];
-    if (pickedWord && pickedWord.word === word) pickedWord.isActive = false;
+    const { verificationPhrase } = params;
+    this.enteredPhrase = verificationPhrase;
   };
 
   @action _clearEnteredRecoveryPhrase = () => {
     this.enteredPhrase = [];
-    this.recoveryPhraseShuffled = this.recoveryPhraseShuffled.map(
-      ({ word }) => ({ word, isActive: true })
-    );
   };
 
   @computed get isRecoveryPhraseValid(): boolean {
-    return (
-      this.recoveryPhraseWords.reduce((words, { word }) => words + word, '') ===
-      this.enteredPhrase.reduce((words, { word }) => words + word, '')
-    );
+    return this.recoveryPhrase.join(' ') === this.enteredPhrase.join(' ');
   }
 
   @action _acceptWalletBackupTermOffline = () => {
