@@ -761,7 +761,10 @@ export default class WalletsStore extends Store {
   @computed get restoreRequest(): Request {
     switch (this.walletKind) {
       case WALLET_KINDS.DAEDALUS:
-        if (this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.SHELLEY_15_WORD) {
+        if (
+          this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.SHELLEY_15_WORD ||
+          this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.SHELLEY_24_WORD
+        ) {
           return this.restoreDaedalusRequest;
         }
         return this.restoreByronRandomWalletRequest;
