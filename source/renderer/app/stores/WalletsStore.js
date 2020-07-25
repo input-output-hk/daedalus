@@ -615,7 +615,9 @@ export default class WalletsStore extends Store {
         sourceWalletId: transferFundsSourceWalletId,
       });
     }
-    this.transferFundsStep = nextStep;
+    runInAction('update transfer funds step', () => {
+      this.transferFundsStep = nextStep;
+    });
   };
 
   @action _transferFundsPrevStep = () => {
