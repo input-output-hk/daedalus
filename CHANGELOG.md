@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## 1.6.0-STN4
+## 1.6.0-STN5
 
 ### Features
 
