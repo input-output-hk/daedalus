@@ -41,6 +41,7 @@ export const WALLET_DAEDALUS_KINDS: EnumMap<
   ? {
       BYRON_12_WORD: '12WordByron',
       SHELLEY_15_WORD: '15WordShelley',
+      SHELLEY_24_WORD: '24WordShelley',
       BYRON_27_WORD: '27WordPaper',
     }
   : {
@@ -61,6 +62,7 @@ export const WALLET_HARDWARE_KINDS: EnumMap<string, WalletHardwareKind> = {
 export const WALLET_DAEDALUS_WORD_COUNT: EnumMap<WalletDaedalusKind, number> = {
   [WALLET_DAEDALUS_KINDS.BYRON_12_WORD]: 12,
   [WALLET_DAEDALUS_KINDS.SHELLEY_15_WORD]: 15,
+  [WALLET_DAEDALUS_KINDS.SHELLEY_24_WORD]: 24,
   [WALLET_DAEDALUS_KINDS.BYRON_27_WORD]: 27,
 };
 

@@ -4,10 +4,7 @@ import { observer } from 'mobx-react';
 import WalletBackupPrivacyWarningDialog from './backup-recovery/WalletBackupPrivacyWarningDialog';
 import WalletRecoveryPhraseDisplayDialog from './backup-recovery/WalletRecoveryPhraseDisplayDialog';
 import WalletRecoveryPhraseEntryDialog from './backup-recovery/WalletRecoveryPhraseEntryDialog';
-import type {
-  RecoveryPhraseWord,
-  walletBackupStep,
-} from '../../types/walletBackupTypes';
+import type { walletBackupStep } from '../../types/walletBackupTypes';
 import { WALLET_BACKUP_STEPS } from '../../types/walletBackupTypes';
 
 type Props = {
@@ -23,8 +20,7 @@ type Props = {
   isSubmitting: boolean,
   isShelleyActivated: boolean,
   recoveryPhrase: string,
-  recoveryPhraseShuffled: Array<RecoveryPhraseWord>,
-  enteredPhrase: Array<{ word: string }>,
+  enteredPhrase: Array<string>,
   onCancelBackup: Function,
   onAcceptPrivacyNotice: Function,
   onContinue: Function,
@@ -32,8 +28,7 @@ type Props = {
   onAcceptTermOffline: Function,
   onAcceptTermRecovery: Function,
   onAcceptTermRewards: Function,
-  onAddWord: Function,
-  onClear: Function,
+  onUpdateVerificationPhrase: Function,
   onFinishBackup: Function,
   onRestartBackup: Function,
 };
@@ -61,11 +56,9 @@ export default class WalletBackupDialog extends Component<Props> {
       onAcceptTermOffline,
       onAcceptTermRecovery,
       onAcceptTermRewards,
-      onAddWord,
-      onClear,
+      onUpdateVerificationPhrase,
       onFinishBackup,
       onRestartBackup,
-      recoveryPhraseShuffled,
       isShelleyActivated,
     } = this.props;
 
@@ -105,12 +98,10 @@ export default class WalletBackupDialog extends Component<Props> {
           onAcceptTermOffline={onAcceptTermOffline}
           onAcceptTermRecovery={onAcceptTermRecovery}
           onAcceptTermRewards={onAcceptTermRewards}
-          onAddWord={onAddWord}
+          onUpdateVerificationPhrase={onUpdateVerificationPhrase}
           onCancelBackup={onCancelBackup}
-          onClear={onClear}
           onFinishBackup={onFinishBackup}
           onRestartBackup={onRestartBackup}
-          recoveryPhraseShuffled={recoveryPhraseShuffled}
         />
       );
     }

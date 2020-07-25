@@ -6635,17 +6635,73 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Verify your wallet recovery phrase by clicking words in the exact order you wrote them down.",
+        "defaultMessage": "!!!Please enter your {wordCount}-word wallet recovery phrase. Make sure you enter the words in the correct order.",
         "description": "Instructions for verifying wallet recovery phrase on dialog for entering wallet recovery phrase.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 31
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.verification.instructions",
         "start": {
           "column": 28,
-          "line": 19
+          "line": 25
+        }
+      },
+      {
+        "defaultMessage": "!!!Verify your recovery phrase",
+        "description": "Label for the recovery phrase input on dialog for entering wallet recovery phrase.",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
+        "id": "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInputLabel",
+        "start": {
+          "column": 28,
+          "line": 32
+        }
+      },
+      {
+        "defaultMessage": "!!!Enter your {numberOfWords}-word recovery phrase",
+        "description": "Placeholder for the mnemonics autocomplete.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
+        "id": "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInputHint",
+        "start": {
+          "column": 27,
+          "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!No results",
+        "description": "\"No results\" message for the recovery phrase input search results.",
+        "end": {
+          "column": 3,
+          "line": 49
+        },
+        "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
+        "id": "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInputNoResults",
+        "start": {
+          "column": 27,
+          "line": 43
+        }
+      },
+      {
+        "defaultMessage": "!!!Invalid recovery phrase",
+        "description": "Error message shown when invalid recovery phrase was entered.",
+        "end": {
+          "column": 3,
+          "line": 56
+        },
+        "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
+        "id": "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInvalidMnemonics",
+        "start": {
+          "column": 34,
+          "line": 50
         }
       },
       {
@@ -6653,27 +6709,13 @@
         "description": "Label for button \"Confirm\" on wallet backup dialog",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 61
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.recovery.phrase.show.entry.dialog.button.labelConfirm",
         "start": {
           "column": 22,
-          "line": 26
-        }
-      },
-      {
-        "defaultMessage": "!!!Clear",
-        "description": "Label for button \"Clear\" on wallet backup dialog",
-        "end": {
-          "column": 3,
-          "line": 35
-        },
-        "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
-        "id": "wallet.recovery.phrase.show.entry.dialog.button.labelClear",
-        "start": {
-          "column": 20,
-          "line": 31
+          "line": 57
         }
       },
       {
@@ -6681,13 +6723,13 @@
         "description": "Term on wallet creation to store recovery phrase offline",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 68
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.offline",
         "start": {
           "column": 15,
-          "line": 36
+          "line": 62
         }
       },
       {
@@ -6695,13 +6737,13 @@
         "description": "Term and condition on wallet backup dialog describing that wallet can only be recovered with a security phrase",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 76
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.recovery",
         "start": {
           "column": 16,
-          "line": 43
+          "line": 69
         }
       },
       {
@@ -6709,13 +6751,13 @@
         "description": "Term and condition on wallet backup dialog describing that wallet can only be recovered with a security phrase",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 83
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.rewards",
         "start": {
           "column": 15,
-          "line": 51
+          "line": 77
         }
       }
     ],
@@ -10826,11 +10868,11 @@
         }
       },
       {
-        "defaultMessage": "!!!15 words <em>(Shelley wallet)</em>",
+        "defaultMessage": "!!!15 words <em>(Incentivized Testnet Rewards wallet)</em>",
         "description": "Label for the \"labelDaedalusWalletKind15WordShelley\" checkbox.",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 66
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.daedalusWalletKind15WordShelley",
@@ -10840,17 +10882,31 @@
         }
       },
       {
+        "defaultMessage": "!!!24 words <em>(Shelley wallet)</em>",
+        "description": "Label for the \"labelDaedalusWalletKind24WordShelley\" checkbox.",
+        "end": {
+          "column": 3,
+          "line": 73
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.walletKind.label.daedalusWalletKind24WordShelley",
+        "start": {
+          "column": 40,
+          "line": 67
+        }
+      },
+      {
         "defaultMessage": "!!!27 words - paper wallet (Byron legacy wallet)</em>",
         "description": "Label for the \"labelDaedalusWalletKind27WordPaper\" checkbox.",
         "end": {
           "column": 3,
-          "line": 71
+          "line": 79
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.daedalusWalletKind27WordPaper",
         "start": {
           "column": 38,
-          "line": 66
+          "line": 74
         }
       },
       {
@@ -10858,13 +10914,13 @@
         "description": "Label for the \"labelYoroiWalletKind\" checkbox.",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 84
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.yoroiWalletKind",
         "start": {
           "column": 24,
-          "line": 72
+          "line": 80
         }
       },
       {
@@ -10872,27 +10928,27 @@
         "description": "Label for the \"labelDaedalusWalletKind15WordByron\" checkbox.",
         "end": {
           "column": 3,
-          "line": 82
+          "line": 90
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.yoroiWalletKindByronLegacy15Word",
         "start": {
           "column": 35,
-          "line": 77
+          "line": 85
         }
       },
       {
-        "defaultMessage": "!!!15 words <em>(Shelley wallet)</em>",
+        "defaultMessage": "!!!15 words <em>(Incentivized Testnet wallet)</em>",
         "description": "Label for the \"labelDaedalusWalletKind15WordShelley\" checkbox.",
         "end": {
           "column": 3,
-          "line": 89
+          "line": 97
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.yoroiWalletKindShelley15Word",
         "start": {
           "column": 37,
-          "line": 83
+          "line": 91
         }
       },
       {
@@ -10900,13 +10956,13 @@
         "description": "Label for the \"labelHardwareWalletKind\" checkbox.",
         "end": {
           "column": 3,
-          "line": 95
+          "line": 103
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.hardwareWalletKind",
         "start": {
           "column": 27,
-          "line": 90
+          "line": 98
         }
       },
       {
@@ -10914,13 +10970,13 @@
         "description": "Label for the \"labelHardwareWalletKindLedger\" checkbox.",
         "end": {
           "column": 3,
-          "line": 100
+          "line": 108
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.hardwareWalletKindLedger",
         "start": {
           "column": 33,
-          "line": 96
+          "line": 104
         }
       },
       {
@@ -10928,13 +10984,13 @@
         "description": "Label for the \"labelHardwareWalletKindTrezor\" checkbox.",
         "end": {
           "column": 3,
-          "line": 105
+          "line": 113
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.hardwareWalletKindTrezor",
         "start": {
           "column": 33,
-          "line": 101
+          "line": 109
         }
       },
       {
@@ -10942,13 +10998,13 @@
         "description": "Label for the \"hardwareWalletDisclaimer1\" disclaimer.",
         "end": {
           "column": 3,
-          "line": 111
+          "line": 119
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.hardwareWalletDisclaimer1",
         "start": {
           "column": 29,
-          "line": 106
+          "line": 114
         }
       },
       {
@@ -10956,13 +11012,13 @@
         "description": "Label for the \"hardwareWalletDisclaimer2\" disclaimer.",
         "end": {
           "column": 3,
-          "line": 117
+          "line": 125
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.hardwareWalletDisclaimer2",
         "start": {
           "column": 29,
-          "line": 112
+          "line": 120
         }
       },
       {
@@ -10970,13 +11026,13 @@
         "description": "Label for the \"hardwareWalletDisclaimer3\" disclaimer.",
         "end": {
           "column": 3,
-          "line": 123
+          "line": 131
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.hardwareWalletDisclaimer3",
         "start": {
           "column": 29,
-          "line": 118
+          "line": 126
         }
       },
       {
@@ -10984,13 +11040,13 @@
         "description": "Label for the \"hardwareWalletCheckbox1\" disclaimer.",
         "end": {
           "column": 3,
-          "line": 129
+          "line": 137
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.hardwareWalletCheckbox1",
         "start": {
           "column": 27,
-          "line": 124
+          "line": 132
         }
       },
       {
@@ -10998,13 +11054,13 @@
         "description": "Label for the \"hardwareWalletCheckbox2\" disclaimer.",
         "end": {
           "column": 3,
-          "line": 135
+          "line": 143
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.hardwareWalletCheckbox2",
         "start": {
           "column": 27,
-          "line": 130
+          "line": 138
         }
       },
       {
@@ -11012,13 +11068,13 @@
         "description": "Label for the \"hardwareWalletCheckbox2\" disclaimer.",
         "end": {
           "column": 3,
-          "line": 141
+          "line": 149
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.hardwareWalletCheckbox3",
         "start": {
           "column": 27,
-          "line": 136
+          "line": 144
         }
       }
     ],
