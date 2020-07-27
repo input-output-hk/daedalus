@@ -16,14 +16,17 @@ export default class TermsOfUsePage extends Component<InjectedProps> {
   };
 
   render() {
-    const {
-      setTermsOfUseAcceptanceRequest,
-      termsOfUse,
-    } = this.props.stores.profile;
-    const { currentRoute, openExternalLink } = this.props.stores.app;
+    const { app, staking, profile } = this.props.stores;
+    const { setTermsOfUseAcceptanceRequest, termsOfUse } = profile;
+    const { currentRoute, openExternalLink } = app;
+    const { isShelleyActivated } = staking;
     const isSubmitting = setTermsOfUseAcceptanceRequest.isExecuting;
     const topbar = (
-      <TopBar currentRoute={currentRoute} showSubMenuToggle={false} />
+      <TopBar
+        currentRoute={currentRoute}
+        showSubMenuToggle={false}
+        isShelleyActivated={isShelleyActivated}
+      />
     );
 
     return (

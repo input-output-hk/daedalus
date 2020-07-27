@@ -279,10 +279,12 @@ export default class WalletsStore extends Store {
   }
 
   _create = async (params: { name: string, spendingPassword: string }) => {
+    const { isShelleyActivated } = this.stores.staking;
     Object.assign(this._newWalletDetails, params);
     try {
-      const recoveryPhrase: ?Array<string> = await this.getWalletRecoveryPhraseRequest.execute()
-        .promise;
+      const recoveryPhrase: ?Array<string> = await this.getWalletRecoveryPhraseRequest.execute(
+        { isShelleyActivated }
+      ).promise;
       if (recoveryPhrase != null) {
         this.actions.walletBackup.initiateWalletBackup.trigger({
           recoveryPhrase,
@@ -435,9 +437,11 @@ export default class WalletsStore extends Store {
     this._newWalletDetails.mnemonic = this.stores.walletBackup.recoveryPhrase.join(
       ' '
     );
-    const wallet = await this.createWalletRequest.execute(
-      this._newWalletDetails
-    ).promise;
+    const { isShelleyActivated } = this.stores.staking;
+    const wallet = await this.createWalletRequest.execute({
+      walletDetails: this._newWalletDetails,
+      isShelleyActivated,
+    }).promise;
     if (wallet) {
       await this._patchWalletRequestWithNewWallet(wallet);
       this.actions.dialogs.closeActiveDialog.trigger();
@@ -599,7 +603,7 @@ export default class WalletsStore extends Store {
     this.goToWalletRoute(wallet.id);
   };
 
-  @action _transferFundsNextStep = () => {
+  @action _transferFundsNextStep = async () => {
     const {
       transferFundsStep,
       transferFundsSourceWalletId,
@@ -615,11 +619,13 @@ export default class WalletsStore extends Store {
       transferFundsTargetWalletId
     ) {
       nextStep = 2;
-      this._transferFundsCalculateFee({
+      await this._transferFundsCalculateFee({
         sourceWalletId: transferFundsSourceWalletId,
       });
     }
-    this.transferFundsStep = nextStep;
+    runInAction('update transfer funds step', () => {
+      this.transferFundsStep = nextStep;
+    });
   };
 
   @action _transferFundsPrevStep = () => {
@@ -681,6 +687,7 @@ export default class WalletsStore extends Store {
   @action _transferFundsClose = () => {
     this.transferFundsStep = 0;
     this.transferFundsFee = null;
+    this.transferFundsCalculateFeeRequest.reset();
   };
 
   @action _transferFundsCalculateFee = async ({
@@ -765,7 +772,10 @@ export default class WalletsStore extends Store {
   @computed get restoreRequest(): Request {
     switch (this.walletKind) {
       case WALLET_KINDS.DAEDALUS:
-        if (this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.SHELLEY_15_WORD) {
+        if (
+          this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.SHELLEY_15_WORD ||
+          this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.SHELLEY_24_WORD
+        ) {
           return this.restoreDaedalusRequest;
         }
         return this.restoreByronRandomWalletRequest;
@@ -925,7 +935,9 @@ export default class WalletsStore extends Store {
     if (this._pollingBlocked) return;
 
     if (this.stores.networkStatus.isConnected) {
-      const result = await this.walletsRequest.execute().promise;
+      const { isShelleyActivated } = this.stores.staking;
+      const result = await this.walletsRequest.execute({ isShelleyActivated })
+        .promise;
       if (!result) return;
       const walletIds = result
         .filter(

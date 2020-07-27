@@ -27,8 +27,8 @@ let
       cluster = "mainnet";
       networkName = "mainnet";
     };
-    shelley_testnet_v3 = {
-      cardanoEnv = cardanoLib.environments.shelley_testnet;
+    shelley_testnet_v6 = {
+      cardanoEnv = cardanoLib.environments.mainnet_candidate_4;
       cluster = "shelley_testnet";
       networkName = "shelley_testnet";
     };
@@ -69,6 +69,7 @@ let
                  else cardanoLib.environments.${network};
     jormungandrEnv = jormungandrLib.environments.${network};
   in if (backend == "cardano") then cardanoEnv else jormungandrEnv;
+  kind = if network == "local" then "shelley" else if (envCfg.nodeConfig.Protocol == "RealPBFT" || envCfg.nodeConfig.Protocol == "Byron") then "byron" else "shelley";
 
   installDirectorySuffix = let
     supportedNetworks = {
@@ -83,7 +84,7 @@ let
       staging = "Staging";
       testnet = "Testnet";
       shelley_testnet = "Shelley Testnet";
-      shelley_testnet_v3 = "Shelley Testnet v3";
+      shelley_testnet_v6 = "Shelley Testnet v6";
       shelley_qa = "Shelley QA";
     };
     unsupported = "Unsupported";
@@ -161,6 +162,7 @@ let
     cluster = if __hasAttr network clusterOverrides then clusterOverrides.${network}.cluster else network;
     networkName = if __hasAttr network clusterOverrides then clusterOverrides.${network}.networkName else network;
     isFlight = network == "mainnet_flight";
+    isStaging = (envCfg.nodeConfig.RequiresNetworkMagic == "RequiresNoMagic");
     nodeImplementation = backend;
   };
 
@@ -174,25 +176,26 @@ let
       cp ${nodeConfigFiles}/* $out/
       cp $launcherConfigPath $out/launcher-config.yaml
       cp $installerConfigPath $out/installer-config.json
+      ${lib.optionalString (envCfg.nodeConfig ? ByronGenesisFile) "cp ${envCfg.nodeConfig.ByronGenesisFile} $out/genesis-byron.json"}
+      ${lib.optionalString (envCfg.nodeConfig ? ShelleyGenesisFile) "cp ${envCfg.nodeConfig.ShelleyGenesisFile} $out/genesis-shelley.json"}
     '';
 
   mkConfigByron = let
     filterMonitoring = config: if devShell then config else builtins.removeAttrs config [ "hasPrometheus" "hasEKG" ];
     cardanoAddressBin = mkBinPath "cardano-address";
-    walletBin = if network == "local" then mkBinPath "cardano-wallet-shelley" else if envCfg.useByronWallet
-                then mkBinPath "cardano-wallet-byron"
-                else mkBinPath "cardano-wallet-shelley";
+    walletBin = mkBinPath "cardano-wallet-${kind}";
     nodeBin = mkBinPath "cardano-node";
     cliBin = mkBinPath "cardano-cli";
     nodeConfig = let
       nodeConfigAttrs = if (configOverride == null) then envCfg.nodeConfig else __fromJSON (__readFile configOverride);
     in builtins.toJSON (filterMonitoring (nodeConfigAttrs // (lib.optionalAttrs (!isDevOrLinux || network == "local") {
-      GenesisFile = "genesis.json";
+      ByronGenesisFile = "genesis-byron.json";
+      ShelleyGenesisFile = "genesis-shelley.json";
     })));
     genesisFile = let
       genesisFile'.selfnode = ../utils/cardano/selfnode/genesis.json;
       genesisFile'.local = (__fromJSON nodeConfig).GenesisFile;
-    in if (genesisOverride != null) then genesisOverride else if (network == "selfnode" || network == "local") then genesisFile'.${network} else envCfg.genesisFile;
+    in if (genesisOverride != null) then genesisOverride else if (network == "selfnode" || network == "local") then genesisFile'.${network} else envCfg.nodeConfig.ByronGenesisFile;
     normalTopologyFile = if network == "selfnode" then envCfg.topology else cardanoLib.mkEdgeTopology {
       inherit (envCfg) edgePort;
       edgeNodes = [ envCfg.relaysNew ];
@@ -241,7 +244,7 @@ let
         legacySecretKey;
       syncTolerance = "300s";
       nodeConfig = {
-        kind = if network == "local" then "shelley" else if envCfg.useByronWallet then "byron" else "shelley";
+        inherit kind;
         configurationDir = "";
         network = {
           configFile = mkConfigPath nodeConfigFiles "config.yaml";
@@ -261,11 +264,13 @@ let
       macPackageName = "Daedalus${network}";
       dataDir = dataDir;
       hasBlock0 = false;
-      installerWinBinaries = let
-        walletExe = if network == "local" then "cardano-wallet-shelley.exe" else if envCfg.useByronWallet
-                    then "cardano-wallet-byron.exe"
-                    else "cardano-wallet-shelley.exe";
-      in [ "cardano-launcher.exe" "cardano-node.exe" walletExe "cardano-cli.exe" "cardano-address.exe" ];
+      installerWinBinaries = [
+        "cardano-launcher.exe"
+        "cardano-node.exe"
+        "cardano-wallet-${kind}.exe"
+        "cardano-cli.exe"
+        "cardano-address.exe"
+      ];
     };
 
   in {

@@ -9,6 +9,7 @@ import {
   NETWORK_STATUS_POLL_INTERVAL,
   NETWORK_CLOCK_POLL_INTERVAL,
   MAX_ALLOWED_STALL_DURATION,
+  DECENTRALIZATION_LEVEL_POLLING_INTERVAL,
 } from '../config/timingConfig';
 import { logger } from '../utils/logging';
 import {
@@ -24,6 +25,7 @@ import { getStateDirectoryPathChannel } from '../ipc/getStateDirectoryPathChanne
 import type {
   GetNetworkInfoResponse,
   GetNetworkClockResponse,
+  GetNetworkParametersResponse,
   NextEpoch,
   FutureEpoch,
   TipInfo,
@@ -67,6 +69,7 @@ export default class NetworkStatusStore extends Store {
   _networkStatus = NETWORK_STATUS.CONNECTING;
   _networkStatusPollingInterval: ?IntervalID = null;
   _networkClockPollingInterval: ?IntervalID = null;
+  _networkParametersPollingInterval: ?IntervalID = null;
 
   // Initialize store observables
 
@@ -93,6 +96,7 @@ export default class NetworkStatusStore extends Store {
   @observable futureEpoch: ?FutureEpoch = null;
   @observable lastSyncProgressChangeTimestamp = 0; // milliseconds
   @observable localTimeDifference: ?number = 0; // microseconds
+  @observable decentralizationProgress: number = 0; // percentage
   @observable
   getNetworkInfoRequest: Request<GetNetworkInfoResponse> = new Request(
     this.api.ada.getNetworkInfo
@@ -100,6 +104,10 @@ export default class NetworkStatusStore extends Store {
   @observable
   getNetworkClockRequest: Request<GetNetworkClockResponse> = new Request(
     this.api.ada.getNetworkClock
+  );
+  @observable
+  getNetworkParametersRequest: Request<GetNetworkParametersResponse> = new Request(
+    this.api.ada.getNetworkParameters
   );
 
   @observable isNotEnoughDiskSpace: boolean = false;
@@ -145,6 +153,7 @@ export default class NetworkStatusStore extends Store {
     // Setup polling interval
     this._setNetworkStatusPollingInterval();
     this._setNetworkClockPollingInterval();
+    this._setNetworkParametersPollingInterval();
 
     // Setup disk space checks
     getDiskSpaceStatusChannel.onReceive(this._onCheckDiskSpace);
@@ -171,6 +180,7 @@ export default class NetworkStatusStore extends Store {
     // Teardown polling intervals
     this._clearNetworkStatusPollingInterval();
     this._clearNetworkClockPollingInterval();
+    this._clearNetworkParametersPollingInterval();
   }
 
   // ================= REACTIONS ==================
@@ -342,6 +352,13 @@ export default class NetworkStatusStore extends Store {
     );
   };
 
+  @action _setNetworkParametersPollingInterval = () => {
+    this._networkParametersPollingInterval = setInterval(
+      this._getNetworkParameters,
+      DECENTRALIZATION_LEVEL_POLLING_INTERVAL
+    );
+  };
+
   @action _clearNetworkStatusPollingInterval = () => {
     if (this._networkStatusPollingInterval) {
       clearInterval(this._networkStatusPollingInterval);
@@ -353,6 +370,13 @@ export default class NetworkStatusStore extends Store {
     if (this._networkClockPollingInterval) {
       clearInterval(this._networkClockPollingInterval);
       this._networkClockPollingInterval = null;
+    }
+  };
+
+  @action _clearNetworkParametersPollingInterval = () => {
+    if (this._networkParametersPollingInterval) {
+      clearInterval(this._networkParametersPollingInterval);
+      this._networkParametersPollingInterval = null;
     }
   };
 
@@ -549,6 +573,24 @@ export default class NetworkStatusStore extends Store {
         });
       }
       logger.debug('NetworkStatusStore: Connection Lost. Reconnecting...');
+    }
+  };
+
+  @action _getNetworkParameters = async () => {
+    // Skip checking network parameters if we are not connected
+    if (!this.isNodeResponding) return;
+
+    try {
+      const networkParameters: GetNetworkParametersResponse = await this.getNetworkParametersRequest.execute()
+        .promise;
+      runInAction('Set Decentralization Progress', () => {
+        this.decentralizationProgress =
+          networkParameters.decentralizationLevel.quantity;
+      });
+    } catch (e) {
+      runInAction('Clear Decentralization Progress', () => {
+        this.decentralizationProgress = 0;
+      });
     }
   };
 

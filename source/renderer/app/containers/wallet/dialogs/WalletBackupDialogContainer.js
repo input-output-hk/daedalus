@@ -25,21 +25,19 @@ export default class WalletBackupDialogContainer extends Component<Props> {
     const { isIncentivizedTestnet, isShelleyTestnet } = global;
     const { actions, stores } = this.props;
     const {
-      recoveryPhraseWords,
       enteredPhrase,
       isRecoveryPhraseValid,
       countdownRemaining,
-      recoveryPhraseShuffled,
       isTermOfflineAccepted,
       isTermRecoveryAccepted,
       isTermRewardsAccepted,
       isPrivacyNoticeAccepted,
       currentStep,
+      recoveryPhrase,
     } = stores.walletBackup;
     const {
       startWalletBackup,
-      addWordToWalletBackupVerification,
-      clearEnteredRecoveryPhrase,
+      updateWalletBackupVerificationPhrase,
       acceptWalletBackupTermOffline,
       acceptWalletBackupTermRecovery,
       acceptWalletBackupTermRewards,
@@ -49,6 +47,7 @@ export default class WalletBackupDialogContainer extends Component<Props> {
       continueToRecoveryPhraseForWalletBackup,
     } = actions.walletBackup;
     const { createWalletRequest } = stores.wallets;
+    const { isShelleyActivated } = stores.staking;
 
     const canFinishBackup =
       isIncentivizedTestnet && !isShelleyTestnet
@@ -71,10 +70,7 @@ export default class WalletBackupDialogContainer extends Component<Props> {
         onAcceptPrivacyNotice={acceptPrivacyNoticeForWalletBackup.trigger}
         onContinue={continueToRecoveryPhraseForWalletBackup.trigger}
         // Props for WalletRecoveryPhraseDisplayDialog
-        recoveryPhrase={recoveryPhraseWords.reduce(
-          (phrase, { word }) => `${phrase} ${word}`,
-          ''
-        )}
+        recoveryPhrase={recoveryPhrase.join(' ')}
         onStartWalletBackup={startWalletBackup.trigger}
         // Props for WalletRecoveryPhraseEntryDialog
         isTermOfflineAccepted={isTermOfflineAccepted}
@@ -87,13 +83,14 @@ export default class WalletBackupDialogContainer extends Component<Props> {
         onAcceptTermOffline={acceptWalletBackupTermOffline.trigger}
         onAcceptTermRecovery={acceptWalletBackupTermRecovery.trigger}
         onAcceptTermRewards={acceptWalletBackupTermRewards.trigger}
-        onAddWord={addWordToWalletBackupVerification.trigger}
-        onClear={clearEnteredRecoveryPhrase.trigger}
+        onUpdateVerificationPhrase={
+          updateWalletBackupVerificationPhrase.trigger
+        }
         onFinishBackup={() => {
           finishWalletBackup.trigger();
         }}
         onRestartBackup={restartWalletBackup.trigger}
-        recoveryPhraseShuffled={recoveryPhraseShuffled}
+        isShelleyActivated={isShelleyActivated}
       />
     );
   }

@@ -210,8 +210,11 @@ export default (api: AdaApi) => {
     });
   });
 
-  api.getWallets = async (): Promise<Array<Wallet>> => {
-    const originalWallets = await originalGetWallets();
+  api.getWallets = async (request: {
+    isShelleyActivated: boolean,
+  }): Promise<Array<Wallet>> => {
+    const { isShelleyActivated } = request;
+    const originalWallets = await originalGetWallets({ isShelleyActivated });
     const modifiedWallets = originalWallets.map(
       (originalWallet: Wallet, index: number) => {
         const testingWallet = TESTING_WALLETS_DATA[index] || {};

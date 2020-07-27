@@ -25,7 +25,10 @@ export default class SidebarStore extends Store {
     sidebarActions.hardwareWalletSelected.listen(
       this._onHardwareWalletSelected
     );
-    this.registerReactions([this._syncSidebarRouteWithRouter]);
+    this.registerReactions([
+      this._syncSidebarRouteWithRouter,
+      this._syncSidebarItemsWithShelleyActivation,
+    ]);
     this._configureCategories();
   }
 
@@ -80,6 +83,8 @@ export default class SidebarStore extends Store {
       environment: { isDev },
     } = global;
 
+    const { isShelleyActivated } = this.stores.staking;
+
     const {
       CATEGORIES_BY_NAME: categories,
       CATEGORIES_LIST: list,
@@ -92,8 +97,9 @@ export default class SidebarStore extends Store {
       [categories.HARDWARE_WALLETS.name]: isDev,
       [categories.PAPER_WALLET_CREATE_CERTIFICATE.name]: false,
       [categories.STAKING_DELEGATION_COUNTDOWN.name]: () =>
-        !isIncentivizedTestnet && !isShelleyTestnet,
-      [categories.STAKING.name]: isIncentivizedTestnet || isShelleyTestnet,
+        isShelleyTestnet && !isShelleyActivated,
+      [categories.STAKING.name]:
+        (isIncentivizedTestnet && !isShelleyTestnet) || isShelleyActivated,
       [categories.REDEEM_ITN_REWARDS.name]: isDev,
       [categories.SETTINGS.name]: true,
       [categories.NETWORK_INFO.name]: !isFlight,
@@ -164,5 +170,10 @@ export default class SidebarStore extends Store {
       if (route.indexOf(category.route) === 0)
         this._setActivateSidebarCategory(category.route);
     });
+  };
+
+  _syncSidebarItemsWithShelleyActivation = () => {
+    const { isShelleyActivated } = this.stores.staking;
+    if (isShelleyActivated) this._configureCategories();
   };
 }
