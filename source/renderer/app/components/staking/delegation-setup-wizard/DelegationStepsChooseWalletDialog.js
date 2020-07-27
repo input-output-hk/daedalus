@@ -146,9 +146,14 @@ export default class DelegationStepsChooseWalletDialog extends Component<
     let errorMessage;
     if (selectedWallet && selectedWallet.isRestoring)
       errorMessage = messages.errorRestoringWallet;
-    else if (!isSelectedWalletAcceptable && reward && !reward.isZero())
+    else if (
+      selectedWallet &&
+      !isSelectedWalletAcceptable &&
+      reward &&
+      !reward.isZero()
+    )
       errorMessage = messages.errorMinDelegationFundsUTXO;
-    else if (!isSelectedWalletAcceptable)
+    else if (selectedWallet && !isSelectedWalletAcceptable)
       errorMessage = messages.errorMinDelegationFunds;
 
     const error = errorMessage && (
