@@ -161,17 +161,31 @@
         }
       },
       {
+        "defaultMessage": "!!!Cannot send from a wallet that contains only rewards balances.",
+        "description": "\"Cannot send from a wallet that contains only rewards balances.\" error message",
+        "end": {
+          "column": 3,
+          "line": 67
+        },
+        "file": "source/renderer/app/api/errors.js",
+        "id": "api.errors.inputsDepleted",
+        "start": {
+          "column": 18,
+          "line": 61
+        }
+      },
+      {
         "defaultMessage": "!!!Transaction too big due to too many inputs.",
         "description": "\"Transaction too big due to too many inputs.\" error message.",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 72
         },
         "file": "source/renderer/app/api/errors.js",
         "id": "api.errors.TooBigTransactionError",
         "start": {
           "column": 23,
-          "line": 61
+          "line": 68
         }
       },
       {
@@ -179,13 +193,13 @@
         "description": "\"Not enough ada . Try sending a smaller amount.\" error message",
         "end": {
           "column": 3,
-          "line": 71
+          "line": 78
         },
         "file": "source/renderer/app/api/errors.js",
         "id": "api.errors.NotEnoughFundsForTransactionError",
         "start": {
           "column": 32,
-          "line": 66
+          "line": 73
         }
       },
       {
@@ -193,13 +207,13 @@
         "description": "Error message shown when invalid address was entered.",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 83
         },
         "file": "source/renderer/app/api/errors.js",
         "id": "api.errors.invalidAddress",
         "start": {
           "column": 18,
-          "line": 72
+          "line": 79
         }
       },
       {
@@ -207,13 +221,13 @@
         "description": "\"Transaction too big due to too many inputs.\" error link label.",
         "end": {
           "column": 3,
-          "line": 82
+          "line": 89
         },
         "file": "source/renderer/app/api/errors.js",
         "id": "api.errors.TooBigTransactionErrorLinkLabel",
         "start": {
           "column": 35,
-          "line": 77
+          "line": 84
         }
       },
       {
@@ -221,13 +235,13 @@
         "description": "\"Transaction too big due to too many inputs.\" error link URL.",
         "end": {
           "column": 3,
-          "line": 89
+          "line": 96
         },
         "file": "source/renderer/app/api/errors.js",
         "id": "api.errors.TooBigTransactionErrorLinkURL",
         "start": {
           "column": 33,
-          "line": 83
+          "line": 90
         }
       },
       {
@@ -235,13 +249,13 @@
         "description": "\"Invalid transaction.\" error message",
         "end": {
           "column": 3,
-          "line": 94
+          "line": 101
         },
         "file": "source/renderer/app/api/errors.js",
         "id": "api.errors.utxoTooSmall",
         "start": {
           "column": 16,
-          "line": 90
+          "line": 97
         }
       },
       {
@@ -249,13 +263,13 @@
         "description": "\"Funds cannot be transferred from this wallet because it contains some unspent transaction outputs (UTXOs), with amounts of ada that are too small to be migrated.\" error message",
         "end": {
           "column": 3,
-          "line": 101
+          "line": 108
         },
         "file": "source/renderer/app/api/errors.js",
         "id": "api.errors.nothingToMigrate",
         "start": {
           "column": 20,
-          "line": 95
+          "line": 102
         }
       }
     ],
