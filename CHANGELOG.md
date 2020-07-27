@@ -5,7 +5,8 @@ Changelog
 
 ### Fixes
 
-- Fixed cardano-wallet info shown on the "About" screen ([PR 2097](https://github.com/input-output-hk/daedalus/pull/2097))
+- Fixed `cardano-wallet` info shown on the "About" screen ([PR 2097](https://github.com/input-output-hk/daedalus/pull/2097))
+- Updated stake pool tooltip to display "Produced blocks" instead of "Blocks (current epoch)" ([PR 2096](https://github.com/input-output-hk/daedalus/pull/2096))
 - Fixed wallet recovery phrase length used on "ITN rewards redemption" wizard ([PR 2095](https://github.com/input-output-hk/daedalus/pull/2095))
 
 ## 1.6.0-STN5

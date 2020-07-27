@@ -462,7 +462,7 @@
   "staking.stakePools.tooltip.delegateButton": "Delegate to this pool",
   "staking.stakePools.tooltip.experimentalTooltipLabel": "Experimental feature, data may be inaccurate.",
   "staking.stakePools.tooltip.pledge": "Pledge:",
-  "staking.stakePools.tooltip.producedBlocks": "Blocks (current epoch):",
+  "staking.stakePools.tooltip.producedBlocks": "Produced blocks:",
   "staking.stakePools.tooltip.profitMargin": "Pool margin:",
   "staking.stakePools.tooltip.ranking": "Rank:",
   "staking.stakePools.tooltip.relativeStake": "Controlled stake:",
