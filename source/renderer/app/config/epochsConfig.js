@@ -11,10 +11,17 @@ export const SLOT_DURATION_MAINNET = 20; // unit: seconds
 export const SLOT_DURATION_STAGING = 20; // unit: seconds
 export const SLOT_DURATION_TESTNET = 20; // unit: seconds
 export const SLOT_DURATION_DEVELOPMENT = 7; // unit: seconds
-export const SLOT_DURATION_ITN = isDev || isTest ? 0.2 : 1; // ITN: 2 | unit: seconds
 
+export const SLOT_DURATION_ITN = isDev || isTest ? 0.2 : 1; // ITN: 2 | unit: seconds
 export const SLOTS_TOTAL =
   isDev || isTest || isIncentivizedTestnetSelfnode ? 1500 : 21600; // ITN: 150 : 43200
+export const SLOT_DURATION_SHELLEY = isDev ? 7 : 20;
+// eslint-disable-next-line
+export const SLOTS_TOTAL_SHELLEY = isDev
+  ? 1541808003
+  : isTest
+  ? 1537941600
+  : 1506203091;
 
 export const EPOCH_LENGTH_BASE_MAINNET = 2160;
 export const EPOCH_LENGTH_BASE_STAGING = 2160;
@@ -22,5 +29,6 @@ export const EPOCH_LENGTH_BASE_TESTNET = 2160;
 export const EPOCH_LENGTH_BASE_DEVELOPMENT = 2;
 
 export const EPOCH_LENGTH_ITN = SLOTS_TOTAL * SLOT_DURATION_ITN; // 1 day / 5 minutes (isDev || isTest || isIncentivizedTestnetSelfnode = true) | unit: seconds
+export const EPOCH_LENGTH_SHELLEY = SLOTS_TOTAL_SHELLEY * SLOT_DURATION_SHELLEY;
 
 export const EPOCH_COUNTDOWN_INTERVAL = 1 * 1000; // 1 second | unit: milliseconds;

@@ -11,10 +11,11 @@ import {
   STAKE_POOL_TRANSACTION_CHECKER_TIMEOUT,
   STAKE_POOLS_INTERVAL,
   STAKE_POOLS_FAST_INTERVAL,
-  SHELLEY_ACTIVATION_CHECK_INTERVAL,
+  SHELLEY_CHECK_INTERVAL,
   REDEEM_ITN_REWARDS_STEPS as steps,
   INITIAL_DELEGATION_FUNDS,
 } from '../config/stakingConfig';
+import { EPOCH_LENGTH_SHELLEY } from '../config/epochsConfig';
 import type {
   Reward,
   RewardForIncentivizedTestnet,
@@ -49,8 +50,10 @@ export default class StakingStore extends Store {
   @observable stakingSuccess: ?boolean = null;
   @observable stakingFailure: number = 0;
   @observable isShelleyActivated: boolean = false;
+  @observable isShelleyDataAvailable: boolean = false;
 
   pollingShelleyActivationCheck: ?IntervalID = null;
+  pollingShelleyDataAvailabilityCheck: ?IntervalID = null;
   pollingStakePoolsInterval: ?IntervalID = null;
   refreshPolling: ?IntervalID = null;
   delegationCheckTimeInterval: ?IntervalID = null;
@@ -67,7 +70,12 @@ export default class StakingStore extends Store {
 
     this.pollingShelleyActivationCheck = setInterval(
       this.checkShelleyActivation,
-      SHELLEY_ACTIVATION_CHECK_INTERVAL
+      SHELLEY_CHECK_INTERVAL
+    );
+
+    this.pollingShelleyDataAvailabilityCheck = setInterval(
+      this.checkShelleyDataAvailability,
+      SHELLEY_CHECK_INTERVAL
     );
 
     this.refreshPolling = setInterval(
@@ -130,6 +138,20 @@ export default class StakingStore extends Store {
     if (this.isShelleyActivated && this.pollingShelleyActivationCheck) {
       clearInterval(this.pollingShelleyActivationCheck);
       this.pollingShelleyActivationCheck = null;
+    }
+  };
+
+  @action checkShelleyDataAvailability = () => {
+    const currentTimeStamp = new Date().getTime();
+    const startTimeStamp = new Date(this.startDateTime).getTime();
+    this.isShelleyDataAvailable =
+      currentTimeStamp >= startTimeStamp + 3 * EPOCH_LENGTH_SHELLEY;
+    if (
+      this.isShelleyDataAvailable &&
+      this.pollingShelleyDataAvailabilityCheck
+    ) {
+      clearInterval(this.pollingShelleyDataAvailabilityCheck);
+      this.pollingShelleyDataAvailabilityCheck = null;
     }
   };
 
