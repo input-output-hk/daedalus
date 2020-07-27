@@ -9515,31 +9515,17 @@
         }
       },
       {
-        "defaultMessage": "!!!Cardano Explorer link currently unavailable.",
-        "description": "Unresolved Input Addresses link unavailable label.",
-        "end": {
-          "column": 3,
-          "line": 130
-        },
-        "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
-        "id": "wallet.transaction.unresolvedInputAddressesLinkUnavailableLabel",
-        "start": {
-          "column": 48,
-          "line": 126
-        }
-      },
-      {
         "defaultMessage": "!!!Transaction confirmed",
         "description": "Transaction state \"confirmed\"",
         "end": {
           "column": 3,
-          "line": 138
+          "line": 133
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.confirmed",
         "start": {
           "column": 26,
-          "line": 134
+          "line": 129
         }
       },
       {
@@ -9547,13 +9533,13 @@
         "description": "Transaction state \"pending\"",
         "end": {
           "column": 3,
-          "line": 143
+          "line": 138
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.pending",
         "start": {
           "column": 31,
-          "line": 139
+          "line": 134
         }
       }
     ],
