@@ -61,8 +61,8 @@ const messages = defineMessages({
   },
   producedBlocks: {
     id: 'staking.stakePools.tooltip.producedBlocks',
-    defaultMessage: '!!!Produced blocks:',
-    description: '"Produced blocks" for the Stake Pools Tooltip page.',
+    defaultMessage: '!!!Blocks (current epoch):',
+    description: '"Blocks" for the Stake Pools Tooltip page.',
   },
   retirement: {
     id: 'staking.stakePools.tooltip.retirement',

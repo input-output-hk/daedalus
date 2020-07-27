@@ -13,6 +13,7 @@
 , configOverride ? null
 , genesisOverride ? null
 , useLocalNode ? false
+, nivOnly ? false
 }:
 
 let
@@ -140,7 +141,7 @@ let
     name = "devops-shell";
     buildInputs = let
       inherit (localLib.iohkNix) niv;
-    in [ niv daedalusPkgs.cardano-node-cluster.start daedalusPkgs.cardano-node-cluster.stop ];
+    in if nivOnly then [ niv ] else [ niv daedalusPkgs.cardano-node-cluster.start daedalusPkgs.cardano-node-cluster.stop ];
     shellHook = ''
       export CARDANO_NODE_SOCKET_PATH=$(pwd)/state-cluster/bft1.socket
       echo "DevOps Tools" \

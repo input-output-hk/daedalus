@@ -72,8 +72,8 @@
             max-width: 400px;
           }
           .SimpleOptions_options {
-            min-width: 250px;
             max-width: 450px;
+            min-width: 250px;
 
             .SimpleOptions_option {
               span {
@@ -112,8 +112,8 @@
     margin-bottom: 18px;
 
     .outOfSliderRangeStart {
-      border-top: 2px solid var(--theme-staking-slider-background-color-2);
       border-style: dotted;
+      border-top: 2px solid var(--theme-staking-slider-background-color-2);
       height: 0;
       margin-top: 24px;
       opacity: 0.3;
@@ -169,8 +169,8 @@
       }
     }
     .outOfSliderRangeEnd {
-      border-top: 2px solid var(--theme-staking-slider-background-color-2);
       border-style: dotted;
+      border-top: 2px solid var(--theme-staking-slider-background-color-2);
       height: 0;
       opacity: 0.3;
       width: 110px;
