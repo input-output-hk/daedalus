@@ -57,7 +57,15 @@ const messages = defineMessages({
     defaultMessage:
       '!!!This wallet does not contain the minimum amount of {minDelegationFunds} ADA which is required for delegation to be available. Please select a wallet with <span>a minimum amount of {minDelegationFunds} ADA</span> and click continue.',
     description:
-      'MinDelegationFunds Error Label on the delegation setup "choose wallet" step dialog.',
+      'errorMinDelegationFunds Error Label on the delegation setup "choose wallet" step dialog.',
+  },
+  errorMinDelegationFundsUTXO: {
+    id:
+      'staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFundsUTXO',
+    defaultMessage:
+      '!!!This wallet does not contain the minimum amount of {minDelegationFunds} ADA which is required for delegation to be available. Please select a wallet with <span>a minimum amount of {minDelegationFunds} ADA</span> and click continue.',
+    description:
+      'errorMinDelegationFundsUTXO Error Label on the delegation setup "choose wallet" step dialog.',
   },
   errorRestoringWallet: {
     id: 'staking.delegationSetup.chooseWallet.step.dialog.errorRestoringWallet',
@@ -130,8 +138,27 @@ export default class DelegationStepsChooseWalletDialog extends Component<
       wallets.find(
         (wallet: Wallet) => wallet && wallet.id === selectedWalletId
       ) || null;
-    const amount = selectedWallet ? selectedWallet.amount : null;
-    const isAcceptableSetupWallet = amount && isWalletAcceptable(amount);
+
+    const { amount, reward } = selectedWallet || {};
+    const isSelectedWalletAcceptable =
+      amount && isWalletAcceptable(amount, reward);
+
+    let errorMessage;
+    if (selectedWallet && selectedWallet.isRestoring)
+      errorMessage = messages.errorRestoringWallet;
+    else if (!isSelectedWalletAcceptable && reward && !reward.isZero())
+      errorMessage = messages.errorMinDelegationFundsUTXO;
+    else if (!isSelectedWalletAcceptable)
+      errorMessage = messages.errorMinDelegationFunds;
+
+    const error = errorMessage && (
+      <p className={styles.errorMessage}>
+        <FormattedHTMLMessage
+          {...errorMessage}
+          values={{ minDelegationFunds }}
+        />
+      </p>
+    );
 
     const dialogClassName = classNames([
       commonStyles.delegationSteps,
@@ -139,26 +166,9 @@ export default class DelegationStepsChooseWalletDialog extends Component<
     ]);
     const contentClassName = classNames([commonStyles.content, styles.content]);
 
-    const errorMinDelegationFunds = selectedWalletId &&
-      !isAcceptableSetupWallet && (
-        <p className={styles.errorMessage}>
-          <FormattedHTMLMessage
-            {...messages.errorMinDelegationFunds}
-            values={{ minDelegationFunds }}
-          />
-        </p>
-      );
-
-    const errorRestoringWallet = selectedWallet &&
-      selectedWallet.isRestoring && (
-        <p className={styles.errorMessage}>
-          {intl.formatMessage(messages.errorRestoringWallet)}
-        </p>
-      );
-
     const walletSelectClasses = classNames([
       styles.walletSelect,
-      errorMinDelegationFunds || errorRestoringWallet ? styles.error : null,
+      error ? styles.error : null,
     ]);
 
     const actions = [
@@ -167,10 +177,7 @@ export default class DelegationStepsChooseWalletDialog extends Component<
         label: intl.formatMessage(messages.continueButtonLabel),
         onClick: this.onSelectWallet.bind(this),
         primary: true,
-        disabled:
-          !selectedWalletId ||
-          !!errorMinDelegationFunds ||
-          !!errorRestoringWallet,
+        disabled: !selectedWalletId || !!error,
       },
     ];
 
@@ -223,8 +230,7 @@ export default class DelegationStepsChooseWalletDialog extends Component<
             value={selectedWalletId}
             getStakePoolById={getStakePoolById}
           />
-          {errorMinDelegationFunds}
-          {errorRestoringWallet}
+          {error}
         </div>
       </Dialog>
     );

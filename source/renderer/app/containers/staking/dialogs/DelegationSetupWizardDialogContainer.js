@@ -61,8 +61,14 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     onClose: () => {},
   };
 
-  handleIsWalletAcceptable = (walletAmount: BigNumber) =>
-    walletAmount.gte(new BigNumber(MIN_DELEGATION_FUNDS));
+  handleIsWalletAcceptable = (
+    walletAmount?: BigNumber,
+    walletReward?: BigNumber = 0
+  ) =>
+    walletAmount &&
+    walletAmount.minus(walletReward).gte(new BigNumber(MIN_DELEGATION_FUNDS));
+
+  // (rewards > 0) AND (amount - rewards < 10 ada)
 
   get selectedWalletId() {
     return get(

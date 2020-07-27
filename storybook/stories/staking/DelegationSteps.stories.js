@@ -88,7 +88,9 @@ export class StakingDelegationSteps extends Component<Props, State> {
         wallets={WALLETS}
         minDelegationFunds={MIN_DELEGATION_FUNDS}
         selectedWalletId={null}
-        isWalletAcceptable={amount => amount.gte(MIN_DELEGATION_FUNDS)}
+        isWalletAcceptable={(amount, reward = 0) =>
+          amount.minus(reward).gte(MIN_DELEGATION_FUNDS)
+        }
       />,
       <DelegationStepsChooseStakePoolDialog
         key="DelegationStepsChooseStakePoolDialog"
