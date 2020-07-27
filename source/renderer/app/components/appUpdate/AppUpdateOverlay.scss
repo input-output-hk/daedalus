@@ -1,8 +1,7 @@
 .component {
   align-items: center;
-  // @UPDATE TODO
-  background-color: var(--theme-news-overlay-update-background-color);
-  color: var(--theme-news-overlay-update-text-color);
+  background-color: var(--theme-app-update-overlay-background-color);
+  color: var(--theme-app-update-overlay-text-color);
   display: flex;
   flex-direction: column;
   font-family: var(--font-regular);
@@ -99,13 +98,13 @@
   }
 
   .subtitle {
-    color: var(--theme-news-overlay-update-subtitle-text-color);
+    color: var(--theme-app-update-overlay-opacity-text-color);
     font-family: var(--font-medium);
     line-height: 1.38;
     margin-bottom: 16px;
     text-align: center;
     b {
-      color: var(--theme-news-overlay-update-text-color);
+      color: var(--theme-app-update-overlay-text-color);
     }
   }
 
@@ -121,7 +120,7 @@
     }
   }
   .downloadProgressData {
-    color: var(--theme-news-overlay-update-subtitle-text-color);
+    color: var(--theme-app-update-overlay-opacity-text-color);
     b {
       font-family: var(--font-bold);
     }
@@ -134,7 +133,7 @@
       margin-bottom: 30px;
       :global {
         .SimpleCheckbox_check {
-          border: 2px solid var(--theme-news-overlay-update-text-color);
+          border: 2px solid var(--theme-app-update-overlay-text-color);
         }
         .SimpleCheckbox_checked {
           background: var(--theme-news-overlay-update-button-text-color);
@@ -143,7 +142,7 @@
           }
         }
         .SimpleCheckbox_label {
-          color: var(--theme-news-overlay-update-text-color);
+          color: var(--theme-app-update-overlay-text-color);
           font-family: var(--font-medium);
           text-align: left;
         }
@@ -161,8 +160,8 @@
         cursor: pointer;
       }
       &.disabled {
-        border-color: var(--theme-news-overlay-update-subtitle-text-color);
-        color: var(--theme-news-overlay-update-subtitle-text-color);
+        border-color: var(--theme-app-update-overlay-opacity-text-color);
+        color: var(--theme-app-update-overlay-opacity-text-color);
         cursor: default;
         opacity: 0.8;
         text-decoration: none;

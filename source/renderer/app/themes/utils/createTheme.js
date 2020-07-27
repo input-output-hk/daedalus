@@ -577,22 +577,25 @@ export const createDaedalusComponentsTheme = (
       '--theme-loading-spinner-medium-color': '#fff',
     },
     manualUpdate: {
-      '--theme-manual-update-overlay-background-color': `${chroma(
+      '--theme-app-update-overlay-background-color': `${chroma(
         background.secondary.regular
       ).alpha(0.96)}`,
-      '--theme-manual-update-overlay-button-background-color': `${background.secondary.dark}`,
-      '--theme-manual-update-overlay-button-background-color-hover': `${text.secondary}`,
-      '--theme-manual-update-overlay-button-icon-color': `${text.secondary}`,
-      '--theme-manual-update-overlay-button-icon-color-hover': `${background.secondary.regular}`,
-      '--theme-manual-update-overlay-button-text-color-hover': `${background.secondary.regular}`,
-      '--theme-manual-update-overlay-button-border-color': `${text.secondary}`,
-      '--theme-manual-update-overlay-text-color': `${chroma(
+
+      '--theme-app-update-overlay-content-background-color':
+        'rgba(0, 0, 0, 0.1)',
+      '--theme-app-update-overlay-button-background-color': `${background.secondary.dark}`,
+      '--theme-app-update-overlay-button-background-color-hover': `${text.secondary}`,
+      '--theme-app-update-overlay-button-icon-color': `${text.secondary}`,
+      '--theme-app-update-overlay-button-icon-color-hover': `${background.secondary.regular}`,
+      '--theme-app-update-overlay-button-text-color-hover': `${background.secondary.regular}`,
+      '--theme-app-update-overlay-button-border-color': `${text.secondary}`,
+      '--theme-app-update-overlay-opacity-text-color': `${chroma(
         text.secondary
       ).alpha(0.7)}`,
-      '--theme-manual-update-overlay-text-highlight-color': `${text.secondary}`,
-      '--theme-manual-update-overlay-title-text-color': `${text.secondary}`,
-      '--theme-manual-update-overlay-button-label-color': `${text.secondary}`,
-      '--theme-manual-update-overlay-button-label-color-hover': `${text.secondary}`,
+      '--theme-app-update-overlay-text-highlight-color': `${text.secondary}`,
+      '--theme-app-update-overlay-text-color': `${text.secondary}`,
+      '--theme-app-update-overlay-button-label-color': `${text.secondary}`,
+      '--theme-app-update-overlay-button-label-color-hover': `${text.secondary}`,
     },
     mnemonic: {
       '--theme-backup-mnemonic-background-color': `${background.primary.light}`,

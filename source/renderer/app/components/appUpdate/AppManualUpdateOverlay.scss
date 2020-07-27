@@ -18,7 +18,7 @@
       outline: none;
     }
     .content {
-      background-color: var(--theme-manual-update-overlay-background-color);
+      background-color: var(--theme-app-update-overlay-background-color);
       display: flex;
       flex-direction: column;
       font-family: var(--font-regular);
@@ -27,7 +27,7 @@
       text-align: center;
 
       h1 {
-        color: var(--theme-manual-update-overlay-title-text-color);
+        color: var(--theme-app-update-overlay-opacity-text-color);
         font-size: 20px;
         line-height: 1.2;
       }
@@ -35,13 +35,13 @@
       .description {
         margin: 16px auto;
         p {
-          color: var(--theme-manual-update-overlay-text-color);
+          color: var(--theme-app-update-overlay-opacity-text-color);
           font-size: 16px;
           line-height: 1.38;
           margin-bottom: 14px;
           max-width: 610px;
           b {
-            color: var(--theme-manual-update-overlay-text-highlight-color);
+            color: var(--theme-app-update-overlay-text-highlight-color);
             font-family: var(--font-medium);
           }
         }
@@ -49,32 +49,32 @@
 
       .actionButton {
         background-color: var(
-          --theme-manual-update-overlay-button-background-color
+          --theme-app-update-overlay-button-background-color
         );
-        border: solid 1px var(--theme-manual-update-overlay-button-border-color);
+        border: solid 1px var(--theme-app-update-overlay-button-border-color);
         font-weight: 500;
         line-height: 1.36;
         margin: 0 auto;
         .btnLabel {
-          color: var(--theme-manual-update-overlay-button-label-color);
+          color: var(--theme-app-update-overlay-button-label-color);
           &:before {
             background-color: var(
-              --theme-manual-update-overlay-button-label-color
+              --theme-app-update-overlay-button-label-color
             );
           }
         }
 
         &:not(.disabled):hover {
           background-color: var(
-            --theme-manual-update-overlay-button-background-color-hover
+            --theme-app-update-overlay-button-background-color-hover
           );
-          color: var(--theme-manual-update-overlay-button-text-color-hover);
+          color: var(--theme-app-update-overlay-button-text-color-hover);
 
           .btnLabel {
-            color: var(--theme-manual-update-overlay-button-label-color-hover);
+            color: var(--theme-app-update-overlay-button-label-color-hover);
             &:before {
               background-color: var(
-                --theme-manual-update-overlay-button-label-color-hover
+                --theme-app-update-overlay-button-label-color-hover
               );
             }
           }

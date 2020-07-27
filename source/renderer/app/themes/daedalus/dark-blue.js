@@ -314,21 +314,21 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-loading-spinner-medium-color': '#e9f4fe',
   },
   manualUpdate: {
-    '--theme-manual-update-overlay-background-color': 'rgba(38, 51, 69, 0.96)',
-    '--theme-manual-update-overlay-button-background-color':
-      'rgba(0, 0, 0, 0.1)',
-    '--theme-manual-update-overlay-button-background-color-hover': '#fafbfc',
-    '--theme-manual-update-overlay-button-icon-color': 'rgba(250, 251, 252, 1)',
-    '--theme-manual-update-overlay-button-icon-color-hover':
+    '--theme-app-update-overlay-background-color': 'rgba(38, 51, 69, 0.96)',
+
+    '--theme-app-update-overlay-content-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-app-update-overlay-button-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-app-update-overlay-button-background-color-hover': '#fafbfc',
+    '--theme-app-update-overlay-button-icon-color': 'rgba(250, 251, 252, 1)',
+    '--theme-app-update-overlay-button-icon-color-hover': 'rgba(38, 51, 69, 1)',
+    '--theme-app-update-overlay-button-label-color-hover':
       'rgba(38, 51, 69, 1)',
-    '--theme-manual-update-overlay-button-label-color-hover':
-      'rgba(38, 51, 69, 1)',
-    '--theme-manual-update-overlay-button-text-color-hover': '#263345',
-    '--theme-manual-update-overlay-button-border-color': '#fafbfc',
-    '--theme-manual-update-overlay-text-color': 'rgba(250, 251, 252, 0.7)',
-    '--theme-manual-update-overlay-text-highlight-color': '#fafbfc',
-    '--theme-manual-update-overlay-title-text-color': '#fafbfc',
-    '--theme-manual-update-overlay-button-label-color': '#fafbfc',
+    '--theme-app-update-overlay-button-text-color-hover': '#263345',
+    '--theme-app-update-overlay-button-border-color': '#fafbfc',
+    '--theme-app-update-overlay-opacity-text-color': 'rgba(250, 251, 252, 0.7)',
+    '--theme-app-update-overlay-text-highlight-color': '#fafbfc',
+    '--theme-app-update-overlay-text-color': '#fafbfc',
+    '--theme-app-update-overlay-button-label-color': '#fafbfc',
   },
   mnemonic: {
     '--theme-backup-mnemonic-background-color': 'rgba(233, 244, 254, 0.05)',

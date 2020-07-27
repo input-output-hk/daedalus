@@ -300,21 +300,20 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-loading-spinner-medium-color': '#2d2d2d',
   },
   manualUpdate: {
-    '--theme-manual-update-overlay-background-color':
-      'rgba(255, 185, 35, 0.96)',
-    '--theme-manual-update-overlay-button-background-color':
-      'rgba(0, 0, 0, 0.1)',
-    '--theme-manual-update-overlay-button-background-color-hover': '#2d2d2d',
-    '--theme-manual-update-overlay-button-icon-color': '#2d2d2d',
-    '--theme-manual-update-overlay-button-icon-color-hover': '#ffffff',
-    '--theme-manual-update-overlay-button-text-color-hover': '#ffffff',
-    '--theme-manual-update-overlay-button-border-color': '#2d2d2d',
-    '--theme-manual-update-overlay-text-color': 'rgba(45, 45, 45, 0.7)',
-    '--theme-manual-update-overlay-text-highlight-color':
-      '#rgba(45, 45, 45, 1)',
-    '--theme-manual-update-overlay-title-text-color': 'rgba(45, 45, 45, 1)',
-    '--theme-manual-update-overlay-button-label-color': 'rgba(45, 45, 45, 1)',
-    '--theme-manual-update-overlay-button-label-color-hover': '#ffffff',
+    '--theme-app-update-overlay-background-color': 'rgba(255, 185, 35, 0.96)',
+
+    '--theme-app-update-overlay-content-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-app-update-overlay-button-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-app-update-overlay-button-background-color-hover': '#2d2d2d',
+    '--theme-app-update-overlay-button-icon-color': '#2d2d2d',
+    '--theme-app-update-overlay-button-icon-color-hover': '#ffffff',
+    '--theme-app-update-overlay-button-text-color-hover': '#ffffff',
+    '--theme-app-update-overlay-button-border-color': '#2d2d2d',
+    '--theme-app-update-overlay-opacity-text-color': 'rgba(45, 45, 45, 0.7)',
+    '--theme-app-update-overlay-text-highlight-color': '#rgba(45, 45, 45, 1)',
+    '--theme-app-update-overlay-text-color': 'rgba(45, 45, 45, 1)',
+    '--theme-app-update-overlay-button-label-color': 'rgba(45, 45, 45, 1)',
+    '--theme-app-update-overlay-button-label-color-hover': '#ffffff',
   },
   mnemonic: {
     '--theme-backup-mnemonic-background-color': '#f1eee6',
