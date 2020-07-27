@@ -71,7 +71,7 @@ export default class NewsFeedStore extends Store {
       );
 
       // Check for "Alerts" with repeatable state and set as unread
-      if (params && params.isInit) {
+      if (params && params.isInit && rawNews) {
         const repeatableNews = find(
           rawNews.items,
           news => news.type === NewsTypes.ALERT && news.repeatOnStartup
