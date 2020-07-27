@@ -27,7 +27,7 @@ import ReactToolboxMobxForm, {
 } from '../../../utils/ReactToolboxMobxForm';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
-import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
+import { ITN_WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 
 const messages = defineMessages({
@@ -173,7 +173,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
             const { intl } = this.context;
             const enteredWords = field.value;
             const wordCount = enteredWords.length;
-            const expectedWordCount = WALLET_RECOVERY_PHRASE_WORD_COUNT;
+            const expectedWordCount = ITN_WALLET_RECOVERY_PHRASE_WORD_COUNT;
             const value = enteredWords.join(' ');
             const isPhraseComplete = wordCount === expectedWordCount;
             if (!isPhraseComplete) {
@@ -346,7 +346,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
               this.recoveryPhraseAutocomplete = autocomplete;
             }}
             options={suggestedMnemonics}
-            maxSelections={WALLET_RECOVERY_PHRASE_WORD_COUNT}
+            maxSelections={ITN_WALLET_RECOVERY_PHRASE_WORD_COUNT}
             error={recoveryPhraseField.error}
             maxVisibleOptions={5}
             noResultsMessage={intl.formatMessage(messages.noResults)}
