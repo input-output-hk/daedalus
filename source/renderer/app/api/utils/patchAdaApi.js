@@ -52,6 +52,8 @@ export default (api: AdaApi) => {
           : get(sync_progress, 'quantity', 0);
 
       // extract relevant data before sending to NetworkStatusStore
+      const nextEpochNumber = get(next_epoch, 'epoch_number', null);
+      const nextEpochStartTime = get(next_epoch, 'epoch_start_time', '');
       return {
         syncProgress: SYNC_PROGRESS !== null ? SYNC_PROGRESS : syncProgress,
         localTip: {
@@ -59,19 +61,22 @@ export default (api: AdaApi) => {
           slot: get(node_tip, 'slot_number', 0),
         },
         networkTip: {
-          epoch: get(network_tip, 'epoch_number', 0),
-          slot: get(network_tip, 'slot_number', 0),
+          epoch: get(network_tip, 'epoch_number', null),
+          slot: get(network_tip, 'slot_number', null),
         },
         nextEpoch: {
-          epochNumber: get(next_epoch, 'epoch_number', 0),
-          epochStart: get(next_epoch, 'epoch_start_time', ''),
+          // N+1 epoch
+          epochNumber: nextEpochNumber,
+          epochStart: nextEpochStartTime,
         },
         futureEpoch: {
-          epochNumber: get(next_epoch, 'epoch_number', 0) + 1,
-          epochStart: moment(get(next_epoch, 'epoch_start', '')).add(
-            EPOCH_LENGTH_ITN,
-            'seconds'
-          ),
+          // N+2 epoch
+          epochNumber: nextEpochNumber ? nextEpochNumber + 1 : null,
+          epochStart: nextEpochStartTime
+            ? moment(nextEpochStartTime)
+                .add(EPOCH_LENGTH_ITN, 'seconds')
+                .toISOString()
+            : '',
         },
       };
     } catch (error) {

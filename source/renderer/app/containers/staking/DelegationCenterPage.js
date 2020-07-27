@@ -61,10 +61,17 @@ export default class DelegationCenterPage extends Component<Props> {
   };
 
   render() {
+    const { isIncentivizedTestnet, isShelleyTestnet } = global;
     const { stores } = this.props;
     const { app, uiDialogs, staking, wallets, networkStatus, profile } = stores;
     const { stakePools, getStakePoolById, fetchingStakePoolsFailed } = staking;
-    const { isSynced, networkTip, nextEpoch, futureEpoch } = networkStatus;
+    const {
+      isSynced,
+      networkTip,
+      nextEpoch,
+      futureEpoch,
+      shelleyEpochsInfoAvailable,
+    } = networkStatus;
     const { currentLocale } = profile;
 
     if (!wallets.allWallets.length) {
@@ -89,6 +96,10 @@ export default class DelegationCenterPage extends Component<Props> {
           getStakePoolById={getStakePoolById}
           isLoading={
             !isSynced || fetchingStakePoolsFailed || !stakePools.length
+          }
+          shelleyEpochsInfoAvailable={
+            (isIncentivizedTestnet && !isShelleyTestnet) ||
+            shelleyEpochsInfoAvailable
           }
           currentLocale={currentLocale}
         />

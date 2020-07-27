@@ -1570,35 +1570,51 @@ export default class AdaApi {
         this.config
       );
       logger.debug('AdaApi::getNetworkInfo success', { networkInfo });
-      /* eslint-disable-next-line camelcase */
-      const { sync_progress, node_tip, network_tip, next_epoch } = networkInfo;
+      const {
+        sync_progress /* eslint-disable-line camelcase */,
+        node_tip: nodeTip,
+        network_tip: networkTip,
+        next_epoch: nextEpoch,
+      } = networkInfo;
+
       const syncProgress =
         get(sync_progress, 'status') === 'ready'
           ? 100
           : get(sync_progress, 'progress.quantity', 0);
+      const nextEpochNumber = get(nextEpoch, 'epoch_number', null);
+      const nextEpochStartTime = get(nextEpoch, 'epoch_start_time', '');
+
       // extract relevant data before sending to NetworkStatusStore
       return {
         syncProgress,
         localTip: {
-          epoch: get(node_tip, 'epoch_number', 0),
-          slot: get(node_tip, 'slot_number', 0),
+          epoch: get(nodeTip, 'epoch_number', 0),
+          slot: get(nodeTip, 'slot_number', 0),
         },
-        networkTip: {
-          epoch: get(network_tip, 'epoch_number', 0),
-          slot: get(network_tip, 'slot_number', 0),
-        },
-        nextEpoch: {
-          // N+1 epoch
-          epochNumber: get(next_epoch, 'epoch_number', 0),
-          epochStart: get(next_epoch, 'epoch_start_time', ''),
-        },
-        futureEpoch: {
-          // N+2 epoch
-          epochNumber: get(next_epoch, 'epoch_number', 0) + 1,
-          epochStart: moment(get(next_epoch, 'epoch_start_time', 0))
-            .add(EPOCH_LENGTH_ITN, 'seconds')
-            .toISOString(),
-        },
+        networkTip: networkTip
+          ? {
+              epoch: get(networkTip, 'epoch_number', null),
+              slot: get(networkTip, 'slot_number', null),
+            }
+          : null,
+        nextEpoch: nextEpoch
+          ? {
+              // N+1 epoch
+              epochNumber: nextEpochNumber,
+              epochStart: nextEpochStartTime,
+            }
+          : null,
+        futureEpoch: nextEpoch
+          ? {
+              // N+2 epoch
+              epochNumber: nextEpochNumber ? nextEpochNumber + 1 : null,
+              epochStart: nextEpochStartTime
+                ? moment(nextEpochStartTime)
+                    .add(EPOCH_LENGTH_ITN, 'seconds')
+                    .toISOString()
+                : '',
+            }
+          : null,
       };
     } catch (error) {
       logger.error('AdaApi::getNetworkInfo error', { error });

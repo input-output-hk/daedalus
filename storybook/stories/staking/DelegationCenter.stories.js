@@ -220,9 +220,11 @@ const wallets = [
 export const StakingDelegationCenterStory = ({
   locale,
   isLoading,
+  shelleyEpochsInfoAvailable,
 }: {
   locale: string,
   isLoading: boolean,
+  shelleyEpochsInfoAvailable: boolean,
 }) => (
   <DelegationCenter
     wallets={wallets}
@@ -237,6 +239,7 @@ export const StakingDelegationCenterStory = ({
     fetchingStakePoolsFailed={isLoading}
     futureEpoch={futureEpoch}
     currentLocale={locale}
-    isLoading={false}
+    isLoading={isLoading}
+    shelleyEpochsInfoAvailable={shelleyEpochsInfoAvailable}
   />
 );
