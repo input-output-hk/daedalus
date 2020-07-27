@@ -11,6 +11,7 @@ Changelog
 
 ### Chores
 
+- Extended incident and alert newsfeed type ([PR 2099](https://github.com/input-output-hk/daedalus/pull/2099))
 - Enable Cardano Explorer URLs for STN network ([PR 2098](https://github.com/input-output-hk/daedalus/pull/2098))
 
 ## 1.6.0-STN5
