@@ -8,7 +8,7 @@ import {
   NEWS_POLL_INTERVAL_ON_ERROR,
   NEWS_POLL_INTERVAL_ON_INCIDENT,
 } from '../config/timingConfig';
-import News, { NewsTypes } from '../domains/News';
+import News, { NewsTypes, IncidentColors } from '../domains/News';
 import type {
   GetNewsResponse,
   GetReadNewsResponse,
@@ -218,7 +218,7 @@ export default class NewsFeedStore extends Store {
       news = map(this.rawNews, item => {
         // Match old and new newsfeed JSON format
         const mainIdentificator = item.id || item.date;
-        return {
+        let newsfeedItem = {
           ...item,
           id: mainIdentificator,
           title: item.title[currentLocale],
@@ -232,6 +232,22 @@ export default class NewsFeedStore extends Store {
           date: get(item, ['publishedAt', currentLocale], item.date),
           read: readNews.includes(mainIdentificator),
         };
+        // Exclude "color" parameter from news that are not incidents
+        if (item.type === NewsTypes.INCIDENT) {
+          newsfeedItem = {
+            ...newsfeedItem,
+            color: get(item, 'color', IncidentColors.RED),
+          };
+        }
+
+        // Exclude "repeatOnStartup" parameter from news that are not alerts
+        if (item.type === NewsTypes.ALERT) {
+          newsfeedItem = {
+            ...newsfeedItem,
+            repeatOnStartup: get(item, 'repeatOnStartup', false),
+          };
+        }
+        return newsfeedItem;
       });
     }
     return new News.NewsCollection(news);
