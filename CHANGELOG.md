@@ -16,15 +16,13 @@ Changelog
 ### Chores
 
 - Added handlers for new error messages ([PR 2090](https://github.com/input-output-hk/daedalus/pull/2090))
+- Updated `cardano-wallet` to revision `71c0b8fd` which includes `cardano-node` 1.18.0
 
 ## 1.5.0-STN4
 
 ### Chores
 
 - Updated `cardano-wallet` to revision `cb6fae7b` which includes `cardano-node` 1.17.0
-- Updated `cardano-wallet` to revision `91db88f9`
-- Updated `cardano-wallet` to revision `a05514b5`
-- Updated `cardano-wallet` to revision `2e5ac559` with mix utxo fixes
 
 ## 1.4.1-STN3
 
