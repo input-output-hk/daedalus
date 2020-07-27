@@ -63,7 +63,7 @@ const messages = defineMessages({
     id:
       'staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFundsUTXO',
     defaultMessage:
-      '!!!This wallet does not contain the minimum amount of {minDelegationFunds} ADA which is required for delegation to be available. Please select a wallet with <span>a minimum amount of {minDelegationFunds} ADA</span> and click continue.',
+      '!!!This wallet does not contain the minimum amount of {minDelegationFunds} ADA which is required for delegation to be available.',
     description:
       'errorMinDelegationFundsUTXO Error Label on the delegation setup "choose wallet" step dialog.',
   },
