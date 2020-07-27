@@ -11,6 +11,8 @@ export type NewsAction = {
   event?: string,
 };
 
+export type IncidentColor = 'red' | 'theme-default' | 'grey';
+
 export const NewsTypes: {
   INCIDENT: NewsType,
   ALERT: NewsType,
@@ -23,6 +25,16 @@ export const NewsTypes: {
   ANNOUNCEMENT: 'announcement',
   INFO: 'info',
   UPDATE: 'software-update',
+};
+
+export const IncidentColors: {
+  RED: IncidentColor,
+  THEME_DEFAULT: IncidentColor,
+  GREY: IncidentColor,
+} = {
+  RED: 'red',
+  THEME_DEFAULT: 'theme-default',
+  GREY: 'grey',
 };
 
 export type NewsTypesStateType = {
@@ -42,6 +54,8 @@ class News {
   @observable date: number;
   @observable type: NewsType;
   @observable read: boolean;
+  @observable color: ?IncidentColor;
+  @observable repeatOnStartup: ?boolean;
 
   constructor(data: {
     id: number,
@@ -52,6 +66,8 @@ class News {
     date: number,
     type: NewsType,
     read: boolean,
+    color?: ?IncidentColor,
+    repeatOnStartup?: ?boolean,
   }) {
     Object.assign(this, data);
   }

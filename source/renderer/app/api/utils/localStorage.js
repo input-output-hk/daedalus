@@ -2,7 +2,7 @@
 
 /* eslint-disable consistent-return */
 
-import { includes } from 'lodash';
+import { includes, without } from 'lodash';
 import { electronStoreConversation } from '../../ipc/electronStoreConversation';
 import { WalletMigrationStatuses } from '../../stores/WalletMigrationStore';
 import {
@@ -183,6 +183,19 @@ export default class LocalStorageApi {
       await LocalStorageApi.set(
         keys.READ_NEWS,
         readNews.concat(newsTimestamps)
+      );
+    }
+    return readNews;
+  };
+
+  markNewsAsUnread = async (
+    newsTimestamp: NewsTimestamp
+  ): Promise<NewsTimestamp[]> => {
+    const readNews = (await LocalStorageApi.get(keys.READ_NEWS)) || [];
+    if (includes(readNews, newsTimestamp)) {
+      await LocalStorageApi.set(
+        keys.READ_NEWS,
+        without(readNews, newsTimestamp)
       );
     }
     return readNews;

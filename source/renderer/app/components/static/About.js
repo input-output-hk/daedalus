@@ -87,7 +87,7 @@ export default class About extends Component<Props> {
       version,
       onClose,
     } = this.props;
-    const { isIncentivizedTestnet } = global;
+    const { isIncentivizedTestnet, isShelleyTestnet } = global;
 
     const apiName = intl.formatMessage(globalMessages.apiName);
     const apiIcon = cardanoIcon;
@@ -112,7 +112,7 @@ export default class About extends Component<Props> {
               <span className={styles.daedalusVersion}>{version}</span>
             </div>
             <div className={styles.daedalusBuildInfo}>
-              {isIncentivizedTestnet ? (
+              {isIncentivizedTestnet && !isShelleyTestnet ? (
                 <FormattedHTMLMessage
                   {...messages.aboutBuildInfoForITN}
                   values={{
