@@ -77,8 +77,9 @@ export default class NewsFeedStore extends Store {
           news => news.type === NewsTypes.ALERT && news.repeatOnStartup
         );
         if (repeatableNews) {
+          const mainIdentificator = repeatableNews.id || repeatableNews.date;
           // Mark Alert as unread in LC if "repeatOnStartup" parameter set
-          await this.markNewsAsUnreadRequest.execute(repeatableNews.date);
+          await this.markNewsAsUnreadRequest.execute(mainIdentificator);
           // Get all read news to force @computed change
           await this.getReadNewsRequest.execute();
         }
