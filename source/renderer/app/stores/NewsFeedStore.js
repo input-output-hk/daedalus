@@ -37,6 +37,10 @@ export default class NewsFeedStore extends Store {
   markNewsAsReadRequest: Request<MarkNewsAsReadResponse> = new Request(
     this.api.localStorage.markNewsAsRead
   );
+  @observable
+  markNewsAsUnreadRequest: Request<MarkNewsAsReadResponse> = new Request(
+    this.api.localStorage.markNewsAsUnread
+  );
   @observable openedAlert: ?News.News = null;
   @observable fetchLocalNews: boolean = false;
 
@@ -46,7 +50,7 @@ export default class NewsFeedStore extends Store {
 
   setup() {
     // Fetch news on app start
-    this.getNews();
+    this.getNews({ isInit: true });
     if (!isTest) {
       // Refetch news every 30 mins
       this.pollingNewsIntervalId = setInterval(
@@ -56,7 +60,7 @@ export default class NewsFeedStore extends Store {
     }
   }
 
-  @action getNews = async () => {
+  @action getNews = async (params?: { isInit: boolean }) => {
     let rawNews;
     try {
       rawNews = await this.getNewsRequest.execute().promise;
@@ -65,6 +69,20 @@ export default class NewsFeedStore extends Store {
         rawNews.items,
         news => news.type === NewsTypes.INCIDENT
       );
+
+      // Check for "Alerts" with repeatable state and set as unread
+      if (params && params.isInit) {
+        const repeatableNews = find(
+          rawNews.items,
+          news => news.type === NewsTypes.ALERT && news.repeatOnStartup
+        );
+        if (repeatableNews) {
+          // Mark Alert as unread in LC if "repeatOnStartup" parameter set
+          await this.markNewsAsUnreadRequest.execute(repeatableNews.date);
+          // Get all read news to force @computed change
+          await this.getReadNewsRequest.execute();
+        }
+      }
 
       // Reset "getNews" fast polling interval if set and set regular polling interval
       if (!isTest && this.pollingNewsOnErrorIntervalId) {
