@@ -1,14 +1,14 @@
 {
     "cardano-node": {
-        "branch": "release/1.16.x",
+        "branch": "refs/tags/1.18.0",
         "description": null,
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-node",
-        "rev": "00830e286846b8d25772d65cd0755c48708cf79e",
-        "sha256": "0cr6x28mh373dnycnghn0izk5ffd28xkv59pw5zw454khvkzgywy",
+        "rev": "ba0f96b1a9fc9232ed211e57835fd5018093069d",
+        "sha256": "1rj7rpr3qqqwdx00zsfg283jflndnr9q5arxf5fiqrrqms40p7sk",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-node/archive/00830e286846b8d25772d65cd0755c48708cf79e.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-node/archive/ba0f96b1a9fc9232ed211e57835fd5018093069d.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-shell": {
@@ -24,15 +24,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-wallet": {
-        "branch": "rvl/1870/bump-deps",
+        "branch": "master",
         "description": "Official Wallet Backend & API for Cardano decentralized",
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-wallet",
-        "rev": "f8399ea0b1e2706478b3c5563ddee7eb1ae98a69",
-        "sha256": "1pbv3vg9hvd6qx8hrifc0g6v8qkpyrqiipxln86zqhghh01jjf2x",
+        "rev": "71c0b8fd10aaf7e09c62c42571780f7676381584",
+        "sha256": "0lmgny26jsax5n3zkh93zcmlik3nzl61ijy0h2986s91b0k7srmf",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-wallet/archive/f8399ea0b1e2706478b3c5563ddee7eb1ae98a69.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-wallet/archive/71c0b8fd10aaf7e09c62c42571780f7676381584.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz",
         "version": "v2020-04-28"
     },
@@ -66,10 +66,10 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "iohk-nix",
-        "rev": "a0d796bb481bdd7b1dfad3b1529d440734de9c07",
-        "sha256": "18zj7bshw0ph16ffaw438mm8ajlh3dn0ns7k92h0ppjsq2cd7hyy",
+        "rev": "0ef68de1c6885e160fee0feb5e04707d7f594624",
+        "sha256": "1iby24kljrlkkzh74pjgggm8z7y1v5wm0xa75ks38axh5ylrapps",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/iohk-nix/archive/a0d796bb481bdd7b1dfad3b1529d440734de9c07.tar.gz",
+        "url": "https://github.com/input-output-hk/iohk-nix/archive/0ef68de1c6885e160fee0feb5e04707d7f594624.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "js-chain-libs": {

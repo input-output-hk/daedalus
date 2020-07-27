@@ -7,6 +7,29 @@ Changelog
 
 - Implemented Daedalus app automatic update ([PR 2056](https://github.com/input-output-hk/daedalus/pull/2056))
 
+## 1.6.0-STN5
+
+### Features
+
+- Added recovery phrase autocomplete on the wallet creation wizard ([PR 2083](https://github.com/input-output-hk/daedalus/pull/2083))
+- Added restoration of 24-word Shelley wallets and 15-word ITN wallets ([PR 2083](https://github.com/input-output-hk/daedalus/pull/2083))
+- Added restoration of legacy Byron hardware wallets ([PR 2082](https://github.com/input-output-hk/daedalus/pull/2082))
+
+### Fixes
+
+- Fixed genesis file
+
+### Chores
+
+- Added handlers for new error messages ([PR 2090](https://github.com/input-output-hk/daedalus/pull/2090))
+- Updated `cardano-wallet` to revision `71c0b8fd` which includes `cardano-node` 1.18.0
+
+## 1.5.0-STN4
+
+### Chores
+
+- Updated `cardano-wallet` to revision `cb6fae7b` which includes `cardano-node` 1.17.0
+
 ## 1.4.1-STN3
 
 ### Fixes

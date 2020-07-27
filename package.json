@@ -1,7 +1,7 @@
 {
   "name": "daedalus",
   "productName": "Daedalus",
-  "version": "1.4.1-STN3",
+  "version": "1.6.0-STN5",
   "description": "Cryptocurrency Wallet",
   "main": "./dist/main/index.js",
   "scripts": {
@@ -52,7 +52,7 @@
     "nix:flight": "NETWORK=mainnet nix-shell --argstr nodeImplementation cardano --argstr cluster mainnet_flight",
     "nix:selfnode": "NETWORK=selfnode nix-shell --argstr nodeImplementation cardano --argstr cluster selfnode",
     "nix:shelley_local": "NETWORK=shelley_testnet nix-shell --arg configOverride state-cluster/config.json --arg genesisOverride state-cluster/keys/genesis.json --argstr nodeImplementation cardano --argstr cluster local --arg useLocalNode true",
-    "nix:shelley_testnet": "NETWORK=shelley_testnet_v4 nix-shell --argstr nodeImplementation cardano --argstr cluster shelley_testnet_v4 --arg useLocalNode true",
+    "nix:shelley_testnet": "NETWORK=shelley_testnet_v6 nix-shell --argstr nodeImplementation cardano --argstr cluster shelley_testnet_v6",
     "nix:shelley_qa": "NETWORK=shelley_qa nix-shell --argstr nodeImplementation cardano --argstr cluster shelley_qa",
     "nix:staging": "NETWORK=staging nix-shell --argstr nodeImplementation cardano --argstr cluster staging",
     "nix:testnet": "NETWORK=testnet nix-shell --argstr nodeImplementation cardano --argstr cluster testnet",

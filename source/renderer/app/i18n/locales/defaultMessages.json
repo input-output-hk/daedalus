@@ -175,7 +175,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Not enough ada . Try sending a smaller amount.",
+        "defaultMessage": "!!!Not enough ada. Try sending a smaller amount.",
         "description": "\"Not enough ada . Try sending a smaller amount.\" error message",
         "end": {
           "column": 3,
@@ -228,6 +228,34 @@
         "start": {
           "column": 33,
           "line": 83
+        }
+      },
+      {
+        "defaultMessage": "!!!Invalid transaction.",
+        "description": "\"Invalid transaction.\" error message",
+        "end": {
+          "column": 3,
+          "line": 94
+        },
+        "file": "source/renderer/app/api/errors.js",
+        "id": "api.errors.utxoTooSmall",
+        "start": {
+          "column": 16,
+          "line": 90
+        }
+      },
+      {
+        "defaultMessage": "!!!Funds cannot be transferred from this wallet because it contains some unspent transaction outputs (UTXOs), with amounts of ada that are too small to be migrated.",
+        "description": "\"Funds cannot be transferred from this wallet because it contains some unspent transaction outputs (UTXOs), with amounts of ada that are too small to be migrated.\" error message",
+        "end": {
+          "column": 3,
+          "line": 101
+        },
+        "file": "source/renderer/app/api/errors.js",
+        "id": "api.errors.nothingToMigrate",
+        "start": {
+          "column": 20,
+          "line": 95
         }
       }
     ],
@@ -2582,7 +2610,7 @@
         }
       },
       {
-        "defaultMessage": "!!!This version of Daedalus has been created to be used specifically with the third iteration of the Shelley testnet network.",
+        "defaultMessage": "!!!This version of Daedalus has been created to be used specifically with the Shelley testnet network.",
         "description": "stnDescription on network splash screen",
         "end": {
           "column": 3,
@@ -5392,8 +5420,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Produced blocks:",
-        "description": "\"Produced blocks\" for the Stake Pools Tooltip page.",
+        "defaultMessage": "!!!Blocks (current epoch):",
+        "description": "\"Blocks\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
           "line": 66
@@ -6621,17 +6649,73 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Verify your wallet recovery phrase by clicking words in the exact order you wrote them down.",
+        "defaultMessage": "!!!Please enter your {wordCount}-word wallet recovery phrase. Make sure you enter the words in the correct order.",
         "description": "Instructions for verifying wallet recovery phrase on dialog for entering wallet recovery phrase.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 31
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.verification.instructions",
         "start": {
           "column": 28,
-          "line": 19
+          "line": 25
+        }
+      },
+      {
+        "defaultMessage": "!!!Verify your recovery phrase",
+        "description": "Label for the recovery phrase input on dialog for entering wallet recovery phrase.",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
+        "id": "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInputLabel",
+        "start": {
+          "column": 28,
+          "line": 32
+        }
+      },
+      {
+        "defaultMessage": "!!!Enter your {numberOfWords}-word recovery phrase",
+        "description": "Placeholder for the mnemonics autocomplete.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
+        "id": "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInputHint",
+        "start": {
+          "column": 27,
+          "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!No results",
+        "description": "\"No results\" message for the recovery phrase input search results.",
+        "end": {
+          "column": 3,
+          "line": 49
+        },
+        "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
+        "id": "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInputNoResults",
+        "start": {
+          "column": 27,
+          "line": 43
+        }
+      },
+      {
+        "defaultMessage": "!!!Invalid recovery phrase",
+        "description": "Error message shown when invalid recovery phrase was entered.",
+        "end": {
+          "column": 3,
+          "line": 56
+        },
+        "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
+        "id": "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInvalidMnemonics",
+        "start": {
+          "column": 34,
+          "line": 50
         }
       },
       {
@@ -6639,27 +6723,13 @@
         "description": "Label for button \"Confirm\" on wallet backup dialog",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 61
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.recovery.phrase.show.entry.dialog.button.labelConfirm",
         "start": {
           "column": 22,
-          "line": 26
-        }
-      },
-      {
-        "defaultMessage": "!!!Clear",
-        "description": "Label for button \"Clear\" on wallet backup dialog",
-        "end": {
-          "column": 3,
-          "line": 35
-        },
-        "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
-        "id": "wallet.recovery.phrase.show.entry.dialog.button.labelClear",
-        "start": {
-          "column": 20,
-          "line": 31
+          "line": 57
         }
       },
       {
@@ -6667,13 +6737,13 @@
         "description": "Term on wallet creation to store recovery phrase offline",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 68
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.offline",
         "start": {
           "column": 15,
-          "line": 36
+          "line": 62
         }
       },
       {
@@ -6681,13 +6751,13 @@
         "description": "Term and condition on wallet backup dialog describing that wallet can only be recovered with a security phrase",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 76
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.recovery",
         "start": {
           "column": 16,
-          "line": 43
+          "line": 69
         }
       },
       {
@@ -6695,13 +6765,13 @@
         "description": "Term and condition on wallet backup dialog describing that wallet can only be recovered with a security phrase",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 83
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.rewards",
         "start": {
           "column": 15,
-          "line": 51
+          "line": 77
         }
       }
     ],
@@ -9571,13 +9641,13 @@
         "description": "Title  in the transfer funds form.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 19
         },
         "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep1Dialog.js",
         "id": "wallet.transferFunds.dialog1.title",
         "start": {
           "column": 15,
-          "line": 13
+          "line": 15
         }
       },
       {
@@ -9585,13 +9655,13 @@
         "description": "sourceWallet in the transfer funds form.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 24
         },
         "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep1Dialog.js",
         "id": "wallet.transferFunds.dialog1.sourceWallet",
         "start": {
           "column": 16,
-          "line": 18
+          "line": 20
         }
       },
       {
@@ -9599,13 +9669,13 @@
         "description": "targetWallet in the transfer funds form.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 29
         },
         "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep1Dialog.js",
         "id": "wallet.transferFunds.dialog1.targetWallet",
         "start": {
           "column": 16,
-          "line": 23
+          "line": 25
         }
       },
       {
@@ -9613,13 +9683,13 @@
         "description": "buttonLabel in the transfer funds form.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 34
         },
         "file": "source/renderer/app/components/wallet/transfer-funds/TransferFundsStep1Dialog.js",
         "id": "wallet.transferFunds.dialog1.continueLabel",
         "start": {
           "column": 15,
-          "line": 28
+          "line": 30
         }
       }
     ],
@@ -10812,11 +10882,11 @@
         }
       },
       {
-        "defaultMessage": "!!!15 words <em>(Shelley wallet)</em>",
+        "defaultMessage": "!!!15 words <em>(Incentivized Testnet Rewards wallet)</em>",
         "description": "Label for the \"labelDaedalusWalletKind15WordShelley\" checkbox.",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 66
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.daedalusWalletKind15WordShelley",
@@ -10826,17 +10896,31 @@
         }
       },
       {
+        "defaultMessage": "!!!24 words <em>(Shelley wallet)</em>",
+        "description": "Label for the \"labelDaedalusWalletKind24WordShelley\" checkbox.",
+        "end": {
+          "column": 3,
+          "line": 73
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.walletKind.label.daedalusWalletKind24WordShelley",
+        "start": {
+          "column": 40,
+          "line": 67
+        }
+      },
+      {
         "defaultMessage": "!!!27 words - paper wallet (Byron legacy wallet)</em>",
         "description": "Label for the \"labelDaedalusWalletKind27WordPaper\" checkbox.",
         "end": {
           "column": 3,
-          "line": 71
+          "line": 79
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.daedalusWalletKind27WordPaper",
         "start": {
           "column": 38,
-          "line": 66
+          "line": 74
         }
       },
       {
@@ -10844,13 +10928,13 @@
         "description": "Label for the \"labelYoroiWalletKind\" checkbox.",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 84
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.yoroiWalletKind",
         "start": {
           "column": 24,
-          "line": 72
+          "line": 80
         }
       },
       {
@@ -10858,27 +10942,27 @@
         "description": "Label for the \"labelDaedalusWalletKind15WordByron\" checkbox.",
         "end": {
           "column": 3,
-          "line": 82
+          "line": 90
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.yoroiWalletKindByronLegacy15Word",
         "start": {
           "column": 35,
-          "line": 77
+          "line": 85
         }
       },
       {
-        "defaultMessage": "!!!15 words <em>(Shelley wallet)</em>",
+        "defaultMessage": "!!!15 words <em>(Incentivized Testnet wallet)</em>",
         "description": "Label for the \"labelDaedalusWalletKind15WordShelley\" checkbox.",
         "end": {
           "column": 3,
-          "line": 89
+          "line": 97
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.yoroiWalletKindShelley15Word",
         "start": {
           "column": 37,
-          "line": 83
+          "line": 91
         }
       },
       {
@@ -10886,69 +10970,83 @@
         "description": "Label for the \"labelHardwareWalletKind\" checkbox.",
         "end": {
           "column": 3,
-          "line": 95
+          "line": 103
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.hardwareWalletKind",
         "start": {
           "column": 27,
-          "line": 90
+          "line": 98
         }
       },
       {
-        "defaultMessage": "!!!24 words - Ledger Nano S or Nano X (Balance wallet)",
+        "defaultMessage": "!!!24 words - Ledger (Byron legacy wallet)",
         "description": "Label for the \"labelHardwareWalletKindLedger\" checkbox.",
         "end": {
           "column": 3,
-          "line": 100
+          "line": 108
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.hardwareWalletKindLedger",
         "start": {
           "column": 33,
-          "line": 96
+          "line": 104
         }
       },
       {
-        "defaultMessage": "!!!24 words - Trezor (Balance wallet)",
+        "defaultMessage": "!!!24 words - Trezor (Byron legacy wallet)",
         "description": "Label for the \"labelHardwareWalletKindTrezor\" checkbox.",
         "end": {
           "column": 3,
-          "line": 105
+          "line": 113
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.label.hardwareWalletKindTrezor",
         "start": {
           "column": 33,
-          "line": 101
+          "line": 109
         }
       },
       {
-        "defaultMessage": "!!!Hardware wallets keep your private keys stored securely on a physical device that is immune to common computer threats such as viruses and software bugs. Recovery phrases for hardware wallets should always be kept offline. By entering your hardware wallet recovery phrase in Daedalus, you are exposing your hardware wallet private keys to the security risks associated with computers and software.",
+        "defaultMessage": "!!!Hardware wallets store your private keys securely on a physical device so they are immune to common computer threats such as viruses and software bugs. Recovery phrases for hardware wallets should always be kept offline. By entering your hardware wallet recovery phrase in Daedalus, you expose your hardware wallet private keys to the security risks associated with computers and software.",
         "description": "Label for the \"hardwareWalletDisclaimer1\" disclaimer.",
         "end": {
           "column": 3,
-          "line": 111
+          "line": 119
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.hardwareWalletDisclaimer1",
         "start": {
           "column": 29,
-          "line": 106
+          "line": 114
         }
       },
       {
-        "defaultMessage": "!!!We strongly recommend that you delete the Balance wallet which is restored from your hardware wallet once you have moved any funds into a Rewards wallet.",
+        "defaultMessage": "!!!All of your assets held on your hardware wallet device are associated with the same wallet recovery phrase and its corresponding private key. If you hold assets other than ada on your hardware wallet device, you expose all of those assets to security risks.",
         "description": "Label for the \"hardwareWalletDisclaimer2\" disclaimer.",
         "end": {
           "column": 3,
-          "line": 117
+          "line": 125
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.hardwareWalletDisclaimer2",
         "start": {
           "column": 29,
-          "line": 112
+          "line": 120
+        }
+      },
+      {
+        "defaultMessage": "!!!We strongly recommend that you delete the Byron legacy wallet that was restored from your hardware wallet once you have moved funds into a Shelley wallet.",
+        "description": "Label for the \"hardwareWalletDisclaimer3\" disclaimer.",
+        "end": {
+          "column": 3,
+          "line": 131
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.walletKind.hardwareWalletDisclaimer3",
+        "start": {
+          "column": 29,
+          "line": 126
         }
       },
       {
@@ -10956,27 +11054,41 @@
         "description": "Label for the \"hardwareWalletCheckbox1\" disclaimer.",
         "end": {
           "column": 3,
-          "line": 123
+          "line": 137
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.hardwareWalletCheckbox1",
         "start": {
           "column": 27,
-          "line": 118
+          "line": 132
         }
       },
       {
-        "defaultMessage": "!!!I understand that I should delete the Balance wallet I am restoring from a hardware wallet after moving funds to a Rewards wallet.",
+        "defaultMessage": "!!!I understand that I should delete the Byron legacy wallet I am restoring from a hardware wallet after moving funds to a Shelley wallet.",
         "description": "Label for the \"hardwareWalletCheckbox2\" disclaimer.",
         "end": {
           "column": 3,
-          "line": 129
+          "line": 143
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
         "id": "wallet.restore.dialog.step.walletKind.hardwareWalletCheckbox2",
         "start": {
           "column": 27,
-          "line": 124
+          "line": 138
+        }
+      },
+      {
+        "defaultMessage": "!!!I understand that I am exposing all of the assets that are stored on my hardware wallet device, and not just ada, to security risks.",
+        "description": "Label for the \"hardwareWalletCheckbox2\" disclaimer.",
+        "end": {
+          "column": 3,
+          "line": 149
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/WalletTypeDialog.js",
+        "id": "wallet.restore.dialog.step.walletKind.hardwareWalletCheckbox3",
+        "start": {
+          "column": 27,
+          "line": 144
         }
       }
     ],
