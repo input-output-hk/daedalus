@@ -6,6 +6,7 @@
   "api.errors.IncorrectPasswordError": "ウォレットパスワードが間違っています",
   "api.errors.NotEnoughFundsForTransactionError": "ADAが不足しています。送金額を減らしてください。",
   "api.errors.NotEnoughFundsForTransactionFeesError": "手数料分のADAが不足しています。送金額を減らしてください。",
+  "api.errors.inputsDepleted": "報酬残高のみを含むウォレットからの送信はできません。",
   "api.errors.NotEnoughMoneyToSendError": "このトランザクションに必要な資金が不足しています。",
   "api.errors.TooBigTransactionError": "入力過多によりトランザクションサイズが超過しています。",
   "api.errors.TooBigTransactionErrorLinkLabel": "もっと知る。",
