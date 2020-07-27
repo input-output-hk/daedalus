@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Fixes
+
+- Fixed wallet recovery phrase length used on "ITN rewards redemption" wizard ([PR 2095](https://github.com/input-output-hk/daedalus/pull/2095))
+
 ## 1.6.0-STN5
 
 ### Features
