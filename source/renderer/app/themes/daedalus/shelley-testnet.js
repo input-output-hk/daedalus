@@ -59,6 +59,8 @@ export const SHELLEY_TESTNET_THEME_OUTPUT = {
     '--theme-button-attention-background-color-hover': '#ee707c',
     '--theme-button-attention-background-color-active': '#a43540',
     '--theme-button-attention-background-color-disabled': '#ea4c5b',
+    '--theme-button-attention-delete-text-color': '#121326',
+    '--theme-button-attention-delete-text-color-disabled': '#121326',
     '--theme-button-attention-text-color': '#ffffff',
     '--theme-button-attention-text-color-disabled': '#ffffff',
     '--theme-button-attention-outline-color': '#f2949d',

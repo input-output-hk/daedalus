@@ -15,6 +15,14 @@
         }
       }
     }
+
+    .attention {
+      color: var(--theme-button-attention-delete-text-color-disabled) !important;
+
+      &:not([disabled]) {
+        color: var(--theme-button-attention-delete-text-color) !important;
+      }
+    }
   }
 
   .confirmationInput {

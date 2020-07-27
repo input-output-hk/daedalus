@@ -60,6 +60,8 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-button-attention-background-color-active': '#b23819',
     '--theme-button-attention-background-color-disabled':
       'rgba(235, 74, 34, 1)',
+    '--theme-button-attention-delete-text-color': '#121326',
+    '--theme-button-attention-delete-text-color-disabled': '#121326',
     '--theme-button-attention-text-color': '#121326',
     '--theme-button-attention-text-color-disabled': '#121326',
     '--theme-button-attention-outline-color': 'rgba(255, 255, 255, 0.3)',
