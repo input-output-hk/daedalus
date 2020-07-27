@@ -5406,7 +5406,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Blocks (current epoch):",
+        "defaultMessage": "!!!Produced blocks:",
         "description": "\"Blocks\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
