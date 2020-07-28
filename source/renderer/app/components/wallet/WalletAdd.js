@@ -175,7 +175,7 @@ export default class WalletAdd extends Component<Props> {
               description={intl.formatMessage(messages.importDescription)}
               isDisabled={
                 isMaxNumberOfWalletsReached ||
-                (isProduction && !isMainnet && !isTestnet)
+                (isProduction && !(isMainnet || isTestnet))
               }
             />
           </div>
