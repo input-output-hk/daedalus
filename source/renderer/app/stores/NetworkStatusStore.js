@@ -118,6 +118,9 @@ export default class NetworkStatusStore extends Store {
   @observable diskSpaceAvailable: string = '';
   @observable isTlsCertInvalid: boolean = false;
   @observable stateDirectoryPath: string = '';
+  @observable isShelleyActivated: boolean = false;
+  @observable isShelleyPending: boolean = false;
+  @observable shelleyActivationTime: string = '';
 
   // DEFINE STORE METHODS
   setup() {
@@ -584,9 +587,22 @@ export default class NetworkStatusStore extends Store {
     try {
       const networkParameters: GetNetworkParametersResponse = await this.getNetworkParametersRequest.execute()
         .promise;
+      let { isShelleyActivated, isShelleyPending } = this;
+      const { decentralizationLevel, hardforkAt } = networkParameters;
+      const epochStartTime = get(hardforkAt, 'epoch_start_time', '');
+
+      if (hardforkAt) {
+        const currentTimeStamp = new Date().getTime();
+        const hardforkStartTime = new Date(epochStartTime).getTime();
+        isShelleyActivated = currentTimeStamp >= hardforkStartTime;
+        isShelleyPending = currentTimeStamp < hardforkStartTime;
+      }
+
       runInAction('Set Decentralization Progress', () => {
-        this.decentralizationProgress =
-          networkParameters.decentralizationLevel.quantity;
+        this.decentralizationProgress = decentralizationLevel.quantity;
+        this.isShelleyActivated = isShelleyActivated;
+        this.isShelleyPending = isShelleyPending;
+        this.shelleyActivationTime = epochStartTime;
       });
     } catch (e) {
       runInAction('Clear Decentralization Progress', () => {

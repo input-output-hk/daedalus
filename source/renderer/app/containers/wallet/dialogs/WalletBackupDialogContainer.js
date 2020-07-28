@@ -46,7 +46,7 @@ export default class WalletBackupDialogContainer extends Component<Props> {
       continueToRecoveryPhraseForWalletBackup,
     } = actions.walletBackup;
     const { createWalletRequest } = stores.wallets;
-    const { isShelleyActivated } = stores.staking;
+    const { isShelleyActivated } = stores.networkStatus;
 
     const canFinishBackup = global.isIncentivizedTestnet
       ? isRecoveryPhraseValid &&

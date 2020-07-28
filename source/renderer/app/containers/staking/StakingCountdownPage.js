@@ -45,7 +45,7 @@ export default class StakingCountdownPage extends Component<Props> {
 
   render() {
     const { stores, actions } = this.props;
-    const { staking } = stores;
+    const { networkStatus } = stores;
     const {
       staking: { goToStakingInfoPage },
     } = actions;
@@ -54,7 +54,7 @@ export default class StakingCountdownPage extends Component<Props> {
     return (
       <StakingCountdown
         redirectToStakingInfo={redirectToStakingInfo}
-        startDateTime={staking.startDateTime}
+        startDateTime={networkStatus.shelleyActivationTime}
         onLearnMoreClick={this.handleLearnMoreClick}
       />
     );
