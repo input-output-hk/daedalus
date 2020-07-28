@@ -78,10 +78,12 @@ export default class SidebarStore extends Store {
   @action _configureCategories = () => {
     const {
       isFlight,
+      isIncentivizedTestnet,
+      isShelleyTestnet,
       environment: { isDev },
     } = global;
 
-    const { isShelleyActivated } = this.stores.staking;
+    const { isShelleyActivated, isShelleyPending } = this.stores.networkStatus;
 
     const {
       CATEGORIES_BY_NAME: categories,
@@ -94,11 +96,12 @@ export default class SidebarStore extends Store {
       [categories.WALLETS.name]: true,
       [categories.HARDWARE_WALLETS.name]: isDev,
       [categories.PAPER_WALLET_CREATE_CERTIFICATE.name]: false,
-      [categories.STAKING_DELEGATION_COUNTDOWN.name]: !isShelleyActivated,
+      [categories.STAKING_DELEGATION_COUNTDOWN.name]: isShelleyPending,
       [categories.STAKING.name]: isShelleyActivated,
       [categories.REDEEM_ITN_REWARDS.name]: isDev,
       [categories.SETTINGS.name]: true,
-      [categories.NETWORK_INFO.name]: !isFlight,
+      [categories.NETWORK_INFO.name]:
+        isFlight || isIncentivizedTestnet || isShelleyTestnet,
     };
 
     const categoriesFilteredList: Array<SidebarCategoryInfo> = list.filter(
@@ -169,7 +172,9 @@ export default class SidebarStore extends Store {
   };
 
   _syncSidebarItemsWithShelleyActivation = () => {
-    const { isShelleyActivated } = this.stores.staking;
-    if (isShelleyActivated) this._configureCategories();
+    const { isShelleyActivated, isShelleyPending } = this.stores.networkStatus;
+    if (isShelleyActivated || isShelleyPending) {
+      this._configureCategories();
+    }
   };
 }

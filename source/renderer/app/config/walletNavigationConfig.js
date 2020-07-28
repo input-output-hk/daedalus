@@ -7,7 +7,7 @@ export const WALLET_NAV_IDS = {
   SETTINGS: 'settings',
 };
 
-export const ITN_LEGACY_WALLET_EXCLUDED_NAV_ITEMS = [
+export const LEGACY_WALLET_EXCLUDED_NAV_ITEMS = [
   WALLET_NAV_IDS.SEND,
   WALLET_NAV_IDS.RECEIVE,
 ];

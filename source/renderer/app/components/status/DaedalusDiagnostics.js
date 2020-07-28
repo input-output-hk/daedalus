@@ -676,9 +676,23 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 'lastSynchronizedBlock',
                 <Fragment>
                   <span>{intl.formatMessage(messages.epoch)}:</span>{' '}
-                  {get(localTip, 'epoch', '-')}
+                  {localTip && localTip.epoch ? (
+                    localTip.epoch
+                  ) : (
+                    <SVGInline
+                      svg={sandClockIcon}
+                      className={styles.networkTipSandClock}
+                    />
+                  )}
                   <span>{intl.formatMessage(messages.slot)}:</span>{' '}
-                  {get(localTip, 'slot', '-')}
+                  {localTip && localTip.slot ? (
+                    localTip.slot
+                  ) : (
+                    <SVGInline
+                      svg={sandClockIcon}
+                      className={styles.networkTipSandClock}
+                    />
+                  )}
                 </Fragment>
               )}
               <div className={styles.layoutRow}>
@@ -702,7 +716,12 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                     </button>
                   }
                   {isCheckingSystemTime ? (
-                    <span className={localTimeDifferenceClasses}>-</span>
+                    <span className={localTimeDifferenceClasses}>
+                      <SVGInline
+                        svg={sandClockIcon}
+                        className={styles.networkTipSandClock}
+                      />
+                    </span>
                   ) : (
                     <span className={localTimeDifferenceClasses}>
                       {isNTPServiceReachable

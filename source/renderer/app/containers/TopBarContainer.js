@@ -20,10 +20,10 @@ export default class TopBarContainer extends Component<Props> {
 
   render() {
     const { actions, stores } = this.props;
-    const { sidebar, app, networkStatus, wallets, newsFeed, staking } = stores;
+    const { sidebar, app, networkStatus, wallets, newsFeed } = stores;
     const { isSynced, syncPercentage } = networkStatus;
     const { active, isWalletRoute, hasAnyWallets, hasRewardsWallets } = wallets;
-    const { isShelleyActivated } = staking;
+    const { isShelleyActivated } = networkStatus;
     const {
       currentRoute,
       environment: { isMainnet, network },
