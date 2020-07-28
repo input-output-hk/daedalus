@@ -197,7 +197,7 @@ import { deleteTransaction } from './transactions/requests/deleteTransaction';
 import { WALLET_BYRON_KINDS } from '../config/walletRestoreConfig';
 import ApiError from '../domains/ApiError';
 
-const { isIncentivizedTestnet, isShelleyTestnet } = global;
+const { isIncentivizedTestnet } = global;
 
 export default class AdaApi {
   config: RequestConfig;
@@ -218,7 +218,7 @@ export default class AdaApi {
     const { isShelleyActivated } = request;
     try {
       const wallets: AdaWallets =
-        (isIncentivizedTestnet && !isShelleyTestnet) || isShelleyActivated
+        isIncentivizedTestnet || isShelleyActivated
           ? await getWallets(this.config)
           : [];
       const legacyWallets: LegacyAdaWallets = await getLegacyWallets(
@@ -551,7 +551,7 @@ export default class AdaApi {
         passphrase: spendingPassword,
       };
 
-      if ((isIncentivizedTestnet && !isShelleyTestnet) || isShelleyActivated) {
+      if (isIncentivizedTestnet || isShelleyActivated) {
         wallet = await createWallet(this.config, {
           walletInitData,
         });
@@ -816,7 +816,7 @@ export default class AdaApi {
       const response: Promise<Array<string>> = new Promise(resolve =>
         resolve(
           generateAccountMnemonics(
-            (isIncentivizedTestnet && !isShelleyTestnet) || isShelleyActivated
+            isIncentivizedTestnet || isShelleyActivated
               ? WALLET_RECOVERY_PHRASE_WORD_COUNT
               : LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT
           )

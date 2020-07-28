@@ -58,8 +58,6 @@ import {
  * The base wallet store that contains logic for dealing with wallets
  */
 
-const { isIncentivizedTestnet, isShelleyTestnet } = global;
-
 export default class WalletsStore extends Store {
   WALLET_REFRESH_INTERVAL = 5000;
 
@@ -136,9 +134,7 @@ export default class WalletsStore extends Store {
   // STEP: WALLET TYPE
   @observable walletKind: ?WalletKind = null;
   @observable walletKindDaedalus: ?WalletDaedalusKind = null;
-  @observable walletKindYoroi: ?WalletYoroiKind = isIncentivizedTestnet
-    ? null
-    : WALLET_YOROI_KINDS.BYRON_15_WORD;
+  @observable walletKindYoroi: ?WalletYoroiKind = null;
   @observable walletKindHardware: ?WalletHardwareKind = null;
   // STEP: RECOVERY PHRASE
   @observable mnemonics: Array<string> = [];
@@ -388,9 +384,7 @@ export default class WalletsStore extends Store {
     this.restoredWallet = null;
     this.walletKind = null;
     this.walletKindDaedalus = null;
-    this.walletKindYoroi = isIncentivizedTestnet
-      ? null
-      : WALLET_YOROI_KINDS.BYRON_15_WORD;
+    this.walletKindYoroi = null;
     this.walletKindHardware = null;
     this.mnemonics = [];
     this.walletName = '';
@@ -888,8 +882,8 @@ export default class WalletsStore extends Store {
   };
 
   isValidAddress = async (address: string) => {
-    const { app } = this.stores;
-    const { isMainnet, isSelfnode, isStaging, isTestnet } = app.environment;
+    const { isIncentivizedTestnet, isShelleyTestnet } = global;
+    const { isMainnet, isSelfnode, isStaging, isTestnet } = this.environment;
     let expectedNetworkTag: number | null;
     let validAddressStyles: AddressStyle[] = [];
     if (isMainnet) {
@@ -898,7 +892,7 @@ export default class WalletsStore extends Store {
     } else if (isStaging) {
       expectedNetworkTag = STAGING_MAGIC;
       validAddressStyles = ['Byron', 'Icarus'];
-    } else if (isIncentivizedTestnet && !isShelleyTestnet) {
+    } else if (isIncentivizedTestnet) {
       expectedNetworkTag = ITN_MAGIC;
       validAddressStyles = ['Jormungandr'];
     } else if (isTestnet) {

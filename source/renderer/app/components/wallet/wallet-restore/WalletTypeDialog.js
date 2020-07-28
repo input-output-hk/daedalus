@@ -164,8 +164,6 @@ type State = {
   [key: HardwareWalletAcceptance]: boolean,
 };
 
-const { isIncentivizedTestnet, isShelleyTestnet } = global;
-
 export default class WalletTypeDialog extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
@@ -223,12 +221,7 @@ export default class WalletTypeDialog extends Component<Props, State> {
     if (!walletKind) return true;
     if (walletKind === WALLET_KINDS.DAEDALUS && !walletKindDaedalus)
       return true;
-    if (
-      walletKind === WALLET_KINDS.YOROI &&
-      !walletKindYoroi &&
-      isIncentivizedTestnet
-    )
-      return true;
+    if (walletKind === WALLET_KINDS.YOROI && !walletKindYoroi) return true;
     return (
       walletKind === WALLET_KINDS.HARDWARE &&
       (!walletKindHardware ||
@@ -284,8 +277,7 @@ export default class WalletTypeDialog extends Component<Props, State> {
               walletKindDaedalus,
               WALLET_KINDS.DAEDALUS
             )}
-          {isIncentivizedTestnet &&
-            walletKind === WALLET_KINDS.YOROI &&
+          {walletKind === WALLET_KINDS.YOROI &&
             this.getWalletKind(
               isShelleyActivated,
               WALLET_YOROI_KINDS,
@@ -293,7 +285,7 @@ export default class WalletTypeDialog extends Component<Props, State> {
               walletKindYoroi,
               WALLET_KINDS.YOROI
             )}
-          {isShelleyTestnet && walletKind === WALLET_KINDS.HARDWARE && (
+          {walletKind === WALLET_KINDS.HARDWARE && (
             <Fragment>
               {this.getWalletKind(
                 isShelleyActivated,

@@ -386,7 +386,7 @@ export default class TooltipPool extends Component<Props, State> {
   };
 
   render() {
-    const { isShelleyTestnet } = global;
+    const { isIncentivizedTestnet } = global;
     const { intl } = this.context;
     const {
       stakePool,
@@ -537,7 +537,7 @@ export default class TooltipPool extends Component<Props, State> {
               >
                 {ranking}
               </span>
-              {!isShelleyTestnet && (
+              {isIncentivizedTestnet && (
                 <Tooltip
                   className={styles.experimentalTooltip}
                   key="experimentalTooltip"

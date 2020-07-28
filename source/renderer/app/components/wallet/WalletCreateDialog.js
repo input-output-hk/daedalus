@@ -88,7 +88,7 @@ const messages = defineMessages({
   },
 });
 
-const { isIncentivizedTestnet, isShelleyTestnet } = global;
+const { isIncentivizedTestnet } = global;
 
 type Props = {
   isShelleyActivated: boolean,
@@ -226,7 +226,7 @@ export default class WalletCreateDialog extends Component<Props, State> {
         className: isSubmitting ? styles.isSubmitting : null,
         disabled: !canSubmit,
         label: this.context.intl.formatMessage(
-          (isIncentivizedTestnet && !isShelleyTestnet) || isShelleyActivated
+          isIncentivizedTestnet || isShelleyActivated
             ? messages.createPersonalWalletItn
             : messages.createPersonalWallet
         ),
@@ -239,7 +239,7 @@ export default class WalletCreateDialog extends Component<Props, State> {
       <Dialog
         className={dialogClasses}
         title={intl.formatMessage(
-          (isIncentivizedTestnet && !isShelleyTestnet) || isShelleyActivated
+          isIncentivizedTestnet || isShelleyActivated
             ? messages.dialogTitleItn
             : messages.dialogTitle
         )}
