@@ -167,11 +167,9 @@ export default class DelegationSetupWizardDialogContainer extends Component<
       wallet => wallet.id === selectedWalletId
     );
 
-    // const acceptableWallets = find(wallets.allWallets, ({ amount, reward }) =>
-    //   this.handleIsWalletAcceptable(amount, reward)
-    // );
-
-    const acceptableWallets = true;
+    const acceptableWallets = find(wallets.allWallets, ({ amount, reward }) =>
+      this.handleIsWalletAcceptable(amount, reward)
+    );
 
     return (
       <DelegationSetupWizardDialog
