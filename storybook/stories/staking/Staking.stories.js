@@ -138,9 +138,7 @@ storiesOf('Decentralization | Staking', module)
 
   .add(
     pageNames['delegation-center'],
-    props => (
-      <StakingDelegationCenterStory {...props} shelleyEpochsInfoAvailable />
-    ),
+    props => <StakingDelegationCenterStory {...props} isEpochsInfoAvailable />,
     {
       id: 'delegation-center',
     }
@@ -148,9 +146,7 @@ storiesOf('Decentralization | Staking', module)
 
   .add(
     pageNames['delegation-center-experiment'],
-    props => (
-      <StakingDelegationCenterStory {...props} shelleyEpochsInfoAvailable />
-    ),
+    props => <StakingDelegationCenterStory {...props} isEpochsInfoAvailable />,
     {
       id: 'delegation-center',
       experiment: true,
@@ -163,7 +159,7 @@ storiesOf('Decentralization | Staking', module)
       <StakingDelegationCenterStory
         {...props}
         isLoading
-        shelleyEpochsInfoAvailable
+        isEpochsInfoAvailable
       />
     ),
     {
@@ -174,10 +170,7 @@ storiesOf('Decentralization | Staking', module)
   .add(
     'Delegation Center - Not an Shelley era',
     props => (
-      <StakingDelegationCenterStory
-        {...props}
-        shelleyEpochsInfoAvailable={false}
-      />
+      <StakingDelegationCenterStory {...props} isEpochsInfoAvailable={false} />
     ),
     {
       id: 'delegation-center-loading',
