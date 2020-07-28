@@ -46,7 +46,6 @@ type Props = {
   disableDownloadLogs: boolean,
   showNewsFeedIcon: boolean,
   isIncentivizedTestnet: boolean,
-  isShelleyTestnet: boolean,
   onIssueClick: Function,
   onOpenExternalLink: Function,
   onDownloadLogs: Function,
@@ -94,6 +93,7 @@ export default class SyncingConnecting extends Component<Props, State> {
       !isNewAppVersionLoaded &&
       !isNewAppVersionLoading &&
       !isIncentivizedTestnet &&
+      !global.isShelleyTestnet &&
       !isFlight
     ) {
       onGetAvailableVersions();
@@ -149,7 +149,7 @@ export default class SyncingConnecting extends Component<Props, State> {
       (!isConnected &&
         (connectingTime >= REPORT_ISSUE_TIME_TRIGGER ||
           cardanoNodeState === CardanoNodeStates.UNRECOVERABLE));
-    if (isFlight || isIncentivizedTestnet) {
+    if (isFlight || isIncentivizedTestnet || global.isShelleyTestnet) {
       return canReportConnectingIssue;
     }
     return (
@@ -174,7 +174,6 @@ export default class SyncingConnecting extends Component<Props, State> {
       onDownloadLogs,
       disableDownloadLogs,
       isIncentivizedTestnet,
-      isShelleyTestnet,
       isNodeResponding,
       isNodeSyncing,
       isNodeTimeCorrect,
@@ -198,7 +197,6 @@ export default class SyncingConnecting extends Component<Props, State> {
         <SyncingConnectingBackground
           hasLoadedCurrentTheme={hasLoadedCurrentTheme}
           isIncentivizedTestnet={isIncentivizedTestnet}
-          isShelleyTestnet={isShelleyTestnet}
           isConnecting={isConnecting}
           isSyncing={isSyncing}
         />
@@ -219,9 +217,7 @@ export default class SyncingConnecting extends Component<Props, State> {
             />
           )}
           <LogosDisplay isConnected={isConnected} />
-          {isIncentivizedTestnet && !isShelleyTestnet && (
-            <SyncingConnectingTitle />
-          )}
+          {isIncentivizedTestnet && <SyncingConnectingTitle />}
         </div>
         <SyncingConnectingStatus
           cardanoNodeState={cardanoNodeState}

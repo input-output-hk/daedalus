@@ -16,16 +16,20 @@ export const introspectAddressChannel: MainIpcChannel<
 
 export const handleAddressIntrospectionRequests = () => {
   introspectAddressChannel.onReceive(
-    ({  input }: IntrospectAddressRendererRequest) =>
+    ({ input }: IntrospectAddressRendererRequest) =>
       new Promise((resolve, reject) => {
-        const { stdout, stderr } = spawnSync('cardano-address', ['address', 'inspect'], { input });
+        const { stdout, stderr } = spawnSync(
+          'cardano-address',
+          ['address', 'inspect'],
+          { input }
+        );
         if (stderr.toString() !== '') {
           if (stderr.toString().match(/user error/g) !== null) {
             return resolve('Invalid');
           }
           return reject(new Error(stderr.toString()));
         }
-        return resolve({ introspection: JSON.parse(stdout.toString()) })
+        return resolve({ introspection: JSON.parse(stdout.toString()) });
       })
   );
 };

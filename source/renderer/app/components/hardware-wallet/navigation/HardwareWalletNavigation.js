@@ -37,7 +37,6 @@ export default class WalletNavigation extends Component<Props> {
   render() {
     const { isActiveNavItem, onNavItemClick, activeItem } = this.props;
     const { intl } = this.context;
-    const { isIncentivizedTestnet } = global;
     const items: Array<NavButtonProps | NavDropdownProps> = [
       {
         id: WALLET_NAV_IDS.SUMMARY,
@@ -47,7 +46,7 @@ export default class WalletNavigation extends Component<Props> {
     ].filter(
       item =>
         !(
-          isIncentivizedTestnet &&
+          global.isIncentivizedTestnet &&
           includes(ITN_LEGACY_WALLET_EXCLUDED_NAV_ITEMS, item.id)
         )
     );

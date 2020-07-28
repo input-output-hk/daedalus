@@ -255,7 +255,7 @@ export default class WalletRecoveryPhraseVerificationWidget extends Component<Pr
         <h2>{intl.formatMessage(messages.title)}</h2>
         <div className={styles.description}>
           {intl.formatMessage(messages.description, { wordCount })}
-          {!isIncentivizedTestnet && (
+          {!isIncentivizedTestnet && !global.isShelleyTestnet && (
             <>
               &nbsp;
               <Tooltip

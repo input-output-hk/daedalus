@@ -15,6 +15,7 @@ Changelog
 
 ### Chores
 
+- Configured mainnet instance for Shelley hardfork ([PR 2104](https://github.com/input-output-hk/daedalus/pull/2104))
 - Updated network-info Api endpoint integration ([PR 2101](https://github.com/input-output-hk/daedalus/pull/2101))
 - Extended incident and alert newsfeed type ([PR 2099](https://github.com/input-output-hk/daedalus/pull/2099))
 - Enable Cardano Explorer URLs for STN network ([PR 2098](https://github.com/input-output-hk/daedalus/pull/2098))
