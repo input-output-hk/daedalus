@@ -663,7 +663,6 @@ export default class NetworkStatusStore extends Store {
     const { networkTip, nextEpoch, stores } = this;
     const { isShelleyActivated } = stores.staking;
     return (
-      isShelleyActivated &&
       get(nextEpoch, 'epochNumber', null) !== null &&
       get(nextEpoch, 'epochStart', null) !== null &&
       get(networkTip, 'epoch', null) !== null &&
