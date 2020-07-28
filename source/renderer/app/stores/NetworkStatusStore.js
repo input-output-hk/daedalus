@@ -1,7 +1,7 @@
 // @flow
 import { observable, action, computed, runInAction } from 'mobx';
 import moment from 'moment';
-import { isEqual, includes } from 'lodash';
+import { isEqual, includes, get } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import {
@@ -658,5 +658,15 @@ export default class NetworkStatusStore extends Store {
 
   @computed get syncPercentage(): number {
     return this.syncProgress || 0;
+  }
+
+  @computed get isEpochsInfoAvailable(): boolean {
+    const { networkTip, nextEpoch } = this;
+    return (
+      get(nextEpoch, 'epochNumber', null) !== null &&
+      get(nextEpoch, 'epochStart', null) !== null &&
+      get(networkTip, 'epoch', null) !== null &&
+      get(networkTip, 'slot', null) !== null
+    );
   }
 }
