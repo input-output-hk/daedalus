@@ -78,6 +78,8 @@ export default class SidebarStore extends Store {
   @action _configureCategories = () => {
     const {
       isFlight,
+      isIncentivizedTestnet,
+      isShelleyTestnet,
       environment: { isDev },
     } = global;
 
@@ -98,7 +100,8 @@ export default class SidebarStore extends Store {
       [categories.STAKING.name]: isShelleyActivated,
       [categories.REDEEM_ITN_REWARDS.name]: isDev,
       [categories.SETTINGS.name]: true,
-      [categories.NETWORK_INFO.name]: !isFlight,
+      [categories.NETWORK_INFO.name]:
+        isFlight || isIncentivizedTestnet || isShelleyTestnet,
     };
 
     const categoriesFilteredList: Array<SidebarCategoryInfo> = list.filter(
