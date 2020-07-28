@@ -16,6 +16,7 @@ export default class TransferFundsStep1Container extends Component<Props> {
   render() {
     const { stores, actions, onClose, onContinue } = this.props;
     const {
+      transferFundsCalculateFeeRequest,
       transferFundsSourceWalletId,
       transferFundsTargetWalletId,
       allLegacyWallets,
@@ -39,6 +40,8 @@ export default class TransferFundsStep1Container extends Component<Props> {
         }
         numberOfStakePools={stakePools.length}
         getStakePoolById={getStakePoolById}
+        isSubmitting={transferFundsCalculateFeeRequest.isExecuting}
+        error={transferFundsCalculateFeeRequest.error}
       />
     );
   }

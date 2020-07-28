@@ -1,11 +1,36 @@
 Changelog
 =========
 
-## 1.5.1-STN4
+## vNext
+
+### Fixes
+
+- Fixed `cardano-wallet` info shown on the "About" screen ([PR 2097](https://github.com/input-output-hk/daedalus/pull/2097))
+- Updated stake pool tooltip to display "Produced blocks" instead of "Blocks (current epoch)" ([PR 2096](https://github.com/input-output-hk/daedalus/pull/2096))
+- Fixed wallet recovery phrase length used on "ITN rewards redemption" wizard ([PR 2095](https://github.com/input-output-hk/daedalus/pull/2095))
+
+### Chores
+
+- Updated network-info Api endpoint integration ([PR 2101](https://github.com/input-output-hk/daedalus/pull/2101))
+- Extended incident and alert newsfeed type ([PR 2099](https://github.com/input-output-hk/daedalus/pull/2099))
+- Enable Cardano Explorer URLs for STN network ([PR 2098](https://github.com/input-output-hk/daedalus/pull/2098))
+
+## 1.6.0-STN5
+
+### Features
+
+- Added recovery phrase autocomplete on the wallet creation wizard ([PR 2083](https://github.com/input-output-hk/daedalus/pull/2083))
+- Added restoration of 24-word Shelley wallets and 15-word ITN wallets ([PR 2083](https://github.com/input-output-hk/daedalus/pull/2083))
+- Added restoration of legacy Byron hardware wallets ([PR 2082](https://github.com/input-output-hk/daedalus/pull/2082))
 
 ### Fixes
 
 - Fixed genesis file
+
+### Chores
+
+- Added handlers for new error messages ([PR 2090](https://github.com/input-output-hk/daedalus/pull/2090))
+- Updated `cardano-wallet` to revision `71c0b8fd` which includes `cardano-node` 1.18.0
 
 ## 1.5.0-STN4
 

@@ -123,11 +123,6 @@ const messages = defineMessages({
     defaultMessage: '!!!to see these addresses.',
     description: 'Unresolved Input Addresses additional label.',
   },
-  unresolvedInputAddressesLinkUnavailableLabel: {
-    id: 'wallet.transaction.unresolvedInputAddressesLinkUnavailableLabel',
-    defaultMessage: '!!!Cardano Explorer link currently unavailable.',
-    description: 'Unresolved Input Addresses link unavailable label.',
-  },
 });
 
 const stateTranslations = defineMessages({
@@ -278,7 +273,6 @@ export default class Transaction extends Component<Props, State> {
       currentTimeFormat,
     } = this.props;
     const { intl } = this.context;
-    const { isShelleyTestnet } = global;
     const { showConfirmationDialog } = this.state;
 
     const isPendingTransaction = state === TransactionStates.PENDING;
@@ -320,31 +314,21 @@ export default class Transaction extends Component<Props, State> {
       if (addresses.length > 0) {
         return includesUnresolvedAddresses(addresses) ? (
           <div className={styles.explorerLinkRow}>
-            {isShelleyTestnet ? (
-              <span>
-                {intl.formatMessage(
-                  messages.unresolvedInputAddressesLinkUnavailableLabel
-                )}
-              </span>
-            ) : (
-              <>
-                <Link
-                  className={styles.explorerLink}
-                  onClick={() =>
-                    onOpenExternalLink(getUrlByType('tx', transactionId))
-                  }
-                  label={intl.formatMessage(
-                    messages.unresolvedInputAddressesLinkLabel
-                  )}
-                  skin={LinkSkin}
-                />
-                <span>
-                  {intl.formatMessage(
-                    messages.unresolvedInputAddressesAdditionalLabel
-                  )}
-                </span>
-              </>
-            )}
+            <Link
+              className={styles.explorerLink}
+              onClick={() =>
+                onOpenExternalLink(getUrlByType('tx', transactionId))
+              }
+              label={intl.formatMessage(
+                messages.unresolvedInputAddressesLinkLabel
+              )}
+              skin={LinkSkin}
+            />
+            <span>
+              {intl.formatMessage(
+                messages.unresolvedInputAddressesAdditionalLabel
+              )}
+            </span>
           </div>
         ) : (
           addresses.map((address, addressIndex) => (
@@ -353,18 +337,14 @@ export default class Transaction extends Component<Props, State> {
               key={`${data.id}-from-${address || ''}-${addressIndex}`}
               className={styles.addressRow}
             >
-              {isShelleyTestnet ? (
-                <span className={styles.address}>{address}</span>
-              ) : (
-                <Link
-                  className={styles.address}
-                  onClick={() =>
-                    onOpenExternalLink(getUrlByType('address', address))
-                  }
-                  label={address}
-                  skin={LinkSkin}
-                />
-              )}
+              <Link
+                className={styles.address}
+                onClick={() =>
+                  onOpenExternalLink(getUrlByType('address', address))
+                }
+                label={address}
+                skin={LinkSkin}
+              />
             </div>
           ))
         );
@@ -431,20 +411,14 @@ export default class Transaction extends Component<Props, State> {
                         key={`${data.id}-to-${address}-${addressIndex}`}
                         className={styles.addressRow}
                       >
-                        {isShelleyTestnet ? (
-                          <span className={styles.address}>{address}</span>
-                        ) : (
-                          <Link
-                            className={styles.address}
-                            onClick={() =>
-                              onOpenExternalLink(
-                                getUrlByType('address', address)
-                              )
-                            }
-                            label={address}
-                            skin={LinkSkin}
-                          />
-                        )}
+                        <Link
+                          className={styles.address}
+                          onClick={() =>
+                            onOpenExternalLink(getUrlByType('address', address))
+                          }
+                          label={address}
+                          skin={LinkSkin}
+                        />
                       </div>
                     ))}
                   </>
@@ -457,35 +431,27 @@ export default class Transaction extends Component<Props, State> {
                     key={`${data.id}-to-${address}-${addressIndex}`}
                     className={styles.addressRow}
                   >
-                    {isShelleyTestnet ? (
-                      <span className={styles.address}>{address}</span>
-                    ) : (
-                      <Link
-                        className={styles.address}
-                        onClick={() =>
-                          onOpenExternalLink(getUrlByType('address', address))
-                        }
-                        label={address}
-                        skin={LinkSkin}
-                      />
-                    )}
+                    <Link
+                      className={styles.address}
+                      onClick={() =>
+                        onOpenExternalLink(getUrlByType('address', address))
+                      }
+                      label={address}
+                      skin={LinkSkin}
+                    />
                   </div>
                 ))}
 
                 <h2>{intl.formatMessage(messages.transactionId)}</h2>
                 <div className={styles.transactionIdRow}>
-                  {isShelleyTestnet ? (
-                    <span className={styles.transactionId}>{data.id}</span>
-                  ) : (
-                    <Link
-                      className={styles.transactionId}
-                      onClick={() =>
-                        onOpenExternalLink(getUrlByType('tx', data.id))
-                      }
-                      label={data.id}
-                      skin={LinkSkin}
-                    />
-                  )}
+                  <Link
+                    className={styles.transactionId}
+                    onClick={() =>
+                      onOpenExternalLink(getUrlByType('tx', data.id))
+                    }
+                    label={data.id}
+                    skin={LinkSkin}
+                  />
                 </div>
                 {this.renderCancelPendingTxnContent()}
               </div>

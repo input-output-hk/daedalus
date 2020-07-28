@@ -40,4 +40,34 @@ storiesOf('News|Incidents', module)
         DATE_ENGLISH_OPTIONS[0].value
       )}
     />
+  ))
+  .add('Incident Overlay - Themed', props => (
+    <IncidentOverlay
+      incident={{
+        ...props,
+        color: 'theme-default',
+      }}
+      onOpenExternalLink={action('onOpenExternalLink')}
+      onProceedNewsAction={action('onProceedNewsAction')}
+      currentDateFormat={select(
+        'currentDateFormat',
+        dateOptions,
+        DATE_ENGLISH_OPTIONS[0].value
+      )}
+    />
+  ))
+  .add('Incident Overlay - Grey', props => (
+    <IncidentOverlay
+      incident={{
+        ...props,
+        color: 'grey',
+      }}
+      onOpenExternalLink={action('onOpenExternalLink')}
+      onProceedNewsAction={action('onProceedNewsAction')}
+      currentDateFormat={select(
+        'currentDateFormat',
+        dateOptions,
+        DATE_ENGLISH_OPTIONS[0].value
+      )}
+    />
   ));

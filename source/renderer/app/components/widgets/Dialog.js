@@ -134,6 +134,7 @@ export default class Dialog extends Component<Props> {
                   />
                 ) : (
                   <Link
+                    key={key}
                     className={action.className}
                     onClick={action.onClick}
                     label={action.label}

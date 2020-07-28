@@ -220,9 +220,11 @@ const wallets = [
 export const StakingDelegationCenterStory = ({
   locale,
   isLoading,
+  isEpochsInfoAvailable,
 }: {
   locale: string,
   isLoading: boolean,
+  isEpochsInfoAvailable: boolean,
 }) => (
   <DelegationCenter
     wallets={wallets}
@@ -237,6 +239,7 @@ export const StakingDelegationCenterStory = ({
     fetchingStakePoolsFailed={isLoading}
     futureEpoch={futureEpoch}
     currentLocale={locale}
-    isLoading={false}
+    isLoading={isLoading}
+    isEpochsInfoAvailable={isEpochsInfoAvailable}
   />
 );

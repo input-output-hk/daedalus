@@ -10,11 +10,9 @@ export default class WalletBackupActions {
   }> = new Action();
   acceptPrivacyNoticeForWalletBackup: Action<any> = new Action();
   continueToRecoveryPhraseForWalletBackup: Action<any> = new Action();
-  addWordToWalletBackupVerification: Action<{
-    word: string,
-    index: number,
+  updateWalletBackupVerificationPhrase: Action<{
+    verificationPhrase: Array<string>,
   }> = new Action();
-  clearEnteredRecoveryPhrase: Action<any> = new Action();
   acceptWalletBackupTermOffline: Action<any> = new Action();
   acceptWalletBackupTermRecovery: Action<any> = new Action();
   acceptWalletBackupTermRewards: Action<any> = new Action();
