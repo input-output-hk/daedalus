@@ -11,7 +11,6 @@ type Props = {
   onNavItemClick: Function,
   isActiveNavItem: Function,
   isIncentivizedTestnet: boolean,
-  isShelleyTestnet: boolean,
 };
 
 type State = {
@@ -46,7 +45,6 @@ export default class StakingWithNavigation extends Component<Props, State> {
       activeItem,
       isActiveNavItem,
       isIncentivizedTestnet,
-      isShelleyTestnet,
     } = this.props;
     const { scrollTop } = this.state;
 
@@ -59,7 +57,6 @@ export default class StakingWithNavigation extends Component<Props, State> {
               onNavItemClick={onNavItemClick}
               activeItem={activeItem}
               isIncentivizedTestnet={isIncentivizedTestnet}
-              isShelleyTestnet={isShelleyTestnet}
             />
           </div>
           <div className={styles.page} onScroll={this.handleScroll}>

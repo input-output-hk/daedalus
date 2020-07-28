@@ -50,8 +50,6 @@ import type {
  * The base wallet store that contains logic for dealing with wallets
  */
 
-const { isIncentivizedTestnet, isShelleyTestnet } = global;
-
 export default class WalletsStore extends Store {
   WALLET_REFRESH_INTERVAL = 5000;
 
@@ -128,9 +126,7 @@ export default class WalletsStore extends Store {
   // STEP: WALLET TYPE
   @observable walletKind: ?WalletKind = null;
   @observable walletKindDaedalus: ?WalletDaedalusKind = null;
-  @observable walletKindYoroi: ?WalletYoroiKind = isIncentivizedTestnet
-    ? null
-    : WALLET_YOROI_KINDS.BYRON_15_WORD;
+  @observable walletKindYoroi: ?WalletYoroiKind = null;
   @observable walletKindHardware: ?WalletHardwareKind = null;
   // STEP: RECOVERY PHRASE
   @observable mnemonics: Array<string> = [];
@@ -380,9 +376,7 @@ export default class WalletsStore extends Store {
     this.restoredWallet = null;
     this.walletKind = null;
     this.walletKindDaedalus = null;
-    this.walletKindYoroi = isIncentivizedTestnet
-      ? null
-      : WALLET_YOROI_KINDS.BYRON_15_WORD;
+    this.walletKindYoroi = null;
     this.walletKindHardware = null;
     this.mnemonics = [];
     this.walletName = '';
@@ -882,8 +876,8 @@ export default class WalletsStore extends Store {
   isValidAddress = (address: string) => {
     const { app } = this.stores;
     const { isMainnet, isStaging, isSelfnode } = app.environment;
-    if (isShelleyTestnet) return true;
-    const addressGroup = isIncentivizedTestnet
+    if (global.isShelleyTestnet) return true;
+    const addressGroup = global.isIncentivizedTestnet
       ? AddressGroup.jormungandr
       : AddressGroup.byron;
     const chainSettings =

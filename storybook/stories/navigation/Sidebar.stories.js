@@ -129,7 +129,6 @@ storiesOf('Navigation|Sidebar', module)
       currentTheme={props.currentTheme}
       network="testnet"
       isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
-      isShelleyTestnet={isShelleyTestnetTheme(props.currentTheme)}
       isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
     />
   ))
@@ -147,7 +146,6 @@ storiesOf('Navigation|Sidebar', module)
       currentTheme={props.currentTheme}
       network="testnet"
       isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
-      isShelleyTestnet={isShelleyTestnetTheme(props.currentTheme)}
       isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
     />
   ))
@@ -166,7 +164,6 @@ storiesOf('Navigation|Sidebar', module)
       currentTheme={props.currentTheme}
       network="testnet"
       isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
-      isShelleyTestnet={isShelleyTestnetTheme(props.currentTheme)}
       isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
     />
   ))
@@ -185,7 +182,6 @@ storiesOf('Navigation|Sidebar', module)
       currentTheme={props.currentTheme}
       network="testnet"
       isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
-      isShelleyTestnet={isShelleyTestnetTheme(props.currentTheme)}
       isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
     />
   ))
@@ -203,7 +199,6 @@ storiesOf('Navigation|Sidebar', module)
       currentTheme={props.currentTheme}
       network="testnet"
       isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
-      isShelleyTestnet={isShelleyTestnetTheme(props.currentTheme)}
       isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
     />
   ))
@@ -223,7 +218,6 @@ storiesOf('Navigation|Sidebar', module)
         currentTheme={props.currentTheme}
         network="testnet"
         isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
-        isShelleyTestnet={isShelleyTestnetTheme(props.currentTheme)}
         isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
       />
     )
@@ -251,7 +245,6 @@ storiesOf('Navigation|Sidebar', module)
         TESTNET
       )}
       isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
-      isShelleyTestnet={isShelleyTestnetTheme(props.currentTheme)}
       isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
     />
   ));

@@ -479,7 +479,6 @@ export default class ProfileStore extends Store {
   _setStateSnapshotLog = async () => {
     try {
       logger.info('ProfileStore: Requesting state snapshot log file creation');
-      const { isIncentivizedTestnet } = global;
       const { networkStatus } = this.stores;
       const {
         cardanoNodePID,
@@ -554,7 +553,7 @@ export default class ProfileStore extends Store {
         isStaging,
         isSynced,
         isTestnet,
-        isIncentivizedTestnet,
+        isIncentivizedTestnet: global.isIncentivizedTestnet,
         currentTime: new Date().toISOString(),
         syncPercentage: syncPercentage.toFixed(2),
         localTip,
