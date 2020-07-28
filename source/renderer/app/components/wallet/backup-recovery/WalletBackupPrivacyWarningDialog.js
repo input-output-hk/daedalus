@@ -58,7 +58,7 @@ const messages = defineMessages({
   },
 });
 
-const { isIncentivizedTestnet, isShelleyTestnet } = global;
+const { isIncentivizedTestnet } = global;
 
 type Props = {
   countdownRemaining: number,
@@ -118,8 +118,7 @@ export default class WalletBackupPrivacyWarningDialog extends Component<Props> {
             messages.recoveryPhraseInstructions1,
             {
               walletRecoveryPhraseWordCount:
-                (isIncentivizedTestnet && !isShelleyTestnet) ||
-                isShelleyActivated
+                isIncentivizedTestnet || isShelleyActivated
                   ? WALLET_RECOVERY_PHRASE_WORD_COUNT
                   : LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
             }
@@ -132,7 +131,7 @@ export default class WalletBackupPrivacyWarningDialog extends Component<Props> {
         />
         <WalletRecoveryInstructions
           instructionsText={
-            isIncentivizedTestnet && !isShelleyTestnet ? (
+            isIncentivizedTestnet ? (
               <FormattedHTMLMessage
                 {...messages.recoveryPhraseInstructions3Itn}
               />

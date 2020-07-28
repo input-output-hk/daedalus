@@ -9,7 +9,7 @@ import type {
   ImportWalletStep,
 } from '../types/walletRestoreTypes';
 
-const { isIncentivizedTestnet, isShelleyTestnet } = global;
+const { isMainnet } = global.environment;
 
 export const RESTORE_WALLET_STEPS: Array<RestoreWalletStep> = [
   'type',
@@ -23,29 +23,25 @@ export const IMPORT_WALLET_STEPS: EnumMap<string, ImportWalletStep> = {
   WALLET_SELECT_IMPORT: 'WalletSelectImport',
 };
 
-export const WALLET_KINDS: EnumMap<string, WalletKind> = isShelleyTestnet
-  ? {
-      DAEDALUS: 'Daedalus',
-      YOROI: 'Yoroi',
-      HARDWARE: 'Hardware',
-    }
-  : {
-      DAEDALUS: 'Daedalus',
-      YOROI: 'Yoroi',
-    };
+export const WALLET_KINDS: EnumMap<string, WalletKind> = {
+  DAEDALUS: 'Daedalus',
+  YOROI: 'Yoroi',
+  HARDWARE: 'Hardware',
+};
 
 export const WALLET_DAEDALUS_KINDS: EnumMap<
   string,
   WalletDaedalusKind
-> = isIncentivizedTestnet
+> = isMainnet
   ? {
       BYRON_12_WORD: '12WordByron',
-      SHELLEY_15_WORD: '15WordShelley',
       SHELLEY_24_WORD: '24WordShelley',
       BYRON_27_WORD: '27WordPaper',
     }
   : {
       BYRON_12_WORD: '12WordByron',
+      SHELLEY_15_WORD: '15WordShelley',
+      SHELLEY_24_WORD: '24WordShelley',
       BYRON_27_WORD: '27WordPaper',
     };
 
