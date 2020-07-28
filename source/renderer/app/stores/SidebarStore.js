@@ -83,7 +83,7 @@ export default class SidebarStore extends Store {
       environment: { isDev },
     } = global;
 
-    const { isShelleyActivated } = this.stores.staking;
+    const { isShelleyActivated, isShelleyPending } = this.stores.networkStatus;
 
     const {
       CATEGORIES_BY_NAME: categories,
@@ -97,7 +97,7 @@ export default class SidebarStore extends Store {
       [categories.HARDWARE_WALLETS.name]: isDev,
       [categories.PAPER_WALLET_CREATE_CERTIFICATE.name]: false,
       [categories.STAKING_DELEGATION_COUNTDOWN.name]: () =>
-        isShelleyTestnet && !isShelleyActivated,
+        isShelleyTestnet && isShelleyPending,
       [categories.STAKING.name]:
         (isIncentivizedTestnet && !isShelleyTestnet) || isShelleyActivated,
       [categories.REDEEM_ITN_REWARDS.name]: isDev,
@@ -173,7 +173,9 @@ export default class SidebarStore extends Store {
   };
 
   _syncSidebarItemsWithShelleyActivation = () => {
-    const { isShelleyActivated } = this.stores.staking;
-    if (isShelleyActivated) this._configureCategories();
+    const { isShelleyActivated, isShelleyPending } = this.stores.networkStatus;
+    if (isShelleyActivated || isShelleyPending) {
+      this._configureCategories();
+    }
   };
 }
