@@ -1,17 +1,17 @@
 // @flow
 export type TipInfo = {
-  epoch: number,
-  slot: number,
+  epoch: ?number,
+  slot: ?number,
 };
 
 export type NextEpoch = {
-  epochNumber: number,
-  epochStart: string,
+  epochNumber: ?number,
+  epochStart: ?string,
 };
 
 export type FutureEpoch = {
-  epochNumber: number,
-  epochStart: string,
+  epochNumber: ?number,
+  epochStart: ?string,
 };
 
 export type ClockOffset = {
@@ -52,9 +52,9 @@ export type MinimumUtxoValue = {
 export type GetNetworkInfoResponse = {
   syncProgress: number,
   localTip: TipInfo,
-  networkTip: TipInfo,
-  nextEpoch: NextEpoch,
-  futureEpoch: FutureEpoch,
+  networkTip: ?TipInfo,
+  nextEpoch: ?NextEpoch,
+  futureEpoch: ?FutureEpoch,
 };
 
 export type NetworkInfoResponse = {
@@ -73,13 +73,13 @@ export type NetworkInfoResponse = {
       unit: 'block',
     },
   },
-  network_tip: {
-    slot_number: number,
-    epoch_number: number,
+  network_tip?: ?{
+    slot_number: ?number,
+    epoch_number: ?number,
   },
-  next_epoch: {
-    epoch_number: number,
-    epoch_start_time: string,
+  next_epoch?: ?{
+    epoch_number: ?number,
+    epoch_start_time: ?string,
   },
 };
 

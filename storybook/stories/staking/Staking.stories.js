@@ -136,13 +136,17 @@ storiesOf('Decentralization | Staking', module)
   .addDecorator(decorator)
   // ====== Stories ======
 
-  .add(pageNames['delegation-center'], StakingDelegationCenterStory, {
-    id: 'delegation-center',
-  })
+  .add(
+    pageNames['delegation-center'],
+    props => <StakingDelegationCenterStory {...props} isEpochsInfoAvailable />,
+    {
+      id: 'delegation-center',
+    }
+  )
 
   .add(
     pageNames['delegation-center-experiment'],
-    StakingDelegationCenterStory,
+    props => <StakingDelegationCenterStory {...props} isEpochsInfoAvailable />,
     {
       id: 'delegation-center',
       experiment: true,
@@ -151,7 +155,23 @@ storiesOf('Decentralization | Staking', module)
 
   .add(
     'Delegation Center - Loading',
-    props => <StakingDelegationCenterStory {...props} isLoading />,
+    props => (
+      <StakingDelegationCenterStory
+        {...props}
+        isLoading
+        isEpochsInfoAvailable
+      />
+    ),
+    {
+      id: 'delegation-center-loading',
+    }
+  )
+
+  .add(
+    'Delegation Center - Not an Shelley era',
+    props => (
+      <StakingDelegationCenterStory {...props} isEpochsInfoAvailable={false} />
+    ),
     {
       id: 'delegation-center-loading',
     }
