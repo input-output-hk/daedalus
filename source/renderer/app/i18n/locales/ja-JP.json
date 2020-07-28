@@ -317,7 +317,7 @@
   "staking.delegationCenter.unknownStakePoolLabel": "不明の",
   "staking.delegationCenter.walletAmount": "{amount}ADA",
   "staking.delegationCountdown.buttonLabel": "もっと知る",
-  "staking.delegationCountdown.description": "Cardanoはまもなく連合型システムから分散型システムへの移行を開始します。その第一歩はShelleyアップグレードの有効化です。アップグレードが完了すると、ステークプールの登録が開始され、ユーザーはウォレットを委任できるようになります。2エポック（12時間）後、ステークプールはブロックの生成を開始し、ユーザーは自分のステークを委任することにより報酬を稼ぎ始めることができるようになります。最初の報酬の配分は（予定されている場合）、さらに2エポック（12時間）後となります。",
+  "staking.delegationCountdown.description": "Cardanoはまもなく連合型システムから分散型システムへの移行を開始します。その第一歩はShelleyアップグレードの有効化です。アップグレードが完了すると、ステークプールの登録が開始され、ユーザーはウォレットを委任できるようになります。2エポック後、ステークプールはブロックの生成を開始し、ユーザーは自分のステークを委任することにより報酬を稼ぎ始めることができるようになります。最初の報酬の配分は（予定されている場合）、さらに2エポック後となります。",
   "staking.delegationCountdown.heading": "Shelleyアップグレード",
   "staking.delegationCountdown.timeLeftDesc": "Shelley開始まであと",
   "staking.delegationSetup.chooseStakePool.step.dialog.continueButtonLabel": "続ける",
