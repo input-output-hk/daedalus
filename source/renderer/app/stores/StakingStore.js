@@ -57,7 +57,6 @@ export default class StakingStore extends Store {
   _delegationFeeCalculationWalletId: ?string = null;
 
   setup() {
-    const { isIncentivizedTestnet, isShelleyTestnet } = global;
     const { staking: stakingActions } = this.actions;
 
     this.refreshPolling = setInterval(
@@ -75,22 +74,20 @@ export default class StakingStore extends Store {
     stakingActions.onResultContinue.listen(this._onResultContinue);
     stakingActions.closeRedeemDialog.listen(this._closeRedeemDialog);
 
-    if (isIncentivizedTestnet || isShelleyTestnet) {
-      stakingActions.goToStakingInfoPage.listen(this._goToStakingInfoPage);
-      stakingActions.goToStakingDelegationCenterPage.listen(
-        this._goToStakingDelegationCenterPage
-      );
-      stakingActions.joinStakePool.listen(this._joinStakePool);
-      stakingActions.quitStakePool.listen(this._quitStakePool);
-      stakingActions.fakeStakePoolsLoading.listen(this._setFakePoller);
-      stakingActions.updateStake.listen(this._setStake);
-      stakingActions.selectDelegationWallet.listen(
-        this._setSelectedDelegationWalletId
-      );
+    stakingActions.goToStakingInfoPage.listen(this._goToStakingInfoPage);
+    stakingActions.goToStakingDelegationCenterPage.listen(
+      this._goToStakingDelegationCenterPage
+    );
+    stakingActions.joinStakePool.listen(this._joinStakePool);
+    stakingActions.quitStakePool.listen(this._quitStakePool);
+    stakingActions.fakeStakePoolsLoading.listen(this._setFakePoller);
+    stakingActions.updateStake.listen(this._setStake);
+    stakingActions.selectDelegationWallet.listen(
+      this._setSelectedDelegationWalletId
+    );
 
-      // ========== MOBX REACTIONS =========== //
-      this.registerReactions([this._pollOnSync]);
-    }
+    // ========== MOBX REACTIONS =========== //
+    this.registerReactions([this._pollOnSync]);
   }
 
   // REQUESTS

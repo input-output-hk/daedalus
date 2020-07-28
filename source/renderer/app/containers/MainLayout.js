@@ -86,7 +86,6 @@ export default class MainLayout extends Component<InjectedContainerProps> {
         menus={sidebarMenus}
         isShowingSubMenus={sidebar.isShowingSubMenus}
         isIncentivizedTestnet={global.isIncentivizedTestnet}
-        isShelleyTestnet={global.isShelleyTestnet}
         isShelleyActivated={isShelleyActivated}
         categories={sidebar.CATEGORIES}
         activeSidebarCategory={sidebar.activeSidebarCategory}

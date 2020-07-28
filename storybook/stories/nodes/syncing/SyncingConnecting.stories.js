@@ -3,10 +3,7 @@ import React from 'react';
 import { boolean, radios } from '@storybook/addon-knobs';
 import { linkTo } from '@storybook/addon-links';
 import { action } from '@storybook/addon-actions';
-import {
-  isIncentivizedTestnetTheme,
-  isShelleyTestnetTheme,
-} from '../../_support/utils';
+import { isIncentivizedTestnetTheme } from '../../_support/utils';
 
 import SyncingConnecting from '../../../../source/renderer/app/components/loading/syncing-connecting/SyncingConnecting';
 import { CardanoNodeStates } from '../../../../source/common/types/cardano-node.types';
@@ -26,7 +23,6 @@ export const DefaultSyncingConnectingStory = (props: {
     )}
     hasBeenConnected={boolean('hasBeenConnected', false)}
     isFlight={false}
-    isShelleyTestnet={isShelleyTestnetTheme(props.currentTheme)}
     isConnected={boolean('isConnected', false)}
     isSynced={boolean('isSynced', false)}
     isConnecting={boolean('isConnecting', true)}
@@ -69,7 +65,6 @@ export const ConnectivityIssuesSyncingConnectingStory = (props: {
     cardanoNodeState={CardanoNodeStates.RUNNING}
     hasBeenConnected
     isFlight={false}
-    isShelleyTestnet={isShelleyTestnetTheme(props.currentTheme)}
     isSynced={false}
     isConnecting
     isSyncing={false}
@@ -110,7 +105,6 @@ export const LoadingWalletDataSyncingConnectingStory = (props: {
     cardanoNodeState={CardanoNodeStates.RUNNING}
     hasBeenConnected
     isFlight={false}
-    isShelleyTestnet={isShelleyTestnetTheme(props.currentTheme)}
     isSynced={false}
     isConnecting={false}
     isSyncing
