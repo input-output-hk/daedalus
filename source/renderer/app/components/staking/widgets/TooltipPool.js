@@ -18,6 +18,7 @@ import experimentalTooltipStyles from './TooltipPool-experimental-tooltip.scss';
 import isTooltipStyles from './TooltipPool-copyId-tooltip.scss';
 import StakePool from '../../../domains/StakePool';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
+import sandClockSmallImage from '../../../assets/images/sand-clock-small.inline.svg';
 import experimentalIcon from '../../../assets/images/experiment-icon.inline.svg';
 import copyIcon from '../../../assets/images/clipboard-small-ic.inline.svg';
 import copyCheckmarkIcon from '../../../assets/images/check-w.inline.svg';
@@ -95,10 +96,16 @@ const messages = defineMessages({
     defaultMessage: '!!!Copy the stake pool ID',
     description: 'copyId tooltip label',
   },
+  sandClockTooltipLabel: {
+    id: 'staking.stakePools.sandClockTooltip',
+    defaultMessage: '!!!Data not available yet',
+    description: 'Data not available yet label',
+  },
 });
 
 type Props = {
   stakePool: StakePool,
+  isShelleyDataAvailable: boolean,
   isVisible: boolean,
   currentTheme: string,
   onClick: Function,
@@ -390,6 +397,7 @@ export default class TooltipPool extends Component<Props, State> {
     const { intl } = this.context;
     const {
       stakePool,
+      isShelleyDataAvailable,
       isVisible,
       currentTheme,
       onClick,
@@ -451,6 +459,10 @@ export default class TooltipPool extends Component<Props, State> {
       styles.hoverContent,
       idCopyFeedback ? styles.checkIcon : styles.copyIcon,
     ]);
+    const colorBandStyles = classnames([
+      styles.colorBand,
+      isShelleyDataAvailable ? null : styles.greyColorBand,
+    ]);
 
     return (
       <div
@@ -460,7 +472,11 @@ export default class TooltipPool extends Component<Props, State> {
         aria-hidden
         style={componentStyle}
       >
-        <div className={styles.colorBand} style={colorBandStyle} />
+        {isShelleyDataAvailable ? (
+          <div className={colorBandStyles} style={colorBandStyle} />
+        ) : (
+          <div className={colorBandStyles} />
+        )}
         <div className={arrowClassnames} style={arrowStyle} />
         <div className={styles.container}>
           <h3 className={styles.name}>{name}</h3>
@@ -526,17 +542,30 @@ export default class TooltipPool extends Component<Props, State> {
             )}
             <dt>{intl.formatMessage(messages.ranking)}</dt>
             <dd className={styles.ranking}>
-              <span
-                style={{
-                  background: getColorFromRange(ranking, {
-                    darken,
-                    alpha,
-                    numberOfItems: numberOfStakePools,
-                  }),
-                }}
-              >
-                {ranking}
-              </span>
+              {isShelleyDataAvailable ? (
+                <span
+                  style={{
+                    background: getColorFromRange(ranking, {
+                      darken,
+                      alpha,
+                      numberOfItems: numberOfStakePools,
+                    }),
+                  }}
+                >
+                  {ranking}
+                </span>
+              ) : (
+                <Tooltip
+                  className={styles.sandClockTooltip}
+                  key="sandClockTooltip"
+                  skin={TooltipSkin}
+                  tip={intl.formatMessage(messages.sandClockTooltipLabel)}
+                >
+                  <div className={styles.sandClock}>
+                    <SVGInline svg={sandClockSmallImage} />
+                  </div>
+                </Tooltip>
+              )}
               {!isShelleyTestnet && (
                 <Tooltip
                   className={styles.experimentalTooltip}
@@ -556,7 +585,22 @@ export default class TooltipPool extends Component<Props, State> {
             </dd>
             <dt>{intl.formatMessage(messages.relativeStake)}</dt>
             <dd className={styles.defaultColor}>
-              <span>{`${parseFloat(relativeStake.toFixed(2))}%`}</span>
+              {isShelleyDataAvailable ? (
+                <span className={styles.defaultColorContent}>{`${parseFloat(
+                  relativeStake.toFixed(2)
+                )}%`}</span>
+              ) : (
+                <Tooltip
+                  className={styles.sandClockTooltip}
+                  key="sandClockTooltip"
+                  skin={TooltipSkin}
+                  tip={intl.formatMessage(messages.sandClockTooltipLabel)}
+                >
+                  <div className={styles.sandClock}>
+                    <SVGInline svg={sandClockSmallImage} />
+                  </div>
+                </Tooltip>
+              )}
             </dd>
             <dt>{intl.formatMessage(messages.profitMargin)}</dt>
             <dd className={styles.profitMargin}>
@@ -573,7 +617,9 @@ export default class TooltipPool extends Component<Props, State> {
             </dd>
             <dt>{intl.formatMessage(messages.pledge)}</dt>
             <dd className={styles.defaultColor}>
-              <span>{formattedWalletAmount(pledge, true, false)}</span>
+              <span className={styles.defaultColorContent}>
+                {formattedWalletAmount(pledge, true, false)}
+              </span>
             </dd>
             <dt>{intl.formatMessage(messages.costPerEpoch)}</dt>
             <dd className={styles.cost}>
@@ -590,7 +636,9 @@ export default class TooltipPool extends Component<Props, State> {
             </dd>
             <dt>{intl.formatMessage(messages.producedBlocks)}</dt>
             <dd className={styles.defaultColor}>
-              <span>{shortNumber(producedBlocks)}</span>
+              <span className={styles.defaultColorContent}>
+                {shortNumber(producedBlocks)}
+              </span>
             </dd>
             {/* <dt>{intl.formatMessage(messages.cost)}</dt>
             <dd>

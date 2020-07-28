@@ -56,6 +56,7 @@ export default class StakePoolsListPage extends Component<Props> {
       isRanking,
       selectedDelegationWalletId,
       stake,
+      isShelleyDataAvailable,
       fetchingStakePoolsFailed,
       recentStakePools,
       getStakePoolById,
@@ -74,6 +75,7 @@ export default class StakePoolsListPage extends Component<Props> {
           onRank={this.onRank}
           selectedDelegationWalletId={selectedDelegationWalletId}
           stake={stake}
+          isShelleyDataAvailable={isShelleyDataAvailable}
           onDelegate={this.handleDelegate}
           isLoading={!isSynced || fetchingStakePoolsFailed}
           isRanking={isRanking && stakePoolsRequest.isExecuting}

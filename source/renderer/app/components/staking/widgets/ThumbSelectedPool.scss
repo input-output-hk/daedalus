@@ -73,3 +73,11 @@
     }
   }
 }
+
+.sandClockIcon {
+  path {
+    stroke: var(--theme-staking-stake-pool-grey-color) !important;
+    fill: var(--theme-staking-stake-pool-grey-color) !important;
+    opacity: 1 !important;
+  }
+}

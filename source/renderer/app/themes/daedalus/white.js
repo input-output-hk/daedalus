@@ -692,6 +692,8 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-staking-stake-pool-background-color': '#fff',
     '--theme-staking-stake-pool-border-color': 'rgba(45, 45, 45, 0.1)',
     '--theme-staking-stake-pool-glow-color': 'rgba(94, 96, 102, 0.07)',
+    '--theme-staking-stake-pool-grey-color': 'rgba(45, 45, 45, 0.5)',
+    '--theme-staking-stake-pool-grey-bg-color': 'rgba(45, 45, 45, 0.1)',
     '--theme-staking-stake-pools-search-icon-color': '#2d2d2d',
     '--theme-staking-stake-pool-saturation-background-color':
       'rgba(45, 45, 45, 0.2)',

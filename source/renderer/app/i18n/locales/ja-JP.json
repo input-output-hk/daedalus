@@ -454,6 +454,7 @@
   "staking.stakePools.rankingSelectWallet": "ウォレットを選択する",
   "staking.stakePools.rankingSelectWalletEnd": "を使用して委任する量を設定します。",
   "staking.stakePools.rankingSelectWalletStart": "または、",
+  "staking.stakePools.sandClockTooltip": "データはまだ利用できません",
   "staking.stakePools.search.delegatingListTitle": "現在委任しているステークプール",
   "staking.stakePools.search.listTitle": "ステークプール ({pools})",
   "staking.stakePools.search.searchInputPlaceholder": "ステークプールを検索する",

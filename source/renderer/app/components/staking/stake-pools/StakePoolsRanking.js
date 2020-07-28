@@ -112,6 +112,7 @@ type Props = {
   onRank: Function,
   selectedDelegationWalletId?: ?string,
   stake?: ?number,
+  isShelleyDataAvailable: boolean,
   isLoading: boolean,
   isRanking: boolean,
   numberOfStakePools: number,
@@ -233,6 +234,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
     const { intl } = this.context;
     const {
       onOpenExternalLink,
+      isShelleyDataAvailable,
       isLoading,
       isRanking,
       selectedDelegationWalletId,
@@ -250,6 +252,10 @@ export default class StakePoolsRanking extends Component<Props, State> {
       walletSelectionEnd,
       learnMoreUrl,
     } = this.generateInfo();
+
+    if (!isShelleyDataAvailable) {
+      return null;
+    }
 
     return (
       <div className={styles.component}>

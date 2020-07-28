@@ -10,6 +10,7 @@ import { ThumbPool } from '../widgets/ThumbPool';
 
 type Props = {
   stakePoolsList: Array<StakePool>,
+  isShelleyDataAvailable: boolean,
   onOpenExternalLink: Function,
   currentTheme: string,
   highlightOnHover?: boolean,
@@ -99,6 +100,7 @@ export class StakePoolsList extends Component<Props, State> {
       showSelected,
       showWithSelectButton,
       stakePoolsList,
+      isShelleyDataAvailable,
       selectedPoolId,
       containerClassName,
       numberOfStakePools,
@@ -119,6 +121,7 @@ export class StakePoolsList extends Component<Props, State> {
             return (
               <ThumbPool
                 stakePool={stakePool}
+                isShelleyDataAvailable={isShelleyDataAvailable}
                 key={stakePool.id + stakePool.ranking}
                 onOpenExternalLink={onOpenExternalLink}
                 isHighlighted={isHighlighted}
