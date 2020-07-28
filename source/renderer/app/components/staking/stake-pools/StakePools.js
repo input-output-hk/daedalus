@@ -154,7 +154,7 @@ export default class StakePools extends Component<Props, State> {
               onRank={onRank}
               selectedDelegationWalletId={selectedDelegationWalletId}
               stake={stake}
-              isShelleyDataAvailable={isShelleyDataAvailable}
+              isShelleyDataAvailable={isShelleyDataAvailable || false}
               isLoading={isLoading}
               isRanking={isRanking}
               numberOfStakePools={stakePoolsList.length}
@@ -175,7 +175,7 @@ export default class StakePools extends Component<Props, State> {
                 <StakePoolsList
                   listName="stakePoolsDelegatingList"
                   stakePoolsList={stakePoolsDelegatingList}
-                  isShelleyDataAvailable={isShelleyDataAvailable}
+                  isShelleyDataAvailable={isShelleyDataAvailable || false}
                   onOpenExternalLink={onOpenExternalLink}
                   currentTheme={currentTheme}
                   isListActive={selectedList === 'stakePoolsDelegatingList'}
@@ -201,7 +201,7 @@ export default class StakePools extends Component<Props, State> {
               showWithSelectButton
               listName="selectedIndexList"
               stakePoolsList={filteredStakePoolsList}
-              isShelleyDataAvailable={isShelleyDataAvailable}
+              isShelleyDataAvailable={isShelleyDataAvailable || false}
               onOpenExternalLink={onOpenExternalLink}
               currentTheme={currentTheme}
               isListActive={selectedList === 'selectedIndexList'}
