@@ -94,6 +94,7 @@ export default class WalletBackupDialog extends Component<Props> {
           isTermRecoveryAccepted={isTermRecoveryAccepted}
           isTermRewardsAccepted={isTermRewardsAccepted}
           isValid={isValid}
+          isShelleyActivated={isShelleyActivated}
           isSubmitting={isSubmitting}
           onAcceptTermOffline={onAcceptTermOffline}
           onAcceptTermRecovery={onAcceptTermRecovery}

@@ -5,7 +5,7 @@ import { includes } from 'lodash';
 import { defineMessages, intlShape } from 'react-intl';
 import {
   WALLET_NAV_IDS,
-  ITN_LEGACY_WALLET_EXCLUDED_NAV_ITEMS,
+  LEGACY_WALLET_EXCLUDED_NAV_ITEMS,
 } from '../../../config/walletNavigationConfig';
 import Navigation from '../../navigation/Navigation';
 import summaryIcon from '../../../assets/images/wallet-nav/summary-ic.inline.svg';
@@ -47,7 +47,7 @@ export default class WalletNavigation extends Component<Props> {
       item =>
         !(
           global.isIncentivizedTestnet &&
-          includes(ITN_LEGACY_WALLET_EXCLUDED_NAV_ITEMS, item.id)
+          includes(LEGACY_WALLET_EXCLUDED_NAV_ITEMS, item.id)
         )
     );
     return (
