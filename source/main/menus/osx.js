@@ -10,7 +10,7 @@ import { NOTIFICATIONS } from '../../common/ipc/constants';
 import { generateSupportRequestLink } from '../../common/utils/reporting';
 
 const id = 'menu';
-const { isBlankScreenFixActive, isIncentivizedTestnet } = environment;
+const { isBlankScreenFixActive } = environment;
 
 export const osxMenu = (
   app: App,
@@ -137,16 +137,14 @@ export const osxMenu = (
           shell.openExternal(faqLink);
         },
       },
-      !isIncentivizedTestnet
-        ? {
-            label: translation('helpSupport.blankScreenFix'),
-            type: 'checkbox',
-            checked: isBlankScreenFixActive,
-            click(item) {
-              actions.toggleBlankScreenFix(item);
-            },
-          }
-        : null,
+      {
+        label: translation('helpSupport.blankScreenFix'),
+        type: 'checkbox',
+        checked: isBlankScreenFixActive,
+        click(item) {
+          actions.toggleBlankScreenFix(item);
+        },
+      },
       { type: 'separator' },
       {
         label: translation('helpSupport.safetyTips'),

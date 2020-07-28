@@ -20,8 +20,8 @@ export default class SplashNetworkPage extends Component<Props> {
       isIncentivizedTestnetTheme,
       currentLocale,
     } = this.props.stores.profile;
-    const { isIncentivizedTestnet, isShelleyTestnet, isFlight } = global;
-    if (isShelleyTestnet) {
+    const { isIncentivizedTestnet, isFlight } = global;
+    if (global.isShelleyTestnet) {
       return (
         <SplashNetworkSTN
           onClose={() => networkStatusActions.toggleSplash.trigger()}

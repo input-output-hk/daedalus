@@ -26,8 +26,7 @@ const _isShelleyTestnet =
     cluster === SHELLEY_TESTNET ||
     cluster === SHELLEY_QA);
 const _isIncentivizedTestnet =
-  nodeImplementation === CardanoNodeImplementationOptions.JORMUNGANDR ||
-  _isShelleyTestnet;
+  nodeImplementation === CardanoNodeImplementationOptions.JORMUNGANDR;
 
 process.once('loaded', () => {
   Object.assign(global, {
