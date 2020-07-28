@@ -659,7 +659,7 @@ export default class NetworkStatusStore extends Store {
     return this.syncProgress || 0;
   }
 
-  @computed get shelleyEpochsInfoAvailable(): boolean {
+  @computed get isEpochsInfoAvailable(): boolean {
     const { networkTip, nextEpoch } = this;
     return (
       get(nextEpoch, 'epochNumber', null) !== null &&

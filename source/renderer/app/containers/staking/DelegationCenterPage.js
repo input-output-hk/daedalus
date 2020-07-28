@@ -70,7 +70,7 @@ export default class DelegationCenterPage extends Component<Props> {
       networkTip,
       nextEpoch,
       futureEpoch,
-      shelleyEpochsInfoAvailable,
+      isEpochsInfoAvailable,
     } = networkStatus;
     const { currentLocale } = profile;
 
@@ -97,9 +97,9 @@ export default class DelegationCenterPage extends Component<Props> {
           isLoading={
             !isSynced || fetchingStakePoolsFailed || !stakePools.length
           }
-          shelleyEpochsInfoAvailable={
+          isEpochsInfoAvailable={
             (isIncentivizedTestnet && !isShelleyTestnet) ||
-            shelleyEpochsInfoAvailable
+            isEpochsInfoAvailable
           }
           currentLocale={currentLocale}
         />

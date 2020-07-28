@@ -21,7 +21,7 @@ type Props = {
   getStakePoolById: Function,
   isLoading: boolean,
   currentLocale: string,
-  shelleyEpochsInfoAvailable: boolean,
+  isEpochsInfoAvailable: boolean,
 };
 
 @observer
@@ -38,12 +38,12 @@ export default class DelegationCenter extends Component<Props> {
       getStakePoolById,
       isLoading,
       currentLocale,
-      shelleyEpochsInfoAvailable,
+      isEpochsInfoAvailable,
     } = this.props;
 
     return (
       <Fragment>
-        {shelleyEpochsInfoAvailable && (
+        {isEpochsInfoAvailable && (
           <DelegationCenterHeader
             networkTip={networkTip}
             nextEpoch={nextEpoch}
@@ -57,7 +57,7 @@ export default class DelegationCenter extends Component<Props> {
           onDelegate={onDelegate}
           onUndelegate={onUndelegate}
           getStakePoolById={getStakePoolById}
-          isLoading={isLoading || !shelleyEpochsInfoAvailable}
+          isLoading={isLoading || !isEpochsInfoAvailable}
         />
       </Fragment>
     );
