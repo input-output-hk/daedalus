@@ -660,8 +660,7 @@ export default class NetworkStatusStore extends Store {
   }
 
   @computed get shelleyEpochsInfoAvailable(): boolean {
-    const { networkTip, nextEpoch, stores } = this;
-    const { isShelleyActivated } = stores.staking;
+    const { networkTip, nextEpoch } = this;
     return (
       get(nextEpoch, 'epochNumber', null) !== null &&
       get(nextEpoch, 'epochStart', null) !== null &&
