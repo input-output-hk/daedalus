@@ -59,13 +59,21 @@ const messages = defineMessages({
     description:
       'errorMinDelegationFunds Error Label on the delegation setup "choose wallet" step dialog.',
   },
-  errorMinDelegationFundsUTXO: {
+  errorMinDelegationFundsHasRewards: {
     id:
-      'staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFundsUTXO',
+      'staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFundsHasRewards',
     defaultMessage:
       '!!!This wallet does not contain the minimum amount of {minDelegationFunds} ADA which is required for delegation to be available.',
     description:
-      'errorMinDelegationFundsUTXO Error Label on the delegation setup "choose wallet" step dialog.',
+      'errorMinDelegationFundsHasRewards Error Label on the delegation setup "choose wallet" step dialog.',
+  },
+  errorMinDelegationFundsRewardsOnly: {
+    id:
+      'staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFundsRewardsOnly',
+    defaultMessage:
+      '!!!This wallet contains only rewards balances so it cannot be delegated.',
+    description:
+      'errorMinDelegationFundsRewardsOnly Error Label on the delegation setup "choose wallet" step dialog.',
   },
   errorRestoringWallet: {
     id: 'staking.delegationSetup.chooseWallet.step.dialog.errorRestoringWallet',
@@ -134,27 +142,27 @@ export default class DelegationStepsChooseWalletDialog extends Component<
       getStakePoolById,
     } = this.props;
 
-    const selectedWallet: ?Wallet =
-      wallets.find(
-        (wallet: Wallet) => wallet && wallet.id === selectedWalletId
-      ) || null;
+    const selectedWallet: ?Wallet = wallets.find(
+      (wallet: Wallet) => wallet && wallet.id === selectedWalletId
+    );
 
-    const { amount, reward } = selectedWallet || {};
-    const isSelectedWalletAcceptable =
-      amount && isWalletAcceptable(amount, reward);
+    const { amount, reward, isRestoring } = selectedWallet || {};
 
     let errorMessage;
-    if (selectedWallet && selectedWallet.isRestoring)
-      errorMessage = messages.errorRestoringWallet;
-    else if (
-      selectedWallet &&
-      !isSelectedWalletAcceptable &&
-      reward &&
-      !reward.isZero()
-    )
-      errorMessage = messages.errorMinDelegationFundsUTXO;
-    else if (selectedWallet && !isSelectedWalletAcceptable)
-      errorMessage = messages.errorMinDelegationFunds;
+    if (selectedWallet && !isWalletAcceptable(amount, reward)) {
+      // Wallet is restoring
+      if (isRestoring) errorMessage = messages.errorRestoringWallet;
+      // Wallet only has Reward balance
+      else if (!amount.isZero() && amount.equals(reward))
+        errorMessage = messages.errorMinDelegationFundsRewardsOnly;
+      // Wallet balance - rewards < min delegation funds
+      /*
+      else if (!reward.isZero())
+        errorMessage = messages.errorMinDelegationFundsHasRewards;
+      */
+      // Wallet balance < min delegation funds
+      else errorMessage = messages.errorMinDelegationFunds;
+    }
 
     const error = errorMessage && (
       <p className={styles.errorMessage}>

@@ -3538,16 +3538,30 @@
       },
       {
         "defaultMessage": "!!!This wallet does not contain the minimum amount of {minDelegationFunds} ADA which is required for delegation to be available.",
-        "description": "errorMinDelegationFundsUTXO Error Label on the delegation setup \"choose wallet\" step dialog.",
+        "description": "errorMinDelegationFundsHasRewards Error Label on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
           "line": 69
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog.js",
-        "id": "staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFundsUTXO",
+        "id": "staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFundsHasRewards",
         "start": {
-          "column": 31,
+          "column": 37,
           "line": 62
+        }
+      },
+      {
+        "defaultMessage": "!!!This wallet contains only rewards balances so it cannot be delegated.",
+        "description": "errorMinDelegationFundsRewardsOnly Error Label on the delegation setup \"choose wallet\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 77
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog.js",
+        "id": "staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFundsRewardsOnly",
+        "start": {
+          "column": 38,
+          "line": 70
         }
       },
       {
@@ -3555,13 +3569,13 @@
         "description": "RestoringWallet Error Label on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 84
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog.js",
         "id": "staking.delegationSetup.chooseWallet.step.dialog.errorRestoringWallet",
         "start": {
           "column": 24,
-          "line": 70
+          "line": 78
         }
       },
       {
@@ -3569,13 +3583,13 @@
         "description": "Label for continue button on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 82
+          "line": 90
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog.js",
         "id": "staking.delegationSetup.chooseWallet.step.dialog.continueButtonLabel",
         "start": {
           "column": 23,
-          "line": 77
+          "line": 85
         }
       }
     ],
@@ -3846,7 +3860,7 @@
         }
       },
       {
-        "defaultMessage": "!!!None of your wallets currently hold the <span>minimum amount of {minDelegationFunds} that is required for delegation options.",
+        "defaultMessage": "!!!None of your wallets currently hold the <span>minimum amount of {minDelegationFunds} ADA</span> that is required for delegation options.",
         "description": "Description on the delegation setup not available dialog.",
         "end": {
           "column": 3,
@@ -13884,7 +13898,7 @@
           "line": 78
         },
         "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "manualUpdate.button.label",
+        "id": "appUpdate.manualUpdateOverlay.button.label",
         "start": {
           "column": 22,
           "line": 74
