@@ -320,3 +320,10 @@ export type DownloadMainResponse = DownloadResponse;
 export const RESUME_DOWNLOAD = 'RESUME_DOWNLOAD';
 export type ResumeDownloadRendererRequest = ResumeDownloadRequest;
 export type ResumeDownloadMainResponse = ResumeDownloadResponse | void;
+
+/**
+ * Channel for checking block replay progress
+ */
+export const GET_BLOCK_REPLAY_STATUS_CHANNEL = 'GetBlockReplayProgressChannel';
+export type GetBlockReplayProgressRendererRequest = void;
+export type GetBlockReplayProgressMainResponse = number;

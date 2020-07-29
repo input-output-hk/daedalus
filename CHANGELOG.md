@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Show block replay progress ([PR 2110](https://github.com/input-output-hk/daedalus/pull/2110))
+
 ### Fixes
 
 - Extended the recovery phrase verification to all possible phrase lengths ([PR 2109](https://github.com/input-output-hk/daedalus/pull/2109))
