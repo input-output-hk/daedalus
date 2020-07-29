@@ -1,6 +1,6 @@
 // @flow
 import { observable, action, computed, runInAction, flow } from 'mobx';
-import { get, find, findIndex, isEqual } from 'lodash';
+import { get, find, findIndex, isEqual, includes } from 'lodash';
 import { BigNumber } from 'bignumber.js';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
@@ -885,7 +885,7 @@ export default class WalletsStore extends Store {
   isValidAddress = async (address: string) => {
     const { isIncentivizedTestnet, isShelleyTestnet } = global;
     const { isMainnet, isSelfnode, isStaging, isTestnet } = this.environment;
-    let expectedNetworkTag: Array<?number> | number | null;
+    let expectedNetworkTag: ?Array<?number> | ?number;
     let validAddressStyles: AddressStyle[] = ['Byron', 'Icarus', 'Shelley'];
     if (isMainnet) {
       expectedNetworkTag = MAINNET_MAGIC;
@@ -911,7 +911,7 @@ export default class WalletsStore extends Store {
       return (
         validAddressStyles.includes(response.introspection.address_style) &&
         ((Array.isArray(expectedNetworkTag) &&
-          expectedNetworkTag.includes(response.introspection.network_tag)) ||
+          includes(expectedNetworkTag, response.introspection.network_tag)) ||
           expectedNetworkTag === response.introspection.network_tag)
       );
     } catch (error) {
