@@ -884,20 +884,20 @@ export default class WalletsStore extends Store {
   isValidAddress = async (address: string) => {
     const { isIncentivizedTestnet, isShelleyTestnet } = global;
     const { isMainnet, isSelfnode, isStaging, isTestnet } = this.environment;
-    let expectedNetworkTag: number | null;
+    let expectedNetworkTag: number[] | number | null;
     let validAddressStyles: AddressStyle[] = [];
     if (isMainnet) {
       expectedNetworkTag = null;
-      validAddressStyles = ['Byron', 'Icarus'];
+      validAddressStyles = ['Byron', 'Icarus', 'Shelley'];
     } else if (isStaging) {
       expectedNetworkTag = STAGING_MAGIC;
-      validAddressStyles = ['Byron', 'Icarus'];
+      validAddressStyles = ['Byron', 'Icarus', 'Shelley'];
     } else if (isIncentivizedTestnet) {
       expectedNetworkTag = ITN_MAGIC;
       validAddressStyles = ['Jormungandr'];
     } else if (isTestnet) {
       expectedNetworkTag = TESTNET_MAGIC;
-      validAddressStyles = ['Byron', 'Icarus'];
+      validAddressStyles = ['Byron', 'Icarus', 'Shelley'];
     } else if (isShelleyTestnet) {
       expectedNetworkTag = SHELLEY_TESTNET_NETWORK_ID;
       validAddressStyles = ['Shelley'];
@@ -914,7 +914,9 @@ export default class WalletsStore extends Store {
       }
       return (
         validAddressStyles.includes(response.introspection.address_style) &&
-        expectedNetworkTag === response.introspection.network_tag
+        ((expectedNetworkTag && expectedNetworkTag.length &&
+          expectedNetworkTag.includes(response.introspection.network_tag)) ||
+          expectedNetworkTag === response.introspection.network_tag)
       );
     } catch (error) {
       logger.error(error);
