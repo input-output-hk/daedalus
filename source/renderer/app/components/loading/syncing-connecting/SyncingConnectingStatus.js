@@ -167,15 +167,14 @@ export default class SyncingConnectingStatus extends Component<Props> {
       showEllipsis ? styles.withoutAnimation : null,
     ]);
 
-    const message = this._getConnectingMessage();
     return (
       <div className={componentStyles}>
         <h1 className={headlineStyles}>
-          {message === messages.connecting && isVerifyingBlockchain
+          {isVerifyingBlockchain
             ? intl.formatMessage(messages.verifyingBlockchain, {
                 verificationProgress,
               })
-            : intl.formatMessage(message)}
+            : intl.formatMessage(this._getConnectingMessage())}
         </h1>
       </div>
     );

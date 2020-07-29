@@ -3,14 +3,14 @@ import { BrowserWindow } from 'electron';
 import fs from 'fs';
 import readline from 'readline';
 import path from 'path';
-import { getBlockReplyProgressChannel } from '../ipc/get-block-reply-progress';
-import { BLOCK_REPLY_PROGRESS_CHECK_INTERVAL } from '../config';
+import { getBlockReplayProgressChannel } from '../ipc/get-block-replay-progress';
+import { BLOCK_REPLAY_PROGRESS_CHECK_INTERVAL } from '../config';
 
-export const handleBlockReplyProgress = (
+export const handleCheckBlockReplayProgress = (
   mainWindow: BrowserWindow,
   logsDirectoryPath: string
 ) => {
-  const handleCheckBlockReplyProgress = async () => {
+  const checkBlockReplayProgress = async () => {
     const filename = 'node.log';
     const logFilePath = `${logsDirectoryPath}/pub/`;
     const filePath = path.join(logFilePath, filename);
@@ -27,26 +27,24 @@ export const handleBlockReplyProgress = (
     if (!progress.length) return;
 
     const finalProgress = progress.slice(-1).pop();
-    const percentage = finalProgress
-      .split('block replay progress (%) =')
-      .pop();
+    const percentage = finalProgress.split('block replay progress (%) =').pop();
     const finalProgressPercentage = parseFloat(percentage);
 
     // Send result to renderer process (NetworkStatusStore)
-    getBlockReplyProgressChannel.send(
+    getBlockReplayProgressChannel.send(
       finalProgressPercentage,
       mainWindow.webContents
     );
   };
 
-  const setBlockReplyProgressIntervalChecking = () => {
+  const setBlockReplayProgressCheckingInterval = () => {
     setInterval(async () => {
-      handleCheckBlockReplyProgress();
-    }, BLOCK_REPLY_PROGRESS_CHECK_INTERVAL);
+      checkBlockReplayProgress();
+    }, BLOCK_REPLAY_PROGRESS_CHECK_INTERVAL);
   };
 
   // Start default interval
-  setBlockReplyProgressIntervalChecking();
+  setBlockReplayProgressCheckingInterval();
 
-  return handleCheckBlockReplyProgress;
+  return checkBlockReplayProgress;
 };

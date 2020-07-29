@@ -324,6 +324,6 @@ export type ResumeDownloadMainResponse = ResumeDownloadResponse | void;
 /**
  * Channel for checking block replay progress
  */
-export const GET_BLOCK_REPLY_STATUS_CHANNEL = 'GetBlockReplyProgressChannel';
-export type GetBlockReplyProgressRendererRequest = any;
-export type GetBlockReplyProgressMainResponse = any;
+export const GET_BLOCK_REPLAY_STATUS_CHANNEL = 'GetBlockReplayProgressChannel';
+export type GetBlockReplayProgressRendererRequest = void;
+export type GetBlockReplayProgressMainResponse = number;

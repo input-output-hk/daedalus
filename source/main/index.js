@@ -11,7 +11,7 @@ import {
   generateWalletMigrationReport,
 } from './utils/setupLogging';
 import { handleDiskSpace } from './utils/handleDiskSpace';
-import { handleBlockReplyProgress } from './utils/handleBlockReplyProgress';
+import { handleCheckBlockReplayProgress } from './utils/handleCheckBlockReplayProgress';
 import { createMainWindow } from './windows/main';
 import { installChromeExtensions } from './utils/installChromeExtensions';
 import { environment } from './environment';
@@ -165,7 +165,7 @@ const onAppReady = async () => {
   mainErrorHandler(onMainError);
   await handleCheckDiskSpace();
 
-  await handleBlockReplyProgress(mainWindow, launcherConfig.logsPrefix);
+  await handleCheckBlockReplayProgress(mainWindow, launcherConfig.logsPrefix);
 
   cardanoNode = setupCardanoNode(launcherConfig, mainWindow);
 
