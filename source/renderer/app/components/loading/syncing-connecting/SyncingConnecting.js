@@ -63,7 +63,8 @@ export default class SyncingConnecting extends Component<Props, State> {
   };
 
   componentDidMount() {
-    this._defensivelyStartTimers(this.props.isConnected);
+    const { isConnected, isVerifyingBlockchain } = this.props;
+    this._defensivelyStartTimers(isConnected, isVerifyingBlockchain);
   }
 
   componentDidUpdate() {
@@ -79,9 +80,12 @@ export default class SyncingConnecting extends Component<Props, State> {
       isFlight,
       isVerifyingBlockchain,
     } = this.props;
-    const canResetConnecting = this._connectingTimerShouldStop(isConnected);
+    const canResetConnecting = this._connectingTimerShouldStop(
+      isConnected,
+      isVerifyingBlockchain
+    );
 
-    this._defensivelyStartTimers(isConnected);
+    this._defensivelyStartTimers(isConnected, isVerifyingBlockchain);
     if (canResetConnecting) {
       this._resetConnectingTime();
     }
@@ -108,14 +112,26 @@ export default class SyncingConnecting extends Component<Props, State> {
     this._resetConnectingTime();
   }
 
-  _connectingTimerShouldStart = (isConnected: boolean): boolean =>
-    !isConnected && connectingInterval === null;
+  _connectingTimerShouldStart = (
+    isConnected: boolean,
+    isVerifyingBlockchain: boolean
+  ): boolean =>
+    !isConnected && !isVerifyingBlockchain && connectingInterval === null;
 
-  _connectingTimerShouldStop = (isConnected: boolean): boolean =>
-    isConnected && connectingInterval !== null;
+  _connectingTimerShouldStop = (
+    isConnected: boolean,
+    isVerifyingBlockchain: boolean
+  ): boolean =>
+    (isConnected || isVerifyingBlockchain) && connectingInterval !== null;
 
-  _defensivelyStartTimers = (isConnected: boolean) => {
-    const needConnectingTimer = this._connectingTimerShouldStart(isConnected);
+  _defensivelyStartTimers = (
+    isConnected: boolean,
+    isVerifyingBlockchain: boolean
+  ) => {
+    const needConnectingTimer = this._connectingTimerShouldStart(
+      isConnected,
+      isVerifyingBlockchain
+    );
     if (needConnectingTimer) {
       connectingInterval = setInterval(this._incrementConnectingTime, 1000);
     }
