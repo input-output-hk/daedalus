@@ -885,7 +885,7 @@ export default class WalletsStore extends Store {
   isValidAddress = async (address: string) => {
     const { isIncentivizedTestnet, isShelleyTestnet } = global;
     const { isMainnet, isSelfnode, isStaging, isTestnet } = this.environment;
-    let expectedNetworkTag: number | null[] | number | null;
+    let expectedNetworkTag: Array<?number> | number | null;
     let validAddressStyles: AddressStyle[] = ['Byron', 'Icarus', 'Shelley'];
     if (isMainnet) {
       expectedNetworkTag = MAINNET_MAGIC;
