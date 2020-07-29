@@ -69,6 +69,7 @@ export const getNetworkExplorerUrl = (
 ): string => {
   const protocol =
     network === MAINNET ||
+    network === TESTNET ||
     network === DEVELOPMENT ||
     network === ITN_REWARDS_V1 ||
     network === SHELLEY_TESTNET
@@ -89,7 +90,12 @@ export const getNetworkExplorerUrlByType = (
   let localePrefix = '';
   let typeValue = type;
 
-  if (network === ITN_REWARDS_V1 || network === SHELLEY_TESTNET) {
+  if (
+    network === MAINNET ||
+    network === TESTNET ||
+    network === ITN_REWARDS_V1 ||
+    network === SHELLEY_TESTNET
+  ) {
     localePrefix = `/${currentLocale.substr(0, 2)}`;
     if (type === 'address') {
       queryStringPrefix = '?address=';
