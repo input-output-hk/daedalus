@@ -50,6 +50,7 @@ import {
   STAGING_MAGIC,
   SHELLEY_TESTNET_NETWORK_ID,
   ITN_MAGIC,
+  MAINNET_MAGIC,
 } from '../../../common/types/cardano-node.types';
 
 /* eslint-disable consistent-return */
@@ -887,7 +888,7 @@ export default class WalletsStore extends Store {
     let expectedNetworkTag: number|null[] | number | null;
     let validAddressStyles: AddressStyle[] = ['Byron', 'Icarus', 'Shelley'];
     if (isMainnet) {
-      expectedNetworkTag = null;
+      expectedNetworkTag = MAINNET_MAGIC;
     } else if (isStaging) {
       expectedNetworkTag = STAGING_MAGIC;
     } else if (isIncentivizedTestnet) {

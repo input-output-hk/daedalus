@@ -1082,7 +1082,7 @@
         "description": "Message \"Verifying the blockchain (65% complete) ...\" on the loading screen.",
         "end": {
           "column": 3,
-          "line": 73
+          "line": 74
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
         "id": "loading.screen.verifyingBlockchainMessage",
@@ -8368,7 +8368,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Please enter your {expectedWordCount}-word wallet recovery phrase. Make sure you enter the words in the correct order.",
+        "defaultMessage": "!!!Please enter your wallet recovery phrase. Make sure you enter the words in the correct order.",
         "description": "Label for the recoveryPhraseStep2Description on wallet settings.",
         "end": {
           "column": 3,
@@ -13912,7 +13912,7 @@
           "line": 78
         },
         "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "appUpdate.manualUpdateOverlay.button.label",
+        "id": "manualUpdate.button.label",
         "start": {
           "column": 22,
           "line": 74

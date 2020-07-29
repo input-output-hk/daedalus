@@ -135,6 +135,9 @@ export type CardanoStatus = {
   cardanoWalletPID: number,
 };
 
+// Cardano Mainet network magic
+export const MAINNET_MAGIC = [1, null];
+
 // Cardano Byron Testnet network magic
 export const TESTNET_MAGIC = [1097911063, 0];
 
