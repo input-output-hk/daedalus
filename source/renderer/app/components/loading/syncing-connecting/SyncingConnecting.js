@@ -22,6 +22,7 @@ type State = {
 
 type Props = {
   cardanoNodeState: ?CardanoNodeState,
+  verificationProgress: number,
   hasBeenConnected: boolean,
   forceConnectivityIssue?: boolean,
   isFlight: boolean,
@@ -46,6 +47,7 @@ type Props = {
   disableDownloadLogs: boolean,
   showNewsFeedIcon: boolean,
   isIncentivizedTestnet: boolean,
+  isVerifyingBlockchain: boolean,
   onIssueClick: Function,
   onOpenExternalLink: Function,
   onDownloadLogs: Function,
@@ -75,6 +77,7 @@ export default class SyncingConnecting extends Component<Props, State> {
       isNewAppVersionLoaded,
       isIncentivizedTestnet,
       isFlight,
+      isVerifyingBlockchain,
     } = this.props;
     const canResetConnecting = this._connectingTimerShouldStop(isConnected);
 
@@ -83,10 +86,11 @@ export default class SyncingConnecting extends Component<Props, State> {
       this._resetConnectingTime();
     }
     const isAppLoadingStuck =
-      isSyncProgressStalling ||
-      (!isConnected &&
-        (connectingTime >= REPORT_ISSUE_TIME_TRIGGER ||
-          cardanoNodeState === CardanoNodeStates.UNRECOVERABLE));
+      !isVerifyingBlockchain &&
+      (isSyncProgressStalling ||
+        (!isConnected &&
+          (connectingTime >= REPORT_ISSUE_TIME_TRIGGER ||
+            cardanoNodeState === CardanoNodeStates.UNRECOVERABLE)));
     // If app loading is stuck, check if a newer version is available and set flag (state)
     if (
       isAppLoadingStuck &&
@@ -185,6 +189,8 @@ export default class SyncingConnecting extends Component<Props, State> {
       onStatusIconClick,
       onToggleNewsFeedIconClick,
       showNewsFeedIcon,
+      isVerifyingBlockchain,
+      verificationProgress,
     } = this.props;
 
     const newsFeedIconStyles = classNames([
@@ -227,6 +233,8 @@ export default class SyncingConnecting extends Component<Props, State> {
           isConnected={isConnected}
           isNodeStopping={isNodeStopping}
           isNodeStopped={isNodeStopped}
+          isVerifyingBlockchain={isVerifyingBlockchain}
+          verificationProgress={verificationProgress}
         />
         <StatusIcons
           onIconClick={onStatusIconClick}

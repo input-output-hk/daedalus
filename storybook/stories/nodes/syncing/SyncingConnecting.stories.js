@@ -12,6 +12,8 @@ export const DefaultSyncingConnectingStory = (props: {
   currentTheme: string,
 }) => (
   <SyncingConnecting
+    isVerifyingBlockchain={false}
+    verificationProgress={0}
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}
     hasUnreadNews={false}
@@ -56,6 +58,8 @@ export const ConnectivityIssuesSyncingConnectingStory = (props: {
   currentTheme: string,
 }) => (
   <SyncingConnecting
+    isVerifyingBlockchain={false}
+    verificationProgress={0}
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}
     hasUnreadNews={false}
@@ -97,6 +101,8 @@ export const LoadingWalletDataSyncingConnectingStory = (props: {
   currentTheme: string,
 }) => (
   <SyncingConnecting
+    isVerifyingBlockchain={false}
+    verificationProgress={0}
     hasUnreadAlerts={false}
     hasUnreadAnnouncements={false}
     hasUnreadNews={false}

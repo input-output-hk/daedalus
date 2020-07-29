@@ -3,16 +3,17 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Implemented address validation ([PR 2041](https://github.com/input-output-hk/daedalus/pull/2041))
+- Show block replay progress ([PR 2110](https://github.com/input-output-hk/daedalus/pull/2110))
+
 ### Fixes
 
 - Extended the recovery phrase verification to all possible phrase lengths ([PR 2109](https://github.com/input-output-hk/daedalus/pull/2109))
 - Fixed epoch length and slot numbers info ([PR 2108](https://github.com/input-output-hk/daedalus/pull/2108))
 
 ## 2.0.0-RC1
-
-### Features
-
-- Implemented address validation ([PR 2041](https://github.com/input-output-hk/daedalus/pull/2041))
 
 ### Fixes
 
