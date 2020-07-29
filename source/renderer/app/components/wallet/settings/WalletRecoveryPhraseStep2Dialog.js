@@ -99,12 +99,16 @@ export default class WalletRecoveryPhraseStep2Dialog extends Component<
 
             // Check if recovery phrase contains the expected words
             if (!isPhraseComplete) {
-              const errorMessage = Array.isArray(expectedWordCount)
-                ? intl.formatMessage(messages.recoveryPhraseNoResults)
-                : intl.formatMessage(globalMessages.incompleteMnemonic, {
-                    expected: expectedWordCount,
-                  });
-              return [false, errorMessage];
+              const expected = Array.isArray(expectedWordCount)
+                ? ''
+                : enteredWordCount;
+
+              return [
+                false,
+                intl.formatMessage(globalMessages.incompleteMnemonic, {
+                  expected,
+                }),
+              ];
             }
             return [
               isValidMnemonic(value, enteredWords.length),
