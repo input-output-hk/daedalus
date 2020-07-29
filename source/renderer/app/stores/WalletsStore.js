@@ -884,7 +884,7 @@ export default class WalletsStore extends Store {
   isValidAddress = async (address: string) => {
     const { isIncentivizedTestnet, isShelleyTestnet } = global;
     const { isMainnet, isSelfnode, isStaging, isTestnet } = this.environment;
-    let expectedNetworkTag: number | number[] | null;
+    let expectedNetworkTag: number | null;
     let validAddressStyles: AddressStyle[] = [];
     if (isMainnet) {
       expectedNetworkTag = null;
@@ -914,10 +914,7 @@ export default class WalletsStore extends Store {
       }
       return (
         validAddressStyles.includes(response.introspection.address_style) &&
-        ((response.introspection.address_style === 'Shelley' &&
-          expectedNetworkTag &&
-            expectedNetworkTag.includes(response.introspection.network_tag)) ||
-          expectedNetworkTag === response.introspection.network_tag)
+        expectedNetworkTag === response.introspection.network_tag
       );
     } catch (error) {
       logger.error(error);
