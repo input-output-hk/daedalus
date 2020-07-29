@@ -23,7 +23,7 @@ export const messages = defineMessages({
   recoveryPhraseStep2Description: {
     id: 'wallet.settings.recoveryPhraseStep2Description',
     defaultMessage:
-      '!!!Please enter your {expectedWordCount}-word wallet recovery phrase. Make sure you enter the words in the correct order.',
+      '!!!Please enter your wallet recovery phrase. Make sure you enter the words in the correct order.',
     description:
       'Label for the recoveryPhraseStep2Description on wallet settings.',
   },
@@ -170,11 +170,7 @@ export default class WalletRecoveryPhraseStep2Dialog extends Component<
         closeButton={<DialogCloseButton />}
       >
         <div className={styles.subtitle}>
-          <p>
-            {intl.formatMessage(messages.recoveryPhraseStep2Description, {
-              expectedWordCount,
-            })}
-          </p>
+          <p>{intl.formatMessage(messages.recoveryPhraseStep2Description)}</p>
         </div>
 
         <Autocomplete
