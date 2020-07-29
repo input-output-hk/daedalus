@@ -3,6 +3,10 @@ Changelog
 
 ## 2.0.0-RC1
 
+### Features
+
+- Show block replay progress ([PR 2087](https://github.com/input-output-hk/daedalus/pull/2087))
+
 ### Fixes
 
 - Fixed the epoch duration copy ([PR 2107](https://github.com/input-output-hk/daedalus/pull/2107))
