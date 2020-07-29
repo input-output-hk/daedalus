@@ -12,7 +12,8 @@ export const handleBlockReplyProgress = (
 ) => {
   const handleCheckBlockReplyProgress = async () => {
     const filename = 'node.log';
-    const filePath = path.join(logsDirectoryPath, filename);
+    const logFilePath = `${logsDirectoryPath}/pub/`;
+    const filePath = path.join(logFilePath, filename);
     if (!fs.existsSync(filePath)) return;
 
     const fileStream = fs.createReadStream(filePath);
