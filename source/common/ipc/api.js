@@ -331,3 +331,10 @@ export type ResumeDownloadMainResponse = ResumeDownloadResponse | void;
 export const INTROSPECT_ADDRESS_CHANNEL = 'INTROSPECT_ADDRESS_CHANNEL';
 export type IntrospectAddressRendererRequest = IntrospectAddressRequest;
 export type IntrospectAddressMainResponse = IntrospectAddressResponse;
+
+/**
+ * Channel for checking block replay progress
+ */
+export const GET_BLOCK_REPLAY_STATUS_CHANNEL = 'GetBlockReplayProgressChannel';
+export type GetBlockReplayProgressRendererRequest = void;
+export type GetBlockReplayProgressMainResponse = number;

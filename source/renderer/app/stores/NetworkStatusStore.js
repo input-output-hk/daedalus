@@ -21,6 +21,7 @@ import {
 } from '../ipc/cardano.ipc';
 import { CardanoNodeStates } from '../../../common/types/cardano-node.types';
 import { getDiskSpaceStatusChannel } from '../ipc/getDiskSpaceChannel.js';
+import { getBlockReplayProgressChannel } from '../ipc/getBlockReplayChannel.js';
 import { getStateDirectoryPathChannel } from '../ipc/getStateDirectoryPathChannel';
 import type {
   GetNetworkInfoResponse,
@@ -121,6 +122,7 @@ export default class NetworkStatusStore extends Store {
   @observable isShelleyActivated: boolean = false;
   @observable isShelleyPending: boolean = false;
   @observable shelleyActivationTime: string = '';
+  @observable verificationProgress: number = 0;
 
   // DEFINE STORE METHODS
   setup() {
@@ -164,6 +166,9 @@ export default class NetworkStatusStore extends Store {
     this._checkDiskSpace();
 
     this._getStateDirectoryPath();
+
+    // Blockchain verification checking
+    getBlockReplayProgressChannel.onReceive(this._onCheckVerificationProgress);
   }
 
   _restartNode = async () => {
@@ -641,6 +646,13 @@ export default class NetworkStatusStore extends Store {
     return Promise.resolve();
   };
 
+  @action _onCheckVerificationProgress = (
+    verificationProgress: number
+  ): Promise<void> => {
+    this.verificationProgress = verificationProgress;
+    return Promise.resolve();
+  };
+
   @action _onReceiveStateDirectoryPath = (stateDirectoryPath: string) => {
     this.stateDirectoryPath = stateDirectoryPath;
   };
@@ -684,5 +696,9 @@ export default class NetworkStatusStore extends Store {
       get(networkTip, 'epoch', null) !== null &&
       get(networkTip, 'slot', null) !== null
     );
+  }
+
+  @computed get isVerifyingBlockchain(): boolean {
+    return !this.isConnected && this.verificationProgress < 100;
   }
 }
