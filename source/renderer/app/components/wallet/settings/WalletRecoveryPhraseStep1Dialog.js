@@ -17,7 +17,7 @@ export const messages = defineMessages({
   recoveryPhraseStep1Paragraph1: {
     id: 'wallet.settings.recoveryPhraseStep1Paragraph1',
     defaultMessage:
-      '!!!To verify that you have the correct recovery phrase for this wallet, you can enter it on the following screen. This wallet uses a {wordCount}-word recovery phrase.',
+      '!!!To verify that you have the correct recovery phrase for this wallet, you can enter it on the following screen. This wallet uses a {expectedWordCount}-word recovery phrase.',
     description:
       'Label for the recoveryPhraseStep1Paragraph1 on wallet settings.',
   },
@@ -38,7 +38,7 @@ export const messages = defineMessages({
 type Props = {
   onContinue: Function,
   onClose: Function,
-  wordCount: number,
+  expectedWordCount: number,
 };
 
 type State = {
@@ -66,7 +66,7 @@ export default class WalletRecoveryPhraseStep1Dialog extends Component<
 
   render() {
     const { intl } = this.context;
-    const { onContinue, onClose, wordCount } = this.props;
+    const { onContinue, onClose, expectedWordCount } = this.props;
     const { safetyAgreement } = this.state;
     const isSubmitting = false;
 
@@ -91,7 +91,7 @@ export default class WalletRecoveryPhraseStep1Dialog extends Component<
       >
         <p>
           {intl.formatMessage(messages.recoveryPhraseStep1Paragraph1, {
-            wordCount,
+            expectedWordCount,
           })}
         </p>
         <div className={styles.checkboxContainer}>
