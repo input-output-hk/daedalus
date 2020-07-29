@@ -150,7 +150,6 @@ export const setupCardanoNode = (
   });
 
   cardanoStateChangeChannel.onRequest(() => {
-    logger.info('>>> LAUNCHER: ', { launcherConfig: launcherConfig });
     logger.info('ipcMain: Received request from renderer for node state', {
       state: cardanoNode.state,
     });

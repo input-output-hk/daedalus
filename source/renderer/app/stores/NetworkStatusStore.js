@@ -668,8 +668,7 @@ export default class NetworkStatusStore extends Store {
   };
 
   @computed get isConnected(): boolean {
-    // return this.isNodeResponding && this.isNodeSyncing;
-    return false;
+    return this.isNodeResponding && this.isNodeSyncing;
   }
 
   @computed get isSystemTimeCorrect(): boolean {

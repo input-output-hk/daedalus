@@ -96,7 +96,6 @@ export default class SyncingConnectingStatus extends Component<Props> {
       hasBeenConnected,
       isTlsCertInvalid,
       isConnected,
-      isVerifyingBlockchain,
     } = this.props;
     if (isConnected) return messages.loadingWalletData;
     let connectingMessage;

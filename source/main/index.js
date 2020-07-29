@@ -165,9 +165,6 @@ const onAppReady = async () => {
   mainErrorHandler(onMainError);
   await handleCheckDiskSpace();
 
-  /* const handleCheckBlockReplyProgress = handleBlockReplyProgress(mainWindow, launcherConfig.launcherLogsPrefix);
-  await handleCheckBlockReplyProgress(); */
-
   await handleBlockReplyProgress(mainWindow, launcherConfig.launcherLogsPrefix);
 
   cardanoNode = setupCardanoNode(launcherConfig, mainWindow);
