@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## vNext
+## 2.0.0-RC1
 
 ### Features
 
@@ -9,6 +9,7 @@ Changelog
 
 ### Fixes
 
+- Fixed the epoch duration copy ([PR 2107](https://github.com/input-output-hk/daedalus/pull/2107))
 - Handled errors from a wallet which has ONLY rewards account balance when sending a transaction or delegating ([PR 2100](https://github.com/input-output-hk/daedalus/pull/2100))
 - Fixed `cardano-wallet` info shown on the "About" screen ([PR 2097](https://github.com/input-output-hk/daedalus/pull/2097))
 - Updated stake pool tooltip to display "Produced blocks" instead of "Blocks (current epoch)" ([PR 2096](https://github.com/input-output-hk/daedalus/pull/2096))

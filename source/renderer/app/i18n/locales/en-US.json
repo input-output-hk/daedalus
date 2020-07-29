@@ -316,7 +316,7 @@
   "staking.delegationCenter.unknownStakePoolLabel": "unknown",
   "staking.delegationCenter.walletAmount": "{amount} ADA",
   "staking.delegationCountdown.buttonLabel": "Learn more",
-  "staking.delegationCountdown.description": "Cardano will soon start transitioning from a federated to a decentralized system. The first step is the activation of the Shelley upgrade. Once the upgrade is complete, stake pools will start registering and users will be able to delegate their wallets. Two epochs (12 hours) later, stake pools will begin producing blocks and users could start earning rewards from delegating their stakes. The first rewards, where due, will be distributed two more epochs later (12 hours).",
+  "staking.delegationCountdown.description": "Cardano will soon start transitioning from a federated to a decentralized system. The first step is the activation of the Shelley upgrade. Once the upgrade is complete, stake pools will start registering and users will be able to delegate their wallets. Two epochs (10 days) later, stake pools will begin producing blocks and users could start earning rewards from delegating their stakes. The first rewards, where due, will be distributed two more epochs later (10 days).",
   "staking.delegationCountdown.heading": "Shelley upgrade",
   "staking.delegationCountdown.timeLeftDesc": "Shelley upgrade in",
   "staking.delegationSetup.chooseStakePool.step.dialog.continueButtonLabel": "Continue",
