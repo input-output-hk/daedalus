@@ -3,15 +3,15 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Show block replay progress ([PR 2087](https://github.com/input-output-hk/daedalus/pull/2087))
+
 ### Fixes
 
 - Fixed epoch length and slot numbers info ([PR 2108](https://github.com/input-output-hk/daedalus/pull/2108))
 
 ## 2.0.0-RC1
-
-### Features
-
-- Show block replay progress ([PR 2087](https://github.com/input-output-hk/daedalus/pull/2087))
 
 ### Fixes
 
