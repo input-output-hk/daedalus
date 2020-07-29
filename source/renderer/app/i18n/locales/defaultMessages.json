@@ -6812,13 +6812,13 @@
         "description": "Label for the \"Summary\" nav button in the wallet navigation.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 24
         },
         "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
         "id": "wallet.navigation.summary",
         "start": {
           "column": 11,
-          "line": 22
+          "line": 20
         }
       },
       {
@@ -6826,13 +6826,13 @@
         "description": "Label for the \"Send\" nav button in the wallet navigation.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 29
         },
         "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
         "id": "wallet.navigation.send",
         "start": {
           "column": 8,
-          "line": 27
+          "line": 25
         }
       },
       {
@@ -6840,13 +6840,13 @@
         "description": "Label for the \"Receive\" nav button in the wallet navigation.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 34
         },
         "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
         "id": "wallet.navigation.receive",
         "start": {
           "column": 11,
-          "line": 32
+          "line": 30
         }
       },
       {
@@ -6854,13 +6854,13 @@
         "description": "Label for the \"Transactions\" nav button in the wallet navigation.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 40
         },
         "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
         "id": "wallet.navigation.transactions",
         "start": {
           "column": 16,
-          "line": 37
+          "line": 35
         }
       },
       {
@@ -6868,13 +6868,13 @@
         "description": "Label for the \"Settings\" nav button in the wallet navigation.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 46
         },
         "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
         "id": "wallet.navigation.settings",
         "start": {
           "column": 12,
-          "line": 43
+          "line": 41
         }
       },
       {
@@ -6882,13 +6882,13 @@
         "description": "Label for the \"Wallet UTXO distribution\" nav button in the wallet navigation.",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 52
         },
         "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
         "id": "wallet.navigation.utxo",
         "start": {
           "column": 8,
-          "line": 49
+          "line": 47
         }
       },
       {
@@ -6896,13 +6896,13 @@
         "description": "Label for the \"More\" nav button in the wallet navigation.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 57
         },
         "file": "source/renderer/app/components/wallet/navigation/WalletNavigation.js",
         "id": "wallet.navigation.more",
         "start": {
           "column": 8,
-          "line": 55
+          "line": 53
         }
       }
     ],
@@ -13898,7 +13898,7 @@
           "line": 78
         },
         "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "appUpdate.manualUpdateOverlay.button.label",
+        "id": "manualUpdate.button.label",
         "start": {
           "column": 22,
           "line": 74

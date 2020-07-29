@@ -17,7 +17,6 @@
   "api.errors.invalidAddress": "Please enter a valid address.",
   "api.errors.nothingToMigrate": "Funds cannot be transferred from this wallet because it contains some unspent transaction outputs (UTXOs), with amounts of ada that are too small to be migrated.",
   "api.errors.utxoTooSmall": "Invalid transaction.",
-  "appUpdate.manualUpdateOverlay.button.label": "!!!Follow instructions and manually update",
   "automaticUpdate.accept.button.label": "Restart Daedalus and Update",
   "automaticUpdate.description1": "You are currently running Daedalus <b>{currentAppVersion}</b> and <b>{nextUpdateVersion}</b> is available.",
   "automaticUpdate.description2": "Would you like to install the update? If choose to postpone, the update will be installed automatically on the next Daedalus launch.",
