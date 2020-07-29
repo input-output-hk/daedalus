@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
@@ -12,6 +13,7 @@ import News from '../../domains/News';
 import styles from './AppUpdateOverlay.scss';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import ProgressBarLarge from '../widgets/ProgressBarLarge';
+import externalLinkIcon from '../../assets/images/link-ic.inline.svg';
 
 const messages = defineMessages({
   title: {
@@ -51,6 +53,26 @@ const messages = defineMessages({
     defaultMessage: '!!!({totalDownloaded} of {totalDownloadSize} downloaded)',
     description: 'downloadProgressData for the Update Overlay',
   },
+  manualUpdateDescription: {
+    id: 'appUpdate.overlay.manualUpdate.description',
+    defaultMessage:
+      '!!!We were unable to launch the update installer automatically. Please manually update Daedalus to its latest version.',
+    description:
+      'Follow instructions and manually update link on "Manual update" overlay',
+  },
+  manualUpdateButtonLabel: {
+    id: 'appUpdate.overlay.manualUpdate.button.label',
+    defaultMessage: '!!!Follow instructions and manually update',
+    description:
+      'Label for "Follow instructions and manually update" action button on "Manual update" overlay',
+  },
+  manualUpdateButtonUrl: {
+    id: 'appUpdate.overlay.manualUpdate.button.url',
+    defaultMessage:
+      '!!!https://iohk.zendesk.com/hc/en-us/articles/360023850634',
+    description:
+      'Follow instructions and manually update link on "Manual update" overlay',
+  },
 });
 
 type Props = {
@@ -63,7 +85,9 @@ type Props = {
   currentAppVersion: string,
   downloadProgress: number,
   isUpdateDownloaded: boolean,
+  isAutomaticUpdateFailed: boolean,
   onInstallUpdate: Function,
+  onExternalLinkClick: Function,
 };
 
 type State = {
@@ -86,26 +110,112 @@ export default class AppUpdateOverlay extends Component<Props, State> {
     }));
   };
 
+  progressActions = () => {
+    const { intl } = this.context;
+    const {
+      downloadTimeLeft,
+      totalDownloaded,
+      totalDownloadSize,
+      downloadProgress,
+    } = this.props;
+    return (
+      <div className={styles.downloadProgress}>
+        <div className={styles.downloadProgressContent}>
+          <p className={styles.downloadProgressLabel}>
+            {intl.formatMessage(messages.downloadProgressLabel)}
+          </p>
+          <p className={styles.downloadProgressData}>
+            <b>
+              {intl.formatMessage(messages.downloadTimeLeft, {
+                downloadTimeLeft,
+              })}
+            </b>{' '}
+            {intl.formatMessage(messages.downloadProgressData, {
+              totalDownloaded,
+              totalDownloadSize,
+            })}
+          </p>
+        </div>
+        <ProgressBarLarge progress={downloadProgress} />
+      </div>
+    );
+  };
+
+  openInstallerAction = () => {
+    const { intl } = this.context;
+    const { onInstallUpdate } = this.props;
+    const { areTermsOfUseAccepted } = this.state;
+    const buttonStyles = classnames([
+      styles.button,
+      !areTermsOfUseAccepted ? styles.disabled : null,
+    ]);
+    return (
+      <div className={styles.actions}>
+        <Checkbox
+          label={intl.formatMessage(messages.checkboxLabel)}
+          onChange={this.toggleAcceptance}
+          className={styles.checkbox}
+          checked={areTermsOfUseAccepted}
+          skin={CheckboxSkin}
+          themeOverrides={styles.checkbox}
+        />
+        <Button
+          className={buttonStyles}
+          onClick={onInstallUpdate}
+          skin={ButtonSkin}
+          label={intl.formatMessage(messages.buttonLabel)}
+          disabled={!areTermsOfUseAccepted}
+        />
+      </div>
+    );
+  };
+
+  manualUpdateAction = () => {
+    const { intl } = this.context;
+    const { onExternalLinkClick } = this.props;
+    return (
+      <div className={styles.actions}>
+        <div className={styles.manualUpdateDescription}>
+          {intl.formatMessage(messages.manualUpdateDescription)}
+        </div>
+        <Button
+          className={styles.button}
+          onClick={() =>
+            onExternalLinkClick(
+              intl.formatMessage(messages.manualUpdateButtonUrl)
+            )
+          }
+          skin={ButtonSkin}
+          label={
+            <span>
+              <SVGInline
+                svg={externalLinkIcon}
+                className={styles.externalLinkIcon}
+              />
+              {intl.formatMessage(messages.manualUpdateButtonLabel)}
+            </span>
+          }
+        />
+      </div>
+    );
+  };
+
   render() {
     const { intl } = this.context;
     const {
       update,
       onClose,
-      downloadTimeLeft,
-      totalDownloaded,
-      totalDownloadSize,
-      downloadProgress,
       isUpdateDownloaded,
-      onInstallUpdate,
       availableAppVersion,
       currentAppVersion,
+      isAutomaticUpdateFailed,
     } = this.props;
-    const { areTermsOfUseAccepted } = this.state;
     const { content } = update;
-    const buttonStyles = classnames([
-      styles.button,
-      !areTermsOfUseAccepted ? styles.disabled : null,
-    ]);
+    let actions;
+    if (isAutomaticUpdateFailed) actions = this.manualUpdateAction();
+    else if (!isUpdateDownloaded) actions = this.progressActions();
+    else actions = this.openInstallerAction();
+
     return (
       <div
         className={styles.component}
@@ -128,45 +238,7 @@ export default class AppUpdateOverlay extends Component<Props, State> {
         <div className={styles.content}>
           <ReactMarkdown escapeHtml={false} source={content} />
         </div>
-        {!isUpdateDownloaded ? (
-          <div className={styles.downloadProgress}>
-            <div className={styles.downloadProgressContent}>
-              <p className={styles.downloadProgressLabel}>
-                {intl.formatMessage(messages.downloadProgressLabel)}
-              </p>
-              <p className={styles.downloadProgressData}>
-                <b>
-                  {intl.formatMessage(messages.downloadTimeLeft, {
-                    downloadTimeLeft,
-                  })}
-                </b>{' '}
-                {intl.formatMessage(messages.downloadProgressData, {
-                  totalDownloaded,
-                  totalDownloadSize,
-                })}
-              </p>
-            </div>
-            <ProgressBarLarge progress={downloadProgress} />
-          </div>
-        ) : (
-          <div className={styles.actions}>
-            <Checkbox
-              label={intl.formatMessage(messages.checkboxLabel)}
-              onChange={this.toggleAcceptance}
-              className={styles.checkbox}
-              checked={areTermsOfUseAccepted}
-              skin={CheckboxSkin}
-              themeOverrides={styles.checkbox}
-            />
-            <Button
-              className={buttonStyles}
-              onClick={onInstallUpdate}
-              skin={ButtonSkin}
-              label={intl.formatMessage(messages.buttonLabel)}
-              disabled={!areTermsOfUseAccepted}
-            />
-          </div>
-        )}
+        {actions}
       </div>
     );
   }

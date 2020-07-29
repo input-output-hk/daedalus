@@ -1,3 +1,5 @@
+@import '../../themes/mixins/link';
+
 .component {
   align-items: center;
   background-color: var(--theme-app-update-overlay-background-color);
@@ -158,6 +160,9 @@
         background-color: var(--theme-news-overlay-update-button-text-color);
         color: var(--theme-news-overlay-update-button-hover-text-color);
         cursor: pointer;
+        .externalLinkIcon {
+          @include link(--theme-news-overlay-update-button-hover-text-color);
+        }
       }
       &.disabled {
         border-color: var(--theme-app-update-overlay-opacity-text-color);
@@ -166,7 +171,30 @@
         opacity: 0.8;
         text-decoration: none;
       }
+      .externalLinkIcon {
+        @include link(--theme-news-overlay-update-button-text-color);
+        border-bottom: none;
+        margin-right: 10px;
+        vertical-align: baseline;
+        width: 15px;
+        svg {
+          margin-left: 0;
+          vertical-align: sub;
+          width: 15px;
+          g {
+            stroke-width: 2px;
+          }
+        }
+      }
     }
+  }
+
+  .manualUpdateDescription {
+    color: var(--theme-app-update-overlay-text-color);
+    font-family: var(--font-medium);
+    line-height: 1.38;
+    margin-bottom: 30px;
+    text-align: center;
   }
 
   .closeButton {

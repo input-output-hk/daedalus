@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import AppUpdateOverlay from '../../components/appUpdate/AppUpdateOverlay';
-import AppManualUpdateOverlay from '../../components/appUpdate/AppManualUpdateOverlay';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 @inject('stores', 'actions')
@@ -27,16 +26,6 @@ export default class AppUpdateContainer extends Component<InjectedProps> {
     } = appUpdate;
     const { installUpdate, closeAppUpdateOverlay } = actions.appUpdate;
 
-    if (isAutomaticUpdateFailed) {
-      return (
-        <AppManualUpdateOverlay
-          currentAppVersion={version}
-          availableAppVersion={availableUpdateVersion}
-          onExternalLinkClick={openExternalLink}
-        />
-      );
-    }
-
     if (!availableUpdate) return null;
 
     return (
@@ -51,6 +40,8 @@ export default class AppUpdateContainer extends Component<InjectedProps> {
         onInstallUpdate={installUpdate.trigger}
         currentAppVersion={version}
         availableAppVersion={availableUpdateVersion}
+        isAutomaticUpdateFailed={isAutomaticUpdateFailed}
+        onExternalLinkClick={openExternalLink}
       />
     );
   }

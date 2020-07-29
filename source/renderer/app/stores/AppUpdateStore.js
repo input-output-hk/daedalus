@@ -33,8 +33,6 @@ const { version: currentVersion, platform } = global.environment;
 const { News } = NewsDomains;
 const APP_UPDATE_DOWNLOAD_ID = 'appUpdate';
 
-const { isIncentivizedTestnet, isShelleyTestnet, isFlight } = global;
-
 export default class AppUpdateStore extends Store {
   @observable availableUpdate: ?News = null;
   @observable availableUpdateVersion: string = '';
@@ -86,7 +84,9 @@ export default class AppUpdateStore extends Store {
   @computed get displayAppUpdateOverlay(): boolean {
     return (
       !!this.availableUpdate &&
-      (this.isUpdateProgressOpen || this.isUpdateDownloaded)
+      (this.isUpdateProgressOpen ||
+        this.isUpdateDownloaded ||
+        this.isAutomaticUpdateFailed)
     );
   }
   @computed get displayAppUpdateNewsItem(): boolean {
@@ -125,6 +125,8 @@ export default class AppUpdateStore extends Store {
 
   isUpdateValid = (update: News) => {
     const { version: updateVersion } = this.getUpdateInfo(update);
+    console.log('updateVersion', updateVersion);
+    console.log('currentVersion', currentVersion);
     return semver.lt(currentVersion, updateVersion);
   };
 
@@ -146,6 +148,7 @@ export default class AppUpdateStore extends Store {
   _checkNewAppUpdate = async (update: News) => {
     // Is there an 'Automatic Update Failed' flag?
     const isAutomaticUpdateFailed = await this.getAppAutomaticUpdateFailedRequest.execute();
+    console.log('isAutomaticUpdateFailed', isAutomaticUpdateFailed);
     if (isAutomaticUpdateFailed) {
       runInAction(() => {
         this.isAutomaticUpdateFailed = true;
@@ -212,6 +215,7 @@ export default class AppUpdateStore extends Store {
         this.downloadInfo = info;
         this.downloadData = data;
       });
+      console.log('Progress', data.progress);
     }
     runInAction('updates the download information', () => {
       if (eventType === DOWNLOAD_EVENT_TYPES.END) {

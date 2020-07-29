@@ -177,7 +177,6 @@ const clearDownloadLocalData = async ({
 }: ClearDownloadLocalDataRendererRequest): Promise<ClearDownloadLocalDataMainResponse> => {
   if (!id) throw new Error('Requires `id` or `fileName`');
   const downloadId: string = getIdFromFileName(String(id));
-  console.log('downloadId', downloadId);
   return localStorage.unset(downloadId);
 };
 
