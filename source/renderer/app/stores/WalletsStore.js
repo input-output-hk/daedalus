@@ -48,7 +48,7 @@ import {
   TESTNET_MAGIC,
   SELFNODE_MAGIC,
   STAGING_MAGIC,
-  SHELLEY_TESTNET_MAGIC,
+  SHELLEY_TESTNET_NETWORK_ID,
   ITN_MAGIC,
 } from '../../../common/types/cardano-node.types';
 
@@ -899,7 +899,7 @@ export default class WalletsStore extends Store {
       expectedNetworkTag = TESTNET_MAGIC;
       validAddressStyles = ['Byron', 'Icarus'];
     } else if (isShelleyTestnet) {
-      expectedNetworkTag = SHELLEY_TESTNET_MAGIC;
+      expectedNetworkTag = SHELLEY_TESTNET_NETWORK_ID;
       validAddressStyles = ['Shelley'];
     } else if (isSelfnode) {
       expectedNetworkTag = SELFNODE_MAGIC;
@@ -914,8 +914,9 @@ export default class WalletsStore extends Store {
       }
       return (
         validAddressStyles.includes(response.introspection.address_style) &&
-        (response.introspection.address_style === 'Shelley' &&
-          (expectedNetworkTag && expectedNetworkTag.includes(response.introspection.network_tag)) ||
+        ((response.introspection.address_style === 'Shelley' &&
+          expectedNetworkTag &&
+            expectedNetworkTag.includes(response.introspection.network_tag)) ||
           expectedNetworkTag === response.introspection.network_tag)
       );
     } catch (error) {

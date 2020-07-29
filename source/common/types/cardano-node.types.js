@@ -141,8 +141,8 @@ export const TESTNET_MAGIC = 1097911063;
 // Cardano Byron Testnet network magic
 export const ITN_MAGIC = 1;
 
-// Cardano Shelley Testnet network magic
-export const SHELLEY_TESTNET_MAGIC = [0, 1, 42];
+// Cardano Mainnet Candidate during the Shelley HF
+export const SHELLEY_TESTNET_NETWORK_ID = 1;
 
 // Cardano Staging network magic
 export const STAGING_MAGIC = 633343913;
