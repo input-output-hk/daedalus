@@ -9,6 +9,7 @@ Changelog
 
 ### Fixes
 
+- Extended the recovery phrase verification to all possible phrase lengths ([PR 2109](https://github.com/input-output-hk/daedalus/pull/2109))
 - Fixed epoch length and slot numbers info ([PR 2108](https://github.com/input-output-hk/daedalus/pull/2108))
 
 ## 2.0.0-RC1

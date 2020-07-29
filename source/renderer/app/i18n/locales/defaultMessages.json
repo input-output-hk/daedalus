@@ -8307,7 +8307,7 @@
         }
       },
       {
-        "defaultMessage": "!!!To verify that you have the correct recovery phrase for this wallet, you can enter it on the following screen. This wallet uses a {wordCount}-word recovery phrase.",
+        "defaultMessage": "!!!To verify that you have the correct recovery phrase for this wallet, you can enter it on the following screen.",
         "description": "Label for the recoveryPhraseStep1Paragraph1 on wallet settings.",
         "end": {
           "column": 3,
@@ -8368,7 +8368,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Please enter your {wordCount}-word wallet recovery phrase. Make sure you enter the words in the correct order.",
+        "defaultMessage": "!!!Please enter your {expectedWordCount}-word wallet recovery phrase. Make sure you enter the words in the correct order.",
         "description": "Label for the recoveryPhraseStep2Description on wallet settings.",
         "end": {
           "column": 3,
@@ -13912,7 +13912,7 @@
           "line": 78
         },
         "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "manualUpdate.button.label",
+        "id": "appUpdate.manualUpdateOverlay.button.label",
         "start": {
           "column": 22,
           "line": 74
