@@ -85,12 +85,12 @@ export default class SyncingConnecting extends Component<Props, State> {
     if (canResetConnecting) {
       this._resetConnectingTime();
     }
-    const isAppLoadingStuck = !isVerifyingBlockchain && (
-      isSyncProgressStalling ||
-      (!isConnected &&
-        (connectingTime >= REPORT_ISSUE_TIME_TRIGGER ||
-          cardanoNodeState === CardanoNodeStates.UNRECOVERABLE))
-    );
+    const isAppLoadingStuck =
+      !isVerifyingBlockchain &&
+      (isSyncProgressStalling ||
+        (!isConnected &&
+          (connectingTime >= REPORT_ISSUE_TIME_TRIGGER ||
+            cardanoNodeState === CardanoNodeStates.UNRECOVERABLE)));
     // If app loading is stuck, check if a newer version is available and set flag (state)
     if (
       isAppLoadingStuck &&

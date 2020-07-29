@@ -163,10 +163,12 @@ export default class NetworkStatusStore extends Store {
 
     // Setup disk space checks
     getDiskSpaceStatusChannel.onReceive(this._onCheckDiskSpace);
-    getBlockReplyProgressChannel.onReceive(this._onCheckVerificationProgress);
     this._checkDiskSpace();
 
     this._getStateDirectoryPath();
+
+    // Blockchain verification checking
+    getBlockReplyProgressChannel.onReceive(this._onCheckVerificationProgress);
   }
 
   _restartNode = async () => {
@@ -644,8 +646,11 @@ export default class NetworkStatusStore extends Store {
     return Promise.resolve();
   };
 
-  @action _onCheckVerificationProgress = (verificationProgress) => {
+  @action _onCheckVerificationProgress = (
+    verificationProgress: number
+  ): Promise<void> => {
     this.verificationProgress = verificationProgress;
+    return Promise.resolve();
   };
 
   @action _onReceiveStateDirectoryPath = (stateDirectoryPath: string) => {

@@ -67,7 +67,8 @@ const messages = defineMessages({
   },
   verifyingBlockchain: {
     id: 'loading.screen.verifyingBlockchainMessage',
-    defaultMessage: '!!!Verifying the blockchain ({verificationProgress}% complete)',
+    defaultMessage:
+      '!!!Verifying the blockchain ({verificationProgress}% complete)',
     description:
       'Message "Verifying the blockchain (65% complete) ..." on the loading screen.',
   },
@@ -170,11 +171,11 @@ export default class SyncingConnectingStatus extends Component<Props> {
     return (
       <div className={componentStyles}>
         <h1 className={headlineStyles}>
-          {message === messages.connecting && isVerifyingBlockchain ? (
-            intl.formatMessage(messages.verifyingBlockchain, { verificationProgress })
-          ) : (
-            intl.formatMessage(message)
-          )}
+          {message === messages.connecting && isVerifyingBlockchain
+            ? intl.formatMessage(messages.verifyingBlockchain, {
+                verificationProgress,
+              })
+            : intl.formatMessage(message)}
         </h1>
       </div>
     );
