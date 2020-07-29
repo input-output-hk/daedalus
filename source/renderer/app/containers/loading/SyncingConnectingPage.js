@@ -13,7 +13,7 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
   static defaultProps = { stores: null, actions: null };
 
   render() {
-    const { isIncentivizedTestnet, isShelleyTestnet, isFlight } = global;
+    const { isIncentivizedTestnet, isFlight } = global;
     const {
       newsFeed,
       appUpdate,
@@ -35,6 +35,8 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
       isNodeStopped,
       isNotEnoughDiskSpace,
       isTlsCertInvalid,
+      isVerifyingBlockchain,
+      verificationProgress,
     } = networkStatus;
     const { displayAppUpdateNewsItem } = appUpdate;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme } = profile;
@@ -67,7 +69,6 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
         isNodeSyncing={isNodeSyncing}
         isNodeTimeCorrect={isNodeTimeCorrect}
         isIncentivizedTestnet={isIncentivizedTestnet}
-        isShelleyTestnet={isShelleyTestnet}
         onIssueClick={this.handleIssueClick}
         onOpenExternalLink={this.handleOpenExternalLink}
         onStatusIconClick={this.openDaedalusDiagnosticsDialog}
@@ -75,6 +76,8 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
         onToggleNewsFeedIconClick={toggleNewsFeed.trigger}
         disableDownloadLogs={app.isDownloadNotificationVisible}
         showNewsFeedIcon={!isNodeStopping && !isNodeStopped}
+        isVerifyingBlockchain={isVerifyingBlockchain}
+        verificationProgress={verificationProgress}
       />
     );
   }

@@ -5,7 +5,7 @@ import { includes } from 'lodash';
 import { defineMessages, intlShape } from 'react-intl';
 import {
   WALLET_NAV_IDS,
-  ITN_LEGACY_WALLET_EXCLUDED_NAV_ITEMS,
+  LEGACY_WALLET_EXCLUDED_NAV_ITEMS,
 } from '../../../config/walletNavigationConfig';
 import Navigation from '../../navigation/Navigation';
 import summaryIcon from '../../../assets/images/wallet-nav/summary-ic.inline.svg';
@@ -37,7 +37,6 @@ export default class WalletNavigation extends Component<Props> {
   render() {
     const { isActiveNavItem, onNavItemClick, activeItem } = this.props;
     const { intl } = this.context;
-    const { isIncentivizedTestnet } = global;
     const items: Array<NavButtonProps | NavDropdownProps> = [
       {
         id: WALLET_NAV_IDS.SUMMARY,
@@ -47,8 +46,8 @@ export default class WalletNavigation extends Component<Props> {
     ].filter(
       item =>
         !(
-          isIncentivizedTestnet &&
-          includes(ITN_LEGACY_WALLET_EXCLUDED_NAV_ITEMS, item.id)
+          global.isIncentivizedTestnet &&
+          includes(LEGACY_WALLET_EXCLUDED_NAV_ITEMS, item.id)
         )
     );
     return (

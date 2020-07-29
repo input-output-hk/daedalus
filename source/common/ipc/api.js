@@ -32,7 +32,6 @@ import type {
   DownloadLocalDataResponse,
   DownloadsLocalDataRequest,
   DownloadsLocalDataResponse,
-  DownloadInfo,
   DownloadRequest,
   DownloadResponse,
   ResumeDownloadRequest,
@@ -43,6 +42,10 @@ import type {
   DeleteDownloadedFileResponse,
 } from '../types/downloadManager.types';
 import type { StoreMessage } from '../types/electron-store.types';
+import type {
+  IntrospectAddressRequest,
+  IntrospectAddressResponse,
+} from '../types/address-introspection.types';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -346,3 +349,17 @@ export type ClearDownloadLocalDataMainResponse = ClearDownloadLocalDataResponse;
 export const QUIT_APP_AND_INSTALL_UPDATE = 'QUIT_APP_AND_INSTALL_UPDATE';
 export type QuitAppAndAppInstallUpdateRendererRequest = string;
 export type QuitAppAndAppInstallUpdateMainResponse = boolean;
+
+/**
+ * Channel for introspecting an address
+ */
+export const INTROSPECT_ADDRESS_CHANNEL = 'INTROSPECT_ADDRESS_CHANNEL';
+export type IntrospectAddressRendererRequest = IntrospectAddressRequest;
+export type IntrospectAddressMainResponse = IntrospectAddressResponse;
+
+/**
+ * Channel for checking block replay progress
+ */
+export const GET_BLOCK_REPLAY_STATUS_CHANNEL = 'GetBlockReplayProgressChannel';
+export type GetBlockReplayProgressRendererRequest = void;
+export type GetBlockReplayProgressMainResponse = number;

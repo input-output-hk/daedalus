@@ -9,7 +9,10 @@ import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteS
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
-import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
+import {
+  WALLET_RECOVERY_PHRASE_WORD_COUNT,
+  LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
+} from '../../../config/cryptoConfig';
 import suggestedMnemonics from '../../../../../common/config/crypto/valid-words.en';
 import { isValidMnemonic } from '../../../../../common/config/crypto/decrypt';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
@@ -83,11 +86,12 @@ const messages = defineMessages({
   },
 });
 
-const { isIncentivizedTestnet, isShelleyTestnet } = global;
+const { isIncentivizedTestnet } = global;
 
 type Props = {
   enteredPhrase: Array<string>,
   isValid: boolean,
+  isShelleyActivated: boolean,
   isTermOfflineAccepted: boolean,
   isTermRecoveryAccepted: boolean,
   isTermRewardsAccepted: boolean,
@@ -117,6 +121,10 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
             const { intl } = this.context;
             const enteredWords = field.value;
             const wordCount = enteredWords.length;
+            const expectedWordCount =
+              isIncentivizedTestnet || this.props.isShelleyActivated
+                ? WALLET_RECOVERY_PHRASE_WORD_COUNT
+                : LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT;
             const value = join(enteredWords, ' ');
 
             this.props.onUpdateVerificationPhrase({
@@ -124,11 +132,11 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
             });
 
             // Check if recovery phrase contains the expected words
-            if (wordCount !== WALLET_RECOVERY_PHRASE_WORD_COUNT) {
+            if (wordCount !== expectedWordCount) {
               return [
                 false,
                 intl.formatMessage(globalMessages.incompleteMnemonic, {
-                  expected: WALLET_RECOVERY_PHRASE_WORD_COUNT,
+                  expected: expectedWordCount,
                 }),
               ];
             }
@@ -157,6 +165,7 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
     const {
       enteredPhrase,
       isValid,
+      isShelleyActivated,
       isTermOfflineAccepted,
       isTermRecoveryAccepted,
       isTermRewardsAccepted,
@@ -174,7 +183,10 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
       styles.component,
       'WalletRecoveryPhraseEntryDialog',
     ]);
-
+    const wordCount =
+      isIncentivizedTestnet || isShelleyActivated
+        ? WALLET_RECOVERY_PHRASE_WORD_COUNT
+        : LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT;
     const enteredPhraseString = enteredPhrase.join(' ');
 
     const actions = [
@@ -205,7 +217,7 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
               instructionsText={intl.formatMessage(
                 messages.verificationInstructions,
                 {
-                  wordCount: WALLET_RECOVERY_PHRASE_WORD_COUNT,
+                  wordCount,
                 }
               )}
             />
@@ -216,11 +228,11 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
               placeholder={intl.formatMessage(
                 messages.recoveryPhraseInputHint,
                 {
-                  numberOfWords: WALLET_RECOVERY_PHRASE_WORD_COUNT,
+                  numberOfWords: wordCount,
                 }
               )}
               options={suggestedMnemonics}
-              maxSelections={WALLET_RECOVERY_PHRASE_WORD_COUNT}
+              maxSelections={wordCount}
               error={recoveryPhraseField.error}
               maxVisibleOptions={5}
               noResultsMessage={intl.formatMessage(
@@ -246,18 +258,14 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
               </div>
               <div className={styles.checkbox}>
                 <Checkbox
-                  className={
-                    isIncentivizedTestnet && !isShelleyTestnet
-                      ? ''
-                      : styles.isBold
-                  }
+                  className={isIncentivizedTestnet ? '' : styles.isBold}
                   label={intl.formatMessage(messages.termRecovery)}
                   onChange={onAcceptTermRecovery}
                   checked={isTermRecoveryAccepted}
                   skin={CheckboxSkin}
                 />
               </div>
-              {isIncentivizedTestnet && !isShelleyTestnet && (
+              {isIncentivizedTestnet && (
                 <div className={styles.checkbox}>
                   <Checkbox
                     label={<FormattedHTMLMessage {...messages.termRewards} />}

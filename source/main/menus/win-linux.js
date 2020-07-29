@@ -10,11 +10,7 @@ import { showUiPartChannel } from '../ipc/control-ui-parts';
 import { generateSupportRequestLink } from '../../common/utils/reporting';
 
 const id = 'menu';
-const {
-  isWindows,
-  isBlankScreenFixActive,
-  isIncentivizedTestnet,
-} = environment;
+const { isWindows, isBlankScreenFixActive } = environment;
 
 export const winLinuxMenu = (
   app: App,
@@ -152,16 +148,14 @@ export const winLinuxMenu = (
           shell.openExternal(faqLink);
         },
       },
-      !isIncentivizedTestnet
-        ? {
-            label: translation('helpSupport.blankScreenFix'),
-            type: 'checkbox',
-            checked: isBlankScreenFixActive,
-            click(item) {
-              actions.toggleBlankScreenFix(item);
-            },
-          }
-        : null,
+      {
+        label: translation('helpSupport.blankScreenFix'),
+        type: 'checkbox',
+        checked: isBlankScreenFixActive,
+        click(item) {
+          actions.toggleBlankScreenFix(item);
+        },
+      },
       { type: 'separator' },
       {
         label: translation('helpSupport.safetyTips'),

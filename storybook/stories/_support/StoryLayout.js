@@ -183,7 +183,6 @@ export default class StoryLayout extends Component<Props> {
         currentTheme={currentTheme}
         network="testnet"
         isIncentivizedTestnet={isIncentivizedTestnetTheme(currentTheme)}
-        isShelleyTestnet={isShelleyTestnetTheme(currentTheme)}
         isShelleyActivated={isShelleyTestnetTheme(currentTheme)}
       />
     );

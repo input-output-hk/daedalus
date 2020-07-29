@@ -30,6 +30,7 @@ export const defaultProps = {
       onClose={action('onClose')}
       onContinue={action('onContinue')}
       wordCount={number('wordCount', 15)}
+      expectedWordCount={15}
     />
   ),
   walletRecoveryPhraseStep3Container: (

@@ -22,6 +22,7 @@ type State = {
 
 type Props = {
   cardanoNodeState: ?CardanoNodeState,
+  verificationProgress: number,
   hasBeenConnected: boolean,
   forceConnectivityIssue?: boolean,
   isFlight: boolean,
@@ -44,7 +45,7 @@ type Props = {
   disableDownloadLogs: boolean,
   showNewsFeedIcon: boolean,
   isIncentivizedTestnet: boolean,
-  isShelleyTestnet: boolean,
+  isVerifyingBlockchain: boolean,
   onIssueClick: Function,
   onOpenExternalLink: Function,
   onDownloadLogs: Function,
@@ -111,15 +112,18 @@ export default class SyncingConnecting extends Component<Props, State> {
       cardanoNodeState,
       isIncentivizedTestnet,
       forceConnectivityIssue,
+      isVerifyingBlockchain,
     } = this.props;
     const { connectingTime } = this.state;
     const canReportConnectingIssue =
-      isSyncProgressStalling ||
-      forceConnectivityIssue ||
-      (!isConnected &&
-        (connectingTime >= REPORT_ISSUE_TIME_TRIGGER ||
-          cardanoNodeState === CardanoNodeStates.UNRECOVERABLE));
-    if (isFlight || isIncentivizedTestnet) {
+      !isVerifyingBlockchain &&
+      (isSyncProgressStalling ||
+        forceConnectivityIssue ||
+        (!isConnected &&
+          (connectingTime >= REPORT_ISSUE_TIME_TRIGGER ||
+            cardanoNodeState === CardanoNodeStates.UNRECOVERABLE)));
+
+    if (isFlight || isIncentivizedTestnet || global.isShelleyTestnet) {
       return canReportConnectingIssue;
     }
     return canReportConnectingIssue;
@@ -141,7 +145,6 @@ export default class SyncingConnecting extends Component<Props, State> {
       onDownloadLogs,
       disableDownloadLogs,
       isIncentivizedTestnet,
-      isShelleyTestnet,
       isNodeResponding,
       isNodeSyncing,
       isNodeTimeCorrect,
@@ -153,6 +156,8 @@ export default class SyncingConnecting extends Component<Props, State> {
       onStatusIconClick,
       onToggleNewsFeedIconClick,
       showNewsFeedIcon,
+      isVerifyingBlockchain,
+      verificationProgress,
     } = this.props;
 
     const newsFeedIconStyles = classNames([
@@ -165,7 +170,6 @@ export default class SyncingConnecting extends Component<Props, State> {
         <SyncingConnectingBackground
           hasLoadedCurrentTheme={hasLoadedCurrentTheme}
           isIncentivizedTestnet={isIncentivizedTestnet}
-          isShelleyTestnet={isShelleyTestnet}
           isConnecting={isConnecting}
           isSyncing={isSyncing}
         />
@@ -187,9 +191,7 @@ export default class SyncingConnecting extends Component<Props, State> {
             />
           )}
           <LogosDisplay isConnected={isConnected} />
-          {isIncentivizedTestnet && !isShelleyTestnet && (
-            <SyncingConnectingTitle />
-          )}
+          {isIncentivizedTestnet && <SyncingConnectingTitle />}
         </div>
         <SyncingConnectingStatus
           cardanoNodeState={cardanoNodeState}
@@ -199,6 +201,8 @@ export default class SyncingConnecting extends Component<Props, State> {
           isConnected={isConnected}
           isNodeStopping={isNodeStopping}
           isNodeStopped={isNodeStopped}
+          isVerifyingBlockchain={isVerifyingBlockchain}
+          verificationProgress={verificationProgress}
         />
         <StatusIcons
           onIconClick={onStatusIconClick}

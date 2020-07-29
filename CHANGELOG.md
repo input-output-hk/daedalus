@@ -1,7 +1,19 @@
 Changelog
 =========
 
-## vNext
+## 2.0.0
+
+### Features
+
+- Implemented address validation ([PR 2041](https://github.com/input-output-hk/daedalus/pull/2041))
+- Show block replay progress ([PR 2110](https://github.com/input-output-hk/daedalus/pull/2110))
+
+### Fixes
+
+- Extended the recovery phrase verification to all possible phrase lengths ([PR 2109](https://github.com/input-output-hk/daedalus/pull/2109))
+- Fixed epoch length and slot numbers info ([PR 2108](https://github.com/input-output-hk/daedalus/pull/2108))
+
+## 2.0.0-RC1
 
 ### Features
 
@@ -9,12 +21,18 @@ Changelog
 
 ### Fixes
 
+- Fixed the epoch duration copy ([PR 2107](https://github.com/input-output-hk/daedalus/pull/2107))
+- Handled errors from a wallet which has ONLY rewards account balance when sending a transaction or delegating ([PR 2100](https://github.com/input-output-hk/daedalus/pull/2100))
 - Fixed `cardano-wallet` info shown on the "About" screen ([PR 2097](https://github.com/input-output-hk/daedalus/pull/2097))
 - Updated stake pool tooltip to display "Produced blocks" instead of "Blocks (current epoch)" ([PR 2096](https://github.com/input-output-hk/daedalus/pull/2096))
 - Fixed wallet recovery phrase length used on "ITN rewards redemption" wizard ([PR 2095](https://github.com/input-output-hk/daedalus/pull/2095))
 
 ### Chores
 
+- Updated `cardano-wallet` to revision `ca96c435` ([PR 2105](https://github.com/input-output-hk/daedalus/pull/2105))
+- Extended network-parameters Api endpoint integration with hardfork info ([PR 2105](https://github.com/input-output-hk/daedalus/pull/2105))
+- Configured mainnet instance for Shelley hardfork ([PR 2104](https://github.com/input-output-hk/daedalus/pull/2104))
+- Updated network-info Api endpoint integration ([PR 2101](https://github.com/input-output-hk/daedalus/pull/2101))
 - Extended incident and alert newsfeed type ([PR 2099](https://github.com/input-output-hk/daedalus/pull/2099))
 - Enable Cardano Explorer URLs for STN network ([PR 2098](https://github.com/input-output-hk/daedalus/pull/2098))
 

@@ -26,12 +26,11 @@ export default class TopBarContainer extends Component<Props> {
       networkStatus,
       wallets,
       newsFeed,
-      staking,
       appUpdate,
     } = stores;
     const { isSynced, syncPercentage } = networkStatus;
     const { active, isWalletRoute, hasAnyWallets, hasRewardsWallets } = wallets;
-    const { isShelleyActivated } = staking;
+    const { isShelleyActivated } = networkStatus;
     const {
       currentRoute,
       environment: { isMainnet, network },

@@ -31,7 +31,7 @@ const messages = defineMessages({
   },
 });
 
-const { isIncentivizedTestnet, isShelleyTestnet } = global;
+const { isIncentivizedTestnet } = global;
 
 type Props = {
   recoveryPhrase: string,
@@ -82,8 +82,7 @@ export default class WalletRecoveryPhraseDisplayDialog extends Component<Props> 
               {...messages.backupInstructions}
               values={{
                 walletRecoveryPhraseWordCount:
-                  (isIncentivizedTestnet && !isShelleyTestnet) ||
-                  isShelleyActivated
+                  isIncentivizedTestnet || isShelleyActivated
                     ? WALLET_RECOVERY_PHRASE_WORD_COUNT
                     : LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
               }}

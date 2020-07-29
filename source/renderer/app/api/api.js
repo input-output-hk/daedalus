@@ -62,7 +62,7 @@ import { transferFunds } from './wallets/requests/transferFunds';
 
 // Staking
 import StakePool from '../domains/StakePool';
-import { EPOCH_LENGTH_ITN } from '../config/epochsConfig';
+import { getEpochLength } from '../config/epochsConfig';
 
 // News requests
 import { getNews } from './news/requests/getNews';
@@ -184,7 +184,7 @@ import ApiError from '../domains/ApiError';
 // @UPDATE TODO
 import dummyUpdates from './news/dummy-update.json';
 
-const { isIncentivizedTestnet, isShelleyTestnet } = global;
+const { isIncentivizedTestnet } = global;
 
 export default class AdaApi {
   config: RequestConfig;
@@ -205,7 +205,7 @@ export default class AdaApi {
     const { isShelleyActivated } = request;
     try {
       const wallets: AdaWallets =
-        (isIncentivizedTestnet && !isShelleyTestnet) || isShelleyActivated
+        isIncentivizedTestnet || isShelleyActivated
           ? await getWallets(this.config)
           : [];
       const legacyWallets: LegacyAdaWallets = await getLegacyWallets(
@@ -538,7 +538,7 @@ export default class AdaApi {
         passphrase: spendingPassword,
       };
 
-      if ((isIncentivizedTestnet && !isShelleyTestnet) || isShelleyActivated) {
+      if (isIncentivizedTestnet || isShelleyActivated) {
         wallet = await createWallet(this.config, {
           walletInitData,
         });
@@ -803,7 +803,7 @@ export default class AdaApi {
       const response: Promise<Array<string>> = new Promise(resolve =>
         resolve(
           generateAccountMnemonics(
-            (isIncentivizedTestnet && !isShelleyTestnet) || isShelleyActivated
+            isIncentivizedTestnet || isShelleyActivated
               ? WALLET_RECOVERY_PHRASE_WORD_COUNT
               : LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT
           )
@@ -1514,35 +1514,51 @@ export default class AdaApi {
         this.config
       );
       logger.debug('AdaApi::getNetworkInfo success', { networkInfo });
-      /* eslint-disable-next-line camelcase */
-      const { sync_progress, node_tip, network_tip, next_epoch } = networkInfo;
+      const {
+        sync_progress /* eslint-disable-line camelcase */,
+        node_tip: nodeTip,
+        network_tip: networkTip,
+        next_epoch: nextEpoch,
+      } = networkInfo;
+
       const syncProgress =
         get(sync_progress, 'status') === 'ready'
           ? 100
           : get(sync_progress, 'progress.quantity', 0);
+      const nextEpochNumber = get(nextEpoch, 'epoch_number', null);
+      const nextEpochStartTime = get(nextEpoch, 'epoch_start_time', '');
+      const epochLength = getEpochLength();
       // extract relevant data before sending to NetworkStatusStore
       return {
         syncProgress,
         localTip: {
-          epoch: get(node_tip, 'epoch_number', 0),
-          slot: get(node_tip, 'slot_number', 0),
+          epoch: get(nodeTip, 'epoch_number', 0),
+          slot: get(nodeTip, 'slot_number', 0),
         },
-        networkTip: {
-          epoch: get(network_tip, 'epoch_number', 0),
-          slot: get(network_tip, 'slot_number', 0),
-        },
-        nextEpoch: {
-          // N+1 epoch
-          epochNumber: get(next_epoch, 'epoch_number', 0),
-          epochStart: get(next_epoch, 'epoch_start_time', ''),
-        },
-        futureEpoch: {
-          // N+2 epoch
-          epochNumber: get(next_epoch, 'epoch_number', 0) + 1,
-          epochStart: moment(get(next_epoch, 'epoch_start_time', 0))
-            .add(EPOCH_LENGTH_ITN, 'seconds')
-            .toISOString(),
-        },
+        networkTip: networkTip
+          ? {
+              epoch: get(networkTip, 'epoch_number', null),
+              slot: get(networkTip, 'slot_number', null),
+            }
+          : null,
+        nextEpoch: nextEpoch
+          ? {
+              // N+1 epoch
+              epochNumber: nextEpochNumber,
+              epochStart: nextEpochStartTime,
+            }
+          : null,
+        futureEpoch: nextEpoch
+          ? {
+              // N+2 epoch
+              epochNumber: nextEpochNumber ? nextEpochNumber + 1 : null,
+              epochStart: nextEpochStartTime
+                ? moment(nextEpochStartTime)
+                    .add(epochLength, 'seconds')
+                    .toISOString()
+                : '',
+            }
+          : null,
       };
     } catch (error) {
       logger.error('AdaApi::getNetworkInfo error', { error });
@@ -1600,6 +1616,7 @@ export default class AdaApi {
         decentralization_level: decentralizationLevel,
         desired_pool_number: desiredPoolNumber,
         minimum_utxo_value: minimumUtxoValue,
+        hardfork_at: hardforkAt,
       } = networkParameters;
       const blockchainStartTime = moment(blockchain_start_time).valueOf();
 
@@ -1613,6 +1630,7 @@ export default class AdaApi {
         decentralizationLevel,
         desiredPoolNumber,
         minimumUtxoValue,
+        hardforkAt: hardforkAt || null,
       };
     } catch (error) {
       logger.error('AdaApi::getNetworkParameters error', { error });

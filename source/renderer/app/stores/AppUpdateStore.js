@@ -33,6 +33,8 @@ const { version: currentVersion, platform } = global.environment;
 const { News } = NewsDomains;
 const APP_UPDATE_DOWNLOAD_ID = 'appUpdate';
 
+const { isIncentivizedTestnet, isShelleyTestnet, isFlight } = global;
+
 export default class AppUpdateStore extends Store {
   @observable availableUpdate: ?News = null;
   @observable availableUpdateVersion: string = '';
@@ -113,10 +115,6 @@ export default class AppUpdateStore extends Store {
 
   @computed get showManualUpdate(): boolean {
     return this.isAutomaticUpdateFailed;
-    // this.isNewAppVersionAvailable &&
-    // !this.isUpdateAvailable &&
-    // !global.isIncentivizedTestnet &&
-    // !global.isFlight
   }
 
   getUpdateInfo(update: News): SoftwareUpdateInfo {
@@ -278,6 +276,7 @@ export default class AppUpdateStore extends Store {
   @action _openAppUpdateOverlay = () => {
     this.isUpdateProgressOpen = true;
   };
+
   @action _closeAppUpdateOverlay = () => {
     this.isUpdateProgressOpen = false;
   };

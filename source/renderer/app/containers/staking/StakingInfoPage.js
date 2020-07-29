@@ -31,7 +31,7 @@ export default class StakingInfoPage extends Component<Props> {
       },
     } = this.props;
 
-    if (global.isIncentivizedTestnet && !global.isShelleyTestnet) {
+    if (global.isIncentivizedTestnet) {
       goToStakingDelegationCenterPage.trigger();
     }
   }
