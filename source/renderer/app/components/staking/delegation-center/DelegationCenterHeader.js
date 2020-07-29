@@ -13,7 +13,7 @@ import type {
   FutureEpoch,
 } from '../../../api/network/types';
 import {
-  SLOTS_TOTAL,
+  getTotalSlots,
   EPOCH_COUNTDOWN_INTERVAL,
 } from '../../../config/epochsConfig';
 import { generateFieldPanel } from './helpers';
@@ -131,7 +131,7 @@ export default class DelegationCenterHeader extends Component<Props, State> {
     const nextEpochStart = get(nextEpoch, 'epochStart', '');
     const nextEpochNumber = get(nextEpoch, 'epochNumber', 0);
     const slot = get(networkTip, 'slot', '-');
-    const totalSlots = SLOTS_TOTAL;
+    const totalSlots = getTotalSlots();
     const headingFirst = intl.formatMessage(messages.headingRight);
     const headingSecond = intl.formatMessage(messages.headingLeft);
     const timeUntilFutureEpoch = humanizeDurationByLocale(
