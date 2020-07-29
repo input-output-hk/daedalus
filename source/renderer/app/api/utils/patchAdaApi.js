@@ -23,7 +23,7 @@ import type {
   GetLatestAppVersionResponse,
 } from '../nodes/types';
 import type { GetNewsResponse } from '../news/types';
-import { EPOCH_LENGTH_ITN } from '../../config/epochsConfig';
+import { getEpochLength } from '../../config/epochsConfig';
 
 let LATEST_APP_VERSION = null;
 let LOCAL_TIME_DIFFERENCE = 0;
@@ -54,6 +54,7 @@ export default (api: AdaApi) => {
       // extract relevant data before sending to NetworkStatusStore
       const nextEpochNumber = get(next_epoch, 'epoch_number', null);
       const nextEpochStartTime = get(next_epoch, 'epoch_start_time', '');
+      const epochLength = getEpochLength();
       return {
         syncProgress: SYNC_PROGRESS !== null ? SYNC_PROGRESS : syncProgress,
         localTip: {
@@ -74,7 +75,7 @@ export default (api: AdaApi) => {
           epochNumber: nextEpochNumber ? nextEpochNumber + 1 : null,
           epochStart: nextEpochStartTime
             ? moment(nextEpochStartTime)
-                .add(EPOCH_LENGTH_ITN, 'seconds')
+                .add(epochLength, 'seconds')
                 .toISOString()
             : '',
         },
