@@ -15,6 +15,7 @@ import { handlePaperWalletRequests } from './generatePaperWalletChannel';
 import { handleAddressPDFRequests } from './generateAddressPDFChannel';
 import { handleRewardsCsvRequests } from './generateRewardsCsvChannel';
 import { handleFileDialogRequests } from './show-file-dialog-channels';
+import { handleAddressIntrospectionRequests } from './introspect-address';
 import { openExternalUrlChannel } from './open-external-url';
 import { openLocalDirectoryChannel } from './open-local-directory';
 
@@ -31,6 +32,7 @@ export default (window: BrowserWindow) => {
   handleAddressPDFRequests();
   handleRewardsCsvRequests();
   handleFileDialogRequests(window);
+  handleAddressIntrospectionRequests();
   // eslint-disable-next-line no-unused-expressions
   openExternalUrlChannel;
   // eslint-disable-next-line no-unused-expressions

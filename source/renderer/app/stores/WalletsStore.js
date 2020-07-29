@@ -1,10 +1,7 @@
 // @flow
 import { observable, action, computed, runInAction, flow } from 'mobx';
-import { get, find, findIndex, isEqual } from 'lodash';
+import { get, find, findIndex, isEqual, includes } from 'lodash';
 import { BigNumber } from 'bignumber.js';
-import { Address } from 'cardano-js';
-import { AddressGroup } from 'cardano-js/dist/Address/AddressGroup';
-import { ChainSettings } from 'cardano-js/dist/ChainSettings';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import Wallet, { WalletSyncStateStatuses } from '../domains/Wallet';
@@ -17,6 +14,7 @@ import { paperWalletPdfGenerator } from '../utils/paperWalletPdfGenerator';
 import { addressPDFGenerator } from '../utils/addressPDFGenerator';
 import { downloadRewardsCsv } from '../utils/rewardsCsvGenerator';
 import { buildRoute, matchRoute } from '../utils/routing';
+import { logger } from '../utils/logging';
 import { ROUTES } from '../routes-config';
 import { formattedWalletAmount } from '../utils/formatters';
 import {
@@ -44,6 +42,17 @@ import type {
   TransferFundsCalculateFeeRequest,
   TransferFundsRequest,
 } from '../api/wallets/types';
+import { introspectAddressChannel } from '../ipc/introspect-address.js';
+import type { AddressStyle } from '../../../common/types/address-introspection.types';
+import {
+  TESTNET_MAGIC,
+  SELFNODE_MAGIC,
+  STAGING_MAGIC,
+  SHELLEY_TESTNET_NETWORK_ID,
+  ITN_MAGIC,
+  MAINNET_MAGIC,
+} from '../../../common/types/cardano-node.types';
+
 /* eslint-disable consistent-return */
 
 /**
@@ -873,21 +882,40 @@ export default class WalletsStore extends Store {
     });
   };
 
-  isValidAddress = (address: string) => {
-    const { app } = this.stores;
-    const { isMainnet, isStaging, isSelfnode } = app.environment;
-    if (global.isShelleyTestnet) return true;
-    const addressGroup = global.isIncentivizedTestnet
-      ? AddressGroup.jormungandr
-      : AddressGroup.byron;
-    const chainSettings =
-      isMainnet || isStaging ? ChainSettings.mainnet : ChainSettings.testnet;
+  isValidAddress = async (address: string) => {
+    const { isIncentivizedTestnet, isShelleyTestnet } = global;
+    const { isMainnet, isSelfnode, isStaging, isTestnet } = this.environment;
+    let expectedNetworkTag: ?Array<?number> | ?number;
+    let validAddressStyles: AddressStyle[] = ['Byron', 'Icarus', 'Shelley'];
+    if (isMainnet) {
+      expectedNetworkTag = MAINNET_MAGIC;
+    } else if (isStaging) {
+      expectedNetworkTag = STAGING_MAGIC;
+    } else if (isIncentivizedTestnet) {
+      expectedNetworkTag = ITN_MAGIC;
+      validAddressStyles = ['Jormungandr'];
+    } else if (isTestnet) {
+      expectedNetworkTag = TESTNET_MAGIC;
+    } else if (isShelleyTestnet) {
+      expectedNetworkTag = SHELLEY_TESTNET_NETWORK_ID;
+    } else if (isSelfnode) {
+      expectedNetworkTag = SELFNODE_MAGIC;
+    } else {
+      throw new Error('Unexpected environment');
+    }
     try {
-      return isSelfnode
-        ? true // Selfnode address validation is missing in cardano-js
-        : Address.Util.isAddress(address, chainSettings, addressGroup);
+      const response = await introspectAddressChannel.send({ input: address });
+      if (response === 'Invalid') {
+        return false;
+      }
+      return (
+        validAddressStyles.includes(response.introspection.address_style) &&
+        ((Array.isArray(expectedNetworkTag) &&
+          includes(expectedNetworkTag, response.introspection.network_tag)) ||
+          expectedNetworkTag === response.introspection.network_tag)
+      );
     } catch (error) {
-      return false;
+      logger.error(error);
     }
   };
 

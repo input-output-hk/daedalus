@@ -172,6 +172,3 @@ export const STAKE_POOL_REGISTRY_URL = {
   qa:
     'https://explorer.qa.jormungandr-testnet.iohkdev.io/stakepool-registry/registry.zip',
 };
-
-// Cardano Byron Testnet network magic
-export const TESTNET_MAGIC = '1097911063';

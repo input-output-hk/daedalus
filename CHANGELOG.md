@@ -1,10 +1,11 @@
 Changelog
 =========
 
-## vNext
+## 2.0.0
 
 ### Features
 
+- Implemented address validation ([PR 2041](https://github.com/input-output-hk/daedalus/pull/2041))
 - Show block replay progress ([PR 2110](https://github.com/input-output-hk/daedalus/pull/2110))
 
 ### Fixes
