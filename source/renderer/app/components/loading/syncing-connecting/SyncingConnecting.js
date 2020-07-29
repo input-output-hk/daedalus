@@ -145,14 +145,17 @@ export default class SyncingConnecting extends Component<Props, State> {
       isNewAppVersionAvailable,
       isIncentivizedTestnet,
       forceConnectivityIssue,
+      isVerifyingBlockchain,
     } = this.props;
     const { connectingTime } = this.state;
     const canReportConnectingIssue =
-      isSyncProgressStalling ||
-      forceConnectivityIssue ||
-      (!isConnected &&
-        (connectingTime >= REPORT_ISSUE_TIME_TRIGGER ||
-          cardanoNodeState === CardanoNodeStates.UNRECOVERABLE));
+      !isVerifyingBlockchain &&
+      (isSyncProgressStalling ||
+        forceConnectivityIssue ||
+        (!isConnected &&
+          (connectingTime >= REPORT_ISSUE_TIME_TRIGGER ||
+            cardanoNodeState === CardanoNodeStates.UNRECOVERABLE)));
+
     if (isFlight || isIncentivizedTestnet || global.isShelleyTestnet) {
       return canReportConnectingIssue;
     }
