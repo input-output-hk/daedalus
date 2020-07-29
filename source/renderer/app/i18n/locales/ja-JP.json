@@ -175,6 +175,7 @@
   "loading.screen.unrecoverableCardanoMessage": "Cardanoノードを起動できません。サポートリクエストを送信してください。",
   "loading.screen.updatedCardanoMessage": "Cardanoノードが更新されました",
   "loading.screen.updatingCardanoMessage": "Cardanoノードを更新しています",
+  "loading.screen.verifyingBlockchainMessage": "ブロックチェーンを検証しています（{verificationProgress}%完了）",
   "manualUpdate.button.label": "指示に従って手動で更新してください",
   "manualUpdate.button.url": "https://iohk.zendesk.com/hc/ja/articles/360023850634",
   "manualUpdate.description1": "ネットワークへの接続に不具合があり、Daedalusウォレットの最新バージョンが実行されていません。DaedalusがCardanoネットワークに接続されていない間、自動更新は実行できません。",

@@ -29,6 +29,8 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
       isNodeStopped,
       isNotEnoughDiskSpace,
       isTlsCertInvalid,
+      isVerifyingBlockchain,
+      verificationProgress,
     } = stores.networkStatus;
     const {
       isNewAppVersionAvailable,
@@ -75,6 +77,8 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
         onToggleNewsFeedIconClick={toggleNewsFeed.trigger}
         disableDownloadLogs={stores.app.isDownloadNotificationVisible}
         showNewsFeedIcon={!isNodeStopping && !isNodeStopped}
+        isVerifyingBlockchain={isVerifyingBlockchain}
+        verificationProgress={verificationProgress}
       />
     );
   }

@@ -65,16 +65,24 @@ const messages = defineMessages({
     defaultMessage: '!!!TLS certificate is not valid, please restart Daedalus.',
     description: 'The TLS cert is not valid and Daedalus should be restarted',
   },
+  verifyingBlockchain: {
+    id: 'loading.screen.verifyingBlockchainMessage',
+    defaultMessage: '!!!Verifying the blockchain ({verificationProgress}% complete)',
+    description:
+      'Message "Verifying the blockchain (65% complete) ..." on the loading screen.',
+  },
 });
 
 type Props = {
   cardanoNodeState: ?CardanoNodeState,
+  verificationProgress: number,
   hasLoadedCurrentLocale: boolean,
   hasBeenConnected: boolean,
   isTlsCertInvalid: boolean,
   isConnected: boolean,
   isNodeStopping: boolean,
   isNodeStopped: boolean,
+  isVerifyingBlockchain: boolean,
 };
 
 export default class SyncingConnectingStatus extends Component<Props> {
@@ -88,6 +96,7 @@ export default class SyncingConnectingStatus extends Component<Props> {
       hasBeenConnected,
       isTlsCertInvalid,
       isConnected,
+      isVerifyingBlockchain,
     } = this.props;
     if (isConnected) return messages.loadingWalletData;
     let connectingMessage;
@@ -139,6 +148,8 @@ export default class SyncingConnectingStatus extends Component<Props> {
       isNodeStopped,
       isTlsCertInvalid,
       hasLoadedCurrentLocale,
+      isVerifyingBlockchain,
+      verificationProgress,
     } = this.props;
 
     if (!hasLoadedCurrentLocale) return null;
@@ -156,10 +167,15 @@ export default class SyncingConnectingStatus extends Component<Props> {
       showEllipsis ? styles.withoutAnimation : null,
     ]);
 
+    const message = this._getConnectingMessage();
     return (
       <div className={componentStyles}>
         <h1 className={headlineStyles}>
-          {intl.formatMessage(this._getConnectingMessage())}
+          {message === messages.connecting && isVerifyingBlockchain ? (
+            intl.formatMessage(messages.verifyingBlockchain, { verificationProgress })
+          ) : (
+            intl.formatMessage(message)
+          )}
         </h1>
       </div>
     );

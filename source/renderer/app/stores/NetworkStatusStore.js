@@ -21,6 +21,7 @@ import {
 } from '../ipc/cardano.ipc';
 import { CardanoNodeStates } from '../../../common/types/cardano-node.types';
 import { getDiskSpaceStatusChannel } from '../ipc/getDiskSpaceChannel.js';
+import { getBlockReplyProgressChannel } from '../ipc/getBlockReplyChannel.js';
 import { getStateDirectoryPathChannel } from '../ipc/getStateDirectoryPathChannel';
 import type {
   GetNetworkInfoResponse,
@@ -121,6 +122,7 @@ export default class NetworkStatusStore extends Store {
   @observable isShelleyActivated: boolean = false;
   @observable isShelleyPending: boolean = false;
   @observable shelleyActivationTime: string = '';
+  @observable verificationProgress: number = 0;
 
   // DEFINE STORE METHODS
   setup() {
@@ -161,6 +163,7 @@ export default class NetworkStatusStore extends Store {
 
     // Setup disk space checks
     getDiskSpaceStatusChannel.onReceive(this._onCheckDiskSpace);
+    getBlockReplyProgressChannel.onReceive(this._onCheckVerificationProgress);
     this._checkDiskSpace();
 
     this._getStateDirectoryPath();
@@ -641,6 +644,10 @@ export default class NetworkStatusStore extends Store {
     return Promise.resolve();
   };
 
+  @action _onCheckVerificationProgress = (verificationProgress) => {
+    this.verificationProgress = verificationProgress;
+  };
+
   @action _onReceiveStateDirectoryPath = (stateDirectoryPath: string) => {
     this.stateDirectoryPath = stateDirectoryPath;
   };
@@ -661,7 +668,8 @@ export default class NetworkStatusStore extends Store {
   };
 
   @computed get isConnected(): boolean {
-    return this.isNodeResponding && this.isNodeSyncing;
+    // return this.isNodeResponding && this.isNodeSyncing;
+    return false;
   }
 
   @computed get isSystemTimeCorrect(): boolean {
@@ -684,5 +692,9 @@ export default class NetworkStatusStore extends Store {
       get(networkTip, 'epoch', null) !== null &&
       get(networkTip, 'slot', null) !== null
     );
+  }
+
+  @computed get isVerifyingBlockchain(): boolean {
+    return !this.isConnected && this.verificationProgress < 100;
   }
 }
