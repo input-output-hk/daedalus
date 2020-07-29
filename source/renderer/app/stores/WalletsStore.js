@@ -885,25 +885,20 @@ export default class WalletsStore extends Store {
     const { isIncentivizedTestnet, isShelleyTestnet } = global;
     const { isMainnet, isSelfnode, isStaging, isTestnet } = this.environment;
     let expectedNetworkTag: number[] | number | null;
-    let validAddressStyles: AddressStyle[] = [];
+    let validAddressStyles: AddressStyle[] = ['Byron', 'Icarus', 'Shelley'];
     if (isMainnet) {
       expectedNetworkTag = null;
-      validAddressStyles = ['Byron', 'Icarus', 'Shelley'];
     } else if (isStaging) {
       expectedNetworkTag = STAGING_MAGIC;
-      validAddressStyles = ['Byron', 'Icarus', 'Shelley'];
     } else if (isIncentivizedTestnet) {
       expectedNetworkTag = ITN_MAGIC;
       validAddressStyles = ['Jormungandr'];
     } else if (isTestnet) {
       expectedNetworkTag = TESTNET_MAGIC;
-      validAddressStyles = ['Byron', 'Icarus', 'Shelley'];
     } else if (isShelleyTestnet) {
       expectedNetworkTag = SHELLEY_TESTNET_NETWORK_ID;
-      validAddressStyles = ['Shelley'];
     } else if (isSelfnode) {
       expectedNetworkTag = SELFNODE_MAGIC;
-      validAddressStyles = ['Byron', 'Icarus'];
     } else {
       throw new Error('Unexpected environment');
     }
@@ -914,7 +909,7 @@ export default class WalletsStore extends Store {
       }
       return (
         validAddressStyles.includes(response.introspection.address_style) &&
-        ((expectedNetworkTag && expectedNetworkTag.length &&
+        ((Array.isArray(expectedNetworkTag) &&
           expectedNetworkTag.includes(response.introspection.network_tag)) ||
           expectedNetworkTag === response.introspection.network_tag)
       );
