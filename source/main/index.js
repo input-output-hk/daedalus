@@ -29,7 +29,6 @@ import { getLocale } from './utils/getLocale';
 import { detectSystemLocale } from './utils/detectSystemLocale';
 import { ensureXDGDataIsSet } from './cardano/config';
 import { rebuildApplicationMenu } from './ipc/rebuild-application-menu';
-import { quitAppAndAppInstallUpdateChannel } from './ipc/quitAppAndAppInstallUpdateChannel';
 import { getStateDirectoryPathChannel } from './ipc/getStateDirectoryPathChannel';
 import { getDesktopDirectoryPathChannel } from './ipc/getDesktopDirectoryPathChannel';
 import { getSystemLocaleChannel } from './ipc/getSystemLocaleChannel';
@@ -199,15 +198,6 @@ const onAppReady = async () => {
     );
     event.preventDefault();
     await safeExit();
-  });
-
-  quitAppAndAppInstallUpdateChannel.onRequest(filePath => {
-    logger.info(
-      'QuitAppAndAppInstallUpdateRendererRequest received <close> event. Safe exiting Daedalus now.'
-    );
-    const openInstaller: boolean = shell.openItem(filePath);
-    if (openInstaller) app.quit();
-    return Promise.resolve(openInstaller);
   });
 
   buildAppMenus(mainWindow, cardanoNode, locale, { isUpdateAvailable: false });

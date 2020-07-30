@@ -57,6 +57,16 @@ export default class AppUpdateStore extends Store {
     Promise<void>
   > = new Request(this.api.localStorage.unsetAppAutomaticUpdateFailed);
 
+  @observable getAppUpdateCompletedRequest: Request<
+    Promise<boolean>
+  > = new Request(this.api.localStorage.getAppUpdateCompleted);
+  @observable setAppUpdateCompletedRequest: Request<
+    Promise<void>
+  > = new Request(this.api.localStorage.setAppUpdateCompleted);
+  @observable unsetAppUpdateCompletedRequest: Request<
+    Promise<void>
+  > = new Request(this.api.localStorage.unsetAppUpdateCompleted);
+
   setup() {
     const actions = this.actions.appUpdate;
     actions.installUpdate.listen(this._installUpdate);
@@ -124,20 +134,20 @@ export default class AppUpdateStore extends Store {
     return { version, hash, url };
   }
 
-  isUpdateValid = (update: News) => {
+  isUpdateInstalled = (update: News) => {
     const { version: updateVersion } = this.getUpdateInfo(update);
-    return semver.lt(currentVersion, updateVersion);
+    return !semver.lt(currentVersion, updateVersion);
   };
 
   // =================== PRIVATE ==================
 
-  // @UPDATE TODO: Remove it
-  @action _toggleUsUpdateDownloaded = () => {
-    this.isUpdateDownloaded = !this.isUpdateDownloaded;
-  };
-
-  // @UPDATE TODO: Commenting the trigger to avoid automatic download
   _checkNewAppUpdate = async (update: News) => {
+    const { version } = this.getUpdateInfo(update);
+    const appUpdateCompleted = await this.getAppUpdateCompletedRequest.execute();
+
+    // The update was already installed and the installer was already deleted
+    if (appUpdateCompleted === version) return;
+
     // Is there an 'Automatic Update Failed' flag?
     const isAutomaticUpdateFailed = await this.getAppAutomaticUpdateFailedRequest.execute();
     if (isAutomaticUpdateFailed) {
@@ -146,15 +156,17 @@ export default class AppUpdateStore extends Store {
       });
     }
 
-    // Is the update valid?
-    if (!this.isUpdateValid(update)) {
+    // Was the update already installed?
+    if (this.isUpdateInstalled(update)) {
+      // Sets the `appUpdateCompleted` flag to prevent this whole process every app load
+      await this.setAppUpdateCompletedRequest.execute(version);
+      await this.unsetAppAutomaticUpdateFailedRequest.execute();
       await this._removeUpdateFile();
       await this._removeLocalDataInfo();
       return;
     }
 
-    const { version } = this.getUpdateInfo(update);
-
+    // The Update is valid and needs to be downloaded/installed
     runInAction(() => {
       this.availableUpdate = update;
       this.availableUpdateVersion = version;
@@ -176,11 +188,12 @@ export default class AppUpdateStore extends Store {
       }
 
       // Resumes the update download
-      // this._requestResumeUpdateDownload();
+      this._requestResumeUpdateDownload();
       return;
     }
-    // await this._removeLocalDataInfo();
-    // this._requestUpdateDownload(update);
+
+    await this._removeLocalDataInfo();
+    this._requestUpdateDownload(update);
   };
 
   _removeLocalDataInfo = async () => {
@@ -189,7 +202,6 @@ export default class AppUpdateStore extends Store {
     });
   };
 
-  // @UPDATE TODO: Implement this method
   _removeUpdateFile = () => {
     deleteDownloadedFile.request({
       id: APP_UPDATE_DOWNLOAD_ID,
@@ -207,7 +219,6 @@ export default class AppUpdateStore extends Store {
         this.downloadInfo = info;
         this.downloadData = data;
       });
-      console.log('Progress', data.progress);
     }
     runInAction('updates the download information', () => {
       if (eventType === DOWNLOAD_EVENT_TYPES.END) {
@@ -243,30 +254,33 @@ export default class AppUpdateStore extends Store {
     });
   };
 
-  @action _installUpdate = async () => {
+  _installUpdate = async () => {
     if (
       !this.availableUpdate ||
       this.isUpdateDownloading ||
       !this.isUpdateDownloaded ||
       !this.downloadInfo
     ) {
-      console.log('!this.availableUpdate', !this.availableUpdate);
-      console.log('this.isUpdateDownloading', this.isUpdateDownloading);
-      console.log('!this.isUpdateDownloaded', !this.isUpdateDownloaded);
-      console.log('!this.downloadInfo', !this.downloadInfo);
+      await this._setAppAutomaticUpdateFailed();
       return;
     }
     const { destinationPath, originalFilename } = this.downloadInfo;
+    const { hash } = this.getUpdateInfo(this.availableUpdate);
     const filePath = `${destinationPath}/${originalFilename}`;
-    const openInstaller = await quitAppAndAppInstallUpdateChannel.request(
-      filePath
-    );
+    const openInstaller = await quitAppAndAppInstallUpdateChannel.request({
+      filePath,
+      hash,
+    });
     if (!openInstaller) {
-      await this.setAppAutomaticUpdateFailedRequest.execute();
-      runInAction(() => {
-        this.isAutomaticUpdateFailed = true;
-      });
+      await this._setAppAutomaticUpdateFailed();
     }
+  };
+
+  _setAppAutomaticUpdateFailed = async () => {
+    await this.setAppAutomaticUpdateFailedRequest.execute();
+    runInAction(() => {
+      this.isAutomaticUpdateFailed = true;
+    });
   };
 
   @action _openAppUpdateOverlay = () => {

@@ -224,6 +224,15 @@ export default class LocalStorageApi {
   unsetAppAutomaticUpdateFailed = (): Promise<void> =>
     LocalStorageApi.unset(keys.APP_AUTOMATIC_UPDATE_FAILED);
 
+  getAppUpdateCompleted = (): Promise<string> =>
+    LocalStorageApi.get(keys.APP_UPDATE_COMPLETED, false);
+
+  setAppUpdateCompleted = (verstion: string): Promise<void> =>
+    LocalStorageApi.set(keys.APP_UPDATE_COMPLETED, verstion, '');
+
+  unsetAppUpdateCompleted = (): Promise<void> =>
+    LocalStorageApi.unset(keys.APP_UPDATE_COMPLETED);
+
   reset = async () => {
     await LocalStorageApi.reset();
   };

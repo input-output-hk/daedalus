@@ -151,12 +151,13 @@ const deleteDownloadedFile = async ({
   id,
 }: DeleteDownloadedFileRendererRequest): Promise<DeleteDownloadedFileMainResponse> => {
   const downloadLocalData = await getDownloadLocalData({ id });
-  const { originalFilename, fileUrl, destinationDirectoryName, options } =
+  if (!downloadLocalData) throw new Error('Download data not found');
+  const { destinationPath, originalFilename, temporaryFilename } =
     downloadLocalData.info || {};
-  console.log('originalFilename', originalFilename);
-  console.log('fileUrl', fileUrl);
-  console.log('destinationDirectoryName', destinationDirectoryName);
-  console.log('options', options);
+  const originalFilePath = `${destinationPath}/${originalFilename}`;
+  const temporaryFilePath = `${destinationPath}/${temporaryFilename}`;
+  if (fs.existsSync(originalFilePath)) fs.unlinkSync(originalFilePath);
+  if (fs.existsSync(temporaryFilePath)) fs.unlinkSync(temporaryFilePath);
 };
 
 const getDownloadLocalData = async ({

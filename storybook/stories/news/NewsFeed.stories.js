@@ -218,7 +218,6 @@ storiesOf('News|NewsFeed', module)
           0,
           updateDownloadProgressOptions
         )}
-        onOpenAppUpdate={action('onOpenAppUpdate')}
         currentDateFormat=" "
       />
     </div>

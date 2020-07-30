@@ -20,10 +20,8 @@ import type {
 import type { GetNewsResponse } from '../news/types';
 import { getEpochLength } from '../../config/epochsConfig';
 
-let LATEST_APP_VERSION = null;
 let LOCAL_TIME_DIFFERENCE = 0;
 let SYNC_PROGRESS = null;
-let APPLICATION_VERSION = null;
 let TESTING_NEWSFEED_JSON: ?GetNewsResponse;
 let TESTING_WALLETS_DATA: Object = {};
 

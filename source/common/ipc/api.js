@@ -347,7 +347,10 @@ export type ClearDownloadLocalDataMainResponse = ClearDownloadLocalDataResponse;
  * Channel for quitting Daedalus and installing update
  */
 export const QUIT_APP_AND_INSTALL_UPDATE = 'QUIT_APP_AND_INSTALL_UPDATE';
-export type QuitAppAndAppInstallUpdateRendererRequest = string;
+export type QuitAppAndAppInstallUpdateRendererRequest = {
+  filePath: string,
+  hash: string,
+};
 export type QuitAppAndAppInstallUpdateMainResponse = boolean;
 
 /**
