@@ -30,6 +30,7 @@
   "appUpdate.overlay.manualUpdate.button.url": "https://iohk.zendesk.com/hc/en-us/articles/360023850634",
   "appUpdate.overlay.manualUpdate.button.label": "Follow instructions and manually update",
   "appUpdate.overlay.manualUpdate.description": "We were unable to launch the update installer automatically. Please manually update Daedalus to its latest version.",
+  "appUpdate.overlay.manualUpdate.link.label": "Download and install it manually",
   "api.errors.nothingToMigrate": "Funds cannot be transferred from this wallet because it contains some unspent transaction outputs (UTXOs), with amounts of ada that are too small to be migrated.",
   "api.errors.utxoTooSmall": "Invalid transaction.",
   "backToTopButton.label": "Back to top",

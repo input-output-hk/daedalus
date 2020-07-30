@@ -576,7 +576,7 @@ export const createDaedalusComponentsTheme = (
       '--theme-loading-spinner-color': `${text.primary}`,
       '--theme-loading-spinner-medium-color': '#fff',
     },
-    manualUpdate: {
+    appUpdateOverlay: {
       '--theme-app-update-overlay-background-color': `${chroma(
         background.secondary.regular
       ).alpha(0.96)}`,
@@ -594,6 +594,7 @@ export const createDaedalusComponentsTheme = (
       ).alpha(0.7)}`,
       '--theme-app-update-overlay-text-highlight-color': `${text.secondary}`,
       '--theme-app-update-overlay-text-color': `${text.secondary}`,
+      '--theme-app-update-overlay-manual-update-text-color': `${error.regular}`,
       '--theme-app-update-overlay-button-label-color': `${text.secondary}`,
       '--theme-app-update-overlay-button-label-color-hover': `${text.secondary}`,
     },

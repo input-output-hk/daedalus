@@ -42,7 +42,6 @@ export const DefaultSyncingConnectingStory = (props: {
     isNodeSubscribed={boolean('isNodeSubscribed', false)}
     isNodeSyncing={boolean('isNodeSyncing', false)}
     isNodeTimeCorrect={boolean('isNodeTimeCorrect', true)}
-    isNewAppVersionAvailable={boolean('isNewAppVersionAvailable', false)}
     isNewAppVersionLoaded={boolean('isNewAppVersionLoaded', false)}
     onIssueClick={action('onIssueClick')}
     onOpenExternalLink={action('onOpenExternalLink')}
@@ -86,7 +85,6 @@ export const ConnectivityIssuesSyncingConnectingStory = (props: {
     isNodeSubscribed={false}
     isNodeSyncing={false}
     isNodeTimeCorrect
-    isNewAppVersionAvailable={false}
     isNewAppVersionLoaded
     onIssueClick={action('onIssueClick')}
     onOpenExternalLink={action('onOpenExternalLink')}
@@ -129,7 +127,6 @@ export const LoadingWalletDataSyncingConnectingStory = (props: {
     isNodeSubscribed
     isNodeSyncing
     isNodeTimeCorrect
-    isNewAppVersionAvailable={false}
     isNewAppVersionLoaded
     onIssueClick={action('onIssueClick')}
     onOpenExternalLink={action('onOpenExternalLink')}

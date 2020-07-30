@@ -39,16 +39,13 @@ export default class AppUpdateStore extends Store {
   @observable isUpdateDownloading: boolean = false;
   @observable isUpdateDownloaded: boolean = false;
   @observable isUpdateInstalled: boolean = false;
-  @observable isAutomaticUpdateFailed: boolean = false;
   @observable isUpdateProgressOpen: boolean = false;
+  @observable isAutomaticUpdateFailed: boolean = false;
+  @observable displayManualUpdateLink: boolean = false;
 
   @observable downloadInfo: ?DownloadInfo = null;
   @observable downloadData: ?DownloadData = null;
-
-  @observable isUpdateAvailable: boolean = true;
   @observable availableAppVersion: ?string = null;
-  @observable isNewAppVersionAvailable: boolean = false;
-  @observable applicationVersion: ?number = null;
 
   @observable getAppAutomaticUpdateFailedRequest: Request<
     Promise<boolean>
@@ -117,6 +114,10 @@ export default class AppUpdateStore extends Store {
     return this.isAutomaticUpdateFailed;
   }
 
+  @computed get isUpdateAvailable(): boolean {
+    return this.availableUpdate !== null;
+  }
+
   getUpdateInfo(update: News): SoftwareUpdateInfo {
     const softwareUpdate = get(update, 'softwareUpdate', {});
     const { version, hash, url } = softwareUpdate[platform] || {};
@@ -125,16 +126,7 @@ export default class AppUpdateStore extends Store {
 
   isUpdateValid = (update: News) => {
     const { version: updateVersion } = this.getUpdateInfo(update);
-    console.log('updateVersion', updateVersion);
-    console.log('currentVersion', currentVersion);
     return semver.lt(currentVersion, updateVersion);
-  };
-
-  isUnfinishedDownloadValid = async (
-    unfinishedDownload: DownloadLocalDataMainResponse
-  ) => {
-    console.log('unfinishedDownload', unfinishedDownload);
-    return true;
   };
 
   // =================== PRIVATE ==================
@@ -148,7 +140,6 @@ export default class AppUpdateStore extends Store {
   _checkNewAppUpdate = async (update: News) => {
     // Is there an 'Automatic Update Failed' flag?
     const isAutomaticUpdateFailed = await this.getAppAutomaticUpdateFailedRequest.execute();
-    console.log('isAutomaticUpdateFailed', isAutomaticUpdateFailed);
     if (isAutomaticUpdateFailed) {
       runInAction(() => {
         this.isAutomaticUpdateFailed = true;
@@ -169,23 +160,24 @@ export default class AppUpdateStore extends Store {
       this.availableUpdateVersion = version;
     });
 
-    // Is there a pending / resumabl\e download?
+    // Is there a pending / resumable download?
     const downloadLocalData = await this._getUpdateDownloadLocalData();
     const { info, data } = downloadLocalData;
     if (info && data) {
+      // The user reopened Daedalus without installing the update
       if (data.state === DOWNLOAD_STATES.FINISHED && data.progress === 100) {
         runInAction(() => {
           this.downloadInfo = info;
           this.downloadData = data;
           this.isUpdateDownloaded = true;
+          this.displayManualUpdateLink = true;
         });
         return;
       }
 
-      if (this.isUnfinishedDownloadValid(downloadLocalData)) {
-        // this._requestResumeUpdateDownload();
-        return;
-      }
+      // Resumes the update download
+      // this._requestResumeUpdateDownload();
+      return;
     }
     // await this._removeLocalDataInfo();
     // this._requestUpdateDownload(update);

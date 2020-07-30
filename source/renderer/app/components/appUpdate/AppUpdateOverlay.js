@@ -7,6 +7,8 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
+import { Link } from 'react-polymorph/lib/components/Link';
+import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import ReactMarkdown from 'react-markdown';
 import News from '../../domains/News';
@@ -19,59 +21,61 @@ const messages = defineMessages({
   title: {
     id: 'appUpdate.overlay.title',
     defaultMessage: '!!!Software update available!',
-    description: 'title for the Update Overlay',
+    description: '"title" for the App Update Overlay',
   },
   subtitle: {
     id: 'appUpdate.overlay.subtitle',
     defaultMessage:
       '!!!You are currently running Daedalus version {currentAppVersion}.<br />Daedalus version {availableAppVersion} is now available to download.',
-    description: 'subtitle for the Update Overlay',
+    description: '"subtitle" for the App Update Overlay',
   },
   checkboxLabel: {
     id: 'appUpdate.overlay.checkboxLabel',
     defaultMessage:
       '!!!I understand that I need to complete the installation before starting Daedalus.',
-    description: 'checkboxLabel for the Update Overlay',
+    description: '"checkboxLabel" for the App Update Overlay',
   },
   buttonLabel: {
     id: 'appUpdate.overlay.buttonLabel',
     defaultMessage: '!!!Quit Daedalus and start the installation',
-    description: 'buttonLabel for the Update Overlay',
+    description: '"buttonLabel" for the App Update Overlay',
   },
   downloadProgressLabel: {
     id: 'appUpdate.overlay.downloadProgressLabel',
     defaultMessage: '!!!Download in progress',
-    description: 'downloadProgressLabel for the Update Overlay',
+    description: '"downloadProgressLabel" for the App Update Overlay',
   },
   downloadTimeLeft: {
     id: 'appUpdate.overlay.downloadTimeLeft',
     defaultMessage: '!!!{downloadTimeLeft} left',
-    description: 'downloadTimeLeft for the Update Overlay',
+    description: '"downloadTimeLeft" for the App Update Overlay',
   },
   downloadProgressData: {
     id: 'appUpdate.overlay.downloadProgressData',
     defaultMessage: '!!!({totalDownloaded} of {totalDownloadSize} downloaded)',
-    description: 'downloadProgressData for the Update Overlay',
+    description: '"downloadProgressData" for the App Update Overlay',
   },
   manualUpdateDescription: {
     id: 'appUpdate.overlay.manualUpdate.description',
     defaultMessage:
       '!!!We were unable to launch the update installer automatically. Please manually update Daedalus to its latest version.',
-    description:
-      'Follow instructions and manually update link on "Manual update" overlay',
+    description: '"manualUpdateDescription" for the App Update Overlay',
+  },
+  manualUpdateLinkLabel: {
+    id: 'appUpdate.overlay.manualUpdate.link.label',
+    defaultMessage: '!!!Download and install it manually',
+    description: '"manualUpdateLinkLabel" for the App Update Overlay',
   },
   manualUpdateButtonLabel: {
     id: 'appUpdate.overlay.manualUpdate.button.label',
     defaultMessage: '!!!Follow instructions and manually update',
-    description:
-      'Label for "Follow instructions and manually update" action button on "Manual update" overlay',
+    description: '"manualUpdateButtonLabel" for the App Update Overlay',
   },
   manualUpdateButtonUrl: {
     id: 'appUpdate.overlay.manualUpdate.button.url',
     defaultMessage:
       '!!!https://iohk.zendesk.com/hc/en-us/articles/360023850634',
-    description:
-      'Follow instructions and manually update link on "Manual update" overlay',
+    description: '"manualUpdateButtonUrl" for the App Update Overlay',
   },
 });
 
@@ -86,6 +90,7 @@ type Props = {
   downloadProgress: number,
   isUpdateDownloaded: boolean,
   isAutomaticUpdateFailed: boolean,
+  displayManualUpdateLink: boolean,
   onInstallUpdate: Function,
   onExternalLinkClick: Function,
 };
@@ -143,7 +148,11 @@ export default class AppUpdateOverlay extends Component<Props, State> {
 
   openInstallerAction = () => {
     const { intl } = this.context;
-    const { onInstallUpdate } = this.props;
+    const {
+      onInstallUpdate,
+      displayManualUpdateLink,
+      onExternalLinkClick,
+    } = this.props;
     const { areTermsOfUseAccepted } = this.state;
     const buttonStyles = classnames([
       styles.button,
@@ -166,6 +175,18 @@ export default class AppUpdateOverlay extends Component<Props, State> {
           label={intl.formatMessage(messages.buttonLabel)}
           disabled={!areTermsOfUseAccepted}
         />
+        {displayManualUpdateLink && (
+          <Link
+            className={styles.manualUpdateLink}
+            onClick={() =>
+              onExternalLinkClick(
+                intl.formatMessage(messages.manualUpdateButtonUrl)
+              )
+            }
+            label={intl.formatMessage(messages.manualUpdateLinkLabel)}
+            skin={LinkSkin}
+          />
+        )}
       </div>
     );
   };

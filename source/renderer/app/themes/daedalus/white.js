@@ -297,9 +297,8 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-loading-spinner-color': '#2d2d2d',
     '--theme-loading-spinner-medium-color': '#2d2d2d',
   },
-  manualUpdate: {
+  appUpdateOverlay: {
     '--theme-app-update-overlay-background-color': '#fffffff5',
-
     '--theme-app-update-overlay-content-background-color': 'rgba(0, 0, 0, 0.1)',
     '--theme-app-update-overlay-button-background-color': '#fff',
     '--theme-app-update-overlay-button-background-color-hover': '#29b595',
@@ -312,6 +311,7 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-app-update-overlay-text-color': '#2d2d2d',
     '--theme-app-update-overlay-button-label-color': '#29b595',
     '--theme-app-update-overlay-button-label-color-hover': '#fff',
+    '--theme-app-update-overlay-manual-update-text-color': '#ea4c5b',
   },
   mnemonic: {
     '--theme-backup-mnemonic-background-color': 'rgba(219, 219, 219, 0.2)',

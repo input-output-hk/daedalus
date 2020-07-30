@@ -23,6 +23,7 @@ export default class AppUpdateContainer extends Component<InjectedProps> {
       totalDownloadSize,
       availableUpdateVersion,
       isAutomaticUpdateFailed,
+      displayManualUpdateLink,
     } = appUpdate;
     const { installUpdate, closeAppUpdateOverlay } = actions.appUpdate;
 
@@ -42,6 +43,7 @@ export default class AppUpdateContainer extends Component<InjectedProps> {
         availableAppVersion={availableUpdateVersion}
         isAutomaticUpdateFailed={isAutomaticUpdateFailed}
         onExternalLinkClick={openExternalLink}
+        displayManualUpdateLink={displayManualUpdateLink}
       />
     );
   }

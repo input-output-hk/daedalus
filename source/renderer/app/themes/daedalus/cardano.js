@@ -309,9 +309,8 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-loading-spinner-color': '#5e6066',
     '--theme-loading-spinner-medium-color': '#fff',
   },
-  manualUpdate: {
+  appUpdateOverlay: {
     '--theme-app-update-overlay-background-color': 'rgba(32, 34, 37, 0.96)',
-
     '--theme-app-update-overlay-content-background-color': 'rgba(0, 0, 0, 0.1)',
     '--theme-app-update-overlay-button-background-color': 'rgba(0, 0, 0, 0.1)',
     '--theme-app-update-overlay-button-background-color-hover': '#ffffff',
@@ -325,6 +324,7 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-app-update-overlay-text-highlight-color': '#ffffff',
     '--theme-app-update-overlay-text-color': '#ffffff',
     '--theme-app-update-overlay-button-label-color': '#ffffff',
+    '--theme-app-update-overlay-manual-update-text-color': '#ea4c5b',
   },
   mnemonic: {
     '--theme-backup-mnemonic-background-color': 'rgba(68, 91, 124, 0.05)',

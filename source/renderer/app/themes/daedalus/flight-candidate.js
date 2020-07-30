@@ -296,9 +296,8 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-loading-spinner-color': '#ffffff',
     '--theme-loading-spinner-medium-color': '#ffffff',
   },
-  manualUpdate: {
+  appUpdateOverlay: {
     '--theme-app-update-overlay-background-color': '#36374df5',
-
     '--theme-app-update-overlay-content-background-color': 'rgba(0, 0, 0, 0.1)',
     '--theme-app-update-overlay-button-background-color': '#313245',
     '--theme-app-update-overlay-button-background-color-hover': '#ffffff',
@@ -311,6 +310,7 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-app-update-overlay-text-color': '#ffffff',
     '--theme-app-update-overlay-button-label-color': '#ffffff',
     '--theme-app-update-overlay-button-label-color-hover': '#000000',
+    '--theme-app-update-overlay-manual-update-text-color': '#ea4c5b',
   },
   mnemonic: {
     '--theme-backup-mnemonic-background-color': '#414251',

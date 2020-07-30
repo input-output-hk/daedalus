@@ -187,10 +187,19 @@
         }
       }
     }
+    .manualUpdateLink {
+      border-bottom-color: var(--theme-app-update-overlay-text-color);
+      color: var(--theme-app-update-overlay-text-color);
+      display: inline-block;
+      margin-top: 20px;
+      &:after {
+        background: var(--theme-app-update-overlay-text-color);
+      }
+    }
   }
 
   .manualUpdateDescription {
-    color: var(--theme-app-update-overlay-text-color);
+    color: var(--theme-app-update-overlay-manual-update-text-color);
     font-family: var(--font-medium);
     line-height: 1.38;
     margin-bottom: 30px;
