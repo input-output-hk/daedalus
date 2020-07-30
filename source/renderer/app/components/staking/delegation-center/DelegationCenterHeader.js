@@ -15,6 +15,7 @@ import type {
 import {
   getTotalSlots,
   EPOCH_COUNTDOWN_INTERVAL,
+  EPOCH_LENGTH,
 } from '../../../config/epochsConfig';
 import { generateFieldPanel } from './helpers';
 
@@ -47,7 +48,7 @@ const messages = defineMessages({
   description: {
     id: 'staking.delegationCenter.description',
     defaultMessage:
-      '!!!Changes to delegation preferences will take effect after both the current and next Cardano epochs have completed. Epochs on the Incentivized Testnet last one day. Any changes made now will take effect in {timeUntilFutureEpoch}.',
+      '!!!Changes to delegation preferences will take effect after both the current and next Cardano epochs have completed. Epochs on the Mainnet last {epochDuration}. Any changes made now will take effect in {timeUntilFutureEpoch}.',
     description: 'Delegation description for the Delegation center.',
   },
 });
@@ -138,7 +139,12 @@ export default class DelegationCenterHeader extends Component<Props, State> {
       this.state.timeUntilFutureEpoch,
       currentLocale
     );
+    const epochDuration = humanizeDurationByLocale(
+      EPOCH_LENGTH,
+      currentLocale
+    );
     const description = intl.formatMessage(messages.description, {
+      epochDuration,
       timeUntilFutureEpoch,
     });
     const fieldPanels = this.generateCurrentEpochPanels(
