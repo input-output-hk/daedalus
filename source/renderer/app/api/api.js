@@ -3,6 +3,7 @@ import { split, get, map, last } from 'lodash';
 import { action } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
+import crypto from 'crypto';
 
 // domains
 import Wallet, {
@@ -211,7 +212,70 @@ export default class AdaApi {
     this.config = config;
   }
 
-  getWallets = async (request: {
+  /* eslint-disable */
+  getWallets = async (request: { isShelleyActivated: boolean }) => {
+    try {
+      const generateWallet = (amount: number, reward: number): AdaWallet => {
+        const total = amount + reward;
+        const walletAmount = BigNumber(total);
+        const walletReward = BigNumber(reward);
+        const ok =
+          walletAmount &&
+          walletAmount.gte(new BigNumber(10)) &&
+          !walletAmount.equals(walletReward)
+            ? 'Y'
+            : 'N';
+        const name = `B-R: ${amount} | R: ${reward} | T: ${total} | OK: ${ok}`;
+
+        const id = crypto
+          .createHash('sha256')
+          .update(name)
+          .digest('hex');
+
+        return {
+          id,
+          address_pool_gap: 20,
+          balance: {
+            available: { quantity: amount, unit: 'ada' },
+            total: { quantity: total, unit: 'ada' },
+            reward: { quantity: reward, unit: 'ada' },
+          },
+          name,
+          passphrase: {
+            last_updated_at: moment().subtract(1, 'month'),
+          },
+          delegation: {
+            next: [],
+            active: {
+              status: 'delegating',
+              target:
+                '2a661c185e0b13fd9c104f0dd640f57b1afcf21fd5160557d55c6453',
+            },
+          },
+          state: {
+            status: 'ready',
+          },
+          discovery: 'sequential',
+        };
+      };
+
+      const wallets: AdaWallets = [
+        generateWallet(0, 20),
+        generateWallet(9, 0),
+        generateWallet(1, 9),
+        generateWallet(0.00001, 9.999999),
+        generateWallet(0.1, 9.9),
+        generateWallet(100, 0),
+      ];
+
+      return wallets.map(_createWalletFromServerData);
+    } catch (error) {
+      logger.error('AdaApi::getWallets error', { error });
+      throw new ApiError(error);
+    }
+  };
+
+  getWallets1 = async (request: {
     isShelleyActivated: boolean,
   }): Promise<Array<Wallet>> => {
     logger.debug('AdaApi::getWallets called');
@@ -225,7 +289,6 @@ export default class AdaApi {
         this.config
       );
       logger.debug('AdaApi::getWallets success', { wallets, legacyWallets });
-
       map(legacyWallets, legacyAdaWallet => {
         const extraLegacyWalletProps = {
           address_pool_gap: 0, // Not needed for legacy wallets
