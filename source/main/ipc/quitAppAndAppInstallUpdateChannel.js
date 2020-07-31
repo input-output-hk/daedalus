@@ -17,15 +17,17 @@ const quitAppAndAppInstallUpdateChannel: MainIpcChannel<
 > = new MainIpcChannel(QUIT_APP_AND_INSTALL_UPDATE);
 
 export const handleQuitAppAndAppInstallUpdateRequests = () => {
-  quitAppAndAppInstallUpdateChannel.onRequest(
-    async ({ filePath, hash: expectedHash }) => {
-      const fileBuffer = fs.readFileSync(filePath);
-      if (!fileBuffer) return false;
-      const fileHash = shasum(fileBuffer, 'sha256');
-      if (fileHash !== expectedHash) return false;
-      const openInstaller: boolean = shell.openItem(filePath);
-      if (openInstaller) app.quit();
-      return openInstaller;
-    }
-  );
+  quitAppAndAppInstallUpdateChannel.onRequest(async () => {
+    // const { hash } = this.getUpdateInfo(this.availableUpdate);
+    // const filePath = `${destinationPath}/${originalFilename}`;
+    const { filePath, hash: expectedHash } = {};
+    if (!filePath || !expectedHash) return false;
+    const fileBuffer = fs.readFileSync(filePath);
+    if (!fileBuffer) return false;
+    const fileHash = shasum(fileBuffer, 'sha256');
+    if (fileHash !== expectedHash) return false;
+    const openInstaller: boolean = shell.openItem(filePath);
+    if (openInstaller) app.quit();
+    return openInstaller;
+  });
 };

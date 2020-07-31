@@ -265,12 +265,7 @@ export default class AppUpdateStore extends Store {
       return;
     }
     const { destinationPath, originalFilename } = this.downloadInfo;
-    const { hash } = this.getUpdateInfo(this.availableUpdate);
-    const filePath = `${destinationPath}/${originalFilename}`;
-    const openInstaller = await quitAppAndAppInstallUpdateChannel.request({
-      filePath,
-      hash,
-    });
+    const openInstaller = await quitAppAndAppInstallUpdateChannel.request();
     if (!openInstaller) {
       await this._setAppAutomaticUpdateFailed();
     }
