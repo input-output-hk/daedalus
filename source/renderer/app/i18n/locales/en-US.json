@@ -283,7 +283,7 @@
   "staking.delegationCenter.bodyTitle": "Wallets",
   "staking.delegationCenter.currentSlot": "Current slot",
   "staking.delegationCenter.delegate": "Delegate",
-  "staking.delegationCenter.description": "Changes to delegation preferences will take effect after both the current and next Cardano epochs have completed. Epochs on the Shelley Testnet last six hours. Any changes made now will take effect in {timeUntilFutureEpoch}.",
+  "staking.delegationCenter.description": "Changes to delegation preferences will take effect after both the current and next Cardano epochs have completed. Epochs on the Shelley Mainnet last five days. Any changes made now will take effect in {timeUntilFutureEpoch}.",
   "staking.delegationCenter.epoch": "Epoch",
   "staking.delegationCenter.headingLeft": "Next Cardano epoch starts in",
   "staking.delegationCenter.headingRight": "Current Cardano epoch",
