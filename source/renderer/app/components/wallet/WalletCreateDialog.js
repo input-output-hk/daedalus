@@ -92,10 +92,10 @@ const messages = defineMessages({
       'Placeholder for the "Password" inputs in the create wallet dialog.',
   },
   passwordTooltip: {
-    id: 'wallet.create.dialog.passwordTooltip',
-    defaultMessage: '!!!It is really good to use Password Manager apps to improve security. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris mattis diam non nulla sollicitudin, ac ultrices purus luctus.',
+    id: 'wallet.dialog.passwordTooltip',
+    defaultMessage: 'We recommend using a password manager app to manage and store your spending password. Generate a unique password using a password manager and paste it here. Passwords should never be reused.',
     description:
-      'Tooltip for the password input in the create wallet dialog.',
+      'Tooltip for the password input in the wallet dialog.',
   },
 });
 
@@ -289,7 +289,7 @@ export default class WalletCreateDialog extends Component<Props, State> {
               <Tooltip
                 skin={TooltipSkin}
                 themeOverrides={tooltipStyles}
-                tip={intl.formatMessage(messages.passwordTooltip)}
+                tip={<FormattedHTMLMessage {...messages.passwordTooltip} />}
                 key="tooltip"
                 className={styles.tooltip}
                 arrowRelativeToTip

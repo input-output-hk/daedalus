@@ -74,7 +74,7 @@ const messages = defineMessages({
     description: 'Placeholder for the dialog "Continue" button',
   },
   passwordTooltip: {
-    id: 'wallet.restore.dialog.step.configuration.passwordTooltip',
+    id: 'wallet.dialog.passwordTooltip',
     defaultMessage: '!!!It is really good to use Password Manager apps to improve security. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris mattis diam non nulla sollicitudin, ac ultrices purus luctus.',
     description:
       'Tooltip for the password input in the create wallet dialog.',
@@ -276,7 +276,7 @@ export default class ConfigurationDialog extends Component<Props> {
                 <Tooltip
                   skin={TooltipSkin}
                   themeOverrides={tooltipStyles}
-                  tip={intl.formatMessage(messages.passwordTooltip)}
+                  tip={<FormattedHTMLMessage {...messages.passwordTooltip} />}
                   key="tooltip"
                   className={styles.tooltip}
                   arrowRelativeToTip
