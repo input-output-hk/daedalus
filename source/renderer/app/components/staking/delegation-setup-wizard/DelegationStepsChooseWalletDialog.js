@@ -59,14 +59,6 @@ const messages = defineMessages({
     description:
       'errorMinDelegationFunds Error Label on the delegation setup "choose wallet" step dialog.',
   },
-  errorMinDelegationFundsHasRewards: {
-    id:
-      'staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFundsHasRewards',
-    defaultMessage:
-      '!!!This wallet does not contain the minimum amount of {minDelegationFunds} ADA which is required for delegation to be available.',
-    description:
-      'errorMinDelegationFundsHasRewards Error Label on the delegation setup "choose wallet" step dialog.',
-  },
   errorMinDelegationFundsRewardsOnly: {
     id:
       'staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFundsRewardsOnly',
@@ -155,11 +147,6 @@ export default class DelegationStepsChooseWalletDialog extends Component<
       // Wallet only has Reward balance
       else if (!amount.isZero() && amount.equals(reward))
         errorMessage = messages.errorMinDelegationFundsRewardsOnly;
-      // Wallet balance - rewards < min delegation funds
-      /*
-      else if (!reward.isZero())
-        errorMessage = messages.errorMinDelegationFundsHasRewards;
-      */
       // Wallet balance < min delegation funds
       else errorMessage = messages.errorMinDelegationFunds;
     }
