@@ -12,6 +12,10 @@ Changelog
 - Fixed Daedalus logo animation on the "Loading" screen ([PR 2124](https://github.com/input-output-hk/daedalus/pull/2124))
 - Fixed text copy on the "Delegation center" screen ([PR 2125](https://github.com/input-output-hk/daedalus/pull/2125))
 
+### Chores
+
+- Updated `cardano-wallet` to revision `03b7568b` ([PR 2119](https://github.com/input-output-hk/daedalus/pull/2119))
+
 ## 2.0.0
 
 ### Features
