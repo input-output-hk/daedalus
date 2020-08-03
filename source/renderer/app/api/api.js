@@ -132,7 +132,7 @@ import type {
   GetLatestAppVersionResponse,
 } from './nodes/types';
 
-// Transactions Types and Config
+// Transactions Types
 import type {
   Transaction,
   TransactionFee,
