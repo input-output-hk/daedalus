@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Fixes
+
+- Fixed text copy on the "Delegation center" screen ([PR 2125](https://github.com/input-output-hk/daedalus/pull/2125))
+
 ## 2.0.0
 
 ### Features
