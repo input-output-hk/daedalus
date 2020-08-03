@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Fixes
+
+- Fixed Daedalus logo animation on the "Loading" screen ([PR 2122](https://github.com/input-output-hk/daedalus/pull/2122))
+
 ## 2.0.0
 
 ### Features
