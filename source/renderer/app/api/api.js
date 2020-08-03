@@ -13,6 +13,7 @@ import {
   WalletTransaction,
   TransactionTypes,
   TransactionStates,
+  TransactionWithdrawal,
 } from '../domains/WalletTransaction';
 import WalletAddress from '../domains/WalletAddress';
 
@@ -131,7 +132,7 @@ import type {
   GetLatestAppVersionResponse,
 } from './nodes/types';
 
-// Transactions Types
+// Transactions Types and Config
 import type {
   Transaction,
   TransactionFee,
@@ -632,6 +633,7 @@ export default class AdaApi {
           },
         ],
         passphrase,
+        withdrawal: TransactionWithdrawal,
       };
 
       let response: Transaction;
@@ -693,6 +695,7 @@ export default class AdaApi {
             },
           },
         ],
+        withdrawal: TransactionWithdrawal,
       };
 
       let response: TransactionFee;
