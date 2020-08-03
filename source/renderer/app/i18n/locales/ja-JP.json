@@ -336,7 +336,6 @@
   "staking.delegationSetup.chooseWallet.step.dialog.continueButtonLabel": "続ける",
   "staking.delegationSetup.chooseWallet.step.dialog.description": "このウォレットには委任を有効にするために必要な最低額{minDelegationFunds}ADAが入っていません。<span>{minDelegationFunds}ADA以上</span>入っているウォレットを選択して、[続ける]をクリックしてください。",
   "staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFunds": "選択されたウォレットには委任を有効にするために必要な最低額{minDelegationFunds}ADAが入っていません。<span>{minDelegationFunds}ADA以上</span>入っているウォレットを選択して、[続ける]をクリックしてください。",
-  "staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFundsHasRewards": "このウォレットには委任を有効にするために必要な最低額{minDelegationFunds}ADAが入っていません。Rewards cannot be used for this purpose. <span>{minDelegationFunds}ADA以上</span><span>{minDelegationFunds}ADA以上</span>入っているウォレットを選択して、[続ける]をクリックしてください。",
   "staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFundsRewardsOnly": "このウォレットに含まれているのは報酬残高のみであるため、委任はできません。",
   "staking.delegationSetup.chooseWallet.step.dialog.errorRestoringWallet": "このウォレットは現在同期中のため委任に使用することができません。",
   "staking.delegationSetup.chooseWallet.step.dialog.selectWalletInputLabel": "ウォレット",

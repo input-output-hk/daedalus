@@ -13,6 +13,7 @@ import {
   WalletTransaction,
   TransactionTypes,
   TransactionStates,
+  TransactionWithdrawal,
 } from '../domains/WalletTransaction';
 import WalletAddress from '../domains/WalletAddress';
 
@@ -225,7 +226,6 @@ export default class AdaApi {
         this.config
       );
       logger.debug('AdaApi::getWallets success', { wallets, legacyWallets });
-
       map(legacyWallets, legacyAdaWallet => {
         const extraLegacyWalletProps = {
           address_pool_gap: 0, // Not needed for legacy wallets
@@ -633,6 +633,7 @@ export default class AdaApi {
           },
         ],
         passphrase,
+        withdrawal: TransactionWithdrawal,
       };
 
       let response: Transaction;
@@ -694,6 +695,7 @@ export default class AdaApi {
             },
           },
         ],
+        withdrawal: TransactionWithdrawal,
       };
 
       let response: TransactionFee;
