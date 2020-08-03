@@ -1,6 +1,17 @@
 Changelog
 =========
 
+## vNext
+
+### Features
+
+- Disabled creating Byron wallets ([PR 2126](https://github.com/input-output-hk/daedalus/pull/2126))
+
+### Fixes
+
+- Fixed Daedalus logo animation on the "Loading" screen ([PR 2124](https://github.com/input-output-hk/daedalus/pull/2124))
+- Fixed text copy on the "Delegation center" screen ([PR 2125](https://github.com/input-output-hk/daedalus/pull/2125))
+
 ## 2.0.0
 
 ### Features
