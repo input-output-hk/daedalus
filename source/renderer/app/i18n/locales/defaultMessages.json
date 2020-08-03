@@ -13898,7 +13898,7 @@
           "line": 78
         },
         "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "appUpdate.manualUpdateOverlay.button.label",
+        "id": "manualUpdate.button.label",
         "start": {
           "column": 22,
           "line": 74

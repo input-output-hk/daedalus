@@ -13,5 +13,6 @@ export const getTransactionFee = (
       path: `/v2/wallets/${walletId}/payment-fees`,
       ...config,
     },
+    {},
     data
   );
