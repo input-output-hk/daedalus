@@ -115,8 +115,8 @@ Daedalus - Cryptocurrency Wallet
 `Niv` is used to manage the version of upstream dependencies. The versions of these dependencies can be seen in `nix/sources.json`.
 
 Dependencies are updated with the follow nix commands:
-- Update to the latest master: `nix-shell -A devops --run "niv update cardano-wallet"`
-- Update to a specific revision: `nix-shell -A devops --run "niv update cardano-wallet -a rev=1988f22895c45e12506ec83da0496ebdcdd17719"`
+- Update to the latest master: `nix-shell -A devops --arg nivOnly true --run "niv update cardano-wallet"`
+- Update to a specific revision: `nix-shell -A devops --arg nivOnly true --run "niv update cardano-wallet -a rev=91db88f9195de49d4fb4299c68fc3f6de09856ab"`
 
 #### Notes
 

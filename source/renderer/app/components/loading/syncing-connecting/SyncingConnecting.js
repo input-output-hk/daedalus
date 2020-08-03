@@ -22,6 +22,7 @@ type State = {
 
 type Props = {
   cardanoNodeState: ?CardanoNodeState,
+  verificationProgress: number,
   hasBeenConnected: boolean,
   forceConnectivityIssue?: boolean,
   isFlight: boolean,
@@ -46,7 +47,7 @@ type Props = {
   disableDownloadLogs: boolean,
   showNewsFeedIcon: boolean,
   isIncentivizedTestnet: boolean,
-  isShelleyTestnet: boolean,
+  isVerifyingBlockchain: boolean,
   onIssueClick: Function,
   onOpenExternalLink: Function,
   onDownloadLogs: Function,
@@ -62,7 +63,8 @@ export default class SyncingConnecting extends Component<Props, State> {
   };
 
   componentDidMount() {
-    this._defensivelyStartTimers(this.props.isConnected);
+    const { isConnected, isVerifyingBlockchain } = this.props;
+    this._defensivelyStartTimers(isConnected, isVerifyingBlockchain);
   }
 
   componentDidUpdate() {
@@ -76,24 +78,30 @@ export default class SyncingConnecting extends Component<Props, State> {
       isNewAppVersionLoaded,
       isIncentivizedTestnet,
       isFlight,
+      isVerifyingBlockchain,
     } = this.props;
-    const canResetConnecting = this._connectingTimerShouldStop(isConnected);
+    const canResetConnecting = this._connectingTimerShouldStop(
+      isConnected,
+      isVerifyingBlockchain
+    );
 
-    this._defensivelyStartTimers(isConnected);
+    this._defensivelyStartTimers(isConnected, isVerifyingBlockchain);
     if (canResetConnecting) {
       this._resetConnectingTime();
     }
     const isAppLoadingStuck =
-      isSyncProgressStalling ||
-      (!isConnected &&
-        (connectingTime >= REPORT_ISSUE_TIME_TRIGGER ||
-          cardanoNodeState === CardanoNodeStates.UNRECOVERABLE));
+      !isVerifyingBlockchain &&
+      (isSyncProgressStalling ||
+        (!isConnected &&
+          (connectingTime >= REPORT_ISSUE_TIME_TRIGGER ||
+            cardanoNodeState === CardanoNodeStates.UNRECOVERABLE)));
     // If app loading is stuck, check if a newer version is available and set flag (state)
     if (
       isAppLoadingStuck &&
       !isNewAppVersionLoaded &&
       !isNewAppVersionLoading &&
       !isIncentivizedTestnet &&
+      !global.isShelleyTestnet &&
       !isFlight
     ) {
       onGetAvailableVersions();
@@ -104,14 +112,26 @@ export default class SyncingConnecting extends Component<Props, State> {
     this._resetConnectingTime();
   }
 
-  _connectingTimerShouldStart = (isConnected: boolean): boolean =>
-    !isConnected && connectingInterval === null;
+  _connectingTimerShouldStart = (
+    isConnected: boolean,
+    isVerifyingBlockchain: boolean
+  ): boolean =>
+    !isConnected && !isVerifyingBlockchain && connectingInterval === null;
 
-  _connectingTimerShouldStop = (isConnected: boolean): boolean =>
-    isConnected && connectingInterval !== null;
+  _connectingTimerShouldStop = (
+    isConnected: boolean,
+    isVerifyingBlockchain: boolean
+  ): boolean =>
+    (isConnected || isVerifyingBlockchain) && connectingInterval !== null;
 
-  _defensivelyStartTimers = (isConnected: boolean) => {
-    const needConnectingTimer = this._connectingTimerShouldStart(isConnected);
+  _defensivelyStartTimers = (
+    isConnected: boolean,
+    isVerifyingBlockchain: boolean
+  ) => {
+    const needConnectingTimer = this._connectingTimerShouldStart(
+      isConnected,
+      isVerifyingBlockchain
+    );
     if (needConnectingTimer) {
       connectingInterval = setInterval(this._incrementConnectingTime, 1000);
     }
@@ -141,15 +161,18 @@ export default class SyncingConnecting extends Component<Props, State> {
       isNewAppVersionAvailable,
       isIncentivizedTestnet,
       forceConnectivityIssue,
+      isVerifyingBlockchain,
     } = this.props;
     const { connectingTime } = this.state;
     const canReportConnectingIssue =
-      isSyncProgressStalling ||
-      forceConnectivityIssue ||
-      (!isConnected &&
-        (connectingTime >= REPORT_ISSUE_TIME_TRIGGER ||
-          cardanoNodeState === CardanoNodeStates.UNRECOVERABLE));
-    if (isFlight || isIncentivizedTestnet) {
+      !isVerifyingBlockchain &&
+      (isSyncProgressStalling ||
+        forceConnectivityIssue ||
+        (!isConnected &&
+          (connectingTime >= REPORT_ISSUE_TIME_TRIGGER ||
+            cardanoNodeState === CardanoNodeStates.UNRECOVERABLE)));
+
+    if (isFlight || isIncentivizedTestnet || global.isShelleyTestnet) {
       return canReportConnectingIssue;
     }
     return (
@@ -174,7 +197,6 @@ export default class SyncingConnecting extends Component<Props, State> {
       onDownloadLogs,
       disableDownloadLogs,
       isIncentivizedTestnet,
-      isShelleyTestnet,
       isNodeResponding,
       isNodeSyncing,
       isNodeTimeCorrect,
@@ -186,6 +208,8 @@ export default class SyncingConnecting extends Component<Props, State> {
       onStatusIconClick,
       onToggleNewsFeedIconClick,
       showNewsFeedIcon,
+      isVerifyingBlockchain,
+      verificationProgress,
     } = this.props;
 
     const newsFeedIconStyles = classNames([
@@ -198,7 +222,6 @@ export default class SyncingConnecting extends Component<Props, State> {
         <SyncingConnectingBackground
           hasLoadedCurrentTheme={hasLoadedCurrentTheme}
           isIncentivizedTestnet={isIncentivizedTestnet}
-          isShelleyTestnet={isShelleyTestnet}
           isConnecting={isConnecting}
           isSyncing={isSyncing}
         />
@@ -219,9 +242,7 @@ export default class SyncingConnecting extends Component<Props, State> {
             />
           )}
           <LogosDisplay isConnected={isConnected} />
-          {isIncentivizedTestnet && !isShelleyTestnet && (
-            <SyncingConnectingTitle />
-          )}
+          {isIncentivizedTestnet && <SyncingConnectingTitle />}
         </div>
         <SyncingConnectingStatus
           cardanoNodeState={cardanoNodeState}
@@ -231,6 +252,8 @@ export default class SyncingConnecting extends Component<Props, State> {
           isConnected={isConnected}
           isNodeStopping={isNodeStopping}
           isNodeStopped={isNodeStopped}
+          isVerifyingBlockchain={isVerifyingBlockchain}
+          verificationProgress={verificationProgress}
         />
         <StatusIcons
           onIconClick={onStatusIconClick}

@@ -21,6 +21,7 @@ import {
 } from '../ipc/cardano.ipc';
 import { CardanoNodeStates } from '../../../common/types/cardano-node.types';
 import { getDiskSpaceStatusChannel } from '../ipc/getDiskSpaceChannel.js';
+import { getBlockReplayProgressChannel } from '../ipc/getBlockReplayChannel.js';
 import { getStateDirectoryPathChannel } from '../ipc/getStateDirectoryPathChannel';
 import type {
   GetNetworkInfoResponse,
@@ -61,7 +62,7 @@ const NODE_STOPPED_STATES = [
 ];
 // END CONSTANTS ----------------------------
 
-const { isIncentivizedTestnet, isFlight } = global;
+const { isIncentivizedTestnet, isShelleyTestnet, isFlight } = global;
 
 export default class NetworkStatusStore extends Store {
   // Initialize store properties
@@ -85,7 +86,8 @@ export default class NetworkStatusStore extends Store {
   @observable isNodeStopped = false; // Is 'true' if node is in `NODE_STOPPED_STATES` states
   @observable isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
   @observable isSystemTimeIgnored = false; // Tracks if NTP time checks are ignored
-  @observable isSplashShown = isIncentivizedTestnet || isFlight; // Visibility of splash screen
+  @observable isSplashShown =
+    isIncentivizedTestnet || isShelleyTestnet || isFlight; // Visibility of splash screen
   @observable isSyncProgressStalling = false; // Is 'true' in case sync progress doesn't change within limit
 
   @observable hasBeenConnected = false;
@@ -117,6 +119,10 @@ export default class NetworkStatusStore extends Store {
   @observable diskSpaceAvailable: string = '';
   @observable isTlsCertInvalid: boolean = false;
   @observable stateDirectoryPath: string = '';
+  @observable isShelleyActivated: boolean = false;
+  @observable isShelleyPending: boolean = false;
+  @observable shelleyActivationTime: string = '';
+  @observable verificationProgress: number = 0;
 
   // DEFINE STORE METHODS
   setup() {
@@ -160,6 +166,9 @@ export default class NetworkStatusStore extends Store {
     this._checkDiskSpace();
 
     this._getStateDirectoryPath();
+
+    // Blockchain verification checking
+    getBlockReplayProgressChannel.onReceive(this._onCheckVerificationProgress);
   }
 
   _restartNode = async () => {
@@ -583,9 +592,22 @@ export default class NetworkStatusStore extends Store {
     try {
       const networkParameters: GetNetworkParametersResponse = await this.getNetworkParametersRequest.execute()
         .promise;
+      let { isShelleyActivated, isShelleyPending } = this;
+      const { decentralizationLevel, hardforkAt } = networkParameters;
+      const epochStartTime = get(hardforkAt, 'epoch_start_time', '');
+
+      if (hardforkAt) {
+        const currentTimeStamp = new Date().getTime();
+        const hardforkStartTime = new Date(epochStartTime).getTime();
+        isShelleyActivated = currentTimeStamp >= hardforkStartTime;
+        isShelleyPending = currentTimeStamp < hardforkStartTime;
+      }
+
       runInAction('Set Decentralization Progress', () => {
-        this.decentralizationProgress =
-          networkParameters.decentralizationLevel.quantity;
+        this.decentralizationProgress = decentralizationLevel.quantity;
+        this.isShelleyActivated = isShelleyActivated;
+        this.isShelleyPending = isShelleyPending;
+        this.shelleyActivationTime = epochStartTime;
       });
     } catch (e) {
       runInAction('Clear Decentralization Progress', () => {
@@ -621,6 +643,13 @@ export default class NetworkStatusStore extends Store {
       this._setNetworkStatusPollingInterval();
     }
 
+    return Promise.resolve();
+  };
+
+  @action _onCheckVerificationProgress = (
+    verificationProgress: number
+  ): Promise<void> => {
+    this.verificationProgress = verificationProgress;
     return Promise.resolve();
   };
 
@@ -667,5 +696,9 @@ export default class NetworkStatusStore extends Store {
       get(networkTip, 'epoch', null) !== null &&
       get(networkTip, 'slot', null) !== null
     );
+  }
+
+  @computed get isVerifyingBlockchain(): boolean {
+    return !this.isConnected && this.verificationProgress < 100;
   }
 }

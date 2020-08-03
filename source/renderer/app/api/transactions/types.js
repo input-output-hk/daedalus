@@ -61,6 +61,7 @@ export type TransactionWithdrawals = {
   stake_address: string,
   amount: TransactionAmount,
 };
+export type TransactionWithdrawalType = 'self';
 
 export type TransactionState = 'pending' | 'in_ledger';
 
@@ -117,9 +118,26 @@ export type GetTransactionsResponse = {
   total: number,
 };
 
+export type TransactionParams = {
+  walletId: string,
+  data: {
+    payments: Array<TransactionPaymentData>,
+    passphrase: string,
+    withdrawal: TransactionWithdrawalType,
+  },
+};
+
 export type TransactionFeeAmount = {
   quantity: number,
   unit: WalletUnits.LOVELACE,
+};
+
+export type GetTransactionFeeParams = {
+  walletId: string,
+  data: {
+    payments: Array<TransactionPaymentData>,
+    withdrawal: TransactionWithdrawalType,
+  },
 };
 
 export type TransactionPaymentData = {

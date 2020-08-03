@@ -381,6 +381,9 @@ export default class WalletMigrationStore extends Store {
   };
 
   @action _startMigration = async () => {
+    // eslint-disable-next-line
+    if (true) return; // This feature is currently unavailable as export tool is disabled
+
     const { isMainnet, isTestnet, isTest } = this.environment;
     if (isMainnet || isTestnet || (isTest && this.isTestMigrationEnabled)) {
       // Reset migration data

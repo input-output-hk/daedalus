@@ -161,17 +161,31 @@
         }
       },
       {
+        "defaultMessage": "!!!Cannot send from a wallet that contains only rewards balances.",
+        "description": "\"Cannot send from a wallet that contains only rewards balances.\" error message",
+        "end": {
+          "column": 3,
+          "line": 67
+        },
+        "file": "source/renderer/app/api/errors.js",
+        "id": "api.errors.inputsDepleted",
+        "start": {
+          "column": 18,
+          "line": 61
+        }
+      },
+      {
         "defaultMessage": "!!!Transaction too big due to too many inputs.",
         "description": "\"Transaction too big due to too many inputs.\" error message.",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 72
         },
         "file": "source/renderer/app/api/errors.js",
         "id": "api.errors.TooBigTransactionError",
         "start": {
           "column": 23,
-          "line": 61
+          "line": 68
         }
       },
       {
@@ -179,13 +193,13 @@
         "description": "\"Not enough ada . Try sending a smaller amount.\" error message",
         "end": {
           "column": 3,
-          "line": 71
+          "line": 78
         },
         "file": "source/renderer/app/api/errors.js",
         "id": "api.errors.NotEnoughFundsForTransactionError",
         "start": {
           "column": 32,
-          "line": 66
+          "line": 73
         }
       },
       {
@@ -193,13 +207,13 @@
         "description": "Error message shown when invalid address was entered.",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 83
         },
         "file": "source/renderer/app/api/errors.js",
         "id": "api.errors.invalidAddress",
         "start": {
           "column": 18,
-          "line": 72
+          "line": 79
         }
       },
       {
@@ -207,13 +221,13 @@
         "description": "\"Transaction too big due to too many inputs.\" error link label.",
         "end": {
           "column": 3,
-          "line": 82
+          "line": 89
         },
         "file": "source/renderer/app/api/errors.js",
         "id": "api.errors.TooBigTransactionErrorLinkLabel",
         "start": {
           "column": 35,
-          "line": 77
+          "line": 84
         }
       },
       {
@@ -221,13 +235,13 @@
         "description": "\"Transaction too big due to too many inputs.\" error link URL.",
         "end": {
           "column": 3,
-          "line": 89
+          "line": 96
         },
         "file": "source/renderer/app/api/errors.js",
         "id": "api.errors.TooBigTransactionErrorLinkURL",
         "start": {
           "column": 33,
-          "line": 83
+          "line": 90
         }
       },
       {
@@ -235,13 +249,13 @@
         "description": "\"Invalid transaction.\" error message",
         "end": {
           "column": 3,
-          "line": 94
+          "line": 101
         },
         "file": "source/renderer/app/api/errors.js",
         "id": "api.errors.utxoTooSmall",
         "start": {
           "column": 16,
-          "line": 90
+          "line": 97
         }
       },
       {
@@ -249,13 +263,13 @@
         "description": "\"Funds cannot be transferred from this wallet because it contains some unspent transaction outputs (UTXOs), with amounts of ada that are too small to be migrated.\" error message",
         "end": {
           "column": 3,
-          "line": 101
+          "line": 108
         },
         "file": "source/renderer/app/api/errors.js",
         "id": "api.errors.nothingToMigrate",
         "start": {
           "column": 20,
-          "line": 95
+          "line": 102
         }
       }
     ],
@@ -1061,6 +1075,20 @@
         "start": {
           "column": 31,
           "line": 63
+        }
+      },
+      {
+        "defaultMessage": "!!!Verifying the blockchain ({verificationProgress}% complete)",
+        "description": "Message \"Verifying the blockchain (65% complete) ...\" on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 74
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
+        "id": "loading.screen.verifyingBlockchainMessage",
+        "start": {
+          "column": 23,
+          "line": 68
         }
       }
     ],
@@ -2671,7 +2699,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Cardano will soon start transitioning from a federated to a decentralized system. The first step is the activation of the Shelley upgrade. Once the upgrade is complete, stake pools will start registering and users will be able to delegate their wallets. Two epochs (12 hours) later, stake pools will begin producing blocks and users could start earning rewards from delegating their stakes. The first rewards, where due, will be distributed two more epochs later (12 hours).",
+        "defaultMessage": "!!!Cardano will soon start transitioning from a federated to a decentralized system. The first step is the activation of the Shelley upgrade. Once the upgrade is complete, stake pools will start registering and users will be able to delegate their wallets. Two epochs (10 days) later, stake pools will begin producing blocks and users could start earning rewards from delegating their stakes. The first rewards, where due, will be distributed two more epochs later (10 days).",
         "description": "Info for the Decentralisation notification.",
         "end": {
           "column": 3,
@@ -3510,7 +3538,7 @@
       },
       {
         "defaultMessage": "!!!This wallet does not contain the minimum amount of {minDelegationFunds} ADA which is required for delegation to be available. Please select a wallet with <span>a minimum amount of {minDelegationFunds} ADA</span> and click continue.",
-        "description": "MinDelegationFunds Error Label on the delegation setup \"choose wallet\" step dialog.",
+        "description": "errorMinDelegationFunds Error Label on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
           "line": 61
@@ -3523,17 +3551,31 @@
         }
       },
       {
+        "defaultMessage": "!!!This wallet contains only rewards balances so it cannot be delegated.",
+        "description": "errorMinDelegationFundsRewardsOnly Error Label on the delegation setup \"choose wallet\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 69
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog.js",
+        "id": "staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFundsRewardsOnly",
+        "start": {
+          "column": 38,
+          "line": 62
+        }
+      },
+      {
         "defaultMessage": "!!!This wallet can’t be used for delegation while it’s being synced.",
         "description": "RestoringWallet Error Label on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 76
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog.js",
         "id": "staking.delegationSetup.chooseWallet.step.dialog.errorRestoringWallet",
         "start": {
           "column": 24,
-          "line": 62
+          "line": 70
         }
       },
       {
@@ -3541,13 +3583,13 @@
         "description": "Label for continue button on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 74
+          "line": 82
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog.js",
         "id": "staking.delegationSetup.chooseWallet.step.dialog.continueButtonLabel",
         "start": {
           "column": 23,
-          "line": 69
+          "line": 77
         }
       }
     ],
@@ -3818,7 +3860,7 @@
         }
       },
       {
-        "defaultMessage": "!!!None of your wallets currently hold the <span>minimum amount of {minDelegationFunds} that is required for delegation options.",
+        "defaultMessage": "!!!None of your wallets currently hold the <span>minimum amount of {minDelegationFunds} ADA</span> that is required for delegation options.",
         "description": "Description on the delegation setup not available dialog.",
         "end": {
           "column": 3,
@@ -6639,13 +6681,13 @@
         "description": "Instructions for verifying wallet recovery phrase on dialog for entering wallet recovery phrase.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 34
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.verification.instructions",
         "start": {
           "column": 28,
-          "line": 25
+          "line": 28
         }
       },
       {
@@ -6653,13 +6695,13 @@
         "description": "Label for the recovery phrase input on dialog for entering wallet recovery phrase.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 40
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInputLabel",
         "start": {
           "column": 28,
-          "line": 32
+          "line": 35
         }
       },
       {
@@ -6667,13 +6709,13 @@
         "description": "Placeholder for the mnemonics autocomplete.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 45
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInputHint",
         "start": {
           "column": 27,
-          "line": 38
+          "line": 41
         }
       },
       {
@@ -6681,13 +6723,13 @@
         "description": "\"No results\" message for the recovery phrase input search results.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 52
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInputNoResults",
         "start": {
           "column": 27,
-          "line": 43
+          "line": 46
         }
       },
       {
@@ -6695,13 +6737,13 @@
         "description": "Error message shown when invalid recovery phrase was entered.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 59
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInvalidMnemonics",
         "start": {
           "column": 34,
-          "line": 50
+          "line": 53
         }
       },
       {
@@ -6709,13 +6751,13 @@
         "description": "Label for button \"Confirm\" on wallet backup dialog",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 64
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.recovery.phrase.show.entry.dialog.button.labelConfirm",
         "start": {
           "column": 22,
-          "line": 57
+          "line": 60
         }
       },
       {
@@ -6723,13 +6765,13 @@
         "description": "Term on wallet creation to store recovery phrase offline",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 71
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.offline",
         "start": {
           "column": 15,
-          "line": 62
+          "line": 65
         }
       },
       {
@@ -6737,13 +6779,13 @@
         "description": "Term and condition on wallet backup dialog describing that wallet can only be recovered with a security phrase",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 79
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.recovery",
         "start": {
           "column": 16,
-          "line": 69
+          "line": 72
         }
       },
       {
@@ -6751,13 +6793,13 @@
         "description": "Term and condition on wallet backup dialog describing that wallet can only be recovered with a security phrase",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 86
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.rewards",
         "start": {
           "column": 15,
-          "line": 77
+          "line": 80
         }
       }
     ],
@@ -8251,7 +8293,7 @@
         }
       },
       {
-        "defaultMessage": "!!!To verify that you have the correct recovery phrase for this wallet, you can enter it on the following screen. This wallet uses a {wordCount}-word recovery phrase.",
+        "defaultMessage": "!!!To verify that you have the correct recovery phrase for this wallet, you can enter it on the following screen.",
         "description": "Label for the recoveryPhraseStep1Paragraph1 on wallet settings.",
         "end": {
           "column": 3,
@@ -8312,7 +8354,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Please enter your {wordCount}-word wallet recovery phrase. Make sure you enter the words in the correct order.",
+        "defaultMessage": "!!!Please enter your wallet recovery phrase. Make sure you enter the words in the correct order.",
         "description": "Label for the recoveryPhraseStep2Description on wallet settings.",
         "end": {
           "column": 3,
