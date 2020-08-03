@@ -21,6 +21,6 @@ export const createTransaction = (
       path: `/v2/wallets/${walletId}/transactions/`,
       ...config,
     },
-    { withdrawRewards: true },
+    { withdrawRewards: 'self' },
     data
   );
