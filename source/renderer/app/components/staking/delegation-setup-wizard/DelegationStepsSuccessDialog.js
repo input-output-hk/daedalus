@@ -51,6 +51,7 @@ type Props = {
   onClose: Function,
   currentLocale: string,
 };
+
 type State = { timeUntilNextEpochStart: number };
 
 @observer

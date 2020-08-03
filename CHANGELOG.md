@@ -1,6 +1,34 @@
 Changelog
 =========
 
+## 2.0.1
+
+### Features
+
+- Disabled creating Byron wallets ([PR 2126](https://github.com/input-output-hk/daedalus/pull/2126))
+
+### Fixes
+
+- Improved wallet delegation error messages ([PR 2111](https://github.com/input-output-hk/daedalus/pull/2111))
+- Fixed Daedalus logo animation on the "Loading" screen ([PR 2124](https://github.com/input-output-hk/daedalus/pull/2124))
+- Fixed text copy on the "Delegation center" screen ([PR 2125](https://github.com/input-output-hk/daedalus/pull/2125))
+
+### Chores
+
+- Updated `cardano-wallet` to revision `03b7568b` ([PR 2119](https://github.com/input-output-hk/daedalus/pull/2119))
+
+## 2.0.0
+
+### Features
+
+- Implemented address validation ([PR 2041](https://github.com/input-output-hk/daedalus/pull/2041))
+- Show block replay progress ([PR 2110](https://github.com/input-output-hk/daedalus/pull/2110))
+
+### Fixes
+
+- Extended the recovery phrase verification to all possible phrase lengths ([PR 2109](https://github.com/input-output-hk/daedalus/pull/2109))
+- Fixed epoch length and slot numbers info ([PR 2108](https://github.com/input-output-hk/daedalus/pull/2108))
+
 ## 2.0.0-RC1
 
 ### Fixes

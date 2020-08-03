@@ -13,6 +13,7 @@ import {
   WalletTransaction,
   TransactionTypes,
   TransactionStates,
+  TransactionWithdrawal,
 } from '../domains/WalletTransaction';
 import WalletAddress from '../domains/WalletAddress';
 
@@ -68,7 +69,7 @@ import { transferFunds } from './wallets/requests/transferFunds';
 
 // Staking
 import StakePool from '../domains/StakePool';
-import { EPOCH_LENGTH_ITN } from '../config/epochsConfig';
+import { getEpochLength } from '../config/epochsConfig';
 
 // News requests
 import { getNews } from './news/requests/getNews';
@@ -225,7 +226,6 @@ export default class AdaApi {
         this.config
       );
       logger.debug('AdaApi::getWallets success', { wallets, legacyWallets });
-
       map(legacyWallets, legacyAdaWallet => {
         const extraLegacyWalletProps = {
           address_pool_gap: 0, // Not needed for legacy wallets
@@ -633,6 +633,7 @@ export default class AdaApi {
           },
         ],
         passphrase,
+        withdrawal: TransactionWithdrawal,
       };
 
       let response: Transaction;
@@ -694,6 +695,7 @@ export default class AdaApi {
             },
           },
         ],
+        withdrawal: TransactionWithdrawal,
       };
 
       let response: TransactionFee;
@@ -1583,7 +1585,7 @@ export default class AdaApi {
           : get(sync_progress, 'progress.quantity', 0);
       const nextEpochNumber = get(nextEpoch, 'epoch_number', null);
       const nextEpochStartTime = get(nextEpoch, 'epoch_start_time', '');
-
+      const epochLength = getEpochLength();
       // extract relevant data before sending to NetworkStatusStore
       return {
         syncProgress,
@@ -1610,7 +1612,7 @@ export default class AdaApi {
               epochNumber: nextEpochNumber ? nextEpochNumber + 1 : null,
               epochStart: nextEpochStartTime
                 ? moment(nextEpochStartTime)
-                    .add(EPOCH_LENGTH_ITN, 'seconds')
+                    .add(epochLength, 'seconds')
                     .toISOString()
                 : '',
             }
