@@ -102,6 +102,7 @@ const messages = defineMessages({
 const { isIncentivizedTestnet } = global;
 
 type Props = {
+  isShelleyActivated: boolean,
   onSubmit: Function,
   onCancel: Function,
 };
@@ -221,7 +222,7 @@ export default class WalletCreateDialog extends Component<Props, State> {
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { onCancel } = this.props;
+    const { onCancel, isShelleyActivated } = this.props;
     const { isSubmitting } = this.state;
     const dialogClasses = classnames([styles.component, 'WalletCreateDialog']);
 
@@ -236,7 +237,7 @@ export default class WalletCreateDialog extends Component<Props, State> {
         className: isSubmitting ? styles.isSubmitting : null,
         disabled: !canSubmit,
         label: this.context.intl.formatMessage(
-          isIncentivizedTestnet
+          isIncentivizedTestnet || isShelleyActivated
             ? messages.createPersonalWalletItn
             : messages.createPersonalWallet
         ),
@@ -249,7 +250,9 @@ export default class WalletCreateDialog extends Component<Props, State> {
       <Dialog
         className={dialogClasses}
         title={intl.formatMessage(
-          isIncentivizedTestnet ? messages.dialogTitleItn : messages.dialogTitle
+          isIncentivizedTestnet || isShelleyActivated
+            ? messages.dialogTitleItn
+            : messages.dialogTitle
         )}
         actions={actions}
         closeOnOverlayClick

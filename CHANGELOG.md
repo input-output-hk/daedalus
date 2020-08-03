@@ -1,11 +1,102 @@
 Changelog
 =========
 
-## vNext
+## 2.0.1
 
 ### Features
 
+- Disabled creating Byron wallets ([PR 2126](https://github.com/input-output-hk/daedalus/pull/2126))
+
+### Fixes
+
+- Improved wallet delegation error messages ([PR 2111](https://github.com/input-output-hk/daedalus/pull/2111))
+- Fixed Daedalus logo animation on the "Loading" screen ([PR 2124](https://github.com/input-output-hk/daedalus/pull/2124))
+- Fixed text copy on the "Delegation center" screen ([PR 2125](https://github.com/input-output-hk/daedalus/pull/2125))
+
+### Chores
+
+- Updated `cardano-wallet` to revision `03b7568b` ([PR 2119](https://github.com/input-output-hk/daedalus/pull/2119))
+
+## 2.0.0
+
+### Features
+
+- Implemented address validation ([PR 2041](https://github.com/input-output-hk/daedalus/pull/2041))
+- Show block replay progress ([PR 2110](https://github.com/input-output-hk/daedalus/pull/2110))
+
+### Fixes
+
+- Extended the recovery phrase verification to all possible phrase lengths ([PR 2109](https://github.com/input-output-hk/daedalus/pull/2109))
+- Fixed epoch length and slot numbers info ([PR 2108](https://github.com/input-output-hk/daedalus/pull/2108))
+
+## 2.0.0-RC1
+
+### Fixes
+
+- Fixed the epoch duration copy ([PR 2107](https://github.com/input-output-hk/daedalus/pull/2107))
+- Handled errors from a wallet which has ONLY rewards account balance when sending a transaction or delegating ([PR 2100](https://github.com/input-output-hk/daedalus/pull/2100))
+- Fixed `cardano-wallet` info shown on the "About" screen ([PR 2097](https://github.com/input-output-hk/daedalus/pull/2097))
+- Updated stake pool tooltip to display "Produced blocks" instead of "Blocks (current epoch)" ([PR 2096](https://github.com/input-output-hk/daedalus/pull/2096))
+- Fixed wallet recovery phrase length used on "ITN rewards redemption" wizard ([PR 2095](https://github.com/input-output-hk/daedalus/pull/2095))
+
+### Chores
+
+- Updated `cardano-wallet` to revision `ca96c435` ([PR 2105](https://github.com/input-output-hk/daedalus/pull/2105))
+- Extended network-parameters Api endpoint integration with hardfork info ([PR 2105](https://github.com/input-output-hk/daedalus/pull/2105))
+- Configured mainnet instance for Shelley hardfork ([PR 2104](https://github.com/input-output-hk/daedalus/pull/2104))
+- Updated network-info Api endpoint integration ([PR 2101](https://github.com/input-output-hk/daedalus/pull/2101))
+- Extended incident and alert newsfeed type ([PR 2099](https://github.com/input-output-hk/daedalus/pull/2099))
+- Enable Cardano Explorer URLs for STN network ([PR 2098](https://github.com/input-output-hk/daedalus/pull/2098))
+
+## 1.6.0-STN5
+
+### Features
+
+- Added recovery phrase autocomplete on the wallet creation wizard ([PR 2083](https://github.com/input-output-hk/daedalus/pull/2083))
+- Added restoration of 24-word Shelley wallets and 15-word ITN wallets ([PR 2083](https://github.com/input-output-hk/daedalus/pull/2083))
+- Added restoration of legacy Byron hardware wallets ([PR 2082](https://github.com/input-output-hk/daedalus/pull/2082))
+
+### Fixes
+
+- Fixed genesis file
+
+### Chores
+
+- Added handlers for new error messages ([PR 2090](https://github.com/input-output-hk/daedalus/pull/2090))
+- Updated `cardano-wallet` to revision `71c0b8fd` which includes `cardano-node` 1.18.0
+
+## 1.5.0-STN4
+
+### Chores
+
+- Updated `cardano-wallet` to revision `cb6fae7b` which includes `cardano-node` 1.17.0
+
+## 1.4.1-STN3
+
+### Fixes
+
+- Fixed wallet restoration success message text ([PR 2080](https://github.com/input-output-hk/daedalus/pull/2080))
+
+### Chores
+
+- Re-enabled Byron wallet "Transfer funds" wizard ([PR 2080](https://github.com/input-output-hk/daedalus/pull/2080))
+- Updated "Splash" screen text copy ([PR 2080](https://github.com/input-output-hk/daedalus/pull/2080))
+
+## 1.4.0-STN3
+
+### Features
+
+- Added Byron to Shelley transition ([PR 2079](https://github.com/input-output-hk/daedalus/pull/2079))
 - Added UX improvements for the display of stake pool ID ([PR 2074](https://github.com/input-output-hk/daedalus/pull/2074))
+- Updated application name and network identifiers for the Shelley Testnet Mainnet candidate network ([PR 2078](https://github.com/input-output-hk/daedalus/pull/2078))
+
+### Fixes
+
+- Fixed double punctuation on delegation dialog ([PR 2077](https://github.com/input-output-hk/daedalus/pull/2077))
+
+### Chores
+
+- Updated `cardano-wallet` to revision `c01efcfe` ([PR 2078](https://github.com/input-output-hk/daedalus/pull/2078))
 
 ## 1.3.0-STN2
 

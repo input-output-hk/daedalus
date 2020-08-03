@@ -24,7 +24,7 @@ const messages = defineMessages({
   description: {
     id: 'staking.delegationSetup.notAvailable.dialog.description',
     defaultMessage:
-      '!!!None of your wallets currently hold the <span>minimum amount of {minDelegationFunds} that is required for delegation options.',
+      '!!!None of your wallets currently hold the <span>minimum amount of {minDelegationFunds} ADA</span> that is required for delegation options.',
     description: 'Description on the delegation setup not available dialog.',
   },
   closeButtonLabel: {

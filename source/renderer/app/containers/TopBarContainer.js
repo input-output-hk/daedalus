@@ -23,6 +23,7 @@ export default class TopBarContainer extends Component<Props> {
     const { sidebar, app, networkStatus, wallets, newsFeed } = stores;
     const { isSynced, syncPercentage } = networkStatus;
     const { active, isWalletRoute, hasAnyWallets, hasRewardsWallets } = wallets;
+    const { isShelleyActivated } = networkStatus;
     const {
       currentRoute,
       environment: { isMainnet, network },
@@ -65,6 +66,7 @@ export default class TopBarContainer extends Component<Props> {
         hasRewardsWallets={hasRewardsWallets}
         onWalletAdd={onWalletAdd}
         onLearnMore={openExternalLink}
+        isShelleyActivated={isShelleyActivated}
       >
         {testnetLabel}
         <NodeSyncStatusIcon

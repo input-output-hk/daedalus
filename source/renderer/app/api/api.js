@@ -13,6 +13,7 @@ import {
   WalletTransaction,
   TransactionTypes,
   TransactionStates,
+  TransactionWithdrawal,
 } from '../domains/WalletTransaction';
 import WalletAddress from '../domains/WalletAddress';
 
@@ -68,7 +69,7 @@ import { transferFunds } from './wallets/requests/transferFunds';
 
 // Staking
 import StakePool from '../domains/StakePool';
-import { EPOCH_LENGTH_ITN } from '../config/epochsConfig';
+import { getEpochLength } from '../config/epochsConfig';
 
 // News requests
 import { getNews } from './news/requests/getNews';
@@ -121,7 +122,7 @@ import type {
   GetNetworkClockResponse,
   NetworkClockResponse,
   GetNetworkParametersResponse,
-  NetworkParametersResponse,
+  GetNetworkParametersApiResponse,
 } from './network/types';
 
 // Nodes Types
@@ -211,17 +212,20 @@ export default class AdaApi {
     this.config = config;
   }
 
-  getWallets = async (): Promise<Array<Wallet>> => {
+  getWallets = async (request: {
+    isShelleyActivated: boolean,
+  }): Promise<Array<Wallet>> => {
     logger.debug('AdaApi::getWallets called');
+    const { isShelleyActivated } = request;
     try {
-      const wallets: AdaWallets = isIncentivizedTestnet
-        ? await getWallets(this.config)
-        : [];
+      const wallets: AdaWallets =
+        isIncentivizedTestnet || isShelleyActivated
+          ? await getWallets(this.config)
+          : [];
       const legacyWallets: LegacyAdaWallets = await getLegacyWallets(
         this.config
       );
       logger.debug('AdaApi::getWallets success', { wallets, legacyWallets });
-
       map(legacyWallets, legacyAdaWallet => {
         const extraLegacyWalletProps = {
           address_pool_gap: 0, // Not needed for legacy wallets
@@ -530,11 +534,15 @@ export default class AdaApi {
     }
   };
 
-  createWallet = async (request: CreateWalletRequest): Promise<Wallet> => {
+  createWallet = async (request: {
+    walletDetails: CreateWalletRequest,
+    isShelleyActivated: boolean,
+  }): Promise<Wallet> => {
     logger.debug('AdaApi::createWallet called', {
       parameters: filterLogData(request),
     });
-    const { name, mnemonic, spendingPassword } = request;
+    const { walletDetails, isShelleyActivated } = request;
+    const { name, mnemonic, spendingPassword } = walletDetails;
     try {
       let wallet: AdaWallet;
       const walletInitData = {
@@ -543,7 +551,7 @@ export default class AdaApi {
         passphrase: spendingPassword,
       };
 
-      if (isIncentivizedTestnet) {
+      if (isIncentivizedTestnet || isShelleyActivated) {
         wallet = await createWallet(this.config, {
           walletInitData,
         });
@@ -625,6 +633,7 @@ export default class AdaApi {
           },
         ],
         passphrase,
+        withdrawal: TransactionWithdrawal,
       };
 
       let response: Transaction;
@@ -686,6 +695,7 @@ export default class AdaApi {
             },
           },
         ],
+        withdrawal: TransactionWithdrawal,
       };
 
       let response: TransactionFee;
@@ -799,13 +809,16 @@ export default class AdaApi {
   isValidCertificateMnemonic = (mnemonic: string): boolean =>
     mnemonic.split(' ').length === ADA_CERTIFICATE_MNEMONIC_LENGTH;
 
-  getWalletRecoveryPhrase(): Promise<Array<string>> {
+  getWalletRecoveryPhrase(request: {
+    isShelleyActivated: string,
+  }): Promise<Array<string>> {
+    const { isShelleyActivated } = request;
     logger.debug('AdaApi::getWalletRecoveryPhrase called');
     try {
       const response: Promise<Array<string>> = new Promise(resolve =>
         resolve(
           generateAccountMnemonics(
-            isIncentivizedTestnet
+            isIncentivizedTestnet || isShelleyActivated
               ? WALLET_RECOVERY_PHRASE_WORD_COUNT
               : LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT
           )
@@ -1535,7 +1548,8 @@ export default class AdaApi {
   testReset = async (): Promise<void> => {
     logger.debug('AdaApi::testReset called');
     try {
-      const wallets = await this.getWallets();
+      // @TODO - pass isShelleyActivated parameter from E2E tests
+      const wallets = await this.getWallets({ isShelleyActivated: false });
       await Promise.all(
         wallets.map(wallet =>
           this.deleteWallet({
@@ -1558,35 +1572,51 @@ export default class AdaApi {
         this.config
       );
       logger.debug('AdaApi::getNetworkInfo success', { networkInfo });
-      /* eslint-disable-next-line camelcase */
-      const { sync_progress, node_tip, network_tip, next_epoch } = networkInfo;
+      const {
+        sync_progress /* eslint-disable-line camelcase */,
+        node_tip: nodeTip,
+        network_tip: networkTip,
+        next_epoch: nextEpoch,
+      } = networkInfo;
+
       const syncProgress =
         get(sync_progress, 'status') === 'ready'
           ? 100
           : get(sync_progress, 'progress.quantity', 0);
+      const nextEpochNumber = get(nextEpoch, 'epoch_number', null);
+      const nextEpochStartTime = get(nextEpoch, 'epoch_start_time', '');
+      const epochLength = getEpochLength();
       // extract relevant data before sending to NetworkStatusStore
       return {
         syncProgress,
         localTip: {
-          epoch: get(node_tip, 'epoch_number', 0),
-          slot: get(node_tip, 'slot_number', 0),
+          epoch: get(nodeTip, 'epoch_number', 0),
+          slot: get(nodeTip, 'slot_number', 0),
         },
-        networkTip: {
-          epoch: get(network_tip, 'epoch_number', 0),
-          slot: get(network_tip, 'slot_number', 0),
-        },
-        nextEpoch: {
-          // N+1 epoch
-          epochNumber: get(next_epoch, 'epoch_number', 0),
-          epochStart: get(next_epoch, 'epoch_start_time', ''),
-        },
-        futureEpoch: {
-          // N+2 epoch
-          epochNumber: get(next_epoch, 'epoch_number', 0) + 1,
-          epochStart: moment(get(next_epoch, 'epoch_start_time', 0))
-            .add(EPOCH_LENGTH_ITN, 'seconds')
-            .toISOString(),
-        },
+        networkTip: networkTip
+          ? {
+              epoch: get(networkTip, 'epoch_number', null),
+              slot: get(networkTip, 'slot_number', null),
+            }
+          : null,
+        nextEpoch: nextEpoch
+          ? {
+              // N+1 epoch
+              epochNumber: nextEpochNumber,
+              epochStart: nextEpochStartTime,
+            }
+          : null,
+        futureEpoch: nextEpoch
+          ? {
+              // N+2 epoch
+              epochNumber: nextEpochNumber ? nextEpochNumber + 1 : null,
+              epochStart: nextEpochStartTime
+                ? moment(nextEpochStartTime)
+                    .add(epochLength, 'seconds')
+                    .toISOString()
+                : '',
+            }
+          : null,
       };
     } catch (error) {
       logger.error('AdaApi::getNetworkInfo error', { error });
@@ -1624,13 +1654,10 @@ export default class AdaApi {
     }
   };
 
-  getNetworkParameters = async (
-    epochId: number
-  ): Promise<GetNetworkParametersResponse> => {
+  getNetworkParameters = async (): Promise<GetNetworkParametersResponse> => {
     logger.debug('AdaApi::getNetworkParameters called');
     try {
-      const networkParameters: NetworkParametersResponse = await getNetworkParameters(
-        epochId,
+      const networkParameters: GetNetworkParametersApiResponse = await getNetworkParameters(
         this.config
       );
       logger.debug('AdaApi::getNetworkParameters success', {
@@ -1644,6 +1671,10 @@ export default class AdaApi {
         epoch_length: epochLength,
         epoch_stability: epochStability,
         active_slot_coefficient: activeSlotCoefficient,
+        decentralization_level: decentralizationLevel,
+        desired_pool_number: desiredPoolNumber,
+        minimum_utxo_value: minimumUtxoValue,
+        hardfork_at: hardforkAt,
       } = networkParameters;
       const blockchainStartTime = moment(blockchain_start_time).valueOf();
 
@@ -1654,6 +1685,10 @@ export default class AdaApi {
         epochLength,
         epochStability,
         activeSlotCoefficient,
+        decentralizationLevel,
+        desiredPoolNumber,
+        minimumUtxoValue,
+        hardforkAt: hardforkAt || null,
       };
     } catch (error) {
       logger.error('AdaApi::getNetworkParameters error', { error });

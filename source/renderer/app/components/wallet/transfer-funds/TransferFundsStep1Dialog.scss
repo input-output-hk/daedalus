@@ -1,3 +1,6 @@
+@import '../../../themes/mixins/loading-spinner';
+@import '../../../themes/mixins/error-message';
+
 .label {
   color: var(--rp-formfield-label-text-color, #5e6066);
   font-family: var(--font-medium);
@@ -5,7 +8,19 @@
   line-height: 1.38;
   margin-bottom: 10px;
 }
+
 .sourceWallet {
   background-color: rgba(94, 96, 102, 0.5);
   margin-bottom: 20px;
+}
+
+.error {
+  @include error-message;
+  margin-top: 27px;
+  text-align: center;
+}
+
+.isSubmitting {
+  box-shadow: none !important;
+  @include loading-spinner('../../../assets/images/spinner-light.svg');
 }

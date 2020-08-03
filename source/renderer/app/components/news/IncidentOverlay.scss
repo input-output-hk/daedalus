@@ -62,7 +62,6 @@
     max-height: 464px;
     max-width: 600px;
     min-width: 600px;
-    opacity: 0.8;
     overflow-y: scroll;
     padding: 12px 20px;
     word-break: break-word;
@@ -126,6 +125,226 @@
 
     em {
       font-style: italic;
+    }
+  }
+
+  &.red {
+    background-color: var(
+      --theme-news-feed-incident-red-overlay-background-color
+    );
+    color: var(--theme-news-feed-incident-red-overlay-text-color);
+    .actionBtn {
+      border: 1px solid var(--theme-news-feed-incident-red-overlay-button-color);
+      &:hover {
+        background-color: var(
+          --theme-news-feed-incident-red-overlay-button-color
+        );
+        color: var(--theme-news-feed-incident-red-overlay-background-color);
+        svg {
+          g {
+            path {
+              stroke: var(
+                --theme-news-feed-incident-red-overlay-background-color
+              );
+            }
+          }
+        }
+      }
+      .externalLink {
+        color: var(--theme-news-feed-incident-red-overlay-button-color);
+        &:after {
+          background-color: var(
+            --theme-news-feed-incident-red-overlay-button-color
+          );
+        }
+      }
+
+      &:hover {
+        background-color: var(
+          --theme-news-feed-incident-red-overlay-button-color
+        );
+        .externalLink {
+          color: var(--theme-news-feed-incident-red-overlay-background-color);
+          &:after {
+            background-color: var(
+              --theme-news-feed-incident-red-overlay-background-color
+            );
+          }
+        }
+      }
+    }
+    .content {
+      &::-webkit-scrollbar-thumb {
+        background-color: var(
+          --theme-news-feed-incident-red-overlay-scrollbar-thumb-background
+        );
+
+        &:hover {
+          background-color: var(
+            --theme-news-feed-incident-red-overlay-scrollbar-thumb-background-hover
+          );
+        }
+      }
+      p,
+      li {
+        color: var(--theme-news-feed-incident-red-overlay-content-list-color);
+        strong {
+          color: var(--theme-news-feed-incident-red-overlay-text-color);
+        }
+      }
+
+      a {
+        border-bottom: 1px solid
+          var(--theme-news-feed-incident-red-overlay-text-color);
+        color: var(--theme-news-feed-incident-red-overlay-text-color);
+      }
+    }
+  }
+
+  &.grey {
+    background-color: var(
+      --theme-news-feed-incident-grey-overlay-background-color
+    );
+    color: var(--theme-news-feed-incident-grey-overlay-text-color);
+    .actionBtn {
+      border: 1px solid
+        var(--theme-news-feed-incident-grey-overlay-button-color);
+      &:hover {
+        background-color: var(
+          --theme-news-feed-incident-grey-overlay-button-color
+        );
+        color: var(--theme-news-feed-incident-grey-overlay-background-color);
+        svg {
+          g {
+            path {
+              stroke: var(
+                --theme-news-feed-incident-grey-overlay-background-color
+              );
+            }
+          }
+        }
+      }
+      .externalLink {
+        color: var(--theme-news-feed-incident-grey-overlay-button-color);
+        &:after {
+          background-color: var(
+            --theme-news-feed-incident-grey-overlay-button-color
+          );
+        }
+      }
+
+      &:hover {
+        background-color: var(
+          --theme-news-feed-incident-grey-overlay-button-color
+        );
+        .externalLink {
+          color: var(--theme-news-feed-incident-grey-overlay-background-color);
+          &:after {
+            background-color: var(
+              --theme-news-feed-incident-grey-overlay-background-color
+            );
+          }
+        }
+      }
+    }
+    .content {
+      &::-webkit-scrollbar-thumb {
+        background-color: var(
+          --theme-news-feed-incident-grey-overlay-scrollbar-thumb-background
+        );
+
+        &:hover {
+          background-color: var(
+            --theme-news-feed-incident-grey-overlay-scrollbar-thumb-background-hover
+          );
+        }
+      }
+      p,
+      li {
+        color: var(--theme-news-feed-incident-grey-overlay-content-list-color);
+        strong {
+          color: var(--theme-news-feed-incident-grey-overlay-text-color);
+        }
+      }
+
+      a {
+        border-bottom: 1px solid
+          var(--theme-news-feed-incident-grey-overlay-text-color);
+        color: var(--theme-news-feed-incident-grey-overlay-text-color);
+      }
+    }
+  }
+
+  &.themeDefault {
+    background-color: var(--theme-news-feed-incident-overlay-background-color);
+    color: var(--theme-news-feed-incident-overlay-text-color);
+    .actionBtn {
+      background-color: var(
+        --theme-news-feed-incident-overlay-button-background
+      );
+      border: 1px solid var(--theme-news-feed-incident-overlay-button-color);
+      &:hover {
+        background-color: var(--theme-news-feed-incident-overlay-button-color);
+        color: var(--theme-news-feed-incident-overlay-button-color-hover);
+        svg {
+          g {
+            path {
+              stroke: var(
+                --theme-news-feed-incident-overlay-button-color-hover
+              );
+            }
+          }
+        }
+      }
+      .externalLink {
+        color: var(--theme-news-feed-incident-overlay-button-color);
+        &:after {
+          background-color: var(
+            --theme-news-feed-incident-overlay-button-color
+          );
+        }
+      }
+
+      &:hover {
+        background-color: var(--theme-news-feed-incident-overlay-button-color);
+        .externalLink {
+          color: var(--theme-news-feed-incident-overlay-button-color-hover);
+          &:after {
+            background-color: var(
+              --theme-news-feed-incident-overlay-button-color-hover
+            );
+          }
+        }
+      }
+    }
+    .content {
+      background-color: var(
+        --theme-news-feed-incident-overlay-content-background
+      );
+      &::-webkit-scrollbar-thumb {
+        background-color: var(
+          --theme-news-feed-incident-overlay-scrollbar-thumb-background
+        );
+
+        &:hover {
+          background-color: var(
+            --theme-news-feed-incident-overlay-scrollbar-thumb-background-hover
+          );
+        }
+      }
+      p,
+      li {
+        color: var(--theme-news-feed-incident-overlay-content-list-color);
+        strong {
+          color: var(--theme-news-feed-incident-overlay-text-color);
+        }
+      }
+
+      a {
+        border-bottom: 1px solid
+          var(--theme-news-feed-incident-overlay-text-color);
+        color: var(--theme-news-feed-incident-overlay-text-color);
+      }
     }
   }
 

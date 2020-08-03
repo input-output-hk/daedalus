@@ -107,7 +107,7 @@ export default class WalletReceivePage extends Component<Props, State> {
     const { activeWallet } = this;
     const { addressToShare } = this.state;
     const { toggleSubMenus } = actions.sidebar;
-    const { isIncentivizedTestnet } = global;
+
     // Guard against potential null values
     if (!activeWallet)
       throw new Error('Active wallet required for WalletReceivePage.');
@@ -143,7 +143,6 @@ export default class WalletReceivePage extends Component<Props, State> {
               isAddressValid={this.handleIsAddressValid}
               onShareAddress={this.handleShareAddress}
               onCopyAddress={this.handleCopyAddress}
-              isIncentivizedTestnet={isIncentivizedTestnet}
               onToggleSubMenus={toggleSubMenus}
             />
           )}

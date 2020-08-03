@@ -51,16 +51,12 @@ export default class StakingStore extends Store {
   pollingStakePoolsInterval: ?IntervalID = null;
   refreshPolling: ?IntervalID = null;
   delegationCheckTimeInterval: ?IntervalID = null;
-
-  startDateTime: string = '2020-07-29T00:00:00.161Z';
-  decentralizationProgress: number = 10;
   adaValue: BigNumber = new BigNumber(82650.15);
   percentage: number = 14;
 
   _delegationFeeCalculationWalletId: ?string = null;
 
   setup() {
-    const { isIncentivizedTestnet, isShelleyTestnet } = global;
     const { staking: stakingActions } = this.actions;
 
     this.refreshPolling = setInterval(
@@ -78,22 +74,20 @@ export default class StakingStore extends Store {
     stakingActions.onResultContinue.listen(this._onResultContinue);
     stakingActions.closeRedeemDialog.listen(this._closeRedeemDialog);
 
-    if (isIncentivizedTestnet || isShelleyTestnet) {
-      stakingActions.goToStakingInfoPage.listen(this._goToStakingInfoPage);
-      stakingActions.goToStakingDelegationCenterPage.listen(
-        this._goToStakingDelegationCenterPage
-      );
-      stakingActions.joinStakePool.listen(this._joinStakePool);
-      stakingActions.quitStakePool.listen(this._quitStakePool);
-      stakingActions.fakeStakePoolsLoading.listen(this._setFakePoller);
-      stakingActions.updateStake.listen(this._setStake);
-      stakingActions.selectDelegationWallet.listen(
-        this._setSelectedDelegationWalletId
-      );
+    stakingActions.goToStakingInfoPage.listen(this._goToStakingInfoPage);
+    stakingActions.goToStakingDelegationCenterPage.listen(
+      this._goToStakingDelegationCenterPage
+    );
+    stakingActions.joinStakePool.listen(this._joinStakePool);
+    stakingActions.quitStakePool.listen(this._quitStakePool);
+    stakingActions.fakeStakePoolsLoading.listen(this._setFakePoller);
+    stakingActions.updateStake.listen(this._setStake);
+    stakingActions.selectDelegationWallet.listen(
+      this._setSelectedDelegationWalletId
+    );
 
-      // ========== MOBX REACTIONS =========== //
-      this.registerReactions([this._pollOnSync]);
-    }
+    // ========== MOBX REACTIONS =========== //
+    this.registerReactions([this._pollOnSync]);
   }
 
   // REQUESTS
@@ -315,12 +309,17 @@ export default class StakingStore extends Store {
   }
 
   @action showCountdown(): boolean {
-    return new Date(this.startDateTime).getTime() - new Date().getTime() > 0;
+    const { isShelleyPending } = this.stores.networkStatus;
+    return isShelleyPending;
   }
 
   @action getStakePoolsData = async () => {
-    const { isConnected, isSynced } = this.stores.networkStatus;
-    if (!isConnected || !isSynced) {
+    const {
+      isConnected,
+      isSynced,
+      isShelleyActivated,
+    } = this.stores.networkStatus;
+    if (!isShelleyActivated || !isConnected || !isSynced) {
       this._resetIsRanking();
       return;
     }
@@ -571,7 +570,8 @@ export default class StakingStore extends Store {
   // ================= REACTIONS ==================
 
   _pollOnSync = () => {
-    if (this.stores.networkStatus.isSynced) {
+    const { isSynced, isShelleyActivated } = this.stores.networkStatus;
+    if (isSynced && isShelleyActivated) {
       this._setStake(this.stake);
     } else {
       this._resetIsRanking();

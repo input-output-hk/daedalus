@@ -62,7 +62,7 @@ const messages = defineMessages({
   producedBlocks: {
     id: 'staking.stakePools.tooltip.producedBlocks',
     defaultMessage: '!!!Produced blocks:',
-    description: '"Produced blocks" for the Stake Pools Tooltip page.',
+    description: '"Blocks" for the Stake Pools Tooltip page.',
   },
   retirement: {
     id: 'staking.stakePools.tooltip.retirement',
@@ -386,7 +386,7 @@ export default class TooltipPool extends Component<Props, State> {
   };
 
   render() {
-    const { isShelleyTestnet } = global;
+    const { isIncentivizedTestnet } = global;
     const { intl } = this.context;
     const {
       stakePool,
@@ -537,7 +537,7 @@ export default class TooltipPool extends Component<Props, State> {
               >
                 {ranking}
               </span>
-              {!isShelleyTestnet && (
+              {isIncentivizedTestnet && (
                 <Tooltip
                   className={styles.experimentalTooltip}
                   key="experimentalTooltip"

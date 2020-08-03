@@ -48,6 +48,7 @@ const startCardanoNode = (
     configPath,
     syncTolerance,
     cliBin,
+    isStaging,
   } = launcherConfig;
   const logFilePath = `${logsPrefix}/pub/`;
   const config = {
@@ -63,6 +64,7 @@ const startCardanoNode = (
     configPath,
     syncTolerance,
     cliBin,
+    isStaging,
     startupTimeout: NODE_STARTUP_TIMEOUT,
     startupMaxRetries: NODE_STARTUP_MAX_RETRIES,
     shutdownTimeout: NODE_SHUTDOWN_TIMEOUT,

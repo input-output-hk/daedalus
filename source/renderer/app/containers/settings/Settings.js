@@ -26,12 +26,11 @@ export default class Settings extends Component<InjectedContainerProps> {
   };
 
   render() {
-    const { isFlight, isShelleyTestnet } = global;
+    const { isFlight } = global;
     const { actions, children } = this.props;
     const menu = (
       <SettingsMenu
         isFlight={isFlight}
-        isShelleyTestnet={isShelleyTestnet}
         onItemClick={route => actions.router.goToRoute.trigger({ route })}
         isActiveItem={this.isActivePage}
       />

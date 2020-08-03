@@ -1,17 +1,17 @@
 // @flow
 export type TipInfo = {
-  epoch: number,
-  slot: number,
+  epoch: ?number,
+  slot: ?number,
 };
 
 export type NextEpoch = {
-  epochNumber: number,
-  epochStart: string,
+  epochNumber: ?number,
+  epochStart: ?string,
 };
 
 export type FutureEpoch = {
-  epochNumber: number,
-  epochStart: string,
+  epochNumber: ?number,
+  epochStart: ?string,
 };
 
 export type ClockOffset = {
@@ -39,12 +39,22 @@ export type ActiveSlotCoefficient = {
   unit: string,
 };
 
+export type DecentralizationLevel = {
+  quantity: number,
+  unit: string,
+};
+
+export type MinimumUtxoValue = {
+  quantity: number,
+  unit: string,
+};
+
 export type GetNetworkInfoResponse = {
   syncProgress: number,
   localTip: TipInfo,
-  networkTip: TipInfo,
-  nextEpoch: NextEpoch,
-  futureEpoch: FutureEpoch,
+  networkTip: ?TipInfo,
+  nextEpoch: ?NextEpoch,
+  futureEpoch: ?FutureEpoch,
 };
 
 export type NetworkInfoResponse = {
@@ -63,13 +73,13 @@ export type NetworkInfoResponse = {
       unit: 'block',
     },
   },
-  network_tip: {
-    slot_number: number,
-    epoch_number: number,
+  network_tip?: ?{
+    slot_number: ?number,
+    epoch_number: ?number,
   },
-  next_epoch: {
-    epoch_number: number,
-    epoch_start_time: string,
+  next_epoch?: ?{
+    epoch_number: ?number,
+    epoch_start_time: ?string,
   },
 };
 
@@ -83,6 +93,11 @@ export type GetNetworkClockResponse = {
   offset: ?number,
 };
 
+export type HardforkAt = {
+  epoch_start_time: string,
+  epoch_number: number,
+};
+
 export type GetNetworkParametersResponse = {
   genesisBlockHash: string,
   blockchainStartTime: number,
@@ -90,13 +105,21 @@ export type GetNetworkParametersResponse = {
   epochLength: EpochLength,
   epochStability: EpochStability,
   activeSlotCoefficient: ActiveSlotCoefficient,
+  decentralizationLevel: DecentralizationLevel,
+  desiredPoolNumber: number,
+  minimumUtxoValue: MinimumUtxoValue,
+  hardforkAt: ?HardforkAt,
 };
 
-export type NetworkParametersResponse = {
+export type GetNetworkParametersApiResponse = {
   genesis_block_hash: string,
   blockchain_start_time: string,
   slot_length: SlotLength,
   epoch_length: EpochLength,
   epoch_stability: EpochStability,
   active_slot_coefficient: ActiveSlotCoefficient,
+  decentralization_level: DecentralizationLevel,
+  desired_pool_number: number,
+  minimum_utxo_value: MinimumUtxoValue,
+  hardfork_at?: HardforkAt,
 };

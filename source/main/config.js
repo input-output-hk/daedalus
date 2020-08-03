@@ -43,7 +43,7 @@ if (!isStartedByLauncher) {
 export type NodeConfig = {
   configurationDir: string,
   delegationCertificate?: string,
-  kind: 'byron',
+  kind: 'byron' | 'shelley',
   network: {
     configFile: string,
     genesisFile: string,
@@ -74,6 +74,7 @@ export type LauncherConfig = {
   legacySecretKey: string,
   legacyWalletDB: string,
   isFlight: boolean,
+  isStaging: boolean,
 };
 
 type WindowOptionsType = {
@@ -160,6 +161,8 @@ export const DISK_SPACE_CHECK_MEDIUM_INTERVAL = 60 * 1000; // 1 minute | unit: m
 export const DISK_SPACE_CHECK_SHORT_INTERVAL = isTest ? 2000 : 10 * 1000; // 10 seconds | unit: milliseconds
 export const DISK_SPACE_RECOMMENDED_PERCENTAGE = 15; // 15% of the total disk space
 
+export const BLOCK_REPLAY_PROGRESS_CHECK_INTERVAL = 1 * 1000; // 1 seconds | unit: milliseconds
+
 // CardanoWallet config
 export const STAKE_POOL_REGISTRY_URL = {
   itn_selfnode:
@@ -169,6 +172,3 @@ export const STAKE_POOL_REGISTRY_URL = {
   qa:
     'https://explorer.qa.jormungandr-testnet.iohkdev.io/stakepool-registry/registry.zip',
 };
-
-// Cardano Byron Testnet network magic
-export const TESTNET_MAGIC = '1097911063';
