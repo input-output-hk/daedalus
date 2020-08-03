@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Disabled creating Byron wallets ([PR 2126](https://github.com/input-output-hk/daedalus/pull/2126))
+
 ### Fixes
 
 - Improved wallet delegation error messages ([PR 2111](https://github.com/input-output-hk/daedalus/pull/2111))
