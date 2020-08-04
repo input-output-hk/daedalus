@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { debounce } from 'lodash';
 import classNames from 'classnames';
+import FlipMove from 'react-flip-move';
 import styles from './StakePoolsList.scss';
 import StakePool from '../../../domains/StakePool';
 import { ThumbPool } from '../widgets/ThumbPool';
@@ -19,6 +20,7 @@ type Props = {
   numberOfStakePools: number,
   selectedPoolId?: ?number,
   disabledStakePoolId?: ?string,
+  activateFlip?: boolean,
   /**
    *
    * If the parent component has more than one <StakePoolsList />
@@ -103,36 +105,44 @@ export class StakePoolsList extends Component<Props, State> {
       numberOfStakePools,
       disabledStakePoolId,
       listName,
+      activateFlip,
     } = this.props;
 
     const componentClasses = classNames([styles.component, listName]);
 
+    const Container = activateFlip
+      ? FlipMove
+      : ({ children }) => <div>{children}</div>;
+
     return (
       <div className={componentClasses}>
-        {stakePoolsList.map(stakePool => {
-          const isHighlighted = this.getIsHighlighted(stakePool.id);
-          const isSelected = selectedPoolId && stakePool.id === selectedPoolId;
+        <Container>
+          {stakePoolsList.map(stakePool => {
+            const isHighlighted = this.getIsHighlighted(stakePool.id);
+            const isSelected =
+              selectedPoolId && stakePool.id === selectedPoolId;
 
-          return (
-            <ThumbPool
-              stakePool={stakePool}
-              key={stakePool.id + stakePool.ranking}
-              onOpenExternalLink={onOpenExternalLink}
-              isHighlighted={isHighlighted}
-              onClose={this.handleClose}
-              onClick={!highlightOnHover && this.handleOpenThumbnail}
-              onHover={highlightOnHover && this.handleOpenThumbnail}
-              onSelect={this.handleSelect}
-              showWithSelectButton={showWithSelectButton}
-              currentTheme={currentTheme}
-              isSelected={isSelected}
-              showSelected={showSelected}
-              containerClassName={containerClassName}
-              numberOfStakePools={numberOfStakePools}
-              disabledStakePoolId={disabledStakePoolId}
-            />
-          );
-        })}
+            return (
+              <ThumbPool
+                stakePool={stakePool}
+                key={stakePool.id + stakePool.ranking}
+                onOpenExternalLink={onOpenExternalLink}
+                isHighlighted={isHighlighted}
+                onClose={this.handleClose}
+                onClick={!highlightOnHover && this.handleOpenThumbnail}
+                onHover={highlightOnHover && this.handleOpenThumbnail}
+                onSelect={this.handleSelect}
+                showWithSelectButton={showWithSelectButton}
+                currentTheme={currentTheme}
+                isSelected={isSelected}
+                showSelected={showSelected}
+                containerClassName={containerClassName}
+                numberOfStakePools={numberOfStakePools}
+                disabledStakePoolId={disabledStakePoolId}
+              />
+            );
+          })}
+        </Container>
       </div>
     );
   }

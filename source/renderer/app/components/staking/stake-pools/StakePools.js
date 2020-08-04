@@ -56,6 +56,7 @@ type Props = {
 type State = {
   search: string,
   selectedList?: ?string,
+  activateFlip: boolean,
 };
 
 const initialState = {
@@ -71,8 +72,25 @@ export default class StakePools extends Component<Props, State> {
   };
   state = {
     search: '',
+    activateFlip: false,
     ...initialState,
   };
+
+  componentDidUpdate({ isRanking: isRankingPrev }) {
+    const { activateFlip } = this.state;
+    const { isRanking: isRankingNext } = this.props;
+    if (isRankingNext && !activateFlip) {
+      this.setState({
+        activateFlip: true,
+      });
+    } else if (!isRankingNext && isRankingPrev) {
+      setTimeout(() => {
+        this.setState({
+          activateFlip: false,
+        });
+      }, 450);
+    }
+  }
 
   handleSearch = (search: string) => this.setState({ search });
   handleClearSearch = () => this.setState({ search: '' });
@@ -101,7 +119,7 @@ export default class StakePools extends Component<Props, State> {
       stakePoolsDelegatingList,
       getStakePoolById,
     } = this.props;
-    const { search, selectedList } = this.state;
+    const { search, selectedList, activateFlip } = this.state;
 
     const filteredStakePoolsList: Array<StakePool> = getFilteredStakePoolsList(
       stakePoolsList,
@@ -174,6 +192,7 @@ export default class StakePools extends Component<Props, State> {
                   containerClassName="StakingWithNavigation_page"
                   onSelect={this.onDelegate}
                   numberOfStakePools={stakePoolsList.length}
+                  activateFlip={activateFlip}
                   showWithSelectButton
                 />
               </Fragment>
@@ -199,6 +218,7 @@ export default class StakePools extends Component<Props, State> {
               containerClassName="StakingWithNavigation_page"
               onSelect={this.onDelegate}
               numberOfStakePools={stakePoolsList.length}
+              activateFlip={activateFlip}
             />
           </Fragment>
         )}
