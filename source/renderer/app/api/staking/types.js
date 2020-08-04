@@ -1,6 +1,7 @@
 // @flow
 import BigNumber from 'bignumber.js';
 import StakePool from '../../domains/StakePool';
+import Wallet from '../../domains/Wallet';
 
 export type DelegationAction =
   | 'changeDelegation'
@@ -93,18 +94,30 @@ export type QuitStakePoolRequest = {
   passphrase: string,
 };
 
-export type SubmitRedeemItnRewardsRequest = {
+export type GetRedeemItnRewardsFeeRequest = {
+  address: string,
+  wallet: Wallet,
+  recoveryPhrase: Array<string>,
+};
+
+export type GetRedeemItnRewardsFeeResponse = {
+  address: string,
+  wallet: Wallet,
+  recoveryPhrase: Array<string>,
+};
+
+export type RequestRedeemItnRewardsRequest = {
   walletId: string,
   recoveryPhrase: Array<string>,
 };
 
-export type SubmitRedeemItnRewardsResponse = {
+export type RequestRedeemItnRewardsResponse = {
   rewardsTotal: number,
   transactionFees: number,
   finalTotal: number,
 };
 
-export type SubmitRedeemItnRewardsApiResponse = {
+export type RequestRedeemItnRewardsApiResponse = {
   rewardsTotal: BigNumber,
   transactionFees: BigNumber,
   finalTotal: BigNumber,

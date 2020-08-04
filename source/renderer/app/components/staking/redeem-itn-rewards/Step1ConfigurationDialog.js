@@ -167,7 +167,24 @@ export default class Step1ConfigurationDialog extends Component<Props> {
     {
       fields: {
         recoveryPhrase: {
-          value: [],
+          // @REDEEM TODO
+          value: [
+            'scatter',
+            'library',
+            'student',
+            'receive',
+            'mercy',
+            'bubble',
+            'wild',
+            'always',
+            'tiger',
+            'opera',
+            'book',
+            'era',
+            'abstract',
+            'kiwi',
+            'donate',
+          ],
           label: this.context.intl.formatMessage(messages.recoveryPhraseLabel),
           validators: ({ field }) => {
             const { intl } = this.context;
@@ -353,6 +370,23 @@ export default class Step1ConfigurationDialog extends Component<Props> {
             className={styles.recoveryPhrase}
             skin={AutocompleteSkin}
             optionHeight={50}
+            preselectedOptions={[
+              'scatter',
+              'library',
+              'student',
+              'receive',
+              'mercy',
+              'bubble',
+              'wild',
+              'always',
+              'tiger',
+              'opera',
+              'book',
+              'era',
+              'abstract',
+              'kiwi',
+              'donate',
+            ]}
           />
           <div className={styles.walletsDropdownWrapper}>
             <WalletsDropdown

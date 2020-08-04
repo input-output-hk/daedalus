@@ -79,7 +79,8 @@ import { getStakePools } from './staking/requests/getStakePools';
 import { getDelegationFee } from './staking/requests/getDelegationFee';
 import { joinStakePool } from './staking/requests/joinStakePool';
 import { quitStakePool } from './staking/requests/quitStakePool';
-import { submitRedeemItnRewards } from './staking/requests/submitRedeemItnRewards';
+// import { requestRedeemItnRewards } from './staking/requests/requestRedeemItnRewards';
+// import { getRedeemItnRewards } from './staking/requests/getRedeemItnRewards';
 
 // Utility functions
 import {
@@ -184,9 +185,11 @@ import type {
   AdaApiStakePools,
   AdaApiStakePool,
   QuitStakePoolRequest,
-  SubmitRedeemItnRewardsRequest,
-  SubmitRedeemItnRewardsResponse,
-  SubmitRedeemItnRewardsApiResponse,
+  GetRedeemItnRewardsFeeRequest,
+  GetRedeemItnRewardsFeeResponse,
+  RequestRedeemItnRewardsRequest,
+  RequestRedeemItnRewardsResponse,
+  RequestRedeemItnRewardsApiResponse,
 } from './staking/types';
 import type { StakePoolProps } from '../domains/StakePool';
 import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-node.types';
@@ -682,6 +685,7 @@ export default class AdaApi {
       walletBalance,
       availableBalance,
       isLegacy,
+      withdrawal = TransactionWithdrawal,
     } = request;
 
     try {
@@ -695,9 +699,8 @@ export default class AdaApi {
             },
           },
         ],
-        withdrawal: TransactionWithdrawal,
+        withdrawal,
       };
-
       let response: TransactionFee;
       if (isLegacy) {
         response = await getByronWalletTransactionFee(this.config, {
@@ -1401,21 +1404,50 @@ export default class AdaApi {
     }
   };
 
-  submitRedeemItnRewards = async (
-    request: SubmitRedeemItnRewardsRequest
-  ): Promise<SubmitRedeemItnRewardsApiResponse> => {
+  getRedeemItnRewardsFee = async (
+    request: GetRedeemItnRewardsFeeRequest
+  ): Promise<BigNumber> => {
+    const { address, wallet, recoveryPhrase } = request;
+    const amount = 1000;
+    const {
+      id: walletId,
+      amount: walletBalance,
+      availableAmount: availableBalance,
+    } = wallet;
+    const payload = {
+      address,
+      walletId,
+      walletBalance,
+      availableBalance,
+      amount,
+      withdrawal: recoveryPhrase,
+      isLegacy: false,
+    };
+    try {
+      const fee = await this.calculateTransactionFee(payload);
+      logger.debug('AdaApi::getRedeemItnRewardsFee success', { fee });
+      return fee;
+    } catch (error) {
+      logger.error('AdaApi::getRedeemItnRewardsFee error', { error });
+      throw new ApiError(error);
+    }
+  };
+
+  requestRedeemItnRewards = async (
+    request: RequestRedeemItnRewardsRequest
+  ): Promise<RequestRedeemItnRewardsApiResponse> => {
     const { walletId, recoveryPhrase } = request;
     try {
-      const response: SubmitRedeemItnRewardsResponse = await submitRedeemItnRewards(
+      const response: RequestRedeemItnRewardsResponse = await createTransaction(
         {
           walletId,
           recoveryPhrase,
         }
       );
-      logger.debug('AdaApi::submitRedeemItnRewards success', { response });
+      logger.debug('AdaApi::requestRedeemItnRewards success', { response });
       return _createRedeemItnRewardsFromServerData(response);
     } catch (error) {
-      logger.error('AdaApi::submitRedeemItnRewards error', { error });
+      logger.error('AdaApi::requestRedeemItnRewards error', { error });
       throw new ApiError(error);
     }
   };
@@ -2043,7 +2075,7 @@ const _createRedeemItnRewardsFromServerData = action(
     rewardsTotal,
     transactionFees,
     finalTotal,
-  }: SubmitRedeemItnRewardsResponse) => ({
+  }: RequestRedeemItnRewardsResponse) => ({
     rewardsTotal: new BigNumber(rewardsTotal),
     transactionFees: new BigNumber(transactionFees),
     finalTotal: new BigNumber(finalTotal),

@@ -40,13 +40,15 @@ export default class StakingStore extends Store {
   @observable redeemStep: ?RedeemItnRewardsStep = null;
   @observable redeemWallet: ?Wallet = null;
   @observable walletName: ?string = null;
-  @observable redeemError: ?LocalizableError = null;
   @observable rewardsTotal: number = 0;
   @observable transactionFees: number = 0;
   @observable finalTotal: number = 0;
   @observable isSubmittingReedem: boolean = false;
   @observable stakingSuccess: ?boolean = null;
   @observable stakingFailure: number = 0;
+
+  @observable configurationStepError: ?LocalizableError = null;
+  @observable resultStepError: ?LocalizableError = null;
 
   pollingStakePoolsInterval: ?IntervalID = null;
   refreshPolling: ?IntervalID = null;
@@ -104,8 +106,11 @@ export default class StakingStore extends Store {
     this.api.ada.calculateDelegationFee
   );
   // @REDEEM TODO: Proper type it when the API endpoint is implemented.
-  @observable submitRedeemItnRewardsRequest: Request<any> = new Request(
-    this.api.ada.submitRedeemItnRewards
+  @observable getRedeemItnRewardsFeeRequest: Request<any> = new Request(
+    this.api.ada.getRedeemItnRewardsFee
+  );
+  @observable requestRedeemItnRewardsRequest: Request<any> = new Request(
+    this.api.ada.requestRedeemItnRewards
   );
 
   // =================== PUBLIC API ==================== //
@@ -483,6 +488,7 @@ export default class StakingStore extends Store {
     walletId: string,
   }) => {
     this.redeemWallet = this.stores.wallets.getWalletById(walletId);
+    console.log('this.redeemWallet', this.redeemWallet);
   };
 
   @action _onRedeemStart = () => {
@@ -497,31 +503,53 @@ export default class StakingStore extends Store {
     this.isSubmittingReedem = true;
     const { redeemWallet } = this;
     if (!redeemWallet) throw new Error('Redeem wallet required');
+
+    // Calculate Fee
     try {
-      const {
-        rewardsTotal,
-        transactionFees,
-        finalTotal,
-      }: any = await this.submitRedeemItnRewardsRequest.execute({
-        walletId: redeemWallet.id,
+      const [address] = await this.stores.addresses.getAddressesByWalletId(
+        redeemWallet.id
+      );
+      const fee = await this.getRedeemItnRewardsFeeRequest.execute({
+        wallet: redeemWallet,
         recoveryPhrase,
+        address: address.id,
       });
-      runInAction('Go to the Confirmation step', () => {
-        this.isSubmittingReedem = false;
-        this.stakingSuccess = true;
-        this.rewardsTotal = rewardsTotal;
-        this.transactionFees = transactionFees;
-        this.finalTotal = finalTotal;
-        this.redeemStep = steps.CONFIRMATION;
-      });
+      console.log('fee', fee);
     } catch (error) {
+      console.log('err ------>', error);
       runInAction(() => {
-        this._resetRedeemItnRewards();
-        this.stakingSuccess = false;
-        this.redeemError = error;
-        throw error;
+        this.configurationStepError = error;
       });
+      return false;
     }
+
+    // try {
+    //   const {
+    //     rewardsTotal,
+    //     transactionFees,
+    //     finalTotal,
+    //   }: any = await this.requestRedeemItnRewardsRequest.execute({
+    //     walletId: redeemWallet.id,
+    //     recoveryPhrase,
+    //   });
+    //   runInAction('Go to the Confirmation step', () => {
+    //     this.isSubmittingReedem = false;
+    //     this.stakingSuccess = true;
+    //     this.rewardsTotal = rewardsTotal;
+    //     this.transactionFees = transactionFees;
+    //     this.finalTotal = finalTotal;
+    //     this.redeemStep = steps.CONFIRMATION;
+    //   });
+    // } catch (error) {
+    //   console.log('err ------>', error);
+    //   runInAction(() => {
+    //     this._resetRedeemItnRewards();
+    //     this.stakingSuccess = false;
+    //     this.resultStepError = error;
+    //     throw error;
+    //   });
+    // }
+    return null;
   };
 
   @action _onConfirmationContinue = ({

@@ -3,18 +3,18 @@
 /* eslint-disable */
 import type { RequestConfig } from '../../common/types';
 import type {
-  SubmitRedeemItnRewardsRequest,
-  SubmitRedeemItnRewardsResponse,
+  RequestRedeemItnRewardsRequest,
+  RequestRedeemItnRewardsResponse,
 } from '../types';
 
 const rewardsTotal = 1000;
 const transactionFees = 1000;
 const finalTotal = 1000;
 
-export const submitRedeemItnRewards = ({
+export const requestRedeemItnRewards = ({
   walletId,
   recoveryPhrase,
-}: SubmitRedeemItnRewardsRequest): Promise<SubmitRedeemItnRewardsResponse> =>
+}: RequestRedeemItnRewardsRequest): Promise<RequestRedeemItnRewardsResponse> =>
   Promise.resolve({
     rewardsTotal,
     transactionFees,
