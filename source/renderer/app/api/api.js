@@ -1408,7 +1408,7 @@ export default class AdaApi {
     request: GetRedeemItnRewardsFeeRequest
   ): Promise<BigNumber> => {
     const { address, wallet, recoveryPhrase } = request;
-    const amount = 1000;
+    const amount = 1000000;
     const {
       id: walletId,
       amount: walletBalance,
