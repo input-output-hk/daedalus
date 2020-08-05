@@ -38,7 +38,24 @@ export default class StakingStore extends Store {
 
   /* ----------  Redeem ITN Rewards  ---------- */
   @observable redeemStep: ?RedeemItnRewardsStep = null;
-  @observable redeemRecoveryPhrase: ?Array<string> = null;
+  @observable redeemRecoveryPhrase: ?Array<string> = [
+    'armed',
+    'slush',
+    'catch',
+    'hint',
+    'gossip',
+    'unveil',
+    'method',
+    'intact',
+    'insect',
+    'ostrich',
+    'actual',
+    'poet',
+    'siege',
+    'hand',
+    'magnet',
+  ];
+  // @observable redeemRecoveryPhrase: ?Array<string> = null;
   @observable redeemWallet: ?Wallet = null;
   @observable walletName: ?string = null;
   @observable transactionFees: ?BigNumber = null;

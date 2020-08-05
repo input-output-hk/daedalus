@@ -199,6 +199,12 @@ import { deleteTransaction } from './transactions/requests/deleteTransaction';
 import { WALLET_BYRON_KINDS } from '../config/walletRestoreConfig';
 import ApiError from '../domains/ApiError';
 
+import {
+  DUMMY_TRANSACTION,
+  DUMMY_MNEMONICS_NO_REWARDS,
+  DUMMY_MNEMONICS_HAS_REWARDS,
+} from './staking/dummyValuesForTesting';
+
 const { isIncentivizedTestnet } = global;
 
 export default class AdaApi {
@@ -1441,20 +1447,19 @@ export default class AdaApi {
   requestRedeemItnRewards = async (
     request: RequestRedeemItnRewardsRequest
   ): Promise<RequestRedeemItnRewardsResponse> => {
-    const {
-      address,
-      walletId,
-      spendingPassword: passphrase,
-      recoveryPhrase: withdrawal,
-    } = request;
-
-    // const DUMMY_MNEMONICS_NO_REWARDS = ['magnet', 'title', 'element', 'inch', 'filter', 'local', 'place', 'accuse', 'middle', 'tongue', 'genius', 'peasant', 'jar', 'garage', 'cube', 'where', 'century', 'speed', 'human', 'brush', 'ceiling', 'father', 'symptom', 'quick'];
-    // const DUMMY_MNEMONICS_NO_REWARDS2 = ['armed', 'slush', 'catch', 'hint', 'gossip', 'unveil', 'method', 'intact', 'insect', 'ostrich', 'actual', 'poet', 'siege', 'hand', 'magnet', ]
-    // const DUMMY_MNEMONICS_HAS_REWARDS = ['scatter', 'library', 'student', 'receive', 'mercy', 'bubble', 'wild', 'always', 'tiger', 'opera', 'book', 'era', 'abstract', 'kiwi', 'donate'];
-    // const DUMMY_MNEMONICS = DUMMY_MNEMONICS_HAS_REWARDS
-    // const withdrawal = DUMMY_MNEMONICS;
-
+    const { address, walletId, spendingPassword: passphrase } = request;
+    let { recoveryPhrase: withdrawal } = request;
     const amount = REDEEM_ITN_REWARDS_AMOUNT;
+
+    if (
+      passphrase === 'GiveMeSomeRewards' ||
+      passphrase === 'IncorrectPassword'
+    ) {
+      withdrawal = DUMMY_MNEMONICS_HAS_REWARDS;
+    } else if (passphrase === 'NoRewardsForMe') {
+      withdrawal = DUMMY_MNEMONICS_NO_REWARDS;
+    }
+
     const payload = {
       walletId,
       address,
@@ -1472,6 +1477,16 @@ export default class AdaApi {
       });
       return response;
     } catch (error) {
+      if (passphrase === 'GiveMeSomeRewards') {
+        const response = _createRedeemItnRewardsFromServerData(
+          DUMMY_TRANSACTION
+        );
+        logger.debug('AdaApi::requestRedeemItnRewards success', {
+          response,
+        });
+        return response;
+      }
+
       logger.error('AdaApi::requestRedeemItnRewards error', { error });
       throw new ApiError(error);
     }
