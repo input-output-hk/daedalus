@@ -22,6 +22,7 @@ export default class Step1ConfigurationContainer extends Component<Props> {
       redeemWallet,
       configurationStepError,
       isSubmittingReedem,
+      redeemRecoveryPhrase,
     } = stores.staking;
     const { openExternalLink } = stores.app;
     const { onConfigurationContinue, onSelectRedeemWallet } = actions.staking;
@@ -38,6 +39,7 @@ export default class Step1ConfigurationContainer extends Component<Props> {
         wallet={redeemWallet}
         wallets={allWallets}
         openExternalLink={openExternalLink}
+        recoveryPhrase={redeemRecoveryPhrase}
       />
     );
   }

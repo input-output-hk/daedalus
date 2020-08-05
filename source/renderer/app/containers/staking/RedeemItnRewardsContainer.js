@@ -32,7 +32,6 @@ export default class RedeemItnRewardsContainer extends Component<Props> {
     if (!allWallets.length)
       return <NoWalletsContainer onClose={closeRedeemDialog.trigger} />;
     const CurrentContainer = this.containers[redeemStep];
-    console.log('redeemStep', redeemStep);
 
     return (
       <>

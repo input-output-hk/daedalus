@@ -22,9 +22,7 @@ import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import Dialog from '../../widgets/Dialog';
 import styles from './Step1ConfigurationDialog.scss';
 import redeemDialogOverride from './RedeemDialogOverride.scss';
-import ReactToolboxMobxForm, {
-  handleFormErrors,
-} from '../../../utils/ReactToolboxMobxForm';
+import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { ITN_WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
@@ -142,6 +140,7 @@ type Props = {
   openExternalLink: Function,
   wallet: ?Wallet,
   suggestedMnemonics: Array<string>,
+  recoveryPhrase?: ?Array<string>,
   wallets: Array<Wallet>,
 };
 
@@ -153,38 +152,16 @@ export default class Step1ConfigurationDialog extends Component<Props> {
 
   static defaultProps = {
     error: null,
+    recoveryPhrase: [],
   };
 
   recoveryPhraseAutocomplete: Autocomplete;
-
-  componentDidUpdate() {
-    if (this.props.error) {
-      handleFormErrors('.ConfigurationDialog_error');
-    }
-  }
 
   form = new ReactToolboxMobxForm(
     {
       fields: {
         recoveryPhrase: {
-          // @REDEEM TODO
-          value: [
-            'scatter',
-            'library',
-            'student',
-            'receive',
-            'mercy',
-            'bubble',
-            'wild',
-            'always',
-            'tiger',
-            'opera',
-            'book',
-            'era',
-            'abstract',
-            'kiwi',
-            'donate',
-          ],
+          value: [...(this.props.recoveryPhrase || [])],
           label: this.context.intl.formatMessage(messages.recoveryPhraseLabel),
           validators: ({ field }) => {
             const { intl } = this.context;
@@ -237,8 +214,6 @@ export default class Step1ConfigurationDialog extends Component<Props> {
         const { recoveryPhrase } = form.values();
         onContinue({ recoveryPhrase });
       },
-      onError: () =>
-        handleFormErrors('.ConfigurationDialog_error', { focusElement: true }),
     });
   };
 
@@ -283,6 +258,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       suggestedMnemonics,
       openExternalLink,
       wallets,
+      recoveryPhrase,
       error,
     } = this.props;
     const recoveryPhraseField = form.$('recoveryPhrase');
@@ -370,23 +346,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
             className={styles.recoveryPhrase}
             skin={AutocompleteSkin}
             optionHeight={50}
-            preselectedOptions={[
-              'scatter',
-              'library',
-              'student',
-              'receive',
-              'mercy',
-              'bubble',
-              'wild',
-              'always',
-              'tiger',
-              'opera',
-              'book',
-              'era',
-              'abstract',
-              'kiwi',
-              'donate',
-            ]}
+            preselectedOptions={[...(recoveryPhrase || [])]}
           />
           <div className={styles.walletsDropdownWrapper}>
             <WalletsDropdown

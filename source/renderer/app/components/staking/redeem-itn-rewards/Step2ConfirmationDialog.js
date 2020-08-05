@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import BigNumber from 'bignumber.js';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
@@ -9,9 +10,7 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import styles from './Step2ConfirmationDialog.scss';
 import redeemDialogOverride from './RedeemDialogOverride.scss';
-import ReactToolboxMobxForm, {
-  handleFormErrors,
-} from '../../../utils/ReactToolboxMobxForm';
+import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import Wallet from '../../../domains/Wallet';
 import { formattedWalletAmount } from '../../../utils/formatters';
 import { isValidSpendingPassword } from '../../../utils/validations';
@@ -69,7 +68,7 @@ const messages = defineMessages({
 
 type Props = {
   wallet: Wallet,
-  transactionFees: number,
+  transactionFees: BigNumber,
   onContinue: Function,
   onClose: Function,
   onBack: Function,
@@ -133,10 +132,6 @@ export default class Step2ConfirmationDialog extends Component<Props> {
         const { onContinue } = this.props;
         onContinue({ spendingPassword });
       },
-      onError: () =>
-        handleFormErrors('.Step2ConfirmationDialog_error', {
-          focusElement: true,
-        }),
     });
   };
 

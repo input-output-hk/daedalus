@@ -79,8 +79,6 @@ import { getStakePools } from './staking/requests/getStakePools';
 import { getDelegationFee } from './staking/requests/getDelegationFee';
 import { joinStakePool } from './staking/requests/joinStakePool';
 import { quitStakePool } from './staking/requests/quitStakePool';
-// import { requestRedeemItnRewards } from './staking/requests/requestRedeemItnRewards';
-// import { getRedeemItnRewards } from './staking/requests/getRedeemItnRewards';
 
 // Utility functions
 import {
@@ -100,6 +98,7 @@ import { filterLogData } from '../../../common/utils/logging';
 
 // Config constants
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
+import { REDEEM_ITN_REWARDS_AMOUNT } from '../config/stakingConfig';
 import {
   ADA_CERTIFICATE_MNEMONIC_LENGTH,
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
@@ -189,7 +188,6 @@ import type {
   GetRedeemItnRewardsFeeResponse,
   RequestRedeemItnRewardsRequest,
   RequestRedeemItnRewardsResponse,
-  RequestRedeemItnRewardsApiResponse,
 } from './staking/types';
 import type { StakePoolProps } from '../domains/StakePool';
 import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-node.types';
@@ -622,7 +620,14 @@ export default class AdaApi {
     logger.debug('AdaApi::createTransaction called', {
       parameters: filterLogData(request),
     });
-    const { walletId, address, amount, passphrase, isLegacy } = request;
+    const {
+      walletId,
+      address,
+      amount,
+      passphrase,
+      isLegacy,
+      withdrawal = TransactionWithdrawal,
+    } = request;
 
     try {
       const data = {
@@ -636,7 +641,7 @@ export default class AdaApi {
           },
         ],
         passphrase,
-        withdrawal: TransactionWithdrawal,
+        withdrawal,
       };
 
       let response: Transaction;
@@ -1406,9 +1411,9 @@ export default class AdaApi {
 
   getRedeemItnRewardsFee = async (
     request: GetRedeemItnRewardsFeeRequest
-  ): Promise<BigNumber> => {
-    const { address, wallet, recoveryPhrase } = request;
-    const amount = 1000000;
+  ): Promise<GetRedeemItnRewardsFeeResponse> => {
+    const { address, wallet, recoveryPhrase: withdrawal } = request;
+    const amount = REDEEM_ITN_REWARDS_AMOUNT;
     const {
       id: walletId,
       amount: walletBalance,
@@ -1420,7 +1425,7 @@ export default class AdaApi {
       walletBalance,
       availableBalance,
       amount,
-      withdrawal: recoveryPhrase,
+      withdrawal,
       isLegacy: false,
     };
     try {
@@ -1435,17 +1440,37 @@ export default class AdaApi {
 
   requestRedeemItnRewards = async (
     request: RequestRedeemItnRewardsRequest
-  ): Promise<RequestRedeemItnRewardsApiResponse> => {
-    const { walletId, recoveryPhrase } = request;
+  ): Promise<RequestRedeemItnRewardsResponse> => {
+    const {
+      address,
+      walletId,
+      spendingPassword: passphrase,
+      recoveryPhrase: withdrawal,
+    } = request;
+
+    // const DUMMY_MNEMONICS_NO_REWARDS = ['magnet', 'title', 'element', 'inch', 'filter', 'local', 'place', 'accuse', 'middle', 'tongue', 'genius', 'peasant', 'jar', 'garage', 'cube', 'where', 'century', 'speed', 'human', 'brush', 'ceiling', 'father', 'symptom', 'quick'];
+    // const DUMMY_MNEMONICS_NO_REWARDS2 = ['armed', 'slush', 'catch', 'hint', 'gossip', 'unveil', 'method', 'intact', 'insect', 'ostrich', 'actual', 'poet', 'siege', 'hand', 'magnet', ]
+    // const DUMMY_MNEMONICS_HAS_REWARDS = ['scatter', 'library', 'student', 'receive', 'mercy', 'bubble', 'wild', 'always', 'tiger', 'opera', 'book', 'era', 'abstract', 'kiwi', 'donate'];
+    // const DUMMY_MNEMONICS = DUMMY_MNEMONICS_HAS_REWARDS
+    // const withdrawal = DUMMY_MNEMONICS;
+
+    const amount = REDEEM_ITN_REWARDS_AMOUNT;
+    const payload = {
+      walletId,
+      address,
+      amount,
+      passphrase,
+      isLegacy: false,
+      withdrawal,
+    };
+
     try {
-      const response: RequestRedeemItnRewardsResponse = await createTransaction(
-        {
-          walletId,
-          recoveryPhrase,
-        }
-      );
-      logger.debug('AdaApi::requestRedeemItnRewards success', { response });
-      return _createRedeemItnRewardsFromServerData(response);
+      const transaction = await this.createTransaction(payload);
+      const response = _createRedeemItnRewardsFromServerData(transaction);
+      logger.debug('AdaApi::requestRedeemItnRewards success', {
+        response,
+      });
+      return response;
     } catch (error) {
       logger.error('AdaApi::requestRedeemItnRewards error', { error });
       throw new ApiError(error);
@@ -2071,13 +2096,10 @@ const _createStakePoolFromServerData = action(
 
 const _createRedeemItnRewardsFromServerData = action(
   'AdaApi::_createRedeemItnRewardsFromServerData',
-  ({
-    rewardsTotal,
-    transactionFees,
-    finalTotal,
-  }: RequestRedeemItnRewardsResponse) => ({
-    rewardsTotal: new BigNumber(rewardsTotal),
-    transactionFees: new BigNumber(transactionFees),
-    finalTotal: new BigNumber(finalTotal),
-  })
+  (transaction: Transaction) => {
+    const { quantity, unit } = get(transaction, 'withdrawals[0].amount');
+    return unit === WalletUnits.LOVELACE
+      ? new BigNumber(quantity).dividedBy(LOVELACES_PER_ADA)
+      : new BigNumber(quantity);
+  }
 );

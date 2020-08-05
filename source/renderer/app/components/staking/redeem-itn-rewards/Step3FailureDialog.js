@@ -44,8 +44,6 @@ const messages = defineMessages({
 type Props = {
   onClose: Function,
   onBack: Function,
-  // @REDEEM TODO: Remove when the API endpoint is implemented
-  stakingFailure: number,
 };
 
 @observer
@@ -56,7 +54,7 @@ export default class Step3FailureDialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onClose, onBack, stakingFailure } = this.props;
+    const { onClose, onBack } = this.props;
 
     const actions = {
       direction: 'column',
@@ -75,10 +73,7 @@ export default class Step3FailureDialog extends Component<Props> {
       ],
     };
 
-    // #REDEEM TODO: remove when the API is ready
-    let description = messages.description1NoRewards;
-    if (stakingFailure === 2) description = messages.description2InvalidWallet;
-    if (stakingFailure === 3) description = messages.description3Generic;
+    const description = messages.description1NoRewards;
 
     const closeButton = (
       <DialogCloseButton

@@ -97,7 +97,7 @@ export type GetTransactionFeeRequest = {
   walletBalance: BigNumber,
   availableBalance: BigNumber,
   isLegacy: boolean,
-  withdrawal?: string | Array<string>,
+  withdrawal?: 'self' | Array<string>,
 };
 
 export type CreateTransactionRequest = {
@@ -106,6 +106,7 @@ export type CreateTransactionRequest = {
   amount: number,
   passphrase: string,
   isLegacy: boolean,
+  withdrawal?: 'self' | Array<string>,
 };
 
 export type DeleteTransactionRequest = {

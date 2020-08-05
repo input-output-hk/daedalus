@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import BigNumber from 'bignumber.js';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
@@ -20,7 +21,7 @@ const messages = defineMessages({
   description: {
     id: 'staking.redeemItnRewards.step3.success.description',
     defaultMessage:
-      '!!!You have successfully redeemed <b>{finalTotal}</b> to your <b>{walletName}</b> wallet. This transaction incurred <b>{transactionFees}</b> in transaction fees',
+      '!!!You have successfully redeemed <b>{redeemedRewards}</b> to your <b>{walletName}</b> wallet. This transaction incurred <b>{transactionFees}</b> in transaction fees',
     description: 'description for Redeem Incentivized Testnet - Step 3',
   },
   openWalletButtonLabel: {
@@ -37,8 +38,8 @@ const messages = defineMessages({
 
 type Props = {
   wallet: Wallet,
-  transactionFees: number,
-  finalTotal: number,
+  transactionFees: BigNumber,
+  redeemedRewards: BigNumber,
   onContinue: Function,
   onClose: Function,
   onPDFDownload?: Function,
@@ -55,7 +56,7 @@ export default class Step3SuccessDialog extends Component<Props> {
     const {
       wallet,
       transactionFees,
-      finalTotal,
+      redeemedRewards,
       onContinue,
       onPDFDownload,
       onClose,
@@ -101,7 +102,7 @@ export default class Step3SuccessDialog extends Component<Props> {
             values={{
               walletName,
               transactionFees: formattedWalletAmount(transactionFees),
-              finalTotal: formattedWalletAmount(finalTotal),
+              redeemedRewards: formattedWalletAmount(redeemedRewards),
             }}
           />
         </div>

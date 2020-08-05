@@ -100,25 +100,13 @@ export type GetRedeemItnRewardsFeeRequest = {
   recoveryPhrase: Array<string>,
 };
 
-export type GetRedeemItnRewardsFeeResponse = {
-  address: string,
-  wallet: Wallet,
-  recoveryPhrase: Array<string>,
-};
+export type GetRedeemItnRewardsFeeResponse = BigNumber;
 
 export type RequestRedeemItnRewardsRequest = {
+  address: string,
   walletId: string,
+  spendingPassword: string,
   recoveryPhrase: Array<string>,
 };
 
-export type RequestRedeemItnRewardsResponse = {
-  rewardsTotal: number,
-  transactionFees: number,
-  finalTotal: number,
-};
-
-export type RequestRedeemItnRewardsApiResponse = {
-  rewardsTotal: BigNumber,
-  transactionFees: BigNumber,
-  finalTotal: BigNumber,
-};
+export type RequestRedeemItnRewardsResponse = BigNumber;
