@@ -18,14 +18,17 @@ export default class Step1ConfigurationContainer extends Component<Props> {
   render() {
     const { onClose, onBack, stores, actions } = this.props;
     const { allWallets } = stores.wallets;
-    const { redeemWallet, configurationStepError } = stores.staking;
+    const {
+      redeemWallet,
+      configurationStepError,
+      isSubmittingReedem,
+    } = stores.staking;
     const { openExternalLink } = stores.app;
     const { onConfigurationContinue, onSelectRedeemWallet } = actions.staking;
-    const isSubmitting = false;
     return (
       <Step1ConfigurationDialog
         error={configurationStepError}
-        isSubmitting={isSubmitting}
+        isSubmitting={isSubmittingReedem}
         mnemonicValidator={isValidMnemonic}
         onBack={onBack}
         onClose={onClose}

@@ -412,8 +412,6 @@
   "staking.redeemItnRewards.step1.walletsDropdownLabel": "報酬の振込先：",
   "staking.redeemItnRewards.step2.backButtonLabel": "戻る",
   "staking.redeemItnRewards.step2.continueButtonLabel": "報酬の還元を確認する",
-  "staking.redeemItnRewards.step2.finalTotal": "振込総額",
-  "staking.redeemItnRewards.step2.rewardsTotal": "報酬総額",
   "staking.redeemItnRewards.step2.spendingPasswordLabel": "ウォレット送信時パスワード<em>（<b>{walletName}</b>ウォレット）</em>",
   "staking.redeemItnRewards.step2.spendingPasswordPlaceholder": "パスワード",
   "staking.redeemItnRewards.step2.title": "報酬の還元を確認する",

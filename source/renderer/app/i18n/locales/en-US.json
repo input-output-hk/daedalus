@@ -412,8 +412,6 @@
   "staking.redeemItnRewards.step1.walletsDropdownLabel": "Redeem rewards to:",
   "staking.redeemItnRewards.step2.backButtonLabel": "Back",
   "staking.redeemItnRewards.step2.continueButtonLabel": "Confirm rewards redemption",
-  "staking.redeemItnRewards.step2.finalTotal": "Final total",
-  "staking.redeemItnRewards.step2.rewardsTotal": "Rewards total",
   "staking.redeemItnRewards.step2.spendingPasswordLabel": "Wallet spending password <em>(<b>{walletName}</b> wallet)</em>",
   "staking.redeemItnRewards.step2.spendingPasswordPlaceholder": "Password",
   "staking.redeemItnRewards.step2.title": "Confirm rewards redemption",

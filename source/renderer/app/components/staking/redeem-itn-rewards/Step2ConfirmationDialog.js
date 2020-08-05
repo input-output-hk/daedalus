@@ -36,20 +36,10 @@ const messages = defineMessages({
     defaultMessage: '!!!{walletName} <span>wallet</span>',
     description: 'walletToName for Redeem Incentivized Testnet - Step 2',
   },
-  rewardsTotal: {
-    id: 'staking.redeemItnRewards.step2.rewardsTotal',
-    defaultMessage: '!!!Rewards total',
-    description: 'rewardsTotal for Redeem Incentivized Testnet - Step 2',
-  },
   transactionFees: {
     id: 'staking.redeemItnRewards.step2.transactionFees',
     defaultMessage: '!!!Transaction fees',
     description: 'transactionFees for Redeem Incentivized Testnet - Step 2',
-  },
-  finalTotal: {
-    id: 'staking.redeemItnRewards.step2.finalTotal',
-    defaultMessage: '!!!Final total',
-    description: 'finalTotal for Redeem Incentivized Testnet - Step 2',
   },
   spendingPasswordLabel: {
     id: 'staking.redeemItnRewards.step2.spendingPasswordLabel',
@@ -79,9 +69,7 @@ const messages = defineMessages({
 
 type Props = {
   wallet: Wallet,
-  rewardsTotal: number,
   transactionFees: number,
-  finalTotal: number,
   onContinue: Function,
   onClose: Function,
   onBack: Function,
@@ -159,9 +147,7 @@ export default class Step2ConfirmationDialog extends Component<Props> {
     const { form } = this;
     const {
       wallet,
-      rewardsTotal,
       transactionFees,
-      finalTotal,
       onContinue,
       onClose,
       onBack,
@@ -221,24 +207,10 @@ export default class Step2ConfirmationDialog extends Component<Props> {
             />
           </div>
         </div>
-        <div className={styles.rewardsTotal}>
-          <div>{intl.formatMessage(messages.rewardsTotal)}</div>
-          <div>
-            <b>{formattedWalletAmount(rewardsTotal, false)}&nbsp;</b>
-            {intl.formatMessage(globalMessages.unitAda)}
-          </div>
-        </div>
         <div className={styles.transactionFees}>
           <div>{intl.formatMessage(messages.transactionFees)}</div>
           <div>
             <b>{formattedWalletAmount(transactionFees, false)}&nbsp;</b>
-            {intl.formatMessage(globalMessages.unitAda)}
-          </div>
-        </div>
-        <div className={styles.finalTotal}>
-          <div>{intl.formatMessage(messages.finalTotal)}</div>
-          <div>
-            <b>{formattedWalletAmount(finalTotal, false)}&nbsp;</b>
             {intl.formatMessage(globalMessages.unitAda)}
           </div>
         </div>

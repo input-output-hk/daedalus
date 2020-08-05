@@ -503,52 +503,25 @@ export default class StakingStore extends Store {
     this.isSubmittingReedem = true;
     const { redeemWallet } = this;
     if (!redeemWallet) throw new Error('Redeem wallet required');
-
-    // Calculate Fee
     try {
       const [address] = await this.stores.addresses.getAddressesByWalletId(
         redeemWallet.id
       );
-      const fee = await this.getRedeemItnRewardsFeeRequest.execute({
+      const transactionFees = await this.getRedeemItnRewardsFeeRequest.execute({
         wallet: redeemWallet,
         recoveryPhrase,
         address: address.id,
       });
-      console.log('fee', fee);
+      this.stakingSuccess = true;
+      this.transactionFees = transactionFees;
+      this.redeemStep = steps.CONFIRMATION;
     } catch (error) {
-      console.log('err ------>', error);
       runInAction(() => {
         this.configurationStepError = error;
+        this.isSubmittingReedem = false;
       });
       return false;
     }
-
-    // try {
-    //   const {
-    //     rewardsTotal,
-    //     transactionFees,
-    //     finalTotal,
-    //   }: any = await this.requestRedeemItnRewardsRequest.execute({
-    //     walletId: redeemWallet.id,
-    //     recoveryPhrase,
-    //   });
-    //   runInAction('Go to the Confirmation step', () => {
-    //     this.isSubmittingReedem = false;
-    //     this.stakingSuccess = true;
-    //     this.rewardsTotal = rewardsTotal;
-    //     this.transactionFees = transactionFees;
-    //     this.finalTotal = finalTotal;
-    //     this.redeemStep = steps.CONFIRMATION;
-    //   });
-    // } catch (error) {
-    //   console.log('err ------>', error);
-    //   runInAction(() => {
-    //     this._resetRedeemItnRewards();
-    //     this.stakingSuccess = false;
-    //     this.resultStepError = error;
-    //     throw error;
-    //   });
-    // }
     return null;
   };
 
