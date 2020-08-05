@@ -512,9 +512,12 @@ export default class StakingStore extends Store {
         recoveryPhrase,
         address: address.id,
       });
-      this.stakingSuccess = true;
-      this.transactionFees = transactionFees;
-      this.redeemStep = steps.CONFIRMATION;
+      runInAction(() => {
+        this.stakingSuccess = true;
+        this.transactionFees = transactionFees;
+        this.redeemStep = steps.CONFIRMATION;
+        this.isSubmittingReedem = false;
+      });
     } catch (error) {
       runInAction(() => {
         this.configurationStepError = error;
