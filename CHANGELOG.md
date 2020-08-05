@@ -16,6 +16,7 @@ Changelog
 ### Chores
 
 - Updated `cardano-wallet` to revision `03b7568b` ([PR 2119](https://github.com/input-output-hk/daedalus/pull/2119))
+- Updated `cardano-wallet` to revision `e1890dbd` ([PR 2133](https://github.com/input-output-hk/daedalus/pull/2133))
 
 ## 2.0.0
 
