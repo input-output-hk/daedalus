@@ -530,6 +530,7 @@ export default class StakingStore extends Store {
       runInAction(() => {
         this.redeemRecoveryPhrase = recoveryPhrase;
         this.transactionFees = transactionFees;
+        this.confirmationStepError = null;
         this.redeemStep = steps.CONFIRMATION;
         this.configurationStepError = null;
         this.isSubmittingReedem = false;
