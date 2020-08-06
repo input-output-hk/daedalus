@@ -12,25 +12,58 @@
     position: static;
   }
   :global {
+    // Background Color Transparent
+    .AutocompleteOverrides_autocompleteContent,
+    .SimpleInput_customValueBlock,
+    .SimpleInput_customValueWrapper,
+    .SimpleInput_input,
+    .SimpleInput_input:focus,
+    .SimpleInput_input:hover,
+    .SimpleLink_root,
+    .SimpleOptions_option {
+      background-color: transparent !important;
+    }
+    // Background Color Darker
+    .DialogCloseButton_component,
+    .ScrollbarsCustom-Content,
+    .SimpleOptions_highlightedOption {
+      background-color: var(
+        --theme-dialog-fullsize-background-color
+      ) !important;
+    }
+    // Background Light
+    .SelectOverrides_selectInput,
+    .SelectOverrides_selectInput:hover {
+      &:after {
+        background-color: var(--theme-dialog-fullsize-text-color);
+      }
+    }
+
+    // Text color
+    .Dialog_content,
     .Dialog_dialogWrapper,
     .Dialog_title,
-    .Dialog_content,
-    .SimpleFormField_label,
     .SimpleCheckbox_label,
+    .SimpleFormField_label,
+    .SimpleInput_input::placeholder,
     .SimpleLink_root {
       color: var(--theme-dialog-fullsize-text-color);
     }
-    .Dialog_dialogWrapper {
-      position: static;
-    }
+    // Border Color
+    .AutocompleteOverrides_autocompleteContent,
+    .SelectOverrides_selectInput input,
+    .SimpleInput_customValueBlock,
+    .SimpleInput_customValueWrapper,
     .SimpleLink_root {
       border-color: var(--theme-dialog-fullsize-text-color) !important;
       &:after {
         background-color: var(--theme-dialog-fullsize-text-color) !important;
       }
     }
+    .Dialog_dialogWrapper {
+      position: static;
+    }
     .DialogCloseButton_component {
-      background-color: var(--theme-dialog-fullsize-text-color);
       border-radius: 50%;
       height: 44px;
       opacity: 0.5;
@@ -42,11 +75,15 @@
         opacity: 1;
       }
     }
-    .AutocompleteOverrides_autocompleteContent,
-    .SimpleInput_customValueWrapper,
-    .SimpleInput_customValueBlock {
-      background: var(--theme-dialog-fullsize-field-background-color);
+    // SVG Fill color
+    .DialogCloseButton_component,
+    .DialogCloseButton_component:hover,
+    .DialogCloseButton_disabled {
+      svg polygon {
+        fill: var(--theme-dialog-fullsize-text-color);
+      }
     }
+
     .CheckboxOverrides_check {
       background-color: transparent;
       border-color: var(--theme-splash-network-overlay-button-border-color);
@@ -61,6 +98,13 @@
           border-color: var(--theme-dialog-fullsize-background-color);
         }
       }
+    }
+    .WalletsDropdownOption_label,
+    .WalletsDropdownOption_detail {
+      color: var(--theme-splash-network-overlay-button-text-color) !important;
+      // &:placeholder {
+      //   color: var(--theme-splash-network-overlay-button-text-color) !important;
+      // }
     }
     button.primary {
       background-color: var(
