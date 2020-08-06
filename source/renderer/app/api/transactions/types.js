@@ -125,7 +125,6 @@ export type TransactionParams = {
   data: {
     payments: Array<TransactionPaymentData>,
     passphrase: string,
-    withdrawal: TransactionWithdrawalType,
   },
 };
 
@@ -138,7 +137,6 @@ export type GetTransactionFeeParams = {
   walletId: string,
   data: {
     payments: Array<TransactionPaymentData>,
-    withdrawal: TransactionWithdrawalType,
   },
 };
 
