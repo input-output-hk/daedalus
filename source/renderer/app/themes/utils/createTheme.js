@@ -482,6 +482,7 @@ export const createDaedalusComponentsTheme = (
       '--theme-dialog-fullsize-background-color': `${chroma(
         background.secondary.regular
       ).alpha(0.96)}`,
+      '--theme-dialog-fullsize-background-color-opaque': `${background.secondary.regular}`,
       '--theme-dialog-fullsize-button-background-color': `${text.secondary}`,
       '--theme-dialog-fullsize-button-background-color-hover': `${background.secondary.dark}`,
       '--theme-dialog-fullsize-button-border-color': `${text.secondary}`,

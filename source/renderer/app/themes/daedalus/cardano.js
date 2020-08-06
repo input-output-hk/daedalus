@@ -218,6 +218,7 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-dialog-text-color': '#5e6066',
     '--theme-dialog-border-color': '#dfe4e8',
     '--theme-dialog-fullsize-background-color': 'rgba(32, 34, 37, 0.96)',
+    '--theme-dialog-fullsize-background-color-opaque': '#2b2d30',
     '--theme-dialog-fullsize-button-background-color': '#ffffff',
     '--theme-dialog-fullsize-button-background-color-hover':
       'rgba(0, 0, 0, 0.1)',

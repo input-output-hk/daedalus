@@ -200,7 +200,7 @@ export default class Step2ConfirmationDialog extends Component<Props> {
           <div>{intl.formatMessage(messages.transactionFees)}</div>
           <div>
             <b>{formattedWalletAmount(transactionFees, false)}&nbsp;</b>
-            {intl.formatMessage(globalMessages.unitAda)}
+            <em>{intl.formatMessage(globalMessages.unitAda)}</em>
           </div>
         </div>
 

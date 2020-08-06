@@ -25,10 +25,15 @@
     }
     // Background Color Darker
     .DialogCloseButton_component,
-    .ScrollbarsCustom-Content,
     .SimpleOptions_highlightedOption {
       background-color: var(
-        --theme-dialog-fullsize-background-color
+        --theme-dialog-fullsize-field-background-color
+      ) !important;
+    }
+    // Background Opaque (se same as the normal background, without the opacity)
+    .SimpleBubble_bubble {
+      background-color: var(
+        --theme-dialog-fullsize-background-color-opaque
       ) !important;
     }
     // Background Light
@@ -38,27 +43,42 @@
         background-color: var(--theme-dialog-fullsize-text-color);
       }
     }
-
-    // Text color
+    // Text Title color
+    .Dialog_title {
+      color: var(--theme-dialog-fullsize-title-text-color);
+    }
+    // Text color default
     .Dialog_content,
     .Dialog_dialogWrapper,
-    .Dialog_title,
     .SimpleCheckbox_label,
     .SimpleFormField_label,
+    .SimpleInput_input,
     .SimpleInput_input::placeholder,
+    .SimpleInput_input:focus,
+    .SimpleInput_input:hover,
     .SimpleLink_root {
       color: var(--theme-dialog-fullsize-text-color);
+    }
+    // Text color highlight
+    .Dialog_content b,
+    .SimpleOptions_option,
+    .SimpleLink_root {
+      color: var(--theme-dialog-fullsize-text-highlight-color);
+      &:after {
+        background-color: var(
+          --theme-dialog-fullsize-text-highlight-color
+        ) !important;
+      }
     }
     // Border Color
     .AutocompleteOverrides_autocompleteContent,
     .SelectOverrides_selectInput input,
     .SimpleInput_customValueBlock,
-    .SimpleInput_customValueWrapper,
+    .SimpleInput_customValueWrapper .SimpleInput_input,
+    .SimpleInput_input:focus,
+    .SimpleInput_input:hover,
     .SimpleLink_root {
       border-color: var(--theme-dialog-fullsize-text-color) !important;
-      &:after {
-        background-color: var(--theme-dialog-fullsize-text-color) !important;
-      }
     }
     .Dialog_dialogWrapper {
       position: static;

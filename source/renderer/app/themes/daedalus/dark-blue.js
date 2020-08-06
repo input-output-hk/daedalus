@@ -220,6 +220,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-dialog-text-color': '#e9f4fe',
     '--theme-dialog-border-color': '#334152',
     '--theme-dialog-fullsize-background-color': 'rgba(38, 51, 69, 0.96)',
+    '--theme-dialog-fullsize-background-color-opaque': '#303d4d',
     '--theme-dialog-fullsize-button-background-color': '#fafbfc',
     '--theme-dialog-fullsize-button-background-color-hover':
       'rgba(0, 0, 0, 0.1)',
@@ -230,9 +231,9 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-dialog-fullsize-button-label-color-hover': 'rgba(38, 51, 69, 1)',
     '--theme-dialog-fullsize-button-text-color-hover': '#263345',
     '--theme-dialog-fullsize-field-background-color': 'rgba(0,0,0, 0.1)',
-    '--theme-dialog-fullsize-text-color': 'rgba(250, 251, 252, 0.7)',
-    '--theme-dialog-fullsize-text-highlight-color': '#fafbfc',
-    '--theme-dialog-fullsize-title-text-color': '#fafbfc',
+    '--theme-dialog-fullsize-text-color': 'rgba(255, 255, 255, 0.7)',
+    '--theme-dialog-fullsize-text-highlight-color': '#ffffff',
+    '--theme-dialog-fullsize-title-text-color': '#ffffff',
   },
   errors: {
     '--theme-color-error': '#ea4c5b',

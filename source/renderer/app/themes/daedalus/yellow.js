@@ -34,7 +34,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-automatic-update-overlay-button-border-color': '#2d2d2d',
     '--theme-automatic-update-overlay-text-color': 'rgba(45, 45, 45, 0.7)',
     '--theme-automatic-update-overlay-text-highlight-color':
-      '#rgba(45, 45, 45, 1)',
+      'rgba(45, 45, 45, 1)',
     '--theme-automatic-update-overlay-title-text-color': 'rgba(45, 45, 45, 1)',
     '--theme-automatic-update-overlay-button-label-color':
       'rgba(45, 45, 45, 1)',
@@ -208,6 +208,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-dialog-text-color': '#2d2d2d',
     '--theme-dialog-border-color': 'rgba(45, 45, 45, 0.2)',
     '--theme-dialog-fullsize-background-color': 'rgba(255, 185, 35, 0.96)',
+    '--theme-dialog-fullsize-background-color-opaque': '#fdbc31',
     '--theme-dialog-fullsize-button-background-color-hover':
       'rgba(0, 0, 0, 0.1)',
     '--theme-dialog-fullsize-button-background-color': '#2d2d2d',
@@ -219,7 +220,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-dialog-fullsize-button-text-color-hover': '#ffffff',
     '--theme-dialog-fullsize-field-background-color': 'rgba(0,0,0, 0.1)',
     '--theme-dialog-fullsize-text-color': 'rgba(45, 45, 45, 0.7)',
-    '--theme-dialog-fullsize-text-highlight-color': '#rgba(45, 45, 45, 1)',
+    '--theme-dialog-fullsize-text-highlight-color': '#2d2d2d',
     '--theme-dialog-fullsize-title-text-color': 'rgba(45, 45, 45, 1)',
   },
   errors: {
@@ -324,8 +325,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-manual-update-overlay-button-text-color-hover': '#ffffff',
     '--theme-manual-update-overlay-button-border-color': '#2d2d2d',
     '--theme-manual-update-overlay-text-color': 'rgba(45, 45, 45, 0.7)',
-    '--theme-manual-update-overlay-text-highlight-color':
-      '#rgba(45, 45, 45, 1)',
+    '--theme-manual-update-overlay-text-highlight-color': 'rgba(45, 45, 45, 1)',
     '--theme-manual-update-overlay-title-text-color': 'rgba(45, 45, 45, 1)',
     '--theme-manual-update-overlay-button-label-color': 'rgba(45, 45, 45, 1)',
     '--theme-manual-update-overlay-button-label-color-hover': '#ffffff',
