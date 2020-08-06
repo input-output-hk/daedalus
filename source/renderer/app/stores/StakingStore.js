@@ -507,6 +507,8 @@ export default class StakingStore extends Store {
   };
 
   @action _onRedeemStart = () => {
+    this.configurationStepError = null;
+    this.confirmationStepError = null;
     this.redeemStep = steps.CONFIGURATION;
   };
 
@@ -600,6 +602,8 @@ export default class StakingStore extends Store {
     this.transactionFees = null;
     this.redeemedRewards = null;
     this.redeemRecoveryPhrase = null;
+    this.configurationStepError = null;
+    this.confirmationStepError = null;
   };
 
   @action _closeRedeemDialog = () => {

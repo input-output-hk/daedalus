@@ -258,8 +258,13 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       openExternalLink,
       wallets,
       recoveryPhrase,
-      error,
     } = this.props;
+    let { error } = this.props;
+    if (
+      error &&
+      error.id === 'api.errors.NotEnoughFundsForTransactionFeesError'
+    )
+      error = messages.walletsDropdownError;
     const recoveryPhraseField = form.$('recoveryPhrase');
     const walletsDropdownField = form.$('walletsDropdown');
     const checkboxAcceptance1Field = form.$('checkboxAcceptance1');
@@ -324,8 +329,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
               values={{
                 itnLink,
               }}
-            />
-            &nbsp;
+            />{' '}
             <FormattedHTMLMessage {...messages.description2} />
           </p>
           <Autocomplete
