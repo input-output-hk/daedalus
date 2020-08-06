@@ -7,7 +7,6 @@ import SVGInline from 'react-svg-inline';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import styles from './Step3SuccessDialog.scss';
-import redeemDialogOverride from './RedeemDialogOverride.scss';
 import Wallet from '../../../domains/Wallet';
 import { formattedWalletAmount } from '../../../utils/formatters';
 import tadaImage from '../../../assets/images/tada-ic.inline.svg';
@@ -79,20 +78,15 @@ export default class Step3SuccessDialog extends Component<Props> {
         onClick: onPDFDownload,
       });
 
-    const closeButton = (
-      <DialogCloseButton
-        className={redeemDialogOverride.closeButton}
-        onClose={onClose}
-      />
-    );
+    const closeButton = <DialogCloseButton onClose={onClose} />;
 
     return (
       <Dialog
         onClose={onClose}
         actions={actions}
         closeButton={closeButton}
-        customThemeOverrides={redeemDialogOverride}
         closeOnOverlayClick={false}
+        fullSize
       >
         <div className={styles.title}>{intl.formatMessage(messages.title)}</div>
         <SVGInline svg={tadaImage} className={styles.tadaImage} />

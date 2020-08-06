@@ -21,7 +21,6 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import Dialog from '../../widgets/Dialog';
 import styles from './Step1ConfigurationDialog.scss';
-import redeemDialogOverride from './RedeemDialogOverride.scss';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
@@ -306,12 +305,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       />
     );
 
-    const closeButton = (
-      <DialogCloseButton
-        className={redeemDialogOverride.closeButton}
-        onClose={onClose}
-      />
-    );
+    const closeButton = <DialogCloseButton onClose={onClose} />;
 
     return (
       <Dialog
@@ -320,8 +314,8 @@ export default class Step1ConfigurationDialog extends Component<Props> {
         onContinue={onContinue}
         onClose={onClose}
         closeButton={closeButton}
-        customThemeOverrides={redeemDialogOverride}
         closeOnOverlayClick={false}
+        fullSize
       >
         <div className={styles.component}>
           <p className={styles.description}>

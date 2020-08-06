@@ -9,7 +9,6 @@ import vjf from 'mobx-react-form/lib/validators/VJF';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import styles from './Step2ConfirmationDialog.scss';
-import redeemDialogOverride from './RedeemDialogOverride.scss';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import Wallet from '../../../domains/Wallet';
 import { formattedWalletAmount } from '../../../utils/formatters';
@@ -173,12 +172,7 @@ export default class Step2ConfirmationDialog extends Component<Props> {
       ],
     };
 
-    const closeButton = (
-      <DialogCloseButton
-        className={redeemDialogOverride.closeButton}
-        onClose={onClose}
-      />
-    );
+    const closeButton = <DialogCloseButton onClose={onClose} />;
 
     return (
       <Dialog
@@ -188,8 +182,8 @@ export default class Step2ConfirmationDialog extends Component<Props> {
         onClose={onClose}
         closeButton={closeButton}
         onBack={onBack}
-        customThemeOverrides={redeemDialogOverride}
         closeOnOverlayClick={false}
+        fullSize
       >
         <div className={styles.to}>
           <div>{intl.formatMessage(messages.walletToLabel)}</div>
