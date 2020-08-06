@@ -62,9 +62,8 @@ export const Step2ConfirmationDialogStory = () => {
     <Step2ConfirmationDialog
       key="Step2ConfirmationDialog"
       wallet={redeemWallet}
-      rewardsTotal={new BigNumber(number('rewardsTotal', 100000))}
       transactionFees={new BigNumber(number('transactionFees', 100000))}
-      finalTotal={new BigNumber(number('finalTotal', 100000))}
+      redeemedRewards={new BigNumber(number('redeemedRewards', 100000))}
       onContinue={action('onContinue')}
       onClose={action('onClose')}
       onBack={action('onBack')}
@@ -86,27 +85,14 @@ export const Step3SuccessDialogStory = () => {
       key="Step2ConfirmationDialog"
       wallet={redeemWallet}
       transactionFees={new BigNumber(number('transactionFees', 100000))}
-      finalTotal={new BigNumber(number('finalTotal', 100000))}
+      redeemedRewards={new BigNumber(number('redeemedRewards', 100000))}
       onContinue={action('onContinue')}
       onClose={action('onClose')}
     />
   );
 };
 export const Step3FailureDialogStory = () => {
-  const stakingFailure = select(
-    'Error type',
-    {
-      'No rewards found': 1,
-      'Invalid recovery phrase': 2,
-      Generic: 3,
-    },
-    1
-  );
   return (
-    <Step3FailureDialog
-      onClose={action('onClose')}
-      onBack={action('onBack')}
-      stakingFailure={stakingFailure}
-    />
+    <Step3FailureDialog onClose={action('onClose')} onBack={action('onBack')} />
   );
 };

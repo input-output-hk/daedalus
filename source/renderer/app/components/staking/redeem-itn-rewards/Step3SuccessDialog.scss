@@ -1,5 +1,4 @@
 .title {
-  color: var(--theme-staking-redeemItnRewards-text-color);
   font-family: var(--font-regular);
   font-size: 20px;
   line-height: 1.2;
@@ -37,14 +36,12 @@
   }
 }
 .description {
-  color: var(--theme-staking-redeemItnRewards-description-text-color);
   font-family: var(--font-regular);
   font-size: 16px;
   line-height: 1.38;
   margin-bottom: 30px;
   text-align: center;
   b {
-    color: var(--theme-staking-redeemItnRewards-text-color);
     font-family: var(--font-semibold);
   }
 }
