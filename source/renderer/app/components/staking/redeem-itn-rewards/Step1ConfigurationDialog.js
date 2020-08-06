@@ -325,6 +325,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
                 itnLink,
               }}
             />
+            &nbsp;
             <FormattedHTMLMessage {...messages.description2} />
           </p>
           <Autocomplete
