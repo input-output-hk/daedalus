@@ -216,15 +216,6 @@ export default class Step1ConfigurationDialog extends Component<Props> {
     });
   };
 
-  get walletsDropdownError() {
-    const { intl } = this.context;
-    const { wallet } = this.props;
-    let walletsDropdownError;
-    if (wallet && wallet.amount.isZero())
-      walletsDropdownError = intl.formatMessage(messages.walletsDropdownError);
-    return walletsDropdownError;
-  }
-
   get canSubmit() {
     const { isSubmitting, wallet } = this.props;
     const { form } = this;
@@ -237,10 +228,8 @@ export default class Step1ConfigurationDialog extends Component<Props> {
     return (
       !isSubmitting &&
       wallet &&
-      !wallet.amount.isZero() &&
       checkboxAcceptance1isChecked &&
       checkboxAcceptance2isChecked &&
-      !this.walletsDropdownError &&
       form.isValid
     );
   }
@@ -262,7 +251,8 @@ export default class Step1ConfigurationDialog extends Component<Props> {
     let { error } = this.props;
     if (
       error &&
-      error.id === 'api.errors.NotEnoughFundsForTransactionFeesError'
+      (error.id === 'api.errors.NotEnoughFundsForTransactionFeesError' ||
+        error.id === 'api.errors.NotEnoughMoneyToSendError')
     )
       error = messages.walletsDropdownError;
     const recoveryPhraseField = form.$('recoveryPhrase');
@@ -359,7 +349,6 @@ export default class Step1ConfigurationDialog extends Component<Props> {
               )}
               value={walletId}
               getStakePoolById={() => {}}
-              error={this.walletsDropdownError}
               errorPosition="bottom"
             />
           </div>
