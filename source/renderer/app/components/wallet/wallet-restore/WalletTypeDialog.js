@@ -91,7 +91,7 @@ const messages = defineMessages({
   labelYoroiWalletKind15WordShelley: {
     id:
       'wallet.restore.dialog.step.walletKind.label.yoroiWalletKindShelley15Word',
-    defaultMessage: '!!!15 words <em>(Incentivized Testnet wallet)</em>',
+    defaultMessage: '!!!15 words <em>(Shelley wallet)</em>',
     description:
       'Label for the "labelDaedalusWalletKind15WordShelley" checkbox.',
   },
@@ -196,9 +196,7 @@ export default class WalletTypeDialog extends Component<Props, State> {
         }
         return {
           key: kind,
-          disabled:
-            (!isShelleyActivated && kind.includes('Shelley')) ||
-            kind === WALLET_YOROI_KINDS.SHELLEY_15_WORD,
+          disabled: !isShelleyActivated && kind.includes('Shelley'),
           label: <FormattedHTMLMessage {...msg} />,
           selected: value === kind,
           onChange: () => this.props.onSetWalletKind(kind, kindParam),
