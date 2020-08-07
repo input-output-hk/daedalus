@@ -2089,7 +2089,9 @@ const _createStakePoolFromServerData = action(
 const _createRedeemItnRewardsFromServerData = action(
   'AdaApi::_createRedeemItnRewardsFromServerData',
   (transaction: Transaction) => {
-    const { quantity, unit } = get(transaction, 'withdrawals[0].amount');
+    if (!transaction || !transaction.withdrawals) return new BigNumber(0);
+    const { quantity, unit } = get(transaction || {}, 'withdrawals[0].amount');
+    if (!quantity || !unit) return new BigNumber(0);
     return unit === WalletUnits.LOVELACE
       ? new BigNumber(quantity).dividedBy(LOVELACES_PER_ADA)
       : new BigNumber(quantity);
