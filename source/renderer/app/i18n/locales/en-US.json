@@ -719,7 +719,7 @@
   "wallet.restore.dialog.step.walletKind.label.walletKindYoroi": "Yoroi wallet",
   "wallet.restore.dialog.step.walletKind.label.yoroiWalletKind": "What kind of Yoroi wallet would you like to restore?",
   "wallet.restore.dialog.step.walletKind.label.yoroiWalletKindByronLegacy15Word": "15 words <em>(Byron legacy wallet)</em>",
-  "wallet.restore.dialog.step.walletKind.label.yoroiWalletKindShelley15Word": "15 words <em>(Incentivized Testnet wallet)</em>",
+  "wallet.restore.dialog.step.walletKind.label.yoroiWalletKindShelley15Word": "15 words <em>(Shelley wallet)</em>",
   "wallet.restore.dialog.stepsCounter": "Step {currentStep} of {totalSteps}",
   "wallet.restore.dialog.tab.title.certificate": "Daedalus paper wallet",
   "wallet.restore.dialog.tab.title.recoveryPhrase": "Daedalus wallet",

@@ -60,6 +60,7 @@
       color: var(--theme-dialog-fullsize-text-color);
     }
     // Text color highlight
+    .SimpleAutocomplete_autocompleteContent input,
     .SimpleOptions_option,
     .SimpleLink_root {
       color: var(--theme-dialog-fullsize-text-highlight-color);
