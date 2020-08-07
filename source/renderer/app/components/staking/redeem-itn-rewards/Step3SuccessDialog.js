@@ -17,17 +17,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Incentivized Testnet rewards redeemed!',
     description: 'title for Redeem Incentivized Testnet - Step 3',
   },
-  descriptionRewards: {
-    id: 'staking.redeemItnRewards.step3.success.descriptionRewards',
+  description: {
+    id: 'staking.redeemItnRewards.step3.success.description',
     defaultMessage:
       '!!!You have successfully redeemed <b>{redeemedRewards}</b> to your <b>{walletName}</b> wallet. This transaction incurred <b>{transactionFees}</b> in transaction fees',
-    description: 'descriptionRewards for Redeem Incentivized Testnet - Step 3',
-  },
-  descriptionFees: {
-    id: 'staking.redeemItnRewards.step3.success.descriptionFees',
-    defaultMessage:
-      '!!!You have successfully redeemed <b>{redeemedRewards}</b> to your <b>{walletName}</b> wallet. This transaction incurred <b>{transactionFees}</b> in transaction fees',
-    description: 'descriptionFees for Redeem Incentivized Testnet - Step 3',
+    description: 'description for Redeem Incentivized Testnet - Step 3',
   },
   openWalletButtonLabel: {
     id: 'staking.redeemItnRewards.step3.success.openWalletButtonLabel',
@@ -60,8 +54,8 @@ export default class Step3SuccessDialog extends Component<Props> {
     const { intl } = this.context;
     const {
       wallet,
-      transactionFees: fees,
-      redeemedRewards: rewards,
+      transactionFees,
+      redeemedRewards,
       onContinue,
       onPDFDownload,
       onClose,
@@ -85,10 +79,6 @@ export default class Step3SuccessDialog extends Component<Props> {
       });
 
     const closeButton = <DialogCloseButton onClose={onClose} />;
-    const redeemedRewards = !rewards.isZero()
-      ? formattedWalletAmount(rewards)
-      : '';
-    const transactionFees = formattedWalletAmount(fees);
 
     return (
       <Dialog
@@ -102,20 +92,13 @@ export default class Step3SuccessDialog extends Component<Props> {
         <SVGInline svg={tadaImage} className={styles.tadaImage} />
         <div className={styles.description}>
           <FormattedHTMLMessage
-            {...messages.descriptionRewards}
+            {...messages.description}
             values={{
               walletName,
-              redeemedRewards,
+              transactionFees: formattedWalletAmount(transactionFees),
+              redeemedRewards: formattedWalletAmount(redeemedRewards),
             }}
           />
-          {redeemedRewards && (
-            <FormattedHTMLMessage
-              {...messages.descriptionFees}
-              values={{
-                transactionFees,
-              }}
-            />
-          )}
         </div>
       </Dialog>
     );

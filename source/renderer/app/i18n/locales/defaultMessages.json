@@ -4747,30 +4747,16 @@
       },
       {
         "defaultMessage": "!!!You have successfully redeemed <b>{redeemedRewards}</b> to your <b>{walletName}</b> wallet. This transaction incurred <b>{transactionFees}</b> in transaction fees",
-        "description": "descriptionRewards for Redeem Incentivized Testnet - Step 3",
+        "description": "description for Redeem Incentivized Testnet - Step 3",
         "end": {
           "column": 3,
           "line": 25
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step3SuccessDialog.js",
-        "id": "staking.redeemItnRewards.step3.success.descriptionRewards",
+        "id": "staking.redeemItnRewards.step3.success.description",
         "start": {
-          "column": 22,
+          "column": 15,
           "line": 20
-        }
-      },
-      {
-        "defaultMessage": "!!!You have successfully redeemed <b>{redeemedRewards}</b> to your <b>{walletName}</b> wallet. This transaction incurred <b>{transactionFees}</b> in transaction fees",
-        "description": "descriptionFees for Redeem Incentivized Testnet - Step 3",
-        "end": {
-          "column": 3,
-          "line": 31
-        },
-        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step3SuccessDialog.js",
-        "id": "staking.redeemItnRewards.step3.success.descriptionFees",
-        "start": {
-          "column": 19,
-          "line": 26
         }
       },
       {
@@ -4778,13 +4764,13 @@
         "description": "description for Redeem Incentivized Testnet - Step 3",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 30
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step3SuccessDialog.js",
         "id": "staking.redeemItnRewards.step3.success.openWalletButtonLabel",
         "start": {
           "column": 25,
-          "line": 32
+          "line": 26
         }
       },
       {
@@ -4792,13 +4778,13 @@
         "description": "description for Redeem Incentivized Testnet - Step 3",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 35
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step3SuccessDialog.js",
         "id": "staking.redeemItnRewards.step3.success.downloadPDFButtonLabel",
         "start": {
           "column": 26,
-          "line": 37
+          "line": 31
         }
       }
     ],
