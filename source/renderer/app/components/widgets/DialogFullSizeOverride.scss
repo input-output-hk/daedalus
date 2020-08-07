@@ -20,7 +20,8 @@
     .SimpleInput_input:focus,
     .SimpleInput_input:hover,
     .SimpleLink_root,
-    .SimpleOptions_option {
+    .SimpleOptions_option,
+    .SimpleOptions_option:after {
       background-color: transparent !important;
     }
     // Background Color Darker
@@ -64,11 +65,6 @@
     .SimpleOptions_option,
     .SimpleLink_root {
       color: var(--theme-dialog-fullsize-text-highlight-color);
-      &:after {
-        background-color: var(
-          --theme-dialog-fullsize-text-highlight-color
-        ) !important;
-      }
     }
     // Border Color
     .AutocompleteOverrides_autocompleteContent,
@@ -77,8 +73,17 @@
     .SimpleInput_customValueWrapper .SimpleInput_input,
     .SimpleInput_input:focus,
     .SimpleInput_input:hover,
-    .SimpleLink_root {
+    .SimpleLink_root,
+    .SimpleOptions_option:after {
       border-color: var(--theme-dialog-fullsize-text-color) !important;
+    }
+    .SimpleLink_root {
+      color: var(--theme-dialog-fullsize-text-highlight-color);
+      &:after {
+        background-color: var(
+          --theme-dialog-fullsize-text-highlight-color
+        ) !important;
+      }
     }
     .Dialog_dialogWrapper {
       position: static;
