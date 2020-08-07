@@ -32,15 +32,15 @@
     color: var(--theme-staking-redeemItnRewards-attention-text-color);
   }
 }
-.sectionOpacity {
-  > div:last-child {
-    opacity: 0.5;
-  }
-}
+// .sectionOpacity {
+//   > div:last-child {
+//     // opacity: 0.5;
+//   }
+// }
 
 .to {
   @extend .section;
-  @extend .sectionOpacity;
+  // @extend .sectionOpacity;
 }
 .rewardsTotal {
   @extend .section;
