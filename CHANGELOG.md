@@ -7,6 +7,9 @@ Changelog
 
 - ITN rewards redemption ([PR 2133](https://github.com/input-output-hk/daedalus/pull/2133))
 
+### Chores
+
+- Updated `cardano-wallet` to revision `4a4d0a65` 
 
 ## 2.0.1
 
