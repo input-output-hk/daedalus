@@ -18,14 +18,18 @@ export default class Step1ConfigurationContainer extends Component<Props> {
   render() {
     const { onClose, onBack, stores, actions } = this.props;
     const { allWallets } = stores.wallets;
-    const { redeemWallet, redeemError } = stores.staking;
+    const {
+      redeemWallet,
+      configurationStepError,
+      isSubmittingReedem,
+      redeemRecoveryPhrase,
+    } = stores.staking;
     const { openExternalLink } = stores.app;
     const { onConfigurationContinue, onSelectRedeemWallet } = actions.staking;
-    const isSubmitting = false;
     return (
       <Step1ConfigurationDialog
-        error={redeemError}
-        isSubmitting={isSubmitting}
+        error={configurationStepError}
+        isSubmitting={isSubmittingReedem}
         mnemonicValidator={isValidMnemonic}
         onBack={onBack}
         onClose={onClose}
@@ -35,6 +39,7 @@ export default class Step1ConfigurationContainer extends Component<Props> {
         wallet={redeemWallet}
         wallets={allWallets}
         openExternalLink={openExternalLink}
+        recoveryPhrase={redeemRecoveryPhrase}
       />
     );
   }

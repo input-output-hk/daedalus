@@ -36,6 +36,8 @@ export const STAKE_POOLS_FAST_INTERVAL = 1 * 1000; // 1 second | unit: milliseco
 
 // Redeem ITN Rewards
 
+export const REDEEM_ITN_REWARDS_AMOUNT = 1 * 1000000; // 1 ADA | unit: lovelace
+
 export const REDEEM_ITN_REWARDS_STEPS: {
   [key: string]: RedeemItnRewardsStep,
 } = {

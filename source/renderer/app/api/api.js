@@ -79,7 +79,6 @@ import { getStakePools } from './staking/requests/getStakePools';
 import { getDelegationFee } from './staking/requests/getDelegationFee';
 import { joinStakePool } from './staking/requests/joinStakePool';
 import { quitStakePool } from './staking/requests/quitStakePool';
-import { submitRedeemItnRewards } from './staking/requests/submitRedeemItnRewards';
 
 // Utility functions
 import {
@@ -99,6 +98,7 @@ import { filterLogData } from '../../../common/utils/logging';
 
 // Config constants
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
+import { REDEEM_ITN_REWARDS_AMOUNT } from '../config/stakingConfig';
 import {
   ADA_CERTIFICATE_MNEMONIC_LENGTH,
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
@@ -184,9 +184,10 @@ import type {
   AdaApiStakePools,
   AdaApiStakePool,
   QuitStakePoolRequest,
-  SubmitRedeemItnRewardsRequest,
-  SubmitRedeemItnRewardsResponse,
-  SubmitRedeemItnRewardsApiResponse,
+  GetRedeemItnRewardsFeeRequest,
+  GetRedeemItnRewardsFeeResponse,
+  RequestRedeemItnRewardsRequest,
+  RequestRedeemItnRewardsResponse,
 } from './staking/types';
 import type { StakePoolProps } from '../domains/StakePool';
 import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-node.types';
@@ -619,7 +620,14 @@ export default class AdaApi {
     logger.debug('AdaApi::createTransaction called', {
       parameters: filterLogData(request),
     });
-    const { walletId, address, amount, passphrase, isLegacy } = request;
+    const {
+      walletId,
+      address,
+      amount,
+      passphrase,
+      isLegacy,
+      withdrawal = TransactionWithdrawal,
+    } = request;
 
     try {
       const data = {
@@ -633,7 +641,7 @@ export default class AdaApi {
           },
         ],
         passphrase,
-        withdrawal: TransactionWithdrawal,
+        withdrawal,
       };
 
       let response: Transaction;
@@ -682,6 +690,7 @@ export default class AdaApi {
       walletBalance,
       availableBalance,
       isLegacy,
+      withdrawal = TransactionWithdrawal,
     } = request;
 
     try {
@@ -695,9 +704,8 @@ export default class AdaApi {
             },
           },
         ],
-        withdrawal: TransactionWithdrawal,
+        withdrawal,
       };
-
       let response: TransactionFee;
       if (isLegacy) {
         response = await getByronWalletTransactionFee(this.config, {
@@ -1401,21 +1409,62 @@ export default class AdaApi {
     }
   };
 
-  submitRedeemItnRewards = async (
-    request: SubmitRedeemItnRewardsRequest
-  ): Promise<SubmitRedeemItnRewardsApiResponse> => {
-    const { walletId, recoveryPhrase } = request;
+  getRedeemItnRewardsFee = async (
+    request: GetRedeemItnRewardsFeeRequest
+  ): Promise<GetRedeemItnRewardsFeeResponse> => {
+    const { address, wallet, recoveryPhrase: withdrawal } = request;
+    const amount = REDEEM_ITN_REWARDS_AMOUNT;
+    const {
+      id: walletId,
+      amount: walletBalance,
+      availableAmount: availableBalance,
+    } = wallet;
+    const payload = {
+      address,
+      walletId,
+      walletBalance,
+      availableBalance,
+      amount,
+      withdrawal,
+      isLegacy: false,
+    };
     try {
-      const response: SubmitRedeemItnRewardsResponse = await submitRedeemItnRewards(
-        {
-          walletId,
-          recoveryPhrase,
-        }
-      );
-      logger.debug('AdaApi::submitRedeemItnRewards success', { response });
-      return _createRedeemItnRewardsFromServerData(response);
+      const fee = await this.calculateTransactionFee(payload);
+      logger.debug('AdaApi::getRedeemItnRewardsFee success', { fee });
+      return fee;
     } catch (error) {
-      logger.error('AdaApi::submitRedeemItnRewards error', { error });
+      logger.error('AdaApi::getRedeemItnRewardsFee error', { error });
+      throw new ApiError(error);
+    }
+  };
+
+  requestRedeemItnRewards = async (
+    request: RequestRedeemItnRewardsRequest
+  ): Promise<RequestRedeemItnRewardsResponse> => {
+    const {
+      address,
+      walletId,
+      spendingPassword: passphrase,
+      recoveryPhrase: withdrawal,
+    } = request;
+    const amount = REDEEM_ITN_REWARDS_AMOUNT;
+    const payload = {
+      walletId,
+      address,
+      amount,
+      passphrase,
+      isLegacy: false,
+      withdrawal,
+    };
+    try {
+      const transaction = await this.createTransaction(payload);
+      const response = _createRedeemItnRewardsFromServerData(transaction);
+      logger.debug('AdaApi::requestRedeemItnRewards success', {
+        response,
+      });
+      return response;
+    } catch (error) {
+      logger.error('AdaApi::requestRedeemItnRewards error', { error });
       throw new ApiError(error);
     }
   };
@@ -2039,13 +2088,10 @@ const _createStakePoolFromServerData = action(
 
 const _createRedeemItnRewardsFromServerData = action(
   'AdaApi::_createRedeemItnRewardsFromServerData',
-  ({
-    rewardsTotal,
-    transactionFees,
-    finalTotal,
-  }: SubmitRedeemItnRewardsResponse) => ({
-    rewardsTotal: new BigNumber(rewardsTotal),
-    transactionFees: new BigNumber(transactionFees),
-    finalTotal: new BigNumber(finalTotal),
-  })
+  (transaction: Transaction) => {
+    const { quantity, unit } = get(transaction, 'withdrawals[0].amount');
+    return unit === WalletUnits.LOVELACE
+      ? new BigNumber(quantity).dividedBy(LOVELACES_PER_ADA)
+      : new BigNumber(quantity);
+  }
 );
