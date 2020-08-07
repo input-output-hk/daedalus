@@ -1,17 +1,26 @@
 Changelog
 =========
 
+## 2.1.0
+
+### Features
+
+- ITN rewards redemption ([PR 2133](https://github.com/input-output-hk/daedalus/pull/2133))
+
+
 ## 2.0.1
 
 ### Features
 
 - Disabled creating Byron wallets ([PR 2126](https://github.com/input-output-hk/daedalus/pull/2126))
+- Transactions automatically spending rewards ([PR 2131](https://github.com/input-output-hk/daedalus/pull/2131))
 
 ### Fixes
 
 - Improved wallet delegation error messages ([PR 2111](https://github.com/input-output-hk/daedalus/pull/2111))
 - Fixed Daedalus logo animation on the "Loading" screen ([PR 2124](https://github.com/input-output-hk/daedalus/pull/2124))
 - Fixed text copy on the "Delegation center" screen ([PR 2125](https://github.com/input-output-hk/daedalus/pull/2125))
+- Stake pools search performance ([PR 2131](https://github.com/input-output-hk/daedalus/pull/2131))
 
 ### Chores
 
