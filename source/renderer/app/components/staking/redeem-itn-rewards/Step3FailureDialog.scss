@@ -4,16 +4,22 @@
   text-align: center;
   svg {
     height: 71px;
-    stroke: var(--theme-staking-redeemItnRewards-icon-color);
+    stroke: var(--theme-dialog-fullsize-text-highlight-color);
     path {
-      stroke: var(--theme-staking-redeemItnRewards-icon-color);
+      stroke: var(--theme-dialog-fullsize-text-highlight-color);
+      &:nth-child(4) {
+        fill: var(--theme-dialog-fullsize-text-highlight-color);
+      }
+    }
+    circle {
+      fill: var(--theme-dialog-fullsize-text-highlight-color);
     }
     g {
       ellipse {
         &:nth-child(7),
         &:nth-child(8),
         &:nth-child(9) {
-          stroke: var(--theme-staking-redeemItnRewards-icon-color);
+          stroke: var(--theme-dialog-fullsize-text-highlight-color);
         }
 
         &:nth-child(11),
@@ -22,14 +28,13 @@
         &:nth-child(14),
         &:nth-child(15),
         &:nth-child(16) {
-          fill: var(--theme-staking-redeemItnRewards-icon-color);
+          fill: var(--theme-dialog-fullsize-text-highlight-color);
         }
       }
     }
   }
 }
 .description {
-  color: rgba(255, 255, 255, 0.7);
   font-family: var(--font-regular);
   font-size: 16px;
   line-height: 1.38;
