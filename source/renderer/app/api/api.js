@@ -1448,16 +1448,24 @@ export default class AdaApi {
       recoveryPhrase: withdrawal,
     } = request;
     const amount = REDEEM_ITN_REWARDS_AMOUNT;
-    const payload = {
-      walletId,
-      address,
-      amount,
-      passphrase,
-      isLegacy: false,
-      withdrawal,
-    };
     try {
-      const transaction = await this.createTransaction(payload);
+      const data = {
+        payments: [
+          {
+            address,
+            amount: {
+              quantity: amount,
+              unit: WalletUnits.LOVELACE,
+            },
+          },
+        ],
+        passphrase,
+        withdrawal,
+      };
+      const transaction = await createTransaction(this.config, {
+        walletId,
+        data,
+      });
       const response = _createRedeemItnRewardsFromServerData(transaction);
       logger.debug('AdaApi::requestRedeemItnRewards success', {
         response,

@@ -10,6 +10,7 @@ Changelog
 ### Chores
 
 - Updated `cardano-wallet` to revision `4a4d0a65` 
+- Updated `cardano-wallet` to revision `d5b43356` 
 
 ## 2.0.1
 
