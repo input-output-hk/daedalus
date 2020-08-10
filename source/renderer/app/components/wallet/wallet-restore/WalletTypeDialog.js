@@ -91,7 +91,7 @@ const messages = defineMessages({
   labelYoroiWalletKind15WordShelley: {
     id:
       'wallet.restore.dialog.step.walletKind.label.yoroiWalletKindShelley15Word',
-    defaultMessage: '!!!15 words <em>(Incentivized Testnet wallet)</em>',
+    defaultMessage: '!!!15 words <em>(Shelley wallet)</em>',
     description:
       'Label for the "labelDaedalusWalletKind15WordShelley" checkbox.',
   },

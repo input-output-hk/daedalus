@@ -38,15 +38,16 @@ export default class StakingStore extends Store {
 
   /* ----------  Redeem ITN Rewards  ---------- */
   @observable redeemStep: ?RedeemItnRewardsStep = null;
+  @observable redeemRecoveryPhrase: ?Array<string> = null;
   @observable redeemWallet: ?Wallet = null;
   @observable walletName: ?string = null;
-  @observable redeemError: ?LocalizableError = null;
-  @observable rewardsTotal: number = 0;
-  @observable transactionFees: number = 0;
-  @observable finalTotal: number = 0;
+  @observable transactionFees: ?BigNumber = null;
+  @observable redeemedRewards: ?BigNumber = null;
   @observable isSubmittingReedem: boolean = false;
   @observable stakingSuccess: ?boolean = null;
-  @observable stakingFailure: number = 0;
+
+  @observable configurationStepError: ?LocalizableError = null;
+  @observable confirmationStepError: ?LocalizableError = null;
 
   pollingStakePoolsInterval: ?IntervalID = null;
   refreshPolling: ?IntervalID = null;
@@ -104,8 +105,11 @@ export default class StakingStore extends Store {
     this.api.ada.calculateDelegationFee
   );
   // @REDEEM TODO: Proper type it when the API endpoint is implemented.
-  @observable submitRedeemItnRewardsRequest: Request<any> = new Request(
-    this.api.ada.submitRedeemItnRewards
+  @observable getRedeemItnRewardsFeeRequest: Request<any> = new Request(
+    this.api.ada.getRedeemItnRewardsFee
+  );
+  @observable requestRedeemItnRewardsRequest: Request<any> = new Request(
+    this.api.ada.requestRedeemItnRewards
   );
 
   // =================== PUBLIC API ==================== //
@@ -486,6 +490,8 @@ export default class StakingStore extends Store {
   };
 
   @action _onRedeemStart = () => {
+    this.configurationStepError = null;
+    this.confirmationStepError = null;
     this.redeemStep = steps.CONFIGURATION;
   };
 
@@ -498,50 +504,70 @@ export default class StakingStore extends Store {
     const { redeemWallet } = this;
     if (!redeemWallet) throw new Error('Redeem wallet required');
     try {
-      const {
-        rewardsTotal,
-        transactionFees,
-        finalTotal,
-      }: any = await this.submitRedeemItnRewardsRequest.execute({
-        walletId: redeemWallet.id,
+      const [address] = await this.stores.addresses.getAddressesByWalletId(
+        redeemWallet.id
+      );
+      const transactionFees = await this.getRedeemItnRewardsFeeRequest.execute({
+        wallet: redeemWallet,
         recoveryPhrase,
+        address: address.id,
       });
-      runInAction('Go to the Confirmation step', () => {
-        this.isSubmittingReedem = false;
-        this.stakingSuccess = true;
-        this.rewardsTotal = rewardsTotal;
+      runInAction(() => {
+        this.redeemRecoveryPhrase = recoveryPhrase;
         this.transactionFees = transactionFees;
-        this.finalTotal = finalTotal;
+        this.confirmationStepError = null;
         this.redeemStep = steps.CONFIRMATION;
+        this.configurationStepError = null;
+        this.isSubmittingReedem = false;
       });
     } catch (error) {
       runInAction(() => {
-        this._resetRedeemItnRewards();
-        this.stakingSuccess = false;
-        this.redeemError = error;
-        throw error;
+        this.configurationStepError = error;
+        this.isSubmittingReedem = false;
+        this.redeemRecoveryPhrase = null;
       });
     }
   };
 
-  @action _onConfirmationContinue = ({
+  @action _onConfirmationContinue = async ({
     spendingPassword,
   }: {
     spendingPassword: string,
   }) => {
-    // @REDEEM TODO: Remove when the API endpoint is implemented
-    if (spendingPassword === 'FailureErr1') this.stakingFailure = 1;
-    else if (spendingPassword === 'FailureErr2') this.stakingFailure = 2;
-    else if (spendingPassword === 'FailureErr3') this.stakingFailure = 3;
-    else {
-      this.stakingFailure = 0;
-      this.stakingSuccess = true;
+    const { redeemRecoveryPhrase: recoveryPhrase, redeemWallet } = this;
+    this.isSubmittingReedem = true;
+    if (!redeemWallet) throw new Error('Redeem wallet required');
+    if (!recoveryPhrase) throw new Error('RecoveryPhrase required');
+    const { id: walletId } = redeemWallet;
+    try {
+      const [address] = await this.stores.addresses.getAddressesByWalletId(
+        walletId
+      );
+      const redeemedRewards = await this.requestRedeemItnRewardsRequest.execute(
+        {
+          address: address.id,
+          walletId,
+          spendingPassword,
+          recoveryPhrase,
+        }
+      );
+      runInAction(() => {
+        this.redeemedRewards = redeemedRewards;
+        this.stakingSuccess = true;
+        this.redeemStep = steps.RESULT;
+        this.confirmationStepError = null;
+        this.isSubmittingReedem = false;
+      });
+    } catch (error) {
+      runInAction(() => {
+        this.confirmationStepError = error;
+        this.isSubmittingReedem = false;
+        if (error.id !== 'api.errors.IncorrectPasswordError') {
+          this.stakingSuccess = false;
+          this.redeemStep = steps.RESULT;
+        }
+      });
     }
-    if (this.stakingFailure > 0) {
-      this.stakingSuccess = false;
-    }
-
-    this.redeemStep = steps.RESULT;
   };
 
   @action _onResultContinue = () => {
@@ -556,10 +582,11 @@ export default class StakingStore extends Store {
     this.isSubmittingReedem = false;
     this.stakingSuccess = null;
     this.redeemWallet = null;
-    this.rewardsTotal = 0;
-    this.transactionFees = 0;
-    this.finalTotal = 0;
-    this.stakingFailure = 0;
+    this.transactionFees = null;
+    this.redeemedRewards = null;
+    this.redeemRecoveryPhrase = null;
+    this.configurationStepError = null;
+    this.confirmationStepError = null;
   };
 
   @action _closeRedeemDialog = () => {

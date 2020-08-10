@@ -1,7 +1,7 @@
 {
   "name": "daedalus",
   "productName": "Daedalus",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "Cryptocurrency Wallet",
   "main": "./dist/main/index.js",
   "scripts": {
@@ -200,6 +200,7 @@
     "mobx-react-router": "4.1.0",
     "moment": "2.24.0",
     "node-downloader-helper": "1.0.13",
+    "omit-deep-lodash": "1.1.4",
     "pbkdf2": "3.0.17",
     "pdfkit": "0.8.3",
     "prop-types": "15.7.2",
@@ -213,7 +214,6 @@
     "react-custom-scrollbars": "4.2.1",
     "react-datetime": "2.16.3",
     "react-dom": "16.13.1",
-    "react-flip-move": "3.0.4",
     "react-intl": "2.7.2",
     "react-lottie": "1.2.3",
     "react-markdown": "4.3.1",
@@ -223,6 +223,7 @@
     "react-svg-inline": "2.1.1",
     "react-virtualized": "9.21.2",
     "recharts": "1.8.5",
+    "rimraf": "3.0.2",
     "rotating-file-stream": "1.4.6",
     "route-parser": "0.0.5",
     "rust-cardano-crypto": "0.2.0",
