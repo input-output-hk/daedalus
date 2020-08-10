@@ -180,7 +180,7 @@ let
       ${lib.optionalString (envCfg.nodeConfig ? ShelleyGenesisFile) "cp ${envCfg.nodeConfig.ShelleyGenesisFile} $out/genesis-shelley.json"}
     '';
 
-  mkConfigByron = let
+  mkConfigCardano = let
     filterMonitoring = config: if devShell then config else builtins.removeAttrs config [ "hasPrometheus" "hasEKG" ];
     cardanoAddressBin = mkBinPath "cardano-address";
     walletBin = mkBinPath "cardano-wallet-${kind}";
@@ -250,6 +250,7 @@ let
           configFile = mkConfigPath nodeConfigFiles "config.yaml";
           genesisFile = mkConfigPath nodeConfigFiles "genesis.json";
           topologyFile = mkConfigPath nodeConfigFiles "topology.yaml";
+          smashUrl = envCfg.smashUrl or null;
         };
         socketFile = if os != "windows" then "${dataDir}${dirSep}cardano-node.socket" else "\\\\.\\pipe\\cardano-node-${network}";
       } // (lib.optionalAttrs (network == "selfnode") {
@@ -344,5 +345,5 @@ let
     configFiles = mkConfigFiles nodeConfigFiles launcherConfig installerConfig;
   };
   configs.jormungandr = mkConfigJormungandr;
-  configs.cardano = mkConfigByron;
+  configs.cardano = mkConfigCardano;
 in configs.${backend}
