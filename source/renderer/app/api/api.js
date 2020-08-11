@@ -641,7 +641,6 @@ export default class AdaApi {
           },
         ],
         passphrase,
-        withdrawal,
       };
 
       let response: Transaction;
@@ -653,7 +652,7 @@ export default class AdaApi {
       } else {
         response = await createTransaction(this.config, {
           walletId,
-          data,
+          data: { ...data, withdrawal },
         });
       }
 
@@ -704,7 +703,6 @@ export default class AdaApi {
             },
           },
         ],
-        withdrawal,
       };
       let response: TransactionFee;
       if (isLegacy) {
@@ -715,7 +713,7 @@ export default class AdaApi {
       } else {
         response = await getTransactionFee(this.config, {
           walletId,
-          data,
+          data: { ...data, withdrawal },
         });
       }
 
