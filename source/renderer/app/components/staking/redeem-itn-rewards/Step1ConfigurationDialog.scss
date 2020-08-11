@@ -1,20 +1,22 @@
 @import '../../../themes/mixins/error-message';
 .component {
-  .description {
+  .description,
+  .redemptionUnavailable {
     font-family: var(--font-regular);
     font-size: 16px;
-    height: 132px;
     line-height: 1.38;
-    margin-bottom: 20px;
     text-align: center;
+    b {
+      color: var(--theme-dialog-fullsize-text-highlight-color);
+      font-family: var(--font-bold);
+    }
+  }
+  .description {
+    margin-bottom: 20px;
     .itnLink {
       @extend .description;
       &:after {
       }
-    }
-    b {
-      color: var(--theme-dialog-fullsize-text-highlight-color);
-      font-family: var(--font-bold);
     }
   }
   .recoveryPhrase {
@@ -25,11 +27,6 @@
   }
   .walletsDropdown {
     margin-bottom: 20px;
-  }
-  hr {
-    border: none;
-    height: 1px;
-    margin-bottom: 17px;
   }
   .checkbox {
     margin-bottom: 20px;

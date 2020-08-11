@@ -33,6 +33,13 @@ const messages = defineMessages({
     defaultMessage: '!!!Redeem Incentivized Testnet rewards',
     description: 'Title for Redeem Incentivized Testnet - Step 1',
   },
+  redemptionUnavailable: {
+    id: 'staking.redeemItnRewards.step1.redemptionUnavailable',
+    defaultMessage:
+      '!!!Before you can redeem your Incentivized Testnet rewards, Daedalus first needs to synchronize with the blockchain. The synchronization process is now underway and is currently {syncPercentage}% complete. As soon as this process is fully complete, you’ll be able to redeem your Incentivized Testnet rewards. Please wait for this process to complete before returning here to redeem your rewards.',
+    description:
+      'redemptionUnavailable for Redeem Incentivized Testnet - Step 1',
+  },
   description1: {
     id: 'staking.redeemItnRewards.step1.description1',
     defaultMessage:
@@ -92,6 +99,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Continue',
     description: 'continueButtonLabel for Redeem Incentivized Testnet - Step 1',
   },
+  closeButtonLabel: {
+    id: 'staking.redeemItnRewards.step1.closeButton.label',
+    defaultMessage: '!!!Close',
+    description: 'closeButtonLabel for Redeem Incentivized Testnet - Step 1',
+  },
   learnMoreLinkLabel: {
     id: 'staking.redeemItnRewards.step1.learnMoreLink.label',
     defaultMessage: '!!!Learn More',
@@ -131,6 +143,8 @@ const messages = defineMessages({
 
 type Props = {
   error?: ?LocalizableError,
+  syncPercentage: number,
+  isSynced: boolean,
   isSubmitting: boolean,
   mnemonicValidator: Function,
   onClose: Function,
@@ -238,6 +252,8 @@ export default class Step1ConfigurationDialog extends Component<Props> {
     const { intl } = this.context;
     const { form } = this;
     const {
+      syncPercentage,
+      isSynced,
       isSubmitting,
       onClose,
       onContinue,
@@ -268,23 +284,32 @@ export default class Step1ConfigurationDialog extends Component<Props> {
 
     const actions = {
       direction: 'column',
-      items: [
-        {
-          className: buttonClasses,
-          disabled: !this.canSubmit,
-          primary: true,
-          label: intl.formatMessage(messages.continueButtonLabel),
-          onClick: this.submit,
-        },
-        {
-          onClick: (event: MouseEvent) =>
-            openExternalLink(
-              intl.formatMessage(messages.learnMoreLinkUrl, event)
-            ),
-          label: intl.formatMessage(messages.learnMoreLinkLabel),
-          isLink: true,
-        },
-      ],
+      items: isSynced
+        ? [
+            {
+              className: buttonClasses,
+              disabled: !this.canSubmit,
+              primary: true,
+              label: intl.formatMessage(messages.continueButtonLabel),
+              onClick: this.submit,
+            },
+            {
+              onClick: (event: MouseEvent) =>
+                openExternalLink(
+                  intl.formatMessage(messages.learnMoreLinkUrl, event)
+                ),
+              label: intl.formatMessage(messages.learnMoreLinkLabel),
+              isLink: true,
+            },
+          ]
+        : [
+            {
+              className: buttonClasses,
+              primary: true,
+              label: intl.formatMessage(messages.closeButtonLabel),
+              onClick: onClose,
+            },
+          ],
     };
 
     const itnLink = (
@@ -313,58 +338,73 @@ export default class Step1ConfigurationDialog extends Component<Props> {
         fullSize
       >
         <div className={styles.component}>
-          <p className={styles.description}>
-            <FormattedMessage
-              {...messages.description1}
-              values={{
-                itnLink,
-              }}
-            />{' '}
-            <FormattedHTMLMessage {...messages.description2} />
-          </p>
-          <Autocomplete
-            {...recoveryPhraseField.bind()}
-            ref={autocomplete => {
-              this.recoveryPhraseAutocomplete = autocomplete;
-            }}
-            options={suggestedMnemonics}
-            maxSelections={ITN_WALLET_RECOVERY_PHRASE_WORD_COUNT}
-            error={recoveryPhraseField.error}
-            maxVisibleOptions={5}
-            noResultsMessage={intl.formatMessage(messages.noResults)}
-            className={styles.recoveryPhrase}
-            skin={AutocompleteSkin}
-            optionHeight={50}
-            preselectedOptions={[...(recoveryPhrase || [])]}
-          />
-          <div className={styles.walletsDropdownWrapper}>
-            <WalletsDropdown
-              className={styles.walletsDropdown}
-              {...walletsDropdownField.bind()}
-              numberOfStakePools={4}
-              wallets={wallets}
-              onChange={onSelectWallet}
-              placeholder={intl.formatMessage(
-                messages.selectWalletInputPlaceholder
+          {!isSynced ? (
+            <p className={styles.redemptionUnavailable}>
+              <FormattedHTMLMessage
+                {...messages.redemptionUnavailable}
+                values={{
+                  syncPercentage: parseFloat(syncPercentage).toFixed(2),
+                }}
+              />
+            </p>
+          ) : (
+            <>
+              <p className={styles.description}>
+                <FormattedMessage
+                  {...messages.description1}
+                  values={{
+                    itnLink,
+                  }}
+                />{' '}
+                <FormattedHTMLMessage {...messages.description2} />
+              </p>
+              <Autocomplete
+                {...recoveryPhraseField.bind()}
+                ref={autocomplete => {
+                  this.recoveryPhraseAutocomplete = autocomplete;
+                }}
+                options={suggestedMnemonics}
+                maxSelections={ITN_WALLET_RECOVERY_PHRASE_WORD_COUNT}
+                error={recoveryPhraseField.error}
+                maxVisibleOptions={5}
+                noResultsMessage={intl.formatMessage(messages.noResults)}
+                className={styles.recoveryPhrase}
+                skin={AutocompleteSkin}
+                optionHeight={50}
+                preselectedOptions={[...(recoveryPhrase || [])]}
+              />
+              <div className={styles.walletsDropdownWrapper}>
+                <WalletsDropdown
+                  className={styles.walletsDropdown}
+                  {...walletsDropdownField.bind()}
+                  numberOfStakePools={4}
+                  wallets={wallets}
+                  onChange={onSelectWallet}
+                  placeholder={intl.formatMessage(
+                    messages.selectWalletInputPlaceholder
+                  )}
+                  value={walletId}
+                  getStakePoolById={() => {}}
+                  errorPosition="bottom"
+                />
+              </div>
+              <Checkbox
+                {...checkboxAcceptance1Field.bind()}
+                className={styles.checkbox}
+                skin={CheckboxSkin}
+                error={checkboxAcceptance1Field.error}
+              />
+              <Checkbox
+                {...checkboxAcceptance2Field.bind()}
+                className={styles.checkbox}
+                skin={CheckboxSkin}
+                error={checkboxAcceptance2Field.error}
+              />
+              {error && (
+                <p className={styles.error}>{intl.formatMessage(error)}</p>
               )}
-              value={walletId}
-              getStakePoolById={() => {}}
-              errorPosition="bottom"
-            />
-          </div>
-          <Checkbox
-            {...checkboxAcceptance1Field.bind()}
-            className={styles.checkbox}
-            skin={CheckboxSkin}
-            error={checkboxAcceptance1Field.error}
-          />
-          <Checkbox
-            {...checkboxAcceptance2Field.bind()}
-            className={styles.checkbox}
-            skin={CheckboxSkin}
-            error={checkboxAcceptance2Field.error}
-          />
-          {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
+            </>
+          )}
         </div>
       </Dialog>
     );
