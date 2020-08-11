@@ -1,6 +1,16 @@
 Changelog
 =========
 
+## vNext
+
+### Features
+
+- Enabled "Send" screen for "Byron" wallets ([PR 2147](https://github.com/input-output-hk/daedalus/pull/2147))
+
+### Fixes
+
+- Fixed the Japanese translation for "Byron" wallet label ([PR 2147](https://github.com/input-output-hk/daedalus/pull/2147))
+
 ## 2.1.0
 
 ### Features
@@ -9,8 +19,8 @@ Changelog
 
 ### Chores
 
-- Updated `cardano-wallet` to revision `4a4d0a65` 
-- Updated `cardano-wallet` to revision `d5b43356` 
+- Updated `cardano-wallet` to revision `4a4d0a65`
+- Updated `cardano-wallet` to revision `d5b43356`
 
 ## 2.0.1
 
