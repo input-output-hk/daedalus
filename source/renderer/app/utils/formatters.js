@@ -83,6 +83,9 @@ export const formattedAmountToBigNumber = (amount: string) => {
 export const formattedAmountToLovelace = (amount: string): number =>
   parseInt(formattedAmountToBigNumber(amount).times(LOVELACES_PER_ADA), 10);
 
+export const formattedAdaAmountToLovelace = (adaAmount: number): number =>
+  adaAmount * LOVELACES_PER_ADA;
+
 export const formattedLovelaceToAmount = (lovelace: number): number =>
   formattedAmountToBigNumber(String(lovelace))
     .dividedBy(LOVELACES_PER_ADA)

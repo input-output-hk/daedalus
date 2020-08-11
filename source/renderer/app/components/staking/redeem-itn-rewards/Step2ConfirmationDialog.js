@@ -1,5 +1,6 @@
 // @flow
 import React, { Component } from 'react';
+import BigNumber from 'bignumber.js';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
@@ -8,10 +9,7 @@ import vjf from 'mobx-react-form/lib/validators/VJF';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import styles from './Step2ConfirmationDialog.scss';
-import redeemDialogOverride from './RedeemDialogOverride.scss';
-import ReactToolboxMobxForm, {
-  handleFormErrors,
-} from '../../../utils/ReactToolboxMobxForm';
+import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import Wallet from '../../../domains/Wallet';
 import { formattedWalletAmount } from '../../../utils/formatters';
 import { isValidSpendingPassword } from '../../../utils/validations';
@@ -36,20 +34,10 @@ const messages = defineMessages({
     defaultMessage: '!!!{walletName} <span>wallet</span>',
     description: 'walletToName for Redeem Incentivized Testnet - Step 2',
   },
-  rewardsTotal: {
-    id: 'staking.redeemItnRewards.step2.rewardsTotal',
-    defaultMessage: '!!!Rewards total',
-    description: 'rewardsTotal for Redeem Incentivized Testnet - Step 2',
-  },
   transactionFees: {
     id: 'staking.redeemItnRewards.step2.transactionFees',
     defaultMessage: '!!!Transaction fees',
     description: 'transactionFees for Redeem Incentivized Testnet - Step 2',
-  },
-  finalTotal: {
-    id: 'staking.redeemItnRewards.step2.finalTotal',
-    defaultMessage: '!!!Final total',
-    description: 'finalTotal for Redeem Incentivized Testnet - Step 2',
   },
   spendingPasswordLabel: {
     id: 'staking.redeemItnRewards.step2.spendingPasswordLabel',
@@ -79,9 +67,7 @@ const messages = defineMessages({
 
 type Props = {
   wallet: Wallet,
-  rewardsTotal: number,
-  transactionFees: number,
-  finalTotal: number,
+  transactionFees: BigNumber,
   onContinue: Function,
   onClose: Function,
   onBack: Function,
@@ -145,10 +131,6 @@ export default class Step2ConfirmationDialog extends Component<Props> {
         const { onContinue } = this.props;
         onContinue({ spendingPassword });
       },
-      onError: () =>
-        handleFormErrors('.Step2ConfirmationDialog_error', {
-          focusElement: true,
-        }),
     });
   };
 
@@ -159,9 +141,7 @@ export default class Step2ConfirmationDialog extends Component<Props> {
     const { form } = this;
     const {
       wallet,
-      rewardsTotal,
       transactionFees,
-      finalTotal,
       onContinue,
       onClose,
       onBack,
@@ -192,12 +172,7 @@ export default class Step2ConfirmationDialog extends Component<Props> {
       ],
     };
 
-    const closeButton = (
-      <DialogCloseButton
-        className={redeemDialogOverride.closeButton}
-        onClose={onClose}
-      />
-    );
+    const closeButton = <DialogCloseButton onClose={onClose} />;
 
     return (
       <Dialog
@@ -207,8 +182,8 @@ export default class Step2ConfirmationDialog extends Component<Props> {
         onClose={onClose}
         closeButton={closeButton}
         onBack={onBack}
-        customThemeOverrides={redeemDialogOverride}
         closeOnOverlayClick={false}
+        fullSize
       >
         <div className={styles.to}>
           <div>{intl.formatMessage(messages.walletToLabel)}</div>
@@ -221,25 +196,11 @@ export default class Step2ConfirmationDialog extends Component<Props> {
             />
           </div>
         </div>
-        <div className={styles.rewardsTotal}>
-          <div>{intl.formatMessage(messages.rewardsTotal)}</div>
-          <div>
-            <b>{formattedWalletAmount(rewardsTotal, false)}&nbsp;</b>
-            {intl.formatMessage(globalMessages.unitAda)}
-          </div>
-        </div>
         <div className={styles.transactionFees}>
           <div>{intl.formatMessage(messages.transactionFees)}</div>
           <div>
             <b>{formattedWalletAmount(transactionFees, false)}&nbsp;</b>
-            {intl.formatMessage(globalMessages.unitAda)}
-          </div>
-        </div>
-        <div className={styles.finalTotal}>
-          <div>{intl.formatMessage(messages.finalTotal)}</div>
-          <div>
-            <b>{formattedWalletAmount(finalTotal, false)}&nbsp;</b>
-            {intl.formatMessage(globalMessages.unitAda)}
+            <em>{intl.formatMessage(globalMessages.unitAda)}</em>
           </div>
         </div>
 

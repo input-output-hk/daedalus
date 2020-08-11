@@ -481,6 +481,24 @@ export const createDaedalusComponentsTheme = (
       '--theme-dialog-title-color': `${text.primary}`,
       '--theme-dialog-text-color': `${text.primary}`,
       '--theme-dialog-border-color': `${border}`,
+      '--theme-dialog-fullsize-background-color': `${chroma(
+        background.secondary.regular
+      ).alpha(0.96)}`,
+      '--theme-dialog-fullsize-background-color-opaque': `${background.secondary.regular}`,
+      '--theme-dialog-fullsize-button-background-color': `${text.secondary}`,
+      '--theme-dialog-fullsize-button-background-color-hover': `${background.secondary.dark}`,
+      '--theme-dialog-fullsize-button-border-color': `${text.secondary}`,
+      '--theme-dialog-fullsize-button-icon-color': `${text.secondary}`,
+      '--theme-dialog-fullsize-button-icon-color-hover': `${background.secondary.regular}`,
+      '--theme-dialog-fullsize-button-label-color': `${text.secondary}`,
+      '--theme-dialog-fullsize-button-label-color-hover': `${text.secondary}`,
+      '--theme-dialog-fullsize-button-text-color-hover': `${background.secondary.regular}`,
+      '--theme-dialog-fullsize-field-background-color': 'rgba(0,0,0, 0.1)',
+      '--theme-dialog-fullsize-text-color': `${chroma(text.secondary).alpha(
+        0.7
+      )}`,
+      '--theme-dialog-fullsize-text-highlight-color': `${text.secondary}`,
+      '--theme-dialog-fullsize-title-text-color': `${text.secondary}`,
     },
     errors: {
       '--theme-color-error': `${error.regular}`,
