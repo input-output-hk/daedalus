@@ -5,7 +5,7 @@ Changelog
 
 ### Fixes
 
-- Disabled ITN rewards redemption in case Daedalus is not fully in sync ([PR 2145](https://github.com/input-output-hk/daedalus/pull/2145))
+- Disabled ITN rewards redemption in case Daedalus is not fully in sync ([PR 2146](https://github.com/input-output-hk/daedalus/pull/2146))
 
 ## 2.1.0
 
