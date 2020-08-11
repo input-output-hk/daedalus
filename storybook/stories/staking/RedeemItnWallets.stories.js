@@ -9,6 +9,8 @@ import Step1ConfigurationDialog from '../../../source/renderer/app/components/st
 import Step2ConfirmationDialog from '../../../source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog';
 import Step3SuccessDialog from '../../../source/renderer/app/components/staking/redeem-itn-rewards/Step3SuccessDialog';
 import Step3FailureDialog from '../../../source/renderer/app/components/staking/redeem-itn-rewards/Step3FailureDialog';
+import NoWalletsDialog from '../../../source/renderer/app/components/staking/redeem-itn-rewards/NoWalletsDialog';
+import RedemptionUnavailableDialog from '../../../source/renderer/app/components/staking/redeem-itn-rewards/RedemptionUnavailableDialog';
 
 // Helpers
 import { isValidMnemonic } from '../../../source/common/config/crypto/decrypt';
@@ -38,7 +40,6 @@ export const Step1ConfigurationDialogStory = () => {
       wallets={WALLETS}
       wallet={redeemWallet}
       isWalletValid={boolean('isWalletValid')}
-      isSynced={boolean('isSynced', true)}
       isSubmitting={boolean('isSubmitting')}
       syncPercentage={99.55}
       mnemonicValidator={isValidMnemonic}
@@ -96,5 +97,28 @@ export const Step3SuccessDialogStory = () => {
 export const Step3FailureDialogStory = () => {
   return (
     <Step3FailureDialog onClose={action('onClose')} onBack={action('onBack')} />
+  );
+};
+
+export const NoWalletsDialogDialogStory = () => {
+  return (
+    <NoWalletsDialog
+      onClose={action('onClose')}
+      onAddWallet={action('onAddWallet')}
+    />
+  );
+};
+
+export const RedemptionUnavailableDialogDialogStory = () => {
+  return (
+    <RedemptionUnavailableDialog
+      onClose={action('onClose')}
+      syncPercentage={number('syncPercentage', 37, {
+        range: true,
+        min: 0,
+        max: 100,
+        step: 1,
+      })}
+    />
   );
 };
