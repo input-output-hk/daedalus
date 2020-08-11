@@ -243,7 +243,6 @@ let
         legacyWalletDB
         legacySecretKey;
       syncTolerance = "300s";
-      smashUrl = envCfg.smashUrl or null;
       nodeConfig = {
         inherit kind;
         configurationDir = "";
@@ -257,7 +256,9 @@ let
         delegationCertificate = mkConfigPath nodeConfigFiles "delegation.cert";
         signingKey = mkConfigPath nodeConfigFiles "signing.key";
       });
-    };
+    } // (lib.optionalAttrs (__hasAttr "smashUrl" envCfg) {
+      smashUrl = envCfg.smashUrl or null;
+    });
 
     installerConfig = {
       installDirectory = if os == "linux" then "Daedalus/${network}" else spacedName;
