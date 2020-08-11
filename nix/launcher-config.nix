@@ -243,6 +243,7 @@ let
         legacyWalletDB
         legacySecretKey;
       syncTolerance = "300s";
+      smashUrl = envCfg.smashUrl or null;
       nodeConfig = {
         inherit kind;
         configurationDir = "";
@@ -250,7 +251,6 @@ let
           configFile = mkConfigPath nodeConfigFiles "config.yaml";
           genesisFile = mkConfigPath nodeConfigFiles "genesis.json";
           topologyFile = mkConfigPath nodeConfigFiles "topology.yaml";
-          smashUrl = envCfg.smashUrl or null;
         };
         socketFile = if os != "windows" then "${dataDir}${dirSep}cardano-node.socket" else "\\\\.\\pipe\\cardano-node-${network}";
       } // (lib.optionalAttrs (network == "selfnode") {
