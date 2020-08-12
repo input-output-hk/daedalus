@@ -26,6 +26,22 @@ import type {
   StateSnapshotLogParams,
   WalletMigrationReportData,
 } from '../types/logging.types';
+import type { Locale } from '../types/locales.types';
+import type {
+  DownloadLocalDataRequest,
+  DownloadLocalDataResponse,
+  DownloadsLocalDataRequest,
+  DownloadsLocalDataResponse,
+  DownloadRequest,
+  DownloadResponse,
+  ResumeDownloadRequest,
+  ResumeDownloadResponse,
+} from '../types/downloadManager.types';
+import type { StoreMessage } from '../types/electron-store.types';
+import type {
+  IntrospectAddressRequest,
+  IntrospectAddressResponse,
+} from '../types/address-introspection.types';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -90,8 +106,15 @@ export type GetStateDirectoryPathMainResponse = any;
  */
 export const GET_DESKTOP_DIRECTORY_PATH_CHANNEL =
   'GetDesktopDirectoryPathChannel';
-export type GetDesktopDirectoryPathRendererRequest = string | any;
-export type GetDesktopDirectoryPathMainResponse = any;
+export type GetDesktopDirectoryPathRendererRequest = void;
+export type GetDesktopDirectoryPathMainResponse = string;
+
+/**
+ * Channel for checking the system locale
+ */
+export const GET_SYSTEM_LOCALE_CHANNEL = 'GetSystemLocaleChannel';
+export type GetSystemLocaleRendererRequest = void;
+export type GetSystemLocaleMainResponse = Locale;
 
 /**
  * Channel for setting log state snapshot
@@ -115,7 +138,7 @@ export type OpenExternalUrlRendererRequest = string;
 export type OpenExternalUrlMainResponse = void;
 
 /**
- * Channel for opening an local directory in the default desktop explorer
+ * Channel for opening a local directory in the default desktop explorer
  */
 export const OPEN_LOCAL_DIRECTORY_CHANNEL = 'OpenLocalDirectoryChannel';
 export type OpenLocalDirectoryRendererRequest = string;
@@ -227,13 +250,6 @@ export type SetCachedCardanoStatusRendererRequest = ?CardanoStatus;
 export type SetCachedCardanoStatusMainResponse = void;
 
 /**
- * Channel where renderer can ask main process for the result of electron's app.getLocale()
- */
-export const DETECT_SYSTEM_LOCALE_CHANNEL = 'DETECT_SYSTEM_LOCALE_CHANNEL';
-export type DetectSystemLocaleRendererRequest = void;
-export type DetectSystemLocaleMainResponse = string;
-
-/**
  * Channel where renderer can ask main process to export wallets
  */
 export const EXPORT_WALLETS_CHANNEL = 'EXPORT_WALLETS_CHANNEL';
@@ -255,6 +271,13 @@ export type GenerateWalletMigrationReportRendererRequest = WalletMigrationReport
 export type GenerateWalletMigrationReportMainResponse = void;
 
 /**
+ * Channel for generating wallet migration report
+ */
+export const GET_WASM_BINARY_CHANNEL = 'GET_WASM_BINARY_CHANNEL';
+export type getRecoveryWalletIdRendererRequest = Array<string>;
+export type getRecoveryWalletIdMainResponse = string;
+
+/**
  * Channel for showing open dialog
  */
 export const SHOW_OPEN_DIALOG_CHANNEL = 'SHOW_OPEN_DIALOG_CHANNEL';
@@ -272,8 +295,46 @@ export type ShowSaveDialogMainResponse = SaveFileDialogResponseParams;
  * Channel for electron-store
  */
 export const ELECTRON_STORE_CHANNEL = 'ELECTRON_STORE_CHANNEL';
-export type ElectronStoreMessage = {
-  type: 'get' | 'set' | 'delete',
-  key: string,
-  data?: any,
-};
+export type ElectronStoreMessage = StoreMessage;
+
+/**
+ * Channel for initiating the download manager
+ */
+export const GET_DOWNLOAD_LOCAL_DATA = 'GET_DOWNLOAD_LOCAL_DATA';
+export type DownloadLocalDataRendererRequest = DownloadLocalDataRequest;
+export type DownloadLocalDataMainResponse = DownloadLocalDataResponse;
+
+/**
+ * Channel for initiating the download manager
+ */
+export const GET_DOWNLOADS_LOCAL_DATA = 'GET_DOWNLOADS_LOCAL_DATA';
+export type DownloadsLocalDataRendererRequest = DownloadsLocalDataRequest | void;
+export type DownloadsLocalDataMainResponse = DownloadsLocalDataResponse | void;
+
+/**
+ * Channel for requesting a new download
+ */
+export const REQUEST_DOWNLOAD = 'REQUEST_DOWNLOAD';
+export type DownloadRendererRequest = DownloadRequest;
+export type DownloadMainResponse = DownloadResponse;
+
+/**
+ * Channel for requesting a new download
+ */
+export const RESUME_DOWNLOAD = 'RESUME_DOWNLOAD';
+export type ResumeDownloadRendererRequest = ResumeDownloadRequest;
+export type ResumeDownloadMainResponse = ResumeDownloadResponse | void;
+
+/**
+ * Channel for introspecting an address
+ */
+export const INTROSPECT_ADDRESS_CHANNEL = 'INTROSPECT_ADDRESS_CHANNEL';
+export type IntrospectAddressRendererRequest = IntrospectAddressRequest;
+export type IntrospectAddressMainResponse = IntrospectAddressResponse;
+
+/**
+ * Channel for checking block replay progress
+ */
+export const GET_BLOCK_REPLAY_STATUS_CHANNEL = 'GetBlockReplayProgressChannel';
+export type GetBlockReplayProgressRendererRequest = void;
+export type GetBlockReplayProgressMainResponse = number;

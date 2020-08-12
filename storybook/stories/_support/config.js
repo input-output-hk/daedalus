@@ -7,6 +7,7 @@ import flightCandidate from '../../../source/renderer/app/themes/daedalus/flight
 import white from '../../../source/renderer/app/themes/daedalus/white.js';
 import yellow from '../../../source/renderer/app/themes/daedalus/yellow.js';
 import incentivizedTestnet from '../../../source/renderer/app/themes/daedalus/incentivized-testnet.js';
+import shelleyTestnet from '../../../source/renderer/app/themes/daedalus/shelley-testnet.js';
 
 export const themes = {
   Cardano: cardano,
@@ -17,6 +18,7 @@ export const themes = {
   Yellow: yellow,
   White: white,
   IncentivizedTestnet: incentivizedTestnet,
+  ShelleyTestnet: shelleyTestnet,
 };
 export const themeNames: Array<any> = Object.keys(themes);
 export const themesIds = {
@@ -28,6 +30,7 @@ export const themesIds = {
   Yellow: 'yellow',
   White: 'white',
   IncentivizedTestnet: 'incentivized-testnet',
+  ShelleyTestnet: 'shelley-testnet',
 };
 
 export const locales = {

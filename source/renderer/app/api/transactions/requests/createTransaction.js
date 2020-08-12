@@ -1,15 +1,7 @@
 // @flow
 import type { RequestConfig } from '../../common/types';
-import type { Transaction, TransactionPaymentData } from '../types';
+import type { Transaction, TransactionParams } from '../types';
 import { request } from '../../utils/request';
-
-export type TransactionParams = {
-  walletId: string,
-  data: {
-    payments: Array<TransactionPaymentData>,
-    passphrase: string,
-  },
-};
 
 export const createTransaction = (
   config: RequestConfig,

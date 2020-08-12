@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import BigNumber from 'bignumber.js';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
+import vjf from 'mobx-react-form/lib/validators/VJF';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -22,19 +23,14 @@ import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 const messages = defineMessages({
   dialogTitle: {
     id: 'wallet.transferFunds.dialog2.title',
-    defaultMessage: '!!!Transfer funds from the Balance wallet',
+    defaultMessage: '!!!Transfer funds from the legacy wallet',
     description: 'Title in the transfer funds form.',
   },
   description: {
     id: 'wallet.transferFunds.dialog2.label.description',
     defaultMessage:
-      '!!!Confirm transfer from the {sourceWalletName}wallet to the {targetWalletName} wallet.',
+      '!!!Confirm transfer from {sourceWalletName}wallet to the {targetWalletName} wallet.',
     description: 'description in the transfer funds form.',
-  },
-  labelTo: {
-    id: 'wallet.transferFunds.dialog2.label.to',
-    defaultMessage: '!!!To',
-    description: 'Label To in the transfer funds form',
   },
   labelAmount: {
     id: 'wallet.transferFunds.dialog2.label.amount',
@@ -58,7 +54,7 @@ const messages = defineMessages({
   },
   passphraseFieldPlaceholder: {
     id: 'wallet.transferFunds.dialog2.passphraseFieldPlaceholder',
-    defaultMessage: '!!!Type your spending password',
+    defaultMessage: '!!!Spending password',
     description: 'passphraseFieldPlaceholder in the transfer funds form.',
   },
   passphraseLabel: {
@@ -100,8 +96,8 @@ export default class TransferFundsStep2Dialog extends Component<Props, State> {
     amount: null,
   };
 
-  componentWillReceiveProps(nextProps: Props) {
-    const { transferFundsFee, sourceWallet } = nextProps;
+  componentDidUpdate() {
+    const { transferFundsFee, sourceWallet } = this.props;
     // "freezes" the current amounts in the component state
     if (transferFundsFee && !this.state.fees && !this.state.amount) {
       const fees = transferFundsFee.toFormat(DECIMAL_PLACES_IN_ADA);
@@ -109,7 +105,7 @@ export default class TransferFundsStep2Dialog extends Component<Props, State> {
         sourceWallet.amount.minus(transferFundsFee),
         false
       );
-      this.setState({ fees, amount });
+      this.setState({ fees, amount }); // eslint-disable-line
     }
   }
 
@@ -138,6 +134,7 @@ export default class TransferFundsStep2Dialog extends Component<Props, State> {
       },
     },
     {
+      plugins: { vjf: vjf() },
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
@@ -208,12 +205,6 @@ export default class TransferFundsStep2Dialog extends Component<Props, State> {
         >
           {(...content) => <div className={styles.description}>{content}</div>}
         </FormattedMessage>
-        {/* <p className={styles.label}>{intl.formatMessage(messages.labelTo)}</p>
-        <ul className={styles.addresses}>
-          {addresses.map(address => (
-            <li key={address}>{address}</li>
-          ))}
-        </ul> */}
         <div className={styles.amountGroup}>
           <p className={styles.label}>
             {intl.formatMessage(messages.labelAmount)}

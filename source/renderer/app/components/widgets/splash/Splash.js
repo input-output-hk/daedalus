@@ -14,10 +14,10 @@ type Props = {
   onLinkClick: Function,
   title: string,
   subTitle1: string,
-  subTitle2: string,
+  subTitle2?: string,
   description: Node,
   buttonLabel: string,
-  linkLabel: string,
+  linkLabel: boolean | string,
   isIncentivizedTestnetTheme?: boolean,
   backgroundImage?: string,
 };
@@ -54,7 +54,7 @@ export default class SplashNetwork extends Component<Props> {
           <SVGInline svg={daedalusIcon} className={styles.daedalusIcon} />
           <div className={styles.title}>{title}</div>
           <div className={styles.subTitle1}>{subTitle1}</div>
-          <div className={styles.subTitle2}>{subTitle2}</div>
+          {subTitle2 && <div className={styles.subTitle2}>{subTitle2}</div>}
           <div className={styles.description}>{description}</div>
           <div className={styles.action}>
             <Button
@@ -64,12 +64,14 @@ export default class SplashNetwork extends Component<Props> {
               skin={ButtonSkin}
             />
           </div>
-          <Link
-            className={styles.learnMoreLink}
-            onClick={onLinkClick}
-            label={linkLabel}
-            skin={LinkSkin}
-          />
+          {linkLabel && (
+            <Link
+              className={styles.learnMoreLink}
+              onClick={onLinkClick}
+              label={linkLabel}
+              skin={LinkSkin}
+            />
+          )}
         </div>
       </div>
     );

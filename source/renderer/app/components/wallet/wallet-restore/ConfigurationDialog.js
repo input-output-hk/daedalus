@@ -3,8 +3,9 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { Input } from 'react-polymorph/lib/components/Input';
-import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import vjf from 'mobx-react-form/lib/validators/VJF';
+import { PasswordInput } from '../../widgets/forms/PasswordInput';
 import WalletRestoreDialog from './widgets/WalletRestoreDialog';
 import styles from './ConfigurationDialog.scss';
 import ReactToolboxMobxForm, {
@@ -91,8 +92,8 @@ export default class ConfigurationDialog extends Component<Props> {
     error: null,
   };
 
-  componentWillReceiveProps(nextProps: Props) {
-    if (nextProps.error) {
+  componentDidUpdate() {
+    if (this.props.error) {
       handleFormErrors('.ConfigurationDialog_error');
     }
   }
@@ -128,9 +129,11 @@ export default class ConfigurationDialog extends Component<Props> {
           validators: [
             ({ field, form }) => {
               const repeatPasswordField = form.$('repeatPassword');
-              if (repeatPasswordField.value.length > 0) {
-                repeatPasswordField.validate({ showErrors: true });
-              }
+              const isRepeatPasswordFieldSet =
+                repeatPasswordField.value.length > 0;
+              repeatPasswordField.validate({
+                showErrors: isRepeatPasswordFieldSet,
+              });
               return [
                 isValidSpendingPassword(field.value),
                 this.context.intl.formatMessage(
@@ -153,7 +156,6 @@ export default class ConfigurationDialog extends Component<Props> {
           validators: [
             ({ field, form }) => {
               const spendingPassword = form.$('spendingPassword').value;
-              if (spendingPassword.length === 0) return [true];
               return [
                 isValidRepeatPassword(spendingPassword, field.value),
                 this.context.intl.formatMessage(
@@ -169,6 +171,7 @@ export default class ConfigurationDialog extends Component<Props> {
       },
     },
     {
+      plugins: { vjf: vjf() },
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
@@ -209,17 +212,20 @@ export default class ConfigurationDialog extends Component<Props> {
     const spendingPasswordField = form.$('spendingPassword');
     const repeatPasswordField = form.$('repeatPassword');
 
-    const walletNameFieldClasses = classnames([styles.input, 'walletName']);
+    const walletNameFieldClasses = classnames([
+      styles.walletName,
+      'walletName',
+    ]);
     const spendingPasswordFieldClasses = classnames([
-      styles.input,
       styles.spendingPasswordField,
       'spendingPassword',
     ]);
     const repeatPasswordFieldClasses = classnames([
-      styles.input,
       styles.spendingPasswordField,
       'repeatPassword',
     ]);
+
+    const canSubmit = !isSubmitting && form.isValid;
 
     return (
       <WalletRestoreDialog
@@ -227,6 +233,7 @@ export default class ConfigurationDialog extends Component<Props> {
         actions={[
           {
             className: isSubmitting ? styles.isSubmitting : null,
+            disabled: !canSubmit,
             primary: true,
             label: intl.formatMessage(messages.continueButtonLabel),
             onClick: this.submit,
@@ -245,30 +252,25 @@ export default class ConfigurationDialog extends Component<Props> {
             onKeyPress={this.handleSubmitOnEnter}
             {...walletNameField.bind()}
             error={walletNameField.error}
-            skin={InputSkin}
           />
 
           <div className={styles.spendingPasswordWrapper}>
             <div className={styles.spendingPasswordFields}>
-              <Input
+              <PasswordInput
                 className={spendingPasswordFieldClasses}
                 onKeyPress={this.handleSubmitOnEnter}
                 {...spendingPasswordField.bind()}
-                error={spendingPasswordField.error}
-                skin={InputSkin}
               />
-              <Input
+              <PasswordInput
                 className={repeatPasswordFieldClasses}
                 onKeyPress={this.handleSubmitOnEnter}
                 {...repeatPasswordField.bind()}
-                error={repeatPasswordField.error}
-                skin={InputSkin}
+                repeatPassword={spendingPasswordField.value}
+                isPasswordRepeat
               />
-              <p className={styles.passwordInstructions}>
-                <FormattedHTMLMessage
-                  {...globalMessages.passwordInstructions}
-                />
-              </p>
+            </div>
+            <div className={styles.passwordInstructions}>
+              <FormattedHTMLMessage {...globalMessages.passwordInstructions} />
             </div>
           </div>
 

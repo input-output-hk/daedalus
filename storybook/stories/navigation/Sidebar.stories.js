@@ -11,9 +11,11 @@ import {
   STAGING,
 } from '../../../source/common/types/environment.types';
 import StoryDecorator from '../_support/StoryDecorator';
-import { isIncentivizedTestnetTheme } from '../_support/utils';
+import {
+  isIncentivizedTestnetTheme,
+  isShelleyTestnetTheme,
+} from '../_support/utils';
 import Sidebar from '../../../source/renderer/app/components/sidebar/Sidebar';
-import { WalletRecoveryPhraseVerificationStatuses } from '../../../source/renderer/app/stores/WalletsStore';
 import {
   CATEGORIES_WITH_DELEGATION_COUNTDOWN,
   CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN,
@@ -29,8 +31,7 @@ const sidebarMenus = observable({
         isNotResponding: false,
         isConnected: true,
         isLegacy: false,
-        recoveryPhraseVerificationStatus:
-          WalletRecoveryPhraseVerificationStatuses.OK,
+        hasNotification: false,
       },
       {
         id: '2',
@@ -39,8 +40,7 @@ const sidebarMenus = observable({
         isNotResponding: false,
         isConnected: true,
         isLegacy: false,
-        recoveryPhraseVerificationStatus:
-          WalletRecoveryPhraseVerificationStatuses.OK,
+        hasNotification: false,
       },
       {
         id: '3',
@@ -49,8 +49,7 @@ const sidebarMenus = observable({
         isNotResponding: false,
         isConnected: true,
         isLegacy: false,
-        recoveryPhraseVerificationStatus:
-          WalletRecoveryPhraseVerificationStatuses.OK,
+        hasNotification: false,
       },
     ],
     activeWalletId: '1',
@@ -59,6 +58,51 @@ const sidebarMenus = observable({
       onWalletItemClick: (walletId: string) => {
         runInAction(() => {
           sidebarMenus.wallets.activeWalletId = walletId;
+        });
+      },
+    },
+  },
+  hardwareWallets: null,
+});
+
+const sidebarMenusHardware = observable({
+  wallets: null,
+  hardwareWallets: {
+    items: [
+      {
+        id: '1',
+        title: 'BTC wallet',
+        info: '2.41824 BTC',
+        isNotResponding: false,
+        isConnected: false,
+        isLegacy: false,
+        hasNotification: false,
+      },
+      {
+        id: '2',
+        title: 'ETC wallet',
+        info: '12M ETC',
+        isNotResponding: false,
+        isConnected: false,
+        isLegacy: false,
+        hasNotification: false,
+      },
+      {
+        id: '3',
+        title: 'ADA wallet',
+        info: '9,800 ADA',
+        isNotResponding: false,
+        isConnected: true,
+        isLegacy: false,
+        hasNotification: false,
+      },
+    ],
+    activeWalletId: '3',
+    actions: {
+      onAddWallet: action('toggleAddWallet'),
+      onHardwareWalletItemClick: (walletId: string) => {
+        runInAction(() => {
+          sidebarMenusHardware.hardwareWallets.activeWalletId = walletId;
         });
       },
     },
@@ -85,6 +129,7 @@ storiesOf('Navigation|Sidebar', module)
       currentTheme={props.currentTheme}
       network="testnet"
       isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
+      isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
     />
   ))
   .add('Wallets Category', (props: { currentTheme: string }) => (
@@ -101,6 +146,7 @@ storiesOf('Navigation|Sidebar', module)
       currentTheme={props.currentTheme}
       network="testnet"
       isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
+      isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
     />
   ))
   .add('Wallet Selected', (props: { currentTheme: string }) => (
@@ -118,13 +164,32 @@ storiesOf('Navigation|Sidebar', module)
       currentTheme={props.currentTheme}
       network="testnet"
       isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
+      isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
+    />
+  ))
+  .add('Hardware Wallet Selected', (props: { currentTheme: string }) => (
+    <Sidebar
+      categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
+      activeSidebarCategory={CATEGORIES_WITH_DELEGATION_COUNTDOWN[1].route}
+      menus={sidebarMenusHardware}
+      onActivateCategory={action('onActivateCategory')}
+      isShowingSubMenus
+      isDialogOpen={() => false}
+      onAddWallet={action('onAddWallet')}
+      onOpenDialog={action('openDialog')}
+      onSubmitSupportRequest={() => {}}
+      pathname="/"
+      currentTheme={props.currentTheme}
+      network="testnet"
+      isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
+      isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
     />
   ))
   .add('Delegation Category', (props: { currentTheme: string }) => (
     <Sidebar
       menus={emptyMenus}
       categories={CATEGORIES_WITH_DELEGATION_COUNTDOWN}
-      activeSidebarCategory={CATEGORIES_WITH_DELEGATION_COUNTDOWN[1].route}
+      activeSidebarCategory={CATEGORIES_WITH_DELEGATION_COUNTDOWN[2].route}
       onActivateCategory={action('onActivateCategory')}
       isDialogOpen={() => false}
       onAddWallet={action('onAddWallet')}
@@ -134,6 +199,7 @@ storiesOf('Navigation|Sidebar', module)
       currentTheme={props.currentTheme}
       network="testnet"
       isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
+      isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
     />
   ))
   .add(
@@ -152,6 +218,7 @@ storiesOf('Navigation|Sidebar', module)
         currentTheme={props.currentTheme}
         network="testnet"
         isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
+        isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
       />
     )
   )
@@ -178,5 +245,6 @@ storiesOf('Navigation|Sidebar', module)
         TESTNET
       )}
       isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
+      isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
     />
   ));

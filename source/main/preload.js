@@ -7,13 +7,26 @@ import electronLog from 'electron-log-daedalus';
 import { environment } from './environment';
 import {
   buildLabel,
+  cluster,
   legacyStateDir,
   nodeImplementation,
   isFlight,
 } from './config';
+import {
+  SHELLEY_LOCAL,
+  SHELLEY_TESTNET,
+  SHELLEY_QA,
+} from '../common/types/environment.types';
+import { CardanoNodeImplementationOptions } from '../common/types/cardano-node.types';
 
 const _process = process;
-const _isIncentivizedTestnet = nodeImplementation === 'jormungandr';
+const _isShelleyTestnet =
+  nodeImplementation === CardanoNodeImplementationOptions.CARDANO &&
+  (cluster === SHELLEY_LOCAL ||
+    cluster === SHELLEY_TESTNET ||
+    cluster === SHELLEY_QA);
+const _isIncentivizedTestnet =
+  nodeImplementation === CardanoNodeImplementationOptions.JORMUNGANDR;
 
 process.once('loaded', () => {
   Object.assign(global, {
@@ -41,6 +54,7 @@ process.once('loaded', () => {
       error: (...args) => electronLog.error(...args),
       warn: (...args) => electronLog.warn(...args),
     },
+    isShelleyTestnet: _isShelleyTestnet,
     isIncentivizedTestnet: _isIncentivizedTestnet,
     isFlight,
     legacyStateDir,

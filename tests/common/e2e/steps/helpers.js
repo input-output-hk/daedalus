@@ -5,7 +5,8 @@ import { expect } from 'chai';
 import { generateFileNameWithTimestamp } from '../../../../source/common/utils/files';
 import ensureDirectoryExists from '../../../../source/main/utils/ensureDirectoryExists';
 import { DEFAULT_TIMEOUT } from './config';
-import type { WebdriverClient } from '../../../types';
+
+export const notFoundWalletsErrorMessage = 'No wallet(s) found with the given name(s).';
 
 export const expectTextInSelector = async (
   client: Object,
@@ -117,9 +118,8 @@ export const waitUntilTextInSelector = async (
     // We only compare the first result
     if (ignoreCase) {
       return textOnScreen[0].toLowerCase() === text.toLowerCase();
-    } else {
-      return textOnScreen[0] === text;
     }
+    return textOnScreen[0] === text;
   });
 
 export const timeout = (ms: number) => {

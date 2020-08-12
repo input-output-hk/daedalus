@@ -216,6 +216,20 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-dialog-title-color': '#5e6066',
     '--theme-dialog-text-color': '#5e6066',
     '--theme-dialog-border-color': '#dfe4e8',
+    '--theme-dialog-fullsize-background-color': 'rgba(36, 62, 98, 0.96)',
+    '--theme-dialog-fullsize-background-color-opaque': '#2f4768',
+    '--theme-dialog-fullsize-button-background-color': '#fafbfc',
+    '--theme-dialog-fullsize-button-background-color-hover': '#243e62',
+    '--theme-dialog-fullsize-button-border-color': '#fafbfc',
+    '--theme-dialog-fullsize-button-icon-color': 'rgba(250, 251, 252, 1)',
+    '--theme-dialog-fullsize-button-icon-color-hover': 'rgba(36, 62, 98, 1)',
+    '--theme-dialog-fullsize-button-label-color': '#fafbfc',
+    '--theme-dialog-fullsize-button-label-color-hover': 'rgba(36, 62, 98, 1)',
+    '--theme-dialog-fullsize-button-text-color-hover': '#243e62',
+    '--theme-dialog-fullsize-field-background-color': 'rgba(0,0,0, 0.1)',
+    '--theme-dialog-fullsize-text-color': 'rgba(255, 255, 255, 0.7)',
+    '--theme-dialog-fullsize-text-highlight-color': '#ffffff',
+    '--theme-dialog-fullsize-title-text-color': '#ffffff',
   },
   errors: {
     '--theme-color-error': '#ea4c5b',
@@ -248,6 +262,15 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--font-heavy': 'NotoSans-ExtraBold, NotoSansCJKjp-Black',
     '--font-black': 'NotoSans-Black, NotoSansCJKjp-Black',
     '--font-mono': 'SFMono-Light',
+  },
+  hardwareWallet: {
+    '--theme-hardware-wallet-step-background-color': '#fafbfc',
+    '--theme-hardware-wallet-step-border-active-color':
+      'rgba(94, 96, 102, 0.5)',
+    '--theme-hardware-wallet-step-border-color': '#c6cdd6',
+    '--theme-hardware-wallet-step-color': '#5e6066',
+    '--theme-hardware-wallet-title-color': '#5e6066',
+    '--theme-hardware-wallet-message-color': '#5e6066',
   },
   icon: {
     '--theme-icon-nav-color': 'rgba(250, 251, 252, 0.6)',
@@ -370,6 +393,42 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-news-feed-icon-toggle-hover-background-color':
       'rgba(0, 0, 0, 0.1)',
     '--theme-news-feed-no-fetch-color': '#fafbfc',
+    '--theme-news-feed-incident-overlay-background-color':
+      'rgba(36, 62, 98, 0.98)',
+    '--theme-news-feed-incident-overlay-text-color': '#fafbfc',
+    '--theme-news-feed-incident-overlay-button-color': '#fafbfc',
+    '--theme-news-feed-incident-overlay-scrollbar-thumb-background':
+      'rgba(250, 251, 252, 0.3)',
+    '--theme-news-feed-incident-overlay-scrollbar-thumb-background-hove':
+      'rgba(250, 251, 252, 0.5)',
+    '--theme-news-feed-incident-overlay-content-list-color':
+      'rgba(250, 251, 252, 0.7)',
+    '--theme-news-feed-incident-overlay-content-background':
+      'rgba(0, 0, 0, 0.1)',
+    '--theme-news-feed-incident-overlay-button-background':
+      'rgba(0, 0, 0, 0.1)',
+    '--theme-news-feed-incident-overlay-button-color-hover':
+      'rgba(36, 62, 98, 0.98)',
+    '--theme-news-feed-incident-grey-overlay-background-color':
+      'rgba(68, 68, 68, 0.98)',
+    '--theme-news-feed-incident-grey-overlay-text-color': '#ffffff',
+    '--theme-news-feed-incident-grey-overlay-button-color': '#ffffff',
+    '--theme-news-feed-incident-grey-overlay-scrollbar-thumb-background':
+      'rgba(255, 255, 255, 0.3)',
+    '--theme-news-feed-incident-grey-overlay-scrollbar-thumb-background-hove':
+      'rgba(255, 255, 255, 0.5)',
+    '--theme-news-feed-incident-grey-overlay-content-list-color':
+      'rgba(255, 255, 255, 0.7)',
+    '--theme-news-feed-incident-red-overlay-background-color':
+      'rgba(171, 23, 0, 0.98)',
+    '--theme-news-feed-incident-red-overlay-text-color': '#ffffff',
+    '--theme-news-feed-incident-red-overlay-button-color': '#ffffff',
+    '--theme-news-feed-incident-red-overlay-scrollbar-thumb-background':
+      'rgba(255, 255, 255, 0.3)',
+    '--theme-news-feed-incident-red-overlay-scrollbar-thumb-background-hove':
+      'rgba(255, 255, 255, 0.5)',
+    '--theme-news-feed-incident-red-overlay-content-list-color':
+      'rgba(255, 255, 255, 0.7)',
   },
   newsItem: {
     '--theme-news-item-action-button-background-color': 'rgba(0, 0, 0, 0.1)',
@@ -385,7 +444,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-news-item-info-background-color': 'rgba(0, 0, 0, 0.1)',
     '--theme-news-item-title-color': '#fafbfc',
   },
-  nodeUpdate: {
+  appUpdate: {
     '--theme-node-update-background-color': '#ebeff2',
     '--theme-node-update-title-color': '#5e6066',
     '--theme-node-update-message-color': '#5e6066',
@@ -738,6 +797,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
       'rgba(47, 73, 110, .1)',
     '--theme-staking-stake-pool-tooltip-neutral-text-color': '#5e6066',
     '--theme-staking-stake-pool-tooltip-experimental-icon-color': '#5e6066',
+    '--theme-staking-stake-pool-tooltip-id-background-color': '#f0f3f5',
   },
   staking: {
     '--theme-staking-content-background-color': '#fafbfc',
@@ -753,6 +813,9 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-staking-progress-bar-background-color': 'rgba(52, 70, 94, 0.1)',
     '--theme-staking-progress-stripe-dark-1-background-color': '#34465e',
     '--theme-staking-progress-stripe-dark-2-background-color': '#445b7c',
+    '--theme-staking-slider-background-color-1': '#445b7c',
+    '--theme-staking-slider-background-color-2': '#445b7c',
+    '--theme-staking-slider-box-shadow-color': 'rgba(0, 0, 0, 0.24)',
     '--theme-staking-table-body-highlighted-text-color': '#296fd0',
     '--theme-staking-donut-ring-completed-color': 'rgba(234, 76, 91, 0.2)',
     '--theme-staking-donut-ring-remaining-color': '#ea4c5b',
@@ -784,6 +847,12 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-staking-wallet-row-ticker-background-color': '#ebeff2',
     '--theme-staking-wallet-row-ticker-text-color': '#5e6066',
     '--theme-staking-wallet-row-ticker-ada-icon-fill-color': '#5e606680',
+    '--theme-staking-redeemItnRewards-text-color': '#fafbfc',
+    '--theme-staking-redeemItnRewards-separator-color': '#2a4263',
+    '--theme-staking-redeemItnRewards-attention-text-color': '#ea4c5b',
+    '--theme-staking-redeemItnRewards-description-text-color':
+      'rgba(250, 251, 252, .7)',
+    '--theme-staking-redeemItnRewards-icon-color': '#fafbfc',
   },
   support: {
     '--theme-support-settings-item-color': 'rgba(94, 96, 102, 0.5)',
@@ -889,6 +958,12 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
       'rgba(68, 91, 124, 0.05)',
     '--theme-recovery-phrase-attention-background-color':
       'rgba(234, 76, 91, .1)',
+    '--theme-recovery-phrase-paper-wallet-background-color':
+      'rgba(68, 91, 124, 0.1)',
+    '--theme-recovery-phrase-paper-wallet-question-background-color':
+      'rgba(68, 91, 124, 0.3)',
+    '--theme-recovery-phrase-paper-wallet-question-text-color': '#e7eaee',
+    '--theme-recovery-phrase-paper-wallet-text-color': 'rgba(94, 96, 102, 0.8)',
   },
   walletImportDialog: {
     '--theme-wallet-import-background-color': 'rgba(36, 62, 98, 0.98)',
@@ -932,7 +1007,6 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
   walletSettings: {
     '--theme-wallet-settings-section-separator-color':
       'rgba(94, 96, 102, 0.15)',
-    '--theme-wallet-settings-resync-button-label-color': 'rgba(94, 96, 102, 1)',
   },
   walletNotRespondingOverlay: {
     '--theme-wallet-not-responding-background-color': 'rgba(36, 62, 98, 0.96)',
@@ -947,6 +1021,16 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-wallet-not-responding-icon-color': '#fafbfc',
     '--theme-wallet-not-responding-link-text-color': '#fafbfc',
     '--theme-wallet-not-responding-title-text-color': '#fafbfc',
+  },
+  rpPasswordInput: {
+    '--rp-password-input-tooltip-border-radius': '5px',
+    '--rp-password-input-error-score-color': '#ea4c5b',
+    '--rp-password-input-error-bg-color': 'rgba(234, 76, 91, 0.4)',
+    '--rp-password-input-warning-score-color': '#f2a218',
+    '--rp-password-input-warning-bg-color': 'rgba(242, 162, 24, 0.4)',
+    '--rp-password-input-success-score-color': '#2dc06c',
+    '--rp-password-input-success-bg-color': 'rgba(45, 192, 108, 0.4)',
+    '--rp-password-input-tooltip-font-family': 'var(--rp-theme-font-medium)',
   },
 };
 

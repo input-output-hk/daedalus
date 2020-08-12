@@ -69,6 +69,24 @@ Daedalus - Cryptocurrency Wallet
 1. Run `yarn nix:staging` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
 
+#### Shelley Local
+
+1. Run `nix-shell -A devops` from `daedalus`.
+2. Run `start-cluster` to launch the cluster (run `stop-cluster` to stop it).
+3. Run `yarn nix:shelley_local` from `daedalus` in a separate Terminal window.
+4. Run `yarn dev` from the subsequent `nix-shell`
+5. Once Daedalus has started, and has gotten past the loading screen, run `yarn shelley:wallet:importer` from a new terminal window. This is only required if you wish to import some funded wallets.
+
+#### Shelley Testnet
+
+1. Run `yarn nix:shelley_testnet` from `daedalus`.
+2. Run `yarn dev` from the subsequent `nix-shell`
+
+#### Shelley QA Testnet
+
+1. Run `yarn nix:shelley_qa` from `daedalus`.
+2. Run `yarn dev` from the subsequent `nix-shell`
+
 ### Running Daedalus with Jormungandr
 
 #### ITN Selfnode
@@ -97,8 +115,8 @@ Daedalus - Cryptocurrency Wallet
 `Niv` is used to manage the version of upstream dependencies. The versions of these dependencies can be seen in `nix/sources.json`.
 
 Dependencies are updated with the follow nix commands:
-- Update to the latest master: `nix-shell -A devops --run "niv update cardano-wallet"`
-- Update to a specific revision: `nix-shell -A devops --run "niv update cardano-wallet -a rev=1988f22895c45e12506ec83da0496ebdcdd17719"`
+- Update to the latest master: `nix-shell -A devops --arg nivOnly true --run "niv update cardano-wallet"`
+- Update to a specific revision: `nix-shell -A devops --arg nivOnly true --run "niv update cardano-wallet -a rev=91db88f9195de49d4fb4299c68fc3f6de09856ab"`
 
 #### Notes
 

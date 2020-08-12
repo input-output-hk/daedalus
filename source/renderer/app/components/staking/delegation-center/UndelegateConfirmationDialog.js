@@ -5,6 +5,7 @@ import { observer } from 'mobx-react';
 import { get } from 'lodash';
 import BigNumber from 'bignumber.js';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import vjf from 'mobx-react-form/lib/validators/VJF';
 import classnames from 'classnames';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { Input } from 'react-polymorph/lib/components/Input';
@@ -53,22 +54,17 @@ const messages = defineMessages({
     description:
       'Label for the unsupport confirmation check in the "Undelegate" dialog.',
   },
-  confirmUneligibleCheck: {
-    id: 'staking.delegationCenter.undelegate.dialog.confirmUneligibleCheck',
+  confirmIneligibleCheck: {
+    id: 'staking.delegationCenter.undelegate.dialog.confirmIneligibleCheck',
     defaultMessage:
       '!!!I understand that I will not be eligible to earn rewards when my stake is undelegated.',
     description:
-      'Label for the uneligible confirmation check in the "Undelegate" dialog.',
+      'Label for the ineligible confirmation check in the "Undelegate" dialog.',
   },
   feesLabel: {
     id: 'staking.delegationCenter.undelegate.dialog.feesLabel',
     defaultMessage: '!!!Fees',
     description: 'Fees label in the "Undelegate" dialog.',
-  },
-  adaLabel: {
-    id: 'staking.delegationCenter.undelegate.dialog.adaLabel',
-    defaultMessage: '!!!ADA',
-    description: 'ADA label in the "Undelegate" dialog.',
   },
   spendingPasswordLabel: {
     id: 'staking.delegationCenter.undelegate.dialog.spendingPasswordLabel',
@@ -91,6 +87,11 @@ const messages = defineMessages({
     defaultMessage: '!!!unknown',
     description: 'unknown stake pool label in the "Undelegate" dialog.',
   },
+  calculatingFees: {
+    id: 'staking.delegationCenter.undelegate.dialog.calculatingFees',
+    defaultMessage: '!!!Calculating fees',
+    description: '"Calculating fees" message in the "Undelegate" dialog.',
+  },
 });
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
@@ -104,7 +105,7 @@ type Props = {
   onExternalLinkClick: Function,
   isSubmitting: boolean,
   error: ?LocalizableError,
-  fees: BigNumber,
+  fees: ?BigNumber,
 };
 
 @observer
@@ -134,10 +135,10 @@ export default class UndelegateConfirmationDialog extends Component<Props> {
             },
           ],
         },
-        isConfirmUneligibleChecked: {
+        isConfirmIneligibleChecked: {
           type: 'checkbox',
           label: this.context.intl.formatMessage(
-            messages.confirmUneligibleCheck
+            messages.confirmIneligibleCheck
           ),
           value: false,
           validators: [
@@ -176,6 +177,7 @@ export default class UndelegateConfirmationDialog extends Component<Props> {
       },
     },
     {
+      plugins: { vjf: vjf() },
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
@@ -185,19 +187,20 @@ export default class UndelegateConfirmationDialog extends Component<Props> {
 
   isConfirmDisabled = () => {
     const { form } = this;
-    const { isSubmitting } = this.props;
+    const { fees, isSubmitting } = this.props;
     const { isValid: unsupportCheckboxIsValid } = form.$(
       'isConfirmUnsupportChecked'
     );
-    const { isValid: uneligibleCheckboxIsValid } = form.$(
-      'isConfirmUneligibleChecked'
+    const { isValid: ineligibleCheckboxIsValid } = form.$(
+      'isConfirmIneligibleChecked'
     );
     const { isValid: passphraseIsValid } = form.$('passphrase');
 
     return (
       isSubmitting ||
+      !fees ||
       !unsupportCheckboxIsValid ||
-      !uneligibleCheckboxIsValid ||
+      !ineligibleCheckboxIsValid ||
       !passphraseIsValid
     );
   };
@@ -244,7 +247,7 @@ export default class UndelegateConfirmationDialog extends Component<Props> {
     const { form } = this;
     const { intl } = this.context;
     const unsupportCheckboxField = form.$('isConfirmUnsupportChecked');
-    const uneligibleCheckboxField = form.$('isConfirmUneligibleChecked');
+    const ineligibleCheckboxField = form.$('isConfirmIneligibleChecked');
     const passphraseField = form.$('passphrase');
     const {
       walletName,
@@ -307,8 +310,8 @@ export default class UndelegateConfirmationDialog extends Component<Props> {
           skin={CheckboxSkin}
         />
         <Checkbox
-          {...uneligibleCheckboxField.bind()}
-          error={uneligibleCheckboxField.error}
+          {...ineligibleCheckboxField.bind()}
+          error={ineligibleCheckboxField.error}
           skin={CheckboxSkin}
         />
         <div className={styles.divider} />
@@ -317,10 +320,18 @@ export default class UndelegateConfirmationDialog extends Component<Props> {
             {intl.formatMessage(messages.feesLabel)}
           </label>
           <p className={styles.feesAmount}>
-            <span>{formattedWalletAmount(fees, false)}</span>
-            <span className={styles.feesAmountLabel}>
-              &nbsp;{intl.formatMessage(messages.adaLabel)}
-            </span>
+            {!fees ? (
+              <span className={styles.calculatingFeesLabel}>
+                {intl.formatMessage(messages.calculatingFees)}
+              </span>
+            ) : (
+              <>
+                <span>{formattedWalletAmount(fees, false)}</span>
+                <span className={styles.feesAmountLabel}>
+                  &nbsp;{intl.formatMessage(globalMessages.unitAda)}
+                </span>
+              </>
+            )}
           </p>
         </div>
         <Input

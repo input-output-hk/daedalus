@@ -1,6 +1,4 @@
 // @flow
-import BigNumber from 'bignumber.js';
-
 import { WalletUnits } from '../../domains/Wallet';
 import type { ExportedByronWallet } from '../../types/walletExportTypes';
 
@@ -105,8 +103,8 @@ export type DelegationStakePool = {
 };
 
 export type WalletNextDelegationEpoch = {
-  epoch_number: number,
-  epoch_start_time: string,
+  epoch_number: ?number,
+  epoch_start_time: ?string,
 };
 
 export type WalletDelegation = {
@@ -153,11 +151,6 @@ export type LegacyWalletInitData = {
   passphrase: string,
 };
 
-export type WalletIdAndBalance = {
-  walletId: string,
-  balance: ?BigNumber,
-};
-
 // req/res Wallet types
 export type CreateWalletRequest = {
   name: string,
@@ -184,16 +177,6 @@ export type GetWalletUtxosRequest = {
   isLegacy: boolean,
 };
 
-export type GetWalletIdAndBalanceRequest = {
-  recoveryPhrase: Array<string>,
-  getBalance: boolean,
-};
-
-export type GetWalletIdAndBalanceResponse = {
-  walletId: string,
-  balance: ?number,
-};
-
 export type RestoreWalletRequest = {
   recoveryPhrase: Array<string>,
   walletName: string,
@@ -211,11 +194,6 @@ export type RestoreExportedByronWalletRequest = ExportedByronWallet;
 export type UpdateWalletRequest = {
   walletId: string,
   name: string,
-  isLegacy: boolean,
-};
-
-export type ForceWalletResyncRequest = {
-  walletId: string,
   isLegacy: boolean,
 };
 
@@ -264,7 +242,7 @@ export type TransferFundsCalculateFeeResponse = {
 
 export type TransferFundsRequest = {
   sourceWalletId: string,
-  targetWalletId: string,
+  targetWalletAddresses: ?Array<string>,
   passphrase: string,
 };
 

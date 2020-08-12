@@ -27,6 +27,8 @@ import {
   WalletImportStatuses,
   ImportFromOptions,
 } from '../types/walletExportTypes';
+import { IMPORT_WALLET_STEPS } from '../config/walletRestoreConfig';
+import type { ImportWalletStep } from '../types/walletRestoreTypes';
 
 export type WalletMigrationStatus =
   | 'unstarted'
@@ -50,13 +52,14 @@ export const WalletMigrationStatuses: {
 };
 
 export default class WalletMigrationStore extends Store {
-  @observable walletMigrationStep = 1;
+  @observable walletMigrationStep: ?ImportWalletStep = null;
 
   @observable isExportRunning = false;
   @observable exportedWallets: Array<ExportedByronWallet> = [];
   @observable exportErrors: string = '';
   @observable exportSourcePath: string = '';
   @observable defaultExportSourcePath: string = global.legacyStateDir;
+  @observable isTestMigrationEnabled: boolean = false;
 
   @observable isRestorationRunning = false;
   @observable restoredWallets: Array<Wallet> = [];
@@ -81,6 +84,7 @@ export default class WalletMigrationStore extends Store {
 
   setup() {
     const { walletMigration } = this.actions;
+    walletMigration.initiateMigration.listen(this._initiateMigration);
     walletMigration.startMigration.listen(this._startMigration);
     walletMigration.finishMigration.listen(this._finishMigration);
     walletMigration.resetMigration.listen(this._resetMigration);
@@ -104,6 +108,10 @@ export default class WalletMigrationStore extends Store {
 
   getExportedWalletByIndex = (index: number): ?ExportedByronWallet =>
     this.exportedWallets.find(w => w.index === index);
+
+  @action _initiateMigration = () => {
+    this.walletMigrationStep = IMPORT_WALLET_STEPS.WALLET_IMPORT_FILE;
+  };
 
   @action _selectExportSourcePath = async ({
     importFrom,
@@ -146,11 +154,11 @@ export default class WalletMigrationStore extends Store {
   };
 
   @action _nextStep = async () => {
-    if (this.walletMigrationStep === 1) {
+    if (this.walletMigrationStep === IMPORT_WALLET_STEPS.WALLET_IMPORT_FILE) {
       await this._exportWallets();
       if (this.exportedWalletsCount) {
         runInAction('update walletMigrationStep', () => {
-          this.walletMigrationStep = 2;
+          this.walletMigrationStep = IMPORT_WALLET_STEPS.WALLET_SELECT_IMPORT;
         });
       }
     } else {
@@ -373,8 +381,11 @@ export default class WalletMigrationStore extends Store {
   };
 
   @action _startMigration = async () => {
-    const { isMainnet, isTestnet } = this.environment;
-    if (isMainnet || isTestnet) {
+    // eslint-disable-next-line
+    if (true) return; // This feature is currently unavailable as export tool is disabled
+
+    const { isMainnet, isTestnet, isTest } = this.environment;
+    if (isMainnet || isTestnet || (isTest && this.isTestMigrationEnabled)) {
       // Reset migration data
       this._resetMigration();
 
@@ -396,7 +407,7 @@ export default class WalletMigrationStore extends Store {
         if (this.exportedWalletsCount) {
           // Wallets successfully exported - ask the user to select the ones to import
           runInAction('update walletMigrationStep', () => {
-            this.walletMigrationStep = 2;
+            this.walletMigrationStep = IMPORT_WALLET_STEPS.WALLET_SELECT_IMPORT;
           });
           this.actions.dialogs.open.trigger({
             dialog: WalletImportFileDialog,
@@ -434,12 +445,32 @@ export default class WalletMigrationStore extends Store {
     this._resetExportData();
     this._resetRestorationData();
     this.exportSourcePath = '';
-    this.walletMigrationStep = 1;
+    this.walletMigrationStep = null;
+  };
+
+  // For E2E test purpose
+  @action _setFakedImportPath = (sourcePath: string) => {
+    if (this.environment.isTest) {
+      this.exportSourcePath = sourcePath;
+      this.defaultExportSourcePath = sourcePath;
+    }
+  };
+
+  // For E2E test purpose
+  @action _enableTestWalletMigration = async () => {
+    if (this.environment.isTest) {
+      this.isTestMigrationEnabled = true;
+      await this.setWalletMigrationStatusRequest.execute(
+        WalletMigrationStatuses.UNSTARTED
+      );
+      this._startMigration();
+    }
   };
 
   @action _finishMigration = async () => {
-    this.actions.dialogs.closeActiveDialog.trigger();
-    this.walletMigrationStep = 1;
+    if (this.stores.uiDialogs.isOpen(WalletImportFileDialog)) {
+      this.actions.dialogs.closeActiveDialog.trigger();
+    }
 
     const walletMigrationStatus = await this.getWalletMigrationStatusRequest.execute()
       .promise;

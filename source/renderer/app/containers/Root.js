@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 import WalletAddPage from './wallet/WalletAddPage';
 import LoadingPage from './loading/LoadingPage';
 import SplashNetworkPage from './splash/SplashNetworkPage';
+import RedeemItnRewardsContainer from './staking/RedeemItnRewardsContainer';
 import WalletImportFileDialog from '../components/wallet/wallet-import/WalletImportFileDialog';
 import type { InjectedContainerProps } from '../types/injectedPropsType';
 
@@ -12,21 +13,23 @@ type Props = InjectedContainerProps;
 @inject('stores', 'actions')
 @observer
 export default class Root extends Component<Props> {
+  static defaultProps = { actions: null, stores: null };
+
   render() {
     const { stores, actions, children } = this.props;
     const {
       app,
+      appUpdate,
       networkStatus,
-      nodeUpdate,
       profile,
       staking,
       uiDialogs,
       wallets,
     } = stores;
-    const { isStakingPage } = staking;
+    const { isStakingPage, redeemStep } = staking;
     const { isProfilePage, isSettingsPage } = profile;
-    const { showManualUpdate } = nodeUpdate;
-    const { hasLoadedWallets } = wallets;
+    const { showManualUpdate } = appUpdate;
+    const { hasLoadedWallets, isHardwareWalletRoute } = wallets;
     const {
       isConnected,
       isNodeStopping,
@@ -36,9 +39,12 @@ export default class Root extends Component<Props> {
       isSystemTimeCorrect,
     } = networkStatus;
     const { isCurrentLocaleSet, areTermsOfUseAccepted } = profile;
+
     const isWalletImportDialogOpen = uiDialogs.isOpen(WalletImportFileDialog);
     const isPageThatDoesntNeedWallets =
-      (isStakingPage || isSettingsPage) && hasLoadedWallets && isConnected;
+      (isStakingPage || isSettingsPage || isHardwareWalletRoute) &&
+      hasLoadedWallets &&
+      isConnected;
 
     // In case node is in stopping sequence we must show the "Connecting" screen
     // with the "Stopping Cardano node..." and "Cardano node stopped" messages
@@ -54,12 +60,16 @@ export default class Root extends Component<Props> {
       return <SplashNetworkPage />;
     }
 
+    if (redeemStep !== null) {
+      return <RedeemItnRewardsContainer key="RedeemItnRewardsContainer" />;
+    }
+
     // Just render any page that doesn't require wallets to be loaded or node to be connected
     if (
       (isPageThatDoesntNeedWallets && !isNodeInStoppingSequence) ||
       (isProfilePage && (isNotEnoughDiskSpace || !isNodeInStoppingSequence))
     ) {
-      return React.Children.only(children);
+      return <>{children}</>;
     }
 
     if (
@@ -76,6 +86,6 @@ export default class Root extends Component<Props> {
       return <WalletAddPage />;
     }
 
-    return React.Children.only(children);
+    return <>{children}</>;
   }
 }

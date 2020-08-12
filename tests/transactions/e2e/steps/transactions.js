@@ -6,9 +6,7 @@ import { DECIMAL_PLACES_IN_ADA, LOVELACES_PER_ADA } from '../../../../source/ren
 import {
   getVisibleTextsForSelector,
   clickInputByLabel,
-  clickOptionByValue,
   clickOptionByIndex,
-  getInputValueByLabel,
 } from '../../../common/e2e/steps/helpers';
 import { getWalletByName, fillOutWalletSendForm } from '../../../wallets/e2e/steps/helpers';
 import { getRawWalletId } from '../../../../source/renderer/app/api/utils';
@@ -22,13 +20,20 @@ Given(
   /^I have made the following transactions:$/,
   { timeout: 40000 },
   async function(table) {
-    const txData = table.hashes().map(t => ({
-      walletId: getWalletByName.call(this, t.source).id,
-      destinationWalletId: getWalletByName.call(this, t.destination).id,
-      amount: parseInt(new BigNumber(t.amount).times(LOVELACES_PER_ADA), 10),
-      passphrase: 'Secret1234',
-      isLegacy: getWalletByName.call(this, t.source).isLegacy,
-    }));
+    const txData = await Promise.all(
+      table.hashes().map(async (t) => {
+        const sourceWallet = await getWalletByName.call(this, t.source);
+        const destinationWallet = await getWalletByName.call(this, t.destination);
+        return {
+          walletId: sourceWallet.id,
+          destinationWalletId: destinationWallet.id,
+          amount: parseInt(new BigNumber(t.amount).times(LOVELACES_PER_ADA), 10),
+          passphrase: 'Secret1234',
+          isLegacy: sourceWallet.isLegacy,
+        }
+      })
+    );
+
     this.transactions = [];
     // Sequentially (and async) create transactions with for loop
     for (const tx of txData) {
@@ -49,6 +54,36 @@ Given(
   }
 );
 
+When(/^I fill out the send form with value equals to "([^"]*)" wallet amount$/, async function(walletName) {
+  const wallet = await getWalletByName.call(this, walletName);
+  const walletId = getRawWalletId(wallet.id);
+  const walletAddress = await this.client.executeAsync((walletId, isLegacy, done) => {
+    daedalus.api.ada
+      .getAddresses({ walletId, isLegacy })
+      .then(response => done(response[0].id))
+      .catch(error => done(error));
+  }, walletId, wallet.isLegacy);
+
+  // Check for pending transactions
+  await this.client.executeAsync((wallet, walletAddress, done) => {
+    const checkPendingTransactions = () => {
+      if (!daedalus.stores.transactions.pendingTransactionsCount) {
+        done()
+      } else {
+        setTimeout(checkPendingTransactions, 500);
+      }
+    };
+    checkPendingTransactions();
+  }, wallet, walletAddress);
+
+  // Fill form when there are no pending transactions
+  const values = {
+    amount: wallet.amount,
+    address: walletAddress.value,
+  }
+  return fillOutWalletSendForm.call(this, values);
+});
+
 When(/^I click on the show more transactions button$/, async function() {
   await this.waitAndClick('.WalletTransactionsList_showMoreTransactionsButton');
 });
@@ -65,9 +100,8 @@ When(
   /^I fill out the send form with a transaction to "([^"]*)" wallet:$/,
   async function(walletName, table) {
     const values = table.hashes()[0];
-    const wallet = getWalletByName.call(this, walletName);
+    const wallet = await getWalletByName.call(this, walletName);
     const walletId = getRawWalletId(wallet.id);
-    const isLegacy = wallet.isLegacy;
 
     // Get Destination wallet address
     const walletAddress = await this.client.executeAsync((walletId, isLegacy, done) => {
@@ -75,7 +109,7 @@ When(
         .getAddresses({ walletId, isLegacy })
         .then(response => done(response[0].id))
         .catch(error => done(error));
-    }, walletId, isLegacy);
+    }, walletId, wallet.isLegacy);
 
     values.address = walletAddress.value;
     return fillOutWalletSendForm.call(this, values);
@@ -160,6 +194,20 @@ Then(
   /^I should see the following error messages on the wallet send form:$/,
   async function(data) {
     const errorSelector = '.WalletSendForm_component .SimpleFormField_error';
+    let errorsOnScreen = await this.waitAndGetText(errorSelector);
+    if (typeof errorsOnScreen === 'string') errorsOnScreen = [errorsOnScreen];
+    const errors = data.hashes();
+    for (let i = 0; i < errors.length; i++) {
+      const expectedError = await this.intl(errors[i].message);
+      expect(errorsOnScreen[i]).to.equal(expectedError);
+    }
+  }
+);
+
+Then(
+  /^I should see the following error messages on the wallet send confirmation dialog:$/,
+  async function(data) {
+    const errorSelector = '.WalletSendConfirmationDialog_dialog .WalletSendConfirmationDialog_error';
     let errorsOnScreen = await this.waitAndGetText(errorSelector);
     if (typeof errorsOnScreen === 'string') errorsOnScreen = [errorsOnScreen];
     const errors = data.hashes();

@@ -33,8 +33,9 @@ storiesOf('Wallets|Import File', module)
         exportSourcePath="/Users/daedalus/Library/Application Support/Daedalus"
         defaultExportSourcePath="/Users/daedalus/Library/Application Support/Daedalus"
         exportErrors=""
+        pendingImportWalletsCount={1}
         onOpen={action('onOpen')}
-        onConfirm={action('onConfirm')}
+        onContinue={action('onContinue')}
         onClose={action('onClose')}
         onOpenExternalLink={action('onOpenExternalLink')}
         onSelectExportSourcePath={action('onSelectExportSourcePath')}
@@ -62,12 +63,13 @@ storiesOf('Wallets|Import File', module)
           // $FlowFixMe
           exportedWallets={[...namedWallets, ...unnamedWallets]}
           pendingImportWalletsCount={number('pendingImportWalletsCount', 0)}
-          onConfirm={action('onConfirm')}
+          onContinue={action('onContinue')}
           onOpenExternalLink={action('onOpenExternalLink')}
           onWalletNameChange={action('onWalletNameChange')}
           onToggleWalletImportSelection={action(
             'onToggleWalletImportSelection'
           )}
+          isMaxNumberOfWalletsReached={false}
           onClose={action('onClose')}
         />
       </VerticalFlexContainer>

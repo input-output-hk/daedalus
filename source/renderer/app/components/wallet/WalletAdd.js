@@ -24,9 +24,9 @@ const messages = defineMessages({
   },
   createDescriptionItn: {
     id: 'wallet.add.dialog.create.description.itn',
-    defaultMessage: '!!!Create a new Rewards wallet',
+    defaultMessage: '!!!Create a new wallet',
     description:
-      'Description for the "Create a new Rewards wallet" button on the wallet add dialog.',
+      'Description for the "Create a new wallet" button on the wallet add dialog.',
   },
   createDescription: {
     id: 'wallet.add.dialog.create.description',
@@ -95,11 +95,12 @@ const { isIncentivizedTestnet } = global;
 type Props = {
   onCreate: Function,
   onRestore: Function,
-  onImportFile: Function,
+  onImport: Function,
   isMaxNumberOfWalletsReached: boolean,
   isMainnet: boolean,
   isTestnet: boolean,
   isProduction: boolean,
+  isShelleyActivated: boolean,
 };
 
 @observer
@@ -118,11 +119,12 @@ export default class WalletAdd extends Component<Props> {
     const {
       onCreate,
       onRestore,
-      onImportFile,
+      onImport,
       isMaxNumberOfWalletsReached,
       isMainnet,
       isTestnet,
       isProduction,
+      isShelleyActivated,
     } = this.props;
 
     const componentClasses = classnames([styles.component, 'WalletAdd']);
@@ -146,7 +148,10 @@ export default class WalletAdd extends Component<Props> {
                   ? intl.formatMessage(messages.createDescriptionItn)
                   : intl.formatMessage(messages.createDescription)
               }
-              isDisabled={isMaxNumberOfWalletsReached}
+              isDisabled={
+                isMaxNumberOfWalletsReached ||
+                (!isIncentivizedTestnet && !isShelleyActivated)
+              }
             />
             <BigButtonForDialogs
               className="joinWalletButton"
@@ -169,13 +174,14 @@ export default class WalletAdd extends Component<Props> {
             />
             <BigButtonForDialogs
               className="importWalletButton"
-              onClick={onImportFile}
+              onClick={onImport}
               icon={importIcon}
               label={intl.formatMessage(messages.importLabel)}
               description={intl.formatMessage(messages.importDescription)}
               isDisabled={
+                true || // This feature is currently unavailable as export tool is disabled
                 isMaxNumberOfWalletsReached ||
-                (isProduction && !isMainnet && !isTestnet)
+                (isProduction && !(isMainnet || isTestnet))
               }
             />
           </div>

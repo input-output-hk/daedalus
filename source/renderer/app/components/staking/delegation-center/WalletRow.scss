@@ -10,7 +10,9 @@
   :global {
     .SimpleBubble_root {
       .SimpleBubble_bubble {
-        margin-left: 0;
+        left: initial;
+        line-height: initial;
+        right: -10px;
       }
     }
   }
@@ -30,6 +32,7 @@
       @extend %accentText;
       margin-bottom: 3px;
     }
+
     .description {
       @extend %regularText;
       align-items: center;
@@ -56,6 +59,7 @@
       :global {
         .SimpleTooltip_root {
           margin-right: 0;
+          margin-top: 2px;
         }
       }
 
@@ -68,7 +72,7 @@
         font-family: var(--font-semibold);
         font-size: 11px;
         line-height: 14px;
-        padding: 3px 8px;
+        padding: 0 8px 3px 8px;
         position: relative;
         text-transform: uppercase;
 
@@ -87,6 +91,23 @@
               }
             }
           }
+        }
+      }
+
+      > span:first-child {
+        height: 22px;
+        line-height: 2;
+        margin-top: 5.5px;
+      }
+
+      > span:last-child > span {
+        padding-bottom: 4px;
+        padding-top: 3px;
+      }
+
+      > span :global {
+        .SimpleTooltip_root > div {
+          right: -80px;
         }
       }
 
@@ -167,6 +188,15 @@
         }
       }
     }
+
+    :global {
+      .LoadingSpinner_component.LoadingSpinner_medium
+        .LoadingSpinner_icon
+        svg
+        path {
+        fill: var(--theme-loading-spinner-color);
+      }
+    }
   }
 
   b {
@@ -192,7 +222,7 @@
 
   .arrow {
     height: 7px;
-    margin: -2px 6px 0;
+    margin: 6px 6px 0;
     opacity: 0.3;
     position: relative;
     width: 3.5px;

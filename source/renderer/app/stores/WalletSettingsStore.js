@@ -1,12 +1,17 @@
 // @flow
-import { observable, action, runInAction } from 'mobx';
+import { observable, action, runInAction, computed } from 'mobx';
 import { findIndex } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import Wallet from '../domains/Wallet';
+import { WALLET_UTXO_API_REQUEST_INTERVAL } from '../config/timingConfig';
+import { getRecoveryWalletIdChannel } from '../ipc/getRecoveryWalletIdChannel';
+import { getStatusFromWalletData } from '../utils/walletRecoveryPhraseVerificationUtils';
+import { getRawWalletId } from '../api/utils';
 import type { WalletExportToFileParams } from '../actions/wallet-settings-actions';
 import type { WalletUtxos } from '../api/wallets/types';
-import { WALLET_UTXO_API_REQUEST_INTERVAL } from '../config/timingConfig';
+import type { WalletLocalData } from '../api/utils/localStorage';
+import { RECOVERY_PHRASE_VERIFICATION_STATUSES } from '../config/walletRecoveryPhraseVerificationConfig';
 
 export default class WalletSettingsStore extends Store {
   @observable updateWalletRequest: Request<Wallet> = new Request(
@@ -21,14 +26,11 @@ export default class WalletSettingsStore extends Store {
   @observable getWalletUtxosRequest: Request<WalletUtxos> = new Request(
     this.api.ada.getWalletUtxos
   );
-  @observable forceWalletResyncRequest: Request<void> = new Request(
-    this.api.ada.forceWalletResync
-  );
 
   @observable walletFieldBeingEdited = null;
   @observable lastUpdatedWalletField = null;
   @observable walletUtxos: ?WalletUtxos = null;
-  @observable isForcedWalletResyncStarting = false;
+  @observable recoveryPhraseStep = 0;
 
   pollingApiInterval: ?IntervalID = null;
 
@@ -57,10 +59,60 @@ export default class WalletSettingsStore extends Store {
     walletSettingsActions.stopWalletUtxoPolling.listen(
       this._stopWalletUtxoPolling
     );
-    walletSettingsActions.forceWalletResync.listen(this._forceWalletResync);
+    walletSettingsActions.recoveryPhraseVerificationContinue.listen(
+      this._recoveryPhraseVerificationContinue
+    );
+    walletSettingsActions.recoveryPhraseVerificationCheck.listen(
+      this._recoveryPhraseVerificationCheck
+    );
+    walletSettingsActions.recoveryPhraseVerificationClose.listen(
+      this._recoveryPhraseVerificationClose
+    );
 
     sidebarActions.walletSelected.listen(this._onWalletSelected);
   }
+
+  // =================== PUBLIC API ==================== //
+
+  // GETTERS
+
+  getWalletsRecoveryPhraseVerificationData = (walletId: string) =>
+    this.walletsRecoveryPhraseVerificationData[walletId] || {};
+
+  @computed get walletsRecoveryPhraseVerificationData() {
+    const { all: walletsLocalData } = this.stores.walletsLocal;
+    // $FlowFixMe
+    return Object.values(walletsLocalData).reduce(
+      (
+        obj,
+        { id, recoveryPhraseVerificationDate, creationDate }: WalletLocalData
+      ) => {
+        const {
+          recoveryPhraseVerificationStatus,
+          recoveryPhraseVerificationStatusType,
+        } = getStatusFromWalletData({
+          creationDate,
+          recoveryPhraseVerificationDate,
+        });
+        const hasNotification =
+          recoveryPhraseVerificationStatus ===
+            RECOVERY_PHRASE_VERIFICATION_STATUSES.NOTIFICATION &&
+          !global.isIncentivizedTestnet;
+        obj[id] = {
+          id,
+          recoveryPhraseVerificationDate,
+          creationDate,
+          recoveryPhraseVerificationStatus,
+          recoveryPhraseVerificationStatusType,
+          hasNotification,
+        };
+        return obj;
+      },
+      {}
+    );
+  }
+
+  // =================== PRIVATE API ==================== //
 
   @action _startEditingWalletField = ({ field }: { field: string }) => {
     this.walletFieldBeingEdited = field;
@@ -156,7 +208,7 @@ export default class WalletSettingsStore extends Store {
 
   @action _getWalletUtxoApiData = async () => {
     const activeWallet = this.stores.wallets.active;
-    if (!activeWallet || this.isForcedWalletResyncStarting) return;
+    if (!activeWallet) return;
     const { id: walletId, isLegacy } = activeWallet;
     const walletUtxos = await this.getWalletUtxosRequest.execute({
       walletId,
@@ -165,7 +217,7 @@ export default class WalletSettingsStore extends Store {
     this._updateWalletUtxos(walletUtxos);
   };
 
-  @action _updateWalletUtxos = walletUtxos => {
+  @action _updateWalletUtxos = (walletUtxos: ?WalletUtxos) => {
     this.walletUtxos = walletUtxos;
   };
 
@@ -173,38 +225,50 @@ export default class WalletSettingsStore extends Store {
     this._updateWalletUtxos(null);
   };
 
-  @action _forceWalletResync = async ({
-    walletId,
-    isLegacy,
+  /* ==========================================================
+=            Wallet Recovery Phrase Verification            =
+========================================================== */
+
+  @action _recoveryPhraseVerificationContinue = async () => {
+    const step = this.recoveryPhraseStep;
+    if (step === 4) this.recoveryPhraseStep = 2;
+    else this.recoveryPhraseStep = step + 1;
+  };
+
+  @action _recoveryPhraseVerificationClose = async () => {
+    this.recoveryPhraseStep = 0;
+  };
+
+  @action _recoveryPhraseVerificationCheck = async ({
+    recoveryPhrase,
   }: {
-    walletId: string,
-    isLegacy: boolean,
+    recoveryPhrase: Array<string>,
   }) => {
-    const {
-      _pausePolling,
-      _resumePolling,
-      refreshWalletsData,
-    } = this.stores.wallets;
-    _pausePolling();
-    this.isForcedWalletResyncStarting = true;
-    this.forceWalletResyncRequest.reset();
-    try {
-      await this.forceWalletResyncRequest.execute({ walletId, isLegacy });
-    } finally {
-      _resumePolling();
-      await refreshWalletsData();
-      runInAction('set isForcedWalletResyncStarting', () => {
-        this.isForcedWalletResyncStarting = false;
-        const activeWallet = this.stores.wallets.active;
-        if (
-          this.pollingApiInterval && // Is "true" if UTXO screen is active
-          activeWallet &&
-          activeWallet.id === walletId &&
-          !isLegacy
-        ) {
-          this._getWalletUtxoApiData();
-        }
+    const walletId = await getRecoveryWalletIdChannel.request(recoveryPhrase);
+    if (!walletId)
+      throw new Error('It was not possible to retrieve the walletId.');
+    const activeWallet = this.stores.wallets.active;
+    if (!activeWallet)
+      throw new Error(
+        'Active wallet required before checking recovery phrase.'
+      );
+    const activeWalletId = getRawWalletId(activeWallet.id);
+    const isCorrect = walletId === activeWalletId;
+    const nextStep = isCorrect ? 3 : 4;
+    if (isCorrect) {
+      const recoveryPhraseVerificationDate = new Date();
+      await this.actions.walletsLocal.setWalletLocalData.trigger({
+        walletId: activeWallet.id,
+        updatedWalletData: { recoveryPhraseVerificationDate },
       });
     }
+    runInAction(
+      'AdaWalletBackupStore::_recoveryPhraseVerificationCheck',
+      () => {
+        this.recoveryPhraseStep = nextStep;
+      }
+    );
   };
+
+  /* ====  End of Wallet Recovery Phrase Verification  ===== */
 }

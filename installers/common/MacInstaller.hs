@@ -179,7 +179,7 @@ makePostInstall = "#!/usr/bin/env bash\n" %
 
 makeScriptsDir :: Options -> DarwinConfig -> Managed T.Text
 makeScriptsDir Options{oBackend} DarwinConfig{dcAppNameApp} = case oBackend of
-    Cardano     _ -> common
+    Cardano   _ _ -> common
     Jormungandr _ -> common
   where
     common = do
@@ -222,7 +222,9 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
   let
     formatter :: Format r (Text -> Text -> r)
     formatter = "../release/darwin-x64/" % s % "-darwin-x64/" % s
+    pathtoapp :: Text
     pathtoapp = format formatter dcAppName dcAppNameApp
+  cptree "../node_modules/js-chain-libs-node" (fromText $ pathtoapp <> "/Contents/Resources/app/node_modules/js-chain-libs-node")
   rewritePackageJson (T.unpack $ pathtoapp <> "/Contents/Resources/app/package.json") (spacedName installerConfig)
   pure $ fromString $ T.unpack $ pathtoapp
 
@@ -238,7 +240,7 @@ npmPackage DarwinConfig{dcAppName} = do
   printf ("Size of Electron app is " % l % "\n") size
 
 getBackendVersion :: Backend -> IO Text
-getBackendVersion (Cardano     bridge) = readCardanoVersionFile bridge
+getBackendVersion (Cardano   _ bridge) = readCardanoVersionFile bridge
 getBackendVersion (Jormungandr bridge) = readCardanoVersionFile bridge
 
 makeComponentRoot :: Options -> FilePath -> DarwinConfig -> InstallerConfig -> IO ()
@@ -258,12 +260,15 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
       -- Config yaml
       cp "launcher-config.yaml" (dataDir </> "launcher-config.yaml")
   case oBackend of
-    Cardano bridge -> do
+    Cardano kind bridge -> do
+      let
+        mainBinary Shelley = "cardano-wallet-shelley"
+        mainBinary Byron = "cardano-wallet-byron"
       common bridge
       -- Executables (from daedalus-bridge)
-      forM_ ["cardano-wallet-byron", "cardano-node", "cardano-cli", "export-wallets" ] $ \f ->
+      forM_ [mainBinary kind, "cardano-node", "cardano-cli", "cardano-address" ] $ \f ->
         cp (bridge </> "bin" </> f) (dir </> f)
-      forM_ ["config.yaml", "genesis.json", "topology.yaml" ] $ \f ->
+      forM_ ["config.yaml", "genesis.json", "genesis-byron.json", "genesis-shelley.json", "topology.yaml" ] $ \f ->
         cp f (dataDir </> f)
 
       when (oCluster == Selfnode) $ do
@@ -275,7 +280,7 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
       rmtree $ dataDir </> "app/installers"
 
       -- Rewrite libs paths and bundle them
-      void $ chain (encodeString dir) $ fmap tt [dir </> "cardano-launcher", dir </> "cardano-wallet-byron", dir </> "cardano-node", dir </> "cardano-cli", dir </> "export-wallets" ]
+      void $ chain (encodeString dir) $ fmap tt [dir </> "cardano-launcher", dir </> mainBinary kind, dir </> "cardano-node", dir </> "cardano-cli", dir </> "cardano-address" ]
     Jormungandr bridge -> do
       common bridge
       -- Executables (from daedalus-bridge)

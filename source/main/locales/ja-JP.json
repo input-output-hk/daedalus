@@ -29,7 +29,7 @@
   "menu.helpSupport.downloadLogs": "ログのダウンロード",
   "menu.helpSupport.knownIssues": "既知の問題 ↗",
   "menu.helpSupport.knownIssuesUrl": "https://daedaluswallet.io/ja/known-issues/",
-  "menu.helpSupport.nonBlankScreenFixDialogMessage": "「ブランク画面修正」を有効にしますか? \n \nDaedalusユーザーインターフェイスがロードに失敗した際、この設定を有効にすることにより問題が解消される場合があります。この場合、グラフィックアクセラレーションが無効化されることでユーザーインターフェイスのレンダリングパフォーマンスが低下しますが、この設定を有効にした方がDaedalusがスムーズに作動する場合があります。 \n \nこの設定はDaedalusユーザーインターフェイスがロードに失敗した場合にのみ有効にしてください。Daedalusが正常に作動している場合は[いいえ]をクリックします。正常に作動していない場合には[はい]をクリックし、ブランク画面修正設定を有効にしてDaedalusを再起動してください。 \n \nこの設定を有効にしてDaedalusを再起動しますか。",
+  "menu.helpSupport.nonBlankScreenFixDialogMessage": "「ブランク画面修正」を有効にしますか? \n \nDaedalusユーザーインターフェイスがロードに失敗した際、この設定を有効にすることにより問題が解消される場合があります。この場合、グラフィックアクセラレーションが無効化されることでユーザーインターフェイスのレンダリングパフォーマンスが低下しますが、この設定を有効にした方がDaedalusがスムーズに作動する場合があります。 \n \nこの設定はDaedalusユーザーインターフェイスがロードに失敗した場合にのみ有効にしてください。Daedalusが正常に作動している場合は[キャンセル]をクリックします。正常に作動していない場合には[はい]をクリックし、ブランク画面修正設定を有効にしてDaedalusを再起動してください。 \n \nこの設定を有効にしてDaedalusを再起動しますか。",
   "menu.helpSupport.nonBlankScreenFixDialogTitle": "「ブランク画面修正」を有効にしますか?",
   "menu.helpSupport.featureRequest": "機能リクエスト ↗",
   "menu.helpSupport.featureRequestUrl": "https://iohk.zendesk.com/hc/ja/sections/360002144373",
@@ -37,10 +37,10 @@
   "menu.helpSupport.safetyTipsUrl": "https://iohk.zendesk.com/hc/ja/articles/360015295134",
   "menu.helpSupport.supportRequest": "サポートリクエスト ↗",
   "menu.helpSupport.supportRequestUrl": "https://iohk.zendesk.com/hc/ja/requests/new/",
-  "menu.view": "見る",
+  "menu.view": "表示",
   "menu.view.reload": "リロード",
-  "menu.view.toggleDeveloperTools": "「開発者ツールの切り替え」",
-  "menu.view.toggleFullScreen": "フルスクリーン切り替え",
+  "menu.view.toggleDeveloperTools": "開発者ツール切替え",
+  "menu.view.toggleFullScreen": "フルスクリーン切替え",
   "menu.view.toggleMaximumWindowSize": "最大ウインドウサイズ切り切り替え",
   "window.title.blankScreenFix": "[「ブランク画面修正」有効 ]"
 }

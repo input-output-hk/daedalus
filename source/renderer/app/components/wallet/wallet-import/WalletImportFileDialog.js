@@ -6,7 +6,6 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
-import ReactModal from 'react-modal';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import SVGInline from 'react-svg-inline';
@@ -20,6 +19,7 @@ import penIcon from '../../../assets/images/pen.inline.svg';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import { ImportFromOptions } from '../../../types/walletExportTypes';
 import type { ImportFromOption } from '../../../types/walletExportTypes';
+import Dialog from '../../widgets/Dialog';
 
 const messages = defineMessages({
   title: {
@@ -95,7 +95,7 @@ type Props = {
   exportErrors: string,
   isSubmitting: boolean,
   onOpen: Function,
-  onConfirm: Function,
+  onContinue: Function,
   onClose: Function,
   onOpenExternalLink: Function,
   onSelectExportSourcePath: Function,
@@ -120,8 +120,7 @@ export default class WalletImportFileDialog extends Component<Props, State> {
 
   importPathInput: Input;
 
-  componentWillMount() {
-    // Reset migration data
+  componentDidMount() {
     this.props.onOpen();
   }
 
@@ -152,7 +151,7 @@ export default class WalletImportFileDialog extends Component<Props, State> {
     const {
       exportErrors,
       isSubmitting,
-      onConfirm,
+      onContinue,
       onClose,
       onOpenExternalLink,
       onSelectExportSourcePath,
@@ -192,13 +191,15 @@ export default class WalletImportFileDialog extends Component<Props, State> {
     ]);
 
     return (
-      <ReactModal
-        isOpen
+      <Dialog
+        className={styles.dialog}
+        closeOnOverlayClick={false}
+        onClose={onClose}
         onRequestClose={onClose}
         shouldCloseOnOverlayClick={false}
-        className={styles.dialog}
-        overlayClassName={styles.overlay}
+        shouldCloseOnEsc={false}
         ariaHideApp={false}
+        defaultThemeOverrides
       >
         <div className={styles.component}>
           <DialogCloseButton
@@ -209,7 +210,6 @@ export default class WalletImportFileDialog extends Component<Props, State> {
           <div className={styles.content}>
             <div className={styles.title}>{title}</div>
             <div className={styles.description}>{description}</div>
-
             <div className={styles.radioButtons}>
               <RadioSet
                 label={intl.formatMessage(messages.importFromLabel)}
@@ -229,7 +229,6 @@ export default class WalletImportFileDialog extends Component<Props, State> {
                 verticallyAligned
               />
             </div>
-
             <div className={styles.stateFolderContainer}>
               <p className={styles.stateFolderLabel}>
                 {this.isImportFromStateDir(importFrom)
@@ -266,7 +265,6 @@ export default class WalletImportFileDialog extends Component<Props, State> {
               </div>
               {error && <p className={styles.noWalletError}>{noWalletError}</p>}
             </div>
-
             <div className={styles.action}>
               <Button
                 className={buttonClasses}
@@ -276,11 +274,10 @@ export default class WalletImportFileDialog extends Component<Props, State> {
                   (this.isImportFromSecretFile(importFrom) && !exportSourcePath)
                 }
                 label={buttonLabel}
-                onClick={onConfirm}
+                onClick={onContinue}
                 skin={ButtonSkin}
               />
             </div>
-
             <Link
               className={styles.learnMoreLink}
               onClick={onLinkClick}
@@ -289,7 +286,7 @@ export default class WalletImportFileDialog extends Component<Props, State> {
             />
           </div>
         </div>
-      </ReactModal>
+      </Dialog>
     );
   }
 }

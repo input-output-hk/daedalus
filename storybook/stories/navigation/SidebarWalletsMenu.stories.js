@@ -3,13 +3,12 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import StoryDecorator from '../_support/StoryDecorator';
-import { isIncentivizedTestnetTheme } from '../_support/utils';
+import {
+  isIncentivizedTestnetTheme,
+  isShelleyTestnetTheme,
+} from '../_support/utils';
 import WalletsWrapper from '../wallets/_utils/WalletsWrapper';
 import SidebarWalletsMenu from '../../../source/renderer/app/components/sidebar/wallets/SidebarWalletsMenu';
-import {
-  WalletRecoveryPhraseVerificationStatuses,
-  WalletRecoveryPhraseVerificationTypes,
-} from '../../../source/renderer/app/stores/WalletsStore';
 
 storiesOf('Navigation|Wallets Menu', module)
   .addDecorator(story => (
@@ -29,6 +28,7 @@ storiesOf('Navigation|Wallets Menu', module)
       isActiveWallet={() => false}
       isAddWalletButtonActive={false}
       isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
+      isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
       visible
     />
   ))
@@ -47,10 +47,7 @@ storiesOf('Navigation|Wallets Menu', module)
           isLegacy: false,
           createdAt: new Date(),
           recoveryPhraseVerificationDate: new Date(),
-          recoveryPhraseVerificationStatus:
-            WalletRecoveryPhraseVerificationStatuses.OK,
-          recoveryPhraseVerificationStatusType:
-            WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
+          hasNotification: false,
         },
         {
           id: '2',
@@ -63,10 +60,7 @@ storiesOf('Navigation|Wallets Menu', module)
           isLegacy: false,
           createdAt: new Date(),
           recoveryPhraseVerificationDate: new Date(),
-          recoveryPhraseVerificationStatus:
-            WalletRecoveryPhraseVerificationStatuses.OK,
-          recoveryPhraseVerificationStatusType:
-            WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
+          hasNotification: false,
         },
         {
           id: '3',
@@ -79,10 +73,7 @@ storiesOf('Navigation|Wallets Menu', module)
           isLegacy: false,
           createdAt: new Date(),
           recoveryPhraseVerificationDate: new Date(),
-          recoveryPhraseVerificationStatus:
-            WalletRecoveryPhraseVerificationStatuses.OK,
-          recoveryPhraseVerificationStatusType:
-            WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
+          hasNotification: false,
         },
         {
           id: '4',
@@ -95,10 +86,7 @@ storiesOf('Navigation|Wallets Menu', module)
           isLegacy: false,
           createdAt: new Date(),
           recoveryPhraseVerificationDate: new Date(),
-          recoveryPhraseVerificationStatus:
-            WalletRecoveryPhraseVerificationStatuses.OK,
-          recoveryPhraseVerificationStatusType:
-            WalletRecoveryPhraseVerificationTypes.NEVER_CHECKED,
+          hasNotification: false,
         },
       ]}
       isActiveWallet={id => id === '2'}
@@ -106,6 +94,7 @@ storiesOf('Navigation|Wallets Menu', module)
       onAddWallet={action('addWallet')}
       isAddWalletButtonActive={false}
       isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
+      isShelleyActivated={isShelleyTestnetTheme(props.currentTheme)}
       visible
     />
   ));

@@ -6,6 +6,7 @@ import classnames from 'classnames';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import vjf from 'mobx-react-form/lib/validators/VJF';
 import ReactToolboxMobxForm, {
   handleFormErrors,
 } from '../../utils/ReactToolboxMobxForm';
@@ -17,6 +18,7 @@ import {
   isValidRepeatPassword,
 } from '../../utils/validations';
 import globalMessages from '../../i18n/global-messages';
+import { PasswordInput } from '../widgets/forms/PasswordInput';
 import styles from './WalletCreateDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { submitOnEnter } from '../../utils/form';
@@ -24,9 +26,8 @@ import { submitOnEnter } from '../../utils/form';
 const messages = defineMessages({
   dialogTitleItn: {
     id: 'wallet.create.dialog.title.itn',
-    defaultMessage: '!!!Create a new Rewards wallet',
-    description:
-      'Title "Create a new Rewards wallet" in the wallet create form.',
+    defaultMessage: '!!!Create a new wallet',
+    description: 'Title "Create a new wallet" in the wallet create form.',
   },
   dialogTitle: {
     id: 'wallet.create.dialog.title',
@@ -47,9 +48,9 @@ const messages = defineMessages({
   },
   createPersonalWalletItn: {
     id: 'wallet.create.dialog.create.personal.wallet.button.label.itn',
-    defaultMessage: '!!!Create Rewards wallet',
+    defaultMessage: '!!!Create Shelley wallet',
     description:
-      'Label for the "Create Rewards wallet" button on create wallet dialog.',
+      'Label for the "Create Shelley wallet" button on create wallet dialog.',
   },
   createPersonalWallet: {
     id: 'wallet.create.dialog.create.personal.wallet.button.label',
@@ -90,6 +91,7 @@ const messages = defineMessages({
 const { isIncentivizedTestnet } = global;
 
 type Props = {
+  isShelleyActivated: boolean,
   onSubmit: Function,
   onCancel: Function,
 };
@@ -142,9 +144,11 @@ export default class WalletCreateDialog extends Component<Props, State> {
           validators: [
             ({ field, form }) => {
               const repeatPasswordField = form.$('repeatPassword');
-              if (repeatPasswordField.value.length > 0) {
-                repeatPasswordField.validate({ showErrors: true });
-              }
+              const isRepeatPasswordFieldSet =
+                repeatPasswordField.value.length > 0;
+              repeatPasswordField.validate({
+                showErrors: isRepeatPasswordFieldSet,
+              });
               return [
                 isValidSpendingPassword(field.value),
                 this.context.intl.formatMessage(
@@ -164,7 +168,6 @@ export default class WalletCreateDialog extends Component<Props, State> {
           validators: [
             ({ field, form }) => {
               const spendingPassword = form.$('spendingPassword').value;
-              if (spendingPassword.length === 0) return [true];
               return [
                 isValidRepeatPassword(spendingPassword, field.value),
                 this.context.intl.formatMessage(
@@ -177,6 +180,7 @@ export default class WalletCreateDialog extends Component<Props, State> {
       },
     },
     {
+      plugins: { vjf: vjf() },
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
@@ -207,15 +211,22 @@ export default class WalletCreateDialog extends Component<Props, State> {
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { onCancel } = this.props;
+    const { onCancel, isShelleyActivated } = this.props;
     const { isSubmitting } = this.state;
     const dialogClasses = classnames([styles.component, 'WalletCreateDialog']);
+
+    const walletNameField = form.$('walletName');
+    const spendingPasswordField = form.$('spendingPassword');
+    const repeatedPasswordField = form.$('repeatPassword');
+
+    const canSubmit = !isSubmitting && form.isValid;
 
     const actions = [
       {
         className: isSubmitting ? styles.isSubmitting : null,
+        disabled: !canSubmit,
         label: this.context.intl.formatMessage(
-          isIncentivizedTestnet
+          isIncentivizedTestnet || isShelleyActivated
             ? messages.createPersonalWalletItn
             : messages.createPersonalWallet
         ),
@@ -224,15 +235,13 @@ export default class WalletCreateDialog extends Component<Props, State> {
       },
     ];
 
-    const walletNameField = form.$('walletName');
-    const spendingPasswordField = form.$('spendingPassword');
-    const repeatedPasswordField = form.$('repeatPassword');
-
     return (
       <Dialog
         className={dialogClasses}
         title={intl.formatMessage(
-          isIncentivizedTestnet ? messages.dialogTitleItn : messages.dialogTitle
+          isIncentivizedTestnet || isShelleyActivated
+            ? messages.dialogTitleItn
+            : messages.dialogTitle
         )}
         actions={actions}
         closeOnOverlayClick
@@ -260,19 +269,17 @@ export default class WalletCreateDialog extends Component<Props, State> {
           </div>
 
           <div className={styles.spendingPasswordFields}>
-            <Input
+            <PasswordInput
               className="spendingPassword"
               onKeyPress={this.handleSubmitOnEnter}
               {...spendingPasswordField.bind()}
-              error={spendingPasswordField.error}
-              skin={InputSkin}
             />
-            <Input
+            <PasswordInput
               className="repeatedPassword"
               onKeyPress={this.handleSubmitOnEnter}
               {...repeatedPasswordField.bind()}
-              error={repeatedPasswordField.error}
-              skin={InputSkin}
+              repeatPassword={spendingPasswordField.value}
+              isPasswordRepeat
             />
             <p className={styles.passwordInstructions}>
               <FormattedHTMLMessage {...globalMessages.passwordInstructions} />

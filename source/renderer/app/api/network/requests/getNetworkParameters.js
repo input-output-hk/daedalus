@@ -1,14 +1,13 @@
 // @flow
 import type { RequestConfig } from '../../common/types';
-import type { NetworkParametersResponse } from '../types';
+import type { GetNetworkParametersApiResponse } from '../types';
 import { request } from '../../utils/request';
 
 export const getNetworkParameters = (
-  epochId: number,
   config: RequestConfig
-): Promise<NetworkParametersResponse> =>
+): Promise<GetNetworkParametersApiResponse> =>
   request({
     method: 'GET',
-    path: `/v2/network/parameters/${epochId}`,
+    path: '/v2/network/parameters',
     ...config,
   });

@@ -1,10 +1,8 @@
 // @flow
-import { expect } from 'chai';
 import {
   clickInputByLabel,
   clickOptionByValue,
   clickOptionByIndex,
-  getInputValueByLabel,
 } from '../../../common/e2e/steps/helpers';
 import type { Daedalus } from '../../../types';
 
@@ -43,7 +41,7 @@ export const screenElementSelectors = {
     number: '.SimpleInput_input[name="amount"]',
   },
   'Target Wallet': {
-    number: '//*[@class="SidebarWalletMenuItem_title" and text()="Target Wallet"]//following-sibling::div[@class="SidebarWalletMenuItem_info"]',
+    number: '//*[@class="SidebarWalletMenuItem_title" and text()="Target Wallet"]//parent::div//following-sibling::div[@class="SidebarWalletMenuItem_info"]',
   },
 };
 

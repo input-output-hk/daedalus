@@ -16,7 +16,7 @@ import {
 import { getProcess } from '../utils/processes';
 import { safeExitWithCode } from '../utils/safeExitWithCode';
 import type {
-  CardanoNodeImplementation,
+  CardanoNodeImplementations,
   CardanoNodeState,
   CardanoStatus,
   FaultInjection,
@@ -24,7 +24,10 @@ import type {
   FaultInjectionIpcResponse,
   TlsConfig,
 } from '../../common/types/cardano-node.types';
-import { CardanoNodeStates } from '../../common/types/cardano-node.types';
+import {
+  CardanoNodeStates,
+  CardanoNodeImplementationOptions,
+} from '../../common/types/cardano-node.types';
 import { CardanoWalletLauncher } from './CardanoWalletLauncher';
 import { launcherConfig } from '../config';
 import type { NodeConfig } from '../config';
@@ -61,7 +64,7 @@ type CardanoNodeIpcMessage = {
 
 export type CardanoNodeConfig = {
   stateDir: string, // Path to the state directory
-  nodeImplementation: CardanoNodeImplementation,
+  nodeImplementation: CardanoNodeImplementations,
   nodeConfig: NodeConfig,
   logFilePath: string, // Log file path for cardano-sl
   tlsPath: string, // Path to cardano-node TLS folder
@@ -77,6 +80,7 @@ export type CardanoNodeConfig = {
   configPath: string,
   syncTolerance: string,
   cliBin: string, // Path to cardano-cli executable
+  isStaging: boolean,
 };
 
 const CARDANO_UPDATE_EXIT_CODE = 20;
@@ -184,7 +188,7 @@ export class CardanoNode {
 
   /**
    * Cardano Node config getter
-   * @returns {CardanoNodeImplementation}
+   * @returns {CardanoNodeImplementations}
    */
   get config(): CardanoNodeConfig {
     return this._config;
@@ -291,6 +295,7 @@ export class CardanoNode {
       configPath,
       syncTolerance,
       cliBin,
+      isStaging,
     } = config;
 
     this._config = config;
@@ -348,6 +353,7 @@ export class CardanoNode {
           nodeLogFile,
           walletLogFile,
           cliBin,
+          isStaging,
         });
 
         this._node = node;
@@ -616,7 +622,7 @@ export class CardanoNode {
     const { _actions } = this;
     const { tlsPath } = this._config;
     this._tlsConfig =
-      nodeImplementation === 'jormungandr'
+      nodeImplementation === CardanoNodeImplementationOptions.JORMUNGANDR
         ? {
             ca: ('': any),
             key: ('': any),
@@ -876,7 +882,7 @@ export class CardanoNode {
       );
 
       this._log.info(
-        `CardanoNode: successfuly killed ${name} process (PID: ${pid})`,
+        `CardanoNode: successfully killed ${name} process (PID: ${pid})`,
         { name, pid }
       );
       return Promise.resolve();
@@ -904,7 +910,7 @@ export class CardanoNode {
       try {
         // saves current port/pid in file system
         store.set(identifier, data);
-        this._log.info(`CardanoNode: ${identifier} stored successfuly`);
+        this._log.info(`CardanoNode: ${identifier} stored successfully`);
         resolve();
       } catch (error) {
         this._log.error(`CardanoNode: failed to store ${identifier}`, {

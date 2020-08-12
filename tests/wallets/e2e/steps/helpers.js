@@ -1,7 +1,7 @@
 // @flow
 import { expect } from 'chai';
-import BigNumber from 'bignumber.js/bignumber';
-import { expectTextInSelector, waitAndClick } from '../../../common/e2e/steps/helpers';
+import BigNumber from 'bignumber.js';
+import { expectTextInSelector, waitAndClick, notFoundWalletsErrorMessage } from '../../../common/e2e/steps/helpers';
 import { rewardsMnemonics, balanceMnemonics, balanceItnMnemonics, testStorageKeys } from '../../../common/e2e/steps/config';
 import { WalletSyncStateStatuses } from '../../../../source/renderer/app/domains/Wallet';
 import type { Daedalus } from '../../../types';
@@ -12,15 +12,6 @@ const ADD_WALLET = '.WalletAdd';
 const IMPORT_WALLET_BUTTON = '.importWalletButton';
 const IMPORT_WALLET_DIALOG = '.WalletFileImportDialog';
 const DEFAULT_LANGUAGE = 'en-US';
-
-export const addOrSetWalletsForScenario = function(wallet: Object) {
-  this.wallet = wallet;
-  if (this.context.wallets != null) {
-    this.context.wallets.push(this.wallet);
-  } else {
-    this.context.wallets = [this.wallet];
-  }
-};
 
 let rewardsMnemonicsIndex = 0;
 export const noWalletsErrorMessage = `The balance wallet for funds transfering was already used and has no longer funds.
@@ -83,13 +74,8 @@ export const restoreLegacyWallet = async (
     recoveryPhrase = null;
   }
   await client.executeAsync((name, recoveryPhrase, transferFunds, noWalletsErrorMessage, done) => {
-    let mnemonics = recoveryPhrase || daedalus.utils.crypto.generateMnemonic(12);
+    const mnemonics = recoveryPhrase || daedalus.utils.crypto.generateMnemonic(12);
     const recoveryPhraseArray = typeof mnemonics === 'string' ? mnemonics.split(' ') : mnemonics;
-    done({
-      walletName: name,
-      recoveryPhrase: recoveryPhraseArray,
-      spendingPassword: 'Secret1234',
-    })
     daedalus.api.ada
       .restoreByronRandomWallet({
         walletName: name,
@@ -101,7 +87,13 @@ export const restoreLegacyWallet = async (
           .refreshWalletsData()
           .then(() => {
             const wallet = daedalus.stores.wallets.getWalletByName(name);
-            if (transferFunds && wallet.amount.isZero()) {
+
+            if (!wallet) {
+              throw new Error(notFoundWalletsErrorMessage);
+            }
+
+            const walletAmount = wallet.amount || new BigNumber(0);
+            if (transferFunds && walletAmount.isZero()) {
               throw new Error(noWalletsErrorMessage);
             }
             done();
@@ -137,8 +129,11 @@ export const getNameOfActiveWalletInSidebar = async function() {
   );
 };
 
-export const getWalletByName = function(walletName: string) {
-  return this.context.wallets.find(w => w.name === walletName);
+export const getWalletByName = async function(walletName: string) {
+  const wallet = await this.client.execute(walletName => (
+    daedalus.stores.wallets.getWalletByName(walletName)
+  ), walletName);
+  return wallet.value;
 };
 
 /**
@@ -151,8 +146,13 @@ export const getFixedAmountByName = async function(walletName: string) {
   await this.client.waitUntil(async () => {
     const isRestoring = await this.client.execute(
       (walletName) => {
-        const { isRestoring } = daedalus.stores.wallets.getWalletByName(walletName);
-        return isRestoring;
+        const wallet = daedalus.stores.wallets.getWalletByName(walletName);
+
+        if (!wallet) {
+          throw new Error(notFoundWalletsErrorMessage);
+        }
+
+        return wallet.isRestoring;
       },
       walletName,
     );
@@ -161,7 +161,13 @@ export const getFixedAmountByName = async function(walletName: string) {
   const walletAmount =
     await this.client.execute(
       (walletName) => {
-        const { amount } = daedalus.stores.wallets.getWalletByName(walletName);
+        const wallet = daedalus.stores.wallets.getWalletByName(walletName);
+
+        if (!wallet) {
+          throw new Error(notFoundWalletsErrorMessage);
+        }
+
+        const amount = wallet.amount || new BigNumber(0);
         return amount.toFixed();
       },
       walletName,
@@ -269,13 +275,17 @@ export const createWallets = async function(
 const createWalletsSequentially = async function(wallets: Array<any>) {
   const isIncentivizedTestnetRequest = await this.client.execute(() => global.isIncentivizedTestnet);
   for (const walletData of wallets) {
-    const result = await this.client.executeAsync((wallet, isIncentivizedTestnet, done) => {
+    await this.client.executeAsync((wallet, isIncentivizedTestnet, done) => {
       const mnemonic = daedalus.utils.crypto.generateMnemonic(isIncentivizedTestnet ? 15 : 12);
+      const walletDetails = {
+        name: wallet.name,
+        mnemonic,
+        spendingPassword: wallet.password || 'Secret1234',
+      };
       daedalus.api.ada
         .createWallet({
-          name: wallet.name,
-          mnemonic,
-          spendingPassword: wallet.password || 'Secret1234',
+          walletDetails,
+          isShelleyActivated: false, // @TODO - pass real flag from staking store
         })
         .then(() =>
           daedalus.stores.wallets.walletsRequest
@@ -290,28 +300,37 @@ const createWalletsSequentially = async function(wallets: Array<any>) {
         )
         .catch(error => done(error.stack));
     }, walletData, isIncentivizedTestnetRequest.value);
-    const wallet = await waitUntilWalletIsLoaded.call(this, walletData.name);
-    addOrSetWalletsForScenario.call(this, wallet);
+    await waitUntilWalletIsLoaded.call(this, walletData.name);
   }
 };
 
 const createWalletsAsync = async function(table, isLegacy?: boolean) {
   const result = await this.client.executeAsync((wallets, isLegacyWallet, done) => {
     const mnemonics = {};
-    const { restoreLegacyRequest, walletsRequest } = daedalus.stores.wallets;
     const { restoreByronRandomWallet, createWallet } = daedalus.api.ada;
-    const request = isLegacyWallet ? restoreLegacyRequest : walletsRequest;
-    const apiEndpoint = isLegacyWallet ? restoreByronRandomWallet : createWallet;
     const mnemonicsLength = isLegacyWallet ? 12 : 15;
 
     window.Promise.all(
-      wallets.map((wallet, index) => {
+      wallets.map(wallet => {
         const mnemonic = daedalus.utils.crypto.generateMnemonic(mnemonicsLength);
         const recoveryPhrase = !isLegacyWallet
           ? mnemonic
           : mnemonic.split(' ');
         mnemonics[wallet.name] = mnemonic.split(' ');
-        return apiEndpoint({
+        const walletDetails = {
+          name: wallet.name,
+          walletName: wallet.name,
+          mnemonic,
+          recoveryPhrase,
+          spendingPassword: wallet.password || 'Secret1234',
+        };
+        if (isLegacyWallet) {
+          return createWallet({
+            walletDetails,
+            isShelleyActivated: false, // @TODO - pass real flag from staking store
+          })
+        }
+        return restoreByronRandomWallet({
           name: wallet.name,
           walletName: wallet.name,
           mnemonic,
@@ -320,22 +339,15 @@ const createWalletsAsync = async function(table, isLegacy?: boolean) {
         });
       })
     )
-      .then(storeWallets =>
+      .then(() =>
         daedalus.stores.wallets
           .refreshWalletsData()
-          .then(() => done({ storeWallets, mnemonics }))
+          .then(() => done({ mnemonics }))
           .catch(error => done(error))
       )
-      .catch(error => done('error.stack'));
+      .catch(error => done(error));
   }, table, isLegacy);
 
-  const { storeWallets, mnemonics, BLAH } = result.value;
-
-  if (this.context.wallets != null) {
-    this.context.wallets.push(...result.value.storeWallets);
-  } else {
-    this.context.wallets = result.value.storeWallets;
-  }
   this.mnemonics = Object.assign(
     {},
     result.value.mnemonics,
@@ -447,3 +459,33 @@ export const getWalletType = async function(_type?: string = '') {
   }
   return type;
 }
+
+export const restoreWallet = async function(walletName: string, kind: string, subkind: string, recovery_phrase: string) {
+  await this.client.executeAsync((done) => {
+    daedalus.stores.wallets._pausePolling().then(done);
+  });
+  let recoveryPhrase = recovery_phrase.split(' ');
+  await this.client.executeAsync((walletName, kind, subkind, recoveryPhrase, done) => {
+    const {
+      restoreWalletSetKind,
+      restoreWalletSetMnemonics,
+      restoreWalletSetConfig,
+    } = daedalus.actions.wallets;
+    restoreWalletSetKind.trigger({ kind });
+    restoreWalletSetKind.trigger({ param: kind, kind: subkind });
+    const { restoreRequest } = daedalus.stores.wallets;
+    const spendingPassword = 'Secret1234';
+    const data = {
+      recoveryPhrase,
+      walletName,
+      spendingPassword,
+    };
+    restoreRequest.execute(data)
+      .then(() => {
+        daedalus.stores.wallets._resumePolling();
+        daedalus.stores.wallets.refreshWalletsData()
+          .then(done)
+      })
+      .catch(error => done(error));
+  }, walletName, kind, subkind, recoveryPhrase);
+};

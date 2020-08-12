@@ -3,7 +3,7 @@ import { Given, Then } from 'cucumber';
 import { expect } from 'chai';
 import BigNumber from 'bignumber.js';
 import { navigateTo } from '../../../navigation/e2e/steps/helpers';
-import { timeout } from '../../../common/e2e/steps/helpers';
+import { timeout, notFoundWalletsErrorMessage } from '../../../common/e2e/steps/helpers';
 import { getCurrentEpoch, getNextEpoch } from './helpers';
 import type { Daedalus } from '../../../types';
 
@@ -41,7 +41,6 @@ Then(/^the current and next epoch countdown have correct data$/, async function(
   return nextEpoch === currentEpoch + 1;
 });
 
-let wallet;
 let pool;
 
 Then(/^the "([^"]*)" wallet should display the "([^"]*)" option$/, async function(walletName, optionText) {
@@ -56,16 +55,19 @@ Given(/^the "([^"]*)" wallet was delegated to the first Stake Pool$/, async func
     return stakePoolsListIsLoaded;
   });
   const data = await this.client.executeAsync((walletName, passphrase, done) => {
-    const { id: walletId } = daedalus.stores.wallets.getWalletByName(walletName);
     const pool = daedalus.stores.staking.stakePools[0];
-    const { id: stakePoolId } = pool;
-    daedalus.actions.staking.joinStakePool.trigger({ stakePoolId, walletId, passphrase });
+    const wallet = daedalus.stores.wallets.getWalletByName(walletName);
+    if (pool && wallet) {
+      const { id: stakePoolId } = pool;
+      const { id: walletId } = wallet;
+      daedalus.actions.staking.joinStakePool.trigger({ stakePoolId, walletId, passphrase });
+    }
     done(pool);
   }, walletName, 'Secret1234');
   pool = data.value;
 });
 
-Given(/^the "([^"]*)" wallet was delegated to a Stake Pool with no metadata$/, async function(walletName) {
+Given(/^the "([^"]*)" wallet was delegated to a Stake Pool with no metadata$/, async function() {
   const walletWithNoMetadata = {
     id: 'walletWithNoMetadata',
     addressPoolGap: 0,
@@ -115,11 +117,14 @@ Then(/^the "([^"]*)" wallet should display the delegated Stake Pool ticker$/, as
 
 Given(/^the "([^"]*)" wallet is undelegated$/, async function(wallet) {
   await this.client.executeAsync((walletName, passphrase, done) => {
-    const { id: walletId } = daedalus.stores.wallets.getWalletByName(walletName);
     const pool = daedalus.stores.staking.stakePools[0];
-    const { id: stakePoolId } = pool;
-    daedalus.actions.staking.quitStakePool.trigger({ stakePoolId, walletId, passphrase });
-    done(pool)
+    const wallet = daedalus.stores.wallets.getWalletByName(walletName);
+    if (pool && wallet) {
+      const { id: stakePoolId } = pool;
+      const { id: walletId } = wallet;
+      daedalus.actions.staking.quitStakePool.trigger({ stakePoolId, walletId, passphrase });
+    }
+    done(pool);
   }, wallet, 'Secret1234');
 });
 
@@ -182,7 +187,7 @@ Given(/^I sucessfully delegate my "([^"]*)" wallet$/, { timeout: 60000 }, async 
   await this.client.click(continueButtonSelector);
 
   // Select pool step
-  await this.waitAndClick('.StakePoolThumbnail_component');
+  await this.waitAndClick('.ThumbPool_component');
   await this.client.waitForVisible(continueButtonSelector);
   await this.client.waitForEnabled(continueButtonSelector);
   await this.client.click(continueButtonSelector);
@@ -211,10 +216,15 @@ Then(/^I close the wizard$/, async function() {
 });
 
 Given('I send {int} ADA from the {string} wallet to the {string} wallet', async function(adaAmount, walletFrom, walletTo) {
-  const DATA = await this.client.executeAsync((amount, senderName, receiverName, done) => {
+  await this.client.executeAsync((amount, senderName, receiverName, done) => {
     const walletSender = daedalus.stores.wallets.getWalletByName(senderName);
     const walletReceiver = daedalus.stores.wallets.getWalletByName(receiverName);
-    daedalus.stores.addresses
+
+    if (!walletSender || !walletReceiver || !walletSender.id || !walletReceiver.id) {
+      return done(new Error(notFoundWalletsErrorMessage));
+    }
+
+    return daedalus.stores.addresses
       .getAddressesByWalletId(walletReceiver.id)
       .then(addresses => {
         daedalus.stores.wallets.sendMoneyRequest.execute({
@@ -222,8 +232,8 @@ Given('I send {int} ADA from the {string} wallet to the {string} wallet', async 
           amount: amount * 1000000,
           passphrase: 'Secret1234',
           walletId: walletSender.id,
-        }).then(done)
-      })
+        }).then(done);
+      });
   }, adaAmount, walletFrom, walletTo);
   await this.client.waitForVisible(`//div[@class="WalletRow_title" and text()="${walletTo}"]//following-sibling::div[@class="WalletRow_description"]//span`);
 });
@@ -238,8 +248,10 @@ Then(/^I choose the "([^"]*)" wallet$/, async function(walletName) {
 });
 
 Then(/^I choose the first stake pool$/, async function() {
-  await this.waitAndClick('.StakePoolThumbnail_component');
-  await this.waitAndClick('//button[text()="Continue"]');
+  await this.waitAndClick('.ThumbPool_component');
+  const selector = '//button[text()="Continue"]';
+  await this.client.waitForEnabled(selector);
+  await this.waitAndClick(selector);
 });
 
 Then(/^I enter "([^"]*)" as the spending password$/, async function(spendingPassword) {
@@ -256,3 +268,16 @@ Then(/^I should see a "Loading stake pools" message until the Stake Pools are lo
     await this.client.waitForVisible('.DelegationCenterBody_isLoading');
   }
 });
+
+Then(
+  /^I should see the following error messages on the delegation process dialog:$/,
+  async function(data) {
+    let errorsOnScreen = await this.waitAndGetText('.DelegationStepsConfirmationDialog_error');
+    if (typeof errorsOnScreen === 'string') errorsOnScreen = [errorsOnScreen];
+    const errors = data.hashes();
+    for (let i = 0; i < errors.length; i++) {
+      const expectedError = await this.intl(errors[i].message);
+      expect(errorsOnScreen[i]).to.equal(expectedError);
+    }
+  }
+);

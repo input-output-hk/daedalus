@@ -71,6 +71,11 @@ const messages = defineMessages({
     defaultMessage: '!!!From addresses',
     description: 'From addresses',
   },
+  fromRewards: {
+    id: 'wallet.transaction.rewards.from',
+    defaultMessage: '!!!From rewards',
+    description: 'From rewards',
+  },
   toAddress: {
     id: 'wallet.transaction.address.to',
     defaultMessage: '!!!To address',
@@ -268,7 +273,6 @@ export default class Transaction extends Component<Props, State> {
       currentTimeFormat,
     } = this.props;
     const { intl } = this.context;
-
     const { showConfirmationDialog } = this.state;
 
     const isPendingTransaction = state === TransactionStates.PENDING;
@@ -396,8 +400,29 @@ export default class Transaction extends Component<Props, State> {
             >
               <div>
                 <h2>{intl.formatMessage(messages.fromAddresses)}</h2>
-
                 {fromAddresses(data.addresses.from, data.id)}
+
+                {data.addresses.withdrawals.length ? (
+                  <>
+                    <h2>{intl.formatMessage(messages.fromRewards)}</h2>
+                    {data.addresses.withdrawals.map((address, addressIndex) => (
+                      <div
+                        // eslint-disable-next-line react/no-array-index-key
+                        key={`${data.id}-to-${address}-${addressIndex}`}
+                        className={styles.addressRow}
+                      >
+                        <Link
+                          className={styles.address}
+                          onClick={() =>
+                            onOpenExternalLink(getUrlByType('address', address))
+                          }
+                          label={address}
+                          skin={LinkSkin}
+                        />
+                      </div>
+                    ))}
+                  </>
+                ) : null}
 
                 <h2>{intl.formatMessage(messages.toAddresses)}</h2>
                 {data.addresses.to.map((address, addressIndex) => (

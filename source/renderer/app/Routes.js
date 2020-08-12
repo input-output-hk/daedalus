@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import { Route, IndexRedirect } from 'react-router';
+import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 import { ROUTES } from './routes-config';
 
 // PAGES
@@ -21,6 +21,8 @@ import StakingInfoPage from './containers/staking/StakingInfoPage';
 import StakingRewardsPage from './containers/staking/StakingRewardsPage';
 import StakePoolsListPage from './containers/staking/StakePoolsListPage';
 import StakingCountdownPage from './containers/staking/StakingCountdownPage';
+import RedeemItnRewardsContainer from './containers/staking/RedeemItnRewardsContainer';
+import HardwareWallet from './containers/hardware-wallet/HardwareWallet';
 import Wallet from './containers/wallet/Wallet';
 import WalletAddPage from './containers/wallet/WalletAddPage';
 import WalletSummaryPage from './containers/wallet/WalletSummaryPage';
@@ -30,55 +32,121 @@ import WalletTransactionsPage from './containers/wallet/WalletTransactionsPage';
 import WalletSettingsPage from './containers/wallet/WalletSettingsPage';
 import WalletUtxoPage from './containers/wallet/WalletUtxoPage';
 
-export const Routes = (
-  <Route path={ROUTES.ROOT} component={Root}>
-    <IndexRedirect to={ROUTES.WALLETS.ROOT} />
-    <Route
-      path={ROUTES.PROFILE.INITIAL_SETTINGS}
-      component={InitialSettingsPage}
-    />
-    <Route path={ROUTES.PROFILE.TERMS_OF_USE} component={TermsOfUsePage} />
-    <Route
-      path={ROUTES.PROFILE.DATA_LAYER_MIGRATION}
-      component={DataLayerMigrationPage}
-    />
-    <Route path={ROUTES.WALLETS.ADD} component={WalletAddPage} />
-    <Route path={ROUTES.WALLETS.ROOT} component={Wallet}>
-      <Route path={ROUTES.WALLETS.SUMMARY} component={WalletSummaryPage} />
-      <Route
-        path={ROUTES.WALLETS.TRANSACTIONS}
-        component={WalletTransactionsPage}
-      />
-      <Route path={ROUTES.WALLETS.SEND} component={WalletSendPage} />
-      <Route path={ROUTES.WALLETS.RECEIVE} component={WalletReceivePage} />
-      <Route path={ROUTES.WALLETS.SETTINGS} component={WalletSettingsPage} />
-      <Route path={ROUTES.WALLETS.UTXO} component={WalletUtxoPage} />
-    </Route>
-    <Route path={ROUTES.SETTINGS.ROOT} component={Settings}>
-      <IndexRedirect to={ROUTES.SETTINGS.GENERAL} />
-      <Route path={ROUTES.SETTINGS.GENERAL} component={GeneralSettingsPage} />
-      <Route
-        path={ROUTES.SETTINGS.TERMS_OF_USE}
-        component={TermsOfUseSettingsPage}
-      />
-      <Route path={ROUTES.SETTINGS.SUPPORT} component={SupportSettingsPage} />
-      <Route path={ROUTES.SETTINGS.DISPLAY} component={DisplaySettingsPage} />
-    </Route>
-    <Route
-      path={ROUTES.PAPER_WALLET_CREATE_CERTIFICATE}
-      component={PaperWalletCreateCertificatePage}
-    />
-    <Route path={ROUTES.STAKING.ROOT} component={Staking}>
-      <IndexRedirect to={ROUTES.STAKING.INFO} />
-      <Route path={ROUTES.STAKING.COUNTDOWN} component={StakingCountdownPage} />
-      <Route
-        path={ROUTES.STAKING.DELEGATION_CENTER}
-        component={DelegationCenterPage}
-      />
-      <Route path={ROUTES.STAKING.STAKE_POOLS} component={StakePoolsListPage} />
-      <Route path={ROUTES.STAKING.REWARDS} component={StakingRewardsPage} />
-      <Route path={ROUTES.STAKING.EPOCHS} component={StakingEpochsPage} />
-      <Route path={ROUTES.STAKING.INFO} component={StakingInfoPage} />
-    </Route>
+export const Routes = withRouter(() => (
+  <Route path={ROUTES.ROOT}>
+    <Root>
+      <Switch>
+        <Route
+          exact
+          path={ROUTES.ROOT}
+          component={() => <Redirect to={ROUTES.WALLETS.ROOT} />}
+        />
+        <Route
+          path={ROUTES.PROFILE.INITIAL_SETTINGS}
+          component={InitialSettingsPage}
+        />
+        <Route path={ROUTES.PROFILE.TERMS_OF_USE} component={TermsOfUsePage} />
+        <Route
+          path={ROUTES.PROFILE.DATA_LAYER_MIGRATION}
+          component={DataLayerMigrationPage}
+        />
+        <Route path={ROUTES.WALLETS.ADD} component={WalletAddPage} />
+        <Route path={ROUTES.WALLETS.ROOT}>
+          <Wallet>
+            <Route
+              exact
+              path={ROUTES.WALLETS.ROOT}
+              component={() => <Redirect to={ROUTES.WALLETS.SUMMARY} />}
+            />
+            <Route
+              path={ROUTES.WALLETS.SUMMARY}
+              component={WalletSummaryPage}
+            />
+            <Route
+              path={ROUTES.WALLETS.TRANSACTIONS}
+              component={WalletTransactionsPage}
+            />
+            <Route path={ROUTES.WALLETS.SEND} component={WalletSendPage} />
+            <Route
+              path={ROUTES.WALLETS.RECEIVE}
+              component={WalletReceivePage}
+            />
+            <Route
+              path={ROUTES.WALLETS.SETTINGS}
+              component={WalletSettingsPage}
+            />
+            <Route path={ROUTES.WALLETS.UTXO} component={WalletUtxoPage} />
+          </Wallet>
+        </Route>
+        <Route path={ROUTES.SETTINGS.ROOT}>
+          <Settings>
+            <Route
+              exact
+              path={ROUTES.SETTINGS.ROOT}
+              component={() => <Redirect to={ROUTES.SETTINGS.GENERAL} />}
+            />
+            <Route
+              path={ROUTES.SETTINGS.GENERAL}
+              component={GeneralSettingsPage}
+            />
+            <Route
+              path={ROUTES.SETTINGS.TERMS_OF_USE}
+              component={TermsOfUseSettingsPage}
+            />
+            <Route
+              path={ROUTES.SETTINGS.SUPPORT}
+              component={SupportSettingsPage}
+            />
+            <Route
+              path={ROUTES.SETTINGS.DISPLAY}
+              component={DisplaySettingsPage}
+            />
+          </Settings>
+        </Route>
+        <Route
+          path={ROUTES.PAPER_WALLET_CREATE_CERTIFICATE}
+          component={PaperWalletCreateCertificatePage}
+        />
+        <Route path={ROUTES.HARDWARE_WALLETS.ROOT}>
+          <HardwareWallet>
+            <Route
+              path={ROUTES.HARDWARE_WALLETS.SUMMARY}
+              component={WalletSummaryPage}
+            />
+          </HardwareWallet>
+        </Route>
+        <Route path={ROUTES.STAKING.ROOT}>
+          <Staking>
+            <Route
+              exact
+              path={ROUTES.STAKING.ROOT}
+              component={() => <Redirect to={ROUTES.STAKING.INFO} />}
+            />
+            <Route
+              path={ROUTES.STAKING.COUNTDOWN}
+              component={StakingCountdownPage}
+            />
+            <Route
+              path={ROUTES.STAKING.DELEGATION_CENTER}
+              component={DelegationCenterPage}
+            />
+            <Route
+              path={ROUTES.STAKING.STAKE_POOLS}
+              component={StakePoolsListPage}
+            />
+            <Route
+              path={ROUTES.STAKING.REWARDS}
+              component={StakingRewardsPage}
+            />
+            <Route path={ROUTES.STAKING.EPOCHS} component={StakingEpochsPage} />
+            <Route path={ROUTES.STAKING.INFO} component={StakingInfoPage} />
+          </Staking>
+          <Route
+            path={ROUTES.REDEEM_ITN_REWARDS}
+            component={RedeemItnRewardsContainer}
+          />
+        </Route>
+      </Switch>
+    </Root>
   </Route>
-);
+));

@@ -16,13 +16,26 @@ import { MIN_DELEGATION_FUNDS } from '../../../source/renderer/app/config/stakin
 import translations from '../../../source/renderer/app/i18n/translations';
 import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
 import { generateWallet } from '../_support/utils';
+import { WalletSyncStateStatuses } from '../../../source/renderer/app/domains/Wallet';
 
 const WALLETS = [
-  generateWallet('First Wallet', '1000000000', 0, STAKE_POOLS[0]),
-  generateWallet('Second Wallet', '500000000', 0, STAKE_POOLS[100]),
-  generateWallet('Third Wallet', '100000000', 0, STAKE_POOLS[150]),
-  generateWallet('Fourth Wallet', '50000000', 0, STAKE_POOLS[290]),
-  generateWallet('Fifth Wallet', '7000000'),
+  generateWallet('Wallet 1', '1000000000', 0, STAKE_POOLS[0]),
+  generateWallet(
+    'Wallet 2 - Rewards Only',
+    '500000000',
+    500000000,
+    STAKE_POOLS[100]
+  ),
+  generateWallet('Wallet 3 - Min Amount - Rewards', '10', 10, STAKE_POOLS[150]),
+  generateWallet('Wallet 4 - Min Amount - No Reward', '0', 0, STAKE_POOLS[290]),
+  generateWallet(
+    'Wallet 5 - Restoring',
+    '0',
+    0,
+    STAKE_POOLS[290],
+    true,
+    WalletSyncStateStatuses.RESTORING
+  ),
 ];
 
 const getDelegationWizardStepsList = locale => [
@@ -88,7 +101,9 @@ export class StakingDelegationSteps extends Component<Props, State> {
         wallets={WALLETS}
         minDelegationFunds={MIN_DELEGATION_FUNDS}
         selectedWalletId={null}
-        isWalletAcceptable={amount => amount.gte(MIN_DELEGATION_FUNDS)}
+        isWalletAcceptable={(amount, reward = 0) =>
+          amount.minus(reward).gte(MIN_DELEGATION_FUNDS)
+        }
       />,
       <DelegationStepsChooseStakePoolDialog
         key="DelegationStepsChooseStakePoolDialog"
@@ -96,7 +111,6 @@ export class StakingDelegationSteps extends Component<Props, State> {
         stakePoolsList={stakePoolsList}
         recentStakePools={[STAKE_POOLS[0], STAKE_POOLS[13], STAKE_POOLS[36]]}
         onOpenExternalLink={action('onOpenExternalLink')}
-        getPledgeAddressUrl={action('getPledgeAddressUrl')}
         currentTheme={this.props.currentTheme}
         onClose={action('onClose')}
         onBack={action('onBack')}

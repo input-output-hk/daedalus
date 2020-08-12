@@ -8,5 +8,17 @@ export type SidebarWalletType = {
   restoreProgress?: number,
   isLegacy: boolean,
   isNotResponding: boolean,
-  recoveryPhraseVerificationStatus: string,
+  hasNotification: boolean,
+};
+
+export type SidebarHardwareWalletType = {
+  id: string,
+  title: string,
+  info: string,
+  isConnected: boolean,
+  isRestoreActive?: boolean,
+  restoreProgress?: number,
+  isLegacy: boolean,
+  isNotResponding: boolean,
+  hasNotification: boolean,
 };

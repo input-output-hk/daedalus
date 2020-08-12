@@ -1,14 +1,7 @@
 // @flow
 import type { RequestConfig } from '../../common/types';
-import type { TransactionPaymentData, TransactionFee } from '../types';
+import type { TransactionFee, GetTransactionFeeParams } from '../types';
 import { request } from '../../utils/request';
-
-export type GetTransactionFeeParams = {
-  walletId: string,
-  data: {
-    payments: Array<TransactionPaymentData>,
-  },
-};
 
 export const getTransactionFee = (
   config: RequestConfig,

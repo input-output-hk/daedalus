@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { Input } from 'react-polymorph/lib/components/Input';
-import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
-import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import { defineMessages, FormattedHTMLMessage, intlShape } from 'react-intl';
+import vjf from 'mobx-react-form/lib/validators/VJF';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
@@ -14,6 +14,7 @@ import {
 } from '../../../utils/validations';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
+import { PasswordInput } from '../../widgets/forms/PasswordInput';
 import styles from './ChangeSpendingPasswordDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import { submitOnEnter } from '../../../utils/form';
@@ -110,6 +111,20 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
             messages.currentPasswordFieldPlaceholder
           ),
           value: '',
+          validators: [
+            ({ form }) => {
+              if (this.props.isSpendingPasswordSet) {
+                const currentPasswordField = form.$('currentPassword');
+                return [
+                  currentPasswordField.value.length > 0,
+                  this.context.intl.formatMessage(
+                    globalMessages.invalidSpendingPassword
+                  ),
+                ];
+              }
+              return [true];
+            },
+          ],
         },
         spendingPassword: {
           type: 'password',
@@ -127,9 +142,11 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
           validators: [
             ({ field, form }) => {
               const repeatPasswordField = form.$('repeatPassword');
-              if (repeatPasswordField.value.length > 0) {
-                repeatPasswordField.validate({ showErrors: true });
-              }
+              const isRepeatPasswordFieldSet =
+                repeatPasswordField.value.length > 0;
+              repeatPasswordField.validate({
+                showErrors: isRepeatPasswordFieldSet,
+              });
               return [
                 isValidSpendingPassword(field.value),
                 this.context.intl.formatMessage(
@@ -149,7 +166,6 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
           validators: [
             ({ field, form }) => {
               const spendingPassword = form.$('spendingPassword').value;
-              if (spendingPassword.length === 0) return [true];
               return [
                 isValidRepeatPassword(spendingPassword, field.value),
                 this.context.intl.formatMessage(
@@ -162,9 +178,11 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
       },
     },
     {
+      plugins: { vjf: vjf() },
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
+        showErrorsOnClear: true,
       },
     }
   );
@@ -194,9 +212,6 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
     const { intl } = this.context;
     const {
       onCancel,
-      currentPasswordValue,
-      newPasswordValue,
-      repeatedPasswordValue,
       isSubmitting,
       error,
       isSpendingPasswordSet,
@@ -214,18 +229,24 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
 
     const newPasswordClasses = classnames(['newPassword', styles.newPassword]);
 
-    const actions = [
-      {
-        label: intl.formatMessage(globalMessages.save),
-        onClick: this.submit,
-        primary: true,
-        className: confirmButtonClasses,
-      },
-    ];
-
     const currentPasswordField = form.$('currentPassword');
     const newPasswordField = form.$('spendingPassword');
     const repeatedPasswordField = form.$('repeatPassword');
+
+    const canSubmit = !isSubmitting && form.isValid;
+
+    const currentPasswordError =
+      canSubmit && error && error.code === 'wrong_encryption_passphrase';
+
+    const actions = [
+      {
+        className: confirmButtonClasses,
+        disabled: !canSubmit,
+        label: intl.formatMessage(globalMessages.save),
+        onClick: this.submit,
+        primary: true,
+      },
+    ];
 
     return (
       <Dialog
@@ -246,46 +267,28 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
         <div className={styles.spendingPasswordFields}>
           {isSpendingPasswordSet && (
             <Input
-              type="password"
               className={styles.currentPassword}
-              label={currentPasswordField.label}
-              value={currentPasswordValue}
-              onKeyPress={this.handleSubmitOnEnter}
-              onChange={value =>
-                this.handleDataChange('currentPasswordValue', value)
-              }
+              error={currentPasswordField.error || currentPasswordError}
               {...currentPasswordField.bind()}
-              error={currentPasswordField.error}
-              skin={InputSkin}
+              onKeyPress={this.handleSubmitOnEnter}
             />
           )}
 
-          <Input
-            type="password"
-            className={newPasswordClasses}
-            label={newPasswordField.label}
-            value={newPasswordValue}
-            onKeyPress={this.handleSubmitOnEnter}
-            onChange={value => this.handleDataChange('newPasswordValue', value)}
-            {...newPasswordField.bind()}
-            error={newPasswordField.error}
-            skin={InputSkin}
-          />
+          <div className={newPasswordClasses}>
+            <PasswordInput
+              {...newPasswordField.bind()}
+              onKeyPress={this.handleSubmitOnEnter}
+            />
+          </div>
 
-          <Input
-            type="password"
-            className={styles.repeatedPassword}
-            label={repeatedPasswordField.label}
-            value={repeatedPasswordValue}
-            onKeyPress={this.handleSubmitOnEnter}
-            onChange={value =>
-              this.handleDataChange('repeatedPasswordValue', value)
-            }
-            {...repeatedPasswordField.bind()}
-            error={repeatedPasswordField.error}
-            skin={InputSkin}
-          />
-
+          <div className={styles.repeatedPassword}>
+            <PasswordInput
+              {...repeatedPasswordField.bind()}
+              onKeyPress={this.handleSubmitOnEnter}
+              repeatPassword={newPasswordField.value}
+              isPasswordRepeat
+            />
+          </div>
           <p className={styles.passwordInstructions}>
             <FormattedHTMLMessage {...globalMessages.passwordInstructions} />
           </p>

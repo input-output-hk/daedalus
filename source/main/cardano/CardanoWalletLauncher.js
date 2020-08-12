@@ -10,19 +10,21 @@ import { environment } from '../environment';
 import { STAKE_POOL_REGISTRY_URL } from '../config';
 import {
   MAINNET,
-  SELFNODE,
+  STAGING,
   TESTNET,
+  SELFNODE,
   ITN_REWARDS_V1,
   ITN_SELFNODE,
   NIGHTLY,
   QA,
 } from '../../common/types/environment.types';
+import { CardanoNodeImplementationOptions } from '../../common/types/cardano-node.types';
 import { createSelfnodeConfig } from './utils';
 import { logger } from '../utils/logging';
-import type { CardanoNodeImplementation } from '../../common/types/cardano-node.types';
+import type { CardanoNodeImplementations } from '../../common/types/cardano-node.types';
 
 export type WalletOpts = {
-  nodeImplementation: CardanoNodeImplementation,
+  nodeImplementation: CardanoNodeImplementations,
   nodeConfig: NodeConfig,
   cluster: string,
   stateDir: string,
@@ -35,6 +37,7 @@ export type WalletOpts = {
   nodeLogFile: WriteStream,
   walletLogFile: WriteStream,
   cliBin: string,
+  isStaging: boolean,
 };
 
 export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
@@ -52,6 +55,7 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
     nodeLogFile,
     walletLogFile,
     cliBin,
+    isStaging,
   } = walletOpts;
   // TODO: Update launcher config to pass number
   const syncToleranceSeconds = parseInt(syncTolerance.replace('s', ''), 10);
@@ -84,15 +88,18 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
 
   // Prepare development TLS files
   const { isProduction } = environment;
-  if (!isProduction && nodeImplementation === 'cardano') {
+  if (
+    !isProduction &&
+    nodeImplementation === CardanoNodeImplementationOptions.CARDANO
+  ) {
     await fs.copy('tls', tlsPath);
   }
 
-  // This switch statement handles any node specifc
+  // This switch statement handles any node specific
   // configuration, prior to spawning the child process
   logger.info('Node implementation', { nodeImplementation });
   switch (nodeImplementation) {
-    case 'cardano':
+    case CardanoNodeImplementationOptions.CARDANO:
       if (cluster === SELFNODE) {
         const { configFile, genesisFile } = nodeConfig.network;
         const {
@@ -109,49 +116,21 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
         nodeConfig.network.genesisFile = selfnodeGenesisPath;
         nodeConfig.network.genesisHash = selfnodeGenesisHash;
         merge(launcherConfig, { apiPort: 8088 });
-      } else {
-        try {
-          const configFileDestPath = path.join(stateDir, 'config.yaml');
-          const configFileSourcePath = nodeConfig.network.configFile;
-          if (configFileDestPath !== configFileSourcePath) {
-            logger.info(`Copying ${cluster} config file...`, {
-              configFileSourcePath,
-              configFileDestPath,
-            });
-            await fs.copy(configFileSourcePath, configFileDestPath);
-            nodeConfig.network.configFile = configFileDestPath;
-            logger.info(`Copied ${cluster} config file`, {
-              configFileDestPath,
-            });
-          }
-        } catch (error) {
-          logger.error(`Copying ${cluster} config file failed`, { error });
-        }
-        try {
-          const genesisFileDestPath = path.join(stateDir, 'genesis.json');
-          const genesisFileSourcePath = nodeConfig.network.genesisFile;
-          if (genesisFileDestPath !== genesisFileSourcePath) {
-            logger.info(`Copying ${cluster} genesis file...`, {
-              genesisFileSourcePath,
-              genesisFileDestPath,
-            });
-            await fs.copy(genesisFileSourcePath, genesisFileDestPath);
-            nodeConfig.network.genesisFile = genesisFileDestPath;
-            logger.info(`Copied ${cluster} genesis file`, {
-              genesisFileDestPath,
-            });
-          }
-        } catch (error) {
-          logger.error(`Copying ${cluster} genesis file failed`, { error });
-        }
       }
-      if (cluster !== MAINNET) {
-        // All clusters except for Mainnet are treated as "Testnets"
+      if (cluster === MAINNET) {
+        launcherConfig.networkName = MAINNET;
+        logger.info('Launching Wallet with --mainnet flag');
+      } else if (isStaging) {
+        launcherConfig.networkName = STAGING;
+        logger.info('Launching Wallet with --staging flag');
+      } else {
+        // All clusters not flagged as staging except for Mainnet are treated as "Testnets"
         launcherConfig.networkName = TESTNET;
+        logger.info('Launching Wallet with --testnet flag');
       }
       merge(launcherConfig, { nodeConfig, tlsConfiguration });
       break;
-    case 'jormungandr':
+    case CardanoNodeImplementationOptions.JORMUNGANDR:
       if (cluster === ITN_SELFNODE) {
         merge(launcherConfig, {
           apiPort: 8088,

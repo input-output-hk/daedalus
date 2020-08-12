@@ -31,8 +31,11 @@ const messages = defineMessages({
   },
 });
 
+const { isIncentivizedTestnet } = global;
+
 type Props = {
   recoveryPhrase: string,
+  isShelleyActivated: boolean,
   onStartWalletBackup: Function,
   onCancelBackup: Function,
 };
@@ -45,8 +48,12 @@ export default class WalletRecoveryPhraseDisplayDialog extends Component<Props> 
 
   render() {
     const { intl } = this.context;
-    const { isIncentivizedTestnet } = global;
-    const { recoveryPhrase, onStartWalletBackup, onCancelBackup } = this.props;
+    const {
+      recoveryPhrase,
+      onStartWalletBackup,
+      onCancelBackup,
+      isShelleyActivated,
+    } = this.props;
     const dialogClasses = classnames([
       styles.component,
       'WalletRecoveryPhraseDisplayDialog',
@@ -74,9 +81,10 @@ export default class WalletRecoveryPhraseDisplayDialog extends Component<Props> 
             <FormattedHTMLMessage
               {...messages.backupInstructions}
               values={{
-                walletRecoveryPhraseWordCount: isIncentivizedTestnet
-                  ? WALLET_RECOVERY_PHRASE_WORD_COUNT
-                  : LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
+                walletRecoveryPhraseWordCount:
+                  isIncentivizedTestnet || isShelleyActivated
+                    ? WALLET_RECOVERY_PHRASE_WORD_COUNT
+                    : LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
               }}
             />
           }

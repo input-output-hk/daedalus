@@ -1,0 +1,186 @@
+@import '../stakingConfig';
+@import '../../../themes/mixins/link';
+
+.component {
+  @extend %contentBorderAndBackground;
+  margin-top: 20px;
+  padding: 20px;
+
+  .upper {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+
+    .selectWallet {
+      :global {
+        .noValueSelected {
+          &.enSelector {
+            .SimpleInput_customValueBlock {
+              width: 110px;
+            }
+          }
+          &.jaSelector {
+            .SimpleInput_customValueBlock {
+              width: 160px;
+            }
+          }
+
+          .SelectOverrides_selectInput::after {
+            bottom: -14.5px !important;
+          }
+        }
+      }
+      .row {
+        .col {
+          margin-right: 5px;
+
+          &:last-child {
+            margin-right: 0;
+          }
+        }
+      }
+      .walletSelector {
+        padding-right: 15px;
+
+        :global {
+          .SimpleInput_input {
+            border: none;
+            height: auto;
+            padding: 0;
+            width: calc(100% + 20px);
+            z-index: 0;
+          }
+          .SelectOverrides_selectInput::after {
+            background-color: var(--theme-staking-font-color-regular);
+            bottom: 7.5px;
+            left: auto;
+            right: 0;
+          }
+          .SimpleInput_customValueBlock {
+            height: auto;
+          }
+          .customValue {
+            color: var(--theme-staking-font-color-regular);
+            cursor: pointer;
+            font-family: var(--font-semibold);
+            font-size: 16px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+          .SimpleSelect_selectInput {
+            max-width: 400px;
+          }
+          .SimpleOptions_options {
+            max-width: 450px;
+            min-width: 250px;
+
+            .SimpleOptions_option {
+              span {
+                display: block;
+                overflow: hidden;
+                text-overflow: ellipsis;
+              }
+            }
+          }
+        }
+
+        ::-webkit-input-placeholder {
+          color: var(--theme-staking-font-color-regular);
+          font-family: var(--font-semibold);
+        }
+        ::placeholder {
+          color: var(--theme-staking-font-color-regular);
+          font-family: var(--font-semibold);
+        }
+      }
+    }
+    .actionLearnMore {
+      height: 36px;
+      line-height: 36px;
+      padding: 0 27px;
+      white-space: nowrap;
+      width: auto;
+    }
+    .externalLink {
+      height: 13px;
+      object-fit: contain;
+      width: 13px;
+    }
+  }
+  .lower {
+    margin-bottom: 18px;
+
+    .outOfSliderRangeStart {
+      border-style: dotted;
+      border-top: 2px solid var(--theme-staking-slider-background-color-2);
+      height: 0;
+      margin-top: 24px;
+      opacity: 0.3;
+      width: 9px;
+    }
+    .slider {
+      flex: 1;
+
+      :global {
+        .SimpleTooltip_bubble {
+          .SimpleBubble_bubble {
+            border-radius: 6px;
+            font-family: var(--font-regular);
+            font-size: 13px;
+            line-height: 1.15;
+          }
+        }
+        .Slider_minMark {
+          .SimpleTooltip_bubble {
+            .SimpleBubble_bubble {
+              left: -15px;
+              right: auto;
+            }
+          }
+        }
+        .Slider_maxMark {
+          .SimpleTooltip_bubble {
+            .SimpleBubble_bubble {
+              left: -50px;
+              right: auto;
+            }
+          }
+        }
+      }
+    }
+    .outOfRangeMaxAmount {
+      font-size: 12px;
+      line-height: 1.33;
+      margin-bottom: 9px;
+      text-align: right;
+
+      :global {
+        .SimpleTooltip_bubble {
+          .SimpleBubble_bubble {
+            border-radius: 6px;
+            font-family: var(--font-regular);
+            font-size: 13px;
+            left: auto;
+            line-height: 1.15;
+            right: -10px;
+          }
+        }
+      }
+    }
+    .outOfSliderRangeEnd {
+      border-style: dotted;
+      border-top: 2px solid var(--theme-staking-slider-background-color-2);
+      height: 0;
+      opacity: 0.3;
+      width: 110px;
+    }
+  }
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .col {
+    @extend %regularText;
+  }
+}

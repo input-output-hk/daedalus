@@ -23,9 +23,10 @@ import type {
   GetLatestAppVersionResponse,
 } from '../nodes/types';
 import type { GetNewsResponse } from '../news/types';
-import { EPOCH_LENGTH_ITN } from '../../config/epochsConfig';
+import { getEpochLength } from '../../config/epochsConfig';
 
 let LATEST_APP_VERSION = null;
+let LOCAL_TIME_DIFFERENCE = 0;
 let SYNC_PROGRESS = null;
 let NEXT_ADA_UPDATE = null;
 let APPLICATION_VERSION = null;
@@ -51,26 +52,32 @@ export default (api: AdaApi) => {
           : get(sync_progress, 'quantity', 0);
 
       // extract relevant data before sending to NetworkStatusStore
+      const nextEpochNumber = get(next_epoch, 'epoch_number', null);
+      const nextEpochStartTime = get(next_epoch, 'epoch_start_time', '');
+      const epochLength = getEpochLength();
       return {
-        syncProgress: SYNC_PROGRESS || syncProgress,
+        syncProgress: SYNC_PROGRESS !== null ? SYNC_PROGRESS : syncProgress,
         localTip: {
           epoch: get(node_tip, 'epoch_number', 0),
           slot: get(node_tip, 'slot_number', 0),
         },
         networkTip: {
-          epoch: get(network_tip, 'epoch_number', 0),
-          slot: get(network_tip, 'slot_number', 0),
+          epoch: get(network_tip, 'epoch_number', null),
+          slot: get(network_tip, 'slot_number', null),
         },
         nextEpoch: {
-          epochNumber: get(next_epoch, 'epoch_number', 0),
-          epochStart: get(next_epoch, 'epoch_start_time', ''),
+          // N+1 epoch
+          epochNumber: nextEpochNumber,
+          epochStart: nextEpochStartTime,
         },
         futureEpoch: {
-          epochNumber: get(next_epoch, 'epoch_number', 0) + 1,
-          epochStart: moment(get(next_epoch, 'epoch_start', '')).add(
-            EPOCH_LENGTH_ITN,
-            'seconds'
-          ),
+          // N+2 epoch
+          epochNumber: nextEpochNumber ? nextEpochNumber + 1 : null,
+          epochStart: nextEpochStartTime
+            ? moment(nextEpochStartTime)
+                .add(epochLength, 'seconds')
+                .toISOString()
+            : '',
         },
       };
     } catch (error) {
@@ -84,16 +91,16 @@ export default (api: AdaApi) => {
   };
 
   api.nextUpdate = async (): Promise<Object> => {
-    let nodeUpdate = null;
+    let appUpdate = null;
 
     if (NEXT_ADA_UPDATE) {
-      nodeUpdate = {
+      appUpdate = {
         version: NEXT_ADA_UPDATE,
       };
     }
 
-    logger.debug('AdaApi::nextUpdate success', { nodeUpdate });
-    return Promise.resolve(nodeUpdate);
+    logger.debug('AdaApi::nextUpdate success', { appUpdate });
+    return Promise.resolve(appUpdate);
   };
 
   api.setNextUpdate = async nextUpdate => {
@@ -209,8 +216,11 @@ export default (api: AdaApi) => {
     });
   });
 
-  api.getWallets = async (): Promise<Array<Wallet>> => {
-    const originalWallets = await originalGetWallets();
+  api.getWallets = async (request: {
+    isShelleyActivated: boolean,
+  }): Promise<Array<Wallet>> => {
+    const { isShelleyActivated } = request;
+    const originalWallets = await originalGetWallets({ isShelleyActivated });
     const modifiedWallets = originalWallets.map(
       (originalWallet: Wallet, index: number) => {
         const testingWallet = TESTING_WALLETS_DATA[index] || {};
@@ -231,10 +241,23 @@ export default (api: AdaApi) => {
       );
   };
 
+  api.setLocalTimeDifference = async timeDifference => {
+    LOCAL_TIME_DIFFERENCE = timeDifference;
+  };
+
+  api.getNetworkClock = async () => {
+    return {
+      status: 'available',
+      offset: LOCAL_TIME_DIFFERENCE,
+    };
+  };
+
   api.resetTestOverrides = () => {
     TESTING_WALLETS_DATA = {};
+    SYNC_PROGRESS = null;
     LATEST_APP_VERSION = null;
     NEXT_ADA_UPDATE = null;
     APPLICATION_VERSION = null;
+    LOCAL_TIME_DIFFERENCE = 0;
   };
 };

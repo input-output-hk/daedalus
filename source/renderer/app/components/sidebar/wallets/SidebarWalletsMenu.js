@@ -9,7 +9,10 @@ import SidebarSubMenu from '../SidebarMenu';
 import styles from './SidebarWalletsMenu.scss';
 import addWalletIcon from '../../../assets/images/sidebar/add-wallet-ic.inline.svg';
 import SidebarWalletMenuItem from './SidebarWalletMenuItem';
-import type { SidebarWalletType } from '../../../types/sidebarTypes';
+import type {
+  SidebarHardwareWalletType,
+  SidebarWalletType,
+} from '../../../types/sidebarTypes';
 
 const messages = defineMessages({
   addAdaWallet: {
@@ -20,13 +23,15 @@ const messages = defineMessages({
 });
 
 type Props = {
-  wallets: Array<SidebarWalletType>,
+  wallets: Array<SidebarWalletType | SidebarHardwareWalletType>,
   isActiveWallet: Function,
   onAddWallet: Function,
   onWalletItemClick: Function,
   visible: boolean,
   isAddWalletButtonActive: boolean,
   isIncentivizedTestnet: boolean,
+  isShelleyActivated: boolean,
+  isHardwareWalletsMenu?: boolean,
 };
 
 @observer
@@ -48,6 +53,8 @@ export default class SidebarWalletsMenu extends Component<Props> {
       onWalletItemClick,
       isAddWalletButtonActive,
       isIncentivizedTestnet,
+      isShelleyActivated,
+      isHardwareWalletsMenu,
     } = this.props;
 
     const addWalletButtonStyles = classNames([
@@ -73,12 +80,12 @@ export default class SidebarWalletsMenu extends Component<Props> {
                 className={`Wallet_${wallet.id}`}
                 isRestoreActive={wallet.isRestoreActive}
                 isIncentivizedTestnet={isIncentivizedTestnet}
+                isShelleyActivated={isShelleyActivated}
                 restoreProgress={wallet.restoreProgress}
                 isNotResponding={wallet.isNotResponding}
                 isLegacy={wallet.isLegacy}
-                recoveryPhraseVerificationStatus={
-                  wallet.recoveryPhraseVerificationStatus
-                }
+                isHardwareWalletsMenu={isHardwareWalletsMenu}
+                hasNotification={wallet.hasNotification}
               />
             ))}
           </Scrollbars>

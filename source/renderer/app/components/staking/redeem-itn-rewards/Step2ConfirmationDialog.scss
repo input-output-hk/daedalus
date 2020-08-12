@@ -1,0 +1,67 @@
+@import '../../../themes/mixins/error-message';
+.walletToLabel {
+  font-family: var(--font-medium);
+  font-size: 16px;
+  font-stretch: normal;
+  font-style: normal;
+  font-weight: 500;
+  height: 22px;
+  letter-spacing: normal;
+  line-height: 1.38;
+  margin-bottom: 6px;
+  width: 20px;
+}
+.section {
+  font-family: var(--font-regular);
+  font-size: 16px;
+  line-height: 1.38;
+  margin-bottom: 20px;
+  span {
+    font-family: var(--font-light);
+  }
+  b {
+    font-family: var(--font-regular);
+  }
+}
+.sectionHalf {
+  display: inline-block;
+  width: 50%;
+}
+.sectionAccent {
+  > div:last-child {
+    color: var(--theme-staking-redeemItnRewards-attention-text-color);
+  }
+}
+
+.to {
+  @extend .section;
+}
+.rewardsTotal {
+  @extend .section;
+  @extend .sectionHalf;
+  @extend .sectionAccent;
+}
+.transactionFees {
+  @extend .section;
+  @extend .sectionHalf;
+  @extend .sectionAccent;
+}
+.finalTotal {
+  @extend .section;
+  @extend .sectionAccent;
+}
+.spendingPassword {
+  @extend .section;
+  span {
+    font-family: var(--font-regular);
+    em {
+      font-family: var(--font-light);
+      opacity: 0.5;
+    }
+  }
+}
+.error {
+  @include error-message;
+  margin-bottom: 1rem;
+  text-align: center;
+}

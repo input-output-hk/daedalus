@@ -6,6 +6,7 @@ import {
   FormattedMessage,
   FormattedHTMLMessage,
 } from 'react-intl';
+import vjf from 'mobx-react-form/lib/validators/VJF';
 import classNames from 'classnames';
 import { get } from 'lodash';
 import { observer } from 'mobx-react';
@@ -20,11 +21,11 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
 import Dialog from '../../widgets/Dialog';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
+import { formattedWalletAmount } from '../../../utils/formatters';
 import { submitOnEnter } from '../../../utils/form';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
-import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import Wallet from '../../../domains/Wallet';
 import StakePool from '../../../domains/StakePool';
 
@@ -39,12 +40,12 @@ const messages = defineMessages({
     id: 'staking.delegationSetup.confirmation.step.dialog.stepIndicatorLabel',
     defaultMessage: '!!!STEP {currentStep} OF {totalSteps}',
     description:
-      'Step indicator labe on the delegation setup "confirmation" step dialog.',
+      'Step indicator label on the delegation setup "confirmation" step dialog.',
   },
   description: {
     id: 'staking.delegationSetup.confirmation.step.dialog.description',
     defaultMessage:
-      '!!!Confirm your delegation for <span>{selectedWalletName}<span> wallet to <span>[{selectedPoolTicker}]<span> stake pool by posting your delegation preferences on the Cardano blockchain.',
+      '!!!Confirm your delegation choice to <span>[{selectedPoolTicker}]<span> stake pool for your <span>{selectedWalletName}<span> wallet by posting your delegation preferences on the Cardano blockchain.',
     description:
       'Description on the delegation setup "confirmation" step dialog.',
   },
@@ -78,6 +79,11 @@ const messages = defineMessages({
     description:
       'Label for "Cancel" button on the delegation setup "confirmation" step dialog.',
   },
+  calculatingFees: {
+    id: 'staking.delegationSetup.confirmation.step.dialog.calculatingFees',
+    defaultMessage: '!!!Calculating fees',
+    description: '"Calculating fees" message in the "Undelegate" dialog.',
+  },
 });
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
@@ -86,7 +92,7 @@ type Props = {
   onBack: Function,
   onClose: Function,
   onConfirm: Function,
-  transactionFee: BigNumber,
+  transactionFee: ?BigNumber,
   selectedWallet: ?Wallet,
   selectedPool: ?StakePool,
   stepsList: Array<string>,
@@ -128,6 +134,7 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
       },
     },
     {
+      plugins: { vjf: vjf() },
       options: {
         validateOnChange: true,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
@@ -180,7 +187,8 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
         label: intl.formatMessage(messages.confirmButtonLabel),
         onClick: this.submit,
         primary: true,
-        disabled: !spendingPasswordField.isValid || isSubmitting,
+        disabled:
+          !spendingPasswordField.isValid || isSubmitting || !transactionFee,
       },
     ];
 
@@ -199,8 +207,6 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
         }}
       />
     );
-
-    const fees = transactionFee.toFormat(DECIMAL_PLACES_IN_ADA);
 
     return (
       <Dialog
@@ -238,8 +244,18 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
               {intl.formatMessage(messages.feesLabel)}
             </p>
             <p className={styles.feesAmount}>
-              {fees}
-              <span> ADA</span>
+              {!transactionFee ? (
+                <span className={styles.calculatingFeesLabel}>
+                  {intl.formatMessage(messages.calculatingFees)}
+                </span>
+              ) : (
+                <>
+                  <span>{formattedWalletAmount(transactionFee, false)}</span>
+                  <span className={styles.feesAmountLabel}>
+                    &nbsp;{intl.formatMessage(globalMessages.unitAda)}
+                  </span>
+                </>
+              )}
             </p>
           </div>
 

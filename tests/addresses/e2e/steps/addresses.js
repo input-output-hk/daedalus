@@ -1,10 +1,9 @@
 // @flow
 import { Given, Then, When } from 'cucumber';
 import { expect } from 'chai';
-import {
-  getVisibleElementsCountForSelector,
-  waitAndClick,
-} from '../../../common/e2e/steps/helpers';
+import { find } from 'lodash';
+import { getVisibleElementsCountForSelector } from '../../../common/e2e/steps/helpers';
+import { getWalletByName } from '../../../wallets/e2e/steps/helpers';
 import type { Daedalus } from '../../../types';
 
 declare var daedalus: Daedalus;
@@ -31,11 +30,14 @@ Given('I have {int} generated wallet addresses', async function(numberOfAddresse
     await this.client.executeAsync(
       (done) => {
         const { active } = daedalus.stores.wallets;
-        daedalus.stores.addresses._createByronWalletAddress({
-          walletId: active ? active.id : null,
+        if (!active) {
+          return done();
+        }
+        return daedalus.stores.addresses._createByronWalletAddress({
+          walletId: active.id,
           passphrase: 'Secret1234',
         })
-        .then(done)
+        .then(done);
       }
     );
   }
@@ -53,6 +55,10 @@ When(
     await this.client.setValue(selector, password);
   }
 );
+
+When('I click "Generate a new address" button', async function() {
+  await this.waitAndClick('.generateAddressButton');
+});
 
 Then('I should see {int} used addresses', { timeout: 60000 }, async function(
   numberOfAddresses
@@ -141,3 +147,32 @@ Then('The active address should be the newest one', async function() {
   const activeAddress = await this.client.getText('.WalletReceiveRandom_hash');
   expect(lastGeneratedAddress).to.equal(activeAddress);
 });
+
+Then(
+  /^I should see the following error messages on the wallet receive screen:$/,
+  async function(data) {
+    let errorsOnScreen = await this.waitAndGetText('.WalletReceiveRandom_error');
+    if (typeof errorsOnScreen === 'string') errorsOnScreen = [errorsOnScreen];
+    const errors = data.hashes();
+    for (let i = 0; i < errors.length; i++) {
+      const expectedError = await this.intl(errors[i].message);
+      expect(errorsOnScreen[i]).to.equal(expectedError);
+    }
+  }
+);
+
+ Then(
+  /^The active address belongs to "([^"]*)" wallet$/, async function(walletName) {
+    const { id: walletId, isLegacy } = await getWalletByName.call(this, walletName);
+    const walletAddresses = await this.client.executeAsync((walletId, isLegacy, done) => {
+      daedalus.api.ada
+        .getAddresses({ walletId, isLegacy })
+        .then(response => done(response))
+        .catch(error => done(error));
+    }, walletId, isLegacy);
+
+    const activeAddress = await this.client.getText('.WalletReceiveRandom_hash');
+    const walletAddress = find(walletAddresses.value, address => address.id === activeAddress);
+    expect(walletAddress.id).to.equal(activeAddress);
+  }
+);

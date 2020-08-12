@@ -1,14 +1,14 @@
 {
     "cardano-node": {
-        "branch": "tags/1.8.0",
+        "branch": "refs/tags/1.18.0",
         "description": null,
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-node",
-        "rev": "64c2778c61245dcda13eaf16a2e0738dfacb7a16",
-        "sha256": "1aybhbip4j9275npvrk4w0bch5bl7fbq8faj1qj8h51f1g0ja74l",
+        "rev": "ba0f96b1a9fc9232ed211e57835fd5018093069d",
+        "sha256": "1rj7rpr3qqqwdx00zsfg283jflndnr9q5arxf5fiqrrqms40p7sk",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-node/archive/64c2778c61245dcda13eaf16a2e0738dfacb7a16.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-node/archive/ba0f96b1a9fc9232ed211e57835fd5018093069d.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-shell": {
@@ -17,22 +17,10 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-shell",
-        "rev": "601bb4324c258e3c8cbd2d532e5696fd09e2582e",
-        "sha256": "0zzd711zgj62l729hyymnv0i6jn3rx8yrww2b4a8l3csf1d9xv7n",
+        "rev": "5257fc818ef7df60986834310432e197aac90711",
+        "sha256": "1si7jb084m2z9h773b1v4mgdkcjbbfpsyys3d6iz6gn0pzkijvc8",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-shell/archive/601bb4324c258e3c8cbd2d532e5696fd09e2582e.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
-    "cardano-sl": {
-        "branch": "KtorZ/export-wallets",
-        "description": "Cryptographic currency implementing Ouroboros PoS protocol",
-        "homepage": "",
-        "owner": "input-output-hk",
-        "repo": "cardano-sl",
-        "rev": "c1815b7dce5fb71d997bd3a94c4c5ccf2c9a9a94",
-        "sha256": "1dzfhv7qhv1498sd8jrac39qd8vgpdahv7dskg1hnfs5rw2gipar",
-        "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-sl/archive/c1815b7dce5fb71d997bd3a94c4c5ccf2c9a9a94.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-shell/archive/5257fc818ef7df60986834310432e197aac90711.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-wallet": {
@@ -41,12 +29,12 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-wallet",
-        "rev": "a638544c454bf71eb4d97a18f2fc3ff49bbab2b0",
-        "sha256": "06qvra6x4886gff5dfnnwb8n83q0bpfz4flghlsxwb8ahh8mr2vc",
+        "rev": "d5b43356e4dbe9267ede9c8e912da6c893bdda85",
+        "sha256": "0r6c46dx7yryb54cj6sbw90i19xy4x10lprq7qda1wjd6rkxyqhf",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-wallet/archive/a638544c454bf71eb4d97a18f2fc3ff49bbab2b0.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-wallet/archive/d5b43356e4dbe9267ede9c8e912da6c893bdda85.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz",
-        "version": "v2020-04-07"
+        "version": "v2020-04-28"
     },
     "gitignore": {
         "branch": "master",
@@ -78,10 +66,10 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "iohk-nix",
-        "rev": "2744051c403165303628c61c8fbb973fa67ab76f",
-        "sha256": "0gxaq42dcyb621av1jy099mjn0ajwng1wwwdkx5mllmbrvl4hfqw",
+        "rev": "f345d26508966e434d8db57d6c3b4ce4202c9fb5",
+        "sha256": "1xcar2r6jm68dp5s8kc2rii0rcg47w41qc1akazbngkj1x6hf1r2",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/iohk-nix/archive/2744051c403165303628c61c8fbb973fa67ab76f.tar.gz",
+        "url": "https://github.com/input-output-hk/iohk-nix/archive/f345d26508966e434d8db57d6c3b4ce4202c9fb5.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "js-chain-libs": {
@@ -106,18 +94,6 @@
         "sha256": "1y1h6aj0rxrrhvp9jpr6xw3zsa1l8ac25ng4xzjskr5kg620pxqr",
         "type": "tarball",
         "url": "https://github.com/input-output-hk/niv/archive/4229fbcf62997467c34283a2f353702359e78e5a.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
-    },
-    "nixpkgs": {
-        "branch": "nixos-19.09",
-        "description": "A read-only mirror of NixOS/nixpkgs tracking the released channels. Send issues and PRs to",
-        "homepage": "https://github.com/NixOS/nixpkgs",
-        "owner": "NixOS",
-        "repo": "nixpkgs-channels",
-        "rev": "c5aabb0d603e2c1ea05f5a93b3be82437f5ebf31",
-        "sha256": "15fwszhn6078sbrb8qk83g8afvh4qnmvff0qbkbvq3cm1fxni2w1",
-        "type": "tarball",
-        "url": "https://github.com/NixOS/nixpkgs-channels/archive/c5aabb0d603e2c1ea05f5a93b3be82437f5ebf31.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixpkgs-nsis": {

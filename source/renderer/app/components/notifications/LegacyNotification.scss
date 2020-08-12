@@ -24,11 +24,11 @@
   padding: 20px 40px;
 
   .actionLearnMore {
-    @extend %actionButton;
     background-color: var(
       --theme-legacy-notification-learn-more-button-background-color
     );
     padding: 0 42px;
+    @extend %actionButton;
 
     &:hover {
       background-color: var(
@@ -57,12 +57,12 @@
   }
 
   .actionMove {
-    @extend %actionButton;
     background-color: var(
       --theme-legacy-notification-move-button-background-color
     );
     color: var(--theme-legacy-notification-move-button-text-color);
     padding: 0 20px;
+    @extend %actionButton;
 
     &:hover {
       background-color: var(
@@ -92,6 +92,14 @@
     letter-spacing: 0.5px;
     line-height: 1.36;
     margin-top: 10px;
+    .descriptionLink {
+      border-color: var(--theme-legacy-notification-description-color);
+      color: var(--theme-legacy-notification-description-color);
+      font-family: var(--font-regular);
+      &:after {
+        background: var(--theme-legacy-notification-description-color);
+      }
+    }
   }
 
   .actions {

@@ -1,7 +1,6 @@
 // @flow
 import React, { Component, Fragment } from 'react';
 import { observer, inject } from 'mobx-react';
-import BigNumber from 'bignumber.js';
 import DelegationCenter from '../../components/staking/delegation-center/DelegationCenter';
 import DelegationSetupWizardDialogContainer from './dialogs/DelegationSetupWizardDialogContainer';
 import UndelegateDialogContainer from './dialogs/UndelegateDialogContainer';
@@ -9,6 +8,7 @@ import UndelegateConfirmationDialog from '../../components/staking/delegation-ce
 import DelegationSetupWizardDialog from '../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
 import DelegationCenterNoWallets from '../../components/staking/delegation-center/DelegationCenterNoWallets';
 import { ROUTES } from '../../routes-config';
+import { MIN_DELEGATION_FUNDS } from '../../config/stakingConfig';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 type Props = InjectedProps;
@@ -31,23 +31,29 @@ export default class DelegationCenterPage extends Component<Props> {
   handleUndelegate = async (walletId: string) => {
     const { actions, stores } = this.props;
     const { updateDataForActiveDialog } = actions.dialogs;
+    const { isOpen } = stores.uiDialogs;
     const { calculateDelegationFee } = stores.staking;
 
     actions.dialogs.open.trigger({ dialog: UndelegateConfirmationDialog });
     const dialogData = {
       walletId,
-      stakePoolQuitFee: new BigNumber(0),
+      stakePoolQuitFee: null,
     };
     updateDataForActiveDialog.trigger({ data: dialogData });
 
     // Update dialog one more time when quit fee is calculated
     const stakePoolQuitFee = await calculateDelegationFee({ walletId });
-    updateDataForActiveDialog.trigger({
-      data: {
-        ...dialogData,
-        stakePoolQuitFee,
-      },
-    });
+
+    // Update dialog data only if UndelegateConfirmationDialog is still active
+    // and fee calculation was successful
+    if (isOpen(UndelegateConfirmationDialog) && stakePoolQuitFee) {
+      updateDataForActiveDialog.trigger({
+        data: {
+          ...dialogData,
+          stakePoolQuitFee,
+        },
+      });
+    }
   };
 
   handleGoToCreateWalletClick = () => {
@@ -55,16 +61,24 @@ export default class DelegationCenterPage extends Component<Props> {
   };
 
   render() {
+    const { isIncentivizedTestnet, isShelleyTestnet } = global;
     const { stores } = this.props;
     const { app, uiDialogs, staking, wallets, networkStatus, profile } = stores;
     const { stakePools, getStakePoolById, fetchingStakePoolsFailed } = staking;
-    const { networkTip, nextEpoch, futureEpoch } = networkStatus;
+    const {
+      isSynced,
+      networkTip,
+      nextEpoch,
+      futureEpoch,
+      isEpochsInfoAvailable,
+    } = networkStatus;
     const { currentLocale } = profile;
 
     if (!wallets.allWallets.length) {
       return (
         <DelegationCenterNoWallets
           onGoToCreateWalletClick={this.handleGoToCreateWalletClick}
+          minDelegationFunds={MIN_DELEGATION_FUNDS}
         />
       );
     }
@@ -80,7 +94,13 @@ export default class DelegationCenterPage extends Component<Props> {
           nextEpoch={nextEpoch}
           futureEpoch={futureEpoch}
           getStakePoolById={getStakePoolById}
-          isLoading={fetchingStakePoolsFailed || !stakePools.length}
+          isLoading={
+            !isSynced || fetchingStakePoolsFailed || !stakePools.length
+          }
+          isEpochsInfoAvailable={
+            (isIncentivizedTestnet && !isShelleyTestnet) ||
+            isEpochsInfoAvailable
+          }
           currentLocale={currentLocale}
         />
         {uiDialogs.isOpen(UndelegateConfirmationDialog) ? (

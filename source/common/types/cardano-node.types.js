@@ -7,7 +7,15 @@ export type TlsConfig = {
   key: Uint8Array,
 };
 
-export type CardanoNodeImplementation = 'jormungandr' | 'cardano';
+export type CardanoNodeImplementations = 'cardano' | 'jormungandr';
+
+export const CardanoNodeImplementationOptions: {
+  CARDANO: CardanoNodeImplementations,
+  JORMUNGANDR: CardanoNodeImplementations,
+} = {
+  CARDANO: 'cardano',
+  JORMUNGANDR: 'jormungandr',
+};
 
 export type NetworkNames =
   | 'mainnet'
@@ -75,7 +83,7 @@ export type ProcessNames = {
 };
 
 export const CardanoProcessNameOptions: {
-  [CardanoNodeImplementation]: {
+  [CardanoNodeImplementations]: {
     win32: CardanoNodeProcessNames,
     linux: CardanoNodeProcessNames,
     darwin: CardanoNodeProcessNames,
@@ -126,3 +134,21 @@ export type CardanoStatus = {
   cardanoNodePID: number,
   cardanoWalletPID: number,
 };
+
+// Cardano Mainet network magic
+export const MAINNET_MAGIC = [1, null];
+
+// Cardano Byron Testnet network magic
+export const TESTNET_MAGIC = [1097911063, 0];
+
+// Cardano Byron Testnet network magic
+export const ITN_MAGIC = 1;
+
+// Cardano Mainnet Candidate during the Shelley HF
+export const SHELLEY_TESTNET_NETWORK_ID = [1, null];
+
+// Cardano Staging network magic
+export const STAGING_MAGIC = 633343913;
+
+// Cardano Selfnode network magic
+export const SELFNODE_MAGIC = 459045235;

@@ -23,7 +23,7 @@ import {
 } from './common/e2e/steps/helpers';
 import { DEFAULT_TIMEOUT } from './common/e2e/steps/config';
 import { setNewsFeedIsOpen, resetTestNews } from './news/e2e/steps/newsfeed-steps';
-import { refreshClient } from './nodes/e2e/steps/helpers';
+import { refreshClient } from './app/e2e/steps/helpers';
 import { TEST } from '../source/common/types/environment.types';
 import type { Daedalus } from './types';
 
@@ -127,11 +127,14 @@ Before({ tags: '@e2e', timeout: DEFAULT_TIMEOUT * 2 }, async function(testCase) 
   await this.client.executeAsync(done => {
     const resetBackend = () => {
       if (daedalus.stores.networkStatus.isConnected) {
-        daedalus.api.ada.resetTestOverrides();
-        daedalus.api.ada
-          .testReset()
-          .then(daedalus.api.localStorage.reset)
-          .then(daedalus.stores.wallets.refreshWalletsData())
+        daedalus.stores.wallets
+          ._pausePolling()
+          .then(() => daedalus.stores.wallets.resetWalletsData())
+          .then(() => daedalus.api.ada.testReset())
+          .then(() => daedalus.api.ada.resetTestOverrides())
+          .then(() => daedalus.api.localStorage.reset())
+          .then(() => daedalus.stores.wallets._resumePolling())
+          .then(() => daedalus.stores.wallets.refreshWalletsData())
           .then(done)
           .catch(error => done(error));
       } else {

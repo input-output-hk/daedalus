@@ -2,6 +2,7 @@
 import fs from 'fs';
 import path from 'path';
 import log from 'electron-log-daedalus';
+import rimraf from 'rimraf';
 import ensureDirectoryExists from './ensureDirectoryExists';
 import { pubLogsFolderPath, appLogsFolderPath } from '../config';
 import {
@@ -24,6 +25,7 @@ const isDev = process.env.NODE_ENV === 'development';
 export const setupLogging = () => {
   const logFilePath = path.join(pubLogsFolderPath, 'Daedalus.json');
   ensureDirectoryExists(pubLogsFolderPath);
+  rimraf.sync(path.join(pubLogsFolderPath, './Daedalus.*'));
   log.transports.console.level = isTest ? 'error' : 'info';
   log.transports.rendererConsole.level = isDev ? 'info' : 'error';
   log.transports.file.level = 'debug';
@@ -36,7 +38,7 @@ export const setupLogging = () => {
 
   log.transports.file.format = (message: Object): string => {
     // Debug level logging is recorded as "info" in Daedalus log files
-    // but in the same time we do not want to output it to console or terminal window
+    // but at the same time we do not want to output it to console or terminal window
     const level = message.level === 'debug' ? 'info' : message.level;
     return formatMessage({ ...message, level });
   };

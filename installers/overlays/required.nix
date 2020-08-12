@@ -8,4 +8,5 @@ self: super: {
   dhall = dontCheck (doJailbreak (self.callPackage ./dhall.nix {}));
   universum = dontCheck (self.callPackage ./universum.nix {});
   nsis = self.callPackage ./nsis.nix {};
+  github = self.callHackage "github" "0.23" {};
 }

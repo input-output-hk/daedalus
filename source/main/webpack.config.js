@@ -17,7 +17,7 @@ module.exports = {
     filename: '[name].js',
   },
   /**
-   * Set targed to Electron speciffic node.js env.
+   * Set target to Electron specific node.js env.
    * https://github.com/chentsulin/webpack-target-electron-renderer#how-this-module-works
    */
   target: 'electron-main',
@@ -30,6 +30,9 @@ module.exports = {
   node: {
     __dirname: false,
     __filename: false,
+  },
+  externals: {
+    'js-chain-libs-node': 'commonjs2 js-chain-libs-node',
   },
   module: {
     rules: [

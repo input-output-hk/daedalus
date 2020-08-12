@@ -3,6 +3,7 @@
 
 .component {
   @include button;
+  align-items: center;
   background-color: var(--theme-sidebar-menu-background-color);
   color: var(--theme-sidebar-menu-item-wallet-name-color);
   display: flex;
@@ -66,15 +67,27 @@
   }
 }
 
-.title {
-  color: var(--theme-sidebar-menu-item-wallet-name-color);
-  font-family: var(--font-regular);
-  font-size: 18px;
-  line-height: 1.5em;
-  margin-top: -5.5px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.topContainer {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+
+  .title {
+    color: var(--theme-sidebar-menu-item-wallet-name-color);
+    font-family: var(--font-regular);
+    font-size: 18px;
+    line-height: 1.5em;
+    margin-top: -5.5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .disconnectedIcon {
+    height: 21px;
+    object-fit: contain;
+    width: 21px;
+  }
 }
 
 .info {
@@ -85,7 +98,7 @@
   opacity: 0.7;
 }
 
-.recoveryPhraseVerificationStatus-notification {
+.notification {
   &:after {
     background: var(--theme-button-attention-background-color);
     border-radius: 50%;

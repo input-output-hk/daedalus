@@ -10,6 +10,7 @@ import themeDarkBluePreview from '../../../assets/images/themes/dark-blue.png';
 import themeDarkCardanoPreview from '../../../assets/images/themes/dark-cardano.png';
 import themeFlightCandidatePreview from '../../../assets/images/themes/flight-candidate.png';
 import themeLightBluePreview from '../../../assets/images/themes/light-blue.png';
+import themeShelleyTestnetPreview from '../../../assets/images/themes/shelley-testnet.png';
 import themeYellowPreview from '../../../assets/images/themes/yellow.png';
 import themeWhitePreview from '../../../assets/images/themes/white.png';
 import { THEMES } from '../../../themes/index';
@@ -53,6 +54,12 @@ const messages = defineMessages({
     defaultMessage: '!!!Flight Candidate',
     description:
       'Name of the "Flight Candidate" theme on the display settings page.',
+  },
+  themeShelleyTestnet: {
+    id: 'settings.display.themeNames.shelleyTestnet',
+    defaultMessage: '!!!Shelley Testnet',
+    description:
+      'Name of the "Shelley Testnet" theme on the display settings page.',
   },
   themeYellow: {
     id: 'settings.display.themeNames.yellow',
@@ -110,6 +117,11 @@ export default class DisplaySettings extends Component<Props> {
 
     const themeFlightCandidateClasses = classnames([
       theme === THEMES.FLIGHT_CANDIDATE ? styles.active : styles.inactive,
+      styles.themeImageWrapper,
+    ]);
+
+    const themeShelleyTestnetClasses = classnames([
+      theme === THEMES.SHELLEY_TESTNET ? styles.active : styles.inactive,
       styles.themeImageWrapper,
     ]);
 
@@ -237,6 +249,22 @@ export default class DisplaySettings extends Component<Props> {
                 draggable="false"
               />
               <span>{intl.formatMessage(messages.themeFlightCandidate)}</span>
+            </button>
+          )}
+
+          {(isDev || global.isShelleyTestnet) && (
+            <button
+              className={themeShelleyTestnetClasses}
+              onClick={selectTheme.bind(this, {
+                theme: THEMES.SHELLEY_TESTNET,
+              })}
+            >
+              <img
+                src={themeShelleyTestnetPreview}
+                role="presentation"
+                draggable="false"
+              />
+              <span>{intl.formatMessage(messages.themeShelleyTestnet)}</span>
             </button>
           )}
         </div>

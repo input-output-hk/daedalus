@@ -27,12 +27,12 @@ $adaLogoWidth: 43px;
 }
 
 .daedalusLogo {
-  height: 135px;
-  margin: 0 114px;
-  width: 173px;
+  height: 140px;
+  margin: 0 110px;
+  width: 180px;
   svg {
-    height: 135px;
-    width: 173px;
+    height: 140px;
+    width: 180px;
   }
 }
 
@@ -70,4 +70,12 @@ $adaLogoWidth: 43px;
       fill: var(--theme-icon-syncing-ada-api-logo-color);
     }
   }
+}
+
+.component,
+.connectingLogo,
+.syncingLogo,
+.daedalusLogo,
+.daedalusLogo > div {
+  --webkit-backface-visibility: hidden;
 }

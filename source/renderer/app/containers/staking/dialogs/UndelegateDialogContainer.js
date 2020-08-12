@@ -28,7 +28,7 @@ export default class UndelegateDialogContainer extends Component<Props> {
     const {
       getStakePoolById,
       quitStakePoolRequest,
-      isDelegatioTransactionPending,
+      isDelegationTransactionPending,
     } = staking;
     const { getWalletById, undelegateWalletSubmissionSuccess } = wallets;
     const futureEpochStartTime = get(futureEpoch, 'epochStart', 0);
@@ -43,10 +43,10 @@ export default class UndelegateDialogContainer extends Component<Props> {
       delegatedStakePoolId,
     } = walletToBeUndelegated;
 
-    const stakePoolId = lastDelegationStakePoolId || delegatedStakePoolId;
+    const stakePoolId = lastDelegationStakePoolId || delegatedStakePoolId || '';
 
     if (
-      (!stakePoolId || !isDelegatioTransactionPending) &&
+      (!stakePoolId || !isDelegationTransactionPending) &&
       undelegateWalletSubmissionSuccess &&
       !quitStakePoolRequest.error
     ) {
@@ -91,7 +91,7 @@ export default class UndelegateDialogContainer extends Component<Props> {
         }}
         onExternalLinkClick={onExternalLinkClick}
         isSubmitting={
-          quitStakePoolRequest.isExecuting || isDelegatioTransactionPending
+          quitStakePoolRequest.isExecuting || isDelegationTransactionPending
         }
         error={quitStakePoolRequest.error}
         fees={stakePoolQuitFee}

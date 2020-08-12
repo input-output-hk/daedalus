@@ -14,8 +14,7 @@ import DeleteWalletConfirmationDialog from './DeleteWalletConfirmationDialog';
 import ChangeSpendingPasswordDialog from './ChangeSpendingPasswordDialog';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletSettings.scss';
-import WalletRecoveryPhrase from './WalletRecoveryPhrase';
-import ResyncWallet from './ResyncWallet';
+import WalletRecoveryPhraseVerificationWidget from './WalletRecoveryPhraseVerificationWidget';
 
 export const messages = defineMessages({
   assuranceLevelLabel: {
@@ -40,17 +39,6 @@ export const messages = defineMessages({
     defaultMessage:
       '!!!You may wish to verify your recovery phrase before deletion to ensure that you can restore this wallet in the future, if desired.',
     description: 'Delete wallet warning explaining the consequences.',
-  },
-  resyncWalletHeader: {
-    id: 'wallet.settings.resyncWallet.header',
-    defaultMessage: '!!!Resync wallet with the blockchain',
-    description: 'Resync wallet header on the wallet settings page.',
-  },
-  resyncWalletDescription: {
-    id: 'wallet.settings.resyncWallet.description',
-    defaultMessage:
-      '!!!If you are experiencing issues with your wallet, or think you have an incorrect balance or transaction history, you can delete the local data stored by Daedalus and resync with the blockchain.',
-    description: 'Resync wallet description.',
   },
   name: {
     id: 'wallet.settings.name.label',
@@ -85,25 +73,21 @@ type Props = {
   onStartEditing: Function,
   onStopEditing: Function,
   onCancelEditing: Function,
-  onResyncWallet: Function,
+  onVerifyRecoveryPhrase: Function,
   nameValidator: Function,
   activeField: ?string,
   isSubmitting: boolean,
-  isForcedWalletResyncStarting: boolean,
   isIncentivizedTestnet: boolean,
-  isWalletRecoveryPhraseDisabled?: boolean,
   isInvalid: boolean,
   isLegacy: boolean,
   lastUpdatedField: ?string,
   changeSpendingPasswordDialog: Node,
   deleteWalletDialogContainer: Node,
-  walletRecoveryPhraseStep1Container: Node,
-  walletRecoveryPhraseStep2Container: Node,
-  walletRecoveryPhraseStep3Container: Node,
-  walletRecoveryPhraseStep4Container: Node,
+  shouldDisplayRecoveryPhrase: boolean,
   recoveryPhraseVerificationDate: ?Date,
   recoveryPhraseVerificationStatus: string,
   recoveryPhraseVerificationStatusType: string,
+  wordCount: number,
   locale: string,
   isSpendingPasswordSet: boolean,
 };
@@ -161,27 +145,23 @@ export default class WalletSettings extends Component<Props, State> {
       onStartEditing,
       onStopEditing,
       onCancelEditing,
-      onResyncWallet,
+      onVerifyRecoveryPhrase,
       nameValidator,
       activeField,
       isSubmitting,
-      isForcedWalletResyncStarting,
       isIncentivizedTestnet,
-      isWalletRecoveryPhraseDisabled,
       isInvalid,
       isLegacy,
       lastUpdatedField,
       changeSpendingPasswordDialog,
       deleteWalletDialogContainer,
-      walletRecoveryPhraseStep1Container,
-      walletRecoveryPhraseStep2Container,
-      walletRecoveryPhraseStep3Container,
-      walletRecoveryPhraseStep4Container,
       recoveryPhraseVerificationDate,
       recoveryPhraseVerificationStatus,
       recoveryPhraseVerificationStatusType,
       locale,
       isSpendingPasswordSet,
+      shouldDisplayRecoveryPhrase,
+      wordCount,
     } = this.props;
     const { isFormBlocked } = this.state;
 
@@ -199,13 +179,6 @@ export default class WalletSettings extends Component<Props, State> {
       ]);
       return (
         <div className={styles.component}>
-          <BorderedBox>
-            <ResyncWallet
-              isForcedWalletResyncStarting={isForcedWalletResyncStarting}
-              onResyncWallet={onResyncWallet}
-            />
-          </BorderedBox>
-
           <BorderedBox className={deleteWalletBoxStyles}>
             <span>{intl.formatMessage(messages.deleteWalletHeader)}</span>
             <div className={styles.contentBox}>
@@ -273,8 +246,9 @@ export default class WalletSettings extends Component<Props, State> {
             }}
           />
 
-          {!isIncentivizedTestnet && !isWalletRecoveryPhraseDisabled && (
-            <WalletRecoveryPhrase
+          {shouldDisplayRecoveryPhrase && (
+            <WalletRecoveryPhraseVerificationWidget
+              onVerify={onVerifyRecoveryPhrase}
               recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
               recoveryPhraseVerificationStatus={
                 recoveryPhraseVerificationStatus
@@ -283,30 +257,10 @@ export default class WalletSettings extends Component<Props, State> {
                 recoveryPhraseVerificationStatusType
               }
               creationDate={creationDate}
-              openDialogAction={openDialogAction}
-              isDialogOpen={isDialogOpen}
-              walletRecoveryPhraseStep1Container={
-                walletRecoveryPhraseStep1Container
-              }
-              walletRecoveryPhraseStep2Container={
-                walletRecoveryPhraseStep2Container
-              }
-              walletRecoveryPhraseStep3Container={
-                walletRecoveryPhraseStep3Container
-              }
-              walletRecoveryPhraseStep4Container={
-                walletRecoveryPhraseStep4Container
-              }
+              locale={locale}
+              wordCount={wordCount}
+              isLegacy={isLegacy}
             />
-          )}
-
-          {isIncentivizedTestnet && (
-            <div className={styles.resyncWalletBox}>
-              <ResyncWallet
-                isForcedWalletResyncStarting={isForcedWalletResyncStarting}
-                onResyncWallet={onResyncWallet}
-              />
-            </div>
           )}
 
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}

@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import vjf from 'mobx-react-form/lib/validators/VJF';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import CopyToClipboard from 'react-copy-to-clipboard';
@@ -126,6 +127,7 @@ export default class WalletReceiveRandom extends Component<Props, State> {
       },
     },
     {
+      plugins: { vjf: vjf() },
       options: {
         validationDebounceWait: 0, // Disable debounce to avoid error state after clearing
         validateOnChange: true,
@@ -200,6 +202,9 @@ export default class WalletReceiveRandom extends Component<Props, State> {
     ]);
 
     const passwordField = form.$('spendingPassword');
+
+    const canSubmit = !isSubmitting && passwordField.value;
+
     const generateAddressForm = (
       <div className={generateAddressWrapperClasses}>
         {walletHasPassword && (
@@ -217,6 +222,7 @@ export default class WalletReceiveRandom extends Component<Props, State> {
 
         <Button
           className={generateAddressButtonClasses}
+          disabled={!canSubmit}
           label={intl.formatMessage(messages.generateNewAddressButtonLabel)}
           skin={ButtonSkin}
           onClick={this.submit}

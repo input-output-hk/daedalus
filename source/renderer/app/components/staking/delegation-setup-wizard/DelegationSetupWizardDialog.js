@@ -30,7 +30,6 @@ type Props = {
   recentStakePools: Array<StakePool>,
   stakePoolsList: Array<StakePool>,
   onOpenExternalLink: Function,
-  getPledgeAddressUrl: Function,
   currentTheme: string,
   selectedWallet: ?Wallet,
   selectedPool: ?StakePool,
@@ -44,15 +43,15 @@ type Props = {
 
 @observer
 export default class DelegationSetupWizardDialog extends Component<Props> {
-  componentWillReceiveProps(nextProps: Props) {
+  componentDidUpdate(prevProps: Props) {
     // On confirm delegation step, wait for API stake pool "join" endpoint response
     // and redirect to "Ta-Da" step
     if (
-      this.props.isSubmitting &&
-      !nextProps.isSubmitting &&
-      !nextProps.error
+      prevProps.isSubmitting &&
+      !this.props.isSubmitting &&
+      !this.props.error
     ) {
-      this.props.onContinue();
+      prevProps.onContinue();
     }
   }
 
@@ -73,7 +72,6 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       recentStakePools,
       stakePoolsList,
       onOpenExternalLink,
-      getPledgeAddressUrl,
       currentTheme,
       selectedWallet,
       selectedPool,
@@ -123,7 +121,6 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
             stakePoolsList={stakePoolsList}
             selectedWallet={selectedWallet}
             onOpenExternalLink={onOpenExternalLink}
-            getPledgeAddressUrl={getPledgeAddressUrl}
             currentTheme={currentTheme}
             selectedPool={selectedPool}
             onClose={onClose}

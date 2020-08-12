@@ -3,9 +3,9 @@ import { observable, action } from 'mobx';
 import type Store from './lib/Store';
 import AddressesStore from './AddressesStore';
 import AppStore from './AppStore';
+import AppUpdateStore from './AppUpdateStore';
 import NetworkStatusStore from './NetworkStatusStore';
 import NewsFeedStore from './NewsFeedStore';
-import NodeUpdateStore from './NodeUpdateStore';
 import ProfileStore from './ProfileStore';
 import SidebarStore from './SidebarStore';
 import StakingStore from './StakingStore';
@@ -13,6 +13,7 @@ import TransactionsStore from './TransactionsStore';
 import UiDialogsStore from './UiDialogsStore';
 import UiNotificationsStore from './UiNotificationsStore';
 import WalletsStore from './WalletsStore';
+import WalletsLocalStore from './WalletsLocalStore';
 import WalletBackupStore from './WalletBackupStore';
 import WalletMigrationStore from './WalletMigrationStore';
 import WalletSettingsStore from './WalletSettingsStore';
@@ -21,9 +22,9 @@ import WindowStore from './WindowStore';
 export const storeClasses = {
   addresses: AddressesStore,
   app: AppStore,
+  appUpdate: AppUpdateStore,
   networkStatus: NetworkStatusStore,
   newsFeed: NewsFeedStore,
-  nodeUpdate: NodeUpdateStore,
   profile: ProfileStore,
   sidebar: SidebarStore,
   staking: StakingStore,
@@ -31,6 +32,7 @@ export const storeClasses = {
   uiDialogs: UiDialogsStore,
   uiNotifications: UiNotificationsStore,
   wallets: WalletsStore,
+  walletsLocal: WalletsLocalStore,
   walletBackup: WalletBackupStore,
   walletMigration: WalletMigrationStore,
   walletSettings: WalletSettingsStore,
@@ -40,9 +42,9 @@ export const storeClasses = {
 export type StoresMap = {
   addresses: AddressesStore,
   app: AppStore,
+  appUpdate: AppUpdateStore,
   networkStatus: NetworkStatusStore,
   newsFeed: NewsFeedStore,
-  nodeUpdate: NodeUpdateStore,
   profile: ProfileStore,
   router: Object,
   sidebar: SidebarStore,
@@ -51,6 +53,7 @@ export type StoresMap = {
   uiDialogs: UiDialogsStore,
   uiNotifications: UiNotificationsStore,
   wallets: WalletsStore,
+  walletsLocal: WalletsLocalStore,
   walletBackup: WalletBackupStore,
   walletMigration: WalletMigrationStore,
   walletSettings: WalletSettingsStore,
@@ -83,7 +86,7 @@ export default action((api, actions, router): StoresMap => {
     app: createStoreInstanceOf(AppStore),
     networkStatus: createStoreInstanceOf(NetworkStatusStore),
     newsFeed: createStoreInstanceOf(NewsFeedStore),
-    nodeUpdate: createStoreInstanceOf(NodeUpdateStore),
+    appUpdate: createStoreInstanceOf(AppUpdateStore),
     profile: createStoreInstanceOf(ProfileStore),
     router,
     sidebar: createStoreInstanceOf(SidebarStore),
@@ -91,6 +94,7 @@ export default action((api, actions, router): StoresMap => {
     transactions: createStoreInstanceOf(TransactionsStore),
     uiDialogs: createStoreInstanceOf(UiDialogsStore),
     wallets: createStoreInstanceOf(WalletsStore),
+    walletsLocal: createStoreInstanceOf(WalletsLocalStore),
     walletBackup: createStoreInstanceOf(WalletBackupStore),
     walletMigration: createStoreInstanceOf(WalletMigrationStore),
     walletSettings: createStoreInstanceOf(WalletSettingsStore),

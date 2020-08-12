@@ -3,13 +3,15 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { join } from 'lodash';
 import { defineMessages, intlShape } from 'react-intl';
+import vjf from 'mobx-react-form/lib/validators/VJF';
 import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
 import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
+import suggestedMnemonics from '../../../../../common/config/crypto/valid-words.en';
+import { isValidMnemonic } from '../../../../../common/config/crypto/decrypt';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import styles from './WalletRecoveryPhraseStepDialogs.scss';
-import { LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
 import globalMessages from '../../../i18n/global-messages';
 
 export const messages = defineMessages({
@@ -21,7 +23,7 @@ export const messages = defineMessages({
   recoveryPhraseStep2Description: {
     id: 'wallet.settings.recoveryPhraseStep2Description',
     defaultMessage:
-      '!!!Please enter your 12-word wallet recovery phrase. Make sure you enter the words in the correct order.',
+      '!!!Please enter your wallet recovery phrase. Make sure you enter the words in the correct order.',
     description:
       'Label for the recoveryPhraseStep2Description on wallet settings.',
   },
@@ -57,17 +59,26 @@ export const messages = defineMessages({
 });
 
 type Props = {
-  mnemonicValidator: Function,
-  suggestedMnemonics: Array<string>,
-  isVerifying: boolean,
-  onVerify: Function,
+  onContinue: Function,
   onClose: Function,
+  expectedWordCount: number | Array<number>,
+};
+
+type State = {
+  isVerifying: boolean,
 };
 
 @observer
-export default class WalletRecoveryPhraseStep2 extends Component<Props> {
+export default class WalletRecoveryPhraseStep2Dialog extends Component<
+  Props,
+  State
+> {
   static contextTypes = {
     intl: intlShape.isRequired,
+  };
+
+  state = {
+    isVerifying: false,
   };
 
   form = new ReactToolboxMobxForm(
@@ -78,22 +89,29 @@ export default class WalletRecoveryPhraseStep2 extends Component<Props> {
           validators: ({ field }) => {
             const { intl } = this.context;
             const enteredWords = field.value;
-            const wordCount = enteredWords.length;
+            const enteredWordCount = enteredWords.length;
             const value = join(enteredWords, ' ');
+            const { expectedWordCount } = this.props;
 
-            // Check if recovery phrase contains 12 words
-            const isPhraseComplete =
-              wordCount === LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT;
+            const isPhraseComplete = Array.isArray(expectedWordCount)
+              ? expectedWordCount.includes(enteredWordCount)
+              : enteredWordCount === expectedWordCount;
+
+            // Check if recovery phrase contains the expected words
             if (!isPhraseComplete) {
+              const expected = Array.isArray(expectedWordCount)
+                ? ''
+                : enteredWordCount;
+
               return [
                 false,
                 intl.formatMessage(globalMessages.incompleteMnemonic, {
-                  expected: LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
+                  expected,
                 }),
               ];
             }
             return [
-              this.props.mnemonicValidator(value),
+              isValidMnemonic(value, enteredWords.length),
               this.context.intl.formatMessage(
                 messages.recoveryPhraseStep2InvalidMnemonics
               ),
@@ -103,6 +121,7 @@ export default class WalletRecoveryPhraseStep2 extends Component<Props> {
       },
     },
     {
+      plugins: { vjf: vjf() },
       options: {
         validateOnChange: true,
       },
@@ -112,23 +131,34 @@ export default class WalletRecoveryPhraseStep2 extends Component<Props> {
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { onClose, onVerify, suggestedMnemonics, isVerifying } = this.props;
-
+    const { onClose, onContinue, expectedWordCount } = this.props;
+    const { isVerifying } = this.state;
     const recoveryPhraseField = form.$('recoveryPhrase');
+    const { length: enteredWordCount } = recoveryPhraseField.value;
     const canSubmit =
       !recoveryPhraseField.error &&
       !isVerifying &&
-      recoveryPhraseField.value.length ===
-        LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT;
+      Array.isArray(expectedWordCount)
+        ? expectedWordCount.includes(enteredWordCount)
+        : enteredWordCount === expectedWordCount;
+
+    const recoveryPhrase = recoveryPhraseField.value;
     const actions = [
       {
         className: isVerifying ? styles.isVerifying : null,
         label: intl.formatMessage(messages.recoveryPhraseStep2Button),
         primary: true,
-        onClick: () => onVerify(recoveryPhraseField.value),
+        onClick: () => {
+          this.setState({ isVerifying: true });
+          onContinue({ recoveryPhrase });
+        },
         disabled: !canSubmit,
       },
     ];
+
+    const maxSelections = Array.isArray(expectedWordCount)
+      ? Math.max(...expectedWordCount)
+      : expectedWordCount;
 
     return (
       <Dialog
@@ -148,7 +178,7 @@ export default class WalletRecoveryPhraseStep2 extends Component<Props> {
           label={intl.formatMessage(messages.recoveryPhraseStep2Subtitle)}
           placeholder={intl.formatMessage(messages.recoveryPhraseInputHint)}
           options={suggestedMnemonics}
-          maxSelections={LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT}
+          maxSelections={maxSelections}
           error={recoveryPhraseField.error}
           maxVisibleOptions={5}
           noResultsMessage={intl.formatMessage(

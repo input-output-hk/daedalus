@@ -2,12 +2,13 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import vjf from 'mobx-react-form/lib/validators/VJF';
 import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
 import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
 import WalletRestoreDialog from './widgets/WalletRestoreDialog';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import globalMessages from '../../../i18n/global-messages';
-import validWords from '../../../../../common/crypto/valid-words.en';
+import validWords from '../../../../../common/config/crypto/valid-words.en';
 import type {
   WalletKind,
   WalletDaedalusKind,
@@ -110,6 +111,7 @@ export default class MnemonicsDialog extends Component<Props> {
       },
     },
     {
+      plugins: { vjf: vjf() },
       options: {
         validateOnChange: false,
       },
@@ -134,12 +136,19 @@ export default class MnemonicsDialog extends Component<Props> {
       expectedWordCount,
     } = this.props;
     const recoveryPhraseField = this.form.$('recoveryPhrase');
+
+    const wordCount = mnemonics.length;
+    const isPhraseComplete = Array.isArray(expectedWordCount)
+      ? expectedWordCount.includes(wordCount)
+      : wordCount === expectedWordCount;
+
     return (
       <WalletRestoreDialog
         stepNumber={1}
         actions={[
           {
             primary: true,
+            disabled: !isPhraseComplete,
             label: intl.formatMessage(messages.continueButtonLabel),
             onClick: this.submit,
           },

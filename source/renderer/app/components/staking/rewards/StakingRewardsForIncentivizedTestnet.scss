@@ -84,9 +84,9 @@
     }
 
     button {
-      @include link(--theme-staking-link-color-light);
       font-size: 14px;
       margin-top: 3px;
+      @include link(--theme-staking-link-color-light);
 
       &:hover {
         border-bottom: 1px solid var(--theme-staking-link-color);
@@ -177,8 +177,8 @@
       padding: 14px 20px;
       position: relative;
       text-align: left;
-      -ms-user-select: none;
       -webkit-user-select: none;
+      -ms-user-select: none;
       user-select: none;
       width: 25%;
 

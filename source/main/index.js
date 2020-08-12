@@ -11,6 +11,7 @@ import {
   generateWalletMigrationReport,
 } from './utils/setupLogging';
 import { handleDiskSpace } from './utils/handleDiskSpace';
+import { handleCheckBlockReplayProgress } from './utils/handleCheckBlockReplayProgress';
 import { createMainWindow } from './windows/main';
 import { installChromeExtensions } from './utils/installChromeExtensions';
 import { environment } from './environment';
@@ -28,9 +29,9 @@ import { getLocale } from './utils/getLocale';
 import { detectSystemLocale } from './utils/detectSystemLocale';
 import { ensureXDGDataIsSet } from './cardano/config';
 import { rebuildApplicationMenu } from './ipc/rebuild-application-menu';
-import { detectSystemLocaleChannel } from './ipc/detect-system-locale';
 import { getStateDirectoryPathChannel } from './ipc/getStateDirectoryPathChannel';
 import { getDesktopDirectoryPathChannel } from './ipc/getDesktopDirectoryPathChannel';
+import { getSystemLocaleChannel } from './ipc/getSystemLocaleChannel';
 import { CardanoNodeStates } from '../common/types/cardano-node.types';
 import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types';
 import { logUsedVersion } from './utils/logUsedVersion';
@@ -58,6 +59,8 @@ if (isBlankScreenFixActive) {
   // Run "location.assign('chrome://gpu')" in JavaScript console to see if the flag is active
   app.disableHardwareAcceleration();
 }
+
+app.allowRendererProcessReuse = true;
 
 const safeExit = async () => {
   if (!cardanoNode || cardanoNode.state === CardanoNodeStates.STOPPED) {
@@ -162,14 +165,14 @@ const onAppReady = async () => {
   mainErrorHandler(onMainError);
   await handleCheckDiskSpace();
 
+  await handleCheckBlockReplayProgress(mainWindow, launcherConfig.logsPrefix);
+
   cardanoNode = setupCardanoNode(launcherConfig, mainWindow);
 
   if (isWatchMode) {
     // Connect to electron-connect server which restarts / reloads windows on file changes
     client.create(mainWindow);
   }
-
-  detectSystemLocaleChannel.onRequest(() => Promise.resolve(systemLocale));
 
   setStateSnapshotLogChannel.onReceive(data => {
     return Promise.resolve(logStateSnapshot(data));
@@ -186,6 +189,8 @@ const onAppReady = async () => {
   getDesktopDirectoryPathChannel.onRequest(() =>
     Promise.resolve(app.getPath('desktop'))
   );
+
+  getSystemLocaleChannel.onRequest(() => Promise.resolve(systemLocale));
 
   mainWindow.on('close', async event => {
     logger.info(

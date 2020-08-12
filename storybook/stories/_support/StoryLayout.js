@@ -6,7 +6,7 @@ import { observer, inject } from 'mobx-react';
 import { get } from 'lodash';
 import { action } from '@storybook/addon-actions';
 import { boolean } from '@storybook/addon-knobs';
-import { isIncentivizedTestnetTheme } from './utils';
+import { isIncentivizedTestnetTheme, isShelleyTestnetTheme } from './utils';
 
 // Assets and helpers
 import { CATEGORIES_BY_NAME } from '../../../source/renderer/app/config/sidebarConfig';
@@ -17,7 +17,10 @@ import Wallet, {
 } from '../../../source/renderer/app/domains/Wallet.js';
 import NewsFeedIcon from '../../../source/renderer/app/components/widgets/NewsFeedIcon';
 import type { SidebarMenus } from '../../../source/renderer/app/components/sidebar/Sidebar';
-import type { SidebarWalletType } from '../../../source/renderer/app/types/sidebarTypes';
+import type {
+  SidebarHardwareWalletType,
+  SidebarWalletType,
+} from '../../../source/renderer/app/types/sidebarTypes';
 
 // Empty screen elements
 import TopBar from '../../../source/renderer/app/components/layout/TopBar';
@@ -25,7 +28,6 @@ import Sidebar from '../../../source/renderer/app/components/sidebar/Sidebar';
 import SidebarLayout from '../../../source/renderer/app/components/layout/SidebarLayout';
 import menuIconOpened from '../../../source/renderer/app/assets/images/menu-opened-ic.inline.svg';
 import menuIconClosed from '../../../source/renderer/app/assets/images/menu-ic.inline.svg';
-import { WalletRecoveryPhraseVerificationStatuses } from '../../../source/renderer/app/stores/WalletsStore';
 
 export type StoriesProps = {
   wallets: Array<Wallet>,
@@ -44,12 +46,14 @@ type Props = {
 
 const CATEGORIES_COUNTDOWN = [
   CATEGORIES_BY_NAME.WALLETS,
+  CATEGORIES_BY_NAME.HARDWARE_WALLETS,
   CATEGORIES_BY_NAME.STAKING_DELEGATION_COUNTDOWN,
   CATEGORIES_BY_NAME.SETTINGS,
 ];
 
 const CATEGORIES = [
   CATEGORIES_BY_NAME.WALLETS,
+  CATEGORIES_BY_NAME.HARDWARE_WALLETS,
   CATEGORIES_BY_NAME.STAKING,
   CATEGORIES_BY_NAME.SETTINGS,
 ];
@@ -95,7 +99,8 @@ export default class StoryLayout extends Component<Props> {
           topbar={this.getTopbar(
             activeSidebarCategory,
             activeWallet,
-            activeNavItem
+            activeNavItem,
+            currentTheme
           )}
         >
           {Children.map(children, child =>
@@ -109,7 +114,9 @@ export default class StoryLayout extends Component<Props> {
   @observable isShowingSubMenus =
     this.props.activeSidebarCategory === '/wallets' && !!this.props.children;
 
-  getSidebarWallets = (wallets: Array<Wallet>): Array<SidebarWalletType> =>
+  getSidebarWallets = (
+    wallets: Array<Wallet>
+  ): Array<SidebarWalletType | SidebarHardwareWalletType> =>
     wallets.map((wallet: Wallet) => ({
       id: wallet.id,
       title: wallet.name,
@@ -124,12 +131,11 @@ export default class StoryLayout extends Component<Props> {
         WalletSyncStateStatuses.RESTORING,
       restoreProgress: get(wallet, 'syncState.progress.quantity', 0),
       isLegacy: wallet.isLegacy,
-      recoveryPhraseVerificationStatus:
-        WalletRecoveryPhraseVerificationStatuses.OK,
+      hasNotification: false,
     }));
 
   getSidebarMenus = (
-    items: Array<SidebarWalletType>,
+    items: Array<SidebarWalletType | SidebarHardwareWalletType>,
     activeWalletId: string,
     setActiveWalletId: Function
   ) => ({
@@ -139,6 +145,14 @@ export default class StoryLayout extends Component<Props> {
       actions: {
         onAddWallet: action('toggleAddWallet'),
         onWalletItemClick: setActiveWalletId,
+      },
+    },
+    hardwareWallets: {
+      items,
+      activeWalletId,
+      actions: {
+        onAddWallet: action('toggleAddWallet'),
+        onHardwareWalletItemClick: setActiveWalletId,
       },
     },
   });
@@ -169,6 +183,7 @@ export default class StoryLayout extends Component<Props> {
         currentTheme={currentTheme}
         network="testnet"
         isIncentivizedTestnet={isIncentivizedTestnetTheme(currentTheme)}
+        isShelleyActivated={isShelleyTestnetTheme(currentTheme)}
       />
     );
   };
@@ -176,7 +191,8 @@ export default class StoryLayout extends Component<Props> {
   getTopbar = (
     activeSidebarCategory: string,
     activeWallet: Wallet,
-    activeNavItem: string
+    activeNavItem: string,
+    currentTheme: string
   ) => (
     <TopBar
       onToggleSidebar={() => {
@@ -197,6 +213,7 @@ export default class StoryLayout extends Component<Props> {
       onTransferFunds={action('onTransferFunds')}
       onWalletAdd={action('onWalletAdd')}
       hasRewardsWallets={boolean('hasRewardsWallets', true)}
+      isShelleyActivated={isShelleyTestnetTheme(currentTheme)}
     >
       <NodeSyncStatusIcon
         isSynced

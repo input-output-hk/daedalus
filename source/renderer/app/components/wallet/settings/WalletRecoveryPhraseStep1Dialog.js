@@ -17,7 +17,7 @@ export const messages = defineMessages({
   recoveryPhraseStep1Paragraph1: {
     id: 'wallet.settings.recoveryPhraseStep1Paragraph1',
     defaultMessage:
-      '!!!To verify that you have the correct recovery phrase for this wallet, you can enter it on the following screen. This wallet uses a 12-word recovery phrase.',
+      '!!!To verify that you have the correct recovery phrase for this wallet, you can enter it on the following screen.',
     description:
       'Label for the recoveryPhraseStep1Paragraph1 on wallet settings.',
   },
@@ -45,7 +45,10 @@ type State = {
 };
 
 @observer
-export default class WalletRecoveryPhraseStep1 extends Component<Props, State> {
+export default class WalletRecoveryPhraseStep1Dialog extends Component<
+  Props,
+  State
+> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -86,7 +89,7 @@ export default class WalletRecoveryPhraseStep1 extends Component<Props, State> {
         closeButton={<DialogCloseButton />}
       >
         <p>{intl.formatMessage(messages.recoveryPhraseStep1Paragraph1)}</p>
-        <p className={styles.checkboxContainer}>
+        <div className={styles.checkboxContainer}>
           <Checkbox
             onChange={this.onToggleSafetyAgreement}
             checked={safetyAgreement}
@@ -94,7 +97,7 @@ export default class WalletRecoveryPhraseStep1 extends Component<Props, State> {
             className={styles.checkbox}
             label={intl.formatMessage(messages.recoveryPhraseStep1Paragraph2)}
           />
-        </p>
+        </div>
       </Dialog>
     );
   }

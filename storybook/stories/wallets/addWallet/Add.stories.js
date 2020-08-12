@@ -23,9 +23,10 @@ storiesOf('Wallets|Add Wallet', module)
       <WalletAdd
         onCreate={() => {}}
         onRestore={() => {}}
-        onImportFile={() => {}}
+        onImport={() => {}}
         isMainnet={boolean('isMainnet', true)}
         isTestnet={boolean('isTestnet', false)}
+        isShelleyActivated={boolean('isShelleyActivated', true)}
         isProduction
         isIncentivizedTestnet={isIncentivizedTestnetTheme(props.currentTheme)}
         isMaxNumberOfWalletsReached={boolean(

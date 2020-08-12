@@ -23,6 +23,12 @@ import { StakingDelegationCenterStory } from './DelegationCenter.stories';
 import { StakingEpochsStory } from './Epochs.stories';
 import { StakingDelegationSteps } from './DelegationSteps.stories';
 import {
+  Step1ConfigurationDialogStory,
+  Step2ConfirmationDialogStory,
+  Step3SuccessDialogStory,
+  Step3FailureDialogStory,
+} from './RedeemItnWallets.stories';
+import {
   StakingUndelegateConfirmationStory,
   StakingUndelegateConfirmationResultStory,
 } from './Undelegate.stories';
@@ -126,13 +132,17 @@ storiesOf('Decentralization | Staking', module)
   .addDecorator(decorator)
   // ====== Stories ======
 
-  .add(pageNames['delegation-center'], StakingDelegationCenterStory, {
-    id: 'delegation-center',
-  })
+  .add(
+    pageNames['delegation-center'],
+    props => <StakingDelegationCenterStory {...props} isEpochsInfoAvailable />,
+    {
+      id: 'delegation-center',
+    }
+  )
 
   .add(
     pageNames['delegation-center-experiment'],
-    StakingDelegationCenterStory,
+    props => <StakingDelegationCenterStory {...props} isEpochsInfoAvailable />,
     {
       id: 'delegation-center',
       experiment: true,
@@ -141,7 +151,23 @@ storiesOf('Decentralization | Staking', module)
 
   .add(
     'Delegation Center - Loading',
-    props => <StakingDelegationCenterStory {...props} isLoading />,
+    props => (
+      <StakingDelegationCenterStory
+        {...props}
+        isLoading
+        isEpochsInfoAvailable
+      />
+    ),
+    {
+      id: 'delegation-center-loading',
+    }
+  )
+
+  .add(
+    'Delegation Center - Not an Shelley era',
+    props => (
+      <StakingDelegationCenterStory {...props} isEpochsInfoAvailable={false} />
+    ),
     {
       id: 'delegation-center-loading',
     }
@@ -150,6 +176,7 @@ storiesOf('Decentralization | Staking', module)
   .add('Delegation Center - No Wallets', () => (
     <DelegationCenterNoWallets
       onGoToCreateWalletClick={action('onGoToCreateWalletClick')}
+      minDelegationFunds={number('minDelegationFunds', 10)}
     />
   ))
 
@@ -217,3 +244,20 @@ storiesOf('Decentralization | Staking', module)
       id: 'undelegate-confirmation-result',
     }
   );
+
+storiesOf('Decentralization | Redeem ITN Rewards', module)
+  .addDecorator(decorator)
+  // ====== Stories ======
+
+  .add('Step 1', Step1ConfigurationDialogStory, {
+    id: 'redeem-itn-wallets-story',
+  })
+  .add('Step 2', Step2ConfirmationDialogStory, {
+    id: 'redeem-itn-wallets-story',
+  })
+  .add('Step 3 - Success', Step3SuccessDialogStory, {
+    id: 'redeem-itn-wallets-story',
+  })
+  .add('Step 3 - Failure', Step3FailureDialogStory, {
+    id: 'redeem-itn-wallets-story',
+  });

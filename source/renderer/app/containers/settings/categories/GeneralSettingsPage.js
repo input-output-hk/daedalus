@@ -12,7 +12,7 @@ export default class GeneralSettingsPage extends Component<InjectedProps> {
 
   handleSelectItem = async (param: string, value: string) => {
     const { actions, stores } = this.props;
-    const { isUpdateAvailable } = stores.nodeUpdate;
+    const { isUpdateAvailable } = stores.appUpdate;
     const { updateUserLocalSetting } = actions.profile;
     updateUserLocalSetting.trigger({ param, value });
     if (param === 'locale') {

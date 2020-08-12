@@ -2,6 +2,7 @@
 export const ROUTES = {
   ROOT: '/',
   PAPER_WALLET_CREATE_CERTIFICATE: '/paper-wallet/create-certificate',
+  REDEEM_ITN_REWARDS: '/redeem-itn-wallets',
   NETWORK_INFO: '/network-info',
   STAKING: {
     ROOT: '/staking',
@@ -28,6 +29,12 @@ export const ROUTES = {
     RECEIVE: '/wallets/:id/receive',
     SETTINGS: '/wallets/:id/settings',
     UTXO: '/wallets/:id/utxo',
+  },
+  HARDWARE_WALLETS: {
+    ROOT: '/hardware-wallets',
+    ADD: '/hardware-wallets/add',
+    PAGE: '/hardware-wallets/:id/:page',
+    SUMMARY: '/hardware-wallets/:id/summary',
   },
   SETTINGS: {
     ROOT: '/settings',

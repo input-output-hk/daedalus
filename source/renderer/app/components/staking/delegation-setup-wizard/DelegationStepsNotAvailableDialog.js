@@ -17,14 +17,14 @@ type Props = {
 const messages = defineMessages({
   title: {
     id: 'staking.delegationSetup.notAvailable.dialog.title',
-    defaultMessage: '!!!Delegation not available',
+    defaultMessage: '!!!Delegation is not currently available',
     description:
       'Title "Delegation Setup" on the delegation setup not available dialog.',
   },
   description: {
     id: 'staking.delegationSetup.notAvailable.dialog.description',
     defaultMessage:
-      '!!!None of your wallets have the <span>minimum amount of {minDelegationFunds} ada</span> required for delegation',
+      '!!!None of your wallets currently hold the <span>minimum amount of {minDelegationFunds} ADA</span> that is required for delegation options.',
     description: 'Description on the delegation setup not available dialog.',
   },
   closeButtonLabel: {

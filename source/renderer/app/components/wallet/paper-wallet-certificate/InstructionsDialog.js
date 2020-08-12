@@ -128,8 +128,8 @@ export default class InstructionsDialog extends Component<Props> {
     rawNetwork: DEVELOPMENT,
   };
 
-  componentWillReceiveProps(newProps: Props) {
-    if (!this.props.error && newProps.error) {
+  componentDidUpdate(prevProps: Props) {
+    if (!prevProps.error && this.props.error) {
       handleFormErrors('.InstructionsDialog_error', { focusElement: true });
     }
   }

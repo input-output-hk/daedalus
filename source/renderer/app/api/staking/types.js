@@ -1,7 +1,7 @@
 // @flow
 import BigNumber from 'bignumber.js';
-import { WalletUnits } from '../../domains/Wallet';
 import StakePool from '../../domains/StakePool';
+import Wallet from '../../domains/Wallet';
 
 export type DelegationAction =
   | 'changeDelegation'
@@ -11,16 +11,20 @@ export type DelegationAction =
 export type AdaApiStakePool = {
   id: string,
   metrics: {
-    controlled_stake: {
+    non_myopic_member_rewards: {
       quantity: number,
-      unit: 'lovelace',
+      unit: 'block',
     },
     produced_blocks: {
       quantity: number,
       unit: 'block',
     },
+    relative_stake: {
+      quantity: number,
+      unit: 'percent',
+    },
+    saturation: number,
   },
-  apparent_performance: number,
   cost: {
     quantity: number,
     unit: 'lovelace',
@@ -30,15 +34,19 @@ export type AdaApiStakePool = {
     unit: 'percent',
   },
   metadata: {
-    owner: string,
     ticker: string, // [3 .. 5] characters
     name: string, // [1 .. 50] characters
     description?: string, // <= 255 characters
     homepage: string,
-    pledge_address: string,
   },
-  saturation: number,
-  desirability: number,
+  pledge: {
+    quantity: number,
+    unit: 'lovelace',
+  },
+  retirement: {
+    epoch_number: number,
+    epoch_start_time: string,
+  },
 };
 export type AdaApiStakePools = Array<AdaApiStakePool>;
 
@@ -81,14 +89,24 @@ export type GetDelegationFeeRequest = {
   walletId: string,
 };
 
-export type DelegationFee = {
-  amount: {
-    quantity: number,
-    unit: WalletUnits.LOVELACE,
-  },
-};
-
 export type QuitStakePoolRequest = {
   walletId: string,
   passphrase: string,
 };
+
+export type GetRedeemItnRewardsFeeRequest = {
+  address: string,
+  wallet: Wallet,
+  recoveryPhrase: Array<string>,
+};
+
+export type GetRedeemItnRewardsFeeResponse = BigNumber;
+
+export type RequestRedeemItnRewardsRequest = {
+  address: string,
+  walletId: string,
+  spendingPassword: string,
+  recoveryPhrase: Array<string>,
+};
+
+export type RequestRedeemItnRewardsResponse = BigNumber;

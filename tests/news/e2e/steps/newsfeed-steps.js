@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { get } from 'lodash';
-import { Before, Given, When, Then } from 'cucumber';
+import { Given, When, Then } from 'cucumber';
 import moment from 'moment';
 
 import newsDummyJson from '../documents/dummy-news.json';
@@ -162,7 +162,7 @@ When('I click on the alert in the newsfeed', async function() {
 
 // THEN STEPS
 
-Then('i should see the newsfeed icon', async function() {
+Then('I should see the newsfeed icon', async function() {
   await this.client.waitForVisible('.NewsFeedIcon_component');
 });
 

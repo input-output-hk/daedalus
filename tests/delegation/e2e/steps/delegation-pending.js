@@ -1,9 +1,8 @@
 // @flow
 import { Given, Then } from 'cucumber';
 import { expect } from 'chai';
-import { set, last } from 'lodash';
+import { last } from 'lodash';
 import type { Daedalus } from '../../../types';
-import type { WalletPendingDelegations } from '../../../../source/renderer/app/api/wallets/types';
 
 declare var daedalus: Daedalus;
 
@@ -22,8 +21,8 @@ Given(/^the wallets have the following pending delegations:$/, async function(de
       delegated: 'delegating',
       undelegated: 'not_delegating',
     };
-    let walletsTickers = [];
-    let modifiedWallets = [];
+    const walletsTickers = [];
+    const modifiedWallets = [];
     for (let index = 0; index < delegationScenarios.length; index++) {
       const delegationQueue = delegationScenarios[index].DELEGATION_SCENARIO.split(' > ');
       const modifiedWallet: {
@@ -61,7 +60,7 @@ Given(/^the wallets have the following pending delegations:$/, async function(de
         else {
           modifiedWallet.lastDelegationStakePoolId = stakePoolId
           modifiedWallet.pendingDelegations[index - 1] = {
-            status: status,
+            status,
             target: stakePoolId,
             changes_at: {
               epoch_start_time: '2020-02-02T02:02:57Z',
@@ -72,7 +71,7 @@ Given(/^the wallets have the following pending delegations:$/, async function(de
       });
       modifiedWallets.push(modifiedWallet);
     }
-    //$FlowFixMe
+    // $FlowFixMe
     daedalus.api.ada.setTestingWallets(modifiedWallets);
     done(walletsTickers);
   }, delegationScenarios);
@@ -81,7 +80,6 @@ Given(/^the wallets have the following pending delegations:$/, async function(de
 
 Then(/^the wallets should correctly display the correct stake pool tickers$/, { timeout: 60000 }, async function() {
   const walletNameSelector = '.WalletRow_title';
-  const lastWalletTickers = last(walletsTickers);
   await this.client.waitForVisible(walletNameSelector);
   // Waits for the patchAdaApi to transform the wallet values
   await this.client.waitUntil(async () => {
@@ -96,7 +94,7 @@ Then(/^the wallets should correctly display the correct stake pool tickers$/, { 
     if (!Array.isArray(tickerTexts)) tickerTexts = [tickerTexts];
     expect(tickerTexts.length).to.equal(expectedTickers.length);
     tickerTexts.forEach((tickerText, index) => {
-      let { ticker: expectedTickerText } = expectedTickers[index];
+      const { ticker: expectedTickerText } = expectedTickers[index];
       expect(tickerText).to.equal(expectedTickerText);
     })
   }
@@ -133,7 +131,7 @@ Then(/^the action links should be displayed as follows:$/, async function(linksT
   const linksScenarios = linksTable.hashes();
   for (let index = 0; index < linksScenarios.length; index++) {
     const expectedLinkExcerpts = linksScenarios[index].LINKS.split(' or ');
-    let linksHTML = await this.client.getHTML(`.WalletRow_component:nth-child(${index + 1}) .WalletRow_action`);
+    const linksHTML = await this.client.getHTML(`.WalletRow_component:nth-child(${index + 1}) .WalletRow_action`);
     expectedLinkExcerpts.forEach(expectedLinkExcerpt => {
       expect(linksHTML).to.have.string(expectedLinkExcerpt);
     })
