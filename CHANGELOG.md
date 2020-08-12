@@ -6,12 +6,15 @@ Changelog
 ### Features
 
 - Handled random stake pool data during the first "Shelley" epochs ([PR 2151](https://github.com/input-output-hk/daedalus/pull/2151))
+- Enabled wallet creation regardless of the sync progress ([PR 2150](https://github.com/input-output-hk/daedalus/pull/2150))
+- Enabled restoration of "Shelley" wallets regardless of the sync progress ([PR 2150](https://github.com/input-output-hk/daedalus/pull/2150))
 - Enabled restoration of Yoroi "Shelley" wallets ([PR 2144](https://github.com/input-output-hk/daedalus/pull/2144))
 - Enabled "Send" screen for "Byron" wallets ([PR 2147](https://github.com/input-output-hk/daedalus/pull/2147))
 - Added SMASH support ([PR 2143](https://github.com/input-output-hk/daedalus/pull/2143))
 
 ### Fixes
 
+- Fixed display priority of Daedalus shutdown messages on the "Loading" screen ([PR 2150](https://github.com/input-output-hk/daedalus/pull/2150))
 - Fixed double loading spinner issue on stake pools list page ([PR 2144](https://github.com/input-output-hk/daedalus/pull/2144))
 - Fixed the Japanese translation for "Byron" wallet label ([PR 2147](https://github.com/input-output-hk/daedalus/pull/2147))
 - Fixed validation of spending passwords which include spaces ([PR 2147](https://github.com/input-output-hk/daedalus/pull/2147))

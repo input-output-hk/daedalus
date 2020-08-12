@@ -46,7 +46,6 @@ export default class WalletBackupDialogContainer extends Component<Props> {
       continueToRecoveryPhraseForWalletBackup,
     } = actions.walletBackup;
     const { createWalletRequest } = stores.wallets;
-    const { isShelleyActivated } = stores.networkStatus;
 
     const canFinishBackup = global.isIncentivizedTestnet
       ? isRecoveryPhraseValid &&
@@ -88,7 +87,6 @@ export default class WalletBackupDialogContainer extends Component<Props> {
           finishWalletBackup.trigger();
         }}
         onRestartBackup={restartWalletBackup.trigger}
-        isShelleyActivated={isShelleyActivated}
       />
     );
   }
