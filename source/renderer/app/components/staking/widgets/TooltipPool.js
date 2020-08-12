@@ -585,22 +585,9 @@ export default class TooltipPool extends Component<Props, State> {
             </dd>
             <dt>{intl.formatMessage(messages.relativeStake)}</dt>
             <dd className={styles.defaultColor}>
-              {isShelleyDataAvailable ? (
-                <span className={styles.defaultColorContent}>{`${parseFloat(
-                  relativeStake.toFixed(2)
-                )}%`}</span>
-              ) : (
-                <Tooltip
-                  className={styles.sandClockTooltip}
-                  key="sandClockTooltip"
-                  skin={TooltipSkin}
-                  tip={intl.formatMessage(messages.sandClockTooltipLabel)}
-                >
-                  <div className={styles.sandClock}>
-                    <SVGInline svg={sandClockSmallImage} />
-                  </div>
-                </Tooltip>
-              )}
+              <span className={styles.defaultColorContent}>{`${parseFloat(
+                relativeStake.toFixed(2)
+              )}%`}</span>
             </dd>
             <dt>{intl.formatMessage(messages.profitMargin)}</dt>
             <dd className={styles.profitMargin}>
