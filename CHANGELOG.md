@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Added SMASH support ([PR 2143](https://github.com/input-output-hk/daedalus/pull/2143))
+
 ### Fixes
 
 - Disabled ITN rewards redemption in case Daedalus is not fully in sync ([PR 2146](https://github.com/input-output-hk/daedalus/pull/2146))
