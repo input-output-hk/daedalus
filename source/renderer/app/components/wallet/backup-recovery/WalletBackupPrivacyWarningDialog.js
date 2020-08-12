@@ -9,10 +9,7 @@ import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import WalletRecoveryInstructions from './WalletRecoveryInstructions';
 import globalMessages from '../../../i18n/global-messages';
-import {
-  LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
-  WALLET_RECOVERY_PHRASE_WORD_COUNT,
-} from '../../../config/cryptoConfig';
+import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
 import styles from './WalletBackupPrivacyWarningDialog.scss';
 
 const messages = defineMessages({
@@ -64,7 +61,6 @@ type Props = {
   countdownRemaining: number,
   canPhraseBeShown: boolean,
   isPrivacyNoticeAccepted: boolean,
-  isShelleyActivated: boolean,
   onAcceptPrivacyNotice: Function,
   onContinue: Function,
   onCancelBackup: Function,
@@ -81,7 +77,6 @@ export default class WalletBackupPrivacyWarningDialog extends Component<Props> {
     const {
       countdownRemaining,
       canPhraseBeShown,
-      isShelleyActivated,
       onAcceptPrivacyNotice,
       onCancelBackup,
       isPrivacyNoticeAccepted,
@@ -117,10 +112,7 @@ export default class WalletBackupPrivacyWarningDialog extends Component<Props> {
           instructionsText={intl.formatMessage(
             messages.recoveryPhraseInstructions1,
             {
-              walletRecoveryPhraseWordCount:
-                isIncentivizedTestnet || isShelleyActivated
-                  ? WALLET_RECOVERY_PHRASE_WORD_COUNT
-                  : LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
+              walletRecoveryPhraseWordCount: WALLET_RECOVERY_PHRASE_WORD_COUNT,
             }
           )}
         />
