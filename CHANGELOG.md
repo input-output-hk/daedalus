@@ -5,10 +5,13 @@ Changelog
 
 ### Features
 
+- Enabled "Send" screen for "Byron" wallets ([PR 2147](https://github.com/input-output-hk/daedalus/pull/2147))
 - Added SMASH support ([PR 2143](https://github.com/input-output-hk/daedalus/pull/2143))
 
 ### Fixes
 
+- Fixed the Japanese translation for "Byron" wallet label ([PR 2147](https://github.com/input-output-hk/daedalus/pull/2147))
+- Fixed validation of spending passwords which include spaces ([PR 2147](https://github.com/input-output-hk/daedalus/pull/2147))
 - Disabled ITN rewards redemption in case Daedalus is not fully in sync ([PR 2146](https://github.com/input-output-hk/daedalus/pull/2146))
 
 ## 2.1.0
