@@ -57,9 +57,7 @@ export const isUnicaseString = (password: string) =>
  */
 export const isValidSpendingPassword = (password: string): boolean => {
   // Should contain at least 10 characters
-  if (password.length < 10) return false;
-  // Must not contain white spaces
-  return !containsWhitespace(password);
+  return password.length >= 10;
 };
 
 // eslint-disable-next-line max-len

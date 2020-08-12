@@ -10,6 +10,7 @@ Changelog
 ### Fixes
 
 - Fixed the Japanese translation for "Byron" wallet label ([PR 2147](https://github.com/input-output-hk/daedalus/pull/2147))
+- Fixed validation of spending passwords which include spaces ([PR 2147](https://github.com/input-output-hk/daedalus/pull/2147))
 
 ## 2.1.0
 
