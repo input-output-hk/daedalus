@@ -18,7 +18,6 @@ type Props = {
   isTermRewardsAccepted: boolean,
   isValid: boolean,
   isSubmitting: boolean,
-  isShelleyActivated: boolean,
   recoveryPhrase: string,
   enteredPhrase: Array<string>,
   onCancelBackup: Function,
@@ -59,7 +58,6 @@ export default class WalletBackupDialog extends Component<Props> {
       onUpdateVerificationPhrase,
       onFinishBackup,
       onRestartBackup,
-      isShelleyActivated,
     } = this.props;
 
     if (currentStep === WALLET_BACKUP_STEPS.PRIVACY_WARNING) {
@@ -68,7 +66,6 @@ export default class WalletBackupDialog extends Component<Props> {
           canPhraseBeShown={canPhraseBeShown}
           isPrivacyNoticeAccepted={isPrivacyNoticeAccepted}
           countdownRemaining={countdownRemaining}
-          isShelleyActivated={isShelleyActivated}
           onAcceptPrivacyNotice={onAcceptPrivacyNotice}
           onCancelBackup={onCancelBackup}
           onContinue={onContinue}
@@ -81,7 +78,6 @@ export default class WalletBackupDialog extends Component<Props> {
           recoveryPhrase={recoveryPhrase}
           onStartWalletBackup={onStartWalletBackup}
           onCancelBackup={onCancelBackup}
-          isShelleyActivated={isShelleyActivated}
         />
       );
     }
@@ -94,7 +90,6 @@ export default class WalletBackupDialog extends Component<Props> {
           isTermRecoveryAccepted={isTermRecoveryAccepted}
           isTermRewardsAccepted={isTermRewardsAccepted}
           isValid={isValid}
-          isShelleyActivated={isShelleyActivated}
           isSubmitting={isSubmitting}
           onAcceptTermOffline={onAcceptTermOffline}
           onAcceptTermRecovery={onAcceptTermRecovery}
