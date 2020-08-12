@@ -4298,10 +4298,10 @@
     "descriptors": [
       {
         "defaultMessage": "!!!Redeem Incentivized Testnet rewards",
-        "description": "Title for Redeem Incentivized Testnet - Step 1",
+        "description": "Title for Redeem Incentivized Testnet - redemptionUnavailable",
         "end": {
           "column": 3,
-          "line": 14
+          "line": 15
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/RedemptionUnavailableDialog.js",
         "id": "staking.redeemItnRewards.redemptionUnavailable.title",
@@ -4315,27 +4315,27 @@
         "description": "description for Redeem Incentivized Testnet - redemptionUnavailable",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 22
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/RedemptionUnavailableDialog.js",
         "id": "staking.redeemItnRewards.redemptionUnavailable.description",
         "start": {
           "column": 15,
-          "line": 15
+          "line": 16
         }
       },
       {
         "defaultMessage": "!!!Close",
-        "description": "closeButtonLabel for Redeem Incentivized Testnet -  redemptionUnavailable",
+        "description": "closeButtonLabel for Redeem Incentivized Testnet - redemptionUnavailable",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 28
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/RedemptionUnavailableDialog.js",
         "id": "staking.redeemItnRewards.redemptionUnavailable.closeButton.label",
         "start": {
           "column": 20,
-          "line": 22
+          "line": 23
         }
       }
     ],

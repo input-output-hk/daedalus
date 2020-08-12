@@ -61,7 +61,8 @@ export default class StakePoolsListPage extends Component<Props> {
     } = staking;
     const { all } = wallets;
     const isLoading = !isSynced || fetchingStakePoolsFailed;
-    const isRanking = staking.isRanking && stakePoolsRequest.isExecuting;
+    const isRanking =
+      !isLoading && staking.isRanking && stakePoolsRequest.isExecuting;
 
     return (
       <Fragment>
@@ -80,9 +81,7 @@ export default class StakePoolsListPage extends Component<Props> {
           isRanking={isRanking}
           getStakePoolById={getStakePoolById}
         />
-        {!isLoading && isRanking && stakePoolsRequest.isExecuting && (
-          <StakePoolsRankingLoader />
-        )}
+        {isRanking && <StakePoolsRankingLoader />}
         {uiDialogs.isOpen(DelegationSetupWizardDialog) ? (
           <DelegationSetupWizardDialogContainer />
         ) : null}
