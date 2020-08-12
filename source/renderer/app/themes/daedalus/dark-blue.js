@@ -300,7 +300,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-icon-syncing-ada-logo-color': '#e9f4fe',
     '--theme-icon-syncing-daedalus-logo-color': '#e9f4fe',
     '--theme-icon-transactions-ada-symbol-color': '#e9f4fe',
-    '--theme-icon-transaction-type-color': '#fafbfc',
+    '--theme-icon-transaction-type-color': '#0b1926',
   },
   input: {
     '--theme-input-background-color': '#263345',

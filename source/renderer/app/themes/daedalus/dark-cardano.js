@@ -282,7 +282,7 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-icon-syncing-ada-logo-color': '#ffffff',
     '--theme-icon-syncing-daedalus-logo-color': '#ffffff',
     '--theme-icon-transactions-ada-symbol-color': '#ffffff',
-    '--theme-icon-transaction-type-color': '#fafbfc',
+    '--theme-icon-transaction-type-color': '#121326',
   },
   input: {
     '--theme-input-background-color': '#1e1f31',
