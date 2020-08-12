@@ -1,6 +1,24 @@
 Changelog
 =========
 
+## vNext
+
+### Features
+
+- Enabled wallet creation regardless of the sync progress ([PR 2150](https://github.com/input-output-hk/daedalus/pull/2150))
+- Enabled restoration of "Shelley" wallets regardless of the sync progress ([PR 2150](https://github.com/input-output-hk/daedalus/pull/2150))
+- Enabled restoration of Yoroi "Shelley" wallets ([PR 2144](https://github.com/input-output-hk/daedalus/pull/2144))
+- Enabled "Send" screen for "Byron" wallets ([PR 2147](https://github.com/input-output-hk/daedalus/pull/2147))
+- Added SMASH support ([PR 2143](https://github.com/input-output-hk/daedalus/pull/2143))
+
+### Fixes
+
+- Fixed display priority of Daedalus shutdown messages on the "Loading" screen ([PR 2150](https://github.com/input-output-hk/daedalus/pull/2150))
+- Fixed double loading spinner issue on stake pools list page ([PR 2144](https://github.com/input-output-hk/daedalus/pull/2144))
+- Fixed the Japanese translation for "Byron" wallet label ([PR 2147](https://github.com/input-output-hk/daedalus/pull/2147))
+- Fixed validation of spending passwords which include spaces ([PR 2147](https://github.com/input-output-hk/daedalus/pull/2147))
+- Disabled ITN rewards redemption in case Daedalus is not fully in sync ([PR 2146](https://github.com/input-output-hk/daedalus/pull/2146))
+
 ## 2.1.0
 
 ### Features
@@ -9,8 +27,8 @@ Changelog
 
 ### Chores
 
-- Updated `cardano-wallet` to revision `4a4d0a65` 
-- Updated `cardano-wallet` to revision `d5b43356` 
+- Updated `cardano-wallet` to revision `4a4d0a65`
+- Updated `cardano-wallet` to revision `d5b43356`
 
 ## 2.0.1
 

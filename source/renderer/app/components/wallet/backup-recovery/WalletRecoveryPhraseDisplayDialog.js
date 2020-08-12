@@ -9,10 +9,7 @@ import Dialog from '../../widgets/Dialog';
 import WalletRecoveryInstructions from './WalletRecoveryInstructions';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletRecoveryPhraseDisplayDialog.scss';
-import {
-  WALLET_RECOVERY_PHRASE_WORD_COUNT,
-  LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
-} from '../../../config/cryptoConfig';
+import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
 
 const messages = defineMessages({
   backupInstructions: {
@@ -31,11 +28,8 @@ const messages = defineMessages({
   },
 });
 
-const { isIncentivizedTestnet } = global;
-
 type Props = {
   recoveryPhrase: string,
-  isShelleyActivated: boolean,
   onStartWalletBackup: Function,
   onCancelBackup: Function,
 };
@@ -48,12 +42,7 @@ export default class WalletRecoveryPhraseDisplayDialog extends Component<Props> 
 
   render() {
     const { intl } = this.context;
-    const {
-      recoveryPhrase,
-      onStartWalletBackup,
-      onCancelBackup,
-      isShelleyActivated,
-    } = this.props;
+    const { recoveryPhrase, onStartWalletBackup, onCancelBackup } = this.props;
     const dialogClasses = classnames([
       styles.component,
       'WalletRecoveryPhraseDisplayDialog',
@@ -81,10 +70,7 @@ export default class WalletRecoveryPhraseDisplayDialog extends Component<Props> 
             <FormattedHTMLMessage
               {...messages.backupInstructions}
               values={{
-                walletRecoveryPhraseWordCount:
-                  isIncentivizedTestnet || isShelleyActivated
-                    ? WALLET_RECOVERY_PHRASE_WORD_COUNT
-                    : LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
+                walletRecoveryPhraseWordCount: WALLET_RECOVERY_PHRASE_WORD_COUNT,
               }}
             />
           }
