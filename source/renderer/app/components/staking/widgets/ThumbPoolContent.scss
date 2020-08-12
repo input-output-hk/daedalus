@@ -109,14 +109,22 @@
 }
 
 .noDataDash {
-  height: 19px;
-  margin: 0 auto;
-  padding-top: 4px;
-  width: 10px;
+  align-items: center;
+  display: flex;
+  justify-content: center;
 
-  path {
-    fill: var(--theme-staking-stake-pool-grey-color) !important;
-    opacity: 1 !important;
+  :global {
+    .SVGInline {
+      svg {
+        height: 3px;
+        width: 12px;
+
+        path {
+          fill: var(--theme-staking-stake-pool-grey-color) !important;
+          opacity: 1 !important;
+        }
+      }
+    }
   }
 }
 
