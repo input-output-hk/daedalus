@@ -87,7 +87,7 @@
     }
   }
 
-  .sandClockTooltip {
+  .noDataDashTooltip {
     padding: 0;
 
     :global {
@@ -96,7 +96,7 @@
       }
     }
 
-    .sandClock {
+    .noDataDash {
       background-color: var(--theme-staking-stake-pool-grey-bg-color);
       border-radius: 3px;
       height: 16px;
@@ -107,15 +107,16 @@
           display: flex;
           align-items: center;
           justify-content: center;
+          padding: 0 5px 0 4px;
         }
       }
 
       svg {
-        height: 8px;
-        width: 5px;
+        height: 10px;
+        width: 7px;
         g {
           path {
-            fill: var(--theme-staking-stake-pool-grey-color);
+            fill: var(--theme-staking-stake-pool-tooltip-neutral-text-color);
           }
         }
       }

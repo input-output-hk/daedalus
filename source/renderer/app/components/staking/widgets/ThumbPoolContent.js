@@ -4,25 +4,21 @@ import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import clockIcon from '../../../assets/images/clock-corner.inline.svg';
-import sandClockBigImage from '../../../assets/images/sand-clock-big.inline.svg';
+import noDataDashBigImage from '../../../assets/images/no-data-dash-big.inline.svg';
 import styles from './ThumbPoolContent.scss';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
 import StakePool from '../../../domains/StakePool';
+import { IS_RANKING_DATA_AVAILABLE } from '../../../config/stakingConfig';
 
 type Props = {
   stakePool: StakePool,
-  isShelleyDataAvailable: boolean,
   numberOfStakePools: number,
 };
 
 @observer
 export default class ThumbPoolContent extends Component<Props> {
   render() {
-    const {
-      stakePool,
-      isShelleyDataAvailable,
-      numberOfStakePools,
-    } = this.props;
+    const { stakePool, numberOfStakePools } = this.props;
 
     const { ranking, ticker, retiring, saturation } = stakePool;
     const color = getColorFromRange(ranking, numberOfStakePools);
@@ -42,7 +38,7 @@ export default class ThumbPoolContent extends Component<Props> {
     return (
       <div className={componentClassnames}>
         <div className={styles.ticker}>{ticker}</div>
-        {isShelleyDataAvailable ? (
+        {IS_RANKING_DATA_AVAILABLE ? (
           <>
             <div className={styles.ranking} style={{ color }}>
               {ranking}
@@ -70,8 +66,8 @@ export default class ThumbPoolContent extends Component<Props> {
           </>
         ) : (
           <>
-            <div className={styles.sandClock}>
-              <SVGInline svg={sandClockBigImage} />
+            <div className={styles.noDataDash}>
+              <SVGInline svg={noDataDashBigImage} />
             </div>
             <div className={styles.greyColorBand} />
           </>

@@ -8,12 +8,12 @@ import { getColorFromRange } from '../../../utils/colors';
 import checkmarkImage from '../../../assets/images/check-w.inline.svg';
 import questionmarkImage from '../../../assets/images/questionmark.inline.svg';
 import clockImage from '../../../assets/images/clock.inline.svg';
-import sandClockBigImage from '../../../assets/images/sand-clock-big.inline.svg';
+import noDataDashBigImage from '../../../assets/images/no-data-dash-big.inline.svg';
 import StakePool from '../../../domains/StakePool';
+import { IS_RANKING_DATA_AVAILABLE } from '../../../config/stakingConfig';
 
 type Props = {
   stakePool?: StakePool,
-  isShelleyDataAvailable: boolean,
   alreadyDelegated?: boolean,
   numberOfStakePools: number,
 };
@@ -21,16 +21,11 @@ type Props = {
 @observer
 export default class ThumbSelectedPool extends Component<Props> {
   render() {
-    const {
-      stakePool,
-      isShelleyDataAvailable,
-      alreadyDelegated,
-      numberOfStakePools,
-    } = this.props;
+    const { stakePool, alreadyDelegated, numberOfStakePools } = this.props;
 
     const { ticker, retiring, ranking } = stakePool || {};
     const rankColor =
-      stakePool && !retiring && isShelleyDataAvailable
+      stakePool && !retiring && IS_RANKING_DATA_AVAILABLE
         ? getColorFromRange(ranking, numberOfStakePools)
         : 'transparent';
 
@@ -55,12 +50,12 @@ export default class ThumbSelectedPool extends Component<Props> {
       >
         {ticker && <div className={styles.ticker}>{ticker}</div>}
         <div className={styles.icon}>
-          {isShelleyDataAvailable ? (
+          {IS_RANKING_DATA_AVAILABLE ? (
             <SVGInline svg={icon} />
           ) : (
             <SVGInline
-              className={styles.sandClockIcon}
-              svg={sandClockBigImage}
+              className={styles.noDataDashIcon}
+              svg={noDataDashBigImage}
             />
           )}
         </div>

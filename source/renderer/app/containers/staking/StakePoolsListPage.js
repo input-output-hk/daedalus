@@ -49,7 +49,7 @@ export default class StakePoolsListPage extends Component<Props> {
       wallets,
     } = this.props.stores;
     const { currentTheme } = profile;
-    const { isSynced, isShelleyDataAvailable } = networkStatus;
+    const { isSynced } = networkStatus;
     const {
       stakePoolsRequest,
       stakePools,
@@ -76,7 +76,6 @@ export default class StakePoolsListPage extends Component<Props> {
           onRank={this.onRank}
           selectedDelegationWalletId={selectedDelegationWalletId}
           stake={stake}
-          isShelleyDataAvailable={isShelleyDataAvailable}
           onDelegate={this.handleDelegate}
           isLoading={isLoading}
           isRanking={isRanking}

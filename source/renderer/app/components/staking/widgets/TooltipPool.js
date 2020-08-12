@@ -18,7 +18,7 @@ import experimentalTooltipStyles from './TooltipPool-experimental-tooltip.scss';
 import isTooltipStyles from './TooltipPool-copyId-tooltip.scss';
 import StakePool from '../../../domains/StakePool';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
-import sandClockSmallImage from '../../../assets/images/sand-clock-small.inline.svg';
+import noDataDashSmallImage from '../../../assets/images/no-data-dash-small.inline.svg';
 import experimentalIcon from '../../../assets/images/experiment-icon.inline.svg';
 import copyIcon from '../../../assets/images/clipboard-small-ic.inline.svg';
 import copyCheckmarkIcon from '../../../assets/images/check-w.inline.svg';
@@ -37,6 +37,7 @@ import {
   TOOLTIP_DELTA,
   TOOLTIP_MAX_HEIGHT,
   TOOLTIP_WIDTH,
+  IS_RANKING_DATA_AVAILABLE,
 } from '../../../config/stakingConfig';
 
 const messages = defineMessages({
@@ -96,8 +97,8 @@ const messages = defineMessages({
     defaultMessage: '!!!Copy the stake pool ID',
     description: 'copyId tooltip label',
   },
-  sandClockTooltipLabel: {
-    id: 'staking.stakePools.sandClockTooltip',
+  noDataDashTooltipLabel: {
+    id: 'staking.stakePools.noDataDashTooltip',
     defaultMessage: '!!!Data not available yet',
     description: 'Data not available yet label',
   },
@@ -105,7 +106,6 @@ const messages = defineMessages({
 
 type Props = {
   stakePool: StakePool,
-  isShelleyDataAvailable: boolean,
   isVisible: boolean,
   currentTheme: string,
   onClick: Function,
@@ -397,7 +397,6 @@ export default class TooltipPool extends Component<Props, State> {
     const { intl } = this.context;
     const {
       stakePool,
-      isShelleyDataAvailable,
       isVisible,
       currentTheme,
       onClick,
@@ -461,7 +460,7 @@ export default class TooltipPool extends Component<Props, State> {
     ]);
     const colorBandStyles = classnames([
       styles.colorBand,
-      isShelleyDataAvailable ? null : styles.greyColorBand,
+      IS_RANKING_DATA_AVAILABLE ? null : styles.greyColorBand,
     ]);
 
     return (
@@ -472,7 +471,7 @@ export default class TooltipPool extends Component<Props, State> {
         aria-hidden
         style={componentStyle}
       >
-        {isShelleyDataAvailable ? (
+        {IS_RANKING_DATA_AVAILABLE ? (
           <div className={colorBandStyles} style={colorBandStyle} />
         ) : (
           <div className={colorBandStyles} />
@@ -542,7 +541,7 @@ export default class TooltipPool extends Component<Props, State> {
             )}
             <dt>{intl.formatMessage(messages.ranking)}</dt>
             <dd className={styles.ranking}>
-              {isShelleyDataAvailable ? (
+              {IS_RANKING_DATA_AVAILABLE ? (
                 <span
                   style={{
                     background: getColorFromRange(ranking, {
@@ -556,13 +555,13 @@ export default class TooltipPool extends Component<Props, State> {
                 </span>
               ) : (
                 <Tooltip
-                  className={styles.sandClockTooltip}
-                  key="sandClockTooltip"
+                  className={styles.noDataDashTooltip}
+                  key="noDataDashTooltip"
                   skin={TooltipSkin}
-                  tip={intl.formatMessage(messages.sandClockTooltipLabel)}
+                  tip={intl.formatMessage(messages.noDataDashTooltipLabel)}
                 >
-                  <div className={styles.sandClock}>
-                    <SVGInline svg={sandClockSmallImage} />
+                  <div className={styles.noDataDash}>
+                    <SVGInline svg={noDataDashSmallImage} />
                   </div>
                 </Tooltip>
               )}

@@ -345,7 +345,6 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
               stakePool={selectedPool}
               numberOfStakePools={stakePoolsList.length}
               alreadyDelegated={selectedPool && !canSubmit}
-              isShelleyDataAvailable
             />
 
             <p className={styles.selectStakePoolLabel}>
@@ -373,7 +372,6 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
               disabledStakePoolId={activeStakePoolId}
               showSelected
               highlightOnHover
-              isShelleyDataAvailable
             />
           </div>
 
@@ -404,7 +402,6 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
               disabledStakePoolId={activeStakePoolId}
               showSelected
               highlightOnHover
-              isShelleyDataAvailable
             />
           </div>
         </div>

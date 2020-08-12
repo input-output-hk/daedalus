@@ -46,7 +46,6 @@ type Props = {
   onRank: Function,
   selectedDelegationWalletId?: ?string,
   stake?: ?number,
-  isShelleyDataAvailable?: ?boolean,
   onDelegate: Function,
   isLoading: boolean,
   isRanking: boolean,
@@ -69,10 +68,6 @@ export default class StakePools extends Component<Props, State> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
-  };
-
-  static defaultProps = {
-    isShelleyDataAvailable: false,
   };
 
   state = {
@@ -100,7 +95,6 @@ export default class StakePools extends Component<Props, State> {
       onRank,
       selectedDelegationWalletId,
       stake,
-      isShelleyDataAvailable,
       onOpenExternalLink,
       currentTheme,
       isLoading,
@@ -154,7 +148,6 @@ export default class StakePools extends Component<Props, State> {
               onRank={onRank}
               selectedDelegationWalletId={selectedDelegationWalletId}
               stake={stake}
-              isShelleyDataAvailable={isShelleyDataAvailable || false}
               isLoading={isLoading}
               isRanking={isRanking}
               numberOfStakePools={stakePoolsList.length}
@@ -175,7 +168,6 @@ export default class StakePools extends Component<Props, State> {
                 <StakePoolsList
                   listName="stakePoolsDelegatingList"
                   stakePoolsList={stakePoolsDelegatingList}
-                  isShelleyDataAvailable={isShelleyDataAvailable || false}
                   onOpenExternalLink={onOpenExternalLink}
                   currentTheme={currentTheme}
                   isListActive={selectedList === 'stakePoolsDelegatingList'}
@@ -201,7 +193,6 @@ export default class StakePools extends Component<Props, State> {
               showWithSelectButton
               listName="selectedIndexList"
               stakePoolsList={filteredStakePoolsList}
-              isShelleyDataAvailable={isShelleyDataAvailable || false}
               onOpenExternalLink={onOpenExternalLink}
               currentTheme={currentTheme}
               isListActive={selectedList === 'selectedIndexList'}

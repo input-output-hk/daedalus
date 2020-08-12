@@ -11,7 +11,6 @@ import {
   MAX_ALLOWED_STALL_DURATION,
   DECENTRALIZATION_LEVEL_POLLING_INTERVAL,
 } from '../config/timingConfig';
-import { EPOCH_LENGTH_SHELLEY } from '../config/epochsConfig';
 import { logger } from '../utils/logging';
 import {
   cardanoStateChangeChannel,
@@ -121,7 +120,6 @@ export default class NetworkStatusStore extends Store {
   @observable isTlsCertInvalid: boolean = false;
   @observable stateDirectoryPath: string = '';
   @observable isShelleyActivated: boolean = false;
-  @observable isShelleyDataAvailable: boolean = false;
   @observable isShelleyPending: boolean = false;
   @observable shelleyActivationTime: string = '';
   @observable verificationProgress: number = 0;
@@ -594,11 +592,7 @@ export default class NetworkStatusStore extends Store {
     try {
       const networkParameters: GetNetworkParametersResponse = await this.getNetworkParametersRequest.execute()
         .promise;
-      let {
-        isShelleyActivated,
-        isShelleyDataAvailable,
-        isShelleyPending,
-      } = this;
+      let { isShelleyActivated, isShelleyPending } = this;
       const { decentralizationLevel, hardforkAt } = networkParameters;
       const epochStartTime = get(hardforkAt, 'epoch_start_time', '');
 
@@ -606,15 +600,12 @@ export default class NetworkStatusStore extends Store {
         const currentTimeStamp = new Date().getTime();
         const hardforkStartTime = new Date(epochStartTime).getTime();
         isShelleyActivated = currentTimeStamp >= hardforkStartTime;
-        isShelleyDataAvailable =
-          currentTimeStamp >= hardforkStartTime + 3 * EPOCH_LENGTH_SHELLEY;
         isShelleyPending = currentTimeStamp < hardforkStartTime;
       }
 
       runInAction('Set Decentralization Progress', () => {
         this.decentralizationProgress = decentralizationLevel.quantity;
         this.isShelleyActivated = isShelleyActivated;
-        this.isShelleyDataAvailable = isShelleyDataAvailable;
         this.isShelleyPending = isShelleyPending;
         this.shelleyActivationTime = epochStartTime;
       });

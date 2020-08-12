@@ -18,6 +18,7 @@ import {
   OUT_OF_RANGE_MAX_DELEGATION_FUNDS,
   ALL_WALLETS_SELECTION_ID,
   INITIAL_DELEGATION_FUNDS,
+  IS_RANKING_DATA_AVAILABLE,
 } from '../../../config/stakingConfig';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import ButtonLink from '../../widgets/ButtonLink';
@@ -112,7 +113,6 @@ type Props = {
   onRank: Function,
   selectedDelegationWalletId?: ?string,
   stake?: ?number,
-  isShelleyDataAvailable: boolean,
   isLoading: boolean,
   isRanking: boolean,
   numberOfStakePools: number,
@@ -234,7 +234,6 @@ export default class StakePoolsRanking extends Component<Props, State> {
     const { intl } = this.context;
     const {
       onOpenExternalLink,
-      isShelleyDataAvailable,
       isLoading,
       isRanking,
       selectedDelegationWalletId,
@@ -253,7 +252,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
       learnMoreUrl,
     } = this.generateInfo();
 
-    if (!isShelleyDataAvailable) {
+    if (!IS_RANKING_DATA_AVAILABLE) {
       return null;
     }
 

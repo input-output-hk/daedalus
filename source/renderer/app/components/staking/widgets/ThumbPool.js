@@ -22,7 +22,6 @@ type Props = {
   showWithSelectButton?: boolean,
   showSelected?: boolean,
   stakePool: StakePool,
-  isShelleyDataAvailable: boolean,
   isSelected?: ?Function,
   containerClassName: string,
   numberOfStakePools: number,
@@ -98,7 +97,6 @@ export class ThumbPool extends Component<Props, State> {
       showWithSelectButton,
       showSelected,
       stakePool,
-      isShelleyDataAvailable,
       containerClassName,
       numberOfStakePools,
       disabledStakePoolId,
@@ -125,13 +123,11 @@ export class ThumbPool extends Component<Props, State> {
       isSelected && showSelected ? (
         <ThumbSelectedPool
           stakePool={stakePool}
-          isShelleyDataAvailable={isShelleyDataAvailable}
           numberOfStakePools={numberOfStakePools}
         />
       ) : (
         <ThumbPoolContent
           stakePool={stakePool}
-          isShelleyDataAvailable={isShelleyDataAvailable}
           numberOfStakePools={numberOfStakePools}
         />
       );
@@ -149,7 +145,6 @@ export class ThumbPool extends Component<Props, State> {
         {isHighlighted && (
           <TooltipPool
             stakePool={stakePool}
-            isShelleyDataAvailable={isShelleyDataAvailable}
             className={styles.tooltip}
             isVisible
             onClick={onClose}
