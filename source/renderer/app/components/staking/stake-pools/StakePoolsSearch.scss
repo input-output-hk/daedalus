@@ -44,6 +44,10 @@
 .clearSearch {
   margin-top: -2px;
 
+  > div > div {
+    margin-left: -15px !important;
+  }
+
   button {
     background-color: var(
       --theme-staking-stake-pools-search-clear-button-background-color
