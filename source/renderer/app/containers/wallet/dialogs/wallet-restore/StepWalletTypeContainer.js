@@ -24,12 +24,10 @@ export default class WalletTypeDialogContainer extends Component<Props> {
       walletKindYoroi,
       walletKindHardware,
     } = stores.wallets;
-    const { isShelleyActivated } = stores.networkStatus;
     return (
       <WalletTypeDialog
         onClose={onClose}
         onContinue={onContinue}
-        isShelleyActivated={isShelleyActivated}
         walletKind={walletKind}
         walletKindDaedalus={walletKindDaedalus}
         walletKindYoroi={walletKindYoroi}

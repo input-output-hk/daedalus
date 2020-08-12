@@ -93,7 +93,6 @@ import { REDEEM_ITN_REWARDS_AMOUNT } from '../config/stakingConfig';
 import {
   ADA_CERTIFICATE_MNEMONIC_LENGTH,
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
-  LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
 } from '../config/cryptoConfig';
 
 // Addresses Types
@@ -200,16 +199,10 @@ export default class AdaApi {
     this.config = config;
   }
 
-  getWallets = async (request: {
-    isShelleyActivated: boolean,
-  }): Promise<Array<Wallet>> => {
+  getWallets = async (): Promise<Array<Wallet>> => {
     logger.debug('AdaApi::getWallets called');
-    const { isShelleyActivated } = request;
     try {
-      const wallets: AdaWallets =
-        isIncentivizedTestnet || isShelleyActivated
-          ? await getWallets(this.config)
-          : [];
+      const wallets: AdaWallets = await getWallets(this.config);
       const legacyWallets: LegacyAdaWallets = await getLegacyWallets(
         this.config
       );
@@ -522,61 +515,70 @@ export default class AdaApi {
     }
   };
 
-  createWallet = async (request: {
-    walletDetails: CreateWalletRequest,
-    isShelleyActivated: boolean,
-  }): Promise<Wallet> => {
+  createWallet = async (request: CreateWalletRequest): Promise<Wallet> => {
     logger.debug('AdaApi::createWallet called', {
       parameters: filterLogData(request),
     });
-    const { walletDetails, isShelleyActivated } = request;
-    const { name, mnemonic, spendingPassword } = walletDetails;
+    const { name, mnemonic, spendingPassword } = request;
     try {
-      let wallet: AdaWallet;
       const walletInitData = {
         name,
         mnemonic_sentence: split(mnemonic, ' '),
         passphrase: spendingPassword,
       };
-
-      if (isIncentivizedTestnet || isShelleyActivated) {
-        wallet = await createWallet(this.config, {
-          walletInitData,
-        });
-        logger.debug('AdaApi::createWallet (Shelley) success', { wallet });
-      } else {
-        const legacyWallet: LegacyAdaWallet = await restoreByronWallet(
-          this.config,
-          { walletInitData },
-          'random'
-        );
-
-        // Generate address for the newly created Byron wallet
-        const { id: walletId } = legacyWallet;
-        const address: Address = await createByronWalletAddress(this.config, {
-          passphrase: spendingPassword,
-          walletId,
-        });
-        logger.debug('AdaApi::createAddress (Byron) success', { address });
-
-        const extraLegacyWalletProps = {
-          address_pool_gap: 0, // Not needed for legacy wallets
-          delegation: {
-            active: {
-              status: WalletDelegationStatuses.NOT_DELEGATING,
-            },
-          },
-          isLegacy: true,
-        };
-        wallet = {
-          ...legacyWallet,
-          ...extraLegacyWalletProps,
-        };
-        logger.debug('AdaApi::createWallet (Byron) success', { wallet });
-      }
+      const wallet: AdaWallet = await createWallet(this.config, {
+        walletInitData,
+      });
+      logger.debug('AdaApi::createWallet success', { wallet });
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::createWallet error', { error });
+      throw new ApiError(error);
+    }
+  };
+
+  createLegacyWallet = async (
+    request: CreateWalletRequest
+  ): Promise<Wallet> => {
+    logger.debug('AdaApi::createLegacyWallet called', {
+      parameters: filterLogData(request),
+    });
+    const { name, mnemonic, spendingPassword } = request;
+    try {
+      const walletInitData = {
+        name,
+        mnemonic_sentence: split(mnemonic, ' '),
+        passphrase: spendingPassword,
+      };
+      const legacyWallet: LegacyAdaWallet = await restoreByronWallet(
+        this.config,
+        { walletInitData },
+        'random'
+      );
+      // Generate address for the newly created Byron wallet
+      const { id: walletId } = legacyWallet;
+      const address: Address = await createByronWalletAddress(this.config, {
+        passphrase: spendingPassword,
+        walletId,
+      });
+      logger.debug('AdaApi::createByronWalletAddress success', { address });
+      const extraLegacyWalletProps = {
+        address_pool_gap: 0, // Not needed for legacy wallets
+        delegation: {
+          active: {
+            status: WalletDelegationStatuses.NOT_DELEGATING,
+          },
+        },
+        isLegacy: true,
+      };
+      const wallet: AdaWallet = {
+        ...legacyWallet,
+        ...extraLegacyWalletProps,
+      };
+      logger.debug('AdaApi::createLegacyWallet success', { wallet });
+      return _createWalletFromServerData(wallet);
+    } catch (error) {
+      logger.error('AdaApi::createLegacyWallet error', { error });
       throw new ApiError(error);
     }
   };
@@ -628,7 +630,6 @@ export default class AdaApi {
           },
         ],
         passphrase,
-        withdrawal,
       };
 
       let response: Transaction;
@@ -640,7 +641,7 @@ export default class AdaApi {
       } else {
         response = await createTransaction(this.config, {
           walletId,
-          data,
+          data: { ...data, withdrawal },
         });
       }
 
@@ -691,7 +692,6 @@ export default class AdaApi {
             },
           },
         ],
-        withdrawal,
       };
       let response: TransactionFee;
       if (isLegacy) {
@@ -702,7 +702,7 @@ export default class AdaApi {
       } else {
         response = await getTransactionFee(this.config, {
           walletId,
-          data,
+          data: { ...data, withdrawal },
         });
       }
 
@@ -804,20 +804,11 @@ export default class AdaApi {
   isValidCertificateMnemonic = (mnemonic: string): boolean =>
     mnemonic.split(' ').length === ADA_CERTIFICATE_MNEMONIC_LENGTH;
 
-  getWalletRecoveryPhrase(request: {
-    isShelleyActivated: string,
-  }): Promise<Array<string>> {
-    const { isShelleyActivated } = request;
+  getWalletRecoveryPhrase(): Promise<Array<string>> {
     logger.debug('AdaApi::getWalletRecoveryPhrase called');
     try {
       const response: Promise<Array<string>> = new Promise(resolve =>
-        resolve(
-          generateAccountMnemonics(
-            isIncentivizedTestnet || isShelleyActivated
-              ? WALLET_RECOVERY_PHRASE_WORD_COUNT
-              : LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT
-          )
-        )
+        resolve(generateAccountMnemonics(WALLET_RECOVERY_PHRASE_WORD_COUNT))
       );
       logger.debug('AdaApi::getWalletRecoveryPhrase success');
       return response;
@@ -1549,8 +1540,7 @@ export default class AdaApi {
   testReset = async (): Promise<void> => {
     logger.debug('AdaApi::testReset called');
     try {
-      // @TODO - pass isShelleyActivated parameter from E2E tests
-      const wallets = await this.getWallets({ isShelleyActivated: false });
+      const wallets = await this.getWallets();
       await Promise.all(
         wallets.map(wallet =>
           this.deleteWallet({

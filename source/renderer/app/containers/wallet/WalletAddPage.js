@@ -31,7 +31,7 @@ export default class WalletAddPage extends Component<Props> {
 
   render() {
     const { actions, stores } = this.props;
-    const { networkStatus, wallets, walletMigration, uiDialogs } = stores;
+    const { wallets, walletMigration, uiDialogs } = stores;
     const {
       createWalletStep,
       createWalletUseNewProcess,
@@ -39,7 +39,6 @@ export default class WalletAddPage extends Component<Props> {
       restoreWalletUseNewProcess,
       environment,
     } = wallets;
-    const { isShelleyActivated } = networkStatus;
     const { walletMigrationStep } = walletMigration;
     const { isMainnet, isTestnet, isProduction } = environment;
 
@@ -83,7 +82,6 @@ export default class WalletAddPage extends Component<Props> {
           isMainnet={isMainnet}
           isTestnet={isTestnet}
           isProduction={isProduction}
-          isShelleyActivated={isShelleyActivated}
         />
         {activeDialog}
       </Layout>
