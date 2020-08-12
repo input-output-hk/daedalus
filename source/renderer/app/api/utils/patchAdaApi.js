@@ -178,8 +178,6 @@ export default (api: AdaApi) => {
   api.resetTestOverrides = () => {
     TESTING_WALLETS_DATA = {};
     SYNC_PROGRESS = null;
-    LATEST_APP_VERSION = null;
-    APPLICATION_VERSION = null;
     LOCAL_TIME_DIFFERENCE = 0;
   };
 };

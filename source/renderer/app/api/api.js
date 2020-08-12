@@ -183,7 +183,7 @@ import { WALLET_BYRON_KINDS } from '../config/walletRestoreConfig';
 import ApiError from '../domains/ApiError';
 
 // @UPDATE TODO
-import dummyUpdates from './news/dummy-update.json';
+import dummyUpdate from './news/dummy-update.json';
 
 const { isIncentivizedTestnet } = global;
 
@@ -1701,8 +1701,7 @@ export default class AdaApi {
       throw new Error('Unable to fetch news');
     }
 
-    // news.items.push(dummyUpdate);
-    news.items = [...news.items, ...dummyUpdates];
+    news.items = [...news.items, ...dummyUpdate];
 
     // Fetch news verification hash
     let newsHash: string;
