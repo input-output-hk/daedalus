@@ -27,6 +27,8 @@ import {
   Step2ConfirmationDialogStory,
   Step3SuccessDialogStory,
   Step3FailureDialogStory,
+  NoWalletsDialogDialogStory,
+  RedemptionUnavailableDialogDialogStory,
 } from './RedeemItnWallets.stories';
 import {
   StakingUndelegateConfirmationStory,
@@ -259,5 +261,11 @@ storiesOf('Decentralization | Redeem ITN Rewards', module)
     id: 'redeem-itn-wallets-story',
   })
   .add('Step 3 - Failure', Step3FailureDialogStory, {
+    id: 'redeem-itn-wallets-story',
+  })
+  .add('No Wallets', NoWalletsDialogDialogStory, {
+    id: 'redeem-itn-wallets-story',
+  })
+  .add('Redemption Unavailable', RedemptionUnavailableDialogDialogStory, {
     id: 'redeem-itn-wallets-story',
   });
