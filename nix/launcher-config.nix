@@ -180,7 +180,7 @@ let
       ${lib.optionalString (envCfg.nodeConfig ? ShelleyGenesisFile) "cp ${envCfg.nodeConfig.ShelleyGenesisFile} $out/genesis-shelley.json"}
     '';
 
-  mkConfigByron = let
+  mkConfigCardano = let
     filterMonitoring = config: if devShell then config else builtins.removeAttrs config [ "hasPrometheus" "hasEKG" ];
     cardanoAddressBin = mkBinPath "cardano-address";
     walletBin = mkBinPath "cardano-wallet-${kind}";
@@ -256,7 +256,9 @@ let
         delegationCertificate = mkConfigPath nodeConfigFiles "delegation.cert";
         signingKey = mkConfigPath nodeConfigFiles "signing.key";
       });
-    };
+    } // (lib.optionalAttrs (__hasAttr "smashUrl" envCfg) {
+      smashUrl = envCfg.smashUrl or null;
+    });
 
     installerConfig = {
       installDirectory = if os == "linux" then "Daedalus/${network}" else spacedName;
@@ -344,5 +346,5 @@ let
     configFiles = mkConfigFiles nodeConfigFiles launcherConfig installerConfig;
   };
   configs.jormungandr = mkConfigJormungandr;
-  configs.cardano = mkConfigByron;
+  configs.cardano = mkConfigCardano;
 in configs.${backend}
