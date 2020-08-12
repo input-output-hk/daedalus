@@ -1695,7 +1695,9 @@ export default class AdaApi {
     let news: GetNewsResponse;
     try {
       rawNews = await getNews();
+      console.log('rawNews', rawNews);
       news = JSON.parse(rawNews);
+      console.log('news', news);
     } catch (error) {
       logger.error('AdaApi::getNews error', { error });
       throw new Error('Unable to fetch news');

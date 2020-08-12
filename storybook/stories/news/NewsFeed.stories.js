@@ -1,7 +1,7 @@
 // @flow
 // eslint-disable-file no-unused-vars
 import React from 'react';
-import { omit } from 'lodash';
+// import { omit } from 'lodash';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { boolean, select, number, withKnobs } from '@storybook/addon-knobs';
@@ -10,50 +10,7 @@ import NewsFeed from '../../../source/renderer/app/components/news/NewsFeed';
 import News from '../../../source/renderer/app/domains/News';
 import { dateOptions } from '../_support/profileSettings';
 import { DATE_ENGLISH_OPTIONS } from '../../../source/renderer/app/config/profileConfig';
-import { updateEN, updateJP } from './_utils/fakeDataUpdate';
 import { getNewsItem } from './_utils/fakeDataNewsFeed';
-
-const newsData = [
-  getNewsItem(1, 'incident'),
-  getNewsItem(2, 'incident', true),
-  getNewsItem(3, 'alert'),
-  getNewsItem(4, 'alert', true),
-  getNewsItem(5, 'announcement'),
-  getNewsItem(6, 'announcement', true),
-  getNewsItem(7, 'info'),
-  getNewsItem(8, 'info', true),
-];
-
-const newsEn = [
-  ...newsData,
-  new News.News({
-    ...updateEN,
-    target: {
-      daedalusVersion: updateEN.target.daedalusVersion,
-      platform: 'darwin',
-    },
-    id: 9,
-    read: false,
-  }),
-];
-
-const newsJp = [
-  ...newsData,
-  new News.News({
-    ...updateJP,
-    target: {
-      daedalusVersion: updateJP.target.daedalusVersion,
-      platform: 'darwin',
-    },
-    id: 9,
-    read: false,
-  }),
-];
-
-export const news = {
-  'en-US': newsEn,
-  'ja-JP': newsJp,
-};
 
 const updateDownloadProgressOptions = {
   range: true,
@@ -112,7 +69,17 @@ storiesOf('News|NewsFeed', module)
     const updateDownloadProgress = displayAppUpdateNewsItem
       ? number('updateDownloadProgress', 30, updateDownloadProgressOptions)
       : 0;
-
+    const news = new News.NewsCollection([
+      getNewsItem(1, 'incident', locale),
+      getNewsItem(2, 'incident', locale, true),
+      getNewsItem(3, 'alert', locale),
+      getNewsItem(4, 'alert', locale, true),
+      getNewsItem(5, 'announcement', locale),
+      getNewsItem(6, 'announcement', locale, true),
+      getNewsItem(7, 'info', locale),
+      getNewsItem(8, 'info', locale, true),
+      getNewsItem(9, 'software-update', locale, true),
+    ]);
     return (
       <div>
         <NewsFeed
@@ -121,7 +88,7 @@ storiesOf('News|NewsFeed', module)
           onMarkNewsAsRead={action('onMarkNewsAsRead')}
           onNewsItemActionClick={action('onNewsItemActionClick')}
           onClose={action('onClose')}
-          news={new News.NewsCollection(news[locale])}
+          news={news}
           isNewsFeedOpen={boolean('isNewsFeedOpen', true)}
           onOpenExternalLink={action('onOpenExternalLink')}
           onOpenAlert={action('onOpenAlert')}

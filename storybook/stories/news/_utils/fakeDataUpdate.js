@@ -1,9 +1,9 @@
 // @flow
 import inc from 'semver/functions/inc';
 import { version as currentVersion } from '../../../../package.json';
+
 export const version = currentVersion;
 export const availableAppVersion = inc(version, 'minor');
-import type { NewsItem } from '../../../../source/renderer/app/api/news/types';
 
 const commonUpdateData = {
   target: {
@@ -60,35 +60,4 @@ export const updateJP = {
 export const update = {
   'en-US': updateEN,
   'ja-JP': updateJP,
-};
-
-export const newsFeedApiItemUpdate: NewsItem = {
-  title: {
-    'en-US': updateEN.title,
-    'ja-JP': updateJP.title,
-  },
-  content: {
-    'en-US': updateEN.content,
-    'ja-JP': updateJP.content,
-  },
-  action: {
-    label: {
-      'en-US': updateEN.action.label,
-      'ja-JP': updateJP.action.label,
-    },
-    url: {
-      'en-US': updateEN.action.url,
-      'ja-JP': updateJP.action.url,
-    },
-  },
-  date: new Date().getTime(),
-  target: {
-    daedalusVersion: version,
-    platform: 'darwin',
-  },
-  type: 'software-update',
-};
-
-export default {
-  version,
 };
