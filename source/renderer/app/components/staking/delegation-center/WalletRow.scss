@@ -28,6 +28,10 @@
   }
 
   .left {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
     .title {
       @extend %accentText;
       margin-bottom: 3px;
