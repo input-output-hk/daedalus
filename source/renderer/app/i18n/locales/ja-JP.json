@@ -721,7 +721,7 @@
   "wallet.restore.dialog.step.walletKind.label.walletKindHardware": "ハードウェアウォレット",
   "wallet.restore.dialog.step.walletKind.label.walletKindYoroi": "Yoroiウォレット",
   "wallet.restore.dialog.step.walletKind.label.yoroiWalletKind": "どのタイプのYoroiウォレットを復元しますか",
-  "wallet.restore.dialog.step.walletKind.label.yoroiWalletKindByronLegacy15Word": "15語 <em>(Byronレガシーウォレット)</em>",
+  "wallet.restore.dialog.step.walletKind.label.yoroiWalletKindByronLegacy15Word": "15語 <em>（Byronレガシーウォレット）</em>",
   "wallet.restore.dialog.step.walletKind.label.yoroiWalletKindShelley15Word": "15語 <em>（Shelleyウォレット）</em>",
   "wallet.restore.dialog.stepsCounter": "ステップ{currentStep}/{totalSteps}",
   "wallet.restore.dialog.tab.title.certificate": "Daedalusペーパーウォレット",
