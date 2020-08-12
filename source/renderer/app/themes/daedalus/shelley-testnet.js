@@ -800,8 +800,8 @@ export const SHELLEY_TESTNET_THEME_OUTPUT = {
     '--theme-staking-link-color-light': 'rgba(137, 142, 230, 0.7)',
     '--theme-staking-progress-bar-background-color':
       'rgba(255, 255, 255, 0.07)',
-    '--theme-staking-progress-stripe-dark-1-background-color': '#898ee6',
-    '--theme-staking-progress-stripe-dark-2-background-color': '#676ddf',
+    '--theme-staking-progress-stripe-dark-1-background-color': '#676ddf',
+    '--theme-staking-progress-stripe-dark-2-background-color': '#898ee6',
     '--theme-staking-slider-background-color-1': '#898ee6',
     '--theme-staking-slider-background-color-2': '#ffffff',
     '--theme-staking-slider-box-shadow-color': 'rgba(0, 0, 0, 0.24)',

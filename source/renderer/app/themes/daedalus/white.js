@@ -805,7 +805,7 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-staking-link-color-light': 'rgba(41, 181, 149, 0.7)',
     '--theme-staking-progress-bar-background-color': 'rgba(94, 96, 102, 0.07)',
     '--theme-staking-progress-stripe-dark-1-background-color': '#29b595',
-    '--theme-staking-progress-stripe-dark-2-background-color': '#53C3AA',
+    '--theme-staking-progress-stripe-dark-2-background-color': '#69cbb4',
     '--theme-staking-slider-background-color-1': '#29b595',
     '--theme-staking-slider-background-color-2': '#2d2d2d',
     '--theme-staking-slider-box-shadow-color': 'rgba(0, 0, 0, 0.24)',

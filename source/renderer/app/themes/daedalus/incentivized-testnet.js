@@ -801,8 +801,8 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-staking-link-color-light': 'rgba(246, 154, 178, 0.7)',
     '--theme-staking-progress-bar-background-color':
       'rgba(255, 255, 255, 0.07)',
-    '--theme-staking-progress-stripe-dark-1-background-color': '#eb2256',
-    '--theme-staking-progress-stripe-dark-2-background-color': '#c81241',
+    '--theme-staking-progress-stripe-dark-1-background-color': '#bf0535',
+    '--theme-staking-progress-stripe-dark-2-background-color': '#eb2256',
     '--theme-staking-slider-background-color-1': '#eb2256',
     '--theme-staking-slider-background-color-2': '#ffffff',
     '--theme-staking-slider-box-shadow-color': 'rgba(0, 0, 0, 0.24)',
