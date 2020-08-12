@@ -3,6 +3,10 @@
 @import '../../../themes/mixins/error-message';
 
 .delegationStepsConfirmationDialogWrapper {
+  .delegationStepsIndicatorWrapper {
+    margin-top: 2px;
+  }
+
   .content {
     .description {
       color: var(--theme-delegation-steps-confirmation-description-color);
