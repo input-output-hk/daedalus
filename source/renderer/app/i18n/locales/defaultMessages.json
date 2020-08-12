@@ -4301,6 +4301,53 @@
         "description": "Title for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
+          "line": 14
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/RedemptionUnavailableDialog.js",
+        "id": "staking.redeemItnRewards.redemptionUnavailable.title",
+        "start": {
+          "column": 9,
+          "line": 10
+        }
+      },
+      {
+        "defaultMessage": "!!!Before you can redeem your Incentivized Testnet rewards, Daedalus first needs to synchronize with the blockchain. The synchronization process is now underway and is currently {syncPercentage}% complete. As soon as this process is fully complete, you’ll be able to redeem your Incentivized Testnet rewards. Please wait for this process to complete before returning here to redeem your rewards.",
+        "description": "description for Redeem Incentivized Testnet - redemptionUnavailable",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/RedemptionUnavailableDialog.js",
+        "id": "staking.redeemItnRewards.redemptionUnavailable.description",
+        "start": {
+          "column": 15,
+          "line": 15
+        }
+      },
+      {
+        "defaultMessage": "!!!Close",
+        "description": "closeButtonLabel for Redeem Incentivized Testnet -  redemptionUnavailable",
+        "end": {
+          "column": 3,
+          "line": 26
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/RedemptionUnavailableDialog.js",
+        "id": "staking.redeemItnRewards.redemptionUnavailable.closeButton.label",
+        "start": {
+          "column": 20,
+          "line": 22
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/staking/redeem-itn-rewards/RedemptionUnavailableDialog.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Redeem Incentivized Testnet rewards",
+        "description": "Title for Redeem Incentivized Testnet - Step 1",
+        "end": {
+          "column": 3,
           "line": 35
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",

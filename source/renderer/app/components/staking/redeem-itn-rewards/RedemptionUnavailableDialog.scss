@@ -1,0 +1,10 @@
+.component {
+  font-family: var(--font-regular);
+  font-size: 16px;
+  line-height: 1.38;
+  text-align: center;
+  b {
+    color: var(--theme-dialog-fullsize-text-highlight-color);
+    font-family: var(--font-bold);
+  }
+}
