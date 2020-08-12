@@ -161,17 +161,31 @@
         }
       },
       {
+        "defaultMessage": "!!!Cannot send from a wallet that contains only rewards balances.",
+        "description": "\"Cannot send from a wallet that contains only rewards balances.\" error message",
+        "end": {
+          "column": 3,
+          "line": 67
+        },
+        "file": "source/renderer/app/api/errors.js",
+        "id": "api.errors.inputsDepleted",
+        "start": {
+          "column": 18,
+          "line": 61
+        }
+      },
+      {
         "defaultMessage": "!!!Transaction too big due to too many inputs.",
         "description": "\"Transaction too big due to too many inputs.\" error message.",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 72
         },
         "file": "source/renderer/app/api/errors.js",
         "id": "api.errors.TooBigTransactionError",
         "start": {
           "column": 23,
-          "line": 61
+          "line": 68
         }
       },
       {
@@ -179,13 +193,13 @@
         "description": "\"Not enough ada . Try sending a smaller amount.\" error message",
         "end": {
           "column": 3,
-          "line": 71
+          "line": 78
         },
         "file": "source/renderer/app/api/errors.js",
         "id": "api.errors.NotEnoughFundsForTransactionError",
         "start": {
           "column": 32,
-          "line": 66
+          "line": 73
         }
       },
       {
@@ -193,13 +207,13 @@
         "description": "Error message shown when invalid address was entered.",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 83
         },
         "file": "source/renderer/app/api/errors.js",
         "id": "api.errors.invalidAddress",
         "start": {
           "column": 18,
-          "line": 72
+          "line": 79
         }
       },
       {
@@ -207,13 +221,13 @@
         "description": "\"Transaction too big due to too many inputs.\" error link label.",
         "end": {
           "column": 3,
-          "line": 82
+          "line": 89
         },
         "file": "source/renderer/app/api/errors.js",
         "id": "api.errors.TooBigTransactionErrorLinkLabel",
         "start": {
           "column": 35,
-          "line": 77
+          "line": 84
         }
       },
       {
@@ -221,13 +235,13 @@
         "description": "\"Transaction too big due to too many inputs.\" error link URL.",
         "end": {
           "column": 3,
-          "line": 89
+          "line": 96
         },
         "file": "source/renderer/app/api/errors.js",
         "id": "api.errors.TooBigTransactionErrorLinkURL",
         "start": {
           "column": 33,
-          "line": 83
+          "line": 90
         }
       },
       {
@@ -235,13 +249,13 @@
         "description": "\"Invalid transaction.\" error message",
         "end": {
           "column": 3,
-          "line": 94
+          "line": 101
         },
         "file": "source/renderer/app/api/errors.js",
         "id": "api.errors.utxoTooSmall",
         "start": {
           "column": 16,
-          "line": 90
+          "line": 97
         }
       },
       {
@@ -249,13 +263,13 @@
         "description": "\"Funds cannot be transferred from this wallet because it contains some unspent transaction outputs (UTXOs), with amounts of ada that are too small to be migrated.\" error message",
         "end": {
           "column": 3,
-          "line": 101
+          "line": 108
         },
         "file": "source/renderer/app/api/errors.js",
         "id": "api.errors.nothingToMigrate",
         "start": {
           "column": 20,
-          "line": 95
+          "line": 102
         }
       }
     ],
@@ -1061,6 +1075,20 @@
         "start": {
           "column": 31,
           "line": 63
+        }
+      },
+      {
+        "defaultMessage": "!!!Verifying the blockchain ({verificationProgress}% complete)",
+        "description": "Message \"Verifying the blockchain (65% complete) ...\" on the loading screen.",
+        "end": {
+          "column": 3,
+          "line": 74
+        },
+        "file": "source/renderer/app/components/loading/syncing-connecting/SyncingConnectingStatus.js",
+        "id": "loading.screen.verifyingBlockchainMessage",
+        "start": {
+          "column": 23,
+          "line": 68
         }
       }
     ],
@@ -2671,7 +2699,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Cardano will soon start transitioning from a federated to a decentralized system. The first step is the activation of the Shelley upgrade. Once the upgrade is complete, stake pools will start registering and users will be able to delegate their wallets. Two epochs (12 hours) later, stake pools will begin producing blocks and users could start earning rewards from delegating their stakes. The first rewards, where due, will be distributed two more epochs later (12 hours).",
+        "defaultMessage": "!!!Cardano will soon start transitioning from a federated to a decentralized system. The first step is the activation of the Shelley upgrade. Once the upgrade is complete, stake pools will start registering and users will be able to delegate their wallets. Two epochs (10 days) later, stake pools will begin producing blocks and users could start earning rewards from delegating their stakes. The first rewards, where due, will be distributed two more epochs later (10 days).",
         "description": "Info for the Decentralisation notification.",
         "end": {
           "column": 3,
@@ -3510,7 +3538,7 @@
       },
       {
         "defaultMessage": "!!!This wallet does not contain the minimum amount of {minDelegationFunds} ADA which is required for delegation to be available. Please select a wallet with <span>a minimum amount of {minDelegationFunds} ADA</span> and click continue.",
-        "description": "MinDelegationFunds Error Label on the delegation setup \"choose wallet\" step dialog.",
+        "description": "errorMinDelegationFunds Error Label on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
           "line": 61
@@ -3523,17 +3551,31 @@
         }
       },
       {
+        "defaultMessage": "!!!This wallet contains only rewards balances so it cannot be delegated.",
+        "description": "errorMinDelegationFundsRewardsOnly Error Label on the delegation setup \"choose wallet\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 69
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog.js",
+        "id": "staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFundsRewardsOnly",
+        "start": {
+          "column": 38,
+          "line": 62
+        }
+      },
+      {
         "defaultMessage": "!!!This wallet can’t be used for delegation while it’s being synced.",
         "description": "RestoringWallet Error Label on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 76
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog.js",
         "id": "staking.delegationSetup.chooseWallet.step.dialog.errorRestoringWallet",
         "start": {
           "column": 24,
-          "line": 62
+          "line": 70
         }
       },
       {
@@ -3541,13 +3583,13 @@
         "description": "Label for continue button on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 74
+          "line": 82
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog.js",
         "id": "staking.delegationSetup.chooseWallet.step.dialog.continueButtonLabel",
         "start": {
           "column": 23,
-          "line": 69
+          "line": 77
         }
       }
     ],
@@ -3818,7 +3860,7 @@
         }
       },
       {
-        "defaultMessage": "!!!None of your wallets currently hold the <span>minimum amount of {minDelegationFunds} that is required for delegation options.",
+        "defaultMessage": "!!!None of your wallets currently hold the <span>minimum amount of {minDelegationFunds} ADA</span> that is required for delegation options.",
         "description": "Description on the delegation setup not available dialog.",
         "end": {
           "column": 3,
@@ -4226,13 +4268,13 @@
         "description": "description for Redeem Incentivized Testnet - Step 3",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 17
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/NoWalletsDialog.js",
         "id": "staking.redeemItnRewards.noWallets.description",
         "start": {
           "column": 15,
-          "line": 13
+          "line": 12
         }
       },
       {
@@ -4240,13 +4282,13 @@
         "description": "addWalletButtonLabel for Redeem Incentivized Testnet - Step 3",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 23
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/NoWalletsDialog.js",
         "id": "staking.redeemItnRewards.noWallets.addWalletButtonLabel",
         "start": {
           "column": 24,
-          "line": 19
+          "line": 18
         }
       }
     ],
@@ -4256,16 +4298,63 @@
     "descriptors": [
       {
         "defaultMessage": "!!!Redeem Incentivized Testnet rewards",
+        "description": "Title for Redeem Incentivized Testnet - redemptionUnavailable",
+        "end": {
+          "column": 3,
+          "line": 15
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/RedemptionUnavailableDialog.js",
+        "id": "staking.redeemItnRewards.redemptionUnavailable.title",
+        "start": {
+          "column": 9,
+          "line": 10
+        }
+      },
+      {
+        "defaultMessage": "!!!Before you can redeem your Incentivized Testnet rewards, Daedalus first needs to synchronize with the blockchain. The synchronization process is now underway and is currently {syncPercentage}% complete. As soon as this process is fully complete, you’ll be able to redeem your Incentivized Testnet rewards. Please wait for this process to complete before returning here to redeem your rewards.",
+        "description": "description for Redeem Incentivized Testnet - redemptionUnavailable",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/RedemptionUnavailableDialog.js",
+        "id": "staking.redeemItnRewards.redemptionUnavailable.description",
+        "start": {
+          "column": 15,
+          "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!Close",
+        "description": "closeButtonLabel for Redeem Incentivized Testnet - redemptionUnavailable",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "source/renderer/app/components/staking/redeem-itn-rewards/RedemptionUnavailableDialog.js",
+        "id": "staking.redeemItnRewards.redemptionUnavailable.closeButton.label",
+        "start": {
+          "column": 20,
+          "line": 23
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/staking/redeem-itn-rewards/RedemptionUnavailableDialog.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Redeem Incentivized Testnet rewards",
         "description": "Title for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 35
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.title",
         "start": {
           "column": 9,
-          "line": 34
+          "line": 31
         }
       },
       {
@@ -4273,13 +4362,13 @@
         "description": "description for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 41
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.description1",
         "start": {
           "column": 16,
-          "line": 39
+          "line": 36
         }
       },
       {
@@ -4287,13 +4376,13 @@
         "description": "description for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 47
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.description2",
         "start": {
           "column": 16,
-          "line": 45
+          "line": 42
         }
       },
       {
@@ -4301,13 +4390,13 @@
         "description": "descriptionItnLinkLabel for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 53
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.descriptionItnLinkLabel",
         "start": {
           "column": 27,
-          "line": 51
+          "line": 48
         }
       },
       {
@@ -4315,13 +4404,13 @@
         "description": "descriptionItnLinkUrl for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 59
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.descriptionItnLinkUrl",
         "start": {
           "column": 25,
-          "line": 57
+          "line": 54
         }
       },
       {
@@ -4329,13 +4418,13 @@
         "description": "recoveryPhraseLabel for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 67
+          "line": 64
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.recoveryPhraseLabel",
         "start": {
           "column": 23,
-          "line": 63
+          "line": 60
         }
       },
       {
@@ -4343,13 +4432,13 @@
         "description": "walletsDropdownLabel for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 73
+          "line": 70
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.walletsDropdownLabel",
         "start": {
           "column": 24,
-          "line": 68
+          "line": 65
         }
       },
       {
@@ -4357,13 +4446,13 @@
         "description": "walletsDropdownError for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 80
+          "line": 77
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.walletsDropdownError",
         "start": {
           "column": 24,
-          "line": 74
+          "line": 71
         }
       },
       {
@@ -4371,13 +4460,13 @@
         "description": "checkbox1Label for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 86
+          "line": 83
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.checkbox1Label",
         "start": {
           "column": 18,
-          "line": 81
+          "line": 78
         }
       },
       {
@@ -4385,13 +4474,13 @@
         "description": "checkbox2Label for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 92
+          "line": 89
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.checkbox2Label",
         "start": {
           "column": 18,
-          "line": 87
+          "line": 84
         }
       },
       {
@@ -4399,13 +4488,13 @@
         "description": "continueButtonLabel for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 97
+          "line": 94
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.continueButton.label",
         "start": {
           "column": 23,
-          "line": 93
+          "line": 90
         }
       },
       {
@@ -4413,13 +4502,13 @@
         "description": "learnMoreLinkLabel for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 102
+          "line": 99
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.learnMoreLink.label",
         "start": {
           "column": 22,
-          "line": 98
+          "line": 95
         }
       },
       {
@@ -4427,13 +4516,13 @@
         "description": "learnMoreLinkUrl for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 108
+          "line": 105
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.learnMoreLink.url",
         "start": {
           "column": 20,
-          "line": 103
+          "line": 100
         }
       },
       {
@@ -4441,13 +4530,13 @@
         "description": "Hint \"Enter recovery phrase\" for the recovery phrase input on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 114
+          "line": 111
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.recoveryPhraseInputHint",
         "start": {
           "column": 27,
-          "line": 109
+          "line": 106
         }
       },
       {
@@ -4455,13 +4544,13 @@
         "description": "Placeholder \"Select Wallet\" for select input on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 120
+          "line": 117
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.selectWalletInputPlaceholder",
         "start": {
           "column": 32,
-          "line": 115
+          "line": 112
         }
       },
       {
@@ -4469,13 +4558,13 @@
         "description": "\"No results\" message for the recovery phrase input search results.",
         "end": {
           "column": 3,
-          "line": 126
+          "line": 123
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.noResults",
         "start": {
           "column": 13,
-          "line": 121
+          "line": 118
         }
       },
       {
@@ -4483,13 +4572,13 @@
         "description": "Error message shown when invalid recovery phrase was entered.",
         "end": {
           "column": 3,
-          "line": 132
+          "line": 129
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.invalidRecoveryPhrase",
         "start": {
           "column": 25,
-          "line": 127
+          "line": 124
         }
       }
     ],
@@ -4502,13 +4591,13 @@
         "description": "title for Redeem Incentivized Testnet - Step 2",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 26
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog.js",
         "id": "staking.redeemItnRewards.step2.title",
         "start": {
           "column": 9,
-          "line": 24
+          "line": 22
         }
       },
       {
@@ -4516,13 +4605,13 @@
         "description": "walletToLabel for Redeem Incentivized Testnet - Step 2",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 31
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog.js",
         "id": "staking.redeemItnRewards.step2.walletToLabel",
         "start": {
           "column": 17,
-          "line": 29
+          "line": 27
         }
       },
       {
@@ -4530,27 +4619,13 @@
         "description": "walletToName for Redeem Incentivized Testnet - Step 2",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 36
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog.js",
         "id": "staking.redeemItnRewards.step2.walletToName",
         "start": {
           "column": 16,
-          "line": 34
-        }
-      },
-      {
-        "defaultMessage": "!!!Rewards total",
-        "description": "rewardsTotal for Redeem Incentivized Testnet - Step 2",
-        "end": {
-          "column": 3,
-          "line": 43
-        },
-        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog.js",
-        "id": "staking.redeemItnRewards.step2.rewardsTotal",
-        "start": {
-          "column": 16,
-          "line": 39
+          "line": 32
         }
       },
       {
@@ -4558,27 +4633,13 @@
         "description": "transactionFees for Redeem Incentivized Testnet - Step 2",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 41
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog.js",
         "id": "staking.redeemItnRewards.step2.transactionFees",
         "start": {
           "column": 19,
-          "line": 44
-        }
-      },
-      {
-        "defaultMessage": "!!!Final total",
-        "description": "finalTotal for Redeem Incentivized Testnet - Step 2",
-        "end": {
-          "column": 3,
-          "line": 53
-        },
-        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog.js",
-        "id": "staking.redeemItnRewards.step2.finalTotal",
-        "start": {
-          "column": 14,
-          "line": 49
+          "line": 37
         }
       },
       {
@@ -4586,13 +4647,13 @@
         "description": "spendingPasswordLabel for Redeem Incentivized Testnet - Step 2",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 48
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog.js",
         "id": "staking.redeemItnRewards.step2.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 54
+          "line": 42
         }
       },
       {
@@ -4600,13 +4661,13 @@
         "description": "spendingPasswordPlaceholder for Redeem Incentivized Testnet - Step 2",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 54
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog.js",
         "id": "staking.redeemItnRewards.step2.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 61
+          "line": 49
         }
       },
       {
@@ -4614,13 +4675,13 @@
         "description": "continueButtonLabel for Redeem Incentivized Testnet - Step 2",
         "end": {
           "column": 3,
-          "line": 71
+          "line": 59
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog.js",
         "id": "staking.redeemItnRewards.step2.continueButtonLabel",
         "start": {
           "column": 23,
-          "line": 67
+          "line": 55
         }
       },
       {
@@ -4628,13 +4689,13 @@
         "description": "Label for the back button in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 77
+          "line": 65
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog.js",
         "id": "staking.redeemItnRewards.step2.backButtonLabel",
         "start": {
           "column": 19,
-          "line": 72
+          "line": 60
         }
       }
     ],
@@ -4647,13 +4708,13 @@
         "description": "description for Redeem Incentivized Testnet - Step 3",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 17
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step3FailureDialog.js",
         "id": "staking.redeemItnRewards.step3.failure.description1NoRewards",
         "start": {
           "column": 25,
-          "line": 13
+          "line": 12
         }
       },
       {
@@ -4661,13 +4722,13 @@
         "description": "description for Redeem Incentivized Testnet - Step 3",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 23
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step3FailureDialog.js",
         "id": "staking.redeemItnRewards.step3.failure.description2InvalidWallet",
         "start": {
           "column": 29,
-          "line": 19
+          "line": 18
         }
       },
       {
@@ -4675,13 +4736,13 @@
         "description": "description for Redeem Incentivized Testnet - Step 3",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 29
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step3FailureDialog.js",
         "id": "staking.redeemItnRewards.step3.failure.description3Generic",
         "start": {
           "column": 23,
-          "line": 25
+          "line": 24
         }
       },
       {
@@ -4689,13 +4750,13 @@
         "description": "backButtonLabel for Redeem Incentivized Testnet - Step 3",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 34
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step3FailureDialog.js",
         "id": "staking.redeemItnRewards.step3.failure.backButtonLabel",
         "start": {
           "column": 19,
-          "line": 31
+          "line": 30
         }
       },
       {
@@ -4703,13 +4764,13 @@
         "description": "closeWindowLinkLabel for Redeem Incentivized Testnet - Step 3",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 40
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step3FailureDialog.js",
         "id": "staking.redeemItnRewards.step3.failure.closeWindowLinkLabel",
         "start": {
           "column": 24,
-          "line": 36
+          "line": 35
         }
       }
     ],
@@ -4732,7 +4793,7 @@
         }
       },
       {
-        "defaultMessage": "!!!You have successfully redeemed <b>{finalTotal}</b> to your <b>{walletName}</b> wallet. This transaction incurred <b>{transactionFees}</b> in transaction fees",
+        "defaultMessage": "!!!You have successfully redeemed <b>{redeemedRewards}</b> to your <b>{walletName}</b> wallet. This transaction incurred <b>{transactionFees}</b> in transaction fees",
         "description": "description for Redeem Incentivized Testnet - Step 3",
         "end": {
           "column": 3,
@@ -5406,7 +5467,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Blocks (current epoch):",
+        "defaultMessage": "!!!Produced blocks:",
         "description": "\"Blocks\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
@@ -5658,13 +5719,13 @@
         "description": "System info",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 34
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.system.info",
         "start": {
           "column": 14,
-          "line": 29
+          "line": 30
         }
       },
       {
@@ -5672,13 +5733,13 @@
         "description": "Platform",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 39
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.platform",
         "start": {
           "column": 12,
-          "line": 34
+          "line": 35
         }
       },
       {
@@ -5686,13 +5747,13 @@
         "description": "Platform version",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 44
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.platform.version",
         "start": {
           "column": 19,
-          "line": 39
+          "line": 40
         }
       },
       {
@@ -5700,13 +5761,13 @@
         "description": "CPU",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 49
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cpu",
         "start": {
           "column": 7,
-          "line": 44
+          "line": 45
         }
       },
       {
@@ -5714,13 +5775,13 @@
         "description": "RAM",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 54
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.ram",
         "start": {
           "column": 7,
-          "line": 49
+          "line": 50
         }
       },
       {
@@ -5728,13 +5789,13 @@
         "description": "Available disk space",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 59
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.availableDiskSpace",
         "start": {
           "column": 22,
-          "line": 54
+          "line": 55
         }
       },
       {
@@ -5742,13 +5803,13 @@
         "description": "Unknown amount of disk space",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 64
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.unknownDiskSpace",
         "start": {
           "column": 20,
-          "line": 59
+          "line": 60
         }
       },
       {
@@ -5756,13 +5817,13 @@
         "description": "\"Support\" link URL while disk space is unknown",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 69
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.unknownDiskSpaceSupportUrl",
         "start": {
           "column": 30,
-          "line": 64
+          "line": 65
         }
       },
       {
@@ -5770,13 +5831,13 @@
         "description": "CORE INFO",
         "end": {
           "column": 3,
-          "line": 73
+          "line": 74
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.coreInfo",
         "start": {
           "column": 12,
-          "line": 69
+          "line": 70
         }
       },
       {
@@ -5784,13 +5845,13 @@
         "description": "Daedalus version",
         "end": {
           "column": 3,
-          "line": 78
+          "line": 79
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.daedalusVersion",
         "start": {
           "column": 19,
-          "line": 74
+          "line": 75
         }
       },
       {
@@ -5798,13 +5859,13 @@
         "description": "Daedalus build number",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 84
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.daedalusBuildNumber",
         "start": {
           "column": 23,
-          "line": 79
+          "line": 80
         }
       },
       {
@@ -5812,13 +5873,13 @@
         "description": "Daedalus main process ID",
         "end": {
           "column": 3,
-          "line": 88
+          "line": 89
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.daedalusMainProcessID",
         "start": {
           "column": 25,
-          "line": 84
+          "line": 85
         }
       },
       {
@@ -5826,13 +5887,13 @@
         "description": "Daedalus renderer process ID",
         "end": {
           "column": 3,
-          "line": 93
+          "line": 94
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.daedalusProcessID",
         "start": {
           "column": 21,
-          "line": 89
+          "line": 90
         }
       },
       {
@@ -5840,13 +5901,13 @@
         "description": "Daedalus 'Blank Screen Fix' active",
         "end": {
           "column": 3,
-          "line": 98
+          "line": 99
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.blankScreenFix",
         "start": {
           "column": 18,
-          "line": 94
+          "line": 95
         }
       },
       {
@@ -5854,13 +5915,13 @@
         "description": "Cardano node version",
         "end": {
           "column": 3,
-          "line": 103
+          "line": 104
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeVersion",
         "start": {
           "column": 22,
-          "line": 99
+          "line": 100
         }
       },
       {
@@ -5868,13 +5929,13 @@
         "description": "Cardano node process ID",
         "end": {
           "column": 3,
-          "line": 108
+          "line": 109
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodePID",
         "start": {
           "column": 18,
-          "line": 104
+          "line": 105
         }
       },
       {
@@ -5882,13 +5943,13 @@
         "description": "Cardano node port",
         "end": {
           "column": 3,
-          "line": 113
+          "line": 114
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeApiPort",
         "start": {
           "column": 22,
-          "line": 109
+          "line": 110
         }
       },
       {
@@ -5896,13 +5957,13 @@
         "description": "Cardano wallet process ID",
         "end": {
           "column": 3,
-          "line": 118
+          "line": 119
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoWalletPID",
         "start": {
           "column": 20,
-          "line": 114
+          "line": 115
         }
       },
       {
@@ -5910,13 +5971,13 @@
         "description": "Cardano wallet version",
         "end": {
           "column": 3,
-          "line": 123
+          "line": 124
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoWalletVersion",
         "start": {
           "column": 24,
-          "line": 119
+          "line": 120
         }
       },
       {
@@ -5924,13 +5985,13 @@
         "description": "Cardano wallet port",
         "end": {
           "column": 3,
-          "line": 128
+          "line": 129
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoWalletApiPort",
         "start": {
           "column": 24,
-          "line": 124
+          "line": 125
         }
       },
       {
@@ -5938,13 +5999,13 @@
         "description": "Cardano network",
         "end": {
           "column": 3,
-          "line": 133
+          "line": 134
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNetwork",
         "start": {
           "column": 18,
-          "line": 129
+          "line": 130
         }
       },
       {
@@ -5952,13 +6013,13 @@
         "description": "Daedalus state directory",
         "end": {
           "column": 3,
-          "line": 138
+          "line": 139
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.stateDirectory",
         "start": {
           "column": 22,
-          "line": 134
+          "line": 135
         }
       },
       {
@@ -5966,13 +6027,13 @@
         "description": "Open",
         "end": {
           "column": 3,
-          "line": 143
+          "line": 144
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.stateDirectoryPathOpenBtn",
         "start": {
           "column": 29,
-          "line": 139
+          "line": 140
         }
       },
       {
@@ -5980,13 +6041,13 @@
         "description": "CONNECTION ERROR",
         "end": {
           "column": 3,
-          "line": 148
+          "line": 149
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.connectionError",
         "start": {
           "column": 19,
-          "line": 144
+          "line": 145
         }
       },
       {
@@ -5994,13 +6055,13 @@
         "description": "DAEDALUS STATUS",
         "end": {
           "column": 3,
-          "line": 153
+          "line": 154
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.daedalusStatus",
         "start": {
           "column": 18,
-          "line": 149
+          "line": 150
         }
       },
       {
@@ -6008,13 +6069,13 @@
         "description": "Connected",
         "end": {
           "column": 3,
-          "line": 158
+          "line": 159
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.connected",
         "start": {
           "column": 13,
-          "line": 154
+          "line": 155
         }
       },
       {
@@ -6022,13 +6083,13 @@
         "description": "Synced",
         "end": {
           "column": 3,
-          "line": 163
+          "line": 164
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.synced",
         "start": {
           "column": 10,
-          "line": 159
+          "line": 160
         }
       },
       {
@@ -6036,13 +6097,13 @@
         "description": "Sync percentage",
         "end": {
           "column": 3,
-          "line": 168
+          "line": 169
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.syncPercentage",
         "start": {
           "column": 18,
-          "line": 164
+          "line": 165
         }
       },
       {
@@ -6050,13 +6111,13 @@
         "description": "Local time difference",
         "end": {
           "column": 3,
-          "line": 173
+          "line": 174
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.localTimeDifference",
         "start": {
           "column": 23,
-          "line": 169
+          "line": 170
         }
       },
       {
@@ -6064,13 +6125,13 @@
         "description": "System time correct",
         "end": {
           "column": 3,
-          "line": 178
+          "line": 179
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.systemTimeCorrect",
         "start": {
           "column": 21,
-          "line": 174
+          "line": 175
         }
       },
       {
@@ -6078,13 +6139,13 @@
         "description": "System time ignored",
         "end": {
           "column": 3,
-          "line": 183
+          "line": 184
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.systemTimeIgnored",
         "start": {
           "column": 21,
-          "line": 179
+          "line": 180
         }
       },
       {
@@ -6092,13 +6153,13 @@
         "description": "Checking system time",
         "end": {
           "column": 3,
-          "line": 188
+          "line": 189
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.checkingNodeTime",
         "start": {
           "column": 20,
-          "line": 184
+          "line": 185
         }
       },
       {
@@ -6106,13 +6167,13 @@
         "description": "CARDANO NODE STATUS",
         "end": {
           "column": 3,
-          "line": 193
+          "line": 194
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeStatus",
         "start": {
           "column": 21,
-          "line": 189
+          "line": 190
         }
       },
       {
@@ -6120,13 +6181,13 @@
         "description": "Restarting Cardano node...",
         "end": {
           "column": 3,
-          "line": 198
+          "line": 199
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeStatusRestarting",
         "start": {
           "column": 31,
-          "line": 194
+          "line": 195
         }
       },
       {
@@ -6134,13 +6195,13 @@
         "description": "Restart Cardano node",
         "end": {
           "column": 3,
-          "line": 203
+          "line": 204
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeStatusRestart",
         "start": {
           "column": 28,
-          "line": 199
+          "line": 200
         }
       },
       {
@@ -6148,13 +6209,13 @@
         "description": "Cardano node state",
         "end": {
           "column": 3,
-          "line": 208
+          "line": 209
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeState",
         "start": {
           "column": 20,
-          "line": 204
+          "line": 205
         }
       },
       {
@@ -6162,13 +6223,13 @@
         "description": "Updated",
         "end": {
           "column": 3,
-          "line": 213
+          "line": 214
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeHasBeenUpdated",
         "start": {
           "column": 22,
-          "line": 209
+          "line": 210
         }
       },
       {
@@ -6176,13 +6237,13 @@
         "description": "Crashed",
         "end": {
           "column": 3,
-          "line": 218
+          "line": 219
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeHasCrashed",
         "start": {
           "column": 18,
-          "line": 214
+          "line": 215
         }
       },
       {
@@ -6190,13 +6251,13 @@
         "description": "Errored",
         "end": {
           "column": 3,
-          "line": 223
+          "line": 224
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeHasErrored",
         "start": {
           "column": 18,
-          "line": 219
+          "line": 220
         }
       },
       {
@@ -6204,13 +6265,13 @@
         "description": "Stopped",
         "end": {
           "column": 3,
-          "line": 228
+          "line": 229
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeHasStopped",
         "start": {
           "column": 18,
-          "line": 224
+          "line": 225
         }
       },
       {
@@ -6218,13 +6279,13 @@
         "description": "Exiting",
         "end": {
           "column": 3,
-          "line": 233
+          "line": 234
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeIsExiting",
         "start": {
           "column": 17,
-          "line": 229
+          "line": 230
         }
       },
       {
@@ -6232,13 +6293,13 @@
         "description": "Running",
         "end": {
           "column": 3,
-          "line": 238
+          "line": 239
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeIsRunning",
         "start": {
           "column": 17,
-          "line": 234
+          "line": 235
         }
       },
       {
@@ -6246,13 +6307,13 @@
         "description": "Starting",
         "end": {
           "column": 3,
-          "line": 243
+          "line": 244
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeIsStarting",
         "start": {
           "column": 18,
-          "line": 239
+          "line": 240
         }
       },
       {
@@ -6260,13 +6321,13 @@
         "description": "Stopping",
         "end": {
           "column": 3,
-          "line": 248
+          "line": 249
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeIsStopping",
         "start": {
           "column": 18,
-          "line": 244
+          "line": 245
         }
       },
       {
@@ -6274,13 +6335,13 @@
         "description": "Unrecoverable",
         "end": {
           "column": 3,
-          "line": 253
+          "line": 254
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeIsUnrecoverable",
         "start": {
           "column": 23,
-          "line": 249
+          "line": 250
         }
       },
       {
@@ -6288,13 +6349,13 @@
         "description": "Updating",
         "end": {
           "column": 3,
-          "line": 258
+          "line": 259
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.nodeIsUpdating",
         "start": {
           "column": 18,
-          "line": 254
+          "line": 255
         }
       },
       {
@@ -6302,13 +6363,13 @@
         "description": "Cardano node responding",
         "end": {
           "column": 3,
-          "line": 263
+          "line": 264
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeResponding",
         "start": {
           "column": 25,
-          "line": 259
+          "line": 260
         }
       },
       {
@@ -6316,13 +6377,13 @@
         "description": "Cardano node subscribed",
         "end": {
           "column": 3,
-          "line": 268
+          "line": 269
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeSubscribed",
         "start": {
           "column": 25,
-          "line": 264
+          "line": 265
         }
       },
       {
@@ -6330,13 +6391,13 @@
         "description": "Cardano node time correct",
         "end": {
           "column": 3,
-          "line": 273
+          "line": 274
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeTimeCorrect",
         "start": {
           "column": 26,
-          "line": 269
+          "line": 270
         }
       },
       {
@@ -6344,13 +6405,13 @@
         "description": "Cardano node syncing",
         "end": {
           "column": 3,
-          "line": 278
+          "line": 279
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeSyncing",
         "start": {
           "column": 22,
-          "line": 274
+          "line": 275
         }
       },
       {
@@ -6358,13 +6419,13 @@
         "description": "Cardano node in sync",
         "end": {
           "column": 3,
-          "line": 283
+          "line": 284
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.cardanoNodeInSync",
         "start": {
           "column": 21,
-          "line": 279
+          "line": 280
         }
       },
       {
@@ -6372,13 +6433,13 @@
         "description": "Checking...",
         "end": {
           "column": 3,
-          "line": 288
+          "line": 289
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.localTimeDifferenceChecking",
         "start": {
           "column": 31,
-          "line": 284
+          "line": 285
         }
       },
       {
@@ -6386,13 +6447,13 @@
         "description": "Check time",
         "end": {
           "column": 3,
-          "line": 293
+          "line": 294
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.localTimeDifferenceCheckTime",
         "start": {
           "column": 32,
-          "line": 289
+          "line": 290
         }
       },
       {
@@ -6400,13 +6461,13 @@
         "description": "YES",
         "end": {
           "column": 3,
-          "line": 298
+          "line": 299
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.statusOn",
         "start": {
           "column": 12,
-          "line": 294
+          "line": 295
         }
       },
       {
@@ -6414,13 +6475,13 @@
         "description": "NO",
         "end": {
           "column": 3,
-          "line": 303
+          "line": 304
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.statusOff",
         "start": {
           "column": 13,
-          "line": 299
+          "line": 300
         }
       },
       {
@@ -6428,13 +6489,13 @@
         "description": "NTP service unreachable",
         "end": {
           "column": 3,
-          "line": 308
+          "line": 309
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.serviceUnreachable",
         "start": {
           "column": 22,
-          "line": 304
+          "line": 305
         }
       },
       {
@@ -6442,13 +6503,13 @@
         "description": "message",
         "end": {
           "column": 3,
-          "line": 313
+          "line": 314
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.message",
         "start": {
           "column": 11,
-          "line": 309
+          "line": 310
         }
       },
       {
@@ -6456,13 +6517,13 @@
         "description": "code",
         "end": {
           "column": 3,
-          "line": 318
+          "line": 319
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.code",
         "start": {
           "column": 8,
-          "line": 314
+          "line": 315
         }
       },
       {
@@ -6470,13 +6531,13 @@
         "description": "Last network block",
         "end": {
           "column": 3,
-          "line": 323
+          "line": 324
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.lastNetworkBlock",
         "start": {
           "column": 20,
-          "line": 319
+          "line": 320
         }
       },
       {
@@ -6484,13 +6545,13 @@
         "description": "Last synchronized block",
         "end": {
           "column": 3,
-          "line": 328
+          "line": 329
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.lastSynchronizedBlock",
         "start": {
           "column": 25,
-          "line": 324
+          "line": 325
         }
       },
       {
@@ -6498,13 +6559,13 @@
         "description": "epoch",
         "end": {
           "column": 3,
-          "line": 333
+          "line": 334
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.epoch",
         "start": {
           "column": 9,
-          "line": 329
+          "line": 330
         }
       },
       {
@@ -6512,13 +6573,13 @@
         "description": "slot",
         "end": {
           "column": 3,
-          "line": 338
+          "line": 339
         },
         "file": "source/renderer/app/components/status/DaedalusDiagnostics.js",
         "id": "daedalus.diagnostics.dialog.slot",
         "start": {
           "column": 8,
-          "line": 334
+          "line": 335
         }
       }
     ],
@@ -6653,13 +6714,13 @@
         "description": "Instructions for verifying wallet recovery phrase on dialog for entering wallet recovery phrase.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 34
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.verification.instructions",
         "start": {
           "column": 28,
-          "line": 25
+          "line": 28
         }
       },
       {
@@ -6667,13 +6728,13 @@
         "description": "Label for the recovery phrase input on dialog for entering wallet recovery phrase.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 40
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInputLabel",
         "start": {
           "column": 28,
-          "line": 32
+          "line": 35
         }
       },
       {
@@ -6681,13 +6742,13 @@
         "description": "Placeholder for the mnemonics autocomplete.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 45
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInputHint",
         "start": {
           "column": 27,
-          "line": 38
+          "line": 41
         }
       },
       {
@@ -6695,13 +6756,13 @@
         "description": "\"No results\" message for the recovery phrase input search results.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 52
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInputNoResults",
         "start": {
           "column": 27,
-          "line": 43
+          "line": 46
         }
       },
       {
@@ -6709,13 +6770,13 @@
         "description": "Error message shown when invalid recovery phrase was entered.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 59
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInvalidMnemonics",
         "start": {
           "column": 34,
-          "line": 50
+          "line": 53
         }
       },
       {
@@ -6723,13 +6784,13 @@
         "description": "Label for button \"Confirm\" on wallet backup dialog",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 64
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.recovery.phrase.show.entry.dialog.button.labelConfirm",
         "start": {
           "column": 22,
-          "line": 57
+          "line": 60
         }
       },
       {
@@ -6737,13 +6798,13 @@
         "description": "Term on wallet creation to store recovery phrase offline",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 71
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.offline",
         "start": {
           "column": 15,
-          "line": 62
+          "line": 65
         }
       },
       {
@@ -6751,13 +6812,13 @@
         "description": "Term and condition on wallet backup dialog describing that wallet can only be recovered with a security phrase",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 79
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.recovery",
         "start": {
           "column": 16,
-          "line": 69
+          "line": 72
         }
       },
       {
@@ -6765,13 +6826,13 @@
         "description": "Term and condition on wallet backup dialog describing that wallet can only be recovered with a security phrase",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 86
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.rewards",
         "start": {
           "column": 15,
-          "line": 77
+          "line": 80
         }
       }
     ],
@@ -8265,7 +8326,7 @@
         }
       },
       {
-        "defaultMessage": "!!!To verify that you have the correct recovery phrase for this wallet, you can enter it on the following screen. This wallet uses a {wordCount}-word recovery phrase.",
+        "defaultMessage": "!!!To verify that you have the correct recovery phrase for this wallet, you can enter it on the following screen.",
         "description": "Label for the recoveryPhraseStep1Paragraph1 on wallet settings.",
         "end": {
           "column": 3,
@@ -8326,7 +8387,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Please enter your {wordCount}-word wallet recovery phrase. Make sure you enter the words in the correct order.",
+        "defaultMessage": "!!!Please enter your wallet recovery phrase. Make sure you enter the words in the correct order.",
         "description": "Label for the recoveryPhraseStep2Description on wallet settings.",
         "end": {
           "column": 3,
@@ -9529,31 +9590,17 @@
         }
       },
       {
-        "defaultMessage": "!!!Cardano Explorer link currently unavailable.",
-        "description": "Unresolved Input Addresses link unavailable label.",
-        "end": {
-          "column": 3,
-          "line": 130
-        },
-        "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
-        "id": "wallet.transaction.unresolvedInputAddressesLinkUnavailableLabel",
-        "start": {
-          "column": 48,
-          "line": 126
-        }
-      },
-      {
         "defaultMessage": "!!!Transaction confirmed",
         "description": "Transaction state \"confirmed\"",
         "end": {
           "column": 3,
-          "line": 138
+          "line": 133
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.confirmed",
         "start": {
           "column": 26,
-          "line": 134
+          "line": 129
         }
       },
       {
@@ -9561,13 +9608,13 @@
         "description": "Transaction state \"pending\"",
         "end": {
           "column": 3,
-          "line": 143
+          "line": 138
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.pending",
         "start": {
           "column": 31,
-          "line": 139
+          "line": 134
         }
       }
     ],
@@ -10952,7 +10999,7 @@
         }
       },
       {
-        "defaultMessage": "!!!15 words <em>(Incentivized Testnet wallet)</em>",
+        "defaultMessage": "!!!15 words <em>(Shelley wallet)</em>",
         "description": "Label for the \"labelDaedalusWalletKind15WordShelley\" checkbox.",
         "end": {
           "column": 3,

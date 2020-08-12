@@ -34,7 +34,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-automatic-update-overlay-button-border-color': '#2d2d2d',
     '--theme-automatic-update-overlay-text-color': 'rgba(45, 45, 45, 0.7)',
     '--theme-automatic-update-overlay-text-highlight-color':
-      '#rgba(45, 45, 45, 1)',
+      'rgba(45, 45, 45, 1)',
     '--theme-automatic-update-overlay-title-text-color': 'rgba(45, 45, 45, 1)',
     '--theme-automatic-update-overlay-button-label-color':
       'rgba(45, 45, 45, 1)',
@@ -207,6 +207,21 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-dialog-title-color': '#2d2d2d',
     '--theme-dialog-text-color': '#2d2d2d',
     '--theme-dialog-border-color': 'rgba(45, 45, 45, 0.2)',
+    '--theme-dialog-fullsize-background-color': 'rgba(255, 185, 35, 0.96)',
+    '--theme-dialog-fullsize-background-color-opaque': '#fdbc31',
+    '--theme-dialog-fullsize-button-background-color-hover':
+      'rgba(0, 0, 0, 0.1)',
+    '--theme-dialog-fullsize-button-background-color': '#2d2d2d',
+    '--theme-dialog-fullsize-button-border-color': '#2d2d2d',
+    '--theme-dialog-fullsize-button-icon-color': '#2d2d2d',
+    '--theme-dialog-fullsize-button-icon-color-hover': '#ffffff',
+    '--theme-dialog-fullsize-button-label-color': 'rgba(45, 45, 45, 1)',
+    '--theme-dialog-fullsize-button-label-color-hover': '#ffffff',
+    '--theme-dialog-fullsize-button-text-color-hover': '#ffffff',
+    '--theme-dialog-fullsize-field-background-color': 'rgba(0,0,0, 0.1)',
+    '--theme-dialog-fullsize-text-color': 'rgba(45, 45, 45, 0.7)',
+    '--theme-dialog-fullsize-text-highlight-color': '#2d2d2d',
+    '--theme-dialog-fullsize-title-text-color': 'rgba(45, 45, 45, 1)',
   },
   errors: {
     '--theme-color-error': '#ea4c5b',
@@ -310,8 +325,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-manual-update-overlay-button-text-color-hover': '#ffffff',
     '--theme-manual-update-overlay-button-border-color': '#2d2d2d',
     '--theme-manual-update-overlay-text-color': 'rgba(45, 45, 45, 0.7)',
-    '--theme-manual-update-overlay-text-highlight-color':
-      '#rgba(45, 45, 45, 1)',
+    '--theme-manual-update-overlay-text-highlight-color': 'rgba(45, 45, 45, 1)',
     '--theme-manual-update-overlay-title-text-color': 'rgba(45, 45, 45, 1)',
     '--theme-manual-update-overlay-button-label-color': 'rgba(45, 45, 45, 1)',
     '--theme-manual-update-overlay-button-label-color-hover': '#ffffff',
@@ -369,6 +383,42 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-news-feed-icon-toggle-hover-background-color':
       'rgba(0, 0, 0, 0.1)',
     '--theme-news-feed-no-fetch-color': '#2d2d2d',
+    '--theme-news-feed-incident-overlay-background-color':
+      'rgba(255, 185, 35, 0.98)',
+    '--theme-news-feed-incident-overlay-text-color': '#2d2d2d',
+    '--theme-news-feed-incident-overlay-button-color': '#2d2d2d',
+    '--theme-news-feed-incident-overlay-scrollbar-thumb-background':
+      'rgba(45, 45, 45, 0.3)',
+    '--theme-news-feed-incident-overlay-scrollbar-thumb-background-hove':
+      'rgba(45, 45, 45, 0.5)',
+    '--theme-news-feed-incident-overlay-content-list-color':
+      'rgba(45, 45, 45, 0.7)',
+    '--theme-news-feed-incident-overlay-content-background':
+      'rgba(0, 0, 0, 0.1)',
+    '--theme-news-feed-incident-overlay-button-background':
+      'rgba(0, 0, 0, 0.1)',
+    '--theme-news-feed-incident-overlay-button-color-hover':
+      'rgba(255, 255, 255, 1)',
+    '--theme-news-feed-incident-grey-overlay-background-color':
+      'rgba(68, 68, 68, 0.98)',
+    '--theme-news-feed-incident-grey-overlay-text-color': '#ffffff',
+    '--theme-news-feed-incident-grey-overlay-button-color': '#ffffff',
+    '--theme-news-feed-incident-grey-overlay-scrollbar-thumb-background':
+      'rgba(255, 255, 255, 0.3)',
+    '--theme-news-feed-incident-grey-overlay-scrollbar-thumb-background-hove':
+      'rgba(255, 255, 255, 0.5)',
+    '--theme-news-feed-incident-grey-overlay-content-list-color':
+      'rgba(255, 255, 255, 0.7)',
+    '--theme-news-feed-incident-red-overlay-background-color':
+      'rgba(171, 23, 0, 0.98)',
+    '--theme-news-feed-incident-red-overlay-text-color': '#ffffff',
+    '--theme-news-feed-incident-red-overlay-button-color': '#ffffff',
+    '--theme-news-feed-incident-red-overlay-scrollbar-thumb-background':
+      'rgba(255, 255, 255, 0.3)',
+    '--theme-news-feed-incident-red-overlay-scrollbar-thumb-background-hove':
+      'rgba(255, 255, 255, 0.5)',
+    '--theme-news-feed-incident-red-overlay-content-list-color':
+      'rgba(255, 255, 255, 0.7)',
   },
   newsItem: {
     '--theme-news-item-action-button-background-color': 'rgba(0, 0, 0, 0.1)',

@@ -479,6 +479,24 @@ export const createDaedalusComponentsTheme = (
       '--theme-dialog-title-color': `${text.primary}`,
       '--theme-dialog-text-color': `${text.primary}`,
       '--theme-dialog-border-color': `${border}`,
+      '--theme-dialog-fullsize-background-color': `${chroma(
+        background.secondary.regular
+      ).alpha(0.96)}`,
+      '--theme-dialog-fullsize-background-color-opaque': `${background.secondary.regular}`,
+      '--theme-dialog-fullsize-button-background-color': `${text.secondary}`,
+      '--theme-dialog-fullsize-button-background-color-hover': `${background.secondary.dark}`,
+      '--theme-dialog-fullsize-button-border-color': `${text.secondary}`,
+      '--theme-dialog-fullsize-button-icon-color': `${text.secondary}`,
+      '--theme-dialog-fullsize-button-icon-color-hover': `${background.secondary.regular}`,
+      '--theme-dialog-fullsize-button-label-color': `${text.secondary}`,
+      '--theme-dialog-fullsize-button-label-color-hover': `${text.secondary}`,
+      '--theme-dialog-fullsize-button-text-color-hover': `${background.secondary.regular}`,
+      '--theme-dialog-fullsize-field-background-color': 'rgba(0,0,0, 0.1)',
+      '--theme-dialog-fullsize-text-color': `${chroma(text.secondary).alpha(
+        0.7
+      )}`,
+      '--theme-dialog-fullsize-text-highlight-color': `${text.secondary}`,
+      '--theme-dialog-fullsize-title-text-color': `${text.secondary}`,
     },
     errors: {
       '--theme-color-error': `${error.regular}`,
@@ -657,6 +675,53 @@ export const createDaedalusComponentsTheme = (
       '--theme-news-feed-icon-toggle-hover-background-color':
         'rgba(0, 0, 0, 0.1)',
       '--theme-news-feed-no-fetch-color': '#fafbfc',
+      '--theme-news-feed-incident-overlay-background-color': `${chroma(
+        background.secondary.regular
+      ).alpha(0.96)}`,
+      '--theme-news-feed-incident-overlay-text-color': `${text.primary}`,
+      '--theme-news-feed-incident-overlay-button-color': `${text.primary}`,
+      '--theme-news-feed-incident-overlay-scrollbar-thumb-background': `${chroma(
+        text.primary
+      ).alpha(0.3)}`,
+      '--theme-news-feed-incident-overlay-scrollbar-thumb-background-hove': `${chroma(
+        text.primary
+      ).alpha(0.3)}`,
+      '--theme-news-feed-incident-overlay-content-list-color': `${chroma(
+        text.primary
+      ).alpha(0.7)}`,
+      '--theme-news-feed-incident-overlay-content-background':
+        'rgba(0, 0, 0, 0.1)',
+      '--theme-news-feed-incident-overlay-button-background':
+        'rgba(0, 0, 0, 0.1)',
+      '--theme-news-feed-incident-overlay-button-color-hover': `${chroma(
+        background.secondary.regular
+      ).alpha(0.96)}`,
+      '--theme-news-feed-incident-grey-overlay-background-color':
+        'rgba(68, 68, 68, 0.98)',
+      '--theme-news-feed-incident-grey-overlay-text-color': `${text.primary}`,
+      '--theme-news-feed-incident-grey-overlay-button-color': `${text.primary}`,
+      '--theme-news-feed-incident-grey-overlay-scrollbar-thumb-background': `${chroma(
+        text.primary
+      ).alpha(0.3)}`,
+      '--theme-news-feed-incident-grey-overlay-scrollbar-thumb-background-hove': `${chroma(
+        text.primary
+      ).alpha(0.5)}`,
+      '--theme-news-feed-incident-grey-overlay-content-list-color': `${chroma(
+        text.primary
+      ).alpha(0.7)}`,
+      '--theme-news-feed-incident-red-overlay-background-color':
+        'rgba(171, 23, 0, 0.98)',
+      '--theme-news-feed-incident-red-overlay-text-color': `${text.primary}`,
+      '--theme-news-feed-incident-red-overlay-button-color': `${text.primary}`,
+      '--theme-news-feed-incident-red-overlay-scrollbar-thumb-background': `${chroma(
+        text.primary
+      ).alpha(0.3)}`,
+      '--theme-news-feed-incident-red-overlay-scrollbar-thumb-background-hove': `${chroma(
+        text.primary
+      ).alpha(0.5)}`,
+      '--theme-news-feed-incident-red-overlay-content-list-color': `${chroma(
+        text.primary
+      ).alpha(0.7)}`,
     },
     newsItem: {
       '--theme-news-item-action-button-background-color': 'rgba(0, 0, 0, 0.1)',

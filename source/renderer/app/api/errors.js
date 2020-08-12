@@ -58,6 +58,13 @@ export const messages = defineMessages({
     description:
       '"Not enough ada for fees. Try sending a smaller amount." error message',
   },
+  inputsDepleted: {
+    id: 'api.errors.inputsDepleted',
+    defaultMessage:
+      '!!!Cannot send from a wallet that contains only rewards balances.',
+    description:
+      '"Cannot send from a wallet that contains only rewards balances." error message',
+  },
   transactionIsTooBig: {
     id: 'api.errors.TooBigTransactionError',
     defaultMessage: '!!!Transaction too big due to too many inputs.',

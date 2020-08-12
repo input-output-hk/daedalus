@@ -13,7 +13,7 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
   static defaultProps = { stores: null, actions: null };
 
   render() {
-    const { isIncentivizedTestnet, isShelleyTestnet, isFlight } = global;
+    const { isIncentivizedTestnet, isFlight } = global;
     const { stores } = this.props;
     const {
       cardanoNodeState,
@@ -29,6 +29,8 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
       isNodeStopped,
       isNotEnoughDiskSpace,
       isTlsCertInvalid,
+      isVerifyingBlockchain,
+      verificationProgress,
     } = stores.networkStatus;
     const {
       isNewAppVersionAvailable,
@@ -67,7 +69,6 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
         isNewAppVersionLoading={isNewAppVersionLoading}
         isNewAppVersionLoaded={isNewAppVersionLoaded}
         isIncentivizedTestnet={isIncentivizedTestnet}
-        isShelleyTestnet={isShelleyTestnet}
         onIssueClick={this.handleIssueClick}
         onOpenExternalLink={this.handleOpenExternalLink}
         onGetAvailableVersions={this.handleGetAvailableVersions}
@@ -76,6 +77,8 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
         onToggleNewsFeedIconClick={toggleNewsFeed.trigger}
         disableDownloadLogs={stores.app.isDownloadNotificationVisible}
         showNewsFeedIcon={!isNodeStopping && !isNodeStopped}
+        isVerifyingBlockchain={isVerifyingBlockchain}
+        verificationProgress={verificationProgress}
       />
     );
   }

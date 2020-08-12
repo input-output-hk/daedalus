@@ -10,7 +10,8 @@ import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import { ModalSkin } from 'react-polymorph/lib/skins/simple/ModalSkin';
 import styles from './Dialog.scss';
-import dialogOverridesStyles from './DialogOverride.scss';
+import dialogOverrides from './DialogOverride.scss';
+import dialogFullSizeOverride from './DialogFullSizeOverride.scss';
 
 export type DialogActionItems = Array<DialogActionItem>;
 
@@ -43,10 +44,10 @@ type Props = {
   backButton?: Node,
   className?: string,
   defaultThemeOverrides?: boolean,
-  customThemeOverrides?: Object,
   onClose?: Function,
   closeOnOverlayClick?: boolean,
   primaryButtonAutoFocus?: boolean,
+  fullSize?: boolean,
 };
 
 const defaultActionOptions = {
@@ -69,7 +70,7 @@ export default class Dialog extends Component<Props> {
       backButton,
       primaryButtonAutoFocus,
       defaultThemeOverrides,
-      customThemeOverrides,
+      fullSize,
     } = this.props;
 
     const { items, direction } = Array.isArray(actions)
@@ -82,9 +83,9 @@ export default class Dialog extends Component<Props> {
           ...actions,
         };
 
-    const themeOverrides = defaultThemeOverrides
-      ? dialogOverridesStyles
-      : customThemeOverrides || '';
+    let themeOverrides;
+    if (defaultThemeOverrides) themeOverrides = dialogOverrides;
+    else if (fullSize) themeOverrides = dialogFullSizeOverride;
 
     const classActionsClasses = classnames([
       styles.actions,
@@ -134,6 +135,7 @@ export default class Dialog extends Component<Props> {
                   />
                 ) : (
                   <Link
+                    key={key}
                     className={action.className}
                     onClick={action.onClick}
                     label={action.label}

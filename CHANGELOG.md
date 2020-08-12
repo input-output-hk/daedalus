@@ -1,6 +1,82 @@
 Changelog
 =========
 
+## vNext
+
+### Features
+
+- Enabled restoration of Yoroi "Shelley" wallets ([PR 2144](https://github.com/input-output-hk/daedalus/pull/2144))
+- Enabled "Send" screen for "Byron" wallets ([PR 2147](https://github.com/input-output-hk/daedalus/pull/2147))
+- Added SMASH support ([PR 2143](https://github.com/input-output-hk/daedalus/pull/2143))
+
+### Fixes
+
+- Fixed double loading spinner issue on stake pools list page ([PR 2144](https://github.com/input-output-hk/daedalus/pull/2144))
+- Fixed the Japanese translation for "Byron" wallet label ([PR 2147](https://github.com/input-output-hk/daedalus/pull/2147))
+- Fixed validation of spending passwords which include spaces ([PR 2147](https://github.com/input-output-hk/daedalus/pull/2147))
+- Disabled ITN rewards redemption in case Daedalus is not fully in sync ([PR 2146](https://github.com/input-output-hk/daedalus/pull/2146))
+
+## 2.1.0
+
+### Features
+
+- ITN rewards redemption ([PR 2133](https://github.com/input-output-hk/daedalus/pull/2133))
+
+### Chores
+
+- Updated `cardano-wallet` to revision `4a4d0a65`
+- Updated `cardano-wallet` to revision `d5b43356`
+
+## 2.0.1
+
+### Features
+
+- Disabled creating Byron wallets ([PR 2126](https://github.com/input-output-hk/daedalus/pull/2126))
+- Transactions automatically spending rewards ([PR 2131](https://github.com/input-output-hk/daedalus/pull/2131))
+
+### Fixes
+
+- Improved wallet delegation error messages ([PR 2111](https://github.com/input-output-hk/daedalus/pull/2111))
+- Fixed Daedalus logo animation on the "Loading" screen ([PR 2124](https://github.com/input-output-hk/daedalus/pull/2124))
+- Fixed text copy on the "Delegation center" screen ([PR 2125](https://github.com/input-output-hk/daedalus/pull/2125))
+- Stake pools search performance ([PR 2131](https://github.com/input-output-hk/daedalus/pull/2131))
+
+### Chores
+
+- Updated `cardano-wallet` to revision `03b7568b` ([PR 2119](https://github.com/input-output-hk/daedalus/pull/2119))
+- Updated `cardano-wallet` to revision `e1890dbd` ([PR 2133](https://github.com/input-output-hk/daedalus/pull/2133))
+
+## 2.0.0
+
+### Features
+
+- Implemented address validation ([PR 2041](https://github.com/input-output-hk/daedalus/pull/2041))
+- Show block replay progress ([PR 2110](https://github.com/input-output-hk/daedalus/pull/2110))
+
+### Fixes
+
+- Extended the recovery phrase verification to all possible phrase lengths ([PR 2109](https://github.com/input-output-hk/daedalus/pull/2109))
+- Fixed epoch length and slot numbers info ([PR 2108](https://github.com/input-output-hk/daedalus/pull/2108))
+
+## 2.0.0-RC1
+
+### Fixes
+
+- Fixed the epoch duration copy ([PR 2107](https://github.com/input-output-hk/daedalus/pull/2107))
+- Handled errors from a wallet which has ONLY rewards account balance when sending a transaction or delegating ([PR 2100](https://github.com/input-output-hk/daedalus/pull/2100))
+- Fixed `cardano-wallet` info shown on the "About" screen ([PR 2097](https://github.com/input-output-hk/daedalus/pull/2097))
+- Updated stake pool tooltip to display "Produced blocks" instead of "Blocks (current epoch)" ([PR 2096](https://github.com/input-output-hk/daedalus/pull/2096))
+- Fixed wallet recovery phrase length used on "ITN rewards redemption" wizard ([PR 2095](https://github.com/input-output-hk/daedalus/pull/2095))
+
+### Chores
+
+- Updated `cardano-wallet` to revision `ca96c435` ([PR 2105](https://github.com/input-output-hk/daedalus/pull/2105))
+- Extended network-parameters Api endpoint integration with hardfork info ([PR 2105](https://github.com/input-output-hk/daedalus/pull/2105))
+- Configured mainnet instance for Shelley hardfork ([PR 2104](https://github.com/input-output-hk/daedalus/pull/2104))
+- Updated network-info Api endpoint integration ([PR 2101](https://github.com/input-output-hk/daedalus/pull/2101))
+- Extended incident and alert newsfeed type ([PR 2099](https://github.com/input-output-hk/daedalus/pull/2099))
+- Enable Cardano Explorer URLs for STN network ([PR 2098](https://github.com/input-output-hk/daedalus/pull/2098))
+
 ## 1.6.0-STN5
 
 ### Features

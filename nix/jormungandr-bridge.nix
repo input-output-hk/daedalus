@@ -1,4 +1,4 @@
-{ target, pkgs, cardano-wallet, cardano-shell, sources, jormungandrLib }:
+{ target, pkgs, cardano-wallet, cardano-shell, sources, jormungandrLib, cardano-address }:
 
 let
   commonLib = import ../lib.nix {};
@@ -14,6 +14,7 @@ in pkgs.runCommandCC "daedalus-bridge" {
   cp -f ${cardano-wallet.haskellPackages.cardano-wallet-jormungandr.components.exes.cardano-wallet-jormungandr}/bin/* .
   cp -f ${cardano-shell.haskellPackages.cardano-launcher.components.exes.cardano-launcher}/bin/cardano-launcher* .
   cp -f ${cardano-wallet.jormungandr}/bin/* .
+  cp -f ${cardano-address}/bin/cardano-address* .
 
   echo ${cardano-wallet.version} > $out/version
 

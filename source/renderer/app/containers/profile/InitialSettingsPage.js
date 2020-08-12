@@ -29,7 +29,7 @@ export default class InitialSettingsPage extends Component<InjectedProps> {
   };
 
   render() {
-    const { app, profile, staking } = this.props.stores;
+    const { app, profile, networkStatus } = this.props.stores;
     const { currentRoute } = app;
     const {
       setProfileLocaleRequest,
@@ -39,7 +39,7 @@ export default class InitialSettingsPage extends Component<InjectedProps> {
       currentTimeFormat,
     } = profile;
     const isSubmitting = setProfileLocaleRequest.isExecuting;
-    const { isShelleyActivated } = staking;
+    const { isShelleyActivated } = networkStatus;
     const topbar = (
       <TopBar
         currentRoute={currentRoute}

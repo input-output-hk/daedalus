@@ -18,11 +18,9 @@ export default class Step3ResultContainer extends Component<Props> {
     const { onBack, onClose, stores, actions } = this.props;
     const {
       redeemWallet,
-      rewardsTotal,
       transactionFees,
-      finalTotal,
+      redeemedRewards,
       stakingSuccess,
-      stakingFailure,
     } = stores.staking;
     const { onResultContinue } = actions.staking;
     if (!redeemWallet) throw new Error('Redeem wallet required');
@@ -30,22 +28,14 @@ export default class Step3ResultContainer extends Component<Props> {
       return (
         <Step3SuccessDialog
           wallet={redeemWallet}
-          rewardsTotal={rewardsTotal}
           transactionFees={transactionFees}
-          finalTotal={finalTotal}
-          error1
+          redeemedRewards={redeemedRewards}
           onClose={onClose}
           onContinue={onResultContinue.trigger}
           onBack={onBack}
         />
       );
     }
-    return (
-      <Step3FailureDialog
-        onClose={onClose}
-        onBack={onBack}
-        stakingFailure={stakingFailure}
-      />
-    );
+    return <Step3FailureDialog onClose={onClose} onBack={onBack} />;
   }
 }

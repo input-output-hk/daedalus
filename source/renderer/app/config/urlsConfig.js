@@ -4,6 +4,9 @@ export const STAGING_EXPLORER_URL = 'cardano-explorer.awstest.iohkdev.io';
 export const TESTNET_EXPLORER_URL =
   'cardano-explorer.cardano-testnet.iohkdev.io';
 
+// STN
+export const STN_EXPLORER_URL = 'explorer.mainnet-candidate-4.dev.cardano.org';
+
 // ITN
 export const ITN_EXPLORER_URL = 'shelleyexplorer.cardano.org';
 export const ITN_QA_EXPLORER_URL = 'shelley-testnet-explorer-qa.netlify.com';
@@ -34,6 +37,7 @@ export const ALLOWED_EXTERNAL_HOSTNAMES = [
   MAINNET_EXPLORER_URL,
   STAGING_EXPLORER_URL,
   TESTNET_EXPLORER_URL,
+  STN_EXPLORER_URL,
   ITN_EXPLORER_URL,
   ITN_QA_EXPLORER_URL,
   ITN_NIGHTLY_EXPLORER_URL,

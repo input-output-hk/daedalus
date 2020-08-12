@@ -13,6 +13,7 @@ import {
   WalletTransaction,
   TransactionTypes,
   TransactionStates,
+  TransactionWithdrawal,
 } from '../domains/WalletTransaction';
 import WalletAddress from '../domains/WalletAddress';
 
@@ -68,7 +69,7 @@ import { transferFunds } from './wallets/requests/transferFunds';
 
 // Staking
 import StakePool from '../domains/StakePool';
-import { EPOCH_LENGTH_ITN } from '../config/epochsConfig';
+import { getEpochLength } from '../config/epochsConfig';
 
 // News requests
 import { getNews } from './news/requests/getNews';
@@ -78,7 +79,6 @@ import { getStakePools } from './staking/requests/getStakePools';
 import { getDelegationFee } from './staking/requests/getDelegationFee';
 import { joinStakePool } from './staking/requests/joinStakePool';
 import { quitStakePool } from './staking/requests/quitStakePool';
-import { submitRedeemItnRewards } from './staking/requests/submitRedeemItnRewards';
 
 // Utility functions
 import {
@@ -98,6 +98,7 @@ import { filterLogData } from '../../../common/utils/logging';
 
 // Config constants
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
+import { REDEEM_ITN_REWARDS_AMOUNT } from '../config/stakingConfig';
 import {
   ADA_CERTIFICATE_MNEMONIC_LENGTH,
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
@@ -183,9 +184,10 @@ import type {
   AdaApiStakePools,
   AdaApiStakePool,
   QuitStakePoolRequest,
-  SubmitRedeemItnRewardsRequest,
-  SubmitRedeemItnRewardsResponse,
-  SubmitRedeemItnRewardsApiResponse,
+  GetRedeemItnRewardsFeeRequest,
+  GetRedeemItnRewardsFeeResponse,
+  RequestRedeemItnRewardsRequest,
+  RequestRedeemItnRewardsResponse,
 } from './staking/types';
 import type { StakePoolProps } from '../domains/StakePool';
 import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-node.types';
@@ -197,7 +199,7 @@ import { deleteTransaction } from './transactions/requests/deleteTransaction';
 import { WALLET_BYRON_KINDS } from '../config/walletRestoreConfig';
 import ApiError from '../domains/ApiError';
 
-const { isIncentivizedTestnet, isShelleyTestnet } = global;
+const { isIncentivizedTestnet } = global;
 
 export default class AdaApi {
   config: RequestConfig;
@@ -218,14 +220,13 @@ export default class AdaApi {
     const { isShelleyActivated } = request;
     try {
       const wallets: AdaWallets =
-        (isIncentivizedTestnet && !isShelleyTestnet) || isShelleyActivated
+        isIncentivizedTestnet || isShelleyActivated
           ? await getWallets(this.config)
           : [];
       const legacyWallets: LegacyAdaWallets = await getLegacyWallets(
         this.config
       );
       logger.debug('AdaApi::getWallets success', { wallets, legacyWallets });
-
       map(legacyWallets, legacyAdaWallet => {
         const extraLegacyWalletProps = {
           address_pool_gap: 0, // Not needed for legacy wallets
@@ -551,7 +552,7 @@ export default class AdaApi {
         passphrase: spendingPassword,
       };
 
-      if ((isIncentivizedTestnet && !isShelleyTestnet) || isShelleyActivated) {
+      if (isIncentivizedTestnet || isShelleyActivated) {
         wallet = await createWallet(this.config, {
           walletInitData,
         });
@@ -619,7 +620,14 @@ export default class AdaApi {
     logger.debug('AdaApi::createTransaction called', {
       parameters: filterLogData(request),
     });
-    const { walletId, address, amount, passphrase, isLegacy } = request;
+    const {
+      walletId,
+      address,
+      amount,
+      passphrase,
+      isLegacy,
+      withdrawal = TransactionWithdrawal,
+    } = request;
 
     try {
       const data = {
@@ -644,7 +652,7 @@ export default class AdaApi {
       } else {
         response = await createTransaction(this.config, {
           walletId,
-          data,
+          data: { ...data, withdrawal },
         });
       }
 
@@ -681,6 +689,7 @@ export default class AdaApi {
       walletBalance,
       availableBalance,
       isLegacy,
+      withdrawal = TransactionWithdrawal,
     } = request;
 
     try {
@@ -695,7 +704,6 @@ export default class AdaApi {
           },
         ],
       };
-
       let response: TransactionFee;
       if (isLegacy) {
         response = await getByronWalletTransactionFee(this.config, {
@@ -705,7 +713,7 @@ export default class AdaApi {
       } else {
         response = await getTransactionFee(this.config, {
           walletId,
-          data,
+          data: { ...data, withdrawal },
         });
       }
 
@@ -816,7 +824,7 @@ export default class AdaApi {
       const response: Promise<Array<string>> = new Promise(resolve =>
         resolve(
           generateAccountMnemonics(
-            (isIncentivizedTestnet && !isShelleyTestnet) || isShelleyActivated
+            isIncentivizedTestnet || isShelleyActivated
               ? WALLET_RECOVERY_PHRASE_WORD_COUNT
               : LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT
           )
@@ -1399,21 +1407,70 @@ export default class AdaApi {
     }
   };
 
-  submitRedeemItnRewards = async (
-    request: SubmitRedeemItnRewardsRequest
-  ): Promise<SubmitRedeemItnRewardsApiResponse> => {
-    const { walletId, recoveryPhrase } = request;
+  getRedeemItnRewardsFee = async (
+    request: GetRedeemItnRewardsFeeRequest
+  ): Promise<GetRedeemItnRewardsFeeResponse> => {
+    const { address, wallet, recoveryPhrase: withdrawal } = request;
+    const amount = REDEEM_ITN_REWARDS_AMOUNT;
+    const {
+      id: walletId,
+      amount: walletBalance,
+      availableAmount: availableBalance,
+    } = wallet;
+    const payload = {
+      address,
+      walletId,
+      walletBalance,
+      availableBalance,
+      amount,
+      withdrawal,
+      isLegacy: false,
+    };
     try {
-      const response: SubmitRedeemItnRewardsResponse = await submitRedeemItnRewards(
-        {
-          walletId,
-          recoveryPhrase,
-        }
-      );
-      logger.debug('AdaApi::submitRedeemItnRewards success', { response });
-      return _createRedeemItnRewardsFromServerData(response);
+      const fee = await this.calculateTransactionFee(payload);
+      logger.debug('AdaApi::getRedeemItnRewardsFee success', { fee });
+      return fee;
     } catch (error) {
-      logger.error('AdaApi::submitRedeemItnRewards error', { error });
+      logger.error('AdaApi::getRedeemItnRewardsFee error', { error });
+      throw new ApiError(error);
+    }
+  };
+
+  requestRedeemItnRewards = async (
+    request: RequestRedeemItnRewardsRequest
+  ): Promise<RequestRedeemItnRewardsResponse> => {
+    const {
+      address,
+      walletId,
+      spendingPassword: passphrase,
+      recoveryPhrase: withdrawal,
+    } = request;
+    const amount = REDEEM_ITN_REWARDS_AMOUNT;
+    try {
+      const data = {
+        payments: [
+          {
+            address,
+            amount: {
+              quantity: amount,
+              unit: WalletUnits.LOVELACE,
+            },
+          },
+        ],
+        passphrase,
+        withdrawal,
+      };
+      const transaction = await createTransaction(this.config, {
+        walletId,
+        data,
+      });
+      const response = _createRedeemItnRewardsFromServerData(transaction);
+      logger.debug('AdaApi::requestRedeemItnRewards success', {
+        response,
+      });
+      return response;
+    } catch (error) {
+      logger.error('AdaApi::requestRedeemItnRewards error', { error });
       throw new ApiError(error);
     }
   };
@@ -1570,35 +1627,51 @@ export default class AdaApi {
         this.config
       );
       logger.debug('AdaApi::getNetworkInfo success', { networkInfo });
-      /* eslint-disable-next-line camelcase */
-      const { sync_progress, node_tip, network_tip, next_epoch } = networkInfo;
+      const {
+        sync_progress /* eslint-disable-line camelcase */,
+        node_tip: nodeTip,
+        network_tip: networkTip,
+        next_epoch: nextEpoch,
+      } = networkInfo;
+
       const syncProgress =
         get(sync_progress, 'status') === 'ready'
           ? 100
           : get(sync_progress, 'progress.quantity', 0);
+      const nextEpochNumber = get(nextEpoch, 'epoch_number', null);
+      const nextEpochStartTime = get(nextEpoch, 'epoch_start_time', '');
+      const epochLength = getEpochLength();
       // extract relevant data before sending to NetworkStatusStore
       return {
         syncProgress,
         localTip: {
-          epoch: get(node_tip, 'epoch_number', 0),
-          slot: get(node_tip, 'slot_number', 0),
+          epoch: get(nodeTip, 'epoch_number', 0),
+          slot: get(nodeTip, 'slot_number', 0),
         },
-        networkTip: {
-          epoch: get(network_tip, 'epoch_number', 0),
-          slot: get(network_tip, 'slot_number', 0),
-        },
-        nextEpoch: {
-          // N+1 epoch
-          epochNumber: get(next_epoch, 'epoch_number', 0),
-          epochStart: get(next_epoch, 'epoch_start_time', ''),
-        },
-        futureEpoch: {
-          // N+2 epoch
-          epochNumber: get(next_epoch, 'epoch_number', 0) + 1,
-          epochStart: moment(get(next_epoch, 'epoch_start_time', 0))
-            .add(EPOCH_LENGTH_ITN, 'seconds')
-            .toISOString(),
-        },
+        networkTip: networkTip
+          ? {
+              epoch: get(networkTip, 'epoch_number', null),
+              slot: get(networkTip, 'slot_number', null),
+            }
+          : null,
+        nextEpoch: nextEpoch
+          ? {
+              // N+1 epoch
+              epochNumber: nextEpochNumber,
+              epochStart: nextEpochStartTime,
+            }
+          : null,
+        futureEpoch: nextEpoch
+          ? {
+              // N+2 epoch
+              epochNumber: nextEpochNumber ? nextEpochNumber + 1 : null,
+              epochStart: nextEpochStartTime
+                ? moment(nextEpochStartTime)
+                    .add(epochLength, 'seconds')
+                    .toISOString()
+                : '',
+            }
+          : null,
       };
     } catch (error) {
       logger.error('AdaApi::getNetworkInfo error', { error });
@@ -1656,6 +1729,7 @@ export default class AdaApi {
         decentralization_level: decentralizationLevel,
         desired_pool_number: desiredPoolNumber,
         minimum_utxo_value: minimumUtxoValue,
+        hardfork_at: hardforkAt,
       } = networkParameters;
       const blockchainStartTime = moment(blockchain_start_time).valueOf();
 
@@ -1669,6 +1743,7 @@ export default class AdaApi {
         decentralizationLevel,
         desiredPoolNumber,
         minimumUtxoValue,
+        hardforkAt: hardforkAt || null,
       };
     } catch (error) {
       logger.error('AdaApi::getNetworkParameters error', { error });
@@ -2019,13 +2094,10 @@ const _createStakePoolFromServerData = action(
 
 const _createRedeemItnRewardsFromServerData = action(
   'AdaApi::_createRedeemItnRewardsFromServerData',
-  ({
-    rewardsTotal,
-    transactionFees,
-    finalTotal,
-  }: SubmitRedeemItnRewardsResponse) => ({
-    rewardsTotal: new BigNumber(rewardsTotal),
-    transactionFees: new BigNumber(transactionFees),
-    finalTotal: new BigNumber(finalTotal),
-  })
+  (transaction: Transaction) => {
+    const { quantity, unit } = get(transaction, 'withdrawals[0].amount');
+    return unit === WalletUnits.LOVELACE
+      ? new BigNumber(quantity).dividedBy(LOVELACES_PER_ADA)
+      : new BigNumber(quantity);
+  }
 );

@@ -1,7 +1,7 @@
 // @flow
 import { observable, action, computed, runInAction } from 'mobx';
 import moment from 'moment';
-import { isEqual, includes } from 'lodash';
+import { isEqual, includes, get } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import {
@@ -11,6 +11,7 @@ import {
   MAX_ALLOWED_STALL_DURATION,
   DECENTRALIZATION_LEVEL_POLLING_INTERVAL,
 } from '../config/timingConfig';
+import { EPOCH_LENGTH_SHELLEY } from '../config/epochsConfig';
 import { logger } from '../utils/logging';
 import {
   cardanoStateChangeChannel,
@@ -21,6 +22,7 @@ import {
 } from '../ipc/cardano.ipc';
 import { CardanoNodeStates } from '../../../common/types/cardano-node.types';
 import { getDiskSpaceStatusChannel } from '../ipc/getDiskSpaceChannel.js';
+import { getBlockReplayProgressChannel } from '../ipc/getBlockReplayChannel.js';
 import { getStateDirectoryPathChannel } from '../ipc/getStateDirectoryPathChannel';
 import type {
   GetNetworkInfoResponse,
@@ -61,7 +63,7 @@ const NODE_STOPPED_STATES = [
 ];
 // END CONSTANTS ----------------------------
 
-const { isIncentivizedTestnet, isFlight } = global;
+const { isIncentivizedTestnet, isShelleyTestnet, isFlight } = global;
 
 export default class NetworkStatusStore extends Store {
   // Initialize store properties
@@ -85,7 +87,8 @@ export default class NetworkStatusStore extends Store {
   @observable isNodeStopped = false; // Is 'true' if node is in `NODE_STOPPED_STATES` states
   @observable isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
   @observable isSystemTimeIgnored = false; // Tracks if NTP time checks are ignored
-  @observable isSplashShown = isIncentivizedTestnet || isFlight; // Visibility of splash screen
+  @observable isSplashShown =
+    isIncentivizedTestnet || isShelleyTestnet || isFlight; // Visibility of splash screen
   @observable isSyncProgressStalling = false; // Is 'true' in case sync progress doesn't change within limit
 
   @observable hasBeenConnected = false;
@@ -117,6 +120,11 @@ export default class NetworkStatusStore extends Store {
   @observable diskSpaceAvailable: string = '';
   @observable isTlsCertInvalid: boolean = false;
   @observable stateDirectoryPath: string = '';
+  @observable isShelleyActivated: boolean = false;
+  @observable isShelleyDataAvailable: boolean = false;
+  @observable isShelleyPending: boolean = false;
+  @observable shelleyActivationTime: string = '';
+  @observable verificationProgress: number = 0;
 
   // DEFINE STORE METHODS
   setup() {
@@ -160,6 +168,9 @@ export default class NetworkStatusStore extends Store {
     this._checkDiskSpace();
 
     this._getStateDirectoryPath();
+
+    // Blockchain verification checking
+    getBlockReplayProgressChannel.onReceive(this._onCheckVerificationProgress);
   }
 
   _restartNode = async () => {
@@ -583,9 +594,29 @@ export default class NetworkStatusStore extends Store {
     try {
       const networkParameters: GetNetworkParametersResponse = await this.getNetworkParametersRequest.execute()
         .promise;
+      let {
+        isShelleyActivated,
+        isShelleyDataAvailable,
+        isShelleyPending,
+      } = this;
+      const { decentralizationLevel, hardforkAt } = networkParameters;
+      const epochStartTime = get(hardforkAt, 'epoch_start_time', '');
+
+      if (hardforkAt) {
+        const currentTimeStamp = new Date().getTime();
+        const hardforkStartTime = new Date(epochStartTime).getTime();
+        isShelleyActivated = currentTimeStamp >= hardforkStartTime;
+        isShelleyDataAvailable =
+          currentTimeStamp >= hardforkStartTime + 3 * EPOCH_LENGTH_SHELLEY;
+        isShelleyPending = currentTimeStamp < hardforkStartTime;
+      }
+
       runInAction('Set Decentralization Progress', () => {
-        this.decentralizationProgress =
-          networkParameters.decentralizationLevel.quantity;
+        this.decentralizationProgress = decentralizationLevel.quantity;
+        this.isShelleyActivated = isShelleyActivated;
+        this.isShelleyDataAvailable = isShelleyDataAvailable;
+        this.isShelleyPending = isShelleyPending;
+        this.shelleyActivationTime = epochStartTime;
       });
     } catch (e) {
       runInAction('Clear Decentralization Progress', () => {
@@ -624,6 +655,13 @@ export default class NetworkStatusStore extends Store {
     return Promise.resolve();
   };
 
+  @action _onCheckVerificationProgress = (
+    verificationProgress: number
+  ): Promise<void> => {
+    this.verificationProgress = verificationProgress;
+    return Promise.resolve();
+  };
+
   @action _onReceiveStateDirectoryPath = (stateDirectoryPath: string) => {
     this.stateDirectoryPath = stateDirectoryPath;
   };
@@ -657,5 +695,19 @@ export default class NetworkStatusStore extends Store {
 
   @computed get syncPercentage(): number {
     return this.syncProgress || 0;
+  }
+
+  @computed get isEpochsInfoAvailable(): boolean {
+    const { networkTip, nextEpoch } = this;
+    return (
+      get(nextEpoch, 'epochNumber', null) !== null &&
+      get(nextEpoch, 'epochStart', null) !== null &&
+      get(networkTip, 'epoch', null) !== null &&
+      get(networkTip, 'slot', null) !== null
+    );
+  }
+
+  @computed get isVerifyingBlockchain(): boolean {
+    return !this.isConnected && this.verificationProgress < 100;
   }
 }

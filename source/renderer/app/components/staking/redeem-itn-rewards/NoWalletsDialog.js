@@ -6,7 +6,6 @@ import SVGInline from 'react-svg-inline';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
 import styles from './Step3FailureDialog.scss';
-import redeemDialogOverride from './RedeemDialogOverride.scss';
 import sadWalletImage from '../../../assets/images/sad-wallet.inline.svg';
 
 const messages = defineMessages({
@@ -39,12 +38,7 @@ export default class NoWalletsDialog extends Component<Props> {
     const { intl } = this.context;
     const { onClose, onAddWallet } = this.props;
 
-    const closeButton = (
-      <DialogCloseButton
-        className={redeemDialogOverride.closeButton}
-        onClose={onClose}
-      />
-    );
+    const closeButton = <DialogCloseButton onClose={onClose} />;
 
     return (
       <Dialog
@@ -57,8 +51,8 @@ export default class NoWalletsDialog extends Component<Props> {
         ]}
         closeButton={closeButton}
         onClose={onClose}
-        customThemeOverrides={redeemDialogOverride}
         closeOnOverlayClick={false}
+        fullSize
       >
         <SVGInline svg={sadWalletImage} className={styles.sadWalletImage} />
         <div className={styles.description}>

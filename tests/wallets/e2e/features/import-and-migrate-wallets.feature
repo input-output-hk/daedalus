@@ -1,4 +1,4 @@
-@e2e @byron
+@e2e @byron @skip
 Feature: Import wallets
 
   Background:

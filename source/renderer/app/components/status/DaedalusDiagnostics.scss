@@ -320,6 +320,27 @@
       padding-left: 6px;
     }
   }
+
+  .networkTipSandClock {
+    border-left: none;
+    margin-left: 3px;
+    opacity: 1;
+    padding-left: 0;
+  }
+}
+
+.networkTipSandClock {
+  svg {
+    height: 13px;
+    position: relative;
+    top: 0.5px;
+    path:nth-child(1) {
+      stroke: var(--theme-network-window-white-color);
+    }
+    path:nth-child(2) {
+      fill: var(--theme-network-window-white-color);
+    }
+  }
 }
 
 button.cardanoNodeStatusBtn {

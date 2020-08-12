@@ -3,6 +3,7 @@ import {
   MAINNET_EXPLORER_URL,
   STAGING_EXPLORER_URL,
   TESTNET_EXPLORER_URL,
+  STN_EXPLORER_URL,
   ITN_EXPLORER_URL,
   ITN_QA_EXPLORER_URL,
   ITN_NIGHTLY_EXPLORER_URL,
@@ -27,6 +28,7 @@ import {
   TESTNET,
   DEVELOPMENT,
   ITN_REWARDS_V1,
+  SHELLEY_TESTNET,
 } from '../../../common/types/environment.types';
 import {
   checkIsIncentivizedTestnetQA,
@@ -55,6 +57,9 @@ export const getNetworkExplorerUri = (
   if (network === ITN_REWARDS_V1) {
     return ITN_EXPLORER_URL;
   }
+  if (network === SHELLEY_TESTNET) {
+    return STN_EXPLORER_URL;
+  }
   return MAINNET_EXPLORER_URL; // sets default to mainnet in case env.NETWORK is undefined
 };
 
@@ -63,7 +68,11 @@ export const getNetworkExplorerUrl = (
   rawNetwork: string
 ): string => {
   const protocol =
-    network === MAINNET || network === DEVELOPMENT || network === ITN_REWARDS_V1
+    network === MAINNET ||
+    network === TESTNET ||
+    network === DEVELOPMENT ||
+    network === ITN_REWARDS_V1 ||
+    network === SHELLEY_TESTNET
       ? 'https://'
       : 'http://';
   const uri = getNetworkExplorerUri(network, rawNetwork);
@@ -81,16 +90,27 @@ export const getNetworkExplorerUrlByType = (
   let localePrefix = '';
   let typeValue = type;
 
-  if (network === ITN_REWARDS_V1) {
-    queryStringPrefix = '?id=';
+  if (
+    network === MAINNET ||
+    network === TESTNET ||
+    network === ITN_REWARDS_V1 ||
+    network === SHELLEY_TESTNET
+  ) {
     localePrefix = `/${currentLocale.substr(0, 2)}`;
-    if (type === 'tx') typeValue = 'transaction';
+    if (type === 'address') {
+      queryStringPrefix = '?address=';
+      typeValue = 'address.html';
+    }
+    if (type === 'tx') {
+      queryStringPrefix = '?id=';
+      typeValue = 'transaction';
+    }
   }
 
   return `${getNetworkExplorerUrl(
     network,
     rawNetwork
-  )}${localePrefix}/${typeValue}/${queryStringPrefix}${param}`;
+  )}${localePrefix}/${typeValue}${queryStringPrefix}${param}`;
 };
 
 export const getNetworkEkgUrl = (env: {

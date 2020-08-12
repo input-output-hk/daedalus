@@ -21,13 +21,10 @@ import DialogCloseButton from '../../widgets/DialogCloseButton';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import Dialog from '../../widgets/Dialog';
 import styles from './Step1ConfigurationDialog.scss';
-import redeemDialogOverride from './RedeemDialogOverride.scss';
-import ReactToolboxMobxForm, {
-  handleFormErrors,
-} from '../../../utils/ReactToolboxMobxForm';
+import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
-import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
+import { ITN_WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 
 const messages = defineMessages({
@@ -142,6 +139,7 @@ type Props = {
   openExternalLink: Function,
   wallet: ?Wallet,
   suggestedMnemonics: Array<string>,
+  recoveryPhrase?: ?Array<string>,
   wallets: Array<Wallet>,
 };
 
@@ -153,27 +151,22 @@ export default class Step1ConfigurationDialog extends Component<Props> {
 
   static defaultProps = {
     error: null,
+    recoveryPhrase: [],
   };
 
   recoveryPhraseAutocomplete: Autocomplete;
-
-  componentDidUpdate() {
-    if (this.props.error) {
-      handleFormErrors('.ConfigurationDialog_error');
-    }
-  }
 
   form = new ReactToolboxMobxForm(
     {
       fields: {
         recoveryPhrase: {
-          value: [],
+          value: [...(this.props.recoveryPhrase || [])],
           label: this.context.intl.formatMessage(messages.recoveryPhraseLabel),
           validators: ({ field }) => {
             const { intl } = this.context;
             const enteredWords = field.value;
             const wordCount = enteredWords.length;
-            const expectedWordCount = WALLET_RECOVERY_PHRASE_WORD_COUNT;
+            const expectedWordCount = ITN_WALLET_RECOVERY_PHRASE_WORD_COUNT;
             const value = enteredWords.join(' ');
             const isPhraseComplete = wordCount === expectedWordCount;
             if (!isPhraseComplete) {
@@ -220,19 +213,8 @@ export default class Step1ConfigurationDialog extends Component<Props> {
         const { recoveryPhrase } = form.values();
         onContinue({ recoveryPhrase });
       },
-      onError: () =>
-        handleFormErrors('.ConfigurationDialog_error', { focusElement: true }),
     });
   };
-
-  get walletsDropdownError() {
-    const { intl } = this.context;
-    const { wallet } = this.props;
-    let walletsDropdownError;
-    if (wallet && wallet.amount.isZero())
-      walletsDropdownError = intl.formatMessage(messages.walletsDropdownError);
-    return walletsDropdownError;
-  }
 
   get canSubmit() {
     const { isSubmitting, wallet } = this.props;
@@ -246,10 +228,8 @@ export default class Step1ConfigurationDialog extends Component<Props> {
     return (
       !isSubmitting &&
       wallet &&
-      !wallet.amount.isZero() &&
       checkboxAcceptance1isChecked &&
       checkboxAcceptance2isChecked &&
-      !this.walletsDropdownError &&
       form.isValid
     );
   }
@@ -266,8 +246,15 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       suggestedMnemonics,
       openExternalLink,
       wallets,
-      error,
+      recoveryPhrase,
     } = this.props;
+    let { error } = this.props;
+    if (
+      error &&
+      (error.id === 'api.errors.NotEnoughFundsForTransactionFeesError' ||
+        error.id === 'api.errors.NotEnoughMoneyToSendError')
+    )
+      error = messages.walletsDropdownError;
     const recoveryPhraseField = form.$('recoveryPhrase');
     const walletsDropdownField = form.$('walletsDropdown');
     const checkboxAcceptance1Field = form.$('checkboxAcceptance1');
@@ -313,12 +300,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       />
     );
 
-    const closeButton = (
-      <DialogCloseButton
-        className={redeemDialogOverride.closeButton}
-        onClose={onClose}
-      />
-    );
+    const closeButton = <DialogCloseButton onClose={onClose} />;
 
     return (
       <Dialog
@@ -327,8 +309,8 @@ export default class Step1ConfigurationDialog extends Component<Props> {
         onContinue={onContinue}
         onClose={onClose}
         closeButton={closeButton}
-        customThemeOverrides={redeemDialogOverride}
         closeOnOverlayClick={false}
+        fullSize
       >
         <div className={styles.component}>
           <p className={styles.description}>
@@ -337,7 +319,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
               values={{
                 itnLink,
               }}
-            />
+            />{' '}
             <FormattedHTMLMessage {...messages.description2} />
           </p>
           <Autocomplete
@@ -346,13 +328,14 @@ export default class Step1ConfigurationDialog extends Component<Props> {
               this.recoveryPhraseAutocomplete = autocomplete;
             }}
             options={suggestedMnemonics}
-            maxSelections={WALLET_RECOVERY_PHRASE_WORD_COUNT}
+            maxSelections={ITN_WALLET_RECOVERY_PHRASE_WORD_COUNT}
             error={recoveryPhraseField.error}
             maxVisibleOptions={5}
             noResultsMessage={intl.formatMessage(messages.noResults)}
             className={styles.recoveryPhrase}
             skin={AutocompleteSkin}
             optionHeight={50}
+            preselectedOptions={[...(recoveryPhrase || [])]}
           />
           <div className={styles.walletsDropdownWrapper}>
             <WalletsDropdown
@@ -366,7 +349,6 @@ export default class Step1ConfigurationDialog extends Component<Props> {
               )}
               value={walletId}
               getStakePoolById={() => {}}
-              error={this.walletsDropdownError}
               errorPosition="bottom"
             />
           </div>

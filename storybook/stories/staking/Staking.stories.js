@@ -6,10 +6,7 @@ import { action } from '@storybook/addon-actions';
 import StoryLayout from '../_support/StoryLayout';
 import StoryProvider from '../_support/StoryProvider';
 import StoryDecorator from '../_support/StoryDecorator';
-import {
-  isIncentivizedTestnetTheme,
-  isShelleyTestnetTheme,
-} from '../_support/utils';
+import { isIncentivizedTestnetTheme } from '../_support/utils';
 
 import { CATEGORIES_BY_NAME } from '../../../source/renderer/app/config/sidebarConfig';
 
@@ -30,6 +27,8 @@ import {
   Step2ConfirmationDialogStory,
   Step3SuccessDialogStory,
   Step3FailureDialogStory,
+  NoWalletsDialogDialogStory,
+  RedemptionUnavailableDialogDialogStory,
 } from './RedeemItnWallets.stories';
 import {
   StakingUndelegateConfirmationStory,
@@ -103,7 +102,6 @@ const decorator = (story, context) => {
                   isIncentivizedTestnet={isIncentivizedTestnetTheme(
                     context.currentTheme
                   )}
-                  isShelleyTestnet={isShelleyTestnetTheme(context.currentTheme)}
                 >
                   {storyWithKnobs}
                 </StakingWithNavigation>,
@@ -136,13 +134,17 @@ storiesOf('Decentralization | Staking', module)
   .addDecorator(decorator)
   // ====== Stories ======
 
-  .add(pageNames['delegation-center'], StakingDelegationCenterStory, {
-    id: 'delegation-center',
-  })
+  .add(
+    pageNames['delegation-center'],
+    props => <StakingDelegationCenterStory {...props} isEpochsInfoAvailable />,
+    {
+      id: 'delegation-center',
+    }
+  )
 
   .add(
     pageNames['delegation-center-experiment'],
-    StakingDelegationCenterStory,
+    props => <StakingDelegationCenterStory {...props} isEpochsInfoAvailable />,
     {
       id: 'delegation-center',
       experiment: true,
@@ -151,7 +153,23 @@ storiesOf('Decentralization | Staking', module)
 
   .add(
     'Delegation Center - Loading',
-    props => <StakingDelegationCenterStory {...props} isLoading />,
+    props => (
+      <StakingDelegationCenterStory
+        {...props}
+        isLoading
+        isEpochsInfoAvailable
+      />
+    ),
+    {
+      id: 'delegation-center-loading',
+    }
+  )
+
+  .add(
+    'Delegation Center - Not an Shelley era',
+    props => (
+      <StakingDelegationCenterStory {...props} isEpochsInfoAvailable={false} />
+    ),
     {
       id: 'delegation-center-loading',
     }
@@ -243,5 +261,11 @@ storiesOf('Decentralization | Redeem ITN Rewards', module)
     id: 'redeem-itn-wallets-story',
   })
   .add('Step 3 - Failure', Step3FailureDialogStory, {
+    id: 'redeem-itn-wallets-story',
+  })
+  .add('No Wallets', NoWalletsDialogDialogStory, {
+    id: 'redeem-itn-wallets-story',
+  })
+  .add('Redemption Unavailable', RedemptionUnavailableDialogDialogStory, {
     id: 'redeem-itn-wallets-story',
   });

@@ -61,6 +61,7 @@ export type TransactionWithdrawals = {
   stake_address: string,
   amount: TransactionAmount,
 };
+export type TransactionWithdrawalType = 'self' | Array<string>;
 
 export type TransactionState = 'pending' | 'in_ledger';
 
@@ -96,6 +97,7 @@ export type GetTransactionFeeRequest = {
   walletBalance: BigNumber,
   availableBalance: BigNumber,
   isLegacy: boolean,
+  withdrawal?: 'self' | Array<string>,
 };
 
 export type CreateTransactionRequest = {
@@ -104,6 +106,7 @@ export type CreateTransactionRequest = {
   amount: number,
   passphrase: string,
   isLegacy: boolean,
+  withdrawal?: 'self' | Array<string>,
 };
 
 export type DeleteTransactionRequest = {
@@ -117,9 +120,24 @@ export type GetTransactionsResponse = {
   total: number,
 };
 
+export type TransactionParams = {
+  walletId: string,
+  data: {
+    payments: Array<TransactionPaymentData>,
+    passphrase: string,
+  },
+};
+
 export type TransactionFeeAmount = {
   quantity: number,
   unit: WalletUnits.LOVELACE,
+};
+
+export type GetTransactionFeeParams = {
+  walletId: string,
+  data: {
+    payments: Array<TransactionPaymentData>,
+  },
 };
 
 export type TransactionPaymentData = {

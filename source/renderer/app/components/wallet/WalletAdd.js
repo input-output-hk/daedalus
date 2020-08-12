@@ -100,6 +100,7 @@ type Props = {
   isMainnet: boolean,
   isTestnet: boolean,
   isProduction: boolean,
+  isShelleyActivated: boolean,
 };
 
 @observer
@@ -123,6 +124,7 @@ export default class WalletAdd extends Component<Props> {
       isMainnet,
       isTestnet,
       isProduction,
+      isShelleyActivated,
     } = this.props;
 
     const componentClasses = classnames([styles.component, 'WalletAdd']);
@@ -146,7 +148,10 @@ export default class WalletAdd extends Component<Props> {
                   ? intl.formatMessage(messages.createDescriptionItn)
                   : intl.formatMessage(messages.createDescription)
               }
-              isDisabled={isMaxNumberOfWalletsReached}
+              isDisabled={
+                isMaxNumberOfWalletsReached ||
+                (!isIncentivizedTestnet && !isShelleyActivated)
+              }
             />
             <BigButtonForDialogs
               className="joinWalletButton"
@@ -174,8 +179,9 @@ export default class WalletAdd extends Component<Props> {
               label={intl.formatMessage(messages.importLabel)}
               description={intl.formatMessage(messages.importDescription)}
               isDisabled={
+                true || // This feature is currently unavailable as export tool is disabled
                 isMaxNumberOfWalletsReached ||
-                (isProduction && !isMainnet && !isTestnet)
+                (isProduction && !(isMainnet || isTestnet))
               }
             />
           </div>

@@ -11,11 +11,9 @@ import {
   STAKE_POOL_TRANSACTION_CHECKER_TIMEOUT,
   STAKE_POOLS_INTERVAL,
   STAKE_POOLS_FAST_INTERVAL,
-  SHELLEY_CHECK_INTERVAL,
   REDEEM_ITN_REWARDS_STEPS as steps,
   INITIAL_DELEGATION_FUNDS,
 } from '../config/stakingConfig';
-import { EPOCH_LENGTH_SHELLEY } from '../config/epochsConfig';
 import type {
   Reward,
   RewardForIncentivizedTestnet,
@@ -40,43 +38,26 @@ export default class StakingStore extends Store {
 
   /* ----------  Redeem ITN Rewards  ---------- */
   @observable redeemStep: ?RedeemItnRewardsStep = null;
+  @observable redeemRecoveryPhrase: ?Array<string> = null;
   @observable redeemWallet: ?Wallet = null;
   @observable walletName: ?string = null;
-  @observable redeemError: ?LocalizableError = null;
-  @observable rewardsTotal: number = 0;
-  @observable transactionFees: number = 0;
-  @observable finalTotal: number = 0;
+  @observable transactionFees: ?BigNumber = null;
+  @observable redeemedRewards: ?BigNumber = null;
   @observable isSubmittingReedem: boolean = false;
   @observable stakingSuccess: ?boolean = null;
-  @observable stakingFailure: number = 0;
-  @observable isShelleyActivated: boolean = false;
-  @observable isShelleyDataAvailable: boolean = false;
+  @observable configurationStepError: ?LocalizableError = null;
+  @observable confirmationStepError: ?LocalizableError = null;
 
-  pollingShelleyActivationCheck: ?IntervalID = null;
-  pollingShelleyDataAvailabilityCheck: ?IntervalID = null;
   pollingStakePoolsInterval: ?IntervalID = null;
   refreshPolling: ?IntervalID = null;
   delegationCheckTimeInterval: ?IntervalID = null;
-
-  startDateTime: string = '2020-07-23T19:00:00.000Z';
   adaValue: BigNumber = new BigNumber(82650.15);
   percentage: number = 14;
 
   _delegationFeeCalculationWalletId: ?string = null;
 
   setup() {
-    const { isIncentivizedTestnet, isShelleyTestnet } = global;
     const { staking: stakingActions } = this.actions;
-
-    this.pollingShelleyActivationCheck = setInterval(
-      this.checkShelleyActivation,
-      SHELLEY_CHECK_INTERVAL
-    );
-
-    this.pollingShelleyDataAvailabilityCheck = setInterval(
-      this.checkShelleyDataAvailability,
-      SHELLEY_CHECK_INTERVAL
-    );
 
     this.refreshPolling = setInterval(
       this.getStakePoolsData,
@@ -93,22 +74,20 @@ export default class StakingStore extends Store {
     stakingActions.onResultContinue.listen(this._onResultContinue);
     stakingActions.closeRedeemDialog.listen(this._closeRedeemDialog);
 
-    if (isIncentivizedTestnet || isShelleyTestnet) {
-      stakingActions.goToStakingInfoPage.listen(this._goToStakingInfoPage);
-      stakingActions.goToStakingDelegationCenterPage.listen(
-        this._goToStakingDelegationCenterPage
-      );
-      stakingActions.joinStakePool.listen(this._joinStakePool);
-      stakingActions.quitStakePool.listen(this._quitStakePool);
-      stakingActions.fakeStakePoolsLoading.listen(this._setFakePoller);
-      stakingActions.updateStake.listen(this._setStake);
-      stakingActions.selectDelegationWallet.listen(
-        this._setSelectedDelegationWalletId
-      );
+    stakingActions.goToStakingInfoPage.listen(this._goToStakingInfoPage);
+    stakingActions.goToStakingDelegationCenterPage.listen(
+      this._goToStakingDelegationCenterPage
+    );
+    stakingActions.joinStakePool.listen(this._joinStakePool);
+    stakingActions.quitStakePool.listen(this._quitStakePool);
+    stakingActions.fakeStakePoolsLoading.listen(this._setFakePoller);
+    stakingActions.updateStake.listen(this._setStake);
+    stakingActions.selectDelegationWallet.listen(
+      this._setSelectedDelegationWalletId
+    );
 
-      // ========== MOBX REACTIONS =========== //
-      this.registerReactions([this._pollOnSync]);
-    }
+    // ========== MOBX REACTIONS =========== //
+    this.registerReactions([this._pollOnSync]);
   }
 
   // REQUESTS
@@ -125,35 +104,14 @@ export default class StakingStore extends Store {
     this.api.ada.calculateDelegationFee
   );
   // @REDEEM TODO: Proper type it when the API endpoint is implemented.
-  @observable submitRedeemItnRewardsRequest: Request<any> = new Request(
-    this.api.ada.submitRedeemItnRewards
+  @observable getRedeemItnRewardsFeeRequest: Request<any> = new Request(
+    this.api.ada.getRedeemItnRewardsFee
+  );
+  @observable requestRedeemItnRewardsRequest: Request<any> = new Request(
+    this.api.ada.requestRedeemItnRewards
   );
 
   // =================== PUBLIC API ==================== //
-
-  @action checkShelleyActivation = () => {
-    const currentTimeStamp = new Date().getTime();
-    const startTimeStamp = new Date(this.startDateTime).getTime();
-    this.isShelleyActivated = currentTimeStamp >= startTimeStamp;
-    if (this.isShelleyActivated && this.pollingShelleyActivationCheck) {
-      clearInterval(this.pollingShelleyActivationCheck);
-      this.pollingShelleyActivationCheck = null;
-    }
-  };
-
-  @action checkShelleyDataAvailability = () => {
-    const currentTimeStamp = new Date().getTime();
-    const startTimeStamp = new Date(this.startDateTime).getTime();
-    this.isShelleyDataAvailable =
-      currentTimeStamp >= startTimeStamp + 3 * EPOCH_LENGTH_SHELLEY;
-    if (
-      this.isShelleyDataAvailable &&
-      this.pollingShelleyDataAvailabilityCheck
-    ) {
-      clearInterval(this.pollingShelleyDataAvailabilityCheck);
-      this.pollingShelleyDataAvailabilityCheck = null;
-    }
-  };
 
   @action _setSelectedDelegationWalletId = (walletId: string) => {
     this.selectedDelegationWalletId = walletId;
@@ -354,12 +312,17 @@ export default class StakingStore extends Store {
   }
 
   @action showCountdown(): boolean {
-    return new Date(this.startDateTime).getTime() - new Date().getTime() > 0;
+    const { isShelleyPending } = this.stores.networkStatus;
+    return isShelleyPending;
   }
 
   @action getStakePoolsData = async () => {
-    const { isConnected, isSynced } = this.stores.networkStatus;
-    if (!this.isShelleyActivated || !isConnected || !isSynced) {
+    const {
+      isConnected,
+      isSynced,
+      isShelleyActivated,
+    } = this.stores.networkStatus;
+    if (!isShelleyActivated || !isConnected || !isSynced) {
       this._resetIsRanking();
       return;
     }
@@ -526,6 +489,8 @@ export default class StakingStore extends Store {
   };
 
   @action _onRedeemStart = () => {
+    this.configurationStepError = null;
+    this.confirmationStepError = null;
     this.redeemStep = steps.CONFIGURATION;
   };
 
@@ -538,50 +503,70 @@ export default class StakingStore extends Store {
     const { redeemWallet } = this;
     if (!redeemWallet) throw new Error('Redeem wallet required');
     try {
-      const {
-        rewardsTotal,
-        transactionFees,
-        finalTotal,
-      }: any = await this.submitRedeemItnRewardsRequest.execute({
-        walletId: redeemWallet.id,
+      const [address] = await this.stores.addresses.getAddressesByWalletId(
+        redeemWallet.id
+      );
+      const transactionFees = await this.getRedeemItnRewardsFeeRequest.execute({
+        wallet: redeemWallet,
         recoveryPhrase,
+        address: address.id,
       });
-      runInAction('Go to the Confirmation step', () => {
-        this.isSubmittingReedem = false;
-        this.stakingSuccess = true;
-        this.rewardsTotal = rewardsTotal;
+      runInAction(() => {
+        this.redeemRecoveryPhrase = recoveryPhrase;
         this.transactionFees = transactionFees;
-        this.finalTotal = finalTotal;
+        this.confirmationStepError = null;
         this.redeemStep = steps.CONFIRMATION;
+        this.configurationStepError = null;
+        this.isSubmittingReedem = false;
       });
     } catch (error) {
       runInAction(() => {
-        this._resetRedeemItnRewards();
-        this.stakingSuccess = false;
-        this.redeemError = error;
-        throw error;
+        this.configurationStepError = error;
+        this.isSubmittingReedem = false;
+        this.redeemRecoveryPhrase = null;
       });
     }
   };
 
-  @action _onConfirmationContinue = ({
+  @action _onConfirmationContinue = async ({
     spendingPassword,
   }: {
     spendingPassword: string,
   }) => {
-    // @REDEEM TODO: Remove when the API endpoint is implemented
-    if (spendingPassword === 'FailureErr1') this.stakingFailure = 1;
-    else if (spendingPassword === 'FailureErr2') this.stakingFailure = 2;
-    else if (spendingPassword === 'FailureErr3') this.stakingFailure = 3;
-    else {
-      this.stakingFailure = 0;
-      this.stakingSuccess = true;
+    const { redeemRecoveryPhrase: recoveryPhrase, redeemWallet } = this;
+    this.isSubmittingReedem = true;
+    if (!redeemWallet) throw new Error('Redeem wallet required');
+    if (!recoveryPhrase) throw new Error('RecoveryPhrase required');
+    const { id: walletId } = redeemWallet;
+    try {
+      const [address] = await this.stores.addresses.getAddressesByWalletId(
+        walletId
+      );
+      const redeemedRewards = await this.requestRedeemItnRewardsRequest.execute(
+        {
+          address: address.id,
+          walletId,
+          spendingPassword,
+          recoveryPhrase,
+        }
+      );
+      runInAction(() => {
+        this.redeemedRewards = redeemedRewards;
+        this.stakingSuccess = true;
+        this.redeemStep = steps.RESULT;
+        this.confirmationStepError = null;
+        this.isSubmittingReedem = false;
+      });
+    } catch (error) {
+      runInAction(() => {
+        this.confirmationStepError = error;
+        this.isSubmittingReedem = false;
+        if (error.id !== 'api.errors.IncorrectPasswordError') {
+          this.stakingSuccess = false;
+          this.redeemStep = steps.RESULT;
+        }
+      });
     }
-    if (this.stakingFailure > 0) {
-      this.stakingSuccess = false;
-    }
-
-    this.redeemStep = steps.RESULT;
   };
 
   @action _onResultContinue = () => {
@@ -596,10 +581,11 @@ export default class StakingStore extends Store {
     this.isSubmittingReedem = false;
     this.stakingSuccess = null;
     this.redeemWallet = null;
-    this.rewardsTotal = 0;
-    this.transactionFees = 0;
-    this.finalTotal = 0;
-    this.stakingFailure = 0;
+    this.transactionFees = null;
+    this.redeemedRewards = null;
+    this.redeemRecoveryPhrase = null;
+    this.configurationStepError = null;
+    this.confirmationStepError = null;
   };
 
   @action _closeRedeemDialog = () => {
@@ -610,7 +596,8 @@ export default class StakingStore extends Store {
   // ================= REACTIONS ==================
 
   _pollOnSync = () => {
-    if (this.stores.networkStatus.isSynced && this.isShelleyActivated) {
+    const { isSynced, isShelleyActivated } = this.stores.networkStatus;
+    if (isSynced && isShelleyActivated) {
       this._setStake(this.stake);
     } else {
       this._resetIsRanking();

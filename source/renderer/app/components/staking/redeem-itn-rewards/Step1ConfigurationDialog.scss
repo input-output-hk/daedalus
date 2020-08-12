@@ -1,41 +1,29 @@
 @import '../../../themes/mixins/error-message';
 .component {
   .description {
-    color: var(--theme-staking-redeemItnRewards-text-color);
     font-family: var(--font-regular);
     font-size: 16px;
-    height: 132px;
     line-height: 1.38;
     margin-bottom: 20px;
     text-align: center;
-    width: 620px;
+    b {
+      color: var(--theme-dialog-fullsize-text-highlight-color);
+      font-family: var(--font-bold);
+    }
     .itnLink {
       @extend .description;
-      border-bottom: 1px solid var(--theme-staking-redeemItnRewards-text-color);
       &:after {
-        background: var(--theme-staking-redeemItnRewards-text-color);
       }
-    }
-    b {
-      font-family: var(--font-bold);
     }
   }
   .recoveryPhrase {
     margin-bottom: 20px;
   }
   .walletsDropdownWrapper {
-    border-bottom: 1px solid
-      var(--theme-staking-redeemItnRewards-separator-color);
     margin-bottom: 17px;
   }
   .walletsDropdown {
     margin-bottom: 20px;
-  }
-  hr {
-    background-color: var(--theme-staking-redeemItnRewards-separator-color);
-    border: none;
-    height: 1px;
-    margin-bottom: 17px;
   }
   .checkbox {
     margin-bottom: 20px;

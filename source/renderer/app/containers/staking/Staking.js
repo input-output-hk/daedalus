@@ -78,12 +78,12 @@ export default class Staking extends Component<Props> {
       stores: { app, staking },
       children,
     } = this.props;
-    const { isShelleyTestnet } = global;
+    const { isIncentivizedTestnet } = global;
     const { isStakingExperimentRead, isStakingDelegationCountdown } = staking;
 
     return (
       <MainLayout>
-        {!isShelleyTestnet && !isStakingExperimentRead && (
+        {isIncentivizedTestnet && !isStakingExperimentRead && (
           <ExperimentalDataOverlay
             onClose={this.handleCloseExperimentalDataOverlay}
           />
@@ -96,7 +96,6 @@ export default class Staking extends Component<Props> {
             onNavItemClick={this.handleNavItemClick}
             activeItem={app.currentPage}
             isIncentivizedTestnet={global.isIncentivizedTestnet}
-            isShelleyTestnet={global.isShelleyTestnet}
           >
             {children}
           </StakingWithNavigation>
