@@ -24,15 +24,10 @@ import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { submitOnEnter } from '../../utils/form';
 
 const messages = defineMessages({
-  dialogTitleItn: {
-    id: 'wallet.create.dialog.title.itn',
-    defaultMessage: '!!!Create a new wallet',
-    description: 'Title "Create a new wallet" in the wallet create form.',
-  },
   dialogTitle: {
     id: 'wallet.create.dialog.title',
-    defaultMessage: '!!!Create a wallet',
-    description: 'Title "Create a wallet" in the wallet create form.',
+    defaultMessage: '!!!Create a new wallet',
+    description: 'Title "Create a new wallet" in the wallet create form.',
   },
   walletName: {
     id: 'wallet.create.dialog.name.label',
@@ -46,17 +41,11 @@ const messages = defineMessages({
     description:
       'Hint for the "Wallet Name" text input in the wallet create form.',
   },
-  createPersonalWalletItn: {
-    id: 'wallet.create.dialog.create.personal.wallet.button.label.itn',
+  createPersonalWallet: {
+    id: 'wallet.create.dialog.create.personal.wallet.button.label',
     defaultMessage: '!!!Create Shelley wallet',
     description:
       'Label for the "Create Shelley wallet" button on create wallet dialog.',
-  },
-  createPersonalWallet: {
-    id: 'wallet.create.dialog.create.personal.wallet.button.label',
-    defaultMessage: '!!!Create wallet',
-    description:
-      'Label for the "Create wallet" button on create wallet dialog.',
   },
   passwordSectionLabel: {
     id: 'wallet.create.dialog.passwordSectionLabel',
@@ -88,10 +77,7 @@ const messages = defineMessages({
   },
 });
 
-const { isIncentivizedTestnet } = global;
-
 type Props = {
-  isShelleyActivated: boolean,
   onSubmit: Function,
   onCancel: Function,
 };
@@ -211,7 +197,7 @@ export default class WalletCreateDialog extends Component<Props, State> {
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { onCancel, isShelleyActivated } = this.props;
+    const { onCancel } = this.props;
     const { isSubmitting } = this.state;
     const dialogClasses = classnames([styles.component, 'WalletCreateDialog']);
 
@@ -225,11 +211,7 @@ export default class WalletCreateDialog extends Component<Props, State> {
       {
         className: isSubmitting ? styles.isSubmitting : null,
         disabled: !canSubmit,
-        label: this.context.intl.formatMessage(
-          isIncentivizedTestnet || isShelleyActivated
-            ? messages.createPersonalWalletItn
-            : messages.createPersonalWallet
-        ),
+        label: this.context.intl.formatMessage(messages.createPersonalWallet),
         primary: true,
         onClick: this.submit,
       },
@@ -238,11 +220,7 @@ export default class WalletCreateDialog extends Component<Props, State> {
     return (
       <Dialog
         className={dialogClasses}
-        title={intl.formatMessage(
-          isIncentivizedTestnet || isShelleyActivated
-            ? messages.dialogTitleItn
-            : messages.dialogTitle
-        )}
+        title={intl.formatMessage(messages.dialogTitle)}
         actions={actions}
         closeOnOverlayClick
         onClose={!isSubmitting ? onCancel : () => {}}

@@ -283,10 +283,7 @@ const createWalletsSequentially = async function(wallets: Array<any>) {
         spendingPassword: wallet.password || 'Secret1234',
       };
       daedalus.api.ada
-        .createWallet({
-          walletDetails,
-          isShelleyActivated: false, // @TODO - pass real flag from staking store
-        })
+        .createWallet(walletDetails)
         .then(() =>
           daedalus.stores.wallets.walletsRequest
             .execute()
@@ -325,10 +322,7 @@ const createWalletsAsync = async function(table, isLegacy?: boolean) {
           spendingPassword: wallet.password || 'Secret1234',
         };
         if (isLegacyWallet) {
-          return createWallet({
-            walletDetails,
-            isShelleyActivated: false, // @TODO - pass real flag from staking store
-          })
+          return createWallet(walletDetails)
         }
         return restoreByronRandomWallet({
           name: wallet.name,

@@ -95,6 +95,7 @@ export default class SyncingConnectingStatus extends Component<Props> {
     const {
       cardanoNodeState,
       hasBeenConnected,
+      isVerifyingBlockchain,
       isTlsCertInvalid,
       isConnected,
     } = this.props;
@@ -137,6 +138,9 @@ export default class SyncingConnectingStatus extends Component<Props> {
     if (isTlsCertInvalid && isConnectingMessage) {
       return messages.tlsCertificateNotValidError;
     }
+    if (isVerifyingBlockchain && isConnectingMessage) {
+      return messages.verifyingBlockchain;
+    }
     return connectingMessage;
   };
 
@@ -148,7 +152,6 @@ export default class SyncingConnectingStatus extends Component<Props> {
       isNodeStopped,
       isTlsCertInvalid,
       hasLoadedCurrentLocale,
-      isVerifyingBlockchain,
       verificationProgress,
     } = this.props;
 
@@ -170,11 +173,9 @@ export default class SyncingConnectingStatus extends Component<Props> {
     return (
       <div className={componentStyles}>
         <h1 className={headlineStyles}>
-          {isVerifyingBlockchain
-            ? intl.formatMessage(messages.verifyingBlockchain, {
-                verificationProgress,
-              })
-            : intl.formatMessage(this._getConnectingMessage())}
+          {intl.formatMessage(this._getConnectingMessage(), {
+            verificationProgress,
+          })}
         </h1>
       </div>
     );
