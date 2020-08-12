@@ -3656,9 +3656,9 @@ cardano-js@0.4.5:
     js-chain-libs-node "^0.3.0"
     ts-custom-error "^3.1.1"
 
-cardano-launcher@0.20200722.0:
-  version "0.20200722.0"
-  resolved "https://registry.yarnpkg.com/cardano-launcher/-/cardano-launcher-0.20200722.0.tgz#35acaa3e3d57997aa5ad434358a4d7fe5b7b85d1"
+cardano-launcher@0.20200804.0:
+  version "0.20200804.0"
+  resolved "https://registry.yarnpkg.com/cardano-launcher/-/cardano-launcher-0.20200804.0.tgz#631a147bf081e3b3117f4a68b5b5740b586ca33c"
   dependencies:
     get-port "^5.1.1"
     lodash "^4.17.19"
