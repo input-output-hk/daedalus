@@ -3846,7 +3846,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Delegation is not currently available",
+        "defaultMessage": "!!!Delegation is currently unavailable",
         "description": "Title \"Delegation Setup\" on the delegation setup not available dialog.",
         "end": {
           "column": 3,
@@ -3860,7 +3860,7 @@
         }
       },
       {
-        "defaultMessage": "!!!None of your wallets currently hold the <span>minimum amount of {minDelegationFunds} ADA</span> that is required for delegation options.",
+        "defaultMessage": "!!!None of your Shelley wallets currently hold the <span>minimum amount of {minDelegationFunds} ada</span> required for delegation.",
         "description": "Description on the delegation setup not available dialog.",
         "end": {
           "column": 3,
@@ -9670,7 +9670,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Transfer funds from the Byron legacy wallet",
+        "defaultMessage": "!!!Transfer funds",
         "description": "Title  in the transfer funds form.",
         "end": {
           "column": 3,
