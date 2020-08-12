@@ -88,6 +88,8 @@
   }
 
   .sandClockTooltip {
+    padding: 0;
+
     :global {
       .SimpleBubble_bubble {
         margin-bottom: -20px !important;
@@ -96,8 +98,17 @@
 
     .sandClock {
       background-color: var(--theme-staking-stake-pool-grey-bg-color);
+      border-radius: 3px;
       height: 16px;
       width: 23px;
+
+      :global {
+        .SVGInline {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+      }
 
       svg {
         height: 8px;
