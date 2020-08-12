@@ -445,7 +445,7 @@
   "staking.stakePools.listTitle": "ステークプール ({pools})",
   "staking.stakePools.listTitleWithSearch": "ステークプール検索結果：({pools})",
   "staking.stakePools.loadingStakePoolsMessage": "ステークプールをロードしています",
-  "staking.stakePools.noDataDashTooltip": "データはまだ利用できません",
+  "staking.stakePools.noDataDashTooltip": "まだ利用できるデータがありません",
   "staking.stakePools.rankingAllWallets": "すべてのウォレット",
   "staking.stakePools.rankingAllWalletsEnd": "の合計額を基にランク付けされています。",
   "staking.stakePools.rankingAllWalletsStart": "ステークプールは現在",
