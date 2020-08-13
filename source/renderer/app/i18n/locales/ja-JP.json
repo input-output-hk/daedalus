@@ -361,8 +361,8 @@
   "staking.delegationSetup.intro.step.dialog.stepsExplanation.step3": "委任の確認",
   "staking.delegationSetup.intro.step.dialog.title": "ウォレットを委任する",
   "staking.delegationSetup.notAvailable.dialog.closeButtonLabel": "閉じる",
-  "staking.delegationSetup.notAvailable.dialog.description": "委任に必要な<span>最低額{minDelegationFunds}ADA</span>が入ったウォレットがありません。",
-  "staking.delegationSetup.notAvailable.dialog.title": "現在委任できません",
+  "staking.delegationSetup.notAvailable.dialog.description": "委任に必要な<span>最低額{minDelegationFunds}ADA</span>が入ったShelleyウォレットがありません。",
+  "staking.delegationSetup.notAvailable.dialog.title": "現在委任はできません",
   "staking.delegationSetup.steps.step.1.label": "ウォレット",
   "staking.delegationSetup.steps.step.2.label": "ステークプール",
   "staking.delegationSetup.steps.step.3.label": "確認",
@@ -895,7 +895,7 @@
   "wallet.transferFunds.dialog1.continueLabel": "続ける",
   "wallet.transferFunds.dialog1.sourceWallet": "送金元Byronレガシーウォレット",
   "wallet.transferFunds.dialog1.targetWallet": "入金先Shelley対応ウォレット",
-  "wallet.transferFunds.dialog1.title": "Byronレガシーウォレットの資金を移す",
+  "wallet.transferFunds.dialog1.title": "資金を移す",
   "wallet.transferFunds.dialog2.label.amount": "金額",
   "wallet.transferFunds.dialog2.label.buttonLabel": "資金を移す",
   "wallet.transferFunds.dialog2.label.description": "{sourceWalletName}ウォレットから{targetWalletName}ウォレットへの送金内容を確認してください。",
@@ -903,5 +903,5 @@
   "wallet.transferFunds.dialog2.label.total": "合計",
   "wallet.transferFunds.dialog2.passphraseFieldPlaceholder": "送信時パスワード",
   "wallet.transferFunds.dialog2.passphraseLabel": "送信時パスワード",
-  "wallet.transferFunds.dialog2.title": "Byronレガシーウォレットの資金を移す"
+  "wallet.transferFunds.dialog2.title": "資金を移す"
 }

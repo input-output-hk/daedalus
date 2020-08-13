@@ -14,6 +14,7 @@ Changelog
 
 ### Fixes
 
+- Fixed text copy on "Transfer funds" and "Delegation" wizards ([PR 2153](https://github.com/input-output-hk/daedalus/pull/2153))
 - Fixed display priority of Daedalus shutdown messages on the "Loading" screen ([PR 2150](https://github.com/input-output-hk/daedalus/pull/2150))
 - Fixed double loading spinner issue on stake pools list page ([PR 2144](https://github.com/input-output-hk/daedalus/pull/2144))
 - Fixed the Japanese translation for "Byron" wallet label ([PR 2147](https://github.com/input-output-hk/daedalus/pull/2147))
