@@ -72,9 +72,7 @@ let
     bridgeTable = {
       jormungandr = self.callPackage ./nix/jormungandr-bridge.nix {};
       cardano = self.callPackage ./nix/cardano-bridge.nix {
-        cardano-wallet = if self.launcherConfigs.launcherConfig.nodeConfig.kind == "byron"
-                         then self.cardano-wallet.cardano-wallet-byron
-                         else self.cardano-wallet.cardano-wallet-shelley;
+        cardano-wallet = self.cardano-wallet.cardano-wallet;
         cardanoWalletPkgs = self.cardano-wallet.pkgs;
       };
     };
@@ -99,7 +97,6 @@ let
     cardano-node = if useLocalNode
                    then (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).haskellPackages.cardano-node.components.exes.cardano-node
                    else self.cardano-wallet.cardano-node;
-    cardano-sl = import self.sources.cardano-sl { inherit target; gitrev = self.sources.cardano-sl.rev; };
     darwin-launcher = self.callPackage ./nix/darwin-launcher.nix {};
 
     # a cross-compiled fastlist for the ps-list package
@@ -200,7 +197,7 @@ let
     '';
 
     nsisFiles = let
-      nodeImplementation' = if nodeImplementation == "jormungandr" then nodeImplementation else "${nodeImplementation}-${self.launcherConfigs.launcherConfig.nodeConfig.kind}";
+      nodeImplementation' = if nodeImplementation == "jormungandr" then nodeImplementation else "${nodeImplementation}";
     in pkgs.runCommand "nsis-files" {
       buildInputs = [ self.daedalus-installer pkgs.glibcLocales ];
     } ''

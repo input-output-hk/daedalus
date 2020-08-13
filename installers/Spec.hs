@@ -21,14 +21,12 @@ import Config
 import Types
 import qualified MacInstaller as Mac
 import Util
-import AppVeyor
 
 main :: IO ()
 main = hspec $ do
   describe "Utility functions" utilSpec
   describe "MacInstaller build" macBuildSpec
   describe "recursive directory deletion" deleteSpec
-  describe "Hydra downloads for AppVeyor" hydraSpec
 
 macBuildSpec :: Spec
 macBuildSpec = do

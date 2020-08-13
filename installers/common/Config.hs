@@ -54,7 +54,6 @@ argReadLower = arg (diagReadCaseInsensitive . T.unpack)
 
 data Command
   =  GenInstaller
-  | Appveyor
   | BuildkiteCrossWin
   deriving (Eq, Show)
 
@@ -75,7 +74,6 @@ commandParser = (fromMaybe GenInstaller <$>) . optional $
   subcommandGroup "Subcommands:"
   [ ("installer",  "Build an installer",
       pure GenInstaller)
-  , ("appveyor",   "do an appveroy build", pure Appveyor)
   , ("buildkite-cross", "cross-compile windows from linux", pure BuildkiteCrossWin)
   ]
 
@@ -97,10 +95,9 @@ optionsParser detectedOS = Options
   <*> (optional $ optPath       "signing-config"      'k' "the path to the json file describing the product signing config")
 
 backendOptionParser :: Parser Backend
-backendOptionParser = enableJormungandr <|> cardanoByron <|> cardanoShelley
+backendOptionParser = enableJormungandr <|> cardano
   where
-    cardanoByron = Cardano Byron <$> optPath "cardano-byron" 'B' "Use Cardano Byron backend with given Daedalus bridge path"
-    cardanoShelley = Cardano Shelley <$> optPath "cardano-shelley" 'S' "Use Cardano Shelley backend with given Daedalus bridge path"
+    cardano = Cardano <$> optPath "cardano" 'S' "Use Cardano backend with given Daedalus bridge path"
     enableJormungandr = Jormungandr <$> optPath  "jormungandr" 'j' "use Jormungandr backend"
 
 -- | Render a FilePath with POSIX-style forward slashes, which is the

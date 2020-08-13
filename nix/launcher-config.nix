@@ -183,7 +183,7 @@ let
   mkConfigCardano = let
     filterMonitoring = config: if devShell then config else builtins.removeAttrs config [ "hasPrometheus" "hasEKG" ];
     cardanoAddressBin = mkBinPath "cardano-address";
-    walletBin = mkBinPath "cardano-wallet-${kind}";
+    walletBin = mkBinPath "cardano-wallet";
     nodeBin = mkBinPath "cardano-node";
     cliBin = mkBinPath "cardano-cli";
     nodeConfig = let
@@ -269,7 +269,7 @@ let
       installerWinBinaries = [
         "cardano-launcher.exe"
         "cardano-node.exe"
-        "cardano-wallet-${kind}.exe"
+        "cardano-wallet.exe"
         "cardano-cli.exe"
         "cardano-address.exe"
       ];

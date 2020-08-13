@@ -99,8 +99,7 @@ let
       source <(cardano-cli --bash-completion-script cardano-cli)
       source <(cardano-node --bash-completion-script cardano-node)
       source <(cardano-address --bash-completion-script cardano-address)
-      [[ $(type -P cardano-wallet-shelley) ]] && source <(cardano-wallet-shelley --bash-completion-script cardano-wallet-shelley)
-      [[ $(type -P cardano-wallet-byron) ]] && source <(cardano-wallet-byron --bash-completion-script cardano-wallet-byron)
+      [[ $(type -P cardano-wallet) ]] && source <(cardano-wallet --bash-completion-script cardano-wallet)
 
       cp -f ${daedalusPkgs.iconPath.small} $DAEDALUS_INSTALL_DIRECTORY/icon.png
 
