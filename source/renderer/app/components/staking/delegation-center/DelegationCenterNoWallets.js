@@ -17,7 +17,7 @@ const messages = defineMessages({
   instructions: {
     id: 'staking.delegationCenter.noWallets.instructions',
     defaultMessage:
-      '!!!Create a new wallet and transfer in a minimum of {minDelegationFunds} ada (or restore an existing wallet with funds), then return here to delegate your stake.',
+      '!!!Create a new wallet and transfer in a minimum of {minDelegationFunds} ADA (or restore an existing wallet with funds), then return here to delegate your stake.',
     description: '"No wallets" instructions on the Delegation centre Page.',
   },
   createWalletButtonLabel: {

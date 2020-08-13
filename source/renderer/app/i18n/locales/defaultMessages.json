@@ -2882,7 +2882,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Create a new wallet and transfer in a minimum of {minDelegationFunds} ada (or restore an existing wallet with funds), then return here to delegate your stake.",
+        "defaultMessage": "!!!Create a new wallet and transfer in a minimum of {minDelegationFunds} ADA (or restore an existing wallet with funds), then return here to delegate your stake.",
         "description": "\"No wallets\" instructions on the Delegation centre Page.",
         "end": {
           "column": 3,
@@ -3860,7 +3860,7 @@
         }
       },
       {
-        "defaultMessage": "!!!None of your Shelley wallets currently hold the <span>minimum amount of {minDelegationFunds} ada</span> required for delegation.",
+        "defaultMessage": "!!!None of your Shelley wallets currently hold the <span>minimum amount of {minDelegationFunds} ADA</span> required for delegation.",
         "description": "Description on the delegation setup not available dialog.",
         "end": {
           "column": 3,
