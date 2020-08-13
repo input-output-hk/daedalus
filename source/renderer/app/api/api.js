@@ -183,7 +183,11 @@ import { WALLET_BYRON_KINDS } from '../config/walletRestoreConfig';
 import ApiError from '../domains/ApiError';
 
 // @UPDATE TODO
-import dummyUpdate from './news/dummy-update.json';
+import {
+  getNewsFeedApiItemUpdate,
+  version as currentAppVersion,
+  availableAppVersion,
+} from './news/dummyUpdate';
 
 const { isIncentivizedTestnet } = global;
 
@@ -1695,15 +1699,16 @@ export default class AdaApi {
     let news: GetNewsResponse;
     try {
       rawNews = await getNews();
-      console.log('rawNews', rawNews);
       news = JSON.parse(rawNews);
-      console.log('news', news);
     } catch (error) {
       logger.error('AdaApi::getNews error', { error });
       throw new Error('Unable to fetch news');
     }
 
-    news.items = [...news.items, ...dummyUpdate];
+    const updateNewsItem = getNewsFeedApiItemUpdate(currentAppVersion);
+    // const updateNewsItem = getNewsFeedApiItemUpdate(availableAppVersion);
+
+    news.items = [...news.items, updateNewsItem];
 
     // Fetch news verification hash
     let newsHash: string;

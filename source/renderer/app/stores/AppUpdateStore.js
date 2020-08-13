@@ -29,9 +29,6 @@ import type {
 } from '../../../common/types/downloadManager.types';
 import type { FormattedDownloadData } from '../utils/formatters.js';
 
-// @UPDATE TODO
-import dummyUpdate from '../api/news/dummy-update.json';
-
 const { version: currentVersion, platform } = global.environment;
 const { News } = NewsDomains;
 const APP_UPDATE_DOWNLOAD_ID = 'appUpdate';
@@ -39,18 +36,7 @@ const APP_UPDATE_DOWNLOAD_ID = 'appUpdate';
 export default class AppUpdateStore extends Store {
   // @UPDATE TODO
   // < -----
-  @observable availableUpdate: ?News = dummyUpdate;
-  @observable availableUpdateVersion: string = '';
-  @observable isUpdateDownloading: boolean = false;
-  @observable isUpdateDownloaded: boolean = false;
-  @observable isUpdateInstalled: boolean = false;
-  @observable isUpdateProgressOpen: boolean = false;
-  @observable isAutomaticUpdateFailed: boolean = false;
-  @observable displayManualUpdateLink: boolean = false;
-  // ----- >
-  // @UPDATE TODO
-
-  // @observable availableUpdate: ?News = null;
+  // @observable availableUpdate: ?News = dummyUpdate;
   // @observable availableUpdateVersion: string = '';
   // @observable isUpdateDownloading: boolean = false;
   // @observable isUpdateDownloaded: boolean = false;
@@ -58,6 +44,17 @@ export default class AppUpdateStore extends Store {
   // @observable isUpdateProgressOpen: boolean = false;
   // @observable isAutomaticUpdateFailed: boolean = false;
   // @observable displayManualUpdateLink: boolean = false;
+  // ----- >
+  // @UPDATE TODO
+
+  @observable availableUpdate: ?News = null;
+  @observable availableUpdateVersion: string = '';
+  @observable isUpdateDownloading: boolean = false;
+  @observable isUpdateDownloaded: boolean = false;
+  @observable isUpdateInstalled: boolean = false;
+  @observable isUpdateProgressOpen: boolean = false;
+  @observable isAutomaticUpdateFailed: boolean = false;
+  @observable displayManualUpdateLink: boolean = false;
 
   @observable downloadInfo: ?DownloadInfo = null;
   @observable downloadData: ?DownloadData = null;
@@ -151,7 +148,12 @@ export default class AppUpdateStore extends Store {
   }
 
   isUpdateInstalled = (update: News) => {
+    console.log('update', update);
     const { version: updateVersion } = this.getUpdateInfo(update);
+    console.log('updateVersion', updateVersion);
+    console.log('---------- >');
+    console.log('updateVersion', updateVersion);
+    console.log('currentVersion', currentVersion);
     return !semver.lt(currentVersion, updateVersion);
   };
 

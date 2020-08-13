@@ -1,6 +1,8 @@
 // @flow
 import inc from 'semver/functions/inc';
 import { version as currentVersion } from '../../../../package.json';
+import News from '../../../../source/renderer/app/domains/News';
+import type { NewsItem } from '../../../../source/renderer/app/api/news/types';
 
 export const version = currentVersion;
 export const availableAppVersion = inc(version, 'minor');
@@ -60,4 +62,51 @@ export const updateJP = {
 export const update = {
   'en-US': updateEN,
   'ja-JP': updateJP,
+};
+
+export const getNewsUpdateItem = (
+  read?: boolean,
+  locale: string
+): News.News => {
+  const date = new Date().getTime();
+  return new News.News({
+    id: date,
+    title: update[locale].title,
+    content: update[locale].content,
+    target: { daedalusVersion: version, platform: 'darwin' },
+    action: {
+      label: 'Visit daedalus.io',
+      url: 'https://daedalus.io',
+    },
+    date,
+    type: 'software-update',
+    read: read || false,
+  });
+};
+
+export const newsFeedApiItemUpdate: NewsItem = {
+  title: {
+    'en-US': updateEN.title,
+    'ja-JP': updateJP.title,
+  },
+  content: {
+    'en-US': updateEN.content,
+    'ja-JP': updateJP.content,
+  },
+  target: {
+    daedalusVersion: version,
+    platform: 'linux',
+  },
+  action: {
+    label: {
+      'en-US': updateEN.action.label,
+      'ja-JP': updateJP.action.label,
+    },
+    url: {
+      'en-US': updateEN.action.url,
+      'ja-JP': updateJP.action.url,
+    },
+  },
+  date: 1571901607418,
+  type: 'software-update',
 };
