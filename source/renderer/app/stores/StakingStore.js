@@ -45,7 +45,6 @@ export default class StakingStore extends Store {
   @observable redeemedRewards: ?BigNumber = null;
   @observable isSubmittingReedem: boolean = false;
   @observable stakingSuccess: ?boolean = null;
-
   @observable configurationStepError: ?LocalizableError = null;
   @observable confirmationStepError: ?LocalizableError = null;
 
