@@ -1037,9 +1037,11 @@ export const DARK_CARDANO_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.3)',
     '--theme-news-overlay-update-content-scroll-hover-background-color':
       'rgba(255, 255, 255, 0.5)',
-    '--theme-news-overlay-update-button-background-color': 'rgba(0, 0, 0, 0.1)',
-    '--theme-news-overlay-update-button-text-color': '#fafbfc',
+    '--theme-news-overlay-update-button-background-color': '#36374d',
+    '--theme-news-overlay-update-button-text-color': '#ffffff',
     '--theme-news-overlay-update-button-hover-text-color': '#273d5b',
+    '--theme-news-overlay-update-button-background-color-hover': '#ffffff',
+    '--theme-news-overlay-update-button-border-color': '#ffffff',
   },
 };
 

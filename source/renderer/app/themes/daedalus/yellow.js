@@ -1038,6 +1038,8 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-news-overlay-update-button-background-color': 'rgba(0, 0, 0, 0.1)',
     '--theme-news-overlay-update-button-text-color': '#2d2d2d',
     '--theme-news-overlay-update-button-hover-text-color': '#fafbfc',
+    '--theme-news-overlay-update-button-background-color-hover': '#2d2d2d',
+    '--theme-news-overlay-update-button-border-color': '#2d2d2d',
   },
 };
 

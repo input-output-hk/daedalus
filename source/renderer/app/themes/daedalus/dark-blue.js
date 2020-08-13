@@ -1056,8 +1056,10 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-news-overlay-update-content-scroll-hover-background-color':
       'rgba(255, 255, 255, 0.5)',
     '--theme-news-overlay-update-button-background-color': 'rgba(0, 0, 0, 0.1)',
-    '--theme-news-overlay-update-button-text-color': '#fafbfc',
+    '--theme-news-overlay-update-button-text-color': '#ffffff',
     '--theme-news-overlay-update-button-hover-text-color': '#273d5b',
+    '--theme-news-overlay-update-button-background-color-hover': '#fafbfc',
+    '--theme-news-overlay-update-button-border-color': '#ffffff',
   },
 };
 
