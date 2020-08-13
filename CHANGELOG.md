@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Handled random stake pool data during the first "Shelley" epochs ([PR 2151](https://github.com/input-output-hk/daedalus/pull/2151))
 - Enabled wallet creation regardless of the sync progress ([PR 2150](https://github.com/input-output-hk/daedalus/pull/2150))
 - Enabled restoration of "Shelley" wallets regardless of the sync progress ([PR 2150](https://github.com/input-output-hk/daedalus/pull/2150))
 - Enabled restoration of Yoroi "Shelley" wallets ([PR 2144](https://github.com/input-output-hk/daedalus/pull/2144))
