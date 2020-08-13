@@ -112,11 +112,11 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-data-migration-layer-box-shadow-color': '#36374d',
     '--theme-data-migration-layer-button-background-color': '#36374d',
     '--theme-data-migration-layer-button-background-color-hover': '#ffffff',
+    '--theme-data-migration-layer-button-border-color': '#ffffff',
+    '--theme-data-migration-layer-button-label-color': '#ffffff',
     '--theme-data-migration-layer-text-color': '#ffffff',
     '--theme-data-migration-layer-text-color-hover': '#36374d',
     '--theme-data-migration-layer-text-opacity-color': '#000000',
-    '--theme-data-migration-button-border-color': '#ffffff',
-    '--theme-data-migration-button-label-color': '#ffffff',
   },
   delegationSetupWizard: {
     '--theme-delegation-steps-activation-steps-indicator-color': '#ffffff',
