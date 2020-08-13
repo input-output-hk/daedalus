@@ -151,7 +151,6 @@ pushd installers
     do
           echo "~~~ Generating installer for cluster ${cluster}.."
           LAUNCHER_CONFIG="$(nix-build ../. --no-out-link -A launcherConfigs.configFiles --argstr cluster "${cluster}")/launcher-config.yaml"
-          KIND="$($nix_shell ../shell.nix -A buildShell --run "jq .nodeConfig.kind < $LAUNCHER_CONFIG ")"
 
           export DAEDALUS_CLUSTER="${cluster}"
           APP_NAME="csl-daedalus"
