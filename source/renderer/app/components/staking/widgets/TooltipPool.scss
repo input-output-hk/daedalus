@@ -114,10 +114,8 @@
       svg {
         height: 10px;
         width: 7px;
-        g {
-          path {
-            fill: var(--theme-staking-stake-pool-tooltip-neutral-text-color);
-          }
+        path {
+          fill: var(--theme-staking-stake-pool-tooltip-neutral-text-color);
         }
       }
     }
