@@ -9,10 +9,6 @@ import qualified System.IO as IO
 
 import qualified MacInstaller
 import qualified WindowsInstaller
-import           System.Environment (getEnv)
-import           Data.List.Split (splitOn)
-import           Data.Maybe                          (fromJust)
-import           System.Directory
 import qualified Data.Text.IO as T
 import qualified Data.Text as T
 import           Data.Yaml                 (decodeFileThrow)
@@ -43,38 +39,6 @@ main = do
       installerConfig <- decodeFileThrow "installer-config.json"
       WindowsInstaller.writeInstallerNSIS fullName fullVersion installerConfig options' (oCluster options')
       WindowsInstaller.writeUninstallerNSIS fullVersion installerConfig
-    Appveyor -> do
-        buildNumber <- getEnv "APPVEYOR_BUILD_NUMBER"
-        let
-            opts' = options' {
-                  oBuildJob = Just $ BuildJob $ pack $ buildNumber
-                }
-            go :: String -> IO ()
-            go cluster' = do
-                let
-                    getAppName ITN_Rewards_v1 = "DaedalusRewardsV1"
-                    getAppName Nightly = "DaedalusNightly"
-                    getAppName QA = "DaedalusQA";
-                    getAppName Selfnode = "DaedalusSelfnode"
-                    cluster = fromJust $ diagReadCaseInsensitive cluster'
-                    opts'' = opts' {
-                          oCluster = cluster
-                        , oAppName = getAppName cluster
-                    }
-                    banner :: Text
-                    banner = "##############################################################################\n" <>
-                             "###\n" <>
-                             "### Building for cluster " <> pack cluster' <> "\n" <>
-                             "###\n" <>
-                             "##############################################################################\n"
-                putStr banner
-                genSignedInstaller os opts''
-                copyFile "launcher-config.yaml" ("launcher-config-" <> cluster' <> ".win64.yaml")
-        clusters' <- getEnv "CLUSTERS"
-        let clusters = splitOn " " clusters'
-        print clusters
-        mapM_ go clusters
-
 -- | The contract of `genSignedInstaller` is not to produce unsigned installer binaries.
 genSignedInstaller :: OS -> Options -> IO ()
 genSignedInstaller os options'= do

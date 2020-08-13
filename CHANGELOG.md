@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## vNext
+## 2.2.0
 
 ### Features
 
@@ -20,6 +20,10 @@ Changelog
 - Fixed the Japanese translation for "Byron" wallet label ([PR 2147](https://github.com/input-output-hk/daedalus/pull/2147))
 - Fixed validation of spending passwords which include spaces ([PR 2147](https://github.com/input-output-hk/daedalus/pull/2147))
 - Disabled ITN rewards redemption in case Daedalus is not fully in sync ([PR 2146](https://github.com/input-output-hk/daedalus/pull/2146))
+
+### Chores
+
+- Updated `cardano-wallet` to revision `a4fd49e3` ([PR 2155](https://github.com/input-output-hk/daedalus/pull/2155))
 
 ## 2.1.0
 
