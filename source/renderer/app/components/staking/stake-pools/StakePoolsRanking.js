@@ -18,6 +18,7 @@ import {
   OUT_OF_RANGE_MAX_DELEGATION_FUNDS,
   ALL_WALLETS_SELECTION_ID,
   INITIAL_DELEGATION_FUNDS,
+  IS_RANKING_DATA_AVAILABLE,
 } from '../../../config/stakingConfig';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import ButtonLink from '../../widgets/ButtonLink';
@@ -250,6 +251,10 @@ export default class StakePoolsRanking extends Component<Props, State> {
       walletSelectionEnd,
       learnMoreUrl,
     } = this.generateInfo();
+
+    if (!IS_RANKING_DATA_AVAILABLE) {
+      return null;
+    }
 
     return (
       <div className={styles.component}>

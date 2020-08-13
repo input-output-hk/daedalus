@@ -1,8 +1,8 @@
 .component {
-  height: 71px;
+  height: 69px;
   padding: 9px 0 0;
   position: relative;
-  width: 80px;
+  width: 78px;
 
   &.disabled {
     opacity: 0.3;
@@ -99,6 +99,37 @@
 }
 
 .colorBand {
+  border-radius: 0 0 4px 4px;
+  bottom: 0;
+  display: block;
+  height: 5px;
+  left: 0;
+  position: absolute;
+  width: 100%;
+}
+
+.noDataDash {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+
+  :global {
+    .SVGInline {
+      svg {
+        height: 3px;
+        width: 12px;
+
+        path {
+          fill: var(--theme-staking-stake-pool-grey-color) !important;
+          opacity: 1 !important;
+        }
+      }
+    }
+  }
+}
+
+.greyColorBand {
+  background: var(--theme-staking-stake-pool-grey-color);
   border-radius: 0 0 4px 4px;
   bottom: 0;
   display: block;

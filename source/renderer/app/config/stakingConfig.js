@@ -45,3 +45,5 @@ export const REDEEM_ITN_REWARDS_STEPS: {
   CONFIRMATION: 'confirmation',
   RESULT: 'result',
 };
+
+export const IS_RANKING_DATA_AVAILABLE = false;

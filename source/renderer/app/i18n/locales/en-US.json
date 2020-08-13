@@ -445,6 +445,7 @@
   "staking.stakePools.listTitle": "Stake pools ({pools})",
   "staking.stakePools.listTitleWithSearch": "Stake pools. Search results: ({pools})",
   "staking.stakePools.loadingStakePoolsMessage": "Loading stake pools",
+  "staking.stakePools.noDataDashTooltip": "Data not available yet",
   "staking.stakePools.rankingAllWallets": "all your wallets",
   "staking.stakePools.rankingAllWalletsEnd": ".",
   "staking.stakePools.rankingAllWalletsStart": "Stake pools are currently ranked based on the combined amount in",
