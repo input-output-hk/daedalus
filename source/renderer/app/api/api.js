@@ -1705,10 +1705,15 @@ export default class AdaApi {
       throw new Error('Unable to fetch news');
     }
 
-    const updateNewsItem = getNewsFeedApiItemUpdate(currentAppVersion);
-    // const updateNewsItem = getNewsFeedApiItemUpdate(availableAppVersion);
-
+    // @UPDATE TODO: Different versions for testing purposes
+    // < -----
+    const appVersions = {
+      current: currentAppVersion,
+      available: availableAppVersion,
+    };
+    const updateNewsItem = getNewsFeedApiItemUpdate(appVersions.current);
     news.items = [...news.items, updateNewsItem];
+    // ----- >
 
     // Fetch news verification hash
     let newsHash: string;
