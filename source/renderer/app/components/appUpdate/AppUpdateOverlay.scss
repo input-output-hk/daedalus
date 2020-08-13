@@ -69,21 +69,20 @@
 
     p,
     li {
-      color: rgba(255, 255, 255, 0.7);
       font-family: var(--font-regular);
       font-size: 14px;
       line-height: 1.5;
       margin-bottom: 6px;
 
       strong {
-        color: rgba(255, 255, 255, 1);
+        color: var(--theme-app-update-overlay-text-color);
         font-weight: 500;
       }
     }
 
     a {
-      border-bottom: 1px solid #fff;
-      color: #fff;
+      border-bottom: 1px solid var(--theme-app-update-overlay-text-color);
+      color: var(--theme-app-update-overlay-text-color);
       text-decoration: none;
     }
 
