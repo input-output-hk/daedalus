@@ -163,7 +163,7 @@ pushd installers
           else
             echo "Cluster type: cardano"
             CARDANO_BRIDGE="$(nix-build ../. --no-out-link -A daedalus-bridge --argstr nodeImplementation cardano --argstr cluster "${cluster}")"
-            BRIDGE_FLAG="--cardano-${KIND} ${CARDANO_BRIDGE}"
+            BRIDGE_FLAG="--cardano ${CARDANO_BRIDGE}"
           fi
 
           INSTALLER_CMD=("make-installer"
