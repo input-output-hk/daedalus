@@ -150,7 +150,6 @@ pushd installers
     for cluster in ${CLUSTERS}
     do
           echo "~~~ Generating installer for cluster ${cluster}.."
-          LAUNCHER_CONFIG="$(nix-build ../. --no-out-link -A launcherConfigs.configFiles --argstr cluster "${cluster}")/launcher-config.yaml"
 
           export DAEDALUS_CLUSTER="${cluster}"
           APP_NAME="csl-daedalus"
