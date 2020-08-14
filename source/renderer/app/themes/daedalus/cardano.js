@@ -753,6 +753,8 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-staking-stake-pool-background-color': '#ffffff',
     '--theme-staking-stake-pool-border-color': '#d2d3d3',
     '--theme-staking-stake-pool-glow-color': '#7cfeb54c',
+    '--theme-staking-stake-pool-grey-color': 'rgba(94, 96, 102, 0.5)',
+    '--theme-staking-stake-pool-grey-bg-color': 'rgba(94, 96, 102, 0.1)',
     '--theme-staking-progress-label-light': '#ffffff',
     '--theme-staking-stake-pool-retirement-background-color': '#ea4c5b',
     '--theme-staking-stake-pool-saturation-background-color':

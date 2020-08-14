@@ -14,7 +14,7 @@ import LocalizableError from '../../../i18n/LocalizableError';
 const messages = defineMessages({
   dialogTitle: {
     id: 'wallet.transferFunds.dialog1.title',
-    defaultMessage: '!!!Transfer funds from the Byron legacy wallet',
+    defaultMessage: '!!!Transfer funds',
     description: 'Title  in the transfer funds form.',
   },
   sourceWallet: {

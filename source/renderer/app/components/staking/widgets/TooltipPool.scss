@@ -86,6 +86,40 @@
       cursor: pointer;
     }
   }
+
+  .noDataDashTooltip {
+    padding: 0;
+
+    :global {
+      .SimpleBubble_bubble {
+        margin-bottom: -20px !important;
+      }
+    }
+
+    .noDataDash {
+      background-color: var(--theme-staking-stake-pool-grey-bg-color);
+      border-radius: 3px;
+      height: 16px;
+      width: 23px;
+
+      :global {
+        .SVGInline {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 0 4px;
+        }
+      }
+
+      svg {
+        height: 10px;
+        width: 7px;
+        path {
+          fill: var(--theme-staking-stake-pool-tooltip-neutral-text-color);
+        }
+      }
+    }
+  }
 }
 
 .container {
@@ -100,6 +134,10 @@
   position: absolute;
   top: 0;
   width: 100%;
+}
+
+.greyColorBand {
+  background: var(--theme-staking-stake-pool-grey-color);
 }
 
 .homepage {
@@ -368,7 +406,7 @@
 }
 
 .defaultColor {
-  span {
+  .defaultColorContent {
     background: var(
       --theme-staking-stake-pool-tooltip-neutral-background-color
     );

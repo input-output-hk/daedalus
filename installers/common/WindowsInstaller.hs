@@ -28,10 +28,8 @@ import           Prelude ((!!))
 import qualified System.IO as IO
 import           Filesystem.Path (FilePath, (</>))
 import           Filesystem.Path.CurrentOS (encodeString, fromText)
-import           Turtle (Shell, Line, ExitCode (..), echo, proc, procs, inproc, shells, testfile, stdout, input, export, sed, strict, format, printf, fp, w, s, (%), need, writeTextFile, die, cp, rm)
+import           Turtle (Shell, Line, ExitCode (..), echo, proc, procs, inproc, shells, testfile, export, sed, strict, format, printf, fp, w, s, (%), need, writeTextFile, die, cp, rm)
 import           Turtle.Pattern (text, plus, noneOf, star, dot)
-import           AppVeyor
-import qualified Codec.Archive.Zip    as Zip
 
 import           Config
 import           Types
@@ -199,12 +197,9 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,inst
                     file [] "jormungandr.exe"
                     file [] "cardano-wallet-jormungandr.exe"
                     file [] "config.yaml"
-                  Cardano kind _ -> do
-                    let
-                      mainBinary Shelley = "cardano-wallet-shelley.exe"
-                      mainBinary Byron = "cardano-wallet-byron.exe"
+                  Cardano _ -> do
                     file [] "cardano-node.exe"
-                    file [] (mainBinary kind)
+                    file [] "cardano-wallet.exe"
                     file [] "cardano-address.exe"
                     file [] "cardano-cli.exe"
                     file [] "config.yaml"
@@ -290,9 +285,6 @@ main opts@Options{..}  = do
 
     installerConfig <- decodeFileThrow "installer-config.json"
 
-    fetchCardanoSL "."
-    printCardanoBuildInfo "."
-
     fullVersion <- getDaedalusVersion "../package.json"
     ver <- getCardanoVersion
 
@@ -330,25 +322,6 @@ main opts@Options{..}  = do
     case signed of
       SignedOK  -> pure ()
       NotSigned -> rm fullName
-
--- | Download and extract the cardano-sl windows build.
-fetchCardanoSL :: FilePath -> IO ()
-fetchCardanoSL dst = do
-  bs <- downloadCardanoSL "../cardano-sl-src.json"
-  let opts = [Zip.OptDestination (encodeString dst), Zip.OptVerbose]
-  Zip.extractFilesFromArchive opts (Zip.toArchive bs)
-
-printCardanoBuildInfo :: MonadIO io => FilePath -> io ()
-printCardanoBuildInfo dst = do
-  let buildInfo what f = do
-        let f' = dst </> f
-        e <- testfile f'
-        when e $ do
-          echo what
-          stdout (input f')
-  buildInfo "cardano-sl build-id:" "build-id"
-  buildInfo "cardano-sl commit-id:" "commit-id"
-  buildInfo "cardano-sl ci-url:" "ci-url"
 
 -- | Run cardano-node --version to get a version string.
 -- Because this is Windows, all necessary DLLs for cardano-node.exe
