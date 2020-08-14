@@ -604,6 +604,7 @@
   "wallet.create.dialog.title": "Create a new wallet",
   "wallet.create.dialog.validateStep": "Validate",
   "wallet.create.dialog.walletNameHint": "Enter wallet name",
+  "wallet.dialog.passwordTooltip": "<b>We recommend using a password manager app</b> to manage and store your spending password. Generate a unique password using a password manager and paste it here. Passwords should never be reused.",
   "wallet.hardware.hardwareWalletBegin": "To begin, connect and unlock your <span>Hardware wallet Device</span>",
   "wallet.hardware.hardwareWalletExport": "Export <span>public key</span> on your device",
   "wallet.hardware.hardwareWalletInstructions": "Follow instructions to access your wallet",
