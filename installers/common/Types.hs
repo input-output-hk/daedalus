@@ -11,7 +11,6 @@ module Types
     OS(..)
   , Cluster(..)
   , Backend(..)
-  , NetworkKind(..)
   , Config(..), configFilename
   , ConfigRequest(..)
   , SigningResult(..)
@@ -68,10 +67,8 @@ data Cluster
 
 -- | The wallet backend to include in the installer.
 --
-data NetworkKind = Byron | Shelley
-  deriving (Eq, Show)
 data Backend
-  = Cardano NetworkKind FilePath -- ^ Cardano SL with the given daedalus-bridge.
+  = Cardano FilePath -- ^ Cardano SL with the given daedalus-bridge.
   | Jormungandr FilePath -- ^ Rust node with haskell wallet
   deriving (Eq, Show)
 
@@ -130,7 +127,7 @@ packageFileName _os cluster ver backend _backendVer build = fromText name <.> ex
     name = T.intercalate "-" parts
     parts = ["daedalus", fromVer ver, lshowText cluster] ++ build'
     _backend' = case backend of
-                 Cardano _ _ -> "cardano-wallet"
+                 Cardano _ -> "cardano-wallet"
                  Jormungandr _ -> "jormungandr-wallet"
     ext = case _os of
             Win64   -> "exe"

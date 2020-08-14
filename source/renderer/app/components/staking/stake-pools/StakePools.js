@@ -69,6 +69,7 @@ export default class StakePools extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
+
   state = {
     search: '',
     ...initialState,
