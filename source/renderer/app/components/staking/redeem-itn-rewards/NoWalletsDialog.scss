@@ -46,8 +46,7 @@
 }
 
 :global {
-  .DialogFullSizeOverride_overlay .DialogCloseButton_component,
-  .DialogFullSizeOverride_overlay .SimpleOptions_highlightedOption {
+  .DialogFullSizeOverride_overlay .DialogCloseButton_component {
     background-color: transparent !important;
     opacity: 1;
 
