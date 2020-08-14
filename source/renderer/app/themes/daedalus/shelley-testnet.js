@@ -486,7 +486,7 @@ export const SHELLEY_TESTNET_THEME_OUTPUT = {
   reportIssue: {
     '--theme-report-issue-button-background-color': '#898ee6',
     '--theme-report-issue-button-background-color-hover': '#abaeed',
-    '--theme-report-issue-button-background-color-active': '#e6a009',
+    '--theme-report-issue-button-background-color-active': '#676ddf',
     '--theme-report-issue-connecting-background-color':
       'rgba(255, 255, 255, 0.05)',
     '--theme-report-issue-connecting-text-color': '#ffffff',
