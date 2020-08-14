@@ -799,7 +799,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
       'rgba(47, 73, 110, .1)',
     '--theme-staking-stake-pool-tooltip-neutral-text-color': '#5e6066',
     '--theme-staking-stake-pool-tooltip-experimental-icon-color': '#5e6066',
-    '--theme-staking-stake-pool-tooltip-id-background-color': '#f0f3f5',
+    '--theme-staking-stake-pool-tooltip-id-background-color': '#fafbfc',
   },
   staking: {
     '--theme-staking-content-background-color': '#fafbfc',

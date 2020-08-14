@@ -783,7 +783,7 @@ export const DARK_CARDANO_THEME_OUTPUT = {
       'rgba(255, 255, 255, .1)',
     '--theme-staking-stake-pool-tooltip-neutral-text-color': '#ffffff',
     '--theme-staking-stake-pool-tooltip-experimental-icon-color': '#ffffff',
-    '--theme-staking-stake-pool-tooltip-id-background-color': '#000000',
+    '--theme-staking-stake-pool-tooltip-id-background-color': '#1e1f31',
   },
   staking: {
     '--theme-staking-content-background-color': '#1e1f31',

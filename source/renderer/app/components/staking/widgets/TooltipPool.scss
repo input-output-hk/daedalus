@@ -184,6 +184,7 @@
   line-height: 14px;
   margin: -8px 0 12px;
   padding: 3px 0;
+  transition: margin 0.4s ease-in-out;
   word-break: break-all;
 
   .ellipsisContent {
@@ -234,6 +235,8 @@
   }
 
   &:hover {
+    margin: -8px 0 27px;
+
     .ellipsisContent {
       opacity: 0;
       transition-delay: 0.25s;
