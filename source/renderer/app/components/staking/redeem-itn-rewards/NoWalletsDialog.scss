@@ -2,12 +2,15 @@
   display: block;
   margin-bottom: 30px;
   text-align: center;
+
   svg {
     height: 71px;
     stroke: var(--theme-dialog-fullsize-text-highlight-color);
+
     path {
       stroke: var(--theme-dialog-fullsize-text-highlight-color);
     }
+
     g {
       ellipse {
         &:nth-child(7),
@@ -28,15 +31,33 @@
     }
   }
 }
+
 .description {
   color: rgba(255, 255, 255, 0.7);
   font-family: var(--font-regular);
   font-size: 16px;
   line-height: 1.38;
-  margin-bottom: 30px;
   text-align: center;
+
   b {
     color: #ffffff;
     font-family: var(--font-semibold);
+  }
+}
+
+:global {
+  .DialogFullSizeOverride_overlay .DialogCloseButton_component,
+  .DialogFullSizeOverride_overlay .SimpleOptions_highlightedOption {
+    background-color: transparent !important;
+    opacity: 1;
+
+    &:hover {
+      background-color: var(--theme-dialog-fullsize-field-background-color) !important;
+    }
+  }
+
+  .Dialog_dialogWrapper > .Dialog_actions button:only-child {
+    max-width: 360px;
+    width: 100%;
   }
 }
