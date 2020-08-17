@@ -60,7 +60,8 @@ export default class StakePoolsListPage extends Component<Props> {
       getStakePoolById,
     } = staking;
     const { all } = wallets;
-    const isLoading = !isSynced || fetchingStakePoolsFailed;
+    const isLoading =
+      !isSynced || fetchingStakePoolsFailed || stakePools.length === 0;
     const isRanking =
       !isLoading && staking.isRanking && stakePoolsRequest.isExecuting;
 
