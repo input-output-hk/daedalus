@@ -3626,7 +3626,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Confirm your delegation choice to <span>[{selectedPoolTicker}]<span> stake pool for your <span>{selectedWalletName}<span> wallet by posting your delegation preferences on the Cardano blockchain.",
+        "defaultMessage": "!!!Confirm your delegation choice to <span>[{selectedPoolTicker}]</span> stake pool for your <span>{selectedWalletName}</span> wallet by posting your delegation preferences on the Cardano blockchain.",
         "description": "Description on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
