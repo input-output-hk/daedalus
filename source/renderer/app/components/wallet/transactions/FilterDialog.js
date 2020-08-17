@@ -99,6 +99,7 @@ const messages = defineMessages({
 
 const FILTER_PANEL_OFFSET = 103;
 const FILTER_DIALOG_WITH_DATE_PICKER_HEIGHT = 545;
+const FILTER_DIALOG_OFFSET_WITH_NOTIFICATION = 60;
 
 const applyDialogStyles = () => {
   const dialogElement = window.document.querySelector('.ReactModal__Content');
@@ -109,11 +110,11 @@ const applyDialogStyles = () => {
   const filterButtonElement = window.document.querySelector(
     '.FilterButton_component'
   );
+  const notificationElement = window.document.querySelector('.ActiveRestoreNotification');
   const windowHeight = window.document.body.clientHeight;
   const filterDialogHeight = dialogElement.clientHeight;
-  const filterDialogOffsetTop =
+  let filterDialogOffsetTop =
     sidebarLayoutContentWrapper.offsetTop + FILTER_PANEL_OFFSET;
-
   dialogOverlayElement.style.backgroundColor = 'transparent';
   dialogElement.style.backgroundColor =
     'var(--theme-transactions-filter-modal-bg-color)';
@@ -128,6 +129,9 @@ const applyDialogStyles = () => {
       40
     )}px`;
   } else {
+    if (notificationElement) {
+      filterDialogOffsetTop += FILTER_DIALOG_OFFSET_WITH_NOTIFICATION;
+    }
     dialogElement.style.right = '20px';
     dialogElement.style.top = `${filterDialogOffsetTop}px`;
   }
