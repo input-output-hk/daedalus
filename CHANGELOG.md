@@ -5,7 +5,7 @@ Changelog
 
 ### Features
 
-- Handled random stake pool data during the first "Shelley" epochs ([PR 2151](https://github.com/input-output-hk/daedalus/pull/2151))
+- Handled random stake pool data during the first "Shelley" epochs ([PR 2151](https://github.com/input-output-hk/daedalus/pull/2151), [PR 2157](https://github.com/input-output-hk/daedalus/pull/2157))
 - Enabled wallet creation regardless of the sync progress ([PR 2150](https://github.com/input-output-hk/daedalus/pull/2150))
 - Enabled restoration of "Shelley" wallets regardless of the sync progress ([PR 2150](https://github.com/input-output-hk/daedalus/pull/2150))
 - Enabled restoration of Yoroi "Shelley" wallets ([PR 2144](https://github.com/input-output-hk/daedalus/pull/2144))
@@ -23,6 +23,7 @@ Changelog
 
 ### Chores
 
+- Updated `cardano-wallet` to revision `75b583a1` ([PR 2157](https://github.com/input-output-hk/daedalus/pull/2157))
 - Updated `cardano-wallet` to revision `a4fd49e3` ([PR 2155](https://github.com/input-output-hk/daedalus/pull/2155))
 
 ## 2.1.0
