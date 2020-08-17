@@ -4,9 +4,11 @@ import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import clockIcon from '../../../assets/images/clock-corner.inline.svg';
+import noDataDashBigImage from '../../../assets/images/no-data-dash-big.inline.svg';
 import styles from './ThumbPoolContent.scss';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
 import StakePool from '../../../domains/StakePool';
+import { IS_RANKING_DATA_AVAILABLE } from '../../../config/stakingConfig';
 
 type Props = {
   stakePool: StakePool,
@@ -36,30 +38,40 @@ export default class ThumbPoolContent extends Component<Props> {
     return (
       <div className={componentClassnames}>
         <div className={styles.ticker}>{ticker}</div>
-        <div className={styles.ranking} style={{ color }}>
-          {ranking}
-        </div>
-        {showSaturation && (
-          <div className={saturationClassnames}>
-            <span
+        {IS_RANKING_DATA_AVAILABLE ? (
+          <>
+            <div className={styles.ranking} style={{ color }}>
+              {ranking}
+            </div>
+            {showSaturation && (
+              <div className={saturationClassnames}>
+                <span
+                  style={{
+                    width: `${parseFloat(saturation.toFixed(2))}%`,
+                  }}
+                />
+              </div>
+            )}
+            {retiring && (
+              <div className={styles.clock}>
+                <SVGInline svg={clockIcon} className={styles.clockIcon} />
+              </div>
+            )}
+            <div
+              className={styles.colorBand}
               style={{
-                width: `${parseFloat(saturation.toFixed(2))}%`,
+                background: color,
               }}
             />
-          </div>
+          </>
+        ) : (
+          <>
+            <div className={styles.noDataDash}>
+              <SVGInline svg={noDataDashBigImage} />
+            </div>
+            <div className={styles.greyColorBand} />
+          </>
         )}
-
-        {retiring && (
-          <div className={styles.clock}>
-            <SVGInline svg={clockIcon} className={styles.clockIcon} />
-          </div>
-        )}
-        <div
-          className={styles.colorBand}
-          style={{
-            background: color,
-          }}
-        />
       </div>
     );
   }

@@ -295,7 +295,7 @@
   "staking.delegationCenter.loadingStakePoolsMessage": "Loading stake pools",
   "staking.delegationCenter.noWallets.createWalletButtonLabel": "Create a wallet",
   "staking.delegationCenter.noWallets.headLine": "The delegation center is not available because you currently do not have any Shelley-compatible wallets.",
-  "staking.delegationCenter.noWallets.instructions": "Create a new wallet and transfer in a minimum of {minDelegationFunds} ada (or restore an existing wallet with funds), then return here to delegate your stake.",
+  "staking.delegationCenter.noWallets.instructions": "Create a new wallet and transfer in a minimum of {minDelegationFunds} ADA (or restore an existing wallet with funds), then return here to delegate your stake.",
   "staking.delegationCenter.notDelegated": "Undelegated",
   "staking.delegationCenter.or": "or",
   "staking.delegationCenter.redelegate": "Redelegate",
@@ -366,8 +366,8 @@
   "staking.delegationSetup.intro.step.dialog.stepsExplanation.step3": "Delegation confirmation",
   "staking.delegationSetup.intro.step.dialog.title": "Delegate wallet",
   "staking.delegationSetup.notAvailable.dialog.closeButtonLabel": "Close",
-  "staking.delegationSetup.notAvailable.dialog.description": "None of your wallets currently hold the <span>minimum amount of {minDelegationFunds} ADA</span> that is required for delegation options.",
-  "staking.delegationSetup.notAvailable.dialog.title": "Delegation is not currently available",
+  "staking.delegationSetup.notAvailable.dialog.description": "None of your Shelley wallets currently hold the <span>minimum amount of {minDelegationFunds} ADA</span> required for delegation.",
+  "staking.delegationSetup.notAvailable.dialog.title": "Delegation is currently unavailable",
   "staking.delegationSetup.steps.step.1.label": "Wallet",
   "staking.delegationSetup.steps.step.2.label": "Stake pool",
   "staking.delegationSetup.steps.step.3.label": "Confirmation",
@@ -450,6 +450,7 @@
   "staking.stakePools.listTitle": "Stake pools ({pools})",
   "staking.stakePools.listTitleWithSearch": "Stake pools. Search results: ({pools})",
   "staking.stakePools.loadingStakePoolsMessage": "Loading stake pools",
+  "staking.stakePools.noDataDashTooltip": "Data not available yet",
   "staking.stakePools.rankingAllWallets": "all your wallets",
   "staking.stakePools.rankingAllWalletsEnd": ".",
   "staking.stakePools.rankingAllWalletsStart": "Stake pools are currently ranked based on the combined amount in",
@@ -899,7 +900,7 @@
   "wallet.transferFunds.dialog1.continueLabel": "Continue",
   "wallet.transferFunds.dialog1.sourceWallet": "From Byron legacy wallet",
   "wallet.transferFunds.dialog1.targetWallet": "To Shelley-compatible wallet",
-  "wallet.transferFunds.dialog1.title": "Transfer funds from the Byron legacy wallet",
+  "wallet.transferFunds.dialog1.title": "Transfer funds",
   "wallet.transferFunds.dialog2.label.amount": "Amount",
   "wallet.transferFunds.dialog2.label.buttonLabel": "Transfer funds",
   "wallet.transferFunds.dialog2.label.description": "Confirm transfer from {sourceWalletName} wallet to {targetWalletName} wallet.",
@@ -907,5 +908,5 @@
   "wallet.transferFunds.dialog2.label.total": "Total",
   "wallet.transferFunds.dialog2.passphraseFieldPlaceholder": "Spending password",
   "wallet.transferFunds.dialog2.passphraseLabel": "Spending password",
-  "wallet.transferFunds.dialog2.title": "Transfer funds from the Byron legacy wallet"
+  "wallet.transferFunds.dialog2.title": "Transfer funds"
 }
