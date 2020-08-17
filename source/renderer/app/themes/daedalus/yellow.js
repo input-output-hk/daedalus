@@ -781,7 +781,7 @@ export const YELLOW_THEME_OUTPUT = {
       '#fafbfc',
     '--theme-staking-stake-pool-tooltip-delegate-button-border-color':
       'transparent',
-    '--theme-staking-progress-label-light': '#2d2d2d',
+    '--theme-staking-progress-label-light': '#fffff',
     '--theme-staking-stake-pools-search-clear-button-background-color':
       'rgba(45, 45, 45, 0.1)',
     '--theme-staking-stake-pools-search-clear-button-color': '#2d2d2d',
