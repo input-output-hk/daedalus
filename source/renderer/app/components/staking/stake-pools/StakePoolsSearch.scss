@@ -31,14 +31,13 @@
 }
 
 .inputExtras {
-  background: var(--rp-input-bg-color);
-  bottom: 1px;
+  bottom: 0.5px;
   display: flex;
   height: 48px;
   line-height: 48px;
   padding-left: 20px;
   position: absolute;
-  right: 20px;
+  right: 11px;
 }
 
 .clearSearch {
@@ -66,7 +65,7 @@
 
   svg {
     position: relative;
-    top: 1px;
+    top: 0.5px;
     width: 10px;
 
     > g > g {
