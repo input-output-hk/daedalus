@@ -964,6 +964,8 @@ export const createDaedalusComponentsTheme = (
       '--theme-staking-stake-pool-tooltip-shadow-color': 'rgba(0, 0, 0, 0.25)',
       '--theme-staking-stake-pool-tooltip-text-color': `${text.primary}`,
       '--theme-staking-stake-pool-tooltip-id-background-color': `${text.secondary}`,
+      '--theme-staking-stake-pool-tooltip-id-shadow-1': 'rgba(42, 43, 60, 1)',
+      '--theme-staking-stake-pool-tooltip-id-shadow-2': 'rgba(42, 43, 60, 0)',
       '--theme-staking-stake-pool-tooltip-link-color': `${background.secondary.dark}`,
       '--theme-staking-stake-pool-tooltip-neutral-background-color': `${chroma(
         background.secondary.regular

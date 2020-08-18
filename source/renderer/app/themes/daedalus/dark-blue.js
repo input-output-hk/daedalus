@@ -810,6 +810,8 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-staking-stake-pool-tooltip-neutral-text-color': '#e9f4fe',
     '--theme-staking-stake-pool-tooltip-experimental-icon-color': '#e9f4fe',
     '--theme-staking-stake-pool-tooltip-id-background-color': '#263345',
+    '--theme-staking-stake-pool-tooltip-id-shadow-1': 'rgba(42, 43, 60, 1)',
+    '--theme-staking-stake-pool-tooltip-id-shadow-2': 'rgba(42, 43, 60, 0)',
   },
   staking: {
     '--theme-staking-content-background-color': '#263345',

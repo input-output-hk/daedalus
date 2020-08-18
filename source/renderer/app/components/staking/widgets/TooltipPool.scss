@@ -17,10 +17,9 @@
   :global {
     button.SimpleButton_root {
       background-color: var(
-        --theme-staking-stake-pool-tooltip-delegate-button-background-color
+          --theme-staking-stake-pool-tooltip-delegate-button-background-color
       );
-      border: 1px solid
-        var(--theme-staking-stake-pool-tooltip-delegate-button-border-color);
+      border: 1px solid var(--theme-staking-stake-pool-tooltip-delegate-button-border-color);
       border-radius: 2px;
       color: var(--theme-staking-stake-pool-tooltip-delegate-button-text-color);
       height: 33px;
@@ -30,21 +29,21 @@
 
       &:hover {
         background-color: var(
-          --theme-staking-stake-pool-tooltip-delegate-button-hover-background-color,
-          --rp-button-bg-color-hover
+            --theme-staking-stake-pool-tooltip-delegate-button-hover-background-color,
+            --rp-button-bg-color-hover
         );
         color: var(
-          --theme-staking-stake-pool-tooltip-delegate-button-inverse-text-color
+            --theme-staking-stake-pool-tooltip-delegate-button-inverse-text-color
         );
       }
 
       &:active {
         background-color: var(
-          --theme-staking-stake-pool-tooltip-delegate-button-active-background-color
+            --theme-staking-stake-pool-tooltip-delegate-button-active-background-color
         );
         border: none;
         color: var(
-          --theme-staking-stake-pool-tooltip-delegate-button-inverse-text-color
+            --theme-staking-stake-pool-tooltip-delegate-button-inverse-text-color
         );
       }
     }
@@ -63,25 +62,30 @@
     right: -5px;
     top: -6px;
     width: 10px;
+
     .experimentalIcon {
       padding: 0;
+
       svg {
         height: 14.5px;
         width: 10px;
+
         g {
           path:nth-child(1) {
             fill: var(
-              --theme-staking-stake-pool-tooltip-experimental-icon-background-color
+                --theme-staking-stake-pool-tooltip-experimental-icon-background-color
             );
           }
+
           path:nth-child(2) {
             fill: var(
-              --theme-staking-stake-pool-tooltip-experimental-icon-lines-color
+                --theme-staking-stake-pool-tooltip-experimental-icon-lines-color
             );
           }
         }
       }
     }
+
     .iconButton {
       cursor: pointer;
     }
@@ -114,6 +118,7 @@
       svg {
         height: 10px;
         width: 7px;
+
         path {
           fill: var(--theme-staking-stake-pool-tooltip-neutral-text-color);
         }
@@ -164,30 +169,35 @@
   &.tooltipPositionTop {
     border-top-color: var(--theme-staking-stake-pool-tooltip-border-color);
     border-width: 11px 11px 0 11px;
+
     &:before {
       border-top-color: var(
-        --theme-staking-stake-pool-tooltip-background-color
+          --theme-staking-stake-pool-tooltip-background-color
       );
       border-width: 10px 10px 0 10px;
       left: -10px;
       top: -11px;
     }
   }
+
   &.tooltipPositionRight {
     border-right-color: var(--theme-staking-stake-pool-tooltip-border-color);
     border-width: 11px 11px 11px 0;
+
     &:before {
       border-right-color: var(
-        --theme-staking-stake-pool-tooltip-background-color
+          --theme-staking-stake-pool-tooltip-background-color
       );
       border-width: 10px 10px 10px 0;
       right: -11px;
       top: -10px;
     }
   }
+
   &.tooltipPositionBottom {
     border-bottom-color: var(--theme-staking-stake-pool-tooltip-border-color);
     border-width: 0 11px 11px 11px;
+
     &:before {
       border-bottom-color: transparent;
       border-width: 0 10px 10px 10px;
@@ -195,12 +205,14 @@
       top: -11px;
     }
   }
+
   &.tooltipPositionLeft {
     border-left-color: var(--theme-staking-stake-pool-tooltip-border-color);
     border-width: 11px 0 11px 11px;
+
     &:before {
       border-left-color: var(
-        --theme-staking-stake-pool-tooltip-background-color
+          --theme-staking-stake-pool-tooltip-background-color
       );
       border-width: 10px 0 10px 10px;
       left: -11px;
@@ -258,6 +270,7 @@
       svg {
         height: 9.5px;
         width: 8px;
+
         path {
           fill: var(--theme-staking-stake-pool-tooltip-text-color);
         }
@@ -268,6 +281,10 @@
       svg {
         height: 8px;
         width: auto;
+
+        path {
+          fill: var(--theme-staking-stake-pool-tooltip-text-color);
+        }
       }
     }
   }
@@ -279,6 +296,7 @@
       opacity: 0;
       transition-delay: 0.25s;
     }
+
     .hoverContent {
       height: 36px;
       opacity: 1;
@@ -329,7 +347,7 @@
 
 .retirement {
   background: var(
-    --theme-staking-stake-pool-tooltip-retirement-background-color
+      --theme-staking-stake-pool-tooltip-retirement-background-color
   );
   border-radius: 3px;
   color: var(--theme-staking-stake-pool-tooltip-retirement-text-color);
@@ -408,7 +426,7 @@
 .defaultColor {
   .defaultColorContent {
     background: var(
-      --theme-staking-stake-pool-tooltip-neutral-background-color
+        --theme-staking-stake-pool-tooltip-neutral-background-color
     );
     color: var(--theme-staking-stake-pool-tooltip-neutral-text-color);
   }
@@ -423,7 +441,7 @@
 
   & > span {
     background: var(
-      --theme-staking-stake-pool-tooltip-neutral-background-color
+        --theme-staking-stake-pool-tooltip-neutral-background-color
     );
     white-space: nowrap;
   }
