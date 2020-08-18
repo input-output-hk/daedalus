@@ -99,5 +99,5 @@
 
 .isSubmitting {
   box-shadow: none !important;
-  @include loading-spinner('../../assets/images/spinner-light.svg');
+  @include loading-spinner('../../assets/images/spinner-dark.svg');
 }
