@@ -1711,7 +1711,13 @@ export default class AdaApi {
       current: currentAppVersion,
       available: availableAppVersion,
     };
-    const updateNewsItem = getNewsFeedApiItemUpdate(appVersions.current);
+
+    // Build as up to date
+    // const updateNewsItem = getNewsFeedApiItemUpdate(appVersions.current);
+
+    // Build as should update
+    const updateNewsItem = getNewsFeedApiItemUpdate(appVersions.available);
+
     news.items = [...news.items, updateNewsItem];
     // ----- >
 
