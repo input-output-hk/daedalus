@@ -1,10 +1,8 @@
 .delegationStepsChooseStakePoolDialogWrapper {
   :global {
     .StakePoolThumbnail_content {
-      background-color: 1px solid
-        var(--theme-delegation-steps-choose-stake-pool-thumb-background-color);
-      border: 1px solid
-        var(--theme-delegation-steps-choose-stake-pool-thumb-border-color);
+      background-color: 1px solid var(--theme-delegation-steps-choose-stake-pool-thumb-background-color);
+      border: 1px solid var(--theme-delegation-steps-choose-stake-pool-thumb-border-color);
     }
 
     .Dialog_subtitle {
@@ -42,7 +40,7 @@
 
         &.retiring {
           background: var(
-            --theme-staking-stake-pool-retirement-background-color
+              --theme-staking-stake-pool-retirement-background-color
           ) !important;
         }
 
@@ -52,17 +50,19 @@
       }
 
       .selectPoolBlockPlaceholder {
-        border: 2px solid
-          var(--theme-delegation-steps-choose-stake-pool-thumb-border-color);
+        border: 2px solid var(--theme-delegation-steps-choose-stake-pool-thumb-border-color);
         border-style: dashed;
+
         .icon {
           margin-top: 24.5px;
           text-align: center;
+
           svg {
             height: 16px;
+
             path {
               stroke: var(
-                --theme-delegation-steps-choose-stake-pool-checkmark-icon-color
+                  --theme-delegation-steps-choose-stake-pool-checkmark-icon-color
               );
             }
           }
@@ -70,11 +70,11 @@
       }
 
       .selectedPoolBlock {
-        border: 1px solid
-          var(--theme-delegation-steps-choose-stake-pool-thumb-border-color);
+        border: 1px solid var(--theme-delegation-steps-choose-stake-pool-thumb-border-color);
+
         .ticker {
           color: var(
-            --theme-delegation-steps-choose-stake-pool-selected-ticker-color
+              --theme-delegation-steps-choose-stake-pool-selected-ticker-color
           );
           font-family: var(--font-semibold);
           font-size: 14px;
@@ -87,12 +87,14 @@
         .icon {
           margin-top: 10px;
           text-align: center;
+
           svg {
             vertical-align: top;
             width: 15.5px;
+
             path {
               stroke: var(
-                --theme-delegation-steps-choose-stake-pool-selected-checkmark-icon-color
+                  --theme-delegation-steps-choose-stake-pool-selected-checkmark-icon-color
               );
             }
           }
@@ -101,11 +103,13 @@
         &.retiring {
           .icon {
             margin-top: 5px;
+
             svg {
               width: 20px;
+
               path {
                 stroke: var(
-                  --theme-staking-stake-pool-retirement-background-color
+                    --theme-staking-stake-pool-retirement-background-color
                 );
               }
             }
@@ -115,13 +119,14 @@
 
       .selectStakePoolLabel {
         color: var(
-          --theme-delegation-steps-choose-stake-pool-delegated-pools-label-color
+            --theme-delegation-steps-choose-stake-pool-delegated-pools-label-color
         );
         flex: 1;
         font-family: var(--font-light);
         font-size: 16px;
         line-height: 1.38;
         margin-left: 19px;
+
         span {
           span {
             font-family: var(--font-medium);
@@ -132,12 +137,22 @@
 
     .recentStakePoolsWrapper {
       margin-top: 20px;
+
       .recentStakePoolsLabel {
         font-family: var(--font-medium);
         margin-bottom: 10px;
       }
     }
+
+    .searchStakePoolsWrapper {
+      :global {
+        .StakePoolsSearch_clearSearch > div > div {
+          margin-left: -15px !important;
+        }
+      }
+    }
   }
+
   .retiringPoolFooter {
     color: var(--theme-staking-stake-pool-retirement-background-color);
     font-family: var(--font-medium);
