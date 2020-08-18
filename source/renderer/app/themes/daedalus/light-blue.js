@@ -525,7 +525,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
   rpBubble: {
     '--rp-bubble-bg-color': '#fafbfc',
     '--rp-bubble-border-color': 'rgba(94, 96, 102, 0.7)',
-    '--rp-bubble-border-radius': '2px',
+    '--rp-bubble-border-radius': '5px',
     '--rp-bubble-arrow-bg-color': '#edf0f3',
     '--rp-bubble-box-shadow':
       '0 4px 16px 0 rgba(0, 0, 0, 0.12), 0 0 8px 0 rgba(0, 0, 0, 0.06)',
@@ -801,7 +801,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
       'rgba(47, 73, 110, .1)',
     '--theme-staking-stake-pool-tooltip-neutral-text-color': '#5e6066',
     '--theme-staking-stake-pool-tooltip-experimental-icon-color': '#5e6066',
-    '--theme-staking-stake-pool-tooltip-id-background-color': '#fafbfc',
+    '--theme-staking-stake-pool-tooltip-id-background-color': 'rgba(68, 91, 124, 0.05)',
     '--theme-staking-stake-pool-tooltip-id-shadow-1': 'rgba(0, 0, 0, 0.25)',
     '--theme-staking-stake-pool-tooltip-id-shadow-2': 'rgba(42, 43, 60, 0)',
   },

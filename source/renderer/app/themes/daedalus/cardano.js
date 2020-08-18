@@ -527,7 +527,7 @@ export const CARDANO_THEME_OUTPUT = {
   rpBubble: {
     '--rp-bubble-bg-color': '#fff',
     '--rp-bubble-border-color': 'rgba(94, 96, 102, 0.7)',
-    '--rp-bubble-border-radius': '2px',
+    '--rp-bubble-border-radius': '5px',
     '--rp-bubble-arrow-bg-color': '#edeeef',
     '--rp-bubble-box-shadow':
       '0 4px 16px 0 rgba(0, 0, 0, 0.12), 0 0 8px 0 rgba(0, 0, 0, 0.06)',
@@ -804,8 +804,8 @@ export const CARDANO_THEME_OUTPUT = {
       'rgba(32, 34, 37, .1)',
     '--theme-staking-stake-pool-tooltip-neutral-text-color': '#5e6066',
     '--theme-staking-stake-pool-tooltip-experimental-icon-color': '#5e6066',
-    '--theme-staking-stake-pool-tooltip-id-background-color': '#fafbfc',
-    '--theme-staking-stake-pool-tooltip-id-shadow-1': 'rgba(42, 43, 60, 1)',
+    '--theme-staking-stake-pool-tooltip-id-background-color': 'rgba(32, 34, 37, 0.05)',
+    '--theme-staking-stake-pool-tooltip-id-shadow-1': 'rgba(0, 0, 0, 0.25)',
     '--theme-staking-stake-pool-tooltip-id-shadow-2': 'rgba(42, 43, 60, 0)',
   },
   staking: {

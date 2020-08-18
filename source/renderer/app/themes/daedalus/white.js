@@ -513,7 +513,7 @@ export const WHITE_THEME_OUTPUT = {
   rpBubble: {
     '--rp-bubble-bg-color': '#fff',
     '--rp-bubble-border-color': 'rgba(45, 45, 45, 0.7)',
-    '--rp-bubble-border-radius': '2px',
+    '--rp-bubble-border-radius': '5px',
     '--rp-bubble-arrow-bg-color': '#f3f3f4',
     '--rp-bubble-box-shadow':
       '0 4px 16px 0 rgba(0, 0, 0, 0.12), 0 0 8px 0 rgba(0, 0, 0, 0.06)',
@@ -792,8 +792,8 @@ export const WHITE_THEME_OUTPUT = {
       'rgba(45, 45, 45, .1)',
     '--theme-staking-stake-pool-tooltip-neutral-text-color': '#2d2d2d',
     '--theme-staking-stake-pool-tooltip-experimental-icon-color': '#2d2d2d',
-    '--theme-staking-stake-pool-tooltip-id-background-color': '#ffffff',
-    '--theme-staking-stake-pool-tooltip-id-shadow-1': 'rgba(42, 43, 60, 1)',
+    '--theme-staking-stake-pool-tooltip-id-background-color': 'rgba(45, 45, 45, 0.05)',
+    '--theme-staking-stake-pool-tooltip-id-shadow-1': 'rgba(0, 0, 0, 0.25)',
     '--theme-staking-stake-pool-tooltip-id-shadow-2': 'rgba(42, 43, 60, 0)',
   },
   staking: {

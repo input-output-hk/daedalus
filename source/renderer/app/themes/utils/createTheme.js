@@ -67,7 +67,7 @@ export const createReactPolymorphTheme = (
     rpBubble: {
       '--rp-bubble-bg-color': `${background.primary.lightest}`,
       '--rp-bubble-border-color': `${border}`,
-      '--rp-bubble-border-radius': '2px',
+      '--rp-bubble-border-radius': '5px',
       '--rp-bubble-box-shadow':
         '0 4px 16px 0 rgba(0, 0, 0, 0.12), 0 0 8px 0 rgba(0, 0, 0, 0.06)',
       '--rp-bubble-arrow-bg-color': `${background.primary.regular}`,

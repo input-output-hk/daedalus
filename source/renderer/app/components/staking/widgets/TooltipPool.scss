@@ -249,7 +249,7 @@
 
   .hoverContent {
     background: var(--theme-staking-stake-pool-tooltip-id-background-color);
-    box-shadow: 1px 6px 6px var(--theme-staking-stake-pool-tooltip-id-shadow-1);
+    box-shadow: 0 2px 5px var(--theme-staking-stake-pool-tooltip-id-shadow-1);
     height: 20px;
     left: 0;
     margin-left: -20px;
@@ -283,7 +283,7 @@
         width: auto;
 
         path {
-          fill: var(--theme-staking-stake-pool-tooltip-text-color);
+          stroke: var(--theme-staking-stake-pool-tooltip-text-color);
         }
       }
     }
