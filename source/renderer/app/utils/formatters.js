@@ -5,7 +5,9 @@ import {
   DECIMAL_PLACES_IN_ADA,
   LOVELACES_PER_ADA,
 } from '../config/numbersConfig';
+import { momentLocales } from '../../../common/types/locales.types';
 import type { DownloadData } from '../../../common/types/downloadManager.types';
+import type { Locale } from '../../../common/types/locales.types';
 
 export const formattedWalletAmount = (
   amount: BigNumber,
@@ -112,7 +114,8 @@ export type FormattedDownloadData = {
 };
 
 export const formattedDownloadData = (
-  downloadData?: ?DownloadData
+  downloadData?: ?DownloadData,
+  userLocale: Locale
 ): FormattedDownloadData => {
   let timeLeft = '';
   let downloaded = '';
@@ -127,6 +130,7 @@ export const formattedDownloadData = (
       remainingSize,
     } = downloadData;
     const secondsLeft = remainingSize / speed;
+    moment.locale(momentLocales[userLocale]);
     timeLeft = moment()
       .add(secondsLeft, 'seconds')
       .fromNow(true);

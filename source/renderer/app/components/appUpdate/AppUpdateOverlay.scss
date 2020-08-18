@@ -140,6 +140,7 @@
           background: var(--theme-news-overlay-update-button-text-color);
           &:after {
             border-color: var(--theme-news-overlay-update-background-color);
+            margin: -3px 0 0;
           }
           border: none;
         }

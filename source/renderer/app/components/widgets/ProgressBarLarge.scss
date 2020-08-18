@@ -6,6 +6,7 @@
   background-color: var(--theme-progress-bar-large-background-color);
   border-radius: 5px;
   height: 100%;
+  position: relative;
   width: 100%;
 }
 
@@ -25,13 +26,28 @@
   transition: width 0.24s;
 }
 
+.progressBackground {
+  background: repeating-linear-gradient(
+    -63deg,
+    var(--theme-progress-bar-large-progress-stripe1),
+    var(--theme-progress-bar-large-progress-stripe1) 10px,
+    var(--theme-progress-bar-large-progress-stripe2) 10px,
+    var(--theme-progress-bar-large-progress-stripe2) 20px
+  );
+  border-radius: 5px;
+  bottom: 0;
+  height: 100%;
+  justify-content: flex-end;
+  opacity: 0.1;
+  position: absolute;
+  width: 100%;
+}
+
 .progressLabel {
-  // @extend %regularText;
   transform: translateX(calc(100% + 8px));
 }
 
 .progressLabelWhite {
-  // @extend %regularText;
   color: var(--theme-staking-progress-label-light);
   transform: translateX(-8px);
 }

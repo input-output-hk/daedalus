@@ -1713,12 +1713,14 @@ export default class AdaApi {
     };
 
     // Build as up to date
-    const updateNewsItem = getNewsFeedApiItemUpdate(appVersions.current);
+    const updateNewsItem = getNewsFeedApiItemUpdate(appVersions.available);
+    console.log('appVersions', appVersions);
+    console.log('updateNewsItem', updateNewsItem);
 
     // Build as should update
-    // const updateNewsItem = getNewsFeedApiItemUpdate(appVersions.available);
+    // const updateNewsItem = getNewsFeedApiItemUpdate(appVersions.current);
 
-    news.items = [...news.items, updateNewsItem];
+    // news.items = [...news.items, updateNewsItem];
     // ----- >
 
     // Fetch news verification hash

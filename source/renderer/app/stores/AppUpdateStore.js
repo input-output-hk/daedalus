@@ -34,19 +34,6 @@ const { News } = NewsDomains;
 const APP_UPDATE_DOWNLOAD_ID = 'appUpdate';
 
 export default class AppUpdateStore extends Store {
-  // @UPDATE TODO
-  // < -----
-  // @observable availableUpdate: ?News = dummyUpdate;
-  // @observable availableUpdateVersion: string = '';
-  // @observable isUpdateDownloading: boolean = false;
-  // @observable isUpdateDownloaded: boolean = false;
-  // @observable isUpdateInstalled: boolean = false;
-  // @observable isUpdateProgressOpen: boolean = false;
-  // @observable isAutomaticUpdateFailed: boolean = false;
-  // @observable displayManualUpdateLink: boolean = false;
-  // ----- >
-  // @UPDATE TODO
-
   @observable availableUpdate: ?News = null;
   @observable availableUpdateVersion: string = '';
   @observable isUpdateDownloading: boolean = false;
@@ -114,7 +101,10 @@ export default class AppUpdateStore extends Store {
   }
 
   @computed get formattedDownloadData(): FormattedDownloadData {
-    return formattedDownloadData(this.downloadData);
+    return formattedDownloadData(
+      this.downloadData,
+      this.stores.profile.currentLocale
+    );
   }
 
   @computed get downloadTimeLeft(): string {

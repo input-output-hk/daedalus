@@ -9,7 +9,6 @@ const path = '/newsfeed';
 const filename = isFlight
   ? 'newsfeed_mainnet_flight.json'
   : `newsfeed_${network}.json`;
-console.log('`${path}/${filename}`', `${path}/${filename}`);
 
 export const getNews = (): Promise<string> =>
   externalRequest(

@@ -497,7 +497,7 @@ export const CARDANO_THEME_OUTPUT = {
   progressBar: {
     '--theme-progress-bar-background-color': 'rgba(255, 255, 255, 0.3)',
     '--theme-progress-bar-foreground-color': 'rgba(255, 255, 255, 0.7)',
-    '--theme-progress-bar-large-progress-stripe1': '#e0e5eb',
+    '--theme-progress-bar-large-progress-stripe1': '#e0e5ea',
     '--theme-progress-bar-large-progress-stripe2': '#fafbfc',
     '--theme-progress-bar-large-background-color': 'rgba(0, 0, 0, 0.1)',
   },
