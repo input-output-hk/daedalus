@@ -774,7 +774,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
       'rgba(18, 19, 38, 1)',
     '--theme-staking-stake-pool-tooltip-delegate-button-border-color':
       'transparent',
-    '--theme-staking-progress-label-light': 'rgba(18, 19, 38, 1)',
+    '--theme-staking-progress-label-light': '#ffffffb3',
     '--theme-staking-stake-pools-search-clear-button-background-color':
       'rgba(255, 255, 255, 0.1)',
     '--theme-staking-stake-pools-search-clear-button-color': '#ffffff',

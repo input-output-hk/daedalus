@@ -778,7 +778,7 @@ export const WHITE_THEME_OUTPUT = {
       '#fafbfc',
     '--theme-staking-stake-pool-tooltip-delegate-button-border-color':
       'transparent',
-    '--theme-staking-progress-label-light': '#fafbfc',
+    '--theme-staking-progress-label-light': '#2d2d2db3',
     '--theme-staking-stake-pools-search-clear-button-background-color':
       'rgba(41, 181, 149, 0.1)',
     '--theme-staking-stake-pools-search-clear-button-color': '#2d2d2d',
