@@ -1,5 +1,5 @@
 .overlay {
-  background-color: var(--rp-modal-bg-color) !important;
+  background-color: var(--theme-dialog-fullsize-background-color) !important;
 
   .modal {
     background-color: transparent !important;
@@ -22,20 +22,17 @@
     .SimpleInput_input,
     .SimpleInput_input:focus,
     .SimpleInput_input:hover,
-    .SimpleLink_root {
-      background-color: transparent !important;
-    }
-
+    .SimpleLink_root,
     .SimpleOptions_option,
     .SimpleOptions_option:after {
-      background-color: var(--rp-option-bg-color) !important;
+      background-color: transparent !important;
     }
 
     // Background Color Darker
     .DialogCloseButton_component,
     .SimpleOptions_highlightedOption {
       background-color: var(
-          --theme-nav-dropdown-item-background-color-hover
+          --theme-dialog-fullsize-field-background-color
       ) !important;
     }
 
@@ -150,9 +147,6 @@
     .WalletsDropdownOption_label,
     .WalletsDropdownOption_detail {
       color: var(--theme-splash-network-overlay-button-text-color) !important;
-      // &:placeholder {
-      //   color: var(--theme-splash-network-overlay-button-text-color) !important;
-      // }
     }
 
     button.primary {
