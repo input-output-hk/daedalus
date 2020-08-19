@@ -1,5 +1,4 @@
 // TODO: Remove once the new wallet creation process is ready
-@import '../../themes/mixins/loading-spinner';
 @import '../../themes/mixins/place-form-field-error-below-input';
 
 .spendingPasswordWrapper {
@@ -53,7 +52,7 @@
       }
 
       :global
-        .WalletCreateDialog_tooltip.SimpleTooltip_root.TooltipOverrides_root.InlineEditingDropdown-tooltip_root.SimpleTooltip_isShowingOnHover {
+      .WalletCreateDialog_tooltip.SimpleTooltip_root.TooltipOverrides_root.InlineEditingDropdown-tooltip_root.SimpleTooltip_isShowingOnHover {
         height: 12px;
         left: -145px;
         top: 5px;
@@ -97,7 +96,16 @@
   }
 }
 
-.isSubmitting {
-  box-shadow: none !important;
-  @include loading-spinner('../../assets/images/spinner-dark.svg');
+:global {
+  .LoadingSpinner_component {
+    margin: 11px auto !important;
+
+    .LoadingSpinner_icon {
+      svg {
+        path {
+          fill: var(--theme-button-primary-text-color-disabled) !important;
+        }
+      }
+    }
+  }
 }

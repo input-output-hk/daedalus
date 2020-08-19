@@ -27,6 +27,7 @@ import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { submitOnEnter } from '../../utils/form';
 import tooltipStyles from '../widgets/forms/InlineEditingDropdown-tooltip.scss';
 import infoIconInline from '../../assets/images/info-icon.inline.svg';
+import LoadingSpinner from '../widgets/LoadingSpinner';
 
 const messages = defineMessages({
   dialogTitle: {
@@ -219,11 +220,16 @@ export default class WalletCreateDialog extends Component<Props, State> {
 
     const canSubmit = !isSubmitting && form.isValid;
 
+    const buttonLabel = !isSubmitting ? (
+      this.context.intl.formatMessage(messages.createPersonalWallet)
+    ) : (
+      <LoadingSpinner />
+    );
+
     const actions = [
       {
-        className: isSubmitting ? styles.isSubmitting : null,
         disabled: !canSubmit,
-        label: this.context.intl.formatMessage(messages.createPersonalWallet),
+        label: buttonLabel,
         primary: true,
         onClick: this.submit,
       },
