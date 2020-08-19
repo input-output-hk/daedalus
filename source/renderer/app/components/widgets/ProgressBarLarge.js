@@ -24,7 +24,6 @@ export default class ProgressBarLarge extends Component<Props> {
               <div className={styles.progressLabel}>{progress}%</div>
             )}
           </div>
-          <div className={styles.progressBackground} />
         </div>
       </div>
     );
