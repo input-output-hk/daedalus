@@ -209,7 +209,6 @@
   }
 
   .closeButton {
-    background-color: var(--theme-news-overlay-update-content-background-color);
     border-radius: 50%;
     height: 44px;
     opacity: 0.5;
@@ -218,6 +217,9 @@
     width: 44px;
     z-index: 999;
     &:hover {
+      background-color: var(
+        --theme-news-overlay-update-content-background-color
+      );
       opacity: 0.8;
     }
   }
