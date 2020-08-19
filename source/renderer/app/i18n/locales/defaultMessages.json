@@ -5167,13 +5167,13 @@
         "description": "All wallets item of dropdown.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 35
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingAllWallets",
         "start": {
           "column": 21,
-          "line": 29
+          "line": 31
         }
       },
       {
@@ -5181,13 +5181,13 @@
         "description": "All wallets description after dropdown.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 40
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingAllWalletsEnd",
         "start": {
           "column": 24,
-          "line": 34
+          "line": 36
         }
       },
       {
@@ -5195,13 +5195,13 @@
         "description": "All wallets description before dropdown.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 46
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingAllWalletsStart",
         "start": {
           "column": 26,
-          "line": 39
+          "line": 41
         }
       },
       {
@@ -5209,13 +5209,13 @@
         "description": "Ranking description.",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 52
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingDescription",
         "start": {
           "column": 22,
-          "line": 45
+          "line": 47
         }
       },
       {
@@ -5223,13 +5223,13 @@
         "description": "Ranking learn more url.",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 57
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingLearnMoreUrl",
         "start": {
           "column": 23,
-          "line": 51
+          "line": 53
         }
       },
       {
@@ -5237,13 +5237,13 @@
         "description": "One wallet description after dropdown.",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 62
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingOneWalletEnd",
         "start": {
           "column": 23,
-          "line": 56
+          "line": 58
         }
       },
       {
@@ -5251,13 +5251,13 @@
         "description": "One wallet description before dropdown.",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 68
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingOneWalletStart",
         "start": {
           "column": 25,
-          "line": 61
+          "line": 63
         }
       },
       {
@@ -5265,13 +5265,13 @@
         "description": "Select wallet item of dropdown.",
         "end": {
           "column": 3,
-          "line": 71
+          "line": 73
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingSelectWallet",
         "start": {
           "column": 23,
-          "line": 67
+          "line": 69
         }
       },
       {
@@ -5279,13 +5279,13 @@
         "description": "Select wallet description after dropdown.",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 78
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingSelectWalletEnd",
         "start": {
           "column": 26,
-          "line": 72
+          "line": 74
         }
       },
       {
@@ -5293,13 +5293,13 @@
         "description": "Select wallet description before dropdown.",
         "end": {
           "column": 3,
-          "line": 81
+          "line": 83
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingSelectWalletStart",
         "start": {
           "column": 28,
-          "line": 77
+          "line": 79
         }
       },
       {
@@ -5307,13 +5307,13 @@
         "description": "Circulating supply slider tooltip.",
         "end": {
           "column": 3,
-          "line": 86
+          "line": 88
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingExtraTooltip",
         "start": {
           "column": 23,
-          "line": 82
+          "line": 84
         }
       },
       {
@@ -5321,13 +5321,13 @@
         "description": "Saturation point slider tooltip.",
         "end": {
           "column": 3,
-          "line": 91
+          "line": 93
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingMaxTooltip",
         "start": {
           "column": 21,
-          "line": 87
+          "line": 89
         }
       },
       {
@@ -5335,13 +5335,13 @@
         "description": "Minimum ADA required for staking slider tooltip.",
         "end": {
           "column": 3,
-          "line": 96
+          "line": 98
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingMinTooltip",
         "start": {
           "column": 21,
-          "line": 92
+          "line": 94
         }
       },
       {
@@ -5349,13 +5349,13 @@
         "description": "Learn more action of ranking panel.",
         "end": {
           "column": 3,
-          "line": 101
+          "line": 103
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.learnMore",
         "start": {
           "column": 19,
-          "line": 97
+          "line": 99
         }
       }
     ],

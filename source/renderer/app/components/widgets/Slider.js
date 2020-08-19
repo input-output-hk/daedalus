@@ -11,7 +11,9 @@ import styles from './Slider.scss';
 type Props = {
   className?: string,
   min: number,
+  minDisplayValue?: number,
   max: number,
+  maxDisplayValue?: number,
   marks?: any,
   step?: number,
   vertical?: boolean,
@@ -32,6 +34,7 @@ type Props = {
   activeDotStyle?: any,
   defaultValue?: number,
   value: number,
+  displayValue?: number,
   showTooltip?: boolean,
   minTooltip?: string,
   maxTooltip?: string,
@@ -51,13 +54,21 @@ export default class Slider extends Component<Props> {
   };
 
   render() {
-    const { showTooltip, minTooltip, maxTooltip, ...rest } = this.props;
+    const {
+      showTooltip,
+      minTooltip,
+      maxTooltip,
+      minDisplayValue,
+      maxDisplayValue,
+      displayValue,
+      ...rest
+    } = this.props;
     const { min, max, value } = rest;
 
     const valueMarkLeftPosition =
       max === min ? `0` : `${((value - min) / (max - min)) * 100}%`;
     const valueMarkStyle = { left: valueMarkLeftPosition };
-    const formattedValue = new BigNumber(value).toFormat(0);
+    const formattedValue = new BigNumber(displayValue || value).toFormat(0);
 
     return (
       <div className={styles.component}>
@@ -65,19 +76,19 @@ export default class Slider extends Component<Props> {
           <div className={styles.minMark}>
             {showTooltip ? (
               <Tooltip skin={TooltipSkin} tip={minTooltip}>
-                {shortNumber(min)}
+                {shortNumber(minDisplayValue || min)}
               </Tooltip>
             ) : (
-              shortNumber(min)
+              shortNumber(minDisplayValue || min)
             )}
           </div>
           <div className={styles.maxMark}>
             {showTooltip ? (
               <Tooltip skin={TooltipSkin} tip={maxTooltip}>
-                {shortNumber(max)}
+                {shortNumber(maxDisplayValue || max)}
               </Tooltip>
             ) : (
-              shortNumber(max)
+              shortNumber(maxDisplayValue || max)
             )}
           </div>
         </div>
