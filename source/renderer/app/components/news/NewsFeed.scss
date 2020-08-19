@@ -132,8 +132,8 @@
   }
 
   .separator {
-    // @UPDATE TODO
-    border: 1px solid #233856;
+    border: 1px solid var(--theme-news-item-title-color);
     margin: 15px 0;
+    opacity: 0.2;
   }
 }

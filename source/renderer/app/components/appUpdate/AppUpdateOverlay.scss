@@ -146,7 +146,7 @@
         }
         .SimpleCheckbox_label {
           color: var(--theme-app-update-overlay-text-color);
-          font-family: var(--font-medium);
+          font-family: var(--font-regular);
           text-align: left;
         }
       }
@@ -204,6 +204,7 @@
     font-family: var(--font-medium);
     line-height: 1.38;
     margin-bottom: 30px;
+    margin-top: -10px;
     text-align: center;
   }
 

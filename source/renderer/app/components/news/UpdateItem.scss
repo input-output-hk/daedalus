@@ -1,8 +1,6 @@
 .component,
 .isRead,
 .info {
-  // background-color: var(--theme-news-item-info-background-color);
-  // @UPDATE TODO
   background-color: rgba(0, 0, 0, 0.1);
   border-radius: 5px;
   cursor: pointer;
@@ -27,7 +25,6 @@
       word-break: break-all;
 
       .badge {
-        // @UPDATE TODO
         background-color: green;
         border-radius: 12.5px;
         display: inline-block;
@@ -49,16 +46,23 @@
   }
 
   .downloadProgress {
-    // @UPDATE TODO
-    background: rgba(255, 255, 255, 0.5);
     height: 2px;
     margin-bottom: -6px;
+    position: relative;
     span {
-      // @UPDATE TODO
-      background: white;
+      background: var(--theme-news-item-title-color);
       display: block;
       height: 2px;
       transition: width 0.24s;
+    }
+    em {
+      background: var(--theme-news-item-title-color);
+      bottom: 0;
+      height: 2px;
+      opacity: 0.5;
+      position: absolute;
+      width: 100%;
+      z-index: 0;
     }
   }
 }

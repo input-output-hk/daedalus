@@ -66,6 +66,7 @@ export default class UpdateItem extends Component<Props> {
         </div>
         <div className={styles.downloadProgress}>
           <span style={{ width: `${downloadProgress}%` }} />
+          <em />
         </div>
       </div>
     );

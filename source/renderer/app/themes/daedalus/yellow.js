@@ -484,8 +484,8 @@ export const YELLOW_THEME_OUTPUT = {
   progressBar: {
     '--theme-progress-bar-background-color': 'rgba(45, 45, 45, 0.3)',
     '--theme-progress-bar-foreground-color': 'rgba(45, 45, 45, 0.7)',
-    '--theme-progress-bar-large-progress-stripe1': '#e0e5eb',
-    '--theme-progress-bar-large-progress-stripe2': '#fafbfc',
+    '--theme-progress-bar-large-progress-stripe1': '#2d2d2d',
+    '--theme-progress-bar-large-progress-stripe2': '#3f3e3e',
     '--theme-progress-bar-large-background-color': 'rgba(0, 0, 0, 0.1)',
   },
   receiveQRCode: {
