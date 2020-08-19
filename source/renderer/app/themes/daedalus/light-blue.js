@@ -228,7 +228,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-dialog-fullsize-button-label-color': '#fafbfc',
     '--theme-dialog-fullsize-button-label-color-hover': 'rgba(36, 62, 98, 1)',
     '--theme-dialog-fullsize-button-text-color-hover': '#243e62',
-    '--theme-dialog-fullsize-field-background-color': 'rgba(0,0,0, 0.1)',
+    '--theme-dialog-fullsize-field-background-color': 'rgba(250, 251, 252, 0.07)',
     '--theme-dialog-fullsize-text-color': 'rgba(255, 255, 255, 0.7)',
     '--theme-dialog-fullsize-text-highlight-color': '#ffffff',
     '--theme-dialog-fullsize-title-text-color': '#ffffff',

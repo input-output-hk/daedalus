@@ -221,7 +221,7 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-dialog-fullsize-title-text-color': '#2d2d2d',
     '--theme-dialog-fullsize-button-label-color': '#29b595',
     '--theme-dialog-fullsize-button-label-color-hover': '#fff',
-    '--theme-dialog-fullsize-field-background-color': 'rgba(0,0,0, 0.1)',
+    '--theme-dialog-fullsize-field-background-color': 'rgba(45, 45, 45, 0.07)',
   },
   errors: {
     '--theme-color-error': '#ea4c5b',

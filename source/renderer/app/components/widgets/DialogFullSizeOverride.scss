@@ -22,10 +22,21 @@
     .SimpleInput_input,
     .SimpleInput_input:focus,
     .SimpleInput_input:hover,
-    .SimpleLink_root,
+    .SimpleLink_root {
+      background-color: transparent !important;
+    }
+
     .SimpleOptions_option,
     .SimpleOptions_option:after {
-      background-color: transparent !important;
+      background-color: var(--theme-dialog-fullsize-background-color) !important;
+    }
+
+    .SimpleOptions_option:first-child {
+      border-radius: 10px 10px 0 0;
+    }
+
+    .SimpleOptions_option:last-child {
+      border-radius: 0 0 10px 10px;
     }
 
     // Background Color Darker
@@ -34,6 +45,7 @@
       background-color: var(
           --theme-dialog-fullsize-field-background-color
       ) !important;
+      border-radius: 0 !important;
     }
 
     // Background Opaque (se same as the normal background, without the opacity)
@@ -146,7 +158,7 @@
 
     .WalletsDropdownOption_label,
     .WalletsDropdownOption_detail {
-      color: var(--theme-splash-network-overlay-button-text-color) !important;
+      color: var(--theme-dialog-fullsize-text-highlight-color) !important;
     }
 
     button.primary {

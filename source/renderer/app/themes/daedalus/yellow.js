@@ -220,7 +220,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-dialog-fullsize-button-label-color': 'rgba(45, 45, 45, 1)',
     '--theme-dialog-fullsize-button-label-color-hover': '#ffffff',
     '--theme-dialog-fullsize-button-text-color-hover': '#ffffff',
-    '--theme-dialog-fullsize-field-background-color': 'rgba(0,0,0, 0.1)',
+    '--theme-dialog-fullsize-field-background-color': 'rgba(45, 45, 45, 0.07)',
     '--theme-dialog-fullsize-text-color': 'rgba(45, 45, 45, 0.7)',
     '--theme-dialog-fullsize-text-highlight-color': '#2d2d2d',
     '--theme-dialog-fullsize-title-text-color': 'rgba(45, 45, 45, 1)',

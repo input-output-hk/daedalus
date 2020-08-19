@@ -207,9 +207,9 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-dialog-title-color': '#ffffff',
     '--theme-dialog-text-color': '#ffffff',
     '--theme-dialog-border-color': 'rgba(255, 255, 255, 0.2)',
-    '--theme-dialog-fullsize-background-color': '#36374df5',
+    '--theme-dialog-fullsize-background-color': 'rgba(42, 43, 60, 0.98)',
     '--theme-dialog-fullsize-background-color-opaque': '#353545',
-    '--theme-dialog-fullsize-field-background-color': 'rgba(0,0,0, 0.1)',
+    '--theme-dialog-fullsize-field-background-color': 'rgba(255, 255, 255, 0.07)',
     '--theme-dialog-fullsize-button-background-color-hover': '#313245',
     '--theme-dialog-fullsize-button-background-color': '#000000',
     '--theme-dialog-fullsize-button-icon-color': '#000000',
@@ -771,7 +771,7 @@ export const DARK_CARDANO_THEME_OUTPUT = {
       'rgba(18, 19, 38, 1)',
     '--theme-staking-stake-pool-tooltip-delegate-button-border-color':
       'transparent',
-    '--theme-staking-progress-label-light': '#ffffffb3',
+    '--theme-staking-progress-label-light': '#121326',
     '--theme-staking-stake-pools-search-clear-button-background-color':
       'rgba(255, 255, 255, 0.1)',
     '--theme-staking-stake-pools-search-clear-button-color': '#ffffff',
