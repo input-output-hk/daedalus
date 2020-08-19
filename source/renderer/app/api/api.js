@@ -1710,17 +1710,22 @@ export default class AdaApi {
     const appVersions = {
       current: currentAppVersion,
       available: availableAppVersion,
+      previous: currentAppVersion.replace(
+        currentAppVersion.substring(0, 1),
+        '1'
+      ),
     };
 
     // Build as up to date
-    const updateNewsItem = getNewsFeedApiItemUpdate(appVersions.available);
-    console.log('appVersions', appVersions);
+    console.log('---> Build as up to date');
+    const updateNewsItem = getNewsFeedApiItemUpdate(appVersions.previous);
     console.log('updateNewsItem', updateNewsItem);
 
+    // console.log('---> Build as should update');
     // Build as should update
     // const updateNewsItem = getNewsFeedApiItemUpdate(appVersions.current);
 
-    // news.items = [...news.items, updateNewsItem];
+    news.items = [...news.items, updateNewsItem];
     // ----- >
 
     // Fetch news verification hash

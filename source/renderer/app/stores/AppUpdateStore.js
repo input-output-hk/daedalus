@@ -138,26 +138,29 @@ export default class AppUpdateStore extends Store {
   }
 
   isUpdateInstalled = (update: News) => {
-    console.log('update', update);
     const { version: updateVersion } = this.getUpdateInfo(update);
-    console.log('updateVersion', updateVersion);
-    console.log('---------- >');
-    console.log('updateVersion', updateVersion);
-    console.log('currentVersion', currentVersion);
     return !semver.lt(currentVersion, updateVersion);
   };
 
   // =================== PRIVATE ==================
 
   _checkNewAppUpdate = async (update: News) => {
+    console.log('---> _checkNewAppUpdate', update);
     const { version } = this.getUpdateInfo(update);
     const appUpdateCompleted = await this.getAppUpdateCompletedRequest.execute();
+    console.log('* appUpdateCompleted', !!appUpdateCompleted);
 
     // The update was already installed and the installer was already deleted
+    if (appUpdateCompleted)
+      console.log(
+        '  . appUpdateCompleted === version',
+        appUpdateCompleted === version
+      );
     if (appUpdateCompleted === version) return;
 
     // Is there an 'Automatic Update Failed' flag?
     const isAutomaticUpdateFailed = await this.getAppAutomaticUpdateFailedRequest.execute();
+    console.log('* isAutomaticUpdateFailed', isAutomaticUpdateFailed);
     if (isAutomaticUpdateFailed) {
       runInAction(() => {
         this.isAutomaticUpdateFailed = true;
@@ -165,6 +168,7 @@ export default class AppUpdateStore extends Store {
     }
 
     // Was the update already installed?
+    console.log('* isUpdateInstalled', this.isUpdateInstalled(update));
     if (this.isUpdateInstalled(update)) {
       // Sets the `appUpdateCompleted` flag to prevent this whole process every app load
       await this.setAppUpdateCompletedRequest.execute(version);
@@ -175,6 +179,7 @@ export default class AppUpdateStore extends Store {
     }
 
     // The Update is valid and needs to be downloaded/installed
+    console.log('@ SHOULD UPDATE');
     runInAction(() => {
       this.availableUpdate = update;
       this.availableUpdateVersion = version;
@@ -196,12 +201,15 @@ export default class AppUpdateStore extends Store {
       }
 
       // Resumes the update download
-      this._requestResumeUpdateDownload();
+      console.log('# _requestResumeUpdateDownload');
+      // this._requestResumeUpdateDownload();
       return;
     }
 
-    await this._removeLocalDataInfo();
-    this._requestUpdateDownload(update);
+    console.log('# _removeLocalDataInfo');
+    console.log('# _requestUpdateDownload');
+    // await this._removeLocalDataInfo();
+    // this._requestUpdateDownload(update);
   };
 
   _removeLocalDataInfo = async () => {
