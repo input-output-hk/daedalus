@@ -139,6 +139,9 @@ export default class AppUpdateStore extends Store {
 
   isUpdateInstalled = (update: News) => {
     const { version: updateVersion } = this.getUpdateInfo(update);
+    console.log('-- isUpdateInstalled');
+    console.log('updateVersion', updateVersion);
+    console.log('currentVersion', currentVersion);
     return !semver.lt(currentVersion, updateVersion);
   };
 
