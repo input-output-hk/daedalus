@@ -5,10 +5,16 @@
 
   svg {
     height: 71px;
+    fill: transparent;
     stroke: var(--theme-dialog-fullsize-text-highlight-color);
 
     path {
+      fill: transparent;
       stroke: var(--theme-dialog-fullsize-text-highlight-color);
+    }
+
+    circle {
+      fill: transparent;
     }
 
     g {
@@ -33,7 +39,7 @@
 }
 
 .description {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--theme-splash-network-overlay-button-text-color);
   font-family: var(--font-regular);
   font-size: 16px;
   line-height: 1.38;
