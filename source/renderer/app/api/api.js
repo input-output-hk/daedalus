@@ -1719,7 +1719,7 @@ export default class AdaApi {
     // Build as up to date
     console.log('---> Build as up to date');
     const updateNewsItem = getNewsFeedApiItemUpdate(appVersions.previous);
-    console.log('updateNewsItem', updateNewsItem);
+    // console.log('updateNewsItem', updateNewsItem);
 
     // console.log('---> Build as should update');
     // Build as should update
