@@ -7,6 +7,7 @@
     font-size: 16px;
     line-height: 1.38;
     margin-bottom: 20px;
+
     b {
       font-family: var(--font-medium);
     }
@@ -34,9 +35,16 @@
 
     :global .ConfigurationDialog_tooltip.SimpleTooltip_root.TooltipOverrides_root.InlineEditingDropdown-tooltip_root.SimpleTooltip_isShowingOnHover {
       height: 12px;
-      left: -145px;
-      top: 5px;
+      left: -150px;
+      top: 2px;
       width: 12px;
+    }
+
+    :global {
+      .PasswordInput_root,
+      .SimplePasswordInput_root {
+        width: 100%;
+      }
     }
 
     :global .InlineEditingDropdown-tooltip_bubble {
@@ -44,7 +52,7 @@
       height: 87px;
       left: 125px;
       line-height: 1.2;
-      top: 54px;
+      top: 66px;
       white-space: normal;
       width: 291.5px;
 
@@ -77,6 +85,7 @@
 
 .spendingPasswordField {
   flex: 1;
+
   &:first-child {
     margin-right: 10px;
   }
