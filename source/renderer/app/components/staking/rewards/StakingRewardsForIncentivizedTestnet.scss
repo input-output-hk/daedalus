@@ -100,6 +100,14 @@
     }
   }
 
+  :global {
+    .LoadingSpinner_component {
+      .LoadingSpinner_icon svg path {
+        fill: var(--theme-loading-spinner-color) !important;
+      }
+    }
+  }
+
   .loadingSpinnerWrapper {
     margin: auto;
   }
@@ -198,7 +206,7 @@
       .syncingProgress {
         position: absolute;
         right: 10px;
-        top: 10px;
+        top: 0;
       }
     }
   }
