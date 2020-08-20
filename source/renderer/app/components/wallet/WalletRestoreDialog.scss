@@ -160,8 +160,15 @@
     text-align: center;
   }
 
-  .isSubmitting {
-    box-shadow: none !important;
-    @include loading-spinner('../../assets/images/spinner-light.svg');
+  :global {
+    .LoadingSpinner_component {
+      .LoadingSpinner_icon {
+        svg {
+          path {
+            fill: var(--theme-button-primary-text-color-disabled) !important;
+          }
+        }
+      }
+    }
   }
 }
