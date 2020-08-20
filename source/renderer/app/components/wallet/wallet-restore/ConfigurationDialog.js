@@ -91,6 +91,7 @@ type Props = {
   spendingPassword: string,
   repeatPassword: string,
   error?: ?LocalizableError,
+  currentLocale: string,
 };
 
 @observer
@@ -216,7 +217,7 @@ export default class ConfigurationDialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onClose, onBack, error, isSubmitting } = this.props;
+    const { onClose, onBack, error, isSubmitting, currentLocale } = this.props;
     const { form } = this;
 
     const walletNameField = form.$('walletName');
@@ -235,6 +236,8 @@ export default class ConfigurationDialog extends Component<Props> {
       styles.spendingPasswordField,
       'repeatPassword',
     ]);
+
+    const tooltipClasses = classnames([styles.tooltip, currentLocale === 'ja-JP' ? 'jpLangTooltipIcon' : '' ]);
 
     const canSubmit = !isSubmitting && form.isValid;
 
@@ -278,7 +281,7 @@ export default class ConfigurationDialog extends Component<Props> {
                   themeOverrides={tooltipStyles}
                   tip={<FormattedHTMLMessage {...messages.passwordTooltip} />}
                   key="tooltip"
-                  className={styles.tooltip}
+                  className={tooltipClasses}
                   arrowRelativeToTip
                 >
                   <SVGInline
