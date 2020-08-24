@@ -13,6 +13,7 @@ import styles from './DeleteWalletConfirmationDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
 import { DELETE_WALLET_COUNTDOWN } from '../../../config/timingConfig';
 import { submitOnEnter } from '../../../utils/form';
+import LoadingSpinner from '../../widgets/LoadingSpinner';
 
 const messages = defineMessages({
   dialogTitle: {
@@ -104,6 +105,12 @@ export default class DeleteWalletConfirmationDialog extends Component<Props> {
       isSubmitting ? styles.isSubmitting : null,
     ]);
 
+    const buttonLabel = !isSubmitting ? (
+      intl.formatMessage(messages.confirmButtonLabel) + countdownDisplay
+    ) : (
+      <LoadingSpinner />
+    );
+
     const actions = [
       {
         label: intl.formatMessage(globalMessages.cancel),
@@ -111,8 +118,7 @@ export default class DeleteWalletConfirmationDialog extends Component<Props> {
       },
       {
         className: buttonClasses,
-        label:
-          intl.formatMessage(messages.confirmButtonLabel) + countdownDisplay,
+        label: buttonLabel,
         onClick: onContinue,
         disabled: isDisabled,
         primary: true,
