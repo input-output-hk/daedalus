@@ -105,6 +105,7 @@ storiesOf('Wallets|Add Wallet', module)
       repeatPassword=""
       spendingPassword=""
       walletName=""
+      currentLocale={'en-US'}
     />
   ))
   .add('Restore - Step 4', () => {

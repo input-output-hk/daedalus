@@ -98,6 +98,7 @@ type Props = {
   error: ?LocalizableError,
   isSpendingPasswordSet: boolean,
   walletName: string,
+  currentLocale: string,
 };
 
 @observer
@@ -227,6 +228,7 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
       error,
       isSpendingPasswordSet,
       walletName,
+      currentLocale,
     } = this.props;
     const dialogClasses = classnames([
       styles.dialog,
@@ -236,6 +238,11 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
     const confirmButtonClasses = classnames([
       'confirmButton',
       isSubmitting ? styles.isSubmitting : null,
+    ]);
+
+    const tooltipClasses = classnames([
+      styles.tooltip,
+      currentLocale === 'ja-JP' ? 'jpLangTooltipIcon' : '',
     ]);
 
     const newPasswordClasses = classnames(['newPassword', styles.newPassword]);
@@ -289,7 +296,7 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
                 themeOverrides={tooltipStyles}
                 tip={<FormattedHTMLMessage {...messages.passwordTooltip} />}
                 key="tooltip"
-                className={styles.tooltip}
+                className={tooltipClasses}
                 arrowRelativeToTip
               >
                 <SVGInline svg={infoIconInline} className={styles.infoIcon} />
@@ -309,7 +316,7 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
                   themeOverrides={tooltipStyles}
                   tip={<FormattedHTMLMessage {...messages.passwordTooltip} />}
                   key="tooltip"
-                  className={styles.tooltip}
+                  className={tooltipClasses}
                   arrowRelativeToTip
                 >
                   <SVGInline svg={infoIconInline} className={styles.infoIcon} />

@@ -92,6 +92,7 @@ const messages = defineMessages({
 type Props = {
   onSubmit: Function,
   onCancel: Function,
+  currentLocale: string,
 };
 
 type State = {
@@ -210,9 +211,13 @@ export default class WalletCreateDialog extends Component<Props, State> {
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { onCancel } = this.props;
+    const { onCancel, currentLocale } = this.props;
     const { isSubmitting } = this.state;
     const dialogClasses = classnames([styles.component, 'WalletCreateDialog']);
+    const tooltipClasses = classnames([
+      styles.tooltip,
+      currentLocale === 'ja-JP' ? 'jpLangTooltipIcon' : '',
+    ]);
 
     const walletNameField = form.$('walletName');
     const spendingPasswordField = form.$('spendingPassword');
@@ -276,7 +281,7 @@ export default class WalletCreateDialog extends Component<Props, State> {
                 themeOverrides={tooltipStyles}
                 tip={<FormattedHTMLMessage {...messages.passwordTooltip} />}
                 key="tooltip"
-                className={styles.tooltip}
+                className={tooltipClasses}
                 arrowRelativeToTip
               >
                 <SVGInline svg={infoIconInline} className={styles.infoIcon} />

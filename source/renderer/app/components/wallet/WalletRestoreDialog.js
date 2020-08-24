@@ -393,16 +393,10 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     const repeatedPasswordField = form.$('repeatPassword');
 
     const label = this.isCertificate()
-      ? this.context.intl.formatMessage(
-        messages.restorePaperWalletButtonLabel
-      )
+      ? this.context.intl.formatMessage(messages.restorePaperWalletButtonLabel)
       : this.context.intl.formatMessage(messages.importButtonLabel);
 
-    const buttonLabel = !isSubmitting ? (
-      label
-    ) : (
-      <LoadingSpinner />
-    );
+    const buttonLabel = !isSubmitting ? label : <LoadingSpinner />;
 
     const actions = [
       {
