@@ -605,6 +605,7 @@
   "wallet.create.dialog.title": "Shelleyウォレットを新規作成する",
   "wallet.create.dialog.validateStep": "!!!Validate",
   "wallet.create.dialog.walletNameHint": "ウォレット名を入力してください",
+  "wallet.dialog.passwordTooltip": "送信時パスワードの管理および保存には、<b>パスワード管理アプリの使用が推奨されます。</b>パスワード管理アプリで専用パスワードを生成し、ここに張り付けてください。パスワードは絶対に再利用しないでください。",
   "wallet.hardware.hardwareWalletBegin": "!!!To begin, connect and unlock your <span>Hardware wallet Device</span>",
   "wallet.hardware.hardwareWalletExport": "!!!Export <span>public key</span> on your device",
   "wallet.hardware.hardwareWalletInstructions": "!!!Follow instructions to access your wallet",
