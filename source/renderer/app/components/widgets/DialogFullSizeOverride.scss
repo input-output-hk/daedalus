@@ -54,13 +54,14 @@
           --theme-dialog-fullsize-background-color-opaque
       ) !important;
       border: 1px solid var(--theme-dialog-fullsize-text-color) !important;
+      border-radius: 4px;
     }
 
     // Background Light
     .SelectOverrides_selectInput,
     .SelectOverrides_selectInput:hover {
       &:after {
-        background-color: var(--theme-dialog-fullsize-text-color);
+        background-color: var(--theme-dialog-fullsize-text-color) !important;
       }
     }
 
@@ -99,6 +100,7 @@
     .SimpleLink_root,
     .SimpleOptions_option:after {
       border-color: var(--theme-dialog-fullsize-text-color) !important;
+      background-color: transparent !important;
     }
 
     .SimpleLink_root {
@@ -116,7 +118,7 @@
     }
 
     .DialogCloseButton_component {
-      border-radius: 50%;
+      border-radius: 50% !important;
       height: 44px;
       opacity: 0.5;
       right: 10px;
