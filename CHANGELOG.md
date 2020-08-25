@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Features
+
+- Implemented slot and epoch length config variables fetching API instead of using constants ([PR 2165](https://github.com/input-output-hk/daedalus/pull/2165))
+
 ## 2.2.0
 
 ### Features
