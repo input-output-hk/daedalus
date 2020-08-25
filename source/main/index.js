@@ -11,7 +11,10 @@ import {
   generateWalletMigrationReport,
 } from './utils/setupLogging';
 import { handleDiskSpace } from './utils/handleDiskSpace';
-import { handleHardwareWalletDevices, handleInitTrezorConnect } from './ipc/getHardwareWalletChannel';
+import {
+  handleHardwareWalletDevices,
+  handleInitTrezorConnect,
+} from './ipc/getHardwareWalletChannel';
 import { handleCheckBlockReplayProgress } from './utils/handleCheckBlockReplayProgress';
 import { createMainWindow } from './windows/main';
 import { installChromeExtensions } from './utils/installChromeExtensions';
@@ -166,10 +169,10 @@ const onAppReady = async () => {
   mainErrorHandler(onMainError);
   await handleCheckDiskSpace();
 
- // const handleCheckHardwareWalletDevices = handleHardwareWalletDevices(
- //   mainWindow
- // );
- // await handleCheckHardwareWalletDevices();
+  // const handleCheckHardwareWalletDevices = handleHardwareWalletDevices(
+  //   mainWindow
+  // );
+  // await handleCheckHardwareWalletDevices();
 
   const initTrezorConnect = handleInitTrezorConnect(mainWindow.webContents);
   await initTrezorConnect();

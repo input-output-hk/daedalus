@@ -35,7 +35,13 @@ export default class MainLayout extends Component<InjectedContainerProps> {
 
   render() {
     const { actions, stores } = this.props;
-    const { sidebar, profile, app, wallets: walletsStore, networkStatus } = stores;
+    const {
+      sidebar,
+      profile,
+      app,
+      wallets: walletsStore,
+      networkStatus,
+    } = stores;
     const { isHardwareWalletRoute } = walletsStore;
     const activeWallet = walletsStore.active;
     const activeWalletId = activeWallet ? activeWallet.id : null;

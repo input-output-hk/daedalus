@@ -185,7 +185,7 @@ export type CreateExternalTransactionRequest = {
 
 export type CreateExternalTransactionResponse = {
   id: string,
-}
+};
 
 export type GetWithdrawalsRequest = {
   walletId: string,

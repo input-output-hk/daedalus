@@ -75,9 +75,9 @@ const messages = defineMessages({
   },
   passwordTooltip: {
     id: 'wallet.dialog.passwordTooltip',
-    defaultMessage: '!!!It is really good to use Password Manager apps to improve security. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris mattis diam non nulla sollicitudin, ac ultrices purus luctus.',
-    description:
-      'Tooltip for the password input in the create wallet dialog.',
+    defaultMessage:
+      '!!!It is really good to use Password Manager apps to improve security. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris mattis diam non nulla sollicitudin, ac ultrices purus luctus.',
+    description: 'Tooltip for the password input in the create wallet dialog.',
   },
 });
 
@@ -237,7 +237,10 @@ export default class ConfigurationDialog extends Component<Props> {
       'repeatPassword',
     ]);
 
-    const tooltipClasses = classnames([styles.tooltip, currentLocale === 'ja-JP' ? 'jpLangTooltipIcon' : '' ]);
+    const tooltipClasses = classnames([
+      styles.tooltip,
+      currentLocale === 'ja-JP' ? 'jpLangTooltipIcon' : '',
+    ]);
 
     const canSubmit = !isSubmitting && form.isValid;
 
@@ -284,10 +287,7 @@ export default class ConfigurationDialog extends Component<Props> {
                   className={tooltipClasses}
                   arrowRelativeToTip
                 >
-                  <SVGInline
-                    svg={infoIconInline}
-                    className={styles.infoIcon}
-                  />
+                  <SVGInline svg={infoIconInline} className={styles.infoIcon} />
                 </Tooltip>
               </div>
               <div className={styles.spendingPasswordField}>

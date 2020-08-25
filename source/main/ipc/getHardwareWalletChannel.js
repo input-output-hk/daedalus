@@ -2,7 +2,12 @@
 import TransportNodeHid from '@ledgerhq/hw-transport-node-hid';
 import AppAda, { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { BrowserWindow } from 'electron';
-import { DEVICE_EVENT, DEVICE, TRANSPORT_EVENT, UI_EVENT } from 'trezor-connect';
+import {
+  DEVICE_EVENT,
+  DEVICE,
+  TRANSPORT_EVENT,
+  UI_EVENT,
+} from 'trezor-connect';
 import { get } from 'lodash';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import {
@@ -98,10 +103,9 @@ class EventObserver {
 }
 
 // SETUP trezor-connect
-export const handleInitTrezorConnect = (sender) => {
+export const handleInitTrezorConnect = sender => {
   console.debug('>>> INI: ', sender);
   const initTrezorConnect = async () => {
-
     TrezorConnect.on(TRANSPORT_EVENT, event => {
       console.debug('>>> TRANSPORT_EVENT: ', event);
     });
@@ -125,50 +129,52 @@ export const handleInitTrezorConnect = (sender) => {
     // });
     TrezorConnect.manifest({
       email: 'email@developer.com',
-      appUrl: 'http://your.application.com'
-    })
-    TrezorConnect.init({
-        popup: false, // render your own UI
-        webusb: false, // webusb is not supported in electron
-        debug: false, // see what's going on inside connect
-        // lazyLoad: true, // set to "false" (default) if you want to start communication with bridge on application start (and detect connected device right away)
-        // set it to "true", then trezor-connect will not be initialized until you call some TrezorConnect.method()
-        // this is useful when you don't know if you are dealing with Trezor user
-        manifest: {
-            email: 'email@developer.com',
-            appUrl: 'http://your.application.com',
-        },
-    }).then((res) => {
-      console.debug('>>> TREZOR INIT - SUCCESS: ', res);
-        sender.send('trezor-connect', 'TrezorConnect is ready!');
-    }).catch(error => {
-      console.debug('>>> TREZOR INIT - ERROR ', error);
-        sender.send('trezor-connect', 'TrezorConnect init error:' + error);
+      appUrl: 'http://your.application.com',
     });
-  }
+    TrezorConnect.init({
+      popup: false, // render your own UI
+      webusb: false, // webusb is not supported in electron
+      debug: false, // see what's going on inside connect
+      // lazyLoad: true, // set to "false" (default) if you want to start communication with bridge on application start (and detect connected device right away)
+      // set it to "true", then trezor-connect will not be initialized until you call some TrezorConnect.method()
+      // this is useful when you don't know if you are dealing with Trezor user
+      manifest: {
+        email: 'email@developer.com',
+        appUrl: 'http://your.application.com',
+      },
+    })
+      .then(res => {
+        console.debug('>>> TREZOR INIT - SUCCESS: ', res);
+        sender.send('trezor-connect', 'TrezorConnect is ready!');
+      })
+      .catch(error => {
+        console.debug('>>> TREZOR INIT - ERROR ', error);
+        sender.send('trezor-connect', 'TrezorConnect init error:' + error);
+      });
+  };
 
   return initTrezorConnect;
 
- //  TrezorConnect.init({
- //      popup: false, // render your own UI
- //      webusb: false, // webusb is not supported in electron
- //      debug: false, // see what's going on inside connect
- //      // lazyLoad: true, // set to "false" (default) if you want to start communication with bridge on application start (and detect connected device right away)
- //      // set it to "true", then trezor-connect will not be initialized until you call some TrezorConnect.method()
- //      // this is useful when you don't know if you are dealing with Trezor user
- //      manifest: {
- //          email: 'email@developer.com',
- //          appUrl: 'electron-app-boilerplate',
- //      },
- //  }).then(() => {
- //    console.debug('>>> INIT TREZOR success <<<');
- //      // sender.send('trezor-connect', 'TrezorConnect is ready!');
- //  }).catch(error => {
- //    console.debug('>>> INIT TREZOR error <<<: ', error);
- //      // sender.send('trezor-connect', 'TrezorConnect init error:' + error);
- //  });
- //  console.debug('>>> INIT TREZOR DONE');
-}
+  //  TrezorConnect.init({
+  //      popup: false, // render your own UI
+  //      webusb: false, // webusb is not supported in electron
+  //      debug: false, // see what's going on inside connect
+  //      // lazyLoad: true, // set to "false" (default) if you want to start communication with bridge on application start (and detect connected device right away)
+  //      // set it to "true", then trezor-connect will not be initialized until you call some TrezorConnect.method()
+  //      // this is useful when you don't know if you are dealing with Trezor user
+  //      manifest: {
+  //          email: 'email@developer.com',
+  //          appUrl: 'electron-app-boilerplate',
+  //      },
+  //  }).then(() => {
+  //    console.debug('>>> INIT TREZOR success <<<');
+  //      // sender.send('trezor-connect', 'TrezorConnect is ready!');
+  //  }).catch(error => {
+  //    console.debug('>>> INIT TREZOR error <<<: ', error);
+  //      // sender.send('trezor-connect', 'TrezorConnect init error:' + error);
+  //  });
+  //  console.debug('>>> INIT TREZOR DONE');
+};
 
 export const handleHardwareWalletDevices = (mainWindow: BrowserWindow) => {
   const handleCheckHardwareWalletDevices = async () => {
@@ -181,7 +187,7 @@ export const handleHardwareWalletDevices = (mainWindow: BrowserWindow) => {
 
 export const handleHardwareWalletRequests = async () => {
   let deviceConnection = null;
-  getHardwareWalletTransportChannel.onRequest(async (isTrezor) => {
+  getHardwareWalletTransportChannel.onRequest(async isTrezor => {
     console.debug('>>> ESTABLISH CONNECTION <<<');
     // console.debug('>>> TRY with TREZOR: ', TrezorConnect);
 
@@ -196,7 +202,10 @@ export const handleHardwareWalletRequests = async () => {
         deviceID: deviceFeatures.payload.device_id,
         deviceType: 'trezor',
         deviceModel: deviceFeatures.payload.model, // e.g. "1" or "T"
-        deviceName: deviceFeatures.payload.model === '1' ? 'Trezor Model One' : 'Trezor Model T', // @TODO - to be defined
+        deviceName:
+          deviceFeatures.payload.model === '1'
+            ? 'Trezor Model One'
+            : 'Trezor Model T', // @TODO - to be defined
       });
     }
 
@@ -252,7 +261,6 @@ export const handleHardwareWalletRequests = async () => {
   getExtendedPublicKeyChannel.onRequest(async params => {
     const { path, isTrezor } = params;
 
-
     console.debug('>>> IS TREZOR: ', isTrezor);
     /* const result = await TrezorConnect.getPublicKey({
       path: "m/44'/1815'/0'",
@@ -265,7 +273,7 @@ export const handleHardwareWalletRequests = async () => {
         trezorConnected = true;
       }
     }
-    console.debug('>>> trezorConnected: ', {trezorConnected, isTrezor});
+    console.debug('>>> trezorConnected: ', { trezorConnected, isTrezor });
 
     try {
       if (!deviceConnection && !trezorConnected) {
@@ -274,24 +282,34 @@ export const handleHardwareWalletRequests = async () => {
       let extendedPublicKey;
       if (trezorConnected && isTrezor) {
         console.debug('>>> EXPORT TREZOR KEY <<< ');
-        const extendedPublicKeyResponse = await TrezorConnect.cardanoGetPublicKey({
-          path: "m/44'/1815'/0'",
-          showOnTrezor: true,
-        });
+        const extendedPublicKeyResponse = await TrezorConnect.cardanoGetPublicKey(
+          {
+            path: "m/44'/1815'/0'",
+            showOnTrezor: true,
+          }
+        );
         console.debug('>>> EXPORT RES: ', extendedPublicKeyResponse);
         if (!extendedPublicKeyResponse.success) {
           console.debug('>>> THROW ERROR: ', extendedPublicKeyResponse.payload);
           throw extendedPublicKeyResponse.payload;
         }
         console.debug('>>> SUCCESS: ', extendedPublicKeyResponse.payload);
-        extendedPublicKey = get(extendedPublicKeyResponse, ['payload', 'node'], {});
+        extendedPublicKey = get(
+          extendedPublicKeyResponse,
+          ['payload', 'node'],
+          {}
+        );
       } else {
         extendedPublicKey = await deviceConnection.getExtendedPublicKey(path);
       }
       console.debug('>>> KEY: ', extendedPublicKey);
       return Promise.resolve({
-        publicKeyHex: isTrezor ? extendedPublicKey.public_key : extendedPublicKey.publicKeyHex,
-        chainCodeHex: isTrezor ? extendedPublicKey.chain_code : extendedPublicKey.chainCodeHex,
+        publicKeyHex: isTrezor
+          ? extendedPublicKey.public_key
+          : extendedPublicKey.publicKeyHex,
+        chainCodeHex: isTrezor
+          ? extendedPublicKey.chain_code
+          : extendedPublicKey.chainCodeHex,
       });
     } catch (error) {
       // return Promise.resolve(error);
@@ -360,7 +378,6 @@ export const handleHardwareWalletRequests = async () => {
       }
     }
     return;
-
 
     try {
       if (!deviceConnection) {
