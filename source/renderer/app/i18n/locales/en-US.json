@@ -911,10 +911,5 @@
   "wallet.transferFunds.dialog2.label.total": "Total",
   "wallet.transferFunds.dialog2.passphraseFieldPlaceholder": "Spending password",
   "wallet.transferFunds.dialog2.passphraseLabel": "Spending password",
-<<<<<<< HEAD
-  "wallet.transferFunds.dialog2.title": "Transfer funds from the Balance wallet"
-}
-=======
   "wallet.transferFunds.dialog2.title": "Transfer funds"
 }
->>>>>>> develop
