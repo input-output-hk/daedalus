@@ -164,6 +164,14 @@
       color: var(--theme-dialog-fullsize-text-highlight-color) !important;
     }
 
+    .SimpleAutocomplete_selectedWordBox {
+      background-color: var(--rp-autocomplete-selected-word-dialog-box-bg-color) !important;
+    }
+
+    .SimpleAutocomplete_selectedWordValue {
+      color: var(--rp-autocomplete-selected-word-dialog-text-color) !important;
+    }
+
     button.primary {
       background-color: var(
           --theme-splash-network-overlay-button-background-color

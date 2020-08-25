@@ -506,6 +506,8 @@ export const WHITE_THEME_OUTPUT = {
     '--rp-autocomplete-input-text-color': 'rgba(45, 45, 45, 0.7)',
     '--rp-autocomplete-placeholder-color': 'rgba(45, 45, 45, 0.5)',
     '--rp-autocomplete-selected-word-box-bg-color': '#29b595',
+    '--rp-autocomplete-selected-word-dialog-box-bg-color': '#29b595',
+    '--rp-autocomplete-selected-word-dialog-text-color': '#ffffff',
     '--rp-autocomplete-selected-word-text-color': '#ffffff',
     '--rp-autocomplete-selected-words-font-family':
       'NotoSans-Regular, NotoSansCJKjp-Regular',

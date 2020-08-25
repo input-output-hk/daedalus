@@ -61,6 +61,8 @@ export const createReactPolymorphTheme = (
         0.5
       )}`,
       '--rp-autocomplete-selected-word-box-bg-color': `${background.secondary.light}`,
+      '--rp-autocomplete-selected-word-dialog-box-bg-color': `${background.secondary.light}`,
+      '--rp-autocomplete-selected-word-dialog-text-color': `${text.secondary}`,
       '--rp-autocomplete-selected-word-text-color': `${text.secondary}`,
       '--rp-autocomplete-selected-words-font-family': `${fonts.regular}`,
     },

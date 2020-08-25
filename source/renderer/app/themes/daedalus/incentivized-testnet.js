@@ -499,6 +499,8 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--rp-autocomplete-input-text-color': 'rgba(255, 255, 255, 0.7)',
     '--rp-autocomplete-placeholder-color': 'rgba(255, 255, 255, 0.5)',
     '--rp-autocomplete-selected-word-box-bg-color': '#eb2256',
+    '--rp-autocomplete-selected-word-dialog-box-bg-color': '#eb2256',
+    '--rp-autocomplete-selected-word-dialog-text-color': '#121326',
     '--rp-autocomplete-selected-word-text-color': '#121326',
     '--rp-autocomplete-selected-words-font-family':
       'NotoSans-Regular, NotoSansCJKjp-Regular',

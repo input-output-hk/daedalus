@@ -499,6 +499,8 @@ export const SHELLEY_TESTNET_THEME_OUTPUT = {
     '--rp-autocomplete-input-text-color': 'rgba(255, 255, 255, 0.7)',
     '--rp-autocomplete-placeholder-color': 'rgba(255, 255, 255, 0.5)',
     '--rp-autocomplete-selected-word-box-bg-color': '#898ee6',
+    '--rp-autocomplete-selected-word-dialog-box-bg-color': '#898ee6',
+    '--rp-autocomplete-selected-word-dialog-text-color': '#121326',
     '--rp-autocomplete-selected-word-text-color': '#121326',
     '--rp-autocomplete-selected-words-font-family':
       'NotoSans-Regular, NotoSansCJKjp-Regular',
