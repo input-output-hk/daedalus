@@ -29,12 +29,14 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
       isNodeStopped,
       isNotEnoughDiskSpace,
       isTlsCertInvalid,
+      isVerifyingBlockchain,
+      verificationProgress,
     } = stores.networkStatus;
     const {
       isNewAppVersionAvailable,
       isNewAppVersionLoading,
       isNewAppVersionLoaded,
-    } = stores.nodeUpdate;
+    } = stores.appUpdate;
     const { hasLoadedCurrentLocale, hasLoadedCurrentTheme } = stores.profile;
     const { toggleNewsFeed } = this.props.actions.app;
     const { unread } = stores.newsFeed.newsFeedData;
@@ -75,6 +77,8 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
         onToggleNewsFeedIconClick={toggleNewsFeed.trigger}
         disableDownloadLogs={stores.app.isDownloadNotificationVisible}
         showNewsFeedIcon={!isNodeStopping && !isNodeStopped}
+        isVerifyingBlockchain={isVerifyingBlockchain}
+        verificationProgress={verificationProgress}
       />
     );
   }
@@ -101,8 +105,8 @@ export default class LoadingSyncingConnectingPage extends Component<Props> {
   };
 
   handleGetAvailableVersions = () => {
-    const { nodeUpdate } = this.props.actions;
-    nodeUpdate.getLatestAvailableAppVersion.trigger();
+    const { appUpdate } = this.props.actions;
+    appUpdate.getLatestAvailableAppVersion.trigger();
   };
 
   openDaedalusDiagnosticsDialog = () => {

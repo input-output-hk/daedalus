@@ -21,6 +21,7 @@ import StakingInfoPage from './containers/staking/StakingInfoPage';
 import StakingRewardsPage from './containers/staking/StakingRewardsPage';
 import StakePoolsListPage from './containers/staking/StakePoolsListPage';
 import StakingCountdownPage from './containers/staking/StakingCountdownPage';
+import RedeemItnRewardsContainer from './containers/staking/RedeemItnRewardsContainer';
 import HardwareWallet from './containers/hardware-wallet/HardwareWallet';
 import HardwareWalletAddPage from './containers/hardware-wallet/HardwareWalletAddPage';
 import Wallet from './containers/wallet/Wallet';
@@ -53,6 +54,11 @@ export const Routes = withRouter(() => (
         <Route path={ROUTES.WALLETS.ADD} component={WalletAddPage} />
         <Route path={ROUTES.WALLETS.ROOT}>
           <Wallet>
+            <Route
+              exact
+              path={ROUTES.WALLETS.ROOT}
+              component={() => <Redirect to={ROUTES.WALLETS.SUMMARY} />}
+            />
             <Route
               path={ROUTES.WALLETS.SUMMARY}
               component={WalletSummaryPage}
@@ -160,6 +166,10 @@ export const Routes = withRouter(() => (
             <Route path={ROUTES.STAKING.EPOCHS} component={StakingEpochsPage} />
             <Route path={ROUTES.STAKING.INFO} component={StakingInfoPage} />
           </Staking>
+          <Route
+            path={ROUTES.REDEEM_ITN_REWARDS}
+            component={RedeemItnRewardsContainer}
+          />
         </Route>
       </Switch>
     </Root>

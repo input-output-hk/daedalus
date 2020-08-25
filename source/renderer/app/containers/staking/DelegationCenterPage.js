@@ -8,6 +8,7 @@ import UndelegateConfirmationDialog from '../../components/staking/delegation-ce
 import DelegationSetupWizardDialog from '../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
 import DelegationCenterNoWallets from '../../components/staking/delegation-center/DelegationCenterNoWallets';
 import { ROUTES } from '../../routes-config';
+import { MIN_DELEGATION_FUNDS } from '../../config/stakingConfig';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 type Props = InjectedProps;
@@ -60,16 +61,24 @@ export default class DelegationCenterPage extends Component<Props> {
   };
 
   render() {
+    const { isIncentivizedTestnet, isShelleyTestnet } = global;
     const { stores } = this.props;
     const { app, uiDialogs, staking, wallets, networkStatus, profile } = stores;
     const { stakePools, getStakePoolById, fetchingStakePoolsFailed } = staking;
-    const { networkTip, nextEpoch, futureEpoch } = networkStatus;
+    const {
+      isSynced,
+      networkTip,
+      nextEpoch,
+      futureEpoch,
+      isEpochsInfoAvailable,
+    } = networkStatus;
     const { currentLocale } = profile;
 
     if (!wallets.allWallets.length) {
       return (
         <DelegationCenterNoWallets
           onGoToCreateWalletClick={this.handleGoToCreateWalletClick}
+          minDelegationFunds={MIN_DELEGATION_FUNDS}
         />
       );
     }
@@ -85,7 +94,13 @@ export default class DelegationCenterPage extends Component<Props> {
           nextEpoch={nextEpoch}
           futureEpoch={futureEpoch}
           getStakePoolById={getStakePoolById}
-          isLoading={fetchingStakePoolsFailed || !stakePools.length}
+          isLoading={
+            !isSynced || fetchingStakePoolsFailed || !stakePools.length
+          }
+          isEpochsInfoAvailable={
+            (isIncentivizedTestnet && !isShelleyTestnet) ||
+            isEpochsInfoAvailable
+          }
           currentLocale={currentLocale}
         />
         {uiDialogs.isOpen(UndelegateConfirmationDialog) ? (

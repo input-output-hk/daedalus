@@ -65,16 +65,25 @@ const messages = defineMessages({
     defaultMessage: '!!!TLS certificate is not valid, please restart Daedalus.',
     description: 'The TLS cert is not valid and Daedalus should be restarted',
   },
+  verifyingBlockchain: {
+    id: 'loading.screen.verifyingBlockchainMessage',
+    defaultMessage:
+      '!!!Verifying the blockchain ({verificationProgress}% complete)',
+    description:
+      'Message "Verifying the blockchain (65% complete) ..." on the loading screen.',
+  },
 });
 
 type Props = {
   cardanoNodeState: ?CardanoNodeState,
+  verificationProgress: number,
   hasLoadedCurrentLocale: boolean,
   hasBeenConnected: boolean,
   isTlsCertInvalid: boolean,
   isConnected: boolean,
   isNodeStopping: boolean,
   isNodeStopped: boolean,
+  isVerifyingBlockchain: boolean,
 };
 
 export default class SyncingConnectingStatus extends Component<Props> {
@@ -86,6 +95,7 @@ export default class SyncingConnectingStatus extends Component<Props> {
     const {
       cardanoNodeState,
       hasBeenConnected,
+      isVerifyingBlockchain,
       isTlsCertInvalid,
       isConnected,
     } = this.props;
@@ -128,6 +138,9 @@ export default class SyncingConnectingStatus extends Component<Props> {
     if (isTlsCertInvalid && isConnectingMessage) {
       return messages.tlsCertificateNotValidError;
     }
+    if (isVerifyingBlockchain && isConnectingMessage) {
+      return messages.verifyingBlockchain;
+    }
     return connectingMessage;
   };
 
@@ -139,6 +152,7 @@ export default class SyncingConnectingStatus extends Component<Props> {
       isNodeStopped,
       isTlsCertInvalid,
       hasLoadedCurrentLocale,
+      verificationProgress,
     } = this.props;
 
     if (!hasLoadedCurrentLocale) return null;
@@ -159,7 +173,9 @@ export default class SyncingConnectingStatus extends Component<Props> {
     return (
       <div className={componentStyles}>
         <h1 className={headlineStyles}>
-          {intl.formatMessage(this._getConnectingMessage())}
+          {intl.formatMessage(this._getConnectingMessage(), {
+            verificationProgress,
+          })}
         </h1>
       </div>
     );

@@ -4,9 +4,9 @@ import type Store from './lib/Store';
 import AddressesStore from './AddressesStore';
 import AppStore from './AppStore';
 import HardwareWalletsStore from './HardwareWalletsStore';
+import AppUpdateStore from './AppUpdateStore';
 import NetworkStatusStore from './NetworkStatusStore';
 import NewsFeedStore from './NewsFeedStore';
-import NodeUpdateStore from './NodeUpdateStore';
 import ProfileStore from './ProfileStore';
 import SidebarStore from './SidebarStore';
 import StakingStore from './StakingStore';
@@ -24,9 +24,9 @@ export const storeClasses = {
   addresses: AddressesStore,
   app: AppStore,
   hardwareWallets: HardwareWalletsStore,
+  appUpdate: AppUpdateStore,
   networkStatus: NetworkStatusStore,
   newsFeed: NewsFeedStore,
-  nodeUpdate: NodeUpdateStore,
   profile: ProfileStore,
   sidebar: SidebarStore,
   staking: StakingStore,
@@ -44,10 +44,11 @@ export const storeClasses = {
 export type StoresMap = {
   addresses: AddressesStore,
   app: AppStore,
+
   hardwareWallets: HardwareWalletsStore,
+  appUpdate: AppUpdateStore,
   networkStatus: NetworkStatusStore,
   newsFeed: NewsFeedStore,
-  nodeUpdate: NodeUpdateStore,
   profile: ProfileStore,
   router: Object,
   sidebar: SidebarStore,
@@ -90,7 +91,7 @@ export default action((api, actions, router): StoresMap => {
     hardwareWallets: createStoreInstanceOf(HardwareWalletsStore),
     networkStatus: createStoreInstanceOf(NetworkStatusStore),
     newsFeed: createStoreInstanceOf(NewsFeedStore),
-    nodeUpdate: createStoreInstanceOf(NodeUpdateStore),
+    appUpdate: createStoreInstanceOf(AppUpdateStore),
     profile: createStoreInstanceOf(ProfileStore),
     router,
     sidebar: createStoreInstanceOf(SidebarStore),

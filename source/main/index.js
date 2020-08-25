@@ -12,6 +12,7 @@ import {
 } from './utils/setupLogging';
 import { handleDiskSpace } from './utils/handleDiskSpace';
 import { handleHardwareWalletDevices, handleInitTrezorConnect } from './ipc/getHardwareWalletChannel';
+import { handleCheckBlockReplayProgress } from './utils/handleCheckBlockReplayProgress';
 import { createMainWindow } from './windows/main';
 import { installChromeExtensions } from './utils/installChromeExtensions';
 import { environment } from './environment';
@@ -59,6 +60,8 @@ if (isBlankScreenFixActive) {
   // Run "location.assign('chrome://gpu')" in JavaScript console to see if the flag is active
   app.disableHardwareAcceleration();
 }
+
+app.allowRendererProcessReuse = true;
 
 const safeExit = async () => {
   if (!cardanoNode || cardanoNode.state === CardanoNodeStates.STOPPED) {
@@ -170,6 +173,8 @@ const onAppReady = async () => {
 
   const initTrezorConnect = handleInitTrezorConnect(mainWindow.webContents);
   await initTrezorConnect();
+
+  await handleCheckBlockReplayProgress(mainWindow, launcherConfig.logsPrefix);
 
   cardanoNode = setupCardanoNode(launcherConfig, mainWindow);
 

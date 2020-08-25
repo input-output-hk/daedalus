@@ -22,10 +22,14 @@ export default class WalletCreateDialogContainer extends Component<Props> {
   };
 
   render() {
+    const { isShelleyActivated } = this.props.stores.networkStatus;
+    const { currentLocale } = this.props.stores.profile;
     return (
       <WalletCreateDialog
         onSubmit={this.onSubmit}
         onCancel={this.props.onClose}
+        isShelleyActivated={isShelleyActivated}
+        currentLocale={currentLocale}
       />
     );
   }

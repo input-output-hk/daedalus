@@ -1,0 +1,44 @@
+.component {
+  position: relative;
+  > button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    height: 100%;
+    position: absolute;
+    width: 100%;
+    z-index: 1;
+  }
+}
+
+.content {
+  background-color: var(--theme-staking-stake-pool-background-color);
+  border: 1px solid var(--theme-staking-stake-pool-border-color);
+  border-radius: 4px;
+  cursor: pointer;
+  height: 71px;
+  width: 80px;
+
+  &.disabled {
+    opacity: 0.3;
+  }
+
+  &.isOnHover:hover {
+    @extend .isHighlighted;
+  }
+}
+
+.isHighlighted {
+  box-shadow: 0 0 4px 2px var(--theme-staking-stake-pool-glow-color);
+}
+
+.isSelected,
+.isNextSelected {
+  .colorBand,
+  .ranking {
+    visibility: hidden;
+  }
+  .ticker {
+    color: var(--theme-staking-stake-pool-selected-ticker-color);
+  }
+}

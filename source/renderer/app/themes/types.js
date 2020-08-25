@@ -8,6 +8,7 @@ export type PendingThemesUpdates = {
   'dark-cardano.js'?: Object,
   'flight-candidate.js'?: Object,
   'light-blue.js'?: Object,
+  'shelley-testnet.js'?: Object,
   'white.js'?: Object,
   'yellow.js'?: Object,
 };
@@ -38,6 +39,7 @@ export type FindUpdatesParams = {
   darkCardano: Object,
   flightCandidate: Object,
   lightBlue: Object,
+  shelleyTestnet: Object,
   yellow: Object,
   white: Object,
 };

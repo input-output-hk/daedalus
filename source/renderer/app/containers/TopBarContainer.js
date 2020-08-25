@@ -21,7 +21,7 @@ export default class TopBarContainer extends Component<Props> {
   render() {
     const { actions, stores } = this.props;
     const { sidebar, app, networkStatus, wallets, newsFeed } = stores;
-    const { isSynced, syncPercentage } = networkStatus;
+    const { isSynced, syncPercentage, isShelleyActivated } = networkStatus;
     const {
       isWalletRoute,
       hasAnyWallets,
@@ -33,7 +33,6 @@ export default class TopBarContainer extends Component<Props> {
     const active = isHardwareWalletRoute
       ? activeHardwareWallet
       : wallets.active;
-
     const {
       currentRoute,
       environment: { isMainnet, network },
@@ -86,6 +85,7 @@ export default class TopBarContainer extends Component<Props> {
         hasRewardsWallets={hasRewardsWallets}
         onWalletAdd={onWalletAdd}
         onLearnMore={openExternalLink}
+        isShelleyActivated={isShelleyActivated}
       >
         {testnetLabel}
         <NodeSyncStatusIcon

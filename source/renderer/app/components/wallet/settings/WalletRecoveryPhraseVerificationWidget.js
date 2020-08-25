@@ -131,7 +131,7 @@ export type Props = {
   onVerify: Function,
   wordCount: number,
   locale: string,
-  isIncentivizedTestnet: boolean,
+  isLegacy: boolean,
 };
 
 @observer
@@ -223,7 +223,7 @@ export default class WalletRecoveryPhraseVerificationWidget extends Component<Pr
       wordCount,
       creationDate,
       recoveryPhraseVerificationDate,
-      isIncentivizedTestnet,
+      isLegacy,
     } = this.props;
     const {
       icon,
@@ -255,7 +255,7 @@ export default class WalletRecoveryPhraseVerificationWidget extends Component<Pr
         <h2>{intl.formatMessage(messages.title)}</h2>
         <div className={styles.description}>
           {intl.formatMessage(messages.description, { wordCount })}
-          {!isIncentivizedTestnet && (
+          {isLegacy && (
             <>
               &nbsp;
               <Tooltip

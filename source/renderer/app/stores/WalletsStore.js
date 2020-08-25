@@ -1,10 +1,7 @@
 // @flow
 import { observable, action, computed, runInAction, flow } from 'mobx';
-import { get, find, findIndex, isEqual } from 'lodash';
+import { get, find, findIndex, isEqual, includes } from 'lodash';
 import { BigNumber } from 'bignumber.js';
-import { Address } from 'cardano-js';
-import { AddressGroup } from 'cardano-js/dist/Address/AddressGroup';
-import { ChainSettings } from 'cardano-js/dist/ChainSettings';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import Wallet, { WalletSyncStateStatuses } from '../domains/Wallet';
@@ -17,6 +14,7 @@ import { paperWalletPdfGenerator } from '../utils/paperWalletPdfGenerator';
 import { addressPDFGenerator } from '../utils/addressPDFGenerator';
 import { downloadRewardsCsv } from '../utils/rewardsCsvGenerator';
 import { buildRoute, matchRoute } from '../utils/routing';
+import { logger } from '../utils/logging';
 import { ROUTES } from '../routes-config';
 import { formattedWalletAmount } from '../utils/formatters';
 import {
@@ -48,13 +46,22 @@ import type {
   TransportDevice,
   ExtendedPublicKey,
 } from './HardwareWalletsStore';
+import { introspectAddressChannel } from '../ipc/introspect-address.js';
+import type { AddressStyle } from '../../../common/types/address-introspection.types';
+import {
+  TESTNET_MAGIC,
+  SELFNODE_MAGIC,
+  STAGING_MAGIC,
+  SHELLEY_TESTNET_NETWORK_ID,
+  ITN_MAGIC,
+  MAINNET_MAGIC,
+} from '../../../common/types/cardano-node.types';
+
 /* eslint-disable consistent-return */
 
 /**
  * The base wallet store that contains logic for dealing with wallets
  */
-
-const { isIncentivizedTestnet } = global;
 
 export default class WalletsStore extends Store {
   WALLET_REFRESH_INTERVAL = 5000;
@@ -137,9 +144,7 @@ export default class WalletsStore extends Store {
   // STEP: WALLET TYPE
   @observable walletKind: ?WalletKind = null;
   @observable walletKindDaedalus: ?WalletDaedalusKind = null;
-  @observable walletKindYoroi: ?WalletYoroiKind = isIncentivizedTestnet
-    ? null
-    : WALLET_YOROI_KINDS.BALANCE_15_WORD;
+  @observable walletKindYoroi: ?WalletYoroiKind = null;
   @observable walletKindHardware: ?WalletHardwareKind = null;
   // STEP: RECOVERY PHRASE
   @observable mnemonics: Array<string> = [];
@@ -380,9 +385,7 @@ export default class WalletsStore extends Store {
     this.restoredWallet = null;
     this.walletKind = null;
     this.walletKindDaedalus = null;
-    this.walletKindYoroi = isIncentivizedTestnet
-      ? null
-      : WALLET_YOROI_KINDS.BALANCE_15_WORD;
+    this.walletKindYoroi = null;
     this.walletKindHardware = null;
     this.mnemonics = [];
     this.walletName = '';
@@ -592,7 +595,7 @@ export default class WalletsStore extends Store {
 
     if (
       this.walletKind === WALLET_KINDS.DAEDALUS &&
-      this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.BALANCE_27_WORD
+      this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.BYRON_27_WORD
     ) {
       // Reset getWalletRecoveryPhraseFromCertificateRequest to clear previous errors
       this.getWalletRecoveryPhraseFromCertificateRequest.reset();
@@ -637,7 +640,7 @@ export default class WalletsStore extends Store {
     this.goToWalletRoute(wallet.id);
   };
 
-  @action _transferFundsNextStep = () => {
+  @action _transferFundsNextStep = async () => {
     const {
       transferFundsStep,
       transferFundsSourceWalletId,
@@ -653,11 +656,13 @@ export default class WalletsStore extends Store {
       transferFundsTargetWalletId
     ) {
       nextStep = 2;
-      this._transferFundsCalculateFee({
+      await this._transferFundsCalculateFee({
         sourceWalletId: transferFundsSourceWalletId,
       });
     }
-    this.transferFundsStep = nextStep;
+    runInAction('update transfer funds step', () => {
+      this.transferFundsStep = nextStep;
+    });
   };
 
   @action _transferFundsPrevStep = () => {
@@ -719,6 +724,7 @@ export default class WalletsStore extends Store {
   @action _transferFundsClose = () => {
     this.transferFundsStep = 0;
     this.transferFundsFee = null;
+    this.transferFundsCalculateFeeRequest.reset();
   };
 
   @action _transferFundsCalculateFee = async ({
@@ -829,12 +835,15 @@ export default class WalletsStore extends Store {
   @computed get restoreRequest(): Request {
     switch (this.walletKind) {
       case WALLET_KINDS.DAEDALUS:
-        if (this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.REWARD_15_WORD) {
+        if (
+          this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.SHELLEY_15_WORD ||
+          this.walletKindDaedalus === WALLET_DAEDALUS_KINDS.SHELLEY_24_WORD
+        ) {
           return this.restoreDaedalusRequest;
         }
         return this.restoreByronRandomWalletRequest;
       case WALLET_KINDS.YOROI:
-        if (this.walletKindYoroi === WALLET_YOROI_KINDS.BALANCE_15_WORD) {
+        if (this.walletKindYoroi === WALLET_YOROI_KINDS.BYRON_15_WORD) {
           return this.restoreByronIcarusWalletRequest;
         }
         return this.restoreDaedalusRequest;
@@ -1012,20 +1021,40 @@ export default class WalletsStore extends Store {
     });
   };
 
-  isValidAddress = (address: string) => {
-    const { app } = this.stores;
-    const { isMainnet, isStaging, isSelfnode } = app.environment;
-    const addressGroup = isIncentivizedTestnet
-      ? AddressGroup.jormungandr
-      : AddressGroup.byron;
-    const chainSettings =
-      isMainnet || isStaging ? ChainSettings.mainnet : ChainSettings.testnet;
+  isValidAddress = async (address: string) => {
+    const { isIncentivizedTestnet, isShelleyTestnet } = global;
+    const { isMainnet, isSelfnode, isStaging, isTestnet } = this.environment;
+    let expectedNetworkTag: ?Array<?number> | ?number;
+    let validAddressStyles: AddressStyle[] = ['Byron', 'Icarus', 'Shelley'];
+    if (isMainnet) {
+      expectedNetworkTag = MAINNET_MAGIC;
+    } else if (isStaging) {
+      expectedNetworkTag = STAGING_MAGIC;
+    } else if (isIncentivizedTestnet) {
+      expectedNetworkTag = ITN_MAGIC;
+      validAddressStyles = ['Jormungandr'];
+    } else if (isTestnet) {
+      expectedNetworkTag = TESTNET_MAGIC;
+    } else if (isShelleyTestnet) {
+      expectedNetworkTag = SHELLEY_TESTNET_NETWORK_ID;
+    } else if (isSelfnode) {
+      expectedNetworkTag = SELFNODE_MAGIC;
+    } else {
+      throw new Error('Unexpected environment');
+    }
     try {
-      return isSelfnode
-        ? true // Selfnode address validation is missing in cardano-js
-        : Address.Util.isAddress(address, chainSettings, addressGroup);
+      const response = await introspectAddressChannel.send({ input: address });
+      if (response === 'Invalid') {
+        return false;
+      }
+      return (
+        validAddressStyles.includes(response.introspection.address_style) &&
+        ((Array.isArray(expectedNetworkTag) &&
+          includes(expectedNetworkTag, response.introspection.network_tag)) ||
+          expectedNetworkTag === response.introspection.network_tag)
+      );
     } catch (error) {
-      return false;
+      logger.error(error);
     }
   };
 
@@ -1074,6 +1103,9 @@ export default class WalletsStore extends Store {
               walletId
             ),
             allRequest: this.stores.transactions._getTransactionsAllRequest(
+              walletId
+            ),
+            withdrawalsRequest: this.stores.transactions._getWithdrawalsRequest(
               walletId
             ),
           })

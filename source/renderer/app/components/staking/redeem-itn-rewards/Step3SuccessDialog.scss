@@ -1,0 +1,47 @@
+.title {
+  font-family: var(--font-regular);
+  font-size: 20px;
+  line-height: 1.2;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.tadaImage {
+  display: block;
+  margin-bottom: 20px;
+  text-align: center;
+  svg {
+    height: 90px;
+    stroke: var(--theme-dialog-fullsize-text-highlight-color);
+    path {
+      stroke: var(--theme-dialog-fullsize-text-highlight-color);
+    }
+    g {
+      ellipse {
+        &:nth-child(7),
+        &:nth-child(8),
+        &:nth-child(9) {
+          stroke: var(--theme-dialog-fullsize-text-highlight-color);
+        }
+
+        &:nth-child(11),
+        &:nth-child(12),
+        &:nth-child(13),
+        &:nth-child(14),
+        &:nth-child(15),
+        &:nth-child(16) {
+          fill: var(--theme-dialog-fullsize-text-highlight-color);
+        }
+      }
+    }
+  }
+}
+.description {
+  font-family: var(--font-regular);
+  font-size: 16px;
+  line-height: 1.38;
+  margin-bottom: 30px;
+  text-align: center;
+  b {
+    font-family: var(--font-semibold);
+  }
+}

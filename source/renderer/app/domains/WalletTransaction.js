@@ -6,6 +6,7 @@ import type {
   TransactionType,
   TransactionDepth,
   TransactionState,
+  TransactionWithdrawalType,
 } from '../api/transactions/types';
 
 export const TransactionStates: EnumMap<string, TransactionState> = {
@@ -21,6 +22,8 @@ export const TransactionTypes: EnumMap<string, TransactionType> = {
   EXCHANGE: 'exchange',
 };
 
+export const TransactionWithdrawal: TransactionWithdrawalType = 'self';
+
 export class WalletTransaction {
   @observable id: string = '';
   @observable type: TransactionType;
@@ -28,7 +31,11 @@ export class WalletTransaction {
   @observable amount: BigNumber;
   @observable date: ?Date;
   @observable description: string = '';
-  @observable addresses: TrasactionAddresses = { from: [], to: [] };
+  @observable addresses: TrasactionAddresses = {
+    from: [],
+    to: [],
+    withdrawals: [],
+  };
   @observable state: TransactionState;
   @observable depth: TransactionDepth;
   @observable slotNumber: ?number;

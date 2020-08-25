@@ -6,7 +6,7 @@ import { observer, inject } from 'mobx-react';
 import { get } from 'lodash';
 import { action } from '@storybook/addon-actions';
 import { boolean } from '@storybook/addon-knobs';
-import { isIncentivizedTestnetTheme } from './utils';
+import { isIncentivizedTestnetTheme, isShelleyTestnetTheme } from './utils';
 
 // Assets and helpers
 import { CATEGORIES_BY_NAME } from '../../../source/renderer/app/config/sidebarConfig';
@@ -99,7 +99,8 @@ export default class StoryLayout extends Component<Props> {
           topbar={this.getTopbar(
             activeSidebarCategory,
             activeWallet,
-            activeNavItem
+            activeNavItem,
+            currentTheme
           )}
         >
           {Children.map(children, child =>
@@ -182,6 +183,7 @@ export default class StoryLayout extends Component<Props> {
         currentTheme={currentTheme}
         network="testnet"
         isIncentivizedTestnet={isIncentivizedTestnetTheme(currentTheme)}
+        isShelleyActivated={isShelleyTestnetTheme(currentTheme)}
       />
     );
   };
@@ -189,7 +191,8 @@ export default class StoryLayout extends Component<Props> {
   getTopbar = (
     activeSidebarCategory: string,
     activeWallet: Wallet,
-    activeNavItem: string
+    activeNavItem: string,
+    currentTheme: string
   ) => (
     <TopBar
       onToggleSidebar={() => {
@@ -210,6 +213,7 @@ export default class StoryLayout extends Component<Props> {
       onTransferFunds={action('onTransferFunds')}
       onWalletAdd={action('onWalletAdd')}
       hasRewardsWallets={boolean('hasRewardsWallets', true)}
+      isShelleyActivated={isShelleyTestnetTheme(currentTheme)}
     >
       <NodeSyncStatusIcon
         isSynced

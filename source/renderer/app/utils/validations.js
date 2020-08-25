@@ -53,34 +53,11 @@ export const isUnicaseString = (password: string) =>
   every(password.split(''), char => isCaselessString(char));
 
 /**
- * Unicode compatible validation rules for spending password.
- * Enforces case sensitive validation for languages that have that concept
- * but allows case-insensitive validation for langs like Kanji
+ * Enforces passwords without spaces and a minimum of 10 characters.
  */
 export const isValidSpendingPassword = (password: string): boolean => {
-  // Validation rules (uses unicode categories for checks):
-  // https://github.com/tc39/proposal-regexp-unicode-property-escapes
-
   // Should contain at least 10 characters
-  if (password.length < 10) return false;
-
-  // Must not contain white spaces
-  if (containsWhitespace(password)) return false;
-
-  // Should contain at least one digit
-  if (!containsDecimalNumber(password)) return false;
-
-  // Should contain at least one lower case
-  if (!containsLowerCaseLetter(password)) {
-    // But allow passwords in unicase languages like Kanji
-    return isUnicaseString(password);
-  }
-  // Should contain at least one upper case
-  if (!containsUpperCaseLetter(password)) {
-    // But allow passwords in unicase languages like Kanji
-    return isUnicaseString(password);
-  }
-  return true;
+  return password.length >= 10;
 };
 
 // eslint-disable-next-line max-len

@@ -17,6 +17,7 @@ import globalMessages from '../../i18n/global-messages';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
+import sandClockIcon from '../../assets/images/sand-clock-xs.inline.svg';
 import LocalizableError from '../../i18n/LocalizableError';
 import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
 import styles from './DaedalusDiagnostics.scss';
@@ -391,15 +392,15 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
     };
   }
 
-  // eslint-disable-next-line
-  UNSAFE_componentWillReceiveProps(nextProps: Props) {
+  componentDidUpdate(prevProps: Props) {
+    const { cardanoNodeState: prevCardanoNodeState } = prevProps;
     const { cardanoNodeState } = this.props;
-    const { cardanoNodeState: nextCardanoNodeState } = nextProps;
+
     if (
-      cardanoNodeState !== nextCardanoNodeState &&
-      includes(FINAL_CARDANO_NODE_STATES, nextCardanoNodeState)
+      cardanoNodeState !== prevCardanoNodeState &&
+      includes(FINAL_CARDANO_NODE_STATES, cardanoNodeState)
     ) {
-      this.setState({ isNodeRestarting: false });
+      this.setState({ isNodeRestarting: false }); // eslint-disable-line
     }
   }
 
@@ -652,18 +653,46 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 'lastNetworkBlock',
                 <Fragment>
                   <span>{intl.formatMessage(messages.epoch)}:</span>{' '}
-                  {get(networkTip, 'epoch', '-')}
+                  {networkTip && networkTip.epoch ? (
+                    networkTip.epoch
+                  ) : (
+                    <SVGInline
+                      svg={sandClockIcon}
+                      className={styles.networkTipSandClock}
+                    />
+                  )}
                   <span>{intl.formatMessage(messages.slot)}:</span>{' '}
-                  {get(networkTip, 'slot', '-')}
+                  {networkTip && networkTip.slot ? (
+                    networkTip.slot
+                  ) : (
+                    <SVGInline
+                      svg={sandClockIcon}
+                      className={styles.networkTipSandClock}
+                    />
+                  )}
                 </Fragment>
               )}
               {getRow(
                 'lastSynchronizedBlock',
                 <Fragment>
                   <span>{intl.formatMessage(messages.epoch)}:</span>{' '}
-                  {get(localTip, 'epoch', '-')}
+                  {localTip && localTip.epoch ? (
+                    localTip.epoch
+                  ) : (
+                    <SVGInline
+                      svg={sandClockIcon}
+                      className={styles.networkTipSandClock}
+                    />
+                  )}
                   <span>{intl.formatMessage(messages.slot)}:</span>{' '}
-                  {get(localTip, 'slot', '-')}
+                  {localTip && localTip.slot ? (
+                    localTip.slot
+                  ) : (
+                    <SVGInline
+                      svg={sandClockIcon}
+                      className={styles.networkTipSandClock}
+                    />
+                  )}
                 </Fragment>
               )}
               <div className={styles.layoutRow}>
@@ -687,7 +716,12 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                     </button>
                   }
                   {isCheckingSystemTime ? (
-                    <span className={localTimeDifferenceClasses}>-</span>
+                    <span className={localTimeDifferenceClasses}>
+                      <SVGInline
+                        svg={sandClockIcon}
+                        className={styles.networkTipSandClock}
+                      />
+                    </span>
                   ) : (
                     <span className={localTimeDifferenceClasses}>
                       {isNTPServiceReachable

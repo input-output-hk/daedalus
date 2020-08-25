@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 import WalletAddPage from './wallet/WalletAddPage';
 import LoadingPage from './loading/LoadingPage';
 import SplashNetworkPage from './splash/SplashNetworkPage';
+import RedeemItnRewardsContainer from './staking/RedeemItnRewardsContainer';
 import WalletImportFileDialog from '../components/wallet/wallet-import/WalletImportFileDialog';
 import type { InjectedContainerProps } from '../types/injectedPropsType';
 
@@ -18,16 +19,16 @@ export default class Root extends Component<Props> {
     const { stores, actions, children } = this.props;
     const {
       app,
+      appUpdate,
       networkStatus,
-      nodeUpdate,
       profile,
       staking,
       uiDialogs,
       wallets,
     } = stores;
-    const { isStakingPage } = staking;
+    const { isStakingPage, redeemStep } = staking;
     const { isProfilePage, isSettingsPage } = profile;
-    const { showManualUpdate } = nodeUpdate;
+    const { showManualUpdate } = appUpdate;
     const { hasLoadedWallets, isHardwareWalletRoute } = wallets;
     const {
       isConnected,
@@ -57,6 +58,10 @@ export default class Root extends Component<Props> {
       isSplashShown
     ) {
       return <SplashNetworkPage />;
+    }
+
+    if (redeemStep !== null) {
+      return <RedeemItnRewardsContainer key="RedeemItnRewardsContainer" />;
     }
 
     // Just render any page that doesn't require wallets to be loaded or node to be connected

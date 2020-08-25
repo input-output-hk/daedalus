@@ -81,7 +81,6 @@ export default class WalletSettingsStore extends Store {
 
   @computed get walletsRecoveryPhraseVerificationData() {
     const { all: walletsLocalData } = this.stores.walletsLocal;
-    const { isIncentivizedTestnet } = global;
     // $FlowFixMe
     return Object.values(walletsLocalData).reduce(
       (
@@ -98,7 +97,7 @@ export default class WalletSettingsStore extends Store {
         const hasNotification =
           recoveryPhraseVerificationStatus ===
             RECOVERY_PHRASE_VERIFICATION_STATUSES.NOTIFICATION &&
-          !isIncentivizedTestnet;
+          !global.isIncentivizedTestnet;
         obj[id] = {
           id,
           recoveryPhraseVerificationDate,

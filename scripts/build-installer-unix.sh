@@ -150,6 +150,7 @@ pushd installers
     for cluster in ${CLUSTERS}
     do
           echo "~~~ Generating installer for cluster ${cluster}.."
+
           export DAEDALUS_CLUSTER="${cluster}"
           APP_NAME="csl-daedalus"
           rm -rf "${APP_NAME}"
@@ -159,6 +160,7 @@ pushd installers
             BRIDGE_FLAG="--jormungandr ${JORMUNGANDR_BRIDGE}"
           else
             echo "Cluster type: cardano"
+            CARDANO_BRIDGE="$(nix-build ../. --no-out-link -A daedalus-bridge --argstr nodeImplementation cardano --argstr cluster "${cluster}")"
             BRIDGE_FLAG="--cardano ${CARDANO_BRIDGE}"
           fi
 

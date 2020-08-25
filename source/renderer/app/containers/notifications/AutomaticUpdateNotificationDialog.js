@@ -11,17 +11,17 @@ export default class AutomaticUpdateNotificationDialog extends Component<Injecte
 
   render() {
     const { stores, actions } = this.props;
-    const { nextUpdateVersion } = stores.nodeUpdate;
+    const { nextUpdateVersion } = stores.appUpdate;
     const { environment } = stores.app;
     const { version } = environment;
-    const { acceptNodeUpdate, postponeNodeUpdate } = actions.nodeUpdate;
+    const { acceptAppUpdate, postponeAppUpdate } = actions.appUpdate;
 
     return (
       <AutomaticUpdateNotification
         currentAppVersion={version}
         nextUpdateVersion={nextUpdateVersion}
-        onAccept={acceptNodeUpdate.trigger}
-        onPostpone={postponeNodeUpdate.trigger}
+        onAccept={acceptAppUpdate.trigger}
+        onPostpone={postponeAppUpdate.trigger}
       />
     );
   }

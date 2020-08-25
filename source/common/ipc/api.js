@@ -27,6 +27,21 @@ import type {
   WalletMigrationReportData,
 } from '../types/logging.types';
 import type { Locale } from '../types/locales.types';
+import type {
+  DownloadLocalDataRequest,
+  DownloadLocalDataResponse,
+  DownloadsLocalDataRequest,
+  DownloadsLocalDataResponse,
+  DownloadRequest,
+  DownloadResponse,
+  ResumeDownloadRequest,
+  ResumeDownloadResponse,
+} from '../types/downloadManager.types';
+import type { StoreMessage } from '../types/electron-store.types';
+import type {
+  IntrospectAddressRequest,
+  IntrospectAddressResponse,
+} from '../types/address-introspection.types';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -299,11 +314,49 @@ export type ShowSaveDialogMainResponse = SaveFileDialogResponseParams;
  * Channel for electron-store
  */
 export const ELECTRON_STORE_CHANNEL = 'ELECTRON_STORE_CHANNEL';
-export type ElectronStoreMessage = {
-  type: 'get' | 'set' | 'delete',
-  key: string,
-  data?: any,
-};
+export type ElectronStoreMessage = StoreMessage;
+
+/**
+ * Channel for initiating the download manager
+ */
+export const GET_DOWNLOAD_LOCAL_DATA = 'GET_DOWNLOAD_LOCAL_DATA';
+export type DownloadLocalDataRendererRequest = DownloadLocalDataRequest;
+export type DownloadLocalDataMainResponse = DownloadLocalDataResponse;
+
+/**
+ * Channel for initiating the download manager
+ */
+export const GET_DOWNLOADS_LOCAL_DATA = 'GET_DOWNLOADS_LOCAL_DATA';
+export type DownloadsLocalDataRendererRequest = DownloadsLocalDataRequest | void;
+export type DownloadsLocalDataMainResponse = DownloadsLocalDataResponse | void;
+
+/**
+ * Channel for requesting a new download
+ */
+export const REQUEST_DOWNLOAD = 'REQUEST_DOWNLOAD';
+export type DownloadRendererRequest = DownloadRequest;
+export type DownloadMainResponse = DownloadResponse;
+
+/**
+ * Channel for requesting a new download
+ */
+export const RESUME_DOWNLOAD = 'RESUME_DOWNLOAD';
+export type ResumeDownloadRendererRequest = ResumeDownloadRequest;
+export type ResumeDownloadMainResponse = ResumeDownloadResponse | void;
+
+/**
+ * Channel for introspecting an address
+ */
+export const INTROSPECT_ADDRESS_CHANNEL = 'INTROSPECT_ADDRESS_CHANNEL';
+export type IntrospectAddressRendererRequest = IntrospectAddressRequest;
+export type IntrospectAddressMainResponse = IntrospectAddressResponse;
+
+/**
+ * Channel for checking block replay progress
+ */
+export const GET_BLOCK_REPLAY_STATUS_CHANNEL = 'GetBlockReplayProgressChannel';
+export type GetBlockReplayProgressRendererRequest = void;
+export type GetBlockReplayProgressMainResponse = number;
 
 /**
  * Channels for Hardware wallets

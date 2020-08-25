@@ -4,7 +4,7 @@ import AppActions from './app-actions';
 import DialogsActions from './dialogs-actions';
 import HardwareWalletsActions from './hardware-wallets-actions';
 import NetworkStatusActions from './network-status-actions';
-import NodeUpdateActions from './node-update-actions';
+import AppUpdateActions from './app-update-actions';
 import NotificationsActions from './notifications-actions';
 import ProfileActions from './profile-actions';
 import RouterActions from './router-actions';
@@ -24,7 +24,7 @@ export type ActionsMap = {
   dialogs: DialogsActions,
   hardwareWallets: HardwareWalletsActions,
   networkStatus: NetworkStatusActions,
-  nodeUpdate: NodeUpdateActions,
+  appUpdate: AppUpdateActions,
   notifications: NotificationsActions,
   profile: ProfileActions,
   router: RouterActions,
@@ -45,7 +45,7 @@ const actionsMap: ActionsMap = {
   dialogs: new DialogsActions(),
   hardwareWallets: new HardwareWalletsActions(),
   networkStatus: new NetworkStatusActions(),
-  nodeUpdate: new NodeUpdateActions(),
+  appUpdate: new AppUpdateActions(),
   notifications: new NotificationsActions(),
   profile: new ProfileActions(),
   router: new RouterActions(),

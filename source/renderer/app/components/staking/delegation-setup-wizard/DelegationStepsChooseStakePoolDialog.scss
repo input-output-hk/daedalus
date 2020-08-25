@@ -22,11 +22,20 @@
 
   .content {
     color: var(--theme-delegation-steps-choose-stake-pool-title-color);
+    margin-bottom: 30px;
 
     .description {
       font-family: var(--font-medium);
       line-height: 1.38;
       margin: 0 auto 10px;
+    }
+
+    .searchStakePoolsWrapper {
+      :global {
+        .StakePoolsSearch_clearSearch {
+          margin-top: 0;
+        }
+      }
     }
 
     .selectStakePoolWrapper {
@@ -39,6 +48,12 @@
         height: 71px;
         width: 80px;
 
+        &.retiring {
+          background: var(
+            --theme-staking-stake-pool-retirement-background-color
+          ) !important;
+        }
+
         &.alreadyDelegated {
           opacity: 0.3;
         }
@@ -48,17 +63,15 @@
         border: 2px solid
           var(--theme-delegation-steps-choose-stake-pool-thumb-border-color);
         border-style: dashed;
-        .questionmarkWrapper {
+        .icon {
           margin-top: 24.5px;
           text-align: center;
-          .questionmarkImage {
-            svg {
-              height: 16px;
-              path {
-                stroke: var(
-                  --theme-delegation-steps-choose-stake-pool-checkmark-icon-color
-                );
-              }
+          svg {
+            height: 16px;
+            path {
+              stroke: var(
+                --theme-delegation-steps-choose-stake-pool-checkmark-icon-color
+              );
             }
           }
         }
@@ -79,16 +92,28 @@
           text-align: center;
         }
 
-        .checkmarkWrapper {
+        .icon {
           margin-top: 10px;
           text-align: center;
-          .checkmarkImage {
+          svg {
+            vertical-align: top;
+            width: 15.5px;
+            path {
+              stroke: var(
+                --theme-delegation-steps-choose-stake-pool-selected-checkmark-icon-color
+              );
+            }
+          }
+        }
+
+        &.retiring {
+          .icon {
+            margin-top: 5px;
             svg {
-              vertical-align: top;
-              width: 15.5px;
+              width: 20px;
               path {
                 stroke: var(
-                  --theme-delegation-steps-choose-stake-pool-selected-checkmark-icon-color
+                  --theme-staking-stake-pool-retirement-background-color
                 );
               }
             }
@@ -120,5 +145,13 @@
         margin-bottom: 10px;
       }
     }
+  }
+  .retiringPoolFooter {
+    color: var(--theme-staking-stake-pool-retirement-background-color);
+    font-family: var(--font-medium);
+    font-size: 16px;
+    line-height: 1.38;
+    margin: 20px 0;
+    text-align: center;
   }
 }

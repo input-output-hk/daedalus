@@ -54,7 +54,7 @@ export default class SettingsMenu extends Component<Props> {
             active={isActiveItem(ROUTES.SETTINGS.GENERAL)}
             className="general"
           />
-          {!isFlight && (
+          {!isFlight && !global.isShelleyTestnet && (
             <SettingsMenuItem
               label={intl.formatMessage(messages.display)}
               onClick={() => onItemClick(ROUTES.SETTINGS.DISPLAY)}

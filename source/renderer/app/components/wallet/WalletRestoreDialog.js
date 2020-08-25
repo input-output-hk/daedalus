@@ -5,10 +5,12 @@ import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
 import { Input } from 'react-polymorph/lib/components/Input';
-import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
-import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
+import SVGInline from 'react-svg-inline';
+import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
+import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
+import { PasswordInput } from '../widgets/forms/PasswordInput';
 import RadioSet from '../widgets/RadioSet';
 import ReactToolboxMobxForm, {
   handleFormErrors,
@@ -35,6 +37,8 @@ import {
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
   YOROI_WALLET_RECOVERY_PHRASE_WORD_COUNT,
 } from '../../config/cryptoConfig';
+import tooltipStyles from '../widgets/forms/InlineEditingDropdown-tooltip.scss';
+import infoIconInline from '../../assets/images/info-icon.inline.svg';
 
 const messages = defineMessages({
   title: {
@@ -177,6 +181,12 @@ const messages = defineMessages({
     description:
       'Label for the "Restore paper wallet" button on the wallet restore dialog.',
   },
+  passwordTooltip: {
+    id: 'wallet.dialog.passwordTooltip',
+    defaultMessage: 'We recommend using a password manager app to manage and store your spending password. Generate a unique password using a password manager and paste it here. Passwords should never be reused.',
+    description:
+      'Tooltip for the password input in the wallet dialog.',
+  },
 });
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
@@ -211,9 +221,8 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
   recoveryPhraseAutocomplete: Autocomplete;
 
-  // eslint-disable-next-line
-  UNSAFE_componentWillReceiveProps(newProps: Props) {
-    if (newProps.error) {
+  componentDidUpdate() {
+    if (this.props.error) {
       handleFormErrors('.WalletRestoreDialog_error');
     }
   }
@@ -452,7 +461,6 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           onKeyPress={this.handleSubmitOnEnter}
           {...walletNameField.bind()}
           error={walletNameField.error}
-          skin={InputSkin}
         />
 
         {(this.isRegular() || this.isLegacy()) && (
@@ -585,7 +593,6 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           noResultsMessage={intl.formatMessage(
             messages.recoveryPhraseNoResults
           )}
-          skin={AutocompleteSkin}
           optionHeight={50}
         />
 
@@ -599,24 +606,39 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           </div>
 
           <div className={styles.spendingPasswordFields}>
-            <Input
-              className="spendingPassword"
-              onKeyPress={this.handleSubmitOnEnter}
-              {...spendingPasswordField.bind()}
-              error={spendingPasswordField.error}
-              skin={InputSkin}
-            />
-            <Input
-              className="repeatedPassword"
-              onKeyPress={this.handleSubmitOnEnter}
-              {...repeatedPasswordField.bind()}
-              error={repeatedPasswordField.error}
-              skin={InputSkin}
-            />
-            <p className={styles.passwordInstructions}>
-              <FormattedHTMLMessage {...globalMessages.passwordInstructions} />
-            </p>
+            <div className={styles.spendingPasswordField}>
+              <PasswordInput
+                className="spendingPassword"
+                onKeyPress={this.handleSubmitOnEnter}
+                {...spendingPasswordField.bind()}
+              />
+              <Tooltip
+                skin={TooltipSkin}
+                themeOverrides={tooltipStyles}
+                tip={<FormattedHTMLMessage {...messages.passwordTooltip} />}
+                key="tooltip"
+                className={styles.tooltip}
+                arrowRelativeToTip
+              >
+                <SVGInline
+                  svg={infoIconInline}
+                  className={styles.infoIcon}
+                />
+              </Tooltip>
+            </div>
+            <div className={styles.spendingPasswordField}>
+              <PasswordInput
+                className="repeatedPassword"
+                onKeyPress={this.handleSubmitOnEnter}
+                {...repeatedPasswordField.bind()}
+                repeatPassword={spendingPasswordField.value}
+                isPasswordRepeat
+              />
+            </div>
           </div>
+          <p className={styles.passwordInstructions}>
+            <FormattedHTMLMessage {...globalMessages.passwordInstructions} />
+          </p>
         </div>
 
         {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}

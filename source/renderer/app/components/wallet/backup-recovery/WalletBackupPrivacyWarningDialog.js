@@ -9,17 +9,14 @@ import Dialog from '../../widgets/Dialog';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import WalletRecoveryInstructions from './WalletRecoveryInstructions';
 import globalMessages from '../../../i18n/global-messages';
-import {
-  LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
-  WALLET_RECOVERY_PHRASE_WORD_COUNT,
-} from '../../../config/cryptoConfig';
+import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
 import styles from './WalletBackupPrivacyWarningDialog.scss';
 
 const messages = defineMessages({
   recoveryPhraseInstructions1: {
     id: 'wallet.backup.privacy.warning.dialog.recoveryPhraseInstructions1',
     defaultMessage:
-      '!!!On the following screen, you will be given a list of {walletRecoveryPhraseWordCount}  words to write down on paper and keep in a safe place. This list of words is the wallet recovery phrase for the Rewards wallet you are creating.',
+      '!!!On the following screen, you will be given a list of {walletRecoveryPhraseWordCount}  words to write down on paper and keep in a safe place. This list of words is the wallet recovery phrase for the wallet you are creating.',
     description:
       'Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.',
   },
@@ -115,9 +112,7 @@ export default class WalletBackupPrivacyWarningDialog extends Component<Props> {
           instructionsText={intl.formatMessage(
             messages.recoveryPhraseInstructions1,
             {
-              walletRecoveryPhraseWordCount: isIncentivizedTestnet
-                ? WALLET_RECOVERY_PHRASE_WORD_COUNT
-                : LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
+              walletRecoveryPhraseWordCount: WALLET_RECOVERY_PHRASE_WORD_COUNT,
             }
           )}
         />

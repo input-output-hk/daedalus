@@ -34,27 +34,36 @@ const TX_ID_SELECTOR = '.Transaction_transactionId';
 
 @observer
 export class VirtualTransactionList extends Component<Props> {
-  static defaultProps = {
-    isLoadingSpinnerShown: false,
-    isSyncingSpinnerShown: false,
-  };
-
-  // eslint-disable-next-line
-  UNSAFE_componentWillReceiveProps(nextProps: Props) {
-    // Recompute all row heights in case the number of rows has changed
-    const prevNumberOfRows = this.props.rows.length;
-    const nextNumberOfRows = nextProps.rows.length;
-    if (prevNumberOfRows && prevNumberOfRows !== nextNumberOfRows) {
-      this.rowHeights = this.estimateRowHeights(nextProps.rows);
-      this.recomputeVirtualRowHeights();
-    }
-  }
-
   list: List;
   rowHeights: RowHeight[] = [];
   txAddressHeight: number = 0;
   txIdHeight: number = 0;
   visibleExpandedTx: Array<WalletTransaction>;
+  overscanStartIndex: number;
+  overscanStopIndex: number;
+
+  static defaultProps = {
+    isLoadingSpinnerShown: false,
+    isSyncingSpinnerShown: false,
+  };
+
+  componentDidMount() {
+    window.addEventListener('resize', this.onResize);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this.onResize);
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    // Recompute all row heights in case the number of rows has changed
+    const prevNumberOfRows = prevProps.rows.length;
+    const nextNumberOfRows = this.props.rows.length;
+    if (prevNumberOfRows && prevNumberOfRows !== nextNumberOfRows) {
+      this.rowHeights = this.estimateRowHeights(this.props.rows);
+      this.recomputeVirtualRowHeights();
+    }
+  }
 
   /**
    * Returns the row index of a given tx.
@@ -216,7 +225,14 @@ export class VirtualTransactionList extends Component<Props> {
   };
 
   updateVisibleExpandedTxRowHeights = () => {
-    this.visibleExpandedTx.forEach(tx => {
+    const expandedRows = this.props.getExpandedTransactions();
+    const visibleExpandedTx = expandedRows.filter(tx => {
+      const index = this.findIndexForTx(tx);
+      return (
+        index >= this.overscanStartIndex && index <= this.overscanStopIndex
+      );
+    });
+    visibleExpandedTx.forEach(tx => {
       this.updateTxRowHeight(tx, true, false);
       const estimatedHeight = this.rowHeights[this.findIndexForTx(tx)];
       this.correctExpandedTxHeightEstimationErrors(tx, estimatedHeight);
@@ -252,11 +268,8 @@ export class VirtualTransactionList extends Component<Props> {
     overscanStartIndex: number,
     overscanStopIndex: number,
   }) => {
-    const expandedRows = this.props.getExpandedTransactions();
-    this.visibleExpandedTx = expandedRows.filter(tx => {
-      const index = this.findIndexForTx(tx);
-      return index >= overscanStartIndex && index <= overscanStopIndex;
-    });
+    this.overscanStartIndex = overscanStartIndex;
+    this.overscanStopIndex = overscanStopIndex;
     this.updateVisibleExpandedTxRowHeights();
   };
 

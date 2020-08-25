@@ -7,9 +7,9 @@ import styles from './LegacyBadge.scss';
 
 const messages = defineMessages({
   label: {
-    id: 'wallet.legacy.badge.label',
-    defaultMessage: '!!!Balance',
-    description: 'Label "Balance" on the legacy badge.',
+    id: 'wallet.byron.badge.label',
+    defaultMessage: '!!!Byron',
+    description: 'Label "Byron" on the legacy badge.',
   },
 });
 
@@ -18,7 +18,9 @@ export const LEGACY_BADGE_MODES = {
   NATURAL: 'natural',
 };
 
-type Props = { mode: string };
+type Props = {
+  mode: string,
+};
 
 @observer
 export default class LegacyBadge extends Component<Props> {

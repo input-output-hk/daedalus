@@ -11,18 +11,18 @@ const messages = defineMessages({
   headLine: {
     id: 'staking.delegationCenter.noWallets.headLine',
     defaultMessage:
-      "!!!The Delegation Center is not available because you don't have any wallets.",
+      '!!!The delegation center is not available because you currently do not have any Shelley-compatible wallets.',
     description: '"No wallets" headLine on the Delegation centre Page.',
   },
   instructions: {
     id: 'staking.delegationCenter.noWallets.instructions',
     defaultMessage:
-      '!!!Create a new wallet (or restore an existing one) then come back here to delegate your stake.',
+      '!!!Create a new wallet and transfer in a minimum of {minDelegationFunds} ADA (or restore an existing wallet with funds), then return here to delegate your stake.',
     description: '"No wallets" instructions on the Delegation centre Page.',
   },
   createWalletButtonLabel: {
     id: 'staking.delegationCenter.noWallets.createWalletButtonLabel',
-    defaultMessage: '!!!Create wallet',
+    defaultMessage: '!!!Create a wallet',
     description:
       'Label for "Create New Wallet" button on the Delegation centre Page.',
   },
@@ -30,6 +30,7 @@ const messages = defineMessages({
 
 type Props = {
   onGoToCreateWalletClick: Function,
+  minDelegationFunds: number,
 };
 
 export default class DelegationCenterNoWallets extends Component<Props> {
@@ -39,13 +40,15 @@ export default class DelegationCenterNoWallets extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onGoToCreateWalletClick } = this.props;
+    const { onGoToCreateWalletClick, minDelegationFunds } = this.props;
 
     return (
       <div className={styles.component}>
         <SVGInline svg={icon} className={styles.icon} />
         <h1>{intl.formatMessage(messages.headLine)}</h1>
-        <p>{intl.formatMessage(messages.instructions)}</p>
+        <p>
+          {intl.formatMessage(messages.instructions, { minDelegationFunds })}
+        </p>
         <Button
           className="primary"
           onClick={onGoToCreateWalletClick}

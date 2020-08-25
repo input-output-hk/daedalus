@@ -39,9 +39,7 @@ export default class WalletAddPage extends Component<Props> {
       restoreWalletUseNewProcess,
       environment,
     } = wallets;
-
     const { walletMigrationStep } = walletMigration;
-
     const { isMainnet, isTestnet, isProduction } = environment;
 
     const onCreateWallet = createWalletUseNewProcess

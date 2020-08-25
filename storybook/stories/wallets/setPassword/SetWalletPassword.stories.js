@@ -43,7 +43,23 @@ storiesOf('Wallets|Set Password', module)
           isSubmitting={false}
           error={undefined}
           walletName={activeWallet.name}
+          currentLocale={'en-US'}
         />
       )}
     </>
+  ))
+  .add('Change Wallet Password', () => (
+    <ChangeSpendingPasswordDialog
+      isSpendingPasswordSet
+      currentPasswordValue={''}
+      newPasswordValue={''}
+      repeatedPasswordValue={''}
+      onSave={() => {}}
+      onCancel={() => {}}
+      onDataChange={() => {}}
+      isSubmitting={false}
+      error={undefined}
+      walletName={activeWallet.name}
+      currentLocale={'en-US'}
+    />
   ));

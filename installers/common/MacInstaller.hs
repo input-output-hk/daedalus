@@ -263,9 +263,9 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
     Cardano bridge -> do
       common bridge
       -- Executables (from daedalus-bridge)
-      forM_ ["cardano-wallet-byron", "cardano-node", "cardano-cli", "export-wallets" ] $ \f ->
+      forM_ ["cardano-wallet", "cardano-node", "cardano-cli", "cardano-address" ] $ \f ->
         cp (bridge </> "bin" </> f) (dir </> f)
-      forM_ ["config.yaml", "genesis.json", "topology.yaml" ] $ \f ->
+      forM_ ["config.yaml", "genesis.json", "genesis-byron.json", "genesis-shelley.json", "topology.yaml" ] $ \f ->
         cp f (dataDir </> f)
 
       when (oCluster == Selfnode) $ do
@@ -277,7 +277,7 @@ makeComponentRoot Options{oBackend,oCluster} appRoot darwinConfig@DarwinConfig{d
       rmtree $ dataDir </> "app/installers"
 
       -- Rewrite libs paths and bundle them
-      void $ chain (encodeString dir) $ fmap tt [dir </> "cardano-launcher", dir </> "cardano-wallet-byron", dir </> "cardano-node", dir </> "cardano-cli", dir </> "export-wallets" ]
+      void $ chain (encodeString dir) $ fmap tt [dir </> "cardano-launcher", dir </> "cardano-wallet", dir </> "cardano-node", dir </> "cardano-cli", dir </> "cardano-address" ]
     Jormungandr bridge -> do
       common bridge
       -- Executables (from daedalus-bridge)

@@ -68,10 +68,10 @@
     z-index: 2000;
 
     .daedalusIcon {
-      height: 135px;
+      height: 140px;
       margin-bottom: 30px;
       object-fit: contain;
-      width: 173px;
+      width: 180px;
 
       svg {
         path {
@@ -96,7 +96,7 @@
       font-size: 20px;
       letter-spacing: 1px;
       line-height: 1.2;
-      margin-bottom: 5px;
+      margin-bottom: 20px;
     }
 
     .subTitle2 {
@@ -106,6 +106,7 @@
       letter-spacing: 0.8px;
       line-height: 1.38;
       margin-bottom: 20px;
+      margin-top: -15px;
       text-transform: uppercase;
     }
 

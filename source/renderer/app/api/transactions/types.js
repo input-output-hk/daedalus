@@ -39,6 +39,7 @@ export type Transaction = {
   direction: 'outgoing' | 'incoming',
   inputs: Array<TransactionInputs>,
   outputs: Array<TransactionOutputs>,
+  withdrawals: Array<TransactionWithdrawals>,
   status: TransactionState,
 };
 
@@ -56,9 +57,19 @@ export type TransactionOutputs = {
   amount: TransactionAmount,
 };
 
+export type TransactionWithdrawals = {
+  stake_address: string,
+  amount: TransactionAmount,
+};
+export type TransactionWithdrawalType = 'self' | Array<string>;
+
 export type TransactionState = 'pending' | 'in_ledger';
 
-export type TrasactionAddresses = { from: Array<?string>, to: Array<string> };
+export type TrasactionAddresses = {
+  from: Array<?string>,
+  to: Array<string>,
+  withdrawals: Array<string>,
+};
 
 export type TransactionType = 'card' | 'expend' | 'income' | 'exchange';
 
@@ -87,6 +98,7 @@ export type GetTransactionFeeRequest = {
   walletBalance: BigNumber,
   availableBalance: BigNumber,
   isLegacy: boolean,
+  withdrawal?: 'self' | Array<string>,
 };
 
 export type CreateTransactionRequest = {
@@ -95,6 +107,7 @@ export type CreateTransactionRequest = {
   amount: number,
   passphrase: string,
   isLegacy: boolean,
+  withdrawal?: 'self' | Array<string>,
 };
 
 export type DeleteTransactionRequest = {
@@ -108,9 +121,24 @@ export type GetTransactionsResponse = {
   total: number,
 };
 
+export type TransactionParams = {
+  walletId: string,
+  data: {
+    payments: Array<TransactionPaymentData>,
+    passphrase: string,
+  },
+};
+
 export type TransactionFeeAmount = {
   quantity: number,
   unit: WalletUnits.LOVELACE,
+};
+
+export type GetTransactionFeeParams = {
+  walletId: string,
+  data: {
+    payments: Array<TransactionPaymentData>,
+  },
 };
 
 export type TransactionPaymentData = {
@@ -123,6 +151,7 @@ export type TransactionFee = {
   estimated_max: TransactionFeeAmount,
 };
 
+<<<<<<< HEAD
 export type CoinSelectionAmount = {
   quantity: number,
   unit: WalletUnits.LOVELACE,
@@ -157,4 +186,12 @@ export type CreateExternalTransactionRequest = {
 
 export type CreateExternalTransactionResponse = {
   id: string,
+=======
+export type GetWithdrawalsRequest = {
+  walletId: string,
+};
+
+export type GetWithdrawalsResponse = {
+  withdrawals: BigNumber,
+>>>>>>> develop
 };

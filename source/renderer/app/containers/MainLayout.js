@@ -5,6 +5,7 @@ import Sidebar from '../components/sidebar/Sidebar';
 import TopBarContainer from './TopBarContainer';
 import SidebarLayout from '../components/layout/SidebarLayout';
 import PaperWalletCreateCertificatePage from './wallet/PaperWalletCreateCertificatePage';
+import InstructionsDialog from '../components/wallet/paper-wallet-certificate/InstructionsDialog';
 import TransferFundsPage from './wallet/TransferFundsPage';
 import type { InjectedContainerProps } from '../types/injectedPropsType';
 import { ROUTES } from '../routes-config';
@@ -19,9 +20,22 @@ export default class MainLayout extends Component<InjectedContainerProps> {
     onClose: () => {},
   };
 
+  handleActivateCategory = (category: string) => {
+    const { actions } = this.props;
+    if (category === ROUTES.PAPER_WALLET_CREATE_CERTIFICATE) {
+      actions.dialogs.open.trigger({ dialog: InstructionsDialog });
+    } else if (category === ROUTES.REDEEM_ITN_REWARDS) {
+      actions.staking.onRedeemStart.trigger();
+    } else if (category === ROUTES.NETWORK_INFO) {
+      actions.networkStatus.toggleSplash.trigger();
+    } else {
+      actions.sidebar.activateSidebarCategory.trigger({ category });
+    }
+  };
+
   render() {
     const { actions, stores } = this.props;
-    const { sidebar, profile, app, wallets: walletsStore } = stores;
+    const { sidebar, profile, app, wallets: walletsStore, networkStatus } = stores;
     const { isHardwareWalletRoute } = walletsStore;
     const activeWallet = walletsStore.active;
     const activeWalletId = activeWallet ? activeWallet.id : null;
@@ -29,6 +43,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
     const activeHardwareWalletId = activeHardwareWallet
       ? activeHardwareWallet.id
       : null;
+    const { isShelleyActivated } = networkStatus;
     const { currentTheme } = profile;
     const {
       environment: { network, isDev },
@@ -74,19 +89,16 @@ export default class MainLayout extends Component<InjectedContainerProps> {
         menus={sidebarMenus}
         isShowingSubMenus={sidebar.isShowingSubMenus}
         isIncentivizedTestnet={global.isIncentivizedTestnet}
+        isShelleyActivated={isShelleyActivated}
         categories={sidebar.CATEGORIES}
         activeSidebarCategory={sidebar.activeSidebarCategory}
-        onActivateCategory={category => {
-          actions.sidebar.activateSidebarCategory.trigger({ category });
-        }}
-        onOpenDialog={dialog => actions.dialogs.open.trigger({ dialog })}
+        onActivateCategory={this.handleActivateCategory}
         onAddWallet={() =>
           actions.router.goToRoute.trigger({ route: addWalletRoute })
         }
         onSubmitSupportRequest={() =>
           actions.router.goToRoute.trigger({ route: ROUTES.SETTINGS.SUPPORT })
         }
-        onOpenSplashNetwork={() => actions.networkStatus.toggleSplash.trigger()}
         pathname={this.props.stores.router.location.pathname}
         currentTheme={currentTheme}
         network={network}

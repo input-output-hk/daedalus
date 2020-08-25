@@ -1,7 +1,7 @@
 // @flow
 import { observable, action, computed, runInAction } from 'mobx';
 import moment from 'moment';
-import { isEqual, includes } from 'lodash';
+import { isEqual, includes, get } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import {
@@ -9,6 +9,7 @@ import {
   NETWORK_STATUS_POLL_INTERVAL,
   NETWORK_CLOCK_POLL_INTERVAL,
   MAX_ALLOWED_STALL_DURATION,
+  DECENTRALIZATION_LEVEL_POLLING_INTERVAL,
 } from '../config/timingConfig';
 import { logger } from '../utils/logging';
 import {
@@ -20,10 +21,12 @@ import {
 } from '../ipc/cardano.ipc';
 import { CardanoNodeStates } from '../../../common/types/cardano-node.types';
 import { getDiskSpaceStatusChannel } from '../ipc/getDiskSpaceChannel.js';
+import { getBlockReplayProgressChannel } from '../ipc/getBlockReplayChannel.js';
 import { getStateDirectoryPathChannel } from '../ipc/getStateDirectoryPathChannel';
 import type {
   GetNetworkInfoResponse,
   GetNetworkClockResponse,
+  GetNetworkParametersResponse,
   NextEpoch,
   FutureEpoch,
   TipInfo,
@@ -59,7 +62,7 @@ const NODE_STOPPED_STATES = [
 ];
 // END CONSTANTS ----------------------------
 
-const { isIncentivizedTestnet, isFlight } = global;
+const { isIncentivizedTestnet, isShelleyTestnet, isFlight } = global;
 
 export default class NetworkStatusStore extends Store {
   // Initialize store properties
@@ -67,6 +70,7 @@ export default class NetworkStatusStore extends Store {
   _networkStatus = NETWORK_STATUS.CONNECTING;
   _networkStatusPollingInterval: ?IntervalID = null;
   _networkClockPollingInterval: ?IntervalID = null;
+  _networkParametersPollingInterval: ?IntervalID = null;
 
   // Initialize store observables
 
@@ -82,7 +86,8 @@ export default class NetworkStatusStore extends Store {
   @observable isNodeStopped = false; // Is 'true' if node is in `NODE_STOPPED_STATES` states
   @observable isNodeTimeCorrect = true; // Is 'true' in case local and global time are in sync
   @observable isSystemTimeIgnored = false; // Tracks if NTP time checks are ignored
-  @observable isSplashShown = isIncentivizedTestnet || isFlight; // Visibility of splash screen
+  @observable isSplashShown =
+    isIncentivizedTestnet || isShelleyTestnet || isFlight; // Visibility of splash screen
   @observable isSyncProgressStalling = false; // Is 'true' in case sync progress doesn't change within limit
 
   @observable hasBeenConnected = false;
@@ -93,6 +98,7 @@ export default class NetworkStatusStore extends Store {
   @observable futureEpoch: ?FutureEpoch = null;
   @observable lastSyncProgressChangeTimestamp = 0; // milliseconds
   @observable localTimeDifference: ?number = 0; // microseconds
+  @observable decentralizationProgress: number = 0; // percentage
   @observable
   getNetworkInfoRequest: Request<GetNetworkInfoResponse> = new Request(
     this.api.ada.getNetworkInfo
@@ -100,6 +106,10 @@ export default class NetworkStatusStore extends Store {
   @observable
   getNetworkClockRequest: Request<GetNetworkClockResponse> = new Request(
     this.api.ada.getNetworkClock
+  );
+  @observable
+  getNetworkParametersRequest: Request<GetNetworkParametersResponse> = new Request(
+    this.api.ada.getNetworkParameters
   );
 
   @observable isNotEnoughDiskSpace: boolean = false;
@@ -109,6 +119,10 @@ export default class NetworkStatusStore extends Store {
   @observable diskSpaceAvailable: string = '';
   @observable isTlsCertInvalid: boolean = false;
   @observable stateDirectoryPath: string = '';
+  @observable isShelleyActivated: boolean = false;
+  @observable isShelleyPending: boolean = false;
+  @observable shelleyActivationTime: string = '';
+  @observable verificationProgress: number = 0;
 
   // DEFINE STORE METHODS
   setup() {
@@ -145,12 +159,16 @@ export default class NetworkStatusStore extends Store {
     // Setup polling interval
     this._setNetworkStatusPollingInterval();
     this._setNetworkClockPollingInterval();
+    this._setNetworkParametersPollingInterval();
 
     // Setup disk space checks
     getDiskSpaceStatusChannel.onReceive(this._onCheckDiskSpace);
     this._checkDiskSpace();
 
     this._getStateDirectoryPath();
+
+    // Blockchain verification checking
+    getBlockReplayProgressChannel.onReceive(this._onCheckVerificationProgress);
   }
 
   _restartNode = async () => {
@@ -171,6 +189,7 @@ export default class NetworkStatusStore extends Store {
     // Teardown polling intervals
     this._clearNetworkStatusPollingInterval();
     this._clearNetworkClockPollingInterval();
+    this._clearNetworkParametersPollingInterval();
   }
 
   // ================= REACTIONS ==================
@@ -292,7 +311,7 @@ export default class NetworkStatusStore extends Store {
           this.tlsConfig = null;
         });
         this._setDisconnected(wasConnected);
-        this.stores.nodeUpdate.hideUpdateDialog();
+        this.stores.appUpdate.hideUpdateDialog();
         this.stores.app._closeActiveDialog();
         break;
       default:
@@ -342,6 +361,13 @@ export default class NetworkStatusStore extends Store {
     );
   };
 
+  @action _setNetworkParametersPollingInterval = () => {
+    this._networkParametersPollingInterval = setInterval(
+      this._getNetworkParameters,
+      DECENTRALIZATION_LEVEL_POLLING_INTERVAL
+    );
+  };
+
   @action _clearNetworkStatusPollingInterval = () => {
     if (this._networkStatusPollingInterval) {
       clearInterval(this._networkStatusPollingInterval);
@@ -353,6 +379,13 @@ export default class NetworkStatusStore extends Store {
     if (this._networkClockPollingInterval) {
       clearInterval(this._networkClockPollingInterval);
       this._networkClockPollingInterval = null;
+    }
+  };
+
+  @action _clearNetworkParametersPollingInterval = () => {
+    if (this._networkParametersPollingInterval) {
+      clearInterval(this._networkParametersPollingInterval);
+      this._networkParametersPollingInterval = null;
     }
   };
 
@@ -552,6 +585,37 @@ export default class NetworkStatusStore extends Store {
     }
   };
 
+  @action _getNetworkParameters = async () => {
+    // Skip checking network parameters if we are not connected
+    if (!this.isNodeResponding) return;
+
+    try {
+      const networkParameters: GetNetworkParametersResponse = await this.getNetworkParametersRequest.execute()
+        .promise;
+      let { isShelleyActivated, isShelleyPending } = this;
+      const { decentralizationLevel, hardforkAt } = networkParameters;
+      const epochStartTime = get(hardforkAt, 'epoch_start_time', '');
+
+      if (hardforkAt) {
+        const currentTimeStamp = new Date().getTime();
+        const hardforkStartTime = new Date(epochStartTime).getTime();
+        isShelleyActivated = currentTimeStamp >= hardforkStartTime;
+        isShelleyPending = currentTimeStamp < hardforkStartTime;
+      }
+
+      runInAction('Set Decentralization Progress', () => {
+        this.decentralizationProgress = decentralizationLevel.quantity;
+        this.isShelleyActivated = isShelleyActivated;
+        this.isShelleyPending = isShelleyPending;
+        this.shelleyActivationTime = epochStartTime;
+      });
+    } catch (e) {
+      runInAction('Clear Decentralization Progress', () => {
+        this.decentralizationProgress = 0;
+      });
+    }
+  };
+
   openStateDirectory(path: string, event?: MouseEvent): void {
     if (event) event.preventDefault();
     openLocalDirectoryChannel.send(path);
@@ -579,6 +643,13 @@ export default class NetworkStatusStore extends Store {
       this._setNetworkStatusPollingInterval();
     }
 
+    return Promise.resolve();
+  };
+
+  @action _onCheckVerificationProgress = (
+    verificationProgress: number
+  ): Promise<void> => {
+    this.verificationProgress = verificationProgress;
     return Promise.resolve();
   };
 
@@ -615,5 +686,19 @@ export default class NetworkStatusStore extends Store {
 
   @computed get syncPercentage(): number {
     return this.syncProgress || 0;
+  }
+
+  @computed get isEpochsInfoAvailable(): boolean {
+    const { networkTip, nextEpoch } = this;
+    return (
+      get(nextEpoch, 'epochNumber', null) !== null &&
+      get(nextEpoch, 'epochStart', null) !== null &&
+      get(networkTip, 'epoch', null) !== null &&
+      get(networkTip, 'slot', null) !== null
+    );
+  }
+
+  @computed get isVerifyingBlockchain(): boolean {
+    return !this.isConnected && this.verificationProgress < 100;
   }
 }

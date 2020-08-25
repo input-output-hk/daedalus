@@ -3,9 +3,11 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { Input } from 'react-polymorph/lib/components/Input';
-import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
-import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import { defineMessages, FormattedHTMLMessage, intlShape } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
+import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
+import SVGInline from 'react-svg-inline';
+import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
@@ -15,9 +17,12 @@ import {
 } from '../../../utils/validations';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
+import { PasswordInput } from '../../widgets/forms/PasswordInput';
 import styles from './ChangeSpendingPasswordDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import { submitOnEnter } from '../../../utils/form';
+import tooltipStyles from '../../widgets/forms/InlineEditingDropdown-tooltip.scss';
+import infoIconInline from '../../../assets/images/info-icon.inline.svg';
 
 const messages = defineMessages({
   dialogTitleSetPassword: {
@@ -74,6 +79,12 @@ const messages = defineMessages({
     description:
       'Placeholder for the "Repeat password" inputs in the change wallet password dialog.',
   },
+  passwordTooltip: {
+    id: 'wallet.dialog.passwordTooltip',
+    defaultMessage: 'We recommend using a password manager app to manage and store your spending password. Generate a unique password using a password manager and paste it here. Passwords should never be reused.',
+    description:
+      'Tooltip for the password input in the wallet dialog.',
+  },
 });
 
 type Props = {
@@ -87,6 +98,7 @@ type Props = {
   error: ?LocalizableError,
   isSpendingPasswordSet: boolean,
   walletName: string,
+  currentLocale: string,
 };
 
 @observer
@@ -212,13 +224,11 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
     const { intl } = this.context;
     const {
       onCancel,
-      currentPasswordValue,
-      newPasswordValue,
-      repeatedPasswordValue,
       isSubmitting,
       error,
       isSpendingPasswordSet,
       walletName,
+      currentLocale,
     } = this.props;
     const dialogClasses = classnames([
       styles.dialog,
@@ -229,6 +239,8 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
       'confirmButton',
       isSubmitting ? styles.isSubmitting : null,
     ]);
+
+    const tooltipClasses = classnames([styles.tooltip, currentLocale === 'ja-JP' ? 'jpLangTooltipIcon' : '' ]);
 
     const newPasswordClasses = classnames(['newPassword', styles.newPassword]);
 
@@ -269,47 +281,61 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
       >
         <div className={styles.spendingPasswordFields}>
           {isSpendingPasswordSet && (
-            <Input
-              type="password"
-              className={styles.currentPassword}
-              label={currentPasswordField.label}
-              value={currentPasswordValue}
-              onKeyPress={this.handleSubmitOnEnter}
-              onChange={value =>
-                this.handleDataChange('currentPasswordValue', value)
-              }
-              {...currentPasswordField.bind()}
-              error={currentPasswordField.error || currentPasswordError}
-              skin={InputSkin}
-            />
+            <div className={styles.spendingPasswordField}>
+              <Input
+                className={styles.currentPassword}
+                error={currentPasswordField.error || currentPasswordError}
+                {...currentPasswordField.bind()}
+                onKeyPress={this.handleSubmitOnEnter}
+              />
+              <Tooltip
+              skin={TooltipSkin}
+              themeOverrides={tooltipStyles}
+              tip={<FormattedHTMLMessage {...messages.passwordTooltip} />}
+              key="tooltip"
+              className={tooltipClasses}
+              arrowRelativeToTip
+              >
+              <SVGInline
+              svg={infoIconInline}
+              className={styles.infoIcon}
+              />
+              </Tooltip>
+            </div>
           )}
 
-          <Input
-            type="password"
-            className={newPasswordClasses}
-            label={newPasswordField.label}
-            value={newPasswordValue}
-            onKeyPress={this.handleSubmitOnEnter}
-            onChange={value => this.handleDataChange('newPasswordValue', value)}
-            {...newPasswordField.bind()}
-            error={newPasswordField.error}
-            skin={InputSkin}
-          />
+          <div className={newPasswordClasses}>
+            <div className={styles.spendingPasswordField}>
+              <PasswordInput
+                {...newPasswordField.bind()}
+                onKeyPress={this.handleSubmitOnEnter}
+              />
+              {!isSpendingPasswordSet && (
+                <Tooltip
+                  skin={TooltipSkin}
+                  themeOverrides={tooltipStyles}
+                  tip={<FormattedHTMLMessage {...messages.passwordTooltip} />}
+                  key="tooltip"
+                  className={tooltipClasses}
+                  arrowRelativeToTip
+                >
+                  <SVGInline
+                    svg={infoIconInline}
+                    className={styles.infoIcon}
+                  />
+                </Tooltip>
+              )}
+            </div>
+          </div>
 
-          <Input
-            type="password"
-            className={styles.repeatedPassword}
-            label={repeatedPasswordField.label}
-            value={repeatedPasswordValue}
-            onKeyPress={this.handleSubmitOnEnter}
-            onChange={value =>
-              this.handleDataChange('repeatedPasswordValue', value)
-            }
-            {...repeatedPasswordField.bind()}
-            error={repeatedPasswordField.error}
-            skin={InputSkin}
-          />
-
+          <div className={styles.repeatedPassword}>
+            <PasswordInput
+              {...repeatedPasswordField.bind()}
+              onKeyPress={this.handleSubmitOnEnter}
+              repeatPassword={newPasswordField.value}
+              isPasswordRepeat
+            />
+          </div>
           <p className={styles.passwordInstructions}>
             <FormattedHTMLMessage {...globalMessages.passwordInstructions} />
           </p>

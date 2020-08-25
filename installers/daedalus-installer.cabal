@@ -16,7 +16,6 @@ library
                    , WindowsInstaller
                    , MacInstaller
                    , RewriteLibs
-                   , AppVeyor
                    , Util
   ghc-options:         -Wextra -Wno-unused-do-bind -Werror
                        -fno-warn-orphans
@@ -80,6 +79,7 @@ executable make-installer
 executable darwin-launcher
   main-is:             DarwinLauncher.hs
   default-language:    Haskell2010
+  buildable:           False
   build-depends:       base
                      , turtle
                      , unix

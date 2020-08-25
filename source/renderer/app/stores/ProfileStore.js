@@ -167,8 +167,9 @@ export default class ProfileStore extends Store {
   @computed get currentTheme(): string {
     // Default theme handling
     let systemValue;
-    if (global.isIncentivizedTestnet) {
-      // Force "Incentivized Testnet" as default theme for the Incentivized Testnet Daedalus version
+    if (global.isShelleyTestnet) {
+      systemValue = THEMES.SHELLEY_TESTNET;
+    } else if (global.isIncentivizedTestnet) {
       systemValue = THEMES.INCENTIVIZED_TESTNET;
     } else if (global.isFlight) {
       systemValue = THEMES.FLIGHT_CANDIDATE;
@@ -478,7 +479,6 @@ export default class ProfileStore extends Store {
   _setStateSnapshotLog = async () => {
     try {
       logger.info('ProfileStore: Requesting state snapshot log file creation');
-      const { isIncentivizedTestnet } = global;
       const { networkStatus } = this.stores;
       const {
         cardanoNodePID,
@@ -553,7 +553,7 @@ export default class ProfileStore extends Store {
         isStaging,
         isSynced,
         isTestnet,
-        isIncentivizedTestnet,
+        isIncentivizedTestnet: global.isIncentivizedTestnet,
         currentTime: new Date().toISOString(),
         syncPercentage: syncPercentage.toFixed(2),
         localTip,

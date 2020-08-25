@@ -22,24 +22,30 @@ export default class InitialSettingsPage extends Component<InjectedProps> {
     const { actions, stores } = this.props;
     const { updateUserLocalSetting } = actions.profile;
     updateUserLocalSetting.trigger({ param, value });
-    const { isUpdateAvailable } = stores.nodeUpdate;
+    const { isUpdateAvailable } = stores.appUpdate;
     if (param === 'locale') {
       await rebuildApplicationMenu.send({ isUpdateAvailable });
     }
   };
 
   render() {
-    const { currentRoute } = this.props.stores.app;
+    const { app, profile, networkStatus } = this.props.stores;
+    const { currentRoute } = app;
     const {
       setProfileLocaleRequest,
       currentLocale,
       currentNumberFormat,
       currentDateFormat,
       currentTimeFormat,
-    } = this.props.stores.profile;
+    } = profile;
     const isSubmitting = setProfileLocaleRequest.isExecuting;
+    const { isShelleyActivated } = networkStatus;
     const topbar = (
-      <TopBar currentRoute={currentRoute} showSubMenuToggle={false} />
+      <TopBar
+        currentRoute={currentRoute}
+        showSubMenuToggle={false}
+        isShelleyActivated={isShelleyActivated}
+      />
     );
     return (
       <TopBarLayout topbar={topbar}>

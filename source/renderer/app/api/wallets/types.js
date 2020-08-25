@@ -104,8 +104,8 @@ export type DelegationStakePool = {
 };
 
 export type WalletNextDelegationEpoch = {
-  epoch_number: number,
-  epoch_start_time: string,
+  epoch_number: ?number,
+  epoch_start_time: ?string,
 };
 
 export type WalletDelegation = {

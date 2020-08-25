@@ -6,6 +6,7 @@ export const THEMES = {
   FLIGHT_CANDIDATE: 'flight-candidate',
   INCENTIVIZED_TESTNET: 'incentivized-testnet',
   LIGHT_BLUE: 'light-blue',
+  SHELLEY_TESTNET: 'shelley-testnet',
   YELLOW: 'yellow',
   WHITE: 'white',
 };

@@ -21,7 +21,7 @@ export default class StakingEpochsPage extends Component<Props> {
       },
     } = this.props;
 
-    if (global.isIncentivizedTestnet) {
+    if (global.isIncentivizedTestnet || global.isShelleyTestnet) {
       goToStakingDelegationCenterPage.trigger();
     }
   }

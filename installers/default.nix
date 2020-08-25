@@ -1,7 +1,7 @@
 { system ? builtins.currentSystem
 , config ? {}
 , localLib ? import ../lib.nix {}
-, pkgs ? import localLib.sources.nixpkgs { inherit system config; }
+, pkgs
 , daedalus-bridge
 }:
 

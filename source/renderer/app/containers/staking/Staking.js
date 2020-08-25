@@ -15,31 +15,31 @@ type Props = InjectedContainerProps;
 @observer
 export default class Staking extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
-  // TODO: Uncomment when the we need the countdown logic
-  // componentDidMount() {
-  //   this.handleDelegationRoute();
-  // }
 
-  // handleDelegationRoute = () => {
-  //   const {
-  //     actions,
-  //     stores: { staking },
-  //   } = this.props;
+  componentDidMount() {
+    this.handleDelegationRoute();
+  }
 
-  //   if (staking.showCountdown() && !staking.isStakingDelegationCountdown) {
-  //     return actions.router.goToRoute.trigger({
-  //       route: ROUTES.STAKING.DELEGATION_COUNTDOWN,
-  //     });
-  //   }
+  handleDelegationRoute = () => {
+    const {
+      actions,
+      stores: { staking },
+    } = this.props;
 
-  //   if (!staking.showCountdown() && staking.isStakingDelegationCountdown) {
-  //     return actions.router.goToRoute.trigger({
-  //       route: ROUTES.STAKING.INFO,
-  //     });
-  //   }
+    if (staking.showCountdown() && !staking.isStakingDelegationCountdown) {
+      return actions.router.goToRoute.trigger({
+        route: ROUTES.STAKING.COUNTDOWN,
+      });
+    }
 
-  //   return true;
-  // };
+    if (!staking.showCountdown() && staking.isStakingDelegationCountdown) {
+      return actions.router.goToRoute.trigger({
+        route: ROUTES.STAKING.INFO,
+      });
+    }
+
+    return true;
+  };
 
   isActiveNavItem = (page: string, item: NavDropdownProps) => {
     const { app } = this.props.stores;
@@ -78,11 +78,12 @@ export default class Staking extends Component<Props> {
       stores: { app, staking },
       children,
     } = this.props;
+    const { isIncentivizedTestnet } = global;
     const { isStakingExperimentRead, isStakingDelegationCountdown } = staking;
 
     return (
       <MainLayout>
-        {!isStakingExperimentRead && (
+        {isIncentivizedTestnet && !isStakingExperimentRead && (
           <ExperimentalDataOverlay
             onClose={this.handleCloseExperimentalDataOverlay}
           />

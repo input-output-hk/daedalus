@@ -7,6 +7,7 @@ import getLogsApi from './get-logs';
 import resizeWindowApi from './resize-window';
 import loadAsset from './load-asset';
 import getGpuStatus from './get-gpu-status';
+import { downloadManagerChannel } from './downloadManagerChannel';
 import getRecoveryWalletIdChannel from './getRecoveryWalletIdChannel';
 import { handleHardwareWalletRequests } from './getHardwareWalletChannel';
 import { handleBugReportRequests } from './bugReportRequestChannel';
@@ -15,6 +16,7 @@ import { handlePaperWalletRequests } from './generatePaperWalletChannel';
 import { handleAddressPDFRequests } from './generateAddressPDFChannel';
 import { handleRewardsCsvRequests } from './generateRewardsCsvChannel';
 import { handleFileDialogRequests } from './show-file-dialog-channels';
+import { handleAddressIntrospectionRequests } from './introspect-address';
 import { openExternalUrlChannel } from './open-external-url';
 import { openLocalDirectoryChannel } from './open-local-directory';
 
@@ -31,10 +33,12 @@ export default (window: BrowserWindow) => {
   handleAddressPDFRequests();
   handleRewardsCsvRequests();
   handleFileDialogRequests(window);
+  handleAddressIntrospectionRequests();
   // eslint-disable-next-line no-unused-expressions
   openExternalUrlChannel;
   // eslint-disable-next-line no-unused-expressions
   openLocalDirectoryChannel;
+  downloadManagerChannel(window);
   getRecoveryWalletIdChannel();
   handleElectronStoreChannel();
   handleHardwareWalletRequests();

@@ -120,8 +120,7 @@ export default class WalletImportFileDialog extends Component<Props, State> {
 
   importPathInput: Input;
 
-  // eslint-disable-next-line
-  UNSAFE_componentWillMount() {
+  componentDidMount() {
     this.props.onOpen();
   }
 
@@ -200,7 +199,7 @@ export default class WalletImportFileDialog extends Component<Props, State> {
         shouldCloseOnOverlayClick={false}
         shouldCloseOnEsc={false}
         ariaHideApp={false}
-        themeOverrides
+        defaultThemeOverrides
       >
         <div className={styles.component}>
           <DialogCloseButton

@@ -277,12 +277,13 @@ const createWalletsSequentially = async function(wallets: Array<any>) {
   for (const walletData of wallets) {
     await this.client.executeAsync((wallet, isIncentivizedTestnet, done) => {
       const mnemonic = daedalus.utils.crypto.generateMnemonic(isIncentivizedTestnet ? 15 : 12);
+      const walletDetails = {
+        name: wallet.name,
+        mnemonic,
+        spendingPassword: wallet.password || 'Secret1234',
+      };
       daedalus.api.ada
-        .createWallet({
-          name: wallet.name,
-          mnemonic,
-          spendingPassword: wallet.password || 'Secret1234',
-        })
+        .createWallet(walletDetails)
         .then(() =>
           daedalus.stores.wallets.walletsRequest
             .execute()
@@ -304,7 +305,6 @@ const createWalletsAsync = async function(table, isLegacy?: boolean) {
   const result = await this.client.executeAsync((wallets, isLegacyWallet, done) => {
     const mnemonics = {};
     const { restoreByronRandomWallet, createWallet } = daedalus.api.ada;
-    const apiEndpoint = isLegacyWallet ? restoreByronRandomWallet : createWallet;
     const mnemonicsLength = isLegacyWallet ? 12 : 15;
 
     window.Promise.all(
@@ -314,7 +314,17 @@ const createWalletsAsync = async function(table, isLegacy?: boolean) {
           ? mnemonic
           : mnemonic.split(' ');
         mnemonics[wallet.name] = mnemonic.split(' ');
-        return apiEndpoint({
+        const walletDetails = {
+          name: wallet.name,
+          walletName: wallet.name,
+          mnemonic,
+          recoveryPhrase,
+          spendingPassword: wallet.password || 'Secret1234',
+        };
+        if (isLegacyWallet) {
+          return createWallet(walletDetails)
+        }
+        return restoreByronRandomWallet({
           name: wallet.name,
           walletName: wallet.name,
           mnemonic,

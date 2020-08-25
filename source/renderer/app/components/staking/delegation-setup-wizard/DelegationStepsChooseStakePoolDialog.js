@@ -7,7 +7,6 @@ import {
   FormattedHTMLMessage,
 } from 'react-intl';
 import classNames from 'classnames';
-import SVGInline from 'react-svg-inline';
 import { Stepper } from 'react-polymorph/lib/components/Stepper';
 import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
 import { find, get } from 'lodash';
@@ -20,23 +19,21 @@ import { getFilteredStakePoolsList } from '../stake-pools/helpers';
 import BackToTopButton from '../../widgets/BackToTopButton';
 import commonStyles from './DelegationSteps.scss';
 import styles from './DelegationStepsChooseStakePoolDialog.scss';
-import checkmarkImage from '../../../assets/images/check-w.inline.svg';
-import questionmarkImage from '../../../assets/images/questionmark.inline.svg';
-import { getColorFromRange } from '../../../utils/colors';
 import Wallet from '../../../domains/Wallet';
+import ThumbSelectedPool from '../widgets/ThumbSelectedPool';
 
 import StakePool from '../../../domains/StakePool';
 
 const messages = defineMessages({
   title: {
     id: 'staking.delegationSetup.chooseStakePool.step.dialog.title',
-    defaultMessage: '!!!Delegate wallet',
+    defaultMessage: '!!!Choose a stake pool',
     description:
-      'Title "Delegate wallet" on the delegation setup "choose stake pool" dialog.',
+      'Title "Choose a stake pool" on the delegation setup "choose stake pool" dialog.',
   },
   description: {
     id: 'staking.delegationSetup.chooseStakePool.step.dialog.description',
-    defaultMessage: '!!!Currently selected stake pool',
+    defaultMessage: '!!!Currently selected stake pool:',
     description:
       'Description on the delegation setup "choose stake pool" dialog.',
   },
@@ -44,7 +41,7 @@ const messages = defineMessages({
     id:
       'staking.delegationSetup.chooseStakePool.step.dialog.selectStakePoolLabel',
     defaultMessage:
-      '!!!Select a stake pool to delegate to for <span>{selectedWalletName}<span>  wallet.',
+      '!!!Select a stake pool to receive your delegated funds in the <span>{selectedWalletName}<span> wallet.',
     description:
       'Select / Selected pool section label on the delegation setup "choose stake pool" dialog.',
   },
@@ -53,6 +50,14 @@ const messages = defineMessages({
       'staking.delegationSetup.chooseStakePool.step.dialog.selectedStakePoolLabel',
     defaultMessage:
       '!!!You have selected [{selectedPoolTicker}] stake pool to delegate to for <span>{selectedWalletName}</span> wallet.',
+    description:
+      '"Selected Pools" Selected pool label on the delegation setup "choose stake pool" dialog.',
+  },
+  selectedStakePoolLabelRetiring: {
+    id:
+      'staking.delegationSetup.chooseStakePool.step.dialog.selectedStakePoolLabelRetiring',
+    defaultMessage:
+      '!!!The [{selectedPoolTicker}] stake pool which you have selected to delegate your <span>{selectedWalletName}</span> wallet funds is about to retire.',
     description:
       '"Selected Pools" Selected pool label on the delegation setup "choose stake pool" dialog.',
   },
@@ -74,7 +79,7 @@ const messages = defineMessages({
   },
   recentPoolsLabel: {
     id: 'staking.delegationSetup.chooseStakePool.step.dialog.recentPoolsLabel',
-    defaultMessage: '!!!Pick one of your recent stake pool choices:',
+    defaultMessage: '!!!Choose one of your recent stake pool choices:',
     description:
       'Recent "Pool" choice section label on the delegation setup "choose stake pool" dialog.',
   },
@@ -106,6 +111,14 @@ const messages = defineMessages({
     description:
       'Step indicator label on the delegation setup "choose wallet" step dialog.',
   },
+  retiringPoolFooter: {
+    id:
+      'staking.delegationSetup.chooseStakePool.step.dialog.retiringPoolFooter',
+    defaultMessage:
+      '!!!The stake pool you have selected is about to be retired. If you continue the delegation process, you will need to delegate your stake to another pool at least one complete epoch before the current pool’s retirement date to avoid losing rewards.',
+    description:
+      'Retiring Pool Footer label on the delegation setup "choose wallet" step dialog.',
+  },
 });
 
 type Props = {
@@ -114,7 +127,6 @@ type Props = {
   stakePoolsList: Array<StakePool>,
   selectedWallet: ?Wallet,
   onOpenExternalLink: Function,
-  getPledgeAddressUrl: Function,
   currentTheme: string,
   selectedPool: ?StakePool,
   onClose: Function,
@@ -165,7 +177,6 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
       recentStakePools,
       stakePoolsList,
       onOpenExternalLink,
-      getPledgeAddressUrl,
       currentTheme,
       selectedWallet,
       onClose,
@@ -210,52 +221,18 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
       },
     ];
 
+    const footer =
+      selectedPool && selectedPool.retiring ? (
+        <div className={styles.retiringPoolFooter}>
+          {intl.formatMessage(messages.retiringPoolFooter)}
+        </div>
+      ) : null;
+
     const dialogClassName = classNames([
       commonStyles.delegationSteps,
       styles.delegationStepsChooseStakePoolDialogWrapper,
     ]);
     const contentClassName = classNames([commonStyles.content, styles.content]);
-
-    const selectedPoolBlock = () => {
-      const selectedPoolBlockClasses = classNames([
-        selectedPool
-          ? styles.selectedPoolBlock
-          : styles.selectPoolBlockPlaceholder,
-        selectedPool && !canSubmit ? styles.alreadyDelegated : null,
-      ]);
-
-      const selectedPoolImageClasses = classNames([
-        selectedPool ? styles.checkmarkImage : styles.questionmarkImage,
-      ]);
-
-      const wrapperClasses = classNames([
-        selectedPool ? styles.checkmarkWrapper : styles.questionmarkWrapper,
-      ]);
-
-      const rankColor = selectedPool
-        ? getColorFromRange(selectedPool.ranking, stakePoolsList.length)
-        : 'transparent';
-
-      return (
-        <div
-          role="presentation"
-          className={selectedPoolBlockClasses}
-          style={{
-            background: rankColor,
-          }}
-        >
-          {selectedPoolTicker && (
-            <div className={styles.ticker}>{selectedPoolTicker}</div>
-          )}
-          <div className={wrapperClasses}>
-            <SVGInline
-              svg={selectedPool ? checkmarkImage : questionmarkImage}
-              className={selectedPoolImageClasses}
-            />
-          </div>
-        </div>
-      );
-    };
 
     const selectionPoolLabel = () => {
       let label = '';
@@ -290,9 +267,12 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
         );
       } else if (selectedPoolId) {
         // Stake pool selected and selected wallet are not delegated to it
+        const message = !selectedPool.retiring
+          ? messages.selectedStakePoolLabel
+          : messages.selectedStakePoolLabelRetiring;
         label = (
           <FormattedHTMLMessage
-            {...messages.selectedStakePoolLabel}
+            {...message}
             values={{
               selectedWalletName,
               selectedPoolTicker,
@@ -333,6 +313,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
         title={intl.formatMessage(messages.title)}
         subtitle={stepsIndicatorLabel}
         actions={actions}
+        footer={footer}
         closeOnOverlayClick
         onClose={onClose}
         className={dialogClassName}
@@ -360,7 +341,11 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
           </p>
 
           <div className={styles.selectStakePoolWrapper}>
-            {selectedPoolBlock()}
+            <ThumbSelectedPool
+              stakePool={selectedPool}
+              numberOfStakePools={stakePoolsList.length}
+              alreadyDelegated={selectedPool && !canSubmit}
+            />
 
             <p className={styles.selectStakePoolLabel}>
               {selectionPoolLabel()}
@@ -377,7 +362,6 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
               listName="recentStakePools"
               stakePoolsList={recentStakePools}
               onOpenExternalLink={onOpenExternalLink}
-              getPledgeAddressUrl={getPledgeAddressUrl}
               currentTheme={currentTheme}
               isListActive={selectedList === 'recentStakePools'}
               setListActive={this.handleSetListActive}
@@ -408,7 +392,6 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
               listName="selectedIndexList"
               stakePoolsList={filteredStakePoolsList}
               onOpenExternalLink={onOpenExternalLink}
-              getPledgeAddressUrl={getPledgeAddressUrl}
               currentTheme={currentTheme}
               isListActive={selectedList === 'selectedIndexList'}
               setListActive={this.handleSetListActive}

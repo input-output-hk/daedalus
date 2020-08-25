@@ -24,9 +24,9 @@ const messages = defineMessages({
   },
   createDescriptionItn: {
     id: 'wallet.add.dialog.create.description.itn',
-    defaultMessage: '!!!Create a new Rewards wallet',
+    defaultMessage: '!!!Create a new wallet',
     description:
-      'Description for the "Create a new Rewards wallet" button on the wallet add dialog.',
+      'Description for the "Create a new wallet" button on the wallet add dialog.',
   },
   createDescription: {
     id: 'wallet.add.dialog.create.description',
@@ -174,8 +174,9 @@ export default class WalletAdd extends Component<Props> {
               label={intl.formatMessage(messages.importLabel)}
               description={intl.formatMessage(messages.importDescription)}
               isDisabled={
+                true || // This feature is currently unavailable as export tool is disabled
                 isMaxNumberOfWalletsReached ||
-                (isProduction && !isMainnet && !isTestnet)
+                (isProduction && !(isMainnet || isTestnet))
               }
             />
           </div>

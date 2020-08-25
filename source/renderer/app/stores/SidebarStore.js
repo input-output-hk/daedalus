@@ -3,6 +3,7 @@ import { action, computed, observable } from 'mobx';
 import { get } from 'lodash';
 import Store from './lib/Store';
 import { sidebarConfig } from '../config/sidebarConfig';
+import type { SidebarCategoryInfo } from '../config/sidebarConfig';
 import { formattedWalletAmount } from '../utils/formatters';
 import type {
   SidebarHardwareWalletType,
@@ -10,7 +11,7 @@ import type {
 } from '../types/sidebarTypes';
 
 export default class SidebarStore extends Store {
-  @observable CATEGORIES: Array<any> = sidebarConfig.CATEGORIES;
+  @observable CATEGORIES: Array<any> = sidebarConfig.CATEGORIES_LIST;
   @observable activeSidebarCategory: string = this.CATEGORIES[0].route;
   @observable isShowingSubMenus: boolean = true;
 
@@ -25,7 +26,10 @@ export default class SidebarStore extends Store {
     sidebarActions.hardwareWalletSelected.listen(
       this._onHardwareWalletSelected
     );
-    this.registerReactions([this._syncSidebarRouteWithRouter]);
+    this.registerReactions([
+      this._syncSidebarRouteWithRouter,
+      this._syncSidebarItemsWithShelleyActivation,
+    ]);
     this._configureCategories();
   }
 
@@ -86,18 +90,45 @@ export default class SidebarStore extends Store {
   }
 
   @action _configureCategories = () => {
-    const { isIncentivizedTestnet, isFlight, environment } = global;
-    if (environment.isDev) {
-      this.CATEGORIES = sidebarConfig.CATEGORIES_WITH_HARDWARE_WALLETS;
-    } else if (isIncentivizedTestnet) {
-      this.CATEGORIES = sidebarConfig.CATEGORIES_WITHOUT_DELEGATION_COUNTDOWN;
-    } else if (isFlight) {
-      this.CATEGORIES = sidebarConfig.CATEGORIES;
-    } else if (environment.isDev) {
-      this.CATEGORIES = sidebarConfig.CATEGORIES_WITH_HARDWARE_WALLETS;
-    } else {
-      this.CATEGORIES = sidebarConfig.CATEGORIES_WITHOUT_NETWORK_INFO;
-    }
+    const {
+      isFlight,
+      isIncentivizedTestnet,
+      isShelleyTestnet,
+      environment: { isDev },
+    } = global;
+
+    const { isShelleyActivated, isShelleyPending } = this.stores.networkStatus;
+
+    const {
+      CATEGORIES_BY_NAME: categories,
+      CATEGORIES_LIST: list,
+    } = sidebarConfig;
+
+    const categoryValidation: {
+      [key: string]: boolean | Function,
+    } = {
+      [categories.WALLETS.name]: true,
+      [categories.HARDWARE_WALLETS.name]: isDev,
+      [categories.PAPER_WALLET_CREATE_CERTIFICATE.name]: false,
+      [categories.STAKING_DELEGATION_COUNTDOWN.name]: isShelleyPending,
+      [categories.STAKING.name]: isShelleyActivated,
+      [categories.REDEEM_ITN_REWARDS.name]: true,
+      [categories.SETTINGS.name]: true,
+      [categories.NETWORK_INFO.name]:
+        isFlight || isIncentivizedTestnet || isShelleyTestnet,
+    };
+
+    const categoriesFilteredList: Array<SidebarCategoryInfo> = list.filter(
+      ({ name }: SidebarCategoryInfo): boolean => {
+        let validator = categoryValidation[name];
+        if (typeof validator === 'function') {
+          validator = validator();
+        }
+        return validator;
+      }
+    );
+
+    this.CATEGORIES = categoriesFilteredList;
   };
 
   @action _onActivateSidebarCategory = (params: {
@@ -152,5 +183,12 @@ export default class SidebarStore extends Store {
       if (route.indexOf(category.route) === 0)
         this._setActivateSidebarCategory(category.route);
     });
+  };
+
+  _syncSidebarItemsWithShelleyActivation = () => {
+    const { isShelleyActivated, isShelleyPending } = this.stores.networkStatus;
+    if (isShelleyActivated || isShelleyPending) {
+      this._configureCategories();
+    }
   };
 }

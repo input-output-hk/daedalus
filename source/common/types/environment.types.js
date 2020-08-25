@@ -47,6 +47,10 @@ export const MAINNET_FLIGHT = 'mainnet_flight';
 export const SELFNODE = 'selfnode';
 export const STAGING = 'staging';
 export const TESTNET = 'testnet';
+export const SHELLEY_LOCAL = 'local';
+export const SHELLEY_TESTNET = 'shelley_testnet';
+export const SHELLEY_TESTNET_V6 = 'shelley_testnet_v6';
+export const SHELLEY_QA = 'shelley_qa';
 
 // jormungandr networks
 export const ITN_REWARDS_V1 = 'itn_rewards_v1';
@@ -69,6 +73,8 @@ export type Network =
   | 'selfnode'
   | 'staging'
   | 'testnet'
+  | 'shelley_testnet'
+  | 'shelley_qa'
   | 'development'
   | 'itn'
   | 'itn_rewards_v1'
@@ -85,6 +91,8 @@ export const networkPrettyNames = {
   selfnode: 'Selfnode',
   staging: 'Staging',
   testnet: 'Testnet',
+  shelley_testnet: 'Shelley Testnet',
+  shelley_qa: 'Shelley QA',
   development: 'Development',
   itn_rewards_v1: 'Incentivized Testnet v1 - Rewards',
 };

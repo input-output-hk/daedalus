@@ -6,7 +6,8 @@ import {
   extendObservable,
   runInAction,
 } from 'mobx';
-import { find } from 'lodash';
+import { find, get } from 'lodash';
+import BigNumber from 'bignumber.js';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { WalletTransaction } from '../domains/WalletTransaction';
@@ -14,6 +15,7 @@ import type {
   DeleteTransactionRequest,
   GetTransactionsResponse,
   CreateExternalTransactionRequest,
+  GetWithdrawalsResponse,
 } from '../api/transactions/types';
 import { isValidAmountInLovelaces } from '../utils/validations';
 import {
@@ -81,6 +83,7 @@ export default class TransactionsStore extends Store {
     isLegacy: boolean,
     recentRequest: Request<GetTransactionsResponse>,
     allRequest: Request<GetTransactionsResponse>,
+    withdrawalsRequest: Request<GetWithdrawalsResponse>,
   }> = [];
 
   @observable
@@ -132,6 +135,18 @@ export default class TransactionsStore extends Store {
     const wallet = this.transactionsWallet;
     if (!wallet) return null;
     return this._filterOptionsForWallets[wallet.id];
+  }
+
+  @computed get withdrawals(): { [string]: BigNumber } {
+    const withdrawals = {};
+    const { allWallets: wallets } = this.stores.wallets;
+    for (const wallet of wallets) {
+      const { id: walletId } = wallet;
+      const request = this._getWithdrawalsRequest(walletId);
+      withdrawals[walletId] =
+        get(request, 'result.withdrawals') || new BigNumber(0);
+    }
+    return withdrawals;
   }
 
   @computed get all(): Array<WalletTransaction> {
@@ -241,6 +256,10 @@ export default class TransactionsStore extends Store {
           // isRestoreCompleted,
           // cachedTransactions: get(allRequest, 'result.transactions', []),
         });
+        if (!wallet.isLegacy) {
+          const withdrawalsRequest = this._getWithdrawalsRequest(wallet.id);
+          withdrawalsRequest.execute({ walletId: wallet.id });
+        }
       }
 
       // Hardware wallet transactions
@@ -378,6 +397,15 @@ export default class TransactionsStore extends Store {
     const foundRequest = find(this.transactionsRequests, { walletId });
     if (foundRequest && foundRequest.allRequest) return foundRequest.allRequest;
     return new Request(this.api.ada.getTransactions);
+  };
+
+  _getWithdrawalsRequest = (
+    walletId: string
+  ): Request<GetWithdrawalsResponse> => {
+    const foundRequest = find(this.transactionsRequests, { walletId });
+    if (foundRequest && foundRequest.withdrawalsRequest)
+      return foundRequest.withdrawalsRequest;
+    return new Request(this.api.ada.getWithdrawals);
   };
 
   // ======================= REACTIONS ========================== //

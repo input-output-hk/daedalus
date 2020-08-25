@@ -9,7 +9,6 @@ import {
   MIN_DELEGATION_FUNDS,
   RECENT_STAKE_POOLS_COUNT,
 } from '../../../config/stakingConfig';
-import { getNetworkExplorerUrlByType } from '../../../utils/network';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
 
 const messages = defineMessages({
@@ -62,8 +61,13 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     onClose: () => {},
   };
 
-  handleIsWalletAcceptable = (walletAmount: BigNumber) =>
-    walletAmount.gte(new BigNumber(MIN_DELEGATION_FUNDS));
+  handleIsWalletAcceptable = (
+    walletAmount?: BigNumber,
+    walletReward?: BigNumber = 0
+  ) =>
+    walletAmount &&
+    walletAmount.gte(new BigNumber(MIN_DELEGATION_FUNDS)) &&
+    !walletAmount.equals(walletReward);
 
   get selectedWalletId() {
     return get(
@@ -129,6 +133,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
 
   handleSelectWallet = (walletId: string) => {
     this.setState({ selectedWalletId: walletId });
+    this.props.actions.staking.selectDelegationWallet.trigger(walletId);
     this.handleContinue();
   };
 
@@ -147,7 +152,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     } = this.state;
     const { app, staking, wallets, profile, networkStatus } = this.props.stores;
     const { futureEpoch } = networkStatus;
-    const { currentTheme, currentLocale, environment } = profile;
+    const { currentTheme, currentLocale } = profile;
     const {
       stakePools,
       recentStakePools,
@@ -155,7 +160,6 @@ export default class DelegationSetupWizardDialogContainer extends Component<
       getStakePoolById,
       isDelegationTransactionPending,
     } = staking;
-    const { network, rawNetwork } = environment;
     const futureEpochStartTime = get(futureEpoch, 'epochStart', 0);
     const selectedPool = find(stakePools, pool => pool.id === selectedPoolId);
 
@@ -164,18 +168,9 @@ export default class DelegationSetupWizardDialogContainer extends Component<
       wallet => wallet.id === selectedWalletId
     );
 
-    const acceptableWallets = find(wallets.allWallets, wallet =>
-      this.handleIsWalletAcceptable(wallet.amount)
+    const acceptableWallets = find(wallets.allWallets, ({ amount, reward }) =>
+      this.handleIsWalletAcceptable(amount, reward)
     );
-
-    const getPledgeAddressUrl = (pledgeAddress: string) =>
-      getNetworkExplorerUrlByType(
-        'address',
-        pledgeAddress,
-        network,
-        rawNetwork,
-        currentLocale
-      );
 
     return (
       <DelegationSetupWizardDialog
@@ -193,7 +188,6 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         futureEpochStartTime={futureEpochStartTime}
         currentLocale={currentLocale}
         onOpenExternalLink={app.openExternalLink}
-        getPledgeAddressUrl={getPledgeAddressUrl}
         currentTheme={currentTheme}
         onClose={this.handleDialogClose}
         onContinue={this.handleContinue}

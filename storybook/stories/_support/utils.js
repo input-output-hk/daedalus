@@ -4,7 +4,9 @@ import faker from 'faker';
 import moment from 'moment';
 import { random, get } from 'lodash';
 import BigNumber from 'bignumber.js';
-import Wallet from '../../../source/renderer/app/domains/Wallet';
+import Wallet, {
+  WalletSyncStateStatuses,
+} from '../../../source/renderer/app/domains/Wallet';
 import StakePool from '../../../source/renderer/app/domains/StakePool';
 import {
   WalletTransaction,
@@ -21,6 +23,7 @@ import type {
   TransactionType,
   TransactionState,
 } from '../../../source/renderer/app/api/transactions/types';
+import type { SyncStateStatus } from '../../../source/renderer/app/api/wallets/types';
 
 export const generateHash = () => {
   const now = new Date().valueOf().toString();
@@ -30,12 +33,23 @@ export const generateHash = () => {
     .digest('hex');
 };
 
+const statusProgress = status =>
+  status === WalletSyncStateStatuses.RESTORING
+    ? {
+        progress: {
+          quantity: 50,
+          unit: 'percentage',
+        },
+      }
+    : null;
+
 export const generateWallet = (
   name: string,
   amount: string,
   reward?: number = 0,
   delegatedStakePool?: StakePool,
-  hasPassword?: boolean
+  hasPassword?: boolean,
+  status?: SyncStateStatus = WalletSyncStateStatuses.READY
 ) =>
   new Wallet({
     id: generateHash(),
@@ -47,7 +61,7 @@ export const generateWallet = (
     name,
     hasPassword: hasPassword || false,
     passwordUpdateDate: new Date(),
-    syncState: { status: 'ready' },
+    syncState: { status, ...statusProgress(status) },
     isLegacy: false,
     discovery: 'random',
     recoveryPhraseVerificationDate: new Date(),
@@ -63,7 +77,8 @@ export const generateTransaction = (
   amount: BigNumber = new BigNumber(faker.finance.amount()),
   state: TransactionState = TransactionStates.OK,
   hasUnresolvedIncomeAddresses: boolean = false,
-  noIncomeAddresses: boolean = false
+  noIncomeAddresses: boolean = false,
+  noWithdrawals: boolean = true
 ) =>
   new WalletTransaction({
     id: faker.random.uuid(),
@@ -91,6 +106,12 @@ export const generateTransaction = (
         faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100),
         faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100),
       ],
+      withdrawals: noWithdrawals
+        ? []
+        : [
+            faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100),
+            faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100),
+          ],
     },
   });
 
@@ -125,3 +146,6 @@ export const promise = (returnValue: any): (() => Promise<any>) => () =>
 
 export const isIncentivizedTestnetTheme = (currentTheme: string) =>
   currentTheme === 'incentivized-testnet';
+
+export const isShelleyTestnetTheme = (currentTheme: string) =>
+  currentTheme === 'shelley-testnet';

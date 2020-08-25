@@ -228,6 +228,16 @@ export const createReactPolymorphTheme = (
       '--rp-tooltip-bg-color': `${text.primary}`,
       '--rp-tooltip-text-color': `${text.secondary}`,
     },
+    rpPasswordInput: {
+      '--rp-password-input-error-score-color': '#ea4c5b',
+      '--rp-password-input-error-bg-color': 'rgba(234, 76, 91, 0.4)',
+      '--rp-password-input-warning-score-color': '#f2a218',
+      '--rp-password-input-warning-bg-color': 'rgba(242, 162, 24, 0.4)',
+      '--rp-password-input-success-score-color': '#2dc06c',
+      '--rp-password-input-success-bg-color': 'rgba(45, 192, 108, 0.4)',
+      '--rp-password-input-tooltip-border-radius': '5px',
+      '--rp-password-input-tooltip-font-family': 'var(--rp-theme-font-medium)',
+    },
   };
 };
 
@@ -469,6 +479,24 @@ export const createDaedalusComponentsTheme = (
       '--theme-dialog-title-color': `${text.primary}`,
       '--theme-dialog-text-color': `${text.primary}`,
       '--theme-dialog-border-color': `${border}`,
+      '--theme-dialog-fullsize-background-color': `${chroma(
+        background.secondary.regular
+      ).alpha(0.96)}`,
+      '--theme-dialog-fullsize-background-color-opaque': `${background.secondary.regular}`,
+      '--theme-dialog-fullsize-button-background-color': `${text.secondary}`,
+      '--theme-dialog-fullsize-button-background-color-hover': `${background.secondary.dark}`,
+      '--theme-dialog-fullsize-button-border-color': `${text.secondary}`,
+      '--theme-dialog-fullsize-button-icon-color': `${text.secondary}`,
+      '--theme-dialog-fullsize-button-icon-color-hover': `${background.secondary.regular}`,
+      '--theme-dialog-fullsize-button-label-color': `${text.secondary}`,
+      '--theme-dialog-fullsize-button-label-color-hover': `${text.secondary}`,
+      '--theme-dialog-fullsize-button-text-color-hover': `${background.secondary.regular}`,
+      '--theme-dialog-fullsize-field-background-color': 'rgba(0,0,0, 0.1)',
+      '--theme-dialog-fullsize-text-color': `${chroma(text.secondary).alpha(
+        0.7
+      )}`,
+      '--theme-dialog-fullsize-text-highlight-color': `${text.secondary}`,
+      '--theme-dialog-fullsize-title-text-color': `${text.secondary}`,
     },
     errors: {
       '--theme-color-error': `${error.regular}`,
@@ -647,6 +675,53 @@ export const createDaedalusComponentsTheme = (
       '--theme-news-feed-icon-toggle-hover-background-color':
         'rgba(0, 0, 0, 0.1)',
       '--theme-news-feed-no-fetch-color': '#fafbfc',
+      '--theme-news-feed-incident-overlay-background-color': `${chroma(
+        background.secondary.regular
+      ).alpha(0.96)}`,
+      '--theme-news-feed-incident-overlay-text-color': `${text.primary}`,
+      '--theme-news-feed-incident-overlay-button-color': `${text.primary}`,
+      '--theme-news-feed-incident-overlay-scrollbar-thumb-background': `${chroma(
+        text.primary
+      ).alpha(0.3)}`,
+      '--theme-news-feed-incident-overlay-scrollbar-thumb-background-hove': `${chroma(
+        text.primary
+      ).alpha(0.3)}`,
+      '--theme-news-feed-incident-overlay-content-list-color': `${chroma(
+        text.primary
+      ).alpha(0.7)}`,
+      '--theme-news-feed-incident-overlay-content-background':
+        'rgba(0, 0, 0, 0.1)',
+      '--theme-news-feed-incident-overlay-button-background':
+        'rgba(0, 0, 0, 0.1)',
+      '--theme-news-feed-incident-overlay-button-color-hover': `${chroma(
+        background.secondary.regular
+      ).alpha(0.96)}`,
+      '--theme-news-feed-incident-grey-overlay-background-color':
+        'rgba(68, 68, 68, 0.98)',
+      '--theme-news-feed-incident-grey-overlay-text-color': `${text.primary}`,
+      '--theme-news-feed-incident-grey-overlay-button-color': `${text.primary}`,
+      '--theme-news-feed-incident-grey-overlay-scrollbar-thumb-background': `${chroma(
+        text.primary
+      ).alpha(0.3)}`,
+      '--theme-news-feed-incident-grey-overlay-scrollbar-thumb-background-hove': `${chroma(
+        text.primary
+      ).alpha(0.5)}`,
+      '--theme-news-feed-incident-grey-overlay-content-list-color': `${chroma(
+        text.primary
+      ).alpha(0.7)}`,
+      '--theme-news-feed-incident-red-overlay-background-color':
+        'rgba(171, 23, 0, 0.98)',
+      '--theme-news-feed-incident-red-overlay-text-color': `${text.primary}`,
+      '--theme-news-feed-incident-red-overlay-button-color': `${text.primary}`,
+      '--theme-news-feed-incident-red-overlay-scrollbar-thumb-background': `${chroma(
+        text.primary
+      ).alpha(0.3)}`,
+      '--theme-news-feed-incident-red-overlay-scrollbar-thumb-background-hove': `${chroma(
+        text.primary
+      ).alpha(0.5)}`,
+      '--theme-news-feed-incident-red-overlay-content-list-color': `${chroma(
+        text.primary
+      ).alpha(0.7)}`,
     },
     newsItem: {
       '--theme-news-item-action-button-background-color': 'rgba(0, 0, 0, 0.1)',
@@ -662,7 +737,7 @@ export const createDaedalusComponentsTheme = (
       '--theme-news-item-info-background-color': 'rgba(0, 0, 0, 0.1)',
       '--theme-news-item-title-color': '#fafbfc',
     },
-    nodeUpdate: {
+    appUpdate: {
       '--theme-node-update-background-color': `${background.primary.regular}`,
       '--theme-node-update-title-color': `${text.primary}`,
       '--theme-node-update-message-color': `${text.primary}`,
@@ -862,6 +937,8 @@ export const createDaedalusComponentsTheme = (
       '--theme-staking-stake-pool-background-color': `${background.primary.lightest}`,
       '--theme-staking-stake-pool-border-color': `${border}`,
       '--theme-staking-stake-pool-glow-color': `${background.secondary.lightest}`,
+      '--theme-staking-stake-pool-grey-color': `${background.primary.lightest}`,
+      '--theme-staking-stake-pool-grey-bg-color': `${background.primary.light}`,
       '--theme-staking-stake-pool-saturation-background-color': `${chroma(
         text.secondary
       ).alpha(0.2)}`,
@@ -884,6 +961,7 @@ export const createDaedalusComponentsTheme = (
       '--theme-staking-stake-pool-tooltip-border-color': `${border}`,
       '--theme-staking-stake-pool-tooltip-shadow-color': 'rgba(0, 0, 0, 0.25)',
       '--theme-staking-stake-pool-tooltip-text-color': `${text.primary}`,
+      '--theme-staking-stake-pool-tooltip-id-background-color': `${text.secondary}`,
       '--theme-staking-stake-pool-tooltip-link-color': `${background.secondary.dark}`,
       '--theme-staking-stake-pool-tooltip-neutral-background-color': `${chroma(
         background.secondary.regular
@@ -921,6 +999,11 @@ export const createDaedalusComponentsTheme = (
       '--theme-staking-progress-bar-background-color': `${background.primary.regular}`,
       '--theme-staking-progress-stripe-dark-1-background-color': `${background.secondary.dark}`,
       '--theme-staking-progress-stripe-dark-2-background-color': `${background.secondary.regular}`,
+      '--theme-staking-slider-background-color-1': `${background.secondary.dark}`,
+      '--theme-staking-slider-background-color-2': `${background.secondary.regular}`,
+      '--theme-staking-slider-box-shadow-color': `${chroma(
+        background.primary.regular
+      ).alpha(0.25)}`,
       '--theme-staking-table-body-highlighted-text-color': `${background.secondary.dark}`,
       '--theme-staking-info-learn-more-button-text-color': `${background.primary.lightest}`,
       '--theme-staking-info-learn-more-icon-color': `${text.secondary}`,
@@ -958,6 +1041,13 @@ export const createDaedalusComponentsTheme = (
         background.primary.regular
       ).alpha(0.18)}`,
       '--theme-staking-export-button-color': `${background.primary.lightest}`,
+      '--theme-staking-redeemItnRewards-text-color': `${text.secondary}`,
+      '--theme-staking-redeemItnRewards-separator-color': `${`${background.secondary.dark}`}`,
+      '--theme-staking-redeemItnRewards-attention-text-color': `${error.regular}`,
+      '--theme-staking-redeemItnRewards-description-text-color': `${chroma(
+        background.primary.light
+      ).alpha(0.7)}`,
+      '--theme-staking-redeemItnRewards-icon-color': `${text.primary}`,
     },
     support: {
       '--theme-support-settings-item-color': `${text.primary}`,
