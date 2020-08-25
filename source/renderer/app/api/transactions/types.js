@@ -151,7 +151,6 @@ export type TransactionFee = {
   estimated_max: TransactionFeeAmount,
 };
 
-<<<<<<< HEAD
 export type CoinSelectionAmount = {
   quantity: number,
   unit: WalletUnits.LOVELACE,
@@ -186,12 +185,12 @@ export type CreateExternalTransactionRequest = {
 
 export type CreateExternalTransactionResponse = {
   id: string,
-=======
+}
+
 export type GetWithdrawalsRequest = {
   walletId: string,
 };
 
 export type GetWithdrawalsResponse = {
   withdrawals: BigNumber,
->>>>>>> develop
 };
