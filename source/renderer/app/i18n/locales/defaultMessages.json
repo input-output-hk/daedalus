@@ -2783,13 +2783,13 @@
         "description": "Headline for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 25
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.epoch",
         "start": {
           "column": 9,
-          "line": 22
+          "line": 21
         }
       },
       {
@@ -2797,13 +2797,13 @@
         "description": "Headline for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 30
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.currentSlot",
         "start": {
           "column": 15,
-          "line": 27
+          "line": 26
         }
       },
       {
@@ -2811,13 +2811,13 @@
         "description": "Headline for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 35
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.totalSlots",
         "start": {
           "column": 14,
-          "line": 32
+          "line": 31
         }
       },
       {
@@ -2825,13 +2825,13 @@
         "description": "Headline for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 40
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.headingLeft",
         "start": {
           "column": 15,
-          "line": 37
+          "line": 36
         }
       },
       {
@@ -2839,13 +2839,13 @@
         "description": "Headline for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 45
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.headingRight",
         "start": {
           "column": 16,
-          "line": 42
+          "line": 41
         }
       },
       {
@@ -2853,13 +2853,13 @@
         "description": "Delegation description for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 51
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.description",
         "start": {
           "column": 15,
-          "line": 47
+          "line": 46
         }
       }
     ],
@@ -3092,13 +3092,13 @@
         "description": "Title for the \"Undelegate Result\" dialog.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 20
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationResultDialog.js",
         "id": "staking.delegationCenter.undelegate.result.dialog.title",
         "start": {
           "column": 15,
-          "line": 15
+          "line": 16
         }
       },
       {
@@ -3106,13 +3106,13 @@
         "description": "Description 1 for the \"Undelegate Result\" dialog.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 26
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationResultDialog.js",
         "id": "staking.delegationCenter.undelegate.result.dialog.description1",
         "start": {
           "column": 16,
-          "line": 20
+          "line": 21
         }
       },
       {
@@ -3120,13 +3120,13 @@
         "description": "Description 2 for the \"Undelegate Result\" dialog.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 32
         },
         "file": "source/renderer/app/components/staking/delegation-center/UndelegateConfirmationResultDialog.js",
         "id": "staking.delegationCenter.undelegate.result.dialog.description2",
         "start": {
           "column": 16,
-          "line": 26
+          "line": 27
         }
       }
     ],
@@ -3897,13 +3897,13 @@
         "description": "Title \"Wallet Delegated\" on the delegation setup \"success\" step dialog.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 25
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsSuccessDialog.js",
         "id": "staking.delegationSetup.success.step.dialog.title",
         "start": {
           "column": 9,
-          "line": 19
+          "line": 20
         }
       },
       {
@@ -3911,13 +3911,13 @@
         "description": "Description \"line 1\" on the delegation setup \"success\" step dialog.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 32
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsSuccessDialog.js",
         "id": "staking.delegationSetup.success.step.dialog.description.line1",
         "start": {
           "column": 20,
-          "line": 25
+          "line": 26
         }
       },
       {
@@ -3925,13 +3925,13 @@
         "description": "Description \"line 2\" on the delegation setup \"success\" step dialog.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 39
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsSuccessDialog.js",
         "id": "staking.delegationSetup.success.step.dialog.description.line2",
         "start": {
           "column": 20,
-          "line": 32
+          "line": 33
         }
       },
       {
@@ -3939,13 +3939,13 @@
         "description": "Label for Close button on the delegation setup \"success\" step dialog.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 45
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsSuccessDialog.js",
         "id": "staking.delegationSetup.success.step.dialog.closeButtonLabel",
         "start": {
           "column": 20,
-          "line": 39
+          "line": 40
         }
       }
     ],

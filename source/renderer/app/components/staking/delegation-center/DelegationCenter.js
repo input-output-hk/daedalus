@@ -8,6 +8,8 @@ import type {
   NextEpoch,
   TipInfo,
   FutureEpoch,
+  SlotLength,
+  EpochLength,
 } from '../../../api/network/types';
 
 type Props = {
@@ -16,6 +18,8 @@ type Props = {
   onDelegate: Function,
   onUndelegate: Function,
   networkTip: ?TipInfo,
+  slotLength: ?SlotLength,
+  epochLength: ?EpochLength,
   nextEpoch: ?NextEpoch,
   futureEpoch: ?FutureEpoch,
   getStakePoolById: Function,
@@ -33,6 +37,8 @@ export default class DelegationCenter extends Component<Props> {
       onDelegate,
       onUndelegate,
       networkTip,
+      slotLength,
+      epochLength,
       nextEpoch,
       futureEpoch,
       getStakePoolById,
@@ -46,6 +52,8 @@ export default class DelegationCenter extends Component<Props> {
         {isEpochsInfoAvailable && (
           <DelegationCenterHeader
             networkTip={networkTip}
+            slotLength={slotLength}
+            epochLength={epochLength}
             nextEpoch={nextEpoch}
             futureEpoch={futureEpoch}
             currentLocale={currentLocale}

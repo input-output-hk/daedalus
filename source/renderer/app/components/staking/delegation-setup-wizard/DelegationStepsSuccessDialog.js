@@ -13,7 +13,8 @@ import tadaImage from '../../../assets/images/tada-ic.inline.svg';
 import Wallet from '../../../domains/Wallet';
 import StakePool from '../../../domains/StakePool';
 import humanizeDurationByLocale from '../../../utils/humanizeDurationByLocale';
-import { EPOCH_COUNTDOWN_INTERVAL } from '../../../config/epochsConfig';
+import { generateEpochCountdownInterval } from '../../../utils/epoch';
+import type { SlotLength } from '../../../api/network/types';
 
 const messages = defineMessages({
   title: {
@@ -48,6 +49,7 @@ type Props = {
   delegatedWallet: ?Wallet,
   delegatedStakePool: ?StakePool,
   futureEpochStartTime: string,
+  slotLength: ?SlotLength,
   onClose: Function,
   currentLocale: string,
 };
@@ -67,10 +69,13 @@ export default class DelegationStepsSuccessDialog extends Component<
   };
 
   componentDidMount() {
+    const { slotLength } = this.props;
+    const epochCountdownInterval = generateEpochCountdownInterval(slotLength);
+
     this.updateTimeUntilNextEpochStart();
     this.intervalHandler = setInterval(
       () => this.updateTimeUntilNextEpochStart(),
-      EPOCH_COUNTDOWN_INTERVAL
+      epochCountdownInterval
     );
   }
 

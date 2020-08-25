@@ -9,7 +9,8 @@ import styles from './UndelegateConfirmationResultDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
 import sadLogo from '../../../assets/images/untada.inline.svg';
 import humanizeDurationByLocale from '../../../utils/humanizeDurationByLocale';
-import { EPOCH_COUNTDOWN_INTERVAL } from '../../../config/epochsConfig';
+import { generateEpochCountdownInterval } from '../../../utils/epoch';
+import type { SlotLength } from '../../../api/network/types';
 
 const messages = defineMessages({
   dialogTitle: {
@@ -34,6 +35,7 @@ const messages = defineMessages({
 type Props = {
   walletName: string,
   futureEpochStartTime: string,
+  slotLength: ?SlotLength,
   currentLocale: string,
   onClose: Function,
 };
@@ -52,10 +54,13 @@ export default class UndelegateConfirmationResultDialog extends Component<
   };
 
   componentDidMount() {
+    const { slotLength } = this.props;
+    const epochCountdownInterval = generateEpochCountdownInterval(slotLength);
+
     this.updateTimeUntilNextEpochStart();
     this.intervalHandler = setInterval(
       () => this.updateTimeUntilNextEpochStart(),
-      EPOCH_COUNTDOWN_INTERVAL
+      epochCountdownInterval
     );
   }
 

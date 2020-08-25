@@ -30,6 +30,8 @@ import type {
   NextEpoch,
   FutureEpoch,
   TipInfo,
+  SlotLength,
+  EpochLength,
 } from '../api/network/types';
 import type {
   CardanoNodeState,
@@ -39,6 +41,10 @@ import type {
 import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space.types';
 import { TlsCertificateNotValidError } from '../api/nodes/errors';
 import { openLocalDirectoryChannel } from '../ipc/open-local-directory';
+import {
+  getDefaultSlotLength,
+  getDefaultEpochLength,
+} from '../config/epochsConfig';
 
 // DEFINE CONSTANTS -------------------------
 const NETWORK_STATUS = {
@@ -123,6 +129,9 @@ export default class NetworkStatusStore extends Store {
   @observable isShelleyPending: boolean = false;
   @observable shelleyActivationTime: string = '';
   @observable verificationProgress: number = 0;
+
+  @observable epochLength: ?EpochLength = null;
+  @observable slotLength: ?SlotLength = null;
 
   // DEFINE STORE METHODS
   setup() {
@@ -467,6 +476,23 @@ export default class NetworkStatusStore extends Store {
         nextEpoch,
         futureEpoch,
       } = networkStatus;
+      let composedFutureEpoch = null;
+      const slotLength = this.slotLength || getDefaultSlotLength();
+      const epochLength = this.epochLength || getDefaultEpochLength();
+
+      if (futureEpoch) {
+        composedFutureEpoch = {
+          ...futureEpoch,
+          epochStart: futureEpoch.epochStart
+            ? moment(futureEpoch.epochStart)
+                .add(
+                  epochLength.quantity * slotLength.quantity,
+                  slotLength.unit
+                )
+                .toISOString()
+            : '',
+        };
+      }
 
       // We got response which means node is responding
       runInAction('update isNodeResponding', () => {
@@ -479,7 +505,7 @@ export default class NetworkStatusStore extends Store {
           this.localTip = localTip;
           this.networkTip = networkTip;
           this.nextEpoch = nextEpoch;
-          this.futureEpoch = futureEpoch;
+          this.futureEpoch = composedFutureEpoch;
         }
       );
 
@@ -593,7 +619,12 @@ export default class NetworkStatusStore extends Store {
       const networkParameters: GetNetworkParametersResponse = await this.getNetworkParametersRequest.execute()
         .promise;
       let { isShelleyActivated, isShelleyPending } = this;
-      const { decentralizationLevel, hardforkAt } = networkParameters;
+      const {
+        decentralizationLevel,
+        hardforkAt,
+        slotLength,
+        epochLength,
+      } = networkParameters;
       const epochStartTime = get(hardforkAt, 'epoch_start_time', '');
 
       if (hardforkAt) {
@@ -608,6 +639,10 @@ export default class NetworkStatusStore extends Store {
         this.isShelleyActivated = isShelleyActivated;
         this.isShelleyPending = isShelleyPending;
         this.shelleyActivationTime = epochStartTime;
+      });
+      runInAction('Update Epoch config', () => {
+        this.slotLength = slotLength;
+        this.epochLength = epochLength;
       });
     } catch (e) {
       runInAction('Clear Decentralization Progress', () => {

@@ -23,7 +23,7 @@ export default class UndelegateDialogContainer extends Component<Props> {
     const { uiDialogs, wallets, staking, networkStatus, profile } = stores;
     const dialogData = uiDialogs.dataForActiveDialog;
     const { walletId, stakePoolQuitFee } = dialogData;
-    const { futureEpoch } = networkStatus;
+    const { futureEpoch, slotLength } = networkStatus;
     const { currentLocale } = profile;
     const {
       getStakePoolById,
@@ -54,6 +54,7 @@ export default class UndelegateDialogContainer extends Component<Props> {
         <UndelegateConfirmationResultDialog
           walletName={walletName}
           futureEpochStartTime={futureEpochStartTime}
+          slotLength={slotLength}
           currentLocale={currentLocale}
           onClose={() => {
             actions.dialogs.closeActiveDialog.trigger();

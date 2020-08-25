@@ -151,7 +151,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
       stakePoolJoinFee,
     } = this.state;
     const { app, staking, wallets, profile, networkStatus } = this.props.stores;
-    const { futureEpoch } = networkStatus;
+    const { futureEpoch, slotLength } = networkStatus;
     const { currentTheme, currentLocale } = profile;
     const {
       stakePools,
@@ -186,6 +186,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         recentStakePools={take(recentStakePools, RECENT_STAKE_POOLS_COUNT)}
         stakePoolJoinFee={stakePoolJoinFee}
         futureEpochStartTime={futureEpochStartTime}
+        slotLength={slotLength}
         currentLocale={currentLocale}
         onOpenExternalLink={app.openExternalLink}
         currentTheme={currentTheme}
