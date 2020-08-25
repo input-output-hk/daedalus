@@ -39,7 +39,7 @@
 }
 
 .description {
-  color: var(--theme-splash-network-overlay-button-text-color);
+  color: var(--theme-splash-network-title-color);
   font-family: var(--font-regular);
   font-size: 16px;
   line-height: 1.38;
@@ -57,7 +57,9 @@
     opacity: 1;
 
     &:hover {
-      background-color: var(--theme-dialog-fullsize-field-background-color) !important;
+      background-color: var(
+        --theme-dialog-fullsize-field-background-color
+      ) !important;
     }
   }
 
