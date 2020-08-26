@@ -30,7 +30,7 @@ const messages = defineMessages({
   aboutContentDaedalusMembers: {
     id: 'static.about.content.daedalus.members',
     defaultMessage:
-      '!!!Alexander Rukin, Charles Hoskinson, Clemens Helm, Darko Mijić, Dominik Guzei, Jeremy Wood, Nikola Glumac, Richard Wild, Stefan Malzner, Tomislav Horaček',
+      '!!!Alexander Rukin, Charles Hoskinson, Clemens Helm, Darko Mijić, Dominik Guzei, Jeremy Wood, Manus McCole, Nikola Glumac, Richard Wild, Stefan Malzner, Tomislav Horaček',
     description: 'About page daedalus team members',
   },
   aboutContentCardanoMembers: {
