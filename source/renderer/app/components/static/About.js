@@ -30,7 +30,7 @@ const messages = defineMessages({
   aboutContentDaedalusMembers: {
     id: 'static.about.content.daedalus.members',
     defaultMessage:
-      '!!!Alexander Rukin, Charles Hoskinson, Clemens Helm, Darko Mijić, Dominik Guzei, Jeremy Wood, Manus McCole, Nikola Glumac, Richard Wild, Stefan Malzner, Tomislav Horaček',
+      '!!!Alan McNicholas, Aleksandar Djordjevic, Alexander Rukin, Brian McKenna, Charles Hoskinson, Danilo Prates, Darko Mijić, Dominik Guzei, Elin Liu, Gabriela Ponce, Jane Wild, Jeremy Wood, Juli Sudi, Junko Oda, Laurie Wang, Manus McCole, Michael Bishop, Mior Sufian, Nikola Glumac, Piotr Stachyra, Rhys Bartels-Waller, Richard Wild, Robert Moore, Rodney Lorrimar, Sam Jeston, Samuel Leathers, Serge Kosyrev, Tatyana Valkevych, Tomas Vrana, Tomislav Horaček, Yakov Karavelov',
     description: 'About page daedalus team members',
   },
   aboutContentCardanoMembers: {
