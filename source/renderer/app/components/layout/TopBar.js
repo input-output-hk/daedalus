@@ -56,6 +56,8 @@ export default class TopBar extends Component<Props> {
         ? () => onTransferFunds(activeWallet.id)
         : () => {};
 
+    const isRestoreActive = activeWallet.isRestoring;
+
     const topBarTitle = activeWallet ? (
       <span className={styles.walletInfo}>
         <span className={styles.walletName}>
@@ -66,6 +68,7 @@ export default class TopBar extends Component<Props> {
         </span>
         <span className={styles.walletAmount}>
           {// show currency and use long format
+            isRestoreActive ? '-' :
           formattedWalletAmount(activeWallet.amount)}
         </span>
       </span>
