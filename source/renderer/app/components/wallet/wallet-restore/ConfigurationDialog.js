@@ -25,6 +25,7 @@ import LocalizableError from '../../../i18n/LocalizableError';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import tooltipStyles from '../../widgets/forms/InlineEditingDropdown-tooltip.scss';
 import infoIconInline from '../../../assets/images/info-icon.inline.svg';
+import LoadingSpinner from '../../widgets/LoadingSpinner';
 
 const messages = defineMessages({
   description1: {
@@ -242,6 +243,8 @@ export default class ConfigurationDialog extends Component<Props> {
       currentLocale === 'ja-JP' ? 'jpLangTooltipIcon' : '',
     ]);
 
+    const buttonLabel = !isSubmitting ? intl.formatMessage(messages.continueButtonLabel) : <LoadingSpinner />;
+
     const canSubmit = !isSubmitting && form.isValid;
 
     return (
@@ -252,7 +255,7 @@ export default class ConfigurationDialog extends Component<Props> {
             className: isSubmitting ? styles.isSubmitting : null,
             disabled: !canSubmit,
             primary: true,
-            label: intl.formatMessage(messages.continueButtonLabel),
+            label: buttonLabel,
             onClick: this.submit,
           },
         ]}
