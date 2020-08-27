@@ -56,7 +56,7 @@ export default class TopBar extends Component<Props> {
         ? () => onTransferFunds(activeWallet.id)
         : () => {};
 
-    const isRestoreActive = activeWallet.isRestoring;
+    const isRestoreActive = activeWallet ? activeWallet.isRestoring : null;
 
     const topBarTitle = activeWallet ? (
       <span className={styles.walletInfo}>
