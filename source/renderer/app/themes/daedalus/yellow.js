@@ -507,7 +507,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--rp-autocomplete-placeholder-color': 'rgba(45, 45, 45, 0.5)',
     '--rp-autocomplete-selected-word-box-bg-color': '#2d2d2d',
     '--rp-autocomplete-selected-word-dialog-box-bg-color': '#2d2d2d',
-    '--rp-autocomplete-selected-word-dialog-text-color': '#2d2d2d',
+    '--rp-autocomplete-selected-word-dialog-text-color': '#fafbfc',
     '--rp-autocomplete-selected-word-text-color': '#fafbfc',
     '--rp-autocomplete-selected-words-font-family':
       'NotoSans-Regular, NotoSansCJKjp-Regular',
@@ -559,7 +559,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--rp-formfield-bg-color-disabled': 'none',
     '--rp-formfield-label-text-color': '#2d2d2d',
     '--rp-formfield-label-text-color-disabled': '#2d2d2d',
-    '--rp-formfield-error-text-color': '#ea4c5b',
+    '--rp-formfield-error-text-color': '#be0b0b',
     '--rp-formfield-error-text-opacity': '0.75',
   },
   rpInput: {
