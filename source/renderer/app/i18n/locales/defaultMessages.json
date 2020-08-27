@@ -10582,13 +10582,13 @@
         "description": "Description1 for Configuration Step",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 36
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/ConfigurationDialog.js",
         "id": "wallet.restore.dialog.step.configuration.description1",
         "start": {
           "column": 16,
-          "line": 30
+          "line": 31
         }
       },
       {
@@ -10596,13 +10596,13 @@
         "description": "Description2 for Configuration Step",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 42
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/ConfigurationDialog.js",
         "id": "wallet.restore.dialog.step.configuration.description2",
         "start": {
           "column": 16,
-          "line": 36
+          "line": 37
         }
       },
       {
@@ -10610,13 +10610,13 @@
         "description": "Label for Wallet Name Input",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 47
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/ConfigurationDialog.js",
         "id": "wallet.restore.dialog.step.configuration.input.walletName.label",
         "start": {
           "column": 19,
-          "line": 42
+          "line": 43
         }
       },
       {
@@ -10624,13 +10624,13 @@
         "description": "Placeholder for Wallet Name Input",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 52
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/ConfigurationDialog.js",
         "id": "wallet.restore.dialog.step.configuration.input.walletName.placeholder",
         "start": {
           "column": 25,
-          "line": 47
+          "line": 48
         }
       },
       {
@@ -10638,13 +10638,13 @@
         "description": "Label for the \"Wallet password\" input in the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 58
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/ConfigurationDialog.js",
         "id": "wallet.restore.dialog.step.configuration.input.spendingPassword.label",
         "start": {
           "column": 25,
-          "line": 52
+          "line": 53
         }
       },
       {
@@ -10652,13 +10652,13 @@
         "description": "Label for the \"Repeat password\" input in the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 64
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/ConfigurationDialog.js",
         "id": "wallet.restore.dialog.step.configuration.input.repeatPassword.label",
         "start": {
           "column": 23,
-          "line": 58
+          "line": 59
         }
       },
       {
@@ -10666,13 +10666,13 @@
         "description": "Placeholder for the \"Password\" inputs in the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 71
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/ConfigurationDialog.js",
         "id": "wallet.restore.dialog.step.configuration.input.passwordFields.placeholder",
         "start": {
           "column": 29,
-          "line": 64
+          "line": 65
         }
       },
       {
@@ -10680,13 +10680,13 @@
         "description": "Placeholder for the dialog \"Continue\" button",
         "end": {
           "column": 3,
-          "line": 75
+          "line": 76
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/ConfigurationDialog.js",
         "id": "wallet.restore.dialog.step.configuration.continueButtonLabel",
         "start": {
           "column": 23,
-          "line": 71
+          "line": 72
         }
       },
       {
@@ -10694,13 +10694,13 @@
         "description": "Tooltip for the password input in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 81
+          "line": 82
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/ConfigurationDialog.js",
         "id": "wallet.dialog.passwordTooltip",
         "start": {
           "column": 19,
-          "line": 76
+          "line": 77
         }
       }
     ],
