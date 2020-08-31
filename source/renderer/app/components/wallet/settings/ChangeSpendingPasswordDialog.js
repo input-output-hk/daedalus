@@ -81,9 +81,9 @@ const messages = defineMessages({
   },
   passwordTooltip: {
     id: 'wallet.dialog.passwordTooltip',
-    defaultMessage: 'We recommend using a password manager app to manage and store your spending password. Generate a unique password using a password manager and paste it here. Passwords should never be reused.',
-    description:
-      'Tooltip for the password input in the wallet dialog.',
+    defaultMessage:
+      'We recommend using a password manager app to manage and store your spending password. Generate a unique password using a password manager and paste it here. Passwords should never be reused.',
+    description: 'Tooltip for the password input in the wallet dialog.',
   },
 });
 
@@ -240,7 +240,10 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
       isSubmitting ? styles.isSubmitting : null,
     ]);
 
-    const tooltipClasses = classnames([styles.tooltip, currentLocale === 'ja-JP' ? 'jpLangTooltipIcon' : '' ]);
+    const tooltipClasses = classnames([
+      styles.tooltip,
+      currentLocale === 'ja-JP' ? 'jpLangTooltipIcon' : '',
+    ]);
 
     const newPasswordClasses = classnames(['newPassword', styles.newPassword]);
 
@@ -289,17 +292,14 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
                 onKeyPress={this.handleSubmitOnEnter}
               />
               <Tooltip
-              skin={TooltipSkin}
-              themeOverrides={tooltipStyles}
-              tip={<FormattedHTMLMessage {...messages.passwordTooltip} />}
-              key="tooltip"
-              className={tooltipClasses}
-              arrowRelativeToTip
+                skin={TooltipSkin}
+                themeOverrides={tooltipStyles}
+                tip={<FormattedHTMLMessage {...messages.passwordTooltip} />}
+                key="tooltip"
+                className={tooltipClasses}
+                arrowRelativeToTip
               >
-              <SVGInline
-              svg={infoIconInline}
-              className={styles.infoIcon}
-              />
+                <SVGInline svg={infoIconInline} className={styles.infoIcon} />
               </Tooltip>
             </div>
           )}
@@ -319,10 +319,7 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
                   className={tooltipClasses}
                   arrowRelativeToTip
                 >
-                  <SVGInline
-                    svg={infoIconInline}
-                    className={styles.infoIcon}
-                  />
+                  <SVGInline svg={infoIconInline} className={styles.infoIcon} />
                 </Tooltip>
               )}
             </div>

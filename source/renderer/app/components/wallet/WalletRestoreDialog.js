@@ -183,9 +183,9 @@ const messages = defineMessages({
   },
   passwordTooltip: {
     id: 'wallet.dialog.passwordTooltip',
-    defaultMessage: 'We recommend using a password manager app to manage and store your spending password. Generate a unique password using a password manager and paste it here. Passwords should never be reused.',
-    description:
-      'Tooltip for the password input in the wallet dialog.',
+    defaultMessage:
+      'We recommend using a password manager app to manage and store your spending password. Generate a unique password using a password manager and paste it here. Passwords should never be reused.',
+    description: 'Tooltip for the password input in the wallet dialog.',
   },
 });
 
@@ -620,10 +620,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
                 className={styles.tooltip}
                 arrowRelativeToTip
               >
-                <SVGInline
-                  svg={infoIconInline}
-                  className={styles.infoIcon}
-                />
+                <SVGInline svg={infoIconInline} className={styles.infoIcon} />
               </Tooltip>
             </div>
             <div className={styles.spendingPasswordField}>
