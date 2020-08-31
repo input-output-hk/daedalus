@@ -52,14 +52,16 @@
         }
       }
 
-      :global .WalletCreateDialog_tooltip.SimpleTooltip_root.TooltipOverrides_root.InlineEditingDropdown-tooltip_root.SimpleTooltip_isShowingOnHover {
+      :global
+        .WalletCreateDialog_tooltip.SimpleTooltip_root.TooltipOverrides_root.InlineEditingDropdown-tooltip_root.SimpleTooltip_isShowingOnHover {
         height: 12px;
         left: -145px;
         top: 5px;
         width: 12px;
       }
 
-      :global .WalletCreateDialog_tooltip.jpLangTooltipIcon.SimpleTooltip_root.TooltipOverrides_root.InlineEditingDropdown-tooltip_root.SimpleTooltip_isShowingOnHover {
+      :global
+        .WalletCreateDialog_tooltip.jpLangTooltipIcon.SimpleTooltip_root.TooltipOverrides_root.InlineEditingDropdown-tooltip_root.SimpleTooltip_isShowingOnHover {
         left: -40px !important;
       }
 
