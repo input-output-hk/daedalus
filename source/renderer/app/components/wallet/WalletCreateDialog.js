@@ -212,7 +212,10 @@ export default class WalletCreateDialog extends Component<Props, State> {
     const { onCancel, currentLocale } = this.props;
     const { isSubmitting } = this.state;
     const dialogClasses = classnames([styles.component, 'WalletCreateDialog']);
-    const tooltipClasses = classnames([styles.tooltip, currentLocale === 'ja-JP' ? 'jpLangTooltipIcon' : '' ]);
+    const tooltipClasses = classnames([
+      styles.tooltip,
+      currentLocale === 'ja-JP' ? 'jpLangTooltipIcon' : '',
+    ]);
 
     const walletNameField = form.$('walletName');
     const spendingPasswordField = form.$('spendingPassword');
