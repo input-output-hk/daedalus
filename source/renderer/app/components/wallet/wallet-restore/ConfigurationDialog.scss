@@ -33,14 +33,16 @@
       }
     }
 
-    :global .ConfigurationDialog_tooltip.SimpleTooltip_root.TooltipOverrides_root.InlineEditingDropdown-tooltip_root.SimpleTooltip_isShowingOnHover {
+    :global
+      .ConfigurationDialog_tooltip.SimpleTooltip_root.TooltipOverrides_root.InlineEditingDropdown-tooltip_root.SimpleTooltip_isShowingOnHover {
       height: 12px;
       left: -154px;
       top: 1px;
       width: 12px;
     }
 
-    :global .ConfigurationDialog_tooltip.jpLangTooltipIcon.SimpleTooltip_root.TooltipOverrides_root.InlineEditingDropdown-tooltip_root.SimpleTooltip_isShowingOnHover {
+    :global
+      .ConfigurationDialog_tooltip.jpLangTooltipIcon.SimpleTooltip_root.TooltipOverrides_root.InlineEditingDropdown-tooltip_root.SimpleTooltip_isShowingOnHover {
       left: -147px !important;
     }
 
