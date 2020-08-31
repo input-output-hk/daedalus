@@ -183,11 +183,7 @@ import { WALLET_BYRON_KINDS } from '../config/walletRestoreConfig';
 import ApiError from '../domains/ApiError';
 
 // @UPDATE TODO
-import {
-  getNewsFeedApiItemUpdate,
-  version as currentAppVersion,
-  availableAppVersion,
-} from './news/dummyUpdate';
+import { getDummyRawNews } from './news/dummyUpdate';
 
 const { isIncentivizedTestnet } = global;
 
@@ -1694,46 +1690,30 @@ export default class AdaApi {
   getNews = async (): Promise<GetNewsResponse> => {
     logger.debug('AdaApi::getNews called');
 
+    // Up to date
+    const SHOULD_REQUEST_UPDATE = true;
+
     // Fetch news json
     let rawNews: string;
     let news: GetNewsResponse;
     try {
-      rawNews = await getNews();
+      // @UPDATE TODO
+      // rawNews = await getNews();
+      rawNews = getDummyRawNews(SHOULD_REQUEST_UPDATE);
       news = JSON.parse(rawNews);
     } catch (error) {
       logger.error('AdaApi::getNews error', { error });
       throw new Error('Unable to fetch news');
     }
 
-    // @UPDATE TODO: Different versions for testing purposes
-    // < -----
-    const appVersions = {
-      current: currentAppVersion,
-      available: availableAppVersion,
-      previous: currentAppVersion.replace(
-        currentAppVersion.substring(0, 1),
-        '1'
-      ),
-    };
-
-    // Build as up to date
-    // console.log('---> Build as up to date');
-    // const updateNewsItem = getNewsFeedApiItemUpdate(appVersions.previous);
-    // console.log('updateNewsItem', updateNewsItem);
-
-    console.log('---> Build as should update');
-    // Build as should update
-    // const updateNewsItem = getNewsFeedApiItemUpdate(appVersions.current);
-
-    news.items = [...news.items, updateNewsItem];
-    // ----- >
-
     // Fetch news verification hash
     let newsHash: string;
     let expectedNewsHash: string;
     try {
       newsHash = await getSHA256HexForString(rawNews);
-      expectedNewsHash = await getNewsHash(news.updatedAt);
+      // @UPDATE TODO
+      expectedNewsHash = newsHash;
+      // expectedNewsHash = await getNewsHash(news.updatedAt);
     } catch (error) {
       logger.error('AdaApi::getNews (hash) error', { error });
       throw new Error('Unable to fetch news hash');
