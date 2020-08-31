@@ -29,10 +29,10 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-wallet",
-        "rev": "375379a9990f12821e865f7e9625b2f65c83a030",
-        "sha256": "1nnkvwanl36wlw1p1q36l69q3gnlp1blhrdx4kyk6xlmmx35wvgg",
+        "rev": "d7994e9c83ed00d798cf24f3101e50f0383ddc17",
+        "sha256": "00wzahmqm44hkxrcns1ig5zann057328y24xbv34jwjgllldmzhb",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-wallet/archive/375379a9990f12821e865f7e9625b2f65c83a030.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-wallet/archive/d7994e9c83ed00d798cf24f3101e50f0383ddc17.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz",
         "version": "v2020-04-28"
     },
@@ -61,15 +61,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "iohk-nix": {
-        "branch": "master",
+        "branch": "daedalus-mainnet-wo-smash",
         "description": "nix scripts shared across projects",
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "iohk-nix",
-        "rev": "edfa1fdbe68fe0023b1a9a231bb41e7a757cb829",
-        "sha256": "09366r2kprvaxx38y9qk05zxqcgkh89x34n6ck1hkvncjg6r9bfc",
+        "rev": "7447a91317d627e84a76c2f7bc61388717f80c21",
+        "sha256": "0iqrcvwcn8b7phszhh80lm93z9gsy6rqwzy6lr3zwsskzy461qb9",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/iohk-nix/archive/edfa1fdbe68fe0023b1a9a231bb41e7a757cb829.tar.gz",
+        "url": "https://github.com/input-output-hk/iohk-nix/archive/7447a91317d627e84a76c2f7bc61388717f80c21.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "js-chain-libs": {
