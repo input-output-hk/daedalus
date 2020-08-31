@@ -17,7 +17,7 @@ export const selectCoins = (
   request(
     {
       method: 'POST',
-      path: `/v2/byron-wallets/${walletId}/coin-selections/random`,
+      path: `/v2/wallets/${walletId}/coin-selections/random`,
       ...config,
     },
     {},

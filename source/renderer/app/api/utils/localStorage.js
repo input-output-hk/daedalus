@@ -241,12 +241,12 @@ export default class LocalStorageApi {
     LocalStorageApi.unset(keys.WALLET_MIGRATION_STATUS);
 
   getHardwareWalletsLocalData = (): Promise<HardwareWalletsLocalData> =>
-    LocalStorageApi.get(this.storageKeys.HARDWARE_WALLETS, {});
+    LocalStorageApi.get(keys.HARDWARE_WALLETS, {});
 
   getHardwareWalletLocalData = (
     walletId: string
   ): Promise<HardwareWalletLocalData> =>
-    LocalStorageApi.get(`${this.storageKeys.HARDWARE_WALLETS}.${walletId}`, {
+    LocalStorageApi.get(`${keys.HARDWARE_WALLETS}.${walletId}`, {
       id: walletId,
     });
 
@@ -263,17 +263,17 @@ export default class LocalStorageApi {
       unmutableData
     );
     await LocalStorageApi.set(
-      `${this.storageKeys.HARDWARE_WALLETS}.${walletId}`,
+      `${keys.HARDWARE_WALLETS}.${walletId}`,
       walletData
     );
     return walletData;
   };
 
   unsetHardwareWalletLocalData = (walletId: string): Promise<void> =>
-    LocalStorageApi.unset(`${this.storageKeys.HARDWARE_WALLETS}.${walletId}`);
+    LocalStorageApi.unset(`${keys.HARDWARE_WALLETS}.${walletId}`);
 
   unsetHardwareWalletLocalDataAll = (): Promise<void> =>
-    LocalStorageApi.unset(this.storageKeys.HARDWARE_WALLETS);
+    LocalStorageApi.unset(keys.HARDWARE_WALLETS);
 
   reset = async () => {
     await LocalStorageApi.reset();

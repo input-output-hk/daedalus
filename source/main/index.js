@@ -174,8 +174,8 @@ const onAppReady = async () => {
   // );
   // await handleCheckHardwareWalletDevices();
 
-  const initTrezorConnect = handleInitTrezorConnect(mainWindow.webContents);
-  await initTrezorConnect();
+  // const initTrezorConnect = handleInitTrezorConnect(mainWindow.webContents);
+  // await initTrezorConnect();
 
   await handleCheckBlockReplayProgress(mainWindow, launcherConfig.logsPrefix);
 

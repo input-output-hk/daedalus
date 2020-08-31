@@ -360,8 +360,9 @@ export default class AdaApi {
           params
         );
       } else {
-        response = await getTransactionHistory(this.config, walletId, params);
+        response = await getTransactionHistory(this.config, rawWalletId, params);
       }
+
       logger.debug('AdaApi::getTransactions success', {
         transactions: response,
       });
@@ -2025,8 +2026,10 @@ const _createWalletFromServerData = action(
       state: syncState,
       isLegacy = false,
       discovery,
+      // isHardwareWallet = false,
     } = wallet;
-    const isHardwareWallet = discovery === WalletDiscovery.SEQUENTIAL;
+    // const isHardwareWallet = discovery === WalletDiscovery.SEQUENTIAL;
+    const isHardwareWallet = name === 'Hardware Wallet';
 
     let id = rawWalletId;
     if (isLegacy) id = getLegacyWalletId(rawWalletId);

@@ -313,6 +313,7 @@ export const handleHardwareWalletRequests = async () => {
       });
     } catch (error) {
       // return Promise.resolve(error);
+      console.debug('>>> EXPORTING error: ', error);
       throw error;
     }
   });
@@ -362,33 +363,62 @@ export const handleHardwareWalletRequests = async () => {
   });
 
   signTransactionChannel.onRequest(async params => {
-    const { inputs, outputs, transactions, protocolMagic, isTrezor } = params;
-    if (isTrezor) {
-      console.debug('>>> Sign Transaction with >>> Trezor <<<: ', params);
-      try {
-        const signedTransaction = await TrezorConnect.cardanoSignTransaction({
-          inputs,
-          outputs,
-          transactions,
-          protocol_magic: protocolMagic,
-        });
-        console.debug('>>> SUCC: ', signedTransaction);
-      } catch (e) {
-        console.debug('>>> ERR: ', e);
-      }
-    }
-    return;
+    console.debug('>>> SIGN REQ received: ', {deviceConnection})
+    // Comment out once Ledger integration is done
+
+    // const { inputs, outputs, transactions, protocolMagic, isTrezor } = params;
+    // if (isTrezor) {
+    //   console.debug('>>> Sign Transaction with >>> Trezor <<<: ', params);
+    //   try {
+    //     const signedTransaction = await TrezorConnect.cardanoSignTransaction({
+    //       inputs,
+    //       outputs,
+    //       transactions,
+    //       protocol_magic: protocolMagic,
+    //     });
+    //     console.debug('>>> SUCC: ', signedTransaction);
+    //   } catch (e) {
+    //     console.debug('>>> ERR: ', e);
+    //   }
+    // }
+    // return;
 
     try {
       if (!deviceConnection) {
         throw new Error('Device not connected');
       }
-      const signedTransaction = await deviceConnection.signTransaction(
+      // const signedTransaction = await deviceConnection.signTransaction(
+      //   inputs,
+      //   outputs
+      // );
+      const {
+        networkId,
+        protocolMagic,
         inputs,
-        outputs
+        outputs,
+        feeStr,
+        ttlStr,
+        certificates,
+        withdrawals,
+        metadataHashHex,
+      } = params
+
+      console.debug('>>> TRY TO SIGN: ', params);
+      const signedTransaction = await deviceConnection.signTransaction(
+        networkId,
+        protocolMagic,
+        inputs,
+        outputs,
+        feeStr,
+        ttlStr,
+        certificates,
+        withdrawals,
+        metadataHashHex,
       );
+      console.debug('>>> SIGNED: ', signedTransaction);
       return Promise.resolve(signedTransaction);
     } catch (error) {
+      console.debug('>>> ERROR OCCURED: ', error);
       throw error;
     }
   });

@@ -1,6 +1,6 @@
 // @flow
 import { observable, action, runInAction, computed } from 'mobx';
-import { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
+import { utils, cardano } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { get, map } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
@@ -154,11 +154,11 @@ export default class HardwareWalletsStore extends Store {
         address,
         amount,
       });
-      console.debug('>>> COIN SELECTION :', coinSelection);
-      const txDataHex = thDataHexGenerator(coinSelection);
+      console.debug('>>> COIN SELECTION :', {coinSelection, params});
+      // const txDataHex = thDataHexGenerator(coinSelection);
       runInAction('HardwareWalletsStore:: set coin selections', () => {
         this.txSignRequest = {
-          txDataHex,
+          // txDataHex,
           recieverAddress: address,
           inputs: coinSelection.inputs,
           outputs: coinSelection.outputs,
@@ -251,17 +251,26 @@ export default class HardwareWalletsStore extends Store {
     const isTrezor = false; // @TODO - add active device recognizing logic
     this.hwDeviceStatus = HwDeviceStatuses.EXPORTING_PUBLIC_KEY;
     const { activeHardwareWallet } = this.stores.wallets;
-    const path = [
-      utils.HARDENED + 44,
-      utils.HARDENED + 1815,
-      utils.HARDENED + 0,
-    ];
+    // const path = [
+    //   utils.HARDENED + 44,
+    //   utils.HARDENED + 1815,
+    //   utils.HARDENED + 0,
+    // ];
+    console.debug('>> UTILS: ', {utils, cardano});
+    const path = cardano.str_to_path("44'/1815'/0'");
+
+    console.debug('>>>> _getExtendedPublicKey: ', path)
+
     try {
       const extendedPublicKey = await getExtendedPublicKeyChannel.request({
         path,
         isTrezor,
       });
-      console.debug('>>> extendedPublicKey: ', extendedPublicKey);
+      console.debug('>>> extendedPublicKey: ', {
+        extendedPublicKey,
+        activeHardwareWallet,
+        hardwareWalletsConnectionData: this.hardwareWalletsConnectionData
+      });
       // Check if public key matches active hardware wallet public key
       if (activeHardwareWallet && this.hardwareWalletsConnectionData) {
         const activeHardwareWalletConnection = this
@@ -271,6 +280,7 @@ export default class HardwareWalletsStore extends Store {
           'extendedPublicKey',
           {}
         );
+        console.debug('>>> activeHardwareWalletConnectionKeys: ', activeHardwareWalletConnectionKeys);
         if (
           activeHardwareWalletConnectionKeys.publicKeyHex ===
           extendedPublicKey.publicKeyHex
@@ -338,7 +348,7 @@ export default class HardwareWalletsStore extends Store {
     }
   };
 
-  @action _signTransaction = async () => {
+  @action _signTransaction11 = async () => {
     const { coinSelection, txDataHex, recieverAddress } = this.txSignRequest;
     const { inputs, outputs } = coinSelection;
 
@@ -525,6 +535,244 @@ export default class HardwareWalletsStore extends Store {
     }
   };
 
+  // For Shelley
+  @action _signTransaction = async () => {
+    const { coinSelection, txDataHex, recieverAddress } = this.txSignRequest;
+    const { inputs, outputs } = coinSelection;
+
+
+    console.debug('>>> SIGN (prepare) - ', {
+      coinSelection, txDataHex, recieverAddress, inputs, outputs, utils,
+    })
+
+    // const inputs = {
+    //   utxoByron: {
+    //     txHashHex: "1af8fa0b754ff99253d983894e63a2b09cbb56c833ba18c3384210163f63dcfc",
+    //     outputIndex: 0,
+    //     path: str_to_path("44'/1815'/0'/0/0")
+    //   },
+    //   utxoShelley: {
+    //     txHashHex: "3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
+    //     outputIndex: 0,
+    //     path: str_to_path("1852'/1815'/0'/0/0"),
+    //   }
+    // };
+
+    // const outputs = {
+    //   externalByronMainnet: {
+    //     amountStr: "3003112",
+    //     addressHex: utils.buf_to_hex(utils.base58_decode(
+    //       "Ae2tdPwUPEZCanmBz5g2GEwFqKTKpNJcGYPKfDxoNeKZ8bRHr8366kseiK2"
+    //     ))
+    //   },
+    //   externalByronDaedalusMainnet: {
+    //     amountStr: "3003112",
+    //     addressHex: utils.buf_to_hex(utils.base58_decode(
+    //       "DdzFFzCqrht7HGoJ87gznLktJGywK1LbAJT2sbd4txmgS7FcYLMQFhawb18ojS9Hx55mrbsHPr7PTraKh14TSQbGBPJHbDZ9QVh6Z6Di"
+    //     ))
+    //   },
+    //   externalByronTestnet: {
+    //     amountStr: "3003112",
+    //     addressHex: utils.buf_to_hex(utils.base58_decode(
+    //       "2657WMsDfac6Cmfg4Varph2qyLKGi2K9E8jrtvjHVzfSjmbTMGy5sY3HpxCKsmtDA"
+    //     ))
+    //   },
+    //   externalShelley: {
+    //     amountStr: "1",
+    //     addressHex: utils.buf_to_hex(utils.bech32_decodeAddress(
+    //       "addr1q97tqh7wzy8mnx0sr2a57c4ug40zzl222877jz06nt49g4zr43fuq3k0dfpqjh3uvqcsl2qzwuwsvuhclck3scgn3vya5cw5yhe5vyg5x20akz"
+    //     ))
+    //   },
+    //   externalShelleyScripthash: {
+    //     amountStr: "1",
+    //     addressHex: utils.buf_to_hex(utils.bech32_decodeAddress(
+    //       "addr_test1zp0z7zqwhya6mpk5q929ur897g3pp9kkgalpreny8y304rfw6j2jxnwq6enuzvt0lp89wgcsufj7mvcnxpzgkd4hz70z3h2pnc8lhq8r"
+    //     ))
+    //   },
+    //   internalBaseWithStakingKeyHash: {
+    //     addressTypeNibble: AddressTypeNibbles.BASE,
+    //     spendingPath: str_to_path("1852'/1815'/0'/0/0"),
+    //     stakingKeyHashHex: "122a946b9ad3d2ddf029d3a828f0468aece76895f15c9efbd69b4277",
+    //     amountStr: "7120787"
+    //   },
+    //   internalBaseWithStakingPath: {
+    //     addressTypeNibble: AddressTypeNibbles.BASE,
+    //     spendingPath: str_to_path("1852'/1815'/0'/0/0"),
+    //     stakingPath: str_to_path("1852'/1815'/0'/2/0"),
+    //     amountStr: "7120787"
+    //   },
+    //   internalEnterprise: {
+    //     addressTypeNibble: AddressTypeNibbles.ENTERPRISE,
+    //     spendingPath: str_to_path("1852'/1815'/0'/0/0"),
+    //     amountStr: "7120787"
+    //   },
+    //   internalPointer: {
+    //     addressTypeNibble: AddressTypeNibbles.POINTER,
+    //     spendingPath: str_to_path("1852'/1815'/0'/0/0"),
+    //     stakingBlockchainPointer: {
+    //       blockIndex: 1,
+    //       txIndex: 2,
+    //       certificateIndex: 3
+    //     },
+    //     amountStr: "7120787"
+    //   }
+    // };
+
+    // const certificates = {
+    //   stakeRegistration: {
+    //     type: 0,
+    //     path: str_to_path("1852'/1815'/0'/2/0")
+    //   },
+    //   stakeDeregistration: {
+    //     type: 1,
+    //     path: str_to_path("1852'/1815'/0'/2/0")
+    //   },
+    //   stakeDelegation: {
+    //     type: 2,
+    //     path: str_to_path("1852'/1815'/0'/2/0"),
+    //     poolKeyHashHex: "f61c42cbf7c8c53af3f520508212ad3e72f674f957fe23ff0acb4973"
+    //   }
+    // }
+    // const withdrawals = {
+    //   withdrawal0: {
+    //     path: str_to_path("1852'/1815'/0'/2/0"),
+    //     amountStr: "111"
+    //   }
+    // }
+
+
+    // it("Should correctly sign tx without change address with Shelley output", async () => {
+    //   const response = await ada.signTransaction(
+    //     NetworkIds.MAINNET,
+    //     ProtocolMagics.MAINNET,
+    //     [inputs.utxoShelley],
+    //     [
+    //       outputs.externalShelley,
+    //     ],
+    //     sampleFeeStr,
+    //     sampleTtlStr,
+    //     [],
+    //     [],
+    //     null
+    //   );
+    //   expect(response).to.deep.equal(results.noChangeShelley);
+    // });
+
+    // const sampleMetadata = "deadbeef".repeat(8);
+    // const sampleFeeStr = "42";
+    // const sampleTtlStr = "10"
+
+    // export const ProtocolMagics = {
+    //   MAINNET: 764824073,
+    //   TESTNET: 42
+    // }
+    // export const NetworkIds = {
+    //   TESTNET: 0x00,
+    //   MAINNET: 0x01
+    // }
+
+    const inputsData = map(inputs, input => {
+      return {
+        txHashHex: input.id,
+        outputIndex: input.index,
+        path: cardano.str_to_path("1852'/1815'/0'/0/0"),
+      };
+    });
+
+    // Without Change address
+    const outputsData = [];
+    map(outputs, output => {
+      // if (output.address !== recieverAddress) {
+      //   // ChangeAddress
+      //   return {
+      //     amountStr: output.amount.quantity.toString(),
+      //     path: cardano.str_to_path("44'/1815'/0'/1/0"), // 4th param can be (0 or 1), 1 will say that address is change address
+      //   };
+      // }
+      if (output.address === recieverAddress) {
+        outputsData.push({
+          amountStr: output.amount.quantity.toString(),
+          // address58: output.address,
+          addressHex: utils.buf_to_hex(utils.bech32_decodeAddress(output.address))
+        });
+      }
+    });
+
+
+    console.debug('>>> SIGN (READY) - ', {
+      inputsData,
+      outputsData,
+    })
+
+
+    try {
+      const signedTransaction = await signTransactionChannel.request({
+        networkId: 0x01, // NetworkIds.MAINNET,
+        protocolMagic: 764824073, // ProtocolMagics.MAINNET,
+        //   utxoShelley: {
+        //     txHashHex: "3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
+        //     outputIndex: 0,
+        //     path: str_to_path("1852'/1815'/0'/0/0"),
+        //   }
+        inputs: inputsData,
+        // inputs exaMPLEMPLE
+        //   externalShelley: {
+        //     amountStr: "1",
+        //     addressHex: utils.buf_to_hex(utils.bech32_decodeAddress(
+        //       "addr1q97tqh7wzy8mnx0sr2a57c4ug40zzl222877jz06nt49g4zr43fuq3k0dfpqjh3uvqcsl2qzwuwsvuhclck3scgn3vya5cw5yhe5vyg5x20akz"
+        //     ))
+        //   },
+        outputs: outputsData,
+        feeStr: '42', // in lovelaces
+        ttlStr: '10', //
+        certificates: [], // [certificates.stakeDelegation],
+        withdrawals: [], // [withdrawals.withdrawal0],
+        metadataHashHex: null // sampleMetadata
+      });
+
+
+     console.debug('>>>> SIGNED: ', signedTransaction)
+
+
+      // get xPub from signed transaction witnesses by exporting extended public key
+      const witnesses = await Promise.all(
+        signedTransaction.witnesses.map(async witness => {
+          const xPub = await this._getXpub(witness.path);
+          return {
+            xpub: xPub,
+            signature: witness.witnessSignatureHex,
+          };
+        })
+      );
+
+      console.debug('>>>> witnesses: ', witnesses);
+
+      const txDataHex = thDataHexGenerator(coinSelection);
+
+      const signedTransactionData = {
+        // txDataHex: signedTransaction.txHashHex,
+        txDataHex,
+        witnesses,
+      };
+
+      console.debug('>>>> signedTransactionData: ', signedTransactionData);
+      console.debug('>>> ENCODED: ', encodeSignedTransaction(signedTransactionData));
+
+      runInAction('HardwareWalletsStore:: set Transaction verified', () => {
+        this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED;
+        this.signedTransaction = encodeSignedTransaction(signedTransactionData);
+      });
+    } catch (error) {
+      runInAction(
+        'HardwareWalletsStore:: set Transaction verifying failed',
+        () => {
+          this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED;
+        }
+      );
+      throw error;
+    }
+  };
+
   @action resetInitializedConnection = () => {
     this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
     this.extendedPublicKey = null;
@@ -536,6 +784,7 @@ export default class HardwareWalletsStore extends Store {
   };
 
   @computed get hardwareWalletsConnectionData(): HardwareWalletsLocalData {
+    console.debug('>>> hardwareWalletsConnectionData');
     return this.hardwareWalletsLocalDataRequest.result
       ? this.hardwareWalletsLocalDataRequest.result
       : {};
@@ -584,6 +833,7 @@ export default class HardwareWalletsStore extends Store {
     walletId,
     data,
   }: SetHardwareWalletLocalDataRequestType) => {
+    console.debug('>>> _setHardwareWalletLocalData');
     await this.setHardwareWalletLocalDataRequest.execute(walletId, data);
     this._refreshHardwareWalletsLocalData();
     this.stores.wallets.refreshWalletsData();
@@ -594,6 +844,7 @@ export default class HardwareWalletsStore extends Store {
   }: {
     walletId: string,
   }) => {
+    console.debug('>>> _unsetHardwareWalletLocalData');
     await this.unsetHardwareWalletLocalDataRequest.execute(walletId);
     this._refreshHardwareWalletsLocalData();
     this.stores.wallets.refreshWalletsData();

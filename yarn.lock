@@ -975,15 +975,16 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@cardano-foundation/ledgerjs-hw-app-cardano@1.0.8":
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/@cardano-foundation/ledgerjs-hw-app-cardano/-/ledgerjs-hw-app-cardano-1.0.8.tgz#89918236e78154b1817f32916e5fc036ab6fe41f"
-  integrity sha512-I4nNXuIj1YMuOCUSZjou4DrIKvMKd9c5y50Bz3YacMsulWJP7SqwD7+PQvd1bKsLU/HVo25rUf3CpqgWIRk5nQ==
+"@cardano-foundation/ledgerjs-hw-app-cardano@2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@cardano-foundation/ledgerjs-hw-app-cardano/-/ledgerjs-hw-app-cardano-2.0.1.tgz#096d2644a7991254105b4aa0528b5cb42d32cafe"
+  integrity sha512-aIlLxp9qmVec9W8//b5hwTZ0N0PHJP2qWGI8h7vUA1mBfqglN9BqqELoKSy0oFPFrBYb431UCj9BDK/HLahDwQ==
   dependencies:
     "@ledgerhq/hw-transport" "^5.12.0"
     babel-polyfill "^6.26.0"
     babel-runtime "^6.26.0"
     base-x "^3.0.5"
+    bech32 "^1.1.4"
     node-int64 "^0.4.0"
 
 "@electron/get@^1.0.1", "@electron/get@^1.6.0":
@@ -1093,7 +1094,7 @@
   version "0.2.4"
   resolved "https://registry.yarnpkg.com/@icons/material/-/material-0.2.4.tgz#e90c9f71768b3736e76d7dd6783fc6c2afa88bc8"
 
-"@ledgerhq/devices@^5.15.0", "@ledgerhq/devices@^5.22.0":
+"@ledgerhq/devices@^5.22.0":
   version "5.22.0"
   resolved "https://registry.yarnpkg.com/@ledgerhq/devices/-/devices-5.22.0.tgz#18595f3545b57cf60e50d6e9d83095dda21f575f"
   integrity sha512-oJxhee/zlHmIx66zvQQTSpIsHOiiLjALemTX9oUtB4xQwFvoiptPnBCeTDTM9teode7wzk7oE9qdUAZuat+nCg==
@@ -1102,12 +1103,12 @@
     "@ledgerhq/logs" "^5.22.0"
     rxjs "^6.6.2"
 
-"@ledgerhq/errors@^5.15.0", "@ledgerhq/errors@^5.22.0":
+"@ledgerhq/errors@^5.22.0":
   version "5.22.0"
   resolved "https://registry.yarnpkg.com/@ledgerhq/errors/-/errors-5.22.0.tgz#7327fc152d4896ddc26aada0943065db21c14880"
   integrity sha512-XDT0meBn39+q+JWzUFXmiFbVYLTy+uHRFMb9napcxyZ0Q/MdKkle9/vkgtvRHjPIkGobklXpyefsgH3BZQHukA==
 
-"@ledgerhq/hw-transport-node-hid-noevents@^5.15.0":
+"@ledgerhq/hw-transport-node-hid-noevents@^5.22.0":
   version "5.22.0"
   resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport-node-hid-noevents/-/hw-transport-node-hid-noevents-5.22.0.tgz#b5a42a71664fe69bf5fae579854d10e4815a794e"
   integrity sha512-6sxrqTcBEGvhVDOS5Vy3mKZgaVOKbHplxm4o/3PmtugJcvpEBvDNGXNh3PMWPtHXXYQ5E5C/qWh7Y+gYshMmTg==
@@ -1118,21 +1119,21 @@
     "@ledgerhq/logs" "^5.22.0"
     node-hid "^1.3.0"
 
-"@ledgerhq/hw-transport-node-hid@5.15.0":
-  version "5.15.0"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport-node-hid/-/hw-transport-node-hid-5.15.0.tgz#8121b8b59980de9f6a8a42565fa30f3042c4bc43"
-  integrity sha512-JX/QnV4hYQESqfyjGwkU0TNHtGEHQ1PHS7ISMqv7bZKvj2hhO3G45xM7fPoLlBa3tZrbDLnNLWkqcFxo60w/jA==
+"@ledgerhq/hw-transport-node-hid@5.22.0":
+  version "5.22.0"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport-node-hid/-/hw-transport-node-hid-5.22.0.tgz#00f573bd9163b9c553071af3f2a52aa19d4674c0"
+  integrity sha512-TrSQEGiYXBW8FQS2QEAmk/g+vwcKQ2MZVjPiIaqSCGnwVgmKOXfMetPjwgwr8k6XiQ7YMRdpsXa0GpIvTowqRA==
   dependencies:
-    "@ledgerhq/devices" "^5.15.0"
-    "@ledgerhq/errors" "^5.15.0"
-    "@ledgerhq/hw-transport" "^5.15.0"
-    "@ledgerhq/hw-transport-node-hid-noevents" "^5.15.0"
-    "@ledgerhq/logs" "^5.15.0"
-    lodash "^4.17.15"
-    node-hid "^1.2.0"
+    "@ledgerhq/devices" "^5.22.0"
+    "@ledgerhq/errors" "^5.22.0"
+    "@ledgerhq/hw-transport" "^5.22.0"
+    "@ledgerhq/hw-transport-node-hid-noevents" "^5.22.0"
+    "@ledgerhq/logs" "^5.22.0"
+    lodash "^4.17.19"
+    node-hid "^1.3.0"
     usb "^1.6.3"
 
-"@ledgerhq/hw-transport@^5.12.0", "@ledgerhq/hw-transport@^5.15.0", "@ledgerhq/hw-transport@^5.22.0":
+"@ledgerhq/hw-transport@^5.12.0", "@ledgerhq/hw-transport@^5.22.0":
   version "5.22.0"
   resolved "https://registry.yarnpkg.com/@ledgerhq/hw-transport/-/hw-transport-5.22.0.tgz#d627948b43005ec9e7dfe85adf9aa01e130de280"
   integrity sha512-MFfkVGYMYnr6fI4XGnJQNLd36JIrRpvd5WBmVSDhCO3UKUER2fJ9koVBGc97o7yXtE5IAlJKF+nR9HZJIa0lRQ==
@@ -1141,7 +1142,7 @@
     "@ledgerhq/errors" "^5.22.0"
     events "^3.2.0"
 
-"@ledgerhq/logs@^5.15.0", "@ledgerhq/logs@^5.22.0":
+"@ledgerhq/logs@^5.22.0":
   version "5.22.0"
   resolved "https://registry.yarnpkg.com/@ledgerhq/logs/-/logs-5.22.0.tgz#a54d6b5b391cdb4c2eacc9500feb04b90475c361"
   integrity sha512-jV4mJxD1aieORm+sK9bYakQd9GMLd7KAxgt2IaxhrTU+QD5Ne47mxQOTys9p7f5w25ujs3R+Px2t3KiMRASHtg==
@@ -1741,6 +1742,16 @@
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/@types/normalize-package-data/-/normalize-package-data-2.4.0.tgz#e486d0d97396d79beedd0a6e33f4534ff6b4973e"
 
+"@types/npmlog@^4.1.2":
+  version "4.1.2"
+  resolved "https://registry.yarnpkg.com/@types/npmlog/-/npmlog-4.1.2.tgz#d070fe6a6b78755d1092a3dc492d34c3d8f871c4"
+  integrity sha512-4QQmOF5KlwfxJ5IGXFIudkeLCdMABz03RcUXu+LCb24zmln8QW6aDjuGl4d4XPVLf2j+FnjelHTP7dvceAFbhA==
+
+"@types/parse-json@^4.0.0":
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/@types/parse-json/-/parse-json-4.0.0.tgz#2f8bb441434d163b35fb8ffdccd7138927ffb8c0"
+  integrity sha512-//oorEZjL6sbPcKUaCdIGlIUeH26mgzimjBB77G6XRgnDl/L5wOnpyBGRe/Mmf5CVW3PwEBE1NjiMZ/ssFh4wA==
+
 "@types/prop-types@*":
   version "15.7.3"
   resolved "https://registry.yarnpkg.com/@types/prop-types/-/prop-types-15.7.3.tgz#2ab0d5da2e5815f94b0b9d4b95d1e5f243ab2ca7"
@@ -1759,6 +1770,13 @@
 "@types/react-color@^3.0.1":
   version "3.0.1"
   resolved "https://registry.yarnpkg.com/@types/react-color/-/react-color-3.0.1.tgz#5433e2f503ea0e0831cbc6fd0c20f8157d93add0"
+  dependencies:
+    "@types/react" "*"
+
+"@types/react-syntax-highlighter@11.0.2":
+  version "11.0.2"
+  resolved "https://registry.yarnpkg.com/@types/react-syntax-highlighter/-/react-syntax-highlighter-11.0.2.tgz#a2e3ff657d7c47813f80ca930f3d959c31ec51e3"
+  integrity sha512-iMNcixH8330f2dq0RY+VOXCP8JFehgmOhLOtnO85Ty+qu0fHXJNEqWx5VuFv8v0aEq0U/N9d/k1yvA+c6PEmPw==
   dependencies:
     "@types/react" "*"
 
@@ -3298,9 +3316,10 @@ bech32@0.0.3:
   resolved "https://registry.yarnpkg.com/bech32/-/bech32-0.0.3.tgz#736747c4a6531c5d8937d0400498de30e93b2f9c"
   integrity sha512-O+K1w8P/aAOLcYwwQ4sbiPYZ51ZIW95lnS4/6nE8Aib/z+OOddQIIPdu2qi94qGDp4HhYy/wJotttXKkak1lXg==
 
-bech32@^1.1.3:
+bech32@^1.1.3, bech32@^1.1.4:
   version "1.1.4"
   resolved "https://registry.yarnpkg.com/bech32/-/bech32-1.1.4.tgz#e38c9f37bf179b8eb16ae3a772b40c356d4832e9"
+  integrity sha512-s0IrSOzLlbvX7yp4WBfPITzpAU8sqQcpsmwXDiKwrG4r491vwCO/XpejasRNl0piBMe/DvP4Tz0mIS/X1DPJBQ==
 
 becke-ch--regex--s0-0-v1--base--pl--lib@^1.4.0:
   version "1.4.0"
@@ -3405,9 +3424,9 @@ bl@^4.0.1:
   dependencies:
     nanoassert "^1.0.0"
 
-"blake2b@git+https://github.com/BitGo/blake2b.git#6268e6dd678661e0acc4359e9171b97eb1ebf8ac":
+"blake2b@https://github.com/BitGo/blake2b#6268e6dd678661e0acc4359e9171b97eb1ebf8ac":
   version "2.1.3"
-  resolved "git+https://github.com/BitGo/blake2b.git#6268e6dd678661e0acc4359e9171b97eb1ebf8ac"
+  resolved "https://github.com/BitGo/blake2b#6268e6dd678661e0acc4359e9171b97eb1ebf8ac"
   dependencies:
     blake2b-wasm "https://github.com/BitGo/blake2b-wasm#193cdb71656c1a6c7f89b05d0327bb9b758d071b"
     nanoassert "^1.0.0"
@@ -10360,7 +10379,7 @@ node-gyp@^6.0.1:
     tar "^4.4.12"
     which "^1.3.1"
 
-node-hid@^1.2.0, node-hid@^1.3.0:
+node-hid@^1.3.0:
   version "1.3.0"
   resolved "https://registry.yarnpkg.com/node-hid/-/node-hid-1.3.0.tgz#346a468505cee13d69ccd760052cbaf749f66a41"
   integrity sha512-BA6G4V84kiNd1uAChub/Z/5s/xS3EHBCxotQ0nyYrUG65mXewUDHE1tWOSqA2dp3N+mV0Ffq9wo2AW9t4p/G7g==
