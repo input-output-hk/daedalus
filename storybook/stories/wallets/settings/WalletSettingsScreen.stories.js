@@ -175,6 +175,7 @@ export default (props: { currentTheme: string, locale: Locale }) => {
             changePasswordId
           )}
           error={null}
+          currentLocale={'en-US'}
         />
       }
       deleteWalletDialogContainer={
