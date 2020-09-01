@@ -1,0 +1,57 @@
+{
+  "updatedAt": 1598566800000,
+  "items": [
+    {
+      "title": {
+        "en-US": "Daedalus 2.2.0 - Release notes",
+        "ja-JP": "Daedalus 2.2.0 - リリースノート"
+      },
+      "content": {
+        "en-US": "This update significantly improves both blockchain synchronization speed and connection time, and fixes some network connection issues. Daedalus 2.2.0 also includes numerous enhancements and resolves some minor issues.",
+        "ja-JP": "今回の更新ではまた、ブロックチェーンの同期スピードおよび接続時間が大幅に向上したほか、一部のネットワーク接続に関する不具合も修正されています。Daedalus 2.2.0には他にも多くの機能改善および一部の軽微な不具合の修正が含まれます。"
+      },
+      "target": {
+        "daedalusVersion": "2.2.0",
+        "platforms": ["darwin", "win32", "linux"]
+      },
+      "action": {
+        "label": {
+          "en-US": "Release notes",
+          "ja-JP": "リリースノート"
+        },
+        "url": {
+          "en-US": "https://iohk.zendesk.com/hc/en-us/articles/900002374526",
+          "ja-JP": "https://iohk.zendesk.com/hc/ja/articles/900002374526"
+        }
+      },
+      "date": 1598566800000,
+      "type": "announcement"
+    },
+    {
+      "title": {
+        "en-US": "Daedalus 2.2.0 available",
+        "ja-JP": "Daedalus 2.2.0配信開始"
+      },
+      "content": {
+        "en-US": "This update significantly improves both blockchain synchronization speed and connection time, and fixes some network connection issues. Daedalus 2.2.0 also includes numerous enhancements and resolves some minor issues.",
+        "ja-JP": "今回の更新ではまた、ブロックチェーンの同期スピードおよび接続時間が大幅に向上したほか、一部のネットワーク接続に関する不具合も修正されています。Daedalus 2.2.0には他にも多くの機能改善および一部の軽微な不具合の修正が含まれます。"
+      },
+      "target": {
+        "daedalusVersion": "<2.2.0",
+        "platforms": ["darwin", "win32", "linux"]
+      },
+      "action": {
+        "label": {
+          "en-US": "Download Daedalus at daedaluswallet.io",
+          "ja-JP": "daedaluswallet.ioでDaedalusをダウンロードする"
+        },
+        "url": {
+          "en-US": "https://daedaluswallet.io/en/download/?utm_source=newsfeed&utm_medium=newsfeed&utm_campaign=newsfeed",
+          "ja-JP": "https://daedaluswallet.io/ja/download/?utm_source=newsfeed&utm_medium=newsfeed&utm_campaign=newsfeed"
+        }
+      },
+      "date": 1598566800000,
+      "type": "sof "
+    }
+  ]
+}
