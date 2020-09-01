@@ -1619,16 +1619,16 @@ export default class AdaApi {
       );
       logger.debug('AdaApi::getNetworkInfo success', { networkInfo });
       const {
-        sync_progress /* eslint-disable-line camelcase */,
+        sync_progress: syncProgressRaw,
         node_tip: nodeTip,
         network_tip: networkTip,
         next_epoch: nextEpoch,
       } = networkInfo;
 
       const syncProgress =
-        get(sync_progress, 'status') === 'ready'
+        get(syncProgressRaw, 'status') === 'ready'
           ? 100
-          : get(sync_progress, 'progress.quantity', 0);
+          : get(syncProgressRaw, 'progress.quantity', 0);
       const nextEpochNumber = get(nextEpoch, 'epoch_number', null);
       const nextEpochStartTime = get(nextEpoch, 'epoch_start_time', '');
       // extract relevant data before sending to NetworkStatusStore
