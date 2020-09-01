@@ -7,6 +7,10 @@ Changelog
 
 - Implemented slot and epoch length config variables fetching API instead of using constants ([PR 2165](https://github.com/input-output-hk/daedalus/pull/2165))
 
+### Chores
+
+- Updated list of team members on About screen ([PR 2167](https://github.com/input-output-hk/daedalus/pull/2167))
+
 ## 2.2.0
 
 ### Features
