@@ -182,18 +182,29 @@ export default class StakePoolsRanking extends Component<Props, State> {
     }
     amountValue = Math.max(amountValue, MIN_DELEGATION_FUNDS);
     sliderValue = Math.round(Math.log(amountValue));
-    adjustedAmountValue = Math.round(Math.exp(sliderValue));
-
+    if (sliderValue === MIN_DELEGATION_FUNDS_LOG) {
+      adjustedAmountValue = MIN_DELEGATION_FUNDS;
+    } else if (sliderValue === MAX_DELEGATION_FUNDS_LOG) {
+      adjustedAmountValue = MAX_DELEGATION_FUNDS;
+    } else {
+      adjustedAmountValue = Math.round(Math.exp(sliderValue));
+    }
     this.setState({ sliderValue });
     onRank(selectedWalletId, adjustedAmountValue);
   };
 
   onSliderChange = (sliderValue: number) => {
     const { onRank } = this.props;
-    const amountValue = Math.round(Math.exp(sliderValue));
-
+    let adjustedAmountValue = null;
+    if (sliderValue === MIN_DELEGATION_FUNDS_LOG) {
+      adjustedAmountValue = MIN_DELEGATION_FUNDS;
+    } else if (sliderValue === MAX_DELEGATION_FUNDS_LOG) {
+      adjustedAmountValue = MAX_DELEGATION_FUNDS;
+    } else {
+      adjustedAmountValue = Math.round(Math.exp(sliderValue));
+    }
     this.setState({ sliderValue });
-    onRank(null, amountValue);
+    onRank(null, adjustedAmountValue);
   };
 
   generateInfo = () => {
@@ -252,7 +263,14 @@ export default class StakePoolsRanking extends Component<Props, State> {
       getStakePoolById,
     } = this.props;
     const { sliderValue } = this.state;
-    const displayValue = Math.round(Math.exp(sliderValue));
+    let displayValue = null;
+    if (sliderValue === MIN_DELEGATION_FUNDS_LOG) {
+      displayValue = MIN_DELEGATION_FUNDS;
+    } else if (sliderValue === MAX_DELEGATION_FUNDS_LOG) {
+      displayValue = MAX_DELEGATION_FUNDS;
+    } else {
+      displayValue = Math.round(Math.exp(sliderValue));
+    }
     const rankingDescription = intl.formatMessage(messages.rankingDescription);
     const learnMoreButtonClasses = classnames(['flat', styles.actionLearnMore]);
     const {
