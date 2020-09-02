@@ -120,11 +120,11 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
     const date = moment().format('YYYY-MM-DDTHHmmss.0SSS');
     const exportedBody = sortedRewards.map(reward => {
       const rewardWallet = get(reward, 'wallet');
+      const isRestoring = get(reward, 'isRestoring');
       const rewardAmount = get(reward, 'reward').toFormat(
         DECIMAL_PLACES_IN_ADA
       );
-
-      return [rewardWallet, `${rewardAmount} ADA`, date];
+      return [rewardWallet, isRestoring ? '-' :`${rewardAmount} ADA`, date];
     });
     const exportedContent = [exportedHeader, ...exportedBody];
 
