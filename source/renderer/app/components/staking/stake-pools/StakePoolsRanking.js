@@ -6,7 +6,7 @@ import classnames from 'classnames';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
-import { shortNumber } from '../../../utils/formatters';
+import { shortNumber, generateThousands } from '../../../utils/formatters';
 import {
   getFilteredWallets,
   getAllAmounts,
@@ -187,7 +187,9 @@ export default class StakePoolsRanking extends Component<Props, State> {
     } else if (sliderValue === MAX_DELEGATION_FUNDS_LOG) {
       adjustedAmountValue = MAX_DELEGATION_FUNDS;
     } else {
-      adjustedAmountValue = Math.round(Math.exp(sliderValue));
+      adjustedAmountValue = generateThousands(
+        Math.round(Math.exp(sliderValue))
+      );
     }
     this.setState({ sliderValue });
     onRank(selectedWalletId, adjustedAmountValue);
@@ -201,7 +203,9 @@ export default class StakePoolsRanking extends Component<Props, State> {
     } else if (sliderValue === MAX_DELEGATION_FUNDS_LOG) {
       adjustedAmountValue = MAX_DELEGATION_FUNDS;
     } else {
-      adjustedAmountValue = Math.round(Math.exp(sliderValue));
+      adjustedAmountValue = generateThousands(
+        Math.round(Math.exp(sliderValue))
+      );
     }
     this.setState({ sliderValue });
     onRank(null, adjustedAmountValue);
@@ -269,7 +273,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
     } else if (sliderValue === MAX_DELEGATION_FUNDS_LOG) {
       displayValue = MAX_DELEGATION_FUNDS;
     } else {
-      displayValue = Math.round(Math.exp(sliderValue));
+      displayValue = generateThousands(Math.round(Math.exp(sliderValue)));
     }
     const rankingDescription = intl.formatMessage(messages.rankingDescription);
     const learnMoreButtonClasses = classnames(['flat', styles.actionLearnMore]);

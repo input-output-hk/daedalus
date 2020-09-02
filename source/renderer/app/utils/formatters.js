@@ -101,3 +101,11 @@ export const formattedBytesToSize = (bytes: number): string => {
   if (i === 0) return `${bytes} ${sizes[i]})`;
   return `${(bytes / 1024 ** i).toFixed(1)} ${sizes[i]}`;
 };
+
+export const generateThousands = (value: number) => {
+  if (value <= 1000) {
+    return value;
+  }
+
+  return Math.round(value / 1000) * 1000;
+};
