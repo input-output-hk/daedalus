@@ -244,7 +244,7 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
                         <tr key={key}>
                           <td>{rewardWallet}</td>
                           <td>
-                            {rewardAmount} ADA
+                            {isRestoring ? '-' : `${rewardAmount} ADA`}
                             {isRestoring && (
                               <div className={styles.syncingProgress}>
                                 <Tooltip
