@@ -43,6 +43,7 @@ storiesOf('Wallets|Set Password', module)
           isSubmitting={false}
           error={undefined}
           walletName={activeWallet.name}
+          currentLocale={'en-US'}
         />
       )}
     </>
@@ -59,5 +60,6 @@ storiesOf('Wallets|Set Password', module)
       isSubmitting={false}
       error={undefined}
       walletName={activeWallet.name}
+      currentLocale={'en-US'}
     />
   ));

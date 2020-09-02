@@ -7,6 +7,10 @@ Changelog
 
 - Made stake pools ranking slider logarithmic ([PR 2162](https://github.com/input-output-hk/daedalus/pull/2162))
 
+### Chores
+
+- Updated list of team members on About screen ([PR 2167](https://github.com/input-output-hk/daedalus/pull/2167))
+
 ## 2.2.0
 
 ### Features

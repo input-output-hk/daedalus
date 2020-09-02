@@ -5,6 +5,9 @@ import classnames from 'classnames';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
+import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
+import SVGInline from 'react-svg-inline';
+import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
 import { PasswordInput } from '../../widgets/forms/PasswordInput';
 import WalletRestoreDialog from './widgets/WalletRestoreDialog';
 import styles from './ConfigurationDialog.scss';
@@ -20,6 +23,8 @@ import { submitOnEnter } from '../../../utils/form';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
+import tooltipStyles from '../../widgets/forms/InlineEditingDropdown-tooltip.scss';
+import infoIconInline from '../../../assets/images/info-icon.inline.svg';
 
 const messages = defineMessages({
   description1: {
@@ -68,6 +73,12 @@ const messages = defineMessages({
     defaultMessage: '!!!Continue',
     description: 'Placeholder for the dialog "Continue" button',
   },
+  passwordTooltip: {
+    id: 'wallet.dialog.passwordTooltip',
+    defaultMessage:
+      '!!!It is really good to use Password Manager apps to improve security. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris mattis diam non nulla sollicitudin, ac ultrices purus luctus.',
+    description: 'Tooltip for the password input in the create wallet dialog.',
+  },
 });
 
 type Props = {
@@ -80,6 +91,7 @@ type Props = {
   spendingPassword: string,
   repeatPassword: string,
   error?: ?LocalizableError,
+  currentLocale: string,
 };
 
 @observer
@@ -205,7 +217,7 @@ export default class ConfigurationDialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onClose, onBack, error, isSubmitting } = this.props;
+    const { onClose, onBack, error, isSubmitting, currentLocale } = this.props;
     const { form } = this;
 
     const walletNameField = form.$('walletName');
@@ -223,6 +235,11 @@ export default class ConfigurationDialog extends Component<Props> {
     const repeatPasswordFieldClasses = classnames([
       styles.spendingPasswordField,
       'repeatPassword',
+    ]);
+
+    const tooltipClasses = classnames([
+      styles.tooltip,
+      currentLocale === 'ja-JP' ? 'jpLangTooltipIcon' : '',
     ]);
 
     const canSubmit = !isSubmitting && form.isValid;
@@ -256,18 +273,32 @@ export default class ConfigurationDialog extends Component<Props> {
 
           <div className={styles.spendingPasswordWrapper}>
             <div className={styles.spendingPasswordFields}>
-              <PasswordInput
-                className={spendingPasswordFieldClasses}
-                onKeyPress={this.handleSubmitOnEnter}
-                {...spendingPasswordField.bind()}
-              />
-              <PasswordInput
-                className={repeatPasswordFieldClasses}
-                onKeyPress={this.handleSubmitOnEnter}
-                {...repeatPasswordField.bind()}
-                repeatPassword={spendingPasswordField.value}
-                isPasswordRepeat
-              />
+              <div className={styles.spendingPasswordField}>
+                <PasswordInput
+                  className={spendingPasswordFieldClasses}
+                  onKeyPress={this.handleSubmitOnEnter}
+                  {...spendingPasswordField.bind()}
+                />
+                <Tooltip
+                  skin={TooltipSkin}
+                  themeOverrides={tooltipStyles}
+                  tip={<FormattedHTMLMessage {...messages.passwordTooltip} />}
+                  key="tooltip"
+                  className={tooltipClasses}
+                  arrowRelativeToTip
+                >
+                  <SVGInline svg={infoIconInline} className={styles.infoIcon} />
+                </Tooltip>
+              </div>
+              <div className={styles.spendingPasswordField}>
+                <PasswordInput
+                  className={repeatPasswordFieldClasses}
+                  onKeyPress={this.handleSubmitOnEnter}
+                  {...repeatPasswordField.bind()}
+                  repeatPassword={spendingPasswordField.value}
+                  isPasswordRepeat
+                />
+              </div>
             </div>
             <div className={styles.passwordInstructions}>
               <FormattedHTMLMessage {...globalMessages.passwordInstructions} />

@@ -1,14 +1,14 @@
 {
     "cardano-node": {
-        "branch": "refs/tags/1.18.0",
+        "branch": "master",
         "description": null,
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-node",
-        "rev": "ba0f96b1a9fc9232ed211e57835fd5018093069d",
-        "sha256": "1rj7rpr3qqqwdx00zsfg283jflndnr9q5arxf5fiqrrqms40p7sk",
+        "rev": "9e06d6f9a293a9656bf6e31b7e5d0a9f498163d1",
+        "sha256": "1kh2rnis2r7g7a40pffnnkzj5mra25581a57b2fgq21jk0g42cby",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-node/archive/ba0f96b1a9fc9232ed211e57835fd5018093069d.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-node/archive/9e06d6f9a293a9656bf6e31b7e5d0a9f498163d1.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-shell": {
@@ -24,15 +24,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-wallet": {
-        "branch": "master",
+        "branch": "rvl/cardano-node-1.18.1",
         "description": "Official Wallet Backend & API for Cardano decentralized",
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-wallet",
-        "rev": "75b583a14faa5bc1875f6dddd2a94a897c47080d",
-        "sha256": "1xjrpx52ap7kps5gkhfllrq19wgccaianj97x1h40mmr00ncxx27",
+        "rev": "d7994e9c83ed00d798cf24f3101e50f0383ddc17",
+        "sha256": "00wzahmqm44hkxrcns1ig5zann057328y24xbv34jwjgllldmzhb",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-wallet/archive/75b583a14faa5bc1875f6dddd2a94a897c47080d.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-wallet/archive/d7994e9c83ed00d798cf24f3101e50f0383ddc17.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz",
         "version": "v2020-04-28"
     },
@@ -61,15 +61,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "iohk-nix": {
-        "branch": "master",
+        "branch": "daedalus-mainnet-wo-smash",
         "description": "nix scripts shared across projects",
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "iohk-nix",
-        "rev": "b1ee93b3d9270ecf1c70dbf92ec9ec0993ad27bf",
-        "sha256": "0a8qniazsdpm0sjdqqpkxk3i3x774xjcrbfid0z0mvgnnl947j9k",
+        "rev": "7447a91317d627e84a76c2f7bc61388717f80c21",
+        "sha256": "0iqrcvwcn8b7phszhh80lm93z9gsy6rqwzy6lr3zwsskzy461qb9",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/iohk-nix/archive/b1ee93b3d9270ecf1c70dbf92ec9ec0993ad27bf.tar.gz",
+        "url": "https://github.com/input-output-hk/iohk-nix/archive/7447a91317d627e84a76c2f7bc61388717f80c21.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "js-chain-libs": {
