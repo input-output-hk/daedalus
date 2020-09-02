@@ -209,7 +209,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-dialog-title-color': '#2d2d2d',
     '--theme-dialog-text-color': '#2d2d2d',
     '--theme-dialog-border-color': 'rgba(45, 45, 45, 0.2)',
-    '--theme-dialog-fullsize-background-color': 'rgba(255, 185, 35, 0.96)',
+    '--theme-dialog-fullsize-background-color': '#FFB923',
     '--theme-dialog-fullsize-background-color-opaque': '#fdbc31',
     '--theme-dialog-fullsize-button-background-color-hover':
       'rgba(0, 0, 0, 0.1)',

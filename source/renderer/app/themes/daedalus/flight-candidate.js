@@ -207,7 +207,7 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-dialog-title-color': '#ffffff',
     '--theme-dialog-text-color': '#ffffff',
     '--theme-dialog-border-color': 'rgba(255, 255, 255, 0.2)',
-    '--theme-dialog-fullsize-background-color': '#36374df5',
+    '--theme-dialog-fullsize-background-color': '#2A2B3C',
     '--theme-dialog-fullsize-background-color-opaque': '#36374d',
     '--theme-dialog-fullsize-button-background-color': '#ffffff',
     '--theme-dialog-fullsize-button-background-color-hover': '#313245',

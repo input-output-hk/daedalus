@@ -207,7 +207,7 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-dialog-title-color': '#ffffff',
     '--theme-dialog-text-color': '#ffffff',
     '--theme-dialog-border-color': 'rgba(255, 255, 255, 0.2)',
-    '--theme-dialog-fullsize-background-color': 'rgba(42, 43, 60, 0.98)',
+    '--theme-dialog-fullsize-background-color': '#2A2B3C',
     '--theme-dialog-fullsize-background-color-opaque': '#353545',
     '--theme-dialog-fullsize-field-background-color': 'rgba(255, 255, 255, 0.07)',
     '--theme-dialog-fullsize-button-background-color-hover': '#313245',
