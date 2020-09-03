@@ -83,7 +83,7 @@ export default class SidebarStore extends Store {
       environment: { isDev },
     } = global;
 
-    const { isShelleyActivated, isShelleyPending } = this.stores.networkStatus;
+    const { isShelleyPending } = this.stores.networkStatus;
 
     const {
       CATEGORIES_BY_NAME: categories,
