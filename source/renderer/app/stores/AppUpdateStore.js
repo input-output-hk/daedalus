@@ -211,14 +211,14 @@ export default class AppUpdateStore extends Store {
 
       // Resumes the update download
       console.log('AppUpdateStore: # _requestResumeUpdateDownload');
-      // this._requestResumeUpdateDownload();
+      this._requestResumeUpdateDownload();
       return;
     }
 
     console.log('AppUpdateStore: # _removeLocalDataInfo');
     console.log('AppUpdateStore: # _requestUpdateDownload');
-    // await this._removeLocalDataInfo();
-    // this._requestUpdateDownload(update);
+    await this._removeLocalDataInfo();
+    this._requestUpdateDownload(update);
   };
 
   _removeLocalDataInfo = async () => {

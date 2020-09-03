@@ -19,6 +19,8 @@ const quitAppAndAppInstallUpdateChannel: MainIpcChannel<
 export const handleQuitAppAndAppInstallUpdateRequests = () => {
   quitAppAndAppInstallUpdateChannel.onRequest(
     async ({ filePath, hash: expectedHash }) => {
+      const fileExists = fs.existsSync(filePath);
+      if (!fileExists) return false;
       const fileBuffer = fs.readFileSync(filePath);
       if (!fileBuffer) return false;
       const fileHash = shasum(fileBuffer, 'sha256');
