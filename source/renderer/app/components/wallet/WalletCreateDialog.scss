@@ -100,17 +100,3 @@
     }
   }
 }
-
-:global {
-  .LoadingSpinner_component {
-    margin: 11px auto !important;
-
-    .LoadingSpinner_icon {
-      svg {
-        path {
-          fill: var(--theme-button-primary-text-color-disabled) !important;
-        }
-      }
-    }
-  }
-}
