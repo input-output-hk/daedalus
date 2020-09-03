@@ -1,5 +1,4 @@
 @import '../../../themes/mixins/animations';
-@import '../../../themes/mixins/loading-spinner';
 @import '../../../themes/mixins/error-message';
 
 .delegationStepsConfirmationDialogWrapper {
@@ -47,9 +46,18 @@
     margin-top: 27px;
     text-align: center;
   }
-}
 
-.submitButtonSpinning {
-  box-shadow: none !important;
-  @include loading-spinner('../../../assets/images/spinner-light.svg');
+  :global {
+    .LoadingSpinner_component {
+      .LoadingSpinner_icon {
+        svg {
+          path {
+            fill: var(
+                --theme-button-attention-delete-text-color-disabled
+            ) !important;
+          }
+        }
+      }
+    }
+  }
 }
