@@ -232,7 +232,8 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-dialog-fullsize-button-label-color': '#fafbfc',
     '--theme-dialog-fullsize-button-label-color-hover': 'rgba(38, 51, 69, 1)',
     '--theme-dialog-fullsize-button-text-color-hover': '#263345',
-    '--theme-dialog-fullsize-field-background-color': 'rgba(233, 244, 254, 0.07)',
+    '--theme-dialog-fullsize-field-background-color':
+      'rgba(233, 244, 254, 0.07)',
     '--theme-dialog-fullsize-text-color': 'rgba(255, 255, 255, 0.7)',
     '--theme-dialog-fullsize-text-highlight-color': '#ffffff',
     '--theme-dialog-fullsize-title-text-color': '#ffffff',
@@ -523,7 +524,8 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--rp-autocomplete-input-text-color': 'rgba(233, 244, 254, 0.7)',
     '--rp-autocomplete-placeholder-color': 'rgba(233, 244, 254, 0.5)',
     '--rp-autocomplete-selected-word-box-bg-color': 'rgba(83, 99, 112, 0.5)',
-    '--rp-autocomplete-selected-word-dialog-box-bg-color': 'rgba(83, 99, 112, 0.5)',
+    '--rp-autocomplete-selected-word-dialog-box-bg-color':
+      'rgba(83, 99, 112, 0.5)',
     '--rp-autocomplete-selected-word-dialog-text-color': '#fafbfc',
     '--rp-autocomplete-selected-word-text-color': '#fafbfc',
     '--rp-autocomplete-selected-words-font-family':
@@ -811,7 +813,8 @@ export const DARK_BLUE_THEME_OUTPUT = {
       'rgba(233, 244, 254, .1)',
     '--theme-staking-stake-pool-tooltip-neutral-text-color': '#e9f4fe',
     '--theme-staking-stake-pool-tooltip-experimental-icon-color': '#e9f4fe',
-    '--theme-staking-stake-pool-tooltip-id-background-color': 'rgba(255, 255, 255, 0.05)',
+    '--theme-staking-stake-pool-tooltip-id-background-color':
+      'rgba(255, 255, 255, 0.05)',
     '--theme-staking-stake-pool-tooltip-id-shadow-1': 'rgba(0, 0, 0, 0.25)',
     '--theme-staking-stake-pool-tooltip-id-shadow-2': 'rgba(42, 43, 60, 0)',
   },

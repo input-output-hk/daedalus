@@ -243,7 +243,11 @@ export default class ConfigurationDialog extends Component<Props> {
       currentLocale === 'ja-JP' ? 'jpLangTooltipIcon' : '',
     ]);
 
-    const buttonLabel = !isSubmitting ? intl.formatMessage(messages.continueButtonLabel) : <LoadingSpinner />;
+    const buttonLabel = !isSubmitting ? (
+      intl.formatMessage(messages.continueButtonLabel)
+    ) : (
+      <LoadingSpinner />
+    );
 
     const canSubmit = !isSubmitting && form.isValid;
 

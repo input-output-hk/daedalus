@@ -15,7 +15,9 @@
     }
 
     .attention {
-      color: var(--theme-button-attention-delete-text-color-disabled) !important;
+      color: var(
+        --theme-button-attention-delete-text-color-disabled
+      ) !important;
 
       &:not([disabled]) {
         color: var(--theme-button-attention-delete-text-color) !important;
@@ -32,7 +34,9 @@
       .LoadingSpinner_icon {
         svg {
           path {
-            fill: var(--theme-button-attention-delete-text-color-disabled) !important;
+            fill: var(
+              --theme-button-attention-delete-text-color-disabled
+            ) !important;
           }
         }
       }

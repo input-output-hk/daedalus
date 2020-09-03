@@ -28,7 +28,9 @@
 
     .SimpleOptions_option,
     .SimpleOptions_option:after {
-      background-color: var(--theme-dialog-fullsize-background-color) !important;
+      background-color: var(
+        --theme-dialog-fullsize-background-color
+      ) !important;
     }
 
     .SimpleOptions_option:first-child {
@@ -43,7 +45,7 @@
     .DialogCloseButton_component,
     .SimpleOptions_highlightedOption {
       background-color: var(
-          --theme-dialog-fullsize-field-background-color
+        --theme-dialog-fullsize-field-background-color
       ) !important;
       border-radius: 0 !important;
     }
@@ -51,7 +53,7 @@
     // Background Opaque (se same as the normal background, without the opacity)
     .SimpleBubble_bubble {
       background-color: var(
-          --theme-dialog-fullsize-background-color-opaque
+        --theme-dialog-fullsize-background-color-opaque
       ) !important;
       border: 1px solid var(--theme-dialog-fullsize-text-color) !important;
       border-radius: 4px;
@@ -108,7 +110,7 @@
 
       &:after {
         background-color: var(
-            --theme-dialog-fullsize-text-highlight-color
+          --theme-dialog-fullsize-text-highlight-color
         ) !important;
       }
     }
@@ -150,7 +152,7 @@
 
       &.SimpleCheckbox_checked {
         background-color: var(
-            --theme-splash-network-overlay-button-background-color-hover
+          --theme-splash-network-overlay-button-background-color-hover
         );
 
         &:after {
@@ -165,7 +167,9 @@
     }
 
     .SimpleAutocomplete_selectedWordBox {
-      background-color: var(--rp-autocomplete-selected-word-dialog-box-bg-color) !important;
+      background-color: var(
+        --rp-autocomplete-selected-word-dialog-box-bg-color
+      ) !important;
     }
 
     .SimpleAutocomplete_selectedWordValue {
@@ -174,7 +178,7 @@
 
     button.primary {
       background-color: var(
-          --theme-splash-network-overlay-button-background-color
+        --theme-splash-network-overlay-button-background-color
       );
       border: solid 1px var(--theme-splash-network-overlay-button-border-color);
       color: var(--theme-splash-network-overlay-button-text-color);
@@ -184,7 +188,7 @@
 
       &:hover {
         background-color: var(
-            --theme-splash-network-overlay-button-background-color-hover
+          --theme-splash-network-overlay-button-background-color-hover
         );
         border: none;
         color: var(--theme-splash-network-overlay-button-text-color-hover);
@@ -192,17 +196,19 @@
 
       &:disabled {
         background-color: var(
-            --theme-splash-network-overlay-button-background-color
+          --theme-splash-network-overlay-button-background-color
         );
-        border: solid 1px var(--theme-splash-network-overlay-button-border-color);
+        border: solid 1px
+          var(--theme-splash-network-overlay-button-border-color);
         color: var(--theme-splash-network-overlay-button-text-color);
         opacity: 0.3;
 
         &:hover {
           background-color: var(
-              --theme-splash-network-overlay-button-background-color
+            --theme-splash-network-overlay-button-background-color
           );
-          border: solid 1px var(--theme-splash-network-overlay-button-border-color);
+          border: solid 1px
+            var(--theme-splash-network-overlay-button-border-color);
           color: var(--theme-splash-network-overlay-button-text-color);
         }
       }

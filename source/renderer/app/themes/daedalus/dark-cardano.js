@@ -209,7 +209,8 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-dialog-border-color': 'rgba(255, 255, 255, 0.2)',
     '--theme-dialog-fullsize-background-color': '#2A2B3C',
     '--theme-dialog-fullsize-background-color-opaque': '#353545',
-    '--theme-dialog-fullsize-field-background-color': 'rgba(255, 255, 255, 0.07)',
+    '--theme-dialog-fullsize-field-background-color':
+      'rgba(255, 255, 255, 0.07)',
     '--theme-dialog-fullsize-button-background-color-hover': '#313245',
     '--theme-dialog-fullsize-button-background-color': '#000000',
     '--theme-dialog-fullsize-button-icon-color': '#000000',
@@ -787,7 +788,8 @@ export const DARK_CARDANO_THEME_OUTPUT = {
       'rgba(255, 255, 255, .1)',
     '--theme-staking-stake-pool-tooltip-neutral-text-color': '#ffffff',
     '--theme-staking-stake-pool-tooltip-experimental-icon-color': '#ffffff',
-    '--theme-staking-stake-pool-tooltip-id-background-color': 'rgba(255, 255, 255, 0.05)',
+    '--theme-staking-stake-pool-tooltip-id-background-color':
+      'rgba(255, 255, 255, 0.05)',
     '--theme-staking-stake-pool-tooltip-id-shadow-1': 'rgba(0, 0, 0, 0.25)',
     '--theme-staking-stake-pool-tooltip-id-shadow-2': 'rgba(42, 43, 60, 0)',
   },

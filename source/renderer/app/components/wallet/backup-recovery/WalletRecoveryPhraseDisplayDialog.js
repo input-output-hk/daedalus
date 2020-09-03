@@ -44,7 +44,12 @@ export default class WalletRecoveryPhraseDisplayDialog extends Component<Props> 
 
   render() {
     const { intl } = this.context;
-    const { recoveryPhrase, onStartWalletBackup, onCancelBackup, isSubmitting } = this.props;
+    const {
+      recoveryPhrase,
+      onStartWalletBackup,
+      onCancelBackup,
+      isSubmitting,
+    } = this.props;
     const dialogClasses = classnames([
       styles.component,
       'WalletRecoveryPhraseDisplayDialog',

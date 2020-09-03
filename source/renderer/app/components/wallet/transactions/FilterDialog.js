@@ -110,7 +110,9 @@ const applyDialogStyles = () => {
   const filterButtonElement = window.document.querySelector(
     '.FilterButton_component'
   );
-  const notificationElement = window.document.querySelector('.ActiveRestoreNotification');
+  const notificationElement = window.document.querySelector(
+    '.ActiveRestoreNotification'
+  );
   const windowHeight = window.document.body.clientHeight;
   const filterDialogHeight = dialogElement.clientHeight;
   let filterDialogOffsetTop =

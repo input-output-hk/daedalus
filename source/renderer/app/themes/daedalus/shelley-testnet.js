@@ -220,7 +220,8 @@ export const SHELLEY_TESTNET_THEME_OUTPUT = {
     '--theme-dialog-fullsize-text-color': 'rgba(255, 255, 255, 0.7)',
     '--theme-dialog-fullsize-text-highlight-color': '#ffffff',
     '--theme-dialog-fullsize-title-text-color': '#ffffff',
-    '--theme-dialog-fullsize-field-background-color': 'rgba(255, 255, 255, 0.07)',
+    '--theme-dialog-fullsize-field-background-color':
+      'rgba(255, 255, 255, 0.07)',
   },
   errors: {
     '--theme-color-error': '#ea4c5b',

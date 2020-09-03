@@ -217,7 +217,8 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-dialog-fullsize-button-label-color': '#ffffff',
     '--theme-dialog-fullsize-button-label-color-hover': '#000000',
     '--theme-dialog-fullsize-button-text-color-hover': '#36374d',
-    '--theme-dialog-fullsize-field-background-color': 'rgba(255, 255, 255, 0.07)',
+    '--theme-dialog-fullsize-field-background-color':
+      'rgba(255, 255, 255, 0.07)',
     '--theme-dialog-fullsize-text-color': 'rgba(255, 255, 255, 0.7)',
     '--theme-dialog-fullsize-text-highlight-color': '#ffffff',
     '--theme-dialog-fullsize-title-text-color': '#ffffff',
@@ -787,7 +788,8 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
       'rgba(255, 255, 255, .1)',
     '--theme-staking-stake-pool-tooltip-neutral-text-color': '#ffffff',
     '--theme-staking-stake-pool-tooltip-experimental-icon-color': '#ffffff',
-    '--theme-staking-stake-pool-tooltip-id-background-color': 'rgba(255, 255, 255, 0.05)',
+    '--theme-staking-stake-pool-tooltip-id-background-color':
+      'rgba(255, 255, 255, 0.05)',
     '--theme-staking-stake-pool-tooltip-id-shadow-1': 'rgba(0, 0, 0, 0.25)',
     '--theme-staking-stake-pool-tooltip-id-shadow-2': 'rgba(42, 43, 60, 0)',
   },

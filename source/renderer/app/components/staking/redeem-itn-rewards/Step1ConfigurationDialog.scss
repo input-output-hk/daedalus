@@ -54,7 +54,9 @@
     opacity: 1;
 
     &:hover {
-      background-color: var(--theme-dialog-fullsize-field-background-color) !important;
+      background-color: var(
+        --theme-dialog-fullsize-field-background-color
+      ) !important;
     }
   }
 }
