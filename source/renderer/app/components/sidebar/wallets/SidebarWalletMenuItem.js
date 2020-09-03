@@ -69,7 +69,7 @@ export default class SidebarWalletMenuItem extends Component<Props> {
               />
             )}
           </div>
-          <div className={styles.info}>{info}</div>
+          <div className={styles.info}>{isRestoreActive ? '-' : info}</div>
           {isRestoreActive ? <ProgressBar progress={restoreProgress} /> : null}
           {showLegacyBadge && (
             <LegacyBadge mode={LEGACY_BADGE_MODES.FLOATING} />
