@@ -1,3 +1,5 @@
-.input[type='password'] {
-  padding-top: 12px;
+:global {
+  .SimpleInput_input[type='password'] {
+    padding-top: 12px;
+  }
 }
