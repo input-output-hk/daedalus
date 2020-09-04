@@ -62,6 +62,7 @@ export default class TransferFundsStep2Container extends Component<Props> {
       sourceWallet.amount.minus(transferFundsFee),
       false
     );
+    const total = formattedWalletAmount(sourceWallet.amount, false);
     const sourceWalletName = sourceWallet.name;
     const targetWalletName = targetWallet.name;
     return (
@@ -69,13 +70,13 @@ export default class TransferFundsStep2Container extends Component<Props> {
         fees={fees}
         leftovers={leftovers}
         amount={amount}
-        total={sourceWallet.amount}
+        total={total}
         sourceWalletName={sourceWalletName}
         targetWalletName={targetWalletName}
         onBack={onBack}
         onClose={this.onClose}
         onFinish={onFinish}
-        isSubmitting={transferFundsRequest.isExecuting}
+        isSubmitting={false /* transferFundsRequest.isExecuting */}
         error={transferFundsRequest.error}
       />
     );
