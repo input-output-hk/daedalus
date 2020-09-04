@@ -4,6 +4,8 @@ import { observer, inject } from 'mobx-react';
 import TransferFundsStep2Dialog from '../../../../components/wallet/transfer-funds/TransferFundsStep2Dialog';
 import type { InjectedDialogContainerStepProps } from '../../../../types/injectedPropsType';
 import { InjectedDialogContainerStepDefaultProps } from '../../../../types/injectedPropsType';
+import { formattedWalletAmount } from '../../../../utils/formatters';
+import { DECIMAL_PLACES_IN_ADA } from '../../../../config/numbersConfig';
 
 type Props = InjectedDialogContainerStepProps;
 const DefaultProps = InjectedDialogContainerStepDefaultProps;
@@ -46,19 +48,35 @@ export default class TransferFundsStep2Container extends Component<Props> {
     const targetWallet = allWallets.find(
       ({ id }) => id === transferFundsTargetWalletId
     );
-    if (!sourceWallet || !targetWallet) return null;
+    if (
+      !sourceWallet ||
+      !targetWallet ||
+      !transferFundsFee ||
+      !transferFundsLeftovers
+    )
+      return null;
+
+    const fees = transferFundsFee.toFormat(DECIMAL_PLACES_IN_ADA);
+    const leftovers = transferFundsLeftovers.toFormat(DECIMAL_PLACES_IN_ADA);
+    const amount = formattedWalletAmount(
+      sourceWallet.amount.minus(transferFundsFee),
+      false
+    );
+    const sourceWalletName = sourceWallet.name;
+    const targetWalletName = targetWallet.name;
     return (
       <TransferFundsStep2Dialog
-        addresses={[]}
-        transferFundsFee={transferFundsFee}
-        transferFundsLeftovers={transferFundsLeftovers}
+        fees={fees}
+        leftovers={leftovers}
+        amount={amount}
+        total={sourceWallet.amount}
+        sourceWalletName={sourceWalletName}
+        targetWalletName={targetWalletName}
         onBack={onBack}
         onClose={this.onClose}
         onFinish={onFinish}
         isSubmitting={transferFundsRequest.isExecuting}
         error={transferFundsRequest.error}
-        sourceWallet={sourceWallet}
-        targetWallet={targetWallet}
       />
     );
   }

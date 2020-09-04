@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import BigNumber from 'bignumber.js';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import { Input } from 'react-polymorph/lib/components/Input';
@@ -12,13 +11,10 @@ import DialogBackButton from '../../widgets/DialogBackButton';
 import Dialog from '../../widgets/Dialog';
 import styles from './TransferFundsStep2Dialog.scss';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
-import { formattedWalletAmount } from '../../../utils/formatters';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
-import Wallet from '../../../domains/Wallet';
 import { submitOnEnter } from '../../../utils/form';
-import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 
 const messages = defineMessages({
   dialogTitle: {
@@ -75,58 +71,21 @@ type Props = {
   onFinish: Function,
   onClose: Function,
   onBack: Function,
-  // addresses: Array<any>,
-  sourceWallet: $Shape<Wallet>,
-  targetWallet: $Shape<Wallet>,
-  transferFundsFee: ?BigNumber,
-  transferFundsLeftovers: ?BigNumber,
-  isSubmitting?: boolean,
-  error?: ?LocalizableError,
-};
-
-type State = {
   total: string,
   fees: ?string,
   leftovers: ?string,
   amount: ?string,
+  sourceWalletName: ?string,
+  targetWalletName: ?string,
+  isSubmitting?: boolean,
+  error?: ?LocalizableError,
 };
 
 @observer
-export default class TransferFundsStep2Dialog extends Component<Props, State> {
+export default class TransferFundsStep2Dialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
-  state = {
-    total: formattedWalletAmount(this.props.sourceWallet.amount, false),
-    fees: null,
-    leftovers: null,
-    amount: null,
-  };
-
-  componentDidUpdate() {
-    const {
-      transferFundsFee,
-      transferFundsLeftovers,
-      sourceWallet,
-    } = this.props;
-    // "freezes" the current amounts in the component state
-    if (
-      transferFundsFee &&
-      transferFundsLeftovers &&
-      !this.state.fees &&
-      !this.state.leftovers &&
-      !this.state.amount
-    ) {
-      const fees = transferFundsFee.toFormat(DECIMAL_PLACES_IN_ADA);
-      const leftovers = transferFundsLeftovers.toFormat(DECIMAL_PLACES_IN_ADA);
-      const amount = formattedWalletAmount(
-        sourceWallet.amount.minus(transferFundsFee),
-        false
-      );
-      this.setState({ fees, leftovers, amount }); // eslint-disable-line
-    }
-  }
 
   form = new ReactToolboxMobxForm(
     {
@@ -177,13 +136,15 @@ export default class TransferFundsStep2Dialog extends Component<Props, State> {
 
   render() {
     const { intl } = this.context;
-    const { total, fees, leftovers, amount } = this.state;
     const {
       onClose,
       onBack,
-      // addresses,
-      sourceWallet,
-      targetWallet,
+      total,
+      fees,
+      leftovers,
+      amount,
+      sourceWalletName,
+      targetWalletName,
       isSubmitting,
       error,
     } = this.props;
@@ -218,8 +179,8 @@ export default class TransferFundsStep2Dialog extends Component<Props, State> {
         <FormattedMessage
           {...messages.description}
           values={{
-            sourceWalletName: <b key="source">{sourceWallet.name}</b>,
-            targetWalletName: <b key="target">{targetWallet.name}</b>,
+            sourceWalletName: <b key="source">{sourceWalletName}</b>,
+            targetWalletName: <b key="target">{targetWalletName}</b>,
           }}
         >
           {(...content) => <div className={styles.description}>{content}</div>}
