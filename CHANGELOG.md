@@ -5,6 +5,7 @@ Changelog
 
 ### Chores
 
+- Changed the ordering of wallet addresses on the "Receive" screen so that the oldest one are on top and the newest one on the bottom of the list ([PR 2176](https://github.com/input-output-hk/daedalus/pull/2176))
 - Updated list of team members on About screen ([PR 2167](https://github.com/input-output-hk/daedalus/pull/2167))
 
 ## 2.2.0
