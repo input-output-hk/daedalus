@@ -10,10 +10,11 @@
   display: flex;
   flex: 1;
   justify-content: center;
+  min-height: 44px;
 
   :global {
     .LoadingSpinner_component {
-      margin: -44px 0 0 0;
+      margin: 0;
     }
   }
 }
