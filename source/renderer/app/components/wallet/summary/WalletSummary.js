@@ -54,12 +54,14 @@ export default class WalletSummary extends Component<Props> {
       isLoadingAllTransactions ? styles.isLoadingNumberOfTransactions : null,
     ]);
 
+    const isRestoreActive = wallet.isRestoring;
+
     return (
       <div className={styles.component}>
         <BorderedBox>
           <div className={styles.walletName}>{wallet.name}</div>
           <div className={styles.walletAmount}>
-            {wallet.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
+            {isRestoreActive ? '-' : wallet.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
             <SVGInline
               svg={adaSymbolBig}
               className={styles.currencySymbolBig}
