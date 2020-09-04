@@ -253,6 +253,7 @@ export default class ConfigurationDialog extends Component<Props> {
 
     return (
       <WalletRestoreDialog
+        className={styles.dialogComponent}
         stepNumber={2}
         actions={[
           {

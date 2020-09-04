@@ -110,12 +110,14 @@
   text-align: center;
 }
 
-:global {
-  .LoadingSpinner_component {
-    .LoadingSpinner_icon {
-      svg {
-        path {
-          fill: var(--theme-button-primary-text-color-disabled) !important;
+.dialogComponent {
+  :global {
+    .LoadingSpinner_component {
+      .LoadingSpinner_icon {
+        svg {
+          path {
+            fill: var(--theme-button-primary-text-color-disabled) !important;
+          }
         }
       }
     }
