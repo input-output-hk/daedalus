@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Fixes
+
+- Improved rendering performance of the stake pools on the "Stake pools" screen ([PR 2177](https://github.com/input-output-hk/daedalus/pull/2177))
+
 ### Chores
 
 - Updated list of team members on About screen ([PR 2167](https://github.com/input-output-hk/daedalus/pull/2167))

@@ -4,3 +4,16 @@
   grid-template-columns: repeat(auto-fill, 80px);
   justify-content: space-between;
 }
+
+.preloadingBlockWrapper {
+  align-items: center;
+  display: flex;
+  flex: 1;
+  justify-content: center;
+
+  :global {
+    .LoadingSpinner_component {
+      margin: -44px 0 0 0;
+    }
+  }
+}
