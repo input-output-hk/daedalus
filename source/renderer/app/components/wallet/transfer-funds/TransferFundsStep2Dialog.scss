@@ -44,6 +44,11 @@
     }
   }
 
+  .amountOpacity {
+    @extend .amount;
+    opacity: 0.5;
+  }
+
   .error {
     @include error-message;
     margin-top: 27px;

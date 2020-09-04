@@ -33,6 +33,7 @@ export default class TransferFundsStep2Container extends Component<Props> {
       allLegacyWallets,
       allWallets,
       transferFundsFee,
+      transferFundsLeftovers,
       transferFundsRequest,
     } = stores.wallets;
 
@@ -50,6 +51,7 @@ export default class TransferFundsStep2Container extends Component<Props> {
       <TransferFundsStep2Dialog
         addresses={[]}
         transferFundsFee={transferFundsFee}
+        transferFundsLeftovers={transferFundsLeftovers}
         onBack={onBack}
         onClose={this.onClose}
         onFinish={onFinish}

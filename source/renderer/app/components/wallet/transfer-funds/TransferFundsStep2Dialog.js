@@ -47,6 +47,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Total',
     description: 'Total Fees in the transfer funds form',
   },
+  labelLeftovers: {
+    id: 'wallet.transferFunds.dialog2.label.leftovers',
+    defaultMessage: '!!!Leftovers',
+    description: 'Label Leftovers in the transfer funds form',
+  },
   buttonLabel: {
     id: 'wallet.transferFunds.dialog2.label.buttonLabel',
     defaultMessage: '!!!Transfer funds',
@@ -74,13 +79,15 @@ type Props = {
   sourceWallet: $Shape<Wallet>,
   targetWallet: $Shape<Wallet>,
   transferFundsFee: ?BigNumber,
+  transferFundsLeftovers: ?BigNumber,
   isSubmitting?: boolean,
   error?: ?LocalizableError,
 };
 
 type State = {
   total: string,
-  fees: ?number,
+  fees: ?string,
+  leftovers: ?string,
   amount: ?string,
 };
 
@@ -93,19 +100,31 @@ export default class TransferFundsStep2Dialog extends Component<Props, State> {
   state = {
     total: formattedWalletAmount(this.props.sourceWallet.amount, false),
     fees: null,
+    leftovers: null,
     amount: null,
   };
 
   componentDidUpdate() {
-    const { transferFundsFee, sourceWallet } = this.props;
+    const {
+      transferFundsFee,
+      transferFundsLeftovers,
+      sourceWallet,
+    } = this.props;
     // "freezes" the current amounts in the component state
-    if (transferFundsFee && !this.state.fees && !this.state.amount) {
+    if (
+      transferFundsFee &&
+      transferFundsLeftovers &&
+      !this.state.fees &&
+      !this.state.leftovers &&
+      !this.state.amount
+    ) {
       const fees = transferFundsFee.toFormat(DECIMAL_PLACES_IN_ADA);
+      const leftovers = transferFundsLeftovers.toFormat(DECIMAL_PLACES_IN_ADA);
       const amount = formattedWalletAmount(
         sourceWallet.amount.minus(transferFundsFee),
         false
       );
-      this.setState({ fees, amount }); // eslint-disable-line
+      this.setState({ fees, leftovers, amount }); // eslint-disable-line
     }
   }
 
@@ -158,7 +177,7 @@ export default class TransferFundsStep2Dialog extends Component<Props, State> {
 
   render() {
     const { intl } = this.context;
-    const { total, fees, amount } = this.state;
+    const { total, fees, leftovers, amount } = this.state;
     const {
       onClose,
       onBack,
@@ -215,7 +234,7 @@ export default class TransferFundsStep2Dialog extends Component<Props, State> {
           <p className={styles.label}>
             {intl.formatMessage(messages.labelFees)}
           </p>
-          <div className={styles.amount}>+ {fees}</div>
+          <div className={styles.amountOpacity}>+ {fees}</div>
         </div>
         <div className={styles.amountGroup}>
           <p className={styles.label}>
@@ -223,6 +242,14 @@ export default class TransferFundsStep2Dialog extends Component<Props, State> {
           </p>
           <div className={styles.amount}>{total}</div>
         </div>
+        {leftovers && (
+          <div className={styles.amountGroup}>
+            <p className={styles.label}>
+              {intl.formatMessage(messages.labelLeftovers)}
+            </p>
+            <div className={styles.amountOpacity}>{leftovers}</div>
+          </div>
+        )}
         <Input
           type="password"
           className={styles.currentPassword}

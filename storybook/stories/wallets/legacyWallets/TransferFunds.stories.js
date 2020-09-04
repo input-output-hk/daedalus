@@ -216,6 +216,7 @@ storiesOf('Wallets|Legacy Wallets', module)
       <TransferFundsStep2Dialog
         addresses={step2Addresses}
         transferFundsFee={new BigNumber(faker.finance.amount(1, 20))}
+        transferFundsLeftovers={new BigNumber(faker.finance.amount(0.01, 0.02))}
         onBack={action('onBack')}
         onClose={action('onClose')}
         onContinue={action('onContinue')}

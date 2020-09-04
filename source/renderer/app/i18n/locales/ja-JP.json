@@ -901,6 +901,7 @@
   "wallet.transferFunds.dialog2.label.buttonLabel": "資金を移す",
   "wallet.transferFunds.dialog2.label.description": "{sourceWalletName}ウォレットから{targetWalletName}ウォレットへの送金内容を確認してください。",
   "wallet.transferFunds.dialog2.label.fees": "手数料",
+  "wallet.transferFunds.dialog2.label.leftovers": "!!!Leftovers",
   "wallet.transferFunds.dialog2.label.total": "合計",
   "wallet.transferFunds.dialog2.passphraseFieldPlaceholder": "送信時パスワード",
   "wallet.transferFunds.dialog2.passphraseLabel": "送信時パスワード",

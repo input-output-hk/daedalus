@@ -166,6 +166,7 @@ import type {
   GetWalletUtxosRequest,
   GetWalletRequest,
   TransferFundsCalculateFeeRequest,
+  TransferFundsCalculateFeeApiResponse,
   TransferFundsCalculateFeeResponse,
   TransferFundsRequest,
   TransferFundsResponse,
@@ -1512,13 +1513,13 @@ export default class AdaApi {
 
   transferFundsCalculateFee = async (
     request: TransferFundsCalculateFeeRequest
-  ): Promise<BigNumber> => {
+  ): Promise<TransferFundsCalculateFeeResponse> => {
     const { sourceWalletId } = request;
     logger.debug('AdaApi::transferFundsCalculateFee called', {
       parameters: { sourceWalletId },
     });
     try {
-      const response: TransferFundsCalculateFeeResponse = await transferFundsCalculateFee(
+      const response: TransferFundsCalculateFeeApiResponse = await transferFundsCalculateFee(
         this.config,
         {
           sourceWalletId,
@@ -2027,9 +2028,14 @@ const _createTransactionFeeFromServerData = action(
 
 const _createMigrationFeeFromServerData = action(
   'AdaApi::_createMigrationFeeFromServerData',
-  (data: TransferFundsCalculateFeeResponse) => {
-    const amount = get(data, ['migration_cost', 'quantity'], 0);
-    return new BigNumber(amount).dividedBy(LOVELACES_PER_ADA);
+  (data: TransferFundsCalculateFeeApiResponse) => {
+    const { quantity: feeAmount = 0 } = data.migration_cost;
+    const fee = new BigNumber(feeAmount).dividedBy(LOVELACES_PER_ADA);
+    const { quantity: leftoversAmount = 0 } = data.leftovers;
+    const leftovers = new BigNumber(leftoversAmount).dividedBy(
+      LOVELACES_PER_ADA
+    );
+    return { fee, leftovers };
   }
 );
 
