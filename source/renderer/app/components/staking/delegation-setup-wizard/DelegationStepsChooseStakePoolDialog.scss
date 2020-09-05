@@ -15,10 +15,8 @@
       padding: 0 25px 4px 4px;
     }
 
-    .Dialog_dialogWrapper > .Dialog_actions.Dialog_rowDirection {
-      button {
-        margin-top: 10px;
-      }
+    .Dialog_actions button {
+      margin-top: 10px !important;
     }
   }
 
