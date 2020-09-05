@@ -207,6 +207,10 @@
         position: absolute;
         right: 10px;
         top: 0;
+
+        :global .LoadingSpinner_component.LoadingSpinner_medium {
+          margin: 10px auto !important;
+        }
       }
     }
   }
