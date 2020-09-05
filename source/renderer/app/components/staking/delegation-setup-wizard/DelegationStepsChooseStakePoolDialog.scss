@@ -14,6 +14,12 @@
     .Dialog_content {
       padding: 0 25px 4px 4px;
     }
+
+    .Dialog_dialogWrapper > .Dialog_actions.Dialog_rowDirection {
+      button {
+        margin-top: 10px;
+      }
+    }
   }
 
   .stakePoolsListWrapper {
@@ -22,7 +28,7 @@
 
   .content {
     color: var(--theme-delegation-steps-choose-stake-pool-title-color);
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 
     .description {
       font-family: var(--font-medium);
