@@ -1,8 +1,16 @@
 .root {
   .bubble {
+    display: none;
     font-size: 14px;
   }
   b {
     font-weight: bold;
+  }
+
+  &.isShowingOnHover:hover {
+    .bubble {
+      display: block;
+      height: auto;
+    }
   }
 }

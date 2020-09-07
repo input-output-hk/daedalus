@@ -74,13 +74,19 @@ export default class MnemonicsDialog extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
-  recoveryPhraseAutocomplete: Autocomplete;
+  isPhraseComplete = () => {
+    const { mnemonics, expectedWordCount } = this.props;
+    const wordCount = mnemonics.length;
+    return Array.isArray(expectedWordCount)
+      ? expectedWordCount.includes(wordCount)
+      : wordCount === expectedWordCount;
+  };
 
   form = new ReactToolboxMobxForm(
     {
       fields: {
         recoveryPhrase: {
-          value: this.props.mnemonics,
+          value: [...this.props.mnemonics],
           validators: () => {
             const { intl } = this.context;
             const {
@@ -88,11 +94,8 @@ export default class MnemonicsDialog extends Component<Props> {
               onValidateMnemonics,
               expectedWordCount,
             } = this.props;
-            const wordCount = mnemonics.length;
-            const isPhraseComplete = Array.isArray(expectedWordCount)
-              ? expectedWordCount.includes(wordCount)
-              : wordCount === expectedWordCount;
-            if (!isPhraseComplete) {
+
+            if (!this.isPhraseComplete()) {
               return [
                 false,
                 Array.isArray(expectedWordCount)
@@ -102,8 +105,9 @@ export default class MnemonicsDialog extends Component<Props> {
                     }),
               ];
             }
+
             return [
-              onValidateMnemonics(mnemonics, wordCount),
+              onValidateMnemonics(mnemonics),
               intl.formatMessage(messages.invalidRecoveryPhrase),
             ];
           },
@@ -113,7 +117,7 @@ export default class MnemonicsDialog extends Component<Props> {
     {
       plugins: { vjf: vjf() },
       options: {
-        validateOnChange: false,
+        validateOnChange: true,
       },
     }
   );
@@ -136,19 +140,14 @@ export default class MnemonicsDialog extends Component<Props> {
       expectedWordCount,
     } = this.props;
     const recoveryPhraseField = this.form.$('recoveryPhrase');
-
-    const wordCount = mnemonics.length;
-    const isPhraseComplete = Array.isArray(expectedWordCount)
-      ? expectedWordCount.includes(wordCount)
-      : wordCount === expectedWordCount;
-
+    const canSubmit = !recoveryPhraseField.error && this.isPhraseComplete();
     return (
       <WalletRestoreDialog
         stepNumber={1}
         actions={[
           {
             primary: true,
-            disabled: !isPhraseComplete,
+            disabled: !canSubmit,
             label: intl.formatMessage(messages.continueButtonLabel),
             onClick: this.submit,
           },
@@ -159,9 +158,6 @@ export default class MnemonicsDialog extends Component<Props> {
         <div>
           <Autocomplete
             {...recoveryPhraseField.bind()}
-            ref={autocomplete => {
-              this.recoveryPhraseAutocomplete = autocomplete;
-            }}
             label={intl.formatMessage(globalMessages.recoveryPhraseDialogTitle)}
             placeholder={
               Array.isArray(expectedWordCount)
@@ -178,7 +174,10 @@ export default class MnemonicsDialog extends Component<Props> {
               messages.autocompleteNoResults
             )}
             skin={AutocompleteSkin}
-            onChange={onSetWalletMnemonics}
+            onChange={enteredMnemonics => {
+              recoveryPhraseField.set(enteredMnemonics);
+              onSetWalletMnemonics(enteredMnemonics);
+            }}
             preselectedOptions={[...mnemonics]}
             optionHeight={50}
           />

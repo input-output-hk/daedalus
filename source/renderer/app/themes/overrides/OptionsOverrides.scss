@@ -1,6 +1,10 @@
 .options {
   margin-top: -7px;
 
+  ul {
+    border-radius: 4px;
+  }
+
   :global {
     [data-bubble-arrow] {
       display: none !important;

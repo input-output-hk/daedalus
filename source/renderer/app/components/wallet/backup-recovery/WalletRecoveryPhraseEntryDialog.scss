@@ -22,15 +22,23 @@
       text-align: center;
     }
   }
+
+  :global {
+    .LoadingSpinner_component {
+      .LoadingSpinner_icon {
+        svg {
+          path {
+            fill: var(--theme-button-primary-text-color-disabled) !important;
+          }
+        }
+      }
+    }
+  }
+
 }
 
 .isBold {
   label {
     font-family: var(--font-medium);
   }
-}
-
-.isSubmitting {
-  box-shadow: none !important;
-  @include loading-spinner('../../../assets/images/spinner-light.svg');
 }

@@ -5,7 +5,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
-import styles from './Step3FailureDialog.scss';
+import styles from './NoWalletsDialog.scss';
 import sadWalletImage from '../../../assets/images/sad-wallet.inline.svg';
 
 const messages = defineMessages({

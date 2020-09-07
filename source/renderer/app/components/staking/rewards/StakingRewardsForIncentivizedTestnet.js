@@ -124,7 +124,7 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
       const rewardAmount = get(reward, 'reward').toFormat(
         DECIMAL_PLACES_IN_ADA
       );
-      return [rewardWallet, isRestoring ? '-' :`${rewardAmount} ADA`, date];
+      return [rewardWallet, isRestoring ? '-' : `${rewardAmount} ADA`, date];
     });
     const exportedContent = [exportedHeader, ...exportedBody];
 
