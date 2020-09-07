@@ -5,7 +5,11 @@ import { debounce } from 'lodash';
 import classNames from 'classnames';
 import styles from './StakePoolsList.scss';
 import StakePool from '../../../domains/StakePool';
+import LoadingSpinner from '../../widgets/LoadingSpinner';
 import { ThumbPool } from '../widgets/ThumbPool';
+
+// Maximum number of stake pools for which we do not need to use the preloading
+const PRELOADER_THRESHOLD = 100;
 
 type Props = {
   stakePoolsList: Array<StakePool>,
@@ -33,10 +37,12 @@ type Props = {
 
 type State = {
   highlightedPoolId?: ?number,
+  isPreloading: boolean,
 };
 
 const initialState = {
   highlightedPoolId: null,
+  isPreloading: true,
 };
 
 @observer
@@ -55,7 +61,20 @@ export class StakePoolsList extends Component<Props, State> {
     ...initialState,
   };
 
+  // We need to track the mounted state in order to avoid calling
+  // setState promise handling code after the component was already unmounted:
+  // Read more: https://facebook.github.io/react/blog/2015/12/16/ismounted-antipattern.html
+  _isMounted = false;
+
+  componentDidMount() {
+    this._isMounted = true;
+    setTimeout(() => {
+      if (this._isMounted) this.setState({ isPreloading: false });
+    }, 0);
+  }
+
   componentWillUnmount() {
+    this._isMounted = false;
     window.removeEventListener('resize', this.handleClose);
   }
 
@@ -78,6 +97,7 @@ export class StakePoolsList extends Component<Props, State> {
   handleClose = () => {
     this.setState({
       ...initialState,
+      isPreloading: false,
     });
   };
 
@@ -104,8 +124,15 @@ export class StakePoolsList extends Component<Props, State> {
       disabledStakePoolId,
       listName,
     } = this.props;
-
+    const { isPreloading } = this.state;
     const componentClasses = classNames([styles.component, listName]);
+
+    if (stakePoolsList.length > PRELOADER_THRESHOLD && isPreloading)
+      return (
+        <div className={styles.preloadingBlockWrapper}>
+          <LoadingSpinner big />
+        </div>
+      );
 
     return (
       <div className={componentClasses}>

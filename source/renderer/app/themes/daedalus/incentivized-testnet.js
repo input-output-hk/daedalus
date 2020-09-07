@@ -60,6 +60,8 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-button-attention-background-color-active': '#b23819',
     '--theme-button-attention-background-color-disabled':
       'rgba(235, 74, 34, 1)',
+    '--theme-button-attention-delete-text-color': '#121326',
+    '--theme-button-attention-delete-text-color-disabled': '#121326',
     '--theme-button-attention-text-color': '#121326',
     '--theme-button-attention-text-color-disabled': '#121326',
     '--theme-button-attention-outline-color': 'rgba(255, 255, 255, 0.3)',
@@ -206,7 +208,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-dialog-title-color': '#ffffff',
     '--theme-dialog-text-color': '#ffffff',
     '--theme-dialog-border-color': 'rgba(255, 255, 255, 0.2)',
-    '--theme-dialog-fullsize-background-color': '#36374df5',
+    '--theme-dialog-fullsize-background-color': '#2A2B3C',
     '--theme-dialog-fullsize-background-color-opaque': '#353545',
     '--theme-dialog-fullsize-button-background-color': '#ffffff',
     '--theme-dialog-fullsize-button-background-color-hover': '#313245',
@@ -216,7 +218,8 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-dialog-fullsize-button-label-color': '#ffffff',
     '--theme-dialog-fullsize-button-label-color-hover': '#000000',
     '--theme-dialog-fullsize-button-text-color-hover': '#36374d',
-    '--theme-dialog-fullsize-field-background-color': 'rgba(0,0,0, 0.1)',
+    '--theme-dialog-fullsize-field-background-color':
+      'rgba(255, 255, 255, 0.07)',
     '--theme-dialog-fullsize-text-color': 'rgba(255, 255, 255, 0.7)',
     '--theme-dialog-fullsize-text-highlight-color': '#ffffff',
     '--theme-dialog-fullsize-title-text-color': '#ffffff',
@@ -502,6 +505,8 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--rp-autocomplete-input-text-color': 'rgba(255, 255, 255, 0.7)',
     '--rp-autocomplete-placeholder-color': 'rgba(255, 255, 255, 0.5)',
     '--rp-autocomplete-selected-word-box-bg-color': '#eb2256',
+    '--rp-autocomplete-selected-word-dialog-box-bg-color': '#eb2256',
+    '--rp-autocomplete-selected-word-dialog-text-color': '#121326',
     '--rp-autocomplete-selected-word-text-color': '#121326',
     '--rp-autocomplete-selected-words-font-family':
       'NotoSans-Regular, NotoSansCJKjp-Regular',
@@ -509,7 +514,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
   rpBubble: {
     '--rp-bubble-bg-color': '#1e1f31',
     '--rp-bubble-border-color': 'rgba(255, 255, 255, 0.7)',
-    '--rp-bubble-border-radius': '2px',
+    '--rp-bubble-border-radius': '5px',
     '--rp-bubble-arrow-bg-color': '#343646',
     '--rp-bubble-box-shadow':
       '0 4px 16px 0 rgba(0, 0, 0, 0.4), 0 0 8px 0 rgba(0, 0, 0, 0.2)',
@@ -777,7 +782,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
       'rgba(18, 19, 38, 1)',
     '--theme-staking-stake-pool-tooltip-delegate-button-border-color':
       'transparent',
-    '--theme-staking-progress-label-light': 'rgba(18, 19, 38, 1)',
+    '--theme-staking-progress-label-light': '#ffffffb3',
     '--theme-staking-stake-pools-search-clear-button-background-color':
       'rgba(255, 255, 255, 0.1)',
     '--theme-staking-stake-pools-search-clear-button-color': '#ffffff',
@@ -791,7 +796,9 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
       'rgba(255, 255, 255, .1)',
     '--theme-staking-stake-pool-tooltip-neutral-text-color': '#ffffff',
     '--theme-staking-stake-pool-tooltip-experimental-icon-color': '#ffffff',
-    '--theme-staking-stake-pool-tooltip-id-background-color': '#000000',
+    ' --theme-staking-stake-pool-tooltip-id-background-color': '#3b3b4b',
+    '--theme-staking-stake-pool-tooltip-id-shadow-1': 'rgba(0, 0, 0, 0.25)',
+    '--theme-staking-stake-pool-tooltip-id-shadow-2': 'rgba(42, 43, 60, 0)',
   },
   staking: {
     '--theme-staking-content-background-color': '#1e1f31',
@@ -806,8 +813,8 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-staking-link-color-light': 'rgba(246, 154, 178, 0.7)',
     '--theme-staking-progress-bar-background-color':
       'rgba(255, 255, 255, 0.07)',
-    '--theme-staking-progress-stripe-dark-1-background-color': '#eb2256',
-    '--theme-staking-progress-stripe-dark-2-background-color': '#c81241',
+    '--theme-staking-progress-stripe-dark-1-background-color': '#bf0535',
+    '--theme-staking-progress-stripe-dark-2-background-color': '#eb2256',
     '--theme-staking-slider-background-color-1': '#eb2256',
     '--theme-staking-slider-background-color-2': '#ffffff',
     '--theme-staking-slider-box-shadow-color': 'rgba(0, 0, 0, 0.24)',

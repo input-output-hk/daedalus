@@ -14,6 +14,10 @@
     .Dialog_content {
       padding: 0 25px 4px 4px;
     }
+
+    .Dialog_actions button {
+      margin-top: 10px !important;
+    }
   }
 
   .stakePoolsListWrapper {
@@ -22,20 +26,12 @@
 
   .content {
     color: var(--theme-delegation-steps-choose-stake-pool-title-color);
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 
     .description {
       font-family: var(--font-medium);
       line-height: 1.38;
       margin: 0 auto 10px;
-    }
-
-    .searchStakePoolsWrapper {
-      :global {
-        .StakePoolsSearch_clearSearch {
-          margin-top: 0;
-        }
-      }
     }
 
     .selectStakePoolWrapper {
@@ -63,11 +59,14 @@
         border: 2px solid
           var(--theme-delegation-steps-choose-stake-pool-thumb-border-color);
         border-style: dashed;
+
         .icon {
           margin-top: 24.5px;
           text-align: center;
+
           svg {
             height: 16px;
+
             path {
               stroke: var(
                 --theme-delegation-steps-choose-stake-pool-checkmark-icon-color
@@ -80,6 +79,7 @@
       .selectedPoolBlock {
         border: 1px solid
           var(--theme-delegation-steps-choose-stake-pool-thumb-border-color);
+
         .ticker {
           color: var(
             --theme-delegation-steps-choose-stake-pool-selected-ticker-color
@@ -95,9 +95,11 @@
         .icon {
           margin-top: 10px;
           text-align: center;
+
           svg {
             vertical-align: top;
             width: 15.5px;
+
             path {
               stroke: var(
                 --theme-delegation-steps-choose-stake-pool-selected-checkmark-icon-color
@@ -109,8 +111,10 @@
         &.retiring {
           .icon {
             margin-top: 5px;
+
             svg {
               width: 20px;
+
               path {
                 stroke: var(
                   --theme-staking-stake-pool-retirement-background-color
@@ -130,6 +134,7 @@
         font-size: 16px;
         line-height: 1.38;
         margin-left: 19px;
+
         span {
           span {
             font-family: var(--font-medium);
@@ -140,12 +145,22 @@
 
     .recentStakePoolsWrapper {
       margin-top: 20px;
+
       .recentStakePoolsLabel {
         font-family: var(--font-medium);
         margin-bottom: 10px;
       }
     }
+
+    .searchStakePoolsWrapper {
+      :global {
+        .StakePoolsSearch_clearSearch > div > div {
+          margin-left: -15px !important;
+        }
+      }
+    }
   }
+
   .retiringPoolFooter {
     color: var(--theme-staking-stake-pool-retirement-background-color);
     font-family: var(--font-medium);
