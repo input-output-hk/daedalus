@@ -6,11 +6,15 @@
       letter-spacing: 2px;
       margin-bottom: 0;
     }
+
+    .BackToTopButton_component {
+      margin-left: 0 !important;
+    }
   }
 
   .delegationStepsIndicatorWrapper {
-    margin: auto;
-    width: 288px;
+    margin: 4px auto;
+    width: 300px;
 
     .stepIndicatorLabel {
       color: var(--theme-delegation-steps-activation-steps-indicator-color);
