@@ -66,6 +66,8 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-button-attention-background-color-hover': '#ec5d6b',
     '--theme-button-attention-background-color-active': '#d34452',
     '--theme-button-attention-background-color-disabled': '#ea4c5b',
+    '--theme-button-attention-delete-text-color': '#121326',
+    '--theme-button-attention-delete-text-color-disabled': '#121326',
     '--theme-button-attention-text-color-disabled': '#fafbfc',
     '--theme-button-attention-text-color': '#fafbfc',
     '--theme-button-attention-outline-color': '#ff707e',
@@ -230,7 +232,8 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-dialog-fullsize-button-label-color': '#fafbfc',
     '--theme-dialog-fullsize-button-label-color-hover': 'rgba(38, 51, 69, 1)',
     '--theme-dialog-fullsize-button-text-color-hover': '#263345',
-    '--theme-dialog-fullsize-field-background-color': 'rgba(0,0,0, 0.1)',
+    '--theme-dialog-fullsize-field-background-color':
+      'rgba(233, 244, 254, 0.07)',
     '--theme-dialog-fullsize-text-color': 'rgba(255, 255, 255, 0.7)',
     '--theme-dialog-fullsize-text-highlight-color': '#ffffff',
     '--theme-dialog-fullsize-title-text-color': '#ffffff',
@@ -298,7 +301,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-icon-syncing-ada-logo-color': '#e9f4fe',
     '--theme-icon-syncing-daedalus-logo-color': '#e9f4fe',
     '--theme-icon-transactions-ada-symbol-color': '#e9f4fe',
-    '--theme-icon-transaction-type-color': '#fafbfc',
+    '--theme-icon-transaction-type-color': '#e9f4fe',
   },
   input: {
     '--theme-input-background-color': '#263345',
@@ -521,6 +524,9 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--rp-autocomplete-input-text-color': 'rgba(233, 244, 254, 0.7)',
     '--rp-autocomplete-placeholder-color': 'rgba(233, 244, 254, 0.5)',
     '--rp-autocomplete-selected-word-box-bg-color': 'rgba(83, 99, 112, 0.5)',
+    '--rp-autocomplete-selected-word-dialog-box-bg-color':
+      'rgba(83, 99, 112, 0.5)',
+    '--rp-autocomplete-selected-word-dialog-text-color': '#fafbfc',
     '--rp-autocomplete-selected-word-text-color': '#fafbfc',
     '--rp-autocomplete-selected-words-font-family':
       'NotoSans-Regular, NotoSansCJKjp-Regular',
@@ -528,7 +534,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
   rpBubble: {
     '--rp-bubble-bg-color': '#263345',
     '--rp-bubble-border-color': 'rgba(233, 244, 254, 0.7)',
-    '--rp-bubble-border-radius': '2px',
+    '--rp-bubble-border-radius': '5px',
     '--rp-bubble-arrow-bg-color': '#536370',
     '--rp-bubble-box-shadow':
       '0 4px 16px 0 rgba(0, 0, 0, 0.4), 0 0 8px 0 rgba(0, 0, 0, 0.2)',
@@ -757,7 +763,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-staking-stake-pool-glow-color': '#7cfeb54c',
     '--theme-staking-stake-pool-grey-color': 'rgba(233, 244, 254, 0.5)',
     '--theme-staking-stake-pool-grey-bg-color': 'rgba(233, 244, 254, 0.1)',
-    '--theme-staking-progress-label-light': '#fafbfc',
+    '--theme-staking-progress-label-light': 'rgba(233, 244, 254, 0.7)',
     '--theme-staking-stake-pool-retirement-background-color': '#ea4c5b',
     '--theme-staking-stake-pool-saturation-background-color':
       'rgba(233, 244, 254, 0.2)',
@@ -807,7 +813,10 @@ export const DARK_BLUE_THEME_OUTPUT = {
       'rgba(233, 244, 254, .1)',
     '--theme-staking-stake-pool-tooltip-neutral-text-color': '#e9f4fe',
     '--theme-staking-stake-pool-tooltip-experimental-icon-color': '#e9f4fe',
-    '--theme-staking-stake-pool-tooltip-id-background-color': '#fafbfc',
+    '--theme-staking-stake-pool-tooltip-id-background-color':
+      'rgba(255, 255, 255, 0.05)',
+    '--theme-staking-stake-pool-tooltip-id-shadow-1': 'rgba(0, 0, 0, 0.25)',
+    '--theme-staking-stake-pool-tooltip-id-shadow-2': 'rgba(42, 43, 60, 0)',
   },
   staking: {
     '--theme-staking-content-background-color': '#263345',

@@ -61,13 +61,15 @@ export const createReactPolymorphTheme = (
         0.5
       )}`,
       '--rp-autocomplete-selected-word-box-bg-color': `${background.secondary.light}`,
+      '--rp-autocomplete-selected-word-dialog-box-bg-color': `${background.secondary.light}`,
+      '--rp-autocomplete-selected-word-dialog-text-color': `${text.secondary}`,
       '--rp-autocomplete-selected-word-text-color': `${text.secondary}`,
       '--rp-autocomplete-selected-words-font-family': `${fonts.regular}`,
     },
     rpBubble: {
       '--rp-bubble-bg-color': `${background.primary.lightest}`,
       '--rp-bubble-border-color': `${border}`,
-      '--rp-bubble-border-radius': '2px',
+      '--rp-bubble-border-radius': '5px',
       '--rp-bubble-box-shadow':
         '0 4px 16px 0 rgba(0, 0, 0, 0.12), 0 0 8px 0 rgba(0, 0, 0, 0.06)',
       '--rp-bubble-arrow-bg-color': `${background.primary.regular}`,
@@ -313,6 +315,8 @@ export const createDaedalusComponentsTheme = (
       '--theme-button-attention-background-color-hover': `${error.light}`,
       '--theme-button-attention-background-color-active': `${error.darkest}`,
       '--theme-button-attention-background-color-disabled': `${error.regular}`,
+      '--theme-button-attention-delete-text-color': `${background.primary.regular}`,
+      '--theme-button-attention-delete-text-color-disabled': `${background.primary.regular}`,
       '--theme-button-attention-text-color': `${text.secondary}`,
       '--theme-button-attention-text-color-disabled': `${text.secondary}`,
       '--theme-button-attention-outline-color': `${error.lighter}`,
@@ -962,6 +966,8 @@ export const createDaedalusComponentsTheme = (
       '--theme-staking-stake-pool-tooltip-shadow-color': 'rgba(0, 0, 0, 0.25)',
       '--theme-staking-stake-pool-tooltip-text-color': `${text.primary}`,
       '--theme-staking-stake-pool-tooltip-id-background-color': `${text.secondary}`,
+      '--theme-staking-stake-pool-tooltip-id-shadow-1': 'rgba(42, 43, 60, 1)',
+      '--theme-staking-stake-pool-tooltip-id-shadow-2': 'rgba(42, 43, 60, 0)',
       '--theme-staking-stake-pool-tooltip-link-color': `${background.secondary.dark}`,
       '--theme-staking-stake-pool-tooltip-neutral-background-color': `${chroma(
         background.secondary.regular

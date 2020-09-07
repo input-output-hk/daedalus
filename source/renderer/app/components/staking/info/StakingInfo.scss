@@ -68,7 +68,7 @@
 }
 
 .progressLabelWhite {
-  @extend %regularText;
+  @extend %accentText;
   color: var(--theme-staking-progress-label-light);
   transform: translateX(-8px);
 }
