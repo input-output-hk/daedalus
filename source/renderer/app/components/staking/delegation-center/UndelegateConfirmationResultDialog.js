@@ -9,8 +9,7 @@ import styles from './UndelegateConfirmationResultDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
 import sadLogo from '../../../assets/images/untada.inline.svg';
 import humanizeDurationByLocale from '../../../utils/humanizeDurationByLocale';
-import { generateEpochCountdownInterval } from '../../../utils/epoch';
-import type { SlotLength } from '../../../api/network/types';
+import { EPOCH_COUNTDOWN_INTERVAL } from '../../../config/stakingConfig';
 
 const messages = defineMessages({
   dialogTitle: {
@@ -35,7 +34,6 @@ const messages = defineMessages({
 type Props = {
   walletName: string,
   futureEpochStartTime: string,
-  slotLength: ?SlotLength,
   currentLocale: string,
   onClose: Function,
 };
@@ -57,23 +55,12 @@ export default class UndelegateConfirmationResultDialog extends Component<
     this.configureUpdateTimer();
   }
 
-  componentDidUpdate(prevProps: Props) {
-    if (prevProps.slotLength !== this.props.slotLength) {
-      this.configureUpdateTimer();
-    }
-  }
-
   configureUpdateTimer = () => {
-    const { slotLength } = this.props;
-    const epochCountdownInterval = generateEpochCountdownInterval(slotLength);
-
-    if (epochCountdownInterval && !this.intervalHandler) {
-      this.updateTimeUntilNextEpochStart();
-      this.intervalHandler = setInterval(
-        () => this.updateTimeUntilNextEpochStart(),
-        epochCountdownInterval
-      );
-    }
+    this.updateTimeUntilNextEpochStart();
+    this.intervalHandler = setInterval(
+      () => this.updateTimeUntilNextEpochStart(),
+      EPOCH_COUNTDOWN_INTERVAL
+    );
   };
 
   updateTimeUntilNextEpochStart = () => {

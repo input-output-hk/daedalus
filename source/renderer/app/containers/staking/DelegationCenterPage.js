@@ -71,7 +71,6 @@ export default class DelegationCenterPage extends Component<Props> {
       nextEpoch,
       futureEpoch,
       isEpochsInfoAvailable,
-      slotLength,
       epochLength,
     } = networkStatus;
     const { currentLocale } = profile;
@@ -93,7 +92,6 @@ export default class DelegationCenterPage extends Component<Props> {
           onDelegate={this.handleDelegate}
           onUndelegate={this.handleUndelegate}
           networkTip={networkTip}
-          slotLength={slotLength}
           epochLength={epochLength}
           nextEpoch={nextEpoch}
           futureEpoch={futureEpoch}

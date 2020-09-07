@@ -13,8 +13,7 @@ import tadaImage from '../../../assets/images/tada-ic.inline.svg';
 import Wallet from '../../../domains/Wallet';
 import StakePool from '../../../domains/StakePool';
 import humanizeDurationByLocale from '../../../utils/humanizeDurationByLocale';
-import { generateEpochCountdownInterval } from '../../../utils/epoch';
-import type { SlotLength } from '../../../api/network/types';
+import { EPOCH_COUNTDOWN_INTERVAL } from '../../../config/stakingConfig';
 
 const messages = defineMessages({
   title: {
@@ -49,7 +48,6 @@ type Props = {
   delegatedWallet: ?Wallet,
   delegatedStakePool: ?StakePool,
   futureEpochStartTime: string,
-  slotLength: ?SlotLength,
   onClose: Function,
   currentLocale: string,
 };
@@ -72,23 +70,12 @@ export default class DelegationStepsSuccessDialog extends Component<
     this.configureUpdateTimer();
   }
 
-  componentDidUpdate(prevProps: Props) {
-    if (prevProps.slotLength !== this.props.slotLength) {
-      this.configureUpdateTimer();
-    }
-  }
-
   configureUpdateTimer = () => {
-    const { slotLength } = this.props;
-    const epochCountdownInterval = generateEpochCountdownInterval(slotLength);
-
-    if (epochCountdownInterval && !this.intervalHandler) {
-      this.updateTimeUntilNextEpochStart();
-      this.intervalHandler = setInterval(
-        () => this.updateTimeUntilNextEpochStart(),
-        epochCountdownInterval
-      );
-    }
+    this.updateTimeUntilNextEpochStart();
+    this.intervalHandler = setInterval(
+      () => this.updateTimeUntilNextEpochStart(),
+      EPOCH_COUNTDOWN_INTERVAL
+    );
   };
 
   updateTimeUntilNextEpochStart = () => {

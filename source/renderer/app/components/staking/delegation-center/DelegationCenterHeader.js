@@ -6,13 +6,11 @@ import { get } from 'lodash';
 import styles from './DelegationCenterHeader.scss';
 import CountdownWidget from '../../widgets/CountdownWidget';
 import humanizeDurationByLocale from '../../../utils/humanizeDurationByLocale';
-import { generateEpochCountdownInterval } from '../../../utils/epoch';
+import { EPOCH_COUNTDOWN_INTERVAL } from '../../../config/stakingConfig';
 import type {
   NextEpoch,
   TipInfo,
   FutureEpoch,
-  SlotLength,
-  EpochLength,
 } from '../../../api/network/types';
 import { generateFieldPanel } from './helpers';
 
@@ -52,8 +50,7 @@ const messages = defineMessages({
 
 type Props = {
   networkTip: ?TipInfo,
-  slotLength: ?SlotLength,
-  epochLength: ?EpochLength,
+  epochLength: ?number,
   nextEpoch: ?NextEpoch,
   futureEpoch: ?FutureEpoch,
   currentLocale: string,
@@ -73,23 +70,12 @@ export default class DelegationCenterHeader extends Component<Props, State> {
     this.configureUpdateTimer();
   }
 
-  componentDidUpdate(prevProps: Props) {
-    if (prevProps.slotLength !== this.props.slotLength) {
-      this.configureUpdateTimer();
-    }
-  }
-
   configureUpdateTimer = () => {
-    const { slotLength } = this.props;
-    const epochCountdownInterval = generateEpochCountdownInterval(slotLength);
-
-    if (epochCountdownInterval && !this.intervalHandler) {
-      this.updateTimeUntilFutureEpoch();
-      this.intervalHandler = setInterval(
-        () => this.updateTimeUntilFutureEpoch(),
-        epochCountdownInterval
-      );
-    }
+    this.updateTimeUntilFutureEpoch();
+    this.intervalHandler = setInterval(
+      () => this.updateTimeUntilFutureEpoch(),
+      EPOCH_COUNTDOWN_INTERVAL
+    );
   };
 
   updateTimeUntilFutureEpoch = () => {
@@ -163,7 +149,7 @@ export default class DelegationCenterHeader extends Component<Props, State> {
     const fieldPanels = this.generateCurrentEpochPanels(
       epoch,
       slot,
-      epochLength.quantity
+      epochLength
     );
     const showNextEpochCountdown = nextEpochNumber > 0;
 

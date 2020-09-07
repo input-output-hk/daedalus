@@ -47,3 +47,5 @@ export const REDEEM_ITN_REWARDS_STEPS: {
 };
 
 export const IS_RANKING_DATA_AVAILABLE = true;
+
+export const EPOCH_COUNTDOWN_INTERVAL = 1000;

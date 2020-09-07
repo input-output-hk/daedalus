@@ -54,7 +54,7 @@ export type GetNetworkInfoResponse = {
   localTip: TipInfo,
   networkTip: ?TipInfo,
   nextEpoch: ?NextEpoch,
-  futureEpoch: ?FutureEpoch,
+  futureEpoch?: ?FutureEpoch,
 };
 
 export type NetworkInfoResponse = {

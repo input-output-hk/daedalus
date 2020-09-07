@@ -12,7 +12,6 @@ import DelegationStepsChooseStakePoolDialog from './DelegationStepsChooseStakePo
 import LocalizableError from '../../../i18n/LocalizableError';
 import StakePool from '../../../domains/StakePool';
 import Wallet from '../../../domains/Wallet';
-import type { SlotLength } from '../../../api/network/types';
 
 type Props = {
   activeStep: number,
@@ -38,7 +37,6 @@ type Props = {
   isSubmitting: boolean,
   error: ?LocalizableError,
   futureEpochStartTime: string,
-  slotLength: ?SlotLength,
   currentLocale: string,
   getStakePoolById: Function,
 };
@@ -80,7 +78,6 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       isWalletAcceptable,
       stakePoolJoinFee,
       futureEpochStartTime,
-      slotLength,
       currentLocale,
       isSubmitting,
       error,
@@ -153,7 +150,6 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
             delegatedWallet={selectedWallet}
             delegatedStakePool={selectedPool}
             futureEpochStartTime={futureEpochStartTime}
-            slotLength={slotLength}
             currentLocale={currentLocale}
             onClose={onClose}
           />

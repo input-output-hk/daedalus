@@ -30,8 +30,6 @@ import type {
   NextEpoch,
   FutureEpoch,
   TipInfo,
-  SlotLength,
-  EpochLength,
 } from '../api/network/types';
 import type {
   CardanoNodeState,
@@ -126,8 +124,8 @@ export default class NetworkStatusStore extends Store {
   @observable shelleyActivationTime: string = '';
   @observable verificationProgress: number = 0;
 
-  @observable epochLength: ?EpochLength = null;
-  @observable slotLength: ?SlotLength = null;
+  @observable epochLength: ?number = null; // unit: 1 slot
+  @observable slotLength: ?number = null; // unit: 1 second
 
   // DEFINE STORE METHODS
   setup() {
@@ -465,24 +463,16 @@ export default class NetworkStatusStore extends Store {
         return;
       }
 
-      const {
-        syncProgress,
-        localTip,
-        networkTip,
-        nextEpoch,
-        futureEpoch,
-      } = networkStatus;
-      let composedFutureEpoch = null;
+      const { syncProgress, localTip, networkTip, nextEpoch } = networkStatus;
+      let futureEpoch = null;
 
-      if (futureEpoch && this.epochLength && this.slotLength) {
-        const epochLengthQuantity = this.epochLength.quantity;
-        const slotLengthQuantity = this.slotLength.quantity;
-        const slotLengthUnit = this.slotLength.unit;
-        composedFutureEpoch = {
-          ...futureEpoch,
-          epochStart: futureEpoch.epochStart
-            ? moment(futureEpoch.epochStart)
-                .add(epochLengthQuantity * slotLengthQuantity, slotLengthUnit)
+      if (nextEpoch && this.epochLength && this.slotLength) {
+        const startDelta = this.epochLength * this.slotLength;
+        futureEpoch = {
+          epochNumber: nextEpoch.epochNumber ? nextEpoch.epochNumber + 1 : null,
+          epochStart: nextEpoch.epochStart
+            ? moment(nextEpoch.epochStart)
+                .add(startDelta, 'seconds')
                 .toISOString()
             : '',
         };
@@ -499,7 +489,7 @@ export default class NetworkStatusStore extends Store {
           this.localTip = localTip;
           this.networkTip = networkTip;
           this.nextEpoch = nextEpoch;
-          this.futureEpoch = composedFutureEpoch;
+          this.futureEpoch = futureEpoch;
         }
       );
 
@@ -635,8 +625,8 @@ export default class NetworkStatusStore extends Store {
         this.shelleyActivationTime = epochStartTime;
       });
       runInAction('Update Epoch config', () => {
-        this.slotLength = slotLength;
-        this.epochLength = epochLength;
+        this.slotLength = slotLength.quantity;
+        this.epochLength = epochLength.quantity;
       });
     } catch (e) {
       runInAction('Clear Decentralization Progress', () => {

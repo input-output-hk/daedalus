@@ -1651,13 +1651,6 @@ export default class AdaApi {
               epochStart: nextEpochStartTime,
             }
           : null,
-        futureEpoch: nextEpoch
-          ? {
-              // N+2 epoch
-              epochNumber: nextEpochNumber ? nextEpochNumber + 1 : null,
-              epochStart: nextEpochStartTime,
-            }
-          : null,
       };
     } catch (error) {
       logger.error('AdaApi::getNetworkInfo error', { error });
