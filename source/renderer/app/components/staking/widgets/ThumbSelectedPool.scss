@@ -33,8 +33,9 @@
 }
 
 .selectedPoolBlock {
-  border: 1px solid
-    var(--theme-delegation-steps-choose-stake-pool-thumb-border-color);
+  margin-top: -1px;
+  padding-top: 1px;
+
   .ticker {
     color: var(
       --theme-delegation-steps-choose-stake-pool-selected-ticker-color
@@ -43,7 +44,7 @@
     font-size: 14px;
     letter-spacing: -0.5px;
     line-height: 1.57;
-    margin-top: 8px;
+    margin-top: 7px;
     text-align: center;
   }
 

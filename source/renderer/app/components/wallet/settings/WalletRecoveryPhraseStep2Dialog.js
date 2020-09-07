@@ -101,7 +101,7 @@ export default class WalletRecoveryPhraseStep2Dialog extends Component<
             if (!isPhraseComplete) {
               const expected = Array.isArray(expectedWordCount)
                 ? ''
-                : enteredWordCount;
+                : expectedWordCount;
 
               return [
                 false,
@@ -135,13 +135,13 @@ export default class WalletRecoveryPhraseStep2Dialog extends Component<
     const { isVerifying } = this.state;
     const recoveryPhraseField = form.$('recoveryPhrase');
     const { length: enteredWordCount } = recoveryPhraseField.value;
+
     const canSubmit =
       !recoveryPhraseField.error &&
       !isVerifying &&
-      Array.isArray(expectedWordCount)
+      (Array.isArray(expectedWordCount)
         ? expectedWordCount.includes(enteredWordCount)
-        : enteredWordCount === expectedWordCount;
-
+        : enteredWordCount === expectedWordCount);
     const recoveryPhrase = recoveryPhraseField.value;
     const actions = [
       {

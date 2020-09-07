@@ -7,8 +7,14 @@ Changelog
 
 - Implemented slot and epoch length config variables fetching API instead of using constants ([PR 2165](https://github.com/input-output-hk/daedalus/pull/2165))
 
+### Fixes
+
+- Improved rendering performance of the stake pools on the "Stake pools" screen ([PR 2177](https://github.com/input-output-hk/daedalus/pull/2177))
+
 ### Chores
 
+- Changed the ordering of wallet addresses on the "Receive" screen so that the oldest one are on top and the newest one on the bottom of the list ([PR 2176](https://github.com/input-output-hk/daedalus/pull/2176))
+- Fixed UI issues ([PR 2152](https://github.com/input-output-hk/daedalus/pull/2152))
 - Updated list of team members on About screen ([PR 2167](https://github.com/input-output-hk/daedalus/pull/2167))
 
 ## 2.2.0

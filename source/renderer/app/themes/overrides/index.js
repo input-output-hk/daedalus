@@ -2,6 +2,7 @@ import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
 import AutocompleteOverrides from './AutocompleteOverrides.scss';
 import ButtonOverrides from './ButtonOverrides.scss';
 import CheckboxOverrides from './CheckboxOverrides.scss';
+import InputOverrides from './InputOverrides.scss';
 import LinkOverrides from './LinkOverrides.scss';
 import ModalOverrides from './ModalOverrides.scss';
 import RadioOverrides from './RadioOverrides.scss';
@@ -16,6 +17,7 @@ const {
   AUTOCOMPLETE,
   BUTTON,
   CHECKBOX,
+  INPUT,
   LINK,
   MODAL,
   SWITCH,
@@ -31,6 +33,7 @@ export const themeOverrides = {
   [AUTOCOMPLETE]: AutocompleteOverrides,
   [BUTTON]: ButtonOverrides,
   [CHECKBOX]: CheckboxOverrides,
+  [INPUT]: InputOverrides,
   [LINK]: LinkOverrides,
   [MODAL]: ModalOverrides,
   [RADIO]: RadioOverrides,

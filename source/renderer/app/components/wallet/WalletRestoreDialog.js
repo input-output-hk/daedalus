@@ -39,6 +39,7 @@ import {
 } from '../../config/cryptoConfig';
 import tooltipStyles from '../widgets/forms/InlineEditingDropdown-tooltip.scss';
 import infoIconInline from '../../assets/images/info-icon.inline.svg';
+import LoadingSpinner from '../widgets/LoadingSpinner';
 
 const messages = defineMessages({
   title: {
@@ -391,14 +392,15 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     const spendingPasswordField = form.$('spendingPassword');
     const repeatedPasswordField = form.$('repeatPassword');
 
+    const label = this.isCertificate()
+      ? this.context.intl.formatMessage(messages.restorePaperWalletButtonLabel)
+      : this.context.intl.formatMessage(messages.importButtonLabel);
+
+    const buttonLabel = !isSubmitting ? label : <LoadingSpinner />;
+
     const actions = [
       {
-        className: isSubmitting ? styles.isSubmitting : null,
-        label: this.isCertificate()
-          ? this.context.intl.formatMessage(
-              messages.restorePaperWalletButtonLabel
-            )
-          : this.context.intl.formatMessage(messages.importButtonLabel),
+        label: buttonLabel,
         primary: true,
         disabled: isSubmitting,
         onClick: this.submit,

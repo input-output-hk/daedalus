@@ -68,8 +68,7 @@ export default class TopBar extends Component<Props> {
         </span>
         <span className={styles.walletAmount}>
           {// show currency and use long format
-            isRestoreActive ? '-' :
-          formattedWalletAmount(activeWallet.amount)}
+          isRestoreActive ? '-' : formattedWalletAmount(activeWallet.amount)}
         </span>
       </span>
     ) : null;
