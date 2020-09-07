@@ -1,6 +1,5 @@
 // @flow
 import type { SlotLength } from '../api/network/types';
-import { DEFAULT_EPOCH_COUNTDOWN_INTERVAL } from '../config/epochsConfig';
 
 const SLOT_LENGTH_UNITS = {
   MILLISECOND: 'millisecond',
@@ -20,7 +19,7 @@ const SLOT_LENGTH_UNIT_MAP = {
 
 export const generateEpochCountdownInterval = (slotLength: ?SlotLength) => {
   if (!slotLength) {
-    return DEFAULT_EPOCH_COUNTDOWN_INTERVAL;
+    return null;
   }
 
   return SLOT_LENGTH_UNIT_MAP[slotLength.unit];

@@ -69,15 +69,27 @@ export default class DelegationStepsSuccessDialog extends Component<
   };
 
   componentDidMount() {
+    this.configureUpdateTimer();
+  }
+
+  componentDidUpdate(prevProps: Props) {
+    if (prevProps.slotLength !== this.props.slotLength) {
+      this.configureUpdateTimer();
+    }
+  }
+
+  configureUpdateTimer = () => {
     const { slotLength } = this.props;
     const epochCountdownInterval = generateEpochCountdownInterval(slotLength);
 
-    this.updateTimeUntilNextEpochStart();
-    this.intervalHandler = setInterval(
-      () => this.updateTimeUntilNextEpochStart(),
-      epochCountdownInterval
-    );
-  }
+    if (epochCountdownInterval && !this.intervalHandler) {
+      this.updateTimeUntilNextEpochStart();
+      this.intervalHandler = setInterval(
+        () => this.updateTimeUntilNextEpochStart(),
+        epochCountdownInterval
+      );
+    }
+  };
 
   updateTimeUntilNextEpochStart = () => {
     const { futureEpochStartTime } = this.props;

@@ -41,10 +41,6 @@ import type {
 import type { CheckDiskSpaceResponse } from '../../../common/types/no-disk-space.types';
 import { TlsCertificateNotValidError } from '../api/nodes/errors';
 import { openLocalDirectoryChannel } from '../ipc/open-local-directory';
-import {
-  getDefaultSlotLength,
-  getDefaultEpochLength,
-} from '../config/epochsConfig';
 
 // DEFINE CONSTANTS -------------------------
 const NETWORK_STATUS = {
@@ -477,18 +473,16 @@ export default class NetworkStatusStore extends Store {
         futureEpoch,
       } = networkStatus;
       let composedFutureEpoch = null;
-      const slotLength = this.slotLength || getDefaultSlotLength();
-      const epochLength = this.epochLength || getDefaultEpochLength();
 
-      if (futureEpoch) {
+      if (futureEpoch && this.epochLength && this.slotLength) {
+        const epochLengthQuantity = this.epochLength.quantity;
+        const slotLengthQuantity = this.slotLength.quantity;
+        const slotLengthUnit = this.slotLength.unit;
         composedFutureEpoch = {
           ...futureEpoch,
           epochStart: futureEpoch.epochStart
             ? moment(futureEpoch.epochStart)
-                .add(
-                  epochLength.quantity * slotLength.quantity,
-                  slotLength.unit
-                )
+                .add(epochLengthQuantity * slotLengthQuantity, slotLengthUnit)
                 .toISOString()
             : '',
         };

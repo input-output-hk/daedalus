@@ -2783,13 +2783,13 @@
         "description": "Headline for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 24
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.epoch",
         "start": {
           "column": 9,
-          "line": 21
+          "line": 20
         }
       },
       {
@@ -2797,13 +2797,13 @@
         "description": "Headline for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 29
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.currentSlot",
         "start": {
           "column": 15,
-          "line": 26
+          "line": 25
         }
       },
       {
@@ -2811,13 +2811,13 @@
         "description": "Headline for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 34
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.totalSlots",
         "start": {
           "column": 14,
-          "line": 31
+          "line": 30
         }
       },
       {
@@ -2825,13 +2825,13 @@
         "description": "Headline for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 39
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.headingLeft",
         "start": {
           "column": 15,
-          "line": 36
+          "line": 35
         }
       },
       {
@@ -2839,13 +2839,13 @@
         "description": "Headline for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 44
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.headingRight",
         "start": {
           "column": 16,
-          "line": 41
+          "line": 40
         }
       },
       {
@@ -2853,13 +2853,13 @@
         "description": "Delegation description for the Delegation center.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 50
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterHeader.js",
         "id": "staking.delegationCenter.description",
         "start": {
           "column": 15,
-          "line": 46
+          "line": 45
         }
       }
     ],
