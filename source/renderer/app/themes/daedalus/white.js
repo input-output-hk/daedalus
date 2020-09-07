@@ -61,6 +61,8 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-button-attention-background-color-hover': '#ee707c',
     '--theme-button-attention-background-color-active': '#a43540',
     '--theme-button-attention-background-color-disabled': '#ea4c5b',
+    '--theme-button-attention-delete-text-color': '#fafbfc',
+    '--theme-button-attention-delete-text-color-disabled': '#fafbfc',
     '--theme-button-attention-text-color': '#fafbfc',
     '--theme-button-attention-text-color-disabled': '#fafbfc',
     '--theme-button-attention-outline-color': '#f2949d',
@@ -219,7 +221,7 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-dialog-fullsize-title-text-color': '#2d2d2d',
     '--theme-dialog-fullsize-button-label-color': '#29b595',
     '--theme-dialog-fullsize-button-label-color-hover': '#fff',
-    '--theme-dialog-fullsize-field-background-color': 'rgba(0,0,0, 0.1)',
+    '--theme-dialog-fullsize-field-background-color': 'rgba(45, 45, 45, 0.07)',
   },
   errors: {
     '--theme-color-error': '#ea4c5b',
@@ -504,6 +506,8 @@ export const WHITE_THEME_OUTPUT = {
     '--rp-autocomplete-input-text-color': 'rgba(45, 45, 45, 0.7)',
     '--rp-autocomplete-placeholder-color': 'rgba(45, 45, 45, 0.5)',
     '--rp-autocomplete-selected-word-box-bg-color': '#29b595',
+    '--rp-autocomplete-selected-word-dialog-box-bg-color': '#29b595',
+    '--rp-autocomplete-selected-word-dialog-text-color': '#ffffff',
     '--rp-autocomplete-selected-word-text-color': '#ffffff',
     '--rp-autocomplete-selected-words-font-family':
       'NotoSans-Regular, NotoSansCJKjp-Regular',
@@ -511,7 +515,7 @@ export const WHITE_THEME_OUTPUT = {
   rpBubble: {
     '--rp-bubble-bg-color': '#fff',
     '--rp-bubble-border-color': 'rgba(45, 45, 45, 0.7)',
-    '--rp-bubble-border-radius': '2px',
+    '--rp-bubble-border-radius': '5px',
     '--rp-bubble-arrow-bg-color': '#f3f3f4',
     '--rp-bubble-box-shadow':
       '0 4px 16px 0 rgba(0, 0, 0, 0.12), 0 0 8px 0 rgba(0, 0, 0, 0.06)',
@@ -776,7 +780,7 @@ export const WHITE_THEME_OUTPUT = {
       '#fafbfc',
     '--theme-staking-stake-pool-tooltip-delegate-button-border-color':
       'transparent',
-    '--theme-staking-progress-label-light': '#fafbfc',
+    '--theme-staking-progress-label-light': '#2d2d2db3',
     '--theme-staking-stake-pools-search-clear-button-background-color':
       'rgba(41, 181, 149, 0.1)',
     '--theme-staking-stake-pools-search-clear-button-color': '#2d2d2d',
@@ -790,7 +794,10 @@ export const WHITE_THEME_OUTPUT = {
       'rgba(45, 45, 45, .1)',
     '--theme-staking-stake-pool-tooltip-neutral-text-color': '#2d2d2d',
     '--theme-staking-stake-pool-tooltip-experimental-icon-color': '#2d2d2d',
-    '--theme-staking-stake-pool-tooltip-id-background-color': '#fafbfc',
+    '--theme-staking-stake-pool-tooltip-id-background-color':
+      'rgba(45, 45, 45, 0.05)',
+    '--theme-staking-stake-pool-tooltip-id-shadow-1': 'rgba(0, 0, 0, 0.25)',
+    '--theme-staking-stake-pool-tooltip-id-shadow-2': 'rgba(42, 43, 60, 0)',
   },
   staking: {
     '--theme-staking-content-background-color': '#fff',
@@ -805,7 +812,7 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-staking-link-color-light': 'rgba(41, 181, 149, 0.7)',
     '--theme-staking-progress-bar-background-color': 'rgba(94, 96, 102, 0.07)',
     '--theme-staking-progress-stripe-dark-1-background-color': '#29b595',
-    '--theme-staking-progress-stripe-dark-2-background-color': '#53C3AA',
+    '--theme-staking-progress-stripe-dark-2-background-color': '#69cbb4',
     '--theme-staking-slider-background-color-1': '#29b595',
     '--theme-staking-slider-background-color-2': '#2d2d2d',
     '--theme-staking-slider-box-shadow-color': 'rgba(0, 0, 0, 0.24)',

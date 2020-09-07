@@ -97,6 +97,7 @@
           color: var(--theme-staking-font-color-regular);
           font-family: var(--font-semibold);
         }
+
         ::placeholder {
           color: var(--theme-staking-font-color-regular);
           font-family: var(--font-semibold);
@@ -124,11 +125,12 @@
 
     .outOfSliderRangeStart {
       border-style: dotted;
-      border-top: 2px solid var(--theme-staking-slider-background-color-2);
+      border-top: 2px dotted var(--theme-staking-slider-background-color-2);
       height: 0;
+      margin-right: 1px;
       margin-top: 24px;
       opacity: 0.3;
-      width: 9px;
+      width: 8px;
     }
 
     .slider {
@@ -186,7 +188,7 @@
 
     .outOfSliderRangeEnd {
       border-style: dotted;
-      border-top: 2px solid var(--theme-staking-slider-background-color-2);
+      border-top: 2px dotted var(--theme-staking-slider-background-color-2);
       height: 0;
       opacity: 0.3;
       width: 110px;
