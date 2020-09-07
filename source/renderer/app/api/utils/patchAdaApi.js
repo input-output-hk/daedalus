@@ -67,11 +67,6 @@ export default (api: AdaApi) => {
           epochNumber: nextEpochNumber,
           epochStart: nextEpochStartTime,
         },
-        futureEpoch: {
-          // N+2 epoch
-          epochNumber: nextEpochNumber ? nextEpochNumber + 1 : null,
-          epochStart: nextEpochStartTime,
-        },
       };
     } catch (error) {
       logger.error('AdaApi::getNetworkInfo (PATCHED) error', { error });
