@@ -177,7 +177,7 @@ export default class ProfileStore extends Store {
       systemValue = THEMES.YELLOW;
     } else {
       systemValue = this.environment.isMainnet
-        ? THEMES.DARK_BLUE
+        ? THEMES.DARK_CARDANO
         : THEMES.LIGHT_BLUE;
     }
     return requestGetter(this.getThemeRequest, systemValue);

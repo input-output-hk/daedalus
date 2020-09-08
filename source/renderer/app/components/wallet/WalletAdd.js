@@ -90,7 +90,7 @@ const messages = defineMessages({
   },
 });
 
-const { isIncentivizedTestnet } = global;
+const { isMainnetEAG, isIncentivizedTestnet } = global;
 
 type Props = {
   onCreate: Function,
@@ -146,7 +146,7 @@ export default class WalletAdd extends Component<Props> {
                   ? intl.formatMessage(messages.createDescriptionItn)
                   : intl.formatMessage(messages.createDescription)
               }
-              isDisabled
+              isDisabled={isMainnetEAG || isMaxNumberOfWalletsReached}
             />
             <BigButtonForDialogs
               className="joinWalletButton"
