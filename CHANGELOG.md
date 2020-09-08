@@ -6,7 +6,9 @@ Changelog
 ### Features
 
 - Disabled wallet creation
-- Increased address pool gap for restoring wallets
+- Disabled delegation features
+- Disabled ITN rewards redemption feature
+- Increased address pool gap for restoring wallets from 20 to 1000
 
 ### Fixes
 
