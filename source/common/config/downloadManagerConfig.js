@@ -38,6 +38,8 @@ export const DOWNLOAD_EVENT_TYPES: {
   PROGRESS: 'progress',
   END: 'end',
   TIMEOUT: 'timeout',
+  STOP: 'stop',
+  PAUSE: 'pause',
   ERROR: 'error',
 };
 

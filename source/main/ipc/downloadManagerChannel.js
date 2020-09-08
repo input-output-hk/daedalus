@@ -1,8 +1,10 @@
 // @flow
 import { DownloaderHelper } from 'node-downloader-helper';
 import fs from 'fs';
+import { get, set } from 'lodash';
 import type { BrowserWindow } from 'electron';
 import { MainIpcChannel } from './lib/MainIpcChannel';
+import { logger } from '../utils/logging';
 import {
   getOriginalFilename,
   getPathFromDirectoryName,
@@ -38,7 +40,9 @@ import type {
   ClearDownloadLocalDataMainResponse,
 } from '../../common/ipc/api';
 
-localStorage.setAllStopped();
+localStorage.setAllPaused();
+
+const downloads = [];
 
 const requestDownload = async (
   downloadRequestPayload: DownloadRendererRequest,
@@ -98,8 +102,10 @@ const requestDownload = async (
     currentDownloadData++;
     eventActions.progress(evt);
   });
+  download.on('pause', eventActions.pause);
   download.on('end', eventActions.end);
   download.on('error', eventActions.error);
+  downloads.push({ downloadId, download });
   if (resumeDownload) download.resume();
   else download.start();
   return download;
@@ -228,4 +234,23 @@ export const downloadManagerChannel = (window: BrowserWindow) => {
   getDownloadLocalDataChannel.onRequest(getDownloadLocalData);
   getDownloadsLocalDataChannel.onRequest(getDownloadsLocalData);
   clearDownloadLocalDataChannel.onRequest(clearDownloadLocalData);
+};
+
+export const pauseAllDownloads = () => {
+  downloads.forEach(({ downloadId, download }) => {
+    try {
+      download.pause();
+      logger.info(
+        `DownloadManager:PauseDownloads download "${downloadId}" was paused`,
+        { downloadId }
+      );
+    } catch (error) {
+      logger.error(
+        `DownloadManager:PauseDownloads download "${downloadId}" could not be paused`,
+        {
+          error,
+        }
+      );
+    }
+  });
 };

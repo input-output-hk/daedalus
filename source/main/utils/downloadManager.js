@@ -157,6 +157,21 @@ export const getEventActions = async (
       const { persistLocalData } = info.options;
       if (!persistLocalData) await localStorage.unset(downloadId);
     },
+    pause: async () => {
+      console.log('PAUSE EVENT RECEIVED');
+      const newState: DownloadDataUpdate = {
+        state: states.PAUSED,
+      };
+      const formattedData = await localStorage.setData(newState, downloadId);
+      requestDownloadChannel.send(
+        {
+          eventType: types.PAUSE,
+          info,
+          data: formattedData,
+        },
+        window.webContents
+      );
+    },
     error: async ({ message }: DownloadInfoError) => {
       const rawData: DownloadDataUpdate = {
         ...{

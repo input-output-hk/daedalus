@@ -57,6 +57,8 @@ export type DownloadEventType =
   | 'progress'
   | 'end'
   | 'timeout'
+  | 'stop'
+  | 'pause'
   | 'error';
 
 export type DownloadResponse = {

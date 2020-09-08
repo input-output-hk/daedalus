@@ -60,7 +60,7 @@ export const downloadManagerLocalStorage = {
     });
     return data;
   },
-  setAllStopped: async () => {
+  setAllPaused: async () => {
     const downloads = await downloadManagerLocalStorage.getAll();
     const downloadsArray = Object.keys(downloads);
     for (let index = 0; index < downloadsArray.length; index++) {
@@ -70,7 +70,7 @@ export const downloadManagerLocalStorage = {
       if (state === DOWNLOAD_STATES.DOWNLOADING && progress < 100) {
         await downloadManagerLocalStorage.setData(
           {
-            state: DOWNLOAD_STATES.STOPPED,
+            state: DOWNLOAD_STATES.PAUSED,
           },
           downloadId
         );
