@@ -246,9 +246,13 @@ export default class LocalStorageApi {
   getHardwareWalletLocalData = (
     walletId: string
   ): Promise<HardwareWalletLocalData> =>
-    LocalStorageApi.get(`${keys.HARDWARE_WALLETS}.${walletId}`, {
-      id: walletId,
-    });
+    LocalStorageApi.get(
+      keys.HARDWARE_WALLETS,
+      {
+        id: walletId,
+      },
+      walletId
+    );
 
   setHardwareWalletLocalData = async (
     walletId: string,
@@ -262,10 +266,7 @@ export default class LocalStorageApi {
       data,
       unmutableData
     );
-    await LocalStorageApi.set(
-      `${keys.HARDWARE_WALLETS}.${walletId}`,
-      walletData
-    );
+    await LocalStorageApi.set(keys.HARDWARE_WALLETS, walletData, walletId);
     return walletData;
   };
 

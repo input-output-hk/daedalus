@@ -441,6 +441,7 @@ export default class WalletsStore extends Store {
         walletName,
         accountPublicKey,
       });
+      console.debug('>>> SET HW to LC');
       await this.actions.hardwareWallets.setHardwareWalletLocalData.trigger({
         walletId: wallet.id,
         data: {

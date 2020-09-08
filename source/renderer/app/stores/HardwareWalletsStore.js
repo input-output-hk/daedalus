@@ -130,11 +130,11 @@ export default class HardwareWalletsStore extends Store {
     hardwareWalletsActions.unsetHardwareWalletLocalData.listen(
       this._unsetHardwareWalletLocalData
     );
-    /* getHardwareWalletConnectionChannel.onReceive(
+    getHardwareWalletConnectionChannel.onReceive(
       this._changeHardwareWalletConnectionStatus
-    ); */
+    );
 
-    // this.hardwareWalletsLocalDataRequest.execute();
+    this.hardwareWalletsLocalDataRequest.execute();
   }
 
   @action _selectCoins = async (params: {
@@ -288,6 +288,7 @@ export default class HardwareWalletsStore extends Store {
           activeHardwareWalletConnectionKeys.publicKeyHex ===
           extendedPublicKey.publicKeyHex
         ) {
+          // If keys match, change device state to connected
           this._setHardwareWalletLocalData({
             walletId: activeHardwareWallet.id,
             data: {
@@ -779,14 +780,12 @@ export default class HardwareWalletsStore extends Store {
   };
 
   @action resetInitializedConnection = () => {
-    console.debug('>>> resetInitializedConnection');
     this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
     this.extendedPublicKey = null;
     this.transportDevice = {};
   };
 
   @action _refreshHardwareWalletsLocalData = () => {
-    console.debug('>>> _refreshHardwareWalletsLocalData');
     this.hardwareWalletsLocalDataRequest.execute();
   };
 
@@ -858,7 +857,6 @@ export default class HardwareWalletsStore extends Store {
   };
 
   stopCardanoAdaAppFetchPoller = () => {
-    console.debug('>>> stopCardanoAdaAppFetchPoller');
     if (this.cardanoAdaAppPollingInterval)
       clearInterval(this.cardanoAdaAppPollingInterval);
   };
