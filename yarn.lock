@@ -1090,6 +1090,11 @@
   version "0.2.5"
   resolved "https://registry.yarnpkg.com/@emotion/weak-memoize/-/weak-memoize-0.2.5.tgz#8eed982e2ee6f7f4e44c253e12962980791efd46"
 
+"@emurgo/cardano-serialization-lib-nodejs@3.0.0":
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/@emurgo/cardano-serialization-lib-nodejs/-/cardano-serialization-lib-nodejs-3.0.0.tgz#0d3027a8449dd684cdd484d4df13d7b319507b96"
+  integrity sha512-MlrViFSPOtyCPnbWTQK2Dus9aYBtgzuclzDcoTqgkrEkeXrER4sBZ7ogniQm+AkWqkAJnX7YBAzQ+95UH2LwMw==
+
 "@icons/material@^0.2.4":
   version "0.2.4"
   resolved "https://registry.yarnpkg.com/@icons/material/-/material-0.2.4.tgz#e90c9f71768b3736e76d7dd6783fc6c2afa88bc8"

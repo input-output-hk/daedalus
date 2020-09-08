@@ -1,5 +1,5 @@
 // @flow
-import { split, get, map, last } from 'lodash';
+import { split, get, map, last, size } from 'lodash';
 import { action } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
@@ -251,7 +251,18 @@ export default class AdaApi {
         });
       });
 
-      return wallets.map(_createWalletFromServerData);
+      return await Promise.all(
+        wallets.map(async (wallet) => {
+          const { id: walletId } = wallet;
+          const hwWalletId = getHardwareWalletId(walletId);
+          const { getHardwareWalletLocalData } = global.daedalus.api.localStorage;
+          const walletData = await getHardwareWalletLocalData(hwWalletId);
+          return _createWalletFromServerData({
+            ...wallet,
+            isHardwareWallet: walletData && walletData.device && size(walletData.device) > 0,
+          })
+        })
+      );
     } catch (error) {
       logger.error('AdaApi::getWallets error', { error });
       throw new ApiError(error);
@@ -2026,14 +2037,13 @@ const _createWalletFromServerData = action(
       state: syncState,
       isLegacy = false,
       discovery,
-      // isHardwareWallet = false,
+      isHardwareWallet = false,
     } = wallet;
-    // const isHardwareWallet = discovery === WalletDiscovery.SEQUENTIAL;
-    const isHardwareWallet = name === 'Hardware Wallet';
 
     let id = rawWalletId;
     if (isLegacy) id = getLegacyWalletId(rawWalletId);
     if (isHardwareWallet) id = getHardwareWalletId(rawWalletId);
+    console.debug('>>>> CREATE:: ', {wallet, id, isHardwareWallet});
 
     const passphraseLastUpdatedAt = get(passphrase, 'last_updated_at', null);
     const walletTotalAmount =

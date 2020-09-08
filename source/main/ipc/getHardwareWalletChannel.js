@@ -1,6 +1,7 @@
 // @flow
 import TransportNodeHid from '@ledgerhq/hw-transport-node-hid';
 import AppAda, { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
+import wasm from 'cardano-serialization-lib-nodejs'
 import { BrowserWindow } from 'electron';
 import {
   DEVICE_EVENT,
@@ -86,6 +87,8 @@ class EventObserver {
   constructor(props) {
     // $FlowFixMe
     this.mainWindow = props;
+    console.debug('>>> TOMO');
+    console.debug('>>> TOMO - test: ', wasm);
   }
   next(eventText) {
     if (eventText.type === 'remove') {
@@ -189,6 +192,10 @@ export const handleHardwareWalletRequests = async () => {
   let deviceConnection = null;
   getHardwareWalletTransportChannel.onRequest(async isTrezor => {
     console.debug('>>> ESTABLISH CONNECTION <<<');
+    console.debug('>>> TOMO');
+    console.debug('>>> TOMO - test new: ', wasm);
+    console.debug('>>> TOMO TransactionBody - ', wasm.TransactionBody);
+
     // console.debug('>>> TRY with TREZOR: ', TrezorConnect);
 
     // Connected Trezor device info
@@ -401,6 +408,7 @@ export const handleHardwareWalletRequests = async () => {
         certificates,
         withdrawals,
         metadataHashHex,
+        bigFee,
       } = params
 
       console.debug('>>> TRY TO SIGN: ', params);
@@ -416,6 +424,31 @@ export const handleHardwareWalletRequests = async () => {
         metadataHashHex,
       );
       console.debug('>>> SIGNED: ', signedTransaction);
+      // txBody
+      /* static new(
+        inputs: TransactionInputs,
+        outputs: TransactionOutputs,
+        fee: BigNum,
+        ttl: number
+      ): TransactionBody; */
+      const txBody = {
+        inputs,
+        outputs,
+        fee: bigFee,
+        ttl: 7200,
+      }
+//
+      console.debug('>>> TX BODY: ', txBody);
+//
+      const serializedTx = wasm.Transaction.new(
+        signedTransaction.txHashHex,
+        signedTransaction.witnesses,
+        undefined, // transaction metadata
+      );
+//
+      console.debug('>>> serializedTx: ', serializedTx);
+      const txHex = Buffer.from(serializedTx.to_bytes()).toString("hex");
+      console.debug('>>> txHex: ', txHex);
       return Promise.resolve(signedTransaction);
     } catch (error) {
       console.debug('>>> ERROR OCCURED: ', error);

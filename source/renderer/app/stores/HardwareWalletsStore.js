@@ -4,6 +4,8 @@ import { utils, cardano } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { get, map } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
+import BigNumber from 'bignumber.js';
+// import { wasm } from '@emurgo/cardano-serialization-lib-nodejs';
 import {
   getHardwareWalletTransportChannel,
   getExtendedPublicKeyChannel,
@@ -128,11 +130,11 @@ export default class HardwareWalletsStore extends Store {
     hardwareWalletsActions.unsetHardwareWalletLocalData.listen(
       this._unsetHardwareWalletLocalData
     );
-    getHardwareWalletConnectionChannel.onReceive(
+    /* getHardwareWalletConnectionChannel.onReceive(
       this._changeHardwareWalletConnectionStatus
-    );
+    ); */
 
-    this.hardwareWalletsLocalDataRequest.execute();
+    // this.hardwareWalletsLocalDataRequest.execute();
   }
 
   @action _selectCoins = async (params: {
@@ -140,6 +142,7 @@ export default class HardwareWalletsStore extends Store {
     address: string,
     amount: string,
   }) => {
+    // console.debug('>>> WASM: ', wasm);
     const { walletId, address, amount } = params;
     const wallet = this.stores.wallets.getWalletById(walletId);
     if (!wallet)
@@ -257,7 +260,7 @@ export default class HardwareWalletsStore extends Store {
     //   utils.HARDENED + 0,
     // ];
     console.debug('>> UTILS: ', {utils, cardano});
-    const path = cardano.str_to_path("44'/1815'/0'");
+    const path = cardano.str_to_path("1852'/1815'/0'");
 
     console.debug('>>>> _getExtendedPublicKey: ', path)
 
@@ -724,7 +727,8 @@ export default class HardwareWalletsStore extends Store {
         //   },
         outputs: outputsData,
         feeStr: '42', // in lovelaces
-        ttlStr: '10', //
+        bigFee: new BigNumber(72),
+        ttlStr: '7200', // e.g. slot 0, epoch 10
         certificates: [], // [certificates.stakeDelegation],
         withdrawals: [], // [withdrawals.withdrawal0],
         metadataHashHex: null // sampleMetadata
@@ -732,6 +736,7 @@ export default class HardwareWalletsStore extends Store {
 
 
      console.debug('>>>> SIGNED: ', signedTransaction)
+     return;
 
 
       // get xPub from signed transaction witnesses by exporting extended public key
@@ -774,12 +779,14 @@ export default class HardwareWalletsStore extends Store {
   };
 
   @action resetInitializedConnection = () => {
+    console.debug('>>> resetInitializedConnection');
     this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
     this.extendedPublicKey = null;
     this.transportDevice = {};
   };
 
   @action _refreshHardwareWalletsLocalData = () => {
+    console.debug('>>> _refreshHardwareWalletsLocalData');
     this.hardwareWalletsLocalDataRequest.execute();
   };
 
@@ -851,6 +858,7 @@ export default class HardwareWalletsStore extends Store {
   };
 
   stopCardanoAdaAppFetchPoller = () => {
+    console.debug('>>> stopCardanoAdaAppFetchPoller');
     if (this.cardanoAdaAppPollingInterval)
       clearInterval(this.cardanoAdaAppPollingInterval);
   };

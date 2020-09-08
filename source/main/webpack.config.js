@@ -37,6 +37,7 @@ module.exports = {
     'node-hid': 'commonjs2 node-hid',
     'blake2b-wasm': 'commonjs2 blake2b-wasm',
     'trezor-connect': 'commonjs2 trezor-connect',
+    'cardano-serialization-lib-nodejs': 'commonjs2 @emurgo/cardano-serialization-lib-nodejs/cardano_serialization_lib',
   },
   module: {
     rules: [
