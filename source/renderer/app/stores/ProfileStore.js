@@ -173,9 +173,11 @@ export default class ProfileStore extends Store {
       systemValue = THEMES.INCENTIVIZED_TESTNET;
     } else if (global.isFlight) {
       systemValue = THEMES.FLIGHT_CANDIDATE;
+    } else if (global.isMainnetEAG) {
+      systemValue = THEMES.YELLOW;
     } else {
       systemValue = this.environment.isMainnet
-        ? THEMES.DARK_CARDANO
+        ? THEMES.DARK_BLUE
         : THEMES.LIGHT_BLUE;
     }
     return requestGetter(this.getThemeRequest, systemValue);

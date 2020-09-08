@@ -60,6 +60,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Cardano mainnet - Daedalus Flight',
     description: 'Label for Daedalus Flight with version.',
   },
+  mainnet_eag: {
+    id: 'test.environment.daedalusMainnetEAGLabel',
+    defaultMessage: '!!!Cardano mainnet - Daedalus EAG',
+    description: 'Label for Daedalus EAG with version.',
+  },
 });
 
 type Props = {
@@ -72,10 +77,15 @@ export default class WalletTestEnvironmentLabel extends Component<Props> {
   };
 
   render() {
-    const { isFlight } = global;
+    const { isFlight, isMainnetEAG } = global;
     const { network } = this.props;
     const { intl } = this.context;
-    const label = messages[isFlight ? 'flight' : network];
+
+    let labelMessageId = network;
+    if (isFlight) labelMessageId = 'flight';
+    if (isMainnetEAG) labelMessageId = 'mainnet_eag';
+    const label = messages[labelMessageId];
+
     return <div className={styles.component}>{intl.formatMessage(label)}</div>;
   }
 }

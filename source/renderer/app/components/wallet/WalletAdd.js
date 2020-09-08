@@ -146,7 +146,7 @@ export default class WalletAdd extends Component<Props> {
                   ? intl.formatMessage(messages.createDescriptionItn)
                   : intl.formatMessage(messages.createDescription)
               }
-              isDisabled={isMaxNumberOfWalletsReached}
+              isDisabled
             />
             <BigButtonForDialogs
               className="joinWalletButton"

@@ -44,6 +44,7 @@ export default class SettingsMenu extends Component<Props> {
   render() {
     const { intl } = this.context;
     const { onItemClick, isActiveItem, isFlight } = this.props;
+    const { isMainnetEAG } = global;
 
     return (
       <div>
@@ -54,7 +55,7 @@ export default class SettingsMenu extends Component<Props> {
             active={isActiveItem(ROUTES.SETTINGS.GENERAL)}
             className="general"
           />
-          {!isFlight && !global.isShelleyTestnet && (
+          {!isMainnetEAG && !isFlight && !global.isShelleyTestnet && (
             <SettingsMenuItem
               label={intl.formatMessage(messages.display)}
               onClick={() => onItemClick(ROUTES.SETTINGS.DISPLAY)}

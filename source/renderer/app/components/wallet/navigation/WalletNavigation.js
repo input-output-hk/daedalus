@@ -10,7 +10,7 @@ import {
 import Navigation from '../../navigation/Navigation';
 import summaryIcon from '../../../assets/images/wallet-nav/summary-ic.inline.svg';
 import sendIcon from '../../../assets/images/wallet-nav/send-ic.inline.svg';
-import receiveIcon from '../../../assets/images/wallet-nav/receive-ic.inline.svg';
+// import receiveIcon from '../../../assets/images/wallet-nav/receive-ic.inline.svg';
 import transactionsIcon from '../../../assets/images/wallet-nav/transactions-ic.inline.svg';
 import settingsIcon from '../../../assets/images/wallet-nav/wallet-settings-2-ic.inline.svg';
 import type {
@@ -94,11 +94,11 @@ export default class WalletNavigation extends Component<Props> {
         label: intl.formatMessage(messages.send),
         icon: sendIcon,
       },
-      {
-        id: WALLET_NAV_IDS.RECEIVE,
-        label: intl.formatMessage(messages.receive),
-        icon: receiveIcon,
-      },
+      // {
+      //   id: WALLET_NAV_IDS.RECEIVE,
+      //   label: intl.formatMessage(messages.receive),
+      //   icon: receiveIcon,
+      // },
       {
         id: WALLET_NAV_IDS.TRANSACTIONS,
         label: intl.formatMessage(messages.transactions),

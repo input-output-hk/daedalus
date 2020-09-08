@@ -15,7 +15,12 @@ import { DOWNLOAD_EVENT_TYPES } from '../../../common/config/downloadManagerConf
 
 const APP_UPDATE_DOWNLOAD_ID = 'appUpdate';
 
-const { isIncentivizedTestnet, isShelleyTestnet, isFlight } = global;
+const {
+  isIncentivizedTestnet,
+  isShelleyTestnet,
+  isFlight,
+  isMainnetEAG,
+} = global;
 
 export default class AppUpdateStore extends Store {
   @observable isUpdateAvailable = false;
@@ -58,7 +63,12 @@ export default class AppUpdateStore extends Store {
     );
     requestDownloadChannel.onReceive(this._manageUpdateResponse);
 
-    if (!isFlight && !isIncentivizedTestnet && !isShelleyTestnet) {
+    if (
+      !isFlight &&
+      !isMainnetEAG &&
+      !isIncentivizedTestnet &&
+      !isShelleyTestnet
+    ) {
       this.nextUpdateInterval = setInterval(
         this.refreshNextUpdate,
         APP_UPDATE_POLL_INTERVAL
@@ -170,7 +180,7 @@ export default class AppUpdateStore extends Store {
 
   @action _getLatestAvailableAppVersion = async () => {
     // Manual update notification is not available for Daedalus Flight and ITN builds
-    if (isFlight || isIncentivizedTestnet || isShelleyTestnet) {
+    if (isFlight || isMainnetEAG || isIncentivizedTestnet || isShelleyTestnet) {
       return;
     }
 
@@ -232,7 +242,8 @@ export default class AppUpdateStore extends Store {
       !this.isUpdateInstalled &&
       !isIncentivizedTestnet &&
       !isShelleyTestnet &&
-      !isFlight
+      !isFlight &&
+      !isMainnetEAG
     );
   }
 
@@ -243,7 +254,8 @@ export default class AppUpdateStore extends Store {
       !this.isUpdateAvailable &&
       !isIncentivizedTestnet &&
       !isShelleyTestnet &&
-      !isFlight
+      !isFlight &&
+      !isMainnetEAG
     );
   }
 }

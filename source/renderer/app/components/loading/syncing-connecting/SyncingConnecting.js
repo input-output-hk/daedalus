@@ -102,6 +102,7 @@ export default class SyncingConnecting extends Component<Props, State> {
       !isNewAppVersionLoading &&
       !isIncentivizedTestnet &&
       !global.isShelleyTestnet &&
+      !global.isMainnetEAG &&
       !isFlight
     ) {
       onGetAvailableVersions();
@@ -172,7 +173,12 @@ export default class SyncingConnecting extends Component<Props, State> {
           (connectingTime >= REPORT_ISSUE_TIME_TRIGGER ||
             cardanoNodeState === CardanoNodeStates.UNRECOVERABLE)));
 
-    if (isFlight || isIncentivizedTestnet || global.isShelleyTestnet) {
+    if (
+      isFlight ||
+      isIncentivizedTestnet ||
+      global.isShelleyTestnet ||
+      global.isMainnetEAG
+    ) {
       return canReportConnectingIssue;
     }
     return (

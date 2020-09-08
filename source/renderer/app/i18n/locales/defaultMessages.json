@@ -12658,6 +12658,20 @@
           "column": 10,
           "line": 58
         }
+      },
+      {
+        "defaultMessage": "!!!Cardano mainnet - Daedalus EAG",
+        "description": "Label for Daedalus EAG with version.",
+        "end": {
+          "column": 3,
+          "line": 67
+        },
+        "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
+        "id": "test.environment.daedalusMainnetEAGLabel",
+        "start": {
+          "column": 15,
+          "line": 63
+        }
       }
     ],
     "path": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.json"

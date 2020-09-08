@@ -534,6 +534,7 @@
   "systemTime.error.supportPortalLink": "サポートポータル",
   "systemTime.error.supportPortalLinkUrl": "https://daedaluswallet.io/ja/clock-sync/",
   "test.environment.daedalusFlightLabel": "Cardano Mainnet - Daedalus Flight",
+  "test.environment.daedalusMainnetEAGLabel": "Cardano Mainnet - Daedalus EAG",
   "test.environment.developmentLabel": "開発",
   "test.environment.itnRewardsV1Label": "Incentivized Testnet v1 - Rewards",
   "test.environment.itnSelfnodeLabel": "ITN Selfnode",

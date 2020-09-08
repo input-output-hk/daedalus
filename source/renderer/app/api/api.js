@@ -97,6 +97,7 @@ import {
 import { filterLogData } from '../../../common/utils/logging';
 
 // Config constants
+import { ADDRESS_POOL_GAP } from '../config/walletsConfig';
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 import { REDEEM_ITN_REWARDS_AMOUNT } from '../config/stakingConfig';
 import {
@@ -896,6 +897,7 @@ export default class AdaApi {
       name: walletName,
       mnemonic_sentence: recoveryPhrase,
       passphrase: spendingPassword,
+      address_pool_gap: ADDRESS_POOL_GAP,
     };
     try {
       const wallet: AdaWallet = await restoreWallet(this.config, {

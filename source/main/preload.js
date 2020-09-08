@@ -11,6 +11,7 @@ import {
   legacyStateDir,
   nodeImplementation,
   isFlight,
+  isMainnetEAG,
 } from './config';
 import {
   SHELLEY_LOCAL,
@@ -57,6 +58,7 @@ process.once('loaded', () => {
     isShelleyTestnet: _isShelleyTestnet,
     isIncentivizedTestnet: _isIncentivizedTestnet,
     isFlight,
+    isMainnetEAG,
     legacyStateDir,
   });
   // Expose require for Spectron!

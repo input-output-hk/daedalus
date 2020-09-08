@@ -74,6 +74,7 @@ export type LauncherConfig = {
   legacySecretKey: string,
   legacyWalletDB: string,
   isFlight: boolean,
+  isMainnetEAG: boolean,
   isStaging: boolean,
   smashUrl?: string,
 };
@@ -120,6 +121,7 @@ export const {
   legacyStateDir,
   logsPrefix,
   isFlight,
+  isMainnetEAG,
 } = launcherConfig;
 export const appLogsFolderPath = logsPrefix;
 export const pubLogsFolderPath = path.join(appLogsFolderPath, 'pub');
@@ -130,6 +132,7 @@ export const buildLabel = getBuildLabel(
   network,
   current,
   isFlight,
+  isMainnetEAG,
   version
 );
 

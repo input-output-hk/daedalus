@@ -1,7 +1,12 @@
 Changelog
 =========
 
-## vNext
+## 2.2.0-EAG
+
+### Features
+
+- Disabled wallet creation
+- Increased address pool gap for restoring wallets
 
 ### Fixes
 
