@@ -65,6 +65,8 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-button-attention-background-color-hover': '#ec5d6b',
     '--theme-button-attention-background-color-active': '#d34452',
     '--theme-button-attention-background-color-disabled': '#ea4c5b',
+    '--theme-button-attention-delete-text-color': '#fafbfc',
+    '--theme-button-attention-delete-text-color-disabled': '#fafbfc',
     '--theme-button-attention-text-color-disabled': '#fafbfc',
     '--theme-button-attention-text-color': '#fafbfc',
     '--theme-button-attention-outline-color': '#ff707e',
@@ -226,7 +228,8 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-dialog-fullsize-button-label-color': '#fafbfc',
     '--theme-dialog-fullsize-button-label-color-hover': 'rgba(36, 62, 98, 1)',
     '--theme-dialog-fullsize-button-text-color-hover': '#243e62',
-    '--theme-dialog-fullsize-field-background-color': 'rgba(0,0,0, 0.1)',
+    '--theme-dialog-fullsize-field-background-color':
+      'rgba(250, 251, 252, 0.07)',
     '--theme-dialog-fullsize-text-color': 'rgba(255, 255, 255, 0.7)',
     '--theme-dialog-fullsize-text-highlight-color': '#ffffff',
     '--theme-dialog-fullsize-title-text-color': '#ffffff',
@@ -520,6 +523,8 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--rp-autocomplete-input-text-color': 'rgba(94, 96, 102, 0.7)',
     '--rp-autocomplete-placeholder-color': 'rgba(94, 96, 102, 0.5)',
     '--rp-autocomplete-selected-word-box-bg-color': 'rgba(68, 91, 124, 0.5)',
+    '--rp-autocomplete-selected-word-dialog-box-bg-color': '#ffffff',
+    '--rp-autocomplete-selected-word-dialog-text-color': '#243e62',
     '--rp-autocomplete-selected-word-text-color': '#fafbfc',
     '--rp-autocomplete-selected-words-font-family':
       'NotoSans-Regular, NotoSansCJKjp-Regular',
@@ -527,7 +532,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
   rpBubble: {
     '--rp-bubble-bg-color': '#fafbfc',
     '--rp-bubble-border-color': 'rgba(94, 96, 102, 0.7)',
-    '--rp-bubble-border-radius': '2px',
+    '--rp-bubble-border-radius': '5px',
     '--rp-bubble-arrow-bg-color': '#edf0f3',
     '--rp-bubble-box-shadow':
       '0 4px 16px 0 rgba(0, 0, 0, 0.12), 0 0 8px 0 rgba(0, 0, 0, 0.06)',
@@ -803,7 +808,10 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
       'rgba(47, 73, 110, .1)',
     '--theme-staking-stake-pool-tooltip-neutral-text-color': '#5e6066',
     '--theme-staking-stake-pool-tooltip-experimental-icon-color': '#5e6066',
-    '--theme-staking-stake-pool-tooltip-id-background-color': '#f0f3f5',
+    '--theme-staking-stake-pool-tooltip-id-background-color':
+      'rgba(68, 91, 124, 0.05)',
+    '--theme-staking-stake-pool-tooltip-id-shadow-1': 'rgba(0, 0, 0, 0.25)',
+    '--theme-staking-stake-pool-tooltip-id-shadow-2': 'rgba(42, 43, 60, 0)',
   },
   staking: {
     '--theme-staking-content-background-color': '#fafbfc',

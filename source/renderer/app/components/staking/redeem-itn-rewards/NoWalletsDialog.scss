@@ -2,12 +2,21 @@
   display: block;
   margin-bottom: 30px;
   text-align: center;
+
   svg {
+    fill: transparent;
     height: 71px;
     stroke: var(--theme-dialog-fullsize-text-highlight-color);
+
     path {
+      fill: transparent;
       stroke: var(--theme-dialog-fullsize-text-highlight-color);
     }
+
+    circle {
+      fill: transparent;
+    }
+
     g {
       ellipse {
         &:nth-child(7),
@@ -28,15 +37,34 @@
     }
   }
 }
+
 .description {
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--theme-splash-network-title-color);
   font-family: var(--font-regular);
   font-size: 16px;
   line-height: 1.38;
-  margin-bottom: 30px;
   text-align: center;
+
   b {
     color: #ffffff;
     font-family: var(--font-semibold);
+  }
+}
+
+:global {
+  .DialogFullSizeOverride_overlay .DialogCloseButton_component {
+    background-color: transparent !important;
+    opacity: 1;
+
+    &:hover {
+      background-color: var(
+        --theme-dialog-fullsize-field-background-color
+      ) !important;
+    }
+  }
+
+  .Dialog_dialogWrapper > .Dialog_actions button:only-child {
+    max-width: 360px;
+    width: 100%;
   }
 }

@@ -346,7 +346,7 @@
   "staking.delegationSetup.confirmation.step.dialog.calculatingFees": "Calculating fees",
   "staking.delegationSetup.confirmation.step.dialog.cancelButtonLabel": "Cancel",
   "staking.delegationSetup.confirmation.step.dialog.confirmButtonLabel": "Confirm",
-  "staking.delegationSetup.confirmation.step.dialog.description": "Confirm your delegation choice to <span>[{selectedPoolTicker}]<span> stake pool for your <span>{selectedWalletName}<span> wallet by posting your delegation preferences on the Cardano blockchain.",
+  "staking.delegationSetup.confirmation.step.dialog.description": "Confirm your delegation choice to <span>[{selectedPoolTicker}]</span> stake pool for your <span>{selectedWalletName}</span> wallet by posting your delegation preferences on the Cardano blockchain.",
   "staking.delegationSetup.confirmation.step.dialog.feesLabel": "Fees",
   "staking.delegationSetup.confirmation.step.dialog.spendingPasswordLabel": "Spending password",
   "staking.delegationSetup.confirmation.step.dialog.spendingPasswordPlaceholder": "Enter your password",

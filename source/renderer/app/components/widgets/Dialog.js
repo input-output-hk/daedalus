@@ -17,7 +17,7 @@ export type DialogActionItems = Array<DialogActionItem>;
 
 export type DialogActionItem = {
   className?: ?string,
-  label: string,
+  label: string | Element<any>,
   primary?: boolean,
   disabled?: boolean,
   onClick?: Function,
