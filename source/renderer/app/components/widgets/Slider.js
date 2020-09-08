@@ -35,6 +35,7 @@ type Props = {
   defaultValue?: number,
   value: number,
   displayValue?: number,
+  showRawValue?: boolean,
   showTooltip?: boolean,
   minTooltip?: string,
   maxTooltip?: string,
@@ -61,6 +62,7 @@ export default class Slider extends Component<Props> {
       minDisplayValue,
       maxDisplayValue,
       displayValue,
+      showRawValue,
       ...rest
     } = this.props;
     const { min, max, value } = rest;
@@ -68,7 +70,9 @@ export default class Slider extends Component<Props> {
     const valueMarkLeftPosition =
       max === min ? `0` : `${((value - min) / (max - min)) * 100}%`;
     const valueMarkStyle = { left: valueMarkLeftPosition };
-    const formattedValue = new BigNumber(displayValue || value).toFormat(0);
+    const formattedValue = showRawValue
+      ? displayValue || value
+      : new BigNumber(displayValue || value).toFormat(0);
 
     return (
       <div className={styles.component}>

@@ -2,13 +2,12 @@
 
 import type { RedeemItnRewardsStep } from '../types/stakingTypes';
 
-export const MIN_DELEGATION_FUNDS_LOG = 2;
+export const RANKING_SLIDER_RATIO = 60;
+export const MIN_DELEGATION_FUNDS_LOG = Math.log(10);
 export const MIN_DELEGATION_FUNDS = 10;
-export const INITIAL_DELEGATION_FUNDS_LOG = 7;
-export const INITIAL_DELEGATION_FUNDS = Math.round(
-  Math.exp(INITIAL_DELEGATION_FUNDS_LOG)
-);
-export const MAX_DELEGATION_FUNDS_LOG = 19;
+export const INITIAL_DELEGATION_FUNDS_LOG = Math.log(1000);
+export const INITIAL_DELEGATION_FUNDS = 1000;
+export const MAX_DELEGATION_FUNDS_LOG = Math.log(220000000);
 export const MAX_DELEGATION_FUNDS = 220000000;
 export const OUT_OF_RANGE_MAX_DELEGATION_FUNDS = 33000000000;
 export const ALL_WALLETS_SELECTION_ID = '0';

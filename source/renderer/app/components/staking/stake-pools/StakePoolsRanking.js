@@ -13,11 +13,13 @@ import {
 } from '../../../utils/walletsForStakePoolsRanking';
 import Wallet from '../../../domains/Wallet';
 import {
+  RANKING_SLIDER_RATIO,
   MIN_DELEGATION_FUNDS_LOG,
   MIN_DELEGATION_FUNDS,
   MAX_DELEGATION_FUNDS_LOG,
   MAX_DELEGATION_FUNDS,
   INITIAL_DELEGATION_FUNDS_LOG,
+  INITIAL_DELEGATION_FUNDS,
   OUT_OF_RANGE_MAX_DELEGATION_FUNDS,
   ALL_WALLETS_SELECTION_ID,
   IS_RANKING_DATA_AVAILABLE,
@@ -123,6 +125,7 @@ type Props = {
 
 type State = {
   sliderValue: number,
+  amountValue: number,
 };
 
 @observer
@@ -136,14 +139,20 @@ export default class StakePoolsRanking extends Component<Props, State> {
   };
 
   state = {
-    sliderValue: INITIAL_DELEGATION_FUNDS_LOG,
+    sliderValue: Math.round(
+      INITIAL_DELEGATION_FUNDS_LOG * RANKING_SLIDER_RATIO
+    ),
+    amountValue: INITIAL_DELEGATION_FUNDS,
   };
 
   componentDidMount() {
     const { stake } = this.props;
 
     if (stake) {
-      this.setState({ sliderValue: Math.round(Math.log(stake)) });
+      this.setState({
+        sliderValue: Math.round(Math.log(stake) * RANKING_SLIDER_RATIO),
+        amountValue: stake,
+      });
     }
   }
 
@@ -169,7 +178,6 @@ export default class StakePoolsRanking extends Component<Props, State> {
     }
 
     let amountValue = 0;
-    let adjustedAmountValue = 0;
     let sliderValue = 0;
 
     if (selectedWalletId === ALL_WALLETS_SELECTION_ID) {
@@ -181,34 +189,31 @@ export default class StakePoolsRanking extends Component<Props, State> {
       amountValue = selectedWallet.amount.toNumber();
     }
     amountValue = Math.max(amountValue, MIN_DELEGATION_FUNDS);
-    sliderValue = Math.round(Math.log(amountValue));
-    if (sliderValue === MIN_DELEGATION_FUNDS_LOG) {
-      adjustedAmountValue = MIN_DELEGATION_FUNDS;
-    } else if (sliderValue === MAX_DELEGATION_FUNDS_LOG) {
-      adjustedAmountValue = MAX_DELEGATION_FUNDS;
-    } else {
-      adjustedAmountValue = generateThousands(
-        Math.round(Math.exp(sliderValue))
-      );
-    }
-    this.setState({ sliderValue });
-    onRank(selectedWalletId, adjustedAmountValue);
+    sliderValue = Math.round(Math.log(amountValue) * RANKING_SLIDER_RATIO);
+    this.setState({ sliderValue, amountValue });
+    onRank(selectedWalletId, amountValue);
   };
 
   onSliderChange = (sliderValue: number) => {
     const { onRank } = this.props;
-    let adjustedAmountValue = null;
-    if (sliderValue === MIN_DELEGATION_FUNDS_LOG) {
-      adjustedAmountValue = MIN_DELEGATION_FUNDS;
-    } else if (sliderValue === MAX_DELEGATION_FUNDS_LOG) {
-      adjustedAmountValue = MAX_DELEGATION_FUNDS;
+    let amountValue = null;
+    if (
+      sliderValue ===
+      Math.round(MIN_DELEGATION_FUNDS_LOG * RANKING_SLIDER_RATIO)
+    ) {
+      amountValue = MIN_DELEGATION_FUNDS;
+    } else if (
+      sliderValue ===
+      Math.round(MAX_DELEGATION_FUNDS_LOG * RANKING_SLIDER_RATIO)
+    ) {
+      amountValue = MAX_DELEGATION_FUNDS;
     } else {
-      adjustedAmountValue = generateThousands(
-        Math.round(Math.exp(sliderValue))
+      amountValue = generateThousands(
+        Math.exp(sliderValue / RANKING_SLIDER_RATIO)
       );
     }
-    this.setState({ sliderValue });
-    onRank(null, adjustedAmountValue);
+    this.setState({ sliderValue, amountValue });
+    onRank(null, amountValue);
   };
 
   generateInfo = () => {
@@ -266,15 +271,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
       numberOfStakePools,
       getStakePoolById,
     } = this.props;
-    const { sliderValue } = this.state;
-    let displayValue = null;
-    if (sliderValue === MIN_DELEGATION_FUNDS_LOG) {
-      displayValue = MIN_DELEGATION_FUNDS;
-    } else if (sliderValue === MAX_DELEGATION_FUNDS_LOG) {
-      displayValue = MAX_DELEGATION_FUNDS;
-    } else {
-      displayValue = generateThousands(Math.round(Math.exp(sliderValue)));
-    }
+    const { sliderValue, amountValue } = this.state;
     const rankingDescription = intl.formatMessage(messages.rankingDescription);
     const learnMoreButtonClasses = classnames(['flat', styles.actionLearnMore]);
     const {
@@ -353,12 +350,17 @@ export default class StakePoolsRanking extends Component<Props, State> {
             </div>
             <div className={styles.slider}>
               <Slider
-                min={MIN_DELEGATION_FUNDS_LOG}
+                min={Math.round(
+                  MIN_DELEGATION_FUNDS_LOG * RANKING_SLIDER_RATIO
+                )}
                 minDisplayValue={MIN_DELEGATION_FUNDS}
-                max={MAX_DELEGATION_FUNDS_LOG}
+                max={Math.round(
+                  MAX_DELEGATION_FUNDS_LOG * RANKING_SLIDER_RATIO
+                )}
                 maxDisplayValue={MAX_DELEGATION_FUNDS}
                 value={sliderValue}
-                displayValue={displayValue}
+                displayValue={amountValue}
+                showRawValue
                 onChange={this.onSliderChange}
                 disabled={isLoading || isRanking}
                 showTooltip
