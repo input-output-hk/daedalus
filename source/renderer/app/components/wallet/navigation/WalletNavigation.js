@@ -6,11 +6,12 @@ import { defineMessages, intlShape } from 'react-intl';
 import {
   WALLET_NAV_IDS,
   LEGACY_WALLET_EXCLUDED_NAV_ITEMS,
+  DAEDALUS_MAINNET_EAG_EXCLUDED_NAV_ITEMS,
 } from '../../../config/walletNavigationConfig';
 import Navigation from '../../navigation/Navigation';
 import summaryIcon from '../../../assets/images/wallet-nav/summary-ic.inline.svg';
 import sendIcon from '../../../assets/images/wallet-nav/send-ic.inline.svg';
-// import receiveIcon from '../../../assets/images/wallet-nav/receive-ic.inline.svg';
+import receiveIcon from '../../../assets/images/wallet-nav/receive-ic.inline.svg';
 import transactionsIcon from '../../../assets/images/wallet-nav/transactions-ic.inline.svg';
 import settingsIcon from '../../../assets/images/wallet-nav/wallet-settings-2-ic.inline.svg';
 import type {
@@ -82,7 +83,7 @@ export default class WalletNavigation extends Component<Props> {
       hasNotification,
     } = this.props;
     const { intl } = this.context;
-    const { isIncentivizedTestnet } = global;
+    const { isMainnetEAG, isIncentivizedTestnet } = global;
     const items: Array<NavButtonProps | NavDropdownProps> = [
       {
         id: WALLET_NAV_IDS.SUMMARY,
@@ -94,11 +95,11 @@ export default class WalletNavigation extends Component<Props> {
         label: intl.formatMessage(messages.send),
         icon: sendIcon,
       },
-      // {
-      //   id: WALLET_NAV_IDS.RECEIVE,
-      //   label: intl.formatMessage(messages.receive),
-      //   icon: receiveIcon,
-      // },
+      {
+        id: WALLET_NAV_IDS.RECEIVE,
+        label: intl.formatMessage(messages.receive),
+        icon: receiveIcon,
+      },
       {
         id: WALLET_NAV_IDS.TRANSACTIONS,
         label: intl.formatMessage(messages.transactions),
@@ -125,9 +126,18 @@ export default class WalletNavigation extends Component<Props> {
           },
         ],
       },
-    ].filter(
-      item => !(isLegacy && includes(LEGACY_WALLET_EXCLUDED_NAV_ITEMS, item.id))
-    );
+    ]
+      .filter(
+        item =>
+          !(isLegacy && includes(LEGACY_WALLET_EXCLUDED_NAV_ITEMS, item.id))
+      )
+      .filter(
+        item =>
+          !(
+            isMainnetEAG &&
+            includes(DAEDALUS_MAINNET_EAG_EXCLUDED_NAV_ITEMS, item.id)
+          )
+      );
     return (
       <Navigation
         activeItem={activeItem}
