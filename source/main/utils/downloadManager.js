@@ -68,6 +68,7 @@ export const getEventActions = async (
 ): Promise<Object> => {
   const { downloadId } = info;
   await localStorage.setInfo(info, downloadId);
+  let serverFileSize;
   return {
     start: async () => {
       const eventType = types.START;
@@ -82,9 +83,10 @@ export const getEventActions = async (
       );
     },
     download: async ({
-      totalSize: serverFileSize,
+      totalSize,
       downloadedSize: diskFileSize,
     }: DownloadInfoInit) => {
+      serverFileSize = totalSize;
       const rawData: DownloadDataUpdate = {
         ...{
           serverFileSize,
@@ -112,6 +114,7 @@ export const getEventActions = async (
       const rawData: DownloadDataUpdate = {
         ...{
           remainingSize: total - downloadSize,
+          serverFileSize,
           downloadSize,
           progress,
           speed,

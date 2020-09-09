@@ -236,7 +236,7 @@ export const downloadManagerChannel = (window: BrowserWindow) => {
   clearDownloadLocalDataChannel.onRequest(clearDownloadLocalData);
 };
 
-export const pauseAllDownloads = () => {
+export const pauseActiveDownloads = () => {
   downloads.forEach(({ downloadId, download }) => {
     try {
       if (download.state === DOWNLOAD_STATES.DOWNLOADING) download.pause();

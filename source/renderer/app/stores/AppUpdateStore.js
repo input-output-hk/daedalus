@@ -148,9 +148,11 @@ export default class AppUpdateStore extends Store {
     const { version } = this.getUpdateInfo(update);
     const appUpdateCompleted = await this.getAppUpdateCompletedRequest.execute();
 
-    // The update was already installed and the installer was already deleted
-    // We can't simply compare with the `package.json` version
-    // otherwise we will trigger the localdata cleaning on every app load
+    /*
+     * The update was already installed and the installer was already deleted.
+     * We can't simply compare with the `package.json` version
+     * otherwise we would trigger the localdata cleaning on every app load
+     */
     if (appUpdateCompleted === version) return;
 
     // Is there an 'Automatic Update Failed' flag?
