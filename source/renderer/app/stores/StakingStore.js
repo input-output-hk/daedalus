@@ -328,8 +328,12 @@ export default class StakingStore extends Store {
     }
 
     try {
-      await this.stakePoolsRequest.execute(this.stake * LOVELACES_PER_ADA)
-        .promise;
+      const stakeInBigNumber = new BigNumber(this.stake);
+      const stakeInLovelace = parseInt(
+        stakeInBigNumber.times(LOVELACES_PER_ADA),
+        10
+      );
+      await this.stakePoolsRequest.execute(stakeInLovelace).promise;
       this._resetPolling(false);
     } catch (error) {
       this._resetPolling(true);
