@@ -10,6 +10,11 @@ Changelog
 - Disabled ITN rewards redemption feature
 - Increased address pool gap for restoring wallets from 20 to 1000
 
+### Features
+
+- Made stake pools ranking slider logarithmic ([PR 2162](https://github.com/input-output-hk/daedalus/pull/2162))
+- Implemented fetching of epoch configuration from the Api instead of using hardcoded constants ([PR 2165](https://github.com/input-output-hk/daedalus/pull/2165))
+
 ### Fixes
 
 - Improved rendering performance of the stake pools on the "Stake pools" screen ([PR 2177](https://github.com/input-output-hk/daedalus/pull/2177))

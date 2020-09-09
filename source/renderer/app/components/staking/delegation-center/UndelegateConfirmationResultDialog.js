@@ -9,7 +9,7 @@ import styles from './UndelegateConfirmationResultDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
 import sadLogo from '../../../assets/images/untada.inline.svg';
 import humanizeDurationByLocale from '../../../utils/humanizeDurationByLocale';
-import { EPOCH_COUNTDOWN_INTERVAL } from '../../../config/epochsConfig';
+import { EPOCH_COUNTDOWN_INTERVAL } from '../../../config/stakingConfig';
 
 const messages = defineMessages({
   dialogTitle: {
@@ -52,12 +52,16 @@ export default class UndelegateConfirmationResultDialog extends Component<
   };
 
   componentDidMount() {
+    this.configureUpdateTimer();
+  }
+
+  configureUpdateTimer = () => {
     this.updateTimeUntilNextEpochStart();
     this.intervalHandler = setInterval(
       () => this.updateTimeUntilNextEpochStart(),
       EPOCH_COUNTDOWN_INTERVAL
     );
-  }
+  };
 
   updateTimeUntilNextEpochStart = () => {
     const { futureEpochStartTime } = this.props;

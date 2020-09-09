@@ -69,7 +69,6 @@ import { transferFunds } from './wallets/requests/transferFunds';
 
 // Staking
 import StakePool from '../domains/StakePool';
-import { getEpochLength } from '../config/epochsConfig';
 
 // News requests
 import { getNews } from './news/requests/getNews';
@@ -1623,19 +1622,18 @@ export default class AdaApi {
       );
       logger.debug('AdaApi::getNetworkInfo success', { networkInfo });
       const {
-        sync_progress /* eslint-disable-line camelcase */,
+        sync_progress: syncProgressRaw,
         node_tip: nodeTip,
         network_tip: networkTip,
         next_epoch: nextEpoch,
       } = networkInfo;
 
       const syncProgress =
-        get(sync_progress, 'status') === 'ready'
+        get(syncProgressRaw, 'status') === 'ready'
           ? 100
-          : get(sync_progress, 'progress.quantity', 0);
+          : get(syncProgressRaw, 'progress.quantity', 0);
       const nextEpochNumber = get(nextEpoch, 'epoch_number', null);
       const nextEpochStartTime = get(nextEpoch, 'epoch_start_time', '');
-      const epochLength = getEpochLength();
       // extract relevant data before sending to NetworkStatusStore
       return {
         syncProgress,
@@ -1654,17 +1652,6 @@ export default class AdaApi {
               // N+1 epoch
               epochNumber: nextEpochNumber,
               epochStart: nextEpochStartTime,
-            }
-          : null,
-        futureEpoch: nextEpoch
-          ? {
-              // N+2 epoch
-              epochNumber: nextEpochNumber ? nextEpochNumber + 1 : null,
-              epochStart: nextEpochStartTime
-                ? moment(nextEpochStartTime)
-                    .add(epochLength, 'seconds')
-                    .toISOString()
-                : '',
             }
           : null,
       };
