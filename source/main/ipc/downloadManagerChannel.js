@@ -21,6 +21,7 @@ import {
 import {
   DEFAULT_DIRECTORY_NAME,
   TEMPORARY_FILENAME,
+  DOWNLOAD_STATES,
 } from '../../common/config/downloadManagerConfig';
 import { generateFileNameWithTimestamp } from '../../common/utils/files.js';
 import { downloadManagerLocalStorage as localStorage } from '../utils/mainLocalStorage';
@@ -238,7 +239,7 @@ export const downloadManagerChannel = (window: BrowserWindow) => {
 export const pauseAllDownloads = () => {
   downloads.forEach(({ downloadId, download }) => {
     try {
-      download.pause();
+      if (download.state === DOWNLOAD_STATES.DOWNLOADING) download.pause();
       logger.info(
         `DownloadManager:PauseDownloads download "${downloadId}" was paused`,
         { downloadId }
