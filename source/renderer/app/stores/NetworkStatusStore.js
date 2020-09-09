@@ -624,6 +624,7 @@ export default class NetworkStatusStore extends Store {
         this.isShelleyPending = isShelleyPending;
         this.shelleyActivationTime = epochStartTime;
       });
+
       runInAction('Update Epoch config', () => {
         this.slotLength = slotLength.quantity;
         this.epochLength = epochLength.quantity;
