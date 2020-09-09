@@ -267,6 +267,7 @@ export default class AppUpdateStore extends Store {
       if (eventType === DOWNLOAD_EVENT_TYPES.END) {
         this.isUpdateDownloading = false;
         this.isUpdateDownloaded = true;
+        this.actions.app.closeNewsFeed.trigger();
       } else {
         this.isUpdateDownloading = true;
       }

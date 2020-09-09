@@ -25,7 +25,7 @@
       word-break: break-all;
 
       .badge {
-        background-color: green;
+        background-color: var(--theme-news-item-badge-green-color);
         border-radius: 12.5px;
         display: inline-block;
         height: 8px;

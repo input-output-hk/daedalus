@@ -6,7 +6,7 @@
 
 .dot {
   &:after {
-    background: green;
+    background: var(--theme-news-feed-icon-green-dot-background-color);
     border-radius: 12.5px;
     content: '';
     display: block;
@@ -22,7 +22,7 @@
 .notificationDot {
   @extend .dot;
   &:after {
-    background: var(--theme-news-feed-icon-dot-background-color);
+    background: var(--theme-news-feed-icon-red-dot-background-color);
   }
 }
 .updateDot {
