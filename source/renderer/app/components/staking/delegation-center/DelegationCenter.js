@@ -16,6 +16,7 @@ type Props = {
   onDelegate: Function,
   onUndelegate: Function,
   networkTip: ?TipInfo,
+  epochLength: ?number,
   nextEpoch: ?NextEpoch,
   futureEpoch: ?FutureEpoch,
   getStakePoolById: Function,
@@ -33,6 +34,7 @@ export default class DelegationCenter extends Component<Props> {
       onDelegate,
       onUndelegate,
       networkTip,
+      epochLength,
       nextEpoch,
       futureEpoch,
       getStakePoolById,
@@ -46,6 +48,7 @@ export default class DelegationCenter extends Component<Props> {
         {isEpochsInfoAvailable && (
           <DelegationCenterHeader
             networkTip={networkTip}
+            epochLength={epochLength}
             nextEpoch={nextEpoch}
             futureEpoch={futureEpoch}
             currentLocale={currentLocale}
