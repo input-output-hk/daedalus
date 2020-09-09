@@ -241,5 +241,7 @@ export const StakingDelegationCenterStory = ({
     currentLocale={locale}
     isLoading={isLoading}
     isEpochsInfoAvailable={isEpochsInfoAvailable}
+    slotLength={null}
+    epochLength={null}
   />
 );

@@ -1,6 +1,5 @@
 // @flow
 import { get, map } from 'lodash';
-import moment from 'moment';
 import { action } from 'mobx';
 import BigNumber from 'bignumber.js/bignumber';
 import AdaApi from '../api';
@@ -23,7 +22,6 @@ import type {
   GetLatestAppVersionResponse,
 } from '../nodes/types';
 import type { GetNewsResponse } from '../news/types';
-import { getEpochLength } from '../../config/epochsConfig';
 
 let LATEST_APP_VERSION = null;
 let LOCAL_TIME_DIFFERENCE = 0;
@@ -54,7 +52,6 @@ export default (api: AdaApi) => {
       // extract relevant data before sending to NetworkStatusStore
       const nextEpochNumber = get(next_epoch, 'epoch_number', null);
       const nextEpochStartTime = get(next_epoch, 'epoch_start_time', '');
-      const epochLength = getEpochLength();
       return {
         syncProgress: SYNC_PROGRESS !== null ? SYNC_PROGRESS : syncProgress,
         localTip: {
@@ -69,15 +66,6 @@ export default (api: AdaApi) => {
           // N+1 epoch
           epochNumber: nextEpochNumber,
           epochStart: nextEpochStartTime,
-        },
-        futureEpoch: {
-          // N+2 epoch
-          epochNumber: nextEpochNumber ? nextEpochNumber + 1 : null,
-          epochStart: nextEpochStartTime
-            ? moment(nextEpochStartTime)
-                .add(epochLength, 'seconds')
-                .toISOString()
-            : '',
         },
       };
     } catch (error) {
