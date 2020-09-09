@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Implemented slot and epoch length config variables fetching API instead of using constants ([PR 2165](https://github.com/input-output-hk/daedalus/pull/2165))
+
 ### Fixes
 
 - Improved rendering performance of the stake pools on the "Stake pools" screen ([PR 2177](https://github.com/input-output-hk/daedalus/pull/2177))

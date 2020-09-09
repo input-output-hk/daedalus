@@ -6,16 +6,12 @@ import { get } from 'lodash';
 import styles from './DelegationCenterHeader.scss';
 import CountdownWidget from '../../widgets/CountdownWidget';
 import humanizeDurationByLocale from '../../../utils/humanizeDurationByLocale';
-
+import { EPOCH_COUNTDOWN_INTERVAL } from '../../../config/stakingConfig';
 import type {
   NextEpoch,
   TipInfo,
   FutureEpoch,
 } from '../../../api/network/types';
-import {
-  getTotalSlots,
-  EPOCH_COUNTDOWN_INTERVAL,
-} from '../../../config/epochsConfig';
 import { generateFieldPanel } from './helpers';
 
 const messages = defineMessages({
@@ -54,6 +50,7 @@ const messages = defineMessages({
 
 type Props = {
   networkTip: ?TipInfo,
+  epochLength: ?number,
   nextEpoch: ?NextEpoch,
   futureEpoch: ?FutureEpoch,
   currentLocale: string,
@@ -70,12 +67,16 @@ export default class DelegationCenterHeader extends Component<Props, State> {
   };
 
   componentDidMount() {
+    this.configureUpdateTimer();
+  }
+
+  configureUpdateTimer = () => {
     this.updateTimeUntilFutureEpoch();
     this.intervalHandler = setInterval(
       () => this.updateTimeUntilFutureEpoch(),
       EPOCH_COUNTDOWN_INTERVAL
     );
-  }
+  };
 
   updateTimeUntilFutureEpoch = () => {
     const { futureEpoch } = this.props;
@@ -126,12 +127,11 @@ export default class DelegationCenterHeader extends Component<Props, State> {
 
   render() {
     const { intl } = this.context;
-    const { networkTip, nextEpoch, currentLocale } = this.props;
+    const { networkTip, epochLength, nextEpoch, currentLocale } = this.props;
     const epoch = get(networkTip, 'epoch', '-');
     const nextEpochStart = get(nextEpoch, 'epochStart', '');
     const nextEpochNumber = get(nextEpoch, 'epochNumber', 0);
     const slot = get(networkTip, 'slot', '-');
-    const totalSlots = getTotalSlots();
     const headingFirst = intl.formatMessage(messages.headingRight);
     const headingSecond = intl.formatMessage(messages.headingLeft);
     const timeUntilFutureEpoch = humanizeDurationByLocale(
@@ -141,10 +141,15 @@ export default class DelegationCenterHeader extends Component<Props, State> {
     const description = intl.formatMessage(messages.description, {
       timeUntilFutureEpoch,
     });
+
+    if (!epochLength) {
+      return null;
+    }
+
     const fieldPanels = this.generateCurrentEpochPanels(
       epoch,
       slot,
-      totalSlots
+      epochLength
     );
     const showNextEpochCountdown = nextEpochNumber > 0;
 

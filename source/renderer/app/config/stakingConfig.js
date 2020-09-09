@@ -1,5 +1,4 @@
 // @flow
-
 import type { RedeemItnRewardsStep } from '../types/stakingTypes';
 
 export const MIN_DELEGATION_FUNDS = 10;
@@ -47,3 +46,5 @@ export const REDEEM_ITN_REWARDS_STEPS: {
 };
 
 export const IS_RANKING_DATA_AVAILABLE = true;
+
+export const EPOCH_COUNTDOWN_INTERVAL = 1 * 1000; // 1 second | unit: milliseconds;
