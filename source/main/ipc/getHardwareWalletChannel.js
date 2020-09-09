@@ -3,13 +3,14 @@ import TransportNodeHid from '@ledgerhq/hw-transport-node-hid';
 import AppAda, { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import wasm from 'cardano-serialization-lib-nodejs'
 import { BrowserWindow } from 'electron';
+import { mnemonicToEntropy } from 'bip39';
 import {
   DEVICE_EVENT,
   DEVICE,
   TRANSPORT_EVENT,
   UI_EVENT,
 } from 'trezor-connect';
-import { get } from 'lodash';
+import { get, map } from 'lodash';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import {
   GET_HARDWARE_WALLET_TRANSPORT_CHANNEL,
@@ -83,12 +84,86 @@ const signTransactionChannel: MainIpcChannel<
   signTransaMainResponse
 > = new MainIpcChannel(SIGN_TRANSACTION_CHANNEL);
 
+
+export function normalizeToAddress(
+  addr: string
+): void | wasm.Address {
+  // in Shelley, addresses can be base16, bech32 or base58
+  // this function, we try parsing in all encodings possible
+
+  // 1) Try converting from base58
+  if (wasm.ByronAddress.is_valid(addr)) {
+    return wasm.ByronAddress.from_base58(addr).to_address();
+  }
+
+  // 2) If already base16, simply return
+  try {
+    return wasm.Address.from_bytes(
+      Buffer.from(addr, 'hex')
+    );
+  } catch (_e) {} // eslint-disable-line no-empty
+
+  // 3) Try converting from base32
+  try {
+    return wasm.Address.from_bech32(addr);
+  } catch (_e) {} // eslint-disable-line no-empty
+
+  return undefined;
+}
+
+export function getCardanoSpendingKeyHash(
+  addr: wasm.Address,
+): (
+  // null -> legacy address (no key hash)
+  // undefined -> script hash instead of key hash
+  wasm.Ed25519KeyHash | null | void
+) {
+  {
+    const byronAddr = wasm.ByronAddress.from_address(addr);
+    if (byronAddr) return null;
+  }
+  {
+    const baseAddr = wasm.BaseAddress.from_address(addr);
+    if (baseAddr) return baseAddr.payment_cred().to_keyhash();
+  }
+  {
+    const ptrAddr = wasm.PointerAddress.from_address(addr);
+    if (ptrAddr) return ptrAddr.payment_cred().to_keyhash();
+  }
+  {
+    const enterpriseAddr = wasm.EnterpriseAddress.from_address(addr);
+    if (enterpriseAddr) return enterpriseAddr.payment_cred().to_keyhash();
+  }
+  {
+    const rewardAddr = wasm.RewardAddress.from_address(addr);
+    if (rewardAddr) return rewardAddr.payment_cred().to_keyhash();
+  }
+  throw new Error(`${nameof(getCardanoSpendingKeyHash)} unknown address type`);
+}
+
+export function harden(num: number): number {
+  return 0x80000000 + num;
+}
+
+export function getCip1852Account() {
+  const entropy = mnemonicToEntropy(
+    [ "test", "walk", "nut", "penalty", "hip", "pave", "soap", "entry", "language", "right", "filter", "choice" ].join(' ')
+  )
+  const rootKey = wasm.Bip32PrivateKey.from_bip39_entropy(
+    Buffer.from(entropy, 'hex'),
+    Buffer.from(''),
+  );
+  return rootKey
+    .derive(harden(1852))
+    .derive(harden(1815))
+    .derive(harden(0)); // account #0
+}
+
+
 class EventObserver {
   constructor(props) {
     // $FlowFixMe
     this.mainWindow = props;
-    console.debug('>>> TOMO');
-    console.debug('>>> TOMO - test: ', wasm);
   }
   next(eventText) {
     if (eventText.type === 'remove') {
@@ -192,10 +267,6 @@ export const handleHardwareWalletRequests = async () => {
   let deviceConnection = null;
   getHardwareWalletTransportChannel.onRequest(async isTrezor => {
     console.debug('>>> ESTABLISH CONNECTION <<<');
-    console.debug('>>> TOMO');
-    console.debug('>>> TOMO - test new: ', wasm);
-    console.debug('>>> TOMO TransactionBody - ', wasm.TransactionBody);
-
     // console.debug('>>> TRY with TREZOR: ', TrezorConnect);
 
     // Connected Trezor device info
@@ -409,6 +480,7 @@ export const handleHardwareWalletRequests = async () => {
         withdrawals,
         metadataHashHex,
         bigFee,
+        coinSelection
       } = params
 
       console.debug('>>> TRY TO SIGN: ', params);
@@ -431,17 +503,131 @@ export const handleHardwareWalletRequests = async () => {
         fee: BigNum,
         ttl: number
       ): TransactionBody; */
-      const txBody = {
-        inputs,
-        outputs,
-        fee: bigFee,
-        ttl: 7200,
-      }
-//
+      // const txBody = {
+      //   inputs,
+      //   outputs,
+      //   fee: bigFee,
+      //   ttl: 7200,
+      // }
+
+
+      // const txBuilder = wasm.TransactionBuilder.new(
+      //   // all of these are taken from the mainnet genesis settings
+      //   wasm.LinearFee.new(wasm.BigNum.from_str('44'), wasm.BigNum.from_str('155381')),
+      //   wasm.BigNum.from_str('1000000'),
+      //   wasm.BigNum.from_str('500000000'),
+      //   wasm.BigNum.from_str('2000000')
+      // );
+
+
+
+      const protocolParams = {
+        linearFee: wasm.LinearFee.new(
+          wasm.BigNum.from_str('2'),
+          wasm.BigNum.from_str('500'),
+        ),
+        minimumUtxoVal: wasm.BigNum.from_str('1'),
+        poolDeposit: wasm.BigNum.from_str('500'),
+        keyDeposit: wasm.BigNum.from_str('500'),
+      };
+      console.debug ('>>> !! protocolParams: ', protocolParams);
+      const txBuilder = wasm.TransactionBuilder.new(
+        protocolParams.linearFee,
+        protocolParams.minimumUtxoVal,
+        protocolParams.poolDeposit,
+        protocolParams.keyDeposit,
+      );
+
+
+
+      // const address = wasm.ByronAddress.from_base58("Ae2tdPwUPEZLs4HtbuNey7tK4hTKrwNwYtGqp7bDfCy2WdR3P6735W5Yfpe");
+      // txBuilder.add_bootstrap_input(
+      //   address,
+      //   wasm.TransactionInput.new(
+      //     wasm.TransactionHash.from_bytes(
+      //       Buffer.from("488afed67b342d41ec08561258e210352fba2ac030c98a8199bc22ec7a27ccf1", "hex"),
+      //     ),
+      //     0, // index
+      //   ),
+      //   wasm.BigNum.from_str('3000000')
+      // );
+
+      map(coinSelection.inputs, input => {
+        console.debug('>>> !! Construct inputs: ', {input, normalizeToAddress, getCardanoSpendingKeyHash });
+        // const address = wasm.ByronAddress.from_base58(input.address);
+        // const address = wasm.ByronAddress.from_base58(input.address);
+
+        const wasmAddr = normalizeToAddress(input.address);
+        // if (wasmAddr == null) throw new Error(`Unknown address ${input.address}`);
+        console.debug('>>>> wasmAddr: ', wasmAddr);
+        const keyHash = getCardanoSpendingKeyHash(wasmAddr);
+        console.debug('>>>> keyHash: ', keyHash);
+
+        // console.debug('>>> !! Input Address: ', address);
+        txBuilder.add_key_input(
+          keyHash,
+          wasm.TransactionInput.new(
+            wasm.TransactionHash.from_bytes(
+              Buffer.from(input.id, "hex"),
+            ),
+            input.index, // index
+          ),
+          wasm.BigNum.from_str(input.amount.quantity.toString())
+        );
+      })
+
+
+      // txBuilder.add_output(
+      //   wasm.TransactionOutput.new(
+      //     address.to_address(),
+      //     // we can construct BigNum (Coin) from both a js BigInt (here) or from a string (below in fee)
+      //     wasm.BigNum.from_str("1000000"),
+      //   ),
+      // );
+
+
+     // map(coinSelection.outputs, output => {
+     //   console.debug('>>> !! Construct outputs: ', output);
+     //   // console.debug('>>> !! output Address: ', output.address.to_address());
+
+     //   txBuilder.add_output(
+     //     wasm.TransactionOutput.new(
+     //       output.address,
+     //       // we can construct BigNum (Coin) from both a js BigInt (here) or from a string (below in fee)
+     //       wasm.BigNum.from_str(output.amount.quantity.toString()),
+     //     ),
+     //   );
+     // })
+     map(outputs, output => {
+       console.debug('>>> !! Construct outputs: ', output);
+       console.debug('>>> TEST: ', wasm.Address.from_bytes(Buffer.from(output.addressHex, 'hex')));
+       // console.debug('>>> !! output Address: ', output.address.to_address());
+       txBuilder.add_output(
+         wasm.TransactionOutput.new(
+           wasm.Address.from_bytes(Buffer.from(output.addressHex, 'hex')),
+           // we can construct BigNum (Coin) from both a js BigInt (here) or from a string (below in fee)
+           wasm.BigNum.from_str(output.amountStr),
+         ),
+       );
+     })
+
+
+      txBuilder.set_ttl(7200);
+      txBuilder.set_fee(wasm.BigNum.from_str('42'));
+
+      console.debug('>>> !! txBuilder PASS: ', txBuilder);
+
+      const txBody = txBuilder.build();
+
       console.debug('>>> TX BODY: ', txBody);
-//
+
+      const txHash = wasm.hash_transaction(txBody);
+
+      console.debug('>>> TX HASH: ', txHash);
+
+
       const serializedTx = wasm.Transaction.new(
-        signedTransaction.txHashHex,
+        txBody,
         signedTransaction.witnesses,
         undefined, // transaction metadata
       );

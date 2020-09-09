@@ -732,7 +732,8 @@ export default class HardwareWalletsStore extends Store {
         ttlStr: '7200', // e.g. slot 0, epoch 10
         certificates: [], // [certificates.stakeDelegation],
         withdrawals: [], // [withdrawals.withdrawal0],
-        metadataHashHex: null // sampleMetadata
+        metadataHashHex: null, // sampleMetadata
+        coinSelection
       });
 
 
