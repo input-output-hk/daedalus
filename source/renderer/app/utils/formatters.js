@@ -145,3 +145,11 @@ export const formattedDownloadData = (
     progress,
   };
 };
+
+export const generateThousands = (value: number) => {
+  if (value <= 1000) {
+    return Math.round(value);
+  }
+
+  return Math.round(value / 1000) * 1000;
+};
