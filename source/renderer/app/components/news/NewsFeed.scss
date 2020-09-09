@@ -89,11 +89,10 @@
     }
   }
 
-  .newsFeedList {
+  .newsFeedContainer {
     background: var(--theme-news-feed-background-color);
-    height: calc(100% - 84px);
-    overflow-x: hidden;
-    overflow-y: overlay;
+    font-family: var(--font-regular);
+    overflow: hidden;
     padding: 20px;
 
     &::-webkit-scrollbar-track {
@@ -120,10 +119,16 @@
         text-align: center;
       }
     }
-
-    .newsFeedItemsContainer {
-      font-family: var(--font-regular);
-      overflow: hidden;
+    .newsFeedList {
+      height: calc(100% - 104px);
+      overflow-x: hidden;
+      overflow-y: overlay;
+      padding: 0 20px 20px 0;
+      position: absolute;
+      width: calc(100% - 20px);
+      &.hasUpdate {
+        height: calc(100% - 220px);
+      }
     }
   }
 

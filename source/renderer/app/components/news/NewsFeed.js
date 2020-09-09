@@ -122,6 +122,8 @@ export default class NewsFeed extends Component<Props, State> {
     const items = get(news, 'all', []);
     const update = get(news, 'update');
     const totalUnreadNewsItems = get(items, 'unread', []).length;
+    const hasUpdateItem = displayAppUpdateNewsItem && update;
+
     const componentClasses = classNames([
       styles.component,
       isNewsFeedOpen ? styles.show : null,
@@ -131,6 +133,11 @@ export default class NewsFeed extends Component<Props, State> {
     const newsFeedHeaderStyles = classNames([
       styles.newsFeedHeader,
       hasShadow ? styles.hasShadow : null,
+    ]);
+
+    const newsFeedListStyles = classNames([
+      styles.newsFeedList,
+      hasUpdateItem ? styles.hasUpdate : null,
     ]);
 
     return (
@@ -148,9 +155,9 @@ export default class NewsFeed extends Component<Props, State> {
             <SVGInline svg={closeCrossThin} />
           </button>
         </div>
-        <div className={styles.newsFeedList}>
-          {displayAppUpdateNewsItem && update && (
-            <div className={styles.newsFeedItemsContainer}>
+        <div className={styles.newsFeedContainer}>
+          {hasUpdateItem && (
+            <>
               {
                 <UpdateItem
                   key={update.id}
@@ -165,10 +172,10 @@ export default class NewsFeed extends Component<Props, State> {
                 />
               }
               <hr className={styles.separator} />
-            </div>
+            </>
           )}
           {items.length > 0 && (
-            <div className={styles.newsFeedItemsContainer}>
+            <div className={newsFeedListStyles}>
               {items.map(newsItem => (
                 <NewsItem
                   key={newsItem.id}
