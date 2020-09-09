@@ -139,36 +139,22 @@ export default class AppUpdateStore extends Store {
 
   isUpdateInstalled = (update: News) => {
     const { version: updateVersion } = this.getUpdateInfo(update);
-    console.log('AppUpdateStore: -- isUpdateInstalled');
-    console.log('AppUpdateStore: updateVersion', updateVersion);
-    console.log('AppUpdateStore: currentVersion', currentVersion);
     return !semver.lt(currentVersion, updateVersion);
   };
 
   // =================== PRIVATE ==================
 
   _checkNewAppUpdate = async (update: News) => {
-    console.log('AppUpdateStore: ---> _checkNewAppUpdate', update);
     const { version } = this.getUpdateInfo(update);
     const appUpdateCompleted = await this.getAppUpdateCompletedRequest.execute();
-    console.log('AppUpdateStore: * appUpdateCompleted', !!appUpdateCompleted);
 
     // The update was already installed and the installer was already deleted
     // We can't simply compare with the `package.json` version
     // otherwise we will trigger the localdata cleaning on every app load
-    if (appUpdateCompleted)
-      console.log(
-        'appUpdateCompleted === version',
-        appUpdateCompleted === version
-      );
     if (appUpdateCompleted === version) return;
 
     // Is there an 'Automatic Update Failed' flag?
     const isAutomaticUpdateFailed = await this.getAppAutomaticUpdateFailedRequest.execute();
-    console.log(
-      'AppUpdateStore: * isAutomaticUpdateFailed',
-      isAutomaticUpdateFailed
-    );
     if (isAutomaticUpdateFailed) {
       runInAction(() => {
         this.isAutomaticUpdateFailed = true;
@@ -176,10 +162,6 @@ export default class AppUpdateStore extends Store {
     }
 
     // Was the update already installed?
-    console.log(
-      'AppUpdateStore: * isUpdateInstalled',
-      this.isUpdateInstalled(update)
-    );
     if (this.isUpdateInstalled(update)) {
       // Sets the `appUpdateCompleted` flag to prevent this whole process every app load
       await this.setAppUpdateCompletedRequest.execute(version);
@@ -190,7 +172,6 @@ export default class AppUpdateStore extends Store {
     }
 
     // The Update is valid and needs to be downloaded/installed
-    console.log('AppUpdateStore: @ SHOULD UPDATE');
     runInAction(() => {
       this.availableUpdate = update;
       this.availableUpdateVersion = version;
@@ -212,26 +193,10 @@ export default class AppUpdateStore extends Store {
       }
 
       // Resumes the update download
-      console.log('AppUpdateStore: # _requestResumeUpdateDownload');
-      const resumeDownload = this._requestResumeUpdateDownload();
-      resumeDownload
-        .then((a, b, c) => {
-          console.log('RESUME:');
-          console.log('a', a);
-          console.log('b', b);
-          console.log('c', c);
-        })
-        .catch((a, b, c) => {
-          console.log('RESUME ERR:');
-          console.log('a', a);
-          console.log('b', b);
-          console.log('c', c);
-        });
+      this._requestResumeUpdateDownload();
       return;
     }
 
-    console.log('AppUpdateStore: # _removeLocalDataInfo');
-    console.log('AppUpdateStore: # _requestUpdateDownload');
     await this._removeLocalDataInfo();
     this._requestUpdateDownload(update);
   };
