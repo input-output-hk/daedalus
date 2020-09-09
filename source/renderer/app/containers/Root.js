@@ -65,7 +65,7 @@ export default class Root extends Component<Props> {
       return <RedeemItnRewardsContainer />;
     }
 
-    if (displayAppUpdateOverlay) {
+    if (!isNodeInStoppingSequence && displayAppUpdateOverlay) {
       return <AppUpdateContainer />;
     }
 
