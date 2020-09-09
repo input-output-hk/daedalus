@@ -1,7 +1,6 @@
 // @flow
 import { DownloaderHelper } from 'node-downloader-helper';
 import fs from 'fs';
-import { get, set } from 'lodash';
 import type { BrowserWindow } from 'electron';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import { logger } from '../utils/logging';

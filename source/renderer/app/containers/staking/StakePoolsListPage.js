@@ -36,7 +36,7 @@ export default class StakePoolsListPage extends Component<Props> {
       stakingActions.selectDelegationWallet.trigger(selectedWalletId);
       stakingActions.updateStake.trigger(sliderValue);
       this.rankTimeoutHandler = null;
-    }, 1000);
+    }, 500);
   };
 
   render() {
