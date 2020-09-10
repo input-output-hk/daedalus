@@ -10,6 +10,7 @@ Changelog
 
 ### Fixes
 
+- Removed one second delay on changing wallet selection and selecting delegating stake slider value on the "Stake pools" screen ([PR 2179](https://github.com/input-output-hk/daedalus/pull/2179))
 - Improved rendering performance of the stake pools on the "Stake pools" screen ([PR 2177](https://github.com/input-output-hk/daedalus/pull/2177))
 
 ### Chores
