@@ -10,6 +10,7 @@ Changelog
 
 ### Fixes
 
+- Fixed stake pool tooltip "Delegate to this pool" button background colors ([PR 2181](https://github.com/input-output-hk/daedalus/pull/2181))
 - Improved rendering performance of the stake pools on the "Stake pools" screen ([PR 2177](https://github.com/input-output-hk/daedalus/pull/2177))
 
 ### Chores
