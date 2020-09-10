@@ -69,6 +69,7 @@ export const getEventActions = async (
   const { downloadId } = info;
   await localStorage.setInfo(info, downloadId);
   let serverFileSize;
+  let endEventWasTriggered = false;
   let checkFileExists;
 
   const startEvent = async () => {
@@ -131,7 +132,7 @@ export const getEventActions = async (
       },
       window.webContents
     );
-    if (progress === 100) {
+    if (progress === 100 && !endEventWasTriggered) {
       checkFileExists = setTimeout(() => {
         errorEvent({ message: 'ENOENT' });
       }, 5000);
@@ -143,6 +144,7 @@ export const getEventActions = async (
     incomplete,
   }: DownloadInfoEnd) => {
     clearTimeout(checkFileExists);
+    endEventWasTriggered = true;
     const rawData: DownloadDataUpdate = {
       ...{
         downloadSize,
