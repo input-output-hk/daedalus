@@ -243,7 +243,7 @@ export default class AppUpdateOverlay extends Component<Props, State> {
         role="presentation"
         onClick={!isUpdateDownloaded ? onClose : () => {}}
       >
-        {!isUpdateDownloaded && (
+        {!isUpdateDownloaded && !isAutomaticUpdateFailed && (
           <DialogCloseButton onClose={onClose} className={styles.closeButton} />
         )}
         <h1 className={styles.title}>{intl.formatMessage(messages.title)}</h1>
