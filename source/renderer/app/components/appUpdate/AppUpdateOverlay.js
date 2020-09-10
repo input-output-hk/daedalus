@@ -73,8 +73,7 @@ const messages = defineMessages({
   },
   manualUpdateButtonUrl: {
     id: 'appUpdate.overlay.manualUpdate.button.url',
-    defaultMessage:
-      '!!!https://iohk.zendesk.com/hc/en-us/articles/360023850634',
+    defaultMessage: '!!!https://daedaluswallet.io/en/download/',
     description: '"manualUpdateButtonUrl" for the App Update Overlay',
   },
 });

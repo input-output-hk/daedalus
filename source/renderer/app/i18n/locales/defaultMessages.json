@@ -418,7 +418,7 @@
         }
       },
       {
-        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360023850634",
+        "defaultMessage": "!!!https://daedaluswallet.io/en/download/",
         "description": "\"manualUpdateButtonUrl\" for the App Update Overlay",
         "end": {
           "column": 3,
@@ -13944,20 +13944,6 @@
         "start": {
           "column": 8,
           "line": 69
-        }
-      },
-      {
-        "defaultMessage": "!!!Follow instructions and manually update",
-        "description": "Follow instructions and manually update description.",
-        "end": {
-          "column": 3,
-          "line": 78
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "appUpdate.overlay.manualUpdate.button.label",
-        "start": {
-          "column": 22,
-          "line": 74
         }
       }
     ],

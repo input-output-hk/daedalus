@@ -23,7 +23,7 @@
   "appUpdate.overlay.downloadProgressLabel": "Download in progress",
   "appUpdate.overlay.downloadTimeLeft": "{downloadTimeLeft} left",
   "appUpdate.overlay.manualUpdate.button.label": "Follow instructions and manually update",
-  "appUpdate.overlay.manualUpdate.button.url": "https://iohk.zendesk.com/hc/en-us/articles/360023850634",
+  "appUpdate.overlay.manualUpdate.button.url": "https://daedaluswallet.io/en/download/",
   "appUpdate.overlay.manualUpdate.description": "We were unable to launch the update installer automatically. Please manually update Daedalus to its latest version.",
   "appUpdate.overlay.manualUpdate.link.label": "Download and install it manually",
   "appUpdate.overlay.subtitle": "You are currently running Daedalus version <b>{currentAppVersion}</b>.<br />Daedalus version <b>{availableAppVersion}</b> is now available to download.",
