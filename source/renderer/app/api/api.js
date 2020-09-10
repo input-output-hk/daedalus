@@ -1680,9 +1680,7 @@ export default class AdaApi {
     let news: GetNewsResponse;
     try {
       news = getDummyNews();
-      console.log('AdaApi::getNews Dummy News', news);
     } catch (error) {
-      console.log('AdaApi::getNews error', error);
       logger.error('AdaApi::getNews error', { error });
       throw new Error('Unable to fetch news');
     }

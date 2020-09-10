@@ -356,6 +356,7 @@ export type CheckFileExistsMainResponse = boolean;
  */
 export const QUIT_APP_AND_INSTALL_UPDATE = 'QUIT_APP_AND_INSTALL_UPDATE';
 export type QuitAppAndAppInstallUpdateRendererRequest = {
+  directoryPath: string,
   filePath: string,
   hash: string,
 };

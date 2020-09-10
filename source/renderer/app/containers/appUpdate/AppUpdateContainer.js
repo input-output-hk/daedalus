@@ -13,7 +13,7 @@ export default class AppUpdateContainer extends Component<InjectedProps> {
     const { stores, actions } = this.props;
     const { appUpdate } = stores;
     const { environment, openExternalLink } = stores.app;
-    const { version } = environment;
+    const { version, isLinux } = environment;
     const {
       downloadProgress,
       isUpdateDownloaded,
@@ -44,6 +44,7 @@ export default class AppUpdateContainer extends Component<InjectedProps> {
         isAutomaticUpdateFailed={isAutomaticUpdateFailed}
         onExternalLinkClick={openExternalLink}
         displayManualUpdateLink={displayManualUpdateLink}
+        isLinux={isLinux}
       />
     );
   }

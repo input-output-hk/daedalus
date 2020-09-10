@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { number, withKnobs, radios } from '@storybook/addon-knobs';
+import { number, withKnobs, radios, boolean } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import StoryDecorator from '../_support/StoryDecorator';
 import AppUpdateOverlay from '../../../source/renderer/app/components/appUpdate/AppUpdateOverlay';
@@ -56,6 +56,11 @@ storiesOf('News|Overlays', module)
       'JP-JP': `${timeLeftNumber}分`,
     };
 
+    const isLinux =
+      scenario === 'downloaded' || scenario === 'reopened'
+        ? boolean('isLinux', false)
+        : false;
+
     return (
       <AppUpdateOverlay
         update={update[locale]}
@@ -71,6 +76,7 @@ storiesOf('News|Overlays', module)
         onClose={action('onClose')}
         onInstallUpdate={action('onInstallUpdate')}
         onExternalLinkClick={action('onExternalLinkClick')}
+        isLinux={isLinux}
       />
     );
   });

@@ -8,6 +8,7 @@ import type {
   QuitAppAndAppInstallUpdateRendererRequest,
   QuitAppAndAppInstallUpdateMainResponse,
 } from '../../common/ipc/api';
+import { environment } from '../environment';
 
 // IpcChannel<Incoming, Outgoing>
 
@@ -18,7 +19,15 @@ const quitAppAndAppInstallUpdateChannel: MainIpcChannel<
 
 export const handleQuitAppAndAppInstallUpdateRequests = () => {
   quitAppAndAppInstallUpdateChannel.onRequest(
-    async ({ filePath, hash: expectedHash }) => {
+    async ({ filePath, directoryPath, hash: expectedHash }) => {
+      // For Linux we simply open the installer directory
+      if (environment.isLinux) {
+        const directoryExists = fs.existsSync(directoryPath);
+        if (!directoryExists) return false;
+        const openDirectory: boolean = shell.openItem(directoryPath);
+        if (openDirectory) app.quit();
+        return openDirectory;
+      }
       const fileExists = fs.existsSync(filePath);
       if (!fileExists) return false;
       const fileBuffer = fs.readFileSync(filePath);

@@ -321,16 +321,30 @@
       },
       {
         "defaultMessage": "!!!Quit Daedalus and start the installation",
-        "description": "\"buttonLabel\" for the App Update Overlay",
+        "description": "\"buttonLabelOpenInstaller\" for the App Update Overlay",
         "end": {
           "column": 3,
           "line": 42
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
-        "id": "appUpdate.overlay.buttonLabel",
+        "id": "appUpdate.overlay.buttonLabelOpenInstaller",
         "start": {
-          "column": 15,
+          "column": 28,
           "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!Quit Daedalus and open installer",
+        "description": "\"buttonLabelOpenDirectory\" for the App Update Overlay",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
+        "id": "appUpdate.overlay.buttonLabelOpenDirectory",
+        "start": {
+          "column": 28,
+          "line": 43
         }
       },
       {
@@ -338,13 +352,13 @@
         "description": "\"downloadProgressLabel\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 52
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
         "id": "appUpdate.overlay.downloadProgressLabel",
         "start": {
           "column": 25,
-          "line": 43
+          "line": 48
         }
       },
       {
@@ -352,13 +366,13 @@
         "description": "\"downloadTimeLeft\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 57
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
         "id": "appUpdate.overlay.downloadTimeLeft",
         "start": {
           "column": 20,
-          "line": 48
+          "line": 53
         }
       },
       {
@@ -366,13 +380,13 @@
         "description": "\"downloadProgressData\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 62
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
         "id": "appUpdate.overlay.downloadProgressData",
         "start": {
           "column": 24,
-          "line": 53
+          "line": 58
         }
       },
       {
@@ -380,13 +394,13 @@
         "description": "\"manualUpdateDescription\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 68
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
         "id": "appUpdate.overlay.manualUpdate.description",
         "start": {
           "column": 27,
-          "line": 58
+          "line": 63
         }
       },
       {
@@ -394,13 +408,13 @@
         "description": "\"manualUpdateLinkLabel\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 73
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
         "id": "appUpdate.overlay.manualUpdate.link.label",
         "start": {
           "column": 25,
-          "line": 64
+          "line": 69
         }
       },
       {
@@ -408,13 +422,13 @@
         "description": "\"manualUpdateButtonLabel\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 73
+          "line": 78
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
         "id": "appUpdate.overlay.manualUpdate.button.label",
         "start": {
           "column": 27,
-          "line": 69
+          "line": 74
         }
       },
       {
@@ -422,13 +436,13 @@
         "description": "\"manualUpdateButtonUrl\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 79
+          "line": 83
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
         "id": "appUpdate.overlay.manualUpdate.button.url",
         "start": {
           "column": 25,
-          "line": 74
+          "line": 79
         }
       }
     ],

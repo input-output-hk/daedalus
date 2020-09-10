@@ -35,10 +35,15 @@ const messages = defineMessages({
       '!!!I understand that I need to complete the installation before starting Daedalus.',
     description: '"checkboxLabel" for the App Update Overlay',
   },
-  buttonLabel: {
-    id: 'appUpdate.overlay.buttonLabel',
+  buttonLabelOpenInstaller: {
+    id: 'appUpdate.overlay.buttonLabelOpenInstaller',
     defaultMessage: '!!!Quit Daedalus and start the installation',
-    description: '"buttonLabel" for the App Update Overlay',
+    description: '"buttonLabelOpenInstaller" for the App Update Overlay',
+  },
+  buttonLabelOpenDirectory: {
+    id: 'appUpdate.overlay.buttonLabelOpenDirectory',
+    defaultMessage: '!!!Quit Daedalus and open installer',
+    description: '"buttonLabelOpenDirectory" for the App Update Overlay',
   },
   downloadProgressLabel: {
     id: 'appUpdate.overlay.downloadProgressLabel',
@@ -92,6 +97,7 @@ type Props = {
   displayManualUpdateLink: boolean,
   onInstallUpdate: Function,
   onExternalLinkClick: Function,
+  isLinux: boolean,
 };
 
 type State = {
@@ -151,12 +157,16 @@ export default class AppUpdateOverlay extends Component<Props, State> {
       onInstallUpdate,
       displayManualUpdateLink,
       onExternalLinkClick,
+      isLinux,
     } = this.props;
     const { areTermsOfUseAccepted } = this.state;
     const buttonStyles = classnames([
       styles.button,
       !areTermsOfUseAccepted ? styles.disabled : null,
     ]);
+    const buttonLabel = isLinux
+      ? messages.buttonLabelOpenDirectory
+      : messages.buttonLabelOpenInstaller;
     return (
       <div className={styles.actions}>
         <Checkbox
@@ -171,7 +181,7 @@ export default class AppUpdateOverlay extends Component<Props, State> {
           className={buttonStyles}
           onClick={onInstallUpdate}
           skin={ButtonSkin}
-          label={intl.formatMessage(messages.buttonLabel)}
+          label={intl.formatMessage(buttonLabel)}
           disabled={!areTermsOfUseAccepted}
         />
         {displayManualUpdateLink && (
