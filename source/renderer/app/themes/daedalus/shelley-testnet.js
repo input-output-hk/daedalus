@@ -376,7 +376,7 @@ export const SHELLEY_TESTNET_THEME_OUTPUT = {
     '--theme-news-feed-icon-color': '#ffffff',
     '--theme-news-feed-icon-color-connecting-screen': '#ffffff',
     '--theme-news-feed-icon-color-syncing-screen': '#ffffff',
-    '--theme-news-feed-icon-green-dot-background-color': '#008000',
+    '--theme-news-feed-icon-green-dot-background-color': '#2DC06C',
     '--theme-news-feed-icon-red-dot-background-color': '#ea4c5b',
     '--theme-news-feed-icon-toggle-hover-background-color':
       'rgba(0, 0, 0, 0.1)',
@@ -427,7 +427,7 @@ export const SHELLEY_TESTNET_THEME_OUTPUT = {
     '--theme-news-item-alert-background-color': 'rgba(242, 162, 24, 0.5)',
     '--theme-news-item-announcement-background-color':
       'rgba(137, 142, 230, 0.2)',
-    '--theme-news-item-badge-green-color': '#1ccc5d',
+    '--theme-news-item-badge-green-color': '#2DC06C',
     '--theme-news-item-badge-red-color': '#ea4c5b',
     '--theme-news-item-content-link-color': '#ffffff',
     '--theme-news-item-info-background-color': 'rgba(0, 0, 0, 0.1)',
