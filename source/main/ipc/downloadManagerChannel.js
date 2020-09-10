@@ -152,7 +152,6 @@ const requestResumeDownload = async (
   );
 };
 
-// @APP_UPDATE TODO
 const deleteDownloadedFile = async ({
   id,
 }: DeleteDownloadedFileRendererRequest): Promise<DeleteDownloadedFileMainResponse> => {

@@ -87,5 +87,9 @@ export const downloadManagerLocalStorage = {
       key: STORAGE_KEYS.DOWNLOAD_MANAGER,
       data: omit(localDownloadsData, id),
     });
+    await requestElectronStore({
+      type: STORAGE_TYPES.DELETE,
+      key: STORAGE_KEYS.APP_AUTOMATIC_UPDATE_FAILED,
+    });
   },
 };

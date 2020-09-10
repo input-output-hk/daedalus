@@ -155,14 +155,6 @@ export default class AppUpdateStore extends Store {
      */
     if (appUpdateCompleted === version) return;
 
-    // Is there an 'Automatic Update Failed' flag?
-    const isAutomaticUpdateFailed = await this.getAppAutomaticUpdateFailedRequest.execute();
-    if (isAutomaticUpdateFailed) {
-      runInAction(() => {
-        this.isAutomaticUpdateFailed = true;
-      });
-    }
-
     // Was the update already installed?
     if (this.isUpdateInstalled(update)) {
       // Sets the `appUpdateCompleted` flag to prevent this whole process every app load
@@ -178,6 +170,15 @@ export default class AppUpdateStore extends Store {
       this.availableUpdate = update;
       this.availableUpdateVersion = version;
     });
+
+    // Is there an 'Automatic Update Failed' flag?
+    const isAutomaticUpdateFailed = await this.getAppAutomaticUpdateFailedRequest.execute();
+    if (isAutomaticUpdateFailed) {
+      runInAction(() => {
+        this.isAutomaticUpdateFailed = true;
+      });
+      return;
+    }
 
     // Is there a pending / resumable download?
     const downloadLocalData = await this._getUpdateDownloadLocalData();
@@ -224,7 +225,6 @@ export default class AppUpdateStore extends Store {
     runInAction('updates the download information', () => {
       if (eventType === DOWNLOAD_EVENT_TYPES.PAUSE) {
         this.availableUpdate = null;
-        this.isUpdateDownloading = false;
         this.isUpdateDownloaded = true;
       }
       if (eventType === DOWNLOAD_EVENT_TYPES.PROGRESS) {
@@ -232,9 +232,18 @@ export default class AppUpdateStore extends Store {
         this.downloadData = data;
       }
       if (eventType === DOWNLOAD_EVENT_TYPES.END) {
-        this.isUpdateDownloading = false;
         this.isUpdateDownloaded = true;
         this.actions.app.closeNewsFeed.trigger();
+      }
+      if (eventType === DOWNLOAD_EVENT_TYPES.ERROR) {
+        this._setAppAutomaticUpdateFailed();
+      }
+      if (
+        eventType === DOWNLOAD_EVENT_TYPES.END ||
+        eventType === DOWNLOAD_EVENT_TYPES.PAUSE ||
+        eventType === DOWNLOAD_EVENT_TYPES.ERROR
+      ) {
+        this.isUpdateDownloading = false;
       } else {
         this.isUpdateDownloading = true;
       }
