@@ -11,11 +11,13 @@ import {
   deleteDownloadedFile,
   getDownloadLocalDataChannel,
   clearDownloadLocalDataChannel,
+  checkFileExistsChannel,
 } from '../ipc/downloadManagerChannel';
 import { quitAppAndAppInstallUpdateChannel } from '../ipc/quitAppAndAppInstallUpdateChannel';
 import type {
   DownloadMainResponse,
   DownloadLocalDataMainResponse,
+  CheckFileExistsMainResponse,
 } from '../../../common/ipc/api';
 import { formattedDownloadData } from '../utils/formatters.js';
 import {
@@ -186,6 +188,13 @@ export default class AppUpdateStore extends Store {
     if (info && data) {
       // The user reopened Daedalus without installing the update
       if (data.state === DOWNLOAD_STATES.FINISHED && data.progress === 100) {
+        // Does the file still exist?
+        const installerFileStillExists = await this._checkFileExists();
+        if (!installerFileStillExists) {
+          this._setAppAutomaticUpdateFailed();
+          return;
+        }
+
         runInAction(() => {
           this.downloadInfo = info;
           this.downloadData = data;
@@ -218,6 +227,11 @@ export default class AppUpdateStore extends Store {
 
   _getUpdateDownloadLocalData = async (): Promise<DownloadLocalDataMainResponse> =>
     getDownloadLocalDataChannel.request({
+      id: APP_UPDATE_DOWNLOAD_ID,
+    });
+
+  _checkFileExists = async (): Promise<CheckFileExistsMainResponse> =>
+    checkFileExistsChannel.request({
       id: APP_UPDATE_DOWNLOAD_ID,
     });
 

@@ -166,3 +166,7 @@ export type DeleteDownloadedFileRequest = {
   id?: string,
 };
 export type DeleteDownloadedFileResponse = void;
+
+export type CheckFileExistsRequest = {
+  id?: string,
+};

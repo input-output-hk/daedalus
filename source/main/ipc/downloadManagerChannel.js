@@ -17,6 +17,7 @@ import {
   GET_DOWNLOAD_LOCAL_DATA,
   GET_DOWNLOADS_LOCAL_DATA,
   CLEAR_DOWNLOAD_LOCAL_DATA,
+  CHECK_FILE_EXISTS,
 } from '../../common/ipc/api';
 import {
   DEFAULT_DIRECTORY_NAME,
@@ -38,6 +39,8 @@ import type {
   DownloadsLocalDataMainResponse,
   ClearDownloadLocalDataRendererRequest,
   ClearDownloadLocalDataMainResponse,
+  CheckFileExistsMainResponse,
+  CheckFileExistsRendererRequest,
 } from '../../common/ipc/api';
 
 localStorage.setAllPaused();
@@ -186,6 +189,20 @@ const clearDownloadLocalData = async ({
   return localStorage.unset(downloadId);
 };
 
+const checkFileExists = async ({
+  id,
+}: CheckFileExistsRendererRequest): Promise<CheckFileExistsMainResponse> => {
+  const downloadLocalData = await getDownloadLocalData({ id });
+  if (!downloadLocalData) throw new Error('Download data not found');
+  const { destinationPath, originalFilename, temporaryFilename } =
+    downloadLocalData.info || {};
+  const { state } = downloadLocalData.data || {};
+  const fileName =
+    state === DOWNLOAD_STATES.FINISHED ? originalFilename : temporaryFilename;
+  const filePath = `${destinationPath}/${fileName}`;
+  return fs.existsSync(filePath);
+};
+
 const requestDownloadChannel: // IpcChannel<Incoming, Outgoing>
 MainIpcChannel<
   DownloadRendererRequest,
@@ -218,6 +235,11 @@ MainIpcChannel<
   ClearDownloadLocalDataRendererRequest,
   ClearDownloadLocalDataMainResponse
 > = new MainIpcChannel(CLEAR_DOWNLOAD_LOCAL_DATA);
+const checkFileExistsChannel: // IpcChannel<Incoming, Outgoing>
+MainIpcChannel<
+  CheckFileExistsRendererRequest,
+  CheckFileExistsMainResponse
+> = new MainIpcChannel(CHECK_FILE_EXISTS);
 
 export const downloadManagerChannel = (window: BrowserWindow) => {
   requestDownloadChannel.onRequest(
@@ -233,6 +255,7 @@ export const downloadManagerChannel = (window: BrowserWindow) => {
   getDownloadLocalDataChannel.onRequest(getDownloadLocalData);
   getDownloadsLocalDataChannel.onRequest(getDownloadsLocalData);
   clearDownloadLocalDataChannel.onRequest(clearDownloadLocalData);
+  checkFileExistsChannel.onRequest(checkFileExists);
 };
 
 export const pauseActiveDownloads = () => {

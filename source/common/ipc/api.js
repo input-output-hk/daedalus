@@ -40,6 +40,7 @@ import type {
   ClearDownloadLocalDataResponse,
   DeleteDownloadedFileRequest,
   DeleteDownloadedFileResponse,
+  CheckFileExistsRequest,
 } from '../types/downloadManager.types';
 import type { StoreMessage } from '../types/electron-store.types';
 import type {
@@ -342,6 +343,13 @@ export type DownloadsLocalDataMainResponse = DownloadsLocalDataResponse | void;
 export const CLEAR_DOWNLOAD_LOCAL_DATA = 'CLEAR_DOWNLOAD_LOCAL_DATA';
 export type ClearDownloadLocalDataRendererRequest = ClearDownloadLocalDataRequest;
 export type ClearDownloadLocalDataMainResponse = ClearDownloadLocalDataResponse;
+
+/**
+ * Channel for checking if the downloaded file still exists
+ */
+export const CHECK_FILE_EXISTS = 'CHECK_FILE_EXISTS';
+export type CheckFileExistsRendererRequest = CheckFileExistsRequest;
+export type CheckFileExistsMainResponse = boolean;
 
 /**
  * Channel for quitting Daedalus and installing update
