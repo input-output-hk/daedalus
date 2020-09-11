@@ -41,7 +41,8 @@ export const StakePoolsStory = (props: Props) => (
     onDelegate={action('onDelegate')}
     isLoading={props.isLoading}
     isRanking={false}
-    onRank={() => null}
+    updateDelegatingStake={() => null}
+    rankStakePools={() => null}
     wallets={dummyWallets}
     getStakePoolById={() => null}
   />

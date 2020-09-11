@@ -81,7 +81,8 @@ export default class StakingStore extends Store {
     stakingActions.joinStakePool.listen(this._joinStakePool);
     stakingActions.quitStakePool.listen(this._quitStakePool);
     stakingActions.fakeStakePoolsLoading.listen(this._setFakePoller);
-    stakingActions.updateStake.listen(this._setStake);
+    stakingActions.updateDelegatingStake.listen(this._setStake);
+    stakingActions.rankStakePools.listen(this._rankStakePools);
     stakingActions.selectDelegationWallet.listen(
       this._setSelectedDelegationWalletId
     );
@@ -119,6 +120,9 @@ export default class StakingStore extends Store {
 
   @action _setStake = (stake: number) => {
     this.stake = stake;
+  };
+
+  @action _rankStakePools = () => {
     this.isRanking = true;
     this.getStakePoolsData();
   };
@@ -602,7 +606,7 @@ export default class StakingStore extends Store {
   _pollOnSync = () => {
     const { isSynced, isShelleyActivated } = this.stores.networkStatus;
     if (isSynced && isShelleyActivated) {
-      this._setStake(this.stake);
+      this.getStakePoolsData();
     } else {
       this._resetIsRanking();
       this._resetPolling(true, true);

@@ -780,9 +780,9 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-staking-stake-pool-tooltip-delegate-button-background-color':
       '#2d2d2d',
     '--theme-staking-stake-pool-tooltip-delegate-button-hover-background-color':
-      '#fdd786',
+      '#575757',
     '--theme-staking-stake-pool-tooltip-delegate-button-active-background-color':
-      '#eea70e',
+      '#282828',
     '--theme-staking-stake-pool-tooltip-delegate-button-text-color': '#fafbfc',
     '--theme-staking-stake-pool-tooltip-delegate-button-inverse-text-color':
       '#fafbfc',

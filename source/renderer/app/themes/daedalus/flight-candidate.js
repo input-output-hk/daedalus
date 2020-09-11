@@ -774,7 +774,7 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-staking-stake-pool-tooltip-delegate-button-hover-background-color':
       '#ffc64d',
     '--theme-staking-stake-pool-tooltip-delegate-button-active-background-color':
-      '#ffc64d',
+      '#e6a009',
     '--theme-staking-stake-pool-tooltip-delegate-button-text-color':
       'rgba(18, 19, 38, 1)',
     '--theme-staking-stake-pool-tooltip-delegate-button-inverse-text-color':
