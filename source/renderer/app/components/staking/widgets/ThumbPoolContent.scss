@@ -4,148 +4,126 @@
   position: relative;
   width: 78px;
 
-  &.disabled {
-    opacity: 0.3;
-  }
-
-  &.isOnHover:hover {
-    @extend .isHighlighted;
-  }
-
   &.hideSaturation {
     padding-top: 11px;
+
     .ticker {
       margin-bottom: 5px;
     }
   }
-}
 
-.isHighlighted {
-  box-shadow: 0 0 4px 2px var(--theme-staking-stake-pool-glow-color);
-}
-
-.ticker {
-  color: var(--theme-staking-stake-pool-ticker-color);
-  font-family: var(--font-semibold);
-  font-size: 14px;
-  letter-spacing: -0.5px;
-  line-height: 1;
-  margin: 0 0 1px;
-  text-align: center;
-}
-
-.ranking {
-  font-size: 20px;
-  font-weight: bold;
-  text-align: center;
-}
-
-.saturationBar {
-  background: var(--theme-staking-stake-pool-saturation-background-color);
-  border-radius: 2px;
-  height: 5px;
-  margin: 2px auto 0;
-  overflow: hidden;
-  position: relative;
-  width: 40px;
-
-  span {
-    border-radius: 2px;
-    bottom: 0;
-    height: inherit;
-    left: 0;
-    position: absolute;
-    top: 0;
+  .ticker {
+    color: var(--theme-staking-stake-pool-ticker-color);
+    font-family: var(--font-semibold);
+    font-size: 14px;
+    letter-spacing: -0.5px;
+    line-height: 1;
+    margin: 0 0 1px;
+    text-align: center;
   }
 
-  &.green span {
-    background: var(--theme-staking-stake-pool-saturation-green-color);
+  .ranking {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
   }
 
-  &.orange span {
-    background: var(--theme-staking-stake-pool-saturation-orange-color);
-  }
+  .noDataDash {
+    align-items: center;
+    display: flex;
+    justify-content: center;
 
-  &.red span {
-    background: var(--theme-staking-stake-pool-saturation-red-color);
-  }
+    :global {
+      .SVGInline {
+        svg {
+          height: 3px;
+          width: 12px;
 
-  &.yellow span {
-    background: var(--theme-staking-stake-pool-saturation-yellow-color);
-  }
-}
-
-.clock {
-  background: var(--theme-staking-stake-pool-retirement-background-color);
-  border-radius: 0 2px 0 4px;
-  height: 18px;
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 18px;
-}
-
-.clockIcon {
-  display: block;
-  line-height: 0;
-  margin: 1px 0 0;
-  padding: 0;
-  text-align: center;
-
-  svg {
-    height: 15px;
-    width: 15px;
-  }
-}
-
-.colorBand {
-  border-radius: 0 0 4px 4px;
-  bottom: 0;
-  display: block;
-  height: 5px;
-  left: 0;
-  position: absolute;
-  width: 100%;
-}
-
-.noDataDash {
-  align-items: center;
-  display: flex;
-  justify-content: center;
-
-  :global {
-    .SVGInline {
-      svg {
-        height: 3px;
-        width: 12px;
-
-        path {
-          fill: var(--theme-staking-stake-pool-grey-color) !important;
-          opacity: 1 !important;
+          path {
+            fill: var(--theme-staking-stake-pool-grey-color) !important;
+            opacity: 1 !important;
+          }
         }
       }
     }
   }
-}
 
-.greyColorBand {
-  background: var(--theme-staking-stake-pool-grey-color);
-  border-radius: 0 0 4px 4px;
-  bottom: 0;
-  display: block;
-  height: 5px;
-  left: 0;
-  position: absolute;
-  width: 100%;
-}
+  .clock {
+    background: var(--theme-staking-stake-pool-retirement-background-color);
+    border-radius: 0 2px 0 4px;
+    height: 18px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 18px;
+  }
 
-// .isSelected,
-// .isNextSelected {
-//   .colorBand,
-//   .ranking {
-//     visibility: hidden;
-//   }
-//   .ticker {
-//     color: var(--theme-staking-stake-pool-selected-ticker-color);
-//   }
-// }
+  .clockIcon {
+    display: block;
+    line-height: 0;
+    margin: 1px 0 0;
+    padding: 0;
+    text-align: center;
+
+    svg {
+      height: 15px;
+      width: 15px;
+    }
+  }
+
+  .colorBand {
+    border-radius: 0 0 4px 4px;
+    bottom: 0;
+    display: block;
+    height: 5px;
+    left: 0;
+    position: absolute;
+    width: 100%;
+  }
+
+  .greyColorBand {
+    background: var(--theme-staking-stake-pool-grey-color);
+    border-radius: 0 0 4px 4px;
+    bottom: 0;
+    display: block;
+    height: 5px;
+    left: 0;
+    position: absolute;
+    width: 100%;
+  }
+
+  .saturationBar {
+    background: var(--theme-staking-stake-pool-saturation-background-color);
+    border-radius: 2px;
+    height: 5px;
+    margin: 2px auto 0;
+    overflow: hidden;
+    position: relative;
+    width: 40px;
+
+    span {
+      border-radius: 2px;
+      bottom: 0;
+      height: inherit;
+      left: 0;
+      position: absolute;
+      top: 0;
+    }
+
+    &.green span {
+      background: var(--theme-staking-stake-pool-saturation-green-color);
+    }
+
+    &.orange span {
+      background: var(--theme-staking-stake-pool-saturation-orange-color);
+    }
+
+    &.red span {
+      background: var(--theme-staking-stake-pool-saturation-red-color);
+    }
+
+    &.yellow span {
+      background: var(--theme-staking-stake-pool-saturation-yellow-color);
+    }
+  }
+}
