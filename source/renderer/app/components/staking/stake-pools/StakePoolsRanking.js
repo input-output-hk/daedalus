@@ -114,7 +114,8 @@ type Props = {
   wallets: Array<Wallet>,
   currentLocale: string,
   onOpenExternalLink: Function,
-  onRank: Function,
+  updateDelegatingStake: Function,
+  rankStakePools: Function,
   selectedDelegationWalletId?: ?string,
   stake?: ?number,
   isLoading: boolean,
@@ -147,7 +148,6 @@ export default class StakePoolsRanking extends Component<Props, State> {
 
   componentDidMount() {
     const { stake } = this.props;
-
     if (stake) {
       this.setState({
         sliderValue: Math.round(Math.log(stake) * RANKING_SLIDER_RATIO),
@@ -165,7 +165,12 @@ export default class StakePoolsRanking extends Component<Props, State> {
   }
 
   onSelectedWalletChange = (selectedWalletId: string) => {
-    const { wallets, onRank, selectedDelegationWalletId } = this.props;
+    const {
+      wallets,
+      updateDelegatingStake,
+      rankStakePools,
+      selectedDelegationWalletId,
+    } = this.props;
     const selectedWallet = wallets.find(
       wallet => wallet.id === selectedWalletId
     );
@@ -191,11 +196,12 @@ export default class StakePoolsRanking extends Component<Props, State> {
     amountValue = Math.max(amountValue, MIN_DELEGATION_FUNDS);
     sliderValue = Math.round(Math.log(amountValue) * RANKING_SLIDER_RATIO);
     this.setState({ sliderValue, amountValue });
-    onRank(selectedWalletId, amountValue);
+    updateDelegatingStake(selectedWalletId, amountValue);
+    rankStakePools();
   };
 
   onSliderChange = (sliderValue: number) => {
-    const { onRank } = this.props;
+    const { updateDelegatingStake } = this.props;
     let amountValue = null;
     if (
       sliderValue ===
@@ -213,7 +219,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
       );
     }
     this.setState({ sliderValue, amountValue });
-    onRank(null, amountValue);
+    updateDelegatingStake(null, amountValue);
   };
 
   generateInfo = () => {
@@ -270,6 +276,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
       wallets,
       numberOfStakePools,
       getStakePoolById,
+      rankStakePools,
     } = this.props;
     const { sliderValue, amountValue } = this.state;
     const rankingDescription = intl.formatMessage(messages.rankingDescription);
@@ -362,6 +369,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
                 displayValue={amountValue}
                 showRawValue
                 onChange={this.onSliderChange}
+                onAfterChange={rankStakePools}
                 disabled={isLoading || isRanking}
                 showTooltip
                 minTooltip={intl.formatMessage(messages.rankingMinTooltip)}
