@@ -5,6 +5,7 @@ import semver from 'semver';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import NewsDomains from '../domains/News';
+import { logger } from '../utils/logging';
 import {
   requestDownloadChannel,
   requestResumeDownloadChannel,
@@ -191,6 +192,9 @@ export default class AppUpdateStore extends Store {
         // Does the file still exist?
         const installerFileStillExists = await this._checkFileExists();
         if (!installerFileStillExists) {
+          logger.error(
+            'AppUpdateStore:_setAppAutomaticUpdateFailed: Failed to find the installer file'
+          );
           this._setAppAutomaticUpdateFailed();
           return;
         }
@@ -250,6 +254,9 @@ export default class AppUpdateStore extends Store {
         this.actions.app.closeNewsFeed.trigger();
       }
       if (eventType === DOWNLOAD_EVENT_TYPES.ERROR) {
+        logger.error(
+          'AppUpdateStore:_setAppAutomaticUpdateFailed: Received an error event from the main process'
+        );
         this._setAppAutomaticUpdateFailed();
       }
       if (
@@ -295,6 +302,15 @@ export default class AppUpdateStore extends Store {
       !this.isUpdateDownloaded ||
       !this.downloadInfo
     ) {
+      logger.error(
+        'AppUpdateStore:_setAppAutomaticUpdateFailed: Unable to install the update',
+        {
+          '!this.availableUpdate': !this.availableUpdate,
+          'this.isUpdateDownloading': this.isUpdateDownloading,
+          '!this.isUpdateDownloaded': !this.isUpdateDownloaded,
+          '!this.downloadInfo': !this.downloadInfo,
+        }
+      );
       await this._setAppAutomaticUpdateFailed();
       return;
     }
@@ -310,6 +326,9 @@ export default class AppUpdateStore extends Store {
       hash,
     });
     if (!openInstaller) {
+      logger.error(
+        'AppUpdateStore:_setAppAutomaticUpdateFailed: Unable to open the installer'
+      );
       await this._setAppAutomaticUpdateFailed();
     }
   };

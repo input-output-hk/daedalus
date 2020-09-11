@@ -1,6 +1,5 @@
 // @flow
 import { version } from '../../../../../package.json';
-import News from '../../domains/News';
 import news from './newsfeed_mainnet.json';
 import type { NewsType } from './types';
 
