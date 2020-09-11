@@ -107,16 +107,12 @@ export class ThumbPool extends Component<Props, State> {
     const color = getColorFromRange(ranking, numberOfStakePools);
     const isDisabled = disabledStakePoolId === id;
 
-    const componentClassnames = classnames([
-      styles.component,
-      isSelected && showSelected ? styles.isSelected : null,
-    ]);
-
     const contentClassnames = classnames([
       styles.content,
+      isDisabled ? styles.disabled : null,
+      isSelected && showSelected ? styles.isSelected : null,
       isHighlighted ? styles.isHighlighted : null,
       onHover ? styles.isOnHover : null,
-      isDisabled ? styles.disabled : null,
     ]);
 
     const content =
@@ -134,7 +130,7 @@ export class ThumbPool extends Component<Props, State> {
 
     return (
       <div
-        className={componentClassnames}
+        className={styles.component}
         onMouseLeave={onHover ? this.handleClose : null}
       >
         <button
