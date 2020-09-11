@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
+import { get } from 'lodash';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
@@ -119,6 +120,15 @@ export default class AppUpdateOverlay extends Component<Props, State> {
       areTermsOfUseAccepted: !prevState.areTermsOfUseAccepted,
     }));
   };
+
+  contentClickHandler(event: SyntheticMouseEvent<HTMLElement>) {
+    const linkUrl = get(event, ['target', 'href']);
+    if (linkUrl) {
+      event.preventDefault();
+      event.stopPropagation();
+      this.props.onExternalLinkClick(linkUrl);
+    }
+  }
 
   progressActions = () => {
     const { intl } = this.context;
@@ -265,7 +275,12 @@ export default class AppUpdateOverlay extends Component<Props, State> {
             }}
           />
         </span>
-        <div className={styles.content}>
+
+        <div
+          className={styles.content}
+          role="presentation"
+          onClick={this.contentClickHandler.bind(this)}
+        >
           <ReactMarkdown escapeHtml={false} source={content} />
         </div>
         {actions}
