@@ -3,6 +3,7 @@ import { app } from 'electron';
 import fs from 'fs';
 import type { BrowserWindow } from 'electron';
 import { MainIpcChannel } from '../ipc/lib/MainIpcChannel';
+import { logger } from './logging';
 
 import {
   ALLOWED_DOWNLOAD_DIRECTORIES,
@@ -70,9 +71,9 @@ export const getEventActions = async (
   await localStorage.setInfo(info, downloadId);
   let serverFileSize;
   let endEventWasTriggered = false;
-  let checkFileExists;
 
   const startEvent = async () => {
+    logger.info('DownloadManager:startEvent...');
     const eventType = types.START;
     const data = DOWNLOAD_DATA_DEFAULT;
     requestDownloadChannel.send(
@@ -88,6 +89,7 @@ export const getEventActions = async (
     totalSize,
     downloadedSize: diskFileSize,
   }: DownloadInfoInit) => {
+    logger.info('DownloadManager:downloadEvent...');
     serverFileSize = totalSize;
     const rawData: DownloadDataUpdate = {
       ...{
@@ -113,6 +115,17 @@ export const getEventActions = async (
     progress,
     speed,
   }: DownloadInfoProgress) => {
+    if (endEventWasTriggered) {
+      logger.error(
+        'DownloadManager:progressEvent: End event was already triggered'
+      );
+      return;
+    }
+    if (parseInt(progress, 10) % 10 === 0) {
+      logger.info('DownloadManager:progressEvent', {
+        progress,
+      });
+    }
     const rawData: DownloadDataUpdate = {
       ...{
         remainingSize: total - downloadSize,
@@ -132,19 +145,14 @@ export const getEventActions = async (
       },
       window.webContents
     );
-    if (progress === 100 && !endEventWasTriggered) {
-      checkFileExists = setTimeout(() => {
-        errorEvent({ message: 'ENOENT' });
-      }, 5000);
-    }
   };
   const endEvent = async ({
     totalSize: downloadSize,
     onDiskSize: diskFileSize,
     incomplete,
   }: DownloadInfoEnd) => {
-    clearTimeout(checkFileExists);
     endEventWasTriggered = true;
+    logger.info('DownloadManager:endEvent...');
     const rawData: DownloadDataUpdate = {
       ...{
         downloadSize,
@@ -157,6 +165,12 @@ export const getEventActions = async (
     const { destinationPath, temporaryFilename, originalFilename } = info;
     const temporaryPath = `${destinationPath}/${temporaryFilename}`;
     const newPath = `${destinationPath}/${originalFilename}`;
+    if (!fs.existsSync(temporaryPath)) {
+      logger.error(
+        'DownloadManager:endEvent: The temporary file does not exist.'
+      );
+      return;
+    }
     fs.renameSync(temporaryPath, newPath);
     requestDownloadChannel.send(
       {
@@ -170,6 +184,7 @@ export const getEventActions = async (
     if (!persistLocalData) await localStorage.unset(downloadId);
   };
   const pauseEvent = async () => {
+    logger.info('DownloadManager:pauseEvent...');
     const newState: DownloadDataUpdate = {
       state: states.PAUSED,
     };
@@ -184,6 +199,7 @@ export const getEventActions = async (
     );
   };
   const errorEvent = async ({ message }: DownloadInfoError) => {
+    logger.error('DownloadManager:errorEvent', { error: message });
     const rawData: DownloadDataUpdate = {
       ...{
         message,

@@ -253,16 +253,11 @@ export default class AppUpdateStore extends Store {
         this.isUpdateDownloaded = true;
         this.actions.app.closeNewsFeed.trigger();
       }
-      if (eventType === DOWNLOAD_EVENT_TYPES.ERROR) {
-        logger.error(
-          'AppUpdateStore:_setAppAutomaticUpdateFailed: Received an error event from the main process'
-        );
-        this._setAppAutomaticUpdateFailed();
-      }
       if (
         eventType === DOWNLOAD_EVENT_TYPES.END ||
         eventType === DOWNLOAD_EVENT_TYPES.PAUSE ||
-        eventType === DOWNLOAD_EVENT_TYPES.ERROR
+        eventType === DOWNLOAD_EVENT_TYPES.ERROR ||
+        !this.isUpdateDownloading
       ) {
         this.isUpdateDownloading = false;
       } else {
