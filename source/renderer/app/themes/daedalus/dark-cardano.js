@@ -767,7 +767,7 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-staking-stake-pool-tooltip-delegate-button-hover-background-color':
       '#26e7eb',
     '--theme-staking-stake-pool-tooltip-delegate-button-active-background-color':
-      '#26e7eb',
+      '#1cabad',
     '--theme-staking-stake-pool-tooltip-delegate-button-text-color':
       'rgba(18, 19, 38, 1)',
     '--theme-staking-stake-pool-tooltip-delegate-button-inverse-text-color':
