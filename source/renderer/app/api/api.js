@@ -65,7 +65,7 @@ import { transferFunds } from './wallets/requests/transferFunds';
 import StakePool from '../domains/StakePool';
 
 // News requests
-import { getNews } from './news/requests/getNews';
+// import { getNews } from './news/requests/getNews';
 
 // Stake Pools request
 import { getStakePools } from './staking/requests/getStakePools';

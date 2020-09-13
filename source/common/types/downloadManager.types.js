@@ -65,6 +65,7 @@ export type DownloadResponse = {
   eventType: DownloadEventType,
   info: DownloadInfo,
   data: DownloadData,
+  error?: string,
 };
 
 export type DownloadInfo = {
@@ -136,8 +137,8 @@ export type DownloadInfoEnd = {
 };
 export type DownloadInfoError = {
   message: string, // Error message
-  status: string, // Http status response if available
-  body: string, // Http body response if available
+  status?: string, // Http status response if available
+  body?: string, // Http body response if available
 };
 
 export type DownloadLocalDataRequest = {

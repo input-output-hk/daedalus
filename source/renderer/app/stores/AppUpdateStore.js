@@ -148,6 +148,8 @@ export default class AppUpdateStore extends Store {
   // =================== PRIVATE ==================
 
   _checkNewAppUpdate = async (update: News) => {
+    // Cancels if the update download is already in progress
+    if (this.isUpdateDownloading) return false;
     const { version } = this.getUpdateInfo(update);
     const appUpdateCompleted = await this.getAppUpdateCompletedRequest.execute();
 
@@ -156,7 +158,7 @@ export default class AppUpdateStore extends Store {
      * We can't simply compare with the `package.json` version
      * otherwise we would trigger the localdata cleaning on every app load
      */
-    if (appUpdateCompleted === version) return;
+    if (appUpdateCompleted === version) return false;
 
     // Was the update already installed?
     if (this.isUpdateInstalled(update)) {
@@ -165,7 +167,7 @@ export default class AppUpdateStore extends Store {
       await this.unsetAppAutomaticUpdateFailedRequest.execute();
       await this._removeUpdateFile();
       await this._removeLocalDataInfo();
-      return;
+      return false;
     }
 
     // The Update is valid and needs to be downloaded/installed
@@ -180,7 +182,7 @@ export default class AppUpdateStore extends Store {
       runInAction(() => {
         this.isAutomaticUpdateFailed = true;
       });
-      return;
+      return false;
     }
 
     // Is there a pending / resumable download?
@@ -196,7 +198,7 @@ export default class AppUpdateStore extends Store {
             'AppUpdateStore:_setAppAutomaticUpdateFailed: Failed to find the installer file'
           );
           this._setAppAutomaticUpdateFailed();
-          return;
+          return false;
         }
 
         runInAction(() => {
@@ -205,16 +207,16 @@ export default class AppUpdateStore extends Store {
           this.isUpdateDownloaded = true;
           this.displayManualUpdateLink = true;
         });
-        return;
+        return false;
       }
 
       // Resumes the update download
       this._requestResumeUpdateDownload();
-      return;
+      return false;
     }
 
     await this._removeLocalDataInfo();
-    this._requestUpdateDownload(update);
+    return this._requestUpdateDownload(update);
   };
 
   _removeLocalDataInfo = async () => {
@@ -239,7 +241,12 @@ export default class AppUpdateStore extends Store {
       id: APP_UPDATE_DOWNLOAD_ID,
     });
 
-  _manageUpdateResponse = ({ eventType, info, data }: DownloadMainResponse) => {
+  _manageUpdateResponse = ({
+    eventType,
+    info,
+    data,
+    error,
+  }: DownloadMainResponse) => {
     runInAction('updates the download information', () => {
       if (eventType === DOWNLOAD_EVENT_TYPES.PAUSE) {
         this.availableUpdate = null;
@@ -253,11 +260,19 @@ export default class AppUpdateStore extends Store {
         this.isUpdateDownloaded = true;
         this.actions.app.closeNewsFeed.trigger();
       }
+      if (eventType === DOWNLOAD_EVENT_TYPES.ERROR) {
+        logger.error(
+          'AppUpdateStore:_setAppAutomaticUpdateFailed: Received an error event from the main process',
+          {
+            error,
+          }
+        );
+        this._setAppAutomaticUpdateFailed();
+      }
       if (
         eventType === DOWNLOAD_EVENT_TYPES.END ||
         eventType === DOWNLOAD_EVENT_TYPES.PAUSE ||
-        eventType === DOWNLOAD_EVENT_TYPES.ERROR ||
-        !this.isUpdateDownloading
+        eventType === DOWNLOAD_EVENT_TYPES.ERROR
       ) {
         this.isUpdateDownloading = false;
       } else {
@@ -307,7 +322,7 @@ export default class AppUpdateStore extends Store {
         }
       );
       await this._setAppAutomaticUpdateFailed();
-      return;
+      return false;
     }
     const {
       destinationPath: directoryPath,
@@ -326,6 +341,7 @@ export default class AppUpdateStore extends Store {
       );
       await this._setAppAutomaticUpdateFailed();
     }
+    return null;
   };
 
   _setAppAutomaticUpdateFailed = async () => {

@@ -62,3 +62,5 @@ export const DOWNLOAD_DATA_DEFAULT = {
   incomplete: false,
   isResumed: false,
 };
+
+export const ERROR_TIME_AFTER_NO_END_EVENT = 10 * 1000; // 10 seconds | unit: milliseconds

@@ -4,12 +4,12 @@ import fs from 'fs';
 import type { BrowserWindow } from 'electron';
 import { MainIpcChannel } from '../ipc/lib/MainIpcChannel';
 import { logger } from './logging';
-
 import {
   ALLOWED_DOWNLOAD_DIRECTORIES,
   DOWNLOAD_DATA_DEFAULT,
   DOWNLOAD_EVENT_TYPES as types,
   DOWNLOAD_STATES as states,
+  ERROR_TIME_AFTER_NO_END_EVENT,
 } from '../../common/config/downloadManagerConfig';
 import { extractFileNameFromPath } from '../../common/utils/files';
 import { downloadManagerLocalStorage as localStorage } from './mainLocalStorage';
@@ -27,6 +27,8 @@ import type {
   DownloadDataUpdate,
 } from '../../common/types/downloadManager.types';
 import { stateDirectoryPath } from '../config';
+
+export const downloads = {};
 
 export const getIdFromFileName = (fileName: string): string =>
   fileName.replace(/\./g, '-');
@@ -59,6 +61,18 @@ export const getOriginalFilename = ({
   return name;
 };
 
+const getPath = (
+  info: DownloadInfo
+): { temporaryPath: string, newPath: string } => {
+  const { destinationPath, temporaryFilename, originalFilename } = info;
+  const temporaryPath = `${destinationPath}/${temporaryFilename}`;
+  const newPath = `${destinationPath}/${originalFilename}`;
+  return {
+    temporaryPath,
+    newPath,
+  };
+};
+
 export const getEventActions = async (
   info: DownloadInfo,
   window: BrowserWindow,
@@ -70,10 +84,10 @@ export const getEventActions = async (
   const { downloadId } = info;
   await localStorage.setInfo(info, downloadId);
   let serverFileSize;
-  let endEventWasTriggered = false;
+  let checkNoEndEvent: TimeoutID;
 
   const startEvent = async () => {
-    logger.info('DownloadManager:startEvent...');
+    logger.info('DownloadManager:startEvent.');
     const eventType = types.START;
     const data = DOWNLOAD_DATA_DEFAULT;
     requestDownloadChannel.send(
@@ -89,7 +103,7 @@ export const getEventActions = async (
     totalSize,
     downloadedSize: diskFileSize,
   }: DownloadInfoInit) => {
-    logger.info('DownloadManager:downloadEvent...');
+    logger.info('DownloadManager:downloadEvent.');
     serverFileSize = totalSize;
     const rawData: DownloadDataUpdate = {
       ...{
@@ -115,17 +129,6 @@ export const getEventActions = async (
     progress,
     speed,
   }: DownloadInfoProgress) => {
-    if (endEventWasTriggered) {
-      logger.error(
-        'DownloadManager:progressEvent: End event was already triggered'
-      );
-      return;
-    }
-    if (parseInt(progress, 10) % 10 === 0) {
-      logger.info('DownloadManager:progressEvent', {
-        progress,
-      });
-    }
     const rawData: DownloadDataUpdate = {
       ...{
         remainingSize: total - downloadSize,
@@ -145,14 +148,24 @@ export const getEventActions = async (
       },
       window.webContents
     );
+    if (progress === 100) {
+      // Checks if the file was delete while the download was in progress
+      checkNoEndEvent = setTimeout(() => {
+        const { temporaryPath, newPath } = getPath(info);
+        if (!fs.existsSync(temporaryPath) || !fs.existsSync(newPath)) {
+          errorEvent({ message: 'The download file was manually deleted' });
+        }
+      }, ERROR_TIME_AFTER_NO_END_EVENT);
+    }
   };
   const endEvent = async ({
     totalSize: downloadSize,
     onDiskSize: diskFileSize,
     incomplete,
   }: DownloadInfoEnd) => {
-    endEventWasTriggered = true;
-    logger.info('DownloadManager:endEvent...');
+    clearTimeout(checkNoEndEvent);
+    delete downloads[downloadId];
+    logger.info('DownloadManager:endEvent.');
     const rawData: DownloadDataUpdate = {
       ...{
         downloadSize,
@@ -162,15 +175,7 @@ export const getEventActions = async (
       state: states.FINISHED,
     };
     const formattedData = await localStorage.setData(rawData, downloadId);
-    const { destinationPath, temporaryFilename, originalFilename } = info;
-    const temporaryPath = `${destinationPath}/${temporaryFilename}`;
-    const newPath = `${destinationPath}/${originalFilename}`;
-    if (!fs.existsSync(temporaryPath)) {
-      logger.error(
-        'DownloadManager:endEvent: The temporary file does not exist.'
-      );
-      return;
-    }
+    const { temporaryPath, newPath } = getPath(info);
     fs.renameSync(temporaryPath, newPath);
     requestDownloadChannel.send(
       {
@@ -184,7 +189,7 @@ export const getEventActions = async (
     if (!persistLocalData) await localStorage.unset(downloadId);
   };
   const pauseEvent = async () => {
-    logger.info('DownloadManager:pauseEvent...');
+    logger.info('DownloadManager:pauseEvent.');
     const newState: DownloadDataUpdate = {
       state: states.PAUSED,
     };
@@ -212,6 +217,7 @@ export const getEventActions = async (
         eventType: types.ERROR,
         info,
         data: formattedData,
+        error: message,
       },
       window.webContents
     );

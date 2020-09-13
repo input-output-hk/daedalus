@@ -1,6 +1,7 @@
 // @flow
 import { DownloaderHelper } from 'node-downloader-helper';
 import fs from 'fs';
+import { forEach } from 'lodash';
 import type { BrowserWindow } from 'electron';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import { logger } from '../utils/logging';
@@ -9,6 +10,7 @@ import {
   getPathFromDirectoryName,
   getEventActions,
   getIdFromFileName,
+  downloads,
 } from '../utils/downloadManager';
 import {
   REQUEST_DOWNLOAD,
@@ -45,8 +47,6 @@ import type {
 
 localStorage.setAllPaused();
 
-const downloads = [];
-
 const requestDownload = async (
   downloadRequestPayload: DownloadRendererRequest,
   window: BrowserWindow
@@ -78,12 +78,20 @@ const requestDownload = async (
     originalFilename,
     options,
   };
+  if (downloads[downloadId]) {
+    logger.info(
+      `DownloadManager: Preventing download "${downloadId}" duplicity`,
+      { downloadId }
+    );
+    return false;
+  }
   const eventActions = await getEventActions(
     info,
     window,
     requestDownloadChannel
   );
   const download = new DownloaderHelper(fileUrl, destinationPath, options);
+  downloads[downloadId] = download;
 
   if (resumeDownload) {
     const { total: downloadSize } = await download.getTotalSize(); // get the total size from the server
@@ -108,9 +116,12 @@ const requestDownload = async (
   download.on('pause', eventActions.pause);
   download.on('end', eventActions.end);
   download.on('error', eventActions.error);
-  downloads.push({ downloadId, download });
-  if (resumeDownload) download.resume();
-  else download.start();
+
+  if (resumeDownload) {
+    download.resume();
+  } else {
+    download.start();
+  }
   return download;
 };
 
@@ -259,9 +270,10 @@ export const downloadManagerChannel = (window: BrowserWindow) => {
 };
 
 export const pauseActiveDownloads = () => {
-  downloads.forEach(({ downloadId, download }) => {
+  forEach(downloads, (download, downloadId) => {
     try {
-      if (download.state === DOWNLOAD_STATES.DOWNLOADING) download.pause();
+      if (download && download.state === DOWNLOAD_STATES.DOWNLOADING)
+        download.pause();
       logger.info(
         `DownloadManager:PauseDownloads download "${downloadId}" was paused`,
         { downloadId }
