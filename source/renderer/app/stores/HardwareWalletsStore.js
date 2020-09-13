@@ -115,6 +115,7 @@ export default class HardwareWalletsStore extends Store {
   @observable derivedAddress: ?string = null;
   @observable signedTransaction: ?string = null;
   @observable transportDevice: TransportDevice = {};
+  @observable txSendParams: Object = {};
 
   cardanoAdaAppPollingInterval: ?IntervalID = null;
 
@@ -174,11 +175,14 @@ export default class HardwareWalletsStore extends Store {
   };
 
   establishHardwareWalletConnection = async () => {
+    console.debug('>>> establishHardwareWalletConnection');
     runInAction('HardwareWalletsStore:: set HW device connecting', () => {
       this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
     });
     try {
-      const transportDevice = await getHardwareWalletTransportChannel.request();
+      // const transportDevice = await getHardwareWalletTransportChannel.request()
+      const transportDevice = await getHardwareWalletTransportChannel.request({ isTrezor: true });
+      console.debug('>>> establishHardwareWalletConnection - transportDevice: ', transportDevice);
       // const deviceType = this._deviceType(transportDevice.deviceModel);
       const deviceType = transportDevice.deviceType;
       runInAction('HardwareWalletsStore:: set HW device connected', () => {
@@ -251,7 +255,7 @@ export default class HardwareWalletsStore extends Store {
   };
 
   @action _getExtendedPublicKey = async () => {
-    const isTrezor = false; // @TODO - add active device recognizing logic
+    const isTrezor = true; // @TODO - add active device recognizing logic
     this.hwDeviceStatus = HwDeviceStatuses.EXPORTING_PUBLIC_KEY;
     const { activeHardwareWallet } = this.stores.wallets;
     // const path = [
@@ -351,6 +355,154 @@ export default class HardwareWalletsStore extends Store {
       throw error;
     }
   };
+
+
+  prepareInput = (input, addressToAbsPathMapper) => {
+    const data = {
+      // path: addressToAbsPathMapper(input.address),
+      path: "m/1852'/1815'/0'/0/0",
+      prev_hash: input.id,
+      prev_index: input.index,
+    }
+
+    return data
+  }
+
+  prepareOutput = (output, addressToAbsPathMapper) => {
+    if (output.isChange) {
+      return {
+        amount: output.amount.quantity,
+        addressParameters: {
+          addressType: 0, // TODO: 0 for base address
+          path: output.spendingPath,
+          stakingPath: output.stakingPath,
+        },
+      }
+    } else {
+      return {
+        address: output.address,
+        amount: output.amount.quantity.toString(),
+      }
+    }
+  }
+
+
+
+
+  @action _signTransactionTrezor = async (isTest = true) => {
+    const { coinSelection, txDataHex, recieverAddress } = this.txSignRequest;
+    // const { inputs, outputs } = coinSelection;
+
+
+    // Example data from `https://github.com/trezor/connect/blob/cardano-shelley/tests/__fixtures__/cardanoSignTransaction.js`
+    /* {
+      description: 'signMainnetBaseHashAddress',
+      params: {
+          inputs: [SAMPLE_INPUTS['shelley_input']],
+          outputs: [
+              SAMPLE_OUTPUTS['simple_shelley_output'],
+              SAMPLE_OUTPUTS['staking_key_hash_output'],
+          ],
+          fee: FEE,
+          ttl: TTL,
+          protocolMagic: PROTOCOL_MAGICS['mainnet'],
+          networkId: NETWORK_IDS['mainnet'],
+      },
+      result: {
+          hash: 'd1610bb89bece22ed3158738bc1fbb31c6af0685053e2993361e3380f49afad9',
+          serializedTx: '83a400818258203b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b700018282583901eb0baa5e570cffbe2934db29df0b6a3d7c0430ee65d4c3a7ab2fefb91bc428e4720702ebd5dab4fb175324c192dc9bb76cc5da956e3c8dff018258390180f9e2c88e6c817008f3a812ed889b4a4da8e0bd103f86e7335422aa32c728d3861e164cab28cb8f006448139c8f1740ffb8e7aa9e5232dc1a006ca79302182a030aa100818258205d010cf16fdeff40955633d6c565f3844a288a24967cf6b76acbeb271b4f13c15840622f22d03bc9651ddc5eb2f5dc709ac4240a64d2b78c70355dd62106543c407d56e8134c4df7884ba67c8a1b5c706fc021df5c4d0ff37385c30572e73c727d00f6',
+      },
+    }, */
+
+    let inputsData;
+    let outputsData;
+    if (isTest) {
+      inputsData = [{
+        path: "m/1852'/1815'/0'/0/0",
+        prev_hash: '3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7',
+        prev_index: 0,
+      }]
+      outputsData = [{
+        address: 'addr1q84sh2j72ux0l03fxndjnhctdg7hcppsaejafsa84vh7lwgmcs5wgus8qt4atk45lvt4xfxpjtwfhdmvchdf2m3u3hlsd5tq5r',
+        amount: '1',
+      },
+      //{
+      //  addressParameters: {
+      //    addressType: 0,
+      //    path: "m/1852'/1815'/0'/0/0",
+      //    stakingKeyHash: '32c728d3861e164cab28cb8f006448139c8f1740ffb8e7aa9e5232dc',
+      //  },
+      //  amount: '7120787',
+      //}
+      ];
+    } else {
+      const _inputs = [];
+      for (const input of coinSelection.inputs) {
+        const data = this.prepareInput(input)
+        _inputs.push(data)
+      }
+
+      const _outputs = []
+      for (const output of coinSelection.outputs) {
+        // @TODO - change address SKIPPED, we need to enable
+        if (output.address === recieverAddress) {
+          const data = this.prepareOutput(output)
+          _outputs.push(data)
+        }
+      }
+
+      console.debug('>>>> CONSTRUCTOED: ', {
+        _inputs,
+        _outputs,
+      })
+
+      inputsData = _inputs;
+      outputsData = _outputs;
+      // return;
+    }
+
+    console.debug('>>> Sign START: ', { inputsData, outputsData });
+
+    try {
+      const signedTransaction = await signTransactionChannel.request({
+        inputs: inputsData,
+        outputs: outputsData,
+        // fee: '42',
+        fee: '172189',
+        // ttl: '7200',
+        ttl: '7200',
+        protocolMagic: 764824073, // ProtocolMagics.MAINNET,
+        networkId: 0x01, // NetworkIds.MAINNET,
+        isTrezor: true,
+      });
+      console.debug('>>> DONE - signedTransaction: ', signedTransaction);
+      runInAction(
+        'HardwareWalletsStore:: set signed transaction data',
+        () => {
+          this.txSendParams = {
+            signedTransaction: signedTransaction.signedTransaction.payload.serializedTx,
+            blob1: signedTransaction.buffer1,
+            blob2: signedTransaction.buffer2,
+          };
+        }
+      );
+    } catch (error) {
+      // runInAction(
+      //   'HardwareWalletsStore:: set Transaction verifying failed',
+      //   () => {
+      //     this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED;
+      //   }
+      // );
+      console.debug('>>> SIGN error: ', error);
+      throw error;
+    }
+  };
+
+
+
+
+
+
 
   @action _signTransaction11 = async () => {
     const { coinSelection, txDataHex, recieverAddress } = this.txSignRequest;

@@ -169,13 +169,13 @@ const onAppReady = async () => {
   mainErrorHandler(onMainError);
   await handleCheckDiskSpace();
 
-  const handleCheckHardwareWalletDevices = handleHardwareWalletDevices(
-    mainWindow
-  );
-  await handleCheckHardwareWalletDevices();
+  // const handleCheckHardwareWalletDevices = handleHardwareWalletDevices(
+  //   mainWindow
+  // );
+  // await handleCheckHardwareWalletDevices();
 
-  // const initTrezorConnect = handleInitTrezorConnect(mainWindow.webContents);
-  // await initTrezorConnect();
+  const initTrezorConnect = handleInitTrezorConnect(mainWindow.webContents);
+  await initTrezorConnect();
 
   await handleCheckBlockReplayProgress(mainWindow, launcherConfig.logsPrefix);
 

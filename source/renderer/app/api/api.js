@@ -842,11 +842,13 @@ export default class AdaApi {
     logger.debug('AdaApi::createExternalTransaction called', {
       parameters: filterLogData(request),
     });
+    console.debug('>>> createExternalTransaction::request: ', request)
     const { signedTransactionBlob } = request;
     try {
       const response = await createExternalTransaction(this.config, {
         signedTransactionBlob,
       });
+      console.debug('>>> RESPONSE: ', response);
       return response;
     } catch (error) {
       logger.error('AdaApi::createExternalTransaction error', { error });
@@ -2043,7 +2045,6 @@ const _createWalletFromServerData = action(
     let id = rawWalletId;
     if (isLegacy) id = getLegacyWalletId(rawWalletId);
     if (isHardwareWallet) id = getHardwareWalletId(rawWalletId);
-    console.debug('>>>> CREATE:: ', {wallet, id, isHardwareWallet});
 
     const passphraseLastUpdatedAt = get(passphrase, 'last_updated_at', null);
     const walletTotalAmount =
