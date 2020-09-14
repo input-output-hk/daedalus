@@ -158,6 +158,8 @@
       border: 1px solid var(--theme-news-overlay-update-button-text-color);
       color: var(--theme-news-overlay-update-button-text-color);
       cursor: pointer;
+      display: block;
+      margin: 0 auto 20px;
       &:not(.disabled):hover {
         background-color: var(--theme-news-overlay-update-button-text-color);
         color: var(--theme-news-overlay-update-button-hover-text-color);
@@ -188,14 +190,9 @@
         }
       }
     }
-    .manualUpdateLink {
+    .postponeLink {
       border-bottom-color: var(--theme-app-update-overlay-text-color);
       color: var(--theme-app-update-overlay-text-color);
-      display: inline-block;
-      margin-top: 20px;
-      &:after {
-        background: var(--theme-app-update-overlay-text-color);
-      }
     }
   }
 

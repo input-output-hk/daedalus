@@ -44,6 +44,7 @@ type Props = {
   onOpenAppUpdate: Function,
   updateDownloadProgress?: number,
   displayAppUpdateNewsItem?: boolean,
+  isUpdatePostponed: boolean,
 };
 
 type State = {
@@ -115,6 +116,7 @@ export default class NewsFeed extends Component<Props, State> {
       currentDateFormat,
       onOpenAppUpdate,
       updateDownloadProgress = 0,
+      isUpdatePostponed,
       displayAppUpdateNewsItem,
     } = this.props;
     const { hasShadow } = this.state;
@@ -169,6 +171,7 @@ export default class NewsFeed extends Component<Props, State> {
                   onOpenAppUpdate={onOpenAppUpdate}
                   currentDateFormat={currentDateFormat}
                   downloadProgress={updateDownloadProgress}
+                  isUpdatePostponed={isUpdatePostponed}
                 />
               }
               <hr className={styles.separator} />

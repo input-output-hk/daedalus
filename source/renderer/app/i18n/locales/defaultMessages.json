@@ -404,14 +404,14 @@
         }
       },
       {
-        "defaultMessage": "!!!Download and install it manually",
+        "defaultMessage": "!!!Postpone installation",
         "description": "\"manualUpdateLinkLabel\" for the App Update Overlay",
         "end": {
           "column": 3,
           "line": 73
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
-        "id": "appUpdate.overlay.manualUpdate.link.label",
+        "id": "appUpdate.overlay.postponeInstall.link.label",
         "start": {
           "column": 25,
           "line": 69

@@ -5,6 +5,7 @@ import Action from './lib/Action';
 
 export default class AppUpdateActions {
   installUpdate: Action<any> = new Action();
+  postponeUpdate: Action<any> = new Action();
   openAppUpdateOverlay: Action<any> = new Action();
   closeAppUpdateOverlay: Action<any> = new Action();
 }

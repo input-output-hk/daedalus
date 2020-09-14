@@ -44,7 +44,7 @@ export default class AppUpdateStore extends Store {
   @observable isUpdateInstalled: boolean = false;
   @observable isUpdateProgressOpen: boolean = false;
   @observable isAutomaticUpdateFailed: boolean = false;
-  @observable displayManualUpdateLink: boolean = false;
+  @observable isUpdatePostponed: boolean = false;
 
   @observable downloadInfo: ?DownloadInfo = null;
   @observable downloadData: ?DownloadData = null;
@@ -75,6 +75,7 @@ export default class AppUpdateStore extends Store {
     actions.installUpdate.listen(this._installUpdate);
     actions.openAppUpdateOverlay.listen(this._openAppUpdateOverlay);
     actions.closeAppUpdateOverlay.listen(this._closeAppUpdateOverlay);
+    actions.postponeUpdate.listen(this._postponeUpdate);
 
     requestDownloadChannel.onReceive(this._manageUpdateResponse);
 
@@ -94,13 +95,14 @@ export default class AppUpdateStore extends Store {
   @computed get displayAppUpdateOverlay(): boolean {
     return (
       !!this.availableUpdate &&
+      !this.isUpdatePostponed &&
       (this.isUpdateProgressOpen ||
         this.isUpdateDownloaded ||
         this.isAutomaticUpdateFailed)
     );
   }
   @computed get displayAppUpdateNewsItem(): boolean {
-    return this.isUpdateDownloading;
+    return this.isUpdateDownloading || this.isUpdatePostponed;
   }
 
   @computed get formattedDownloadData(): FormattedDownloadData {
@@ -205,7 +207,6 @@ export default class AppUpdateStore extends Store {
           this.downloadInfo = info;
           this.downloadData = data;
           this.isUpdateDownloaded = true;
-          this.displayManualUpdateLink = true;
         });
         return false;
       }
@@ -353,9 +354,14 @@ export default class AppUpdateStore extends Store {
 
   @action _openAppUpdateOverlay = () => {
     this.isUpdateProgressOpen = true;
+    this.isUpdatePostponed = false;
   };
 
   @action _closeAppUpdateOverlay = () => {
     this.isUpdateProgressOpen = false;
+  };
+
+  @action _postponeUpdate = () => {
+    this.isUpdatePostponed = true;
   };
 }

@@ -11,6 +11,7 @@ type Props = {
   onOpenAppUpdate: Function,
   currentDateFormat: string,
   downloadProgress: number,
+  isUpdatePostponed: boolean,
 };
 
 @observer
@@ -47,6 +48,7 @@ export default class UpdateItem extends Component<Props> {
       currentDateFormat,
       onOpenAppUpdate,
       downloadProgress,
+      isUpdatePostponed,
     } = this.props;
     const componentClasses = classNames([
       styles.component,
@@ -64,10 +66,12 @@ export default class UpdateItem extends Component<Props> {
         <div className={styles.date}>
           {moment(updateItem.date).format(currentDateFormat)}
         </div>
-        <div className={styles.downloadProgress}>
-          <span style={{ width: `${downloadProgress}%` }} />
-          <em />
-        </div>
+        {!isUpdatePostponed && (
+          <div className={styles.downloadProgress}>
+            <span style={{ width: `${downloadProgress}%` }} />
+            <em />
+          </div>
+        )}
       </div>
     );
   }

@@ -36,15 +36,20 @@ const messages = defineMessages({
       '!!!I understand that I need to complete the installation before starting Daedalus.',
     description: '"checkboxLabel" for the App Update Overlay',
   },
-  buttonLabelOpenInstaller: {
-    id: 'appUpdate.overlay.buttonLabelOpenInstaller',
+  buttonLaunchInstallerLabel: {
+    id: 'appUpdate.overlay.button.launchInstaller.label',
     defaultMessage: '!!!Quit Daedalus and start the installation',
-    description: '"buttonLabelOpenInstaller" for the App Update Overlay',
+    description: '"buttonLaunchInstallerLabel" for the App Update Overlay',
   },
-  buttonLabelOpenDirectory: {
-    id: 'appUpdate.overlay.buttonLabelOpenDirectory',
+  buttonInstallUpdateLabel: {
+    id: 'appUpdate.overlay.button.installUpdate.label',
     defaultMessage: '!!!Quit Daedalus and open installer',
-    description: '"buttonLabelOpenDirectory" for the App Update Overlay',
+    description: '"buttonInstallUpdateLabel" for the App Update Overlay',
+  },
+  postponeInstallLinkLabel: {
+    id: 'appUpdate.overlay.postponeInstall.link.label',
+    defaultMessage: '!!!Postpone installation',
+    description: '"manualUpdateLinkLabel" for the App Update Overlay',
   },
   downloadProgressLabel: {
     id: 'appUpdate.overlay.downloadProgressLabel',
@@ -66,11 +71,6 @@ const messages = defineMessages({
     defaultMessage:
       '!!!We were unable to launch the update installer automatically. Please manually update Daedalus to its latest version.',
     description: '"manualUpdateDescription" for the App Update Overlay',
-  },
-  manualUpdateLinkLabel: {
-    id: 'appUpdate.overlay.manualUpdate.link.label',
-    defaultMessage: '!!!Download and install it manually',
-    description: '"manualUpdateLinkLabel" for the App Update Overlay',
   },
   manualUpdateButtonLabel: {
     id: 'appUpdate.overlay.manualUpdate.button.label',
@@ -95,9 +95,9 @@ type Props = {
   downloadProgress: number,
   isUpdateDownloaded: boolean,
   isAutomaticUpdateFailed: boolean,
-  displayManualUpdateLink: boolean,
   onInstallUpdate: Function,
   onExternalLinkClick: Function,
+  onPostponeUpdate: Function,
   isLinux: boolean,
 };
 
@@ -163,20 +163,15 @@ export default class AppUpdateOverlay extends Component<Props, State> {
 
   openInstallerAction = () => {
     const { intl } = this.context;
-    const {
-      onInstallUpdate,
-      displayManualUpdateLink,
-      onExternalLinkClick,
-      isLinux,
-    } = this.props;
+    const { onInstallUpdate, onPostponeUpdate, isLinux } = this.props;
     const { areTermsOfUseAccepted } = this.state;
     const buttonStyles = classnames([
       styles.button,
       !areTermsOfUseAccepted ? styles.disabled : null,
     ]);
     const buttonLabel = isLinux
-      ? messages.buttonLabelOpenDirectory
-      : messages.buttonLabelOpenInstaller;
+      ? messages.buttonInstallUpdateLabel
+      : messages.buttonLaunchInstallerLabel;
     return (
       <div className={styles.actions}>
         <Checkbox
@@ -194,25 +189,20 @@ export default class AppUpdateOverlay extends Component<Props, State> {
           label={intl.formatMessage(buttonLabel)}
           disabled={!areTermsOfUseAccepted}
         />
-        {displayManualUpdateLink && (
-          <Link
-            className={styles.manualUpdateLink}
-            onClick={() =>
-              onExternalLinkClick(
-                intl.formatMessage(messages.manualUpdateButtonUrl)
-              )
-            }
-            label={intl.formatMessage(messages.manualUpdateLinkLabel)}
-            skin={LinkSkin}
-          />
-        )}
+        <Link
+          className={styles.postponeLink}
+          onClick={onPostponeUpdate}
+          label={intl.formatMessage(messages.postponeInstallLinkLabel)}
+          skin={LinkSkin}
+          hasIconAfter={false}
+        />
       </div>
     );
   };
 
   manualUpdateAction = () => {
     const { intl } = this.context;
-    const { onExternalLinkClick } = this.props;
+    const { onExternalLinkClick, onPostponeUpdate } = this.props;
     return (
       <div className={styles.actions}>
         <div className={styles.manualUpdateDescription}>
@@ -235,6 +225,13 @@ export default class AppUpdateOverlay extends Component<Props, State> {
               {intl.formatMessage(messages.manualUpdateButtonLabel)}
             </span>
           }
+        />
+        <Link
+          className={styles.postponeLink}
+          onClick={onPostponeUpdate}
+          label={intl.formatMessage(messages.postponeInstallLinkLabel)}
+          skin={LinkSkin}
+          hasIconAfter={false}
         />
       </div>
     );
