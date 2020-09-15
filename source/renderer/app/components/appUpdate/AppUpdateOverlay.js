@@ -43,12 +43,12 @@ const messages = defineMessages({
   },
   buttonInstallUpdateLabel: {
     id: 'appUpdate.overlay.button.installUpdate.label',
-    defaultMessage: '!!!Quit Daedalus and open installer',
+    defaultMessage: '!!!Install the update and restart Daedalus',
     description: '"buttonInstallUpdateLabel" for the App Update Overlay',
   },
   postponeInstallLinkLabel: {
     id: 'appUpdate.overlay.postponeInstall.link.label',
-    defaultMessage: '!!!Postpone installation',
+    defaultMessage: 'Postpone the update',
     description: '"manualUpdateLinkLabel" for the App Update Overlay',
   },
   downloadProgressLabel: {
