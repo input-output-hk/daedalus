@@ -358,24 +358,37 @@ export default class HardwareWalletsStore extends Store {
 
 
   prepareInput = (input, addressToAbsPathMapper) => {
+    const addressIndex = this.stores.addresses.getAddressIndex(input.address);
+    console.debug('>>> addressIndex: ', addressIndex);
+    console.debug('>>> cardano: ', cardano);
+    const addressIndexPath = [cardano.str_to_path("1852'/1815'/0'"), 0, addressIndex];
+    console.debug('>>> addressIndexPath: ', addressIndexPath);
+
     const data = {
-      // path: addressToAbsPathMapper(input.address),
-      path: "m/1852'/1815'/0'/0/0",
+      // path: addressToAbsPathMapper(input.address), // From AdaLite example
+      path: cardano.str_to_path(`1852'/1815'/0'/0/${addressIndex}`),
       prev_hash: input.id,
       prev_index: input.index,
     }
 
     return data
-  }
+  };
 
-  prepareOutput = (output, addressToAbsPathMapper) => {
-    if (output.isChange) {
+  prepareOutputs = (output, isChange) => {
+    if (isChange) {
+      // const someInputAddress = this.txSignRequest.coinSelection.inputs[0].address;
+      const addressIndex = this.stores.addresses.getAddressIndex(output.address);
+      // const addressIndex = this.stores.addresses.getAddressIndex(someInputAddress);
       return {
-        amount: output.amount.quantity,
+        amount: output.amount.quantity.toString(),
         addressParameters: {
           addressType: 0, // TODO: 0 for base address
-          path: output.spendingPath,
-          stakingPath: output.stakingPath,
+          // path: output.spendingPath, // output.path "m/1852'/1815'/0'/1/{index??}"
+          // stakingPath: output.stakingPath, // "m/1852'/1815'/0'/2/0"
+          // path: cardano.str_to_path(`1852'/1815'/0'/1/${addressIndex}`),
+          // path: cardano.str_to_path("1852'/1815'/0'/0/0"), // OK when NO change address
+          path: cardano.str_to_path(`1852'/1815'/0'/0/${addressIndex}`),
+          stakingPath: cardano.str_to_path("1852'/1815'/0'/2/0"),
         },
       }
     } else {
@@ -384,10 +397,7 @@ export default class HardwareWalletsStore extends Store {
         amount: output.amount.quantity.toString(),
       }
     }
-  }
-
-
-
+  };
 
   @action _signTransactionTrezor = async (isTest = true) => {
     const { coinSelection, txDataHex, recieverAddress } = this.txSignRequest;
@@ -416,6 +426,8 @@ export default class HardwareWalletsStore extends Store {
 
     let inputsData;
     let outputsData;
+    let totalInputs = 0;
+    let totalOutputs = 0;
     if (isTest) {
       inputsData = [{
         path: "m/1852'/1815'/0'/0/0",
@@ -438,17 +450,29 @@ export default class HardwareWalletsStore extends Store {
     } else {
       const _inputs = [];
       for (const input of coinSelection.inputs) {
-        const data = this.prepareInput(input)
-        _inputs.push(data)
+        const data = this.prepareInput(input);
+        _inputs.push(data);
+        totalInputs = totalInputs + input.amount.quantity;
       }
 
-      const _outputs = []
+      const _outputs = [];
+      // let fakedChangeIndex = 0; // index from addresses list
       for (const output of coinSelection.outputs) {
+        totalOutputs = totalOutputs + output.amount.quantity;
         // @TODO - change address SKIPPED, we need to enable
-        if (output.address === recieverAddress) {
-          const data = this.prepareOutput(output)
+        // if (output.address === recieverAddress) {
+          const isChange = output.address !== recieverAddress;
+          console.debug('>>> Output: ', {
+            output,
+            isChange,
+          })
+          const data = this.prepareOutputs(output, isChange);
+          // if (isChange) {
+          //   fakedChangeIndex = fakedChangeIndex + 1;
+          // }
+          console.debug('>>> Output data contst: ', data);
           _outputs.push(data)
-        }
+        // }
       }
 
       console.debug('>>>> CONSTRUCTOED: ', {
@@ -461,16 +485,16 @@ export default class HardwareWalletsStore extends Store {
       // return;
     }
 
-    console.debug('>>> Sign START: ', { inputsData, outputsData });
+    console.debug('>>> Sign START: ', { inputsData, outputsData, totalInputs, totalOutputs });
 
     try {
       const signedTransaction = await signTransactionChannel.request({
         inputs: inputsData,
         outputs: outputsData,
         // fee: '42',
-        fee: '172189',
+        fee: (totalInputs - totalOutputs).toString(),
         // ttl: '7200',
-        ttl: '7200',
+        ttl: '15000000',
         protocolMagic: 764824073, // ProtocolMagics.MAINNET,
         networkId: 0x01, // NetworkIds.MAINNET,
         isTrezor: true,

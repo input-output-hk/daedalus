@@ -272,7 +272,12 @@ export const handleHardwareWalletRequests = async () => {
     // Connected Trezor device info
     let deviceFeatures;
     if (isTrezor) {
-      deviceFeatures = await TrezorConnect.getFeatures();
+      try {
+        console.debug('>>> ESTABLISH CONNECTION Trezor');
+        deviceFeatures = await TrezorConnect.getFeatures();
+      } catch (e) {
+        console.debug('>>> ESTABLISH CONNECTION error: <<<', error);
+      }
     }
 
     if (deviceFeatures && deviceFeatures.success) {

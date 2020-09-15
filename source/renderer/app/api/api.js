@@ -326,6 +326,7 @@ export default class AdaApi {
         );
       } else if (!isLegacy) {
         response = await getAddresses(this.config, rawWalletId, queryParams);
+        response.reverse();
       }
       logger.debug('AdaApi::getAddresses success', { addresses: response });
       return response.map(_createAddressFromServerData);

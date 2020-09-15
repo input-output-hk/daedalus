@@ -139,6 +139,7 @@ export default class WalletReceiveSequential extends Component<Props, State> {
         shouldRegisterAddressElement={index === 0}
         onRegisterHTMLElements={this.handleRegisterHTMLElements}
         addressSlice={addressSlice}
+        index={index}
       />
     );
   };
