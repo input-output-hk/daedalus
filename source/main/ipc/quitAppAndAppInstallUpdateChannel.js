@@ -2,7 +2,6 @@
 import { app, shell } from 'electron';
 import fs from 'fs';
 import shasum from 'shasum';
-// import { spawnSync } from 'child_process';
 import { spawn } from 'child_process';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import { QUIT_APP_AND_INSTALL_UPDATE } from '../../common/ipc/api';
@@ -45,6 +44,7 @@ const checkInstallerHash = (filePath, expectedHash): Response => {
 };
 
 const installUpdate = (filePath): Response => {
+  fs.chmodSync(filePath, 0o777);
   const ps = spawn(filePath);
   let success = true;
   let message = 'appUpdateInstall:installUpdate';
