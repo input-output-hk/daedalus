@@ -325,20 +325,19 @@ export default class AppUpdateStore extends Store {
       await this._setAppAutomaticUpdateFailed();
       return false;
     }
-    const {
-      destinationPath: directoryPath,
-      originalFilename,
-    } = this.downloadInfo;
+    const { destinationPath, originalFilename } = this.downloadInfo;
     const { hash } = this.getUpdateInfo(this.availableUpdate);
-    const filePath = `${directoryPath}/${originalFilename}`;
-    const openInstaller = await quitAppAndAppInstallUpdateChannel.request({
-      directoryPath,
+    const filePath = `${destinationPath}/${originalFilename}`;
+    const install = await quitAppAndAppInstallUpdateChannel.request({
       filePath,
       hash,
     });
-    if (!openInstaller) {
+    const message = get(install, 'message', '');
+    const data = get(install, 'data', {});
+    if (!install.success) {
       logger.error(
-        'AppUpdateStore:_setAppAutomaticUpdateFailed: Unable to open the installer'
+        `AppUpdateStore:_setAppAutomaticUpdateFailed: Unable to open the installer: ${message}`,
+        { data }
       );
       await this._setAppAutomaticUpdateFailed();
     }

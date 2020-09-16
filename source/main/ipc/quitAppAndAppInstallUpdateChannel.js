@@ -2,7 +2,8 @@
 import { app, shell } from 'electron';
 import fs from 'fs';
 import shasum from 'shasum';
-import { spawnSync } from 'child_process';
+// import { spawnSync } from 'child_process';
+import { spawn } from 'child_process';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import { QUIT_APP_AND_INSTALL_UPDATE } from '../../common/ipc/api';
 import type {
@@ -44,20 +45,25 @@ const checkInstallerHash = (filePath, expectedHash): Response => {
 };
 
 const installUpdate = (filePath): Response => {
-  try {
-    logger.info('appUpdateInstall: Installing the update', { filePath });
-    const { stdout, stderr } = spawnSync(filePath);
-    const status = JSON.parse(stdout.toString());
-    logger.info('appUpdateInstall:installing:', { status });
-    const errors = stderr.toString();
-    if (errors) throw new Error(errors);
-    return { success: true };
-  } catch (errors) {
-    return returnError(
-      'appUpdateInstall:installing: Error when trying to install the update:',
-      { errors }
-    );
-  }
+  const ps = spawn(filePath);
+  let success = true;
+  let message = 'appUpdateInstall:installUpdate';
+  logger.info((message += ' ...installing'));
+  let data;
+  ps.stderr.on('data', errData => {
+    success = false;
+    data = errData;
+  });
+  ps.on('close', code => {
+    if (code !== 0) {
+      success = false;
+      data = { code };
+      message += ` ps process exited with code ${code}`;
+    }
+  });
+  if (!success) return returnError(message, data);
+  logger.info((message += ' ...installing'));
+  return { success: true };
 };
 
 export const handleQuitAppAndAppInstallUpdateRequests = () => {

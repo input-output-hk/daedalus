@@ -41,6 +41,7 @@ storiesOf('News|NewsFeed', module)
         onProceedNewsAction={action('onOpenExternalLink')}
         onOpenAppUpdate={action('onOpenAppUpdate')}
         currentDateFormat=" "
+        isUpdatePostponed={false}
       />
     </div>
   ))
@@ -60,6 +61,7 @@ storiesOf('News|NewsFeed', module)
         onProceedNewsAction={action('onOpenExternalLink')}
         onOpenAppUpdate={action('onOpenAppUpdate')}
         currentDateFormat=" "
+        isUpdatePostponed={false}
       />
     </div>
   ))
@@ -101,6 +103,7 @@ storiesOf('News|NewsFeed', module)
             dateOptions,
             DATE_ENGLISH_OPTIONS[0].value
           )}
+          isUpdatePostponed={false}
         />
       </div>
     );

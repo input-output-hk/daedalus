@@ -75,6 +75,7 @@ storiesOf('News|Overlays', module)
         displayManualUpdateLink={displayManualUpdateLink}
         onClose={action('onClose')}
         onInstallUpdate={action('onInstallUpdate')}
+        onPostponeUpdate={action('onPostponeUpdate')}
         onExternalLinkClick={action('onExternalLinkClick')}
         isLinux={isLinux}
       />

@@ -361,8 +361,8 @@ export type QuitAppAndAppInstallUpdateRendererRequest = {
 };
 export type QuitAppAndAppInstallUpdateMainResponse = {
   success: boolean,
-  message?: ?string,
-  data?: ?Object,
+  message?: string,
+  data?: Object,
 };
 
 /**
