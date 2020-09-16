@@ -45,6 +45,7 @@ export default class AppUpdateStore extends Store {
   @observable isUpdateProgressOpen: boolean = false;
   @observable isAutomaticUpdateFailed: boolean = false;
   @observable isUpdatePostponed: boolean = false;
+  @observable isInstallingUpdate: boolean = false;
 
   @observable downloadInfo: ?DownloadInfo = null;
   @observable downloadData: ?DownloadData = null;
@@ -325,6 +326,7 @@ export default class AppUpdateStore extends Store {
       await this._setAppAutomaticUpdateFailed();
       return false;
     }
+    this.isInstallingUpdate = true;
     const { destinationPath, originalFilename } = this.downloadInfo;
     const { hash } = this.getUpdateInfo(this.availableUpdate);
     const filePath = `${destinationPath}/${originalFilename}`;

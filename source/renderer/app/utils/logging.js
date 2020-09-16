@@ -1,4 +1,5 @@
 // @flow
+/* eslint-disable */
 import { formatContext } from '../../../common/utils/logging';
 import type {
   FormatMessageContextParams,
@@ -28,17 +29,19 @@ const environmentData = {
 const logToLevel = (level: LoggingLevel) => (
   message: string,
   data: ?Object
-) => {
-  const args = [
-    formatContext({ ...messageContext, level }),
-    {
-      message,
-      data,
-      environmentData,
-    },
-  ];
-  electronLog[level](...args);
-};
+) => {};
+
+// {
+//   const args = [
+//     formatContext({ ...messageContext, level }),
+//     {
+//       message,
+//       data,
+//       environmentData,
+//     },
+//   ];
+//   electronLog[level](...args);
+// };
 
 export const logger: Logger = {
   debug: logToLevel('debug'),

@@ -43,12 +43,12 @@ const checkInstallerHash = (filePath, expectedHash): Response => {
   return { success: true };
 };
 
-const installUpdate = (filePath): Response => {
+const installUpdate = async (filePath): Promise<Response> => {
   fs.chmodSync(filePath, 0o777);
   const ps = spawn(filePath);
   let success = true;
   let message = 'appUpdateInstall:installUpdate';
-  logger.info((message += ' ...installing'));
+  logger.info(`${message} Installation - init`);
   let data;
   ps.stderr.on('data', errData => {
     success = false;
@@ -61,9 +61,19 @@ const installUpdate = (filePath): Response => {
       message += ` ps process exited with code ${code}`;
     }
   });
-  if (!success) return returnError(message, data);
-  logger.info((message += ' ...installing'));
-  return { success: true };
+  ps.on('error', error => {
+    success = false;
+    message = error;
+  });
+  ps.on('exit', () => {
+    if (!success) {
+      return returnError(message, data);
+    }
+    logger.info(`${message} Installation - End`);
+    app.quit();
+    return { success: true };
+  });
+  logger.info(`${message} Installation - installing...`);
 };
 
 export const handleQuitAppAndAppInstallUpdateRequests = () => {
