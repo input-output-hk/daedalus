@@ -20,39 +20,59 @@ const quitAppAndAppInstallUpdateChannel: MainIpcChannel<
 > = new MainIpcChannel(QUIT_APP_AND_INSTALL_UPDATE);
 
 const checkInstallerHash = (filePath, expectedHash): boolean => {
-  const fileExists = fs.existsSync(filePath);
-  if (!fileExists) return false;
   const fileBuffer = fs.readFileSync(filePath);
-  if (!fileBuffer) return false;
+  if (!fileBuffer) {
+    logger.error(
+      'appUpdateInstall:checkInstallerHash: Unable to read the installer:',
+      {
+        filePath,
+      }
+    );
+    return false;
+  }
   const fileHash = shasum(fileBuffer, 'sha256');
-  if (fileHash !== expectedHash) return false;
+  if (fileHash !== expectedHash) {
+    logger.error('appUpdateInstall:checkInstallerHash: Hash does not match');
+    return false;
+  }
   return true;
 };
 
 const installUpdate = (filePath): boolean => {
-  logger.info('quitAppInstallUpdate: Installing the update', { filePath });
-  const { stdout, stderr } = spawnSync(filePath);
-  const status = JSON.parse(stdout.toString());
-  logger.info('quitAppInstallUpdate:installing:', { status });
-  const errors = stderr.toString();
-  if (errors) {
+  try {
+    logger.info('appUpdateInstall: Installing the update', { filePath });
+    const { stdout, stderr } = spawnSync(filePath);
+    const status = JSON.parse(stdout.toString());
+    logger.info('appUpdateInstall:installing:', { status });
+    const errors = stderr.toString();
+    if (errors) {
+      logger.error(
+        'appUpdateInstall:installing: Error when trying to install the update:',
+        { errors }
+      );
+    }
+    return !errors;
+  } catch (error) {
     logger.error(
-      'quitAppInstallUpdate:installing: Error when trying to install the update:',
-      { errors }
+      'appUpdateInstall:installing: Error when trying to install the update:',
+      { error }
     );
+    return false;
   }
-  return !errors;
 };
 
 export const handleQuitAppAndAppInstallUpdateRequests = () => {
   quitAppAndAppInstallUpdateChannel.onRequest(
     async ({ filePath, hash: expectedHash }) => {
-      if (checkInstallerHash(filePath, expectedHash)) return false;
       const fileExists = fs.existsSync(filePath);
       if (!fileExists) {
-        logger.error('quitAppInstallUpdate: Installer not found:', {
+        logger.error('appUpdateInstall: Installer not found:', {
           filePath,
         });
+        return false;
+      }
+
+      if (checkInstallerHash(filePath, expectedHash)) {
         return false;
       }
 
@@ -64,7 +84,7 @@ export const handleQuitAppAndAppInstallUpdateRequests = () => {
       // For other OS we launch the installer file
       const openInstaller: boolean = shell.openItem(filePath);
       if (!openInstaller) {
-        logger.error('quitAppInstallUpdate: Installer not found:', {
+        logger.error('appUpdateInstall: Installer not found:', {
           filePath,
         });
       }
