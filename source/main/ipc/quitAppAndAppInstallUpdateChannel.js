@@ -6,8 +6,8 @@ import { spawnSync } from 'child_process';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import { QUIT_APP_AND_INSTALL_UPDATE } from '../../common/ipc/api';
 import type {
-  QuitAppAndAppInstallUpdateRendererRequest,
-  QuitAppAndAppInstallUpdateMainResponse,
+  QuitAppAndAppInstallUpdateRendererRequest as Request,
+  QuitAppAndAppInstallUpdateMainResponse as Response,
 } from '../../common/ipc/api';
 import { environment } from '../environment';
 import { logger } from '../utils/logging';
@@ -15,49 +15,48 @@ import { logger } from '../utils/logging';
 // IpcChannel<Incoming, Outgoing>
 
 const quitAppAndAppInstallUpdateChannel: MainIpcChannel<
-  QuitAppAndAppInstallUpdateRendererRequest,
-  QuitAppAndAppInstallUpdateMainResponse
+  Request,
+  Response
 > = new MainIpcChannel(QUIT_APP_AND_INSTALL_UPDATE);
 
-const checkInstallerHash = (filePath, expectedHash): boolean => {
-  const fileBuffer = fs.readFileSync(filePath);
-  if (!fileBuffer) {
-    logger.error(
-      'appUpdateInstall:checkInstallerHash: Unable to read the installer:',
-      {
-        filePath,
-      }
-    );
-    return false;
-  }
-  const fileHash = shasum(fileBuffer, 'sha256');
-  if (fileHash !== expectedHash) {
-    logger.error('appUpdateInstall:checkInstallerHash: Hash does not match');
-    return false;
-  }
-  return true;
+const returnError = (message: string, data?: Object): Response => {
+  logger.error(message, data);
+  return {
+    success: false,
+    message,
+    data,
+  };
 };
 
-const installUpdate = (filePath): boolean => {
+const checkInstallerHash = (filePath, expectedHash): Response => {
+  const fileBuffer = fs.readFileSync(filePath);
+  if (!fileBuffer)
+    return returnError(
+      'appUpdateInstall:checkInstallerHash: Unable to read the installer:',
+      { filePath }
+    );
+  const fileHash = shasum(fileBuffer, 'sha256');
+  if (fileHash !== expectedHash)
+    return returnError(
+      'appUpdateInstall:checkInstallerHash: Hash does not match'
+    );
+  return { success: true };
+};
+
+const installUpdate = (filePath): Response => {
   try {
     logger.info('appUpdateInstall: Installing the update', { filePath });
     const { stdout, stderr } = spawnSync(filePath);
     const status = JSON.parse(stdout.toString());
     logger.info('appUpdateInstall:installing:', { status });
     const errors = stderr.toString();
-    if (errors) {
-      logger.error(
-        'appUpdateInstall:installing: Error when trying to install the update:',
-        { errors }
-      );
-    }
-    return !errors;
-  } catch (error) {
-    logger.error(
+    if (errors) throw new Error(errors);
+    return { success: true };
+  } catch (errors) {
+    return returnError(
       'appUpdateInstall:installing: Error when trying to install the update:',
-      { error }
+      { errors }
     );
-    return false;
   }
 };
 
@@ -65,16 +64,15 @@ export const handleQuitAppAndAppInstallUpdateRequests = () => {
   quitAppAndAppInstallUpdateChannel.onRequest(
     async ({ filePath, hash: expectedHash }) => {
       const fileExists = fs.existsSync(filePath);
-      if (!fileExists) {
-        logger.error('appUpdateInstall: Installer not found:', {
+      if (!fileExists)
+        return returnError('appUpdateInstall: Installer not found:', {
           filePath,
         });
-        return false;
-      }
 
-      if (checkInstallerHash(filePath, expectedHash)) {
-        return false;
-      }
+      const installerHash = checkInstallerHash(filePath, expectedHash);
+
+      if (!installerHash.success)
+        return returnError('appUpdateInstall: Invalid hash');
 
       // For linux we execute the installer file
       if (environment.isLinux) {
@@ -84,11 +82,13 @@ export const handleQuitAppAndAppInstallUpdateRequests = () => {
       // For other OS we launch the installer file
       const openInstaller: boolean = shell.openItem(filePath);
       if (!openInstaller) {
-        logger.error('appUpdateInstall: Installer not found:', {
-          filePath,
-        });
+        return returnError(
+          'appUpdateInstall: Not able to launch the installer'
+        );
       }
-      return openInstaller;
+
+      app.quit();
+      return { success: true };
     }
   );
 };

@@ -20,14 +20,16 @@ import type {
 } from '../../common/types/logging.types';
 
 const isTest = process.env.NODE_ENV === 'test';
-const isDev = process.env.NODE_ENV === 'development';
+// const isDev = process.env.NODE_ENV === 'development';
 
 export const setupLogging = () => {
   const logFilePath = path.join(pubLogsFolderPath, 'Daedalus.json');
   ensureDirectoryExists(pubLogsFolderPath);
   rimraf.sync(path.join(pubLogsFolderPath, './Daedalus.*'));
   log.transports.console.level = isTest ? 'error' : 'info';
-  log.transports.rendererConsole.level = isDev ? 'info' : 'error';
+  // @APP_UPDATE TODO
+  // log.transports.rendererConsole.level = isDev ? 'info' : 'error';
+  log.transports.rendererConsole.level = 'info';
   log.transports.file.level = 'debug';
   log.transports.file.maxSize = 5 * 1024 * 1024; // 5MB, unit bytes
   log.transports.file.maxItems = 4;

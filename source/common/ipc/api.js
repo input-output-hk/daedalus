@@ -359,7 +359,11 @@ export type QuitAppAndAppInstallUpdateRendererRequest = {
   filePath: string,
   hash: string,
 };
-export type QuitAppAndAppInstallUpdateMainResponse = boolean;
+export type QuitAppAndAppInstallUpdateMainResponse = {
+  success: boolean,
+  message?: ?string,
+  data?: ?Object,
+};
 
 /**
  * Channel for introspecting an address
