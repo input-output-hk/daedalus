@@ -11,6 +11,9 @@ import type {
 } from '../../common/ipc/api';
 import { environment } from '../environment';
 import { logger } from '../utils/logging';
+import { launcherConfig } from '../config';
+
+const { updateRunnerBin } = launcherConfig;
 
 // IpcChannel<Incoming, Outgoing>
 
@@ -45,11 +48,13 @@ const checkInstallerHash = (filePath, expectedHash): Response => {
 
 const installUpdate = async (filePath): Promise<Response> => {
   fs.chmodSync(filePath, 0o777);
-  const ps = spawn(filePath);
+  const ps = spawn(updateRunnerBin, [filePath]);
   let success = true;
   let message = 'appUpdateInstall:installUpdate';
-  logger.info(`${message} Installation - init`);
   let data;
+  ps.stdout.on('data', progressData => {
+    logger.info((message += ' installing progress...'), { data: progressData });
+  });
   ps.stderr.on('data', errData => {
     success = false;
     data = errData;
@@ -73,7 +78,7 @@ const installUpdate = async (filePath): Promise<Response> => {
     app.quit();
     return { success: true };
   });
-  logger.info(`${message} Installation - installing...`);
+  logger.info(`${message} Installation - init`);
 };
 
 export const handleQuitAppAndAppInstallUpdateRequests = () => {
