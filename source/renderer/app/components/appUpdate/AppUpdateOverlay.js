@@ -10,7 +10,7 @@ import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
-// import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { ButtonSpinnerSkin } from 'react-polymorph/lib/skins/simple/ButtonSpinnerSkin';
 import ReactMarkdown from 'react-markdown';
 import News from '../../domains/News';

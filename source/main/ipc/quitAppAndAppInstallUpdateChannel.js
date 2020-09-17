@@ -22,94 +22,108 @@ const quitAppAndAppInstallUpdateChannel: MainIpcChannel<
   Response
 > = new MainIpcChannel(QUIT_APP_AND_INSTALL_UPDATE);
 
-const returnError = (message: string, data?: Object): Response => {
-  logger.error(message, data);
+const logPrefix = 'appUpdateInstall';
+
+const getMessage = (functionPrefix: string, message?: string): string => {
+  let formattedMessage = `${logPrefix}:${functionPrefix}`;
+  if (message) formattedMessage += `: ${message}`;
+  return formattedMessage;
+};
+
+const response = (
+  success: boolean,
+  functionPrefix: string,
+  message?: string = '',
+  data?: any
+): Response => {
+  const log = success ? logger.info : logger.error;
+  log(getMessage(functionPrefix, message));
   return {
-    success: false,
+    success,
     message,
     data,
   };
 };
 
 const checkInstallerHash = (filePath, expectedHash): Response => {
+  const { name: functionPrefix } = checkInstallerHash;
   const fileBuffer = fs.readFileSync(filePath);
   if (!fileBuffer)
-    return returnError(
-      'appUpdateInstall:checkInstallerHash: Unable to read the installer:',
-      { filePath }
-    );
+    return response(false, functionPrefix, 'Unable to read the installer:', {
+      filePath,
+    });
   const fileHash = shasum(fileBuffer, 'sha256');
   if (fileHash !== expectedHash)
-    return returnError(
-      'appUpdateInstall:checkInstallerHash: Hash does not match'
-    );
+    return response(false, functionPrefix, 'Hash does not match', { filePath });
   return { success: true };
 };
 
 const installUpdate = async (filePath): Promise<Response> => {
-  fs.chmodSync(filePath, 0o777);
-  const ps = spawn(updateRunnerBin, [filePath]);
-  let success = true;
-  let message = 'appUpdateInstall:installUpdate';
-  let data;
-  ps.stdout.on('data', progressData => {
-    logger.info((message += ' installing progress...'), { data: progressData });
-  });
-  ps.stderr.on('data', errData => {
-    success = false;
-    data = errData;
-  });
-  ps.on('close', code => {
-    if (code !== 0) {
+  return new Promise((resolve, reject) => {
+    const { name: functionPrefix } = installUpdate;
+    fs.chmodSync(filePath, 0o777);
+    const ps = spawn(updateRunnerBin, [filePath]);
+
+    let success = true;
+    let errorMessage = '';
+    let errorData;
+
+    logger.info(getMessage(functionPrefix, 'installation begin.'));
+    ps.stdout.on('data', progressData => {
+      logger.info(getMessage(functionPrefix, 'installation progress...'), {
+        data: progressData.toString(),
+      });
+    });
+    ps.stderr.on('data', errData => {
       success = false;
-      data = { code };
-      message += ` ps process exited with code ${code}`;
-    }
+      errorData = errData.toString();
+    });
+    ps.on('close', code => {
+      if (code !== 0) {
+        success = false;
+        errorData = { code };
+        errorMessage = `ps process exited with code ${code}`;
+      }
+    });
+    ps.on('error', error => {
+      success = false;
+      errorMessage = 'installation failed';
+      errorData = error.toString();
+    });
+    ps.on('exit', () => {
+      if (!success)
+        return reject(response(false, functionPrefix, errorMessage, errorData));
+      app.quit();
+      return resolve(response(true, functionPrefix, errorMessage, errorData));
+    });
   });
-  ps.on('error', error => {
-    success = false;
-    message = error;
-  });
-  ps.on('exit', () => {
-    if (!success) {
-      return returnError(message, data);
-    }
-    logger.info(`${message} Installation - End`);
-    app.quit();
-    return { success: true };
-  });
-  logger.info(`${message} Installation - init`);
 };
 
 export const handleQuitAppAndAppInstallUpdateRequests = () => {
   quitAppAndAppInstallUpdateChannel.onRequest(
     async ({ filePath, hash: expectedHash }) => {
-      console.log('typeof updateRunnerBin', typeof updateRunnerBin);
-      console.log('updateRunnerBin', updateRunnerBin);
-
+      const functionPrefix = 'onRequest';
       const fileExists = fs.existsSync(filePath);
       if (!fileExists)
-        return returnError('appUpdateInstall: Installer not found:', {
+        return response(false, functionPrefix, 'Installer not found:', {
           filePath,
         });
 
       const installerHash = checkInstallerHash(filePath, expectedHash);
 
-      if (!installerHash.success)
-        return returnError('appUpdateInstall: Invalid hash');
+      if (!installerHash.success) return installerHash;
 
       // For linux we execute the installer file
-      if (environment.isLinux) {
-        return installUpdate(filePath);
-      }
+      if (environment.isLinux) return installUpdate(filePath);
 
       // For other OS we launch the installer file
       const openInstaller: boolean = shell.openItem(filePath);
-      if (!openInstaller) {
-        return returnError(
-          'appUpdateInstall: Not able to launch the installer'
+      if (!openInstaller)
+        return response(
+          false,
+          functionPrefix,
+          'Not able to launch the installer'
         );
-      }
 
       app.quit();
       return { success: true };

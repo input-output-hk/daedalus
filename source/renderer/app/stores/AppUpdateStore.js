@@ -323,13 +323,14 @@ export default class AppUpdateStore extends Store {
           '!this.downloadInfo': !this.downloadInfo,
         }
       );
-      await this._setAppAutomaticUpdateFailed();
+      // this._setAppAutomaticUpdateFailed();
       return false;
     }
     runInAction(() => {
       this.isInstallingUpdate = true;
     });
-    const { destinationPath, originalFilename } = this.downloadInfo;
+    if (!this.availableUpdate) return false;
+    const { destinationPath, originalFilename } = this.downloadInfo || {};
     const { hash } = this.getUpdateInfo(this.availableUpdate);
     const filePath = `${destinationPath}/${originalFilename}`;
     const install = await quitAppAndAppInstallUpdateChannel.request({
