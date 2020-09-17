@@ -151,6 +151,7 @@ let
     inherit logsPrefix launcherLogsPrefix tlsConfig;
     walletLogging = false;
     daedalusBin = mkBinPath "frontend";
+    updateRunnerBin = mkBinPath "update-runner";
     # TODO: set when update system is complete
     updaterArgs = [];
     updaterPath = "";
@@ -186,7 +187,6 @@ let
     walletBin = mkBinPath "cardano-wallet";
     nodeBin = mkBinPath "cardano-node";
     cliBin = mkBinPath "cardano-cli";
-    updateRunnerBin = mkBinPath "update-runner";
     nodeConfig = let
       nodeConfigAttrs = if (configOverride == null) then envCfg.nodeConfig else __fromJSON (__readFile configOverride);
     in builtins.toJSON (filterMonitoring (nodeConfigAttrs // (lib.optionalAttrs (!isDevOrLinux || network == "local") {

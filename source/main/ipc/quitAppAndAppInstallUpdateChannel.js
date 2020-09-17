@@ -84,6 +84,9 @@ const installUpdate = async (filePath): Promise<Response> => {
 export const handleQuitAppAndAppInstallUpdateRequests = () => {
   quitAppAndAppInstallUpdateChannel.onRequest(
     async ({ filePath, hash: expectedHash }) => {
+      console.log('typeof updateRunnerBin', typeof updateRunnerBin);
+      console.log('updateRunnerBin', updateRunnerBin);
+
       const fileExists = fs.existsSync(filePath);
       if (!fileExists)
         return returnError('appUpdateInstall: Installer not found:', {

@@ -326,7 +326,9 @@ export default class AppUpdateStore extends Store {
       await this._setAppAutomaticUpdateFailed();
       return false;
     }
-    this.isInstallingUpdate = true;
+    runInAction(() => {
+      this.isInstallingUpdate = true;
+    });
     const { destinationPath, originalFilename } = this.downloadInfo;
     const { hash } = this.getUpdateInfo(this.availableUpdate);
     const filePath = `${destinationPath}/${originalFilename}`;
@@ -341,6 +343,9 @@ export default class AppUpdateStore extends Store {
         `AppUpdateStore:_setAppAutomaticUpdateFailed: Unable to open the installer: ${message}`,
         { data }
       );
+      runInAction(() => {
+        this.isInstallingUpdate = false;
+      });
       await this._setAppAutomaticUpdateFailed();
     }
     return null;

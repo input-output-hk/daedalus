@@ -61,6 +61,10 @@ storiesOf('News|Overlays', module)
         ? boolean('isLinux', false)
         : false;
 
+    const isInstallingUpdate = isLinux
+      ? boolean('isInstallingUpdate', false)
+      : false;
+
     return (
       <AppUpdateOverlay
         update={update[locale]}
@@ -77,6 +81,7 @@ storiesOf('News|Overlays', module)
         onInstallUpdate={action('onInstallUpdate')}
         onPostponeUpdate={action('onPostponeUpdate')}
         onExternalLinkClick={action('onExternalLinkClick')}
+        isInstallingUpdate={isInstallingUpdate}
         isLinux={isLinux}
       />
     );
