@@ -2,7 +2,7 @@
 import { app, shell } from 'electron';
 import fs from 'fs';
 import shasum from 'shasum';
-import { spawn } from 'child_process';
+import { spawnSync } from 'child_process';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import { QUIT_APP_AND_INSTALL_UPDATE } from '../../common/ipc/api';
 import type {
@@ -55,48 +55,19 @@ const checkInstallerHash = (filePath, expectedHash): Response => {
   const fileHash = shasum(fileBuffer, 'sha256');
   if (fileHash !== expectedHash)
     return response(false, functionPrefix, 'Hash does not match', { filePath });
-  return { success: true };
+  return response(true, functionPrefix);
 };
 
 const installUpdate = async (filePath): Promise<Response> => {
-  return new Promise((resolve, reject) => {
-    const { name: functionPrefix } = installUpdate;
-    fs.chmodSync(filePath, 0o777);
-    const ps = spawn(updateRunnerBin, [filePath]);
-
-    let success = true;
-    let errorMessage = '';
-    let errorData;
-
-    logger.info(getMessage(functionPrefix, 'installation begin.'));
-    ps.stdout.on('data', progressData => {
-      logger.info(getMessage(functionPrefix, 'installation progress...'), {
-        data: progressData.toString(),
-      });
+  const { name: functionPrefix } = installUpdate;
+  logger.info(getMessage(functionPrefix, 'installation begin.'));
+  fs.chmodSync(filePath, 0o777);
+  const { error } = await spawnSync(updateRunnerBin, [filePath]);
+  if (error)
+    return response(false, functionPrefix, 'Unable to install the update', {
+      error,
     });
-    ps.stderr.on('data', errData => {
-      success = false;
-      errorData = errData.toString();
-    });
-    ps.on('close', code => {
-      if (code !== 0) {
-        success = false;
-        errorData = { code };
-        errorMessage = `ps process exited with code ${code}`;
-      }
-    });
-    ps.on('error', error => {
-      success = false;
-      errorMessage = 'installation failed';
-      errorData = error.toString();
-    });
-    ps.on('exit', () => {
-      if (!success)
-        return reject(response(false, functionPrefix, errorMessage, errorData));
-      app.quit();
-      return resolve(response(true, functionPrefix, errorMessage, errorData));
-    });
-  });
+  return response(true, functionPrefix, 'installation success.');
 };
 
 export const handleQuitAppAndAppInstallUpdateRequests = () => {
