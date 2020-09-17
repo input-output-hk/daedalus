@@ -282,13 +282,13 @@
         "description": "\"title\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 27
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
         "id": "appUpdate.overlay.title",
         "start": {
           "column": 9,
-          "line": 22
+          "line": 23
         }
       },
       {
@@ -296,13 +296,13 @@
         "description": "\"subtitle\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 33
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
         "id": "appUpdate.overlay.subtitle",
         "start": {
           "column": 12,
-          "line": 27
+          "line": 28
         }
       },
       {
@@ -310,13 +310,13 @@
         "description": "\"checkboxLabel\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 39
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
         "id": "appUpdate.overlay.checkboxLabel",
         "start": {
           "column": 17,
-          "line": 33
+          "line": 34
         }
       },
       {
@@ -324,13 +324,13 @@
         "description": "\"buttonLaunchInstallerLabel\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 44
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
         "id": "appUpdate.overlay.button.launchInstaller.label",
         "start": {
           "column": 30,
-          "line": 39
+          "line": 40
         }
       },
       {
@@ -338,13 +338,13 @@
         "description": "\"buttonInstallUpdateLabel\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 49
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
         "id": "appUpdate.overlay.button.installUpdate.label",
         "start": {
           "column": 28,
-          "line": 44
+          "line": 45
         }
       },
       {
@@ -352,13 +352,13 @@
         "description": "\"manualUpdateLinkLabel\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 54
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
         "id": "appUpdate.overlay.postponeInstall.link.label",
         "start": {
           "column": 28,
-          "line": 49
+          "line": 50
         }
       },
       {
@@ -366,13 +366,13 @@
         "description": "\"downloadProgressLabel\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 59
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
         "id": "appUpdate.overlay.downloadProgressLabel",
         "start": {
           "column": 25,
-          "line": 54
+          "line": 55
         }
       },
       {
@@ -380,13 +380,13 @@
         "description": "\"downloadTimeLeft\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 64
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
         "id": "appUpdate.overlay.downloadTimeLeft",
         "start": {
           "column": 20,
-          "line": 59
+          "line": 60
         }
       },
       {
@@ -394,27 +394,55 @@
         "description": "\"downloadProgressData\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 69
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
         "id": "appUpdate.overlay.downloadProgressData",
         "start": {
           "column": 24,
-          "line": 64
+          "line": 65
         }
       },
       {
-        "defaultMessage": "!!!We were unable to launch the update installer automatically. Please manually update Daedalus to its latest version.",
-        "description": "\"manualUpdateDescription\" for the App Update Overlay",
+        "defaultMessage": "!!!We were unable to launch the update installer automatically.",
+        "description": "\"manualUpdateDescriptionError\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 74
+          "line": 75
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
-        "id": "appUpdate.overlay.manualUpdate.description",
+        "id": "appUpdate.overlay.manualUpdate.description.error",
         "start": {
-          "column": 27,
-          "line": 69
+          "column": 32,
+          "line": 70
+        }
+      },
+      {
+        "defaultMessage": "!!!We were unable to install the update.",
+        "description": "\"manualUpdateDescriptionErrorLinux\" for the App Update Overlay",
+        "end": {
+          "column": 3,
+          "line": 80
+        },
+        "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
+        "id": "appUpdate.overlay.manualUpdate.description.errorLinux",
+        "start": {
+          "column": 37,
+          "line": 76
+        }
+      },
+      {
+        "defaultMessage": "!!!Please manually update Daedalus to its latest version.",
+        "description": "\"manualUpdateDescriptionAction\" for the App Update Overlay",
+        "end": {
+          "column": 3,
+          "line": 85
+        },
+        "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
+        "id": "appUpdate.overlay.manualUpdate.description.action",
+        "start": {
+          "column": 33,
+          "line": 81
         }
       },
       {
@@ -422,13 +450,13 @@
         "description": "\"manualUpdateButtonLabel\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 79
+          "line": 90
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
         "id": "appUpdate.overlay.manualUpdate.button.label",
         "start": {
           "column": 27,
-          "line": 75
+          "line": 86
         }
       },
       {
@@ -436,13 +464,13 @@
         "description": "\"manualUpdateButtonUrl\" for the App Update Overlay",
         "end": {
           "column": 3,
-          "line": 84
+          "line": 95
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
         "id": "appUpdate.overlay.manualUpdate.button.url",
         "start": {
           "column": 25,
-          "line": 80
+          "line": 91
         }
       }
     ],

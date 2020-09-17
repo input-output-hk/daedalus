@@ -34,7 +34,7 @@ export default (window: BrowserWindow) => {
   handleRewardsCsvRequests();
   handleFileDialogRequests(window);
   handleAddressIntrospectionRequests();
-  handleQuitAppAndAppInstallUpdateRequests();
+  handleQuitAppAndAppInstallUpdateRequests(window);
   // eslint-disable-next-line no-unused-expressions
   openExternalUrlChannel;
   // eslint-disable-next-line no-unused-expressions

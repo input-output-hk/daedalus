@@ -3,6 +3,7 @@ import { app, shell } from 'electron';
 import fs from 'fs';
 import shasum from 'shasum';
 import { spawnSync } from 'child_process';
+import type { BrowserWindow } from 'electron';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import { QUIT_APP_AND_INSTALL_UPDATE } from '../../common/ipc/api';
 import type {
@@ -12,8 +13,6 @@ import type {
 import { environment } from '../environment';
 import { logger } from '../utils/logging';
 import { launcherConfig } from '../config';
-
-const { updateRunnerBin } = launcherConfig;
 
 // IpcChannel<Incoming, Outgoing>
 
@@ -30,50 +29,71 @@ const getMessage = (functionPrefix: string, message?: string): string => {
   return formattedMessage;
 };
 
-const response = (
-  success: boolean,
-  functionPrefix: string,
-  message?: string = '',
-  data?: any
-): Response => {
-  const log = success ? logger.info : logger.error;
-  log(getMessage(functionPrefix, message));
-  return {
-    success,
-    message,
-    data,
+export const handleQuitAppAndAppInstallUpdateRequests = (
+  window: BrowserWindow
+) => {
+  const response = (
+    success: ?boolean,
+    functionPrefix: string,
+    messageText?: string = '',
+    data?: any
+  ): Response => {
+    let status = 'progress';
+    if (success === true) status = 'success';
+    else if (success === false) status = 'error';
+    const log = success === false ? logger.error : logger.info;
+    const message = getMessage(functionPrefix, messageText);
+    log(getMessage(functionPrefix, message));
+    quitAppAndAppInstallUpdateChannel.send(
+      {
+        status,
+        message,
+        data,
+      },
+      window.webContents
+    );
+    return {
+      status,
+      message,
+      data,
+    };
   };
-};
 
-const checkInstallerHash = (filePath, expectedHash): Response => {
-  const { name: functionPrefix } = checkInstallerHash;
-  const fileBuffer = fs.readFileSync(filePath);
-  if (!fileBuffer)
-    return response(false, functionPrefix, 'Unable to read the installer:', {
-      filePath,
-    });
-  const fileHash = shasum(fileBuffer, 'sha256');
-  if (fileHash !== expectedHash)
-    return response(false, functionPrefix, 'Hash does not match', { filePath });
-  return response(true, functionPrefix);
-};
+  const checkInstallerHash = (filePath, expectedHash): boolean => {
+    const { name: functionPrefix } = checkInstallerHash;
+    const fileBuffer = fs.readFileSync(filePath);
+    if (!fileBuffer) {
+      logger.error(getMessage(functionPrefix, 'Unable to read the installer:'));
+      return false;
+    }
+    const fileHash = shasum(fileBuffer, 'sha256');
+    if (fileHash !== expectedHash) {
+      logger.error(getMessage(functionPrefix, 'Hash does not match'), {
+        filePath,
+      });
+      return false;
+    }
+    return true;
+  };
 
-const installUpdate = async (filePath): Promise<Response> => {
-  const { name: functionPrefix } = installUpdate;
-  logger.info(getMessage(functionPrefix, 'installation begin.'));
-  fs.chmodSync(filePath, 0o777);
-  const { error } = await spawnSync(updateRunnerBin, [filePath]);
-  if (error)
-    return response(false, functionPrefix, 'Unable to install the update', {
-      error,
-    });
-  return response(true, functionPrefix, 'installation success.');
-};
+  const installUpdate = async filePath => {
+    const { name: functionPrefix } = installUpdate;
+    response(null, functionPrefix, 'installation begin.');
+    // logger.info(getMessage(functionPrefix, 'installation begin.'));
+    const { updateRunnerBin } = launcherConfig;
+    fs.chmodSync(filePath, 0o777);
+    const { error } = await spawnSync(updateRunnerBin, [filePath]);
+    if (error)
+      return response(false, functionPrefix, 'Unable to install the update', {
+        error: error.toString(),
+      });
+    return response(true, functionPrefix, 'installation success.');
+  };
 
-export const handleQuitAppAndAppInstallUpdateRequests = () => {
   quitAppAndAppInstallUpdateChannel.onRequest(
     async ({ filePath, hash: expectedHash }) => {
       const functionPrefix = 'onRequest';
+
       const fileExists = fs.existsSync(filePath);
       if (!fileExists)
         return response(false, functionPrefix, 'Installer not found:', {
@@ -81,8 +101,7 @@ export const handleQuitAppAndAppInstallUpdateRequests = () => {
         });
 
       const installerHash = checkInstallerHash(filePath, expectedHash);
-
-      if (!installerHash.success) return installerHash;
+      if (!installerHash) return response(false, functionPrefix);
 
       // For linux we execute the installer file
       if (environment.isLinux) return installUpdate(filePath);
@@ -97,7 +116,7 @@ export const handleQuitAppAndAppInstallUpdateRequests = () => {
         );
 
       app.quit();
-      return { success: true };
+      return response(true, functionPrefix);
     }
   );
 };

@@ -360,7 +360,7 @@ export type QuitAppAndAppInstallUpdateRendererRequest = {
   hash: string,
 };
 export type QuitAppAndAppInstallUpdateMainResponse = {
-  success: boolean,
+  status: 'progress' | 'success' | 'error',
   message?: string,
   data?: Object,
 };

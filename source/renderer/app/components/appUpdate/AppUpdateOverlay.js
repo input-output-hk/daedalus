@@ -67,11 +67,22 @@ const messages = defineMessages({
     defaultMessage: '!!!({totalDownloaded} of {totalDownloadSize} downloaded)',
     description: '"downloadProgressData" for the App Update Overlay',
   },
-  manualUpdateDescription: {
-    id: 'appUpdate.overlay.manualUpdate.description',
+  manualUpdateDescriptionError: {
+    id: 'appUpdate.overlay.manualUpdate.description.error',
     defaultMessage:
-      '!!!We were unable to launch the update installer automatically. Please manually update Daedalus to its latest version.',
-    description: '"manualUpdateDescription" for the App Update Overlay',
+      '!!!We were unable to launch the update installer automatically.',
+    description: '"manualUpdateDescriptionError" for the App Update Overlay',
+  },
+  manualUpdateDescriptionErrorLinux: {
+    id: 'appUpdate.overlay.manualUpdate.description.errorLinux',
+    defaultMessage: '!!!We were unable to install the update.',
+    description:
+      '"manualUpdateDescriptionErrorLinux" for the App Update Overlay',
+  },
+  manualUpdateDescriptionAction: {
+    id: 'appUpdate.overlay.manualUpdate.description.action',
+    defaultMessage: '!!!Please manually update Daedalus to its latest version.',
+    description: '"manualUpdateDescriptionAction" for the App Update Overlay',
   },
   manualUpdateButtonLabel: {
     id: 'appUpdate.overlay.manualUpdate.button.label',
@@ -211,11 +222,15 @@ export default class AppUpdateOverlay extends Component<Props, State> {
 
   manualUpdateAction = () => {
     const { intl } = this.context;
-    const { onExternalLinkClick, onPostponeUpdate } = this.props;
+    const { onExternalLinkClick, onPostponeUpdate, isLinux } = this.props;
+    const errorMessage = isLinux
+      ? messages.manualUpdateDescriptionErrorLinux
+      : messages.manualUpdateDescriptionError;
     return (
       <div className={styles.actions}>
         <div className={styles.manualUpdateDescription}>
-          {intl.formatMessage(messages.manualUpdateDescription)}
+          {intl.formatMessage(errorMessage)}
+          {intl.formatMessage(messages.manualUpdateDescriptionAction)}
         </div>
         <Button
           className={styles.button}

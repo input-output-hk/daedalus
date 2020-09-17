@@ -19,6 +19,8 @@ import type {
   DownloadMainResponse,
   DownloadLocalDataMainResponse,
   CheckFileExistsMainResponse,
+  QuitAppAndAppInstallUpdateRendererRequest,
+  QuitAppAndAppInstallUpdateMainResponse,
 } from '../../../common/ipc/api';
 import { formattedDownloadData } from '../utils/formatters.js';
 import {
@@ -79,6 +81,9 @@ export default class AppUpdateStore extends Store {
     actions.postponeUpdate.listen(this._postponeUpdate);
 
     requestDownloadChannel.onReceive(this._manageUpdateResponse);
+    quitAppAndAppInstallUpdateChannel.onReceive(
+      this._manageQuitAndInstallResponse
+    );
 
     // ============== MOBX REACTIONS ==============
     this.registerReactions([this._watchForNewsfeedUpdates]);
@@ -294,7 +299,7 @@ export default class AppUpdateStore extends Store {
     });
   };
 
-  _requestUpdateDownload = async (update: News) => {
+  _requestUpdateDownload = (update: News) => {
     const { url: fileUrl } = this.getUpdateInfo(update);
     if (!fileUrl) return null;
     return requestDownloadChannel.request({
@@ -333,23 +338,32 @@ export default class AppUpdateStore extends Store {
     const { destinationPath, originalFilename } = this.downloadInfo || {};
     const { hash } = this.getUpdateInfo(this.availableUpdate);
     const filePath = `${destinationPath}/${originalFilename}`;
-    const install = await quitAppAndAppInstallUpdateChannel.request({
+    return quitAppAndAppInstallUpdateChannel.request({
       filePath,
       hash,
     });
-    const message = get(install, 'message', '');
-    const data = get(install, 'data', {});
-    if (!install.success) {
-      logger.error(
-        `AppUpdateStore:_setAppAutomaticUpdateFailed: Unable to open the installer: ${message}`,
-        { data }
-      );
+  };
+
+  _manageQuitAndInstallResponse = ({
+    status,
+    message,
+    data,
+  }: QuitAppAndAppInstallUpdateMainResponse) => {
+    if (status === 'error') {
+      logger.error(message || '', { data });
       runInAction(() => {
         this.isInstallingUpdate = false;
       });
-      await this._setAppAutomaticUpdateFailed();
+      this._setAppAutomaticUpdateFailed();
+    } else {
+      // eslint-disable-next-line
+      console.log('--- INSTALLATION ', {
+        status,
+        message,
+        data,
+      });
     }
-    return null;
+    return Promise.resolve({ filePath: '', hash: '' });
   };
 
   _setAppAutomaticUpdateFailed = async () => {
