@@ -84,11 +84,9 @@ export const handleQuitAppAndAppInstallUpdateRequests = (
       const { updateRunnerBin } = launcherConfig;
       fs.chmodSync(filePath, 0o777);
       const { stdout, stderr, on } = spawn(updateRunnerBin, [filePath], {
-        cwd: process.cwd(),
         env: {
           PATH: process.env.PATH,
         },
-        stdio: 'inherit',
       });
       let success = true;
       stdout.on('data', progressData => {
