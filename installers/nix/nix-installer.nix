@@ -179,5 +179,5 @@ let
     ];
   };
 in {
-  inherit installerBundle pkgs firstGeneration tarball updater;
+  inherit installerBundle pkgs firstGeneration tarball;
 }
