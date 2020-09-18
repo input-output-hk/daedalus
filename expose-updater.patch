@@ -1,0 +1,43 @@
+diff --git i/default.nix w/default.nix
+index 9d456177a..915829e9c 100644
+--- i/default.nix
++++ w/default.nix
+@@ -407,15 +407,15 @@ let
+         exit 1
+       fi
+     '';
+-    newBundle = let
+-      daedalus' = self.daedalus.override { sandboxed = true; };
+-    in (import ./installers/nix/nix-installer.nix {
++    daedalus' = self.daedalus.override { sandboxed = true; };
++    installerNix = import ./installers/nix/nix-installer.nix {
+       inherit (self) postInstall preInstall linuxClusterBinName rawapp;
+       inherit pkgs;
+       installationSlug = installPath;
+-      installedPackages = [ daedalus' self.postInstall self.namespaceHelper daedalus'.cfg self.daedalus-bridge daedalus'.daedalus-frontend self.xdg-open ];
++      installedPackages = [ self.daedalus' self.postInstall self.namespaceHelper self.daedalus'.cfg self.daedalus-bridge self.daedalus'.daedalus-frontend self.xdg-open ];
+       nix-bundle = self.nix-bundle;
+-    }).installerBundle;
++    };
++    newBundle = self.installerNix.nix-bundle;
+     wrappedBundle = let
+       version = (builtins.fromJSON (builtins.readFile ./package.json)).version;
+       backend = "cardano-wallet-${nodeImplementation}";
+@@ -425,5 +425,6 @@ let
+       mkdir -p $out
+       cp ${self.newBundle} $out/${fn}
+     '';
++    updater = self.installerNix.updater;
+     };
+ in pkgs.lib.makeScope pkgs.newScope packages
+diff --git i/installers/nix/nix-installer.nix w/installers/nix/nix-installer.nix
+index 6b76ed0e2..c3a391955 100644
+--- i/installers/nix/nix-installer.nix
++++ w/installers/nix/nix-installer.nix
+@@ -179,5 +179,5 @@ let
+     ];
+   };
+ in {
+-  inherit installerBundle pkgs firstGeneration tarball;
++  inherit installerBundle pkgs firstGeneration tarball updater;
+ }
