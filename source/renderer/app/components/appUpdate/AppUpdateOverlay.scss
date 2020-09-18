@@ -132,6 +132,9 @@
     width: 540px;
     .checkbox {
       margin-bottom: 30px;
+      &.disabled {
+        opacity: 0.4;
+      }
       :global {
         .SimpleCheckbox_check {
           border: 2px solid var(--theme-news-overlay-update-button-text-color);

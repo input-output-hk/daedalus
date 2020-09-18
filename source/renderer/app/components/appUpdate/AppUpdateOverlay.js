@@ -49,8 +49,13 @@ const messages = defineMessages({
   },
   postponeInstallLinkLabel: {
     id: 'appUpdate.overlay.postponeInstall.link.label',
-    defaultMessage: 'Postpone the update',
+    defaultMessage: '!!!Postpone the update',
     description: '"manualUpdateLinkLabel" for the App Update Overlay',
+  },
+  installingUpdateLabel: {
+    id: 'appUpdate.overlay.installingUpdate.link.label',
+    defaultMessage: '!!!Installing update...',
+    description: '"installingUpdateLabel" for the App Update Overlay',
   },
   downloadProgressLabel: {
     id: 'appUpdate.overlay.downloadProgressLabel',
@@ -183,9 +188,15 @@ export default class AppUpdateOverlay extends Component<Props, State> {
       isLinux,
     } = this.props;
     const { areTermsOfUseAccepted } = this.state;
+    const isCheckboxDisabled = isInstallingUpdate;
+    const checkboxStyles = classnames([
+      styles.checkbox,
+      isCheckboxDisabled ? styles.disabled : null,
+    ]);
+    const isButtonDisabled = !areTermsOfUseAccepted || isInstallingUpdate;
     const buttonStyles = classnames([
       styles.button,
-      !areTermsOfUseAccepted ? styles.disabled : null,
+      isButtonDisabled ? styles.disabled : null,
       isInstallingUpdate ? styles.installing : null,
     ]);
     const buttonLabel = isLinux
@@ -196,10 +207,11 @@ export default class AppUpdateOverlay extends Component<Props, State> {
         <Checkbox
           label={intl.formatMessage(messages.checkboxLabel)}
           onChange={this.toggleAcceptance}
-          className={styles.checkbox}
+          className={checkboxStyles}
           checked={areTermsOfUseAccepted}
           skin={CheckboxSkin}
           themeOverrides={styles.checkbox}
+          disabled={isCheckboxDisabled}
         />
         <Button
           className={buttonStyles}
@@ -207,15 +219,19 @@ export default class AppUpdateOverlay extends Component<Props, State> {
           skin={ButtonSpinnerSkin}
           loading={isInstallingUpdate}
           label={intl.formatMessage(buttonLabel)}
-          disabled={!areTermsOfUseAccepted || isInstallingUpdate}
+          disabled={isButtonDisabled}
         />
-        <Link
-          className={styles.postponeLink}
-          onClick={onPostponeUpdate}
-          label={intl.formatMessage(messages.postponeInstallLinkLabel)}
-          skin={LinkSkin}
-          hasIconAfter={false}
-        />
+        {!isInstallingUpdate ? (
+          <Link
+            className={styles.postponeLink}
+            onClick={onPostponeUpdate}
+            label={intl.formatMessage(messages.postponeInstallLinkLabel)}
+            skin={LinkSkin}
+            hasIconAfter={false}
+          />
+        ) : (
+          intl.formatMessage(messages.installingUpdateLabel)
+        )}
       </div>
     );
   };

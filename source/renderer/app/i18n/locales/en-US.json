@@ -23,6 +23,7 @@
   "appUpdate.overlay.downloadProgressData": "({totalDownloaded} of {totalDownloadSize} downloaded)",
   "appUpdate.overlay.downloadProgressLabel": "Download in progress",
   "appUpdate.overlay.downloadTimeLeft": "{downloadTimeLeft} left",
+  "appUpdate.overlay.installingUpdate.link.label": "Installing update...",
   "appUpdate.overlay.manualUpdate.button.label": "Follow instructions and manually update",
   "appUpdate.overlay.manualUpdate.button.url": "https://daedaluswallet.io/en/download/",
   "appUpdate.overlay.manualUpdate.description.action": "Please manually update Daedalus to its latest version.",

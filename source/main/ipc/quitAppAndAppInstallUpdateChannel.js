@@ -2,7 +2,7 @@
 import { app, shell } from 'electron';
 import fs from 'fs';
 import shasum from 'shasum';
-import { spawnSync } from 'child_process';
+import { spawn } from 'child_process';
 import type { BrowserWindow } from 'electron';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import { QUIT_APP_AND_INSTALL_UPDATE } from '../../common/ipc/api';
@@ -11,6 +11,7 @@ import type {
   QuitAppAndAppInstallUpdateMainResponse as Response,
 } from '../../common/ipc/api';
 import { environment } from '../environment';
+import { safeExitWithCode } from '../utils/safeExitWithCode';
 import { logger } from '../utils/logging';
 import { launcherConfig } from '../config';
 
@@ -77,17 +78,51 @@ export const handleQuitAppAndAppInstallUpdateRequests = (
   };
 
   const installUpdate = async filePath => {
-    const { name: functionPrefix } = installUpdate;
-    response(null, functionPrefix, 'installation begin.');
-    // logger.info(getMessage(functionPrefix, 'installation begin.'));
-    const { updateRunnerBin } = launcherConfig;
-    fs.chmodSync(filePath, 0o777);
-    const { error } = await spawnSync(updateRunnerBin, [filePath]);
-    if (error)
-      return response(false, functionPrefix, 'Unable to install the update', {
-        error: error.toString(),
+    return new Promise((resolve, reject) => {
+      const { name: functionPrefix } = installUpdate;
+      response(null, functionPrefix, 'installation begin.');
+      const { updateRunnerBin } = launcherConfig;
+      fs.chmodSync(filePath, 0o777);
+      const { stdout, stderr, on } = spawn(updateRunnerBin, [filePath]);
+      let success = true;
+
+      stdout.on('data', progressData => {
+        response(null, functionPrefix, 'installation progress.', {
+          data: progressData.toString(),
+        });
       });
-    return response(true, functionPrefix, 'installation success.');
+      stderr.on('data', data => {
+        const error = data.toString();
+        success = false;
+        reject(
+          response(false, functionPrefix, 'installation failed', { error })
+        );
+      });
+      on('close', code => {
+        if (code !== 0) {
+          success = false;
+          reject(
+            response(
+              false,
+              functionPrefix,
+              `ps process exited with code ${code}`,
+              { code }
+            )
+          );
+        }
+      });
+      on('error', error => {
+        success = false;
+        reject(
+          response(false, functionPrefix, 'installation failed', { error })
+        );
+      });
+      on('exit', () => {
+        if (!success) return reject();
+        safeExitWithCode(20);
+        return resolve(response(true, functionPrefix));
+      });
+    });
   };
 
   quitAppAndAppInstallUpdateChannel.onRequest(
@@ -114,7 +149,6 @@ export const handleQuitAppAndAppInstallUpdateRequests = (
           functionPrefix,
           'Not able to launch the installer'
         );
-
       app.quit();
       return response(true, functionPrefix);
     }

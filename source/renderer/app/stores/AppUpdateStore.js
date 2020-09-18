@@ -19,7 +19,6 @@ import type {
   DownloadMainResponse,
   DownloadLocalDataMainResponse,
   CheckFileExistsMainResponse,
-  QuitAppAndAppInstallUpdateRendererRequest,
   QuitAppAndAppInstallUpdateMainResponse,
 } from '../../../common/ipc/api';
 import { formattedDownloadData } from '../utils/formatters.js';
