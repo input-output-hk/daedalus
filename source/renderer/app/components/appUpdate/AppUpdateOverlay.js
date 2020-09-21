@@ -208,7 +208,7 @@ export default class AppUpdateOverlay extends Component<Props, State> {
           label={intl.formatMessage(messages.checkboxLabel)}
           onChange={this.toggleAcceptance}
           className={checkboxStyles}
-          checked={areTermsOfUseAccepted}
+          checked={areTermsOfUseAccepted || isInstallingUpdate}
           skin={CheckboxSkin}
           themeOverrides={styles.checkbox}
           disabled={isCheckboxDisabled}
