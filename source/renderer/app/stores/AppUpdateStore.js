@@ -155,8 +155,6 @@ export default class AppUpdateStore extends Store {
   // =================== PRIVATE ==================
 
   _checkNewAppUpdate = async (update: News) => {
-    // Cancels if the update download is already in progress
-    if (this.isUpdateDownloading) return false;
     const { version } = this.getUpdateInfo(update);
     const appUpdateCompleted = await this.getAppUpdateCompletedRequest.execute();
 
@@ -182,6 +180,9 @@ export default class AppUpdateStore extends Store {
       this.availableUpdate = update;
       this.availableUpdateVersion = version;
     });
+
+    // Cancels if the update download is already in progress
+    if (this.isUpdateDownloading) return false;
 
     // Is there an 'Automatic Update Failed' flag?
     const isAutomaticUpdateFailed = await this.getAppAutomaticUpdateFailedRequest.execute();
