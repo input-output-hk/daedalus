@@ -16,6 +16,7 @@ Changelog
 
 ### Chores
 
+- Set "Delegation center" as default staking screen ([PR 2185](https://github.com/input-output-hk/daedalus/pull/2185))
 - Changed the ordering of wallet addresses on the "Receive" screen so that the oldest one are on top and the newest one on the bottom of the list ([PR 2176](https://github.com/input-output-hk/daedalus/pull/2176))
 - Fixed UI issues ([PR 2152](https://github.com/input-output-hk/daedalus/pull/2152))
 - Updated list of team members on About screen ([PR 2167](https://github.com/input-output-hk/daedalus/pull/2167))
