@@ -120,7 +120,9 @@ export const Routes = withRouter(() => (
             <Route
               exact
               path={ROUTES.STAKING.ROOT}
-              component={() => <Redirect to={ROUTES.STAKING.INFO} />}
+              component={() => (
+                <Redirect to={ROUTES.STAKING.DELEGATION_CENTER} />
+              )}
             />
             <Route
               path={ROUTES.STAKING.COUNTDOWN}
