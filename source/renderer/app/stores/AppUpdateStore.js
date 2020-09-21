@@ -46,7 +46,7 @@ export default class AppUpdateStore extends Store {
   @observable isUpdateProgressOpen: boolean = false;
   @observable isAutomaticUpdateFailed: boolean = false;
   @observable isUpdatePostponed: boolean = false;
-  @observable isInstallingUpdate: boolean = false;
+  @observable isWaitingToQuitDaedalus: boolean = false;
 
   @observable downloadInfo: ?DownloadInfo = null;
   @observable downloadData: ?DownloadData = null;
@@ -331,7 +331,7 @@ export default class AppUpdateStore extends Store {
       return false;
     }
     runInAction(() => {
-      this.isInstallingUpdate = true;
+      this.isWaitingToQuitDaedalus = true;
     });
     if (!this.availableUpdate) return false;
     const { destinationPath, originalFilename } = this.downloadInfo || {};
@@ -351,7 +351,7 @@ export default class AppUpdateStore extends Store {
     if (status === 'error') {
       logger.error(message || '', { data });
       runInAction(() => {
-        this.isInstallingUpdate = false;
+        this.isWaitingToQuitDaedalus = false;
       });
       this._setAppAutomaticUpdateFailed();
     } else {

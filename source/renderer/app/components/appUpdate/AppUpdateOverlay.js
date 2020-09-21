@@ -112,7 +112,7 @@ type Props = {
   downloadProgress: number,
   isUpdateDownloaded: boolean,
   isAutomaticUpdateFailed: boolean,
-  isInstallingUpdate: boolean,
+  isWaitingToQuitDaedalus: boolean,
   onInstallUpdate: Function,
   onExternalLinkClick: Function,
   onPostponeUpdate: Function,
@@ -184,20 +184,20 @@ export default class AppUpdateOverlay extends Component<Props, State> {
     const {
       onInstallUpdate,
       onPostponeUpdate,
-      isInstallingUpdate,
+      isWaitingToQuitDaedalus,
       isLinux,
     } = this.props;
     const { areTermsOfUseAccepted } = this.state;
-    const isCheckboxDisabled = isInstallingUpdate;
+    const isCheckboxDisabled = isWaitingToQuitDaedalus;
     const checkboxStyles = classnames([
       styles.checkbox,
       isCheckboxDisabled ? styles.disabled : null,
     ]);
-    const isButtonDisabled = !areTermsOfUseAccepted || isInstallingUpdate;
+    const isButtonDisabled = !areTermsOfUseAccepted || isWaitingToQuitDaedalus;
     const buttonStyles = classnames([
       styles.button,
       isButtonDisabled ? styles.disabled : null,
-      isInstallingUpdate ? styles.installing : null,
+      isWaitingToQuitDaedalus ? styles.installing : null,
     ]);
     const buttonLabel = isLinux
       ? messages.buttonInstallUpdateLabel
@@ -208,7 +208,7 @@ export default class AppUpdateOverlay extends Component<Props, State> {
           label={intl.formatMessage(messages.checkboxLabel)}
           onChange={this.toggleAcceptance}
           className={checkboxStyles}
-          checked={areTermsOfUseAccepted || isInstallingUpdate}
+          checked={areTermsOfUseAccepted || isWaitingToQuitDaedalus}
           skin={CheckboxSkin}
           themeOverrides={styles.checkbox}
           disabled={isCheckboxDisabled}
@@ -217,11 +217,11 @@ export default class AppUpdateOverlay extends Component<Props, State> {
           className={buttonStyles}
           onClick={onInstallUpdate}
           skin={ButtonSpinnerSkin}
-          loading={isInstallingUpdate}
+          loading={isWaitingToQuitDaedalus}
           label={intl.formatMessage(buttonLabel)}
           disabled={isButtonDisabled}
         />
-        {!isInstallingUpdate ? (
+        {!isWaitingToQuitDaedalus ? (
           <Link
             className={styles.postponeLink}
             onClick={onPostponeUpdate}

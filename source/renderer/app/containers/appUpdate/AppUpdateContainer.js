@@ -23,7 +23,7 @@ export default class AppUpdateContainer extends Component<InjectedProps> {
       totalDownloadSize,
       availableUpdateVersion,
       isAutomaticUpdateFailed,
-      isInstallingUpdate,
+      isWaitingToQuitDaedalus,
     } = appUpdate;
     const {
       installUpdate,
@@ -48,7 +48,7 @@ export default class AppUpdateContainer extends Component<InjectedProps> {
         isAutomaticUpdateFailed={isAutomaticUpdateFailed}
         onExternalLinkClick={openExternalLink}
         onPostponeUpdate={postponeUpdate.trigger}
-        isInstallingUpdate={isInstallingUpdate}
+        isWaitingToQuitDaedalus={isWaitingToQuitDaedalus}
         isLinux={isLinux}
       />
     );

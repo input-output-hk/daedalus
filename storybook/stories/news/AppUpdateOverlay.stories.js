@@ -17,8 +17,6 @@ storiesOf('News|Overlays', module)
       {
         Downloading: 'downloading',
         'Download complete': 'downloaded',
-        'Download complete. User reopened app without installing the update':
-          'reopened',
         'Process failed': 'failed',
       },
       'downloading'
@@ -26,14 +24,16 @@ storiesOf('News|Overlays', module)
 
     let isUpdateDownloaded = true;
     let isAutomaticUpdateFailed = false;
-    let displayManualUpdateLink = false;
+    let isLinux = false;
+    let isWaitingToQuitDaedalus = false;
 
     if (scenario === 'downloading') {
       isUpdateDownloaded = false;
-    } else if (scenario === 'reopened') {
-      displayManualUpdateLink = true;
     } else if (scenario === 'failed') {
       isAutomaticUpdateFailed = true;
+    } else if (scenario === 'downloaded') {
+      isLinux = boolean('isLinux', false);
+      isWaitingToQuitDaedalus = boolean('isWaitingToQuitDaedalus', false);
     }
 
     const downloadProgress =
@@ -56,15 +56,6 @@ storiesOf('News|Overlays', module)
       'JP-JP': `${timeLeftNumber}分`,
     };
 
-    const isLinux =
-      scenario === 'downloaded' || scenario === 'reopened'
-        ? boolean('isLinux', false)
-        : false;
-
-    const isInstallingUpdate = isLinux
-      ? boolean('isInstallingUpdate', false)
-      : false;
-
     return (
       <AppUpdateOverlay
         update={update[locale]}
@@ -76,12 +67,11 @@ storiesOf('News|Overlays', module)
         downloadProgress={downloadProgress}
         isUpdateDownloaded={isUpdateDownloaded}
         isAutomaticUpdateFailed={isAutomaticUpdateFailed}
-        displayManualUpdateLink={displayManualUpdateLink}
         onClose={action('onClose')}
         onInstallUpdate={action('onInstallUpdate')}
         onPostponeUpdate={action('onPostponeUpdate')}
         onExternalLinkClick={action('onExternalLinkClick')}
-        isInstallingUpdate={isInstallingUpdate}
+        isWaitingToQuitDaedalus={isWaitingToQuitDaedalus}
         isLinux={isLinux}
       />
     );
