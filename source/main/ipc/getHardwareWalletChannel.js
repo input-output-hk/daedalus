@@ -265,8 +265,9 @@ export const handleHardwareWalletDevices = (mainWindow: BrowserWindow) => {
 
 export const handleHardwareWalletRequests = async () => {
   let deviceConnection = null;
-  getHardwareWalletTransportChannel.onRequest(async isTrezor => {
-    console.debug('>>> ESTABLISH CONNECTION <<<');
+  getHardwareWalletTransportChannel.onRequest(async request => {
+    const { isTrezor } = request;
+    console.debug('>>> ESTABLISH CONNECTION:  <<<, ', isTrezor);
     // console.debug('>>> TRY with TREZOR: ', TrezorConnect);
 
     // Connected Trezor device info
@@ -450,32 +451,32 @@ export const handleHardwareWalletRequests = async () => {
     // Comment out once Ledger integration is done
 
     const { inputs, outputs, transactions, protocolMagic, isTrezor, fee, ttl, networkId } = params;
-    if (isTrezor) {
-      console.debug('>>> Sign Transaction with >>> Trezor <<<: ', params);
-      try {
-        const signedTransaction = await TrezorConnect.cardanoSignTransaction({
-          inputs,
-          outputs,
-          fee,
-          ttl,
-          protocolMagic,
-          networkId
-        });
-        console.debug('>>> SUCC: ', signedTransaction);
-
-        const serialized = signedTransaction.payload.serializedTx
-        console.debug('>>> serialized: ', serialized);
-        const buffer1 = Buffer.from(serialized).toString("hex");
-        const buffer2 = Buffer.from(serialized, 'hex');
-        console.debug('>>> Buffer 1: ', buffer1)
-        console.debug('>>> Buffer 2: ', buffer2)
-
-        return Promise.resolve({signedTransaction, buffer1, buffer2});
-      } catch (e) {
-        console.debug('>>> ERR: ', e);
-      }
-    }
-    return;
+    //if (isTrezor) {
+    //  console.debug('>>> Sign Transaction with >>> Trezor <<<: ', params);
+    //  try {
+    //    const signedTransaction = await TrezorConnect.cardanoSignTransaction({
+    //      inputs,
+    //      outputs,
+    //      fee,
+    //      ttl,
+    //      protocolMagic,
+    //      networkId
+    //    });
+    //    console.debug('>>> SUCC: ', signedTransaction);
+//
+    //    const serialized = signedTransaction.payload.serializedTx
+    //    console.debug('>>> serialized: ', serialized);
+    //    const buffer1 = Buffer.from(serialized).toString("hex");
+    //    const buffer2 = Buffer.from(serialized, 'hex');
+    //    console.debug('>>> Buffer 1: ', buffer1)
+    //    console.debug('>>> Buffer 2: ', buffer2)
+//
+    //    return Promise.resolve({signedTransaction, buffer1, buffer2});
+    //  } catch (e) {
+    //    console.debug('>>> ERR: ', e);
+    //  }
+    //}
+    //return;
 
     try {
       if (!deviceConnection) {
@@ -500,18 +501,24 @@ export const handleHardwareWalletRequests = async () => {
       } = params
 
       console.debug('>>> TRY TO SIGN: ', params);
-      const signedTransaction = await deviceConnection.signTransaction(
-        networkId,
-        protocolMagic,
-        inputs,
-        outputs,
-        feeStr,
-        ttlStr,
-        certificates,
-        withdrawals,
-        metadataHashHex,
-      );
-      console.debug('>>> SIGNED: ', signedTransaction);
+      try {
+        const signedTransaction = await deviceConnection.signTransaction(
+          networkId,
+          protocolMagic,
+          inputs,
+          outputs,
+          feeStr,
+          ttlStr,
+          certificates,
+          withdrawals,
+          metadataHashHex,
+        );
+        console.debug('>>> SIGNED: ', signedTransaction);
+        return Promise.resolve({signedTransaction});
+      } catch (e) {
+        console.debug('>>> SIGN ERROR: ', e);
+      }
+      return;
       // txBody
       /* static new(
         inputs: TransactionInputs,

@@ -5,6 +5,9 @@ import { get, map } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import BigNumber from 'bignumber.js';
+import { encode } from 'borc'
+import blakejs from 'blakejs';
+import { derivePublic as deriveChildXpub } from 'cardano-crypto.js';
 // import { wasm } from '@emurgo/cardano-serialization-lib-nodejs';
 import {
   getHardwareWalletTransportChannel,
@@ -92,6 +95,12 @@ export const DeviceTypes: {
 
 const CARDANO_ADA_APP_POLLING_INTERVAL = 1000;
 const DEFAULT_HW_NAME = 'Hardware Wallet';
+
+const derivationScheme = {
+  type: 'v2',
+  ed25519Mode: 2,
+  keyfileVersion: '2.0.0',
+};
 
 export default class HardwareWalletsStore extends Store {
   @observable selectCoinsRequest: Request<CoinSelectionsResponse> = new Request(
@@ -181,7 +190,7 @@ export default class HardwareWalletsStore extends Store {
     });
     try {
       // const transportDevice = await getHardwareWalletTransportChannel.request()
-      const transportDevice = await getHardwareWalletTransportChannel.request({ isTrezor: true });
+      const transportDevice = await getHardwareWalletTransportChannel.request({ isTrezor: false });
       console.debug('>>> establishHardwareWalletConnection - transportDevice: ', transportDevice);
       // const deviceType = this._deviceType(transportDevice.deviceModel);
       const deviceType = transportDevice.deviceType;
@@ -255,7 +264,7 @@ export default class HardwareWalletsStore extends Store {
   };
 
   @action _getExtendedPublicKey = async () => {
-    const isTrezor = true; // @TODO - add active device recognizing logic
+    const isTrezor = false; // @TODO - add active device recognizing logic
     this.hwDeviceStatus = HwDeviceStatuses.EXPORTING_PUBLIC_KEY;
     const { activeHardwareWallet } = this.stores.wallets;
     // const path = [
@@ -366,7 +375,8 @@ export default class HardwareWalletsStore extends Store {
 
     const data = {
       // path: addressToAbsPathMapper(input.address), // From AdaLite example
-      path: cardano.str_to_path(`1852'/1815'/0'/0/${addressIndex}`),
+      // path: cardano.str_to_path(`1852'/1815'/0'/0/${addressIndex}`),
+      path: `m/1852'/1815'/0'/0/${addressIndex}`,
       prev_hash: input.id,
       prev_index: input.index,
     }
@@ -387,8 +397,11 @@ export default class HardwareWalletsStore extends Store {
           // stakingPath: output.stakingPath, // "m/1852'/1815'/0'/2/0"
           // path: cardano.str_to_path(`1852'/1815'/0'/1/${addressIndex}`),
           // path: cardano.str_to_path("1852'/1815'/0'/0/0"), // OK when NO change address
-          path: cardano.str_to_path(`1852'/1815'/0'/0/${addressIndex}`),
-          stakingPath: cardano.str_to_path("1852'/1815'/0'/2/0"),
+
+          path: `m/1852'/1815'/0'/0/${addressIndex}`,
+          stakingPath: "m/1852'/1815'/0'/2/0",
+          // path: cardano.str_to_path(`1852'/1815'/0'/0/${addressIndex}`),
+          // stakingPath: cardano.str_to_path("1852'/1815'/0'/2/0"),
         },
       }
     } else {
@@ -398,6 +411,36 @@ export default class HardwareWalletsStore extends Store {
       }
     }
   };
+
+  _prepareLedgerInput = (input) => {
+    const addressIndex = this.stores.addresses.getAddressIndex(input.address);
+    return {
+      txHashHex: input.id,
+      outputIndex: input.index,
+      // path: `m/1852'/1815'/0'/0/${addressIndex}`,
+      path: cardano.str_to_path(`1852'/1815'/0'/0/${addressIndex}`),
+    }
+  };
+
+  _prepareLedgerOutput = (output, isChange) => {
+    const addressIndex = this.stores.addresses.getAddressIndex(output.address);
+    if (isChange) {
+      return {
+        addressTypeNibble: 0, // TODO: get from address
+        // spendingPath: `m/1852'/1815'/0'/0/${addressIndex}`,
+        spendingPath: cardano.str_to_path(`1852'/1815'/0'/0/${addressIndex}`),
+        amountStr: output.amount.quantity.toString(),
+        // stakingPath: "m/1852'/1815'/0'/2/0",
+        stakingPath: cardano.str_to_path("1852'/1815'/0'/2/0"),
+      };
+    }
+
+    return {
+      amountStr: output.amount.quantity.toString(),
+      addressHex: utils.buf_to_hex(utils.bech32_decodeAddress(output.address))
+    };
+  };
+
 
   @action _signTransactionTrezor = async (isTest = true) => {
     const { coinSelection, txDataHex, recieverAddress } = this.txSignRequest;
@@ -523,6 +566,234 @@ export default class HardwareWalletsStore extends Store {
   };
 
 
+    // For Shelley
+  @action _signTransactionLedger = async () => {
+    const { coinSelection, txDataHex, recieverAddress } = this.txSignRequest;
+    const { inputs, outputs } = coinSelection;
+    let totalInputs = 0;
+    let totalOutputs = 0;
+
+
+    console.debug('>>> SIGN (prepare) - ', {
+      txDataHex, recieverAddress, inputs, outputs, utils,
+    })
+
+
+    let inputsData = map(inputs, input => {
+      totalInputs = totalInputs + input.amount.quantity;
+      return this._prepareLedgerInput(input);
+    });
+
+    let outputsData = map(outputs, output => {
+      totalOutputs = totalOutputs + output.amount.quantity;
+      const isChange = output.address !== recieverAddress;
+      return this._prepareLedgerOutput(output, isChange);
+    });
+
+
+    console.debug('>>>> MY DATA: ', {
+      inputsData,
+      outputsData,
+    })
+
+    // FAKED FROM ADA LITE
+    inputsData = [
+      {
+        path: [2147485500, 2147485463, 2147483648, 0, 0],
+        txHashHex: "7cfcc86ecf47b15df9beb1dccd3e9bfa4e4e99a53241d8d7bd27536e8311ab1c",
+        outputIndex: 1
+      },
+      {
+        path: [2147485500, 2147485463, 2147483648, 0, 1],
+        txHashHex: "605d54a6bbd10db3d6b0363cb40358f21fdee21c5cbeff1bef0246aa64f1f65e",
+        outputIndex: 0
+      }
+    ];
+
+    outputsData = [
+      {
+        addressHex: "0165afcacea378acc3ce3417bbc926af84ac390e2f9cb89555e1b74c389b63aba776c239684e574af94f2516878a97630f75a569511b8f13ba",
+        amountStr: "2000000",
+      },
+      {
+        addressTypeNibble: 0,
+        amountStr: "1128680",
+        spendingPath: [2147485500, 2147485463, 2147483648, 0, 0],
+        stakingPath: [2147485500, 2147485463, 2147483648, 2, 0]
+      }
+    ];
+
+    const unsignedTx = {
+      inputs: [
+        {
+          address: "addr1qypq77cn4ugc2tzy5wsna2r6w6fffcc8ygatkz5hm79j2gxss5ftcx6ppfxak3ydjjm06q6kqprfu38fqdc7fr5xqy6sztdpc2",
+          coins: 1814340,
+          outputNo: 1,
+          txHash: "7cfcc86ecf47b15df9beb1dccd3e9bfa4e4e99a53241d8d7bd27536e8311ab1c",
+        },
+        {
+          address: "addr1qxxsrzqvt94pe2es4upp5q0ufqpsgne4lvutcxhc6trnnpwss5ftcx6ppfxak3ydjjm06q6kqprfu38fqdc7fr5xqy6sel85za",
+          coins: 1500000,
+          outputNo: 0,
+          txHash: "605d54a6bbd10db3d6b0363cb40358f21fdee21c5cbeff1bef0246aa64f1f65e",
+        }
+      ],
+      outputs: [
+        {
+          address: "addr1q9j6ljkw5du2es7wxstmhjfx47z2cwgw97wt3924uxm5cwymvw46wakz895yu462l98j295832tkxrm45454zxu0zwaqgu7xj2",
+          coins: 2000000,
+          isChange: false,
+          spendingPath: null,
+          stakingPath: null,
+        }, {
+          address: "addr1qypq77cn4ugc2tzy5wsna2r6w6fffcc8ygatkz5hm79j2gxss5ftcx6ppfxak3ydjjm06q6kqprfu38fqdc7fr5xqy6sztdpc2",
+          coins: 1128680,
+          isChange: true,
+          spendingPath: [2147485500, 2147485463, 2147483648, 0, 0],
+          stakingPath: [2147485500, 2147485463, 2147483648, 2, 0],
+        },
+      ],
+      fee: 185660,
+      ttl: 8875164,
+      certs: [],
+      withdrawals: undefined,
+    }
+
+
+
+    let fee = totalInputs - totalOutputs;
+
+    // FAKED FROM ADA LITE
+    fee = 185660;
+
+    console.debug('>>> SIGN (READY) - ', {
+      networkId: 1, // NetworkIds.MAINNET,
+      protocolMagic: 764824073, // ProtocolMagics.MAINNET,
+      //   utxoShelley: {
+      //     txHashHex: "3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
+      //     outputIndex: 0,
+      //     path: str_to_path("1852'/1815'/0'/0/0"),
+      //   }
+      inputs: inputsData,
+      // inputs exaMPLEMPLE
+      //   externalShelley: {
+      //     amountStr: "1",
+      //     addressHex: utils.buf_to_hex(utils.bech32_decodeAddress(
+      //       "addr1q97tqh7wzy8mnx0sr2a57c4ug40zzl222877jz06nt49g4zr43fuq3k0dfpqjh3uvqcsl2qzwuwsvuhclck3scgn3vya5cw5yhe5vyg5x20akz"
+      //     ))
+      //   },
+      outputs: outputsData,
+      feeStr: fee.toString(),
+      bigFee: new BigNumber(fee),
+      // ttlStr: '15000000', // e.g. slot 0, epoch 10
+      ttlStr: "8875164",
+      certificates: [], // [certificates.stakeDelegation],
+      withdrawals: [], // [withdrawals.withdrawal0],
+      metadataHashHex: null, // sampleMetadata
+      coinSelection,
+    })
+    try {
+      const signedTransaction = await signTransactionChannel.request({
+        networkId: 1, // NetworkIds.MAINNET,
+        protocolMagic: 764824073, // ProtocolMagics.MAINNET,
+        //   utxoShelley: {
+        //     txHashHex: "3b40265111d8bb3c3c608d95b3a0bf83461ace32d79336579a1939b3aad1c0b7",
+        //     outputIndex: 0,
+        //     path: str_to_path("1852'/1815'/0'/0/0"),
+        //   }
+        inputs: inputsData,
+        // inputs exaMPLEMPLE
+        //   externalShelley: {
+        //     amountStr: "1",
+        //     addressHex: utils.buf_to_hex(utils.bech32_decodeAddress(
+        //       "addr1q97tqh7wzy8mnx0sr2a57c4ug40zzl222877jz06nt49g4zr43fuq3k0dfpqjh3uvqcsl2qzwuwsvuhclck3scgn3vya5cw5yhe5vyg5x20akz"
+        //     ))
+        //   },
+        outputs: outputsData,
+        feeStr: fee.toString(),
+        bigFee: new BigNumber(fee),
+        // ttlStr: '15000000', // e.g. slot 0, epoch 10
+        ttlStr: "8875164",
+        certificates: [], // [certificates.stakeDelegation],
+        withdrawals: [], // [withdrawals.withdrawal0],
+        metadataHashHex: null, // sampleMetadata
+        coinSelection,
+      });
+
+
+     console.debug('>>>> SIGNED: ', signedTransaction)
+
+
+      // get xPub from signed transaction witnesses by exporting extended public key
+      // const witnesses = await Promise.all(
+      //   signedTransaction.witnesses.map(async witness => {
+      //     const xPub = await this._getXpub(witness.path);
+      //     return {
+      //       xpub: xPub,
+      //       signature: witness.witnessSignatureHex,
+      //     };
+      //   })
+      // );
+//
+      // console.debug('>>>> witnesses: ', witnesses);
+//
+      // const txDataHex = thDataHexGenerator(coinSelection);
+
+      // const signedTransactionData = {
+      //   txDataHex: signedTransaction.txHashHex,
+      //   txDataHex,
+      //   witnesses,
+      // };
+
+      console.debug('>>> START ENCODING: ', {
+        witnesses: signedTransaction.signedTransaction.witnesses,
+        unsignedTx: unsignedTx,
+      })
+
+      const adaLiteWitnesses = [
+        {
+          path:[2147485500, 2147485463, 2147483648, 0, 0],
+          witnessSignatureHex:"128507227833015854da7afc85e04d8cb305187cd7bb790578ddf3ab7a2b582da67a3ca3340fd6a2d25cc17de9c393a0bf4c84aa3226f2462ba12f7f7251b70c",
+        },
+        {
+          path: [2147485500, 2147485463, 2147483648, 0, 1],
+          witnessSignatureHex: "581d0d3fe79908d0e9958c460ac4654f02c78a1827dee926c8dc883afdc5f29c5a4e0be4955bbd75fff5051e96488408299f57b3fa709b4f0bfced360c667801",
+        },
+      ]
+
+      const txWitnesses = await this.prepareWitnesses(signedTransaction.signedTransaction.witnesses);
+      // const txWitnesses = await this.prepareWitnesses(adaLiteWitnesses);
+      console.debug('>>> txWitnesses: ', txWitnesses);
+
+      const txAux = this.prepareTxAux(unsignedTx);
+      console.debug('>>> TX AUX: ', txAux);
+
+      const txBody = await this.prepareBody(txAux, txWitnesses);
+      console.debug('>>> txBody: ', txBody);
+
+
+      // console.debug('>>>> signedTransactionData: ', signedTransactionData);
+      // console.debug('>>> ENCODED: ', encodeSignedTransaction(signedTransactionData));
+
+      runInAction('HardwareWalletsStore:: set Transaction verified', () => {
+        // this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED;
+        // this.signedTransaction = signedTransactionData;
+        this.signedTransaction = txBody;
+        this.txSendParams = {
+          signTransaction: txBody,
+        }
+      });
+    } catch (error) {
+      runInAction(
+        'HardwareWalletsStore:: set Transaction verifying failed',
+        () => {
+          this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED;
+        }
+      );
+      throw error;
+    }
+  };
+
 
 
 
@@ -622,7 +893,7 @@ export default class HardwareWalletsStore extends Store {
           '839f8200d818582482582008abb575fac4c39d5bf80683f7f0c37e48f4e3d96e37d1f6611919a7241b456600ff9f8282d818582183581cda4da43db3fca93695e71dab839e72271204d28b9d964d306b8800a8a0001a7a6916a51a00305becffa0',
         ],
         protocolMagic: 764824073,
-        isTrezor: true,
+        isTrezor: false,
       });
       console.debug('>>> Sign SUCCESS: ', signedTransaction);
       // get xPub from signed transaction witnesses by exporting extended public key
@@ -955,6 +1226,324 @@ export default class HardwareWalletsStore extends Store {
       throw error;
     }
   };
+
+
+  CachedDeriveXpubFactory = (derivationScheme, deriveXpubHardenedFn) => {
+
+    console.debug('>>> CachedDeriveXpubFactory - INSTANCE: ', {
+      derivationScheme, deriveXpubHardenedFn
+    })
+
+    const derivedXpubs = {}
+    // HARDENED_THRESHOLD = 0x80000000;
+    const indexIsHardened = (index) => {
+      console.debug('>>> indexIsHardened: ', index);
+      return index >= 0x80000000;
+    };
+
+    async function deriveXpub(absDerivationPath) {
+      console.debug('>>> CachedDeriveXpubFactory - deriveXpub: ', absDerivationPath)
+
+      const memoKey = JSON.stringify(absDerivationPath)
+
+      const derivedXpubsMemo = await derivedXpubs[memoKey];
+      console.debug('>>>> CachedDeriveXpubFactory derivedXpubsMemo: ', derivedXpubsMemo);
+      console.debug('>>> CachedDeriveXpubFactory - memoKey: ', {memoKey, derivedXpubs })
+
+      if (!derivedXpubs[memoKey]) {
+        const deriveHardened =
+          absDerivationPath.length === 0 || indexIsHardened(absDerivationPath.slice(-1)[0])
+
+        /*
+        * TODO - reset cache if the promise fails, for now it does not matter
+        * since a failure (e.g. rejection by user) there leads to
+        * the creation of a fresh wallet and crypto provider instance
+        */
+        derivedXpubs[memoKey] = deriveHardened
+          ? deriveXpubHardenedFn(absDerivationPath)
+          : deriveXpubNonhardenedFn(absDerivationPath)
+        console.debug('>>> CachedDeriveXpubFactory - IF CASE : ', {
+          deriveHardened,
+          derivedXpubs: derivedXpubs[memoKey],
+        });
+      }
+
+      /*
+      * the derivedXpubs map stores promises instead of direct results
+      * to deal with concurrent requests to derive the same xpub
+      */
+      const derivedXpubsMemoKey = await derivedXpubs[memoKey]
+      console.debug('>>> CachedDeriveXpubFactory - derivedXpubs[memoKey]: ', derivedXpubsMemoKey)
+      return derivedXpubsMemoKey;
+    }
+
+    async function deriveXpubNonhardenedFn(derivationPath) {
+      console.debug('>>> CALL deriveXpubNonhardenedFn METHOD: ', derivationPath);
+      const lastIndex = derivationPath.slice(-1)[0]
+      const parentXpub = await deriveXpub(derivationPath.slice(0, -1))
+      console.debug('>>> CALL deriveXpubNonhardenedFn METHOD - PARAMS: ', {
+        lastIndex,
+        parentXpub,
+        derivationScheme,
+      });
+
+      const res = deriveChildXpub(parentXpub, lastIndex, derivationScheme.ed25519Mode);
+      console.debug('>>> CALL deriveXpubNonhardenedFn RESULT: ', res);
+      return res;
+      // return
+    }
+
+    console.debug('>>> CachedDeriveXpubFactory - MAIN RETURN: ', deriveXpub);
+    return deriveXpub
+  }
+
+  deriveXpub = this.CachedDeriveXpubFactory(derivationScheme, async (absDerivationPath) => {
+    console.debug('>>> deriveXpub - START: ', {absDerivationPath, derivationScheme});
+    // const response = await deviceConnection.getExtendedPublicKey(absDerivationPath);
+
+    const response = await getExtendedPublicKeyChannel.request({
+      path: absDerivationPath,
+      isTrezor: false,
+    });
+
+    console.debug('>>> deriveXpub - RESPONSE: ', response);
+
+    const xpubHex = response.publicKeyHex + response.chainCodeHex
+
+    console.debug('>>> xpubHex: ', {xpubHex, res: Buffer.from(xpubHex, 'hex')});
+
+    const xpubHexBuffer = Buffer.from(xpubHex, 'hex');
+
+    console.debug('>>> xpubHexBuffer: ', xpubHexBuffer);
+    this.xpubHexBuffer = xpubHexBuffer;
+    return xpubHexBuffer;
+  })
+
+  xpub2pub = (xpub: Buffer) => {
+      console.debug('>>> GET xpub2pub: ', xpub);
+      // console.debug('>>> GET xpub2pub: ', this.xpubHexBuffer);
+      // const xpub = this.xpubHexBuffer;
+      const res = xpub.slice(0, 32);
+      console.debug('>>> RES xpub2pub: ', res);
+      return res;
+      // return xpub2.slice(0, 32)
+    } // TODO: export from addresses
+
+
+  ShelleyTxWitnessShelley = (publicKey, signature) => {
+    console.debug('>>> ShelleyTxWitnessShelley: ', publicKey, signature);
+    function encodeCBOR(encoder) {
+      return encoder.pushAny([publicKey, signature])
+    }
+
+    return {
+      publicKey,
+      signature,
+      encodeCBOR,
+    }
+  }
+
+
+
+  ShelleyWitness = async (witness) => {
+    console.debug('>>> ShelleyWitness: ', witness);
+    const xpub = await this.deriveXpub(witness.path);
+    console.debug('>>> ShelleyWitness xPub: ', xpub, this.xpubHexBuffer);
+    const publicKey = this.xpub2pub(xpub); // send "this.xpubHexBuffer"
+    console.debug('>>> ShelleyWitness publicKey: ', publicKey);
+    const signature = Buffer.from(witness.witnessSignatureHex, 'hex')
+    console.debug('>>> ShelleyWitness signature: ', signature);
+    const shelleyWitness = this.ShelleyTxWitnessShelley(publicKey, signature);
+    console.debug('>>> ShelleyWitness - DONE: ', shelleyWitness);
+    return shelleyWitness;
+  }
+
+  prepareWitnesses = async (ledgerWitnesses) => {
+    console.debug('>>> prepareWitnesses: ', ledgerWitnesses);
+    const _shelleyWitnesses = []
+    ledgerWitnesses.forEach((witness) => {
+      /* isShelleyPath(witness.path)
+        ? _shelleyWitnesses.push(ShelleyWitness(witness))
+        : _byronWitnesses.push(ByronWitness(witness)) */
+        _shelleyWitnesses.push(this.ShelleyWitness(witness))
+    })
+    console.debug('>>> ShelleyWitnesses: ', _shelleyWitnesses);
+    const shelleyWitnesses = await Promise.all(_shelleyWitnesses);
+
+    const witnesses = new Map();
+    if (shelleyWitnesses.length > 0) {
+      witnesses.set(0, shelleyWitnesses)
+    }
+
+    console.debug('>>> Returned Witnesses: ', witnesses);
+
+    this.transformedWitnesses = witnesses;
+
+    return witnesses
+  }
+
+  ShelleyTxInputFromUtxo = (utxo) => {
+    const coins = utxo.coins
+    const txid = utxo.txHash
+    const outputNo = utxo.outputNo
+    const address = utxo.address
+    const txHash = Buffer.from(txid, 'hex')
+    function encodeCBOR(encoder) {
+      return encoder.pushAny([txHash, outputNo])
+    }
+
+    return {
+      coins,
+      address,
+      txid,
+      outputNo,
+      encodeCBOR,
+    }
+  }
+
+  ShelleyTxOutput = (address, coins, isChange, spendingPath = null, stakingPath = null) => {
+    function encodeCBOR(encoder) {
+      // const addressBuff = isShelleyFormat(address)
+      //   ? bech32.decode(address).data
+      //   : base58.decode(address)
+      // addressBuff = bech32.decode(address).data;
+      const addressBuff = utils.bech32_decodeAddress(address);
+      // addressHex: utils.buf_to_hex(utils.bech32_decodeAddress(output.address))
+
+      return encoder.pushAny([addressBuff, coins])
+    }
+
+    return {
+      address,
+      coins,
+      isChange,
+      spendingPath,
+      stakingPath,
+      encodeCBOR,
+    }
+  }
+
+  ShelleyFee = (fee) => {
+    function encodeCBOR(encoder) {
+      return encoder.pushAny(fee)
+    }
+
+    return {
+      fee,
+      encodeCBOR,
+    }
+  }
+
+  ShelleyTtl = (ttl) => {
+    function encodeCBOR(encoder) {
+      return encoder.pushAny(ttl)
+    }
+
+    return {
+      ttl,
+      encodeCBOR,
+    }
+  }
+
+  prepareTxAux = (unsignedTx) => {
+    console.debug('>>> PREPARE prepareTxAux: ', unsignedTx);
+    const txInputs = unsignedTx.inputs.map(this.ShelleyTxInputFromUtxo)
+    const txOutputs = unsignedTx.outputs.map(({address, coins, isChange, spendingPath, stakingPath}) => {
+      if (isChange) {
+        // const spendingPath = [2147485500, 2147485463, 2147483648, 0, 0];
+        // const stakingPath = [2147485500, 2147485463, 2147483648, 2, 0];
+        return this.ShelleyTxOutput(address, coins, true, spendingPath, stakingPath);
+      } else {
+        return this.ShelleyTxOutput(address, coins, false)
+      }
+    })
+    // const txCerts = unsignedTx.certs.map(({type, accountAddress, poolHash}) =>
+    //   ShelleyTxCert(type, accountAddress, poolHash)
+    // )
+    const txCerts = [];
+
+    const txFee = this.ShelleyFee(unsignedTx.fee)
+    // const txTtl = ShelleyTtl(await calculateTtl())
+    const txTtl = this.ShelleyTtl(unsignedTx.ttl)
+    // const txWithdrawals = unsignedTx.withdrawals.map(({accountAddress, rewards}) => {
+    //   return ShelleyWitdrawal(accountAddress, rewards)
+    // })
+    const txWithdrawals = [undefined];
+    /* if (unsignedTx.isChange) {
+      const { address, coins, accountAddress } = unsignedTx.change
+      const absDerivationPath = myAddresses.getAddressToAbsPathMapper()(address)
+      const stakingPath = myAddresses.getAddressToAbsPathMapper()(accountAddress)
+      txOutputs.push(ShelleyTxOutput(address, coins, true, absDerivationPath, stakingPath))
+    } */
+    // TODO: Without withdrawals
+    console.debug('>>>> CREATE FROM prepareTxAux: ', {
+      txInputs, txOutputs, txFee, txTtl, txCerts, txWithdrawals: txWithdrawals[0],
+    })
+    return this.ShelleyTxAux(txInputs, txOutputs, txFee, txTtl, txCerts, txWithdrawals[0])
+  }
+
+  ShelleyTxAux = (inputs, outputs, fee, ttl, certs, withdrawals) => {
+    const blake2b = data => blakejs.blake2b(data, null, 32);
+    function getId() {
+      return blake2b(
+        encode(this.ShelleyTxAux(inputs, outputs, fee, ttl, certs, withdrawals)),
+        32
+      ).toString('hex')
+    }
+
+    function encodeCBOR(encoder) {
+      const txMap = new Map()
+      txMap.set(0, inputs)
+      txMap.set(1, outputs)
+      txMap.set(2, fee)
+      txMap.set(3, ttl)
+      if (certs && certs.length) txMap.set(4, certs)
+      if (withdrawals) txMap.set(5, withdrawals)
+      return encoder.pushAny(txMap)
+    }
+
+    return {
+      getId,
+      inputs,
+      outputs,
+      fee,
+      ttl,
+      certs,
+      withdrawals,
+      encodeCBOR,
+    }
+  }
+
+  ShelleySignedTransactionStructured = (txAux, witnesses, meta) => {
+    function getId() {
+      return txAux.getId()
+    }
+
+    function encodeCBOR(encoder) {
+      return encoder.pushAny([txAux, witnesses, meta])
+    }
+
+    return {
+      getId,
+      witnesses,
+      txAux,
+      encodeCBOR,
+    }
+  }
+
+  prepareBody = (unsignedTx, txWitnesses) => {
+    console.debug('>>> prepareBody <<<');
+    // const txWitnesses = this.transformedWitnesses;
+    console.debug('>>> txWitnesses: ', txWitnesses);
+    // const unsignedTx = this.txSignRequest.coinSelection;
+    console.debug('>>> unsignedTx: ', unsignedTx);
+
+    const signedTransactionStructure = this.ShelleySignedTransactionStructured(unsignedTx, txWitnesses, null);
+    console.debug('>>> signedTransactionStructure: ', signedTransactionStructure);
+    const encodedSignedTransactionStructure = encode(signedTransactionStructure).toString('hex');
+    console.debug('>>> encodedSignedTransactionStructure: ', encodedSignedTransactionStructure);
+    return encodedSignedTransactionStructure;
+  }
 
   @action resetInitializedConnection = () => {
     this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
