@@ -23,7 +23,7 @@
   "appUpdate.overlay.downloadProgressData": "（{totalDownloaded}/{totalDownloadSize}をダウンロード済み）",
   "appUpdate.overlay.downloadProgressLabel": "ダウンロードしています",
   "appUpdate.overlay.downloadTimeLeft": "残り{downloadTimeLeft}",
-  "appUpdate.overlay.installingUpdate.link.label": "!!!Installing update...",
+  "appUpdate.overlay.installingUpdate.link.label": "更新をインストールしています…",
   "appUpdate.overlay.manualUpdate.button.label": "指示に従い手動で更新してください",
   "appUpdate.overlay.manualUpdate.button.url": "https://daedaluswallet.io/ja/download/",
   "appUpdate.overlay.manualUpdate.description.action": "手動でDaedalusを最新バージョンに更新してください。",

@@ -196,6 +196,18 @@
     .postponeLink {
       border-bottom-color: var(--theme-app-update-overlay-text-color);
       color: var(--theme-app-update-overlay-text-color);
+      &.disabled {
+        border-bottom-color: transparent;
+        opacity: 0.4;
+        cursor: default;
+      }
+    }
+    :global {
+      .SimpleLoadingSpinner_root {
+        border-color: var(--theme-news-overlay-update-button-text-color)
+          var(--theme-news-overlay-update-button-text-color) transparent
+          transparent;
+      }
     }
   }
 

@@ -202,6 +202,10 @@ export default class AppUpdateOverlay extends Component<Props, State> {
     const buttonLabel = isLinux
       ? messages.buttonInstallUpdateLabel
       : messages.buttonLaunchInstallerLabel;
+    const postponeLinkStyles = classnames([
+      styles.postponeLink,
+      isWaitingToQuitDaedalus ? styles.disabled : null,
+    ]);
     return (
       <div className={styles.actions}>
         <Checkbox
@@ -221,16 +225,16 @@ export default class AppUpdateOverlay extends Component<Props, State> {
           label={intl.formatMessage(buttonLabel)}
           disabled={isButtonDisabled}
         />
-        {!isWaitingToQuitDaedalus ? (
+        {isLinux && isWaitingToQuitDaedalus ? (
+          intl.formatMessage(messages.installingUpdateLabel)
+        ) : (
           <Link
-            className={styles.postponeLink}
-            onClick={onPostponeUpdate}
+            className={postponeLinkStyles}
+            onClick={!isWaitingToQuitDaedalus ? onPostponeUpdate : () => {}}
             label={intl.formatMessage(messages.postponeInstallLinkLabel)}
             skin={LinkSkin}
             hasIconAfter={false}
           />
-        ) : (
-          intl.formatMessage(messages.installingUpdateLabel)
         )}
       </div>
     );
