@@ -236,16 +236,16 @@ export class StakePoolsTable extends Component<Props, State> {
                   </thead>
                   <tbody>
                   {map(stakePoolsList, (stakePool, key) => {
-                    const rank = get(stakePool, 'ranking');
-                    const ticker = get(stakePool, 'ticker');
-                    const description = get(stakePool, 'description');
+                    const rank = get(stakePool, 'ranking', '');
+                    const ticker = get(stakePool, 'ticker', '');
+                    const description = get(stakePool, 'description', '');
                     const name = `[${ticker}] ${description}`;
-                    const saturation = get(stakePool, 'saturation');
-                    const performance = get(stakePool, 'performance');
-                    const uptime = get(stakePool, 'uptime');
-                    const margin = get(stakePool, 'profitMargin');
-                    const roi = get(stakePool, 'roi');
-                    const cost = get(stakePool, 'cost');
+                    const saturation = get(stakePool, 'saturation', '');
+                    const performance = get(stakePool, 'performance', '');
+                    const uptime = get(stakePool, 'uptime', '');
+                    const margin = get(stakePool, 'profitMargin', '');
+                    const roi = get(stakePool, 'roi', '');
+                    // const cost = get(stakePool, 'cost', '');
                     return (
                       <tr key={key}>
                         <td>{rank}</td>
@@ -255,7 +255,6 @@ export class StakePoolsTable extends Component<Props, State> {
                         <td>{uptime}</td>
                         <td>{margin}</td>
                         <td>{roi}</td>
-                        <td>{cost}</td>
                       </tr>
                     );
                   })}
