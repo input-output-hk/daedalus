@@ -18,7 +18,7 @@
     background-color: var(--theme-news-overlay-update-content-background-color);
     font-size: 16px;
     line-height: 1.2;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     max-height: 464px;
     opacity: 0.8;
     overflow-y: scroll;
@@ -198,7 +198,11 @@
       color: var(--theme-app-update-overlay-text-color);
       &.disabled {
         border-bottom-color: transparent;
+        cursor: default;
         opacity: 0.4;
+      }
+      &.noLink {
+        border-bottom-color: transparent;
         cursor: default;
       }
     }
@@ -216,7 +220,7 @@
     font-family: var(--font-medium);
     line-height: 1.38;
     margin-bottom: 30px;
-    margin-top: -10px;
+    // margin-top: -10px;
     text-align: center;
   }
 
