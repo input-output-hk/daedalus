@@ -77,7 +77,7 @@ type State = {
 const initialState = {
   highlightedPoolId: null,
   isPreloading: true,
-  stakePoolsOrder: 'desc',
+  stakePoolsOrder: 'asc',
   stakePoolsSortBy: 'ranking',
 };
 
