@@ -12,6 +12,7 @@ import { StakingPageScrollContext } from '../layouts/StakingWithNavigation';
 import BorderedBox from '../../widgets/BorderedBox';
 import sortIcon from '../../../assets/images/ascending.inline.svg';
 import { formattedWalletAmount } from '../../../utils/formatters';
+import { getSaturationColor } from '../../../utils/colors';
 
 const messages = defineMessages({
   tableHeaderRank: {
@@ -248,11 +249,25 @@ export class StakePoolsTable extends Component<Props, State> {
                     const margin = get(stakePool, 'profitMargin', '');
                     const roi = get(stakePool, 'roi', 0);
                     const cost = get(stakePool, 'cost', '');
+                    const color = getSaturationColor(saturation);
+                    const isOversaturated = (saturation / 100) >= 1;
+                    const saturationValue = (isOversaturated || !saturation) ? parseInt(saturation, 10) : parseFloat(saturation).toFixed(2);
+
                     return (
                       <tr key={key}>
                         <td>{rank}</td>
                         <td><span className={styles.ticker}>[{ticker}]</span> {description}</td>
-                        <td>{saturation}</td>
+                        <td>
+                          <div className={styles.currentEpochProgressBar}>
+                            <div className={styles.progressBarContainer}>
+                              <div
+                                className={styles.progress}
+                                style={{width: `${saturationValue}%`, background: color}}
+                               />
+                              <div className={styles.progressLabel}>{saturationValue}%</div>
+                            </div>
+                          </div>
+                        </td>
                         <td>{performance}</td>
                         <td>{uptime}</td>
                         <td>{margin}%</td>

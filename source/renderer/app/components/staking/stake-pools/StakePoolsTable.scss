@@ -1,6 +1,16 @@
 @import '../../../themes/mixins/link';
 @import '../../../themes/mixins/loading-spinner';
 
+%progressLabelText {
+  font-family: var(--font-medium);
+  font-size: 12px;
+  left: 60px;
+  line-height: 24px;
+  position: absolute;
+  top: -10px;
+  white-space: nowrap;
+}
+
 .component {
   .headerWrapper {
     align-items: flex-end;
@@ -211,6 +221,43 @@
         .stakePoolReference {
           font-family: var(--font-medium);
         }
+      }
+
+      .currentEpochProgressBar {
+        height: 5px;
+        margin: 5px 0;
+        width: 50px;
+      }
+
+      .progressBarContainer {
+        background-color: var(--theme-staking-progress-bar-background-color);
+        border-radius: 5px;
+        display: flex;
+        height: 100%;
+        position: relative;
+        top: -1px;
+        width: 100%;
+      }
+
+      .progress {
+        border-radius: 5px;
+        height: 100%;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .overlapProgressLabel {
+        color: #fff;
+        transform: translateX(calc(-100% - 8px));
+        z-index: 98;
+        @extend %progressLabelText;
+      }
+
+      .progressLabel {
+        color: var(--theme-staking-font-color-regular);
+        right: 8px;
+        z-index: 97;
+        @extend %progressLabelText;
       }
 
       .syncingProgress {
