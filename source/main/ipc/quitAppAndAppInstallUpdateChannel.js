@@ -94,12 +94,10 @@ export const handleQuitAppAndAppInstallUpdateRequests = (
           data: progressData.toString(),
         });
       });
-      stderr.on('data', data => {
-        const error = data.toString();
-        success = false;
-        reject(
-          response(false, functionPrefix, 'installation failed', { error })
-        );
+      stderr.on('data', progressData => {
+        response(null, functionPrefix, 'installation progress.', {
+          data: progressData.toString(),
+        });
       });
       on('close', code => {
         if (code !== 0) {
