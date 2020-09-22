@@ -11,6 +11,7 @@ import LoadingSpinner from '../../widgets/LoadingSpinner';
 import { StakingPageScrollContext } from '../layouts/StakingWithNavigation';
 import BorderedBox from '../../widgets/BorderedBox';
 import sortIcon from '../../../assets/images/ascending.inline.svg';
+import { formattedWalletAmount } from '../../../utils/formatters';
 
 const messages = defineMessages({
   tableHeaderRank: {
@@ -241,24 +242,22 @@ export class StakePoolsTable extends Component<Props, State> {
                     const rank = get(stakePool, 'ranking', '');
                     const ticker = get(stakePool, 'ticker', '');
                     const description = get(stakePool, 'description', '');
-                    const name = `[${ticker}] ${description}`;
                     const saturation = get(stakePool, 'saturation', '');
-                    const performance = get(stakePool, 'performance', '');
-                    const uptime = get(stakePool, 'uptime', '');
+                    const performance = get(stakePool, 'performance', '100%');
+                    const uptime = get(stakePool, 'uptime', 201);
                     const margin = get(stakePool, 'profitMargin', '');
-                    const roi = get(stakePool, 'roi', '');
-                    // const cost = get(stakePool, 'cost', '');
-                    const cost = 0;
+                    const roi = get(stakePool, 'roi', 0);
+                    const cost = get(stakePool, 'cost', '');
                     return (
                       <tr key={key}>
                         <td>{rank}</td>
-                        <td>{name}</td>
+                        <td><span className={styles.ticker}>[{ticker}]</span> {description}</td>
                         <td>{saturation}</td>
                         <td>{performance}</td>
                         <td>{uptime}</td>
-                        <td>{margin}</td>
-                        <td>{roi}</td>
-                        <td>{cost}</td>
+                        <td>{margin}%</td>
+                        <td>{roi}%</td>
+                        <td>{`${formattedWalletAmount(cost, false, false)}`}</td>
                       </tr>
                     );
                   })}
