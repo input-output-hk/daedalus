@@ -86,6 +86,7 @@ let
     ln -svf ${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt /etc/ssl/certs/ca-certificates.crt
     ln -svf ${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt /etc/ssl/certs/ca-bundle.crt
     unset NIX_SSL_CERT_FILE
+    export USER=daedalus
 
     if [ -z "$@" ]; then
       exec bash
