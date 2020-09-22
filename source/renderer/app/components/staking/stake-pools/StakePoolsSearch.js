@@ -9,6 +9,9 @@ import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import styles from './StakePoolsSearch.scss';
 import searchIcon from '../../../assets/images/search.inline.svg';
 import closeIcon from '../../../assets/images/close-cross.inline.svg';
+import gridIcon from '../../../assets/images/grid-ic.inline.svg';
+import listIcon from '../../../assets/images/list-ic.inline.svg';
+import classnames from "classnames";
 
 const messages = defineMessages({
   searchInputPlaceholder: {
@@ -32,8 +35,12 @@ type Props = {
   label?: string,
   placeholder?: string,
   isClearTooltipOpeningDownward?: boolean,
+  isListView: boolean,
+  isGridView: boolean,
   onSearch: Function,
   onClearSearch: Function,
+  onGridView: Function,
+  onListView: Function,
   search: string,
 };
 
@@ -57,10 +64,24 @@ export class StakePoolsSearch extends Component<Props> {
       label,
       onSearch,
       onClearSearch,
+      onGridView,
+      onListView,
       placeholder,
       search,
+      isListView,
+      isGridView,
       isClearTooltipOpeningDownward,
     } = this.props;
+
+    const gridButtonClasses = classnames([
+      styles.gridView,
+      isGridView ? styles.selected : null,
+    ]);
+
+    const listButtonClasses = classnames([
+      styles.listView,
+      isListView ? styles.selected : null,
+    ]);
 
     return (
       <div className={styles.component}>
@@ -98,6 +119,15 @@ export class StakePoolsSearch extends Component<Props> {
               )}
             </div>
           )}
+          <div className={styles.viewButtons}>
+            <span className={styles.separator}>|</span>
+            <button className={gridButtonClasses} onClick={onGridView}>
+              <SVGInline svg={gridIcon} />
+            </button>
+            <button className={listButtonClasses} onClick={onListView}>
+              <SVGInline svg={listIcon} />
+            </button>
+          </div>
         </div>
       </div>
     );

@@ -5,6 +5,7 @@ import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import classnames from 'classnames';
 import StakePoolsRanking from './StakePoolsRanking';
 import { StakePoolsList } from './StakePoolsList';
+import { StakePoolsTable } from './StakePoolsTable';
 import { StakePoolsSearch } from './StakePoolsSearch';
 import BackToTopButton from '../../widgets/BackToTopButton';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
@@ -57,6 +58,8 @@ type Props = {
 type State = {
   search: string,
   selectedList?: ?string,
+  isGridView: boolean,
+  isListView: boolean,
 };
 
 const initialState = {
@@ -73,11 +76,15 @@ export default class StakePools extends Component<Props, State> {
 
   state = {
     search: '',
+    isGridView: true,
+    isListView: false,
     ...initialState,
   };
 
   handleSearch = (search: string) => this.setState({ search });
   handleClearSearch = () => this.setState({ search: '' });
+  handleGridView = () => this.setState({ isGridView: true, isListView: false });
+  handleListView = () => this.setState({ isGridView: false, isListView: true });
 
   handleSetListActive = (selectedList: string) =>
     this.setState({ selectedList });
@@ -104,7 +111,7 @@ export default class StakePools extends Component<Props, State> {
       stakePoolsDelegatingList,
       getStakePoolById,
     } = this.props;
-    const { search, selectedList } = this.state;
+    const { search, selectedList, isListView, isGridView } = this.state;
 
     const filteredStakePoolsList: Array<StakePool> = getFilteredStakePoolsList(
       stakePoolsList,
@@ -142,7 +149,6 @@ export default class StakePools extends Component<Props, State> {
               scrollableElementClassName="StakingWithNavigation_page"
               buttonTopPosition={144}
             />
-
             <StakePoolsRanking
               wallets={wallets}
               currentLocale={currentLocale}
@@ -160,50 +166,79 @@ export default class StakePools extends Component<Props, State> {
               search={search}
               onSearch={this.handleSearch}
               onClearSearch={this.handleClearSearch}
+              onGridView={this.handleGridView}
+              onListView={this.handleListView}
+              isListView={isListView}
+              isGridView={isGridView}
               isClearTooltipOpeningDownward
             />
-
-            {stakePoolsDelegatingList.length > 0 && (
+            {isListView && (
               <Fragment>
-                <h2 className={styles.listTitle}>
-                  {intl.formatMessage(messages.delegatingListTitle)}
+                <h2>
+                  <FormattedMessage
+                    {...listTitleMessage}
+                    values={{
+                      pools: filteredStakePoolsList.length,
+                    }}
+                  />
                 </h2>
-                <StakePoolsList
-                  listName="stakePoolsDelegatingList"
-                  stakePoolsList={stakePoolsDelegatingList}
+                <StakePoolsTable
+                  showWithSelectButton
+                  listName="selectedIndexList"
+                  stakePoolsList={filteredStakePoolsList}
                   onOpenExternalLink={onOpenExternalLink}
                   currentTheme={currentTheme}
-                  isListActive={selectedList === 'stakePoolsDelegatingList'}
+                  isListActive={selectedList === 'selectedIndexList'}
                   setListActive={this.handleSetListActive}
                   containerClassName="StakingWithNavigation_page"
                   onSelect={this.onDelegate}
                   numberOfStakePools={stakePoolsList.length}
-                  showWithSelectButton
                 />
               </Fragment>
             )}
-
-            <h2>
-              <FormattedMessage
-                {...listTitleMessage}
-                values={{
-                  pools: filteredStakePoolsList.length,
-                }}
-              />
-            </h2>
-
-            <StakePoolsList
-              showWithSelectButton
-              listName="selectedIndexList"
-              stakePoolsList={filteredStakePoolsList}
-              onOpenExternalLink={onOpenExternalLink}
-              currentTheme={currentTheme}
-              isListActive={selectedList === 'selectedIndexList'}
-              setListActive={this.handleSetListActive}
-              containerClassName="StakingWithNavigation_page"
-              onSelect={this.onDelegate}
-              numberOfStakePools={stakePoolsList.length}
-            />
+            {isGridView && (
+              <Fragment>
+                {stakePoolsDelegatingList.length > 0 && (
+                  <Fragment>
+                    <h2 className={styles.listTitle}>
+                      {intl.formatMessage(messages.delegatingListTitle)}
+                    </h2>
+                    <StakePoolsList
+                      listName="stakePoolsDelegatingList"
+                      stakePoolsList={stakePoolsDelegatingList}
+                      onOpenExternalLink={onOpenExternalLink}
+                      currentTheme={currentTheme}
+                      isListActive={selectedList === 'stakePoolsDelegatingList'}
+                      setListActive={this.handleSetListActive}
+                      containerClassName="StakingWithNavigation_page"
+                      onSelect={this.onDelegate}
+                      numberOfStakePools={stakePoolsList.length}
+                      showWithSelectButton
+                    />
+                  </Fragment>
+                )}
+                <h2>
+                  <FormattedMessage
+                    {...listTitleMessage}
+                    values={{
+                      pools: filteredStakePoolsList.length,
+                    }}
+                  />
+                </h2>
+                <StakePoolsList
+                  showWithSelectButton
+                  listName="selectedIndexList"
+                  stakePoolsList={filteredStakePoolsList}
+                  onOpenExternalLink={onOpenExternalLink}
+                  currentTheme={currentTheme}
+                  isListActive={selectedList === 'selectedIndexList'}
+                  setListActive={this.handleSetListActive}
+                  containerClassName="StakingWithNavigation_page"
+                  onSelect={this.onDelegate}
+                  numberOfStakePools={stakePoolsList.length}
+                />
+              </Fragment>
+            )}
           </Fragment>
         )}
       </div>
