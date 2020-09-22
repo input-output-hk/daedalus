@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import {debounce, get, map} from 'lodash';
+import { debounce, get, map, orderBy } from 'lodash';
 import classNames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
@@ -78,7 +78,7 @@ const initialState = {
   highlightedPoolId: null,
   isPreloading: true,
   stakePoolsOrder: 'desc',
-  stakePoolsSortBy: 'rank',
+  stakePoolsSortBy: 'ranking',
 };
 
 @observer
@@ -163,9 +163,11 @@ export class StakePoolsTable extends Component<Props, State> {
         </div>
       );
 
+    const sortedStakePoolList = orderBy(stakePoolsList, stakePoolsSortBy, stakePoolsOrder);
+
     const availableTableHeaders = [
       {
-        name: 'rank',
+        name: 'ranking',
         title: intl.formatMessage(messages.tableHeaderRank),
       },
       {
@@ -185,7 +187,7 @@ export class StakePoolsTable extends Component<Props, State> {
         title: intl.formatMessage(messages.tableHeaderUptime),
       },
       {
-        name: 'margin',
+        name: 'profitMargin',
         title: intl.formatMessage(messages.tableHeaderMargin),
       },
       {
@@ -203,7 +205,7 @@ export class StakePoolsTable extends Component<Props, State> {
         {() => (
           <div className={componentClasses}>
             <BorderedBox>
-              {stakePoolsList.length > 0 && (
+              {sortedStakePoolList.length > 0 && (
                 <table>
                   <thead>
                   <tr>
@@ -235,7 +237,7 @@ export class StakePoolsTable extends Component<Props, State> {
                   </tr>
                   </thead>
                   <tbody>
-                  {map(stakePoolsList, (stakePool, key) => {
+                  {map(sortedStakePoolList, (stakePool, key) => {
                     const rank = get(stakePool, 'ranking', '');
                     const ticker = get(stakePool, 'ticker', '');
                     const description = get(stakePool, 'description', '');
@@ -246,6 +248,7 @@ export class StakePoolsTable extends Component<Props, State> {
                     const margin = get(stakePool, 'profitMargin', '');
                     const roi = get(stakePool, 'roi', '');
                     // const cost = get(stakePool, 'cost', '');
+                    const cost = 0;
                     return (
                       <tr key={key}>
                         <td>{rank}</td>
@@ -255,6 +258,7 @@ export class StakePoolsTable extends Component<Props, State> {
                         <td>{uptime}</td>
                         <td>{margin}</td>
                         <td>{roi}</td>
+                        <td>{cost}</td>
                       </tr>
                     );
                   })}
