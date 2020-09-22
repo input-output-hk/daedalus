@@ -83,43 +83,59 @@ export const handleQuitAppAndAppInstallUpdateRequests = (
       response(null, functionPrefix, 'installation begin.');
       const { updateRunnerBin } = launcherConfig;
       fs.chmodSync(filePath, 0o777);
-      const { stdout, stderr, on } = spawn(updateRunnerBin, [filePath], {
-        env: {
-          PATH: process.env.PATH,
-        },
-      });
+      const updater = spawn(updateRunnerBin, [filePath]);
       let success = true;
-      stdout.on('data', progressData => {
+      updater.stdout.on('data', progressData => {
+        console.log(progressData.toString());
         response(null, functionPrefix, 'installation progress.', {
           data: progressData.toString(),
         });
       });
-      stderr.on('data', progressData => {
+      updater.stderr.on('data', progressData => {
+        console.log(progressData.toString());
         response(null, functionPrefix, 'installation progress.', {
           data: progressData.toString(),
         });
       });
-      on('close', code => {
+      updater.on('close', code => {
         if (code !== 0) {
           success = false;
+          logger.info(`updater closed with ${code}`);
           reject(
             response(
               false,
               functionPrefix,
-              `ps process exited with code ${code}`,
+              `updater closed with code ${code}`,
               { code }
             )
           );
         }
+        response(null, functionPrefix, 'installation progress.', { data: "stdio closed" });
       });
-      on('error', error => {
+      updater.on('error', error => {
         success = false;
+        logger.error(`on error with ${error}`);
         reject(
           response(false, functionPrefix, 'installation failed', { error })
         );
       });
-      on('exit', () => {
-        if (!success) return reject();
+      updater.on('exit', code => {
+        if (code !== 0) {
+          success = false;
+          logger.info(`updater exited with ${code}`);
+          reject(
+            response(
+              false,
+              functionPrefix,
+              `updater exited with code ${code}`,
+              { code }
+            )
+          );
+        }
+        if (!success) {
+          logger.error("exit without success");
+          return reject();
+        }
         safeExitWithCode(20);
         return resolve(response(true, functionPrefix));
       });
