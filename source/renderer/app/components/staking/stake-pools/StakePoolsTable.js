@@ -4,17 +4,13 @@ import { observer } from 'mobx-react';
 import {debounce, get, map} from 'lodash';
 import classNames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
-import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import SVGInline from 'react-svg-inline';
-import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
 import styles from './StakePoolsTable.scss';
 import StakePool from '../../../domains/StakePool';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import { StakingPageScrollContext } from '../layouts/StakingWithNavigation';
 import BorderedBox from '../../widgets/BorderedBox';
 import sortIcon from '../../../assets/images/ascending.inline.svg';
-import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
-import tooltipStyles from '../rewards/StakingRewardsForIncentivizedTestnetTooltip.scss';
 
 const messages = defineMessages({
   tableHeaderRank: {
@@ -64,23 +60,8 @@ const PRELOADER_THRESHOLD = 100;
 
 type Props = {
   stakePoolsList: Array<StakePool>,
-  onOpenExternalLink: Function,
-  currentTheme: string,
-  highlightOnHover?: boolean,
   onSelect?: Function,
-  showWithSelectButton?: boolean,
-  showSelected?: boolean,
-  containerClassName: string,
-  numberOfStakePools: number,
   selectedPoolId?: ?number,
-  disabledStakePoolId?: ?string,
-  /**
-   *
-   * If the parent component has more than one <StakePoolsList />
-   * these 3 props need to be passed, as it's the parent who will control
-   * which list is active and prevent multiple Tooltips to be displayed
-   *
-   */
   listName?: string,
   isListActive?: boolean,
   setListActive?: Function,
@@ -120,9 +101,6 @@ export class StakePoolsTable extends Component<Props, State> {
     ...initialState,
   };
 
-  // We need to track the mounted state in order to avoid calling
-  // setState promise handling code after the component was already unmounted:
-  // Read more: https://facebook.github.io/react/blog/2015/12/16/ismounted-antipattern.html
   _isMounted = false;
 
   componentDidMount() {
@@ -194,6 +172,30 @@ export class StakePoolsTable extends Component<Props, State> {
         name: 'name',
         title: intl.formatMessage(messages.tableHeaderName),
       },
+      {
+        name: 'saturation',
+        title: intl.formatMessage(messages.tableHeaderSaturation),
+      },
+      {
+        name: 'performance',
+        title: intl.formatMessage(messages.tableHeaderPerformance),
+      },
+      {
+        name: 'uptime',
+        title: intl.formatMessage(messages.tableHeaderUptime),
+      },
+      {
+        name: 'margin',
+        title: intl.formatMessage(messages.tableHeaderMargin),
+      },
+      {
+        name: 'roi',
+        title: intl.formatMessage(messages.tableHeaderRoi),
+      },
+      {
+        name: 'cost',
+        title: intl.formatMessage(messages.tableHeaderCost),
+      },
     ];
 
     return (
@@ -233,33 +235,27 @@ export class StakePoolsTable extends Component<Props, State> {
                   </tr>
                   </thead>
                   <tbody>
-                  {map(stakePoolsList, (reward, key) => {
-                    const rewardWallet = get(reward, 'wallet');
-                    const isRestoring = get(reward, 'isRestoring');
-                    const syncingProgress = get(reward, 'syncingProgress');
-                    const rewardAmount = get(reward, 'reward');
+                  {map(stakePoolsList, (stakePool, key) => {
+                    const rank = get(stakePool, 'ranking');
+                    const ticker = get(stakePool, 'ticker');
+                    const description = get(stakePool, 'description');
+                    const name = `[${ticker}] ${description}`;
+                    const saturation = get(stakePool, 'saturation');
+                    const performance = get(stakePool, 'performance');
+                    const uptime = get(stakePool, 'uptime');
+                    const margin = get(stakePool, 'profitMargin');
+                    const roi = get(stakePool, 'roi');
+                    const cost = get(stakePool, 'cost');
                     return (
                       <tr key={key}>
-                        <td>{rewardWallet}</td>
-                        <td>
-                          {isRestoring ? '-' : `${rewardAmount} ADA`}
-                          {isRestoring && (
-                            <div className={styles.syncingProgress}>
-                              <Tooltip
-                                skin={TooltipSkin}
-                                themeOverrides={tooltipStyles}
-                                tip={intl.formatMessage(
-                                  messages.syncingTooltipLabel,
-                                  {
-                                    syncingProgress,
-                                  }
-                                )}
-                              >
-                                <LoadingSpinner medium />
-                              </Tooltip>
-                            </div>
-                          )}
-                        </td>
+                        <td>{rank}</td>
+                        <td>{name}</td>
+                        <td>{saturation}</td>
+                        <td>{performance}</td>
+                        <td>{uptime}</td>
+                        <td>{margin}</td>
+                        <td>{roi}</td>
+                        <td>{cost}</td>
                       </tr>
                     );
                   })}
