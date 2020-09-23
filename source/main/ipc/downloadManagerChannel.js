@@ -54,7 +54,6 @@ const requestDownload = async (
   const {
     fileUrl,
     destinationDirectoryName = DEFAULT_DIRECTORY_NAME,
-    // options,
     options: _options,
     id,
     resumeDownload,

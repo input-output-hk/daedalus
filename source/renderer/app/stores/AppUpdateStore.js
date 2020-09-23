@@ -14,13 +14,17 @@ import {
   clearDownloadLocalDataChannel,
   checkFileExistsChannel,
 } from '../ipc/downloadManagerChannel';
-import { quitAppAndAppInstallUpdateChannel } from '../ipc/quitAppAndAppInstallUpdateChannel';
+import { manageAppUpdateChannel } from '../ipc/manageAppUpdateChannel';
 import type {
   DownloadMainResponse,
   DownloadLocalDataMainResponse,
   CheckFileExistsMainResponse,
-  QuitAppAndAppInstallUpdateMainResponse,
+  ManageAppUpdateMainResponse,
 } from '../../../common/ipc/api';
+import {
+  APP_UPDATE_DOWNLOAD_ID,
+  UPDATE_INSTALLATION_STATUSES as statuses,
+} from '../../../common/config/appupdateConfig';
 import { formattedDownloadData } from '../utils/formatters.js';
 import {
   DOWNLOAD_EVENT_TYPES,
@@ -35,7 +39,6 @@ import type { FormattedDownloadData } from '../utils/formatters.js';
 
 const { version: currentVersion, platform } = global.environment;
 const { News } = NewsDomains;
-const APP_UPDATE_DOWNLOAD_ID = 'appUpdate';
 
 export default class AppUpdateStore extends Store {
   @observable availableUpdate: ?News = null;
@@ -47,6 +50,8 @@ export default class AppUpdateStore extends Store {
   @observable isAutomaticUpdateFailed: boolean = false;
   @observable isUpdatePostponed: boolean = false;
   @observable isWaitingToQuitDaedalus: boolean = false;
+  @observable instalationProgress: number = 0;
+  @observable instalationMessages: Array<any> = [];
 
   @observable downloadInfo: ?DownloadInfo = null;
   @observable downloadData: ?DownloadData = null;
@@ -80,9 +85,7 @@ export default class AppUpdateStore extends Store {
     actions.postponeUpdate.listen(this._postponeUpdate);
 
     requestDownloadChannel.onReceive(this._manageUpdateResponse);
-    quitAppAndAppInstallUpdateChannel.onReceive(
-      this._manageQuitAndInstallResponse
-    );
+    manageAppUpdateChannel.onReceive(this._manageQuitAndInstallResponse);
 
     // ============== MOBX REACTIONS ==============
     this.registerReactions([this._watchForNewsfeedUpdates]);
@@ -338,7 +341,7 @@ export default class AppUpdateStore extends Store {
     const { destinationPath, originalFilename } = this.downloadInfo || {};
     const { hash } = this.getUpdateInfo(this.availableUpdate);
     const filePath = `${destinationPath}/${originalFilename}`;
-    return quitAppAndAppInstallUpdateChannel.request({
+    return manageAppUpdateChannel.request({
       filePath,
       hash,
     });
@@ -346,21 +349,29 @@ export default class AppUpdateStore extends Store {
 
   _manageQuitAndInstallResponse = ({
     status,
-    message,
     data,
-  }: QuitAppAndAppInstallUpdateMainResponse) => {
-    if (status === 'error') {
-      logger.error(message || '', { data });
+  }: ManageAppUpdateMainResponse) => {
+    const { message, progress, code, info, error } = data;
+    if (status === statuses.ERROR) {
+      logger.error(message || '', { error });
       runInAction(() => {
         this.isWaitingToQuitDaedalus = false;
       });
       this._setAppAutomaticUpdateFailed();
-    } else {
+    } else if (status === statuses.PROGRESS) {
+      if (progress) {
+        runInAction(() => {
+          this.instalationProgress = progress;
+        });
+      }
       // eslint-disable-next-line
       console.log('--- INSTALLATION ', {
         status,
         message,
-        data,
+        progress,
+        code,
+        info,
+        error,
       });
     }
     return Promise.resolve({ filePath: '', hash: '' });

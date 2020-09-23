@@ -5,11 +5,12 @@ import shasum from 'shasum';
 import { spawn } from 'child_process';
 import type { BrowserWindow } from 'electron';
 import { MainIpcChannel } from './lib/MainIpcChannel';
-import { QUIT_APP_AND_INSTALL_UPDATE } from '../../common/ipc/api';
+import { MANAGE_APP_UPDATE } from '../../common/ipc/api';
 import type {
-  QuitAppAndAppInstallUpdateRendererRequest as Request,
-  QuitAppAndAppInstallUpdateMainResponse as Response,
+  ManageAppUpdateRendererRequest as Request,
+  ManageAppUpdateMainResponse as Response,
 } from '../../common/ipc/api';
+import { UPDATE_INSTALLATION_STATUSES as statuses } from '../../common/config/appupdateConfig';
 import { environment } from '../environment';
 import { safeExitWithCode } from '../utils/safeExitWithCode';
 import { logger } from '../utils/logging';
@@ -17,10 +18,10 @@ import { launcherConfig } from '../config';
 
 // IpcChannel<Incoming, Outgoing>
 
-const quitAppAndAppInstallUpdateChannel: MainIpcChannel<
+const manageAppUpdateChannel: MainIpcChannel<
   Request,
   Response
-> = new MainIpcChannel(QUIT_APP_AND_INSTALL_UPDATE);
+> = new MainIpcChannel(MANAGE_APP_UPDATE);
 
 const logPrefix = 'appUpdateInstall';
 
@@ -30,22 +31,24 @@ const getMessage = (functionPrefix: string, message?: string): string => {
   return formattedMessage;
 };
 
-export const handleQuitAppAndAppInstallUpdateRequests = (
-  window: BrowserWindow
-) => {
+export const handleManageAppUpdateRequests = (window: BrowserWindow) => {
   const response = (
     success: ?boolean,
     functionPrefix: string,
     messageText?: string = '',
-    data?: any
+    _data?: Object
   ): Response => {
-    let status = 'progress';
-    if (success === true) status = 'success';
-    else if (success === false) status = 'error';
+    let status = statuses.PROGRESS;
+    if (success === true) status = statuses.SUCCESS;
+    else if (success === false) status = statuses.ERROR;
     const log = success === false ? logger.error : logger.info;
     const message = getMessage(functionPrefix, messageText);
     log(getMessage(functionPrefix, message));
-    quitAppAndAppInstallUpdateChannel.send(
+    const data = {
+      ..._data,
+      message,
+    };
+    manageAppUpdateChannel.send(
       {
         status,
         message,
@@ -86,15 +89,26 @@ export const handleQuitAppAndAppInstallUpdateRequests = (
       const updater = spawn(updateRunnerBin, [filePath]);
       let success = true;
       updater.stdout.on('data', progressData => {
-        console.log(progressData.toString());
+        const info = progressData.toString().split(/\n/);
+        const progress = info.reduce((prog, infoItem) => {
+          const [, progressStr] = infoItem.split('echo PROG ');
+          if (progressStr) {
+            const [item, total] = `${progressStr}`.trim().split('/');
+            return parseInt(
+              (parseInt(item, 10) * 100) / parseInt(total, 10),
+              10
+            );
+          }
+          return prog;
+        }, 0);
         response(null, functionPrefix, 'installation progress.', {
-          data: progressData.toString(),
+          info,
+          progress,
         });
       });
       updater.stderr.on('data', progressData => {
-        console.log(progressData.toString());
         response(null, functionPrefix, 'installation progress.', {
-          data: progressData.toString(),
+          info: progressData.toString(),
         });
       });
       updater.on('close', code => {
@@ -110,7 +124,9 @@ export const handleQuitAppAndAppInstallUpdateRequests = (
             )
           );
         }
-        response(null, functionPrefix, 'installation progress.', { data: "stdio closed" });
+        response(null, functionPrefix, 'installation progress.', {
+          info: 'stdio closed',
+        });
       });
       updater.on('error', error => {
         success = false;
@@ -133,7 +149,7 @@ export const handleQuitAppAndAppInstallUpdateRequests = (
           );
         }
         if (!success) {
-          logger.error("exit without success");
+          logger.error('exit without success');
           return reject();
         }
         safeExitWithCode(20);
@@ -142,32 +158,30 @@ export const handleQuitAppAndAppInstallUpdateRequests = (
     });
   };
 
-  quitAppAndAppInstallUpdateChannel.onRequest(
-    async ({ filePath, hash: expectedHash }) => {
-      const functionPrefix = 'onRequest';
+  manageAppUpdateChannel.onRequest(async ({ filePath, hash: expectedHash }) => {
+    const functionPrefix = 'onRequest';
 
-      const fileExists = fs.existsSync(filePath);
-      if (!fileExists)
-        return response(false, functionPrefix, 'Installer not found:', {
-          filePath,
-        });
+    const fileExists = fs.existsSync(filePath);
+    if (!fileExists)
+      return response(false, functionPrefix, 'Installer not found:', {
+        info: { filePath },
+      });
 
-      const installerHash = checkInstallerHash(filePath, expectedHash);
-      if (!installerHash) return response(false, functionPrefix);
+    const installerHash = checkInstallerHash(filePath, expectedHash);
+    if (!installerHash) return response(false, functionPrefix);
 
-      // For linux we execute the installer file
-      if (environment.isLinux) return installUpdate(filePath);
+    // For linux we execute the installer file
+    if (environment.isLinux) return installUpdate(filePath);
 
-      // For other OS we launch the installer file
-      const openInstaller: boolean = shell.openItem(filePath);
-      if (!openInstaller)
-        return response(
-          false,
-          functionPrefix,
-          'Not able to launch the installer'
-        );
-      app.quit();
-      return response(true, functionPrefix);
-    }
-  );
+    // For other OS we launch the installer file
+    const openInstaller: boolean = shell.openItem(filePath);
+    if (!openInstaller)
+      return response(
+        false,
+        functionPrefix,
+        'Not able to launch the installer'
+      );
+    app.quit();
+    return response(true, functionPrefix);
+  });
 };

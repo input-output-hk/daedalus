@@ -26,6 +26,7 @@ storiesOf('News|Overlays', module)
     let isAutomaticUpdateFailed = false;
     let isLinux = false;
     let isWaitingToQuitDaedalus = false;
+    let instalationProgress = 0;
 
     if (scenario === 'downloading') {
       isUpdateDownloaded = false;
@@ -34,6 +35,13 @@ storiesOf('News|Overlays', module)
     } else if (scenario === 'downloaded') {
       isLinux = boolean('isLinux', false);
       isWaitingToQuitDaedalus = boolean('isWaitingToQuitDaedalus', false);
+      if (isLinux)
+        instalationProgress = number('instalationProgress', 30, {
+          range: true,
+          min: 0,
+          max: 100,
+          step: 1,
+        });
     }
 
     const downloadProgress =
@@ -73,6 +81,7 @@ storiesOf('News|Overlays', module)
         onExternalLinkClick={action('onExternalLinkClick')}
         isWaitingToQuitDaedalus={isWaitingToQuitDaedalus}
         isLinux={isLinux}
+        instalationProgress={instalationProgress}
       />
     );
   });

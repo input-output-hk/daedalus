@@ -354,15 +354,20 @@ export type CheckFileExistsMainResponse = boolean;
 /**
  * Channel for quitting Daedalus and installing update
  */
-export const QUIT_APP_AND_INSTALL_UPDATE = 'QUIT_APP_AND_INSTALL_UPDATE';
-export type QuitAppAndAppInstallUpdateRendererRequest = {
+export const MANAGE_APP_UPDATE = 'MANAGE_APP_UPDATE';
+export type ManageAppUpdateRendererRequest = {
   filePath: string,
   hash: string,
 };
-export type QuitAppAndAppInstallUpdateMainResponse = {
+export type ManageAppUpdateMainResponse = {
   status: 'progress' | 'success' | 'error',
-  message?: string,
-  data?: Object,
+  data: {
+    message?: string,
+    progress?: number,
+    code?: number,
+    error?: Error,
+    info?: Object,
+  },
 };
 
 /**

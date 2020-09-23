@@ -116,6 +116,7 @@ type Props = {
   onInstallUpdate: Function,
   onExternalLinkClick: Function,
   onPostponeUpdate: Function,
+  instalationProgress: number,
   isLinux: boolean,
 };
 
@@ -186,6 +187,7 @@ export default class AppUpdateOverlay extends Component<Props, State> {
       onPostponeUpdate,
       isWaitingToQuitDaedalus,
       isLinux,
+      instalationProgress,
     } = this.props;
     const { areTermsOfUseAccepted } = this.state;
     const isCheckboxDisabled = isWaitingToQuitDaedalus;
@@ -225,21 +227,35 @@ export default class AppUpdateOverlay extends Component<Props, State> {
           themeOverrides={styles.checkbox}
           disabled={isCheckboxDisabled}
         />
-        <Button
-          className={buttonStyles}
-          onClick={onInstallUpdate}
-          skin={ButtonSpinnerSkin}
-          loading={isWaitingToQuitDaedalus}
-          label={intl.formatMessage(buttonLabel)}
-          disabled={isButtonDisabled}
-        />
-        <Link
-          className={postponeLinkStyles}
-          onClick={postponeAction}
-          label={intl.formatMessage(postponeLabel)}
-          skin={LinkSkin}
-          hasIconAfter={false}
-        />
+        {!(isLinux && isWaitingToQuitDaedalus) && (
+          <>
+            <Button
+              className={buttonStyles}
+              onClick={onInstallUpdate}
+              skin={ButtonSpinnerSkin}
+              loading={isWaitingToQuitDaedalus}
+              label={intl.formatMessage(buttonLabel)}
+              disabled={isButtonDisabled}
+            />
+            <Link
+              className={postponeLinkStyles}
+              onClick={postponeAction}
+              label={intl.formatMessage(postponeLabel)}
+              skin={LinkSkin}
+              hasIconAfter={false}
+            />
+          </>
+        )}
+        {isLinux && isWaitingToQuitDaedalus && (
+          <>
+            <div className={styles.downloadProgressContent}>
+              <p className={styles.downloadProgressLabel}>
+                {intl.formatMessage(messages.installingUpdateLabel)}
+              </p>
+            </div>
+            <ProgressBarLarge progress={instalationProgress} />
+          </>
+        )}
       </div>
     );
   };
