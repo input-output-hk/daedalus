@@ -473,6 +473,8 @@
   "staking.stakePools.tableHeader.roi": "Roi",
   "staking.stakePools.tableHeader.saturation": "Saturation",
   "staking.stakePools.tableHeader.uptime": "Uptime (days)",
+  "staking.stakePools.tableValue.no": "No",
+  "staking.stakePools.tableValue.yes": "Yes",
   "staking.stakePools.tooltip.copyIdTooltipLabel": "Copy the stake pool ID",
   "staking.stakePools.tooltip.costPerEpoch": "Cost per epoch:",
   "staking.stakePools.tooltip.delegateButton": "Delegate to this pool",

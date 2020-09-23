@@ -7,17 +7,13 @@ import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.d
 import { StakePoolsTable } from '../../../source/renderer/app/components/staking/stake-pools/StakePoolsTable';
 import { StakePoolsSearch } from '../../../source/renderer/app/components/staking/stake-pools/StakePoolsSearch';
 
-type Props = {
-  currentTheme: string,
-};
-
 const listTitle = {
   id: 'staking.stakePools.listTitle',
   defaultMessage: '!!!Stake pools ({pools})',
   description: '"listTitle" for the Stake Pools page.',
 };
 
-export const StakePoolsTableStory = (props: Props) => (
+export const StakePoolsTableStory = () => (
   <React.Fragment>
     <div
       style={{
@@ -62,7 +58,6 @@ export const StakePoolsTableStory = (props: Props) => (
         />
       </h2>
       <StakePoolsTable
-        showWithSelectButton
         listName="selectedIndexList"
         stakePoolsList={STAKE_POOLS.slice(
           0,
@@ -73,23 +68,6 @@ export const StakePoolsTableStory = (props: Props) => (
             step: 1,
           })
         )}
-        onOpenExternalLink={action('onOpenExternalLink')}
-        currentTheme={props.currentTheme}
-        isListActive
-        setListActive={action('setListActive')}
-        containerClassName="StakingWithNavigation_page"
-        onSelect={action('onSelect')}
-        numberOfStakePools={
-          STAKE_POOLS.slice(
-            0,
-            number('Pools', 300, {
-              range: true,
-              min: 37,
-              max: 300,
-              step: 1,
-            })
-          ).length
-        }
       />
     </div>
   </React.Fragment>

@@ -183,16 +183,8 @@ export default class StakePools extends Component<Props, State> {
                   />
                 </h2>
                 <StakePoolsTable
-                  showWithSelectButton
                   listName="selectedIndexList"
                   stakePoolsList={filteredStakePoolsList}
-                  onOpenExternalLink={onOpenExternalLink}
-                  currentTheme={currentTheme}
-                  isListActive={selectedList === 'selectedIndexList'}
-                  setListActive={this.handleSetListActive}
-                  containerClassName="StakingWithNavigation_page"
-                  onSelect={this.onDelegate}
-                  numberOfStakePools={stakePoolsList.length}
                 />
               </Fragment>
             )}

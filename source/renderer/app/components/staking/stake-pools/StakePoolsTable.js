@@ -70,6 +70,16 @@ const messages = defineMessages({
     defaultMessage: '!!!Retiring',
     description: 'Table header "Retiring" label on stake pools list view page',
   },
+  tableValueYes: {
+    id: 'staking.stakePools.tableValue.yes',
+    defaultMessage: '!!!Yes',
+    description: 'Table value "Yes" label on stake pools list view page',
+  },
+  tableValueNo: {
+    id: 'staking.stakePools.tableValue.no',
+    defaultMessage: '!!!No',
+    description: 'Table value "No" label on stake pools list view page',
+  },
 });
 
 // Maximum number of stake pools for which we do not need to use the preloading
@@ -77,11 +87,7 @@ const PRELOADER_THRESHOLD = 100;
 
 type Props = {
   stakePoolsList: Array<StakePool>,
-  onSelect?: Function,
-  selectedPoolId?: ?number,
   listName?: string,
-  isListActive?: boolean,
-  setListActive?: Function,
 };
 
 type State = {
@@ -102,11 +108,6 @@ const initialState = {
 export class StakePoolsTable extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
-  };
-
-  static defaultProps = {
-    isListActive: true,
-    showWithSelectButton: false,
   };
 
   constructor(props: Props) {
@@ -137,31 +138,11 @@ export class StakePoolsTable extends Component<Props, State> {
 
   searchInput: ?HTMLElement = null;
 
-  getIsHighlighted = (id: string) =>
-    this.props.isListActive !== false && id === this.state.highlightedPoolId;
-
-  handleOpenThumbnail = (highlightedPoolId: number) => {
-    const { isListActive, setListActive, listName } = this.props;
-    if (isListActive === false && setListActive) setListActive(listName);
-    return this.setState({
-      highlightedPoolId,
-    });
-  };
-
   handleClose = () => {
     this.setState({
       ...initialState,
       isPreloading: false,
     });
-  };
-
-  handleSelect = (stakePoolId: number) => {
-    const { onSelect } = this.props;
-    const selectedPoolId =
-      this.props.selectedPoolId === stakePoolId ? null : stakePoolId;
-    if (onSelect) {
-      onSelect(selectedPoolId);
-    }
   };
 
   render() {
@@ -287,7 +268,7 @@ export class StakePoolsTable extends Component<Props, State> {
                         <td>{margin}%</td>
                         <td>{producedBlocks}</td>
                         <td>{`${formattedWalletAmount(pledge, false, false)}`}</td>
-                        <td>{retiring ? 'Yes' : 'No'}</td>
+                        <td>{retiring ? intl.formatMessage(messages.tableValueYes) : intl.formatMessage(messages.tableValueNo)}</td>
                       </tr>
                     );
                   })}
