@@ -1,7 +1,7 @@
 // @flow
 import { DownloaderHelper } from 'node-downloader-helper';
 import fs from 'fs';
-import { forEach } from 'lodash';
+import { forEach, omit } from 'lodash';
 import type { BrowserWindow } from 'electron';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import { logger } from '../utils/logging';
@@ -54,15 +54,20 @@ const requestDownload = async (
   const {
     fileUrl,
     destinationDirectoryName = DEFAULT_DIRECTORY_NAME,
-    options,
+    // options,
+    options: _options,
     id,
     resumeDownload,
-  } = downloadRequestPayload || {};
+  } = downloadRequestPayload;
   const temporaryFilename = resumeDownload
     ? resumeDownload.temporaryFilename
     : generateFileNameWithTimestamp(TEMPORARY_FILENAME);
   const originalFilename = getOriginalFilename(downloadRequestPayload);
   const destinationPath = getPathFromDirectoryName(destinationDirectoryName);
+  const options = {
+    ..._options,
+    fileName: temporaryFilename,
+  };
   const downloadId = getIdFromFileName(id || originalFilename);
   const info = {
     downloadId,
@@ -71,7 +76,7 @@ const requestDownload = async (
     destinationDirectoryName,
     temporaryFilename,
     originalFilename,
-    options: {},
+    options,
   };
   if (downloads[downloadId]) {
     logger.info(
@@ -99,9 +104,7 @@ const requestDownload = async (
   let currentDownloadData = 0;
 
   const progressType =
-    options && options.progressIsThrottled === false
-      ? 'progress'
-      : 'progress.throttled';
+    options.progressIsThrottled === false ? 'progress' : 'progress.throttled';
 
   download.on('start', eventActions.start);
   download.on('download', eventActions.download);
@@ -151,15 +154,25 @@ const requestResumeDownload = async (
     requestDownloadPayload = {
       ...requestDownloadPayload,
       resumeDownload: { temporaryFilename, originalFilename },
-      override: true,
     };
   } else {
     // Otherwise:
     // * New download request
     // * The previous download data is removed
+    // * `fileName` is removed from options
+    requestDownloadPayload = {
+      ...requestDownloadPayload,
+      options: omit(options, 'fileName'),
+    };
     await localStorage.unset(id);
   }
-  return requestDownload(requestDownloadPayload, window);
+  return requestDownload(
+    {
+      ...requestDownloadPayload,
+      override: true,
+    },
+    window
+  );
 };
 
 const deleteDownloadedFile = async ({
