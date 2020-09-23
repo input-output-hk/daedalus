@@ -5521,6 +5521,48 @@
           "column": 19,
           "line": 53
         }
+      },
+      {
+        "defaultMessage": "!!!Produced Blocks",
+        "description": "Table header \"Produced Blocks\" label on stake pools list view page",
+        "end": {
+          "column": 3,
+          "line": 62
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsTable.js",
+        "id": "staking.stakePools.tableHeader.producedBlocks",
+        "start": {
+          "column": 29,
+          "line": 58
+        }
+      },
+      {
+        "defaultMessage": "!!!Pledge",
+        "description": "Table header \"Pledge\" label on stake pools list view page",
+        "end": {
+          "column": 3,
+          "line": 67
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsTable.js",
+        "id": "staking.stakePools.tableHeader.pledge",
+        "start": {
+          "column": 21,
+          "line": 63
+        }
+      },
+      {
+        "defaultMessage": "!!!Retiring",
+        "description": "Table header \"Retiring\" label on stake pools list view page",
+        "end": {
+          "column": 3,
+          "line": 72
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsTable.js",
+        "id": "staking.stakePools.tableHeader.retiring",
+        "start": {
+          "column": 23,
+          "line": 68
+        }
       }
     ],
     "path": "source/renderer/app/components/staking/stake-pools/StakePoolsTable.json"
