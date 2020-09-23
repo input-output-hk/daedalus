@@ -5563,6 +5563,34 @@
           "column": 23,
           "line": 68
         }
+      },
+      {
+        "defaultMessage": "!!!Yes",
+        "description": "Table value \"Yes\" label on stake pools list view page",
+        "end": {
+          "column": 3,
+          "line": 77
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsTable.js",
+        "id": "staking.stakePools.tableValue.yes",
+        "start": {
+          "column": 17,
+          "line": 73
+        }
+      },
+      {
+        "defaultMessage": "!!!No",
+        "description": "Table value \"No\" label on stake pools list view page",
+        "end": {
+          "column": 3,
+          "line": 82
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsTable.js",
+        "id": "staking.stakePools.tableValue.no",
+        "start": {
+          "column": 16,
+          "line": 78
+        }
       }
     ],
     "path": "source/renderer/app/components/staking/stake-pools/StakePoolsTable.json"
