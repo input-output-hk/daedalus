@@ -8,6 +8,8 @@ let
     target = "${installer}";
     run = "/bin/installer";
     nixUserChrootFlags = "-c -m /home:/home -p HOME";
+    rmStyle = "-rm_";
+    shared = false;
   };
   utils = pkgs.writeText "utils.sh" ''
     function rmrf {
@@ -29,24 +31,38 @@ let
     pwd
     id
     UNPACK=$(mktemp -d)
-    cd $UNPACK
-    echo "$@"
-    bash "$1" --extract
-    ls -ltrh dat/nix/store/*-tarball/tarball/tarball.tar.xz
-    UNPACK2=$(mktemp -d)
-    tar --delay-directory-restore -C $UNPACK2 -xf dat/nix/store/*-tarball/tarball/tarball.tar.xz
-    cd
+    pushd $UNPACK
+      echo "$@"
+      echo STATUS decompressing
+      echo PROG 1/6
+      bash "$1" --extract
+      ls -ltrh dat/nix/store/*-tarball/tarball/tarball.tar.xz
+      UNPACK2=$(mktemp -d)
+      echo STATUS unpacking
+      echo PROG 2/6
+      tar --delay-directory-restore -C $UNPACK2 -xf dat/nix/store/*-tarball/tarball/tarball.tar.xz
+    popd
+    echo STATUS removing temp files
+    echo PROG 3/6
     rmrf $UNPACK
     ls -ltrh $UNPACK2
+    echo STATUS copying files
+    echo PROG 3/6
     NIX_REMOTE=local?root=$UNPACK2 nix-store --load-db < $UNPACK2/nix-path-registration
     NIX_REMOTE=local?root=$UNPACK2 nix-store --verify --check-contents
     nix copy --no-check-sigs --from local?root=$UNPACK2 $(readlink $UNPACK2/firstGeneration)
     export NIX_PROFILE=/nix/var/nix/profiles/profile
     nix-env --set $(readlink $UNPACK2/firstGeneration)
     nix-env -p /nix/var/nix/profiles/profile-${linuxClusterBinName} --set $(readlink $UNPACK2/firstGeneration)
+    echo STATUS cleaning up
+    echo PROG 4/6
     rmrf $UNPACK2
 
+    echo STATUS post-install
+    echo PROG 5/6
     post-install || true
+    echo STATUS done
+    echo PROG 6/6
   '';
   enter = pkgs.writeScriptBin "enter-chroot" ''
     #!/usr/bin/env bash

@@ -333,12 +333,7 @@ let
       runLint = self.callPackage ./tests/lint.nix {};
       runShellcheck = self.callPackage ./tests/shellcheck.nix { src = ./.;};
     };
-    nix-bundle = import (pkgs.fetchFromGitHub {
-      owner = "matthewbauer";
-      repo = "nix-bundle";
-      rev = "7f12322399fd87d937355d0fc263d37d798496fc";
-      sha256 = "07wnmdadchf73p03wk51abzgd3zm2xz5khwadz1ypbvv3cqlzp5m";
-    }) { nixpkgs = pkgs; };
+    nix-bundle = import sources.nix-bundle { nixpkgs = pkgs; };
     iconPath = self.launcherConfigs.installerConfig.iconPath;
     # used for name of profile, binary and the desktop shortcut
     linuxClusterBinName = cluster;
