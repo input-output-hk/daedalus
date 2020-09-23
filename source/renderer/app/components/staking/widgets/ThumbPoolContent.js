@@ -8,7 +8,10 @@ import noDataDashBigImage from '../../../assets/images/no-data-dash-big.inline.s
 import styles from './ThumbPoolContent.scss';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
 import StakePool from '../../../domains/StakePool';
-import { IS_RANKING_DATA_AVAILABLE } from '../../../config/stakingConfig';
+import {
+  IS_RANKING_DATA_AVAILABLE,
+  IS_SATURATION_DATA_AVAILABLE,
+} from '../../../config/stakingConfig';
 
 type Props = {
   stakePool: StakePool,
@@ -19,15 +22,12 @@ type Props = {
 export default class ThumbPoolContent extends Component<Props> {
   render() {
     const { stakePool, numberOfStakePools } = this.props;
-
     const { ranking, ticker, retiring, saturation } = stakePool;
     const color = getColorFromRange(ranking, numberOfStakePools);
 
-    const showSaturation = false;
-
     const componentClassnames = classnames([
       styles.component,
-      !showSaturation ? styles.hideSaturation : null,
+      !IS_SATURATION_DATA_AVAILABLE ? styles.hideSaturation : null,
     ]);
 
     const saturationClassnames = classnames([
@@ -43,7 +43,7 @@ export default class ThumbPoolContent extends Component<Props> {
             <div className={styles.ranking} style={{ color }}>
               {ranking}
             </div>
-            {showSaturation && (
+            {IS_SATURATION_DATA_AVAILABLE && (
               <div className={saturationClassnames}>
                 <span
                   style={{
