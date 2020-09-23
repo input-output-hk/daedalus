@@ -39,8 +39,8 @@ type Props = {
   isGridView?: boolean,
   onSearch: Function,
   onClearSearch: Function,
-  onGridView: Function,
-  onListView: Function,
+  onGridView?: Function,
+  onListView?: Function,
   search: string,
 };
 
