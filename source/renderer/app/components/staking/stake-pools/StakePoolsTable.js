@@ -55,6 +55,21 @@ const messages = defineMessages({
     defaultMessage: '!!!Cost (ADA)',
     description: 'Table header "Cost" label on stake pools list view page',
   },
+  tableHeaderProducedBlocks: {
+    id: 'staking.stakePools.tableHeader.producedBlocks',
+    defaultMessage: '!!!Produced Blocks',
+    description: 'Table header "Produced Blocks" label on stake pools list view page',
+  },
+  tableHeaderPledge: {
+    id: 'staking.stakePools.tableHeader.pledge',
+    defaultMessage: '!!!Pledge',
+    description: 'Table header "Pledge" label on stake pools list view page',
+  },
+  tableHeaderRetiring: {
+    id: 'staking.stakePools.tableHeader.retiring',
+    defaultMessage: '!!!Retiring',
+    description: 'Table header "Retiring" label on stake pools list view page',
+  },
 });
 
 // Maximum number of stake pools for which we do not need to use the preloading
@@ -181,24 +196,24 @@ export class StakePoolsTable extends Component<Props, State> {
         title: intl.formatMessage(messages.tableHeaderSaturation),
       },
       {
-        name: 'performance',
-        title: intl.formatMessage(messages.tableHeaderPerformance),
-      },
-      {
-        name: 'uptime',
-        title: intl.formatMessage(messages.tableHeaderUptime),
+        name: 'cost',
+        title: intl.formatMessage(messages.tableHeaderCost),
       },
       {
         name: 'profitMargin',
         title: intl.formatMessage(messages.tableHeaderMargin),
       },
       {
-        name: 'roi',
-        title: intl.formatMessage(messages.tableHeaderRoi),
+        name: 'producedBlocks',
+        title: intl.formatMessage(messages.tableHeaderProducedBlocks),
       },
       {
-        name: 'cost',
-        title: intl.formatMessage(messages.tableHeaderCost),
+        name: 'pledge',
+        title: intl.formatMessage(messages.tableHeaderPledge),
+      },
+      {
+        name: 'retiring',
+        title: intl.formatMessage(messages.tableHeaderRetiring),
       },
     ];
 
@@ -244,11 +259,11 @@ export class StakePoolsTable extends Component<Props, State> {
                     const ticker = get(stakePool, 'ticker', '');
                     const description = get(stakePool, 'description', '');
                     const saturation = get(stakePool, 'saturation', '');
-                    const performance = get(stakePool, 'performance', '100%');
-                    const uptime = get(stakePool, 'uptime', 201);
-                    const margin = get(stakePool, 'profitMargin', '');
-                    const roi = get(stakePool, 'roi', 0);
                     const cost = get(stakePool, 'cost', '');
+                    const margin = get(stakePool, 'profitMargin', '');
+                    const producedBlocks = get(stakePool, 'producedBlocks', '');
+                    const pledge = get(stakePool, 'pledge', '');
+                    const retiring = get(stakePool, 'retiring', '');
                     const color = getSaturationColor(saturation);
                     const isOversaturated = (saturation / 100) >= 1;
                     const saturationValue = (isOversaturated || !saturation) ? parseInt(saturation, 10) : parseFloat(saturation).toFixed(2);
@@ -268,11 +283,11 @@ export class StakePoolsTable extends Component<Props, State> {
                             </div>
                           </div>
                         </td>
-                        <td>{performance}</td>
-                        <td>{uptime}</td>
-                        <td>{margin}%</td>
-                        <td>{roi}%</td>
                         <td>{`${formattedWalletAmount(cost, false, false)}`}</td>
+                        <td>{margin}%</td>
+                        <td>{producedBlocks}</td>
+                        <td>{`${formattedWalletAmount(pledge, false, false)}`}</td>
+                        <td>{retiring ? 'Yes' : 'No'}</td>
                       </tr>
                     );
                   })}

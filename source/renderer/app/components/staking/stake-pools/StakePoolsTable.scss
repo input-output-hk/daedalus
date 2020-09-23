@@ -111,6 +111,14 @@
       }
     }
 
+    tbody {
+      tr {
+        &:hover {
+          background-color: var(--theme-staking-stake-pools-search-clear-button-background-color);
+        }
+      }
+    }
+
     tr,
     td {
       border-bottom: 1px solid var(--theme-staking-table-border-color);
