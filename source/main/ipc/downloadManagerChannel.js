@@ -54,20 +54,15 @@ const requestDownload = async (
   const {
     fileUrl,
     destinationDirectoryName = DEFAULT_DIRECTORY_NAME,
-    // options,
-    options: _options,
+    options,
     id,
     resumeDownload,
-  } = downloadRequestPayload;
+  } = downloadRequestPayload || {};
   const temporaryFilename = resumeDownload
     ? resumeDownload.temporaryFilename
     : generateFileNameWithTimestamp(TEMPORARY_FILENAME);
   const originalFilename = getOriginalFilename(downloadRequestPayload);
   const destinationPath = getPathFromDirectoryName(destinationDirectoryName);
-  const options = {
-    ..._options,
-    fileName: temporaryFilename,
-  };
   const downloadId = getIdFromFileName(id || originalFilename);
   const info = {
     downloadId,
@@ -76,7 +71,7 @@ const requestDownload = async (
     destinationDirectoryName,
     temporaryFilename,
     originalFilename,
-    options,
+    options: {},
   };
   if (downloads[downloadId]) {
     logger.info(
@@ -104,7 +99,9 @@ const requestDownload = async (
   let currentDownloadData = 0;
 
   const progressType =
-    options.progressIsThrottled === false ? 'progress' : 'progress.throttled';
+    options && options.progressIsThrottled === false
+      ? 'progress'
+      : 'progress.throttled';
 
   download.on('start', eventActions.start);
   download.on('download', eventActions.download);
@@ -150,20 +147,19 @@ const requestResumeDownload = async (
     options,
   };
   // Check if the file to be resumed still exists
-  // Otherwise it's a new download request
   if (fs.existsSync(filePath)) {
     requestDownloadPayload = {
       ...requestDownloadPayload,
       resumeDownload: { temporaryFilename, originalFilename },
-    };
-  }
-  return requestDownload(
-    {
-      ...requestDownloadPayload,
       override: true,
-    },
-    window
-  );
+    };
+  } else {
+    // Otherwise:
+    // * New download request
+    // * The previous download data is removed
+    await localStorage.unset(id);
+  }
+  return requestDownload(requestDownloadPayload, window);
 };
 
 const deleteDownloadedFile = async ({
