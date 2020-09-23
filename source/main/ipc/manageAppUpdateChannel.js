@@ -91,7 +91,7 @@ export const handleManageAppUpdateRequests = (window: BrowserWindow) => {
       updater.stdout.on('data', progressData => {
         const info = progressData.toString().split(/\n/);
         const progress = info.reduce((prog, infoItem) => {
-          const [, progressStr] = infoItem.split('echo PROG ');
+          const [, progressStr] = infoItem.split('PROG ');
           if (progressStr) {
             const [item, total] = `${progressStr}`.trim().split('/');
             return parseInt(
