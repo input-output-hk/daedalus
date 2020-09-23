@@ -5106,13 +5106,13 @@
         "description": "\"delegatingListTitle\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 22
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.delegatingListTitle",
         "start": {
           "column": 23,
-          "line": 17
+          "line": 18
         }
       },
       {
@@ -5120,13 +5120,13 @@
         "description": "\"listTitle\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 27
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.listTitle",
         "start": {
           "column": 13,
-          "line": 22
+          "line": 23
         }
       },
       {
@@ -5134,13 +5134,13 @@
         "description": "\"listTitle\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 32
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.listTitleWithSearch",
         "start": {
           "column": 23,
-          "line": 27
+          "line": 28
         }
       },
       {
@@ -5148,13 +5148,13 @@
         "description": "Loading stake pool message for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 38
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.loadingStakePoolsMessage",
         "start": {
           "column": 28,
-          "line": 32
+          "line": 33
         }
       }
     ],
@@ -5368,13 +5368,13 @@
         "description": "\"Delegating List Title\" for the Stake Pools search.",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 21
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
         "id": "staking.stakePools.search.searchInputPlaceholder",
         "start": {
           "column": 26,
-          "line": 14
+          "line": 17
         }
       },
       {
@@ -5382,13 +5382,13 @@
         "description": "\"delegatingListTitlee\" for the Stake Pools search.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 26
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
         "id": "staking.stakePools.search.delegatingListTitle",
         "start": {
           "column": 23,
-          "line": 19
+          "line": 22
         }
       },
       {
@@ -5396,17 +5396,134 @@
         "description": "\"listTitle\" for the Stake Pools search.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 31
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.js",
         "id": "staking.stakePools.search.listTitle",
         "start": {
           "column": 13,
-          "line": 24
+          "line": 27
         }
       }
     ],
     "path": "source/renderer/app/components/staking/stake-pools/StakePoolsSearch.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Rank",
+        "description": "Table header \"Rank\" label on stake pools list view page",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsTable.js",
+        "id": "staking.stakePools.tableHeader.rank",
+        "start": {
+          "column": 19,
+          "line": 18
+        }
+      },
+      {
+        "defaultMessage": "!!!Name",
+        "description": "Table header \"Name\" label on stake pools list view page",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsTable.js",
+        "id": "staking.stakePools.tableHeader.name",
+        "start": {
+          "column": 19,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!Saturation",
+        "description": "Table header \"Saturation\" label on stake pools list view page",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsTable.js",
+        "id": "staking.stakePools.tableHeader.saturation",
+        "start": {
+          "column": 25,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!Performance",
+        "description": "Table header \"Performance\" label on stake pools list view page",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsTable.js",
+        "id": "staking.stakePools.tableHeader.performance",
+        "start": {
+          "column": 26,
+          "line": 33
+        }
+      },
+      {
+        "defaultMessage": "!!!Uptime (days)",
+        "description": "Table header \"Uptime\" label on stake pools list view page",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsTable.js",
+        "id": "staking.stakePools.tableHeader.uptime",
+        "start": {
+          "column": 21,
+          "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!Margin",
+        "description": "Table header \"Margin\" label on stake pools list view page",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsTable.js",
+        "id": "staking.stakePools.tableHeader.margin",
+        "start": {
+          "column": 21,
+          "line": 43
+        }
+      },
+      {
+        "defaultMessage": "!!!Roi",
+        "description": "Table header \"Roi\" label on stake pools list view page",
+        "end": {
+          "column": 3,
+          "line": 52
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsTable.js",
+        "id": "staking.stakePools.tableHeader.roi",
+        "start": {
+          "column": 18,
+          "line": 48
+        }
+      },
+      {
+        "defaultMessage": "!!!Cost (ADA)",
+        "description": "Table header \"Cost\" label on stake pools list view page",
+        "end": {
+          "column": 3,
+          "line": 57
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsTable.js",
+        "id": "staking.stakePools.tableHeader.cost",
+        "start": {
+          "column": 19,
+          "line": 53
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/staking/stake-pools/StakePoolsTable.json"
   },
   {
     "descriptors": [
