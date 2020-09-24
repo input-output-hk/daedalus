@@ -10,7 +10,7 @@ import type {
   ManageAppUpdateRendererRequest as Request,
   ManageAppUpdateMainResponse as Response,
 } from '../../common/ipc/api';
-import { UPDATE_INSTALLATION_STATUSES as statuses } from '../../common/config/appupdateConfig';
+import { UPDATE_INSTALLATION_STATUSES as statuses } from '../../common/config/appUpdateConfig';
 import { environment } from '../environment';
 import { safeExitWithCode } from '../utils/safeExitWithCode';
 import { logger } from '../utils/logging';

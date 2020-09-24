@@ -24,7 +24,7 @@ import type {
 import {
   APP_UPDATE_DOWNLOAD_ID,
   UPDATE_INSTALLATION_STATUSES as statuses,
-} from '../../../common/config/appupdateConfig';
+} from '../../../common/config/appUpdateConfig';
 import { formattedDownloadData } from '../utils/formatters.js';
 import {
   DOWNLOAD_EVENT_TYPES,
