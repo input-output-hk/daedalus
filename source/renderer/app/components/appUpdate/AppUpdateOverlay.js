@@ -216,19 +216,23 @@ export default class AppUpdateOverlay extends Component<Props, State> {
     const postponeAction = !isWaitingToQuitDaedalus
       ? onPostponeUpdate
       : () => {};
+    const actionsStyles = classnames([
+      styles.actions,
+      isLinux && isWaitingToQuitDaedalus ? styles.progressBar : null,
+    ]);
     return (
-      <div className={styles.actions}>
-        <Checkbox
-          label={intl.formatMessage(messages.checkboxLabel)}
-          onChange={this.toggleAcceptance}
-          className={checkboxStyles}
-          checked={areTermsOfUseAccepted || isWaitingToQuitDaedalus}
-          skin={CheckboxSkin}
-          themeOverrides={styles.checkbox}
-          disabled={isCheckboxDisabled}
-        />
+      <div className={actionsStyles}>
         {!(isLinux && isWaitingToQuitDaedalus) && (
           <>
+            <Checkbox
+              label={intl.formatMessage(messages.checkboxLabel)}
+              onChange={this.toggleAcceptance}
+              className={checkboxStyles}
+              checked={areTermsOfUseAccepted || isWaitingToQuitDaedalus}
+              skin={CheckboxSkin}
+              themeOverrides={styles.checkbox}
+              disabled={isCheckboxDisabled}
+            />
             <Button
               className={buttonStyles}
               onClick={onInstallUpdate}

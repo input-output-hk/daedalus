@@ -130,6 +130,9 @@
   .actions {
     text-align: center;
     width: 540px;
+    &.progressBar {
+      width: 608px;
+    }
     .checkbox {
       margin-bottom: 30px;
       &.disabled {

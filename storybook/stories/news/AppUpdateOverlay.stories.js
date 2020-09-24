@@ -35,7 +35,7 @@ storiesOf('News|Overlays', module)
     } else if (scenario === 'downloaded') {
       isLinux = boolean('isLinux', false);
       isWaitingToQuitDaedalus = boolean('isWaitingToQuitDaedalus', false);
-      if (isLinux)
+      if (isLinux && isWaitingToQuitDaedalus)
         instalationProgress = number('instalationProgress', 30, {
           range: true,
           min: 0,
