@@ -51,4 +51,6 @@ export const REDEEM_ITN_REWARDS_STEPS: {
 
 export const IS_RANKING_DATA_AVAILABLE = true;
 
+export const IS_SATURATION_DATA_AVAILABLE = true;
+
 export const EPOCH_COUNTDOWN_INTERVAL = 1 * 1000; // 1 second | unit: milliseconds;
