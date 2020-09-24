@@ -65,7 +65,7 @@ import { transferFunds } from './wallets/requests/transferFunds';
 import StakePool from '../domains/StakePool';
 
 // News requests
-// import { getNews } from './news/requests/getNews';
+import { getNews } from './news/requests/getNews';
 
 // Stake Pools request
 import { getStakePools } from './staking/requests/getStakePools';
@@ -175,14 +175,11 @@ import type { StakePoolProps } from '../domains/StakePool';
 import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-node.types';
 
 import { TlsCertificateNotValidError } from './nodes/errors';
-// import { getSHA256HexForString } from './utils/hashing';
-// import { getNewsHash } from './news/requests/getNewsHash';
+import { getSHA256HexForString } from './utils/hashing';
+import { getNewsHash } from './news/requests/getNewsHash';
 import { deleteTransaction } from './transactions/requests/deleteTransaction';
 import { WALLET_BYRON_KINDS } from '../config/walletRestoreConfig';
 import ApiError from '../domains/ApiError';
-
-// @APP_UPDATE TODO
-import { getDummyNews } from './news/dummyUpdate';
 
 const { isIncentivizedTestnet } = global;
 
@@ -1675,53 +1672,41 @@ export default class AdaApi {
     }
   };
 
-  // @APP_UPDATE TODO
   getNews = async (): Promise<GetNewsResponse> => {
+    logger.debug('AdaApi::getNews called');
+
+    // Fetch news json
+    let rawNews: string;
     let news: GetNewsResponse;
     try {
-      news = getDummyNews();
+      rawNews = await getNews();
+      news = JSON.parse(rawNews);
     } catch (error) {
       logger.error('AdaApi::getNews error', { error });
       throw new Error('Unable to fetch news');
     }
+
+    // Fetch news verification hash
+    let newsHash: string;
+    let expectedNewsHash: string;
+    try {
+      newsHash = await getSHA256HexForString(rawNews);
+      expectedNewsHash = await getNewsHash(news.updatedAt);
+    } catch (error) {
+      logger.error('AdaApi::getNews (hash) error', { error });
+      throw new Error('Unable to fetch news hash');
+    }
+
+    if (newsHash !== expectedNewsHash) {
+      throw new Error('Newsfeed could not be verified');
+    }
+
+    logger.debug('AdaApi::getNews success', {
+      updatedAt: news.updatedAt,
+      items: news.items.length,
+    });
     return news;
   };
-
-  // getNews = async (): Promise<GetNewsResponse> => {
-  //   logger.debug('AdaApi::getNews called');
-
-  //   // Fetch news json
-  //   let rawNews: string;
-  //   let news: GetNewsResponse;
-  //   try {
-  //     rawNews = await getNews();
-  //     news = JSON.parse(rawNews);
-  //   } catch (error) {
-  //     logger.error('AdaApi::getNews error', { error });
-  //     throw new Error('Unable to fetch news');
-  //   }
-
-  //   // Fetch news verification hash
-  //   let newsHash: string;
-  //   let expectedNewsHash: string;
-  //   try {
-  //     newsHash = await getSHA256HexForString(rawNews);
-  //     expectedNewsHash = await getNewsHash(news.updatedAt);
-  //   } catch (error) {
-  //     logger.error('AdaApi::getNews (hash) error', { error });
-  //     throw new Error('Unable to fetch news hash');
-  //   }
-
-  //   if (newsHash !== expectedNewsHash) {
-  //     throw new Error('Newsfeed could not be verified');
-  //   }
-
-  //   logger.debug('AdaApi::getNews success', {
-  //     updatedAt: news.updatedAt,
-  //     items: news.items.length,
-  //   });
-  //   return news;
-  // };
 
   calculateDelegationFee = async (
     request: GetDelegationFeeRequest
