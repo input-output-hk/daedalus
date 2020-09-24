@@ -45,13 +45,11 @@ export default class AppUpdateStore extends Store {
   @observable availableUpdateVersion: string = '';
   @observable isUpdateDownloading: boolean = false;
   @observable isUpdateDownloaded: boolean = false;
-  @observable isUpdateInstalled: boolean = false;
   @observable isUpdateProgressOpen: boolean = false;
   @observable isAutomaticUpdateFailed: boolean = false;
   @observable isUpdatePostponed: boolean = false;
   @observable isWaitingToQuitDaedalus: boolean = false;
-  @observable instalationProgress: number = 0;
-  @observable instalationMessages: Array<any> = [];
+  @observable installationProgress: number = 0;
 
   @observable downloadInfo: ?DownloadInfo = null;
   @observable downloadData: ?DownloadData = null;
@@ -351,7 +349,7 @@ export default class AppUpdateStore extends Store {
     status,
     data,
   }: ManageAppUpdateMainResponse) => {
-    const { message, progress, code, info, error } = data;
+    const { message, progress, error } = data;
     if (status === statuses.ERROR) {
       logger.error(message || '', { error });
       runInAction(() => {
@@ -361,18 +359,9 @@ export default class AppUpdateStore extends Store {
     } else if (status === statuses.PROGRESS) {
       if (progress) {
         runInAction(() => {
-          this.instalationProgress = progress;
+          this.installationProgress = progress;
         });
       }
-      // eslint-disable-next-line
-      console.log('--- INSTALLATION ', {
-        status,
-        message,
-        progress,
-        code,
-        info,
-        error,
-      });
     }
     return Promise.resolve({ filePath: '', hash: '' });
   };

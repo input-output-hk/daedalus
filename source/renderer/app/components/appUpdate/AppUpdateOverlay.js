@@ -116,7 +116,7 @@ type Props = {
   onInstallUpdate: Function,
   onExternalLinkClick: Function,
   onPostponeUpdate: Function,
-  instalationProgress: number,
+  installationProgress: number,
   isLinux: boolean,
 };
 
@@ -187,7 +187,7 @@ export default class AppUpdateOverlay extends Component<Props, State> {
       onPostponeUpdate,
       isWaitingToQuitDaedalus,
       isLinux,
-      instalationProgress,
+      installationProgress,
     } = this.props;
     const { areTermsOfUseAccepted } = this.state;
     const isCheckboxDisabled = isWaitingToQuitDaedalus;
@@ -257,7 +257,7 @@ export default class AppUpdateOverlay extends Component<Props, State> {
                 {intl.formatMessage(messages.installingUpdateLabel)}
               </p>
             </div>
-            <ProgressBarLarge progress={instalationProgress} />
+            <ProgressBarLarge progress={installationProgress} />
           </>
         )}
       </div>

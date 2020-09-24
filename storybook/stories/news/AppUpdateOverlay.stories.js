@@ -26,7 +26,7 @@ storiesOf('News|Overlays', module)
     let isAutomaticUpdateFailed = false;
     let isLinux = false;
     let isWaitingToQuitDaedalus = false;
-    let instalationProgress = 0;
+    let installationProgress = 0;
 
     if (scenario === 'downloading') {
       isUpdateDownloaded = false;
@@ -36,7 +36,7 @@ storiesOf('News|Overlays', module)
       isLinux = boolean('isLinux', false);
       isWaitingToQuitDaedalus = boolean('isWaitingToQuitDaedalus', false);
       if (isLinux && isWaitingToQuitDaedalus)
-        instalationProgress = number('instalationProgress', 30, {
+        installationProgress = number('installationProgress', 30, {
           range: true,
           min: 0,
           max: 100,
@@ -81,7 +81,7 @@ storiesOf('News|Overlays', module)
         onExternalLinkClick={action('onExternalLinkClick')}
         isWaitingToQuitDaedalus={isWaitingToQuitDaedalus}
         isLinux={isLinux}
-        instalationProgress={instalationProgress}
+        installationProgress={installationProgress}
       />
     );
   });
