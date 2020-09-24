@@ -27,7 +27,6 @@ import { formattedWalletAmount, shortNumber } from '../../../utils/formatters';
 import { rangeMap } from '../../../utils/numbers';
 import { ellipsis } from '../../../utils/strings';
 import { STAKE_POOL_ID_COPY_FEEDBACK } from '../../../config/timingConfig';
-
 import {
   THUMBNAIL_HEIGHT,
   THUMBNAIL_OFFSET_WIDTH,
@@ -38,6 +37,7 @@ import {
   TOOLTIP_MAX_HEIGHT,
   TOOLTIP_WIDTH,
   IS_RANKING_DATA_AVAILABLE,
+  IS_SATURATION_DATA_AVAILABLE,
 } from '../../../config/stakingConfig';
 
 const messages = defineMessages({
@@ -405,7 +405,6 @@ export default class TooltipPool extends Component<Props, State> {
       showWithSelectButton,
       numberOfStakePools,
     } = this.props;
-    const showSaturation = false;
     const {
       componentStyle,
       arrowStyle,
@@ -520,7 +519,7 @@ export default class TooltipPool extends Component<Props, State> {
           />
 
           <dl className={styles.table}>
-            {showSaturation && (
+            {IS_SATURATION_DATA_AVAILABLE && (
               <>
                 <dt className={styles.saturationLabel}>
                   {intl.formatMessage(messages.saturation)}
