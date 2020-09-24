@@ -1,0 +1,68 @@
+.component,
+.isRead,
+.info {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 20px;
+  position: relative;
+  width: 100%;
+  word-break: break-word;
+
+  & + .component {
+    margin-top: 10px;
+  }
+
+  .title {
+    color: var(--theme-news-item-title-color);
+    font-family: var(--font-regular);
+    font-size: 16px;
+    line-height: 1.33;
+    margin-bottom: 2px;
+
+    .lastWordWrapper {
+      display: inline-block;
+      word-break: break-all;
+
+      .badge {
+        background-color: var(--theme-news-item-badge-green-color);
+        border-radius: 12.5px;
+        display: inline-block;
+        height: 8px;
+        margin: 3px 8px 3px 4px;
+        width: 8px;
+      }
+    }
+  }
+
+  .date {
+    color: var(--theme-news-item-title-color);
+    font-family: var(--font-light);
+    font-size: 14px;
+    font-weight: 300;
+    line-height: 1.36;
+    margin-bottom: 6px;
+    opacity: 0.7;
+  }
+
+  .downloadProgress {
+    height: 2px;
+    margin-bottom: -6px;
+    position: relative;
+    span {
+      background: var(--theme-news-item-title-color);
+      display: block;
+      height: 2px;
+      transition: width 0.24s;
+    }
+    em {
+      background: var(--theme-news-item-title-color);
+      bottom: 0;
+      height: 2px;
+      opacity: 0.5;
+      position: absolute;
+      width: 100%;
+      z-index: 0;
+    }
+  }
+}

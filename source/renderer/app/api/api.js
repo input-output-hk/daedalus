@@ -27,12 +27,6 @@ import { getNetworkInfo } from './network/requests/getNetworkInfo';
 import { getNetworkClock } from './network/requests/getNetworkClock';
 import { getNetworkParameters } from './network/requests/getNetworkParameters';
 
-// App update requests
-import { applyAppUpdate } from './nodes/requests/applyAppUpdate';
-// import { getNextAppUpdate } from './nodes/requests/getNextAppUpdate';
-import { postponeAppUpdate } from './nodes/requests/postponeAppUpdate';
-import { getLatestAppVersion } from './nodes/requests/getLatestAppVersion';
-
 // Transactions requests
 import { getTransactionFee } from './transactions/requests/getTransactionFee';
 import { getByronWalletTransactionFee } from './transactions/requests/getByronWalletTransactionFee';
@@ -80,10 +74,7 @@ import { joinStakePool } from './staking/requests/joinStakePool';
 import { quitStakePool } from './staking/requests/quitStakePool';
 
 // Utility functions
-import {
-  awaitUpdateChannel,
-  cardanoFaultInjectionChannel,
-} from '../ipc/cardano.ipc';
+import { cardanoFaultInjectionChannel } from '../ipc/cardano.ipc';
 import patchAdaApi from './utils/patchAdaApi';
 import { getLegacyWalletId, utcStringToDate } from './utils';
 import { logger } from '../utils/logging';
@@ -122,13 +113,6 @@ import type {
   GetNetworkParametersResponse,
   GetNetworkParametersApiResponse,
 } from './network/types';
-
-// Nodes Types
-import type {
-  LatestAppVersionInfoResponse,
-  AppInfo,
-  GetLatestAppVersionResponse,
-} from './nodes/types';
 
 // Transactions Types
 import type {
@@ -1258,49 +1242,6 @@ export default class AdaApi {
     }
   };
 
-  nextUpdate = async (): Promise<AppInfo | null> => {
-    logger.debug('AdaApi::nextUpdate called');
-
-    /* TODO: Re-enable when API is available
-    try {
-      const appUpdate = await getNextAppUpdate(this.config);
-      if (appUpdate && appUpdate.version) {
-        logger.debug('AdaApi::nextUpdate success', { appUpdate });
-        return appUpdate;
-      }
-      logger.debug('AdaApi::nextUpdate success: No Update Available');
-    } catch (error) {
-      logger.error('AdaApi::nextUpdate error', { error });
-      throw new GenericApiError(error);
-    }
-    */
-
-    return null;
-  };
-
-  postponeUpdate = async (): Promise<void> => {
-    logger.debug('AdaApi::postponeUpdate called');
-    try {
-      const response: Promise<any> = await postponeAppUpdate(this.config);
-      logger.debug('AdaApi::postponeUpdate success', { response });
-    } catch (error) {
-      logger.error('AdaApi::postponeUpdate error', { error });
-      throw new ApiError(error);
-    }
-  };
-
-  applyUpdate = async (): Promise<void> => {
-    logger.debug('AdaApi::applyUpdate called');
-    try {
-      await awaitUpdateChannel.send();
-      const response: Promise<any> = await applyAppUpdate(this.config);
-      logger.debug('AdaApi::applyUpdate success', { response });
-    } catch (error) {
-      logger.error('AdaApi::applyUpdate error', { error });
-      throw new ApiError(error);
-    }
-  };
-
   updateWallet = async (request: UpdateWalletRequest): Promise<Wallet> => {
     logger.debug('AdaApi::updateWallet called', {
       parameters: filterLogData(request),
@@ -1731,43 +1672,6 @@ export default class AdaApi {
     }
   };
 
-  getLatestAppVersion = async (): Promise<GetLatestAppVersionResponse> => {
-    logger.debug('AdaApi::getLatestAppVersion called');
-    try {
-      const { isWindows, platform } = global.environment;
-      const latestAppVersionInfo: LatestAppVersionInfoResponse = await getLatestAppVersion();
-
-      const latestAppVersionPath = `platforms.${
-        isWindows ? 'windows' : platform
-      }.version`;
-
-      const applicationVersionPath = `platforms.${
-        isWindows ? 'windows' : platform
-      }.applicationVersion`;
-
-      const latestAppVersion = get(
-        latestAppVersionInfo,
-        latestAppVersionPath,
-        null
-      );
-
-      const applicationVersion = get(
-        latestAppVersionInfo,
-        applicationVersionPath,
-        null
-      );
-      logger.debug('AdaApi::getLatestAppVersion success', {
-        latestAppVersion,
-        latestAppVersionInfo,
-        applicationVersion,
-      });
-      return { latestAppVersion, applicationVersion };
-    } catch (error) {
-      logger.error('AdaApi::getLatestAppVersion error', { error });
-      throw new ApiError(error);
-    }
-  };
-
   getNews = async (): Promise<GetNewsResponse> => {
     logger.debug('AdaApi::getNews called');
 
@@ -1857,9 +1761,6 @@ export default class AdaApi {
   // No implementation here but can be overwritten
   setLocalTimeDifference: Function;
   setSyncProgress: Function;
-  setNextUpdate: Function;
-  setLatestAppVersion: Function;
-  setApplicationVersion: Function;
   setFaultyNodeSettingsApi: boolean;
   resetTestOverrides: Function;
 

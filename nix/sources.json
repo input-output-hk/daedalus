@@ -96,6 +96,18 @@
         "url": "https://github.com/input-output-hk/niv/archive/4229fbcf62997467c34283a2f353702359e78e5a.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
+    "nix-bundle": {
+        "branch": "rm-style",
+        "description": "Bundle Nix derivations to run anywhere!",
+        "homepage": "",
+        "owner": "input-output-hk",
+        "repo": "nix-bundle",
+        "rev": "acf3b142c1fa332d4f9050e7cdfb3c3f8091e78b",
+        "sha256": "0pcc8bh1x3shr6k2h8zw05n0apm5ppx6nk07xp89ljldah4mmc6c",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/nix-bundle/archive/acf3b142c1fa332d4f9050e7cdfb3c3f8091e78b.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
     "nixpkgs-nsis": {
         "branch": "nsis",
         "description": "A read-only mirror of NixOS/nixpkgs tracking the released channels. Send issues and PRs to",
