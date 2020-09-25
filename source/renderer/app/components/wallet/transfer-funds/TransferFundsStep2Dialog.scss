@@ -34,6 +34,14 @@
     font-family: var(--font-medium);
     margin-bottom: 20px;
     width: 50%;
+    b {
+      font-family: var(--font-semibold);
+    }
+  }
+
+  .amountGroupFull {
+    @extend .amountGroup;
+    width: 100%;
   }
 
   .amount {

@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
+import BigNumber from 'bignumber.js';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import { Input } from 'react-polymorph/lib/components/Input';
@@ -15,6 +16,8 @@ import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { submitOnEnter } from '../../../utils/form';
+import { formattedWalletAmount } from '../../../utils/formatters';
+import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 
 const messages = defineMessages({
   dialogTitle: {
@@ -28,10 +31,10 @@ const messages = defineMessages({
       '!!!Confirm transfer from {sourceWalletName}wallet to the {targetWalletName} wallet.',
     description: 'description in the transfer funds form.',
   },
-  labelAmount: {
-    id: 'wallet.transferFunds.dialog2.label.amount',
-    defaultMessage: '!!!Amount',
-    description: 'Label Amount in the transfer funds form',
+  labelSourceWalletAmount: {
+    id: 'wallet.transferFunds.dialog2.label.sourceWalletAmount',
+    defaultMessage: '!!!{sourceWalletName} amount',
+    description: 'Label Source wallet Amount in the transfer funds form',
   },
   labelFees: {
     id: 'wallet.transferFunds.dialog2.label.fees',
@@ -71,12 +74,11 @@ type Props = {
   onFinish: Function,
   onClose: Function,
   onBack: Function,
-  total: string,
-  fees: ?string,
-  leftovers: ?string,
-  amount: ?string,
-  sourceWalletName: ?string,
-  targetWalletName: ?string,
+  feesAmount: BigNumber,
+  leftoversAmount: BigNumber,
+  sourceWalletAmount: BigNumber,
+  sourceWalletName: string,
+  targetWalletName: string,
   isSubmitting?: boolean,
   error?: ?LocalizableError,
 };
@@ -139,15 +141,25 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
     const {
       onClose,
       onBack,
-      total,
-      fees,
-      leftovers,
-      amount,
+      feesAmount,
+      leftoversAmount,
       sourceWalletName,
+      sourceWalletAmount,
       targetWalletName,
       isSubmitting,
       error,
     } = this.props;
+
+    const fees = feesAmount.toFormat(DECIMAL_PLACES_IN_ADA);
+    const leftovers = leftoversAmount.toFormat(DECIMAL_PLACES_IN_ADA);
+    const totalToBeReceived = formattedWalletAmount(
+      sourceWalletAmount.minus(feesAmount),
+      false
+    );
+    const sourceWalletBalance = formattedWalletAmount(
+      sourceWalletAmount,
+      false
+    );
 
     const spendingPasswordField = this.form.$('spendingPassword');
 
@@ -185,23 +197,22 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
         >
           {(...content) => <div className={styles.description}>{content}</div>}
         </FormattedMessage>
-        <div className={styles.amountGroup}>
+        <div className={styles.amountGroupFull}>
           <p className={styles.label}>
-            {intl.formatMessage(messages.labelAmount)}
+            <FormattedMessage
+              {...messages.labelSourceWalletAmount}
+              values={{
+                sourceWalletName: <b key="source">{sourceWalletName}</b>,
+              }}
+            />
           </p>
-          <div className={styles.amount}>{amount}</div>
+          <div className={styles.amount}>{sourceWalletBalance}</div>
         </div>
         <div className={styles.amountGroup}>
           <p className={styles.label}>
             {intl.formatMessage(messages.labelFees)}
           </p>
-          <div className={styles.amountOpacity}>+ {fees}</div>
-        </div>
-        <div className={styles.amountGroup}>
-          <p className={styles.label}>
-            {intl.formatMessage(messages.labelTotal)}
-          </p>
-          <div className={styles.amount}>{total}</div>
+          <div className={styles.amountOpacity}>{fees}</div>
         </div>
         {leftovers && (
           <div className={styles.amountGroup}>
@@ -211,6 +222,12 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
             <div className={styles.amountOpacity}>{leftovers}</div>
           </div>
         )}
+        <div className={styles.amountGroupFull}>
+          <p className={styles.label}>
+            {intl.formatMessage(messages.labelTotal)}
+          </p>
+          <div className={styles.amount}>{totalToBeReceived}</div>
+        </div>
         <Input
           type="password"
           className={styles.currentPassword}

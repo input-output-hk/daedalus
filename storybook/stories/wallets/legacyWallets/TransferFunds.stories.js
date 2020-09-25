@@ -65,32 +65,28 @@ storiesOf('Wallets|Legacy Wallets', module)
     );
   })
   .add('Transfer Funds - Step2', () => {
-    let totalNumber = number('sourceWalletBalance', 50, {
-      range: true,
-      min: 10,
-      max: 3000,
-      step: 1,
-    });
-    totalNumber = BigNumber(totalNumber);
-    const total = formattedWalletAmount(totalNumber, false);
-    let feesNumber = number('fees', 1, {
+    const feesNumber = number('fees', 1, {
       range: true,
       min: 1,
       max: 5,
       step: 1,
     });
-    feesNumber = BigNumber(feesNumber);
-    const fees = formattedWalletAmount(feesNumber, false);
-    const leftovers = boolean('Has leftovers', true)
-      ? formattedWalletAmount(new BigNumber(0.000005), false)
+    const feesAmount = BigNumber(feesNumber);
+    const leftoversAmount = boolean('Has leftovers', true)
+      ? new BigNumber(0.000005)
       : null;
-    const amount = formattedWalletAmount(totalNumber.minus(feesNumber), false);
+    const sourceWalletNumber = number('sourceWalletBalance', 50, {
+      range: true,
+      min: 10,
+      max: 3000,
+      step: 1,
+    });
+    const sourceWalletAmount = BigNumber(sourceWalletNumber);
     return (
       <TransferFundsStep2Dialog
-        leftovers={leftovers}
-        amount={amount}
-        fees={fees}
-        total={total}
+        feesAmount={feesAmount}
+        leftoversAmount={leftoversAmount}
+        sourceWalletAmount={sourceWalletAmount}
         sourceWalletName="Source Wallet"
         targetWalletName="Target Wallet"
         onBack={action('onBack')}
