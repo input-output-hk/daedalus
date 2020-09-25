@@ -1,14 +1,14 @@
 {
     "cardano-node": {
-        "branch": "master",
+        "branch": "tags/1.20.0",
         "description": null,
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-node",
-        "rev": "9e06d6f9a293a9656bf6e31b7e5d0a9f498163d1",
-        "sha256": "1kh2rnis2r7g7a40pffnnkzj5mra25581a57b2fgq21jk0g42cby",
+        "rev": "1f2f51164b53b9b775c03ac9f1e23e7b70c74b05",
+        "sha256": "0ql57bhisnhs2dr2vdk8s4rwnff818lzvqw3l2780q16f20yypdg",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-node/archive/9e06d6f9a293a9656bf6e31b7e5d0a9f498163d1.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-node/archive/1f2f51164b53b9b775c03ac9f1e23e7b70c74b05.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-shell": {
@@ -29,10 +29,10 @@
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-wallet",
-        "rev": "d7994e9c83ed00d798cf24f3101e50f0383ddc17",
-        "sha256": "00wzahmqm44hkxrcns1ig5zann057328y24xbv34jwjgllldmzhb",
+        "rev": "e3145b822d4ece10f98039e3b5b535d9e43d190a",
+        "sha256": "1nfzfdv03nz2bhin2jflxsmh597vkjifb76jsdg0384x89gi0a10",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-wallet/archive/d7994e9c83ed00d798cf24f3101e50f0383ddc17.tar.gz",
+        "url": "https://github.com/input-output-hk/cardano-wallet/archive/e3145b822d4ece10f98039e3b5b535d9e43d190a.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz",
         "version": "v2020-04-28"
     },
@@ -94,6 +94,18 @@
         "sha256": "1y1h6aj0rxrrhvp9jpr6xw3zsa1l8ac25ng4xzjskr5kg620pxqr",
         "type": "tarball",
         "url": "https://github.com/input-output-hk/niv/archive/4229fbcf62997467c34283a2f353702359e78e5a.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
+    },
+    "nix-bundle": {
+        "branch": "rm-style",
+        "description": "Bundle Nix derivations to run anywhere!",
+        "homepage": "",
+        "owner": "input-output-hk",
+        "repo": "nix-bundle",
+        "rev": "acf3b142c1fa332d4f9050e7cdfb3c3f8091e78b",
+        "sha256": "0pcc8bh1x3shr6k2h8zw05n0apm5ppx6nk07xp89ljldah4mmc6c",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/nix-bundle/archive/acf3b142c1fa332d4f9050e7cdfb3c3f8091e78b.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "nixpkgs-nsis": {

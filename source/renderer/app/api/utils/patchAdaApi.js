@@ -4,7 +4,6 @@ import { action } from 'mobx';
 import BigNumber from 'bignumber.js/bignumber';
 import AdaApi from '../api';
 import { getNetworkInfo } from '../network/requests/getNetworkInfo';
-import { getLatestAppVersion } from '../nodes/requests/getLatestAppVersion';
 import { logger } from '../../utils/logging';
 import packageJson from '../../../../../package.json';
 import ApiError from '../../domains/ApiError';
@@ -17,17 +16,10 @@ import type {
   GetNetworkInfoResponse,
   NetworkInfoResponse,
 } from '../network/types';
-import type {
-  LatestAppVersionInfoResponse,
-  GetLatestAppVersionResponse,
-} from '../nodes/types';
 import type { GetNewsResponse } from '../news/types';
 
-let LATEST_APP_VERSION = null;
 let LOCAL_TIME_DIFFERENCE = 0;
 let SYNC_PROGRESS = null;
-let NEXT_ADA_UPDATE = null;
-let APPLICATION_VERSION = null;
 let TESTING_NEWSFEED_JSON: ?GetNewsResponse;
 let TESTING_WALLETS_DATA: Object = {};
 
@@ -76,72 +68,6 @@ export default (api: AdaApi) => {
 
   api.setSyncProgress = async syncProgress => {
     SYNC_PROGRESS = syncProgress;
-  };
-
-  api.nextUpdate = async (): Promise<Object> => {
-    let appUpdate = null;
-
-    if (NEXT_ADA_UPDATE) {
-      appUpdate = {
-        version: NEXT_ADA_UPDATE,
-      };
-    }
-
-    logger.debug('AdaApi::nextUpdate success', { appUpdate });
-    return Promise.resolve(appUpdate);
-  };
-
-  api.setNextUpdate = async nextUpdate => {
-    NEXT_ADA_UPDATE = nextUpdate;
-  };
-
-  api.getLatestAppVersion = async (): Promise<GetLatestAppVersionResponse> => {
-    logger.debug('AdaApi::getLatestAppVersion (PATCHED) called');
-    try {
-      const { isWindows, platform } = global.environment;
-      const latestAppVersionInfo: LatestAppVersionInfoResponse = await getLatestAppVersion();
-      const latestAppVersionPath = `platforms.${
-        isWindows ? 'windows' : platform
-      }.version`;
-
-      const applicationVersionPath = `platforms.${
-        isWindows ? 'windows' : platform
-      }.applicationVersion`;
-
-      const latestAppVersion = get(
-        latestAppVersionInfo,
-        latestAppVersionPath,
-        null
-      );
-
-      const applicationVersion = get(
-        latestAppVersionInfo,
-        applicationVersionPath,
-        null
-      );
-
-      logger.debug('AdaApi::getLatestAppVersion success', {
-        latestAppVersion,
-        latestAppVersionInfo,
-        applicationVersion,
-      });
-
-      return {
-        latestAppVersion: LATEST_APP_VERSION || latestAppVersion,
-        applicationVersion: APPLICATION_VERSION || applicationVersion,
-      };
-    } catch (error) {
-      logger.error('AdaApi::getLatestAppVersion (PATCHED) error', { error });
-      throw new ApiError();
-    }
-  };
-
-  api.setLatestAppVersion = async (latestAppVersion: ?string) => {
-    LATEST_APP_VERSION = latestAppVersion;
-  };
-
-  api.setApplicationVersion = async (applicationVersion: number) => {
-    APPLICATION_VERSION = applicationVersion;
   };
 
   api.setTestingNewsFeed = (testingNewsFeedData: ?GetNewsResponse) => {
@@ -240,9 +166,6 @@ export default (api: AdaApi) => {
   api.resetTestOverrides = () => {
     TESTING_WALLETS_DATA = {};
     SYNC_PROGRESS = null;
-    LATEST_APP_VERSION = null;
-    NEXT_ADA_UPDATE = null;
-    APPLICATION_VERSION = null;
     LOCAL_TIME_DIFFERENCE = 0;
   };
 };

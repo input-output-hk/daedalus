@@ -58,11 +58,11 @@ export const getColorFromRange = (
 
 export const getSaturationColor = (saturation: number): string => {
   let color;
-  if (saturation >= 100) {
+  if (saturation > 110) {
     color = 'red';
-  } else if (saturation >= 90) {
+  } else if (saturation > 105) {
     color = 'orange';
-  } else if (saturation >= 80) {
+  } else if (saturation > 100) {
     color = 'yellow';
   } else {
     color = 'green';

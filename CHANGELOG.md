@@ -17,6 +17,8 @@ Changelog
 
 ### Chores
 
+- Updated `cardano-wallet` to version `2020-09-22` ([PR 2188](https://github.com/input-output-hk/daedalus/pull/2188))
+- Updated `cardano-wallet` to revision `ffeca1d9` which includes `cardano-node` 1.20.0 ([PR 2187](https://github.com/input-output-hk/daedalus/pull/2187))
 - Set "Delegation center" as default staking screen ([PR 2185](https://github.com/input-output-hk/daedalus/pull/2185))
 - Changed the ordering of wallet addresses on the "Receive" screen so that the oldest one are on top and the newest one on the bottom of the list ([PR 2176](https://github.com/input-output-hk/daedalus/pull/2176))
 - Fixed UI issues ([PR 2152](https://github.com/input-output-hk/daedalus/pull/2152))
@@ -90,6 +92,10 @@ Changelog
 - Fixed epoch length and slot numbers info ([PR 2108](https://github.com/input-output-hk/daedalus/pull/2108))
 
 ## 2.0.0-RC1
+
+### Features
+
+- Implemented Daedalus app automatic update ([PR 2056](https://github.com/input-output-hk/daedalus/pull/2056))
 
 ### Fixes
 
