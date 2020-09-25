@@ -314,7 +314,6 @@ export default class NetworkStatusStore extends Store {
           this.tlsConfig = null;
         });
         this._setDisconnected(wasConnected);
-        this.stores.appUpdate.hideUpdateDialog();
         this.stores.app._closeActiveDialog();
         break;
       default:

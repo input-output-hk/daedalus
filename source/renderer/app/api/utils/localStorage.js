@@ -123,12 +123,12 @@ export default class LocalStorageApi {
   unsetTermsOfUseAcceptance = (): Promise<void> =>
     LocalStorageApi.unset(keys.TERMS_OF_USE_ACCEPTANCE);
 
-  getUserTheme = (): Promise<string> => LocalStorageApi.get(keys.USER_THEME);
+  getUserTheme = (): Promise<string> => LocalStorageApi.get(keys.THEME);
 
   setUserTheme = (theme: string): Promise<void> =>
-    LocalStorageApi.set(keys.USER_THEME, theme);
+    LocalStorageApi.set(keys.THEME, theme);
 
-  unsetUserTheme = (): Promise<void> => LocalStorageApi.unset(keys.USER_THEME);
+  unsetUserTheme = (): Promise<void> => LocalStorageApi.unset(keys.THEME);
 
   getDataLayerMigrationAcceptance = (): Promise<boolean> =>
     LocalStorageApi.get(keys.DATA_LAYER_MIGRATION_ACCEPTANCE, false);
@@ -214,6 +214,24 @@ export default class LocalStorageApi {
 
   unsetWalletMigrationStatus = (): Promise<void> =>
     LocalStorageApi.unset(keys.WALLET_MIGRATION_STATUS);
+
+  getAppAutomaticUpdateFailed = (): Promise<boolean> =>
+    LocalStorageApi.get(keys.APP_AUTOMATIC_UPDATE_FAILED, false);
+
+  setAppAutomaticUpdateFailed = (): Promise<void> =>
+    LocalStorageApi.set(keys.APP_AUTOMATIC_UPDATE_FAILED, true);
+
+  unsetAppAutomaticUpdateFailed = (): Promise<void> =>
+    LocalStorageApi.unset(keys.APP_AUTOMATIC_UPDATE_FAILED);
+
+  getAppUpdateCompleted = (): Promise<string> =>
+    LocalStorageApi.get(keys.APP_UPDATE_COMPLETED, false);
+
+  setAppUpdateCompleted = (verstion: string): Promise<void> =>
+    LocalStorageApi.set(keys.APP_UPDATE_COMPLETED, verstion, '');
+
+  unsetAppUpdateCompleted = (): Promise<void> =>
+    LocalStorageApi.unset(keys.APP_UPDATE_COMPLETED);
 
   reset = async () => {
     await LocalStorageApi.reset();

@@ -18,11 +18,13 @@ export const NewsTypes: {
   ALERT: NewsType,
   ANNOUNCEMENT: NewsType,
   INFO: NewsType,
+  UPDATE: NewsType,
 } = {
   INCIDENT: 'incident',
   ALERT: 'alert',
   ANNOUNCEMENT: 'announcement',
   INFO: 'info',
+  UPDATE: 'software-update',
 };
 
 export const IncidentColors: {
@@ -73,6 +75,7 @@ class News {
 
 class NewsCollection {
   @observable all: Array<News> = [];
+  @observable update: ?News = null;
 
   constructor(data: Array<News>) {
     // Filter news by platform and versions
@@ -83,6 +86,7 @@ class NewsCollection {
         ''
       );
       const targetPlatforms = get(newsItem, ['target', 'platforms']);
+
       return (
         (!availableTargetVersionRange ||
           (availableTargetVersionRange &&
@@ -90,6 +94,7 @@ class NewsCollection {
               includePrerelease: true,
             }))) &&
         (platform === 'browser' || includes(targetPlatforms, platform)) &&
+        newsItem.type !== NewsTypes.UPDATE &&
         newsItem.id &&
         newsItem.title &&
         newsItem.content &&
@@ -97,11 +102,12 @@ class NewsCollection {
         newsItem.date
       );
     });
-
     const orderedNews = orderBy(filteredNews, 'date', 'desc');
+    const update = data.filter(item => item.type === NewsTypes.UPDATE)[0];
 
     runInAction(() => {
       this.all = orderedNews;
+      this.update = update;
     });
   }
 
@@ -170,6 +176,10 @@ class NewsCollection {
     // Order read from newest to oldest
     return orderBy(read, 'date', 'asc');
   }
+
+  // @computed get update(): News | null {
+  //   return this.all.filter(item => item.type === NewsTypes.UPDATE)[0];
+  // }
 }
 
 export default {

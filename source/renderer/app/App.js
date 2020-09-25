@@ -14,7 +14,6 @@ import ThemeManager from './ThemeManager';
 import AboutDialog from './containers/static/AboutDialog';
 import DaedalusDiagnosticsDialog from './containers/status/DaedalusDiagnosticsDialog';
 import NotificationsContainer from './containers/notifications/NotificationsContainer';
-import AutomaticUpdateNotificationDialog from './containers/notifications/AutomaticUpdateNotificationDialog';
 import NewsOverlayContainer from './containers/news/NewsOverlayContainer';
 import { DIALOGS } from '../../common/ipc/constants';
 import type { StoresMap } from './stores/index';
@@ -34,8 +33,7 @@ export default class App extends Component<{
 
   render() {
     const { stores, actions, history } = this.props;
-    const { app, appUpdate, networkStatus } = stores;
-    const { showManualUpdate, showNextUpdate } = appUpdate;
+    const { app, networkStatus } = stores;
     const { isActiveDialog, isSetupPage } = app;
     const { isNodeStopping, isNodeStopped } = networkStatus;
     const locale = stores.profile.currentLocale;
@@ -46,8 +44,6 @@ export default class App extends Component<{
 
     const canShowNews =
       !isSetupPage && // Active page is not "Language Selection" or "Terms of Use"
-      !showNextUpdate && // Automatic update not available
-      !showManualUpdate && // Manual update not available
       !isNodeStopping && // Daedalus is not shutting down
       !isNodeStopped; // Daedalus is not shutting down
 
@@ -68,17 +64,13 @@ export default class App extends Component<{
                   <Routes />
                 </Router>
                 {mobxDevTools}
-                {showNextUpdate ? (
-                  <AutomaticUpdateNotificationDialog />
-                ) : (
-                  [
-                    isActiveDialog(ABOUT) && <AboutDialog key="aboutDialog" />,
-                    isActiveDialog(DAEDALUS_DIAGNOSTICS) && (
-                      <DaedalusDiagnosticsDialog key="daedalusDiagnosticsDialog" />
-                    ),
-                    <NotificationsContainer key="notificationsContainer" />,
-                  ]
-                )}
+                {[
+                  isActiveDialog(ABOUT) && <AboutDialog key="aboutDialog" />,
+                  isActiveDialog(DAEDALUS_DIAGNOSTICS) && (
+                    <DaedalusDiagnosticsDialog key="daedalusDiagnosticsDialog" />
+                  ),
+                  <NotificationsContainer key="notificationsContainer" />,
+                ]}
                 {canShowNews && [
                   <NewsFeedContainer key="newsFeedList" />,
                   <NewsOverlayContainer key="newsFeedOverlay" />,

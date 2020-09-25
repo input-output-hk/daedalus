@@ -15,6 +15,8 @@ import ChangeSpendingPasswordDialog from './ChangeSpendingPasswordDialog';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletSettings.scss';
 import WalletRecoveryPhraseVerificationWidget from './WalletRecoveryPhraseVerificationWidget';
+import { momentLocales } from '../../../../../common/types/locales.types';
+import type { Locale } from '../../../../../common/types/locales.types';
 
 export const messages = defineMessages({
   assuranceLevelLabel: {
@@ -88,7 +90,7 @@ type Props = {
   recoveryPhraseVerificationStatus: string,
   recoveryPhraseVerificationStatusType: string,
   wordCount: number,
-  locale: string,
+  locale: Locale,
   isSpendingPasswordSet: boolean,
 };
 
@@ -166,11 +168,7 @@ export default class WalletSettings extends Component<Props, State> {
     const { isFormBlocked } = this.state;
 
     // Set Japanese locale to moment. Default is en-US
-    if (locale === 'ja-JP') {
-      moment.locale('ja');
-    } else {
-      moment.locale('en-us');
-    }
+    moment.locale(momentLocales[locale]);
 
     if (isLegacy && isIncentivizedTestnet) {
       const deleteWalletBoxStyles = classNames([

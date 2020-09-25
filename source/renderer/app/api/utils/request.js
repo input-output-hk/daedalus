@@ -17,9 +17,7 @@ export type RequestOptions = {
   },
 };
 
-const ALLOWED_ERROR_EXCEPTION_PATHS = [
-  '/api/internal/next-update', // when nextAdaUpdate receives a 404, it isn't an error
-];
+const ALLOWED_ERROR_EXCEPTION_PATHS = [];
 
 const { isIncentivizedTestnet } = global.environment;
 

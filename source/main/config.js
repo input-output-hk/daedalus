@@ -76,6 +76,7 @@ export type LauncherConfig = {
   isFlight: boolean,
   isStaging: boolean,
   smashUrl?: string,
+  updateRunnerBin: string,
 };
 
 type WindowOptionsType = {
