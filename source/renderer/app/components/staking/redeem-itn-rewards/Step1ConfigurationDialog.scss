@@ -42,6 +42,22 @@
   }
 }
 
+.errorMessage {
+  color: var(
+      --theme-delegation-steps-choose-wallet-error-message-light-color
+  );
+  font-size: 14px;
+  letter-spacing: normal;
+  margin-bottom: 10px;
+  margin-top: -5px;
+
+  span {
+    color: var(--theme-delegation-steps-choose-wallet-error-message-color);
+    font-family: var(--font-medium);
+    font-weight: 500;
+  }
+}
+
 .error {
   @include error-message;
   margin-bottom: 1rem;
@@ -55,7 +71,7 @@
 
     &:hover {
       background-color: var(
-        --theme-dialog-fullsize-field-background-color
+          --theme-dialog-fullsize-field-background-color
       ) !important;
     }
   }

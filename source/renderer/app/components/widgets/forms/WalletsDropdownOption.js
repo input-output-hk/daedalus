@@ -18,9 +18,19 @@ export type WalletOption = {
 export default class WalletsDropdownOption extends Component<WalletOption> {
   renderLabelAndTicker = () => {
     const { delegatedStakePool, label, numberOfStakePools, syncing } = this.props;
-
     if (!delegatedStakePool || !numberOfStakePools) {
-      return <div className={styles.label}>{label}</div>;
+      return (
+        <div className={styles.topRow}>
+          <div className={styles.topRowTicker}>
+            <div className={styles.label}>{label}</div>
+          </div>
+          <div className={styles.topRowSync}>
+            {syncing && (<div className={styles.syncing}>
+              <LoadingSpinner/>
+            </div>)}
+          </div>
+        </div>
+      );
     }
 
     const { ranking, ticker } = delegatedStakePool;
@@ -32,11 +42,6 @@ export default class WalletsDropdownOption extends Component<WalletOption> {
             [{ticker}]
           </div>
           <div className={styles.label}>{label}</div>
-        </div>
-        <div className={styles.topRowSync}>
-          {syncing && (<div className={styles.syncing}>
-            <LoadingSpinner/>
-          </div>)}
         </div>
       </div>
     );

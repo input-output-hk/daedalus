@@ -16,6 +16,7 @@ import {
   FormattedMessage,
   FormattedHTMLMessage,
 } from 'react-intl';
+import BigNumber from 'bignumber.js';
 import Wallet from '../../../domains/Wallet';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
@@ -26,6 +27,7 @@ import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { ITN_WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
+import { MIN_DELEGATION_FUNDS } from '../../../config/stakingConfig';
 
 const messages = defineMessages({
   title: {
@@ -127,6 +129,29 @@ const messages = defineMessages({
     description:
       'Error message shown when invalid recovery phrase was entered.',
   },
+  errorMinDelegationFunds: {
+    id:
+      'staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFunds',
+    defaultMessage:
+      '!!!This wallet does not contain the minimum amount of {minDelegationFunds} ADA which is required for delegation to be available. Please select a wallet with <span>a minimum amount of {minDelegationFunds} ADA</span> and click continue.',
+    description:
+      'errorMinDelegationFunds Error Label on the delegation setup "choose wallet" step dialog.',
+  },
+  errorMinDelegationFundsRewardsOnly: {
+    id:
+      'staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFundsRewardsOnly',
+    defaultMessage:
+      '!!!This wallet contains only rewards balances so it cannot be delegated.',
+    description:
+      'errorMinDelegationFundsRewardsOnly Error Label on the delegation setup "choose wallet" step dialog.',
+  },
+  errorRestoringWallet: {
+    id: 'staking.delegationSetup.chooseWallet.step.dialog.errorRestoringWallet',
+    defaultMessage:
+      '!!!This wallet can’t be used for delegation while it’s being synced.',
+    description:
+      'RestoringWallet Error Label on the delegation setup "choose wallet" step dialog.',
+  },
 });
 
 type Props = {
@@ -205,6 +230,14 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       },
     }
   );
+
+  isWalletAcceptable = (
+    walletAmount?: BigNumber,
+    walletReward?: BigNumber = 0
+  ) =>
+    walletAmount &&
+    walletAmount.gte(new BigNumber(MIN_DELEGATION_FUNDS)) &&
+    !walletAmount.equals(walletReward);
 
   submit = () => {
     this.form.submit({
@@ -302,6 +335,32 @@ export default class Step1ConfigurationDialog extends Component<Props> {
 
     const closeButton = <DialogCloseButton onClose={onClose} />;
 
+    const selectedWallet: ?Wallet = wallets.find(
+      (current: Wallet) => current && current.id === walletId
+    );
+
+    const { amount, reward, isRestoring } = selectedWallet || {};
+
+    let errorMessage;
+    if (selectedWallet && !this.isWalletAcceptable(amount, reward)) {
+      // Wallet is restoring
+      if (isRestoring) errorMessage = messages.errorRestoringWallet;
+      // Wallet only has Reward balance
+      else if (!amount.isZero() && amount.equals(reward))
+        errorMessage = messages.errorMinDelegationFundsRewardsOnly;
+      // Wallet balance < min delegation funds
+      else errorMessage = messages.errorMinDelegationFunds;
+    }
+
+    const dropdownError = errorMessage && (
+      <p className={styles.errorMessage}>
+        <FormattedHTMLMessage
+          {...errorMessage}
+          values={{ MIN_DELEGATION_FUNDS }}
+        />
+      </p>
+    );
+
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
@@ -352,6 +411,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
               errorPosition="bottom"
             />
           </div>
+          {dropdownError}
           <Checkbox
             {...checkboxAcceptance1Field.bind()}
             className={styles.checkbox}
