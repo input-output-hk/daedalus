@@ -5,9 +5,6 @@ import {
   GET_EXTENDED_PUBLIC_KEY_CHANNEL,
   GET_CARDANO_ADA_APP_CHANNEL,
   GET_HARDWARE_WALLET_CONNECTION_CHANNEL,
-  DERIVE_ADDRESS_CHANNEL,
-  SHOW_ADDRESS_CHANNEL,
-  ATTEST_UTXO_CHANNEL,
   SIGN_TRANSACTION_CHANNEL,
 } from '../../../common/ipc/api';
 
@@ -18,12 +15,6 @@ import type {
   getExtendedPublicKeyMainResponse,
   getHardwareWalletConnectiontMainRequest,
   getHardwareWalletConnectiontRendererResponse,
-  deriveAddressMainResponse,
-  deriveAddressRendererRequest,
-  showAddresMainResponse,
-  showAddressRendererRequest,
-  attestUtxoMainResponse,
-  attestUtxoRendererRequest,
   signTransaMainResponse,
   signTransactionRendererRequest,
   getCardanoAdaAppMainResponse,
@@ -53,24 +44,6 @@ export const getHardwareWalletConnectionChannel: RendererIpcChannel<
   getHardwareWalletConnectiontMainRequest,
   getHardwareWalletConnectiontRendererResponse
 > = new RendererIpcChannel(GET_HARDWARE_WALLET_CONNECTION_CHANNEL);
-
-// IpcChannel<Incoming, Outgoing>
-export const deriveAddressChannel: RendererIpcChannel<
-  deriveAddressMainResponse,
-  deriveAddressRendererRequest
-> = new RendererIpcChannel(DERIVE_ADDRESS_CHANNEL);
-
-// IpcChannel<Incoming, Outgoing>
-export const showAddressChannel: RendererIpcChannel<
-  showAddresMainResponse,
-  showAddressRendererRequest
-> = new RendererIpcChannel(SHOW_ADDRESS_CHANNEL);
-
-// IpcChannel<Incoming, Outgoing>
-export const attestUtxoChannel: RendererIpcChannel<
-  attestUtxoMainResponse,
-  attestUtxoRendererRequest
-> = new RendererIpcChannel(ATTEST_UTXO_CHANNEL);
 
 // IpcChannel<Incoming, Outgoing>
 export const signTransactionChannel: RendererIpcChannel<

@@ -24,10 +24,10 @@ export const ShelleyTxWitnessShelley = (publicKey, signature) => {
 };
 
 export const ShelleyTxInputFromUtxo = (utxo) => {
-  const coins = utxo.coins;
-  const txid = utxo.txHash;
-  const outputNo = utxo.outputNo;
-  const address = utxo.address;
+  const { address } = utxo;
+  const coins = utxo.amount.quantity;
+  const txid = utxo.id;
+  const outputNo = utxo.index;
   const txHash = Buffer.from(txid, 'hex');
 
   function encodeCBOR(encoder) {
@@ -43,7 +43,10 @@ export const ShelleyTxInputFromUtxo = (utxo) => {
   };
 };
 
-export const ShelleyTxOutput = (address, coins, isChange, spendingPath = null, stakingPath = null) => {
+export const ShelleyTxOutput = (output, addressIndex, isChange) => {
+  const { address, amount } = output;
+  const coins = amount.quantity;
+
   function encodeCBOR(encoder) {
     const addressBuff = utils.bech32_decodeAddress(address);
     return encoder.pushAny([addressBuff, coins]);
@@ -52,8 +55,8 @@ export const ShelleyTxOutput = (address, coins, isChange, spendingPath = null, s
     address,
     coins,
     isChange,
-    spendingPath,
-    stakingPath,
+    spendingPath: isChange ? [2147485500, 2147485463, 2147483648, 0, addressIndex] : null,
+    stakingPath: isChange ? [2147485500, 2147485463, 2147483648, 2, 0] : null,
     encodeCBOR,
   };
 }
@@ -127,16 +130,16 @@ export const ShelleySignedTransactionStructured = (txAux, witnesses, meta) => {
   };
 };
 
-export const CachedDeriveXpubFactory = (derivationScheme, deriveXpubHardenedFn) => {
+export const CachedDeriveXpubFactory = (deriveXpubHardenedFn) => {
   const derivedXpubs = {}
 
   const deriveXpub = async (absDerivationPath) => {
     const memoKey = JSON.stringify(absDerivationPath);
-    const derivedXpubsMemo = await derivedXpubs[memoKey];
+    let derivedXpubsMemo = await derivedXpubs[memoKey];
 
-    if (!derivedXpubs[memoKey]) {
+    if (!derivedXpubsMemo) {
       const deriveHardened = absDerivationPath.length === 0 || indexIsHardened(absDerivationPath.slice(-1)[0]);
-      derivedXpubs[memoKey] = deriveHardened
+      derivedXpubsMemo = deriveHardened
         ? deriveXpubHardenedFn(absDerivationPath)
         : deriveXpubNonhardenedFn(absDerivationPath);
     }
@@ -145,7 +148,7 @@ export const CachedDeriveXpubFactory = (derivationScheme, deriveXpubHardenedFn) 
     * the derivedXpubs map stores promises instead of direct results
     * to deal with concurrent requests to derive the same xpub
     */
-    return await derivedXpubs[memoKey];
+    return derivedXpubsMemo;
   }
 
   const deriveXpubNonhardenedFn = async (derivationPath) => {
@@ -185,26 +188,18 @@ export const prepareLedgerOutput = (output, addressIndex = 0, isChange = false) 
   };
 };
 
-export const prepareTxAux = (unsignedTx) => {
-  const { inputs, outputs } = unsignedTx;
-  const txInputs = inputs.map(ShelleyTxInputFromUtxo);
-  const txOutputs = outputs.map(({
-    address,
-    coins,
-    isChange,
-    spendingPath,
-    stakingPath,
-  }) => {
-    if (isChange) {
-      return ShelleyTxOutput(address, coins, true, spendingPath, stakingPath);
-    }
-    return ShelleyTxOutput(address, coins, false);
-  })
-
-  const txCerts = [];
-  const txFee = ShelleyFee(unsignedTx.fee);
-  const txTtl = ShelleyTtl(unsignedTx.ttl);
-  const txWithdrawals = undefined;
+export const prepareTxAux = ({
+  txInputs,
+  txOutputs,
+  fee,
+  ttl,
+  certificates,
+  withdrawals,
+}) => {
+  const txFee = ShelleyFee(fee);
+  const txTtl = ShelleyTtl(ttl);
+  const txCerts = certificates; // @TODO - implement once delegation enabled
+  const txWithdrawals = withdrawals[0]; // @TODO - implement once delegation enabled
   return ShelleyTxAux(txInputs, txOutputs, txFee, txTtl, txCerts, txWithdrawals);
 };
 

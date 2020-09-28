@@ -1,6 +1,10 @@
-import { utils, cardano } from '@cardano-foundation/ledgerjs-hw-app-cardano';
+// @flow
+import type { CoinSelectionInput, CoinSelectionOutput } from '../api/transactions/types';
 
-export const prepareTrezorInput = (input, addressIndex) => {
+export const prepareTrezorInput = (
+  input: CoinSelectionInput,
+  addressIndex: number
+) => {
   return {
     path: `m/1852'/1815'/0'/0/${addressIndex}`,
     prev_hash: input.id,
@@ -8,7 +12,11 @@ export const prepareTrezorInput = (input, addressIndex) => {
   };
 };
 
-export const prepareTrezorOutput = (output, addressIndex = 0, isChange = false) => {
+export const prepareTrezorOutput = (
+  output: CoinSelectionOutput,
+  addressIndex?: number = 0,
+  isChange?: boolean = false
+) => {
   if (isChange) {
     return {
       amount: output.amount.quantity.toString(),

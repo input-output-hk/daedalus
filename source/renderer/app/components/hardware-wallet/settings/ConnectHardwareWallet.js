@@ -12,8 +12,8 @@ import HardwareWalletStatus from '../status/HardwareWalletStatus';
 import {
   DeviceModels,
   DeviceTypes,
-} from '../../../stores/HardwareWalletsStore';
-import type { TransportDevice } from '../../../stores/HardwareWalletsStore';
+} from '../../../../../common/types/hardware-wallets.types';
+import type { TransportDevice } from '../../../../../common/types/hardware-wallets.types';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
 
 const messages = defineMessages({

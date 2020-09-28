@@ -65,7 +65,7 @@
     "create-news-verification-hashes": "node utils/create-news-verification-hashes/index.js",
     "lockfile:check": "node utils/lockfile-checker/index.js --check",
     "lockfile:fix": "node utils/lockfile-checker/index.js --fix",
-    "postinstall": "electron-rebuild"
+    "postinstall": "electron-rebuild -f -w usb"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"
@@ -170,7 +170,6 @@
   },
   "dependencies": {
     "@cardano-foundation/ledgerjs-hw-app-cardano": "2.0.1",
-    "@emurgo/cardano-serialization-lib-nodejs": "3.0.0",
     "@ledgerhq/hw-transport-node-hid": "5.22.0",
     "aes-js": "3.1.2",
     "bignumber.js": "5.0.0",

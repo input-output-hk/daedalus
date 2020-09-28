@@ -47,7 +47,6 @@ export default class AddressSequential extends Component<Props> {
       onShareAddress,
       onCopyAddress,
       shouldRegisterAddressElement,
-      index
     } = this.props;
     const { renderAddress, rawAddress } = this;
     const addressClasses = classnames([
@@ -66,7 +65,7 @@ export default class AddressSequential extends Component<Props> {
           }}
           id={`address-${rawAddress}`}
         >
-          {index} / {renderAddress}
+          {renderAddress}
           {shouldRegisterAddressElement && (
             <span
               ref={ref => {

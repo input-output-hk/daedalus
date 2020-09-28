@@ -13,7 +13,7 @@ import {
 import { handleDiskSpace } from './utils/handleDiskSpace';
 import {
   handleHardwareWalletDevices,
-  handleInitTrezorConnect,
+  // handleInitTrezorConnect,
 } from './ipc/getHardwareWalletChannel';
 import { handleCheckBlockReplayProgress } from './utils/handleCheckBlockReplayProgress';
 import { createMainWindow } from './windows/main';

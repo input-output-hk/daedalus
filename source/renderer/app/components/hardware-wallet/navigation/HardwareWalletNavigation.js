@@ -107,7 +107,7 @@ export default class HardwareWalletNavigation extends Component<Props> {
         id: WALLET_NAV_IDS.SETTINGS,
         type: 'dropdown',
         label:
-          isLegacy && isIncentivizedTestnet
+          isLegacy && global.isIncentivizedTestnet
             ? intl.formatMessage(messages.settings)
             : intl.formatMessage(messages.more),
         icon: settingsIcon,

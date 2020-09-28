@@ -8,7 +8,6 @@ import moment from 'moment';
 import Wallet, {
   WalletDelegationStatuses,
   WalletUnits,
-  WalletDiscovery,
 } from '../domains/Wallet';
 import {
   WalletTransaction,
@@ -805,8 +804,6 @@ export default class AdaApi {
     }
   };
 
-  // example:
-  // daedalus.stores.hardwareWallets.selectCoins({walletId: "hw_d5184982ea26e8f6335e04b93c8d64cac7b1f678", address: "addr1ssj9c58d76x7v9yulh8wt03t4ksshre2m3wfkul0l43g8pf65ul5u6fal3lnl4y73q8pvvcdt26kp63g8zfsag9edxzjnhx7s6zm82zlt30slw", amount: 42000000})
   selectCoins = async (
     request: CoinSelectionsRequest
   ): Promise<CoinSelectionsResponse> => {
@@ -843,13 +840,11 @@ export default class AdaApi {
     logger.debug('AdaApi::createExternalTransaction called', {
       parameters: filterLogData(request),
     });
-    console.debug('>>> createExternalTransaction::request: ', request)
     const { signedTransactionBlob } = request;
     try {
       const response = await createExternalTransaction(this.config, {
         signedTransactionBlob,
       });
-      console.debug('>>> RESPONSE: ', response);
       return response;
     } catch (error) {
       logger.error('AdaApi::createExternalTransaction error', { error });

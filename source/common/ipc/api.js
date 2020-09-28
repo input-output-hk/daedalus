@@ -42,6 +42,15 @@ import type {
   IntrospectAddressRequest,
   IntrospectAddressResponse,
 } from '../types/address-introspection.types';
+import type {
+  HardwareWalletTransportDeviceRequest,
+  HardwareWalletTransportDeviceResponse,
+  HardwareWalletExtendedPublicKeyRequest,
+  HardwareWalletExtendedPublicKeyResponse,
+  HardwareWalletCardanoAdaAppResponse,
+  HardwareWalletSignTransactionRequest,
+  HardwareWalletSignTransactionResponse,
+} from '../types/hardware-wallets.types';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -52,27 +61,8 @@ import type {
  */
 
 export const GET_LOGS_CHANNEL = 'GET_LOGS_CHANNEL';
-export type BIP32Path = Array<number>;
 export type GetLogsRendererRequest = void;
 export type GetLogsMainResponse = LogFiles;
-export type SignTransactionInputType = {|
-  txDataHex: string,
-  outputIndex: number,
-  path: BIP32Path,
-|};
-export type OutputTypeAddress = {|
-  amountStr: string,
-  address58: string,
-|};
-
-export type OutputTypeChange = {|
-  amountStr: string,
-  path: BIP32Path,
-|};
-export type SignTransactionInputsType = Array<SignTransactionInputType>;
-export type SignTransactionOutputsType = Array<
-  OutputTypeAddress | OutputTypeChange
->;
 
 export const COMPRESS_LOGS_CHANNEL = 'COMPRESS_LOGS_CHANNEL';
 export type CompressLogsRendererRequest = {
@@ -359,45 +349,27 @@ export type GetBlockReplayProgressRendererRequest = void;
 export type GetBlockReplayProgressMainResponse = number;
 
 /**
- * Channels for Hardware wallets
+ * Channels for connecting / interacting with Hardware Wallet devices
  */
 export const GET_HARDWARE_WALLET_TRANSPORT_CHANNEL =
   'GET_HARDWARE_WALLET_TRANSPORT_CHANNEL';
-export type getHardwareWalletTransportRendererRequest = void;
-export type getHardwareWalletTransportMainResponse = Object;
+export type getHardwareWalletTransportRendererRequest = HardwareWalletTransportDeviceRequest;
+export type getHardwareWalletTransportMainResponse = HardwareWalletTransportDeviceResponse;
 
 export const GET_EXTENDED_PUBLIC_KEY_CHANNEL =
   'GET_EXTENDED_PUBLIC_KEY_CHANNEL';
-export type getExtendedPublicKeyRendererRequest = { path: BIP32Path };
-export type getExtendedPublicKeyMainResponse = Object;
+export type getExtendedPublicKeyRendererRequest = HardwareWalletExtendedPublicKeyRequest;
+export type getExtendedPublicKeyMainResponse = HardwareWalletExtendedPublicKeyResponse;
 
 export const GET_CARDANO_ADA_APP_CHANNEL = 'GET_CARDANO_ADA_APP_CHANNEL';
 export type getCardanoAdaAppRendererRequest = void;
-export type getCardanoAdaAppMainResponse = Object;
+export type getCardanoAdaAppMainResponse = HardwareWalletCardanoAdaAppResponse;
 
 export const GET_HARDWARE_WALLET_CONNECTION_CHANNEL =
   'GET_HARDWARE_WALLET_CONNECTION_CHANNEL';
 export type getHardwareWalletConnectiontMainRequest = { disconnected: boolean };
 export type getHardwareWalletConnectiontRendererResponse = Object;
 
-export const DERIVE_ADDRESS_CHANNEL = 'DERIVE_ADDRESS_CHANNEL';
-export type deriveAddressRendererRequest = { derivationPath: string };
-export type deriveAddressMainResponse = Object;
-
-export const SHOW_ADDRESS_CHANNEL = 'SHOW_ADDRESS_CHANNEL';
-export type showAddressRendererRequest = { derivationPath: string };
-export type showAddresMainResponse = Object;
-
-export const ATTEST_UTXO_CHANNEL = 'ATTEST_UTXO_CHANNEL';
-export type attestUtxoRendererRequest = {
-  txHexData: string,
-  outputIndex: number,
-};
-export type attestUtxoMainResponse = Object;
-
 export const SIGN_TRANSACTION_CHANNEL = 'SIGN_TRANSACTION_CHANNEL';
-export type signTransactionRendererRequest = {
-  inputs: SignTransactionInputsType,
-  outputs: SignTransactionOutputsType,
-};
-export type signTransaMainResponse = Object;
+export type signTransactionRendererRequest = HardwareWalletSignTransactionRequest;
+export type signTransaMainResponse = HardwareWalletSignTransactionResponse;

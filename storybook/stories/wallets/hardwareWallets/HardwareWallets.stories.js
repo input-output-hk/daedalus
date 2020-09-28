@@ -7,7 +7,7 @@ import { HwDeviceStatuses } from '../../../../source/renderer/app/domains/Wallet
 import {
   DeviceModels,
   DeviceTypes,
-} from '../../../../source/renderer/app/stores/HardwareWalletsStore';
+} from '../../../../source/common/types/hardware-wallets.types';
 
 const ledgerDevice = {
   id: DeviceModels.LEDGER_NANO_S,
