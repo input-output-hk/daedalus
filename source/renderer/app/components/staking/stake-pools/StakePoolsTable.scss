@@ -278,7 +278,7 @@
         }
       }
 
-      &.retiring > span {
+      .retiring {
         background-color: var(--theme-button-attention-background-color);
         border-radius: 3px;
         color: var(--theme-staking-content-background-color);

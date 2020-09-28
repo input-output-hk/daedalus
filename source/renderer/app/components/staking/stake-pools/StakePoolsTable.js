@@ -259,7 +259,13 @@ export class StakePoolsTable extends Component<Props, State> {
                         <td>{margin}%</td>
                         <td>{producedBlocks}</td>
                         <td>{`${formattedWalletAmount(pledge, false, false)}`}</td>
-                        <td className={styles.retiring}><span>{retiring ? `${calculatedDateRange} days` : '-'}</span></td>
+                        <td>
+                          {retiring ? (
+                            <span className={styles.retiring}>
+                              {`${calculatedDateRange} days`}
+                            </span>
+                          ) : (<span>-</span>)}
+                        </td>
                       </tr>
                     );
                   })}
