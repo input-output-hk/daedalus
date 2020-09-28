@@ -48,6 +48,7 @@ type WalletOption = {
   numberOfStakePools: number,
   detail: string,
   value: string,
+  syncing?: boolean,
 };
 
 export default class WalletsDropdown extends Component<Props> {
@@ -57,8 +58,10 @@ export default class WalletsDropdown extends Component<Props> {
       detail,
       numberOfStakePools,
       delegatedStakePool,
+      syncing,
     }: WalletOption) => (
       <WalletsDropdownOption
+        syncing={syncing}
         label={label}
         numberOfStakePools={numberOfStakePools}
         detail={detail}
@@ -70,9 +73,11 @@ export default class WalletsDropdown extends Component<Props> {
       detail,
       numberOfStakePools,
       delegatedStakePool,
+      syncing,
     }: WalletOption) => (
       <WalletsDropdownOption
         selected
+        syncing={syncing}
         label={label}
         numberOfStakePools={numberOfStakePools}
         detail={detail}
@@ -112,6 +117,7 @@ export default class WalletsDropdown extends Component<Props> {
         const detail = !isRestoring ? formattedWalletAmount(amount) : '-';
         return {
           detail,
+          syncing: isRestoring,
           label,
           value,
           numberOfStakePools,

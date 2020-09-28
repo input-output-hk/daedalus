@@ -27,16 +27,39 @@
   align-items: center;
   display: flex;
   flex-direction: row;
-  justify-content: flex-start;
+  justify-content: space-between;
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
+  width: 100%;
 
   .ticker {
     font-size: 14px;
     line-height: 18px;
     margin-right: 6px;
     text-transform: uppercase;
+  }
+
+  .topRowTicker {
+    display: flex;
+  }
+
+  .topRowSync {
+    position: absolute;
+    right: 40px;
+    top: 18px;
+  }
+
+  .syncing {
+    > div {
+      height: 24px;
+      margin: 0 !important;
+      width: 24px;
+
+      :global .LoadingSpinner_icon svg path {
+        fill: var(--theme-loading-spinner-color) !important;
+      }
+    }
   }
 }
 
