@@ -31,6 +31,7 @@
   justify-content: space-between;
   max-width: 100%;
   overflow: hidden;
+  padding-right: 10px;
   text-overflow: ellipsis;
   width: 100%;
 
@@ -77,4 +78,14 @@
   color: var(--theme-delegation-steps-choose-wallet-custom-value-color);
   height: 100%;
   padding: 8px 20px;
+
+  .topRow {
+    height: initial;
+
+    .topRowSync {
+      position: absolute;
+      top: 13px;
+      right: 50px;
+    }
+  }
 }

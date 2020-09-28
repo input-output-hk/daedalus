@@ -75,4 +75,10 @@
       ) !important;
     }
   }
+
+  .SimpleOptions_option.SimpleOptions_selectedOption .WalletsDropdownOption_component .WalletsDropdownOption_topRow .WalletsDropdownOption_topRowSync {
+    position: absolute !important;
+    right: 50px !important;
+    top: 25px !important;
+  }
 }
