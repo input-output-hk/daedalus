@@ -252,6 +252,22 @@
         height: 100%;
         overflow: hidden;
         position: relative;
+
+        &.green {
+          background: var(--theme-staking-stake-pool-saturation-green-color);
+        }
+
+        &.orange {
+          background: var(--theme-staking-stake-pool-saturation-orange-color);
+        }
+
+        &.red {
+          background: var(--theme-staking-stake-pool-saturation-red-color);
+        }
+
+        &.yellow {
+          background: var(--theme-staking-stake-pool-saturation-yellow-color);
+        }
       }
 
       .overlapProgressLabel {

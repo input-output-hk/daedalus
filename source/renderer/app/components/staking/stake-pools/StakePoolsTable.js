@@ -236,10 +236,15 @@ export class StakePoolsTable extends Component<Props, State> {
                     const producedBlocks = get(stakePool, 'producedBlocks', '');
                     const pledge = get(stakePool, 'pledge', '');
                     const retiring = get(stakePool, 'retiring', '');
-                    const color = getSaturationColor(saturation);
                     const isOversaturated = (saturation / 100) >= 1;
                     const saturationValue = (isOversaturated || !saturation) ? parseInt(saturation, 10) : parseFloat(saturation).toFixed(2);
                     const calculatedDateRange = moment().diff(moment(retiring), 'days');
+
+                    const saturationBarClassnames = classNames([
+                      styles.progress,
+                      styles[getSaturationColor(saturation)],
+                    ]);
+
                     return (
                       <tr key={key}>
                         <td>{rank}</td>
@@ -248,8 +253,8 @@ export class StakePoolsTable extends Component<Props, State> {
                           <div className={styles.currentEpochProgressBar}>
                             <div className={styles.progressBarContainer}>
                               <div
-                                className={styles.progress}
-                                style={{width: `${saturationValue}%`, background: color}}
+                                className={saturationBarClassnames}
+                                style={{width: `${saturationValue}%`}}
                                />
                               <div className={styles.progressLabel}>{saturationValue}%</div>
                             </div>
@@ -258,7 +263,7 @@ export class StakePoolsTable extends Component<Props, State> {
                         <td>{`${formattedWalletAmount(cost, false, false)}`}</td>
                         <td>{margin}%</td>
                         <td>{producedBlocks}</td>
-                        <td>{`${formattedWalletAmount(pledge, false, false)}`}</td>
+                        <td>{`${formattedWalletAmount(pledge, false, true)}`}</td>
                         <td>
                           {retiring ? (
                             <span className={styles.retiring}>
@@ -282,10 +287,13 @@ export class StakePoolsTable extends Component<Props, State> {
   handleSort = (newSortBy: string) => {
     const { stakePoolsOrder, stakePoolsSortBy } = this.state;
     let newOrder;
-    if (stakePoolsSortBy === newSortBy) {
+    if (stakePoolsSortBy === newSortBy || newSortBy === 'name') {
       newOrder = stakePoolsOrder === 'asc' ? 'desc' : 'asc';
     } else {
       newOrder = 'desc';
+    }
+    if (newSortBy === 'name') {
+      newSortBy = 'ticker';
     }
     this.setState({
       stakePoolsOrder: newOrder,
