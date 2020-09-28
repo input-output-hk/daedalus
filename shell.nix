@@ -57,6 +57,8 @@ let
       nodePackages.node-gyp nodePackages.node-pre-gyp
       gnumake
       chromedriver
+      pkgconfig
+      libusb
     ] ++ (localLib.optionals autoStartBackend [
       daedalusPkgs.daedalus-bridge
     ]) ++ (if (pkgs.stdenv.hostPlatform.system == "x86_64-darwin") then [
