@@ -763,8 +763,8 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-splash-network-learn-more-color': '#e9f4fe',
   },
   stakePools: {
-    '--theme-staking-stake-pool-background-color': '#263345',
-    '--theme-staking-stake-pool-border-color': '#263345',
+    '--theme-staking-stake-pool-background-color': '#314259',
+    '--theme-staking-stake-pool-border-color': '#314259',
     '--theme-staking-stake-pool-glow-color': '#7cfeb54c',
     '--theme-staking-stake-pool-grey-color': 'rgba(233, 244, 254, 0.5)',
     '--theme-staking-stake-pool-grey-bg-color': 'rgba(233, 244, 254, 0.1)',
