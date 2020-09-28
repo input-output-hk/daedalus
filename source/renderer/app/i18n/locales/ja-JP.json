@@ -477,7 +477,6 @@
   "staking.stakePools.tableHeader.roi": "!!!Roi",
   "staking.stakePools.tableHeader.saturation": "!!!Saturation",
   "staking.stakePools.tableHeader.uptime": "!!!Uptime (days)",
-  "staking.stakePools.tableValue.no": "!!!No",
   "staking.stakePools.tooltip.copyIdTooltipLabel": "ステークプールIDをコピーする",
   "staking.stakePools.tooltip.costPerEpoch": "エポックごとのコスト：",
   "staking.stakePools.tooltip.delegateButton": "このプールに委任する",

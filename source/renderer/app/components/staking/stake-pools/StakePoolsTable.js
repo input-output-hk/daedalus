@@ -71,11 +71,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Retiring in',
     description: 'Table header "Retiring" label on stake pools list view page',
   },
-  tableValueNo: {
-    id: 'staking.stakePools.tableValue.no',
-    defaultMessage: '!!!No',
-    description: 'Table value "No" label on stake pools list view page',
-  },
 });
 
 // Maximum number of stake pools for which we do not need to use the preloading
@@ -264,7 +259,7 @@ export class StakePoolsTable extends Component<Props, State> {
                         <td>{margin}%</td>
                         <td>{producedBlocks}</td>
                         <td>{`${formattedWalletAmount(pledge, false, false)}`}</td>
-                        <td className={styles.retiring}><span>{retiring ? `${calculatedDateRange} days` : intl.formatMessage(messages.tableValueNo)}</span></td>
+                        <td className={styles.retiring}><span>{retiring ? `${calculatedDateRange} days` : '-'}</span></td>
                       </tr>
                     );
                   })}
