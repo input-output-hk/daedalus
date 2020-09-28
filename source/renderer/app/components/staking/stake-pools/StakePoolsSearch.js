@@ -83,6 +83,13 @@ export class StakePoolsSearch extends Component<Props> {
       isListView ? styles.selected : null,
     ]);
 
+    const isBigSearchComponent = isListView || isGridView;
+
+    const clearSearchClasses = classnames([
+      styles.inputExtras,
+      isBigSearchComponent ? styles.inputExtrasSearch : null,
+    ]);
+
     return (
       <div className={styles.component}>
         <div className={styles.container}>
@@ -104,7 +111,7 @@ export class StakePoolsSearch extends Component<Props> {
             onFocus={this.autoSelectOnFocus}
           />
           {this.hasSearchClearButton && (
-            <div className={styles.inputExtras}>
+            <div className={clearSearchClasses}>
               {this.hasSearchClearButton && (
                 <Tooltip
                   skin={TooltipSkin}
@@ -119,7 +126,7 @@ export class StakePoolsSearch extends Component<Props> {
               )}
             </div>
           )}
-          <div className={styles.viewButtons}>
+          {isBigSearchComponent && (<div className={styles.viewButtons}>
             <span className={styles.separator}>|</span>
             <button className={gridButtonClasses} onClick={onGridView}>
               <SVGInline svg={gridIcon} />
@@ -127,7 +134,7 @@ export class StakePoolsSearch extends Component<Props> {
             <button className={listButtonClasses} onClick={onListView}>
               <SVGInline svg={listIcon} />
             </button>
-          </div>
+          </div>)}
         </div>
       </div>
     );

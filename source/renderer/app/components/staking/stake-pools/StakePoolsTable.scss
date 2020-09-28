@@ -255,7 +255,7 @@
       }
 
       .overlapProgressLabel {
-        color: #fff;
+        color: var(--theme-staking-content-background-color);
         transform: translateX(calc(-100% - 8px));
         z-index: 98;
         @extend %progressLabelText;
@@ -276,6 +276,17 @@
         :global .LoadingSpinner_component.LoadingSpinner_medium {
           margin: 10px auto !important;
         }
+      }
+
+      &.retiring > span {
+        background-color: var(--theme-button-attention-background-color);
+        border-radius: 3px;
+        color: var(--theme-staking-content-background-color);
+        font-family: var(--font-bold);
+        font-size: 8px;
+        font-weight: 500;
+        padding: 2px 5px;
+        text-transform: uppercase;
       }
     }
   }

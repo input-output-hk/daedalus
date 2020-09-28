@@ -5,6 +5,7 @@ import { debounce, get, map, orderBy } from 'lodash';
 import classNames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
+import moment from 'moment';
 import styles from './StakePoolsTable.scss';
 import StakePool from '../../../domains/StakePool';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
@@ -67,13 +68,8 @@ const messages = defineMessages({
   },
   tableHeaderRetiring: {
     id: 'staking.stakePools.tableHeader.retiring',
-    defaultMessage: '!!!Retiring',
+    defaultMessage: '!!!Retiring in',
     description: 'Table header "Retiring" label on stake pools list view page',
-  },
-  tableValueYes: {
-    id: 'staking.stakePools.tableValue.yes',
-    defaultMessage: '!!!Yes',
-    description: 'Table value "Yes" label on stake pools list view page',
   },
   tableValueNo: {
     id: 'staking.stakePools.tableValue.no',
@@ -248,7 +244,7 @@ export class StakePoolsTable extends Component<Props, State> {
                     const color = getSaturationColor(saturation);
                     const isOversaturated = (saturation / 100) >= 1;
                     const saturationValue = (isOversaturated || !saturation) ? parseInt(saturation, 10) : parseFloat(saturation).toFixed(2);
-
+                    const calculatedDateRange = moment().diff(moment(retiring), 'days');
                     return (
                       <tr key={key}>
                         <td>{rank}</td>
@@ -268,7 +264,7 @@ export class StakePoolsTable extends Component<Props, State> {
                         <td>{margin}%</td>
                         <td>{producedBlocks}</td>
                         <td>{`${formattedWalletAmount(pledge, false, false)}`}</td>
-                        <td>{retiring ? intl.formatMessage(messages.tableValueYes) : intl.formatMessage(messages.tableValueNo)}</td>
+                        <td className={styles.retiring}><span>{retiring ? `${calculatedDateRange} days` : intl.formatMessage(messages.tableValueNo)}</span></td>
                       </tr>
                     );
                   })}

@@ -37,7 +37,11 @@
   line-height: 48px;
   padding-left: 20px;
   position: absolute;
-  right: 110px;
+  right: 20px;
+
+  &.inputExtrasSearch {
+    right: 110px;
+  }
 }
 
 .clearSearch {
@@ -93,7 +97,7 @@
   right: 11px;
 
   .separator {
-    color: var(--theme-about-window-icon-close-button-color);
+    color: var(--theme-staking-stake-pools-search-clear-button-color);
     opacity: 0.2;
     padding-right: 10px;
     position: relative;
