@@ -2,11 +2,19 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
+import SVGInline from 'react-svg-inline';
 import BigNumber from 'bignumber.js';
-import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
+import {
+  defineMessages,
+  intlShape,
+  FormattedMessage,
+  FormattedHTMLMessage,
+} from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
+import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
 import Dialog from '../../widgets/Dialog';
@@ -18,6 +26,7 @@ import LocalizableError from '../../../i18n/LocalizableError';
 import { submitOnEnter } from '../../../utils/form';
 import { formattedWalletAmount } from '../../../utils/formatters';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
+import questionMarkIcon from '../../../assets/images/question-mark.inline.svg';
 
 const messages = defineMessages({
   dialogTitle: {
@@ -50,6 +59,12 @@ const messages = defineMessages({
     id: 'wallet.transferFunds.dialog2.label.leftovers',
     defaultMessage: '!!!Leftovers',
     description: 'Label Leftovers in the transfer funds form',
+  },
+  tooltipLeftovers: {
+    id: 'wallet.transferFunds.dialog2.tooltip.leftovers',
+    defaultMessage:
+      '!!!<b>Leftovers</b> are some amount left in the source wallet some rare cases.',
+    description: 'Tooltip Leftovers in the transfer funds form',
   },
   buttonLabel: {
     id: 'wallet.transferFunds.dialog2.label.buttonLabel',
@@ -220,6 +235,16 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
           <div className={styles.amountGroup}>
             <p className={styles.label}>
               {intl.formatMessage(messages.labelLeftovers)}
+              <Tooltip
+                skin={TooltipSkin}
+                className={styles.tooltip}
+                tip={<FormattedHTMLMessage {...messages.tooltipLeftovers} />}
+              >
+                <SVGInline
+                  svg={questionMarkIcon}
+                  className={styles.questionMarkIcon}
+                />
+              </Tooltip>
             </p>
             <div className={styles.amountOpacity}>{leftovers}</div>
           </div>
