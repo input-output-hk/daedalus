@@ -9,8 +9,6 @@ import TransferFundsStep1Dialog from '../../../../source/renderer/app/components
 import TransferFundsStep2Dialog from '../../../../source/renderer/app/components/wallet/transfer-funds/TransferFundsStep2Dialog';
 import { WALLETS_V2 } from '../../_support/StoryProvider';
 import STAKE_POOLS from '../../../../source/renderer/app/config/stakingStakePools.dummy.json';
-import { formattedWalletAmount } from '../../../../source/renderer/app/utils/formatters';
-import { DECIMAL_PLACES_IN_ADA } from '../../../../source/renderer/app/config/numbersConfig';
 
 // Helpers
 import WalletsWrapper from '../_utils/WalletsWrapper';
