@@ -27,6 +27,7 @@
   align-items: center;
   display: flex;
   flex-direction: row;
+  height: 30px;
   justify-content: space-between;
   max-width: 100%;
   overflow: hidden;
@@ -45,9 +46,8 @@
   }
 
   .topRowSync {
-    position: absolute;
-    right: 40px;
-    top: 18px;
+    position: relative;
+    top: 3px;
   }
 
   .syncing {
