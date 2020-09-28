@@ -35,7 +35,6 @@ module.exports = {
     'js-chain-libs-node': 'commonjs2 js-chain-libs-node',
     usb: 'commonjs2 usb',
     'node-hid': 'commonjs2 node-hid',
-    'blake2b-wasm': 'commonjs2 blake2b-wasm',
     'trezor-connect': 'commonjs2 trezor-connect',
   },
   module: {
