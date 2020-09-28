@@ -4,7 +4,7 @@
  */
 
 const faker = require('faker');
-const fs = require('fs');
+//const fs = require('fs');
 const path = require('path');
 const BigNumber = require('bignumber.js');
 
