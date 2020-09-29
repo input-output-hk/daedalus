@@ -4,7 +4,7 @@
  */
 
 const faker = require('faker');
-//const fs = require('fs');
+// const fs = require('fs');
 const path = require('path');
 const BigNumber = require('bignumber.js');
 
@@ -54,7 +54,9 @@ function generatStakePoolsFakeData() {
 }
 
 const fakeStakePools = generatStakePoolsFakeData();
-fs.writeFileSync(
+// @TODO - remove flow fix and move fs to main process
+// $FlowFixMe
+fs.writeFileSync(  // eslint-disable-line
   `${path.join(__dirname, '/')}stakingStakePools.dummy.json`,
   JSON.stringify(fakeStakePools, null, '\t')
 );

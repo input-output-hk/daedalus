@@ -2,10 +2,7 @@
 import Action from './lib/Action';
 import type { WalletExportTypeChoices } from '../types/walletExportTypes';
 import type { CsvRecord } from '../../../common/types/rewards-csv-request.types';
-import type {
-  TransportDevice,
-  ExtendedPublicKey,
-} from '../stores/HardwareWalletsStore';
+import type { TransportDevice, HardwareWalletExtendedPublicKeyResponse } from '../../../common/types/hardware-wallets.types';
 
 export type WalletImportFromFileParams = {
   filePath: string,
@@ -93,7 +90,7 @@ export default class WalletsActions {
   transferFunds: Action<{ spendingPassword: string }> = new Action();
   createHardwareWallet: Action<{
     walletName: string,
-    extendedPublicKey: ExtendedPublicKey,
+    extendedPublicKey: HardwareWalletExtendedPublicKeyResponse,
     device: TransportDevice,
   }> = new Action();
 }

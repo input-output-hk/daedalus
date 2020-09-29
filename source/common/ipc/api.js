@@ -48,8 +48,10 @@ import type {
   HardwareWalletExtendedPublicKeyRequest,
   HardwareWalletExtendedPublicKeyResponse,
   HardwareWalletCardanoAdaAppResponse,
-  HardwareWalletSignTransactionRequest,
-  HardwareWalletSignTransactionResponse,
+  LedgerSignTransactionRequest,
+  LedgerSignTransactionResponse,
+  TrezorSignTransactionRequest,
+  TrezorSignTransactionResponse,
 } from '../types/hardware-wallets.types';
 
 /**
@@ -370,6 +372,10 @@ export const GET_HARDWARE_WALLET_CONNECTION_CHANNEL =
 export type getHardwareWalletConnectiontMainRequest = { disconnected: boolean };
 export type getHardwareWalletConnectiontRendererResponse = Object;
 
-export const SIGN_TRANSACTION_CHANNEL = 'SIGN_TRANSACTION_CHANNEL';
-export type signTransactionRendererRequest = HardwareWalletSignTransactionRequest;
-export type signTransaMainResponse = HardwareWalletSignTransactionResponse;
+export const SIGN_TRANSACTION_LEDGER_CHANNEL = 'SIGN_TRANSACTION_LEDGER_CHANNEL';
+export type signTransactionLedgerRendererRequest = LedgerSignTransactionRequest;
+export type signTransactionLedgerMainResponse = LedgerSignTransactionResponse;
+
+export const SIGN_TRANSACTION_TREZOR_CHANNEL = 'SIGN_TRANSACTION_TREZOR_CHANNEL';
+export type signTransactionTrezorRendererRequest = TrezorSignTransactionRequest;
+export type signTransactionTrezorMainResponse = TrezorSignTransactionResponse;

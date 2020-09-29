@@ -25,28 +25,77 @@ export const DeviceTypes: {
   TREZOR: 'trezor',
 };
 
+export type AddressTypeNibble = 0b0000 | 0b0100 | 0b0110 | 0b1000 | 0b1110;
+
+export const AddressTypeNibbles: {
+  BASE: AddressTypeNibble,
+  POINTER: AddressTypeNibble,
+  ENTERPRISE: AddressTypeNibble,
+  BYRON: AddressTypeNibble,
+  REWARD: AddressTypeNibble,
+} = {
+  BASE: 0b0000,
+  POINTER: 0b0100,
+  ENTERPRISE: 0b0110,
+  BYRON: 0b1000,
+  REWARD: 0b1110,
+};
+
+export type CertificateType = 0 | 1 | 2;
+
+export const CertificateTypes: {
+  STAKE_REGISTRATION: CertificateType,
+  STAKE_DEREGISTRATION: CertificateType,
+  STAKE_DELEGATION: CertificateType,
+} = {
+  STAKE_REGISTRATION: 0,
+  STAKE_DEREGISTRATION: 1,
+  STAKE_DELEGATION: 2,
+};
+
 export type TransportDevice = {
-  deviceID: ?string,
+  deviceId: ?string,
   deviceType: DeviceType,
   deviceModel: string,
   deviceName: string,
 };
 
-export type LedgerSignTransactionInputType = {
-  txDataHex: string,
+export type Certificate = {|
+  type: CertificateType,
+  path: BIP32Path,
+  poolKeyHashHex: ?string
+|};
+
+export type Withdrawal = {|
+  path: BIP32Path,
+  amountStr: string
+|};
+
+export type LedgerSignTransactionInputType = {|
+  txHashHex: string,
   outputIndex: number,
   path: BIP32Path,
-};
+|};
 
-export type LedgerOutputTypeAddress = {
+export type LedgerOutputTypeAddress = {|
   amountStr: string,
-  address58: string,
-};
+  addressHex: string,
+|};
 
-export type LedgerOutputTypeChange = {
+export type LedgerOutputTypeChange = {|
+  addressTypeNibble: AddressTypeNibble,
+  spendingPath: BIP32Path,
   amountStr: string,
-  path: BIP32Path,
-};
+  stakingPath: ?BIP32Path,
+  stakingKeyHashHex: ?string,
+  stakingBlockchainPointer: ?StakingBlockchainPointer,
+|};
+
+export type StakingBlockchainPointer = {|
+  blockIndex: number,
+  txIndex: number,
+  certificateIndex: number,
+|};
 
 export type LedgerSignTransactionInputsType = Array<LedgerSignTransactionInputType>;
 
@@ -86,14 +135,14 @@ export type Witness = {|
 |};
 
 export type HardwareWalletTransportDeviceRequest = {
-  isTrezor: string,
+  isTrezor: boolean,
 };
 
 export type HardwareWalletTransportDeviceResponse = TransportDevice;
 
 export type HardwareWalletExtendedPublicKeyRequest = {
   path: string,
-  isTrezor: string,
+  isTrezor: boolean,
 };
 
 export type HardwareWalletExtendedPublicKeyResponse = {
@@ -107,26 +156,34 @@ export type HardwareWalletCardanoAdaAppResponse = {
   patch: string,
 };
 
-export type HardwareWalletSignTransactionRequest = {
-  inputs: TrezorSignTransactionInputsType | LedgerSignTransactionInputsType,
-  outputs: TrezorSignTransactionOutputsType | LedgerSignTransactionOutputsType,
+export type LedgerSignTransactionRequest = {
+  inputs: LedgerSignTransactionInputsType,
+  outputs: LedgerSignTransactionOutputsType,
   fee: string,
   ttl: string,
   networkId: number,
   protocolMagic: number,
-  isTrezor: boolean,
-  certificates?: Array<?any>, // TODO - add once certificates defined
-  withdrawals?: Array<?any>, // TODO - add once withdrawals defined
-  metadataHashHex?: ?string, // TODO - add once metadata defined
+  // $FlowFixMe
+  certificates: Array<?Certificate>, // TODO - add once certificates defined
+  // $FlowFixMe
+  withdrawals: Array<?Withdrawal>, // TODO - add once withdrawals defined
+  metadataHashHex: ?string, // TODO - add once metadata defined
 };
 
-export type SignTransactionLedgerResponse = {
+export type TrezorSignTransactionRequest = {
+  inputs: TrezorSignTransactionInputsType,
+  outputs: TrezorSignTransactionOutputsType,
+  fee: string,
+  ttl: string,
+  networkId: number,
+  protocolMagic: number,
+};
+
+export type LedgerSignTransactionResponse = {
   txHashHex: string,
   witnesses: Array<Witness>,
 };
 
-export type SignTransactionTrezorResponse = {
+export type TrezorSignTransactionResponse = {
   serializedTx: string,
 };
-
-export type HardwareWalletSignTransactionResponse = SignTransactionLedgerResponse | SignTransactionTrezorResponse;

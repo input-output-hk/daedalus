@@ -79,10 +79,10 @@ export default class ConnectHardwareWallet extends Component<Props> {
             )}
             {isLedger && (
               <div className={styles.hardwareWalletLedger}>
-                {transportDevice.id === DeviceModels.LEDGER_NANO_X && (
+                {transportDevice.deviceModel === DeviceModels.LEDGER_NANO_X && (
                   <SVGInline svg={ledgerXIcon} className={styles.ledgerXIcon} />
                 )}
-                {transportDevice.id === DeviceModels.LEDGER_NANO_S && (
+                {transportDevice.deviceModel === DeviceModels.LEDGER_NANO_S && (
                   <SVGInline svg={ledgerIcon} className={styles.ledgerIcon} />
                 )}
               </div>

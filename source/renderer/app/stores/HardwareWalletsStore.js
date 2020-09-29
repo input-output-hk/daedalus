@@ -11,7 +11,8 @@ import {
   getExtendedPublicKeyChannel,
   getCardanoAdaAppChannel,
   getHardwareWalletConnectionChannel,
-  signTransactionChannel,
+  signTransactionLedgerChannel,
+  signTransactionTrezorChannel,
 } from '../ipc/getHardwareWalletChannel';
 import {
   prepareLedgerInput,
@@ -24,6 +25,10 @@ import {
   ShelleyTxOutput,
 } from '../utils/shelleyLedger';
 import { prepareTrezorInput, prepareTrezorOutput } from '../utils/shelleyTrezor';
+import {
+  DeviceModels,
+  DeviceTypes,
+} from '../../../common/types/hardware-wallets.types';
 
 import type { HwDeviceStatus } from '../domains/Wallet';
 import type { CoinSelectionsResponse } from '../api/transactions/types';
@@ -33,15 +38,25 @@ import type {
   SetHardwareWalletLocalDataRequestType,
 } from '../api/utils/localStorage';
 import type {
-  DeviceModels,
-  DeviceTypes,
   TransportDevice,
+  LedgerModel,
+  TrezorModel,
   HardwareWalletExtendedPublicKeyResponse,
 } from '../../../common/types/hardware-wallets.types';
 
 export type TxSignRequestTypes = {
   recieverAddress: string,
   coinSelection: CoinSelectionsResponse,
+};
+
+export type ByronEncodeSignedTransactionRequest = {|
+  txDataHex: string,
+  witnesses: Array<ByronSignedTransactionWitnesses>,
+|};
+
+export type ByronSignedTransactionWitnesses = {
+  signature: string,
+  xpub: HardwareWalletExtendedPublicKeyResponse,
 };
 
 const CARDANO_ADA_APP_POLLING_INTERVAL = 1000;
@@ -66,6 +81,7 @@ export default class HardwareWalletsStore extends Store {
   @observable extendedPublicKey: ?HardwareWalletExtendedPublicKeyResponse = null;
   @observable txSignRequest: TxSignRequestTypes = {};
   @observable transportDevice: TransportDevice = {};
+  @observable txBody: ?string = null;
 
   cardanoAdaAppPollingInterval: ?IntervalID = null;
 
@@ -188,7 +204,7 @@ export default class HardwareWalletsStore extends Store {
       const cardanoAdaApp = await getCardanoAdaAppChannel.request();
       // @TODO - keep poller until app recognized or process exited
       this.stopCardanoAdaAppFetchPoller();
-      if (cardanoAdaApp.result) {
+      if (cardanoAdaApp) {
         // While Cardano ADA app recognized on Ledger, proceed to exporting public key
         await this._getExtendedPublicKey();
       }
@@ -282,14 +298,13 @@ export default class HardwareWalletsStore extends Store {
     const fee = totalInputs - totalOutputs;
 
     try {
-      const signedTransaction = await signTransactionChannel.request({
+      const signedTransaction = await signTransactionTrezorChannel.request({
         inputs: inputsData,
         outputs: outputsData,
         fee: fee.toString(),
         ttl: '15000000',
         networkId: HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId,
         protocolMagic: HW_SHELLEY_CONFIG.NETWORK.MAINNET.protocolMagic,
-        isTrezor: true,
       });
 
       runInAction(
@@ -342,7 +357,7 @@ export default class HardwareWalletsStore extends Store {
     const metadataHashHex = null;
 
     try {
-      const signedTransaction = await signTransactionChannel.request({
+      const signedTransaction = await signTransactionLedgerChannel.request({
         inputs: inputsData,
         outputs: outputsData,
         fee: fee.toString(),
@@ -352,7 +367,6 @@ export default class HardwareWalletsStore extends Store {
         certificates,
         withdrawals,
         metadataHashHex,
-        isTrezor: false,
       });
 
       // Sign and prepare witnesses
@@ -423,7 +437,7 @@ export default class HardwareWalletsStore extends Store {
     this.txSignRequest = {};
   };
 
-  _deviceType = (deviceModel: DeviceModel) => {
+  _deviceType = (deviceModel: LedgerModel | TrezorModel) => {
     let type;
     switch (deviceModel) {
       case DeviceModels.LEDGER_NANO_S:

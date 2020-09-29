@@ -1,7 +1,7 @@
 import { utils, cardano } from '@cardano-foundation/ledgerjs-hw-app-cardano';
-//import { derivePublic as deriveChildXpub } from 'cardano-crypto.js';
 import { encode } from 'borc';
 import blakejs from 'blakejs';
+// import { derivePublic as deriveChildXpub } from 'cardano-crypto.js';
 
 // Constants
 export const HARDENED_THRESHOLD = 0x80000000;
@@ -152,9 +152,11 @@ export const CachedDeriveXpubFactory = (deriveXpubHardenedFn) => {
   }
 
   const deriveXpubNonhardenedFn = async (derivationPath) => {
-    const lastIndex = derivationPath.slice(-1)[0]
-    const parentXpub = await deriveXpub(derivationPath.slice(0, -1))
-    return deriveChildXpub(parentXpub, lastIndex, derivationScheme.ed25519Mode);
+    const lastIndex = derivationPath.slice(-1)[0];
+    const parentXpub = await deriveXpub(derivationPath.slice(0, -1));
+    // @TODO - remove flow fix and move fs to main process
+    // $FlowFixMe
+    return deriveChildXpub(parentXpub, lastIndex, derivationScheme.ed25519Mode); // eslint-disable-line
   }
 
   return deriveXpub;
@@ -176,7 +178,7 @@ export const prepareLedgerInput = (input, addressIndex = 0) => {
 export const prepareLedgerOutput = (output, addressIndex = 0, isChange = false) => {
   if (isChange) {
     return {
-      addressTypeNibble: 0, // TODO: get from address
+      addressTypeNibble: 0b0000, // TODO: get from address
       spendingPath: cardano.str_to_path(`1852'/1815'/0'/0/${addressIndex}`),
       amountStr: output.amount.quantity.toString(),
       stakingPath: cardano.str_to_path("1852'/1815'/0'/2/0"),

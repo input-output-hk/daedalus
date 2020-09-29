@@ -10,15 +10,17 @@ import {
 } from '../../../../source/common/types/hardware-wallets.types';
 
 const ledgerDevice = {
-  id: DeviceModels.LEDGER_NANO_S,
-  productName: 'Ledger Nano S',
+  deviceId: '1',
   deviceType: DeviceTypes.LEDGER,
+  deviceModel: DeviceModels.LEDGER_NANO_S,
+  deviceName: 'Ledger Nano S',
 };
 
 const trezorDevice = {
-  id: DeviceModels.TREZOR,
-  productName: 'Trezor',
+  deviceId: '2',
   deviceType: DeviceTypes.TREZOR,
+  deviceModel: DeviceModels.TREZOR_T,
+  deviceName: 'Trezor Model T',
 };
 
 storiesOf('Wallets|Hardware Wallets', module)

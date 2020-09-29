@@ -10,8 +10,8 @@ import { formattedWalletAmount } from './formatters';
 import { DateRangeTypes } from '../stores/TransactionsStore';
 import type { TransactionFilterOptionsType } from '../stores/TransactionsStore';
 import type {
-  EncodeSignedTransactionRequest,
-  SignedTransactionWitnesses,
+  ByronEncodeSignedTransactionRequest,
+  ByronSignedTransactionWitnesses,
 } from '../stores/HardwareWalletsStore';
 import type { CoinSelectionsResponse } from '../api/transactions/types';
 
@@ -307,7 +307,7 @@ export const thDataHexGenerator = (txData: CoinSelectionsResponse) => {
 export const encodeSignedTransaction = ({
   txDataHex,
   witnesses,
-}: EncodeSignedTransactionRequest) => {
+}: ByronEncodeSignedTransactionRequest) => {
   //  {
   //    txDataHex: '01f54c866c778568c01b9e4c0a2cbab29e0af285623404e0ef922c6b63f9b222',
   //    witnesses: [
@@ -331,7 +331,7 @@ const rawBuffer = str => {
   return Buffer.from(str, 'hex');
 };
 
-const encodeWitness = ({ signature, xpub }: SignedTransactionWitnesses) => {
+const encodeWitness = ({ signature, xpub }: ByronSignedTransactionWitnesses) => {
   const witness = [
     Buffer.concat([rawBuffer(xpub.publicKeyHex), rawBuffer(xpub.chainCodeHex)]),
     rawBuffer(signature),

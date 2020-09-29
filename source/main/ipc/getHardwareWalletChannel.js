@@ -13,7 +13,8 @@ import {
   GET_EXTENDED_PUBLIC_KEY_CHANNEL,
   GET_CARDANO_ADA_APP_CHANNEL,
   GET_HARDWARE_WALLET_CONNECTION_CHANNEL,
-  SIGN_TRANSACTION_CHANNEL,
+  SIGN_TRANSACTION_LEDGER_CHANNEL,
+  SIGN_TRANSACTION_TREZOR_CHANNEL,
 } from '../../common/ipc/api';
 
 import type { IpcSender } from '../../common/ipc/lib/IpcChannel';
@@ -27,8 +28,10 @@ import type {
   getCardanoAdaAppMainResponse,
   getHardwareWalletConnectiontMainRequest,
   getHardwareWalletConnectiontRendererResponse,
-  signTransactionRendererRequest,
-  signTransaMainResponse,
+  signTransactionLedgerRendererRequest,
+  signTransactionLedgerMainResponse,
+  signTransactionTrezorRendererRequest,
+  signTransactionTrezorMainResponse,
 } from '../../common/ipc/api';
 
 // const TrezorConnect = require('trezor-connect').default;
@@ -60,10 +63,15 @@ const getHardwareWalletConnectionChannel: MainIpcChannel<
   getHardwareWalletConnectiontRendererResponse
 > = new MainIpcChannel(GET_HARDWARE_WALLET_CONNECTION_CHANNEL);
 
-const signTransactionChannel: MainIpcChannel<
-  signTransactionRendererRequest,
-  signTransaMainResponse
-> = new MainIpcChannel(SIGN_TRANSACTION_CHANNEL);
+const signTransactionLedgerChannel: MainIpcChannel<
+  signTransactionLedgerRendererRequest,
+  signTransactionLedgerMainResponse
+> = new MainIpcChannel(SIGN_TRANSACTION_LEDGER_CHANNEL);
+
+const signTransactionTrezorChannel: MainIpcChannel<
+  signTransactionTrezorRendererRequest,
+  signTransactionTrezorMainResponse
+> = new MainIpcChannel(SIGN_TRANSACTION_TREZOR_CHANNEL);
 
 class EventObserver {
   constructor(props) {
@@ -156,7 +164,7 @@ export const handleHardwareWalletRequests = async () => {
 
     if (deviceFeatures && deviceFeatures.success) {
       return Promise.resolve({
-        deviceID: deviceFeatures.payload.device_id,
+        deviceId: deviceFeatures.payload.device_id,
         deviceType: 'trezor',
         deviceModel: deviceFeatures.payload.model, // e.g. "1" or "T"
         deviceName:
@@ -189,7 +197,7 @@ export const handleHardwareWalletRequests = async () => {
       if (deviceModel) {
         const { id, productName } = deviceModel;
         return Promise.resolve({
-          deviceID: null, // @TODO - to be defined
+          deviceId: null, // @TODO - to be defined
           deviceType: 'ledger',
           deviceModel: id, // e.g. nanoS
           deviceName: productName, // e.g. Ledger Nano S
@@ -270,12 +278,11 @@ export const handleHardwareWalletRequests = async () => {
   });
 
 
-  signTransactionChannel.onRequest(async params => {
+  signTransactionLedgerChannel.onRequest(async params => {
     const {
       inputs,
       outputs,
       protocolMagic,
-      isTrezor,
       fee,
       ttl,
       networkId,
@@ -283,26 +290,6 @@ export const handleHardwareWalletRequests = async () => {
       withdrawals,
       metadataHashHex,
     } = params;
-
-
-    if (isTrezor) {
-      if (!TrezorConnect) {
-        throw new Error('Device not connected!');
-      }
-      try {
-        const signedTransaction = await TrezorConnect.cardanoSignTransaction({
-          inputs,
-          outputs,
-          fee,
-          ttl,
-          protocolMagic,
-          networkId
-        });
-        return Promise.resolve({ serializedTx: signedTransaction.payload.serializedTx });
-      } catch (e) {
-        throw e;
-      }
-    }
 
     try {
       if (!deviceConnection) {
@@ -320,6 +307,33 @@ export const handleHardwareWalletRequests = async () => {
         metadataHashHex,
       );
       return Promise.resolve(signedTransaction);
+    } catch (e) {
+      throw e;
+    }
+  });
+
+  signTransactionTrezorChannel.onRequest(async params => {
+    const {
+      inputs,
+      outputs,
+      protocolMagic,
+      fee,
+      ttl,
+      networkId,
+    } = params;
+    if (!TrezorConnect) {
+      throw new Error('Device not connected!');
+    }
+    try {
+      const signedTransaction = await TrezorConnect.cardanoSignTransaction({
+        inputs,
+        outputs,
+        fee,
+        ttl,
+        protocolMagic,
+        networkId
+      });
+      return Promise.resolve({ serializedTx: signedTransaction.payload.serializedTx });
     } catch (e) {
       throw e;
     }

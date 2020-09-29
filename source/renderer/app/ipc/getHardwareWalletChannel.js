@@ -5,7 +5,8 @@ import {
   GET_EXTENDED_PUBLIC_KEY_CHANNEL,
   GET_CARDANO_ADA_APP_CHANNEL,
   GET_HARDWARE_WALLET_CONNECTION_CHANNEL,
-  SIGN_TRANSACTION_CHANNEL,
+  SIGN_TRANSACTION_LEDGER_CHANNEL,
+  SIGN_TRANSACTION_TREZOR_CHANNEL,
 } from '../../../common/ipc/api';
 
 import type {
@@ -15,8 +16,10 @@ import type {
   getExtendedPublicKeyMainResponse,
   getHardwareWalletConnectiontMainRequest,
   getHardwareWalletConnectiontRendererResponse,
-  signTransaMainResponse,
-  signTransactionRendererRequest,
+  signTransactionLedgerMainResponse,
+  signTransactionLedgerRendererRequest,
+  signTransactionTrezorMainResponse,
+  signTransactionTrezorRendererRequest,
   getCardanoAdaAppMainResponse,
   getCardanoAdaAppRendererRequest,
 } from '../../../common/ipc/api';
@@ -46,7 +49,13 @@ export const getHardwareWalletConnectionChannel: RendererIpcChannel<
 > = new RendererIpcChannel(GET_HARDWARE_WALLET_CONNECTION_CHANNEL);
 
 // IpcChannel<Incoming, Outgoing>
-export const signTransactionChannel: RendererIpcChannel<
-  signTransaMainResponse,
-  signTransactionRendererRequest
-> = new RendererIpcChannel(SIGN_TRANSACTION_CHANNEL);
+export const signTransactionLedgerChannel: RendererIpcChannel<
+  signTransactionLedgerMainResponse,
+  signTransactionLedgerRendererRequest
+> = new RendererIpcChannel(SIGN_TRANSACTION_LEDGER_CHANNEL);
+
+// IpcChannel<Incoming, Outgoing>
+export const signTransactionTrezorChannel: RendererIpcChannel<
+  signTransactionTrezorMainResponse,
+  signTransactionTrezorRendererRequest
+> = new RendererIpcChannel(SIGN_TRANSACTION_TREZOR_CHANNEL);

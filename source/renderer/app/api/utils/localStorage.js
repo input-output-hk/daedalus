@@ -12,10 +12,7 @@ import {
 
 import type { NewsTimestamp } from '../news/types';
 import type { WalletMigrationStatus } from '../../stores/WalletMigrationStore';
-import type {
-  TransportDevice,
-  ExtendedPublicKey,
-} from '../../stores/HardwareWalletsStore';
+import type { TransportDevice, HardwareWalletExtendedPublicKeyResponse } from '../../../../common/types/hardware-wallets.types';
 import type { StorageKey } from '../../../../common/types/electron-store.types';
 
 export type WalletLocalData = {
@@ -31,7 +28,7 @@ export type SetHardwareWalletLocalDataRequestType = {
   walletId: string,
   data: {
     device?: TransportDevice,
-    extendedPublicKey?: ExtendedPublicKey,
+    extendedPublicKey?: HardwareWalletExtendedPublicKeyResponse,
     disconnected?: boolean,
   },
 };
@@ -39,7 +36,7 @@ export type SetHardwareWalletLocalDataRequestType = {
 export type HardwareWalletLocalData = {
   id: string,
   device: TransportDevice,
-  extendedPublicKey: ExtendedPublicKey,
+  extendedPublicKey: HardwareWalletExtendedPublicKeyResponse,
   disconnected: boolean,
 };
 
@@ -271,7 +268,7 @@ export default class LocalStorageApi {
   };
 
   unsetHardwareWalletLocalData = (walletId: string): Promise<void> =>
-    LocalStorageApi.unset(`${keys.HARDWARE_WALLETS}.${walletId}`);
+    LocalStorageApi.unset(keys.HARDWARE_WALLETS, walletId);
 
   unsetHardwareWalletLocalDataAll = (): Promise<void> =>
     LocalStorageApi.unset(keys.HARDWARE_WALLETS);

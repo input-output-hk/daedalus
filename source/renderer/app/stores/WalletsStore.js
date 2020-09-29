@@ -44,8 +44,8 @@ import type {
 } from '../api/wallets/types';
 import type {
   TransportDevice,
-  ExtendedPublicKey,
-} from './HardwareWalletsStore';
+  HardwareWalletExtendedPublicKeyResponse,
+} from '../../../common/types/hardware-wallets.types';
 import { introspectAddressChannel } from '../ipc/introspect-address.js';
 import type { AddressStyle } from '../../../common/types/address-introspection.types';
 import {
@@ -430,7 +430,7 @@ export default class WalletsStore extends Store {
 
   @action _createHardwareWallet = async (params: {
     walletName: string,
-    extendedPublicKey: ExtendedPublicKey,
+    extendedPublicKey: HardwareWalletExtendedPublicKeyResponse,
     device: TransportDevice,
   }) => {
     const { walletName, extendedPublicKey, device } = params;
