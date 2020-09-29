@@ -7,6 +7,7 @@ Changelog
 
 - Made stake pools ranking slider logarithmic ([PR 2162](https://github.com/input-output-hk/daedalus/pull/2162))
 - Implemented fetching of epoch configuration from the Api instead of using hardcoded constants ([PR 2165](https://github.com/input-output-hk/daedalus/pull/2165))
+- Enabled SMASH ([PR 2154](https://github.com/input-output-hk/daedalus/pull/2154))
 
 ### Fixes
 
@@ -33,7 +34,7 @@ Changelog
 - Enabled restoration of "Shelley" wallets regardless of the sync progress ([PR 2150](https://github.com/input-output-hk/daedalus/pull/2150))
 - Enabled restoration of Yoroi "Shelley" wallets ([PR 2144](https://github.com/input-output-hk/daedalus/pull/2144))
 - Enabled "Send" screen for "Byron" wallets ([PR 2147](https://github.com/input-output-hk/daedalus/pull/2147))
-- Added SMASH support ([PR 2143](https://github.com/input-output-hk/daedalus/pull/2143), [PR 2154](https://github.com/input-output-hk/daedalus/pull/2154))
+- Added SMASH support ([PR 2143](https://github.com/input-output-hk/daedalus/pull/2143))
 
 ### Fixes
 
