@@ -78,9 +78,9 @@ let
     };
     cardano-wallet = import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; crossSystem = crossSystem walletPkgs.lib; };
     cardano-wallet-native = import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; };
-    cardano-address = (import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; crossSystem = crossSystem walletPkgs.lib; }).haskellPackages.cardano-addresses.components.exes.cardano-address;
+    cardano-address = (import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; crossSystem = crossSystem walletPkgs.lib; }).cardano-address;
     cardano-shell = import self.sources.cardano-shell { inherit system; crossSystem = crossSystem shellPkgs.lib; };
-    cardano-cli = (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).haskellPackages.cardano-cli.components.exes.cardano-cli;
+    cardano-cli = (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).cardano-cli;
     cardano-node-cluster = let
       # Test wallets with known mnemonics
       walletTestGenesisYaml = (self.sources.cardano-wallet + "/lib/shelley/test/data/cardano-node-shelley/genesis.yaml");
@@ -333,12 +333,7 @@ let
       runLint = self.callPackage ./tests/lint.nix {};
       runShellcheck = self.callPackage ./tests/shellcheck.nix { src = ./.;};
     };
-    nix-bundle = import (pkgs.fetchFromGitHub {
-      owner = "matthewbauer";
-      repo = "nix-bundle";
-      rev = "7f12322399fd87d937355d0fc263d37d798496fc";
-      sha256 = "07wnmdadchf73p03wk51abzgd3zm2xz5khwadz1ypbvv3cqlzp5m";
-    }) { nixpkgs = pkgs; };
+    nix-bundle = import sources.nix-bundle { nixpkgs = pkgs; };
     iconPath = self.launcherConfigs.installerConfig.iconPath;
     # used for name of profile, binary and the desktop shortcut
     linuxClusterBinName = cluster;

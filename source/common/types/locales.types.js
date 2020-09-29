@@ -13,3 +13,10 @@ export const humanizedDurationLanguages = {
   'en-US': 'en',
   'ja-JP': 'ja',
 };
+
+export const momentLocales: {
+  [key: Locale]: string,
+} = {
+  'en-US': 'en-us',
+  'ja-JP': 'ja',
+};

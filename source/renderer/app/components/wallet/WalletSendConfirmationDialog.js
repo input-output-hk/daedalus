@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import classnames from 'classnames';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
@@ -18,6 +17,8 @@ import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { submitOnEnter } from '../../utils/form';
 import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
 import HardwareWalletStatus from '../hardware-wallet/status/HardwareWalletStatus';
+import LoadingSpinner from '../widgets/LoadingSpinner';
+
 import type { HwDeviceStatus } from '../../domains/Wallet';
 
 export const messages = defineMessages({
@@ -197,10 +198,11 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
       isHardwareWallet,
     } = this.props;
 
-    const confirmButtonClasses = classnames([
-      'confirmButton',
-      isSubmitting ? styles.submitButtonSpinning : null,
-    ]);
+    const buttonLabel = !isSubmitting ? (
+      intl.formatMessage(messages.sendButtonLabel)
+    ) : (
+      <LoadingSpinner />
+    );
 
     const actions = [
       {
@@ -208,10 +210,10 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
         onClick: !isSubmitting ? onCancel : () => {},
       },
       {
-        label: intl.formatMessage(messages.sendButtonLabel),
+        label: buttonLabel,
         onClick: this.submit,
         primary: true,
-        className: confirmButtonClasses,
+        className: 'confirmButton',
         disabled:
           !passphraseField.isValid ||
           (!flightCandidateCheckboxField.value && isFlight),

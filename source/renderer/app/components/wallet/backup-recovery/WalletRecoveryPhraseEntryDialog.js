@@ -20,6 +20,7 @@ import Dialog from '../../widgets/Dialog';
 import WalletRecoveryInstructions from './WalletRecoveryInstructions';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletRecoveryPhraseEntryDialog.scss';
+import LoadingSpinner from '../../widgets/LoadingSpinner';
 
 const messages = defineMessages({
   verificationInstructions: {
@@ -178,10 +179,15 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
     const wordCount = WALLET_RECOVERY_PHRASE_WORD_COUNT;
     const enteredPhraseString = enteredPhrase.join(' ');
 
+    const buttonLabel = !isSubmitting ? (
+      intl.formatMessage(messages.buttonLabelConfirm)
+    ) : (
+      <LoadingSpinner />
+    );
+
     const actions = [
       {
-        className: isSubmitting ? styles.isSubmitting : null,
-        label: intl.formatMessage(messages.buttonLabelConfirm),
+        label: buttonLabel,
         onClick: onFinishBackup,
         disabled: !canFinishBackup,
         primary: true,

@@ -28,6 +28,7 @@ import LocalizableError from '../../../i18n/LocalizableError';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import Wallet from '../../../domains/Wallet';
 import StakePool from '../../../domains/StakePool';
+import LoadingSpinner from '../../widgets/LoadingSpinner';
 
 const messages = defineMessages({
   title: {
@@ -45,7 +46,7 @@ const messages = defineMessages({
   description: {
     id: 'staking.delegationSetup.confirmation.step.dialog.description',
     defaultMessage:
-      '!!!Confirm your delegation choice to <span>[{selectedPoolTicker}]<span> stake pool for your <span>{selectedWalletName}<span> wallet by posting your delegation preferences on the Cardano blockchain.',
+      '!!!Confirm your delegation choice to <span>[{selectedPoolTicker}]</span> stake pool for your <span>{selectedWalletName}</span> wallet by posting your delegation preferences on the Cardano blockchain.',
     description:
       'Description on the delegation setup "confirmation" step dialog.',
   },
@@ -171,10 +172,11 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
     const selectedPoolTicker = get(selectedPool, 'ticker');
     const spendingPasswordField = form.$('spendingPassword');
 
-    const confirmButtonClasses = classNames([
-      'confirmButton',
-      isSubmitting ? styles.submitButtonSpinning : null,
-    ]);
+    const buttonLabel = !isSubmitting ? (
+      intl.formatMessage(messages.confirmButtonLabel)
+    ) : (
+      <LoadingSpinner />
+    );
 
     const actions = [
       {
@@ -183,8 +185,8 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
         onClick: !isSubmitting ? onClose : () => {},
       },
       {
-        className: confirmButtonClasses,
-        label: intl.formatMessage(messages.confirmButtonLabel),
+        className: 'confirmButton',
+        label: buttonLabel,
         onClick: this.submit,
         primary: true,
         disabled:

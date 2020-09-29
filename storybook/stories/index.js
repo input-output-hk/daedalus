@@ -18,6 +18,7 @@ import './settings';
 import './news/NewsFeed.stories';
 import './news/IncidentOverlay.stories';
 import './news/AlertsOverlay.stories';
+import './news/AppUpdateOverlay.stories';
 
 // Navigation
 import './navigation/Sidebar.stories';

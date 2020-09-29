@@ -124,6 +124,9 @@ export default class NetworkStatusStore extends Store {
   @observable shelleyActivationTime: string = '';
   @observable verificationProgress: number = 0;
 
+  @observable epochLength: ?number = null; // unit: 1 slot
+  @observable slotLength: ?number = null; // unit: 1 second
+
   // DEFINE STORE METHODS
   setup() {
     // ========== IPC CHANNELS =========== //
@@ -311,7 +314,6 @@ export default class NetworkStatusStore extends Store {
           this.tlsConfig = null;
         });
         this._setDisconnected(wasConnected);
-        this.stores.appUpdate.hideUpdateDialog();
         this.stores.app._closeActiveDialog();
         break;
       default:
@@ -460,13 +462,20 @@ export default class NetworkStatusStore extends Store {
         return;
       }
 
-      const {
-        syncProgress,
-        localTip,
-        networkTip,
-        nextEpoch,
-        futureEpoch,
-      } = networkStatus;
+      const { syncProgress, localTip, networkTip, nextEpoch } = networkStatus;
+      let futureEpoch = null;
+
+      if (nextEpoch && this.epochLength && this.slotLength) {
+        const startDelta = this.epochLength * this.slotLength;
+        futureEpoch = {
+          epochNumber: nextEpoch.epochNumber ? nextEpoch.epochNumber + 1 : null,
+          epochStart: nextEpoch.epochStart
+            ? moment(nextEpoch.epochStart)
+                .add(startDelta, 'seconds')
+                .toISOString()
+            : '',
+        };
+      }
 
       // We got response which means node is responding
       runInAction('update isNodeResponding', () => {
@@ -593,7 +602,12 @@ export default class NetworkStatusStore extends Store {
       const networkParameters: GetNetworkParametersResponse = await this.getNetworkParametersRequest.execute()
         .promise;
       let { isShelleyActivated, isShelleyPending } = this;
-      const { decentralizationLevel, hardforkAt } = networkParameters;
+      const {
+        decentralizationLevel,
+        hardforkAt,
+        slotLength,
+        epochLength,
+      } = networkParameters;
       const epochStartTime = get(hardforkAt, 'epoch_start_time', '');
 
       if (hardforkAt) {
@@ -608,6 +622,11 @@ export default class NetworkStatusStore extends Store {
         this.isShelleyActivated = isShelleyActivated;
         this.isShelleyPending = isShelleyPending;
         this.shelleyActivationTime = epochStartTime;
+      });
+
+      runInAction('Update Epoch config', () => {
+        this.slotLength = slotLength.quantity;
+        this.epochLength = epochLength.quantity;
       });
     } catch (e) {
       runInAction('Clear Decentralization Progress', () => {

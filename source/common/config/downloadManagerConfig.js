@@ -38,6 +38,8 @@ export const DOWNLOAD_EVENT_TYPES: {
   PROGRESS: 'progress',
   END: 'end',
   TIMEOUT: 'timeout',
+  STOP: 'stop',
+  PAUSE: 'pause',
   ERROR: 'error',
 };
 
@@ -49,7 +51,7 @@ export const TEMPORARY_FILENAME = {
   extension: 'crdownload',
 };
 
-export const DOWNLOAD_PROGRESS_DEFAULT = {
+export const DOWNLOAD_DATA_DEFAULT = {
   state: DOWNLOAD_STATES.IDLE,
   remainingSize: 0,
   serverFileSize: 0,
@@ -60,3 +62,5 @@ export const DOWNLOAD_PROGRESS_DEFAULT = {
   incomplete: false,
   isResumed: false,
 };
+
+export const ERROR_TIME_AFTER_NO_END_EVENT = 10 * 1000; // 10 seconds | unit: milliseconds

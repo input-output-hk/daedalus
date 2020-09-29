@@ -41,6 +41,7 @@ import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types
 import { logUsedVersion } from './utils/logUsedVersion';
 import { setStateSnapshotLogChannel } from './ipc/set-log-state-snapshot';
 import { generateWalletMigrationReportChannel } from './ipc/generateWalletMigrationReportChannel';
+import { pauseActiveDownloads } from './ipc/downloadManagerChannel';
 
 /* eslint-disable consistent-return */
 
@@ -65,8 +66,8 @@ if (isBlankScreenFixActive) {
 }
 
 app.allowRendererProcessReuse = true;
-
 const safeExit = async () => {
+  pauseActiveDownloads();
   if (!cardanoNode || cardanoNode.state === CardanoNodeStates.STOPPED) {
     logger.info('Daedalus:safeExit: exiting Daedalus with code 0', { code: 0 });
     return safeExitWithCode(0);

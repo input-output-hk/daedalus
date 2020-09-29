@@ -36,6 +36,11 @@ import type {
   DownloadResponse,
   ResumeDownloadRequest,
   ResumeDownloadResponse,
+  ClearDownloadLocalDataRequest,
+  ClearDownloadLocalDataResponse,
+  DeleteDownloadedFileRequest,
+  DeleteDownloadedFileResponse,
+  CheckFileExistsRequest,
 } from '../types/downloadManager.types';
 import type { StoreMessage } from '../types/electron-store.types';
 import type {
@@ -309,6 +314,27 @@ export const ELECTRON_STORE_CHANNEL = 'ELECTRON_STORE_CHANNEL';
 export type ElectronStoreMessage = StoreMessage;
 
 /**
+ * Channel for requesting a new download
+ */
+export const REQUEST_DOWNLOAD = 'REQUEST_DOWNLOAD';
+export type DownloadRendererRequest = DownloadRequest;
+export type DownloadMainResponse = DownloadResponse;
+
+/**
+ * Channel for resuming an existing download
+ */
+export const RESUME_DOWNLOAD = 'RESUME_DOWNLOAD';
+export type ResumeDownloadRendererRequest = ResumeDownloadRequest;
+export type ResumeDownloadMainResponse = ResumeDownloadResponse | void;
+
+/**
+ * Channel for resuming an existing download
+ */
+export const DELETE_DOWNLOADED_FILE = 'DELETE_DOWNLOADED_FILE';
+export type DeleteDownloadedFileRendererRequest = DeleteDownloadedFileRequest;
+export type DeleteDownloadedFileMainResponse = DeleteDownloadedFileResponse | void;
+
+/**
  * Channel for initiating the download manager
  */
 export const GET_DOWNLOAD_LOCAL_DATA = 'GET_DOWNLOAD_LOCAL_DATA';
@@ -323,18 +349,37 @@ export type DownloadsLocalDataRendererRequest = DownloadsLocalDataRequest | void
 export type DownloadsLocalDataMainResponse = DownloadsLocalDataResponse | void;
 
 /**
- * Channel for requesting a new download
+ * Channel for initiating the download manager
  */
-export const REQUEST_DOWNLOAD = 'REQUEST_DOWNLOAD';
-export type DownloadRendererRequest = DownloadRequest;
-export type DownloadMainResponse = DownloadResponse;
+export const CLEAR_DOWNLOAD_LOCAL_DATA = 'CLEAR_DOWNLOAD_LOCAL_DATA';
+export type ClearDownloadLocalDataRendererRequest = ClearDownloadLocalDataRequest;
+export type ClearDownloadLocalDataMainResponse = ClearDownloadLocalDataResponse;
 
 /**
- * Channel for requesting a new download
+ * Channel for checking if the downloaded file still exists
  */
-export const RESUME_DOWNLOAD = 'RESUME_DOWNLOAD';
-export type ResumeDownloadRendererRequest = ResumeDownloadRequest;
-export type ResumeDownloadMainResponse = ResumeDownloadResponse | void;
+export const CHECK_FILE_EXISTS = 'CHECK_FILE_EXISTS';
+export type CheckFileExistsRendererRequest = CheckFileExistsRequest;
+export type CheckFileExistsMainResponse = boolean;
+
+/**
+ * Channel for quitting Daedalus and installing update
+ */
+export const MANAGE_APP_UPDATE = 'MANAGE_APP_UPDATE';
+export type ManageAppUpdateRendererRequest = {
+  filePath: string,
+  hash: string,
+};
+export type ManageAppUpdateMainResponse = {
+  status: 'progress' | 'success' | 'error',
+  data: {
+    message?: string,
+    progress?: number,
+    code?: number,
+    error?: Error,
+    info?: Object,
+  },
+};
 
 /**
  * Channel for introspecting an address

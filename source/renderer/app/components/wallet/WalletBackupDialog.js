@@ -78,6 +78,7 @@ export default class WalletBackupDialog extends Component<Props> {
           recoveryPhrase={recoveryPhrase}
           onStartWalletBackup={onStartWalletBackup}
           onCancelBackup={onCancelBackup}
+          isSubmitting={isSubmitting}
         />
       );
     }
