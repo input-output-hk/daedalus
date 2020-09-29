@@ -13,8 +13,8 @@ import {
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
-import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
-import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
+import { Link } from 'react-polymorph/lib/components/Link';
+import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
 import Dialog from '../../widgets/Dialog';
@@ -26,7 +26,7 @@ import LocalizableError from '../../../i18n/LocalizableError';
 import { submitOnEnter } from '../../../utils/form';
 import { formattedWalletAmount } from '../../../utils/formatters';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
-import questionMarkIcon from '../../../assets/images/question-mark.inline.svg';
+// import questionMarkIcon from '../../../assets/images/question-mark.inline.svg';
 
 const messages = defineMessages({
   dialogTitle: {
@@ -35,36 +35,40 @@ const messages = defineMessages({
     description: 'Title in the transfer funds form.',
   },
   description: {
-    id: 'wallet.transferFunds.dialog2.label.description',
+    id: 'wallet.transferFunds.dialog2.description.label',
     defaultMessage:
       '!!!Confirm transfer from {sourceWalletName}wallet to the {targetWalletName} wallet.',
     description: 'description in the transfer funds form.',
   },
-  labelSourceWalletAmount: {
-    id: 'wallet.transferFunds.dialog2.label.sourceWalletAmount',
+  sourceWalletAmountLabel: {
+    id: 'wallet.transferFunds.dialog2.sourceWalletAmount.label',
     defaultMessage: '!!!{sourceWalletName} amount',
     description: 'Label Source wallet Amount in the transfer funds form',
   },
-  labelFees: {
-    id: 'wallet.transferFunds.dialog2.label.fees',
+  feesLabel: {
+    id: 'wallet.transferFunds.dialog2.fees.label',
     defaultMessage: '!!!Fees',
     description: 'Label Fees in the transfer funds form',
   },
-  labelTotal: {
-    id: 'wallet.transferFunds.dialog2.label.total',
+  totalLabel: {
+    id: 'wallet.transferFunds.dialog2.total.label',
     defaultMessage: '!!!Total',
     description: 'Total Fees in the transfer funds form',
   },
-  labelLeftovers: {
-    id: 'wallet.transferFunds.dialog2.label.leftovers',
+  leftoversLabel: {
+    id: 'wallet.transferFunds.dialog2.leftovers.label',
     defaultMessage: '!!!Leftovers',
     description: 'Label Leftovers in the transfer funds form',
   },
-  tooltipLeftovers: {
-    id: 'wallet.transferFunds.dialog2.tooltip.leftovers',
-    defaultMessage:
-      '!!!<b>Leftovers</b> are some amount left in the source wallet some rare cases.',
-    description: 'Tooltip Leftovers in the transfer funds form',
+  leftoversLearnMoreLabel: {
+    id: 'wallet.transferFunds.dialog2.leftovers.LearnMore.label',
+    defaultMessage: '!!!Learn more.',
+    description: 'Label Leftovers in the transfer funds form',
+  },
+  leftoversLearnMoreUrl: {
+    id: 'wallet.transferFunds.dialog2.leftovers.LearnMore.url',
+    defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/articles/',
+    description: 'Label Leftovers in the transfer funds form',
   },
   buttonLabel: {
     id: 'wallet.transferFunds.dialog2.label.buttonLabel',
@@ -89,6 +93,7 @@ type Props = {
   onFinish: Function,
   onClose: Function,
   onBack: Function,
+  onOpenExternalLink: Function,
   feesAmount: BigNumber,
   leftoversAmount: BigNumber,
   sourceWalletAmount: BigNumber,
@@ -161,6 +166,7 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
       sourceWalletName,
       sourceWalletAmount,
       targetWalletName,
+      onOpenExternalLink,
       isSubmitting,
       error,
     } = this.props;
@@ -217,7 +223,7 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
         <div className={styles.amountGroupFull}>
           <p className={styles.label}>
             <FormattedMessage
-              {...messages.labelSourceWalletAmount}
+              {...messages.sourceWalletAmountLabel}
               values={{
                 sourceWalletName: <b key="source">{sourceWalletName}</b>,
               }}
@@ -227,31 +233,30 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
         </div>
         <div className={styles.amountGroup}>
           <p className={styles.label}>
-            {intl.formatMessage(messages.labelFees)}
+            {intl.formatMessage(messages.feesLabel)}
           </p>
           <div className={styles.amountOpacity}>{fees}</div>
         </div>
         {leftovers && (
           <div className={styles.amountGroup}>
             <p className={styles.label}>
-              {intl.formatMessage(messages.labelLeftovers)}
-              <Tooltip
-                skin={TooltipSkin}
-                className={styles.tooltip}
-                tip={<FormattedHTMLMessage {...messages.tooltipLeftovers} />}
-              >
-                <SVGInline
-                  svg={questionMarkIcon}
-                  className={styles.questionMarkIcon}
-                />
-              </Tooltip>
+              {intl.formatMessage(messages.leftoversLabel)}
+              <Link
+                className={styles.leftoversLearnMoreLink}
+                onClick={onOpenExternalLink(
+                  (event: SyntheticMouseEvent<HTMLElement>) =>
+                    intl.formatMessage(messages.leftoversLearnMoreUrl, event)
+                )}
+                label={intl.formatMessage(messages.leftoversLearnMoreLabel)}
+                skin={LinkSkin}
+              />
             </p>
             <div className={styles.amountOpacity}>{leftovers}</div>
           </div>
         )}
         <div className={styles.amountGroupFull}>
           <p className={styles.label}>
-            {intl.formatMessage(messages.labelTotal)}
+            {intl.formatMessage(messages.totalLabel)}
           </p>
           <div className={styles.amount}>{totalToBeReceived}</div>
         </div>

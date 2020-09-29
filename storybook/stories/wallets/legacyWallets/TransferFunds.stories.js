@@ -93,6 +93,7 @@ storiesOf('Wallets|Legacy Wallets', module)
         onDataChange={action('onDataChange')}
         isSubmitting={boolean('isSubmitting', false)}
         onFinish={action('onFinish')}
+        onOpenExternalLink={action('onOpenExternalLink')}
       />
     );
   });

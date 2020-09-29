@@ -37,6 +37,8 @@ export default class TransferFundsStep2Container extends Component<Props> {
       transferFundsRequest,
     } = stores.wallets;
 
+    const { openExternalLink } = stores.app;
+
     const onFinish = spendingPassword =>
       actions.wallets.transferFunds.trigger({ spendingPassword });
 
@@ -65,6 +67,7 @@ export default class TransferFundsStep2Container extends Component<Props> {
         sourceWalletAmount={sourceWalletAmount}
         sourceWalletName={sourceWalletName}
         targetWalletName={targetWalletName}
+        onOpenExternalLink={openExternalLink}
         onBack={onBack}
         onClose={this.onClose}
         onFinish={onFinish}

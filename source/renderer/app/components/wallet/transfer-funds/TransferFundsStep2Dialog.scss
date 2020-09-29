@@ -65,6 +65,32 @@
     }
   }
 
+  .leftoversLearnMoreLink {
+    background-color: var(
+      --theme-recovery-phrase-paper-wallet-question-text-color
+    );
+    border: none;
+    border-radius: 3px;
+    color: #5e6066;
+    color: var(--theme-recovery-phrase-paper-wallet-text-color);
+    font-family: var(--font-regular);
+    font-size: 8px;
+    font-weight: bold;
+    height: 16px;
+    line-height: 1.25;
+    margin-left: 12px;
+    padding: 3px 8px;
+    text-transform: uppercase;
+    vertical-align: middle;
+    width: 54px;
+    &:after {
+      background-color: var(--theme-recovery-phrase-paper-wallet-text-color);
+      font-size: 8px;
+      -webkit-mask-size: 10px;
+      transform: scale(0.9);
+    }
+  }
+
   .tooltip {
     :global {
       .SimpleTooltip_bubble {
