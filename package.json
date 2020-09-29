@@ -188,7 +188,7 @@
     "glob": "7.1.6",
     "graceful-fs": "4.2.4",
     "gulp": "4.0.2",
-    "history": "5.0.0",
+    "history": "4.10.1",
     "humanize-duration": "3.23.1",
     "lodash": "4.17.20",
     "lodash-es": "4.17.15",
