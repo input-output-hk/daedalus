@@ -258,7 +258,7 @@ let
         signingKey = mkConfigPath nodeConfigFiles "signing.key";
       });
     } // (lib.optionalAttrs (__hasAttr "smashUrl" envCfg) {
-      smashUrl = envCfg.smashUrl or null;
+      smashUrl = envCfg.smashUrl;
     });
 
     installerConfig = {
