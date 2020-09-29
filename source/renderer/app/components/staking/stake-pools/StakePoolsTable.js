@@ -6,6 +6,7 @@ import classNames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import moment from 'moment';
+import BigNumber from 'bignumber.js';
 import styles from './StakePoolsTable.scss';
 import StakePool from '../../../domains/StakePool';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
@@ -234,7 +235,7 @@ export class StakePoolsTable extends Component<Props, State> {
                     const cost = get(stakePool, 'cost', '');
                     const margin = get(stakePool, 'profitMargin', '');
                     const producedBlocks = get(stakePool, 'producedBlocks', '');
-                    const pledge = get(stakePool, 'pledge', '');
+                    const pledge = new BigNumber(get(stakePool, 'pledge', ''));
                     const retiring = get(stakePool, 'retiring', '');
                     const isOversaturated = (saturation / 100) >= 1;
                     const saturationValue = (isOversaturated || !saturation) ? parseInt(saturation, 10) : parseFloat(saturation).toFixed(2);

@@ -140,12 +140,16 @@
       &:nth-child(3),
       &:nth-child(4),
       &:nth-child(5),
-      &:nth-child(6),
-      &:nth-child(7) {
+      &:nth-child(6) {
         text-align: center;
       }
 
       &:last-child {
+        text-align: right;
+      }
+
+      &:nth-child(7) {
+        padding-right: 3px;
         text-align: right;
       }
 
@@ -198,12 +202,12 @@
       &:nth-child(3),
       &:nth-child(4),
       &:nth-child(5),
-      &:nth-child(6),
-      &:nth-child(7) {
+      &:nth-child(6) {
         text-align: center;
       }
 
-      &:last-child {
+      &:last-child,
+      &:nth-child(7) {
         text-align: right;
       }
 
