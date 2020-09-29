@@ -8,7 +8,6 @@ import { getColorFromRange } from '../../../utils/colors';
 import checkmarkImage from '../../../assets/images/check-w.inline.svg';
 import questionmarkImage from '../../../assets/images/questionmark.inline.svg';
 import clockImage from '../../../assets/images/clock.inline.svg';
-import noDataDashBigImage from '../../../assets/images/no-data-dash-big.inline.svg';
 import StakePool from '../../../domains/StakePool';
 import { IS_RANKING_DATA_AVAILABLE } from '../../../config/stakingConfig';
 
@@ -50,14 +49,7 @@ export default class ThumbSelectedPool extends Component<Props> {
       >
         {ticker && <div className={styles.ticker}>{ticker}</div>}
         <div className={styles.icon}>
-          {IS_RANKING_DATA_AVAILABLE ? (
-            <SVGInline svg={icon} />
-          ) : (
-            <SVGInline
-              className={styles.noDataDashIcon}
-              svg={noDataDashBigImage}
-            />
-          )}
+          <SVGInline svg={icon} />
         </div>
       </div>
     );

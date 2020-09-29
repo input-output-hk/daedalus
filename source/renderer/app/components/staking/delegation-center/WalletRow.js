@@ -157,12 +157,16 @@ export default class WalletRow extends Component<Props> {
         <div className={styles.left}>
           <div className={styles.title}>{name}</div>
           <div className={styles.description}>
-            <FormattedMessage
-              {...messages.walletAmount}
-              values={{
-                amount: amount.toFormat(DECIMAL_PLACES_IN_ADA),
-              }}
-            />
+            {!isRestoring ? (
+              <FormattedMessage
+                {...messages.walletAmount}
+                values={{
+                  amount: amount.toFormat(DECIMAL_PLACES_IN_ADA),
+                }}
+              />
+            ) : (
+              '-'
+            )}
           </div>
         </div>
 

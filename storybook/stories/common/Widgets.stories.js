@@ -71,11 +71,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Save',
     description: 'Save description.',
   },
-  followInstructions: {
-    id: 'manualUpdate.button.label',
-    defaultMessage: '!!!Follow instructions and manually update',
-    description: 'Follow instructions and manually update description.',
-  },
 });
 
 storiesOf('Common|Widgets', module)
@@ -161,7 +156,7 @@ storiesOf('Common|Widgets', module)
 
   .add('ButtonLink', (props: { locale: string }) => (
     <ButtonLink
-      label={intl[props.locale].formatMessage(messages.followInstructions)}
+      label={intl[props.locale].formatMessage(messages.save)}
       onClick={action('onClick')}
     />
   ))

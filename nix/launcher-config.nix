@@ -151,6 +151,7 @@ let
     inherit logsPrefix launcherLogsPrefix tlsConfig;
     walletLogging = false;
     daedalusBin = mkBinPath "frontend";
+    updateRunnerBin = mkBinPath "update-runner";
     # TODO: set when update system is complete
     updaterArgs = [];
     updaterPath = "";

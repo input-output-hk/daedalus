@@ -73,6 +73,7 @@ export const defaultProps = {
       onDataChange={action('Change Password - onDataChange')}
       isSubmitting={boolean('Change Password - isSubmitting', false)}
       error={null}
+      currentLocale={'en-US'}
     />
   ),
   deleteWalletDialogContainer: (

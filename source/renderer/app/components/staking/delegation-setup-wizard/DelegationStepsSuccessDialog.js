@@ -13,7 +13,7 @@ import tadaImage from '../../../assets/images/tada-ic.inline.svg';
 import Wallet from '../../../domains/Wallet';
 import StakePool from '../../../domains/StakePool';
 import humanizeDurationByLocale from '../../../utils/humanizeDurationByLocale';
-import { EPOCH_COUNTDOWN_INTERVAL } from '../../../config/epochsConfig';
+import { EPOCH_COUNTDOWN_INTERVAL } from '../../../config/stakingConfig';
 
 const messages = defineMessages({
   title: {
@@ -67,12 +67,16 @@ export default class DelegationStepsSuccessDialog extends Component<
   };
 
   componentDidMount() {
+    this.configureUpdateTimer();
+  }
+
+  configureUpdateTimer = () => {
     this.updateTimeUntilNextEpochStart();
     this.intervalHandler = setInterval(
       () => this.updateTimeUntilNextEpochStart(),
       EPOCH_COUNTDOWN_INTERVAL
     );
-  }
+  };
 
   updateTimeUntilNextEpochStart = () => {
     const { futureEpochStartTime } = this.props;

@@ -1,9 +1,13 @@
 // @flow
 import BigNumber from 'bignumber.js';
+import moment from 'moment';
 import {
   DECIMAL_PLACES_IN_ADA,
   LOVELACES_PER_ADA,
 } from '../config/numbersConfig';
+import { momentLocales } from '../../../common/types/locales.types';
+import type { DownloadData } from '../../../common/types/downloadManager.types';
+import type { Locale } from '../../../common/types/locales.types';
 
 export const formattedWalletAmount = (
   amount: BigNumber,
@@ -100,4 +104,52 @@ export const formattedBytesToSize = (bytes: number): string => {
   );
   if (i === 0) return `${bytes} ${sizes[i]})`;
   return `${(bytes / 1024 ** i).toFixed(1)} ${sizes[i]}`;
+};
+
+export type FormattedDownloadData = {
+  timeLeft: string,
+  downloaded: string,
+  total: string,
+  progress: number,
+};
+
+export const formattedDownloadData = (
+  downloadData?: ?DownloadData,
+  userLocale: Locale
+): FormattedDownloadData => {
+  let timeLeft = '';
+  let downloaded = '';
+  let total = '';
+  let progress = 0;
+  if (downloadData) {
+    const {
+      serverFileSize,
+      downloadSize,
+      progress: rawProgress,
+      speed,
+      remainingSize,
+    } = downloadData;
+    const secondsLeft = remainingSize / speed;
+    moment.locale(momentLocales[userLocale]);
+    timeLeft = moment()
+      .add(secondsLeft, 'seconds')
+      .fromNow(true);
+    downloaded = formattedBytesToSize(downloadSize);
+    total = formattedBytesToSize(serverFileSize);
+    progress = parseInt(rawProgress, 10);
+  }
+  return {
+    timeLeft,
+    downloaded,
+    total,
+    progress,
+  };
+};
+
+export const generateThousands = (value: number) => {
+  if (value <= 1000) {
+    return Math.round(value);
+  }
+
+  return Math.round(value / 1000) * 1000;
 };

@@ -12,7 +12,7 @@
   position: absolute;
   user-select: text;
   width: 280px;
-  z-index: 2;
+  z-index: 20;
 
   :global {
     button.SimpleButton_root {
@@ -63,17 +63,21 @@
     right: -5px;
     top: -6px;
     width: 10px;
+
     .experimentalIcon {
       padding: 0;
+
       svg {
         height: 14.5px;
         width: 10px;
+
         g {
           path:nth-child(1) {
             fill: var(
               --theme-staking-stake-pool-tooltip-experimental-icon-background-color
             );
           }
+
           path:nth-child(2) {
             fill: var(
               --theme-staking-stake-pool-tooltip-experimental-icon-lines-color
@@ -82,6 +86,7 @@
         }
       }
     }
+
     .iconButton {
       cursor: pointer;
     }
@@ -104,8 +109,8 @@
 
       :global {
         .SVGInline {
-          display: flex;
           align-items: center;
+          display: flex;
           justify-content: center;
           padding: 0 4px;
         }
@@ -114,6 +119,7 @@
       svg {
         height: 10px;
         width: 7px;
+
         path {
           fill: var(--theme-staking-stake-pool-tooltip-neutral-text-color);
         }
@@ -164,6 +170,7 @@
   &.tooltipPositionTop {
     border-top-color: var(--theme-staking-stake-pool-tooltip-border-color);
     border-width: 11px 11px 0 11px;
+
     &:before {
       border-top-color: var(
         --theme-staking-stake-pool-tooltip-background-color
@@ -173,9 +180,11 @@
       top: -11px;
     }
   }
+
   &.tooltipPositionRight {
     border-right-color: var(--theme-staking-stake-pool-tooltip-border-color);
     border-width: 11px 11px 11px 0;
+
     &:before {
       border-right-color: var(
         --theme-staking-stake-pool-tooltip-background-color
@@ -185,9 +194,11 @@
       top: -10px;
     }
   }
+
   &.tooltipPositionBottom {
     border-bottom-color: var(--theme-staking-stake-pool-tooltip-border-color);
     border-width: 0 11px 11px 11px;
+
     &:before {
       border-bottom-color: transparent;
       border-width: 0 10px 10px 10px;
@@ -195,9 +206,11 @@
       top: -11px;
     }
   }
+
   &.tooltipPositionLeft {
     border-left-color: var(--theme-staking-stake-pool-tooltip-border-color);
     border-width: 11px 0 11px 11px;
+
     &:before {
       border-left-color: var(
         --theme-staking-stake-pool-tooltip-background-color
@@ -222,6 +235,7 @@
   line-height: 14px;
   margin: -8px 0 12px;
   padding: 3px 0;
+  transition: margin 0.4s ease-in-out;
   word-break: break-all;
 
   .ellipsisContent {
@@ -236,7 +250,7 @@
 
   .hoverContent {
     background: var(--theme-staking-stake-pool-tooltip-id-background-color);
-    box-shadow: 1px 6px 6px var(--theme-staking-stake-pool-tooltip-id-shadow-1);
+    box-shadow: 0 2px 5px var(--theme-staking-stake-pool-tooltip-id-shadow-1);
     height: 20px;
     left: 0;
     margin-left: -20px;
@@ -247,7 +261,7 @@
     transition: opacity 0.25s, height 0.25s;
     transition-delay: 0s;
     user-select: none;
-    width: 280px;
+    width: 278px;
 
     svg {
       margin-left: 3px;
@@ -257,6 +271,7 @@
       svg {
         height: 9.5px;
         width: 8px;
+
         path {
           fill: var(--theme-staking-stake-pool-tooltip-text-color);
         }
@@ -267,15 +282,22 @@
       svg {
         height: 8px;
         width: auto;
+
+        path {
+          stroke: var(--theme-staking-stake-pool-tooltip-text-color);
+        }
       }
     }
   }
 
   &:hover {
+    margin: -8px 0 27px;
+
     .ellipsisContent {
       opacity: 0;
       transition-delay: 0.25s;
     }
+
     .hoverContent {
       height: 36px;
       opacity: 1;

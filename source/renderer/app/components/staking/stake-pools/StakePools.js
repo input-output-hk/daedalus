@@ -43,7 +43,8 @@ type Props = {
   stakePoolsList: Array<StakePool>,
   onOpenExternalLink: Function,
   currentTheme: string,
-  onRank: Function,
+  updateDelegatingStake: Function,
+  rankStakePools: Function,
   selectedDelegationWalletId?: ?string,
   stake?: ?number,
   onDelegate: Function,
@@ -92,7 +93,8 @@ export default class StakePools extends Component<Props, State> {
       wallets,
       currentLocale,
       stakePoolsList,
-      onRank,
+      updateDelegatingStake,
+      rankStakePools,
       selectedDelegationWalletId,
       stake,
       onOpenExternalLink,
@@ -145,7 +147,8 @@ export default class StakePools extends Component<Props, State> {
               wallets={wallets}
               currentLocale={currentLocale}
               onOpenExternalLink={onOpenExternalLink}
-              onRank={onRank}
+              updateDelegatingStake={updateDelegatingStake}
+              rankStakePools={rankStakePools}
               selectedDelegationWalletId={selectedDelegationWalletId}
               stake={stake}
               isLoading={isLoading}

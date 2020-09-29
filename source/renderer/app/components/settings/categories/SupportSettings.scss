@@ -37,10 +37,16 @@
     font-size: 16px;
   }
 
+  .faqLink {
+    align-items: center;
+    display: inline-flex;
+  }
+
   .externalLink {
     font-family: var(--font-regular);
     font-size: 16px;
     margin-right: 4px;
+    word-break: break-word;
 
     &.disabled {
       cursor: default;

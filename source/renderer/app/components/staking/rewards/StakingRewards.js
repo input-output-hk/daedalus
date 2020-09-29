@@ -184,6 +184,7 @@ export default class StakingRewards extends Component<Props, State> {
                   const rewardPoolName = get(reward, ['pool', 'name'], '');
                   const rewardWallet = get(reward, 'wallet', '');
                   const rewardAmount = get(reward, 'reward', '');
+                  const isRestoring = get(reward, 'isRestoring');
                   return (
                     <tr key={key}>
                       <td>{rewardDate}</td>
@@ -197,10 +198,11 @@ export default class StakingRewards extends Component<Props, State> {
                       </td>
                       <td>{rewardWallet}</td>
                       <td>
-                        {new BigNumber(rewardAmount).toFormat(
-                          DECIMAL_PLACES_IN_ADA
-                        )}{' '}
-                        ADA
+                        {isRestoring
+                          ? '-'
+                          : `${new BigNumber(rewardAmount).toFormat(
+                              DECIMAL_PLACES_IN_ADA
+                            )} ADA`}
                       </td>
                     </tr>
                   );
