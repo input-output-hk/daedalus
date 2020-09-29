@@ -775,8 +775,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-staking-stake-pool-tooltip-table-title-color': '#2d2d2d',
     '--theme-staking-stake-pool-tooltip-table-param-color': '#2d2d2d',
     '--theme-staking-stake-pool-tooltip-retirement-text-color': '#fafbfc',
-    '--theme-staking-stake-pool-tooltip-retirement-background-color':
-      '#ea4c5b',
+    '--theme-staking-stake-pool-tooltip-retirement-background-color': '#ea4c5b',
     '--theme-staking-stake-pool-tooltip-delegate-button-background-color':
       '#2d2d2d',
     '--theme-staking-stake-pool-tooltip-delegate-button-hover-background-color':
