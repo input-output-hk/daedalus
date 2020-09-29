@@ -114,7 +114,7 @@ export default class WalletsDropdown extends Component<Props> {
           currentStakePoolId = lastDelegationStakePoolId;
         }
         const delegatedStakePool = getStakePoolById(currentStakePoolId);
-        const detail = !isRestoring ? formattedWalletAmount(amount) : '-';
+        const detail = !isRestoring ? formattedWalletAmount(amount) : '- ADA';
         return {
           detail,
           syncing: isRestoring,

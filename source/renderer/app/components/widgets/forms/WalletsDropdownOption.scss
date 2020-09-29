@@ -58,7 +58,7 @@
       width: 24px;
 
       :global .LoadingSpinner_icon svg path {
-        fill: var(--theme-loading-spinner-color) !important;
+        fill: var(--theme-dialog-fullsize-text-highlight-color) !important;
       }
     }
   }
