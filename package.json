@@ -168,7 +168,7 @@
   },
   "dependencies": {
     "aes-js": "3.1.2",
-    "bignumber.js": "9.0.0",
+    "bignumber.js": "5.0.0",
     "bip39": "3.0.2",
     "blakejs": "1.1.0",
     "bs58": "4.0.1",
@@ -248,14 +248,15 @@
   "resolutions": {
     "**/**/marked": "^0.7.0",
     "**/**/minimatch": "^3.0.2",
-    "**/**/lodash.template": "^4.5.0",
-    "**/**/lodash": "^4.17.14",
     "**/**/unicode-properties": "1.1.0",
     "**/**/handlebars": "4.5.3",
     "**/**/minimist": "^1.2.2",
     "**/**/acorn": "^6.4.1",
-    "@storybook/core/**/terser-webpack-plugin": "^2.1.2",
-    "browserslist": "4.8.3",
-    "webpack/**/terser-webpack-plugin": "1.4.1"
+    "**/**/elliptic": "^6.5.3",
+    "**/**/bl": "^4.0.3",
+    "**/**/lodash": "^4.17.20",
+    "**/**/yargs-parser": "^20.2.0",
+    "**/**/braces": "^2.3.1",
+    "**/**/node-fetch": "^2.6.1"
   }
 }
