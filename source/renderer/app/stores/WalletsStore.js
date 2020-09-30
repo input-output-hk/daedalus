@@ -610,11 +610,9 @@ export default class WalletsStore extends Store {
       transferFundsSourceWalletId &&
       transferFundsTargetWalletId
     ) {
-      console.log('this.transferFundsFee 1', this.transferFundsFee);
       await this._transferFundsCalculateFee({
         sourceWalletId: transferFundsSourceWalletId,
       });
-      console.log('this.transferFundsFee 2', this.transferFundsFee.toString());
       nextStep = 2;
     }
     runInAction('update transfer funds step', () => {

@@ -236,10 +236,11 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
               {intl.formatMessage(messages.leftoversLabel)}
               <Link
                 className={styles.leftoversLearnMoreLink}
-                onClick={onOpenExternalLink(
-                  (event: SyntheticMouseEvent<HTMLElement>) =>
+                onClick={(event: SyntheticMouseEvent<HTMLElement>) =>
+                  onOpenExternalLink(
                     intl.formatMessage(messages.leftoversLearnMoreUrl, event)
-                )}
+                  )
+                }
                 label={intl.formatMessage(messages.leftoversLearnMoreLabel)}
                 skin={LinkSkin}
               />

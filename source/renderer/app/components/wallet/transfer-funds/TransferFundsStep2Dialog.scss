@@ -69,7 +69,7 @@
     background-color: var(
       --theme-recovery-phrase-paper-wallet-question-text-color
     );
-    border: none;
+    border: none !important;
     border-radius: 3px;
     color: #5e6066;
     color: var(--theme-recovery-phrase-paper-wallet-text-color);
@@ -84,10 +84,10 @@
     vertical-align: middle;
     width: 54px;
     &:after {
-      background-color: var(--theme-recovery-phrase-paper-wallet-text-color);
-      font-size: 8px;
-      -webkit-mask-size: 10px;
-      transform: scale(0.9);
+      background-color: var(
+        --theme-recovery-phrase-paper-wallet-text-color
+      ) !important;
+      -webkit-mask-size: 9px !important;
     }
   }
 
