@@ -345,6 +345,8 @@
   "staking.delegationSetup.chooseWallet.step.dialog.selectWalletInputLabel": "Wallet",
   "staking.delegationSetup.chooseWallet.step.dialog.selectWalletInputPlaceholder": "Select wallet",
   "staking.delegationSetup.chooseWallet.step.dialog.stepIndicatorLabel": "STEP {currentStep} OF {totalSteps}",
+  "staking.delegationSetup.chooseWallet.step.dialog.syncingSavingsWallet": "Savings",
+  "staking.delegationSetup.chooseWallet.step.dialog.syncingWallet": "in sync",
   "staking.delegationSetup.chooseWallet.step.dialog.title": "Delegate wallet",
   "staking.delegationSetup.confirmation.step.dialog.calculatingFees": "Calculating fees",
   "staking.delegationSetup.confirmation.step.dialog.cancelButtonLabel": "Cancel",

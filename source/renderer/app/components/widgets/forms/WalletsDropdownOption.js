@@ -8,26 +8,44 @@ import LoadingSpinner from '../LoadingSpinner';
 
 export type WalletOption = {
   delegatedStakePool?: ?StakePool,
-  detail: string,
+  detail?: string,
   label: string,
   numberOfStakePools?: number,
   selected?: boolean,
   syncing?: boolean,
+  syncingSavingsLabel?: string,
+  syncingLabel?: string,
 };
 
 export default class WalletsDropdownOption extends Component<WalletOption> {
   renderLabelAndTicker = () => {
-    const { delegatedStakePool, label, numberOfStakePools, syncing } = this.props;
+    const {
+      delegatedStakePool,
+      label,
+      numberOfStakePools,
+      syncing,
+      syncingSavingsLabel,
+      syncingLabel,
+    } = this.props;
     if (!delegatedStakePool || !numberOfStakePools) {
       return (
         <div className={styles.topRow}>
           <div className={styles.topRowTicker}>
-            <div className={styles.label}>{label}</div>
+            {syncing ? (
+              <div className={styles.label}>
+                {syncingSavingsLabel}
+                <span className={styles.labelSync}> {syncingLabel}</span>
+              </div>
+            ) : (
+              <div className={styles.label}>{label}</div>
+            )}
           </div>
           <div className={styles.topRowSync}>
-            {syncing && (<div className={styles.syncing}>
-              <LoadingSpinner/>
-            </div>)}
+            {syncing && (
+              <div className={styles.syncing}>
+                <LoadingSpinner />
+              </div>
+            )}
           </div>
         </div>
       );
@@ -38,7 +56,7 @@ export default class WalletsDropdownOption extends Component<WalletOption> {
     return (
       <div className={styles.topRow}>
         <div className={styles.topRowTicker}>
-          <div style={{color}} className={styles.ticker}>
+          <div style={{ color }} className={styles.ticker}>
             [{ticker}]
           </div>
           <div className={styles.label}>{label}</div>
@@ -55,7 +73,7 @@ export default class WalletsDropdownOption extends Component<WalletOption> {
     return (
       <div className={componentStyles}>
         {this.renderLabelAndTicker()}
-        <div className={styles.detail}>{detail}</div>
+        {detail && <div className={styles.detail}>{detail}</div>}
       </div>
     );
   }

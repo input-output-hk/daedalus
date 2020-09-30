@@ -40,6 +40,8 @@ type Props = {
   numberOfStakePools: number,
   wallets: Array<$Shape<Wallet>>,
   getStakePoolById: Function,
+  syncingSavingsLabel?: string,
+  syncingLabel?: string,
 };
 
 type WalletOption = {
@@ -49,6 +51,8 @@ type WalletOption = {
   detail: string,
   value: string,
   syncing?: boolean,
+  syncingSavingsLabel?: string,
+  syncingLabel?: string,
 };
 
 export default class WalletsDropdown extends Component<Props> {
@@ -59,6 +63,8 @@ export default class WalletsDropdown extends Component<Props> {
       numberOfStakePools,
       delegatedStakePool,
       syncing,
+      syncingSavingsLabel,
+      syncingLabel,
     }: WalletOption) => (
       <WalletsDropdownOption
         syncing={syncing}
@@ -66,6 +72,8 @@ export default class WalletsDropdown extends Component<Props> {
         numberOfStakePools={numberOfStakePools}
         detail={detail}
         delegatedStakePool={delegatedStakePool}
+        syncingSavingsLabel={syncingSavingsLabel}
+        syncingLabel={syncingLabel}
       />
     ),
     selectionRenderer: ({
@@ -74,6 +82,8 @@ export default class WalletsDropdown extends Component<Props> {
       numberOfStakePools,
       delegatedStakePool,
       syncing,
+      syncingSavingsLabel,
+      syncingLabel,
     }: WalletOption) => (
       <WalletsDropdownOption
         selected
@@ -82,6 +92,8 @@ export default class WalletsDropdown extends Component<Props> {
         numberOfStakePools={numberOfStakePools}
         detail={detail}
         delegatedStakePool={delegatedStakePool}
+        syncingSavingsLabel={syncingSavingsLabel}
+        syncingLabel={syncingLabel}
       />
     ),
     skin: SelectSkin,
@@ -114,7 +126,7 @@ export default class WalletsDropdown extends Component<Props> {
           currentStakePoolId = lastDelegationStakePoolId;
         }
         const delegatedStakePool = getStakePoolById(currentStakePoolId);
-        const detail = !isRestoring ? formattedWalletAmount(amount) : '- ADA';
+        const detail = !isRestoring ? formattedWalletAmount(amount) : null;
         return {
           detail,
           syncing: isRestoring,
@@ -122,6 +134,8 @@ export default class WalletsDropdown extends Component<Props> {
           value,
           numberOfStakePools,
           delegatedStakePool,
+          syncingSavingsLabel: this.props.syncingSavingsLabel,
+          syncingLabel: this.props.syncingLabel,
         };
       }
     );

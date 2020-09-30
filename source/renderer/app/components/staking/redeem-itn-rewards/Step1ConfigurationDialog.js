@@ -152,6 +152,18 @@ const messages = defineMessages({
     description:
       'RestoringWallet Error Label on the delegation setup "choose wallet" step dialog.',
   },
+  syncingSavingsWallet: {
+    id: 'staking.delegationSetup.chooseWallet.step.dialog.syncingSavingsWallet',
+    defaultMessage: '!!!Savings',
+    description:
+      'Syncing wallet savings label on the delegation setup "choose wallet" step dialog.',
+  },
+  syncingWallet: {
+    id: 'staking.delegationSetup.chooseWallet.step.dialog.syncingWallet',
+    defaultMessage: '!!!in sync',
+    description:
+      'Syncing wallet label on the delegation setup "choose wallet" step dialog.',
+  },
 });
 
 type Props = {
@@ -352,11 +364,13 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       else errorMessage = messages.errorMinDelegationFunds;
     }
 
+    const minDelegationFunds = MIN_DELEGATION_FUNDS;
+
     const dropdownError = errorMessage && (
       <p className={styles.errorMessage}>
         <FormattedHTMLMessage
           {...errorMessage}
-          values={{ MIN_DELEGATION_FUNDS }}
+          values={{ minDelegationFunds }}
         />
       </p>
     );
@@ -406,6 +420,10 @@ export default class Step1ConfigurationDialog extends Component<Props> {
               placeholder={intl.formatMessage(
                 messages.selectWalletInputPlaceholder
               )}
+              syncingSavingsLabel={intl.formatMessage(
+                messages.syncingSavingsWallet
+              )}
+              syncingLabel={intl.formatMessage(messages.syncingWallet)}
               value={walletId}
               getStakePoolById={() => {}}
               errorPosition="bottom"

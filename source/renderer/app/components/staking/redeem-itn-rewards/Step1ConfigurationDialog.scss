@@ -43,9 +43,7 @@
 }
 
 .errorMessage {
-  color: var(
-      --theme-delegation-steps-choose-wallet-error-message-light-color
-  );
+  color: var(--theme-delegation-steps-choose-wallet-error-message-light-color);
   font-size: 14px;
   letter-spacing: normal;
   margin-bottom: 10px;
@@ -71,18 +69,16 @@
 
     &:hover {
       background-color: var(
-          --theme-dialog-fullsize-field-background-color
+        --theme-dialog-fullsize-field-background-color
       ) !important;
     }
   }
 
-  .DialogFullSizeOverride_overlay .SimpleOptions_option {
-    padding: 7px 20px;
-  }
-
-  .SimpleOptions_option.SimpleOptions_selectedOption .WalletsDropdownOption_component .WalletsDropdownOption_topRow .WalletsDropdownOption_topRowSync {
+  .SimpleOptions_option.SimpleOptions_selectedOption
+    .WalletsDropdownOption_component
+    .WalletsDropdownOption_topRow
+    .WalletsDropdownOption_topRowSync {
     position: absolute !important;
     right: 50px !important;
-    top: 25px !important;
   }
 }
