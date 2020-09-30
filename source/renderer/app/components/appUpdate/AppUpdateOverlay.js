@@ -131,7 +131,7 @@ export default class AppUpdateOverlay extends Component<Props, State> {
   };
 
   state = {
-    areTermsOfUseAccepted: false,
+    areTermsOfUseAccepted: this.props.isLinux,
   };
 
   toggleAcceptance = () => {
@@ -222,17 +222,28 @@ export default class AppUpdateOverlay extends Component<Props, State> {
     ]);
     return (
       <div className={actionsStyles}>
-        {!(isLinux && isWaitingToQuitDaedalus) && (
+        {!isLinux && (
+          <Checkbox
+            label={intl.formatMessage(messages.checkboxLabel)}
+            onChange={this.toggleAcceptance}
+            className={checkboxStyles}
+            checked={areTermsOfUseAccepted || isWaitingToQuitDaedalus}
+            skin={CheckboxSkin}
+            themeOverrides={styles.checkbox}
+            disabled={isCheckboxDisabled}
+          />
+        )}
+        {isLinux && isWaitingToQuitDaedalus ? (
           <>
-            <Checkbox
-              label={intl.formatMessage(messages.checkboxLabel)}
-              onChange={this.toggleAcceptance}
-              className={checkboxStyles}
-              checked={areTermsOfUseAccepted || isWaitingToQuitDaedalus}
-              skin={CheckboxSkin}
-              themeOverrides={styles.checkbox}
-              disabled={isCheckboxDisabled}
-            />
+            <div className={styles.downloadProgressContent}>
+              <p className={styles.downloadProgressLabel}>
+                {intl.formatMessage(messages.installingUpdateLabel)}
+              </p>
+            </div>
+            <ProgressBarLarge progress={installationProgress} />
+          </>
+        ) : (
+          <>
             <Button
               className={buttonStyles}
               onClick={onInstallUpdate}
@@ -248,16 +259,6 @@ export default class AppUpdateOverlay extends Component<Props, State> {
               skin={LinkSkin}
               hasIconAfter={false}
             />
-          </>
-        )}
-        {isLinux && isWaitingToQuitDaedalus && (
-          <>
-            <div className={styles.downloadProgressContent}>
-              <p className={styles.downloadProgressLabel}>
-                {intl.formatMessage(messages.installingUpdateLabel)}
-              </p>
-            </div>
-            <ProgressBarLarge progress={installationProgress} />
           </>
         )}
       </div>
