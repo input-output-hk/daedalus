@@ -211,7 +211,7 @@ storiesOf('Wallets|Legacy Wallets', module)
       ...targetWalletSelect,
       amount: new BigNumber(targetWalletSelect.amount),
     };
-    const step2Addresses = addresses[parseInt(targetWalletSelect.id, 0) - 1];
+    const step2Addresses = addresses[parseInt(targetWalletSelect.id, 10) - 1];
     return (
       <TransferFundsStep2Dialog
         addresses={step2Addresses}
