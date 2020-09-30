@@ -200,7 +200,7 @@ export class StakePoolsTable extends Component<Props, State> {
                   <thead>
                   <tr>
                     {map(availableTableHeaders, tableHeader => {
-                      const isSorted = tableHeader.name === stakePoolsSortBy;
+                      const isSorted = tableHeader.name === stakePoolsSortBy || (tableHeader.name === 'name' && stakePoolsSortBy === 'ticker');
                       const sortIconClasses = classNames([
                         styles.sortIcon,
                         isSorted ? styles.sorted : null,
@@ -239,7 +239,7 @@ export class StakePoolsTable extends Component<Props, State> {
                     const retiring = get(stakePool, 'retiring', '');
                     const isOversaturated = (saturation / 100) >= 1;
                     const saturationValue = (isOversaturated || !saturation) ? parseInt(saturation, 10) : parseFloat(saturation).toFixed(2);
-                    const calculatedDateRange = moment().diff(moment(retiring), 'days');
+                    const calculatedDateRange = moment(retiring).diff(moment(), 'days');
 
                     const saturationBarClassnames = classNames([
                       styles.progress,
@@ -266,9 +266,9 @@ export class StakePoolsTable extends Component<Props, State> {
                         <td>{producedBlocks}</td>
                         <td>{`${formattedWalletAmount(pledge, false, true)}`}</td>
                         <td>
-                          {retiring ? (
+                          {retiring && calculatedDateRange ? (
                             <span className={styles.retiring}>
-                              {`${calculatedDateRange} days`}
+                              {calculatedDateRange === 1 ? `${calculatedDateRange} day` : `${calculatedDateRange} days`}
                             </span>
                           ) : (<span>-</span>)}
                         </td>
