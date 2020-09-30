@@ -2,18 +2,21 @@
   display: block;
   margin-bottom: 30px;
   text-align: center;
+
   svg {
+    fill: transparent;
     height: 71px;
     stroke: var(--theme-dialog-fullsize-text-highlight-color);
+
     path {
+      fill: transparent;
       stroke: var(--theme-dialog-fullsize-text-highlight-color);
-      &:nth-child(4) {
-        fill: var(--theme-dialog-fullsize-text-highlight-color);
-      }
     }
+
     circle {
-      fill: var(--theme-dialog-fullsize-text-highlight-color);
+      fill: transparent;
     }
+
     g {
       ellipse {
         &:nth-child(7),
@@ -34,12 +37,14 @@
     }
   }
 }
+
 .description {
   font-family: var(--font-regular);
   font-size: 16px;
   line-height: 1.38;
   margin-bottom: 30px;
   text-align: center;
+
   b {
     font-family: var(--font-semibold);
   }
