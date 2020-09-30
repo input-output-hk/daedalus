@@ -167,7 +167,7 @@
         }
         &.ascending {
           & > svg {
-            transform: rotate(180deg);
+            transform: rotateX(150deg);
           }
         }
         &.sorted {
