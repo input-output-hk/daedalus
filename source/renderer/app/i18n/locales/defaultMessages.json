@@ -4679,7 +4679,7 @@
         "description": "Syncing wallet savings label on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 161
+          "line": 160
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.delegationSetup.chooseWallet.step.dialog.syncingSavingsWallet",
@@ -4693,13 +4693,13 @@
         "description": "Syncing wallet label on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 168
+          "line": 166
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.delegationSetup.chooseWallet.step.dialog.syncingWallet",
         "start": {
           "column": 17,
-          "line": 162
+          "line": 161
         }
       }
     ],
