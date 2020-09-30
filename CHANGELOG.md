@@ -8,9 +8,11 @@ Changelog
 - Dependency update ([PR 2190](https://github.com/input-output-hk/daedalus/pull/2190))
 - Made stake pools ranking slider logarithmic ([PR 2162](https://github.com/input-output-hk/daedalus/pull/2162))
 - Implemented fetching of epoch configuration from the Api instead of using hardcoded constants ([PR 2165](https://github.com/input-output-hk/daedalus/pull/2165))
+- Enabled SMASH ([PR 2154](https://github.com/input-output-hk/daedalus/pull/2154))
 
 ### Fixes
 
+- Fixed the "Retirement" label on Stake Pools for yellow theme ([PR 2189](https://github.com/input-output-hk/daedalus/pull/2189))
 - Fixed stake pool tooltip "Delegate to this pool" button background colors ([PR 2181](https://github.com/input-output-hk/daedalus/pull/2181))
 - Removed one second delay on changing wallet selection and selecting delegating stake slider value on the "Stake pools" screen ([PR 2179](https://github.com/input-output-hk/daedalus/pull/2179))
 - Improved rendering performance of the stake pools on the "Stake pools" screen ([PR 2177](https://github.com/input-output-hk/daedalus/pull/2177))
