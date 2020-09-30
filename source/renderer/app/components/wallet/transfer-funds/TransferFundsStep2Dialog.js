@@ -2,14 +2,8 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import SVGInline from 'react-svg-inline';
 import BigNumber from 'bignumber.js';
-import {
-  defineMessages,
-  intlShape,
-  FormattedMessage,
-  FormattedHTMLMessage,
-} from 'react-intl';
+import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
@@ -26,7 +20,6 @@ import LocalizableError from '../../../i18n/LocalizableError';
 import { submitOnEnter } from '../../../utils/form';
 import { formattedWalletAmount } from '../../../utils/formatters';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
-// import questionMarkIcon from '../../../assets/images/question-mark.inline.svg';
 
 const messages = defineMessages({
   dialogTitle: {
