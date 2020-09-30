@@ -12,6 +12,8 @@ export const DefaultSyncingConnectingStory = (props: {
   currentTheme: string,
 }) => (
   <SyncingConnecting
+    hasNotification={false}
+    hasUpdate={false}
     isVerifyingBlockchain={false}
     verificationProgress={0}
     hasUnreadAlerts={false}
@@ -40,8 +42,6 @@ export const DefaultSyncingConnectingStory = (props: {
     isNodeSubscribed={boolean('isNodeSubscribed', false)}
     isNodeSyncing={boolean('isNodeSyncing', false)}
     isNodeTimeCorrect={boolean('isNodeTimeCorrect', true)}
-    isNewAppVersionAvailable={boolean('isNewAppVersionAvailable', false)}
-    isNewAppVersionLoading={boolean('isNewAppVersionLoading', false)}
     isNewAppVersionLoaded={boolean('isNewAppVersionLoaded', false)}
     onIssueClick={action('onIssueClick')}
     onOpenExternalLink={action('onOpenExternalLink')}
@@ -58,6 +58,8 @@ export const ConnectivityIssuesSyncingConnectingStory = (props: {
   currentTheme: string,
 }) => (
   <SyncingConnecting
+    hasNotification={false}
+    hasUpdate={false}
     isVerifyingBlockchain={false}
     verificationProgress={0}
     hasUnreadAlerts={false}
@@ -83,8 +85,6 @@ export const ConnectivityIssuesSyncingConnectingStory = (props: {
     isNodeSubscribed={false}
     isNodeSyncing={false}
     isNodeTimeCorrect
-    isNewAppVersionAvailable={false}
-    isNewAppVersionLoading={false}
     isNewAppVersionLoaded
     onIssueClick={action('onIssueClick')}
     onOpenExternalLink={action('onOpenExternalLink')}
@@ -101,6 +101,8 @@ export const LoadingWalletDataSyncingConnectingStory = (props: {
   currentTheme: string,
 }) => (
   <SyncingConnecting
+    hasNotification={false}
+    hasUpdate={false}
     isVerifyingBlockchain={false}
     verificationProgress={0}
     hasUnreadAlerts={false}
@@ -125,8 +127,6 @@ export const LoadingWalletDataSyncingConnectingStory = (props: {
     isNodeSubscribed
     isNodeSyncing
     isNodeTimeCorrect
-    isNewAppVersionAvailable={false}
-    isNewAppVersionLoading={false}
     isNewAppVersionLoaded
     onIssueClick={action('onIssueClick')}
     onOpenExternalLink={action('onOpenExternalLink')}

@@ -34,6 +34,8 @@ export type DownloadRequestOptions = {
   override?: boolean, // if true it will override the file, otherwise will append '(number)' to the end of file
   httpRequestOptions?: Object, // Override the http request options
   httpsRequestOptions?: Object, // Override the https request options, ex: to add SSL Certs
+  progressIsThrottled?: boolean, // by default, the progress is sent every second. if `false` it will be sent every milisecond
+  persistLocalData?: boolean, // by default, the localdata information is deleted after the end of the download
 };
 
 // https://www.npmjs.com/package/node-downloader-helper
@@ -55,15 +57,18 @@ export type DownloadEventType =
   | 'progress'
   | 'end'
   | 'timeout'
+  | 'stop'
+  | 'pause'
   | 'error';
 
 export type DownloadResponse = {
   eventType: DownloadEventType,
+  info: DownloadInfo,
   data: DownloadData,
-  progress: DownloadProgress,
+  error?: string,
 };
 
-export type DownloadData = {
+export type DownloadInfo = {
   downloadId: string,
   fileUrl: string,
   originalFilename: string,
@@ -71,10 +76,9 @@ export type DownloadData = {
   destinationDirectoryName: AllowedDownloadDirectories,
   destinationPath: string,
   options: DownloadRequestOptions,
-  persistLocalData?: boolean,
 };
 
-export type DownloadProgress = {
+export type DownloadData = {
   state: DownloadState,
   remainingSize: number,
   serverFileSize: number,
@@ -87,7 +91,7 @@ export type DownloadProgress = {
   error?: string,
 };
 
-export type DownloadProgressUpdate = {
+export type DownloadDataUpdate = {
   state?: DownloadState,
   remainingSize?: number,
   serverFileSize?: number,
@@ -104,7 +108,7 @@ export type DownloadProgressUpdate = {
  *
  * Each event has a different response
  * which is formatted and so the Main IPC
- * response has always the DownloadProgress shape
+ * response has always the DownloadData shape
  *
  */
 
@@ -133,31 +137,37 @@ export type DownloadInfoEnd = {
 };
 export type DownloadInfoError = {
   message: string, // Error message
-  status: string, // Http status response if available
-  body: string, // Http body response if available
+  status?: string, // Http status response if available
+  body?: string, // Http body response if available
 };
 
 export type DownloadLocalDataRequest = {
   fileName?: string,
   id?: string,
 };
-
 export type DownloadLocalDataResponse = {
-  data: DownloadData,
-  progress: DownloadProgress,
+  info?: DownloadInfo,
+  data?: DownloadData,
 };
 
 export type DownloadsLocalDataRequest = {
   state: DownloadState,
 };
-
 export type DownloadsLocalDataResponse = {
-  [key: string]: DownloadsLocalDataResponse,
+  [key: string]: DownloadLocalDataResponse,
 };
 
-export type ResumeDownloadRequest = {
-  fileName?: string,
+export type ResumeDownloadRequest = DownloadLocalDataRequest;
+export type ResumeDownloadResponse = DownloadResponse | void;
+
+export type ClearDownloadLocalDataRequest = DownloadLocalDataRequest;
+export type ClearDownloadLocalDataResponse = void;
+
+export type DeleteDownloadedFileRequest = {
   id?: string,
 };
+export type DeleteDownloadedFileResponse = void;
 
-export type ResumeDownloadResponse = DownloadResponse | void;
+export type CheckFileExistsRequest = {
+  id?: string,
+};

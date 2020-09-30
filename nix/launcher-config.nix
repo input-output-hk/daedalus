@@ -151,6 +151,7 @@ let
     inherit logsPrefix launcherLogsPrefix tlsConfig;
     walletLogging = false;
     daedalusBin = mkBinPath "frontend";
+    updateRunnerBin = mkBinPath "update-runner";
     # TODO: set when update system is complete
     updaterArgs = [];
     updaterPath = "";
@@ -257,7 +258,7 @@ let
         signingKey = mkConfigPath nodeConfigFiles "signing.key";
       });
     } // (lib.optionalAttrs (__hasAttr "smashUrl" envCfg) {
-      smashUrl = envCfg.smashUrl or null;
+      smashUrl = envCfg.smashUrl;
     });
 
     installerConfig = {

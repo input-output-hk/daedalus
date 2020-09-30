@@ -31,6 +31,7 @@ import {
   hasLoadedRequest,
   isRequestSet,
   requestGetter,
+  requestGetterLocale,
   getRequestKeys,
 } from '../utils/storesUtils';
 import {
@@ -148,8 +149,8 @@ export default class ProfileStore extends Store {
     BigNumber.config({ FORMAT });
   };
 
-  @computed get currentLocale(): string {
-    return requestGetter(this.getProfileLocaleRequest, this.systemLocale);
+  @computed get currentLocale(): Locale {
+    return requestGetterLocale(this.getProfileLocaleRequest, this.systemLocale);
   }
 
   @computed get hasLoadedCurrentLocale(): boolean {

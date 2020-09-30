@@ -67,6 +67,8 @@ export const OS_NAMES = {
   [LINUX]: 'Linux',
 };
 
+export type Platform = 'darwin' | 'win32' | 'linux';
+
 export type Network =
   | 'mainnet'
   | 'mainnet_flight'

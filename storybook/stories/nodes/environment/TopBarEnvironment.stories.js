@@ -29,7 +29,8 @@ const topBarTestEnv = currentTheme => (
     />
     <NewsFeedIcon
       onNewsFeedIconClick={action('onNewsFeedIconClick')}
-      showDot={false}
+      hasNotification={false}
+      hasUpdate={false}
     />
   </TopBar>
 );
@@ -51,7 +52,8 @@ const topBarItnEnv = currentTheme => (
     />
     <NewsFeedIcon
       onNewsFeedIconClick={action('onNewsFeedIconClick')}
-      showDot={false}
+      hasNotification={false}
+      hasUpdate={false}
     />
   </TopBar>
 );
@@ -67,7 +69,8 @@ const topBarProductionEnv = currentTheme => (
     <NodeSyncStatusIcon isSynced syncPercentage={100} isProduction isMainnet />
     <NewsFeedIcon
       onNewsFeedIconClick={action('onNewsFeedIconClick')}
-      showDot={false}
+      hasNotification={false}
+      hasUpdate={false}
     />
   </TopBar>
 );

@@ -3,8 +3,26 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Made stake pools ranking slider logarithmic ([PR 2162](https://github.com/input-output-hk/daedalus/pull/2162))
+- Implemented fetching of epoch configuration from the Api instead of using hardcoded constants ([PR 2165](https://github.com/input-output-hk/daedalus/pull/2165))
+- Enabled SMASH ([PR 2154](https://github.com/input-output-hk/daedalus/pull/2154))
+
+### Fixes
+
+- Fixed the "Retirement" label on Stake Pools for yellow theme ([PR 2189](https://github.com/input-output-hk/daedalus/pull/2189))
+- Fixed stake pool tooltip "Delegate to this pool" button background colors ([PR 2181](https://github.com/input-output-hk/daedalus/pull/2181))
+- Removed one second delay on changing wallet selection and selecting delegating stake slider value on the "Stake pools" screen ([PR 2179](https://github.com/input-output-hk/daedalus/pull/2179))
+- Improved rendering performance of the stake pools on the "Stake pools" screen ([PR 2177](https://github.com/input-output-hk/daedalus/pull/2177))
+
 ### Chores
 
+- Updated `cardano-wallet` to version `2020-09-22` ([PR 2188](https://github.com/input-output-hk/daedalus/pull/2188))
+- Updated `cardano-wallet` to revision `ffeca1d9` which includes `cardano-node` 1.20.0 ([PR 2187](https://github.com/input-output-hk/daedalus/pull/2187))
+- Set "Delegation center" as default staking screen ([PR 2185](https://github.com/input-output-hk/daedalus/pull/2185))
+- Changed the ordering of wallet addresses on the "Receive" screen so that the oldest one are on top and the newest one on the bottom of the list ([PR 2176](https://github.com/input-output-hk/daedalus/pull/2176))
+- Fixed UI issues ([PR 2152](https://github.com/input-output-hk/daedalus/pull/2152))
 - Updated list of team members on About screen ([PR 2167](https://github.com/input-output-hk/daedalus/pull/2167))
 
 ## 2.2.0
@@ -76,6 +94,10 @@ Changelog
 - Fixed epoch length and slot numbers info ([PR 2108](https://github.com/input-output-hk/daedalus/pull/2108))
 
 ## 2.0.0-RC1
+
+### Features
+
+- Implemented Daedalus app automatic update ([PR 2056](https://github.com/input-output-hk/daedalus/pull/2056))
 
 ### Fixes
 

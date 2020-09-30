@@ -9,6 +9,7 @@ import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import styles from './NewsFeed.scss';
 import News from '../../domains/News';
 import NewsItem from './NewsItem';
+import UpdateItem from './UpdateItem';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 
 const messages = defineMessages({
@@ -40,6 +41,10 @@ type Props = {
   currentDateFormat: string,
   onOpenExternalLink: Function,
   onProceedNewsAction: Function,
+  onOpenAppUpdate: Function,
+  updateDownloadProgress?: number,
+  displayAppUpdateNewsItem?: boolean,
+  isUpdatePostponed: boolean,
 };
 
 type State = {
@@ -109,11 +114,18 @@ export default class NewsFeed extends Component<Props, State> {
       onProceedNewsAction,
       onOpenExternalLink,
       currentDateFormat,
+      onOpenAppUpdate,
+      updateDownloadProgress = 0,
+      isUpdatePostponed,
+      displayAppUpdateNewsItem,
     } = this.props;
     const { hasShadow } = this.state;
 
-    const totalNewsItems = get(news, 'all', []).length;
-    const totalUnreadNewsItems = get(news, 'unread', []).length;
+    const items = get(news, 'all', []);
+    const update = get(news, 'update');
+    const totalUnreadNewsItems = get(items, 'unread', []).length;
+    const hasUpdateItem = displayAppUpdateNewsItem && update;
+
     const componentClasses = classNames([
       styles.component,
       isNewsFeedOpen ? styles.show : null,
@@ -123,6 +135,11 @@ export default class NewsFeed extends Component<Props, State> {
     const newsFeedHeaderStyles = classNames([
       styles.newsFeedHeader,
       hasShadow ? styles.hasShadow : null,
+    ]);
+
+    const newsFeedListStyles = classNames([
+      styles.newsFeedList,
+      hasUpdateItem ? styles.hasUpdate : null,
     ]);
 
     return (
@@ -140,10 +157,29 @@ export default class NewsFeed extends Component<Props, State> {
             <SVGInline svg={closeCrossThin} />
           </button>
         </div>
-        <div className={styles.newsFeedList}>
-          {news && totalNewsItems > 0 && (
-            <div className={styles.newsFeedItemsContainer}>
-              {news.all.map(newsItem => (
+        <div className={styles.newsFeedContainer}>
+          {hasUpdateItem && (
+            <>
+              {
+                <UpdateItem
+                  key={update.id}
+                  updateItem={update}
+                  isNewsFeedOpen={isNewsFeedOpen}
+                  onMarkNewsAsRead={onMarkNewsAsRead}
+                  onOpenAlert={onOpenAlert}
+                  onProceedNewsAction={onProceedNewsAction}
+                  onOpenAppUpdate={onOpenAppUpdate}
+                  currentDateFormat={currentDateFormat}
+                  downloadProgress={updateDownloadProgress}
+                  isUpdatePostponed={isUpdatePostponed}
+                />
+              }
+              <hr className={styles.separator} />
+            </>
+          )}
+          {items.length > 0 && (
+            <div className={newsFeedListStyles}>
+              {items.map(newsItem => (
                 <NewsItem
                   key={newsItem.id}
                   newsItem={newsItem}
@@ -157,14 +193,14 @@ export default class NewsFeed extends Component<Props, State> {
               ))}
             </div>
           )}
-          {news && totalNewsItems === 0 && !isLoadingNews && (
+          {news && items.length === 0 && !isLoadingNews && (
             <div className={styles.newsFeedEmptyContainer}>
               <p className={styles.newsFeedEmpty}>
                 {intl.formatMessage(messages.newsFeedEmpty)}
               </p>
             </div>
           )}
-          {(!news || totalNewsItems === 0) && isLoadingNews && (
+          {(!news || items.length === 0) && isLoadingNews && (
             <div className={styles.newsFeedNoFetchContainer}>
               <p className={styles.newsFeedNoFetch}>
                 {intl.formatMessage(messages.newsFeedNoFetch)}
