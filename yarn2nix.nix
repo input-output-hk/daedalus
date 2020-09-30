@@ -5,6 +5,7 @@
 , libidn2
 , libunistring
 , libusb
+, libusb1
 , lz4
 , pkgconfig
 , systemd
@@ -165,6 +166,7 @@ yarn2nix.mkYarnPackage {
 
     mkdir -pv $out/share/daedalus/build
     cp node_modules/usb/build/Debug/usb_bindings.node $out/share/daedalus/build/usb_bindings.node
+    cp node_modules/node-hid/build/Debug/HID-hidraw.node $out/share/daedalus/build/HID-hidraw.node
   '';
   #allowedReferences = [ "out" ];
   allowedRequisites = [
@@ -182,6 +184,7 @@ yarn2nix.mkYarnPackage {
     libidn2.out
     libgpgerror
     libunistring
+    libusb1
   ] ++ stdenv.cc.libc.buildInputs;
   yarnPreBuild = ''
     mkdir -p $HOME/.node-gyp/${nodejs.version}
