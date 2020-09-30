@@ -193,7 +193,7 @@
     "lodash": "4.17.20",
     "lodash-es": "4.17.15",
     "mime-types": "2.1.27",
-    "mkdirp": "1.0.4",
+    "mkdirp": "0.5.1",
     "mobx": "5.15.7",
     "mobx-react": "6.3.0",
     "mobx-react-form": "2.0.8",
