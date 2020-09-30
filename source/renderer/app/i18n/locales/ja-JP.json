@@ -901,15 +901,15 @@
   "wallet.transferFunds.dialog1.sourceWallet": "送金元Byronレガシーウォレット",
   "wallet.transferFunds.dialog1.targetWallet": "入金先Shelley対応ウォレット",
   "wallet.transferFunds.dialog1.title": "資金を移す",
-  "wallet.transferFunds.dialog2.label.amount": "金額",
-  "wallet.transferFunds.dialog2.label.buttonLabel": "資金を移す",
   "wallet.transferFunds.dialog2.description.label": "{sourceWalletName}ウォレットから{targetWalletName}ウォレットへの送金内容を確認してください。",
   "wallet.transferFunds.dialog2.fees.label": "手数料",
+  "wallet.transferFunds.dialog2.label.buttonLabel": "資金を移す",
+  "wallet.transferFunds.dialog2.leftovers.LearnMore.label": "もっと知る",
+  "wallet.transferFunds.dialog2.leftovers.LearnMore.url": "https://iohk.zendesk.com/hc/ja/articles/900002932323",
   "wallet.transferFunds.dialog2.leftovers.label": "レフトオーバー",
-  "wallet.transferFunds.dialog2.leftovers.LearnMore.label": "もっと知る。",
-  "wallet.transferFunds.dialog2.leftovers.LearnMore.url": "!!!https://iohk.zendesk.com/hc/ja/articles/",
-  "wallet.transferFunds.dialog2.total.label": "合計",
   "wallet.transferFunds.dialog2.passphraseFieldPlaceholder": "送信時パスワード",
   "wallet.transferFunds.dialog2.passphraseLabel": "送信時パスワード",
-  "wallet.transferFunds.dialog2.title": "資金を移す"
+  "wallet.transferFunds.dialog2.sourceWalletAmount.label": "{sourceWalletName}の額",
+  "wallet.transferFunds.dialog2.title": "資金を移す",
+  "wallet.transferFunds.dialog2.total.label": "合計"
 }
