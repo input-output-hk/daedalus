@@ -901,7 +901,7 @@
   "wallet.transferFunds.dialog2.label.buttonLabel": "資金を移す",
   "wallet.transferFunds.dialog2.description.label": "{sourceWalletName}ウォレットから{targetWalletName}ウォレットへの送金内容を確認してください。",
   "wallet.transferFunds.dialog2.fees.label": "手数料",
-  "wallet.transferFunds.dialog2.leftovers.label": "!!!Leftovers",
+  "wallet.transferFunds.dialog2.leftovers.label": "レフトオーバー",
   "wallet.transferFunds.dialog2.leftovers.LearnMore.label": "もっと知る。",
   "wallet.transferFunds.dialog2.leftovers.LearnMore.url": "!!!https://iohk.zendesk.com/hc/ja/articles/",
   "wallet.transferFunds.dialog2.total.label": "合計",
