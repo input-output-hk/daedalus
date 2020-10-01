@@ -232,7 +232,7 @@ export class StakePoolsTable extends Component<Props, State> {
                     const ticker = get(stakePool, 'ticker', '');
                     const description = get(stakePool, 'description', '');
                     const saturation = get(stakePool, 'saturation', '');
-                    const cost = get(stakePool, 'cost', '');
+                    const cost = new BigNumber(get(stakePool, 'cost', ''));
                     const margin = get(stakePool, 'profitMargin', '');
                     const producedBlocks = get(stakePool, 'producedBlocks', '');
                     const pledge = new BigNumber(get(stakePool, 'pledge', ''));
@@ -261,7 +261,7 @@ export class StakePoolsTable extends Component<Props, State> {
                             </div>
                           </div>
                         </td>
-                        <td>{`${formattedWalletAmount(cost, false, false)}`}</td>
+                        <td>{`${formattedWalletAmount(cost, false, true)}`}</td>
                         <td>{margin}%</td>
                         <td>{producedBlocks}</td>
                         <td>{`${formattedWalletAmount(pledge, false, true)}`}</td>
