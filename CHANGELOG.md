@@ -3,6 +3,10 @@ Changelog
 
 ## 2.3.0-FC2
 
+### Features
+
+- Changed the way the update installer is launched, waiting first for the app to quit ([PR 2195](https://github.com/input-output-hk/daedalus/pull/2195))
+
 ### Chores
 
 - Bumped Daedalus version to 2.3.0-FC2
