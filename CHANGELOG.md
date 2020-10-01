@@ -1,7 +1,13 @@
 Changelog
 =========
 
-## vNext
+## 2.3.0-FC2
+
+### Chores
+
+- Bumped Daedalus version to 2.3.0-FC2
+
+## 2.3.0-FC1
 
 ### Features
 
