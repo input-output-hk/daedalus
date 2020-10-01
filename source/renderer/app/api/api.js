@@ -1675,12 +1675,55 @@ export default class AdaApi {
   getNews = async (): Promise<GetNewsResponse> => {
     logger.debug('AdaApi::getNews called');
 
+    const UPDATE_VERSION = '2.2.0';
+    const DARWIN_INSTALLER_URL =
+      'https://update-cardano-mainnet.iohk.io/daedalus-2.2.0-mainnet-14276.pkg';
+    const WIN32_INSTALLER_URL =
+      'https://update-cardano-mainnet.iohk.io/daedalus-2.2.0-mainnet-14276.exe';
+    const LINUX_INSTALLER_URL =
+      'https://update-cardano-mainnet.iohk.io/daedalus-2.2.0-mainnet-14276.bin';
+    const DARWIN_HASH =
+      'b546db6f06065ddce601b1dd6b9afdce8a3b46c01e0058503207be99f3e4976b';
+    const WIN32_HASH =
+      'a3826e1b05d211c1c21de4a28a967d46530a1c318ae970bb024001ad05684f74';
+    const LINUX_HASH =
+      'e8d3879b6402062f2626e0fe16ea452992c68f70c639adbf083015d3b24c1f03';
+
     // Fetch news json
     let rawNews: string;
     let news: GetNewsResponse;
     try {
       rawNews = await getNews();
       news = JSON.parse(rawNews);
+      news = {
+        updatedAt: 1598569200000,
+        items: [
+          news.items[0],
+          {
+            ...news.items[1],
+            type: 'software-update',
+            softwareUpdate: {
+              darwin: {
+                version: UPDATE_VERSION,
+                hash: DARWIN_HASH,
+                url: DARWIN_INSTALLER_URL,
+              },
+              win32: {
+                version: UPDATE_VERSION,
+                hash: WIN32_HASH,
+                url: WIN32_INSTALLER_URL,
+              },
+              linux: {
+                version: UPDATE_VERSION,
+                hash: LINUX_HASH,
+                url: LINUX_INSTALLER_URL,
+              },
+            },
+          },
+        ],
+      };
+
+      console.log('news', news);
     } catch (error) {
       logger.error('AdaApi::getNews error', { error });
       throw new Error('Unable to fetch news');
