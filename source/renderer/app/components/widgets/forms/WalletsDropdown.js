@@ -40,7 +40,6 @@ type Props = {
   numberOfStakePools: number,
   wallets: Array<$Shape<Wallet>>,
   getStakePoolById: Function,
-  syncingSavingsLabel?: string,
   syncingLabel?: string,
 };
 
@@ -51,7 +50,6 @@ type WalletOption = {
   detail: string,
   value: string,
   syncing?: boolean,
-  syncingSavingsLabel?: string,
   syncingLabel?: string,
 };
 
@@ -63,7 +61,6 @@ export default class WalletsDropdown extends Component<Props> {
       numberOfStakePools,
       delegatedStakePool,
       syncing,
-      syncingSavingsLabel,
       syncingLabel,
     }: WalletOption) => (
       <WalletsDropdownOption
@@ -72,7 +69,6 @@ export default class WalletsDropdown extends Component<Props> {
         numberOfStakePools={numberOfStakePools}
         detail={detail}
         delegatedStakePool={delegatedStakePool}
-        syncingSavingsLabel={syncingSavingsLabel}
         syncingLabel={syncingLabel}
       />
     ),
@@ -82,7 +78,6 @@ export default class WalletsDropdown extends Component<Props> {
       numberOfStakePools,
       delegatedStakePool,
       syncing,
-      syncingSavingsLabel,
       syncingLabel,
     }: WalletOption) => (
       <WalletsDropdownOption
@@ -92,7 +87,6 @@ export default class WalletsDropdown extends Component<Props> {
         numberOfStakePools={numberOfStakePools}
         detail={detail}
         delegatedStakePool={delegatedStakePool}
-        syncingSavingsLabel={syncingSavingsLabel}
         syncingLabel={syncingLabel}
       />
     ),
@@ -134,7 +128,6 @@ export default class WalletsDropdown extends Component<Props> {
           value,
           numberOfStakePools,
           delegatedStakePool,
-          syncingSavingsLabel: this.props.syncingSavingsLabel,
           syncingLabel: this.props.syncingLabel,
         };
       }

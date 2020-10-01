@@ -13,7 +13,6 @@ export type WalletOption = {
   numberOfStakePools?: number,
   selected?: boolean,
   syncing?: boolean,
-  syncingSavingsLabel?: string,
   syncingLabel?: string,
 };
 
@@ -24,7 +23,6 @@ export default class WalletsDropdownOption extends Component<WalletOption> {
       label,
       numberOfStakePools,
       syncing,
-      syncingSavingsLabel,
       syncingLabel,
     } = this.props;
     if (!delegatedStakePool || !numberOfStakePools) {
@@ -33,7 +31,7 @@ export default class WalletsDropdownOption extends Component<WalletOption> {
           <div className={styles.topRowTicker}>
             {syncing ? (
               <div className={styles.label}>
-                {syncingSavingsLabel}
+                {label}
                 <span className={styles.labelSync}> {syncingLabel}</span>
               </div>
             ) : (

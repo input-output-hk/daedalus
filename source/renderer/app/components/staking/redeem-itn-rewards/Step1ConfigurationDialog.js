@@ -152,12 +152,6 @@ const messages = defineMessages({
     description:
       'RestoringWallet Error Label on the delegation setup "choose wallet" step dialog.',
   },
-  syncingSavingsWallet: {
-    id: 'staking.delegationSetup.chooseWallet.step.dialog.syncingSavingsWallet',
-    defaultMessage: '!!!Savings',
-    description:
-      'Syncing wallet savings label on the delegation setup "choose wallet" step dialog.',
-  },
   syncingWallet: {
     id: 'staking.delegationSetup.chooseWallet.step.dialog.syncingWallet',
     defaultMessage: '!!!in sync',
@@ -419,9 +413,6 @@ export default class Step1ConfigurationDialog extends Component<Props> {
               onChange={onSelectWallet}
               placeholder={intl.formatMessage(
                 messages.selectWalletInputPlaceholder
-              )}
-              syncingSavingsLabel={intl.formatMessage(
-                messages.syncingSavingsWallet
               )}
               syncingLabel={intl.formatMessage(messages.syncingWallet)}
               value={walletId}
