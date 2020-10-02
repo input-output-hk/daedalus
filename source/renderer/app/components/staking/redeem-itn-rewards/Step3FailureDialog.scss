@@ -12,6 +12,14 @@
       stroke: var(--theme-dialog-fullsize-text-highlight-color);
     }
 
+    path:nth-child(4) {
+      fill: var(--theme-dialog-fullsize-text-highlight-color);
+    }
+
+    circle {
+      fill: var(--theme-dialog-fullsize-text-highlight-color);
+    }
+
     g {
       ellipse {
         &:nth-child(7),
