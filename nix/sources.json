@@ -61,15 +61,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "iohk-nix": {
-        "branch": "daedalus-mainnet-wo-smash",
+        "branch": "master",
         "description": "nix scripts shared across projects",
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "iohk-nix",
-        "rev": "d4a880635861ceecad4574eb8091456cb7caae2a",
-        "sha256": "0mbmlpx1am14p6m4hhd5cs3d80ps8mwk6m2qcb83cb9lya9rp3ay",
+        "rev": "f4790863d0d4e3f9018f012ec6575432c7952a48",
+        "sha256": "0jds3j5fqcwbgpmbddrp9cxia5mxz8kw7sqsw6jcq9bq5mv1x00d",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/iohk-nix/archive/d4a880635861ceecad4574eb8091456cb7caae2a.tar.gz",
+        "url": "https://github.com/input-output-hk/iohk-nix/archive/f4790863d0d4e3f9018f012ec6575432c7952a48.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "js-chain-libs": {
