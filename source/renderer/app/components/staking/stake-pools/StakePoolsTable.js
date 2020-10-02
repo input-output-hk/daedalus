@@ -30,12 +30,14 @@ const messages = defineMessages({
   tableHeaderSaturation: {
     id: 'staking.stakePools.tableHeader.saturation',
     defaultMessage: '!!!Saturation',
-    description: 'Table header "Saturation" label on stake pools list view page',
+    description:
+      'Table header "Saturation" label on stake pools list view page',
   },
   tableHeaderPerformance: {
     id: 'staking.stakePools.tableHeader.performance',
     defaultMessage: '!!!Performance',
-    description: 'Table header "Performance" label on stake pools list view page',
+    description:
+      'Table header "Performance" label on stake pools list view page',
   },
   tableHeaderUptime: {
     id: 'staking.stakePools.tableHeader.uptime',
@@ -60,7 +62,8 @@ const messages = defineMessages({
   tableHeaderProducedBlocks: {
     id: 'staking.stakePools.tableHeader.producedBlocks',
     defaultMessage: '!!!Produced Blocks',
-    description: 'Table header "Produced Blocks" label on stake pools list view page',
+    description:
+      'Table header "Produced Blocks" label on stake pools list view page',
   },
   tableHeaderPledge: {
     id: 'staking.stakePools.tableHeader.pledge',
@@ -138,10 +141,7 @@ export class StakePoolsTable extends Component<Props, State> {
   };
 
   render() {
-    const {
-      stakePoolsList,
-      listName,
-    } = this.props;
+    const { stakePoolsList, listName } = this.props;
     const { isPreloading, stakePoolsSortBy, stakePoolsOrder } = this.state;
     const { intl } = this.context;
     const componentClasses = classNames([styles.component, listName]);
@@ -153,7 +153,11 @@ export class StakePoolsTable extends Component<Props, State> {
         </div>
       );
 
-    const sortedStakePoolList = orderBy(stakePoolsList, stakePoolsSortBy, stakePoolsOrder);
+    const sortedStakePoolList = orderBy(
+      stakePoolsList,
+      stakePoolsSortBy,
+      stakePoolsOrder
+    );
 
     const availableTableHeaders = [
       {
@@ -198,83 +202,113 @@ export class StakePoolsTable extends Component<Props, State> {
               {sortedStakePoolList.length > 0 && (
                 <table>
                   <thead>
-                  <tr>
-                    {map(availableTableHeaders, tableHeader => {
-                      const isSorted = tableHeader.name === stakePoolsSortBy || (tableHeader.name === 'name' && stakePoolsSortBy === 'ticker');
-                      const sortIconClasses = classNames([
-                        styles.sortIcon,
-                        isSorted ? styles.sorted : null,
-                        isSorted && stakePoolsOrder === 'asc'
-                          ? styles.ascending
-                          : null,
+                    <tr>
+                      {map(availableTableHeaders, tableHeader => {
+                        const isSorted =
+                          tableHeader.name === stakePoolsSortBy ||
+                          (tableHeader.name === 'name' &&
+                            stakePoolsSortBy === 'ticker');
+                        const sortIconClasses = classNames([
+                          styles.sortIcon,
+                          isSorted ? styles.sorted : null,
+                          isSorted && stakePoolsOrder === 'asc'
+                            ? styles.ascending
+                            : null,
+                        ]);
+
+                        return (
+                          <th
+                            key={tableHeader.name}
+                            onClick={() => this.handleSort(tableHeader.name)}
+                          >
+                            {tableHeader.title}
+                            <SVGInline
+                              svg={sortIcon}
+                              className={sortIconClasses}
+                            />
+                          </th>
+                        );
+                      })}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {map(sortedStakePoolList, (stakePool, key) => {
+                      const rank = get(stakePool, 'ranking', '');
+                      const ticker = get(stakePool, 'ticker', '');
+                      const description = get(stakePool, 'description', '');
+                      const saturation = get(stakePool, 'saturation', '');
+                      const cost = new BigNumber(get(stakePool, 'cost', ''));
+                      const margin = get(stakePool, 'profitMargin', '');
+                      const producedBlocks = get(
+                        stakePool,
+                        'producedBlocks',
+                        ''
+                      );
+                      const pledge = new BigNumber(
+                        get(stakePool, 'pledge', '')
+                      );
+                      const retiring = get(stakePool, 'retiring', '');
+                      const isOversaturated = saturation / 100 >= 1;
+                      const saturationValue =
+                        isOversaturated || !saturation
+                          ? parseInt(saturation, 10)
+                          : parseFloat(saturation).toFixed(2);
+                      const calculatedDateRange = moment(retiring).diff(
+                        moment(),
+                        'days'
+                      );
+
+                      const saturationBarClassnames = classNames([
+                        styles.progress,
+                        styles[getSaturationColor(saturation)],
                       ]);
 
                       return (
-                        <th
-                          key={tableHeader.name}
-                          onClick={() =>
-                            this.handleSort(tableHeader.name)
-                          }
-                        >
-                          {tableHeader.title}
-                          <SVGInline
-                            svg={sortIcon}
-                            className={sortIconClasses}
-                          />
-                        </th>
+                        <tr key={key}>
+                          <td>{rank}</td>
+                          <td>
+                            <span className={styles.ticker}>[{ticker}]</span>{' '}
+                            {description}
+                          </td>
+                          <td>
+                            <div className={styles.currentEpochProgressBar}>
+                              <div className={styles.progressBarContainer}>
+                                <div
+                                  className={saturationBarClassnames}
+                                  style={{ width: `${saturationValue}%` }}
+                                />
+                                <div className={styles.progressLabel}>
+                                  {saturationValue}%
+                                </div>
+                              </div>
+                            </div>
+                          </td>
+                          <td>{`${formattedWalletAmount(
+                            cost,
+                            false,
+                            true
+                          )}`}</td>
+                          <td>{margin}%</td>
+                          <td>{producedBlocks}</td>
+                          <td>{`${formattedWalletAmount(
+                            pledge,
+                            false,
+                            true
+                          )}`}</td>
+                          <td>
+                            {retiring && calculatedDateRange ? (
+                              <span className={styles.retiring}>
+                                {calculatedDateRange === 1
+                                  ? `${calculatedDateRange} day`
+                                  : `${calculatedDateRange} days`}
+                              </span>
+                            ) : (
+                              <span>-</span>
+                            )}
+                          </td>
+                        </tr>
                       );
                     })}
-                  </tr>
-                  </thead>
-                  <tbody>
-                  {map(sortedStakePoolList, (stakePool, key) => {
-                    const rank = get(stakePool, 'ranking', '');
-                    const ticker = get(stakePool, 'ticker', '');
-                    const description = get(stakePool, 'description', '');
-                    const saturation = get(stakePool, 'saturation', '');
-                    const cost = new BigNumber(get(stakePool, 'cost', ''));
-                    const margin = get(stakePool, 'profitMargin', '');
-                    const producedBlocks = get(stakePool, 'producedBlocks', '');
-                    const pledge = new BigNumber(get(stakePool, 'pledge', ''));
-                    const retiring = get(stakePool, 'retiring', '');
-                    const isOversaturated = (saturation / 100) >= 1;
-                    const saturationValue = (isOversaturated || !saturation) ? parseInt(saturation, 10) : parseFloat(saturation).toFixed(2);
-                    const calculatedDateRange = moment(retiring).diff(moment(), 'days');
-
-                    const saturationBarClassnames = classNames([
-                      styles.progress,
-                      styles[getSaturationColor(saturation)],
-                    ]);
-
-                    return (
-                      <tr key={key}>
-                        <td>{rank}</td>
-                        <td><span className={styles.ticker}>[{ticker}]</span> {description}</td>
-                        <td>
-                          <div className={styles.currentEpochProgressBar}>
-                            <div className={styles.progressBarContainer}>
-                              <div
-                                className={saturationBarClassnames}
-                                style={{width: `${saturationValue}%`}}
-                               />
-                              <div className={styles.progressLabel}>{saturationValue}%</div>
-                            </div>
-                          </div>
-                        </td>
-                        <td>{`${formattedWalletAmount(cost, false, true)}`}</td>
-                        <td>{margin}%</td>
-                        <td>{producedBlocks}</td>
-                        <td>{`${formattedWalletAmount(pledge, false, true)}`}</td>
-                        <td>
-                          {retiring && calculatedDateRange ? (
-                            <span className={styles.retiring}>
-                              {calculatedDateRange === 1 ? `${calculatedDateRange} day` : `${calculatedDateRange} days`}
-                            </span>
-                          ) : (<span>-</span>)}
-                        </td>
-                      </tr>
-                    );
-                  })}
                   </tbody>
                 </table>
               )}
@@ -292,6 +326,9 @@ export class StakePoolsTable extends Component<Props, State> {
       newOrder = stakePoolsOrder === 'asc' ? 'desc' : 'asc';
     } else {
       newOrder = 'desc';
+    }
+    if (stakePoolsSortBy !== 'ticker' && stakePoolsSortBy !== newSortBy) {
+      newOrder = 'asc';
     }
     if (newSortBy === 'name') {
       newSortBy = 'ticker';
