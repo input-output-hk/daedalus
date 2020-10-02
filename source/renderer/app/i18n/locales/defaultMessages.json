@@ -4675,31 +4675,17 @@
         }
       },
       {
-        "defaultMessage": "!!!Savings",
-        "description": "Syncing wallet savings label on the delegation setup \"choose wallet\" step dialog.",
+        "defaultMessage": "!!!in sync",
+        "description": "Syncing wallet label on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
           "line": 160
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
-        "id": "staking.delegationSetup.chooseWallet.step.dialog.syncingSavingsWallet",
-        "start": {
-          "column": 24,
-          "line": 155
-        }
-      },
-      {
-        "defaultMessage": "!!!in sync",
-        "description": "Syncing wallet label on the delegation setup \"choose wallet\" step dialog.",
-        "end": {
-          "column": 3,
-          "line": 166
-        },
-        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.delegationSetup.chooseWallet.step.dialog.syncingWallet",
         "start": {
           "column": 17,
-          "line": 161
+          "line": 155
         }
       }
     ],
