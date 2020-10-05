@@ -55,7 +55,7 @@ const messages = defineMessages({
   },
   leftoversLearnMoreLabel: {
     id: 'wallet.transferFunds.dialog2.leftovers.LearnMore.label',
-    defaultMessage: '!!!Learn more.',
+    defaultMessage: '!!!Learn more',
     description: 'Label Leftovers in the transfer funds form',
   },
   leftoversLearnMoreUrl: {
