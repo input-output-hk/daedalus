@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Features
+
+- Changed the way the update installer is launched, waiting first for the app to quit ([PR 2195](https://github.com/input-output-hk/daedalus/pull/2195))
+
 ## 2.3.0-FC2
 
 ### Chores
