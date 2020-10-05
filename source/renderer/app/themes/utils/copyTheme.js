@@ -157,8 +157,7 @@ const copy = async () => {
     }
 
     const existingProperties = Object.entries(firstTheme).reduce(
-      (existing, category, index) => {
-        const [categoryName, categoryObj] = category;
+      (existing, [categoryName, categoryObj]) => {
         const hasExistingProperties = Object.keys(categoryObj).filter(
           property => property.indexOf(toPrefix) > -1
         );
