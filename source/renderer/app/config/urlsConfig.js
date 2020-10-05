@@ -1,5 +1,5 @@
 // @flow
-export const MAINNET_EXPLORER_URL = 'cardanoexplorer.com';
+export const MAINNET_EXPLORER_URL = 'explorer.cardano.org';
 export const STAGING_EXPLORER_URL = 'cardano-explorer.awstest.iohkdev.io';
 export const TESTNET_EXPLORER_URL =
   'cardano-explorer.cardano-testnet.iohkdev.io';
