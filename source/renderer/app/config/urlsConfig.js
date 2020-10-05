@@ -1,8 +1,8 @@
 // @flow
 export const MAINNET_EXPLORER_URL = 'explorer.cardano.org';
-export const STAGING_EXPLORER_URL = 'cardano-explorer.awstest.iohkdev.io';
+export const STAGING_EXPLORER_URL = 'explorer.awstest.iohkdev.io';
 export const TESTNET_EXPLORER_URL =
-  'cardano-explorer.cardano-testnet.iohkdev.io';
+  'explorer.cardano-testnet.iohkdev.io';
 
 // STN
 export const STN_EXPLORER_URL = 'explorer.mainnet-candidate-4.dev.cardano.org';
