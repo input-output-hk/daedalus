@@ -71,6 +71,7 @@ const copy = async () => {
   let properties;
   let selectedProperties;
   let toPrefix;
+  let existingCategory;
 
   /**
    * STEP 1
@@ -155,8 +156,19 @@ const copy = async () => {
       return step3();
     }
 
-    const existingProperties = flatProperties.filter(
-      ([property]) => property.indexOf(toPrefix) > -1
+    const existingProperties = Object.entries(firstTheme).reduce(
+      (existing, category, index) => {
+        const [categoryName, categoryObj] = category;
+        const hasExistingProperties = Object.keys(categoryObj).filter(
+          property => property.indexOf(toPrefix) > -1
+        );
+        if (hasExistingProperties.length) {
+          if (!existingCategory) existingCategory = categoryName;
+          existing.push(categoryObj);
+        }
+        return existing;
+      },
+      []
     );
 
     // Check existing properties with the given new prefix
@@ -212,26 +224,29 @@ const copy = async () => {
    * Category to copy the properties into
    */
   const step4 = async () => {
-    const categorType = await prompt({
-      type: 'list',
-      message: 'Which category do you want me to copy into?',
-      choices: ['New category', 'Existing category'],
-    });
-
     let category;
-    const isNewCategory = categorType.includes('New');
-    if (isNewCategory) {
-      category = await prompt({
-        type: 'input',
-        message: `What is the category name? (e.g. "newFeatureName")'
-      )}\n--->`,
-      });
-    } else {
-      category = await prompt({
+    if (existingCategory) category = existingCategory;
+    else {
+      const categorType = await prompt({
         type: 'list',
-        message: 'Choose an existing gategory',
-        choices: getCategoriesChoices(),
+        message: 'Which category do you want me to copy into?',
+        choices: ['New category', 'Existing category'],
       });
+
+      const isNewCategory = categorType.includes('New');
+      if (isNewCategory) {
+        category = await prompt({
+          type: 'input',
+          message: `What is the category name? (e.g. "newFeatureName")'
+      )}\n--->`,
+        });
+      } else {
+        category = await prompt({
+          type: 'list',
+          message: 'Choose an existing gategory',
+          choices: getCategoriesChoices(),
+        });
+      }
     }
 
     const [propKey, propValue] = properties[0];
