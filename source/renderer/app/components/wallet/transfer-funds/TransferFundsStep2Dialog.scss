@@ -34,6 +34,14 @@
     font-family: var(--font-medium);
     margin-bottom: 20px;
     width: 50%;
+    b {
+      font-family: var(--font-semibold);
+    }
+  }
+
+  .amountGroupFull {
+    @extend .amountGroup;
+    width: 100%;
   }
 
   .amount {
@@ -41,6 +49,59 @@
     &:after {
       content: ' ADA';
       opacity: 0.5;
+    }
+  }
+
+  .amountOpacity {
+    @extend .amount;
+    opacity: 0.5;
+  }
+
+  .questionMarkIcon {
+    svg {
+      margin-left: 6px;
+      opacity: 0.4;
+      width: 14px;
+    }
+  }
+
+  .leftoversLearnMoreLink {
+    background-color: var(
+      --theme-recovery-phrase-paper-wallet-question-text-color
+    );
+    border: none !important;
+    border-radius: 3px;
+    color: #5e6066;
+    color: var(--theme-recovery-phrase-paper-wallet-text-color);
+    font-family: var(--font-bold);
+    font-size: 8px;
+    font-weight: bold;
+    height: 16px;
+    line-height: 1.25;
+    margin-left: 12px;
+    padding: 3px 8px;
+    text-transform: uppercase;
+    vertical-align: middle;
+    width: 54px;
+    &:after {
+      background-color: var(
+        --theme-recovery-phrase-paper-wallet-text-color
+      ) !important;
+      -webkit-mask-size: 9px !important;
+    }
+  }
+
+  .tooltip {
+    :global {
+      .SimpleTooltip_bubble {
+        left: 6px;
+        top: -9px;
+        .SimpleBubble_bubble {
+          margin-left: -71px;
+          white-space: normal;
+          width: 164px;
+        }
+      }
     }
   }
 
