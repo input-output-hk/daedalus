@@ -5,12 +5,6 @@ import type { CreateThemeParams } from '../types';
 //  ==== cardano theme output for Daedalus and react-polymorph components === //
 export const CARDANO_THEME_OUTPUT = {
   aboutWindow: {
-    '--fromz-key1': 'blah',
-    '--fromz-key2': 'blah',
-    '--fromz-key3': 'blah',
-    '--fromz-key4': 'blah',
-    '--toz-key1': 'blah',
-    '--toz-key2': 'blah',
     '--theme-about-window-background-color': 'rgba(32, 34, 37, 0.96)',
     '--theme-about-window-header-bottom-border-color':
       'rgba(233, 244, 254, 0.3)',
