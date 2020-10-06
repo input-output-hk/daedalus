@@ -2,6 +2,7 @@
 import chalk from 'chalk';
 import inquirer from 'inquirer';
 import { EXISTING_THEME_OUTPUTS } from '../daedalus/index';
+import { runUpdateThemesCLI } from './updateThemesCLI';
 
 // Utils
 const { log } = console;
@@ -30,13 +31,13 @@ const flatProperties = Object.values(firstTheme).reduce(
   },
   []
 );
-const categtories = Object.keys(firstTheme);
+const categories = Object.keys(firstTheme);
 
 // Types
 type Property = Array<string>;
 
 const getCategoriesChoices = () =>
-  categtories.map(category => ({
+  categories.map(category => ({
     value: category,
     short: `\nOk, I'll use the existing ${orange(category)} category`,
     name: category,
@@ -49,6 +50,30 @@ const getChoicesFromProperties = properties =>
     name: `${cyan(name)}: ${magenta(value)}`,
     checked: true,
   }));
+
+const findPropertiesFromPrefix = (
+  themeObj: Object,
+  prefix: string
+): {
+  category: string,
+  items: Array<any>,
+} =>
+  Object.entries(themeObj).reduce(
+    (response, [categoryName, categoryObj]) => {
+      const hasExistingProperties = Object.keys(categoryObj).filter(
+        property => property.indexOf(prefix) > -1
+      );
+      if (hasExistingProperties.length) {
+        if (!response.category) response.category = categoryName;
+        response.items = Object.entries(categoryObj);
+      }
+      return response;
+    },
+    {
+      category: '',
+      items: [],
+    }
+  );
 
 const replaceSingleProperty = (
   propertyName: string,
@@ -71,6 +96,8 @@ const copy = async () => {
   let properties;
   let selectedProperties;
   let toPrefix;
+  let fromCategory;
+  let existingProperties;
   let existingCategory;
 
   /**
@@ -90,9 +117,11 @@ const copy = async () => {
       warn('Invalid prefix');
       return step1();
     }
-    properties = flatProperties.filter(
-      ([property]) => property.indexOf(fromPrefix) > -1
-    );
+
+    ({ items: properties, category: fromCategory } = findPropertiesFromPrefix(
+      firstTheme,
+      fromPrefix
+    ));
 
     // No properties found
     if (!properties.length) {
@@ -156,19 +185,10 @@ const copy = async () => {
       return step3();
     }
 
-    const existingProperties = Object.entries(firstTheme).reduce(
-      (existing, [categoryName, categoryObj]) => {
-        const hasExistingProperties = Object.keys(categoryObj).filter(
-          property => property.indexOf(toPrefix) > -1
-        );
-        if (hasExistingProperties.length) {
-          if (!existingCategory) existingCategory = categoryName;
-          existing.push(categoryObj);
-        }
-        return existing;
-      },
-      []
-    );
+    ({
+      items: existingProperties,
+      category: existingCategory,
+    } = findPropertiesFromPrefix(firstTheme, toPrefix));
 
     // Check existing properties with the given new prefix
     const conflictingProperties = existingProperties.reduce(
@@ -295,7 +315,23 @@ Should I proceed?
    * Copying...
    */
   const step5 = async () => {
-    log(magenta('DO THE THING'));
+    // log(magenta('DO THE THING'));
+    info(`Great, I'll run the theme updater:`);
+
+    // const newProperties = selectedProperties.map(([propKey, propValue]) => [
+    //   replaceSingleProperty(propKey, fromPrefix, toPrefix),
+    //   propValue,
+    // ]);
+
+    // const pendingUpdates = EXISTING_THEME_OUTPUTS.map(
+    //   ([themeName, theme]) => {
+
+    //     // const fromProperties =
+
+    //   }
+    // );
+
+    // runUpdateThemesCLI(pendingUpdates);
   };
 
   step1();
