@@ -2449,20 +2449,20 @@
   resolved "https://registry.yarnpkg.com/@types/minimatch/-/minimatch-3.0.3.tgz#3dca0e3f33b200fc7d1139c0cd96c1268cadfd9d"
 
 "@types/node@*":
-  version "14.11.2"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.11.2.tgz#2de1ed6670439387da1c9f549a2ade2b0a799256"
+  version "14.11.5"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-14.11.5.tgz#fecad41c041cae7f2404ad4b2d0742fdb628b305"
 
 "@types/node@11.11.6":
   version "11.11.6"
   resolved "https://registry.yarnpkg.com/@types/node/-/node-11.11.6.tgz#df929d1bb2eee5afdda598a41930fe50b43eaa6a"
 
 "@types/node@^12.0.12":
-  version "12.12.62"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.62.tgz#733923d73669188d35950253dd18a21570085d2b"
+  version "12.12.64"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.64.tgz#e3b336dc4c6ba52c6b59e3bd69a100347c20b1c0"
 
 "@types/node@^12.7.2":
-  version "12.12.62"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.62.tgz#733923d73669188d35950253dd18a21570085d2b"
+  version "12.12.64"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-12.12.64.tgz#e3b336dc4c6ba52c6b59e3bd69a100347c20b1c0"
 
 "@types/normalize-package-data@^2.4.0":
   version "2.4.0"
@@ -2496,8 +2496,8 @@
     "@types/react" "*"
 
 "@types/react@*":
-  version "16.9.50"
-  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.50.tgz#cb5f2c22d42de33ca1f5efc6a0959feb784a3a2d"
+  version "16.9.51"
+  resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.51.tgz#f8aa51ffa9996f1387f63686696d9b59713d2b60"
   dependencies:
     "@types/prop-types" "*"
     csstype "^3.0.2"
@@ -2761,24 +2761,24 @@ acorn-walk@^7.0.0:
   resolved "https://registry.yarnpkg.com/acorn-walk/-/acorn-walk-7.2.0.tgz#0de889a601203909b0fbe07b8938dc21d2e967bc"
 
 acorn@^4.0.4:
-  version "6.4.1"
-  resolved "https://registry.yarnpkg.com/acorn/-/acorn-6.4.1.tgz#531e58ba3f51b9dacb9a6646ca4debf5b14ca474"
+  version "6.4.2"
+  resolved "https://registry.yarnpkg.com/acorn/-/acorn-6.4.2.tgz#35866fd710528e92de10cf06016498e47e39e1e6"
 
 acorn@^6.4.1:
-  version "6.4.1"
-  resolved "https://registry.yarnpkg.com/acorn/-/acorn-6.4.1.tgz#531e58ba3f51b9dacb9a6646ca4debf5b14ca474"
+  version "6.4.2"
+  resolved "https://registry.yarnpkg.com/acorn/-/acorn-6.4.2.tgz#35866fd710528e92de10cf06016498e47e39e1e6"
 
 acorn@^7.0.0:
-  version "6.4.1"
-  resolved "https://registry.yarnpkg.com/acorn/-/acorn-6.4.1.tgz#531e58ba3f51b9dacb9a6646ca4debf5b14ca474"
+  version "6.4.2"
+  resolved "https://registry.yarnpkg.com/acorn/-/acorn-6.4.2.tgz#35866fd710528e92de10cf06016498e47e39e1e6"
 
 acorn@^7.1.1:
-  version "6.4.1"
-  resolved "https://registry.yarnpkg.com/acorn/-/acorn-6.4.1.tgz#531e58ba3f51b9dacb9a6646ca4debf5b14ca474"
+  version "6.4.2"
+  resolved "https://registry.yarnpkg.com/acorn/-/acorn-6.4.2.tgz#35866fd710528e92de10cf06016498e47e39e1e6"
 
 acorn@^7.4.0:
-  version "6.4.1"
-  resolved "https://registry.yarnpkg.com/acorn/-/acorn-6.4.1.tgz#531e58ba3f51b9dacb9a6646ca4debf5b14ca474"
+  version "6.4.2"
+  resolved "https://registry.yarnpkg.com/acorn/-/acorn-6.4.2.tgz#35866fd710528e92de10cf06016498e47e39e1e6"
 
 add-px-to-style@1.0.0:
   version "1.0.0"
@@ -4843,16 +4843,16 @@ can-use-dom@^0.1.0:
   resolved "https://registry.yarnpkg.com/can-use-dom/-/can-use-dom-0.1.0.tgz#22cc4a34a0abc43950f42c6411024a3f6366b45a"
 
 caniuse-lite@^1.0.30000989:
-  version "1.0.30001143"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001143.tgz#560f2cfb9f313d1d7e52eb8dac0e4e36c8821c0d"
+  version "1.0.30001144"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001144.tgz#bca0fffde12f97e1127a351fec3bfc1971aa3b3d"
 
 caniuse-lite@^1.0.30001109:
-  version "1.0.30001143"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001143.tgz#560f2cfb9f313d1d7e52eb8dac0e4e36c8821c0d"
+  version "1.0.30001144"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001144.tgz#bca0fffde12f97e1127a351fec3bfc1971aa3b3d"
 
 caniuse-lite@^1.0.30001135:
-  version "1.0.30001143"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001143.tgz#560f2cfb9f313d1d7e52eb8dac0e4e36c8821c0d"
+  version "1.0.30001144"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001144.tgz#bca0fffde12f97e1127a351fec3bfc1971aa3b3d"
 
 cardano-js@0.4.5:
   version "0.4.5"
@@ -6849,12 +6849,6 @@ domhandler@^2.3.0:
   dependencies:
     domelementtype "1"
 
-domhandler@^3.0:
-  version "3.3.0"
-  resolved "https://registry.yarnpkg.com/domhandler/-/domhandler-3.3.0.tgz#6db7ea46e4617eb15cf875df68b2b8524ce0037a"
-  dependencies:
-    domelementtype "^2.0.1"
-
 domhandler@^3.0.0:
   version "3.3.0"
   resolved "https://registry.yarnpkg.com/domhandler/-/domhandler-3.3.0.tgz#6db7ea46e4617eb15cf875df68b2b8524ce0037a"
@@ -6888,7 +6882,7 @@ domutils@^1.7.0:
     dom-serializer "0"
     domelementtype "1"
 
-domutils@^2.0.0:
+domutils@^2.4.2:
   version "2.4.2"
   resolved "https://registry.yarnpkg.com/domutils/-/domutils-2.4.2.tgz#7ee5be261944e1ad487d9aa0616720010123922b"
   dependencies:
@@ -7108,12 +7102,12 @@ electron-store@5.1.1:
     type-fest "^0.7.1"
 
 electron-to-chromium@^1.3.247:
-  version "1.3.576"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.576.tgz#2e70234484e03d7c7e90310d7d79fd3775379c34"
+  version "1.3.577"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.577.tgz#9885f3f72c6e3367010b461ff6f2d9624a929720"
 
 electron-to-chromium@^1.3.571:
-  version "1.3.576"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.576.tgz#2e70234484e03d7c7e90310d7d79fd3775379c34"
+  version "1.3.577"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.3.577.tgz#9885f3f72c6e3367010b461ff6f2d9624a929720"
 
 electron@8.2.2:
   version "8.2.2"
@@ -9913,13 +9907,13 @@ html-tags@^3.1.0:
   resolved "https://registry.yarnpkg.com/html-tags/-/html-tags-3.1.0.tgz#7b5e6f7e665e9fb41f30007ed9e0d41e97fb2140"
 
 html-to-react@^1.3.4:
-  version "1.4.3"
-  resolved "https://registry.yarnpkg.com/html-to-react/-/html-to-react-1.4.3.tgz#1430a1cb581ef29533892ec70a2fdc4554b17ffd"
+  version "1.4.4"
+  resolved "https://registry.yarnpkg.com/html-to-react/-/html-to-react-1.4.4.tgz#dd5edb76ff28ab7fc34faabd91446bece292dc38"
   dependencies:
-    domhandler "^3.0"
-    htmlparser2 "^4.1.0"
+    domhandler "^3.3.0"
+    htmlparser2 "^5.0"
     lodash.camelcase "^4.3.0"
-    ramda "^0.27"
+    ramda "^0.27.1"
 
 html-webpack-plugin@^4.0.0-beta.2:
   version "4.5.0"
@@ -9956,13 +9950,13 @@ htmlparser2@^3.3.0:
     inherits "^2.0.1"
     readable-stream "^3.1.1"
 
-htmlparser2@^4.1.0:
-  version "4.1.0"
-  resolved "https://registry.yarnpkg.com/htmlparser2/-/htmlparser2-4.1.0.tgz#9a4ef161f2e4625ebf7dfbe6c0a2f52d18a59e78"
+htmlparser2@^5.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/htmlparser2/-/htmlparser2-5.0.0.tgz#78454bc782599291d9fefd7b48ef2058dc62eb89"
   dependencies:
     domelementtype "^2.0.1"
-    domhandler "^3.0.0"
-    domutils "^2.0.0"
+    domhandler "^3.3.0"
+    domutils "^2.4.2"
     entities "^2.0.0"
 
 http-cache-semantics@^4.0.0:
@@ -15028,7 +15022,7 @@ ramda@^0.21.0:
   version "0.21.0"
   resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.21.0.tgz#a001abedb3ff61077d4ff1d577d44de77e8d0a35"
 
-ramda@^0.27:
+ramda@^0.27.1:
   version "0.27.1"
   resolved "https://registry.yarnpkg.com/ramda/-/ramda-0.27.1.tgz#66fc2df3ef873874ffc2da6aa8984658abacf5c9"
 
