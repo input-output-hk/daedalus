@@ -73,6 +73,21 @@ export default class ThemesManager extends Component<
     return content;
   };
 
+  get iframe() {
+    return document.getElementById('storybook-preview-iframe').contentWindow;
+  }
+
+  onHoverOn = (paramName: string) => {
+    this.iframe.document.documentElement.style.setProperty(paramName, 'pink');
+  };
+
+  onHoverOff = (paramName: string, paramColor: string) => {
+    this.iframe.document.documentElement.style.setProperty(
+      paramName,
+      paramColor
+    );
+  };
+
   render() {
     const { themeName, filter } = this.state;
     const themeContent = this.getThemeContent();
@@ -91,7 +106,12 @@ export default class ThemesManager extends Component<
         />
         <ul style={styles.list}>
           {Object.entries(themeContent).map(([paramName, paramColor]) => (
-            <li key={paramName} style={styles.listItem}>
+            <li
+              key={paramName}
+              style={styles.listItem}
+              onMouseEnter={() => this.onHoverOn(paramName)}
+              onMouseLeave={() => this.onHoverOff(paramName, paramColor)}
+            >
               <em style={{ ...styles.itemColor, background: paramColor }} />
               {paramName}
             </li>
