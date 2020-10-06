@@ -941,6 +941,8 @@ export const YELLOW_THEME_OUTPUT = {
       'rgba(45, 45, 45, 0.05)',
     '--theme-transactions-filter-title-button-background-color-active':
       'rgba(45, 45, 45, 0.12)',
+    '--theme-transactions-transfer-funds-selected-wallet-background-color':
+      '#2d2d2d0d',
   },
   uploader: {
     '--theme-uploader-text-color': '#2d2d2d',

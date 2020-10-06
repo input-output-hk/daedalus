@@ -1,11 +1,10 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import faker from 'faker';
 import { action } from '@storybook/addon-actions';
-import { withKnobs, select, boolean } from '@storybook/addon-knobs';
-import { BigNumber } from 'bignumber.js';
+import { withKnobs, select, boolean, number } from '@storybook/addon-knobs';
 import { set } from 'lodash';
+import { BigNumber } from 'bignumber.js';
 import TransferFundsStep1Dialog from '../../../../source/renderer/app/components/wallet/transfer-funds/TransferFundsStep1Dialog';
 import TransferFundsStep2Dialog from '../../../../source/renderer/app/components/wallet/transfer-funds/TransferFundsStep2Dialog';
 import { WALLETS_V2 } from '../../_support/StoryProvider';
@@ -14,149 +13,6 @@ import STAKE_POOLS from '../../../../source/renderer/app/config/stakingStakePool
 // Helpers
 import WalletsWrapper from '../_utils/WalletsWrapper';
 
-const addresses = [
-  [
-    'YbDziZoPjGmJdssagaugyCqUUJVySKBdA1DUHbpYmQd6yTeFQqfrWWKx9gs19MxMbcEskurDMdVX1h32Fi94Nojxp1gvwM',
-    'YbDziZoPjGmJdsgUUJVsagauySKyCqBbpYmQd6yTdA1DUHeFQqfbcEskrDMdVX1h32Fi94Np1gvwMWWKx9gs1ojx9MxMur',
-  ],
-  [
-    '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',
-  ],
-];
-
-const walletOptions = WALLETS_V2.reduce(
-  (options, wallet) => ({
-    ...options,
-    ...set({}, wallet.name, wallet),
-  }),
-  {}
-);
-const walletIdOptions = WALLETS_V2.reduce(
-  (options, wallet) => ({
-    ...options,
-    ...set({}, wallet.name, wallet.id),
-  }),
-  {}
-);
 storiesOf('Wallets|Legacy Wallets', module)
   .addDecorator(WalletsWrapper)
   .addDecorator(withKnobs)
@@ -164,6 +20,20 @@ storiesOf('Wallets|Legacy Wallets', module)
   // ====== Stories ======
 
   .add('Transfer Funds - Step1', () => {
+    const walletOptions = WALLETS_V2.reduce(
+      (options, wallet) => ({
+        ...options,
+        ...set({}, wallet.name, wallet),
+      }),
+      {}
+    );
+    const walletIdOptions = WALLETS_V2.reduce(
+      (options, wallet) => ({
+        ...options,
+        ...set({}, wallet.name, wallet.id),
+      }),
+      {}
+    );
     const sourceWalletSelect = select(
       'sourceWallet',
       walletOptions,
@@ -193,37 +63,37 @@ storiesOf('Wallets|Legacy Wallets', module)
     );
   })
   .add('Transfer Funds - Step2', () => {
-    const sourceWalletSelect = select(
-      'sourceWallet',
-      walletOptions,
-      WALLETS_V2[1]
-    );
-    const targetWalletSelect = select(
-      'targetWallet',
-      walletOptions,
-      WALLETS_V2[0]
-    );
-    const sourceWallet = {
-      ...sourceWalletSelect,
-      amount: new BigNumber(sourceWalletSelect.amount),
-    };
-    const targetWallet = {
-      ...targetWalletSelect,
-      amount: new BigNumber(targetWalletSelect.amount),
-    };
-    const step2Addresses = addresses[parseInt(targetWalletSelect.id, 10) - 1];
+    const feesNumber = number('fees', 1, {
+      range: true,
+      min: 1,
+      max: 5,
+      step: 1,
+    });
+    const feesAmount = BigNumber(feesNumber);
+    const leftoversAmount = boolean('Has leftovers', true)
+      ? new BigNumber(0.000005)
+      : null;
+    const sourceWalletNumber = number('sourceWalletBalance', 50, {
+      range: true,
+      min: 10,
+      max: 3000,
+      step: 1,
+    });
+    const sourceWalletAmount = BigNumber(sourceWalletNumber);
     return (
       <TransferFundsStep2Dialog
-        addresses={step2Addresses}
-        transferFundsFee={new BigNumber(faker.finance.amount(1, 20))}
+        feesAmount={feesAmount}
+        leftoversAmount={leftoversAmount}
+        sourceWalletAmount={sourceWalletAmount}
+        sourceWalletName="Source Wallet"
+        targetWalletName="Target Wallet"
         onBack={action('onBack')}
         onClose={action('onClose')}
         onContinue={action('onContinue')}
         onDataChange={action('onDataChange')}
-        sourceWallet={sourceWallet}
-        targetWallet={targetWallet}
         isSubmitting={boolean('isSubmitting', false)}
         onFinish={action('onFinish')}
+        onOpenExternalLink={action('onOpenExternalLink')}
       />
     );
   });
