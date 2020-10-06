@@ -1,4 +1,5 @@
 // @flow
+import BigNumber from 'bignumber.js';
 import { WalletUnits } from '../../domains/Wallet';
 import type { ExportedByronWallet } from '../../types/walletExportTypes';
 
@@ -233,11 +234,20 @@ export type TransferFundsCalculateFeeRequest = {
   sourceWalletId: string,
 };
 
-export type TransferFundsCalculateFeeResponse = {
+export type TransferFundsCalculateFeeApiResponse = {
   migration_cost: {
     quantity: number,
     unit: WalletUnits.LOVELACE,
   },
+  leftovers: {
+    quantity: number,
+    unit: WalletUnits.LOVELACE,
+  },
+};
+
+export type TransferFundsCalculateFeeResponse = {
+  fee: BigNumber,
+  leftovers: BigNumber,
 };
 
 export type TransferFundsRequest = {
