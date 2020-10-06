@@ -224,6 +224,7 @@ const copy = async () => {
    */
   const step4 = async () => {
     let category;
+    let isNewCategory = false;
     if (existingCategory) category = existingCategory;
     else {
       const categorType = await prompt({
@@ -232,12 +233,13 @@ const copy = async () => {
         choices: ['New category', 'Existing category'],
       });
 
-      const isNewCategory = categorType.includes('New');
+      isNewCategory = categorType.includes('New');
       if (isNewCategory) {
         category = await prompt({
           type: 'input',
-          message: `What is the category name? (e.g. "newFeatureName")'
-      )}\n--->`,
+          message: `What is the category name? (e.g. ${orange(
+            'newFeatureName'
+          )})'\n--->`,
         });
       } else {
         category = await prompt({
@@ -248,9 +250,10 @@ const copy = async () => {
       }
     }
 
-    const [propKey, propValue] = properties[0];
-
-    const newPropKey = replaceSingleProperty(propKey, fromPrefix, toPrefix);
+    const newProperties = selectedProperties.map(([propKey, propValue]) => [
+      replaceSingleProperty(propKey, fromPrefix, toPrefix),
+      propValue,
+    ]);
 
     const confirmMessage = `Great, I'll copy ${
       selectedProperties.length
@@ -263,11 +266,12 @@ Here's an example of how they will look like:
   ${orange(category)}: {${
       !isNewCategory
         ? `
-    ...`
+    `
         : ''
     }
-    ${cyan(newPropKey)}: ${magenta(propValue)}
-    ...
+    ${newProperties
+      .map(([key, value]) => `${cyan(key)}: ${magenta(value)},`)
+      .join(`\n    `)}
   },
   ...
 }"
