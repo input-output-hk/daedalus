@@ -4,92 +4,13 @@ import inquirer from 'inquirer';
 import { EXISTING_THEME_OUTPUTS } from '../daedalus/index';
 import { runUpdateThemesCLI } from './updateThemesCLI';
 
-// Utils
-const { log } = console;
-const { cyan, red, magenta } = chalk;
-const separator = () => log('\n');
-const orange = content => chalk.keyword('orange')(content);
-const info = message => log(orange(message));
-const warn = message => log(red(message));
-const prompt = async promptConfig => {
-  separator();
-  const { response } = await inquirer.prompt([
-    {
-      ...promptConfig,
-      name: 'response',
-    },
-  ]);
-  return response;
-};
-
 // Config
 const MAX_RESULTS_BEFORE_WARNING = 30;
 const firstTheme = EXISTING_THEME_OUTPUTS[0][1];
-const flatProperties = Object.values(firstTheme).reduce(
-  (properties, category) => {
-    return [...Object.entries(category), ...properties];
-  },
-  []
-);
 const categories = Object.keys(firstTheme);
 
 // Types
 type Property = Array<string>;
-
-const getCategoriesChoices = () =>
-  categories.map(category => ({
-    value: category,
-    short: `\nOk, I'll use the existing ${orange(category)} category`,
-    name: category,
-  }));
-
-const getChoicesFromProperties = properties =>
-  properties.map(([name, value]) => ({
-    value: [name, value],
-    short: `\n✔ ${name}`,
-    name: `${cyan(name)}: ${magenta(value)}`,
-    checked: true,
-  }));
-
-const findPropertiesFromPrefix = (
-  themeObj: Object,
-  prefix: string
-): {
-  category: string,
-  items: Array<any>,
-} =>
-  Object.entries(themeObj).reduce(
-    (response, [categoryName, categoryObj]) => {
-      const hasExistingProperties = Object.keys(categoryObj).filter(
-        property => property.indexOf(prefix) > -1
-      );
-      if (hasExistingProperties.length) {
-        if (!response.category) response.category = categoryName;
-        response.items = Object.entries(categoryObj);
-      }
-      return response;
-    },
-    {
-      category: '',
-      items: [],
-    }
-  );
-
-const replaceSingleProperty = (
-  propertyName: string,
-  fromPrefix: string,
-  toPrefix
-) => {
-  const fromPrefixNoDash = removeLastDash(fromPrefix);
-  const toPrefixNoDash = removeLastDash(toPrefix);
-  return propertyName.replace(fromPrefixNoDash, toPrefixNoDash);
-};
-
-const removeLastDash = property => {
-  let prop = property;
-  if (property.slice(-1) === '-') prop = prop.replace(/-$/, '');
-  return prop;
-};
 
 const copy = async () => {
   let fromPrefix;
@@ -156,7 +77,7 @@ const copy = async () => {
   const step2 = async () => {
     selectedProperties = await prompt({
       type: 'checkbox',
-      message: chalk`Great! I've found ${properties.length} properties. Which ones should I copy over?`,
+      message: chalk`Great! I've found ${properties.length} properties. Which ones should I copy over?\n`,
       choices: getChoicesFromProperties(properties),
       loop: false,
     });
@@ -335,6 +256,80 @@ Should I proceed?
   };
 
   step1();
+};
+
+// Utils
+const { log } = console;
+const { cyan, red, magenta } = chalk;
+const separator = () => log('\n');
+const orange = content => chalk.keyword('orange')(content);
+const info = message => log(orange(message));
+const warn = message => log(red(message));
+const prompt = async promptConfig => {
+  separator();
+  const { response } = await inquirer.prompt([
+    {
+      ...promptConfig,
+      name: 'response',
+    },
+  ]);
+  return response;
+};
+
+// Helpers
+const getCategoriesChoices = () =>
+  categories.map(category => ({
+    value: category,
+    short: `\nOk, I'll use the existing ${orange(category)} category`,
+    name: category,
+  }));
+
+const getChoicesFromProperties = properties =>
+  properties.map(([name, value]) => ({
+    value: [name, value],
+    short: `\n✔ ${name}`,
+    name: `${cyan(name)}: ${magenta(value)}`,
+    checked: true,
+  }));
+
+const findPropertiesFromPrefix = (
+  themeObj: Object,
+  prefix: string
+): {
+  category: string,
+  items: Array<any>,
+} =>
+  Object.entries(themeObj).reduce(
+    (response, [categoryName, categoryObj]) => {
+      const hasExistingProperties = Object.keys(categoryObj).filter(
+        property => property.indexOf(prefix) > -1
+      );
+      if (hasExistingProperties.length) {
+        if (!response.category) response.category = categoryName;
+        response.items = Object.entries(categoryObj);
+      }
+      return response;
+    },
+    {
+      category: '',
+      items: [],
+    }
+  );
+
+const replaceSingleProperty = (
+  propertyName: string,
+  fromPrefix: string,
+  toPrefix
+) => {
+  const fromPrefixNoDash = removeLastDash(fromPrefix);
+  const toPrefixNoDash = removeLastDash(toPrefix);
+  return propertyName.replace(fromPrefixNoDash, toPrefixNoDash);
+};
+
+const removeLastDash = property => {
+  let prop = property;
+  if (property.slice(-1) === '-') prop = prop.replace(/-$/, '');
+  return prop;
 };
 
 copy();
