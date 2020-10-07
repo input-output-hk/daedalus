@@ -10,7 +10,9 @@
 }
 
 .sourceWallet {
-  background-color: rgba(94, 96, 102, 0.5);
+  background-color: var(
+    --theme-transactions-transfer-funds-selected-wallet-background-color
+  );
   margin-bottom: 20px;
 }
 
