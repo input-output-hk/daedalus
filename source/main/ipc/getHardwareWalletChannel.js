@@ -34,15 +34,6 @@ import type {
   signTransactionTrezorMainResponse,
 } from '../../common/ipc/api';
 
-// const TrezorConnect = require('trezor-connect').default;
-
-console.debug('>>>> TREZOR: ', {
-  TrezorConnect,
-  DEVICE_EVENT,
-  TRANSPORT_EVENT,
-  UI_EVENT,
-})
-
 const getHardwareWalletTransportChannel: MainIpcChannel<
   getHardwareWalletTransportRendererRequest,
   getHardwareWalletTransportMainResponse
@@ -95,13 +86,28 @@ class EventObserver {
 
 // SETUP trezor-connect
 export const handleInitTrezorConnect = (sender: IpcSender) => {
-  console.debug('>>> INI: ', sender);
+  console.debug('>>> Trezor Init ');
   const initTrezorConnect = async () => {
     TrezorConnect.on(TRANSPORT_EVENT, event => {
       console.debug('>>> TRANSPORT_EVENT: ', event);
     });
     TrezorConnect.on(DEVICE_EVENT, event => {
       console.debug('>>> DEVICE_EVENT: ', event);
+      const connectionChanged = event.type === 'device-connect' || event.type === 'device-disconnect';
+      if (connectionChanged) {
+        getHardwareWalletConnectionChannel.send(
+          {
+            disconnected: event.type === 'device-disconnect',
+            deviceType: 'trezor',
+            deviceId: event.payload.id, // 58E026E1F5CF549198EDCC35
+            deviceModel: event.payload.features.model, // e.g. T
+            deviceName: event.payload.label, // e.g. Test Name
+            path: event.payload.path,
+          },
+          // $FlowFixMe
+          sender
+        );
+      }
     });
     TrezorConnect.on(UI_EVENT, event => {
       console.debug('>>> UI_EVENT: ', event);
@@ -147,31 +153,28 @@ export const handleHardwareWalletDevices = (mainWindow: BrowserWindow) => {
 export const handleHardwareWalletRequests = async () => {
   let deviceConnection = null;
   getHardwareWalletTransportChannel.onRequest(async request => {
-    const { isTrezor } = request;
+    const { isTrezor, devicePath } = request;
     console.debug('>>> ESTABLISH CONNECTION:  <<<, ', request);
     // Connected Trezor device info
     let deviceFeatures;
     if (isTrezor) {
       try {
         console.debug('>>> ESTABLISH CONNECTION Trezor');
-        deviceFeatures = await TrezorConnect.getFeatures();
-        console.debug('>>> Trezor Connected');
+        deviceFeatures = await TrezorConnect.getFeatures({ device: { path: devicePath}});
+        console.debug('>>> Trezor Connected: ', deviceFeatures);
+        if (deviceFeatures && deviceFeatures.success) {
+          return Promise.resolve({
+            deviceId: deviceFeatures.payload.device_id,
+            deviceType: 'trezor',
+            deviceModel: deviceFeatures.payload.model, // e.g. "1" or "T"
+            deviceName: deviceFeatures.payload.label,
+            path: devicePath,
+          });
+        }
       } catch (e) {
         console.debug('>>> ESTABLISH CONNECTION error: <<<', e);
         throw new Error('Establishing Trezor connection failed');
       }
-    }
-
-    if (deviceFeatures && deviceFeatures.success) {
-      return Promise.resolve({
-        deviceId: deviceFeatures.payload.device_id,
-        deviceType: 'trezor',
-        deviceModel: deviceFeatures.payload.model, // e.g. "1" or "T"
-        deviceName:
-          deviceFeatures.payload.model === '1'
-            ? 'Trezor Model One'
-            : 'Trezor Model T', // @TODO - to be defined
-      });
     }
 
     try {
@@ -232,46 +235,50 @@ export const handleHardwareWalletRequests = async () => {
   });
 
   getExtendedPublicKeyChannel.onRequest(async params => {
-    const { path, isTrezor } = params;
-    let trezorConnected = false;
-    if (isTrezor) {
-      const deviceFeatures = await TrezorConnect.getFeatures();
-      if (deviceFeatures.success) {
-        trezorConnected = true;
-      }
-    }
+    const { path, isTrezor, devicePath } = params;
+    // let trezorConnected = false;
+
+    console.debug('>>> getExtendedPublicKeyChannel: ', params);
+
     try {
-      if (!deviceConnection && !trezorConnected) {
-        throw new Error('Device not connected');
-      }
-      if (trezorConnected && isTrezor) {
-        const extendedPublicKeyResponse = await TrezorConnect.cardanoGetPublicKey(
-          {
-            path: `m/${path}`,
-            showOnTrezor: true,
+      if (isTrezor) {
+        // Check if Trezor instantiated
+        const deviceFeatures = await TrezorConnect.getFeatures({ device: { path: devicePath } });
+        console.debug('>>> Trezor - getExtendedPublicKey::Device Features: ', deviceFeatures);
+        if (deviceFeatures.success) {
+          // trezorConnected = true;
+          const extendedPublicKeyResponse = await TrezorConnect.cardanoGetPublicKey(
+            {
+              path: `m/${path}`,
+              showOnTrezor: true,
+            }
+          );
+          if (!extendedPublicKeyResponse.success) {
+            throw extendedPublicKeyResponse.payload;
           }
-        );
-        if (!extendedPublicKeyResponse.success) {
-          throw extendedPublicKeyResponse.payload;
+          const extendedPublicKey = get(
+            extendedPublicKeyResponse,
+            ['payload', 'node'],
+            {}
+          );
+          return Promise.resolve({
+            publicKeyHex: extendedPublicKey.public_key,
+            chainCodeHex: extendedPublicKey.chain_code,
+          });
         }
-        const extendedPublicKey = get(
-          extendedPublicKeyResponse,
-          ['payload', 'node'],
-          {}
-        );
-        return Promise.resolve({
-          publicKeyHex: extendedPublicKey.public_key,
-          chainCodeHex: extendedPublicKey.chain_code,
-        });
+        throw new Error('Trezor device not connected');
       }
-      if (deviceConnection && !isTrezor) {
-        const extendedPublicKey = await deviceConnection.getExtendedPublicKey(cardano.str_to_path(path));
-        return Promise.resolve({
-          publicKeyHex: extendedPublicKey.publicKeyHex,
-          chainCodeHex: extendedPublicKey.chainCodeHex,
-        });
+
+      // Check if Ledger instantiated
+      if (!deviceConnection) {
+        throw new Error('Ledger device not connected');
       }
-      throw new Error('Unrecognized Device!');
+
+      const extendedPublicKey = await deviceConnection.getExtendedPublicKey(cardano.str_to_path(path));
+      return Promise.resolve({
+        publicKeyHex: extendedPublicKey.publicKeyHex,
+        chainCodeHex: extendedPublicKey.chainCodeHex,
+      });
     } catch (error) {
       throw error;
     }

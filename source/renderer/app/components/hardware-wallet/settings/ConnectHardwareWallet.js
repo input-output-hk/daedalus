@@ -55,8 +55,8 @@ export default class ConnectHardwareWallet extends Component<Props> {
 
     const { hwDeviceStatus, transportDevice } = this.props;
 
-    const isLedger = transportDevice.deviceType === DeviceTypes.LEDGER;
-    const isTrezor = transportDevice.deviceType === DeviceTypes.TREZOR;
+    const isLedger = transportDevice && transportDevice.deviceType === DeviceTypes.LEDGER;
+    const isTrezor = transportDevice && transportDevice.deviceType === DeviceTypes.TREZOR;
 
     let hardwareTitle = intl.formatMessage(messages.hardwareWalletTitle);
     if (isTrezor) {

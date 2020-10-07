@@ -434,6 +434,7 @@ export default class WalletsStore extends Store {
     device: TransportDevice,
   }) => {
     const { walletName, extendedPublicKey, device } = params;
+    const { deviceId, deviceType, deviceModel, deviceName, path } = device;
     const accountPublicKey =
       extendedPublicKey.publicKeyHex + extendedPublicKey.chainCodeHex;
     try {
@@ -447,6 +448,18 @@ export default class WalletsStore extends Store {
           device,
           extendedPublicKey,
           disconnected: false,
+        },
+      });
+
+      await this.actions.hardwareWallets.setHardwareWalletDevice.trigger({
+        deviceId,
+        data: {
+          deviceType,
+          deviceModel,
+          deviceName,
+          path,
+          paired: wallet.id, // device paired with software wallet
+          disconnected: false, // device physically disconnected
         },
       });
       this._setActiveHardwareWallet({ walletId: wallet.id });

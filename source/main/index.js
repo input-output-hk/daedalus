@@ -13,7 +13,7 @@ import {
 import { handleDiskSpace } from './utils/handleDiskSpace';
 import {
   handleHardwareWalletDevices,
-  // handleInitTrezorConnect,
+  handleInitTrezorConnect,
 } from './ipc/getHardwareWalletChannel';
 import { handleCheckBlockReplayProgress } from './utils/handleCheckBlockReplayProgress';
 import { createMainWindow } from './windows/main';
@@ -170,13 +170,15 @@ const onAppReady = async () => {
   mainErrorHandler(onMainError);
   await handleCheckDiskSpace();
 
-  const handleCheckHardwareWalletDevices = handleHardwareWalletDevices(
-    mainWindow
-  );
-  await handleCheckHardwareWalletDevices();
+  // Ledger INIT
+  // const handleCheckHardwareWalletDevices = handleHardwareWalletDevices(
+  //   mainWindow
+  // );
+  // await handleCheckHardwareWalletDevices();
 
-  // const initTrezorConnect = handleInitTrezorConnect(mainWindow.webContents);
-  // await initTrezorConnect();
+  // Trezor INIT
+  const initTrezorConnect = handleInitTrezorConnect(mainWindow.webContents);
+  await initTrezorConnect();
 
   await handleCheckBlockReplayProgress(mainWindow, launcherConfig.logsPrefix);
 

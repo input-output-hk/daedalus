@@ -255,7 +255,8 @@ export default class LocalStorageApi {
   unsetAppUpdateCompleted = (): Promise<void> =>
     LocalStorageApi.unset(keys.APP_UPDATE_COMPLETED);
 
-    getHardwareWalletsLocalData = (): Promise<HardwareWalletsLocalData> =>
+  // Paired Hardware wallets (software <-> hardware wallet / device)
+  getHardwareWalletsLocalData = (): Promise<HardwareWalletsLocalData> =>
     LocalStorageApi.get(keys.HARDWARE_WALLETS, {});
 
   getHardwareWalletLocalData = (
@@ -270,7 +271,7 @@ export default class LocalStorageApi {
     );
 
   setHardwareWalletLocalData = async (
-    walletId: string,
+    walletId: ?string,
     data?: Object
   ): Promise<HardwareWalletLocalData> => {
     const currentWalletData = await this.getHardwareWalletLocalData(walletId);
@@ -290,6 +291,44 @@ export default class LocalStorageApi {
 
   unsetHardwareWalletLocalDataAll = (): Promise<void> =>
     LocalStorageApi.unset(keys.HARDWARE_WALLETS);
+
+
+  // Recognized Hardware wallet devices
+  getHardwareWalletDevices = (): Promise<HardwareWalletsLocalData> =>
+    LocalStorageApi.get(keys.HARDWARE_WALLET_DEVICES, {});
+
+  getHardwareWalletDevice = (
+    deviceId: string
+  ): Promise<HardwareWalletLocalData> =>
+    LocalStorageApi.get(
+      keys.HARDWARE_WALLET_DEVICES,
+      {
+        id: deviceId,
+      },
+      deviceId
+    );
+
+  setHardwareWalletDevice = async (
+    deviceId: ?string,
+    data?: Object
+  ): Promise<HardwareWalletLocalData> => {
+    const currentDeviceData = await this.getHardwareWalletDevice(deviceId);
+    const unmutableData = { id: deviceId };
+    const deviceData = Object.assign(
+      {},
+      currentDeviceData,
+      data,
+      unmutableData
+    );
+    await LocalStorageApi.set(keys.HARDWARE_WALLET_DEVICES, deviceData, deviceId);
+    return deviceData;
+  };
+
+  unsetHardwareWalletDevice = (deviceId: string): Promise<void> =>
+    LocalStorageApi.unset(keys.HARDWARE_WALLET_DEVICES, deviceId);
+
+  unsetHardwareWalletDevicesAll = (): Promise<void> =>
+    LocalStorageApi.unset(keys.HARDWARE_WALLET_DEVICES);
 
   reset = async () => {
     await LocalStorageApi.reset();
