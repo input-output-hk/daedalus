@@ -1,8 +1,11 @@
 // @flow
 import chalk from 'chalk';
+import { isEmpty } from 'lodash';
 import inquirer from 'inquirer';
 import { EXISTING_THEME_OUTPUTS } from '../daedalus/index';
-import { runUpdateThemesCLI } from './updateThemesCLI';
+// import { runUpdateThemesCLI } from './updateThemesCLI';
+import { updateThemes } from './updateThemes';
+import { writeThemeUpdate } from './writeThemeUpdate';
 
 // Types
 type Category = string;
@@ -244,9 +247,6 @@ Should I proceed?
    * Copying...
    */
   const step5 = async () => {
-    // log(magenta('DO THE THING'));
-    info(`Great, I'll run the theme updater:`);
-
     const newProperties = selectedProperties.map(([propKey, propValue]) => [
       replaceSingleProperty(propKey, fromPrefix, toPrefix),
       propValue,
@@ -279,7 +279,20 @@ Should I proceed?
       },
       {}
     );
-    runUpdateThemesCLI(pendingUpdates);
+
+    const updatedThemes = updateThemes(pendingUpdates);
+    for (const themeName in updatedThemes) {
+      if (themeName && !isEmpty(updatedThemes[themeName])) {
+        const fileName = themeName.split('.')[0];
+        const updatedThemeObj = updatedThemes[themeName];
+        writeThemeUpdate({ fileName, updatedThemeObj });
+      }
+    }
+    info(
+      `\nGreat! I have finished adding the new properties and am running Prettier.\nMeanwhile you need to update the '${cyan(
+        'CreateTheme.js'
+      )}' file, because I can't do it automatically.\n`
+    );
   };
 
   step1();

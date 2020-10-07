@@ -43,7 +43,7 @@
     "storybook:build": "build-storybook -c storybook -o dist/storybook",
     "themes:check:createTheme": "gulp build:themes && node -r esm ./dist/scripts/check.js",
     "themes:update": "gulp build:themes && node -r esm ./dist/scripts/update.js && yarn prettier --loglevel warn --write source/renderer/app/themes/daedalus/*.js",
-    "themes:copy": "node -r @babel/register -r @babel/polyfill source/renderer/app/themes/utils/copyTheme.js",
+    "themes:copy": "node -r @babel/register -r @babel/polyfill source/renderer/app/themes/utils/copyTheme.js && yarn prettier --loglevel warn --write source/renderer/app/themes/daedalus/*.js",
     "clear:cache": "gulp clear:cache",
     "nix:itn": "NETWORK=itn_rewards_v1 nix-shell --argstr nodeImplementation jormungandr --argstr cluster itn_rewards_v1",
     "nix:itn_selfnode": "NETWORK=itn_selfnode nix-shell --argstr nodeImplementation jormungandr --argstr cluster itn_selfnode",
