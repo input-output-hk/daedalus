@@ -937,6 +937,8 @@ export const SHELLEY_TESTNET_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.05)',
     '--theme-transactions-filter-title-button-background-color-active':
       'rgba(255, 255, 255, 0.12)',
+    '--theme-transactions-transfer-funds-selected-wallet-background-color':
+      '#ffffff0d',
   },
   uploader: {
     '--theme-uploader-text-color': '#ffffff',

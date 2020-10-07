@@ -173,14 +173,10 @@ export const handleManageAppUpdateRequests = (window: BrowserWindow) => {
     // For linux we execute the installer file
     if (environment.isLinux) return installUpdate(filePath);
 
-    // For other OS we launch the installer file
-    const openInstaller: boolean = shell.openItem(filePath);
-    if (!openInstaller)
-      return response(
-        false,
-        functionPrefix,
-        'Not able to launch the installer'
-      );
+    // For other OS we launch the installer file after the app was closed
+    app.on('quit', () => {
+      shell.openItem(filePath);
+    });
     app.quit();
     return response(true, functionPrefix);
   });
