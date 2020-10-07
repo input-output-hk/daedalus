@@ -11,6 +11,10 @@ Changelog
 
 - Fixed Cardano Explorer URLs ([PR 2198](https://github.com/input-output-hk/daedalus/pull/2198))
 
+### Chores
+
+- Dependency update ([PR 2190](https://github.com/input-output-hk/daedalus/pull/2190))
+
 ## 2.3.0
 
 ### Features

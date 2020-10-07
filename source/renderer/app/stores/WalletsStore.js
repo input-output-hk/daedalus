@@ -460,7 +460,7 @@ export default class WalletsStore extends Store {
       walletId: params.walletId,
       isLegacy: params.isLegacy || false,
     });
-    await this.walletsRequest.patch(result => {
+    await this.walletsRequest.patch((result) => {
       result.splice(indexOfWalletToDelete, 1);
     });
     runInAction('AdaWalletsStore::_deleteWallet', () => {
@@ -639,7 +639,7 @@ export default class WalletsStore extends Store {
     await this.transferFundsRequest.execute({
       sourceWalletId: transferFundsSourceWalletId,
       targetWalletAddresses: targetWalletAddresses
-        ? targetWalletAddresses.map(address => address.id).slice(0, 20)
+        ? targetWalletAddresses.map((address) => address.id).slice(0, 20)
         : null,
       passphrase: spendingPassword,
     });
@@ -790,10 +790,10 @@ export default class WalletsStore extends Store {
     }
   }
 
-  getWalletById = (id: string): ?Wallet => this.all.find(w => w.id === id);
+  getWalletById = (id: string): ?Wallet => this.all.find((w) => w.id === id);
 
   getWalletByName = (name: string): ?Wallet =>
-    this.all.find(w => w.name === name);
+    this.all.find((w) => w.name === name);
 
   getWalletRoute = (walletId: string, page: string = 'summary'): string =>
     buildRoute(ROUTES.WALLETS.PAGE, { id: walletId, page });
@@ -826,7 +826,7 @@ export default class WalletsStore extends Store {
 
   _patchWalletRequestWithNewWallet = async (wallet: Wallet) => {
     // Only add the new wallet if it does not exist yet in the result!
-    await this.walletsRequest.patch(result => {
+    await this.walletsRequest.patch((result) => {
       if (!find(result, { id: wallet.id })) {
         if (wallet.isLegacy) {
           // Legacy wallets are always added to the end of the list!
@@ -862,7 +862,7 @@ export default class WalletsStore extends Store {
       );
       if (match) {
         // We have a route for a specific wallet -> let's try to find it
-        const walletForCurrentRoute = this.all.find(w => w.id === match.id);
+        const walletForCurrentRoute = this.all.find((w) => w.id === match.id);
         if (walletForCurrentRoute) {
           // The wallet exists, we are done
           this._setActiveWallet({ walletId: walletForCurrentRoute.id });
@@ -943,7 +943,7 @@ export default class WalletsStore extends Store {
         }
       });
       runInAction('refresh address data', () => {
-        this.stores.addresses.addressesRequests = walletIds.map(walletId => ({
+        this.stores.addresses.addressesRequests = walletIds.map((walletId) => ({
           walletId,
           allRequest: this.stores.addresses._getAddressesAllRequest(walletId),
         }));
@@ -951,7 +951,7 @@ export default class WalletsStore extends Store {
       });
       runInAction('refresh transaction data', () => {
         this.stores.transactions.transactionsRequests = walletIds.map(
-          walletId => ({
+          (walletId) => ({
             walletId,
             recentRequest: this.stores.transactions._getTransactionsRecentRequest(
               walletId
@@ -996,7 +996,7 @@ export default class WalletsStore extends Store {
   @action _setActiveWallet = ({ walletId }: { walletId: string }) => {
     if (this.hasAnyWallets) {
       const activeWalletId = this.active ? this.active.id : null;
-      const newActiveWallet = this.all.find(wallet => wallet.id === walletId);
+      const newActiveWallet = this.all.find((wallet) => wallet.id === walletId);
       if (
         (!this.active || !this.active.isNotResponding) &&
         newActiveWallet &&
