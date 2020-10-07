@@ -1173,6 +1173,9 @@ export const createDaedalusComponentsTheme = (
         background.primary.regular
       ).alpha(0.5)}`,
       '--theme-transactions-filter-title-button-background-color-active': `${background.primary.regular}`,
+      '--theme-transactions-transfer-funds-selected-wallet-background-color': `${chroma(
+        focus
+      ).alpha(0.05)}`,
     },
     uploader: {
       '--theme-uploader-text-color': `${text.primary}`,

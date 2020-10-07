@@ -173,6 +173,7 @@ export default class WalletsStore extends Store {
   @observable transferFundsTargetWalletId: string = '';
   @observable transferFundsStep: number = 0;
   @observable transferFundsFee: ?BigNumber = null;
+  @observable transferFundsLeftovers: ?BigNumber = null;
 
   /* ----------  Hardware Wallet  ---------- */
   @observable isExportingPublicKeyAborted = false;
@@ -609,10 +610,10 @@ export default class WalletsStore extends Store {
       transferFundsSourceWalletId &&
       transferFundsTargetWalletId
     ) {
-      nextStep = 2;
       await this._transferFundsCalculateFee({
         sourceWalletId: transferFundsSourceWalletId,
       });
+      nextStep = 2;
     }
     runInAction('update transfer funds step', () => {
       this.transferFundsStep = nextStep;
@@ -686,11 +687,15 @@ export default class WalletsStore extends Store {
   }: {
     sourceWalletId: string,
   }) => {
-    const fee = await this.transferFundsCalculateFeeRequest.execute({
+    const {
+      fee,
+      leftovers,
+    } = await this.transferFundsCalculateFeeRequest.execute({
       sourceWalletId,
     }).promise;
-    runInAction('set migration fee', () => {
+    runInAction('set migration fee and leftovers', () => {
       this.transferFundsFee = fee;
+      this.transferFundsLeftovers = leftovers;
     });
   };
 

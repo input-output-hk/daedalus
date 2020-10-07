@@ -1,6 +1,22 @@
 Changelog
 =========
 
+## vNext
+
+### Features
+
+- Implemented the wallet migration leftovers handling ([PR 2178](https://github.com/input-output-hk/daedalus/pull/2178))
+
+### Fixes
+
+- Fixed Cardano Explorer URLs ([PR 2198](https://github.com/input-output-hk/daedalus/pull/2198))
+
+## 2.3.0
+
+### Features
+
+- Changed the way the update installer is launched, waiting first for the app to quit ([PR 2195](https://github.com/input-output-hk/daedalus/pull/2195))
+
 ## 2.3.0-FC2
 
 ### Chores
