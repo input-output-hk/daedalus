@@ -53,7 +53,6 @@ export const createReactPolymorphTheme = (
   const { background, border, error, focus, text } = colors;
   return {
     rpAutocomplete: {
-      BLAH: `${background.primary.regular}`,
       '--rp-autocomplete-bg-color': `${background.primary.lightest}`,
       '--rp-autocomplete-border': `1px solid ${border}`,
       '--rp-autocomplete-border-color-opened': `${focus}`,

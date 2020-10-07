@@ -4,22 +4,33 @@ import inquirer from 'inquirer';
 import { EXISTING_THEME_OUTPUTS } from '../daedalus/index';
 import { runUpdateThemesCLI } from './updateThemesCLI';
 
+// Types
+type Category = string;
+type PropertyName = string;
+type PropertyValue = string;
+type PropertiesObj = {
+  [key: PropertyName]: PropertyValue,
+};
+type Theme = {
+  [key: Category]: PropertiesObj,
+};
+type Property = Array<PropertyName | PropertyValue>;
+type SimplePropertiesList = Array<string>;
+type CompletePropertiesList = Array<Property>;
+
 // Config
 const MAX_RESULTS_BEFORE_WARNING = 30;
 const firstTheme = EXISTING_THEME_OUTPUTS[0][1];
 const categories = Object.keys(firstTheme);
 
-// Types
-type Property = Array<string>;
-
 const copy = async () => {
-  let fromPrefix;
-  let properties;
-  let selectedProperties;
-  let toPrefix;
-  let fromCategory;
-  let existingProperties;
-  let existingCategory;
+  let fromPrefix: ?string;
+  let fromCategory: ?string;
+  let foundProperties: ?string;
+  let selectedProperties: ?SimplePropertiesList;
+  let existingProperties: ?SimplePropertiesList;
+  let toPrefix: ?string;
+  let toCategory: ?string;
 
   /**
    * STEP 1
@@ -39,13 +50,15 @@ const copy = async () => {
       return step1();
     }
 
-    ({ items: properties, category: fromCategory } = findPropertiesFromPrefix(
-      firstTheme,
-      fromPrefix
-    ));
+    fromPrefix = fromPrefix.trim();
+
+    ({
+      items: foundProperties,
+      category: fromCategory,
+    } = findPropertiesFromPrefix(firstTheme, fromPrefix));
 
     // No properties found
-    if (!properties.length) {
+    if (!foundProperties.length) {
       warn(
         `I couldn't find any property with the prefix "${cyan(
           fromPrefix
@@ -55,11 +68,11 @@ const copy = async () => {
     }
 
     // Too many properties found (> MAX_RESULTS_BEFORE_WARNIN)
-    if (properties.length > MAX_RESULTS_BEFORE_WARNING) {
+    if (foundProperties.length > MAX_RESULTS_BEFORE_WARNING) {
       const shouldProceed = await prompt({
         type: 'confirm',
         message: red(
-          `I've found over ${properties.length} properties. Are you sure you want to proceed?`
+          `I've found ${foundProperties.length} properties. Are you sure you want to proceed?`
         ),
       });
       if (!shouldProceed) {
@@ -77,8 +90,8 @@ const copy = async () => {
   const step2 = async () => {
     selectedProperties = await prompt({
       type: 'checkbox',
-      message: chalk`Great! I've found ${properties.length} properties. Which ones should I copy over?\n`,
-      choices: getChoicesFromProperties(properties),
+      message: chalk`Great! I've found ${foundProperties.length} properties. Which ones should I copy over?\n`,
+      choices: getChoicesFromProperties(foundProperties),
       loop: false,
     });
 
@@ -106,27 +119,25 @@ const copy = async () => {
       return step3();
     }
 
+    toPrefix = toPrefix.trim();
+
     ({
       items: existingProperties,
-      category: existingCategory,
+      category: toCategory,
     } = findPropertiesFromPrefix(firstTheme, toPrefix));
 
     // Check existing properties with the given new prefix
-    const conflictingProperties = existingProperties.reduce(
-      (conflicting, [propertyKey]) => {
-        const selectedPropertyKey = replaceSingleProperty(
-          propertyKey,
+    const conflictingProperties = existingProperties.filter(
+      existingProperty => {
+        const selectedProperty = replaceSingleProperty(
+          existingProperty,
           toPrefix,
           fromPrefix
         );
-        if (
-          selectedProperties.filter(prop => prop[0] === selectedPropertyKey)
-            .length
-        )
-          conflicting.push(propertyKey);
-        return conflicting;
-      },
-      []
+        return !!selectedProperties.filter(
+          property => property === selectedProperty
+        ).length;
+      }
     );
 
     // List and remove unselected conflicting properties
@@ -134,20 +145,21 @@ const copy = async () => {
       const confirmReplace = await prompt({
         type: 'checkbox',
         message:
-          'The following properties already exist. Select which ones should be replaced.',
+          'The following properties already exist. Select which ones should be replaced.\n',
         choices: conflictingProperties,
       });
       const originalSelectedPropertiesLength = selectedProperties.length;
-      selectedProperties = selectedProperties.reduce((list, category) => {
-        let [categoryKey] = category;
-        categoryKey = replaceSingleProperty(categoryKey, fromPrefix, toPrefix);
-        if (
-          !conflictingProperties.includes(categoryKey) ||
-          confirmReplace.includes(categoryKey)
-        )
-          list.push(category);
-        return list;
-      }, []);
+      selectedProperties = selectedProperties.filter(selectedProperty => {
+        const newProperty = replaceSingleProperty(
+          selectedProperty,
+          fromPrefix,
+          toPrefix
+        );
+        return (
+          !conflictingProperties.includes(newProperty) ||
+          confirmReplace.includes(newProperty)
+        );
+      });
       const removed =
         originalSelectedPropertiesLength - selectedProperties.length;
       if (removed > 0) {
@@ -155,7 +167,6 @@ const copy = async () => {
         log(`Great, I've removed ${removed} existing properties`);
       }
     }
-
     return step4();
   };
 
@@ -164,10 +175,8 @@ const copy = async () => {
    * Category to copy the properties into
    */
   const step4 = async () => {
-    let category;
     let isNewCategory = false;
-    if (existingCategory) category = existingCategory;
-    else {
+    if (!toCategory) {
       const categorType = await prompt({
         type: 'list',
         message: 'Which category do you want me to copy into?',
@@ -176,14 +185,14 @@ const copy = async () => {
 
       isNewCategory = categorType.includes('New');
       if (isNewCategory) {
-        category = await prompt({
+        toCategory = await prompt({
           type: 'input',
           message: `What is the category name? (e.g. ${orange(
             'newFeatureName'
           )})'\n--->`,
         });
       } else {
-        category = await prompt({
+        toCategory = await prompt({
           type: 'list',
           message: 'Choose an existing gategory',
           choices: getCategoriesChoices(),
@@ -191,27 +200,26 @@ const copy = async () => {
       }
     }
 
-    const newProperties = selectedProperties.map(([propKey, propValue]) => [
-      replaceSingleProperty(propKey, fromPrefix, toPrefix),
-      propValue,
-    ]);
+    const newProperties = selectedProperties.map(selectedProperty =>
+      replaceSingleProperty(selectedProperty, fromPrefix, toPrefix)
+    );
 
     const confirmMessage = `Great, I'll copy ${
       selectedProperties.length
     } properties from "${cyan(fromPrefix)}" to "${cyan(
       toPrefix
-    )}" into ${orange(category)}.
+    )}" into ${orange(toCategory)}.
 Here's an example of how they will look like:
 "{
   ...
-  ${orange(category)}: {${
+  ${orange(toCategory)}: {${
       !isNewCategory
         ? `
-    `
+    ...`
         : ''
     }
     ${newProperties
-      .map(([key, value]) => `${cyan(key)}: ${magenta(value)},`)
+      .map(newProperty => `${cyan(newProperty)}: ${magenta('...')},`)
       .join(`\n    `)}
   },
   ...
@@ -239,20 +247,39 @@ Should I proceed?
     // log(magenta('DO THE THING'));
     info(`Great, I'll run the theme updater:`);
 
-    // const newProperties = selectedProperties.map(([propKey, propValue]) => [
-    //   replaceSingleProperty(propKey, fromPrefix, toPrefix),
-    //   propValue,
-    // ]);
+    const newProperties = selectedProperties.map(([propKey, propValue]) => [
+      replaceSingleProperty(propKey, fromPrefix, toPrefix),
+      propValue,
+    ]);
 
-    // const pendingUpdates = EXISTING_THEME_OUTPUTS.map(
-    //   ([themeName, theme]) => {
+    const pendingUpdates = EXISTING_THEME_OUTPUTS.reduce(
+      (pending, [themeName, theme]) => {
+        const fromProperties: CompletePropertiesList = Object.entries(
+          theme[fromCategory]
+        ).filter(([propertyKey]) => selectedProperties.includes(propertyKey));
 
-    //     // const fromProperties =
+        const toProperties = fromProperties.map(
+          ([fromPropertyKey, fromPropertyValue]) => [
+            replaceSingleProperty(fromPropertyKey, fromPrefix, toPrefix),
+            fromPropertyValue,
+          ]
+        );
 
-    //   }
-    // );
+        pending[themeName] = {};
 
-    // runUpdateThemesCLI(pendingUpdates);
+        pending[themeName][toCategory] = toProperties.reduce(
+          (obj, [propertyKey, propertyValue]) => {
+            obj[propertyKey] = propertyValue;
+            return obj;
+          },
+          {}
+        );
+
+        return pending;
+      },
+      {}
+    );
+    runUpdateThemesCLI(pendingUpdates);
   };
 
   step1();
@@ -275,6 +302,8 @@ const prompt = async promptConfig => {
   ]);
   return response;
 };
+const randomColor = () =>
+  `#${Math.floor(Math.random() * 16777215).toString(16)}`;
 
 // Helpers
 const getCategoriesChoices = () =>
@@ -285,10 +314,10 @@ const getCategoriesChoices = () =>
   }));
 
 const getChoicesFromProperties = properties =>
-  properties.map(([name, value]) => ({
-    value: [name, value],
-    short: `\n✔ ${name}`,
-    name: `${cyan(name)}: ${magenta(value)}`,
+  properties.map(propertyName => ({
+    value: propertyName,
+    short: `\n✔ ${propertyName}`,
+    name: cyan(propertyName),
     checked: true,
   }));
 
@@ -297,7 +326,7 @@ const findPropertiesFromPrefix = (
   prefix: string
 ): {
   category: string,
-  items: Array<any>,
+  items: Array<string>,
 } =>
   Object.entries(themeObj).reduce(
     (response, [categoryName, categoryObj]) => {
@@ -306,7 +335,7 @@ const findPropertiesFromPrefix = (
       );
       if (hasExistingProperties.length) {
         if (!response.category) response.category = categoryName;
-        response.items = Object.entries(categoryObj);
+        response.items = Object.keys(categoryObj);
       }
       return response;
     },
