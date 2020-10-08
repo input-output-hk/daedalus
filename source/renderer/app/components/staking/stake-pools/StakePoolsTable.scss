@@ -115,6 +115,7 @@
       tr {
         &:hover {
           background-color: var(--theme-staking-stake-pools-search-clear-button-background-color);
+          cursor: pointer;
         }
       }
     }

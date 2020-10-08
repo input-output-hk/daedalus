@@ -114,6 +114,7 @@ type Props = {
   showWithSelectButton?: boolean,
   top: number,
   left: number,
+  bottom?: number,
   color: string,
   containerClassName: string,
   numberOfStakePools: number,
@@ -147,7 +148,7 @@ export default class TooltipPool extends Component<Props, State> {
   };
 
   componentDidMount() {
-    const { top, left, containerClassName } = this.props;
+    const { top, left, containerClassName, bottom } = this.props;
     const container = document.querySelector(`.${containerClassName}`);
 
     window.document.addEventListener('click', this.handleOutterClick);
@@ -156,14 +157,14 @@ export default class TooltipPool extends Component<Props, State> {
       this.containerWidth = container.offsetWidth;
       this.containerHeight = container.offsetHeight;
     }
-    this.getTooltipStyle(top, left);
+    this.getTooltipStyle(top, left, bottom);
   }
 
   componentDidUpdate(prevProps: Props) {
     const { isVisible: prevVisibility } = prevProps;
-    const { isVisible: currentVisibility, top, left } = this.props;
+    const { isVisible: currentVisibility, top, left, bottom } = this.props;
     if (currentVisibility !== prevVisibility) {
-      this.getTooltipStyle(top, left);
+      this.getTooltipStyle(top, left, bottom);
     }
   }
 
@@ -190,7 +191,7 @@ export default class TooltipPool extends Component<Props, State> {
     this.tooltipClick = true;
   };
 
-  getTooltipStyle = (top: number, originalLeft: number) => {
+  getTooltipStyle = (top: number, originalLeft: number, bottom?: number) => {
     const { color } = this.props;
 
     const left = originalLeft + THUMBNAIL_OFFSET_WIDTH;
@@ -210,7 +211,7 @@ export default class TooltipPool extends Component<Props, State> {
     } =
       tooltipPosition === 'top' || tooltipPosition === 'bottom'
         ? this.getTopBottomPosition(left)
-        : this.getLeftRightPosition(top, isTopHalf);
+        : this.getLeftRightPosition(top, isTopHalf, bottom);
 
     const componentStyle = this.getComponenStyle(
       tooltipPosition,
@@ -266,7 +267,7 @@ export default class TooltipPool extends Component<Props, State> {
     };
   };
 
-  getLeftRightPosition = (top: number, isTopHalf: boolean) => {
+  getLeftRightPosition = (top: number, isTopHalf: boolean, fixedBottom?: number) => {
     const bottom = this.containerHeight - (top + THUMBNAIL_HEIGHT);
 
     const componentLeft = THUMBNAIL_HEIGHT;
@@ -279,7 +280,7 @@ export default class TooltipPool extends Component<Props, State> {
       componentTop = -((TOOLTIP_MAX_HEIGHT * top) / this.containerHeight);
       arrowTop = -componentTop + ARROW_WIDTH / 2;
     } else {
-      componentBottom = -((TOOLTIP_MAX_HEIGHT * bottom) / this.containerHeight);
+      componentBottom = !fixedBottom ? -((TOOLTIP_MAX_HEIGHT * bottom) / this.containerHeight) : fixedBottom ;
       arrowBottom = -componentBottom + ARROW_WIDTH / 2;
     }
 
@@ -404,6 +405,7 @@ export default class TooltipPool extends Component<Props, State> {
       onSelect,
       showWithSelectButton,
       numberOfStakePools,
+      bottom,
     } = this.props;
     const {
       componentStyle,
@@ -431,6 +433,7 @@ export default class TooltipPool extends Component<Props, State> {
 
     const componentClassnames = classnames([
       styles.component,
+      bottom ? styles.fixedComponent : null,
       isVisible ? styles.isVisible : null,
     ]);
 
@@ -455,6 +458,7 @@ export default class TooltipPool extends Component<Props, State> {
     const idCopyIcon = idCopyFeedback ? copyCheckmarkIcon : copyIcon;
     const hoverContentStyles = classnames([
       styles.hoverContent,
+      bottom ? styles.fixedHover : null,
       idCopyFeedback ? styles.checkIcon : styles.copyIcon,
     ]);
     const colorBandStyles = classnames([
@@ -475,7 +479,7 @@ export default class TooltipPool extends Component<Props, State> {
         ) : (
           <div className={colorBandStyles} />
         )}
-        <div className={arrowClassnames} style={arrowStyle} />
+        {!bottom && (<div className={arrowClassnames} style={arrowStyle} />)}
         <div className={styles.container}>
           <h3 className={styles.name}>{name}</h3>
           <button className={styles.closeButton} onClick={onClick}>

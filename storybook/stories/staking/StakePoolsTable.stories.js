@@ -13,7 +13,12 @@ const listTitle = {
   description: '"listTitle" for the Stake Pools page.',
 };
 
-export const StakePoolsTableStory = () => (
+type Props = {
+  currentTheme: string,
+};
+
+
+export const StakePoolsTableStory = (props: Props) => (
   <React.Fragment>
     <div
       style={{
@@ -68,6 +73,18 @@ export const StakePoolsTableStory = () => (
             step: 1,
           })
         )}
+        currentTheme={props.currentTheme}
+        onOpenExternalLink={action('onOpenExternalLink')}
+        containerClassName="StakingWithNavigation_page"
+        numberOfStakePools={STAKE_POOLS.slice(
+          0,
+          number('Pools', 300, {
+            range: true,
+            min: 37,
+            max: 300,
+            step: 1,
+          })
+        ).length}
       />
     </div>
   </React.Fragment>

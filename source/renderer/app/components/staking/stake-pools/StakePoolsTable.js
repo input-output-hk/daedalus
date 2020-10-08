@@ -14,7 +14,9 @@ import { StakingPageScrollContext } from '../layouts/StakingWithNavigation';
 import BorderedBox from '../../widgets/BorderedBox';
 import sortIcon from '../../../assets/images/ascending.inline.svg';
 import { formattedWalletAmount } from '../../../utils/formatters';
-import { getSaturationColor } from '../../../utils/colors';
+import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
+import TooltipPool from '../widgets/TooltipPool';
+import { getRelativePosition } from '../../../utils/domManipulation';
 
 const messages = defineMessages({
   tableHeaderRank: {
@@ -83,6 +85,16 @@ const PRELOADER_THRESHOLD = 100;
 type Props = {
   stakePoolsList: Array<StakePool>,
   listName?: string,
+  isListActive?: boolean,
+  currentTheme: string,
+  setListActive?: Function,
+  showWithSelectButton?: boolean,
+  onSelect?: Function,
+  containerClassName: string,
+  numberOfStakePools: number,
+  selectedPoolId?: ?number,
+  onOpenExternalLink: Function,
+  highlightOnHover?: boolean,
 };
 
 type State = {
@@ -90,6 +102,8 @@ type State = {
   isPreloading: boolean,
   stakePoolsOrder: string,
   stakePoolsSortBy: string,
+  top: number,
+  left: number,
 };
 
 const initialState = {
@@ -97,6 +111,8 @@ const initialState = {
   isPreloading: true,
   stakePoolsOrder: 'asc',
   stakePoolsSortBy: 'ranking',
+  top: 0,
+  left: 0,
 };
 
 @observer
@@ -104,6 +120,12 @@ export class StakePoolsTable extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
+
+  static defaultProps = {
+    isListActive: true,
+    showWithSelectButton: false,
+  };
+
 
   constructor(props: Props) {
     super(props);
@@ -133,6 +155,35 @@ export class StakePoolsTable extends Component<Props, State> {
 
   searchInput: ?HTMLElement = null;
 
+  handleOpenThumbnail = (poolId: SyntheticMouseEvent<HTMLElement>) => {
+    const { isListActive, setListActive, listName, stakePoolsList, containerClassName } = this.props;
+    const { stakePoolsSortBy, stakePoolsOrder } = this.state;
+    if (poolId.target) {
+      poolId.persist();
+      const targetElement = poolId.target;
+      if (targetElement instanceof HTMLElement) {
+        const { top, left } = getRelativePosition(
+          targetElement,
+          `.${containerClassName}`
+        );
+        this.setState({ top, left });
+      }
+    }
+    if (isListActive === false && setListActive) setListActive(listName);
+    const sortedStakePoolList = orderBy(
+      stakePoolsList,
+      stakePoolsSortBy,
+      stakePoolsOrder
+    );
+    const currentTargetChildren = poolId.currentTarget.childNodes;
+    const highlightedPoolId = currentTargetChildren.length && currentTargetChildren[0].innerText &&
+    sortedStakePoolList[currentTargetChildren[0].innerText] ?
+      sortedStakePoolList[currentTargetChildren[0].innerText].id : null;
+    return this.setState({
+      highlightedPoolId,
+    });
+  };
+
   handleClose = () => {
     this.setState({
       ...initialState,
@@ -140,8 +191,29 @@ export class StakePoolsTable extends Component<Props, State> {
     });
   };
 
+  handleSelect = (stakePoolId: number) => {
+    const { onSelect } = this.props;
+    const selectedPoolId =
+      this.props.selectedPoolId === stakePoolId ? null : stakePoolId;
+    if (onSelect) {
+      onSelect(selectedPoolId);
+    }
+  };
+
+  getIsHighlighted = (id: string) =>
+    this.props.isListActive !== false && id === this.state.highlightedPoolId;
+
   render() {
-    const { stakePoolsList, listName } = this.props;
+    const {
+      currentTheme,
+      highlightOnHover,
+      onOpenExternalLink,
+      showWithSelectButton,
+      stakePoolsList,
+      containerClassName,
+      numberOfStakePools,
+      listName,
+    } = this.props;
     const { isPreloading, stakePoolsSortBy, stakePoolsOrder } = this.state;
     const { intl } = this.context;
     const componentClasses = classNames([styles.component, listName]);
@@ -263,9 +335,32 @@ export class StakePoolsTable extends Component<Props, State> {
                         styles[getSaturationColor(saturation)],
                       ]);
 
+                      const isHighlighted = this.getIsHighlighted(stakePool.id);
+                      const color = getColorFromRange(rank, numberOfStakePools);
+                      const { top, left } = this.state;
+
                       return (
-                        <tr key={key}>
-                          <td>{rank}</td>
+                        <tr key={key} onClick={!highlightOnHover && this.handleOpenThumbnail}>
+                          <td>
+                            {rank}
+                            {isHighlighted && (
+                              <TooltipPool
+                                stakePool={stakePool}
+                                isVisible
+                                onClick={this.handleClose}
+                                currentTheme={currentTheme}
+                                onOpenExternalLink={onOpenExternalLink}
+                                top={top}
+                                left={left}
+                                bottom={20}
+                                color={color}
+                                onSelect={this.handleSelect}
+                                showWithSelectButton={showWithSelectButton}
+                                containerClassName={containerClassName}
+                                numberOfStakePools={numberOfStakePools}
+                              />
+                            )}
+                          </td>
                           <td>
                             <span className={styles.ticker}>[{ticker}]</span>{' '}
                             {description}
@@ -275,7 +370,7 @@ export class StakePoolsTable extends Component<Props, State> {
                               <div className={styles.progressBarContainer}>
                                 <div
                                   className={saturationBarClassnames}
-                                  style={{ width: `${saturationValue}%` }}
+                                  style={{width: `${saturationValue}%`}}
                                 />
                                 <div className={styles.progressLabel}>
                                   {saturationValue}%

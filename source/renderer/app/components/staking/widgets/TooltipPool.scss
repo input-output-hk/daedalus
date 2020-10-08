@@ -14,6 +14,10 @@
   width: 280px;
   z-index: 20;
 
+  &.fixedComponent {
+    position: fixed;
+  }
+
   :global {
     button.SimpleButton_root {
       background-color: var(
@@ -262,6 +266,10 @@
     transition-delay: 0s;
     user-select: none;
     width: 278px;
+
+    &.fixedHover {
+      left: -120px;
+    }
 
     svg {
       margin-left: 3px;
