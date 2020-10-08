@@ -34,7 +34,7 @@
   justify-content: space-between;
   max-width: 100%;
   overflow: hidden;
-  padding-right: 10px;
+  padding-right: 0;
   text-overflow: ellipsis;
   width: 100%;
 
@@ -49,6 +49,11 @@
     display: flex;
   }
 
+  .topRowSync {
+    position: absolute;
+    right: 15px;
+  }
+
   .syncing {
     > div {
       height: 24px;
@@ -57,6 +62,7 @@
 
       :global .LoadingSpinner_icon svg path {
         fill: var(--theme-dialog-fullsize-text-highlight-color) !important;
+        opacity: 0.5;
       }
     }
   }
