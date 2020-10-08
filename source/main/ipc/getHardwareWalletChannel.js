@@ -86,7 +86,7 @@ class EventObserver {
 
 // SETUP trezor-connect
 export const handleInitTrezorConnect = (sender: IpcSender) => {
-  console.debug('>>> Trezor Init ');
+  console.debug('>>> Trezor Init: ', TrezorConnect);
   const initTrezorConnect = async () => {
     TrezorConnect.on(TRANSPORT_EVENT, event => {
       console.debug('>>> TRANSPORT_EVENT: ', event);

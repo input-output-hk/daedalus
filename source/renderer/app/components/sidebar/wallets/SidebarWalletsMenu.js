@@ -86,6 +86,7 @@ export default class SidebarWalletsMenu extends Component<Props> {
                 isNotResponding={wallet.isNotResponding}
                 isLegacy={wallet.isLegacy}
                 isHardwareWalletsMenu={isHardwareWalletsMenu}
+                isHardwareWallet={wallet.isHardwareWallet}
                 hasNotification={wallet.hasNotification}
                 isHardwareWalletDisconnected={
                   wallet.isHardwareWalletDisconnected

@@ -26,6 +26,7 @@ type Props = {
   hasNotification: boolean,
   isHardwareWalletsMenu?: boolean,
   isHardwareWalletDisconnected?: boolean,
+  isHardwareWallet: boolean,
 };
 
 @observer
@@ -46,6 +47,7 @@ export default class SidebarWalletMenuItem extends Component<Props> {
       hasNotification,
       isHardwareWalletsMenu,
       isHardwareWalletDisconnected,
+      isHardwareWallet,
     } = this.props;
 
     const showLegacyBadge =
@@ -71,7 +73,7 @@ export default class SidebarWalletMenuItem extends Component<Props> {
         <div className={styles.meta}>
           <div className={styles.topContainer}>
             <div className={styles.title}>{title}</div>
-            {isHardwareWalletsMenu && (
+            {isHardwareWallet && (
               // @TODO - Remove check once HW are listed along with regular wallets
               <SVGInline
                 svg={hardwareWalletsIcon}

@@ -794,7 +794,12 @@ export default class WalletsStore extends Store {
   }
 
   @computed get all(): Array<Wallet> {
-    return [...this.allWallets, ...this.allLegacyWallets];
+    return [
+      ...this.allWallets,
+      ...this.allLegacyWallets,
+      // @TODO - ADD hardware wallets to list
+      // ...this.allHardwareWallets
+    ];
   }
 
   @computed get allWallets(): Array<Wallet> {
@@ -810,7 +815,7 @@ export default class WalletsStore extends Store {
     return this.walletsRequest.result
       ? this.walletsRequest.result.filter(
           ({ isLegacy, isHardwareWallet }: Wallet) =>
-            isLegacy && !isHardwareWallet
+            isLegacy && !isHardwareWallet // @TODO - should be changed once Byron HW enabled
         )
       : [];
   }
