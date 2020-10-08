@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Re-enabled stake pool saturation info ([PR 2200](https://github.com/input-output-hk/daedalus/pull/2200))
 - Implemented the wallet migration leftovers handling ([PR 2178](https://github.com/input-output-hk/daedalus/pull/2178))
 
 ### Fixes
@@ -13,6 +14,8 @@ Changelog
 
 ### Chores
 
+- Update Nix installation instructions ([PR 2200](https://github.com/input-output-hk/daedalus/pull/2200))
+- Updated `cardano-wallet` to revision `be40d5f2` which includes `cardano-node` 1.21.1 ([PR 2200](https://github.com/input-output-hk/daedalus/pull/2200))
 - Dependency update ([PR 2190](https://github.com/input-output-hk/daedalus/pull/2190))
 
 ## 2.3.0
