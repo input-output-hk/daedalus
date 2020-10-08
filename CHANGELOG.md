@@ -5,8 +5,35 @@ Changelog
 
 ### Features
 
+- Implemented the wallet migration leftovers handling ([PR 2178](https://github.com/input-output-hk/daedalus/pull/2178))
+
+### Fixes
+
+- Fixed Cardano Explorer URLs ([PR 2198](https://github.com/input-output-hk/daedalus/pull/2198))
+
+### Chores
+
+- Dependency update ([PR 2190](https://github.com/input-output-hk/daedalus/pull/2190))
+
+## 2.3.0
+
+### Features
+
+- Changed the way the update installer is launched, waiting first for the app to quit ([PR 2195](https://github.com/input-output-hk/daedalus/pull/2195))
+
+## 2.3.0-FC2
+
+### Chores
+
+- Bumped Daedalus version to 2.3.0-FC2
+
+## 2.3.0-FC1
+
+### Features
+
 - Made stake pools ranking slider logarithmic ([PR 2162](https://github.com/input-output-hk/daedalus/pull/2162))
 - Implemented fetching of epoch configuration from the Api instead of using hardcoded constants ([PR 2165](https://github.com/input-output-hk/daedalus/pull/2165))
+- Enabled SMASH ([PR 2154](https://github.com/input-output-hk/daedalus/pull/2154))
 
 ### Fixes
 

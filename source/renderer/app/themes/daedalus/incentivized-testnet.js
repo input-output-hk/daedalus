@@ -800,6 +800,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     ' --theme-staking-stake-pool-tooltip-id-background-color': '#3b3b4b',
     '--theme-staking-stake-pool-tooltip-id-shadow-1': 'rgba(0, 0, 0, 0.25)',
     '--theme-staking-stake-pool-tooltip-id-shadow-2': 'rgba(42, 43, 60, 0)',
+    '--theme-staking-stake-pool-tooltip-id-background-color': '#000000',
   },
   staking: {
     '--theme-staking-content-background-color': '#1e1f31',
@@ -940,6 +941,8 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.05)',
     '--theme-transactions-filter-title-button-background-color-active':
       'rgba(255, 255, 255, 0.12)',
+    '--theme-transactions-transfer-funds-selected-wallet-background-color':
+      '#ffffff0d',
   },
   uploader: {
     '--theme-uploader-text-color': '#ffffff',
