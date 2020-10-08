@@ -19,10 +19,7 @@ Daedalus - Cryptocurrency Wallet
 
 [Nix](https://nixos.org/nix/) is needed to run Daedalus in `nix-shell`.
 
-**Note:** There are special instructions for
-[installing Nix on macOS Catalina](https://github.com/NixOS/nix/issues/2925#issuecomment-564149154).
-
-1. Install nix: `curl https://nixos.org/nix/install | sh`
+1. Install nix: `curl -L https://nixos.org/nix/install | sh` (use `sh <(curl -L https://nixos.org/nix/install) --darwin-use-unencrypted-nix-store-volume` on macOS Catalina)
 2. Employ the signed IOHK binary cache:
    ```bash
    $ sudo mkdir -p /etc/nix
