@@ -39,7 +39,7 @@ export default class TransferFundsStep2Container extends Component<Props> {
 
     const { openExternalLink } = stores.app;
 
-    const onFinish = spendingPassword =>
+    const onFinish = (spendingPassword) =>
       actions.wallets.transferFunds.trigger({ spendingPassword });
 
     const sourceWallet = allLegacyWallets.find(

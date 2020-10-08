@@ -137,7 +137,7 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
 
   submit = () => {
     this.form.submit({
-      onSuccess: form => {
+      onSuccess: (form) => {
         const { spendingPassword } = form.values();
         this.props.onFinish(spendingPassword);
       },
