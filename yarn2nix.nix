@@ -1,4 +1,18 @@
-{ lib, yarn, nodejs, python, api, apiVersion, cluster, buildNum, nukeReferences, fetchzip, daedalus, stdenv, win64 ? false, wine64, runCommand, fetchurl, unzip, spacedName, iconPath, launcherConfig, pkgs }:
+{ lib, yarn, nodejs, python, api, apiVersion, cluster, buildNum, nukeReferences, fetchzip, daedalus, stdenv, win64 ? false, wine64, runCommand, fetchurl, unzip, spacedName, iconPath, launcherConfig, pkgs, python27
+, libcap
+, libgcrypt
+, libgpgerror
+, libidn2
+, libunistring
+, libusb
+, libusb1
+, lz4
+, pkgconfig
+, systemd
+, writeShellScriptBin
+, xz
+, zlib
+, strace }:
 let
   cluster' = launcherConfig.networkName;
   yarn2nix = import (fetchzip {
@@ -37,6 +51,10 @@ let
     ln -s ${windowsElectron} $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}electron-v${windowsElectronVersion}-win32-x64.zip/electron-v${windowsElectronVersion}-win32-x64.zip
     ln -s ${checksums} $out/httpsgithub.comelectronelectronreleasesdownloadv${windowsElectronVersion}SHASUMS256.txt/SHASUMS256.txt
   '';
+  electron-gyp = fetchurl {
+    url = "https://www.electronjs.org/headers/v8.2.2/node-v8.2.2-headers.tar.gz";
+    sha256 = "sha256-7tzr4FojyIcciQ4Krj0WbnWPqDgNdaTGgEnw0mlI9KM=";
+  };
   filter = name: type: let
     baseName = baseNameOf (toString name);
     sansPrefix = lib.removePrefix (toString ./.) name;
@@ -50,18 +68,30 @@ let
       sansPrefix == "/scripts/package.js" ||
       sansPrefix == "/installers" ||
       (lib.hasPrefix "/installers/icons" sansPrefix)
-    );
+      );
+  commonInputs = [
+    python27
+    nukeReferences
+    strace
+    pkgconfig
+    libusb
+  ];
+  hack = writeShellScriptBin "node-gyp" ''
+    echo gyp wrapper
+    $NIX_BUILD_TOP/daedalus/node_modules/electron-rebuild/node_modules/.bin/node-gyp-old "$@" --tarball ${electron-gyp} --nodedir $HOME/.electron-gyp/8.2.2/
+  '';
 in
 yarn2nix.mkYarnPackage {
   name = "daedalus-js";
-  src = lib.cleanSourceWith { inherit filter; src = ./.; };
+  src = lib.cleanSourceWith { inherit filter; src = ./.; name = "daedalus"; };
   API = api;
   API_VERSION = apiVersion;
   CI = "nix";
   NETWORK = cluster';
   BUILD_NUMBER = "${toString buildNum}";
   NODE_ENV = "production";
-  extraBuildInputs = if win64 then [ unzip wine64 nukeReferences ] else [ nukeReferences ];
+  BUILDTYPE = "Release";
+  extraBuildInputs = commonInputs ++ (if win64 then [ unzip wine64 ] else []);
   installPhase = let
     nukeAllRefs = ''
       # the webpack utils embed the original source paths into map files, so backtraces from the 1 massive index.js can be converted back to multiple files
@@ -93,7 +123,35 @@ yarn2nix.mkYarnPackage {
     mkdir -pv $out/resources/app/node_modules
     cp -rv $node_modules/js-chain-libs-node $out/resources/app/node_modules/
   '' else ''
+    mkdir -pv home/.cache/
+    export HOME=$(realpath home)
     yarn --offline run build
+
+    mkdir -pv $HOME/.electron-gyp/
+    tar -xvf ${electron-gyp} -C $HOME/.electron-gyp
+    mv -vi $HOME/.electron-gyp/node_headers $HOME/.electron-gyp/8.2.2/
+
+    ln -sv $HOME/.electron-gyp $HOME/.node-gyp
+
+    #export DEBUG=electron-rebuild
+
+    ls -ltrha $NIX_BUILD_TOP/daedalus/node_modules/
+    function dup() {
+      cp -vr node_modules/''${1}/ node_modules/''${1}-temp
+      rm -v node_modules/''${1}
+      mv -v node_modules/''${1}-temp node_modules/''${1}
+      chmod -R +w node_modules/''${1}
+    }
+    pwd
+    find -name node_modules
+    dup keccak
+    dup node-hid
+    dup secp256k1
+    dup usb
+
+    # strace -ff -o logfiles -s 300
+    node_modules/.bin/electron-rebuild -w usb --useCache -s --debug
+
     mkdir -p $out/bin $out/share/daedalus
     cp -R dist/* $out/share/daedalus
     cp ${newPackagePath} $out/share/daedalus/package.json
@@ -104,8 +162,30 @@ yarn2nix.mkYarnPackage {
     ln -sv $out/share/daedalus/renderer/assets $out/share/fonts/daedalus
     mkdir -pv $out/share/daedalus/node_modules
     cp -rv $node_modules/js-chain-libs-node $out/share/daedalus/node_modules/
+    find $out $NIX_BUILD_TOP -name '*.node'
+
+    mkdir -pv $out/share/daedalus/build
+    cp node_modules/usb/build/Debug/usb_bindings.node $out/share/daedalus/build/usb_bindings.node
+    cp node_modules/node-hid/build/Debug/HID-hidraw.node $out/share/daedalus/build/HID-hidraw.node
   '';
-  allowedReferences = [ "out" ];
+  #allowedReferences = [ "out" ];
+  allowedRequisites = [
+    systemd.lib
+    stdenv.cc.cc.lib
+    stdenv.cc.cc
+    stdenv.cc.libc
+    stdenv.cc.libc.bin
+    stdenv.cc.libc.dev
+    libcap.lib
+    lz4
+    zlib
+    xz.out
+    libgcrypt
+    libidn2.out
+    libgpgerror
+    libunistring
+    libusb1
+  ] ++ stdenv.cc.libc.buildInputs;
   yarnPreBuild = ''
     mkdir -p $HOME/.node-gyp/${nodejs.version}
     echo 9 > $HOME/.node-gyp/${nodejs.version}/installVersion
@@ -123,6 +203,14 @@ yarn2nix.mkYarnPackage {
       postInstall = ''
         flow_ver=${origPackage.devDependencies."flow-bin"}
         patchelf --set-interpreter ${stdenv.cc.libc}/lib/ld-linux-x86-64.so.2 flow-linux64-v$flow_ver/flow
+      '';
+    };
+    electron-rebuild = {
+      postInstall = ''
+        if [ -d node_modules ]; then
+          mv -vi node_modules/.bin/node-gyp node_modules/.bin/node-gyp-old
+          ln -sv ${hack}/bin/node-gyp node_modules/.bin/node-gyp
+        fi
       '';
     };
   };

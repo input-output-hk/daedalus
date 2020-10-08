@@ -110,6 +110,9 @@ let
       ln -svf $(type -P jormungandr)
       ln -svf $(type -P cardano-wallet-jormungandr)
       ln -svf $(type -P jcli)
+      mkdir -p Release/
+      ln -sv $PWD/node_modules/usb/build/Release/usb_bindings.node Release/
+      ln -sv $PWD/node_modules/node-hid/build/Release/HID.node Release/
       ${pkgs.lib.optionalString (nodeImplementation == "cardano") ''
         source <(cardano-node --bash-completion-script `type -p cardano-node`)
       ''}
