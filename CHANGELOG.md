@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Added stake pools list view ([PR 2186](https://github.com/input-output-hk/daedalus/pull/2186))
 - Re-enabled stake pool saturation info ([PR 2200](https://github.com/input-output-hk/daedalus/pull/2200))
 - Implemented the wallet migration leftovers handling ([PR 2178](https://github.com/input-output-hk/daedalus/pull/2178))
 
@@ -34,7 +35,6 @@ Changelog
 
 ### Features
 
-- Added stake pools list view ([PR 2186](https://github.com/input-output-hk/daedalus/pull/2186))
 - Made stake pools ranking slider logarithmic ([PR 2162](https://github.com/input-output-hk/daedalus/pull/2162))
 - Implemented fetching of epoch configuration from the Api instead of using hardcoded constants ([PR 2165](https://github.com/input-output-hk/daedalus/pull/2165))
 - Enabled SMASH ([PR 2154](https://github.com/input-output-hk/daedalus/pull/2154))
