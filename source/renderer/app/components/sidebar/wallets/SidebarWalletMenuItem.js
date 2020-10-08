@@ -9,6 +9,7 @@ import LegacyBadge, {
 import ProgressBar from '../../widgets/ProgressBar';
 import styles from './SidebarWalletMenuItem.scss';
 import disconnectedIcon from '../../../assets/images/hardware-wallet/disconnected.inline.svg';
+import hardwareWalletsIcon from '../../../assets/images/sidebar/hardware-wallet-ic.inline.svg';
 
 type Props = {
   title: string,
@@ -57,6 +58,12 @@ export default class SidebarWalletMenuItem extends Component<Props> {
       className,
       !isIncentivizedTestnet && hasNotification ? styles.notification : null,
       isNotResponding ? styles.notResponding : null,
+      isHardwareWalletsMenu && isHardwareWalletDisconnected ? styles.disconnectedBorder : null, // @TODO - remove
+    ]);
+
+    const hwIconStyles = classNames([
+      styles.hardwareWalletsIcon,
+      isHardwareWalletDisconnected ? styles.disconnected : styles.connected,
     ]);
 
     return (
@@ -64,10 +71,11 @@ export default class SidebarWalletMenuItem extends Component<Props> {
         <div className={styles.meta}>
           <div className={styles.topContainer}>
             <div className={styles.title}>{title}</div>
-            {isHardwareWalletsMenu && isHardwareWalletDisconnected && (
+            {isHardwareWalletsMenu && (
+              // @TODO - Remove check once HW are listed along with regular wallets
               <SVGInline
-                svg={disconnectedIcon}
-                className={styles.disconnectedIcon}
+                svg={hardwareWalletsIcon}
+                className={hwIconStyles}
               />
             )}
           </div>

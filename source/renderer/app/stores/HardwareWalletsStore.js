@@ -508,7 +508,7 @@ export default class HardwareWalletsStore extends Store {
 
     if (disconnected) {
       console.debug('>>>> DISCONNECT');
-      this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
+      // this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
       // @TODO - This logic should be changed once we allow multiple hardware wallets
       if (deviceType !== DeviceTypes.TREZOR) {
         console.debug('>>>> DISCONNECT - stop Cardano app poller');

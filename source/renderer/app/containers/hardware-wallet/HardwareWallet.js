@@ -66,7 +66,12 @@ export default class HardwareWallet extends Component<Props> {
     );
 
     // Redirect to HW add / connect page if wallet disconnected or there is no active wallets
-    if (!activeHardwareWallet || (activeHardwareWallet && isWalletDisconnected))
+    // if (!activeHardwareWallet || (activeHardwareWallet && isWalletDisconnected))
+    //   return <HardwareWalletAddPage />;
+
+    // Redirect to HW add / connect page ONLY if there are no active wallets (for now)
+    // @TODO - This should be changed once hardware wallets are listed along with regular wallets
+    if (!activeHardwareWallet)
       return <HardwareWalletAddPage />;
 
     const { isLegacy, isNotResponding, id, hasPassword } = activeHardwareWallet;
