@@ -95,12 +95,14 @@ export default class SupportSettings extends Component<Props> {
     const faqLinkUrl = intl.formatMessage(globalMessages.faqLinkUrl);
 
     const faqLink = (
-      <Link
-        className={styles.externalLink}
-        onClick={event => onExternalLinkClick(faqLinkUrl, event)}
-        label={intl.formatMessage(messages.faqLink)}
-        skin={LinkSkin}
-      />
+      <span className={styles.faqLink}>
+        <Link
+          className={styles.externalLink}
+          onClick={event => onExternalLinkClick(faqLinkUrl, event)}
+          label={intl.formatMessage(messages.faqLink)}
+          skin={LinkSkin}
+        />
+      </span>
     );
 
     const downloadLogsClasses = classNames([

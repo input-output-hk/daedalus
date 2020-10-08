@@ -100,6 +100,7 @@ export default class WalletsDropdown extends Component<Props> {
         delegatedStakePoolId,
         lastDelegationStakePoolId,
         pendingDelegations,
+        isRestoring,
       }: Wallet) => {
         const hasPendingDelegations =
           pendingDelegations && pendingDelegations.length > 0;
@@ -108,7 +109,7 @@ export default class WalletsDropdown extends Component<Props> {
           currentStakePoolId = lastDelegationStakePoolId;
         }
         const delegatedStakePool = getStakePoolById(currentStakePoolId);
-        const detail = formattedWalletAmount(amount);
+        const detail = !isRestoring ? formattedWalletAmount(amount) : '-';
         return {
           detail,
           label,

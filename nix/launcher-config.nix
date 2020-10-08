@@ -151,6 +151,7 @@ let
     inherit logsPrefix launcherLogsPrefix tlsConfig;
     walletLogging = false;
     daedalusBin = mkBinPath "frontend";
+    updateRunnerBin = mkBinPath "update-runner";
     # TODO: set when update system is complete
     updaterArgs = [];
     updaterPath = "";
@@ -180,10 +181,10 @@ let
       ${lib.optionalString (envCfg.nodeConfig ? ShelleyGenesisFile) "cp ${envCfg.nodeConfig.ShelleyGenesisFile} $out/genesis-shelley.json"}
     '';
 
-  mkConfigByron = let
+  mkConfigCardano = let
     filterMonitoring = config: if devShell then config else builtins.removeAttrs config [ "hasPrometheus" "hasEKG" ];
     cardanoAddressBin = mkBinPath "cardano-address";
-    walletBin = mkBinPath "cardano-wallet-${kind}";
+    walletBin = mkBinPath "cardano-wallet";
     nodeBin = mkBinPath "cardano-node";
     cliBin = mkBinPath "cardano-cli";
     nodeConfig = let
@@ -256,7 +257,9 @@ let
         delegationCertificate = mkConfigPath nodeConfigFiles "delegation.cert";
         signingKey = mkConfigPath nodeConfigFiles "signing.key";
       });
-    };
+    } // (lib.optionalAttrs (__hasAttr "smashUrl" envCfg) {
+      smashUrl = envCfg.smashUrl;
+    });
 
     installerConfig = {
       installDirectory = if os == "linux" then "Daedalus/${network}" else spacedName;
@@ -267,7 +270,7 @@ let
       installerWinBinaries = [
         "cardano-launcher.exe"
         "cardano-node.exe"
-        "cardano-wallet-${kind}.exe"
+        "cardano-wallet.exe"
         "cardano-cli.exe"
         "cardano-address.exe"
       ];
@@ -344,5 +347,5 @@ let
     configFiles = mkConfigFiles nodeConfigFiles launcherConfig installerConfig;
   };
   configs.jormungandr = mkConfigJormungandr;
-  configs.cardano = mkConfigByron;
+  configs.cardano = mkConfigCardano;
 in configs.${backend}

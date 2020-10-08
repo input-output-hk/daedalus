@@ -34,6 +34,7 @@ export const StakingUndelegateConfirmationResultStory = ({
 }) => (
   <UndelegateConfirmationResultDialog
     walletName="Darko's ADA"
+    slotLength={null}
     onClose={() => null}
     currentLocale={locale}
     futureEpochStartTime={moment()

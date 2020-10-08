@@ -72,17 +72,15 @@ let
     bridgeTable = {
       jormungandr = self.callPackage ./nix/jormungandr-bridge.nix {};
       cardano = self.callPackage ./nix/cardano-bridge.nix {
-        cardano-wallet = if self.launcherConfigs.launcherConfig.nodeConfig.kind == "byron"
-                         then self.cardano-wallet.cardano-wallet-byron
-                         else self.cardano-wallet.cardano-wallet-shelley;
+        cardano-wallet = self.cardano-wallet.cardano-wallet;
         cardanoWalletPkgs = self.cardano-wallet.pkgs;
       };
     };
     cardano-wallet = import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; crossSystem = crossSystem walletPkgs.lib; };
     cardano-wallet-native = import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; };
-    cardano-address = (import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; crossSystem = crossSystem walletPkgs.lib; }).haskellPackages.cardano-addresses.components.exes.cardano-address;
+    cardano-address = (import self.sources.cardano-wallet { inherit system; gitrev = self.sources.cardano-wallet.rev; crossSystem = crossSystem walletPkgs.lib; }).cardano-address;
     cardano-shell = import self.sources.cardano-shell { inherit system; crossSystem = crossSystem shellPkgs.lib; };
-    cardano-cli = (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).haskellPackages.cardano-cli.components.exes.cardano-cli;
+    cardano-cli = (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).cardano-cli;
     cardano-node-cluster = let
       # Test wallets with known mnemonics
       walletTestGenesisYaml = (self.sources.cardano-wallet + "/lib/shelley/test/data/cardano-node-shelley/genesis.yaml");
@@ -99,7 +97,6 @@ let
     cardano-node = if useLocalNode
                    then (import self.sources.cardano-node { inherit system; crossSystem = crossSystem nodePkgs.lib; }).haskellPackages.cardano-node.components.exes.cardano-node
                    else self.cardano-wallet.cardano-node;
-    cardano-sl = import self.sources.cardano-sl { inherit target; gitrev = self.sources.cardano-sl.rev; };
     darwin-launcher = self.callPackage ./nix/darwin-launcher.nix {};
 
     # a cross-compiled fastlist for the ps-list package
@@ -200,7 +197,7 @@ let
     '';
 
     nsisFiles = let
-      nodeImplementation' = if nodeImplementation == "jormungandr" then nodeImplementation else "${nodeImplementation}-${self.launcherConfigs.launcherConfig.nodeConfig.kind}";
+      nodeImplementation' = if nodeImplementation == "jormungandr" then nodeImplementation else "${nodeImplementation}";
     in pkgs.runCommand "nsis-files" {
       buildInputs = [ self.daedalus-installer pkgs.glibcLocales ];
     } ''
@@ -336,12 +333,7 @@ let
       runLint = self.callPackage ./tests/lint.nix {};
       runShellcheck = self.callPackage ./tests/shellcheck.nix { src = ./.;};
     };
-    nix-bundle = import (pkgs.fetchFromGitHub {
-      owner = "matthewbauer";
-      repo = "nix-bundle";
-      rev = "7f12322399fd87d937355d0fc263d37d798496fc";
-      sha256 = "07wnmdadchf73p03wk51abzgd3zm2xz5khwadz1ypbvv3cqlzp5m";
-    }) { nixpkgs = pkgs; };
+    nix-bundle = import sources.nix-bundle { nixpkgs = pkgs; };
     iconPath = self.launcherConfigs.installerConfig.iconPath;
     # used for name of profile, binary and the desktop shortcut
     linuxClusterBinName = cluster;

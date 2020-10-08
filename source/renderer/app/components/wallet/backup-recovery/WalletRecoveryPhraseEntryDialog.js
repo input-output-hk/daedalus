@@ -9,10 +9,7 @@ import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteS
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
-import {
-  WALLET_RECOVERY_PHRASE_WORD_COUNT,
-  LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
-} from '../../../config/cryptoConfig';
+import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
 import suggestedMnemonics from '../../../../../common/config/crypto/valid-words.en';
 import { isValidMnemonic } from '../../../../../common/config/crypto/decrypt';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
@@ -23,6 +20,7 @@ import Dialog from '../../widgets/Dialog';
 import WalletRecoveryInstructions from './WalletRecoveryInstructions';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletRecoveryPhraseEntryDialog.scss';
+import LoadingSpinner from '../../widgets/LoadingSpinner';
 
 const messages = defineMessages({
   verificationInstructions: {
@@ -91,7 +89,6 @@ const { isIncentivizedTestnet } = global;
 type Props = {
   enteredPhrase: Array<string>,
   isValid: boolean,
-  isShelleyActivated: boolean,
   isTermOfflineAccepted: boolean,
   isTermRecoveryAccepted: boolean,
   isTermRewardsAccepted: boolean,
@@ -121,10 +118,7 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
             const { intl } = this.context;
             const enteredWords = field.value;
             const wordCount = enteredWords.length;
-            const expectedWordCount =
-              isIncentivizedTestnet || this.props.isShelleyActivated
-                ? WALLET_RECOVERY_PHRASE_WORD_COUNT
-                : LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT;
+            const expectedWordCount = WALLET_RECOVERY_PHRASE_WORD_COUNT;
             const value = join(enteredWords, ' ');
 
             this.props.onUpdateVerificationPhrase({
@@ -165,7 +159,6 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
     const {
       enteredPhrase,
       isValid,
-      isShelleyActivated,
       isTermOfflineAccepted,
       isTermRecoveryAccepted,
       isTermRewardsAccepted,
@@ -183,16 +176,18 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
       styles.component,
       'WalletRecoveryPhraseEntryDialog',
     ]);
-    const wordCount =
-      isIncentivizedTestnet || isShelleyActivated
-        ? WALLET_RECOVERY_PHRASE_WORD_COUNT
-        : LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT;
+    const wordCount = WALLET_RECOVERY_PHRASE_WORD_COUNT;
     const enteredPhraseString = enteredPhrase.join(' ');
+
+    const buttonLabel = !isSubmitting ? (
+      intl.formatMessage(messages.buttonLabelConfirm)
+    ) : (
+      <LoadingSpinner />
+    );
 
     const actions = [
       {
-        className: isSubmitting ? styles.isSubmitting : null,
-        label: intl.formatMessage(messages.buttonLabelConfirm),
+        label: buttonLabel,
         onClick: onFinishBackup,
         disabled: !canFinishBackup,
         primary: true,

@@ -14,8 +14,6 @@ type Props = InjectedProps;
 export default class StakePoolsListPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
-  rankTimeoutHandler = null;
-
   handleDelegate = (poolId: string) => {
     const { actions } = this.props;
     const { updateDataForActiveDialog } = actions.dialogs;
@@ -25,18 +23,19 @@ export default class StakePoolsListPage extends Component<Props> {
     });
   };
 
-  onRank = (selectedWalletId: string, sliderValue: number) => {
-    if (this.rankTimeoutHandler) {
-      clearTimeout(this.rankTimeoutHandler);
-    }
-    this.rankTimeoutHandler = setTimeout(() => {
-      const {
-        actions: { staking: stakingActions },
-      } = this.props;
-      stakingActions.selectDelegationWallet.trigger(selectedWalletId);
-      stakingActions.updateStake.trigger(sliderValue);
-      this.rankTimeoutHandler = null;
-    }, 1000);
+  onUpdateDelegatingStake = (selectedWalletId: string, sliderValue: number) => {
+    const {
+      actions: { staking: stakingActions },
+    } = this.props;
+    stakingActions.selectDelegationWallet.trigger(selectedWalletId);
+    stakingActions.updateDelegatingStake.trigger(sliderValue);
+  };
+
+  onRankStakePools = () => {
+    const {
+      actions: { staking: stakingActions },
+    } = this.props;
+    stakingActions.rankStakePools.trigger();
   };
 
   render() {
@@ -53,7 +52,6 @@ export default class StakePoolsListPage extends Component<Props> {
     const {
       stakePoolsRequest,
       stakePools,
-      isRanking,
       selectedDelegationWalletId,
       stake,
       fetchingStakePoolsFailed,
@@ -61,6 +59,10 @@ export default class StakePoolsListPage extends Component<Props> {
       getStakePoolById,
     } = staking;
     const { all } = wallets;
+    const isLoading =
+      !isSynced || fetchingStakePoolsFailed || stakePools.length === 0;
+    const isRanking =
+      !isLoading && staking.isRanking && stakePoolsRequest.isExecuting;
 
     return (
       <Fragment>
@@ -71,17 +73,16 @@ export default class StakePoolsListPage extends Component<Props> {
           stakePoolsDelegatingList={recentStakePools}
           onOpenExternalLink={app.openExternalLink}
           currentTheme={currentTheme}
-          onRank={this.onRank}
+          updateDelegatingStake={this.onUpdateDelegatingStake}
+          rankStakePools={this.onRankStakePools}
           selectedDelegationWalletId={selectedDelegationWalletId}
           stake={stake}
           onDelegate={this.handleDelegate}
-          isLoading={!isSynced || fetchingStakePoolsFailed}
-          isRanking={isRanking && stakePoolsRequest.isExecuting}
+          isLoading={isLoading}
+          isRanking={isRanking}
           getStakePoolById={getStakePoolById}
         />
-        {isRanking && stakePoolsRequest.isExecuting && (
-          <StakePoolsRankingLoader />
-        )}
+        {isRanking && <StakePoolsRankingLoader />}
         {uiDialogs.isOpen(DelegationSetupWizardDialog) ? (
           <DelegationSetupWizardDialogContainer />
         ) : null}

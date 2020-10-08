@@ -9,10 +9,8 @@ import Dialog from '../../widgets/Dialog';
 import WalletRecoveryInstructions from './WalletRecoveryInstructions';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletRecoveryPhraseDisplayDialog.scss';
-import {
-  WALLET_RECOVERY_PHRASE_WORD_COUNT,
-  LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
-} from '../../../config/cryptoConfig';
+import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
+import LoadingSpinner from '../../widgets/LoadingSpinner';
 
 const messages = defineMessages({
   backupInstructions: {
@@ -31,13 +29,11 @@ const messages = defineMessages({
   },
 });
 
-const { isIncentivizedTestnet } = global;
-
 type Props = {
   recoveryPhrase: string,
-  isShelleyActivated: boolean,
   onStartWalletBackup: Function,
   onCancelBackup: Function,
+  isSubmitting: boolean,
 };
 
 @observer
@@ -52,16 +48,22 @@ export default class WalletRecoveryPhraseDisplayDialog extends Component<Props> 
       recoveryPhrase,
       onStartWalletBackup,
       onCancelBackup,
-      isShelleyActivated,
+      isSubmitting,
     } = this.props;
     const dialogClasses = classnames([
       styles.component,
       'WalletRecoveryPhraseDisplayDialog',
     ]);
 
+    const buttonLabel = !isSubmitting ? (
+      intl.formatMessage(messages.buttonLabelIHaveWrittenItDown)
+    ) : (
+      <LoadingSpinner />
+    );
+
     const actions = [
       {
-        label: intl.formatMessage(messages.buttonLabelIHaveWrittenItDown),
+        label: buttonLabel,
         onClick: onStartWalletBackup,
         primary: true,
       },
@@ -81,10 +83,7 @@ export default class WalletRecoveryPhraseDisplayDialog extends Component<Props> 
             <FormattedHTMLMessage
               {...messages.backupInstructions}
               values={{
-                walletRecoveryPhraseWordCount:
-                  isIncentivizedTestnet || isShelleyActivated
-                    ? WALLET_RECOVERY_PHRASE_WORD_COUNT
-                    : LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
+                walletRecoveryPhraseWordCount: WALLET_RECOVERY_PHRASE_WORD_COUNT,
               }}
             />
           }

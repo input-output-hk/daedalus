@@ -119,7 +119,7 @@ export default class LegacyNotification extends Component<Props> {
     const { intl } = this.context;
     const { onTransferFunds, hasRewardsWallets, onWalletAdd } = this.props;
     const { getValue, onLearnMore } = this;
-
+    const showLearnMoreButton = false;
     const moveFundsLink = (
       <Link
         className={styles.descriptionLink}
@@ -153,25 +153,25 @@ export default class LegacyNotification extends Component<Props> {
           <p>{description2}</p>
         </div>
         <div className={styles.actions}>
-          <ButtonLink
-            className={styles.actionLearnMore}
-            onClick={onLearnMore}
-            skin={ButtonSkin}
-            label={intl.formatMessage(messages.actionLearnMore)}
-            linkProps={{
-              className: styles.externalLink,
-              hasIconBefore: false,
-              hasIconAfter: true,
-            }}
-          />
-          {
-            <Button
-              className={styles.actionMove}
-              label={buttonLabel}
-              onClick={buttonAction}
+          {showLearnMoreButton && (
+            <ButtonLink
+              className={styles.actionLearnMore}
+              onClick={onLearnMore}
               skin={ButtonSkin}
+              label={intl.formatMessage(messages.actionLearnMore)}
+              linkProps={{
+                className: styles.externalLink,
+                hasIconBefore: false,
+                hasIconAfter: true,
+              }}
             />
-          }
+          )}
+          <Button
+            className={styles.actionMove}
+            label={buttonLabel}
+            onClick={buttonAction}
+            skin={ButtonSkin}
+          />
         </div>
       </div>
     );

@@ -49,7 +49,6 @@ storiesOf('Wallets|Add Wallet', module)
         onContinue={action('onContinue')}
         onClose={action('onClose')}
         onSetWalletKind={action('onSetWalletKind')}
-        isShelleyActivated
         walletKind={walletKindSelect}
         walletKindDaedalus={walletKindSpecificSelect}
         walletKindYoroi={walletKindSpecificSelect}
@@ -106,6 +105,7 @@ storiesOf('Wallets|Add Wallet', module)
       repeatPassword=""
       spendingPassword=""
       walletName=""
+      currentLocale={'en-US'}
     />
   ))
   .add('Restore - Step 4', () => {

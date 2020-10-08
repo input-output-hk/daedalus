@@ -4,6 +4,7 @@ import { text, boolean, number, select } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import moment from 'moment';
 import { isIncentivizedTestnetTheme } from '../../_support/utils';
+import type { Locale } from '../../../../source/common/types/locales.types';
 
 // Screens
 import WalletSettings from '../../../../source/renderer/app/components/wallet/settings/WalletSettings';
@@ -81,7 +82,7 @@ const getWalletDates = (type: string, status: string) => {
   };
 };
 
-export default (props: { currentTheme: string, locale: string }) => {
+export default (props: { currentTheme: string, locale: Locale }) => {
   const { currentTheme, locale } = props;
 
   const { type, status } = select(
@@ -174,6 +175,7 @@ export default (props: { currentTheme: string, locale: string }) => {
             changePasswordId
           )}
           error={null}
+          currentLocale={'en-US'}
         />
       }
       deleteWalletDialogContainer={

@@ -117,6 +117,7 @@ Daedalus - Cryptocurrency Wallet
 Dependencies are updated with the follow nix commands:
 - Update to the latest master: `nix-shell -A devops --arg nivOnly true --run "niv update cardano-wallet"`
 - Update to a specific revision: `nix-shell -A devops --arg nivOnly true --run "niv update cardano-wallet -a rev=91db88f9195de49d4fb4299c68fc3f6de09856ab"`
+- Update node to a specific tag: `nix-shell -A devops --arg nivOnly true --run "niv update cardano-node -b tags/1.20.0"`
 
 #### Notes
 

@@ -1,0 +1,36 @@
+.component {
+  height: 24px;
+}
+
+.progressBarContainer {
+  background-color: var(--theme-progress-bar-large-background-color);
+  border-radius: 5px;
+  height: 100%;
+  position: relative;
+  width: 100%;
+}
+
+.progress {
+  align-items: center;
+  background: repeating-linear-gradient(
+    -63deg,
+    var(--theme-progress-bar-large-progress-stripe1),
+    var(--theme-progress-bar-large-progress-stripe1) 10px,
+    var(--theme-progress-bar-large-progress-stripe2) 10px,
+    var(--theme-progress-bar-large-progress-stripe2) 20px
+  );
+  border-radius: 5px;
+  display: flex;
+  height: 100%;
+  justify-content: flex-end;
+  transition: width 0.24s;
+}
+
+.progressLabel {
+  transform: translateX(calc(100% + 8px));
+}
+
+.progressLabelWhite {
+  color: var(--theme-staking-progress-label-light);
+  transform: translateX(-8px);
+}

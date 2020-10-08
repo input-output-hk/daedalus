@@ -45,7 +45,6 @@ export default class StakingStore extends Store {
   @observable redeemedRewards: ?BigNumber = null;
   @observable isSubmittingReedem: boolean = false;
   @observable stakingSuccess: ?boolean = null;
-
   @observable configurationStepError: ?LocalizableError = null;
   @observable confirmationStepError: ?LocalizableError = null;
 
@@ -82,7 +81,8 @@ export default class StakingStore extends Store {
     stakingActions.joinStakePool.listen(this._joinStakePool);
     stakingActions.quitStakePool.listen(this._quitStakePool);
     stakingActions.fakeStakePoolsLoading.listen(this._setFakePoller);
-    stakingActions.updateStake.listen(this._setStake);
+    stakingActions.updateDelegatingStake.listen(this._setStake);
+    stakingActions.rankStakePools.listen(this._rankStakePools);
     stakingActions.selectDelegationWallet.listen(
       this._setSelectedDelegationWalletId
     );
@@ -120,6 +120,9 @@ export default class StakingStore extends Store {
 
   @action _setStake = (stake: number) => {
     this.stake = stake;
+  };
+
+  @action _rankStakePools = () => {
     this.isRanking = true;
     this.getStakePoolsData();
   };
@@ -329,8 +332,12 @@ export default class StakingStore extends Store {
     }
 
     try {
-      await this.stakePoolsRequest.execute(this.stake * LOVELACES_PER_ADA)
-        .promise;
+      const stakeInBigNumber = new BigNumber(this.stake);
+      const stakeInLovelace = parseInt(
+        stakeInBigNumber.times(LOVELACES_PER_ADA),
+        10
+      );
+      await this.stakePoolsRequest.execute(stakeInLovelace).promise;
       this._resetPolling(false);
     } catch (error) {
       this._resetPolling(true);
@@ -599,7 +606,7 @@ export default class StakingStore extends Store {
   _pollOnSync = () => {
     const { isSynced, isShelleyActivated } = this.stores.networkStatus;
     if (isSynced && isShelleyActivated) {
-      this._setStake(this.stake);
+      this.getStakePoolsData();
     } else {
       this._resetIsRanking();
       this._resetPolling(true, true);

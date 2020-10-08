@@ -9,6 +9,7 @@ import checkmarkImage from '../../../assets/images/check-w.inline.svg';
 import questionmarkImage from '../../../assets/images/questionmark.inline.svg';
 import clockImage from '../../../assets/images/clock.inline.svg';
 import StakePool from '../../../domains/StakePool';
+import { IS_RANKING_DATA_AVAILABLE } from '../../../config/stakingConfig';
 
 type Props = {
   stakePool?: StakePool,
@@ -22,9 +23,8 @@ export default class ThumbSelectedPool extends Component<Props> {
     const { stakePool, alreadyDelegated, numberOfStakePools } = this.props;
 
     const { ticker, retiring, ranking } = stakePool || {};
-
     const rankColor =
-      stakePool && !retiring
+      stakePool && !retiring && IS_RANKING_DATA_AVAILABLE
         ? getColorFromRange(ranking, numberOfStakePools)
         : 'transparent';
 
@@ -36,15 +36,16 @@ export default class ThumbSelectedPool extends Component<Props> {
     ]);
 
     let icon = questionmarkImage;
-    if (retiring) icon = clockImage;
-    else if (stakePool) icon = checkmarkImage;
+    if (retiring) {
+      icon = clockImage;
+    } else if (stakePool) {
+      icon = checkmarkImage;
+    }
 
     return (
       <div
         className={selectedPoolBlockClasses}
-        style={{
-          background: rankColor,
-        }}
+        style={{ background: rankColor }}
       >
         {ticker && <div className={styles.ticker}>{ticker}</div>}
         <div className={styles.icon}>

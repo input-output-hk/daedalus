@@ -12,7 +12,8 @@ export default class StakingActions {
   goToStakingDelegationCenterPage: Action<any> = new Action();
   joinStakePool: Action<JoinStakePoolRequest> = new Action();
   quitStakePool: Action<QuitStakePoolRequest> = new Action();
-  updateStake: Action<number> = new Action();
+  updateDelegatingStake: Action<number> = new Action();
+  rankStakePools: Action<any> = new Action();
   selectDelegationWallet: Action<string> = new Action();
   /* ----------  Redeem ITN Rewards  ---------- */
   onRedeemStart: Action<any> = new Action();

@@ -36,7 +36,7 @@ exportBuildVars Options{oBackend, oBuildJob, oCluster} backendVersion = do
         , ("NETWORK", clusterNetwork oCluster)
         ]
     where
-        apiName (Cardano _ _) = "ada"
+        apiName (Cardano _) = "ada"
         apiName (Jormungandr _) = "ada"
 
 rewritePackageJson :: FilePath -> Text -> IO ()

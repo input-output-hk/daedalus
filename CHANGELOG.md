@@ -1,6 +1,67 @@
 Changelog
 =========
 
+## 2.3.0
+
+### Features
+
+- Changed the way the update installer is launched, waiting first for the app to quit ([PR 2195](https://github.com/input-output-hk/daedalus/pull/2195))
+
+## 2.3.0-FC2
+
+### Chores
+
+- Bumped Daedalus version to 2.3.0-FC2
+
+## 2.3.0-FC1
+
+### Features
+
+- Made stake pools ranking slider logarithmic ([PR 2162](https://github.com/input-output-hk/daedalus/pull/2162))
+- Implemented fetching of epoch configuration from the Api instead of using hardcoded constants ([PR 2165](https://github.com/input-output-hk/daedalus/pull/2165))
+- Enabled SMASH ([PR 2154](https://github.com/input-output-hk/daedalus/pull/2154))
+
+### Fixes
+
+- Fixed the "Retirement" label on Stake Pools for yellow theme ([PR 2189](https://github.com/input-output-hk/daedalus/pull/2189))
+- Fixed stake pool tooltip "Delegate to this pool" button background colors ([PR 2181](https://github.com/input-output-hk/daedalus/pull/2181))
+- Removed one second delay on changing wallet selection and selecting delegating stake slider value on the "Stake pools" screen ([PR 2179](https://github.com/input-output-hk/daedalus/pull/2179))
+- Improved rendering performance of the stake pools on the "Stake pools" screen ([PR 2177](https://github.com/input-output-hk/daedalus/pull/2177))
+
+### Chores
+
+- Updated `cardano-wallet` to version `2020-09-22` ([PR 2188](https://github.com/input-output-hk/daedalus/pull/2188))
+- Updated `cardano-wallet` to revision `ffeca1d9` which includes `cardano-node` 1.20.0 ([PR 2187](https://github.com/input-output-hk/daedalus/pull/2187))
+- Set "Delegation center" as default staking screen ([PR 2185](https://github.com/input-output-hk/daedalus/pull/2185))
+- Changed the ordering of wallet addresses on the "Receive" screen so that the oldest one are on top and the newest one on the bottom of the list ([PR 2176](https://github.com/input-output-hk/daedalus/pull/2176))
+- Fixed UI issues ([PR 2152](https://github.com/input-output-hk/daedalus/pull/2152))
+- Updated list of team members on About screen ([PR 2167](https://github.com/input-output-hk/daedalus/pull/2167))
+
+## 2.2.0
+
+### Features
+
+- Handled random stake pool data during the first "Shelley" epochs ([PR 2151](https://github.com/input-output-hk/daedalus/pull/2151), [PR 2157](https://github.com/input-output-hk/daedalus/pull/2157))
+- Enabled wallet creation regardless of the sync progress ([PR 2150](https://github.com/input-output-hk/daedalus/pull/2150))
+- Enabled restoration of "Shelley" wallets regardless of the sync progress ([PR 2150](https://github.com/input-output-hk/daedalus/pull/2150))
+- Enabled restoration of Yoroi "Shelley" wallets ([PR 2144](https://github.com/input-output-hk/daedalus/pull/2144))
+- Enabled "Send" screen for "Byron" wallets ([PR 2147](https://github.com/input-output-hk/daedalus/pull/2147))
+- Added SMASH support ([PR 2143](https://github.com/input-output-hk/daedalus/pull/2143))
+
+### Fixes
+
+- Fixed text copy on "Transfer funds" and "Delegation" wizards ([PR 2153](https://github.com/input-output-hk/daedalus/pull/2153))
+- Fixed display priority of Daedalus shutdown messages on the "Loading" screen ([PR 2150](https://github.com/input-output-hk/daedalus/pull/2150))
+- Fixed double loading spinner issue on stake pools list page ([PR 2144](https://github.com/input-output-hk/daedalus/pull/2144))
+- Fixed the Japanese translation for "Byron" wallet label ([PR 2147](https://github.com/input-output-hk/daedalus/pull/2147))
+- Fixed validation of spending passwords which include spaces ([PR 2147](https://github.com/input-output-hk/daedalus/pull/2147))
+- Disabled ITN rewards redemption in case Daedalus is not fully in sync ([PR 2146](https://github.com/input-output-hk/daedalus/pull/2146))
+
+### Chores
+
+- Updated `cardano-wallet` to revision `75b583a1` ([PR 2157](https://github.com/input-output-hk/daedalus/pull/2157))
+- Updated `cardano-wallet` to revision `a4fd49e3` ([PR 2155](https://github.com/input-output-hk/daedalus/pull/2155))
+
 ## 2.1.0
 
 ### Features
@@ -9,8 +70,8 @@ Changelog
 
 ### Chores
 
-- Updated `cardano-wallet` to revision `4a4d0a65` 
-- Updated `cardano-wallet` to revision `d5b43356` 
+- Updated `cardano-wallet` to revision `4a4d0a65`
+- Updated `cardano-wallet` to revision `d5b43356`
 
 ## 2.0.1
 
@@ -44,6 +105,10 @@ Changelog
 - Fixed epoch length and slot numbers info ([PR 2108](https://github.com/input-output-hk/daedalus/pull/2108))
 
 ## 2.0.0-RC1
+
+### Features
+
+- Implemented Daedalus app automatic update ([PR 2056](https://github.com/input-output-hk/daedalus/pull/2056))
 
 ### Fixes
 

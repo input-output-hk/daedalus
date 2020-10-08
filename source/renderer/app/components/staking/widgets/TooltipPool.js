@@ -18,6 +18,7 @@ import experimentalTooltipStyles from './TooltipPool-experimental-tooltip.scss';
 import isTooltipStyles from './TooltipPool-copyId-tooltip.scss';
 import StakePool from '../../../domains/StakePool';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
+import noDataDashSmallImage from '../../../assets/images/no-data-dash-small.inline.svg';
 import experimentalIcon from '../../../assets/images/experiment-icon.inline.svg';
 import copyIcon from '../../../assets/images/clipboard-small-ic.inline.svg';
 import copyCheckmarkIcon from '../../../assets/images/check-w.inline.svg';
@@ -26,7 +27,6 @@ import { formattedWalletAmount, shortNumber } from '../../../utils/formatters';
 import { rangeMap } from '../../../utils/numbers';
 import { ellipsis } from '../../../utils/strings';
 import { STAKE_POOL_ID_COPY_FEEDBACK } from '../../../config/timingConfig';
-
 import {
   THUMBNAIL_HEIGHT,
   THUMBNAIL_OFFSET_WIDTH,
@@ -36,6 +36,8 @@ import {
   TOOLTIP_DELTA,
   TOOLTIP_MAX_HEIGHT,
   TOOLTIP_WIDTH,
+  IS_RANKING_DATA_AVAILABLE,
+  IS_SATURATION_DATA_AVAILABLE,
 } from '../../../config/stakingConfig';
 
 const messages = defineMessages({
@@ -94,6 +96,11 @@ const messages = defineMessages({
     id: 'staking.stakePools.tooltip.copyIdTooltipLabel',
     defaultMessage: '!!!Copy the stake pool ID',
     description: 'copyId tooltip label',
+  },
+  noDataDashTooltipLabel: {
+    id: 'staking.stakePools.noDataDashTooltip',
+    defaultMessage: '!!!Data not available yet',
+    description: 'Data not available yet label',
   },
 });
 
@@ -398,7 +405,6 @@ export default class TooltipPool extends Component<Props, State> {
       showWithSelectButton,
       numberOfStakePools,
     } = this.props;
-    const showSaturation = false;
     const {
       componentStyle,
       arrowStyle,
@@ -451,6 +457,10 @@ export default class TooltipPool extends Component<Props, State> {
       styles.hoverContent,
       idCopyFeedback ? styles.checkIcon : styles.copyIcon,
     ]);
+    const colorBandStyles = classnames([
+      styles.colorBand,
+      IS_RANKING_DATA_AVAILABLE ? null : styles.greyColorBand,
+    ]);
 
     return (
       <div
@@ -460,7 +470,11 @@ export default class TooltipPool extends Component<Props, State> {
         aria-hidden
         style={componentStyle}
       >
-        <div className={styles.colorBand} style={colorBandStyle} />
+        {IS_RANKING_DATA_AVAILABLE ? (
+          <div className={colorBandStyles} style={colorBandStyle} />
+        ) : (
+          <div className={colorBandStyles} />
+        )}
         <div className={arrowClassnames} style={arrowStyle} />
         <div className={styles.container}>
           <h3 className={styles.name}>{name}</h3>
@@ -505,7 +519,7 @@ export default class TooltipPool extends Component<Props, State> {
           />
 
           <dl className={styles.table}>
-            {showSaturation && (
+            {IS_SATURATION_DATA_AVAILABLE && (
               <>
                 <dt className={styles.saturationLabel}>
                   {intl.formatMessage(messages.saturation)}
@@ -526,17 +540,30 @@ export default class TooltipPool extends Component<Props, State> {
             )}
             <dt>{intl.formatMessage(messages.ranking)}</dt>
             <dd className={styles.ranking}>
-              <span
-                style={{
-                  background: getColorFromRange(ranking, {
-                    darken,
-                    alpha,
-                    numberOfItems: numberOfStakePools,
-                  }),
-                }}
-              >
-                {ranking}
-              </span>
+              {IS_RANKING_DATA_AVAILABLE ? (
+                <span
+                  style={{
+                    background: getColorFromRange(ranking, {
+                      darken,
+                      alpha,
+                      numberOfItems: numberOfStakePools,
+                    }),
+                  }}
+                >
+                  {ranking}
+                </span>
+              ) : (
+                <Tooltip
+                  className={styles.noDataDashTooltip}
+                  key="noDataDashTooltip"
+                  skin={TooltipSkin}
+                  tip={intl.formatMessage(messages.noDataDashTooltipLabel)}
+                >
+                  <div className={styles.noDataDash}>
+                    <SVGInline svg={noDataDashSmallImage} />
+                  </div>
+                </Tooltip>
+              )}
               {isIncentivizedTestnet && (
                 <Tooltip
                   className={styles.experimentalTooltip}
@@ -556,7 +583,9 @@ export default class TooltipPool extends Component<Props, State> {
             </dd>
             <dt>{intl.formatMessage(messages.relativeStake)}</dt>
             <dd className={styles.defaultColor}>
-              <span>{`${parseFloat(relativeStake.toFixed(2))}%`}</span>
+              <span className={styles.defaultColorContent}>{`${parseFloat(
+                relativeStake.toFixed(2)
+              )}%`}</span>
             </dd>
             <dt>{intl.formatMessage(messages.profitMargin)}</dt>
             <dd className={styles.profitMargin}>
@@ -573,7 +602,9 @@ export default class TooltipPool extends Component<Props, State> {
             </dd>
             <dt>{intl.formatMessage(messages.pledge)}</dt>
             <dd className={styles.defaultColor}>
-              <span>{formattedWalletAmount(pledge, true, false)}</span>
+              <span className={styles.defaultColorContent}>
+                {formattedWalletAmount(pledge, true, false)}
+              </span>
             </dd>
             <dt>{intl.formatMessage(messages.costPerEpoch)}</dt>
             <dd className={styles.cost}>
@@ -590,7 +621,9 @@ export default class TooltipPool extends Component<Props, State> {
             </dd>
             <dt>{intl.formatMessage(messages.producedBlocks)}</dt>
             <dd className={styles.defaultColor}>
-              <span>{shortNumber(producedBlocks)}</span>
+              <span className={styles.defaultColorContent}>
+                {shortNumber(producedBlocks)}
+              </span>
             </dd>
             {/* <dt>{intl.formatMessage(messages.cost)}</dt>
             <dd>

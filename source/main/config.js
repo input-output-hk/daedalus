@@ -75,6 +75,8 @@ export type LauncherConfig = {
   legacyWalletDB: string,
   isFlight: boolean,
   isStaging: boolean,
+  smashUrl?: string,
+  updateRunnerBin: string,
 };
 
 type WindowOptionsType = {
