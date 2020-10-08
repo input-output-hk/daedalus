@@ -329,5 +329,6 @@
 }
 
 :global .BorderedBox_component {
+  max-height: calc(100vh - 453px);
   overflow-x: auto;
 }
