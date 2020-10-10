@@ -11,6 +11,7 @@ Changelog
 ### Fixes
 
 - Fixed Cardano Explorer URLs ([PR 2198](https://github.com/input-output-hk/daedalus/pull/2198))
+- Fixed Stake pool tooltip height issue ([PR 2203](https://github.com/input-output-hk/daedalus/pull/2203))
 
 ### Chores
 
