@@ -139,7 +139,6 @@
       vertical-align: middle;
 
       &:first-child,
-      &:nth-child(3),
       &:nth-child(4),
       &:nth-child(5),
       &:nth-child(6) {
@@ -147,7 +146,7 @@
       }
 
       &:last-child {
-        text-align: right;
+        text-align: center;
       }
 
       &:nth-child(7) {
@@ -209,7 +208,10 @@
         text-align: center;
       }
 
-      &:last-child,
+      &:last-child {
+        text-align: center;
+      }
+
       &:nth-child(7) {
         text-align: right;
       }
@@ -327,9 +329,4 @@
       margin: 0;
     }
   }
-}
-
-:global .BorderedBox_component {
-  max-height: calc(100vh - 453px);
-  overflow-x: auto;
 }

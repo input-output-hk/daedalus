@@ -324,7 +324,7 @@ export class StakePoolsTable extends Component<Props, State> {
                       const saturationValue =
                         isOversaturated || !saturation
                           ? parseInt(saturation, 10)
-                          : parseFloat(saturation).toFixed(2);
+                          : parseInt(saturation, 10);
                       const calculatedDateRange = moment(retiring).diff(
                         moment(),
                         'days'
@@ -378,18 +378,18 @@ export class StakePoolsTable extends Component<Props, State> {
                               </div>
                             </div>
                           </td>
-                          <td>{`${formattedWalletAmount(
+                          <td>{`${parseFloat(formattedWalletAmount(
                             cost,
                             false,
                             true
-                          )}`}</td>
+                          )).toFixed(2)}`}</td>
                           <td>{margin}%</td>
                           <td>{producedBlocks}</td>
-                          <td>{`${formattedWalletAmount(
+                          <td>{`${parseFloat(formattedWalletAmount(
                             pledge,
                             false,
                             true
-                          )}`}</td>
+                          )).toFixed(2)}`}</td>
                           <td>
                             {retiring && calculatedDateRange ? (
                               <span className={styles.retiring}>
