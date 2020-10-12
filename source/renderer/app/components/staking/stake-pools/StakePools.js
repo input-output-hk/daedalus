@@ -61,6 +61,7 @@ type State = {
   isGridView: boolean,
   isListView: boolean,
   isFixed: boolean,
+  isScrolled: boolean,
   maintainFixed: boolean,
 };
 
@@ -81,15 +82,16 @@ export default class StakePools extends Component<Props, State> {
     isGridView: true,
     isListView: false,
     isFixed: false,
+    isScrolled: false,
     maintainFixed: false,
     ...initialState,
   };
 
-  handleSearch = (search: string) => this.setState({ search, maintainFixed: true });
+  handleSearch = (search: string) => this.setState(prevState => ({ search, maintainFixed: prevState.isFixed, isFixed: true }));
   handleClearSearch = () => this.setState({ search: '', maintainFixed: false });
   handleGridView = () => this.setState({ isGridView: true, isListView: false, isFixed: false, maintainFixed: false });
   handleListView = () => this.setState({ isGridView: false, isListView: true, isFixed: false, maintainFixed: false });
-  handleSearchComponentScrollView = () => this.setState(prevState => ({ isFixed: !prevState.isFixed }));
+  handleSearchComponentScrollView = (isScrolled: boolean) => this.setState(prevState => ({ isFixed: !prevState.isFixed, isScrolled }));
 
   handleSetListActive = (selectedList: string) =>
     this.setState({ selectedList });
@@ -116,7 +118,7 @@ export default class StakePools extends Component<Props, State> {
       stakePoolsDelegatingList,
       getStakePoolById,
     } = this.props;
-    const { search, selectedList, isListView, isGridView, isFixed, maintainFixed } = this.state;
+    const { search, selectedList, isListView, isGridView, isFixed, maintainFixed, isScrolled } = this.state;
 
     const filteredStakePoolsList: Array<StakePool> = getFilteredStakePoolsList(
       stakePoolsList,
@@ -177,6 +179,7 @@ export default class StakePools extends Component<Props, State> {
               isGridView={isGridView}
               isFixed={(isFixed || maintainFixed) && !!filteredStakePoolsList.length}
               isClearTooltipOpeningDownward
+              isScrolled={isScrolled}
             />
             {isListView && (
               <Fragment>
@@ -201,6 +204,7 @@ export default class StakePools extends Component<Props, State> {
                   showWithSelectButton
                   onScrollView={this.handleSearchComponentScrollView}
                   maintainFixed={maintainFixed && !!filteredStakePoolsList.length}
+                  isScrolled={isScrolled}
                 />
               </Fragment>
             )}

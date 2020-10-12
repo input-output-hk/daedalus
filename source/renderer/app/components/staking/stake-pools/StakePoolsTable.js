@@ -97,6 +97,7 @@ type Props = {
   highlightOnHover?: boolean,
   onScrollView?: Function,
   maintainFixed?: boolean,
+  isScrolled?: boolean,
 };
 
 type State = {
@@ -187,10 +188,10 @@ export class StakePoolsTable extends Component<Props, State> {
       const scrollPosition = this.scrollableDomElement.scrollTop;
       if ((scrollPosition > fixedSearchBarPosition && !isFixedSearchBarActive) || maintainFixed) {
         this.setState({ isFixedSearchBarActive: true });
-        if (onScrollView) onScrollView();
+        if (onScrollView) onScrollView(true);
       } else if ((scrollPosition <= fixedSearchBarPosition && isFixedSearchBarActive) || maintainFixed) {
         this.setState({ isFixedSearchBarActive: false });
-        if (onScrollView) onScrollView();
+        if (onScrollView) onScrollView(false);
       }
       if ((scrollPosition > fixedTableHeaderPosition && !isFixedTableHeaderActive) || maintainFixed) {
         this.setState({ isFixedTableHeaderActive: true });
@@ -281,6 +282,8 @@ export class StakePoolsTable extends Component<Props, State> {
       containerClassName,
       numberOfStakePools,
       listName,
+      maintainFixed,
+      isScrolled,
     } = this.props;
     const { isPreloading, stakePoolsSortBy, stakePoolsOrder, isFixedTableHeaderActive } = this.state;
     const { intl } = this.context;
@@ -292,11 +295,18 @@ export class StakePoolsTable extends Component<Props, State> {
           <LoadingSpinner big />
         </div>
       );
-
-    const tableHeaderClasses = classNames([
-      styles.tableHeader,
-      isFixedTableHeaderActive ? styles.fixedTableHeader : null,
-    ]);
+    let tableHeaderClasses: string = '';
+    if (isScrolled) {
+      tableHeaderClasses = classNames([
+        styles.tableHeader,
+        isScrolled && isFixedTableHeaderActive ? styles.fixedTableHeader : null,
+      ]);
+    } else {
+      tableHeaderClasses = classNames([
+        styles.tableHeader,
+        isScrolled && (isFixedTableHeaderActive || maintainFixed) ? styles.fixedTableHeader : null,
+      ]);
+    }
 
     const sortedStakePoolList = orderBy(
       stakePoolsList,

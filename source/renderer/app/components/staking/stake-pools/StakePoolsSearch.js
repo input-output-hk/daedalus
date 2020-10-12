@@ -42,7 +42,8 @@ type Props = {
   onGridView?: Function,
   onListView?: Function,
   search: string,
-  isFixed: boolean,
+  isFixed?: boolean,
+  isScrolled?: boolean,
 };
 
 export class StakePoolsSearch extends Component<Props> {
@@ -73,12 +74,21 @@ export class StakePoolsSearch extends Component<Props> {
       isGridView,
       isClearTooltipOpeningDownward,
       isFixed,
+      isScrolled,
     } = this.props;
 
-    const componentClasses = classnames([
-      styles.component,
-      isListView && isFixed ? styles.componentFixedPosition : null,
-    ]);
+    let componentClasses: string = '';
+    if (isScrolled) {
+      componentClasses = classnames([
+        styles.component,
+        isListView && isScrolled ? styles.componentFixedPosition : null,
+      ]);
+    } else {
+      componentClasses = classnames([
+        styles.component,
+        isScrolled && (isListView && isFixed) ? styles.componentFixedPosition : null,
+      ]);
+    }
 
     const gridButtonClasses = classnames([
       styles.gridView,
