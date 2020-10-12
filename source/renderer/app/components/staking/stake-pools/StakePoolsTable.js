@@ -122,8 +122,8 @@ const initialState = {
   left: 0,
   isFixedTableHeaderActive: false,
   isFixedSearchBarActive: false,
-  fixedTableHeaderPosition: 188,
-  fixedSearchBarPosition: 187,
+  fixedTableHeaderPosition: 220,
+  fixedSearchBarPosition: 186,
 };
 
 @observer
@@ -187,7 +187,7 @@ export class StakePoolsTable extends Component<Props, State> {
 
     if (this.scrollableDomElement instanceof HTMLElement && stakePoolsList.length) {
       const scrollPosition = this.scrollableDomElement.scrollTop;
-      if ((scrollPosition > fixedSearchBarPosition && !isFixedSearchBarActive) || maintainFixed) {
+      if ((scrollPosition >= fixedSearchBarPosition && !isFixedSearchBarActive) || maintainFixed) {
         this.setState({ isFixedSearchBarActive: true });
         if (onScrollView) onScrollView(true);
       } else if ((scrollPosition <= fixedSearchBarPosition && isFixedSearchBarActive) || maintainFixed) {
@@ -424,7 +424,7 @@ export class StakePoolsTable extends Component<Props, State> {
                       const { top, left } = this.state;
 
                       return (
-                        <tr key={key} onClick={!highlightOnHover && this.handleOpenThumbnail}>
+                        <tr key={key} className={this.props.selectedPoolId ? styles.selected : null} onClick={!highlightOnHover && this.handleOpenThumbnail}>
                           <td>
                             {rank}
                             {isHighlighted && (

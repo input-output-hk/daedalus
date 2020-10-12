@@ -31,5 +31,11 @@
     margin: 20px 0 10px;
     opacity: 0.5;
     padding-left: 20px;
+
+    &.tableHeading {
+      &.tableHeadingFixed {
+        margin-top: 91px;
+      }
+    }
   }
 }

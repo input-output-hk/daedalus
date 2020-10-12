@@ -143,6 +143,11 @@ export default class StakePools extends Component<Props, State> {
       isLoading ? styles.isLoading : null,
     ]);
 
+    const tableHeadingClasses = classnames([
+      styles.tableHeading,
+      isFixed ? styles.tableHeadingFixed : null,
+    ]);
+
     return (
       <div className={componentClasses}>
         {isLoading ? (
@@ -183,7 +188,7 @@ export default class StakePools extends Component<Props, State> {
             />
             {isListView && (
               <Fragment>
-                <h2>
+                <h2 className={tableHeadingClasses}>
                   <FormattedMessage
                     {...listTitleMessage}
                     values={{

@@ -2,7 +2,6 @@
   background: transparent;
   padding: 20px 0 0;
   position: initial;
-  top: 134px;
   transition: position 1s ease-out, top 1s ease-out;
   width: 100%;
 
@@ -14,7 +13,6 @@
     margin-right: -20px;
     padding: 10px 20px;
     position: fixed;
-    top: 134px;
     width: calc(100% - 84px);
     z-index: 100;
   }
