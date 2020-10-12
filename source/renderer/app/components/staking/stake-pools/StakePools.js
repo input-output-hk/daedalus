@@ -60,6 +60,8 @@ type State = {
   selectedList?: ?string,
   isGridView: boolean,
   isListView: boolean,
+  isFixed: boolean,
+  maintainFixed: boolean,
 };
 
 const initialState = {
@@ -78,13 +80,16 @@ export default class StakePools extends Component<Props, State> {
     search: '',
     isGridView: true,
     isListView: false,
+    isFixed: false,
+    maintainFixed: false,
     ...initialState,
   };
 
-  handleSearch = (search: string) => this.setState({ search });
-  handleClearSearch = () => this.setState({ search: '' });
-  handleGridView = () => this.setState({ isGridView: true, isListView: false });
-  handleListView = () => this.setState({ isGridView: false, isListView: true });
+  handleSearch = (search: string) => this.setState({ search, maintainFixed: true });
+  handleClearSearch = () => this.setState({ search: '', maintainFixed: false });
+  handleGridView = () => this.setState({ isGridView: true, isListView: false, isFixed: false, maintainFixed: false });
+  handleListView = () => this.setState({ isGridView: false, isListView: true, isFixed: false, maintainFixed: false });
+  handleSearchComponentScrollView = () => this.setState(prevState => ({ isFixed: !prevState.isFixed }));
 
   handleSetListActive = (selectedList: string) =>
     this.setState({ selectedList });
@@ -111,7 +116,7 @@ export default class StakePools extends Component<Props, State> {
       stakePoolsDelegatingList,
       getStakePoolById,
     } = this.props;
-    const { search, selectedList, isListView, isGridView } = this.state;
+    const { search, selectedList, isListView, isGridView, isFixed, maintainFixed } = this.state;
 
     const filteredStakePoolsList: Array<StakePool> = getFilteredStakePoolsList(
       stakePoolsList,
@@ -170,6 +175,7 @@ export default class StakePools extends Component<Props, State> {
               onListView={this.handleListView}
               isListView={isListView}
               isGridView={isGridView}
+              isFixed={(isFixed || maintainFixed) && !!filteredStakePoolsList.length}
               isClearTooltipOpeningDownward
             />
             {isListView && (
@@ -193,6 +199,8 @@ export default class StakePools extends Component<Props, State> {
                   onSelect={this.onDelegate}
                   numberOfStakePools={stakePoolsList.length}
                   showWithSelectButton
+                  onScrollView={this.handleSearchComponentScrollView}
+                  maintainFixed={maintainFixed && !!filteredStakePoolsList.length}
                 />
               </Fragment>
             )}

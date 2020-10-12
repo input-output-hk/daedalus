@@ -95,6 +95,8 @@ type Props = {
   selectedPoolId?: ?number,
   onOpenExternalLink: Function,
   highlightOnHover?: boolean,
+  onScrollView?: Function,
+  maintainFixed?: boolean,
 };
 
 type State = {
@@ -104,6 +106,10 @@ type State = {
   stakePoolsSortBy: string,
   top: number,
   left: number,
+  isFixedTableHeaderActive: boolean,
+  isFixedSearchBarActive: boolean,
+  fixedTableHeaderPosition: number,
+  fixedSearchBarPosition: number,
 };
 
 const initialState = {
@@ -113,6 +119,9 @@ const initialState = {
   stakePoolsSortBy: 'ranking',
   top: 0,
   left: 0,
+  isFixedTableHeaderActive: false,
+  fixedTableHeaderPosition: 188,
+  fixedSearchBarPosition: 187,
 };
 
 @observer
@@ -138,22 +147,61 @@ export class StakePoolsTable extends Component<Props, State> {
 
   _isMounted = false;
 
+  scrollableDomElement: ?HTMLElement = null;
+
+  searchInput: ?HTMLElement = null;
+
   componentDidMount() {
     this._isMounted = true;
     setTimeout(() => {
       if (this._isMounted) this.setState({ isPreloading: false });
     }, 0);
+    this.scrollableDomElement = document.querySelector(
+      `.${this.props.containerClassName}`
+    );
+    if (!this.scrollableDomElement) return false;
+    return this.scrollableDomElement.addEventListener(
+      'scroll',
+      this.getIsFixedActive
+    );
   }
 
   componentWillUnmount() {
     this._isMounted = false;
     window.removeEventListener('resize', this.handleClose);
+    this.scrollableDomElement = document.querySelector(
+      `.${this.props.containerClassName}`
+    );
+    if (!this.scrollableDomElement) return false;
+    return this.scrollableDomElement.removeEventListener(
+      'scroll',
+      this.getIsFixedActive
+    );
   }
+
+  getIsFixedActive = () => {
+    const { isFixedTableHeaderActive, fixedTableHeaderPosition, fixedSearchBarPosition, isFixedSearchBarActive } = this.state;
+    const { onScrollView, stakePoolsList, maintainFixed } = this.props;
+
+    if (this.scrollableDomElement instanceof HTMLElement && stakePoolsList.length) {
+      const scrollPosition = this.scrollableDomElement.scrollTop;
+      if ((scrollPosition > fixedSearchBarPosition && !isFixedSearchBarActive) || maintainFixed) {
+        this.setState({ isFixedSearchBarActive: true });
+        if (onScrollView) onScrollView();
+      } else if ((scrollPosition <= fixedSearchBarPosition && isFixedSearchBarActive) || maintainFixed) {
+        this.setState({ isFixedSearchBarActive: false });
+        if (onScrollView) onScrollView();
+      }
+      if ((scrollPosition > fixedTableHeaderPosition && !isFixedTableHeaderActive) || maintainFixed) {
+        this.setState({ isFixedTableHeaderActive: true });
+      } else if ((scrollPosition <= fixedTableHeaderPosition && isFixedTableHeaderActive) || maintainFixed) {
+        this.setState({ isFixedTableHeaderActive: false });
+      }
+    }
+  };
 
   handleResize = () =>
     debounce(this.handleClose, 200, { leading: true, trailing: false });
-
-  searchInput: ?HTMLElement = null;
 
   handleOpenThumbnail = (poolId: SyntheticMouseEvent<HTMLElement>) => {
     const { isListActive, setListActive, listName, stakePoolsList, containerClassName } = this.props;
@@ -200,6 +248,26 @@ export class StakePoolsTable extends Component<Props, State> {
     }
   };
 
+  handleSort = (newSortBy: string) => {
+    const { stakePoolsOrder, stakePoolsSortBy } = this.state;
+    let newOrder;
+    if (stakePoolsSortBy === newSortBy || newSortBy === 'name') {
+      newOrder = stakePoolsOrder === 'asc' ? 'desc' : 'asc';
+    } else {
+      newOrder = 'desc';
+    }
+    if (stakePoolsSortBy !== 'ticker' && stakePoolsSortBy !== newSortBy) {
+      newOrder = 'asc';
+    }
+    if (newSortBy === 'name') {
+      newSortBy = 'ticker';
+    }
+    this.setState({
+      stakePoolsOrder: newOrder,
+      stakePoolsSortBy: newSortBy,
+    });
+  };
+
   getIsHighlighted = (id: string) =>
     this.props.isListActive !== false && id === this.state.highlightedPoolId;
 
@@ -214,7 +282,7 @@ export class StakePoolsTable extends Component<Props, State> {
       numberOfStakePools,
       listName,
     } = this.props;
-    const { isPreloading, stakePoolsSortBy, stakePoolsOrder } = this.state;
+    const { isPreloading, stakePoolsSortBy, stakePoolsOrder, isFixedTableHeaderActive } = this.state;
     const { intl } = this.context;
     const componentClasses = classNames([styles.component, listName]);
 
@@ -224,6 +292,11 @@ export class StakePoolsTable extends Component<Props, State> {
           <LoadingSpinner big />
         </div>
       );
+
+    const tableHeaderClasses = classNames([
+      styles.tableHeader,
+      isFixedTableHeaderActive ? styles.fixedTableHeader : null,
+    ]);
 
     const sortedStakePoolList = orderBy(
       stakePoolsList,
@@ -273,7 +346,7 @@ export class StakePoolsTable extends Component<Props, State> {
             <BorderedBox>
               {sortedStakePoolList.length > 0 && (
                 <table>
-                  <thead>
+                  <thead className={tableHeaderClasses}>
                     <tr>
                       {map(availableTableHeaders, tableHeader => {
                         const isSorted =
@@ -413,24 +486,4 @@ export class StakePoolsTable extends Component<Props, State> {
       </StakingPageScrollContext.Consumer>
     );
   }
-
-  handleSort = (newSortBy: string) => {
-    const { stakePoolsOrder, stakePoolsSortBy } = this.state;
-    let newOrder;
-    if (stakePoolsSortBy === newSortBy || newSortBy === 'name') {
-      newOrder = stakePoolsOrder === 'asc' ? 'desc' : 'asc';
-    } else {
-      newOrder = 'desc';
-    }
-    if (stakePoolsSortBy !== 'ticker' && stakePoolsSortBy !== newSortBy) {
-      newOrder = 'asc';
-    }
-    if (newSortBy === 'name') {
-      newSortBy = 'ticker';
-    }
-    this.setState({
-      stakePoolsOrder: newOrder,
-      stakePoolsSortBy: newSortBy,
-    });
-  };
 }
