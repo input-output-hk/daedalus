@@ -89,6 +89,10 @@ export default class HardwareWalletsStore extends Store {
   unsetHardwareWalletDeviceRequest: Request<HardwareWalletLocalData> = new Request(
     this.api.localStorage.unsetHardwareWalletDevice
   );
+  @observable
+  unsetHardwareWalletLocalDataAllRequest: Request<HardwareWalletLocalData> = new Request(
+    this.api.localStorage.unsetHardwareWalletLocalDataAll
+  );
   @observable hwDeviceStatus: HwDeviceStatus = HwDeviceStatuses.CONNECTING;
   @observable extendedPublicKey: ?HardwareWalletExtendedPublicKeyResponse = null;
   @observable txSignRequest: TxSignRequestTypes = {};
@@ -120,6 +124,80 @@ export default class HardwareWalletsStore extends Store {
     );
     this.hardwareWalletsLocalDataRequest.execute();
     this.hardwareWalletDevicesRequest.execute();
+    this.getAvailableDevices();
+  }
+
+  getAvailableDevices22 = async () => {
+    const aa = await this.getAvailableDevices();
+    console.debug('>> PP: ', aa)
+  }
+
+  getAvailableDevices = async () => {
+    const hardwareWalletsConnectionData = await this.hardwareWalletDevicesRequest.execute();
+    // Set all logical HW into disconnected state
+    map(this.hardwareWalletsConnectionData, async (connectedWallet) => {
+      console.debug('>> Connectinos: ', connectedWallet);
+      await this._setHardwareWalletLocalData({
+        walletId: connectedWallet.id,
+        data: {
+          disconnected: true,
+        },
+      });
+    })
+
+    // Recognize at least last device if connected
+    // Maybe we don't need this
+    // if (!this.hardwareWalletDevices || !this.hardwareWalletDevices.length) {
+    //   await getHardwareWalletTransportChannel.request({
+    //     devicePath: null,
+    //     isTrezor: true,
+    //   });
+    // }
+
+    map(this.hardwareWalletDevices, async dev => {
+      console.debug('>> DEvice: ', dev);
+      // Unset all physical devices
+      // await this._setHardwareWalletDevice({
+      //   deviceId: dev.id,
+      //   data: {}
+      // });
+      // Initiate Device Check
+      await getHardwareWalletTransportChannel.request({
+        devicePath: dev.path,
+        isTrezor: true,
+      });
+    })
+
+
+
+
+    this._refreshHardwareWalletsLocalData();
+    this._refreshHardwareWalletDevices();
+
+    return;
+    /* const transportDevice1 = await getHardwareWalletTransportChannel.request({
+      devicePath: "2",
+      isTrezor: true,
+    });
+    console.debug('>>> TEST1: ', transportDevice1);
+
+    const transportDevice2 = await getHardwareWalletTransportChannel.request({
+      devicePath: "4",
+      isTrezor: true,
+    });
+    console.debug('>>> TEST2: ', transportDevice2); */
+
+
+    /* await Promise.all(
+      hardwareWalletsConnectionData.map(async (dev) => {
+        const transportDevice = await getHardwareWalletTransportChannel.request({
+          devicePath: dev.path,
+          isTrezor: dev.deviceType === DeviceTypes.TREZOR,
+        });
+        console.debug('>>> transportDevice: ', {path: dev.path, transportDevice});
+        return TransportDevice;
+      })
+    ); */
   }
 
   @action _selectCoins = async (params: {
@@ -646,9 +724,13 @@ export default class HardwareWalletsStore extends Store {
   _unsetHardwareWalletDevice = async ({
     deviceId,
   }: {
-    deviceId: string,
+    deviceId?: ?string,
   }) => {
-    await this.unsetHardwareWalletDeviceRequest.execute(deviceId);
+    if (deviceId) {
+      await this.unsetHardwareWalletDeviceRequest.execute(deviceId);
+    } else {
+      await this.unsetHardwareWalletLocalDataAllRequest.execute();
+    }
     this._refreshHardwareWalletDevices();
   };
 

@@ -93,7 +93,7 @@ export const handleInitTrezorConnect = (sender: IpcSender) => {
     });
     TrezorConnect.on(DEVICE_EVENT, event => {
       console.debug('>>> DEVICE_EVENT: ', event);
-      const connectionChanged = event.type === 'device-connect' || event.type === 'device-disconnect';
+      const connectionChanged = event.type === 'device-connect' || event.type === 'device-disconnect' || event.type === 'device-changed';
       if (connectionChanged) {
         getHardwareWalletConnectionChannel.send(
           {
@@ -150,17 +150,36 @@ export const handleHardwareWalletDevices = (mainWindow: BrowserWindow) => {
   return handleCheckHardwareWalletDevices;
 };
 
-export const handleHardwareWalletRequests = async () => {
+export const handleHardwareWalletRequests = async (mainWindow) => {
   let deviceConnection = null;
   getHardwareWalletTransportChannel.onRequest(async request => {
     const { isTrezor, devicePath } = request;
+
+
+    // const test = await TrezorConnect.getFeatures();
+    console.debug('>>> TEST - REQ: ', request);
+    const test = await TrezorConnect.getFeatures({ device: { path: devicePath}});
+    console.debug('>>> TEST 1: ', test);
+
+
+    return Promise.resolve({
+      deviceId: test.payload.device_id,
+      deviceType: 'trezor',
+      deviceModel: test.payload.model, // e.g. "1" or "T"
+      deviceName: test.payload.label,
+      path: devicePath,
+    });
+
+    // console.debug('>>> TrezorConnect METHODS: ', TrezorConnect);
+    // return;
+
     console.debug('>>> ESTABLISH CONNECTION:  <<<, ', request);
     // Connected Trezor device info
     let deviceFeatures;
     if (isTrezor) {
       try {
         console.debug('>>> ESTABLISH CONNECTION Trezor');
-        deviceFeatures = await TrezorConnect.getFeatures({ device: { path: devicePath}});
+        deviceFeatures = await TrezorConnect.getFeatures({ device: { path: devicePath } });
         console.debug('>>> Trezor Connected: ', deviceFeatures);
         if (deviceFeatures && deviceFeatures.success) {
           return Promise.resolve({
