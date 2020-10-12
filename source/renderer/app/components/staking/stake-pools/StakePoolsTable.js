@@ -121,6 +121,7 @@ const initialState = {
   top: 0,
   left: 0,
   isFixedTableHeaderActive: false,
+  isFixedSearchBarActive: false,
   fixedTableHeaderPosition: 188,
   fixedSearchBarPosition: 187,
 };
