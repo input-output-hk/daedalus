@@ -135,6 +135,7 @@
           background-color: var(--theme-staking-stake-pools-search-clear-button-hover-background-color);
           cursor: pointer;
         }
+
         &.selected {
           background-color: var(--theme-staking-stake-pools-search-clear-button-background-color);
         }
@@ -257,19 +258,40 @@
       user-select: none;
 
       &:first-child,
-      &:nth-child(3),
       &:nth-child(4),
       &:nth-child(5),
       &:nth-child(6) {
         text-align: center;
       }
 
-      &:last-child {
+      &:first-child {
+        min-width: 70px;
+      }
+
+      &:nth-child(2) {
+        min-width: 210px;
+      }
+
+      &:nth-child(3) {
+        min-width: 95px;
         text-align: center;
+      }
+
+      &:nth-child(4) {
+        min-width: 83px;
+      }
+
+      &:nth-child(6) {
+        min-width: 110px;
       }
 
       &:nth-child(7) {
         text-align: right;
+      }
+
+      &:last-child {
+        min-width: 75px;
+        text-align: center;
       }
 
       .ticker {

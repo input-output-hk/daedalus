@@ -111,6 +111,7 @@ type State = {
   isFixedSearchBarActive: boolean,
   fixedTableHeaderPosition: number,
   fixedSearchBarPosition: number,
+  selectedRow: number | null,
 };
 
 const initialState = {
@@ -124,6 +125,7 @@ const initialState = {
   isFixedSearchBarActive: false,
   fixedTableHeaderPosition: 250,
   fixedSearchBarPosition: 186,
+  selectedRow: null,
 };
 
 @observer
@@ -189,15 +191,17 @@ export class StakePoolsTable extends Component<Props, State> {
       const scrollPosition = this.scrollableDomElement.scrollTop;
       if ((scrollPosition > fixedSearchBarPosition && !isFixedSearchBarActive) || maintainFixed) {
         this.setState({ isFixedSearchBarActive: true });
-        if (onScrollView) onScrollView(true);
+        if (onScrollView) onScrollView(true, false);
       } else if ((scrollPosition <= fixedSearchBarPosition && isFixedSearchBarActive) || maintainFixed) {
         this.setState({ isFixedSearchBarActive: false });
-        if (onScrollView) onScrollView(false);
+        if (onScrollView) onScrollView(false, false);
       }
       if ((scrollPosition > fixedTableHeaderPosition && !isFixedTableHeaderActive) || maintainFixed) {
         this.setState({ isFixedTableHeaderActive: true });
-      } else if ((scrollPosition <= fixedTableHeaderPosition && isFixedTableHeaderActive) || maintainFixed) {
+        if (onScrollView) onScrollView(true, true);
+      } else if ((scrollPosition <= fixedTableHeaderPosition && isFixedTableHeaderActive && scrollPosition > fixedSearchBarPosition) || maintainFixed) {
         this.setState({ isFixedTableHeaderActive: false });
+        if (onScrollView) onScrollView(true, false);
       }
     }
   };
@@ -217,6 +221,9 @@ export class StakePoolsTable extends Component<Props, State> {
           `.${containerClassName}`
         );
         this.setState({ top, left });
+        const { parentElement } = poolId.target;
+        const { sectionRowIndex } = parentElement;
+        this.setState({ selectedRow: sectionRowIndex });
       }
     }
     if (isListActive === false && setListActive) setListActive(listName);
@@ -234,9 +241,17 @@ export class StakePoolsTable extends Component<Props, State> {
     });
   };
 
-  handleClose = () => {
+  handleClose = (item: SyntheticMouseEvent<HTMLElement>) => {
+    let selectedRow = null;
+    if (item) {
+      const { target } = item;
+      const { parentElement } = target;
+      const { sectionRowIndex } = parentElement;
+      selectedRow = sectionRowIndex;
+    }
     this.setState({
       ...initialState,
+      selectedRow,
       isPreloading: false,
     });
   };
@@ -421,10 +436,10 @@ export class StakePoolsTable extends Component<Props, State> {
 
                       const isHighlighted = this.getIsHighlighted(stakePool.id);
                       const color = getColorFromRange(rank, numberOfStakePools);
-                      const { top, left } = this.state;
+                      const { top, left, selectedRow } = this.state;
 
                       return (
-                        <tr key={key} className={this.props.selectedPoolId ? styles.selected : null} onClick={!highlightOnHover && this.handleOpenThumbnail}>
+                        <tr key={key} className={selectedRow && selectedRow === key ? styles.selected : null} onClick={!highlightOnHover && this.handleOpenThumbnail}>
                           <td>
                             {rank}
                             {isHighlighted && (

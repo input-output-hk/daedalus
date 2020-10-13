@@ -61,6 +61,7 @@ type State = {
   isGridView: boolean,
   isListView: boolean,
   isFixed: boolean,
+  isHeaderFixed: boolean,
   isScrolled: boolean,
   maintainFixed: boolean,
 };
@@ -82,6 +83,7 @@ export default class StakePools extends Component<Props, State> {
     isGridView: true,
     isListView: false,
     isFixed: false,
+    isHeaderFixed: false,
     isScrolled: false,
     maintainFixed: false,
     ...initialState,
@@ -91,7 +93,13 @@ export default class StakePools extends Component<Props, State> {
   handleClearSearch = () => this.setState({ search: '', maintainFixed: false });
   handleGridView = () => this.setState({ isGridView: true, isListView: false, isFixed: false, maintainFixed: false });
   handleListView = () => this.setState({ isGridView: false, isListView: true, isFixed: false, maintainFixed: false });
-  handleSearchComponentScrollView = (isScrolled: boolean) => this.setState(prevState => ({ isFixed: !prevState.isFixed, isScrolled }));
+  handleSearchComponentScrollView = (isScrolled: boolean, isHeaderFixed: boolean) =>  {
+    if (isHeaderFixed) {
+      this.setState(prevState => ({ isFixed: !prevState.isFixed, isScrolled, isHeaderFixed }));
+    } else {
+      this.setState(prevState => ({ isFixed: !(!isScrolled && !isHeaderFixed && !prevState.isFixed), isScrolled, isHeaderFixed: false }));
+    }
+  };
 
   handleSetListActive = (selectedList: string) =>
     this.setState({ selectedList });
@@ -118,7 +126,7 @@ export default class StakePools extends Component<Props, State> {
       stakePoolsDelegatingList,
       getStakePoolById,
     } = this.props;
-    const { search, selectedList, isListView, isGridView, isFixed, maintainFixed, isScrolled } = this.state;
+    const { search, selectedList, isListView, isGridView, isFixed, isHeaderFixed, maintainFixed, isScrolled } = this.state;
 
     const filteredStakePoolsList: Array<StakePool> = getFilteredStakePoolsList(
       stakePoolsList,
@@ -146,6 +154,7 @@ export default class StakePools extends Component<Props, State> {
     const tableHeadingClasses = classnames([
       styles.tableHeading,
       isFixed ? styles.tableHeadingFixed : null,
+      isHeaderFixed ? styles.tableHeadingFixedPosition : null,
     ]);
 
     return (

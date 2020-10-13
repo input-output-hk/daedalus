@@ -5,7 +5,7 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-  margin: 0 20px 20px;
+  margin: 0 0 20px 20px;
 
   &.isLoading {
     align-items: center;
@@ -35,6 +35,9 @@
     &.tableHeading {
       &.tableHeadingFixed {
         margin-top: 91px;
+      }
+      &.tableHeadingFixedPosition {
+        margin-top: 131px;
       }
     }
   }
