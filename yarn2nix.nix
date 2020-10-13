@@ -148,6 +148,7 @@ yarn2nix.mkYarnPackage {
     dup node-hid
     dup secp256k1
     dup usb
+    dup @ledgerhq
 
     # strace -ff -o logfiles -s 300
     node_modules/.bin/electron-rebuild -w usb --useCache -s --debug
