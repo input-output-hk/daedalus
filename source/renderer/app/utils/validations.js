@@ -50,7 +50,7 @@ export const isUnicaseString = (password: string) =>
   // We require at least one unicase letter
   containsUnicaseLetter(password) &&
   // Every char has to belong to the support caseless categories
-  every(password.split(''), char => isCaselessString(char));
+  every(password.split(''), (char) => isCaselessString(char));
 
 /**
  * Enforces passwords without spaces and a minimum of 10 characters.
@@ -76,3 +76,11 @@ export const isValidAmountInLovelaces = (value: string) => {
   const maxValue = new BigNumber(45000000000000000);
   return numericValue.gte(minValue) && numericValue.lte(maxValue);
 };
+
+export const isValidPinCode = (pinCode: number, length: number): boolean => {
+  return pinCode.toString().length === length;
+};
+
+// eslint-disable-next-line max-len
+export const isValidRepeatPinCode = (pinCode: number, repeatPinCode: number) =>
+  pinCode === repeatPinCode;
