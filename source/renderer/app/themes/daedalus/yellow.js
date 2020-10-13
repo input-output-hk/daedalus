@@ -1051,6 +1051,18 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-news-overlay-update-button-background-color-hover': '#2d2d2d',
     '--theme-news-overlay-update-button-border-color': '#2d2d2d',
   },
+  voting: {
+    '--theme-voting-font-color-accent': '#2d2d2d',
+    '--theme-voting-font-color-regular': '#2d2d2d',
+    '--theme-voting-font-color-light': '#2d2d2db3',
+    '--theme-voting-steps-description-highlighted-color': '#2d2d2d',
+    '--theme-voting-steps-description-color': '#2d2d2dcc',
+    '--theme-voting-steps-activation-steps-indicator-color': '#2d2d2d',
+    '--theme-voting-steps-choose-wallet-error-message-light-color': '#ea4c5bb3',
+    '--theme-voting-steps-choose-wallet-error-message-color': '#ea4c5b',
+    '--theme-voting-steps-deposit-fees-label-color': '#2d2d2d',
+    '--theme-voting-steps-deposit-fees-amount-color': '#ea4c5b',
+  },
 };
 
 const YELLOW_THEME_PARAMS: CreateThemeParams = {

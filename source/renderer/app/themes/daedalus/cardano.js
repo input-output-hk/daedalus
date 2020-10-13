@@ -1,6 +1,7 @@
 // @flow
 import { createTheme } from '../utils/createTheme';
 import type { CreateThemeParams } from '../types';
+import chroma from 'chroma-js';
 
 //  ==== cardano theme output for Daedalus and react-polymorph components === //
 export const CARDANO_THEME_OUTPUT = {
@@ -1068,6 +1069,19 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-news-overlay-update-button-hover-text-color': '#273d5b',
     '--theme-news-overlay-update-button-background-color-hover': '#ffffff',
     '--theme-news-overlay-update-button-border-color': '#ffffff',
+  },
+  voting: {
+    '--theme-voting-font-color-accent': '#5e6066',
+    '--theme-voting-font-color-regular': '#5e6066',
+    '--theme-voting-font-color-light': 'rgba(94, 96, 102, 0.7)',
+    '--theme-voting-steps-description-highlighted-color': '#5e6066',
+    '--theme-voting-steps-description-color': 'rgba(94, 96, 102, 0.8)',
+    '--theme-voting-steps-activation-steps-indicator-color': '#5e6066',
+    '--theme-voting-steps-choose-wallet-error-message-light-color':
+      'rgba(234, 76, 91, 0.7)',
+    '--theme-voting-steps-choose-wallet-error-message-color': '#ea4c5b',
+    '--theme-voting-steps-deposit-fees-label-color': '#5e6066',
+    '--theme-voting-steps-deposit-fees-amount-color': '#ea4c5b',
   },
 };
 

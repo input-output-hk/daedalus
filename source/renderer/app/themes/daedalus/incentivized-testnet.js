@@ -1057,6 +1057,18 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-news-overlay-update-button-background-color-hover': '#ffffff',
     '--theme-news-overlay-update-button-border-color': '#ffffff',
   },
+  voting: {
+    '--theme-voting-font-color-accent': '#ffffff',
+    '--theme-voting-font-color-regular': '#ffffff',
+    '--theme-voting-font-color-light': '#ffffffb3',
+    '--theme-voting-steps-description-highlighted-color': '#ffffff',
+    '--theme-voting-steps-description-color': '#ffffffcc',
+    '--theme-voting-steps-activation-steps-indicator-color': '#ffffff',
+    '--theme-voting-steps-choose-wallet-error-message-light-color': '#eb4a22b3',
+    '--theme-voting-steps-choose-wallet-error-message-color': '#eb4a22',
+    '--theme-voting-steps-deposit-fees-label-color': '#ffffff',
+    '--theme-voting-steps-deposit-fees-amount-color': '#ea4c5b',
+  },
 };
 
 const INCENTIVIZED_TESTNET_THEME_PARAMS: CreateThemeParams = {

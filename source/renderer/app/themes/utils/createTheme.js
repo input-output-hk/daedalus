@@ -1228,6 +1228,22 @@ export const createDaedalusComponentsTheme = (
       '--theme-wallet-not-responding-link-text-color': `${text.secondary}`,
       '--theme-wallet-not-responding-title-text-color': `${text.secondary}`,
     },
+    voting: {
+      '--theme-voting-font-color-accent': `${focus}`,
+      '--theme-voting-font-color-regular': `${text.primary}`,
+      '--theme-voting-font-color-light': `${chroma(text.primary).alpha(0.7)}`,
+      '--theme-voting-steps-description-highlighted-color': `${text.primary}`,
+      '--theme-voting-steps-description-color': `${chroma(text.primary).alpha(
+        0.8
+      )}`,
+      '--theme-voting-steps-activation-steps-indicator-color': `${text.primary}`,
+      '--theme-voting-steps-choose-wallet-error-message-light-color': `${chroma(
+        error.regular
+      ).alpha(0.7)}`,
+      '--theme-voting-steps-choose-wallet-error-message-color': `${error.regular}`,
+      '--theme-voting-steps-deposit-fees-label-color': `${text.primary}`,
+      '--theme-voting-steps-deposit-fees-amount-color': `${error.regular}`,
+    },
   };
 };
 
