@@ -170,23 +170,23 @@ yarn2nix.mkYarnPackage {
     cp node_modules/node-hid/build/Debug/HID-hidraw.node $out/share/daedalus/build/HID-hidraw.node
   '';
   #allowedReferences = [ "out" ];
-  allowedRequisites = [
-    systemd.lib
-    stdenv.cc.cc.lib
-    stdenv.cc.cc
-    stdenv.cc.libc
-    stdenv.cc.libc.bin
-    stdenv.cc.libc.dev
-    libcap.lib
-    lz4
-    zlib
-    xz.out
-    libgcrypt
-    libidn2.out
-    libgpgerror
-    libunistring
-    libusb1
-  ] ++ stdenv.cc.libc.buildInputs;
+  #allowedRequisites = [
+  #  systemd.lib
+  #  stdenv.cc.cc.lib
+  #  stdenv.cc.cc
+  #  stdenv.cc.libc
+  #  stdenv.cc.libc.bin
+  #  stdenv.cc.libc.dev
+  #  libcap.lib
+  #  lz4
+  #  zlib
+  #  xz.out
+  #  libgcrypt
+  #  libidn2.out
+  #  libgpgerror
+  #  libunistring
+  #  libusb1
+  #] ++ stdenv.cc.libc.buildInputs;
   yarnPreBuild = ''
     mkdir -p $HOME/.node-gyp/${nodejs.version}
     echo 9 > $HOME/.node-gyp/${nodejs.version}/installVersion
