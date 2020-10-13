@@ -94,7 +94,6 @@ type Props = {
   numberOfStakePools: number,
   selectedPoolId?: ?number,
   onOpenExternalLink: Function,
-  highlightOnHover?: boolean,
   onScrollView?: Function,
   maintainFixed?: boolean,
   isScrolled?: boolean,
@@ -265,19 +264,17 @@ export class StakePoolsTable extends Component<Props, State> {
       stakePoolsSortBy,
       stakePoolsOrder
     );
-    const currentTargetChildren = poolId.currentTarget.childNodes;
-    const highlightedPoolId =
-      currentTargetChildren.length &&
-      currentTargetChildren[0].innerText &&
-      sortedStakePoolList[currentTargetChildren[0].innerText]
-        ? sortedStakePoolList[currentTargetChildren[0].innerText].id
-        : null;
+    const currentTargetChildren = poolId.currentTarget.sectionRowIndex;
+    const highlightedPoolId = sortedStakePoolList[currentTargetChildren]
+      ? sortedStakePoolList[currentTargetChildren].id
+      : null;
     return this.setState({
       highlightedPoolId,
     });
   };
 
   handleClose = (item: SyntheticMouseEvent<HTMLElement>) => {
+    const { isListActive, setListActive } = this.props;
     let selectedRow = null;
     if (item) {
       const { target } = item;
@@ -289,6 +286,7 @@ export class StakePoolsTable extends Component<Props, State> {
       selectedRow,
       isPreloading: false,
     });
+    if (isListActive !== false && setListActive) setListActive(null);
   };
 
   handleSelect = (stakePoolId: number) => {
@@ -326,7 +324,6 @@ export class StakePoolsTable extends Component<Props, State> {
   render() {
     const {
       currentTheme,
-      highlightOnHover,
       onOpenExternalLink,
       showWithSelectButton,
       stakePoolsList,
@@ -488,9 +485,7 @@ export class StakePoolsTable extends Component<Props, State> {
                               ? styles.selected
                               : null
                           }
-                          onClick={
-                            !highlightOnHover && this.handleOpenThumbnail
-                          }
+                          onClick={this.handleOpenThumbnail}
                         >
                           <td>
                             {rank}

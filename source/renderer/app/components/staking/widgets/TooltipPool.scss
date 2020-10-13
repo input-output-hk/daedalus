@@ -266,10 +266,6 @@
     user-select: none;
     width: 278px;
 
-    &.fixedHover {
-      left: -120px;
-    }
-
     .hoverContentBackground {
       background: var(--theme-staking-stake-pool-tooltip-id-background-color);
       box-shadow: 0 2px 5px var(--theme-staking-stake-pool-tooltip-id-shadow-1);
