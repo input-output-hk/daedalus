@@ -210,10 +210,10 @@ export default class TooltipPool extends Component<Props, State> {
       arrowLeft,
     } =
       tooltipPosition === 'top' || tooltipPosition === 'bottom'
-        ? this.getTopBottomPosition(left)
+        ? this.getTopBottomPosition(left, bottom)
         : this.getLeftRightPosition(top, isTopHalf, bottom);
 
-    const componentStyle = this.getComponenStyle(
+    const componentStyle = this.getComponentStyle(
       tooltipPosition,
       componentTop,
       componentBottom,
@@ -228,7 +228,9 @@ export default class TooltipPool extends Component<Props, State> {
     const colorBandStyle = {
       background: color,
     };
-
+    if (bottom) {
+      componentStyle.right = bottom;
+    }
     this.setState({
       componentStyle,
       arrowStyle,
@@ -237,7 +239,7 @@ export default class TooltipPool extends Component<Props, State> {
     });
   };
 
-  getTopBottomPosition = (left: number) => {
+  getTopBottomPosition = (left: number, fixedBottom?: number) => {
     const paddingOffset = rangeMap(
       left,
       THUMBNAIL_OFFSET_WIDTH,
@@ -246,12 +248,12 @@ export default class TooltipPool extends Component<Props, State> {
       THUMBNAIL_OFFSET_WIDTH / 2
     );
 
-    const componentLeft =
+    const componentLeft = !fixedBottom ?
       -((TOOLTIP_WIDTH * left) / this.containerWidth) +
       THUMBNAIL_OFFSET_WIDTH +
-      paddingOffset;
-    const componentTop = THUMBNAIL_HEIGHT + ARROW_HEIGHT / 2;
-    const componentBottom = THUMBNAIL_HEIGHT + ARROW_HEIGHT / 2;
+      paddingOffset : 'auto';
+    const componentTop = !fixedBottom ? THUMBNAIL_HEIGHT + ARROW_HEIGHT / 2 : 'auto';
+    const componentBottom = !fixedBottom ? THUMBNAIL_HEIGHT + ARROW_HEIGHT / 2 : fixedBottom;
 
     const arrowLeft = -componentLeft + THUMBNAIL_OFFSET_WIDTH - ARROW_OFFSET;
     const arrowTop = -(ARROW_WIDTH / 2);
@@ -270,17 +272,18 @@ export default class TooltipPool extends Component<Props, State> {
   getLeftRightPosition = (top: number, isTopHalf: boolean, fixedBottom?: number) => {
     const bottom = this.containerHeight - (top + THUMBNAIL_HEIGHT);
 
-    const componentLeft = THUMBNAIL_HEIGHT;
+    const componentLeft = fixedBottom ? 'auto' : THUMBNAIL_HEIGHT;
     let componentTop = 'auto';
     let componentBottom = 'auto';
     let arrowTop = 'auto';
     let arrowBottom = 'auto';
 
     if (isTopHalf) {
-      componentTop = -((TOOLTIP_MAX_HEIGHT * top) / this.containerHeight);
+      componentTop = !fixedBottom ? -((TOOLTIP_MAX_HEIGHT * top) / this.containerHeight) : 'auto';
       arrowTop = -componentTop + ARROW_WIDTH / 2;
+      componentBottom = fixedBottom || 'auto';
     } else {
-      componentBottom = !fixedBottom ? -((TOOLTIP_MAX_HEIGHT * bottom) / this.containerHeight) : fixedBottom ;
+      componentBottom = !fixedBottom ? -((TOOLTIP_MAX_HEIGHT * bottom) / this.containerHeight) : fixedBottom;
       arrowBottom = -componentBottom + ARROW_WIDTH / 2;
     }
 
@@ -315,7 +318,7 @@ export default class TooltipPool extends Component<Props, State> {
     return 'right';
   };
 
-  getComponenStyle = (
+  getComponentStyle = (
     tooltipPosition: string,
     top: number | 'auto',
     bottom: number | 'auto',

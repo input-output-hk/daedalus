@@ -197,10 +197,12 @@
 
       &:nth-child(7) {
         min-width: 6.8%;
+        padding-right: 3px;
         text-align: right;
 
         @media (max-width: 925px) {
           min-width: 8%;
+          padding-right: 0;
         }
       }
 
