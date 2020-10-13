@@ -254,13 +254,11 @@
   }
 
   .hoverContent {
-    background: var(--theme-staking-stake-pool-tooltip-id-background-color);
-    box-shadow: 0 2px 5px var(--theme-staking-stake-pool-tooltip-id-shadow-1);
+    background: var(--theme-staking-stake-pool-tooltip-background-color);
     height: 20px;
     left: 0;
     margin-left: -20px;
     opacity: 0;
-    padding: 3px 20px 5px;
     position: absolute;
     right: 0;
     transition: opacity 0.25s, height 0.25s;
@@ -270,6 +268,14 @@
 
     &.fixedHover {
       left: -120px;
+    }
+
+    .hoverContentBackground {
+      background: var(--theme-staking-stake-pool-tooltip-id-background-color);
+      box-shadow: 0 2px 5px var(--theme-staking-stake-pool-tooltip-id-shadow-1);
+      height: 100%;
+      padding: 3px 20px 5px;
+      width: 100%;
     }
 
     svg {
@@ -300,8 +306,6 @@
   }
 
   &:hover {
-    margin: -8px 0 27px;
-
     .ellipsisContent {
       opacity: 0;
       transition-delay: 0.25s;
