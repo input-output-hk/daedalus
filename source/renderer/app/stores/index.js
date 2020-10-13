@@ -18,6 +18,7 @@ import WalletBackupStore from './WalletBackupStore';
 import WalletMigrationStore from './WalletMigrationStore';
 import WalletSettingsStore from './WalletSettingsStore';
 import WindowStore from './WindowStore';
+import VotingStore from './VotingStore';
 
 export const storeClasses = {
   addresses: AddressesStore,
@@ -37,6 +38,7 @@ export const storeClasses = {
   walletMigration: WalletMigrationStore,
   walletSettings: WalletSettingsStore,
   window: WindowStore,
+  voting: VotingStore,
 };
 
 export type StoresMap = {
@@ -58,6 +60,7 @@ export type StoresMap = {
   walletMigration: WalletMigrationStore,
   walletSettings: WalletSettingsStore,
   window: WindowStore,
+  voting: VotingStore,
 };
 
 let stores: ?StoresMap = null;
@@ -65,7 +68,7 @@ const storeNames = Object.keys(storeClasses);
 
 // Helpers
 function executeOnEveryStore(fn: (store: Store) => void) {
-  storeNames.forEach(name => {
+  storeNames.forEach((name) => {
     if (stores && stores[name]) fn(stores[name]);
   });
 }
@@ -77,7 +80,7 @@ export default action((api, actions, router): StoresMap => {
   }
 
   // Teardown existing stores
-  if (stores) executeOnEveryStore(store => store.teardown());
+  if (stores) executeOnEveryStore((store) => store.teardown());
 
   // Create fresh instances of all stores
   stores = observable({
@@ -99,11 +102,12 @@ export default action((api, actions, router): StoresMap => {
     walletMigration: createStoreInstanceOf(WalletMigrationStore),
     walletSettings: createStoreInstanceOf(WalletSettingsStore),
     window: createStoreInstanceOf(WindowStore),
+    voting: createStoreInstanceOf(VotingStore),
   });
   // Configure and initialize all stores
-  executeOnEveryStore(store => {
+  executeOnEveryStore((store) => {
     if (stores) store.configure(stores);
   });
-  executeOnEveryStore(store => store.initialize());
+  executeOnEveryStore((store) => store.initialize());
   return stores;
 });

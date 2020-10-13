@@ -37,7 +37,7 @@ export default class SidebarStore extends Store {
   // https://alexhisen.gitbooks.io/mobx-recipes/content/use-computedstruct-for-computed-objects.html
   @computed.struct get wallets(): Array<SidebarWalletType> {
     const { networkStatus, wallets, walletSettings } = this.stores;
-    return wallets.all.map(wallet => {
+    return wallets.all.map((wallet) => {
       const {
         hasNotification,
       } = walletSettings.getWalletsRecoveryPhraseVerificationData(wallet.id);
@@ -57,7 +57,7 @@ export default class SidebarStore extends Store {
 
   @computed.struct get hardwareWallets(): Array<SidebarHardwareWalletType> {
     const { networkStatus, wallets, walletSettings } = this.stores;
-    return wallets.all.map(wallet => {
+    return wallets.all.map((wallet) => {
       const {
         hasNotification,
       } = walletSettings.getWalletsRecoveryPhraseVerificationData(wallet.id);
@@ -100,6 +100,7 @@ export default class SidebarStore extends Store {
       [categories.STAKING.name]: isShelleyActivated,
       [categories.REDEEM_ITN_REWARDS.name]: true,
       [categories.SETTINGS.name]: true,
+      [categories.VOTING.name]: true,
       [categories.NETWORK_INFO.name]:
         isFlight || isIncentivizedTestnet || isShelleyTestnet,
     };
@@ -164,7 +165,7 @@ export default class SidebarStore extends Store {
 
   _syncSidebarRouteWithRouter = () => {
     const route = this.stores.app.currentRoute;
-    this.CATEGORIES.forEach(category => {
+    this.CATEGORIES.forEach((category) => {
       // If the current route starts with the root of the category
       if (route.indexOf(category.route) === 0)
         this._setActivateSidebarCategory(category.route);
