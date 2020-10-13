@@ -97,7 +97,7 @@ export default class StakePools extends Component<Props, State> {
     if (isHeaderFixed) {
       this.setState(prevState => ({ isFixed: !prevState.isFixed, isScrolled, isHeaderFixed }));
     } else {
-      this.setState(prevState => ({ isFixed: !(!isScrolled && !isHeaderFixed && !prevState.isFixed), isScrolled, isHeaderFixed: false }));
+      this.setState(() => ({ isFixed: !(!isScrolled && !isHeaderFixed), isScrolled, isHeaderFixed: false }));
     }
   };
 
