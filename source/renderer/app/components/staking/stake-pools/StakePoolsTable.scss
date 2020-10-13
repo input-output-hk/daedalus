@@ -36,7 +36,8 @@
       width: auto;
 
       &:focus {
-        box-shadow: 0 1.5px 5px 0 var(--theme-staking-export-button-shadow-color) !important;
+        box-shadow: 0 1.5px 5px 0
+          var(--theme-staking-export-button-shadow-color) !important;
       }
 
       &.actionButtonFaded {
@@ -132,12 +133,16 @@
     tbody {
       tr {
         &:hover {
-          background-color: var(--theme-staking-stake-pools-search-clear-button-hover-background-color);
+          background-color: var(
+            --theme-staking-stake-pools-search-clear-button-hover-background-color
+          );
           cursor: pointer;
         }
 
         &.selected {
-          background-color: var(--theme-staking-stake-pools-search-clear-button-background-color);
+          background-color: var(
+            --theme-staking-stake-pools-search-clear-button-background-color
+          );
         }
       }
     }
@@ -191,7 +196,7 @@
       }
 
       &:nth-child(7) {
-        min-width: 7%;
+        min-width: 6.8%;
         text-align: right;
 
         @media (max-width: 925px) {
