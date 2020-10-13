@@ -16,6 +16,7 @@ import WalletBackupActions from './wallet-backup-actions';
 import WalletMigrationActions from './wallet-migration-actions';
 import WalletSettingsActions from './wallet-settings-actions';
 import WindowActions from './window-actions';
+import VotingActions from './voting-actions';
 
 export type ActionsMap = {
   addresses: AddressesActions,
@@ -35,6 +36,7 @@ export type ActionsMap = {
   walletMigration: WalletMigrationActions,
   walletSettings: WalletSettingsActions,
   window: WindowActions,
+  voting: VotingActions,
 };
 
 const actionsMap: ActionsMap = {
@@ -55,6 +57,7 @@ const actionsMap: ActionsMap = {
   walletMigration: new WalletMigrationActions(),
   walletSettings: new WalletSettingsActions(),
   window: new WindowActions(),
+  voting: new VotingActions(),
 };
 
 export default actionsMap;
