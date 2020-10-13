@@ -122,7 +122,7 @@ const initialState = {
   left: 0,
   isFixedTableHeaderActive: false,
   isFixedSearchBarActive: false,
-  fixedTableHeaderPosition: 220,
+  fixedTableHeaderPosition: 250,
   fixedSearchBarPosition: 186,
 };
 
@@ -187,7 +187,7 @@ export class StakePoolsTable extends Component<Props, State> {
 
     if (this.scrollableDomElement instanceof HTMLElement && stakePoolsList.length) {
       const scrollPosition = this.scrollableDomElement.scrollTop;
-      if ((scrollPosition >= fixedSearchBarPosition && !isFixedSearchBarActive) || maintainFixed) {
+      if ((scrollPosition > fixedSearchBarPosition && !isFixedSearchBarActive) || maintainFixed) {
         this.setState({ isFixedSearchBarActive: true });
         if (onScrollView) onScrollView(true);
       } else if ((scrollPosition <= fixedSearchBarPosition && isFixedSearchBarActive) || maintainFixed) {

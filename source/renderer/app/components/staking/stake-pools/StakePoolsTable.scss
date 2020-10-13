@@ -115,14 +115,17 @@
       position: initial;
 
       &.fixedTableHeader {
-        background-color: #fafbfc;
+        background-color: var(--theme-staking-stake-pool-tooltip-retirement-text-color);
         box-shadow: 0 10px 10px -10px var(--theme-staking-stake-pool-tooltip-shadow-color);
         height: 40px;
-        left: 105px;
         position: fixed;
         top: 204px;
-        width: calc(100% - 126px);
+        width: calc(100% - 166px);
         z-index: 99;
+
+        tr {
+          display: flex;
+        }
       }
     }
 
