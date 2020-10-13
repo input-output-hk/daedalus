@@ -7,17 +7,18 @@ import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
+import { Link } from 'react-polymorph/lib/components/Link';
+import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
 import Dialog from '../../widgets/Dialog';
 import styles from './TransferFundsStep2Dialog.scss';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
-import { formattedWalletAmount } from '../../../utils/formatters';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
-import Wallet from '../../../domains/Wallet';
 import { submitOnEnter } from '../../../utils/form';
+import { formattedWalletAmount } from '../../../utils/formatters';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 
 const messages = defineMessages({
@@ -27,25 +28,40 @@ const messages = defineMessages({
     description: 'Title in the transfer funds form.',
   },
   description: {
-    id: 'wallet.transferFunds.dialog2.label.description',
+    id: 'wallet.transferFunds.dialog2.description.label',
     defaultMessage:
       '!!!Confirm transfer from {sourceWalletName}wallet to the {targetWalletName} wallet.',
     description: 'description in the transfer funds form.',
   },
-  labelAmount: {
-    id: 'wallet.transferFunds.dialog2.label.amount',
-    defaultMessage: '!!!Amount',
-    description: 'Label Amount in the transfer funds form',
+  sourceWalletAmountLabel: {
+    id: 'wallet.transferFunds.dialog2.sourceWalletAmount.label',
+    defaultMessage: '!!!{sourceWalletName} amount',
+    description: 'Label Source wallet Amount in the transfer funds form',
   },
-  labelFees: {
-    id: 'wallet.transferFunds.dialog2.label.fees',
+  feesLabel: {
+    id: 'wallet.transferFunds.dialog2.fees.label',
     defaultMessage: '!!!Fees',
     description: 'Label Fees in the transfer funds form',
   },
-  labelTotal: {
-    id: 'wallet.transferFunds.dialog2.label.total',
+  totalLabel: {
+    id: 'wallet.transferFunds.dialog2.total.label',
     defaultMessage: '!!!Total',
     description: 'Total Fees in the transfer funds form',
+  },
+  leftoversLabel: {
+    id: 'wallet.transferFunds.dialog2.leftovers.label',
+    defaultMessage: '!!!Leftovers',
+    description: 'Label Leftovers in the transfer funds form',
+  },
+  leftoversLearnMoreLabel: {
+    id: 'wallet.transferFunds.dialog2.leftovers.LearnMore.label',
+    defaultMessage: '!!!Learn more',
+    description: 'Label Leftovers in the transfer funds form',
+  },
+  leftoversLearnMoreUrl: {
+    id: 'wallet.transferFunds.dialog2.leftovers.LearnMore.url',
+    defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/articles/',
+    description: 'Label Leftovers in the transfer funds form',
   },
   buttonLabel: {
     id: 'wallet.transferFunds.dialog2.label.buttonLabel',
@@ -70,44 +86,21 @@ type Props = {
   onFinish: Function,
   onClose: Function,
   onBack: Function,
-  // addresses: Array<any>,
-  sourceWallet: $Shape<Wallet>,
-  targetWallet: $Shape<Wallet>,
-  transferFundsFee: ?BigNumber,
+  onOpenExternalLink: Function,
+  feesAmount: BigNumber,
+  leftoversAmount: BigNumber,
+  sourceWalletAmount: BigNumber,
+  sourceWalletName: string,
+  targetWalletName: string,
   isSubmitting?: boolean,
   error?: ?LocalizableError,
 };
 
-type State = {
-  total: string,
-  fees: ?number,
-  amount: ?string,
-};
-
 @observer
-export default class TransferFundsStep2Dialog extends Component<Props, State> {
+export default class TransferFundsStep2Dialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
-  state = {
-    total: formattedWalletAmount(this.props.sourceWallet.amount, false),
-    fees: null,
-    amount: null,
-  };
-
-  componentDidUpdate() {
-    const { transferFundsFee, sourceWallet } = this.props;
-    // "freezes" the current amounts in the component state
-    if (transferFundsFee && !this.state.fees && !this.state.amount) {
-      const fees = transferFundsFee.toFormat(DECIMAL_PLACES_IN_ADA);
-      const amount = formattedWalletAmount(
-        sourceWallet.amount.minus(transferFundsFee),
-        false
-      );
-      this.setState({ fees, amount }); // eslint-disable-line
-    }
-  }
 
   form = new ReactToolboxMobxForm(
     {
@@ -144,7 +137,7 @@ export default class TransferFundsStep2Dialog extends Component<Props, State> {
 
   submit = () => {
     this.form.submit({
-      onSuccess: form => {
+      onSuccess: (form) => {
         const { spendingPassword } = form.values();
         this.props.onFinish(spendingPassword);
       },
@@ -158,16 +151,31 @@ export default class TransferFundsStep2Dialog extends Component<Props, State> {
 
   render() {
     const { intl } = this.context;
-    const { total, fees, amount } = this.state;
     const {
       onClose,
       onBack,
-      // addresses,
-      sourceWallet,
-      targetWallet,
+      feesAmount,
+      leftoversAmount,
+      sourceWalletName,
+      sourceWalletAmount,
+      targetWalletName,
+      onOpenExternalLink,
       isSubmitting,
       error,
     } = this.props;
+
+    const fees = feesAmount.toFormat(DECIMAL_PLACES_IN_ADA);
+    const leftovers = leftoversAmount
+      ? leftoversAmount.toFormat(DECIMAL_PLACES_IN_ADA)
+      : null;
+    const totalToBeReceived = formattedWalletAmount(
+      sourceWalletAmount.minus(feesAmount),
+      false
+    );
+    const sourceWalletBalance = formattedWalletAmount(
+      sourceWalletAmount,
+      false
+    );
 
     const spendingPasswordField = this.form.$('spendingPassword');
 
@@ -199,29 +207,52 @@ export default class TransferFundsStep2Dialog extends Component<Props, State> {
         <FormattedMessage
           {...messages.description}
           values={{
-            sourceWalletName: <b key="source">{sourceWallet.name}</b>,
-            targetWalletName: <b key="target">{targetWallet.name}</b>,
+            sourceWalletName: <b key="source">{sourceWalletName}</b>,
+            targetWalletName: <b key="target">{targetWalletName}</b>,
           }}
         >
           {(...content) => <div className={styles.description}>{content}</div>}
         </FormattedMessage>
-        <div className={styles.amountGroup}>
+        <div className={styles.amountGroupFull}>
           <p className={styles.label}>
-            {intl.formatMessage(messages.labelAmount)}
+            <FormattedMessage
+              {...messages.sourceWalletAmountLabel}
+              values={{
+                sourceWalletName: <b key="source">{sourceWalletName}</b>,
+              }}
+            />
           </p>
-          <div className={styles.amount}>{amount}</div>
+          <div className={styles.amount}>{sourceWalletBalance}</div>
         </div>
         <div className={styles.amountGroup}>
           <p className={styles.label}>
-            {intl.formatMessage(messages.labelFees)}
+            {intl.formatMessage(messages.feesLabel)}
           </p>
-          <div className={styles.amount}>+ {fees}</div>
+          <div className={styles.amountOpacity}>{fees}</div>
         </div>
-        <div className={styles.amountGroup}>
+        {leftovers && (
+          <div className={styles.amountGroup}>
+            <p className={styles.label}>
+              {intl.formatMessage(messages.leftoversLabel)}
+              <Link
+                className={styles.leftoversLearnMoreLink}
+                onClick={(event: SyntheticMouseEvent<HTMLElement>) =>
+                  onOpenExternalLink(
+                    intl.formatMessage(messages.leftoversLearnMoreUrl, event)
+                  )
+                }
+                label={intl.formatMessage(messages.leftoversLearnMoreLabel)}
+                skin={LinkSkin}
+              />
+            </p>
+            <div className={styles.amountOpacity}>{leftovers}</div>
+          </div>
+        )}
+        <div className={styles.amountGroupFull}>
           <p className={styles.label}>
-            {intl.formatMessage(messages.labelTotal)}
+            {intl.formatMessage(messages.totalLabel)}
           </p>
-          <div className={styles.amount}>{total}</div>
+          <div className={styles.amount}>{totalToBeReceived}</div>
         </div>
         <Input
           type="password"

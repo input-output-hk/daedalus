@@ -1,5 +1,5 @@
 import aesjs from 'aes-js';
-import bip39 from 'bip39';
+import * as bip39 from 'bip39';
 import blakejs from 'blakejs';
 import crypto from 'crypto';
 import validWords from './valid-words.en';
@@ -32,7 +32,7 @@ const hexChar = [
   'f',
 ];
 
-const hexToBytes = s => {
+const hexToBytes = (s) => {
   const arr = [];
   // eslint-disable-next-line no-self-compare
   if (s.length & (1 === 1)) {
@@ -49,16 +49,16 @@ const hexToBytes = s => {
   return new Uint8Array(arr);
 };
 
-const blake2b = data => blakejs.blake2b(data, null, 32);
+const blake2b = (data) => blakejs.blake2b(data, null, 32);
 
-const fromMnemonic = words =>
+const fromMnemonic = (words) =>
   hexToBytes(bip39.mnemonicToEntropy(words, validWords));
 
 export const isValidMnemonic = (phrase, numberOfWords = 9) =>
   phrase.split(' ').length === numberOfWords &&
   bip39.validateMnemonic(phrase, validWords);
 
-const hashData = data => {
+const hashData = (data) => {
   const hash = crypto.createHash('sha256');
   hash.update(data, 'utf8');
   return hash.digest();

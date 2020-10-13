@@ -958,6 +958,8 @@ export const DARK_BLUE_THEME_OUTPUT = {
       'rgba(233, 244, 254, 0.05)',
     '--theme-transactions-filter-title-button-background-color-active':
       'rgba(233, 244, 254, 0.12)',
+    '--theme-transactions-transfer-funds-selected-wallet-background-color':
+      '#e9f4fe0d',
   },
   uploader: {
     '--theme-uploader-text-color': '#e9f4fe',
