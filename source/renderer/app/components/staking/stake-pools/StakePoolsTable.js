@@ -139,7 +139,6 @@ export class StakePoolsTable extends Component<Props, State> {
     showWithSelectButton: false,
   };
 
-
   constructor(props: Props) {
     super(props);
     window.addEventListener('resize', this.handleResize);
@@ -184,22 +183,45 @@ export class StakePoolsTable extends Component<Props, State> {
   }
 
   getIsFixedActive = () => {
-    const { isFixedTableHeaderActive, fixedTableHeaderPosition, fixedSearchBarPosition, isFixedSearchBarActive } = this.state;
+    const {
+      isFixedTableHeaderActive,
+      fixedTableHeaderPosition,
+      fixedSearchBarPosition,
+      isFixedSearchBarActive,
+    } = this.state;
     const { onScrollView, stakePoolsList, maintainFixed } = this.props;
 
-    if (this.scrollableDomElement instanceof HTMLElement && stakePoolsList.length) {
+    if (
+      this.scrollableDomElement instanceof HTMLElement &&
+      stakePoolsList.length
+    ) {
       const scrollPosition = this.scrollableDomElement.scrollTop;
-      if ((scrollPosition > fixedSearchBarPosition && !isFixedSearchBarActive) || maintainFixed) {
+      if (
+        (scrollPosition > fixedSearchBarPosition && !isFixedSearchBarActive) ||
+        maintainFixed
+      ) {
         this.setState({ isFixedSearchBarActive: true });
         if (onScrollView) onScrollView(true, false);
-      } else if ((scrollPosition <= fixedSearchBarPosition && isFixedSearchBarActive) || maintainFixed) {
+      } else if (
+        (scrollPosition <= fixedSearchBarPosition && isFixedSearchBarActive) ||
+        maintainFixed
+      ) {
         this.setState({ isFixedSearchBarActive: false });
         if (onScrollView) onScrollView(false, false);
       }
-      if ((scrollPosition > fixedTableHeaderPosition && !isFixedTableHeaderActive) || maintainFixed) {
+      if (
+        (scrollPosition > fixedTableHeaderPosition &&
+          !isFixedTableHeaderActive) ||
+        maintainFixed
+      ) {
         this.setState({ isFixedTableHeaderActive: true });
         if (onScrollView) onScrollView(true, true);
-      } else if ((scrollPosition <= fixedTableHeaderPosition && isFixedTableHeaderActive && scrollPosition > fixedSearchBarPosition) || maintainFixed) {
+      } else if (
+        (scrollPosition <= fixedTableHeaderPosition &&
+          isFixedTableHeaderActive &&
+          scrollPosition > fixedSearchBarPosition) ||
+        maintainFixed
+      ) {
         this.setState({ isFixedTableHeaderActive: false });
         if (onScrollView) onScrollView(true, false);
       }
@@ -210,7 +232,13 @@ export class StakePoolsTable extends Component<Props, State> {
     debounce(this.handleClose, 200, { leading: true, trailing: false });
 
   handleOpenThumbnail = (poolId: SyntheticMouseEvent<HTMLElement>) => {
-    const { isListActive, setListActive, listName, stakePoolsList, containerClassName } = this.props;
+    const {
+      isListActive,
+      setListActive,
+      listName,
+      stakePoolsList,
+      containerClassName,
+    } = this.props;
     const { stakePoolsSortBy, stakePoolsOrder } = this.state;
     if (poolId.target) {
       poolId.persist();
@@ -221,9 +249,14 @@ export class StakePoolsTable extends Component<Props, State> {
           `.${containerClassName}`
         );
         this.setState({ top, left });
-        const { parentElement } = poolId.target;
-        const { sectionRowIndex } = parentElement;
-        this.setState({ selectedRow: sectionRowIndex });
+        if (targetElement.parentElement) {
+          const index = get(
+            targetElement.parentElement,
+            'sectionRowIndex',
+            null
+          );
+          this.setState({ selectedRow: index });
+        }
       }
     }
     if (isListActive === false && setListActive) setListActive(listName);
@@ -233,9 +266,12 @@ export class StakePoolsTable extends Component<Props, State> {
       stakePoolsOrder
     );
     const currentTargetChildren = poolId.currentTarget.childNodes;
-    const highlightedPoolId = currentTargetChildren.length && currentTargetChildren[0].innerText &&
-    sortedStakePoolList[currentTargetChildren[0].innerText] ?
-      sortedStakePoolList[currentTargetChildren[0].innerText].id : null;
+    const highlightedPoolId =
+      currentTargetChildren.length &&
+      currentTargetChildren[0].innerText &&
+      sortedStakePoolList[currentTargetChildren[0].innerText]
+        ? sortedStakePoolList[currentTargetChildren[0].innerText].id
+        : null;
     return this.setState({
       highlightedPoolId,
     });
@@ -245,9 +281,8 @@ export class StakePoolsTable extends Component<Props, State> {
     let selectedRow = null;
     if (item) {
       const { target } = item;
-      const { parentElement } = target;
-      const { sectionRowIndex } = parentElement;
-      selectedRow = sectionRowIndex;
+      const parent = get(target, 'parentElement', null);
+      selectedRow = get(parent, 'sectionRowIndex', null);
     }
     this.setState({
       ...initialState,
@@ -301,7 +336,12 @@ export class StakePoolsTable extends Component<Props, State> {
       maintainFixed,
       isScrolled,
     } = this.props;
-    const { isPreloading, stakePoolsSortBy, stakePoolsOrder, isFixedTableHeaderActive } = this.state;
+    const {
+      isPreloading,
+      stakePoolsSortBy,
+      stakePoolsOrder,
+      isFixedTableHeaderActive,
+    } = this.state;
     const { intl } = this.context;
     const componentClasses = classNames([styles.component, listName]);
 
@@ -320,7 +360,9 @@ export class StakePoolsTable extends Component<Props, State> {
     } else {
       tableHeaderClasses = classNames([
         styles.tableHeader,
-        isScrolled && (isFixedTableHeaderActive || maintainFixed) ? styles.fixedTableHeader : null,
+        isScrolled && (isFixedTableHeaderActive || maintainFixed)
+          ? styles.fixedTableHeader
+          : null,
       ]);
     }
 
@@ -374,7 +416,7 @@ export class StakePoolsTable extends Component<Props, State> {
                 <table>
                   <thead className={tableHeaderClasses}>
                     <tr>
-                      {map(availableTableHeaders, tableHeader => {
+                      {map(availableTableHeaders, (tableHeader) => {
                         const isSorted =
                           tableHeader.name === stakePoolsSortBy ||
                           (tableHeader.name === 'name' &&
@@ -439,7 +481,17 @@ export class StakePoolsTable extends Component<Props, State> {
                       const { top, left, selectedRow } = this.state;
 
                       return (
-                        <tr key={key} className={selectedRow && selectedRow === key ? styles.selected : null} onClick={!highlightOnHover && this.handleOpenThumbnail}>
+                        <tr
+                          key={key}
+                          className={
+                            selectedRow && selectedRow === key
+                              ? styles.selected
+                              : null
+                          }
+                          onClick={
+                            !highlightOnHover && this.handleOpenThumbnail
+                          }
+                        >
                           <td>
                             {rank}
                             {isHighlighted && (
@@ -469,7 +521,7 @@ export class StakePoolsTable extends Component<Props, State> {
                               <div className={styles.progressBarContainer}>
                                 <div
                                   className={saturationBarClassnames}
-                                  style={{width: `${saturationValue}%`}}
+                                  style={{ width: `${saturationValue}%` }}
                                 />
                                 <div className={styles.progressLabel}>
                                   {saturationValue}%
@@ -477,18 +529,14 @@ export class StakePoolsTable extends Component<Props, State> {
                               </div>
                             </div>
                           </td>
-                          <td>{`${parseFloat(formattedWalletAmount(
-                            cost,
-                            false,
-                            true
-                          )).toFixed(2)}`}</td>
+                          <td>{`${parseFloat(
+                            formattedWalletAmount(cost, false, true)
+                          ).toFixed(2)}`}</td>
                           <td>{margin}%</td>
                           <td>{producedBlocks}</td>
-                          <td>{`${parseFloat(formattedWalletAmount(
-                            pledge,
-                            false,
-                            true
-                          )).toFixed(2)}`}</td>
+                          <td>{`${parseFloat(
+                            formattedWalletAmount(pledge, false, true)
+                          ).toFixed(2)}`}</td>
                           <td>
                             {retiring && calculatedDateRange ? (
                               <span className={styles.retiring}>
