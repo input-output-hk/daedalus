@@ -217,7 +217,7 @@ export default class TooltipPool extends Component<Props, State> {
       tooltipPosition,
       componentTop,
       componentBottom,
-      componentLeft
+      componentLeft,
     );
     const arrowStyle = this.getArrowStyle(
       tooltipPosition,
@@ -255,7 +255,7 @@ export default class TooltipPool extends Component<Props, State> {
     const componentTop = !fixedBottom ? THUMBNAIL_HEIGHT + ARROW_HEIGHT / 2 : 'auto';
     const componentBottom = !fixedBottom ? THUMBNAIL_HEIGHT + ARROW_HEIGHT / 2 : fixedBottom;
 
-    const arrowLeft = -componentLeft + THUMBNAIL_OFFSET_WIDTH - ARROW_OFFSET;
+    const arrowLeft = !fixedBottom && typeof componentLeft === 'number' ? -componentLeft + THUMBNAIL_OFFSET_WIDTH - ARROW_OFFSET : 0;
     const arrowTop = -(ARROW_WIDTH / 2);
     const arrowBottom = -(ARROW_WIDTH / 2);
 
@@ -280,7 +280,7 @@ export default class TooltipPool extends Component<Props, State> {
 
     if (isTopHalf) {
       componentTop = !fixedBottom ? -((TOOLTIP_MAX_HEIGHT * top) / this.containerHeight) : 'auto';
-      arrowTop = -componentTop + ARROW_WIDTH / 2;
+      arrowTop = !fixedBottom && typeof componentTop === 'number'  ? -componentTop + ARROW_WIDTH / 2 : 0;
       componentBottom = fixedBottom || 'auto';
     } else {
       componentBottom = !fixedBottom ? -((TOOLTIP_MAX_HEIGHT * bottom) / this.containerHeight) : fixedBottom;
@@ -322,13 +322,15 @@ export default class TooltipPool extends Component<Props, State> {
     tooltipPosition: string,
     top: number | 'auto',
     bottom: number | 'auto',
-    left: number,
-    right: number = left
+    left: number | string,
+    right: number | string = left
   ) => {
+  const fixedBottom = this.props.bottom;
     if (tooltipPosition === 'top') {
       return {
         bottom,
         left,
+        right: fixedBottom ? right : 'auto'
       };
     }
     if (tooltipPosition === 'right') {
@@ -336,12 +338,14 @@ export default class TooltipPool extends Component<Props, State> {
         left,
         top,
         bottom,
+        right: fixedBottom ? right : 'auto'
       };
     }
     if (tooltipPosition === 'bottom') {
       return {
         left,
         top,
+        right: fixedBottom ? right : 'auto'
       };
     }
     return {

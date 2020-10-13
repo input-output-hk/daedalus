@@ -264,7 +264,11 @@ export class StakePoolsTable extends Component<Props, State> {
       stakePoolsSortBy,
       stakePoolsOrder
     );
-    const currentTargetChildren = poolId.currentTarget.sectionRowIndex;
+    const currentTargetChildren = get(
+      poolId.currentTarget,
+      'sectionRowIndex',
+      null
+    );
     const highlightedPoolId = sortedStakePoolList[currentTargetChildren]
       ? sortedStakePoolList[currentTargetChildren].id
       : null;
