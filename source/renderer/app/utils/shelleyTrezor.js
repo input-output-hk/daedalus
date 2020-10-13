@@ -1,4 +1,5 @@
 // @flow
+import { derivationPathToString } from './hardwareWalletUtils';
 import type { CoinSelectionInput, CoinSelectionOutput } from '../api/transactions/types';
 
 export const prepareTrezorInput = (
@@ -6,7 +7,7 @@ export const prepareTrezorInput = (
   addressIndex: number
 ) => {
   return {
-    path: `m/1852'/1815'/0'/0/${addressIndex}`,
+    path: derivationPathToString(input.derivation_path),
     prev_hash: input.id,
     prev_index: input.index,
   };
@@ -21,7 +22,7 @@ export const prepareTrezorOutput = (
     return {
       amount: output.amount.quantity.toString(),
       addressParameters: {
-        addressType: 0, // TODO: 0 for base address
+        addressType: 0, // BASE address
         path: `m/1852'/1815'/0'/0/${addressIndex}`,
         stakingPath: "m/1852'/1815'/0'/2/0",
       },

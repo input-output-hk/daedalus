@@ -161,6 +161,7 @@ export type CoinSelectionInput = {
   amount: CoinSelectionAmount,
   id: string,
   index: number,
+  derivation_path: Array<string>,
 };
 
 export type CoinSelectionOutput = {

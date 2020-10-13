@@ -132,7 +132,8 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
       }
       if (smashUrl) {
         logger.info('Launching Wallet with --smash-url flag', { smashUrl });
-        merge(launcherConfig, { smashUrl });
+        // @TODO - remove comment once WBE fixed
+        // merge(launcherConfig, { smashUrl });
       }
       merge(launcherConfig, { nodeConfig, tlsConfiguration });
       break;
