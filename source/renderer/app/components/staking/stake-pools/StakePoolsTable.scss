@@ -167,32 +167,40 @@
       }
 
       &:first-child {
-        min-width: 70px;
+        min-width: 9.2%;
       }
 
       &:nth-child(2) {
-        min-width: 210px;
+        min-width: 28.5%;
       }
 
       &:nth-child(3) {
-        min-width: 95px;
-        text-align: center;
+        min-width: 13%;
       }
 
       &:nth-child(4) {
-        min-width: 83px;
+        min-width: 9.5%;
+      }
+
+      &:nth-child(5) {
+        min-width: 8%;
       }
 
       &:nth-child(6) {
-        min-width: 110px;
+        min-width: 14%;
       }
 
       &:nth-child(7) {
+        min-width: 7.5%;
         text-align: right;
+
+        @media (max-width: 925px) {
+          min-width: 9%;
+        }
       }
 
       &:last-child {
-        min-width: 75px;
+        min-width: 10%;
         text-align: center;
       }
 
