@@ -1,0 +1,24 @@
+@import '../votingConfig';
+
+.component {
+  padding: 20px;
+  text-align: center;
+}
+
+.heading {
+  @extend %accentText;
+  font-size: 19px;
+  margin-bottom: 14px;
+  text-transform: uppercase;
+}
+
+.description {
+  @extend %regularText;
+  color: var(--theme-voting-font-color-light);
+  margin-bottom: 24px;
+  span > span {
+    color: var(--theme-voting-steps-description-highlighted-color);
+    font-family: var(--font-medium);
+    font-weight: 500;
+  }
+}

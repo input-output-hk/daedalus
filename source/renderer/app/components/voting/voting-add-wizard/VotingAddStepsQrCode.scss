@@ -1,0 +1,52 @@
+.votingAddStepsQrCodeWrapper {
+  :global {
+    .LoadingSpinner_component {
+      height: 66px;
+      width: 66px;
+    }
+  }
+
+  .content {
+    .qrCode {
+      display: flex;
+      text-align: center;
+
+      canvas {
+        border: 4px solid var(--theme-receive-qr-code-background-color);
+        box-sizing: content-box;
+        margin: auto;
+      }
+    }
+
+    .qrCodeDescription {
+      display: flex;
+      flex-direction: column;
+      text-align: center;
+      margin-top: 25px;
+      margin-bottom: 15px;
+      p:last-child {
+        color: var(--theme-voting-steps-description-color);
+      }
+    }
+
+    .qrCodeConfirm {
+      display: flex;
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    .loadinBlockWrapper {
+      margin-top: 20px;
+      margin-bottom: 20px;
+      text-align: center;
+      p {
+        color: var(--theme-voting-steps-description-color);
+      }
+    }
+
+    .separator {
+      margin: 15px 0;
+      opacity: 0.2;
+    }
+  }
+}

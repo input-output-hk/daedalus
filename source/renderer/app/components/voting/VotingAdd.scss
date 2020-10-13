@@ -1,0 +1,36 @@
+@import './votingConfig';
+
+.component {
+  overflow-y: overlay;
+  padding: 20px;
+  text-align: center;
+
+  .heading {
+    @extend %accentText;
+    font-size: 19px;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+  }
+
+  .subTitle {
+    @extend %regularText;
+    font-size: 14px;
+    margin-bottom: 14px;
+    text-transform: uppercase;
+  }
+
+  .votingAddStepsIndicatorWrapper {
+    margin: auto;
+    width: 288px;
+
+    .stepIndicatorLabel {
+      color: var(--theme-voting-steps-activation-steps-indicator-color);
+      font-family: var(--font-medium);
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 1.83;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+  }
+}

@@ -1,0 +1,37 @@
+@import '../../../themes/mixins/animations';
+@import '../../../themes/mixins/error-message';
+
+.votingAddStepsDepositWrapper {
+  .content {
+    .description {
+      color: var(--theme-voting-steps-description-color);
+    }
+  }
+
+  .feesWrapper {
+    font-family: var(--font-medium);
+    font-weight: 500;
+    line-height: 1.38;
+    margin-top: 20px;
+    margin-bottom: 20px;
+
+    .feesLabel {
+      color: var(--theme-voting-steps-deposit-fees-label-color);
+      margin-bottom: 6px;
+    }
+
+    .calculatingFeesLabel {
+      @include animated-ellipsis($width: 20px);
+      --webkit-backface-visibility: hidden;
+    }
+
+    .feesAmount {
+      color: var(--theme-voting-steps-deposit-fees-amount-color);
+      user-select: text;
+
+      .feesAmountLabel {
+        font-family: var(--font-light);
+      }
+    }
+  }
+}
