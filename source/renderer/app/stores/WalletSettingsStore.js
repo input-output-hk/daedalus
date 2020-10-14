@@ -7,7 +7,7 @@ import Wallet from '../domains/Wallet';
 import { WALLET_UTXO_API_REQUEST_INTERVAL } from '../config/timingConfig';
 import { getRecoveryWalletIdChannel } from '../ipc/getRecoveryWalletIdChannel';
 import { getStatusFromWalletData } from '../utils/walletRecoveryPhraseVerificationUtils';
-import { getRawWalletId, WalletIdPrefixes } from '../api/utils';
+import { getRawWalletId } from '../api/utils';
 import type { WalletExportToFileParams } from '../actions/wallet-settings-actions';
 import type { WalletUtxos } from '../api/wallets/types';
 import type { WalletLocalData } from '../api/utils/localStorage';
@@ -159,23 +159,17 @@ export default class WalletSettingsStore extends Store {
     field: string,
     value: string,
   }) => {
-    const {
-      isHardwareWalletRoute,
-      active,
-      activeHardwareWallet,
-    } = this.stores.wallets;
-    const activeWallet = isHardwareWalletRoute ? activeHardwareWallet : active;
+    const activeWallet = this.stores.wallets.active;
     if (!activeWallet) return;
 
-    const { id: walletId, name, isLegacy, isHardwareWallet } = activeWallet;
-    const walletData = { walletId, name, isLegacy, isHardwareWallet };
+    const { id: walletId, name, isLegacy } = activeWallet;
+    const walletData = { walletId, name, isLegacy };
     walletData[field] = value;
 
     const wallet = await this.updateWalletRequest.execute({
       walletId: walletData.walletId,
       name: walletData.name,
       isLegacy: walletData.isLegacy,
-      isHardwareWallet: walletData.isHardwareWallet,
     }).promise;
 
     if (!wallet) return;
@@ -213,18 +207,10 @@ export default class WalletSettingsStore extends Store {
   };
 
   @action _getWalletUtxoApiData = async () => {
-    const {
-      active,
-      activeHardwareWallet,
-      isHardwareWalletRoute,
-    } = this.stores.wallets;
-    const activeWallet = isHardwareWalletRoute ? activeHardwareWallet : active;
+    const activeWallet = this.stores.wallets.active;
     if (!activeWallet) return;
 
-    const { id, isLegacy } = activeWallet;
-    const walletId = isHardwareWalletRoute
-      ? getRawWalletId(id, WalletIdPrefixes.HARDWARE_WALLET)
-      : id;
+    const { id: walletId, isLegacy } = activeWallet;
     const walletUtxos = await this.getWalletUtxosRequest.execute({
       walletId,
       isLegacy,

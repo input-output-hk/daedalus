@@ -81,10 +81,7 @@ import { cardanoFaultInjectionChannel } from '../ipc/cardano.ipc';
 import patchAdaApi from './utils/patchAdaApi';
 import {
   getLegacyWalletId,
-  getHardwareWalletId,
-  getRawWalletId,
   utcStringToDate,
-  WalletIdPrefixes,
 } from './utils';
 import { logger } from '../utils/logging';
 import {
@@ -234,12 +231,12 @@ export default class AdaApi {
         });
       });
 
+      // @TODO - Remove this once we get hardware wallet flag from WBE
       return await Promise.all(
         wallets.map(async (wallet) => {
-          const { id: walletId } = wallet;
-          const hwWalletId = getHardwareWalletId(walletId);
+          const { id } = wallet;
           const { getHardwareWalletLocalData } = global.daedalus.api.localStorage;
-          const walletData = await getHardwareWalletLocalData(hwWalletId);
+          const walletData = await getHardwareWalletLocalData(id);
           return _createWalletFromServerData({
             ...wallet,
             isHardwareWallet: walletData && walletData.device && size(walletData.device) > 0,
@@ -294,21 +291,18 @@ export default class AdaApi {
     logger.debug('AdaApi::getAddresses called', {
       parameters: filterLogData(request),
     });
-    const { walletId, queryParams, isLegacy, isHardwareWallet } = request;
-    const rawWalletId = isHardwareWallet
-      ? getRawWalletId(walletId, WalletIdPrefixes.HARDWARE_WALLET)
-      : walletId;
+    const { walletId, queryParams, isLegacy } = request;
 
     try {
       let response = [];
       if (isLegacy && !isIncentivizedTestnet) {
         response = await getByronWalletAddresses(
           this.config,
-          rawWalletId,
+          walletId,
           queryParams
         );
       } else if (!isLegacy) {
-        response = await getAddresses(this.config, rawWalletId, queryParams);
+        response = await getAddresses(this.config, walletId, queryParams);
         response.reverse();
       }
       logger.debug('AdaApi::getAddresses success', { addresses: response });
@@ -323,17 +317,7 @@ export default class AdaApi {
     request: GetTransactionsRequest
   ): Promise<GetTransactionsResponse> => {
     logger.debug('AdaApi::getTransactions called', { parameters: request });
-    const {
-      walletId,
-      order,
-      fromDate,
-      toDate,
-      isLegacy,
-      isHardwareWallet,
-    } = request;
-    const rawWalletId = isHardwareWallet
-      ? getRawWalletId(walletId, WalletIdPrefixes.HARDWARE_WALLET)
-      : walletId;
+    const { walletId, order, fromDate, toDate, isLegacy } = request;
 
     const params = Object.assign(
       {},
@@ -351,11 +335,11 @@ export default class AdaApi {
       if (isLegacy) {
         response = await getLegacyWalletTransactionHistory(
           this.config,
-          rawWalletId,
+          walletId,
           params
         );
       } else {
-        response = await getTransactionHistory(this.config, rawWalletId, params);
+        response = await getTransactionHistory(this.config, walletId, params);
       }
 
       logger.debug('AdaApi::getTransactions success', {
@@ -626,15 +610,12 @@ export default class AdaApi {
       parameters: filterLogData(request),
     });
     try {
-      const { walletId, isLegacy, isHardwareWallet } = request;
-      const id = isHardwareWallet
-        ? getRawWalletId(walletId, WalletIdPrefixes.HARDWARE_WALLET)
-        : walletId;
+      const { walletId, isLegacy } = request;
       let response;
       if (isLegacy) {
-        response = await deleteLegacyWallet(this.config, { walletId: id });
+        response = await deleteLegacyWallet(this.config, { walletId });
       } else {
-        response = await deleteWallet(this.config, { walletId: id });
+        response = await deleteWallet(this.config, { walletId });
       }
       logger.debug('AdaApi::deleteWallet success', { response });
       return true;
@@ -809,7 +790,7 @@ export default class AdaApi {
         ],
       };
       const response = await selectCoins(this.config, {
-        walletId: getRawWalletId(walletId, WalletIdPrefixes.HARDWARE_WALLET),
+        walletId,
         data,
       });
 
@@ -1395,16 +1376,13 @@ export default class AdaApi {
     logger.debug('AdaApi::updateWallet called', {
       parameters: filterLogData(request),
     });
-    const { walletId, name, isLegacy, isHardwareWallet } = request;
-    const rawWalletId = isHardwareWallet
-      ? getRawWalletId(walletId, WalletIdPrefixes.HARDWARE_WALLET)
-      : walletId;
+    const { walletId, name, isLegacy } = request;
 
     try {
       let wallet: AdaWallet;
       if (isLegacy) {
         const response = await updateByronWallet(this.config, {
-          walletId: rawWalletId,
+          walletId,
           name,
         });
         wallet = {
@@ -1420,10 +1398,6 @@ export default class AdaApi {
       } else {
         wallet = await updateWallet(this.config, { walletId, name });
       }
-      wallet = {
-        ...wallet,
-        isHardwareWallet,
-      };
       logger.debug('AdaApi::updateWallet success', { wallet });
       return _createWalletFromServerData(wallet);
     } catch (error) {
@@ -1953,10 +1927,7 @@ const _createWalletFromServerData = action(
       isHardwareWallet = false,
     } = wallet;
 
-    let id = rawWalletId;
-    if (isLegacy) id = getLegacyWalletId(rawWalletId);
-    if (isHardwareWallet) id = getHardwareWalletId(rawWalletId);
-
+    const id = isLegacy ? getLegacyWalletId(rawWalletId) : rawWalletId;
     const passphraseLastUpdatedAt = get(passphrase, 'last_updated_at', null);
     const walletTotalAmount =
       balance.total.unit === WalletUnits.LOVELACE
@@ -1967,7 +1938,7 @@ const _createWalletFromServerData = action(
         ? new BigNumber(balance.available.quantity).dividedBy(LOVELACES_PER_ADA)
         : new BigNumber(balance.available.quantity);
     let walletRewardAmount = new BigNumber(0);
-    if (!isLegacy && !isHardwareWallet) {
+    if (!isLegacy) {
       walletRewardAmount =
         balance.reward.unit === WalletUnits.LOVELACE
           ? new BigNumber(balance.reward.quantity).dividedBy(LOVELACES_PER_ADA)
@@ -1996,7 +1967,8 @@ const _createWalletFromServerData = action(
       reward: walletRewardAmount,
       passwordUpdateDate:
         passphraseLastUpdatedAt && new Date(passphraseLastUpdatedAt),
-      hasPassword: true,
+      // hasPassword: isHardwareWallet || passphraseLastUpdatedAt !== null, // For HW set that wallet has password
+      hasPassword: true, // @TODO - remove faked data
       syncState,
       isLegacy,
       isHardwareWallet,

@@ -24,7 +24,6 @@ type Props = {
   isLegacy: boolean,
   isNotResponding: boolean,
   hasNotification: boolean,
-  isHardwareWalletsMenu?: boolean,
   isHardwareWalletDisconnected?: boolean,
   isHardwareWallet: boolean,
 };
@@ -45,7 +44,6 @@ export default class SidebarWalletMenuItem extends Component<Props> {
       isLegacy,
       isNotResponding,
       hasNotification,
-      isHardwareWalletsMenu,
       isHardwareWalletDisconnected,
       isHardwareWallet,
     } = this.props;
@@ -60,12 +58,12 @@ export default class SidebarWalletMenuItem extends Component<Props> {
       className,
       !isIncentivizedTestnet && hasNotification ? styles.notification : null,
       isNotResponding ? styles.notResponding : null,
-      isHardwareWalletsMenu && isHardwareWalletDisconnected ? styles.disconnectedBorder : null, // @TODO - remove
+      isHardwareWallet && isHardwareWalletDisconnected ? styles.disconnectedBorder : null, // @TODO - remove
     ]);
 
     const hwIconStyles = classNames([
       styles.hardwareWalletsIcon,
-      isHardwareWalletDisconnected ? styles.disconnected : styles.connected,
+      (isHardwareWallet && isHardwareWalletDisconnected) ? styles.disconnected : styles.connected,
     ]);
 
     return (

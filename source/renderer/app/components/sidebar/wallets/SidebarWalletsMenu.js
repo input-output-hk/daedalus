@@ -55,7 +55,6 @@ export default class SidebarWalletsMenu extends Component<Props> {
       isAddWalletButtonActive,
       isIncentivizedTestnet,
       isShelleyActivated,
-      isHardwareWalletsMenu,
     } = this.props;
 
     const addWalletButtonStyles = classNames([
@@ -85,7 +84,6 @@ export default class SidebarWalletsMenu extends Component<Props> {
                 restoreProgress={wallet.restoreProgress}
                 isNotResponding={wallet.isNotResponding}
                 isLegacy={wallet.isLegacy}
-                isHardwareWalletsMenu={isHardwareWalletsMenu}
                 isHardwareWallet={wallet.isHardwareWallet}
                 hasNotification={wallet.hasNotification}
                 isHardwareWalletDisconnected={

@@ -108,31 +108,22 @@ export default class TransactionsStore extends Store {
     this.registerReactions([this._ensureFilterOptionsForActiveWallet]);
   }
 
-  @computed get transactionsWallet(): ?Wallet {
-    const {
-      isHardwareWalletRoute,
-      active,
-      activeHardwareWallet,
-    } = this.stores.wallets;
-    return isHardwareWalletRoute ? activeHardwareWallet : active;
-  }
-
   @computed get recentTransactionsRequest(): Request<GetTransactionsResponse> {
-    const wallet = this.transactionsWallet;
+    const wallet = this.stores.wallets.active;
     // TODO: Do not return new request here
     if (!wallet) return new Request(this.api.ada.getTransactions);
     return this._getTransactionsRecentRequest(wallet.id);
   }
 
   @computed get searchRequest(): Request<GetTransactionsResponse> {
-    const wallet = this.transactionsWallet;
+    const wallet = this.stores.wallets.active;
     // TODO: Do not return new request here
     if (!wallet) return new Request(this.api.ada.getTransactions);
     return this._getTransactionsAllRequest(wallet.id);
   }
 
   @computed get filterOptions(): ?TransactionFilterOptionsType {
-    const wallet = this.transactionsWallet;
+    const wallet = this.stores.wallets.active;
     if (!wallet) return null;
     return this._filterOptionsForWallets[wallet.id];
   }
@@ -150,7 +141,7 @@ export default class TransactionsStore extends Store {
   }
 
   @computed get all(): Array<WalletTransaction> {
-    const wallet = this.transactionsWallet;
+    const wallet = this.stores.wallets.active;
     if (!wallet) return [];
     const request = this._getTransactionsAllRequest(wallet.id);
 
@@ -176,7 +167,7 @@ export default class TransactionsStore extends Store {
   }
 
   @computed get recent(): Array<WalletTransaction> {
-    const wallet = this.transactionsWallet;
+    const wallet = this.stores.wallets.active;
     if (!wallet) return [];
     const results = this._getTransactionsRecentRequest(wallet.id).result;
     return results ? results.transactions : [];
@@ -189,28 +180,28 @@ export default class TransactionsStore extends Store {
   }
 
   @computed get hasAnyFiltered(): boolean {
-    const wallet = this.transactionsWallet;
+    const wallet = this.stores.wallets.active;
     if (!wallet) return false;
     const results = this._getTransactionsAllRequest(wallet.id).result;
     return results ? results.transactions.length > 0 : false;
   }
 
   @computed get hasAny(): boolean {
-    const wallet = this.transactionsWallet;
+    const wallet = this.stores.wallets.active;
     if (!wallet) return false;
     const results = this._getTransactionsRecentRequest(wallet.id).result;
     return results ? results.total > 0 : false;
   }
 
   @computed get totalAvailable(): number {
-    const wallet = this.transactionsWallet;
+    const wallet = this.stores.wallets.active;
     if (!wallet) return 0;
     const results = this._getTransactionsAllRequest(wallet.id).result;
     return results ? results.total : 0;
   }
 
   @computed get totalFilteredAvailable(): number {
-    const wallet = this.transactionsWallet;
+    const wallet = this.stores.wallets.active;
     if (!wallet) return 0;
     const results = this._getTransactionsAllRequest(wallet.id).result;
     return results ? results.transactions.length : 0;
@@ -222,7 +213,7 @@ export default class TransactionsStore extends Store {
 
   @action _refreshTransactionData = async () => {
     if (this.stores.networkStatus.isConnected) {
-      const { all: wallets, allHardwareWallets } = this.stores.wallets;
+      const { all: wallets } = this.stores.wallets;
       for (const wallet of wallets) {
         const recentRequest = this._getTransactionsRecentRequest(wallet.id);
         recentRequest.execute({
@@ -260,46 +251,6 @@ export default class TransactionsStore extends Store {
           const withdrawalsRequest = this._getWithdrawalsRequest(wallet.id);
           withdrawalsRequest.execute({ walletId: wallet.id });
         }
-      }
-
-      // Hardware wallet transactions
-      for (const hardwareWallet of allHardwareWallets) {
-        const recentRequest = this._getTransactionsRecentRequest(
-          hardwareWallet.id
-        );
-        recentRequest.execute({
-          walletId: hardwareWallet.id,
-          order: 'descending',
-          fromDate: null,
-          toDate: null,
-          isLegacy: hardwareWallet.isLegacy,
-          isHardwareWallet: true,
-          // @API TODO - Params "pending" for V2
-          // limit: this.RECENT_TRANSACTIONS_LIMIT,
-          // skip: 0,
-          // searchTerm: '',
-          // isFirstLoad: !recentRequest.wasExecuted,
-          // isRestoreActive,
-          // isRestoreCompleted,
-          // cachedTransactions: get(recentRequest, 'result.transactions', []),
-        });
-        const allRequest = this._getTransactionsAllRequest(hardwareWallet.id);
-        allRequest.execute({
-          walletId: hardwareWallet.id,
-          order: 'descending',
-          fromDate: null,
-          toDate: null,
-          isLegacy: hardwareWallet.isLegacy,
-          isHardwareWallet: true,
-          // @API TODO - Params "pending" for V2
-          // limit: this.INITIAL_SEARCH_LIMIT,
-          // skip: 0,
-          // searchTerm: '',
-          // isFirstLoad: !allRequest.wasExecuted,
-          // isRestoreActive,
-          // isRestoreCompleted,
-          // cachedTransactions: get(allRequest, 'result.transactions', []),
-        });
       }
     }
   };
@@ -354,7 +305,7 @@ export default class TransactionsStore extends Store {
   @action _updateFilterOptions = (
     filterOptions: TransactionFilterOptionsType
   ) => {
-    const wallet = this.transactionsWallet;
+    const wallet = this.stores.wallets.active;
     if (!wallet) return false;
     const currentFilterOptions = this._filterOptionsForWallets[wallet.id];
     this._filterOptionsForWallets[wallet.id] = {
@@ -365,7 +316,7 @@ export default class TransactionsStore extends Store {
   };
 
   @action _clearFilterOptions = () => {
-    const wallet = this.transactionsWallet;
+    const wallet = this.stores.wallets.active;
     if (!wallet) return false;
     this._filterOptionsForWallets[wallet.id] = {
       ...emptyTransactionFilterOptions,
@@ -416,7 +367,7 @@ export default class TransactionsStore extends Store {
    * @private
    */
   _ensureFilterOptionsForActiveWallet = () => {
-    const wallet = this.transactionsWallet;
+    const wallet = this.stores.wallets.active;
     if (!wallet) return false;
     const options = this._filterOptionsForWallets[wallet.id];
     if (!options) {

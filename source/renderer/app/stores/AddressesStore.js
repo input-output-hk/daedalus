@@ -1,12 +1,11 @@
 // @flow
-import { find, last, filter, findIndex } from 'lodash';
+import { find, last, filter } from 'lodash';
 import { observable, computed, action, runInAction } from 'mobx';
 import Store from './lib/Store';
 import CachedRequest from './lib/LocalizedCachedRequest';
 import WalletAddress from '../domains/WalletAddress';
 import Request from './lib/LocalizedRequest';
 import LocalizableError from '../i18n/LocalizableError';
-import Wallet from '../domains/Wallet';
 import type { Address } from '../api/addresses/types';
 
 export default class AddressesStore extends Store {
@@ -59,31 +58,22 @@ export default class AddressesStore extends Store {
     }
   };
 
-  @computed get addressesWallet(): ?Wallet {
-    const {
-      isHardwareWalletRoute,
-      active,
-      activeHardwareWallet,
-    } = this.stores.wallets;
-    return isHardwareWalletRoute ? activeHardwareWallet : active;
-  }
-
   @computed get all(): Array<WalletAddress> {
-    const wallet = this.addressesWallet;
+    const wallet = this.stores.wallets.active;
     if (!wallet) return [];
     const addresses = this._getAddressesAllRequest(wallet.id).result;
     return addresses || [];
   }
 
   @computed get hasAny(): boolean {
-    const wallet = this.addressesWallet;
+    const wallet = this.stores.wallets.active;
     if (!wallet) return false;
     const addresses = this._getAddressesAllRequest(wallet.id).result;
     return addresses ? addresses.length > 0 : false;
   }
 
   @computed get active(): ?WalletAddress {
-    const wallet = this.addressesWallet;
+    const wallet = this.stores.wallets.active;
     if (!wallet) return null;
 
     // If address generated and not used, set as active address
@@ -103,7 +93,7 @@ export default class AddressesStore extends Store {
   }
 
   @computed get totalAvailable(): number {
-    const wallet = this.addressesWallet;
+    const wallet = this.stores.wallets.active;
     if (!wallet) return 0;
     const addresses = this._getAddressesAllRequest(wallet.id).result;
     return addresses ? addresses.length : 0;
@@ -111,34 +101,18 @@ export default class AddressesStore extends Store {
 
   @action _refreshAddresses = () => {
     if (this.stores.networkStatus.isConnected) {
-      const { all, allHardwareWallets } = this.stores.wallets;
-
+      const { all } = this.stores.wallets;
       for (const wallet of all) {
         const { id: walletId, isLegacy } = wallet;
         const allRequest = this._getAddressesAllRequest(walletId);
         allRequest.invalidate({ immediately: false });
         allRequest.execute({ walletId, isLegacy });
       }
-
-      for (const hardwareWallet of allHardwareWallets) {
-        const { id: walletId, isLegacy } = hardwareWallet;
-        const allRequest = this._getAddressesAllRequest(walletId);
-        allRequest.invalidate({ immediately: false });
-        allRequest.execute({
-          walletId,
-          isLegacy,
-          isHardwareWallet: true,
-        });
-      }
     }
   };
 
   @action _resetErrors = () => {
     this.error = null;
-  };
-
-  getAddressIndex = (address: string): number => {
-    return this.all.length - findIndex(this.all, { id: address }) - 1;
   };
 
   getAccountIndexByWalletId = async (walletId: string): Promise<?number> => {

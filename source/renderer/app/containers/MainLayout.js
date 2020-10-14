@@ -42,13 +42,8 @@ export default class MainLayout extends Component<InjectedContainerProps> {
       wallets: walletsStore,
       networkStatus,
     } = stores;
-    const { isHardwareWalletRoute } = walletsStore;
     const activeWallet = walletsStore.active;
     const activeWalletId = activeWallet ? activeWallet.id : null;
-    const { activeHardwareWallet } = walletsStore;
-    const activeHardwareWalletId = activeHardwareWallet
-      ? activeHardwareWallet.id
-      : null;
     const { isShelleyActivated } = networkStatus;
     const { currentTheme } = profile;
     const {
@@ -68,27 +63,11 @@ export default class MainLayout extends Component<InjectedContainerProps> {
           }
         : null;
 
-    const hardwareWallets =
-      sidebar.hardwareWallets.length > 0
-        ? {
-            items: sidebar.hardwareWallets,
-            activeWalletId: activeHardwareWalletId,
-            actions: {
-              onHardwareWalletItemClick: (walletId: string) => {
-                actions.sidebar.hardwareWalletSelected.trigger({ walletId });
-              },
-            },
-          }
-        : null;
 
     const sidebarMenus = {
       wallets: appWallets,
-      hardwareWallets: isDev ? hardwareWallets : null,
+      hardwareWallets: [], // @TODO - remove once I want to remove HW sidebar section
     };
-
-    const addWalletRoute = isHardwareWalletRoute
-      ? ROUTES.HARDWARE_WALLETS.ADD
-      : ROUTES.WALLETS.ADD;
 
     const sidebarComponent = (
       <Sidebar
@@ -100,7 +79,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
         activeSidebarCategory={sidebar.activeSidebarCategory}
         onActivateCategory={this.handleActivateCategory}
         onAddWallet={() =>
-          actions.router.goToRoute.trigger({ route: addWalletRoute })
+          actions.router.goToRoute.trigger({ route: ROUTES.WALLETS.ADD })
         }
         onSubmitSupportRequest={() =>
           actions.router.goToRoute.trigger({ route: ROUTES.SETTINGS.SUPPORT })

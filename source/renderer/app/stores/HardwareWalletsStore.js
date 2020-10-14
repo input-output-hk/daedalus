@@ -4,7 +4,6 @@ import { get, map, find, findLast } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { HwDeviceStatuses } from '../domains/Wallet';
-import { getRawWalletId, WalletIdPrefixes } from '../api/utils';
 import { HW_SHELLEY_CONFIG } from '../config/hardwareWalletsConfig';
 import {
   getHardwareWalletTransportChannel,
@@ -133,7 +132,7 @@ export default class HardwareWalletsStore extends Store {
   }
 
   _sendMoney = async () => {
-    const wallet = this.stores.wallets.activeHardwareWallet;
+    const wallet = this.stores.wallets.active;
     if (!wallet) throw new Error('Active wallet required before sending.');
     await this.sendMoneyRequest.execute({
       signedTransactionBlob: this.txBody,
@@ -142,7 +141,7 @@ export default class HardwareWalletsStore extends Store {
     this.stores.wallets.refreshWalletsData();
     this.actions.dialogs.closeActiveDialog.trigger();
     this.sendMoneyRequest.reset();
-    this.stores.wallets.goToHardwareWalletRoute(wallet.id);
+    this.stores.wallets.goToWalletRoute(wallet.id);
   };
 
   getAvailableDevices = async () => {
@@ -225,12 +224,8 @@ export default class HardwareWalletsStore extends Store {
     const wallet = this.stores.wallets.getWalletById(walletId);
     if (!wallet)
       throw new Error('Active wallet required before coins selections.');
-    const rawWalletId = getRawWalletId(
-      walletId,
-      WalletIdPrefixes.HARDWARE_WALLET
-    );
     const coinSelection = await this.selectCoinsRequest.execute({
-      walletId: rawWalletId,
+      walletId,
       address,
       amount,
       walletBalance: wallet.amount,

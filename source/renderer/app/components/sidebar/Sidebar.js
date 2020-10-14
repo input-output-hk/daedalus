@@ -37,6 +37,7 @@ export type SidebarMenus = {
       onWalletItemClick: Function,
     },
   },
+  // @TODO - remove once I want to remove HW sidebar section
   hardwareWallets: ?{
     items: Array<SidebarHardwareWalletType>,
     activeWalletId: ?string,
@@ -72,12 +73,14 @@ export default class Sidebar extends Component<Props> {
     });
     const walletsCategoryRoute = walletsCategory ? walletsCategory.route : null;
 
+    // @TODO - remove once I want to remove HW sidebar section
     const hardwareWalletsCategory =
       menus &&
       menus.hardwareWallets &&
       find(categories, {
         name: CATEGORIES_BY_NAME.HARDWARE_WALLETS.name,
       });
+    // @TODO - remove once I want to remove HW sidebar section
     const hardwareWalletsCategoryRoute = hardwareWalletsCategory
       ? hardwareWalletsCategory.route
       : null;
@@ -108,6 +111,7 @@ export default class Sidebar extends Component<Props> {
       );
     }
 
+    // @TODO - remove once I want to remove HW sidebar section
     if (
       menus &&
       menus.hardwareWallets &&
@@ -129,7 +133,6 @@ export default class Sidebar extends Component<Props> {
               ? menus.hardwareWallets.activeWalletId
               : null)
           }
-          isHardwareWalletsMenu
           isAddWalletButtonActive={pathname === ROUTES.HARDWARE_WALLETS.ADD}
           isIncentivizedTestnet={isIncentivizedTestnet}
           isShelleyActivated={isShelleyActivated}

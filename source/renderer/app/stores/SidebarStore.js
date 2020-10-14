@@ -5,10 +5,7 @@ import Store from './lib/Store';
 import { sidebarConfig } from '../config/sidebarConfig';
 import type { SidebarCategoryInfo } from '../config/sidebarConfig';
 import { formattedWalletAmount } from '../utils/formatters';
-import type {
-  SidebarHardwareWalletType,
-  SidebarWalletType,
-} from '../types/sidebarTypes';
+import type { SidebarWalletType } from '../types/sidebarTypes';
 
 export default class SidebarStore extends Store {
   @observable CATEGORIES: Array<any> = sidebarConfig.CATEGORIES_LIST;
@@ -23,9 +20,6 @@ export default class SidebarStore extends Store {
       this._onActivateSidebarCategory
     );
     sidebarActions.walletSelected.listen(this._onWalletSelected);
-    sidebarActions.hardwareWalletSelected.listen(
-      this._onHardwareWalletSelected
-    );
     this.registerReactions([
       this._syncSidebarRouteWithRouter,
       this._syncSidebarItemsWithShelleyActivation,
@@ -64,40 +58,6 @@ export default class SidebarStore extends Store {
     });
   }
 
-  @computed.struct get hardwareWallets(): Array<SidebarHardwareWalletType> {
-    const {
-      networkStatus,
-      wallets,
-      walletSettings,
-      hardwareWallets,
-    } = this.stores;
-    const { hardwareWalletsConnectionData } = hardwareWallets;
-
-    return wallets.allHardwareWallets.map(wallet => {
-      const isHardwareWalletDisconnected = get(
-        hardwareWalletsConnectionData,
-        [wallet.id, 'disconnected'],
-        true
-      );
-      const {
-        hasNotification,
-      } = walletSettings.getWalletsRecoveryPhraseVerificationData(wallet.id);
-      return {
-        id: wallet.id,
-        title: wallet.name,
-        info: formattedWalletAmount(wallet.amount, true, false),
-        isConnected: networkStatus.isConnected,
-        isRestoreActive: wallet.isRestoring,
-        restoreProgress: wallet.restorationProgress,
-        isNotResponding: wallet.isNotResponding,
-        isLegacy: wallet.isLegacy,
-        isHardwareWalletDisconnected,
-        isHardwareWallet: true,
-        hasNotification,
-      };
-    });
-  }
-
   @action _configureCategories = () => {
     const {
       isFlight,
@@ -117,7 +77,7 @@ export default class SidebarStore extends Store {
       [key: string]: boolean | Function,
     } = {
       [categories.WALLETS.name]: true,
-      [categories.HARDWARE_WALLETS.name]: isDev,
+      [categories.HARDWARE_WALLETS.name]: isDev, // @TODO - remove
       [categories.PAPER_WALLET_CREATE_CERTIFICATE.name]: false,
       [categories.STAKING_DELEGATION_COUNTDOWN.name]: isShelleyPending,
       [categories.STAKING.name]: isShelleyActivated,
@@ -159,10 +119,6 @@ export default class SidebarStore extends Store {
 
   @action _onWalletSelected = ({ walletId }: { walletId: string }) => {
     this.stores.wallets.goToWalletRoute(walletId);
-  };
-
-  @action _onHardwareWalletSelected = ({ walletId }: { walletId: string }) => {
-    this.stores.wallets.goToHardwareWalletRoute(walletId);
   };
 
   @action _setActivateSidebarCategory = (category: string) => {
