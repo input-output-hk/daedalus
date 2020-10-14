@@ -442,9 +442,7 @@ export default class TooltipPool extends Component<Props, State> {
     const darken = currentTheme === 'dark-blue' ? 1 : 0;
     const alpha = 0.3;
     const retirementFromNow = retiring
-      ? moment(retiring)
-          .locale(intl.locale)
-          .fromNow(true)
+      ? moment(retiring).locale(intl.locale).fromNow(true)
       : '';
 
     const saturationBarClassnames = classnames([
@@ -504,9 +502,11 @@ export default class TooltipPool extends Component<Props, State> {
                 skin={TooltipSkin}
                 tip={intl.formatMessage(messages.copyIdTooltipLabel)}
               >
-                <p className={hoverContentStyles}>
-                  {id} <SVGInline svg={idCopyIcon} />
-                </p>
+                <div className={hoverContentStyles}>
+                  <p className={styles.hoverContentBackground}>
+                    {id} <SVGInline svg={idCopyIcon} />
+                  </p>
+                </div>
               </Tooltip>
             </CopyToClipboard>
           </div>
