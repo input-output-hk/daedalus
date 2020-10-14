@@ -15,6 +15,8 @@ Changelog
 
 ### Chores
 
+- Updated `cardano-launcher` to version `0.20201014.0`
+- Updated `cardano-wallet` to version `2020-10-13`
 - Update Nix installation instructions ([PR 2200](https://github.com/input-output-hk/daedalus/pull/2200))
 - Updated `cardano-wallet` to revision `be40d5f2` which includes `cardano-node` 1.21.1 ([PR 2200](https://github.com/input-output-hk/daedalus/pull/2200))
 - Dependency update ([PR 2190](https://github.com/input-output-hk/daedalus/pull/2190))
@@ -43,7 +45,7 @@ Changelog
 
 - Fixed the "Retirement" label on Stake Pools for yellow theme ([PR 2189](https://github.com/input-output-hk/daedalus/pull/2189))
 - Fixed stake pool tooltip "Delegate to this pool" button background colors ([PR 2181](https://github.com/input-output-hk/daedalus/pull/2181))
-- Removed one second delay on changing wallet selection and selecting delegating stake slider value on the "Stake pools" screen ([PR 2179](https://github.com/input-output-hk/daedalus/pull/2179))
+- Removed one second delay on changing wallet selection and selecting delegating stake slider value on the "Stake pools" screen ([PR 2180](https://github.com/input-output-hk/daedalus/pull/2180))
 - Improved rendering performance of the stake pools on the "Stake pools" screen ([PR 2177](https://github.com/input-output-hk/daedalus/pull/2177))
 
 ### Chores
