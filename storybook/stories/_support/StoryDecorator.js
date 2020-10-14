@@ -27,7 +27,7 @@ export default class StoryDecorator extends Component<Props> {
         themeOverrides={themeOverrides}
       >
         <Fragment>
-          {Children.map(children, child => {
+          {Children.map(children, (child) => {
             const childProps = child.type === 'div' ? {} : { propsForChildren };
             return React.cloneElement(child, childProps);
           })}

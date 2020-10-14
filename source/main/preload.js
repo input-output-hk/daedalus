@@ -76,7 +76,7 @@ process.once('loaded', () => {
     // must have a css property of user-select: 'text' or be an input element
     global.document.addEventListener(
       'contextmenu',
-      event => {
+      (event) => {
         const targetIsSelectable =
           getComputedStyle(event.target).userSelect === 'text';
         const targetIsInput = event.target.nodeName === 'INPUT';

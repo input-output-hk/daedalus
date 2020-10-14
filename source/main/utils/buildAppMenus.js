@@ -55,7 +55,7 @@ export const buildAppMenus = async (
     safeExitWithCode(22);
   };
 
-  const toggleBlankScreenFix = async item => {
+  const toggleBlankScreenFix = async (item) => {
     const translation = getTranslation(translations, 'menu');
     const blankScreenFixDialogOptions = {
       buttons: [

@@ -8,7 +8,7 @@ export const getRequestKeys = (
   param: string,
   currentLocale: Locale
 ): Request<string> => {
-  const currentLanguage = findKey(LOCALES, l => l === currentLocale);
+  const currentLanguage = findKey(LOCALES, (l) => l === currentLocale);
   const languageSufix = param === 'dateFormat' ? currentLanguage : '';
   const requestKey = camelCase(['Profile', param, languageSufix, 'Request']);
   return {

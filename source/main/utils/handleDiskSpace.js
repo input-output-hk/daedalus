@@ -96,7 +96,7 @@ export const handleDiskSpace = (
     }
   };
 
-  const setDiskSpaceIntervalChecking = interval => {
+  const setDiskSpaceIntervalChecking = (interval) => {
     clearInterval(diskSpaceCheckInterval);
     diskSpaceCheckInterval = setInterval(async () => {
       handleCheckDiskSpace();
@@ -107,7 +107,7 @@ export const handleDiskSpace = (
   // Start default interval
   setDiskSpaceIntervalChecking(diskSpaceCheckIntervalLength);
 
-  getDiskSpaceStatusChannel.onReceive(diskSpaceRequired =>
+  getDiskSpaceStatusChannel.onReceive((diskSpaceRequired) =>
     handleCheckDiskSpace(diskSpaceRequired)
   );
 

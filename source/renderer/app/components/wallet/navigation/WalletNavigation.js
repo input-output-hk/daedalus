@@ -126,7 +126,8 @@ export default class WalletNavigation extends Component<Props> {
         ],
       },
     ].filter(
-      item => !(isLegacy && includes(LEGACY_WALLET_EXCLUDED_NAV_ITEMS, item.id))
+      (item) =>
+        !(isLegacy && includes(LEGACY_WALLET_EXCLUDED_NAV_ITEMS, item.id))
     );
     return (
       <Navigation

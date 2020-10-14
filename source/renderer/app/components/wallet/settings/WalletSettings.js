@@ -221,7 +221,7 @@ export default class WalletSettings extends Component<Props, State> {
             onStartEditing={() => onStartEditing('name')}
             onStopEditing={onStopEditing}
             onCancelEditing={onCancelEditing}
-            onSubmit={value => onFieldValueChange('name', value)}
+            onSubmit={(value) => onFieldValueChange('name', value)}
             isValid={nameValidator}
             validationErrorMessage={intl.formatMessage(
               globalMessages.invalidWalletName

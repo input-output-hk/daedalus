@@ -118,7 +118,7 @@ export default class StakePools extends Component<Props, State> {
     const loadingSpinner = (
       <LoadingSpinner
         big
-        ref={component => {
+        ref={(component) => {
           this.loadingSpinner = component;
         }}
       />

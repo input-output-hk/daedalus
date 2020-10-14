@@ -107,7 +107,7 @@ const requestDownload = async (
 
   download.on('start', eventActions.start);
   download.on('download', eventActions.download);
-  download.on(progressType, evt => {
+  download.on(progressType, (evt) => {
     if (!evt || parseInt(evt.progress, 10) === currentDownloadData) return;
     currentDownloadData++;
     eventActions.progress(evt);

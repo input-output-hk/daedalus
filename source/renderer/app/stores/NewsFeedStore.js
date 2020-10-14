@@ -67,14 +67,14 @@ export default class NewsFeedStore extends Store {
 
       const hasIncident = find(
         rawNews.items,
-        news => news.type === NewsTypes.INCIDENT
+        (news) => news.type === NewsTypes.INCIDENT
       );
 
       // Check for "Alerts" with repeatable state and set as unread
       if (params && params.isInit && rawNews) {
         const repeatableNews = find(
           rawNews.items,
-          news => news.type === NewsTypes.ALERT && news.repeatOnStartup
+          (news) => news.type === NewsTypes.ALERT && news.repeatOnStartup
         );
         if (repeatableNews) {
           const mainIdentificator = repeatableNews.id || repeatableNews.date;
@@ -175,7 +175,7 @@ export default class NewsFeedStore extends Store {
   @action openAlert = (newsId: number) => {
     if (this.getNewsRequest.wasExecuted) {
       const alertToOpen = this.newsFeedData.alerts.all.find(
-        newsItem => newsItem.id === newsId
+        (newsItem) => newsItem.id === newsId
       );
       if (alertToOpen) {
         this.openedAlert = alertToOpen;
@@ -234,7 +234,7 @@ export default class NewsFeedStore extends Store {
     let news = [];
 
     if (this.getNewsRequest.wasExecuted) {
-      news = map(this.rawNews, item => {
+      news = map(this.rawNews, (item) => {
         // Match old and new newsfeed JSON format
         const mainIdentificator = item.id || item.date;
         let newsfeedItem = {

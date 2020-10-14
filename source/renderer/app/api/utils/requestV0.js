@@ -68,14 +68,14 @@ function typedRequest<Response>(
     if (hasRequestBody) {
       httpsRequest.write(requestBody);
     }
-    httpsRequest.on('response', response => {
+    httpsRequest.on('response', (response) => {
       let body = '';
       // Cardano-sl returns chunked requests, so we need to concat them
-      response.on('data', chunk => {
+      response.on('data', (chunk) => {
         body += chunk;
       });
       // Reject errors
-      response.on('error', error => reject(error));
+      response.on('error', (error) => reject(error));
       // Resolve JSON results and handle weird backend behavior
       // of "Left" (for errors) and "Right" (for success) properties
       response.on('end', () => {
@@ -101,7 +101,7 @@ function typedRequest<Response>(
         }
       });
     });
-    httpsRequest.on('error', error => reject(error));
+    httpsRequest.on('error', (error) => reject(error));
     httpsRequest.end();
   });
 }

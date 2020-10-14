@@ -112,7 +112,7 @@ export default class StakingEpochs extends Component<Props, State> {
               value={selectedEpoch}
               onChange={this.onSelectedEpochChange}
               skin={SelectSkin}
-              selectionRenderer={option => (
+              selectionRenderer={(option) => (
                 <div className={styles.customSelectValue}>{option.label}</div>
               )}
               optionHeight={50}
