@@ -28,8 +28,7 @@ export default class WalletSettingsPage extends Component<Props> {
       wallets,
       profile,
     } = this.props.stores;
-    const { activeHardwareWallet, active, isHardwareWalletRoute } = wallets;
-    const activeWallet = isHardwareWalletRoute ? activeHardwareWallet : active;
+    const activeWallet = wallets.active;
 
     let isLegacyWallet: boolean = false;
     if (activeWallet) {

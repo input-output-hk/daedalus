@@ -34,12 +34,7 @@ export default class WalletRecoveryPhraseContainer extends Component<Props> {
 
   render() {
     const { stores, actions } = this.props;
-    const {
-      activeHardwareWallet,
-      active,
-      isHardwareWalletRoute,
-    } = stores.wallets;
-    const activeWallet = isHardwareWalletRoute ? activeHardwareWallet : active;
+    const { active: activeWallet } = stores.wallets;
 
     if (!activeWallet) throw new Error('Active wallet required.');
     const {

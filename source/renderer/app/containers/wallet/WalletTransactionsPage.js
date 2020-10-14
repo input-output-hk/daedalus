@@ -82,12 +82,11 @@ export default class WalletTransactionsPage extends Component<Props, State> {
     const { actions, stores } = this.props;
     const { isFilterButtonFaded } = this.state;
     const { app, uiDialogs, wallets, profile } = stores;
-    const { activeHardwareWallet, active, isHardwareWalletRoute } = wallets;
     const {
       openExternalLink,
       environment: { network, rawNetwork },
     } = app;
-    const activeWallet = isHardwareWalletRoute ? activeHardwareWallet : active;
+    const activeWallet = wallets.active;
     const {
       filterOptions,
       searchRequest,

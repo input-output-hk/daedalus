@@ -48,7 +48,6 @@ export default class WalletSummaryPage extends Component<Props> {
       openExternalLink,
       environment: { network, rawNetwork },
     } = app;
-    const { isHardwareWalletRoute, active, activeHardwareWallet } = wallets;
     const {
       hasAny,
       totalAvailable,
@@ -58,7 +57,7 @@ export default class WalletSummaryPage extends Component<Props> {
       deleteTransactionRequest,
       pendingTransactionsCount,
     } = transactions;
-    const wallet = isHardwareWalletRoute ? activeHardwareWallet : active;
+    const wallet = wallets.active;
     const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
     // Guard against potential null values
     if (!wallet)

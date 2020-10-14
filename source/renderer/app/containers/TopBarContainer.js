@@ -28,31 +28,19 @@ export default class TopBarContainer extends Component<Props> {
       newsFeed,
       appUpdate,
     } = stores;
-    const { isSynced, syncPercentage, isShelleyActivated } = networkStatus;
-    const { isWalletRoute, hasAnyWallets, hasRewardsWallets, isHardwareWalletRoute, activeHardwareWallet, hasAnyHardwareWalletLoaded } = wallets;
-    const active = isHardwareWalletRoute
-      ? activeHardwareWallet
-      : wallets.active;
+    const { isSynced, syncPercentage } = networkStatus;
+    const { active, isWalletRoute, hasAnyWallets, hasRewardsWallets } = wallets;
+    const { isShelleyActivated } = networkStatus;
     const {
       currentRoute,
       environment: { isMainnet, network },
       openExternalLink,
     } = app;
-    let walletRoutesMatch;
-    if (isHardwareWalletRoute) {
-      walletRoutesMatch = matchRoute(
-        `${ROUTES.HARDWARE_WALLETS.ROOT}/:id(*page)`,
-        currentRoute
-      );
-    } else {
-      walletRoutesMatch = matchRoute(
-        `${ROUTES.WALLETS.ROOT}/:id(*page)`,
-        currentRoute
-      );
-    }
-    const showSubMenuToggle =
-      (isWalletRoute && hasAnyWallets) ||
-      (isHardwareWalletRoute && hasAnyHardwareWalletLoaded);
+    const walletRoutesMatch = matchRoute(
+      `${ROUTES.WALLETS.ROOT}/:id(*page)`,
+      currentRoute
+    );
+    const showSubMenuToggle = isWalletRoute && hasAnyWallets;
     const activeWallet = walletRoutesMatch && active != null ? active : null;
     const leftIconSVG = sidebar.isShowingSubMenus
       ? menuIconOpened

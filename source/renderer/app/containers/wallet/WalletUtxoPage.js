@@ -27,8 +27,7 @@ export default class WalletSettingsPage extends Component<Props> {
   render() {
     const { app, wallets, walletSettings, transactions } = this.props.stores;
     const { walletUtxos } = walletSettings;
-    const { activeHardwareWallet, active, isHardwareWalletRoute } = wallets;
-    const activeWallet = isHardwareWalletRoute ? activeHardwareWallet : active;
+    const { active: activeWallet } = wallets;
 
     if (!activeWallet)
       throw new Error('Active wallet required for WalletUtxoPage.');
