@@ -796,7 +796,7 @@ export const SHELLEY_TESTNET_THEME_OUTPUT = {
     '--theme-staking-stake-pool-tooltip-neutral-text-color': '#ffffff',
     '--theme-staking-stake-pool-tooltip-experimental-icon-color': '#ffffff',
     '--theme-staking-stake-pool-tooltip-id-background-color': '#3b3b4b',
-    '--theme-staking-stake-pool-tooltip-id-shadow-1': 'rgba(42, 43, 60, 1)',
+    '--theme-staking-stake-pool-tooltip-id-shadow-1': 'rgba(0, 0, 0, 0.25)',
     '--theme-staking-stake-pool-tooltip-id-shadow-2': 'rgba(42, 43, 60, 0)',
   },
   staking: {
