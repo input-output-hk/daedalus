@@ -15,8 +15,8 @@ Changelog
 
 ### Chores
 
-- Updated `cardano-launcher` to version `0.20201014.0`
-- Updated `cardano-wallet` to version `2020-10-13`
+- Updated `cardano-launcher` to version `0.20201014.0` ([PR 2205](https://github.com/input-output-hk/daedalus/pull/2205))
+- Updated `cardano-wallet` to version `2020-10-13` ([PR 2205](https://github.com/input-output-hk/daedalus/pull/2205))
 - Update Nix installation instructions ([PR 2200](https://github.com/input-output-hk/daedalus/pull/2200))
 - Updated `cardano-wallet` to revision `be40d5f2` which includes `cardano-node` 1.21.1 ([PR 2200](https://github.com/input-output-hk/daedalus/pull/2200))
 - Dependency update ([PR 2190](https://github.com/input-output-hk/daedalus/pull/2190))
