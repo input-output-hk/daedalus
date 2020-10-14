@@ -178,7 +178,6 @@
     "check-disk-space": "2.1.0",
     "chroma-js": "2.1.0",
     "classnames": "2.2.6",
-    "commander": "^6.1.0",
     "csv-stringify": "5.3.6",
     "cucumber-html-reporter": "5.1.0",
     "electron": "8.2.2",
