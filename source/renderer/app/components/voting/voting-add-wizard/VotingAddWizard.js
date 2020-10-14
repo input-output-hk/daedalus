@@ -9,6 +9,7 @@ import VotingAddStepsDeposit from './VotingAddStepsDeposit';
 import VotingAddStepsQrCode from './VotingAddStepsQrCode';
 import StakePool from '../../../domains/StakePool';
 import { BigNumber } from 'bignumber.js';
+import LocalizableError from '../../../i18n/LocalizableError';
 
 type Props = {
   activeStep: number,
@@ -25,7 +26,9 @@ type Props = {
   transactionFee: ?BigNumber,
   onConfirm: Function,
   isDisabled: Boolean,
+  qrCode: ?string,
   isSubmitting: Boolean,
+  error: ?LocalizableError,
 };
 
 @observer
@@ -46,7 +49,9 @@ export default class VotingAddWizard extends Component<Props> {
       transactionFee,
       onConfirm,
       isDisabled,
+      qrCode,
       isSubmitting,
+      error,
     } = this.props;
 
     const selectedWalletId = get(selectedWallet, 'id', null);
@@ -75,6 +80,7 @@ export default class VotingAddWizard extends Component<Props> {
           <VotingAddStepsDeposit
             onConfirm={onConfirm}
             transactionFee={transactionFee}
+            error={error}
           />
         );
         break;
@@ -82,7 +88,7 @@ export default class VotingAddWizard extends Component<Props> {
         content = (
           <VotingAddStepsQrCode
             onClose={onClose}
-            qrCode={'TEST'}
+            qrCode={qrCode}
             isSubmitting={isSubmitting}
           />
         );

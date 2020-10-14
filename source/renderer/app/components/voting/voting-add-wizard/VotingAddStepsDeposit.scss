@@ -34,4 +34,13 @@
       }
     }
   }
+
+  .errorMessage {
+    margin-top: 10px;
+    p {
+      color: var(--theme-color-error);
+      font-family: var(--font-medium);
+      font-weight: 500;
+    }
+  }
 }

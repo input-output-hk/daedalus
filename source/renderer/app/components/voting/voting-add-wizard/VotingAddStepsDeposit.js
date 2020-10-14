@@ -16,6 +16,7 @@ import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import BigNumber from 'bignumber.js';
 import { submitOnEnter } from '../../../utils/form';
 import { observer } from 'mobx-react';
+import LocalizableError from '../../../i18n/LocalizableError';
 
 const messages = defineMessages({
   description: {
@@ -56,6 +57,7 @@ messages.fieldIsRequired = globalMessages.fieldIsRequired;
 type Props = {
   onConfirm: Function,
   transactionFee: ?BigNumber,
+  error: ?LocalizableError,
 };
 
 @observer
@@ -115,7 +117,7 @@ export default class VotingAddStepsDeposit extends Component<Props> {
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { transactionFee } = this.props;
+    const { transactionFee, error } = this.props;
     const spendingPasswordField = form.$('spendingPassword');
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
 
@@ -155,11 +157,18 @@ export default class VotingAddStepsDeposit extends Component<Props> {
 
           <Input
             {...spendingPasswordField.bind()}
+            autoFocus={true}
             skin={InputSkin}
             error={spendingPasswordField.error}
             onKeyPress={this.handleSubmitOnEnter}
           />
+          {error ? (
+            <div className={styles.errorMessage}>
+              <p>{intl.formatMessage(error)}</p>
+            </div>
+          ) : null}
         </div>
+
         <Button
           skin={ButtonSkin}
           label={buttonLabel}
