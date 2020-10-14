@@ -101,6 +101,12 @@
     }
   }
 
+  .boxedContainer {
+    @media (max-width: 950px) {
+      padding-left: 15px;
+    }
+  }
+
   table {
     border-style: hidden;
     user-select: text;
@@ -122,7 +128,8 @@
         box-shadow: 0 10px 10px -10px var(--theme-staking-stake-pool-tooltip-shadow-color);
         height: 40px;
         left: 104px;
-        padding: 0 20px;
+        padding-left: 20px;
+        padding-right: 10px;
         position: fixed;
         top: 204px;
         width: calc(100% - 124px);
@@ -213,10 +220,6 @@
       &:last-child {
         min-width: 10%;
         text-align: center;
-
-        @media (max-width: 925px) {
-          min-width: 8%;
-        }
       }
 
       &:hover {

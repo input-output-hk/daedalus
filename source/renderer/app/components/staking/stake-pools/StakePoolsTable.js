@@ -412,7 +412,7 @@ export class StakePoolsTable extends Component<Props, State> {
       <StakingPageScrollContext.Consumer>
         {() => (
           <div className={componentClasses}>
-            <BorderedBox>
+            <BorderedBox className={styles.boxedContainer}>
               {sortedStakePoolList.length > 0 && (
                 <table>
                   <thead className={tableHeaderClasses}>
