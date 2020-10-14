@@ -148,6 +148,7 @@ yarn2nix.mkYarnPackage {
     dup node-hid
     dup secp256k1
     dup usb
+    dup @ledgerhq
 
     # strace -ff -o logfiles -s 300
     node_modules/.bin/electron-rebuild -w usb --useCache -s --debug
@@ -161,7 +162,7 @@ yarn2nix.mkYarnPackage {
     mkdir -p $out/share/fonts
     ln -sv $out/share/daedalus/renderer/assets $out/share/fonts/daedalus
     mkdir -pv $out/share/daedalus/node_modules
-    cp -rv $node_modules/js-chain-libs-node $out/share/daedalus/node_modules/
+    cp -rv $node_modules/{trezor-connect,js-chain-libs-node} $out/share/daedalus/node_modules/
     find $out $NIX_BUILD_TOP -name '*.node'
 
     mkdir -pv $out/share/daedalus/build
@@ -169,23 +170,23 @@ yarn2nix.mkYarnPackage {
     cp node_modules/node-hid/build/Debug/HID-hidraw.node $out/share/daedalus/build/HID-hidraw.node
   '';
   #allowedReferences = [ "out" ];
-  allowedRequisites = [
-    systemd.lib
-    stdenv.cc.cc.lib
-    stdenv.cc.cc
-    stdenv.cc.libc
-    stdenv.cc.libc.bin
-    stdenv.cc.libc.dev
-    libcap.lib
-    lz4
-    zlib
-    xz.out
-    libgcrypt
-    libidn2.out
-    libgpgerror
-    libunistring
-    libusb1
-  ] ++ stdenv.cc.libc.buildInputs;
+  #allowedRequisites = [
+  #  systemd.lib
+  #  stdenv.cc.cc.lib
+  #  stdenv.cc.cc
+  #  stdenv.cc.libc
+  #  stdenv.cc.libc.bin
+  #  stdenv.cc.libc.dev
+  #  libcap.lib
+  #  lz4
+  #  zlib
+  #  xz.out
+  #  libgcrypt
+  #  libidn2.out
+  #  libgpgerror
+  #  libunistring
+  #  libusb1
+  #] ++ stdenv.cc.libc.buildInputs;
   yarnPreBuild = ''
     mkdir -p $HOME/.node-gyp/${nodejs.version}
     echo 9 > $HOME/.node-gyp/${nodejs.version}/installVersion
