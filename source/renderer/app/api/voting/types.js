@@ -1,4 +1,7 @@
-export type VotingRegistrationRequest = {
+export type CreateVotingRegistrationRequest = {
   walletId: string,
+  address: string,
+  amount: number,
   passphrase: string,
+  votingKey: string,
 };

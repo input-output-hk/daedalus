@@ -15,6 +15,7 @@ import { FormattedHTMLMessageWithLink } from '../../components/widgets/Formatted
 import type { InjectedProps as Props } from '../../types/injectedPropsType';
 import { formattedAmountToLovelace } from '../../utils/formatters';
 import { ROUTES } from '../../routes-config';
+import LocalizableError from '../../i18n/LocalizableError';
 
 const messages = defineMessages({
   votingAddStep1Label: {
@@ -46,6 +47,7 @@ type State = {
   transactionFeeError: ?string | ?Node,
   isLoading: Boolean,
   pinCode: number,
+  error: ?LocalizableError,
 };
 
 @inject('stores', 'actions')
@@ -59,6 +61,25 @@ export default class VotingAddPage extends Component<Props, State> {
     actions: null,
     stores: null,
   };
+
+  // We need to track the mounted state in order to avoid calling
+  // setState promise handling code after the component was already unmounted:
+  // Read more: https://facebook.github.io/react/blog/2015/12/16/ismounted-antipattern.html
+  _isMounted = false;
+
+  componentDidMount() {
+    this._isMounted = true;
+  }
+
+  componentDidUpdate() {
+    this.handleTransactionError();
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+    this.props.stores.voting.votingSendTransactionRequest.reset();
+    this.props.actions.voting.resetVotingRegistration.trigger();
+  }
 
   handleIsWalletAcceptable = (
     walletAmount?: BigNumber,
@@ -89,6 +110,12 @@ export default class VotingAddPage extends Component<Props, State> {
     this.context.intl.formatMessage(messages.votingAddStep4Label),
   ];
 
+  handleBack = () => {
+    const { activeStep } = this.state;
+    this.props.stores.voting.votingSendTransactionRequest.reset();
+    this.setState({ activeStep: activeStep - 1 });
+  };
+
   handleContinue = () => {
     const { activeStep } = this.state;
     this.setState({ activeStep: activeStep + 1 });
@@ -108,26 +135,42 @@ export default class VotingAddPage extends Component<Props, State> {
 
   handleSetPinCode = (code: number) => {
     this.setState({ pinCode: code });
+    this.props.actions.voting.setPinCode.trigger(code);
     this.handleContinue();
   };
 
   handleDeposit = (spendingPassword: string) => {
     const amount = formattedAmountToLovelace(`${VOTING_FEE_FOR_CALCULATE}`);
 
+    this.props.stores.voting.votingSendTransactionRequest.reset();
     this.props.actions.voting.sendTransaction.trigger({
       passphrase: spendingPassword,
       amount,
     });
+
     this.handleContinue();
   };
 
+  handleTransactionError = () => {
+    const { voting } = this.props.stores;
+    const { votingSendTransactionRequest } = voting;
+    if (votingSendTransactionRequest.error) {
+      this.setState({ error: votingSendTransactionRequest.error });
+      this.handleBack();
+    }
+  };
+
   render() {
-    const { activeStep, selectedWalletId, transactionFee } = this.state;
+    const { activeStep, selectedWalletId, transactionFee, error } = this.state;
     const { wallets, staking, voting } = this.props.stores;
 
     const { stakePools, getStakePoolById } = staking;
 
-    const { votingSendTransactionRequest } = voting;
+    const {
+      votingSendTransactionRequest,
+      isVotingRegistrationTransactionPending,
+      qrCode,
+    } = voting;
 
     const selectedWallet = find(
       wallets.allWallets,
@@ -155,7 +198,12 @@ export default class VotingAddPage extends Component<Props, State> {
           onClose={this.onClose}
           onConfirm={this.handleDeposit}
           transactionFee={transactionFee}
-          isSubmitting={votingSendTransactionRequest.isExecuting}
+          qrCode={qrCode}
+          isSubmitting={
+            votingSendTransactionRequest.isExecuting ||
+            isVotingRegistrationTransactionPending
+          }
+          error={error}
         />
       </VotingAdd>
     );
@@ -178,10 +226,12 @@ export default class VotingAddPage extends Component<Props, State> {
         address: address.id,
         amount,
       });
-      this.setState({
-        transactionFee: fee,
-        transactionFeeError: null,
-      });
+      if (this._isMounted) {
+        this.setState({
+          transactionFee: fee,
+          transactionFeeError: null,
+        });
+      }
     } catch (error) {
       const errorHasLink = !!get(error, ['values', 'linkLabel']);
       const transactionFeeError = errorHasLink ? (
@@ -193,10 +243,12 @@ export default class VotingAddPage extends Component<Props, State> {
         this.context.intl.formatMessage(error)
       );
 
-      this.setState({
-        transactionFee: new BigNumber(0),
-        transactionFeeError,
-      });
+      if (this._isMounted) {
+        this.setState({
+          transactionFee: new BigNumber(0),
+          transactionFeeError,
+        });
+      }
     }
   }
 }

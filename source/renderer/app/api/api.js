@@ -172,6 +172,10 @@ import type {
   RequestRedeemItnRewardsRequest,
   RequestRedeemItnRewardsResponse,
 } from './staking/types';
+
+// Voting Types
+import type { CreateVotingRegistrationRequest } from './voting/types';
+
 import type { StakePoolProps } from '../domains/StakePool';
 import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-node.types';
 
@@ -1753,6 +1757,71 @@ export default class AdaApi {
 
   setCardanoNodeFault = async (fault: FaultInjectionIpcRequest) => {
     await cardanoFaultInjectionChannel.send(fault);
+  };
+
+  createVotingRegistrationTransaction = async (
+    request: CreateVotingRegistrationRequest
+  ): Promise<WalletTransaction> => {
+    logger.debug('AdaApi::createVotingRegistrationTransaction called', {
+      parameters: filterLogData(request),
+    });
+    const { walletId, address, amount, passphrase, votingKey } = request;
+
+    try {
+      const data = {
+        payments: [
+          {
+            address,
+            amount: {
+              quantity: amount,
+              unit: WalletUnits.LOVELACE,
+            },
+          },
+        ],
+        passphrase,
+        metadata: {
+          0: {
+            map: [
+              {
+                k: {
+                  string: 'voting_registration',
+                },
+                v: {
+                  bytes: votingKey,
+                },
+              },
+            ],
+          },
+        },
+      };
+
+      let response: Transaction;
+
+      response = await createTransaction(this.config, {
+        walletId,
+        data: { ...data },
+      });
+
+      logger.debug('AdaApi::createVotingRegistrationTransaction success', {
+        transaction: response,
+      });
+
+      return _createTransactionFromServerData(response);
+    } catch (error) {
+      logger.error('AdaApi::createVotingRegistrationTransaction error', {
+        error,
+      });
+      throw new ApiError(error)
+        .set('wrongEncryptionPassphrase')
+        .where('code', 'bad_request')
+        .inc('message', 'passphrase is too short')
+        .set('transactionIsTooBig', true, {
+          linkLabel: 'tooBigTransactionErrorLinkLabel',
+          linkURL: 'tooBigTransactionErrorLinkURL',
+        })
+        .where('code', 'transaction_is_too_big')
+        .result();
+    }
   };
 
   // No implementation here but can be overwritten
