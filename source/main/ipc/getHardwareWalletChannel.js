@@ -359,7 +359,7 @@ export const handleHardwareWalletRequests = async (mainWindow) => {
         protocolMagic,
         networkId
       });
-      return Promise.resolve({ serializedTx: signedTransaction.payload.serializedTx });
+      return Promise.resolve(signedTransaction);
     } catch (e) {
       throw e;
     }

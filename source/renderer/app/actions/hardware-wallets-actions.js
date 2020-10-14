@@ -9,6 +9,7 @@ export default class HardwareWalletsActions {
     address: string,
     amount: string,
   }> = new Action();
+  sendMoney: Action<any> = new Action();
   refreshHardwareWalletsLocalData: Action<any> = new Action();
   setHardwareWalletLocalData: Action<SetHardwareWalletLocalDataRequestType> = new Action();
   unsetHardwareWalletLocalData: Action<{ walletId: string }> = new Action();

@@ -734,6 +734,7 @@ export default class AdaApi {
           },
         ],
       };
+
       let response: TransactionFee;
       if (isLegacy) {
         response = await getByronWalletTransactionFee(this.config, {
@@ -794,7 +795,7 @@ export default class AdaApi {
     logger.debug('AdaApi::selectCoins called', {
       parameters: filterLogData(request),
     });
-    const { walletId, address, amount } = request;
+    const { walletId, address, amount, walletBalance, availableAmount, isLegacy } = request;
     try {
       const data = {
         payments: [
@@ -811,7 +812,36 @@ export default class AdaApi {
         walletId: getRawWalletId(walletId, WalletIdPrefixes.HARDWARE_WALLET),
         data,
       });
-      return response;
+
+      // Calculate fee from inputs and outputs
+      let totalInputs = 0;
+      let totalOutputs = 0;
+      const inputsData = map(response.inputs, input => {
+        totalInputs += input.amount.quantity;
+      });
+      const outputsData = map(response.outputs, output => {
+        totalOutputs += output.amount.quantity;
+      })
+      const fee = new BigNumber(totalInputs - totalOutputs).dividedBy(LOVELACES_PER_ADA);
+
+      // Prepare checks
+      const formattedTxAmount = new BigNumber(amount).dividedBy(
+        LOVELACES_PER_ADA
+      );
+      const amountWithFee = formattedTxAmount.plus(fee);
+      if (amountWithFee.gt(walletBalance)) {
+        // Amount + fees exceeds walletBalance:
+        // = show "Not enough Ada for fees. Try sending a smaller amount."
+        throw new ApiError().result('cannotCoverFee');
+      }
+      const extendedResponse = {
+        ...response,
+        fee,
+      };
+      logger.debug('AdaApi::selectCoins success', {
+        transactionFee: response,
+      });
+      return extendedResponse;
     } catch (error) {
       logger.error('AdaApi::selectCoins error', { error });
       throw new ApiError(error);

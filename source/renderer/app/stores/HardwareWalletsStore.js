@@ -29,6 +29,7 @@ import {
   DeviceModels,
   DeviceTypes,
 } from '../../../common/types/hardware-wallets.types';
+import { formattedAmountToLovelace } from '../utils/formatters';
 
 import type { HwDeviceStatus } from '../domains/Wallet';
 import type { CoinSelectionsResponse } from '../api/transactions/types';
@@ -65,6 +66,9 @@ const DEFAULT_HW_NAME = 'Hardware Wallet';
 export default class HardwareWalletsStore extends Store {
   @observable selectCoinsRequest: Request<CoinSelectionsResponse> = new Request(
     this.api.ada.selectCoins
+  );
+  @observable sendMoneyRequest: Request<WalletTransaction> = new Request(
+    this.api.ada.createExternalTransaction
   );
   @observable
   hardwareWalletsLocalDataRequest: Request<HardwareWalletsLocalData> = new Request(
@@ -104,6 +108,7 @@ export default class HardwareWalletsStore extends Store {
   setup() {
     const { hardwareWallets: hardwareWalletsActions } = this.actions;
     hardwareWalletsActions.selectCoins.listen(this._selectCoins);
+    hardwareWalletsActions.sendMoney.listen(this._sendMoney);
     hardwareWalletsActions.refreshHardwareWalletsLocalData.listen(
       this._refreshHardwareWalletsLocalData
     );
@@ -127,16 +132,29 @@ export default class HardwareWalletsStore extends Store {
     this.getAvailableDevices();
   }
 
-  getAvailableDevices22 = async () => {
-    const aa = await this.getAvailableDevices();
-    console.debug('>> PP: ', aa)
-  }
+  _sendMoney = async () => {
+    const wallet = this.stores.wallets.activeHardwareWallet;
+    if (!wallet) throw new Error('Active wallet required before sending.');
+    await this.sendMoneyRequest.execute({
+      signedTransactionBlob: this.txBody,
+    });
+    this._resetTransaction();
+    this.stores.wallets.refreshWalletsData();
+    this.actions.dialogs.closeActiveDialog.trigger();
+    this.sendMoneyRequest.reset();
+    this.stores.wallets.goToHardwareWalletRoute(wallet.id);
+  };
 
   getAvailableDevices = async () => {
     const hardwareWalletsConnectionData = await this.hardwareWalletDevicesRequest.execute();
+    console.debug('>>> GET AVAILABLE DEVICES: ', {
+      hardwareWalletsConnectionData,
+      aa: this.hardwareWalletsConnectionData,
+      hardwareWalletDevices: this.hardwareWalletDevices,
+    })
     // Set all logical HW into disconnected state
     map(this.hardwareWalletsConnectionData, async (connectedWallet) => {
-      console.debug('>> Connectinos: ', connectedWallet);
+      console.debug('>> connectedWallet: ', connectedWallet);
       await this._setHardwareWalletLocalData({
         walletId: connectedWallet.id,
         data: {
@@ -168,9 +186,6 @@ export default class HardwareWalletsStore extends Store {
       });
     })
 
-
-
-
     this._refreshHardwareWalletsLocalData();
     this._refreshHardwareWalletDevices();
 
@@ -200,7 +215,8 @@ export default class HardwareWalletsStore extends Store {
     ); */
   }
 
-  @action _selectCoins = async (params: {
+  // @TODO - move to Transactions store once all logic fit and hardware wallets listed in general wallets list
+  selectCoins = async (params: {
     walletId: string,
     address: string,
     amount: string,
@@ -208,7 +224,7 @@ export default class HardwareWalletsStore extends Store {
     const { walletId, address, amount } = params;
     const wallet = this.stores.wallets.getWalletById(walletId);
     if (!wallet)
-      throw new Error('Active wallet required before coin selections.');
+      throw new Error('Active wallet required before coins selections.');
     const rawWalletId = getRawWalletId(
       walletId,
       WalletIdPrefixes.HARDWARE_WALLET
@@ -217,6 +233,9 @@ export default class HardwareWalletsStore extends Store {
       walletId: rawWalletId,
       address,
       amount,
+      walletBalance: wallet.amount,
+      availableBalance: wallet.availableAmount,
+      isLegacy: wallet.isLegacy,
     });
     runInAction('HardwareWalletsStore:: set coin selections', () => {
       this.txSignRequest = {
@@ -224,6 +243,7 @@ export default class HardwareWalletsStore extends Store {
         coinSelection,
       };
     });
+    return coinSelection;
   };
 
   @action establishHardwareWalletConnection = async () => {
@@ -426,9 +446,22 @@ export default class HardwareWalletsStore extends Store {
   };
 
   // Trezor - Shelley only
-  @action _signTransactionTrezor = async () => {
+  @action _signTransactionTrezor = async (walletId: string) => {
     const { coinSelection, recieverAddress } = this.txSignRequest;
-    const { inputs, outputs } = coinSelection;
+    const { inputs, outputs, fee } = coinSelection;
+
+    console.debug('>>> SIGN TRANSACTION: ', {
+      fee: coinSelection,
+      string: formattedAmountToLovelace(coinSelection.fee.toString()), // OK
+      walletId,
+    })
+
+    runInAction(
+      'HardwareWalletsStore:: set Transaction verifying',
+      () => {
+        this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION;
+      }
+    );
 
     let totalInputs = 0;
     const inputsData = map(inputs, input => {
@@ -445,22 +478,27 @@ export default class HardwareWalletsStore extends Store {
       return prepareTrezorOutput(output, addressIndex, isChange);
     })
 
-    const fee = totalInputs - totalOutputs;
-
     try {
       const signedTransaction = await signTransactionTrezorChannel.request({
         inputs: inputsData,
         outputs: outputsData,
-        fee: fee.toString(),
+        fee: formattedAmountToLovelace(fee.toString()).toString(),
         ttl: '15000000',
         networkId: HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId,
         protocolMagic: HW_SHELLEY_CONFIG.NETWORK.MAINNET.protocolMagic,
       });
 
+      console.debug('>>> signedTransaction: ', signedTransaction);
+
+      if (!signedTransaction.success) {
+        throw signedTransaction.payload;
+      }
+
       runInAction(
-        'HardwareWalletsStore:: set signed transaction data',
+        'HardwareWalletsStore:: transaction successfully signed',
         () => {
-          this.txBody = signedTransaction.serializedTx;
+          this.txBody = signedTransaction.payload.serializedTx;
+          this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED;
         }
       );
     } catch (error) {
@@ -470,6 +508,10 @@ export default class HardwareWalletsStore extends Store {
           this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED;
         }
       );
+      // @TODO - Maybe we should handle this case as separated message in tx dialog
+      if (error.code === 'Device_CallInProgress') {
+        throw new Error('Device is busy - reconnect device and try again')
+      }
       throw error;
     }
   };
@@ -559,6 +601,50 @@ export default class HardwareWalletsStore extends Store {
     }
   };
 
+  initiateTransaction = async (params: {
+    walletId: string
+  }) => {
+    console.debug('>>> INIT TX Send!');
+    const { walletId } = params;
+    const hardwareWalletConnectionData = get(this.hardwareWalletsConnectionData, walletId);
+
+    // Guard against potential null value
+    if (!hardwareWalletConnectionData)
+      throw new Error('Wallet not exist');
+
+    // const isReady = hardwareWalletsConnectionData.state === HwDeviceStatuses.READY;
+    // const isConnecting = hardwareWalletsConnectionData.state === HwDeviceStatuses.CONNECTING;
+    // const isDisconnected = hardwareWalletsConnectionData.disconnected;
+    const { disconnected, deviceType, id } = hardwareWalletConnectionData;
+
+    // Add more cases / edge cases if needed
+    if (!disconnected) {
+      if (deviceType === DeviceTypes.TREZOR) {
+        console.debug('>>> INIT:: Sign Trezor');
+        this._signTransactionTrezor(id);
+      } else {
+        console.debug('>>> INIT:: Sign Ledger');
+        this._signTransactionLedger(id);
+      }
+    } else {
+      console.debug('>>> INIT:: establish conn');
+      this.establishHardwareWalletConnection();
+    }
+  };
+
+  _resetTransaction = async (params: {
+    walletId: string
+  }) => {
+    this.selectCoinsRequest.reset();
+    runInAction(
+      'HardwareWalletsStore:: reset Transaction verifying',
+      () => {
+        this.hwDeviceStatus = HwDeviceStatuses.READY;
+        this.txBody = null;
+      }
+    );
+  };
+
   @action _changeHardwareWalletConnectionStatus = async (params: {
     disconnected: boolean,
   }) => {
@@ -600,7 +686,7 @@ export default class HardwareWalletsStore extends Store {
         // this.establishHardwareWalletConnection();
       }
     }
-    console.debug('>>>> CONNECT');
+    console.debug('>>>> CONNECT: ', recognizedPairedHardwareWallet);
     // Check if plugged-in device match one already established connections
     // If deviceId recognized - get software wallet and set to connected.
     //   - update possible device changes
@@ -616,6 +702,7 @@ export default class HardwareWalletsStore extends Store {
           deviceModel,
           deviceName,
           disconnected,
+          state: disconnected ? HwDeviceStatuses.CONNECTING : HwDeviceStatuses.READY,
         },
       });
     }

@@ -18,6 +18,7 @@ import { submitOnEnter } from '../../utils/form';
 import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
 import HardwareWalletStatus from '../hardware-wallet/status/HardwareWalletStatus';
 import LoadingSpinner from '../widgets/LoadingSpinner';
+import { HwDeviceStatuses } from '../../domains/Wallet';
 
 import type { HwDeviceStatus } from '../../domains/Wallet';
 
@@ -132,6 +133,8 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
           value: '',
           validators: [
             ({ field }) => {
+              if (this.props.isHardwareWallet)
+                return [true];
               if (field.value === '') {
                 return [
                   false,
@@ -162,12 +165,13 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
   submit = () => {
     this.form.submit({
       onSuccess: form => {
-        const { receiver, amount, amountToNaturalUnits } = this.props;
+        const { receiver, amount, amountToNaturalUnits, isHardwareWallet } = this.props;
         const { passphrase } = form.values();
         const transactionData = {
           receiver,
           amount: amountToNaturalUnits(amount),
           passphrase,
+          isHardwareWallet,
         };
         this.props.onSubmit(transactionData);
       },
@@ -176,7 +180,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
   };
 
   handleSubmitOnEnter = (event: {}) =>
-    this.form.$('passphrase').isValid && submitOnEnter(this.submit, event);
+    (this.props.isHardwareWallet || this.form.$('passphrase').isValid) && submitOnEnter(this.submit, event);
 
   render() {
     const { form } = this;
@@ -215,7 +219,8 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
         primary: true,
         className: 'confirmButton',
         disabled:
-          !passphraseField.isValid ||
+          (!isHardwareWallet && !passphraseField.isValid) ||
+          (isHardwareWallet && hwDeviceStatus !== HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED) ||
           (!flightCandidateCheckboxField.value && isFlight),
       },
     ];

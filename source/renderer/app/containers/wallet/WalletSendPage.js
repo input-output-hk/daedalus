@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { intlShape } from 'react-intl';
+import { get } from 'lodash';
 import WalletSendForm from '../../components/wallet/WalletSendForm';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import globalMessages from '../../i18n/global-messages';
@@ -21,6 +22,40 @@ export default class WalletSendPage extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
+  calculateTransactionFee = async (params: {
+    walletId: string,
+    address: string,
+    amount: number,
+    isHardwareWallet: boolean,
+  }) => {
+    const { walletId, address, amount, isHardwareWallet } = params;
+    let fee;
+    if (isHardwareWallet) {
+      const coinsSelection = await this.props.stores.hardwareWallets.selectCoins({
+        walletId,
+        address,
+        amount,
+      });
+      fee = coinsSelection.fee;
+    } else {
+      fee = await this.props.stores.transactions.calculateTransactionFee({
+        walletId,
+        address,
+        amount,
+      });
+    }
+    return fee;
+  };
+
+  openDialog = (params, isHardwareWallet, walletId) => {
+    this.props.actions.dialogs.open.trigger({
+      dialog: params.dialog,
+    })
+    if (isHardwareWallet) {
+      this.props.stores.hardwareWallets.initiateTransaction({ walletId })
+    }
+  }
+
   render() {
     const { intl } = this.context;
     const {
@@ -39,8 +74,9 @@ export default class WalletSendPage extends Component<Props> {
       active,
       isHardwareWalletRoute,
     } = wallets;
-    const { hwDeviceStatus } = hardwareWallets;
+    const { hardwareWalletsConnectionData, hwDeviceStatus } = hardwareWallets;
     const activeWallet = isHardwareWalletRoute ? activeHardwareWallet : active;
+    const isHardwareWallet = activeWallet.isHardwareWallet;
 
     // Guard against potential null values
     if (!activeWallet)
@@ -54,20 +90,21 @@ export default class WalletSendPage extends Component<Props> {
         currentNumberFormat={profile.currentNumberFormat}
         validateAmount={validateAmount}
         calculateTransactionFee={(address: string, amount: number) =>
-          calculateTransactionFee({
+          this.calculateTransactionFee({
             walletId: activeWallet.id,
             address,
             amount,
+            isHardwareWallet
           })
         }
         walletAmount={activeWallet.amount}
         addressValidator={isValidAddress}
         isDialogOpen={uiDialogs.isOpen}
-        openDialogAction={actions.dialogs.open.trigger}
+        openDialogAction={(params) => this.openDialog(params, isHardwareWallet, activeWallet.id)}
         isRestoreActive={activeWallet.isRestoring}
         onExternalLinkClick={app.openExternalLink}
         hwDeviceStatus={hwDeviceStatus}
-        isHardwareWallet={activeWallet.isHardwareWallet}
+        isHardwareWallet={isHardwareWallet}
       />
     );
   }
