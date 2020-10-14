@@ -117,11 +117,15 @@
 
       &.fixedTableHeader {
         background-color: var(--theme-bordered-box-background-color);
+        border-left: var(--theme-bordered-box-border);
+        border-right: var(--theme-bordered-box-border);
         box-shadow: 0 10px 10px -10px var(--theme-staking-stake-pool-tooltip-shadow-color);
         height: 40px;
+        left: 104px;
+        padding: 0 20px;
         position: fixed;
         top: 204px;
-        width: calc(100% - 166px);
+        width: calc(100% - 124px);
         z-index: 99;
 
         tr {
