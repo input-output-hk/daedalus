@@ -233,7 +233,8 @@
     "source-map-support": "0.5.19",
     "spectron-fake-dialog": "0.0.1",
     "unorm": "1.6.0",
-    "validator": "13.1.17"
+    "validator": "13.1.17",
+    "wallet-js": "https://github.com/input-output-hk/chain-wallet-libs/releases/download/v0.5.0-pre4/chain-wallet-libs-v0.5.0-pre4-bundler.tgz"
   },
   "devEngines": {
     "node": ">=12.13.0",
