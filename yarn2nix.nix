@@ -17,14 +17,14 @@ let
     main = "main/index.js";
   };
   newPackagePath = builtins.toFile "package.json" (builtins.toJSON newPackage);
-  windowsElectronVersion = "8.2.2";
+  windowsElectronVersion = "9.3.2";
   windowsElectron = fetchurl {
     url = "https://github.com/electron/electron/releases/download/v${windowsElectronVersion}/electron-v${windowsElectronVersion}-win32-x64.zip";
-    sha256 = "0v9y8qih494k4a5q9s3jgvkdi0nbp60hr0v0w5cxlki79z8gk5ax";
+    sha256 = "3a69de7798f098fcd18b791295b69df0ba6e1f4b5ae710708ea42b549e78ea37";
   };
   checksums = fetchurl {
     url = "https://github.com/electron/electron/releases/download/v${windowsElectronVersion}/SHASUMS256.txt";
-    sha256 = "1z9wcgqjjany2ny4k771835m190vyp8h5gjbh898mf81mk7h3805";
+    sha256 = "cdc2a54179bd29cd2b8ba5499c32c9ddef97c8bfe5358e10da1569a1c532b621";
   };
   electron-cache = runCommand "electron-cache" {} ''
     mkdir $out

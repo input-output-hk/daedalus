@@ -62,7 +62,7 @@ let
     ]) ++ (if (pkgs.stdenv.hostPlatform.system == "x86_64-darwin") then [
       darwin.apple_sdk.frameworks.CoreServices
     ] else [
-      daedalusPkgs.electron8
+      daedalusPkgs.electron9
       winePackages.minimal
     ])
     ) ++ (pkgs.lib.optionals (nodeImplementation == "cardano") [
@@ -122,7 +122,7 @@ let
       }
       yarn install
       ${pkgs.lib.optionalString (pkgs.stdenv.hostPlatform.system != "x86_64-darwin") ''
-        ln -svf ${daedalusPkgs.electron8}/bin/electron ./node_modules/electron/dist/electron
+        ln -svf ${daedalusPkgs.electron9}/bin/electron ./node_modules/electron/dist/electron
         ln -svf ${pkgs.chromedriver}/bin/chromedriver ./node_modules/electron-chromedriver/bin/chromedriver
       ''}
       echo 'jq < $LAUNCHER_CONFIG'
