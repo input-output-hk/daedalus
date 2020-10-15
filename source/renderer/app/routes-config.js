@@ -30,17 +30,6 @@ export const ROUTES = {
     SETTINGS: '/wallets/:id/settings',
     UTXO: '/wallets/:id/utxo',
   },
-  HARDWARE_WALLETS: {
-    ROOT: '/hardware-wallets',
-    ADD: '/hardware-wallets/add',
-    PAGE: '/hardware-wallets/:id/:page',
-    SUMMARY: '/hardware-wallets/:id/summary',
-    TRANSACTIONS: '/hardware-wallets/:id/transactions',
-    SEND: '/hardware-wallets/:id/send',
-    RECEIVE: '/hardware-wallets/:id/receive',
-    SETTINGS: '/hardware-wallets/:id/settings',
-    UTXO: '/hardware-wallets/:id/utxo',
-  },
   SETTINGS: {
     ROOT: '/settings',
     GENERAL: '/settings/general',

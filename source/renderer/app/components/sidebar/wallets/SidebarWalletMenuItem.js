@@ -72,7 +72,6 @@ export default class SidebarWalletMenuItem extends Component<Props> {
           <div className={styles.topContainer}>
             <div className={styles.title}>{title}</div>
             {isHardwareWallet && (
-              // @TODO - Remove check once HW are listed along with regular wallets
               <SVGInline
                 svg={hardwareWalletsIcon}
                 className={hwIconStyles}

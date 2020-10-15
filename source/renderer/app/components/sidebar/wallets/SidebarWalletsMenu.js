@@ -10,10 +10,7 @@ import SidebarSubMenu from '../SidebarMenu';
 import styles from './SidebarWalletsMenu.scss';
 import addWalletIcon from '../../../assets/images/sidebar/add-wallet-ic.inline.svg';
 import SidebarWalletMenuItem from './SidebarWalletMenuItem';
-import type {
-  SidebarHardwareWalletType,
-  SidebarWalletType,
-} from '../../../types/sidebarTypes';
+import type { SidebarWalletType } from '../../../types/sidebarTypes';
 
 const messages = defineMessages({
   addAdaWallet: {
@@ -24,7 +21,7 @@ const messages = defineMessages({
 });
 
 type Props = {
-  wallets: Array<SidebarWalletType | SidebarHardwareWalletType>,
+  wallets: Array<SidebarWalletType>,
   isActiveWallet: Function,
   onAddWallet: Function,
   onWalletItemClick: Function,
@@ -32,7 +29,6 @@ type Props = {
   isAddWalletButtonActive: boolean,
   isIncentivizedTestnet: boolean,
   isShelleyActivated: boolean,
-  isHardwareWalletsMenu?: boolean,
 };
 
 @observer

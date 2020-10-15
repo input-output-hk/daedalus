@@ -463,6 +463,7 @@ export default class WalletsStore extends Store {
         },
       });
 
+      // @TODO - check if everything refreshed as is expected
       console.debug('>>> WALLET CREATED: ', walelt);
 
       if (wallet) {

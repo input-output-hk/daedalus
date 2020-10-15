@@ -66,7 +66,6 @@ export default class MainLayout extends Component<InjectedContainerProps> {
 
     const sidebarMenus = {
       wallets: appWallets,
-      hardwareWallets: [], // @TODO - remove once I want to remove HW sidebar section
     };
 
     const sidebarComponent = (

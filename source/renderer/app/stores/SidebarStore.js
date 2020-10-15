@@ -77,7 +77,6 @@ export default class SidebarStore extends Store {
       [key: string]: boolean | Function,
     } = {
       [categories.WALLETS.name]: true,
-      [categories.HARDWARE_WALLETS.name]: isDev, // @TODO - remove
       [categories.PAPER_WALLET_CREATE_CERTIFICATE.name]: false,
       [categories.STAKING_DELEGATION_COUNTDOWN.name]: isShelleyPending,
       [categories.STAKING.name]: isShelleyActivated,

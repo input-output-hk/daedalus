@@ -22,8 +22,6 @@ import StakingRewardsPage from './containers/staking/StakingRewardsPage';
 import StakePoolsListPage from './containers/staking/StakePoolsListPage';
 import StakingCountdownPage from './containers/staking/StakingCountdownPage';
 import RedeemItnRewardsContainer from './containers/staking/RedeemItnRewardsContainer';
-import HardwareWallet from './containers/hardware-wallet/HardwareWallet';
-import HardwareWalletAddPage from './containers/hardware-wallet/HardwareWalletAddPage';
 import Wallet from './containers/wallet/Wallet';
 import WalletAddPage from './containers/wallet/WalletAddPage';
 import WalletSummaryPage from './containers/wallet/WalletSummaryPage';
@@ -108,38 +106,6 @@ export const Routes = withRouter(() => (
           path={ROUTES.PAPER_WALLET_CREATE_CERTIFICATE}
           component={PaperWalletCreateCertificatePage}
         />
-        <Route
-          path={ROUTES.HARDWARE_WALLETS.ADD}
-          component={HardwareWalletAddPage}
-        />
-        <Route path={ROUTES.HARDWARE_WALLETS.ROOT}>
-          <HardwareWallet>
-            <Route
-              path={ROUTES.HARDWARE_WALLETS.SUMMARY}
-              component={WalletSummaryPage}
-            />
-            <Route
-              path={ROUTES.HARDWARE_WALLETS.TRANSACTIONS}
-              component={WalletTransactionsPage}
-            />
-            <Route
-              path={ROUTES.HARDWARE_WALLETS.SEND}
-              component={WalletSendPage}
-            />
-            <Route
-              path={ROUTES.HARDWARE_WALLETS.RECEIVE}
-              component={WalletReceivePage}
-            />
-            <Route
-              path={ROUTES.HARDWARE_WALLETS.SETTINGS}
-              component={WalletSettingsPage}
-            />
-            <Route
-              path={ROUTES.HARDWARE_WALLETS.UTXO}
-              component={WalletUtxoPage}
-            />
-          </HardwareWallet>
-        </Route>
         <Route path={ROUTES.STAKING.ROOT}>
           <Staking>
             <Route
