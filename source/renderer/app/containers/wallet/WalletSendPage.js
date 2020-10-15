@@ -69,6 +69,7 @@ export default class WalletSendPage extends Component<Props> {
     const { actions } = this.props;
     const { isValidAddress } = wallets;
     const { calculateTransactionFee, validateAmount } = transactions;
+    const { hwDeviceStatus } = hardwareWallets;
     const activeWallet = wallets.active;
 
     // Guard against potential null values

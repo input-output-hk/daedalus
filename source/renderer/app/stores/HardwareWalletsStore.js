@@ -262,7 +262,7 @@ export default class HardwareWalletsStore extends Store {
 
     const activeHardwareWalletId = get(
       this.stores,
-      ['wallets', 'activeHardwareWallet', 'id'],
+      ['wallets', 'active', 'id'],
       null
     );
     const hardwareWalletsConnectionData = this.hardwareWalletsConnectionData;
@@ -363,7 +363,7 @@ export default class HardwareWalletsStore extends Store {
     const { deviceType, path, deviceName, deviceId } = transportDevice;
     const isTrezor = deviceType === DeviceTypes.TREZOR;
 
-    const { activeHardwareWallet } = this.stores.wallets;
+    const { active: activeHardwareWallet } = this.stores.wallets;
     try {
       const extendedPublicKey = await getExtendedPublicKeyChannel.request({
         path: "1852'/1815'/0'", // Shelley 1852 ADA 1815 indicator for account '0'
@@ -648,7 +648,7 @@ export default class HardwareWalletsStore extends Store {
     // If Hardware Wallet exist and connected with device, set current connection status to LC
     const activeHardwareWalletId = get(
       this.stores,
-      ['wallets', 'activeHardwareWallet', 'id'],
+      ['wallets', 'active', 'id'],
       null
     );
 
