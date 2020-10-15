@@ -60,7 +60,7 @@ export default class NewsItem extends Component<Props, State> {
       const { newsItemCollapsible } = this.state;
       if (type === NewsTypes.INFO || type === NewsTypes.ANNOUNCEMENT) {
         if (newsItemCollapsible) {
-          this.setState(prevState => ({
+          this.setState((prevState) => ({
             newsItemExpanded: !prevState.newsItemExpanded,
           }));
         } else {
@@ -144,7 +144,7 @@ export default class NewsItem extends Component<Props, State> {
             </div>
             <ButtonLink
               className={styles.newsItemActionBtn}
-              onClick={e => this.onProceedNewsAction(e)}
+              onClick={(e) => this.onProceedNewsAction(e)}
               skin={ButtonSkin}
               label={newsItem.action.label}
               linkProps={{

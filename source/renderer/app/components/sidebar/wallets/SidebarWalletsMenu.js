@@ -70,7 +70,7 @@ export default class SidebarWalletsMenu extends Component<Props> {
             renderThumbVertical={this.renderThumb}
             hideTracksWhenNotNeeded
           >
-            {wallets.map(wallet => (
+            {wallets.map((wallet) => (
               <SidebarWalletMenuItem
                 title={wallet.title}
                 info={wallet.info}

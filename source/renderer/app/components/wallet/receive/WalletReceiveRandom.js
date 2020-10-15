@@ -99,7 +99,7 @@ export default class WalletReceiveRandom extends Component<Props, State> {
   passwordField: Input;
 
   toggleUsedAddresses = () => {
-    this.setState(prevState => ({ showUsed: !prevState.showUsed }));
+    this.setState((prevState) => ({ showUsed: !prevState.showUsed }));
   };
 
   form = new ReactToolboxMobxForm(
@@ -148,7 +148,7 @@ export default class WalletReceiveRandom extends Component<Props, State> {
 
   submit = () => {
     this.form.submit({
-      onSuccess: form => {
+      onSuccess: (form) => {
         const { spendingPassword } = form.values();
         this.props.onGenerateAddress(spendingPassword || '');
         form.clear();
@@ -211,7 +211,7 @@ export default class WalletReceiveRandom extends Component<Props, State> {
           <Input
             className={styles.spendingPassword}
             {...passwordField.bind()}
-            ref={input => {
+            ref={(input) => {
               this.passwordField = input;
             }}
             error={passwordField.error}

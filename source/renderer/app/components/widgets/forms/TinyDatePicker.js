@@ -113,7 +113,7 @@ export default class TinyDatePicker extends Component<Props> {
           value={value ? moment(value).toDate() : null}
           onViewModeChange={this.ensureResetButtonExistence}
           isValidDate={isValidDate}
-          onChange={selectedDate => {
+          onChange={(selectedDate) => {
             if (typeof selectedDate === 'string') {
               if (!selectedDate) {
                 onChange && onChange(selectedDate);
@@ -122,7 +122,7 @@ export default class TinyDatePicker extends Component<Props> {
               onChange && onChange(selectedDate.format('YYYY-MM-DD'));
             }
           }}
-          renderInput={props => (
+          renderInput={(props) => (
             <>
               <TinyInput
                 {...props}
@@ -133,7 +133,7 @@ export default class TinyDatePicker extends Component<Props> {
                   props.onFocus(...args);
                   this.ensureResetButtonExistence();
                 }}
-                onInput={evt => {
+                onInput={(evt) => {
                   const inputDate = moment(evt.target.value, dateFormat);
                   if (
                     !inputDate.isValid() ||

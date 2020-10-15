@@ -24,4 +24,4 @@ export const testSync = (apiMethod: Function) => {
 
 // helper code for deferring API call execution
 export const wait = (ms: number): Promise<void> =>
-  new Promise(resolve => setTimeout(resolve, ms));
+  new Promise((resolve) => setTimeout(resolve, ms));

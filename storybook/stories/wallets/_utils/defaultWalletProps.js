@@ -55,9 +55,7 @@ export const defaultProps = {
   onStopEditing: () => {},
   openDialogAction: () => {},
   walletName: text('Wallet Name', 'Wallet Name'),
-  spendingPasswordUpdateDate: moment()
-    .subtract(1, 'month')
-    .toDate(),
+  spendingPasswordUpdateDate: moment().subtract(1, 'month').toDate(),
   changeSpendingPasswordDialog: (
     <ChangeSpendingPasswordDialog
       walletName={text('Wallet Name', 'Wallet Name')}

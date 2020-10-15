@@ -12,7 +12,7 @@ import menuIconClosed from '../../../../source/renderer/app/assets/images/menu-i
 import NewsFeedIcon from '../../../../source/renderer/app/components/widgets/NewsFeedIcon';
 import { isShelleyTestnetTheme } from '../../_support/utils';
 
-const topBarTestEnv = currentTheme => (
+const topBarTestEnv = (currentTheme) => (
   <TopBar
     formattedWalletAmount={formattedWalletAmount}
     currentRoute=""
@@ -35,7 +35,7 @@ const topBarTestEnv = currentTheme => (
   </TopBar>
 );
 
-const topBarItnEnv = currentTheme => (
+const topBarItnEnv = (currentTheme) => (
   <TopBar
     formattedWalletAmount={formattedWalletAmount}
     currentRoute=""
@@ -58,7 +58,7 @@ const topBarItnEnv = currentTheme => (
   </TopBar>
 );
 
-const topBarProductionEnv = currentTheme => (
+const topBarProductionEnv = (currentTheme) => (
   <TopBar
     formattedWalletAmount={formattedWalletAmount}
     currentRoute=""
@@ -76,7 +76,7 @@ const topBarProductionEnv = currentTheme => (
 );
 
 storiesOf('Nodes|Environment', module)
-  .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
+  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   // ====== Stories ======
   .add('Testnet', (props: { currentTheme: string }) => (
     <SidebarLayout

@@ -84,7 +84,7 @@ export default class InlineEditingInput extends Component<Props, State> {
 
   submit = () => {
     this.validator.submit({
-      onSuccess: form => {
+      onSuccess: (form) => {
         const { inputField } = form.values();
         if (inputField !== this.props.inputFieldValue) {
           this.props.onSubmit(inputField);
@@ -178,10 +178,10 @@ export default class InlineEditingInput extends Component<Props, State> {
           onChange={inputField.onChange}
           onFocus={inputField.onFocus}
           onBlur={inputField.onBlur}
-          onKeyDown={event => this.handleInputKeyDown(event)}
+          onKeyDown={(event) => this.handleInputKeyDown(event)}
           error={isActive || inputBlocked ? inputField.error : null}
           disabled={!isActive}
-          ref={input => {
+          ref={(input) => {
             this.inputField = input;
           }}
           skin={InputSkin}

@@ -330,7 +330,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
   submit = () => {
     this.form.submit({
-      onSuccess: form => {
+      onSuccess: (form) => {
         const { onSubmit } = this.props;
         const { recoveryPhrase, walletName, spendingPassword } = form.values();
         const walletData: Object = {
@@ -353,7 +353,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
   resetForm = () => {
     const { form } = this;
     // Cancel all debounced field validations
-    form.each(field => {
+    form.each((field) => {
       field.debouncedValidation.cancel();
     });
     form.reset();
@@ -573,7 +573,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
 
         <Autocomplete
           {...recoveryPhraseField.bind()}
-          ref={autocomplete => {
+          ref={(autocomplete) => {
             this.recoveryPhraseAutocomplete = autocomplete;
           }}
           label={

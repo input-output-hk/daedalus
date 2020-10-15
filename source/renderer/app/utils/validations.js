@@ -50,7 +50,7 @@ export const isUnicaseString = (password: string) =>
   // We require at least one unicase letter
   containsUnicaseLetter(password) &&
   // Every char has to belong to the support caseless categories
-  every(password.split(''), char => isCaselessString(char));
+  every(password.split(''), (char) => isCaselessString(char));
 
 /**
  * Enforces passwords without spaces and a minimum of 10 characters.
