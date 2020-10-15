@@ -15,6 +15,7 @@ Changelog
 
 ### Chores
 
+- Update electron and related packages ([PR 2206](https://github.com/input-output-hk/daedalus/pull/2206))
 - Update Nix installation instructions ([PR 2200](https://github.com/input-output-hk/daedalus/pull/2200))
 - Updated `cardano-wallet` to revision `be40d5f2` which includes `cardano-node` 1.21.1 ([PR 2200](https://github.com/input-output-hk/daedalus/pull/2200))
 - Dependency update ([PR 2190](https://github.com/input-output-hk/daedalus/pull/2190))
