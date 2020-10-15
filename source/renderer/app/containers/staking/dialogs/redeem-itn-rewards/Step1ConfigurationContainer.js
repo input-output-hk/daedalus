@@ -34,7 +34,9 @@ export default class Step1ConfigurationContainer extends Component<Props> {
         onBack={onBack}
         onClose={onClose}
         onContinue={onConfigurationContinue.trigger}
-        onSelectWallet={walletId => onSelectRedeemWallet.trigger({ walletId })}
+        onSelectWallet={(walletId) =>
+          onSelectRedeemWallet.trigger({ walletId })
+        }
         suggestedMnemonics={validWords}
         wallet={redeemWallet}
         wallets={allWallets}

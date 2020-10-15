@@ -60,7 +60,7 @@ export default class Navigation extends Component<Props> {
               label={label}
               icon={icon}
               isActive={isActiveNavItem(id, item)}
-              onChange={i => onNavItemClick(i)}
+              onChange={(i) => onNavItemClick(i)}
               activeItem={activeItem}
               options={item.options}
               hasNotification={hasNotification}

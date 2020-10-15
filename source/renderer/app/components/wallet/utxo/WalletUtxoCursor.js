@@ -33,8 +33,9 @@ export default class WalletUtxoCursor extends Component<CursorProps> {
         className={styles.component}
       >
         <path
-          d={`M 0.0,0 h ${offsetWidth ||
-            0} v ${verticalPosition} h -${offsetWidth || 0} Z`}
+          d={`M 0.0,0 h ${offsetWidth || 0} v ${verticalPosition} h -${
+            offsetWidth || 0
+          } Z`}
         />
       </g>
     );

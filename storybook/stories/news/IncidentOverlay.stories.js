@@ -9,7 +9,7 @@ import { dateOptions } from '../_support/profileSettings';
 import { DATE_ENGLISH_OPTIONS } from '../../../source/renderer/app/config/profileConfig';
 
 storiesOf('News|Overlays', module)
-  .addDecorator(story => (
+  .addDecorator((story) => (
     <StoryDecorator>
       {story({
         action: {
@@ -29,7 +29,7 @@ storiesOf('News|Overlays', module)
     </StoryDecorator>
   ))
   .addDecorator(withKnobs)
-  .add('Incident Overlay', props => (
+  .add('Incident Overlay', (props) => (
     <IncidentOverlay
       incident={props}
       onOpenExternalLink={action('onOpenExternalLink')}
@@ -41,7 +41,7 @@ storiesOf('News|Overlays', module)
       )}
     />
   ))
-  .add('Incident - Themed', props => (
+  .add('Incident - Themed', (props) => (
     <IncidentOverlay
       incident={{
         ...props,
@@ -56,7 +56,7 @@ storiesOf('News|Overlays', module)
       )}
     />
   ))
-  .add('Incident - Grey', props => (
+  .add('Incident - Grey', (props) => (
     <IncidentOverlay
       incident={{
         ...props,

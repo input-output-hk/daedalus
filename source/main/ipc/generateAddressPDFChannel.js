@@ -40,7 +40,7 @@ export const handleAddressPDFRequests = () => {
           author,
         } = request;
 
-        const readAssetSync = p => fs.readFileSync(path.join(__dirname, p));
+        const readAssetSync = (p) => fs.readFileSync(path.join(__dirname, p));
         let fontRegular;
         let fontMedium;
 
@@ -90,13 +90,10 @@ export const handleAddressPDFRequests = () => {
           }).fillColor(textColor);
 
           // Title
-          doc
-            .font(fontBufferMedium)
-            .fontSize(18)
-            .text(title.toUpperCase(), {
-              align: 'center',
-              characterSpacing: 2,
-            });
+          doc.font(fontBufferMedium).fontSize(18).text(title.toUpperCase(), {
+            align: 'center',
+            characterSpacing: 2,
+          });
 
           // Creation date
           doc
@@ -118,21 +115,15 @@ export const handleAddressPDFRequests = () => {
           doc.moveDown();
 
           // Address
-          doc
-            .font(fontBufferMono)
-            .fontSize(19)
-            .text(address, {
-              align: 'center',
-              characterSpacing: 1.5,
-            });
+          doc.font(fontBufferMono).fontSize(19).text(address, {
+            align: 'center',
+            characterSpacing: 1.5,
+          });
 
           if (note) {
             doc.moveDown();
             // Note title
-            doc
-              .font(fontBufferRegular)
-              .fontSize(14)
-              .text(noteLabel);
+            doc.font(fontBufferRegular).fontSize(14).text(noteLabel);
 
             // Note
             doc.font(fontBufferUnicode).text(note);

@@ -51,7 +51,7 @@ export default class DeleteWalletDialogContainer extends Component<Props> {
           deleteWalletRequest.reset();
         }}
         confirmationValue={dialogData.confirmationValue}
-        onConfirmationValueChange={confirmationValue =>
+        onConfirmationValueChange={(confirmationValue) =>
           updateDataForActiveDialog.trigger({
             data: { confirmationValue },
           })

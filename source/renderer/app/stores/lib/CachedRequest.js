@@ -47,7 +47,7 @@ export default class CachedRequest<Result, Error> extends Request<
     // Issue api call & save it as promise that is handled to update the results of the operation
     this.promise = new Promise((resolve, reject) => {
       this._method(...callArgs)
-        .then(result => {
+        .then((result) => {
           setTimeout(
             action(() => {
               this.result = result;
@@ -63,7 +63,7 @@ export default class CachedRequest<Result, Error> extends Request<
           return result;
         })
         .catch(
-          action(error => {
+          action((error) => {
             setTimeout(
               action(() => {
                 this.error = error;
@@ -94,7 +94,7 @@ export default class CachedRequest<Result, Error> extends Request<
   }
 
   removeCacheForCallWith(...args: Array<any>): Array<ApiCallType> {
-    return remove(this._apiCalls, c => isEqual(c.args, args));
+    return remove(this._apiCalls, (c) => isEqual(c.args, args));
   }
 
   _addApiCall(args: Array<any>): ApiCallType {
@@ -104,7 +104,7 @@ export default class CachedRequest<Result, Error> extends Request<
   }
 
   _findApiCall(args: Array<any>): ?ApiCallType {
-    return this._apiCalls.find(c => isEqual(c.args, args));
+    return this._apiCalls.find((c) => isEqual(c.args, args));
   }
 
   reset(): CachedRequest<Result, Error> {

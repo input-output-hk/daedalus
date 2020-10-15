@@ -145,7 +145,7 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
 
   submit = () => {
     this.form.submit({
-      onSuccess: form => {
+      onSuccess: (form) => {
         const { spendingPassword } = form.values();
         this.props.onConfirm(spendingPassword);
       },

@@ -174,7 +174,7 @@ export default class MnemonicsDialog extends Component<Props> {
               messages.autocompleteNoResults
             )}
             skin={AutocompleteSkin}
-            onChange={enteredMnemonics => {
+            onChange={(enteredMnemonics) => {
               recoveryPhraseField.set(enteredMnemonics);
               onSetWalletMnemonics(enteredMnemonics);
             }}
