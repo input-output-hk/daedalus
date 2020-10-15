@@ -44,7 +44,7 @@ export default class WalletsDropdownOption extends Component<WalletOption> {
       return (
         <div className={styles.topRow}>
           <div className={styles.topRowTicker}>
-            {isSyncing
+            {isSyncing && syncingLabel
               ? this.renderLabelSyncing(label, syncingLabel)
               : this.renderLabel(label)
             }
