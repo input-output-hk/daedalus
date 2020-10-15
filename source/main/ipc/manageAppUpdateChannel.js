@@ -80,7 +80,7 @@ export const handleManageAppUpdateRequests = (window: BrowserWindow) => {
     return true;
   };
 
-  const installUpdate = async filePath => {
+  const installUpdate = async (filePath) => {
     return new Promise((resolve, reject) => {
       const { name: functionPrefix } = installUpdate;
       response(null, functionPrefix, 'installation begin.');
@@ -88,7 +88,7 @@ export const handleManageAppUpdateRequests = (window: BrowserWindow) => {
       fs.chmodSync(filePath, 0o777);
       const updater = spawn(updateRunnerBin, [filePath]);
       let success = true;
-      updater.stdout.on('data', progressData => {
+      updater.stdout.on('data', (progressData) => {
         const info = progressData.toString().split(/\n/);
         const progress = info.reduce((prog, infoItem) => {
           const [, progressStr] = infoItem.split('PROG ');
@@ -106,12 +106,12 @@ export const handleManageAppUpdateRequests = (window: BrowserWindow) => {
           progress,
         });
       });
-      updater.stderr.on('data', progressData => {
+      updater.stderr.on('data', (progressData) => {
         response(null, functionPrefix, 'installation progress.', {
           info: progressData.toString(),
         });
       });
-      updater.on('close', code => {
+      updater.on('close', (code) => {
         if (code !== 0) {
           success = false;
           logger.info(`updater closed with ${code}`);
@@ -128,14 +128,14 @@ export const handleManageAppUpdateRequests = (window: BrowserWindow) => {
           info: 'stdio closed',
         });
       });
-      updater.on('error', error => {
+      updater.on('error', (error) => {
         success = false;
         logger.error(`on error with ${error}`);
         reject(
           response(false, functionPrefix, 'installation failed', { error })
         );
       });
-      updater.on('exit', code => {
+      updater.on('exit', (code) => {
         if (code !== 0) {
           success = false;
           logger.info(`updater exited with ${code}`);

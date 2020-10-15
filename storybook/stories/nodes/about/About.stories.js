@@ -10,7 +10,7 @@ storiesOf('Nodes|About', module)
   .addDecorator((story, context) => (
     <StoryDecorator>{withKnobs(story, context)}</StoryDecorator>
   ))
-  .add('About Dialog', props => {
+  .add('About Dialog', (props) => {
     aboutDialogProps.stores.app.environment.os = props.osName;
     return <AboutDialog {...aboutDialogProps} />;
   });

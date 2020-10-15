@@ -114,11 +114,11 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
     const { onExportCsv } = this.props;
     const { intl } = this.context;
     const exportedHeader = [
-      ...availableTableHeaders.map(header => header.title),
+      ...availableTableHeaders.map((header) => header.title),
       intl.formatMessage(messages.tableHeaderDate),
     ];
     const date = moment().format('YYYY-MM-DDTHHmmss.0SSS');
-    const exportedBody = sortedRewards.map(reward => {
+    const exportedBody = sortedRewards.map((reward) => {
       const rewardWallet = get(reward, 'wallet');
       const isRestoring = get(reward, 'isRestoring');
       const rewardAmount = get(reward, 'reward').toFormat(
@@ -167,7 +167,7 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
         <SVGInline svg={downloadIcon} className={styles.downloadIcon} />
       </>
     );
-    const exportCsvButtonClasses = ctx =>
+    const exportCsvButtonClasses = (ctx) =>
       classNames([
         'primary',
         styles.actionButton,
@@ -176,7 +176,7 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
 
     return (
       <StakingPageScrollContext.Consumer>
-        {context => (
+        {(context) => (
           <div className={styles.component}>
             <div className={styles.headerWrapper}>
               <div className={styles.title}>
@@ -204,7 +204,7 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
                 <table>
                   <thead>
                     <tr>
-                      {map(availableTableHeaders, tableHeader => {
+                      {map(availableTableHeaders, (tableHeader) => {
                         const isSorted = tableHeader.name === rewardsSortBy;
                         const sortIconClasses = classNames([
                           styles.sortIcon,

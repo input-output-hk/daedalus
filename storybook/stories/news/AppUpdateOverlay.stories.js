@@ -9,7 +9,7 @@ import { update, version, availableAppVersion } from './_utils/fakeDataUpdate';
 import { rangeMap } from '../../../source/renderer/app/utils/numbers';
 
 storiesOf('News|Overlays', module)
-  .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
+  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .addDecorator(withKnobs)
   .add('Update', ({ locale }: { locale: string }) => {
     const scenario = radios(

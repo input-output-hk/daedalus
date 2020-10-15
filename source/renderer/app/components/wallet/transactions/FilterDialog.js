@@ -353,7 +353,7 @@ export default class FilterDialog extends Component<Props> {
           <div className={styles.typeCheckbox}>
             <TinyCheckbox
               {...incomingCheckboxField.bind()}
-              onChange={isSelected =>
+              onChange={(isSelected) =>
                 this.setFilterType('incomingChecked', isSelected)
               }
             />
@@ -361,7 +361,7 @@ export default class FilterDialog extends Component<Props> {
           <div className={styles.typeCheckbox}>
             <TinyCheckbox
               {...outgoingCheckboxField.bind()}
-              onChange={isSelected =>
+              onChange={(isSelected) =>
                 this.setFilterType('outgoingChecked', isSelected)
               }
             />

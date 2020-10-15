@@ -20,7 +20,7 @@ export const runUpdateThemesCLI = (pendingUpdates: PendingThemesUpdates) => {
 
   rl.prompt();
 
-  rl.on('line', line => {
+  rl.on('line', (line) => {
     switch (line.trim()) {
       case 'yes': {
         logMsg(chalk`\n{cyan Upating themes...}\n`);

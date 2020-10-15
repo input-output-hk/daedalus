@@ -37,7 +37,7 @@ storiesOf('Settings|General', module)
         if (param === 'locale') {
           updateParam({
             param: 'localeName',
-            value: findKey(locales, item => item === value),
+            value: findKey(locales, (item) => item === value),
           });
         }
       }}
@@ -58,7 +58,7 @@ storiesOf('Settings|General', module)
       }}
     />
   ))
-  .add('Terms of Service', props => {
+  .add('Terms of Service', (props) => {
     const termsOfUseSource = require(`../../../../source/renderer/app/i18n/locales/terms-of-use/${props.locale}.md`);
     return (
       <TermsOfUseSettings

@@ -156,7 +156,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
 
   submit = () => {
     this.form.submit({
-      onSuccess: form => {
+      onSuccess: (form) => {
         const { receiver, amount, amountToNaturalUnits } = this.props;
         const { passphrase } = form.values();
         const transactionData = {

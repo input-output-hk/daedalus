@@ -97,7 +97,7 @@ export default class Sidebar extends Component<Props> {
               ? menus.wallets.actions.onWalletItemClick
               : null
           }
-          isActiveWallet={id =>
+          isActiveWallet={(id) =>
             id === (menus.wallets ? menus.wallets.activeWalletId : null)
           }
           isAddWalletButtonActive={pathname === ROUTES.WALLETS.ADD}
@@ -123,7 +123,7 @@ export default class Sidebar extends Component<Props> {
               ? menus.hardwareWallets.actions.onHardwareWalletItemClick
               : null
           }
-          isActiveWallet={id =>
+          isActiveWallet={(id) =>
             id ===
             (menus.hardwareWallets
               ? menus.hardwareWallets.activeWalletId

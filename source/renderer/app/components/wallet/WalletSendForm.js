@@ -301,7 +301,7 @@ export default class WalletSendForm extends Component<Props, State> {
                   label={intl.formatMessage(messages.receiverLabel)}
                   {...receiverField.bind()}
                   error={receiverField.error}
-                  onChange={value => {
+                  onChange={(value) => {
                     this._isCalculatingFee = true;
                     receiverField.onChange(value || '');
                   }}
@@ -320,7 +320,7 @@ export default class WalletSendForm extends Component<Props, State> {
                     minimumFractionDigits: currencyMaxFractionalDigits,
                   }}
                   error={transactionFeeError || amountField.error}
-                  onChange={value => {
+                  onChange={(value) => {
                     this._isCalculatingFee = true;
                     amountField.onChange(value);
                   }}

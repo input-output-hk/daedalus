@@ -239,7 +239,7 @@ export default class WalletImportFileDialog extends Component<Props, State> {
                 <Input
                   type="text"
                   className={inputClasses}
-                  ref={input => {
+                  ref={(input) => {
                     this.importPathInput = input;
                   }}
                   skin={InputSkin}
