@@ -128,29 +128,6 @@ const messages = defineMessages({
     description:
       'Error message shown when invalid recovery phrase was entered.',
   },
-  errorMinDelegationFunds: {
-    id:
-      'staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFunds',
-    defaultMessage:
-      '!!!This wallet does not contain the minimum amount of {minDelegationFunds} ADA which is required for delegation to be available. Please select a wallet with <span>a minimum amount of {minDelegationFunds} ADA</span> and click continue.',
-    description:
-      'errorMinDelegationFunds Error Label on the delegation setup "choose wallet" step dialog.',
-  },
-  errorMinDelegationFundsRewardsOnly: {
-    id:
-      'staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFundsRewardsOnly',
-    defaultMessage:
-      '!!!This wallet contains only rewards balances so it cannot be delegated.',
-    description:
-      'errorMinDelegationFundsRewardsOnly Error Label on the delegation setup "choose wallet" step dialog.',
-  },
-  errorRestoringWallet: {
-    id: 'staking.delegationSetup.chooseWallet.step.dialog.errorRestoringWallet',
-    defaultMessage:
-      '!!!This wallet can’t be used for delegation while it’s being synced.',
-    description:
-      'RestoringWallet Error Label on the delegation setup "choose wallet" step dialog.',
-  },
   syncingWallet: {
     id: 'staking.delegationSetup.chooseWallet.step.dialog.syncingWallet',
     defaultMessage: '!!!syncing',
@@ -161,6 +138,7 @@ const messages = defineMessages({
 
 type Props = {
   error?: ?LocalizableError,
+  errorMessage?: ?LocalizableError,
   isSubmitting: boolean,
   mnemonicValidator: Function,
   onClose: Function,
@@ -171,7 +149,6 @@ type Props = {
   suggestedMnemonics: Array<string>,
   recoveryPhrase?: ?Array<string>,
   wallets: Array<Wallet>,
-  isWalletAcceptable: Function,
 };
 
 @observer
@@ -278,7 +255,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       openExternalLink,
       wallets,
       recoveryPhrase,
-      isWalletAcceptable,
+      errorMessage,
     } = this.props;
     let { error } = this.props;
     if (
@@ -333,23 +310,6 @@ export default class Step1ConfigurationDialog extends Component<Props> {
     );
 
     const closeButton = <DialogCloseButton onClose={onClose} />;
-
-    const selectedWallet: ?Wallet = wallets.find(
-      (current: Wallet) => current && current.id === walletId
-    );
-
-    const { amount, reward, isRestoring } = selectedWallet || {};
-
-    let errorMessage;
-    if (selectedWallet && isWalletAcceptable && !isWalletAcceptable(amount, reward)) {
-      // Wallet is restoring
-      if (isRestoring) errorMessage = messages.errorRestoringWallet;
-      // Wallet only has Reward balance
-      else if (!amount.isZero() && amount.equals(reward))
-        errorMessage = messages.errorMinDelegationFundsRewardsOnly;
-      // Wallet balance < min delegation funds
-      else errorMessage = messages.errorMinDelegationFunds;
-    }
 
     const minDelegationFunds = MIN_DELEGATION_FUNDS;
 
