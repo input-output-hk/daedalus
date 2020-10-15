@@ -57,12 +57,14 @@ export default class WalletsDropdown extends Component<Props> {
       detail,
       numberOfStakePools,
       delegatedStakePool,
+      isHardwareWallet,
     }: WalletOption) => (
       <WalletsDropdownOption
         label={label}
         numberOfStakePools={numberOfStakePools}
         detail={detail}
         delegatedStakePool={delegatedStakePool}
+        isHardwareWallet={isHardwareWallet}
       />
     ),
     selectionRenderer: ({
@@ -70,6 +72,7 @@ export default class WalletsDropdown extends Component<Props> {
       detail,
       numberOfStakePools,
       delegatedStakePool,
+      isHardwareWallet,
     }: WalletOption) => (
       <WalletsDropdownOption
         selected
@@ -77,6 +80,7 @@ export default class WalletsDropdown extends Component<Props> {
         numberOfStakePools={numberOfStakePools}
         detail={detail}
         delegatedStakePool={delegatedStakePool}
+        isHardwareWallet={isHardwareWallet}
       />
     ),
     skin: SelectSkin,
@@ -101,6 +105,7 @@ export default class WalletsDropdown extends Component<Props> {
         lastDelegationStakePoolId,
         pendingDelegations,
         isRestoring,
+        isHardwareWallet,
       }: Wallet) => {
         const hasPendingDelegations =
           pendingDelegations && pendingDelegations.length > 0;
@@ -116,6 +121,7 @@ export default class WalletsDropdown extends Component<Props> {
           value,
           numberOfStakePools,
           delegatedStakePool,
+          isHardwareWallet,
         };
       }
     );

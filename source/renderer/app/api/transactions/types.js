@@ -173,6 +173,7 @@ export type CoinSelectionsRequest = {
   walletId: string,
   address: string,
   amount: number,
+  poolId?: string,
 };
 
 export type CoinSelectionsResponse = {

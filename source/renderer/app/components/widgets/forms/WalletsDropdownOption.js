@@ -1,9 +1,11 @@
 // @flow
 import React, { Component } from 'react';
 import classnames from 'classnames';
+import SVGInline from 'react-svg-inline';
 import { getColorFromRange } from '../../../utils/colors';
 import styles from './WalletsDropdownOption.scss';
 import StakePool from '../../../domains/StakePool';
+import hardwareWalletsIcon from '../../../assets/images/hardware-wallet/connect-ic.inline.svg';
 
 export type WalletOption = {
   delegatedStakePool?: ?StakePool,
@@ -15,9 +17,19 @@ export type WalletOption = {
 
 export default class WalletsDropdownOption extends Component<WalletOption> {
   renderLabelAndTicker = () => {
-    const { delegatedStakePool, label, numberOfStakePools } = this.props;
+    const { delegatedStakePool, label, numberOfStakePools, isHardwareWallet } = this.props;
     if (!delegatedStakePool || !numberOfStakePools) {
-      return <div className={styles.label}>{label}</div>;
+      return (
+        <div className={styles.label}>
+          {label}
+          {isHardwareWallet && (
+            <SVGInline
+              svg={hardwareWalletsIcon}
+              className={styles.hardwareWalletsIcon}
+            />
+          )}
+        </div>
+      );
     }
 
     const { ranking, ticker } = delegatedStakePool;
@@ -27,7 +39,15 @@ export default class WalletsDropdownOption extends Component<WalletOption> {
         <div style={{ color }} className={styles.ticker}>
           [{ticker}]
         </div>
-        <div className={styles.label}>{label}</div>
+        <div className={styles.label}>
+          {label}
+          {isHardwareWallet && (
+            <SVGInline
+              svg={hardwareWalletsIcon}
+              className={styles.hardwareWalletsIcon}
+            />
+          )}
+        </div>
       </div>
     );
   };

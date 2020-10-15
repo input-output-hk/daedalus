@@ -346,6 +346,7 @@ export const handleHardwareWalletRequests = async (mainWindow) => {
       fee,
       ttl,
       networkId,
+      certificates,
     } = params;
     if (!TrezorConnect) {
       throw new Error('Device not connected!');
@@ -357,7 +358,8 @@ export const handleHardwareWalletRequests = async (mainWindow) => {
         fee,
         ttl,
         protocolMagic,
-        networkId
+        networkId,
+        certificates
       });
       return Promise.resolve(signedTransaction);
     } catch (e) {

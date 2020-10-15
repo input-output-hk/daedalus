@@ -55,3 +55,14 @@
   height: 100%;
   padding: 8px 20px;
 }
+
+.hardwareWalletsIcon {
+  svg {
+    height: 11px;
+    margin-left: 6px;
+    width: 11px;
+    path {
+      fill: var(--theme-staking-font-color-accent);
+    }
+  }
+}

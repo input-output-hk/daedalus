@@ -8,8 +8,7 @@ import LegacyBadge, {
 } from '../../notifications/LegacyBadge';
 import ProgressBar from '../../widgets/ProgressBar';
 import styles from './SidebarWalletMenuItem.scss';
-import disconnectedIcon from '../../../assets/images/hardware-wallet/disconnected.inline.svg';
-import hardwareWalletsIcon from '../../../assets/images/sidebar/hardware-wallet-ic.inline.svg';
+import hardwareWalletsIcon from '../../../assets/images/hardware-wallet/connect-ic.inline.svg';
 
 type Props = {
   title: string,
@@ -70,13 +69,15 @@ export default class SidebarWalletMenuItem extends Component<Props> {
       <button className={componentStyles} onClick={onClick}>
         <div className={styles.meta}>
           <div className={styles.topContainer}>
-            <div className={styles.title}>{title}</div>
-            {isHardwareWallet && (
-              <SVGInline
-                svg={hardwareWalletsIcon}
-                className={hwIconStyles}
-              />
-            )}
+            <div className={styles.title}>
+              {title}
+              {isHardwareWallet && (
+                <SVGInline
+                  svg={hardwareWalletsIcon}
+                  className={hwIconStyles}
+                />
+              )}
+            </div>
           </div>
           <div className={styles.info}>{isRestoreActive ? '-' : info}</div>
           {isRestoreActive ? <ProgressBar progress={restoreProgress} /> : null}

@@ -48,8 +48,8 @@
   :global {	
     .LoadingSpinner_component {	
       height: 24px;	
-      margin: initial;	
-      width: 24px;	
+      margin: 0 !important;
+      width: 24px;
 
       .LoadingSpinner_icon svg path {	
         fill: var(--theme-hardware-wallet-message-color) !important;	

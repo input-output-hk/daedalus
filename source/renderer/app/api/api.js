@@ -776,7 +776,8 @@ export default class AdaApi {
     logger.debug('AdaApi::selectCoins called', {
       parameters: filterLogData(request),
     });
-    const { walletId, address, amount, walletBalance, availableAmount, isLegacy } = request;
+    const { walletId, address, amount, walletBalance, availableAmount, isLegacy, poolId } = request;
+    // @TODO - Add PoolId to request once is defined by WBE
     try {
       const data = {
         payments: [

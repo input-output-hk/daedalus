@@ -219,26 +219,40 @@ export default class HardwareWalletsStore extends Store {
     walletId: string,
     address: string,
     amount: string,
+    poolId?: string, // Only for delegation
   }) => {
-    const { walletId, address, amount } = params;
+    const { walletId, address, amount, poolId } = params;
+    console.debug('>>> selectCoins: ', params);
     const wallet = this.stores.wallets.getWalletById(walletId);
     if (!wallet)
       throw new Error('Active wallet required before coins selections.');
-    const coinSelection = await this.selectCoinsRequest.execute({
-      walletId,
-      address,
-      amount,
-      walletBalance: wallet.amount,
-      availableBalance: wallet.availableAmount,
-      isLegacy: wallet.isLegacy,
-    });
-    runInAction('HardwareWalletsStore:: set coin selections', () => {
-      this.txSignRequest = {
-        recieverAddress: address,
-        coinSelection,
-      };
-    });
-    return coinSelection;
+
+    try {
+      const coinSelection = await this.selectCoinsRequest.execute({
+        walletId,
+        address,
+        amount,
+        poolId,
+        walletBalance: wallet.amount,
+        availableBalance: wallet.availableAmount,
+        isLegacy: wallet.isLegacy,
+      });
+      runInAction('HardwareWalletsStore:: set coin selections', () => {
+        this.txSignRequest = {
+          recieverAddress: address,
+          coinSelection,
+        };
+      });
+      return coinSelection;
+    } catch (e) {
+      runInAction(
+        'HardwareWalletsStore:: set Transaction verifying failed',
+        () => {
+          this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED;
+        }
+      );
+      throw e;
+    }
   };
 
   @action establishHardwareWalletConnection = async () => {
@@ -443,20 +457,32 @@ export default class HardwareWalletsStore extends Store {
   // Trezor - Shelley only
   @action _signTransactionTrezor = async (walletId: string) => {
     const { coinSelection, recieverAddress } = this.txSignRequest;
-    const { inputs, outputs, fee } = coinSelection;
-
-    console.debug('>>> SIGN TRANSACTION: ', {
-      fee: coinSelection,
-      string: formattedAmountToLovelace(coinSelection.fee.toString()), // OK
-      walletId,
-    })
-
     runInAction(
       'HardwareWalletsStore:: set Transaction verifying',
       () => {
         this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION;
       }
     );
+
+    // @TODO - remove once signing delegation transaction will call coins selection
+    // This case is covered in coins selection action
+    if (!coinSelection) {
+      runInAction(
+        'HardwareWalletsStore:: set Transaction verifying failed',
+        () => {
+          this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED;
+        }
+      );
+      throw new Error(`Missing Coins Selection for wallet: ${walletId}`);
+    }
+
+    const { inputs, outputs, fee, certificates } = coinSelection;
+
+    console.debug('>>> SIGN TRANSACTION: ', {
+      fee: coinSelection,
+      string: formattedAmountToLovelace(coinSelection.fee.toString()), // OK
+      walletId,
+    })
 
     let totalInputs = 0;
     const inputsData = map(inputs, input => {
@@ -481,6 +507,7 @@ export default class HardwareWalletsStore extends Store {
         ttl: '15000000',
         networkId: HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId,
         protocolMagic: HW_SHELLEY_CONFIG.NETWORK.MAINNET.protocolMagic,
+        certificates: certificates || [],
       });
 
       console.debug('>>> signedTransaction: ', signedTransaction);
@@ -497,6 +524,7 @@ export default class HardwareWalletsStore extends Store {
         }
       );
     } catch (error) {
+      console.debug('>>>> HERE: ', error);
       runInAction(
         'HardwareWalletsStore:: set Transaction verifying failed',
         () => {
@@ -597,9 +625,9 @@ export default class HardwareWalletsStore extends Store {
   };
 
   initiateTransaction = async (params: {
-    walletId: string
+    walletId: string,
   }) => {
-    console.debug('>>> INIT TX Send!');
+    console.debug('>>> INIT TX Send!: ', params);
     const { walletId } = params;
     const hardwareWalletConnectionData = get(this.hardwareWalletsConnectionData, walletId);
 
@@ -636,6 +664,7 @@ export default class HardwareWalletsStore extends Store {
       () => {
         this.hwDeviceStatus = HwDeviceStatuses.READY;
         this.txBody = null;
+        this.txSignRequest = {};
       }
     );
   };

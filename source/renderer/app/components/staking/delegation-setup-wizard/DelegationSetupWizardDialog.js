@@ -39,6 +39,8 @@ type Props = {
   futureEpochStartTime: string,
   currentLocale: string,
   getStakePoolById: Function,
+  isHardwareWallet: boolean,
+  hwDeviceStatus: string,
 };
 
 @observer
@@ -82,6 +84,8 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       isSubmitting,
       error,
       getStakePoolById,
+      isHardwareWallet,
+      hwDeviceStatus,
     } = this.props;
 
     const selectedWalletId = get(selectedWallet, 'id', null);
@@ -141,6 +145,8 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
             onBack={onBack}
             isSubmitting={isSubmitting}
             error={error}
+            isHardwareWallet={isHardwareWallet}
+            hwDeviceStatus={hwDeviceStatus}
           />
         );
         break;
