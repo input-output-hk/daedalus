@@ -126,7 +126,7 @@ export default class Step2ConfirmationDialog extends Component<Props> {
 
   submit = () => {
     this.form.submit({
-      onSuccess: form => {
+      onSuccess: (form) => {
         const { spendingPassword } = form.values();
         const { onContinue } = this.props;
         onContinue({ spendingPassword });

@@ -70,13 +70,13 @@ export default class WalletReceiveDialog extends Component<Props> {
 
   submit = () => {
     this.form.submit({
-      onSuccess: form => {
+      onSuccess: (form) => {
         const { noteInput } = form.values();
         const { onDownloadPDF, onClose } = this.props;
         onDownloadPDF(noteInput);
         onClose();
       },
-      onError: err => {
+      onError: (err) => {
         throw new Error(err);
       },
     });

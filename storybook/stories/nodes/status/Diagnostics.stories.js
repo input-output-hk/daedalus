@@ -34,7 +34,7 @@ const coreInfo = {
 };
 
 storiesOf('Nodes|Status', module)
-  .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
+  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .addDecorator(withKnobs)
 
   // ====== Stories ======

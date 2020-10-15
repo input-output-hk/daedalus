@@ -28,13 +28,13 @@ export const externalRequest = (
     const requestMethod = global[protocol].request;
     const request = requestMethod(options);
 
-    request.on('response', response => {
+    request.on('response', (response) => {
       response.setEncoding('utf8');
       let body = '';
-      response.on('data', chunk => {
+      response.on('data', (chunk) => {
         body += chunk;
       });
-      response.on('error', error => reject(error));
+      response.on('error', (error) => reject(error));
       response.on('end', () => {
         try {
           resolve(raw ? body : JSON.parse(body));
@@ -44,6 +44,6 @@ export const externalRequest = (
         }
       });
     });
-    request.on('error', error => reject(error));
+    request.on('error', (error) => reject(error));
     return request.end();
   });

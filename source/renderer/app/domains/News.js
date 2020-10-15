@@ -79,7 +79,7 @@ class NewsCollection {
 
   constructor(data: Array<News>) {
     // Filter news by platform and versions
-    const filteredNews = filter(data, newsItem => {
+    const filteredNews = filter(data, (newsItem) => {
       const availableTargetVersionRange = get(
         newsItem,
         ['target', 'daedalusVersion'],
@@ -103,7 +103,7 @@ class NewsCollection {
       );
     });
     const orderedNews = orderBy(filteredNews, 'date', 'desc');
-    const update = data.filter(item => item.type === NewsTypes.UPDATE)[0];
+    const update = data.filter((item) => item.type === NewsTypes.UPDATE)[0];
 
     runInAction(() => {
       this.all = orderedNews;
@@ -114,7 +114,7 @@ class NewsCollection {
   @computed get incident(): ?News {
     const incidents = filter(
       this.all,
-      item => item.type === NewsTypes.INCIDENT
+      (item) => item.type === NewsTypes.INCIDENT
     );
     const lastIncidentIndex =
       incidents.length > 0 ? incidents.length - 1 : null;
@@ -126,7 +126,7 @@ class NewsCollection {
   }
 
   @computed get alerts(): NewsTypesStateType {
-    const alerts = filter(this.all, item => item.type === NewsTypes.ALERT);
+    const alerts = filter(this.all, (item) => item.type === NewsTypes.ALERT);
     // Order alerts from newest to oldest
     const orderedAlerts = orderBy(alerts, 'date', 'asc');
 
@@ -141,7 +141,7 @@ class NewsCollection {
   @computed get announcements(): NewsTypesStateType {
     const announcements = filter(
       this.all,
-      item => item.type === NewsTypes.ANNOUNCEMENT && !item.read
+      (item) => item.type === NewsTypes.ANNOUNCEMENT && !item.read
     );
     const obj = new NewsCollection(announcements);
     return {
@@ -154,7 +154,7 @@ class NewsCollection {
   @computed get infos(): NewsTypesStateType {
     const infos = filter(
       this.all,
-      item => item.type === NewsTypes.INFO && !item.read
+      (item) => item.type === NewsTypes.INFO && !item.read
     );
 
     const obj = new NewsCollection(infos);
@@ -166,13 +166,13 @@ class NewsCollection {
   }
 
   @computed get unread(): Array<News> {
-    const unread = filter(this.all, item => !item.read);
+    const unread = filter(this.all, (item) => !item.read);
     // Order unread from newest to oldest
     return orderBy(unread, 'date', 'asc');
   }
 
   @computed get read(): Array<News> {
-    const read = filter(this.all, item => item.read);
+    const read = filter(this.all, (item) => item.read);
     // Order read from newest to oldest
     return orderBy(read, 'date', 'asc');
   }
