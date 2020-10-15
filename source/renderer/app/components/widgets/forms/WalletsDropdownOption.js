@@ -12,34 +12,45 @@ export type WalletOption = {
   label: string,
   numberOfStakePools?: number,
   selected?: boolean,
-  syncing?: boolean,
+  isSyncing?: boolean,
   syncingLabel?: string,
 };
 
 export default class WalletsDropdownOption extends Component<WalletOption> {
+  renderLabel = (label: string) => {
+    return (
+      <div className={styles.label}>{label}</div>
+    );
+  };
+
+  renderLabelSyncing = (label: string, syncingLabel: string) => {
+    return (
+      <div className={styles.label}>
+        {label}
+        <span className={styles.labelSync}> {syncingLabel}</span>
+      </div>
+    );
+  };
+
   renderLabelAndTicker = () => {
     const {
       delegatedStakePool,
       label,
       numberOfStakePools,
-      syncing,
+      isSyncing,
       syncingLabel,
     } = this.props;
     if (!delegatedStakePool || !numberOfStakePools) {
       return (
         <div className={styles.topRow}>
           <div className={styles.topRowTicker}>
-            {syncing ? (
-              <div className={styles.label}>
-                {label}
-                <span className={styles.labelSync}> {syncingLabel}</span>
-              </div>
-            ) : (
-              <div className={styles.label}>{label}</div>
-            )}
+            {isSyncing
+              ? this.renderLabelSyncing(label, syncingLabel)
+              : this.renderLabel(label)
+            }
           </div>
           <div className={styles.topRowSync}>
-            {syncing && (
+            {isSyncing && (
               <div className={styles.syncing}>
                 <LoadingSpinner />
               </div>

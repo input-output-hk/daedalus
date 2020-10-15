@@ -64,7 +64,7 @@ export default class WalletsDropdown extends Component<Props> {
       syncingLabel,
     }: WalletOption) => (
       <WalletsDropdownOption
-        syncing={syncing}
+        isSyncing={syncing}
         label={label}
         numberOfStakePools={numberOfStakePools}
         detail={detail}
@@ -82,7 +82,7 @@ export default class WalletsDropdown extends Component<Props> {
     }: WalletOption) => (
       <WalletsDropdownOption
         selected
-        syncing={syncing}
+        isSyncing={syncing}
         label={label}
         numberOfStakePools={numberOfStakePools}
         detail={detail}
