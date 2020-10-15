@@ -149,6 +149,10 @@ eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Ver
 eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libswiftshader_libEGL.dylib\" $LOG"
 eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libswiftshader_libGLESv2.dylib\" $LOG"
 
+# Sign native electron bindings
+eval "$SIGN_CMD \"$ABS_PATH/Contents/Resources/app/build/usb_bindings.node\" $LOG"
+eval "$SIGN_CMD \"$ABS_PATH/Contents/Resources/app/build/HID.node\" $LOG"
+
 # Sign the whole component deeply
 eval "$SIGN_CMD \"$ABS_PATH\" $LOG"
 
