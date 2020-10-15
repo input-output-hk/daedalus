@@ -19,6 +19,7 @@ import {
 import WalletTransactionsList from '../../../../source/renderer/app/components/wallet/transactions/WalletTransactionsList';
 import FilterButton from '../../../../source/renderer/app/components/wallet/transactions/FilterButton';
 import FilterDialog from '../../../../source/renderer/app/components/wallet/transactions/FilterDialog';
+import TinyButton from '../../../../source/renderer/app/components/widgets/forms/TinyButton';
 
 storiesOf('Wallets|Transactions', module)
   .addDecorator(WalletsWrapper)
@@ -29,6 +30,7 @@ storiesOf('Wallets|Transactions', module)
     'Transactions - With filter dialog open',
     ({ locale, numberFormat }: { locale: string, numberFormat: string }) => (
       <div>
+        <TinyButton label="Export CSV" />
         <FilterButton
           numberOfFilterDimensionsApplied={1}
           faded={false}

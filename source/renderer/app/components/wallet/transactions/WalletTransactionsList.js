@@ -173,11 +173,15 @@ export default class WalletTransactionsList extends Component<Props> {
   getExpandedTransactions = (): Array<any> =>
     Object.values(this.expandedTransactions);
 
-  renderGroup = (data: TransactionsGroup): Node => (
+  // renderGroup = (data: TransactionsGroup): Node => (
+  // @TX TODO
+  renderGroup = (data: TransactionsGroup) => (
     <div className={styles.groupDate}>{this.localizedDate(data.date)}</div>
   );
 
-  renderTransaction = (data: TransactionInfo): Node => {
+  // renderTransaction = (data: TransactionInfo): Node => {
+  // @TX TODO
+  renderTransaction = (data: TransactionInfo) => {
     const {
       deletePendingTransaction,
       formattedWalletAmount,

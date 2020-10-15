@@ -2,10 +2,14 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import WalletTransactions from '../../components/wallet/transactions/WalletTransactions';
-import WalletTransactionsList, {
-  WalletTransactionsListScrollContext,
-} from '../../components/wallet/transactions/WalletTransactionsList';
+// import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
+import FilterDialogContainer from '../dialogs/FilterDialogContainer';
+// /Users/danilo/iohk/daedalus/source/renderer/app/containers/wallet/dialogs/FilterDialogContainer.js
+// /Users/danilo/iohk/daedalus/source/renderer/app/components/wallet/transactions/TransactionsHeader.js
+import FilterDialog from './FilterDialog';
+import FilterButton from '../../components/wallet/transactions/FilterButton';
+import FilterResultInfo from '../../components/wallet/transactions/FilterResultInfo';
+import TinyButton from '../../components/widgets/forms/TinyButton';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { formattedWalletAmount } from '../../utils/formatters';
 import { getNumberOfFilterDimensionsApplied } from '../../utils/transaction';
@@ -20,14 +24,13 @@ export const messages = defineMessages({
   },
 });
 
-type Props = InjectedProps;
+type Props = {};
 type State = {
   isFilterButtonFaded: boolean,
 };
 
-@inject('stores', 'actions')
 @observer
-export default class WalletTransactionsPage extends Component<Props, State> {
+export default class TransactionsHeader extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -50,7 +53,7 @@ export default class WalletTransactionsPage extends Component<Props, State> {
     const { currentNumberFormat: numberFormat } = this.props.stores.profile;
 
     this.setState({ isFilterButtonFaded: false });
-    // dialogs.open.trigger({ dialog: FilterDialog });
+    dialogs.open.trigger({ dialog: FilterDialog });
     dialogs.updateDataForActiveDialog.trigger({
       data: {
         defaultFilterOptions,
@@ -73,6 +76,7 @@ export default class WalletTransactionsPage extends Component<Props, State> {
     this.setState({ isFilterButtonFaded });
 
   render() {
+    const { intl } = this.context;
     const { actions, stores } = this.props;
     const { isFilterButtonFaded } = this.state;
     const { app, uiDialogs, wallets, profile } = stores;
@@ -92,57 +96,32 @@ export default class WalletTransactionsPage extends Component<Props, State> {
       deleteTransactionRequest,
     } = stores.transactions;
     const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
-    const { searchLimit = 0 } = filterOptions;
 
+    // Guard against potential null values
+    if (!filterOptions || !activeWallet) return null;
+
+    let walletTransactions = null;
+    const { searchLimit } = filterOptions;
     const numberOfFilterDimensionsApplied = getNumberOfFilterDimensionsApplied(
       filterOptions
     );
-
-    let transactions = [];
-    const shouldDisplayTransactions =
-      hasAny || !activeWallet || activeWallet.isRestoring;
-
-    // Straight away show recent filtered transactions if all filtered ones are not loaded yet
-    if (shouldDisplayTransactions) {
-      transactions =
-        recentFiltered.length && !allFiltered.length
-          ? recentFiltered
-          : allFiltered;
-    }
-
-    const getUrlByType = (type: 'tx' | 'address', param: string) =>
-      getNetworkExplorerUrlByType(
-        type,
-        param,
-        network,
-        rawNetwork,
-        currentLocale
-      );
-
+    const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
     const hasMoreToLoad = () =>
       searchLimit !== null &&
       searchLimit !== undefined &&
       totalAvailable > searchLimit;
 
     return (
-      <WalletTransactions
-        activeWallet={activeWallet}
-        transactions={transactions}
-        shouldDisplayTransactions={shouldDisplayTransactions}
-        filterOptions={filterOptions}
-        deletePendingTransaction={deletePendingTransaction}
-        isLoadingTransactions={searchRequest.isExecutingFirstTime}
-        hasMoreToLoad={hasMoreToLoad()}
-        onLoadMore={actions.transactions.loadMoreTransactions.trigger}
-        isDeletingTransaction={deleteTransactionRequest.isExecuting}
-        formattedWalletAmount={formattedWalletAmount}
-        onOpenExternalLink={openExternalLink}
-        getUrlByType={getUrlByType}
-        currentTimeFormat={currentTimeFormat}
-        currentDateFormat={currentDateFormat}
-        totalAvailable={totalAvailable}
-        isRenderingAsVirtualList
-      />
+      <div>
+        <FilterDialogContainer />
+        {hasAny && (
+          <FilterButton
+            numberOfFilterDimensionsApplied={numberOfFilterDimensionsApplied}
+            faded={isFilterButtonFaded}
+            onClick={this.openFilterDialog}
+          />
+        )}
+      </div>
     );
   }
 }
