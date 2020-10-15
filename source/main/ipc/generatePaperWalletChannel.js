@@ -38,8 +38,8 @@ export const handlePaperWalletRequests = () => {
         } = request;
 
         // Helpers
-        const printMnemonic = index => `${index + 1}. ${mnemonics[index]}`;
-        const readAssetSync = p => fs.readFileSync(path.join(__dirname, p));
+        const printMnemonic = (index) => `${index + 1}. ${mnemonics[index]}`;
+        const readAssetSync = (p) => fs.readFileSync(path.join(__dirname, p));
 
         // Generate QR image for wallet address
         const qrCodeImage = qr.imageSync(address, {

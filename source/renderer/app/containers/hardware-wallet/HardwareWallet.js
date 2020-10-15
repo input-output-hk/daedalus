@@ -20,7 +20,7 @@ export default class HardwareWallet extends Component<Props> {
     if (!wallets.active) return false;
     const { options } = item;
     if (options && options.length) {
-      options.forEach(option => {
+      options.forEach((option) => {
         if (
           app.currentRoute &&
           app.currentRoute.includes(option.value.toString())

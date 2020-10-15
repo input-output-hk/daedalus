@@ -6,7 +6,7 @@ import SplashNetworkITN from '../../../../source/renderer/app/components/splash/
 import StoryDecorator from '../../_support/StoryDecorator';
 
 storiesOf('Nodes|Splash Network Info', module)
-  .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
+  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
   .add('Flight', () => (
     <SplashNetworkFlight onClose={() => null} openExternalLink={() => null} />
   ))

@@ -216,7 +216,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
 
   submit = () => {
     this.form.submit({
-      onSuccess: form => {
+      onSuccess: (form) => {
         const { onContinue } = this.props;
         const { recoveryPhrase } = form.values();
         onContinue({ recoveryPhrase });
@@ -344,7 +344,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
           </p>
           <Autocomplete
             {...recoveryPhraseField.bind()}
-            ref={autocomplete => {
+            ref={(autocomplete) => {
               this.recoveryPhraseAutocomplete = autocomplete;
             }}
             options={suggestedMnemonics}

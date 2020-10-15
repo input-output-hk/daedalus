@@ -120,7 +120,7 @@ export const setupCardanoNode = (
       onStopped: () => {},
       onUpdating: () => {},
       onUpdated: () => {},
-      onCrashed: code => {
+      onCrashed: (code) => {
         const restartTimeout = cardanoNode.startupTries > 0 ? 30000 : 1000;
         logger.info(
           `CardanoNode crashed with code ${code}. Restarting in ${restartTimeout}ms...`,
@@ -180,7 +180,7 @@ export const setupCardanoNode = (
     return cardanoNode.restart(true); // forced restart
   });
 
-  cardanoFaultInjectionChannel.onReceive(fault => {
+  cardanoFaultInjectionChannel.onReceive((fault) => {
     logger.info(
       'ipcMain: Received request to inject a fault into cardano node',
       { fault }

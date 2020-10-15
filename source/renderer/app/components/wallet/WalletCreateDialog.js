@@ -190,7 +190,7 @@ export default class WalletCreateDialog extends Component<Props, State> {
   submit = () => {
     this.setState({ isSubmitting: false });
     this.form.submit({
-      onSuccess: form => {
+      onSuccess: (form) => {
         this.setState({ isSubmitting: true });
         const { walletName, spendingPassword } = form.values();
         const walletData = {
@@ -252,7 +252,7 @@ export default class WalletCreateDialog extends Component<Props, State> {
         <Input
           className="walletName"
           onKeyPress={this.handleSubmitOnEnter}
-          ref={input => {
+          ref={(input) => {
             this.walletNameInput = input;
           }}
           {...walletNameField.bind()}

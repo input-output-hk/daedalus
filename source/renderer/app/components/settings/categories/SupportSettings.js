@@ -98,7 +98,7 @@ export default class SupportSettings extends Component<Props> {
       <span className={styles.faqLink}>
         <Link
           className={styles.externalLink}
-          onClick={event => onExternalLinkClick(faqLinkUrl, event)}
+          onClick={(event) => onExternalLinkClick(faqLinkUrl, event)}
           label={intl.formatMessage(messages.faqLink)}
           skin={LinkSkin}
         />

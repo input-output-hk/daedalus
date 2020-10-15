@@ -38,7 +38,7 @@ const WALLETS = [
   ),
 ];
 
-const getDelegationWizardStepsList = locale => [
+const getDelegationWizardStepsList = (locale) => [
   translations[locale]['staking.delegationSetup.steps.step.1.label'],
   translations[locale]['staking.delegationSetup.steps.step.2.label'],
   translations[locale]['staking.delegationSetup.steps.step.3.label'],
@@ -93,8 +93,8 @@ export class StakingDelegationSteps extends Component<Props, State> {
         numberOfStakePools={stakePoolsList.length}
         stepsList={getDelegationWizardStepsList(this.props.locale)}
         onClose={action('onClose')}
-        getStakePoolById={poolId =>
-          find(STAKE_POOLS, stakePool => stakePool.id === poolId)
+        getStakePoolById={(poolId) =>
+          find(STAKE_POOLS, (stakePool) => stakePool.id === poolId)
         }
         onSelectWallet={this.onContinue}
         onBack={action('onBack')}
@@ -136,9 +136,7 @@ export class StakingDelegationSteps extends Component<Props, State> {
         delegatedStakePool={STAKE_POOLS[0]}
         slotLength={null}
         currentLocale={this.props.locale}
-        futureEpochStartTime={moment()
-          .add(35, 'hour')
-          .toString()}
+        futureEpochStartTime={moment().add(35, 'hour').toString()}
         onClose={this.onReset}
       />,
     ];

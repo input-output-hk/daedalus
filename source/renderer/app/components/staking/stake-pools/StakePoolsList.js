@@ -136,7 +136,7 @@ export class StakePoolsList extends Component<Props, State> {
 
     return (
       <div className={componentClasses}>
-        {stakePoolsList.map(stakePool => {
+        {stakePoolsList.map((stakePool) => {
           const isHighlighted = this.getIsHighlighted(stakePool.id);
           const isSelected = selectedPoolId && stakePool.id === selectedPoolId;
 

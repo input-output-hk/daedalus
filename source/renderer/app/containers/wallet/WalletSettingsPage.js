@@ -101,12 +101,12 @@ export default class WalletSettingsPage extends Component<Props> {
           onFieldValueChange={(field, value) =>
             updateWalletField.trigger({ field, value })
           }
-          onStartEditing={field => startEditingWalletField.trigger({ field })}
+          onStartEditing={(field) => startEditingWalletField.trigger({ field })}
           onStopEditing={stopEditingWalletField.trigger}
           onCancelEditing={cancelEditingWalletField.trigger}
           onVerifyRecoveryPhrase={recoveryPhraseVerificationContinue.trigger}
           activeField={walletFieldBeingEdited}
-          nameValidator={name => isValidWalletName(name)}
+          nameValidator={(name) => isValidWalletName(name)}
           changeSpendingPasswordDialog={
             <ChangeSpendingPasswordDialogContainer />
           }

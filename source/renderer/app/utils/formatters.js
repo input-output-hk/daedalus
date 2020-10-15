@@ -131,9 +131,7 @@ export const formattedDownloadData = (
     } = downloadData;
     const secondsLeft = remainingSize / speed;
     moment.locale(momentLocales[userLocale]);
-    timeLeft = moment()
-      .add(secondsLeft, 'seconds')
-      .fromNow(true);
+    timeLeft = moment().add(secondsLeft, 'seconds').fromNow(true);
     downloaded = formattedBytesToSize(downloadSize);
     total = formattedBytesToSize(serverFileSize);
     progress = parseInt(rawProgress, 10);

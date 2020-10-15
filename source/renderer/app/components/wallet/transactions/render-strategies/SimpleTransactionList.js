@@ -9,7 +9,7 @@ import { WalletTransactionsListScrollContext } from '../WalletTransactionsList';
 import styles from './SimpleTransactionList.scss';
 
 type Props = {
-  renderRow: Row => Node,
+  renderRow: (Row) => Node,
   rows: Row[],
 };
 
@@ -36,12 +36,12 @@ export class SimpleTransactionList extends Component<Props> {
 
     return (
       <WalletTransactionsListScrollContext.Consumer>
-        {context => (
+        {(context) => (
           <div
             className={styles.component}
-            onScroll={evt => this.onListScroll(context, evt)}
+            onScroll={(evt) => this.onListScroll(context, evt)}
           >
-            {rows.map(row => (
+            {rows.map((row) => (
               <div key={uniqueId()}>{renderRow(row)}</div>
             ))}
           </div>
