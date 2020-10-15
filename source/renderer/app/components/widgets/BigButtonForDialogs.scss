@@ -27,6 +27,21 @@
   }
 }
 
+.connectWalletButton {
+  .icon {
+    height: 83px;
+  }
+  .label {
+    margin-top: 5px;
+  }
+  .description {
+    margin-bottom: 18px;
+  }
+  svg {
+    height: 83px;
+  }
+}
+
 .label {
   color: var(--theme-dialog-big-button-label-color);
   font-family: var(--font-medium);

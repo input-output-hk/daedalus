@@ -8,6 +8,7 @@ import BigButtonForDialogs from '../widgets/BigButtonForDialogs';
 import createIcon from '../../assets/images/create-ic.inline.svg';
 import importIcon from '../../assets/images/import-ic.inline.svg';
 import joinSharedIcon from '../../assets/images/join-shared-ic.inline.svg';
+import connectIcon from '../../assets/images/hardware-wallet/connect-ic.inline.svg';
 import restoreIcon from '../../assets/images/restore-ic.inline.svg';
 import { MAX_ADA_WALLETS_COUNT } from '../../config/numbersConfig';
 
@@ -43,6 +44,16 @@ const messages = defineMessages({
     id: 'wallet.add.dialog.join.description',
     defaultMessage: '!!!Join a shared wallet with up to 5 people',
     description: 'Description for the "Join" button on the wallet add dialog.',
+  },
+  connectLabel: {
+    id: 'wallet.add.dialog.connect.label',
+    defaultMessage: '!!!Connect',
+    description: 'Label for the "Connect" button on the wallet add dialog.',
+  },
+  connectDescription: {
+    id: 'wallet.add.dialog.connect.description',
+    defaultMessage: '!!!Connect hardware wallet',
+    description: 'Description for the "Connect" button on the wallet add dialog.',
   },
   restoreLabel: {
     id: 'wallet.add.dialog.restore.label',
@@ -149,11 +160,11 @@ export default class WalletAdd extends Component<Props> {
               isDisabled={isMaxNumberOfWalletsReached}
             />
             <BigButtonForDialogs
-              className="joinWalletButton"
-              icon={joinSharedIcon}
-              label={intl.formatMessage(messages.joinLabel)}
-              description={intl.formatMessage(messages.joinDescription)}
-              isDisabled
+              className="connectWalletButton"
+              icon={connectIcon}
+              label={intl.formatMessage(messages.connectLabel)}
+              description={intl.formatMessage(messages.connectDescription)}
+              isDisabled={isMaxNumberOfWalletsReached}
             />
           </div>
           <div className={styles.secondRow}>
