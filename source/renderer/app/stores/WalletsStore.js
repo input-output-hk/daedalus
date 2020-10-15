@@ -846,10 +846,6 @@ export default class WalletsStore extends Store {
   getWalletRoute = (walletId: string, page: string = 'summary'): string =>
     buildRoute(ROUTES.WALLETS.PAGE, { id: walletId, page });
 
-  getHardwareWalletRoute = (
-    walletId: string,
-    page: string = 'summary'
-  ): string => buildRoute(ROUTES.HARDWARE_WALLETS.PAGE, { id: walletId, page });
 
   // ACTIONS
 

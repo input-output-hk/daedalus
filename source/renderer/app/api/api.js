@@ -1967,8 +1967,7 @@ const _createWalletFromServerData = action(
       reward: walletRewardAmount,
       passwordUpdateDate:
         passphraseLastUpdatedAt && new Date(passphraseLastUpdatedAt),
-      // hasPassword: isHardwareWallet || passphraseLastUpdatedAt !== null, // For HW set that wallet has password
-      hasPassword: true, // @TODO - remove faked data
+      hasPassword: isHardwareWallet || passphraseLastUpdatedAt !== null, // For HW set that wallet has password
       syncState,
       isLegacy,
       isHardwareWallet,

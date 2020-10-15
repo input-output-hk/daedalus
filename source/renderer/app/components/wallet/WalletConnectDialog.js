@@ -14,7 +14,7 @@ import LocalizableError from '../../i18n/LocalizableError';
 import Dialog from '../widgets/Dialog';
 import styles from './WalletConnectDialog.scss';
 import LoadingSpinner from '../widgets/LoadingSpinner';
-import HardwareWalletStatus from '../hardware-wallet/status/HardwareWalletStatus';
+import HardwareWalletStatus from '../hardware-wallet/HardwareWalletStatus';
 import {
   DeviceModels,
   DeviceTypes,
