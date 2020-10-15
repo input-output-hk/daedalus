@@ -71,7 +71,7 @@ export class StakePoolsSearch extends Component<Props> {
             label={label || null}
             className={styles.searchInput}
             onChange={onSearch}
-            ref={input => {
+            ref={(input) => {
               this.searchInput = input;
             }}
             placeholder={

@@ -64,7 +64,7 @@ export default class SecuringPasswordDialog extends Component<Props, State> {
   };
 
   onSecurePasswordConfirmation = () => {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       securePasswordConfirmed: !prevState.securePasswordConfirmed,
     }));
   };

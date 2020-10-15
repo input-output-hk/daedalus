@@ -75,7 +75,7 @@ export default class UndelegateDialogContainer extends Component<Props> {
         walletName={walletName}
         stakePoolName={stakePoolName}
         stakePoolTicker={stakePoolTicker}
-        onConfirm={passphrase => {
+        onConfirm={(passphrase) => {
           actions.wallets.undelegateWallet.trigger({
             walletId,
             stakePoolId,

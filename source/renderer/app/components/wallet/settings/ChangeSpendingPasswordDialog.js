@@ -201,7 +201,7 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
 
   submit = () => {
     this.form.submit({
-      onSuccess: form => {
+      onSuccess: (form) => {
         const { currentPassword, spendingPassword } = form.values();
         const passwordData = {
           oldPassword: currentPassword,

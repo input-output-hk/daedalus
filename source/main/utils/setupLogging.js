@@ -61,7 +61,7 @@ export const setupLogging = () => {
 
   // Removes existing compressed logs
   fs.readdir(appLogsFolderPath, (err, files) => {
-    files.filter(isFileNameWithTimestamp()).forEach(fileName => {
+    files.filter(isFileNameWithTimestamp()).forEach((fileName) => {
       const filePath = path.join(appLogsFolderPath, fileName);
       try {
         fs.unlinkSync(filePath);

@@ -161,11 +161,11 @@ export default class DelegationSetupWizardDialogContainer extends Component<
       isDelegationTransactionPending,
     } = staking;
     const futureEpochStartTime = get(futureEpoch, 'epochStart', 0);
-    const selectedPool = find(stakePools, pool => pool.id === selectedPoolId);
+    const selectedPool = find(stakePools, (pool) => pool.id === selectedPoolId);
 
     const selectedWallet = find(
       wallets.allWallets,
-      wallet => wallet.id === selectedWalletId
+      (wallet) => wallet.id === selectedWalletId
     );
 
     const acceptableWallets = find(wallets.allWallets, ({ amount, reward }) =>

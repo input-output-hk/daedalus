@@ -194,7 +194,7 @@ export default class ConfigurationDialog extends Component<Props> {
 
   submit = () => {
     this.form.submit({
-      onSuccess: form => {
+      onSuccess: (form) => {
         const { onContinue } = this.props;
         const { walletName, spendingPassword } = form.values();
         onContinue(walletName, spendingPassword);
@@ -209,7 +209,7 @@ export default class ConfigurationDialog extends Component<Props> {
   resetForm = () => {
     const { form } = this;
     // Cancel all debounced field validations
-    form.each(field => {
+    form.each((field) => {
       field.debouncedValidation.cancel();
     });
     form.reset();
