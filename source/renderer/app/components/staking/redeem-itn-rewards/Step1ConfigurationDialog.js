@@ -154,7 +154,7 @@ const messages = defineMessages({
   },
   syncingWallet: {
     id: 'staking.delegationSetup.chooseWallet.step.dialog.syncingWallet',
-    defaultMessage: '!!!in sync',
+    defaultMessage: '!!!syncing',
     description:
       'Syncing wallet label on the delegation setup "choose wallet" step dialog.',
   },
