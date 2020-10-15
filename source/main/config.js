@@ -73,6 +73,7 @@ export type LauncherConfig = {
   legacyStateDir: string,
   legacySecretKey: string,
   legacyWalletDB: string,
+  isCatalyst: boolean,
   isFlight: boolean,
   isStaging: boolean,
   smashUrl?: string,
@@ -120,6 +121,7 @@ export const {
   stateDir,
   legacyStateDir,
   logsPrefix,
+  isCatalyst,
   isFlight,
 } = launcherConfig;
 export const appLogsFolderPath = logsPrefix;
@@ -130,6 +132,7 @@ export const buildLabel = getBuildLabel(
   build,
   network,
   current,
+  isCatalyst,
   isFlight,
   version
 );

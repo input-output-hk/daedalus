@@ -170,8 +170,9 @@ export default class ProfileStore extends Store {
     let systemValue;
     if (global.isShelleyTestnet) {
       systemValue = THEMES.SHELLEY_TESTNET;
-    } else if (global.isIncentivizedTestnet) {
+    } else if (global.isCatalyst || global.isIncentivizedTestnet) {
       systemValue = THEMES.INCENTIVIZED_TESTNET;
+      systemValue = THEMES.FLIGHT_CANDIDATE;
     } else if (global.isFlight) {
       systemValue = THEMES.FLIGHT_CANDIDATE;
     } else {

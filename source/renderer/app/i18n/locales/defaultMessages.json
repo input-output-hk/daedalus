@@ -13203,17 +13203,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Cardano mainnet - Daedalus Flight",
-        "description": "Label for Daedalus Flight with version.",
+        "defaultMessage": "!!!Cardano mainnet - Daedalus Catalyst",
+        "description": "Label for Daedalus Catalyst with version.",
         "end": {
           "column": 3,
           "line": 62
         },
         "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
+        "id": "test.environment.daedalusCatalystLabel",
+        "start": {
+          "column": 12,
+          "line": 58
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano mainnet - Daedalus Flight",
+        "description": "Label for Daedalus Flight with version.",
+        "end": {
+          "column": 3,
+          "line": 67
+        },
+        "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
         "id": "test.environment.daedalusFlightLabel",
         "start": {
           "column": 10,
-          "line": 58
+          "line": 63
         }
       }
     ],

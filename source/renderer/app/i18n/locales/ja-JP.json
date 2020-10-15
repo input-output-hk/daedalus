@@ -538,6 +538,7 @@
   "systemTime.error.overlayTitle": "同期できません - 時刻の不一致",
   "systemTime.error.supportPortalLink": "サポートポータル",
   "systemTime.error.supportPortalLinkUrl": "https://daedaluswallet.io/ja/clock-sync/",
+  "test.environment.daedalusCatalystLabel": "Cardano mainnet - Daedalus Catalyst",
   "test.environment.daedalusFlightLabel": "Cardano Mainnet - Daedalus Flight",
   "test.environment.developmentLabel": "開発",
   "test.environment.itnRewardsV1Label": "Incentivized Testnet v1 - Rewards",
