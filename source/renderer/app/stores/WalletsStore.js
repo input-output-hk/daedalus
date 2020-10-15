@@ -433,6 +433,7 @@ export default class WalletsStore extends Store {
     device: TransportDevice,
   }) => {
     const { walletName, extendedPublicKey, device } = params;
+    console.debug('>>> _createHardwareWallet <<<: ', params);
     const { deviceId, deviceType, deviceModel, deviceName, path } = device;
     const accountPublicKey =
       extendedPublicKey.publicKeyHex + extendedPublicKey.chainCodeHex;
@@ -462,11 +463,14 @@ export default class WalletsStore extends Store {
         },
       });
 
+      console.debug('>>> WALLET CREATED: ', walelt);
+
       if (wallet) {
         await this._patchWalletRequestWithNewWallet(wallet);
-        this.actions.dialogs.closeActiveDialog.trigger();
         this.goToWalletRoute(wallet.id);
         this.refreshWalletsData();
+        console.debug('>>> CLOSE active dialog');
+        this.actions.dialogs.closeActiveDialog.trigger();
       }
 
     } catch (error) {

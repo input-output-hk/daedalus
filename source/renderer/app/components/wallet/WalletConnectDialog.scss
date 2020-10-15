@@ -1,0 +1,87 @@
+@import '../../themes/mixins/error-message';
+.component {
+  font-family: var(--font-regular);
+  .hardwareWalletWrapper {
+    margin-top: 10px;
+    .hardwareWalletUnknown,
+    .hardwareWalletLedger,
+    .hardwareWalletTrezor {
+      text-align: center;
+      svg {
+        path {
+          stroke: var(--theme-hardware-wallet-title-color);
+
+          > g {
+            fill: var(--theme-hardware-wallet-title-color);
+          }
+        }
+      }
+    }
+
+    .hardwareWalletUnknown {
+      .unknownDeviceIcon {
+        svg {
+          height: 138px;
+          width: 325.5px;
+        }
+      }
+    }
+
+    .hardwareWalletLedger {
+      .ledgerIcon {
+        svg {
+          height: 78px;
+          width: 250px;
+        }
+      }
+
+      .ledgerXIcon {
+        svg {
+          height: 75px;
+          width: 250px;
+        }
+      }
+    }
+
+    .hardwareWalletTrezor {
+      .trezorIcon {
+        svg {
+          height: 138px;
+          width: 70.5px;
+        }
+      }
+    }
+
+    .hardwareWalletMessage {
+      color: var(--theme-hardware-wallet-message-color);
+      font-size: 16px;
+      font-weight: 300;
+      line-height: 1.38;
+      max-width: 670px;
+      opacity: 0.7;
+      padding-top: 30px;
+    }
+
+    .hardwareWalletStatusWrapper {
+      margin-top: 20px;
+      width: 100%;
+    }
+    .error {
+      @include error-message;
+      margin-top: 27px;
+      text-align: center;
+    }
+  }
+
+  :global {
+    .LoadingSpinner_component {
+      height: 24px;
+      margin: 0 !important;
+      width: 24px;
+      .LoadingSpinner_icon svg path {
+        fill: var(--theme-hardware-wallet-message-color) !important;
+        opacity: 0.5;
+      }
+    }
+  }
+}

@@ -130,6 +130,7 @@ export default class WalletAdd extends Component<Props> {
       onCreate,
       onRestore,
       onImport,
+      onConnect,
       isMaxNumberOfWalletsReached,
       isMainnet,
       isTestnet,
@@ -161,6 +162,7 @@ export default class WalletAdd extends Component<Props> {
             />
             <BigButtonForDialogs
               className="connectWalletButton"
+              onClick={onConnect}
               icon={connectIcon}
               label={intl.formatMessage(messages.connectLabel)}
               description={intl.formatMessage(messages.connectDescription)}
