@@ -224,7 +224,62 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
     formatter = "../release/darwin-x64/" % s % "-darwin-x64/" % s
     pathtoapp :: Text
     pathtoapp = format formatter dcAppName dcAppNameApp
-  cptree "../node_modules/js-chain-libs-node" (fromText $ pathtoapp <> "/Contents/Resources/app/node_modules/js-chain-libs-node")
+    externalYarn :: [FilePath]
+    externalYarn =
+      [ "@babel"
+      , "regenerator-runtime"
+      , "node-fetch"
+      , "@trezor"
+      , "runtypes"
+      , "parse-uri"
+      , "randombytes"
+      , "safe-buffer"
+      , "bip66"
+      , "pushdata-bitcoin"
+      , "bitcoin-ops"
+      , "typeforce"
+      , "varuint-bitcoin"
+      , "bigi"
+      , "create-hash"
+      , "merkle-lib"
+      , "blake2b"
+      , "nanoassert"
+      , "blake2b-wasm"
+      , "bs58check"
+      , "bs58"
+      , "base-x"
+      , "create-hmac"
+      , "ecurve"
+      , "wif"
+      , "ms"
+      , "keccak"
+      , "trezor-link"
+      , "semver-compare"
+      , "protobufjs-old-fixed-webpack"
+      , "bytebuffer-old-fixed-webpack"
+      , "long"
+      , "object.values"
+      , "define-properties"
+      , "object-keys"
+      , "has"
+      , "function-bind"
+      , "es-abstract"
+      , "has-symbols"
+      , "json-stable-stringify"
+      , "tiny-worker"
+      , "hd-wallet"
+      , "cashaddrjs"
+      , "big-integer"
+      , "queue"
+      , "inherits"
+      , "bchaddrjs"
+      , "cross-fetch"
+      , "trezor-connect"
+      , "js-chain-libs-node"
+      ]
+  mapM_ (\lib -> do
+      cptree ("../node_modules" </> lib) ((fromText pathtoapp) </> "Contents/Resources/app/node_modules" </> lib)
+    ) externalYarn
   rewritePackageJson (T.unpack $ pathtoapp <> "/Contents/Resources/app/package.json") (spacedName installerConfig)
   pure $ fromString $ T.unpack $ pathtoapp
 
