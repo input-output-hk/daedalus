@@ -3642,6 +3642,20 @@
           "column": 23,
           "line": 77
         }
+      },
+      {
+        "defaultMessage": "!!!syncing",
+        "description": "Syncing wallet label on the delegation setup \"choose wallet\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 88
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog.js",
+        "id": "staking.delegationSetup.chooseWallet.step.dialog.syncingWallet",
+        "start": {
+          "column": 17,
+          "line": 83
+        }
       }
     ],
     "path": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsChooseWalletDialog.json"
@@ -4399,13 +4413,13 @@
         "description": "Title for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 36
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.title",
         "start": {
           "column": 9,
-          "line": 33
+          "line": 32
         }
       },
       {
@@ -4413,13 +4427,13 @@
         "description": "description for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 42
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.description1",
         "start": {
           "column": 16,
-          "line": 38
+          "line": 37
         }
       },
       {
@@ -4427,13 +4441,13 @@
         "description": "description for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 48
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.description2",
         "start": {
           "column": 16,
-          "line": 44
+          "line": 43
         }
       },
       {
@@ -4441,13 +4455,13 @@
         "description": "descriptionItnLinkLabel for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 54
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.descriptionItnLinkLabel",
         "start": {
           "column": 27,
-          "line": 50
+          "line": 49
         }
       },
       {
@@ -4455,13 +4469,13 @@
         "description": "descriptionItnLinkUrl for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 60
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.descriptionItnLinkUrl",
         "start": {
           "column": 25,
-          "line": 56
+          "line": 55
         }
       },
       {
@@ -4469,13 +4483,13 @@
         "description": "recoveryPhraseLabel for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 65
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.recoveryPhraseLabel",
         "start": {
           "column": 23,
-          "line": 62
+          "line": 61
         }
       },
       {
@@ -4483,13 +4497,13 @@
         "description": "walletsDropdownLabel for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 72
+          "line": 71
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.walletsDropdownLabel",
         "start": {
           "column": 24,
-          "line": 67
+          "line": 66
         }
       },
       {
@@ -4497,13 +4511,13 @@
         "description": "walletsDropdownError for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 79
+          "line": 78
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.walletsDropdownError",
         "start": {
           "column": 24,
-          "line": 73
+          "line": 72
         }
       },
       {
@@ -4511,13 +4525,13 @@
         "description": "checkbox1Label for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 85
+          "line": 84
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.checkbox1Label",
         "start": {
           "column": 18,
-          "line": 80
+          "line": 79
         }
       },
       {
@@ -4525,13 +4539,13 @@
         "description": "checkbox2Label for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 91
+          "line": 90
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.checkbox2Label",
         "start": {
           "column": 18,
-          "line": 86
+          "line": 85
         }
       },
       {
@@ -4539,13 +4553,13 @@
         "description": "continueButtonLabel for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 96
+          "line": 95
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.continueButton.label",
         "start": {
           "column": 23,
-          "line": 92
+          "line": 91
         }
       },
       {
@@ -4553,13 +4567,13 @@
         "description": "learnMoreLinkLabel for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 101
+          "line": 100
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.learnMoreLink.label",
         "start": {
           "column": 22,
-          "line": 97
+          "line": 96
         }
       },
       {
@@ -4567,13 +4581,13 @@
         "description": "learnMoreLinkUrl for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 107
+          "line": 106
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.learnMoreLink.url",
         "start": {
           "column": 20,
-          "line": 102
+          "line": 101
         }
       },
       {
@@ -4581,13 +4595,13 @@
         "description": "Hint \"Enter recovery phrase\" for the recovery phrase input on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 113
+          "line": 112
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.recoveryPhraseInputHint",
         "start": {
           "column": 27,
-          "line": 108
+          "line": 107
         }
       },
       {
@@ -4595,13 +4609,13 @@
         "description": "Placeholder \"Select Wallet\" for select input on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 119
+          "line": 118
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.selectWalletInputPlaceholder",
         "start": {
           "column": 32,
-          "line": 114
+          "line": 113
         }
       },
       {
@@ -4609,13 +4623,13 @@
         "description": "\"No results\" message for the recovery phrase input search results.",
         "end": {
           "column": 3,
-          "line": 125
+          "line": 124
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.noResults",
         "start": {
           "column": 13,
-          "line": 120
+          "line": 119
         }
       },
       {
@@ -4623,13 +4637,13 @@
         "description": "Error message shown when invalid recovery phrase was entered.",
         "end": {
           "column": 3,
-          "line": 131
+          "line": 130
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.invalidRecoveryPhrase",
         "start": {
           "column": 25,
-          "line": 126
+          "line": 125
         }
       },
       {
@@ -4637,13 +4651,13 @@
         "description": "errorMinDelegationFunds Error Label on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 139
+          "line": 138
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFunds",
         "start": {
           "column": 27,
-          "line": 132
+          "line": 131
         }
       },
       {
@@ -4651,13 +4665,13 @@
         "description": "errorMinDelegationFundsRewardsOnly Error Label on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 147
+          "line": 146
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFundsRewardsOnly",
         "start": {
           "column": 38,
-          "line": 140
+          "line": 139
         }
       },
       {
@@ -4665,27 +4679,27 @@
         "description": "RestoringWallet Error Label on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 154
+          "line": 153
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.delegationSetup.chooseWallet.step.dialog.errorRestoringWallet",
         "start": {
           "column": 24,
-          "line": 148
+          "line": 147
         }
       },
       {
-        "defaultMessage": "!!!in sync",
+        "defaultMessage": "!!!syncing",
         "description": "Syncing wallet label on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 160
+          "line": 159
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.delegationSetup.chooseWallet.step.dialog.syncingWallet",
         "start": {
           "column": 17,
-          "line": 155
+          "line": 154
         }
       }
     ],
