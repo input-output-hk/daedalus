@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Implemented filter and CSV export in the transactions list ([PR 2207](https://github.com/input-output-hk/daedalus/pull/2207))
 - Re-enabled stake pool saturation info ([PR 2200](https://github.com/input-output-hk/daedalus/pull/2200))
 - Implemented the wallet migration leftovers handling ([PR 2178](https://github.com/input-output-hk/daedalus/pull/2178))
 
