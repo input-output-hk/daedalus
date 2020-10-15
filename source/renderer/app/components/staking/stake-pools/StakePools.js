@@ -38,6 +38,10 @@ const messages = defineMessages({
   },
 });
 
+const SELECTED_INDEX_TABLE = 'selectedIndexTable';
+const STAKE_POOLS_DELEGATING_LIST = 'stakePoolsDelegatingList';
+const SELECTED_INDEX_LIST = 'selectedIndexList';
+
 type Props = {
   wallets: Array<Wallet>,
   currentLocale: string,
@@ -206,11 +210,11 @@ export default class StakePools extends Component<Props, State> {
                   />
                 </h2>
                 <StakePoolsTable
-                  listName="selectedIndexTable"
+                  listName={SELECTED_INDEX_TABLE}
                   stakePoolsList={filteredStakePoolsList}
                   onOpenExternalLink={onOpenExternalLink}
                   currentTheme={currentTheme}
-                  isListActive={selectedList === 'selectedIndexTable'}
+                  isListActive={selectedList === SELECTED_INDEX_TABLE}
                   setListActive={this.handleSetListActive}
                   containerClassName="StakingWithNavigation_page"
                   onSelect={this.onDelegate}
@@ -230,11 +234,11 @@ export default class StakePools extends Component<Props, State> {
                       {intl.formatMessage(messages.delegatingListTitle)}
                     </h2>
                     <StakePoolsList
-                      listName="stakePoolsDelegatingList"
+                      listName={STAKE_POOLS_DELEGATING_LIST}
                       stakePoolsList={stakePoolsDelegatingList}
                       onOpenExternalLink={onOpenExternalLink}
                       currentTheme={currentTheme}
-                      isListActive={selectedList === 'stakePoolsDelegatingList'}
+                      isListActive={selectedList === STAKE_POOLS_DELEGATING_LIST}
                       setListActive={this.handleSetListActive}
                       containerClassName="StakingWithNavigation_page"
                       onSelect={this.onDelegate}
@@ -253,11 +257,11 @@ export default class StakePools extends Component<Props, State> {
                 </h2>
                 <StakePoolsList
                   showWithSelectButton
-                  listName="selectedIndexList"
+                  listName={SELECTED_INDEX_LIST}
                   stakePoolsList={filteredStakePoolsList}
                   onOpenExternalLink={onOpenExternalLink}
                   currentTheme={currentTheme}
-                  isListActive={selectedList === 'selectedIndexList'}
+                  isListActive={selectedList === SELECTED_INDEX_LIST}
                   setListActive={this.handleSetListActive}
                   containerClassName="StakingWithNavigation_page"
                   onSelect={this.onDelegate}
