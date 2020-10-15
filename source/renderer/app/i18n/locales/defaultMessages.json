@@ -4647,59 +4647,17 @@
         }
       },
       {
-        "defaultMessage": "!!!This wallet does not contain the minimum amount of {minDelegationFunds} ADA which is required for delegation to be available. Please select a wallet with <span>a minimum amount of {minDelegationFunds} ADA</span> and click continue.",
-        "description": "errorMinDelegationFunds Error Label on the delegation setup \"choose wallet\" step dialog.",
-        "end": {
-          "column": 3,
-          "line": 138
-        },
-        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
-        "id": "staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFunds",
-        "start": {
-          "column": 27,
-          "line": 131
-        }
-      },
-      {
-        "defaultMessage": "!!!This wallet contains only rewards balances so it cannot be delegated.",
-        "description": "errorMinDelegationFundsRewardsOnly Error Label on the delegation setup \"choose wallet\" step dialog.",
-        "end": {
-          "column": 3,
-          "line": 146
-        },
-        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
-        "id": "staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFundsRewardsOnly",
-        "start": {
-          "column": 38,
-          "line": 139
-        }
-      },
-      {
-        "defaultMessage": "!!!This wallet can’t be used for delegation while it’s being synced.",
-        "description": "RestoringWallet Error Label on the delegation setup \"choose wallet\" step dialog.",
-        "end": {
-          "column": 3,
-          "line": 153
-        },
-        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
-        "id": "staking.delegationSetup.chooseWallet.step.dialog.errorRestoringWallet",
-        "start": {
-          "column": 24,
-          "line": 147
-        }
-      },
-      {
         "defaultMessage": "!!!syncing",
         "description": "Syncing wallet label on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 159
+          "line": 136
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.delegationSetup.chooseWallet.step.dialog.syncingWallet",
         "start": {
           "column": 17,
-          "line": 154
+          "line": 131
         }
       }
     ],
@@ -12969,6 +12927,53 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!This wallet does not contain the minimum amount of {minDelegationFunds} ADA which is required for delegation to be available. Please select a wallet with <span>a minimum amount of {minDelegationFunds} ADA</span> and click continue.",
+        "description": "errorMinDelegationFunds Error Label on the delegation setup \"choose wallet\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 26
+        },
+        "file": "source/renderer/app/containers/staking/dialogs/redeem-itn-rewards/Step1ConfigurationContainer.js",
+        "id": "staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFunds",
+        "start": {
+          "column": 27,
+          "line": 19
+        }
+      },
+      {
+        "defaultMessage": "!!!This wallet contains only rewards balances so it cannot be delegated.",
+        "description": "errorMinDelegationFundsRewardsOnly Error Label on the delegation setup \"choose wallet\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 34
+        },
+        "file": "source/renderer/app/containers/staking/dialogs/redeem-itn-rewards/Step1ConfigurationContainer.js",
+        "id": "staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFundsRewardsOnly",
+        "start": {
+          "column": 38,
+          "line": 27
+        }
+      },
+      {
+        "defaultMessage": "!!!This wallet can’t be used for delegation while it’s being synced.",
+        "description": "RestoringWallet Error Label on the delegation setup \"choose wallet\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 41
+        },
+        "file": "source/renderer/app/containers/staking/dialogs/redeem-itn-rewards/Step1ConfigurationContainer.js",
+        "id": "staking.delegationSetup.chooseWallet.step.dialog.errorRestoringWallet",
+        "start": {
+          "column": 24,
+          "line": 35
+        }
+      }
+    ],
+    "path": "source/renderer/app/containers/staking/dialogs/redeem-itn-rewards/Step1ConfigurationContainer.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!https://iohk.zendesk.com/hc",
         "description": "\"Learn more\" link URL in the staking countdown page",
         "end": {
@@ -14112,20 +14117,6 @@
         "start": {
           "column": 8,
           "line": 69
-        }
-      },
-      {
-        "defaultMessage": "!!!Follow instructions and manually update",
-        "description": "Follow instructions and manually update description.",
-        "end": {
-          "column": 3,
-          "line": 78
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "manualUpdate.button.label",
-        "start": {
-          "column": 22,
-          "line": 74
         }
       }
     ],
