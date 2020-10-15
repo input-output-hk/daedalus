@@ -1,11 +1,13 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
+import BigNumber from 'bignumber.js';
 import Step1ConfigurationDialog from '../../../../components/staking/redeem-itn-rewards/Step1ConfigurationDialog';
 import type { InjectedDialogContainerStepProps } from '../../../../types/injectedPropsType';
 import { InjectedDialogContainerStepDefaultProps } from '../../../../types/injectedPropsType';
 import validWords from '../../../../../../common/config/crypto/valid-words.en';
 import { isValidMnemonic } from '../../../../../../common/config/crypto/decrypt';
+import { MIN_DELEGATION_FUNDS } from '../../../../config/stakingConfig';
 
 type Props = InjectedDialogContainerStepProps;
 const DefaultProps = InjectedDialogContainerStepDefaultProps;
@@ -14,6 +16,14 @@ const DefaultProps = InjectedDialogContainerStepDefaultProps;
 @observer
 export default class Step1ConfigurationContainer extends Component<Props> {
   static defaultProps = DefaultProps;
+
+  onWalletAcceptable = (
+    walletAmount?: BigNumber,
+    walletReward?: BigNumber = 0
+  ) =>
+    walletAmount &&
+    walletAmount.gte(new BigNumber(MIN_DELEGATION_FUNDS)) &&
+    !walletAmount.equals(walletReward);
 
   render() {
     const { onClose, onBack, stores, actions } = this.props;
@@ -40,6 +50,7 @@ export default class Step1ConfigurationContainer extends Component<Props> {
         wallets={allWallets}
         openExternalLink={openExternalLink}
         recoveryPhrase={redeemRecoveryPhrase}
+        isWalletAcceptable={this.onWalletAcceptable}
       />
     );
   }

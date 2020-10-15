@@ -16,7 +16,6 @@ import {
   FormattedMessage,
   FormattedHTMLMessage,
 } from 'react-intl';
-import BigNumber from 'bignumber.js';
 import Wallet from '../../../domains/Wallet';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
@@ -172,6 +171,7 @@ type Props = {
   suggestedMnemonics: Array<string>,
   recoveryPhrase?: ?Array<string>,
   wallets: Array<Wallet>,
+  isWalletAcceptable: Function,
 };
 
 @observer
@@ -237,14 +237,6 @@ export default class Step1ConfigurationDialog extends Component<Props> {
     }
   );
 
-  isWalletAcceptable = (
-    walletAmount?: BigNumber,
-    walletReward?: BigNumber = 0
-  ) =>
-    walletAmount &&
-    walletAmount.gte(new BigNumber(MIN_DELEGATION_FUNDS)) &&
-    !walletAmount.equals(walletReward);
-
   submit = () => {
     this.form.submit({
       onSuccess: form => {
@@ -286,6 +278,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       openExternalLink,
       wallets,
       recoveryPhrase,
+      isWalletAcceptable,
     } = this.props;
     let { error } = this.props;
     if (
@@ -348,7 +341,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
     const { amount, reward, isRestoring } = selectedWallet || {};
 
     let errorMessage;
-    if (selectedWallet && !this.isWalletAcceptable(amount, reward)) {
+    if (selectedWallet && isWalletAcceptable && !isWalletAcceptable(amount, reward)) {
       // Wallet is restoring
       if (isRestoring) errorMessage = messages.errorRestoringWallet;
       // Wallet only has Reward balance
