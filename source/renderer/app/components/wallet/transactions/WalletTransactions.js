@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { observer, inject } from 'mobx-react';
+import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import WalletTransactionsList, {
   WalletTransactionsListScrollContext,
@@ -10,7 +10,6 @@ import WalletNoTransactions from './WalletNoTransactions';
 import VerticalFlexContainer from '../../layout/VerticalFlexContainer';
 import { formattedWalletAmount } from '../../../utils/formatters';
 import { getNumberOfFilterDimensionsApplied } from '../../../utils/transaction';
-import { getNetworkExplorerUrlByType } from '../../../utils/network';
 import { WalletTransaction } from '../../../domains/WalletTransaction';
 import Wallet from '../../../domains/Wallet';
 
@@ -31,11 +30,8 @@ type Props = {
   onLoadMore: Function,
   hasMoreToLoad: boolean,
   isLoadingTransactions: boolean,
-  isRenderingAsVirtualList: boolean,
-  onShowMoreTransactions?: Function,
   onOpenExternalLink: Function,
   getUrlByType: Function,
-  showMoreTransactionsButton?: boolean,
   isDeletingTransaction: boolean,
   totalAvailable: number,
   currentDateFormat: string,
@@ -70,11 +66,8 @@ export default class WalletTransactions extends Component<Props, State> {
       onLoadMore,
       hasMoreToLoad,
       isLoadingTransactions,
-      isRenderingAsVirtualList,
-      onShowMoreTransactions,
       onOpenExternalLink,
       getUrlByType,
-      showMoreTransactionsButton,
       isDeletingTransaction,
       totalAvailable,
       currentDateFormat,
@@ -86,14 +79,13 @@ export default class WalletTransactions extends Component<Props, State> {
     if (!filterOptions || !activeWallet) return null;
 
     let walletTransactions = null;
-    const { searchLimit } = filterOptions;
+    // const { searchLimit } = filterOptions;
     const numberOfFilterDimensionsApplied = getNumberOfFilterDimensionsApplied(
       filterOptions
     );
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
 
     const isRestoreActive = activeWallet && activeWallet.isRestoring;
-    const walletId = activeWallet && activeWallet.id;
 
     if (!shouldDisplayTransactions) {
       walletTransactions = <WalletNoTransactions label={noTransactionsLabel} />;

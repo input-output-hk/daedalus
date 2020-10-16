@@ -70,7 +70,7 @@ export default class WalletTransactionsPage extends Component<Props, State> {
   render() {
     const { actions, stores } = this.props;
     const { isFilterButtonFaded } = this.state;
-    const { app, uiDialogs, wallets, profile } = stores;
+    const { app, wallets, profile } = stores;
     const {
       openExternalLink,
       environment: { network, rawNetwork },

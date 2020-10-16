@@ -184,6 +184,9 @@ import ApiError from '../domains/ApiError';
 
 const { isIncentivizedTestnet } = global;
 
+// @TX TODO
+const now = new Date();
+
 export default class AdaApi {
   config: RequestConfig;
 
@@ -296,28 +299,78 @@ export default class AdaApi {
     logger.debug('AdaApi::getTransactions called', { parameters: request });
     const { walletId, order, fromDate, toDate, isLegacy } = request;
 
-    const params = Object.assign(
-      {},
-      {
-        order: order || 'descending',
-      }
-    );
-    if (fromDate)
-      params.start = `${moment.utc(fromDate).format('YYYY-MM-DDTHH:mm:ss')}Z`;
-    if (toDate)
-      params.end = `${moment.utc(toDate).format('YYYY-MM-DDTHH:mm:ss')}Z`;
+    // @TX TODO
+    // const params = Object.assign(
+    //   {},
+    //   {
+    //     order: order || 'descending',
+    //   }
+    // );
+    // if (fromDate)
+    //   params.start = `${moment.utc(fromDate).format('YYYY-MM-DDTHH:mm:ss')}Z`;
+    // if (toDate)
+    //   params.end = `${moment.utc(toDate).format('YYYY-MM-DDTHH:mm:ss')}Z`;
+
+    // try {
+    //   let response;
+    //   if (isLegacy) {
+    //     response = await getLegacyWalletTransactionHistory(
+    //       this.config,
+    //       walletId,
+    //       params
+    //     );
+    //   } else {
+    //     response = await getTransactionHistory(this.config, walletId, params);
+    //   }
+    const getDummyTx = (id, amount, direction = 'incoming') => ({
+      id,
+      amount: {
+        quantity: amount,
+        unit: 'lovelace',
+      },
+      inserted_at: {
+        time: now,
+        block: {
+          slot_number: 123456,
+          epoch_number: 123456,
+        },
+      },
+      pending_since: {
+        time: now,
+        block: {
+          ...{
+            slot_number: 123456,
+            epoch_number: 123456,
+          },
+          height: {
+            quantity: number,
+            unit: string,
+          },
+        },
+      },
+      depth: {
+        quantity: 10,
+        unit: 'block',
+      },
+      direction,
+      inputs: [
+        {
+          address: 'aksjfhaksfhadkh',
+          amount: {
+            quantity: amount,
+            unit: 'lovelace',
+          },
+          id,
+          index: 1,
+        },
+      ],
+      outputs: [],
+      withdrawals: [],
+      status: TransactionState,
+    });
 
     try {
-      let response;
-      if (isLegacy) {
-        response = await getLegacyWalletTransactionHistory(
-          this.config,
-          walletId,
-          params
-        );
-      } else {
-        response = await getTransactionHistory(this.config, walletId, params);
-      }
+      const response = [getDummyTx(1, 1234), getDummyTx(1, 4321)];
       logger.debug('AdaApi::getTransactions success', {
         transactions: response,
       });
