@@ -99,7 +99,7 @@ export default class SystemTimeError extends Component<Props> {
     const supportPortalLink = (
       <Link
         className={styles.supportPortalLink}
-        onClick={event => onExternalLinkClick(supportPortalLinkUrl, event)}
+        onClick={(event) => onExternalLinkClick(supportPortalLinkUrl, event)}
         label={intl.formatMessage(messages.supportPortalLink)}
         skin={LinkSkin}
       />

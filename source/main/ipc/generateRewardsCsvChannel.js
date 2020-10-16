@@ -25,7 +25,7 @@ export const handleRewardsCsvRequests = () => {
             return reject(csvErr);
           }
 
-          return fs.writeFile(filePath, output, fileErr => {
+          return fs.writeFile(filePath, output, (fileErr) => {
             if (fileErr) {
               return reject(fileErr);
             }

@@ -61,16 +61,10 @@ export const isTransactionDateInFilterRange = (
   }
 
   const compareFrom = fromDate
-    ? date.getTime() >=
-      moment(fromDate)
-        .startOf('day')
-        .valueOf()
+    ? date.getTime() >= moment(fromDate).startOf('day').valueOf()
     : true;
   const compareTo = toDate
-    ? date.getTime() <=
-      moment(toDate)
-        .endOf('day')
-        .valueOf()
+    ? date.getTime() <= moment(toDate).endOf('day').valueOf()
     : true;
 
   return compareFrom && compareTo;
@@ -293,7 +287,7 @@ class List {
   encodeCBOR(encoder) {
     encoder.push(rawBuffer('9F')); // Begin Indefinite list
     // $FlowFixMe
-    this.elems.forEach(el => encoder.pushAny(el));
+    this.elems.forEach((el) => encoder.pushAny(el));
     encoder.push(rawBuffer('FF')); // Break Indefinite list
     return true;
   }
@@ -327,11 +321,14 @@ export const encodeSignedTransaction = ({
   ]).toString('hex');
 };
 
-const rawBuffer = str => {
+const rawBuffer = (str) => {
   return Buffer.from(str, 'hex');
 };
 
-const encodeWitness = ({ signature, xpub }: ByronSignedTransactionWitnesses) => {
+const encodeWitness = ({
+  signature,
+  xpub,
+}: ByronSignedTransactionWitnesses) => {
   const witness = [
     Buffer.concat([rawBuffer(xpub.publicKeyHex), rawBuffer(xpub.chainCodeHex)]),
     rawBuffer(signature),
@@ -339,7 +336,7 @@ const encodeWitness = ({ signature, xpub }: ByronSignedTransactionWitnesses) => 
   return [0, new cbor.Tagged(24, cbor.encode(witness))];
 };
 
-const encodeTransaction = data => {
+const encodeTransaction = (data) => {
   return cbor.encode([
     encodeTransactionInputs(data.inputs),
     encodeTransactionOutputs(data.outputs),
@@ -347,9 +344,9 @@ const encodeTransaction = data => {
   ]);
 };
 
-const encodeTransactionInputs = inps => {
+const encodeTransactionInputs = (inps) => {
   return new List(
-    inps.map(i => [0, new cbor.Tagged(24, encodeTransactionInput(i))])
+    inps.map((i) => [0, new cbor.Tagged(24, encodeTransactionInput(i))])
   );
 };
 
@@ -357,13 +354,13 @@ const encodeTransactionInput = ({ id, index }) => {
   return cbor.encode([rawBuffer(id), index]);
 };
 
-const encodeTransactionOutputs = outs => {
+const encodeTransactionOutputs = (outs) => {
   return new List(
-    outs.map(o => [encodeTransactionAddress(o.address), o.amount.quantity])
+    outs.map((o) => [encodeTransactionAddress(o.address), o.amount.quantity])
   );
 };
 
-const encodeTransactionAddress = addr => {
+const encodeTransactionAddress = (addr) => {
   const bytes = bs58.decode(addr);
   return cbor.decodeFirstSync(bytes);
 };

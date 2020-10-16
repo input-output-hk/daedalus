@@ -174,7 +174,7 @@ export default class WalletSettingsStore extends Store {
 
     if (!wallet) return;
 
-    await this.stores.wallets.walletsRequest.patch(result => {
+    await this.stores.wallets.walletsRequest.patch((result) => {
       const walletIndex = findIndex(result, { id: walletId });
       result[walletIndex] = wallet;
     });

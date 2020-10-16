@@ -24,17 +24,17 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-wallet": {
-      "branch": "master",
-      "description": "Official Wallet Backend & API for Cardano decentralized",
-      "homepage": null,
-      "owner": "input-output-hk",
-      "repo": "cardano-wallet",
-      "rev": "364c48021961ee2bd9df3141bf5dec334e922ec9",
-      "sha256": "1jpf5r329hv87ip8ipzvi7qvs8bznzc7w41vhhn37xw518xnhpb7",
-      "type": "tarball",
-      "url": "https://github.com/input-output-hk/cardano-wallet/archive/364c48021961ee2bd9df3141bf5dec334e922ec9.tar.gz",
-      "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz",
-      "version": "v2020-04-28"
+        "branch": "master",
+        "description": "Official Wallet Backend & API for Cardano decentralized",
+        "homepage": null,
+        "owner": "input-output-hk",
+        "repo": "cardano-wallet",
+        "rev": "77e04fc0f0c226f27ea2e293666bb8311ba0daa1",
+        "sha256": "0kc1ddidp1vip8rfnm7vp5avx46xr9nvyzn7q9r3yn50ylhx0i0j",
+        "type": "tarball",
+        "url": "https://github.com/input-output-hk/cardano-wallet/archive/77e04fc0f0c226f27ea2e293666bb8311ba0daa1.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz",
+        "version": "v2020-10-13"
     },
     "gitignore": {
         "branch": "master",

@@ -60,7 +60,7 @@ export default class AddressSequential extends Component<Props> {
       <div className={addressClasses}>
         <div
           className={addressIdClasses}
-          ref={ref => {
+          ref={(ref) => {
             this.addressContainerElement = ref;
           }}
           id={`address-${rawAddress}`}
@@ -68,7 +68,7 @@ export default class AddressSequential extends Component<Props> {
           {renderAddress}
           {shouldRegisterAddressElement && (
             <span
-              ref={ref => {
+              ref={(ref) => {
                 this.addressElement = ref;
               }}
               className={styles.addressElement}

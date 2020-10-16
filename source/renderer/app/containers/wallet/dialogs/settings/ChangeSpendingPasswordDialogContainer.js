@@ -52,7 +52,7 @@ export default class ChangeSpendingPasswordDialogContainer extends Component<Pro
           actions.dialogs.closeActiveDialog.trigger();
           updateSpendingPasswordRequest.reset();
         }}
-        onDataChange={data => {
+        onDataChange={(data) => {
           updateDataForActiveDialog.trigger({ data });
         }}
         isSubmitting={updateSpendingPasswordRequest.isExecuting}

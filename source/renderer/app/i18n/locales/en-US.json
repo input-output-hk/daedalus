@@ -185,7 +185,7 @@
   "loading.screen.updatedCardanoMessage": "Cardano node updated",
   "loading.screen.updatingCardanoMessage": "Updating Cardano node",
   "loading.screen.verifyingBlockchainMessage": "Verifying the blockchain ({verificationProgress}% complete) ",
-  "manualUpdate.button.label": "!!!Follow instructions and manually update",
+  "manualUpdate.button.label": "Follow instructions and manually update",
   "news.newsfeed.empty": "Newsfeed is empty",
   "news.newsfeed.noFetch": "Trying to fetch the newsfeed...",
   "news.newsfeed.title": "Newsfeed",

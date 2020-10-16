@@ -55,7 +55,7 @@ export default class DelegationCenterBody extends Component<Props> {
     const loadingSpinner = (
       <LoadingSpinner
         big
-        ref={component => {
+        ref={(component) => {
           this.loadingSpinner = component;
         }}
       />

@@ -66,7 +66,7 @@ export default (api: AdaApi) => {
     }
   };
 
-  api.setSyncProgress = async syncProgress => {
+  api.setSyncProgress = async (syncProgress) => {
     SYNC_PROGRESS = syncProgress;
   };
 
@@ -77,7 +77,7 @@ export default (api: AdaApi) => {
       return;
     }
     // Always mutate newsfeed target version to current app version
-    const newsFeedItems = map(testingNewsFeedData.items, item => {
+    const newsFeedItems = map(testingNewsFeedData.items, (item) => {
       return {
         ...item,
         target: {
@@ -152,7 +152,7 @@ export default (api: AdaApi) => {
       );
   };
 
-  api.setLocalTimeDifference = async timeDifference => {
+  api.setLocalTimeDifference = async (timeDifference) => {
     LOCAL_TIME_DIFFERENCE = timeDifference;
   };
 

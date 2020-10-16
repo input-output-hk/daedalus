@@ -85,7 +85,7 @@ export default class AddressesStore extends Store {
     if (!addresses) return null;
 
     // Check if there is any unused address and set last as active
-    const unusedAddresses = filter(addresses, address => !address.used);
+    const unusedAddresses = filter(addresses, (address) => !address.used);
     if (unusedAddresses.length) return last(unusedAddresses);
 
     // Set last used address as active

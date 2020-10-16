@@ -189,11 +189,11 @@ const onAppReady = async () => {
     client.create(mainWindow);
   }
 
-  setStateSnapshotLogChannel.onReceive(data => {
+  setStateSnapshotLogChannel.onReceive((data) => {
     return Promise.resolve(logStateSnapshot(data));
   });
 
-  generateWalletMigrationReportChannel.onReceive(data => {
+  generateWalletMigrationReportChannel.onReceive((data) => {
     return Promise.resolve(generateWalletMigrationReport(data));
   });
 
@@ -207,7 +207,7 @@ const onAppReady = async () => {
 
   getSystemLocaleChannel.onRequest(() => Promise.resolve(systemLocale));
 
-  mainWindow.on('close', async event => {
+  mainWindow.on('close', async (event) => {
     logger.info(
       'mainWindow received <close> event. Safe exiting Daedalus now.'
     );
@@ -218,8 +218,8 @@ const onAppReady = async () => {
   buildAppMenus(mainWindow, cardanoNode, locale, { isUpdateAvailable: false });
 
   await rebuildApplicationMenu.onReceive(
-    data =>
-      new Promise(resolve => {
+    (data) =>
+      new Promise((resolve) => {
         locale = getLocale(network);
         buildAppMenus(mainWindow, cardanoNode, locale, {
           isUpdateAvailable: data.isUpdateAvailable,
@@ -242,7 +242,7 @@ const onAppReady = async () => {
   });
 
   // Wait for controlled cardano-node shutdown before quitting the app
-  app.on('before-quit', async event => {
+  app.on('before-quit', async (event) => {
     logger.info('app received <before-quit> event. Safe exiting Daedalus now.');
     event.preventDefault(); // prevent Daedalus from quitting immediately
     await safeExit();

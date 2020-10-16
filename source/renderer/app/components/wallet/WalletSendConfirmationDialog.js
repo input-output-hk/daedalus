@@ -133,8 +133,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
           value: '',
           validators: [
             ({ field }) => {
-              if (this.props.isHardwareWallet)
-                return [true];
+              if (this.props.isHardwareWallet) return [true];
               if (field.value === '') {
                 return [
                   false,
@@ -164,8 +163,13 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
 
   submit = () => {
     this.form.submit({
-      onSuccess: form => {
-        const { receiver, amount, amountToNaturalUnits, isHardwareWallet } = this.props;
+      onSuccess: (form) => {
+        const {
+          receiver,
+          amount,
+          amountToNaturalUnits,
+          isHardwareWallet,
+        } = this.props;
         const { passphrase } = form.values();
         const transactionData = {
           receiver,
@@ -180,7 +184,8 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
   };
 
   handleSubmitOnEnter = (event: {}) =>
-    (this.props.isHardwareWallet || this.form.$('passphrase').isValid) && submitOnEnter(this.submit, event);
+    (this.props.isHardwareWallet || this.form.$('passphrase').isValid) &&
+    submitOnEnter(this.submit, event);
 
   render() {
     const { form } = this;
@@ -220,7 +225,9 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
         className: 'confirmButton',
         disabled:
           (!isHardwareWallet && !passphraseField.isValid) ||
-          (isHardwareWallet && hwDeviceStatus !== HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED) ||
+          (isHardwareWallet &&
+            hwDeviceStatus !==
+              HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED) ||
           (!flightCandidateCheckboxField.value && isFlight),
       },
     ];

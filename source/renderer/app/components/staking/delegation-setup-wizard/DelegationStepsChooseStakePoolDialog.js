@@ -186,7 +186,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
     const selectedWalletName = get(selectedWallet, 'name');
     const selectedPool = find(
       stakePoolsList,
-      stakePool => stakePool.id === selectedPoolId
+      (stakePool) => stakePool.id === selectedPoolId
     );
     const lastDelegatedStakePoolId = get(
       selectedWallet,
