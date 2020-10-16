@@ -3,12 +3,7 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import WalletTransactions from '../../components/wallet/transactions/WalletTransactions';
-import WalletTransactionsList, {
-  WalletTransactionsListScrollContext,
-} from '../../components/wallet/transactions/WalletTransactionsList';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import { formattedWalletAmount } from '../../utils/formatters';
-import { getNumberOfFilterDimensionsApplied } from '../../utils/transaction';
 import type { TransactionFilterOptionsType } from '../../stores/TransactionsStore';
 import { getNetworkExplorerUrlByType } from '../../utils/network';
 
@@ -94,10 +89,6 @@ export default class WalletTransactionsPage extends Component<Props, State> {
     const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
     const { searchLimit = 0 } = filterOptions;
 
-    const numberOfFilterDimensionsApplied = getNumberOfFilterDimensionsApplied(
-      filterOptions
-    );
-
     let transactions = [];
     const shouldDisplayTransactions =
       hasAny || !activeWallet || activeWallet.isRestoring;
@@ -135,7 +126,6 @@ export default class WalletTransactionsPage extends Component<Props, State> {
         hasMoreToLoad={hasMoreToLoad()}
         onLoadMore={actions.transactions.loadMoreTransactions.trigger}
         isDeletingTransaction={deleteTransactionRequest.isExecuting}
-        formattedWalletAmount={formattedWalletAmount}
         onOpenExternalLink={openExternalLink}
         getUrlByType={getUrlByType}
         currentTimeFormat={currentTimeFormat}
