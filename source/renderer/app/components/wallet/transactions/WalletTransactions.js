@@ -5,6 +5,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import WalletTransactionsList, {
   WalletTransactionsListScrollContext,
 } from './WalletTransactionsList';
+import WalletTransactionsHeader from './WalletTransactionsHeader';
 import FilterResultInfo from './FilterResultInfo';
 import WalletNoTransactions from './WalletNoTransactions';
 import VerticalFlexContainer from '../../layout/VerticalFlexContainer';
@@ -12,6 +13,7 @@ import { formattedWalletAmount } from '../../../utils/formatters';
 import { getNumberOfFilterDimensionsApplied } from '../../../utils/transaction';
 import { WalletTransaction } from '../../../domains/WalletTransaction';
 import Wallet from '../../../domains/Wallet';
+import type { TransactionFilterOptionsType } from '../../../stores/TransactionsStore';
 
 export const messages = defineMessages({
   noTransactions: {
@@ -25,7 +27,7 @@ type Props = {
   activeWallet: ?Wallet,
   transactions: Array<WalletTransaction>,
   shouldDisplayTransactions: boolean,
-  filterOptions: any,
+  filterOptions: TransactionFilterOptionsType,
   deletePendingTransaction: Function,
   onLoadMore: Function,
   hasMoreToLoad: boolean,
@@ -34,8 +36,13 @@ type Props = {
   getUrlByType: Function,
   isDeletingTransaction: boolean,
   totalAvailable: number,
+  currentLocale: string,
   currentDateFormat: string,
-  currentTimeFormat: string,
+  currentNumberFormat: string,
+  defaultFilterOptions: TransactionFilterOptionsType,
+  populatedFilterOptions: TransactionFilterOptionsType,
+  onFilter: Function,
+  onClose: Function,
 };
 type State = {
   isFilterButtonFaded: boolean,
@@ -72,6 +79,7 @@ export default class WalletTransactions extends Component<Props, State> {
       totalAvailable,
       currentDateFormat,
       currentTimeFormat,
+      currentLocale,
     } = this.props;
 
     // Guard against potential null values
@@ -107,6 +115,7 @@ export default class WalletTransactions extends Component<Props, State> {
           formattedWalletAmount={formattedWalletAmount}
           onOpenExternalLink={onOpenExternalLink}
           getUrlByType={getUrlByType}
+          currentLocale={currentLocale}
           currentTimeFormat={currentTimeFormat}
           currentDateFormat={currentDateFormat}
           isRenderingAsVirtualList
@@ -118,6 +127,7 @@ export default class WalletTransactions extends Component<Props, State> {
       <WalletTransactionsListScrollContext.Provider
         value={{ setFilterButtonFaded: this.setFilterButtonFaded }}
       >
+        <WalletTransactionsHeader transactions={transactions} />
         <VerticalFlexContainer>{walletTransactions}</VerticalFlexContainer>
       </WalletTransactionsListScrollContext.Provider>
     );

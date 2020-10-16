@@ -87,6 +87,8 @@ export default class WalletTransactionsPage extends Component<Props, State> {
       deleteTransactionRequest,
     } = stores.transactions;
     const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
+    const { dataForActiveDialog } = stores.uiDialogs;
+    const { closeActiveDialog } = actions.dialogs;
     const { searchLimit = 0 } = filterOptions;
 
     let transactions = [];
@@ -128,9 +130,13 @@ export default class WalletTransactionsPage extends Component<Props, State> {
         isDeletingTransaction={deleteTransactionRequest.isExecuting}
         onOpenExternalLink={openExternalLink}
         getUrlByType={getUrlByType}
+        totalAvailable={totalAvailable}
+        currentLocale={currentLocale}
         currentTimeFormat={currentTimeFormat}
         currentDateFormat={currentDateFormat}
-        totalAvailable={totalAvailable}
+        onFilter={this.onFilter}
+        onClose={() => closeActiveDialog.trigger()}
+        {...dataForActiveDialog}
         isRenderingAsVirtualList
       />
     );

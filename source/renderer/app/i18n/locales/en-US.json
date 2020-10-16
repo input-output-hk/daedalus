@@ -897,6 +897,7 @@
   "wallet.transaction.type.exchange": "Exchange",
   "wallet.transaction.unresolvedInputAddressesAdditionalLabel": "to see these addresses.",
   "wallet.transaction.unresolvedInputAddressesLinkLabel": "Open this transaction in Cardano explorer",
+  "wallet.transactions.header.transactions": "Transactions",
   "wallet.transactions.no.transactions": "No transactions",
   "wallet.transferFunds.dialog1.continueLabel": "Continue",
   "wallet.transferFunds.dialog1.sourceWallet": "From Byron legacy wallet",

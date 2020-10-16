@@ -897,6 +897,7 @@
   "wallet.transaction.type.exchange": "換金",
   "wallet.transaction.unresolvedInputAddressesAdditionalLabel": "アドレスを表示する。",
   "wallet.transaction.unresolvedInputAddressesLinkLabel": "Cardanoエクスプローラーでこのトランザクションを開き",
+  "wallet.transactions.header.transactions": "トランザクション",
   "wallet.transactions.no.transactions": "トランザクションはありません",
   "wallet.transferFunds.dialog1.continueLabel": "続ける",
   "wallet.transferFunds.dialog1.sourceWallet": "送金元Byronレガシーウォレット",
