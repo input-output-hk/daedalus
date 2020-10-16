@@ -277,6 +277,17 @@ export class StakePoolsTable extends Component<Props, State> {
     });
   };
 
+  bigNumbersToFormattedNumbers = (value: BigNumber) => {
+    const formattedValue = formattedWalletAmount(value, false, true);
+    const splitValues = formattedValue.split(',');
+    let result = '';
+    splitValues.map(item => {
+      result+= item;
+      return true;
+    });
+    return result;
+  };
+
   handleClose = (item: SyntheticMouseEvent<HTMLElement>) => {
     const { isListActive, setListActive } = this.props;
     let selectedRow = null;
@@ -368,9 +379,25 @@ export class StakePoolsTable extends Component<Props, State> {
     }
 
     const sortedStakePoolList = orderBy(
-      stakePoolsList,
-      stakePoolsSortBy,
-      stakePoolsOrder
+      stakePoolsList.map((stakePool) => {
+        let calculatedPledge;
+        let calculatedCost;
+        let formattedTicker;
+        if (stakePoolsSortBy === 'ticker') {
+          formattedTicker = stakePool.ticker.replace(/[^\w\s]/gi, '').toLowerCase();
+        }
+        if (stakePoolsSortBy === 'pledge') {
+          const formattedPledgeValue = this.bigNumbersToFormattedNumbers(stakePool.pledge);
+          calculatedPledge = Number(parseFloat(formattedPledgeValue).toFixed(2));
+        }
+        if (stakePoolsSortBy === 'cost') {
+          const formattedCostValue = this.bigNumbersToFormattedNumbers(stakePool.cost);
+          calculatedCost = Number(parseFloat(formattedCostValue).toFixed(2));
+        }
+        return { ...stakePool, calculatedPledge, calculatedCost, formattedTicker };
+      }),
+      ['formattedTicker', 'calculatedPledge', 'calculatedCost', stakePoolsSortBy],
+      [stakePoolsOrder, stakePoolsOrder, stakePoolsOrder, stakePoolsOrder]
     );
 
     const availableTableHeaders = [
@@ -472,6 +499,9 @@ export class StakePoolsTable extends Component<Props, State> {
                         'days'
                       );
 
+                      const pledgeValue = this.bigNumbersToFormattedNumbers(pledge);
+                      const costValue = this.bigNumbersToFormattedNumbers(cost);
+
                       const saturationBarClassnames = classNames([
                         styles.progress,
                         styles[getSaturationColor(saturation)],
@@ -528,14 +558,10 @@ export class StakePoolsTable extends Component<Props, State> {
                               </div>
                             </div>
                           </td>
-                          <td>{`${parseFloat(
-                            formattedWalletAmount(cost, false, true)
-                          ).toFixed(2)}`}</td>
+                          <td>{Number(costValue).toFixed(2)}</td>
                           <td>{margin}%</td>
                           <td>{producedBlocks}</td>
-                          <td>{`${parseFloat(
-                            formattedWalletAmount(pledge, false, true)
-                          ).toFixed(2)}`}</td>
+                          <td>{Number(pledgeValue).toFixed(2)}</td>
                           <td>
                             {retiring && calculatedDateRange ? (
                               <span className={styles.retiring}>
