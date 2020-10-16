@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Increased the maximum number of wallets limit to 100 ([PR 2208](https://github.com/input-output-hk/daedalus/pull/2208))
 - Re-enabled stake pool saturation info ([PR 2200](https://github.com/input-output-hk/daedalus/pull/2200))
 - Implemented the wallet migration leftovers handling ([PR 2178](https://github.com/input-output-hk/daedalus/pull/2178))
 
