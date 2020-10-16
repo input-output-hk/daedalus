@@ -15,6 +15,7 @@ Changelog
 
 ### Chores
 
+- Optimized wallet data polling ([PR 2208](https://github.com/input-output-hk/daedalus/pull/2208))
 - Updated `cardano-launcher` to version `0.20201014.0` ([PR 2205](https://github.com/input-output-hk/daedalus/pull/2205))
 - Updated `cardano-wallet` to version `2020-10-13` ([PR 2205](https://github.com/input-output-hk/daedalus/pull/2205))
 - Update Nix installation instructions ([PR 2200](https://github.com/input-output-hk/daedalus/pull/2200))

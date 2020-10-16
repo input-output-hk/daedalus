@@ -207,8 +207,8 @@ export default class TransactionsStore extends Store {
 
   @action _refreshTransactionData = async () => {
     if (this.stores.networkStatus.isConnected) {
-      const { all: wallets } = this.stores.wallets;
-      for (const wallet of wallets) {
+      const wallet = this.stores.wallets.active;
+      if (wallet) {
         const recentRequest = this._getTransactionsRecentRequest(wallet.id);
         recentRequest.execute({
           walletId: wallet.id,
