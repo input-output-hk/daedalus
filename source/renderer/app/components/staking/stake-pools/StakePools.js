@@ -95,8 +95,22 @@ export default class StakePools extends Component<Props, State> {
 
   handleSearch = (search: string) => this.setState(prevState => ({ search, maintainFixed: prevState.isFixed, isFixed: true }));
   handleClearSearch = () => this.setState({ search: '', maintainFixed: false });
-  handleGridView = () => this.setState({ isGridView: true, isListView: false, isFixed: false, maintainFixed: false });
-  handleListView = () => this.setState({ isGridView: false, isListView: true, isFixed: false, maintainFixed: false });
+  handleGridView = () => this.setState({
+    isGridView: true,
+    isListView: false,
+    isFixed: false,
+    maintainFixed: false,
+    isScrolled: false,
+    isHeaderFixed: false
+  });
+  handleListView = () => this.setState({
+    isGridView: false,
+    isListView: true,
+    isFixed: false,
+    maintainFixed: false,
+    isScrolled: false,
+    isHeaderFixed: false
+  });
   handleSearchComponentScrollView = (isScrolled: boolean, isHeaderFixed: boolean) =>  {
     if (isHeaderFixed) {
       this.setState(prevState => ({ isFixed: !prevState.isFixed, isScrolled, isHeaderFixed }));
