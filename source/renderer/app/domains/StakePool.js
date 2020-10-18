@@ -19,6 +19,7 @@ export type StakePoolProps = {
   homepage: string,
   relativeStake: BigNumber,
   producedBlocks: number,
+  nonMyopicMemberRewards: number,
   description: string,
   cost: BigNumber,
   pledge: BigNumber,
@@ -35,6 +36,7 @@ export default class StakePool {
   @observable ticker: string;
   @observable homepage: string;
   @observable producedBlocks: number;
+  @observable nonMyopicMemberRewards: number;
   @observable relativeStake: BigNumber;
   @observable pledge: BigNumber;
   @observable cost: BigNumber;

@@ -23,9 +23,14 @@ import experimentalIcon from '../../../assets/images/experiment-icon.inline.svg'
 import copyIcon from '../../../assets/images/clipboard-small-ic.inline.svg';
 import copyCheckmarkIcon from '../../../assets/images/check-w.inline.svg';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
-import { formattedWalletAmount, shortNumber } from '../../../utils/formatters';
+import {
+  formattedWalletAmount,
+  shortNumber,
+  formattedLovelaceToAmount,
+} from '../../../utils/formatters';
 import { rangeMap } from '../../../utils/numbers';
 import { ellipsis } from '../../../utils/strings';
+import globalMessages from '../../../i18n/global-messages';
 import { STAKE_POOL_ID_COPY_FEEDBACK } from '../../../config/timingConfig';
 import {
   THUMBNAIL_HEIGHT,
@@ -65,6 +70,11 @@ const messages = defineMessages({
     id: 'staking.stakePools.tooltip.producedBlocks',
     defaultMessage: '!!!Produced blocks:',
     description: '"Blocks" for the Stake Pools Tooltip page.',
+  },
+  expectedRewards: {
+    id: 'staking.stakePools.tooltip.expectedRewards',
+    defaultMessage: '!!!Expected rewards:',
+    description: '"Rewards" for the Stake Pools Tooltip page.',
   },
   retirement: {
     id: 'staking.stakePools.tooltip.retirement',
@@ -422,6 +432,7 @@ export default class TooltipPool extends Component<Props, State> {
       ranking,
       relativeStake,
       producedBlocks,
+      nonMyopicMemberRewards,
       retiring,
       cost,
       profitMargin,
@@ -468,7 +479,7 @@ export default class TooltipPool extends Component<Props, State> {
         aria-hidden
         style={componentStyle}
       >
-        {IS_RANKING_DATA_AVAILABLE ? (
+        {IS_RANKING_DATA_AVAILABLE && nonMyopicMemberRewards ? (
           <div className={colorBandStyles} style={colorBandStyle} />
         ) : (
           <div className={colorBandStyles} />
@@ -519,7 +530,7 @@ export default class TooltipPool extends Component<Props, State> {
           />
 
           <dl className={styles.table}>
-            {IS_SATURATION_DATA_AVAILABLE && (
+            {IS_SATURATION_DATA_AVAILABLE && nonMyopicMemberRewards && (
               <>
                 <dt className={styles.saturationLabel}>
                   {intl.formatMessage(messages.saturation)}
@@ -540,7 +551,7 @@ export default class TooltipPool extends Component<Props, State> {
             )}
             <dt>{intl.formatMessage(messages.ranking)}</dt>
             <dd className={styles.ranking}>
-              {IS_RANKING_DATA_AVAILABLE ? (
+              {IS_RANKING_DATA_AVAILABLE && nonMyopicMemberRewards ? (
                 <span
                   style={{
                     background: getColorFromRange(ranking, {
@@ -623,6 +634,13 @@ export default class TooltipPool extends Component<Props, State> {
             <dd className={styles.defaultColor}>
               <span className={styles.defaultColorContent}>
                 {shortNumber(producedBlocks)}
+              </span>
+            </dd>
+            <dt>{intl.formatMessage(messages.expectedRewards)}</dt>
+            <dd className={styles.defaultColor}>
+              <span className={styles.defaultColorContent}>
+                {shortNumber(formattedLovelaceToAmount(nonMyopicMemberRewards))}{' '}
+                {intl.formatMessage(globalMessages.unitAda)}
               </span>
             </dd>
             {/* <dt>{intl.formatMessage(messages.cost)}</dt>
