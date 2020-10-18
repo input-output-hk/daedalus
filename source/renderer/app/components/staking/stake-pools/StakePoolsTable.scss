@@ -101,12 +101,6 @@
     }
   }
 
-  .boxedContainer {
-    @media (max-width: 950px) {
-      padding-left: 15px;
-    }
-  }
-
   table {
     border-style: hidden;
     user-select: text;
@@ -115,6 +109,9 @@
     thead {
       tr {
         border: 0;
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
       }
     }
 
@@ -128,8 +125,7 @@
         box-shadow: 0 10px 10px -10px var(--theme-staking-stake-pool-tooltip-shadow-color);
         height: 40px;
         left: 104px;
-        padding-left: 20px;
-        padding-right: 10px;
+        padding: 0 10px;
         position: fixed;
         top: 204px;
         width: calc(100% - 124px);
@@ -137,12 +133,17 @@
 
         tr {
           display: flex;
+          padding: 0 10px;
         }
       }
     }
 
     tbody {
       tr {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+
         &:hover {
           background-color: var(
             --theme-staking-stake-pools-search-clear-button-hover-background-color
@@ -158,8 +159,7 @@
       }
     }
 
-    tr,
-    td {
+    tr {
       border-bottom: 1px solid var(--theme-staking-table-border-color);
     }
 
@@ -170,7 +170,7 @@
       font-size: 10px;
       font-weight: 600;
       line-height: 2;
-      padding: 10px 0 10px 0;
+      padding: 10px;
       text-align: left;
       text-transform: uppercase;
       vertical-align: middle;
@@ -182,44 +182,21 @@
         text-align: center;
       }
 
-      &:first-child {
-        min-width: 9.16%;
-      }
-
       &:nth-child(2) {
-        min-width: 27.55%;
-      }
-
-      &:nth-child(3) {
-        min-width: 13.15%;
-      }
-
-      &:nth-child(4) {
-        min-width: 9.5%;
-      }
-
-      &:nth-child(5) {
-        min-width: 8.75%;
-      }
-
-      &:nth-child(6) {
-        min-width: 13.2%;
+        max-width: 100px;
+        min-width: 100px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
 
       &:nth-child(7) {
-        min-width: 7.6%;
-        padding-right: 5px;
+        margin-right: -12px;
         text-align: right;
-
-        @media (max-width: 925px) {
-          min-width: 8%;
-          padding-right: 0;
-        }
       }
 
       &:last-child {
-        min-width: 10%;
-        text-align: center;
+        text-align: right;
       }
 
       &:hover {
@@ -276,7 +253,7 @@
       font-family: var(--font-regular);
       font-size: 12px;
       line-height: 1.33;
-      padding: 10px 15px 10px 0;
+      padding: 10px;
       position: relative;
       text-align: left;
       -webkit-user-select: none;
@@ -291,32 +268,33 @@
       }
 
       &:first-child {
-        min-width: 70px;
-      }
-
-      &:nth-child(2) {
-        min-width: 210px;
+        min-width: 57.58px
       }
 
       &:nth-child(3) {
-        min-width: 95px;
+        min-width: 92.39px;
         text-align: center;
       }
 
       &:nth-child(4) {
-        min-width: 83px;
+        min-width: 84.92px;
+      }
+
+      &:nth-child(5) {
+        min-width: 71.36px;
       }
 
       &:nth-child(6) {
-        min-width: 110px;
+        min-width: 125.44px;
       }
 
       &:nth-child(7) {
+        min-width: 67.48px;
         text-align: right;
       }
 
       &:last-child {
-        min-width: 75px;
+        min-width: 91.03px;
         text-align: center;
       }
 
@@ -325,7 +303,8 @@
       }
 
       &:nth-child(2) {
-        max-width: 150px;
+        max-width: 100px;
+        min-width: 100px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;

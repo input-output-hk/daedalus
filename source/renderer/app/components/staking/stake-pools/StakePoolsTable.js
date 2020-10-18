@@ -277,8 +277,8 @@ export class StakePoolsTable extends Component<Props, State> {
     });
   };
 
-  bigNumbersToFormattedNumbers = (value: BigNumber) => {
-    const formattedValue = formattedWalletAmount(value, false, true);
+  bigNumbersToFormattedNumbers = (value: BigNumber, shortNumber?: boolean) => {
+    const formattedValue = formattedWalletAmount(value, false, !shortNumber);
     const splitValues = formattedValue.split(',');
     let result = '';
     splitValues.map(item => {
@@ -499,7 +499,8 @@ export class StakePoolsTable extends Component<Props, State> {
                         'days'
                       );
 
-                      const pledgeValue = this.bigNumbersToFormattedNumbers(pledge);
+                      const pledgeValue = this.bigNumbersToFormattedNumbers(pledge, true);
+                      const pledgeCalculatedValue = Number(pledgeValue) ? Number(pledgeValue).toFixed(2) : pledgeValue;
                       const costValue = this.bigNumbersToFormattedNumbers(cost);
 
                       const saturationBarClassnames = classNames([
@@ -561,7 +562,7 @@ export class StakePoolsTable extends Component<Props, State> {
                           <td>{Number(costValue).toFixed(2)}</td>
                           <td>{margin}%</td>
                           <td>{producedBlocks}</td>
-                          <td>{Number(pledgeValue).toFixed(2)}</td>
+                          <td>{pledgeCalculatedValue}</td>
                           <td>
                             {retiring && calculatedDateRange ? (
                               <span className={styles.retiring}>
