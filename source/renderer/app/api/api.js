@@ -1755,10 +1755,6 @@ export default class AdaApi {
     }
   };
 
-  setCardanoNodeFault = async (fault: FaultInjectionIpcRequest) => {
-    await cardanoFaultInjectionChannel.send(fault);
-  };
-
   createVotingRegistrationTransaction = async (
     request: CreateVotingRegistrationRequest
   ): Promise<WalletTransaction> => {
@@ -1794,10 +1790,7 @@ export default class AdaApi {
           },
         },
       };
-
-      let response: Transaction;
-
-      response = await createTransaction(this.config, {
+      const response: Transaction = await createTransaction(this.config, {
         walletId,
         data: { ...data },
       });
@@ -1822,6 +1815,10 @@ export default class AdaApi {
         .where('code', 'transaction_is_too_big')
         .result();
     }
+  };
+
+  setCardanoNodeFault = async (fault: FaultInjectionIpcRequest) => {
+    await cardanoFaultInjectionChannel.send(fault);
   };
 
   // No implementation here but can be overwritten
