@@ -17,6 +17,7 @@
   &.fixedComponent {
     position: fixed;
     text-align: initial;
+    z-index: 100;
   }
 
   :global {

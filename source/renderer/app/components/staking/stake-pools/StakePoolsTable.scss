@@ -148,7 +148,6 @@
           background-color: var(
             --theme-staking-stake-pools-search-clear-button-hover-background-color
           );
-          cursor: pointer;
         }
 
         &.selected {
@@ -308,6 +307,10 @@
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
+
+        span {
+          cursor: pointer;
+        }
       }
 
       p {

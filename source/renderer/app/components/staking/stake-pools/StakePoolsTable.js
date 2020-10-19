@@ -248,9 +248,10 @@ export class StakePoolsTable extends Component<Props, State> {
           `.${containerClassName}`
         );
         this.setState({ top, left });
-        if (targetElement.parentElement) {
+        const parentEl = targetElement.parentElement;
+        if (parentEl && parentEl.parentElement) {
           const index = get(
-            targetElement.parentElement,
+            parentEl.parentElement,
             'sectionRowIndex',
             null
           );
@@ -264,8 +265,10 @@ export class StakePoolsTable extends Component<Props, State> {
       stakePoolsSortBy,
       stakePoolsOrder
     );
+    const targetEl = poolId.currentTarget;
+    const { parentElement } = targetEl;
     const currentTargetChildren = get(
-      poolId.currentTarget,
+      parentElement.parentElement,
       'sectionRowIndex',
       null
     );
@@ -516,7 +519,6 @@ export class StakePoolsTable extends Component<Props, State> {
                               ? styles.selected
                               : null
                           }
-                          onClick={this.handleOpenThumbnail}
                         >
                           <td>
                             {rank}
@@ -538,7 +540,13 @@ export class StakePoolsTable extends Component<Props, State> {
                               />
                             )}
                           </td>
-                          <td><span className={styles.ticker}>[{ticker}]</span>{' '}</td>
+                          <td>
+                            <span className={styles.ticker}
+                                  role="presentation"
+                                  onClick={this.handleOpenThumbnail}>
+                              {ticker}
+                            </span>
+                          </td>
                           <td>
                             <div className={styles.currentEpochProgressBar}>
                               <div className={styles.progressBarContainer}>
