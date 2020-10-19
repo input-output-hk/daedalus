@@ -15,6 +15,7 @@ type Props = {
   isActiveScreen: Function,
   isLegacy: boolean,
   isNotResponding: boolean,
+  isHardwareWallet: boolean,
   isSetWalletPasswordDialogOpen: boolean,
   onOpenExternalLink: Function,
   onRestartNode: Function,
@@ -33,6 +34,7 @@ export default class WalletWithNavigation extends Component<Props> {
       isActiveScreen,
       isLegacy,
       isNotResponding,
+      isHardwareWallet,
       isSetWalletPasswordDialogOpen,
       onOpenExternalLink,
       onRestartNode,
@@ -54,7 +56,7 @@ export default class WalletWithNavigation extends Component<Props> {
 
         <div className={styles.page}>{children}</div>
 
-        {!hasPassword && (
+        {!hasPassword && !isHardwareWallet && (
           <SetWalletPassword
             isSetWalletPasswordDialogOpen={isSetWalletPasswordDialogOpen}
             onSetWalletPassword={onSetWalletPassword}

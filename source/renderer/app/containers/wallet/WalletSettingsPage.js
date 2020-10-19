@@ -30,14 +30,11 @@ export default class WalletSettingsPage extends Component<Props> {
     } = this.props.stores;
     const activeWallet = wallets.active;
 
-    let isLegacyWallet: boolean = false;
-    if (activeWallet) {
-      isLegacyWallet = activeWallet.isLegacy;
-    }
-
     // Guard against potential null values
     if (!activeWallet)
       throw new Error('Active wallet required for WalletSettingsPage.');
+
+    const { isLegacyWallet, isHardwareWallet } = activeWallet;
 
     const { actions } = this.props;
     const {
@@ -68,7 +65,8 @@ export default class WalletSettingsPage extends Component<Props> {
     const { isIncentivizedTestnet } = global;
 
     const shouldDisplayRecoveryPhrase =
-      (!isIncentivizedTestnet && isLegacyWallet) || !isLegacyWallet;
+      ((!isIncentivizedTestnet && isLegacyWallet) || !isLegacyWallet) &&
+      !isHardwareWallet;
 
     const wordCount = activeWallet.isRandom
       ? LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT
@@ -79,6 +77,7 @@ export default class WalletSettingsPage extends Component<Props> {
         <WalletSettings
           error={updateWalletRequest.error}
           openDialogAction={actions.dialogs.open.trigger}
+          isHardwareWallet={isHardwareWallet}
           isSpendingPasswordSet={activeWallet.hasPassword}
           spendingPasswordUpdateDate={activeWallet.passwordUpdateDate}
           recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
