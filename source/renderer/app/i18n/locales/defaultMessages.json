@@ -5532,16 +5532,16 @@
         }
       },
       {
-        "defaultMessage": "!!!Expected rewards:",
+        "defaultMessage": "!!!Potential rewards:",
         "description": "\"Rewards\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
           "line": 78
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
-        "id": "staking.stakePools.tooltip.expectedRewards",
+        "id": "staking.stakePools.tooltip.potentialRewards",
         "start": {
-          "column": 19,
+          "column": 20,
           "line": 74
         }
       },

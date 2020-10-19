@@ -71,9 +71,9 @@ const messages = defineMessages({
     defaultMessage: '!!!Produced blocks:',
     description: '"Blocks" for the Stake Pools Tooltip page.',
   },
-  expectedRewards: {
-    id: 'staking.stakePools.tooltip.expectedRewards',
-    defaultMessage: '!!!Expected rewards:',
+  potentialRewards: {
+    id: 'staking.stakePools.tooltip.potentialRewards',
+    defaultMessage: '!!!Potential rewards:',
     description: '"Rewards" for the Stake Pools Tooltip page.',
   },
   retirement: {
@@ -638,7 +638,7 @@ export default class TooltipPool extends Component<Props, State> {
                 {shortNumber(producedBlocks)}
               </span>
             </dd>
-            <dt>{intl.formatMessage(messages.expectedRewards)}</dt>
+            <dt>{intl.formatMessage(messages.potentialRewards)}</dt>
             <dd className={styles.defaultColor}>
               <span className={styles.defaultColorContent}>
                 {shortNumber(formattedLovelaceToAmount(nonMyopicMemberRewards))}{' '}
