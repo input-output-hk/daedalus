@@ -531,7 +531,7 @@ export class StakePoolsTable extends Component<Props, State> {
                                 onOpenExternalLink={onOpenExternalLink}
                                 top={top}
                                 left={left}
-                                bottom={100}
+                                fromStakePool
                                 color={color}
                                 onSelect={this.handleSelect}
                                 showWithSelectButton={showWithSelectButton}
