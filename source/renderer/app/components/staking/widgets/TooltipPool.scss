@@ -12,12 +12,11 @@
   position: absolute;
   user-select: text;
   width: 280px;
-  z-index: 20;
+  z-index: 100;
 
   &.fixedComponent {
     position: fixed;
     text-align: initial;
-    z-index: 100;
   }
 
   :global {

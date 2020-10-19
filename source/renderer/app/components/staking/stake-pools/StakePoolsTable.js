@@ -263,17 +263,19 @@ export class StakePoolsTable extends Component<Props, State> {
     );
     const targetEl = poolId.currentTarget;
     const { parentElement } = targetEl;
-    const currentTargetChildren = get(
-      parentElement.parentElement,
-      'sectionRowIndex',
-      null
-    );
-    const highlightedPoolId = sortedStakePoolList[currentTargetChildren]
-      ? sortedStakePoolList[currentTargetChildren].id
-      : null;
-    return this.setState({
-      highlightedPoolId,
-    });
+    if (parentElement) {
+      const currentTargetChildren = get(
+        parentElement.parentElement,
+        'sectionRowIndex',
+        null
+      );
+      const highlightedPoolId = sortedStakePoolList[currentTargetChildren]
+        ? sortedStakePoolList[currentTargetChildren].id
+        : null;
+      return this.setState({
+        highlightedPoolId,
+      });
+    }
   };
 
   bigNumbersToFormattedNumbers = (value: BigNumber, shortNumber?: boolean) => {
@@ -550,7 +552,7 @@ export class StakePoolsTable extends Component<Props, State> {
                                 onOpenExternalLink={onOpenExternalLink}
                                 top={top}
                                 left={left}
-                                bottom={100}
+                                fromStakePool
                                 color={color}
                                 onSelect={this.handleSelect}
                                 showWithSelectButton={showWithSelectButton}
