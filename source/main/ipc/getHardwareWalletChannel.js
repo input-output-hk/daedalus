@@ -1,7 +1,7 @@
 // @flow
 /* eslint-disable no-console */
 // @TODO - enable console once connecting logic refined
-import TransportNodeHid from '@ledgerhq/hw-transport-node-hid';
+//import TransportNodeHid from '@ledgerhq/hw-transport-node-hid';
 import AppAda, { cardano } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { BrowserWindow } from 'electron';
 // $FlowFixMe
