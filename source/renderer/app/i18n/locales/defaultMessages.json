@@ -5476,16 +5476,16 @@
         }
       },
       {
-        "defaultMessage": "!!!Name",
-        "description": "Table header \"Name\" label on stake pools list view page",
+        "defaultMessage": "!!!Ticker",
+        "description": "Table header \"Ticker\" label on stake pools list view page",
         "end": {
           "column": 3,
           "line": 31
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsTable.js",
-        "id": "staking.stakePools.tableHeader.name",
+        "id": "staking.stakePools.tableHeader.ticker",
         "start": {
-          "column": 19,
+          "column": 21,
           "line": 27
         }
       },

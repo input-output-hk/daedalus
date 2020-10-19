@@ -24,10 +24,10 @@ const messages = defineMessages({
     defaultMessage: '!!!Rank',
     description: 'Table header "Rank" label on stake pools list view page',
   },
-  tableHeaderName: {
-    id: 'staking.stakePools.tableHeader.name',
-    defaultMessage: '!!!Name',
-    description: 'Table header "Name" label on stake pools list view page',
+  tableHeaderTicker: {
+    id: 'staking.stakePools.tableHeader.ticker',
+    defaultMessage: '!!!Ticker',
+    description: 'Table header "Ticker" label on stake pools list view page',
   },
   tableHeaderSaturation: {
     id: 'staking.stakePools.tableHeader.saturation',
@@ -316,16 +316,13 @@ export class StakePoolsTable extends Component<Props, State> {
   handleSort = (newSortBy: string) => {
     const { stakePoolsOrder, stakePoolsSortBy } = this.state;
     let newOrder;
-    if (stakePoolsSortBy === newSortBy || newSortBy === 'name') {
+    if (stakePoolsSortBy === newSortBy || newSortBy === 'ticker') {
       newOrder = stakePoolsOrder === 'asc' ? 'desc' : 'asc';
     } else {
       newOrder = 'desc';
     }
     if (stakePoolsSortBy !== 'ticker' && stakePoolsSortBy !== newSortBy) {
       newOrder = 'asc';
-    }
-    if (newSortBy === 'name') {
-      newSortBy = 'ticker';
     }
     this.setState({
       stakePoolsOrder: newOrder,
@@ -406,8 +403,8 @@ export class StakePoolsTable extends Component<Props, State> {
         title: intl.formatMessage(messages.tableHeaderRank),
       },
       {
-        name: 'name',
-        title: intl.formatMessage(messages.tableHeaderName),
+        name: 'ticker',
+        title: intl.formatMessage(messages.tableHeaderTicker),
       },
       {
         name: 'saturation',
@@ -447,7 +444,7 @@ export class StakePoolsTable extends Component<Props, State> {
                       {map(availableTableHeaders, (tableHeader) => {
                         const isSorted =
                           tableHeader.name === stakePoolsSortBy ||
-                          (tableHeader.name === 'name' &&
+                          (tableHeader.name === 'ticker' &&
                             stakePoolsSortBy === 'ticker');
                         const sortIconClasses = classNames([
                           styles.sortIcon,
@@ -476,7 +473,6 @@ export class StakePoolsTable extends Component<Props, State> {
                     {map(sortedStakePoolList, (stakePool, key) => {
                       const rank = get(stakePool, 'ranking', '');
                       const ticker = get(stakePool, 'ticker', '');
-                      const description = get(stakePool, 'description', '');
                       const saturation = get(stakePool, 'saturation', '');
                       const cost = new BigNumber(get(stakePool, 'cost', ''));
                       const margin = get(stakePool, 'profitMargin', '');
@@ -542,10 +538,7 @@ export class StakePoolsTable extends Component<Props, State> {
                               />
                             )}
                           </td>
-                          <td>
-                            <span className={styles.ticker}>[{ticker}]</span>{' '}
-                            {description}
-                          </td>
+                          <td><span className={styles.ticker}>[{ticker}]</span>{' '}</td>
                           <td>
                             <div className={styles.currentEpochProgressBar}>
                               <div className={styles.progressBarContainer}>
