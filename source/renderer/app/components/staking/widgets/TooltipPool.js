@@ -530,7 +530,7 @@ export default class TooltipPool extends Component<Props, State> {
           />
 
           <dl className={styles.table}>
-            {IS_SATURATION_DATA_AVAILABLE && nonMyopicMemberRewards && (
+            {IS_SATURATION_DATA_AVAILABLE && nonMyopicMemberRewards ? (
               <>
                 <dt className={styles.saturationLabel}>
                   {intl.formatMessage(messages.saturation)}
@@ -548,7 +548,7 @@ export default class TooltipPool extends Component<Props, State> {
                   </span>
                 </dd>
               </>
-            )}
+            ) : null}
             <dt>{intl.formatMessage(messages.ranking)}</dt>
             <dd className={styles.ranking}>
               {IS_RANKING_DATA_AVAILABLE && nonMyopicMemberRewards ? (
