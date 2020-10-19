@@ -164,7 +164,7 @@ export class StakePoolsTable extends Component<Props, State> {
     if (!this.scrollableDomElement) return false;
     return this.scrollableDomElement.addEventListener(
       'scroll',
-      this.getIsFixedActive
+      debounce(this.getIsFixedActive, 100, { leading: false, trailing: true })
     );
   }
 
@@ -250,11 +250,7 @@ export class StakePoolsTable extends Component<Props, State> {
         this.setState({ top, left });
         const parentEl = targetElement.parentElement;
         if (parentEl && parentEl.parentElement) {
-          const index = get(
-            parentEl.parentElement,
-            'sectionRowIndex',
-            null
-          );
+          const index = get(parentEl.parentElement, 'sectionRowIndex', null);
           this.setState({ selectedRow: index });
         }
       }
@@ -284,8 +280,8 @@ export class StakePoolsTable extends Component<Props, State> {
     const formattedValue = formattedWalletAmount(value, false, !shortNumber);
     const splitValues = formattedValue.split(',');
     let result = '';
-    splitValues.map(item => {
-      result+= item;
+    splitValues.map((item) => {
+      result += item;
       return true;
     });
     return result;
@@ -384,19 +380,37 @@ export class StakePoolsTable extends Component<Props, State> {
         let calculatedCost;
         let formattedTicker;
         if (stakePoolsSortBy === 'ticker') {
-          formattedTicker = stakePool.ticker.replace(/[^\w\s]/gi, '').toLowerCase();
+          formattedTicker = stakePool.ticker
+            .replace(/[^\w\s]/gi, '')
+            .toLowerCase();
         }
         if (stakePoolsSortBy === 'pledge') {
-          const formattedPledgeValue = this.bigNumbersToFormattedNumbers(stakePool.pledge);
-          calculatedPledge = Number(parseFloat(formattedPledgeValue).toFixed(2));
+          const formattedPledgeValue = this.bigNumbersToFormattedNumbers(
+            stakePool.pledge
+          );
+          calculatedPledge = Number(
+            parseFloat(formattedPledgeValue).toFixed(2)
+          );
         }
         if (stakePoolsSortBy === 'cost') {
-          const formattedCostValue = this.bigNumbersToFormattedNumbers(stakePool.cost);
+          const formattedCostValue = this.bigNumbersToFormattedNumbers(
+            stakePool.cost
+          );
           calculatedCost = Number(parseFloat(formattedCostValue).toFixed(2));
         }
-        return { ...stakePool, calculatedPledge, calculatedCost, formattedTicker };
+        return {
+          ...stakePool,
+          calculatedPledge,
+          calculatedCost,
+          formattedTicker,
+        };
       }),
-      ['formattedTicker', 'calculatedPledge', 'calculatedCost', stakePoolsSortBy],
+      [
+        'formattedTicker',
+        'calculatedPledge',
+        'calculatedCost',
+        stakePoolsSortBy,
+      ],
       [stakePoolsOrder, stakePoolsOrder, stakePoolsOrder, stakePoolsOrder]
     );
 
@@ -498,8 +512,13 @@ export class StakePoolsTable extends Component<Props, State> {
                         'days'
                       );
 
-                      const pledgeValue = this.bigNumbersToFormattedNumbers(pledge, true);
-                      const pledgeCalculatedValue = Number(pledgeValue) ? Number(pledgeValue).toFixed(2) : pledgeValue;
+                      const pledgeValue = this.bigNumbersToFormattedNumbers(
+                        pledge,
+                        true
+                      );
+                      const pledgeCalculatedValue = Number(pledgeValue)
+                        ? Number(pledgeValue).toFixed(2)
+                        : pledgeValue;
                       const costValue = this.bigNumbersToFormattedNumbers(cost);
 
                       const saturationBarClassnames = classNames([
@@ -541,9 +560,11 @@ export class StakePoolsTable extends Component<Props, State> {
                             )}
                           </td>
                           <td>
-                            <span className={styles.ticker}
-                                  role="presentation"
-                                  onClick={this.handleOpenThumbnail}>
+                            <span
+                              className={styles.ticker}
+                              role="presentation"
+                              onClick={this.handleOpenThumbnail}
+                            >
                               {ticker}
                             </span>
                           </td>

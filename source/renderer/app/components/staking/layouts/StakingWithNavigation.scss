@@ -19,6 +19,11 @@
   overflow-y: scroll;
   position: relative;
   scroll-behavior: smooth;
+  &::-webkit-scrollbar-thumb {
+    &:vertical {
+      min-height: 60px !important;
+    }
+  }
 }
 
 .settingsTabPage {
