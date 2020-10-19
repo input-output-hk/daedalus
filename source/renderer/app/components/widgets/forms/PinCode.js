@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import type { Node } from 'react';
-import { find, map } from 'lodash';
+import { map } from 'lodash';
 import { NumericInput } from 'react-polymorph/lib/components/NumericInput';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
@@ -16,17 +15,20 @@ type Props = $Exact<{
   value: number,
 }>;
 
-export default class PinCode extends Component<Props, State> {
+export default class PinCode extends Component<Props> {
   static defaultProps = {
     length: 4,
   };
 
-  onChange = (inputValue?: number, key: number) => {
+  onChange = (inputValue: ?number, key: number) => {
     const { value, onChange } = this.props;
 
     const newValue = value.toString().split('');
-    newValue[key] = inputValue ? inputValue.toString() : null;
-    onChange(parseInt(newValue.join('')));
+    newValue[key] = inputValue ? inputValue.toString() : '';
+
+    if (onChange) {
+      onChange(parseInt(newValue.join(''), 10));
+    }
   };
 
   render() {
@@ -34,7 +36,9 @@ export default class PinCode extends Component<Props, State> {
 
     return (
       <div className={styles.component} role="button">
-        <label className="SimpleFormField_label">{label}</label>
+        <label htmlFor="firstName" className="SimpleFormField_label">
+          {label}
+        </label>
         {map(Array(length).fill(), (action, key) => {
           const inputValue = value ? value.toString().split('') : undefined;
           return (
@@ -43,13 +47,13 @@ export default class PinCode extends Component<Props, State> {
               themeId={IDENTIFIERS.INPUT}
               skin={InputSkin}
               {...restProps}
-              onChange={(value) => this.onChange(value, key)}
+              onChange={(number) => this.onChange(number, key)}
               value={inputValue ? inputValue[key] : undefined}
               autoFocus={autoFocus && key === 0}
-              onKeyPress={this.onKeyPress}
               disabled={
                 key !== 0 &&
-                (!inputValue || !inputValue.hasOwnProperty(key - 1))
+                (!inputValue ||
+                  !Object.prototype.hasOwnProperty.call(inputValue, key - 1))
               }
             />
           );

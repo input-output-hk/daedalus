@@ -80,6 +80,7 @@ export default class SidebarStore extends Store {
       isFlight,
       isIncentivizedTestnet,
       isShelleyTestnet,
+      isCatalyst,
       environment: { isDev },
     } = global;
 
@@ -100,7 +101,7 @@ export default class SidebarStore extends Store {
       [categories.STAKING.name]: isShelleyActivated,
       [categories.REDEEM_ITN_REWARDS.name]: true,
       [categories.SETTINGS.name]: true,
-      [categories.VOTING.name]: true,
+      [categories.VOTING.name]: isCatalyst,
       [categories.NETWORK_INFO.name]:
         isFlight || isIncentivizedTestnet || isShelleyTestnet,
     };

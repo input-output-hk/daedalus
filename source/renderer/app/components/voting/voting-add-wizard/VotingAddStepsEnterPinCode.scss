@@ -5,6 +5,11 @@
     }
     .reminder {
       color: var(--theme-voting-steps-description-color);
+      span > span {
+        color: var(--theme-voting-steps-description-highlighted-color);
+        font-family: var(--font-medium);
+        font-weight: 500;
+      }
     }
     .pinCode {
       display: flex;

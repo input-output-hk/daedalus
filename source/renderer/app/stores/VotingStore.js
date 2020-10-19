@@ -1,5 +1,6 @@
 // @flow
 import { action, observable } from 'mobx';
+import { find } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import {
@@ -8,7 +9,6 @@ import {
 } from '../domains/WalletTransaction';
 import { formattedArrayBufferToHexString } from '../utils/formatters';
 import wallet from '../utils/wallet';
-import { find } from 'lodash';
 import {
   VOTING_REGISTRATION_TRANSACTION_CHECK_INTERVAL,
   VOTING_REGISTRATION_TRANSACTION_CHECKER_TIMEOUT,
@@ -18,10 +18,10 @@ export default class VotingStore extends Store {
   @observable selectedVotingWalletId: ?string = null;
   @observable isVotingRegistrationTransactionPending: boolean = false;
   @observable votingRegistrationKey: any = null;
-  @observable qrCode: ?string = null;
+  @observable qrCode: string | null = null;
 
-  pinCode: ?number = null;
-  votingCheckTimeInterval: ?IntervalID = null;
+  pinCode: number;
+  votingCheckTimeInterval: IntervalID | null = null;
 
   setup() {
     const { voting: votingActions } = this.actions;
@@ -41,10 +41,13 @@ export default class VotingStore extends Store {
 
   // ACTIONS
 
-  @action _setSelectedVotingWalletId = (walletId: string) =>
-    (this.selectedVotingWalletId = walletId);
+  @action _setSelectedVotingWalletId = (walletId: string) => {
+    this.selectedVotingWalletId = walletId;
+  };
 
-  @action _setPinCode = (pinCode: number) => (this.pinCode = pinCode);
+  @action _setPinCode = (pinCode: number) => {
+    this.pinCode = pinCode;
+  };
 
   @action setVotingCheckTimeInterval = (value: any) => {
     this.votingCheckTimeInterval = value;
@@ -58,7 +61,7 @@ export default class VotingStore extends Store {
     this.votingRegistrationKey = value;
   };
 
-  @action setQrCode = (value: ?string) => {
+  @action setQrCode = (value: string | null) => {
     this.qrCode = value;
   };
 
@@ -67,7 +70,6 @@ export default class VotingStore extends Store {
     this.isVotingRegistrationTransactionPending = false;
     this.votingRegistrationKey = null;
     this.qrCode = null;
-    this.pinCode = null;
   };
 
   /* ====  Private methods  ===== */
@@ -76,7 +78,7 @@ export default class VotingStore extends Store {
     amount,
     passphrase,
   }: {
-    amount: string,
+    amount: number,
     passphrase: string,
     amount: number,
   }) => {
@@ -95,14 +97,14 @@ export default class VotingStore extends Store {
     try {
       await this.generateVotingRegistrationKey();
 
-      const key = this.votingRegistrationKey;
-
       const transaction = await this.votingSendTransactionRequest.execute({
         address: address.id,
-        amount: amount,
+        amount,
         passphrase,
-        walletId: walletId,
-        votingKey: formattedArrayBufferToHexString(key.public().bytes()),
+        walletId,
+        votingKey: formattedArrayBufferToHexString(
+          this.votingRegistrationKey.public().bytes()
+        ),
       });
 
       // Start interval to check transaction state every second
@@ -158,27 +160,29 @@ export default class VotingStore extends Store {
   };
 
   generateQrCode = async () => {
-    const Modules = await wallet;
-    const pinCode = this.pinCode;
-    const key = this.votingRegistrationKey;
-    const PASSWORD = new Uint8Array(4);
-    pinCode
-      .toString()
-      .split('')
-      .forEach((value, index) => {
-        PASSWORD[index] = value;
-      });
-    const encrypt = Modules.symmetric_encrypt(PASSWORD, key.bytes());
-    this.setQrCode(formattedArrayBufferToHexString(encrypt));
+    if (this.pinCode) {
+      const Modules = await wallet;
+      const PASSWORD = new Uint8Array(4);
+      this.pinCode
+        .toString()
+        .split('')
+        .forEach((value: string, index: number) => {
+          PASSWORD[index] = parseInt(value, 10);
+        });
+      const encrypt = Modules.symmetric_encrypt(
+        PASSWORD,
+        this.votingRegistrationKey.bytes()
+      );
+      this.setQrCode(formattedArrayBufferToHexString(encrypt));
+    }
   };
 
   // Reset voting registration interval and refresh wallet data
   resetVotingRegistrationTransactionChecker = () => {
     if (this.votingCheckTimeInterval) {
       clearInterval(this.votingCheckTimeInterval);
-      this.setIsVotingRegistrationTransactionPending(null);
+      this.setVotingCheckTimeInterval(null);
     }
-    this.stores.wallets.refreshWalletsData();
     this.setIsVotingRegistrationTransactionPending(false);
   };
 }

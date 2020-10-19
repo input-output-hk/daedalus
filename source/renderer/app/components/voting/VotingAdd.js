@@ -1,23 +1,23 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import styles from './VotingAdd.scss';
-import BorderedBox from '../widgets/BorderedBox';
 import type { Node } from 'react';
 import { Stepper } from 'react-polymorph/lib/components/Stepper';
 import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
 import { defineMessages, FormattedMessage, intlShape } from 'react-intl';
+import styles from './VotingAdd.scss';
+import BorderedBox from '../widgets/BorderedBox';
 
 const messages = defineMessages({
   heading: {
     id: 'voting.votingAdd.heading',
     defaultMessage: '!!!Register to vote',
-    description: 'Headline for Voting add Stepper.',
+    description: 'Headline for Voting add Stepper',
   },
-  subTitle: {
-    id: 'voting.votingAdd.subTitle',
+  subtitle: {
+    id: 'voting.votingAdd.subtitle',
     defaultMessage: '!!!Step {step} of {stepCount}',
-    description: 'Sub title for Voting add.',
+    description: 'Sub title for Voting add',
   },
 });
 
@@ -47,9 +47,9 @@ export default class VotingAdd extends Component<Props> {
       <div className={styles.component}>
         <BorderedBox>
           <div className={styles.heading}>{heading}</div>
-          <div className={styles.subTitle}>
+          <div className={styles.subtitle}>
             <FormattedMessage
-              {...messages.subTitle}
+              {...messages.subtitle}
               values={{ step: activeStep, stepCount: stepsList.length }}
             />
           </div>

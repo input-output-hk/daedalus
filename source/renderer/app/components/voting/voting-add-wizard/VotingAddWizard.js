@@ -1,15 +1,16 @@
 // @flow
 import React, { Component } from 'react';
+import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import { get } from 'lodash';
-import Wallet from '../../../domains/Wallet';
+import { BigNumber } from 'bignumber.js';
 import VotingAddStepsChooseWallet from './VotingAddStepsChooseWallet';
 import VotingAddStepsEnterPinCode from './VotingAddStepsEnterPinCode';
 import VotingAddStepsDeposit from './VotingAddStepsDeposit';
 import VotingAddStepsQrCode from './VotingAddStepsQrCode';
 import StakePool from '../../../domains/StakePool';
-import { BigNumber } from 'bignumber.js';
 import LocalizableError from '../../../i18n/LocalizableError';
+import Wallet from '../../../domains/Wallet';
 
 type Props = {
   activeStep: number,
@@ -24,9 +25,9 @@ type Props = {
   stakePoolsList: Array<StakePool>,
   getStakePoolById: Function,
   transactionFee: ?BigNumber,
+  transactionFeeError: string | Node | null,
   onConfirm: Function,
-  isDisabled: Boolean,
-  qrCode: ?string,
+  qrCode: string | null,
   isSubmitting: Boolean,
   error: ?LocalizableError,
 };
@@ -47,8 +48,8 @@ export default class VotingAddWizard extends Component<Props> {
       minVotingFunds,
       getStakePoolById,
       transactionFee,
+      transactionFeeError,
       onConfirm,
-      isDisabled,
       qrCode,
       isSubmitting,
       error,
@@ -80,6 +81,7 @@ export default class VotingAddWizard extends Component<Props> {
           <VotingAddStepsDeposit
             onConfirm={onConfirm}
             transactionFee={transactionFee}
+            transactionFeeError={transactionFeeError}
             error={error}
           />
         );
@@ -92,6 +94,9 @@ export default class VotingAddWizard extends Component<Props> {
             isSubmitting={isSubmitting}
           />
         );
+        break;
+      default:
+        content = <></>;
         break;
     }
 

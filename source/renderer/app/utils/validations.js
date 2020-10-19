@@ -81,6 +81,5 @@ export const isValidPinCode = (pinCode: number, length: number): boolean => {
   return pinCode.toString().length === length;
 };
 
-// eslint-disable-next-line max-len
 export const isValidRepeatPinCode = (pinCode: number, repeatPinCode: number) =>
   pinCode === repeatPinCode;

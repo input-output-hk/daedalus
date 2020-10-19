@@ -1,5 +1,7 @@
-export const MIN_VOTING_FUNDS = 10;
+// @flow
+export const MIN_VOTING_FUNDS = 1;
 export const VOTING_FEE_FOR_CALCULATE = 1;
+export const PIN_CODE_LENGTH = 4;
 // Timers
 
 export const VOTING_REGISTRATION_TRANSACTION_CHECK_INTERVAL = 1 * 1000; // 1 second | unit: milliseconds;

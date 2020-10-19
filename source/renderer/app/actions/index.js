@@ -30,13 +30,13 @@ export type ActionsMap = {
   sidebar: SidebarActions,
   staking: StakingActions,
   transactions: TransactionsActions,
+  voting: VotingActions,
   wallets: WalletsActions,
   walletsLocal: WalletsLocalAction,
   walletBackup: WalletBackupActions,
   walletMigration: WalletMigrationActions,
   walletSettings: WalletSettingsActions,
   window: WindowActions,
-  voting: VotingActions,
 };
 
 const actionsMap: ActionsMap = {
@@ -51,13 +51,13 @@ const actionsMap: ActionsMap = {
   sidebar: new SidebarActions(),
   staking: new StakingActions(),
   transactions: new TransactionsActions(),
+  voting: new VotingActions(),
   wallets: new WalletsActions(),
   walletsLocal: new WalletsLocalAction(),
   walletBackup: new WalletBackupActions(),
   walletMigration: new WalletMigrationActions(),
   walletSettings: new WalletSettingsActions(),
   window: new WindowActions(),
-  voting: new VotingActions(),
 };
 
 export default actionsMap;

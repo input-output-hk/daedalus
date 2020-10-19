@@ -1,8 +1,9 @@
 // @flow
 import React, { Component } from 'react';
+import type { Node } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import { find, get, take } from 'lodash';
+import { find, get } from 'lodash';
 import BigNumber from 'bignumber.js';
 import VotingAdd from '../../components/voting/VotingAdd';
 import VotingAddWizard from '../../components/voting/voting-add-wizard/VotingAddWizard';
@@ -10,7 +11,6 @@ import {
   MIN_VOTING_FUNDS,
   VOTING_FEE_FOR_CALCULATE,
 } from '../../config/votingConfig';
-import type { Node } from 'react';
 import { FormattedHTMLMessageWithLink } from '../../components/widgets/FormattedHTMLMessageWithLink';
 import type { InjectedProps as Props } from '../../types/injectedPropsType';
 import { formattedAmountToLovelace } from '../../utils/formatters';
@@ -44,10 +44,8 @@ type State = {
   activeStep: number,
   selectedWalletId: string,
   transactionFee: BigNumber,
-  transactionFeeError: ?string | ?Node,
-  isLoading: Boolean,
-  pinCode: number,
-  error: ?LocalizableError,
+  transactionFeeError: string | Node | null,
+  error: LocalizableError | null,
 };
 
 @inject('stores', 'actions')
@@ -101,6 +99,8 @@ export default class VotingAddPage extends Component<Props, State> {
     activeStep: 1,
     selectedWalletId: this.selectedWalletId,
     transactionFee: null,
+    error: null,
+    transactionFeeError: null,
   };
 
   STEPS_LIST = [
@@ -134,7 +134,6 @@ export default class VotingAddPage extends Component<Props, State> {
   };
 
   handleSetPinCode = (code: number) => {
-    this.setState({ pinCode: code });
     this.props.actions.voting.setPinCode.trigger(code);
     this.handleContinue();
   };
@@ -161,7 +160,13 @@ export default class VotingAddPage extends Component<Props, State> {
   };
 
   render() {
-    const { activeStep, selectedWalletId, transactionFee, error } = this.state;
+    const {
+      activeStep,
+      selectedWalletId,
+      transactionFee,
+      transactionFeeError,
+      error,
+    } = this.state;
     const { wallets, staking, voting } = this.props.stores;
 
     const { stakePools, getStakePoolById } = staking;
@@ -177,17 +182,12 @@ export default class VotingAddPage extends Component<Props, State> {
       (wallet) => wallet.id === selectedWalletId
     );
 
-    const acceptableWallets = find(wallets.allWallets, ({ amount, reward }) =>
-      this.handleIsWalletAcceptable(amount, reward)
-    );
-
     return (
       <VotingAdd stepsList={this.STEPS_LIST} activeStep={activeStep}>
         <VotingAddWizard
           stakePoolsList={stakePools}
           wallets={wallets.allWallets}
           activeStep={activeStep}
-          isDisabled={activeStep === 1 && !acceptableWallets}
           minVotingFunds={MIN_VOTING_FUNDS}
           isWalletAcceptable={this.handleIsWalletAcceptable}
           selectedWallet={selectedWallet}
@@ -198,6 +198,7 @@ export default class VotingAddPage extends Component<Props, State> {
           onClose={this.onClose}
           onConfirm={this.handleDeposit}
           transactionFee={transactionFee}
+          transactionFeeError={transactionFeeError}
           qrCode={qrCode}
           isSubmitting={
             votingSendTransactionRequest.isExecuting ||

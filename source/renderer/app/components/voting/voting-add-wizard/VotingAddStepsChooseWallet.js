@@ -2,12 +2,12 @@
 import React, { Component } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import classNames from 'classnames';
-import commonStyles from './VotingAddSteps.scss';
-import styles from './VotingAddStepsChooseWallet.scss';
-import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
-import Wallet from '../../../domains/Wallet';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
+import Wallet from '../../../domains/Wallet';
+import commonStyles from './VotingAddSteps.scss';
+import styles from './VotingAddStepsChooseWallet.scss';
 
 const messages = defineMessages({
   description: {

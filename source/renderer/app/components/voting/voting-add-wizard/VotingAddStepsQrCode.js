@@ -2,18 +2,18 @@
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
-import commonStyles from './VotingAddSteps.scss';
-import styles from './VotingAddStepsQrCode.scss';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import QRCode from 'qrcode.react';
-import LoadingSpinner from '../../widgets/LoadingSpinner';
+import { observer } from 'mobx-react';
+import vjf from 'mobx-react-form/lib/validators/VJF';
+import globalMessages from '../../../i18n/global-messages';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import TinyCheckbox from '../../widgets/forms/TinyCheckbox';
-import { observer } from 'mobx-react';
-import globalMessages from '../../../i18n/global-messages';
-import vjf from 'mobx-react-form/lib/validators/VJF';
+import LoadingSpinner from '../../widgets/LoadingSpinner';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
+import commonStyles from './VotingAddSteps.scss';
+import styles from './VotingAddStepsQrCode.scss';
 
 const messages = defineMessages({
   loadingLabel: {
@@ -53,7 +53,7 @@ messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
 type Props = {
   onClose: Function,
-  qrCode: string,
+  qrCode: string | null,
   isSubmitting: Boolean,
 };
 

@@ -1,33 +1,35 @@
 // @flow
 import React, { Component } from 'react';
+import type { Node } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import classNames from 'classnames';
-import commonStyles from './VotingAddSteps.scss';
-import styles from './VotingAddStepsDeposit.scss';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import { formattedWalletAmount } from '../../../utils/formatters';
-import globalMessages from '../../../i18n/global-messages';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
-import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import vjf from 'mobx-react-form/lib/validators/VJF';
-import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import BigNumber from 'bignumber.js';
-import { submitOnEnter } from '../../../utils/form';
 import { observer } from 'mobx-react';
+import { submitOnEnter } from '../../../utils/form';
+import globalMessages from '../../../i18n/global-messages';
+import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
+import { formattedWalletAmount } from '../../../utils/formatters';
+import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import LocalizableError from '../../../i18n/LocalizableError';
+import commonStyles from './VotingAddSteps.scss';
+import styles from './VotingAddStepsDeposit.scss';
 
 const messages = defineMessages({
   description: {
     id: 'voting.votingAdd.Deposit.step.description',
     defaultMessage:
-      '!!!By confirming this action, you are making a tx to yourself, and generating meta-data that validates your voting power.',
+      "!!!By confirming this action, you are making a tx to yourself, and generating meta-data that validates your voting power. Except Fees, there will be no change in your wallet's balance.",
     description: 'Description on the voting add "deposit" step.',
   },
   continueButtonLabel: {
     id: 'voting.votingAdd.Deposit.step.continueButtonLabel',
-    defaultMessage: '!!!Deposit funds and generate QR code',
+    defaultMessage:
+      '!!!Validate my voting power by sending myself a transaction',
     description: 'Label for continue button on the voting add "deposit" step.',
   },
   feesLabel: {
@@ -58,6 +60,7 @@ type Props = {
   onConfirm: Function,
   transactionFee: ?BigNumber,
   error: ?LocalizableError,
+  transactionFeeError: string | Node | null,
 };
 
 @observer
@@ -108,7 +111,6 @@ export default class VotingAddStepsDeposit extends Component<Props> {
         const { spendingPassword } = form.values();
         this.props.onConfirm(spendingPassword);
       },
-      onError: (error) => {},
     });
   };
 
@@ -117,7 +119,7 @@ export default class VotingAddStepsDeposit extends Component<Props> {
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { transactionFee, error } = this.props;
+    const { transactionFee, transactionFeeError, error } = this.props;
     const spendingPasswordField = form.$('spendingPassword');
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
 
@@ -157,7 +159,7 @@ export default class VotingAddStepsDeposit extends Component<Props> {
 
           <Input
             {...spendingPasswordField.bind()}
-            autoFocus={true}
+            autoFocus
             skin={InputSkin}
             error={spendingPasswordField.error}
             onKeyPress={this.handleSubmitOnEnter}
@@ -165,6 +167,11 @@ export default class VotingAddStepsDeposit extends Component<Props> {
           {error ? (
             <div className={styles.errorMessage}>
               <p>{intl.formatMessage(error)}</p>
+            </div>
+          ) : null}
+          {transactionFeeError ? (
+            <div className={styles.errorMessage}>
+              <p>{transactionFeeError}</p>
             </div>
           ) : null}
         </div>

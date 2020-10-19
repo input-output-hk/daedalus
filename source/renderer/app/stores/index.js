@@ -12,13 +12,13 @@ import StakingStore from './StakingStore';
 import TransactionsStore from './TransactionsStore';
 import UiDialogsStore from './UiDialogsStore';
 import UiNotificationsStore from './UiNotificationsStore';
+import VotingStore from './VotingStore';
 import WalletsStore from './WalletsStore';
 import WalletsLocalStore from './WalletsLocalStore';
 import WalletBackupStore from './WalletBackupStore';
 import WalletMigrationStore from './WalletMigrationStore';
 import WalletSettingsStore from './WalletSettingsStore';
 import WindowStore from './WindowStore';
-import VotingStore from './VotingStore';
 
 export const storeClasses = {
   addresses: AddressesStore,
@@ -32,13 +32,13 @@ export const storeClasses = {
   transactions: TransactionsStore,
   uiDialogs: UiDialogsStore,
   uiNotifications: UiNotificationsStore,
+  voting: VotingStore,
   wallets: WalletsStore,
   walletsLocal: WalletsLocalStore,
   walletBackup: WalletBackupStore,
   walletMigration: WalletMigrationStore,
   walletSettings: WalletSettingsStore,
   window: WindowStore,
-  voting: VotingStore,
 };
 
 export type StoresMap = {
@@ -54,13 +54,13 @@ export type StoresMap = {
   transactions: TransactionsStore,
   uiDialogs: UiDialogsStore,
   uiNotifications: UiNotificationsStore,
+  voting: VotingStore,
   wallets: WalletsStore,
   walletsLocal: WalletsLocalStore,
   walletBackup: WalletBackupStore,
   walletMigration: WalletMigrationStore,
   walletSettings: WalletSettingsStore,
   window: WindowStore,
-  voting: VotingStore,
 };
 
 let stores: ?StoresMap = null;

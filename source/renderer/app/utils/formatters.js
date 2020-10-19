@@ -158,7 +158,7 @@ export const formattedArrayBufferToHexString = (arrayBuffer: Uint8Array) => {
   const hexOctets = [];
 
   for (let n = 0; n <= 0xff; ++n) {
-    const hexOctet = ('0' + n.toString(16)).slice(-2);
+    const hexOctet = `0${n.toString(16)}`.slice(-2);
     byteToHex.push(hexOctet);
   }
 

@@ -1,3 +1,4 @@
+// @flow
 export type CreateVotingRegistrationRequest = {
   walletId: string,
   address: string,

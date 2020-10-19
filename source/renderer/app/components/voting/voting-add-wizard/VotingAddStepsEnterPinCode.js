@@ -2,20 +2,20 @@
 import React, { Component } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import classNames from 'classnames';
-import commonStyles from './VotingAddSteps.scss';
-import styles from './VotingAddStepsEnterPinCode.scss';
-import PinCode from '../../widgets/forms/PinCode';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { observer } from 'mobx-react';
+import vjf from 'mobx-react-form/lib/validators/VJF';
+import PinCode from '../../widgets/forms/PinCode';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import {
   isValidPinCode,
   isValidRepeatPinCode,
 } from '../../../utils/validations';
-import globalMessages from '../../../i18n/global-messages';
-import vjf from 'mobx-react-form/lib/validators/VJF';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
-import { observer } from 'mobx-react';
+import { PIN_CODE_LENGTH } from '../../../config/votingConfig';
+import commonStyles from './VotingAddSteps.scss';
+import styles from './VotingAddStepsEnterPinCode.scss';
 
 const messages = defineMessages({
   description: {
@@ -27,7 +27,7 @@ const messages = defineMessages({
   reminder: {
     id: 'voting.votingAdd.EnterPinCode.step.reminder',
     defaultMessage:
-      '!!!Dont forget it! You will need it in order to access the voting app and be able to vote.',
+      "!!!<span>Don't forget your Pin Code.</span> If you lose it you will not be able to vote.",
     description: 'Reminder on the voting add "enter pin code" step.',
   },
   enterPinCodeLabel: {
@@ -86,7 +86,7 @@ export default class VotingAddStepsEnterPinCode extends Component<Props> {
               });
 
               return [
-                isValidPinCode(field.value, 4),
+                isValidPinCode(field.value, PIN_CODE_LENGTH),
                 this.context.intl.formatMessage(messages.invalidPinCode),
               ];
             },
@@ -122,14 +122,12 @@ export default class VotingAddStepsEnterPinCode extends Component<Props> {
         const { pinCode } = form.values();
         this.props.onSetPinCode(pinCode);
       },
-      onError: (error) => {},
     });
   };
 
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { onSetPinCode } = this.props;
 
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
     const enterPinCodeLabel = intl.formatMessage(messages.enterPinCodeLabel);
@@ -158,7 +156,7 @@ export default class VotingAddStepsEnterPinCode extends Component<Props> {
             <PinCode
               {...pinCodeFieldProps}
               label={enterPinCodeLabel}
-              autoFocus={true}
+              autoFocus
               onChange={(...args) => pinCodeFieldProps.onChange(...args)}
             />
             <PinCode
@@ -176,7 +174,7 @@ export default class VotingAddStepsEnterPinCode extends Component<Props> {
           onClick={this.submit}
           skin={ButtonSkin}
           label={buttonLabel}
-          disabled={!pinCodeField.isValid || !repeatPinCodeField.isValid}
+          disabled={!form.isValid}
         />
       </div>
     );
