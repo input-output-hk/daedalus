@@ -977,6 +977,21 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-utxo-tooltip-shadow-color': 'rgba(0, 0, 0, 0.18)',
     '--theme-utxo-tooltip-text-color': '#fafbfc',
   },
+  voting: {
+    '--theme-voting-info-icon-color': 'rgb(250, 251, 252)',
+    '--theme-voting-info-background-color': '#cecfd1b3',
+    '--theme-voting-font-color-accent': '#cecfd1',
+    '--theme-voting-font-color-regular': '#cecfd1',
+    '--theme-voting-font-color-light': 'rgba(233, 244, 254, 0.7)',
+    '--theme-voting-steps-description-highlighted-color': '#e9f4fe',
+    '--theme-voting-steps-description-color': 'rgba(233, 244, 254, 0.8)',
+    '--theme-voting-steps-activation-steps-indicator-color': '#e9f4fe',
+    '--theme-voting-steps-choose-wallet-error-message-light-color':
+      'rgba(234, 76, 91, 0.7)',
+    '--theme-voting-steps-choose-wallet-error-message-color': '#ea4c5b',
+    '--theme-voting-steps-deposit-fees-label-color': '#e9f4fe',
+    '--theme-voting-steps-deposit-fees-amount-color': '#ea4c5b',
+  },
   recoveryPhrase: {
     '--theme-recovery-phrase-normal-background-color': 'rgba(83, 99, 112, .3)',
     '--theme-recovery-phrase-normal-border-color': 'transparent',
@@ -1075,19 +1090,6 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-news-overlay-update-button-hover-text-color': '#273d5b',
     '--theme-news-overlay-update-button-background-color-hover': '#fafbfc',
     '--theme-news-overlay-update-button-border-color': '#ffffff',
-  },
-  voting: {
-    '--theme-voting-font-color-accent': '#cecfd1',
-    '--theme-voting-font-color-regular': '#cecfd1',
-    '--theme-voting-font-color-light': 'rgba(233, 244, 254, 0.7)',
-    '--theme-voting-steps-description-highlighted-color': '#e9f4fe',
-    '--theme-voting-steps-description-color': 'rgba(233, 244, 254, 0.8)',
-    '--theme-voting-steps-activation-steps-indicator-color': '#e9f4fe',
-    '--theme-voting-steps-choose-wallet-error-message-light-color':
-      'rgba(234, 76, 91, 0.7)',
-    '--theme-voting-steps-choose-wallet-error-message-color': '#ea4c5b',
-    '--theme-voting-steps-deposit-fees-label-color': '#e9f4fe',
-    '--theme-voting-steps-deposit-fees-amount-color': '#ea4c5b',
   },
 };
 
