@@ -468,7 +468,9 @@ export default class TooltipPool extends Component<Props, State> {
     ]);
     const colorBandStyles = classnames([
       styles.colorBand,
-      IS_RANKING_DATA_AVAILABLE ? null : styles.greyColorBand,
+      IS_RANKING_DATA_AVAILABLE && nonMyopicMemberRewards
+        ? null
+        : styles.greyColorBand,
     ]);
 
     return (
@@ -530,7 +532,7 @@ export default class TooltipPool extends Component<Props, State> {
           />
 
           <dl className={styles.table}>
-            {IS_SATURATION_DATA_AVAILABLE && nonMyopicMemberRewards && (
+            {IS_SATURATION_DATA_AVAILABLE && (
               <>
                 <dt className={styles.saturationLabel}>
                   {intl.formatMessage(messages.saturation)}

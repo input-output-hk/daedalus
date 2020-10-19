@@ -22,7 +22,13 @@ type Props = {
 export default class ThumbPoolContent extends Component<Props> {
   render() {
     const { stakePool, numberOfStakePools } = this.props;
-    const { ranking, ticker, retiring, saturation } = stakePool;
+    const {
+      ranking,
+      nonMyopicMemberRewards,
+      ticker,
+      retiring,
+      saturation,
+    } = stakePool;
     const color = getColorFromRange(ranking, numberOfStakePools);
 
     const componentClassnames = classnames([
@@ -38,20 +44,26 @@ export default class ThumbPoolContent extends Component<Props> {
     return (
       <div className={componentClassnames}>
         <div className={styles.ticker}>{ticker}</div>
-        {IS_RANKING_DATA_AVAILABLE ? (
+        {IS_RANKING_DATA_AVAILABLE && nonMyopicMemberRewards ? (
+          <div className={styles.ranking} style={{ color }}>
+            {ranking}
+          </div>
+        ) : (
+          <div className={styles.noDataDash}>
+            <SVGInline svg={noDataDashBigImage} />
+          </div>
+        )}
+        {IS_SATURATION_DATA_AVAILABLE && (
+          <div className={saturationClassnames}>
+            <span
+              style={{
+                width: `${parseFloat(saturation.toFixed(2))}%`,
+              }}
+            />
+          </div>
+        )}
+        {IS_RANKING_DATA_AVAILABLE && nonMyopicMemberRewards ? (
           <>
-            <div className={styles.ranking} style={{ color }}>
-              {ranking}
-            </div>
-            {IS_SATURATION_DATA_AVAILABLE && (
-              <div className={saturationClassnames}>
-                <span
-                  style={{
-                    width: `${parseFloat(saturation.toFixed(2))}%`,
-                  }}
-                />
-              </div>
-            )}
             {retiring && (
               <div className={styles.clock}>
                 <SVGInline svg={clockIcon} className={styles.clockIcon} />
@@ -65,12 +77,7 @@ export default class ThumbPoolContent extends Component<Props> {
             />
           </>
         ) : (
-          <>
-            <div className={styles.noDataDash}>
-              <SVGInline svg={noDataDashBigImage} />
-            </div>
-            <div className={styles.greyColorBand} />
-          </>
+          <div className={styles.greyColorBand} />
         )}
       </div>
     );
