@@ -256,7 +256,7 @@ export default class TooltipPool extends Component<Props, State> {
     const componentTop = !fromStakePool ? THUMBNAIL_HEIGHT + ARROW_HEIGHT / 2 : THUMBNAIL_HEIGHT + ARROW_WIDTH / 2;
     const componentBottom = !fromStakePool ? THUMBNAIL_HEIGHT + ARROW_HEIGHT / 2 : THUMBNAIL_HEIGHT / 2;
 
-    const arrowLeft = !fromStakePool ? -componentLeft + THUMBNAIL_OFFSET_WIDTH - ARROW_OFFSET : THUMBNAIL_HEIGHT - ARROW_WIDTH;
+    const arrowLeft = !fromStakePool ? -componentLeft + THUMBNAIL_OFFSET_WIDTH - ARROW_OFFSET : THUMBNAIL_HEIGHT - ARROW_WIDTH - TOOLTIP_DELTA;
     const arrowTop = -(ARROW_WIDTH / 2);
     const arrowBottom = -(ARROW_WIDTH / 2);
 
@@ -286,6 +286,7 @@ export default class TooltipPool extends Component<Props, State> {
     } else {
       componentBottom = -((TOOLTIP_MAX_HEIGHT * bottom) / this.containerHeight);
       arrowBottom = -componentBottom + ARROW_WIDTH / 2;
+      if (fromStakePool) arrowBottom -= TOOLTIP_DELTA;
     }
 
     const arrowLeft = -(ARROW_WIDTH / 2);
