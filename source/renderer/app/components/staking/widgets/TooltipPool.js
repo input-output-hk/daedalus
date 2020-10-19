@@ -108,7 +108,7 @@ const messages = defineMessages({
 type Props = {
   stakePool: StakePool,
   isVisible: boolean,
-  fromStakePool: boolean,
+  fromStakePool?: boolean,
   currentTheme: string,
   onClick: Function,
   onOpenExternalLink: Function,
