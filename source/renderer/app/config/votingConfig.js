@@ -1,6 +1,6 @@
 // @flow
-export const MIN_VOTING_FUNDS = 1;
-export const VOTING_FEE_FOR_CALCULATE = 1;
+export const MIN_VOTING_FUNDS = 1; // 1 ADA | unit: ada
+export const VOTING_FEE_FOR_CALCULATE = 1; // 1 ADA | unit: ada
 export const PIN_CODE_LENGTH = 4;
 // Timers
 
