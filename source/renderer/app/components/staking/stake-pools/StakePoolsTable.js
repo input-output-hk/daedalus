@@ -13,10 +13,11 @@ import LoadingSpinner from '../../widgets/LoadingSpinner';
 import { StakingPageScrollContext } from '../layouts/StakingWithNavigation';
 import BorderedBox from '../../widgets/BorderedBox';
 import sortIcon from '../../../assets/images/ascending.inline.svg';
-import { formattedWalletAmount } from '../../../utils/formatters';
+import { formattedLovelaceToAmount, formattedWalletAmount, shortNumber } from '../../../utils/formatters';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
 import TooltipPool from '../widgets/TooltipPool';
 import { getRelativePosition } from '../../../utils/domManipulation';
+import globalMessages from '../../../i18n/global-messages';
 
 const messages = defineMessages({
   tableHeaderRank: {
@@ -66,6 +67,12 @@ const messages = defineMessages({
     defaultMessage: '!!!Produced Blocks',
     description:
       'Table header "Produced Blocks" label on stake pools list view page',
+  },
+  tableHeaderPotentialRewards: {
+    id: 'staking.stakePools.tableHeader.potentialRewards',
+    defaultMessage: '!!!Potential rewards',
+    description:
+      'Table header "Potential rewards" label on stake pools list view page',
   },
   tableHeaderPledge: {
     id: 'staking.stakePools.tableHeader.pledge',
@@ -382,6 +389,10 @@ export class StakePoolsTable extends Component<Props, State> {
         title: intl.formatMessage(messages.tableHeaderProducedBlocks),
       },
       {
+        name: 'potentialRewards',
+        title: intl.formatMessage(messages.tableHeaderPotentialRewards),
+      },
+      {
         name: 'pledge',
         title: intl.formatMessage(messages.tableHeaderPledge),
       },
@@ -444,6 +455,8 @@ export class StakePoolsTable extends Component<Props, State> {
                         get(stakePool, 'pledge', '')
                       );
                       const retiring = get(stakePool, 'retiring', '');
+                      const memberRewards = get(stakePool, 'nonMyopicMemberRewards', '');
+                      const potentialRewards = memberRewards ? `${shortNumber(formattedLovelaceToAmount(memberRewards))  } ${intl.formatMessage(globalMessages.unitAda)}` : '-';
                       const isOversaturated = saturation / 100 >= 1;
                       const saturationValue =
                         isOversaturated || !saturation
@@ -526,6 +539,7 @@ export class StakePoolsTable extends Component<Props, State> {
                           <td>{Number(costValue).toFixed(2)}</td>
                           <td>{margin}%</td>
                           <td>{producedBlocks}</td>
+                          <td>{potentialRewards}</td>
                           <td>{pledgeCalculatedValue}</td>
                           <td>
                             {retiring && calculatedDateRange ? (

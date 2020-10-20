@@ -471,6 +471,7 @@
   "staking.stakePools.tableHeader.margin": "Margin",
   "staking.stakePools.tableHeader.performance": "Performance",
   "staking.stakePools.tableHeader.pledge": "Pledge",
+  "staking.stakePools.tableHeader.potentialRewards": "Potential rewards",
   "staking.stakePools.tableHeader.producedBlocks": "Produced Blocks",
   "staking.stakePools.tableHeader.rank": "Rank",
   "staking.stakePools.tableHeader.retiring": "Retiring in",
