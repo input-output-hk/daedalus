@@ -26,7 +26,6 @@ export const messages = defineMessages({
 type Props = {
   activeWallet: ?Wallet,
   transactions: Array<WalletTransaction>,
-  shouldDisplayTransactions: boolean,
   filterOptions: TransactionFilterOptionsType,
   deletePendingTransaction: Function,
   onLoadMore: Function,
@@ -67,7 +66,6 @@ export default class WalletTransactions extends Component<Props, State> {
     const {
       activeWallet,
       transactions,
-      shouldDisplayTransactions,
       filterOptions,
       deletePendingTransaction,
       onLoadMore,
@@ -95,11 +93,11 @@ export default class WalletTransactions extends Component<Props, State> {
 
     const isRestoreActive = activeWallet && activeWallet.isRestoring;
 
-    if (!shouldDisplayTransactions) {
-      walletTransactions = <WalletNoTransactions label={noTransactionsLabel} />;
-    } else if (numberOfFilterDimensionsApplied > 0 && !transactions.length) {
-      walletTransactions = (
+    if (!transactions.length) {
+      walletTransactions = numberOfFilterDimensionsApplied ? (
         <FilterResultInfo filtered={0} total={totalAvailable} />
+      ) : (
+        <WalletNoTransactions label={noTransactionsLabel} />
       );
     } else {
       walletTransactions = (

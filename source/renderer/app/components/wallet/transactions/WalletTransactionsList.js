@@ -252,14 +252,16 @@ export default class WalletTransactionsList extends Component<Props> {
         />
       ) : null;
 
-    const syncingTransactionsSpinner = isRestoreActive ? (
-      <div className={styles.syncingTransactionsWrapper}>
-        <LoadingSpinner big />
-        <p className={styles.syncingTransactionsText}>
-          {intl.formatMessage(messages.syncingTransactionsMessage)}
-        </p>
-      </div>
-    ) : null;
+    // @TX TODO
+    const syncingTransactionsSpinner = null;
+    // isRestoreActive ? (
+    //   <div className={styles.syncingTransactionsWrapper}>
+    //     <LoadingSpinner big />
+    //     <p className={styles.syncingTransactionsText}>
+    //       {intl.formatMessage(messages.syncingTransactionsMessage)}
+    //     </p>
+    //   </div>
+    // ) : null;
 
     const buttonClasses = classnames([
       'primary',

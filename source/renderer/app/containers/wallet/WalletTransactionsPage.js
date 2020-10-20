@@ -92,11 +92,9 @@ export default class WalletTransactionsPage extends Component<Props, State> {
     const { searchLimit = 0 } = filterOptions;
 
     let transactions = [];
-    const shouldDisplayTransactions =
-      hasAny || !activeWallet || activeWallet.isRestoring;
 
     // Straight away show recent filtered transactions if all filtered ones are not loaded yet
-    if (shouldDisplayTransactions) {
+    if (hasAny && activeWallet && !activeWallet.isRestoring) {
       transactions =
         recentFiltered.length && !allFiltered.length
           ? recentFiltered
@@ -121,7 +119,6 @@ export default class WalletTransactionsPage extends Component<Props, State> {
       <WalletTransactions
         activeWallet={activeWallet}
         transactions={transactions}
-        shouldDisplayTransactions={shouldDisplayTransactions}
         filterOptions={filterOptions}
         deletePendingTransaction={deletePendingTransaction}
         isLoadingTransactions={searchRequest.isExecutingFirstTime}
