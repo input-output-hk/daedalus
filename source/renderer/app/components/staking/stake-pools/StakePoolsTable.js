@@ -1,26 +1,19 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { debounce, get, map, orderBy } from 'lodash';
+import { orderBy } from 'lodash';
 import classNames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
-import SVGInline from 'react-svg-inline';
-import moment from 'moment';
-import BigNumber from 'bignumber.js';
 import styles from './StakePoolsTable.scss';
 import StakePool from '../../../domains/StakePool';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import BorderedBox from '../../widgets/BorderedBox';
-import sortIcon from '../../../assets/images/ascending.inline.svg';
 import {
-  formattedLovelaceToAmount,
-  formattedWalletAmount,
-  shortNumber,
+  bigNumbersToFormattedNumbers,
 } from '../../../utils/formatters';
-import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
-import TooltipPool from '../widgets/TooltipPool';
-import { getRelativePosition } from '../../../utils/domManipulation';
 import globalMessages from '../../../i18n/global-messages';
+import { StakePoolsTableHeader } from './StakePoolsTableHeader';
+import { StakePoolsTableBody } from './StakePoolsTableBody';
 
 const messages = defineMessages({
   tableHeaderRank: {
@@ -89,6 +82,18 @@ const messages = defineMessages({
   },
 });
 
+export const defaultTableOrdering = {
+  ranking: 'asc',
+  ticker: 'asc',
+  saturation: 'asc',
+  cost: 'asc',
+  profitMargin: 'asc',
+  producedBlocks: 'desc',
+  nonMyopicMemberRewards: 'desc',
+  pledge: 'asc',
+  retiring: 'asc',
+};
+
 // Maximum number of stake pools for which we do not need to use the preloading
 const PRELOADER_THRESHOLD = 100;
 
@@ -109,31 +114,23 @@ type Props = {
 };
 
 type State = {
-  highlightedPoolId?: ?number,
   isPreloading: boolean,
   stakePoolsOrder: string,
   stakePoolsSortBy: string,
-  top: number,
-  left: number,
   isFixedTableHeaderActive: boolean,
   isFixedSearchBarActive: boolean,
   fixedTableHeaderPosition: number,
   fixedSearchBarPosition: number,
-  selectedRow: number | null,
 };
 
 const initialState = {
-  highlightedPoolId: null,
   isPreloading: true,
   stakePoolsOrder: 'asc',
   stakePoolsSortBy: 'ranking',
-  top: 0,
-  left: 0,
   isFixedTableHeaderActive: false,
   isFixedSearchBarActive: false,
   fixedTableHeaderPosition: 250,
   fixedSearchBarPosition: 186,
-  selectedRow: null,
 };
 
 @observer
@@ -147,11 +144,6 @@ export class StakePoolsTable extends Component<Props, State> {
     showWithSelectButton: false,
   };
 
-  constructor(props: Props) {
-    super(props);
-    window.addEventListener('resize', this.handleResize);
-  }
-
   state = {
     ...initialState,
   };
@@ -162,14 +154,10 @@ export class StakePoolsTable extends Component<Props, State> {
 
   _isMounted = false;
 
-  scrollableDomElement: ?HTMLElement = null;
-
-  searchInput: ?HTMLElement = null;
-
   componentDidMount() {
     this._isMounted = true;
     setTimeout(() => {
-      if (this._isMounted) this.setState({ isPreloading: false });
+      if (this._isMounted) this.setState({isPreloading: false});
     }, 0);
   }
 
@@ -180,113 +168,17 @@ export class StakePoolsTable extends Component<Props, State> {
     );
   }
 
-  handleResize = () =>
-    debounce(this.handleCloseTooltip, 200, { leading: true, trailing: false });
-
-  handleOpenTooltip = (poolId: SyntheticMouseEvent<HTMLElement>) => {
-    const {
-      isListActive,
-      setListActive,
-      listName,
-      stakePoolsList,
-      containerClassName,
-    } = this.props;
-    const { stakePoolsSortBy, stakePoolsOrder } = this.state;
-    if (poolId.target) {
-      poolId.persist();
-      const targetElement = poolId.target;
-      if (targetElement instanceof HTMLElement) {
-        const { top, left } = getRelativePosition(
-          targetElement,
-          `.${containerClassName}`
-        );
-        this.setState({ top, left });
-        const parentEl = targetElement.parentElement;
-        if (parentEl && parentEl.parentElement) {
-          const index = get(parentEl.parentElement, 'sectionRowIndex', null);
-          this.setState({ selectedRow: index });
-        }
-      }
-    }
-    if (isListActive === false && setListActive) setListActive(listName);
-    const sortedStakePoolList = orderBy(
-      stakePoolsList,
-      stakePoolsSortBy,
-      stakePoolsOrder
-    );
-    const targetEl = poolId.currentTarget;
-    const { parentElement } = targetEl;
-    if (parentElement) {
-      const currentTargetChildren = get(
-        parentElement.parentElement,
-        'sectionRowIndex',
-        null
-      );
-      const highlightedPoolId = sortedStakePoolList[currentTargetChildren]
-        ? sortedStakePoolList[currentTargetChildren].id
-        : null;
-      return this.setState({
-        highlightedPoolId,
-      });
-    }
-    return null;
-  };
-
-  bigNumbersToFormattedNumbers = (value: BigNumber, shorterNumber?: boolean) => {
-    const formattedValue = formattedWalletAmount(value, false, !shorterNumber);
-    const splitValues = formattedValue.split(',');
-    let result = '';
-    splitValues.map((item) => {
-      result += item;
-      return true;
-    });
-    return result;
-  };
-
-  handleCloseTooltip = (item: SyntheticMouseEvent<HTMLElement>) => {
-    const { isListActive, setListActive } = this.props;
-    let selectedRow = null;
-    if (item) {
-      const { target } = item;
-      const parent = get(target, 'parentElement', null);
-      selectedRow = get(parent, 'sectionRowIndex', null);
-    }
-    this.setState({
-      ...initialState,
-      selectedRow,
-      isPreloading: false,
-    });
-    if (isListActive !== false && setListActive) setListActive(null);
-  };
-
-  handleSelect = (stakePoolId: number) => {
-    const { onSelect } = this.props;
-    const selectedPoolId =
-      this.props.selectedPoolId === stakePoolId ? null : stakePoolId;
-    if (onSelect) {
-      onSelect(selectedPoolId);
-    }
-  };
-
   handleSort = (newSortBy: string) => {
-    const { stakePoolsOrder, stakePoolsSortBy } = this.state;
-    let newOrder;
-    if (stakePoolsSortBy === newSortBy || newSortBy === 'ticker') {
+    const {stakePoolsOrder, stakePoolsSortBy} = this.state;
+    let newOrder = defaultTableOrdering[newSortBy];
+    if (newSortBy === stakePoolsSortBy) {
       newOrder = stakePoolsOrder === 'asc' ? 'desc' : 'asc';
-    } else {
-      newOrder = 'desc';
-    }
-    if (stakePoolsSortBy !== 'ticker' && stakePoolsSortBy !== newSortBy) {
-      newOrder = 'asc';
     }
     this.setState({
       stakePoolsOrder: newOrder,
       stakePoolsSortBy: newSortBy,
     });
   };
-
-  getIsHighlighted = (id: string) =>
-    this.props.isListActive !== false && id === this.state.highlightedPoolId;
 
   render() {
     const {
@@ -299,6 +191,10 @@ export class StakePoolsTable extends Component<Props, State> {
       listName,
       maintainFixed,
       isScrolled,
+      onSelect,
+      selectedPoolId,
+      setListActive,
+      isListActive,
     } = this.props;
     const {
       isPreloading,
@@ -306,13 +202,13 @@ export class StakePoolsTable extends Component<Props, State> {
       stakePoolsOrder,
       isFixedTableHeaderActive,
     } = this.state;
-    const { intl } = this.context;
+    const {intl} = this.context;
     const componentClasses = classNames([styles.component, listName]);
 
     if (stakePoolsList.length > PRELOADER_THRESHOLD && isPreloading)
       return (
         <div className={styles.preloadingBlockWrapper}>
-          <LoadingSpinner big />
+          <LoadingSpinner big/>
         </div>
       );
     let tableHeaderClasses: string = '';
@@ -341,7 +237,7 @@ export class StakePoolsTable extends Component<Props, State> {
             .toLowerCase();
         }
         if (stakePoolsSortBy === 'pledge') {
-          const formattedPledgeValue = this.bigNumbersToFormattedNumbers(
+          const formattedPledgeValue = bigNumbersToFormattedNumbers(
             stakePool.pledge
           );
           calculatedPledge = Number(
@@ -349,7 +245,7 @@ export class StakePoolsTable extends Component<Props, State> {
           );
         }
         if (stakePoolsSortBy === 'cost') {
-          const formattedCostValue = this.bigNumbersToFormattedNumbers(
+          const formattedCostValue = bigNumbersToFormattedNumbers(
             stakePool.cost
           );
           calculatedCost = Number(parseFloat(formattedCostValue).toFixed(2));
@@ -396,7 +292,7 @@ export class StakePoolsTable extends Component<Props, State> {
         title: intl.formatMessage(messages.tableHeaderProducedBlocks),
       },
       {
-        name: 'potentialRewards',
+        name: 'nonMyopicMemberRewards',
         title: intl.formatMessage(messages.tableHeaderPotentialRewards),
       },
       {
@@ -412,162 +308,37 @@ export class StakePoolsTable extends Component<Props, State> {
     return (
       <div>
         <div className={componentClasses}>
-          <BorderedBox className={styles.boxedContainer}>
+          <BorderedBox>
             {sortedStakePoolList.length > 0 && (
               <table>
                 <thead className={tableHeaderClasses}>
-                  <tr>
-                    {map(availableTableHeaders, (tableHeader) => {
-                      const isSorted =
-                        tableHeader.name === stakePoolsSortBy ||
-                        (tableHeader.name === 'ticker' &&
-                          stakePoolsSortBy === 'ticker');
-                      const sortIconClasses = classNames([
-                        styles.sortIcon,
-                        isSorted ? styles.sorted : null,
-                        isSorted && stakePoolsOrder === 'asc'
-                          ? styles.ascending
-                          : null,
-                      ]);
-
-                      return (
-                        <th
-                          key={tableHeader.name}
-                          onClick={() => this.handleSort(tableHeader.name)}
-                        >
-                          {tableHeader.title}
-                          <SVGInline
-                            svg={sortIcon}
-                            className={sortIconClasses}
-                          />
-                        </th>
-                      );
-                    })}
-                  </tr>
+                <tr>
+                  <StakePoolsTableHeader
+                    availableTableHeaders={availableTableHeaders}
+                    stakePoolsSortBy={stakePoolsSortBy}
+                    stakePoolsOrder={stakePoolsOrder}
+                    onHandleSort={this.handleSort}
+                  />
+                </tr>
                 </thead>
                 <tbody>
-                  {map(sortedStakePoolList, (stakePool, key) => {
-                    const rank = get(stakePool, 'ranking', '');
-                    const ticker = get(stakePool, 'ticker', '');
-                    const saturation = get(stakePool, 'saturation', '');
-                    const cost = new BigNumber(get(stakePool, 'cost', ''));
-                    const margin = get(stakePool, 'profitMargin', '');
-                    const producedBlocks = get(stakePool, 'producedBlocks', '');
-                    const pledge = new BigNumber(get(stakePool, 'pledge', ''));
-                    const retiring = get(stakePool, 'retiring', '');
-                    const memberRewards = get(
-                      stakePool,
-                      'nonMyopicMemberRewards',
-                      ''
-                    );
-                    const potentialRewards = memberRewards
-                      ? `${shortNumber(
-                          formattedLovelaceToAmount(memberRewards)
-                        )} ${intl.formatMessage(globalMessages.unitAda)}`
-                      : '-';
-                    const isOversaturated = saturation / 100 >= 1;
-                    const saturationValue =
-                      isOversaturated || !saturation
-                        ? parseInt(saturation, 10)
-                        : parseInt(saturation, 10);
-                    const calculatedDateRange = moment(retiring).diff(
-                      moment(),
-                      'days'
-                    );
-
-                    const pledgeValue = this.bigNumbersToFormattedNumbers(
-                      pledge,
-                      true
-                    );
-                    const pledgeCalculatedValue = Number(pledgeValue)
-                      ? Number(pledgeValue).toFixed(2)
-                      : pledgeValue;
-                    const costValue = this.bigNumbersToFormattedNumbers(cost);
-
-                    const saturationBarClassnames = classNames([
-                      styles.progress,
-                      styles[getSaturationColor(saturation)],
-                    ]);
-
-                    const isHighlighted = this.getIsHighlighted(stakePool.id);
-                    const color = getColorFromRange(
-                      rank,
-                      numberOfRankedStakePools
-                    );
-                    const { top, left, selectedRow } = this.state;
-
-                    return (
-                      <tr
-                        key={key}
-                        className={
-                          selectedRow && selectedRow === key
-                            ? styles.selected
-                            : null
-                        }
-                      >
-                        <td>
-                          {rank}
-                          {isHighlighted && (
-                            <TooltipPool
-                              stakePool={stakePool}
-                              isVisible
-                              onClick={this.handleCloseTooltip}
-                              currentTheme={currentTheme}
-                              onOpenExternalLink={onOpenExternalLink}
-                              top={top}
-                              left={left}
-                              fromStakePool
-                              color={color}
-                              onSelect={this.handleSelect}
-                              showWithSelectButton={showWithSelectButton}
-                              containerClassName={containerClassName}
-                              numberOfRankedStakePools={
-                                numberOfRankedStakePools
-                              }
-                            />
-                          )}
-                        </td>
-                        <td>
-                          <span
-                            className={styles.ticker}
-                            role="presentation"
-                            onClick={this.handleOpenTooltip}
-                          >
-                            {ticker}
-                          </span>
-                        </td>
-                        <td>
-                          <div className={styles.currentEpochProgressBar}>
-                            <div className={styles.progressBarContainer}>
-                              <div
-                                className={saturationBarClassnames}
-                                style={{ width: `${saturationValue}%` }}
-                              />
-                              <div className={styles.progressLabel}>
-                                {saturationValue}%
-                              </div>
-                            </div>
-                          </div>
-                        </td>
-                        <td>{Number(costValue).toFixed(2)}</td>
-                        <td>{margin}%</td>
-                        <td>{producedBlocks}</td>
-                        <td>{potentialRewards}</td>
-                        <td>{pledgeCalculatedValue}</td>
-                        <td>
-                          {retiring && calculatedDateRange ? (
-                            <span className={styles.retiring}>
-                              {calculatedDateRange === 1
-                                ? `${calculatedDateRange} day`
-                                : `${calculatedDateRange} days`}
-                            </span>
-                          ) : (
-                            <span>-</span>
-                          )}
-                        </td>
-                      </tr>
-                    );
-                  })}
+                <StakePoolsTableBody
+                  sortedStakePoolList={sortedStakePoolList}
+                  ada={intl.formatMessage(globalMessages.unitAda)}
+                  numberOfRankedStakePools={numberOfRankedStakePools}
+                  currentTheme={currentTheme}
+                  onOpenExternalLink={onOpenExternalLink}
+                  showWithSelectButton={showWithSelectButton}
+                  containerClassName={containerClassName}
+                  onSelect={onSelect}
+                  selectedPoolId={selectedPoolId}
+                  setListActive={setListActive}
+                  isListActive={isListActive}
+                  listName={listName}
+                  stakePoolsList={stakePoolsList}
+                  stakePoolsSortBy={stakePoolsSortBy}
+                  stakePoolsOrder={stakePoolsOrder}
+                />
                 </tbody>
               </table>
             )}
