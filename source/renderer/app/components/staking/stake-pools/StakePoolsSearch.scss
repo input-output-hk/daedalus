@@ -7,7 +7,8 @@
 
   &.componentFixedPosition {
     background-color: var(--theme-main-body-background-color);
-    box-shadow: 0 2.5px 10px 0 var(--theme-staking-stake-pool-tooltip-shadow-color);
+    box-shadow: 0 2.5px 10px 0
+      var(--theme-staking-stake-pool-tooltip-shadow-color);
     height: 70px;
     margin-left: -20px;
     margin-right: -20px;
@@ -121,12 +122,15 @@
   button {
     border-radius: 3px;
     color: var(--theme-about-window-icon-close-button-color);
+    cursor: pointer;
     height: 28px;
     margin: 0 2px;
     width: 28px;
 
     &:hover {
-      background-color: var(--theme-staking-stake-pools-search-clear-button-background-color);
+      background-color: var(
+        --theme-staking-stake-pools-search-clear-button-background-color
+      );
     }
 
     svg {
@@ -142,6 +146,11 @@
   }
 
   .selected {
+    cursor: default;
+    &:hover {
+      background-color: transparent;
+    }
+
     svg {
       > g > g {
         opacity: 1;
