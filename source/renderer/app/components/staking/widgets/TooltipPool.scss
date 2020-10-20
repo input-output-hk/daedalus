@@ -10,14 +10,10 @@
   display: none;
   padding: 10px;
   position: absolute;
+  text-align: initial;
   user-select: text;
   width: 280px;
   z-index: 100;
-
-  &.fixedComponent {
-    position: fixed;
-    text-align: initial;
-  }
 
   :global {
     button.SimpleButton_root {
