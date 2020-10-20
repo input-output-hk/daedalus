@@ -175,7 +175,6 @@ export class StakePoolsTable extends Component<Props, State> {
 
   componentWillUnmount() {
     this._isMounted = false;
-    window.removeEventListener('resize', this.handleClose);
     this.scrollableDomElement = document.querySelector(
       `.${this.props.containerClassName}`
     );
@@ -230,10 +229,11 @@ export class StakePoolsTable extends Component<Props, State> {
         highlightedPoolId,
       });
     }
+    return null;
   };
 
-  bigNumbersToFormattedNumbers = (value: BigNumber, shortNumber?: boolean) => {
-    const formattedValue = formattedWalletAmount(value, false, !shortNumber);
+  bigNumbersToFormattedNumbers = (value: BigNumber, shorterNumber?: boolean) => {
+    const formattedValue = formattedWalletAmount(value, false, !shorterNumber);
     const splitValues = formattedValue.split(',');
     let result = '';
     splitValues.map((item) => {

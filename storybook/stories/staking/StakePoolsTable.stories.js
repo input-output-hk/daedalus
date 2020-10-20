@@ -76,7 +76,7 @@ export const StakePoolsTableStory = (props: Props) => (
         currentTheme={props.currentTheme}
         onOpenExternalLink={action('onOpenExternalLink')}
         containerClassName="StakingWithNavigation_page"
-        numberOfStakePools={STAKE_POOLS.slice(
+        numberOfRankedStakePools={STAKE_POOLS.slice(
           0,
           number('Pools', 300, {
             range: true,
