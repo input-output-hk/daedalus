@@ -32,9 +32,14 @@
     align-items: center;
     display: flex;
     justify-content: center;
+    height: 27px;
 
     :global {
       .SVGInline {
+        align-items: center;
+        display: flex;
+        justify-content: center;
+
         svg {
           height: 3px;
           width: 12px;
