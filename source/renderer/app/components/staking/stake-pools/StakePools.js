@@ -13,6 +13,7 @@ import Wallet from '../../../domains/Wallet';
 import styles from './StakePools.scss';
 import { getFilteredStakePoolsList } from './helpers';
 import StakePool from '../../../domains/StakePool';
+import { IS_RANKING_DATA_AVAILABLE } from '../../../config/stakingConfig';
 
 const messages = defineMessages({
   delegatingListTitle: {
@@ -177,6 +178,11 @@ export default class StakePools extends Component<Props, State> {
       stakePoolsList,
       search
     );
+
+    const numberOfRankedStakePools: number = stakePoolsList.filter(
+      (stakePool) =>
+        IS_RANKING_DATA_AVAILABLE && stakePool.nonMyopicMemberRewards
+    ).length;
 
     const listTitleMessage = search.trim().length
       ? messages.listTitleWithSearch

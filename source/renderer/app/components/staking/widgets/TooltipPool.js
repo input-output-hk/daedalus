@@ -23,9 +23,14 @@ import experimentalIcon from '../../../assets/images/experiment-icon.inline.svg'
 import copyIcon from '../../../assets/images/clipboard-small-ic.inline.svg';
 import copyCheckmarkIcon from '../../../assets/images/check-w.inline.svg';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
-import { formattedWalletAmount, shortNumber } from '../../../utils/formatters';
+import {
+  formattedWalletAmount,
+  shortNumber,
+  formattedLovelaceToAmount,
+} from '../../../utils/formatters';
 import { rangeMap } from '../../../utils/numbers';
 import { ellipsis } from '../../../utils/strings';
+import globalMessages from '../../../i18n/global-messages';
 import { STAKE_POOL_ID_COPY_FEEDBACK } from '../../../config/timingConfig';
 import {
   THUMBNAIL_HEIGHT,
@@ -66,6 +71,11 @@ const messages = defineMessages({
     id: 'staking.stakePools.tooltip.producedBlocks',
     defaultMessage: '!!!Produced blocks:',
     description: '"Blocks" for the Stake Pools Tooltip page.',
+  },
+  potentialRewards: {
+    id: 'staking.stakePools.tooltip.potentialRewards',
+    defaultMessage: '!!!Potential rewards:',
+    description: '"Rewards" for the Stake Pools Tooltip page.',
   },
   retirement: {
     id: 'staking.stakePools.tooltip.retirement',
@@ -118,7 +128,7 @@ type Props = {
   left: number,
   color: string,
   containerClassName: string,
-  numberOfStakePools: number,
+  numberOfRankedStakePools: number,
 };
 
 type State = {
@@ -420,7 +430,7 @@ export default class TooltipPool extends Component<Props, State> {
       onOpenExternalLink,
       onSelect,
       showWithSelectButton,
-      numberOfStakePools,
+      numberOfRankedStakePools,
     } = this.props;
     const {
       componentStyle,
@@ -439,6 +449,7 @@ export default class TooltipPool extends Component<Props, State> {
       ranking,
       relativeStake,
       producedBlocks,
+      nonMyopicMemberRewards,
       retiring,
       cost,
       profitMargin,
@@ -474,7 +485,9 @@ export default class TooltipPool extends Component<Props, State> {
     ]);
     const colorBandStyles = classnames([
       styles.colorBand,
-      IS_RANKING_DATA_AVAILABLE ? null : styles.greyColorBand,
+      IS_RANKING_DATA_AVAILABLE && nonMyopicMemberRewards
+        ? null
+        : styles.greyColorBand,
     ]);
 
     return (
@@ -485,7 +498,7 @@ export default class TooltipPool extends Component<Props, State> {
         aria-hidden
         style={componentStyle}
       >
-        {IS_RANKING_DATA_AVAILABLE ? (
+        {IS_RANKING_DATA_AVAILABLE && nonMyopicMemberRewards ? (
           <div className={colorBandStyles} style={colorBandStyle} />
         ) : (
           <div className={colorBandStyles} />
@@ -557,29 +570,22 @@ export default class TooltipPool extends Component<Props, State> {
             )}
             <dt>{intl.formatMessage(messages.ranking)}</dt>
             <dd className={styles.ranking}>
-              {IS_RANKING_DATA_AVAILABLE ? (
+              {IS_RANKING_DATA_AVAILABLE && nonMyopicMemberRewards ? (
                 <span
                   style={{
                     background: getColorFromRange(ranking, {
                       darken,
                       alpha,
-                      numberOfItems: numberOfStakePools,
+                      numberOfItems: numberOfRankedStakePools,
                     }),
                   }}
                 >
                   {ranking}
                 </span>
               ) : (
-                <Tooltip
-                  className={styles.noDataDashTooltip}
-                  key="noDataDashTooltip"
-                  skin={TooltipSkin}
-                  tip={intl.formatMessage(messages.noDataDashTooltipLabel)}
-                >
-                  <div className={styles.noDataDash}>
-                    <SVGInline svg={noDataDashSmallImage} />
-                  </div>
-                </Tooltip>
+                <div className={styles.noDataDash}>
+                  <SVGInline svg={noDataDashSmallImage} />
+                </div>
               )}
               {isIncentivizedTestnet && (
                 <Tooltip
@@ -642,19 +648,21 @@ export default class TooltipPool extends Component<Props, State> {
                 {shortNumber(producedBlocks)}
               </span>
             </dd>
-            {/* <dt>{intl.formatMessage(messages.cost)}</dt>
-            <dd>
-              <span
-                style={{
-                  background: getColorFromRange(shortNumber(cost), {
-                    darken,
-                    alpha,
-                  }),
-                }}
-              >
-                {formattedWalletAmount(shortNumber(cost))}
-              </span>
-            </dd> */}
+            <dt>{intl.formatMessage(messages.potentialRewards)}</dt>
+            <dd className={styles.defaultColor}>
+              {nonMyopicMemberRewards ? (
+                <span className={styles.defaultColorContent}>
+                  {shortNumber(
+                    formattedLovelaceToAmount(nonMyopicMemberRewards)
+                  )}{' '}
+                  {intl.formatMessage(globalMessages.unitAda)}
+                </span>
+              ) : (
+                <div className={styles.noDataDash}>
+                  <SVGInline svg={noDataDashSmallImage} />
+                </div>
+              )}
+            </dd>
           </dl>
         </div>
         {onSelect && showWithSelectButton && (
