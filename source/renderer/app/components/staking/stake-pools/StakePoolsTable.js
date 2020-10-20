@@ -91,10 +91,9 @@ type Props = {
   showWithSelectButton?: boolean,
   onSelect?: Function,
   containerClassName: string,
-  numberOfStakePools: number,
+  numberOfRankedStakePools: number,
   selectedPoolId?: ?number,
   onOpenExternalLink: Function,
-  onScrollView?: Function,
   maintainFixed?: boolean,
   isScrolled?: boolean,
 };
@@ -282,7 +281,7 @@ export class StakePoolsTable extends Component<Props, State> {
       showWithSelectButton,
       stakePoolsList,
       containerClassName,
-      numberOfStakePools,
+      numberOfRankedStakePools,
       listName,
       maintainFixed,
       isScrolled,
@@ -470,7 +469,7 @@ export class StakePoolsTable extends Component<Props, State> {
                       ]);
 
                       const isHighlighted = this.getIsHighlighted(stakePool.id);
-                      const color = getColorFromRange(rank, numberOfStakePools);
+                      const color = getColorFromRange(rank, numberOfRankedStakePools);
                       const { top, left, selectedRow } = this.state;
 
                       return (
@@ -498,7 +497,7 @@ export class StakePoolsTable extends Component<Props, State> {
                                 onSelect={this.handleSelect}
                                 showWithSelectButton={showWithSelectButton}
                                 containerClassName={containerClassName}
-                                numberOfStakePools={numberOfStakePools}
+                                numberOfRankedStakePools={numberOfRankedStakePools}
                               />
                             )}
                           </td>
