@@ -149,12 +149,22 @@ export class StakePoolsTable extends Component<Props, State> {
 
   searchInput: ?HTMLElement = null;
 
+  _isMounted = false;
+
+  scrollableDomElement: ?HTMLElement = null;
+
+  searchInput: ?HTMLElement = null;
+
   componentDidMount() {
-    this.setState({ isPreloading: false });
+    this._isMounted = true;
+    setTimeout(() => {
+      if (this._isMounted) this.setState({ isPreloading: false });
+    }, 0);
   }
 
   componentWillUnmount() {
-    window.removeEventListener('resize', this.handleCloseTooltip);
+    this._isMounted = false;
+    window.removeEventListener('resize', this.handleClose);
     this.scrollableDomElement = document.querySelector(
       `.${this.props.containerClassName}`
     );
