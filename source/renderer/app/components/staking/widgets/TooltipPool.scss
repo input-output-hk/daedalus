@@ -92,37 +92,37 @@
     }
   }
 
+  .noDataDash {
+    background-color: var(--theme-staking-stake-pool-grey-bg-color);
+    border-radius: 3px;
+    height: 16px;
+    width: 23px;
+
+    :global {
+      .SVGInline {
+        align-items: center;
+        display: flex;
+        justify-content: center;
+        padding: 0 4px;
+      }
+    }
+
+    svg {
+      height: 10px;
+      width: 7px;
+
+      path {
+        fill: var(--theme-staking-stake-pool-tooltip-neutral-text-color);
+      }
+    }
+  }
+
   .noDataDashTooltip {
     padding: 0;
 
     :global {
       .SimpleBubble_bubble {
         margin-bottom: -20px !important;
-      }
-    }
-
-    .noDataDash {
-      background-color: var(--theme-staking-stake-pool-grey-bg-color);
-      border-radius: 3px;
-      height: 16px;
-      width: 23px;
-
-      :global {
-        .SVGInline {
-          align-items: center;
-          display: flex;
-          justify-content: center;
-          padding: 0 4px;
-        }
-      }
-
-      svg {
-        height: 10px;
-        width: 7px;
-
-        path {
-          fill: var(--theme-staking-stake-pool-tooltip-neutral-text-color);
-        }
       }
     }
   }
