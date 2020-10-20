@@ -295,7 +295,7 @@ export default class StakePools extends Component<Props, State> {
                       setListActive={this.handleSetListActive}
                       containerClassName="StakingWithNavigation_page"
                       onSelect={this.onDelegate}
-                      numberOfStakePools={stakePoolsList.length}
+                      numberOfRankedStakePools={numberOfRankedStakePools}
                       showWithSelectButton
                     />
                   </Fragment>
@@ -318,7 +318,7 @@ export default class StakePools extends Component<Props, State> {
                   setListActive={this.handleSetListActive}
                   containerClassName="StakingWithNavigation_page"
                   onSelect={this.onDelegate}
-                  numberOfStakePools={stakePoolsList.length}
+                  numberOfRankedStakePools={numberOfRankedStakePools}
                 />
               </Fragment>
             )}
