@@ -8,9 +8,7 @@ import styles from './StakePoolsTable.scss';
 import StakePool from '../../../domains/StakePool';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import BorderedBox from '../../widgets/BorderedBox';
-import {
-  bigNumbersToFormattedNumbers,
-} from '../../../utils/formatters';
+import { bigNumbersToFormattedNumbers } from '../../../utils/formatters';
 import globalMessages from '../../../i18n/global-messages';
 import { StakePoolsTableHeader } from './StakePoolsTableHeader';
 import { StakePoolsTableBody } from './StakePoolsTableBody';
@@ -157,7 +155,7 @@ export class StakePoolsTable extends Component<Props, State> {
   componentDidMount() {
     this._isMounted = true;
     setTimeout(() => {
-      if (this._isMounted) this.setState({isPreloading: false});
+      if (this._isMounted) this.setState({ isPreloading: false });
     }, 0);
   }
 
@@ -169,7 +167,7 @@ export class StakePoolsTable extends Component<Props, State> {
   }
 
   handleSort = (newSortBy: string) => {
-    const {stakePoolsOrder, stakePoolsSortBy} = this.state;
+    const { stakePoolsOrder, stakePoolsSortBy } = this.state;
     let newOrder = defaultTableOrdering[newSortBy];
     if (newSortBy === stakePoolsSortBy) {
       newOrder = stakePoolsOrder === 'asc' ? 'desc' : 'asc';
@@ -202,13 +200,13 @@ export class StakePoolsTable extends Component<Props, State> {
       stakePoolsOrder,
       isFixedTableHeaderActive,
     } = this.state;
-    const {intl} = this.context;
+    const { intl } = this.context;
     const componentClasses = classNames([styles.component, listName]);
 
     if (stakePoolsList.length > PRELOADER_THRESHOLD && isPreloading)
       return (
         <div className={styles.preloadingBlockWrapper}>
-          <LoadingSpinner big/>
+          <LoadingSpinner big />
         </div>
       );
     let tableHeaderClasses: string = '';
@@ -312,33 +310,33 @@ export class StakePoolsTable extends Component<Props, State> {
             {sortedStakePoolList.length > 0 && (
               <table>
                 <thead className={tableHeaderClasses}>
-                <tr>
-                  <StakePoolsTableHeader
-                    availableTableHeaders={availableTableHeaders}
-                    stakePoolsSortBy={stakePoolsSortBy}
-                    stakePoolsOrder={stakePoolsOrder}
-                    onHandleSort={this.handleSort}
-                  />
-                </tr>
+                  <tr>
+                    <StakePoolsTableHeader
+                      availableTableHeaders={availableTableHeaders}
+                      stakePoolsSortBy={stakePoolsSortBy}
+                      stakePoolsOrder={stakePoolsOrder}
+                      onHandleSort={this.handleSort}
+                    />
+                  </tr>
                 </thead>
                 <tbody>
-                <StakePoolsTableBody
-                  sortedStakePoolList={sortedStakePoolList}
-                  ada={intl.formatMessage(globalMessages.unitAda)}
-                  numberOfRankedStakePools={numberOfRankedStakePools}
-                  currentTheme={currentTheme}
-                  onOpenExternalLink={onOpenExternalLink}
-                  showWithSelectButton={showWithSelectButton}
-                  containerClassName={containerClassName}
-                  onSelect={onSelect}
-                  selectedPoolId={selectedPoolId}
-                  setListActive={setListActive}
-                  isListActive={isListActive}
-                  listName={listName}
-                  stakePoolsList={stakePoolsList}
-                  stakePoolsSortBy={stakePoolsSortBy}
-                  stakePoolsOrder={stakePoolsOrder}
-                />
+                  <StakePoolsTableBody
+                    sortedStakePoolList={sortedStakePoolList}
+                    ada={intl.formatMessage(globalMessages.unitAda)}
+                    numberOfRankedStakePools={numberOfRankedStakePools}
+                    currentTheme={currentTheme}
+                    onOpenExternalLink={onOpenExternalLink}
+                    showWithSelectButton={showWithSelectButton}
+                    containerClassName={containerClassName}
+                    onSelect={onSelect}
+                    selectedPoolId={selectedPoolId}
+                    setListActive={setListActive}
+                    isListActive={isListActive}
+                    listName={listName}
+                    stakePoolsList={stakePoolsList}
+                    stakePoolsSortBy={stakePoolsSortBy}
+                    stakePoolsOrder={stakePoolsOrder}
+                  />
                 </tbody>
               </table>
             )}

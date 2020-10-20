@@ -7,7 +7,8 @@
 
   &.componentFixedPosition {
     background-color: var(--theme-main-body-background-color);
-    box-shadow: 0 2.5px 10px 0 var(--theme-staking-stake-pool-tooltip-shadow-color);
+    box-shadow: 0 2.5px 10px 0
+      var(--theme-staking-stake-pool-tooltip-shadow-color);
     height: 70px;
     margin-left: -20px;
     margin-right: -20px;
@@ -126,7 +127,9 @@
     width: 28px;
 
     &:hover {
-      background-color: var(--theme-staking-stake-pools-search-clear-button-background-color);
+      background-color: var(
+        --theme-staking-stake-pools-search-clear-button-background-color
+      );
     }
 
     svg {
@@ -142,6 +145,10 @@
   }
 
   .selected {
+    &:hover {
+      background-color: transparent;
+    }
+
     svg {
       > g > g {
         opacity: 1;
