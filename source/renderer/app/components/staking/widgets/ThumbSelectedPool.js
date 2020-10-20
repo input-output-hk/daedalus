@@ -14,18 +14,26 @@ import { IS_RANKING_DATA_AVAILABLE } from '../../../config/stakingConfig';
 type Props = {
   stakePool?: StakePool,
   alreadyDelegated?: boolean,
-  numberOfStakePools: number,
+  numberOfRankedStakePools: number,
 };
 
 @observer
 export default class ThumbSelectedPool extends Component<Props> {
   render() {
-    const { stakePool, alreadyDelegated, numberOfStakePools } = this.props;
+    const {
+      stakePool,
+      alreadyDelegated,
+      numberOfRankedStakePools,
+    } = this.props;
 
-    const { ticker, retiring, ranking } = stakePool || {};
+    const { ticker, retiring, ranking, nonMyopicMemberRewards } =
+      stakePool || {};
     const rankColor =
-      stakePool && !retiring && IS_RANKING_DATA_AVAILABLE
-        ? getColorFromRange(ranking, numberOfStakePools)
+      stakePool &&
+      !retiring &&
+      IS_RANKING_DATA_AVAILABLE &&
+      nonMyopicMemberRewards
+        ? getColorFromRange(ranking, numberOfRankedStakePools)
         : 'transparent';
 
     const selectedPoolBlockClasses = classnames([

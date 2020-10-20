@@ -21,7 +21,7 @@ import commonStyles from './DelegationSteps.scss';
 import styles from './DelegationStepsChooseStakePoolDialog.scss';
 import Wallet from '../../../domains/Wallet';
 import ThumbSelectedPool from '../widgets/ThumbSelectedPool';
-
+import { IS_RANKING_DATA_AVAILABLE } from '../../../config/stakingConfig';
 import StakePool from '../../../domains/StakePool';
 
 const messages = defineMessages({
@@ -308,6 +308,11 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
       searchValue
     );
 
+    const numberOfRankedStakePools: number = stakePoolsList.filter(
+      (stakePool) =>
+        IS_RANKING_DATA_AVAILABLE && stakePool.nonMyopicMemberRewards
+    ).length;
+
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
@@ -343,7 +348,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
           <div className={styles.selectStakePoolWrapper}>
             <ThumbSelectedPool
               stakePool={selectedPool}
-              numberOfStakePools={stakePoolsList.length}
+              numberOfRankedStakePools={numberOfRankedStakePools}
               alreadyDelegated={selectedPool && !canSubmit}
             />
 
@@ -368,7 +373,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
               containerClassName="Dialog_content"
               onSelect={this.handleSelect}
               selectedPoolId={selectedPoolId}
-              numberOfStakePools={stakePoolsList.length}
+              numberOfRankedStakePools={numberOfRankedStakePools}
               disabledStakePoolId={activeStakePoolId}
               showSelected
               highlightOnHover
@@ -398,7 +403,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
               onSelect={this.handleSelect}
               selectedPoolId={selectedPoolId}
               containerClassName="Dialog_content"
-              numberOfStakePools={stakePoolsList.length}
+              numberOfRankedStakePools={numberOfRankedStakePools}
               disabledStakePoolId={activeStakePoolId}
               showSelected
               highlightOnHover
