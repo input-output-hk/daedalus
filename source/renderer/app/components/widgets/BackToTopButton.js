@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
+import { debounce } from 'lodash';
 import styles from './BackToTopButton.scss';
 
 const messages = defineMessages({
@@ -45,7 +46,10 @@ export default class BackToTopButton extends Component<Props, State> {
     if (!this.scrollableDomElement) return false;
     return this.scrollableDomElement.addEventListener(
       'scroll',
-      this.getIsBackToTopActive
+      debounce(this.getIsBackToTopActive, 300, {
+        leading: false,
+        trailing: true,
+      })
     );
   }
 
