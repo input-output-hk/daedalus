@@ -20,7 +20,7 @@ type Props = {
   showWithSelectButton?: boolean,
   showSelected?: boolean,
   containerClassName: string,
-  numberOfStakePools: number,
+  numberOfRankedStakePools: number,
   selectedPoolId?: ?number,
   disabledStakePoolId?: ?string,
   /**
@@ -120,7 +120,7 @@ export class StakePoolsList extends Component<Props, State> {
       stakePoolsList,
       selectedPoolId,
       containerClassName,
-      numberOfStakePools,
+      numberOfRankedStakePools,
       disabledStakePoolId,
       listName,
     } = this.props;
@@ -155,7 +155,7 @@ export class StakePoolsList extends Component<Props, State> {
               isSelected={isSelected}
               showSelected={showSelected}
               containerClassName={containerClassName}
-              numberOfStakePools={numberOfStakePools}
+              numberOfRankedStakePools={numberOfRankedStakePools}
               disabledStakePoolId={disabledStakePoolId}
             />
           );

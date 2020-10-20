@@ -126,7 +126,7 @@ type Props = {
   left: number,
   color: string,
   containerClassName: string,
-  numberOfStakePools: number,
+  numberOfRankedStakePools: number,
 };
 
 type State = {
@@ -413,7 +413,7 @@ export default class TooltipPool extends Component<Props, State> {
       onOpenExternalLink,
       onSelect,
       showWithSelectButton,
-      numberOfStakePools,
+      numberOfRankedStakePools,
     } = this.props;
     const {
       componentStyle,
@@ -559,7 +559,7 @@ export default class TooltipPool extends Component<Props, State> {
                     background: getColorFromRange(ranking, {
                       darken,
                       alpha,
-                      numberOfItems: numberOfStakePools,
+                      numberOfItems: numberOfRankedStakePools,
                     }),
                   }}
                 >

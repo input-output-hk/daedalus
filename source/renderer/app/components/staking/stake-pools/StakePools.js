@@ -12,6 +12,7 @@ import Wallet from '../../../domains/Wallet';
 import styles from './StakePools.scss';
 import { getFilteredStakePoolsList } from './helpers';
 import StakePool from '../../../domains/StakePool';
+import { IS_RANKING_DATA_AVAILABLE } from '../../../config/stakingConfig';
 
 const messages = defineMessages({
   delegatingListTitle: {
@@ -111,6 +112,11 @@ export default class StakePools extends Component<Props, State> {
       search
     );
 
+    const numberOfRankedStakePools: number = stakePoolsList.filter(
+      (stakePool) =>
+        IS_RANKING_DATA_AVAILABLE && stakePool.nonMyopicMemberRewards
+    ).length;
+
     const listTitleMessage = search.trim().length
       ? messages.listTitleWithSearch
       : messages.listTitle;
@@ -177,7 +183,7 @@ export default class StakePools extends Component<Props, State> {
                   setListActive={this.handleSetListActive}
                   containerClassName="StakingWithNavigation_page"
                   onSelect={this.onDelegate}
-                  numberOfStakePools={stakePoolsList.length}
+                  numberOfRankedStakePools={numberOfRankedStakePools}
                   showWithSelectButton
                 />
               </Fragment>
@@ -202,7 +208,7 @@ export default class StakePools extends Component<Props, State> {
               setListActive={this.handleSetListActive}
               containerClassName="StakingWithNavigation_page"
               onSelect={this.onDelegate}
-              numberOfStakePools={stakePoolsList.length}
+              numberOfRankedStakePools={numberOfRankedStakePools}
             />
           </Fragment>
         )}

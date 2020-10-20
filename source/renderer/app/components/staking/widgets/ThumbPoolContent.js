@@ -15,13 +15,13 @@ import {
 
 type Props = {
   stakePool: StakePool,
-  numberOfStakePools: number,
+  numberOfRankedStakePools: number,
 };
 
 @observer
 export default class ThumbPoolContent extends Component<Props> {
   render() {
-    const { stakePool, numberOfStakePools } = this.props;
+    const { stakePool, numberOfRankedStakePools } = this.props;
     const {
       ranking,
       nonMyopicMemberRewards,
@@ -29,7 +29,7 @@ export default class ThumbPoolContent extends Component<Props> {
       retiring,
       saturation,
     } = stakePool;
-    const color = getColorFromRange(ranking, numberOfStakePools);
+    const color = getColorFromRange(ranking, numberOfRankedStakePools);
 
     const componentClassnames = classnames([
       styles.component,
