@@ -566,16 +566,9 @@ export default class TooltipPool extends Component<Props, State> {
                   {ranking}
                 </span>
               ) : (
-                <Tooltip
-                  className={styles.noDataDashTooltip}
-                  key="noDataDashTooltip"
-                  skin={TooltipSkin}
-                  tip={intl.formatMessage(messages.noDataDashTooltipLabel)}
-                >
-                  <div className={styles.noDataDash}>
-                    <SVGInline svg={noDataDashSmallImage} />
-                  </div>
-                </Tooltip>
+                <div className={styles.noDataDash}>
+                  <SVGInline svg={noDataDashSmallImage} />
+                </div>
               )}
               {isIncentivizedTestnet && (
                 <Tooltip
@@ -640,24 +633,19 @@ export default class TooltipPool extends Component<Props, State> {
             </dd>
             <dt>{intl.formatMessage(messages.potentialRewards)}</dt>
             <dd className={styles.defaultColor}>
-              <span className={styles.defaultColorContent}>
-                {shortNumber(formattedLovelaceToAmount(nonMyopicMemberRewards))}{' '}
-                {intl.formatMessage(globalMessages.unitAda)}
-              </span>
+              {nonMyopicMemberRewards ? (
+                <span className={styles.defaultColorContent}>
+                  {shortNumber(
+                    formattedLovelaceToAmount(nonMyopicMemberRewards)
+                  )}{' '}
+                  {intl.formatMessage(globalMessages.unitAda)}
+                </span>
+              ) : (
+                <div className={styles.noDataDash}>
+                  <SVGInline svg={noDataDashSmallImage} />
+                </div>
+              )}
             </dd>
-            {/* <dt>{intl.formatMessage(messages.cost)}</dt>
-            <dd>
-              <span
-                style={{
-                  background: getColorFromRange(shortNumber(cost), {
-                    darken,
-                    alpha,
-                  }),
-                }}
-              >
-                {formattedWalletAmount(shortNumber(cost))}
-              </span>
-            </dd> */}
           </dl>
         </div>
         {onSelect && showWithSelectButton && (
