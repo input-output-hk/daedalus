@@ -158,14 +158,6 @@ export class StakePoolsTable extends Component<Props, State> {
     setTimeout(() => {
       if (this._isMounted) this.setState({ isPreloading: false });
     }, 0);
-    this.scrollableDomElement = document.querySelector(
-      `.${this.props.containerClassName}`
-    );
-    if (!this.scrollableDomElement) return false;
-    return this.scrollableDomElement.addEventListener(
-      'scroll',
-      debounce(this.getIsFixedActive, 100, { leading: false, trailing: true })
-    );
   }
 
   componentWillUnmount() {
@@ -174,58 +166,7 @@ export class StakePoolsTable extends Component<Props, State> {
     this.scrollableDomElement = document.querySelector(
       `.${this.props.containerClassName}`
     );
-    if (!this.scrollableDomElement) return false;
-    return this.scrollableDomElement.removeEventListener(
-      'scroll',
-      this.getIsFixedActive
-    );
   }
-
-  getIsFixedActive = () => {
-    const {
-      isFixedTableHeaderActive,
-      fixedTableHeaderPosition,
-      fixedSearchBarPosition,
-      isFixedSearchBarActive,
-    } = this.state;
-    const { onScrollView, stakePoolsList, maintainFixed } = this.props;
-
-    if (
-      this.scrollableDomElement instanceof HTMLElement &&
-      stakePoolsList.length
-    ) {
-      const scrollPosition = this.scrollableDomElement.scrollTop;
-      if (
-        (scrollPosition > fixedSearchBarPosition && !isFixedSearchBarActive) ||
-        maintainFixed
-      ) {
-        this.setState({ isFixedSearchBarActive: true });
-        if (onScrollView) onScrollView(true, false);
-      } else if (
-        (scrollPosition <= fixedSearchBarPosition && isFixedSearchBarActive) ||
-        maintainFixed
-      ) {
-        this.setState({ isFixedSearchBarActive: false });
-        if (onScrollView) onScrollView(false, false);
-      }
-      if (
-        (scrollPosition > fixedTableHeaderPosition &&
-          !isFixedTableHeaderActive) ||
-        maintainFixed
-      ) {
-        this.setState({ isFixedTableHeaderActive: true });
-        if (onScrollView) onScrollView(true, true);
-      } else if (
-        (scrollPosition <= fixedTableHeaderPosition &&
-          isFixedTableHeaderActive &&
-          scrollPosition > fixedSearchBarPosition) ||
-        maintainFixed
-      ) {
-        this.setState({ isFixedTableHeaderActive: false });
-        if (onScrollView) onScrollView(true, false);
-      }
-    }
-  };
 
   handleResize = () =>
     debounce(this.handleClose, 200, { leading: true, trailing: false });
