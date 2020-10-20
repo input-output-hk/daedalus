@@ -36,7 +36,8 @@
       width: auto;
 
       &:focus {
-        box-shadow: 0 1.5px 5px 0 var(--theme-staking-export-button-shadow-color) !important;
+        box-shadow: 0 1.5px 5px 0
+          var(--theme-staking-export-button-shadow-color) !important;
       }
 
       &.actionButtonFaded {
@@ -152,13 +153,13 @@
 
         &:hover {
           background-color: var(
-              --theme-staking-stake-pools-search-clear-button-hover-background-color
+            --theme-staking-stake-pools-search-clear-button-hover-background-color
           );
         }
 
         &.selected {
           background-color: var(
-              --theme-staking-stake-pools-search-clear-button-background-color
+            --theme-staking-stake-pools-search-clear-button-background-color
           );
         }
       }
@@ -178,6 +179,7 @@
       padding: 10px 0;
       text-align: left;
       text-transform: uppercase;
+      user-select: none;
       vertical-align: middle;
 
       &:first-child,
@@ -205,21 +207,11 @@
       }
 
       &:hover {
-        & > .sortIcon {
+        & > .sortIcon:not(.sorted) {
           opacity: 0.5;
           visibility: visible;
 
-          &.sorted {
-            & > svg {
-              transform: rotateX(0deg);
-            }
-          }
-
-          & > svg {
-            transform: rotateX(150deg);
-          }
-
-          &.ascending {
+          &.ascDefaultOrdering {
             & > svg {
               transform: rotateX(150deg);
             }
@@ -240,7 +232,7 @@
           }
         }
 
-        &.ascending {
+        &.ascCurrentOrdering {
           & > svg {
             transform: rotateX(150deg);
           }

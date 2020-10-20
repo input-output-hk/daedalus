@@ -89,6 +89,18 @@ const messages = defineMessages({
   },
 });
 
+const defaultTableOrdering = {
+  ranking: 'asc',
+  ticker: 'asc',
+  saturation: 'asc',
+  cost: 'asc',
+  profitMargin: 'asc',
+  producedBlocks: 'desc',
+  potentialRewards: 'desc',
+  pledge: 'asc',
+  retiring: 'asc',
+};
+
 // Maximum number of stake pools for which we do not need to use the preloading
 const PRELOADER_THRESHOLD = 100;
 
@@ -232,7 +244,10 @@ export class StakePoolsTable extends Component<Props, State> {
     return null;
   };
 
-  bigNumbersToFormattedNumbers = (value: BigNumber, shorterNumber?: boolean) => {
+  bigNumbersToFormattedNumbers = (
+    value: BigNumber,
+    shorterNumber?: boolean
+  ) => {
     const formattedValue = formattedWalletAmount(value, false, !shorterNumber);
     const splitValues = formattedValue.split(',');
     let result = '';
@@ -270,14 +285,9 @@ export class StakePoolsTable extends Component<Props, State> {
 
   handleSort = (newSortBy: string) => {
     const { stakePoolsOrder, stakePoolsSortBy } = this.state;
-    let newOrder;
-    if (stakePoolsSortBy === newSortBy || newSortBy === 'ticker') {
+    let newOrder = defaultTableOrdering[newSortBy];
+    if (newSortBy === stakePoolsSortBy) {
       newOrder = stakePoolsOrder === 'asc' ? 'desc' : 'asc';
-    } else {
-      newOrder = 'desc';
-    }
-    if (stakePoolsSortBy !== 'ticker' && stakePoolsSortBy !== newSortBy) {
-      newOrder = 'asc';
     }
     this.setState({
       stakePoolsOrder: newOrder,
@@ -422,12 +432,16 @@ export class StakePoolsTable extends Component<Props, State> {
                         tableHeader.name === stakePoolsSortBy ||
                         (tableHeader.name === 'ticker' &&
                           stakePoolsSortBy === 'ticker');
+                      const defaultOrdering =
+                        defaultTableOrdering[tableHeader.name];
                       const sortIconClasses = classNames([
                         styles.sortIcon,
                         isSorted ? styles.sorted : null,
                         isSorted && stakePoolsOrder === 'asc'
                           ? styles.ascending
                           : null,
+                        isSorted && styles[`${stakePoolsOrder}CurrentOrdering`],
+                        styles[`${defaultOrdering}DefaultOrdering`],
                       ]);
 
                       return (
