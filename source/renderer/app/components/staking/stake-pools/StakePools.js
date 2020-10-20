@@ -13,6 +13,7 @@ import Wallet from '../../../domains/Wallet';
 import styles from './StakePools.scss';
 import { getFilteredStakePoolsList } from './helpers';
 import StakePool from '../../../domains/StakePool';
+import { IS_RANKING_DATA_AVAILABLE } from '../../../config/stakingConfig';
 
 const messages = defineMessages({
   delegatingListTitle: {
@@ -93,29 +94,47 @@ export default class StakePools extends Component<Props, State> {
     ...initialState,
   };
 
-  handleSearch = (search: string) => this.setState(prevState => ({ search, maintainFixed: prevState.isFixed, isFixed: true }));
+  handleSearch = (search: string) =>
+    this.setState((prevState) => ({
+      search,
+      maintainFixed: prevState.isFixed,
+      isFixed: true,
+    }));
   handleClearSearch = () => this.setState({ search: '', maintainFixed: false });
-  handleGridView = () => this.setState({
-    isGridView: true,
-    isListView: false,
-    isFixed: false,
-    maintainFixed: false,
-    isScrolled: false,
-    isHeaderFixed: false
-  });
-  handleListView = () => this.setState({
-    isGridView: false,
-    isListView: true,
-    isFixed: false,
-    maintainFixed: false,
-    isScrolled: false,
-    isHeaderFixed: false
-  });
-  handleSearchComponentScrollView = (isScrolled: boolean, isHeaderFixed: boolean) =>  {
+  handleGridView = () =>
+    this.setState({
+      isGridView: true,
+      isListView: false,
+      isFixed: false,
+      maintainFixed: false,
+      isScrolled: false,
+      isHeaderFixed: false,
+    });
+  handleListView = () =>
+    this.setState({
+      isGridView: false,
+      isListView: true,
+      isFixed: false,
+      maintainFixed: false,
+      isScrolled: false,
+      isHeaderFixed: false,
+    });
+  handleSearchComponentScrollView = (
+    isScrolled: boolean,
+    isHeaderFixed: boolean
+  ) => {
     if (isHeaderFixed) {
-      this.setState(prevState => ({ isFixed: !prevState.isFixed, isScrolled, isHeaderFixed }));
+      this.setState((prevState) => ({
+        isFixed: !prevState.isFixed,
+        isScrolled,
+        isHeaderFixed,
+      }));
     } else {
-      this.setState(() => ({ isFixed: !(!isScrolled && !isHeaderFixed), isScrolled, isHeaderFixed: false }));
+      this.setState(() => ({
+        isFixed: !(!isScrolled && !isHeaderFixed),
+        isScrolled,
+        isHeaderFixed: false,
+      }));
     }
   };
 
@@ -144,12 +163,26 @@ export default class StakePools extends Component<Props, State> {
       stakePoolsDelegatingList,
       getStakePoolById,
     } = this.props;
-    const { search, selectedList, isListView, isGridView, isFixed, isHeaderFixed, maintainFixed, isScrolled } = this.state;
+    const {
+      search,
+      selectedList,
+      isListView,
+      isGridView,
+      isFixed,
+      isHeaderFixed,
+      maintainFixed,
+      isScrolled,
+    } = this.state;
 
     const filteredStakePoolsList: Array<StakePool> = getFilteredStakePoolsList(
       stakePoolsList,
       search
     );
+
+    const numberOfRankedStakePools: number = stakePoolsList.filter(
+      (stakePool) =>
+        IS_RANKING_DATA_AVAILABLE && stakePool.nonMyopicMemberRewards
+    ).length;
 
     const listTitleMessage = search.trim().length
       ? messages.listTitleWithSearch
@@ -209,7 +242,9 @@ export default class StakePools extends Component<Props, State> {
               onListView={this.handleListView}
               isListView={isListView}
               isGridView={isGridView}
-              isFixed={(isFixed || maintainFixed) && !!filteredStakePoolsList.length}
+              isFixed={
+                (isFixed || maintainFixed) && !!filteredStakePoolsList.length
+              }
               isClearTooltipOpeningDownward
               isScrolled={isScrolled}
             />
@@ -235,7 +270,9 @@ export default class StakePools extends Component<Props, State> {
                   numberOfStakePools={stakePoolsList.length}
                   showWithSelectButton
                   onScrollView={this.handleSearchComponentScrollView}
-                  maintainFixed={maintainFixed && !!filteredStakePoolsList.length}
+                  maintainFixed={
+                    maintainFixed && !!filteredStakePoolsList.length
+                  }
                   isScrolled={isScrolled}
                 />
               </Fragment>
@@ -252,7 +289,9 @@ export default class StakePools extends Component<Props, State> {
                       stakePoolsList={stakePoolsDelegatingList}
                       onOpenExternalLink={onOpenExternalLink}
                       currentTheme={currentTheme}
-                      isListActive={selectedList === STAKE_POOLS_DELEGATING_LIST}
+                      isListActive={
+                        selectedList === STAKE_POOLS_DELEGATING_LIST
+                      }
                       setListActive={this.handleSetListActive}
                       containerClassName="StakingWithNavigation_page"
                       onSelect={this.onDelegate}

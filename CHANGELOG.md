@@ -8,6 +8,7 @@ Changelog
 - Added stake pools list view ([PR 2186](https://github.com/input-output-hk/daedalus/pull/2186))
 - Re-enabled stake pool saturation info ([PR 2200](https://github.com/input-output-hk/daedalus/pull/2200))
 - Implemented the wallet migration leftovers handling ([PR 2178](https://github.com/input-output-hk/daedalus/pull/2178))
+- Implemented hiding ranking info for pools without non myopic member rewards on the stake pool tooltip panel ([PR 2209](https://github.com/input-output-hk/daedalus/pull/2209))
 
 ### Fixes
 
