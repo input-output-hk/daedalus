@@ -36,8 +36,7 @@
       width: auto;
 
       &:focus {
-        box-shadow: 0 1.5px 5px 0
-          var(--theme-staking-export-button-shadow-color) !important;
+        box-shadow: 0 1.5px 5px 0 var(--theme-staking-export-button-shadow-color) !important;
       }
 
       &.actionButtonFaded {
@@ -115,6 +114,7 @@
       position: sticky;
       top: 0;
       z-index: 99;
+
       tr {
         border: 0;
         display: flex;
@@ -152,13 +152,13 @@
 
         &:hover {
           background-color: var(
-            --theme-staking-stake-pools-search-clear-button-hover-background-color
+              --theme-staking-stake-pools-search-clear-button-hover-background-color
           );
         }
 
         &.selected {
           background-color: var(
-            --theme-staking-stake-pools-search-clear-button-background-color
+              --theme-staking-stake-pools-search-clear-button-background-color
           );
         }
       }
@@ -188,8 +188,8 @@
       }
 
       &:nth-child(2) {
-        max-width: 70px;
-        min-width: 70px;
+        max-width: 50px;
+        min-width: 50px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -277,34 +277,34 @@
       }
 
       &:nth-child(3) {
-        min-width: 92.39px;
+        min-width: 72.39px;
         text-align: center;
       }
 
       &:nth-child(4) {
-        min-width: 84.92px;
+        min-width: 64.92px;
       }
 
       &:nth-child(5) {
-        min-width: 71.36px;
+        min-width: 51.36px;
       }
 
       &:nth-child(6) {
-        min-width: 125.44px;
+        min-width: 105.44px;
       }
 
       &:nth-child(7) {
-        min-width: 134.42px;
+        min-width: 114.42px;
         text-align: right;
       }
 
       &:nth-child(8) {
-        min-width: 67.48px;
+        min-width: 47.48px;
         text-align: right;
       }
 
       &:last-child {
-        min-width: 91.03px;
+        min-width: 71.03px;
         text-align: center;
       }
 
@@ -313,14 +313,15 @@
       }
 
       &:nth-child(2) {
-        max-width: 70px;
-        min-width: 70px;
+        max-width: 50px;
+        min-width: 50px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
 
         span {
           cursor: pointer;
+          padding-left: 2px;
         }
       }
 
