@@ -163,44 +163,6 @@
           );
         }
       }
-
-      &.japaneseHeader {
-        display: block;
-
-        td {
-          &:first-child {
-            min-width: 40px;
-          }
-
-          &:nth-child(3) {
-            min-width: 30px;
-          }
-
-          &:nth-child(4) {
-            min-width: 59.67px;
-          }
-
-          &:nth-child(5) {
-            min-width: 49.81px;
-          }
-
-          &:nth-child(6) {
-            min-width: 80px;
-          }
-
-          &:nth-child(7) {
-            min-width: 70px;
-          }
-
-          &:nth-child(8) {
-            min-width: 30px;
-          }
-
-          &:last-child {
-            min-width: 40px;
-          }
-        }
-      }
     }
 
     tr {
@@ -220,28 +182,10 @@
       user-select: none;
       vertical-align: middle;
 
-      &:first-child,
-      &:nth-child(4),
-      &:nth-child(5),
-      &:nth-child(6) {
-        text-align: center;
-      }
-
       &:nth-child(2) {
-        max-width: 60px;
-        min-width: 60px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-      }
-
-      &:nth-child(8) {
-        margin-right: -12px;
-        text-align: right;
-      }
-
-      &:last-child {
-        text-align: right;
       }
 
       &:hover {
@@ -295,47 +239,11 @@
       -ms-user-select: none;
       user-select: none;
 
-      &:first-child,
-      &:nth-child(4),
-      &:nth-child(5),
-      &:nth-child(6) {
-        text-align: center;
-      }
-
-      &:first-child {
-        min-width: 37.58px;
-      }
-
-      &:nth-child(3) {
-        min-width: 72.39px;
-        text-align: center;
-      }
-
-      &:nth-child(4) {
-        min-width: 64.92px;
-      }
-
-      &:nth-child(5) {
-        min-width: 51.36px;
-      }
-
-      &:nth-child(6) {
-        min-width: 105.44px;
-      }
-
-      &:nth-child(7) {
-        min-width: 114.42px;
-        text-align: right;
-      }
-
+      // Right alligned cells need this padding
+      // because of the sorting icon
+      &:nth-child(7),
       &:nth-child(8) {
-        min-width: 47.48px;
-        text-align: right;
-      }
-
-      &:last-child {
-        min-width: 71.03px;
-        text-align: center;
+        padding-right: 10px;
       }
 
       .ticker {
@@ -343,8 +251,6 @@
       }
 
       &:nth-child(2) {
-        max-width: 60px;
-        min-width: 60px;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
@@ -440,6 +346,50 @@
         font-weight: 500;
         padding: 2px 5px;
         text-transform: uppercase;
+      }
+    }
+
+    th,
+    td {
+      &:nth-child(1),
+      &:nth-child(3),
+      &:nth-child(4),
+      &:nth-child(5),
+      &:nth-child(6),
+      &:nth-child(9) {
+        text-align: center;
+      }
+      &:nth-child(7),
+      &:nth-child(8) {
+        text-align: right;
+      }
+
+      &:nth-child(1) {
+        width: 7%;
+      }
+      &:nth-child(2) {
+        width: 9%;
+      }
+      &:nth-child(3) {
+        width: 12%;
+      }
+      &:nth-child(4) {
+        width: 12%;
+      }
+      &:nth-child(5) {
+        width: 8%;
+      }
+      &:nth-child(6) {
+        width: 15%;
+      }
+      &:nth-child(7) {
+        width: 16%;
+      }
+      &:nth-child(8) {
+        width: 9%;
+      }
+      &:nth-child(9) {
+        width: 12%;
       }
     }
   }

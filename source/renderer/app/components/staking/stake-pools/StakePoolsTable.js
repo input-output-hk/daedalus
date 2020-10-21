@@ -214,13 +214,11 @@ export class StakePoolsTable extends Component<Props, State> {
     if (isScrolled) {
       tableHeaderClasses = classNames([
         styles.tableHeader,
-        currentLocale === 'ja-JP' ? styles.japaneseHeader : null,
         isScrolled && isFixedTableHeaderActive ? styles.fixedTableHeader : null,
       ]);
     } else {
       tableHeaderClasses = classNames([
         styles.tableHeader,
-        currentLocale === 'ja-JP' ? styles.japaneseHeader : null,
         isScrolled && (isFixedTableHeaderActive || maintainFixed)
           ? styles.fixedTableHeader
           : null,
