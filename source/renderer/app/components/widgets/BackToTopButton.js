@@ -78,7 +78,7 @@ export default class BackToTopButton extends Component<Props, State> {
   getIsBackToTopActive = () => {
     const { isActive } = this.state;
     const { scrollTopToActivate } = this.props;
-    if (this.scrollableDomElement instanceof HTMLElement) {
+    if (this.scrollableDomElement instanceof HTMLElement && this._isMounted) {
       const scrollPosition = this.scrollableDomElement.scrollTop;
       if (scrollPosition > scrollTopToActivate && !isActive) {
         this.setState({ isActive: true });
