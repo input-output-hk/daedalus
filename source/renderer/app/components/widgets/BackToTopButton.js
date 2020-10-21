@@ -72,7 +72,7 @@ export default class BackToTopButton extends Component<Props, State> {
         'scroll',
         this.getIsBackToTopActive
       );
-    }
+    } return null;
   }
 
   getIsBackToTopActive = () => {
