@@ -14305,6 +14305,20 @@
           "column": 8,
           "line": 69
         }
+      },
+      {
+        "defaultMessage": "!!!Follow instructions and manually update",
+        "description": "Follow instructions and manually update description.",
+        "end": {
+          "column": 3,
+          "line": 78
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "manualUpdate.button.label",
+        "start": {
+          "column": 22,
+          "line": 74
+        }
       }
     ],
     "path": "storybook/stories/common/Widgets.stories.json"
