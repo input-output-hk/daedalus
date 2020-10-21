@@ -8,7 +8,6 @@ import styles from './StakePoolsTable.scss';
 import StakePool from '../../../domains/StakePool';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import BorderedBox from '../../widgets/BorderedBox';
-import { bigNumbersToFormattedNumbers } from '../../../utils/formatters';
 import globalMessages from '../../../i18n/global-messages';
 import { StakePoolsTableHeader } from './StakePoolsTableHeader';
 import { StakePoolsTableBody } from './StakePoolsTableBody';
