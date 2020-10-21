@@ -306,41 +306,41 @@ export class StakePoolsTable extends Component<Props, State> {
     return (
       <div>
         <div className={componentClasses}>
-          <BorderedBox>
-            {sortedStakePoolList.length > 0 && (
+          {sortedStakePoolList.length > 0 && (
+            <BorderedBox>
               <table>
                 <thead className={tableHeaderClasses}>
-                  <tr>
-                    <StakePoolsTableHeader
-                      availableTableHeaders={availableTableHeaders}
-                      stakePoolsSortBy={stakePoolsSortBy}
-                      stakePoolsOrder={stakePoolsOrder}
-                      onHandleSort={this.handleSort}
-                    />
-                  </tr>
-                </thead>
-                <tbody>
-                  <StakePoolsTableBody
-                    sortedStakePoolList={sortedStakePoolList}
-                    ada={intl.formatMessage(globalMessages.unitAda)}
-                    numberOfRankedStakePools={numberOfRankedStakePools}
-                    currentTheme={currentTheme}
-                    onOpenExternalLink={onOpenExternalLink}
-                    showWithSelectButton={showWithSelectButton}
-                    containerClassName={containerClassName}
-                    onSelect={onSelect}
-                    selectedPoolId={selectedPoolId}
-                    setListActive={setListActive}
-                    isListActive={isListActive}
-                    listName={listName}
-                    stakePoolsList={stakePoolsList}
+                <tr>
+                  <StakePoolsTableHeader
+                    availableTableHeaders={availableTableHeaders}
                     stakePoolsSortBy={stakePoolsSortBy}
                     stakePoolsOrder={stakePoolsOrder}
+                    onHandleSort={this.handleSort}
                   />
+                </tr>
+                </thead>
+                <tbody>
+                <StakePoolsTableBody
+                  sortedStakePoolList={sortedStakePoolList}
+                  ada={intl.formatMessage(globalMessages.unitAda)}
+                  numberOfRankedStakePools={numberOfRankedStakePools}
+                  currentTheme={currentTheme}
+                  onOpenExternalLink={onOpenExternalLink}
+                  showWithSelectButton={showWithSelectButton}
+                  containerClassName={containerClassName}
+                  onSelect={onSelect}
+                  selectedPoolId={selectedPoolId}
+                  setListActive={setListActive}
+                  isListActive={isListActive}
+                  listName={listName}
+                  stakePoolsList={stakePoolsList}
+                  stakePoolsSortBy={stakePoolsSortBy}
+                  stakePoolsOrder={stakePoolsOrder}
+                />
                 </tbody>
               </table>
-            )}
-          </BorderedBox>
+            </BorderedBox>
+          )}
         </div>
       </div>
     );
