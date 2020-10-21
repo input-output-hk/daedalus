@@ -86,7 +86,9 @@ export class StakePoolsSearch extends Component<Props> {
     } else {
       componentClasses = classnames([
         styles.component,
-        isScrolled && (isListView && isFixed) ? styles.componentFixedPosition : null,
+        isScrolled && isListView && isFixed
+          ? styles.componentFixedPosition
+          : null,
       ]);
     }
 
@@ -143,15 +145,17 @@ export class StakePoolsSearch extends Component<Props> {
               )}
             </div>
           )}
-          {isBigSearchComponent && (<div className={styles.viewButtons}>
-            <span className={styles.separator}>|</span>
-            <button className={gridButtonClasses} onClick={onGridView}>
-              <SVGInline svg={gridIcon} />
-            </button>
-            <button className={listButtonClasses} onClick={onListView}>
-              <SVGInline svg={listIcon} />
-            </button>
-          </div>)}
+          {isBigSearchComponent && (
+            <div className={styles.viewButtons}>
+              <span className={styles.separator}>|</span>
+              <button className={gridButtonClasses} onClick={onGridView}>
+                <SVGInline svg={gridIcon} />
+              </button>
+              <button className={listButtonClasses} onClick={onListView}>
+                <SVGInline svg={listIcon} />
+              </button>
+            </div>
+          )}
         </div>
       </div>
     );

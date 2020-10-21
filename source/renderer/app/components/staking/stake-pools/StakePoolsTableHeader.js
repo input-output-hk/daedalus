@@ -18,38 +18,33 @@ type TableHeaderProps = {
 @observer
 export class StakePoolsTableHeader extends Component<TableHeaderProps> {
   render() {
-    const {availableTableHeaders, stakePoolsSortBy, stakePoolsOrder, onHandleSort} = this.props;
-    return (
-      map(availableTableHeaders, (tableHeader) => {
-          const isSorted =
-            tableHeader.name === stakePoolsSortBy ||
-            (tableHeader.name === 'ticker' &&
-              stakePoolsSortBy === 'ticker');
-          const defaultOrdering =
-            defaultTableOrdering[tableHeader.name];
-          const sortIconClasses = classNames([
-            styles.sortIcon,
-            isSorted ? styles.sorted : null,
-            isSorted && stakePoolsOrder === 'asc'
-              ? styles.ascending
-              : null,
-            isSorted && styles[`${stakePoolsOrder}CurrentOrdering`],
-            styles[`${defaultOrdering}DefaultOrdering`],
-          ]);
-          return (
-            <th
-              key={tableHeader.name}
-              onClick={() => onHandleSort(tableHeader.name)}
-            >
-              {tableHeader.title}
-              <SVGInline
-                svg={sortIcon}
-                className={sortIconClasses}
-              />
-            </th>
-          );
-        }
-      )
-    );
+    const {
+      availableTableHeaders,
+      stakePoolsSortBy,
+      stakePoolsOrder,
+      onHandleSort,
+    } = this.props;
+    return map(availableTableHeaders, (tableHeader) => {
+      const isSorted =
+        tableHeader.name === stakePoolsSortBy ||
+        (tableHeader.name === 'ticker' && stakePoolsSortBy === 'ticker');
+      const defaultOrdering = defaultTableOrdering[tableHeader.name];
+      const sortIconClasses = classNames([
+        styles.sortIcon,
+        isSorted ? styles.sorted : null,
+        isSorted && stakePoolsOrder === 'asc' ? styles.ascending : null,
+        isSorted && styles[`${stakePoolsOrder}CurrentOrdering`],
+        styles[`${defaultOrdering}DefaultOrdering`],
+      ]);
+      return (
+        <th
+          key={tableHeader.name}
+          onClick={() => onHandleSort(tableHeader.name)}
+        >
+          {tableHeader.title}
+          <SVGInline svg={sortIcon} className={sortIconClasses} />
+        </th>
+      );
+    });
   }
 }

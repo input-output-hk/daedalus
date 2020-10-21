@@ -57,7 +57,8 @@ export default class BackToTopButton extends Component<Props, State> {
             trailing: true,
           })
         );
-      } return null;
+      }
+      return null;
     }, 0);
   }
 
@@ -72,7 +73,8 @@ export default class BackToTopButton extends Component<Props, State> {
         'scroll',
         this.getIsBackToTopActive
       );
-    } return null;
+    }
+    return null;
   }
 
   getIsBackToTopActive = () => {

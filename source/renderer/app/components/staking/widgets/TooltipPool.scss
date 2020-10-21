@@ -431,9 +431,7 @@
 }
 
 .defaultColorContent {
-  background: var(
-      --theme-staking-stake-pool-tooltip-neutral-background-color
-  );
+  background: var(--theme-staking-stake-pool-tooltip-neutral-background-color);
   color: var(--theme-staking-stake-pool-tooltip-neutral-text-color);
 }
 

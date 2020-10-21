@@ -99,7 +99,8 @@ export default class StakePools extends Component<Props, State> {
       search,
       maintainFixed: prevState.isFixed,
     }));
-  handleClearSearch = () => this.setState({ search: '', maintainFixed: false, isFixed: false, });
+  handleClearSearch = () =>
+    this.setState({ search: '', maintainFixed: false, isFixed: false });
   handleGridView = () =>
     this.setState({
       isGridView: true,
@@ -203,7 +204,9 @@ export default class StakePools extends Component<Props, State> {
 
     const tableHeadingClasses = classnames([
       styles.tableHeading,
-      isFixed && filteredStakePoolsList.length ? styles.tableHeadingFixed : null,
+      isFixed && filteredStakePoolsList.length
+        ? styles.tableHeadingFixed
+        : null,
       isHeaderFixed ? styles.tableHeadingFixedPosition : null,
     ]);
 

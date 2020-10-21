@@ -18,9 +18,7 @@ export type WalletOption = {
 
 export default class WalletsDropdownOption extends Component<WalletOption> {
   renderLabel = (label: string) => {
-    return (
-      <div className={styles.label}>{label}</div>
-    );
+    return <div className={styles.label}>{label}</div>;
   };
 
   renderLabelSyncing = (label: string, syncingLabel: string) => {
@@ -46,8 +44,7 @@ export default class WalletsDropdownOption extends Component<WalletOption> {
           <div className={styles.topRowTicker}>
             {isSyncing && syncingLabel
               ? this.renderLabelSyncing(label, syncingLabel)
-              : this.renderLabel(label)
-            }
+              : this.renderLabel(label)}
           </div>
           <div className={styles.topRowSync}>
             {isSyncing && (

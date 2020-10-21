@@ -17,7 +17,6 @@ type Props = {
   currentTheme: string,
 };
 
-
 export const StakePoolsTableStory = (props: Props) => (
   <React.Fragment>
     <div
@@ -77,15 +76,17 @@ export const StakePoolsTableStory = (props: Props) => (
         currentTheme={props.currentTheme}
         onOpenExternalLink={action('onOpenExternalLink')}
         containerClassName="StakingWithNavigation_page"
-        numberOfRankedStakePools={STAKE_POOLS.slice(
-          0,
-          number('Pools', 300, {
-            range: true,
-            min: 37,
-            max: 300,
-            step: 1,
-          })
-        ).length}
+        numberOfRankedStakePools={
+          STAKE_POOLS.slice(
+            0,
+            number('Pools', 300, {
+              range: true,
+              min: 37,
+              max: 300,
+              step: 1,
+            })
+          ).length
+        }
       />
     </div>
   </React.Fragment>

@@ -309,33 +309,37 @@ export class StakePoolsTable extends Component<Props, State> {
             <BorderedBox>
               <table>
                 <thead className={tableHeaderClasses}>
-                <tr>
-                  <StakePoolsTableHeader
-                    availableTableHeaders={availableTableHeaders}
+                  <tr>
+                    <StakePoolsTableHeader
+                      availableTableHeaders={availableTableHeaders}
+                      stakePoolsSortBy={stakePoolsSortBy}
+                      stakePoolsOrder={stakePoolsOrder}
+                      onHandleSort={this.handleSort}
+                    />
+                  </tr>
+                </thead>
+                <tbody
+                  className={
+                    currentLocale === 'ja-JP' ? styles.japaneseHeader : null
+                  }
+                >
+                  <StakePoolsTableBody
+                    sortedStakePoolList={sortedStakePoolList}
+                    ada={intl.formatMessage(globalMessages.unitAda)}
+                    numberOfRankedStakePools={numberOfRankedStakePools}
+                    currentTheme={currentTheme}
+                    onOpenExternalLink={onOpenExternalLink}
+                    showWithSelectButton={showWithSelectButton}
+                    containerClassName={containerClassName}
+                    onSelect={onSelect}
+                    selectedPoolId={selectedPoolId}
+                    setListActive={setListActive}
+                    isListActive={isListActive}
+                    listName={listName}
+                    stakePoolsList={stakePoolsList}
                     stakePoolsSortBy={stakePoolsSortBy}
                     stakePoolsOrder={stakePoolsOrder}
-                    onHandleSort={this.handleSort}
                   />
-                </tr>
-                </thead>
-                <tbody className={currentLocale === 'ja-JP' ? styles.japaneseHeader : null}>
-                <StakePoolsTableBody
-                  sortedStakePoolList={sortedStakePoolList}
-                  ada={intl.formatMessage(globalMessages.unitAda)}
-                  numberOfRankedStakePools={numberOfRankedStakePools}
-                  currentTheme={currentTheme}
-                  onOpenExternalLink={onOpenExternalLink}
-                  showWithSelectButton={showWithSelectButton}
-                  containerClassName={containerClassName}
-                  onSelect={onSelect}
-                  selectedPoolId={selectedPoolId}
-                  setListActive={setListActive}
-                  isListActive={isListActive}
-                  listName={listName}
-                  stakePoolsList={stakePoolsList}
-                  stakePoolsSortBy={stakePoolsSortBy}
-                  stakePoolsOrder={stakePoolsOrder}
-                />
                 </tbody>
               </table>
             </BorderedBox>

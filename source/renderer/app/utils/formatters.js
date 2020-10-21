@@ -70,7 +70,10 @@ export const shortNumber = (value: number | BigNumber): string => {
   return formattedAmount;
 };
 
-export const bigNumbersToFormattedNumbers = (value: BigNumber, shorterNumber?: boolean): string => {
+export const bigNumbersToFormattedNumbers = (
+  value: BigNumber,
+  shorterNumber?: boolean
+): string => {
   const formattedValue = formattedWalletAmount(value, false, !shorterNumber);
   const splitValues = formattedValue.split(',');
   let result = '';
