@@ -170,7 +170,7 @@
   },
   "dependencies": {
     "@cardano-foundation/ledgerjs-hw-app-cardano": "2.0.1",
-    "@ledgerhq/hw-transport-node-hid": "5.22.0",
+    "@ledgerhq/hw-transport-node-hid": "5.26.0",
     "aes-js": "3.1.2",
     "bignumber.js": "5.0.0",
     "bip39": "2.3.0",
@@ -240,7 +240,7 @@
     "shasum": "1.0.2",
     "source-map-support": "0.5.19",
     "spectron-fake-dialog": "0.0.1",
-    "trezor-connect": "8.1.15-extended",
+    "trezor-connect": "8.1.16-extended",
     "unorm": "1.6.0",
     "validator": "13.1.17"
   },

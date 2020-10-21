@@ -3,7 +3,6 @@ import { split, get, map, last, size } from 'lodash';
 import { action } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
-
 // domains
 import Wallet, {
   WalletDelegationStatuses,
@@ -16,6 +15,10 @@ import {
   TransactionWithdrawal,
 } from '../domains/WalletTransaction';
 import WalletAddress from '../domains/WalletAddress';
+
+// Utils and Config
+import { formattedAmountToLovelace } from '../utils/formatters';
+import { DELEGATION_DEPOSIT } from '../config/stakingConfig';
 
 // Addresses requests
 import { getAddresses } from './addresses/requests/getAddresses';
@@ -776,20 +779,31 @@ export default class AdaApi {
     logger.debug('AdaApi::selectCoins called', {
       parameters: filterLogData(request),
     });
-    const { walletId, address, amount, walletBalance, availableAmount, isLegacy, poolId } = request;
-    // @TODO - Add PoolId to request once is defined by WBE
+    const { walletId, address, amount, poolId, delegationAction } = request;
+
     try {
-      const data = {
-        payments: [
-          {
-            address,
-            amount: {
-              quantity: amount,
-              unit: WalletUnits.LOVELACE,
-            },
+      let data;
+      if (delegationAction) {
+        data = {
+          delegation_action: {
+            action: delegationAction,
+            pool: poolId,
           },
-        ],
-      };
+        };
+      } else {
+        data = {
+          payments: [
+            {
+              address,
+              amount: {
+                quantity: amount,
+                unit: WalletUnits.LOVELACE,
+              },
+            },
+          ],
+        };
+      }
+
       const response = await selectCoins(this.config, {
         walletId,
         data,
@@ -806,20 +820,22 @@ export default class AdaApi {
       })
       const fee = new BigNumber(totalInputs - totalOutputs).dividedBy(LOVELACES_PER_ADA);
 
-      // Prepare checks
-      const formattedTxAmount = new BigNumber(amount).dividedBy(
-        LOVELACES_PER_ADA
-      );
-      const amountWithFee = formattedTxAmount.plus(fee);
-      if (amountWithFee.gt(walletBalance)) {
-        // Amount + fees exceeds walletBalance:
-        // = show "Not enough Ada for fees. Try sending a smaller amount."
-        throw new ApiError().result('cannotCoverFee');
+      let transactionFee;
+      if (delegationAction) {
+        const delegationDeposit = new BigNumber(DELEGATION_DEPOSIT);
+        const isDepositIncluded = fee.gt(delegationDeposit);
+        transactionFee = isDepositIncluded ? fee.minus(delegationDeposit) : fee;
+      } else {
+        transactionFee = fee;
       }
+
+      // On first wallet delegation deposit is included in fee
       const extendedResponse = {
         ...response,
-        fee,
+        feeWithDelegationDeposit: fee,
+        fee: transactionFee,
       };
+
       logger.debug('AdaApi::selectCoins success', {
         transactionFee: response,
       });
@@ -841,6 +857,8 @@ export default class AdaApi {
       const response = await createExternalTransaction(this.config, {
         signedTransactionBlob,
       });
+
+      console.debug('>>> API done: ', response);
       return response;
     } catch (error) {
       logger.error('AdaApi::createExternalTransaction error', { error });

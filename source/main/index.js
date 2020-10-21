@@ -170,15 +170,18 @@ const onAppReady = async () => {
   mainErrorHandler(onMainError);
   await handleCheckDiskSpace();
 
-  // Ledger INIT
-  // const handleCheckHardwareWalletDevices = handleHardwareWalletDevices(
-  //   mainWindow
-  // );
-  // await handleCheckHardwareWalletDevices();
-
   // Trezor INIT
   const initTrezorConnect = handleInitTrezorConnect(mainWindow.webContents);
   await initTrezorConnect();
+
+
+  // Ledger INIT
+  console.debug('>>> Ledger:: INIT - index.js');
+  const handleCheckHardwareWalletDevices = handleHardwareWalletDevices(
+    mainWindow
+  );
+  await handleCheckHardwareWalletDevices();
+
 
   await handleCheckBlockReplayProgress(mainWindow, launcherConfig.logsPrefix);
 

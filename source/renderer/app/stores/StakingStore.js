@@ -128,17 +128,22 @@ export default class StakingStore extends Store {
   };
 
   @action _joinStakePool = async (request: JoinStakePoolRequest) => {
-    const { walletId, stakePoolId, passphrase } = request;
+    const { walletId, stakePoolId, passphrase, isHardwareWallet } = request;
 
     // Set join transaction in "PENDING" state
     this.isDelegationTransactionPending = true;
 
     try {
-      const joinTransaction = await this.joinStakePoolRequest.execute({
-        walletId,
-        stakePoolId,
-        passphrase,
-      });
+      let joinTransaction;
+      if (isHardwareWallet) {
+        joinTransaction = await this.stores.hardwareWallets._sendMoney({ isDelegationTransaction: true });
+      } else {
+        joinTransaction = await this.joinStakePoolRequest.execute({
+          walletId,
+          stakePoolId,
+          passphrase,
+        });
+      }
       // Start interval to check transaction state every second
       this.delegationCheckTimeInterval = setInterval(
         this.checkDelegationTransaction,

@@ -23,7 +23,7 @@ import {
   ShelleyTxInputFromUtxo,
   ShelleyTxOutput,
 } from '../utils/shelleyLedger';
-import { prepareTrezorInput, prepareTrezorOutput } from '../utils/shelleyTrezor';
+import { prepareTrezorInput, prepareTrezorOutput, prepareCertificate } from '../utils/shelleyTrezor';
 import {
   DeviceModels,
   DeviceTypes,
@@ -59,7 +59,7 @@ export type ByronSignedTransactionWitnesses = {
   xpub: HardwareWalletExtendedPublicKeyResponse,
 };
 
-const CARDANO_ADA_APP_POLLING_INTERVAL = 1000;
+const CARDANO_ADA_APP_POLLING_INTERVAL = 3000;
 const DEFAULT_HW_NAME = 'Hardware Wallet';
 
 export default class HardwareWalletsStore extends Store {
@@ -131,17 +131,26 @@ export default class HardwareWalletsStore extends Store {
     this.getAvailableDevices();
   }
 
-  _sendMoney = async () => {
+  _sendMoney = async (params?: { isDelegationTransaction: boolean }) => {
+    const { isDelegationTransaction } = params;
     const wallet = this.stores.wallets.active;
-    if (!wallet) throw new Error('Active wallet required before sending.');
-    await this.sendMoneyRequest.execute({
-      signedTransactionBlob: this.txBody,
-    });
-    this._resetTransaction();
-    this.stores.wallets.refreshWalletsData();
-    this.actions.dialogs.closeActiveDialog.trigger();
-    this.sendMoneyRequest.reset();
-    this.stores.wallets.goToWalletRoute(wallet.id);
+
+    if (!isDelegationTransaction && !wallet) throw new Error('Active wallet required before sending.');
+    try {
+      const transaction = await this.sendMoneyRequest.execute({
+        signedTransactionBlob: this.txBody,
+      });
+      this._resetTransaction();
+      this.stores.wallets.refreshWalletsData();
+      this.sendMoneyRequest.reset();
+      if (!isDelegationTransaction) {
+        this.actions.dialogs.closeActiveDialog.trigger();
+        this.stores.wallets.goToWalletRoute(wallet.id);
+      }
+      return transaction;
+    } catch (e) {
+      throw e;
+    }
   };
 
   getAvailableDevices = async () => {
@@ -221,7 +230,7 @@ export default class HardwareWalletsStore extends Store {
     amount: string,
     poolId?: string, // Only for delegation
   }) => {
-    const { walletId, address, amount, poolId } = params;
+    const { walletId, address, amount, poolId, delegationAction } = params;
     console.debug('>>> selectCoins: ', params);
     const wallet = this.stores.wallets.getWalletById(walletId);
     if (!wallet)
@@ -236,6 +245,7 @@ export default class HardwareWalletsStore extends Store {
         walletBalance: wallet.amount,
         availableBalance: wallet.availableAmount,
         isLegacy: wallet.isLegacy,
+        delegationAction,
       });
       runInAction('HardwareWalletsStore:: set coin selections', () => {
         this.txSignRequest = {
@@ -274,26 +284,25 @@ export default class HardwareWalletsStore extends Store {
         //    - Pick device not initialized in LC so we keep connections with already created wallets
 
 
-    const activeHardwareWalletId = get(
-      this.stores,
-      ['wallets', 'active', 'id'],
-      null
-    );
+    const activeWallet = this.stores.wallets.active;
+    const isHardwareWallet = get(activeWallet, 'isHardwareWallet');
+
     const hardwareWalletsConnectionData = this.hardwareWalletsConnectionData;
     const hardwareWalletDevices = this.hardwareWalletDevices;
 
     console.debug('>>> establishHardwareWalletConnection Checks: ', {
-      activeHardwareWalletId,
       hardwareWalletsConnectionData,
       hardwareWalletDevices,
+      activeWallet,
+      isHardwareWallet,
     });
 
     let transportDevice;
-    if (activeHardwareWalletId) {
-      console.debug('>>> Active HW recognized: ', activeHardwareWalletId);
+    if (isHardwareWallet) {
+      console.debug('>>> Active HW recognized: ', activeWallet.id);
       // Check for device wallet connected to
       const recognizedPairedHardwareWallet = find(hardwareWalletDevices, recognizedDevice => (
-        recognizedDevice.paired === activeHardwareWalletId
+        recognizedDevice.paired === activeWallet.id
       ));
       console.debug('>>> Active HW paired device: ', recognizedPairedHardwareWallet);
       if (!recognizedPairedHardwareWallet || (recognizedPairedHardwareWallet && recognizedPairedHardwareWallet.disconnected)) {
@@ -319,7 +328,9 @@ export default class HardwareWalletsStore extends Store {
           devicePath: lastUnpairedConnectedDevice ? lastUnpairedConnectedDevice.path : null,
           isTrezor: lastUnpairedConnectedDevice && lastUnpairedConnectedDevice.deviceType === DeviceTypes.TREZOR,
         });
+
         console.debug('>>> DEVICE CONNECTED: ', transportDevice);
+
         if (transportDevice) {
           const { deviceType } = transportDevice;
           runInAction('HardwareWalletsStore:: set HW device CONNECTED', () => {
@@ -354,11 +365,18 @@ export default class HardwareWalletsStore extends Store {
   // Ledger method only
   @action getCardanoAdaApp = async () => {
     this.hwDeviceStatus = HwDeviceStatuses.LAUNCHING_CARDANO_APP;
+    console.debug('>>> getCardanoAdaApp <<<');
     try {
       const cardanoAdaApp = await getCardanoAdaAppChannel.request();
       // @TODO - keep poller until app recognized or process exited
       this.stopCardanoAdaAppFetchPoller();
       if (cardanoAdaApp) {
+        console.debug('>>> getCardanoAdaApp - Initiate Ledger device with ID:', cardanoAdaApp.deviceId);
+        this._setHardwareWalletDevice({
+          deviceId: cardanoAdaApp.deviceId,
+          data: {},
+        });
+        console.debug('>>> getCardanoAdaApp - stop poller <<<');
         // While Cardano ADA app recognized on Ledger, proceed to exporting public key
         await this._getExtendedPublicKey();
       }
@@ -369,7 +387,7 @@ export default class HardwareWalletsStore extends Store {
 
   @action _getExtendedPublicKey = async () => {
     this.hwDeviceStatus = HwDeviceStatuses.EXPORTING_PUBLIC_KEY;
-    console.debug('>>>> _getExtendedPublicKey <<<<');
+    console.debug('>>>> _getExtendedPublicKey <<<<: ', transportDevice);
     const { transportDevice } = this;
     if (!transportDevice)
       throw new Error('Can not export extended public key: Device not recognized!');
@@ -478,12 +496,6 @@ export default class HardwareWalletsStore extends Store {
 
     const { inputs, outputs, fee, certificates } = coinSelection;
 
-    console.debug('>>> SIGN TRANSACTION: ', {
-      fee: coinSelection,
-      string: formattedAmountToLovelace(coinSelection.fee.toString()), // OK
-      walletId,
-    })
-
     let totalInputs = 0;
     const inputsData = map(inputs, input => {
       const addressIndex = this.stores.addresses.getAddressIndex(input.address);
@@ -499,6 +511,17 @@ export default class HardwareWalletsStore extends Store {
       return prepareTrezorOutput(output, addressIndex, isChange);
     })
 
+    const certificatesData = map(certificates, certificate => prepareCertificate(certificate));
+
+    console.debug('>>> SIGN TRANSACTION: ', {
+      inputs: inputsData,
+      outputs: outputsData,
+      fee: formattedAmountToLovelace(fee.toString()).toString(),
+      ttl: '15000000',
+      networkId: HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId,
+      protocolMagic: HW_SHELLEY_CONFIG.NETWORK.MAINNET.protocolMagic,
+      certificates: certificatesData,
+    });
     try {
       const signedTransaction = await signTransactionTrezorChannel.request({
         inputs: inputsData,
@@ -507,7 +530,7 @@ export default class HardwareWalletsStore extends Store {
         ttl: '15000000',
         networkId: HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId,
         protocolMagic: HW_SHELLEY_CONFIG.NETWORK.MAINNET.protocolMagic,
-        certificates: certificates || [],
+        certificates: certificatesData,
       });
 
       console.debug('>>> signedTransaction: ', signedTransaction);
@@ -628,7 +651,7 @@ export default class HardwareWalletsStore extends Store {
     walletId: string,
   }) => {
     console.debug('>>> INIT TX Send!: ', params);
-    const { walletId } = params;
+    const { walletId, fee } = params;
     const hardwareWalletConnectionData = get(this.hardwareWalletsConnectionData, walletId);
 
     // Guard against potential null value

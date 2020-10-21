@@ -433,7 +433,6 @@ export default class WalletsStore extends Store {
     device: TransportDevice,
   }) => {
     const { walletName, extendedPublicKey, device } = params;
-    console.debug('>>> _createHardwareWallet <<<: ', params);
     const { deviceId, deviceType, deviceModel, deviceName, path } = device;
     const accountPublicKey =
       extendedPublicKey.publicKeyHex + extendedPublicKey.chainCodeHex;
@@ -462,9 +461,6 @@ export default class WalletsStore extends Store {
           disconnected: false, // device physically disconnected
         },
       });
-
-      // @TODO - check if everything refreshed as is expected
-      console.debug('>>> WALLET CREATED: ', walelt);
 
       if (wallet) {
         await this._patchWalletRequestWithNewWallet(wallet);

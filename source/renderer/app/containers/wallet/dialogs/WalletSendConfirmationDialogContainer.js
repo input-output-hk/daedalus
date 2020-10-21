@@ -27,7 +27,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
 
   handleWalletSendFormSubmit = (values: Object) => {
     if (values.isHardwareWallet) {
-      this.props.actions.hardwareWallets.sendMoney.trigger();
+      this.props.actions.hardwareWallets.sendMoney.trigger({});
     } else {
       this.props.actions.wallets.sendMoney.trigger(values);
     }

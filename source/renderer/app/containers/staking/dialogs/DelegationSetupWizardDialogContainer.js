@@ -8,6 +8,7 @@ import DelegationSetupWizardDialog from '../../../components/staking/delegation-
 import {
   MIN_DELEGATION_FUNDS,
   RECENT_STAKE_POOLS_COUNT,
+  DELEGATION_ACTIONS,
 } from '../../../config/stakingConfig';
 import { LOVELACES_PER_ADA } from '../../../config/numbersConfig';
 import { formattedAmountToLovelace, formattedWalletAmount } from '../../../utils/formatters';
@@ -125,17 +126,13 @@ export default class DelegationSetupWizardDialogContainer extends Component<
 
   handleConfirm = (spendingPassword?: string, isHardwareWallet: boolean) => {
     const { selectedPoolId, selectedWalletId } = this.state;
-    if (isHardwareWallet) {
-      this.props.stores.hardwareWallets.sendMoneyRequest.reset();
-      this.props.actions.hardwareWallets.sendMoney.trigger();
-    } else {
       this.props.stores.staking.joinStakePoolRequest.reset();
       this.props.actions.staking.joinStakePool.trigger({
         stakePoolId: selectedPoolId,
         walletId: selectedWalletId,
         passphrase: spendingPassword,
+        isHardwareWallet,
       });
-    }
   };
 
   handleSelectWallet = (walletId: string) => {
@@ -160,7 +157,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     const { app, staking, wallets, profile, networkStatus, hardwareWallets } = this.props.stores;
     const { futureEpoch } = networkStatus;
     const { currentTheme, currentLocale } = profile;
-    const { hwDeviceStatus } = hardwareWallets;
+    const { hwDeviceStatus, sendMoneyRequest } = hardwareWallets;
     const {
       stakePools,
       recentStakePools,
@@ -179,6 +176,8 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     const acceptableWallets = find(wallets.allWallets, ({ amount, reward }) =>
       this.handleIsWalletAcceptable(amount, reward)
     );
+
+    console.debug('>>>> sendMoneyRequest: ', sendMoneyRequest.result);
 
     return (
       <DelegationSetupWizardDialog
@@ -206,9 +205,9 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         onConfirm={this.handleConfirm}
         getStakePoolById={getStakePoolById}
         isSubmitting={
-          joinStakePoolRequest.isExecuting || isDelegationTransactionPending
+          joinStakePoolRequest.isExecuting || sendMoneyRequest.isExecuting || isDelegationTransactionPending
         }
-        error={joinStakePoolRequest.error}
+        error={joinStakePoolRequest.error || sendMoneyRequest.error}
         isHardwareWallet={selectedWallet.isHardwareWallet}
         hwDeviceStatus={hwDeviceStatus}
       />
@@ -226,20 +225,18 @@ export default class DelegationSetupWizardDialogContainer extends Component<
       wallet => wallet.id === selectedWalletId
     );
 
+
     let stakePoolJoinFee;
     if (selectedWallet.isHardwareWallet) {
+      // Calculate fee from coins selections
+      const coinsSelection = await hardwareWallets.selectCoins({
+        walletId: selectedWallet.id,
+        poolId,
+        delegationAction: DELEGATION_ACTIONS.JOIN,
+      });
+      stakePoolJoinFee = coinsSelection.feeWithDelegationDeposit;
       // Initiate Transaction (Delegation)
       hardwareWallets.initiateTransaction({ walletId: selectedWalletId });
-      // Get Stake pools and calculate fee
-      // const coinsSelection = await hardwareWallets.selectCoins({
-      //   walletId: selectedWallet.id,
-      //   address, // @TODO - do we need address? If yes, which one we shoul use?
-      //   amount: formattedAmountToLovelace(selectedWallet.amount.toString()).toString(),
-      //   poolId,
-      // });
-      // console.debug('>>> coinsSelection: ', coinsSelection);
-      // stakePoolJoinFee = coinsSelection.fee;
-      stakePoolJoinFee = new BigNumber('0.123456'); // @TODO - replace with real one
     } else {
       stakePoolJoinFee = await calculateDelegationFee({
         walletId: selectedWalletId,

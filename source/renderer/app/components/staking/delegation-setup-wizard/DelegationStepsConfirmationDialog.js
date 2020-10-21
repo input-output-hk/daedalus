@@ -193,6 +193,7 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
         className: 'cancelButton',
         label: intl.formatMessage(messages.cancelButtonLabel),
         onClick: !isSubmitting ? onClose : () => {},
+        disabled: !isSubmitting,
       },
       {
         className: 'confirmButton',

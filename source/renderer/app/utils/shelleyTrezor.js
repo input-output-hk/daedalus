@@ -1,5 +1,6 @@
 // @flow
-import { derivationPathToString } from './hardwareWalletUtils';
+import { utils, cardano } from '@cardano-foundation/ledgerjs-hw-app-cardano';
+import { derivationPathToString, CERTIFICATE_TYPE } from './hardwareWalletUtils';
 import type { CoinSelectionInput, CoinSelectionOutput } from '../api/transactions/types';
 
 export const prepareTrezorInput = (
@@ -32,4 +33,25 @@ export const prepareTrezorOutput = (
     address: output.address,
     amount: output.amount.quantity.toString(),
   }
+};
+
+export const prepareCertificate = (cert) => {
+  if (cert.pool) {
+    const pool11 = Buffer.from(cert.pool).toString('hex');
+    const pool33 = utils.buf_to_hex(utils.bech32_decodeAddress(cert.pool))
+    console.debug('>>>> HEX <<<< ', {
+      pool11,
+      pool33,
+    })
+  }
+  return cert.pool
+    ? {
+      type: CERTIFICATE_TYPE[cert.certificate_type],
+      path: derivationPathToString(cert.reward_account_path),
+      pool: utils.buf_to_hex(utils.bech32_decodeAddress(cert.pool)),
+    }
+    : {
+      type: CERTIFICATE_TYPE[cert.certificate_type],
+      path: derivationPathToString(cert.reward_account_path),
+    }
 };
