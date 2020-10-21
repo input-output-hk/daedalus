@@ -49,32 +49,68 @@ const messages = defineMessages({
   ranking: {
     id: 'staking.stakePools.tooltip.ranking',
     defaultMessage: '!!!Rank:',
-    description: '"" for the Stake Pools Tooltip page.',
+    description: '"Rank" for the Stake Pools Tooltip page.',
+  },
+  rankingTooltip: {
+    id: 'staking.stakePools.tooltip.rankingTooltip',
+    defaultMessage:
+      '!!!A hierarchical ranking based on the potential rewards you will earn if you delegate the intended amount of stake to this pool, assuming that it reaches saturation.',
+    description: '"Rank" tooltip for the Stake Pools Tooltip page.',
   },
   relativeStake: {
     id: 'staking.stakePools.tooltip.relativeStake',
-    defaultMessage: '!!!Controlled stake:',
-    description: '"Controlled stake" for the Stake Pools Tooltip page.',
+    defaultMessage: '!!!Live stake:',
+    description: '"Live stake" for the Stake Pools Tooltip page.',
+  },
+  relativeStakeTooltip: {
+    id: 'staking.stakePools.tooltip.relativeStakeTooltip',
+    defaultMessage:
+      '!!!Measures the amount of stake pledged by the pool plus the amount of stake currently delegated to the pool, versus the total amount in the system.',
+    description: '"Live stake" tooltip for the Stake Pools Tooltip page.',
   },
   profitMargin: {
     id: 'staking.stakePools.tooltip.profitMargin',
-    defaultMessage: '!!!Profit margin:',
-    description: '"Profit margin" for the Stake Pools Tooltip page.',
+    defaultMessage: '!!!Pool margin:',
+    description: '"Pool margin" for the Stake Pools Tooltip page.',
+  },
+  profitMarginTooltip: {
+    id: 'staking.stakePools.tooltip.profitMarginTooltip',
+    defaultMessage:
+      "!!!The pool's profit, defined as the rewards percentage kept by the pool from the stake that was delegated to it.",
+    description: '"Pool margin" tooltip for the Stake Pools Tooltip page.',
   },
   costPerEpoch: {
     id: 'staking.stakePools.tooltip.costPerEpoch',
     defaultMessage: '!!!Cost per epoch:',
     description: '"Cost per epoch" for the Stake Pools Tooltip page.',
   },
+  costPerEpochTooltip: {
+    id: 'staking.stakePools.tooltip.costPerEpochTooltip',
+    defaultMessage:
+      '!!!Fixed operational costs that the stake pool retains from any rewards earned during each epoch.',
+    description: '"Cost per epoch" tooltip for the Stake Pools Tooltip page.',
+  },
   producedBlocks: {
     id: 'staking.stakePools.tooltip.producedBlocks',
     defaultMessage: '!!!Produced blocks:',
     description: '"Blocks" for the Stake Pools Tooltip page.',
   },
+  producedBlocksTooltip: {
+    id: 'staking.stakePools.tooltip.producedBlocksTooltip',
+    defaultMessage:
+      '!!!The total number of blocks the stake pool has produced.',
+    description: '"Blocks" tooltip for the Stake Pools Tooltip page.',
+  },
   potentialRewards: {
     id: 'staking.stakePools.tooltip.potentialRewards',
     defaultMessage: '!!!Potential rewards:',
     description: '"Rewards" for the Stake Pools Tooltip page.',
+  },
+  potentialRewardsTooltip: {
+    id: 'staking.stakePools.tooltip.potentialRewardsTooltip',
+    defaultMessage:
+      "!!!An estimation of the potential rewards you will earn per epoch if you delegate the intended amount of stake. The system looks at the pool's parameters and historical performance data to calculate potential rewards, assuming that the pool reaches optimal saturation.",
+    description: '"Rewards" tooltip for the Stake Pools Tooltip page.',
   },
   retirement: {
     id: 'staking.stakePools.tooltip.retirement',
@@ -86,10 +122,22 @@ const messages = defineMessages({
     defaultMessage: '!!!Saturation:',
     description: '"Saturation" for the Stake Pools Tooltip page.',
   },
+  saturationTooltip: {
+    id: 'staking.stakePools.tooltip.saturationTooltip',
+    defaultMessage:
+      '!!!Saturation measures the stake in the pool and indicates the point at which rewards stop increasing with increases in stake. This capping mechanism encourages decentralization by discouraging users from delegating to oversaturated stake pools.',
+    description: '"Saturation" tooltip for the Stake Pools Tooltip page.',
+  },
   pledge: {
     id: 'staking.stakePools.tooltip.pledge',
     defaultMessage: '!!!Pledge:',
     description: '"Pledge" for the Stake Pools Tooltip page.',
+  },
+  pledgeTooltip: {
+    id: 'staking.stakePools.tooltip.pledgeTooltip',
+    defaultMessage:
+      '!!!The amount of stake that a pool operator contributes to a pool. Pools with higher pledge amounts earn more rewards for themselves and their delegators. Pools that do not honor their pledge earn zero rewards and accrue low ranking.',
+    description: '"Pledge" tooltip for the Stake Pools Tooltip page.',
   },
   delegateButton: {
     id: 'staking.stakePools.tooltip.delegateButton',
@@ -535,7 +583,16 @@ export default class TooltipPool extends Component<Props, State> {
             {IS_SATURATION_DATA_AVAILABLE && (
               <>
                 <dt className={styles.saturationLabel}>
-                  {intl.formatMessage(messages.saturation)}
+                  <div className={styles.fieldLabel}>
+                    {intl.formatMessage(messages.saturation)}
+                  </div>
+                  <Tooltip
+                    key="saturation"
+                    skin={TooltipSkin}
+                    tip={intl.formatMessage(messages.saturationTooltip)}
+                  >
+                    <div className={styles.questionMark}>?</div>
+                  </Tooltip>
                 </dt>
                 <dd className={styles.saturationValue}>
                   <span>
@@ -551,7 +608,18 @@ export default class TooltipPool extends Component<Props, State> {
                 </dd>
               </>
             )}
-            <dt>{intl.formatMessage(messages.ranking)}</dt>
+            <dt>
+              <div className={styles.fieldLabel}>
+                {intl.formatMessage(messages.ranking)}
+              </div>
+              <Tooltip
+                key="ranking"
+                skin={TooltipSkin}
+                tip={intl.formatMessage(messages.rankingTooltip)}
+              >
+                <div className={styles.questionMark}>?</div>
+              </Tooltip>
+            </dt>
             <dd className={styles.ranking}>
               {IS_RANKING_DATA_AVAILABLE && nonMyopicMemberRewards ? (
                 <span
@@ -587,13 +655,35 @@ export default class TooltipPool extends Component<Props, State> {
                 </Tooltip>
               )}
             </dd>
-            <dt>{intl.formatMessage(messages.relativeStake)}</dt>
+            <dt>
+              <div className={styles.fieldLabel}>
+                {intl.formatMessage(messages.relativeStake)}
+              </div>
+              <Tooltip
+                key="relativeStake"
+                skin={TooltipSkin}
+                tip={intl.formatMessage(messages.relativeStakeTooltip)}
+              >
+                <div className={styles.questionMark}>?</div>
+              </Tooltip>
+            </dt>
             <dd className={styles.defaultColor}>
               <span className={styles.defaultColorContent}>{`${parseFloat(
                 relativeStake.toFixed(2)
               )}%`}</span>
             </dd>
-            <dt>{intl.formatMessage(messages.profitMargin)}</dt>
+            <dt>
+              <div className={styles.fieldLabel}>
+                {intl.formatMessage(messages.profitMargin)}
+              </div>
+              <Tooltip
+                key="profitMargin"
+                skin={TooltipSkin}
+                tip={intl.formatMessage(messages.profitMarginTooltip)}
+              >
+                <div className={styles.questionMark}>?</div>
+              </Tooltip>
+            </dt>
             <dd className={styles.profitMargin}>
               <span
                 style={{
@@ -606,13 +696,35 @@ export default class TooltipPool extends Component<Props, State> {
                 {`${parseFloat(profitMargin.toFixed(2))}%`}
               </span>
             </dd>
-            <dt>{intl.formatMessage(messages.pledge)}</dt>
+            <dt>
+              <div className={styles.fieldLabel}>
+                {intl.formatMessage(messages.pledge)}
+              </div>
+              <Tooltip
+                key="pledge"
+                skin={TooltipSkin}
+                tip={intl.formatMessage(messages.pledgeTooltip)}
+              >
+                <div className={styles.questionMark}>?</div>
+              </Tooltip>
+            </dt>
             <dd className={styles.defaultColor}>
               <span className={styles.defaultColorContent}>
                 {formattedWalletAmount(pledge, true, false)}
               </span>
             </dd>
-            <dt>{intl.formatMessage(messages.costPerEpoch)}</dt>
+            <dt>
+              <div className={styles.fieldLabel}>
+                {intl.formatMessage(messages.costPerEpoch)}
+              </div>
+              <Tooltip
+                key="costPerEpoch"
+                skin={TooltipSkin}
+                tip={intl.formatMessage(messages.costPerEpochTooltip)}
+              >
+                <div className={styles.questionMark}>?</div>
+              </Tooltip>
+            </dt>
             <dd className={styles.cost}>
               <span
                 style={{
@@ -625,13 +737,35 @@ export default class TooltipPool extends Component<Props, State> {
                 {`${formattedWalletAmount(cost, true, false)}`}
               </span>
             </dd>
-            <dt>{intl.formatMessage(messages.producedBlocks)}</dt>
+            <dt>
+              <div className={styles.fieldLabel}>
+                {intl.formatMessage(messages.producedBlocks)}
+              </div>
+              <Tooltip
+                key="producedBlocks"
+                skin={TooltipSkin}
+                tip={intl.formatMessage(messages.producedBlocksTooltip)}
+              >
+                <div className={styles.questionMark}>?</div>
+              </Tooltip>
+            </dt>
             <dd className={styles.defaultColor}>
               <span className={styles.defaultColorContent}>
                 {shortNumber(producedBlocks)}
               </span>
             </dd>
-            <dt>{intl.formatMessage(messages.potentialRewards)}</dt>
+            <dt>
+              <div className={styles.fieldLabel}>
+                {intl.formatMessage(messages.potentialRewards)}
+              </div>
+              <Tooltip
+                key="potentialRewards"
+                skin={TooltipSkin}
+                tip={intl.formatMessage(messages.potentialRewardsTooltip)}
+              >
+                <div className={styles.questionMark}>?</div>
+              </Tooltip>
+            </dt>
             <dd className={styles.defaultColor}>
               {nonMyopicMemberRewards ? (
                 <span className={styles.defaultColorContent}>

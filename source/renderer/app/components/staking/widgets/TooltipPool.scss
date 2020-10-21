@@ -393,11 +393,46 @@
   }
 
   dt {
+    align-items: center;
     color: var(--theme-staking-stake-pool-tooltip-table-title-color);
+    display: flex;
     font-size: 14px;
     line-height: 1.36;
-    opacity: 0.8;
     width: 65%;
+
+    &:hover {
+      .questionMark {
+        display: flex;
+      }
+    }
+
+    .fieldLabel {
+      opacity: 0.8;
+    }
+
+    .questionMark {
+      align-items: center;
+      background-color: var(
+        --theme-staking-stake-pool-tooltip-table-title-color
+      );
+      border-radius: 5px;
+      color: var(--theme-staking-stake-pool-tooltip-background-color);
+      cursor: pointer;
+      display: none;
+      font-size: 8px;
+      font-weight: 600;
+      height: 10px;
+      justify-content: center;
+      margin-left: 4px;
+      margin-top: 3px;
+      opacity: 0.3;
+      padding: 1px 0 0 1px;
+      width: 10px;
+
+      &:hover {
+        opacity: 0.5;
+      }
+    }
   }
 
   dd {
@@ -405,17 +440,17 @@
     padding-top: 1px;
     text-align: right;
     width: 35%;
-  }
 
-  span {
-    border-radius: 3px;
-    color: var(--theme-staking-stake-pool-tooltip-table-param-color);
-    display: inline-block;
-    font-size: 8px;
-    font-weight: bold;
-    height: 16px;
-    line-height: 16px;
-    padding: 0 9px;
+    span {
+      border-radius: 3px;
+      color: var(--theme-staking-stake-pool-tooltip-table-param-color);
+      display: inline-block;
+      font-size: 8px;
+      font-weight: bold;
+      height: 16px;
+      line-height: 16px;
+      padding: 0 9px;
+    }
   }
 
   .ranking,
