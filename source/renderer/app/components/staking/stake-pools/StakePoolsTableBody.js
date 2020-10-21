@@ -86,10 +86,45 @@ export class StakePoolsTableBody extends Component<TableBodyProps, TableBodyStat
     }
     if (isListActive === false && setListActive) setListActive(listName);
     const sortedStakePoolList = orderBy(
-      stakePoolsList,
-      stakePoolsSortBy,
-      stakePoolsOrder
+      stakePoolsList.map((stakePool) => {
+        let calculatedPledge;
+        let calculatedCost;
+        let formattedTicker;
+        if (stakePoolsSortBy === 'ticker') {
+          formattedTicker = stakePool.ticker
+            .replace(/[^\w\s]/gi, '')
+            .toLowerCase();
+        }
+        if (stakePoolsSortBy === 'pledge') {
+          const formattedPledgeValue = bigNumbersToFormattedNumbers(
+            stakePool.pledge
+          );
+          calculatedPledge = Number(
+            parseFloat(formattedPledgeValue).toFixed(2)
+          );
+        }
+        if (stakePoolsSortBy === 'cost') {
+          const formattedCostValue = bigNumbersToFormattedNumbers(
+            stakePool.cost
+          );
+          calculatedCost = Number(parseFloat(formattedCostValue).toFixed(2));
+        }
+        return {
+          ...stakePool,
+          calculatedPledge,
+          calculatedCost,
+          formattedTicker,
+        };
+      }),
+      [
+        'formattedTicker',
+        'calculatedPledge',
+        'calculatedCost',
+        stakePoolsSortBy,
+      ],
+      [stakePoolsOrder, stakePoolsOrder, stakePoolsOrder, stakePoolsOrder]
     );
+
     const targetEl = poolId.currentTarget;
     const {parentElement} = targetEl;
     if (parentElement) {
