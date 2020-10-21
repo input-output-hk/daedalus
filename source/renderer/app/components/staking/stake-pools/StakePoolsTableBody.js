@@ -198,7 +198,7 @@ export class StakePoolsTableBody extends Component<TableBodyProps, TableBodyStat
             }
           >
             <td>
-              {rank}
+              {memberRewards ? rank : '-'}
               {isHighlighted && (
                 <TooltipPool
                   stakePool={stakePool}
