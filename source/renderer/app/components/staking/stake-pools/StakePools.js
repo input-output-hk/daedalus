@@ -98,7 +98,6 @@ export default class StakePools extends Component<Props, State> {
     this.setState((prevState) => ({
       search,
       maintainFixed: prevState.isFixed,
-      isFixed: true,
     }));
   handleClearSearch = () => this.setState({ search: '', maintainFixed: false, isFixed: false, });
   handleGridView = () =>
