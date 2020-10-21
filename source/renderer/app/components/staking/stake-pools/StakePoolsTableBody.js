@@ -86,8 +86,7 @@ export class StakePoolsTableBody extends Component<
       if (targetElement instanceof HTMLElement) {
         const { top, left } = getRelativePosition(
           targetElement,
-          `.${containerClassName}`,
-          true
+          `.${containerClassName}`
         );
         this.setState({ top, left });
         const parentEl = targetElement.parentElement;
@@ -248,6 +247,7 @@ export class StakePoolsTableBody extends Component<
                 showWithSelectButton={showWithSelectButton}
                 containerClassName={containerClassName}
                 numberOfRankedStakePools={numberOfRankedStakePools}
+                isListView
               />
             )}
           </td>

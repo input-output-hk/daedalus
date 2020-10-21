@@ -129,6 +129,7 @@ type Props = {
   color: string,
   containerClassName: string,
   numberOfRankedStakePools: number,
+  isListView: boolean,
 };
 
 type State = {
@@ -289,7 +290,12 @@ export default class TooltipPool extends Component<Props, State> {
   };
 
   getLeftRightPosition = (top: number, isTopHalf: boolean, left: number) => {
-    const { fromStakePool } = this.props;
+    console.log('left', left);
+    console.log('top', top);
+    console.log('isTopHalf', isTopHalf);
+    const { fromStakePool, isListView } = this.props;
+    console.log('isListView', isListView);
+    console.log('fromStakePool', fromStakePool);
     const bottom = this.containerHeight - (top + THUMBNAIL_HEIGHT);
     const componentLeft = fromStakePool
       ? -((TOOLTIP_WIDTH * left) / this.containerWidth) +
@@ -301,7 +307,7 @@ export default class TooltipPool extends Component<Props, State> {
     let arrowTop = 'auto';
     let arrowBottom = 'auto';
 
-    if (isTopHalf) {
+    if (isTopHalf && !isListView) {
       componentTop = -((TOOLTIP_MAX_HEIGHT * top) / this.containerHeight);
       arrowTop = -componentTop + ARROW_WIDTH / 2;
     } else {
