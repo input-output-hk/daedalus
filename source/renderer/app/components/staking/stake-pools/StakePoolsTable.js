@@ -239,17 +239,13 @@ export class StakePoolsTable extends Component<Props, State> {
             .toLowerCase();
         }
         if (stakePoolsSortBy === 'pledge') {
-          const formattedPledgeValue = bigNumbersToFormattedNumbers(
-            stakePool.pledge
-          );
+          const formattedPledgeValue = stakePool.pledge.toFixed(2);
           calculatedPledge = Number(
             parseFloat(formattedPledgeValue).toFixed(2)
           );
         }
         if (stakePoolsSortBy === 'cost') {
-          const formattedCostValue = bigNumbersToFormattedNumbers(
-            stakePool.cost
-          );
+          const formattedCostValue = stakePool.cost.toFixed(2);
           calculatedCost = Number(parseFloat(formattedCostValue).toFixed(2));
         }
         return {
