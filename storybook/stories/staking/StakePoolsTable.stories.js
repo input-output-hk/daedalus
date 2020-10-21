@@ -73,6 +73,7 @@ export const StakePoolsTableStory = (props: Props) => (
             step: 1,
           })
         )}
+        currentLocale="en-US"
         currentTheme={props.currentTheme}
         onOpenExternalLink={action('onOpenExternalLink')}
         containerClassName="StakingWithNavigation_page"

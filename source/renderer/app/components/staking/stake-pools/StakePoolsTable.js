@@ -109,6 +109,7 @@ type Props = {
   onOpenExternalLink: Function,
   maintainFixed?: boolean,
   isScrolled?: boolean,
+  currentLocale: string,
 };
 
 type State = {
@@ -193,6 +194,7 @@ export class StakePoolsTable extends Component<Props, State> {
       selectedPoolId,
       setListActive,
       isListActive,
+      currentLocale,
     } = this.props;
     const {
       isPreloading,
@@ -213,11 +215,13 @@ export class StakePoolsTable extends Component<Props, State> {
     if (isScrolled) {
       tableHeaderClasses = classNames([
         styles.tableHeader,
+        currentLocale === 'ja-JP' ? styles.japaneseHeader : null,
         isScrolled && isFixedTableHeaderActive ? styles.fixedTableHeader : null,
       ]);
     } else {
       tableHeaderClasses = classNames([
         styles.tableHeader,
+        currentLocale === 'ja-JP' ? styles.japaneseHeader : null,
         isScrolled && (isFixedTableHeaderActive || maintainFixed)
           ? styles.fixedTableHeader
           : null,
@@ -319,7 +323,7 @@ export class StakePoolsTable extends Component<Props, State> {
                   />
                 </tr>
                 </thead>
-                <tbody>
+                <tbody className={currentLocale === 'ja-JP' ? styles.japaneseHeader : null}>
                 <StakePoolsTableBody
                   sortedStakePoolList={sortedStakePoolList}
                   ada={intl.formatMessage(globalMessages.unitAda)}

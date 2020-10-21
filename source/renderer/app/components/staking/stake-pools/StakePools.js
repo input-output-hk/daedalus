@@ -259,6 +259,7 @@ export default class StakePools extends Component<Props, State> {
                 </h2>
                 <StakePoolsTable
                   listName={SELECTED_INDEX_TABLE}
+                  currentLocale={currentLocale}
                   stakePoolsList={filteredStakePoolsList}
                   onOpenExternalLink={onOpenExternalLink}
                   currentTheme={currentTheme}

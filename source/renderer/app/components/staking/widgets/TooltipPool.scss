@@ -430,13 +430,11 @@
   }
 }
 
-.defaultColor {
-  .defaultColorContent {
-    background: var(
+.defaultColorContent {
+  background: var(
       --theme-staking-stake-pool-tooltip-neutral-background-color
-    );
-    color: var(--theme-staking-stake-pool-tooltip-neutral-text-color);
-  }
+  );
+  color: var(--theme-staking-stake-pool-tooltip-neutral-text-color);
 }
 
 .saturationLabel {

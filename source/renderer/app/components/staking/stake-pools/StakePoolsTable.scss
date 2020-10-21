@@ -143,6 +143,10 @@
           padding: 0 10px;
         }
       }
+
+      &.japaneseHeader {
+        display: block;
+      }
     }
 
     tbody {
@@ -161,6 +165,44 @@
           background-color: var(
             --theme-staking-stake-pools-search-clear-button-background-color
           );
+        }
+      }
+
+      &.japaneseHeader {
+        display: block;
+
+        td {
+          &:first-child {
+            min-width: 40px;
+          }
+
+          &:nth-child(3) {
+            min-width: 30px;
+          }
+
+          &:nth-child(4) {
+            min-width: 59.67px;
+          }
+
+          &:nth-child(5) {
+            min-width: 49.81px;
+          }
+
+          &:nth-child(6) {
+            min-width: 80px;
+          }
+
+          &:nth-child(7) {
+            min-width: 70px;
+          }
+
+          &:nth-child(7) {
+            min-width: 30px;
+          }
+
+          &:last-child {
+            min-width: 40px;
+          }
         }
       }
     }

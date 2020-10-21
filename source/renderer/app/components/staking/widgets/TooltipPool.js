@@ -631,14 +631,7 @@ export default class TooltipPool extends Component<Props, State> {
             </dd>
             <dt>{intl.formatMessage(messages.costPerEpoch)}</dt>
             <dd className={styles.cost}>
-              <span
-                style={{
-                  background: getColorFromRange(profitMargin, {
-                    darken,
-                    alpha,
-                  }),
-                }}
-              >
+              <span className={styles.defaultColorContent}>
                 {`${formattedWalletAmount(cost, true, false)}`}
               </span>
             </dd>
