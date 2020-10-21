@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import { intlShape } from 'react-intl';
 import { debounce, get, map, orderBy } from 'lodash';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
@@ -53,6 +54,10 @@ export class StakePoolsTableBody extends Component<
   TableBodyProps,
   TableBodyState
 > {
+  static contextTypes = {
+    intl: intlShape.isRequired,
+  };
+
   state = {
     ...initialTableBodyState,
   };
@@ -184,6 +189,7 @@ export class StakePoolsTableBody extends Component<
       showWithSelectButton,
       containerClassName,
     } = this.props;
+    const { intl } = this.context;
     return map(sortedStakePoolList, (stakePool, key) => {
       const rank = get(stakePool, 'ranking', '');
       const ticker = get(stakePool, 'ticker', '');
@@ -202,8 +208,8 @@ export class StakePoolsTableBody extends Component<
         isOversaturated || !saturation
           ? parseInt(saturation, 10)
           : parseInt(saturation, 10);
-      const calculatedDateRange = moment(retiring).diff(moment(), 'days');
-
+      const retirement =
+        retiring && moment(retiring).locale(intl.locale).fromNow(true);
       const pledgeValue = bigNumbersToFormattedNumbers(pledge, true);
       const pledgeCalculatedValue = Number(pledgeValue)
         ? Number(pledgeValue).toFixed(2)
@@ -271,14 +277,10 @@ export class StakePoolsTableBody extends Component<
           <td>{potentialRewards}</td>
           <td>{pledgeCalculatedValue}</td>
           <td>
-            {retiring && calculatedDateRange ? (
-              <span className={styles.retiring}>
-                {calculatedDateRange === 1
-                  ? `${calculatedDateRange} day`
-                  : `${calculatedDateRange} days`}
-              </span>
+            {retirement ? (
+              <span className={styles.retiring}>{retirement}</span>
             ) : (
-              <span>-</span>
+              '-'
             )}
           </td>
         </tr>
