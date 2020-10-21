@@ -215,8 +215,8 @@ export class StakePoolsTableBody extends Component<
         ? Number(pledgeValue).toFixed(2)
         : pledgeValue;
       const costValue = cost.toFixed(2);
-      const saturationBarClassnames = classNames([
-        styles.progress,
+      const progressBarContentClassnames = classNames([
+        styles.progressBarContent,
         styles[getSaturationColor(saturation)],
       ]);
 
@@ -261,14 +261,16 @@ export class StakePoolsTableBody extends Component<
             </span>
           </td>
           <td>
-            <div className={styles.currentEpochProgressBar}>
-              <div className={styles.progressBarContainer}>
-                <div
-                  className={saturationBarClassnames}
-                  style={{ width: `${saturationValue}%` }}
-                />
-                <div className={styles.progressLabel}>{saturationValue}%</div>
+            <div className={styles.saturation}>
+              <div className={styles.progressBar}>
+                <div className={styles.progressBarContainer}>
+                  <div
+                    className={progressBarContentClassnames}
+                    style={{ width: `${saturationValue}%` }}
+                  />
+                </div>
               </div>
+              <div className={styles.saturationLabel}>{saturationValue}%</div>
             </div>
           </td>
           <td>{Number(costValue).toFixed(2)}</td>
