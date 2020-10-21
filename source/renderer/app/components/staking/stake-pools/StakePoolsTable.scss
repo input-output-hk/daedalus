@@ -143,10 +143,6 @@
           padding: 0 10px;
         }
       }
-
-      &.japaneseHeader {
-        display: block;
-      }
     }
 
     tbody {
@@ -176,10 +172,6 @@
             min-width: 40px;
           }
 
-          &:nth-child(2) {
-            margin-left: -5px;
-          }
-
           &:nth-child(3) {
             min-width: 30px;
           }
@@ -200,7 +192,7 @@
             min-width: 70px;
           }
 
-          &:nth-child(7) {
+          &:nth-child(8) {
             min-width: 30px;
           }
 
