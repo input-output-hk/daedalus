@@ -37,31 +37,42 @@ export default class BackToTopButton extends Component<Props, State> {
     isActive: false,
   };
 
+  _isMounted = false;
+
   scrollableDomElement: ?HTMLElement = null;
 
   componentDidMount() {
-    this.scrollableDomElement = document.querySelector(
-      `.${this.props.scrollableElementClassName}`
-    );
-    if (!this.scrollableDomElement) return false;
-    return this.scrollableDomElement.addEventListener(
-      'scroll',
-      debounce(this.getIsBackToTopActive, 300, {
-        leading: false,
-        trailing: true,
-      })
-    );
+    this._isMounted = true;
+
+    setTimeout(() => {
+      if (this._isMounted) {
+        this.scrollableDomElement = document.querySelector(
+          `.${this.props.scrollableElementClassName}`
+        );
+        if (!this.scrollableDomElement) return false;
+        return this.scrollableDomElement.addEventListener(
+          'scroll',
+          debounce(this.getIsBackToTopActive, 300, {
+            leading: false,
+            trailing: true,
+          })
+        );
+      } return null;
+    }, 0);
   }
 
   componentWillUnmount() {
-    this.scrollableDomElement = document.querySelector(
-      `.${this.props.scrollableElementClassName}`
-    );
-    if (!this.scrollableDomElement) return false;
-    return this.scrollableDomElement.removeEventListener(
-      'scroll',
-      this.getIsBackToTopActive
-    );
+    if (this._isMounted) {
+      this._isMounted = false;
+      this.scrollableDomElement = document.querySelector(
+        `.${this.props.scrollableElementClassName}`
+      );
+      if (!this.scrollableDomElement) return false;
+      return this.scrollableDomElement.removeEventListener(
+        'scroll',
+        this.getIsBackToTopActive
+      );
+    }
   }
 
   getIsBackToTopActive = () => {
