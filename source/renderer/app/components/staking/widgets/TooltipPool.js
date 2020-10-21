@@ -39,6 +39,8 @@ import {
   ARROW_HEIGHT,
   ARROW_OFFSET,
   TOOLTIP_DELTA,
+  LIST_VIEW_TOOLTIP_DELTA_TOP,
+  LIST_VIEW_ROW_HEIGHT,
   TOOLTIP_MAX_HEIGHT,
   TOOLTIP_WIDTH,
   IS_RANKING_DATA_AVAILABLE,
@@ -250,7 +252,7 @@ export default class TooltipPool extends Component<Props, State> {
   };
 
   getTopBottomPosition = (left: number) => {
-    const { fromStakePool } = this.props;
+    const { fromStakePool, isListView } = this.props;
     const paddingOffset = rangeMap(
       left,
       THUMBNAIL_OFFSET_WIDTH,
@@ -266,12 +268,14 @@ export default class TooltipPool extends Component<Props, State> {
       : -((TOOLTIP_WIDTH * left) / this.containerWidth) +
         THUMBNAIL_OFFSET_WIDTH +
         (left - THUMBNAIL_OFFSET_WIDTH - THUMBNAIL_WIDTH);
-    const componentTop = !fromStakePool
+    let componentTop = !fromStakePool
       ? THUMBNAIL_HEIGHT + ARROW_HEIGHT / 2
       : THUMBNAIL_HEIGHT + ARROW_WIDTH / 2;
-    const componentBottom = !fromStakePool
+    if (isListView) componentTop -= LIST_VIEW_ROW_HEIGHT;
+    let componentBottom = !fromStakePool
       ? THUMBNAIL_HEIGHT + ARROW_HEIGHT / 2
       : THUMBNAIL_HEIGHT / 2;
+    if (isListView) componentBottom += ARROW_HEIGHT;
 
     const arrowLeft = !fromStakePool
       ? -componentLeft + THUMBNAIL_OFFSET_WIDTH - ARROW_OFFSET
@@ -324,17 +328,16 @@ export default class TooltipPool extends Component<Props, State> {
   };
 
   getTooltipPosition = (top: number, isLeftHalf: boolean) => {
-    const ignoreTopBottom = false;
-    if (!ignoreTopBottom) {
-      if (top <= TOOLTIP_DELTA) {
-        return 'bottom';
-      }
-      if (
-        TOOLTIP_DELTA >=
-        this.containerHeight - (top + (THUMBNAIL_HEIGHT - TOOLTIP_DELTA))
-      ) {
-        return 'top';
-      }
+    const { isListView } = this.props;
+    const topDelta = isListView ? LIST_VIEW_TOOLTIP_DELTA_TOP : TOOLTIP_DELTA;
+    if (top <= topDelta) {
+      return 'bottom';
+    }
+    if (
+      TOOLTIP_DELTA >=
+      this.containerHeight - (top + (THUMBNAIL_HEIGHT - TOOLTIP_DELTA))
+    ) {
+      return 'top';
     }
     if (!isLeftHalf) {
       return 'left';
