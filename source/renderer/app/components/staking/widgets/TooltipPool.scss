@@ -402,7 +402,7 @@
 
     &:hover {
       .questionMark {
-        display: flex;
+        display: block;
       }
     }
 
@@ -411,26 +411,36 @@
     }
 
     .questionMark {
-      align-items: center;
-      background-color: var(
-        --theme-staking-stake-pool-tooltip-table-title-color
-      );
-      border-radius: 5px;
-      color: var(--theme-staking-stake-pool-tooltip-background-color);
       cursor: pointer;
       display: none;
-      font-size: 8px;
-      font-weight: 600;
       height: 10px;
-      justify-content: center;
       margin-left: 4px;
-      margin-top: 3px;
-      opacity: 0.3;
-      padding: 1px 0 0 1px;
+      margin-top: 4px;
       width: 10px;
 
-      &:hover {
-        opacity: 0.5;
+      :global {
+        .SVGInline {
+          display: block;
+          height: 100%;
+          line-height: 10px;
+          width: 100%;
+
+          svg {
+            height: 100%;
+            width: 100%;
+
+            path {
+              fill: var(--theme-staking-stake-pool-tooltip-table-title-color);
+              opacity: 0.3;
+            }
+
+            &:hover {
+              path {
+                opacity: 0.5;
+              }
+            }
+          }
+        }
       }
     }
 

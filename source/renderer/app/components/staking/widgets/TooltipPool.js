@@ -20,6 +20,7 @@ import StakePool from '../../../domains/StakePool';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
 import noDataDashSmallImage from '../../../assets/images/no-data-dash-small.inline.svg';
 import experimentalIcon from '../../../assets/images/experiment-icon.inline.svg';
+import questionMarkIcon from '../../../assets/images/question-mark.inline.svg';
 import copyIcon from '../../../assets/images/clipboard-small-ic.inline.svg';
 import copyCheckmarkIcon from '../../../assets/images/check-w.inline.svg';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
@@ -591,7 +592,9 @@ export default class TooltipPool extends Component<Props, State> {
                     skin={TooltipSkin}
                     tip={intl.formatMessage(messages.saturationTooltip)}
                   >
-                    <div className={styles.questionMark}>?</div>
+                    <div className={styles.questionMark}>
+                      <SVGInline svg={questionMarkIcon} />
+                    </div>
                   </Tooltip>
                 </dt>
                 <dd className={styles.saturationValue}>
@@ -617,7 +620,9 @@ export default class TooltipPool extends Component<Props, State> {
                 skin={TooltipSkin}
                 tip={intl.formatMessage(messages.rankingTooltip)}
               >
-                <div className={styles.questionMark}>?</div>
+                <div className={styles.questionMark}>
+                  <SVGInline svg={questionMarkIcon} />
+                </div>
               </Tooltip>
             </dt>
             <dd className={styles.ranking}>
@@ -664,7 +669,9 @@ export default class TooltipPool extends Component<Props, State> {
                 skin={TooltipSkin}
                 tip={intl.formatMessage(messages.relativeStakeTooltip)}
               >
-                <div className={styles.questionMark}>?</div>
+                <div className={styles.questionMark}>
+                  <SVGInline svg={questionMarkIcon} />
+                </div>
               </Tooltip>
             </dt>
             <dd className={styles.defaultColor}>
@@ -681,7 +688,9 @@ export default class TooltipPool extends Component<Props, State> {
                 skin={TooltipSkin}
                 tip={intl.formatMessage(messages.profitMarginTooltip)}
               >
-                <div className={styles.questionMark}>?</div>
+                <div className={styles.questionMark}>
+                  <SVGInline svg={questionMarkIcon} />
+                </div>
               </Tooltip>
             </dt>
             <dd className={styles.profitMargin}>
@@ -705,7 +714,9 @@ export default class TooltipPool extends Component<Props, State> {
                 skin={TooltipSkin}
                 tip={intl.formatMessage(messages.pledgeTooltip)}
               >
-                <div className={styles.questionMark}>?</div>
+                <div className={styles.questionMark}>
+                  <SVGInline svg={questionMarkIcon} />
+                </div>
               </Tooltip>
             </dt>
             <dd className={styles.defaultColor}>
@@ -722,7 +733,9 @@ export default class TooltipPool extends Component<Props, State> {
                 skin={TooltipSkin}
                 tip={intl.formatMessage(messages.costPerEpochTooltip)}
               >
-                <div className={styles.questionMark}>?</div>
+                <div className={styles.questionMark}>
+                  <SVGInline svg={questionMarkIcon} />
+                </div>
               </Tooltip>
             </dt>
             <dd className={styles.cost}>
@@ -746,7 +759,9 @@ export default class TooltipPool extends Component<Props, State> {
                 skin={TooltipSkin}
                 tip={intl.formatMessage(messages.producedBlocksTooltip)}
               >
-                <div className={styles.questionMark}>?</div>
+                <div className={styles.questionMark}>
+                  <SVGInline svg={questionMarkIcon} />
+                </div>
               </Tooltip>
             </dt>
             <dd className={styles.defaultColor}>
@@ -763,7 +778,9 @@ export default class TooltipPool extends Component<Props, State> {
                 skin={TooltipSkin}
                 tip={intl.formatMessage(messages.potentialRewardsTooltip)}
               >
-                <div className={styles.questionMark}>?</div>
+                <div className={styles.questionMark}>
+                  <SVGInline svg={questionMarkIcon} />
+                </div>
               </Tooltip>
             </dt>
             <dd className={styles.defaultColor}>
