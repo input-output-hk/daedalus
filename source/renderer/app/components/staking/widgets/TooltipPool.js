@@ -290,12 +290,7 @@ export default class TooltipPool extends Component<Props, State> {
   };
 
   getLeftRightPosition = (top: number, isTopHalf: boolean, left: number) => {
-    console.log('left', left);
-    console.log('top', top);
-    console.log('isTopHalf', isTopHalf);
     const { fromStakePool, isListView } = this.props;
-    console.log('isListView', isListView);
-    console.log('fromStakePool', fromStakePool);
     const bottom = this.containerHeight - (top + THUMBNAIL_HEIGHT);
     const componentLeft = fromStakePool
       ? -((TOOLTIP_WIDTH * left) / this.containerWidth) +

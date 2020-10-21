@@ -19,7 +19,6 @@ export const getRelativePosition = (
     const parentPosition = parentHTMLElement.getBoundingClientRect();
     const childrenPosition = targetHTMLElement.getBoundingClientRect();
     relativePosition.top = childrenPosition.top - parentPosition.top;
-    console.log('relativePosition.top', relativePosition.top);
     relativePosition.left = childrenPosition.left - parentPosition.left;
   }
   return relativePosition;
