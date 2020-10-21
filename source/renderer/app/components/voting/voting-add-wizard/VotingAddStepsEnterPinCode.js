@@ -163,6 +163,8 @@ export default class VotingAddStepsEnterPinCode extends Component<Props> {
               {...repeatPinCodeFieldProps}
               label={repeatPinCodeLabel}
               onChange={(...args) => repeatPinCodeFieldProps.onChange(...args)}
+              isDisabled={!pinCodeField.isValid}
+              error={repeatPinCodeField.error}
             />
           </div>
 

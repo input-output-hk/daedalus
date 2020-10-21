@@ -1,7 +1,4 @@
 .component {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-between;
   width: 240px;
 
   :global {
@@ -15,22 +12,47 @@
       height: 50px;
       padding: 10px 10px;
       width: 50px;
+      text-align: center;
+    }
+
+    .SimpleTooltip_bubble {
+      .SimpleBubble_bubble {
+        padding: 8px;
+        left: 60px !important;
+        text-align: center;
+        border: none;
+        border-radius: 5px;
+        font-weight: bold;
+        background: var(--theme-color-error) !important;
+      }
+      span {
+        &:before {
+          border-color: transparent transparent
+            var(--theme-color-error, transparent) transparent !important;
+        }
+        &:after {
+          border-color: transparent transparent
+            var(--theme-color-error, rgba(94, 96, 102, 0.9)) transparent !important;
+        }
+      }
     }
   }
 
-  .contentLabel {
-    height: 33px;
-    line-height: 17px;
-    padding: 7px 10px;
-    width: 185px;
-
-    .label {
-      color: var(--rp-switch-label-text-color);
-      flex: 1;
-      font-family: var(--font-semibold);
-      font-size: 16px;
-      line-height: 1.38;
-      padding-top: 1px;
+  .pinCodeInput {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 240px;
+    .pinCode {
+      &.error {
+        input {
+          border-color: var(--theme-color-error);
+        }
+      }
     }
+  }
+
+  .tooltip {
+    display: inline-block !important;
   }
 }
