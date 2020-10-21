@@ -278,6 +278,7 @@
       .progressBar {
         @extend %saturationContainer;
         flex: 0.7;
+        padding-top: 2px;
       }
 
       .progressBarContainer {
@@ -320,7 +321,6 @@
         flex: 0.3;
         font-family: var(--font-medium);
         font-size: 12px;
-        line-height: 24px;
         padding-left: 12px;
         right: 8px;
         white-space: nowrap;
