@@ -580,24 +580,26 @@ export default class TooltipPool extends Component<Props, State> {
             skin={LinkSkin}
           />
 
-          <dl className={styles.table}>
+          <div className={styles.table}>
             {IS_SATURATION_DATA_AVAILABLE && (
-              <>
-                <dt className={styles.saturationLabel}>
-                  <div className={styles.fieldLabel}>
-                    {intl.formatMessage(messages.saturation)}
-                  </div>
+              <div className={styles.dRow}>
+                <div className={styles.saturationLabel}>
                   <Tooltip
                     key="saturation"
                     skin={TooltipSkin}
                     tip={intl.formatMessage(messages.saturationTooltip)}
                   >
-                    <div className={styles.questionMark}>
-                      <SVGInline svg={questionMarkIcon} />
+                    <div className={styles.labelContainer}>
+                      <div className={styles.fieldLabel}>
+                        {intl.formatMessage(messages.saturation)}
+                      </div>
+                      <div className={styles.questionMark}>
+                        <SVGInline svg={questionMarkIcon} />
+                      </div>
                     </div>
                   </Tooltip>
-                </dt>
-                <dd className={styles.saturationValue}>
+                </div>
+                <div className={styles.saturationValue}>
                   <span>
                     <span className={saturationBarClassnames}>
                       <span
@@ -608,196 +610,225 @@ export default class TooltipPool extends Component<Props, State> {
                     </span>
                     {`${parseFloat(saturation.toFixed(2))}%`}
                   </span>
-                </dd>
-              </>
-            )}
-            <dt>
-              <div className={styles.fieldLabel}>
-                {intl.formatMessage(messages.ranking)}
-              </div>
-              <Tooltip
-                key="ranking"
-                skin={TooltipSkin}
-                tip={intl.formatMessage(messages.rankingTooltip)}
-              >
-                <div className={styles.questionMark}>
-                  <SVGInline svg={questionMarkIcon} />
                 </div>
-              </Tooltip>
-            </dt>
-            <dd className={styles.ranking}>
-              {IS_RANKING_DATA_AVAILABLE && nonMyopicMemberRewards ? (
+              </div>
+            )}
+            <div className={styles.dRow}>
+              <div>
+                <Tooltip
+                  key="ranking"
+                  skin={TooltipSkin}
+                  tip={intl.formatMessage(messages.rankingTooltip)}
+                >
+                  <div className={styles.labelContainer}>
+                    <div className={styles.fieldLabel}>
+                      {intl.formatMessage(messages.ranking)}
+                    </div>
+                    <div className={styles.questionMark}>
+                      <SVGInline svg={questionMarkIcon} />
+                    </div>
+                  </div>
+                </Tooltip>
+              </div>
+              <div className={styles.ranking}>
+                {IS_RANKING_DATA_AVAILABLE && nonMyopicMemberRewards ? (
+                  <span
+                    style={{
+                      background: getColorFromRange(ranking, {
+                        darken,
+                        alpha,
+                        numberOfItems: numberOfRankedStakePools,
+                      }),
+                    }}
+                  >
+                    {ranking}
+                  </span>
+                ) : (
+                  <div className={styles.noDataDash}>
+                    <SVGInline svg={noDataDashSmallImage} />
+                  </div>
+                )}
+                {isIncentivizedTestnet && (
+                  <Tooltip
+                    className={styles.experimentalTooltip}
+                    key="experimentalTooltip"
+                    themeOverrides={experimentalTooltipStyles}
+                    skin={TooltipSkin}
+                    tip={intl.formatMessage(messages.experimentalTooltipLabel)}
+                  >
+                    <button className={styles.iconButton}>
+                      <SVGInline
+                        svg={experimentalIcon}
+                        className={styles.experimentalIcon}
+                      />
+                    </button>
+                  </Tooltip>
+                )}
+              </div>
+            </div>
+            <div className={styles.dRow}>
+              <div>
+                <Tooltip
+                  key="relativeStake"
+                  skin={TooltipSkin}
+                  tip={intl.formatMessage(messages.relativeStakeTooltip)}
+                >
+                  <div className={styles.labelContainer}>
+                    <div className={styles.fieldLabel}>
+                      {intl.formatMessage(messages.relativeStake)}
+                    </div>
+                    <div className={styles.questionMark}>
+                      <SVGInline svg={questionMarkIcon} />
+                    </div>
+                  </div>
+                </Tooltip>
+              </div>
+              <div className={styles.defaultColor}>
+                <span className={styles.defaultColorContent}>{`${parseFloat(
+                  relativeStake.toFixed(2)
+                )}%`}</span>
+              </div>
+            </div>
+            <div className={styles.dRow}>
+              <div>
+                <Tooltip
+                  key="profitMargin"
+                  skin={TooltipSkin}
+                  tip={intl.formatMessage(messages.profitMarginTooltip)}
+                >
+                  <div className={styles.labelContainer}>
+                    <div className={styles.fieldLabel}>
+                      {intl.formatMessage(messages.profitMargin)}
+                    </div>
+                    <div className={styles.questionMark}>
+                      <SVGInline svg={questionMarkIcon} />
+                    </div>
+                  </div>
+                </Tooltip>
+              </div>
+              <div>
                 <span
                   style={{
-                    background: getColorFromRange(ranking, {
+                    background: getColorFromRange(profitMargin, {
                       darken,
                       alpha,
-                      numberOfItems: numberOfRankedStakePools,
                     }),
                   }}
                 >
-                  {ranking}
+                  {`${parseFloat(profitMargin.toFixed(2))}%`}
                 </span>
-              ) : (
-                <div className={styles.noDataDash}>
-                  <SVGInline svg={noDataDashSmallImage} />
-                </div>
-              )}
-              {isIncentivizedTestnet && (
+              </div>
+            </div>
+            <div className={styles.dRow}>
+              <div>
                 <Tooltip
-                  className={styles.experimentalTooltip}
-                  key="experimentalTooltip"
-                  themeOverrides={experimentalTooltipStyles}
+                  key="pledge"
                   skin={TooltipSkin}
-                  tip={intl.formatMessage(messages.experimentalTooltipLabel)}
+                  tip={intl.formatMessage(messages.pledgeTooltip)}
                 >
-                  <button className={styles.iconButton}>
-                    <SVGInline
-                      svg={experimentalIcon}
-                      className={styles.experimentalIcon}
-                    />
-                  </button>
+                  <div className={styles.labelContainer}>
+                    <div className={styles.fieldLabel}>
+                      {intl.formatMessage(messages.pledge)}
+                    </div>
+                    <div className={styles.questionMark}>
+                      <SVGInline svg={questionMarkIcon} />
+                    </div>
+                  </div>
                 </Tooltip>
-              )}
-            </dd>
-            <dt>
-              <div className={styles.fieldLabel}>
-                {intl.formatMessage(messages.relativeStake)}
               </div>
-              <Tooltip
-                key="relativeStake"
-                skin={TooltipSkin}
-                tip={intl.formatMessage(messages.relativeStakeTooltip)}
-              >
-                <div className={styles.questionMark}>
-                  <SVGInline svg={questionMarkIcon} />
-                </div>
-              </Tooltip>
-            </dt>
-            <dd className={styles.defaultColor}>
-              <span className={styles.defaultColorContent}>{`${parseFloat(
-                relativeStake.toFixed(2)
-              )}%`}</span>
-            </dd>
-            <dt>
-              <div className={styles.fieldLabel}>
-                {intl.formatMessage(messages.profitMargin)}
-              </div>
-              <Tooltip
-                key="profitMargin"
-                skin={TooltipSkin}
-                tip={intl.formatMessage(messages.profitMarginTooltip)}
-              >
-                <div className={styles.questionMark}>
-                  <SVGInline svg={questionMarkIcon} />
-                </div>
-              </Tooltip>
-            </dt>
-            <dd className={styles.profitMargin}>
-              <span
-                style={{
-                  background: getColorFromRange(profitMargin, {
-                    darken,
-                    alpha,
-                  }),
-                }}
-              >
-                {`${parseFloat(profitMargin.toFixed(2))}%`}
-              </span>
-            </dd>
-            <dt>
-              <div className={styles.fieldLabel}>
-                {intl.formatMessage(messages.pledge)}
-              </div>
-              <Tooltip
-                key="pledge"
-                skin={TooltipSkin}
-                tip={intl.formatMessage(messages.pledgeTooltip)}
-              >
-                <div className={styles.questionMark}>
-                  <SVGInline svg={questionMarkIcon} />
-                </div>
-              </Tooltip>
-            </dt>
-            <dd className={styles.defaultColor}>
-              <span className={styles.defaultColorContent}>
-                {formattedWalletAmount(pledge, true, false)}
-              </span>
-            </dd>
-            <dt>
-              <div className={styles.fieldLabel}>
-                {intl.formatMessage(messages.costPerEpoch)}
-              </div>
-              <Tooltip
-                key="costPerEpoch"
-                skin={TooltipSkin}
-                tip={intl.formatMessage(messages.costPerEpochTooltip)}
-              >
-                <div className={styles.questionMark}>
-                  <SVGInline svg={questionMarkIcon} />
-                </div>
-              </Tooltip>
-            </dt>
-            <dd className={styles.cost}>
-              <span
-                style={{
-                  background: getColorFromRange(profitMargin, {
-                    darken,
-                    alpha,
-                  }),
-                }}
-              >
-                {`${formattedWalletAmount(cost, true, false)}`}
-              </span>
-            </dd>
-            <dt>
-              <div className={styles.fieldLabel}>
-                {intl.formatMessage(messages.producedBlocks)}
-              </div>
-              <Tooltip
-                key="producedBlocks"
-                skin={TooltipSkin}
-                tip={intl.formatMessage(messages.producedBlocksTooltip)}
-              >
-                <div className={styles.questionMark}>
-                  <SVGInline svg={questionMarkIcon} />
-                </div>
-              </Tooltip>
-            </dt>
-            <dd className={styles.defaultColor}>
-              <span className={styles.defaultColorContent}>
-                {shortNumber(producedBlocks)}
-              </span>
-            </dd>
-            <dt>
-              <div className={styles.fieldLabel}>
-                {intl.formatMessage(messages.potentialRewards)}
-              </div>
-              <Tooltip
-                key="potentialRewards"
-                skin={TooltipSkin}
-                tip={intl.formatMessage(messages.potentialRewardsTooltip)}
-              >
-                <div className={styles.questionMark}>
-                  <SVGInline svg={questionMarkIcon} />
-                </div>
-              </Tooltip>
-            </dt>
-            <dd className={styles.defaultColor}>
-              {nonMyopicMemberRewards ? (
+              <div className={styles.defaultColor}>
                 <span className={styles.defaultColorContent}>
-                  {shortNumber(
-                    formattedLovelaceToAmount(nonMyopicMemberRewards)
-                  )}{' '}
-                  {intl.formatMessage(globalMessages.unitAda)}
+                  {formattedWalletAmount(pledge, true, false)}
                 </span>
-              ) : (
-                <div className={styles.noDataDash}>
-                  <SVGInline svg={noDataDashSmallImage} />
-                </div>
-              )}
-            </dd>
-          </dl>
+              </div>
+            </div>
+
+            <div className={styles.dRow}>
+              <div className={styles.costLabel}>
+                <Tooltip
+                  key="costPerEpoch"
+                  skin={TooltipSkin}
+                  tip={intl.formatMessage(messages.costPerEpochTooltip)}
+                >
+                  <div className={styles.labelContainer}>
+                    <div className={styles.fieldLabel}>
+                      {intl.formatMessage(messages.costPerEpoch)}
+                    </div>
+                    <div className={styles.questionMark}>
+                      <SVGInline svg={questionMarkIcon} />
+                    </div>
+                  </div>
+                </Tooltip>
+              </div>
+              <div className={styles.costValue}>
+                <span
+                  style={{
+                    background: getColorFromRange(profitMargin, {
+                      darken,
+                      alpha,
+                    }),
+                  }}
+                >
+                  {`${formattedWalletAmount(cost, true, false)}`}
+                </span>
+              </div>
+            </div>
+            <div className={styles.dRow}>
+              <div>
+                <Tooltip
+                  key="producedBlocks"
+                  skin={TooltipSkin}
+                  tip={intl.formatMessage(messages.producedBlocksTooltip)}
+                >
+                  <div className={styles.labelContainer}>
+                    <div className={styles.fieldLabel}>
+                      {intl.formatMessage(messages.producedBlocks)}
+                    </div>
+                    <div className={styles.questionMark}>
+                      <SVGInline svg={questionMarkIcon} />
+                    </div>
+                  </div>
+                </Tooltip>
+              </div>
+              <div className={styles.defaultColor}>
+                <span className={styles.defaultColorContent}>
+                  {shortNumber(producedBlocks)}
+                </span>
+              </div>
+            </div>
+            <div className={styles.dRow}>
+              <div>
+                <Tooltip
+                  key="potentialRewards"
+                  skin={TooltipSkin}
+                  tip={intl.formatMessage(messages.potentialRewardsTooltip)}
+                >
+                  <div className={styles.labelContainer}>
+                    <div className={styles.fieldLabel}>
+                      {intl.formatMessage(messages.potentialRewards)}
+                    </div>
+                    <div className={styles.questionMark}>
+                      <SVGInline svg={questionMarkIcon} />
+                    </div>
+                  </div>
+                </Tooltip>
+              </div>
+              <div className={styles.defaultColor}>
+                {nonMyopicMemberRewards ? (
+                  <span className={styles.defaultColorContent}>
+                    {shortNumber(
+                      formattedLovelaceToAmount(nonMyopicMemberRewards)
+                    )}{' '}
+                    {intl.formatMessage(globalMessages.unitAda)}
+                  </span>
+                ) : (
+                  <div className={styles.noDataDash}>
+                    <SVGInline svg={noDataDashSmallImage} />
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
         </div>
         {onSelect && showWithSelectButton && (
           <Button
