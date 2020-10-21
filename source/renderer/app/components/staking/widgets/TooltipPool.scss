@@ -433,6 +433,15 @@
         opacity: 0.5;
       }
     }
+
+    :global {
+      .SimpleTooltip_root {
+        .SimpleBubble_bubble {
+          white-space: normal;
+          width: 300px;
+        }
+      }
+    }
   }
 
   dd {

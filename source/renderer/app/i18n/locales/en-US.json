@@ -454,7 +454,7 @@
   "staking.stakePools.rankingAllWallets": "all your wallets",
   "staking.stakePools.rankingAllWalletsEnd": ".",
   "staking.stakePools.rankingAllWalletsStart": "Stake pools are currently ranked based on the combined amount in",
-  "staking.stakePools.rankingDescription": "Use the slider to rank the stake pools and check the potential rewards <b>based on the amount of stake you intend to delegate</b>.",
+  "staking.stakePools.rankingDescription": "Use the slider to rank the stake pools and check the potential rewards <strong>based on the amount of stake you intend to delegate</strong>.",
   "staking.stakePools.rankingExtraTooltip": "Circulating supply of ada",
   "staking.stakePools.rankingLearnMoreUrl": "https://iohk.zendesk.com/hc/en-us",
   "staking.stakePools.rankingMaxTooltip": "Stake pool saturation point",

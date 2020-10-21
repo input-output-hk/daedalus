@@ -49,7 +49,7 @@ const messages = defineMessages({
   rankingDescription: {
     id: 'staking.stakePools.rankingDescription',
     defaultMessage:
-      '!!!Use the slider to rank the stake pools based on the amount you intend to delegate.',
+      '!!!Use the slider to rank the stake pools and check the potential rewards <strong>based on the amount of stake you intend to delegate</strong>.',
     description: 'Ranking description.',
   },
   rankingLearnMoreUrl: {
