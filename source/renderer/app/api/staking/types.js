@@ -13,7 +13,7 @@ export type AdaApiStakePool = {
   metrics: {
     non_myopic_member_rewards: {
       quantity: number,
-      unit: 'block',
+      unit: 'lovelace',
     },
     produced_blocks: {
       quantity: number,

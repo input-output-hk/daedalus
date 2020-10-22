@@ -26,6 +26,7 @@ import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { ITN_WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
+import { MIN_DELEGATION_FUNDS } from '../../../config/stakingConfig';
 
 const messages = defineMessages({
   title: {
@@ -127,10 +128,17 @@ const messages = defineMessages({
     description:
       'Error message shown when invalid recovery phrase was entered.',
   },
+  syncingWallet: {
+    id: 'staking.delegationSetup.chooseWallet.step.dialog.syncingWallet',
+    defaultMessage: '!!!syncing',
+    description:
+      'Syncing wallet label on the delegation setup "choose wallet" step dialog.',
+  },
 });
 
 type Props = {
   error?: ?LocalizableError,
+  errorMessage?: ?LocalizableError,
   isSubmitting: boolean,
   mnemonicValidator: Function,
   onClose: Function,
@@ -247,6 +255,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       openExternalLink,
       wallets,
       recoveryPhrase,
+      errorMessage,
     } = this.props;
     let { error } = this.props;
     if (
@@ -302,6 +311,17 @@ export default class Step1ConfigurationDialog extends Component<Props> {
 
     const closeButton = <DialogCloseButton onClose={onClose} />;
 
+    const minDelegationFunds = MIN_DELEGATION_FUNDS;
+
+    const dropdownError = errorMessage && (
+      <p className={styles.errorMessage}>
+        <FormattedHTMLMessage
+          {...errorMessage}
+          values={{ minDelegationFunds }}
+        />
+      </p>
+    );
+
     return (
       <Dialog
         title={intl.formatMessage(messages.title)}
@@ -347,11 +367,13 @@ export default class Step1ConfigurationDialog extends Component<Props> {
               placeholder={intl.formatMessage(
                 messages.selectWalletInputPlaceholder
               )}
+              syncingLabel={intl.formatMessage(messages.syncingWallet)}
               value={walletId}
               getStakePoolById={() => {}}
               errorPosition="bottom"
             />
           </div>
+          {dropdownError}
           <Checkbox
             {...checkboxAcceptance1Field.bind()}
             className={styles.checkbox}

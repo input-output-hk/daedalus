@@ -7,9 +7,11 @@ Changelog
 
 - Re-enabled stake pool saturation info ([PR 2200](https://github.com/input-output-hk/daedalus/pull/2200))
 - Implemented the wallet migration leftovers handling ([PR 2178](https://github.com/input-output-hk/daedalus/pull/2178))
+- Implemented hiding ranking info for pools without non myopic member rewards on the stake pool tooltip panel ([PR 2209](https://github.com/input-output-hk/daedalus/pull/2209))
 
 ### Fixes
 
+- Fixed animation on wallet dropdown option during redemption process ([PR 2191](https://github.com/input-output-hk/daedalus/pull/2191))
 - Fixed Cardano Explorer URLs ([PR 2198](https://github.com/input-output-hk/daedalus/pull/2198))
 - Fixed Stake pool tooltip height issue ([PR 2203](https://github.com/input-output-hk/daedalus/pull/2203))
 

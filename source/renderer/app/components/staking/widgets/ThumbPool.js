@@ -24,7 +24,7 @@ type Props = {
   stakePool: StakePool,
   isSelected?: ?Function,
   containerClassName: string,
-  numberOfStakePools: number,
+  numberOfRankedStakePools: number,
   disabledStakePoolId: ?string,
 };
 
@@ -98,13 +98,13 @@ export class ThumbPool extends Component<Props, State> {
       showSelected,
       stakePool,
       containerClassName,
-      numberOfStakePools,
+      numberOfRankedStakePools,
       disabledStakePoolId,
     } = this.props;
     const { top, left } = this.state;
 
     const { ranking, id } = stakePool;
-    const color = getColorFromRange(ranking, numberOfStakePools);
+    const color = getColorFromRange(ranking, numberOfRankedStakePools);
     const isDisabled = disabledStakePoolId === id;
 
     const contentClassnames = classnames([
@@ -119,12 +119,12 @@ export class ThumbPool extends Component<Props, State> {
       isSelected && showSelected ? (
         <ThumbSelectedPool
           stakePool={stakePool}
-          numberOfStakePools={numberOfStakePools}
+          numberOfRankedStakePools={numberOfRankedStakePools}
         />
       ) : (
         <ThumbPoolContent
           stakePool={stakePool}
-          numberOfStakePools={numberOfStakePools}
+          numberOfRankedStakePools={numberOfRankedStakePools}
         />
       );
 
@@ -152,7 +152,7 @@ export class ThumbPool extends Component<Props, State> {
             onSelect={this.handleSelect}
             showWithSelectButton={showWithSelectButton}
             containerClassName={containerClassName}
-            numberOfStakePools={numberOfStakePools}
+            numberOfRankedStakePools={numberOfRankedStakePools}
           />
         )}
       </div>
