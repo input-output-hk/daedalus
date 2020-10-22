@@ -164,6 +164,15 @@ export const winLinuxMenu = (
           shell.openExternal(safetyTipsLinkUrl);
         },
       },
+      /* {
+        label: translation('helpSupport.featureRequest'),
+        click() {
+          const featureRequestLinkUrl = translation(
+            'helpSupport.featureRequestUrl'
+          );
+          shell.openExternal(featureRequestLinkUrl);
+        },
+      }, */
       {
         label: translation('helpSupport.supportRequest'),
         click() {
