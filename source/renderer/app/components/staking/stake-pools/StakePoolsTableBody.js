@@ -261,11 +261,13 @@ export class StakePoolsTableBody extends Component<
                 <div className={styles.progressBarContainer}>
                   <div
                     className={progressBarContentClassnames}
-                    style={{ width: `${parseFloat(saturation.toFixed(2))}%` }}
+                    style={{ width: `${parseFloat(saturation).toFixed(2)}%` }}
                   />
                 </div>
               </div>
-              <div className={styles.saturationLabel}>{`${parseFloat(saturation.toFixed(2))}%`}</div>
+              <div className={styles.saturationLabel}>{`${parseFloat(
+                saturation
+              ).toFixed(2)}%`}</div>
             </div>
           </td>
           <td>{Number(costValue).toFixed(2)}</td>
