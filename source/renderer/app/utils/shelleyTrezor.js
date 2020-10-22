@@ -36,14 +36,6 @@ export const prepareTrezorOutput = (
 };
 
 export const prepareCertificate = (cert) => {
-  if (cert.pool) {
-    const pool11 = Buffer.from(cert.pool).toString('hex');
-    const pool33 = utils.buf_to_hex(utils.bech32_decodeAddress(cert.pool))
-    console.debug('>>>> HEX <<<< ', {
-      pool11,
-      pool33,
-    })
-  }
   return cert.pool
     ? {
       type: CERTIFICATE_TYPE[cert.certificate_type],
