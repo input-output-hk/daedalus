@@ -12,7 +12,7 @@ import {
 } from './utils/setupLogging';
 import { handleDiskSpace } from './utils/handleDiskSpace';
 import {
-  handleHardwareWalletDevices,
+  // handleHardwareWalletDevices, // @TODO - uncomment once TransportNodeHID enabled by dev-ops
   handleInitTrezorConnect,
 } from './ipc/getHardwareWalletChannel';
 import { handleCheckBlockReplayProgress } from './utils/handleCheckBlockReplayProgress';
@@ -176,11 +176,12 @@ const onAppReady = async () => {
 
 
   // Ledger INIT
-  console.debug('>>> Ledger:: INIT - index.js');
-  const handleCheckHardwareWalletDevices = handleHardwareWalletDevices(
-    mainWindow
-  );
-  await handleCheckHardwareWalletDevices();
+  // @TODO - uncomment once TransportNodeHID enabled by dev-ops
+  // console.debug('>>> Ledger:: INIT - index.js');
+  // const handleCheckHardwareWalletDevices = handleHardwareWalletDevices(
+  //   mainWindow
+  // );
+  // await handleCheckHardwareWalletDevices();
 
 
   await handleCheckBlockReplayProgress(mainWindow, launcherConfig.logsPrefix);
