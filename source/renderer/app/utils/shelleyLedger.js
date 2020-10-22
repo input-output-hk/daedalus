@@ -2,6 +2,8 @@
 import { utils, cardano } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { encode } from 'borc';
 import blakejs from 'blakejs';
+
+// @TODO - Move to main process
 // import { derivePublic as deriveChildXpub } from 'cardano-crypto.js';
 
 // Types

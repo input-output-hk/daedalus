@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { intlShape } from 'react-intl';
-import { get } from 'lodash';
 import WalletSendForm from '../../components/wallet/WalletSendForm';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import globalMessages from '../../i18n/global-messages';
@@ -66,17 +65,15 @@ export default class WalletSendPage extends Component<Props> {
       profile,
       hardwareWallets,
     } = this.props.stores;
-    const { actions } = this.props;
     const { isValidAddress } = wallets;
-    const { calculateTransactionFee, validateAmount } = transactions;
+    const { validateAmount } = transactions;
     const { hwDeviceStatus } = hardwareWallets;
     const activeWallet = wallets.active;
 
     // Guard against potential null values
     if (!activeWallet)
       throw new Error('Active wallet required for WalletSendPage.');
-
-    const isHardwareWallet = activeWallet.isHardwareWallet;
+    const { isHardwareWallet } = activeWallet;
 
     return (
       <WalletSendForm

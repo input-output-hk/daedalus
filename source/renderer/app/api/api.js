@@ -16,10 +16,6 @@ import {
 } from '../domains/WalletTransaction';
 import WalletAddress from '../domains/WalletAddress';
 
-// Utils and Config
-import { formattedAmountToLovelace } from '../utils/formatters';
-import { DELEGATION_DEPOSIT } from '../config/stakingConfig';
-
 // Addresses requests
 import { getAddresses } from './addresses/requests/getAddresses';
 import { getByronWalletAddresses } from './addresses/requests/getByronWalletAddresses';
@@ -97,7 +93,7 @@ import { filterLogData } from '../../../common/utils/logging';
 
 // Config constants
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
-import { REDEEM_ITN_REWARDS_AMOUNT } from '../config/stakingConfig';
+import { REDEEM_ITN_REWARDS_AMOUNT, DELEGATION_DEPOSIT } from '../config/stakingConfig';
 import {
   ADA_CERTIFICATE_MNEMONIC_LENGTH,
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
@@ -812,10 +808,10 @@ export default class AdaApi {
       // Calculate fee from inputs and outputs
       let totalInputs = 0;
       let totalOutputs = 0;
-      const inputsData = map(response.inputs, input => {
+      map(response.inputs, input => {
         totalInputs += input.amount.quantity;
       });
-      const outputsData = map(response.outputs, output => {
+      map(response.outputs, output => {
         totalOutputs += output.amount.quantity;
       })
       const fee = new BigNumber(totalInputs - totalOutputs).dividedBy(LOVELACES_PER_ADA);
@@ -857,8 +853,6 @@ export default class AdaApi {
       const response = await createExternalTransaction(this.config, {
         signedTransactionBlob,
       });
-
-      console.debug('>>> API done: ', response);
       return response;
     } catch (error) {
       logger.error('AdaApi::createExternalTransaction error', { error });

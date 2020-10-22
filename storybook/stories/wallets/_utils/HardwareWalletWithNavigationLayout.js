@@ -2,7 +2,7 @@
 import React, { Component, Children } from 'react';
 import { linkTo } from '@storybook/addon-links';
 import { get } from 'lodash';
-import HardwareWalletWithNavigation from '../../../../source/renderer/app/components/hardware-wallet/layouts/HardwareWalletWithNavigation';
+import WalletWithNavigation from '../../../../source/renderer/app/components/wallet/layouts/WalletWithNavigation';
 
 // Context has many changeable props but "kind" is required
 type contextType = {
@@ -39,7 +39,7 @@ export default class WalletWithNavigationLayout extends Component<Props> {
       .toLocaleLowerCase();
 
     return (
-      <HardwareWalletWithNavigation
+      <WalletWithNavigation
         activeItem={contextItem}
         isActiveScreen={(item) => item === contextItem}
         hasPassword={hasPassword}
@@ -65,7 +65,7 @@ export default class WalletWithNavigationLayout extends Component<Props> {
             wallet: activeWallet || child.props.wallet,
           })
         )}
-      </HardwareWalletWithNavigation>
+      </WalletWithNavigation>
     );
   }
 }

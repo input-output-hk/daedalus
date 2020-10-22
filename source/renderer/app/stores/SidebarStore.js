@@ -68,7 +68,6 @@ export default class SidebarStore extends Store {
       isFlight,
       isIncentivizedTestnet,
       isShelleyTestnet,
-      environment: { isDev },
     } = global;
 
     const { isShelleyActivated, isShelleyPending } = this.stores.networkStatus;

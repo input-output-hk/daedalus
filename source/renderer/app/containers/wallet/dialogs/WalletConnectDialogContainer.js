@@ -1,5 +1,5 @@
 // @flow
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import WalletConnectDialog from '../../../components/wallet/WalletConnectDialog';
 import type { InjectedStoresProps } from '../../../types/injectedPropsType';
@@ -19,7 +19,6 @@ export default class WalletConnectDialogContainer extends Component<Props> {
 
   onClose = () => {
     const {
-      hwDeviceStatus,
       stopCardanoAdaAppFetchPoller,
       resetInitializedConnection,
     } = this.props.stores.hardwareWallets;
@@ -37,7 +36,7 @@ export default class WalletConnectDialogContainer extends Component<Props> {
       <WalletConnectDialog
         isSubmitting={createHardwareWalletRequest.isExecuting}
         error={createHardwareWalletRequest.error}
-        onClose={this.onClose.bind(this)}
+        onClose={this.onClose}
         hwDeviceStatus={hwDeviceStatus}
         transportDevice={transportDevice}
       />

@@ -7,7 +7,6 @@ import styles from './WalletAdd.scss';
 import BigButtonForDialogs from '../widgets/BigButtonForDialogs';
 import createIcon from '../../assets/images/create-ic.inline.svg';
 import importIcon from '../../assets/images/import-ic.inline.svg';
-import joinSharedIcon from '../../assets/images/join-shared-ic.inline.svg';
 import connectIcon from '../../assets/images/hardware-wallet/connect-ic.inline.svg';
 import restoreIcon from '../../assets/images/restore-ic.inline.svg';
 import { MAX_ADA_WALLETS_COUNT } from '../../config/numbersConfig';
@@ -107,6 +106,7 @@ type Props = {
   onCreate: Function,
   onRestore: Function,
   onImport: Function,
+  onConnect: Function,
   isMaxNumberOfWalletsReached: boolean,
   isMainnet: boolean,
   isTestnet: boolean,

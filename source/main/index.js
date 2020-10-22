@@ -177,7 +177,6 @@ const onAppReady = async () => {
 
   // Ledger INIT
   // @TODO - uncomment once TransportNodeHID enabled by dev-ops
-  // console.debug('>>> Ledger:: INIT - index.js');
   // const handleCheckHardwareWalletDevices = handleHardwareWalletDevices(
   //   mainWindow
   // );

@@ -22,7 +22,6 @@ import {
   generateFilterOptions,
   isTransactionInFilterRange,
 } from '../utils/transaction';
-import Wallet from '../domains/Wallet';
 
 const INITIAL_SEARCH_LIMIT = null; // 'null' value stands for 'load all'
 const SEARCH_LIMIT_INCREASE = 500; // eslint-disable-line

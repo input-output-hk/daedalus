@@ -1,7 +1,8 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import ConnectHardwareWallet from '../../../../source/renderer/app/components/hardware-wallet/settings/ConnectHardwareWallet';
+import { action } from '@storybook/addon-actions';
+import WalletConnectDialog from '../../../../source/renderer/app/components/wallet/WalletConnectDialog';
 import HardwareWalletsWrapper from '../_utils/HardwareWalletsWrapper';
 import { HwDeviceStatuses } from '../../../../source/renderer/app/domains/Wallet';
 import {
@@ -29,71 +30,91 @@ storiesOf('Wallets|Hardware Wallets', module)
   // ====== Stories ======
 
   .add('Hardware wallet connect Ledger step 1', () => (
-    <ConnectHardwareWallet
+    <WalletConnectDialog
       transportDevice={ledgerDevice}
       hwDeviceStatus={HwDeviceStatuses.CONNECTING}
+      onClose={action('onClose')}
+      isSubmitting={action('isSubmitting')}
     />
   ))
 
   .add('Hardware wallet connect Ledger step 2', () => (
-    <ConnectHardwareWallet
+    <WalletConnectDialog
       transportDevice={ledgerDevice}
       hwDeviceStatus={HwDeviceStatuses.LAUNCHING_CARDANO_APP}
+      onClose={action('onClose')}
+      isSubmitting={action('isSubmitting')}
     />
   ))
 
   .add('Hardware wallet connect Ledger step 3', () => (
-    <ConnectHardwareWallet
+    <WalletConnectDialog
       transportDevice={ledgerDevice}
       hwDeviceStatus={HwDeviceStatuses.EXPORTING_PUBLIC_KEY}
+      onClose={action('onClose')}
+      isSubmitting={action('isSubmitting')}
     />
   ))
 
   .add('Hardware wallet connect Ledger step 4', () => (
-    <ConnectHardwareWallet
+    <WalletConnectDialog
       transportDevice={ledgerDevice}
       hwDeviceStatus={HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED}
+      onClose={action('onClose')}
+      isSubmitting={action('isSubmitting')}
     />
   ))
 
   .add('Hardware wallet connect Ledger step 5', () => (
-    <ConnectHardwareWallet
+    <WalletConnectDialog
       transportDevice={ledgerDevice}
       hwDeviceStatus={HwDeviceStatuses.READY}
+      onClose={action('onClose')}
+      isSubmitting={action('isSubmitting')}
     />
   ))
 
   .add('Hardware wallet connect Trezor step 1', () => (
-    <ConnectHardwareWallet
+    <WalletConnectDialog
       transportDevice={trezorDevice}
       hwDeviceStatus={HwDeviceStatuses.CONNECTING}
+      onClose={action('onClose')}
+      isSubmitting={action('isSubmitting')}
     />
   ))
 
   .add('Hardware wallet connect Trezor step 2', () => (
-    <ConnectHardwareWallet
+    <WalletConnectDialog
       transportDevice={trezorDevice}
       hwDeviceStatus={HwDeviceStatuses.LAUNCHING_CARDANO_APP}
+      onClose={action('onClose')}
+      isSubmitting={action('isSubmitting')}
     />
   ))
 
   .add('Hardware wallet connect Trezor step 3', () => (
-    <ConnectHardwareWallet
+    <WalletConnectDialog
       transportDevice={trezorDevice}
       hwDeviceStatus={HwDeviceStatuses.EXPORTING_PUBLIC_KEY}
+      onClose={action('onClose')}
+      isSubmitting={action('isSubmitting')}
     />
   ))
 
   .add('Hardware wallet connect Trezor step 4', () => (
-    <ConnectHardwareWallet
+    <WalletConnectDialog
       transportDevice={trezorDevice}
       hwDeviceStatus={HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED}
+      onClose={action('onClose')}
+      isSubmitting={action('isSubmitting')}
     />
   ))
 
   .add('Hardware wallet connect Trezor step 5', () => (
-    <ConnectHardwareWallet
+    <WalletConnectDialog
       transportDevice={trezorDevice}
       hwDeviceStatus={HwDeviceStatuses.READY}
+      onClose={action('onClose')}
+      isSubmitting={action('isSubmitting')}
     />
   ));

@@ -52,7 +52,7 @@ type Props = {
 
 
 @observer
-export default class WalletConnectDialog extends Component<State> {
+export default class WalletConnectDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };

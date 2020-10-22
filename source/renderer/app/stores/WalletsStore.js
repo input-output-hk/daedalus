@@ -466,7 +466,6 @@ export default class WalletsStore extends Store {
         await this._patchWalletRequestWithNewWallet(wallet);
         this.goToWalletRoute(wallet.id);
         this.refreshWalletsData();
-        console.debug('>>> CLOSE active dialog');
         this.actions.dialogs.closeActiveDialog.trigger();
       }
     } catch (error) {

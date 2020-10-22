@@ -10,11 +10,6 @@ import {
   RECENT_STAKE_POOLS_COUNT,
   DELEGATION_ACTIONS,
 } from '../../../config/stakingConfig';
-import { LOVELACES_PER_ADA } from '../../../config/numbersConfig';
-import {
-  formattedAmountToLovelace,
-  formattedWalletAmount,
-} from '../../../utils/formatters';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
 
 const messages = defineMessages({
@@ -186,8 +181,6 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     const acceptableWallets = find(wallets.allWallets, ({ amount, reward }) =>
       this.handleIsWalletAcceptable(amount, reward)
     );
-
-    console.debug('>>>> sendMoneyRequest: ', sendMoneyRequest.result);
 
     return (
       <DelegationSetupWizardDialog

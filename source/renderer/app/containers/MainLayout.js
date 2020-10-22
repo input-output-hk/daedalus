@@ -47,7 +47,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
     const { isShelleyActivated } = networkStatus;
     const { currentTheme } = profile;
     const {
-      environment: { network, isDev },
+      environment: { network },
     } = app;
 
     const appWallets =

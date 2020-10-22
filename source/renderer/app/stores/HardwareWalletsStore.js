@@ -1,4 +1,5 @@
 // @flow
+/* eslint-disable no-console */
 import { observable, action, runInAction, computed } from 'mobx';
 import { get, map, find, findLast } from 'lodash';
 import Store from './lib/Store';
@@ -154,12 +155,6 @@ export default class HardwareWalletsStore extends Store {
   };
 
   getAvailableDevices = async () => {
-    const hardwareWalletsConnectionData = await this.hardwareWalletDevicesRequest.execute();
-    console.debug('>>> GET AVAILABLE DEVICES: ', {
-      hardwareWalletsConnectionData,
-      aa: this.hardwareWalletsConnectionData,
-      hardwareWalletDevices: this.hardwareWalletDevices,
-    })
     // Set all logical HW into disconnected state
     map(this.hardwareWalletsConnectionData, async (connectedWallet) => {
       console.debug('>> connectedWallet: ', connectedWallet);
@@ -171,23 +166,8 @@ export default class HardwareWalletsStore extends Store {
       });
     })
 
-    // Recognize at least last device if connected
-    // Maybe we don't need this
-    // if (!this.hardwareWalletDevices || !this.hardwareWalletDevices.length) {
-    //   await getHardwareWalletTransportChannel.request({
-    //     devicePath: null,
-    //     isTrezor: true,
-    //   });
-    // }
-
+    // Initiate Device Check for each stored device
     map(this.hardwareWalletDevices, async dev => {
-      console.debug('>> DEvice: ', dev);
-      // Unset all physical devices
-      // await this._setHardwareWalletDevice({
-      //   deviceId: dev.id,
-      //   data: {}
-      // });
-      // Initiate Device Check
       await getHardwareWalletTransportChannel.request({
         devicePath: dev.path,
         isTrezor: true,
@@ -196,31 +176,6 @@ export default class HardwareWalletsStore extends Store {
 
     this._refreshHardwareWalletsLocalData();
     this._refreshHardwareWalletDevices();
-
-    return;
-    /* const transportDevice1 = await getHardwareWalletTransportChannel.request({
-      devicePath: "2",
-      isTrezor: true,
-    });
-    console.debug('>>> TEST1: ', transportDevice1);
-
-    const transportDevice2 = await getHardwareWalletTransportChannel.request({
-      devicePath: "4",
-      isTrezor: true,
-    });
-    console.debug('>>> TEST2: ', transportDevice2); */
-
-
-    /* await Promise.all(
-      hardwareWalletsConnectionData.map(async (dev) => {
-        const transportDevice = await getHardwareWalletTransportChannel.request({
-          devicePath: dev.path,
-          isTrezor: dev.deviceType === DeviceTypes.TREZOR,
-        });
-        console.debug('>>> transportDevice: ', {path: dev.path, transportDevice});
-        return TransportDevice;
-      })
-    ); */
   }
 
   // @TODO - move to Transactions store once all logic fit and hardware wallets listed in general wallets list
@@ -267,37 +222,21 @@ export default class HardwareWalletsStore extends Store {
 
   @action establishHardwareWalletConnection = async () => {
     console.debug('>>> establishHardwareWalletConnection');
+
     runInAction('HardwareWalletsStore:: set HW device CONNECTING', () => {
       this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
     });
-
-
-    // Am I on hardware wallet route
-      // YES
-
-
-        // YES - check what device is expected (deviceType & deviceId) from LC
-        //     - if device not found start with establishing new connection
-        //     - if device found just change device status if not connected to connected (_changeHardwareWalletConnectionStatus)
-
-        // NO - I want to add new wallet
-        //    - Pick device not initialized in LC so we keep connections with already created wallets
-
-
+    const { hardwareWalletDevices } = this;
     const activeWallet = this.stores.wallets.active;
     const isHardwareWallet = get(activeWallet, 'isHardwareWallet');
 
-    const hardwareWalletsConnectionData = this.hardwareWalletsConnectionData;
-    const hardwareWalletDevices = this.hardwareWalletDevices;
+    // Re-Establish Connection
+      // YES - check what device is expected (deviceType & deviceId) from LC
+      //     - if device not found start with establishing new connection
+      //     - if device found just change device status if not connected to connected (_changeHardwareWalletConnectionStatus)
 
-    console.debug('>>> establishHardwareWalletConnection Checks: ', {
-      hardwareWalletsConnectionData,
-      hardwareWalletDevices,
-      activeWallet,
-      isHardwareWallet,
-    });
-
-    let transportDevice;
+      // NO - I want to add new wallet
+      //    - Pick device not initialized in LC so we keep connections with already created wallets
     if (isHardwareWallet) {
       console.debug('>>> Active HW recognized: ', activeWallet.id);
       // Check for device wallet connected to
@@ -387,12 +326,12 @@ export default class HardwareWalletsStore extends Store {
 
   @action _getExtendedPublicKey = async () => {
     this.hwDeviceStatus = HwDeviceStatuses.EXPORTING_PUBLIC_KEY;
-    console.debug('>>>> _getExtendedPublicKey <<<<: ', transportDevice);
     const { transportDevice } = this;
+    console.debug('>>>> _getExtendedPublicKey <<<<: ', transportDevice);
     if (!transportDevice)
       throw new Error('Can not export extended public key: Device not recognized!');
     console.debug('>>> _getExtendedPublicKey::Continue: ', transportDevice);
-    const { deviceType, path, deviceName, deviceId } = transportDevice;
+    const { deviceType, path, deviceName, deviceId, deviceModel } = transportDevice;
     const isTrezor = deviceType === DeviceTypes.TREZOR;
 
     const { active: activeHardwareWallet } = this.stores.wallets;
@@ -496,18 +435,14 @@ export default class HardwareWalletsStore extends Store {
 
     const { inputs, outputs, fee, certificates } = coinSelection;
 
-    let totalInputs = 0;
     const inputsData = map(inputs, input => {
       const addressIndex = this.stores.addresses.getAddressIndex(input.address);
-      totalInputs += input.amount.quantity;
       return prepareTrezorInput(input, addressIndex);
     });
 
-    let totalOutputs = 0;
     const outputsData = map(outputs, output => {
       const addressIndex = this.stores.addresses.getAddressIndex(output.address);
       const isChange = output.address !== recieverAddress;
-      totalOutputs += output.amount.quantity;
       return prepareTrezorOutput(output, addressIndex, isChange);
     })
 
@@ -651,7 +586,7 @@ export default class HardwareWalletsStore extends Store {
     walletId: string,
   }) => {
     console.debug('>>> INIT TX Send!: ', params);
-    const { walletId, fee } = params;
+    const { walletId } = params;
     const hardwareWalletConnectionData = get(this.hardwareWalletsConnectionData, walletId);
 
     // Guard against potential null value
@@ -678,9 +613,7 @@ export default class HardwareWalletsStore extends Store {
     }
   };
 
-  _resetTransaction = async (params: {
-    walletId: string
-  }) => {
+  _resetTransaction = async () => {
     this.selectCoinsRequest.reset();
     runInAction(
       'HardwareWalletsStore:: reset Transaction verifying',
@@ -704,7 +637,7 @@ export default class HardwareWalletsStore extends Store {
       null
     );
 
-    const hardwareWalletsConnectionData = this.hardwareWalletsConnectionData;
+    const { hardwareWalletsConnectionData } = this;
     // Add new recognized device - not connected to software wallet
     // Or update recognized device while paired with existing software wallet
     const recognizedPairedHardwareWallet = find(hardwareWalletsConnectionData, connection => (

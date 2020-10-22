@@ -1,12 +1,13 @@
 // @flow
-import { utils, cardano } from '@cardano-foundation/ledgerjs-hw-app-cardano';
-import { derivationPathToString, CERTIFICATE_TYPE } from './hardwareWalletUtils';
+import { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
+import {
+  derivationPathToString,
+  CERTIFICATE_TYPE,
+} from './hardwareWalletUtils';
+
 import type { CoinSelectionInput, CoinSelectionOutput } from '../api/transactions/types';
 
-export const prepareTrezorInput = (
-  input: CoinSelectionInput,
-  addressIndex: number
-) => {
+export const prepareTrezorInput = (input: CoinSelectionInput) => {
   return {
     path: derivationPathToString(input.derivation_path),
     prev_hash: input.id,
