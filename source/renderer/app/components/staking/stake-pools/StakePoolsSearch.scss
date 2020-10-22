@@ -1,7 +1,22 @@
 .component {
   background: transparent;
   padding: 20px 0 0;
+  position: initial;
+  transition: position 1s ease-out, top 1s ease-out;
   width: 100%;
+
+  &.componentFixedPosition {
+    background-color: var(--theme-main-body-background-color);
+    box-shadow: 0 2.5px 10px 0
+      var(--theme-staking-stake-pool-tooltip-shadow-color);
+    height: 70px;
+    margin-left: -20px;
+    margin-right: -20px;
+    padding: 10px 20px;
+    position: fixed;
+    width: calc(100% - 84px);
+    z-index: 100;
+  }
 }
 
 .container {
@@ -37,7 +52,11 @@
   line-height: 48px;
   padding-left: 20px;
   position: absolute;
-  right: 11px;
+  right: 20px;
+
+  &.inputExtrasSearch {
+    right: 110px;
+  }
 }
 
 .clearSearch {
@@ -77,6 +96,69 @@
     > div > div {
       height: 30px;
       line-height: 1.3;
+    }
+  }
+}
+
+.viewButtons {
+  align-items: center;
+  bottom: 0.5px;
+  display: flex;
+  height: 48px;
+  justify-content: space-between;
+  line-height: 48px;
+  padding-left: 20px;
+  position: absolute;
+  right: 11px;
+
+  .separator {
+    color: var(--theme-staking-stake-pools-search-clear-button-color);
+    opacity: 0.2;
+    padding-right: 10px;
+    position: relative;
+    top: -2px;
+  }
+
+  button {
+    border-radius: 3px;
+    color: var(--theme-about-window-icon-close-button-color);
+    height: 28px;
+    margin: 0 2px;
+    width: 28px;
+
+    &:hover {
+      background-color: var(
+        --theme-staking-stake-pools-search-clear-button-background-color
+      );
+    }
+
+    svg {
+      position: relative;
+      top: 1px;
+      width: 18px;
+
+      > g > g {
+        fill: var(--theme-staking-stake-pools-search-clear-button-color);
+        opacity: 0.3;
+      }
+    }
+  }
+
+  .selected {
+    &:hover {
+      background-color: transparent;
+    }
+
+    svg {
+      > g > g {
+        opacity: 1;
+      }
+    }
+  }
+
+  .gridView {
+    svg {
+      width: 15px !important;
     }
   }
 }

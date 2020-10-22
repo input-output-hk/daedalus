@@ -69,15 +69,15 @@
 
     &:hover {
       background-color: var(
-          --theme-dialog-fullsize-field-background-color
+        --theme-dialog-fullsize-field-background-color
       ) !important;
     }
   }
 
   .SimpleOptions_option.SimpleOptions_selectedOption
-  .WalletsDropdownOption_component
-  .WalletsDropdownOption_topRow
-  .WalletsDropdownOption_topRowSync {
+    .WalletsDropdownOption_component
+    .WalletsDropdownOption_topRow
+    .WalletsDropdownOption_topRowSync {
     display: none;
   }
 

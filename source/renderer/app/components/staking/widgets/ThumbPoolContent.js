@@ -57,7 +57,7 @@ export default class ThumbPoolContent extends Component<Props> {
           <div className={saturationClassnames}>
             <span
               style={{
-                width: `${parseFloat(saturation.toFixed(2))}%`,
+                width: `${parseFloat(saturation).toFixed(2)}%`,
               }}
             />
           </div>
