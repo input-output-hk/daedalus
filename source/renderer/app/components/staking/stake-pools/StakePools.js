@@ -250,6 +250,25 @@ export default class StakePools extends Component<Props, State> {
               isClearTooltipOpeningDownward
               isScrolled={isScrolled}
             />
+            {stakePoolsDelegatingList.length > 0 && (
+              <Fragment>
+                <h2 className={styles.listTitle}>
+                  {intl.formatMessage(messages.delegatingListTitle)}
+                </h2>
+                <StakePoolsList
+                  listName={STAKE_POOLS_DELEGATING_LIST}
+                  stakePoolsList={stakePoolsDelegatingList}
+                  onOpenExternalLink={onOpenExternalLink}
+                  currentTheme={currentTheme}
+                  isListActive={selectedList === STAKE_POOLS_DELEGATING_LIST}
+                  setListActive={this.handleSetListActive}
+                  containerClassName="StakingWithNavigation_page"
+                  onSelect={this.onDelegate}
+                  numberOfRankedStakePools={numberOfRankedStakePools}
+                  showWithSelectButton
+                />
+              </Fragment>
+            )}
             {isListView && (
               <Fragment>
                 <h2 className={tableHeadingClasses}>
@@ -282,27 +301,6 @@ export default class StakePools extends Component<Props, State> {
             )}
             {isGridView && (
               <Fragment>
-                {stakePoolsDelegatingList.length > 0 && (
-                  <Fragment>
-                    <h2 className={styles.listTitle}>
-                      {intl.formatMessage(messages.delegatingListTitle)}
-                    </h2>
-                    <StakePoolsList
-                      listName={STAKE_POOLS_DELEGATING_LIST}
-                      stakePoolsList={stakePoolsDelegatingList}
-                      onOpenExternalLink={onOpenExternalLink}
-                      currentTheme={currentTheme}
-                      isListActive={
-                        selectedList === STAKE_POOLS_DELEGATING_LIST
-                      }
-                      setListActive={this.handleSetListActive}
-                      containerClassName="StakingWithNavigation_page"
-                      onSelect={this.onDelegate}
-                      numberOfRankedStakePools={numberOfRankedStakePools}
-                      showWithSelectButton
-                    />
-                  </Fragment>
-                )}
                 <h2>
                   <FormattedMessage
                     {...listTitleMessage}
