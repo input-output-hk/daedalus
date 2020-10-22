@@ -5284,7 +5284,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Use the slider to rank the stake pools based on the amount you intend to delegate.",
+        "defaultMessage": "!!!Use the slider to rank the stake pools and check the potential rewards <strong>based on the amount of stake you intend to delegate</strong>.",
         "description": "Ranking description.",
         "end": {
           "column": 3,
@@ -5491,44 +5491,86 @@
     "descriptors": [
       {
         "defaultMessage": "!!!Rank:",
-        "description": "\"\" for the Stake Pools Tooltip page.",
+        "description": "\"Rank\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 54
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.ranking",
         "start": {
           "column": 11,
-          "line": 49
+          "line": 50
         }
       },
       {
-        "defaultMessage": "!!!Controlled stake:",
-        "description": "\"Controlled stake\" for the Stake Pools Tooltip page.",
+        "defaultMessage": "!!!A hierarchical ranking based on the potential rewards you will earn if you delegate the intended amount of stake to this pool, assuming that it reaches saturation.",
+        "description": "\"Rank\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 60
+        },
+        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
+        "id": "staking.stakePools.tooltip.rankingTooltip",
+        "start": {
+          "column": 18,
+          "line": 55
+        }
+      },
+      {
+        "defaultMessage": "!!!Live stake:",
+        "description": "\"Live stake\" for the Stake Pools Tooltip page.",
+        "end": {
+          "column": 3,
+          "line": 65
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.relativeStake",
         "start": {
           "column": 17,
-          "line": 54
+          "line": 61
         }
       },
       {
-        "defaultMessage": "!!!Profit margin:",
-        "description": "\"Profit margin\" for the Stake Pools Tooltip page.",
+        "defaultMessage": "!!!Measures the amount of stake pledged by the pool plus the amount of stake currently delegated to the pool, versus the total amount in the system.",
+        "description": "\"Live stake\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 71
+        },
+        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
+        "id": "staking.stakePools.tooltip.relativeStakeTooltip",
+        "start": {
+          "column": 24,
+          "line": 66
+        }
+      },
+      {
+        "defaultMessage": "!!!Pool margin:",
+        "description": "\"Pool margin\" for the Stake Pools Tooltip page.",
+        "end": {
+          "column": 3,
+          "line": 76
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.profitMargin",
         "start": {
           "column": 16,
-          "line": 59
+          "line": 72
+        }
+      },
+      {
+        "defaultMessage": "!!!The pool's profit, defined as the rewards percentage kept by the pool from the stake that was delegated to it.",
+        "description": "\"Pool margin\" tooltip for the Stake Pools Tooltip page.",
+        "end": {
+          "column": 3,
+          "line": 82
+        },
+        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
+        "id": "staking.stakePools.tooltip.profitMarginTooltip",
+        "start": {
+          "column": 23,
+          "line": 77
         }
       },
       {
@@ -5536,13 +5578,27 @@
         "description": "\"Cost per epoch\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 87
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.costPerEpoch",
         "start": {
           "column": 16,
-          "line": 64
+          "line": 83
+        }
+      },
+      {
+        "defaultMessage": "!!!Fixed operational costs that the stake pool retains from any rewards earned during each epoch.",
+        "description": "\"Cost per epoch\" tooltip for the Stake Pools Tooltip page.",
+        "end": {
+          "column": 3,
+          "line": 93
+        },
+        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
+        "id": "staking.stakePools.tooltip.costPerEpochTooltip",
+        "start": {
+          "column": 23,
+          "line": 88
         }
       },
       {
@@ -5550,13 +5606,27 @@
         "description": "\"Blocks\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 73
+          "line": 98
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.producedBlocks",
         "start": {
           "column": 18,
-          "line": 69
+          "line": 94
+        }
+      },
+      {
+        "defaultMessage": "!!!The total number of blocks the stake pool has produced.",
+        "description": "\"Blocks\" tooltip for the Stake Pools Tooltip page.",
+        "end": {
+          "column": 3,
+          "line": 104
+        },
+        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
+        "id": "staking.stakePools.tooltip.producedBlocksTooltip",
+        "start": {
+          "column": 25,
+          "line": 99
         }
       },
       {
@@ -5564,13 +5634,27 @@
         "description": "\"Rewards\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 78
+          "line": 109
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.potentialRewards",
         "start": {
           "column": 20,
-          "line": 74
+          "line": 105
+        }
+      },
+      {
+        "defaultMessage": "!!!An estimation of the potential rewards you will earn per epoch if you delegate the intended amount of stake. The system looks at the pool's parameters and historical performance data to calculate potential rewards, assuming that the pool reaches optimal saturation.",
+        "description": "\"Rewards\" tooltip for the Stake Pools Tooltip page.",
+        "end": {
+          "column": 3,
+          "line": 115
+        },
+        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
+        "id": "staking.stakePools.tooltip.potentialRewardsTooltip",
+        "start": {
+          "column": 27,
+          "line": 110
         }
       },
       {
@@ -5578,13 +5662,13 @@
         "description": "\"Retirement\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 120
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.retirement",
         "start": {
           "column": 14,
-          "line": 79
+          "line": 116
         }
       },
       {
@@ -5592,13 +5676,27 @@
         "description": "\"Saturation\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 88
+          "line": 125
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.saturation",
         "start": {
           "column": 14,
-          "line": 84
+          "line": 121
+        }
+      },
+      {
+        "defaultMessage": "!!!Saturation measures the stake in the pool and indicates the point at which rewards stop increasing with increases in stake. This capping mechanism encourages decentralization by discouraging users from delegating to oversaturated stake pools.",
+        "description": "\"Saturation\" tooltip for the Stake Pools Tooltip page.",
+        "end": {
+          "column": 3,
+          "line": 131
+        },
+        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
+        "id": "staking.stakePools.tooltip.saturationTooltip",
+        "start": {
+          "column": 21,
+          "line": 126
         }
       },
       {
@@ -5606,13 +5704,27 @@
         "description": "\"Pledge\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 93
+          "line": 136
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.pledge",
         "start": {
           "column": 10,
-          "line": 89
+          "line": 132
+        }
+      },
+      {
+        "defaultMessage": "!!!The amount of stake that a pool operator contributes to a pool. Pools with higher pledge amounts earn more rewards for themselves and their delegators. Pools that do not honor their pledge earn zero rewards and accrue low ranking.",
+        "description": "\"Pledge\" tooltip for the Stake Pools Tooltip page.",
+        "end": {
+          "column": 3,
+          "line": 142
+        },
+        "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
+        "id": "staking.stakePools.tooltip.pledgeTooltip",
+        "start": {
+          "column": 17,
+          "line": 137
         }
       },
       {
@@ -5620,13 +5732,13 @@
         "description": "\"Delegate to this pool\" Button for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 99
+          "line": 148
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.delegateButton",
         "start": {
           "column": 18,
-          "line": 94
+          "line": 143
         }
       },
       {
@@ -5634,13 +5746,13 @@
         "description": "Experimental tooltip label",
         "end": {
           "column": 3,
-          "line": 104
+          "line": 153
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.experimentalTooltipLabel",
         "start": {
           "column": 28,
-          "line": 100
+          "line": 149
         }
       },
       {
@@ -5648,13 +5760,13 @@
         "description": "copyId tooltip label",
         "end": {
           "column": 3,
-          "line": 109
+          "line": 158
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.copyIdTooltipLabel",
         "start": {
           "column": 22,
-          "line": 105
+          "line": 154
         }
       },
       {
@@ -5662,13 +5774,13 @@
         "description": "Data not available yet label",
         "end": {
           "column": 3,
-          "line": 114
+          "line": 163
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.noDataDashTooltip",
         "start": {
           "column": 26,
-          "line": 110
+          "line": 159
         }
       }
     ],
@@ -14018,169 +14130,5 @@
       }
     ],
     "path": "source/renderer/app/utils/paperWalletPdfGenerator.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Create",
-        "description": "Create label.",
-        "end": {
-          "column": 3,
-          "line": 36
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "global.labels.create",
-        "start": {
-          "column": 10,
-          "line": 32
-        }
-      },
-      {
-        "defaultMessage": "!!!Create a new wallet",
-        "description": "Create a new wallet description.",
-        "end": {
-          "column": 3,
-          "line": 41
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "wallet.add.dialog.create.description",
-        "start": {
-          "column": 19,
-          "line": 37
-        }
-      },
-      {
-        "defaultMessage": "!!!Join",
-        "description": "Join label.",
-        "end": {
-          "column": 3,
-          "line": 46
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "wallet.add.dialog.join.label",
-        "start": {
-          "column": 8,
-          "line": 42
-        }
-      },
-      {
-        "defaultMessage": "!!!Join a shared wallet",
-        "description": "Join a shared wallet description.",
-        "end": {
-          "column": 3,
-          "line": 51
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "wallet.add.dialog.join.description",
-        "start": {
-          "column": 20,
-          "line": 47
-        }
-      },
-      {
-        "defaultMessage": "!!!Import",
-        "description": "Import label.",
-        "end": {
-          "column": 3,
-          "line": 56
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "wallet.add.dialog.import.label",
-        "start": {
-          "column": 10,
-          "line": 52
-        }
-      },
-      {
-        "defaultMessage": "!!!Import wallets from an earlier version of Daedalus or the Daedalus state directory",
-        "description": "Import wallets from an earlier version of Daedalus or the Daedalus state directory description.",
-        "end": {
-          "column": 3,
-          "line": 63
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "wallet.add.dialog.import.description",
-        "start": {
-          "column": 24,
-          "line": 57
-        }
-      },
-      {
-        "defaultMessage": "!!!Recovery Phrase",
-        "description": "Recovery Phrase description.",
-        "end": {
-          "column": 3,
-          "line": 68
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "wallet.restore.dialog.mnemonicsStep",
-        "start": {
-          "column": 18,
-          "line": 64
-        }
-      },
-      {
-        "defaultMessage": "!!!Save",
-        "description": "Save description.",
-        "end": {
-          "column": 3,
-          "line": 73
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "global.labels.save",
-        "start": {
-          "column": 8,
-          "line": 69
-        }
-      }
-    ],
-    "path": "storybook/stories/common/Widgets.stories.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Read More",
-        "description": "Read More button label.",
-        "end": {
-          "column": 3,
-          "line": 37
-        },
-        "file": "storybook/stories/news/AlertsOverlay.stories.js",
-        "id": "global.labels.readMore",
-        "start": {
-          "column": 12,
-          "line": 33
-        }
-      },
-      {
-        "defaultMessage": "!!!Failure Alert",
-        "description": "Failure Alert title.",
-        "end": {
-          "column": 3,
-          "line": 42
-        },
-        "file": "storybook/stories/news/AlertsOverlay.stories.js",
-        "id": "global.errors.failureAlert",
-        "start": {
-          "column": 16,
-          "line": 38
-        }
-      },
-      {
-        "defaultMessage": "!!!Content",
-        "description": "Content.",
-        "end": {
-          "column": 3,
-          "line": 47
-        },
-        "file": "storybook/stories/news/AlertsOverlay.stories.js",
-        "id": "static.dummy.markdown",
-        "start": {
-          "column": 11,
-          "line": 43
-        }
-      }
-    ],
-    "path": "storybook/stories/news/AlertsOverlay.stories.json"
   }
 ]
