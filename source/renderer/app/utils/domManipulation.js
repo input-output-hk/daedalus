@@ -5,8 +5,7 @@ type Element = ClassName | HTMLElement;
 
 export const getRelativePosition = (
   targetElement: Element,
-  parentElement?: ?Element,
-  isVerticallyCentered?: boolean
+  parentElement?: ?Element
 ): Object => {
   const targetHTMLElement = getElementHTMLElement(targetElement);
   const parentHTMLElement = parentElement
@@ -19,12 +18,8 @@ export const getRelativePosition = (
   ) {
     const parentPosition = parentHTMLElement.getBoundingClientRect();
     const childrenPosition = targetHTMLElement.getBoundingClientRect();
+    relativePosition.top = childrenPosition.top - parentPosition.top;
     relativePosition.left = childrenPosition.left - parentPosition.left;
-    if (isVerticallyCentered) {
-      relativePosition.top = childrenPosition.top - childrenPosition.height / 2;
-    } else {
-      relativePosition.top = childrenPosition.top - parentPosition.top;
-    }
   }
   return relativePosition;
 };
