@@ -202,7 +202,6 @@ export class StakePoolsTableBody extends Component<
       const potentialRewards = memberRewards
         ? `${shortNumber(formattedLovelaceToAmount(memberRewards))} ${ada}`
         : '-';
-      const saturationValue = parseInt(saturation, 10);
       const retirement =
         retiring && moment(retiring).locale(intl.locale).fromNow(true);
       const pledgeValue = bigNumbersToFormattedNumbers(pledge, true);
@@ -262,11 +261,11 @@ export class StakePoolsTableBody extends Component<
                 <div className={styles.progressBarContainer}>
                   <div
                     className={progressBarContentClassnames}
-                    style={{ width: `${saturationValue}%` }}
+                    style={{ width: `${parseFloat(saturation.toFixed(2))}%` }}
                   />
                 </div>
               </div>
-              <div className={styles.saturationLabel}>{saturationValue}%</div>
+              <div className={styles.saturationLabel}>{`${parseFloat(saturation.toFixed(2))}%`}</div>
             </div>
           </td>
           <td>{Number(costValue).toFixed(2)}</td>
