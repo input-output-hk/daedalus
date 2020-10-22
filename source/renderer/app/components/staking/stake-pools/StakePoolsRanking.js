@@ -1,7 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import classnames from 'classnames';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
@@ -49,7 +49,7 @@ const messages = defineMessages({
   rankingDescription: {
     id: 'staking.stakePools.rankingDescription',
     defaultMessage:
-      '!!!Use the slider to rank the stake pools based on the amount you intend to delegate.',
+      '!!!Use the slider to rank the stake pools and check the potential rewards <strong>based on the amount of stake you intend to delegate</strong>.',
     description: 'Ranking description.',
   },
   rankingLearnMoreUrl: {
@@ -279,7 +279,6 @@ export default class StakePoolsRanking extends Component<Props, State> {
       rankStakePools,
     } = this.props;
     const { sliderValue, amountValue } = this.state;
-    const rankingDescription = intl.formatMessage(messages.rankingDescription);
     const learnMoreButtonClasses = classnames(['flat', styles.actionLearnMore]);
     const {
       walletSelectorWallets,
@@ -298,7 +297,9 @@ export default class StakePoolsRanking extends Component<Props, State> {
         <div className={styles.upper}>
           <div className={styles.selectWallet}>
             <div className={styles.row}>
-              <div className={styles.col}>{rankingDescription}</div>
+              <div className={styles.col}>
+                <FormattedHTMLMessage {...messages.rankingDescription} />
+              </div>
             </div>
             {getFilteredWallets(wallets).length > 0 ? (
               <div className={styles.row}>

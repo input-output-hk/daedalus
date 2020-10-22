@@ -5,6 +5,7 @@ import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import classnames from 'classnames';
 import StakePoolsRanking from './StakePoolsRanking';
 import { StakePoolsList } from './StakePoolsList';
+import { StakePoolsTable } from './StakePoolsTable';
 import { StakePoolsSearch } from './StakePoolsSearch';
 import BackToTopButton from '../../widgets/BackToTopButton';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
@@ -38,6 +39,10 @@ const messages = defineMessages({
   },
 });
 
+const SELECTED_INDEX_TABLE = 'selectedIndexTable';
+const STAKE_POOLS_DELEGATING_LIST = 'stakePoolsDelegatingList';
+const SELECTED_INDEX_LIST = 'selectedIndexList';
+
 type Props = {
   wallets: Array<Wallet>,
   currentLocale: string,
@@ -58,6 +63,12 @@ type Props = {
 type State = {
   search: string,
   selectedList?: ?string,
+  isGridView: boolean,
+  isListView: boolean,
+  isFixed: boolean,
+  isHeaderFixed: boolean,
+  isScrolled: boolean,
+  maintainFixed: boolean,
 };
 
 const initialState = {
@@ -74,11 +85,58 @@ export default class StakePools extends Component<Props, State> {
 
   state = {
     search: '',
+    isGridView: true,
+    isListView: false,
+    isFixed: false,
+    isHeaderFixed: false,
+    isScrolled: false,
+    maintainFixed: false,
     ...initialState,
   };
 
-  handleSearch = (search: string) => this.setState({ search });
-  handleClearSearch = () => this.setState({ search: '' });
+  handleSearch = (search: string) =>
+    this.setState((prevState) => ({
+      search,
+      maintainFixed: prevState.isFixed,
+    }));
+  handleClearSearch = () =>
+    this.setState({ search: '', maintainFixed: false, isFixed: false });
+  handleGridView = () =>
+    this.setState({
+      isGridView: true,
+      isListView: false,
+      isFixed: false,
+      maintainFixed: false,
+      isScrolled: false,
+      isHeaderFixed: false,
+    });
+  handleListView = () =>
+    this.setState({
+      isGridView: false,
+      isListView: true,
+      isFixed: false,
+      maintainFixed: false,
+      isScrolled: false,
+      isHeaderFixed: false,
+    });
+  handleSearchComponentScrollView = (
+    isScrolled: boolean,
+    isHeaderFixed: boolean
+  ) => {
+    if (isHeaderFixed) {
+      this.setState((prevState) => ({
+        isFixed: !prevState.isFixed,
+        isScrolled,
+        isHeaderFixed,
+      }));
+    } else {
+      this.setState(() => ({
+        isFixed: !(!isScrolled && !isHeaderFixed),
+        isScrolled,
+        isHeaderFixed: false,
+      }));
+    }
+  };
 
   handleSetListActive = (selectedList: string) =>
     this.setState({ selectedList });
@@ -105,7 +163,16 @@ export default class StakePools extends Component<Props, State> {
       stakePoolsDelegatingList,
       getStakePoolById,
     } = this.props;
-    const { search, selectedList } = this.state;
+    const {
+      search,
+      selectedList,
+      isListView,
+      isGridView,
+      isFixed,
+      isHeaderFixed,
+      maintainFixed,
+      isScrolled,
+    } = this.state;
 
     const filteredStakePoolsList: Array<StakePool> = getFilteredStakePoolsList(
       stakePoolsList,
@@ -135,6 +202,14 @@ export default class StakePools extends Component<Props, State> {
       isLoading ? styles.isLoading : null,
     ]);
 
+    const tableHeadingClasses = classnames([
+      styles.tableHeading,
+      isFixed && filteredStakePoolsList.length
+        ? styles.tableHeadingFixed
+        : null,
+      isHeaderFixed ? styles.tableHeadingFixedPosition : null,
+    ]);
+
     return (
       <div className={componentClasses}>
         {isLoading ? (
@@ -146,9 +221,8 @@ export default class StakePools extends Component<Props, State> {
           <Fragment>
             <BackToTopButton
               scrollableElementClassName="StakingWithNavigation_page"
-              buttonTopPosition={144}
+              buttonTopPosition={isListView ? 184 : 144}
             />
-
             <StakePoolsRanking
               wallets={wallets}
               currentLocale={currentLocale}
@@ -166,20 +240,27 @@ export default class StakePools extends Component<Props, State> {
               search={search}
               onSearch={this.handleSearch}
               onClearSearch={this.handleClearSearch}
+              onGridView={this.handleGridView}
+              onListView={this.handleListView}
+              isListView={isListView}
+              isGridView={isGridView}
+              isFixed={
+                (isFixed || maintainFixed) && !!filteredStakePoolsList.length
+              }
               isClearTooltipOpeningDownward
+              isScrolled={isScrolled}
             />
-
             {stakePoolsDelegatingList.length > 0 && (
               <Fragment>
                 <h2 className={styles.listTitle}>
                   {intl.formatMessage(messages.delegatingListTitle)}
                 </h2>
                 <StakePoolsList
-                  listName="stakePoolsDelegatingList"
+                  listName={STAKE_POOLS_DELEGATING_LIST}
                   stakePoolsList={stakePoolsDelegatingList}
                   onOpenExternalLink={onOpenExternalLink}
                   currentTheme={currentTheme}
-                  isListActive={selectedList === 'stakePoolsDelegatingList'}
+                  isListActive={selectedList === STAKE_POOLS_DELEGATING_LIST}
                   setListActive={this.handleSetListActive}
                   containerClassName="StakingWithNavigation_page"
                   onSelect={this.onDelegate}
@@ -188,28 +269,60 @@ export default class StakePools extends Component<Props, State> {
                 />
               </Fragment>
             )}
-
-            <h2>
-              <FormattedMessage
-                {...listTitleMessage}
-                values={{
-                  pools: filteredStakePoolsList.length,
-                }}
-              />
-            </h2>
-
-            <StakePoolsList
-              showWithSelectButton
-              listName="selectedIndexList"
-              stakePoolsList={filteredStakePoolsList}
-              onOpenExternalLink={onOpenExternalLink}
-              currentTheme={currentTheme}
-              isListActive={selectedList === 'selectedIndexList'}
-              setListActive={this.handleSetListActive}
-              containerClassName="StakingWithNavigation_page"
-              onSelect={this.onDelegate}
-              numberOfRankedStakePools={numberOfRankedStakePools}
-            />
+            {isListView && (
+              <Fragment>
+                <h2 className={tableHeadingClasses}>
+                  <FormattedMessage
+                    {...listTitleMessage}
+                    values={{
+                      pools: filteredStakePoolsList.length,
+                    }}
+                  />
+                </h2>
+                <StakePoolsTable
+                  listName={SELECTED_INDEX_TABLE}
+                  currentLocale={currentLocale}
+                  stakePoolsList={filteredStakePoolsList}
+                  onOpenExternalLink={onOpenExternalLink}
+                  currentTheme={currentTheme}
+                  isListActive={selectedList === SELECTED_INDEX_TABLE}
+                  setListActive={this.handleSetListActive}
+                  containerClassName="StakingWithNavigation_page"
+                  onSelect={this.onDelegate}
+                  numberOfRankedStakePools={numberOfRankedStakePools}
+                  showWithSelectButton
+                  onScrollView={this.handleSearchComponentScrollView}
+                  maintainFixed={
+                    maintainFixed && !!filteredStakePoolsList.length
+                  }
+                  isScrolled={isScrolled}
+                />
+              </Fragment>
+            )}
+            {isGridView && (
+              <Fragment>
+                <h2>
+                  <FormattedMessage
+                    {...listTitleMessage}
+                    values={{
+                      pools: filteredStakePoolsList.length,
+                    }}
+                  />
+                </h2>
+                <StakePoolsList
+                  showWithSelectButton
+                  listName={SELECTED_INDEX_LIST}
+                  stakePoolsList={filteredStakePoolsList}
+                  onOpenExternalLink={onOpenExternalLink}
+                  currentTheme={currentTheme}
+                  isListActive={selectedList === SELECTED_INDEX_LIST}
+                  setListActive={this.handleSetListActive}
+                  containerClassName="StakingWithNavigation_page"
+                  onSelect={this.onDelegate}
+                  numberOfRankedStakePools={numberOfRankedStakePools}
+                />
+              </Fragment>
+            )}
           </Fragment>
         )}
       </div>
