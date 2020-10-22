@@ -203,11 +203,7 @@ export class StakePoolsTableBody extends Component<
       const potentialRewards = memberRewards
         ? `${shortNumber(formattedLovelaceToAmount(memberRewards))} ${ada}`
         : '-';
-      const isOversaturated = saturation / 100 >= 1;
-      const saturationValue =
-        isOversaturated || !saturation
-          ? parseInt(saturation, 10)
-          : parseInt(saturation, 10);
+      const saturationValue = parseInt(saturation, 10);
       const retirement =
         retiring && moment(retiring).locale(intl.locale).fromNow(true);
       const pledgeValue = bigNumbersToFormattedNumbers(pledge, true);
