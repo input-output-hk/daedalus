@@ -47,9 +47,7 @@ storiesOf('Wallets|Transactions', module)
         ),
         generateTransaction(
           TransactionTypes.INCOME,
-          moment()
-            .subtract(1, 'days')
-            .toDate(),
+          moment().subtract(1, 'days').toDate(),
           new BigNumber(1)
         ),
         generateTransaction(
@@ -59,16 +57,12 @@ storiesOf('Wallets|Transactions', module)
         ),
         generateTransaction(
           TransactionTypes.INCOME,
-          moment()
-            .subtract(2, 'days')
-            .toDate(),
+          moment().subtract(2, 'days').toDate(),
           new BigNumber(1)
         ),
         generateTransaction(
           TransactionTypes.INCOME,
-          moment()
-            .subtract(1, 'days')
-            .toDate(),
+          moment().subtract(1, 'days').toDate(),
           new BigNumber(1)
         ),
       ]}

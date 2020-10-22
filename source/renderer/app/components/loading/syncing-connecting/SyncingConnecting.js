@@ -115,7 +115,7 @@ export default class SyncingConnecting extends Component<Props, State> {
   };
 
   _incrementConnectingTime = () => {
-    this.setState(prevState => ({
+    this.setState((prevState) => ({
       connectingTime: prevState.connectingTime + 1,
     }));
   };

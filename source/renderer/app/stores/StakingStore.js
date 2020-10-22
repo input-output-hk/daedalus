@@ -205,7 +205,7 @@ export default class StakingStore extends Store {
     // Return stake pool transaction when state is not "PENDING"
     const stakePoolTransaction = find(
       recentTransactions,
-      transaction =>
+      (transaction) =>
         transaction.id === transactionId &&
         transaction.state === TransactionStates.OK
     );
@@ -277,7 +277,7 @@ export default class StakingStore extends Store {
 
   @computed get recentStakePools(): Array<StakePool> {
     const delegatedStakePools = [];
-    map(this.stores.wallets.all, wallet => {
+    map(this.stores.wallets.all, (wallet) => {
       const hasPendingDelegations =
         wallet.pendingDelegations && wallet.pendingDelegations.length > 0;
       let lastDelegatedStakePoolId = wallet.delegatedStakePoolId;
@@ -287,13 +287,13 @@ export default class StakingStore extends Store {
       if (lastDelegatedStakePoolId) {
         const delegatingStakePoolExistInList = find(
           delegatedStakePools,
-          delegatedStakePool =>
+          (delegatedStakePool) =>
             delegatedStakePool.id === lastDelegatedStakePoolId
         );
         if (!delegatingStakePoolExistInList) {
           const delegatingStakePool = find(
             this.stakePools,
-            stakePool => stakePool.id === lastDelegatedStakePoolId
+            (stakePool) => stakePool.id === lastDelegatedStakePoolId
           );
           if (delegatingStakePool)
             delegatedStakePools.push(delegatingStakePool);

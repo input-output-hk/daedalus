@@ -11,7 +11,10 @@ import {
   DELEGATION_ACTIONS,
 } from '../../../config/stakingConfig';
 import { LOVELACES_PER_ADA } from '../../../config/numbersConfig';
-import { formattedAmountToLovelace, formattedWalletAmount } from '../../../utils/formatters';
+import {
+  formattedAmountToLovelace,
+  formattedWalletAmount,
+} from '../../../utils/formatters';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
 
 const messages = defineMessages({
@@ -154,7 +157,14 @@ export default class DelegationSetupWizardDialogContainer extends Component<
       selectedPoolId,
       stakePoolJoinFee,
     } = this.state;
-    const { app, staking, wallets, profile, networkStatus, hardwareWallets } = this.props.stores;
+    const {
+      app,
+      staking,
+      wallets,
+      profile,
+      networkStatus,
+      hardwareWallets,
+    } = this.props.stores;
     const { futureEpoch } = networkStatus;
     const { currentTheme, currentLocale } = profile;
     const { hwDeviceStatus, sendMoneyRequest } = hardwareWallets;
@@ -166,11 +176,11 @@ export default class DelegationSetupWizardDialogContainer extends Component<
       isDelegationTransactionPending,
     } = staking;
     const futureEpochStartTime = get(futureEpoch, 'epochStart', 0);
-    const selectedPool = find(stakePools, pool => pool.id === selectedPoolId);
+    const selectedPool = find(stakePools, (pool) => pool.id === selectedPoolId);
 
     const selectedWallet = find(
       wallets.allWallets,
-      wallet => wallet.id === selectedWalletId
+      (wallet) => wallet.id === selectedWalletId
     );
 
     const acceptableWallets = find(wallets.allWallets, ({ amount, reward }) =>
@@ -222,7 +232,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
 
     const selectedWallet = find(
       wallets.allWallets,
-      wallet => wallet.id === selectedWalletId
+      (wallet) => wallet.id === selectedWalletId
     );
 
 

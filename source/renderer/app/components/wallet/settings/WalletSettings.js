@@ -92,6 +92,7 @@ type Props = {
   wordCount: number,
   locale: Locale,
   isSpendingPasswordSet: boolean,
+  isHardwareWallet: boolean,
 };
 
 type State = {
@@ -162,6 +163,7 @@ export default class WalletSettings extends Component<Props, State> {
       recoveryPhraseVerificationStatusType,
       locale,
       isSpendingPasswordSet,
+      isHardwareWallet,
       shouldDisplayRecoveryPhrase,
       wordCount,
     } = this.props;
@@ -221,7 +223,7 @@ export default class WalletSettings extends Component<Props, State> {
             onStartEditing={() => onStartEditing('name')}
             onStopEditing={onStopEditing}
             onCancelEditing={onCancelEditing}
-            onSubmit={value => onFieldValueChange('name', value)}
+            onSubmit={(value) => onFieldValueChange('name', value)}
             isValid={nameValidator}
             validationErrorMessage={intl.formatMessage(
               globalMessages.invalidWalletName
@@ -232,17 +234,19 @@ export default class WalletSettings extends Component<Props, State> {
             inputBlocked={isFormBlocked}
           />
 
-          <ReadOnlyInput
-            label={intl.formatMessage(messages.passwordLabel)}
-            value={passwordMessage}
-            isSet={isSpendingPasswordSet}
-            onClick={() => {
-              this.onBlockForm();
-              openDialogAction({
-                dialog: ChangeSpendingPasswordDialog,
-              });
-            }}
-          />
+          {!isHardwareWallet && (
+            <ReadOnlyInput
+              label={intl.formatMessage(messages.passwordLabel)}
+              value={passwordMessage}
+              isSet={isSpendingPasswordSet}
+              onClick={() => {
+                this.onBlockForm();
+                openDialogAction({
+                  dialog: ChangeSpendingPasswordDialog,
+                });
+              }}
+            />
+          )}
 
           {shouldDisplayRecoveryPhrase && (
             <WalletRecoveryPhraseVerificationWidget

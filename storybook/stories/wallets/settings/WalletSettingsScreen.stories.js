@@ -108,7 +108,7 @@ export default (props: { currentTheme: string, locale: Locale }) => {
     <WalletSettings
       isIncentivizedTestnet={isIncentivizedTestnetTheme(currentTheme)}
       isLegacy={boolean('isLegacy', false)}
-      isDialogOpen={dialog => {
+      isDialogOpen={(dialog) => {
         if (dialog === ChangeSpendingPasswordDialog) {
           return boolean(
             'Change Password - Show dialog',
@@ -144,9 +144,7 @@ export default (props: { currentTheme: string, locale: Locale }) => {
       onStopEditing={() => {}}
       openDialogAction={() => {}}
       walletName={text('Wallet Name', 'Wallet Name', basicSettingsId)}
-      spendingPasswordUpdateDate={moment()
-        .subtract(1, 'month')
-        .toDate()}
+      spendingPasswordUpdateDate={moment().subtract(1, 'month').toDate()}
       isSpendingPasswordSet={boolean(
         'isSpendingPasswordSet',
         false,

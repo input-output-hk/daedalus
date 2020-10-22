@@ -59,10 +59,7 @@ export default () => {
     // check if pub folder exists and create array of log file names
     const logFiles: Array<string> = [];
     if (fs.existsSync(pubLogsFolderPath)) {
-      const files = fs
-        .readdirSync(pubLogsFolderPath)
-        .sort()
-        .reverse();
+      const files = fs.readdirSync(pubLogsFolderPath).sort().reverse();
 
       let nodeLogsIncluded = 0;
       let launcherLogsIncluded = 0;

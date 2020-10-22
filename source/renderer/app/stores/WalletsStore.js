@@ -469,7 +469,6 @@ export default class WalletsStore extends Store {
         console.debug('>>> CLOSE active dialog');
         this.actions.dialogs.closeActiveDialog.trigger();
       }
-
     } catch (error) {
       throw error;
     }
@@ -841,7 +840,6 @@ export default class WalletsStore extends Store {
 
   getWalletRoute = (walletId: string, page: string = 'summary'): string =>
     buildRoute(ROUTES.WALLETS.PAGE, { id: walletId, page });
-
 
   // ACTIONS
 

@@ -69,7 +69,7 @@ const storeNames = Object.keys(storeClasses);
 
 // Helpers
 function executeOnEveryStore(fn: (store: Store) => void) {
-  storeNames.forEach(name => {
+  storeNames.forEach((name) => {
     if (stores && stores[name]) fn(stores[name]);
   });
 }
@@ -81,7 +81,7 @@ export default action((api, actions, router): StoresMap => {
   }
 
   // Teardown existing stores
-  if (stores) executeOnEveryStore(store => store.teardown());
+  if (stores) executeOnEveryStore((store) => store.teardown());
 
   // Create fresh instances of all stores
   stores = observable({
@@ -106,9 +106,9 @@ export default action((api, actions, router): StoresMap => {
     window: createStoreInstanceOf(WindowStore),
   });
   // Configure and initialize all stores
-  executeOnEveryStore(store => {
+  executeOnEveryStore((store) => {
     if (stores) store.configure(stores);
   });
-  executeOnEveryStore(store => store.initialize());
+  executeOnEveryStore((store) => store.initialize());
   return stores;
 });

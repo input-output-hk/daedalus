@@ -127,8 +127,7 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
           validators: [
             ({ field }) => {
               const password = field.value;
-              if (this.props.isHardwareWallet)
-                return [true];
+              if (this.props.isHardwareWallet) return [true];
               if (password === '') {
                 return [
                   false,
@@ -152,7 +151,7 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
 
   submit = () => {
     this.form.submit({
-      onSuccess: form => {
+      onSuccess: (form) => {
         const { isHardwareWallet } = this.props;
         const { spendingPassword } = form.values();
         this.props.onConfirm(spendingPassword, isHardwareWallet);
@@ -202,7 +201,9 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
         primary: true,
         disabled:
           (!isHardwareWallet && !spendingPasswordField.isValid) ||
-          (isHardwareWallet && hwDeviceStatus !== HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED) ||
+          (isHardwareWallet &&
+            hwDeviceStatus !==
+              HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED) ||
           isSubmitting ||
           !transactionFee,
       },

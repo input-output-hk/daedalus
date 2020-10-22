@@ -125,7 +125,7 @@ export default class WalletReceiveSequential extends Component<Props, State> {
   };
 
   toggleUsedAddresses = () => {
-    this.setState(prevState => ({ showUsed: !prevState.showUsed }));
+    this.setState((prevState) => ({ showUsed: !prevState.showUsed }));
   };
 
   renderRow = (address: WalletAddress, index: number) => {

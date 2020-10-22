@@ -45,7 +45,7 @@ export default class Staking extends Component<Props> {
     const { app } = this.props.stores;
     const { options } = item;
     if (options && options.length) {
-      options.forEach(option => {
+      options.forEach((option) => {
         if (
           app.currentRoute &&
           app.currentRoute.includes(option.value.toString())

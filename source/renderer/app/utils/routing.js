@@ -33,7 +33,7 @@ export const buildRoute = (pattern, params) => {
   const tokens = {};
 
   if (params) {
-    Object.keys(params).forEach(paramName => {
+    Object.keys(params).forEach((paramName) => {
       let paramValue = params[paramName];
 
       // special param name in RR, used for '*' and '**' placeholders
@@ -41,7 +41,7 @@ export const buildRoute = (pattern, params) => {
         // when there are multiple globs, RR defines 'splat' param as array.
         paramValue = toArray(paramValue);
         let i = 0;
-        routePath = routePath.replace(reSplatParams, match => {
+        routePath = routePath.replace(reSplatParams, (match) => {
           const val = paramValue[i++];
           if (val == null) {
             return '';

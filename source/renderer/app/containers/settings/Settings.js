@@ -31,7 +31,7 @@ export default class Settings extends Component<InjectedContainerProps> {
     const menu = (
       <SettingsMenu
         isFlight={isFlight}
-        onItemClick={route => actions.router.goToRoute.trigger({ route })}
+        onItemClick={(route) => actions.router.goToRoute.trigger({ route })}
         isActiveItem={this.isActivePage}
       />
     );
