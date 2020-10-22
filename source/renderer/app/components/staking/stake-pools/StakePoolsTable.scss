@@ -268,6 +268,7 @@
         display: flex;
         flex-direction: row;
         height: 100%;
+        justify-content: space-between;
       }
 
       %saturationContainer {
@@ -277,8 +278,7 @@
 
       .progressBar {
         @extend %saturationContainer;
-        flex: 0.7;
-        min-width: 58%;
+        min-width: 42%;
         padding-top: 2px;
       }
 
@@ -319,11 +319,9 @@
       .saturationLabel {
         @extend %saturationContainer;
         color: var(--theme-staking-font-color-regular);
-        flex: 0.3;
         font-family: var(--font-medium);
         font-size: 12px;
         padding-left: 6px;
-        right: 8px;
         white-space: nowrap;
       }
 
@@ -390,6 +388,12 @@
       }
       &:nth-child(9) {
         width: 12%;
+      }
+    }
+
+    @media (min-width: 1100px) {
+      td:nth-child(3) {
+        width: 8%;
       }
     }
   }
