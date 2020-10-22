@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Added stake pools list view ([PR 2186](https://github.com/input-output-hk/daedalus/pull/2186))
 - Implemented stake pool details explanation tooltips ([PR 2211](https://github.com/input-output-hk/daedalus/pull/2211))
 - Re-enabled stake pool saturation info ([PR 2200](https://github.com/input-output-hk/daedalus/pull/2200))
 - Implemented the wallet migration leftovers handling ([PR 2178](https://github.com/input-output-hk/daedalus/pull/2178))

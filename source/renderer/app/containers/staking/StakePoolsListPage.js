@@ -47,7 +47,7 @@ export default class StakePoolsListPage extends Component<Props> {
       profile,
       wallets,
     } = this.props.stores;
-    const { currentTheme } = profile;
+    const { currentTheme, currentLocale } = profile;
     const { isSynced } = networkStatus;
     const {
       stakePoolsRequest,
@@ -68,7 +68,7 @@ export default class StakePoolsListPage extends Component<Props> {
       <Fragment>
         <StakePools
           wallets={all}
-          currentLocale={profile.currentLocale}
+          currentLocale={currentLocale}
           stakePoolsList={stakePools}
           stakePoolsDelegatingList={recentStakePools}
           onOpenExternalLink={app.openExternalLink}

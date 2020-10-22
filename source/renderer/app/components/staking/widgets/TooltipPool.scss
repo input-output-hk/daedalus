@@ -10,9 +10,10 @@
   display: none;
   padding: 10px;
   position: absolute;
+  text-align: initial;
   user-select: text;
   width: 280px;
-  z-index: 20;
+  z-index: 100;
 
   :global {
     button.SimpleButton_root {
@@ -568,11 +569,7 @@
   }
 }
 
-.defaultColor {
-  .defaultColorContent {
-    background: var(
-      --theme-staking-stake-pool-tooltip-neutral-background-color
-    );
-    color: var(--theme-staking-stake-pool-tooltip-neutral-text-color);
-  }
+.defaultColorContent {
+  background: var(--theme-staking-stake-pool-tooltip-neutral-background-color);
+  color: var(--theme-staking-stake-pool-tooltip-neutral-text-color);
 }
