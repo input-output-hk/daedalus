@@ -20,6 +20,7 @@ import StakePool from '../../../domains/StakePool';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
 import noDataDashSmallImage from '../../../assets/images/no-data-dash-small.inline.svg';
 import experimentalIcon from '../../../assets/images/experiment-icon.inline.svg';
+import questionMarkIcon from '../../../assets/images/question-mark.inline.svg';
 import copyIcon from '../../../assets/images/clipboard-small-ic.inline.svg';
 import copyCheckmarkIcon from '../../../assets/images/check-w.inline.svg';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
@@ -52,32 +53,68 @@ const messages = defineMessages({
   ranking: {
     id: 'staking.stakePools.tooltip.ranking',
     defaultMessage: '!!!Rank:',
-    description: '"" for the Stake Pools Tooltip page.',
+    description: '"Rank" for the Stake Pools Tooltip page.',
+  },
+  rankingTooltip: {
+    id: 'staking.stakePools.tooltip.rankingTooltip',
+    defaultMessage:
+      '!!!A hierarchical ranking based on the potential rewards you will earn if you delegate the intended amount of stake to this pool, assuming that it reaches saturation.',
+    description: '"Rank" tooltip for the Stake Pools Tooltip page.',
   },
   relativeStake: {
     id: 'staking.stakePools.tooltip.relativeStake',
-    defaultMessage: '!!!Controlled stake:',
-    description: '"Controlled stake" for the Stake Pools Tooltip page.',
+    defaultMessage: '!!!Live stake:',
+    description: '"Live stake" for the Stake Pools Tooltip page.',
+  },
+  relativeStakeTooltip: {
+    id: 'staking.stakePools.tooltip.relativeStakeTooltip',
+    defaultMessage:
+      '!!!Measures the amount of stake pledged by the pool plus the amount of stake currently delegated to the pool, versus the total amount in the system.',
+    description: '"Live stake" tooltip for the Stake Pools Tooltip page.',
   },
   profitMargin: {
     id: 'staking.stakePools.tooltip.profitMargin',
-    defaultMessage: '!!!Profit margin:',
-    description: '"Profit margin" for the Stake Pools Tooltip page.',
+    defaultMessage: '!!!Pool margin:',
+    description: '"Pool margin" for the Stake Pools Tooltip page.',
+  },
+  profitMarginTooltip: {
+    id: 'staking.stakePools.tooltip.profitMarginTooltip',
+    defaultMessage:
+      "!!!The pool's profit, defined as the rewards percentage kept by the pool from the stake that was delegated to it.",
+    description: '"Pool margin" tooltip for the Stake Pools Tooltip page.',
   },
   costPerEpoch: {
     id: 'staking.stakePools.tooltip.costPerEpoch',
     defaultMessage: '!!!Cost per epoch:',
     description: '"Cost per epoch" for the Stake Pools Tooltip page.',
   },
+  costPerEpochTooltip: {
+    id: 'staking.stakePools.tooltip.costPerEpochTooltip',
+    defaultMessage:
+      '!!!Fixed operational costs that the stake pool retains from any rewards earned during each epoch.',
+    description: '"Cost per epoch" tooltip for the Stake Pools Tooltip page.',
+  },
   producedBlocks: {
     id: 'staking.stakePools.tooltip.producedBlocks',
     defaultMessage: '!!!Produced blocks:',
     description: '"Blocks" for the Stake Pools Tooltip page.',
   },
+  producedBlocksTooltip: {
+    id: 'staking.stakePools.tooltip.producedBlocksTooltip',
+    defaultMessage:
+      '!!!The total number of blocks the stake pool has produced.',
+    description: '"Blocks" tooltip for the Stake Pools Tooltip page.',
+  },
   potentialRewards: {
     id: 'staking.stakePools.tooltip.potentialRewards',
     defaultMessage: '!!!Potential rewards:',
     description: '"Rewards" for the Stake Pools Tooltip page.',
+  },
+  potentialRewardsTooltip: {
+    id: 'staking.stakePools.tooltip.potentialRewardsTooltip',
+    defaultMessage:
+      "!!!An estimation of the potential rewards you will earn per epoch if you delegate the intended amount of stake. The system looks at the pool's parameters and historical performance data to calculate potential rewards, assuming that the pool reaches optimal saturation.",
+    description: '"Rewards" tooltip for the Stake Pools Tooltip page.',
   },
   retirement: {
     id: 'staking.stakePools.tooltip.retirement',
@@ -89,10 +126,22 @@ const messages = defineMessages({
     defaultMessage: '!!!Saturation:',
     description: '"Saturation" for the Stake Pools Tooltip page.',
   },
+  saturationTooltip: {
+    id: 'staking.stakePools.tooltip.saturationTooltip',
+    defaultMessage:
+      '!!!Saturation measures the stake in the pool and indicates the point at which rewards stop increasing with increases in stake. This capping mechanism encourages decentralization by discouraging users from delegating to oversaturated stake pools.',
+    description: '"Saturation" tooltip for the Stake Pools Tooltip page.',
+  },
   pledge: {
     id: 'staking.stakePools.tooltip.pledge',
     defaultMessage: '!!!Pledge:',
     description: '"Pledge" for the Stake Pools Tooltip page.',
+  },
+  pledgeTooltip: {
+    id: 'staking.stakePools.tooltip.pledgeTooltip',
+    defaultMessage:
+      '!!!The amount of stake that a pool operator contributes to a pool. Pools with higher pledge amounts earn more rewards for themselves and their delegators. Pools that do not honor their pledge earn zero rewards and accrue low ranking.',
+    description: '"Pledge" tooltip for the Stake Pools Tooltip page.',
   },
   delegateButton: {
     id: 'staking.stakePools.tooltip.delegateButton',
@@ -423,18 +472,213 @@ export default class TooltipPool extends Component<Props, State> {
     this.setState({ idCopyFeedback: false });
   };
 
-  render() {
+  renderDescriptionFields = () => {
     const { isIncentivizedTestnet } = global;
+    const { intl } = this.context;
+    const { currentTheme, stakePool, numberOfRankedStakePools } = this.props;
+    const {
+      ranking,
+      relativeStake,
+      producedBlocks,
+      nonMyopicMemberRewards,
+      cost,
+      profitMargin,
+      saturation,
+      pledge,
+    } = stakePool;
+    const darken = currentTheme === 'dark-blue' ? 1 : 0;
+    const alpha = 0.3;
+    const saturationBarClassnames = classnames([
+      styles.saturationBar,
+      styles[getSaturationColor(saturation)],
+    ]);
+    const fields = [
+      {
+        key: 'saturation',
+        value: (
+          <div className={styles.saturationValue}>
+            <span>
+              <span className={saturationBarClassnames}>
+                <span
+                  style={{
+                    width: `${parseFloat(saturation).toFixed(2)}%`,
+                  }}
+                />
+              </span>
+              {`${parseFloat(saturation).toFixed(2)}%`}
+            </span>
+          </div>
+        ),
+      },
+      {
+        key: 'ranking',
+        value: (
+          <div className={styles.ranking}>
+            {IS_RANKING_DATA_AVAILABLE && nonMyopicMemberRewards ? (
+              <span
+                style={{
+                  background: getColorFromRange(ranking, {
+                    darken,
+                    alpha,
+                    numberOfItems: numberOfRankedStakePools,
+                  }),
+                }}
+              >
+                {ranking}
+              </span>
+            ) : (
+              <div className={styles.noDataDash}>
+                <SVGInline svg={noDataDashSmallImage} />
+              </div>
+            )}
+            {isIncentivizedTestnet && (
+              <Tooltip
+                className={styles.experimentalTooltip}
+                key="experimentalTooltip"
+                themeOverrides={experimentalTooltipStyles}
+                skin={TooltipSkin}
+                tip={intl.formatMessage(messages.experimentalTooltipLabel)}
+              >
+                <button className={styles.iconButton}>
+                  <SVGInline
+                    svg={experimentalIcon}
+                    className={styles.experimentalIcon}
+                  />
+                </button>
+              </Tooltip>
+            )}
+          </div>
+        ),
+      },
+      {
+        key: 'relativeStake',
+        value: (
+          <div className={styles.defaultColor}>
+            <span className={styles.defaultColorContent}>{`${parseFloat(
+              relativeStake
+            ).toFixed(2)}%`}</span>
+          </div>
+        ),
+      },
+      {
+        key: 'profitMargin',
+        value: (
+          <div>
+            <span
+              style={{
+                background: getColorFromRange(profitMargin, {
+                  darken,
+                  alpha,
+                }),
+              }}
+            >
+              {`${parseFloat(profitMargin).toFixed(2)}%`}
+            </span>
+          </div>
+        ),
+      },
+      {
+        key: 'pledge',
+        value: (
+          <div className={styles.defaultColor}>
+            <span className={styles.defaultColorContent}>
+              {formattedWalletAmount(pledge, true, false)}
+            </span>
+          </div>
+        ),
+      },
+      {
+        key: 'costPerEpoch',
+        value: (
+          <div className={styles.costValue}>
+            <span
+              style={{
+                background: getColorFromRange(profitMargin, {
+                  darken,
+                  alpha,
+                }),
+              }}
+            >
+              {`${formattedWalletAmount(cost, true, false)}`}
+            </span>
+          </div>
+        ),
+      },
+      {
+        key: 'producedBlocks',
+        value: (
+          <div className={styles.defaultColor}>
+            <span className={styles.defaultColorContent}>
+              {shortNumber(producedBlocks)}
+            </span>
+          </div>
+        ),
+      },
+      {
+        key: 'potentialRewards',
+        value: (
+          <div className={styles.defaultColor}>
+            {nonMyopicMemberRewards ? (
+              <span className={styles.defaultColorContent}>
+                {shortNumber(formattedLovelaceToAmount(nonMyopicMemberRewards))}{' '}
+                {intl.formatMessage(globalMessages.unitAda)}
+              </span>
+            ) : (
+              <div className={styles.noDataDash}>
+                <SVGInline svg={noDataDashSmallImage} />
+              </div>
+            )}
+          </div>
+        ),
+      },
+    ];
+
+    return (
+      <div className={styles.table}>
+        {fields.map((field: { key: string, value: any }) => {
+          const labelPart = (
+            <div className={styles[`${field.key}Label`]}>
+              <Tooltip
+                key={field.key}
+                skin={TooltipSkin}
+                tip={intl.formatMessage(messages[`${field.key}Tooltip`])}
+              >
+                <div className={styles.labelContainer}>
+                  <div className={styles.fieldLabel}>
+                    {intl.formatMessage(messages[field.key])}
+                  </div>
+                  <div className={styles.questionMark}>
+                    <SVGInline svg={questionMarkIcon} />
+                  </div>
+                </div>
+              </Tooltip>
+            </div>
+          );
+
+          if (field.key === 'saturation' && !IS_SATURATION_DATA_AVAILABLE) {
+            return null;
+          }
+
+          return (
+            <div key={field.key} className={styles.dRow}>
+              {labelPart}
+              {field.value}
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
+  render() {
     const { intl } = this.context;
     const {
       stakePool,
       isVisible,
-      currentTheme,
       onClick,
       onOpenExternalLink,
       onSelect,
       showWithSelectButton,
-      numberOfRankedStakePools,
     } = this.props;
     const {
       componentStyle,
@@ -450,15 +694,8 @@ export default class TooltipPool extends Component<Props, State> {
       description,
       ticker,
       homepage,
-      ranking,
-      relativeStake,
-      producedBlocks,
       nonMyopicMemberRewards,
       retiring,
-      cost,
-      profitMargin,
-      saturation,
-      pledge,
     } = stakePool;
 
     const componentClassnames = classnames([
@@ -471,16 +708,9 @@ export default class TooltipPool extends Component<Props, State> {
       styles[`tooltipPosition${capitalize(tooltipPosition)}`],
     ]);
 
-    const darken = currentTheme === 'dark-blue' ? 1 : 0;
-    const alpha = 0.3;
     const retirementFromNow = retiring
       ? moment(retiring).locale(intl.locale).fromNow(true)
       : '';
-
-    const saturationBarClassnames = classnames([
-      styles.saturationBar,
-      styles[getSaturationColor(saturation)],
-    ]);
 
     const idCopyIcon = idCopyFeedback ? copyCheckmarkIcon : copyIcon;
     const hoverContentStyles = classnames([
@@ -551,116 +781,7 @@ export default class TooltipPool extends Component<Props, State> {
             label={homepage}
             skin={LinkSkin}
           />
-
-          <dl className={styles.table}>
-            {IS_SATURATION_DATA_AVAILABLE && (
-              <>
-                <dt className={styles.saturationLabel}>
-                  {intl.formatMessage(messages.saturation)}
-                </dt>
-                <dd className={styles.saturationValue}>
-                  <span>
-                    <span className={saturationBarClassnames}>
-                      <span
-                        style={{
-                          width: `${parseFloat(saturation).toFixed(2)}%`,
-                        }}
-                      />
-                    </span>
-                    {`${parseFloat(saturation).toFixed(2)}%`}
-                  </span>
-                </dd>
-              </>
-            )}
-            <dt>{intl.formatMessage(messages.ranking)}</dt>
-            <dd className={styles.ranking}>
-              {IS_RANKING_DATA_AVAILABLE && nonMyopicMemberRewards ? (
-                <span
-                  style={{
-                    background: getColorFromRange(ranking, {
-                      darken,
-                      alpha,
-                      numberOfItems: numberOfRankedStakePools,
-                    }),
-                  }}
-                >
-                  {ranking}
-                </span>
-              ) : (
-                <div className={styles.noDataDash}>
-                  <SVGInline svg={noDataDashSmallImage} />
-                </div>
-              )}
-              {isIncentivizedTestnet && (
-                <Tooltip
-                  className={styles.experimentalTooltip}
-                  key="experimentalTooltip"
-                  themeOverrides={experimentalTooltipStyles}
-                  skin={TooltipSkin}
-                  tip={intl.formatMessage(messages.experimentalTooltipLabel)}
-                >
-                  <button className={styles.iconButton}>
-                    <SVGInline
-                      svg={experimentalIcon}
-                      className={styles.experimentalIcon}
-                    />
-                  </button>
-                </Tooltip>
-              )}
-            </dd>
-            <dt>{intl.formatMessage(messages.relativeStake)}</dt>
-            <dd className={styles.defaultColor}>
-              <span className={styles.defaultColorContent}>{`${parseFloat(
-                relativeStake.toFixed(2)
-              )}%`}</span>
-            </dd>
-            <dt>{intl.formatMessage(messages.profitMargin)}</dt>
-            <dd className={styles.profitMargin}>
-              <span
-                style={{
-                  background: getColorFromRange(profitMargin, {
-                    darken,
-                    alpha,
-                  }),
-                }}
-              >
-                {`${parseFloat(profitMargin.toFixed(2))}%`}
-              </span>
-            </dd>
-            <dt>{intl.formatMessage(messages.pledge)}</dt>
-            <dd className={styles.defaultColor}>
-              <span className={styles.defaultColorContent}>
-                {formattedWalletAmount(pledge, true, false)}
-              </span>
-            </dd>
-            <dt>{intl.formatMessage(messages.costPerEpoch)}</dt>
-            <dd className={styles.cost}>
-              <span className={styles.defaultColorContent}>
-                {`${formattedWalletAmount(cost, true, false)}`}
-              </span>
-            </dd>
-            <dt>{intl.formatMessage(messages.producedBlocks)}</dt>
-            <dd className={styles.defaultColor}>
-              <span className={styles.defaultColorContent}>
-                {shortNumber(producedBlocks)}
-              </span>
-            </dd>
-            <dt>{intl.formatMessage(messages.potentialRewards)}</dt>
-            <dd className={styles.defaultColor}>
-              {nonMyopicMemberRewards ? (
-                <span className={styles.defaultColorContent}>
-                  {shortNumber(
-                    formattedLovelaceToAmount(nonMyopicMemberRewards)
-                  )}{' '}
-                  {intl.formatMessage(globalMessages.unitAda)}
-                </span>
-              ) : (
-                <div className={styles.noDataDash}>
-                  <SVGInline svg={noDataDashSmallImage} />
-                </div>
-              )}
-            </dd>
-          </dl>
+          {this.renderDescriptionFields()}
         </div>
         {onSelect && showWithSelectButton && (
           <Button
