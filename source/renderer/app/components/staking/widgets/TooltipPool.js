@@ -451,18 +451,213 @@ export default class TooltipPool extends Component<Props, State> {
     this.setState({ idCopyFeedback: false });
   };
 
-  render() {
+  renderDescriptionFields = () => {
     const { isIncentivizedTestnet } = global;
+    const { intl } = this.context;
+    const { currentTheme, stakePool, numberOfRankedStakePools } = this.props;
+    const {
+      ranking,
+      relativeStake,
+      producedBlocks,
+      nonMyopicMemberRewards,
+      cost,
+      profitMargin,
+      saturation,
+      pledge,
+    } = stakePool;
+    const darken = currentTheme === 'dark-blue' ? 1 : 0;
+    const alpha = 0.3;
+    const saturationBarClassnames = classnames([
+      styles.saturationBar,
+      styles[getSaturationColor(saturation)],
+    ]);
+    const fields = [
+      {
+        key: 'saturation',
+        value: (
+          <div className={styles.saturationValue}>
+            <span>
+              <span className={saturationBarClassnames}>
+                <span
+                  style={{
+                    width: `${parseFloat(saturation.toFixed(2))}%`,
+                  }}
+                />
+              </span>
+              {`${parseFloat(saturation.toFixed(2))}%`}
+            </span>
+          </div>
+        ),
+      },
+      {
+        key: 'ranking',
+        value: (
+          <div className={styles.ranking}>
+            {IS_RANKING_DATA_AVAILABLE && nonMyopicMemberRewards ? (
+              <span
+                style={{
+                  background: getColorFromRange(ranking, {
+                    darken,
+                    alpha,
+                    numberOfItems: numberOfRankedStakePools,
+                  }),
+                }}
+              >
+                {ranking}
+              </span>
+            ) : (
+              <div className={styles.noDataDash}>
+                <SVGInline svg={noDataDashSmallImage} />
+              </div>
+            )}
+            {isIncentivizedTestnet && (
+              <Tooltip
+                className={styles.experimentalTooltip}
+                key="experimentalTooltip"
+                themeOverrides={experimentalTooltipStyles}
+                skin={TooltipSkin}
+                tip={intl.formatMessage(messages.experimentalTooltipLabel)}
+              >
+                <button className={styles.iconButton}>
+                  <SVGInline
+                    svg={experimentalIcon}
+                    className={styles.experimentalIcon}
+                  />
+                </button>
+              </Tooltip>
+            )}
+          </div>
+        ),
+      },
+      {
+        key: 'relativeStake',
+        value: (
+          <div className={styles.defaultColor}>
+            <span className={styles.defaultColorContent}>{`${parseFloat(
+              relativeStake.toFixed(2)
+            )}%`}</span>
+          </div>
+        ),
+      },
+      {
+        key: 'profitMargin',
+        value: (
+          <div>
+            <span
+              style={{
+                background: getColorFromRange(profitMargin, {
+                  darken,
+                  alpha,
+                }),
+              }}
+            >
+              {`${parseFloat(profitMargin.toFixed(2))}%`}
+            </span>
+          </div>
+        ),
+      },
+      {
+        key: 'pledge',
+        value: (
+          <div className={styles.defaultColor}>
+            <span className={styles.defaultColorContent}>
+              {formattedWalletAmount(pledge, true, false)}
+            </span>
+          </div>
+        ),
+      },
+      {
+        key: 'costPerEpoch',
+        value: (
+          <div className={styles.costValue}>
+            <span
+              style={{
+                background: getColorFromRange(profitMargin, {
+                  darken,
+                  alpha,
+                }),
+              }}
+            >
+              {`${formattedWalletAmount(cost, true, false)}`}
+            </span>
+          </div>
+        ),
+      },
+      {
+        key: 'producedBlocks',
+        value: (
+          <div className={styles.defaultColor}>
+            <span className={styles.defaultColorContent}>
+              {shortNumber(producedBlocks)}
+            </span>
+          </div>
+        ),
+      },
+      {
+        key: 'potentialRewards',
+        value: (
+          <div className={styles.defaultColor}>
+            {nonMyopicMemberRewards ? (
+              <span className={styles.defaultColorContent}>
+                {shortNumber(formattedLovelaceToAmount(nonMyopicMemberRewards))}{' '}
+                {intl.formatMessage(globalMessages.unitAda)}
+              </span>
+            ) : (
+              <div className={styles.noDataDash}>
+                <SVGInline svg={noDataDashSmallImage} />
+              </div>
+            )}
+          </div>
+        ),
+      },
+    ];
+
+    return (
+      <div className={styles.table}>
+        {fields.map((field: { key: string, value: any }) => {
+          const labelPart = (
+            <div className={styles[`${field.key}Label`]}>
+              <Tooltip
+                key={field.key}
+                skin={TooltipSkin}
+                tip={intl.formatMessage(messages[`${field.key}Tooltip`])}
+              >
+                <div className={styles.labelContainer}>
+                  <div className={styles.fieldLabel}>
+                    {intl.formatMessage(messages[field.key])}
+                  </div>
+                  <div className={styles.questionMark}>
+                    <SVGInline svg={questionMarkIcon} />
+                  </div>
+                </div>
+              </Tooltip>
+            </div>
+          );
+
+          if (field.key === 'saturation' && !IS_SATURATION_DATA_AVAILABLE) {
+            return null;
+          }
+
+          return (
+            <div key={field.key} className={styles.dRow}>
+              {labelPart}
+              {field.value}
+            </div>
+          );
+        })}
+      </div>
+    );
+  };
+
+  render() {
     const { intl } = this.context;
     const {
       stakePool,
       isVisible,
-      currentTheme,
       onClick,
       onOpenExternalLink,
       onSelect,
       showWithSelectButton,
-      numberOfRankedStakePools,
     } = this.props;
     const {
       componentStyle,
@@ -478,15 +673,8 @@ export default class TooltipPool extends Component<Props, State> {
       description,
       ticker,
       homepage,
-      ranking,
-      relativeStake,
-      producedBlocks,
       nonMyopicMemberRewards,
       retiring,
-      cost,
-      profitMargin,
-      saturation,
-      pledge,
     } = stakePool;
 
     const componentClassnames = classnames([
@@ -499,16 +687,9 @@ export default class TooltipPool extends Component<Props, State> {
       styles[`tooltipPosition${capitalize(tooltipPosition)}`],
     ]);
 
-    const darken = currentTheme === 'dark-blue' ? 1 : 0;
-    const alpha = 0.3;
     const retirementFromNow = retiring
       ? moment(retiring).locale(intl.locale).fromNow(true)
       : '';
-
-    const saturationBarClassnames = classnames([
-      styles.saturationBar,
-      styles[getSaturationColor(saturation)],
-    ]);
 
     const idCopyIcon = idCopyFeedback ? copyCheckmarkIcon : copyIcon;
     const hoverContentStyles = classnames([
@@ -579,256 +760,7 @@ export default class TooltipPool extends Component<Props, State> {
             label={homepage}
             skin={LinkSkin}
           />
-
-          <div className={styles.table}>
-            {IS_SATURATION_DATA_AVAILABLE && (
-              <div className={styles.dRow}>
-                <div className={styles.saturationLabel}>
-                  <Tooltip
-                    key="saturation"
-                    skin={TooltipSkin}
-                    tip={intl.formatMessage(messages.saturationTooltip)}
-                  >
-                    <div className={styles.labelContainer}>
-                      <div className={styles.fieldLabel}>
-                        {intl.formatMessage(messages.saturation)}
-                      </div>
-                      <div className={styles.questionMark}>
-                        <SVGInline svg={questionMarkIcon} />
-                      </div>
-                    </div>
-                  </Tooltip>
-                </div>
-                <div className={styles.saturationValue}>
-                  <span>
-                    <span className={saturationBarClassnames}>
-                      <span
-                        style={{
-                          width: `${parseFloat(saturation.toFixed(2))}%`,
-                        }}
-                      />
-                    </span>
-                    {`${parseFloat(saturation.toFixed(2))}%`}
-                  </span>
-                </div>
-              </div>
-            )}
-            <div className={styles.dRow}>
-              <div>
-                <Tooltip
-                  key="ranking"
-                  skin={TooltipSkin}
-                  tip={intl.formatMessage(messages.rankingTooltip)}
-                >
-                  <div className={styles.labelContainer}>
-                    <div className={styles.fieldLabel}>
-                      {intl.formatMessage(messages.ranking)}
-                    </div>
-                    <div className={styles.questionMark}>
-                      <SVGInline svg={questionMarkIcon} />
-                    </div>
-                  </div>
-                </Tooltip>
-              </div>
-              <div className={styles.ranking}>
-                {IS_RANKING_DATA_AVAILABLE && nonMyopicMemberRewards ? (
-                  <span
-                    style={{
-                      background: getColorFromRange(ranking, {
-                        darken,
-                        alpha,
-                        numberOfItems: numberOfRankedStakePools,
-                      }),
-                    }}
-                  >
-                    {ranking}
-                  </span>
-                ) : (
-                  <div className={styles.noDataDash}>
-                    <SVGInline svg={noDataDashSmallImage} />
-                  </div>
-                )}
-                {isIncentivizedTestnet && (
-                  <Tooltip
-                    className={styles.experimentalTooltip}
-                    key="experimentalTooltip"
-                    themeOverrides={experimentalTooltipStyles}
-                    skin={TooltipSkin}
-                    tip={intl.formatMessage(messages.experimentalTooltipLabel)}
-                  >
-                    <button className={styles.iconButton}>
-                      <SVGInline
-                        svg={experimentalIcon}
-                        className={styles.experimentalIcon}
-                      />
-                    </button>
-                  </Tooltip>
-                )}
-              </div>
-            </div>
-            <div className={styles.dRow}>
-              <div>
-                <Tooltip
-                  key="relativeStake"
-                  skin={TooltipSkin}
-                  tip={intl.formatMessage(messages.relativeStakeTooltip)}
-                >
-                  <div className={styles.labelContainer}>
-                    <div className={styles.fieldLabel}>
-                      {intl.formatMessage(messages.relativeStake)}
-                    </div>
-                    <div className={styles.questionMark}>
-                      <SVGInline svg={questionMarkIcon} />
-                    </div>
-                  </div>
-                </Tooltip>
-              </div>
-              <div className={styles.defaultColor}>
-                <span className={styles.defaultColorContent}>{`${parseFloat(
-                  relativeStake.toFixed(2)
-                )}%`}</span>
-              </div>
-            </div>
-            <div className={styles.dRow}>
-              <div>
-                <Tooltip
-                  key="profitMargin"
-                  skin={TooltipSkin}
-                  tip={intl.formatMessage(messages.profitMarginTooltip)}
-                >
-                  <div className={styles.labelContainer}>
-                    <div className={styles.fieldLabel}>
-                      {intl.formatMessage(messages.profitMargin)}
-                    </div>
-                    <div className={styles.questionMark}>
-                      <SVGInline svg={questionMarkIcon} />
-                    </div>
-                  </div>
-                </Tooltip>
-              </div>
-              <div>
-                <span
-                  style={{
-                    background: getColorFromRange(profitMargin, {
-                      darken,
-                      alpha,
-                    }),
-                  }}
-                >
-                  {`${parseFloat(profitMargin.toFixed(2))}%`}
-                </span>
-              </div>
-            </div>
-            <div className={styles.dRow}>
-              <div>
-                <Tooltip
-                  key="pledge"
-                  skin={TooltipSkin}
-                  tip={intl.formatMessage(messages.pledgeTooltip)}
-                >
-                  <div className={styles.labelContainer}>
-                    <div className={styles.fieldLabel}>
-                      {intl.formatMessage(messages.pledge)}
-                    </div>
-                    <div className={styles.questionMark}>
-                      <SVGInline svg={questionMarkIcon} />
-                    </div>
-                  </div>
-                </Tooltip>
-              </div>
-              <div className={styles.defaultColor}>
-                <span className={styles.defaultColorContent}>
-                  {formattedWalletAmount(pledge, true, false)}
-                </span>
-              </div>
-            </div>
-
-            <div className={styles.dRow}>
-              <div className={styles.costLabel}>
-                <Tooltip
-                  key="costPerEpoch"
-                  skin={TooltipSkin}
-                  tip={intl.formatMessage(messages.costPerEpochTooltip)}
-                >
-                  <div className={styles.labelContainer}>
-                    <div className={styles.fieldLabel}>
-                      {intl.formatMessage(messages.costPerEpoch)}
-                    </div>
-                    <div className={styles.questionMark}>
-                      <SVGInline svg={questionMarkIcon} />
-                    </div>
-                  </div>
-                </Tooltip>
-              </div>
-              <div className={styles.costValue}>
-                <span
-                  style={{
-                    background: getColorFromRange(profitMargin, {
-                      darken,
-                      alpha,
-                    }),
-                  }}
-                >
-                  {`${formattedWalletAmount(cost, true, false)}`}
-                </span>
-              </div>
-            </div>
-            <div className={styles.dRow}>
-              <div>
-                <Tooltip
-                  key="producedBlocks"
-                  skin={TooltipSkin}
-                  tip={intl.formatMessage(messages.producedBlocksTooltip)}
-                >
-                  <div className={styles.labelContainer}>
-                    <div className={styles.fieldLabel}>
-                      {intl.formatMessage(messages.producedBlocks)}
-                    </div>
-                    <div className={styles.questionMark}>
-                      <SVGInline svg={questionMarkIcon} />
-                    </div>
-                  </div>
-                </Tooltip>
-              </div>
-              <div className={styles.defaultColor}>
-                <span className={styles.defaultColorContent}>
-                  {shortNumber(producedBlocks)}
-                </span>
-              </div>
-            </div>
-            <div className={styles.dRow}>
-              <div>
-                <Tooltip
-                  key="potentialRewards"
-                  skin={TooltipSkin}
-                  tip={intl.formatMessage(messages.potentialRewardsTooltip)}
-                >
-                  <div className={styles.labelContainer}>
-                    <div className={styles.fieldLabel}>
-                      {intl.formatMessage(messages.potentialRewards)}
-                    </div>
-                    <div className={styles.questionMark}>
-                      <SVGInline svg={questionMarkIcon} />
-                    </div>
-                  </div>
-                </Tooltip>
-              </div>
-              <div className={styles.defaultColor}>
-                {nonMyopicMemberRewards ? (
-                  <span className={styles.defaultColorContent}>
-                    {shortNumber(
-                      formattedLovelaceToAmount(nonMyopicMemberRewards)
-                    )}{' '}
-                    {intl.formatMessage(globalMessages.unitAda)}
-                  </span>
-                ) : (
-                  <div className={styles.noDataDash}>
-                    <SVGInline svg={noDataDashSmallImage} />
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
+          {this.renderDescriptionFields()}
         </div>
         {onSelect && showWithSelectButton && (
           <Button

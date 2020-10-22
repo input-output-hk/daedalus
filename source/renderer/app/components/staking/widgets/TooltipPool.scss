@@ -406,31 +406,32 @@
       line-height: 1.36;
       width: 65%;
 
-      &:hover {
-        .questionMark {
-          :global {
-            .SVGInline {
-              svg {
-                path {
-                  opacity: 0.5;
-                }
-              }
-            }
-          }
-        }
-      }
-
       &.saturationLabel {
         width: 50%;
       }
 
-      &.costLabel {
+      &.costPerEpochLabel {
         width: 75%;
       }
 
       .labelContainer {
         align-items: center;
+        cursor: pointer;
         display: flex;
+
+        &:hover {
+          .questionMark {
+            :global {
+              .SVGInline {
+                svg {
+                  path {
+                    opacity: 0.5;
+                  }
+                }
+              }
+            }
+          }
+        }
       }
 
       .fieldLabel {
@@ -439,7 +440,6 @@
       }
 
       .questionMark {
-        cursor: pointer;
         display: none;
         height: 19px;
         margin-left: 4px;
@@ -469,12 +469,16 @@
 
       :global {
         .SimpleTooltip_root {
-          .SimpleBubble_bubble {
-            font-family: var(--font-regular);
-            margin-left: 40px;
-            transform: translate(-50%, 0);
-            white-space: normal;
-            width: 250px;
+          .SimpleTooltip_bubble {
+            transform: translate(calc(50% - 5px), 5px);
+
+            .SimpleBubble_bubble {
+              font-family: var(--font-regular);
+              margin-left: 40px;
+              transform: translate(-50%, 0);
+              white-space: normal;
+              width: 250px;
+            }
           }
         }
       }
