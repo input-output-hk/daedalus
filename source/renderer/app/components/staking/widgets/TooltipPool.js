@@ -501,7 +501,7 @@ export default class TooltipPool extends Component<Props, State> {
               <span className={saturationBarClassnames}>
                 <span
                   style={{
-                    width: `${toFixedUserFormat(saturation, 2)}%`,
+                    width: `${parseFloat(saturation).toFixed(2)}%`,
                   }}
                 />
               </span>
