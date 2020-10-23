@@ -34,6 +34,7 @@ import {
   StakingUndelegateConfirmationStory,
   StakingUndelegateConfirmationResultStory,
 } from './Undelegate.stories';
+import { StakePoolsTableStory } from './StakePoolsTable.stories';
 
 const defaultPercentage = 10;
 const defaultStartDateTime = new Date();
@@ -49,6 +50,7 @@ const pageNames = {
   'delegation-center': 'Delegation Center',
   'delegation-center-experiment': 'Delegation Center - experimental feature',
   'stake-pools': 'Pools Index',
+  'stake-pools-table': 'Stake Pools List',
   'stake-pools-tooltip': 'Tooltip',
   rewards: 'Rewards',
   'rewards-itn': 'Rewards - ITN',
@@ -195,6 +197,10 @@ storiesOf('Decentralization | Staking', module)
       id: 'stake-pools-loading',
     }
   )
+
+  .add(pageNames['stake-pools-table'], StakePoolsTableStory, {
+    id: 'stake-pools-table',
+  })
 
   .add(pageNames.rewards, StakingRewardsStory, { id: 'rewards' })
 

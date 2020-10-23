@@ -16,7 +16,8 @@
   top: 144px;
   transform: translateX(-50%);
   transition: opacity 0.25s ease-out, top 0.25s ease-out;
-  z-index: 3;
+  z-index: 999;
+
   &.isActive {
     opacity: 1;
   }
