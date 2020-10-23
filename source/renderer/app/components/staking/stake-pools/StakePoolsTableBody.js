@@ -207,7 +207,7 @@ export class StakePoolsTableBody extends Component<
       const pledgeCalculatedValue = Number(pledgeValue)
         ? Number(pledgeValue).toFixed(2)
         : pledgeValue;
-      const costValue = cost.toFixed(2);
+      const costValue = formattedWalletAmount(cost, false, false);
       const progressBarContentClassnames = classNames([
         styles.progressBarContent,
         styles[getSaturationColor(saturation)],
@@ -269,7 +269,7 @@ export class StakePoolsTableBody extends Component<
               </div>
             </div>
           </td>
-          <td>{Number(costValue).toFixed(2)}</td>
+          <td>{costValue}</td>
           <td>{`${toFixedUserFormat(margin, 2)}%`}</td>
           <td>{shortNumber(producedBlocks)}</td>
           <td>{potentialRewards}</td>
