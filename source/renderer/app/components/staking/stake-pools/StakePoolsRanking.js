@@ -6,7 +6,12 @@ import classnames from 'classnames';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
-import { shortNumber, generateThousands } from '../../../utils/formatters';
+import BigNumber from 'bignumber.js';
+import {
+  shortNumber,
+  generateThousands,
+  formattedWalletAmount,
+} from '../../../utils/formatters';
 import {
   getFilteredWallets,
   getAllAmounts,
@@ -126,7 +131,7 @@ type Props = {
 
 type State = {
   sliderValue: number,
-  amountValue: number,
+  displayValue: string,
 };
 
 @observer
@@ -143,15 +148,19 @@ export default class StakePoolsRanking extends Component<Props, State> {
     sliderValue: Math.round(
       INITIAL_DELEGATION_FUNDS_LOG * RANKING_SLIDER_RATIO
     ),
-    amountValue: INITIAL_DELEGATION_FUNDS,
+    displayValue: Number(INITIAL_DELEGATION_FUNDS).toString(),
   };
 
   componentDidMount() {
     const { stake } = this.props;
     if (stake) {
+      const hasDecimal = stake - Math.floor(stake);
+      const displayValue = hasDecimal
+        ? formattedWalletAmount(new BigNumber(stake), false)
+        : stake;
       this.setState({
         sliderValue: Math.round(Math.log(stake) * RANKING_SLIDER_RATIO),
-        amountValue: stake,
+        displayValue,
       });
     }
   }
@@ -195,7 +204,11 @@ export default class StakePoolsRanking extends Component<Props, State> {
     }
     amountValue = Math.max(amountValue, MIN_DELEGATION_FUNDS);
     sliderValue = Math.round(Math.log(amountValue) * RANKING_SLIDER_RATIO);
-    this.setState({ sliderValue, amountValue });
+    const displayValue = formattedWalletAmount(
+      new BigNumber(amountValue),
+      false
+    );
+    this.setState({ sliderValue, displayValue });
     updateDelegatingStake(selectedWalletId, amountValue);
     rankStakePools();
   };
@@ -218,7 +231,8 @@ export default class StakePoolsRanking extends Component<Props, State> {
         Math.exp(sliderValue / RANKING_SLIDER_RATIO)
       );
     }
-    this.setState({ sliderValue, amountValue });
+    const displayValue = Number(amountValue).toString();
+    this.setState({ sliderValue, displayValue });
     updateDelegatingStake(null, amountValue);
   };
 
@@ -278,7 +292,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
       getStakePoolById,
       rankStakePools,
     } = this.props;
-    const { sliderValue, amountValue } = this.state;
+    const { sliderValue, displayValue } = this.state;
     const learnMoreButtonClasses = classnames(['flat', styles.actionLearnMore]);
     const {
       walletSelectorWallets,
@@ -367,7 +381,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
                 )}
                 maxDisplayValue={MAX_DELEGATION_FUNDS}
                 value={sliderValue}
-                displayValue={amountValue}
+                displayValue={displayValue}
                 showRawValue
                 onChange={this.onSliderChange}
                 onAfterChange={rankStakePools}

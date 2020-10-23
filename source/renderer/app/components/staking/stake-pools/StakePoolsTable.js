@@ -10,7 +10,6 @@ import styles from './StakePoolsTable.scss';
 import StakePool from '../../../domains/StakePool';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import BorderedBox from '../../widgets/BorderedBox';
-import globalMessages from '../../../i18n/global-messages';
 import { StakePoolsTableHeader } from './StakePoolsTableHeader';
 import { StakePoolsTableBody } from './StakePoolsTableBody';
 
@@ -432,7 +431,6 @@ export class StakePoolsTable extends Component<Props, State> {
                 >
                   <StakePoolsTableBody
                     sortedStakePoolList={sortedStakePoolList}
-                    ada={intl.formatMessage(globalMessages.unitAda)}
                     numberOfRankedStakePools={numberOfRankedStakePools}
                     currentTheme={currentTheme}
                     onOpenExternalLink={onOpenExternalLink}

@@ -27,11 +27,10 @@ import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
 import {
   formattedWalletAmount,
   shortNumber,
-  formattedLovelaceToAmount,
+  toFixedUserFormat,
 } from '../../../utils/formatters';
 import { rangeMap } from '../../../utils/numbers';
 import { ellipsis } from '../../../utils/strings';
-import globalMessages from '../../../i18n/global-messages';
 import { STAKE_POOL_ID_COPY_FEEDBACK } from '../../../config/timingConfig';
 import {
   THUMBNAIL_HEIGHT,
@@ -480,7 +479,7 @@ export default class TooltipPool extends Component<Props, State> {
       ranking,
       relativeStake,
       producedBlocks,
-      nonMyopicMemberRewards,
+      potentialRewards,
       cost,
       profitMargin,
       saturation,
@@ -492,6 +491,7 @@ export default class TooltipPool extends Component<Props, State> {
       styles.saturationBar,
       styles[getSaturationColor(saturation)],
     ]);
+
     const fields = [
       {
         key: 'saturation',
@@ -501,11 +501,11 @@ export default class TooltipPool extends Component<Props, State> {
               <span className={saturationBarClassnames}>
                 <span
                   style={{
-                    width: `${parseFloat(saturation).toFixed(2)}%`,
+                    width: `${toFixedUserFormat(saturation, 2)}%`,
                   }}
                 />
               </span>
-              {`${parseFloat(saturation).toFixed(2)}%`}
+              {`${toFixedUserFormat(saturation, 2)}%`}
             </span>
           </div>
         ),
@@ -514,7 +514,7 @@ export default class TooltipPool extends Component<Props, State> {
         key: 'ranking',
         value: (
           <div className={styles.ranking}>
-            {IS_RANKING_DATA_AVAILABLE && nonMyopicMemberRewards ? (
+            {IS_RANKING_DATA_AVAILABLE && potentialRewards ? (
               <span
                 style={{
                   background: getColorFromRange(ranking, {
@@ -554,9 +554,10 @@ export default class TooltipPool extends Component<Props, State> {
         key: 'relativeStake',
         value: (
           <div className={styles.defaultColor}>
-            <span className={styles.defaultColorContent}>{`${parseFloat(
-              relativeStake
-            ).toFixed(2)}%`}</span>
+            <span className={styles.defaultColorContent}>{`${toFixedUserFormat(
+              relativeStake,
+              2
+            )}%`}</span>
           </div>
         ),
       },
@@ -572,7 +573,7 @@ export default class TooltipPool extends Component<Props, State> {
                 }),
               }}
             >
-              {`${parseFloat(profitMargin).toFixed(2)}%`}
+              {`${toFixedUserFormat(profitMargin, 2)}%`}
             </span>
           </div>
         ),
@@ -618,10 +619,9 @@ export default class TooltipPool extends Component<Props, State> {
         key: 'potentialRewards',
         value: (
           <div className={styles.defaultColor}>
-            {nonMyopicMemberRewards ? (
+            {potentialRewards ? (
               <span className={styles.defaultColorContent}>
-                {shortNumber(formattedLovelaceToAmount(nonMyopicMemberRewards))}{' '}
-                {intl.formatMessage(globalMessages.unitAda)}
+                {formattedWalletAmount(potentialRewards)}
               </span>
             ) : (
               <div className={styles.noDataDash}>
@@ -694,7 +694,7 @@ export default class TooltipPool extends Component<Props, State> {
       description,
       ticker,
       homepage,
-      nonMyopicMemberRewards,
+      potentialRewards,
       retiring,
     } = stakePool;
 
@@ -719,7 +719,7 @@ export default class TooltipPool extends Component<Props, State> {
     ]);
     const colorBandStyles = classnames([
       styles.colorBand,
-      IS_RANKING_DATA_AVAILABLE && nonMyopicMemberRewards
+      IS_RANKING_DATA_AVAILABLE && potentialRewards
         ? null
         : styles.greyColorBand,
     ]);
@@ -732,7 +732,7 @@ export default class TooltipPool extends Component<Props, State> {
         aria-hidden
         style={componentStyle}
       >
-        {IS_RANKING_DATA_AVAILABLE && nonMyopicMemberRewards ? (
+        {IS_RANKING_DATA_AVAILABLE && potentialRewards ? (
           <div className={colorBandStyles} style={colorBandStyle} />
         ) : (
           <div className={colorBandStyles} />
