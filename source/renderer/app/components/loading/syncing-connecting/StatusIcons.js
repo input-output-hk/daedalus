@@ -2,11 +2,9 @@
 import React, { Component } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
-import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import classNames from 'classnames';
 import styles from './StatusIcons.scss';
-import tooltipStyles from './StatusIcons-tooltip.scss';
 import { CardanoNodeStates } from '../../../../../common/types/cardano-node.types';
 import nodeStateIcon from '../../../assets/images/node-state-icon.inline.svg';
 import isNodeRespondingIcon from '../../../assets/images/is-node-responding-icon.inline.svg';
