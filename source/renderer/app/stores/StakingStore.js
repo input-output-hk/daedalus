@@ -12,7 +12,6 @@ import {
   STAKE_POOLS_INTERVAL,
   STAKE_POOLS_FAST_INTERVAL,
   REDEEM_ITN_REWARDS_STEPS as steps,
-  INITIAL_DELEGATION_FUNDS,
 } from '../config/stakingConfig';
 import type {
   Reward,
@@ -33,7 +32,7 @@ export default class StakingStore extends Store {
   @observable fetchingStakePoolsFailed = false;
   @observable isStakingExperimentRead: boolean = false;
   @observable selectedDelegationWalletId = null;
-  @observable stake = INITIAL_DELEGATION_FUNDS;
+  @observable stake = 0;
   @observable isRanking = false;
 
   /* ----------  Redeem ITN Rewards  ---------- */
