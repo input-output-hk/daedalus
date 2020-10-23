@@ -9,9 +9,7 @@ import classNames from 'classnames';
 import { getRelativePosition } from '../../../utils/domManipulation';
 import {
   bigNumbersToFormattedNumbers,
-  formattedLovelaceToAmount,
   formattedWalletAmount,
-  shortNumber,
 } from '../../../utils/formatters';
 import styles from './StakePoolsTable.scss';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
@@ -21,7 +19,6 @@ import StakePool from '../../../domains/StakePool';
 type TableBodyProps = {
   stakePoolsList: Array<StakePool>,
   sortedStakePoolList: StakePool,
-  ada: string,
   numberOfRankedStakePools: number,
   currentTheme: string,
   onOpenExternalLink: Function,
@@ -181,7 +178,6 @@ export class StakePoolsTableBody extends Component<
 
   render() {
     const {
-      ada,
       sortedStakePoolList,
       numberOfRankedStakePools,
       currentTheme,

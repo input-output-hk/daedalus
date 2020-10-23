@@ -13,7 +13,6 @@ import SVGInline from 'react-svg-inline';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
-import BigNumber from 'bignumber.js';
 import styles from './TooltipPool.scss';
 import experimentalTooltipStyles from './TooltipPool-experimental-tooltip.scss';
 import isTooltipStyles from './TooltipPool-copyId-tooltip.scss';
@@ -30,13 +29,8 @@ import {
   shortNumber,
   toFixedUserFormat,
 } from '../../../utils/formatters';
-import {
-  DECIMAL_PLACES_IN_ADA,
-  LOVELACES_PER_ADA,
-} from '../../../config/numbersConfig';
 import { rangeMap } from '../../../utils/numbers';
 import { ellipsis } from '../../../utils/strings';
-import globalMessages from '../../../i18n/global-messages';
 import { STAKE_POOL_ID_COPY_FEEDBACK } from '../../../config/timingConfig';
 import {
   THUMBNAIL_HEIGHT,
