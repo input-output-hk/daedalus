@@ -25,7 +25,11 @@ import questionMarkIcon from '../../../assets/images/question-mark.inline.svg';
 import copyIcon from '../../../assets/images/clipboard-small-ic.inline.svg';
 import copyCheckmarkIcon from '../../../assets/images/check-w.inline.svg';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
-import { formattedWalletAmount, shortNumber } from '../../../utils/formatters';
+import {
+  formattedWalletAmount,
+  shortNumber,
+  toFixedUserFormat,
+} from '../../../utils/formatters';
 import {
   DECIMAL_PLACES_IN_ADA,
   LOVELACES_PER_ADA,
@@ -503,11 +507,11 @@ export default class TooltipPool extends Component<Props, State> {
               <span className={saturationBarClassnames}>
                 <span
                   style={{
-                    width: `${parseFloat(saturation).toFixed(2)}%`,
+                    width: `${toFixedUserFormat(saturation, 2)}%`,
                   }}
                 />
               </span>
-              {`${parseFloat(saturation).toFixed(2)}%`}
+              {`${toFixedUserFormat(saturation, 2)}%`}
             </span>
           </div>
         ),
@@ -556,9 +560,10 @@ export default class TooltipPool extends Component<Props, State> {
         key: 'relativeStake',
         value: (
           <div className={styles.defaultColor}>
-            <span className={styles.defaultColorContent}>{`${parseFloat(
-              relativeStake
-            ).toFixed(2)}%`}</span>
+            <span className={styles.defaultColorContent}>{`${toFixedUserFormat(
+              relativeStake,
+              2
+            )}%`}</span>
           </div>
         ),
       },
@@ -574,7 +579,7 @@ export default class TooltipPool extends Component<Props, State> {
                 }),
               }}
             >
-              {`${parseFloat(profitMargin).toFixed(2)}%`}
+              {`${toFixedUserFormat(profitMargin, 2)}%`}
             </span>
           </div>
         ),
