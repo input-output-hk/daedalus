@@ -1,6 +1,6 @@
 @import '../../../themes/mixins/link';
 .component {
-  padding: 20px;
+  padding: 20px 0 20px 20px;
 
   .headerWrapper {
     display: flex;
@@ -112,7 +112,7 @@
         }
         &.ascending {
           & > svg {
-            transform: rotate(180deg);
+            transform: rotateX(150deg);
           }
         }
         &.sorted {
