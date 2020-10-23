@@ -13,6 +13,7 @@ Changelog
 
 ### Fixes
 
+- Fixed wrong number formatting on staking screens ([PR 2213](https://github.com/input-output-hk/daedalus/pull/2213))
 - Fixed animation on wallet dropdown option during redemption process ([PR 2191](https://github.com/input-output-hk/daedalus/pull/2191))
 - Fixed Cardano Explorer URLs ([PR 2198](https://github.com/input-output-hk/daedalus/pull/2198))
 - Fixed Stake pool tooltip height issue ([PR 2203](https://github.com/input-output-hk/daedalus/pull/2203))
