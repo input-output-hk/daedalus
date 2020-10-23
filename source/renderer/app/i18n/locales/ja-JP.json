@@ -470,7 +470,7 @@
   "staking.stakePools.tableHeader.cost": "費用 (ADA)",
   "staking.stakePools.tableHeader.margin": "マージン",
   "staking.stakePools.tableHeader.performance": "!!!Performance",
-  "staking.stakePools.tableHeader.pledge": "出資",
+  "staking.stakePools.tableHeader.pledge": "出資 (ADA)",
   "staking.stakePools.tableHeader.potentialRewards": "見込み報酬額",
   "staking.stakePools.tableHeader.producedBlocks": "生成ブロック数",
   "staking.stakePools.tableHeader.rank": "ランク",

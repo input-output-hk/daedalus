@@ -470,7 +470,7 @@
   "staking.stakePools.tableHeader.cost": "Cost (ADA)",
   "staking.stakePools.tableHeader.margin": "Margin",
   "staking.stakePools.tableHeader.performance": "Performance",
-  "staking.stakePools.tableHeader.pledge": "Pledge",
+  "staking.stakePools.tableHeader.pledge": "Pledge (ADA)",
   "staking.stakePools.tableHeader.potentialRewards": "Potential rewards",
   "staking.stakePools.tableHeader.producedBlocks": "Produced Blocks",
   "staking.stakePools.tableHeader.rank": "Rank",

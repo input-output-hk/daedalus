@@ -388,30 +388,39 @@
         text-align: right;
       }
 
+      // Rank
       &:nth-child(1) {
         width: 7%;
       }
+      // Ticker
       &:nth-child(2) {
         width: 9%;
       }
+      // Saturation
       &:nth-child(3) {
-        width: 12%;
+        width: 11%;
       }
+      // Cost
       &:nth-child(4) {
-        width: 12%;
+        width: 10%;
       }
+      // Margin
       &:nth-child(5) {
         width: 8%;
       }
+      // Produced Blocks
       &:nth-child(6) {
         width: 15%;
       }
+      // Potential Rewards
       &:nth-child(7) {
         width: 16%;
       }
+      // Pledge
       &:nth-child(8) {
-        width: 9%;
+        width: 12%;
       }
+      // Retiring in
       &:nth-child(9) {
         width: 12%;
       }

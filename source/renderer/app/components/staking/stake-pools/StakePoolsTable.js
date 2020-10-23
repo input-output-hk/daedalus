@@ -106,7 +106,7 @@ const messages = defineMessages({
   },
   tableHeaderPledge: {
     id: 'staking.stakePools.tableHeader.pledge',
-    defaultMessage: '!!!Pledge',
+    defaultMessage: '!!!Pledge (ADA)',
     description: 'Table header "Pledge" label on stake pools list view page',
   },
   tableHeaderPledgeTooltip: {
