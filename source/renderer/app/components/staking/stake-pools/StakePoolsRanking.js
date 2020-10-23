@@ -154,9 +154,13 @@ export default class StakePoolsRanking extends Component<Props, State> {
   componentDidMount() {
     const { stake } = this.props;
     if (stake) {
+      const hasDecimal = stake - Math.floor(stake);
+      const displayValue = hasDecimal
+        ? formattedWalletAmount(new BigNumber(stake), false)
+        : stake;
       this.setState({
         sliderValue: Math.round(Math.log(stake) * RANKING_SLIDER_RATIO),
-        displayValue: formattedWalletAmount(new BigNumber(stake), false),
+        displayValue,
       });
     }
   }
