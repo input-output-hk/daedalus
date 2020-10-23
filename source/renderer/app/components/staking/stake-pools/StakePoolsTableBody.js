@@ -9,9 +9,8 @@ import classNames from 'classnames';
 import { getRelativePosition } from '../../../utils/domManipulation';
 import {
   bigNumbersToFormattedNumbers,
-  formattedLovelaceToAmount,
   formattedWalletAmount,
-  shortNumber,
+  toFixedUserFormat,
 } from '../../../utils/formatters';
 import styles from './StakePoolsTable.scss';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
@@ -21,7 +20,6 @@ import StakePool from '../../../domains/StakePool';
 type TableBodyProps = {
   stakePoolsList: Array<StakePool>,
   sortedStakePoolList: StakePool,
-  ada: string,
   numberOfRankedStakePools: number,
   currentTheme: string,
   onOpenExternalLink: Function,
@@ -181,7 +179,6 @@ export class StakePoolsTableBody extends Component<
 
   render() {
     const {
-      ada,
       sortedStakePoolList,
       numberOfRankedStakePools,
       currentTheme,
@@ -262,13 +259,13 @@ export class StakePoolsTableBody extends Component<
                 <div className={styles.progressBarContainer}>
                   <div
                     className={progressBarContentClassnames}
-                    style={{ width: `${parseFloat(saturation).toFixed(2)}%` }}
+                    style={{ width: `${toFixedUserFormat(saturation, 2)}%` }}
                   />
                 </div>
               </div>
-              <div className={styles.saturationLabel}>{`${parseFloat(
-                saturation
-              ).toFixed(2)}%`}</div>
+              <div className={styles.saturationLabel}>
+                {`${toFixedUserFormat(saturation, 2)}%`}
+              </div>
             </div>
           </td>
           <td>{Number(costValue).toFixed(2)}</td>
