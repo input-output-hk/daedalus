@@ -149,6 +149,15 @@
             }
           }
         }
+        th:nth-child(8) {
+          .SimpleTooltip_root {
+            .SimpleTooltip_bubble {
+              .SimpleBubble_bubble {
+                margin-left: -35px;
+              }
+            }
+          }
+        }
       }
     }
 
