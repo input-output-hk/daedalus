@@ -10,6 +10,7 @@ import { getRelativePosition } from '../../../utils/domManipulation';
 import {
   bigNumbersToFormattedNumbers,
   formattedLovelaceToAmount,
+  formattedWalletAmount,
   shortNumber,
 } from '../../../utils/formatters';
 import styles from './StakePoolsTable.scss';
@@ -198,9 +199,9 @@ export class StakePoolsTableBody extends Component<
       const producedBlocks = get(stakePool, 'producedBlocks', '');
       const pledge = new BigNumber(get(stakePool, 'pledge', ''));
       const retiring = get(stakePool, 'retiring', '');
-      const memberRewards = get(stakePool, 'nonMyopicMemberRewards', '');
+      const memberRewards = get(stakePool, 'potentialRewards', '');
       const potentialRewards = memberRewards
-        ? `${shortNumber(formattedLovelaceToAmount(memberRewards))} ${ada}`
+        ? formattedWalletAmount(memberRewards)
         : '-';
       const retirement =
         retiring && moment(retiring).locale(intl.locale).fromNow(true);

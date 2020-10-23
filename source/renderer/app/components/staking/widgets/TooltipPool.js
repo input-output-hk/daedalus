@@ -13,6 +13,7 @@ import SVGInline from 'react-svg-inline';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
+import BigNumber from 'bignumber.js';
 import styles from './TooltipPool.scss';
 import experimentalTooltipStyles from './TooltipPool-experimental-tooltip.scss';
 import isTooltipStyles from './TooltipPool-copyId-tooltip.scss';
@@ -24,11 +25,11 @@ import questionMarkIcon from '../../../assets/images/question-mark.inline.svg';
 import copyIcon from '../../../assets/images/clipboard-small-ic.inline.svg';
 import copyCheckmarkIcon from '../../../assets/images/check-w.inline.svg';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
+import { formattedWalletAmount, shortNumber } from '../../../utils/formatters';
 import {
-  formattedWalletAmount,
-  shortNumber,
-  formattedLovelaceToAmount,
-} from '../../../utils/formatters';
+  DECIMAL_PLACES_IN_ADA,
+  LOVELACES_PER_ADA,
+} from '../../../config/numbersConfig';
 import { rangeMap } from '../../../utils/numbers';
 import { ellipsis } from '../../../utils/strings';
 import globalMessages from '../../../i18n/global-messages';
@@ -480,7 +481,7 @@ export default class TooltipPool extends Component<Props, State> {
       ranking,
       relativeStake,
       producedBlocks,
-      nonMyopicMemberRewards,
+      potentialRewards,
       cost,
       profitMargin,
       saturation,
@@ -492,6 +493,7 @@ export default class TooltipPool extends Component<Props, State> {
       styles.saturationBar,
       styles[getSaturationColor(saturation)],
     ]);
+
     const fields = [
       {
         key: 'saturation',
@@ -514,7 +516,7 @@ export default class TooltipPool extends Component<Props, State> {
         key: 'ranking',
         value: (
           <div className={styles.ranking}>
-            {IS_RANKING_DATA_AVAILABLE && nonMyopicMemberRewards ? (
+            {IS_RANKING_DATA_AVAILABLE && potentialRewards ? (
               <span
                 style={{
                   background: getColorFromRange(ranking, {
@@ -618,10 +620,9 @@ export default class TooltipPool extends Component<Props, State> {
         key: 'potentialRewards',
         value: (
           <div className={styles.defaultColor}>
-            {nonMyopicMemberRewards ? (
+            {potentialRewards ? (
               <span className={styles.defaultColorContent}>
-                {shortNumber(formattedLovelaceToAmount(nonMyopicMemberRewards))}{' '}
-                {intl.formatMessage(globalMessages.unitAda)}
+                {formattedWalletAmount(potentialRewards)}
               </span>
             ) : (
               <div className={styles.noDataDash}>
@@ -694,7 +695,7 @@ export default class TooltipPool extends Component<Props, State> {
       description,
       ticker,
       homepage,
-      nonMyopicMemberRewards,
+      potentialRewards,
       retiring,
     } = stakePool;
 
@@ -719,7 +720,7 @@ export default class TooltipPool extends Component<Props, State> {
     ]);
     const colorBandStyles = classnames([
       styles.colorBand,
-      IS_RANKING_DATA_AVAILABLE && nonMyopicMemberRewards
+      IS_RANKING_DATA_AVAILABLE && potentialRewards
         ? null
         : styles.greyColorBand,
     ]);
@@ -732,7 +733,7 @@ export default class TooltipPool extends Component<Props, State> {
         aria-hidden
         style={componentStyle}
       >
-        {IS_RANKING_DATA_AVAILABLE && nonMyopicMemberRewards ? (
+        {IS_RANKING_DATA_AVAILABLE && potentialRewards ? (
           <div className={colorBandStyles} style={colorBandStyle} />
         ) : (
           <div className={colorBandStyles} />
