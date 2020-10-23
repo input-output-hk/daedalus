@@ -270,7 +270,7 @@ export class StakePoolsTableBody extends Component<
             </div>
           </td>
           <td>{Number(costValue).toFixed(2)}</td>
-          <td>{margin}%</td>
+          <td>{`${toFixedUserFormat(margin, 2)}%`}</td>
           <td>{shortNumber(producedBlocks)}</td>
           <td>{potentialRewards}</td>
           <td>{pledgeCalculatedValue}</td>
