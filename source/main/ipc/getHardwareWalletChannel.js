@@ -1,7 +1,7 @@
 // @flow
 /* eslint-disable */
 // @TODO - enable console once connecting logic refined
-//import TransportNodeHid from '@ledgerhq/hw-transport-node-hid';
+import TransportNodeHid from '@ledgerhq/hw-transport-node-hid';
 import AppAda, { cardano } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { BrowserWindow } from 'electron';
 // $FlowFixMe
@@ -182,7 +182,7 @@ export const handleHardwareWalletDevices = (mainWindow: BrowserWindow) => {
     // INIT - 5
     console.debug('>>> Ledger:: INIT - handleCheckHardwareWalletDevices - observer: ', observer);
     // @TODO - uncomment once Ledger enabled
-    // await TransportNodeHid.listen(observer);
+    await TransportNodeHid.listen(observer);
   };
 
   return handleCheckHardwareWalletDevices;
@@ -235,59 +235,59 @@ export const handleHardwareWalletRequests = async (mainWindow) => {
     }
 
     // @TODO - uncomment once Ledger enabled
-    // try {
-    //   const transportList = await TransportNodeHid.list();
-    //   console.debug('>>> LEDGER Connect <<<: ', {
-    //     deviceConnection,
-    //     transportList
-    //   });
-    //
-    //   let hw;
-    //   if (
-    //     !deviceConnection ||
-    //     (deviceConnection &&
-    //       deviceConnection.transport &&
-    //       // $FlowFixMe
-    //       deviceConnection.transport.disconnected)
-    //   ) {
-    //     console.debug('>>>  LEDGER Connect - NO Device connection instance <<<');
-    //     if (transportList.length) {
-    //       console.debug('>>>  LEDGER Connect - OPEN conn from list <<<');
-    //       hw = await TransportNodeHid.open(transportList[0]);
-    //       // hw = await TransportNodeHid.create();
-    //     } else {
-    //       console.debug('>>>  LEDGER Connect - CREATE new connection <<<');
-    //       hw = await TransportNodeHid.create();
-    //     }
-    //   } else {
-    //     console.debug('>>>  LEDGER Connect - device connection instance exists <<<');
-    //     hw = deviceConnection.transport;
-    //   }
-    //
-    //   console.debug('>>> LEDGER BEGIN: ', {
-    //     hw,
-    //     deviceConnection,
-    //   })
-    //
-    //   if (!deviceConnection) {
-    //     deviceConnection = new AppAda(hw);
-    //   }
-    //
-    //   const { deviceModel } = hw;
-    //   if (deviceModel) {
-    //     console.debug('>>> CONN ESTABLISHED: ', deviceModel);
-    //     const { id, productName } = deviceModel;
-    //     return Promise.resolve({
-    //       deviceId: null, // @TODO - to be defined
-    //       deviceType: 'ledger',
-    //       deviceModel: id, // e.g. nanoS
-    //       deviceName: productName, // e.g. Ledger Nano S
-    //     });
-    //   }
-    //   throw new Error('Missing device info');
-    // } catch (error) {
-    //   throw error;
-    // }
+    try {
+      const transportList = await TransportNodeHid.list();
+      console.debug('>>> LEDGER Connect <<<: ', {
+        deviceConnection,
+        transportList
+      });
+
+      let hw;
+      if (
+        !deviceConnection ||
+        (deviceConnection &&
+          deviceConnection.transport &&
+          // $FlowFixMe
+          deviceConnection.transport.disconnected)
+      ) {
+        console.debug('>>>  LEDGER Connect - NO Device connection instance <<<');
+        if (transportList.length) {
+          console.debug('>>>  LEDGER Connect - OPEN conn from list <<<');
+          hw = await TransportNodeHid.open(transportList[0]);
+          // hw = await TransportNodeHid.create();
+        } else {
+          console.debug('>>>  LEDGER Connect - CREATE new connection <<<');
+          hw = await TransportNodeHid.create();
+        }
+      } else {
+        console.debug('>>>  LEDGER Connect - device connection instance exists <<<');
+        hw = deviceConnection.transport;
+      }
+
+      console.debug('>>> LEDGER BEGIN: ', {
+        hw,
+        deviceConnection,
+      })
+
+      if (!deviceConnection) {
+        deviceConnection = new AppAda(hw);
+      }
+
+      const { deviceModel } = hw;
+      if (deviceModel) {
+        console.debug('>>> CONN ESTABLISHED: ', deviceModel);
+        const { id, productName } = deviceModel;
+        return Promise.resolve({
+          deviceId: null, // @TODO - to be defined
+          deviceType: 'ledger',
+          deviceModel: id, // e.g. nanoS
+          deviceName: productName, // e.g. Ledger Nano S
+        });
+      }
+      throw new Error('Missing device info');
+    } catch (error) {
+      throw error;
+    }
   });
 
   getCardanoAdaAppChannel.onRequest(async () => {
@@ -301,16 +301,16 @@ export const handleHardwareWalletRequests = async (mainWindow) => {
     // If transport is initialized outside Cardano ADA app it is set to disconnected so we need to reconnect same channel
 
     // @TODO - uncomment once Ledger enabled
-    // if (!deviceConnection) {
-    //   try {
-    //     console.debug('>>> GET CARDANO APP - open instances for: ', transportList[0])
-    //     const newDeviceConnection = await TransportNodeHid.open(transportList[0]);
-    //     deviceConnection = new AppAda(newDeviceConnection);
-    //   } catch (e) {
-    //     console.debug('>>> GET CARDANO APP - open instances FAILED: ', e);
-    //     throw e;
-    //   }
-    // }
+    if (!deviceConnection) {
+      try {
+        console.debug('>>> GET CARDANO APP - open instances for: ', transportList[0])
+        const newDeviceConnection = await TransportNodeHid.open(transportList[0]);
+        deviceConnection = new AppAda(newDeviceConnection);
+      } catch (e) {
+        console.debug('>>> GET CARDANO APP - open instances FAILED: ', e);
+        throw e;
+      }
+    }
 
     try {
       console.debug('>>> GET CARDANO APP - get version');
