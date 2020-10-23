@@ -9,7 +9,7 @@ import sortIcon from '../../../assets/images/ascending.inline.svg';
 import { defaultTableOrdering } from './StakePoolsTable';
 
 type TableHeaderProps = {
-  availableTableHeaders: Array<{ name: string, title: string }>,
+  availableTableHeaders: Array<{ name: string, title: any }>,
   stakePoolsSortBy: string,
   stakePoolsOrder: string,
   onHandleSort: Function,
