@@ -10,6 +10,7 @@ import { getRelativePosition } from '../../../utils/domManipulation';
 import {
   bigNumbersToFormattedNumbers,
   formattedWalletAmount,
+  toFixedUserFormat,
 } from '../../../utils/formatters';
 import styles from './StakePoolsTable.scss';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
@@ -258,13 +259,13 @@ export class StakePoolsTableBody extends Component<
                 <div className={styles.progressBarContainer}>
                   <div
                     className={progressBarContentClassnames}
-                    style={{ width: `${parseFloat(saturation).toFixed(2)}%` }}
+                    style={{ width: `${toFixedUserFormat(saturation, 2)}%` }}
                   />
                 </div>
               </div>
-              <div className={styles.saturationLabel}>{`${parseFloat(
-                saturation
-              ).toFixed(2)}%`}</div>
+              <div className={styles.saturationLabel}>
+                {`${toFixedUserFormat(saturation, 2)}%`}
+              </div>
             </div>
           </td>
           <td>{Number(costValue).toFixed(2)}</td>
