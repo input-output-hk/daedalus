@@ -203,10 +203,7 @@ export class StakePoolsTableBody extends Component<
         : '-';
       const retirement =
         retiring && moment(retiring).locale(intl.locale).fromNow(true);
-      const pledgeValue = bigNumbersToFormattedNumbers(pledge, true);
-      const pledgeCalculatedValue = Number(pledgeValue)
-        ? Number(pledgeValue).toFixed(2)
-        : pledgeValue;
+      const pledgeValue = formattedWalletAmount(pledge, false, false);
       const costValue = formattedWalletAmount(cost, false, false);
       const progressBarContentClassnames = classNames([
         styles.progressBarContent,
@@ -273,7 +270,7 @@ export class StakePoolsTableBody extends Component<
           <td>{`${toFixedUserFormat(margin, 2)}%`}</td>
           <td>{shortNumber(producedBlocks)}</td>
           <td>{potentialRewards}</td>
-          <td>{pledgeCalculatedValue}</td>
+          <td>{pledgeValue}</td>
           <td>
             {retirement ? (
               <span className={styles.retiring}>{retirement}</span>
