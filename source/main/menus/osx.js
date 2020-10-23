@@ -153,7 +153,7 @@ export const osxMenu = (
           shell.openExternal(safetyTipsLinkUrl);
         },
       },
-      {
+      /* {
         label: translation('helpSupport.featureRequest'),
         click() {
           const featureRequestLinkUrl = translation(
@@ -161,7 +161,7 @@ export const osxMenu = (
           );
           shell.openExternal(featureRequestLinkUrl);
         },
-      },
+      }, */
       {
         label: translation('helpSupport.supportRequest'),
         click() {
