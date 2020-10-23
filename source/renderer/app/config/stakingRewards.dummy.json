@@ -1,8 +1,8 @@
 [
   {
-    "date": "01.01.2019",
+    "date": "15.01.2019",
     "wallet": "Main Wallet",
-    "reward": 1.1,
+    "reward": 0.2,
     "pool": {
       "id": "a476343dd1dd57d680656224886ad9c11b5c44f6331bf029e9008a702713eda4",
       "ranking": 1,
@@ -17,9 +17,9 @@
     }
   },
   {
-    "date": "02.01.2019",
+    "date": "15.01.2019",
     "wallet": "Spending Money",
-    "reward": 12.12,
+    "reward": 1.003,
     "pool": {
       "id": "afd042672ed0212d074c5814771dc0f9d696b0fe3ca00c6bf613c1843f70419d",
       "ranking": 2,
@@ -34,111 +34,9 @@
     }
   },
   {
-    "date": "03.01.2019",
+    "date": "10.01.2019",
     "wallet": "Spending Money",
-    "reward": 123.123,
-    "pool": {
-      "id": "4484e2076b4604250f63032644acf37f0630e208b5d03378d546f747f9b7d3ff",
-      "ranking": 3,
-      "ticker": "IMMR",
-      "name": "Suscipit",
-      "description": "Lorem ipsum dolor sit amet, consectetur.",
-      "url": "https://springer.com",
-      "relativeStake": 63,
-      "profitMargin": 63,
-      "performance": 40,
-      "retiring": null
-    }
-  },
-  {
-    "date": "04.01.2019",
-    "wallet": "Saving",
-    "reward": 1234.1234,
-    "pool": {
-      "id": "b537af120298162372fc393d87e35803a8573a654786838e7a34b8d2354ec2fb",
-      "ranking": 4,
-      "ticker": "ORAN",
-      "name": "Prednisone",
-      "description": "Lorem ipsum dolor sit amet, consectetur.",
-      "url": "http://cisco.com",
-      "relativeStake": 69,
-      "profitMargin": 76,
-      "performance": 40,
-      "retiring": null
-    }
-  },
-  {
-    "date": "05.01.2019",
-    "wallet": "Main Wallet",
-    "reward": 12345.12345,
-    "pool": {
-      "id": "9438c572026bf8a7019ae1733e4c6a1b4208fc12291e4788a7db70891d6bdb97",
-      "ranking": 5,
-      "ticker": "ITUB",
-      "name": "Accusantium",
-      "description": "Lorem ipsum dolor sit amet, consectetur.",
-      "url": "http://stumbleupon.com",
-      "relativeStake": 75,
-      "profitMargin": 86,
-      "performance": 67,
-      "retiring": null
-    }
-  },
-  {
-    "date": "06.01.2019",
-    "wallet": "Main Wallet",
-    "reward": 123456.123456,
-    "pool": {
-      "id": "9eebf901e2ab6ee31eddd54b9725df5b59f23a531f5cb6d547b69f3fa880df89",
-      "ranking": 6,
-      "ticker": "MKL",
-      "name": "Molestias",
-      "description": "Lorem ipsum dolor sit amet, consectetur.",
-      "url": "http://soundcloud.com",
-      "relativeStake": 69,
-      "profitMargin": 89,
-      "performance": 79,
-      "retiring": null
-    }
-  },
-  {
-    "date": "07.01.2019",
-    "wallet": "Main Wallet",
-    "reward": 1234567.000006,
-    "pool": {
-      "id": "a476343dd1dd57d680656224886ad9c11b5c44f6331bf029e9008a702713eda4",
-      "ranking": 1,
-      "ticker": "ELSAC",
-      "name": "Repellendus",
-      "description": "Lorem ipsum dolor sit amet, consectetur.",
-      "url": "https://technorati.com",
-      "relativeStake": 65,
-      "profitMargin": 43,
-      "performance": 9,
-      "retiring": null
-    }
-  },
-  {
-    "date": "08.01.2019",
-    "wallet": "Spending Money",
-    "reward": 12345678.000056,
-    "pool": {
-      "id": "afd042672ed0212d074c5814771dc0f9d696b0fe3ca00c6bf613c1843f70419d",
-      "ranking": 2,
-      "ticker": "MOCO",
-      "name": "Dolorem",
-      "description": "Lorem ipsum dolor sit amet, consectetur.",
-      "url": "https://amazon.de",
-      "relativeStake": 47,
-      "profitMargin": 62,
-      "performance": 90,
-      "retiring": null
-    }
-  },
-  {
-    "date": "09.01.2019",
-    "wallet": "Spending Money",
-    "reward": 123456.000456,
+    "reward": 2,
     "pool": {
       "id": "4484e2076b4604250f63032644acf37f0630e208b5d03378d546f747f9b7d3ff",
       "ranking": 3,
@@ -155,7 +53,7 @@
   {
     "date": "10.01.2019",
     "wallet": "Saving",
-    "reward": 123.003456,
+    "reward": 0.9,
     "pool": {
       "id": "b537af120298162372fc393d87e35803a8573a654786838e7a34b8d2354ec2fb",
       "ranking": 4,
@@ -170,9 +68,9 @@
     }
   },
   {
-    "date": "11.01.2019",
+    "date": "10.01.2019",
     "wallet": "Main Wallet",
-    "reward": 0.023456,
+    "reward": 0.2,
     "pool": {
       "id": "9438c572026bf8a7019ae1733e4c6a1b4208fc12291e4788a7db70891d6bdb97",
       "ranking": 5,
@@ -187,9 +85,9 @@
     }
   },
   {
-    "date": "12.01.2019",
+    "date": "05.01.2019",
     "wallet": "Main Wallet",
-    "reward": 1.1,
+    "reward": 1.6,
     "pool": {
       "id": "9eebf901e2ab6ee31eddd54b9725df5b59f23a531f5cb6d547b69f3fa880df89",
       "ranking": 6,
