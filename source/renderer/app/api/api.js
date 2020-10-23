@@ -1,5 +1,5 @@
 // @flow
-import { split, get, map, last, size } from 'lodash';
+import { split, get, map, last, size, concat } from 'lodash';
 import { action } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
@@ -805,15 +805,55 @@ export default class AdaApi {
         data,
       });
 
+      // @TODO - handle CHANGE on smarter way and change corresponding downstream logic
+      const outputs = concat(response.outputs, response.change);
+
       // Calculate fee from inputs and outputs
       let totalInputs = 0;
       let totalOutputs = 0;
+      const inputsData = [];
+      const outputsData = [];
+      const certificatesData = [];
       map(response.inputs, input => {
         totalInputs += input.amount.quantity;
+        const inputData = {
+          address: input.address,
+          amount: input.amount,
+          id: input.id,
+          index: input.index,
+          derivationPath: input.derivation_path,
+        }
+        inputsData.push(inputData);
       });
-      map(response.outputs, output => {
+      map(outputs, output => {
         totalOutputs += output.amount.quantity;
-      })
+        let outputData = {
+          address: output.address,
+          amount: output.amount,
+        }
+        if (output.derivation_path) {
+          outputData = {
+            ...outputData,
+            derivationPath: output.derivation_path,
+          }
+        }
+        outputsData.push(outputData);
+      });
+      if (response.certificates) {
+        map(response.certificates, certificate => {
+          let certificateData = {
+            certificateType: certificate.certificate_type,
+            rewardAccountPath: certificate.reward_account_path,
+          }
+          if (certificate.pool) {
+            certificateData = {
+              ...certificateData,
+              pool: certificate.pool,
+            }
+          }
+          certificatesData.push(certificateData);
+        });
+      }
       const fee = new BigNumber(totalInputs - totalOutputs).dividedBy(LOVELACES_PER_ADA);
 
       let transactionFee;
@@ -827,13 +867,15 @@ export default class AdaApi {
 
       // On first wallet delegation deposit is included in fee
       const extendedResponse = {
-        ...response,
+        inputs: inputsData,
+        outputs: outputsData,
+        certificates: certificatesData,
         feeWithDelegationDeposit: fee,
         fee: transactionFee,
       };
 
       logger.debug('AdaApi::selectCoins success', {
-        transactionFee: response,
+        transactionFee: extendedResponse,
       });
       return extendedResponse;
     } catch (error) {

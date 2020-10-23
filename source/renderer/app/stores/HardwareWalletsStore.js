@@ -413,7 +413,7 @@ export default class HardwareWalletsStore extends Store {
 
   // Trezor - Shelley only
   @action _signTransactionTrezor = async (walletId: string) => {
-    const { coinSelection, recieverAddress } = this.txSignRequest;
+    const { coinSelection } = this.txSignRequest;
     runInAction(
       'HardwareWalletsStore:: set Transaction verifying',
       () => {
@@ -436,14 +436,11 @@ export default class HardwareWalletsStore extends Store {
     const { inputs, outputs, fee, certificates } = coinSelection;
 
     const inputsData = map(inputs, input => {
-      const addressIndex = this.stores.addresses.getAddressIndex(input.address);
-      return prepareTrezorInput(input, addressIndex);
+      return prepareTrezorInput(input);
     });
 
     const outputsData = map(outputs, output => {
-      const addressIndex = this.stores.addresses.getAddressIndex(output.address);
-      const isChange = output.address !== recieverAddress;
-      return prepareTrezorOutput(output, addressIndex, isChange);
+      return prepareTrezorOutput(output);
     })
 
     const certificatesData = map(certificates, certificate => prepareCertificate(certificate));

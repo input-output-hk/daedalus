@@ -2,6 +2,7 @@
 import BigNumber from 'bignumber.js';
 import { WalletTransaction } from '../../domains/WalletTransaction';
 import { WalletUnits } from '../../domains/Wallet';
+import type { DelegationAction } from '../../types/stakingTypes';
 
 export type TransactionAmount = {
   quantity: number,
@@ -169,6 +170,20 @@ export type CoinSelectionOutput = {
   amount: CoinSelectionAmount,
 };
 
+export type CoinSelectionChange = {
+  address: string,
+  amount: CoinSelectionAmount,
+  derivation_path: Array<string>,
+};
+
+export type CoinSelectionCertificate = {
+  certificate_type: DelegationAction,
+  pool: string,
+  reward_account_path: Array<string>,
+};
+
+export type CoinSelectionCertificates = Array<CoinSelectionCertificate>;
+
 export type CoinSelectionsRequest = {
   walletId: string,
   address: string,
@@ -179,6 +194,8 @@ export type CoinSelectionsRequest = {
 export type CoinSelectionsResponse = {
   inputs: Array<CoinSelectionInput>,
   outputs: Array<CoinSelectionOutput>,
+  change: Array<CoinSelectionChange>,
+  certificates?: CoinSelectionCertificates,
 };
 
 export type CreateExternalTransactionRequest = {

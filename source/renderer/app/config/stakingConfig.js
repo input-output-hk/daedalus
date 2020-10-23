@@ -1,5 +1,5 @@
 // @flow
-import type { RedeemItnRewardsStep, DelefationAction } from '../types/stakingTypes';
+import type { RedeemItnRewardsStep, DelegationAction } from '../types/stakingTypes';
 
 export const RANKING_SLIDER_RATIO = 60;
 export const MIN_DELEGATION_FUNDS_LOG = Math.log(10);
@@ -50,7 +50,7 @@ export const REDEEM_ITN_REWARDS_STEPS: {
 };
 
 export const DELEGATION_ACTIONS: {
-  [key: string]: DelefationAction,
+  [key: string]: DelegationAction,
 } = {
   JOIN: 'join',
   QUIT: 'quit',

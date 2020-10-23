@@ -9,7 +9,7 @@ import type { CoinSelectionInput, CoinSelectionOutput } from '../api/transaction
 
 export const prepareTrezorInput = (input: CoinSelectionInput) => {
   return {
-    path: derivationPathToString(input.derivation_path),
+    path: derivationPathToString(input.derivationPath),
     prev_hash: input.id,
     prev_index: input.index,
   };
@@ -17,15 +17,13 @@ export const prepareTrezorInput = (input: CoinSelectionInput) => {
 
 export const prepareTrezorOutput = (
   output: CoinSelectionOutput,
-  addressIndex?: number = 0,
-  isChange?: boolean = false
 ) => {
-  if (isChange) {
+  if (output.derivationPath) { // Change output
     return {
       amount: output.amount.quantity.toString(),
       addressParameters: {
         addressType: 0, // BASE address
-        path: `m/1852'/1815'/0'/0/${addressIndex}`,
+        path: derivationPathToString(output.derivationPath),
         stakingPath: "m/1852'/1815'/0'/2/0",
       },
     };
@@ -39,12 +37,12 @@ export const prepareTrezorOutput = (
 export const prepareCertificate = (cert) => {
   return cert.pool
     ? {
-      type: CERTIFICATE_TYPE[cert.certificate_type],
-      path: derivationPathToString(cert.reward_account_path),
+      type: CERTIFICATE_TYPE[cert.certificateType],
+      path: derivationPathToString(cert.rewardAccountPath),
       pool: utils.buf_to_hex(utils.bech32_decodeAddress(cert.pool)),
     }
     : {
-      type: CERTIFICATE_TYPE[cert.certificate_type],
-      path: derivationPathToString(cert.reward_account_path),
+      type: CERTIFICATE_TYPE[cert.certificateType],
+      path: derivationPathToString(cert.rewardAccountPath),
     }
 };

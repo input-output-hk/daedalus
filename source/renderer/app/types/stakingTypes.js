@@ -1,4 +1,4 @@
 // @flow
 
 export type RedeemItnRewardsStep = 'configuration' | 'confirmation' | 'result';
-export type DelefationAction = 'join' | 'quit';
+export type DelegationAction = 'join' | 'quit';
