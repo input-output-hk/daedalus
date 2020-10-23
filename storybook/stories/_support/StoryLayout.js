@@ -2,14 +2,20 @@
 import React, { Component, Children } from 'react';
 import type { Node } from 'react';
 import { observable, runInAction } from 'mobx';
+import BigNumber from 'bignumber.js';
 import { observer, inject } from 'mobx-react';
 import { get } from 'lodash';
 import { action } from '@storybook/addon-actions';
-import { boolean } from '@storybook/addon-knobs';
+import { select, boolean } from '@storybook/addon-knobs';
 import { isIncentivizedTestnetTheme, isShelleyTestnetTheme } from './utils';
 
 // Assets and helpers
 import { CATEGORIES_BY_NAME } from '../../../source/renderer/app/config/sidebarConfig';
+import {
+  DEFAULT_NUMBER_FORMAT,
+  NUMBER_FORMATS,
+} from '../../../source/common/types/number.types';
+import { NUMBER_OPTIONS } from '../../../source/renderer/app/config/profileConfig';
 import { formattedWalletAmount } from '../../../source/renderer/app/utils/formatters';
 import NodeSyncStatusIcon from '../../../source/renderer/app/components/widgets/NodeSyncStatusIcon';
 import Wallet, {
@@ -81,7 +87,19 @@ export default class StoryLayout extends Component<Props> {
       activeWalletId,
       setActiveWalletId
     );
-
+    const currentNumberFormat = select(
+      'currentNumberFormat',
+      NUMBER_OPTIONS.reduce((obj, option) => {
+        obj[option.label] = option.value;
+        return obj;
+      }, {}),
+      NUMBER_OPTIONS[0]
+    );
+    const FORMAT = {
+      ...DEFAULT_NUMBER_FORMAT,
+      ...NUMBER_FORMATS[currentNumberFormat],
+    };
+    BigNumber.config({ FORMAT });
     return (
       <div
         style={{
