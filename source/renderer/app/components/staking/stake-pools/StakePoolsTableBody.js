@@ -10,7 +10,6 @@ import { getRelativePosition } from '../../../utils/domManipulation';
 import {
   bigNumbersToFormattedNumbers,
   formattedWalletAmount,
-  shortNumber,
   toFixedUserFormat,
 } from '../../../utils/formatters';
 import styles from './StakePoolsTable.scss';
@@ -268,7 +267,7 @@ export class StakePoolsTableBody extends Component<
           </td>
           <td>{costValue}</td>
           <td>{`${toFixedUserFormat(margin, 2)}%`}</td>
-          <td>{shortNumber(producedBlocks)}</td>
+          <td>{formattedWalletAmount(producedBlocks, false, false)}</td>
           <td>{potentialRewards}</td>
           <td>{pledgeValue}</td>
           <td>

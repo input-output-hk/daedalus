@@ -26,7 +26,6 @@ import copyCheckmarkIcon from '../../../assets/images/check-w.inline.svg';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
 import {
   formattedWalletAmount,
-  shortNumber,
   toFixedUserFormat,
 } from '../../../utils/formatters';
 import { rangeMap } from '../../../utils/numbers';
@@ -610,7 +609,7 @@ export default class TooltipPool extends Component<Props, State> {
         value: (
           <div className={styles.defaultColor}>
             <span className={styles.defaultColorContent}>
-              {shortNumber(producedBlocks)}
+              {formattedWalletAmount(producedBlocks, false, false)}
             </span>
           </div>
         ),
