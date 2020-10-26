@@ -102,6 +102,7 @@ export default class HardwareWalletsStore extends Store {
   @observable txSignRequest: TxSignRequestTypes = {};
   @observable transportDevice: ?TransportDevice = null;
   @observable txBody: ?string = null;
+  @observable isConnectionInitialized: boolean = false;
 
   cardanoAdaAppPollingInterval: ?IntervalID = null;
 
@@ -257,18 +258,39 @@ export default class HardwareWalletsStore extends Store {
         //    - Pick device not initialized in LC so we keep connections with already created wallets
       console.debug('>>> establishHardwareWalletConnection - connect with NEW device');
       try {
-        console.debug('>>> DEVICES: ', this.hardwareWalletDevices);
         // Get unpaired devices if exist
         const lastUnpairedConnectedDevice = findLast(this.hardwareWalletDevices, hardwareWalletDevice => !hardwareWalletDevice.paired && !hardwareWalletDevice.disconnected);
 
         console.debug('>>> UNPAIRED: ', lastUnpairedConnectedDevice);
 
-        const transportDevice = await getHardwareWalletTransportChannel.request({
-          devicePath: lastUnpairedConnectedDevice ? lastUnpairedConnectedDevice.path : null,
-          isTrezor: lastUnpairedConnectedDevice && lastUnpairedConnectedDevice.deviceType === DeviceTypes.TREZOR,
+        runInAction('HardwareWalletsStore:: set connecting helper flag', () => {
+          this.isConnectionInitialized = true;
         });
 
-        console.debug('>>> DEVICE CONNECTED: ', transportDevice);
+        let transportDevice;
+        // Start listeners for both device types
+        if (!lastUnpairedConnectedDevice) {
+          // Start Trezor listener
+          transportDevice = await getHardwareWalletTransportChannel.request({
+            devicePath: null,
+            isTrezor: true,
+          });
+          // @TODO - improve logic for Ledger (no devices -> connect device when connecting state initialized)
+          if (!transportDevice) {
+            // Start Ledger listener
+            transportDevice = await getHardwareWalletTransportChannel.request({
+              devicePath: null,
+              isTrezor: false,
+            });
+            console.debug('>>> transportDevice 2: ', transportDevice);
+          }
+        } else {
+          // Start listeners for specific (last connected) device
+          transportDevice = await getHardwareWalletTransportChannel.request({
+            devicePath: lastUnpairedConnectedDevice.path,
+            isTrezor: lastUnpairedConnectedDevice.deviceType === DeviceTypes.TREZOR,
+          });
+        }
 
         if (transportDevice) {
           const { deviceType } = transportDevice;
@@ -396,6 +418,7 @@ export default class HardwareWalletsStore extends Store {
       runInAction('HardwareWalletsStore:: set wallet READY', () => {
         this.extendedPublicKey = extendedPublicKey;
         this.hwDeviceStatus = HwDeviceStatuses.READY;
+        this.isConnectionInitialized = false;
       });
 
       this._refreshHardwareWalletsLocalData();
