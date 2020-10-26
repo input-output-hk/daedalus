@@ -945,6 +945,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-transactions-transfer-funds-selected-wallet-background-color':
       '#ffffff0d',
     '--theme-transactions-header-background-color': '#121326',
+    '--theme-transactions-header-texct-color': '#ffffff80',
   },
   uploader: {
     '--theme-uploader-text-color': '#ffffff',

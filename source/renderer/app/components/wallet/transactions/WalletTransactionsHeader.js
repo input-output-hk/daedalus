@@ -1,12 +1,13 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
+import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
 import FilterDialog from './FilterDialog';
 import FilterButton from './FilterButton';
 import FilterResultInfo from './FilterResultInfo';
 import styles from './WalletTransactionsHeader.scss';
-// import TinyButton from '../widgets/forms/TinyButton';
+import TinyButton from '../widgets/forms/TinyButton';
 import type { TransactionFilterOptionsType } from '../../../stores/TransactionsStore';
 
 export const messages = defineMessages({
@@ -27,6 +28,7 @@ type Props = {
   populatedFilterOptions: TransactionFilterOptionsType,
   onFilter: Function,
   onClose: Function,
+  isScrolling: boolean,
 };
 
 type State = {
@@ -49,14 +51,34 @@ export default class WalletTransactionsHeader extends Component<Props, State> {
   render() {
     const { intl } = this.context;
     const { isFilterButtonFaded } = this.state;
-    const { transactions, filterOptions } = this.props;
-    console.log('filterOptions', filterOptions);
+    const {
+      transactions,
+      filterOptions,
+      isScrolling /* , hasAny*/,
+    } = this.props;
+    // console.log('this.props.hasAny', this.props.hasAny);
+    const hasAny = true;
+
+    const componentClassnames = classnames([
+      styles.component,
+      isScrolling ? styles.isScrolling : null,
+    ]);
 
     return (
-      <div className={styles.component}>
+      <div className={componentClassnames}>
         <div className={styles.numberOfTransactions}>
           {intl.formatMessage(messages.transactions)} ({transactions.length})
         </div>
+        {hasAny && (
+          <div className={styles.actions}>
+            <TinyButton className={styles.csvButton} loading={false} />
+            <FilterButton
+              numberOfFilterDimensionsApplied={0}
+              faded={isFilterButtonFaded}
+              onClick={this.openFilterDialog}
+            />
+          </div>
+        )}
       </div>
     );
 

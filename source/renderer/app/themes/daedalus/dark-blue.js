@@ -961,6 +961,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-transactions-transfer-funds-selected-wallet-background-color':
       '#e9f4fe0d',
     '--theme-transactions-header-background-color': '#263345',
+    '--theme-transactions-header-texct-color': '#e9f4fe80',
   },
   uploader: {
     '--theme-uploader-text-color': '#e9f4fe',

@@ -945,6 +945,7 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-transactions-transfer-funds-selected-wallet-background-color':
       '#2d2d2d0d',
     '--theme-transactions-header-background-color': '#f9f9f9',
+    '--theme-transactions-header-texct-color': '#2d2d2d80',
   },
   uploader: {
     '--theme-uploader-text-color': '#2d2d2d',

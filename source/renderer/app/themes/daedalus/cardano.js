@@ -955,6 +955,7 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-transactions-transfer-funds-selected-wallet-background-color':
       '#5e60660d',
     '--theme-transactions-header-background-color': '#efefef',
+    '--theme-transactions-header-texct-color': '#5e606680',
   },
   uploader: {
     '--theme-uploader-text-color': '#5e6066',

@@ -1,8 +1,25 @@
 .component {
+  align-items: center;
+  background: var(--theme-transactions-header-background-color);
+  display: flex;
   height: 53px;
   padding: 0 40px;
+  position: relative;
+  z-index: 1;
+  &.isScrolling {
+    box-shadow: 0 2.5px 10px 0 rgba(0, 0, 0, 0.25);
+  }
 }
 .numberOfTransactions {
-  // background: red;
-  color: orange;
+  color: var(--theme-transactions-header-texct-color);
+  font-family: var(--font-regular);
+  line-height: 1.38;
+}
+
+.actions {
+  align-self: right;
+}
+
+.csvButton {
+  background: red;
 }
