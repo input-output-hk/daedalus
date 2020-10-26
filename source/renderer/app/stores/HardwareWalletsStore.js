@@ -684,17 +684,21 @@ export default class HardwareWalletsStore extends Store {
       });
     }
     console.debug('>>> Add new device or update - LC- not connected to software wallet: ', { recognizedPairedHardwareWallet });
-    await this._setHardwareWalletDevice({
-      deviceId,
-      data: {
-        deviceType,
-        deviceModel,
-        deviceName,
-        path,
-        paired: recognizedPairedHardwareWallet ? recognizedPairedHardwareWallet.id : null, // device paired with software wallet
-        disconnected, // device physically disconnected
-      },
-    });
+
+    if (deviceId) {
+      // @TODO - Ledger can not return id initially
+      await this._setHardwareWalletDevice({
+        deviceId,
+        data: {
+          deviceType,
+          deviceModel,
+          deviceName,
+          path,
+          paired: recognizedPairedHardwareWallet ? recognizedPairedHardwareWallet.id : null, // device paired with software wallet
+          disconnected, // device physically disconnected
+        },
+      });
+    }
 
     this._refreshHardwareWalletsLocalData();
     this._refreshHardwareWalletDevices();
