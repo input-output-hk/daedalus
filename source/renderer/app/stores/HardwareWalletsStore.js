@@ -156,9 +156,15 @@ export default class HardwareWalletsStore extends Store {
   };
 
   getAvailableDevices = async () => {
+    await this.hardwareWalletsLocalDataRequest.execute();
+    await this.hardwareWalletDevicesRequest.execute();
+    console.debug('>>> SETUP:: getAvailableDevices ', {
+      hardwareWalletsConnectionData: this.hardwareWalletsConnectionData,
+      hardwareWalletDevices: this.hardwareWalletDevices,
+    })
     // Set all logical HW into disconnected state
     map(this.hardwareWalletsConnectionData, async (connectedWallet) => {
-      console.debug('>> connectedWallet: ', connectedWallet);
+      console.debug('>> SET connectedWallet to disconnected state: ', connectedWallet);
       await this._setHardwareWalletLocalData({
         walletId: connectedWallet.id,
         data: {
@@ -168,10 +174,11 @@ export default class HardwareWalletsStore extends Store {
     })
 
     // Initiate Device Check for each stored device
-    map(this.hardwareWalletDevices, async dev => {
+    map(this.hardwareWalletDevices, async device => {
+      console.debug('>> Check Device: ', device);
       await getHardwareWalletTransportChannel.request({
-        devicePath: dev.path,
-        isTrezor: true,
+        devicePath: device.path,
+        isTrezor: device.deviceType === DeviceTypes.TREZOR,
       });
     })
 
