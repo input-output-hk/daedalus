@@ -700,15 +700,7 @@ export default class TooltipPool extends Component<Props, State> {
       idCopyFeedback,
     } = this.state;
 
-    const {
-      id,
-      name,
-      description,
-      ticker,
-      homepage,
-      potentialRewards,
-      retiring,
-    } = stakePool;
+    const { id, name, description, ticker, homepage, retiring } = stakePool;
 
     const componentClassnames = classnames([
       styles.component,
