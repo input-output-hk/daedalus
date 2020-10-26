@@ -207,10 +207,9 @@
       left: -10px;
       top: -11px;
     }
-  }
-
-  &.greyArrow {
-    border-bottom-color: var(--theme-staking-stake-pool-grey-color);
+    &.greyArrow {
+      border-bottom-color: var(--theme-staking-stake-pool-grey-color);
+    }
   }
 
   &.tooltipPositionLeft {
