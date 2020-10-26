@@ -940,6 +940,7 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.12)',
     '--theme-transactions-transfer-funds-selected-wallet-background-color':
       '#ffffff0d',
+    '--theme-transactions-header-background-color': '#121326',
   },
   uploader: {
     '--theme-uploader-text-color': '#ffffff',

@@ -1137,6 +1137,7 @@ export const createDaedalusComponentsTheme = (
       '--theme-topbar-logo-color': `${text.primary}`,
     },
     transactions: {
+      '--theme-transactions-header-background-color': `${background.primary.regular}`,
       '--theme-transactions-list-background-color': `${background.primary.lightest}`,
       '--theme-transactions-list-border-color': `${border}`,
       '--theme-transactions-list-group-date-color': `${text.primary}`,
