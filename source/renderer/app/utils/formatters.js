@@ -70,20 +70,6 @@ export const shortNumber = (value: number | BigNumber): string => {
   return formattedAmount;
 };
 
-export const bigNumbersToFormattedNumbers = (
-  value: BigNumber,
-  shorterNumber?: boolean
-): string => {
-  const formattedValue = formattedWalletAmount(value, false, !shorterNumber);
-  const splitValues = formattedValue.split(',');
-  let result = '';
-  splitValues.map((item) => {
-    result += item;
-    return true;
-  });
-  return result;
-};
-
 export const formattedAmountToNaturalUnits = (amount: string): string => {
   const cleanedAmount = amount
     .replace(/\./g, '') // removes all the dot separators

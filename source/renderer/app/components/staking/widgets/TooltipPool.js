@@ -513,7 +513,7 @@ export default class TooltipPool extends Component<Props, State> {
         key: 'ranking',
         value: (
           <div className={styles.ranking}>
-            {IS_RANKING_DATA_AVAILABLE && potentialRewards ? (
+            {IS_RANKING_DATA_AVAILABLE && !potentialRewards.isZero() ? (
               <span
                 style={{
                   background: getColorFromRange(ranking, {
@@ -609,7 +609,7 @@ export default class TooltipPool extends Component<Props, State> {
         value: (
           <div className={styles.defaultColor}>
             <span className={styles.defaultColorContent}>
-              {formattedWalletAmount(producedBlocks, false, false)}
+              {toFixedUserFormat(producedBlocks, 0)}
             </span>
           </div>
         ),
@@ -618,7 +618,7 @@ export default class TooltipPool extends Component<Props, State> {
         key: 'potentialRewards',
         value: (
           <div className={styles.defaultColor}>
-            {potentialRewards ? (
+            {!potentialRewards.isZero() ? (
               <span className={styles.defaultColorContent}>
                 {formattedWalletAmount(potentialRewards)}
               </span>
@@ -718,7 +718,7 @@ export default class TooltipPool extends Component<Props, State> {
     ]);
     const colorBandStyles = classnames([
       styles.colorBand,
-      IS_RANKING_DATA_AVAILABLE && potentialRewards
+      IS_RANKING_DATA_AVAILABLE && !potentialRewards.isZero()
         ? null
         : styles.greyColorBand,
     ]);
@@ -731,7 +731,7 @@ export default class TooltipPool extends Component<Props, State> {
         aria-hidden
         style={componentStyle}
       >
-        {IS_RANKING_DATA_AVAILABLE && potentialRewards ? (
+        {IS_RANKING_DATA_AVAILABLE && !potentialRewards.isZero() ? (
           <div className={colorBandStyles} style={colorBandStyle} />
         ) : (
           <div className={colorBandStyles} />

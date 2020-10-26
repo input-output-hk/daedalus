@@ -103,9 +103,9 @@
     :global {
       .SVGInline {
         align-items: center;
-        display: flex;
+        display: flex !important;
         justify-content: center;
-        padding: 0 4px;
+        padding: 0 4px !important;
       }
     }
 
