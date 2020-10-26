@@ -153,6 +153,7 @@ export class ThumbPool extends Component<Props, State> {
             showWithSelectButton={showWithSelectButton}
             containerClassName={containerClassName}
             numberOfRankedStakePools={numberOfRankedStakePools}
+            isListView={false}
           />
         )}
       </div>
