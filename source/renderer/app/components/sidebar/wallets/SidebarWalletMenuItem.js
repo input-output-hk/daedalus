@@ -57,7 +57,6 @@ export default class SidebarWalletMenuItem extends Component<Props> {
       className,
       !isIncentivizedTestnet && hasNotification ? styles.notification : null,
       isNotResponding ? styles.notResponding : null,
-      isHardwareWallet && isHardwareWalletDisconnected ? styles.disconnectedBorder : null, // @TODO - remove
     ]);
 
     const hwIconStyles = classNames([
