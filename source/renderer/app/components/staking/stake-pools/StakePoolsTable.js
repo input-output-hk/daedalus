@@ -149,29 +149,21 @@ type Props = {
   numberOfRankedStakePools: number,
   selectedPoolId?: ?number,
   onOpenExternalLink: Function,
-  maintainFixed?: boolean,
-  isScrolled?: boolean,
   currentLocale: string,
+  onTableHeaderMouseEnter: Function,
+  onTableHeaderMouseLeave: Function,
 };
 
 type State = {
   isPreloading: boolean,
   stakePoolsOrder: string,
   stakePoolsSortBy: string,
-  isFixedTableHeaderActive: boolean,
-  isFixedSearchBarActive: boolean,
-  fixedTableHeaderPosition: number,
-  fixedSearchBarPosition: number,
 };
 
 const initialState = {
   isPreloading: true,
   stakePoolsOrder: 'asc',
   stakePoolsSortBy: 'ranking',
-  isFixedTableHeaderActive: false,
-  isFixedSearchBarActive: false,
-  fixedTableHeaderPosition: 250,
-  fixedSearchBarPosition: 186,
 };
 
 @observer
@@ -185,9 +177,7 @@ export class StakePoolsTable extends Component<Props, State> {
     showWithSelectButton: false,
   };
 
-  state = {
-    ...initialState,
-  };
+  state = { ...initialState };
 
   scrollableDomElement: ?HTMLElement = null;
 
@@ -230,20 +220,15 @@ export class StakePoolsTable extends Component<Props, State> {
       containerClassName,
       numberOfRankedStakePools,
       listName,
-      maintainFixed,
-      isScrolled,
       onSelect,
       selectedPoolId,
       setListActive,
       isListActive,
       currentLocale,
+      onTableHeaderMouseEnter,
+      onTableHeaderMouseLeave,
     } = this.props;
-    const {
-      isPreloading,
-      stakePoolsSortBy,
-      stakePoolsOrder,
-      isFixedTableHeaderActive,
-    } = this.state;
+    const { isPreloading, stakePoolsSortBy, stakePoolsOrder } = this.state;
     const { intl } = this.context;
     const componentClasses = classNames([styles.component, listName]);
 
@@ -253,20 +238,6 @@ export class StakePoolsTable extends Component<Props, State> {
           <LoadingSpinner big />
         </div>
       );
-    let tableHeaderClasses: string = '';
-    if (isScrolled) {
-      tableHeaderClasses = classNames([
-        styles.tableHeader,
-        isScrolled && isFixedTableHeaderActive ? styles.fixedTableHeader : null,
-      ]);
-    } else {
-      tableHeaderClasses = classNames([
-        styles.tableHeader,
-        isScrolled && (isFixedTableHeaderActive || maintainFixed)
-          ? styles.fixedTableHeader
-          : null,
-      ]);
-    }
 
     const sortedStakePoolList = orderBy(
       stakePoolsList.map((stakePool) => {
@@ -414,7 +385,10 @@ export class StakePoolsTable extends Component<Props, State> {
           {sortedStakePoolList.length > 0 && (
             <BorderedBox>
               <table>
-                <thead className={tableHeaderClasses}>
+                <thead
+                  onMouseEnter={onTableHeaderMouseEnter}
+                  onMouseLeave={onTableHeaderMouseLeave}
+                >
                   <tr>
                     <StakePoolsTableHeader
                       availableTableHeaders={availableTableHeaders}

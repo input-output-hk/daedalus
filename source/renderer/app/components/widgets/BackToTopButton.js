@@ -17,6 +17,7 @@ type Props = {
   scrollableElementClassName: string,
   buttonTopPosition: number,
   scrollTopToActivate: number,
+  isForceHidden?: boolean,
 };
 
 type State = {
@@ -31,6 +32,7 @@ export default class BackToTopButton extends Component<Props, State> {
   static defaultProps = {
     scrollTopToActivate: 20,
     buttonTopPosition: 20,
+    isForceHidden: false,
   };
 
   state = {
@@ -99,11 +101,14 @@ export default class BackToTopButton extends Component<Props, State> {
   render() {
     const { intl } = this.context;
     const { isActive } = this.state;
-    const { buttonTopPosition } = this.props;
+    const { buttonTopPosition, isForceHidden } = this.props;
     const componentStyles = classnames(styles.component, {
       [styles.isActive]: isActive,
     });
     const top = isActive ? buttonTopPosition : buttonTopPosition - 10;
+
+    if (isForceHidden) return null;
+
     return (
       <button
         style={{ top }}
