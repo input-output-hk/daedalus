@@ -804,6 +804,21 @@ export default class HardwareWalletsStore extends Store {
     walletId: string,
   }) => {
     await this.unsetHardwareWalletLocalDataRequest.execute(walletId);
+
+    const pairedDevice = find(this.hardwareWalletDevices, recognizedDevice => (
+      recognizedDevice.paired === walletId
+    ));
+
+    // Unset device <-> wallet paired parameter
+    if (pairedDevice) {
+      this._setHardwareWalletDevice({
+        deviceId: pairedDevice.id,
+        data: {
+          paired: null,
+        }
+      });
+      this._refreshHardwareWalletDevices();
+    }
     this._refreshHardwareWalletsLocalData();
     this.stores.wallets.refreshWalletsData();
   };
