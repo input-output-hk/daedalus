@@ -286,9 +286,11 @@ export default class TooltipPool extends Component<Props, State> {
       arrowBottom,
       arrowLeft
     );
-    const colorBandStyle = {
-      background: color,
-    };
+    const colorBandStyle = !this.isGreyColor
+      ? {
+          background: color,
+        }
+      : {};
 
     this.setState({
       componentStyle,
@@ -443,12 +445,16 @@ export default class TooltipPool extends Component<Props, State> {
         top,
         bottom,
       };
-    if (tooltipPosition === 'bottom')
-      return {
+    if (tooltipPosition === 'bottom') {
+      const borderStyle = !this.isGreyColor && {
         borderBottomColor: this.props.color,
+      };
+      return {
+        ...borderStyle,
         left,
         top,
       };
+    }
     return {
       right,
       top,
@@ -469,6 +475,13 @@ export default class TooltipPool extends Component<Props, State> {
   onIdMouseOut = () => {
     this.setState({ idCopyFeedback: false });
   };
+
+  get isGreyColor() {
+    return (
+      IS_RANKING_DATA_AVAILABLE &&
+      this.props.stakePool.potentialRewards.isZero()
+    );
+  }
 
   renderDescriptionFields = () => {
     const { isIncentivizedTestnet } = global;
@@ -513,7 +526,7 @@ export default class TooltipPool extends Component<Props, State> {
         key: 'ranking',
         value: (
           <div className={styles.ranking}>
-            {IS_RANKING_DATA_AVAILABLE && potentialRewards ? (
+            {!this.isGreyColor ? (
               <span
                 style={{
                   background: getColorFromRange(ranking, {
@@ -609,7 +622,7 @@ export default class TooltipPool extends Component<Props, State> {
         value: (
           <div className={styles.defaultColor}>
             <span className={styles.defaultColorContent}>
-              {formattedWalletAmount(producedBlocks, false, false)}
+              {toFixedUserFormat(producedBlocks, 0)}
             </span>
           </div>
         ),
@@ -618,7 +631,7 @@ export default class TooltipPool extends Component<Props, State> {
         key: 'potentialRewards',
         value: (
           <div className={styles.defaultColor}>
-            {potentialRewards ? (
+            {!potentialRewards.isZero() ? (
               <span className={styles.defaultColorContent}>
                 {formattedWalletAmount(potentialRewards)}
               </span>
@@ -687,15 +700,7 @@ export default class TooltipPool extends Component<Props, State> {
       idCopyFeedback,
     } = this.state;
 
-    const {
-      id,
-      name,
-      description,
-      ticker,
-      homepage,
-      potentialRewards,
-      retiring,
-    } = stakePool;
+    const { id, name, description, ticker, homepage, retiring } = stakePool;
 
     const componentClassnames = classnames([
       styles.component,
@@ -705,6 +710,7 @@ export default class TooltipPool extends Component<Props, State> {
     const arrowClassnames = classnames([
       styles.arrow,
       styles[`tooltipPosition${capitalize(tooltipPosition)}`],
+      this.isGreyColor ? styles.greyArrow : null,
     ]);
 
     const retirementFromNow = retiring
@@ -712,15 +718,13 @@ export default class TooltipPool extends Component<Props, State> {
       : '';
 
     const idCopyIcon = idCopyFeedback ? copyCheckmarkIcon : copyIcon;
-    const hoverContentStyles = classnames([
+    const hoverContentClassnames = classnames([
       styles.hoverContent,
       idCopyFeedback ? styles.checkIcon : styles.copyIcon,
     ]);
-    const colorBandStyles = classnames([
+    const colorBandClassnames = classnames([
       styles.colorBand,
-      IS_RANKING_DATA_AVAILABLE && potentialRewards
-        ? null
-        : styles.greyColorBand,
+      this.isGreyColor ? styles.greyColorBand : null,
     ]);
 
     return (
@@ -731,11 +735,7 @@ export default class TooltipPool extends Component<Props, State> {
         aria-hidden
         style={componentStyle}
       >
-        {IS_RANKING_DATA_AVAILABLE && potentialRewards ? (
-          <div className={colorBandStyles} style={colorBandStyle} />
-        ) : (
-          <div className={colorBandStyles} />
-        )}
+        <div className={colorBandClassnames} style={colorBandStyle} />
         <div className={arrowClassnames} style={arrowStyle} />
         <div className={styles.container}>
           <h3 className={styles.name}>{name}</h3>
@@ -765,7 +765,7 @@ export default class TooltipPool extends Component<Props, State> {
                 skin={TooltipSkin}
                 tip={intl.formatMessage(messages.copyIdTooltipLabel)}
               >
-                <div className={hoverContentStyles}>
+                <div className={hoverContentClassnames}>
                   <p className={styles.hoverContentBackground}>
                     {id} <SVGInline svg={idCopyIcon} />
                   </p>

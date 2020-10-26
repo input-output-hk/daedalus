@@ -11,6 +11,7 @@ import {
   shortNumber,
   generateThousands,
   formattedWalletAmount,
+  toFixedUserFormat,
 } from '../../../utils/formatters';
 import {
   getFilteredWallets,
@@ -148,7 +149,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
     sliderValue: Math.round(
       INITIAL_DELEGATION_FUNDS_LOG * RANKING_SLIDER_RATIO
     ),
-    displayValue: Number(INITIAL_DELEGATION_FUNDS).toString(),
+    displayValue: toFixedUserFormat(INITIAL_DELEGATION_FUNDS, 0),
   };
 
   componentDidMount() {
@@ -157,7 +158,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
       const hasDecimal = stake - Math.floor(stake);
       const displayValue = hasDecimal
         ? formattedWalletAmount(new BigNumber(stake), false)
-        : stake;
+        : toFixedUserFormat(stake, 0);
       this.setState({
         sliderValue: Math.round(Math.log(stake) * RANKING_SLIDER_RATIO),
         displayValue,
@@ -231,7 +232,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
         Math.exp(sliderValue / RANKING_SLIDER_RATIO)
       );
     }
-    const displayValue = Number(amountValue).toString();
+    const displayValue = toFixedUserFormat(amountValue, 0);
     this.setState({ sliderValue, displayValue });
     updateDelegatingStake(null, amountValue);
   };

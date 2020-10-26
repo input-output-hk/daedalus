@@ -57,9 +57,7 @@ export class StakePoolsList extends Component<Props, State> {
     window.addEventListener('resize', this.handleResize);
   }
 
-  state = {
-    ...initialState,
-  };
+  state = { ...initialState };
 
   // We need to track the mounted state in order to avoid calling
   // setState promise handling code after the component was already unmounted:

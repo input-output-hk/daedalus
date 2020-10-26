@@ -8,7 +8,6 @@ import moment from 'moment';
 import classNames from 'classnames';
 import { getRelativePosition } from '../../../utils/domManipulation';
 import {
-  bigNumbersToFormattedNumbers,
   formattedWalletAmount,
   toFixedUserFormat,
 } from '../../../utils/formatters';
@@ -197,7 +196,7 @@ export class StakePoolsTableBody extends Component<
       const pledge = new BigNumber(get(stakePool, 'pledge', ''));
       const retiring = get(stakePool, 'retiring', '');
       const memberRewards = get(stakePool, 'potentialRewards', '');
-      const potentialRewards = memberRewards
+      const potentialRewards = !memberRewards.isZero()
         ? formattedWalletAmount(memberRewards)
         : '-';
       const retirement =
@@ -221,7 +220,7 @@ export class StakePoolsTableBody extends Component<
           }
         >
           <td>
-            {memberRewards ? rank : '-'}
+            {!memberRewards.isZero() ? rank : '-'}
             {isHighlighted && (
               <TooltipPool
                 stakePool={stakePool}
@@ -267,7 +266,7 @@ export class StakePoolsTableBody extends Component<
           </td>
           <td>{costValue}</td>
           <td>{`${toFixedUserFormat(margin, 2)}%`}</td>
-          <td>{formattedWalletAmount(producedBlocks, false, false)}</td>
+          <td>{toFixedUserFormat(producedBlocks, 0)}</td>
           <td>{potentialRewards}</td>
           <td>{pledgeValue}</td>
           <td>

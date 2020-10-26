@@ -4,19 +4,6 @@
   position: initial;
   transition: position 1s ease-out, top 1s ease-out;
   width: 100%;
-
-  &.componentFixedPosition {
-    background-color: var(--theme-main-body-background-color);
-    box-shadow: 0 2.5px 10px 0
-      var(--theme-staking-stake-pool-tooltip-shadow-color);
-    height: 70px;
-    margin-left: -20px;
-    margin-right: -20px;
-    padding: 10px 20px;
-    position: fixed;
-    width: calc(100% - 84px);
-    z-index: 100;
-  }
 }
 
 .container {
