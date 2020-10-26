@@ -397,6 +397,9 @@ export default class HardwareWalletsStore extends Store {
         this.extendedPublicKey = extendedPublicKey;
         this.hwDeviceStatus = HwDeviceStatuses.READY;
       });
+
+      this._refreshHardwareWalletsLocalData();
+      this._refreshHardwareWalletDevices();
     } catch (e) {
       /**
        * ============  Exporting aborted  =============
@@ -593,7 +596,8 @@ export default class HardwareWalletsStore extends Store {
     // const isReady = hardwareWalletsConnectionData.state === HwDeviceStatuses.READY;
     // const isConnecting = hardwareWalletsConnectionData.state === HwDeviceStatuses.CONNECTING;
     // const isDisconnected = hardwareWalletsConnectionData.disconnected;
-    const { disconnected, deviceType, id } = hardwareWalletConnectionData;
+    const { disconnected, device, id } = hardwareWalletConnectionData;
+    const { deviceType } = device
 
     // Add more cases / edge cases if needed
     if (!disconnected) {
