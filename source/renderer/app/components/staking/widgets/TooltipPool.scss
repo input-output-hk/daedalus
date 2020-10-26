@@ -209,6 +209,10 @@
     }
   }
 
+  &.greyArrow {
+    border-bottom-color: var(--theme-staking-stake-pool-grey-color);
+  }
+
   &.tooltipPositionLeft {
     border-left-color: var(--theme-staking-stake-pool-tooltip-border-color);
     border-width: 11px 0 11px 11px;
