@@ -157,8 +157,8 @@ export default class HardwareWalletsStore extends Store {
         );
       } else {
         this.setTransactionPendingState(false);
+        this._resetTransaction();
       }
-      this._resetTransaction();
       this.stores.wallets.refreshWalletsData();
       this.sendMoneyRequest.reset();
       return transaction;
@@ -202,6 +202,7 @@ export default class HardwareWalletsStore extends Store {
     this.stores.wallets.refreshWalletsData();
     this.isTransactionPending = false;
     this.actions.dialogs.closeActiveDialog.trigger();
+    this._resetTransaction();
     this.stores.wallets.goToWalletRoute(walletId);
   };
 
