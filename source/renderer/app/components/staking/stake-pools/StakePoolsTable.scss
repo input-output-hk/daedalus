@@ -116,6 +116,8 @@
         :global {
           .SimpleTooltip_root {
             .SimpleTooltip_bubble {
+              pointer-events: none;
+
               .SimpleBubble_bubble {
                 font-family: var(--font-regular);
                 font-weight: 400;
