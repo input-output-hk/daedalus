@@ -87,6 +87,8 @@ export const StakePoolsTableStory = (props: Props) => (
             })
           ).length
         }
+        onTableHeaderMouseEnter={() => {}}
+        onTableHeaderMouseLeave={() => {}}
       />
     </div>
   </React.Fragment>

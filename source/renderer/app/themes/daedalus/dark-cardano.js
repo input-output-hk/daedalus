@@ -744,7 +744,7 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-staking-stake-pool-background-color': 'rgba(42, 43, 60, 1)',
     '--theme-staking-stake-pool-border-color': 'rgba(42, 43, 60, 1)',
     '--theme-staking-stake-pool-glow-color': '#1fc1c34c',
-    '--theme-staking-stake-pool-grey-color': 'rgba(255, 255, 255, 0.5)',
+    '--theme-staking-stake-pool-grey-color': '#434554',
     '--theme-staking-stake-pool-grey-bg-color': 'rgba(255, 255, 255, 0.1)',
     '--theme-staking-stake-pools-search-icon-color': '#ffffff',
     '--theme-staking-stake-pool-saturation-background-color':
