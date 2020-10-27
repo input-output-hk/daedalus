@@ -1,13 +1,15 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { observer, inject } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
+import SVGInline from 'react-svg-inline';
 import FilterDialog from './FilterDialog';
 import FilterButton from './FilterButton';
 import FilterResultInfo from './FilterResultInfo';
 import styles from './WalletTransactionsHeader.scss';
-import TinyButton from '../widgets/forms/TinyButton';
+import TinyButton from '../../widgets/forms/TinyButton';
+import downloadIcon from '../../../assets/images/download-icon.inline.svg';
 import type { TransactionFilterOptionsType } from '../../../stores/TransactionsStore';
 
 export const messages = defineMessages({
@@ -15,6 +17,11 @@ export const messages = defineMessages({
     id: 'wallet.transactions.header.transactions',
     defaultMessage: '!!!Transactions',
     description: 'Label for the "Transactions" header.',
+  },
+  exportCSVButtonLabel: {
+    id: 'wallet.transactions.header.exportCSV.button.label',
+    defaultMessage: '!!!Export CSV',
+    description: 'Label for the "Export CSV" button.',
   },
 });
 
@@ -71,9 +78,22 @@ export default class WalletTransactionsHeader extends Component<Props, State> {
         </div>
         {hasAny && (
           <div className={styles.actions}>
-            <TinyButton className={styles.csvButton} loading={false} />
+            <TinyButton
+              label={
+                <Fragment>
+                  {intl.formatMessage(messages.exportCSVButtonLabel)}
+                  <SVGInline
+                    svg={downloadIcon}
+                    className={styles.downloadIcon}
+                  />
+                </Fragment>
+              }
+              containerClassName={styles.csvButtonContainer}
+              className={styles.csvButton}
+              loading={false}
+            />
             <FilterButton
-              numberOfFilterDimensionsApplied={0}
+              numberOfFilterDimensionsApplied={3}
               faded={isFilterButtonFaded}
               onClick={this.openFilterDialog}
             />

@@ -3,11 +3,20 @@
   background: var(--theme-transactions-header-background-color);
   display: flex;
   height: 53px;
+  justify-content: space-between;
   padding: 0 40px;
   position: relative;
   z-index: 1;
   &.isScrolling {
     box-shadow: 0 2.5px 10px 0 rgba(0, 0, 0, 0.25);
+  }
+  .csvButtonContainer {
+    margin-right: 9px;
+    .csvButton {
+      background: #dadfe5 !important;
+      padding: 0 12px !important;
+      color: #5e6066 !important;
+    }
   }
 }
 .numberOfTransactions {
@@ -15,11 +24,13 @@
   font-family: var(--font-regular);
   line-height: 1.38;
 }
-
 .actions {
-  align-self: right;
+  display: flex;
 }
-
-.csvButton {
-  background: red;
+.downloadIcon {
+  svg {
+    width: 11px;
+    height: 11px;
+    margin-left: 11px;
+  }
 }
