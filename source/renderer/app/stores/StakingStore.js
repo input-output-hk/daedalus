@@ -222,6 +222,7 @@ export default class StakingStore extends Store {
       clearInterval(this.delegationCheckTimeInterval);
       this.delegationCheckTimeInterval = null;
     }
+    this.stores.hardwareWallets._resetTransaction();
     this.stores.wallets.refreshWalletsData();
     this.isDelegationTransactionPending = false;
   };

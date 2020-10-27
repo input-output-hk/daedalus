@@ -157,7 +157,7 @@ export default class HardwareWalletsStore extends Store {
         );
       } else {
         this.setTransactionPendingState(false);
-        this._resetTransaction();
+        // this._resetTransaction();
       }
       this.stores.wallets.refreshWalletsData();
       this.sendMoneyRequest.reset();
