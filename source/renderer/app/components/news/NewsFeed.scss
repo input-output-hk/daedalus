@@ -95,6 +95,13 @@
     overflow: hidden;
     padding: 20px;
 
+    &.emptyFeedContainer {
+      align-items: center;
+      display: flex;
+      justify-content: center;
+      height: 100%;
+    }
+
     &::-webkit-scrollbar-track {
       margin: 13px 0;
     }
