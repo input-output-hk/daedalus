@@ -756,7 +756,7 @@ export default class TooltipPool extends Component<Props, State> {
             onMouseOut={this.onIdMouseOut}
             onBlur={() => {}}
           >
-            <p className={styles.ellipsisContent}>{ellipsis(id, 20, 20)}</p>
+            <p className={styles.ellipsisContent}>{ellipsis(id, 18, 18)}</p>
             <CopyToClipboard text={id} onCopy={this.onCopyId}>
               <Tooltip
                 className={styles.idTooltip}
