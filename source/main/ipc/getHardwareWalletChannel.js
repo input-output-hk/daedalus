@@ -122,6 +122,7 @@ export const handleInitTrezorConnect = (sender: IpcSender) => {
     TrezorConnect.on(TRANSPORT_EVENT, event => {
       console.debug('>>> TRANSPORT_EVENT: ', event);
     });
+
     TrezorConnect.on(DEVICE_EVENT, event => {
       console.debug('>>> DEVICE_EVENT: ', event);
       const connectionChanged = event.type === 'device-connect' || event.type === 'device-disconnect' || event.type === 'device-changed';
