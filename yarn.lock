@@ -11096,15 +11096,7 @@ polished@^3.3.1:
   dependencies:
     "@babel/runtime" "^7.9.2"
 
-popper.js@1.16.1:
-  version "1.16.1"
-  resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.16.1.tgz#2a223cb3dc7b6213d740e40372be40de43e65b1b"
-
-popper.js@^1.14.4:
-  version "1.16.1"
-  resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.16.1.tgz#2a223cb3dc7b6213d740e40372be40de43e65b1b"
-
-popper.js@^1.14.7:
+popper.js@1.16.1, popper.js@^1.14.4, popper.js@^1.14.7:
   version "1.16.1"
   resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.16.1.tgz#2a223cb3dc7b6213d740e40372be40de43e65b1b"
 
@@ -11957,9 +11949,10 @@ react-modal@3.1.12:
     prop-types "^15.5.10"
     warning "^3.0.0"
 
-react-polymorph@0.9.6-rc.1:
-  version "0.9.6-rc.1"
-  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-0.9.6-rc.1.tgz#cc74e3fbf073e8e39606a7f33ae55072dd9a4e60"
+react-polymorph@0.9.6-rc.2:
+  version "0.9.6-rc.2"
+  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-0.9.6-rc.2.tgz#57705b3465fda2a7fb3ccc5a505fbbe92dc885c9"
+  integrity sha512-82dneRY5VVHkIjLTn6jZG7QMvLOdJ0Exf44GMeiNj5Cl3tuBpQVWAN0H8rEXIXkpILjXaDG0/WzvQfruQtm7jw==
   dependencies:
     "@tippyjs/react" "4.2.0"
     create-react-context "0.2.2"
