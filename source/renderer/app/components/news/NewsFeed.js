@@ -144,6 +144,7 @@ export default class NewsFeed extends Component<Props, State> {
 
     const newsFeedContainerClasses = classNames([
       styles.newsFeedContainer,
+      hasUpdateItem ? styles.hasUpdate : null,
       !items.length ? styles.emptyFeedContainer : null,
     ]);
 

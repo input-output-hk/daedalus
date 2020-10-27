@@ -98,8 +98,14 @@
     &.emptyFeedContainer {
       height: 100%;
 
+      &.hasUpdate {
+        .newsFeedEmptyContainer {
+          height: calc(100% - 100px) !important;
+        }
+      }
+
       .newsFeedEmptyContainer {
-        height: calc(100% - 100px) !important;
+        height: 100%;
       }
     }
 
