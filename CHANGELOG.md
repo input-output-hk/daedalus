@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Fixes
+
+- Fixed Address validation on Shelley QA network ([PR 2218](https://github.com/input-output-hk/daedalus/pull/2218))
+
 ## 2.4.0
 
 ### Features
