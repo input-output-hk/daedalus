@@ -97,6 +97,10 @@
 
     &.emptyFeedContainer {
       height: 100%;
+
+      .newsFeedEmptyContainer {
+        height: calc(100% - 100px) !important;
+      }
     }
 
     &::-webkit-scrollbar-track {
