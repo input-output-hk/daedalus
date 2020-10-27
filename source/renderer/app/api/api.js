@@ -1968,6 +1968,9 @@ const _createStakePoolFromServerData = action(
       id,
       relativeStake: relativeStakePercentage,
       producedBlocks: producedBlocksCount,
+      potentialRewards: new BigNumber(nonMyopicMemberRewardsQuantity).dividedBy(
+        LOVELACES_PER_ADA
+      ),
       nonMyopicMemberRewards: nonMyopicMemberRewardsQuantity,
       ticker,
       homepage,

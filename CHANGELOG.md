@@ -1,12 +1,12 @@
 Changelog
 =========
 
-## vNext
+## 2.4.0
 
 ### Features
 
-- Replaced several tooltips with new react-polymorph PopOver component [PR 2210](https://github.com/input-output-hk/daedalus/pull/2210)
-- Added stake pools list view ([PR 2186](https://github.com/input-output-hk/daedalus/pull/2186))
+- Added tooltips to stake pools table view headers ([PR 2214](https://github.com/input-output-hk/daedalus/pull/2214))
+- Added stake pools list view ([PR 2186](https://github.com/input-output-hk/daedalus/pull/2186), [PR 2215](https://github.com/input-output-hk/daedalus/pull/2215))
 - Implemented stake pool details explanation tooltips ([PR 2211](https://github.com/input-output-hk/daedalus/pull/2211))
 - Re-enabled stake pool saturation info ([PR 2200](https://github.com/input-output-hk/daedalus/pull/2200))
 - Implemented the wallet migration leftovers handling ([PR 2178](https://github.com/input-output-hk/daedalus/pull/2178))
@@ -14,6 +14,8 @@ Changelog
 
 ### Fixes
 
+- Fixed wrong number formatting on staking screens ([PR 2213](https://github.com/input-output-hk/daedalus/pull/2213))
+- Removed broken feature requests link ([PR 2212](https://github.com/input-output-hk/daedalus/pull/2212))
 - Fixed animation on wallet dropdown option during redemption process ([PR 2191](https://github.com/input-output-hk/daedalus/pull/2191))
 - Fixed Cardano Explorer URLs ([PR 2198](https://github.com/input-output-hk/daedalus/pull/2198))
 - Fixed Stake pool tooltip height issue ([PR 2203](https://github.com/input-output-hk/daedalus/pull/2203))

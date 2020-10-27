@@ -13,7 +13,7 @@
   text-align: initial;
   user-select: text;
   width: 280px;
-  z-index: 100;
+  z-index: 1000;
 
   :global {
     button.SimpleButton_root {
@@ -103,9 +103,9 @@
     :global {
       .SVGInline {
         align-items: center;
-        display: flex;
+        display: flex !important;
         justify-content: center;
-        padding: 0 4px;
+        padding: 0 4px !important;
       }
     }
 
@@ -206,6 +206,10 @@
       border-width: 0 10px 10px 10px;
       left: -10px;
       top: -11px;
+    }
+
+    &.greyArrow {
+      border-bottom-color: var(--theme-staking-stake-pool-grey-color);
     }
   }
 
@@ -397,6 +401,7 @@
     & > div {
       height: 19px;
       margin-bottom: 6px;
+      white-space: nowrap;
     }
 
     & > div:first-child {

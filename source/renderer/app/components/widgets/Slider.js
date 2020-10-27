@@ -33,7 +33,7 @@ type Props = {
   activeDotStyle?: any,
   defaultValue?: number,
   value: number,
-  displayValue?: number,
+  displayValue?: any,
   showRawValue?: boolean,
   showTooltip?: boolean,
   minTooltip?: string,
@@ -71,7 +71,7 @@ export default class Slider extends Component<Props> {
     const valueMarkStyle = { left: valueMarkLeftPosition };
     const formattedValue = showRawValue
       ? displayValue || value
-      : new BigNumber(displayValue || value).toFormat(0);
+      : new BigNumber(value).toFormat(0);
 
     return (
       <div className={styles.component}>

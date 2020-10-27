@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
-import { debounce } from 'lodash';
+import { throttle } from 'lodash';
 import styles from './BackToTopButton.scss';
 
 const messages = defineMessages({
@@ -17,6 +17,7 @@ type Props = {
   scrollableElementClassName: string,
   buttonTopPosition: number,
   scrollTopToActivate: number,
+  isForceHidden?: boolean,
 };
 
 type State = {
@@ -31,6 +32,7 @@ export default class BackToTopButton extends Component<Props, State> {
   static defaultProps = {
     scrollTopToActivate: 20,
     buttonTopPosition: 20,
+    isForceHidden: false,
   };
 
   state = {
@@ -52,7 +54,7 @@ export default class BackToTopButton extends Component<Props, State> {
         if (!this.scrollableDomElement) return false;
         return this.scrollableDomElement.addEventListener(
           'scroll',
-          debounce(this.getIsBackToTopActive, 300, {
+          throttle(this.getIsBackToTopActive, 300, {
             leading: false,
             trailing: true,
           })
@@ -99,11 +101,14 @@ export default class BackToTopButton extends Component<Props, State> {
   render() {
     const { intl } = this.context;
     const { isActive } = this.state;
-    const { buttonTopPosition } = this.props;
+    const { buttonTopPosition, isForceHidden } = this.props;
     const componentStyles = classnames(styles.component, {
       [styles.isActive]: isActive,
     });
     const top = isActive ? buttonTopPosition : buttonTopPosition - 10;
+
+    if (isForceHidden) return null;
+
     return (
       <button
         style={{ top }}

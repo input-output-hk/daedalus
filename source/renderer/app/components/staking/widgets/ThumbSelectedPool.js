@@ -34,7 +34,13 @@ export default class ThumbSelectedPool extends Component<Props> {
       IS_RANKING_DATA_AVAILABLE &&
       nonMyopicMemberRewards
         ? getColorFromRange(ranking, numberOfRankedStakePools)
-        : 'transparent';
+        : null;
+
+    const selectedPoolBlockStyle = rankColor
+      ? {
+          background: rankColor,
+        }
+      : {};
 
     const selectedPoolBlockClasses = classnames([
       styles.component,
@@ -51,10 +57,7 @@ export default class ThumbSelectedPool extends Component<Props> {
     }
 
     return (
-      <div
-        className={selectedPoolBlockClasses}
-        style={{ background: rankColor }}
-      >
+      <div className={selectedPoolBlockClasses} style={selectedPoolBlockStyle}>
         {ticker && <div className={styles.ticker}>{ticker}</div>}
         <div className={styles.icon}>
           <SVGInline svg={icon} />
