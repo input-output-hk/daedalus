@@ -8,7 +8,7 @@ export const setInitialState = (initialState: Object) =>
     updateParam({ param, value })
   );
 
-channel.on('daedalusMenu/updateParam', query => {
+channel.on('daedalusMenu/updateParam', (query) => {
   channel.emit('daedalusMenu/paramUpdated', query);
 });
 
@@ -16,6 +16,6 @@ export const updateParam = (query: Object) =>
   channel.emit('daedalusMenu/updateParam', query);
 
 export const onReceiveParam = (cb: Function) =>
-  channel.on('daedalusMenu/updateParam', query => {
+  channel.on('daedalusMenu/updateParam', (query) => {
     cb(query);
   });

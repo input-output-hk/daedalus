@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
+import { throttle } from 'lodash';
 import styles from './BackToTopButton.scss';
 
 const messages = defineMessages({
@@ -16,6 +17,7 @@ type Props = {
   scrollableElementClassName: string,
   buttonTopPosition: number,
   scrollTopToActivate: number,
+  isForceHidden?: boolean,
 };
 
 type State = {
@@ -30,40 +32,57 @@ export default class BackToTopButton extends Component<Props, State> {
   static defaultProps = {
     scrollTopToActivate: 20,
     buttonTopPosition: 20,
+    isForceHidden: false,
   };
 
   state = {
     isActive: false,
   };
 
+  _isMounted = false;
+
   scrollableDomElement: ?HTMLElement = null;
 
   componentDidMount() {
-    this.scrollableDomElement = document.querySelector(
-      `.${this.props.scrollableElementClassName}`
-    );
-    if (!this.scrollableDomElement) return false;
-    return this.scrollableDomElement.addEventListener(
-      'scroll',
-      this.getIsBackToTopActive
-    );
+    this._isMounted = true;
+
+    setTimeout(() => {
+      if (this._isMounted) {
+        this.scrollableDomElement = document.querySelector(
+          `.${this.props.scrollableElementClassName}`
+        );
+        if (!this.scrollableDomElement) return false;
+        return this.scrollableDomElement.addEventListener(
+          'scroll',
+          throttle(this.getIsBackToTopActive, 300, {
+            leading: false,
+            trailing: true,
+          })
+        );
+      }
+      return null;
+    }, 0);
   }
 
   componentWillUnmount() {
-    this.scrollableDomElement = document.querySelector(
-      `.${this.props.scrollableElementClassName}`
-    );
-    if (!this.scrollableDomElement) return false;
-    return this.scrollableDomElement.removeEventListener(
-      'scroll',
-      this.getIsBackToTopActive
-    );
+    if (this._isMounted) {
+      this._isMounted = false;
+      this.scrollableDomElement = document.querySelector(
+        `.${this.props.scrollableElementClassName}`
+      );
+      if (!this.scrollableDomElement) return false;
+      return this.scrollableDomElement.removeEventListener(
+        'scroll',
+        this.getIsBackToTopActive
+      );
+    }
+    return null;
   }
 
   getIsBackToTopActive = () => {
     const { isActive } = this.state;
     const { scrollTopToActivate } = this.props;
-    if (this.scrollableDomElement instanceof HTMLElement) {
+    if (this.scrollableDomElement instanceof HTMLElement && this._isMounted) {
       const scrollPosition = this.scrollableDomElement.scrollTop;
       if (scrollPosition > scrollTopToActivate && !isActive) {
         this.setState({ isActive: true });
@@ -82,11 +101,14 @@ export default class BackToTopButton extends Component<Props, State> {
   render() {
     const { intl } = this.context;
     const { isActive } = this.state;
-    const { buttonTopPosition } = this.props;
+    const { buttonTopPosition, isForceHidden } = this.props;
     const componentStyles = classnames(styles.component, {
       [styles.isActive]: isActive,
     });
     const top = isActive ? buttonTopPosition : buttonTopPosition - 10;
+
+    if (isForceHidden) return null;
+
     return (
       <button
         style={{ top }}

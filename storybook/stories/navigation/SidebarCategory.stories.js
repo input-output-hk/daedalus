@@ -12,7 +12,7 @@ const category = {
   route: 'WALLETS',
 };
 storiesOf('Navigation|Sidebar', module)
-  .addDecorator(story => <StoryDecorator>{story()}</StoryDecorator>)
+  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
 
   // ====== Stories ======
 

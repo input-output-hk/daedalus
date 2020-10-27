@@ -179,7 +179,7 @@ export default class NewsFeed extends Component<Props, State> {
           )}
           {items.length > 0 && (
             <div className={newsFeedListStyles}>
-              {items.map(newsItem => (
+              {items.map((newsItem) => (
                 <NewsItem
                   key={newsItem.id}
                   newsItem={newsItem}

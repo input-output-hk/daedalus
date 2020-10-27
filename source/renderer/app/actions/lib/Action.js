@@ -17,7 +17,7 @@ export default class Action<Params> {
   static actions: Action<any>[] = [];
 
   static resetAllActions() {
-    Action.actions.forEach(action => action.removeAll());
+    Action.actions.forEach((action) => action.removeAll());
   }
 
   listeners: Listener<Params>[] = [];
@@ -32,7 +32,7 @@ export default class Action<Params> {
   }
 
   trigger(params: Params) {
-    this.listeners.forEach(listener => listener(params));
+    this.listeners.forEach((listener) => listener(params));
   }
 
   remove(listener: Listener<Params>) {

@@ -131,8 +131,10 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
         logger.info('Launching Wallet with --testnet flag');
       }
       if (smashUrl) {
-        logger.info('Launching Wallet with --smash-url flag', { smashUrl });
-        merge(launcherConfig, { smashUrl });
+        logger.info('Launching Wallet with --pool-metadata-fetching flag', {
+          poolMetadataSource: { smashUrl },
+        });
+        merge(launcherConfig, { poolMetadataSource: { smashUrl } });
       }
       merge(launcherConfig, { nodeConfig, tlsConfiguration });
       break;

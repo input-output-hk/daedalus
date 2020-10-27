@@ -147,7 +147,7 @@ export default class TransactionsStore extends Store {
   }
 
   @computed get allFiltered(): Array<WalletTransaction> {
-    return this.all.filter(transaction =>
+    return this.all.filter((transaction) =>
       isTransactionInFilterRange(this.filterOptions, transaction)
     );
   }
@@ -168,7 +168,7 @@ export default class TransactionsStore extends Store {
   }
 
   @computed get recentFiltered(): Array<WalletTransaction> {
-    return this.recent.filter(transaction =>
+    return this.recent.filter((transaction) =>
       isTransactionInFilterRange(this.filterOptions, transaction)
     );
   }

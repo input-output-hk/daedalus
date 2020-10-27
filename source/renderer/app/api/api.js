@@ -1949,11 +1949,17 @@ const _createStakePoolFromServerData = action(
     const {
       relative_stake: relativeStake,
       produced_blocks: producedBlocks,
+      non_myopic_member_rewards: nonMyopicMemberRewards,
       saturation,
     } = metrics; // eslint-disable-line
     const { name, description = '', ticker, homepage } = metadata;
     const relativeStakePercentage = get(relativeStake, 'quantity', 0);
     const producedBlocksCount = get(producedBlocks, 'quantity', 0);
+    const nonMyopicMemberRewardsQuantity = get(
+      nonMyopicMemberRewards,
+      'quantity',
+      0
+    );
     const costQuantity = get(cost, 'quantity', 0).toString();
     const pledgeQuantity = get(pledge, 'quantity', 0).toString();
     const profitMarginPercentage = get(profitMargin, 'quantity', 0);
@@ -1962,6 +1968,10 @@ const _createStakePoolFromServerData = action(
       id,
       relativeStake: relativeStakePercentage,
       producedBlocks: producedBlocksCount,
+      potentialRewards: new BigNumber(nonMyopicMemberRewardsQuantity).dividedBy(
+        LOVELACES_PER_ADA
+      ),
+      nonMyopicMemberRewards: nonMyopicMemberRewardsQuantity,
       ticker,
       homepage,
       cost: new BigNumber(costQuantity).dividedBy(LOVELACES_PER_ADA),

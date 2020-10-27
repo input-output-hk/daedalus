@@ -33,7 +33,7 @@ export const generateHash = () => {
     .digest('hex');
 };
 
-const statusProgress = status =>
+const statusProgress = (status) =>
   status === WalletSyncStateStatuses.RESTORING
     ? {
         progress: {
@@ -118,9 +118,7 @@ export const generateTransaction = (
 export const generateRandomTransaction = (index: number) =>
   generateTransaction(
     TransactionTypes.INCOME,
-    moment()
-      .subtract(index, 'days')
-      .toDate(),
+    moment().subtract(index, 'days').toDate(),
     new BigNumber(faker.random.number(5))
   );
 
@@ -138,7 +136,7 @@ export const generateAddress = (used: boolean = false): WalletAddress =>
   });
 
 export const promise = (returnValue: any): (() => Promise<any>) => () =>
-  new Promise(resolve => {
+  new Promise((resolve) => {
     setTimeout(() => {
       resolve(returnValue);
     }, 2000);

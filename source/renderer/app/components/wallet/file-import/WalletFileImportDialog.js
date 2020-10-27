@@ -173,7 +173,7 @@ export default class WalletFileImportDialog extends Component<Props> {
 
   submit = () => {
     this.form.submit({
-      onSuccess: form => {
+      onSuccess: (form) => {
         const { walletFilePath, spendingPassword, walletName } = form.values();
         const walletData = {
           filePath: walletFilePath,
@@ -225,7 +225,7 @@ export default class WalletFileImportDialog extends Component<Props> {
             placeholder={intl.formatMessage(messages.walletFileHint)}
             acceptedFileTypes={['*']}
             selectedFile={walletFilePath.value}
-            onFileSelected={filePath => {
+            onFileSelected={(filePath) => {
               // "set(value)" is an unbound method and thus must be explicitly called
               walletFilePath.set(filePath);
             }}

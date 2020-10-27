@@ -32,7 +32,7 @@ export default () => {
           resolve(outputPath);
         });
 
-        archive.on('error', error => {
+        archive.on('error', (error) => {
           logger.error('COMPRESS_LOGS.ERROR', { error });
           reject(error);
         });
@@ -48,7 +48,7 @@ export default () => {
           archive.append(stream, { name: logFiles[i] });
         }
 
-        archive.finalize(error => {
+        archive.finalize((error) => {
           if (error) {
             logger.error('COMPRESS_LOGS.ERROR', { error });
             reject(error);

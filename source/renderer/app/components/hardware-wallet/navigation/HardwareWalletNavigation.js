@@ -44,7 +44,7 @@ export default class WalletNavigation extends Component<Props> {
         icon: summaryIcon,
       },
     ].filter(
-      item =>
+      (item) =>
         !(
           global.isIncentivizedTestnet &&
           includes(LEGACY_WALLET_EXCLUDED_NAV_ITEMS, item.id)

@@ -31,10 +31,15 @@
   .noDataDash {
     align-items: center;
     display: flex;
+    height: 27px;
     justify-content: center;
 
     :global {
       .SVGInline {
+        align-items: center;
+        display: flex;
+        justify-content: center;
+
         svg {
           height: 3px;
           width: 12px;

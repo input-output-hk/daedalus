@@ -20,7 +20,7 @@ type Props = {
   showWithSelectButton?: boolean,
   showSelected?: boolean,
   containerClassName: string,
-  numberOfStakePools: number,
+  numberOfRankedStakePools: number,
   selectedPoolId?: ?number,
   disabledStakePoolId?: ?string,
   /**
@@ -57,9 +57,7 @@ export class StakePoolsList extends Component<Props, State> {
     window.addEventListener('resize', this.handleResize);
   }
 
-  state = {
-    ...initialState,
-  };
+  state = { ...initialState };
 
   // We need to track the mounted state in order to avoid calling
   // setState promise handling code after the component was already unmounted:
@@ -120,7 +118,7 @@ export class StakePoolsList extends Component<Props, State> {
       stakePoolsList,
       selectedPoolId,
       containerClassName,
-      numberOfStakePools,
+      numberOfRankedStakePools,
       disabledStakePoolId,
       listName,
     } = this.props;
@@ -136,7 +134,7 @@ export class StakePoolsList extends Component<Props, State> {
 
     return (
       <div className={componentClasses}>
-        {stakePoolsList.map(stakePool => {
+        {stakePoolsList.map((stakePool) => {
           const isHighlighted = this.getIsHighlighted(stakePool.id);
           const isSelected = selectedPoolId && stakePool.id === selectedPoolId;
 
@@ -155,7 +153,7 @@ export class StakePoolsList extends Component<Props, State> {
               isSelected={isSelected}
               showSelected={showSelected}
               containerClassName={containerClassName}
-              numberOfStakePools={numberOfStakePools}
+              numberOfRankedStakePools={numberOfRankedStakePools}
               disabledStakePoolId={disabledStakePoolId}
             />
           );
