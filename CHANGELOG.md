@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Fixes
+
+- Vertically centered empty news feed message ([PR 2216](https://github.com/input-output-hk/daedalus/pull/2216))
+
 ## 2.4.0
 
 ### Features
@@ -14,7 +20,6 @@ Changelog
 
 ### Fixes
 
-- Vertically centered empty news feed message ([PR 2216](https://github.com/input-output-hk/daedalus/pull/2216))
 - Fixed wrong number formatting on staking screens ([PR 2213](https://github.com/input-output-hk/daedalus/pull/2213))
 - Removed broken feature requests link ([PR 2212](https://github.com/input-output-hk/daedalus/pull/2212))
 - Fixed animation on wallet dropdown option during redemption process ([PR 2191](https://github.com/input-output-hk/daedalus/pull/2191))
