@@ -144,6 +144,7 @@ export default class StakingStore extends Store {
           passphrase,
         });
       }
+
       // Start interval to check transaction state every second
       this.delegationCheckTimeInterval = setInterval(
         this.checkDelegationTransaction,

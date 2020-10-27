@@ -30,6 +30,7 @@ import {
   DeviceTypes,
 } from '../../../common/types/hardware-wallets.types';
 import { formattedAmountToLovelace } from '../utils/formatters';
+import { TransactionStates } from '../domains/WalletTransaction';
 
 import type { HwDeviceStatus } from '../domains/Wallet';
 import type { CoinSelectionsResponse } from '../api/transactions/types';
@@ -103,8 +104,10 @@ export default class HardwareWalletsStore extends Store {
   @observable transportDevice: ?TransportDevice = null;
   @observable txBody: ?string = null;
   @observable isConnectionInitialized: boolean = false;
+  @observable isTransactionPending: boolean = false;
 
   cardanoAdaAppPollingInterval: ?IntervalID = null;
+  checkTransactionTimeInterval: ?IntervalID = null;
 
   setup() {
     const { hardwareWallets: hardwareWalletsActions } = this.actions;
@@ -137,23 +140,76 @@ export default class HardwareWalletsStore extends Store {
     const { isDelegationTransaction } = params;
     const wallet = this.stores.wallets.active;
 
+    this.setTransactionPendingState(true);
+
     if (!isDelegationTransaction && !wallet) throw new Error('Active wallet required before sending.');
     try {
       const transaction = await this.sendMoneyRequest.execute({
         signedTransactionBlob: this.txBody,
       });
+
+      if (!isDelegationTransaction) {
+        // Start interval to check transaction state every second
+        this.checkTransactionTimeInterval = setInterval(
+          this.checkTransaction,
+          1000,
+          { transactionId: transaction.id, walletId: wallet.id }
+        );
+      } else {
+        this.setTransactionPendingState(false);
+      }
       this._resetTransaction();
       this.stores.wallets.refreshWalletsData();
       this.sendMoneyRequest.reset();
-      if (!isDelegationTransaction) {
-        this.actions.dialogs.closeActiveDialog.trigger();
-        this.stores.wallets.goToWalletRoute(wallet.id);
-      }
       return transaction;
     } catch (e) {
+      this.setTransactionPendingState(false);
       throw e;
     }
   };
+
+  // Check stake pool transaction state and reset pending state when transction is "in_ledger"
+  @action checkTransaction = (request: {
+    transactionId: string,
+    walletId: string,
+  }) => {
+    const { transactionId, walletId } = request;
+    const recentTransactionsResponse = this.stores.transactions._getTransactionsRecentRequest(
+      walletId
+    ).result;
+    const recentTransactions = recentTransactionsResponse
+      ? recentTransactionsResponse.transactions
+      : [];
+
+    // Return transaction when state is not "PENDING"
+    const targetTransaction = find(
+      recentTransactions,
+      (transaction) =>
+        transaction.id === transactionId &&
+        transaction.state === TransactionStates.OK
+    );
+
+    if (targetTransaction) {
+      this.resetStakePoolTransactionChecker(walletId);
+    }
+  };
+
+  @action resetStakePoolTransactionChecker = (walletId) => {
+    if (this.checkTransactionTimeInterval) {
+      clearInterval(this.checkTransactionTimeInterval);
+      this.checkTransactionTimeInterval = null;
+    }
+    this.stores.wallets.refreshWalletsData();
+    this.isTransactionPending = false;
+    this.actions.dialogs.closeActiveDialog.trigger();
+    this.stores.wallets.goToWalletRoute(walletId);
+  };
+
+  @action setTransactionPendingState = (isTransactionPending) => {
+    runInAction('HardwareWalletsStore:: set transaction state', () => {
+      this.isTransactionPending = isTransactionPending
+    });
+  }
 
   getAvailableDevices = async () => {
     await this.hardwareWalletsLocalDataRequest.execute();

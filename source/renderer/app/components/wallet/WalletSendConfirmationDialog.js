@@ -359,6 +359,7 @@ export default class WalletSendConfirmationDialog extends Component<Props, State
                 skin={CheckboxSkin}
                 disabled={areTermsAccepted}
                 onChange={this.onCheckboxClick}
+                checked={areTermsAccepted}
               />
             </div>
           )}
