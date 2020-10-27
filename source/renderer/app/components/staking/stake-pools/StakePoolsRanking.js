@@ -4,8 +4,7 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import classnames from 'classnames';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
-import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { shortNumber, generateThousands } from '../../../utils/formatters';
 import {
   getFilteredWallets,
@@ -379,12 +378,11 @@ export default class StakePoolsRanking extends Component<Props, State> {
             </div>
             <div className={styles.col}>
               <div className={styles.outOfRangeMaxAmount}>
-                <Tooltip
-                  skin={TooltipSkin}
-                  tip={intl.formatMessage(messages.rankingExtraTooltip)}
+                <PopOver
+                  content={intl.formatMessage(messages.rankingExtraTooltip)}
                 >
                   {shortNumber(OUT_OF_RANGE_MAX_DELEGATION_FUNDS)}
-                </Tooltip>
+                </PopOver>
               </div>
               <div className={styles.outOfSliderRangeEnd} />
             </div>
