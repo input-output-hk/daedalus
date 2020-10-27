@@ -8,7 +8,6 @@
   left: 50%;
   line-height: 1.17;
   margin-left: 42px;
-  opacity: 0.98;
   opacity: 0;
   padding: 6px 12px;
   position: fixed;
@@ -16,7 +15,7 @@
   top: 144px;
   transform: translateX(-50%);
   transition: opacity 0.25s ease-out, top 0.25s ease-out;
-  z-index: 999;
+  z-index: 1001;
 
   &.isActive {
     opacity: 1;

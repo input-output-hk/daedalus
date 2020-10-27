@@ -26,12 +26,10 @@ import copyCheckmarkIcon from '../../../assets/images/check-w.inline.svg';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
 import {
   formattedWalletAmount,
-  shortNumber,
-  formattedLovelaceToAmount,
+  toFixedUserFormat,
 } from '../../../utils/formatters';
 import { rangeMap } from '../../../utils/numbers';
 import { ellipsis } from '../../../utils/strings';
-import globalMessages from '../../../i18n/global-messages';
 import { STAKE_POOL_ID_COPY_FEEDBACK } from '../../../config/timingConfig';
 import {
   THUMBNAIL_HEIGHT,
@@ -288,9 +286,11 @@ export default class TooltipPool extends Component<Props, State> {
       arrowBottom,
       arrowLeft
     );
-    const colorBandStyle = {
-      background: color,
-    };
+    const colorBandStyle = !this.isGreyColor
+      ? {
+          background: color,
+        }
+      : {};
 
     this.setState({
       componentStyle,
@@ -445,12 +445,16 @@ export default class TooltipPool extends Component<Props, State> {
         top,
         bottom,
       };
-    if (tooltipPosition === 'bottom')
-      return {
+    if (tooltipPosition === 'bottom') {
+      const borderStyle = !this.isGreyColor && {
         borderBottomColor: this.props.color,
+      };
+      return {
+        ...borderStyle,
         left,
         top,
       };
+    }
     return {
       right,
       top,
@@ -472,6 +476,13 @@ export default class TooltipPool extends Component<Props, State> {
     this.setState({ idCopyFeedback: false });
   };
 
+  get isGreyColor() {
+    return (
+      IS_RANKING_DATA_AVAILABLE &&
+      this.props.stakePool.potentialRewards.isZero()
+    );
+  }
+
   renderDescriptionFields = () => {
     const { isIncentivizedTestnet } = global;
     const { intl } = this.context;
@@ -480,7 +491,7 @@ export default class TooltipPool extends Component<Props, State> {
       ranking,
       relativeStake,
       producedBlocks,
-      nonMyopicMemberRewards,
+      potentialRewards,
       cost,
       profitMargin,
       saturation,
@@ -492,6 +503,7 @@ export default class TooltipPool extends Component<Props, State> {
       styles.saturationBar,
       styles[getSaturationColor(saturation)],
     ]);
+
     const fields = [
       {
         key: 'saturation',
@@ -505,7 +517,7 @@ export default class TooltipPool extends Component<Props, State> {
                   }}
                 />
               </span>
-              {`${parseFloat(saturation).toFixed(2)}%`}
+              {`${toFixedUserFormat(saturation, 2)}%`}
             </span>
           </div>
         ),
@@ -514,7 +526,7 @@ export default class TooltipPool extends Component<Props, State> {
         key: 'ranking',
         value: (
           <div className={styles.ranking}>
-            {IS_RANKING_DATA_AVAILABLE && nonMyopicMemberRewards ? (
+            {!this.isGreyColor ? (
               <span
                 style={{
                   background: getColorFromRange(ranking, {
@@ -554,9 +566,10 @@ export default class TooltipPool extends Component<Props, State> {
         key: 'relativeStake',
         value: (
           <div className={styles.defaultColor}>
-            <span className={styles.defaultColorContent}>{`${parseFloat(
-              relativeStake
-            ).toFixed(2)}%`}</span>
+            <span className={styles.defaultColorContent}>{`${toFixedUserFormat(
+              relativeStake,
+              2
+            )}%`}</span>
           </div>
         ),
       },
@@ -572,7 +585,7 @@ export default class TooltipPool extends Component<Props, State> {
                 }),
               }}
             >
-              {`${parseFloat(profitMargin).toFixed(2)}%`}
+              {`${toFixedUserFormat(profitMargin, 2)}%`}
             </span>
           </div>
         ),
@@ -609,7 +622,7 @@ export default class TooltipPool extends Component<Props, State> {
         value: (
           <div className={styles.defaultColor}>
             <span className={styles.defaultColorContent}>
-              {shortNumber(producedBlocks)}
+              {toFixedUserFormat(producedBlocks, 0)}
             </span>
           </div>
         ),
@@ -618,10 +631,9 @@ export default class TooltipPool extends Component<Props, State> {
         key: 'potentialRewards',
         value: (
           <div className={styles.defaultColor}>
-            {nonMyopicMemberRewards ? (
+            {!potentialRewards.isZero() ? (
               <span className={styles.defaultColorContent}>
-                {shortNumber(formattedLovelaceToAmount(nonMyopicMemberRewards))}{' '}
-                {intl.formatMessage(globalMessages.unitAda)}
+                {formattedWalletAmount(potentialRewards)}
               </span>
             ) : (
               <div className={styles.noDataDash}>
@@ -688,15 +700,7 @@ export default class TooltipPool extends Component<Props, State> {
       idCopyFeedback,
     } = this.state;
 
-    const {
-      id,
-      name,
-      description,
-      ticker,
-      homepage,
-      nonMyopicMemberRewards,
-      retiring,
-    } = stakePool;
+    const { id, name, description, ticker, homepage, retiring } = stakePool;
 
     const componentClassnames = classnames([
       styles.component,
@@ -706,6 +710,7 @@ export default class TooltipPool extends Component<Props, State> {
     const arrowClassnames = classnames([
       styles.arrow,
       styles[`tooltipPosition${capitalize(tooltipPosition)}`],
+      this.isGreyColor ? styles.greyArrow : null,
     ]);
 
     const retirementFromNow = retiring
@@ -713,15 +718,13 @@ export default class TooltipPool extends Component<Props, State> {
       : '';
 
     const idCopyIcon = idCopyFeedback ? copyCheckmarkIcon : copyIcon;
-    const hoverContentStyles = classnames([
+    const hoverContentClassnames = classnames([
       styles.hoverContent,
       idCopyFeedback ? styles.checkIcon : styles.copyIcon,
     ]);
-    const colorBandStyles = classnames([
+    const colorBandClassnames = classnames([
       styles.colorBand,
-      IS_RANKING_DATA_AVAILABLE && nonMyopicMemberRewards
-        ? null
-        : styles.greyColorBand,
+      this.isGreyColor ? styles.greyColorBand : null,
     ]);
 
     return (
@@ -732,11 +735,7 @@ export default class TooltipPool extends Component<Props, State> {
         aria-hidden
         style={componentStyle}
       >
-        {IS_RANKING_DATA_AVAILABLE && nonMyopicMemberRewards ? (
-          <div className={colorBandStyles} style={colorBandStyle} />
-        ) : (
-          <div className={colorBandStyles} />
-        )}
+        <div className={colorBandClassnames} style={colorBandStyle} />
         <div className={arrowClassnames} style={arrowStyle} />
         <div className={styles.container}>
           <h3 className={styles.name}>{name}</h3>
@@ -757,7 +756,7 @@ export default class TooltipPool extends Component<Props, State> {
             onMouseOut={this.onIdMouseOut}
             onBlur={() => {}}
           >
-            <p className={styles.ellipsisContent}>{ellipsis(id, 20, 20)}</p>
+            <p className={styles.ellipsisContent}>{ellipsis(id, 18, 18)}</p>
             <CopyToClipboard text={id} onCopy={this.onCopyId}>
               <Tooltip
                 className={styles.idTooltip}
@@ -766,7 +765,7 @@ export default class TooltipPool extends Component<Props, State> {
                 skin={TooltipSkin}
                 tip={intl.formatMessage(messages.copyIdTooltipLabel)}
               >
-                <div className={hoverContentStyles}>
+                <div className={hoverContentClassnames}>
                   <p className={styles.hoverContentBackground}>
                     {id} <SVGInline svg={idCopyIcon} />
                   </p>

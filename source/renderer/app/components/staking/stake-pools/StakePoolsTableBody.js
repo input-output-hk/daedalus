@@ -8,9 +8,8 @@ import moment from 'moment';
 import classNames from 'classnames';
 import { getRelativePosition } from '../../../utils/domManipulation';
 import {
-  bigNumbersToFormattedNumbers,
-  formattedLovelaceToAmount,
-  shortNumber,
+  formattedWalletAmount,
+  toFixedUserFormat,
 } from '../../../utils/formatters';
 import styles from './StakePoolsTable.scss';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
@@ -20,7 +19,6 @@ import StakePool from '../../../domains/StakePool';
 type TableBodyProps = {
   stakePoolsList: Array<StakePool>,
   sortedStakePoolList: StakePool,
-  ada: string,
   numberOfRankedStakePools: number,
   currentTheme: string,
   onOpenExternalLink: Function,
@@ -180,7 +178,6 @@ export class StakePoolsTableBody extends Component<
 
   render() {
     const {
-      ada,
       sortedStakePoolList,
       numberOfRankedStakePools,
       currentTheme,
@@ -198,17 +195,14 @@ export class StakePoolsTableBody extends Component<
       const producedBlocks = get(stakePool, 'producedBlocks', '');
       const pledge = new BigNumber(get(stakePool, 'pledge', ''));
       const retiring = get(stakePool, 'retiring', '');
-      const memberRewards = get(stakePool, 'nonMyopicMemberRewards', '');
-      const potentialRewards = memberRewards
-        ? `${shortNumber(formattedLovelaceToAmount(memberRewards))} ${ada}`
+      const memberRewards = get(stakePool, 'potentialRewards', '');
+      const potentialRewards = !memberRewards.isZero()
+        ? formattedWalletAmount(memberRewards)
         : '-';
       const retirement =
         retiring && moment(retiring).locale(intl.locale).fromNow(true);
-      const pledgeValue = bigNumbersToFormattedNumbers(pledge, true);
-      const pledgeCalculatedValue = Number(pledgeValue)
-        ? Number(pledgeValue).toFixed(2)
-        : pledgeValue;
-      const costValue = cost.toFixed(2);
+      const pledgeValue = formattedWalletAmount(pledge, false, false);
+      const costValue = formattedWalletAmount(cost, false, false);
       const progressBarContentClassnames = classNames([
         styles.progressBarContent,
         styles[getSaturationColor(saturation)],
@@ -226,7 +220,7 @@ export class StakePoolsTableBody extends Component<
           }
         >
           <td>
-            {memberRewards ? rank : '-'}
+            {!memberRewards.isZero() ? rank : '-'}
             {isHighlighted && (
               <TooltipPool
                 stakePool={stakePool}
@@ -238,7 +232,9 @@ export class StakePoolsTableBody extends Component<
                 left={left}
                 fromStakePool
                 color={color}
-                onSelect={this.handleSelect}
+                onSelect={() => {
+                  this.handleSelect(stakePool.id);
+                }}
                 showWithSelectButton={showWithSelectButton}
                 containerClassName={containerClassName}
                 numberOfRankedStakePools={numberOfRankedStakePools}
@@ -265,16 +261,16 @@ export class StakePoolsTableBody extends Component<
                   />
                 </div>
               </div>
-              <div className={styles.saturationLabel}>{`${parseFloat(
-                saturation
-              ).toFixed(2)}%`}</div>
+              <div className={styles.saturationLabel}>
+                {`${toFixedUserFormat(saturation, 2)}%`}
+              </div>
             </div>
           </td>
-          <td>{Number(costValue).toFixed(2)}</td>
-          <td>{margin}%</td>
-          <td>{producedBlocks}</td>
+          <td>{costValue}</td>
+          <td>{`${toFixedUserFormat(margin, 2)}%`}</td>
+          <td>{toFixedUserFormat(producedBlocks, 0)}</td>
           <td>{potentialRewards}</td>
-          <td>{pledgeCalculatedValue}</td>
+          <td>{pledgeValue}</td>
           <td>
             {retirement ? (
               <span className={styles.retiring}>{retirement}</span>
