@@ -172,8 +172,9 @@ const onAppReady = async () => {
 
   // Trezor INIT
   const initTrezorConnect = handleInitTrezorConnect(mainWindow.webContents);
-  await initTrezorConnect();
-
+  try {
+    await initTrezorConnect();
+  } catch (e) {} // eslint-disable-line
 
   // Ledger INIT
   // @TODO - uncomment once TransportNodeHID enabled by dev-ops
@@ -181,7 +182,6 @@ const onAppReady = async () => {
     mainWindow
   );
   await handleCheckHardwareWalletDevices();
-
 
   await handleCheckBlockReplayProgress(mainWindow, launcherConfig.logsPrefix);
 
