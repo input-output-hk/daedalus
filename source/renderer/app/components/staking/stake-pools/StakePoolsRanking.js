@@ -184,17 +184,17 @@ export default class StakePoolsRanking extends Component<Props, State> {
     const selectedWallet = wallets.find(
       (wallet) => wallet.id === selectedWalletId
     );
+    const hasSelectedWallet = !!selectedWallet;
+    const isAllWalletsSelected = selectedWalletId === ALL_WALLETS_SELECTION_ID;
+    const wasSelectedWalletChanged =
+      selectedWalletId !== selectedDelegationWalletId;
 
-    if (
-      selectedWalletId === selectedDelegationWalletId ||
-      (selectedWalletId !== ALL_WALLETS_SELECTION_ID && !selectedWallet)
-    ) {
+    // Prevent ranking stake pools if we don't have data for the selected wallet ready
+    if (wasSelectedWalletChanged && !isAllWalletsSelected && !hasSelectedWallet)
       return;
-    }
 
     let amountValue = 0;
     let sliderValue = 0;
-
     if (selectedWalletId === ALL_WALLETS_SELECTION_ID) {
       amountValue = Math.min(
         getAllAmounts(wallets).toNumber(),
@@ -205,6 +205,11 @@ export default class StakePoolsRanking extends Component<Props, State> {
     }
     amountValue = Math.max(amountValue, MIN_DELEGATION_FUNDS);
     sliderValue = Math.round(Math.log(amountValue) * RANKING_SLIDER_RATIO);
+    const hasSliderValueChanged = sliderValue !== this.state.sliderValue;
+
+    // Prevent ranking stake pools if selected wallet and slider value remains unchanged
+    if (!wasSelectedWalletChanged && !hasSliderValueChanged) return;
+
     const displayValue = formattedWalletAmount(
       new BigNumber(amountValue),
       false
