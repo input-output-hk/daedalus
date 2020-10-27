@@ -232,7 +232,9 @@ export class StakePoolsTableBody extends Component<
                 left={left}
                 fromStakePool
                 color={color}
-                onSelect={this.handleSelect}
+                onSelect={() => {
+                  this.handleSelect(stakePool.id);
+                }}
                 showWithSelectButton={showWithSelectButton}
                 containerClassName={containerClassName}
                 numberOfRankedStakePools={numberOfRankedStakePools}
