@@ -33,6 +33,13 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
     }
   };
 
+  handleInitiateTransaction = () => {
+    const { stores } = this.props;
+    const { wallets, hardwareWallets } = stores;
+    const { active: activeWallet } = wallets;
+    hardwareWallets.initiateTransaction({ walletId: activeWallet.id })
+  }
+
   render() {
     const {
       actions,
@@ -72,6 +79,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
         onExternalLinkClick={onExternalLinkClick}
         hwDeviceStatus={hwDeviceStatus}
         isHardwareWallet={isHardwareWallet}
+        onInitiateTransaction={this.handleInitiateTransaction}
       />
     );
   }

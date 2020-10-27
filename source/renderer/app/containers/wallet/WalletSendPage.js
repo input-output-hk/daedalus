@@ -47,10 +47,11 @@ export default class WalletSendPage extends Component<Props> {
   };
 
   openDialog = (params, isHardwareWallet, walletId) => {
+    const { isFlight } = global;
     this.props.actions.dialogs.open.trigger({
       dialog: params.dialog,
     })
-    if (isHardwareWallet) {
+    if (isHardwareWallet && !isFlight) {
       this.props.stores.hardwareWallets.initiateTransaction({ walletId })
     }
   }
