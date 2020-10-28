@@ -13,6 +13,7 @@ import {
   getHardwareWalletConnectionChannel,
   signTransactionLedgerChannel,
   signTransactionTrezorChannel,
+  handleInitTrezorConnectChannel,
 } from '../ipc/getHardwareWalletChannel';
 import {
   prepareLedgerInput,
@@ -105,6 +106,7 @@ export default class HardwareWalletsStore extends Store {
   @observable txBody: ?string = null;
   @observable isConnectionInitialized: boolean = false;
   @observable isTransactionPending: boolean = false;
+  @observable isTrezorBridgeInstalled: boolean = false;
 
   cardanoAdaAppPollingInterval: ?IntervalID = null;
   checkTransactionTimeInterval: ?IntervalID = null;
@@ -131,9 +133,17 @@ export default class HardwareWalletsStore extends Store {
     getHardwareWalletConnectionChannel.onReceive(
       this._changeHardwareWalletConnectionStatus
     );
+    this.initTrezor();
     this.hardwareWalletsLocalDataRequest.execute();
     this.hardwareWalletDevicesRequest.execute();
-    this.getAvailableDevices();
+  }
+
+  initTrezor = async () => {
+    console.debug('>>>> INIT TREZOR');
+    await handleInitTrezorConnectChannel.request();
+    console.debug('>>>> INIT TREZOR - DONE');
+    await this.getAvailableDevices();
+    console.debug('>>>> INIT TREZOR - getAvailableDevices');
   }
 
   _sendMoney = async (params?: { isDelegationTransaction: boolean }) => {
@@ -164,6 +174,7 @@ export default class HardwareWalletsStore extends Store {
       return transaction;
     } catch (e) {
       this.setTransactionPendingState(false);
+      this._resetTransaction();
       throw e;
     }
   };
@@ -233,14 +244,19 @@ export default class HardwareWalletsStore extends Store {
     // Initiate Device Check for each stored device
     map(this.hardwareWalletDevices, async device => {
       console.debug('>> Check Device: ', device);
-      await getHardwareWalletTransportChannel.request({
-        devicePath: device.path,
-        isTrezor: device.deviceType === DeviceTypes.TREZOR,
-      });
+      try {
+        await getHardwareWalletTransportChannel.request({
+          devicePath: device.path,
+          isTrezor: device.deviceType === DeviceTypes.TREZOR,
+        });
+      } catch (e) {
+        console.debug('>> Check Device - ERROR: ', e);
+      }
     })
 
     this._refreshHardwareWalletsLocalData();
     this._refreshHardwareWalletDevices();
+    console.debug('>>>> getAvailableDevices - DONE');
   }
 
   // @TODO - move to Transactions store once all logic fit and hardware wallets listed in general wallets list
@@ -711,7 +727,32 @@ export default class HardwareWalletsStore extends Store {
   @action _changeHardwareWalletConnectionStatus = async (params: {
     disconnected: boolean,
   }) => {
-    const { disconnected, deviceType, deviceId, deviceModel, deviceName, path } = params;
+    const { disconnected, deviceType, deviceId, deviceModel, deviceName, path, error } = params;
+
+    if (error) {
+      console.debug('>>> TRANSPORT ERROR <<<: ', error);
+      if (error.payload && error.payload && error.payload.code === 'ECONNREFUSED') {
+        console.debug('>>> TRANSPORT - Mark Trezor Bridge as NOT Installed <<<');
+        runInAction(
+          'HardwareWalletsStore:: Mark Trezor Bridge as not installed',
+          () => {
+            this.isTrezorBridgeInstalled = false;
+          }
+        );
+      }
+      return;
+    }
+
+    if (deviceType === DeviceTypes.TREZOR && !this.isTrezorBridgeInstalled) {
+      console.debug('>>> TRANSPORT - Mark Trezor Bridge as Installed <<<');
+      runInAction(
+        'HardwareWalletsStore:: Mark Trezor Bridge as installed',
+        () => {
+          this.isTrezorBridgeInstalled = true;
+        }
+      );
+    }
+
     console.debug('>>> _changeHardwareWalletConnectionStatus: ', params);
     // If Hardware Wallet exist and connected with device, set current connection status to LC
     const activeHardwareWalletId = get(

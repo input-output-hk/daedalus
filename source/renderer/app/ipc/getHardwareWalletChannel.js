@@ -7,6 +7,9 @@ import {
   GET_HARDWARE_WALLET_CONNECTION_CHANNEL,
   SIGN_TRANSACTION_LEDGER_CHANNEL,
   SIGN_TRANSACTION_TREZOR_CHANNEL,
+  GET_INIT_TREZOR_CONNECT_CHANNEL,
+  handleInitTrezorConnectMainResponse,
+  handleInitTrezorConnectRendererRequest,
 } from '../../../common/ipc/api';
 
 import type {
@@ -59,3 +62,8 @@ export const signTransactionTrezorChannel: RendererIpcChannel<
   signTransactionTrezorMainResponse,
   signTransactionTrezorRendererRequest
 > = new RendererIpcChannel(SIGN_TRANSACTION_TREZOR_CHANNEL);
+
+export const handleInitTrezorConnectChannel: RendererIpcChannel<
+  handleInitTrezorConnectMainResponse,
+  handleInitTrezorConnectRendererRequest
+> = new RendererIpcChannel(GET_INIT_TREZOR_CONNECT_CHANNEL);

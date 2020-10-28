@@ -43,5 +43,5 @@ export default (window: BrowserWindow) => {
   downloadManagerChannel(window);
   getRecoveryWalletIdChannel();
   handleElectronStoreChannel();
-  handleHardwareWalletRequests();
+  handleHardwareWalletRequests(window);
 };

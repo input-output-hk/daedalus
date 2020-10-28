@@ -15,6 +15,7 @@ import {
   GET_HARDWARE_WALLET_CONNECTION_CHANNEL,
   SIGN_TRANSACTION_LEDGER_CHANNEL,
   SIGN_TRANSACTION_TREZOR_CHANNEL,
+  GET_INIT_TREZOR_CONNECT_CHANNEL,
 } from '../../common/ipc/api';
 
 import type { IpcSender } from '../../common/ipc/lib/IpcChannel';
@@ -32,6 +33,8 @@ import type {
   signTransactionLedgerMainResponse,
   signTransactionTrezorRendererRequest,
   signTransactionTrezorMainResponse,
+  handleInitTrezorConnectRendererRequest,
+  handleInitTrezorConnectMainResponse,
 } from '../../common/ipc/api';
 
 const getHardwareWalletTransportChannel: MainIpcChannel<
@@ -63,6 +66,12 @@ const signTransactionTrezorChannel: MainIpcChannel<
   signTransactionTrezorRendererRequest,
   signTransactionTrezorMainResponse
 > = new MainIpcChannel(SIGN_TRANSACTION_TREZOR_CHANNEL);
+
+const handleInitTrezorConnectChannel: MainIpcChannel<
+  handleInitTrezorConnectRendererRequest,
+  handleInitTrezorConnectMainResponse
+> = new MainIpcChannel(GET_INIT_TREZOR_CONNECT_CHANNEL);
+
 
 class EventObserver {
   constructor(props) {
@@ -115,64 +124,6 @@ class EventObserver {
   }
 }
 
-// SETUP trezor-connect
-export const handleInitTrezorConnect = (sender: IpcSender) => {
-  console.debug('>>> Trezor Init: ', TrezorConnect);
-  const initTrezorConnect = async () => {
-    TrezorConnect.on(TRANSPORT_EVENT, event => {
-      console.debug('>>> TRANSPORT_EVENT: ', event);
-    });
-
-    TrezorConnect.on(DEVICE_EVENT, event => {
-      console.debug('>>> DEVICE_EVENT: ', event);
-      const connectionChanged = event.type === 'device-connect' || event.type === 'device-disconnect' || event.type === 'device-changed';
-      if (connectionChanged) {
-        getHardwareWalletConnectionChannel.send(
-          {
-            disconnected: event.type === 'device-disconnect',
-            deviceType: 'trezor',
-            deviceId: event.payload.id, // 58E026E1F5CF549198EDCC35
-            deviceModel: event.payload.features.model, // e.g. T
-            deviceName: event.payload.label, // e.g. Test Name
-            path: event.payload.path,
-          },
-          // $FlowFixMe
-          sender
-        );
-      }
-    });
-    TrezorConnect.on(UI_EVENT, event => {
-      console.debug('>>> UI_EVENT: ', event);
-    });
-    TrezorConnect.manifest({
-      email: 'email@developer.com',
-      appUrl: 'http://your.application.com',
-    });
-    TrezorConnect.init({
-      popup: false, // render your own UI
-      webusb: false, // webusb is not supported in electron
-      debug: true, // see what's going on inside connect
-      // lazyLoad: true, // set to "false" (default) if you want to start communication with bridge on application start (and detect connected device right away)
-      // set it to "true", then trezor-connect will not be initialized until you call some TrezorConnect.method()
-      // this is useful when you don't know if you are dealing with Trezor user
-      manifest: {
-        email: 'email@developer.com', // @TODO
-        appUrl: 'http://your.application.com', // @TODO
-      },
-    })
-    .then(res => {
-      console.debug('>>> TREZOR INIT - SUCCESS: ', res);
-      sender.send('trezor-connect', 'TrezorConnect is ready!');
-    })
-    .catch(error => {
-      console.debug('>>> TREZOR INIT - ERROR ', error);
-      sender.send('trezor-connect', `TrezorConnect init error: ${error}`);
-    });
-  };
-
-  return initTrezorConnect;
-};
-
 // INIT - 2
 export const handleHardwareWalletDevices = (mainWindow: BrowserWindow) => {
   console.debug('>>> Ledger:: INIT - handleHardwareWalletDevices');
@@ -191,25 +142,13 @@ export const handleHardwareWalletDevices = (mainWindow: BrowserWindow) => {
 
 // INIT - 1
 export const handleHardwareWalletRequests = async (mainWindow) => {
-  console.debug('>>> Ledger:: handleHardwareWalletRequests');
+  console.debug('>>> handleHardwareWalletRequests <<<');
   let deviceConnection = null;
   getHardwareWalletTransportChannel.onRequest(async request => {
     // INIT - 6
     const { isTrezor, devicePath } = request;
-
-
-    // return Promise.resolve({
-    //   deviceId: test.payload.device_id,
-    //   deviceType: 'trezor',
-    //   deviceModel: test.payload.model, // e.g. "1" or "T"
-    //   deviceName: test.payload.label,
-    //   path: devicePath,
-    // });
-
-    // console.debug('>>> TrezorConnect METHODS: ', TrezorConnect);
-    // return;
-
     console.debug('>>> ESTABLISH CONNECTION:  <<<, ', request);
+
     // Connected Trezor device info
     let deviceFeatures;
     if (isTrezor) {
@@ -229,9 +168,10 @@ export const handleHardwareWalletRequests = async (mainWindow) => {
             path: devicePath,
           });
         }
+        throw deviceFeatures.payload; // Error is in payload
       } catch (e) {
         console.debug('>>> ESTABLISH CONNECTION error: <<<', e);
-        throw new Error('Establishing Trezor connection failed');
+        throw e;
       }
     }
 
@@ -289,6 +229,84 @@ export const handleHardwareWalletRequests = async (mainWindow) => {
     } catch (error) {
       throw error;
     }
+  });
+
+  handleInitTrezorConnectChannel.onRequest(async () => {
+    console.debug('>>> Trezor Init: ', TrezorConnect);
+    TrezorConnect.on(TRANSPORT_EVENT, event => {
+      console.debug('>>> TRANSPORT_EVENT: ', event);
+
+      if (event.type === 'transport-error') {
+        console.debug('>>> ECONNREFUSED <<<<');
+        // Send Transport error to Renderer
+        getHardwareWalletConnectionChannel.send(
+          {
+            error: {
+              payload: event.payload,
+            },
+          },
+          // $FlowFixMe
+          mainWindow
+        );
+        throw new Error(event.payload.error);
+      }
+    });
+    TrezorConnect.on(DEVICE_EVENT, event => {
+      console.debug('>>> DEVICE_EVENT: ', event);
+      const connectionChanged = event.type === 'device-connect' || event.type === 'device-disconnect' || event.type === 'device-changed';
+      const isAcquired = get(event, ['payload', 'type'], '') === 'acquired';
+      const deviceError = get(event, ['payload', 'error']);
+
+      if (deviceError) {
+        throw new Error(deviceError);
+        return;
+      }
+
+      if (connectionChanged && isAcquired) {
+        getHardwareWalletConnectionChannel.send(
+          {
+            disconnected: event.type === 'device-disconnect',
+            deviceType: 'trezor',
+            deviceId: event.payload.id, // 58E026E1F5CF549198EDCC35
+            deviceModel: event.payload.features.model, // e.g. T
+            deviceName: event.payload.label, // e.g. Test Name
+            path: event.payload.path,
+          },
+          // $FlowFixMe
+          mainWindow
+        );
+      }
+    });
+    TrezorConnect.on(UI_EVENT, event => {
+      console.debug('>>> UI_EVENT: ', event);
+    });
+    TrezorConnect.manifest({
+      email: 'email@developer.com',
+      appUrl: 'http://your.application.com',
+    });
+    const transport = TrezorConnect.init({
+      popup: false, // render your own UI
+      webusb: false, // webusb is not supported in electron
+      debug: true, // see what's going on inside connect
+      // lazyLoad: true, // set to "false" (default) if you want to start communication with bridge on application start (and detect connected device right away)
+      // set it to "true", then trezor-connect will not be initialized until you call some TrezorConnect.method()
+      // this is useful when you don't know if you are dealing with Trezor user
+      manifest: {
+        email: 'email@developer.com', // @TODO
+        appUrl: 'http://your.application.com', // @TODO
+      },
+    })
+    .then(() => {
+      console.debug('>>> TREZOR INIT - SUCCESS: ');
+      return;
+    })
+    .catch(error => {
+      console.debug('>>> TREZOR INIT - ERROR ', error);
+      throw error;
+    });
+    return Promise.resolve({
+      success: true,
+    });
   });
 
   getCardanoAdaAppChannel.onRequest(async () => {

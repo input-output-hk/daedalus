@@ -11,10 +11,7 @@ import {
   generateWalletMigrationReport,
 } from './utils/setupLogging';
 import { handleDiskSpace } from './utils/handleDiskSpace';
-import {
-  handleHardwareWalletDevices, // @TODO - uncomment once TransportNodeHID enabled by dev-ops
-  handleInitTrezorConnect,
-} from './ipc/getHardwareWalletChannel';
+import { handleHardwareWalletDevices } from './ipc/getHardwareWalletChannel';
 import { handleCheckBlockReplayProgress } from './utils/handleCheckBlockReplayProgress';
 import { createMainWindow } from './windows/main';
 import { installChromeExtensions } from './utils/installChromeExtensions';
@@ -169,11 +166,6 @@ const onAppReady = async () => {
   };
   mainErrorHandler(onMainError);
   await handleCheckDiskSpace();
-
-  // Trezor INIT
-  const initTrezorConnect = handleInitTrezorConnect(mainWindow.webContents);
-  await initTrezorConnect();
-
 
   // Ledger INIT
   // @TODO - uncomment once TransportNodeHID enabled by dev-ops
