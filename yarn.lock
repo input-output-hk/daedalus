@@ -11952,7 +11952,6 @@ react-modal@3.1.12:
 react-polymorph@0.9.6-rc.2:
   version "0.9.6-rc.2"
   resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-0.9.6-rc.2.tgz#57705b3465fda2a7fb3ccc5a505fbbe92dc885c9"
-  integrity sha512-82dneRY5VVHkIjLTn6jZG7QMvLOdJ0Exf44GMeiNj5Cl3tuBpQVWAN0H8rEXIXkpILjXaDG0/WzvQfruQtm7jw==
   dependencies:
     "@tippyjs/react" "4.2.0"
     create-react-context "0.2.2"
