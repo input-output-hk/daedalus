@@ -174,7 +174,6 @@ const onAppReady = async () => {
   );
   await handleCheckHardwareWalletDevices();
 
-
   await handleCheckBlockReplayProgress(mainWindow, launcherConfig.logsPrefix);
 
   cardanoNode = setupCardanoNode(launcherConfig, mainWindow);
