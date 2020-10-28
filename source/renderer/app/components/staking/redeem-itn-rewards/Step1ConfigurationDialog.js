@@ -313,7 +313,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
 
     const minDelegationFunds = MIN_DELEGATION_FUNDS;
 
-    const dropdownError = errorMessage && (
+    const dropdownError = !error && errorMessage && (
       <p className={styles.errorMessage}>
         <FormattedHTMLMessage
           {...errorMessage}
