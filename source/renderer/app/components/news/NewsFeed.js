@@ -142,12 +142,6 @@ export default class NewsFeed extends Component<Props, State> {
       hasUpdateItem ? styles.hasUpdate : null,
     ]);
 
-    const newsFeedContainerClasses = classNames([
-      styles.newsFeedContainer,
-      hasUpdateItem ? styles.hasUpdate : null,
-      !items.length ? styles.emptyFeedContainer : null,
-    ]);
-
     return (
       <div className={componentClasses}>
         <div className={newsFeedHeaderStyles}>
@@ -163,7 +157,7 @@ export default class NewsFeed extends Component<Props, State> {
             <SVGInline svg={closeCrossThin} />
           </button>
         </div>
-        <div className={newsFeedContainerClasses}>
+        <div className={styles.newsFeedContainer}>
           {hasUpdateItem && (
             <>
               {

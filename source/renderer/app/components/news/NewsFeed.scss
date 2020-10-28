@@ -91,22 +91,12 @@
 
   .newsFeedContainer {
     background: var(--theme-news-feed-background-color);
+    display: flex;
+    flex: 1;
+    flex-direction: column;
     font-family: var(--font-regular);
     overflow: hidden;
     padding: 20px;
-
-    &.hasUpdate.emptyFeedContainer {
-      .newsFeedEmptyContainer {
-        height: calc(100% - 100px) !important;
-      }
-    }
-
-    &.emptyFeedContainer {
-      height: 100%;
-      .newsFeedEmptyContainer {
-        height: 100%;
-      }
-    }
 
     &::-webkit-scrollbar-track {
       margin: 13px 0;
@@ -116,6 +106,7 @@
     .newsFeedNoFetchContainer {
       align-items: center;
       display: flex;
+      flex-grow: 1;
       flex-direction: column;
       height: 100%;
       justify-content: center;
