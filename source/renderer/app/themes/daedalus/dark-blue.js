@@ -1076,6 +1076,10 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-news-overlay-update-button-background-color-hover': '#fafbfc',
     '--theme-news-overlay-update-button-border-color': '#ffffff',
   },
+  rpPopOver: {
+    '--rp-pop-over-bg-color': '',
+    '--rp-pop-over-text-color': '',
+  },
 };
 
 const DARK_BLUE_THEME_PARAMS: CreateThemeParams = {
