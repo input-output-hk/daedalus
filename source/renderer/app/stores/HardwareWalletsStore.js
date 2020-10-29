@@ -751,14 +751,22 @@ export default class HardwareWalletsStore extends Store {
     }
   };
 
-  _resetTransaction = async () => {
-    this.selectCoinsRequest.reset();
+  _resetTransaction = async (params: ?{
+    cancelDeviceAction: boolean;
+  }) => {
+    const { cancelDeviceAction } = params;
+    console.debug('>>> CANCEL: ', cancelDeviceAction);
+    if (cancelDeviceAction) {
+      signTransactionTrezorChannel.request({
+        reset: true,
+      });
+    }
+    this.sendMoneyRequest.reset();
     runInAction(
       'HardwareWalletsStore:: reset Transaction verifying',
       () => {
         this.hwDeviceStatus = HwDeviceStatuses.READY;
         this.txBody = null;
-        this.txSignRequest = {};
       }
     );
   };

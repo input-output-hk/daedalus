@@ -55,7 +55,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
     } = this.props;
     const { stores } = this.props;
     const { sendMoneyRequest, active: activeWallet } = stores.wallets;
-    const { sendMoneyRequest: sendMoneyExternalRequest, isTransactionPending } = stores.hardwareWallets;
+    const { _resetTransaction: resetHardwareWalletTransaction, sendMoneyRequest: sendMoneyExternalRequest, isTransactionPending } = stores.hardwareWallets;
     const { isFlight } = global;
 
     if (!activeWallet)
@@ -77,7 +77,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
         onCancel={() => {
           actions.dialogs.closeActiveDialog.trigger();
           sendMoneyRequest.reset();
-          sendMoneyExternalRequest.reset();
+          resetHardwareWalletTransaction({ cancelDeviceAction: true });
         }}
         error={error}
         currencyUnit={currencyUnit}

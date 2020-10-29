@@ -243,6 +243,9 @@ export const handleHardwareWalletRequests = async (mainWindow) => {
 
   handleInitTrezorConnectChannel.onRequest(async () => {
     console.debug('>>> Trezor Init: ', TrezorConnect);
+    // Remove all listeners if exist - e.g. on app refresh
+    TrezorConnect.removeAllListeners();
+    // Initialize new device listeners
     TrezorConnect.on(TRANSPORT_EVENT, event => {
       console.debug('>>> TRANSPORT_EVENT: ', event);
 
@@ -458,10 +461,23 @@ export const handleHardwareWalletRequests = async (mainWindow) => {
       ttl,
       networkId,
       certificates,
+      reset
     } = params;
     if (!TrezorConnect) {
       throw new Error('Device not connected!');
     }
+
+    if (reset) {
+      TrezorConnect.cancel('Method_Cancel');
+      return {
+        success: false,
+        payload: {
+          code: 'Method_Cancel',
+          error: 'Signing Cancelled',
+        }
+      }
+    }
+
     try {
       console.debug('>>> Signing REQ: ', params);
       const signedTransaction = await TrezorConnect.cardanoSignTransaction({
