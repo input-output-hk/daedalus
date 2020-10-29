@@ -1071,6 +1071,10 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-news-overlay-update-button-background-color-hover': '#ffffff',
     '--theme-news-overlay-update-button-border-color': '#ffffff',
   },
+  rpPopOver: {
+    '--rp-pop-over-bg-color': 'rgba(0,0,0,0.9)',
+    '--rp-pop-over-text-color': '#ffffff',
+  },
 };
 
 const CARDANO_THEME_PARAMS: CreateThemeParams = {

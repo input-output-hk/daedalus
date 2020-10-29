@@ -1059,6 +1059,10 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-news-overlay-update-button-background-color-hover': '#29b595',
     '--theme-news-overlay-update-button-border-color': '#29b595',
   },
+  rpPopOver: {
+    '--rp-pop-over-bg-color': 'rgba(45,45,45,0.9)',
+    '--rp-pop-over-text-color': 'white',
+  },
 };
 
 const WHITE_THEME_PARAMS: CreateThemeParams = {

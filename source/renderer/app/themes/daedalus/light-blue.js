@@ -676,7 +676,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--rp-textarea-text-color': '#5e6066',
   },
   rpTooltip: {
-    '--rp-tooltip-bg-color': '#062148',
+    '--rp-tooltip-bg-color': '#5e6066',
     '--rp-tooltip-text-color': '#fafbfc',
   },
   scrollbar: {
@@ -1066,6 +1066,10 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-news-overlay-update-button-text-color': '#fafbfc',
     '--theme-news-overlay-update-button-background-color-hover': '#fafbfc',
     '--theme-news-overlay-update-button-border-color': '#fafbfc',
+  },
+  rpPopOver: {
+    '--rp-pop-over-bg-color': 'rgba(94,96,102,0.9)',
+    '--rp-pop-over-text-color': '#fafbfc',
   },
 };
 
