@@ -6,8 +6,7 @@ import classnames from 'classnames';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
-import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import moment from 'moment';
 import SVGInline from 'react-svg-inline';
 import iconOk from '../../../assets/images/recovery-phrase-verification-ok.inline.svg';
@@ -258,13 +257,17 @@ export default class WalletRecoveryPhraseVerificationWidget extends Component<Pr
           {isLegacy && (
             <>
               &nbsp;
-              <Tooltip
-                className={styles.paperWallet}
-                skin={TooltipSkin}
-                tip={intl.formatMessage(messages.paperWalletDescription)}
+              <PopOver
+                content={
+                  <span className={styles.paperWalletTooltip}>
+                    {intl.formatMessage(messages.paperWalletDescription)}
+                  </span>
+                }
               >
-                {intl.formatMessage(messages.paperWalletTitle)}
-              </Tooltip>
+                <div className={styles.paperWallet}>
+                  {intl.formatMessage(messages.paperWalletTitle)}
+                </div>
+              </PopOver>
             </>
           )}
         </div>
