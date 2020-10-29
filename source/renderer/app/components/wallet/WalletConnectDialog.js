@@ -27,13 +27,13 @@ const messages = defineMessages({
   dialogTitle: {
     id: 'wallet.connect.dialog.title',
     defaultMessage: '!!!Connect hardware wallet',
-    description: 'Title "Connect hardware wallet" in the connect wallet dialog.',
+    description:
+      'Title "Connect hardware wallet" in the connect wallet dialog.',
   },
   closeButton: {
     id: 'wallet.connect.dialog.button.close',
     defaultMessage: '!!!Cancel',
-    description:
-      'Label for the "Cancel" button in the connect wallet dialog',
+    description: 'Label for the "Cancel" button in the connect wallet dialog',
   },
   hardwareWalletInstructions: {
     id: 'wallet.connect.hardwareWalletInstructions',
@@ -50,7 +50,6 @@ type Props = {
   error: ?LocalizableError,
 };
 
-
 @observer
 export default class WalletConnectDialog extends Component<Props> {
   static contextTypes = {
@@ -59,10 +58,18 @@ export default class WalletConnectDialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onClose, isSubmitting, hwDeviceStatus, transportDevice, error } = this.props;
+    const {
+      onClose,
+      isSubmitting,
+      hwDeviceStatus,
+      transportDevice,
+      error,
+    } = this.props;
 
-    const isLedger = transportDevice && transportDevice.deviceType === DeviceTypes.LEDGER;
-    const isTrezor = transportDevice && transportDevice.deviceType === DeviceTypes.TREZOR;
+    const isLedger =
+      transportDevice && transportDevice.deviceType === DeviceTypes.LEDGER;
+    const isTrezor =
+      transportDevice && transportDevice.deviceType === DeviceTypes.TREZOR;
     const dialogClasses = classnames([styles.component, 'WalletConnectDialog']);
 
     const buttonLabel = !isSubmitting ? (
@@ -89,45 +96,43 @@ export default class WalletConnectDialog extends Component<Props> {
         onClose={!isSubmitting ? onClose : () => {}}
         closeButton={<DialogCloseButton />}
       >
-
-          <div className={styles.hardwareWalletWrapper}>
-            {!isTrezor && !isLedger && (
-              <div className={styles.hardwareWalletUnknown}>
-                <SVGInline
-                  svg={unknownDeviceIcon}
-                  className={styles.unknownDeviceIcon}
-                />
+        <div className={styles.hardwareWalletWrapper}>
+          {!isTrezor && !isLedger && (
+            <div className={styles.hardwareWalletUnknown}>
+              <SVGInline
+                svg={unknownDeviceIcon}
+                className={styles.unknownDeviceIcon}
+              />
+            </div>
+          )}
+          {isLedger && (
+            <div className={styles.hardwareWalletLedger}>
+              {transportDevice.deviceModel === DeviceModels.LEDGER_NANO_X && (
+                <SVGInline svg={ledgerXIcon} className={styles.ledgerXIcon} />
+              )}
+              {transportDevice.deviceModel === DeviceModels.LEDGER_NANO_S && (
+                <SVGInline svg={ledgerIcon} className={styles.ledgerIcon} />
+              )}
+            </div>
+          )}
+          {isTrezor && (
+            <div className={styles.hardwareWalletTrezor}>
+              <SVGInline svg={trezorIcon} className={styles.trezorIcon} />
+            </div>
+          )}
+          {error ? (
+            <p className={styles.error}>{intl.formatMessage(error)}</p>
+          ) : (
+            <div>
+              <p className={styles.hardwareWalletMessage}>
+                {intl.formatMessage(messages.hardwareWalletInstructions)}
+              </p>
+              <div className={styles.hardwareWalletStatusWrapper}>
+                <HardwareWalletStatus hwDeviceStatus={hwDeviceStatus} />
               </div>
-            )}
-            {isLedger && (
-              <div className={styles.hardwareWalletLedger}>
-                {transportDevice.deviceModel === DeviceModels.LEDGER_NANO_X && (
-                  <SVGInline svg={ledgerXIcon} className={styles.ledgerXIcon} />
-                )}
-                {transportDevice.deviceModel === DeviceModels.LEDGER_NANO_S && (
-                  <SVGInline svg={ledgerIcon} className={styles.ledgerIcon} />
-                )}
-              </div>
-            )}
-            {isTrezor && (
-              <div className={styles.hardwareWalletTrezor}>
-                <SVGInline svg={trezorIcon} className={styles.trezorIcon} />
-              </div>
-            )}
-            {error ? (
-              <p className={styles.error}>{intl.formatMessage(error)}</p>
-            ) : (
-              <div>
-                <p className={styles.hardwareWalletMessage}>
-                  {intl.formatMessage(messages.hardwareWalletInstructions)}
-                </p>
-                <div className={styles.hardwareWalletStatusWrapper}>
-                  <HardwareWalletStatus hwDeviceStatus={hwDeviceStatus} />
-                </div>
-              </div>
-            )}
-          </div>
-
+            </div>
+          )}
+        </div>
       </Dialog>
     );
   }

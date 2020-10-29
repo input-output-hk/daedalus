@@ -124,13 +124,13 @@ export default class DelegationSetupWizardDialogContainer extends Component<
 
   handleConfirm = (spendingPassword?: string, isHardwareWallet: boolean) => {
     const { selectedPoolId, selectedWalletId } = this.state;
-      this.props.stores.staking.joinStakePoolRequest.reset();
-      this.props.actions.staking.joinStakePool.trigger({
-        stakePoolId: selectedPoolId,
-        walletId: selectedWalletId,
-        passphrase: spendingPassword,
-        isHardwareWallet,
-      });
+    this.props.stores.staking.joinStakePoolRequest.reset();
+    this.props.actions.staking.joinStakePool.trigger({
+      stakePoolId: selectedPoolId,
+      walletId: selectedWalletId,
+      passphrase: spendingPassword,
+      isHardwareWallet,
+    });
   };
 
   handleSelectWallet = (walletId: string) => {
@@ -208,7 +208,9 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         onConfirm={this.handleConfirm}
         getStakePoolById={getStakePoolById}
         isSubmitting={
-          joinStakePoolRequest.isExecuting || sendMoneyRequest.isExecuting || isDelegationTransactionPending
+          joinStakePoolRequest.isExecuting ||
+          sendMoneyRequest.isExecuting ||
+          isDelegationTransactionPending
         }
         error={joinStakePoolRequest.error || sendMoneyRequest.error}
         isHardwareWallet={selectedWallet.isHardwareWallet}
@@ -227,7 +229,6 @@ export default class DelegationSetupWizardDialogContainer extends Component<
       wallets.allWallets,
       (wallet) => wallet.id === selectedWalletId
     );
-
 
     let stakePoolJoinFee;
     if (selectedWallet.isHardwareWallet) {

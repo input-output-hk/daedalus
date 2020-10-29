@@ -64,11 +64,7 @@ export default class SidebarStore extends Store {
   }
 
   @action _configureCategories = () => {
-    const {
-      isFlight,
-      isIncentivizedTestnet,
-      isShelleyTestnet,
-    } = global;
+    const { isFlight, isIncentivizedTestnet, isShelleyTestnet } = global;
 
     const { isShelleyActivated, isShelleyPending } = this.stores.networkStatus;
 

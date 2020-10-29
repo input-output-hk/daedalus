@@ -61,7 +61,9 @@ export default class SidebarWalletMenuItem extends Component<Props> {
 
     const hwIconStyles = classNames([
       styles.hardwareWalletsIcon,
-      (isHardwareWallet && isHardwareWalletDisconnected) ? styles.disconnected : styles.connected,
+      isHardwareWallet && isHardwareWalletDisconnected
+        ? styles.disconnected
+        : styles.connected,
     ]);
 
     return (
@@ -71,10 +73,7 @@ export default class SidebarWalletMenuItem extends Component<Props> {
             <div className={styles.title}>
               {title}
               {isHardwareWallet && (
-                <SVGInline
-                  svg={hardwareWalletsIcon}
-                  className={hwIconStyles}
-                />
+                <SVGInline svg={hardwareWalletsIcon} className={hwIconStyles} />
               )}
             </div>
           </div>

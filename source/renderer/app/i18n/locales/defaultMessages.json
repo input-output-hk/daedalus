@@ -493,74 +493,13 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Hardware wallet",
-        "description": "Hardware wallet title.",
-        "end": {
-          "column": 3,
-          "line": 24
-        },
-        "file": "source/renderer/app/components/hardware-wallet/settings/ConnectHardwareWallet.js",
-        "id": "wallet.hardware.hardwareWalletTitle",
-        "start": {
-          "column": 23,
-          "line": 20
-        }
-      },
-      {
-        "defaultMessage": "!!!Ledger wallet",
-        "description": "Ledger wallet title.",
-        "end": {
-          "column": 3,
-          "line": 29
-        },
-        "file": "source/renderer/app/components/hardware-wallet/settings/ConnectHardwareWallet.js",
-        "id": "wallet.hardware.ledgerWalletTitle",
-        "start": {
-          "column": 21,
-          "line": 25
-        }
-      },
-      {
-        "defaultMessage": "!!!Trezor wallet",
-        "description": "Trezor wallet title.",
-        "end": {
-          "column": 3,
-          "line": 34
-        },
-        "file": "source/renderer/app/components/hardware-wallet/settings/ConnectHardwareWallet.js",
-        "id": "wallet.hardware.trezorWalletTitle",
-        "start": {
-          "column": 21,
-          "line": 30
-        }
-      },
-      {
-        "defaultMessage": "!!!Follow instructions to access your wallet",
-        "description": "Follow instructions label",
-        "end": {
-          "column": 3,
-          "line": 39
-        },
-        "file": "source/renderer/app/components/hardware-wallet/settings/ConnectHardwareWallet.js",
-        "id": "wallet.hardware.hardwareWalletInstructions",
-        "start": {
-          "column": 30,
-          "line": 35
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/hardware-wallet/settings/ConnectHardwareWallet.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!Connect your device and enter your PIN to unlock it",
         "description": "\"Connect your device and enter your PIN to unlock it\" device state",
         "end": {
           "column": 3,
           "line": 20
         },
-        "file": "source/renderer/app/components/hardware-wallet/status/HardwareWalletStatus.js",
+        "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.connecting",
         "start": {
           "column": 14,
@@ -574,7 +513,7 @@
           "column": 3,
           "line": 25
         },
-        "file": "source/renderer/app/components/hardware-wallet/status/HardwareWalletStatus.js",
+        "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.launching_cardano_app",
         "start": {
           "column": 25,
@@ -588,7 +527,7 @@
           "column": 3,
           "line": 31
         },
-        "file": "source/renderer/app/components/hardware-wallet/status/HardwareWalletStatus.js",
+        "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.exporting_public_key",
         "start": {
           "column": 24,
@@ -602,7 +541,7 @@
           "column": 3,
           "line": 36
         },
-        "file": "source/renderer/app/components/hardware-wallet/status/HardwareWalletStatus.js",
+        "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.exporting_public_key_failed",
         "start": {
           "column": 31,
@@ -616,7 +555,7 @@
           "column": 3,
           "line": 43
         },
-        "file": "source/renderer/app/components/hardware-wallet/status/HardwareWalletStatus.js",
+        "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.exportingPublicKeyError",
         "start": {
           "column": 27,
@@ -630,7 +569,7 @@
           "column": 3,
           "line": 48
         },
-        "file": "source/renderer/app/components/hardware-wallet/status/HardwareWalletStatus.js",
+        "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.ready",
         "start": {
           "column": 9,
@@ -644,7 +583,7 @@
           "column": 3,
           "line": 55
         },
-        "file": "source/renderer/app/components/hardware-wallet/status/HardwareWalletStatus.js",
+        "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.verifying_transaction",
         "start": {
           "column": 25,
@@ -658,7 +597,7 @@
           "column": 3,
           "line": 60
         },
-        "file": "source/renderer/app/components/hardware-wallet/status/HardwareWalletStatus.js",
+        "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.verifying_transaction_failed",
         "start": {
           "column": 32,
@@ -672,7 +611,7 @@
           "column": 3,
           "line": 65
         },
-        "file": "source/renderer/app/components/hardware-wallet/status/HardwareWalletStatus.js",
+        "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.verifying_transaction_succeeded",
         "start": {
           "column": 35,
@@ -680,7 +619,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/hardware-wallet/status/HardwareWalletStatus.json"
+    "path": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.json"
   },
   {
     "descriptors": [
@@ -2440,13 +2379,13 @@
         "description": "Label for the \"Add wallet\" button in wallet sidebar menu.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 20
         },
         "file": "source/renderer/app/components/sidebar/wallets/SidebarWalletsMenu.js",
         "id": "sidebar.wallets.addWallet",
         "start": {
           "column": 16,
-          "line": 19
+          "line": 16
         }
       }
     ],
@@ -3260,13 +3199,13 @@
         "description": "Amount of each wallet for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 27
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.walletAmount",
         "start": {
           "column": 16,
-          "line": 21
+          "line": 22
         }
       },
       {
@@ -3274,13 +3213,13 @@
         "description": "Undelegated label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 32
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.notDelegated",
         "start": {
           "column": 16,
-          "line": 27
+          "line": 28
         }
       },
       {
@@ -3288,13 +3227,13 @@
         "description": "Remove delegation label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 38
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.removeDelegation",
         "start": {
           "column": 20,
-          "line": 32
+          "line": 33
         }
       },
       {
@@ -3302,13 +3241,13 @@
         "description": "\"or\" text for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 43
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.or",
         "start": {
           "column": 6,
-          "line": 38
+          "line": 39
         }
       },
       {
@@ -3316,13 +3255,13 @@
         "description": "Delegated stake pool tooltip ticker for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 49
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.stakePoolTooltipTickerEpoch",
         "start": {
           "column": 26,
-          "line": 43
+          "line": 44
         }
       },
       {
@@ -3330,13 +3269,13 @@
         "description": "Delegated stake pool tooltip ticker for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 55
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.stakePoolTooltipTickerEarningRewards",
         "start": {
           "column": 35,
-          "line": 49
+          "line": 50
         }
       },
       {
@@ -3344,13 +3283,13 @@
         "description": "Delegate label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 60
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.delegate",
         "start": {
           "column": 12,
-          "line": 55
+          "line": 56
         }
       },
       {
@@ -3358,13 +3297,13 @@
         "description": "Redelegate label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 65
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.redelegate",
         "start": {
           "column": 14,
-          "line": 60
+          "line": 61
         }
       },
       {
@@ -3372,13 +3311,13 @@
         "description": "unknown stake pool label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 71
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.unknownStakePoolLabel",
         "start": {
           "column": 25,
-          "line": 65
+          "line": 66
         }
       },
       {
@@ -3386,13 +3325,13 @@
         "description": "unknown stake pool label for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 77
         },
         "file": "source/renderer/app/components/staking/delegation-center/WalletRow.js",
         "id": "staking.delegationCenter.syncingTooltipLabel",
         "start": {
           "column": 23,
-          "line": 71
+          "line": 72
         }
       }
     ],
@@ -3737,13 +3676,13 @@
         "description": "Title \"Confirm Delegation\" on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 42
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.title",
         "start": {
           "column": 9,
-          "line": 34
+          "line": 37
         }
       },
       {
@@ -3751,13 +3690,13 @@
         "description": "Step indicator label on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 48
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.stepIndicatorLabel",
         "start": {
           "column": 22,
-          "line": 40
+          "line": 43
         }
       },
       {
@@ -3765,13 +3704,13 @@
         "description": "Description on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 55
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.description",
         "start": {
           "column": 15,
-          "line": 46
+          "line": 49
         }
       },
       {
@@ -3779,13 +3718,13 @@
         "description": "Fees label on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 61
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.feesLabel",
         "start": {
           "column": 13,
-          "line": 53
+          "line": 56
         }
       },
       {
@@ -3793,13 +3732,13 @@
         "description": "Placeholder for \"spending password\"",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 67
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 59
+          "line": 62
         }
       },
       {
@@ -3807,13 +3746,13 @@
         "description": "Label for \"spending password\"",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 73
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 65
+          "line": 68
         }
       },
       {
@@ -3821,13 +3760,13 @@
         "description": "Label for continue button on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 79
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.confirmButtonLabel",
         "start": {
           "column": 22,
-          "line": 71
+          "line": 74
         }
       },
       {
@@ -3835,13 +3774,13 @@
         "description": "Label for \"Cancel\" button on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 82
+          "line": 85
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.cancelButtonLabel",
         "start": {
           "column": 21,
-          "line": 77
+          "line": 80
         }
       },
       {
@@ -3849,13 +3788,13 @@
         "description": "\"Calculating fees\" message in the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 87
+          "line": 90
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.calculatingFees",
         "start": {
           "column": 19,
-          "line": 83
+          "line": 86
         }
       }
     ],
@@ -11999,17 +11938,45 @@
         }
       },
       {
-        "defaultMessage": "!!!Restore",
-        "description": "Label for the \"Restore\" button on the wallet add dialog.",
+        "defaultMessage": "!!!Connect",
+        "description": "Label for the \"Connect\" button on the wallet add dialog.",
         "end": {
           "column": 3,
           "line": 51
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
-        "id": "wallet.add.dialog.restore.label",
+        "id": "wallet.add.dialog.connect.label",
         "start": {
           "column": 16,
           "line": 47
+        }
+      },
+      {
+        "defaultMessage": "!!!Connect hardware wallet",
+        "description": "Description for the \"Connect\" button on the wallet add dialog.",
+        "end": {
+          "column": 3,
+          "line": 56
+        },
+        "file": "source/renderer/app/components/wallet/WalletAdd.js",
+        "id": "wallet.add.dialog.connect.description",
+        "start": {
+          "column": 22,
+          "line": 52
+        }
+      },
+      {
+        "defaultMessage": "!!!Restore",
+        "description": "Label for the \"Restore\" button on the wallet add dialog.",
+        "end": {
+          "column": 3,
+          "line": 61
+        },
+        "file": "source/renderer/app/components/wallet/WalletAdd.js",
+        "id": "wallet.add.dialog.restore.label",
+        "start": {
+          "column": 16,
+          "line": 57
         }
       },
       {
@@ -12017,13 +11984,13 @@
         "description": "Description for the \"Restore\" button with paper wallet certificate on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 68
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.restore.withCertificate.description",
         "start": {
           "column": 37,
-          "line": 52
+          "line": 62
         }
       },
       {
@@ -12031,13 +11998,13 @@
         "description": "Description for the \"Restore\" button without paper wallet certificate on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 74
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.restore.withoutCertificate.description",
         "start": {
           "column": 40,
-          "line": 59
+          "line": 69
         }
       },
       {
@@ -12045,13 +12012,13 @@
         "description": "Label for the \"Import\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 79
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.import.label",
         "start": {
           "column": 15,
-          "line": 65
+          "line": 75
         }
       },
       {
@@ -12059,13 +12026,13 @@
         "description": "Description for the \"Import\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 86
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.import.description",
         "start": {
           "column": 21,
-          "line": 70
+          "line": 80
         }
       },
       {
@@ -12073,13 +12040,13 @@
         "description": "Restore notification message shown during async wallet restore on the wallet add screen.",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 93
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.restoreNotificationMessage",
         "start": {
           "column": 30,
-          "line": 77
+          "line": 87
         }
       },
       {
@@ -12087,17 +12054,64 @@
         "description": "\"Maximum number of wallets reached\" notification message shown on the wallet add screen if user has 50 wallets.",
         "end": {
           "column": 3,
-          "line": 90
+          "line": 100
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.maxNumberOfWalletsNotificationMessage",
         "start": {
           "column": 41,
-          "line": 84
+          "line": 94
         }
       }
     ],
     "path": "source/renderer/app/components/wallet/WalletAdd.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Connect hardware wallet",
+        "description": "Title \"Connect hardware wallet\" in the connect wallet dialog.",
+        "end": {
+          "column": 3,
+          "line": 31
+        },
+        "file": "source/renderer/app/components/wallet/WalletConnectDialog.js",
+        "id": "wallet.connect.dialog.title",
+        "start": {
+          "column": 15,
+          "line": 27
+        }
+      },
+      {
+        "defaultMessage": "!!!Cancel",
+        "description": "Label for the \"Cancel\" button in the connect wallet dialog",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "source/renderer/app/components/wallet/WalletConnectDialog.js",
+        "id": "wallet.connect.dialog.button.close",
+        "start": {
+          "column": 15,
+          "line": 32
+        }
+      },
+      {
+        "defaultMessage": "!!!Follow instructions to access your wallet",
+        "description": "Follow instructions label",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/wallet/WalletConnectDialog.js",
+        "id": "wallet.connect.hardwareWalletInstructions",
+        "start": {
+          "column": 30,
+          "line": 38
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/WalletConnectDialog.json"
   },
   {
     "descriptors": [
@@ -12606,13 +12620,13 @@
         "description": "Title for the \"Confirm transaction\" dialog.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 30
         },
         "file": "source/renderer/app/components/wallet/WalletSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.title",
         "start": {
           "column": 15,
-          "line": 25
+          "line": 26
         }
       },
       {
@@ -12620,13 +12634,13 @@
         "description": "Label for the \"Spending password\" input in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 36
         },
         "file": "source/renderer/app/components/wallet/WalletSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.passphraseLabel",
         "start": {
           "column": 19,
-          "line": 30
+          "line": 31
         }
       },
       {
@@ -12634,13 +12648,13 @@
         "description": "Label for the \"To\" in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 41
         },
         "file": "source/renderer/app/components/wallet/WalletSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.addressToLabel",
         "start": {
           "column": 18,
-          "line": 36
+          "line": 37
         }
       },
       {
@@ -12648,13 +12662,13 @@
         "description": "Label for the \"Amount\" in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 47
         },
         "file": "source/renderer/app/components/wallet/WalletSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.amountLabel",
         "start": {
           "column": 15,
-          "line": 41
+          "line": 42
         }
       },
       {
@@ -12662,13 +12676,13 @@
         "description": "Label for the \"Fees\" in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 52
         },
         "file": "source/renderer/app/components/wallet/WalletSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.feesLabel",
         "start": {
           "column": 13,
-          "line": 47
+          "line": 48
         }
       },
       {
@@ -12676,13 +12690,13 @@
         "description": "Label for the \"Total\" in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 58
         },
         "file": "source/renderer/app/components/wallet/WalletSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.totalLabel",
         "start": {
           "column": 14,
-          "line": 52
+          "line": 53
         }
       },
       {
@@ -12690,13 +12704,13 @@
         "description": "Placeholder for the \"Spending password\" inputs in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 64
         },
         "file": "source/renderer/app/components/wallet/WalletSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.passphraseFieldPlaceholder",
         "start": {
           "column": 30,
-          "line": 58
+          "line": 59
         }
       },
       {
@@ -12704,13 +12718,13 @@
         "description": "Text for the \"Flight candidate\" warning in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 71
         },
         "file": "source/renderer/app/components/wallet/WalletSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.flightCandidateWarning",
         "start": {
           "column": 26,
-          "line": 64
+          "line": 65
         }
       },
       {
@@ -12718,13 +12732,13 @@
         "description": "Label for the \"Flight candidate\" warning checkbox in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 77
+          "line": 78
         },
         "file": "source/renderer/app/components/wallet/WalletSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.flightCandidateCheckboxLabel",
         "start": {
           "column": 32,
-          "line": 71
+          "line": 72
         }
       },
       {
@@ -12732,13 +12746,13 @@
         "description": "Label for the send button in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 84
         },
         "file": "source/renderer/app/components/wallet/WalletSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.submit",
         "start": {
           "column": 19,
-          "line": 78
+          "line": 79
         }
       },
       {
@@ -12746,13 +12760,13 @@
         "description": "Label for the back button in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 89
+          "line": 90
         },
         "file": "source/renderer/app/components/wallet/WalletSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.back",
         "start": {
           "column": 19,
-          "line": 84
+          "line": 85
         }
       },
       {
@@ -12760,13 +12774,13 @@
         "description": "Label for password error in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 95
+          "line": 96
         },
         "file": "source/renderer/app/components/wallet/WalletSendConfirmationDialog.js",
         "id": "wallet.send.confirmationDialog.passwordError",
         "start": {
           "column": 24,
-          "line": 90
+          "line": 91
         }
       }
     ],
@@ -13337,13 +13351,13 @@
         "description": "\"Learn more\" link URL on the delegation setup \"intro\" dialog.",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 21
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.intro.step.dialog.learnMore.url",
         "start": {
           "column": 20,
-          "line": 15
+          "line": 16
         }
       },
       {
@@ -13351,13 +13365,13 @@
         "description": "Step 1 label text on delegation steps dialog.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 26
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.steps.step.1.label",
         "start": {
           "column": 29,
-          "line": 21
+          "line": 22
         }
       },
       {
@@ -13365,13 +13379,13 @@
         "description": "Step 2 label text on delegation steps dialog.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 31
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.steps.step.2.label",
         "start": {
           "column": 29,
-          "line": 26
+          "line": 27
         }
       },
       {
@@ -13379,13 +13393,13 @@
         "description": "Step 3 label text on delegation steps dialog.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 36
         },
         "file": "source/renderer/app/containers/staking/dialogs/DelegationSetupWizardDialogContainer.js",
         "id": "staking.delegationSetup.steps.step.3.label",
         "start": {
           "column": 29,
-          "line": 31
+          "line": 32
         }
       }
     ],

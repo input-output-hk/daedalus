@@ -52,7 +52,8 @@ const messages = defineMessages({
   connectDescription: {
     id: 'wallet.add.dialog.connect.description',
     defaultMessage: '!!!Connect hardware wallet',
-    description: 'Description for the "Connect" button on the wallet add dialog.',
+    description:
+      'Description for the "Connect" button on the wallet add dialog.',
   },
   restoreLabel: {
     id: 'wallet.add.dialog.restore.label',

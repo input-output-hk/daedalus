@@ -9,12 +9,10 @@ export const CERTIFICATE_TYPE = {
 };
 
 // Helpers
-export const derivationPathToString = (
-  path: Array<string>,
-) => {
+export const derivationPathToString = (path: Array<string>) => {
   let constructedPath = 'm';
-  map(path, chunk => {
+  map(path, (chunk) => {
     constructedPath = `${constructedPath}/${chunk.replace('H', "'")}`;
-  })
+  });
   return constructedPath;
 };

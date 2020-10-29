@@ -2,7 +2,10 @@
 import Action from './lib/Action';
 import type { WalletExportTypeChoices } from '../types/walletExportTypes';
 import type { CsvRecord } from '../../../common/types/rewards-csv-request.types';
-import type { TransportDevice, HardwareWalletExtendedPublicKeyResponse } from '../../../common/types/hardware-wallets.types';
+import type {
+  TransportDevice,
+  HardwareWalletExtendedPublicKeyResponse,
+} from '../../../common/types/hardware-wallets.types';
 
 export type WalletImportFromFileParams = {
   filePath: string,

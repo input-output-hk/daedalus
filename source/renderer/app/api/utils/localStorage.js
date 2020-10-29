@@ -12,7 +12,10 @@ import {
 
 import type { NewsTimestamp } from '../news/types';
 import type { WalletMigrationStatus } from '../../stores/WalletMigrationStore';
-import type { TransportDevice, HardwareWalletExtendedPublicKeyResponse } from '../../../../common/types/hardware-wallets.types';
+import type {
+  TransportDevice,
+  HardwareWalletExtendedPublicKeyResponse,
+} from '../../../../common/types/hardware-wallets.types';
 import type { StorageKey } from '../../../../common/types/electron-store.types';
 
 export type WalletLocalData = {
@@ -292,7 +295,6 @@ export default class LocalStorageApi {
   unsetHardwareWalletLocalDataAll = (): Promise<void> =>
     LocalStorageApi.unset(keys.HARDWARE_WALLETS);
 
-
   // Recognized Hardware wallet devices
   getHardwareWalletDevices = (): Promise<HardwareWalletsLocalData> =>
     LocalStorageApi.get(keys.HARDWARE_WALLET_DEVICES, {});
@@ -320,7 +322,11 @@ export default class LocalStorageApi {
       data,
       unmutableData
     );
-    await LocalStorageApi.set(keys.HARDWARE_WALLET_DEVICES, deviceData, deviceId);
+    await LocalStorageApi.set(
+      keys.HARDWARE_WALLET_DEVICES,
+      deviceData,
+      deviceId
+    );
     return deviceData;
   };
 

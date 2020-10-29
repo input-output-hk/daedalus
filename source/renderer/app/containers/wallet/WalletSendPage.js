@@ -30,11 +30,13 @@ export default class WalletSendPage extends Component<Props> {
     const { walletId, address, amount, isHardwareWallet } = params;
     let fee;
     if (isHardwareWallet) {
-      const coinsSelection = await this.props.stores.hardwareWallets.selectCoins({
-        walletId,
-        address,
-        amount,
-      });
+      const coinsSelection = await this.props.stores.hardwareWallets.selectCoins(
+        {
+          walletId,
+          address,
+          amount,
+        }
+      );
       fee = coinsSelection.fee;
     } else {
       fee = await this.props.stores.transactions.calculateTransactionFee({
@@ -50,11 +52,11 @@ export default class WalletSendPage extends Component<Props> {
     const { isFlight } = global;
     this.props.actions.dialogs.open.trigger({
       dialog: params.dialog,
-    })
+    });
     if (isHardwareWallet && !isFlight) {
-      this.props.stores.hardwareWallets.initiateTransaction({ walletId })
+      this.props.stores.hardwareWallets.initiateTransaction({ walletId });
     }
-  }
+  };
 
   render() {
     const { intl } = this.context;
@@ -88,13 +90,15 @@ export default class WalletSendPage extends Component<Props> {
             walletId: activeWallet.id,
             address,
             amount,
-            isHardwareWallet
+            isHardwareWallet,
           })
         }
         walletAmount={activeWallet.amount}
         addressValidator={isValidAddress}
         isDialogOpen={uiDialogs.isOpen}
-        openDialogAction={(params) => this.openDialog(params, isHardwareWallet, activeWallet.id)}
+        openDialogAction={(params) =>
+          this.openDialog(params, isHardwareWallet, activeWallet.id)
+        }
         isRestoreActive={activeWallet.isRestoring}
         onExternalLinkClick={app.openExternalLink}
         hwDeviceStatus={hwDeviceStatus}

@@ -47,5 +47,5 @@ export const writeThemeUpdate = ({
 
   // @TODO - remove flow fix and move fs to main process
   // $FlowFixMe
-  fs.writeFileSync(THEME_FILE, FILE_CONTENT, {});  // eslint-disable-line
+  fs.writeFileSync(THEME_FILE, FILE_CONTENT, {}); // eslint-disable-line
 };

@@ -63,7 +63,6 @@ export default class MainLayout extends Component<InjectedContainerProps> {
           }
         : null;
 
-
     const sidebarMenus = {
       wallets: appWallets,
     };

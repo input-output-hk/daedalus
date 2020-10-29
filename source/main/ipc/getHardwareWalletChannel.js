@@ -5,7 +5,11 @@ import TransportNodeHid from '@ledgerhq/hw-transport-node-hid';
 import AppAda, { cardano } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { BrowserWindow } from 'electron';
 // $FlowFixMe
-import TrezorConnect, { DEVICE_EVENT, TRANSPORT_EVENT, UI_EVENT } from 'trezor-connect';
+import TrezorConnect, {
+  DEVICE_EVENT,
+  TRANSPORT_EVENT,
+  UI_EVENT,
+} from 'trezor-connect';
 import { get } from 'lodash';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import {
@@ -72,7 +76,6 @@ const handleInitTrezorConnectChannel: MainIpcChannel<
   handleInitTrezorConnectMainResponse
 > = new MainIpcChannel(GET_INIT_TREZOR_CONNECT_CHANNEL);
 
-
 class EventObserver {
   constructor(props) {
     // INIT - 4
@@ -114,7 +117,7 @@ class EventObserver {
         this.mainWindow
       );
     }
-  }
+  };
   error(e) {
     console.debug('>>> Ledger::EventObserver - error: ', e);
     throw e;
@@ -132,7 +135,10 @@ export const handleHardwareWalletDevices = (mainWindow: BrowserWindow) => {
     console.debug('>>> Ledger:: INIT - handleCheckHardwareWalletDevices');
     const observer = new EventObserver(mainWindow);
     // INIT - 5
-    console.debug('>>> Ledger:: INIT - handleCheckHardwareWalletDevices - observer: ', observer);
+    console.debug(
+      '>>> Ledger:: INIT - handleCheckHardwareWalletDevices - observer: ',
+      observer
+    );
     // @TODO - uncomment once Ledger enabled
     await TransportNodeHid.listen(observer);
   };
@@ -144,7 +150,7 @@ export const handleHardwareWalletDevices = (mainWindow: BrowserWindow) => {
 export const handleHardwareWalletRequests = async (mainWindow) => {
   console.debug('>>> handleHardwareWalletRequests <<<');
   let deviceConnection = null;
-  getHardwareWalletTransportChannel.onRequest(async request => {
+  getHardwareWalletTransportChannel.onRequest(async (request) => {
     // INIT - 6
     const { isTrezor, devicePath } = request;
     console.debug('>>> ESTABLISH CONNECTION:  <<<, ', request);
@@ -153,11 +159,15 @@ export const handleHardwareWalletRequests = async (mainWindow) => {
     let deviceFeatures;
     if (isTrezor) {
       console.debug('>>> TEST - REQ: ', request);
-      const test = await TrezorConnect.getFeatures({ device: { path: devicePath}});
+      const test = await TrezorConnect.getFeatures({
+        device: { path: devicePath },
+      });
       console.debug('>>> TEST 1: ', test);
       try {
         console.debug('>>> ESTABLISH CONNECTION Trezor');
-        deviceFeatures = await TrezorConnect.getFeatures({ device: { path: devicePath } });
+        deviceFeatures = await TrezorConnect.getFeatures({
+          device: { path: devicePath },
+        });
         console.debug('>>> Trezor Connected: ', deviceFeatures);
         if (deviceFeatures && deviceFeatures.success) {
           return Promise.resolve({
@@ -180,7 +190,7 @@ export const handleHardwareWalletRequests = async (mainWindow) => {
       const transportList = await TransportNodeHid.list();
       console.debug('>>> LEDGER Connect <<<: ', {
         deviceConnection,
-        transportList
+        transportList,
       });
 
       let hw;
@@ -191,7 +201,9 @@ export const handleHardwareWalletRequests = async (mainWindow) => {
           // $FlowFixMe
           deviceConnection.transport.disconnected)
       ) {
-        console.debug('>>>  LEDGER Connect - NO Device connection instance <<<');
+        console.debug(
+          '>>>  LEDGER Connect - NO Device connection instance <<<'
+        );
         if (transportList.length) {
           console.debug('>>>  LEDGER Connect - OPEN conn from list <<<');
           hw = await TransportNodeHid.open(transportList[0]);
@@ -201,14 +213,16 @@ export const handleHardwareWalletRequests = async (mainWindow) => {
           hw = await TransportNodeHid.create();
         }
       } else {
-        console.debug('>>>  LEDGER Connect - device connection instance exists <<<');
+        console.debug(
+          '>>>  LEDGER Connect - device connection instance exists <<<'
+        );
         hw = deviceConnection.transport;
       }
 
       console.debug('>>> LEDGER BEGIN: ', {
         hw,
         deviceConnection,
-      })
+      });
 
       if (!deviceConnection) {
         deviceConnection = new AppAda(hw);
@@ -233,7 +247,7 @@ export const handleHardwareWalletRequests = async (mainWindow) => {
 
   handleInitTrezorConnectChannel.onRequest(async () => {
     console.debug('>>> Trezor Init: ', TrezorConnect);
-    TrezorConnect.on(TRANSPORT_EVENT, event => {
+    TrezorConnect.on(TRANSPORT_EVENT, (event) => {
       console.debug('>>> TRANSPORT_EVENT: ', event);
 
       if (event.type === 'transport-error') {
@@ -251,9 +265,12 @@ export const handleHardwareWalletRequests = async (mainWindow) => {
         throw new Error(event.payload.error);
       }
     });
-    TrezorConnect.on(DEVICE_EVENT, event => {
+    TrezorConnect.on(DEVICE_EVENT, (event) => {
       console.debug('>>> DEVICE_EVENT: ', event);
-      const connectionChanged = event.type === 'device-connect' || event.type === 'device-disconnect' || event.type === 'device-changed';
+      const connectionChanged =
+        event.type === 'device-connect' ||
+        event.type === 'device-disconnect' ||
+        event.type === 'device-changed';
       const isAcquired = get(event, ['payload', 'type'], '') === 'acquired';
       const deviceError = get(event, ['payload', 'error']);
 
@@ -277,7 +294,7 @@ export const handleHardwareWalletRequests = async (mainWindow) => {
         );
       }
     });
-    TrezorConnect.on(UI_EVENT, event => {
+    TrezorConnect.on(UI_EVENT, (event) => {
       console.debug('>>> UI_EVENT: ', event);
     });
     TrezorConnect.manifest({
@@ -296,14 +313,14 @@ export const handleHardwareWalletRequests = async (mainWindow) => {
         appUrl: 'http://your.application.com', // @TODO
       },
     })
-    .then(() => {
-      console.debug('>>> TREZOR INIT - SUCCESS: ');
-      return;
-    })
-    .catch(error => {
-      console.debug('>>> TREZOR INIT - ERROR ', error);
-      throw error;
-    });
+      .then(() => {
+        console.debug('>>> TREZOR INIT - SUCCESS: ');
+        return;
+      })
+      .catch((error) => {
+        console.debug('>>> TREZOR INIT - ERROR ', error);
+        throw error;
+      });
     return Promise.resolve({
       success: true,
     });
@@ -322,8 +339,13 @@ export const handleHardwareWalletRequests = async (mainWindow) => {
     // @TODO - uncomment once Ledger enabled
     if (!deviceConnection) {
       try {
-        console.debug('>>> GET CARDANO APP - open instances for: ', transportList[0])
-        const newDeviceConnection = await TransportNodeHid.open(transportList[0]);
+        console.debug(
+          '>>> GET CARDANO APP - open instances for: ',
+          transportList[0]
+        );
+        const newDeviceConnection = await TransportNodeHid.open(
+          transportList[0]
+        );
         deviceConnection = new AppAda(newDeviceConnection);
       } catch (e) {
         console.debug('>>> GET CARDANO APP - open instances FAILED: ', e);
@@ -353,7 +375,7 @@ export const handleHardwareWalletRequests = async (mainWindow) => {
     }
   });
 
-  getExtendedPublicKeyChannel.onRequest(async params => {
+  getExtendedPublicKeyChannel.onRequest(async (params) => {
     const { path, isTrezor, devicePath } = params;
     // let trezorConnected = false;
 
@@ -362,8 +384,13 @@ export const handleHardwareWalletRequests = async (mainWindow) => {
     try {
       if (isTrezor) {
         // Check if Trezor instantiated
-        const deviceFeatures = await TrezorConnect.getFeatures({ device: { path: devicePath } });
-        console.debug('>>> Trezor - getExtendedPublicKey::Device Features: ', deviceFeatures);
+        const deviceFeatures = await TrezorConnect.getFeatures({
+          device: { path: devicePath },
+        });
+        console.debug(
+          '>>> Trezor - getExtendedPublicKey::Device Features: ',
+          deviceFeatures
+        );
         if (deviceFeatures.success) {
           // trezorConnected = true;
           const extendedPublicKeyResponse = await TrezorConnect.cardanoGetPublicKey(
@@ -393,7 +420,9 @@ export const handleHardwareWalletRequests = async (mainWindow) => {
         throw new Error('Ledger device not connected');
       }
 
-      const extendedPublicKey = await deviceConnection.getExtendedPublicKey(cardano.str_to_path(path));
+      const extendedPublicKey = await deviceConnection.getExtendedPublicKey(
+        cardano.str_to_path(path)
+      );
       return Promise.resolve({
         publicKeyHex: extendedPublicKey.publicKeyHex,
         chainCodeHex: extendedPublicKey.chainCodeHex,
@@ -403,8 +432,7 @@ export const handleHardwareWalletRequests = async (mainWindow) => {
     }
   });
 
-
-  signTransactionLedgerChannel.onRequest(async params => {
+  signTransactionLedgerChannel.onRequest(async (params) => {
     const {
       inputs,
       outputs,
@@ -430,7 +458,7 @@ export const handleHardwareWalletRequests = async (mainWindow) => {
         ttl,
         certificates,
         withdrawals,
-        metadataHashHex,
+        metadataHashHex
       );
       return Promise.resolve(signedTransaction);
     } catch (e) {
@@ -438,7 +466,7 @@ export const handleHardwareWalletRequests = async (mainWindow) => {
     }
   });
 
-  signTransactionTrezorChannel.onRequest(async params => {
+  signTransactionTrezorChannel.onRequest(async (params) => {
     const {
       inputs,
       outputs,
@@ -460,7 +488,7 @@ export const handleHardwareWalletRequests = async (mainWindow) => {
         ttl,
         protocolMagic,
         networkId,
-        certificates
+        certificates,
       });
       console.debug('>>> Signing SUCC: ', signedTransaction);
       return Promise.resolve(signedTransaction);
