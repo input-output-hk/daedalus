@@ -1053,6 +1053,10 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-news-overlay-update-button-background-color-hover': '#2d2d2d',
     '--theme-news-overlay-update-button-border-color': '#2d2d2d',
   },
+  rpPopOver: {
+    '--rp-pop-over-bg-color': 'rgba(45,45,45,0.9)',
+    '--rp-pop-over-text-color': 'white',
+  },
 };
 
 const YELLOW_THEME_PARAMS: CreateThemeParams = {
