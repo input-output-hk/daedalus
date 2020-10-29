@@ -1060,6 +1060,10 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-news-overlay-update-button-background-color-hover': '#ffffff',
     '--theme-news-overlay-update-button-border-color': '#ffffff',
   },
+  rpPopOver: {
+    '--rp-pop-over-bg-color': 'rgba(63,64,79,0.9)',
+    '--rp-pop-over-text-color': 'white',
+  },
 };
 
 const INCENTIVIZED_TESTNET_THEME_PARAMS: CreateThemeParams = {
