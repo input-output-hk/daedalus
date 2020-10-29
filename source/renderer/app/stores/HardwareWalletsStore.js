@@ -567,12 +567,7 @@ export default class HardwareWalletsStore extends Store {
         device: transportDevice,
       });
 
-      runInAction('HardwareWalletsStore:: set wallet READY', () => {
-        this.extendedPublicKey = extendedPublicKey;
-        this.hwDeviceStatus = HwDeviceStatuses.READY;
-        this.isConnectionInitialized = false;
-      });
-
+      this.resetInitializedConnection();
       this._refreshHardwareWalletsLocalData();
       this._refreshHardwareWalletDevices();
     } catch (e) {
@@ -800,7 +795,7 @@ export default class HardwareWalletsStore extends Store {
   _resetTransaction = async (params: ?{
     cancelDeviceAction: boolean;
   }) => {
-    const { cancelDeviceAction } = params;
+    const cancelDeviceAction = get(params, 'cancelDeviceAction', false);
     console.debug('>>> CANCEL: ', cancelDeviceAction);
     if (cancelDeviceAction) {
       signTransactionTrezorChannel.request({
@@ -954,11 +949,20 @@ export default class HardwareWalletsStore extends Store {
     );
   };
 
-  @action resetInitializedConnection = () => {
+  @action resetInitializedConnection = async (params: ?{
+    cancelDeviceAction: boolean;
+  }) => {
+    const cancelDeviceAction = get(params, 'cancelDeviceAction', false);
+    if (cancelDeviceAction) {
+      getHardwareWalletTransportChannel.request({
+        reset: true,
+      });
+    }
     this.stores.wallets.createHardwareWalletRequest.reset();
     this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
     this.extendedPublicKey = null;
     this.transportDevice = {};
+    this.isConnectionInitialized = false;
   };
 
   @action _refreshHardwareWalletsLocalData = () => {

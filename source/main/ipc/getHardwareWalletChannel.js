@@ -152,7 +152,17 @@ export const handleHardwareWalletRequests = async (mainWindow) => {
   let deviceConnection = null;
   getHardwareWalletTransportChannel.onRequest(async (request) => {
     // INIT - 6
-    const { isTrezor, devicePath } = request;
+    const { isTrezor, devicePath, reset } = request;
+    if (reset) {
+      TrezorConnect.cancel('Method_Cancel');
+      return {
+        success: false,
+        payload: {
+          code: 'Method_Cancel',
+          error: 'Signing Cancelled',
+        }
+      }
+    }
     console.debug('>>> ESTABLISH CONNECTION:  <<<, ', request);
 
     // Connected Trezor device info
