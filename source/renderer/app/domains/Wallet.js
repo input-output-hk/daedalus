@@ -41,12 +41,15 @@ export const WalletDelegationStatuses: {
 
 export type HwDeviceStatus =
   | 'connecting'
+  | 'trezor_bridge_failure'
   | 'launching_cardano_app'
   | 'exporting_public_key'
   | 'exporting_public_key_failed'
   | 'ready'
   | 'verifying_transaction'
   | 'verifying_transaction_failed'
+  | 'wrong_firmware'
+  | 'unsupported_device'
   | 'verifying_transaction_succeeded';
 
 export const HwDeviceStatuses: {
@@ -58,11 +61,17 @@ export const HwDeviceStatuses: {
   VERIFYING_TRANSACTION: HwDeviceStatus,
   VERIFYING_TRANSACTION_FAILED: HwDeviceStatus,
   VERIFYING_TRANSACTION_SUCCEEDED: HwDeviceStatus,
+  WRONG_FIRMWARE: HwDeviceStatus,
+  UNSUPPORTED_DEVICE: HwDeviceStatus,
+  TREZOR_BRIDGE_FAILURE: HwDeviceStatus,
 } = {
   CONNECTING: 'connecting',
+  TREZOR_BRIDGE_FAILURE: 'trezor_bridge_failure',
   LAUNCHING_CARDANO_APP: 'launching_cardano_app',
   EXPORTING_PUBLIC_KEY: 'exporting_public_key',
   EXPORTING_PUBLIC_KEY_FAILED: 'exporting_public_key_failed',
+  WRONG_FIRMWARE: 'wrong_firmware',
+  UNSUPPORTED_DEVICE: 'unsupported_device',
   READY: 'ready',
   VERIFYING_TRANSACTION: 'verifying_transaction',
   VERIFYING_TRANSACTION_FAILED: 'verifying_transaction_failed',

@@ -160,12 +160,22 @@ export const handleHardwareWalletRequests = async (mainWindow) => {
         deviceFeatures = await TrezorConnect.getFeatures({ device: { path: devicePath } });
         console.debug('>>> Trezor Connected: ', deviceFeatures);
         if (deviceFeatures && deviceFeatures.success) {
+          const {
+            major_version,
+            minor_version,
+            patch_version,
+            device_id,
+            model,
+            label
+          } = deviceFeatures.payload;
+          const firmwareVersion = `${major_version}.${minor_version}.${patch_version}`;
           return Promise.resolve({
-            deviceId: deviceFeatures.payload.device_id,
+            deviceId: device_id,
             deviceType: 'trezor',
-            deviceModel: deviceFeatures.payload.model, // e.g. "1" or "T"
-            deviceName: deviceFeatures.payload.label,
+            deviceModel: model, // e.g. "1" or "T"
+            deviceName: label,
             path: devicePath,
+            firmwareVersion,
           });
         }
         throw deviceFeatures.payload; // Error is in payload
@@ -248,7 +258,8 @@ export const handleHardwareWalletRequests = async (mainWindow) => {
           // $FlowFixMe
           mainWindow
         );
-        throw new Error(event.payload.error);
+        // throw new Error(event.payload.error);
+        console.debug('>>> Transport ERROR - ', event.payload);
       }
     });
     TrezorConnect.on(DEVICE_EVENT, event => {

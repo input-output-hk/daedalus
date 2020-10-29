@@ -2,10 +2,11 @@
 /* eslint-disable no-console */
 import { observable, action, runInAction, computed } from 'mobx';
 import { get, map, find, findLast } from 'lodash';
+import semver from 'semver';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { HwDeviceStatuses } from '../domains/Wallet';
-import { HW_SHELLEY_CONFIG } from '../config/hardwareWalletsConfig';
+import { HW_SHELLEY_CONFIG, MINIMAL_TREZOR_FIRMWARE_VERSION, MINIMAL_LEDGER_FIRMWARE_VERSION } from '../config/hardwareWalletsConfig';
 import {
   getHardwareWalletTransportChannel,
   getExtendedPublicKeyChannel,
@@ -146,6 +147,47 @@ export default class HardwareWalletsStore extends Store {
     console.debug('>>>> INIT TREZOR - getAvailableDevices');
   }
 
+  getAvailableDevices = async () => {
+    await this.hardwareWalletsLocalDataRequest.execute();
+    await this.hardwareWalletDevicesRequest.execute();
+    console.debug('>>> SETUP:: getAvailableDevices ', {
+      hardwareWalletsConnectionData: this.hardwareWalletsConnectionData,
+      hardwareWalletDevices: this.hardwareWalletDevices,
+    })
+    // Set all logical HW into disconnected state
+    map(this.hardwareWalletsConnectionData, async (connectedWallet) => {
+      console.debug('>> SET connectedWallet to disconnected state: ', connectedWallet);
+      await this._setHardwareWalletLocalData({
+        walletId: connectedWallet.id,
+        data: {
+          disconnected: true,
+        },
+      });
+    });
+
+    // Initiate Device Check for each stored device
+    map(this.hardwareWalletDevices, async device => {
+      console.debug('>> Check Device: ', device);
+      // Prevent device check if device is TREZOR and bridge not installed
+      if (device.deviceType === DeviceTypes.TREZOR && !this.isTrezorBridgeInstalled) {
+        return;
+      }
+
+      try {
+        await getHardwareWalletTransportChannel.request({
+          devicePath: device.path,
+          isTrezor: device.deviceType === DeviceTypes.TREZOR,
+        });
+      } catch (e) {
+        console.debug('>> Check Device - ERROR: ', e);
+      }
+    });
+
+    this._refreshHardwareWalletsLocalData();
+    this._refreshHardwareWalletDevices();
+    console.debug('>>>> getAvailableDevices - DONE');
+  };
+
   _sendMoney = async (params?: { isDelegationTransaction: boolean }) => {
     const { isDelegationTransaction } = params;
     const wallet = this.stores.wallets.active;
@@ -221,42 +263,6 @@ export default class HardwareWalletsStore extends Store {
     runInAction('HardwareWalletsStore:: set transaction state', () => {
       this.isTransactionPending = isTransactionPending
     });
-  }
-
-  getAvailableDevices = async () => {
-    await this.hardwareWalletsLocalDataRequest.execute();
-    await this.hardwareWalletDevicesRequest.execute();
-    console.debug('>>> SETUP:: getAvailableDevices ', {
-      hardwareWalletsConnectionData: this.hardwareWalletsConnectionData,
-      hardwareWalletDevices: this.hardwareWalletDevices,
-    })
-    // Set all logical HW into disconnected state
-    map(this.hardwareWalletsConnectionData, async (connectedWallet) => {
-      console.debug('>> SET connectedWallet to disconnected state: ', connectedWallet);
-      await this._setHardwareWalletLocalData({
-        walletId: connectedWallet.id,
-        data: {
-          disconnected: true,
-        },
-      });
-    })
-
-    // Initiate Device Check for each stored device
-    map(this.hardwareWalletDevices, async device => {
-      console.debug('>> Check Device: ', device);
-      try {
-        await getHardwareWalletTransportChannel.request({
-          devicePath: device.path,
-          isTrezor: device.deviceType === DeviceTypes.TREZOR,
-        });
-      } catch (e) {
-        console.debug('>> Check Device - ERROR: ', e);
-      }
-    })
-
-    this._refreshHardwareWalletsLocalData();
-    this._refreshHardwareWalletDevices();
-    console.debug('>>>> getAvailableDevices - DONE');
   }
 
   // @TODO - move to Transactions store once all logic fit and hardware wallets listed in general wallets list
@@ -367,13 +373,40 @@ export default class HardwareWalletsStore extends Store {
         }
       }
 
+
       console.debug('>>> transportDevice FETCHED - proceed with wallet creation ', transportDevice);
 
       if (transportDevice) {
-        const { deviceType } = transportDevice;
+        const { deviceType, firmwareVersion } = transportDevice;
+        // Check Device model
+        if ((deviceType === DeviceTypes.TREZOR && !DeviceModels.TREZOR_T) || (deviceType === DeviceTypes.LEDGER && (!DeviceModels.LEDGER_NANO_S && !DeviceModels.LEDGER_NANO_X))) {
+          runInAction('HardwareWalletsStore:: set HW device CONNECTING FAILED - device not supported', () => {
+            this.hwDeviceStatus = HwDeviceStatuses.UNSUPPORTED_DEVICE;
+          });
+          throw new Error('Device not Supported!', {
+            errorMessage: 'Device not supported',
+            code: 'Device_Not_Supported',
+          });
+        }
+
+        // Check Firmware version
+        const minFirmwareVersion = deviceType === DeviceTypes.TREZOR ? MINIMAL_TREZOR_FIRMWARE_VERSION : MINIMAL_LEDGER_FIRMWARE_VERSION;
+        const isFirmwareVersionValid = semver.gte(firmwareVersion, minFirmwareVersion);
+        if (!isFirmwareVersionValid) {
+          runInAction('HardwareWalletsStore:: set HW device CONNECTING FAILED - wrong firmware', () => {
+            this.hwDeviceStatus = HwDeviceStatuses.WRONG_FIRMWARE;
+          });
+          throw new Error(`Firmware must be ${minFirmwareVersion} or greater!`, {
+            errorMessage: 'Wrong Firmware',
+            code: 'Wrong_Firmware',
+          });
+        }
+
+        // All Checks pass - mark device as connected (set transport device for this session)
         runInAction('HardwareWalletsStore:: set HW device CONNECTED', () => {
           this.transportDevice = transportDevice;
         });
+
         if (deviceType === DeviceTypes.TREZOR) {
           // Jump to exporting public key
           await this._getExtendedPublicKey();
@@ -394,6 +427,12 @@ export default class HardwareWalletsStore extends Store {
       }
       if (e.id === 'TransportLocked') {
         throw new Error('Transport Failure');
+      }
+      if (e.code === 'Transport_Missing' && !this.isTrezorBridgeInstalled) {
+        runInAction('HardwareWalletsStore:: set HW device CONNECTING FAILED', () => {
+          this.hwDeviceStatus = HwDeviceStatuses.TREZOR_BRIDGE_FAILURE;
+        });
+        throw new Error('Trezor Bridge not installed!');
       }
       throw e;
     }

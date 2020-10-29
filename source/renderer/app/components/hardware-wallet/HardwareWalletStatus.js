@@ -63,6 +63,21 @@ const messages = defineMessages({
     defaultMessage: '!!!Transaction verified and signed',
     description: '"Transaction verified and signed" device state',
   },
+  trezor_bridge_failure: {
+    id: 'wallet.hardware.deviceStatus.trezor_bridge_failure',
+    defaultMessage: '!!!Trezor Bridge not installed!',
+    description: '"Trezor Bridge not installed!" device state',
+  },
+  wrong_firmware: {
+    id: 'wallet.hardware.deviceStatus.wrong_firmware',
+    defaultMessage: '!!!Please update your device firmware!',
+    description: '"Please update your firmware!" device state',
+  },
+  unsupported_device: {
+    id: 'wallet.hardware.deviceStatus.unsupported_device',
+    defaultMessage: '!!!This Device is not supported!',
+    description: '"This Device is not supported!" device state',
+  },
 });
 
 type Props = {
@@ -91,6 +106,9 @@ export default class HardwareWalletStatus extends Component<Props> {
 
     const hasErrored =
       hwDeviceStatus === HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED ||
+      hwDeviceStatus === HwDeviceStatuses.TREZOR_BRIDGE_FAILURE ||
+      hwDeviceStatus === HwDeviceStatuses.WRONG_FIRMWARE ||
+      hwDeviceStatus === HwDeviceStatuses.UNSUPPORTED_DEVICE ||
       hwDeviceStatus === HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED;
 
     const componentClasses = classnames([

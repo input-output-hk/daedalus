@@ -32,14 +32,5 @@ export const RECOMMENDED_LEDGER_APP_VERSION = {
   patch: 4,
 };
 
-export const MINIMAL_LEDGER_FIRMWARE_VERSION = {
-  major: 1,
-  minor: 6,
-  patch: 1,
-};
-
-export const MINIMAL_TREZOR_FIRMWARE_VERSION = {
-  major: 2,
-  minor: 3,
-  patch: 3,
-};
+export const MINIMAL_LEDGER_FIRMWARE_VERSION = '1.6.1';
+export const MINIMAL_TREZOR_FIRMWARE_VERSION = '2.3.3';
