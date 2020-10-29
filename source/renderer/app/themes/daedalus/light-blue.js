@@ -322,7 +322,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-loading-status-icons-off-color': '#ea4c5b',
     '--theme-loading-status-icons-unloaded-loading-color': '#fafbfc',
     '--theme-loading-status-icons-unloaded-syncing-color': '#5e6066',
-    '--theme-loading-status-icons-tooltip-color': '#062148',
+    '--theme-loading-status-icons-tooltip-color': 'var(--rp-pop-over-bg-color)',
     '--theme-loading-spinner-color': '#5e6066',
     '--theme-loading-spinner-medium-color': '#fafbfc',
   },
