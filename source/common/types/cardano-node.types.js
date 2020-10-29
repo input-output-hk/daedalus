@@ -148,7 +148,7 @@ export const ITN_MAGIC = 1;
 export const SHELLEY_TESTNET_NETWORK_ID = [1, 0, null];
 
 // Cardano Staging network magic
-export const STAGING_MAGIC = 633343913;
+export const STAGING_MAGIC = [633343913, 1];
 
 // Cardano Selfnode network magic
 export const SELFNODE_MAGIC = 459045235;
