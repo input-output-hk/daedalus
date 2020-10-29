@@ -5,6 +5,7 @@ Changelog
 
 ### Fixes
 
+- Fixes `PopOver` themes ([PR 2223](https://github.com/input-output-hk/daedalus/pull/2223))
 - Vertically centered empty news feed message ([PR 2216](https://github.com/input-output-hk/daedalus/pull/2216))
 - Fixed the fix missing space in the App Update Overlay error message ([PR 2219](https://github.com/input-output-hk/daedalus/pull/2219))
 
