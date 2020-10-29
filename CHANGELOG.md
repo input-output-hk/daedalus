@@ -6,11 +6,13 @@ Changelog
 ### Fixes
 
 - Fixed Address validation on Shelley QA network ([PR 2218](https://github.com/input-output-hk/daedalus/pull/2218))
+- Fixed the fix missing space in the App Update Overlay error message ([PR 2219](https://github.com/input-output-hk/daedalus/pull/2219))
 
 ## 2.4.0
 
 ### Features
 
+- Replaced several tooltips with new react-polymorph PopOver component [PR 2210](https://github.com/input-output-hk/daedalus/pull/2210)
 - Added tooltips to stake pools table view headers ([PR 2214](https://github.com/input-output-hk/daedalus/pull/2214))
 - Added stake pools list view ([PR 2186](https://github.com/input-output-hk/daedalus/pull/2186), [PR 2215](https://github.com/input-output-hk/daedalus/pull/2215))
 - Implemented stake pool details explanation tooltips ([PR 2211](https://github.com/input-output-hk/daedalus/pull/2211))
