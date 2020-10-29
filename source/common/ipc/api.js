@@ -417,14 +417,17 @@ export const GET_HARDWARE_WALLET_CONNECTION_CHANNEL =
 export type getHardwareWalletConnectiontMainRequest = { disconnected: boolean };
 export type getHardwareWalletConnectiontRendererResponse = Object;
 
-export const SIGN_TRANSACTION_LEDGER_CHANNEL = 'SIGN_TRANSACTION_LEDGER_CHANNEL';
+export const SIGN_TRANSACTION_LEDGER_CHANNEL =
+  'SIGN_TRANSACTION_LEDGER_CHANNEL';
 export type signTransactionLedgerRendererRequest = LedgerSignTransactionRequest;
 export type signTransactionLedgerMainResponse = LedgerSignTransactionResponse;
 
-export const SIGN_TRANSACTION_TREZOR_CHANNEL = 'SIGN_TRANSACTION_TREZOR_CHANNEL';
+export const SIGN_TRANSACTION_TREZOR_CHANNEL =
+  'SIGN_TRANSACTION_TREZOR_CHANNEL';
 export type signTransactionTrezorRendererRequest = TrezorSignTransactionRequest;
 export type signTransactionTrezorMainResponse = TrezorSignTransactionResponse;
 
-export const GET_INIT_TREZOR_CONNECT_CHANNEL = 'GET_INIT_TREZOR_CONNECT_CHANNEL';
+export const GET_INIT_TREZOR_CONNECT_CHANNEL =
+  'GET_INIT_TREZOR_CONNECT_CHANNEL';
 export type handleInitTrezorConnectRendererRequest = void;
 export type handleInitTrezorConnectMainResponse = void;

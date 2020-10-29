@@ -7,8 +7,14 @@ import blakejs from 'blakejs';
 // import { derivePublic as deriveChildXpub } from 'cardano-crypto.js';
 
 // Types
-import type { CoinSelectionInput, CoinSelectionOutput } from '../api/transactions/types';
-import type { BIP32Path, Certificate } from '../../../common/types/hardware-wallets.types';
+import type {
+  CoinSelectionInput,
+  CoinSelectionOutput,
+} from '../api/transactions/types';
+import type {
+  BIP32Path,
+  Certificate,
+} from '../../../common/types/hardware-wallets.types';
 
 export type ShelleyTxInputType = {
   coins: number,
@@ -63,7 +69,10 @@ export const derivationScheme = {
 };
 
 // Constructors
-export const ShelleyTxWitnessShelley = (publicKey: string, signature: Buffer) => {
+export const ShelleyTxWitnessShelley = (
+  publicKey: string,
+  signature: Buffer
+) => {
   function encodeCBOR(encoder: any) {
     return encoder.pushAny([publicKey, signature]);
   }
@@ -71,7 +80,7 @@ export const ShelleyTxWitnessShelley = (publicKey: string, signature: Buffer) =>
     publicKey,
     signature,
     encodeCBOR,
-  }
+  };
 };
 
 export const ShelleyTxInputFromUtxo = (utxoInput: CoinSelectionInput) => {
@@ -94,7 +103,11 @@ export const ShelleyTxInputFromUtxo = (utxoInput: CoinSelectionInput) => {
   };
 };
 
-export const ShelleyTxOutput = (output: CoinSelectionOutput, addressIndex: number, isChange: boolean) => {
+export const ShelleyTxOutput = (
+  output: CoinSelectionOutput,
+  addressIndex: number,
+  isChange: boolean
+) => {
   const { address, amount } = output;
   const coins = amount.quantity;
 
@@ -106,11 +119,13 @@ export const ShelleyTxOutput = (output: CoinSelectionOutput, addressIndex: numbe
     address,
     coins,
     isChange,
-    spendingPath: isChange ? [2147485500, 2147485463, 2147483648, 0, addressIndex] : null,
+    spendingPath: isChange
+      ? [2147485500, 2147485463, 2147483648, 0, addressIndex]
+      : null,
     stakingPath: isChange ? [2147485500, 2147485463, 2147483648, 2, 0] : null,
     encodeCBOR,
   };
-}
+};
 
 export const ShelleyFee = (fee: number) => {
   function encodeCBOR(encoder: any) {
@@ -120,7 +135,7 @@ export const ShelleyFee = (fee: number) => {
     fee,
     encodeCBOR,
   };
-}
+};
 
 export const ShelleyTtl = (ttl: number) => {
   function encodeCBOR(encoder: any) {
@@ -138,18 +153,18 @@ export const ShelleyTxAux = (
   fee: ShelleyFeeType,
   ttl: ShelleyTtlType,
   certs: Array<?Certificate>,
-  withdrawals: any, // @TODO - implement once delegation enabled
+  withdrawals: any // @TODO - implement once delegation enabled
 ) => {
-  const blake2b = data => blakejs.blake2b(data, null, 32);
+  const blake2b = (data) => blakejs.blake2b(data, null, 32);
   function getId() {
     return blake2b(
-      encode(ShelleyTxAux(inputs, outputs, fee, ttl, certs, withdrawals)),
+      encode(ShelleyTxAux(inputs, outputs, fee, ttl, certs, withdrawals))
       // 32
     ).toString('hex');
   }
 
   function encodeCBOR(encoder: any) {
-    const txMap = new Map()
+    const txMap = new Map();
     txMap.set(0, inputs);
     txMap.set(1, outputs);
     txMap.set(2, fee);
@@ -174,7 +189,7 @@ export const ShelleyTxAux = (
 export const ShelleySignedTransactionStructured = (
   txAux: ShelleyTxAuxType,
   witnesses: Map<number, ShelleyTxWitnessType>,
-  meta: ?any, // @TODO - TBD once meta introduced
+  meta: ?any // @TODO - TBD once meta introduced
 ) => {
   function getId() {
     return txAux.getId();
@@ -193,25 +208,27 @@ export const ShelleySignedTransactionStructured = (
 };
 
 export const CachedDeriveXpubFactory = (deriveXpubHardenedFn: Function) => {
-  const derivedXpubs = {}
+  const derivedXpubs = {};
 
   const deriveXpub = async (absDerivationPath: Array<number>) => {
     const memoKey = JSON.stringify(absDerivationPath);
     let derivedXpubsMemo = await derivedXpubs[memoKey];
 
     if (!derivedXpubsMemo) {
-      const deriveHardened = absDerivationPath.length === 0 || indexIsHardened(absDerivationPath.slice(-1)[0]);
+      const deriveHardened =
+        absDerivationPath.length === 0 ||
+        indexIsHardened(absDerivationPath.slice(-1)[0]);
       derivedXpubsMemo = deriveHardened
         ? deriveXpubHardenedFn(absDerivationPath)
         : deriveXpubNonhardenedFn(absDerivationPath);
     }
 
     /*
-    * the derivedXpubs map stores promises instead of direct results
-    * to deal with concurrent requests to derive the same xpub
-    */
+     * the derivedXpubs map stores promises instead of direct results
+     * to deal with concurrent requests to derive the same xpub
+     */
     return derivedXpubsMemo;
-  }
+  };
 
   const deriveXpubNonhardenedFn = async (derivationPath) => {
     const lastIndex = derivationPath.slice(-1)[0];
@@ -219,25 +236,32 @@ export const CachedDeriveXpubFactory = (deriveXpubHardenedFn: Function) => {
     // @TODO - remove flow fix and move deriveChildXpub to main process
     // $FlowFixMe
     return deriveChildXpub(parentXpub, lastIndex, derivationScheme.ed25519Mode); // eslint-disable-line
-  }
+  };
 
   return deriveXpub;
-}
+};
 
 // Helpers
 export const indexIsHardened = (index: number) => {
   return index >= HARDENED_THRESHOLD;
 };
 
-export const prepareLedgerInput = (input: CoinSelectionInput, addressIndex: number = 0) => {
+export const prepareLedgerInput = (
+  input: CoinSelectionInput,
+  addressIndex: number = 0
+) => {
   return {
     txHashHex: input.id,
     outputIndex: input.index,
     path: cardano.str_to_path(`1852'/1815'/0'/0/${addressIndex}`),
-  }
+  };
 };
 
-export const prepareLedgerOutput = (output: CoinSelectionOutput, addressIndex: number = 0, isChange: ?boolean = false) => {
+export const prepareLedgerOutput = (
+  output: CoinSelectionOutput,
+  addressIndex: number = 0,
+  isChange: ?boolean = false
+) => {
   if (isChange) {
     return {
       addressTypeNibble: 0b0000, // TODO: get from address
@@ -248,7 +272,7 @@ export const prepareLedgerOutput = (output: CoinSelectionOutput, addressIndex: n
   }
   return {
     amountStr: output.amount.quantity.toString(),
-    addressHex: utils.buf_to_hex(utils.bech32_decodeAddress(output.address))
+    addressHex: utils.buf_to_hex(utils.bech32_decodeAddress(output.address)),
   };
 };
 
@@ -259,7 +283,7 @@ export const prepareTxAux = ({
   ttl,
   certificates,
   withdrawals,
-} : {
+}: {
   txInputs: Array<ShelleyTxInputType>,
   txOutputs: Array<ShelleyTxOutputType>,
   fee: number,
@@ -271,10 +295,24 @@ export const prepareTxAux = ({
   const txTtl = ShelleyTtl(ttl);
   const txCerts = certificates; // @TODO - implement once delegation enabled
   const txWithdrawals = withdrawals[0]; // @TODO - implement once delegation enabled
-  return ShelleyTxAux(txInputs, txOutputs, txFee, txTtl, txCerts, txWithdrawals);
+  return ShelleyTxAux(
+    txInputs,
+    txOutputs,
+    txFee,
+    txTtl,
+    txCerts,
+    txWithdrawals
+  );
 };
 
-export const prepareBody = (unsignedTx: ShelleyTxAuxType, txWitnesses: Map<number, ShelleyTxWitnessType>) => {
-  const signedTransactionStructure = ShelleySignedTransactionStructured(unsignedTx, txWitnesses, null);
+export const prepareBody = (
+  unsignedTx: ShelleyTxAuxType,
+  txWitnesses: Map<number, ShelleyTxWitnessType>
+) => {
+  const signedTransactionStructure = ShelleySignedTransactionStructured(
+    unsignedTx,
+    txWitnesses,
+    null
+  );
   return encode(signedTransactionStructure).toString('hex');
 };

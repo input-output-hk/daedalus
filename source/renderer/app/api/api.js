@@ -78,10 +78,7 @@ import { quitStakePool } from './staking/requests/quitStakePool';
 // Utility functions
 import { cardanoFaultInjectionChannel } from '../ipc/cardano.ipc';
 import patchAdaApi from './utils/patchAdaApi';
-import {
-  getLegacyWalletId,
-  utcStringToDate,
-} from './utils';
+import { getLegacyWalletId, utcStringToDate } from './utils';
 import { logger } from '../utils/logging';
 import {
   unscrambleMnemonics,
@@ -93,7 +90,10 @@ import { filterLogData } from '../../../common/utils/logging';
 
 // Config constants
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
-import { REDEEM_ITN_REWARDS_AMOUNT, DELEGATION_DEPOSIT } from '../config/stakingConfig';
+import {
+  REDEEM_ITN_REWARDS_AMOUNT,
+  DELEGATION_DEPOSIT,
+} from '../config/stakingConfig';
 import {
   ADA_CERTIFICATE_MNEMONIC_LENGTH,
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
@@ -234,12 +234,15 @@ export default class AdaApi {
       return await Promise.all(
         wallets.map(async (wallet) => {
           const { id } = wallet;
-          const { getHardwareWalletLocalData } = global.daedalus.api.localStorage;
+          const {
+            getHardwareWalletLocalData,
+          } = global.daedalus.api.localStorage;
           const walletData = await getHardwareWalletLocalData(id);
           return _createWalletFromServerData({
             ...wallet,
-            isHardwareWallet: walletData && walletData.device && size(walletData.device) > 0,
-          })
+            isHardwareWallet:
+              walletData && walletData.device && size(walletData.device) > 0,
+          });
         })
       );
     } catch (error) {
@@ -814,7 +817,7 @@ export default class AdaApi {
       const inputsData = [];
       const outputsData = [];
       const certificatesData = [];
-      map(response.inputs, input => {
+      map(response.inputs, (input) => {
         totalInputs += input.amount.quantity;
         const inputData = {
           address: input.address,
@@ -822,39 +825,41 @@ export default class AdaApi {
           id: input.id,
           index: input.index,
           derivationPath: input.derivation_path,
-        }
+        };
         inputsData.push(inputData);
       });
-      map(outputs, output => {
+      map(outputs, (output) => {
         totalOutputs += output.amount.quantity;
         let outputData = {
           address: output.address,
           amount: output.amount,
-        }
+        };
         if (output.derivation_path) {
           outputData = {
             ...outputData,
             derivationPath: output.derivation_path,
-          }
+          };
         }
         outputsData.push(outputData);
       });
       if (response.certificates) {
-        map(response.certificates, certificate => {
+        map(response.certificates, (certificate) => {
           let certificateData = {
             certificateType: certificate.certificate_type,
             rewardAccountPath: certificate.reward_account_path,
-          }
+          };
           if (certificate.pool) {
             certificateData = {
               ...certificateData,
               pool: certificate.pool,
-            }
+            };
           }
           certificatesData.push(certificateData);
         });
       }
-      const fee = new BigNumber(totalInputs - totalOutputs).dividedBy(LOVELACES_PER_ADA);
+      const fee = new BigNumber(totalInputs - totalOutputs).dividedBy(
+        LOVELACES_PER_ADA
+      );
 
       let transactionFee;
       if (delegationAction) {
@@ -2160,6 +2165,9 @@ const _createStakePoolFromServerData = action(
       id,
       relativeStake: relativeStakePercentage,
       producedBlocks: producedBlocksCount,
+      potentialRewards: new BigNumber(nonMyopicMemberRewardsQuantity).dividedBy(
+        LOVELACES_PER_ADA
+      ),
       nonMyopicMemberRewards: nonMyopicMemberRewardsQuantity,
       ticker,
       homepage,

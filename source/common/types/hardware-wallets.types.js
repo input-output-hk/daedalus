@@ -63,12 +63,12 @@ export type TransportDevice = {
 export type Certificate = {|
   type: CertificateType,
   path: BIP32Path,
-  poolKeyHashHex: ?string
+  poolKeyHashHex: ?string,
 |};
 
 export type Withdrawal = {|
   path: BIP32Path,
-  amountStr: string
+  amountStr: string,
 |};
 
 export type LedgerSignTransactionInputType = {|

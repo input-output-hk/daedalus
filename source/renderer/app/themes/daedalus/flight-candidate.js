@@ -743,7 +743,7 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-staking-stake-pool-background-color': 'rgba(42, 43, 60, 1)',
     '--theme-staking-stake-pool-border-color': 'rgba(42, 43, 60, 1)',
     '--theme-staking-stake-pool-glow-color': '#ffb9234c',
-    '--theme-staking-stake-pool-grey-color': 'rgba(255, 255, 255, 0.5)',
+    '--theme-staking-stake-pool-grey-color': '#434554',
     '--theme-staking-stake-pool-grey-bg-color': 'rgba(255, 255, 255, 0.1)',
     '--theme-staking-stake-pools-search-icon-color': '#ffffff',
     '--theme-staking-stake-pool-saturation-background-color':
@@ -1055,6 +1055,10 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-news-overlay-update-button-hover-text-color': '#273d5b',
     '--theme-news-overlay-update-button-background-color-hover': '#ffffff',
     '--theme-news-overlay-update-button-border-color': '#ffffff',
+  },
+  rpPopOver: {
+    '--rp-pop-over-bg-color': 'rgba(63,64,79,0.9)',
+    '--rp-pop-over-text-color': 'white',
   },
 };
 

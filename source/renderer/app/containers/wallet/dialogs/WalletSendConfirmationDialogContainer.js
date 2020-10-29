@@ -37,8 +37,8 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
     const { stores } = this.props;
     const { wallets, hardwareWallets } = stores;
     const { active: activeWallet } = wallets;
-    hardwareWallets.initiateTransaction({ walletId: activeWallet.id })
-  }
+    hardwareWallets.initiateTransaction({ walletId: activeWallet.id });
+  };
 
   render() {
     const {
@@ -55,14 +55,23 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
     } = this.props;
     const { stores } = this.props;
     const { sendMoneyRequest, active: activeWallet } = stores.wallets;
-    const { _resetTransaction: resetHardwareWalletTransaction, sendMoneyRequest: sendMoneyExternalRequest, isTransactionPending } = stores.hardwareWallets;
+    const {
+      _resetTransaction: resetHardwareWalletTransaction,
+      sendMoneyRequest: sendMoneyExternalRequest,
+      isTransactionPending,
+    } = stores.hardwareWallets;
     const { isFlight } = global;
 
     if (!activeWallet)
       throw new Error('Active wallet required for WalletSendPage.');
 
-    const isSubmitting = (!isHardwareWallet && sendMoneyRequest.isExecuting) || (isHardwareWallet && (sendMoneyExternalRequest.isExecuting || isTransactionPending));
-    const error = (!isHardwareWallet && sendMoneyRequest.error) || (isHardwareWallet && sendMoneyExternalRequest.error);
+    const isSubmitting =
+      (!isHardwareWallet && sendMoneyRequest.isExecuting) ||
+      (isHardwareWallet &&
+        (sendMoneyExternalRequest.isExecuting || isTransactionPending));
+    const error =
+      (!isHardwareWallet && sendMoneyRequest.error) ||
+      (isHardwareWallet && sendMoneyExternalRequest.error);
 
     return (
       <WalletSendConfirmationDialog

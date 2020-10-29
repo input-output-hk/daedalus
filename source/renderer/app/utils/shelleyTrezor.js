@@ -5,7 +5,10 @@ import {
   CERTIFICATE_TYPE,
 } from './hardwareWalletUtils';
 
-import type { CoinSelectionInput, CoinSelectionOutput } from '../api/transactions/types';
+import type {
+  CoinSelectionInput,
+  CoinSelectionOutput,
+} from '../api/transactions/types';
 
 export const prepareTrezorInput = (input: CoinSelectionInput) => {
   return {
@@ -15,10 +18,9 @@ export const prepareTrezorInput = (input: CoinSelectionInput) => {
   };
 };
 
-export const prepareTrezorOutput = (
-  output: CoinSelectionOutput,
-) => {
-  if (output.derivationPath) { // Change output
+export const prepareTrezorOutput = (output: CoinSelectionOutput) => {
+  if (output.derivationPath) {
+    // Change output
     return {
       amount: output.amount.quantity.toString(),
       addressParameters: {
@@ -31,18 +33,18 @@ export const prepareTrezorOutput = (
   return {
     address: output.address,
     amount: output.amount.quantity.toString(),
-  }
+  };
 };
 
 export const prepareCertificate = (cert) => {
   return cert.pool
     ? {
-      type: CERTIFICATE_TYPE[cert.certificateType],
-      path: derivationPathToString(cert.rewardAccountPath),
-      pool: utils.buf_to_hex(utils.bech32_decodeAddress(cert.pool)),
-    }
+        type: CERTIFICATE_TYPE[cert.certificateType],
+        path: derivationPathToString(cert.rewardAccountPath),
+        pool: utils.buf_to_hex(utils.bech32_decodeAddress(cert.pool)),
+      }
     : {
-      type: CERTIFICATE_TYPE[cert.certificateType],
-      path: derivationPathToString(cert.rewardAccountPath),
-    }
+        type: CERTIFICATE_TYPE[cert.certificateType],
+        path: derivationPathToString(cert.rewardAccountPath),
+      };
 };

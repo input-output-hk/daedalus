@@ -25,7 +25,7 @@ export default class WalletConnectDialogContainer extends Component<Props> {
     stopCardanoAdaAppFetchPoller();
     resetInitializedConnection();
     this.props.onClose();
-  }
+  };
 
   render() {
     const { stores } = this.props;

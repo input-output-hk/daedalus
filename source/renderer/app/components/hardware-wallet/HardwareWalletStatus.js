@@ -123,7 +123,9 @@ export default class HardwareWalletStatus extends Component<Props> {
           <div className={styles.message}>
             {intl.formatMessage(messages[hwDeviceStatus])}
           </div>
-          {isLoading && <LoadingSpinner className='hardwareWalletProcessProgress' />}
+          {isLoading && (
+            <LoadingSpinner className="hardwareWalletProcessProgress" />
+          )}
           {isReady && (
             <SVGInline svg={checkIcon} className={styles.checkIcon} />
           )}

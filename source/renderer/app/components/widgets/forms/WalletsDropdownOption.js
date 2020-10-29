@@ -34,7 +34,11 @@ export default class WalletsDropdownOption extends Component<WalletOption> {
     );
   };
 
-  renderLabelSyncing = (label: string, syncingLabel: string, isHardwareWallet: boolean) => {
+  renderLabelSyncing = (
+    label: string,
+    syncingLabel: string,
+    isHardwareWallet: boolean
+  ) => {
     return (
       <div className={styles.label}>
         {label}
@@ -64,8 +68,7 @@ export default class WalletsDropdownOption extends Component<WalletOption> {
           <div className={styles.topRowTicker}>
             {isSyncing && syncingLabel
               ? this.renderLabelSyncing(label, syncingLabel, isHardwareWallet)
-              : this.renderLabel(label, isHardwareWallet)
-            }
+              : this.renderLabel(label, isHardwareWallet)}
           </div>
           <div className={styles.topRowSync}>
             {isSyncing && (

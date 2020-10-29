@@ -42,8 +42,6 @@ type Props = {
   onGridView?: Function,
   onListView?: Function,
   search: string,
-  isFixed?: boolean,
-  isScrolled?: boolean,
 };
 
 export class StakePoolsSearch extends Component<Props> {
@@ -73,24 +71,7 @@ export class StakePoolsSearch extends Component<Props> {
       isListView,
       isGridView,
       isClearTooltipOpeningDownward,
-      isFixed,
-      isScrolled,
     } = this.props;
-
-    let componentClasses: string = '';
-    if (isScrolled) {
-      componentClasses = classnames([
-        styles.component,
-        isListView && isScrolled ? styles.componentFixedPosition : null,
-      ]);
-    } else {
-      componentClasses = classnames([
-        styles.component,
-        isScrolled && isListView && isFixed
-          ? styles.componentFixedPosition
-          : null,
-      ]);
-    }
 
     const gridButtonClasses = classnames([
       styles.gridView,
@@ -110,7 +91,7 @@ export class StakePoolsSearch extends Component<Props> {
     ]);
 
     return (
-      <div className={componentClasses}>
+      <div className={styles.component}>
         <div className={styles.container}>
           <SVGInline svg={searchIcon} className={styles.searchIcon} />
           <Input

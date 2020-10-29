@@ -43,9 +43,7 @@ export default class Root extends Component<Props> {
 
     const isWalletImportDialogOpen = uiDialogs.isOpen(WalletImportFileDialog);
     const isPageThatDoesntNeedWallets =
-      (isStakingPage || isSettingsPage) &&
-      hasLoadedWallets &&
-      isConnected;
+      (isStakingPage || isSettingsPage) && hasLoadedWallets && isConnected;
 
     // In case node is in stopping sequence we must show the "Connecting" screen
     // with the "Stopping Cardano node..." and "Cardano node stopped" messages

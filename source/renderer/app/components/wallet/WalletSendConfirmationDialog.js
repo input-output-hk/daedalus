@@ -121,7 +121,10 @@ type State = {
 };
 
 @observer
-export default class WalletSendConfirmationDialog extends Component<Props, State> {
+export default class WalletSendConfirmationDialog extends Component<
+  Props,
+  State
+> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -230,7 +233,7 @@ export default class WalletSendConfirmationDialog extends Component<Props, State
     if (isHardwareWallet) {
       onInitiateTransaction();
     }
-  }
+  };
 
   render() {
     const { form } = this;
@@ -366,7 +369,6 @@ export default class WalletSendConfirmationDialog extends Component<Props, State
 
           {this.renderConfirmationElement(isHardwareWallet)}
         </div>
-
 
         {errorElement ? <p className={styles.error}>{errorElement}</p> : null}
       </Dialog>
