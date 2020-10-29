@@ -158,11 +158,9 @@ export const handleHardwareWalletRequests = async (mainWindow) => {
     // Connected Trezor device info
     let deviceFeatures;
     if (isTrezor) {
-      console.debug('>>> TEST - REQ: ', request);
       const test = await TrezorConnect.getFeatures({
         device: { path: devicePath },
       });
-      console.debug('>>> TEST 1: ', test);
       try {
         console.debug('>>> ESTABLISH CONNECTION Trezor');
         deviceFeatures = await TrezorConnect.getFeatures({
@@ -190,7 +188,6 @@ export const handleHardwareWalletRequests = async (mainWindow) => {
         }
         throw deviceFeatures.payload; // Error is in payload
       } catch (e) {
-        console.debug('>>> ESTABLISH CONNECTION error: <<<', e);
         throw e;
       }
     }
@@ -262,9 +259,7 @@ export const handleHardwareWalletRequests = async (mainWindow) => {
     // Initialize new device listeners
     TrezorConnect.on(TRANSPORT_EVENT, (event) => {
       console.debug('>>> TRANSPORT_EVENT: ', event);
-
       if (event.type === 'transport-error') {
-        console.debug('>>> ECONNREFUSED <<<<');
         // Send Transport error to Renderer
         getHardwareWalletConnectionChannel.send(
           {
@@ -275,8 +270,6 @@ export const handleHardwareWalletRequests = async (mainWindow) => {
           // $FlowFixMe
           mainWindow
         );
-        // throw new Error(event.payload.error);
-        console.debug('>>> Transport ERROR - ', event.payload);
       }
     });
     TrezorConnect.on(DEVICE_EVENT, (event) => {
@@ -308,14 +301,11 @@ export const handleHardwareWalletRequests = async (mainWindow) => {
         );
       }
     });
-    TrezorConnect.on(UI_EVENT, (event) => {
-      console.debug('>>> UI_EVENT: ', event);
-    });
     TrezorConnect.manifest({
       email: 'email@developer.com',
       appUrl: 'http://your.application.com',
     });
-    const transport = TrezorConnect.init({
+    TrezorConnect.init({
       popup: false, // render your own UI
       webusb: false, // webusb is not supported in electron
       debug: true, // see what's going on inside connect
@@ -329,7 +319,6 @@ export const handleHardwareWalletRequests = async (mainWindow) => {
     })
       .then(() => {
         console.debug('>>> TREZOR INIT - SUCCESS: ');
-        return;
       })
       .catch((error) => {
         console.debug('>>> TREZOR INIT - ERROR ', error);
@@ -391,20 +380,13 @@ export const handleHardwareWalletRequests = async (mainWindow) => {
 
   getExtendedPublicKeyChannel.onRequest(async (params) => {
     const { path, isTrezor, devicePath } = params;
-    // let trezorConnected = false;
-
     console.debug('>>> getExtendedPublicKeyChannel: ', params);
-
     try {
       if (isTrezor) {
         // Check if Trezor instantiated
         const deviceFeatures = await TrezorConnect.getFeatures({
           device: { path: devicePath },
         });
-        console.debug(
-          '>>> Trezor - getExtendedPublicKey::Device Features: ',
-          deviceFeatures
-        );
         if (deviceFeatures.success) {
           // trezorConnected = true;
           const extendedPublicKeyResponse = await TrezorConnect.cardanoGetPublicKey(
@@ -507,7 +489,6 @@ export const handleHardwareWalletRequests = async (mainWindow) => {
     }
 
     try {
-      console.debug('>>> Signing REQ: ', params);
       const signedTransaction = await TrezorConnect.cardanoSignTransaction({
         inputs,
         outputs,
@@ -517,10 +498,8 @@ export const handleHardwareWalletRequests = async (mainWindow) => {
         networkId,
         certificates,
       });
-      console.debug('>>> Signing SUCC: ', signedTransaction);
       return Promise.resolve(signedTransaction);
     } catch (e) {
-      console.debug('>>> Signing ERROR: ', e);
       throw e;
     }
   });
