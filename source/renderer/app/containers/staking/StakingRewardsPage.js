@@ -8,7 +8,7 @@ import { generateFileNameWithTimestamp } from '../../../../common/utils/files';
 import StakingRewards from '../../components/staking/rewards/StakingRewards';
 import StakingRewardsForIncentivizedTestnet from '../../components/staking/rewards/StakingRewardsForIncentivizedTestnet';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import type { CsvRecord } from '../../../../common/types/rewards-csv-request.types';
+import type { CsvRecord } from '../../../../common/types/csv-request.types';
 
 const messages = defineMessages({
   learnMoreLinkUrl: {
@@ -36,7 +36,7 @@ export default class StakingRewardsPage extends Component<Props> {
     this.props.stores.app.openExternalLink(learnMoreLinkUrl);
   };
 
-  onExportCsv = async (rewards: Array<CsvRecord>) => {
+  onExportCsv = async (fileContent: Array<CsvRecord>) => {
     const {
       actions: { wallets },
     } = this.props;
@@ -60,7 +60,7 @@ export default class StakingRewardsPage extends Component<Props> {
     // if cancel button is clicked or path is empty
     if (!filePath) return;
 
-    wallets.generateRewardsCsv.trigger({ rewards, filePath });
+    wallets.generateCsv.trigger({ fileContent, filePath });
   };
 
   render() {

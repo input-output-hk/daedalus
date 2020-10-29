@@ -12,7 +12,7 @@ import { i18nContext } from '../utils/i18nContext';
 import { mnemonicToSeedHex, getScrambledInput } from '../utils/crypto';
 import { paperWalletPdfGenerator } from '../utils/paperWalletPdfGenerator';
 import { addressPDFGenerator } from '../utils/addressPDFGenerator';
-import { downloadRewardsCsv } from '../utils/rewardsCsvGenerator';
+import { downloadsCsv } from '../utils/csvGenerator';
 import { buildRoute, matchRoute } from '../utils/routing';
 import { logger } from '../utils/logging';
 import { ROUTES } from '../routes-config';
@@ -34,7 +34,7 @@ import type {
   WalletYoroiKind,
   WalletHardwareKind,
 } from '../types/walletRestoreTypes';
-import type { CsvRecord } from '../../../common/types/rewards-csv-request.types';
+import type { CsvRecord } from '../../../common/types/csv-request.types';
 import type { WalletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
 import type LocalizableError from '../i18n/LocalizableError';
@@ -247,7 +247,7 @@ export default class WalletsStore extends Store {
       this._closeCertificateGeneration
     );
 
-    walletsActions.generateRewardsCsv.listen(this._generateRewardsCsv);
+    walletsActions.generateCsv.listen(this._generateCsv);
     walletsActions.closeRewardsCsvGeneration.listen(
       this._closeRewardsCsvGeneration
     );
@@ -1228,7 +1228,7 @@ export default class WalletsStore extends Store {
    * Using mobx flows: https://mobx.js.org/best/actions.html#flows
    * @private
    */
-  _generateRewardsCsv = flow(function* generateRewardsCsv(params: {
+  _generateCsv = flow(function* generateCsv(params: {
     rewards: Array<CsvRecord>,
     filePath: string,
   }) {
@@ -1247,10 +1247,13 @@ export default class WalletsStore extends Store {
     }
   }).bind(this);
 
-  _downloadRewardsCsv = async (rewards: Array<CsvRecord>, filePath: string) => {
+  _downloadRewardsCsv = async (
+    fileContent: Array<CsvRecord>,
+    filePath: string
+  ) => {
     try {
-      await downloadRewardsCsv({
-        rewards,
+      await downloadCsv({
+        fileContent,
         filePath,
       });
       runInAction('handle successful rewards csv download', () => {
