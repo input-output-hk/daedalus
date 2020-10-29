@@ -309,7 +309,7 @@ export const SHELLEY_TESTNET_THEME_OUTPUT = {
     '--theme-loading-status-icons-off-color': '#ea4c5b',
     '--theme-loading-status-icons-unloaded-loading-color': '#ffffff',
     '--theme-loading-status-icons-unloaded-syncing-color': '#ffffff',
-    '--theme-loading-status-icons-tooltip-color': '#56576b',
+    '--theme-loading-status-icons-tooltip-color': 'var(--rp-pop-over-bg-color)',
     '--theme-loading-spinner-color': '#ffffff',
     '--theme-loading-spinner-medium-color': '#ffffff',
   },
@@ -1056,6 +1056,10 @@ export const SHELLEY_TESTNET_THEME_OUTPUT = {
     '--theme-news-overlay-update-button-hover-text-color': '#2a2b3c',
     '--theme-news-overlay-update-button-background-color-hover': '#ffffff',
     '--theme-news-overlay-update-button-border-color': '#ffffff',
+  },
+  rpPopOver: {
+    '--rp-pop-over-bg-color': 'rgba(63,64,79,0.9)',
+    '--rp-pop-over-text-color': 'white',
   },
 };
 

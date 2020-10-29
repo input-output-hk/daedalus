@@ -91,6 +91,9 @@
 
   .newsFeedContainer {
     background: var(--theme-news-feed-background-color);
+    display: flex;
+    flex: 1;
+    flex-direction: column;
     font-family: var(--font-regular);
     overflow: hidden;
     padding: 20px;
@@ -104,6 +107,7 @@
       align-items: center;
       display: flex;
       flex-direction: column;
+      flex-grow: 1;
       height: 100%;
       justify-content: center;
 
@@ -119,6 +123,7 @@
         text-align: center;
       }
     }
+
     .newsFeedList {
       height: calc(100% - 104px);
       overflow-x: hidden;
@@ -126,8 +131,10 @@
       padding: 0 20px 20px 0;
       position: absolute;
       width: calc(100% - 20px);
+
       &.hasUpdate {
         height: calc(100% - 220px);
+        margin-top: 115px;
       }
     }
   }
