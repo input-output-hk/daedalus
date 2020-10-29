@@ -44,11 +44,10 @@ type Props = {
   onFilter: Function,
   onClose: Function,
   onRequestCSVFile: Function,
+  onFilterButtonClick: Function,
   isScrolling: boolean,
-};
-
-type State = {
   isFilterButtonFaded: boolean,
+  isFilterDialogOpen: boolean,
 };
 
 @observer
@@ -57,21 +56,19 @@ export default class WalletTransactionsHeader extends Component<Props, State> {
     intl: intlShape.isRequired,
   };
 
-  state = {
-    isFilterButtonFaded: false,
-  };
-
-  setFilterButtonFaded = (isFilterButtonFaded: boolean) =>
-    this.setState({ isFilterButtonFaded });
-
   render() {
     const { intl } = this.context;
-    const { isFilterButtonFaded } = this.state;
     const {
       transactions,
       filterOptions,
       isScrolling,
       onRequestCSVFile,
+      onFilterButtonClick,
+      currentLocale,
+      currentDateFormat,
+      currentNumberFormat,
+      isFilterButtonFaded,
+      isFilterDialogOpen,
       /* hasAny, */
     } = this.props;
     // console.log('this.props.hasAny', this.props.hasAny);
@@ -107,9 +104,45 @@ export default class WalletTransactionsHeader extends Component<Props, State> {
             <FilterButton
               numberOfFilterDimensionsApplied={3}
               faded={isFilterButtonFaded}
-              onClick={this.openFilterDialog}
+              onClick={onFilterButtonClick}
             />
           </div>
+        )}
+        {isFilterDialogOpen && (
+          <FilterDialog
+            locale={currentLocale}
+            dateFormat={currentDateFormat}
+            numberFormat={currentNumberFormat}
+            defaultFilterOptions={{}}
+            populatedFilterOptions={{
+              incomingChecked: true,
+              outgoingChecked: false,
+              dateRange: 'dateRange',
+              fromDate: 'fromDate',
+              toDate: 'toDate',
+              fromAmount: 'fromAmount',
+              toAmount: 'toAmount',
+            }}
+            filterOptions={{
+              incomingChecked: true,
+              outgoingChecked: false,
+              dateRange: 'dateRange',
+              fromDate: 'fromDate',
+              toDate: 'toDate',
+              fromAmount: 'fromAmount',
+              toAmount: 'toAmount',
+            }}
+            onFilter={(a, b, c) => {
+              console.log('a', a);
+              console.log('b', b);
+              console.log('c', c);
+            }}
+            onClose={(a, b, c) => {
+              console.log('a', a);
+              console.log('b', b);
+              console.log('c', c);
+            }}
+          />
         )}
       </div>
     );

@@ -8,7 +8,7 @@ import { isEqual, pick } from 'lodash';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
-import { i18nContext } from '../../../utils/i18nContext';
+// import { i18nContext } from '../../../utils/i18nContext';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import {
   calculateDateRange,
@@ -168,9 +168,12 @@ export default class FilterDialog extends Component<Props> {
   dateRangeOptions: Array<{ label: string, value: string }>;
   form: ReactToolboxMobxForm;
 
-  constructor(props: Props) {
+  constructor(props: Props, context) {
+    console.log('context', context);
     super(props);
+  }
 
+  componentDidMount() {
     const {
       locale,
       populatedFilterOptions: {
@@ -182,28 +185,31 @@ export default class FilterDialog extends Component<Props> {
         fromAmount,
         toAmount,
       },
-    } = props;
-    const intl = i18nContext(locale);
+    } = this.props;
+
+    // const { intl } = this.context;
+    console.log('this.context', this.context);
+    // const intl = i18nContext(locale);
 
     this.dateRangeOptions = [
       {
-        label: intl.formatMessage(messages.last7Days),
+        label: 'intl.formatMessage(messages.last7Days)',
         value: DateRangeTypes.LAST_7_DAYS,
       },
       {
-        label: intl.formatMessage(messages.last30Days),
+        label: 'intl.formatMessage(messages.last30Days)',
         value: DateRangeTypes.LAST_30_DAYS,
       },
       {
-        label: intl.formatMessage(messages.last90Days),
+        label: 'intl.formatMessage(messages.last90Days)',
         value: DateRangeTypes.LAST_90_DAYS,
       },
       {
-        label: intl.formatMessage(messages.thisYear),
+        label: 'intl.formatMessage(messages.thisYear)',
         value: DateRangeTypes.THIS_YEAR,
       },
       {
-        label: intl.formatMessage(messages.custom),
+        label: 'intl.formatMessage(messages.custom)',
         value: DateRangeTypes.CUSTOM,
       },
     ];
@@ -211,16 +217,16 @@ export default class FilterDialog extends Component<Props> {
       fields: {
         incomingChecked: {
           type: 'checkbox',
-          label: intl.formatMessage(messages.incoming),
+          label: 'intl.formatMessage(messages.incoming)',
           value: incomingChecked,
         },
         outgoingChecked: {
           type: 'checkbox',
-          label: intl.formatMessage(messages.outgoing),
+          label: 'intl.formatMessage(messages.outgoing)',
           value: outgoingChecked,
         },
         dateRange: {
-          label: intl.formatMessage(messages.dateRange),
+          label: 'intl.formatMessage(messages.dateRange)',
           value: dateRange,
         },
         fromDate: {
@@ -243,9 +249,7 @@ export default class FilterDialog extends Component<Props> {
         },
       },
     });
-  }
 
-  componentDidMount() {
     window.addEventListener('resize', applyDialogStyles);
   }
 
@@ -302,44 +306,48 @@ export default class FilterDialog extends Component<Props> {
   isFormValuesEqualTo = (
     comparedFilterOptions: TransactionFilterOptionsType
   ) => {
-    const formFieldNames = Object.keys(this.form.fields.toJSON());
-    return isEqual(
-      this.getComposedFormValues(),
-      pick(comparedFilterOptions, formFieldNames)
-    );
+    return false;
+    // const formFieldNames = Object.keys(this.form.fields.toJSON());
+    // return isEqual(
+    //   this.getComposedFormValues(),
+    //   pick(comparedFilterOptions, formFieldNames)
+    // );
   };
 
   getComposedFormValues = () => {
-    const formValues = this.form.values();
-    return {
-      ...formValues,
-      fromAmount: formValues.fromAmount.toString(),
-      toAmount: formValues.toAmount.toString(),
-    };
+    return {};
+    // const formValues = this.form.values();
+    // return {
+    //   ...formValues,
+    //   fromAmount: formValues.fromAmount.toString(),
+    //   toAmount: formValues.toAmount.toString(),
+    // };
   };
 
-  handleSubmit = () =>
-    this.form.submit({
-      onSuccess: () => {
-        const { onFilter } = this.props;
-        const formValues = this.getComposedFormValues();
-        if (validateFilterForm(formValues).isValid) {
-          onFilter(formValues);
-        }
-      },
-      onError: () => null,
-    });
+  handleSubmit = () => {};
+  // this.form.submit({
+  //   onSuccess: () => {
+  //     const { onFilter } = this.props;
+  //     const formValues = this.getComposedFormValues();
+  //     if (validateFilterForm(formValues).isValid) {
+  //       onFilter(formValues);
+  //     }
+  //   },
+  //   onError: () => null,
+  // });
 
   isValidFromDate = (date: Object) => {
-    return date.isSameOrBefore(moment().endOf('day'));
+    return true;
+    // return date.isSameOrBefore(moment().endOf('day'));
   };
 
   isValidToDate = (date: Object) => {
-    const { fromDate } = this.form.values();
-    return (
-      date.isSameOrBefore(moment().endOf('day')) &&
-      date.isSameOrAfter(moment(fromDate).startOf('day'))
-    );
+    return true;
+    // const { fromDate } = this.form.values();
+    // return (
+    //   date.isSameOrBefore(moment().endOf('day')) &&
+    //   date.isSameOrAfter(moment(fromDate).startOf('day'))
+    // );
   };
 
   renderTypeField = () => {
@@ -571,11 +579,12 @@ export default class FilterDialog extends Component<Props> {
             </div>
           </div>
           <div className={styles.content}>
-            {this.renderTypeField()}
+            oioioi
+            {/*this.renderTypeField()}
             {this.renderDateRangeField()}
             {this.renderDateRangeFromToField()}
             {this.renderAmountRangeField()}
-            {this.renderActionButton()}
+            {this.renderActionButton()*/}
           </div>
         </div>
       </Dialog>

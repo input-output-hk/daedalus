@@ -44,26 +44,39 @@ type Props = {
   onClose: Function,
   onRequestCSVFile: Function,
 };
+
 type State = {
+  isScrolling: boolean,
   isFilterButtonFaded: boolean,
+  isFilterDialogOpen: boolean,
 };
 
 @observer
-export default class WalletTransactions extends Component<Props, State> {
+export default class WalletTransactions extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
   state = {
     isFilterButtonFaded: false,
+    isFilterDialogOpen: false,
   };
 
-  setFilterButtonFaded = (isFilterButtonFaded: boolean) =>
-    this.setState({ isFilterButtonFaded });
+  setFilterButtonFaded = (isFilterButtonFaded) => {
+    this.setState(() => ({
+      isFilterButtonFaded,
+    }));
+  };
+
+  onFilterButtonClick = () => {
+    this.setState((prevState) => ({
+      isFilterDialogOpen: !prevState.isFilterDialogOpen,
+    }));
+  };
 
   render() {
     const { intl } = this.context;
-    const { isFilterButtonFaded } = this.state;
+    const { isFilterButtonFaded, isFilterDialogOpen } = this.state;
     const {
       activeWallet,
       transactions,
@@ -130,6 +143,9 @@ export default class WalletTransactions extends Component<Props, State> {
         <WalletTransactionsHeader
           transactions={transactions}
           onRequestCSVFile={onRequestCSVFile}
+          onFilterButtonClick={this.onFilterButtonClick}
+          isFilterButtonFaded={isFilterButtonFaded}
+          isFilterDialogOpen={isFilterDialogOpen}
         />
         <VerticalFlexContainer>{walletTransactions}</VerticalFlexContainer>
       </WalletTransactionsListScrollContext.Provider>
