@@ -24,6 +24,7 @@ export default class RedeemItnRewardsContainer extends Component<Props> {
       result: ResultContainer,
     };
   }
+
   render() {
     const { stores, actions } = this.props;
     const { allWallets } = stores.wallets;
@@ -36,21 +37,22 @@ export default class RedeemItnRewardsContainer extends Component<Props> {
     if (!allWallets.length)
       return <NoWalletsContainer onClose={closeRedeemDialog.trigger} />;
 
-    if (!isSynced && redeemStep === REDEEM_ITN_REWARDS_STEPS.CONFIGURATION)
+    if (redeemStep && isSynced && allWallets) {
+      const CurrentContainer = this.containers[redeemStep];
+      return (
+        <>
+          {isSubmittingReedem && <LoadingOverlay />}
+          <CurrentContainer
+            onBack={onRedeemStart.trigger}
+            onClose={closeRedeemDialog.trigger}
+          />
+        </>
+      );
+    }
+
+    if (!isSynced && redeemStep && redeemStep === REDEEM_ITN_REWARDS_STEPS.CONFIGURATION)
       return (
         <RedemptionUnavailableContainer onClose={closeRedeemDialog.trigger} />
       );
-
-    const CurrentContainer = this.containers[redeemStep];
-
-    return (
-      <>
-        {isSubmittingReedem && <LoadingOverlay />}
-        <CurrentContainer
-          onBack={onRedeemStart.trigger}
-          onClose={closeRedeemDialog.trigger}
-        />
-      </>
-    );
   }
 }
