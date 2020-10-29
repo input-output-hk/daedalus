@@ -1,9 +1,9 @@
 // @flow
 import { generateCsvChannel } from '../ipc/generateCsvChannel';
-import type { CsvRecord } from '../../../common/types/csv-request.types';
+import type { CsvFileContent } from '../../../common/types/csv-request.types';
 
 type Params = {
-  fileContent: Array<CsvRecord>,
+  fileContent: CsvFileContent,
   filePath: string,
 };
 

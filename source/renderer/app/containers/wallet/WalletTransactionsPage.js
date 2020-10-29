@@ -3,9 +3,12 @@ import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import WalletTransactions from '../../components/wallet/transactions/WalletTransactions';
+import { getNetworkExplorerUrlByType } from '../../utils/network';
+import { downloadCsv } from '../../utils/csvGenerator';
+import { generateFileNameWithTimestamp } from '../../../../common/utils/files';
+import type { CsvFileContent } from '../../../../common/types/csv-request.types';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import type { TransactionFilterOptionsType } from '../../stores/TransactionsStore';
-import { getNetworkExplorerUrlByType } from '../../utils/network';
 
 export const messages = defineMessages({
   noTransactions: {
@@ -115,6 +118,12 @@ export default class WalletTransactionsPage extends Component<Props, State> {
       searchLimit !== undefined &&
       totalAvailable > searchLimit;
 
+    const fileName = generateFileNameWithTimestamp({
+      prefix: 'transactions',
+      extension: 'csv',
+      isUTC: true,
+    });
+
     return (
       <WalletTransactions
         activeWallet={activeWallet}
@@ -134,6 +143,9 @@ export default class WalletTransactionsPage extends Component<Props, State> {
         onFilter={this.onFilter}
         onClose={() => closeActiveDialog.trigger()}
         {...dataForActiveDialog}
+        onRequestCSVFile={(fileContent: CsvFileContent) =>
+          downloadCsv({ fileName, fileContent })
+        }
         isRenderingAsVirtualList
       />
     );

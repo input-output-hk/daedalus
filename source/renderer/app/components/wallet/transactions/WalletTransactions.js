@@ -42,6 +42,7 @@ type Props = {
   populatedFilterOptions: TransactionFilterOptionsType,
   onFilter: Function,
   onClose: Function,
+  onRequestCSVFile: Function,
 };
 type State = {
   isFilterButtonFaded: boolean,

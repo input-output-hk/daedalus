@@ -34,7 +34,7 @@ import type {
   WalletYoroiKind,
   WalletHardwareKind,
 } from '../types/walletRestoreTypes';
-import type { CsvRecord } from '../../../common/types/csv-request.types';
+import type { CsvFileContent } from '../../../common/types/csv-request.types';
 import type { WalletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
 import type LocalizableError from '../i18n/LocalizableError';
@@ -1229,7 +1229,7 @@ export default class WalletsStore extends Store {
    * @private
    */
   _generateCsv = flow(function* generateCsv(params: {
-    rewards: Array<CsvRecord>,
+    rewards: CsvFileContent,
     filePath: string,
   }) {
     try {
@@ -1248,7 +1248,7 @@ export default class WalletsStore extends Store {
   }).bind(this);
 
   _downloadRewardsCsv = async (
-    fileContent: Array<CsvRecord>,
+    fileContent: CsvFileContent,
     filePath: string
   ) => {
     try {

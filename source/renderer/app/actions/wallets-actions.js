@@ -1,7 +1,7 @@
 // @flow
 import Action from './lib/Action';
 import type { WalletExportTypeChoices } from '../types/walletExportTypes';
-import type { CsvRecord } from '../../../common/types/csv-request.types';
+import type { CsvFileContent } from '../../../common/types/csv-request.types';
 
 export type WalletImportFromFileParams = {
   filePath: string,
@@ -59,7 +59,7 @@ export default class WalletsActions {
   generateCertificate: Action<{ filePath: string }> = new Action();
   generateCsv: Action<{
     filePath: string,
-    fileContent: Array<CsvRecord>,
+    fileContent: CsvFileContent,
   }> = new Action();
   generateAddressPDF: Action<{
     address: string,

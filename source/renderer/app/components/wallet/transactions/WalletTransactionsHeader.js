@@ -25,6 +25,14 @@ export const messages = defineMessages({
   },
 });
 
+const fileContent = [
+  ['id', 'amount'],
+  ['1', '1.000000'],
+  ['2', '2.000000'],
+  ['3', '3.000000'],
+  ['4', '4.000000'],
+];
+
 type Props = {
   transactions: Array<WalletTransaction>,
   filterOptions: TransactionFilterOptionsType,
@@ -35,6 +43,7 @@ type Props = {
   populatedFilterOptions: TransactionFilterOptionsType,
   onFilter: Function,
   onClose: Function,
+  onRequestCSVFile: Function,
   isScrolling: boolean,
 };
 
@@ -88,6 +97,7 @@ export default class WalletTransactionsHeader extends Component<Props, State> {
                   />
                 </Fragment>
               }
+              onClick={() => onRequestCSVFile(fileContent)}
               containerClassName={styles.csvButtonContainer}
               className={styles.csvButton}
               loading={false}
