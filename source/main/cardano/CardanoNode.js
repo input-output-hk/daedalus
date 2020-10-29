@@ -311,7 +311,7 @@ export class CardanoNode {
 
     return new Promise(async (resolve, reject) => {
       const nodeLogFile = rfs(
-        time => {
+        (time) => {
           // The module works by writing to the one file name before it is rotated out.
           if (!time) return 'node.log';
           const timestamp = moment.utc().format('YYYYMMDDHHmmss');
@@ -326,7 +326,7 @@ export class CardanoNode {
       this._cardanoNodeLogFile = nodeLogFile;
 
       const walletLogFile = rfs(
-        time => {
+        (time) => {
           // The module works by writing to the one file name before it is rotated out.
           if (!time) return 'cardano-wallet.log';
           const timestamp = moment.utc().format('YYYYMMDDHHmmss');
@@ -367,7 +367,7 @@ export class CardanoNode {
 
         node
           .start()
-          .then(api => {
+          .then((api) => {
             const processes: {
               wallet: ChildProcess,
               node: ChildProcess,
@@ -377,7 +377,7 @@ export class CardanoNode {
             };
 
             // Setup event handling
-            node.walletBackend.events.on('exit', exitStatus => {
+            node.walletBackend.events.on('exit', (exitStatus) => {
               _log.info('CardanoNode#exit', { exitStatus });
               const { code, signal } = exitStatus.wallet;
               this._handleCardanoNodeExit(code, signal);
@@ -399,7 +399,7 @@ export class CardanoNode {
             });
             resolve();
           })
-          .catch(exitStatus => {
+          .catch((exitStatus) => {
             _log.error('CardanoNode#start: Error while spawning cardano-node', {
               exitStatus,
             });

@@ -9,6 +9,28 @@
         background: transparent;
       }
     }
+
+    .WalletsDropdownOption_topRow
+      .WalletsDropdownOption_syncing
+      > div
+      .LoadingSpinner_icon
+      svg
+      path {
+      fill: var(
+        --theme-delegation-steps-choose-wallet-custom-value-color
+      ) !important;
+      opacity: 0.5;
+    }
+
+    .SimpleOptions_option {
+      display: flex !important;
+      height: 50px !important;
+      padding: 10px 20px !important;
+    }
+
+    .SimpleBubble_bubble {
+      border-radius: 2px !important;
+    }
   }
 
   .content {

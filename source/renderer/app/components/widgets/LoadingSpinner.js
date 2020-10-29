@@ -33,7 +33,7 @@ export default class LoadingSpinner extends Component<Props> {
     return (
       <div
         className={componentClasses}
-        ref={div => {
+        ref={(div) => {
           this.root = div;
         }}
       >

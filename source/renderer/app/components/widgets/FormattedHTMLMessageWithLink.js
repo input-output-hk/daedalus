@@ -35,7 +35,7 @@ export class FormattedHTMLMessageWithLink extends Component<Props> {
     const url = intl.formatMessage(linkURL);
     const Link = (
       <Fragment key="link">
-        <a href={url} onClick={event => onExternalLinkClick(url, event)}>
+        <a href={url} onClick={(event) => onExternalLinkClick(url, event)}>
           {intl.formatMessage(linkLabel)}
         </a>
       </Fragment>

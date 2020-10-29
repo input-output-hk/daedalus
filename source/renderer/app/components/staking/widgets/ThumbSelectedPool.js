@@ -14,19 +14,33 @@ import { IS_RANKING_DATA_AVAILABLE } from '../../../config/stakingConfig';
 type Props = {
   stakePool?: StakePool,
   alreadyDelegated?: boolean,
-  numberOfStakePools: number,
+  numberOfRankedStakePools: number,
 };
 
 @observer
 export default class ThumbSelectedPool extends Component<Props> {
   render() {
-    const { stakePool, alreadyDelegated, numberOfStakePools } = this.props;
+    const {
+      stakePool,
+      alreadyDelegated,
+      numberOfRankedStakePools,
+    } = this.props;
 
-    const { ticker, retiring, ranking } = stakePool || {};
+    const { ticker, retiring, ranking, nonMyopicMemberRewards } =
+      stakePool || {};
     const rankColor =
-      stakePool && !retiring && IS_RANKING_DATA_AVAILABLE
-        ? getColorFromRange(ranking, numberOfStakePools)
-        : 'transparent';
+      stakePool &&
+      !retiring &&
+      IS_RANKING_DATA_AVAILABLE &&
+      nonMyopicMemberRewards
+        ? getColorFromRange(ranking, numberOfRankedStakePools)
+        : null;
+
+    const selectedPoolBlockStyle = rankColor
+      ? {
+          background: rankColor,
+        }
+      : {};
 
     const selectedPoolBlockClasses = classnames([
       styles.component,
@@ -43,10 +57,7 @@ export default class ThumbSelectedPool extends Component<Props> {
     }
 
     return (
-      <div
-        className={selectedPoolBlockClasses}
-        style={{ background: rankColor }}
-      >
+      <div className={selectedPoolBlockClasses} style={selectedPoolBlockStyle}>
         {ticker && <div className={styles.ticker}>{ticker}</div>}
         <div className={styles.icon}>
           <SVGInline svg={icon} />

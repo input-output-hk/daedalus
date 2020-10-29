@@ -1,6 +1,33 @@
 Changelog
 =========
 
+## 2.4.0
+
+### Features
+
+- Added tooltips to stake pools table view headers ([PR 2214](https://github.com/input-output-hk/daedalus/pull/2214))
+- Added stake pools list view ([PR 2186](https://github.com/input-output-hk/daedalus/pull/2186), [PR 2215](https://github.com/input-output-hk/daedalus/pull/2215))
+- Implemented stake pool details explanation tooltips ([PR 2211](https://github.com/input-output-hk/daedalus/pull/2211))
+- Re-enabled stake pool saturation info ([PR 2200](https://github.com/input-output-hk/daedalus/pull/2200))
+- Implemented the wallet migration leftovers handling ([PR 2178](https://github.com/input-output-hk/daedalus/pull/2178))
+- Implemented hiding ranking info for pools without non myopic member rewards on the stake pool tooltip panel ([PR 2209](https://github.com/input-output-hk/daedalus/pull/2209))
+
+### Fixes
+
+- Fixed wrong number formatting on staking screens ([PR 2213](https://github.com/input-output-hk/daedalus/pull/2213))
+- Removed broken feature requests link ([PR 2212](https://github.com/input-output-hk/daedalus/pull/2212))
+- Fixed animation on wallet dropdown option during redemption process ([PR 2191](https://github.com/input-output-hk/daedalus/pull/2191))
+- Fixed Cardano Explorer URLs ([PR 2198](https://github.com/input-output-hk/daedalus/pull/2198))
+- Fixed Stake pool tooltip height issue ([PR 2203](https://github.com/input-output-hk/daedalus/pull/2203))
+
+### Chores
+
+- Updated `cardano-launcher` to version `0.20201014.0` ([PR 2205](https://github.com/input-output-hk/daedalus/pull/2205))
+- Updated `cardano-wallet` to version `2020-10-13` ([PR 2205](https://github.com/input-output-hk/daedalus/pull/2205))
+- Update Nix installation instructions ([PR 2200](https://github.com/input-output-hk/daedalus/pull/2200))
+- Updated `cardano-wallet` to revision `be40d5f2` which includes `cardano-node` 1.21.1 ([PR 2200](https://github.com/input-output-hk/daedalus/pull/2200))
+- Dependency update ([PR 2190](https://github.com/input-output-hk/daedalus/pull/2190))
+
 ## 2.3.0
 
 ### Features
@@ -25,7 +52,7 @@ Changelog
 
 - Fixed the "Retirement" label on Stake Pools for yellow theme ([PR 2189](https://github.com/input-output-hk/daedalus/pull/2189))
 - Fixed stake pool tooltip "Delegate to this pool" button background colors ([PR 2181](https://github.com/input-output-hk/daedalus/pull/2181))
-- Removed one second delay on changing wallet selection and selecting delegating stake slider value on the "Stake pools" screen ([PR 2179](https://github.com/input-output-hk/daedalus/pull/2179))
+- Removed one second delay on changing wallet selection and selecting delegating stake slider value on the "Stake pools" screen ([PR 2180](https://github.com/input-output-hk/daedalus/pull/2180))
 - Improved rendering performance of the stake pools on the "Stake pools" screen ([PR 2177](https://github.com/input-output-hk/daedalus/pull/2177))
 
 ### Chores

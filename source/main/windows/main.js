@@ -72,13 +72,13 @@ export const createMainWindow = (locale: string) => {
   });
 
   // Provide render process with an api to close the main window
-  ipcMain.on('close-window', event => {
+  ipcMain.on('close-window', (event) => {
     if (event.sender !== window.webContents) return;
     window.close();
   });
 
   window.loadURL(`file://${__dirname}/../renderer/index.html`);
-  window.on('page-title-updated', event => {
+  window.on('page-title-updated', (event) => {
     event.preventDefault();
   });
   window.setTitle(getWindowTitle(locale));
@@ -127,11 +127,11 @@ export const createMainWindow = (locale: string) => {
     app.quit();
   });
 
-  window.webContents.on('did-fail-load', err => {
+  window.webContents.on('did-fail-load', (err) => {
     rendererErrorHandler.onError('did-fail-load', err);
   });
 
-  window.webContents.on('crashed', err => {
+  window.webContents.on('crashed', (err) => {
     rendererErrorHandler.onError('crashed', err);
   });
 

@@ -95,7 +95,7 @@ export default class StakingChart extends Component<Props, State> {
           <CustomReferenceLine x={refLineSlot} stroke="#5e6066" />
           <Bar
             dataKey="numberOfTransactions"
-            onMouseEnter={barData =>
+            onMouseEnter={(barData) =>
               this.setState({ isHovered: true, hoveredBarData: barData })
             }
             onMouseLeave={() =>

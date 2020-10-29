@@ -95,7 +95,7 @@ export default class WalletTransactionsList extends Component<Props> {
     for (const transaction of transactions) {
       const date = moment(transaction.date);
       let group = groups.find(
-        g => g.date.format(DATE_FORMAT) === date.format(DATE_FORMAT)
+        (g) => g.date.format(DATE_FORMAT) === date.format(DATE_FORMAT)
       );
       if (!group) {
         group = new TransactionsGroup({ date, transactions: [] });
@@ -128,9 +128,7 @@ export default class WalletTransactionsList extends Component<Props> {
     const today = moment().format(DATE_FORMAT);
     if (date === today) return intl.formatMessage(messages.today);
     // YESTERDAY
-    const yesterday = moment()
-      .subtract(1, 'days')
-      .format(DATE_FORMAT);
+    const yesterday = moment().subtract(1, 'days').format(DATE_FORMAT);
     if (date === yesterday) return intl.formatMessage(messages.yesterday);
     // PAST DATE
     return moment(date).format(currentDateFormat);
@@ -244,7 +242,7 @@ export default class WalletTransactionsList extends Component<Props> {
     const loadingSpinner =
       (isLoadingTransactions || hasMoreToLoad) && !isRestoreActive ? (
         <LoadingSpinner
-          ref={component => {
+          ref={(component) => {
             this.loadingSpinner = component;
           }}
         />
@@ -266,7 +264,7 @@ export default class WalletTransactionsList extends Component<Props> {
 
     // Generate flat list with dates in-between
     const rows: Row[] = [];
-    transactionsGroups.forEach(group => {
+    transactionsGroups.forEach((group) => {
       // First push the group into the list
       rows.push(group);
       // Followed by all transactions the tx in the group
@@ -300,7 +298,7 @@ export default class WalletTransactionsList extends Component<Props> {
         {isRenderingAsVirtualList ? (
           <VirtualTransactionList
             getExpandedTransactions={this.getExpandedTransactions}
-            ref={list => {
+            ref={(list) => {
               this.virtualList = list;
             }}
             renderRow={this.renderItem}
@@ -310,7 +308,7 @@ export default class WalletTransactionsList extends Component<Props> {
           />
         ) : (
           <SimpleTransactionList
-            ref={list => {
+            ref={(list) => {
               this.simpleList = list;
             }}
             renderRow={this.renderItem}

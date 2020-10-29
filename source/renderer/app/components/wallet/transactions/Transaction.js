@@ -308,7 +308,8 @@ export default class Transaction extends Component<Props, State> {
 
     const exceedsPendingTimeLimit = this.hasExceededPendingTimeLimit();
 
-    const includesUnresolvedAddresses = addresses => includes(addresses, null);
+    const includesUnresolvedAddresses = (addresses) =>
+      includes(addresses, null);
 
     const fromAddresses = (addresses, transactionId) => {
       if (addresses.length > 0) {
@@ -374,8 +375,10 @@ export default class Transaction extends Component<Props, State> {
                     : intl.formatMessage(messages.received, { currency })}
                 </div>
                 <div className={styles.amount}>
-                  {// hide currency (we are showing symbol instead)
-                  formattedWalletAmount(data.amount, false)}
+                  {
+                    // hide currency (we are showing symbol instead)
+                    formattedWalletAmount(data.amount, false)
+                  }
                   <SVGInline svg={symbol} className={styles.currencySymbol} />
                 </div>
               </div>
@@ -394,7 +397,7 @@ export default class Transaction extends Component<Props, State> {
           <div className={contentStyles}>
             <div
               className={detailsStyles}
-              onClick={event => event.stopPropagation()}
+              onClick={(event) => event.stopPropagation()}
               role="presentation"
               aria-hidden
             >

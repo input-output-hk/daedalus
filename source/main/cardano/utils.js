@@ -257,7 +257,7 @@ export const exportWallets = async (
   const errors = stderr.toString();
 
   logger.info(`ipcMain: Exported ${wallets.length} wallets`, {
-    walletsData: wallets.map(w => ({
+    walletsData: wallets.map((w) => ({
       name: w.name,
       id: w.id,
       hasPassword: w.is_passphrase_empty,

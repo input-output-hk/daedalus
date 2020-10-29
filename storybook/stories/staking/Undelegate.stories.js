@@ -37,8 +37,6 @@ export const StakingUndelegateConfirmationResultStory = ({
     slotLength={null}
     onClose={() => null}
     currentLocale={locale}
-    futureEpochStartTime={moment()
-      .add(35, 'hour')
-      .toString()}
+    futureEpochStartTime={moment().add(35, 'hour').toString()}
   />
 );

@@ -766,7 +766,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-staking-stake-pool-background-color': '#314259',
     '--theme-staking-stake-pool-border-color': '#314259',
     '--theme-staking-stake-pool-glow-color': '#7cfeb54c',
-    '--theme-staking-stake-pool-grey-color': 'rgba(233, 244, 254, 0.5)',
+    '--theme-staking-stake-pool-grey-color': '#93a1b0',
     '--theme-staking-stake-pool-grey-bg-color': 'rgba(233, 244, 254, 0.1)',
     '--theme-staking-progress-label-light': 'rgba(233, 244, 254, 0.7)',
     '--theme-staking-stake-pool-retirement-background-color': '#ea4c5b',
@@ -958,6 +958,8 @@ export const DARK_BLUE_THEME_OUTPUT = {
       'rgba(233, 244, 254, 0.05)',
     '--theme-transactions-filter-title-button-background-color-active':
       'rgba(233, 244, 254, 0.12)',
+    '--theme-transactions-transfer-funds-selected-wallet-background-color':
+      '#e9f4fe0d',
   },
   uploader: {
     '--theme-uploader-text-color': '#e9f4fe',

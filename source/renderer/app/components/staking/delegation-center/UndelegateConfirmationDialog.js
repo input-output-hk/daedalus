@@ -211,7 +211,7 @@ export default class UndelegateConfirmationDialog extends Component<Props> {
     }
 
     return this.form.submit({
-      onSuccess: form => {
+      onSuccess: (form) => {
         const { onConfirm } = this.props;
         const { passphrase } = form.values();
         onConfirm(passphrase);

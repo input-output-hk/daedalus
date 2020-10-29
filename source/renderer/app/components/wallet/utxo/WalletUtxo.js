@@ -135,7 +135,7 @@ export default class WalletUtxo extends Component<Props, State> {
     const findOutMoreLink = (
       <Link
         className={styles.externalLink}
-        onClick={event => onExternalLinkClick(findOutMoreLinkUrl, event)}
+        onClick={(event) => onExternalLinkClick(findOutMoreLinkUrl, event)}
         label={intl.formatMessage(messages.findOutMoreLink)}
         skin={LinkSkin}
       />

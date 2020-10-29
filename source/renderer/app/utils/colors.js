@@ -49,11 +49,7 @@ export const getColorFromRange = (
     return 'transparent';
   }
 
-  return scale(index)
-    .darken(darken)
-    .brighten(brighten)
-    .alpha(alpha)
-    .hex();
+  return scale(index).darken(darken).brighten(brighten).alpha(alpha).hex();
 };
 
 export const getSaturationColor = (saturation: number): string => {

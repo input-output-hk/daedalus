@@ -43,7 +43,7 @@ const buildMain = () => () =>
     .pipe(webpackStream(mainWebpackConfig, webpack))
     .pipe(mainOutputDestination());
 
-const buildMainWatch = () => done =>
+const buildMainWatch = () => (done) =>
   mainInputSource()
     .pipe(
       webpackStream(mainWebpackWatchConfig, webpack, () => {
@@ -59,7 +59,7 @@ const buildRenderer = () => () =>
     .pipe(webpackStream(rendererWebpackConfig, webpack))
     .pipe(rendererOutputDestination());
 
-const buildRendererWatch = () => done =>
+const buildRendererWatch = () => (done) =>
   rendererInputSource()
     .pipe(
       webpackStream(rendererWebpackWatchConfig, webpack, () => {
@@ -79,17 +79,17 @@ gulp.task(
 
 gulp.task('clean:dist', shell.task('rimraf ./dist'));
 
-gulp.task('server:start', done => {
+gulp.task('server:start', (done) => {
   electronServer.start();
   done();
 });
 
-gulp.task('server:create:dev', done => {
+gulp.task('server:create:dev', (done) => {
   createElectronServer({ NODE_ENV: process.env.NODE_ENV || 'development' });
   done();
 });
 
-gulp.task('server:create:debug', done => {
+gulp.task('server:create:debug', (done) => {
   createElectronServer({ NODE_ENV: process.env.NODE_ENV || 'development' }, [
     '--inspect',
     '--inspect-brk',
