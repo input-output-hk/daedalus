@@ -3,8 +3,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import BigNumber from 'bignumber.js';
 import RcSlider from 'rc-slider';
-import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
-import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { shortNumber } from '../../utils/formatters';
 import styles from './Slider.scss';
 
@@ -79,18 +78,18 @@ export default class Slider extends Component<Props> {
         <div className={styles.upperMarks}>
           <div className={styles.minMark}>
             {showTooltip ? (
-              <Tooltip skin={TooltipSkin} tip={minTooltip}>
+              <PopOver content={minTooltip}>
                 {shortNumber(minDisplayValue || min)}
-              </Tooltip>
+              </PopOver>
             ) : (
               shortNumber(minDisplayValue || min)
             )}
           </div>
           <div className={styles.maxMark}>
             {showTooltip ? (
-              <Tooltip skin={TooltipSkin} tip={maxTooltip}>
+              <PopOver content={maxTooltip}>
                 {shortNumber(maxDisplayValue || max)}
-              </Tooltip>
+              </PopOver>
             ) : (
               shortNumber(maxDisplayValue || max)
             )}
