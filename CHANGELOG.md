@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Replaced several tooltips with new react-polymorph `PopOver` component ([PR 2210](https://github.com/input-output-hk/daedalus/pull/2210), [PR 2223](https://github.com/input-output-hk/daedalus/pull/2223))
+
 ### Fixes
 
 - Fixed Address validation on Shelley QA network ([PR 2218](https://github.com/input-output-hk/daedalus/pull/2218))
@@ -13,7 +17,6 @@ Changelog
 
 ### Features
 
-- Replaced several tooltips with new react-polymorph PopOver component [PR 2210](https://github.com/input-output-hk/daedalus/pull/2210)
 - Added tooltips to stake pools table view headers ([PR 2214](https://github.com/input-output-hk/daedalus/pull/2214))
 - Added stake pools list view ([PR 2186](https://github.com/input-output-hk/daedalus/pull/2186), [PR 2215](https://github.com/input-output-hk/daedalus/pull/2215))
 - Implemented stake pool details explanation tooltips ([PR 2211](https://github.com/input-output-hk/daedalus/pull/2211))
