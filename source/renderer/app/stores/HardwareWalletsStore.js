@@ -955,6 +955,7 @@ export default class HardwareWalletsStore extends Store {
   };
 
   @action resetInitializedConnection = () => {
+    this.stores.wallets.createHardwareWalletRequest.reset();
     this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
     this.extendedPublicKey = null;
     this.transportDevice = {};

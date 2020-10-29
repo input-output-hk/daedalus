@@ -11,12 +11,6 @@ type Props = InjectedStoresProps;
 export default class WalletConnectDialogContainer extends Component<Props> {
   static defaultProps = { stores: null };
 
-  componentDidMount() {
-    // Establish Connection
-    this.props.stores.wallets.createHardwareWalletRequest.reset();
-    this.props.stores.hardwareWallets.establishHardwareWalletConnection();
-  }
-
   onClose = () => {
     const {
       stopCardanoAdaAppFetchPoller,

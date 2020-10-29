@@ -57,8 +57,10 @@ export default class WalletAddPage extends Component<Props> {
     const onImportWallet = () =>
       actions.walletMigration.initiateMigration.trigger();
 
-    const onConnectWallet = () =>
+    const onConnectWallet = () => {
       actions.dialogs.open.trigger({ dialog: WalletConnectDialog });
+      stores.hardwareWallets.establishHardwareWalletConnection();
+    }
 
     let activeDialog = null;
 
