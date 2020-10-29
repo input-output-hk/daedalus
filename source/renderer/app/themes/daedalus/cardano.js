@@ -761,7 +761,7 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-staking-stake-pool-background-color': '#ffffff',
     '--theme-staking-stake-pool-border-color': '#d2d3d3',
     '--theme-staking-stake-pool-glow-color': '#7cfeb54c',
-    '--theme-staking-stake-pool-grey-color': 'rgba(94, 96, 102, 0.5)',
+    '--theme-staking-stake-pool-grey-color': '#b2b3b6',
     '--theme-staking-stake-pool-grey-bg-color': 'rgba(94, 96, 102, 0.1)',
     '--theme-staking-progress-label-light': '#ffffff',
     '--theme-staking-stake-pool-retirement-background-color': '#ea4c5b',
@@ -1069,6 +1069,10 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-news-overlay-update-button-hover-text-color': '#273d5b',
     '--theme-news-overlay-update-button-background-color-hover': '#ffffff',
     '--theme-news-overlay-update-button-border-color': '#ffffff',
+  },
+  rpPopOver: {
+    '--rp-pop-over-bg-color': 'rgba(0,0,0,0.9)',
+    '--rp-pop-over-text-color': '#ffffff',
   },
 };
 

@@ -1279,6 +1279,10 @@
     node-gyp "^7.1.0"
     read-package-json-fast "^1.1.3"
 
+"@popperjs/core@^2.4.4":
+  version "2.5.3"
+  resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.5.3.tgz#4982b0b66b7a4cf949b86f5d25a8cf757d3cfd9d"
+
 "@reach/router@^1.2.1":
   version "1.3.4"
   resolved "https://registry.yarnpkg.com/@reach/router/-/router-1.3.4.tgz#d2574b19370a70c80480ed91f3da840136d10f8c"
@@ -1758,6 +1762,12 @@
   resolved "https://registry.yarnpkg.com/@szmarczak/http-timer/-/http-timer-1.1.2.tgz#b1665e2c461a2cd92f4c1bbf50d5454de0d4b421"
   dependencies:
     defer-to-connect "^1.0.1"
+
+"@tippyjs/react@4.2.0":
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/@tippyjs/react/-/react-4.2.0.tgz#a1cb369d0051099e8a7e4ceb59f809abd9955283"
+  dependencies:
+    tippy.js "^6.2.0"
 
 "@tootallnate/once@1":
   version "1.1.2"
@@ -11607,7 +11617,7 @@ polished@^3.3.1:
   dependencies:
     "@babel/runtime" "^7.9.2"
 
-popper.js@^1.14.4, popper.js@^1.14.7:
+popper.js@1.16.1, popper.js@^1.14.4, popper.js@^1.14.7:
   version "1.16.1"
   resolved "https://registry.yarnpkg.com/popper.js/-/popper.js-1.16.1.tgz#2a223cb3dc7b6213d740e40372be40de43e65b1b"
 
@@ -11816,10 +11826,6 @@ postcss@^7.0.0, postcss@^7.0.1, postcss@^7.0.14, postcss@^7.0.17, postcss@^7.0.2
     chalk "^2.4.2"
     source-map "^0.6.1"
     supports-color "^6.1.0"
-
-postinstall-build@5.0.1:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/postinstall-build/-/postinstall-build-5.0.1.tgz#b917a9079b26178d9a24af5a5cd8cb4a991d11b9"
 
 prebuild-install@^5.3.3, prebuild-install@^5.3.4:
   version "5.3.5"
@@ -12503,15 +12509,16 @@ react-modal@3.1.12:
     prop-types "^15.5.10"
     warning "^3.0.0"
 
-react-polymorph@0.9.4:
-  version "0.9.4"
-  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-0.9.4.tgz#81ddc70ddfd0008665f96763d7856ffcbcd17553"
+react-polymorph@0.9.6-rc.2:
+  version "0.9.6-rc.2"
+  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-0.9.6-rc.2.tgz#57705b3465fda2a7fb3ccc5a505fbbe92dc885c9"
   dependencies:
+    "@tippyjs/react" "4.2.0"
     create-react-context "0.2.2"
     create-react-ref "0.1.0"
     fast-password-entropy "1.1.1"
     filter-react-dom-props "0.0.2"
-    postinstall-build "5.0.1"
+    popper.js "1.16.1"
     react-modal "3.1.12"
     react-scrollbars-custom "4.0.21"
 
@@ -14833,6 +14840,12 @@ tiny-worker@^2.3.0:
 tinycolor2@^1.4.1:
   version "1.4.2"
   resolved "https://registry.yarnpkg.com/tinycolor2/-/tinycolor2-1.4.2.tgz#3f6a4d1071ad07676d7fa472e1fac40a719d8803"
+
+tippy.js@^6.2.0:
+  version "6.2.7"
+  resolved "https://registry.yarnpkg.com/tippy.js/-/tippy.js-6.2.7.tgz#62fb34eda23f7d78151ddca922b62818c1ab9869"
+  dependencies:
+    "@popperjs/core" "^2.4.4"
 
 title-case@^2.1.1:
   version "2.1.1"

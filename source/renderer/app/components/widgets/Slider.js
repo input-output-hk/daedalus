@@ -3,8 +3,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import BigNumber from 'bignumber.js';
 import RcSlider from 'rc-slider';
-import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
-import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { shortNumber } from '../../utils/formatters';
 import styles from './Slider.scss';
 
@@ -34,7 +33,7 @@ type Props = {
   activeDotStyle?: any,
   defaultValue?: number,
   value: number,
-  displayValue?: number,
+  displayValue?: any,
   showRawValue?: boolean,
   showTooltip?: boolean,
   minTooltip?: string,
@@ -72,25 +71,25 @@ export default class Slider extends Component<Props> {
     const valueMarkStyle = { left: valueMarkLeftPosition };
     const formattedValue = showRawValue
       ? displayValue || value
-      : new BigNumber(displayValue || value).toFormat(0);
+      : new BigNumber(value).toFormat(0);
 
     return (
       <div className={styles.component}>
         <div className={styles.upperMarks}>
           <div className={styles.minMark}>
             {showTooltip ? (
-              <Tooltip skin={TooltipSkin} tip={minTooltip}>
+              <PopOver content={minTooltip}>
                 {shortNumber(minDisplayValue || min)}
-              </Tooltip>
+              </PopOver>
             ) : (
               shortNumber(minDisplayValue || min)
             )}
           </div>
           <div className={styles.maxMark}>
             {showTooltip ? (
-              <Tooltip skin={TooltipSkin} tip={maxTooltip}>
+              <PopOver content={maxTooltip}>
                 {shortNumber(maxDisplayValue || max)}
-              </Tooltip>
+              </PopOver>
             ) : (
               shortNumber(maxDisplayValue || max)
             )}

@@ -811,13 +811,13 @@
         "description": "Message \"Cardano node is running\" on the status icon tooltip",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 21
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.nodeIsRunning",
         "start": {
           "column": 17,
-          "line": 19
+          "line": 17
         }
       },
       {
@@ -825,13 +825,13 @@
         "description": "Message \"Node is starting\" on the status icon tooltip",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 26
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.nodeIsStarting",
         "start": {
           "column": 18,
-          "line": 24
+          "line": 22
         }
       },
       {
@@ -839,13 +839,13 @@
         "description": "Message \"Cardano node is exiting\" on the status icon tooltip",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 31
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.nodeIsExiting",
         "start": {
           "column": 17,
-          "line": 29
+          "line": 27
         }
       },
       {
@@ -853,13 +853,13 @@
         "description": "Message \"Cardano node is stopping\" on the status icon tooltip",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 37
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.nodeIsStopping",
         "start": {
           "column": 18,
-          "line": 34
+          "line": 32
         }
       },
       {
@@ -867,13 +867,13 @@
         "description": "Message \"Cardano node has stopped\" on the status icon tooltip",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 43
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.nodeHasStopped",
         "start": {
           "column": 18,
-          "line": 40
+          "line": 38
         }
       },
       {
@@ -881,13 +881,13 @@
         "description": "Message \"Cardano node is updating\" on the status icon tooltip",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 49
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.nodeIsUpdating",
         "start": {
           "column": 18,
-          "line": 46
+          "line": 44
         }
       },
       {
@@ -895,13 +895,13 @@
         "description": "Message \"Cardano node has been updated\" on the status icon tooltip",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 55
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.nodeHasBeenUpdated",
         "start": {
           "column": 22,
-          "line": 52
+          "line": 50
         }
       },
       {
@@ -909,13 +909,13 @@
         "description": "Message \"Cardano node has crashed\" on the status icon tooltip",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 61
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.nodeHasCrashed",
         "start": {
           "column": 18,
-          "line": 58
+          "line": 56
         }
       },
       {
@@ -923,13 +923,13 @@
         "description": "Message \"Cardano node has errored\" on the status icon tooltip",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 67
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.nodeHasErrored",
         "start": {
           "column": 18,
-          "line": 64
+          "line": 62
         }
       },
       {
@@ -937,13 +937,13 @@
         "description": "Message \"Cardano node is unrecoverable\" on the status icon tooltip",
         "end": {
           "column": 3,
-          "line": 75
+          "line": 73
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.nodeIsUnrecoverable",
         "start": {
           "column": 23,
-          "line": 70
+          "line": 68
         }
       },
       {
@@ -951,13 +951,13 @@
         "description": "Message \"Check your Internet connection\" on the status icon tooltip",
         "end": {
           "column": 3,
-          "line": 81
+          "line": 79
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.checkYourInternetConnection",
         "start": {
           "column": 31,
-          "line": 76
+          "line": 74
         }
       },
       {
@@ -965,13 +965,13 @@
         "description": "Message \"Cardano node is responding\" on the status icon tooltip",
         "end": {
           "column": 3,
-          "line": 87
+          "line": 85
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.isNodeRespondingOn",
         "start": {
           "column": 22,
-          "line": 82
+          "line": 80
         }
       },
       {
@@ -979,13 +979,13 @@
         "description": "Message \"Cardano node is not responding\" on the status icon tooltip",
         "end": {
           "column": 3,
-          "line": 93
+          "line": 91
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.isNodeRespondingOff",
         "start": {
           "column": 23,
-          "line": 88
+          "line": 86
         }
       },
       {
@@ -993,13 +993,13 @@
         "description": "Message \"Checking if Cardano node is responding\" on the status icon tooltip",
         "end": {
           "column": 3,
-          "line": 99
+          "line": 97
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.isNodeRespondingLoading",
         "start": {
           "column": 27,
-          "line": 94
+          "line": 92
         }
       },
       {
@@ -1007,13 +1007,13 @@
         "description": "Message \"Cardano node is subscribed\" on the status icon tooltip",
         "end": {
           "column": 3,
-          "line": 105
+          "line": 103
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.isNodeSubscribedOn",
         "start": {
           "column": 22,
-          "line": 100
+          "line": 98
         }
       },
       {
@@ -1021,13 +1021,13 @@
         "description": "Message \"Cardano node is not subscribed\" on the status icon tooltip",
         "end": {
           "column": 3,
-          "line": 111
+          "line": 109
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.isNodeSubscribedOff",
         "start": {
           "column": 23,
-          "line": 106
+          "line": 104
         }
       },
       {
@@ -1035,13 +1035,13 @@
         "description": "Message \"Checking if Cardano node is subscribed\" on the status icon tooltip",
         "end": {
           "column": 3,
-          "line": 117
+          "line": 115
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.isNodeSubscribedLoading",
         "start": {
           "column": 27,
-          "line": 112
+          "line": 110
         }
       },
       {
@@ -1049,13 +1049,13 @@
         "description": "Message \"Cardano node time is correct\" on the status icon tooltip",
         "end": {
           "column": 3,
-          "line": 123
+          "line": 121
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.isNodeTimeCorrectOn",
         "start": {
           "column": 23,
-          "line": 118
+          "line": 116
         }
       },
       {
@@ -1063,13 +1063,13 @@
         "description": "Message \"Cardano node time is not correct\" on the status icon tooltip",
         "end": {
           "column": 3,
-          "line": 129
+          "line": 127
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.isNodeTimeCorrectOff",
         "start": {
           "column": 24,
-          "line": 124
+          "line": 122
         }
       },
       {
@@ -1077,13 +1077,13 @@
         "description": "Message \"Checking if Cardano node time is correct\" on the status icon tooltip",
         "end": {
           "column": 3,
-          "line": 135
+          "line": 133
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.isNodeTimeCorrectLoading",
         "start": {
           "column": 28,
-          "line": 130
+          "line": 128
         }
       },
       {
@@ -1091,13 +1091,13 @@
         "description": "Message \"Cardano node is syncing\" on the status icon tooltip",
         "end": {
           "column": 3,
-          "line": 140
+          "line": 138
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.isNodeSyncingOn",
         "start": {
           "column": 19,
-          "line": 136
+          "line": 134
         }
       },
       {
@@ -1105,13 +1105,13 @@
         "description": "Message \"Cardano node is not syncing\" on the status icon tooltip",
         "end": {
           "column": 3,
-          "line": 146
+          "line": 144
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.isNodeSyncingOff",
         "start": {
           "column": 20,
-          "line": 141
+          "line": 139
         }
       },
       {
@@ -1119,13 +1119,13 @@
         "description": "Message \"Checking if Cardano node is syncing\" on the status icon tooltip",
         "end": {
           "column": 3,
-          "line": 152
+          "line": 150
         },
         "file": "source/renderer/app/components/loading/syncing-connecting/StatusIcons.js",
         "id": "status.icons.isNodeSyncingLoading",
         "start": {
           "column": 24,
-          "line": 147
+          "line": 145
         }
       }
     ],
@@ -5316,13 +5316,13 @@
         "description": "All wallets item of dropdown.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 42
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingAllWallets",
         "start": {
           "column": 21,
-          "line": 33
+          "line": 38
         }
       },
       {
@@ -5330,13 +5330,13 @@
         "description": "All wallets description after dropdown.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 47
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingAllWalletsEnd",
         "start": {
           "column": 24,
-          "line": 38
+          "line": 43
         }
       },
       {
@@ -5344,13 +5344,13 @@
         "description": "All wallets description before dropdown.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 53
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingAllWalletsStart",
         "start": {
           "column": 26,
-          "line": 43
+          "line": 48
         }
       },
       {
@@ -5358,13 +5358,13 @@
         "description": "Ranking description.",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 59
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingDescription",
         "start": {
           "column": 22,
-          "line": 49
+          "line": 54
         }
       },
       {
@@ -5372,13 +5372,13 @@
         "description": "Ranking learn more url.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 64
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingLearnMoreUrl",
         "start": {
           "column": 23,
-          "line": 55
+          "line": 60
         }
       },
       {
@@ -5386,13 +5386,13 @@
         "description": "One wallet description after dropdown.",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 69
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingOneWalletEnd",
         "start": {
           "column": 23,
-          "line": 60
+          "line": 65
         }
       },
       {
@@ -5400,13 +5400,13 @@
         "description": "One wallet description before dropdown.",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 75
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingOneWalletStart",
         "start": {
           "column": 25,
-          "line": 65
+          "line": 70
         }
       },
       {
@@ -5414,13 +5414,13 @@
         "description": "Select wallet item of dropdown.",
         "end": {
           "column": 3,
-          "line": 75
+          "line": 80
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingSelectWallet",
         "start": {
           "column": 23,
-          "line": 71
+          "line": 76
         }
       },
       {
@@ -5428,13 +5428,13 @@
         "description": "Select wallet description after dropdown.",
         "end": {
           "column": 3,
-          "line": 80
+          "line": 85
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingSelectWalletEnd",
         "start": {
           "column": 26,
-          "line": 76
+          "line": 81
         }
       },
       {
@@ -5442,13 +5442,13 @@
         "description": "Select wallet description before dropdown.",
         "end": {
           "column": 3,
-          "line": 85
+          "line": 90
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingSelectWalletStart",
         "start": {
           "column": 28,
-          "line": 81
+          "line": 86
         }
       },
       {
@@ -5456,13 +5456,13 @@
         "description": "Circulating supply slider tooltip.",
         "end": {
           "column": 3,
-          "line": 90
+          "line": 95
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingExtraTooltip",
         "start": {
           "column": 23,
-          "line": 86
+          "line": 91
         }
       },
       {
@@ -5470,13 +5470,13 @@
         "description": "Saturation point slider tooltip.",
         "end": {
           "column": 3,
-          "line": 95
+          "line": 100
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingMaxTooltip",
         "start": {
           "column": 21,
-          "line": 91
+          "line": 96
         }
       },
       {
@@ -5484,13 +5484,13 @@
         "description": "Minimum ADA required for staking slider tooltip.",
         "end": {
           "column": 3,
-          "line": 100
+          "line": 105
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingMinTooltip",
         "start": {
           "column": 21,
-          "line": 96
+          "line": 101
         }
       },
       {
@@ -5498,13 +5498,13 @@
         "description": "Learn more action of ranking panel.",
         "end": {
           "column": 3,
-          "line": 105
+          "line": 110
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.learnMore",
         "start": {
           "column": 19,
-          "line": 101
+          "line": 106
         }
       }
     ],
@@ -5564,13 +5564,27 @@
         "description": "Table header \"Rank\" label on stake pools list view page",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 21
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsTable.js",
         "id": "staking.stakePools.tableHeader.rank",
         "start": {
           "column": 19,
-          "line": 16
+          "line": 17
+        }
+      },
+      {
+        "defaultMessage": "!!!A hierarchical ranking based on the potential rewards you will earn if you delegate the intended amount of stake to this pool, assuming that it reaches saturation.",
+        "description": "\"Rank\" tooltip for the Stake Pools Table.",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsTable.js",
+        "id": "staking.stakePools.tooltip.rankingTooltip",
+        "start": {
+          "column": 26,
+          "line": 22
         }
       },
       {
@@ -5578,13 +5592,13 @@
         "description": "Table header \"Ticker\" label on stake pools list view page",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 32
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsTable.js",
         "id": "staking.stakePools.tableHeader.ticker",
         "start": {
           "column": 21,
-          "line": 21
+          "line": 28
         }
       },
       {
@@ -5592,13 +5606,27 @@
         "description": "Table header \"Saturation\" label on stake pools list view page",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 38
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsTable.js",
         "id": "staking.stakePools.tableHeader.saturation",
         "start": {
           "column": 25,
-          "line": 26
+          "line": 33
+        }
+      },
+      {
+        "defaultMessage": "!!!Saturation measures the stake in the pool and indicates the point at which rewards stop increasing with increases in stake. This capping mechanism encourages decentralization by discouraging users from delegating to oversaturated stake pools.",
+        "description": "\"Saturation\" tooltip for the Stake Pools Table.",
+        "end": {
+          "column": 3,
+          "line": 44
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsTable.js",
+        "id": "staking.stakePools.tooltip.saturationTooltip",
+        "start": {
+          "column": 32,
+          "line": 39
         }
       },
       {
@@ -5606,13 +5634,13 @@
         "description": "Table header \"Performance\" label on stake pools list view page",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 50
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsTable.js",
         "id": "staking.stakePools.tableHeader.performance",
         "start": {
           "column": 26,
-          "line": 32
+          "line": 45
         }
       },
       {
@@ -5620,13 +5648,13 @@
         "description": "Table header \"Uptime\" label on stake pools list view page",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 55
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsTable.js",
         "id": "staking.stakePools.tableHeader.uptime",
         "start": {
           "column": 21,
-          "line": 38
+          "line": 51
         }
       },
       {
@@ -5634,13 +5662,27 @@
         "description": "Table header \"Margin\" label on stake pools list view page",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 60
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsTable.js",
         "id": "staking.stakePools.tableHeader.margin",
         "start": {
           "column": 21,
-          "line": 43
+          "line": 56
+        }
+      },
+      {
+        "defaultMessage": "!!!The pool's profit, defined as the rewards percentage kept by the pool from the stake that was delegated to it.",
+        "description": "\"Pool margin\" tooltip for the Stake Pools Table.",
+        "end": {
+          "column": 3,
+          "line": 66
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsTable.js",
+        "id": "staking.stakePools.tooltip.profitMarginTooltip",
+        "start": {
+          "column": 28,
+          "line": 61
         }
       },
       {
@@ -5648,13 +5690,13 @@
         "description": "Table header \"Roi\" label on stake pools list view page",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 71
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsTable.js",
         "id": "staking.stakePools.tableHeader.roi",
         "start": {
           "column": 18,
-          "line": 48
+          "line": 67
         }
       },
       {
@@ -5662,13 +5704,27 @@
         "description": "Table header \"Cost\" label on stake pools list view page",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 76
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsTable.js",
         "id": "staking.stakePools.tableHeader.cost",
         "start": {
           "column": 19,
-          "line": 53
+          "line": 72
+        }
+      },
+      {
+        "defaultMessage": "!!!Fixed operational costs that the stake pool retains from any rewards earned during each epoch.",
+        "description": "\"Cost per epoch\" tooltip for the Stake Pools Table.",
+        "end": {
+          "column": 3,
+          "line": 82
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsTable.js",
+        "id": "staking.stakePools.tooltip.costPerEpochTooltip",
+        "start": {
+          "column": 26,
+          "line": 77
         }
       },
       {
@@ -5676,13 +5732,27 @@
         "description": "Table header \"Produced Blocks\" label on stake pools list view page",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 88
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsTable.js",
         "id": "staking.stakePools.tableHeader.producedBlocks",
         "start": {
           "column": 29,
-          "line": 58
+          "line": 83
+        }
+      },
+      {
+        "defaultMessage": "!!!The total number of blocks the stake pool has produced.",
+        "description": "\"Blocks\" tooltip for the Stake Pools Table.",
+        "end": {
+          "column": 3,
+          "line": 94
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsTable.js",
+        "id": "staking.stakePools.tooltip.producedBlocksTooltip",
+        "start": {
+          "column": 36,
+          "line": 89
         }
       },
       {
@@ -5690,27 +5760,55 @@
         "description": "Table header \"Potential rewards\" label on stake pools list view page",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 100
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsTable.js",
         "id": "staking.stakePools.tableHeader.potentialRewards",
         "start": {
           "column": 31,
-          "line": 64
+          "line": 95
         }
       },
       {
-        "defaultMessage": "!!!Pledge",
+        "defaultMessage": "!!!An estimation of the potential rewards you will earn per epoch if you delegate the intended amount of stake. The system looks at the pool's parameters and historical performance data to calculate potential rewards, assuming that the pool reaches optimal saturation.",
+        "description": "\"Rewards\" tooltip for the Stake Pools Table.",
+        "end": {
+          "column": 3,
+          "line": 106
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsTable.js",
+        "id": "staking.stakePools.tooltip.potentialRewardsTooltip",
+        "start": {
+          "column": 38,
+          "line": 101
+        }
+      },
+      {
+        "defaultMessage": "!!!Pledge (ADA)",
         "description": "Table header \"Pledge\" label on stake pools list view page",
         "end": {
           "column": 3,
-          "line": 74
+          "line": 111
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsTable.js",
         "id": "staking.stakePools.tableHeader.pledge",
         "start": {
           "column": 21,
-          "line": 70
+          "line": 107
+        }
+      },
+      {
+        "defaultMessage": "!!!The amount of stake that a pool operator contributes to a pool. Pools with higher pledge amounts earn more rewards for themselves and their delegators. Pools that do not honor their pledge earn zero rewards and accrue low ranking.",
+        "description": "\"Pledge\" tooltip for the Stake Pools Table.",
+        "end": {
+          "column": 3,
+          "line": 117
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePoolsTable.js",
+        "id": "staking.stakePools.tooltip.pledgeTooltip",
+        "start": {
+          "column": 28,
+          "line": 112
         }
       },
       {
@@ -5718,13 +5816,13 @@
         "description": "Table header \"Retiring\" label on stake pools list view page",
         "end": {
           "column": 3,
-          "line": 79
+          "line": 122
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsTable.js",
         "id": "staking.stakePools.tableHeader.retiring",
         "start": {
           "column": 23,
-          "line": 75
+          "line": 118
         }
       }
     ],
@@ -5737,13 +5835,13 @@
         "description": "\"Rank\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 55
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.ranking",
         "start": {
           "column": 11,
-          "line": 53
+          "line": 51
         }
       },
       {
@@ -5751,13 +5849,13 @@
         "description": "\"Rank\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 61
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.rankingTooltip",
         "start": {
           "column": 18,
-          "line": 58
+          "line": 56
         }
       },
       {
@@ -5765,13 +5863,13 @@
         "description": "\"Live stake\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 66
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.relativeStake",
         "start": {
           "column": 17,
-          "line": 64
+          "line": 62
         }
       },
       {
@@ -5779,13 +5877,13 @@
         "description": "\"Live stake\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 74
+          "line": 72
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.relativeStakeTooltip",
         "start": {
           "column": 24,
-          "line": 69
+          "line": 67
         }
       },
       {
@@ -5793,13 +5891,13 @@
         "description": "\"Pool margin\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 79
+          "line": 77
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.profitMargin",
         "start": {
           "column": 16,
-          "line": 75
+          "line": 73
         }
       },
       {
@@ -5807,13 +5905,13 @@
         "description": "\"Pool margin\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 85
+          "line": 83
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.profitMarginTooltip",
         "start": {
           "column": 23,
-          "line": 80
+          "line": 78
         }
       },
       {
@@ -5821,13 +5919,13 @@
         "description": "\"Cost per epoch\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 90
+          "line": 88
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.costPerEpoch",
         "start": {
           "column": 16,
-          "line": 86
+          "line": 84
         }
       },
       {
@@ -5835,13 +5933,13 @@
         "description": "\"Cost per epoch\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 96
+          "line": 94
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.costPerEpochTooltip",
         "start": {
           "column": 23,
-          "line": 91
+          "line": 89
         }
       },
       {
@@ -5849,13 +5947,13 @@
         "description": "\"Blocks\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 101
+          "line": 99
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.producedBlocks",
         "start": {
           "column": 18,
-          "line": 97
+          "line": 95
         }
       },
       {
@@ -5863,13 +5961,13 @@
         "description": "\"Blocks\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 107
+          "line": 105
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.producedBlocksTooltip",
         "start": {
           "column": 25,
-          "line": 102
+          "line": 100
         }
       },
       {
@@ -5877,13 +5975,13 @@
         "description": "\"Rewards\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 112
+          "line": 110
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.potentialRewards",
         "start": {
           "column": 20,
-          "line": 108
+          "line": 106
         }
       },
       {
@@ -5891,13 +5989,13 @@
         "description": "\"Rewards\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 118
+          "line": 116
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.potentialRewardsTooltip",
         "start": {
           "column": 27,
-          "line": 113
+          "line": 111
         }
       },
       {
@@ -5905,13 +6003,13 @@
         "description": "\"Retirement\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 123
+          "line": 121
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.retirement",
         "start": {
           "column": 14,
-          "line": 119
+          "line": 117
         }
       },
       {
@@ -5919,13 +6017,13 @@
         "description": "\"Saturation\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 128
+          "line": 126
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.saturation",
         "start": {
           "column": 14,
-          "line": 124
+          "line": 122
         }
       },
       {
@@ -5933,13 +6031,13 @@
         "description": "\"Saturation\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 134
+          "line": 132
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.saturationTooltip",
         "start": {
           "column": 21,
-          "line": 129
+          "line": 127
         }
       },
       {
@@ -5947,13 +6045,13 @@
         "description": "\"Pledge\" for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 139
+          "line": 137
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.pledge",
         "start": {
           "column": 10,
-          "line": 135
+          "line": 133
         }
       },
       {
@@ -5961,13 +6059,13 @@
         "description": "\"Pledge\" tooltip for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 145
+          "line": 143
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.pledgeTooltip",
         "start": {
           "column": 17,
-          "line": 140
+          "line": 138
         }
       },
       {
@@ -5975,13 +6073,13 @@
         "description": "\"Delegate to this pool\" Button for the Stake Pools Tooltip page.",
         "end": {
           "column": 3,
-          "line": 151
+          "line": 149
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.delegateButton",
         "start": {
           "column": 18,
-          "line": 146
+          "line": 144
         }
       },
       {
@@ -5989,13 +6087,13 @@
         "description": "Experimental tooltip label",
         "end": {
           "column": 3,
-          "line": 156
+          "line": 154
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.experimentalTooltipLabel",
         "start": {
           "column": 28,
-          "line": 152
+          "line": 150
         }
       },
       {
@@ -6003,13 +6101,13 @@
         "description": "copyId tooltip label",
         "end": {
           "column": 3,
-          "line": 161
+          "line": 159
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.tooltip.copyIdTooltipLabel",
         "start": {
           "column": 22,
-          "line": 157
+          "line": 155
         }
       },
       {
@@ -6017,13 +6115,13 @@
         "description": "Data not available yet label",
         "end": {
           "column": 3,
-          "line": 166
+          "line": 164
         },
         "file": "source/renderer/app/components/staking/widgets/TooltipPool.js",
         "id": "staking.stakePools.noDataDashTooltip",
         "start": {
           "column": 26,
-          "line": 162
+          "line": 160
         }
       }
     ],
@@ -9092,13 +9190,13 @@
         "description": "Label for the recoveryPhraseVerificationTitle on wallet settings.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 29
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
         "id": "wallet.settings.recoveryPhraseVerification.title",
         "start": {
           "column": 9,
-          "line": 25
+          "line": 24
         }
       },
       {
@@ -9106,13 +9204,13 @@
         "description": "Label for the recoveryPhraseVerificationDescription on wallet settings.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 36
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
         "id": "wallet.settings.recoveryPhraseVerification.description",
         "start": {
           "column": 15,
-          "line": 31
+          "line": 30
         }
       },
       {
@@ -9120,13 +9218,13 @@
         "description": "Label for the recoveryPhraseVerificationNeverOk on wallet settings.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 43
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
         "id": "wallet.settings.recoveryPhraseVerification.neverOkTimeUntil",
         "start": {
           "column": 20,
-          "line": 38
+          "line": 37
         }
       },
       {
@@ -9134,13 +9232,13 @@
         "description": "Label for the recoveryPhraseVerificationNeverOk on wallet settings.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 50
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
         "id": "wallet.settings.recoveryPhraseVerification.neverOkFewMonths",
         "start": {
           "column": 20,
-          "line": 45
+          "line": 44
         }
       },
       {
@@ -9148,13 +9246,13 @@
         "description": "Label for the recoveryPhraseVerificationNeverOk on wallet settings.",
         "end": {
           "column": 3,
-          "line": 58
+          "line": 57
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
         "id": "wallet.settings.recoveryPhraseVerification.neverOkFewWeeks",
         "start": {
           "column": 19,
-          "line": 52
+          "line": 51
         }
       },
       {
@@ -9162,13 +9260,13 @@
         "description": "Label for the recoveryPhraseVerificationNeverOk on wallet settings.",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 64
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
         "id": "wallet.settings.recoveryPhraseVerification.neverOkFewDays",
         "start": {
           "column": 18,
-          "line": 59
+          "line": 58
         }
       },
       {
@@ -9176,13 +9274,13 @@
         "description": "Label for the recoveryPhraseVerificationNeverWarning on wallet settings.",
         "end": {
           "column": 3,
-          "line": 72
+          "line": 71
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
         "id": "wallet.settings.recoveryPhraseVerification.neverWarning",
         "start": {
           "column": 16,
-          "line": 66
+          "line": 65
         }
       },
       {
@@ -9190,13 +9288,13 @@
         "description": "Label for the recoveryPhraseVerificationNeverNotification on wallet settings.",
         "end": {
           "column": 3,
-          "line": 79
+          "line": 78
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
         "id": "wallet.settings.recoveryPhraseVerification.neverNotification",
         "start": {
           "column": 21,
-          "line": 73
+          "line": 72
         }
       },
       {
@@ -9204,13 +9302,13 @@
         "description": "Label for the recoveryPhraseVerificationCheckedOk on wallet settings.",
         "end": {
           "column": 3,
-          "line": 86
+          "line": 85
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
         "id": "wallet.settings.recoveryPhraseVerification.checkedOk",
         "start": {
           "column": 13,
-          "line": 80
+          "line": 79
         }
       },
       {
@@ -9218,13 +9316,13 @@
         "description": "Label for the recoveryPhraseVerificationCheckedWarning on wallet settings.",
         "end": {
           "column": 3,
-          "line": 93
+          "line": 92
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
         "id": "wallet.settings.recoveryPhraseVerification.checkedWarning",
         "start": {
           "column": 18,
-          "line": 87
+          "line": 86
         }
       },
       {
@@ -9232,13 +9330,13 @@
         "description": "Label for the recoveryPhraseVerificationCheckedNotification on wallet settings.",
         "end": {
           "column": 3,
-          "line": 100
+          "line": 99
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
         "id": "wallet.settings.recoveryPhraseVerification.checkedNotification",
         "start": {
           "column": 23,
-          "line": 94
+          "line": 93
         }
       },
       {
@@ -9246,13 +9344,13 @@
         "description": "Description for the paperWallet instructions on wallet settings.",
         "end": {
           "column": 3,
-          "line": 107
+          "line": 106
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
         "id": "wallet.settings.recoveryPhraseVerification.paperWalletDescription",
         "start": {
           "column": 26,
-          "line": 101
+          "line": 100
         }
       },
       {
@@ -9260,13 +9358,13 @@
         "description": "Title for the paperWallet instructions on wallet settings.",
         "end": {
           "column": 3,
-          "line": 112
+          "line": 111
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
         "id": "wallet.settings.recoveryPhraseVerification.paperWalletTitle",
         "start": {
           "column": 20,
-          "line": 108
+          "line": 107
         }
       },
       {
@@ -9274,13 +9372,13 @@
         "description": "Label for the recoveryPhraseVerificationButton on wallet settings.",
         "end": {
           "column": 3,
-          "line": 118
+          "line": 117
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
         "id": "wallet.settings.recoveryPhraseVerification.button",
         "start": {
           "column": 10,
-          "line": 113
+          "line": 112
         }
       },
       {
@@ -9288,13 +9386,13 @@
         "description": "Label for the recoveryPhraseVerificationButton on wallet settings.",
         "end": {
           "column": 3,
-          "line": 125
+          "line": 124
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseVerificationWidget.js",
         "id": "wallet.settings.recoveryPhraseVerification.timeUntilWarningReplacement",
         "start": {
           "column": 31,
-          "line": 119
+          "line": 118
         }
       }
     ],
@@ -14373,5 +14471,169 @@
       }
     ],
     "path": "source/renderer/app/utils/paperWalletPdfGenerator.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Create",
+        "description": "Create label.",
+        "end": {
+          "column": 3,
+          "line": 36
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "global.labels.create",
+        "start": {
+          "column": 10,
+          "line": 32
+        }
+      },
+      {
+        "defaultMessage": "!!!Create a new wallet",
+        "description": "Create a new wallet description.",
+        "end": {
+          "column": 3,
+          "line": 41
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "wallet.add.dialog.create.description",
+        "start": {
+          "column": 19,
+          "line": 37
+        }
+      },
+      {
+        "defaultMessage": "!!!Join",
+        "description": "Join label.",
+        "end": {
+          "column": 3,
+          "line": 46
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "wallet.add.dialog.join.label",
+        "start": {
+          "column": 8,
+          "line": 42
+        }
+      },
+      {
+        "defaultMessage": "!!!Join a shared wallet",
+        "description": "Join a shared wallet description.",
+        "end": {
+          "column": 3,
+          "line": 51
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "wallet.add.dialog.join.description",
+        "start": {
+          "column": 20,
+          "line": 47
+        }
+      },
+      {
+        "defaultMessage": "!!!Import",
+        "description": "Import label.",
+        "end": {
+          "column": 3,
+          "line": 56
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "wallet.add.dialog.import.label",
+        "start": {
+          "column": 10,
+          "line": 52
+        }
+      },
+      {
+        "defaultMessage": "!!!Import wallets from an earlier version of Daedalus or the Daedalus state directory",
+        "description": "Import wallets from an earlier version of Daedalus or the Daedalus state directory description.",
+        "end": {
+          "column": 3,
+          "line": 63
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "wallet.add.dialog.import.description",
+        "start": {
+          "column": 24,
+          "line": 57
+        }
+      },
+      {
+        "defaultMessage": "!!!Recovery Phrase",
+        "description": "Recovery Phrase description.",
+        "end": {
+          "column": 3,
+          "line": 68
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "wallet.restore.dialog.mnemonicsStep",
+        "start": {
+          "column": 18,
+          "line": 64
+        }
+      },
+      {
+        "defaultMessage": "!!!Save",
+        "description": "Save description.",
+        "end": {
+          "column": 3,
+          "line": 73
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "global.labels.save",
+        "start": {
+          "column": 8,
+          "line": 69
+        }
+      }
+    ],
+    "path": "storybook/stories/common/Widgets.stories.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Read More",
+        "description": "Read More button label.",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "storybook/stories/news/AlertsOverlay.stories.js",
+        "id": "global.labels.readMore",
+        "start": {
+          "column": 12,
+          "line": 33
+        }
+      },
+      {
+        "defaultMessage": "!!!Failure Alert",
+        "description": "Failure Alert title.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "storybook/stories/news/AlertsOverlay.stories.js",
+        "id": "global.errors.failureAlert",
+        "start": {
+          "column": 16,
+          "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!Content",
+        "description": "Content.",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "storybook/stories/news/AlertsOverlay.stories.js",
+        "id": "static.dummy.markdown",
+        "start": {
+          "column": 11,
+          "line": 43
+        }
+      }
+    ],
+    "path": "storybook/stories/news/AlertsOverlay.stories.json"
   }
 ]
