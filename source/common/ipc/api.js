@@ -12,7 +12,6 @@ import type {
 } from '../types/file-dialog.types';
 import type { GenerateAddressPDFParams } from '../types/address-pdf-request.types';
 import type { GenerateCsvParams } from '../types/csv-request.types';
-import type { GenerateTransactionsCsvParams } from '../types/transactions-csv-request.types';
 import type {
   CardanoNodeState,
   CardanoStatus,

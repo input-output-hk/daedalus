@@ -70,7 +70,9 @@ export default class WalletTransactionsHeader extends Component<Props, State> {
     const {
       transactions,
       filterOptions,
-      isScrolling /* , hasAny*/,
+      isScrolling,
+      onRequestCSVFile,
+      /* hasAny, */
     } = this.props;
     // console.log('this.props.hasAny', this.props.hasAny);
     const hasAny = true;

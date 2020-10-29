@@ -79,6 +79,7 @@ export default class WalletTransactions extends Component<Props, State> {
       currentDateFormat,
       currentTimeFormat,
       currentLocale,
+      onRequestCSVFile,
     } = this.props;
 
     // Guard against potential null values
@@ -126,7 +127,10 @@ export default class WalletTransactions extends Component<Props, State> {
       <WalletTransactionsListScrollContext.Provider
         value={{ setFilterButtonFaded: this.setFilterButtonFaded }}
       >
-        <WalletTransactionsHeader transactions={transactions} />
+        <WalletTransactionsHeader
+          transactions={transactions}
+          onRequestCSVFile={onRequestCSVFile}
+        />
         <VerticalFlexContainer>{walletTransactions}</VerticalFlexContainer>
       </WalletTransactionsListScrollContext.Provider>
     );

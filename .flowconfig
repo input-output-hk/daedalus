@@ -11,6 +11,7 @@
 <PROJECT_ROOT>/state-cluster/.*
 <PROJECT_ROOT>/utils/js-launcher/.*
 <PROJECT_ROOT>/tests-report/.*
+<PROJECT_ROOT>/storybook/stories/wallets/transactions/Utxo.stories.js
 
 [include]
 

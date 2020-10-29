@@ -12,14 +12,13 @@ type Props = $Exact<{
   className?: string,
   disabled?: boolean,
   label?: string | Element<any>,
-  loading: boolean,
+  loading?: boolean,
   onClick?: Function,
 }>;
 
 export default class TinyButton extends Component<Props> {
   render() {
-    const { containerClassName, ...buttonProps } = this.props;
-    console.log('containerClassName', containerClassName);
+    const { containerClassName, loading, ...buttonProps } = this.props;
     const componentClassnames = classnames([
       styles.component,
       containerClassName,
@@ -29,6 +28,7 @@ export default class TinyButton extends Component<Props> {
         <Button
           themeId={IDENTIFIERS.BUTTON}
           skin={ButtonSkin}
+          loading={loading ? true : false}
           {...buttonProps}
         />
       </div>

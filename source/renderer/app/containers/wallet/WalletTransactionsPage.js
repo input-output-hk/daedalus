@@ -1,7 +1,9 @@
 // @flow
 import React, { Component } from 'react';
+import path from 'path';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import { showSaveDialogChannel } from '../../ipc/show-file-dialog-channels';
 import WalletTransactions from '../../components/wallet/transactions/WalletTransactions';
 import { getNetworkExplorerUrlByType } from '../../utils/network';
 import { downloadCsv } from '../../utils/csvGenerator';
@@ -70,6 +72,30 @@ export default class WalletTransactionsPage extends Component<Props, State> {
   setFilterButtonFaded = (isFilterButtonFaded: boolean) =>
     this.setState({ isFilterButtonFaded });
 
+  onExportCsv = async (fileContent: CsvFileContent) => {
+    const fileName = generateFileNameWithTimestamp({
+      prefix: 'transactions',
+      extension: 'csv',
+      isUTC: true,
+    });
+    const { desktopDirectoryPath } = this.props.stores.profile;
+    const defaultPath = path.join(desktopDirectoryPath, fileName);
+    const params = {
+      defaultPath,
+      filters: [
+        {
+          extensions: ['csv'],
+        },
+      ],
+    };
+    const { filePath } = await showSaveDialogChannel.send(params);
+
+    // if cancel button is clicked or path is empty
+    if (!filePath) return;
+
+    downloadCsv({ filePath, fileContent });
+  };
+
   render() {
     const { actions, stores } = this.props;
     const { isFilterButtonFaded } = this.state;
@@ -118,12 +144,6 @@ export default class WalletTransactionsPage extends Component<Props, State> {
       searchLimit !== undefined &&
       totalAvailable > searchLimit;
 
-    const fileName = generateFileNameWithTimestamp({
-      prefix: 'transactions',
-      extension: 'csv',
-      isUTC: true,
-    });
-
     return (
       <WalletTransactions
         activeWallet={activeWallet}
@@ -143,9 +163,7 @@ export default class WalletTransactionsPage extends Component<Props, State> {
         onFilter={this.onFilter}
         onClose={() => closeActiveDialog.trigger()}
         {...dataForActiveDialog}
-        onRequestCSVFile={(fileContent: CsvFileContent) =>
-          downloadCsv({ fileName, fileContent })
-        }
+        onRequestCSVFile={this.onExportCsv}
         isRenderingAsVirtualList
       />
     );

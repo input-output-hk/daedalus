@@ -12,7 +12,7 @@ import { i18nContext } from '../utils/i18nContext';
 import { mnemonicToSeedHex, getScrambledInput } from '../utils/crypto';
 import { paperWalletPdfGenerator } from '../utils/paperWalletPdfGenerator';
 import { addressPDFGenerator } from '../utils/addressPDFGenerator';
-import { downloadsCsv } from '../utils/csvGenerator';
+import { downloadCsv } from '../utils/csvGenerator';
 import { buildRoute, matchRoute } from '../utils/routing';
 import { logger } from '../utils/logging';
 import { ROUTES } from '../routes-config';
@@ -1228,8 +1228,11 @@ export default class WalletsStore extends Store {
    * Using mobx flows: https://mobx.js.org/best/actions.html#flows
    * @private
    */
-  _generateCsv = flow(function* generateCsv(params: {
-    rewards: CsvFileContent,
+  _generateCsv = flow(function* generateCsv({
+    fileContent,
+    filePath,
+  }: {
+    fileContent: CsvFileContent,
     filePath: string,
   }) {
     try {
@@ -1239,7 +1242,7 @@ export default class WalletsStore extends Store {
       this._updateRewardsCsvCreationState(true);
 
       // download rewards csv
-      yield this._downloadRewardsCsv(params.rewards, params.filePath);
+      yield this._downloadRewardsCsv(fileContent, filePath);
     } catch (error) {
       throw error;
     } finally {
