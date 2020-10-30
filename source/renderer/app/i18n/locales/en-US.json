@@ -416,7 +416,7 @@
   "staking.redeemItnRewards.step1.recoveryPhraseLabel": "Wallet recovery phrase:",
   "staking.redeemItnRewards.step1.selectWalletInputPlaceholder": "Select Wallet",
   "staking.redeemItnRewards.step1.title": "Redeem Incentivized Testnet rewards",
-  "staking.redeemItnRewards.step1.walletsDropdownError": "The selected wallet does not have sufficient ADA to cover the necessary transaction fees. Please choose another wallet or add more funds to this one.",
+  "staking.redeemItnRewards.step1.walletsDropdownError": "The selected wallet does not have sufficient ada to cover the necessary transaction fees. Please choose another wallet or add more funds to this one.",
   "staking.redeemItnRewards.step1.walletsDropdownLabel": "Redeem rewards to:",
   "staking.redeemItnRewards.step2.backButtonLabel": "Back",
   "staking.redeemItnRewards.step2.continueButtonLabel": "Confirm rewards redemption",

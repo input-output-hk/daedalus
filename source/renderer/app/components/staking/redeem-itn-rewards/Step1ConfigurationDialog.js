@@ -72,7 +72,7 @@ const messages = defineMessages({
   walletsDropdownError: {
     id: 'staking.redeemItnRewards.step1.walletsDropdownError',
     defaultMessage:
-      '!!!The selected wallet does not have sufficient ADA to cover the necessary transaction fees. Please choose another wallet or add more funds to this one.',
+      '!!!The selected wallet does not have sufficient ada to cover the necessary transaction fees. Please choose another wallet or add more funds to this one.',
     description:
       'walletsDropdownError for Redeem Incentivized Testnet - Step 1',
   },
