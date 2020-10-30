@@ -323,7 +323,7 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-loading-status-icons-off-color': '#ea4c5b',
     '--theme-loading-status-icons-unloaded-loading-color': '#ffffff',
     '--theme-loading-status-icons-unloaded-syncing-color': '#5e6066',
-    '--theme-loading-status-icons-tooltip-color': '#5e6066',
+    '--theme-loading-status-icons-tooltip-color': 'rgba(0, 0, 0, 0.9)',
     '--theme-loading-spinner-color': '#5e6066',
     '--theme-loading-spinner-medium-color': '#fff',
   },
@@ -1072,7 +1072,7 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-news-overlay-update-button-border-color': '#ffffff',
   },
   rpPopOver: {
-    '--rp-pop-over-bg-color': 'rgba(0,0,0,0.9)',
+    '--rp-pop-over-bg-color': 'rgba(32, 34, 37, 0.9)',
     '--rp-pop-over-text-color': '#ffffff',
   },
 };
