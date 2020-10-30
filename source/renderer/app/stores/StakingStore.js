@@ -47,6 +47,7 @@ export default class StakingStore extends Store {
   @observable stakingSuccess: ?boolean = null;
   @observable configurationStepError: ?LocalizableError = null;
   @observable confirmationStepError: ?LocalizableError = null;
+  @observable closeStakeRedeemDialog: boolean = false;
 
   pollingStakePoolsInterval: ?IntervalID = null;
   refreshPolling: ?IntervalID = null;
@@ -500,6 +501,7 @@ export default class StakingStore extends Store {
     this.configurationStepError = null;
     this.confirmationStepError = null;
     this.redeemStep = steps.CONFIGURATION;
+    this.closeStakeRedeemDialog = false;
   };
 
   @action _onConfigurationContinue = async ({
@@ -599,6 +601,7 @@ export default class StakingStore extends Store {
   @action _closeRedeemDialog = () => {
     this._resetRedeemItnRewards();
     this.redeemStep = null;
+    this.closeStakeRedeemDialog = true;
   };
 
   // ================= REACTIONS ==================
