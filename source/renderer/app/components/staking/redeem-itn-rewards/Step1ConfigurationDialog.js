@@ -26,7 +26,6 @@ import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { ITN_WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
-import { MIN_DELEGATION_FUNDS } from '../../../config/stakingConfig';
 
 const messages = defineMessages({
   title: {
@@ -225,7 +224,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
   };
 
   get canSubmit() {
-    const { isSubmitting, wallet, errorMessage } = this.props;
+    const { isSubmitting, wallet, error } = this.props;
     const { form } = this;
     const { checked: checkboxAcceptance1isChecked } = form.$(
       'checkboxAcceptance1'
@@ -236,7 +235,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
     return (
       !isSubmitting &&
       wallet &&
-      !errorMessage &&
+      !error &&
       checkboxAcceptance1isChecked &&
       checkboxAcceptance2isChecked &&
       form.isValid
@@ -259,10 +258,12 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       errorMessage,
     } = this.props;
     let { error } = this.props;
+
     if (
-      error &&
-      (error.id === 'api.errors.NotEnoughFundsForTransactionFeesError' ||
-        error.id === 'api.errors.NotEnoughMoneyToSendError')
+      (error &&
+        (error.id === 'api.errors.NotEnoughFundsForTransactionFeesError' ||
+          error.id === 'api.errors.NotEnoughMoneyToSendError'
+        )) || errorMessage
     )
       error = messages.walletsDropdownError;
     const recoveryPhraseField = form.$('recoveryPhrase');
@@ -311,17 +312,6 @@ export default class Step1ConfigurationDialog extends Component<Props> {
     );
 
     const closeButton = <DialogCloseButton onClose={onClose} />;
-
-    const minDelegationFunds = MIN_DELEGATION_FUNDS;
-
-    const dropdownError = !error && errorMessage && (
-      <p className={styles.errorMessage}>
-        <FormattedHTMLMessage
-          {...errorMessage}
-          values={{ minDelegationFunds }}
-        />
-      </p>
-    );
 
     return (
       <Dialog
@@ -374,7 +364,6 @@ export default class Step1ConfigurationDialog extends Component<Props> {
               errorPosition="bottom"
             />
           </div>
-          {dropdownError}
           <Checkbox
             {...checkboxAcceptance1Field.bind()}
             className={styles.checkbox}
