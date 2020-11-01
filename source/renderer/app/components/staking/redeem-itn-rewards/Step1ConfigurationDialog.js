@@ -224,7 +224,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
   };
 
   get canSubmit() {
-    const { isSubmitting, wallet, error } = this.props;
+    const { isSubmitting, wallet, error, errorMessage } = this.props;
     const { form } = this;
     const { checked: checkboxAcceptance1isChecked } = form.$(
       'checkboxAcceptance1'
@@ -236,6 +236,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       !isSubmitting &&
       wallet &&
       !error &&
+      !errorMessage &&
       checkboxAcceptance1isChecked &&
       checkboxAcceptance2isChecked &&
       form.isValid
