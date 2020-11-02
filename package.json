@@ -6,6 +6,7 @@
   "main": "./dist/main/index.js",
   "scripts": {
     "build": "gulp build",
+    "build:electron": "electron-rebuild -f -w usb",
     "check:all": "yarn prettier:check && yarn lint && yarn flow:test && yarn stylelint && yarn lockfile:check && yarn manage:translations",
     "start": "gulp start",
     "start:dev": "NODE_ENV=development gulp start",
@@ -65,7 +66,7 @@
     "create-news-verification-hashes": "node utils/create-news-verification-hashes/index.js",
     "lockfile:check": "node utils/lockfile-checker/index.js --check",
     "lockfile:fix": "node utils/lockfile-checker/index.js --fix",
-    "postinstall": "electron-rebuild -f -w usb"
+    "postinstall": "node scripts/npm-postinstall.js"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"
