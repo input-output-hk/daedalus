@@ -9,6 +9,7 @@ Changelog
 
 ### Fixes
 
+- Fixed error message and validation on redeem rewards screen ([PR 2220](https://github.com/input-output-hk/daedalus/pull/2220))
 - Fixed Address validation on Shelley QA network ([PR 2218](https://github.com/input-output-hk/daedalus/pull/2218))
 - Vertically centered empty news feed message ([PR 2216](https://github.com/input-output-hk/daedalus/pull/2216))
 - Fixed the fix missing space in the App Update Overlay error message ([PR 2219](https://github.com/input-output-hk/daedalus/pull/2219))
