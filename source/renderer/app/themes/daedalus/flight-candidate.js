@@ -308,7 +308,7 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-loading-status-icons-off-color': '#ea4c5b',
     '--theme-loading-status-icons-unloaded-loading-color': '#ffffff',
     '--theme-loading-status-icons-unloaded-syncing-color': '#ffffff',
-    '--theme-loading-status-icons-tooltip-color': '#56576b',
+    '--theme-loading-status-icons-tooltip-color': 'var(--rp-pop-over-bg-color)',
     '--theme-loading-spinner-color': '#ffffff',
     '--theme-loading-spinner-medium-color': '#ffffff',
   },

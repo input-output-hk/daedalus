@@ -312,7 +312,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-loading-status-icons-off-color': '#ea4c5b',
     '--theme-loading-status-icons-unloaded-loading-color': '#2d2d2d',
     '--theme-loading-status-icons-unloaded-syncing-color': '#2d2d2d',
-    '--theme-loading-status-icons-tooltip-color': '#2d2d2d',
+    '--theme-loading-status-icons-tooltip-color': 'var(--rp-pop-over-bg-color)',
     '--theme-loading-spinner-color': '#2d2d2d',
     '--theme-loading-spinner-medium-color': '#2d2d2d',
   },
