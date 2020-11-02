@@ -4,11 +4,11 @@
 import TransportNodeHid from '@ledgerhq/hw-transport-node-hid';
 import AppAda, { cardano } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { BrowserWindow } from 'electron';
-// $FlowFixMe
 import TrezorConnect, {
   DEVICE_EVENT,
   TRANSPORT_EVENT,
   UI_EVENT,
+  // $FlowFixMe
 } from 'trezor-connect';
 import { get } from 'lodash';
 import { MainIpcChannel } from './lib/MainIpcChannel';
@@ -104,14 +104,16 @@ class EventObserver {
     //console.debug('>>> DEVICE serial: ', deviceSerial);
 
     if (connectionChanged) {
+      const device = get(event, 'device', {});
+      const deviceModel = get(event, 'deviceModel', {});
       getHardwareWalletConnectionChannel.send(
         {
           disconnected: event.type === 'remove',
           deviceType: 'ledger',
           deviceId: null, // Available only when Cardano APP opened
-          deviceModel: event.deviceModel.id, // e.g. nanoS
-          deviceName: event.deviceModel.productName, // e.g. Test Name
-          path: event.device.path,
+          deviceModel: deviceModel.id, // e.g. nanoS
+          deviceName: deviceModel.productName, // e.g. Test Name
+          path: device.path,
         },
         // $FlowFixMe
         this.mainWindow
@@ -147,7 +149,7 @@ export const handleHardwareWalletDevices = (mainWindow: BrowserWindow) => {
 };
 
 // INIT - 1
-export const handleHardwareWalletRequests = async (mainWindow) => {
+export const handleHardwareWalletRequests = async (mainWindow: BrowserWindow) => {
   console.debug('>>> handleHardwareWalletRequests <<<');
   let deviceConnection = null;
   getHardwareWalletTransportChannel.onRequest(async (request) => {

@@ -39,6 +39,7 @@ import { logUsedVersion } from './utils/logUsedVersion';
 import { setStateSnapshotLogChannel } from './ipc/set-log-state-snapshot';
 import { generateWalletMigrationReportChannel } from './ipc/generateWalletMigrationReportChannel';
 import { pauseActiveDownloads } from './ipc/downloadManagerChannel';
+import { isLedgerEnabled } from '../common/config/hardwareWalletsConfig';
 
 /* eslint-disable consistent-return */
 
@@ -168,11 +169,12 @@ const onAppReady = async () => {
   await handleCheckDiskSpace();
 
   // Ledger INIT
-  // @TODO - uncomment once TransportNodeHID enabled by dev-ops
-  const handleCheckHardwareWalletDevices = handleHardwareWalletDevices(
-    mainWindow
-  );
-  await handleCheckHardwareWalletDevices();
+  if (isLedgerEnabled) {
+    const handleCheckHardwareWalletDevices = handleHardwareWalletDevices(
+      mainWindow
+    );
+    await handleCheckHardwareWalletDevices();
+  }
 
   await handleCheckBlockReplayProgress(mainWindow, launcherConfig.logsPrefix);
 

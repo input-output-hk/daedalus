@@ -15,6 +15,7 @@ import Dialog from '../widgets/Dialog';
 import styles from './WalletConnectDialog.scss';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import HardwareWalletStatus from '../hardware-wallet/HardwareWalletStatus';
+import { isLedgerEnabled, isTrezorEnabled } from '../../../../common/config/hardwareWalletsConfig';
 import {
   DeviceModels,
   DeviceTypes,
@@ -66,10 +67,8 @@ export default class WalletConnectDialog extends Component<Props> {
       error,
     } = this.props;
 
-    const isLedger =
-      transportDevice && transportDevice.deviceType === DeviceTypes.LEDGER;
-    const isTrezor =
-      transportDevice && transportDevice.deviceType === DeviceTypes.TREZOR;
+    const isLedger = transportDevice && transportDevice.deviceType === DeviceTypes.LEDGER;
+    const isTrezor = transportDevice && transportDevice.deviceType === DeviceTypes.TREZOR;
     const dialogClasses = classnames([styles.component, 'WalletConnectDialog']);
 
     const buttonLabel = !isSubmitting ? (
@@ -87,6 +86,33 @@ export default class WalletConnectDialog extends Component<Props> {
       },
     ];
 
+    const renderUnknownDevice = () => {
+      let unknownDeviceElement;
+      if (isTrezorEnabled && !isLedgerEnabled) {
+        unknownDeviceElement = (
+          <div className={styles.hardwareWalletTrezor}>
+            <SVGInline svg={trezorIcon} className={styles.trezorIcon} />
+          </div>
+        );
+      } else if (isLedgerEnabled && !isTrezorEnabled) {
+        unknownDeviceElement = (
+          <div className={styles.hardwareWalletLedger}>
+            <SVGInline svg={ledgerIcon} className={styles.ledgerIcon} />
+          </div>
+        );
+      } else {
+        unknownDeviceElement = (
+          <div className={styles.hardwareWalletUnknown}>
+            <SVGInline
+              svg={unknownDeviceIcon}
+              className={styles.unknownDeviceIcon}
+            />
+          </div>
+        );
+      }
+      return unknownDeviceElement;
+    };
+
     return (
       <Dialog
         className={dialogClasses}
@@ -97,15 +123,8 @@ export default class WalletConnectDialog extends Component<Props> {
         closeButton={<DialogCloseButton />}
       >
         <div className={styles.hardwareWalletWrapper}>
-          {!isTrezor && !isLedger && (
-            <div className={styles.hardwareWalletUnknown}>
-              <SVGInline
-                svg={unknownDeviceIcon}
-                className={styles.unknownDeviceIcon}
-              />
-            </div>
-          )}
-          {isLedger && (
+          {(!isTrezor && !isLedger) && renderUnknownDevice()}
+          {isLedger && isLedgerEnabled && (
             <div className={styles.hardwareWalletLedger}>
               {transportDevice.deviceModel === DeviceModels.LEDGER_NANO_X && (
                 <SVGInline svg={ledgerXIcon} className={styles.ledgerXIcon} />
@@ -115,7 +134,7 @@ export default class WalletConnectDialog extends Component<Props> {
               )}
             </div>
           )}
-          {isTrezor && (
+          {isTrezor && isTrezorEnabled && (
             <div className={styles.hardwareWalletTrezor}>
               <SVGInline svg={trezorIcon} className={styles.trezorIcon} />
             </div>
