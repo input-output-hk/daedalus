@@ -477,10 +477,7 @@ export default class TooltipPool extends Component<Props, State> {
   };
 
   get isGreyColor() {
-    return (
-      IS_RANKING_DATA_AVAILABLE &&
-      this.props.stakePool.potentialRewards.isZero()
-    );
+    return !IS_RANKING_DATA_AVAILABLE;
   }
 
   renderDescriptionFields = () => {
@@ -526,7 +523,7 @@ export default class TooltipPool extends Component<Props, State> {
         key: 'ranking',
         value: (
           <div className={styles.ranking}>
-            {!this.isGreyColor ? (
+            {IS_RANKING_DATA_AVAILABLE ? (
               <span
                 style={{
                   background: getColorFromRange(ranking, {
@@ -536,7 +533,9 @@ export default class TooltipPool extends Component<Props, State> {
                   }),
                 }}
               >
-                {ranking}
+                {!potentialRewards.isZero()
+                  ? ranking
+                  : numberOfRankedStakePools + 1}
               </span>
             ) : (
               <div className={styles.noDataDash}>
@@ -631,15 +630,9 @@ export default class TooltipPool extends Component<Props, State> {
         key: 'potentialRewards',
         value: (
           <div className={styles.defaultColor}>
-            {!potentialRewards.isZero() ? (
-              <span className={styles.defaultColorContent}>
-                {formattedWalletAmount(potentialRewards)}
-              </span>
-            ) : (
-              <div className={styles.noDataDash}>
-                <SVGInline svg={noDataDashSmallImage} />
-              </div>
-            )}
+            <span className={styles.defaultColorContent}>
+              {formattedWalletAmount(potentialRewards)}
+            </span>
           </div>
         ),
       },
