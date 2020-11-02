@@ -1,4 +1,4 @@
-{ target, pkgs, cardanoWalletPkgs, runCommand, cardano-wallet, cardano-node, cardano-shell, cardano-cli, cardano-address }:
+{ target, pkgs, cardanoWalletPkgs, runCommand, cardano-wallet, cardano-node, cardano-shell, cardano-cli, cardano-address, shelley-test-cluster ? null }:
 
 let
   commonLib = import ../lib.nix {};
@@ -17,4 +17,5 @@ in runCommand "daedalus-cardano-bridge" {
   cp -f ${cardano-shell.haskellPackages.cardano-launcher.components.exes.cardano-launcher}/bin/cardano-launcher* .
   cp -f ${cardano-node}/bin/cardano-node* .
   cp -f ${cardano-cli}/bin/cardano-cli* .
+  ${pkgs.lib.optionalString (shelley-test-cluster != null) "cp -f ${shelley-test-cluster}/bin/shelley-test-cluster* ."}
 ''
