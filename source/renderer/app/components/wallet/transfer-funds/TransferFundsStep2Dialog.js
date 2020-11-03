@@ -165,13 +165,14 @@ export default class TransferFundsStep2Dialog extends Component<Props> {
     } = this.props;
 
     const fees = feesAmount.toFormat(DECIMAL_PLACES_IN_ADA);
-    const leftovers = leftoversAmount
-      ? leftoversAmount.toFormat(DECIMAL_PLACES_IN_ADA)
-      : null;
-    const totalToBeReceived = formattedWalletAmount(
-      sourceWalletAmount.minus(feesAmount),
-      false
-    );
+    const leftovers =
+      leftoversAmount && !leftoversAmount.isZero()
+        ? leftoversAmount.toFormat(DECIMAL_PLACES_IN_ADA)
+        : null;
+    const totalAmount = sourceWalletAmount
+      .minus(feesAmount)
+      .minus(leftoversAmount);
+    const totalToBeReceived = formattedWalletAmount(totalAmount, false);
     const sourceWalletBalance = formattedWalletAmount(
       sourceWalletAmount,
       false
