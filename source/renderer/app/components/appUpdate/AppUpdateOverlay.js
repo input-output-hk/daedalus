@@ -135,7 +135,7 @@ export default class AppUpdateOverlay extends Component<Props, State> {
   };
 
   toggleAcceptance = () => {
-    this.setState((prevState) => ({
+    this.setState(prevState => ({
       areTermsOfUseAccepted: !prevState.areTermsOfUseAccepted,
     }));
   };
@@ -274,8 +274,8 @@ export default class AppUpdateOverlay extends Component<Props, State> {
     return (
       <div className={styles.actions}>
         <div className={styles.manualUpdateDescription}>
-          {intl.formatMessage(errorMessage)}
-          {intl.formatMessage(messages.manualUpdateDescriptionAction)}
+          <p>{intl.formatMessage(errorMessage)}</p>
+          <p>{intl.formatMessage(messages.manualUpdateDescriptionAction)}</p>
         </div>
         <Button
           className={styles.button}

@@ -70,20 +70,6 @@ export const shortNumber = (value: number | BigNumber): string => {
   return formattedAmount;
 };
 
-export const bigNumbersToFormattedNumbers = (
-  value: BigNumber,
-  shorterNumber?: boolean
-): string => {
-  const formattedValue = formattedWalletAmount(value, false, !shorterNumber);
-  const splitValues = formattedValue.split(',');
-  let result = '';
-  splitValues.map((item) => {
-    result += item;
-    return true;
-  });
-  return result;
-};
-
 export const formattedAmountToNaturalUnits = (amount: string): string => {
   const cleanedAmount = amount
     .replace(/\./g, '') // removes all the dot separators
@@ -96,6 +82,13 @@ export const formattedAmountToNaturalUnits = (amount: string): string => {
 export const formattedAmountToBigNumber = (amount: string) => {
   const cleanedAmount = amount.replace(/,/g, '');
   return new BigNumber(cleanedAmount !== '' ? cleanedAmount : 0);
+};
+
+export const toFixedUserFormat = (number: number, digits: number) => {
+  // This is necessary, because the BigNumber version we use
+  // can't receive numbers with more than 15 digits
+  const parsedNumber = parseFloat(number).toFixed(digits);
+  return new BigNumber(parsedNumber).toFormat(digits);
 };
 
 export const formattedAmountToLovelace = (amount: string): number =>
@@ -145,7 +138,9 @@ export const formattedDownloadData = (
     } = downloadData;
     const secondsLeft = remainingSize / speed;
     moment.locale(momentLocales[userLocale]);
-    timeLeft = moment().add(secondsLeft, 'seconds').fromNow(true);
+    timeLeft = moment()
+      .add(secondsLeft, 'seconds')
+      .fromNow(true);
     downloaded = formattedBytesToSize(downloadSize);
     total = formattedBytesToSize(serverFileSize);
     progress = parseInt(rawProgress, 10);

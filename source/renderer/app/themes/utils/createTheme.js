@@ -154,6 +154,10 @@ export const createReactPolymorphTheme = (
       '--rp-options-border-color': `${border}`,
       '--rp-options-shadow': 'none',
     },
+    rpPopOver: {
+      '--rp-pop-over-bg-color': '',
+      '--rp-pop-over-text-color': '',
+    },
     rpRadio: {
       '--rp-radio-border': `2px solid ${background.secondary.regular}`,
       '--rp-radio-border-color': `${background.secondary.regular}`,

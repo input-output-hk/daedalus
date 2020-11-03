@@ -3,12 +3,13 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { orderBy } from 'lodash';
 import classNames from 'classnames';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
+import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import styles from './StakePoolsTable.scss';
 import StakePool from '../../../domains/StakePool';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import BorderedBox from '../../widgets/BorderedBox';
-import globalMessages from '../../../i18n/global-messages';
 import { StakePoolsTableHeader } from './StakePoolsTableHeader';
 import { StakePoolsTableBody } from './StakePoolsTableBody';
 
@@ -17,6 +18,12 @@ const messages = defineMessages({
     id: 'staking.stakePools.tableHeader.rank',
     defaultMessage: '!!!Rank',
     description: 'Table header "Rank" label on stake pools list view page',
+  },
+  tableHeaderRankTooltip: {
+    id: 'staking.stakePools.tooltip.rankingTooltip',
+    defaultMessage:
+      '!!!<p>A hierarchical ranking based on the potential rewards you will earn if you delegate the intended amount of stake to this pool, assuming that it reaches saturation.</p><p>*Stake pools with the potential rewards estimated at zero have the same ranking. Please set the stake slider to a higher value for more pools to get potential rewards estimated at more than zero.</p>',
+    description: '"Rank" tooltip for the Stake Pools Table.',
   },
   tableHeaderTicker: {
     id: 'staking.stakePools.tableHeader.ticker',
@@ -28,6 +35,12 @@ const messages = defineMessages({
     defaultMessage: '!!!Saturation',
     description:
       'Table header "Saturation" label on stake pools list view page',
+  },
+  tableHeaderSaturationTooltip: {
+    id: 'staking.stakePools.tooltip.saturationTooltip',
+    defaultMessage:
+      '!!!Saturation measures the stake in the pool and indicates the point at which rewards stop increasing with increases in stake. This capping mechanism encourages decentralization by discouraging users from delegating to oversaturated stake pools.',
+    description: '"Saturation" tooltip for the Stake Pools Table.',
   },
   tableHeaderPerformance: {
     id: 'staking.stakePools.tableHeader.performance',
@@ -45,6 +58,12 @@ const messages = defineMessages({
     defaultMessage: '!!!Margin',
     description: 'Table header "Margin" label on stake pools list view page',
   },
+  tableHeaderMarginTooltip: {
+    id: 'staking.stakePools.tooltip.profitMarginTooltip',
+    defaultMessage:
+      "!!!The pool's profit, defined as the rewards percentage kept by the pool from the stake that was delegated to it.",
+    description: '"Pool margin" tooltip for the Stake Pools Table.',
+  },
   tableHeaderRoi: {
     id: 'staking.stakePools.tableHeader.roi',
     defaultMessage: '!!!Roi',
@@ -55,11 +74,23 @@ const messages = defineMessages({
     defaultMessage: '!!!Cost (ADA)',
     description: 'Table header "Cost" label on stake pools list view page',
   },
+  tableHeaderCostTooltip: {
+    id: 'staking.stakePools.tooltip.costPerEpochTooltip',
+    defaultMessage:
+      '!!!Fixed operational costs that the stake pool retains from any rewards earned during each epoch.',
+    description: '"Cost per epoch" tooltip for the Stake Pools Table.',
+  },
   tableHeaderProducedBlocks: {
     id: 'staking.stakePools.tableHeader.producedBlocks',
     defaultMessage: '!!!Produced Blocks',
     description:
       'Table header "Produced Blocks" label on stake pools list view page',
+  },
+  tableHeaderProducedBlocksTooltip: {
+    id: 'staking.stakePools.tooltip.producedBlocksTooltip',
+    defaultMessage:
+      '!!!The total number of blocks the stake pool has produced.',
+    description: '"Blocks" tooltip for the Stake Pools Table.',
   },
   tableHeaderPotentialRewards: {
     id: 'staking.stakePools.tableHeader.potentialRewards',
@@ -67,10 +98,22 @@ const messages = defineMessages({
     description:
       'Table header "Potential rewards" label on stake pools list view page',
   },
+  tableHeaderPotentialRewardsTooltip: {
+    id: 'staking.stakePools.tooltip.potentialRewardsTooltip',
+    defaultMessage:
+      "!!!An estimation of the potential rewards you will earn per epoch if you delegate the intended amount of stake. The system looks at the pool's parameters and historical performance data to calculate potential rewards, assuming that the pool reaches optimal saturation.",
+    description: '"Rewards" tooltip for the Stake Pools Table.',
+  },
   tableHeaderPledge: {
     id: 'staking.stakePools.tableHeader.pledge',
-    defaultMessage: '!!!Pledge',
+    defaultMessage: '!!!Pledge (ADA)',
     description: 'Table header "Pledge" label on stake pools list view page',
+  },
+  tableHeaderPledgeTooltip: {
+    id: 'staking.stakePools.tooltip.pledgeTooltip',
+    defaultMessage:
+      '!!!The amount of stake that a pool operator contributes to a pool. Pools with higher pledge amounts earn more rewards for themselves and their delegators. Pools that do not honor their pledge earn zero rewards and accrue low ranking.',
+    description: '"Pledge" tooltip for the Stake Pools Table.',
   },
   tableHeaderRetiring: {
     id: 'staking.stakePools.tableHeader.retiring',
@@ -106,29 +149,21 @@ type Props = {
   numberOfRankedStakePools: number,
   selectedPoolId?: ?number,
   onOpenExternalLink: Function,
-  maintainFixed?: boolean,
-  isScrolled?: boolean,
   currentLocale: string,
+  onTableHeaderMouseEnter: Function,
+  onTableHeaderMouseLeave: Function,
 };
 
 type State = {
   isPreloading: boolean,
   stakePoolsOrder: string,
   stakePoolsSortBy: string,
-  isFixedTableHeaderActive: boolean,
-  isFixedSearchBarActive: boolean,
-  fixedTableHeaderPosition: number,
-  fixedSearchBarPosition: number,
 };
 
 const initialState = {
   isPreloading: true,
   stakePoolsOrder: 'asc',
   stakePoolsSortBy: 'ranking',
-  isFixedTableHeaderActive: false,
-  isFixedSearchBarActive: false,
-  fixedTableHeaderPosition: 250,
-  fixedSearchBarPosition: 186,
 };
 
 @observer
@@ -142,9 +177,7 @@ export class StakePoolsTable extends Component<Props, State> {
     showWithSelectButton: false,
   };
 
-  state = {
-    ...initialState,
-  };
+  state = { ...initialState };
 
   scrollableDomElement: ?HTMLElement = null;
 
@@ -187,20 +220,15 @@ export class StakePoolsTable extends Component<Props, State> {
       containerClassName,
       numberOfRankedStakePools,
       listName,
-      maintainFixed,
-      isScrolled,
       onSelect,
       selectedPoolId,
       setListActive,
       isListActive,
       currentLocale,
+      onTableHeaderMouseEnter,
+      onTableHeaderMouseLeave,
     } = this.props;
-    const {
-      isPreloading,
-      stakePoolsSortBy,
-      stakePoolsOrder,
-      isFixedTableHeaderActive,
-    } = this.state;
+    const { isPreloading, stakePoolsSortBy, stakePoolsOrder } = this.state;
     const { intl } = this.context;
     const componentClasses = classNames([styles.component, listName]);
 
@@ -210,23 +238,9 @@ export class StakePoolsTable extends Component<Props, State> {
           <LoadingSpinner big />
         </div>
       );
-    let tableHeaderClasses: string = '';
-    if (isScrolled) {
-      tableHeaderClasses = classNames([
-        styles.tableHeader,
-        isScrolled && isFixedTableHeaderActive ? styles.fixedTableHeader : null,
-      ]);
-    } else {
-      tableHeaderClasses = classNames([
-        styles.tableHeader,
-        isScrolled && (isFixedTableHeaderActive || maintainFixed)
-          ? styles.fixedTableHeader
-          : null,
-      ]);
-    }
 
     const sortedStakePoolList = orderBy(
-      stakePoolsList.map((stakePool) => {
+      stakePoolsList.map(stakePool => {
         let calculatedPledge;
         let calculatedCost;
         let formattedTicker;
@@ -264,7 +278,20 @@ export class StakePoolsTable extends Component<Props, State> {
     const availableTableHeaders = [
       {
         name: 'ranking',
-        title: intl.formatMessage(messages.tableHeaderRank),
+        title: (
+          <Tooltip
+            key="ranking"
+            isOpeningUpward={false}
+            skin={TooltipSkin}
+            tip={
+              <div className={styles.tooltipWithHTMLContent}>
+                <FormattedHTMLMessage {...messages.tableHeaderRankTooltip} />
+              </div>
+            }
+          >
+            {intl.formatMessage(messages.tableHeaderRank)}
+          </Tooltip>
+        ),
       },
       {
         name: 'ticker',
@@ -272,27 +299,83 @@ export class StakePoolsTable extends Component<Props, State> {
       },
       {
         name: 'saturation',
-        title: intl.formatMessage(messages.tableHeaderSaturation),
+        title: (
+          <Tooltip
+            key="saturation"
+            isOpeningUpward={false}
+            skin={TooltipSkin}
+            tip={intl.formatMessage(messages.tableHeaderSaturationTooltip)}
+          >
+            {intl.formatMessage(messages.tableHeaderSaturation)}
+          </Tooltip>
+        ),
       },
       {
         name: 'cost',
-        title: intl.formatMessage(messages.tableHeaderCost),
+        title: (
+          <Tooltip
+            key="cost"
+            isOpeningUpward={false}
+            skin={TooltipSkin}
+            tip={intl.formatMessage(messages.tableHeaderCostTooltip)}
+          >
+            {intl.formatMessage(messages.tableHeaderCost)}
+          </Tooltip>
+        ),
       },
       {
         name: 'profitMargin',
-        title: intl.formatMessage(messages.tableHeaderMargin),
+        title: (
+          <Tooltip
+            key="profitMargin"
+            isOpeningUpward={false}
+            skin={TooltipSkin}
+            tip={intl.formatMessage(messages.tableHeaderMarginTooltip)}
+          >
+            {intl.formatMessage(messages.tableHeaderMargin)}
+          </Tooltip>
+        ),
       },
       {
         name: 'producedBlocks',
-        title: intl.formatMessage(messages.tableHeaderProducedBlocks),
+        title: (
+          <Tooltip
+            key="producedBlocks"
+            isOpeningUpward={false}
+            skin={TooltipSkin}
+            tip={intl.formatMessage(messages.tableHeaderProducedBlocksTooltip)}
+          >
+            {intl.formatMessage(messages.tableHeaderProducedBlocks)}
+          </Tooltip>
+        ),
       },
       {
         name: 'nonMyopicMemberRewards',
-        title: intl.formatMessage(messages.tableHeaderPotentialRewards),
+        title: (
+          <Tooltip
+            key="nonMyopicMemberRewards"
+            isOpeningUpward={false}
+            skin={TooltipSkin}
+            tip={intl.formatMessage(
+              messages.tableHeaderPotentialRewardsTooltip
+            )}
+          >
+            {intl.formatMessage(messages.tableHeaderPotentialRewards)}
+          </Tooltip>
+        ),
       },
       {
         name: 'pledge',
-        title: intl.formatMessage(messages.tableHeaderPledge),
+        title: (
+          <Tooltip
+            key="pledge"
+            isOpeningUpward={false}
+            skin={TooltipSkin}
+            tip={intl.formatMessage(messages.tableHeaderPledgeTooltip)}
+          >
+            {intl.formatMessage(messages.tableHeaderPledge)}
+          </Tooltip>
+        ),
       },
       {
         name: 'retiring',
@@ -306,7 +389,10 @@ export class StakePoolsTable extends Component<Props, State> {
           {sortedStakePoolList.length > 0 && (
             <BorderedBox>
               <table>
-                <thead className={tableHeaderClasses}>
+                <thead
+                  onMouseEnter={onTableHeaderMouseEnter}
+                  onMouseLeave={onTableHeaderMouseLeave}
+                >
                   <tr>
                     <StakePoolsTableHeader
                       availableTableHeaders={availableTableHeaders}
@@ -323,7 +409,6 @@ export class StakePoolsTable extends Component<Props, State> {
                 >
                   <StakePoolsTableBody
                     sortedStakePoolList={sortedStakePoolList}
-                    ada={intl.formatMessage(globalMessages.unitAda)}
                     numberOfRankedStakePools={numberOfRankedStakePools}
                     currentTheme={currentTheme}
                     onOpenExternalLink={onOpenExternalLink}

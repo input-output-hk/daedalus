@@ -65,14 +65,15 @@ type State = {
   selectedList?: ?string,
   isGridView: boolean,
   isListView: boolean,
-  isFixed: boolean,
-  isHeaderFixed: boolean,
-  isScrolled: boolean,
-  maintainFixed: boolean,
+  isTableHeaderHovered: boolean,
 };
 
 const initialState = {
+  search: '',
   selectedList: null,
+  isGridView: true,
+  isListView: false,
+  isTableHeaderHovered: false,
 };
 
 @observer
@@ -83,63 +84,32 @@ export default class StakePools extends Component<Props, State> {
     intl: intlShape.isRequired,
   };
 
-  state = {
-    search: '',
-    isGridView: true,
-    isListView: false,
-    isFixed: false,
-    isHeaderFixed: false,
-    isScrolled: false,
-    maintainFixed: false,
-    ...initialState,
-  };
+  state = { ...initialState };
 
-  handleSearch = (search: string) =>
-    this.setState((prevState) => ({
-      search,
-      maintainFixed: prevState.isFixed,
-    }));
-  handleClearSearch = () =>
-    this.setState({ search: '', maintainFixed: false, isFixed: false });
+  handleSearch = (search: string) => this.setState({ search });
+
+  handleClearSearch = () => this.setState({ search: '' });
+
   handleGridView = () =>
     this.setState({
       isGridView: true,
       isListView: false,
-      isFixed: false,
-      maintainFixed: false,
-      isScrolled: false,
-      isHeaderFixed: false,
     });
+
   handleListView = () =>
     this.setState({
       isGridView: false,
       isListView: true,
-      isFixed: false,
-      maintainFixed: false,
-      isScrolled: false,
-      isHeaderFixed: false,
     });
-  handleSearchComponentScrollView = (
-    isScrolled: boolean,
-    isHeaderFixed: boolean
-  ) => {
-    if (isHeaderFixed) {
-      this.setState((prevState) => ({
-        isFixed: !prevState.isFixed,
-        isScrolled,
-        isHeaderFixed,
-      }));
-    } else {
-      this.setState(() => ({
-        isFixed: !(!isScrolled && !isHeaderFixed),
-        isScrolled,
-        isHeaderFixed: false,
-      }));
-    }
-  };
 
   handleSetListActive = (selectedList: string) =>
     this.setState({ selectedList });
+
+  handleTableHeaderMouseEnter = () =>
+    this.setState({ isTableHeaderHovered: true });
+
+  handleTableHeaderMouseLeave = () =>
+    this.setState({ isTableHeaderHovered: false });
 
   onDelegate = (poolId: string) => {
     const { onDelegate } = this.props;
@@ -168,10 +138,7 @@ export default class StakePools extends Component<Props, State> {
       selectedList,
       isListView,
       isGridView,
-      isFixed,
-      isHeaderFixed,
-      maintainFixed,
-      isScrolled,
+      isTableHeaderHovered,
     } = this.state;
 
     const filteredStakePoolsList: Array<StakePool> = getFilteredStakePoolsList(
@@ -180,8 +147,7 @@ export default class StakePools extends Component<Props, State> {
     );
 
     const numberOfRankedStakePools: number = stakePoolsList.filter(
-      (stakePool) =>
-        IS_RANKING_DATA_AVAILABLE && stakePool.nonMyopicMemberRewards
+      stakePool => IS_RANKING_DATA_AVAILABLE && stakePool.nonMyopicMemberRewards
     ).length;
 
     const listTitleMessage = search.trim().length
@@ -191,7 +157,7 @@ export default class StakePools extends Component<Props, State> {
     const loadingSpinner = (
       <LoadingSpinner
         big
-        ref={(component) => {
+        ref={component => {
           this.loadingSpinner = component;
         }}
       />
@@ -200,14 +166,6 @@ export default class StakePools extends Component<Props, State> {
     const componentClasses = classnames([
       styles.component,
       isLoading ? styles.isLoading : null,
-    ]);
-
-    const tableHeadingClasses = classnames([
-      styles.tableHeading,
-      isFixed && filteredStakePoolsList.length
-        ? styles.tableHeadingFixed
-        : null,
-      isHeaderFixed ? styles.tableHeadingFixedPosition : null,
     ]);
 
     return (
@@ -221,7 +179,9 @@ export default class StakePools extends Component<Props, State> {
           <Fragment>
             <BackToTopButton
               scrollableElementClassName="StakingWithNavigation_page"
+              scrollTopToActivate={isListView ? 400 : 340}
               buttonTopPosition={isListView ? 184 : 144}
+              isForceHidden={isTableHeaderHovered}
             />
             <StakePoolsRanking
               wallets={wallets}
@@ -244,11 +204,7 @@ export default class StakePools extends Component<Props, State> {
               onListView={this.handleListView}
               isListView={isListView}
               isGridView={isGridView}
-              isFixed={
-                (isFixed || maintainFixed) && !!filteredStakePoolsList.length
-              }
               isClearTooltipOpeningDownward
-              isScrolled={isScrolled}
             />
             {stakePoolsDelegatingList.length > 0 && (
               <Fragment>
@@ -271,7 +227,7 @@ export default class StakePools extends Component<Props, State> {
             )}
             {isListView && (
               <Fragment>
-                <h2 className={tableHeadingClasses}>
+                <h2>
                   <FormattedMessage
                     {...listTitleMessage}
                     values={{
@@ -291,11 +247,8 @@ export default class StakePools extends Component<Props, State> {
                   onSelect={this.onDelegate}
                   numberOfRankedStakePools={numberOfRankedStakePools}
                   showWithSelectButton
-                  onScrollView={this.handleSearchComponentScrollView}
-                  maintainFixed={
-                    maintainFixed && !!filteredStakePoolsList.length
-                  }
-                  isScrolled={isScrolled}
+                  onTableHeaderMouseEnter={this.handleTableHeaderMouseEnter}
+                  onTableHeaderMouseLeave={this.handleTableHeaderMouseLeave}
                 />
               </Fragment>
             )}

@@ -208,7 +208,7 @@ export default class AdaApi {
         this.config
       );
       logger.debug('AdaApi::getWallets success', { wallets, legacyWallets });
-      map(legacyWallets, (legacyAdaWallet) => {
+      map(legacyWallets, legacyAdaWallet => {
         const extraLegacyWalletProps = {
           address_pool_gap: 0, // Not needed for legacy wallets
           delegation: {
@@ -306,10 +306,10 @@ export default class AdaApi {
       logger.debug('AdaApi::getTransactions success', {
         transactions: response,
       });
-      const transactions = response.map((tx) =>
+      const transactions = response.map(tx =>
         _createTransactionFromServerData(tx)
       );
-      return new Promise((resolve) =>
+      return new Promise(resolve =>
         resolve({ transactions, total: response.length })
       );
     } catch (error) {
@@ -790,7 +790,7 @@ export default class AdaApi {
   getWalletRecoveryPhrase(): Promise<Array<string>> {
     logger.debug('AdaApi::getWalletRecoveryPhrase called');
     try {
-      const response: Promise<Array<string>> = new Promise((resolve) =>
+      const response: Promise<Array<string>> = new Promise(resolve =>
         resolve(generateAccountMnemonics(WALLET_RECOVERY_PHRASE_WORD_COUNT))
       );
       logger.debug('AdaApi::getWalletRecoveryPhrase success');
@@ -804,7 +804,7 @@ export default class AdaApi {
   getWalletCertificateAdditionalMnemonics(): Promise<Array<string>> {
     logger.debug('AdaApi::getWalletCertificateAdditionalMnemonics called');
     try {
-      const response: Promise<Array<string>> = new Promise((resolve) =>
+      const response: Promise<Array<string>> = new Promise(resolve =>
         resolve(generateAdditionalMnemonics())
       );
       logger.debug('AdaApi::getWalletCertificateAdditionalMnemonics success');
@@ -823,7 +823,7 @@ export default class AdaApi {
     logger.debug('AdaApi::getWalletCertificateRecoveryPhrase called');
     const { passphrase, input: scrambledInput } = request;
     try {
-      const response: Promise<Array<string>> = new Promise((resolve) =>
+      const response: Promise<Array<string>> = new Promise(resolve =>
         resolve(scrambleMnemonics({ passphrase, scrambledInput }))
       );
       logger.debug('AdaApi::getWalletCertificateRecoveryPhrase success');
@@ -1205,7 +1205,11 @@ export default class AdaApi {
       parameters: filterLogData(request),
     });
     const { filePath, spendingPassword } = request;
-    const isKeyFile = filePath.split('.').pop().toLowerCase() === 'key';
+    const isKeyFile =
+      filePath
+        .split('.')
+        .pop()
+        .toLowerCase() === 'key';
     try {
       const importedWallet: AdaWallet = isKeyFile
         ? await importWalletAsKey(this.config, {
@@ -1521,7 +1525,7 @@ export default class AdaApi {
     try {
       const wallets = await this.getWallets();
       await Promise.all(
-        wallets.map((wallet) =>
+        wallets.map(wallet =>
           this.deleteWallet({
             walletId: wallet.id,
             isLegacy: wallet.isLegacy,
@@ -1953,6 +1957,9 @@ const _createStakePoolFromServerData = action(
       id,
       relativeStake: relativeStakePercentage,
       producedBlocks: producedBlocksCount,
+      potentialRewards: new BigNumber(nonMyopicMemberRewardsQuantity).dividedBy(
+        LOVELACES_PER_ADA
+      ),
       nonMyopicMemberRewards: nonMyopicMemberRewardsQuantity,
       ticker,
       homepage,

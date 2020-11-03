@@ -2,11 +2,9 @@
 import React, { Component } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
-import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
-import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import classNames from 'classnames';
 import styles from './StatusIcons.scss';
-import tooltipStyles from './StatusIcons-tooltip.scss';
 import { CardanoNodeStates } from '../../../../../common/types/cardano-node.types';
 import nodeStateIcon from '../../../assets/images/node-state-icon.inline.svg';
 import isNodeRespondingIcon from '../../../assets/images/is-node-responding-icon.inline.svg';
@@ -244,29 +242,33 @@ export default class StatusIcons extends Component<Props> {
     paramName !== 'nodeState' &&
     this.props.nodeState !== CardanoNodeStates.RUNNING;
 
-  getIconWithToolTip = (icon: string, paramName: string) => (
-    <Tooltip
-      className={this.getTooltipClassname(paramName)}
+  getIconWithPopover = (icon: string, paramName: string) => (
+    <PopOver
+      themeVariables={{
+        '--rp-pop-over-bg-color':
+          'var(--theme-loading-status-icons-tooltip-color)',
+        '--rp-pop-over-border-radius': '5px',
+        '--rp-bubble-padding': '6px 12px 7px',
+      }}
+      contentClassName={this.getTooltipClassname(paramName)}
       key={paramName}
-      themeOverrides={tooltipStyles}
-      skin={TooltipSkin}
-      tip={this.getTip(paramName, this.props[paramName])}
+      content={this.getTip(paramName, this.props[paramName])}
     >
       <button className={styles.iconButton} onClick={this.props.onIconClick}>
         <SVGInline svg={icon} className={this.getClassName(paramName)} />
       </button>
-    </Tooltip>
+    </PopOver>
   );
 
   render() {
     return (
       <div className={styles.component}>
         {[
-          this.getIconWithToolTip(nodeStateIcon, 'nodeState'),
-          this.getIconWithToolTip(isNodeRespondingIcon, 'isNodeResponding'),
-          // this.getIconWithToolTip(isNodeSubscribedIcon, 'isNodeSubscribed'),
-          this.getIconWithToolTip(isNodeTimeCorrectIcon, 'isNodeTimeCorrect'),
-          this.getIconWithToolTip(isNodeSyncingIcon, 'isNodeSyncing'),
+          this.getIconWithPopover(nodeStateIcon, 'nodeState'),
+          this.getIconWithPopover(isNodeRespondingIcon, 'isNodeResponding'),
+          // this.getIconWithPopover(isNodeSubscribedIcon, 'isNodeSubscribed'),
+          this.getIconWithPopover(isNodeTimeCorrectIcon, 'isNodeTimeCorrect'),
+          this.getIconWithPopover(isNodeSyncingIcon, 'isNodeSyncing'),
         ]}
       </div>
     );

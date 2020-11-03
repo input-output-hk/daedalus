@@ -327,7 +327,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-loading-status-icons-off-color': '#ea4c5b',
     '--theme-loading-status-icons-unloaded-loading-color': '#fafbfc',
     '--theme-loading-status-icons-unloaded-syncing-color': '#fafbfc',
-    '--theme-loading-status-icons-tooltip-color': '#4b5a68',
+    '--theme-loading-status-icons-tooltip-color': 'rgba(75, 90, 104, 0.9)',
     '--theme-loading-spinner-color': '#e9f4fe',
     '--theme-loading-spinner-medium-color': '#e9f4fe',
   },
@@ -766,7 +766,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-staking-stake-pool-background-color': '#314259',
     '--theme-staking-stake-pool-border-color': '#314259',
     '--theme-staking-stake-pool-glow-color': '#7cfeb54c',
-    '--theme-staking-stake-pool-grey-color': 'rgba(233, 244, 254, 0.5)',
+    '--theme-staking-stake-pool-grey-color': '#93a1b0',
     '--theme-staking-stake-pool-grey-bg-color': 'rgba(233, 244, 254, 0.1)',
     '--theme-staking-progress-label-light': 'rgba(233, 244, 254, 0.7)',
     '--theme-staking-stake-pool-retirement-background-color': '#ea4c5b',
@@ -1077,6 +1077,10 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-news-overlay-update-button-hover-text-color': '#273d5b',
     '--theme-news-overlay-update-button-background-color-hover': '#fafbfc',
     '--theme-news-overlay-update-button-border-color': '#ffffff',
+  },
+  rpPopOver: {
+    '--rp-pop-over-bg-color': 'rgba(75, 90, 104, 0.9)',
+    '--rp-pop-over-text-color': '#fafbfc',
   },
 };
 

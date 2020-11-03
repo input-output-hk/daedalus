@@ -98,39 +98,63 @@
 
     thead {
       background: var(--theme-bordered-box-background-color);
+      border-radius: 4px 4px 0 0;
       box-shadow: 0 10px 10px -10px rgba(0, 0, 0, 0.2);
       display: block;
       margin: -20px -20px 0;
       padding: 0 20px;
       position: sticky;
       top: 0;
-      z-index: 99;
+      z-index: 999;
 
       tr {
         border: 0;
         display: flex;
         justify-content: space-between;
         width: 100%;
-      }
-    }
 
-    .tableHeader {
-      &.fixedTableHeader {
-        background-color: var(--theme-bordered-box-background-color);
-        border-left: var(--theme-bordered-box-border);
-        border-right: var(--theme-bordered-box-border);
-        box-shadow: 0 10px 10px -10px var(--theme-staking-stake-pool-tooltip-shadow-color);
-        height: 40px;
-        left: 104px;
-        padding: 0 10px;
-        position: fixed;
-        top: 204px;
-        width: calc(100% - 124px);
-        z-index: 99;
+        .tooltipWithHTMLContent {
+          p {
+            -webkit-box-orient: horizontal;
+            display: block;
+            -webkit-line-clamp: none;
+            overflow: visible;
+            text-overflow: clip;
+            word-break: normal;
 
-        tr {
-          display: flex;
-          padding: 0 10px;
+            & + p {
+              margin-top: 6px;
+            }
+          }
+        }
+
+        :global {
+          .SimpleTooltip_root {
+            .SimpleTooltip_bubble {
+              pointer-events: none;
+
+              .SimpleBubble_bubble {
+                font-family: var(--font-regular);
+                font-weight: 400;
+                line-height: 19.04px;
+                text-align: left;
+                text-transform: initial;
+                transform: translate(-50px, 0);
+                white-space: normal;
+                width: 230px;
+              }
+            }
+          }
+
+          th:nth-child(8) {
+            .SimpleTooltip_root {
+              .SimpleTooltip_bubble {
+                .SimpleBubble_bubble {
+                  margin-left: -35px;
+                }
+              }
+            }
+          }
         }
       }
     }
@@ -264,6 +288,13 @@
         }
       }
 
+      .asterisk {
+        font-family: Verdana;
+        margin-right: -8px;
+        opacity: 50%;
+        width: 8px;
+      }
+
       .saturation {
         display: flex;
         flex-direction: row;
@@ -362,30 +393,39 @@
         text-align: right;
       }
 
+      // Rank
       &:nth-child(1) {
         width: 7%;
       }
+      // Ticker
       &:nth-child(2) {
         width: 9%;
       }
+      // Saturation
       &:nth-child(3) {
-        width: 12%;
+        width: 11%;
       }
+      // Cost
       &:nth-child(4) {
-        width: 12%;
+        width: 10%;
       }
+      // Margin
       &:nth-child(5) {
         width: 8%;
       }
+      // Produced Blocks
       &:nth-child(6) {
         width: 15%;
       }
+      // Potential Rewards
       &:nth-child(7) {
         width: 16%;
       }
+      // Pledge
       &:nth-child(8) {
-        width: 9%;
+        width: 12%;
       }
+      // Retiring in
       &:nth-child(9) {
         width: 12%;
       }
