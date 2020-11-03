@@ -318,7 +318,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
     const minRewardFunds = MIN_REWARDS_FUNDS;
 
     if (error) {
-      error = <p className={styles.error}>intl.formatMessage(error)</p>;
+      error = <p className={styles.error}>{intl.formatMessage(error)}</p>;
     } else if (!error && errorMessage) {
       error = <p className={styles.errorMessage}>
         <FormattedHTMLMessage
