@@ -9,20 +9,20 @@ import type { InjectedDialogContainerStepProps } from '../../../../types/injecte
 import { InjectedDialogContainerStepDefaultProps } from '../../../../types/injectedPropsType';
 import validWords from '../../../../../../common/config/crypto/valid-words.en';
 import { isValidMnemonic } from '../../../../../../common/config/crypto/decrypt';
-import { MIN_DELEGATION_FUNDS } from '../../../../config/stakingConfig';
+import { MIN_REWARDS_FUNDS } from '../../../../config/stakingConfig';
 import Wallet from '../../../../domains/Wallet';
 
 type Props = InjectedDialogContainerStepProps;
 const DefaultProps = InjectedDialogContainerStepDefaultProps;
 
 const messages = defineMessages({
-  errorMinDelegationFunds: {
+  errorMinRewardFunds: {
     id:
-      'staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFunds',
+      'staking.redeemItnRewards.step1.errorMessage',
     defaultMessage:
-      '!!!This wallet does not contain the minimum amount of {minDelegationFunds} ADA which is required for delegation to be available. Please select a wallet with <span>a minimum amount of {minDelegationFunds} ADA</span> and click continue.',
+      '!!!This wallet does not contain the minimum amount of {minRewardFunds} ADA which is required to cover the necessary transaction fees. Please select a wallet with <span>a minimum amount of {minRewardFunds} ADA</span> and click continue.',
     description:
-      'errorMinDelegationFunds Error Label on the delegation setup "choose wallet" step dialog.',
+      'errorMinRewardFunds Error Label on the delegation setup "choose wallet" step dialog.',
   },
   errorMinDelegationFundsRewardsOnly: {
     id:
@@ -51,7 +51,7 @@ export default class Step1ConfigurationContainer extends Component<Props> {
     walletReward?: BigNumber = 0
   ) =>
     walletAmount &&
-    walletAmount.gte(new BigNumber(MIN_DELEGATION_FUNDS)) &&
+    walletAmount.gte(new BigNumber(MIN_REWARDS_FUNDS)) &&
     !walletAmount.equals(walletReward);
 
   render() {
@@ -77,7 +77,7 @@ export default class Step1ConfigurationContainer extends Component<Props> {
       else if (!amount.isZero() && amount.equals(reward))
         errorMessage = messages.errorMinDelegationFundsRewardsOnly;
       // Wallet balance < min delegation funds
-      else errorMessage = messages.errorMinDelegationFunds;
+      else errorMessage = messages.errorMinRewardFunds;
     }
     const { openExternalLink } = stores.app;
     const { onConfigurationContinue, onSelectRedeemWallet } = actions.staking;

@@ -408,6 +408,7 @@
   "staking.redeemItnRewards.step1.description2": "You will need the <b>wallet recovery phrase for the Incentivized Testnet wallet</b> used to earn rewards and an existing mainnet wallet in Daedalus to which the rewards will be transferred. This wallet will also be used to pay any applicable transaction fees.",
   "staking.redeemItnRewards.step1.descriptionItnLinkLabel": "Incentivized Testnet",
   "staking.redeemItnRewards.step1.descriptionItnLinkUrl": "https://staking.cardano.org/",
+  "staking.redeemItnRewards.step1.errorMessage": "This wallet does not contain the minimum amount of {minRewardFunds} ADA which is required to cover the necessary transaction fees. Please select a wallet with <span>a minimum amount of {minRewardFunds} ADA</span> and click continue.",
   "staking.redeemItnRewards.step1.invalidRecoveryPhrase": "Invalid recovery phrase",
   "staking.redeemItnRewards.step1.learnMoreLink.label": "Learn More",
   "staking.redeemItnRewards.step1.learnMoreLink.url": "https://iohk.zendesk.com/hc/en-us/articles/900001656586",

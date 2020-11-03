@@ -4,6 +4,7 @@ import type { RedeemItnRewardsStep } from '../types/stakingTypes';
 export const RANKING_SLIDER_RATIO = 60;
 export const MIN_DELEGATION_FUNDS_LOG = Math.log(10);
 export const MIN_DELEGATION_FUNDS = 10;
+export const MIN_REWARDS_FUNDS = 1;
 export const INITIAL_DELEGATION_FUNDS_LOG = Math.log(1000);
 export const INITIAL_DELEGATION_FUNDS = 1000;
 export const MAX_DELEGATION_FUNDS_LOG = Math.log(220000000);

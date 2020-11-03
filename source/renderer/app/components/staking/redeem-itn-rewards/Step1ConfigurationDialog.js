@@ -26,6 +26,7 @@ import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { ITN_WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
+import { MIN_REWARDS_FUNDS } from '../../../config/stakingConfig';
 
 const messages = defineMessages({
   title: {
@@ -261,10 +262,10 @@ export default class Step1ConfigurationDialog extends Component<Props> {
     let { error } = this.props;
 
     if (
-      (error &&
-        (error.id === 'api.errors.NotEnoughFundsForTransactionFeesError' ||
-          error.id === 'api.errors.NotEnoughMoneyToSendError'
-        )) || errorMessage
+      error &&
+      (error.id === 'api.errors.NotEnoughFundsForTransactionFeesError' ||
+        error.id === 'api.errors.NotEnoughMoneyToSendError'
+      )
     )
       error = messages.walletsDropdownError;
     const recoveryPhraseField = form.$('recoveryPhrase');
@@ -313,6 +314,19 @@ export default class Step1ConfigurationDialog extends Component<Props> {
     );
 
     const closeButton = <DialogCloseButton onClose={onClose} />;
+
+    const minRewardFunds = MIN_REWARDS_FUNDS;
+
+    if (error) {
+      error = <p className={styles.error}>intl.formatMessage(error)</p>;
+    } else if (!error && errorMessage) {
+      error = <p className={styles.errorMessage}>
+        <FormattedHTMLMessage
+          {...errorMessage}
+          values={{minRewardFunds}}
+        />
+      </p>
+    }
 
     return (
       <Dialog
@@ -377,7 +391,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
             skin={CheckboxSkin}
             error={checkboxAcceptance2Field.error}
           />
-          {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
+          {error}
         </div>
       </Dialog>
     );
