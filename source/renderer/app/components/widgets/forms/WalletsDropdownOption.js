@@ -16,7 +16,7 @@ export type WalletOption = {
   selected?: boolean,
   isSyncing?: boolean,
   syncingLabel?: string,
-  isHardwareWallet: string,
+  isHardwareWallet: boolean,
 };
 
 export default class WalletsDropdownOption extends Component<WalletOption> {

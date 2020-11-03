@@ -39,21 +39,30 @@ import { formattedAmountToLovelace } from '../utils/formatters';
 import { TransactionStates } from '../domains/WalletTransaction';
 
 import type { HwDeviceStatus } from '../domains/Wallet';
-import type { CoinSelectionsResponse } from '../api/transactions/types';
+import type {
+  CoinSelectionsRequest,
+  CoinSelectionsPaymentRequestType,
+  CoinSelectionsDelegationRequestType,
+  CreateExternalTransactionResponse,
+  CoinSelectionsResponse
+} from '../api/transactions/types';
 import type {
   HardwareWalletLocalData,
   HardwareWalletsLocalData,
   SetHardwareWalletLocalDataRequestType,
+  SetHardwareWalletDeviceRequestType,
 } from '../api/utils/localStorage';
 import type {
   TransportDevice,
   LedgerModel,
   TrezorModel,
   HardwareWalletExtendedPublicKeyResponse,
+  HardwareWalletConnectionRequest,
+  DeviceType,
 } from '../../../common/types/hardware-wallets.types';
 
 export type TxSignRequestTypes = {
-  recieverAddress: string,
+  recieverAddress: ?string,
   coinSelection: CoinSelectionsResponse,
 };
 
@@ -74,7 +83,7 @@ export default class HardwareWalletsStore extends Store {
   @observable selectCoinsRequest: Request<CoinSelectionsResponse> = new Request(
     this.api.ada.selectCoins
   );
-  @observable sendMoneyRequest: Request<WalletTransaction> = new Request(
+  @observable sendMoneyRequest: Request<CreateExternalTransactionResponse,> = new Request(
     this.api.ada.createExternalTransaction
   );
   @observable
@@ -119,7 +128,6 @@ export default class HardwareWalletsStore extends Store {
 
   setup() {
     const { hardwareWallets: hardwareWalletsActions } = this.actions;
-    hardwareWalletsActions.selectCoins.listen(this._selectCoins);
     hardwareWalletsActions.sendMoney.listen(this._sendMoney);
     hardwareWalletsActions.refreshHardwareWalletsLocalData.listen(
       this._refreshHardwareWalletsLocalData
@@ -194,13 +202,14 @@ export default class HardwareWalletsStore extends Store {
   };
 
   _sendMoney = async (params?: { isDelegationTransaction: boolean }) => {
-    const { isDelegationTransaction } = params;
+    const isDelegationTransaction = get(params, 'isDelegationTransaction');
     const wallet = this.stores.wallets.active;
+    if (!wallet) {
+      throw new Error('Active wallet required before sending.');
+    }
 
     this.setTransactionPendingState(true);
 
-    if (!isDelegationTransaction && !wallet)
-      throw new Error('Active wallet required before sending.');
     try {
       const transaction = await this.sendMoneyRequest.execute({
         signedTransactionBlob: this.txBody,
@@ -253,7 +262,7 @@ export default class HardwareWalletsStore extends Store {
     }
   };
 
-  @action resetStakePoolTransactionChecker = (walletId) => {
+  @action resetStakePoolTransactionChecker = (walletId: string) => {
     if (this.checkTransactionTimeInterval) {
       clearInterval(this.checkTransactionTimeInterval);
       this.checkTransactionTimeInterval = null;
@@ -265,21 +274,16 @@ export default class HardwareWalletsStore extends Store {
     this.stores.wallets.goToWalletRoute(walletId);
   };
 
-  @action setTransactionPendingState = (isTransactionPending) => {
+  @action setTransactionPendingState = (isTransactionPending: boolean) => {
     runInAction('HardwareWalletsStore:: set transaction state', () => {
       this.isTransactionPending = isTransactionPending;
     });
   };
 
   // @TODO - move to Transactions store once all logic fit and hardware wallets listed in general wallets list
-  selectCoins = async (params: {
-    walletId: string,
-    address: string,
-    amount: string,
-    poolId?: string, // Only for delegation
-  }) => {
-    const { walletId, address, amount, poolId, delegationAction } = params;
-    console.debug('>>> selectCoins: ', params);
+  selectCoins = async (params: CoinSelectionsPaymentRequestType) => {
+    const { walletId, address, amount } = params;
+    console.debug('>>> selectCoins - Payments: ', params);
     const wallet = this.stores.wallets.getWalletById(walletId);
     if (!wallet)
       throw new Error('Active wallet required before coins selections.');
@@ -287,18 +291,47 @@ export default class HardwareWalletsStore extends Store {
     try {
       const coinSelection = await this.selectCoinsRequest.execute({
         walletId,
-        address,
-        amount,
-        poolId,
-        walletBalance: wallet.amount,
-        availableBalance: wallet.availableAmount,
-        isLegacy: wallet.isLegacy,
-        delegationAction,
+        payments: {
+          address,
+          amount,
+        }
       });
       runInAction('HardwareWalletsStore:: set coin selections', () => {
         this.txSignRequest = {
           recieverAddress: address,
           coinSelection,
+        };
+      });
+      return coinSelection;
+    } catch (e) {
+      runInAction(
+        'HardwareWalletsStore:: set Transaction verifying failed',
+        () => {
+          this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED;
+        }
+      );
+      throw e;
+    }
+  };
+
+  selectDelegationCoins = async (params: CoinSelectionsDelegationRequestType) => {
+    const { walletId, poolId, delegationAction } = params;
+    console.debug('>>> selectCoins - Delegation: ', params);
+    const wallet = this.stores.wallets.getWalletById(walletId);
+    if (!wallet)
+      throw new Error('Active wallet required before coins selections.');
+    try {
+      const coinSelection = await this.selectCoinsRequest.execute({
+        walletId,
+        delegation: {
+          poolId,
+          delegationAction,
+        }
+      });
+      runInAction('HardwareWalletsStore:: set coin selections', () => {
+        this.txSignRequest = {
+          recieverAddress: null,
+          coinSelection
         };
       });
       return coinSelection;
@@ -409,10 +442,7 @@ export default class HardwareWalletsStore extends Store {
           runInAction('HardwareWalletsStore:: set HW device CONNECTING FAILED - device not supported', () => {
             this.hwDeviceStatus = HwDeviceStatuses.UNSUPPORTED_DEVICE;
           });
-          throw new Error('Device not Supported!', {
-            errorMessage: 'Device not supported',
-            code: 'Device_Not_Supported',
-          });
+          throw new Error('Device not Supported!');
         }
 
         // Check Firmware version
@@ -422,10 +452,7 @@ export default class HardwareWalletsStore extends Store {
           runInAction('HardwareWalletsStore:: set HW device CONNECTING FAILED - wrong firmware', () => {
             this.hwDeviceStatus = HwDeviceStatuses.WRONG_FIRMWARE;
           });
-          throw new Error(`Firmware must be ${minFirmwareVersion} or greater!`, {
-            errorMessage: 'Wrong Firmware',
-            code: 'Wrong_Firmware',
-          });
+          throw new Error(`Firmware must be ${minFirmwareVersion} or greater!`);
         }
 
         // All Checks pass - mark device as connected (set transport device for this session)
@@ -460,6 +487,7 @@ export default class HardwareWalletsStore extends Store {
         });
         throw new Error('Trezor Bridge not installed!');
       }
+      console.debug('>> CC error: ', e);
       throw e;
     }
   };
@@ -540,17 +568,20 @@ export default class HardwareWalletsStore extends Store {
             },
           });
 
-          this._setHardwareWalletDevice({
-            deviceId,
-            data: {
-              deviceType,
-              deviceModel,
-              deviceName,
-              path,
-              paired: activeHardwareWallet.id, // device paired with software wallet
-              disconnected: false, // device physically disconnected
-            },
-          });
+          // @TODO - guard against Ledger - login needs to be changed and deviceId (serial) applied
+          if (deviceId) {
+            this._setHardwareWalletDevice({
+              deviceId,
+              data: {
+                deviceType,
+                deviceModel,
+                deviceName,
+                path,
+                paired: activeHardwareWallet.id, // device paired with software wallet
+                disconnected: false, // device physically disconnected
+              },
+            });
+          }
           return;
         }
         // Active wallet exists but wrong device supplied
@@ -672,6 +703,7 @@ export default class HardwareWalletsStore extends Store {
 
   // Ledger - Shelley only
   @action _signTransactionLedger = async () => {
+    // @TODO - once data with CHANGE applied remove recieverAddress from store
     const { coinSelection, recieverAddress } = this.txSignRequest;
     const { inputs, outputs } = coinSelection;
 
@@ -788,7 +820,7 @@ export default class HardwareWalletsStore extends Store {
       this._signTransactionTrezor(id);
     } else {
       console.debug('>>> INIT:: Sign Ledger');
-      this._signTransactionLedger(id);
+      this._signTransactionLedger();
     }
   };
 
@@ -812,9 +844,7 @@ export default class HardwareWalletsStore extends Store {
     );
   };
 
-  @action _changeHardwareWalletConnectionStatus = async (params: {
-    disconnected: boolean,
-  }) => {
+  @action _changeHardwareWalletConnectionStatus = async (params: HardwareWalletConnectionRequest) => {
     const {
       disconnected,
       deviceType,
@@ -824,7 +854,6 @@ export default class HardwareWalletsStore extends Store {
       path,
       error,
     } = params;
-
     if (error) {
       console.debug('>>> TRANSPORT ERROR <<<: ', error);
       if (
@@ -985,6 +1014,7 @@ export default class HardwareWalletsStore extends Store {
     const response = await getExtendedPublicKeyChannel.request({
       path: absDerivationPath,
       isTrezor: false,
+      devicePath: null,
     });
     const xpubHex = `${response.publicKeyHex}${response.chainCodeHex}`;
     return Buffer.from(xpubHex, 'hex');
@@ -1054,7 +1084,7 @@ export default class HardwareWalletsStore extends Store {
   _setHardwareWalletDevice = async ({
     deviceId,
     data,
-  }: SetHardwareWalletLocalDataRequestType) => {
+  }: SetHardwareWalletDeviceRequestType) => {
     await this.setHardwareWalletDeviceRequest.execute(deviceId, data);
     this._refreshHardwareWalletDevices();
   };

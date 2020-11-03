@@ -57,6 +57,8 @@ import type {
   LedgerSignTransactionResponse,
   TrezorSignTransactionRequest,
   TrezorSignTransactionResponse,
+  DeviceType,
+  HardwareWalletConnectionRequest
 } from '../types/hardware-wallets.types';
 
 /**
@@ -414,7 +416,7 @@ export type getCardanoAdaAppMainResponse = HardwareWalletCardanoAdaAppResponse;
 
 export const GET_HARDWARE_WALLET_CONNECTION_CHANNEL =
   'GET_HARDWARE_WALLET_CONNECTION_CHANNEL';
-export type getHardwareWalletConnectiontMainRequest = { disconnected: boolean };
+export type getHardwareWalletConnectiontMainRequest = HardwareWalletConnectionRequest;
 export type getHardwareWalletConnectiontRendererResponse = Object;
 
 export const SIGN_TRANSACTION_LEDGER_CHANNEL =

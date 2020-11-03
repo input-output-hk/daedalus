@@ -13,6 +13,8 @@ import LocalizableError from '../../../i18n/LocalizableError';
 import StakePool from '../../../domains/StakePool';
 import Wallet from '../../../domains/Wallet';
 
+import type { HwDeviceStatus } from '../../../domains/Wallet';
+
 type Props = {
   activeStep: number,
   isDisabled: boolean,
@@ -40,7 +42,7 @@ type Props = {
   currentLocale: string,
   getStakePoolById: Function,
   isHardwareWallet: boolean,
-  hwDeviceStatus: string,
+  hwDeviceStatus: HwDeviceStatus,
 };
 
 @observer

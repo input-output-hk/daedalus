@@ -130,6 +130,8 @@ import type {
   GetTransactionsRequest,
   GetTransactionsResponse,
   CoinSelectionsRequest,
+  CoinSelectionsPaymentRequestType,
+  CoinSelectionsDelegationRequestType,
   CoinSelectionsResponse,
   CreateExternalTransactionRequest,
   CreateExternalTransactionResponse,
@@ -773,42 +775,47 @@ export default class AdaApi {
   };
 
   selectCoins = async (
-    request: CoinSelectionsRequest
+    request: {
+      walletId: string,
+      payments?: CoinSelectionsPaymentRequestType,
+      delegation?: CoinSelectionsDelegationRequestType,
+    }
   ): Promise<CoinSelectionsResponse> => {
     logger.debug('AdaApi::selectCoins called', {
       parameters: filterLogData(request),
     });
-    const { walletId, address, amount, poolId, delegationAction } = request;
+    const { walletId, payments, delegation } = request;
 
     try {
       let data;
-      if (delegationAction) {
+      if (delegation) {
         data = {
           delegation_action: {
-            action: delegationAction,
-            pool: poolId,
+            action: delegation.delegationAction,
+            pool: delegation.poolId,
           },
         };
-      } else {
+      } else if (payments) {
         data = {
           payments: [
             {
-              address,
+              address: payments.address,
               amount: {
-                quantity: amount,
+                quantity: payments.amount,
                 unit: WalletUnits.LOVELACE,
               },
             },
           ],
         };
+      } else {
+        throw new Error('Missing parameters!');
       }
-
       const response = await selectCoins(this.config, {
         walletId,
         data,
       });
 
-      // @TODO - handle CHANGE on smarter way and change corresponding downstream logic
+      // @TODO - handle CHANGE paramete on smarter way and change corresponding downstream logic
       const outputs = concat(response.outputs, response.change);
 
       // Calculate fee from inputs and outputs
@@ -830,16 +837,11 @@ export default class AdaApi {
       });
       map(outputs, (output) => {
         totalOutputs += output.amount.quantity;
-        let outputData = {
+        const outputData = {
           address: output.address,
           amount: output.amount,
+          derivationPath: output.derivation_path || null,
         };
-        if (output.derivation_path) {
-          outputData = {
-            ...outputData,
-            derivationPath: output.derivation_path,
-          };
-        }
         outputsData.push(outputData);
       });
       if (response.certificates) {
@@ -847,13 +849,8 @@ export default class AdaApi {
           let certificateData = {
             certificateType: certificate.certificate_type,
             rewardAccountPath: certificate.reward_account_path,
+            pool: certificate.pool,
           };
-          if (certificate.pool) {
-            certificateData = {
-              ...certificateData,
-              pool: certificate.pool,
-            };
-          }
           certificatesData.push(certificateData);
         });
       }
@@ -862,7 +859,7 @@ export default class AdaApi {
       );
 
       let transactionFee;
-      if (delegationAction) {
+      if (delegation && delegation.delegationAction) {
         const delegationDeposit = new BigNumber(DELEGATION_DEPOSIT);
         const isDepositIncluded = fee.gt(delegationDeposit);
         transactionFee = isDepositIncluded ? fee.minus(delegationDeposit) : fee;

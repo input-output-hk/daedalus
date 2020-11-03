@@ -8,6 +8,7 @@ import {
 import type {
   CoinSelectionInput,
   CoinSelectionOutput,
+  CoinSelectionCertificate,
 } from '../api/transactions/types';
 
 export const prepareTrezorInput = (input: CoinSelectionInput) => {
@@ -36,7 +37,7 @@ export const prepareTrezorOutput = (output: CoinSelectionOutput) => {
   };
 };
 
-export const prepareCertificate = (cert) => {
+export const prepareCertificate = (cert: CoinSelectionCertificate) => {
   return cert.pool
     ? {
         type: CERTIFICATE_TYPE[cert.certificateType],

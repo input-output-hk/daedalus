@@ -82,7 +82,8 @@ export type Epoch = {
 export type JoinStakePoolRequest = {
   walletId: string,
   stakePoolId: string,
-  passphrase: string,
+  passphrase: ?string,
+  isHardwareWallet?: boolean,
 };
 
 export type GetDelegationFeeRequest = {

@@ -122,7 +122,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     this.props.stores.app.openExternalLink(learnMoreLinkUrl);
   };
 
-  handleConfirm = (spendingPassword?: string, isHardwareWallet: boolean) => {
+  handleConfirm = (spendingPassword: ?string, isHardwareWallet: boolean) => {
     const { selectedPoolId, selectedWalletId } = this.state;
     this.props.stores.staking.joinStakePoolRequest.reset();
     this.props.actions.staking.joinStakePool.trigger({
@@ -233,7 +233,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     let stakePoolJoinFee;
     if (selectedWallet.isHardwareWallet) {
       // Calculate fee from coins selections
-      const coinsSelection = await hardwareWallets.selectCoins({
+      const coinsSelection = await hardwareWallets.selectDelegationCoins({
         walletId: selectedWallet.id,
         poolId,
         delegationAction: DELEGATION_ACTIONS.JOIN,

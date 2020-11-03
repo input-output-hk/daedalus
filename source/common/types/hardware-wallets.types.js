@@ -54,10 +54,12 @@ export const CertificateTypes: {
 };
 
 export type TransportDevice = {
-  deviceId: ?string,
+  deviceId: ?string, // @TODO - mark as mandatory parameter once Ledger improver
   deviceType: DeviceType,
   deviceModel: string,
   deviceName: string,
+  path: ?string,
+  firmwareVersion: ?string,
 };
 
 export type Certificate = {|
@@ -136,12 +138,15 @@ export type Witness = {|
 
 export type HardwareWalletTransportDeviceRequest = {
   isTrezor: boolean,
+  devicePath: ?string,
+  reset?: boolean,
 };
 
 export type HardwareWalletTransportDeviceResponse = TransportDevice;
 
 export type HardwareWalletExtendedPublicKeyRequest = {
   path: string,
+  devicePath: ?string,
   isTrezor: boolean,
 };
 
@@ -154,6 +159,7 @@ export type HardwareWalletCardanoAdaAppResponse = {
   major: string,
   minor: string,
   patch: string,
+  deviceId: string,
 };
 
 export type LedgerSignTransactionRequest = {
@@ -168,6 +174,7 @@ export type LedgerSignTransactionRequest = {
   // $FlowFixMe
   withdrawals: Array<?Withdrawal>, // TODO - add once withdrawals defined
   metadataHashHex: ?string, // TODO - add once metadata defined
+  reset?: boolean,
 };
 
 export type TrezorSignTransactionRequest = {
@@ -177,6 +184,8 @@ export type TrezorSignTransactionRequest = {
   ttl: string,
   networkId: number,
   protocolMagic: number,
+  certificates: Array<?Certificate>,
+  reset?: boolean,
 };
 
 export type LedgerSignTransactionResponse = {
@@ -185,5 +194,23 @@ export type LedgerSignTransactionResponse = {
 };
 
 export type TrezorSignTransactionResponse = {
-  serializedTx: string,
+  success: boolean,
+  payload: {
+    serializedTx: string,
+  },
+};
+
+export type HardwareWalletConnectionRequest = {
+  disconnected: boolean,
+  deviceType: DeviceType,
+  deviceId: ?string,
+  deviceModel: string,
+  deviceName: string,
+  path: ?string,
+  error?: {
+    payload: {
+      code: string,
+      error: string,
+    }
+  },
 };

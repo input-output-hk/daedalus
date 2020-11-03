@@ -11,6 +11,7 @@ import { CATEGORIES_BY_NAME } from '../../config/sidebarConfig.js';
 import { ROUTES } from '../../routes-config';
 import type { networkType } from '../../types/networkTypes';
 import type { SidebarCategoryInfo } from '../../config/sidebarConfig';
+import type { SidebarWalletType } from '../../types/sidebarTypes';
 
 type Props = {
   menus: SidebarMenus,

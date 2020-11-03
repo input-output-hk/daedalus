@@ -8,8 +8,6 @@ import {
   SIGN_TRANSACTION_LEDGER_CHANNEL,
   SIGN_TRANSACTION_TREZOR_CHANNEL,
   GET_INIT_TREZOR_CONNECT_CHANNEL,
-  handleInitTrezorConnectMainResponse,
-  handleInitTrezorConnectRendererRequest,
 } from '../../../common/ipc/api';
 
 import type {
@@ -25,6 +23,8 @@ import type {
   signTransactionTrezorRendererRequest,
   getCardanoAdaAppMainResponse,
   getCardanoAdaAppRendererRequest,
+  handleInitTrezorConnectMainResponse,
+  handleInitTrezorConnectRendererRequest,
 } from '../../../common/ipc/api';
 
 // IpcChannel<Incoming, Outgoing>

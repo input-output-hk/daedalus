@@ -5,6 +5,7 @@ import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
+import { get } from 'lodash';
 import ledgerIcon from '../../assets/images/hardware-wallet/ledger-cropped.inline.svg';
 import ledgerXIcon from '../../assets/images/hardware-wallet/ledger-x-cropped-outlines.inline.svg';
 import trezorIcon from '../../assets/images/hardware-wallet/trezor.inline.svg';
@@ -47,7 +48,7 @@ type Props = {
   onClose: Function,
   isSubmitting: boolean,
   hwDeviceStatus: HwDeviceStatus,
-  transportDevice: TransportDevice,
+  transportDevice: ?TransportDevice,
   error: ?LocalizableError,
 };
 
@@ -67,8 +68,11 @@ export default class WalletConnectDialog extends Component<Props> {
       error,
     } = this.props;
 
-    const isLedger = transportDevice && transportDevice.deviceType === DeviceTypes.LEDGER;
-    const isTrezor = transportDevice && transportDevice.deviceType === DeviceTypes.TREZOR;
+    const deviceType = get(transportDevice, 'deviceType');
+    const deviceModel = get(transportDevice, 'deviceModel');
+
+    const isLedger = deviceType === DeviceTypes.LEDGER;
+    const isTrezor = deviceType === DeviceTypes.TREZOR;
     const dialogClasses = classnames([styles.component, 'WalletConnectDialog']);
 
     const buttonLabel = !isSubmitting ? (
@@ -123,13 +127,13 @@ export default class WalletConnectDialog extends Component<Props> {
         closeButton={<DialogCloseButton />}
       >
         <div className={styles.hardwareWalletWrapper}>
-          {(!isTrezor && !isLedger) && renderUnknownDevice()}
+          {(!transportDevice || (!isTrezor && !isLedger)) && renderUnknownDevice()}
           {isLedger && isLedgerEnabled && (
             <div className={styles.hardwareWalletLedger}>
-              {transportDevice.deviceModel === DeviceModels.LEDGER_NANO_X && (
+              {deviceModel === DeviceModels.LEDGER_NANO_X && (
                 <SVGInline svg={ledgerXIcon} className={styles.ledgerXIcon} />
               )}
-              {transportDevice.deviceModel === DeviceModels.LEDGER_NANO_S && (
+              {deviceModel === DeviceModels.LEDGER_NANO_S && (
                 <SVGInline svg={ledgerIcon} className={styles.ledgerIcon} />
               )}
             </div>

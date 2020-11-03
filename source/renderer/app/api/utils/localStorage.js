@@ -17,6 +17,7 @@ import type {
   HardwareWalletExtendedPublicKeyResponse,
 } from '../../../../common/types/hardware-wallets.types';
 import type { StorageKey } from '../../../../common/types/electron-store.types';
+import type { DeviceType } from '../../../../common/types/hardware-wallets.types';
 
 export type WalletLocalData = {
   id: string,
@@ -32,6 +33,18 @@ export type SetHardwareWalletLocalDataRequestType = {
   data: {
     device?: TransportDevice,
     extendedPublicKey?: HardwareWalletExtendedPublicKeyResponse,
+    disconnected?: boolean,
+  },
+};
+
+export type SetHardwareWalletDeviceRequestType = {
+  deviceId: ?string, // @TODO - mark as mandatory parameter once Ledger improver
+  data: {
+    deviceType?: DeviceType,
+    deviceModel?: string,
+    deviceName?: string,
+    path?: ?string,
+    paired?: ?string,
     disconnected?: boolean,
   },
 };
@@ -274,8 +287,8 @@ export default class LocalStorageApi {
     );
 
   setHardwareWalletLocalData = async (
-    walletId: ?string,
-    data?: Object
+    walletId: string,
+    data?: Object // @TODO - define real type
   ): Promise<HardwareWalletLocalData> => {
     const currentWalletData = await this.getHardwareWalletLocalData(walletId);
     const unmutableData = { id: walletId };
@@ -311,7 +324,7 @@ export default class LocalStorageApi {
     );
 
   setHardwareWalletDevice = async (
-    deviceId: ?string,
+    deviceId: string,
     data?: Object
   ): Promise<HardwareWalletLocalData> => {
     const currentDeviceData = await this.getHardwareWalletDevice(deviceId);

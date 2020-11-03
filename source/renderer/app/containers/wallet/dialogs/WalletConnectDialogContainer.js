@@ -4,7 +4,10 @@ import { observer, inject } from 'mobx-react';
 import WalletConnectDialog from '../../../components/wallet/WalletConnectDialog';
 import type { InjectedStoresProps } from '../../../types/injectedPropsType';
 
-type Props = InjectedStoresProps;
+type Props = {
+  ...InjectedStoresProps,
+  onClose: Function,
+};
 
 @inject('stores')
 @observer

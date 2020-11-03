@@ -76,6 +76,8 @@ const handleInitTrezorConnectChannel: MainIpcChannel<
   handleInitTrezorConnectMainResponse
 > = new MainIpcChannel(GET_INIT_TREZOR_CONNECT_CHANNEL);
 
+// Start Ledger listeners
+// @TODO - uncomment once ledger instantiated
 class EventObserver {
   constructor(props) {
     // INIT - 4
@@ -156,14 +158,9 @@ export const handleHardwareWalletRequests = async (mainWindow: BrowserWindow) =>
     // INIT - 6
     const { isTrezor, devicePath, reset } = request;
     if (reset) {
+      console.debug('>>> CANCEL connecting!!!');
       TrezorConnect.cancel('Method_Cancel');
-      return {
-        success: false,
-        payload: {
-          code: 'Method_Cancel',
-          error: 'Signing Cancelled',
-        }
-      }
+      throw new Error ('Connecting aborted')
     }
     console.debug('>>> ESTABLISH CONNECTION:  <<<, ', request);
 
@@ -200,68 +197,71 @@ export const handleHardwareWalletRequests = async (mainWindow: BrowserWindow) =>
         }
         throw deviceFeatures.payload; // Error is in payload
       } catch (e) {
+        console.debug('>>> THROW connecting error: ', e);
         throw e;
       }
     }
 
     // @TODO - uncomment once Ledger enabled
-    try {
+     try {
       const transportList = await TransportNodeHid.list();
-      console.debug('>>> LEDGER Connect <<<: ', {
-        deviceConnection,
-        transportList,
-      });
+       console.debug('>>> LEDGER Connect <<<: ', {
+         deviceConnection,
+         transportList,
+       });
 
-      let hw;
-      if (
-        !deviceConnection ||
-        (deviceConnection &&
-          deviceConnection.transport &&
-          // $FlowFixMe
-          deviceConnection.transport.disconnected)
-      ) {
-        console.debug(
-          '>>>  LEDGER Connect - NO Device connection instance <<<'
-        );
-        if (transportList.length) {
-          console.debug('>>>  LEDGER Connect - OPEN conn from list <<<');
-          hw = await TransportNodeHid.open(transportList[0]);
-          // hw = await TransportNodeHid.create();
-        } else {
-          console.debug('>>>  LEDGER Connect - CREATE new connection <<<');
-          hw = await TransportNodeHid.create();
-        }
-      } else {
-        console.debug(
-          '>>>  LEDGER Connect - device connection instance exists <<<'
-        );
-        hw = deviceConnection.transport;
-      }
+       let hw;
+       if (
+         !deviceConnection ||
+         (deviceConnection &&
+           deviceConnection.transport &&
+           // $FlowFixMe
+           deviceConnection.transport.disconnected)
+       ) {
+         console.debug(
+           '>>>  LEDGER Connect - NO Device connection instance <<<'
+         );
+         if (transportList.length) {
+           console.debug('>>>  LEDGER Connect - OPEN conn from list <<<');
+           hw = await TransportNodeHid.open(transportList[0]);
+           // hw = await TransportNodeHid.create();
+         } else {
+           console.debug('>>>  LEDGER Connect - CREATE new connection <<<');
+           hw = await TransportNodeHid.create();
+         }
+       } else {
+         console.debug(
+           '>>>  LEDGER Connect - device connection instance exists <<<'
+         );
+         hw = deviceConnection.transport;
+       }
 
-      console.debug('>>> LEDGER BEGIN: ', {
-        hw,
-        deviceConnection,
-      });
+       console.debug('>>> LEDGER BEGIN: ', {
+         hw,
+         deviceConnection,
+       });
 
-      if (!deviceConnection) {
-        deviceConnection = new AppAda(hw);
-      }
+       if (!deviceConnection) {
+         deviceConnection = new AppAda(hw);
+       }
 
-      const { deviceModel } = hw;
-      if (deviceModel) {
-        console.debug('>>> CONN ESTABLISHED: ', deviceModel);
-        const { id, productName } = deviceModel;
-        return Promise.resolve({
-          deviceId: null, // @TODO - to be defined
-          deviceType: 'ledger',
-          deviceModel: id, // e.g. nanoS
-          deviceName: productName, // e.g. Ledger Nano S
-        });
-      }
-      throw new Error('Missing device info');
-    } catch (error) {
-      throw error;
-    }
+       const { deviceModel } = hw;
+       if (deviceModel) {
+         console.debug('>>> CONN ESTABLISHED: ', deviceModel);
+         const { id, productName } = deviceModel;
+         return Promise.resolve({
+           deviceId: null, // @TODO - to be defined
+           deviceType: 'ledger',
+           deviceModel: id, // e.g. nanoS
+           deviceName: productName, // e.g. Ledger Nano S
+           path: null,
+           firmwareVersion: null,
+         });
+       }
+       throw new Error('Missing device info');
+     } catch (error) {
+       throw error;
+     }
   });
 
   handleInitTrezorConnectChannel.onRequest(async () => {
@@ -295,7 +295,6 @@ export const handleHardwareWalletRequests = async (mainWindow: BrowserWindow) =>
 
       if (deviceError) {
         throw new Error(deviceError);
-        return;
       }
 
       if (connectionChanged && isAcquired) {
@@ -336,9 +335,6 @@ export const handleHardwareWalletRequests = async (mainWindow: BrowserWindow) =>
         console.debug('>>> TREZOR INIT - ERROR ', error);
         throw error;
       });
-    return Promise.resolve({
-      success: true,
-    });
   });
 
   getCardanoAdaAppChannel.onRequest(async () => {
@@ -346,8 +342,6 @@ export const handleHardwareWalletRequests = async (mainWindow: BrowserWindow) =>
     console.debug('>>> GET CARDANO APP <<<: ', {
       transportList,
       deviceConnection,
-      transport: deviceConnection.transport,
-      device: deviceConnection.transport.device,
     });
     // If transport is initialized outside Cardano ADA app it is set to disconnected so we need to reconnect same channel
 
@@ -427,7 +421,6 @@ export const handleHardwareWalletRequests = async (mainWindow: BrowserWindow) =>
       if (!deviceConnection) {
         throw new Error('Ledger device not connected');
       }
-
       const extendedPublicKey = await deviceConnection.getExtendedPublicKey(
         cardano.str_to_path(path)
       );
@@ -491,13 +484,7 @@ export const handleHardwareWalletRequests = async (mainWindow: BrowserWindow) =>
 
     if (reset) {
       TrezorConnect.cancel('Method_Cancel');
-      return {
-        success: false,
-        payload: {
-          code: 'Method_Cancel',
-          error: 'Signing Cancelled',
-        }
-      }
+      throw new Error('Transaction signing aborted');
     }
 
     try {

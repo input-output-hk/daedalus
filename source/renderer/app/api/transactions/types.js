@@ -162,40 +162,51 @@ export type CoinSelectionInput = {
   amount: CoinSelectionAmount,
   id: string,
   index: number,
-  derivation_path: Array<string>,
+  derivationPath: Array<string>,
 };
 
 export type CoinSelectionOutput = {
   address: string,
   amount: CoinSelectionAmount,
+  derivationPath: Array<string>,
 };
 
 export type CoinSelectionChange = {
   address: string,
   amount: CoinSelectionAmount,
-  derivation_path: Array<string>,
+  derivationPath: ?Array<string>,
 };
 
+export type CertificateType = 'register_reward_account' || 'quit_pool' || 'join_pool';
+
 export type CoinSelectionCertificate = {
-  certificate_type: DelegationAction,
-  pool: string,
-  reward_account_path: Array<string>,
+  pool?: string,
+  certificateType: CertificateType,
+  rewardAccountPath: Array<string>,
 };
 
 export type CoinSelectionCertificates = Array<CoinSelectionCertificate>;
 
-export type CoinSelectionsRequest = {
+export type CoinSelectionsDelegationRequestType = {
+  walletId: string,
+  poolId: string,
+  delegationAction: DelegationAction,
+};
+
+export type CoinSelectionsPaymentRequestType = {
   walletId: string,
   address: string,
   amount: number,
-  poolId?: string,
 };
+
+export type CoinSelectionsRequest = CoinSelectionsPaymentRequestType | CoinSelectionsDelegationRequestType;
 
 export type CoinSelectionsResponse = {
   inputs: Array<CoinSelectionInput>,
   outputs: Array<CoinSelectionOutput>,
-  change: Array<CoinSelectionChange>,
-  certificates?: CoinSelectionCertificates,
+  certificates: CoinSelectionCertificates,
+  feeWithDelegationDeposit: BigNumber,
+  fee: BigNumber,
 };
 
 export type CreateExternalTransactionRequest = {

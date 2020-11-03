@@ -199,7 +199,7 @@ export default class WalletSendConfirmationDialog extends Component<
     (this.props.isHardwareWallet || this.form.$('passphrase').isValid) &&
     submitOnEnter(this.submit, event);
 
-  renderConfirmationElement = (isHardwareWallet) => {
+  renderConfirmationElement = (isHardwareWallet: boolean) => {
     const passphraseField = this.form.$('passphrase');
     const { areTermsAccepted } = this.state;
     const { hwDeviceStatus, isFlight } = this.props;
@@ -227,7 +227,7 @@ export default class WalletSendConfirmationDialog extends Component<
     return null;
   };
 
-  onCheckboxClick = (areTermsAccepted) => {
+  onCheckboxClick = (areTermsAccepted: boolean) => {
     const { isHardwareWallet, onInitiateTransaction } = this.props;
     this.setState({ areTermsAccepted });
     if (isHardwareWallet) {

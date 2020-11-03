@@ -48,10 +48,10 @@ export default class WalletSendPage extends Component<Props> {
     return fee;
   };
 
-  openDialog = (params, isHardwareWallet, walletId) => {
+  openDialog = (dialog: Function, isHardwareWallet: boolean, walletId: string) => {
     const { isFlight } = global;
     this.props.actions.dialogs.open.trigger({
-      dialog: params.dialog,
+      dialog,
     });
     if (isHardwareWallet && !isFlight) {
       this.props.stores.hardwareWallets.initiateTransaction({ walletId });
@@ -97,7 +97,7 @@ export default class WalletSendPage extends Component<Props> {
         addressValidator={isValidAddress}
         isDialogOpen={uiDialogs.isOpen}
         openDialogAction={(params) =>
-          this.openDialog(params, isHardwareWallet, activeWallet.id)
+          this.openDialog(params.dialog, isHardwareWallet, activeWallet.id)
         }
         isRestoreActive={activeWallet.isRestoring}
         onExternalLinkClick={app.openExternalLink}
