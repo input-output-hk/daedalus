@@ -61,7 +61,7 @@ const messages = defineMessages({
   rankingTooltip: {
     id: 'staking.stakePools.tooltip.rankingTooltip',
     defaultMessage:
-      '!!!<p>A hierarchical ranking based on the potential rewards you will earn if you delegate the intended amount of stake to this pool, assuming that it reaches saturation.</p><p>* Stake pools with the potential rewards estimated at zero have the same ranking. Please set the stake slider to a higher value for more pools to get potential rewards estimated at more than zero.</p>',
+      '!!!<p>A hierarchical ranking based on the potential rewards you will earn if you delegate the intended amount of stake to this pool, assuming that it reaches saturation.</p><p>*Stake pools with the potential rewards estimated at zero have the same ranking. Please set the stake slider to a higher value for more pools to get potential rewards estimated at more than zero.</p>',
     description: '"Rank" tooltip for the Stake Pools Tooltip page.',
   },
   relativeStake: {
