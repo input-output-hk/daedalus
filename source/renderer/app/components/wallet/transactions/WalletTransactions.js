@@ -27,6 +27,8 @@ type Props = {
   activeWallet: ?Wallet,
   transactions: Array<WalletTransaction>,
   filterOptions: TransactionFilterOptionsType,
+  defaultFilterOptions: TransactionFilterOptionsType,
+  populatedFilterOptions: TransactionFilterOptionsType,
   deletePendingTransaction: Function,
   onLoadMore: Function,
   hasMoreToLoad: boolean,
@@ -38,8 +40,6 @@ type Props = {
   currentLocale: string,
   currentDateFormat: string,
   currentNumberFormat: string,
-  defaultFilterOptions: TransactionFilterOptionsType,
-  populatedFilterOptions: TransactionFilterOptionsType,
   onFilter: Function,
   onClose: Function,
   onRequestCSVFile: Function,
@@ -49,6 +49,7 @@ type State = {
   isScrolling: boolean,
   isFilterButtonFaded: boolean,
   isFilterDialogOpen: boolean,
+  filterOptions: TransactionFilterOptionsType,
 };
 
 @observer
@@ -68,9 +69,15 @@ export default class WalletTransactions extends Component<Props> {
     }));
   };
 
-  onFilterButtonClick = () => {
-    this.setState((prevState) => ({
-      isFilterDialogOpen: !prevState.isFilterDialogOpen,
+  onFilterDialogOpen = () => {
+    this.setState(() => ({
+      isFilterDialogOpen: true,
+    }));
+  };
+
+  onFilterDialogClose = () => {
+    this.setState(() => ({
+      isFilterDialogOpen: false,
     }));
   };
 
@@ -91,8 +98,11 @@ export default class WalletTransactions extends Component<Props> {
       totalAvailable,
       currentDateFormat,
       currentTimeFormat,
+      currentNumberFormat,
       currentLocale,
       onRequestCSVFile,
+      defaultFilterOptions,
+      populatedFilterOptions,
     } = this.props;
 
     // Guard against potential null values
@@ -143,9 +153,16 @@ export default class WalletTransactions extends Component<Props> {
         <WalletTransactionsHeader
           transactions={transactions}
           onRequestCSVFile={onRequestCSVFile}
-          onFilterButtonClick={this.onFilterButtonClick}
+          onFilterDialogOpen={this.onFilterDialogOpen}
+          onFilterDialogClose={this.onFilterDialogClose}
           isFilterButtonFaded={isFilterButtonFaded}
           isFilterDialogOpen={isFilterDialogOpen}
+          defaultFilterOptions={defaultFilterOptions}
+          populatedFilterOptions={populatedFilterOptions}
+          currentLocale={currentLocale}
+          currentTimeFormat={currentTimeFormat}
+          currentNumberFormat={currentNumberFormat}
+          currentDateFormat={currentDateFormat}
         />
         <VerticalFlexContainer>{walletTransactions}</VerticalFlexContainer>
       </WalletTransactionsListScrollContext.Provider>

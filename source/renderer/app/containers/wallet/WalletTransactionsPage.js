@@ -114,11 +114,18 @@ export default class WalletTransactionsPage extends Component<Props, State> {
       recentFiltered,
       deletePendingTransaction,
       deleteTransactionRequest,
-    } = stores.transactions;
-    const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
+      defaultFilterOptions,
+      populatedFilterOptions,
+    } = this.props.stores.transactions;
+    const {
+      currentTimeFormat,
+      currentDateFormat,
+      currentNumberFormat,
+      currentLocale,
+    } = profile;
     const { dataForActiveDialog } = stores.uiDialogs;
     const { closeActiveDialog } = actions.dialogs;
-    const { searchLimit = 0 } = filterOptions;
+    const { searchLimit = 0 } = filterOptions || {};
 
     let transactions = [];
 
@@ -149,6 +156,8 @@ export default class WalletTransactionsPage extends Component<Props, State> {
         activeWallet={activeWallet}
         transactions={transactions}
         filterOptions={filterOptions}
+        defaultFilterOptions={defaultFilterOptions}
+        populatedFilterOptions={populatedFilterOptions}
         deletePendingTransaction={deletePendingTransaction}
         isLoadingTransactions={searchRequest.isExecutingFirstTime}
         hasMoreToLoad={hasMoreToLoad()}
@@ -160,6 +169,7 @@ export default class WalletTransactionsPage extends Component<Props, State> {
         currentLocale={currentLocale}
         currentTimeFormat={currentTimeFormat}
         currentDateFormat={currentDateFormat}
+        currentNumberFormat={currentNumberFormat}
         onFilter={this.onFilter}
         onClose={() => closeActiveDialog.trigger()}
         {...dataForActiveDialog}
