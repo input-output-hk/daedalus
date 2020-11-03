@@ -473,6 +473,21 @@
         }
       }
 
+      .tooltipWithHTMLContent {
+        p {
+          -webkit-box-orient: horizontal;
+          display: block;
+          -webkit-line-clamp: none;
+          overflow: visible;
+          text-overflow: clip;
+          word-break: normal;
+
+          & + p {
+            margin-top: 6px;
+          }
+        }
+      }
+
       :global {
         .SimpleTooltip_root {
           .SimpleTooltip_bubble {
@@ -571,6 +586,11 @@
 
   .ranking {
     position: relative;
+
+    .asterisk {
+      font-family: Verdana;
+      padding: 0 !important;
+    }
   }
 }
 

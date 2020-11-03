@@ -25,7 +25,16 @@
   .ranking {
     font-size: 20px;
     font-weight: bold;
+    position: relative;
     text-align: center;
+
+    sup {
+      font-family: Verdana;
+      font-size: 14px;
+      margin-left: -1px;
+      position: absolute;
+      top: -2px;
+    }
   }
 
   .noDataDash {

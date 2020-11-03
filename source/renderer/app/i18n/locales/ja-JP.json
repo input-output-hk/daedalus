@@ -494,7 +494,7 @@
   "staking.stakePools.tooltip.profitMargin": "プールマージン：",
   "staking.stakePools.tooltip.profitMarginTooltip": "プールが得る利益としてプールが設定した、プールに委任されたステークへの報酬から差し引く割合",
   "staking.stakePools.tooltip.ranking": "ランク：",
-  "staking.stakePools.tooltip.rankingTooltip": "対象プールに意図した量のステークを委任することにより得られる見込み報酬に基づいたランキングで、計算は飽和状態を想定",
+  "staking.stakePools.tooltip.rankingTooltip": "<p>対象プールに意図した量のステークを委任することにより得られる見込み報酬に基づいたランキングで、計算は飽和状態を想定。</p><p>*見込み報酬額の見積もりがゼロのステークプールはランキングが同じになります。見込み報酬額がゼロより大きなプールを増やすには、ステークスライダーをより高額に設定してください。</p>",
   "staking.stakePools.tooltip.relativeStake": "ライブステーク：",
   "staking.stakePools.tooltip.relativeStakeTooltip": "システムのステーク総量に対する、プールに出資されたステークと現在委任されているステークの合計",
   "staking.stakePools.tooltip.retirement": "あと{retirementFromNow}で終了",

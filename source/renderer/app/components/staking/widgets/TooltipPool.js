@@ -1,7 +1,12 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
+import {
+  defineMessages,
+  intlShape,
+  FormattedMessage,
+  FormattedHTMLMessage,
+} from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
 import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
@@ -56,7 +61,7 @@ const messages = defineMessages({
   rankingTooltip: {
     id: 'staking.stakePools.tooltip.rankingTooltip',
     defaultMessage:
-      '!!!A hierarchical ranking based on the potential rewards you will earn if you delegate the intended amount of stake to this pool, assuming that it reaches saturation.',
+      '!!!<p>A hierarchical ranking based on the potential rewards you will earn if you delegate the intended amount of stake to this pool, assuming that it reaches saturation.</p><p>*Stake pools with the potential rewards estimated at zero have the same ranking. Please set the stake slider to a higher value for more pools to get potential rewards estimated at more than zero.</p>',
     description: '"Rank" tooltip for the Stake Pools Tooltip page.',
   },
   relativeStake: {
@@ -477,10 +482,7 @@ export default class TooltipPool extends Component<Props, State> {
   };
 
   get isGreyColor() {
-    return (
-      IS_RANKING_DATA_AVAILABLE &&
-      this.props.stakePool.potentialRewards.isZero()
-    );
+    return !IS_RANKING_DATA_AVAILABLE;
   }
 
   renderDescriptionFields = () => {
@@ -526,7 +528,7 @@ export default class TooltipPool extends Component<Props, State> {
         key: 'ranking',
         value: (
           <div className={styles.ranking}>
-            {!this.isGreyColor ? (
+            {IS_RANKING_DATA_AVAILABLE ? (
               <span
                 style={{
                   background: getColorFromRange(ranking, {
@@ -536,7 +538,14 @@ export default class TooltipPool extends Component<Props, State> {
                   }),
                 }}
               >
-                {ranking}
+                {!potentialRewards.isZero() ? (
+                  ranking
+                ) : (
+                  <>
+                    {numberOfRankedStakePools + 1}
+                    <span className={styles.asterisk}>*</span>
+                  </>
+                )}
               </span>
             ) : (
               <div className={styles.noDataDash}>
@@ -631,15 +640,9 @@ export default class TooltipPool extends Component<Props, State> {
         key: 'potentialRewards',
         value: (
           <div className={styles.defaultColor}>
-            {!potentialRewards.isZero() ? (
-              <span className={styles.defaultColorContent}>
-                {formattedWalletAmount(potentialRewards)}
-              </span>
-            ) : (
-              <div className={styles.noDataDash}>
-                <SVGInline svg={noDataDashSmallImage} />
-              </div>
-            )}
+            <span className={styles.defaultColorContent}>
+              {formattedWalletAmount(potentialRewards)}
+            </span>
           </div>
         ),
       },
@@ -653,7 +656,13 @@ export default class TooltipPool extends Component<Props, State> {
               <Tooltip
                 key={field.key}
                 skin={TooltipSkin}
-                tip={intl.formatMessage(messages[`${field.key}Tooltip`])}
+                tip={
+                  <div className={styles.tooltipWithHTMLContent}>
+                    <FormattedHTMLMessage
+                      {...messages[`${field.key}Tooltip`]}
+                    />
+                  </div>
+                }
               >
                 <div className={styles.labelContainer}>
                   <div className={styles.fieldLabel}>
