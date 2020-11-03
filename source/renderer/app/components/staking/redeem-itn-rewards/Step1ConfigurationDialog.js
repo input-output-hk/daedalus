@@ -259,8 +259,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       recoveryPhrase,
       errorMessage,
     } = this.props;
-    let { error, test } = this.props;
-    console.log('test', test);
+    let { error } = this.props;
 
     if (
       error &&
