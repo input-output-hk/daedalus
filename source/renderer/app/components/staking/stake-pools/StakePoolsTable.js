@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { orderBy } from 'lodash';
 import classNames from 'classnames';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
 import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import styles from './StakePoolsTable.scss';
@@ -22,7 +22,7 @@ const messages = defineMessages({
   tableHeaderRankTooltip: {
     id: 'staking.stakePools.tooltip.rankingTooltip',
     defaultMessage:
-      '!!!A hierarchical ranking based on the potential rewards you will earn if you delegate the intended amount of stake to this pool, assuming that it reaches saturation.',
+      '!!!<p>A hierarchical ranking based on the potential rewards you will earn if you delegate the intended amount of stake to this pool, assuming that it reaches saturation.</p><p>* Stake pools with the potential rewards estimated at zero have the same ranking. Please set the stake slider to a higher value for more pools to get potential rewards estimated at more than zero.</p>',
     description: '"Rank" tooltip for the Stake Pools Table.',
   },
   tableHeaderTicker: {
@@ -283,7 +283,11 @@ export class StakePoolsTable extends Component<Props, State> {
             key="ranking"
             isOpeningUpward={false}
             skin={TooltipSkin}
-            tip={intl.formatMessage(messages.tableHeaderRankTooltip)}
+            tip={
+              <div className={styles.tooltipWithHTMLContent}>
+                <FormattedHTMLMessage {...messages.tableHeaderRankTooltip} />
+              </div>
+            }
           >
             {intl.formatMessage(messages.tableHeaderRank)}
           </Tooltip>

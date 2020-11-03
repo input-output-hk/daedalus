@@ -493,7 +493,7 @@
   "staking.stakePools.tooltip.profitMargin": "Pool margin:",
   "staking.stakePools.tooltip.profitMarginTooltip": "The pool's profit, defined as the rewards percentage kept by the pool from the stake that was delegated to it.",
   "staking.stakePools.tooltip.ranking": "Rank:",
-  "staking.stakePools.tooltip.rankingTooltip": "A hierarchical ranking based on the potential rewards you will earn if you delegate the intended amount of stake to this pool, assuming that it reaches saturation.",
+  "staking.stakePools.tooltip.rankingTooltip": "<p>A hierarchical ranking based on the potential rewards you will earn if you delegate the intended amount of stake to this pool, assuming that it reaches saturation.</p><p>* Stake pools with the potential rewards estimated at zero have the same ranking. Please set the stake slider to a higher value for more pools to get potential rewards estimated at more than zero.</p>",
   "staking.stakePools.tooltip.relativeStake": "Live stake:",
   "staking.stakePools.tooltip.relativeStakeTooltip": "Measures the amount of stake pledged by the pool plus the amount of stake currently delegated to the pool, versus the total amount in the system.",
   "staking.stakePools.tooltip.retirement": "Retirement in {retirementFromNow}",

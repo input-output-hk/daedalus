@@ -220,7 +220,14 @@ export class StakePoolsTableBody extends Component<
           }
         >
           <td>
-            {!memberRewards.isZero() ? rank : numberOfRankedStakePools + 1}
+            {!memberRewards.isZero() ? (
+              rank
+            ) : (
+              <>
+                {numberOfRankedStakePools + 1}
+                <span className={styles.asterisk}>*</span>
+              </>
+            )}
             {isHighlighted && (
               <TooltipPool
                 stakePool={stakePool}
