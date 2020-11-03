@@ -17,8 +17,7 @@ const DefaultProps = InjectedDialogContainerStepDefaultProps;
 
 const messages = defineMessages({
   errorMinRewardFunds: {
-    id:
-      'staking.redeemItnRewards.step1.errorMessage',
+    id: 'staking.redeemItnRewards.step1.errorMessage',
     defaultMessage:
       '!!!This wallet does not contain the minimum amount of {minRewardFunds} ADA which is required to cover the necessary transaction fees. Please select a wallet with <span>a minimum amount of {minRewardFunds} ADA</span> and click continue.',
     description:
