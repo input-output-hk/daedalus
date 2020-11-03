@@ -259,13 +259,13 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       recoveryPhrase,
       errorMessage,
     } = this.props;
-    let { error } = this.props;
+    let { error, test } = this.props;
+    console.log('test', test);
 
     if (
       error &&
       (error.id === 'api.errors.NotEnoughFundsForTransactionFeesError' ||
-        error.id === 'api.errors.NotEnoughMoneyToSendError'
-      )
+        error.id === 'api.errors.NotEnoughMoneyToSendError')
     )
       error = messages.walletsDropdownError;
     const recoveryPhraseField = form.$('recoveryPhrase');
@@ -320,12 +320,11 @@ export default class Step1ConfigurationDialog extends Component<Props> {
     if (error) {
       error = <p className={styles.error}>intl.formatMessage(error)</p>;
     } else if (!error && errorMessage) {
-      error = <p className={styles.errorMessage}>
-        <FormattedHTMLMessage
-          {...errorMessage}
-          values={{minRewardFunds}}
-        />
-      </p>
+      error = (
+        <p className={styles.errorMessage}>
+          <FormattedHTMLMessage {...errorMessage} values={{ minRewardFunds }} />
+        </p>
+      );
     }
 
     return (
