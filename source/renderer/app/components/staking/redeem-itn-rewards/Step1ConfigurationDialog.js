@@ -138,7 +138,6 @@ const messages = defineMessages({
 
 type Props = {
   error?: ?LocalizableError,
-  errorMessage?: ?LocalizableError,
   isSubmitting: boolean,
   mnemonicValidator: Function,
   onClose: Function,
@@ -225,7 +224,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
   };
 
   get canSubmit() {
-    const { isSubmitting, wallet, error, errorMessage } = this.props;
+    const { isSubmitting, wallet, error } = this.props;
     const { form } = this;
     const { checked: checkboxAcceptance1isChecked } = form.$(
       'checkboxAcceptance1'
@@ -237,7 +236,6 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       !isSubmitting &&
       wallet &&
       !error &&
-      !errorMessage &&
       checkboxAcceptance1isChecked &&
       checkboxAcceptance2isChecked &&
       form.isValid
@@ -257,17 +255,31 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       openExternalLink,
       wallets,
       recoveryPhrase,
-      errorMessage,
+      error,
     } = this.props;
-    let { error } = this.props;
+    const minRewardFunds = MIN_REWARDS_FUNDS;
 
+    let errorMessage;
     if (
       error &&
       (error.id === 'api.errors.NotEnoughFundsForTransactionFeesError' ||
-        error.id === 'api.errors.NotEnoughMoneyToSendError'
+        error.id === 'api.errors.NotEnoughMoneyToSendError' ||
+        error.id === 'staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFundsRewardsOnly' ||
+        error.id === 'staking.delegationSetup.chooseWallet.step.dialog.errorRestoringWallet'
       )
     )
-      error = messages.walletsDropdownError;
+      errorMessage = <p className={styles.error}>
+        {intl.formatMessage(messages.walletsDropdownError)}
+      </p>;
+
+    if (error && error.id === 'staking.redeemItnRewards.step1.errorMessage')
+      errorMessage = <p className={styles.errorMessage}>
+        <FormattedHTMLMessage
+          {...error}
+          values={{minRewardFunds}}
+        />
+      </p>;
+
     const recoveryPhraseField = form.$('recoveryPhrase');
     const walletsDropdownField = form.$('walletsDropdown');
     const checkboxAcceptance1Field = form.$('checkboxAcceptance1');
@@ -314,19 +326,6 @@ export default class Step1ConfigurationDialog extends Component<Props> {
     );
 
     const closeButton = <DialogCloseButton onClose={onClose} />;
-
-    const minRewardFunds = MIN_REWARDS_FUNDS;
-
-    if (error) {
-      error = <p className={styles.error}>{intl.formatMessage(error)}</p>;
-    } else if (!error && errorMessage) {
-      error = <p className={styles.errorMessage}>
-        <FormattedHTMLMessage
-          {...errorMessage}
-          values={{minRewardFunds}}
-        />
-      </p>
-    }
 
     return (
       <Dialog
@@ -391,7 +390,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
             skin={CheckboxSkin}
             error={checkboxAcceptance2Field.error}
           />
-          {error}
+          {errorMessage}
         </div>
       </Dialog>
     );
