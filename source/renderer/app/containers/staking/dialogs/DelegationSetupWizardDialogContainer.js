@@ -100,8 +100,10 @@ export default class DelegationSetupWizardDialogContainer extends Component<
   ];
 
   handleDialogClose = () => {
-    this.props.stores.staking.joinStakePoolRequest.reset();
-    this.props.actions.dialogs.closeActiveDialog.trigger();
+    const { stores, actions } = this.props;
+    stores.staking.joinStakePoolRequest.reset();
+    actions.dialogs.closeActiveDialog.trigger();
+    stores.hardwareWallets._resetTransaction({ cancelDeviceAction: true });
   };
 
   handleContinue = () => {
