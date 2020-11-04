@@ -72,7 +72,9 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
       (isHardwareWallet &&
         (sendMoneyExternalRequest.isExecuting || isTransactionPending));
 
-    const error = isHardwareWallet ? sendMoneyExternalRequest.error : sendMoneyRequest.error
+    const error = isHardwareWallet
+      ? sendMoneyExternalRequest.error
+      : sendMoneyRequest.error;
 
     return (
       <WalletSendConfirmationDialog

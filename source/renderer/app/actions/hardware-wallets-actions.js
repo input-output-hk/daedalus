@@ -1,6 +1,9 @@
 // @flow
 import Action from './lib/Action';
-import type { SetHardwareWalletLocalDataRequestType, SetHardwareWalletDeviceRequestType} from '../api/utils/localStorage';
+import type {
+  SetHardwareWalletLocalDataRequestType,
+  SetHardwareWalletDeviceRequestType,
+} from '../api/utils/localStorage';
 import type { DelegationAction } from '../types/stakingTypes';
 
 export default class HardwareWalletsActions {

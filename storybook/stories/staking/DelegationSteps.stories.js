@@ -16,7 +16,10 @@ import { MIN_DELEGATION_FUNDS } from '../../../source/renderer/app/config/stakin
 import translations from '../../../source/renderer/app/i18n/translations';
 import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
 import { generateWallet } from '../_support/utils';
-import { WalletSyncStateStatuses, HwDeviceStatuses } from '../../../source/renderer/app/domains/Wallet';
+import {
+  WalletSyncStateStatuses,
+  HwDeviceStatuses,
+} from '../../../source/renderer/app/domains/Wallet';
 
 const WALLETS = [
   generateWallet('Wallet 1', '1000000000', 0, STAKE_POOLS[0]),

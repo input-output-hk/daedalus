@@ -6,7 +6,11 @@ import semver from 'semver';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { HwDeviceStatuses } from '../domains/Wallet';
-import { HW_SHELLEY_CONFIG, MINIMAL_TREZOR_FIRMWARE_VERSION, MINIMAL_LEDGER_FIRMWARE_VERSION } from '../config/hardwareWalletsConfig';
+import {
+  HW_SHELLEY_CONFIG,
+  MINIMAL_TREZOR_FIRMWARE_VERSION,
+  MINIMAL_LEDGER_FIRMWARE_VERSION,
+} from '../config/hardwareWalletsConfig';
 import {
   getHardwareWalletTransportChannel,
   getExtendedPublicKeyChannel,
@@ -44,7 +48,7 @@ import type {
   CoinSelectionsPaymentRequestType,
   CoinSelectionsDelegationRequestType,
   CreateExternalTransactionResponse,
-  CoinSelectionsResponse
+  CoinSelectionsResponse,
 } from '../api/transactions/types';
 import type {
   HardwareWalletLocalData,
@@ -82,7 +86,8 @@ export default class HardwareWalletsStore extends Store {
   @observable selectCoinsRequest: Request<CoinSelectionsResponse> = new Request(
     this.api.ada.selectCoins
   );
-  @observable sendMoneyRequest: Request<CreateExternalTransactionResponse,> = new Request(
+  @observable
+  sendMoneyRequest: Request<CreateExternalTransactionResponse> = new Request(
     this.api.ada.createExternalTransaction
   );
   @observable
@@ -165,10 +170,13 @@ export default class HardwareWalletsStore extends Store {
     console.debug('>>> SETUP:: getAvailableDevices ', {
       hardwareWalletsConnectionData: this.hardwareWalletsConnectionData,
       hardwareWalletDevices: this.hardwareWalletDevices,
-    })
+    });
     // Set all logical HW into disconnected state
     map(this.hardwareWalletsConnectionData, async (connectedWallet) => {
-      console.debug('>> SET connectedWallet to disconnected state: ', connectedWallet);
+      console.debug(
+        '>> SET connectedWallet to disconnected state: ',
+        connectedWallet
+      );
       await this._setHardwareWalletLocalData({
         walletId: connectedWallet.id,
         data: {
@@ -178,10 +186,13 @@ export default class HardwareWalletsStore extends Store {
     });
 
     // Initiate Device Check for each stored device
-    map(this.hardwareWalletDevices, async device => {
+    map(this.hardwareWalletDevices, async (device) => {
       console.debug('>> Check Device: ', device);
       // Prevent device check if device is TREZOR and bridge not installed
-      if (device.deviceType === DeviceTypes.TREZOR && !this.isTrezorBridgeInstalled) {
+      if (
+        device.deviceType === DeviceTypes.TREZOR &&
+        !this.isTrezorBridgeInstalled
+      ) {
         return;
       }
 
@@ -293,7 +304,7 @@ export default class HardwareWalletsStore extends Store {
         payments: {
           address,
           amount,
-        }
+        },
       });
       runInAction('HardwareWalletsStore:: set coin selections', () => {
         this.txSignRequest = {
@@ -313,7 +324,9 @@ export default class HardwareWalletsStore extends Store {
     }
   };
 
-  selectDelegationCoins = async (params: CoinSelectionsDelegationRequestType) => {
+  selectDelegationCoins = async (
+    params: CoinSelectionsDelegationRequestType
+  ) => {
     const { walletId, poolId, delegationAction } = params;
     console.debug('>>> selectCoins - Delegation: ', params);
     const wallet = this.stores.wallets.getWalletById(walletId);
@@ -325,12 +338,12 @@ export default class HardwareWalletsStore extends Store {
         delegation: {
           poolId,
           delegationAction,
-        }
+        },
       });
       runInAction('HardwareWalletsStore:: set coin selections', () => {
         this.txSignRequest = {
           recieverAddress: null,
-          coinSelection
+          coinSelection,
         };
       });
       return coinSelection;
@@ -437,20 +450,37 @@ export default class HardwareWalletsStore extends Store {
       if (transportDevice) {
         const { deviceType, firmwareVersion } = transportDevice;
         // Check Device model
-        if ((deviceType === DeviceTypes.TREZOR && !DeviceModels.TREZOR_T) || (deviceType === DeviceTypes.LEDGER && (!DeviceModels.LEDGER_NANO_S && !DeviceModels.LEDGER_NANO_X))) {
-          runInAction('HardwareWalletsStore:: set HW device CONNECTING FAILED - device not supported', () => {
-            this.hwDeviceStatus = HwDeviceStatuses.UNSUPPORTED_DEVICE;
-          });
+        if (
+          (deviceType === DeviceTypes.TREZOR && !DeviceModels.TREZOR_T) ||
+          (deviceType === DeviceTypes.LEDGER &&
+            !DeviceModels.LEDGER_NANO_S &&
+            !DeviceModels.LEDGER_NANO_X)
+        ) {
+          runInAction(
+            'HardwareWalletsStore:: set HW device CONNECTING FAILED - device not supported',
+            () => {
+              this.hwDeviceStatus = HwDeviceStatuses.UNSUPPORTED_DEVICE;
+            }
+          );
           throw new Error('Device not Supported!');
         }
 
         // Check Firmware version
-        const minFirmwareVersion = deviceType === DeviceTypes.TREZOR ? MINIMAL_TREZOR_FIRMWARE_VERSION : MINIMAL_LEDGER_FIRMWARE_VERSION;
-        const isFirmwareVersionValid = semver.gte(firmwareVersion, minFirmwareVersion);
+        const minFirmwareVersion =
+          deviceType === DeviceTypes.TREZOR
+            ? MINIMAL_TREZOR_FIRMWARE_VERSION
+            : MINIMAL_LEDGER_FIRMWARE_VERSION;
+        const isFirmwareVersionValid = semver.gte(
+          firmwareVersion,
+          minFirmwareVersion
+        );
         if (!isFirmwareVersionValid) {
-          runInAction('HardwareWalletsStore:: set HW device CONNECTING FAILED - wrong firmware', () => {
-            this.hwDeviceStatus = HwDeviceStatuses.WRONG_FIRMWARE;
-          });
+          runInAction(
+            'HardwareWalletsStore:: set HW device CONNECTING FAILED - wrong firmware',
+            () => {
+              this.hwDeviceStatus = HwDeviceStatuses.WRONG_FIRMWARE;
+            }
+          );
           throw new Error(`Firmware must be ${minFirmwareVersion} or greater!`);
         }
 
@@ -481,9 +511,12 @@ export default class HardwareWalletsStore extends Store {
         throw new Error('Transport Failure');
       }
       if (e.code === 'Transport_Missing' && !this.isTrezorBridgeInstalled) {
-        runInAction('HardwareWalletsStore:: set HW device CONNECTING FAILED', () => {
-          this.hwDeviceStatus = HwDeviceStatuses.TREZOR_BRIDGE_FAILURE;
-        });
+        runInAction(
+          'HardwareWalletsStore:: set HW device CONNECTING FAILED',
+          () => {
+            this.hwDeviceStatus = HwDeviceStatuses.TREZOR_BRIDGE_FAILURE;
+          }
+        );
         throw new Error('Trezor Bridge not installed!');
       }
       console.debug('>> CC error: ', e);
@@ -824,25 +857,26 @@ export default class HardwareWalletsStore extends Store {
     }
   };
 
-  _resetTransaction = async (params: ?{
-    cancelDeviceAction: boolean;
-  }) => {
+  _resetTransaction = async (
+    params: ?{
+      cancelDeviceAction: boolean,
+    }
+  ) => {
     const cancelDeviceAction = get(params, 'cancelDeviceAction', false);
     console.debug('>>> CANCEL: ', cancelDeviceAction);
     if (cancelDeviceAction) {
       resetTrezorActionChannel.request();
     }
     this.sendMoneyRequest.reset();
-    runInAction(
-      'HardwareWalletsStore:: reset Transaction verifying',
-      () => {
-        this.hwDeviceStatus = HwDeviceStatuses.READY;
-        this.txBody = null;
-      }
-    );
+    runInAction('HardwareWalletsStore:: reset Transaction verifying', () => {
+      this.hwDeviceStatus = HwDeviceStatuses.READY;
+      this.txBody = null;
+    });
   };
 
-  @action _changeHardwareWalletConnectionStatus = async (params: HardwareWalletConnectionRequest) => {
+  @action _changeHardwareWalletConnectionStatus = async (
+    params: HardwareWalletConnectionRequest
+  ) => {
     const {
       disconnected,
       deviceType,
@@ -976,9 +1010,11 @@ export default class HardwareWalletsStore extends Store {
     );
   };
 
-  @action resetInitializedConnection = async (params: ?{
-    cancelDeviceAction: boolean;
-  }) => {
+  @action resetInitializedConnection = async (
+    params: ?{
+      cancelDeviceAction: boolean,
+    }
+  ) => {
     const cancelDeviceAction = get(params, 'cancelDeviceAction', false);
     if (cancelDeviceAction) {
       resetTrezorActionChannel.request();

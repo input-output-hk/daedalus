@@ -773,13 +773,11 @@ export default class AdaApi {
     }
   };
 
-  selectCoins = async (
-    request: {
-      walletId: string,
-      payments?: CoinSelectionsPaymentRequestType,
-      delegation?: CoinSelectionsDelegationRequestType,
-    }
-  ): Promise<CoinSelectionsResponse> => {
+  selectCoins = async (request: {
+    walletId: string,
+    payments?: CoinSelectionsPaymentRequestType,
+    delegation?: CoinSelectionsDelegationRequestType,
+  }): Promise<CoinSelectionsResponse> => {
     logger.debug('AdaApi::selectCoins called', {
       parameters: filterLogData(request),
     });

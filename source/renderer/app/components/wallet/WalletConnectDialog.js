@@ -16,7 +16,10 @@ import Dialog from '../widgets/Dialog';
 import styles from './WalletConnectDialog.scss';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import HardwareWalletStatus from '../hardware-wallet/HardwareWalletStatus';
-import { isLedgerEnabled, isTrezorEnabled } from '../../../../common/config/hardwareWalletsConfig';
+import {
+  isLedgerEnabled,
+  isTrezorEnabled,
+} from '../../../../common/config/hardwareWalletsConfig';
 import {
   DeviceModels,
   DeviceTypes,
@@ -127,7 +130,8 @@ export default class WalletConnectDialog extends Component<Props> {
         closeButton={<DialogCloseButton />}
       >
         <div className={styles.hardwareWalletWrapper}>
-          {(!transportDevice || (!isTrezor && !isLedger)) && renderUnknownDevice()}
+          {(!transportDevice || (!isTrezor && !isLedger)) &&
+            renderUnknownDevice()}
           {isLedger && isLedgerEnabled && (
             <div className={styles.hardwareWalletLedger}>
               {deviceModel === DeviceModels.LEDGER_NANO_X && (

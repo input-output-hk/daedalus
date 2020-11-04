@@ -4,9 +4,8 @@ import type { TransactionPaymentData, CoinSelectionAmount } from '../types';
 import type { DelegationAction } from '../../../types/stakingTypes';
 import { request } from '../../utils/request';
 
-
 export type PaymentsType = {
-  payments: Array<TransactionPaymentData>
+  payments: Array<TransactionPaymentData>,
 };
 
 export type DelegationType = {

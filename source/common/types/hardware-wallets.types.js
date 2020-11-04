@@ -212,6 +212,6 @@ export type HardwareWalletConnectionRequest = {
     payload: {
       code: string,
       error: string,
-    }
+    },
   },
 };

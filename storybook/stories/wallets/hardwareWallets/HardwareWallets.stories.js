@@ -5,7 +5,10 @@ import { action } from '@storybook/addon-actions';
 import WalletConnectDialog from '../../../../source/renderer/app/components/wallet/WalletConnectDialog';
 import HardwareWalletsWrapper from '../_utils/HardwareWalletsWrapper';
 import { HwDeviceStatuses } from '../../../../source/renderer/app/domains/Wallet';
-import { MINIMAL_TREZOR_FIRMWARE_VERSION, MINIMAL_LEDGER_FIRMWARE_VERSION } from '../../../../source/renderer/app/config/hardwareWalletsConfig';
+import {
+  MINIMAL_TREZOR_FIRMWARE_VERSION,
+  MINIMAL_LEDGER_FIRMWARE_VERSION,
+} from '../../../../source/renderer/app/config/hardwareWalletsConfig';
 import {
   DeviceModels,
   DeviceTypes,

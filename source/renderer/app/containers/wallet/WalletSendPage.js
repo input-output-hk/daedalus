@@ -48,7 +48,11 @@ export default class WalletSendPage extends Component<Props> {
     return fee;
   };
 
-  openDialog = (dialog: Function, isHardwareWallet: boolean, walletId: string) => {
+  openDialog = (
+    dialog: Function,
+    isHardwareWallet: boolean,
+    walletId: string
+  ) => {
     const { isFlight } = global;
     this.props.actions.dialogs.open.trigger({
       dialog,

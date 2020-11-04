@@ -171,7 +171,10 @@ export type CoinSelectionOutput = {
   derivationPath: Array<string>,
 };
 
-export type CertificateType = 'register_reward_account' | 'quit_pool' | 'join_pool';
+export type CertificateType =
+  | 'register_reward_account'
+  | 'quit_pool'
+  | 'join_pool';
 
 export type CoinSelectionCertificate = {
   pool: string,
@@ -193,7 +196,9 @@ export type CoinSelectionsPaymentRequestType = {
   amount: number,
 };
 
-export type CoinSelectionsRequest = CoinSelectionsPaymentRequestType | CoinSelectionsDelegationRequestType;
+export type CoinSelectionsRequest =
+  | CoinSelectionsPaymentRequestType
+  | CoinSelectionsDelegationRequestType;
 
 export type CoinSelectionsResponse = {
   inputs: Array<CoinSelectionInput>,
