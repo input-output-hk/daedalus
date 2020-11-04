@@ -470,10 +470,11 @@ export default class HardwareWalletsStore extends Store {
           deviceType === DeviceTypes.TREZOR
             ? MINIMAL_TREZOR_FIRMWARE_VERSION
             : MINIMAL_LEDGER_FIRMWARE_VERSION;
-        const isFirmwareVersionValid = semver.gte(
+        let isFirmwareVersionValid = semver.gte(
           firmwareVersion,
           minFirmwareVersion
         );
+        isFirmwareVersionValid = false;
         if (!isFirmwareVersionValid) {
           runInAction(
             'HardwareWalletsStore:: set HW device CONNECTING FAILED - wrong firmware',

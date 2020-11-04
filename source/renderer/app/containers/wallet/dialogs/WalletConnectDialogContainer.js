@@ -26,7 +26,7 @@ export default class WalletConnectDialogContainer extends Component<Props> {
 
   render() {
     const { stores } = this.props;
-    const { hardwareWallets, wallets } = stores;
+    const { hardwareWallets, wallets, app } = stores;
     const { hwDeviceStatus, transportDevice } = hardwareWallets;
     const { createHardwareWalletRequest } = wallets;
     return (
@@ -36,6 +36,7 @@ export default class WalletConnectDialogContainer extends Component<Props> {
         onClose={this.onClose}
         hwDeviceStatus={hwDeviceStatus}
         transportDevice={transportDevice}
+        onExternalLinkClick={app.openExternalLink}
       />
     );
   }

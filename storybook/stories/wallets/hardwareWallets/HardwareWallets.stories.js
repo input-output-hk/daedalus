@@ -43,6 +43,7 @@ storiesOf('Wallets|Hardware Wallets', module)
       hwDeviceStatus={HwDeviceStatuses.CONNECTING}
       onClose={action('onClose')}
       isSubmitting={action('isSubmitting')}
+      onExternalLinkClick={action('onOpenExternalLink')}
       error={null}
     />
   ))
@@ -53,6 +54,7 @@ storiesOf('Wallets|Hardware Wallets', module)
       hwDeviceStatus={HwDeviceStatuses.LAUNCHING_CARDANO_APP}
       onClose={action('onClose')}
       isSubmitting={action('isSubmitting')}
+      onExternalLinkClick={action('onOpenExternalLink')}
       error={null}
     />
   ))
@@ -63,6 +65,7 @@ storiesOf('Wallets|Hardware Wallets', module)
       hwDeviceStatus={HwDeviceStatuses.EXPORTING_PUBLIC_KEY}
       onClose={action('onClose')}
       isSubmitting={action('isSubmitting')}
+      onExternalLinkClick={action('onOpenExternalLink')}
       error={null}
     />
   ))
@@ -73,6 +76,7 @@ storiesOf('Wallets|Hardware Wallets', module)
       hwDeviceStatus={HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED}
       onClose={action('onClose')}
       isSubmitting={action('isSubmitting')}
+      onExternalLinkClick={action('onOpenExternalLink')}
       error={null}
     />
   ))
@@ -83,6 +87,7 @@ storiesOf('Wallets|Hardware Wallets', module)
       hwDeviceStatus={HwDeviceStatuses.READY}
       onClose={action('onClose')}
       isSubmitting={action('isSubmitting')}
+      onExternalLinkClick={action('onOpenExternalLink')}
       error={null}
     />
   ))
@@ -93,6 +98,7 @@ storiesOf('Wallets|Hardware Wallets', module)
       hwDeviceStatus={HwDeviceStatuses.CONNECTING}
       onClose={action('onClose')}
       isSubmitting={action('isSubmitting')}
+      onExternalLinkClick={action('onOpenExternalLink')}
       error={null}
     />
   ))
@@ -103,6 +109,7 @@ storiesOf('Wallets|Hardware Wallets', module)
       hwDeviceStatus={HwDeviceStatuses.LAUNCHING_CARDANO_APP}
       onClose={action('onClose')}
       isSubmitting={action('isSubmitting')}
+      onExternalLinkClick={action('onOpenExternalLink')}
       error={null}
     />
   ))
@@ -113,6 +120,7 @@ storiesOf('Wallets|Hardware Wallets', module)
       hwDeviceStatus={HwDeviceStatuses.EXPORTING_PUBLIC_KEY}
       onClose={action('onClose')}
       isSubmitting={action('isSubmitting')}
+      onExternalLinkClick={action('onOpenExternalLink')}
       error={null}
     />
   ))
@@ -123,6 +131,7 @@ storiesOf('Wallets|Hardware Wallets', module)
       hwDeviceStatus={HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED}
       onClose={action('onClose')}
       isSubmitting={action('isSubmitting')}
+      onExternalLinkClick={action('onOpenExternalLink')}
       error={null}
     />
   ))
@@ -133,6 +142,7 @@ storiesOf('Wallets|Hardware Wallets', module)
       hwDeviceStatus={HwDeviceStatuses.READY}
       onClose={action('onClose')}
       isSubmitting={action('isSubmitting')}
+      onExternalLinkClick={action('onOpenExternalLink')}
       error={null}
     />
   ));

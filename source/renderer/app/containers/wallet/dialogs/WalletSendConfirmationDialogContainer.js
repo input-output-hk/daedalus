@@ -97,6 +97,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
         hwDeviceStatus={hwDeviceStatus}
         isHardwareWallet={isHardwareWallet}
         onInitiateTransaction={this.handleInitiateTransaction}
+        walletName={activeWallet.name}
       />
     );
   }

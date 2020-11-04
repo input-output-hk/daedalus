@@ -149,6 +149,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
             error={error}
             isHardwareWallet={isHardwareWallet}
             hwDeviceStatus={hwDeviceStatus}
+            onExternalLinkClick={onOpenExternalLink}
           />
         );
         break;

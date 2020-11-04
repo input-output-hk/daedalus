@@ -114,6 +114,8 @@ type Props = {
   hwDeviceStatus: HwDeviceStatus,
   isHardwareWallet: boolean,
   onInitiateTransaction: Function,
+  walletName: string,
+  onExternalLinkClick: Function,
 };
 
 type State = {
@@ -202,13 +204,22 @@ export default class WalletSendConfirmationDialog extends Component<
   renderConfirmationElement = (isHardwareWallet: boolean) => {
     const passphraseField = this.form.$('passphrase');
     const { areTermsAccepted } = this.state;
-    const { hwDeviceStatus, isFlight } = this.props;
+    const {
+      hwDeviceStatus,
+      isFlight,
+      onExternalLinkClick,
+      walletName,
+    } = this.props;
 
     if (!isFlight || (isFlight && areTermsAccepted)) {
       if (isHardwareWallet) {
         return (
           <div className={styles.hardwareWalletStatusWrapper}>
-            <HardwareWalletStatus hwDeviceStatus={hwDeviceStatus} />
+            <HardwareWalletStatus
+              hwDeviceStatus={hwDeviceStatus}
+              walletName={walletName}
+              onExternalLinkClick={onExternalLinkClick}
+            />
           </div>
         );
       }

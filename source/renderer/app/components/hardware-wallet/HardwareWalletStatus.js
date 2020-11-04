@@ -1,9 +1,11 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
+import { Link } from 'react-polymorph/lib/components/Link';
+import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import checkIcon from '../../assets/images/hardware-wallet/check.inline.svg';
 import clearIcon from '../../assets/images/hardware-wallet/close-cross-red.inline.svg';
 import LoadingSpinner from '../widgets/LoadingSpinner';
@@ -18,40 +20,45 @@ const messages = defineMessages({
     description:
       '"Connect your device and enter your PIN to unlock it" device state',
   },
+  connecting_known: {
+    id: 'wallet.hardware.deviceStatus.connecting.known',
+    defaultMessage: '!!!Connect the "{walletName}" device',
+    description: '"Connect the IOHK Trezor 1 device" device state',
+  },
   launching_cardano_app: {
     id: 'wallet.hardware.deviceStatus.launching_cardano_app',
-    defaultMessage: '!!!Launch the Cardano application on your device',
-    description: '"Launch the Cardano application on your device" device state',
+    defaultMessage: '!!!Launch Cardano application on your device',
+    description: '"Launch Cardano application on your device" device state',
   },
   exporting_public_key: {
     id: 'wallet.hardware.deviceStatus.exporting_public_key',
-    defaultMessage: '!!!Confirm exporting your public key on your device',
+    defaultMessage: '!!!Export the public key on your device',
     description:
       '"Confirm exporting your public key on your device" device state',
   },
   exporting_public_key_failed: {
     id: 'wallet.hardware.deviceStatus.exporting_public_key_failed',
-    defaultMessage: '!!!Exporting public key failed',
+    defaultMessage: '!!!Exporting the public key failed',
     description: '"Exporting public key failed" device state',
   },
   exportingPublicKeyError: {
     id: 'wallet.hardware.deviceStatus.exportingPublicKeyError',
     defaultMessage:
-      '!!!Disconnect and reconnect your device to start the process again',
+      '!!!Disconnect and reconnect your device to restart the process',
     description:
       '"Disconnect and reconnect your device to start the process again" device state',
   },
   ready: {
     id: 'wallet.hardware.deviceStatus.ready',
-    defaultMessage: '!!!Device ready and waiting for commands',
-    description: '"Device ready and waiting for commands" device state',
+    defaultMessage: '!!!Device ready',
+    description: '"Device ready" device state',
   },
   verifying_transaction: {
     id: 'wallet.hardware.deviceStatus.verifying_transaction',
     defaultMessage:
-      '!!!Verify the transaction on your device in order to sign it',
+      '!!!Confirm the transaction using the "{walletName}" device ',
     description:
-      '"Verify the transaction on your device in order to sign it" device state',
+      '"Confirm the transaction using the IOHK Trezor 1 device" device state',
   },
   verifying_transaction_failed: {
     id: 'wallet.hardware.deviceStatus.verifying_transaction_failed',
@@ -60,28 +67,53 @@ const messages = defineMessages({
   },
   verifying_transaction_succeeded: {
     id: 'wallet.hardware.deviceStatus.verifying_transaction_succeeded',
-    defaultMessage: '!!!Transaction verified and signed',
+    defaultMessage: '!!!Transaction confirmed',
     description: '"Transaction verified and signed" device state',
   },
   trezor_bridge_failure: {
     id: 'wallet.hardware.deviceStatus.trezor_bridge_failure',
     defaultMessage: '!!!Trezor Bridge not installed!',
-    description: '"Trezor Bridge not installed!" device state',
+    description:
+      '"Trezor Bridge not installed! {instructionsLink}" device state',
+  },
+  trezor_bridge_failure_link_label: {
+    id: 'wallet.hardware.deviceStatus.trezor_bridge_failure.link.label',
+    defaultMessage: '!!!Installation instructions',
+    description: 'Trezor Bridge installation instructions link label',
+  },
+  trezor_bridge_failure_link_url: {
+    id: 'wallet.hardware.deviceStatus.trezor_bridge_failure.link.url',
+    defaultMessage:
+      '!!!https://iohk.zendesk.com/hc/en-us/articles/360011451693',
+    description: 'URL for the "Trezor Bridge" update',
   },
   wrong_firmware: {
     id: 'wallet.hardware.deviceStatus.wrong_firmware',
-    defaultMessage: '!!!Please update your device firmware!',
-    description: '"Please update your firmware!" device state',
+    defaultMessage: '!!!Unsupported firmware! {instructionsLink}',
+    description: '"Unsupported firmware!" device state',
+  },
+  wrong_firmware_link_label: {
+    id: 'wallet.hardware.deviceStatus.wrong_firmware.link.label',
+    defaultMessage: '!!!Firmware update instructions',
+    description: 'Firmware update installation instructions link label',
+  },
+  wrong_firmware_link_url: {
+    id: 'wallet.hardware.deviceStatus.wrong_firmware.link.url',
+    defaultMessage:
+      '!!!https://iohk.zendesk.com/hc/en-us/articles/360011451693',
+    description: 'URL for the "Firmware Update"',
   },
   unsupported_device: {
     id: 'wallet.hardware.deviceStatus.unsupported_device',
-    defaultMessage: '!!!This Device is not supported!',
-    description: '"This Device is not supported!" device state',
+    defaultMessage: '!!!The device is not supported!',
+    description: '"The device is not supported!" device state',
   },
 });
 
 type Props = {
   hwDeviceStatus: HwDeviceStatus,
+  onExternalLinkClick: Function,
+  walletName?: string,
 };
 
 @observer
@@ -92,7 +124,7 @@ export default class HardwareWalletStatus extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { hwDeviceStatus } = this.props;
+    const { hwDeviceStatus, onExternalLinkClick, walletName } = this.props;
 
     const isLoading =
       hwDeviceStatus === HwDeviceStatuses.CONNECTING ||
@@ -117,11 +149,56 @@ export default class HardwareWalletStatus extends Component<Props> {
       hasErrored ? styles.isError : null,
     ]);
 
+    const hasInstructionsLink =
+      hwDeviceStatus === HwDeviceStatuses.TREZOR_BRIDGE_FAILURE ||
+      hwDeviceStatus === HwDeviceStatuses.WRONG_FIRMWARE;
+    let instructionsLink;
+    if (hasInstructionsLink) {
+      // @TODO - add Ledger firmware update support article links
+      instructionsLink = (
+        <Link
+          className={styles.externalLink}
+          onClick={(event) =>
+            onExternalLinkClick(
+              intl.formatMessage(messages[`${hwDeviceStatus}_link_url`]),
+              event
+            )
+          }
+          label={intl.formatMessage(messages[`${hwDeviceStatus}_link_label`])}
+          skin={LinkSkin}
+        />
+      );
+    }
+
+    let label;
+    if (
+      walletName &&
+      (hwDeviceStatus === HwDeviceStatuses.CONNECTING ||
+        hwDeviceStatus === HwDeviceStatuses.VERIFYING_TRANSACTION)
+    ) {
+      const message =
+        hwDeviceStatus === HwDeviceStatuses.CONNECTING
+          ? `${hwDeviceStatus}_known`
+          : hwDeviceStatus;
+      label = (
+        <FormattedMessage {...messages[message]} values={{ walletName }} />
+      );
+    } else {
+      label = intl.formatMessage(messages[hwDeviceStatus]);
+    }
+
     return (
       <>
         <div className={componentClasses}>
           <div className={styles.message}>
-            {intl.formatMessage(messages[hwDeviceStatus])}
+            {hasInstructionsLink && instructionsLink ? (
+              <FormattedMessage
+                {...messages[hwDeviceStatus]}
+                values={{ instructionsLink }}
+              />
+            ) : (
+              label
+            )}
           </div>
           {isLoading && (
             <LoadingSpinner className="hardwareWalletProcessProgress" />

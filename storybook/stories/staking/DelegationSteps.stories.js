@@ -134,6 +134,7 @@ export class StakingDelegationSteps extends Component<Props, State> {
         error={null}
         isHardwareWallet={false}
         hwDeviceStatus={HwDeviceStatuses.CONNECTING}
+        onExternalLinkClick={action('onOpenExternalLink')}
       />,
       <DelegationStepsSuccessDialog
         key="DelegationStepsSuccessDialog"

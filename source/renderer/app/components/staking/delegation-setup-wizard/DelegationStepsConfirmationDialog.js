@@ -49,7 +49,7 @@ const messages = defineMessages({
   description: {
     id: 'staking.delegationSetup.confirmation.step.dialog.description',
     defaultMessage:
-      '!!!Confirm your delegation choice to <span>[{selectedPoolTicker}]</span> stake pool for your <span>{selectedWalletName}</span> wallet by posting your delegation preferences on the Cardano blockchain.',
+      '!!!Confirm your delegation choice to <span>[{selectedPoolTicker}]</span> stake pool for your <span>{selectedWalletName}</span> wallet.',
     description:
       'Description on the delegation setup "confirmation" step dialog.',
   },
@@ -104,6 +104,7 @@ type Props = {
   hwDeviceStatus: HwDeviceStatus,
   isHardwareWallet: boolean,
   error: ?LocalizableError,
+  onExternalLinkClick: Function,
 };
 
 @observer
@@ -176,6 +177,7 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
       isSubmitting,
       hwDeviceStatus,
       isHardwareWallet,
+      onExternalLinkClick,
     } = this.props;
     const selectedWalletName = get(selectedWallet, 'name');
     const selectedPoolTicker = get(selectedPool, 'ticker');
@@ -278,7 +280,11 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
 
           {isHardwareWallet ? (
             <div className={styles.hardwareWalletStatusWrapper}>
-              <HardwareWalletStatus hwDeviceStatus={hwDeviceStatus} />
+              <HardwareWalletStatus
+                hwDeviceStatus={hwDeviceStatus}
+                walletName={selectedWalletName}
+                onExternalLinkClick={onExternalLinkClick}
+              />
             </div>
           ) : (
             <Input

@@ -3,7 +3,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import { get } from 'lodash';
 import ledgerIcon from '../../assets/images/hardware-wallet/ledger-cropped.inline.svg';
@@ -31,18 +31,19 @@ import type { HwDeviceStatus } from '../../domains/Wallet';
 const messages = defineMessages({
   dialogTitle: {
     id: 'wallet.connect.dialog.title',
-    defaultMessage: '!!!Connect hardware wallet',
+    defaultMessage: '!!!Connect a hardware wallet device',
     description:
-      'Title "Connect hardware wallet" in the connect wallet dialog.',
+      'Title "Connect a hardware wallet device" in the connect wallet dialog.',
   },
-  closeButton: {
-    id: 'wallet.connect.dialog.button.close',
+  cancelButton: {
+    id: 'wallet.connect.dialog.button.cancel',
     defaultMessage: '!!!Cancel',
     description: 'Label for the "Cancel" button in the connect wallet dialog',
   },
-  hardwareWalletInstructions: {
-    id: 'wallet.connect.hardwareWalletInstructions',
-    defaultMessage: '!!!Follow instructions to access your wallet',
+  instructions: {
+    id: 'wallet.connect.dialog.instructions',
+    defaultMessage:
+      '!!!<p><b>Daedalus currently supports only Trezor Model T hardware wallet devices.</b></p><p>If you are <b>connecting your device with Daedalus for the first time</b>, please follow the instructions below.</p><p>If you have <b>already connected your device with Daedalus</b>, you don’t need to repeat this step. Just connect your device when you need to confirm a transaction.</p>',
     description: 'Follow instructions label',
   },
 });
@@ -53,6 +54,7 @@ type Props = {
   hwDeviceStatus: HwDeviceStatus,
   transportDevice: ?TransportDevice,
   error: ?LocalizableError,
+  onExternalLinkClick: Function,
 };
 
 @observer
@@ -68,6 +70,7 @@ export default class WalletConnectDialog extends Component<Props> {
       isSubmitting,
       hwDeviceStatus,
       transportDevice,
+      onExternalLinkClick,
       error,
     } = this.props;
 
@@ -79,7 +82,7 @@ export default class WalletConnectDialog extends Component<Props> {
     const dialogClasses = classnames([styles.component, 'WalletConnectDialog']);
 
     const buttonLabel = !isSubmitting ? (
-      this.context.intl.formatMessage(messages.closeButton)
+      this.context.intl.formatMessage(messages.cancelButton)
     ) : (
       <LoadingSpinner />
     );
@@ -152,10 +155,14 @@ export default class WalletConnectDialog extends Component<Props> {
           ) : (
             <div>
               <p className={styles.hardwareWalletMessage}>
-                {intl.formatMessage(messages.hardwareWalletInstructions)}
+                <FormattedHTMLMessage {...messages.instructions} />
               </p>
               <div className={styles.hardwareWalletStatusWrapper}>
-                <HardwareWalletStatus hwDeviceStatus={hwDeviceStatus} />
+                <HardwareWalletStatus
+                  hwDeviceStatus={hwDeviceStatus}
+                  onExternalLinkClick={onExternalLinkClick}
+                  isTransactionStatus={false}
+                />
               </div>
             </div>
           )}
