@@ -195,10 +195,10 @@ export class StakePoolsTableBody extends Component<
       const producedBlocks = get(stakePool, 'producedBlocks', '');
       const pledge = new BigNumber(get(stakePool, 'pledge', ''));
       const retiring = get(stakePool, 'retiring', '');
-      const memberRewards = get(stakePool, 'potentialRewards', '');
-      const potentialRewards = !memberRewards.isZero()
-        ? formattedWalletAmount(memberRewards)
-        : '-';
+      const memberRewards = new BigNumber(
+        get(stakePool, 'potentialRewards', '')
+      );
+      const potentialRewards = formattedWalletAmount(memberRewards);
       const retirement =
         retiring && moment(retiring).locale(intl.locale).fromNow(true);
       const pledgeValue = formattedWalletAmount(pledge, false, false);
@@ -220,7 +220,14 @@ export class StakePoolsTableBody extends Component<
           }
         >
           <td>
-            {!memberRewards.isZero() ? rank : '-'}
+            {!memberRewards.isZero() ? (
+              rank
+            ) : (
+              <>
+                {numberOfRankedStakePools + 1}
+                <span className={styles.asterisk}>*</span>
+              </>
+            )}
             {isHighlighted && (
               <TooltipPool
                 stakePool={stakePool}

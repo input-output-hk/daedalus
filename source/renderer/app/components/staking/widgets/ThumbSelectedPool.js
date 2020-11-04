@@ -26,13 +26,9 @@ export default class ThumbSelectedPool extends Component<Props> {
       numberOfRankedStakePools,
     } = this.props;
 
-    const { ticker, retiring, ranking, nonMyopicMemberRewards } =
-      stakePool || {};
+    const { ticker, retiring, ranking } = stakePool || {};
     const rankColor =
-      stakePool &&
-      !retiring &&
-      IS_RANKING_DATA_AVAILABLE &&
-      nonMyopicMemberRewards
+      stakePool && !retiring && IS_RANKING_DATA_AVAILABLE
         ? getColorFromRange(ranking, numberOfRankedStakePools)
         : null;
 
