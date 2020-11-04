@@ -1,12 +1,12 @@
 // @flow
 import React, { Component } from 'react';
-import path from 'path';
+import { intlShape } from 'react-intl';
 import { observer, inject } from 'mobx-react';
 import { showSaveDialogChannel } from '../../ipc/show-file-dialog-channels';
 import WalletTransactions from '../../components/wallet/transactions/WalletTransactions';
 import { getNetworkExplorerUrlByType } from '../../utils/network';
-import { downloadCsv } from '../../utils/csvGenerator';
-import { generateFileNameWithTimestamp } from '../../../../common/utils/files';
+import transactionsCsvGenerator from '../../utils/transactionsCsvGenerator';
+import { WalletTransaction } from '../../domains/WalletTransaction';
 import type { CsvFileContent } from '../../../../common/types/csv-request.types';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
@@ -15,31 +15,29 @@ type Props = InjectedProps;
 @inject('stores', 'actions')
 @observer
 export default class WalletTransactionsPage extends Component<Props> {
-  onExportCsv = async (fileContent: CsvFileContent) => {
-    const fileName = generateFileNameWithTimestamp({
-      prefix: 'transactions',
-      extension: 'csv',
-      isUTC: true,
-    });
-    const { desktopDirectoryPath } = this.props.stores.profile;
-    const defaultPath = path.join(desktopDirectoryPath, fileName);
-    const params = {
-      defaultPath,
-      filters: [
-        {
-          extensions: ['csv'],
-        },
-      ],
-    };
-    const { filePath } = await showSaveDialogChannel.send(params);
-
-    // if cancel button is clicked or path is empty
-    if (!filePath) return;
-
-    downloadCsv({ filePath, fileContent });
+  static contextTypes = {
+    intl: intlShape.isRequired,
   };
 
+  get transactions() {
+    let transactions = [];
+    const { stores } = this.props;
+    const { wallets } = stores;
+    const activeWallet = wallets.active;
+    const { hasAny, allFiltered, recentFiltered } = stores.transactions;
+
+    // Straight away show recent filtered transactions if all filtered ones are not loaded yet
+    if (hasAny && activeWallet && !activeWallet.isRestoring) {
+      transactions =
+        recentFiltered.length && !allFiltered.length
+          ? recentFiltered
+          : allFiltered;
+    }
+    return transactions;
+  }
+
   render() {
+    const { intl } = this.context;
     const { actions, stores } = this.props;
     const { app, wallets, profile } = stores;
     const {
@@ -50,10 +48,7 @@ export default class WalletTransactionsPage extends Component<Props> {
     const {
       filterOptions,
       searchRequest,
-      hasAny,
       totalAvailable,
-      allFiltered,
-      recentFiltered,
       deletePendingTransaction,
       deleteTransactionRequest,
       defaultFilterOptions,
@@ -64,19 +59,11 @@ export default class WalletTransactionsPage extends Component<Props> {
       currentDateFormat,
       currentNumberFormat,
       currentLocale,
+      desktopDirectoryPath,
     } = profile;
     const { searchLimit = 0 } = filterOptions || {};
     const { transactions: transactionActions } = this.props.actions;
-
-    let transactions = [];
-
-    // Straight away show recent filtered transactions if all filtered ones are not loaded yet
-    if (hasAny && activeWallet && !activeWallet.isRestoring) {
-      transactions =
-        recentFiltered.length && !allFiltered.length
-          ? recentFiltered
-          : allFiltered;
-    }
+    const { transactions } = this;
 
     const getUrlByType = (type: 'tx' | 'address', param: string) =>
       getNetworkExplorerUrlByType(
@@ -91,6 +78,13 @@ export default class WalletTransactionsPage extends Component<Props> {
       searchLimit !== null &&
       searchLimit !== undefined &&
       totalAvailable > searchLimit;
+
+    const onRequestCSVFile = () =>
+      transactionsCsvGenerator({
+        desktopDirectoryPath,
+        transactions,
+        intl,
+      });
 
     return (
       <WalletTransactions
@@ -112,7 +106,7 @@ export default class WalletTransactionsPage extends Component<Props> {
         currentDateFormat={currentDateFormat}
         currentNumberFormat={currentNumberFormat}
         onFilter={transactionActions.filterTransactions.trigger}
-        onRequestCSVFile={this.onExportCsv}
+        onRequestCSVFile={onRequestCSVFile}
         isRenderingAsVirtualList
       />
     );
