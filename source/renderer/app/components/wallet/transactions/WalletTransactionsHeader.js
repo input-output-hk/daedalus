@@ -23,14 +23,6 @@ export const messages = defineMessages({
   },
 });
 
-const fileContent = [
-  ['id', 'amount'],
-  ['1', '1.000000'],
-  ['2', '2.000000'],
-  ['3', '3.000000'],
-  ['4', '4.000000'],
-];
-
 type Props = {
   children: Node,
   isScrolling: boolean,
@@ -64,6 +56,13 @@ export default class WalletTransactionsHeader extends Component<Props> {
       isScrolling ? styles.isScrolling : null,
     ]);
 
+    const isCsvButtonDisabled = numberOfTransactions === 0;
+
+    const cvsButtonClassnames = classnames([
+      styles.csvButton,
+      isCsvButtonDisabled ? styles.csvButtonDisabled : null,
+    ]);
+
     return (
       <div className={componentClassnames}>
         <div className={styles.numberOfTransactions}>
@@ -81,9 +80,10 @@ export default class WalletTransactionsHeader extends Component<Props> {
                   />
                 </Fragment>
               }
-              onClick={() => onRequestCSVFile(fileContent)}
+              onClick={onRequestCSVFile}
               containerClassName={styles.csvButtonContainer}
-              className={styles.csvButton}
+              className={cvsButtonClassnames}
+              disabled={isCsvButtonDisabled}
               loading={false}
             />
             <FilterButton
