@@ -557,8 +557,12 @@ export default class ProfileStore extends Store {
         isIncentivizedTestnet: global.isIncentivizedTestnet,
         currentTime: new Date().toISOString(),
         syncPercentage: syncPercentage.toFixed(2),
-        localTip,
-        networkTip,
+        localTip: localTip
+          ? { epoch: localTip.epoch, slot: localTip.slot }
+          : localTip,
+        networkTip: networkTip
+          ? { epoch: networkTip.epoch, slot: networkTip.slot }
+          : networkTip,
       };
 
       await setStateSnapshotLogChannel.send(stateSnapshotData);
