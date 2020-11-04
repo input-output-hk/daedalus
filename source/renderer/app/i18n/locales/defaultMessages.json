@@ -13328,7 +13328,7 @@
         "description": "errorMinRewardFunds Error Label on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 25
         },
         "file": "source/renderer/app/containers/staking/dialogs/redeem-itn-rewards/Step1ConfigurationContainer.js",
         "id": "staking.redeemItnRewards.step1.errorMessage",
@@ -13342,27 +13342,27 @@
         "description": "errorMinDelegationFundsRewardsOnly Error Label on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 33
         },
         "file": "source/renderer/app/containers/staking/dialogs/redeem-itn-rewards/Step1ConfigurationContainer.js",
         "id": "staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFundsRewardsOnly",
         "start": {
           "column": 38,
-          "line": 27
+          "line": 26
         }
       },
       {
-        "defaultMessage": "!!!This wallet can’t be used for delegation while it’s being synced.",
-        "description": "RestoringWallet Error Label on the delegation setup \"choose wallet\" step dialog.",
+        "defaultMessage": "!!!This wallet can’t be used for rewards redemption while it’s being synced.",
+        "description": "RestoringWallet Error Label on the rewards redemption setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 40
         },
         "file": "source/renderer/app/containers/staking/dialogs/redeem-itn-rewards/Step1ConfigurationContainer.js",
-        "id": "staking.delegationSetup.chooseWallet.step.dialog.errorRestoringWallet",
+        "id": "staking.redeemItnRewards.step1.errorRestoringWallet",
         "start": {
           "column": 24,
-          "line": 35
+          "line": 34
         }
       }
     ],

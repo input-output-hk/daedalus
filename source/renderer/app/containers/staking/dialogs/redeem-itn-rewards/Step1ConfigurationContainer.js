@@ -32,11 +32,11 @@ const messages = defineMessages({
       'errorMinDelegationFundsRewardsOnly Error Label on the delegation setup "choose wallet" step dialog.',
   },
   errorRestoringWallet: {
-    id: 'staking.delegationSetup.chooseWallet.step.dialog.errorRestoringWallet',
+    id: 'staking.redeemItnRewards.step1.errorRestoringWallet',
     defaultMessage:
-      '!!!This wallet can’t be used for delegation while it’s being synced.',
+      '!!!This wallet can’t be used for rewards redemption while it’s being synced.',
     description:
-      'RestoringWallet Error Label on the delegation setup "choose wallet" step dialog.',
+      'RestoringWallet Error Label on the rewards redemption setup "choose wallet" step dialog.',
   },
 });
 
@@ -51,7 +51,7 @@ export default class Step1ConfigurationContainer extends Component<Props> {
   ) =>
     walletAmount &&
     walletAmount.gte(new BigNumber(MIN_REWARDS_FUNDS)) &&
-    !walletAmount.equals(walletReward);
+    walletAmount.gte(walletReward);
 
   render() {
     const { onClose, onBack, stores, actions } = this.props;

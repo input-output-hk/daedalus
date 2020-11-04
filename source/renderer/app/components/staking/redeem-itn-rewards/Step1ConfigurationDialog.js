@@ -263,13 +263,19 @@ export default class Step1ConfigurationDialog extends Component<Props> {
     if (
       error &&
       (error.id === 'api.errors.NotEnoughFundsForTransactionFeesError' ||
-        error.id === 'api.errors.NotEnoughMoneyToSendError' ||
-        error.id === 'staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFundsRewardsOnly' ||
-        error.id === 'staking.delegationSetup.chooseWallet.step.dialog.errorRestoringWallet'
+        error.id === 'api.errors.NotEnoughMoneyToSendError'
       )
     )
       errorMessage = <p className={styles.error}>
         {intl.formatMessage(messages.walletsDropdownError)}
+      </p>;
+
+    if (error && (error.id === 'staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFundsRewardsOnly' ||
+      error.id === 'staking.delegationSetup.chooseWallet.step.dialog.errorRestoringWallet'
+    )
+    )
+      errorMessage = <p className={styles.error}>
+        {intl.formatMessage(error)}
       </p>;
 
     if (error && error.id === 'staking.redeemItnRewards.step1.errorMessage')
