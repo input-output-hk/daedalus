@@ -164,7 +164,11 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     } = this.props.stores;
     const { futureEpoch } = networkStatus;
     const { currentTheme, currentLocale } = profile;
-    const { hwDeviceStatus, sendMoneyRequest } = hardwareWallets;
+    const {
+      hwDeviceStatus,
+      sendMoneyRequest,
+      selectCoinsRequest,
+    } = hardwareWallets;
     const {
       stakePools,
       recentStakePools,
@@ -214,7 +218,11 @@ export default class DelegationSetupWizardDialogContainer extends Component<
           sendMoneyRequest.isExecuting ||
           isDelegationTransactionPending
         }
-        error={joinStakePoolRequest.error || sendMoneyRequest.error}
+        error={
+          joinStakePoolRequest.error ||
+          sendMoneyRequest.error ||
+          selectCoinsRequest.error
+        }
         isHardwareWallet={selectedWallet.isHardwareWallet}
         hwDeviceStatus={hwDeviceStatus}
       />

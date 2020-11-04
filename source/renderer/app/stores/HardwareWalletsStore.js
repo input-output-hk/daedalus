@@ -802,6 +802,7 @@ export default class HardwareWalletsStore extends Store {
       resetTrezorActionChannel.request();
     }
     this.sendMoneyRequest.reset();
+    this.selectCoinsRequest.reset();
     runInAction('HardwareWalletsStore:: reset Transaction verifying', () => {
       this.hwDeviceStatus = HwDeviceStatuses.READY;
       this.txBody = null;
