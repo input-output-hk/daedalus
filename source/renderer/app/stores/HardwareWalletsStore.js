@@ -683,6 +683,12 @@ export default class HardwareWalletsStore extends Store {
       prepareCertificate(certificate)
     );
 
+    const recognizedDevice = find(
+      this.hardwareWalletDevices,
+      (hardwareWalletDevice) => hardwareWalletDevice.paired === walletId
+    );
+    const recognizedDevicePath = get(recognizedDevice, 'path', null);
+
     console.debug('>>> SIGN TRANSACTION: ', {
       inputs: inputsData,
       outputs: outputsData,
@@ -701,7 +707,7 @@ export default class HardwareWalletsStore extends Store {
         networkId: HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId,
         protocolMagic: HW_SHELLEY_CONFIG.NETWORK.MAINNET.protocolMagic,
         certificates: certificatesData,
-        devicePath: null, // @TODO - pass real device path
+        devicePath: recognizedDevicePath,
       });
 
       console.debug('>>> signedTransaction: ', signedTransaction);
