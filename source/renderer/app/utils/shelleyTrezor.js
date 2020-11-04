@@ -38,14 +38,15 @@ export const prepareTrezorOutput = (output: CoinSelectionOutput) => {
 };
 
 export const prepareCertificate = (cert: CoinSelectionCertificate) => {
-  return cert.pool
-    ? {
-        type: CERTIFICATE_TYPE[cert.certificateType],
-        path: derivationPathToString(cert.rewardAccountPath),
-        pool: utils.buf_to_hex(utils.bech32_decodeAddress(cert.pool)),
-      }
-    : {
-        type: CERTIFICATE_TYPE[cert.certificateType],
-        path: derivationPathToString(cert.rewardAccountPath),
-      };
+  if (cert.pool) {
+    return {
+      type: CERTIFICATE_TYPE[cert.certificateType],
+      path: derivationPathToString(cert.rewardAccountPath),
+      pool: utils.buf_to_hex(utils.bech32_decodeAddress(cert.pool)),
+    };
+  }
+  return {
+    type: CERTIFICATE_TYPE[cert.certificateType],
+    path: derivationPathToString(cert.rewardAccountPath),
+  };
 };

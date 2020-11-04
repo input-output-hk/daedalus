@@ -57,7 +57,6 @@ import type {
   LedgerSignTransactionResponse,
   TrezorSignTransactionRequest,
   TrezorSignTransactionResponse,
-  DeviceType,
   HardwareWalletConnectionRequest
 } from '../types/hardware-wallets.types';
 
@@ -433,3 +432,8 @@ export const GET_INIT_TREZOR_CONNECT_CHANNEL =
   'GET_INIT_TREZOR_CONNECT_CHANNEL';
 export type handleInitTrezorConnectRendererRequest = void;
 export type handleInitTrezorConnectMainResponse = void;
+
+export const RESET_ACTION_TREZOR_CHANNEL =
+  'RESET_ACTION_TREZOR_CHANNEL';
+export type resetTrezorActionRendererRequest = void;
+export type resetTrezorActionMainResponse = void;

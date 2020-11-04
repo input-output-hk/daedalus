@@ -8,6 +8,7 @@ import {
   SIGN_TRANSACTION_LEDGER_CHANNEL,
   SIGN_TRANSACTION_TREZOR_CHANNEL,
   GET_INIT_TREZOR_CONNECT_CHANNEL,
+  RESET_ACTION_TREZOR_CHANNEL,
 } from '../../../common/ipc/api';
 
 import type {
@@ -25,6 +26,8 @@ import type {
   getCardanoAdaAppRendererRequest,
   handleInitTrezorConnectMainResponse,
   handleInitTrezorConnectRendererRequest,
+  resetTrezorActionMainResponse,
+  resetTrezorActionRendererRequest,
 } from '../../../common/ipc/api';
 
 // IpcChannel<Incoming, Outgoing>
@@ -67,3 +70,8 @@ export const handleInitTrezorConnectChannel: RendererIpcChannel<
   handleInitTrezorConnectMainResponse,
   handleInitTrezorConnectRendererRequest
 > = new RendererIpcChannel(GET_INIT_TREZOR_CONNECT_CHANNEL);
+
+export const resetTrezorActionChannel: RendererIpcChannel<
+  resetTrezorActionMainResponse,
+  resetTrezorActionRendererRequest
+> = new RendererIpcChannel(RESET_ACTION_TREZOR_CHANNEL);

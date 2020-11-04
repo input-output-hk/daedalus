@@ -5,6 +5,7 @@ import { action } from '@storybook/addon-actions';
 import WalletConnectDialog from '../../../../source/renderer/app/components/wallet/WalletConnectDialog';
 import HardwareWalletsWrapper from '../_utils/HardwareWalletsWrapper';
 import { HwDeviceStatuses } from '../../../../source/renderer/app/domains/Wallet';
+import { MINIMAL_TREZOR_FIRMWARE_VERSION, MINIMAL_LEDGER_FIRMWARE_VERSION } from '../../../../source/renderer/app/config/hardwareWalletsConfig';
 import {
   DeviceModels,
   DeviceTypes,
@@ -15,6 +16,8 @@ const ledgerDevice = {
   deviceType: DeviceTypes.LEDGER,
   deviceModel: DeviceModels.LEDGER_NANO_S,
   deviceName: 'Ledger Nano S',
+  path: null,
+  firmwareVersion: MINIMAL_LEDGER_FIRMWARE_VERSION,
 };
 
 const trezorDevice = {
@@ -22,6 +25,8 @@ const trezorDevice = {
   deviceType: DeviceTypes.TREZOR,
   deviceModel: DeviceModels.TREZOR_T,
   deviceName: 'Trezor Model T',
+  path: null,
+  firmwareVersion: MINIMAL_TREZOR_FIRMWARE_VERSION,
 };
 
 storiesOf('Wallets|Hardware Wallets', module)
@@ -35,6 +40,7 @@ storiesOf('Wallets|Hardware Wallets', module)
       hwDeviceStatus={HwDeviceStatuses.CONNECTING}
       onClose={action('onClose')}
       isSubmitting={action('isSubmitting')}
+      error={null}
     />
   ))
 
@@ -44,6 +50,7 @@ storiesOf('Wallets|Hardware Wallets', module)
       hwDeviceStatus={HwDeviceStatuses.LAUNCHING_CARDANO_APP}
       onClose={action('onClose')}
       isSubmitting={action('isSubmitting')}
+      error={null}
     />
   ))
 
@@ -53,6 +60,7 @@ storiesOf('Wallets|Hardware Wallets', module)
       hwDeviceStatus={HwDeviceStatuses.EXPORTING_PUBLIC_KEY}
       onClose={action('onClose')}
       isSubmitting={action('isSubmitting')}
+      error={null}
     />
   ))
 
@@ -62,6 +70,7 @@ storiesOf('Wallets|Hardware Wallets', module)
       hwDeviceStatus={HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED}
       onClose={action('onClose')}
       isSubmitting={action('isSubmitting')}
+      error={null}
     />
   ))
 
@@ -71,6 +80,7 @@ storiesOf('Wallets|Hardware Wallets', module)
       hwDeviceStatus={HwDeviceStatuses.READY}
       onClose={action('onClose')}
       isSubmitting={action('isSubmitting')}
+      error={null}
     />
   ))
 
@@ -80,6 +90,7 @@ storiesOf('Wallets|Hardware Wallets', module)
       hwDeviceStatus={HwDeviceStatuses.CONNECTING}
       onClose={action('onClose')}
       isSubmitting={action('isSubmitting')}
+      error={null}
     />
   ))
 
@@ -89,6 +100,7 @@ storiesOf('Wallets|Hardware Wallets', module)
       hwDeviceStatus={HwDeviceStatuses.LAUNCHING_CARDANO_APP}
       onClose={action('onClose')}
       isSubmitting={action('isSubmitting')}
+      error={null}
     />
   ))
 
@@ -98,6 +110,7 @@ storiesOf('Wallets|Hardware Wallets', module)
       hwDeviceStatus={HwDeviceStatuses.EXPORTING_PUBLIC_KEY}
       onClose={action('onClose')}
       isSubmitting={action('isSubmitting')}
+      error={null}
     />
   ))
 
@@ -107,6 +120,7 @@ storiesOf('Wallets|Hardware Wallets', module)
       hwDeviceStatus={HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED}
       onClose={action('onClose')}
       isSubmitting={action('isSubmitting')}
+      error={null}
     />
   ))
 
@@ -116,5 +130,6 @@ storiesOf('Wallets|Hardware Wallets', module)
       hwDeviceStatus={HwDeviceStatuses.READY}
       onClose={action('onClose')}
       isSubmitting={action('isSubmitting')}
+      error={null}
     />
   ));

@@ -1,6 +1,6 @@
 // @flow
 import type { RequestConfig } from '../../common/types';
-import type { CoinSelectionsResponse, TransactionPaymentData, CoinSelectionAmount } from '../types';
+import type { TransactionPaymentData, CoinSelectionAmount } from '../types';
 import type { DelegationAction } from '../../../types/stakingTypes';
 import { request } from '../../utils/request';
 
@@ -40,6 +40,7 @@ export type SelectCoinsResponseType = {
     derivation_path: Array<string>,
   }>,
   certificates?: Array<{
+    pool?: string,
     certificate_type: DelegationAction,
     reward_account_path: Array<string>,
   }>,

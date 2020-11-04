@@ -15,6 +15,7 @@ import {
   signTransactionLedgerChannel,
   signTransactionTrezorChannel,
   handleInitTrezorConnectChannel,
+  resetTrezorActionChannel,
 } from '../ipc/getHardwareWalletChannel';
 import {
   prepareLedgerInput,
@@ -40,7 +41,6 @@ import { TransactionStates } from '../domains/WalletTransaction';
 
 import type { HwDeviceStatus } from '../domains/Wallet';
 import type {
-  CoinSelectionsRequest,
   CoinSelectionsPaymentRequestType,
   CoinSelectionsDelegationRequestType,
   CreateExternalTransactionResponse,
@@ -58,7 +58,6 @@ import type {
   TrezorModel,
   HardwareWalletExtendedPublicKeyResponse,
   HardwareWalletConnectionRequest,
-  DeviceType,
 } from '../../../common/types/hardware-wallets.types';
 
 export type TxSignRequestTypes = {
@@ -669,6 +668,7 @@ export default class HardwareWalletsStore extends Store {
         networkId: HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId,
         protocolMagic: HW_SHELLEY_CONFIG.NETWORK.MAINNET.protocolMagic,
         certificates: certificatesData,
+        devicePath: null, // @TODO - pass real device path
       });
 
       console.debug('>>> signedTransaction: ', signedTransaction);
@@ -830,9 +830,7 @@ export default class HardwareWalletsStore extends Store {
     const cancelDeviceAction = get(params, 'cancelDeviceAction', false);
     console.debug('>>> CANCEL: ', cancelDeviceAction);
     if (cancelDeviceAction) {
-      signTransactionTrezorChannel.request({
-        reset: true,
-      });
+      resetTrezorActionChannel.request();
     }
     this.sendMoneyRequest.reset();
     runInAction(
@@ -983,9 +981,7 @@ export default class HardwareWalletsStore extends Store {
   }) => {
     const cancelDeviceAction = get(params, 'cancelDeviceAction', false);
     if (cancelDeviceAction) {
-      getHardwareWalletTransportChannel.request({
-        reset: true,
-      });
+      resetTrezorActionChannel.request();
     }
     this.stores.wallets.createHardwareWalletRequest.reset();
     this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;

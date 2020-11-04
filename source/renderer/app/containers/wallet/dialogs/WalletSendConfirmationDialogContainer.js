@@ -89,7 +89,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
           sendMoneyRequest.reset();
           resetHardwareWalletTransaction({ cancelDeviceAction: true });
         }}
-        error={!isHardwareWallet ? sendMoneyRequest.error : sendMoneyExternalRequest.error}
+        error={error}
         currencyUnit={currencyUnit}
         onExternalLinkClick={onExternalLinkClick}
         hwDeviceStatus={hwDeviceStatus}

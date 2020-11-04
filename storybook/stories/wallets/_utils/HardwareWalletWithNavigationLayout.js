@@ -58,6 +58,7 @@ export default class WalletWithNavigationLayout extends Component<Props> {
         isExportingPublicKeyAborted={false}
         isLedger
         isTrezor={false}
+        isHardwareWallet={false}
       >
         {Children.map(children, (child) =>
           React.cloneElement(child, {

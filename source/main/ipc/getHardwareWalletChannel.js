@@ -20,6 +20,7 @@ import {
   SIGN_TRANSACTION_LEDGER_CHANNEL,
   SIGN_TRANSACTION_TREZOR_CHANNEL,
   GET_INIT_TREZOR_CONNECT_CHANNEL,
+  RESET_ACTION_TREZOR_CHANNEL,
 } from '../../common/ipc/api';
 
 import type { IpcSender } from '../../common/ipc/lib/IpcChannel';
@@ -39,6 +40,8 @@ import type {
   signTransactionTrezorMainResponse,
   handleInitTrezorConnectRendererRequest,
   handleInitTrezorConnectMainResponse,
+  resetTrezorActionRendererRequest,
+  resetTrezorActionMainResponse,
 } from '../../common/ipc/api';
 
 const getHardwareWalletTransportChannel: MainIpcChannel<
@@ -70,6 +73,11 @@ const signTransactionTrezorChannel: MainIpcChannel<
   signTransactionTrezorRendererRequest,
   signTransactionTrezorMainResponse
 > = new MainIpcChannel(SIGN_TRANSACTION_TREZOR_CHANNEL);
+
+const resetTrezorActionChannel: MainIpcChannel<
+  resetTrezorActionRendererRequest,
+  resetTrezorActionMainResponse
+> = new MainIpcChannel(RESET_ACTION_TREZOR_CHANNEL);
 
 const handleInitTrezorConnectChannel: MainIpcChannel<
   handleInitTrezorConnectRendererRequest,
@@ -156,12 +164,7 @@ export const handleHardwareWalletRequests = async (mainWindow: BrowserWindow) =>
   let deviceConnection = null;
   getHardwareWalletTransportChannel.onRequest(async (request) => {
     // INIT - 6
-    const { isTrezor, devicePath, reset } = request;
-    if (reset) {
-      console.debug('>>> CANCEL connecting!!!');
-      TrezorConnect.cancel('Method_Cancel');
-      throw new Error ('Connecting aborted')
-    }
+    const { isTrezor, devicePath } = request;
     console.debug('>>> ESTABLISH CONNECTION:  <<<, ', request);
 
     // Connected Trezor device info
@@ -476,19 +479,15 @@ export const handleHardwareWalletRequests = async (mainWindow: BrowserWindow) =>
       ttl,
       networkId,
       certificates,
-      reset
+      devicePath,
     } = params;
+
     if (!TrezorConnect) {
       throw new Error('Device not connected!');
     }
 
-    if (reset) {
-      TrezorConnect.cancel('Method_Cancel');
-      throw new Error('Transaction signing aborted');
-    }
-
     try {
-      const signedTransaction = await TrezorConnect.cardanoSignTransaction({
+      const dataToSign = {
         inputs,
         outputs,
         fee,
@@ -496,10 +495,15 @@ export const handleHardwareWalletRequests = async (mainWindow: BrowserWindow) =>
         protocolMagic,
         networkId,
         certificates,
-      });
+      }
+      const signedTransaction = await TrezorConnect.cardanoSignTransaction({ device: { path: devicePath }, ...dataToSign });
       return Promise.resolve(signedTransaction);
     } catch (e) {
       throw e;
     }
+  });
+
+  resetTrezorActionChannel.onRequest(async () => {
+    TrezorConnect.cancel('Method_Cancel');
   });
 };

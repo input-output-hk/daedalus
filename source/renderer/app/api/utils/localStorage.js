@@ -15,9 +15,9 @@ import type { WalletMigrationStatus } from '../../stores/WalletMigrationStore';
 import type {
   TransportDevice,
   HardwareWalletExtendedPublicKeyResponse,
+  DeviceType,
 } from '../../../../common/types/hardware-wallets.types';
 import type { StorageKey } from '../../../../common/types/electron-store.types';
-import type { DeviceType } from '../../../../common/types/hardware-wallets.types';
 
 export type WalletLocalData = {
   id: string,

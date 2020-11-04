@@ -186,6 +186,7 @@ export type TrezorSignTransactionRequest = {
   protocolMagic: number,
   certificates: Array<?Certificate>,
   reset?: boolean,
+  devicePath: ?string,
 };
 
 export type LedgerSignTransactionResponse = {

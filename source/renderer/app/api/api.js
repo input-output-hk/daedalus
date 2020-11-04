@@ -129,7 +129,6 @@ import type {
   DeleteTransactionRequest,
   GetTransactionsRequest,
   GetTransactionsResponse,
-  CoinSelectionsRequest,
   CoinSelectionsPaymentRequestType,
   CoinSelectionsDelegationRequestType,
   CoinSelectionsResponse,
@@ -846,10 +845,10 @@ export default class AdaApi {
       });
       if (response.certificates) {
         map(response.certificates, (certificate) => {
-          let certificateData = {
+          const certificateData = {
             certificateType: certificate.certificate_type,
             rewardAccountPath: certificate.reward_account_path,
-            pool: certificate.pool,
+            pool: certificate.pool || null,
           };
           certificatesData.push(certificateData);
         });
