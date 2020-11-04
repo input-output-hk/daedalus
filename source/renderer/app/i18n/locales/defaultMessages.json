@@ -497,97 +497,111 @@
         "description": "\"Connect your device and enter your PIN to unlock it\" device state",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 22
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.connecting",
         "start": {
           "column": 14,
-          "line": 15
+          "line": 17
         }
       },
       {
-        "defaultMessage": "!!!Launch the Cardano application on your device",
-        "description": "\"Launch the Cardano application on your device\" device state",
+        "defaultMessage": "!!!Connect the \"{walletName}\" device",
+        "description": "\"Connect the IOHK Trezor 1 device\" device state",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 27
+        },
+        "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
+        "id": "wallet.hardware.deviceStatus.connecting.known",
+        "start": {
+          "column": 20,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!Launch Cardano application on your device",
+        "description": "\"Launch Cardano application on your device\" device state",
+        "end": {
+          "column": 3,
+          "line": 32
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.launching_cardano_app",
         "start": {
           "column": 25,
-          "line": 21
+          "line": 28
         }
       },
       {
-        "defaultMessage": "!!!Confirm exporting your public key on your device",
+        "defaultMessage": "!!!Export the public key on your device",
         "description": "\"Confirm exporting your public key on your device\" device state",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 38
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.exporting_public_key",
         "start": {
           "column": 24,
-          "line": 26
+          "line": 33
         }
       },
       {
-        "defaultMessage": "!!!Exporting public key failed",
+        "defaultMessage": "!!!Exporting the public key failed",
         "description": "\"Exporting public key failed\" device state",
-        "end": {
-          "column": 3,
-          "line": 36
-        },
-        "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
-        "id": "wallet.hardware.deviceStatus.exporting_public_key_failed",
-        "start": {
-          "column": 31,
-          "line": 32
-        }
-      },
-      {
-        "defaultMessage": "!!!Disconnect and reconnect your device to start the process again",
-        "description": "\"Disconnect and reconnect your device to start the process again\" device state",
         "end": {
           "column": 3,
           "line": 43
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
-        "id": "wallet.hardware.deviceStatus.exportingPublicKeyError",
+        "id": "wallet.hardware.deviceStatus.exporting_public_key_failed",
         "start": {
-          "column": 27,
-          "line": 37
+          "column": 31,
+          "line": 39
         }
       },
       {
-        "defaultMessage": "!!!Device ready and waiting for commands",
-        "description": "\"Device ready and waiting for commands\" device state",
+        "defaultMessage": "!!!Disconnect and reconnect your device to restart the process",
+        "description": "\"Disconnect and reconnect your device to start the process again\" device state",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 50
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
-        "id": "wallet.hardware.deviceStatus.ready",
+        "id": "wallet.hardware.deviceStatus.exportingPublicKeyError",
         "start": {
-          "column": 9,
+          "column": 27,
           "line": 44
         }
       },
       {
-        "defaultMessage": "!!!Verify the transaction on your device in order to sign it",
-        "description": "\"Verify the transaction on your device in order to sign it\" device state",
+        "defaultMessage": "!!!Device ready",
+        "description": "\"Device ready\" device state",
         "end": {
           "column": 3,
           "line": 55
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
+        "id": "wallet.hardware.deviceStatus.ready",
+        "start": {
+          "column": 9,
+          "line": 51
+        }
+      },
+      {
+        "defaultMessage": "!!!Confirm the transaction using the \"{walletName}\" device",
+        "description": "\"Confirm the transaction using the IOHK Trezor 1 device\" device state",
+        "end": {
+          "column": 3,
+          "line": 62
+        },
+        "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.verifying_transaction",
         "start": {
           "column": 25,
-          "line": 49
+          "line": 56
         }
       },
       {
@@ -595,27 +609,125 @@
         "description": "\"Transaction verification and signing failed\" device state",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 67
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.verifying_transaction_failed",
         "start": {
           "column": 32,
-          "line": 56
+          "line": 63
         }
       },
       {
-        "defaultMessage": "!!!Transaction verified and signed",
+        "defaultMessage": "!!!Transaction confirmed",
         "description": "\"Transaction verified and signed\" device state",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 72
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.verifying_transaction_succeeded",
         "start": {
           "column": 35,
-          "line": 61
+          "line": 68
+        }
+      },
+      {
+        "defaultMessage": "!!!Trezor Bridge not installed!",
+        "description": "\"Trezor Bridge not installed! {instructionsLink}\" device state",
+        "end": {
+          "column": 3,
+          "line": 78
+        },
+        "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
+        "id": "wallet.hardware.deviceStatus.trezor_bridge_failure",
+        "start": {
+          "column": 25,
+          "line": 73
+        }
+      },
+      {
+        "defaultMessage": "!!!Installation instructions",
+        "description": "Trezor Bridge installation instructions link label",
+        "end": {
+          "column": 3,
+          "line": 83
+        },
+        "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
+        "id": "wallet.hardware.deviceStatus.trezor_bridge_failure.link.label",
+        "start": {
+          "column": 36,
+          "line": 79
+        }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360011451693",
+        "description": "URL for the \"Trezor Bridge\" update",
+        "end": {
+          "column": 3,
+          "line": 89
+        },
+        "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
+        "id": "wallet.hardware.deviceStatus.trezor_bridge_failure.link.url",
+        "start": {
+          "column": 34,
+          "line": 84
+        }
+      },
+      {
+        "defaultMessage": "!!!Unsupported firmware! {instructionsLink}",
+        "description": "\"Unsupported firmware!\" device state",
+        "end": {
+          "column": 3,
+          "line": 94
+        },
+        "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
+        "id": "wallet.hardware.deviceStatus.wrong_firmware",
+        "start": {
+          "column": 18,
+          "line": 90
+        }
+      },
+      {
+        "defaultMessage": "!!!Firmware update instructions",
+        "description": "Firmware update installation instructions link label",
+        "end": {
+          "column": 3,
+          "line": 99
+        },
+        "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
+        "id": "wallet.hardware.deviceStatus.wrong_firmware.link.label",
+        "start": {
+          "column": 29,
+          "line": 95
+        }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/articles/360011451693",
+        "description": "URL for the \"Firmware Update\"",
+        "end": {
+          "column": 3,
+          "line": 105
+        },
+        "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
+        "id": "wallet.hardware.deviceStatus.wrong_firmware.link.url",
+        "start": {
+          "column": 27,
+          "line": 100
+        }
+      },
+      {
+        "defaultMessage": "!!!The device is not supported!",
+        "description": "\"The device is not supported!\" device state",
+        "end": {
+          "column": 3,
+          "line": 110
+        },
+        "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
+        "id": "wallet.hardware.deviceStatus.unsupported_device",
+        "start": {
+          "column": 22,
+          "line": 106
         }
       }
     ],
@@ -3700,7 +3812,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Confirm your delegation choice to <span>[{selectedPoolTicker}]</span> stake pool for your <span>{selectedWalletName}</span> wallet by posting your delegation preferences on the Cardano blockchain.",
+        "defaultMessage": "!!!Confirm your delegation choice to <span>[{selectedPoolTicker}]</span> stake pool for your <span>{selectedWalletName}</span> wallet.",
         "description": "Description on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
@@ -11956,7 +12068,7 @@
         "description": "Description for the \"Connect\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 57
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.connect.description",
@@ -11970,13 +12082,13 @@
         "description": "Label for the \"Restore\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 62
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.restore.label",
         "start": {
           "column": 16,
-          "line": 57
+          "line": 58
         }
       },
       {
@@ -11984,13 +12096,13 @@
         "description": "Description for the \"Restore\" button with paper wallet certificate on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 69
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.restore.withCertificate.description",
         "start": {
           "column": 37,
-          "line": 62
+          "line": 63
         }
       },
       {
@@ -11998,13 +12110,13 @@
         "description": "Description for the \"Restore\" button without paper wallet certificate on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 74
+          "line": 75
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.restore.withoutCertificate.description",
         "start": {
           "column": 40,
-          "line": 69
+          "line": 70
         }
       },
       {
@@ -12012,13 +12124,13 @@
         "description": "Label for the \"Import\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 79
+          "line": 80
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.import.label",
         "start": {
           "column": 15,
-          "line": 75
+          "line": 76
         }
       },
       {
@@ -12026,13 +12138,13 @@
         "description": "Description for the \"Import\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 86
+          "line": 87
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.import.description",
         "start": {
           "column": 21,
-          "line": 80
+          "line": 81
         }
       },
       {
@@ -12040,13 +12152,13 @@
         "description": "Restore notification message shown during async wallet restore on the wallet add screen.",
         "end": {
           "column": 3,
-          "line": 93
+          "line": 94
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.restoreNotificationMessage",
         "start": {
           "column": 30,
-          "line": 87
+          "line": 88
         }
       },
       {
@@ -12054,13 +12166,13 @@
         "description": "\"Maximum number of wallets reached\" notification message shown on the wallet add screen if user has 50 wallets.",
         "end": {
           "column": 3,
-          "line": 100
+          "line": 101
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.maxNumberOfWalletsNotificationMessage",
         "start": {
           "column": 41,
-          "line": 94
+          "line": 95
         }
       }
     ],
@@ -12069,17 +12181,17 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Connect hardware wallet",
-        "description": "Title \"Connect hardware wallet\" in the connect wallet dialog.",
+        "defaultMessage": "!!!Connect a hardware wallet device",
+        "description": "Title \"Connect a hardware wallet device\" in the connect wallet dialog.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 37
         },
         "file": "source/renderer/app/components/wallet/WalletConnectDialog.js",
         "id": "wallet.connect.dialog.title",
         "start": {
           "column": 15,
-          "line": 27
+          "line": 32
         }
       },
       {
@@ -12087,27 +12199,27 @@
         "description": "Label for the \"Cancel\" button in the connect wallet dialog",
         "end": {
           "column": 3,
-          "line": 37
-        },
-        "file": "source/renderer/app/components/wallet/WalletConnectDialog.js",
-        "id": "wallet.connect.dialog.button.close",
-        "start": {
-          "column": 15,
-          "line": 32
-        }
-      },
-      {
-        "defaultMessage": "!!!Follow instructions to access your wallet",
-        "description": "Follow instructions label",
-        "end": {
-          "column": 3,
           "line": 42
         },
         "file": "source/renderer/app/components/wallet/WalletConnectDialog.js",
-        "id": "wallet.connect.hardwareWalletInstructions",
+        "id": "wallet.connect.dialog.button.cancel",
         "start": {
-          "column": 30,
+          "column": 16,
           "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!<p><b>Daedalus currently supports only Trezor Model T hardware wallet devices.</b></p><p>If you are <b>connecting your device with Daedalus for the first time</b>, please follow the instructions below.</p><p>If you have <b>already connected your device with Daedalus</b>, you don’t need to repeat this step. Just connect your device when you need to confirm a transaction.</p>",
+        "description": "Follow instructions label",
+        "end": {
+          "column": 3,
+          "line": 48
+        },
+        "file": "source/renderer/app/components/wallet/WalletConnectDialog.js",
+        "id": "wallet.connect.dialog.instructions",
+        "start": {
+          "column": 16,
+          "line": 43
         }
       }
     ],
@@ -14598,6 +14710,20 @@
         "start": {
           "column": 8,
           "line": 69
+        }
+      },
+      {
+        "defaultMessage": "!!!Follow instructions and manually update",
+        "description": "Follow instructions and manually update description.",
+        "end": {
+          "column": 3,
+          "line": 78
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "manualUpdate.button.label",
+        "start": {
+          "column": 22,
+          "line": 74
         }
       }
     ],
