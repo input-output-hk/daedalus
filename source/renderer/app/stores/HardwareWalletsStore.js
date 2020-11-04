@@ -470,11 +470,10 @@ export default class HardwareWalletsStore extends Store {
           deviceType === DeviceTypes.TREZOR
             ? MINIMAL_TREZOR_FIRMWARE_VERSION
             : MINIMAL_LEDGER_FIRMWARE_VERSION;
-        let isFirmwareVersionValid = semver.gte(
+        const isFirmwareVersionValid = semver.gte(
           firmwareVersion,
           minFirmwareVersion
         );
-        isFirmwareVersionValid = false;
         if (!isFirmwareVersionValid) {
           runInAction(
             'HardwareWalletsStore:: set HW device CONNECTING FAILED - wrong firmware',
@@ -569,62 +568,61 @@ export default class HardwareWalletsStore extends Store {
     } = transportDevice;
     const isTrezor = deviceType === DeviceTypes.TREZOR;
 
-    const { active: activeHardwareWallet } = this.stores.wallets;
     try {
       const extendedPublicKey = await getExtendedPublicKeyChannel.request({
         path: "1852'/1815'/0'", // Shelley 1852 ADA 1815 indicator for account '0'
         isTrezor,
         devicePath: path,
       });
-      console.debug('>>> _getExtendedPublicKey::Exported: ', extendedPublicKey);
+      console.debug('>>> _getExtendedPublicKey::Exported: ', {
+        extendedPublicKey,
+        hardwareWalletsConnectionData: this.hardwareWalletsConnectionData,
+      });
 
-      // Check if public key matches active hardware wallet public key
-      if (activeHardwareWallet && this.hardwareWalletsConnectionData) {
-        const activeHardwareWalletConnection = this
-          .hardwareWalletsConnectionData[activeHardwareWallet.id];
-        const activeHardwareWalletConnectionKeys = get(
-          activeHardwareWalletConnection,
-          'extendedPublicKey',
-          {}
-        );
-        if (
-          activeHardwareWalletConnectionKeys.publicKeyHex ===
-          extendedPublicKey.publicKeyHex
-        ) {
-          console.debug('>>> WALLET ALREADY PAIRED - SET TO connected!');
-          // Active wallet exists and match device - set to CONNECTED state
-          this._setHardwareWalletLocalData({
-            walletId: activeHardwareWallet.id,
+      const recognizedDevice = find(
+        this.hardwareWalletsConnectionData,
+        (hardwareWalletData) =>
+          hardwareWalletData.extendedPublicKey.chainCodeHex ===
+            extendedPublicKey.chainCodeHex &&
+          hardwareWalletData.extendedPublicKey.publicKeyHex ===
+            extendedPublicKey.publicKeyHex
+      );
+      const recognizedWallet = recognizedDevice
+        ? this.stores.wallets.getWalletById(recognizedDevice.id)
+        : null;
+
+      // Check if public key matches already restored hardware wallet public key
+      if (recognizedWallet) {
+        console.debug('>>> WALLET ALREADY PAIRED - SET TO connected!');
+        this._setHardwareWalletLocalData({
+          walletId: recognizedWallet.id,
+          data: {
+            disconnected: false,
+            device: transportDevice,
+          },
+        });
+
+        // @TODO - guard against Ledger - login needs to be changed and deviceId (serial) applied
+        if (deviceId) {
+          this._setHardwareWalletDevice({
+            deviceId,
             data: {
-              disconnected: false,
-              device: transportDevice,
+              deviceType,
+              deviceModel,
+              deviceName,
+              path,
+              paired: recognizedWallet.id, // device paired with software wallet
+              disconnected: false, // device physically disconnected
             },
           });
-
-          // @TODO - guard against Ledger - login needs to be changed and deviceId (serial) applied
-          if (deviceId) {
-            this._setHardwareWalletDevice({
-              deviceId,
-              data: {
-                deviceType,
-                deviceModel,
-                deviceName,
-                path,
-                paired: activeHardwareWallet.id, // device paired with software wallet
-                disconnected: false, // device physically disconnected
-              },
-            });
-          }
-          return;
         }
-        // Active wallet exists but wrong device supplied
-        console.debug('>>> WALLET ALREADY PAIRED - KEYS NOT MATCH!');
-        throw new Error(
-          `Wrong Hardware Wallet device supplied to "${activeHardwareWallet.name}" wallet`
-        );
+        this.stores.wallets.goToWalletRoute(recognizedDevice.id);
+        this.actions.dialogs.closeActiveDialog.trigger();
+        return;
       }
       // Active wallet not exist, create new one with default name
       console.debug('>>> WALLET NOT PAIRED - CREATE NEW ONE!');
+
       await this.actions.wallets.createHardwareWallet.trigger({
         walletName: deviceName || DEFAULT_HW_NAME,
         extendedPublicKey,

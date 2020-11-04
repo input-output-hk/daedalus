@@ -153,6 +153,7 @@ export default class HardwareWalletStatus extends Component<Props> {
       hwDeviceStatus === HwDeviceStatuses.TREZOR_BRIDGE_FAILURE ||
       hwDeviceStatus === HwDeviceStatuses.WRONG_FIRMWARE;
     let instructionsLink;
+    let label;
     if (hasInstructionsLink) {
       // @TODO - add Ledger firmware update support article links
       instructionsLink = (
@@ -168,10 +169,7 @@ export default class HardwareWalletStatus extends Component<Props> {
           skin={LinkSkin}
         />
       );
-    }
-
-    let label;
-    if (
+    } else if (
       walletName &&
       (hwDeviceStatus === HwDeviceStatuses.CONNECTING ||
         hwDeviceStatus === HwDeviceStatuses.VERIFYING_TRANSACTION)
