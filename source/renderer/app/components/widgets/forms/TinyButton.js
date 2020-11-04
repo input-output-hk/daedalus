@@ -28,7 +28,7 @@ export default class TinyButton extends Component<Props> {
         <Button
           themeId={IDENTIFIERS.BUTTON}
           skin={ButtonSkin}
-          loading={loading ? true : false}
+          loading={loading}
           {...buttonProps}
         />
       </div>

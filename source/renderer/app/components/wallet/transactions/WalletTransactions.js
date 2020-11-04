@@ -6,6 +6,7 @@ import WalletTransactionsList, {
   WalletTransactionsListScrollContext,
 } from './WalletTransactionsList';
 import WalletTransactionsHeader from './WalletTransactionsHeader';
+import FilterDialog from './FilterDialog';
 import FilterResultInfo from './FilterResultInfo';
 import WalletNoTransactions from './WalletNoTransactions';
 import VerticalFlexContainer from '../../layout/VerticalFlexContainer';
@@ -25,49 +26,43 @@ export const messages = defineMessages({
 
 type Props = {
   activeWallet: ?Wallet,
-  transactions: Array<WalletTransaction>,
-  filterOptions: TransactionFilterOptionsType,
-  defaultFilterOptions: TransactionFilterOptionsType,
-  populatedFilterOptions: TransactionFilterOptionsType,
-  deletePendingTransaction: Function,
-  onLoadMore: Function,
-  hasMoreToLoad: boolean,
-  isLoadingTransactions: boolean,
-  onOpenExternalLink: Function,
-  getUrlByType: Function,
-  isDeletingTransaction: boolean,
-  totalAvailable: number,
-  currentLocale: string,
   currentDateFormat: string,
+  currentLocale: string,
   currentNumberFormat: string,
+  currentTimeFormat: string,
+  defaultFilterOptions: TransactionFilterOptionsType,
+  deletePendingTransaction: Function,
+  filterOptions: TransactionFilterOptionsType,
+  getUrlByType: Function,
+  hasMoreToLoad: boolean,
+  isDeletingTransaction: boolean,
+  isLoadingTransactions: boolean,
   onFilter: Function,
-  onClose: Function,
+  onLoadMore: Function,
+  onOpenExternalLink: Function,
   onRequestCSVFile: Function,
+  populatedFilterOptions: TransactionFilterOptionsType,
+  totalAvailable: number,
+  transactions: Array<WalletTransaction>,
 };
 
 type State = {
   isScrolling: boolean,
-  isFilterButtonFaded: boolean,
   isFilterDialogOpen: boolean,
-  filterOptions: TransactionFilterOptionsType,
 };
 
 @observer
-export default class WalletTransactions extends Component<Props> {
+export default class WalletTransactions extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
   state = {
-    isFilterButtonFaded: false,
+    isScrolling: false,
     isFilterDialogOpen: false,
   };
 
-  setFilterButtonFaded = (isFilterButtonFaded) => {
-    this.setState(() => ({
-      isFilterButtonFaded,
-    }));
-  };
+  setIsScrolling = (isScrolling: boolean) => this.setState({ isScrolling });
 
   onFilterDialogOpen = () => {
     this.setState(() => ({
@@ -81,9 +76,14 @@ export default class WalletTransactions extends Component<Props> {
     }));
   };
 
+  onFilter = (filterOptions: TransactionFilterOptionsType) => {
+    this.props.onFilter(filterOptions);
+    this.onFilterDialogClose();
+  };
+
   render() {
     const { intl } = this.context;
-    const { isFilterButtonFaded, isFilterDialogOpen } = this.state;
+    const { isFilterDialogOpen, isScrolling } = this.state;
     const {
       activeWallet,
       transactions,
@@ -148,22 +148,27 @@ export default class WalletTransactions extends Component<Props> {
 
     return (
       <WalletTransactionsListScrollContext.Provider
-        value={{ setFilterButtonFaded: this.setFilterButtonFaded }}
+        value={{ setIsScrolling: this.setIsScrolling }}
       >
         <WalletTransactionsHeader
-          transactions={transactions}
+          numberOfFilterDimensionsApplied={numberOfFilterDimensionsApplied}
+          numberOfTransactions={transactions.length}
           onRequestCSVFile={onRequestCSVFile}
           onFilterDialogOpen={this.onFilterDialogOpen}
-          onFilterDialogClose={this.onFilterDialogClose}
-          isFilterButtonFaded={isFilterButtonFaded}
-          isFilterDialogOpen={isFilterDialogOpen}
-          defaultFilterOptions={defaultFilterOptions}
-          populatedFilterOptions={populatedFilterOptions}
-          currentLocale={currentLocale}
-          currentTimeFormat={currentTimeFormat}
-          currentNumberFormat={currentNumberFormat}
-          currentDateFormat={currentDateFormat}
-        />
+          isScrolling={isScrolling}
+        >
+          {isFilterDialogOpen && (
+            <FilterDialog
+              locale={currentLocale}
+              dateFormat={currentDateFormat}
+              numberFormat={currentNumberFormat}
+              defaultFilterOptions={defaultFilterOptions}
+              populatedFilterOptions={populatedFilterOptions}
+              onFilter={this.onFilter}
+              onClose={this.onFilterDialogClose}
+            />
+          )}
+        </WalletTransactionsHeader>
         <VerticalFlexContainer>{walletTransactions}</VerticalFlexContainer>
       </WalletTransactionsListScrollContext.Provider>
     );

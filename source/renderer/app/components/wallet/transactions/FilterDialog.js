@@ -168,12 +168,10 @@ export default class FilterDialog extends Component<Props> {
   dateRangeOptions: Array<{ label: string, value: string }>;
   form: ReactToolboxMobxForm;
 
-  constructor(props: Props, context) {
-    console.log('props', props);
+  constructor(props: Props, context: Object) {
     super(props);
 
     const {
-      locale,
       populatedFilterOptions: {
         incomingChecked,
         outgoingChecked,

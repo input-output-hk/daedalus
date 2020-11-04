@@ -1,6 +1,5 @@
 // @flow
 import React, { Component } from 'react';
-import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { Button } from 'react-polymorph/lib/components/Button';
@@ -43,11 +42,11 @@ const messages = defineMessages({
 });
 
 export type ScrollContextType = {
-  setFilterButtonFaded: Function,
+  setIsScrolling: Function,
 };
 
 export const WalletTransactionsListScrollContext = React.createContext<ScrollContextType>(
-  { setFilterButtonFaded: () => null }
+  { setIsScrolling: () => null }
 );
 
 type Props = {

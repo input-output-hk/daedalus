@@ -1,11 +1,9 @@
 // @flow
-import faker from 'faker';
 import moment from 'moment';
-import { random, get } from 'lodash';
 
 const isOdd = (number: number) => number % 2;
 
-const now = moment();
+const date = moment().subtract('month', 1);
 const getAddress = (txIndex: number, inputOutputIndex: number) =>
   `addr1qxwt274ux0n46rvg27k6dcepdewvh28ex0uua2u2gsuus7wp7n5ea7ryx48h2txjkf09cljahkwyvpawpm3ga6s8hynscqps${txIndex}${inputOutputIndex}`;
 const amountBase = Math.round(Math.random() * 10) + 1000000000;
@@ -13,7 +11,7 @@ const amountBase = Math.round(Math.random() * 10) + 1000000000;
 const getDummyTransaction = (index: number) => {
   const amount = amountBase + index;
   const direction = isOdd(index) ? 'incoming' : 'outgoing';
-  if (isOdd(index)) now.add(1, 'day');
+  if (isOdd(index)) date.add(1, 'day');
   const id = index;
   return {
     id,
@@ -22,7 +20,7 @@ const getDummyTransaction = (index: number) => {
       unit: 'lovelace',
     },
     inserted_at: {
-      time: now.toDate(),
+      time: date.toDate(),
       block: {
         slot_number: amountBase,
         epoch_number: amountBase,
