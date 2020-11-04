@@ -10,6 +10,7 @@ Changelog
 
 ### Fixes
 
+- Fixed `leftovers` not being displayed correctly ([PR 2231](https://github.com/input-output-hk/daedalus/pull/2231))
 - Fixed error message and validation on redeem rewards screen ([PR 2220](https://github.com/input-output-hk/daedalus/pull/2220))
 - Fixed Address validation on Shelley QA network ([PR 2218](https://github.com/input-output-hk/daedalus/pull/2218))
 - Vertically centered empty news feed message ([PR 2216](https://github.com/input-output-hk/daedalus/pull/2216))
