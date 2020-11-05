@@ -269,7 +269,7 @@ export const CARDANO_THEME_OUTPUT = {
   },
   hardwareWallet: {
     '--theme-hardware-wallet-status-background-color': '#ffffff',
-    '--theme-hardware-wallet-status-border-color': '#d2d3d3',
+    '--theme-hardware-wallet-status-border-color': 'rgba(94, 96, 102, 0.3)',
     '--theme-hardware-wallet-status-color': '#5e6066',
     '--theme-hardware-wallet-status-ready-color': '#2dc06c',
     '--theme-hardware-wallet-title-color': '#5e6066',

@@ -70,12 +70,12 @@ export default class SidebarWalletMenuItem extends Component<Props> {
       <button className={componentStyles} onClick={onClick}>
         <div className={styles.meta}>
           <div className={styles.topContainer}>
-            <div className={styles.title}>
-              {title}
-              {isHardwareWallet && (
+            <div className={styles.title}>{title}</div>
+            {isHardwareWallet && (
+              <div className={styles.hardwareWalletsIconWrapper}>
                 <SVGInline svg={hardwareWalletsIcon} className={hwIconStyles} />
-              )}
-            </div>
+              </div>
+            )}
           </div>
           <div className={styles.info}>{isRestoreActive ? '-' : info}</div>
           {isRestoreActive ? <ProgressBar progress={restoreProgress} /> : null}

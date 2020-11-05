@@ -83,17 +83,24 @@
     white-space: nowrap;
   }
 
-  .hardwareWalletsIcon {
-    svg {
-      height: 14px;
-      margin-left: 6px;
-      width: 14px;
-    }
-    &.disconnected {
+  .hardwareWalletsIconWrapper {
+    flex: 1;
+    margin-top: -5.5px;
+
+    .hardwareWalletsIcon {
       svg {
-        opacity: 0.3;
+        height: 14px;
+        margin-left: 6px;
+        width: 14px;
+
         path {
-          fill: var(--theme-icon-sidebar-color);
+          fill: var(--theme-sidebar-menu-item-wallet-name-color);
+        }
+      }
+
+      &.disconnected {
+        svg {
+          opacity: 0.3;
         }
       }
     }

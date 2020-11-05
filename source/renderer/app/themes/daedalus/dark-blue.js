@@ -272,7 +272,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
   },
   hardwareWallet: {
     '--theme-hardware-wallet-status-background-color': '#263345',
-    '--theme-hardware-wallet-status-border-color': '#263345',
+    '--theme-hardware-wallet-status-border-color': 'rgba(233, 244, 254, 0.3)',
     '--theme-hardware-wallet-status-color': '#e9f4fe',
     '--theme-hardware-wallet-status-ready-color': '#2dc06c',
     '--theme-hardware-wallet-title-color': '#e9f4fe',
