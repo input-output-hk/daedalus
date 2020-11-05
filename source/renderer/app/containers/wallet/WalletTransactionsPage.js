@@ -82,8 +82,8 @@ export default class WalletTransactionsPage extends Component<Props> {
     const onRequestCSVFile = () =>
       transactionsCsvGenerator({
         desktopDirectoryPath,
-        transactions,
         intl,
+        transactions,
       });
 
     return (
