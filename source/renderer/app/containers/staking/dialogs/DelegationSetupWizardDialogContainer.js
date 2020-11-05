@@ -223,7 +223,6 @@ export default class DelegationSetupWizardDialogContainer extends Component<
           sendMoneyRequest.error ||
           selectCoinsRequest.error
         }
-        isHardwareWallet={selectedWallet.isHardwareWallet}
         hwDeviceStatus={hwDeviceStatus}
       />
     );

@@ -102,7 +102,6 @@ type Props = {
   stepsList: Array<string>,
   isSubmitting: boolean,
   hwDeviceStatus: HwDeviceStatus,
-  isHardwareWallet: boolean,
   error: ?LocalizableError,
   onExternalLinkClick: Function,
 };
@@ -128,7 +127,11 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
           validators: [
             ({ field }) => {
               const password = field.value;
-              if (this.props.isHardwareWallet) return [true];
+              const isHardwareWallet = get(
+                this.props.selectedWallet,
+                'isHardwareWallet'
+              );
+              if (isHardwareWallet) return [true];
               if (password === '') {
                 return [
                   false,
@@ -153,7 +156,8 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
   submit = () => {
     this.form.submit({
       onSuccess: (form) => {
-        const { isHardwareWallet } = this.props;
+        const { selectedWallet } = this.props;
+        const isHardwareWallet = get(selectedWallet, 'isHardwareWallet');
         const { spendingPassword } = form.values();
         this.props.onConfirm(spendingPassword, isHardwareWallet);
       },
@@ -176,10 +180,10 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
       error,
       isSubmitting,
       hwDeviceStatus,
-      isHardwareWallet,
       onExternalLinkClick,
     } = this.props;
     const selectedWalletName = get(selectedWallet, 'name');
+    const isHardwareWallet = get(selectedWallet, 'isHardwareWallet');
     const selectedPoolTicker = get(selectedPool, 'ticker');
     const spendingPasswordField = form.$('spendingPassword');
 
