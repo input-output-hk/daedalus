@@ -873,9 +873,7 @@ export default class AdaApi {
         fee: transactionFee,
       };
 
-      logger.debug('AdaApi::selectCoins success', {
-        transactionFee: extendedResponse,
-      });
+      logger.debug('AdaApi::selectCoins success', { extendedResponse });
       return extendedResponse;
     } catch (error) {
       logger.error('AdaApi::selectCoins error', { error });
@@ -886,9 +884,6 @@ export default class AdaApi {
   createExternalTransaction = async (
     request: CreateExternalTransactionRequest
   ): Promise<CreateExternalTransactionResponse> => {
-    logger.debug('AdaApi::createExternalTransaction called', {
-      parameters: filterLogData(request),
-    });
     const { signedTransactionBlob } = request;
     try {
       const response = await createExternalTransaction(this.config, {
