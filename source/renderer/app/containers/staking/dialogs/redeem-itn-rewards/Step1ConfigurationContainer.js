@@ -43,7 +43,7 @@ export default class Step1ConfigurationContainer extends Component<Props> {
   ) =>
     walletAmount &&
     walletAmount.gte(new BigNumber(MIN_REWARDS_FUNDS)) &&
-    walletAmount.gte(walletReward);
+    !walletAmount.equals(walletReward);
 
   render() {
     const { onClose, onBack, stores, actions } = this.props;
