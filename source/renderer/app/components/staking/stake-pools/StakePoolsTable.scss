@@ -113,6 +113,21 @@
         justify-content: space-between;
         width: 100%;
 
+        .tooltipWithHTMLContent {
+          p {
+            -webkit-box-orient: horizontal;
+            display: block;
+            -webkit-line-clamp: none;
+            overflow: visible;
+            text-overflow: clip;
+            word-break: normal;
+
+            & + p {
+              margin-top: 6px;
+            }
+          }
+        }
+
         :global {
           .SimpleTooltip_root {
             .SimpleTooltip_bubble {
@@ -271,6 +286,13 @@
         .stakePoolReference {
           font-family: var(--font-medium);
         }
+      }
+
+      .asterisk {
+        font-family: Verdana;
+        margin-right: -8px;
+        opacity: 50%;
+        width: 8px;
       }
 
       .saturation {

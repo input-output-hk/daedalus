@@ -309,7 +309,7 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-loading-status-icons-off-color': '#ea4c5b',
     '--theme-loading-status-icons-unloaded-loading-color': '#2d2d2d',
     '--theme-loading-status-icons-unloaded-syncing-color': '#2d2d2d',
-    '--theme-loading-status-icons-tooltip-color': '#2d2d2d',
+    '--theme-loading-status-icons-tooltip-color': 'var(--rp-pop-over-bg-color)',
     '--theme-loading-spinner-color': '#2d2d2d',
     '--theme-loading-spinner-medium-color': '#2d2d2d',
   },
@@ -1058,6 +1058,10 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-news-overlay-update-button-hover-text-color': '#fff',
     '--theme-news-overlay-update-button-background-color-hover': '#29b595',
     '--theme-news-overlay-update-button-border-color': '#29b595',
+  },
+  rpPopOver: {
+    '--rp-pop-over-bg-color': 'rgba(45,45,45,0.9)',
+    '--rp-pop-over-text-color': 'white',
   },
 };
 
