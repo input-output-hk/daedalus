@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## 3.0.0-FC1
+
+### Features
+
+- Added hardware wallet support for "Trezor model T" ([PR 2046](https://github.com/input-output-hk/daedalus/pull/2046))
+
 ## 2.4.1
 
 ### Fixes
