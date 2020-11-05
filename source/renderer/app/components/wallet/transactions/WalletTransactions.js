@@ -14,6 +14,7 @@ import { formattedWalletAmount } from '../../../utils/formatters';
 import { getNumberOfFilterDimensionsApplied } from '../../../utils/transaction';
 import { WalletTransaction } from '../../../domains/WalletTransaction';
 import Wallet from '../../../domains/Wallet';
+import styles from './WalletTransactions.scss';
 import type { TransactionFilterOptionsType } from '../../../stores/TransactionsStore';
 
 export const messages = defineMessages({
@@ -150,26 +151,28 @@ export default class WalletTransactions extends Component<Props, State> {
       <WalletTransactionsListScrollContext.Provider
         value={{ setIsScrolling: this.setIsScrolling }}
       >
-        <WalletTransactionsHeader
-          numberOfFilterDimensionsApplied={numberOfFilterDimensionsApplied}
-          numberOfTransactions={transactions.length}
-          onRequestCSVFile={onRequestCSVFile}
-          onFilterDialogOpen={this.onFilterDialogOpen}
-          isScrolling={isScrolling}
-        >
-          {isFilterDialogOpen && (
-            <FilterDialog
-              locale={currentLocale}
-              dateFormat={currentDateFormat}
-              numberFormat={currentNumberFormat}
-              defaultFilterOptions={defaultFilterOptions}
-              populatedFilterOptions={populatedFilterOptions}
-              onFilter={this.onFilter}
-              onClose={this.onFilterDialogClose}
-            />
-          )}
-        </WalletTransactionsHeader>
-        <VerticalFlexContainer>{walletTransactions}</VerticalFlexContainer>
+        <div className={styles.component}>
+          <WalletTransactionsHeader
+            numberOfFilterDimensionsApplied={numberOfFilterDimensionsApplied}
+            numberOfTransactions={transactions.length}
+            onRequestCSVFile={onRequestCSVFile}
+            onFilterDialogOpen={this.onFilterDialogOpen}
+            isScrolling={isScrolling}
+          >
+            {isFilterDialogOpen && (
+              <FilterDialog
+                locale={currentLocale}
+                dateFormat={currentDateFormat}
+                numberFormat={currentNumberFormat}
+                defaultFilterOptions={defaultFilterOptions}
+                populatedFilterOptions={populatedFilterOptions}
+                onFilter={this.onFilter}
+                onClose={this.onFilterDialogClose}
+              />
+            )}
+          </WalletTransactionsHeader>
+          <VerticalFlexContainer>{walletTransactions}</VerticalFlexContainer>
+        </div>
       </WalletTransactionsListScrollContext.Provider>
     );
   }
