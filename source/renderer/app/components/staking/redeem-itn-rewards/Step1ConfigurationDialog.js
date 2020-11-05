@@ -271,7 +271,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       </p>;
 
     if (error && (error.id === 'staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFundsRewardsOnly' ||
-      error.id === 'staking.delegationSetup.chooseWallet.step.dialog.errorRestoringWallet'
+      error.id === 'staking.redeemItnRewards.step1.errorRestoringWallet'
     )
     )
       errorMessage = <p className={styles.error}>
