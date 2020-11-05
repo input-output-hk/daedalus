@@ -19,7 +19,7 @@ import HardwareWalletStatus from '../hardware-wallet/HardwareWalletStatus';
 import {
   isLedgerEnabled,
   isTrezorEnabled,
-} from '../../../../common/config/hardwareWalletsConfig';
+} from '../../config/hardwareWalletsConfig';
 import {
   DeviceModels,
   DeviceTypes,

@@ -9,6 +9,8 @@ import {
   HW_SHELLEY_CONFIG,
   MINIMAL_TREZOR_FIRMWARE_VERSION,
   MINIMAL_LEDGER_FIRMWARE_VERSION,
+  isHardwareWalletSupportEnabled,
+  isTrezorEnabled,
 } from '../config/hardwareWalletsConfig';
 import {
   getHardwareWalletTransportChannel,
@@ -156,8 +158,10 @@ export default class HardwareWalletsStore extends Store {
   }
 
   initTrezor = async () => {
-    await handleInitTrezorConnectChannel.request();
-    await this.getAvailableDevices();
+    if (isHardwareWalletSupportEnabled && isTrezorEnabled) {
+      await handleInitTrezorConnectChannel.request();
+      await this.getAvailableDevices();
+    }
   };
 
   getAvailableDevices = async () => {

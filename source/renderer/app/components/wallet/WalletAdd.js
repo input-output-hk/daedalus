@@ -10,6 +10,7 @@ import importIcon from '../../assets/images/import-ic.inline.svg';
 import connectIcon from '../../assets/images/hardware-wallet/connect-ic.inline.svg';
 import restoreIcon from '../../assets/images/restore-ic.inline.svg';
 import { MAX_ADA_WALLETS_COUNT } from '../../config/numbersConfig';
+import { isHardwareWalletSupportEnabled } from '../../config/hardwareWalletsConfig';
 
 const messages = defineMessages({
   title: {
@@ -167,7 +168,9 @@ export default class WalletAdd extends Component<Props> {
               icon={connectIcon}
               label={intl.formatMessage(messages.connectLabel)}
               description={intl.formatMessage(messages.connectDescription)}
-              isDisabled={isMaxNumberOfWalletsReached}
+              isDisabled={
+                isMaxNumberOfWalletsReached || !isHardwareWalletSupportEnabled
+              }
             />
           </div>
           <div className={styles.secondRow}>

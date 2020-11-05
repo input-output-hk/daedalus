@@ -1,3 +1,5 @@
+const { isMainnet } = global.environment;
+
 export const HW_SHELLEY_CONFIG = {
   NETWORK: {
     MAINNET: {
@@ -34,3 +36,9 @@ export const RECOMMENDED_LEDGER_APP_VERSION = {
 
 export const MINIMAL_LEDGER_FIRMWARE_VERSION = '1.6.1';
 export const MINIMAL_TREZOR_FIRMWARE_VERSION = '2.3.3';
+
+export const isTrezorEnabled = true;
+export const isLedgerEnabled = false;
+
+export const isHardwareWalletSupportEnabled =
+  isMainnet && (isTrezorEnabled || isLedgerEnabled);

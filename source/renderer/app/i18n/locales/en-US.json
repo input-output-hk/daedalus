@@ -572,7 +572,7 @@
   "test.environment.shelleyTestnetLabel": "Shelley Testnet",
   "test.environment.stagingLabel": "Staging",
   "test.environment.testnetLabel": "Testnet",
-  "wallet.add.dialog.connect.description": "Connect hardware wallet",
+  "wallet.add.dialog.connect.description": "Connect a hardware wallet",
   "wallet.add.dialog.connect.label": "Connect",
   "wallet.add.dialog.create.description": "Create a new wallet",
   "wallet.add.dialog.create.description.itn": "Create a new wallet",
