@@ -23,14 +23,6 @@ const messages = defineMessages({
     description:
       'errorMinRewardFunds Error Label on the delegation setup "choose wallet" step dialog.',
   },
-  errorMinDelegationFundsRewardsOnly: {
-    id:
-      'staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFundsRewardsOnly',
-    defaultMessage:
-      '!!!This wallet contains only rewards balances so it cannot be delegated.',
-    description:
-      'errorMinDelegationFundsRewardsOnly Error Label on the delegation setup "choose wallet" step dialog.',
-  },
   errorRestoringWallet: {
     id: 'staking.redeemItnRewards.step1.errorRestoringWallet',
     defaultMessage:
@@ -72,9 +64,6 @@ export default class Step1ConfigurationContainer extends Component<Props> {
     if (selectedWallet && !this.onWalletAcceptable(amount, reward)) {
       // Wallet is restoring
       if (isRestoring) errorMessage = messages.errorRestoringWallet;
-      // Wallet only has Reward balance
-      else if (!amount.isZero() && amount.equals(reward))
-        errorMessage = messages.errorMinDelegationFundsRewardsOnly;
       // Wallet balance < min delegation funds
       else errorMessage = messages.errorMinRewardFunds;
     }
