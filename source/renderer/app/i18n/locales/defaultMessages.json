@@ -11970,13 +11970,13 @@
         "description": "Label for the \"Add wallet\" title on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 20
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.title.label",
         "start": {
           "column": 9,
-          "line": 15
+          "line": 16
         }
       },
       {
@@ -11984,13 +11984,13 @@
         "description": "Label for the \"Create\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 25
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.create.label",
         "start": {
           "column": 15,
-          "line": 20
+          "line": 21
         }
       },
       {
@@ -11998,13 +11998,13 @@
         "description": "Description for the \"Create a new wallet\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 31
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.create.description.itn",
         "start": {
           "column": 24,
-          "line": 25
+          "line": 26
         }
       },
       {
@@ -12012,13 +12012,13 @@
         "description": "Description for the \"Create a new wallet\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 37
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.create.description",
         "start": {
           "column": 21,
-          "line": 31
+          "line": 32
         }
       },
       {
@@ -12026,13 +12026,13 @@
         "description": "Label for the \"Join\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 42
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.join.label",
         "start": {
           "column": 13,
-          "line": 37
+          "line": 38
         }
       },
       {
@@ -12040,13 +12040,13 @@
         "description": "Description for the \"Join\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 47
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.join.description",
         "start": {
           "column": 19,
-          "line": 42
+          "line": 43
         }
       },
       {
@@ -12054,13 +12054,13 @@
         "description": "Label for the \"Connect\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 52
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.connect.label",
         "start": {
           "column": 16,
-          "line": 47
+          "line": 48
         }
       },
       {
@@ -12068,13 +12068,13 @@
         "description": "Description for the \"Connect\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 58
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.connect.description",
         "start": {
           "column": 22,
-          "line": 52
+          "line": 53
         }
       },
       {
@@ -12082,13 +12082,13 @@
         "description": "Label for the \"Restore\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 63
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.restore.label",
         "start": {
           "column": 16,
-          "line": 58
+          "line": 59
         }
       },
       {
@@ -12096,13 +12096,13 @@
         "description": "Description for the \"Restore\" button with paper wallet certificate on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 70
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.restore.withCertificate.description",
         "start": {
           "column": 37,
-          "line": 63
+          "line": 64
         }
       },
       {
@@ -12110,13 +12110,13 @@
         "description": "Description for the \"Restore\" button without paper wallet certificate on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 75
+          "line": 76
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.restore.withoutCertificate.description",
         "start": {
           "column": 40,
-          "line": 70
+          "line": 71
         }
       },
       {
@@ -12124,13 +12124,13 @@
         "description": "Label for the \"Import\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 80
+          "line": 81
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.import.label",
         "start": {
           "column": 15,
-          "line": 76
+          "line": 77
         }
       },
       {
@@ -12138,13 +12138,13 @@
         "description": "Description for the \"Import\" button on the wallet add dialog.",
         "end": {
           "column": 3,
-          "line": 87
+          "line": 88
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.import.description",
         "start": {
           "column": 21,
-          "line": 81
+          "line": 82
         }
       },
       {
@@ -12152,13 +12152,13 @@
         "description": "Restore notification message shown during async wallet restore on the wallet add screen.",
         "end": {
           "column": 3,
-          "line": 94
+          "line": 95
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.restoreNotificationMessage",
         "start": {
           "column": 30,
-          "line": 88
+          "line": 89
         }
       },
       {
@@ -12166,13 +12166,13 @@
         "description": "\"Maximum number of wallets reached\" notification message shown on the wallet add screen if user has 50 wallets.",
         "end": {
           "column": 3,
-          "line": 101
+          "line": 102
         },
         "file": "source/renderer/app/components/wallet/WalletAdd.js",
         "id": "wallet.add.dialog.maxNumberOfWalletsNotificationMessage",
         "start": {
           "column": 41,
-          "line": 95
+          "line": 96
         }
       }
     ],
@@ -14597,5 +14597,183 @@
       }
     ],
     "path": "source/renderer/app/utils/paperWalletPdfGenerator.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Create",
+        "description": "Create label.",
+        "end": {
+          "column": 3,
+          "line": 36
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "global.labels.create",
+        "start": {
+          "column": 10,
+          "line": 32
+        }
+      },
+      {
+        "defaultMessage": "!!!Create a new wallet",
+        "description": "Create a new wallet description.",
+        "end": {
+          "column": 3,
+          "line": 41
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "wallet.add.dialog.create.description",
+        "start": {
+          "column": 19,
+          "line": 37
+        }
+      },
+      {
+        "defaultMessage": "!!!Join",
+        "description": "Join label.",
+        "end": {
+          "column": 3,
+          "line": 46
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "wallet.add.dialog.join.label",
+        "start": {
+          "column": 8,
+          "line": 42
+        }
+      },
+      {
+        "defaultMessage": "!!!Join a shared wallet",
+        "description": "Join a shared wallet description.",
+        "end": {
+          "column": 3,
+          "line": 51
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "wallet.add.dialog.join.description",
+        "start": {
+          "column": 20,
+          "line": 47
+        }
+      },
+      {
+        "defaultMessage": "!!!Import",
+        "description": "Import label.",
+        "end": {
+          "column": 3,
+          "line": 56
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "wallet.add.dialog.import.label",
+        "start": {
+          "column": 10,
+          "line": 52
+        }
+      },
+      {
+        "defaultMessage": "!!!Import wallets from an earlier version of Daedalus or the Daedalus state directory",
+        "description": "Import wallets from an earlier version of Daedalus or the Daedalus state directory description.",
+        "end": {
+          "column": 3,
+          "line": 63
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "wallet.add.dialog.import.description",
+        "start": {
+          "column": 24,
+          "line": 57
+        }
+      },
+      {
+        "defaultMessage": "!!!Recovery Phrase",
+        "description": "Recovery Phrase description.",
+        "end": {
+          "column": 3,
+          "line": 68
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "wallet.restore.dialog.mnemonicsStep",
+        "start": {
+          "column": 18,
+          "line": 64
+        }
+      },
+      {
+        "defaultMessage": "!!!Save",
+        "description": "Save description.",
+        "end": {
+          "column": 3,
+          "line": 73
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "global.labels.save",
+        "start": {
+          "column": 8,
+          "line": 69
+        }
+      },
+      {
+        "defaultMessage": "!!!Follow instructions and manually update",
+        "description": "Follow instructions and manually update description.",
+        "end": {
+          "column": 3,
+          "line": 78
+        },
+        "file": "storybook/stories/common/Widgets.stories.js",
+        "id": "manualUpdate.button.label",
+        "start": {
+          "column": 22,
+          "line": 74
+        }
+      }
+    ],
+    "path": "storybook/stories/common/Widgets.stories.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Read More",
+        "description": "Read More button label.",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "storybook/stories/news/AlertsOverlay.stories.js",
+        "id": "global.labels.readMore",
+        "start": {
+          "column": 12,
+          "line": 33
+        }
+      },
+      {
+        "defaultMessage": "!!!Failure Alert",
+        "description": "Failure Alert title.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "storybook/stories/news/AlertsOverlay.stories.js",
+        "id": "global.errors.failureAlert",
+        "start": {
+          "column": 16,
+          "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!Content",
+        "description": "Content.",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "storybook/stories/news/AlertsOverlay.stories.js",
+        "id": "static.dummy.markdown",
+        "start": {
+          "column": 11,
+          "line": 43
+        }
+      }
+    ],
+    "path": "storybook/stories/news/AlertsOverlay.stories.json"
   }
 ]
