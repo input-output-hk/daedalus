@@ -218,7 +218,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       onSuccess: (form) => {
         const { onContinue } = this.props;
         const { recoveryPhrase } = form.values();
-        onContinue({ recoveryPhrase, isReedemRewards: true });
+        onContinue({ recoveryPhrase, isRedeemRewards: true });
       },
     });
   };
