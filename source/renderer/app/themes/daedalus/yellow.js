@@ -259,7 +259,7 @@ export const YELLOW_THEME_OUTPUT = {
   },
   hardwareWallet: {
     '--theme-hardware-wallet-status-background-color': '#ffffff',
-    '--theme-hardware-wallet-status-border-color': '#e1dac6',
+    '--theme-hardware-wallet-status-border-color': 'rgba(45, 45, 45, 0.3)',
     '--theme-hardware-wallet-status-color': '#2d2d2d',
     '--theme-hardware-wallet-status-ready-color': '#2dc06c',
     '--theme-hardware-wallet-title-color': '#2d2d2d',

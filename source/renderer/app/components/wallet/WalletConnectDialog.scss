@@ -1,12 +1,16 @@
 @import '../../themes/mixins/error-message';
+
 .component {
   font-family: var(--font-regular);
+
   .hardwareWalletWrapper {
     margin-top: 10px;
+
     .hardwareWalletUnknown,
     .hardwareWalletLedger,
     .hardwareWalletTrezor {
       text-align: center;
+
       svg {
         path {
           stroke: var(--theme-hardware-wallet-title-color);
@@ -55,12 +59,13 @@
     .hardwareWalletMessage {
       max-width: 670px;
       padding-top: 30px;
+
       p {
         color: var(--theme-hardware-wallet-message-color);
         font-family: var(--font-light);
         font-size: 16px;
         line-height: 1.38;
-        opacity: 0.7;
+
         b {
           font-family: var(--font-medium);
         }
@@ -71,6 +76,7 @@
       margin-top: 20px;
       width: 100%;
     }
+
     .error {
       @include error-message;
       margin-top: 27px;
@@ -83,6 +89,7 @@
       height: 24px;
       margin: 0 !important;
       width: 24px;
+
       .LoadingSpinner_icon svg path {
         fill: var(--theme-hardware-wallet-message-color) !important;
         opacity: 0.5;
