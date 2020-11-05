@@ -1916,9 +1916,7 @@ const _createMigrationFeeFromServerData = action(
   (data: TransferFundsCalculateFeeApiResponse) => {
     const { quantity: feeAmount = 0 } = data.migration_cost;
     const fee = new BigNumber(feeAmount).dividedBy(LOVELACES_PER_ADA);
-    // const { quantity: leftoversAmount = 0 } = data.leftovers;
-    // @LEFTOVERS TODO: Dummy data for testing
-    const leftoversAmount = 45;
+    const { quantity: leftoversAmount = 0 } = data.leftovers;
     const leftovers = new BigNumber(leftoversAmount).dividedBy(
       LOVELACES_PER_ADA
     );
