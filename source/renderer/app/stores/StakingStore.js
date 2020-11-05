@@ -504,8 +504,10 @@ export default class StakingStore extends Store {
 
   @action _onConfigurationContinue = async ({
     recoveryPhrase,
+    isReedemRewards,
   }: {
     recoveryPhrase: Array<string>,
+    isReedemRewards?: boolean,
   }) => {
     this.isSubmittingReedem = true;
     const { redeemWallet } = this;
@@ -518,6 +520,7 @@ export default class StakingStore extends Store {
         wallet: redeemWallet,
         recoveryPhrase,
         address: address.id,
+        isReedemRewards,
       });
       runInAction(() => {
         this.redeemRecoveryPhrase = recoveryPhrase;
