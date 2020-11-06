@@ -3,6 +3,19 @@ Changelog
 
 ## vNext
 
+### Chores
+
+- Hided hardware wallet restoration support ([PR 2237](https://github.com/input-output-hk/daedalus/pull/2237))
+
+## 2.4.1
+
+### Fixes
+
+- Fixed `leftovers` not being displayed correctly ([PR 2231](https://github.com/input-output-hk/daedalus/pull/2231))
+- Fixed prettier/flow linting issue ([PR 2232](https://github.com/input-output-hk/daedalus/pull/2232))
+
+## 2.4.1-FC1
+
 ### Features
 
 - Implemented filter and CSV export in the transactions list ([PR 2207](https://github.com/input-output-hk/daedalus/pull/2207))
