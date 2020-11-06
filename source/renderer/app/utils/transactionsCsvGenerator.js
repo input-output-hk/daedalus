@@ -1,11 +1,13 @@
 // @flow
 import path from 'path';
 import moment from 'moment';
+import BigNumber from 'bignumber.js';
 import { intlShape, defineMessages } from 'react-intl';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
 import { showSaveDialogChannel } from '../ipc/show-file-dialog-channels';
 import { WalletTransaction } from '../domains/WalletTransaction';
 import { downloadCsv } from './csvGenerator';
+import { formattedWalletAmount } from './formatters';
 
 const messages = defineMessages({
   columnID: {
@@ -76,7 +78,6 @@ const messages = defineMessages({
 });
 
 type Params = {
-  currentLocale: string,
   desktopDirectoryPath: string,
   intl: intlShape,
   transactions: Array<WalletTransaction>,
@@ -86,7 +87,7 @@ const transactionsCsvGenerator = async ({
   desktopDirectoryPath,
   intl,
   transactions,
-}) => {
+}: Params) => {
   const fileName = generateFileNameWithTimestamp({
     prefix: 'transactions',
     extension: 'csv',
@@ -121,36 +122,38 @@ const transactionsCsvGenerator = async ({
 
   transactions.forEach(
     ({ id, type, amount, date, addresses, state }: WalletTransaction) => {
-      const typeValue =
+      const valueType =
         type == 'expend'
           ? intl.formatMessage(messages.valueTypeExpend)
           : intl.formatMessage(messages.valueTypeIncome);
-      const amountValue = intl.formatMessage(messages.valueAmount, { amount });
-      const dateTimeValue = `${moment(date)
+      const amountNumber = formattedWalletAmount(new BigNumber(amount), false);
+      const valueAmount = intl.formatMessage(messages.valueAmount, {
+        amount: amountNumber,
+      });
+      const valueDateTime = `${moment(date)
         .utc()
         .format('YYYY-MM-DDTHHmmss.0SSS')}Z`;
-      const statusValue =
+      const valueStatus =
         state === 'pending'
           ? intl.formatMessage(messages.valueStatusPending)
           : intl.formatMessage(messages.valueStatusConfirmed);
-      const addressesFromValue = addresses.from.join(', ');
-      const addressesToValue = addresses.to.join(', ');
-      const withdrawalsValue = addresses.withdrawals.join(', ');
+      const valueAddressesFrom = addresses.from.join(', ');
+      const valueAddressesTo = addresses.to.join(', ');
+      const valueWithdrawals = addresses.withdrawals.join(', ');
       const txValues = [
         id,
-        typeValue,
-        amountValue,
-        `${dateTimeValue}`,
-        statusValue,
-        addressesFromValue,
-        addressesToValue,
-        withdrawalsValue,
+        valueType,
+        valueAmount,
+        `${valueDateTime}`,
+        valueStatus,
+        valueAddressesFrom,
+        valueAddressesTo,
+        valueWithdrawals,
       ];
       fileContent.push(txValues);
     }
   );
 
-  console.log('fileContent', fileContent);
   downloadCsv({ filePath, fileContent });
 };
 

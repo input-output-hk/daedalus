@@ -152,7 +152,6 @@ const applyDialogStyles = () => {
 type Props = {
   locale: string,
   dateFormat: string,
-  numberFormat: string,
   defaultFilterOptions: TransactionFilterOptionsType,
   populatedFilterOptions: TransactionFilterOptionsType,
   onFilter: Function,
@@ -462,7 +461,7 @@ export default class FilterDialog extends Component<Props> {
   renderAmountRangeField = () => {
     const { form } = this;
     const { intl } = this.context;
-    const { locale, numberFormat } = this.props;
+    const { locale } = this.props;
     const { invalidFields } = validateFilterForm(this.getComposedFormValues());
     const fromAmountField = form.$('fromAmount');
     const toAmountField = form.$('toAmount');
@@ -492,7 +491,6 @@ export default class FilterDialog extends Component<Props> {
               {...fromAmountField.bind()}
               onSubmit={this.handleSubmit}
               label={intl.formatMessage(globalMessages.rangeFrom)}
-              numberFormat={NUMBER_FORMATS[numberFormat]}
               numberLocaleOptions={{
                 minimumFractionDigits: DECIMAL_PLACES_IN_ADA,
               }}
@@ -504,7 +502,6 @@ export default class FilterDialog extends Component<Props> {
               {...toAmountField.bind()}
               onSubmit={this.handleSubmit}
               label={intl.formatMessage(globalMessages.rangeTo)}
-              numberFormat={NUMBER_FORMATS[numberFormat]}
               numberLocaleOptions={{
                 minimumFractionDigits: DECIMAL_PLACES_IN_ADA,
               }}

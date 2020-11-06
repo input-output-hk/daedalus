@@ -57,7 +57,6 @@ export default class WalletTransactionsPage extends Component<Props> {
     const {
       currentTimeFormat,
       currentDateFormat,
-      currentNumberFormat,
       currentLocale,
       desktopDirectoryPath,
     } = profile;
@@ -104,7 +103,6 @@ export default class WalletTransactionsPage extends Component<Props> {
         currentLocale={currentLocale}
         currentTimeFormat={currentTimeFormat}
         currentDateFormat={currentDateFormat}
-        currentNumberFormat={currentNumberFormat}
         onFilter={transactionActions.filterTransactions.trigger}
         onRequestCSVFile={onRequestCSVFile}
         isRenderingAsVirtualList
