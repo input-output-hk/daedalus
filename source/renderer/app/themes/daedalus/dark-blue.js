@@ -287,7 +287,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-icon-add-wallet-from-sidebar-color': '#fafbfc',
     '--theme-icon-ada-summary-wallet-amount-symbol-color': '#e9f4fe',
     '--theme-icon-add-wallet-dialog-big-button-color':
-      'rgba(233, 244, 254, 0.8)',
+      'rgba(233, 244, 254, 0.5)',
     '--theme-icon-back-button-color': '#e9f4fe',
     '--theme-icon-close-button-color': '#fafbfc',
     '--theme-icon-connecting-ada-api-logo-color': '#fafbfc',
