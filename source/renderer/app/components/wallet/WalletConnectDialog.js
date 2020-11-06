@@ -31,7 +31,7 @@ import type { HwDeviceStatus } from '../../domains/Wallet';
 const messages = defineMessages({
   dialogTitle: {
     id: 'wallet.connect.dialog.title',
-    defaultMessage: '!!!Connect a hardware wallet device',
+    defaultMessage: '!!!Pair a hardware wallet device',
     description:
       'Title "Connect a hardware wallet device" in the connect wallet dialog.',
   },
@@ -43,7 +43,7 @@ const messages = defineMessages({
   instructions: {
     id: 'wallet.connect.dialog.instructions',
     defaultMessage:
-      '!!!<p><b>Daedalus currently supports only Trezor Model T hardware wallet devices.</b></p><p>If you are <b>connecting your device with Daedalus for the first time</b>, please follow the instructions below.</p><p>If you have <b>already connected your device with Daedalus</b>, you don’t need to repeat this step. Just connect your device when you need to confirm a transaction.</p>',
+      '!!!<p><b>Daedalus currently supports only Trezor Model T hardware wallet devices.</b></p><p>If you are <b>pairing your device with Daedalus for the first time</b>, please follow the instructions below.</p><p>If you have <b>already paired your device with Daedalus</b>, you don’t need to repeat this step. Just connect your device when you need to confirm a transaction.</p>',
     description: 'Follow instructions label',
   },
 });

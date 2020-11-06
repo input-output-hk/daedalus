@@ -12050,7 +12050,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Connect",
+        "defaultMessage": "!!!Pair",
         "description": "Label for the \"Connect\" button on the wallet add dialog.",
         "end": {
           "column": 3,
@@ -12064,7 +12064,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Connect hardware wallet",
+        "defaultMessage": "!!!Pair a hardware wallet device",
         "description": "Description for the \"Connect\" button on the wallet add dialog.",
         "end": {
           "column": 3,
@@ -12181,7 +12181,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Connect a hardware wallet device",
+        "defaultMessage": "!!!Pair a hardware wallet device",
         "description": "Title \"Connect a hardware wallet device\" in the connect wallet dialog.",
         "end": {
           "column": 3,
@@ -12209,7 +12209,7 @@
         }
       },
       {
-        "defaultMessage": "!!!<p><b>Daedalus currently supports only Trezor Model T hardware wallet devices.</b></p><p>If you are <b>connecting your device with Daedalus for the first time</b>, please follow the instructions below.</p><p>If you have <b>already connected your device with Daedalus</b>, you don’t need to repeat this step. Just connect your device when you need to confirm a transaction.</p>",
+        "defaultMessage": "!!!<p><b>Daedalus currently supports only Trezor Model T hardware wallet devices.</b></p><p>If you are <b>pairing your device with Daedalus for the first time</b>, please follow the instructions below.</p><p>If you have <b>already paired your device with Daedalus</b>, you don’t need to repeat this step. Just connect your device when you need to confirm a transaction.</p>",
         "description": "Follow instructions label",
         "end": {
           "column": 3,
