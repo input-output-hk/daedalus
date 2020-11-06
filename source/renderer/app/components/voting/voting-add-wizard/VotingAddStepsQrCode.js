@@ -2,59 +2,48 @@
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
-import { Button } from 'react-polymorph/lib/components/Button';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import QRCode from 'qrcode.react';
 import { observer } from 'mobx-react';
-import vjf from 'mobx-react-form/lib/validators/VJF';
-import globalMessages from '../../../i18n/global-messages';
-import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
-import TinyCheckbox from '../../widgets/forms/TinyCheckbox';
-import LoadingSpinner from '../../widgets/LoadingSpinner';
-import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
+import SVGInline from 'react-svg-inline';
+import openAppIcon from '../../../assets/images/voting/open-app-ic.inline.svg';
 import commonStyles from './VotingAddSteps.scss';
 import styles from './VotingAddStepsQrCode.scss';
 
 const messages = defineMessages({
-  loadingLabel: {
-    id: 'voting.votingAdd.QrCode.step.description',
-    defaultMessage: '!!!Waiting for transaction to be confirmed...',
-    description: 'Description on the voting add "qr code" step.',
-  },
-  loadingMessage: {
-    id: 'voting.votingAdd.QrCode.step.loadingMessage',
-    defaultMessage: '!!!Waiting for transaction to be confirmed...',
-    description: 'Loading voting add message for the QR code step.',
-  },
   qrCodeTitle: {
-    id: 'voting.votingAdd.QrCode.step.qrCodeTitle',
+    id: 'voting.votingAdd.qrCode.step.qrCodeTitle',
     defaultMessage: '!!!Please complete your registration now.',
     description: 'Qr code title on the voting add "qr code" step.',
   },
   qrCodeDescription: {
-    id: 'voting.votingAdd.QrCode.step.qrCodeDescription',
+    id: 'voting.votingAdd.qrCode.step.qrCodeDescription',
     defaultMessage: '!!!Scan the QR code using the Catalyst Voting app.',
     description: 'Qr code description of use on the voting add "qr code" step.',
   },
-  readCheckboxLabel: {
-    id: 'voting.votingAdd.QrCode.step.readCheckboxLabel',
+  message: {
+    id: 'voting.votingAdd.qrCode.step.message',
     defaultMessage:
-      '!!!I undestand that this is last time I see this QR code before closing. Next time I will need to generate new one and pay feed again',
-    description: 'Label for read checkbox on the voting add "qr code" step..',
+      '!!!I understand that this QR is not saved anywhere, and I will not have access to it after closing this screen.',
+    description: 'Qr code messakes of use on the voting add "qr code" step.',
   },
-  continueButtonLabel: {
-    id: 'voting.votingAdd.QrCode.step.continueButtonLabel',
-    defaultMessage: '!!!Close',
-    description: 'Label for continue button on the voting add "qr code" step.',
+  takeScreenShotMessage: {
+    id: 'voting.votingAdd.qrCode.step.takeScreenShotMessage',
+    defaultMessage:
+      '!!!Take a screenshot of the QR code if you want to access it later.',
+    description:
+      'Qr code second message for take a screen shot used on the voting add "qr code" step.',
+  },
+  warningMessage: {
+    id: 'voting.votingAdd.qrCode.step.warningMessage',
+    defaultMessage:
+      '!!!If you lose access to the QR code, you will need to register again in order to generate a new QR code.',
+    description:
+      'Qr code warning messages of use on the voting add "qr code" step.',
   },
 });
 
-messages.fieldIsRequired = globalMessages.fieldIsRequired;
-
 type Props = {
-  onClose: Function,
   qrCode: string | null,
-  isSubmitting: Boolean,
 };
 
 @observer
@@ -63,46 +52,17 @@ export default class VotingAddStepsQrCode extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
-  form = new ReactToolboxMobxForm(
-    {
-      fields: {
-        readChecked: {
-          type: 'checkbox',
-          label: this.context.intl.formatMessage(messages.readCheckboxLabel),
-          validators: [
-            ({ field }) => {
-              const checkbox = field.value;
-              if (!checkbox) {
-                return [
-                  false,
-                  this.context.intl.formatMessage(messages.fieldIsRequired),
-                ];
-              }
-              return [true];
-            },
-          ],
-        },
-      },
-    },
-    {
-      plugins: { vjf: vjf() },
-      options: {
-        validateOnChange: true,
-        validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
-      },
-    }
-  );
-
   render() {
-    const { form } = this;
     const { intl } = this.context;
-    const { onClose, qrCode, isSubmitting } = this.props;
-    const readCheckboxField = form.$('readChecked');
+    const { qrCode } = this.props;
 
-    const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
-    const loadingMessage = intl.formatMessage(messages.loadingMessage);
     const qrCodeTitle = intl.formatMessage(messages.qrCodeTitle);
     const qrCodeDescription = intl.formatMessage(messages.qrCodeDescription);
+    const message = intl.formatMessage(messages.message);
+    const takeScreenShotMessage = intl.formatMessage(
+      messages.takeScreenShotMessage
+    );
+    const warningMessage = intl.formatMessage(messages.warningMessage);
 
     const className = classNames([
       commonStyles.votingAddSteps,
@@ -126,38 +86,30 @@ export default class VotingAddStepsQrCode extends Component<Props> {
     return (
       <div className={className}>
         <div className={contentClassName}>
-          {isSubmitting || !qrCode ? (
-            <div className={styles.loadinBlockWrapper}>
-              <LoadingSpinner />
-              <p>{loadingMessage}</p>
+          <div className={styles.qrCode}>
+            {qrCode && (
+              <QRCode
+                value={qrCode}
+                bgColor={qrCodeBackgroundColor}
+                fgColor={qrCodeForegroundColor}
+                size={152}
+              />
+            )}
+          </div>
+          <div className={styles.qrCodeDescription}>
+            <SVGInline svg={openAppIcon} className={styles.qrCodeMessageIcon} />
+            <div className={styles.qrCodeMessageText}>
+              <p>{qrCodeTitle}</p>
+              <p>{qrCodeDescription}</p>
             </div>
-          ) : (
-            <>
-              <div className={styles.qrCode}>
-                <QRCode
-                  value={qrCode}
-                  bgColor={qrCodeBackgroundColor}
-                  fgColor={qrCodeForegroundColor}
-                  size={152}
-                />
-              </div>
-              <div className={styles.qrCodeDescription}>
-                <p>{qrCodeTitle}</p>
-                <p>{qrCodeDescription}</p>
-              </div>
-              <hr className={styles.separator} />
-              <div className={styles.qrCodeConfirm}>
-                <TinyCheckbox {...readCheckboxField.bind()} />
-              </div>
-            </>
-          )}
+          </div>
+          <hr className={styles.separator} />
+          <div className={styles.messages}>
+            <p>{message}</p>
+            <p className={styles.secondaryWarning}>{takeScreenShotMessage}</p>
+            <p className={styles.primaryWarning}>{warningMessage}</p>
+          </div>
         </div>
-        <Button
-          onClick={onClose}
-          skin={ButtonSkin}
-          label={buttonLabel}
-          disabled={!readCheckboxField.isValid || isSubmitting || !qrCode}
-        />
       </div>
     );
   }

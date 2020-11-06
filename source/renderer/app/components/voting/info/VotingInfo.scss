@@ -3,6 +3,11 @@
 .component {
   padding: 20px;
   text-align: center;
+  :global {
+    button.SimpleButton_root {
+      width: 415px;
+    }
+  }
 }
 
 .heading {

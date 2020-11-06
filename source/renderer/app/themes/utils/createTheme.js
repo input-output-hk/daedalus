@@ -1210,6 +1210,7 @@ export const createDaedalusComponentsTheme = (
       '--theme-voting-font-color-accent': `${focus}`,
       '--theme-voting-font-color-regular': `${text.primary}`,
       '--theme-voting-font-color-light': `${chroma(text.primary).alpha(0.7)}`,
+      '--theme-voting-steps-warning-messages-font-color': `${error.regular}`,
       '--theme-voting-steps-description-highlighted-color': `${text.primary}`,
       '--theme-voting-steps-description-color': `${chroma(text.primary).alpha(
         0.8

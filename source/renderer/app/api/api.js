@@ -37,6 +37,10 @@ import { createTransaction } from './transactions/requests/createTransaction';
 import { createByronWalletTransaction } from './transactions/requests/createByronWalletTransaction';
 import { deleteLegacyTransaction } from './transactions/requests/deleteLegacyTransaction';
 
+// Voting requests
+import { getWalletKey } from './voting/requests/getWalletKey';
+import { createWalletSignature } from './voting/requests/createWalletSignature';
+
 // Wallets requests
 import { updateSpendingPassword } from './wallets/requests/updateSpendingPassword';
 import { updateByronSpendingPassword } from './wallets/requests/updateByronSpendingPassword';
@@ -174,7 +178,11 @@ import type {
 } from './staking/types';
 
 // Voting Types
-import type { CreateVotingRegistrationRequest } from './voting/types';
+import type {
+  CreateVotingRegistrationRequest,
+  GetWalletKeyRequest,
+  CreateWalletSignatureRequest,
+} from './voting/types';
 
 import type { StakePoolProps } from '../domains/StakePool';
 import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-node.types';
@@ -1755,13 +1763,89 @@ export default class AdaApi {
     }
   };
 
+  getWalletKey = async (request: GetWalletKeyRequest): Promise<string> => {
+    const { walletId, role, index } = request;
+    logger.debug('AdaApi::getWalletKey called', {
+      parameters: filterLogData(request),
+    });
+    try {
+      const response: string = await getWalletKey(this.config, {
+        walletId,
+        role,
+        index,
+      });
+      logger.debug('AdaApi::getWalletKey success', { response });
+      return response;
+    } catch (error) {
+      logger.error('AdaApi::getWalletKey error', { error });
+      throw new ApiError(error);
+    }
+  };
+
+  createWalletSignature = async (
+    request: CreateWalletSignatureRequest
+  ): Promise<string> => {
+    logger.debug('AdaApi::createWalletSignature called', {
+      parameters: filterLogData(request),
+    });
+    const { walletId, role, index, passphrase, votingKey, stakeKey } = request;
+
+    try {
+      const data = {
+        passphrase,
+        metadata: {
+          61284: {
+            map: [
+              {
+                k: {
+                  int: 1,
+                },
+                v: {
+                  bytes: votingKey,
+                },
+              },
+              {
+                k: {
+                  int: 2,
+                },
+                v: {
+                  bytes: stakeKey,
+                },
+              },
+            ],
+          },
+        },
+      };
+
+      const response = await createWalletSignature(this.config, {
+        walletId,
+        role,
+        index,
+        data: { ...data },
+      });
+      logger.debug('AdaApi::createWalletSignature success', { response });
+      return response;
+    } catch (error) {
+      logger.error('AdaApi::createWalletSignature error', { error });
+      throw new ApiError(error);
+    }
+  };
+
   createVotingRegistrationTransaction = async (
     request: CreateVotingRegistrationRequest
   ): Promise<WalletTransaction> => {
     logger.debug('AdaApi::createVotingRegistrationTransaction called', {
       parameters: filterLogData(request),
     });
-    const { walletId, address, amount, passphrase, votingKey } = request;
+    const {
+      walletId,
+      address,
+      amount,
+      passphrase,
+      votingKey,
+      stakeKey,
+      signature,
+    } = request;
 
     try {
       const data = {
@@ -1776,14 +1860,34 @@ export default class AdaApi {
         ],
         passphrase,
         metadata: {
-          0: {
+          61284: {
             map: [
               {
                 k: {
-                  string: 'voting_registration',
+                  int: 1,
                 },
                 v: {
                   bytes: votingKey,
+                },
+              },
+              {
+                k: {
+                  int: 2,
+                },
+                v: {
+                  bytes: stakeKey,
+                },
+              },
+            ],
+          },
+          61285: {
+            map: [
+              {
+                k: {
+                  int: 1,
+                },
+                v: {
+                  bytes: signature,
                 },
               },
             ],

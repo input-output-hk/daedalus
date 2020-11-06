@@ -1,5 +1,5 @@
 // @flow
-import { includes, omit, size } from 'lodash';
+import { includes, omit, size, assign, cloneDeep, has, keys } from 'lodash';
 import querystring from 'querystring';
 import { getContentLength } from '.';
 
@@ -28,7 +28,7 @@ function typedRequest<Response>(
   // requestOptions?: { returnMeta: boolean }
 ): Promise<Response> {
   return new Promise((resolve, reject) => {
-    const options: RequestOptions = Object.assign({}, httpOptions);
+    const options: RequestOptions = cloneDeep(httpOptions);
     // const { returnMeta } = Object.assign({}, requestOptions);
     let hasRequestBody = false;
     let requestBody = '';
@@ -41,11 +41,17 @@ function typedRequest<Response>(
     if (rawBodyParams) {
       hasRequestBody = true;
       requestBody = JSON.stringify(rawBodyParams);
-      options.headers = {
-        'Content-Length': getContentLength(requestBody),
-        'Content-Type': 'application/json; charset=utf-8',
-        Accept: 'application/json; charset=utf-8',
-      };
+      options.headers = assign(
+        options.headers,
+        omit(
+          {
+            'Content-Length': getContentLength(requestBody),
+            'Content-Type': 'application/json; charset=utf-8',
+            Accept: 'application/json; charset=utf-8',
+          },
+          has(httpOptions, 'headers') ? keys(httpOptions.headers) : []
+        )
+      );
     }
 
     const httpOnlyOptions = omit(options, ['ca', 'cert', 'key']);

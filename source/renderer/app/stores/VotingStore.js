@@ -12,24 +12,33 @@ import wallet from '../utils/wallet';
 import {
   VOTING_REGISTRATION_TRANSACTION_CHECK_INTERVAL,
   VOTING_REGISTRATION_TRANSACTION_CHECKER_TIMEOUT,
+  VOTING_COUNTDOWN_INTERVAL,
 } from '../config/votingConfig';
+
+// Voting Types
+import type {
+  GetWalletKeyRequest,
+  CreateWalletSignatureRequest,
+} from '../api/voting/types';
 
 export default class VotingStore extends Store {
   @observable selectedVotingWalletId: ?string = null;
   @observable isVotingRegistrationTransactionPending: boolean = false;
   @observable votingRegistrationKey: any = null;
   @observable qrCode: string | null = null;
+  @observable countdownRemaining = 0;
 
-  pinCode: number;
   votingCheckTimeInterval: IntervalID | null = null;
+  countdownTimerInterval: ?IntervalID = null;
 
   setup() {
     const { voting: votingActions } = this.actions;
 
     votingActions.selectVotingWallet.listen(this._setSelectedVotingWalletId);
-    votingActions.setPinCode.listen(this._setPinCode);
+    votingActions.generateQrCode.listen(this._generateQrCode);
     votingActions.sendTransaction.listen(this._sendTransaction);
     votingActions.resetVotingRegistration.listen(this._resetVotingRegistration);
+    votingActions.initializeCountdownInterval.listen(this._initializeCountdown);
   }
 
   // REQUESTS
@@ -45,8 +54,23 @@ export default class VotingStore extends Store {
     this.selectedVotingWalletId = walletId;
   };
 
-  @action _setPinCode = (pinCode: number) => {
-    this.pinCode = pinCode;
+  @action _resetVotingRegistration = () => {
+    this.selectedVotingWalletId = null;
+    this.isVotingRegistrationTransactionPending = false;
+    this.votingRegistrationKey = null;
+    this.qrCode = null;
+  };
+
+  @action _initializeCountdown = async () => {
+    this.countdownRemaining = VOTING_COUNTDOWN_INTERVAL;
+    if (this.countdownTimerInterval) clearInterval(this.countdownTimerInterval);
+    this.countdownTimerInterval = setInterval(() => {
+      if (this.countdownRemaining > 0) {
+        action(() => this.countdownRemaining--)();
+      } else if (this.countdownTimerInterval != null) {
+        clearInterval(this.countdownTimerInterval);
+      }
+    }, 1000);
   };
 
   @action setVotingCheckTimeInterval = (value: any) => {
@@ -63,13 +87,6 @@ export default class VotingStore extends Store {
 
   @action setQrCode = (value: string | null) => {
     this.qrCode = value;
-  };
-
-  @action _resetVotingRegistration = () => {
-    this.selectedVotingWalletId = null;
-    this.isVotingRegistrationTransactionPending = false;
-    this.votingRegistrationKey = null;
-    this.qrCode = null;
   };
 
   /* ====  Private methods  ===== */
@@ -97,14 +114,33 @@ export default class VotingStore extends Store {
     try {
       await this.generateVotingRegistrationKey();
 
+      const votingKey = formattedArrayBufferToHexString(
+        this.votingRegistrationKey.public().bytes()
+      );
+
+      const stakeKey = await this._getWalletKeyRequest({
+        walletId,
+        role: 'mutable_account',
+        index: '0',
+      });
+
+      const signature = await this._createWalletSignatureRequest({
+        walletId,
+        passphrase,
+        votingKey,
+        stakeKey,
+        role: 'mutable_account',
+        index: '0',
+      });
+
       const transaction = await this.votingSendTransactionRequest.execute({
         address: address.id,
         amount,
         passphrase,
         walletId,
-        votingKey: formattedArrayBufferToHexString(
-          this.votingRegistrationKey.public().bytes()
-        ),
+        votingKey,
+        stakeKey,
+        signature,
       });
 
       // Start interval to check transaction state every second
@@ -124,6 +160,41 @@ export default class VotingStore extends Store {
       this.resetVotingRegistrationTransactionChecker();
       throw error;
     }
+  };
+
+  // Get wallet stake key
+  _getWalletKeyRequest = async (
+    request: GetWalletKeyRequest
+  ): Promise<string> => {
+    const response = await this.api.ada.getWalletKey(request);
+    if (!response)
+      throw new Error('Could not get the public key of the wallet.');
+    return response;
+  };
+
+  // Create wallet signature
+  _createWalletSignatureRequest = async (
+    request: CreateWalletSignatureRequest
+  ): Promise<string> => {
+    const response = await this.api.ada.createWalletSignature(request);
+    if (!response) throw new Error('Could not generate a wallet signature.');
+    return response;
+  };
+
+  _generateQrCode = async (pinCode: number) => {
+    const Modules = await wallet;
+    const PASSWORD = new Uint8Array(4);
+    pinCode
+      .toString()
+      .split('')
+      .forEach((value: string, index: number) => {
+        PASSWORD[index] = parseInt(value, 10);
+      });
+    const encrypt = Modules.symmetric_encrypt(
+      PASSWORD,
+      this.votingRegistrationKey.bytes()
+    );
+    this.setQrCode(formattedArrayBufferToHexString(encrypt));
   };
 
   // Check voting registration transaction state and reset pending state when transaction is "in_ledger"
@@ -149,7 +220,6 @@ export default class VotingStore extends Store {
 
     if (votingRegistrationTransaction) {
       this.resetVotingRegistrationTransactionChecker();
-      this.generateQrCode();
     }
   };
 
@@ -157,24 +227,6 @@ export default class VotingStore extends Store {
     const Modules = await wallet;
     const key = Modules.Ed25519ExtendedPrivate;
     this.setVotingRegistrationKey(key.generate());
-  };
-
-  generateQrCode = async () => {
-    if (this.pinCode) {
-      const Modules = await wallet;
-      const PASSWORD = new Uint8Array(4);
-      this.pinCode
-        .toString()
-        .split('')
-        .forEach((value: string, index: number) => {
-          PASSWORD[index] = parseInt(value, 10);
-        });
-      const encrypt = Modules.symmetric_encrypt(
-        PASSWORD,
-        this.votingRegistrationKey.bytes()
-      );
-      this.setQrCode(formattedArrayBufferToHexString(encrypt));
-    }
   };
 
   // Reset voting registration interval and refresh wallet data

@@ -966,6 +966,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-voting-font-color-accent': '#2d2d2d',
     '--theme-voting-font-color-regular': '#2d2d2d',
     '--theme-voting-font-color-light': '#2d2d2db3',
+    '--theme-voting-steps-warning-messages-font-color': '#ea4c5b',
     '--theme-voting-steps-description-highlighted-color': '#2d2d2d',
     '--theme-voting-steps-description-color': '#2d2d2dcc',
     '--theme-voting-steps-activation-steps-indicator-color': '#2d2d2d',

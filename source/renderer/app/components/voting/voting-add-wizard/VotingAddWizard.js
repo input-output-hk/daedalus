@@ -5,8 +5,9 @@ import { observer } from 'mobx-react';
 import { get } from 'lodash';
 import { BigNumber } from 'bignumber.js';
 import VotingAddStepsChooseWallet from './VotingAddStepsChooseWallet';
+import VotingAddStepsSign from './VotingAddStepsSign';
+import VotingAddStepsConfirm from './VotingAddStepsConfirm';
 import VotingAddStepsEnterPinCode from './VotingAddStepsEnterPinCode';
-import VotingAddStepsDeposit from './VotingAddStepsDeposit';
 import VotingAddStepsQrCode from './VotingAddStepsQrCode';
 import StakePool from '../../../domains/StakePool';
 import LocalizableError from '../../../i18n/LocalizableError';
@@ -14,7 +15,6 @@ import Wallet from '../../../domains/Wallet';
 
 type Props = {
   activeStep: number,
-  onClose: Function,
   onContinue: Function,
   onSelectWallet: Function,
   isWalletAcceptable: Function,
@@ -26,10 +26,12 @@ type Props = {
   getStakePoolById: Function,
   transactionFee: ?BigNumber,
   transactionFeeError: string | Node | null,
-  onConfirm: Function,
+  onSubmit: Function,
   qrCode: string | null,
   isSubmitting: Boolean,
-  error: ?LocalizableError,
+  transactionError: ?LocalizableError,
+  onRollback: Function,
+  countdownRemaining: number,
 };
 
 @observer
@@ -37,7 +39,6 @@ export default class VotingAddWizard extends Component<Props> {
   render() {
     const {
       activeStep,
-      onClose,
       onContinue,
       onSelectWallet,
       onSetPinCode,
@@ -49,10 +50,12 @@ export default class VotingAddWizard extends Component<Props> {
       getStakePoolById,
       transactionFee,
       transactionFeeError,
-      onConfirm,
+      onSubmit,
       qrCode,
       isSubmitting,
-      error,
+      transactionError,
+      onRollback,
+      countdownRemaining,
     } = this.props;
 
     const selectedWalletId = get(selectedWallet, 'id', null);
@@ -74,26 +77,30 @@ export default class VotingAddWizard extends Component<Props> {
         );
         break;
       case 2:
-        content = <VotingAddStepsEnterPinCode onSetPinCode={onSetPinCode} />;
+        content = (
+          <VotingAddStepsSign
+            onConfirm={onSubmit}
+            transactionFee={transactionFee}
+            transactionFeeError={transactionFeeError}
+          />
+        );
         break;
       case 3:
         content = (
-          <VotingAddStepsDeposit
-            onConfirm={onConfirm}
-            transactionFee={transactionFee}
-            transactionFeeError={transactionFeeError}
-            error={error}
+          <VotingAddStepsConfirm
+            transactionError={transactionError}
+            onConfirm={onContinue}
+            onRollback={onRollback}
+            isSubmitting={isSubmitting}
+            countdownRemaining={countdownRemaining}
           />
         );
         break;
       case 4:
-        content = (
-          <VotingAddStepsQrCode
-            onClose={onClose}
-            qrCode={qrCode}
-            isSubmitting={isSubmitting}
-          />
-        );
+        content = <VotingAddStepsEnterPinCode onSetPinCode={onSetPinCode} />;
+        break;
+      case 5:
+        content = <VotingAddStepsQrCode qrCode={qrCode} />;
         break;
       default:
         content = <></>;

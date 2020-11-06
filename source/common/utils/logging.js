@@ -30,6 +30,7 @@ export const filterLogData = (data: Object): Object => {
     'passphrase',
     'password',
     'votingKey',
+    'signature',
   ];
   return omitDeep(data, ...sensitiveData);
 };

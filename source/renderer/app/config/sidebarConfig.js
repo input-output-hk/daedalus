@@ -60,7 +60,7 @@ export const CATEGORIES_BY_NAME = {
   VOTING: {
     name: 'VOTING',
     icon: votingIcon,
-    route: ROUTES.VOTING.ROOT,
+    route: ROUTES.VOTING.ADD,
   },
 };
 

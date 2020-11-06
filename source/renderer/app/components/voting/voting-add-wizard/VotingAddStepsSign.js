@@ -15,42 +15,40 @@ import globalMessages from '../../../i18n/global-messages';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { formattedWalletAmount } from '../../../utils/formatters';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
-import LocalizableError from '../../../i18n/LocalizableError';
 import commonStyles from './VotingAddSteps.scss';
-import styles from './VotingAddStepsDeposit.scss';
+import styles from './VotingAddStepsSign.scss';
 
 const messages = defineMessages({
   description: {
-    id: 'voting.votingAdd.Deposit.step.description',
+    id: 'voting.votingAdd.sign.step.description',
     defaultMessage:
-      "!!!By confirming this action, you are making a tx to yourself, and generating meta-data that validates your voting power. Except Fees, there will be no change in your wallet's balance.",
-    description: 'Description on the voting add "deposit" step.',
+      "!!!By submitting this registration transaction. You will be creating a proof of your staking balance. The proof will be used to calculate your voting power. Except fees, there will no change in your wallet's balance.",
+    description: 'Description on the voting add "sign" step.',
   },
   continueButtonLabel: {
-    id: 'voting.votingAdd.Deposit.step.continueButtonLabel',
-    defaultMessage:
-      '!!!Validate my voting power by sending myself a transaction',
-    description: 'Label for continue button on the voting add "deposit" step.',
+    id: 'voting.votingAdd.sign.step.continueButtonLabel',
+    defaultMessage: '!!!Submit Registration Transaction',
+    description: 'Label for continue button on the voting add "sign" step.',
   },
   feesLabel: {
-    id: 'voting.votingAdd.Deposit.step.feesLabel',
+    id: 'voting.votingAdd.sign.step.feesLabel',
     defaultMessage: '!!!Fees',
-    description: 'Fees label on the voting add "deposit" step.',
+    description: 'Fees label on the voting add "sign" step.',
   },
   spendingPasswordPlaceholder: {
-    id: 'voting.votingAdd.Deposit.step.spendingPasswordPlaceholder',
+    id: 'voting.votingAdd.sign.step.spendingPasswordPlaceholder',
     defaultMessage: '!!!Spending password',
     description: 'Placeholder for "spending password"',
   },
   spendingPasswordLabel: {
-    id: 'voting.votingAdd.Deposit.step.spendingPasswordLabel',
+    id: 'voting.votingAdd.sign.step.spendingPasswordLabel',
     defaultMessage: '!!!Spending password',
     description: 'Label for "spending password"',
   },
   calculatingFees: {
-    id: 'voting.votingAdd.Deposit.step.calculatingFees',
+    id: 'voting.votingAdd.sign.step.calculatingFees',
     defaultMessage: '!!!Calculating fees',
-    description: '"Calculating fees" message in the "deposit" step.',
+    description: '"Calculating fees" message in the "sign" step.',
   },
 });
 
@@ -59,12 +57,11 @@ messages.fieldIsRequired = globalMessages.fieldIsRequired;
 type Props = {
   onConfirm: Function,
   transactionFee: ?BigNumber,
-  error: ?LocalizableError,
   transactionFeeError: string | Node | null,
 };
 
 @observer
-export default class VotingAddStepsDeposit extends Component<Props> {
+export default class VotingAddStepsSign extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -119,7 +116,7 @@ export default class VotingAddStepsDeposit extends Component<Props> {
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { transactionFee, transactionFeeError, error } = this.props;
+    const { transactionFee, transactionFeeError } = this.props;
     const spendingPasswordField = form.$('spendingPassword');
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
 
@@ -164,11 +161,6 @@ export default class VotingAddStepsDeposit extends Component<Props> {
             error={spendingPasswordField.error}
             onKeyPress={this.handleSubmitOnEnter}
           />
-          {error ? (
-            <div className={styles.errorMessage}>
-              <p>{intl.formatMessage(error)}</p>
-            </div>
-          ) : null}
           {transactionFeeError ? (
             <div className={styles.errorMessage}>
               <p>{transactionFeeError}</p>

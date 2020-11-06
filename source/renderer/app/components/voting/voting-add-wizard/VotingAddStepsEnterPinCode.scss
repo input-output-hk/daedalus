@@ -4,12 +4,27 @@
       color: var(--theme-voting-steps-description-color);
     }
     .reminder {
-      color: var(--theme-voting-steps-description-color);
+      color: var(--theme-voting-steps-warning-messages-font-color);
       span > span {
+        font-family: var(--font-medium);
+        font-weight: bold;
+      }
+    }
+    .headingDescription {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 15px;
+      margin-top: 25px;
+      text-align: center;
+      p {
         color: var(--theme-voting-steps-description-highlighted-color);
         font-family: var(--font-medium);
         font-weight: 500;
       }
+    }
+    .separator {
+      margin: 30px 0;
+      opacity: 0.2;
     }
     .pinCode {
       display: flex;

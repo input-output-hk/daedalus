@@ -18,43 +18,53 @@ import commonStyles from './VotingAddSteps.scss';
 import styles from './VotingAddStepsEnterPinCode.scss';
 
 const messages = defineMessages({
+  title: {
+    id: 'voting.votingAdd.enterPinCode.step.title',
+    defaultMessage: '!!!Congratulations!',
+    description: 'Title on the voting add "enter pin code" step.',
+  },
+  subtitle: {
+    id: 'voting.votingAdd.enterPinCode.step.subtitle',
+    defaultMessage: '!!!Your registration transaction was confirmed.',
+    description: 'Subtitle on the voting add "enter pin code" step.',
+  },
   description: {
-    id: 'voting.votingAdd.EnterPinCode.step.description',
+    id: 'voting.votingAdd.enterPinCode.step.description',
     defaultMessage:
-      '!!!This voting Pin Code will be used to access the Catalyst Voting App and decrypt your QR code. Do not use the same pin code as the one you use for your phone.',
+      '!!!Please create a voting PIN code. This code will be used to access the Catalyst Voting App and decrypt your QR code.',
     description: 'Description on the voting add "enter pin code" step.',
   },
   reminder: {
-    id: 'voting.votingAdd.EnterPinCode.step.reminder',
+    id: 'voting.votingAdd.enterPinCode.step.reminder',
     defaultMessage:
-      "!!!<span>Don't forget your Pin Code.</span> If you lose it you will not be able to vote.",
+      "!!!<span>Don't forget your Pin Code.</span> If you lose it, you will not be able to proceed with the registration process and you will not be able to access the mobile app.",
     description: 'Reminder on the voting add "enter pin code" step.',
   },
   enterPinCodeLabel: {
-    id: 'voting.votingAdd.EnterPinCode.step.enterPinCodeLabel',
+    id: 'voting.votingAdd.enterPinCode.step.enterPinCodeLabel',
     defaultMessage: '!!!Enter PIN code',
     description:
       'Label for pin code input on the voting add "enter pin code" step.',
   },
   repeatPinCodeLabel: {
-    id: 'voting.votingAdd.EnterPinCode.step.repeatPinCodeLabel',
+    id: 'voting.votingAdd.enterPinCode.step.repeatPinCodeLabel',
     defaultMessage: '!!!Repeat PIN code',
     description:
       'Label for repeat pin code on the voting add "enter pin code" step.',
   },
   invalidPinCode: {
-    id: 'voting.votingAdd.EnterPinCode.step.errors.invalidPinCode',
+    id: 'voting.votingAdd.enterPinCode.step.errors.invalidPinCode',
     defaultMessage: '!!!Invalid pin code',
     description: 'Error message shown when repeat pin code is invalid.',
   },
   invalidRepeatPinCode: {
-    id: 'voting.votingAdd.EnterPinCode.step.errors.invalidRepeatPinCode',
+    id: 'voting.votingAdd.enterPinCode.step.errors.invalidRepeatPinCode',
     defaultMessage: "!!!Pin doesn't match",
     description: 'Error message shown when repeat pin code is invalid.',
   },
   continueButtonLabel: {
-    id: 'voting.votingAdd.EnterPinCode.step.continueButtonLabel',
-    defaultMessage: '!!!Continue',
+    id: 'voting.votingAdd.enterPinCode.step.continueButtonLabel',
+    defaultMessage: '!!!Create PIN code',
     description:
       'Label for continue button on the voting add "enter pin code" step.',
   },
@@ -129,6 +139,8 @@ export default class VotingAddStepsEnterPinCode extends Component<Props> {
     const { form } = this;
     const { intl } = this.context;
 
+    const title = intl.formatMessage(messages.title);
+    const subtitle = intl.formatMessage(messages.subtitle);
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
     const enterPinCodeLabel = intl.formatMessage(messages.enterPinCodeLabel);
     const repeatPinCodeLabel = intl.formatMessage(messages.repeatPinCodeLabel);
@@ -148,6 +160,11 @@ export default class VotingAddStepsEnterPinCode extends Component<Props> {
     return (
       <div className={className}>
         <div className={contentClassName}>
+          <div className={styles.headingDescription}>
+            <p>{title}</p>
+            <p>{subtitle}</p>
+          </div>
+          <hr className={styles.separator} />
           <p className={styles.description}>
             <FormattedHTMLMessage {...messages.description} />
           </p>

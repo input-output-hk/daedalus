@@ -38,7 +38,8 @@ const messages = defineMessages({
   },
   stepTitle3: {
     id: 'voting.info.stepTitle3',
-    defaultMessage: '!!!Make sure you have 5 minutes to complete the process',
+    defaultMessage:
+      '!!!Make sure you have 5 minutes for going through the process, and additional one hour wait time to receive a final confirmation.',
     description: 'Info step title 3 for Voting Catalyst steps',
   },
   buttonLabel: {

@@ -967,6 +967,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-voting-font-color-accent': '#ffffff',
     '--theme-voting-font-color-regular': '#ffffff',
     '--theme-voting-font-color-light': '#ffffffb3',
+    '--theme-voting-steps-warning-messages-font-color': '#ea4c5b',
     '--theme-voting-steps-description-highlighted-color': '#ffffff',
     '--theme-voting-steps-description-color': '#ffffffcc',
     '--theme-voting-steps-activation-steps-indicator-color': '#ffffff',

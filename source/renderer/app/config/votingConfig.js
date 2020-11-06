@@ -6,3 +6,4 @@ export const PIN_CODE_LENGTH = 4;
 
 export const VOTING_REGISTRATION_TRANSACTION_CHECK_INTERVAL = 1 * 1000; // 1 second | unit: milliseconds;
 export const VOTING_REGISTRATION_TRANSACTION_CHECKER_TIMEOUT = 30 * 1000; // 30 seconds | unit: milliseconds;
+export const VOTING_COUNTDOWN_INTERVAL = 60 * 60; // 60 minutes | unit: seconds;

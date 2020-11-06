@@ -31,8 +31,6 @@ import WalletReceivePage from './containers/wallet/WalletReceivePage';
 import WalletTransactionsPage from './containers/wallet/WalletTransactionsPage';
 import WalletSettingsPage from './containers/wallet/WalletSettingsPage';
 import WalletUtxoPage from './containers/wallet/WalletUtxoPage';
-import Voting from './containers/voting/Voting';
-import VotingInfoPage from './containers/voting/VotingInfoPage';
 import VotingAddPage from './containers/voting/VotingAddPage';
 
 export const Routes = withRouter(() => (
@@ -151,17 +149,7 @@ export const Routes = withRouter(() => (
             component={RedeemItnRewardsContainer}
           />
         </Route>
-        <Route path={ROUTES.VOTING.ROOT}>
-          <Voting>
-            <Route
-              exact
-              path={ROUTES.VOTING.ROOT}
-              component={() => <Redirect to={ROUTES.VOTING.INFO} />}
-            />
-            <Route path={ROUTES.VOTING.INFO} component={VotingInfoPage} />
-            <Route path={ROUTES.VOTING.ADD} component={VotingAddPage} />
-          </Voting>
-        </Route>
+        <Route path={ROUTES.VOTING.ADD} component={VotingAddPage} />
       </Switch>
     </Root>
   </Route>

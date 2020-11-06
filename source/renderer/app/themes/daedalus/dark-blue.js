@@ -983,6 +983,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-voting-font-color-accent': '#cecfd1',
     '--theme-voting-font-color-regular': '#cecfd1',
     '--theme-voting-font-color-light': 'rgba(233, 244, 254, 0.7)',
+    '--theme-voting-steps-warning-messages-font-color': '#ea4c5b',
     '--theme-voting-steps-description-highlighted-color': '#e9f4fe',
     '--theme-voting-steps-description-color': 'rgba(233, 244, 254, 0.8)',
     '--theme-voting-steps-activation-steps-indicator-color': '#e9f4fe',
