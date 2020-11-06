@@ -193,7 +193,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-dialog-big-button-background-color': '#ffffff',
     '--theme-dialog-big-button-border-color': '#e1dac6',
     '--theme-dialog-big-button-label-color': '#2d2d2d',
-    '--theme-dialog-big-button-description-color': '#2d2d2d',
+    '--theme-dialog-big-button-description-color': 'rgba(45, 45, 45, 0.6)',
     '--theme-dialog-set-wallet-password-background-color':
       'rgba(255, 185, 35, 0.96)',
     '--theme-dialog-set-wallet-password-box-shadow': 'rgba(0, 0, 0, 0.25)',
@@ -273,7 +273,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-icon-node-update-notification-arrow-color': '#2d2d2d',
     '--theme-icon-add-wallet-from-sidebar-color': '#2d2d2d',
     '--theme-icon-ada-summary-wallet-amount-symbol-color': '#2d2d2d',
-    '--theme-icon-add-wallet-dialog-big-button-color': '#2d2d2d',
+    '--theme-icon-add-wallet-dialog-big-button-color': 'rgba(45, 45, 45, 0.5)',
     '--theme-icon-back-button-color': '#2d2d2d',
     '--theme-icon-close-button-color': '#2d2d2d',
     '--theme-icon-connecting-ada-api-logo-color': '#2d2d2d',
