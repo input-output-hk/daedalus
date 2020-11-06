@@ -7,6 +7,10 @@ Changelog
 
 - Added hardware wallet support for "Trezor model T" ([PR 2046](https://github.com/input-output-hk/daedalus/pull/2046))
 
+### Chores
+
+- Hided hardware wallet restoration support ([PR 2237](https://github.com/input-output-hk/daedalus/pull/2237))
+
 ## 2.4.1
 
 ### Fixes
