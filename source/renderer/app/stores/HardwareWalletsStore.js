@@ -127,6 +127,7 @@ export default class HardwareWalletsStore extends Store {
   @observable isConnectionInitialized: boolean = false;
   @observable isTransactionPending: boolean = false;
   @observable isTrezorBridgeInstalled: boolean = false;
+  @observable isTransactionInitiated: boolean = false;
 
   cardanoAdaAppPollingInterval: ?IntervalID = null;
   checkTransactionTimeInterval: ?IntervalID = null;
@@ -354,6 +355,7 @@ export default class HardwareWalletsStore extends Store {
     });
     const { hardwareWalletDevices } = this;
     const activeWallet = this.stores.wallets.active;
+
     try {
       runInAction('HardwareWalletsStore:: set connecting helper flag', () => {
         this.isConnectionInitialized = true;
@@ -383,11 +385,15 @@ export default class HardwareWalletsStore extends Store {
       ) {
         // Device exist and but not physically connected - initiate listener to first recognized device and let txSend to reject wrong device
         transportDevice = await getHardwareWalletTransportChannel.request({
-          devicePath: null, // Path can change because device is disconnected now
+          devicePath: null, // Path can change because device is disconnected now.
           isTrezor:
             recognizedPairedHardwareWallet.deviceType === DeviceTypes.TREZOR,
         });
-        return;
+        return transportDevice; // Special Case when we are waiting on response return to continue with tx signing
+      }
+
+      if (this.isTransactionInitiated && !recognizedPairedHardwareWallet) {
+        return null; // Special Case when we are waiting on response return to continue with tx signing
       }
 
       // Cases for wallet create / restore
@@ -417,7 +423,7 @@ export default class HardwareWalletsStore extends Store {
 
       if (transportDevice) {
         const { deviceType, firmwareVersion } = transportDevice;
-        // Check Device model
+        // Check if device is supported
         if (
           (deviceType === DeviceTypes.TREZOR && !DeviceModels.TREZOR_T) ||
           (deviceType === DeviceTypes.LEDGER &&
@@ -470,6 +476,7 @@ export default class HardwareWalletsStore extends Store {
       } else {
         throw new Error('Device not found');
       }
+      return transportDevice;
     } catch (e) {
       if (e.statusCode === 28177) {
         throw new Error('Device is locked');
@@ -668,6 +675,7 @@ export default class HardwareWalletsStore extends Store {
         'HardwareWalletsStore:: set Transaction verifying failed',
         () => {
           this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED;
+          this.isTransactionInitiated = false;
         }
       );
       // @TODO - Maybe we should handle this case as separated message in tx dialog
@@ -770,6 +778,9 @@ export default class HardwareWalletsStore extends Store {
   };
 
   initiateTransaction = async (params: { walletId: string }) => {
+    runInAction('HardwareWalletsStore:: Initiate Transaction', () => {
+      this.isTransactionInitiated = true;
+    });
     const { walletId } = params;
     const hardwareWalletConnectionData = get(
       this.hardwareWalletsConnectionData,
@@ -785,7 +796,18 @@ export default class HardwareWalletsStore extends Store {
 
     if (disconnected) {
       // Wait for connection to be established and continue to signing process
-      await this.establishHardwareWalletConnection();
+      try {
+        const transportDevice = await this.establishHardwareWalletConnection();
+        if (!transportDevice) {
+          throw new Error('Signing device not recognized!');
+        }
+      } catch (e) {
+        runInAction('HardwareWalletsStore:: Initiate transaction', () => {
+          this.isTransactionInitiated = false;
+          this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED;
+        });
+        throw e;
+      }
     }
 
     // Add more cases / edge cases if needed
@@ -794,6 +816,9 @@ export default class HardwareWalletsStore extends Store {
     } else {
       this._signTransactionLedger();
     }
+    runInAction('HardwareWalletsStore:: Initiate transaction', () => {
+      this.isTransactionInitiated = false;
+    });
   };
 
   _resetTransaction = async (
@@ -801,6 +826,9 @@ export default class HardwareWalletsStore extends Store {
       cancelDeviceAction: boolean,
     }
   ) => {
+    runInAction('HardwareWalletsStore:: Reset initiated transaction', () => {
+      this.isTransactionInitiated = false;
+    });
     const cancelDeviceAction = get(params, 'cancelDeviceAction', false);
     if (cancelDeviceAction) {
       resetTrezorActionChannel.request();
