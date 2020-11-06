@@ -51,6 +51,7 @@ export default class Step1ConfigurationContainer extends Component<Props> {
     const {
       redeemWallet,
       configurationStepError,
+      transactionFees,
       isSubmittingReedem,
       redeemRecoveryPhrase,
     } = stores.staking;
@@ -61,7 +62,7 @@ export default class Step1ConfigurationContainer extends Component<Props> {
     );
     const { amount, reward, isRestoring } = selectedWallet || {};
     let errorMessage = configurationStepError;
-    if (selectedWallet && !this.onWalletAcceptable(amount, reward)) {
+    if (selectedWallet && (!this.onWalletAcceptable(amount, reward) || transactionFees)) {
       // Wallet is restoring
       if (isRestoring) errorMessage = messages.errorRestoringWallet;
       // Wallet balance < min delegation funds
@@ -72,6 +73,7 @@ export default class Step1ConfigurationContainer extends Component<Props> {
     return (
       <Step1ConfigurationDialog
         error={errorMessage}
+        transactionFees={transactionFees}
         isSubmitting={isSubmittingReedem}
         mnemonicValidator={isValidMnemonic}
         onBack={onBack}

@@ -526,7 +526,7 @@ export default class StakingStore extends Store {
         this.redeemRecoveryPhrase = recoveryPhrase;
         this.transactionFees = transactionFees;
         this.confirmationStepError = null;
-        this.redeemStep = steps.CONFIRMATION;
+        this.redeemStep = !isRedeemRewards ? steps.CONFIRMATION : steps.CONFIGURATION;
         this.configurationStepError = null;
         this.isSubmittingReedem = false;
       });

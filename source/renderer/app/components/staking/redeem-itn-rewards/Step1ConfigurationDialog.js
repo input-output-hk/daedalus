@@ -16,6 +16,7 @@ import {
   FormattedMessage,
   FormattedHTMLMessage,
 } from 'react-intl';
+import {BigNumber} from 'bignumber.js';
 import Wallet from '../../../domains/Wallet';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
@@ -148,6 +149,7 @@ type Props = {
   suggestedMnemonics: Array<string>,
   recoveryPhrase?: ?Array<string>,
   wallets: Array<Wallet>,
+  transactionFees?: BigNumber,
 };
 
 @observer
@@ -216,9 +218,9 @@ export default class Step1ConfigurationDialog extends Component<Props> {
   submit = () => {
     this.form.submit({
       onSuccess: (form) => {
-        const { onContinue } = this.props;
+        const { onContinue, transactionFees } = this.props;
         const { recoveryPhrase } = form.values();
-        onContinue({ recoveryPhrase, isRedeemRewards: true });
+        onContinue({ recoveryPhrase, isRedeemRewards: !transactionFees });
       },
     });
   };
@@ -256,8 +258,10 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       wallets,
       recoveryPhrase,
       error,
+      transactionFees,
     } = this.props;
-    const minRewardFunds = MIN_REWARDS_FUNDS;
+
+    const minRewardFunds = transactionFees ? MIN_REWARDS_FUNDS + transactionFees.toNumber() : MIN_REWARDS_FUNDS;
 
     let errorMessage;
     if (
