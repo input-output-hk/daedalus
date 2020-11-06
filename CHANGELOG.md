@@ -4,8 +4,11 @@ Changelog
 ## vNext
 
 ### Fixes
-- Fixed `leftovers` not being displayed correctly ([PR 2231](https://github.com/input-output-hk/daedalus/pull/2231))
 - Fixed error message and validation on redeem rewards screen ([PR 2220](https://github.com/input-output-hk/daedalus/pull/2220))
+
+### Chores
+
+- Hided hardware wallet restoration support ([PR 2237](https://github.com/input-output-hk/daedalus/pull/2237))
 
 ## 2.4.1
 
