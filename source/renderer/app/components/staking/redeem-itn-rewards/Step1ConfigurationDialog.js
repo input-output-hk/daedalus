@@ -265,6 +265,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
 
     let errorMessage;
     if (
+      !isSubmitting &&
       error &&
       (error.id === 'api.errors.NotEnoughFundsForTransactionFeesError' ||
         error.id === 'api.errors.NotEnoughMoneyToSendError'
@@ -274,12 +275,12 @@ export default class Step1ConfigurationDialog extends Component<Props> {
         {intl.formatMessage(messages.walletsDropdownError)}
       </p>;
 
-    if (error && error.id === 'staking.redeemItnRewards.step1.errorRestoringWallet')
+    if (!isSubmitting && error && error.id === 'staking.redeemItnRewards.step1.errorRestoringWallet')
       errorMessage = <p className={styles.error}>
         {intl.formatMessage(error)}
       </p>;
 
-    if (error && error.id === 'staking.redeemItnRewards.step1.errorMessage')
+    if (!isSubmitting && error && error.id === 'staking.redeemItnRewards.step1.errorMessage')
       errorMessage = <p className={styles.errorMessage}>
         <FormattedHTMLMessage
           {...error}

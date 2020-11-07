@@ -39,30 +39,33 @@ export default class Step1ConfigurationContainer extends Component<Props> {
 
   onWalletAcceptable = (
     walletAmount?: BigNumber,
-    walletReward?: BigNumber = 0
-  ) =>
-    walletAmount &&
-    walletAmount.gte(new BigNumber(MIN_REWARDS_FUNDS)) &&
-    !walletAmount.equals(walletReward);
+    transactionFees?: BigNumber = 0
+  ) => {
+    const minRewardsFunds = new BigNumber(MIN_REWARDS_FUNDS);
+    const calculatedRewardsCosts = transactionFees ? minRewardsFunds.plus(transactionFees) : minRewardsFunds;
+    return (walletAmount &&
+      walletAmount.gte(calculatedRewardsCosts) &&
+      !walletAmount.equals(calculatedRewardsCosts));
+  };
 
   render() {
     const { onClose, onBack, stores, actions } = this.props;
-    const { allWallets } = stores.wallets;
+    const { wallets, staking } = stores;
+    const { allWallets } = wallets;
     const {
       redeemWallet,
-      configurationStepError,
       transactionFees,
       isSubmittingReedem,
       redeemRecoveryPhrase,
-    } = stores.staking;
+    } = staking;
 
     const selectedWalletId = get(redeemWallet, 'id', null);
     const selectedWallet: ?Wallet = allWallets.find(
       (current: Wallet) => current && current.id === selectedWalletId
     );
-    const { amount, reward, isRestoring } = selectedWallet || {};
-    let errorMessage = configurationStepError;
-    if (selectedWallet && (!this.onWalletAcceptable(amount, reward) || transactionFees)) {
+    const { amount, isRestoring } = selectedWallet || {};
+    let errorMessage = null;
+    if (selectedWallet && !this.onWalletAcceptable(amount, transactionFees)) {
       // Wallet is restoring
       if (isRestoring) errorMessage = messages.errorRestoringWallet;
       // Wallet balance < min delegation funds

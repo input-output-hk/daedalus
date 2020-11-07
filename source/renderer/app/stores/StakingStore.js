@@ -494,6 +494,28 @@ export default class StakingStore extends Store {
     walletId: string,
   }) => {
     this.redeemWallet = this.stores.wallets.getWalletById(walletId);
+    this.isSubmittingReedem = true;
+    try {
+      const [address] = await this.stores.addresses.getAddressesByWalletId(
+        walletId
+      );
+      const transactionFees = await this.getRedeemItnRewardsFeeRequest.execute({
+        wallet: this.redeemWallet,
+        recoveryPhrase: 'self',
+        address: address.id,
+        isRedeemRewards: true,
+      });
+      runInAction(() => {
+        this.confirmationStepError = null;
+        this.transactionFees = transactionFees;
+        this.isSubmittingReedem = false;
+      });
+    } catch (error) {
+      runInAction(() => {
+        this.configurationStepError = error;
+        this.isSubmittingReedem = false;
+      });
+    }
   };
 
   @action _onRedeemStart = () => {
