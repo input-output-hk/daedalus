@@ -24,8 +24,9 @@ const { isIncentivizedTestnet } = global.environment;
 function typedRequest<Response>(
   httpOptions: RequestOptions,
   queryParams?: {},
-  rawBodyParams?: any
-  // requestOptions?: { returnMeta: boolean }
+  rawBodyParams?: any,
+  onHttpRequestSent?: Function,
+  onHttpRequestComplete?: Function
 ): Promise<Response> {
   return new Promise((resolve, reject) => {
     const options: RequestOptions = Object.assign({}, httpOptions);
@@ -56,6 +57,9 @@ function typedRequest<Response>(
     if (hasRequestBody) {
       httpsRequest.write(requestBody);
     }
+    if (onHttpRequestSent) {
+      onHttpRequestSent(httpsRequest);
+    }
     httpsRequest.on('response', (response) => {
       let body = '';
       // Cardano-sl returns chunked requests, so we need to concat them
@@ -63,7 +67,12 @@ function typedRequest<Response>(
         body += chunk;
       });
       // Reject errors
-      response.on('error', (error) => reject(error));
+      response.on('error', (error) => {
+        reject(error);
+        if (onHttpRequestComplete) {
+          onHttpRequestComplete();
+        }
+      });
       // Resolve JSON results and handle backend errors
       response.on('end', () => {
         try {
@@ -103,9 +112,29 @@ function typedRequest<Response>(
           // Handle internal server errors (e.g. HTTP 500 - 'Something went wrong')
           reject(new Error(error));
         }
+        if (onHttpRequestComplete) {
+          onHttpRequestComplete();
+        }
       });
     });
-    httpsRequest.on('error', (error) => reject(error));
+    httpsRequest.on('error', (error) => {
+      reject(error);
+      if (onHttpRequestComplete) {
+        onHttpRequestComplete();
+      }
+    });
+    httpsRequest.on('timeout', () => {
+      httpsRequest.destroy();
+      if (onHttpRequestComplete) {
+        onHttpRequestComplete();
+      }
+    });
+    httpsRequest.on('uncaughtException', () => {
+      httpsRequest.destroy();
+      if (onHttpRequestComplete) {
+        onHttpRequestComplete();
+      }
+    });
     httpsRequest.end();
   });
 }

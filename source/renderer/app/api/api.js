@@ -664,7 +664,9 @@ export default class AdaApi {
   };
 
   calculateTransactionFee = async (
-    request: GetTransactionFeeRequest
+    request: GetTransactionFeeRequest,
+    onHttpRequestSent?: Function,
+    onHttpRequestComplete?: Function
   ): Promise<BigNumber> => {
     logger.debug('AdaApi::calculateTransactionFee called', {
       parameters: filterLogData(request),
@@ -693,15 +695,25 @@ export default class AdaApi {
       };
       let response: TransactionFee;
       if (isLegacy) {
-        response = await getByronWalletTransactionFee(this.config, {
-          walletId,
-          data,
-        });
+        response = await getByronWalletTransactionFee(
+          this.config,
+          {
+            walletId,
+            data,
+          },
+          onHttpRequestSent,
+          onHttpRequestComplete
+        );
       } else {
-        response = await getTransactionFee(this.config, {
-          walletId,
-          data: { ...data, withdrawal },
-        });
+        response = await getTransactionFee(
+          this.config,
+          {
+            walletId,
+            data: { ...data, withdrawal },
+          },
+          onHttpRequestSent,
+          onHttpRequestComplete
+        );
       }
 
       const formattedTxAmount = new BigNumber(amount).dividedBy(

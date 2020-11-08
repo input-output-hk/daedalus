@@ -91,6 +91,8 @@ export default class TransactionsStore extends Store {
 
   @observable _filterOptionsForWallets = {};
 
+  @observable transactionFeeCalculationRequest: any = null;
+
   setup() {
     const {
       transactions: transactionActions,
@@ -261,12 +263,18 @@ export default class TransactionsStore extends Store {
       );
     }
 
-    return this.api.ada.calculateTransactionFee({
-      ...transactionFeeRequest,
-      walletBalance: wallet.amount,
-      availableBalance: wallet.availableAmount,
-      isLegacy: wallet.isLegacy,
-    });
+    this.destroyPendingTransactionFeeCalculationRequest();
+
+    return this.api.ada.calculateTransactionFee(
+      {
+        ...transactionFeeRequest,
+        walletBalance: wallet.amount,
+        availableBalance: wallet.availableAmount,
+        isLegacy: wallet.isLegacy,
+      },
+      this.onTransactionFeeCalculationRequestSent,
+      this.onTransactionFeeCalculationRequestComplete
+    );
   };
 
   deletePendingTransaction = async ({
@@ -316,6 +324,23 @@ export default class TransactionsStore extends Store {
       ...emptyTransactionFilterOptions,
     };
     return true;
+  };
+
+  destroyPendingTransactionFeeCalculationRequest = () => {
+    runInAction('destroy pending transaction fee calculation request', () => {
+      if (this.transactionFeeCalculationRequest) {
+        this.transactionFeeCalculationRequest.destroy();
+        this.transactionFeeCalculationRequest = null;
+      }
+    });
+  };
+
+  @action onTransactionFeeCalculationRequestSent = (request: any) => {
+    this.transactionFeeCalculationRequest = request;
+  };
+
+  @action onTransactionFeeCalculationRequestComplete = () => {
+    this.transactionFeeCalculationRequest = null;
   };
 
   _getTransactionsRecentRequest = (
