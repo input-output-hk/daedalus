@@ -88,7 +88,6 @@ export default class WalletTransactionsHeader extends Component<Props> {
             />
             <FilterButton
               numberOfFilterDimensionsApplied={numberOfFilterDimensionsApplied}
-              faded={isScrolling}
               onClick={onFilterDialogOpen}
             />
           </div>

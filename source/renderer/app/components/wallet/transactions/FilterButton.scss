@@ -11,14 +11,6 @@
         var(--theme-transactions-filter-button-shadow-color) !important;
     }
 
-    &.actionButtonFaded {
-      opacity: 0.5;
-
-      &:hover {
-        opacity: 1;
-      }
-    }
-
     .actionLabel {
       color: var(--theme-transactions-filter-button-color);
       font-family: var(--font-medium);

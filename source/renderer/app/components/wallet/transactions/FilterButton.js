@@ -11,7 +11,6 @@ import styles from './FilterButton.scss';
 
 type Props = {
   numberOfFilterDimensionsApplied: number,
-  faded: boolean,
   onClick: Function,
 };
 
@@ -23,7 +22,7 @@ export default class FilterButton extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { numberOfFilterDimensionsApplied, faded, onClick } = this.props;
+    const { numberOfFilterDimensionsApplied, onClick } = this.props;
     const buttonLabel = (
       <>
         <div className={styles.actionLabel}>
@@ -37,11 +36,7 @@ export default class FilterButton extends Component<Props> {
         <SVGInline svg={filterIcon} className={styles.filterIcon} />
       </>
     );
-    const buttonClasses = classNames([
-      'primary',
-      styles.actionButton,
-      faded ? styles.actionButtonFaded : null,
-    ]);
+    const buttonClasses = classNames(['primary', styles.actionButton]);
 
     return (
       <div className={styles.component}>
