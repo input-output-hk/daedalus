@@ -33,8 +33,6 @@ import { getByronWalletTransactionFee } from './transactions/requests/getByronWa
 import { getTransactionHistory } from './transactions/requests/getTransactionHistory';
 import { getLegacyWalletTransactionHistory } from './transactions/requests/getLegacyWalletTransactionHistory';
 import { getWithdrawalHistory } from './transactions/requests/getWithdrawalHistory';
-// @TX TODO
-import { getDummyTransactionHistory } from './transactions/getDummyTransactionHistory';
 import { createTransaction } from './transactions/requests/createTransaction';
 import { createByronWalletTransaction } from './transactions/requests/createByronWalletTransaction';
 import { deleteLegacyTransaction } from './transactions/requests/deleteLegacyTransaction';
@@ -186,8 +184,6 @@ import ApiError from '../domains/ApiError';
 
 const { isIncentivizedTestnet } = global;
 
-const txHistory = getDummyTransactionHistory();
-
 export default class AdaApi {
   config: RequestConfig;
 
@@ -300,9 +296,28 @@ export default class AdaApi {
     logger.debug('AdaApi::getTransactions called', { parameters: request });
     const { walletId, order, fromDate, toDate, isLegacy } = request;
 
-    // @TX TODO
+    const params = Object.assign(
+      {},
+      {
+        order: order || 'descending',
+      }
+    );
+    if (fromDate)
+      params.start = `${moment.utc(fromDate).format('YYYY-MM-DDTHH:mm:ss')}Z`;
+    if (toDate)
+      params.end = `${moment.utc(toDate).format('YYYY-MM-DDTHH:mm:ss')}Z`;
+
     try {
-      const response = txHistory;
+      let response;
+      if (isLegacy) {
+        response = await getLegacyWalletTransactionHistory(
+          this.config,
+          walletId,
+          params
+        );
+      } else {
+        response = await getTransactionHistory(this.config, walletId, params);
+      }
       logger.debug('AdaApi::getTransactions success', {
         transactions: response,
       });
