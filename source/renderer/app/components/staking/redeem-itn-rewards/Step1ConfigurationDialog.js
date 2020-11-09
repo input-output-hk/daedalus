@@ -383,7 +383,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
               {...walletsDropdownField.bind()}
               numberOfStakePools={4}
               wallets={wallets}
-              onChange={onSelectWallet}
+              onChange={(id) => onSelectWallet(id, recoveryPhraseField.value)}
               placeholder={intl.formatMessage(
                 messages.selectWalletInputPlaceholder
               )}

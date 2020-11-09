@@ -490,8 +490,10 @@ export default class StakingStore extends Store {
 
   @action _onSelectRedeemWallet = async ({
     walletId,
+    recoveryPhrase,
   }: {
     walletId: string,
+    recoveryPhrase: Array<string>,
   }) => {
     this.redeemWallet = this.stores.wallets.getWalletById(walletId);
     this.isSubmittingReedem = true;
@@ -501,7 +503,7 @@ export default class StakingStore extends Store {
       );
       const transactionFees = await this.getRedeemItnRewardsFeeRequest.execute({
         wallet: this.redeemWallet,
-        recoveryPhrase: 'self',
+        recoveryPhrase,
         address: address.id,
         isRedeemRewards: true,
       });
@@ -513,6 +515,7 @@ export default class StakingStore extends Store {
     } catch (error) {
       runInAction(() => {
         this.configurationStepError = error;
+        this.transactionFees = null;
         this.isSubmittingReedem = false;
       });
     }
