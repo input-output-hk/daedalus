@@ -10117,13 +10117,13 @@
         "description": "Message shown when wallet has no transactions yet.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 25
         },
         "file": "source/renderer/app/components/wallet/transactions/WalletTransactions.js",
         "id": "wallet.transactions.no.transactions",
         "start": {
           "column": 18,
-          "line": 20
+          "line": 21
         }
       }
     ],
@@ -14442,13 +14442,13 @@
         "description": "Transactions CSV column - ID",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 17
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.column.id",
         "start": {
           "column": 12,
-          "line": 11
+          "line": 13
         }
       },
       {
@@ -14456,13 +14456,13 @@
         "description": "Transactions CSV column - Type",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 22
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.column.type",
         "start": {
           "column": 14,
-          "line": 16
+          "line": 18
         }
       },
       {
@@ -14470,13 +14470,13 @@
         "description": "Transactions CSV column - Amount",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 27
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.column.amount",
         "start": {
           "column": 16,
-          "line": 21
+          "line": 23
         }
       },
       {
@@ -14484,13 +14484,13 @@
         "description": "Transactions CSV column - DateTime",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 32
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.column.dateTime",
         "start": {
           "column": 18,
-          "line": 26
+          "line": 28
         }
       },
       {
@@ -14498,13 +14498,13 @@
         "description": "Transactions CSV column - Status",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 37
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.column.status",
         "start": {
           "column": 16,
-          "line": 31
+          "line": 33
         }
       },
       {
@@ -14512,13 +14512,13 @@
         "description": "Transactions CSV column - AddressesFrom",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 42
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.column.addressesFrom",
         "start": {
           "column": 23,
-          "line": 36
+          "line": 38
         }
       },
       {
@@ -14526,13 +14526,13 @@
         "description": "Transactions CSV column - AddressesTo",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 47
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.column.addressesTo",
         "start": {
           "column": 21,
-          "line": 41
+          "line": 43
         }
       },
       {
@@ -14540,13 +14540,13 @@
         "description": "Transactions CSV column - Withdrawals",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 52
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.column.withdrawals",
         "start": {
           "column": 21,
-          "line": 46
+          "line": 48
         }
       },
       {
@@ -14554,13 +14554,13 @@
         "description": "Transactions CSV value - Type Expend",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 57
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.value.type.expend",
         "start": {
           "column": 19,
-          "line": 51
+          "line": 53
         }
       },
       {
@@ -14568,13 +14568,13 @@
         "description": "Transactions CSV value - Type Income",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 62
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.value.type.income",
         "start": {
           "column": 19,
-          "line": 56
+          "line": 58
         }
       },
       {
@@ -14582,13 +14582,13 @@
         "description": "Transactions CSV value - Amount",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 67
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.value.amount",
         "start": {
           "column": 15,
-          "line": 61
+          "line": 63
         }
       },
       {
@@ -14596,13 +14596,13 @@
         "description": "Transactions CSV value - Status Confirmed",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 72
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.value.statusConfirmed",
         "start": {
           "column": 24,
-          "line": 66
+          "line": 68
         }
       },
       {
@@ -14610,13 +14610,13 @@
         "description": "Transactions CSV value - Status Pending",
         "end": {
           "column": 3,
-          "line": 75
+          "line": 77
         },
         "file": "source/renderer/app/utils/transactionsCsvGenerator.js",
         "id": "wallet.transactions.csv.value.statusPending",
         "start": {
           "column": 22,
-          "line": 71
+          "line": 73
         }
       }
     ],
