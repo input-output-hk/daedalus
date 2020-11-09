@@ -58,6 +58,7 @@ export default class WalletTransactionsPage extends Component<Props> {
       currentTimeFormat,
       currentDateFormat,
       currentLocale,
+      currentNumberFormat,
       desktopDirectoryPath,
     } = profile;
     const { searchLimit = 0 } = filterOptions || {};
@@ -102,6 +103,7 @@ export default class WalletTransactionsPage extends Component<Props> {
         totalAvailable={totalAvailable}
         currentLocale={currentLocale}
         currentTimeFormat={currentTimeFormat}
+        currentNumberFormat={currentNumberFormat}
         currentDateFormat={currentDateFormat}
         onFilter={transactionActions.filterTransactions.trigger}
         onRequestCSVFile={onRequestCSVFile}

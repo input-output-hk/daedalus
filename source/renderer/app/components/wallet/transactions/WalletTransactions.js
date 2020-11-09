@@ -30,6 +30,7 @@ type Props = {
   currentDateFormat: string,
   currentLocale: string,
   currentTimeFormat: string,
+  currentNumberFormat: string,
   defaultFilterOptions: TransactionFilterOptionsType,
   deletePendingTransaction: Function,
   filterOptions: TransactionFilterOptionsType,
@@ -98,6 +99,7 @@ export default class WalletTransactions extends Component<Props, State> {
       totalAvailable,
       currentDateFormat,
       currentTimeFormat,
+      currentNumberFormat,
       currentLocale,
       onRequestCSVFile,
       defaultFilterOptions,
@@ -165,6 +167,7 @@ export default class WalletTransactions extends Component<Props, State> {
                 populatedFilterOptions={populatedFilterOptions}
                 onFilter={this.onFilter}
                 onClose={this.onFilterDialogClose}
+                numberFormat={currentNumberFormat}
               />
             )}
           </WalletTransactionsHeader>
