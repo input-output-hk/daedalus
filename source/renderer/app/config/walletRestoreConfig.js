@@ -26,7 +26,7 @@ export const IMPORT_WALLET_STEPS: EnumMap<string, ImportWalletStep> = {
 export const WALLET_KINDS: EnumMap<string, WalletKind> = {
   DAEDALUS: 'Daedalus',
   YOROI: 'Yoroi',
-  HARDWARE: 'Hardware',
+  // HARDWARE: 'Hardware',
 };
 
 export const WALLET_DAEDALUS_KINDS: EnumMap<
