@@ -44,8 +44,7 @@ export default class Step1ConfigurationContainer extends Component<Props> {
     const minRewardsFunds = new BigNumber(MIN_REWARDS_FUNDS);
     const calculatedRewardsCosts = transactionFees ? minRewardsFunds.plus(transactionFees) : minRewardsFunds;
     return (walletAmount &&
-      walletAmount.gte(calculatedRewardsCosts) &&
-      !walletAmount.equals(calculatedRewardsCosts));
+      walletAmount.gte(calculatedRewardsCosts));
   };
 
   render() {
