@@ -131,14 +131,14 @@ const copy = async () => {
 
     // Check existing properties with the given new prefix
     const conflictingProperties = existingProperties.filter(
-      existingProperty => {
+      (existingProperty) => {
         const selectedProperty = replaceSingleProperty(
           existingProperty,
           toPrefix,
           fromPrefix
         );
         return !!selectedProperties.filter(
-          property => property === selectedProperty
+          (property) => property === selectedProperty
         ).length;
       }
     );
@@ -152,7 +152,7 @@ const copy = async () => {
         choices: conflictingProperties,
       });
       const originalSelectedPropertiesLength = selectedProperties.length;
-      selectedProperties = selectedProperties.filter(selectedProperty => {
+      selectedProperties = selectedProperties.filter((selectedProperty) => {
         const newProperty = replaceSingleProperty(
           selectedProperty,
           fromPrefix,
@@ -203,7 +203,7 @@ const copy = async () => {
       }
     }
 
-    const newProperties = selectedProperties.map(selectedProperty =>
+    const newProperties = selectedProperties.map((selectedProperty) =>
       replaceSingleProperty(selectedProperty, fromPrefix, toPrefix)
     );
 
@@ -222,7 +222,7 @@ Here's an example of how they will look like:
         : ''
     }
     ${newProperties
-      .map(newProperty => `${cyan(newProperty)}: ${magenta('...')},`)
+      .map((newProperty) => `${cyan(newProperty)}: ${magenta('...')},`)
       .join(`\n    `)}
   },
   ...
@@ -302,10 +302,10 @@ Should I proceed?
 const { log } = console;
 const { cyan, red, magenta } = chalk;
 const separator = () => log('\n');
-const orange = content => chalk.keyword('orange')(content);
-const info = message => log(orange(message));
-const warn = message => log(red(message));
-const prompt = async promptConfig => {
+const orange = (content) => chalk.keyword('orange')(content);
+const info = (message) => log(orange(message));
+const warn = (message) => log(red(message));
+const prompt = async (promptConfig) => {
   separator();
   const { response } = await inquirer.prompt([
     {
@@ -320,14 +320,14 @@ const randomColor = () =>
 
 // Helpers
 const getCategoriesChoices = () =>
-  categories.map(category => ({
+  categories.map((category) => ({
     value: category,
     short: `\nOk, I'll use the existing ${orange(category)} category`,
     name: category,
   }));
 
-const getChoicesFromProperties = properties =>
-  properties.map(propertyName => ({
+const getChoicesFromProperties = (properties) =>
+  properties.map((propertyName) => ({
     value: propertyName,
     short: `\n✔ ${propertyName}`,
     name: cyan(propertyName),
@@ -343,12 +343,12 @@ const findPropertiesFromPrefix = (
 } =>
   Object.entries(themeObj).reduce(
     (response, [categoryName, categoryObj]) => {
-      const hasExistingProperties = Object.keys(categoryObj).filter(
-        property => property.indexOf(prefix) > -1
+      const existingProperties = Object.keys(categoryObj).filter(
+        (property) => property.indexOf(prefix) > -1
       );
-      if (hasExistingProperties.length) {
+      if (existingProperties.length) {
         if (!response.category) response.category = categoryName;
-        response.items = Object.keys(categoryObj);
+        response.items = existingProperties;
       }
       return response;
     },
@@ -368,7 +368,7 @@ const replaceSingleProperty = (
   return propertyName.replace(fromPrefixNoDash, toPrefixNoDash);
 };
 
-const removeLastDash = property => {
+const removeLastDash = (property) => {
   let prop = property;
   if (property.slice(-1) === '-') prop = prop.replace(/-$/, '');
   return prop;
