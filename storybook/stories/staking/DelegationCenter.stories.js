@@ -230,8 +230,8 @@ export const StakingDelegationCenterStory = ({
     wallets={wallets}
     onDelegate={action('onDelegate')}
     onUndelegate={action('onUndelegate')}
-    getStakePoolById={poolId =>
-      find(STAKE_POOLS, stakePool => stakePool.id === poolId)
+    getStakePoolById={(poolId) =>
+      find(STAKE_POOLS, (stakePool) => stakePool.id === poolId)
     }
     numberOfStakePools={STAKE_POOLS.length}
     networkTip={networkTip}

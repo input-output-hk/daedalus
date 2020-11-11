@@ -53,16 +53,10 @@ export const isTransactionDateInFilterRange = (
   }
 
   const compareFrom = fromDate
-    ? date.getTime() >=
-      moment(fromDate)
-        .startOf('day')
-        .valueOf()
+    ? date.getTime() >= moment(fromDate).startOf('day').valueOf()
     : true;
   const compareTo = toDate
-    ? date.getTime() <=
-      moment(toDate)
-        .endOf('day')
-        .valueOf()
+    ? date.getTime() <= moment(toDate).endOf('day').valueOf()
     : true;
 
   return compareFrom && compareTo;

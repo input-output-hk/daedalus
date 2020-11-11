@@ -175,7 +175,7 @@ export default class WalletTypeDialog extends Component<Props, State> {
   };
 
   toggleAcceptance = (param: HardwareWalletAcceptance) =>
-    this.setState(currentState => set({}, param, !currentState[param]));
+    this.setState((currentState) => set({}, param, !currentState[param]));
 
   getWalletKind = (
     kinds: Object,

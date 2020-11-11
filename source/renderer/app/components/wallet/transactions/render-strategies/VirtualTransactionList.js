@@ -16,7 +16,7 @@ import styles from './VirtualTransactionList.scss';
 
 type Props = {
   getExpandedTransactions: () => Array<any>,
-  renderRow: Row => Node,
+  renderRow: (Row) => Node,
   rows: Row[],
   isLoadingSpinnerShown?: boolean,
   isSyncingSpinnerShown?: boolean,
@@ -70,7 +70,7 @@ export class VirtualTransactionList extends Component<Props> {
    */
   findIndexForTx = (tx: WalletTransaction): number =>
     this.props.rows.findIndex(
-      r => r instanceof TransactionInfo && r.tx.id === tx.id
+      (r) => r instanceof TransactionInfo && r.tx.id === tx.id
     );
 
   /**
@@ -226,13 +226,13 @@ export class VirtualTransactionList extends Component<Props> {
 
   updateVisibleExpandedTxRowHeights = () => {
     const expandedRows = this.props.getExpandedTransactions();
-    const visibleExpandedTx = expandedRows.filter(tx => {
+    const visibleExpandedTx = expandedRows.filter((tx) => {
       const index = this.findIndexForTx(tx);
       return (
         index >= this.overscanStartIndex && index <= this.overscanStopIndex
       );
     });
-    visibleExpandedTx.forEach(tx => {
+    visibleExpandedTx.forEach((tx) => {
       this.updateTxRowHeight(tx, true, false);
       const estimatedHeight = this.rowHeights[this.findIndexForTx(tx)];
       this.correctExpandedTxHeightEstimationErrors(tx, estimatedHeight);
@@ -310,7 +310,7 @@ export class VirtualTransactionList extends Component<Props> {
 
     return (
       <WalletTransactionsListScrollContext.Consumer>
-        {context => (
+        {(context) => (
           <div className={componentStyles}>
             <AutoSizer
               onResize={throttle(this.onResize, 100, {
@@ -321,7 +321,7 @@ export class VirtualTransactionList extends Component<Props> {
               {({ width, height }) => (
                 <List
                   className={styles.list}
-                  ref={list => {
+                  ref={(list) => {
                     this.list = list;
                   }}
                   width={width}
@@ -336,7 +336,7 @@ export class VirtualTransactionList extends Component<Props> {
                   }
                   rowRenderer={this.rowRenderer}
                   style={{ overflowY: 'scroll' }}
-                  onScroll={param => this.onListScroll(context, param)}
+                  onScroll={(param) => this.onListScroll(context, param)}
                 />
               )}
             </AutoSizer>

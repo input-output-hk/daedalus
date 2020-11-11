@@ -23,6 +23,8 @@ export const ARROW_WIDTH = 22;
 export const ARROW_HEIGHT = 11;
 export const ARROW_OFFSET = ARROW_WIDTH / 2;
 export const TOOLTIP_DELTA = 5;
+export const LIST_VIEW_TOOLTIP_DELTA_TOP = 120;
+export const LIST_VIEW_ROW_HEIGHT = 36;
 export const TOOLTIP_MIN_HEIGHT = 287;
 export const TOOLTIP_MAX_HEIGHT = 370;
 export const TOOLTIP_AVG_HEIGHT = (TOOLTIP_MIN_HEIGHT + TOOLTIP_MAX_HEIGHT) / 2;
@@ -51,6 +53,6 @@ export const REDEEM_ITN_REWARDS_STEPS: {
 
 export const IS_RANKING_DATA_AVAILABLE = true;
 
-export const IS_SATURATION_DATA_AVAILABLE = false;
+export const IS_SATURATION_DATA_AVAILABLE = true;
 
 export const EPOCH_COUNTDOWN_INTERVAL = 1 * 1000; // 1 second | unit: milliseconds;

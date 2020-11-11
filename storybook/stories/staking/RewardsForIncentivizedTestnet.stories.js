@@ -10,7 +10,7 @@ import StakingRewardsForIncentivizedTestnet from '../../../source/renderer/app/c
 // Dummy data initialization
 import REWARDS from '../../../source/renderer/app/config/stakingRewards.dummy.json';
 
-const rewards = map(REWARDS, reward => {
+const rewards = map(REWARDS, (reward) => {
   return {
     ...reward,
     reward: new BigNumber(reward.reward),

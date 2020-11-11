@@ -34,6 +34,7 @@ import {
   StakingUndelegateConfirmationStory,
   StakingUndelegateConfirmationResultStory,
 } from './Undelegate.stories';
+import { StakePoolsTableStory } from './StakePoolsTable.stories';
 
 const defaultPercentage = 10;
 const defaultStartDateTime = new Date();
@@ -49,6 +50,7 @@ const pageNames = {
   'delegation-center': 'Delegation Center',
   'delegation-center-experiment': 'Delegation Center - experimental feature',
   'stake-pools': 'Pools Index',
+  'stake-pools-table': 'Stake Pools List',
   'stake-pools-tooltip': 'Tooltip',
   rewards: 'Rewards',
   'rewards-itn': 'Rewards - ITN',
@@ -96,7 +98,7 @@ const decorator = (story, context) => {
                 ),
                 <StakingWithNavigation
                   key="stakingWithNavigation"
-                  isActiveNavItem={item => item === getItemFromContext()}
+                  isActiveNavItem={(item) => item === getItemFromContext()}
                   activeItem={getItemFromContext()}
                   onNavItemClick={() => {}}
                   isIncentivizedTestnet={isIncentivizedTestnetTheme(
@@ -136,7 +138,9 @@ storiesOf('Decentralization | Staking', module)
 
   .add(
     pageNames['delegation-center'],
-    props => <StakingDelegationCenterStory {...props} isEpochsInfoAvailable />,
+    (props) => (
+      <StakingDelegationCenterStory {...props} isEpochsInfoAvailable />
+    ),
     {
       id: 'delegation-center',
     }
@@ -144,7 +148,9 @@ storiesOf('Decentralization | Staking', module)
 
   .add(
     pageNames['delegation-center-experiment'],
-    props => <StakingDelegationCenterStory {...props} isEpochsInfoAvailable />,
+    (props) => (
+      <StakingDelegationCenterStory {...props} isEpochsInfoAvailable />
+    ),
     {
       id: 'delegation-center',
       experiment: true,
@@ -153,7 +159,7 @@ storiesOf('Decentralization | Staking', module)
 
   .add(
     'Delegation Center - Loading',
-    props => (
+    (props) => (
       <StakingDelegationCenterStory
         {...props}
         isLoading
@@ -167,7 +173,7 @@ storiesOf('Decentralization | Staking', module)
 
   .add(
     'Delegation Center - Not an Shelley era',
-    props => (
+    (props) => (
       <StakingDelegationCenterStory {...props} isEpochsInfoAvailable={false} />
     ),
     {
@@ -186,11 +192,15 @@ storiesOf('Decentralization | Staking', module)
 
   .add(
     `${pageNames['stake-pools']} - Loading`,
-    props => <StakePoolsStory {...props} isLoading />,
+    (props) => <StakePoolsStory {...props} isLoading />,
     {
       id: 'stake-pools-loading',
     }
   )
+
+  .add(pageNames['stake-pools-table'], StakePoolsTableStory, {
+    id: 'stake-pools-table',
+  })
 
   .add(pageNames.rewards, StakingRewardsStory, { id: 'rewards' })
 
@@ -217,12 +227,12 @@ storiesOf('Decentralization | Staking', module)
       id: 'info',
     }
   )
-  .add('Delegation Wizard', props => <StakingDelegationSteps {...props} />, {
+  .add('Delegation Wizard', (props) => <StakingDelegationSteps {...props} />, {
     id: 'wizard',
   })
   .add(
     'Delegation Wizard - Delegation Not Available',
-    props => <StakingDelegationSteps {...props} isDisabled />,
+    (props) => <StakingDelegationSteps {...props} isDisabled />,
     {
       id: 'wizard',
     }
@@ -233,7 +243,9 @@ storiesOf('Decentralization | Staking', module)
 
   .add(
     'Undelegate Confirmation - unknownn stake pool',
-    props => <StakingUndelegateConfirmationStory {...props} unknownStakePool />,
+    (props) => (
+      <StakingUndelegateConfirmationStory {...props} unknownStakePool />
+    ),
     {
       id: 'undelegate-confirmation-unknown-pool',
     }

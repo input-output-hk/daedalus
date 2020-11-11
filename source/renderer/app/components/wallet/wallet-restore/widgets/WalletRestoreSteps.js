@@ -40,11 +40,11 @@ export default class WalletRestoreSteps extends Component<Props> {
   };
 
   get filteredSteps(): Array<RestoreWalletStep> {
-    return RESTORE_WALLET_STEPS.filter(stepId => stepId !== 'success');
+    return RESTORE_WALLET_STEPS.filter((stepId) => stepId !== 'success');
   }
 
   get stepsList() {
-    return (this: any).filteredSteps.map(stepId =>
+    return (this: any).filteredSteps.map((stepId) =>
       this.context.intl.formatMessage(messages[`${stepId}Step`])
     );
   }

@@ -1,5 +1,5 @@
 // @flow
-import bip39 from 'bip39';
+import * as bip39 from 'bip39';
 import { Buffer } from 'safe-buffer';
 import crypto from 'crypto';
 import { chunk } from 'lodash';

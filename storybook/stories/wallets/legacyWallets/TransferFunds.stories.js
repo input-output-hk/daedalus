@@ -9,6 +9,7 @@ import TransferFundsStep1Dialog from '../../../../source/renderer/app/components
 import TransferFundsStep2Dialog from '../../../../source/renderer/app/components/wallet/transfer-funds/TransferFundsStep2Dialog';
 import { WALLETS_V2 } from '../../_support/StoryProvider';
 import STAKE_POOLS from '../../../../source/renderer/app/config/stakingStakePools.dummy.json';
+import { LOVELACES_PER_ADA } from '../../../../source/renderer/app/config/numbersConfig';
 
 // Helpers
 import WalletsWrapper from '../_utils/WalletsWrapper';
@@ -70,9 +71,15 @@ storiesOf('Wallets|Legacy Wallets', module)
       step: 1,
     });
     const feesAmount = BigNumber(feesNumber);
-    const leftoversAmount = boolean('Has leftovers', true)
-      ? new BigNumber(0.000005)
-      : null;
+    const leftoversNumber = number('leftovers (Lovelaces)', 0, {
+      range: true,
+      min: 0,
+      max: 10,
+      step: 1,
+    });
+    const leftoversAmount = new BigNumber(leftoversNumber).dividedBy(
+      LOVELACES_PER_ADA
+    );
     const sourceWalletNumber = number('sourceWalletBalance', 50, {
       range: true,
       min: 10,

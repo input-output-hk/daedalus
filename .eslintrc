@@ -45,6 +45,7 @@
     "no-unused-expressions": "warn",
     "no-use-before-define": 0,
     "no-useless-catch": 0,
+    "no-useless-computed-key": 0,
     "no-restricted-syntax": 0,
     "prefer-destructuring": "warn",
     "prefer-object-spread": 0,

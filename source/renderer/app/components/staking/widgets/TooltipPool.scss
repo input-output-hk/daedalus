@@ -10,9 +10,10 @@
   display: none;
   padding: 10px;
   position: absolute;
+  text-align: initial;
   user-select: text;
   width: 280px;
-  z-index: 20;
+  z-index: 1000;
 
   :global {
     button.SimpleButton_root {
@@ -92,37 +93,38 @@
     }
   }
 
+  .noDataDash {
+    background-color: var(--theme-staking-stake-pool-grey-bg-color);
+    border-radius: 3px;
+    display: inline-block;
+    height: 16px;
+    width: 23px;
+
+    :global {
+      .SVGInline {
+        align-items: center;
+        display: flex !important;
+        justify-content: center;
+        padding: 0 4px !important;
+      }
+    }
+
+    svg {
+      height: 10px;
+      width: 7px;
+
+      path {
+        fill: var(--theme-staking-stake-pool-tooltip-neutral-text-color);
+      }
+    }
+  }
+
   .noDataDashTooltip {
     padding: 0;
 
     :global {
       .SimpleBubble_bubble {
         margin-bottom: -20px !important;
-      }
-    }
-
-    .noDataDash {
-      background-color: var(--theme-staking-stake-pool-grey-bg-color);
-      border-radius: 3px;
-      height: 16px;
-      width: 23px;
-
-      :global {
-        .SVGInline {
-          align-items: center;
-          display: flex;
-          justify-content: center;
-          padding: 0 4px;
-        }
-      }
-
-      svg {
-        height: 10px;
-        width: 7px;
-
-        path {
-          fill: var(--theme-staking-stake-pool-tooltip-neutral-text-color);
-        }
       }
     }
   }
@@ -205,6 +207,10 @@
       left: -10px;
       top: -11px;
     }
+
+    &.greyArrow {
+      border-bottom-color: var(--theme-staking-stake-pool-grey-color);
+    }
   }
 
   &.tooltipPositionLeft {
@@ -249,19 +255,25 @@
   }
 
   .hoverContent {
-    background: var(--theme-staking-stake-pool-tooltip-id-background-color);
-    box-shadow: 0 2px 5px var(--theme-staking-stake-pool-tooltip-id-shadow-1);
+    background: var(--theme-staking-stake-pool-tooltip-background-color);
     height: 20px;
     left: 0;
     margin-left: -20px;
     opacity: 0;
-    padding: 3px 20px 5px;
     position: absolute;
     right: 0;
     transition: opacity 0.25s, height 0.25s;
     transition-delay: 0s;
     user-select: none;
     width: 278px;
+
+    .hoverContentBackground {
+      background: var(--theme-staking-stake-pool-tooltip-id-background-color);
+      box-shadow: 0 2px 5px var(--theme-staking-stake-pool-tooltip-id-shadow-1);
+      height: 100%;
+      padding: 3px 20px 5px;
+      width: 100%;
+    }
 
     svg {
       margin-left: 3px;
@@ -291,8 +303,6 @@
   }
 
   &:hover {
-    margin: -8px 0 27px;
-
     .ellipsisContent {
       opacity: 0;
       transition-delay: 0.25s;
@@ -373,114 +383,218 @@
 
 .table {
   @extend %regularText;
-  display: flex;
-  flex-wrap: wrap;
   margin: 18px 0 6px 0;
 
-  dt,
-  dd {
-    height: 19px;
-    margin-bottom: 6px;
+  .dRow {
+    align-items: center;
+    display: flex;
+    justify-content: space-between;
 
-    &:last-of-type {
-      margin-bottom: 0;
+    &:hover {
+      & > div:first-child {
+        .questionMark {
+          display: block;
+        }
+      }
     }
-  }
 
-  dt {
-    color: var(--theme-staking-stake-pool-tooltip-table-title-color);
-    font-size: 14px;
-    line-height: 1.36;
-    opacity: 0.8;
-    width: 65%;
-  }
+    & > div {
+      height: 19px;
+      margin-bottom: 6px;
+      white-space: nowrap;
+    }
 
-  dd {
-    line-height: 0;
-    padding-top: 1px;
-    text-align: right;
-    width: 35%;
-  }
+    & > div:first-child {
+      align-items: center;
+      color: var(--theme-staking-stake-pool-tooltip-table-title-color);
+      display: flex;
+      font-size: 14px;
+      line-height: 1.36;
+      width: 65%;
 
-  span {
-    border-radius: 3px;
-    color: var(--theme-staking-stake-pool-tooltip-table-param-color);
-    display: inline-block;
-    font-size: 8px;
-    font-weight: bold;
-    height: 16px;
-    line-height: 16px;
-    padding: 0 9px;
-  }
+      &.saturationLabel {
+        width: 50%;
+      }
 
-  .ranking,
-  .profitMargin,
-  .cost {
-    width: 35%;
+      &.costPerEpochLabel {
+        width: 75%;
+      }
+
+      .labelContainer {
+        align-items: center;
+        cursor: pointer;
+        display: flex;
+
+        &:hover {
+          .questionMark {
+            :global {
+              .SVGInline {
+                svg {
+                  path {
+                    opacity: 0.5;
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      .fieldLabel {
+        line-height: 1;
+        opacity: 0.8;
+      }
+
+      .questionMark {
+        display: none;
+        height: 19px;
+        margin-left: 4px;
+        width: 10px;
+
+        :global {
+          .SVGInline {
+            align-items: center;
+            display: flex;
+            height: 100%;
+            justify-content: center;
+            line-height: 19px;
+            width: 100%;
+
+            svg {
+              height: 10px;
+              width: 10px;
+
+              path {
+                fill: var(--theme-staking-stake-pool-tooltip-table-title-color);
+                opacity: 0.3;
+              }
+            }
+          }
+        }
+      }
+
+      .tooltipWithHTMLContent {
+        p {
+          -webkit-box-orient: horizontal;
+          display: block;
+          -webkit-line-clamp: none;
+          overflow: visible;
+          text-overflow: clip;
+          word-break: normal;
+
+          & + p {
+            margin-top: 6px;
+          }
+        }
+      }
+
+      :global {
+        .SimpleTooltip_root {
+          .SimpleTooltip_bubble {
+            transform: translate(calc(50% - 5px), 5px);
+
+            .SimpleBubble_bubble {
+              font-family: var(--font-regular);
+              margin-left: 40px;
+              transform: translate(-50%, 0);
+              white-space: normal;
+              width: 250px;
+            }
+          }
+        }
+      }
+    }
+
+    & > div:last-child {
+      line-height: 0;
+      padding-top: 1px;
+      text-align: right;
+      width: 35%;
+
+      &.costValue {
+        width: 25%;
+      }
+
+      span {
+        border-radius: 3px;
+        color: var(--theme-staking-stake-pool-tooltip-table-param-color);
+        display: inline-block;
+        font-size: 8px;
+        font-weight: bold;
+        height: 16px;
+        line-height: 16px;
+        padding: 0 9px;
+      }
+
+      &.saturationValue {
+        width: 50% !important;
+
+        & > span {
+          background: var(
+            --theme-staking-stake-pool-tooltip-neutral-background-color
+          );
+          white-space: nowrap;
+
+          .saturationBar {
+            background: var(
+              --theme-staking-stake-pool-saturation-background-color
+            );
+            border-radius: 2px;
+            height: 5px;
+            margin: 0 6px 0 0;
+            overflow: hidden;
+            padding: 0;
+            position: relative;
+            width: 40px;
+
+            span {
+              border-radius: 2px;
+              bottom: 0;
+              height: inherit;
+              left: 0;
+              padding: 0;
+              position: absolute;
+              top: 0;
+            }
+
+            &.green span {
+              background: var(
+                --theme-staking-stake-pool-saturation-green-color
+              );
+            }
+
+            &.orange span {
+              background: var(
+                --theme-staking-stake-pool-saturation-orange-color
+              );
+            }
+
+            &.red span {
+              background: var(--theme-staking-stake-pool-saturation-red-color);
+            }
+
+            &.yellow span {
+              background: var(
+                --theme-staking-stake-pool-saturation-yellow-color
+              );
+            }
+          }
+        }
+      }
+    }
   }
 
   .ranking {
     position: relative;
+
+    .asterisk {
+      font-family: Verdana;
+      padding: 0 !important;
+    }
   }
 }
 
-.defaultColor {
-  .defaultColorContent {
-    background: var(
-      --theme-staking-stake-pool-tooltip-neutral-background-color
-    );
-    color: var(--theme-staking-stake-pool-tooltip-neutral-text-color);
-  }
-}
-
-.saturationLabel {
-  width: 50% !important;
-}
-
-.saturationValue {
-  width: 50% !important;
-
-  & > span {
-    background: var(
-      --theme-staking-stake-pool-tooltip-neutral-background-color
-    );
-    white-space: nowrap;
-  }
-
-  .saturationBar {
-    background: var(--theme-staking-stake-pool-saturation-background-color);
-    border-radius: 2px;
-    height: 5px;
-    margin: 0 6px 0 0;
-    overflow: hidden;
-    padding: 0;
-    position: relative;
-    width: 40px;
-
-    span {
-      border-radius: 2px;
-      bottom: 0;
-      height: inherit;
-      left: 0;
-      padding: 0;
-      position: absolute;
-      top: 0;
-    }
-
-    &.green span {
-      background: var(--theme-staking-stake-pool-saturation-green-color);
-    }
-
-    &.orange span {
-      background: var(--theme-staking-stake-pool-saturation-orange-color);
-    }
-
-    &.red span {
-      background: var(--theme-staking-stake-pool-saturation-red-color);
-    }
-
-    &.yellow span {
-      background: var(--theme-staking-stake-pool-saturation-yellow-color);
-    }
-  }
+.defaultColorContent {
+  background: var(--theme-staking-stake-pool-tooltip-neutral-background-color);
+  color: var(--theme-staking-stake-pool-tooltip-neutral-text-color);
 }
