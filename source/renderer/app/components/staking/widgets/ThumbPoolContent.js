@@ -44,9 +44,16 @@ export default class ThumbPoolContent extends Component<Props> {
     return (
       <div className={componentClassnames}>
         <div className={styles.ticker}>{ticker}</div>
-        {IS_RANKING_DATA_AVAILABLE && nonMyopicMemberRewards ? (
+        {IS_RANKING_DATA_AVAILABLE ? (
           <div className={styles.ranking} style={{ color }}>
-            {ranking}
+            {nonMyopicMemberRewards ? (
+              ranking
+            ) : (
+              <>
+                {numberOfRankedStakePools + 1}
+                <sup>*</sup>
+              </>
+            )}
           </div>
         ) : (
           <div className={styles.noDataDash}>
@@ -62,7 +69,7 @@ export default class ThumbPoolContent extends Component<Props> {
             />
           </div>
         )}
-        {IS_RANKING_DATA_AVAILABLE && nonMyopicMemberRewards ? (
+        {IS_RANKING_DATA_AVAILABLE ? (
           <>
             {retiring && (
               <div className={styles.clock}>
