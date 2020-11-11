@@ -25,11 +25,12 @@ export const messages = defineMessages({
 
 type Props = {
   children: Node,
+  isFilterDisabled: boolean,
   isScrolling: boolean,
+  numberOfFilterDimensionsApplied: number,
+  numberOfTransactions: number,
   onFilterDialogOpen: Function,
   onRequestCSVFile: Function,
-  numberOfTransactions: number,
-  numberOfFilterDimensionsApplied: number,
 };
 
 @observer
@@ -42,12 +43,12 @@ export default class WalletTransactionsHeader extends Component<Props> {
     const { intl } = this.context;
     const {
       children,
+      isFilterDisabled,
       isScrolling,
+      numberOfFilterDimensionsApplied,
+      numberOfTransactions,
       onFilterDialogOpen,
       onRequestCSVFile,
-      numberOfTransactions,
-      numberOfFilterDimensionsApplied,
-      /* hasAny, */
     } = this.props;
     const hasAny = true;
 
@@ -87,6 +88,7 @@ export default class WalletTransactionsHeader extends Component<Props> {
               loading={false}
             />
             <FilterButton
+              disabled={isFilterDisabled}
               numberOfFilterDimensionsApplied={numberOfFilterDimensionsApplied}
               onClick={onFilterDialogOpen}
             />

@@ -10,6 +10,7 @@ import globalMessages from '../../../i18n/global-messages';
 import styles from './FilterButton.scss';
 
 type Props = {
+  disabled: boolean,
   numberOfFilterDimensionsApplied: number,
   onClick: Function,
 };
@@ -22,7 +23,7 @@ export default class FilterButton extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { numberOfFilterDimensionsApplied, onClick } = this.props;
+    const { numberOfFilterDimensionsApplied, onClick, disabled } = this.props;
     const buttonLabel = (
       <>
         <div className={styles.actionLabel}>
@@ -45,6 +46,7 @@ export default class FilterButton extends Component<Props> {
           label={buttonLabel}
           loading={false}
           onClick={onClick}
+          disabled={disabled}
         />
       </div>
     );

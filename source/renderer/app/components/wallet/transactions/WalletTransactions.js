@@ -119,6 +119,9 @@ export default class WalletTransactions extends Component<Props, State> {
 
     const isRestoreActive = activeWallet && activeWallet.isRestoring;
 
+    const isFilterDisabled =
+      !transactions.length && !numberOfFilterDimensionsApplied;
+
     if (!transactions.length) {
       walletTransactions = numberOfFilterDimensionsApplied ? (
         <FilterResultInfo filtered={0} total={totalAvailable} />
@@ -158,6 +161,7 @@ export default class WalletTransactions extends Component<Props, State> {
             onRequestCSVFile={onRequestCSVFile}
             onFilterDialogOpen={this.onFilterDialogOpen}
             isScrolling={isScrolling}
+            isFilterDisabled={isFilterDisabled}
           >
             {isFilterDialogOpen && (
               <FilterDialog
