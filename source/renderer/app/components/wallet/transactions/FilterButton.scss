@@ -1,15 +1,8 @@
 .component {
   .actionButton {
     border-radius: 2px;
-    box-shadow: 0 1.5px 5px 0
-      var(--theme-transactions-filter-button-shadow-color);
     display: flex;
     padding: 7px 12px;
-
-    &:focus {
-      box-shadow: 0 1.5px 5px 0
-        var(--theme-transactions-filter-button-shadow-color) !important;
-    }
 
     .actionLabel {
       color: var(--theme-transactions-filter-button-color);

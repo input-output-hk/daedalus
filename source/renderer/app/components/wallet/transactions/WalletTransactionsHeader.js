@@ -62,6 +62,7 @@ export default class WalletTransactionsHeader extends Component<Props> {
     const cvsButtonClassnames = classnames([
       styles.csvButton,
       isCsvButtonDisabled ? styles.csvButtonDisabled : null,
+      'flat',
     ]);
 
     return (
