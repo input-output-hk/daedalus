@@ -140,7 +140,7 @@ const transactionsCsvGenerator = async ({
           : intl.formatMessage(messages.valueStatusConfirmed);
       const valueAddressesFrom = !includes(addresses.from, null)
         ? addresses.from.join(', ')
-        : '-';
+        : ' ';
       const valueAddressesTo = addresses.to.join(', ');
       const valueWithdrawals = addresses.withdrawals.join(', ');
       const txValues = [
