@@ -17,6 +17,9 @@
     margin-right: 9px;
     .csvButton {
       padding: 0 12px !important;
+      svg g {
+        fill: var(--theme-button-flat-text-color);
+      }
     }
     .csvButtonDisabled {
       opacity: 0.5;
