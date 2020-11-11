@@ -3,6 +3,7 @@ import path from 'path';
 import moment from 'moment';
 import BigNumber from 'bignumber.js';
 import { intlShape, defineMessages } from 'react-intl';
+import { includes } from 'lodash';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
 import { showSaveDialogChannel } from '../ipc/show-file-dialog-channels';
 import { WalletTransaction } from '../domains/WalletTransaction';
@@ -137,7 +138,9 @@ const transactionsCsvGenerator = async ({
         state === 'pending'
           ? intl.formatMessage(messages.valueStatusPending)
           : intl.formatMessage(messages.valueStatusConfirmed);
-      const valueAddressesFrom = addresses.from.join(', ');
+      const valueAddressesFrom = !includes(addresses.from, null)
+        ? addresses.from.join(', ')
+        : '-';
       const valueAddressesTo = addresses.to.join(', ');
       const valueWithdrawals = addresses.withdrawals.join(', ');
       const txValues = [
