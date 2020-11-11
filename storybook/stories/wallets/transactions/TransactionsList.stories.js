@@ -3,21 +3,10 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { withKnobs, select } from '@storybook/addon-knobs';
-import BigNumber from 'bignumber.js';
-import moment from 'moment';
 
 // Assets and helpers
-import {
-  generateWallet,
-  generateTransaction,
-  generateMultipleTransactions,
-} from '../../_support/utils';
+import { generateWallet } from '../../_support/utils';
 import { formattedWalletAmount } from '../../../../source/renderer/app/utils/formatters';
-import { generateFilterOptions } from '../../../../source/renderer/app/utils/transaction.js';
-import {
-  TransactionStates,
-  TransactionTypes,
-} from '../../../../source/renderer/app/domains/WalletTransaction';
 import WalletsWrapper from '../_utils/WalletsWrapper';
 import WalletsTransactionsWrapper from '../_utils/WalletsTransactionsWrapper';
 import {
@@ -30,7 +19,6 @@ import { WalletTransaction } from '../../../../source/renderer/app/domains/Walle
 import type { TransactionFilterOptionsType } from '../../../../source/renderer/app/stores/TransactionsStore';
 
 // Screens
-import WalletTransactionsList from '../../../../source/renderer/app/components/wallet/transactions/WalletTransactionsList';
 import WalletTransactions from '../../../../source/renderer/app/components/wallet/transactions/WalletTransactions';
 
 type Props = {

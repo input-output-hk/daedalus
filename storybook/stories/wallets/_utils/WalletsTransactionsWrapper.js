@@ -1,19 +1,14 @@
 // @flow
-import React, { Component, Children } from 'react';
+import { Component } from 'react';
 import { computed } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
-import { linkTo } from '@storybook/addon-links';
-import { get } from 'lodash';
-import WalletWithNavigation from '../../../../source/renderer/app/components/wallet/layouts/WalletWithNavigation';
 
 // Assets and helpers
 import {
-  generateWallet,
   generateTransaction,
   generateMultipleTransactions,
 } from '../../_support/utils';
-import { formattedWalletAmount } from '../../../../source/renderer/app/utils/formatters';
 import {
   generateFilterOptions,
   isTransactionInFilterRange,
@@ -22,27 +17,18 @@ import {
   TransactionStates,
   TransactionTypes,
 } from '../../../../source/renderer/app/domains/WalletTransaction';
-import {
-  DATE_ENGLISH_OPTIONS,
-  // LANGUAGE_OPTIONS,
-  NUMBER_OPTIONS,
-  TIME_OPTIONS,
-} from '../../../../source/renderer/app/config/profileConfig';
 
 import { emptyTransactionFilterOptions } from '../../../../source/renderer/app/stores/TransactionsStore';
 import type { TransactionFilterOptionsType } from '../../../../source/renderer/app/stores/TransactionsStore';
 
 type Props = {
-  children: Node,
   getStory: Function,
   locale: string,
   transactionsOption: string,
 };
 
 type State = {
-  defaultFilterOptions: TransactionFilterOptionsType,
   filterOptions: TransactionFilterOptionsType,
-  populatedFilterOptions: TransactionFilterOptionsType,
 };
 
 export default class WalletsTransactionsWrapper extends Component<

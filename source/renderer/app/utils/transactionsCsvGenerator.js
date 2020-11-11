@@ -123,7 +123,7 @@ const transactionsCsvGenerator = async ({
   transactions.forEach(
     ({ id, type, amount, date, addresses, state }: WalletTransaction) => {
       const valueType =
-        type == 'expend'
+        type === 'expend'
           ? intl.formatMessage(messages.valueTypeExpend)
           : intl.formatMessage(messages.valueTypeIncome);
       const amountNumber = formattedWalletAmount(new BigNumber(amount), false);

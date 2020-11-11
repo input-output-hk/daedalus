@@ -2,12 +2,9 @@
 import React, { Component } from 'react';
 import { intlShape } from 'react-intl';
 import { observer, inject } from 'mobx-react';
-import { showSaveDialogChannel } from '../../ipc/show-file-dialog-channels';
 import WalletTransactions from '../../components/wallet/transactions/WalletTransactions';
 import { getNetworkExplorerUrlByType } from '../../utils/network';
 import transactionsCsvGenerator from '../../utils/transactionsCsvGenerator';
-import { WalletTransaction } from '../../domains/WalletTransaction';
-import type { CsvFileContent } from '../../../../common/types/csv-request.types';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 type Props = InjectedProps;
