@@ -16,7 +16,7 @@ import {
   FormattedMessage,
   FormattedHTMLMessage,
 } from 'react-intl';
-import {BigNumber} from 'bignumber.js';
+import { BigNumber } from 'bignumber.js';
 import Wallet from '../../../domains/Wallet';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
@@ -27,7 +27,7 @@ import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { ITN_WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
-import { MIN_REWARDS_FUNDS } from '../../../config/stakingConfig';
+import { MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE } from '../../../config/stakingConfig';
 
 const messages = defineMessages({
   title: {
@@ -261,7 +261,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       transactionFees,
     } = this.props;
 
-    const minRewardFunds = transactionFees ? MIN_REWARDS_FUNDS + transactionFees.toNumber() : MIN_REWARDS_FUNDS;
+    const minRewardFunds = transactionFees ? MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE + transactionFees.toNumber() : MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE;
 
     let errorMessage;
     if (

@@ -9,7 +9,7 @@ import type { InjectedDialogContainerStepProps } from '../../../../types/injecte
 import { InjectedDialogContainerStepDefaultProps } from '../../../../types/injectedPropsType';
 import validWords from '../../../../../../common/config/crypto/valid-words.en';
 import { isValidMnemonic } from '../../../../../../common/config/crypto/decrypt';
-import { MIN_REWARDS_FUNDS } from '../../../../config/stakingConfig';
+import { MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE } from '../../../../config/stakingConfig';
 import Wallet from '../../../../domains/Wallet';
 
 type Props = InjectedDialogContainerStepProps;
@@ -41,7 +41,7 @@ export default class Step1ConfigurationContainer extends Component<Props> {
     walletAmount?: BigNumber,
     transactionFees?: BigNumber = 0
   ) => {
-    const minRewardsFunds = new BigNumber(MIN_REWARDS_FUNDS);
+    const minRewardsFunds = new BigNumber(MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE);
     const calculatedRewardsCosts = transactionFees ? minRewardsFunds.plus(transactionFees) : minRewardsFunds;
     return (walletAmount &&
       walletAmount.gte(calculatedRewardsCosts));
