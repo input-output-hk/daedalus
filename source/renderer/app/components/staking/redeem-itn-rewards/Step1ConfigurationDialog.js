@@ -70,13 +70,6 @@ const messages = defineMessages({
     description:
       'walletsDropdownLabel for Redeem Incentivized Testnet - Step 1',
   },
-  walletsDropdownError: {
-    id: 'staking.redeemItnRewards.step1.walletsDropdownError',
-    defaultMessage:
-      '!!!The selected wallet does not have sufficient ada to cover the necessary transaction fees. Please choose another wallet or add more funds to this one.',
-    description:
-      'walletsDropdownError for Redeem Incentivized Testnet - Step 1',
-  },
   checkbox1Label: {
     id: 'staking.redeemItnRewards.step1.checkbox1Label',
     defaultMessage:
@@ -256,29 +249,23 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       error,
       transactionFees,
     } = this.props;
-    const minRewardFunds = transactionFees ? MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE + transactionFees.toNumber() : MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE;
+
+    const minRewardsReceiverBalance = new BigNumber(MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE);
+    console.log('Minimum needed balance: ', minRewardsReceiverBalance);
+    const calculatedMinRewardsReceiverBalance = (transactionFees ? minRewardsReceiverBalance.plus(transactionFees) : minRewardsReceiverBalance).toNumber();
+    console.log('Minimum needed calculated balance: ', minRewardsReceiverBalance);
 
     let errorMessage;
-    if (
-      error &&
-      (error.id === 'api.errors.NotEnoughFundsForTransactionFeesError' ||
-        error.id === 'api.errors.NotEnoughMoneyToSendError'
-      )
-    )
-      errorMessage = <p className={styles.error}>
-        {intl.formatMessage(messages.walletsDropdownError)}
-      </p>;
-
-    if (error && error.id === 'staking.redeemItnRewards.step1.errorRestoringWallet')
+    if (!isCalculatingReedemFees && error && error.id === 'staking.redeemItnRewards.step1.errorRestoringWallet')
       errorMessage = <p className={styles.error}>
         {intl.formatMessage(error)}
       </p>;
 
-    if (error && error.id === 'staking.redeemItnRewards.step1.errorMessage')
+    if (!isCalculatingReedemFees && error && error.id === 'staking.redeemItnRewards.step1.errorMessage')
       errorMessage = <p className={styles.errorMessage}>
         <FormattedHTMLMessage
           {...error}
-          values={{minRewardFunds}}
+          values={{calculatedMinRewardsReceiverBalance}}
         />
       </p>;
 

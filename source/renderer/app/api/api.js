@@ -709,7 +709,7 @@ export default class AdaApi {
       );
       const fee = _createTransactionFeeFromServerData(response);
       const amountWithFee = formattedTxAmount.plus(fee);
-      if (amountWithFee.gt(walletBalance)) {
+      if (!Array.isArray(withdrawal) && amountWithFee.gt(walletBalance)) {
         // Amount + fees exceeds walletBalance:
         // = show "Not enough Ada for fees. Try sending a smaller amount."
         throw new ApiError().result('cannotCoverFee');

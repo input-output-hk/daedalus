@@ -408,7 +408,7 @@
   "staking.redeemItnRewards.step1.description2": "報酬を還元するには、報酬の獲得に使用した<b>インセンティブ付きテストネット用ウォレットの復元</b>フレーズと、報酬の振込先となる既存のメインネット用Daedalusウォレットが必要です。このウォレットは、適用されるトランザクション手数料の支払いにも使用されます。",
   "staking.redeemItnRewards.step1.descriptionItnLinkLabel": "インセンティブ付きテストネット",
   "staking.redeemItnRewards.step1.descriptionItnLinkUrl": "https://staking.cardano.org/ja/",
-  "staking.redeemItnRewards.step1.errorMessage": "このウォレットには既定のトランザクション手数料を賄うために必要な最低額{minRewardFunds}ADAが入っていません。<span>{minRewardFunds}ADA以上</span>以上入っているウォレットを選択して、[続ける]をクリックしてください。",
+  "staking.redeemItnRewards.step1.errorMessage": "このウォレットには既定のトランザクション手数料を賄うために必要な最低額{calculatedMinRewardsReceiverBalance}ADAが入っていません。<span>{calculatedMinRewardsReceiverBalance}ADA以上</span>以上入っているウォレットを選択して、[続ける]をクリックしてください。",
   "staking.redeemItnRewards.step1.errorRestoringWallet": "このウォレットは、同期中は特典の引き換えに使用できません。",
   "staking.redeemItnRewards.step1.invalidRecoveryPhrase": "無効な復元フレーズ",
   "staking.redeemItnRewards.step1.learnMoreLink.label": "もっと知る",

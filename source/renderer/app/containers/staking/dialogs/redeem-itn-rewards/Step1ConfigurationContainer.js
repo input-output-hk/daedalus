@@ -19,7 +19,7 @@ const messages = defineMessages({
   errorMinRewardFunds: {
     id: 'staking.redeemItnRewards.step1.errorMessage',
     defaultMessage:
-      '!!!This wallet does not contain the minimum amount of {minRewardFunds} ADA which is required to cover the necessary transaction fees. Please select a wallet with <span>a minimum amount of {minRewardFunds} ADA</span> and click continue.',
+      '!!!This wallet does not contain the minimum amount of {calculatedMinRewardsReceiverBalance} ADA which is required to cover the necessary transaction fees. Please select a wallet with <span>a minimum amount of {calculatedMinRewardsReceiverBalance} ADA</span> and click continue.',
     description:
       'errorMinRewardFunds Error Label on the delegation setup "choose wallet" step dialog.',
   },
