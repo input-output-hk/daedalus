@@ -20,3 +20,6 @@ How to write all the red theme CSS variables to the `RED_THEME_OUTPUT` object us
 ### Part 4
 How to use the `themes:check:createTheme` script.  
 [video](https://youtu.be/C1OfIggOOGE)
+
+# Copy Themes tool
+The `yarn copy:themes` command is a tool for quickly copying css properties from an element into another in all theme files. Simply run the command and follow the CLI instructions.

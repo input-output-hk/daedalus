@@ -1,9 +1,8 @@
 // @flow
 import chalk from 'chalk';
-import { isEmpty } from 'lodash';
+import { isEmpty, keys, toPairs } from 'lodash';
 import inquirer from 'inquirer';
 import { EXISTING_THEME_OUTPUTS } from '../daedalus/index';
-// import { runUpdateThemesCLI } from './updateThemesCLI';
 import { updateThemes } from './updateThemes';
 import { writeThemeUpdate } from './writeThemeUpdate';
 
@@ -14,9 +13,6 @@ type PropertyValue = string;
 type PropertiesObj = {
   [key: PropertyName]: PropertyValue,
 };
-type Theme = {
-  [key: Category]: PropertiesObj,
-};
 type Property = Array<PropertyName | PropertyValue>;
 type SimplePropertiesList = Array<string>;
 type CompletePropertiesList = Array<Property>;
@@ -24,16 +20,16 @@ type CompletePropertiesList = Array<Property>;
 // Config
 const MAX_RESULTS_BEFORE_WARNING = 30;
 const firstTheme = EXISTING_THEME_OUTPUTS[0][1];
-const categories = Object.keys(firstTheme);
+const categories = keys(firstTheme);
 
 const copy = async () => {
-  let fromPrefix: ?string;
-  let fromCategory: ?string;
-  let foundProperties: ?string;
-  let selectedProperties: ?SimplePropertiesList;
-  let existingProperties: ?SimplePropertiesList;
-  let toPrefix: ?string;
-  let toCategory: ?string;
+  let fromPrefix: string = '';
+  let fromCategory: string = '';
+  let foundProperties: Array<string> = [];
+  let selectedProperties: SimplePropertiesList = [];
+  let existingProperties: SimplePropertiesList = [];
+  let toPrefix: string = '';
+  let toCategory: string = '';
 
   /**
    * STEP 1
@@ -247,14 +243,9 @@ Should I proceed?
    * Copying...
    */
   const step5 = async () => {
-    const newProperties = selectedProperties.map(([propKey, propValue]) => [
-      replaceSingleProperty(propKey, fromPrefix, toPrefix),
-      propValue,
-    ]);
-
     const pendingUpdates = EXISTING_THEME_OUTPUTS.reduce(
       (pending, [themeName, theme]) => {
-        const fromProperties: CompletePropertiesList = Object.entries(
+        const fromProperties: CompletePropertiesList = toPairs(
           theme[fromCategory]
         ).filter(([propertyKey]) => selectedProperties.includes(propertyKey));
 
@@ -315,8 +306,6 @@ const prompt = async (promptConfig) => {
   ]);
   return response;
 };
-const randomColor = () =>
-  `#${Math.floor(Math.random() * 16777215).toString(16)}`;
 
 // Helpers
 const getCategoriesChoices = () =>
@@ -341,9 +330,9 @@ const findPropertiesFromPrefix = (
   category: string,
   items: Array<string>,
 } =>
-  Object.entries(themeObj).reduce(
+  toPairs(themeObj).reduce(
     (response, [categoryName, categoryObj]) => {
-      const existingProperties = Object.keys(categoryObj).filter(
+      const existingProperties = keys(categoryObj).filter(
         (property) => property.indexOf(prefix) > -1
       );
       if (existingProperties.length) {
