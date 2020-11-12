@@ -1,5 +1,6 @@
 // @flow
-import { map } from 'lodash';
+import { map, join } from 'lodash';
+import { cardano } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 
 // Constants
 export const CERTIFICATE_TYPE = {
@@ -9,10 +10,17 @@ export const CERTIFICATE_TYPE = {
 };
 
 // Helpers
-export const derivationPathToString = (path: Array<string>) => {
+export const derivationPathToString = (derivationPath: Array<string>) => {
   let constructedPath = 'm';
-  map(path, (chunk) => {
+  map(derivationPath, (chunk) => {
     constructedPath = `${constructedPath}/${chunk.replace('H', "'")}`;
   });
   return constructedPath;
 };
+
+export const derivationPathToLedgerPath = (derivationPath: Array<string>) => {
+  const transformedPath = map(derivationPath, (chunk) => chunk.replace('H', "'"));
+  const constructedPath = join(transformedPath, '/');
+  return cardano.str_to_path(constructedPath);
+};
+

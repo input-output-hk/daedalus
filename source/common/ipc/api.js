@@ -433,6 +433,15 @@ export const GET_INIT_TREZOR_CONNECT_CHANNEL =
 export type handleInitTrezorConnectRendererRequest = void;
 export type handleInitTrezorConnectMainResponse = void;
 
+export const GET_INIT_LEDGER_CONNECT_CHANNEL =
+  'GET_INIT_LEDGER_CONNECT_CHANNEL';
+export type handleInitLedgerConnectRendererRequest = void;
+export type handleInitLedgerConnectMainResponse = void;
+
+export const DERIVE_XPUB_CHANNEL = 'DERIVE_XPUB_CHANNEL';
+export type deriveXpubRendererRequest = void;
+export type deriveXpubMainResponse = void;
+
 export const RESET_ACTION_TREZOR_CHANNEL = 'RESET_ACTION_TREZOR_CHANNEL';
 export type resetTrezorActionRendererRequest = void;
 export type resetTrezorActionMainResponse = void;

@@ -38,7 +38,7 @@ export const MINIMAL_LEDGER_FIRMWARE_VERSION = '1.6.1';
 export const MINIMAL_TREZOR_FIRMWARE_VERSION = '2.3.3';
 
 export const isTrezorEnabled = true;
-export const isLedgerEnabled = false;
+export const isLedgerEnabled = true;
 
 export const isHardwareWalletSupportEnabled =
   isMainnet && (isTrezorEnabled || isLedgerEnabled);

@@ -2,14 +2,16 @@
 import { utils, cardano } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { encode } from 'borc';
 import blakejs from 'blakejs';
+import { derivationPathToLedgerPath, derivationPathToStrin, CERTIFICATE_TYPE } from './hardwareWalletUtils';
 
 // @TODO - Move to main process
-// import { derivePublic as deriveChildXpub } from 'cardano-crypto.js';
+import { derivePublic as deriveChildXpub } from 'cardano-crypto.js';
 
 // Types
 import type {
   CoinSelectionInput,
   CoinSelectionOutput,
+  CoinSelectionCertificate,
 } from '../api/transactions/types';
 import type {
   BIP32Path,
@@ -84,20 +86,19 @@ export const ShelleyTxWitnessShelley = (
 };
 
 export const ShelleyTxInputFromUtxo = (utxoInput: CoinSelectionInput) => {
-  const { address } = utxoInput;
-  const coins = utxoInput.amount.quantity;
-  const txid = utxoInput.id;
-  const outputNo = utxoInput.index;
-  const txHash = Buffer.from(txid, 'hex');
+  const { address, amount, id, index } = utxoInput;
+  const coins = amount.quantity;
+  const outputNo = index;
+  const txHash = Buffer.from(id, 'hex');
 
   function encodeCBOR(encoder: any) {
     return encoder.pushAny([txHash, outputNo]);
   }
 
   return {
+    txid: id,
     coins,
     address,
-    txid,
     outputNo,
     encodeCBOR,
   };
@@ -105,27 +106,75 @@ export const ShelleyTxInputFromUtxo = (utxoInput: CoinSelectionInput) => {
 
 export const ShelleyTxOutput = (
   output: CoinSelectionOutput,
-  addressIndex: number,
-  isChange: boolean
 ) => {
-  const { address, amount } = output;
+  const { address, amount, derivationPath } = output;
   const coins = amount.quantity;
 
   function encodeCBOR(encoder: any) {
     const addressBuff = utils.bech32_decodeAddress(address);
     return encoder.pushAny([addressBuff, coins]);
   }
+
+  const isChange = derivationPath !== null;
+
+  const aa = {
+    address,
+    coins,
+    isChange,
+    spendingPath: isChange
+      ? derivationPathToLedgerPath(derivationPath)
+      : null,
+    stakingPath: isChange ? [2147485500, 2147485463, 2147483648, 2, 0] : null,
+    encodeCBOR,
+  };
+  console.debug('>>> ShelleyTxOutput: ', { transformed: aa, output });
+
   return {
     address,
     coins,
     isChange,
     spendingPath: isChange
-      ? [2147485500, 2147485463, 2147483648, 0, addressIndex]
+      ? derivationPathToLedgerPath(derivationPath)
       : null,
     stakingPath: isChange ? [2147485500, 2147485463, 2147483648, 2, 0] : null,
     encodeCBOR,
   };
 };
+
+
+
+export const ShelleyTxCert = (type, accountAddress, poolHash) => {
+  function encodeCBOR(encoder) {
+    const accountAddressHash = utils.bech32_decodeAddress(accountAddress).data.slice(1)
+    let hash
+    if (poolHash) hash = Buffer.from(poolHash, 'hex')
+    const account = [0, accountAddressHash]
+    const encodedCertsTypes = {
+      0: [type, account],
+      1: [type, account],
+      2: [type, account, hash],
+    }
+    return encoder.pushAny(encodedCertsTypes[type])
+  }
+
+  return {
+    address: accountAddress,
+    type,
+    accountAddress,
+    poolHash,
+    encodeCBOR,
+  }
+};
+
+export const prepareLedgerCertificate = (cert: CoinSelectionCertificate) => {
+  return {
+    type: CERTIFICATE_TYPE[cert.certificateType],
+    path: derivationPathToString(cert.rewardAccountPath),
+    poolKeyHashHex: cert.pool ? utils.buf_to_hex(utils.bech32_decodeAddress(cert.pool)) : null,
+  };
+};
+
+
 
 export const ShelleyFee = (fee: number) => {
   function encodeCBOR(encoder: any) {
@@ -208,20 +257,30 @@ export const ShelleySignedTransactionStructured = (
 };
 
 export const CachedDeriveXpubFactory = (deriveXpubHardenedFn: Function) => {
+  console.debug('>>> UTIL:: deriveXpubHardenedFn')
   const derivedXpubs = {};
 
   const deriveXpub = async (absDerivationPath: Array<number>) => {
+    console.debug('>>>> deriveXpub: ', absDerivationPath);
     const memoKey = JSON.stringify(absDerivationPath);
+    console.debug('>>>> memoKey: ', memoKey);
     let derivedXpubsMemo = await derivedXpubs[memoKey];
+    console.debug('>>>> derivedXpubsMemo: ', derivedXpubsMemo);
 
     if (!derivedXpubsMemo) {
+      console.debug('>>> CHECK: derivedXpubsMemo --- NOT EXIST');
       const deriveHardened =
         absDerivationPath.length === 0 ||
         indexIsHardened(absDerivationPath.slice(-1)[0]);
+      console.debug('>>> UTIL:: deriveXpubHardenedFn:: deriveHardened', {deriveHardened, absDerivationPath});
       derivedXpubsMemo = deriveHardened
-        ? deriveXpubHardenedFn(absDerivationPath)
-        : deriveXpubNonhardenedFn(absDerivationPath);
+        ? await deriveXpubHardenedFn(absDerivationPath)
+        : await deriveXpubNonhardenedFn(absDerivationPath);
+      console.debug('>>> UTIL:: deriveXpubHardenedFn:: MEMO', {derivedXpubsMemo});
+    } else {
+      console.debug('>>> CHECK: derivedXpubsMemo --- EXIST');
     }
+    console.debug('>>> CHECK: derivedXpubsMemo RES: ', derivedXpubsMemo);
 
     /*
      * the derivedXpubs map stores promises instead of direct results
@@ -231,11 +290,20 @@ export const CachedDeriveXpubFactory = (deriveXpubHardenedFn: Function) => {
   };
 
   const deriveXpubNonhardenedFn = async (derivationPath) => {
+    console.debug('>>> deriveXpubNonhardenedFn: ', {derivationPath});
     const lastIndex = derivationPath.slice(-1)[0];
+    console.debug('>>> deriveXpubNonhardenedFn: lastIndex ', lastIndex);
     const parentXpub = await deriveXpub(derivationPath.slice(0, -1));
+    console.debug('>>> deriveXpubNonhardenedFn: parentXpub ', parentXpub);
     // @TODO - remove flow fix and move deriveChildXpub to main process
     // $FlowFixMe
-    return deriveChildXpub(parentXpub, lastIndex, derivationScheme.ed25519Mode); // eslint-disable-line
+
+
+    console.debug('>>> METHOD <<< ', {deriveChildXpub});
+
+    const aa = deriveChildXpub(parentXpub, lastIndex, derivationScheme.ed25519Mode); // eslint-disable-line
+    console.debug('>>> TO RETURN :: deriveXpubNonhardenedFn: ', aa);
+    return aa;
   };
 
   return deriveXpub;
@@ -248,24 +316,23 @@ export const indexIsHardened = (index: number) => {
 
 export const prepareLedgerInput = (
   input: CoinSelectionInput,
-  addressIndex: number = 0
 ) => {
   return {
     txHashHex: input.id,
     outputIndex: input.index,
-    path: cardano.str_to_path(`1852'/1815'/0'/0/${addressIndex}`),
+    // path: cardano.str_to_path(`1852'/1815'/0'/0/${addressIndex}`),
+    path: derivationPathToLedgerPath(input.derivationPath),
   };
 };
 
 export const prepareLedgerOutput = (
   output: CoinSelectionOutput,
-  addressIndex: number = 0,
-  isChange: ?boolean = false
 ) => {
+  const isChange = output.derivationPath !== null;
   if (isChange) {
     return {
-      addressTypeNibble: 0b0000, // TODO: get from address
-      spendingPath: cardano.str_to_path(`1852'/1815'/0'/0/${addressIndex}`),
+      addressTypeNibble: 0, // TODO: get from address
+      spendingPath: derivationPathToLedgerPath(output.derivationPath),
       amountStr: output.amount.quantity.toString(),
       stakingPath: cardano.str_to_path("1852'/1815'/0'/2/0"),
     };
