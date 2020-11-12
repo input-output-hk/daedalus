@@ -418,7 +418,6 @@
   "staking.redeemItnRewards.step1.recoveryPhraseLabel": "ウォレット復元フレーズ：",
   "staking.redeemItnRewards.step1.selectWalletInputPlaceholder": "ウォレットを選択してください",
   "staking.redeemItnRewards.step1.title": "インセンティブ付きテストネットの報酬を還元する",
-  "staking.redeemItnRewards.step1.walletsDropdownError": "選択されたウォレットには、トランザクション手数料分のADAが不足しています。別のウォレットを選択するか、このウォレットに資金を追加してください。",
   "staking.redeemItnRewards.step1.walletsDropdownLabel": "報酬の振込先：",
   "staking.redeemItnRewards.step2.backButtonLabel": "戻る",
   "staking.redeemItnRewards.step2.continueButtonLabel": "報酬の還元を確認する",
