@@ -16,23 +16,6 @@ export default class WalletTransactionsPage extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
-  get transactions() {
-    let transactions = [];
-    const { stores } = this.props;
-    const { wallets } = stores;
-    const activeWallet = wallets.active;
-    const { hasAny, allFiltered, recentFiltered } = stores.transactions;
-
-    // Straight away show recent filtered transactions if all filtered ones are not loaded yet
-    if (hasAny && activeWallet && !activeWallet.isRestoring) {
-      transactions =
-        recentFiltered.length && !allFiltered.length
-          ? recentFiltered
-          : allFiltered;
-    }
-    return transactions;
-  }
-
   render() {
     const { intl } = this.context;
     const { actions, stores } = this.props;
@@ -43,6 +26,7 @@ export default class WalletTransactionsPage extends Component<Props> {
     } = app;
     const activeWallet = wallets.active;
     const {
+      allFiltered,
       filterOptions,
       searchRequest,
       totalAvailable,
@@ -60,7 +44,7 @@ export default class WalletTransactionsPage extends Component<Props> {
     } = profile;
     const { searchLimit = 0 } = filterOptions || {};
     const { transactions: transactionActions } = this.props.actions;
-    const { transactions } = this;
+    const { filterTransactions, requestCSVFile } = transactionActions;
 
     const getUrlByType = (type: 'tx' | 'address', param: string) =>
       getNetworkExplorerUrlByType(
@@ -76,17 +60,10 @@ export default class WalletTransactionsPage extends Component<Props> {
       searchLimit !== undefined &&
       totalAvailable > searchLimit;
 
-    const onRequestCSVFile = () =>
-      transactionsCsvGenerator({
-        desktopDirectoryPath,
-        intl,
-        transactions,
-      });
-
     return (
       <WalletTransactions
         activeWallet={activeWallet}
-        transactions={transactions}
+        transactions={allFiltered}
         filterOptions={filterOptions || {}}
         defaultFilterOptions={defaultFilterOptions}
         populatedFilterOptions={populatedFilterOptions}
@@ -102,8 +79,8 @@ export default class WalletTransactionsPage extends Component<Props> {
         currentTimeFormat={currentTimeFormat}
         currentNumberFormat={currentNumberFormat}
         currentDateFormat={currentDateFormat}
-        onFilter={transactionActions.filterTransactions.trigger}
-        onRequestCSVFile={onRequestCSVFile}
+        onFilter={filterTransactions.trigger}
+        onRequestCSVFile={requestCSVFile.trigger}
         isRenderingAsVirtualList
       />
     );

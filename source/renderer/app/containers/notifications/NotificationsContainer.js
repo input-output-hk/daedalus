@@ -30,6 +30,16 @@ const messages = defineMessages({
     description:
       'Notification for download logs in the Loading and Settings pages.',
   },
+  downloadRewardsCSVSuccess: {
+    id: 'notification.downloadRewardsCSVSuccess',
+    defaultMessage: '!!!CSV file successfully downloaded',
+    description: 'Notification for download Rewards CSV file.',
+  },
+  downloadTransactionsCSVSuccess: {
+    id: 'notification.downloadTransactionsCSVSuccess',
+    defaultMessage: '!!!CSV file successfully downloaded',
+    description: 'Notification for download Transactions CSV file.',
+  },
   copyAddress: {
     id: 'notification.copyAddress',
     defaultMessage:
@@ -65,6 +75,17 @@ export default class NotificationsContainer extends Component<InjectedProps> {
       id: 'downloadLogsSuccess',
       actionToListenAndOpen: this.props.actions.profile.downloadLogsSuccess,
       actionToListenAndClose: this.props.actions.profile.downloadLogs,
+    },
+    {
+      id: 'downloadRewardsCSVSuccess',
+      actionToListenAndOpen: this.props.actions.profile.downloadLogsSuccess,
+      actionToListenAndClose: this.props.actions.profile.downloadLogs,
+    },
+    {
+      id: 'downloadTransactionsCSVSuccess',
+      actionToListenAndOpen: this.props.actions.transactions
+        .requestCSVFileSuccess,
+      actionToListenAndClose: this.props.actions.transactions.requestCSVFile,
     },
     {
       id: 'copyAddress',

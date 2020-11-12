@@ -157,7 +157,7 @@ const transactionsCsvGenerator = async ({
     }
   );
 
-  downloadCsv({ filePath, fileContent });
+  await downloadCsv({ filePath, fileContent });
 };
 
 export default transactionsCsvGenerator;

@@ -17,6 +17,8 @@ import type {
   GetWithdrawalsResponse,
 } from '../api/transactions/types';
 import { isValidAmountInLovelaces } from '../utils/validations';
+import transactionsCsvGenerator from '../utils/transactionsCsvGenerator';
+import { i18nContext } from '../utils/i18nContext';
 import {
   generateFilterOptions,
   isTransactionInFilterRange,
@@ -98,6 +100,7 @@ export default class TransactionsStore extends Store {
     } = this.actions;
     transactionActions.filterTransactions.listen(this._updateFilterOptions);
     // transactionActions.loadMoreTransactions.listen(this._increaseSearchLimit);
+    transactionActions.requestCSVFile.listen(this._requestCSVFile);
     networkStatusActions.restartNode.listen(this._clearFilterOptions);
     this.registerReactions([this._ensureFilterOptionsForActiveWallet]);
   }
@@ -147,9 +150,15 @@ export default class TransactionsStore extends Store {
   }
 
   @computed get allFiltered(): Array<WalletTransaction> {
-    return this.all.filter((transaction) =>
+    let transactions = [];
+    const { hasAny, recentFiltered } = this;
+    const allFiltered = this.all.filter((transaction) =>
       isTransactionInFilterRange(this.filterOptions, transaction)
     );
+    // Straight away show recent filtered transactions if all filtered ones are not loaded yet
+    return !allFiltered.length && recentFiltered.length
+      ? recentFiltered
+      : allFiltered;
   }
 
   @computed get defaultFilterOptions(): TransactionFilterOptionsType {
@@ -316,6 +325,19 @@ export default class TransactionsStore extends Store {
       ...emptyTransactionFilterOptions,
     };
     return true;
+  };
+
+  @action _requestCSVFile = async () => {
+    const { desktopDirectoryPath } = this.stores.profile;
+    const locale = this.stores.profile.currentLocale;
+    const intl = i18nContext(locale);
+    const transactions = this.allFiltered;
+    await transactionsCsvGenerator({
+      desktopDirectoryPath,
+      intl,
+      transactions,
+    });
+    this.actions.transactions.requestCSVFileSuccess.trigger();
   };
 
   _getTransactionsRecentRequest = (

@@ -194,6 +194,8 @@
   "notification.copyStateDirectoryPath": "Daedalus state directory copied to clipboard",
   "notification.downloadLogsProgress": "Preparing logs for download",
   "notification.downloadLogsSuccess": "Logs successfully downloaded",
+  "notification.downloadRewardsCSVSuccess": "CSV file successfully downloaded",
+  "notification.downloadTransactionsCSVSuccess": "CSV file successfully downloaded",
   "paper.wallet.create.certificate.completion.dialog.addressCopiedLabel": "copied",
   "paper.wallet.create.certificate.completion.dialog.addressInstructions": "To receive funds to your paper wallet simply share your wallet address with others.",
   "paper.wallet.create.certificate.completion.dialog.addressLabel": "Wallet address",
