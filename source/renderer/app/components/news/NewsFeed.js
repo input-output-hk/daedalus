@@ -134,7 +134,7 @@ export default class NewsFeed extends Component<Props, State> {
 
     const newsFeedHeaderStyles = classNames([
       styles.newsFeedHeader,
-      hasShadow ? styles.hasShadow : null,
+      hasShadow && !hasUpdateItem ? styles.hasShadow : null,
     ]);
 
     const newsFeedListStyles = classNames([
