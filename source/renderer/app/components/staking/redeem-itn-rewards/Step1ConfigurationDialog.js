@@ -250,8 +250,10 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       transactionFees,
     } = this.props;
 
+    const { amount } = wallet || {};
+
     const minRewardsReceiverBalance = new BigNumber(MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE);
-    const calculatedMinRewardsReceiverBalance = (transactionFees ? minRewardsReceiverBalance.plus(transactionFees) : minRewardsReceiverBalance).toNumber();
+    const calculatedMinRewardsReceiverBalance = (transactionFees ? amount.plus(minRewardsReceiverBalance.minus(amount.minus(transactionFees))) : minRewardsReceiverBalance).toNumber();
 
     let errorMessage;
     if (!isCalculatingReedemFees && error && error.id === 'staking.redeemItnRewards.step1.errorRestoringWallet')
