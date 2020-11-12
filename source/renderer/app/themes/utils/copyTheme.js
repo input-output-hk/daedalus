@@ -7,12 +7,8 @@ import { updateThemes } from './updateThemes';
 import { writeThemeUpdate } from './writeThemeUpdate';
 
 // Types
-type Category = string;
 type PropertyName = string;
 type PropertyValue = string;
-type PropertiesObj = {
-  [key: PropertyName]: PropertyValue,
-};
 type Property = Array<PropertyName | PropertyValue>;
 type SimplePropertiesList = Array<string>;
 type CompletePropertiesList = Array<Property>;
