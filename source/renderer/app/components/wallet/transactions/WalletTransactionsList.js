@@ -172,15 +172,11 @@ export default class WalletTransactionsList extends Component<Props> {
   getExpandedTransactions = (): Array<any> =>
     Object.values(this.expandedTransactions);
 
-  // renderGroup = (data: TransactionsGroup): Node => (
-  // @TX TODO
-  renderGroup = (data: TransactionsGroup) => (
+  renderGroup = (data: TransactionsGroup): Node => (
     <div className={styles.groupDate}>{this.localizedDate(data.date)}</div>
   );
 
-  // renderTransaction = (data: TransactionInfo): Node => {
-  // @TX TODO
-  renderTransaction = (data: TransactionInfo) => {
+  renderTransaction = (data: TransactionInfo): Node => {
     const {
       deletePendingTransaction,
       formattedWalletAmount,
@@ -251,16 +247,14 @@ export default class WalletTransactionsList extends Component<Props> {
         />
       ) : null;
 
-    // @TX TODO
-    const syncingTransactionsSpinner = null;
-    // isRestoreActive ? (
-    //   <div className={styles.syncingTransactionsWrapper}>
-    //     <LoadingSpinner big />
-    //     <p className={styles.syncingTransactionsText}>
-    //       {intl.formatMessage(messages.syncingTransactionsMessage)}
-    //     </p>
-    //   </div>
-    // ) : null;
+    const syncingTransactionsSpinner = isRestoreActive ? (
+      <div className={styles.syncingTransactionsWrapper}>
+        <LoadingSpinner big />
+        <p className={styles.syncingTransactionsText}>
+          {intl.formatMessage(messages.syncingTransactionsMessage)}
+        </p>
+      </div>
+    ) : null;
 
     const buttonClasses = classnames([
       'primary',

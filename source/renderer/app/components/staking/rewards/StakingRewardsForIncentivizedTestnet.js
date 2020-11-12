@@ -15,7 +15,6 @@ import { StakingPageScrollContext } from '../layouts/StakingWithNavigation';
 import BorderedBox from '../../widgets/BorderedBox';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import sortIcon from '../../../assets/images/ascending.inline.svg';
-// import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 import downloadIcon from '../../../assets/images/download-ic.inline.svg';
 import type { RewardForIncentivizedTestnet } from '../../../api/staking/types';
 import styles from './StakingRewardsForIncentivizedTestnet.scss';

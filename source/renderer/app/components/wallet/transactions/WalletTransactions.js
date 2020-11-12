@@ -107,7 +107,6 @@ export default class WalletTransactions extends Component<Props, State> {
     } = this.props;
 
     // Guard against potential null values
-    // @TX TODO - display NoWallets?
     if (!filterOptions || !activeWallet) return null;
 
     let walletTransactions = null;
