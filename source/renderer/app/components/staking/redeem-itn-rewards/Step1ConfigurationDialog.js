@@ -139,7 +139,7 @@ const messages = defineMessages({
 
 type Props = {
   error?: ?LocalizableError,
-  isSubmitting: boolean,
+  isCalculatingReedemFees: boolean,
   mnemonicValidator: Function,
   onClose: Function,
   onContinue: Function,
@@ -226,7 +226,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
   };
 
   get canSubmit() {
-    const { isSubmitting, wallet, error } = this.props;
+    const { isCalculatingReedemFees, wallet, error } = this.props;
     const { form } = this;
     const { checked: checkboxAcceptance1isChecked } = form.$(
       'checkboxAcceptance1'
@@ -235,7 +235,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       'checkboxAcceptance2'
     );
     return (
-      !isSubmitting &&
+      !isCalculatingReedemFees &&
       wallet &&
       !error &&
       checkboxAcceptance1isChecked &&
@@ -248,7 +248,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
     const { intl } = this.context;
     const { form } = this;
     const {
-      isSubmitting,
+      isCalculatingReedemFees,
       onClose,
       onContinue,
       onSelectWallet,
@@ -265,7 +265,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
 
     let errorMessage;
     if (
-      !isSubmitting &&
+      !isCalculatingReedemFees &&
       error &&
       (error.id === 'api.errors.NotEnoughFundsForTransactionFeesError' ||
         error.id === 'api.errors.NotEnoughMoneyToSendError'
@@ -275,12 +275,12 @@ export default class Step1ConfigurationDialog extends Component<Props> {
         {intl.formatMessage(messages.walletsDropdownError)}
       </p>;
 
-    if (!isSubmitting && error && error.id === 'staking.redeemItnRewards.step1.errorRestoringWallet')
+    if (!isCalculatingReedemFees && error && error.id === 'staking.redeemItnRewards.step1.errorRestoringWallet')
       errorMessage = <p className={styles.error}>
         {intl.formatMessage(error)}
       </p>;
 
-    if (!isSubmitting && error && error.id === 'staking.redeemItnRewards.step1.errorMessage')
+    if (!isCalculatingReedemFees && error && error.id === 'staking.redeemItnRewards.step1.errorMessage')
       errorMessage = <p className={styles.errorMessage}>
         <FormattedHTMLMessage
           {...error}
@@ -298,7 +298,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
 
     const buttonClasses = classnames([
       'primary',
-      isSubmitting ? styles.isSubmitting : null,
+      isCalculatingReedemFees ? styles.isSubmitting : null,
     ]);
 
     const walletsDropdownClasses = classnames([

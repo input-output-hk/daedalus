@@ -54,7 +54,7 @@ export default class Step1ConfigurationContainer extends Component<Props> {
     const {
       redeemWallet,
       transactionFees,
-      isSubmittingReedem,
+      isCalculatingReedemFees,
       redeemRecoveryPhrase,
     } = staking;
 
@@ -71,18 +71,18 @@ export default class Step1ConfigurationContainer extends Component<Props> {
       else errorMessage = messages.errorMinRewardFunds;
     }
     const { openExternalLink } = stores.app;
-    const { onConfigurationContinue, onSelectRedeemWallet } = actions.staking;
+    const { onConfigurationContinue, onCalculateRedeemWalletFees } = actions.staking;
     return (
       <Step1ConfigurationDialog
         error={errorMessage}
         transactionFees={transactionFees}
-        isSubmitting={isSubmittingReedem}
+        isCalculatingReedemFees={isCalculatingReedemFees}
         mnemonicValidator={isValidMnemonic}
         onBack={onBack}
         onClose={onClose}
         onContinue={onConfigurationContinue.trigger}
         onSelectWallet={(walletId, recoveryPhrase) =>
-          onSelectRedeemWallet.trigger({ walletId, recoveryPhrase })
+          onCalculateRedeemWalletFees.trigger({ walletId, recoveryPhrase })
         }
         suggestedMnemonics={validWords}
         wallet={redeemWallet}

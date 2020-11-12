@@ -28,7 +28,7 @@ export default class RedeemItnRewardsContainer extends Component<Props> {
   render() {
     const { stores, actions } = this.props;
     const { allWallets } = stores.wallets;
-    const { redeemStep, isSubmittingReedem } = stores.staking;
+    const { redeemStep, isSubmittingReedem, isCalculatingReedemFees } = stores.staking;
     const { isSynced } = stores.networkStatus;
     const { onRedeemStart, closeRedeemDialog } = actions.staking;
 
@@ -46,7 +46,7 @@ export default class RedeemItnRewardsContainer extends Component<Props> {
 
     return (
       <>
-        {isSubmittingReedem && <LoadingOverlay />}
+        {(isSubmittingReedem || isCalculatingReedemFees) && <LoadingOverlay />}
         <CurrentContainer
           onBack={onRedeemStart.trigger}
           onClose={closeRedeemDialog.trigger}

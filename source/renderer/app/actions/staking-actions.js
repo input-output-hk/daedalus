@@ -20,7 +20,7 @@ export default class StakingActions {
   onConfigurationContinue: Action<{
     recoveryPhrase: Array<string>
   }> = new Action();
-  onSelectRedeemWallet: Action<{ walletId: string, recoveryPhrase: Array<string> }> = new Action();
+  onCalculateRedeemWalletFees: Action<{ walletId: string, recoveryPhrase: Array<string> }> = new Action();
   onConfirmationContinue: Action<{ spendingPassword: string }> = new Action();
   onResultContinue: Action<any> = new Action();
   closeRedeemDialog: Action<any> = new Action();
