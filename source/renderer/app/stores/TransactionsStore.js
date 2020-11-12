@@ -150,8 +150,7 @@ export default class TransactionsStore extends Store {
   }
 
   @computed get allFiltered(): Array<WalletTransaction> {
-    let transactions = [];
-    const { hasAny, recentFiltered } = this;
+    const { recentFiltered } = this;
     const allFiltered = this.all.filter((transaction) =>
       isTransactionInFilterRange(this.filterOptions, transaction)
     );

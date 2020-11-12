@@ -1,10 +1,8 @@
 // @flow
 import React, { Component } from 'react';
-import { intlShape } from 'react-intl';
 import { observer, inject } from 'mobx-react';
 import WalletTransactions from '../../components/wallet/transactions/WalletTransactions';
 import { getNetworkExplorerUrlByType } from '../../utils/network';
-import transactionsCsvGenerator from '../../utils/transactionsCsvGenerator';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 type Props = InjectedProps;
@@ -12,12 +10,7 @@ type Props = InjectedProps;
 @inject('stores', 'actions')
 @observer
 export default class WalletTransactionsPage extends Component<Props> {
-  static contextTypes = {
-    intl: intlShape.isRequired,
-  };
-
   render() {
-    const { intl } = this.context;
     const { actions, stores } = this.props;
     const { app, wallets, profile } = stores;
     const {
@@ -40,7 +33,6 @@ export default class WalletTransactionsPage extends Component<Props> {
       currentDateFormat,
       currentLocale,
       currentNumberFormat,
-      desktopDirectoryPath,
     } = profile;
     const { searchLimit = 0 } = filterOptions || {};
     const { transactions: transactionActions } = this.props.actions;
