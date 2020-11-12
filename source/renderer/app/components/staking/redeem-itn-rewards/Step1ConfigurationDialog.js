@@ -218,9 +218,9 @@ export default class Step1ConfigurationDialog extends Component<Props> {
   submit = () => {
     this.form.submit({
       onSuccess: (form) => {
-        const { onContinue, transactionFees } = this.props;
+        const { onContinue } = this.props;
         const { recoveryPhrase } = form.values();
-        onContinue({ recoveryPhrase, isRedeemRewards: !transactionFees });
+        onContinue({ recoveryPhrase });
       },
     });
   };

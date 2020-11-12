@@ -664,8 +664,7 @@ export default class AdaApi {
   };
 
   calculateTransactionFee = async (
-    request: GetTransactionFeeRequest,
-    isRedeemRewards?: boolean
+    request: GetTransactionFeeRequest
   ): Promise<BigNumber> => {
     logger.debug('AdaApi::calculateTransactionFee called', {
       parameters: filterLogData(request),
@@ -710,7 +709,7 @@ export default class AdaApi {
       );
       const fee = _createTransactionFeeFromServerData(response);
       const amountWithFee = formattedTxAmount.plus(fee);
-      if (!isRedeemRewards && amountWithFee.gt(walletBalance)) {
+      if (amountWithFee.gt(walletBalance)) {
         // Amount + fees exceeds walletBalance:
         // = show "Not enough Ada for fees. Try sending a smaller amount."
         throw new ApiError().result('cannotCoverFee');
@@ -1342,7 +1341,7 @@ export default class AdaApi {
   getRedeemItnRewardsFee = async (
     request: GetRedeemItnRewardsFeeRequest
   ): Promise<GetRedeemItnRewardsFeeResponse> => {
-    const { address, wallet, recoveryPhrase: withdrawal, isRedeemRewards } = request;
+    const { address, wallet, recoveryPhrase: withdrawal } = request;
     const amount = REDEEM_ITN_REWARDS_AMOUNT;
     const {
       id: walletId,
@@ -1359,7 +1358,7 @@ export default class AdaApi {
       isLegacy: false,
     };
     try {
-      const fee = await this.calculateTransactionFee(payload, isRedeemRewards);
+      const fee = await this.calculateTransactionFee(payload);
       logger.debug('AdaApi::getRedeemItnRewardsFee success', { fee });
       return fee;
     } catch (error) {

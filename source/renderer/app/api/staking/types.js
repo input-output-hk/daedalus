@@ -98,7 +98,6 @@ export type GetRedeemItnRewardsFeeRequest = {
   address: string,
   wallet: Wallet,
   recoveryPhrase: Array<string>,
-  isRedeemRewards?: boolean,
 };
 
 export type GetRedeemItnRewardsFeeResponse = BigNumber;
