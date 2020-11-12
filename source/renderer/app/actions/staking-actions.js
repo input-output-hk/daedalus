@@ -17,9 +17,7 @@ export default class StakingActions {
   selectDelegationWallet: Action<string> = new Action();
   /* ----------  Redeem ITN Rewards  ---------- */
   onRedeemStart: Action<any> = new Action();
-  onConfigurationContinue: Action<{
-    recoveryPhrase: Array<string>
-  }> = new Action();
+  onConfigurationContinue: Action<any> = new Action();
   onCalculateRedeemWalletFees: Action<{ walletId: string, recoveryPhrase: Array<string> }> = new Action();
   onConfirmationContinue: Action<{ spendingPassword: string }> = new Action();
   onResultContinue: Action<any> = new Action();

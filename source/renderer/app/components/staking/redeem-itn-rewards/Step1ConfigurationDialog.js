@@ -217,11 +217,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
 
   submit = () => {
     this.form.submit({
-      onSuccess: (form) => {
-        const { onContinue } = this.props;
-        const { recoveryPhrase } = form.values();
-        onContinue({ recoveryPhrase });
-      },
+      onSuccess: () => this.props.onContinue()
     });
   };
 
@@ -260,12 +256,10 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       error,
       transactionFees,
     } = this.props;
-
     const minRewardFunds = transactionFees ? MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE + transactionFees.toNumber() : MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE;
 
     let errorMessage;
     if (
-      !isCalculatingReedemFees &&
       error &&
       (error.id === 'api.errors.NotEnoughFundsForTransactionFeesError' ||
         error.id === 'api.errors.NotEnoughMoneyToSendError'
@@ -275,12 +269,12 @@ export default class Step1ConfigurationDialog extends Component<Props> {
         {intl.formatMessage(messages.walletsDropdownError)}
       </p>;
 
-    if (!isCalculatingReedemFees && error && error.id === 'staking.redeemItnRewards.step1.errorRestoringWallet')
+    if (error && error.id === 'staking.redeemItnRewards.step1.errorRestoringWallet')
       errorMessage = <p className={styles.error}>
         {intl.formatMessage(error)}
       </p>;
 
-    if (!isCalculatingReedemFees && error && error.id === 'staking.redeemItnRewards.step1.errorMessage')
+    if (error && error.id === 'staking.redeemItnRewards.step1.errorMessage')
       errorMessage = <p className={styles.errorMessage}>
         <FormattedHTMLMessage
           {...error}

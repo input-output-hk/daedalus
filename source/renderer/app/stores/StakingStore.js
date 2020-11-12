@@ -497,6 +497,7 @@ export default class StakingStore extends Store {
     recoveryPhrase: Array<string>,
   }) => {
     this.redeemWallet = this.stores.wallets.getWalletById(walletId);
+    this.redeemRecoveryPhrase = recoveryPhrase;
     this.isCalculatingReedemFees = true;
     try {
       const [address] = await this.stores.addresses.getAddressesByWalletId(
@@ -527,13 +528,8 @@ export default class StakingStore extends Store {
     this.redeemStep = steps.CONFIGURATION;
   };
 
-  @action _onConfigurationContinue = async ({
-    recoveryPhrase,
-  }: {
-    recoveryPhrase: Array<string>
-  }) => {
-    if (this.transactionFees) {
-      this.redeemRecoveryPhrase = recoveryPhrase;
+  @action _onConfigurationContinue = () => {
+    if (this.transactionFees && this.redeemRecoveryPhrase) {
       this.redeemStep = steps.CONFIRMATION;
       this.confirmationStepError = null;
       this.configurationStepError = null;
