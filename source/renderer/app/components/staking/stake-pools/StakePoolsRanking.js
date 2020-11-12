@@ -181,7 +181,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
       selectedDelegationWalletId,
     } = this.props;
     const selectedWallet = wallets.find(
-      wallet => wallet.id === selectedWalletId
+      (wallet) => wallet.id === selectedWalletId
     );
     const hasSelectedWallet = !!selectedWallet;
     const isAllWalletsSelected = selectedWalletId === ALL_WALLETS_SELECTION_ID;
@@ -333,7 +333,7 @@ export default class StakePoolsRanking extends Component<Props, State> {
                     onChange={this.onSelectedWalletChange}
                     disabled={isLoading || isRanking}
                     value={selectedDelegationWalletId}
-                    selectionRenderer={option => (
+                    selectionRenderer={(option) => (
                       <button
                         className="customValue"
                         onClick={() => {

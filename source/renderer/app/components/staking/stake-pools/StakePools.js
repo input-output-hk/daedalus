@@ -147,7 +147,8 @@ export default class StakePools extends Component<Props, State> {
     );
 
     const numberOfRankedStakePools: number = stakePoolsList.filter(
-      stakePool => IS_RANKING_DATA_AVAILABLE && stakePool.nonMyopicMemberRewards
+      (stakePool) =>
+        IS_RANKING_DATA_AVAILABLE && stakePool.nonMyopicMemberRewards
     ).length;
 
     const listTitleMessage = search.trim().length
@@ -157,7 +158,7 @@ export default class StakePools extends Component<Props, State> {
     const loadingSpinner = (
       <LoadingSpinner
         big
-        ref={component => {
+        ref={(component) => {
           this.loadingSpinner = component;
         }}
       />

@@ -723,9 +723,7 @@ export default class TooltipPool extends Component<Props, State> {
     ]);
 
     const retirementFromNow = retiring
-      ? moment(retiring)
-          .locale(intl.locale)
-          .fromNow(true)
+      ? moment(retiring).locale(intl.locale).fromNow(true)
       : '';
 
     const idCopyIcon = idCopyFeedback ? copyCheckmarkIcon : copyIcon;

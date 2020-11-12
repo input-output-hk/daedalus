@@ -24,7 +24,7 @@ export class StakePoolsTableHeader extends Component<TableHeaderProps> {
       stakePoolsOrder,
       onHandleSort,
     } = this.props;
-    return map(availableTableHeaders, tableHeader => {
+    return map(availableTableHeaders, (tableHeader) => {
       const isSorted =
         tableHeader.name === stakePoolsSortBy ||
         (tableHeader.name === 'ticker' && stakePoolsSortBy === 'ticker');
