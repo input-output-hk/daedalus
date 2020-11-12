@@ -16,7 +16,10 @@ export default class StakingActions {
   updateDelegatingStake: Action<number> = new Action();
   rankStakePools: Action<any> = new Action();
   selectDelegationWallet: Action<string> = new Action();
-  requestCSVFile: Action<{ fileContent: CsvFileContent }> = new Action();
+  requestCSVFile: Action<{
+    fileContent: CsvFileContent,
+    filenamePrefix: string,
+  }> = new Action();
   requestCSVFileSuccess: Action<any> = new Action();
   /* ----------  Redeem ITN Rewards  ---------- */
   onRedeemStart: Action<any> = new Action();

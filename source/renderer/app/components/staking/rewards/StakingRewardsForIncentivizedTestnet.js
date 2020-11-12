@@ -27,6 +27,12 @@ const messages = defineMessages({
     description:
       'Title "Earned delegation rewards" label on the staking rewards page.',
   },
+  csvFilenamePrefix: {
+    id: 'staking.rewards.csvFilenamePrefix',
+    defaultMessage: '!!!Rewards',
+    description:
+      'Filename prefix for the "Export CSV" on the staking rewards page.',
+  },
   exportButtonLabel: {
     id: 'staking.rewards.exportButtonLabel',
     defaultMessage: '!!!Export CSV',
@@ -126,7 +132,10 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
     });
     const exportedContent = [exportedHeader, ...exportedBody];
 
-    onExportCsv({ fileContent: exportedContent });
+    onExportCsv({
+      fileContent: exportedContent,
+      filenamePrefix: intl.formatMessage(messages.csvFilenamePrefix),
+    });
   };
 
   render() {
@@ -277,12 +286,6 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
             <div className={styles.note}>
               <div className={styles.noteContent}>
                 <FormattedHTMLMessage {...messages.note} />
-                {/*
-                  <button onClick={onLearnMoreClick}>
-                    {intl.formatMessage(messages.learnMoreButtonLabel)}
-                    <SVGInline svg={externalLinkIcon} />
-                  </button>
-                */}
               </div>
             </div>
           </div>

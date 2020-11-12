@@ -231,14 +231,16 @@ export default class StakingStore extends Store {
 
   @action _requestCSVFile = async ({
     fileContent,
+    filenamePrefix: prefix,
   }: {
     fileContent: CsvFileContent,
+    filenamePrefix: string,
   }) => {
     const {
       actions: { wallets },
     } = this;
     const fileName = generateFileNameWithTimestamp({
-      prefix: 'rewards',
+      prefix,
       extension: 'csv',
       isUTC: true,
     });

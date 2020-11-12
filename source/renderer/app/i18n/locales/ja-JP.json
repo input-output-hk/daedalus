@@ -437,6 +437,7 @@
   "staking.redeemItnRewards.step3.success.downloadPDFButtonLabel": "PDF証明書をダウンロードする",
   "staking.redeemItnRewards.step3.success.openWalletButtonLabel": "ウォレットを開く",
   "staking.redeemItnRewards.step3.success.title": "インセンティブ付きテストネットの報酬は還元されました",
+  "staking.rewards.csvFilenamePrefix": "報酬",
   "staking.rewards.exportButtonLabel": "CSV形式でエキスポートする",
   "staking.rewards.learnMore.ButtonLabel": "もっと知る",
   "staking.rewards.learnMore.linkUrl": "https://iohk.zendesk.com/hc/ja/articles/900000026583",
