@@ -96,7 +96,7 @@ export class StakePoolsTableBody extends Component<
     }
     if (isListActive === false && setListActive) setListActive(listName);
     const sortedStakePoolList = orderBy(
-      stakePoolsList.map(stakePool => {
+      stakePoolsList.map((stakePool) => {
         let calculatedPledge;
         let calculatedCost;
         let formattedTicker;
@@ -200,10 +200,7 @@ export class StakePoolsTableBody extends Component<
       );
       const potentialRewards = formattedWalletAmount(memberRewards);
       const retirement =
-        retiring &&
-        moment(retiring)
-          .locale(intl.locale)
-          .fromNow(true);
+        retiring && moment(retiring).locale(intl.locale).fromNow(true);
       const pledgeValue = formattedWalletAmount(pledge, false, false);
       const costValue = formattedWalletAmount(cost, false, false);
       const progressBarContentClassnames = classNames([

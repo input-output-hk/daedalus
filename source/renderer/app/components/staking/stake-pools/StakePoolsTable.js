@@ -240,7 +240,7 @@ export class StakePoolsTable extends Component<Props, State> {
       );
 
     const sortedStakePoolList = orderBy(
-      stakePoolsList.map(stakePool => {
+      stakePoolsList.map((stakePool) => {
         let calculatedPledge;
         let calculatedCost;
         let formattedTicker;
