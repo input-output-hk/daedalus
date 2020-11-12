@@ -1,14 +1,10 @@
 // @flow
 import React, { Component } from 'react';
-import path from 'path';
 import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import { showSaveDialogChannel } from '../../ipc/show-file-dialog-channels';
-import { generateFileNameWithTimestamp } from '../../../../common/utils/files';
 import StakingRewards from '../../components/staking/rewards/StakingRewards';
 import StakingRewardsForIncentivizedTestnet from '../../components/staking/rewards/StakingRewardsForIncentivizedTestnet';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import type { CsvFileContent } from '../../../../common/types/csv-request.types';
 
 const messages = defineMessages({
   learnMoreLinkUrl: {
@@ -36,33 +32,6 @@ export default class StakingRewardsPage extends Component<Props> {
     this.props.stores.app.openExternalLink(learnMoreLinkUrl);
   };
 
-  onExportCsv = async (fileContent: CsvFileContent) => {
-    const {
-      actions: { wallets },
-    } = this.props;
-    const fileName = generateFileNameWithTimestamp({
-      prefix: 'rewards',
-      extension: 'csv',
-      isUTC: true,
-    });
-    const { desktopDirectoryPath } = this.props.stores.profile;
-    const defaultPath = path.join(desktopDirectoryPath, fileName);
-    const params = {
-      defaultPath,
-      filters: [
-        {
-          extensions: ['csv'],
-        },
-      ],
-    };
-    const { filePath } = await showSaveDialogChannel.send(params);
-
-    // if cancel button is clicked or path is empty
-    if (!filePath) return;
-
-    wallets.generateCsv.trigger({ fileContent, filePath });
-  };
-
   render() {
     const {
       staking: { rewards, rewardsForIncentivizedTestnet },
@@ -71,6 +40,7 @@ export default class StakingRewardsPage extends Component<Props> {
     } = this.props.stores;
     const { isIncentivizedTestnet, isShelleyTestnet } = global;
     const { isMainnet, isTestnet, isTest } = networkStatus.environment;
+    const { requestCSVFile } = this.props.actions.staking;
 
     if (
       isMainnet ||
@@ -85,7 +55,7 @@ export default class StakingRewardsPage extends Component<Props> {
           isLoading={false}
           isExporting={wallets.generatingRewardsCsvInProgress}
           onLearnMoreClick={this.handleLearnMoreClick}
-          onExportCsv={this.onExportCsv}
+          onExportCsv={requestCSVFile.trigger}
         />
       );
     }

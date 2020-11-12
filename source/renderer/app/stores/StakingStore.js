@@ -1,6 +1,7 @@
 // @flow
 import { computed, action, observable, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
+import path from 'path';
 import { orderBy, find, map, get } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
@@ -21,12 +22,15 @@ import type {
   GetDelegationFeeRequest,
   QuitStakePoolRequest,
 } from '../api/staking/types';
-import type { RedeemItnRewardsStep } from '../types/stakingTypes';
 import Wallet from '../domains/Wallet';
 import StakePool from '../domains/StakePool';
 import { TransactionStates } from '../domains/WalletTransaction';
 import LocalizableError from '../i18n/LocalizableError';
+import { showSaveDialogChannel } from '../ipc/show-file-dialog-channels';
 import REWARDS from '../config/stakingRewards.dummy.json';
+import { generateFileNameWithTimestamp } from '../../../common/utils/files';
+import type { RedeemItnRewardsStep } from '../types/stakingTypes';
+import type { CsvFileContent } from '../../../common/types/csv-request.types';
 
 export default class StakingStore extends Store {
   @observable isDelegationTransactionPending = false;
@@ -86,6 +90,7 @@ export default class StakingStore extends Store {
     stakingActions.selectDelegationWallet.listen(
       this._setSelectedDelegationWalletId
     );
+    stakingActions.requestCSVFile.listen(this._requestCSVFile);
 
     // ========== MOBX REACTIONS =========== //
     this.registerReactions([this._pollOnSync]);
@@ -222,6 +227,37 @@ export default class StakingStore extends Store {
 
   @action markStakingExperimentAsRead = () => {
     this.isStakingExperimentRead = true;
+  };
+
+  @action _requestCSVFile = async ({
+    fileContent,
+  }: {
+    fileContent: CsvFileContent,
+  }) => {
+    const {
+      actions: { wallets },
+    } = this;
+    const fileName = generateFileNameWithTimestamp({
+      prefix: 'rewards',
+      extension: 'csv',
+      isUTC: true,
+    });
+    const { desktopDirectoryPath } = this.stores.profile;
+    const defaultPath = path.join(desktopDirectoryPath, fileName);
+    const params = {
+      defaultPath,
+      filters: [
+        {
+          extensions: ['csv'],
+        },
+      ],
+    };
+    const { filePath } = await showSaveDialogChannel.send(params);
+
+    // if cancel button is clicked or path is empty
+    if (!filePath) return;
+
+    wallets.generateCsv.trigger({ fileContent, filePath });
   };
 
   calculateDelegationFee = async (

@@ -327,16 +327,21 @@ export default class TransactionsStore extends Store {
   };
 
   @action _requestCSVFile = async () => {
-    const { desktopDirectoryPath } = this.stores.profile;
-    const locale = this.stores.profile.currentLocale;
+    const {
+      stores: { profile },
+      allFiltered,
+      actions,
+    } = this;
+    const { desktopDirectoryPath } = profile;
+    const locale = profile.currentLocale;
     const intl = i18nContext(locale);
-    const transactions = this.allFiltered;
+    const transactions = allFiltered;
     await transactionsCsvGenerator({
       desktopDirectoryPath,
       intl,
       transactions,
     });
-    this.actions.transactions.requestCSVFileSuccess.trigger();
+    actions.transactions.requestCSVFileSuccess.trigger();
   };
 
   _getTransactionsRecentRequest = (
