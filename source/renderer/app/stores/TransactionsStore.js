@@ -332,16 +332,19 @@ export default class TransactionsStore extends Store {
       allFiltered,
       actions,
     } = this;
+    const { active } = this.stores.wallets;
     const { desktopDirectoryPath } = profile;
     const locale = profile.currentLocale;
     const intl = i18nContext(locale);
     const transactions = allFiltered;
-    await transactionsCsvGenerator({
+    const walletName = active ? active.name : '';
+    const success = await transactionsCsvGenerator({
       desktopDirectoryPath,
       intl,
       transactions,
+      walletName,
     });
-    actions.transactions.requestCSVFileSuccess.trigger();
+    if (success) actions.transactions.requestCSVFileSuccess.trigger();
   };
 
   _getTransactionsRecentRequest = (

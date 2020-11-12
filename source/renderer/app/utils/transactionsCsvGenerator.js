@@ -51,15 +51,15 @@ const messages = defineMessages({
     defaultMessage: '!!!Withdrawals',
     description: 'Transactions CSV column - Withdrawals',
   },
-  valueTypeExpend: {
-    id: 'wallet.transactions.csv.value.type.expend',
-    defaultMessage: '!!!Expend',
-    description: 'Transactions CSV value - Type Expend',
+  valueTypeSent: {
+    id: 'wallet.transactions.csv.value.type.sent',
+    defaultMessage: '!!!Sent',
+    description: 'Transactions CSV value - Type Sent',
   },
-  valueTypeIncome: {
-    id: 'wallet.transactions.csv.value.type.income',
-    defaultMessage: '!!!Income',
-    description: 'Transactions CSV value - Type Income',
+  valueTypeReceived: {
+    id: 'wallet.transactions.csv.value.type.received',
+    defaultMessage: '!!!Received',
+    description: 'Transactions CSV value - Type Received',
   },
   valueAmount: {
     id: 'wallet.transactions.csv.value.amount',
@@ -76,21 +76,29 @@ const messages = defineMessages({
     defaultMessage: '!!!Pending',
     description: 'Transactions CSV value - Status Pending',
   },
+  filenamePrefix: {
+    id: 'wallet.transactions.csv.filenamePrefix',
+    defaultMessage: '!!!Transactions',
+    description: 'Transactions CSV "Transactions" filename',
+  },
 });
 
 type Params = {
   desktopDirectoryPath: string,
   intl: intlShape,
   transactions: Array<WalletTransaction>,
+  walletName: string,
 };
 
 const transactionsCsvGenerator = async ({
   desktopDirectoryPath,
   intl,
   transactions,
-}: Params) => {
+  walletName,
+}: Params): Promise<boolean> => {
+  const prefix = `${intl.formatMessage(messages.filenamePrefix)}-${walletName}`;
   const fileName = generateFileNameWithTimestamp({
-    prefix: 'transactions',
+    prefix,
     extension: 'csv',
     isUTC: true,
   });
@@ -106,7 +114,7 @@ const transactionsCsvGenerator = async ({
   const { filePath } = await showSaveDialogChannel.send(params);
 
   // if cancel button is clicked or path is empty
-  if (!filePath) return;
+  if (!filePath) return false;
 
   const columns = [
     intl.formatMessage(messages.columnID),
@@ -125,9 +133,12 @@ const transactionsCsvGenerator = async ({
     ({ id, type, amount, date, addresses, state }: WalletTransaction) => {
       const valueType =
         type === 'expend'
-          ? intl.formatMessage(messages.valueTypeExpend)
-          : intl.formatMessage(messages.valueTypeIncome);
-      const amountNumber = formattedWalletAmount(new BigNumber(amount), false);
+          ? intl.formatMessage(messages.valueTypeSent)
+          : intl.formatMessage(messages.valueTypeReceived);
+      const amountNumber = formattedWalletAmount(
+        new BigNumber(Math.abs(amount)),
+        false
+      );
       const valueAmount = intl.formatMessage(messages.valueAmount, {
         amount: amountNumber,
       });
@@ -158,6 +169,7 @@ const transactionsCsvGenerator = async ({
   );
 
   await downloadCsv({ filePath, fileContent });
+  return true;
 };
 
 export default transactionsCsvGenerator;

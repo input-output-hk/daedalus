@@ -8,7 +8,6 @@ import { isEqual, pick } from 'lodash';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
-// import { i18nContext } from '../../../utils/i18nContext';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import {
   calculateDateRange,
