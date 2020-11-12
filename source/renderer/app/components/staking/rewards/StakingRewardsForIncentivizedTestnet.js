@@ -116,7 +116,7 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
       ...availableTableHeaders.map((header) => header.title),
       intl.formatMessage(messages.tableHeaderDate),
     ];
-    const date = moment().format('YYYY-MM-DDTHHmmss.0SSS');
+    const date = `${moment().utc().format('YYYY-MM-DDTHHmmss.0SSS')}Z`;
     const exportedBody = sortedRewards.map((reward) => {
       const rewardWallet = get(reward, 'wallet');
       const isRestoring = get(reward, 'isRestoring');
