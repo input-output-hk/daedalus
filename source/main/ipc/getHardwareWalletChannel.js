@@ -8,6 +8,7 @@ import TrezorConnect, {
   // $FlowFixMe
 } from 'trezor-connect';
 import { get } from 'lodash';
+import { derivePublic as deriveChildXpub } from 'cardano-crypto.js';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import {
   GET_HARDWARE_WALLET_TRANSPORT_CHANNEL,
@@ -309,20 +310,22 @@ export const handleHardwareWalletRequests = async (
 
   handleInitLedgerConnectChannel.onRequest(async () => {
     console.debug('>>> INIT LEDGER <<<');
-    console.debug('>>> handleHardwareWalletDevices 222');
-    // INIT - 3
     const observer = new EventObserver(mainWindow);
-    // INIT - 5
-    // @TODO - uncomment once Ledger enabled
     const listener = await TransportNodeHid.listen(observer);
   });
 
-  deriveXpubChannel.onRequest(async () => {
-    console.debug('>>> Derive Xpub <<<');
+  deriveXpubChannel.onRequest(async (params) => {
+    const { parentXpubHex, lastIndex, derivationScheme, test_new } = params;
+    const parentXpub = utils.hex_to_buf(parentXpubHex);
+    try {
+      const xpub = deriveChildXpub(parentXpub, lastIndex, derivationScheme);
+      return utils.buf_to_hex(xpub);
+    } catch (e) {
+      throw e;
+    }
   });
 
   getCardanoAdaAppChannel.onRequest(async () => {
-
     if (!deviceConnection) {
       console.debug('>>> NO DEVICE CONN <<');
       try {

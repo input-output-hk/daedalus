@@ -35,6 +35,7 @@ import {
   ShelleyTxWitnessShelley,
   ShelleyTxInputFromUtxo,
   ShelleyTxOutput,
+  ShelleyTxCert,
 } from '../utils/shelleyLedger';
 import {
   prepareTrezorInput,
@@ -681,6 +682,16 @@ export default class HardwareWalletsStore extends Store {
       throw e;
     }
   };
+
+  _test11 = () => {
+    const data = {
+      accountAddress: "addr1u8gg2y4urdqs5nwmgjxefdhaqdtqq357gn5sxu0y36rqzdg6kn7p9",
+      poolHash: "04c60c78417132a195cbb74975346462410f72612952a7c4ade7e438",
+      type: 2,
+    };
+    const test = ShelleyTxCert(data);
+    console.debug('>>> TEST: ', test);
+  }
 
   // Trezor - Shelley only
   @action _signTransactionTrezor = async (walletId: string) => {

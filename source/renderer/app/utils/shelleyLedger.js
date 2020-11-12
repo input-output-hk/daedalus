@@ -3,9 +3,7 @@ import { utils, cardano } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { encode } from 'borc';
 import blakejs from 'blakejs';
 import { derivationPathToLedgerPath, derivationPathToStrin, CERTIFICATE_TYPE } from './hardwareWalletUtils';
-
-// @TODO - Move to main process
-import { derivePublic as deriveChildXpub } from 'cardano-crypto.js';
+import { deriveXpubChannel } from '../ipc/getHardwareWalletChannel';
 
 // Types
 import type {
@@ -143,9 +141,10 @@ export const ShelleyTxOutput = (
 
 
 
-export const ShelleyTxCert = (type, accountAddress, poolHash) => {
+export const ShelleyTxCert = (cert) => {
+  const { type, accountAddress, poolHash } = cert;
   function encodeCBOR(encoder) {
-    const accountAddressHash = utils.bech32_decodeAddress(accountAddress).data.slice(1)
+    const accountAddressHash = utils.bech32_decodeAddress(accountAddress).slice(1)
     let hash
     if (poolHash) hash = Buffer.from(poolHash, 'hex')
     const account = [0, accountAddressHash]
@@ -257,31 +256,20 @@ export const ShelleySignedTransactionStructured = (
 };
 
 export const CachedDeriveXpubFactory = (deriveXpubHardenedFn: Function) => {
-  console.debug('>>> UTIL:: deriveXpubHardenedFn')
   const derivedXpubs = {};
 
   const deriveXpub = async (absDerivationPath: Array<number>) => {
-    console.debug('>>>> deriveXpub: ', absDerivationPath);
     const memoKey = JSON.stringify(absDerivationPath);
-    console.debug('>>>> memoKey: ', memoKey);
     let derivedXpubsMemo = await derivedXpubs[memoKey];
-    console.debug('>>>> derivedXpubsMemo: ', derivedXpubsMemo);
 
     if (!derivedXpubsMemo) {
-      console.debug('>>> CHECK: derivedXpubsMemo --- NOT EXIST');
       const deriveHardened =
         absDerivationPath.length === 0 ||
         indexIsHardened(absDerivationPath.slice(-1)[0]);
-      console.debug('>>> UTIL:: deriveXpubHardenedFn:: deriveHardened', {deriveHardened, absDerivationPath});
       derivedXpubsMemo = deriveHardened
         ? await deriveXpubHardenedFn(absDerivationPath)
         : await deriveXpubNonhardenedFn(absDerivationPath);
-      console.debug('>>> UTIL:: deriveXpubHardenedFn:: MEMO', {derivedXpubsMemo});
-    } else {
-      console.debug('>>> CHECK: derivedXpubsMemo --- EXIST');
     }
-    console.debug('>>> CHECK: derivedXpubsMemo RES: ', derivedXpubsMemo);
-
     /*
      * the derivedXpubs map stores promises instead of direct results
      * to deal with concurrent requests to derive the same xpub
@@ -290,20 +278,19 @@ export const CachedDeriveXpubFactory = (deriveXpubHardenedFn: Function) => {
   };
 
   const deriveXpubNonhardenedFn = async (derivationPath) => {
-    console.debug('>>> deriveXpubNonhardenedFn: ', {derivationPath});
     const lastIndex = derivationPath.slice(-1)[0];
-    console.debug('>>> deriveXpubNonhardenedFn: lastIndex ', lastIndex);
     const parentXpub = await deriveXpub(derivationPath.slice(0, -1));
-    console.debug('>>> deriveXpubNonhardenedFn: parentXpub ', parentXpub);
-    // @TODO - remove flow fix and move deriveChildXpub to main process
-    // $FlowFixMe
-
-
-    console.debug('>>> METHOD <<< ', {deriveChildXpub});
-
-    const aa = deriveChildXpub(parentXpub, lastIndex, derivationScheme.ed25519Mode); // eslint-disable-line
-    console.debug('>>> TO RETURN :: deriveXpubNonhardenedFn: ', aa);
-    return aa;
+    try {
+      const parentXpubHex = utils.buf_to_hex(parentXpub);
+      const derivedXpub = await deriveXpubChannel.request({
+        parentXpubHex,
+        lastIndex,
+        derivationScheme: derivationScheme.ed25519Mode,
+      });
+      return utils.hex_to_buf(derivedXpub);
+    } catch (e) {
+      throw e;
+    }
   };
 
   return deriveXpub;
