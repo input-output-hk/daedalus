@@ -257,7 +257,9 @@ export default class StakingStore extends Store {
     // if cancel button is clicked or path is empty
     if (!filePath) return;
 
-    wallets.generateCsv.trigger({ fileContent, filePath });
+    await wallets.generateCsv.trigger({ fileContent, filePath });
+
+    this.actions.staking.requestCSVFileSuccess.trigger();
   };
 
   calculateDelegationFee = async (

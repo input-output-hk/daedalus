@@ -78,8 +78,8 @@ export default class NotificationsContainer extends Component<InjectedProps> {
     },
     {
       id: 'downloadRewardsCSVSuccess',
-      actionToListenAndOpen: this.props.actions.profile.downloadLogsSuccess,
-      actionToListenAndClose: this.props.actions.profile.downloadLogs,
+      actionToListenAndOpen: this.props.actions.staking.requestCSVFileSuccess,
+      actionToListenAndClose: this.props.actions.staking.requestCSVFile,
     },
     {
       id: 'downloadTransactionsCSVSuccess',

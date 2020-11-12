@@ -76,7 +76,6 @@ type Props = {
   rewards: Array<RewardForIncentivizedTestnet>,
   isLoading: boolean,
   isExporting: boolean,
-  // onLearnMoreClick: Function,
   onExportCsv: Function,
 };
 
@@ -128,7 +127,7 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
     });
     const exportedContent = [exportedHeader, ...exportedBody];
 
-    onExportCsv(exportedContent);
+    onExportCsv({ fileContent: exportedContent });
   };
 
   render() {
