@@ -67,7 +67,7 @@ yarn2nix.mkYarnPackage {
       # the webpack utils embed the original source paths into map files, so backtraces from the 1 massive index.js can be converted back to multiple files
       # but that causes the derivation to depend on the original inputs at the nix layer, and double the size of the linux installs
       # nuke-refs will just replace all storepaths with an invalid one
-      for x in {main,renderer}/index.js{,.map} main/preload.js{,.map} main/0.js{,.map} renderer/styles.css.map; do
+      for x in {main,renderer}/{0.,}index.js{,.map} main/preload.js{,.map} main/0.js{,.map} renderer/styles.css.map; do
         nuke-refs $x
       done
     '';
