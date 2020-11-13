@@ -52,14 +52,6 @@
       }
 
       :global
-        .WalletCreateDialog_tooltip.SimpleTooltip_root.TooltipOverrides_root.InlineEditingDropdown-tooltip_root.SimpleTooltip_isShowingOnHover {
-        height: 12px;
-        left: -145px;
-        top: 5px;
-        width: 12px;
-      }
-
-      :global
         .WalletCreateDialog_tooltip.jpLangTooltipIcon.SimpleTooltip_root.TooltipOverrides_root.InlineEditingDropdown-tooltip_root.SimpleTooltip_isShowingOnHover {
         left: -40px !important;
       }
@@ -81,9 +73,16 @@
         }
       }
 
+      .tooltip {
+        height: 12px;
+        left: -139px;
+        position: relative;
+        top: 5px;
+        width: 12px;
+      }
+
       .infoIcon {
         height: 14px;
-        margin-left: 6px;
         opacity: 0.4;
         transform: translateY(2px);
         width: 14px;

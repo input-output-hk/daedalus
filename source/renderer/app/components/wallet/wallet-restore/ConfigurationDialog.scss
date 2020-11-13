@@ -32,10 +32,10 @@
       }
     }
 
-    :global
-      .ConfigurationDialog_tooltip.SimpleTooltip_root.TooltipOverrides_root.InlineEditingDropdown-tooltip_root.SimpleTooltip_isShowingOnHover {
+    .tooltip {
       height: 12px;
-      left: -154px;
+      left: -148px;
+      position: relative;
       top: 1px;
       width: 12px;
     }
@@ -71,7 +71,6 @@
 
     .infoIcon {
       height: 14px;
-      margin-left: 6px;
       opacity: 0.4;
       transform: translateY(2px);
       width: 14px;
