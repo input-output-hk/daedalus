@@ -19,6 +19,7 @@ import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import styles from './TooltipPool.scss';
 import experimentalTooltipStyles from './TooltipPool-experimental-tooltip.scss';
+import fieldLabelTooltipStyles from './TooltipPool-fieldLabel-tooltip.scss';
 import isTooltipStyles from './TooltipPool-copyId-tooltip.scss';
 import StakePool from '../../../domains/StakePool';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
@@ -651,25 +652,26 @@ export default class TooltipPool extends Component<Props, State> {
         {fields.map((field: { key: string, value: any }) => {
           const labelPart = (
             <div className={styles[`${field.key}Label`]}>
-              <PopOver
-                key={field.key}
-                content={
-                  <div className={styles.tooltipWithHTMLContent}>
-                    <FormattedHTMLMessage
-                      {...messages[`${field.key}Tooltip`]}
-                    />
-                  </div>
-                }
-              >
-                <div className={styles.labelContainer}>
-                  <div className={styles.fieldLabel}>
-                    {intl.formatMessage(messages[field.key])}
-                  </div>
+              <div className={styles.labelContainer}>
+                <div className={styles.fieldLabel}>
+                  {intl.formatMessage(messages[field.key])}
+                </div>
+                <PopOver
+                  key={field.key}
+                  themeOverrides={fieldLabelTooltipStyles}
+                  content={
+                    <div className={styles.tooltipWithHTMLContent}>
+                      <FormattedHTMLMessage
+                        {...messages[`${field.key}Tooltip`]}
+                      />
+                    </div>
+                  }
+                >
                   <div className={styles.questionMark}>
                     <SVGInline svg={questionMarkIcon} />
                   </div>
-                </div>
-              </PopOver>
+                </PopOver>
+              </div>
             </div>
           );
 
