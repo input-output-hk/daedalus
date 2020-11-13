@@ -142,6 +142,11 @@ export default class NewsFeed extends Component<Props, State> {
       hasUpdateItem ? styles.hasUpdate : null,
     ]);
 
+    const newsFeedUpdateStyles = classNames([
+      styles.updateItem,
+      hasShadow ? styles.hasShadow : null,
+    ]);
+
     return (
       <div className={componentClasses}>
         <div className={newsFeedHeaderStyles}>
@@ -159,7 +164,7 @@ export default class NewsFeed extends Component<Props, State> {
         </div>
         <div className={styles.newsFeedContainer}>
           {hasUpdateItem && (
-            <>
+            <div className={newsFeedUpdateStyles}>
               {
                 <UpdateItem
                   key={update.id}
@@ -174,7 +179,7 @@ export default class NewsFeed extends Component<Props, State> {
                   isUpdatePostponed={isUpdatePostponed}
                 />
               }
-            </>
+            </div>
           )}
           {items.length > 0 && (
             <div className={newsFeedListStyles}>
