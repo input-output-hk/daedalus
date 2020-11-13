@@ -6,10 +6,12 @@ Changelog
 ### Features
 
 - Enabled the sharing functionality in the Wallet Receive Screen ([PR 2245](https://github.com/input-output-hk/daedalus/pull/2245))
+- Implemented "Filter and CSV export" feature on the "Transactions" screen ([PR 2207](https://github.com/input-output-hk/daedalus/pull/2207))
 
 ### Chores
 
-- Hided hardware wallet restoration support ([PR 2237](https://github.com/input-output-hk/daedalus/pull/2237))
+- Implemented a tool for quickly copying css properties on theme files ([PR 2196](https://github.com/input-output-hk/daedalus/pull/2196))
+- Hid hardware wallet restoration support ([PR 2237](https://github.com/input-output-hk/daedalus/pull/2237))
 
 ## 2.4.1
 
