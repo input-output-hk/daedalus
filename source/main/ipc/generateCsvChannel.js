@@ -2,25 +2,25 @@
 import fs from 'fs';
 import csvStringify from 'csv-stringify';
 import { MainIpcChannel } from './lib/MainIpcChannel';
-import { GENERATE_REWARDS_CSV_CHANNEL } from '../../common/ipc/api';
+import { GENERATE_CSV_CHANNEL } from '../../common/ipc/api';
 import type {
-  GenerateRewardsCsvMainResponse,
-  GenerateRewardsCsvRendererRequest,
+  GenerateCsvMainResponse,
+  GenerateCsvRendererRequest,
 } from '../../common/ipc/api';
 
-export const generateRewardsCsvChannel: // IpcChannel<Incoming, Outgoing>
+export const generateCsvChannel: // IpcChannel<Incoming, Outgoing>
 MainIpcChannel<
-  GenerateRewardsCsvRendererRequest,
-  GenerateRewardsCsvMainResponse
-> = new MainIpcChannel(GENERATE_REWARDS_CSV_CHANNEL);
+  GenerateCsvRendererRequest,
+  GenerateCsvMainResponse
+> = new MainIpcChannel(GENERATE_CSV_CHANNEL);
 
 export const handleRewardsCsvRequests = () => {
-  generateRewardsCsvChannel.onReceive(
-    (request: GenerateRewardsCsvRendererRequest) =>
+  generateCsvChannel.onReceive(
+    (request: GenerateCsvRendererRequest) =>
       new Promise((resolve, reject) => {
-        const { rewards, filePath } = request;
+        const { fileContent, filePath } = request;
 
-        csvStringify(rewards, (csvErr, output) => {
+        csvStringify(fileContent, (csvErr, output) => {
           if (csvErr) {
             return reject(csvErr);
           }

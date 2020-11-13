@@ -25,10 +25,12 @@ export const writeThemeUpdate = ({
   fileName,
   updatedThemeObj,
 }: WriteThemeUpdateParams) => {
-  const THEME_FILE = path.join(
-    __dirname,
-    `../../source/renderer/app/themes/daedalus/${fileName}.js`
-  );
+  const pathBase = __dirname.includes('dist')
+    ? '../../source/renderer/app/themes/daedalus'
+    : '../daedalus';
+
+  const THEME_FILE = path.join(__dirname, pathBase, `${fileName}.js`);
+
   const { themeOutput, themeParams } = formatConstNames(fileName);
   const FILE_CONTENT = `
     // @flow
