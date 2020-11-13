@@ -7,6 +7,10 @@ Changelog
 
 - Hided hardware wallet restoration support ([PR 2237](https://github.com/input-output-hk/daedalus/pull/2237))
 
+### Fixes
+
+- Fixed Newsfeed drop shadow when there is an update item ([PR 2231](https://github.com/input-output-hk/daedalus/pull/2231))
+
 ## 2.4.1
 
 ### Fixes
