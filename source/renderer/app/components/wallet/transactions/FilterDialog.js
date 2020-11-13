@@ -8,7 +8,6 @@ import { isEqual, pick } from 'lodash';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
-import { i18nContext } from '../../../utils/i18nContext';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import {
   calculateDateRange,
@@ -168,11 +167,10 @@ export default class FilterDialog extends Component<Props> {
   dateRangeOptions: Array<{ label: string, value: string }>;
   form: ReactToolboxMobxForm;
 
-  constructor(props: Props) {
+  constructor(props: Props, context: Object) {
     super(props);
 
     const {
-      locale,
       populatedFilterOptions: {
         incomingChecked,
         outgoingChecked,
@@ -183,7 +181,8 @@ export default class FilterDialog extends Component<Props> {
         toAmount,
       },
     } = props;
-    const intl = i18nContext(locale);
+
+    const { intl } = context;
 
     this.dateRangeOptions = [
       {

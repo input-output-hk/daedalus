@@ -4,6 +4,7 @@ import type {
   JoinStakePoolRequest,
   QuitStakePoolRequest,
 } from '../api/staking/types';
+import type { CsvFileContent } from '../../../common/types/csv-request.types';
 // ======= STAKING ACTIONS =======
 
 export default class StakingActions {
@@ -15,6 +16,11 @@ export default class StakingActions {
   updateDelegatingStake: Action<number> = new Action();
   rankStakePools: Action<any> = new Action();
   selectDelegationWallet: Action<string> = new Action();
+  requestCSVFile: Action<{
+    fileContent: CsvFileContent,
+    filenamePrefix: string,
+  }> = new Action();
+  requestCSVFileSuccess: Action<any> = new Action();
   /* ----------  Redeem ITN Rewards  ---------- */
   onRedeemStart: Action<any> = new Action();
   onConfigurationContinue: Action<any> = new Action();
