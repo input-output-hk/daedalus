@@ -3,8 +3,13 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Implemented "Filter and CSV export" feature on the "Transactions" screen ([PR 2207](https://github.com/input-output-hk/daedalus/pull/2207))
+
 ### Chores
 
+- Implemented a tool for quickly copying css properties on theme files ([PR 2196](https://github.com/input-output-hk/daedalus/pull/2196))
 - Hid hardware wallet restoration support ([PR 2237](https://github.com/input-output-hk/daedalus/pull/2237))
 
 ## 2.4.1
@@ -18,7 +23,6 @@ Changelog
 
 ### Features
 
-- Implemented filter and CSV export in the transactions list ([PR 2207](https://github.com/input-output-hk/daedalus/pull/2207))
 - Updated stake pool ranking logic to display the same rank for all stake pools without potential rewards ([PR 2227](https://github.com/input-output-hk/daedalus/pull/2227))
 - Replaced several tooltips with new react-polymorph `PopOver` component ([PR 2210](https://github.com/input-output-hk/daedalus/pull/2210), [PR 2223](https://github.com/input-output-hk/daedalus/pull/2223))
 
