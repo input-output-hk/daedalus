@@ -9,7 +9,7 @@ Changelog
 
 ### Fixes
 
-- Fixed Newsfeed drop shadow when there is an update item ([PR 2231](https://github.com/input-output-hk/daedalus/pull/2231))
+- Fixed Newsfeed drop shadow when there is an update item ([PR 2242](https://github.com/input-output-hk/daedalus/pull/2242))
 
 ## 2.4.1
 
