@@ -3,8 +3,7 @@ import React, { Component } from 'react';
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
-import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import { Select } from 'react-polymorph/lib/components/Select';
@@ -66,18 +65,17 @@ export default class InlineEditingDropdown extends Component<Props> {
     const labelText = [
       label,
       !!tooltip && (
-        <Tooltip
-          skin={TooltipSkin}
+        <PopOver
           themeOverrides={tooltipStyles}
-          tip={tooltip}
+          content={tooltip}
           key="tooltip"
-          className={styles.tooltip}
+          contentClassName={styles.tooltip}
         >
           <SVGInline
             svg={questionMarkIcon}
             className={styles.questionMarkIcon}
           />
-        </Tooltip>
+        </PopOver>
       ),
     ];
 

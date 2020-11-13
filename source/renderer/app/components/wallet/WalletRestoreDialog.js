@@ -8,8 +8,7 @@ import { Input } from 'react-polymorph/lib/components/Input';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import SVGInline from 'react-svg-inline';
-import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
-import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { PasswordInput } from '../widgets/forms/PasswordInput';
 import RadioSet from '../widgets/RadioSet';
 import ReactToolboxMobxForm, {
@@ -614,16 +613,15 @@ export default class WalletRestoreDialog extends Component<Props, State> {
                 onKeyPress={this.handleSubmitOnEnter}
                 {...spendingPasswordField.bind()}
               />
-              <Tooltip
-                skin={TooltipSkin}
+              <PopOver
                 themeOverrides={tooltipStyles}
-                tip={<FormattedHTMLMessage {...messages.passwordTooltip} />}
+                content={<FormattedHTMLMessage {...messages.passwordTooltip} />}
                 key="tooltip"
-                className={styles.tooltip}
+                contentClassName={styles.tooltip}
                 arrowRelativeToTip
               >
                 <SVGInline svg={infoIconInline} className={styles.infoIcon} />
-              </Tooltip>
+              </PopOver>
             </div>
             <div className={styles.spendingPasswordField}>
               <PasswordInput

@@ -5,8 +5,7 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import { get, map, orderBy } from 'lodash';
 import classNames from 'classnames';
-import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
-import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import moment from 'moment';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
@@ -247,10 +246,9 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
                             {isRestoring ? '-' : `${rewardAmount} ADA`}
                             {isRestoring && (
                               <div className={styles.syncingProgress}>
-                                <Tooltip
-                                  skin={TooltipSkin}
+                                <PopOver
                                   themeOverrides={tooltipStyles}
-                                  tip={intl.formatMessage(
+                                  content={intl.formatMessage(
                                     messages.syncingTooltipLabel,
                                     {
                                       syncingProgress,
@@ -258,7 +256,7 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
                                   )}
                                 >
                                   <LoadingSpinner medium />
-                                </Tooltip>
+                                </PopOver>
                               </div>
                             )}
                           </td>

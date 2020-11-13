@@ -8,8 +8,7 @@ import {
   FormattedHTMLMessage,
 } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
-import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
-import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import classnames from 'classnames';
 import { capitalize } from 'lodash';
@@ -553,12 +552,11 @@ export default class TooltipPool extends Component<Props, State> {
               </div>
             )}
             {isIncentivizedTestnet && (
-              <Tooltip
-                className={styles.experimentalTooltip}
+              <PopOver
+                contentClassName={styles.experimentalTooltip}
                 key="experimentalTooltip"
                 themeOverrides={experimentalTooltipStyles}
-                skin={TooltipSkin}
-                tip={intl.formatMessage(messages.experimentalTooltipLabel)}
+                content={intl.formatMessage(messages.experimentalTooltipLabel)}
               >
                 <button className={styles.iconButton}>
                   <SVGInline
@@ -566,7 +564,7 @@ export default class TooltipPool extends Component<Props, State> {
                     className={styles.experimentalIcon}
                   />
                 </button>
-              </Tooltip>
+              </PopOver>
             )}
           </div>
         ),
@@ -653,10 +651,9 @@ export default class TooltipPool extends Component<Props, State> {
         {fields.map((field: { key: string, value: any }) => {
           const labelPart = (
             <div className={styles[`${field.key}Label`]}>
-              <Tooltip
+              <PopOver
                 key={field.key}
-                skin={TooltipSkin}
-                tip={
+                content={
                   <div className={styles.tooltipWithHTMLContent}>
                     <FormattedHTMLMessage
                       {...messages[`${field.key}Tooltip`]}
@@ -672,7 +669,7 @@ export default class TooltipPool extends Component<Props, State> {
                     <SVGInline svg={questionMarkIcon} />
                   </div>
                 </div>
-              </Tooltip>
+              </PopOver>
             </div>
           );
 
@@ -767,19 +764,18 @@ export default class TooltipPool extends Component<Props, State> {
           >
             <p className={styles.ellipsisContent}>{ellipsis(id, 18, 18)}</p>
             <CopyToClipboard text={id} onCopy={this.onCopyId}>
-              <Tooltip
-                className={styles.idTooltip}
+              <PopOver
+                contentClassName={styles.idTooltip}
                 key="id"
                 themeOverrides={isTooltipStyles}
-                skin={TooltipSkin}
-                tip={intl.formatMessage(messages.copyIdTooltipLabel)}
+                content={intl.formatMessage(messages.copyIdTooltipLabel)}
               >
                 <div className={hoverContentClassnames}>
                   <p className={styles.hoverContentBackground}>
                     {id} <SVGInline svg={idCopyIcon} />
                   </p>
                 </div>
-              </Tooltip>
+              </PopOver>
             </CopyToClipboard>
           </div>
           <div className={styles.description}>{description}</div>

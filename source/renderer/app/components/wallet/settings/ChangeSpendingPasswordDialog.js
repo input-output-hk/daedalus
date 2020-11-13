@@ -5,9 +5,8 @@ import classnames from 'classnames';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { defineMessages, FormattedHTMLMessage, intlShape } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
-import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import SVGInline from 'react-svg-inline';
-import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
@@ -291,16 +290,15 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
                 {...currentPasswordField.bind()}
                 onKeyPress={this.handleSubmitOnEnter}
               />
-              <Tooltip
-                skin={TooltipSkin}
+              <PopOver
                 themeOverrides={tooltipStyles}
-                tip={<FormattedHTMLMessage {...messages.passwordTooltip} />}
+                content={<FormattedHTMLMessage {...messages.passwordTooltip} />}
                 key="tooltip"
-                className={tooltipClasses}
+                contentClassName={tooltipClasses}
                 arrowRelativeToTip
               >
                 <SVGInline svg={infoIconInline} className={styles.infoIcon} />
-              </Tooltip>
+              </PopOver>
             </div>
           )}
 
@@ -311,16 +309,15 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
                 onKeyPress={this.handleSubmitOnEnter}
               />
               {!isSpendingPasswordSet && (
-                <Tooltip
-                  skin={TooltipSkin}
+                <PopOver
                   themeOverrides={tooltipStyles}
-                  tip={<FormattedHTMLMessage {...messages.passwordTooltip} />}
+                  content={<FormattedHTMLMessage {...messages.passwordTooltip} />}
                   key="tooltip"
-                  className={tooltipClasses}
+                  contentClassName={tooltipClasses}
                   arrowRelativeToTip
                 >
                   <SVGInline svg={infoIconInline} className={styles.infoIcon} />
-                </Tooltip>
+                </PopOver>
               )}
             </div>
           </div>
