@@ -142,7 +142,6 @@ type Props = {
   suggestedMnemonics: Array<string>,
   recoveryPhrase?: ?Array<string>,
   wallets: Array<Wallet>,
-  transactionFees?: BigNumber,
 };
 
 @observer
@@ -247,13 +246,9 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       wallets,
       recoveryPhrase,
       error,
-      transactionFees,
     } = this.props;
 
-    const { amount } = wallet || {};
-
-    const minRewardsReceiverBalance = new BigNumber(MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE);
-    const calculatedMinRewardsReceiverBalance = (transactionFees ? amount.plus(minRewardsReceiverBalance.minus(amount.minus(transactionFees))) : minRewardsReceiverBalance).toNumber();
+    const calculatedMinRewardsReceiverBalance = new BigNumber(MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE);
 
     let errorMessage;
     if (!isCalculatingReedemFees && error && error.id === 'staking.redeemItnRewards.step1.errorRestoringWallet')

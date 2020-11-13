@@ -38,13 +38,11 @@ export default class Step1ConfigurationContainer extends Component<Props> {
   static defaultProps = DefaultProps;
 
   onWalletAcceptable = (
-    walletAmount?: BigNumber,
-    transactionFees?: BigNumber = 0
+    walletAmount?: BigNumber
   ) => {
     const minRewardsFunds = new BigNumber(MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE);
-    const calculatedRewardsCosts = transactionFees && walletAmount ? walletAmount.plus(minRewardsFunds.minus(walletAmount.minus(transactionFees))) : minRewardsFunds;
     return (walletAmount &&
-      walletAmount.gte(calculatedRewardsCosts));
+      walletAmount.gte(minRewardsFunds));
   };
 
   render() {
@@ -53,7 +51,6 @@ export default class Step1ConfigurationContainer extends Component<Props> {
     const { allWallets } = wallets;
     const {
       redeemWallet,
-      transactionFees,
       isCalculatingReedemFees,
       redeemRecoveryPhrase,
     } = staking;
@@ -64,7 +61,7 @@ export default class Step1ConfigurationContainer extends Component<Props> {
     );
     const { amount, isRestoring } = selectedWallet || {};
     let errorMessage = null;
-    if (selectedWallet && !this.onWalletAcceptable(amount, transactionFees)) {
+    if (selectedWallet && !this.onWalletAcceptable(amount)) {
       // Wallet is restoring
       if (isRestoring) errorMessage = messages.errorRestoringWallet;
       // Wallet balance < min delegation funds
@@ -75,7 +72,6 @@ export default class Step1ConfigurationContainer extends Component<Props> {
     return (
       <Step1ConfigurationDialog
         error={errorMessage}
-        transactionFees={transactionFees}
         isCalculatingReedemFees={isCalculatingReedemFees}
         mnemonicValidator={isValidMnemonic}
         onBack={onBack}

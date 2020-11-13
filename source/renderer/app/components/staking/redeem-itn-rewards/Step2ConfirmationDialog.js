@@ -17,6 +17,7 @@ import { submitOnEnter } from '../../../utils/form';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
+import { MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE } from "../../../config/stakingConfig";
 
 const messages = defineMessages({
   title: {
@@ -149,6 +150,12 @@ export default class Step2ConfirmationDialog extends Component<Props> {
       error,
     } = this.props;
 
+    const { amount } = wallet || {};
+
+    const minRewardsReceiverBalance = new BigNumber(MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE);
+    const differenceBetweenAmountAndFee = amount.minus(transactionFees);
+    const calculatedTransactionFees = differenceBetweenAmountAndFee.lessThan(minRewardsReceiverBalance) ? amount : transactionFees;
+
     const { name: walletName } = wallet;
 
     const spendingPasswordField = form.$('spendingPassword');
@@ -199,7 +206,7 @@ export default class Step2ConfirmationDialog extends Component<Props> {
         <div className={styles.transactionFees}>
           <div>{intl.formatMessage(messages.transactionFees)}</div>
           <div>
-            <b>{formattedWalletAmount(transactionFees, false)}&nbsp;</b>
+            <b>{formattedWalletAmount(calculatedTransactionFees, false)}&nbsp;</b>
             <em>{intl.formatMessage(globalMessages.unitAda)}</em>
           </div>
         </div>
