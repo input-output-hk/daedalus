@@ -98,6 +98,10 @@
     overflow: hidden;
     padding: 20px;
 
+    &.noUpdateItem {
+      padding: 0 20px;
+    }
+
     &::-webkit-scrollbar-track {
       margin: 13px 0;
     }

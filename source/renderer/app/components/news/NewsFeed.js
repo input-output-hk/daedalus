@@ -137,6 +137,11 @@ export default class NewsFeed extends Component<Props, State> {
       hasShadow && !hasUpdateItem ? styles.hasShadow : null,
     ]);
 
+    const newsFeedContainerStyles = classNames([
+      styles.newsFeedContainer,
+      !hasUpdateItem ? styles.noUpdateItem : null,
+    ]);
+
     const newsFeedListStyles = classNames([
       styles.newsFeedList,
       hasUpdateItem ? styles.hasUpdate : null,
@@ -162,7 +167,7 @@ export default class NewsFeed extends Component<Props, State> {
             <SVGInline svg={closeCrossThin} />
           </button>
         </div>
-        <div className={styles.newsFeedContainer}>
+        <div className={newsFeedContainerStyles}>
           {hasUpdateItem && (
             <div className={newsFeedUpdateStyles}>
               {
@@ -186,6 +191,7 @@ export default class NewsFeed extends Component<Props, State> {
               {items.map((newsItem) => (
                 <NewsItem
                   key={newsItem.id}
+                  hasUpdateItem={hasUpdateItem}
                   newsItem={newsItem}
                   isNewsFeedOpen={isNewsFeedOpen}
                   onMarkNewsAsRead={onMarkNewsAsRead}
