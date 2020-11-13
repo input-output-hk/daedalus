@@ -81,6 +81,7 @@ export default class AddressSequential extends Component<Props> {
           address={address}
           onShareAddress={onShareAddress}
           onCopyAddress={onCopyAddress}
+          type="share"
         />
       </div>
     );

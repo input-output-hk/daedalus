@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Enabled the sharing functionality in the Wallet Receive Screen ([PR 2245](https://github.com/input-output-hk/daedalus/pull/2245))
+
 ### Chores
 
 - Hided hardware wallet restoration support ([PR 2237](https://github.com/input-output-hk/daedalus/pull/2237))
