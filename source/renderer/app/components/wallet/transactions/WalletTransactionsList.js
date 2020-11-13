@@ -43,11 +43,11 @@ const messages = defineMessages({
 });
 
 export type ScrollContextType = {
-  setFilterButtonFaded: Function,
+  setIsScrolling: Function,
 };
 
 export const WalletTransactionsListScrollContext = React.createContext<ScrollContextType>(
-  { setFilterButtonFaded: () => null }
+  { setIsScrolling: () => null }
 );
 
 type Props = {
