@@ -74,7 +74,9 @@ export default class StakingStore extends Store {
     stakingActions.onConfigurationContinue.listen(
       this._onConfigurationContinue
     );
-    stakingActions.onCalculateRedeemWalletFees.listen(this._onCalculateRedeemWalletFees);
+    stakingActions.onCalculateRedeemWalletFees.listen(
+      this._onCalculateRedeemWalletFees
+    );
     stakingActions.onConfirmationContinue.listen(this._onConfirmationContinue);
     stakingActions.onResultContinue.listen(this._onResultContinue);
     stakingActions.closeRedeemDialog.listen(this._closeRedeemDialog);
