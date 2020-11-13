@@ -20,6 +20,8 @@ import WalletAddress from '../domains/WalletAddress';
 import { getAddresses } from './addresses/requests/getAddresses';
 import { getByronWalletAddresses } from './addresses/requests/getByronWalletAddresses';
 import { createByronWalletAddress } from './addresses/requests/createByronWalletAddress';
+import { constructAddress } from './addresses/requests/constructAddress';
+import { inspectAddress } from './addresses/requests/inspectAddress';
 
 // Network requests
 import { getNetworkInfo } from './network/requests/getNetworkInfo';
@@ -37,6 +39,7 @@ import { createByronWalletTransaction } from './transactions/requests/createByro
 import { deleteLegacyTransaction } from './transactions/requests/deleteLegacyTransaction';
 import { selectCoins } from './transactions/requests/selectCoins';
 import { createExternalTransaction } from './transactions/requests/createExternalTransaction';
+import { getPublicKey } from './transactions/requests/getPublicKey';
 
 // Wallets requests
 import { updateSpendingPassword } from './wallets/requests/updateSpendingPassword';
@@ -892,6 +895,69 @@ export default class AdaApi {
       return response;
     } catch (error) {
       logger.error('AdaApi::createExternalTransaction error', { error });
+      throw new ApiError(error);
+    }
+  };
+
+  inspectAddress = async (
+    request: any // @TODO
+  ): Promise<any> => {
+    logger.debug('AdaApi::inspectAddress called', {
+      parameters: filterLogData(request),
+    });
+    const { addressId } = request;
+    try {
+      const response = await inspectAddress(this.config, {
+        addressId
+      });
+      console.debug('>>> API:: inspectAddress RES: ', response);
+      logger.debug('AdaApi::inspectAddress success', { response });
+      return response;
+    } catch (error) {
+      console.debug('>>> API:: inspectAddress ERROR: ', error);
+      logger.error('AdaApi::inspectAddress error', { error });
+      throw new ApiError(error);
+    }
+  };
+
+  getPublicKey = async (
+    request: any // @TODO
+  ): Promise<any> => {
+    logger.debug('AdaApi::getPublicKey called', {
+      parameters: filterLogData(request),
+    });
+    const { walletId, role, index } = request;
+    try {
+      const response = await getPublicKey(this.config, {
+        walletId, role, index,
+      });
+      console.debug('>>> API:: getPublicKey RES: ', response);
+      logger.debug('AdaApi::getPublicKey success', { response });
+      return response;
+    } catch (error) {
+      console.debug('>>> API:: getPublicKey ERROR: ', error);
+      logger.error('AdaApi::getPublicKey error', { error });
+      throw new ApiError(error);
+    }
+  };
+
+  constructAddress = async (
+    request: any // @TODO
+  ): Promise<any> => {
+    logger.debug('AdaApi::constructAddress called', {
+      parameters: filterLogData(request),
+    });
+    const { publicKey } = request;
+    try {
+      const response = await constructAddress(this.config, {
+        publicKey
+      });
+      console.debug('>>> API:: constructAddress RES: ', response);
+      logger.debug('AdaApi::constructAddress success', { response });
+      return response;
+    } catch (error) {
+      console.debug('>>> API:: constructAddress ERROR: ', error);
+      logger.error('AdaApi::constructAddress error', { error });
       throw new ApiError(error);
     }
   };

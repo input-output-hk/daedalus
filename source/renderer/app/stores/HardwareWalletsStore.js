@@ -96,6 +96,18 @@ export default class HardwareWalletsStore extends Store {
   sendMoneyRequest: Request<CreateExternalTransactionResponse> = new Request(
     this.api.ada.createExternalTransaction
   );
+  // @TODO - improve types
+  getPublicKeyRequest: Request<any> = new Request(
+    this.api.ada.getPublicKey
+  );
+  // @TODO - improve types
+  constructAddressRequest: Request<any> = new Request(
+    this.api.ada.constructAddress
+  );
+  // @TODO - improve types
+  inspectAddressRequest: Request<any> = new Request(
+    this.api.ada.inspectAddress
+  );
   @observable
   hardwareWalletsLocalDataRequest: Request<HardwareWalletsLocalData> = new Request(
     this.api.localStorage.getHardwareWalletsLocalData
@@ -683,7 +695,7 @@ export default class HardwareWalletsStore extends Store {
     }
   };
 
-  _test11 = () => {
+  _test11 = async () => {
     const data = {
       accountAddress: "addr1u8gg2y4urdqs5nwmgjxefdhaqdtqq357gn5sxu0y36rqzdg6kn7p9",
       poolHash: "04c60c78417132a195cbb74975346462410f72612952a7c4ade7e438",
@@ -691,6 +703,30 @@ export default class HardwareWalletsStore extends Store {
     };
     const test = ShelleyTxCert(data);
     console.debug('>>> TEST: ', test);
+
+
+
+    console.debug('>>> INIT API <<<');
+    const inspectedAddress = await this.inspectAddressRequest.execute({
+      addressId: 'addr1u8gg2y4urdqs5nwmgjxefdhaqdtqq357gn5sxu0y36rqzdg6kn7p9',
+    });
+    console.debug('>> inspectedAddress: ', inspectedAddress);
+
+    const publicKey = await this.getPublicKeyRequest.execute({
+      walletId: '60f8e500da902bc9bee26872d4f233b5824675ba',
+      role: 'utxo_internal',
+      index: 0,
+    });
+
+    console.debug('>> publicKey: ', publicKey);
+
+    const constructedAddress = await this.constructAddressRequest.execute({
+      publicKey,
+    });
+    console.debug('>> constructedAddress: ', constructedAddress);
+
+
+
   }
 
   // Trezor - Shelley only
