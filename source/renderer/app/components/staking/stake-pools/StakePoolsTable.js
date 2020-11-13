@@ -280,7 +280,7 @@ export class StakePoolsTable extends Component<Props, State> {
         title: (
           <PopOver
             key="ranking"
-            isOpeningUpward={false}
+            placement="bottom"
             content={
               <div className={styles.tooltipWithHTMLContent}>
                 <FormattedHTMLMessage {...messages.tableHeaderRankTooltip} />
@@ -300,7 +300,7 @@ export class StakePoolsTable extends Component<Props, State> {
         title: (
           <PopOver
             key="saturation"
-            isOpeningUpward={false}
+            placement="bottom"
             content={intl.formatMessage(messages.tableHeaderSaturationTooltip)}
           >
             {intl.formatMessage(messages.tableHeaderSaturation)}
@@ -312,7 +312,7 @@ export class StakePoolsTable extends Component<Props, State> {
         title: (
           <PopOver
             key="cost"
-            isOpeningUpward={false}
+            placement="bottom"
             content={intl.formatMessage(messages.tableHeaderCostTooltip)}
           >
             {intl.formatMessage(messages.tableHeaderCost)}
@@ -324,7 +324,7 @@ export class StakePoolsTable extends Component<Props, State> {
         title: (
           <PopOver
             key="profitMargin"
-            isOpeningUpward={false}
+            placement="bottom"
             content={intl.formatMessage(messages.tableHeaderMarginTooltip)}
           >
             {intl.formatMessage(messages.tableHeaderMargin)}
@@ -336,7 +336,7 @@ export class StakePoolsTable extends Component<Props, State> {
         title: (
           <PopOver
             key="producedBlocks"
-            isOpeningUpward={false}
+            placement="bottom"
             content={intl.formatMessage(messages.tableHeaderProducedBlocksTooltip)}
           >
             {intl.formatMessage(messages.tableHeaderProducedBlocks)}
@@ -348,7 +348,7 @@ export class StakePoolsTable extends Component<Props, State> {
         title: (
           <PopOver
             key="nonMyopicMemberRewards"
-            isOpeningUpward={false}
+            placement="bottom"
             content={intl.formatMessage(
               messages.tableHeaderPotentialRewardsTooltip
             )}
@@ -362,7 +362,7 @@ export class StakePoolsTable extends Component<Props, State> {
         title: (
           <PopOver
             key="pledge"
-            isOpeningUpward={false}
+            placement="bottom"
             content={intl.formatMessage(messages.tableHeaderPledgeTooltip)}
           >
             {intl.formatMessage(messages.tableHeaderPledge)}

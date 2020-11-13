@@ -48,7 +48,7 @@ export const FormFieldSkin = (props: Props) => (
             content={props.error}
             key="tooltip"
             contentClassName={styles.tooltip}
-            isOpeningUpward={false}
+            placement="bottom"
           >
             <SVGInline
               svg={exclamationPointIcon}

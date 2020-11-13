@@ -291,7 +291,6 @@ export default class ConfigurationDialog extends Component<Props> {
                   content={<FormattedHTMLMessage {...messages.passwordTooltip} />}
                   key="tooltip"
                   contentClassName={tooltipClasses}
-                  arrowRelativeToTip
                 >
                   <SVGInline svg={infoIconInline} className={styles.infoIcon} />
                 </PopOver>

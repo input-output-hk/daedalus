@@ -280,7 +280,6 @@ export default class WalletCreateDialog extends Component<Props, State> {
                 content={<FormattedHTMLMessage {...messages.passwordTooltip} />}
                 key="tooltip"
                 contentClassName={tooltipClasses}
-                arrowRelativeToTip
               >
                 <SVGInline svg={infoIconInline} className={styles.infoIcon} />
               </PopOver>

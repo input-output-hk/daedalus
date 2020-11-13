@@ -295,7 +295,6 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
                 content={<FormattedHTMLMessage {...messages.passwordTooltip} />}
                 key="tooltip"
                 contentClassName={tooltipClasses}
-                arrowRelativeToTip
               >
                 <SVGInline svg={infoIconInline} className={styles.infoIcon} />
               </PopOver>
@@ -314,7 +313,6 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
                   content={<FormattedHTMLMessage {...messages.passwordTooltip} />}
                   key="tooltip"
                   contentClassName={tooltipClasses}
-                  arrowRelativeToTip
                 >
                   <SVGInline svg={infoIconInline} className={styles.infoIcon} />
                 </PopOver>

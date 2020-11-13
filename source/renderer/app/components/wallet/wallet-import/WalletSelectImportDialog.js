@@ -231,8 +231,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
               )
             }
             isBounded={walletNotSelectable}
-            isOpeningUpward={isOpeningUpward}
-            arrowRelativeToTip
+            placement={isOpeningUpward  ? 'top': 'bottom'}
           >
             {statusIcon}
           </PopOver>
@@ -426,7 +425,6 @@ export default class WalletSelectImportDialog extends Component<Props> {
                           content={intl.formatMessage(
                             messages.enterWalletNameTooltip
                           )}
-                          arrowRelativeToTip
                         >
                           {this.getInlineEditingSmallInput(
                             wallet,
