@@ -4,6 +4,8 @@ import Action from '../actions/lib/Action';
 export type NotificationId =
   | 'downloadLogsProgress'
   | 'downloadLogsSuccess'
+  | 'downloadRewardsCSVSuccess'
+  | 'downloadTransactionsCSVSuccess'
   | 'copyAddress'
   | 'copyStateDirectoryPath';
 

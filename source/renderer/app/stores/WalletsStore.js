@@ -12,7 +12,7 @@ import { i18nContext } from '../utils/i18nContext';
 import { mnemonicToSeedHex, getScrambledInput } from '../utils/crypto';
 import { paperWalletPdfGenerator } from '../utils/paperWalletPdfGenerator';
 import { addressPDFGenerator } from '../utils/addressPDFGenerator';
-import { downloadRewardsCsv } from '../utils/rewardsCsvGenerator';
+import { downloadCsv } from '../utils/csvGenerator';
 import { buildRoute, matchRoute } from '../utils/routing';
 import { logger } from '../utils/logging';
 import { ROUTES } from '../routes-config';
@@ -34,7 +34,7 @@ import type {
   WalletYoroiKind,
   WalletHardwareKind,
 } from '../types/walletRestoreTypes';
-import type { CsvRecord } from '../../../common/types/rewards-csv-request.types';
+import type { CsvFileContent } from '../../../common/types/csv-request.types';
 import type { WalletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
 import type LocalizableError from '../i18n/LocalizableError';
@@ -247,7 +247,7 @@ export default class WalletsStore extends Store {
       this._closeCertificateGeneration
     );
 
-    walletsActions.generateRewardsCsv.listen(this._generateRewardsCsv);
+    walletsActions.generateCsv.listen(this._generateCsv);
     walletsActions.closeRewardsCsvGeneration.listen(
       this._closeRewardsCsvGeneration
     );
@@ -1228,8 +1228,11 @@ export default class WalletsStore extends Store {
    * Using mobx flows: https://mobx.js.org/best/actions.html#flows
    * @private
    */
-  _generateRewardsCsv = flow(function* generateRewardsCsv(params: {
-    rewards: Array<CsvRecord>,
+  _generateCsv = flow(function* generateCsv({
+    fileContent,
+    filePath,
+  }: {
+    fileContent: CsvFileContent,
     filePath: string,
   }) {
     try {
@@ -1239,7 +1242,7 @@ export default class WalletsStore extends Store {
       this._updateRewardsCsvCreationState(true);
 
       // download rewards csv
-      yield this._downloadRewardsCsv(params.rewards, params.filePath);
+      yield this._downloadRewardsCsv(fileContent, filePath);
     } catch (error) {
       throw error;
     } finally {
@@ -1247,10 +1250,13 @@ export default class WalletsStore extends Store {
     }
   }).bind(this);
 
-  _downloadRewardsCsv = async (rewards: Array<CsvRecord>, filePath: string) => {
+  _downloadRewardsCsv = async (
+    fileContent: CsvFileContent,
+    filePath: string
+  ) => {
     try {
-      await downloadRewardsCsv({
-        rewards,
+      await downloadCsv({
+        fileContent,
         filePath,
       });
       runInAction('handle successful rewards csv download', () => {

@@ -1,29 +1,8 @@
 .component {
-  position: absolute;
-  right: 10px;
-  top: 10px;
-  z-index: 98;
-
   .actionButton {
-    border-radius: 5px;
-    box-shadow: 0 1.5px 5px 0
-      var(--theme-transactions-filter-button-shadow-color);
+    border-radius: 2px;
     display: flex;
     padding: 7px 12px;
-    right: 10px;
-
-    &:focus {
-      box-shadow: 0 1.5px 5px 0
-        var(--theme-transactions-filter-button-shadow-color) !important;
-    }
-
-    &.actionButtonFaded {
-      opacity: 0.5;
-
-      &:hover {
-        opacity: 1;
-      }
-    }
 
     .actionLabel {
       color: var(--theme-transactions-filter-button-color);
