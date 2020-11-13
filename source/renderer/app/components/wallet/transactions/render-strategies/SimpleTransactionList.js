@@ -25,9 +25,9 @@ export class SimpleTransactionList extends Component<Props> {
   ) => {
     const { scrollTop } = evt.currentTarget;
     if (scrollTop > 10) {
-      context.setFilterButtonFaded(true);
+      context.setIsScrolling(true);
     } else {
-      context.setFilterButtonFaded(false);
+      context.setIsScrolling(false);
     }
   };
 

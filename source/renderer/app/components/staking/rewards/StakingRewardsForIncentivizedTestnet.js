@@ -15,7 +15,6 @@ import { StakingPageScrollContext } from '../layouts/StakingWithNavigation';
 import BorderedBox from '../../widgets/BorderedBox';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import sortIcon from '../../../assets/images/ascending.inline.svg';
-// import externalLinkIcon from '../../../assets/images/link-ic.inline.svg';
 import downloadIcon from '../../../assets/images/download-ic.inline.svg';
 import type { RewardForIncentivizedTestnet } from '../../../api/staking/types';
 import styles from './StakingRewardsForIncentivizedTestnet.scss';
@@ -27,6 +26,12 @@ const messages = defineMessages({
     defaultMessage: '!!!Earned delegation rewards',
     description:
       'Title "Earned delegation rewards" label on the staking rewards page.',
+  },
+  csvFilenamePrefix: {
+    id: 'staking.rewards.csvFilenamePrefix',
+    defaultMessage: '!!!Rewards',
+    description:
+      'Filename prefix for the "Export CSV" on the staking rewards page.',
   },
   exportButtonLabel: {
     id: 'staking.rewards.exportButtonLabel',
@@ -76,7 +81,6 @@ type Props = {
   rewards: Array<RewardForIncentivizedTestnet>,
   isLoading: boolean,
   isExporting: boolean,
-  // onLearnMoreClick: Function,
   onExportCsv: Function,
 };
 
@@ -117,7 +121,7 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
       ...availableTableHeaders.map((header) => header.title),
       intl.formatMessage(messages.tableHeaderDate),
     ];
-    const date = moment().format('YYYY-MM-DDTHHmmss.0SSS');
+    const date = `${moment().utc().format('YYYY-MM-DDTHHmmss.0SSS')}Z`;
     const exportedBody = sortedRewards.map((reward) => {
       const rewardWallet = get(reward, 'wallet');
       const isRestoring = get(reward, 'isRestoring');
@@ -128,7 +132,10 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
     });
     const exportedContent = [exportedHeader, ...exportedBody];
 
-    onExportCsv(exportedContent);
+    onExportCsv({
+      fileContent: exportedContent,
+      filenamePrefix: intl.formatMessage(messages.csvFilenamePrefix),
+    });
   };
 
   render() {
@@ -279,12 +286,6 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
             <div className={styles.note}>
               <div className={styles.noteContent}>
                 <FormattedHTMLMessage {...messages.note} />
-                {/*
-                  <button onClick={onLearnMoreClick}>
-                    {intl.formatMessage(messages.learnMoreButtonLabel)}
-                    <SVGInline svg={externalLinkIcon} />
-                  </button>
-                */}
               </div>
             </div>
           </div>
