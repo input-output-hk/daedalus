@@ -174,7 +174,6 @@ export default class NewsFeed extends Component<Props, State> {
                   isUpdatePostponed={isUpdatePostponed}
                 />
               }
-              <hr className={styles.separator} />
             </>
           )}
           {items.length > 0 && (

@@ -134,18 +134,12 @@
 
       &.hasUpdate {
         height: calc(100% - 220px);
-        margin-top: 115px;
+        margin-top: 95px;
       }
     }
   }
 
   &.show {
     margin-right: 0;
-  }
-
-  .separator {
-    border: 1px solid var(--theme-news-item-title-color);
-    margin: 15px 0;
-    opacity: 0.2;
   }
 }
