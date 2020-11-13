@@ -3,7 +3,7 @@ import { request } from '../../utils/request';
 
 export const constructAddress = (
   config: RequestConfig,
-  { publicKey }: any // @TODO
+  { data }: any // @TODO
 ): Promise<any> =>
   request(
     {
@@ -12,7 +12,5 @@ export const constructAddress = (
       ...config,
     },
     {},
-    {
-      stake: publicKey,
-    }
+    data,
   );

@@ -948,9 +948,12 @@ export default class AdaApi {
       parameters: filterLogData(request),
     });
     const { publicKey } = request;
+    const data = {
+      stake: publicKey,
+    };
     try {
       const response = await constructAddress(this.config, {
-        publicKey
+        data
       });
       console.debug('>>> API:: constructAddress RES: ', response);
       logger.debug('AdaApi::constructAddress success', { response });
