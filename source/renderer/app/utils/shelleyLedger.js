@@ -112,21 +112,7 @@ export const ShelleyTxOutput = (
     const addressBuff = utils.bech32_decodeAddress(address);
     return encoder.pushAny([addressBuff, coins]);
   }
-
   const isChange = derivationPath !== null;
-
-  const aa = {
-    address,
-    coins,
-    isChange,
-    spendingPath: isChange
-      ? derivationPathToLedgerPath(derivationPath)
-      : null,
-    stakingPath: isChange ? [2147485500, 2147485463, 2147483648, 2, 0] : null,
-    encodeCBOR,
-  };
-  console.debug('>>> ShelleyTxOutput: ', { transformed: aa, output });
-
   return {
     address,
     coins,
@@ -139,24 +125,17 @@ export const ShelleyTxOutput = (
   };
 };
 
-
-
 export const ShelleyTxCert = (cert) => {
   const { type, accountAddress, pool } = cert;
+  let hash;
+  let poolHash;
+  if (pool) {
+    poolHash = utils.buf_to_hex(utils.bech32_decodeAddress(pool));
+    hash = Buffer.from(poolHash, 'hex');
+  }
+
   function encodeCBOR(encoder) {
     const accountAddressHash = utils.bech32_decodeAddress(accountAddress).slice(1)
-    let hash;
-    let poolHash;
-    // if (poolHash) hash = Buffer.from(poolHash, 'hex')
-    if (pool) {
-      console.debug('>> pool: ', pool);
-      poolHash = utils.buf_to_hex(utils.bech32_decodeAddress(pool))
-      console.debug('>> poolHash: ', poolHash);
-      hash = Buffer.from(poolHash, 'hex')
-      console.debug('>> hash: ', hash);
-
-      console.debug('>>> TEST: ', utils.bech32_decodeAddress(pool));
-    }
     const account = [0, accountAddressHash]
     const encodedCertsTypes = {
       0: [type, account],
@@ -165,12 +144,11 @@ export const ShelleyTxCert = (cert) => {
     }
     return encoder.pushAny(encodedCertsTypes[type])
   }
-
   return {
     address: accountAddress,
     type,
     accountAddress,
-    poolHash: pool ? utils.buf_to_hex(utils.bech32_decodeAddress(pool)) : null,
+    poolHash: poolHash || null,
     encodeCBOR,
   }
 };
@@ -182,8 +160,6 @@ export const prepareLedgerCertificate = (cert: CoinSelectionCertificate) => {
     poolKeyHashHex: cert.pool ? utils.buf_to_hex(utils.bech32_decodeAddress(cert.pool)) : null,
   };
 };
-
-
 
 export const ShelleyFee = (fee: number) => {
   function encodeCBOR(encoder: any) {
@@ -317,7 +293,6 @@ export const prepareLedgerInput = (
   return {
     txHashHex: input.id,
     outputIndex: input.index,
-    // path: cardano.str_to_path(`1852'/1815'/0'/0/${addressIndex}`),
     path: derivationPathToLedgerPath(input.derivationPath),
   };
 };
@@ -328,7 +303,7 @@ export const prepareLedgerOutput = (
   const isChange = output.derivationPath !== null;
   if (isChange) {
     return {
-      addressTypeNibble: 0, // TODO: get from address
+      addressTypeNibble: 0,
       spendingPath: derivationPathToLedgerPath(output.derivationPath),
       amountStr: output.amount.quantity.toString(),
       stakingPath: cardano.str_to_path("1852'/1815'/0'/2/0"),
@@ -357,8 +332,8 @@ export const prepareTxAux = ({
 }) => {
   const txFee = ShelleyFee(fee);
   const txTtl = ShelleyTtl(ttl);
-  const txCerts = certificates; // @TODO - implement once delegation enabled
-  const txWithdrawals = withdrawals[0]; // @TODO - implement once delegation enabled
+  const txCerts = certificates;
+  const txWithdrawals = withdrawals[0]; // @TODO - implement once withdrawals enabled
   return ShelleyTxAux(
     txInputs,
     txOutputs,

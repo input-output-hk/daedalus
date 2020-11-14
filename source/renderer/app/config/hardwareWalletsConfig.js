@@ -1,5 +1,12 @@
 const { isMainnet } = global.environment;
 
+export const HARDENED_HEX = 0x80000000;
+export const HARDENED = 2147483648;
+export const SHELLEY_PURPOSE_INDEX = 1852;
+export const BYRON_PURPOSE_INDEX = 44;
+export const ADA_COIN_TYPE = 1815;
+export const DEFAULT_ADDRESS_INDEX = 0;
+
 export const HW_SHELLEY_CONFIG = {
   NETWORK: {
     MAINNET: {
@@ -10,6 +17,11 @@ export const HW_SHELLEY_CONFIG = {
       ttl: 3600,
     },
   },
+  ABD_DERIVATION_PATH: [
+    HARDENED + SHELLEY_PURPOSE_INDEX,
+    HARDENED + ADA_COIN_TYPE,
+    HARDENED + DEFAULT_ADDRESS_INDEX,
+  ],
 };
 
 export const HW_BYRON_CONFIG = {
@@ -20,6 +32,11 @@ export const HW_BYRON_CONFIG = {
       protocolMagic: 764824073,
     },
   },
+  ABD_DERIVATION_PATH: [
+    HARDENED + BYRON_PURPOSE_INDEX,
+    HARDENED + ADA_COIN_TYPE,
+    HARDENED + DEFAULT_ADDRESS_INDEX,
+  ],
 };
 
 export const MINIMAL_LEDGER_APP_VERSION = {

@@ -48,7 +48,7 @@ import {
 } from '../../../common/types/hardware-wallets.types';
 import { formattedAmountToLovelace } from '../utils/formatters';
 import { TransactionStates } from '../domains/WalletTransaction';
-import { CERTIFICATE_TYPE } from '../utils/hardwareWalletUtils';
+import { CERTIFICATE_TYPE, getParamsFromPath, hardenedPathToString } from '../utils/hardwareWalletUtils';
 
 import type { HwDeviceStatus } from '../domains/Wallet';
 import type {
@@ -333,7 +333,6 @@ export default class HardwareWalletsStore extends Store {
           amount,
         },
       });
-      console.debug('>>> COIN SELECTION: ', coinSelection);
       runInAction('HardwareWalletsStore:: set coin selections', () => {
         this.txSignRequest = {
           recieverAddress: address,
@@ -696,106 +695,6 @@ export default class HardwareWalletsStore extends Store {
     }
   };
 
-  _test11 = async () => {
-    const data = {
-      accountAddress: "addr1u8gg2y4urdqs5nwmgjxefdhaqdtqq357gn5sxu0y36rqzdg6kn7p9",
-      poolHash: "04c60c78417132a195cbb74975346462410f72612952a7c4ade7e438",
-      type: 2,
-    };
-    const test = ShelleyTxCert(data);
-    console.debug('>>> TEST: ', test);
-
-    // ROLES
-    // 0 - address (utxo_external)
-    // 1 - change (utxo_internal)
-    // 2 - stake (mutable_account)
-    // 3 - script (multisig_script)
-
-    console.debug('>>> INIT API <<<');
-    const inspectedAddress = await this.inspectAddressRequest.execute({
-      addressId: 'addr1u8gg2y4urdqs5nwmgjxefdhaqdtqq357gn5sxu0y36rqzdg6kn7p9',
-    });
-    console.debug('>> inspectedAddress: ', inspectedAddress);
-
-    const publicKey = await this.getPublicKeyRequest.execute({
-      walletId: '60f8e500da902bc9bee26872d4f233b5824675ba',
-      role: 'mutable_account',
-      index: 0,
-    });
-
-    console.debug('>> publicKey: ', publicKey);
-    const data1 = {
-      stake: publicKey,
-    };
-
-    const constructedAddress = await this.constructAddressRequest.execute({data: data1});
-    console.debug('>> constructedAddress: ', constructedAddress);
-
-
-    console.debug('');
-    console.debug('');
-    console.debug('');
-
-
-
-
-    console.debug('>>> INIT API <<<');
-    const publicKey2 = await this.getPublicKeyRequest.execute({
-      walletId: '60f8e500da902bc9bee26872d4f233b5824675ba',
-      role: 'utxo_external',
-      index: 0,
-    });
-
-    console.debug('>> publicKey: ', publicKey2);
-
-    const data2 = {
-      payment: publicKey2,
-    };
-    const constructedAddress2 = await this.constructAddressRequest.execute({data: data2});
-    console.debug('>> constructedAddress: ', constructedAddress2);
-
-
-    console.debug('');
-    console.debug('');
-    console.debug('');
-
-
-    console.debug('>>> INIT API <<<');
-    const publicKey3 = await this.getPublicKeyRequest.execute({
-      walletId: '60f8e500da902bc9bee26872d4f233b5824675ba',
-      role: 'utxo_internal',
-      index: 0,
-    });
-
-    console.debug('>> publicKey: ', publicKey3);
-
-    const data3 = {
-      payment: publicKey3,
-    };
-    const constructedAddress3 = await this.constructAddressRequest.execute({data: data3});
-    console.debug('>> constructedAddress: ', constructedAddress3);
-
-
-    console.debug('');
-    console.debug('');
-    console.debug('');
-
-    console.debug('>>> INIT API <<<');
-    const publicKey4 = await this.getPublicKeyRequest.execute({
-      walletId: '60f8e500da902bc9bee26872d4f233b5824675ba',
-      role: 'mutable_account',
-      index: 0,
-    });
-
-    console.debug('>> publicKey: ', publicKey4);
-
-    const data4 = {
-      payment: publicKey4,
-    };
-    const constructedAddress4 = await this.constructAddressRequest.execute({data: data4});
-    console.debug('>> constructedAddress: ', constructedAddress4);
-  }
-
   // Trezor - Shelley only
   @action _signTransactionTrezor = async (walletId: string) => {
     const { coinSelection } = this.txSignRequest;
@@ -876,14 +775,11 @@ export default class HardwareWalletsStore extends Store {
   };
 
   _deriveXpub = CachedDeriveXpubFactory(async (absDerivationPath) => {
-    console.debug('>>> _deriveXpub: ', absDerivationPath);
     const response = await getExtendedPublicKeyChannel.request({
-      // path: absDerivationPath, // @TODO - check
-      path: "1852'/1815'/0'",
+      path: hardenedPathToString(absDerivationPath),
       isTrezor: false,
       devicePath: null,
     });
-    console.debug('>>> response: ', response);
     const xpubHex = `${response.publicKeyHex}${response.chainCodeHex}`;
     return Buffer.from(xpubHex, 'hex');
   });
@@ -895,49 +791,27 @@ export default class HardwareWalletsStore extends Store {
       signedWitnesses.push(signedWitness);
     }
     return signedWitnesses;
-  }
-
-
-  ShelleyWitness = async (witness) => {
-    console.debug('>>> TOMO - ShelleyWitness: ', witness);
-    const xpub = await this._deriveXpub(witness.path); // @TODO - error is here
-    console.debug('>>> TOMO - DERIVATION xpub: ', xpub);
-    console.debug('>>> xPub: ', xpub);
-    const publicKey = xpub.slice(0, 32); // TODO: export from addresses
-    console.debug('>>> publicKey: ', publicKey);
-    const signature = Buffer.from(witness.witnessSignatureHex, 'hex');
-    console.debug('>>> signature: ', signature);
-    return ShelleyTxWitnessShelley(publicKey, signature);
   };
 
   _getRewardAccountAddress = async (walletId: string, path: Array<string>) => {
-    // ROLES
-    // 0 - address (utxo_external)
-    // 1 - change (utxo_internal)
-    // 2 - stake (mutable_account)
-    // 3 - script (multisig_script)
-
-    console.debug('>> RR - _getRewardAccountAddress params: ', {walletId, path});
-
+    const pathParams = getParamsFromPath(path);
     const publicKey = await this.getPublicKeyRequest.execute({
       walletId,
-      role: 'mutable_account',
-      index: 0,
+      role: pathParams.roleIdentity,
+      index: pathParams.index,
     });
-
-    console.debug('>> publicKey: ', publicKey);
     const data = {
       stake: publicKey,
     };
-
     const constructedAddress = await this.constructAddressRequest.execute({ data });
-    console.debug('>> constructedAddress: ', constructedAddress);
-
-    const inspectedAddress = await this.inspectAddressRequest.execute({
-      addressId: constructedAddress.address,
-    });
-    console.debug('>>> INSPECTED ADDR: ', inspectedAddress);
     return constructedAddress.address;
+  };
+
+  ShelleyWitness = async (witness) => {
+    const xpub = await this._deriveXpub(witness.path);
+    const publicKey = xpub.slice(0, 32);
+    const signature = Buffer.from(witness.witnessSignatureHex, 'hex');
+    return ShelleyTxWitnessShelley(publicKey, signature);
   };
 
   // Ledger - Shelley only
@@ -1021,7 +895,6 @@ export default class HardwareWalletsStore extends Store {
 
       // Prepare serialized transaction with unsigned data and signed witnesses
       const txBody = await prepareBody(unsignedTx, txWitnesses);
-      console.debug('>>>> FINAL: ', txBody);
 
       runInAction('HardwareWalletsStore:: set Transaction verified', () => {
         this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED;
@@ -1054,8 +927,6 @@ export default class HardwareWalletsStore extends Store {
 
     const { disconnected, device, id } = hardwareWalletConnectionData;
     const { deviceType } = device;
-
-    console.debug('>>> Initiate Transaction: ', { hardwareWalletConnectionData });
 
     if (disconnected) {
       // Wait for connection to be established and continue to signing process
