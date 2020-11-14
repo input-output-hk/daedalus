@@ -888,16 +888,13 @@ export default class HardwareWalletsStore extends Store {
     return Buffer.from(xpubHex, 'hex');
   });
 
-  processArray = async (array) => {
-    const _shelleyWitnesses = [];
-    for (const item of array) {
-      console.debug('>>> TOMO - get ShelleyWitness: ', {item, path: item.path});
-      const aa = await this.ShelleyWitness(item);
-      console.debug('>>> SGN: ', aa);
-      _shelleyWitnesses.push(aa);
+  _signWitnesses = async (witnesses) => {
+    const signedWitnesses = [];
+    for (const witness of witnesses) {
+      const signedWitness = await this.ShelleyWitness(witness);
+      signedWitnesses.push(signedWitness);
     }
-    console.log('Done!: ', _shelleyWitnesses);
-    return _shelleyWitnesses;
+    return signedWitnesses;
   }
 
 
@@ -944,98 +941,13 @@ export default class HardwareWalletsStore extends Store {
   };
 
   // Ledger - Shelley only
-  @action _signTransactionLedger = async () => {
-    console.debug('>>> _signTransactionLedger');
+  @action _signTransactionLedger = async (walletId: string) => {
+    console.debug('>>> _signTransactionLedger: ', { walletId });
     runInAction('HardwareWalletsStore:: set Transaction verifying', () => {
       this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION;
     });
     // @TODO - once data with CHANGE applied remove recieverAddress from store
     const { coinSelection, recieverAddress } = this.txSignRequest;
-
-    console.debug('>>> coinSelection: ', coinSelection);
-
-
-    const coinSelection22 = {
-      inputs: [
-        {
-          address: "addr1qxa9wgcsld6vyp2f3fwkzmksh5cx3sw6wrnespdjam43x5wss5ftcx6ppfxak3ydjjm06q6kqprfu38fqdc7fr5xqy6se6car9",
-          amount: {
-            quantity: 1000000,
-            unit: "lovelaces"
-          },
-          id: "73ac5260f3a005c0ffb52443d1ebc19de85d6a4e4591474b538971b5d134df9e",
-          index: 0,
-          derivationPath: [
-            "1852H",
-            "1815H",
-            "0H",
-            "0",
-            "6",
-          ],
-        },
-        {
-          address: "addr1q8dz79jhnlrc6lzcglack4d2yd9rfw7fcgraw52c5l3mdrkss5ftcx6ppfxak3ydjjm06q6kqprfu38fqdc7fr5xqy6sehduvt",
-          amount: {
-            quantity: 9585855,
-            unit: "lovelaces"
-          },
-          id: "73ac5260f3a005c0ffb52443d1ebc19de85d6a4e4591474b538971b5d134df9e",
-          index: 1,
-          derivationPath: [
-            "1852H",
-            "1815H",
-            "0H",
-            "1",
-            "46",
-          ],
-        },
-      ],
-      outputs: [
-        {
-          address: "addr1qypq77cn4ugc2tzy5wsna2r6w6fffcc8ygatkz5hm79j2gxss5ftcx6ppfxak3ydjjm06q6kqprfu38fqdc7fr5xqy6sztdpc2",
-          amount: {
-            quantity: 8386484,
-            unit: "lovelaces"
-          },
-          derivationPath: [
-            "1852H",
-            "1815H",
-            "0H",
-            "0",
-            "0",
-          ],
-        },
-      ],
-      certificates: [
-        {
-          certificateType: 'register_reward_account',
-          pool: null,
-          rewardAccountPath: [
-            "1852H",
-            "1815H",
-            "0H",
-            "2",
-            "0",
-          ],
-        },
-        {
-          certificateType: 'join_pool',
-          pool: "pool1qnrqc7zpwye2r9wtkayh2dryvfqs7unp99f2039duljrsaffq5c", // Equivalent to "04c60c78417132a195cbb74975346462410f72612952a7c4ade7e438"
-          rewardAccountPath: [
-            "1852H",
-            "1815H",
-            "0H",
-            "2",
-            "0",
-          ],
-        }
-      ],
-      feeWithDelegation: new BigNumber(0.199371),
-      fee: new BigNumber(0.199371), // 0.7ADA = 18566000000000 || 0.185660ADA = 18566000000000
-    }
-
-
-
     const { inputs, outputs, certificates } = coinSelection;
 
     let totalInputs = 0;
@@ -1060,19 +972,9 @@ export default class HardwareWalletsStore extends Store {
       return prepareLedgerOutput(output);
     });
 
-    // const data = {
-    //   accountAddress: "addr1u8gg2y4urdqs5nwmgjxefdhaqdtqq357gn5sxu0y36rqzdg6kn7p9",
-    //   poolHash: "04c60c78417132a195cbb74975346462410f72612952a7c4ade7e438",
-    //   type: 2,
-    // };
-    // const test = ShelleyTxCert(data);
-    // console.debug('>>> TEST: ', test);
-
     const unsignedTxCerts = [];
     const _certificatesData = map(certificates, async (certificate) => {
-      console.debug('>>> RR CALL');
-      const accountAddress = await this._getRewardAccountAddress("60f8e500da902bc9bee26872d4f233b5824675ba", certificate.rewardAccountPath)
-      console.debug('>>> RR 1: ', accountAddress);
+      const accountAddress = await this._getRewardAccountAddress(walletId, certificate.rewardAccountPath)
       const shelleyTxCert = ShelleyTxCert({
         accountAddress,
         pool: certificate.pool,
@@ -1085,30 +987,9 @@ export default class HardwareWalletsStore extends Store {
     const certificatesData = await Promise.all(_certificatesData);
 
     const fee = totalInputs - totalOutputs;
-    // const fee = 199371 // @TODO - revert
     const ttl = 150000000;
-    // const ttl = 13782048 // @TODO - revert
-    // const certificates = [];
     const withdrawals = [];
     const metadataHashHex = null;
-
-    console.debug('>>> DATA to SIGN: ', {
-      inputs: inputsData,
-      outputs: outputsData,
-      fee: fee.toString(),
-      ttl: ttl.toString(),
-      networkId: HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId,
-      protocolMagic: HW_SHELLEY_CONFIG.NETWORK.MAINNET.protocolMagic,
-      certificates: certificatesData,
-      withdrawals,
-      metadataHashHex,
-    });
-
-    console.debug('>>> CERTS: ', {
-      certificatesFromCoinSelection: certificates,
-      unsignedTxCerts,
-      certificatesData,
-    });
 
     try {
       const signedTransaction = await signTransactionLedgerChannel.request({
@@ -1122,105 +1003,26 @@ export default class HardwareWalletsStore extends Store {
         withdrawals,
         metadataHashHex,
       });
-    console.debug('>>> SIGNED TX: ', signedTransaction);
-    // return;
-
       // Prepare unsigned transaction structure for serialzation
-      // @TODO - remove
       const unsignedTx = prepareTxAux({
         txInputs: unsignedTxInputs,
         txOutputs: unsignedTxOutputs,
         fee,
         ttl,
-        certificates: unsignedTxCerts, // @TODO - prepare unsigned certs
+        certificates: unsignedTxCerts,
         withdrawals,
       });
 
-      console.debug('>>> signedTransaction: ', signedTransaction);
-
-
-      // @TODO - remove
-    // const wt = [
-    //   {
-    //     path: [2147485500, 2147485463, 2147483648, 0, 39],
-    //     witnessSignatureHex: "3db1a6c4b515a94a20af204792430e63848e3b3fa01ba6e454b3dc642fa19a05ddb245e382327d2b3759464742f7bc939210cdc1e26885c4d9506c00f4619804",
-    //   },
-    //   {
-    //     path: [2147485500, 2147485463, 2147483648, 0, 0],
-    //     witnessSignatureHex: "e5864abcdb7d39c8dd281bc8dd02b687f5f53f57975daade930476e7989acf253f9c7479cf643078e1b211abbad2f70cd124a2c4168ffce7a276c37164503107",
-    //   }
-    // ]
-    const testWitnessesSigned = await this.processArray(signedTransaction.witnesses);
-    console.debug('>>> _shelleyWitnesses TEST: ', testWitnessesSigned);
-
-    console.debug('>>> DONE');
-
-    const txWitnesses_test = new Map();
-    if (testWitnessesSigned.length > 0) {
-      txWitnesses_test.set(0, testWitnessesSigned);
-    }
-    console.debug('>>> START ENCODING: ', { unsignedTx, testWitnessesSigned, txWitnesses_test });
-
-
-      const txBody = await prepareBody(unsignedTx, txWitnesses_test);
-      console.debug('>>>> FINAL: ', txBody);
-      // return;
-      console.debug('>>> SIGNED TX: ', signedTransaction);
-
-      // Sign and prepare witnesses
-      const _shelleyWitnesses = [];
-
-      // const _shelleyWitnesses = map(
-      //   signedTransaction.witnesses,
-      //   async (witness) => {
-      //     let xpub;
-      //     try {
-      //       xpub = await this._deriveXpub(witness.path); // @TODO - error is here
-      //       console.debug('>>> DERIVATION xpub: ', xpub);
-      //     } catch (e) {
-      //       console.debug('>>> DERIVATION ERROR: ', e);
-      //       throw e;
-      //     }
-      //     console.debug('>>> xPub: ', xpub);
-      //     const publicKey = xpub.slice(0, 32); // TODO: export from addresses
-      //     console.debug('>>> publicKey: ', publicKey);
-      //     const signature = Buffer.from(witness.witnessSignatureHex, 'hex');
-      //     console.debug('>>> signature: ', signature);
-      //     return ShelleyTxWitnessShelley(publicKey, signature);
-      //   }
-      // );
-
-      // signedTransaction.witnesses.forEach((witness) => {
-      //   console.debug('>>> TOMO - get ShelleyWitness: ', witness);
-      //   _shelleyWitnesses.push(this.ShelleyWitness(witness))
-      // })
-//
-//
-//
-      // const shelleyWitnesses = await Promise.all(_shelleyWitnesses);
-      // console.debug('>>> _shelleyWitnesses: ', shelleyWitnesses);
-      // const txWitnesses = new Map();
-      // if (shelleyWitnesses.length > 0) {
-      //   txWitnesses.set(0, shelleyWitnesses);
-      // }
-//
-      // console.debug('>>> txWitnesses: ', txWitnesses);
-//
-      // // Prepare unsigned transaction structure for serialzation
-      // const txAux = prepareTxAux({
-      //   txInputs: unsignedTxInputs,
-      //   txOutputs: unsignedTxOutputs,
-      //   fee,
-      //   ttl,
-      //   certificates,
-      //   withdrawals,
-      // });
-//
-      // console.debug('>>> txAux: ', txAux);
+      const signedWitnesses = await this._signWitnesses(signedTransaction.witnesses);
+      const txWitnesses = new Map();
+      if (signedWitnesses.length > 0) {
+        txWitnesses.set(0, signedWitnesses);
+      }
 
       // Prepare serialized transaction with unsigned data and signed witnesses
-      // const txBody = await prepareBody(txAux, txWitnesses);
-      console.debug('>>> txBody: ', txBody);
+      const txBody = await prepareBody(unsignedTx, txWitnesses);
+      console.debug('>>>> FINAL: ', txBody);
+
       runInAction('HardwareWalletsStore:: set Transaction verified', () => {
         this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED;
         this.txBody = txBody;
@@ -1253,6 +1055,8 @@ export default class HardwareWalletsStore extends Store {
     const { disconnected, device, id } = hardwareWalletConnectionData;
     const { deviceType } = device;
 
+    console.debug('>>> Initiate Transaction: ', { hardwareWalletConnectionData });
+
     if (disconnected) {
       // Wait for connection to be established and continue to signing process
       try {
@@ -1273,7 +1077,7 @@ export default class HardwareWalletsStore extends Store {
     if (deviceType === DeviceTypes.TREZOR) {
       this._signTransactionTrezor(id);
     } else {
-      this._signTransactionLedger();
+      this._signTransactionLedger(id);
     }
     runInAction('HardwareWalletsStore:: Initiate transaction', () => {
       this.isTransactionInitiated = false;
