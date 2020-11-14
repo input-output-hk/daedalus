@@ -2,7 +2,7 @@
 import { utils, cardano } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { encode } from 'borc';
 import blakejs from 'blakejs';
-import { derivationPathToLedgerPath, derivationPathToStrin, CERTIFICATE_TYPE } from './hardwareWalletUtils';
+import { derivationPathToLedgerPath, derivationPathToString, CERTIFICATE_TYPE } from './hardwareWalletUtils';
 import { deriveXpubChannel } from '../ipc/getHardwareWalletChannel';
 
 // Types
@@ -142,11 +142,21 @@ export const ShelleyTxOutput = (
 
 
 export const ShelleyTxCert = (cert) => {
-  const { type, accountAddress, poolHash } = cert;
+  const { type, accountAddress, pool } = cert;
   function encodeCBOR(encoder) {
     const accountAddressHash = utils.bech32_decodeAddress(accountAddress).slice(1)
-    let hash
-    if (poolHash) hash = Buffer.from(poolHash, 'hex')
+    let hash;
+    let poolHash;
+    // if (poolHash) hash = Buffer.from(poolHash, 'hex')
+    if (pool) {
+      console.debug('>> pool: ', pool);
+      poolHash = utils.buf_to_hex(utils.bech32_decodeAddress(pool))
+      console.debug('>> poolHash: ', poolHash);
+      hash = Buffer.from(poolHash, 'hex')
+      console.debug('>> hash: ', hash);
+
+      console.debug('>>> TEST: ', utils.bech32_decodeAddress(pool));
+    }
     const account = [0, accountAddressHash]
     const encodedCertsTypes = {
       0: [type, account],
@@ -160,7 +170,7 @@ export const ShelleyTxCert = (cert) => {
     address: accountAddress,
     type,
     accountAddress,
-    poolHash,
+    poolHash: pool ? utils.buf_to_hex(utils.bech32_decodeAddress(pool)) : null,
     encodeCBOR,
   }
 };
@@ -168,7 +178,7 @@ export const ShelleyTxCert = (cert) => {
 export const prepareLedgerCertificate = (cert: CoinSelectionCertificate) => {
   return {
     type: CERTIFICATE_TYPE[cert.certificateType],
-    path: derivationPathToString(cert.rewardAccountPath),
+    path: derivationPathToLedgerPath(cert.rewardAccountPath),
     poolKeyHashHex: cert.pool ? utils.buf_to_hex(utils.bech32_decodeAddress(cert.pool)) : null,
   };
 };

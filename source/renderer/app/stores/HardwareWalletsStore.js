@@ -48,6 +48,7 @@ import {
 } from '../../../common/types/hardware-wallets.types';
 import { formattedAmountToLovelace } from '../utils/formatters';
 import { TransactionStates } from '../domains/WalletTransaction';
+import { CERTIFICATE_TYPE } from '../utils/hardwareWalletUtils';
 
 import type { HwDeviceStatus } from '../domains/Wallet';
 import type {
@@ -704,7 +705,11 @@ export default class HardwareWalletsStore extends Store {
     const test = ShelleyTxCert(data);
     console.debug('>>> TEST: ', test);
 
-
+    // ROLES
+    // 0 - address (utxo_external)
+    // 1 - change (utxo_internal)
+    // 2 - stake (mutable_account)
+    // 3 - script (multisig_script)
 
     console.debug('>>> INIT API <<<');
     const inspectedAddress = await this.inspectAddressRequest.execute({
@@ -714,19 +719,81 @@ export default class HardwareWalletsStore extends Store {
 
     const publicKey = await this.getPublicKeyRequest.execute({
       walletId: '60f8e500da902bc9bee26872d4f233b5824675ba',
-      role: 'utxo_internal',
+      role: 'mutable_account',
       index: 0,
     });
 
     console.debug('>> publicKey: ', publicKey);
+    const data1 = {
+      stake: publicKey,
+    };
 
-    const constructedAddress = await this.constructAddressRequest.execute({
-      publicKey,
-    });
+    const constructedAddress = await this.constructAddressRequest.execute({data: data1});
     console.debug('>> constructedAddress: ', constructedAddress);
 
 
+    console.debug('');
+    console.debug('');
+    console.debug('');
 
+
+
+
+    console.debug('>>> INIT API <<<');
+    const publicKey2 = await this.getPublicKeyRequest.execute({
+      walletId: '60f8e500da902bc9bee26872d4f233b5824675ba',
+      role: 'utxo_external',
+      index: 0,
+    });
+
+    console.debug('>> publicKey: ', publicKey2);
+
+    const data2 = {
+      payment: publicKey2,
+    };
+    const constructedAddress2 = await this.constructAddressRequest.execute({data: data2});
+    console.debug('>> constructedAddress: ', constructedAddress2);
+
+
+    console.debug('');
+    console.debug('');
+    console.debug('');
+
+
+    console.debug('>>> INIT API <<<');
+    const publicKey3 = await this.getPublicKeyRequest.execute({
+      walletId: '60f8e500da902bc9bee26872d4f233b5824675ba',
+      role: 'utxo_internal',
+      index: 0,
+    });
+
+    console.debug('>> publicKey: ', publicKey3);
+
+    const data3 = {
+      payment: publicKey3,
+    };
+    const constructedAddress3 = await this.constructAddressRequest.execute({data: data3});
+    console.debug('>> constructedAddress: ', constructedAddress3);
+
+
+    console.debug('');
+    console.debug('');
+    console.debug('');
+
+    console.debug('>>> INIT API <<<');
+    const publicKey4 = await this.getPublicKeyRequest.execute({
+      walletId: '60f8e500da902bc9bee26872d4f233b5824675ba',
+      role: 'mutable_account',
+      index: 0,
+    });
+
+    console.debug('>> publicKey: ', publicKey4);
+
+    const data4 = {
+      payment: publicKey4,
+    };
+    const constructedAddress4 = await this.constructAddressRequest.execute({data: data4});
+    console.debug('>> constructedAddress: ', constructedAddress4);
   }
 
   // Trezor - Shelley only
@@ -844,7 +911,37 @@ export default class HardwareWalletsStore extends Store {
     const signature = Buffer.from(witness.witnessSignatureHex, 'hex');
     console.debug('>>> signature: ', signature);
     return ShelleyTxWitnessShelley(publicKey, signature);
-  }
+  };
+
+  _getRewardAccountAddress = async (walletId: string, path: Array<string>) => {
+    // ROLES
+    // 0 - address (utxo_external)
+    // 1 - change (utxo_internal)
+    // 2 - stake (mutable_account)
+    // 3 - script (multisig_script)
+
+    console.debug('>> RR - _getRewardAccountAddress params: ', {walletId, path});
+
+    const publicKey = await this.getPublicKeyRequest.execute({
+      walletId,
+      role: 'mutable_account',
+      index: 0,
+    });
+
+    console.debug('>> publicKey: ', publicKey);
+    const data = {
+      stake: publicKey,
+    };
+
+    const constructedAddress = await this.constructAddressRequest.execute({ data });
+    console.debug('>> constructedAddress: ', constructedAddress);
+
+    const inspectedAddress = await this.inspectAddressRequest.execute({
+      addressId: constructedAddress.address,
+    });
+    console.debug('>>> INSPECTED ADDR: ', inspectedAddress);
+    return constructedAddress.address;
+  };
 
   // Ledger - Shelley only
   @action _signTransactionLedger = async () => {
@@ -854,6 +951,90 @@ export default class HardwareWalletsStore extends Store {
     });
     // @TODO - once data with CHANGE applied remove recieverAddress from store
     const { coinSelection, recieverAddress } = this.txSignRequest;
+
+    console.debug('>>> coinSelection: ', coinSelection);
+
+
+    const coinSelection22 = {
+      inputs: [
+        {
+          address: "addr1qxa9wgcsld6vyp2f3fwkzmksh5cx3sw6wrnespdjam43x5wss5ftcx6ppfxak3ydjjm06q6kqprfu38fqdc7fr5xqy6se6car9",
+          amount: {
+            quantity: 1000000,
+            unit: "lovelaces"
+          },
+          id: "73ac5260f3a005c0ffb52443d1ebc19de85d6a4e4591474b538971b5d134df9e",
+          index: 0,
+          derivationPath: [
+            "1852H",
+            "1815H",
+            "0H",
+            "0",
+            "6",
+          ],
+        },
+        {
+          address: "addr1q8dz79jhnlrc6lzcglack4d2yd9rfw7fcgraw52c5l3mdrkss5ftcx6ppfxak3ydjjm06q6kqprfu38fqdc7fr5xqy6sehduvt",
+          amount: {
+            quantity: 9585855,
+            unit: "lovelaces"
+          },
+          id: "73ac5260f3a005c0ffb52443d1ebc19de85d6a4e4591474b538971b5d134df9e",
+          index: 1,
+          derivationPath: [
+            "1852H",
+            "1815H",
+            "0H",
+            "1",
+            "46",
+          ],
+        },
+      ],
+      outputs: [
+        {
+          address: "addr1qypq77cn4ugc2tzy5wsna2r6w6fffcc8ygatkz5hm79j2gxss5ftcx6ppfxak3ydjjm06q6kqprfu38fqdc7fr5xqy6sztdpc2",
+          amount: {
+            quantity: 8386484,
+            unit: "lovelaces"
+          },
+          derivationPath: [
+            "1852H",
+            "1815H",
+            "0H",
+            "0",
+            "0",
+          ],
+        },
+      ],
+      certificates: [
+        {
+          certificateType: 'register_reward_account',
+          pool: null,
+          rewardAccountPath: [
+            "1852H",
+            "1815H",
+            "0H",
+            "2",
+            "0",
+          ],
+        },
+        {
+          certificateType: 'join_pool',
+          pool: "pool1qnrqc7zpwye2r9wtkayh2dryvfqs7unp99f2039duljrsaffq5c", // Equivalent to "04c60c78417132a195cbb74975346462410f72612952a7c4ade7e438"
+          rewardAccountPath: [
+            "1852H",
+            "1815H",
+            "0H",
+            "2",
+            "0",
+          ],
+        }
+      ],
+      feeWithDelegation: new BigNumber(0.199371),
+      fee: new BigNumber(0.199371), // 0.7ADA = 18566000000000 || 0.185660ADA = 18566000000000
+    }
+
+
 
     const { inputs, outputs, certificates } = coinSelection;
 
@@ -879,14 +1060,34 @@ export default class HardwareWalletsStore extends Store {
       return prepareLedgerOutput(output);
     });
 
-    const certificatesData = map(certificates, (certificate) =>
-      prepareLedgerCertificate(certificate)
-    );
+    // const data = {
+    //   accountAddress: "addr1u8gg2y4urdqs5nwmgjxefdhaqdtqq357gn5sxu0y36rqzdg6kn7p9",
+    //   poolHash: "04c60c78417132a195cbb74975346462410f72612952a7c4ade7e438",
+    //   type: 2,
+    // };
+    // const test = ShelleyTxCert(data);
+    // console.debug('>>> TEST: ', test);
+
+    const unsignedTxCerts = [];
+    const _certificatesData = map(certificates, async (certificate) => {
+      console.debug('>>> RR CALL');
+      const accountAddress = await this._getRewardAccountAddress("60f8e500da902bc9bee26872d4f233b5824675ba", certificate.rewardAccountPath)
+      console.debug('>>> RR 1: ', accountAddress);
+      const shelleyTxCert = ShelleyTxCert({
+        accountAddress,
+        pool: certificate.pool,
+        type: CERTIFICATE_TYPE[certificate.certificateType],
+      });
+      unsignedTxCerts.push(shelleyTxCert);
+      return prepareLedgerCertificate(certificate);
+    });
+
+    const certificatesData = await Promise.all(_certificatesData);
 
     const fee = totalInputs - totalOutputs;
-    // const fee = 185660 // @TODO - revert
+    // const fee = 199371 // @TODO - revert
     const ttl = 150000000;
-    // const ttl = 13602704 // @TODO - revert
+    // const ttl = 13782048 // @TODO - revert
     // const certificates = [];
     const withdrawals = [];
     const metadataHashHex = null;
@@ -903,6 +1104,12 @@ export default class HardwareWalletsStore extends Store {
       metadataHashHex,
     });
 
+    console.debug('>>> CERTS: ', {
+      certificatesFromCoinSelection: certificates,
+      unsignedTxCerts,
+      certificatesData,
+    });
+
     try {
       const signedTransaction = await signTransactionLedgerChannel.request({
         inputs: inputsData,
@@ -915,6 +1122,8 @@ export default class HardwareWalletsStore extends Store {
         withdrawals,
         metadataHashHex,
       });
+    console.debug('>>> SIGNED TX: ', signedTransaction);
+    // return;
 
       // Prepare unsigned transaction structure for serialzation
       // @TODO - remove
@@ -923,7 +1132,7 @@ export default class HardwareWalletsStore extends Store {
         txOutputs: unsignedTxOutputs,
         fee,
         ttl,
-        certificates: certificatesData, // @TODO - prepare unsigned certs
+        certificates: unsignedTxCerts, // @TODO - prepare unsigned certs
         withdrawals,
       });
 

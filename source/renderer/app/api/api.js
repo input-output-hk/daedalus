@@ -947,10 +947,8 @@ export default class AdaApi {
     logger.debug('AdaApi::constructAddress called', {
       parameters: filterLogData(request),
     });
-    const { publicKey } = request;
-    const data = {
-      stake: publicKey,
-    };
+    const { data } = request;
+    console.debug('>>> SEND DATA: ', data)
     try {
       const response = await constructAddress(this.config, {
         data
