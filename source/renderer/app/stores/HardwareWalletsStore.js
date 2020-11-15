@@ -72,7 +72,6 @@ import type {
 } from '../../../common/types/hardware-wallets.types';
 
 export type TxSignRequestTypes = {
-  recieverAddress: ?string,
   coinSelection: CoinSelectionsResponse,
 };
 
@@ -238,8 +237,6 @@ export default class HardwareWalletsStore extends Store {
     const isDelegationTransaction = get(params, 'isDelegationTransaction');
     const wallet = this.stores.wallets.active;
 
-    console.debug('>>> SEND MONEY: ', params);
-
     if (!wallet) {
       throw new Error('Active wallet required before sending.');
     }
@@ -250,7 +247,7 @@ export default class HardwareWalletsStore extends Store {
       const transaction = await this.sendMoneyRequest.execute({
         signedTransactionBlob: this.txBody,
       });
-      console.debug('>>> SEND MONEY - DONE: ', transaction);
+      console.debug('>>> SEND MONEY - DONE: ', { transaction, params });
 
       if (!isDelegationTransaction) {
         // Start interval to check transaction state every second
@@ -335,7 +332,6 @@ export default class HardwareWalletsStore extends Store {
       });
       runInAction('HardwareWalletsStore:: set coin selections', () => {
         this.txSignRequest = {
-          recieverAddress: address,
           coinSelection,
         };
       });
@@ -368,7 +364,6 @@ export default class HardwareWalletsStore extends Store {
       });
       runInAction('HardwareWalletsStore:: set coin selections', () => {
         this.txSignRequest = {
-          recieverAddress: null,
           coinSelection,
         };
       });
@@ -816,31 +811,22 @@ export default class HardwareWalletsStore extends Store {
 
   // Ledger - Shelley only
   @action _signTransactionLedger = async (walletId: string) => {
-    console.debug('>>> _signTransactionLedger: ', { walletId });
     runInAction('HardwareWalletsStore:: set Transaction verifying', () => {
       this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION;
     });
-    // @TODO - once data with CHANGE applied remove recieverAddress from store
-    const { coinSelection, recieverAddress } = this.txSignRequest;
+    const { coinSelection } = this.txSignRequest;
     const { inputs, outputs, certificates, fee: flatFee } = coinSelection;
+    console.debug('>>> _signTransactionLedger: ', { walletId, inputs, outputs, certificates, flatFee });
 
-    let totalInputs = 0;
     const unsignedTxInputs = [];
     const inputsData = map(inputs, (input) => {
-      totalInputs += input.amount.quantity;
       const shelleyTxInput = ShelleyTxInputFromUtxo(input);
       unsignedTxInputs.push(shelleyTxInput);
       return prepareLedgerInput(input);
     });
 
-    let totalOutputs = 0;
     const unsignedTxOutputs = [];
     const outputsData = map(outputs, (output) => {
-      totalOutputs += output.amount.quantity;
-      const isChange = output.address !== recieverAddress;
-      const addressIndex = this.stores.addresses.getAddressIndex(
-        output.address
-      );
       const shelleyTxOutput = ShelleyTxOutput(output);
       unsignedTxOutputs.push(shelleyTxOutput);
       return prepareLedgerOutput(output);
@@ -864,19 +850,6 @@ export default class HardwareWalletsStore extends Store {
     const ttl = 150000000;
     const withdrawals = [];
     const metadataHashHex = null;
-
-    console.debug('>>> DATA PREPARED FOR SIGNING: ', {
-      inputs: inputsData,
-      outputs: outputsData,
-      original_fee: fee,
-      fee: fee.toString(),
-      ttl: ttl.toString(),
-      networkId: HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId,
-      protocolMagic: HW_SHELLEY_CONFIG.NETWORK.MAINNET.protocolMagic,
-      certificates: certificatesData,
-      withdrawals,
-      metadataHashHex,
-    });
 
     try {
       const signedTransaction = await signTransactionLedgerChannel.request({
