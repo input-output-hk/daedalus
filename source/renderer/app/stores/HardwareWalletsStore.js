@@ -822,7 +822,7 @@ export default class HardwareWalletsStore extends Store {
     });
     // @TODO - once data with CHANGE applied remove recieverAddress from store
     const { coinSelection, recieverAddress } = this.txSignRequest;
-    const { inputs, outputs, certificates } = coinSelection;
+    const { inputs, outputs, certificates, fee: flatFee } = coinSelection;
 
     let totalInputs = 0;
     const unsignedTxInputs = [];
@@ -860,10 +860,23 @@ export default class HardwareWalletsStore extends Store {
 
     const certificatesData = await Promise.all(_certificatesData);
 
-    const fee = totalInputs - totalOutputs;
+    const fee = formattedAmountToLovelace(flatFee.toString());
     const ttl = 150000000;
     const withdrawals = [];
     const metadataHashHex = null;
+
+    console.debug('>>> DATA PREPARED FOR SIGNING: ', {
+      inputs: inputsData,
+      outputs: outputsData,
+      original_fee: fee,
+      fee: fee.toString(),
+      ttl: ttl.toString(),
+      networkId: HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId,
+      protocolMagic: HW_SHELLEY_CONFIG.NETWORK.MAINNET.protocolMagic,
+      certificates: certificatesData,
+      withdrawals,
+      metadataHashHex,
+    });
 
     try {
       const signedTransaction = await signTransactionLedgerChannel.request({
