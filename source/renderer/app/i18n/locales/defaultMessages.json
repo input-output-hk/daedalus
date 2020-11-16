@@ -13319,17 +13319,31 @@
         }
       },
       {
+        "defaultMessage": "!!!Address: <strong>{walletAddress}</strong> PDF successfully downloaded",
+        "description": "Notification for the wallet address PDF download success in the Wallet Receive page.",
+        "end": {
+          "column": 3,
+          "line": 56
+        },
+        "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
+        "id": "notification.downloadAddressPDFSuccess",
+        "start": {
+          "column": 29,
+          "line": 50
+        }
+      },
+      {
         "defaultMessage": "!!!Daedalus state directory copied to clipboard",
         "description": "Notification for the state directory copy success in the Diagnostics page.",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 62
         },
         "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
         "id": "notification.copyStateDirectoryPath",
         "start": {
           "column": 26,
-          "line": 50
+          "line": 57
         }
       }
     ],
@@ -13518,6 +13532,25 @@
       }
     ],
     "path": "source/renderer/app/containers/staking/StakingRewardsPage.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Address",
+        "description": "\"Address\" word in the Address PDF export",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "source/renderer/app/containers/wallet/WalletReceivePage.js",
+        "id": "wallet.receive.pdf.filenamePrefix",
+        "start": {
+          "column": 11,
+          "line": 17
+        }
+      }
+    ],
+    "path": "source/renderer/app/containers/wallet/WalletReceivePage.json"
   },
   {
     "descriptors": [
