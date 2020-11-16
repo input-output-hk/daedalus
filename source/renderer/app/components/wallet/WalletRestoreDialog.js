@@ -36,7 +36,6 @@ import {
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
   YOROI_WALLET_RECOVERY_PHRASE_WORD_COUNT,
 } from '../../config/cryptoConfig';
-import tooltipStyles from '../widgets/forms/InlineEditingDropdown-tooltip.scss';
 import infoIconInline from '../../assets/images/info-icon.inline.svg';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 
@@ -614,7 +613,6 @@ export default class WalletRestoreDialog extends Component<Props, State> {
                 {...spendingPasswordField.bind()}
               />
               <PopOver
-                themeOverrides={tooltipStyles}
                 content={<FormattedHTMLMessage {...messages.passwordTooltip} />}
                 key="tooltip"
                 contentClassName={styles.tooltip}

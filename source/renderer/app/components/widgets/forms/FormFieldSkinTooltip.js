@@ -6,7 +6,6 @@ import { omit } from 'lodash';
 import classnames from 'classnames';
 import SVGInline from 'react-svg-inline';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
-import tooltipStyles from './FormFieldSkinTooltip-tooltip.scss';
 
 import exclamationPointIcon from '../../../assets/images/exclamation-point.inline.svg';
 import styles from './FormFieldSkinTooltip.scss';
@@ -44,7 +43,6 @@ export const FormFieldSkin = (props: Props) => (
         {props.label}
         {props.error && (
           <PopOver
-            themeOverrides={tooltipStyles}
             content={props.error}
             key="tooltip"
             contentClassName={styles.tooltip}

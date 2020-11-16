@@ -20,7 +20,6 @@ import { PasswordInput } from '../../widgets/forms/PasswordInput';
 import styles from './ChangeSpendingPasswordDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import { submitOnEnter } from '../../../utils/form';
-import tooltipStyles from '../../widgets/forms/InlineEditingDropdown-tooltip.scss';
 import infoIconInline from '../../../assets/images/info-icon.inline.svg';
 
 const messages = defineMessages({
@@ -291,7 +290,6 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
                 onKeyPress={this.handleSubmitOnEnter}
               />
               <PopOver
-                themeOverrides={tooltipStyles}
                 content={<FormattedHTMLMessage {...messages.passwordTooltip} />}
                 key="tooltip"
                 contentClassName={tooltipClasses}
@@ -309,7 +307,6 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
               />
               {!isSpendingPasswordSet && (
                 <PopOver
-                  themeOverrides={tooltipStyles}
                   content={<FormattedHTMLMessage {...messages.passwordTooltip} />}
                   key="tooltip"
                   contentClassName={tooltipClasses}

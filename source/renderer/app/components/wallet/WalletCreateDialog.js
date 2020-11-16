@@ -24,7 +24,6 @@ import { PasswordInput } from '../widgets/forms/PasswordInput';
 import styles from './WalletCreateDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { submitOnEnter } from '../../utils/form';
-import tooltipStyles from '../widgets/forms/InlineEditingDropdown-tooltip.scss';
 import infoIconInline from '../../assets/images/info-icon.inline.svg';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 
@@ -276,7 +275,6 @@ export default class WalletCreateDialog extends Component<Props, State> {
                 {...spendingPasswordField.bind()}
               />
               <PopOver
-                themeOverrides={tooltipStyles}
                 content={<FormattedHTMLMessage {...messages.passwordTooltip} />}
                 key="tooltip"
                 contentClassName={tooltipClasses}

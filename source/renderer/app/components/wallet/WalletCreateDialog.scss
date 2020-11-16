@@ -51,11 +51,6 @@
         }
       }
 
-      :global
-        .WalletCreateDialog_tooltip.jpLangTooltipIcon.SimpleTooltip_root.TooltipOverrides_root.InlineEditingDropdown-tooltip_root.SimpleTooltip_isShowingOnHover {
-        left: -40px !important;
-      }
-
       :global .InlineEditingDropdown-tooltip_bubble {
         border-radius: 10px;
         height: 87px;

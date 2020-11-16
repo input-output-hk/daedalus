@@ -18,9 +18,6 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import styles from './TooltipPool.scss';
-import experimentalTooltipStyles from './TooltipPool-experimental-tooltip.scss';
-import fieldLabelTooltipStyles from './TooltipPool-fieldLabel-tooltip.scss';
-import isTooltipStyles from './TooltipPool-copyId-tooltip.scss';
 import StakePool from '../../../domains/StakePool';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
 import noDataDashSmallImage from '../../../assets/images/no-data-dash-small.inline.svg';
@@ -556,7 +553,6 @@ export default class TooltipPool extends Component<Props, State> {
               <PopOver
                 contentClassName={styles.experimentalTooltip}
                 key="experimentalTooltip"
-                themeOverrides={experimentalTooltipStyles}
                 content={intl.formatMessage(messages.experimentalTooltipLabel)}
               >
                 <button className={styles.iconButton}>
@@ -658,7 +654,6 @@ export default class TooltipPool extends Component<Props, State> {
                 </div>
                 <PopOver
                   key={field.key}
-                  themeOverrides={fieldLabelTooltipStyles}
                   content={
                     <div className={styles.tooltipWithHTMLContent}>
                       <FormattedHTMLMessage
@@ -759,27 +754,25 @@ export default class TooltipPool extends Component<Props, State> {
               />
             </div>
           )}
-          <div
-            className={styles.id}
-            onMouseOut={this.onIdMouseOut}
-            onBlur={() => {}}
+          <PopOver
+            key="id"
+            content={intl.formatMessage(messages.copyIdTooltipLabel)}
           >
-            <p className={styles.ellipsisContent}>{ellipsis(id, 18, 18)}</p>
-            <CopyToClipboard text={id} onCopy={this.onCopyId}>
-              <PopOver
-                contentClassName={styles.idTooltip}
-                key="id"
-                themeOverrides={isTooltipStyles}
-                content={intl.formatMessage(messages.copyIdTooltipLabel)}
-              >
+            <div
+              className={styles.id}
+              onMouseOut={this.onIdMouseOut}
+              onBlur={() => {}}
+            >
+              <p className={styles.ellipsisContent}>{ellipsis(id, 18, 18)}</p>
+              <CopyToClipboard text={id} onCopy={this.onCopyId}>
                 <div className={hoverContentClassnames}>
                   <p className={styles.hoverContentBackground}>
                     {id} <SVGInline svg={idCopyIcon} />
                   </p>
                 </div>
-              </PopOver>
-            </CopyToClipboard>
-          </div>
+              </CopyToClipboard>
+            </div>
+          </PopOver>
           <div className={styles.description}>{description}</div>
           <Link
             onClick={() => onOpenExternalLink(homepage)}

@@ -9,7 +9,6 @@ import classnames from 'classnames';
 import { Select } from 'react-polymorph/lib/components/Select';
 import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import styles from './InlineEditingDropdown.scss';
-import tooltipStyles from './InlineEditingDropdown-tooltip.scss';
 import questionMarkIcon from '../../../assets/images/question-mark.inline.svg';
 
 const messages = defineMessages({
@@ -66,7 +65,6 @@ export default class InlineEditingDropdown extends Component<Props> {
       label,
       !!tooltip && (
         <PopOver
-          themeOverrides={tooltipStyles}
           content={tooltip}
           key="tooltip"
           contentClassName={styles.tooltip}

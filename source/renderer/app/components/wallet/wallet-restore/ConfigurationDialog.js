@@ -22,7 +22,6 @@ import { submitOnEnter } from '../../../utils/form';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
-import tooltipStyles from '../../widgets/forms/InlineEditingDropdown-tooltip.scss';
 import infoIconInline from '../../../assets/images/info-icon.inline.svg';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 
@@ -287,7 +286,6 @@ export default class ConfigurationDialog extends Component<Props> {
                   {...spendingPasswordField.bind()}
                 />
                 <PopOver
-                  themeOverrides={tooltipStyles}
                   content={<FormattedHTMLMessage {...messages.passwordTooltip} />}
                   key="tooltip"
                   contentClassName={tooltipClasses}

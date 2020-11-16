@@ -12,7 +12,6 @@ import { getColorFromRange } from '../../../utils/colors';
 import adaIcon from '../../../assets/images/ada-symbol.inline.svg';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import styles from './WalletRow.scss';
-import tooltipStyles from './WalletRowTooltip.scss';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import arrow from '../../../assets/images/collapse-arrow.inline.svg';
 
@@ -327,7 +326,6 @@ export default class WalletRow extends Component<Props> {
             </Fragment>
           ) : (
             <PopOver
-              themeOverrides={tooltipStyles}
               content={intl.formatMessage(messages.syncingTooltipLabel, {
                 syncingProgress,
               })}
