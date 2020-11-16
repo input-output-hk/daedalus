@@ -305,7 +305,7 @@ export default class LocalStorageApi {
   unsetHardwareWalletLocalData = (walletId: string): Promise<void> =>
     LocalStorageApi.unset(keys.HARDWARE_WALLETS, walletId);
 
-  unsetHardwareWalletLocalDataAll = (): Promise<void> =>
+  unsetHardwareWalletLocalDataAll = async (): Promise<void> =>
     LocalStorageApi.unset(keys.HARDWARE_WALLETS);
 
   // Recognized Hardware wallet devices
@@ -346,7 +346,7 @@ export default class LocalStorageApi {
   unsetHardwareWalletDevice = (deviceId: string): Promise<void> =>
     LocalStorageApi.unset(keys.HARDWARE_WALLET_DEVICES, deviceId);
 
-  unsetHardwareWalletDevicesAll = (): Promise<void> =>
+  unsetHardwareWalletDevicesAll = async (): Promise<void> =>
     LocalStorageApi.unset(keys.HARDWARE_WALLET_DEVICES);
 
   reset = async () => {

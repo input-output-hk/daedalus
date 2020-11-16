@@ -132,6 +132,10 @@ export default class HardwareWalletsStore extends Store {
     this.api.localStorage.unsetHardwareWalletDevice
   );
   @observable
+  unsetHardwareWalletDevicesAllRequest: Request<void> = new Request(
+    this.api.localStorage.unsetHardwareWalletDevicesAll
+  );
+  @observable
   unsetHardwareWalletLocalDataAllRequest: Request<HardwareWalletLocalData> = new Request(
     this.api.localStorage.unsetHardwareWalletLocalDataAll
   );
@@ -199,6 +203,7 @@ export default class HardwareWalletsStore extends Store {
 
     // Set all logical HW into disconnected state
     map(this.hardwareWalletsConnectionData, async (connectedWallet) => {
+      console.debug('>>> SET _setHardwareWalletLocalData: ', connectedWallet);
       await this._setHardwareWalletLocalData({
         walletId: connectedWallet.id,
         data: {
@@ -629,6 +634,7 @@ export default class HardwareWalletsStore extends Store {
       // Check if public key matches already restored hardware wallet public key
       if (recognizedWallet) {
         console.debug('>>> I have recognized wallet: ', {recognizedWallet});
+        console.debug('>>> SET 2 _setHardwareWalletLocalData: ', recognizedWallet);
         this._setHardwareWalletLocalData({
           walletId: recognizedWallet.id,
           data: {
@@ -1056,6 +1062,7 @@ export default class HardwareWalletsStore extends Store {
 
     if (recognizedPairedHardwareWallet) {
       // Change software wallet status paired with device
+      console.debug('>>> SET 3 _setHardwareWalletLocalData: ', recognizedPairedHardwareWallet);
       await this._setHardwareWalletLocalData({
         walletId: recognizedPairedHardwareWallet.id,
         data: {
@@ -1122,8 +1129,8 @@ export default class HardwareWalletsStore extends Store {
     this.isListeningForDevice = false;
   };
 
-  @action _refreshHardwareWalletsLocalData = () => {
-    this.hardwareWalletsLocalDataRequest.execute();
+  @action _refreshHardwareWalletsLocalData = async () => {
+    await this.hardwareWalletsLocalDataRequest.execute();
   };
 
   @action _refreshHardwareWalletDevices = async () => {
@@ -1168,9 +1175,12 @@ export default class HardwareWalletsStore extends Store {
     walletId,
     data,
   }: SetHardwareWalletLocalDataRequestType) => {
-    await this.setHardwareWalletLocalDataRequest.execute(walletId, data);
-    this._refreshHardwareWalletsLocalData();
-    this.stores.wallets.refreshWalletsData();
+    console.debug('>>> CALL SET - _setHardwareWalletLocalData METHOD: ', walletId)
+    if (walletId) {
+      await this.setHardwareWalletLocalDataRequest.execute(walletId, data);
+      this._refreshHardwareWalletsLocalData();
+      this.stores.wallets.refreshWalletsData();
+    }
   };
 
   _unsetHardwareWalletLocalData = async ({
@@ -1178,6 +1188,7 @@ export default class HardwareWalletsStore extends Store {
   }: {
     walletId: string,
   }) => {
+    console.debug('>>> _unsetHardwareWalletLocalData');
     await this.unsetHardwareWalletLocalDataRequest.execute(walletId);
 
     const pairedDevice = find(
@@ -1215,6 +1226,22 @@ export default class HardwareWalletsStore extends Store {
     }
     this._refreshHardwareWalletDevices();
   };
+
+  _resetHardwareWallets = async () => {
+    if (global.environment.isDev) {
+      await Promise.all(
+        this.stores.wallets.all.map(async wallet => {
+          if (wallet.isHardwareWallet) {
+            return await this.stores.wallets._deleteWallet({ walletId: wallet.id, isLegacy: wallet.isLegacy  })
+          }
+        })
+      );
+      await this.unsetHardwareWalletDevicesAllRequest.execute();
+      await this.unsetHardwareWalletLocalDataAllRequest.execute();
+      await this._refreshHardwareWalletsLocalData();
+      await this._refreshHardwareWalletDevices();
+    }
+  }
 
   stopCardanoAdaAppFetchPoller = () => {
     if (this.cardanoAdaAppPollingInterval) {
