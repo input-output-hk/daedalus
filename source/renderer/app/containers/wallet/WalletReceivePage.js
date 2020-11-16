@@ -1,6 +1,7 @@
 // @flow
 import React, { Component, Fragment } from 'react';
 import path from 'path';
+import { defineMessages, intlShape } from 'react-intl';
 import { observer, inject } from 'mobx-react';
 import { showSaveDialogChannel } from '../../ipc/show-file-dialog-channels';
 import WalletReceiveRandom from '../../components/wallet/receive/WalletReceiveRandom';
@@ -12,6 +13,14 @@ import WalletAddress from '../../domains/WalletAddress';
 import { generateFileNameWithTimestamp } from '../../../../common/utils/files';
 import { ellipsis } from '../../utils/strings';
 
+const messages = defineMessages({
+  address: {
+    id: 'wallet.receive.pdf.filenamePrefix',
+    defaultMessage: '!!!Address',
+    description: '"Address" word in the Address PDF export',
+  },
+});
+
 type Props = InjectedProps;
 
 type State = {
@@ -22,6 +31,10 @@ type State = {
 @observer
 export default class WalletReceivePage extends Component<Props, State> {
   static defaultProps = { actions: null, stores: null };
+
+  static contextTypes = {
+    intl: intlShape.isRequired,
+  };
 
   state = {
     addressToShare: null,
@@ -60,9 +73,16 @@ export default class WalletReceivePage extends Component<Props, State> {
 
   handleDownloadPDF = async (note: string) => {
     const { addressToShare } = this.state;
+    const { activeWallet } = this;
+    const { intl } = this.context;
+    if (!activeWallet) return;
+
+    const prefix = `${intl.formatMessage(messages.address)}-${
+      activeWallet.name
+    }`;
 
     const name = generateFileNameWithTimestamp({
-      prefix: 'daedalus-cardano-ada-address',
+      prefix,
       extension: '',
       isUTC: false,
     });
