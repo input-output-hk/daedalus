@@ -192,6 +192,7 @@
   "noDiskSpace.error.overlayTitle": "ハードディスクの空き容量が不足しているためDaedalusを作動できません",
   "notification.copyAddress": "アドレス：<strong>{address}</strong>をクリップボードにコピーしました",
   "notification.copyStateDirectoryPath": "Daedalusステータスディレクトリーをクリップボードにコピーしました",
+  "notification.downloadAddressPDFSuccess": "アドレス：<strong></strong>{walletAddress}<strong></strong> PDFをダウンロードしました",
   "notification.downloadLogsProgress": "ダウンロード用のログを準備しています",
   "notification.downloadLogsSuccess": "ログをダウンロードしました",
   "notification.downloadRewardsCSVSuccess": "CSVファイルのダウンロードが完了しました",

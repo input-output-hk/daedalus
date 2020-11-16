@@ -47,6 +47,13 @@ const messages = defineMessages({
     description:
       'Notification for the wallet address copy success in the Wallet Receive page.',
   },
+  downloadAddressPDFSuccess: {
+    id: 'notification.downloadAddressPDFSuccess',
+    defaultMessage:
+      '!!!Address: <strong>{walletAddress}</strong> PDF successfully downloaded',
+    description:
+      'Notification for the wallet address PDF download success in the Wallet Receive page.',
+  },
   copyStateDirectoryPath: {
     id: 'notification.copyStateDirectoryPath',
     defaultMessage: '!!!Daedalus state directory copied to clipboard',
@@ -92,6 +99,12 @@ export default class NotificationsContainer extends Component<InjectedProps> {
       actionToListenAndOpen: this.props.actions.wallets.copyAddress,
     },
     {
+      id: 'downloadAddressPDFSuccess',
+      actionToListenAndOpen: this.props.actions.wallets
+        .generateAddressPDFSuccess,
+      actionToListenAndClose: this.props.actions.wallets.generateAddressPDF,
+    },
+    {
       id: 'copyStateDirectoryPath',
       actionToListenAndOpen: this.props.actions.networkStatus
         .copyStateDirectoryPath,
@@ -126,7 +139,6 @@ export default class NotificationsContainer extends Component<InjectedProps> {
     const { stores, actions } = this.props;
     const { closeNotification } = actions.notifications;
     const { activeNotifications } = stores.uiNotifications;
-    Object.keys(activeNotifications);
     return (
       <div>
         {this.notificationsConfig.map(({ id }: NotificationConfig) => {

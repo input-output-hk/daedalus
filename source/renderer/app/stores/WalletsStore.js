@@ -17,6 +17,7 @@ import { buildRoute, matchRoute } from '../utils/routing';
 import { logger } from '../utils/logging';
 import { ROUTES } from '../routes-config';
 import { formattedWalletAmount } from '../utils/formatters';
+import { ellipsis } from '../utils/strings';
 import {
   WalletPaperWalletOpenPdfError,
   WalletRewardsOpenCsvError,
@@ -1201,6 +1202,8 @@ export default class WalletsStore extends Store {
         isMainnet,
         intl,
       });
+      const walletAddress = ellipsis(address, 15, 15);
+      this.actions.wallets.generateAddressPDFSuccess.trigger({ walletAddress });
     } catch (error) {
       throw new Error(error);
     }

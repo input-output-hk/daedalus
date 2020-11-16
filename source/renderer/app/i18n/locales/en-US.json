@@ -192,6 +192,7 @@
   "noDiskSpace.error.overlayTitle": "Daedalus requires more hard drive space",
   "notification.copyAddress": "Address: <strong>{address}</strong> copied to clipboard",
   "notification.copyStateDirectoryPath": "Daedalus state directory copied to clipboard",
+  "notification.downloadAddressPDFSuccess": "Address: <strong>{walletAddress}</strong> PDF successfully downloaded",
   "notification.downloadLogsProgress": "Preparing logs for download",
   "notification.downloadLogsSuccess": "Logs successfully downloaded",
   "notification.downloadRewardsCSVSuccess": "CSV file successfully downloaded",

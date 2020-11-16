@@ -7,6 +7,7 @@ export type NotificationId =
   | 'downloadRewardsCSVSuccess'
   | 'downloadTransactionsCSVSuccess'
   | 'copyAddress'
+  | 'downloadAddressPDF'
   | 'copyStateDirectoryPath';
 
 export type NotificationConfig = {
