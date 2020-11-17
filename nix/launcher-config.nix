@@ -23,9 +23,9 @@
 let
   clusterOverrides = {
     mainnet_catalyst = {
-      cardanoEnv = cardanoLib.environments.mainnet;
-      cluster = "mainnet";
-      networkName = "mainnet";
+      cardanoEnv = cardanoLib.environments.testnet;
+      cluster = "testnet";
+      networkName = "testnet";
     };
     mainnet_flight = {
       cardanoEnv = cardanoLib.environments.mainnet;
