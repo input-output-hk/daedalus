@@ -3,6 +3,7 @@ $bg0: rgba(0, 0, 0, 0);
 
 .component {
   box-sizing: border-box;
+  cursor: pointer;
   display: flex;
   justify-content: space-between;
   padding: 10.5px 0;
@@ -16,9 +17,15 @@ $bg0: rgba(0, 0, 0, 0);
       opacity: 0.2;
     }
   }
+  &:hover {
+    :global {
+      .AddressActions_shareAddressButton {
+        opacity: 1;
+      }
+    }
+  }
 }
 .addressId {
-  cursor: default;
   display: flex;
   flex-direction: row;
   flex-grow: 1;

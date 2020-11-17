@@ -57,7 +57,12 @@ export default class AddressSequential extends Component<Props> {
     ]);
     const addressIdClasses = classnames([styles.addressId]);
     return (
-      <div className={addressClasses}>
+      <div
+        className={addressClasses}
+        onClick={() => onShareAddress(address)}
+        role="link"
+        aria-hidden
+      >
         <div
           className={addressIdClasses}
           ref={(ref) => {

@@ -45,6 +45,8 @@
 .shareAddressButton {
   cursor: pointer;
   line-height: 1.36;
+  opacity: 0.4;
+  transition: opacity 0.25s;
   white-space: nowrap;
 }
 .shareIcon {
