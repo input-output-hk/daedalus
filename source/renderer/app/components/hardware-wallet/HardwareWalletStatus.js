@@ -20,6 +20,12 @@ const messages = defineMessages({
     description:
       '"Connect your device and enter your PIN to unlock it" device state',
   },
+  connecting_failed: {
+    id: 'wallet.hardware.deviceStatus.connecting.failed',
+    defaultMessage: '!!!Connecting failed',
+    description:
+      '"Connect failed" device state',
+  },
   connecting_known: {
     id: 'wallet.hardware.deviceStatus.connecting.known',
     defaultMessage: '!!!Connect the "{walletName}" device',
@@ -138,6 +144,7 @@ export default class HardwareWalletStatus extends Component<Props> {
 
     const hasErrored =
       hwDeviceStatus === HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED ||
+      hwDeviceStatus === HwDeviceStatuses.CONNECTING_FAILED ||
       hwDeviceStatus === HwDeviceStatuses.TREZOR_BRIDGE_FAILURE ||
       hwDeviceStatus === HwDeviceStatuses.WRONG_FIRMWARE ||
       hwDeviceStatus === HwDeviceStatuses.UNSUPPORTED_DEVICE ||
@@ -208,7 +215,7 @@ export default class HardwareWalletStatus extends Component<Props> {
             <SVGInline svg={clearIcon} className={styles.clearIcon} />
           )}
         </div>
-        {hwDeviceStatus === HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED && (
+        {(hwDeviceStatus === HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED || hwDeviceStatus === HwDeviceStatuses.CONNECTING_FAILED) && (
           <div className={styles.errorText}>
             {intl.formatMessage(messages.exportingPublicKeyError)}
           </div>

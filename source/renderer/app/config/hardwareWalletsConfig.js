@@ -59,3 +59,5 @@ export const isLedgerEnabled = true;
 
 export const isHardwareWalletSupportEnabled =
   isMainnet && (isTrezorEnabled || isLedgerEnabled);
+
+export const isHardwareWalletIndicatorEnabled = false;

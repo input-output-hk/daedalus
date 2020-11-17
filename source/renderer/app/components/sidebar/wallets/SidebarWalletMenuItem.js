@@ -8,6 +8,7 @@ import LegacyBadge, {
 } from '../../notifications/LegacyBadge';
 import ProgressBar from '../../widgets/ProgressBar';
 import styles from './SidebarWalletMenuItem.scss';
+import { isHardwareWalletIndicatorEnabled } from '../../../config/hardwareWalletsConfig';
 import hardwareWalletsIcon from '../../../assets/images/hardware-wallet/connect-ic.inline.svg';
 
 type Props = {
@@ -61,7 +62,7 @@ export default class SidebarWalletMenuItem extends Component<Props> {
 
     const hwIconStyles = classNames([
       styles.hardwareWalletsIcon,
-      isHardwareWallet && isHardwareWalletDisconnected
+      (isHardwareWallet && isHardwareWalletDisconnected && isHardwareWalletIndicatorEnabled)
         ? styles.disconnected
         : styles.connected,
     ]);
