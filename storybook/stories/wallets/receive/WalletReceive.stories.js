@@ -78,6 +78,7 @@ storiesOf('Wallets|Receive', module)
             address={generateAddress()}
             onCopyAddress={action('onCopyAddress')}
             onDownloadPDF={action('onDownloadPDF')}
+            onSaveQRCodeImage={action('onSaveQRCodeImage')}
             onClose={action('onClose')}
           />
         )}

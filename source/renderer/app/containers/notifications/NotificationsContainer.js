@@ -54,6 +54,13 @@ const messages = defineMessages({
     description:
       'Notification for the wallet address PDF download success in the Wallet Receive page.',
   },
+  downloadQRCodeImageSuccess: {
+    id: 'notification.downloadQRCodeImageSuccess',
+    defaultMessage:
+      '!!!Address: <strong>{walletAddress}</strong> QR code image successfully downloaded',
+    description:
+      'Notification for the wallet address PDF download success in the Wallet Receive page.',
+  },
   copyStateDirectoryPath: {
     id: 'notification.copyStateDirectoryPath',
     defaultMessage: '!!!Daedalus state directory copied to clipboard',
@@ -103,6 +110,11 @@ export default class NotificationsContainer extends Component<InjectedProps> {
       actionToListenAndOpen: this.props.actions.wallets
         .generateAddressPDFSuccess,
       actionToListenAndClose: this.props.actions.wallets.generateAddressPDF,
+    },
+    {
+      id: 'downloadQRCodeImageSuccess',
+      actionToListenAndOpen: this.props.actions.wallets.saveQRCodeImageSuccess,
+      actionToListenAndClose: this.props.actions.wallets.saveQRCodeImage,
     },
     {
       id: 'copyStateDirectoryPath',

@@ -29,7 +29,7 @@ const messages = defineMessages({
   },
   showUsedLabel: {
     id: 'wallet.receive.page.showUsedLabel',
-    defaultMessage: '!!!show used',
+    defaultMessage: '!!!Show used',
     description:
       'Label for "show used" wallet addresses link on the wallet "Receive page"',
   },

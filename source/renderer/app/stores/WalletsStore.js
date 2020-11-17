@@ -43,7 +43,8 @@ import type {
   TransferFundsCalculateFeeRequest,
   TransferFundsRequest,
 } from '../api/wallets/types';
-import { introspectAddressChannel } from '../ipc/introspect-address.js';
+import { introspectAddressChannel } from '../ipc/introspect-address';
+import { saveQRCodeImageChannel } from '../ipc/saveQRCodeImageChannel';
 import type { AddressStyle } from '../../../common/types/address-introspection.types';
 import {
   TESTNET_MAGIC,
@@ -243,6 +244,7 @@ export default class WalletsStore extends Store {
 
     walletsActions.generateCertificate.listen(this._generateCertificate);
     walletsActions.generateAddressPDF.listen(this._generateAddressPDF);
+    walletsActions.saveQRCodeImage.listen(this._saveQRCodeImage);
     walletsActions.updateCertificateStep.listen(this._updateCertificateStep);
     walletsActions.closeCertificateGeneration.listen(
       this._closeCertificateGeneration
@@ -1175,12 +1177,12 @@ export default class WalletsStore extends Store {
   };
 
   _generateAddressPDF = async ({
-    address,
     note,
+    address,
     filePath,
   }: {
-    address: string,
     note: string,
+    address: string,
     filePath: string,
   }) => {
     const {
@@ -1204,6 +1206,25 @@ export default class WalletsStore extends Store {
       });
       const walletAddress = ellipsis(address, 15, 15);
       this.actions.wallets.generateAddressPDFSuccess.trigger({ walletAddress });
+    } catch (error) {
+      throw new Error(error);
+    }
+  };
+
+  _saveQRCodeImage = async ({
+    address,
+    filePath,
+  }: {
+    address: string,
+    filePath: string,
+  }) => {
+    try {
+      await saveQRCodeImageChannel.send({
+        address,
+        filePath,
+      });
+      const walletAddress = ellipsis(address, 15, 15);
+      this.actions.wallets.saveQRCodeImageSuccess.trigger({ walletAddress });
     } catch (error) {
       throw new Error(error);
     }
