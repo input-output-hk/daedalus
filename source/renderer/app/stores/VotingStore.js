@@ -7,7 +7,10 @@ import {
   TransactionStates,
   WalletTransaction,
 } from '../domains/WalletTransaction';
-import { formattedArrayBufferToHexString } from '../utils/formatters';
+import {
+  formattedArrayBufferToHexString,
+  formattedBytesToB16,
+} from '../utils/formatters';
 import wallet from '../utils/wallet';
 import {
   VOTING_REGISTRATION_TRANSACTION_CHECK_INTERVAL,
@@ -20,6 +23,7 @@ import type {
   GetWalletKeyRequest,
   CreateWalletSignatureRequest,
 } from '../api/voting/types';
+import type { GetTransactionRequest } from '../api/transactions/types';
 
 export default class VotingStore extends Store {
   @observable selectedVotingWalletId: ?string = null;
@@ -118,11 +122,13 @@ export default class VotingStore extends Store {
         this.votingRegistrationKey.public().bytes()
       );
 
-      const stakeKey = await this._getWalletKeyRequest({
+      let stakeKey = await this._getWalletKeyRequest({
         walletId,
         role: 'mutable_account',
         index: '0',
       });
+
+      stakeKey = await this.getHexFromBech32(stakeKey);
 
       const signature = await this._createWalletSignatureRequest({
         walletId,
@@ -140,7 +146,7 @@ export default class VotingStore extends Store {
         walletId,
         votingKey,
         stakeKey,
-        signature,
+        signature: formattedBytesToB16(signature),
       });
 
       // Start interval to check transaction state every second
@@ -179,6 +185,13 @@ export default class VotingStore extends Store {
     const response = await this.api.ada.createWalletSignature(request);
     if (!response) throw new Error('Could not generate a wallet signature.');
     return response;
+  };
+
+  _getTransaction = async (
+    request: GetTransactionRequest
+  ): Request<WalletTransaction> => {
+    const transaction = await this.api.ada.getTransaction(request);
+    return transaction || {};
   };
 
   _generateQrCode = async (pinCode: number) => {
@@ -227,6 +240,11 @@ export default class VotingStore extends Store {
     const Modules = await wallet;
     const key = Modules.Ed25519ExtendedPrivate;
     this.setVotingRegistrationKey(key.generate());
+  };
+
+  getHexFromBech32 = async (key: string) => {
+    const Modules = await wallet;
+    return formattedArrayBufferToHexString(Modules.bech32_decode_to_bytes(key));
   };
 
   // Reset voting registration interval and refresh wallet data

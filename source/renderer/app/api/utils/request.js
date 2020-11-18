@@ -1,7 +1,7 @@
 // @flow
 import { includes, omit, size, assign, cloneDeep, has, keys } from 'lodash';
 import querystring from 'querystring';
-import { getContentLength } from '.';
+import { getContentLength, tryParseJSON } from '.';
 
 export type RequestOptions = {
   hostname: string,
@@ -26,7 +26,7 @@ function typedRequest<Response>(
   queryParams?: {},
   rawBodyParams?: any
   // requestOptions?: { returnMeta: boolean }
-): Promise<Response> {
+): Promise<Response> | Promise<any> {
   return new Promise((resolve, reject) => {
     const options: RequestOptions = cloneDeep(httpOptions);
     // const { returnMeta } = Object.assign({}, requestOptions);
@@ -86,13 +86,20 @@ function typedRequest<Response>(
                 : `"statusCode: ${statusCode} -- statusMessage: ${statusMessage}"`;
             // When deleting a wallet, the API does not return any data in body
             // even if it was successful
+
             if (!body) {
               body = `{
                 "status": ${statusCode},
                 "data": ${data}
               }`;
             }
-            resolve(JSON.parse(body));
+
+            const parsedBody = tryParseJSON(body);
+            if (parsedBody) {
+              resolve(parsedBody);
+            } else {
+              resolve(body);
+            }
           } else if (body) {
             // Error response with a body
             const parsedBody = JSON.parse(body);

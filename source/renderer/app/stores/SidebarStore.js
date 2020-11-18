@@ -101,7 +101,7 @@ export default class SidebarStore extends Store {
       [categories.STAKING.name]: isShelleyActivated,
       [categories.REDEEM_ITN_REWARDS.name]: true,
       [categories.SETTINGS.name]: true,
-      [categories.VOTING.name]: isCatalyst,
+      [categories.VOTING.name]: isCatalyst || isDev,
       [categories.NETWORK_INFO.name]:
         isFlight || isIncentivizedTestnet || isShelleyTestnet,
     };

@@ -1,1 +1,1 @@
-export default import('wallet-js').then((modules) => modules);
+export default import('@iohk-jormungandr/wallet-js').then((modules) => modules);

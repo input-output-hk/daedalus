@@ -30,6 +30,7 @@ import { getNetworkParameters } from './network/requests/getNetworkParameters';
 // Transactions requests
 import { getTransactionFee } from './transactions/requests/getTransactionFee';
 import { getByronWalletTransactionFee } from './transactions/requests/getByronWalletTransactionFee';
+import { getTransaction } from './transactions/requests/getTransaction';
 import { getTransactionHistory } from './transactions/requests/getTransactionHistory';
 import { getLegacyWalletTransactionHistory } from './transactions/requests/getLegacyWalletTransactionHistory';
 import { getWithdrawalHistory } from './transactions/requests/getWithdrawalHistory';
@@ -126,6 +127,7 @@ import type {
   GetTransactionFeeRequest,
   CreateTransactionRequest,
   DeleteTransactionRequest,
+  GetTransactionRequest,
   GetTransactionsRequest,
   GetTransactionsResponse,
   GetWithdrawalsRequest,
@@ -298,6 +300,26 @@ export default class AdaApi {
       return response.map(_createAddressFromServerData);
     } catch (error) {
       logger.error('AdaApi::getAddresses error', { error });
+      throw new ApiError(error);
+    }
+  };
+
+  getTransaction = async (
+    request: GetTransactionRequest
+  ): Promise<WalletTransaction> => {
+    logger.debug('AdaApi::getTransaction called', { parameters: request });
+    const { walletId, transactionId } = request;
+
+    try {
+      const response = await getTransaction(
+        this.config,
+        walletId,
+        transactionId
+      );
+      logger.debug('AdaApi::getTransaction success', { response });
+      return _createTransactionFromServerData(response);
+    } catch (error) {
+      logger.error('AdaApi::getTransaction error', { error });
       throw new ApiError(error);
     }
   };
@@ -1774,6 +1796,7 @@ export default class AdaApi {
         role,
         index,
       });
+
       logger.debug('AdaApi::getWalletKey success', { response });
       return response;
     } catch (error) {
