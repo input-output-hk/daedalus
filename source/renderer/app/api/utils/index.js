@@ -26,12 +26,3 @@ export const getLegacyWalletId = (rawWalletId: string) =>
   `${LEGACY_WALLET_ID_PREFIX}${rawWalletId}`;
 export const getRawWalletId = (legacyWalletId: string) =>
   legacyWalletId.replace(LEGACY_WALLET_ID_PREFIX, '');
-
-// requests utils
-export const tryParseJSON = (data: any) => {
-  try {
-    return JSON.parse(data);
-  } catch (e) {
-    return false;
-  }
-};

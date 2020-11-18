@@ -7,10 +7,7 @@ import {
   TransactionStates,
   WalletTransaction,
 } from '../domains/WalletTransaction';
-import {
-  formattedArrayBufferToHexString,
-  formattedBytesToB16,
-} from '../utils/formatters';
+import { formattedArrayBufferToHexString } from '../utils/formatters';
 import wallet from '../utils/wallet';
 import {
   VOTING_REGISTRATION_TRANSACTION_CHECK_INTERVAL,
@@ -146,7 +143,7 @@ export default class VotingStore extends Store {
         walletId,
         votingKey,
         stakeKey,
-        signature: formattedBytesToB16(signature),
+        signature: signature.toString('hex'),
       });
 
       // Start interval to check transaction state every second
@@ -181,7 +178,7 @@ export default class VotingStore extends Store {
   // Create wallet signature
   _createWalletSignatureRequest = async (
     request: CreateWalletSignatureRequest
-  ): Promise<string> => {
+  ): Promise<Buffer> => {
     const response = await this.api.ada.createWalletSignature(request);
     if (!response) throw new Error('Could not generate a wallet signature.');
     return response;

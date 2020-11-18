@@ -1,5 +1,5 @@
 // @flow
-import { includes, omit, size } from 'lodash';
+import { omit, size, assign, cloneDeep, has, keys } from 'lodash';
 import querystring from 'querystring';
 import { getContentLength } from '.';
 
@@ -17,18 +17,15 @@ export type RequestOptions = {
   },
 };
 
-const ALLOWED_ERROR_EXCEPTION_PATHS = [];
-
 const { isIncentivizedTestnet } = global.environment;
 
 function typedRequest<Response>(
   httpOptions: RequestOptions,
   queryParams?: {},
   rawBodyParams?: any
-  // requestOptions?: { returnMeta: boolean }
 ): Promise<Response> {
   return new Promise((resolve, reject) => {
-    const options: RequestOptions = Object.assign({}, httpOptions);
+    const options: RequestOptions = cloneDeep(httpOptions);
     // const { returnMeta } = Object.assign({}, requestOptions);
     let hasRequestBody = false;
     let requestBody = '';
@@ -41,11 +38,17 @@ function typedRequest<Response>(
     if (rawBodyParams) {
       hasRequestBody = true;
       requestBody = JSON.stringify(rawBodyParams);
-      options.headers = {
-        'Content-Length': getContentLength(requestBody),
-        'Content-Type': 'application/json; charset=utf-8',
-        Accept: 'application/json; charset=utf-8',
-      };
+      options.headers = assign(
+        options.headers,
+        omit(
+          {
+            'Content-Length': getContentLength(requestBody),
+            'Content-Type': 'application/json; charset=utf-8',
+            Accept: 'application/octet-stream',
+          },
+          has(httpOptions, 'headers') ? keys(httpOptions.headers) : []
+        )
+      );
     }
 
     const httpOnlyOptions = omit(options, ['ca', 'cert', 'key']);
@@ -57,36 +60,20 @@ function typedRequest<Response>(
       httpsRequest.write(requestBody);
     }
     httpsRequest.on('response', (response) => {
-      let body = '';
+      let body = null;
       // Cardano-sl returns chunked requests, so we need to concat them
       response.on('data', (chunk) => {
-        body += chunk;
+        body = chunk;
       });
       // Reject errors
       response.on('error', (error) => reject(error));
       // Resolve JSON results and handle backend errors
       response.on('end', () => {
         try {
-          const { statusCode, statusMessage } = response;
-          const isSuccessResponse =
-            (statusCode >= 200 && statusCode <= 206) ||
-            (statusCode === 404 &&
-              includes(ALLOWED_ERROR_EXCEPTION_PATHS, options.path));
+          const { statusCode } = response;
 
-          if (isSuccessResponse) {
-            const data =
-              statusCode === 404
-                ? 'null'
-                : `"statusCode: ${statusCode} -- statusMessage: ${statusMessage}"`;
-            // When deleting a wallet, the API does not return any data in body
-            // even if it was successful
-            if (!body) {
-              body = `{
-                "status": ${statusCode},
-                "data": ${data}
-              }`;
-            }
-            resolve(JSON.parse(body));
+          if (statusCode >= 200 && statusCode <= 206) {
+            resolve(body);
           } else if (body) {
             // Error response with a body
             const parsedBody = JSON.parse(body);

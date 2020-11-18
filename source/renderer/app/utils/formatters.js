@@ -168,8 +168,3 @@ export const formattedArrayBufferToHexString = (arrayBuffer: Uint8Array) => {
 
   return hexOctets.join('');
 };
-
-export const formattedBytesToB16 = (bytes: any) => {
-  const binaryData = bytes.toString('binary');
-  return new Buffer(binaryData, 'ascii').toString('hex');
-};
