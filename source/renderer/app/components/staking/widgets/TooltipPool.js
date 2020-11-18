@@ -551,7 +551,6 @@ export default class TooltipPool extends Component<Props, State> {
             )}
             {isIncentivizedTestnet && (
               <PopOver
-                contentClassName={styles.experimentalTooltip}
                 key="experimentalTooltip"
                 content={intl.formatMessage(messages.experimentalTooltipLabel)}
               >

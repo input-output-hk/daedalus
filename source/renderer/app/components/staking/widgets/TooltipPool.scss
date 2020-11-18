@@ -55,42 +55,37 @@
         margin-left: -40px;
       }
     }
+
+    .TooltipPool_container > span {
+      outline: none;
+    }
   }
 
-  .experimentalTooltip {
-    height: 14.5px;
+  .experimentalIcon {
     padding: 0;
-    position: absolute;
-    right: -5px;
-    top: -6px;
-    width: 10px;
 
-    .experimentalIcon {
-      padding: 0;
+    svg {
+      height: 14.5px;
+      width: 10px;
 
-      svg {
-        height: 14.5px;
-        width: 10px;
-
-        g {
-          path:nth-child(1) {
-            fill: var(
+      g {
+        path:nth-child(1) {
+          fill: var(
               --theme-staking-stake-pool-tooltip-experimental-icon-background-color
-            );
-          }
+          );
+        }
 
-          path:nth-child(2) {
-            fill: var(
+        path:nth-child(2) {
+          fill: var(
               --theme-staking-stake-pool-tooltip-experimental-icon-lines-color
-            );
-          }
+          );
         }
       }
     }
+  }
 
-    .iconButton {
-      cursor: pointer;
-    }
+  .iconButton {
+    cursor: pointer;
   }
 
   .noDataDash {
