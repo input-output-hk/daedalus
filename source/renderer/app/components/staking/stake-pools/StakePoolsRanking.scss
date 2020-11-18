@@ -138,6 +138,10 @@
     .slider {
       flex: 1;
 
+      span {
+        outline: none;
+      }
+
       :global {
         .SimpleTooltip_bubble {
           .SimpleBubble_bubble {
@@ -204,5 +208,9 @@
 
   .col {
     @extend %regularText;
+
+    span {
+      outline: none;
+    }
   }
 }
