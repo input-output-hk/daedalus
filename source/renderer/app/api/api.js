@@ -1807,7 +1807,7 @@ export default class AdaApi {
 
   createWalletSignature = async (
     request: CreateWalletSignatureRequest
-  ): Promise<string> => {
+  ): Promise<Buffer> => {
     logger.debug('AdaApi::createWalletSignature called', {
       parameters: filterLogData(request),
     });

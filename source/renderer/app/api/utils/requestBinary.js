@@ -60,7 +60,7 @@ function typedRequest<Response>(
       httpsRequest.write(requestBody);
     }
     httpsRequest.on('response', (response) => {
-      let body = null;
+      let body;
       // Cardano-sl returns chunked requests, so we need to concat them
       response.on('data', (chunk) => {
         body = chunk;
