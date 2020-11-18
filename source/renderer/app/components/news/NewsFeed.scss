@@ -143,8 +143,10 @@
     }
 
     .updateItem {
+      box-shadow: 0 0 0 rgba(0, 0, 0, 0.2);
       margin: -20px;
       padding: 20px 20px 15px;
+      transition: box-shadow 0.15s ease-in;
 
       &.hasShadow {
         box-shadow: var(--theme-news-feed-header-box-shadow-color);
