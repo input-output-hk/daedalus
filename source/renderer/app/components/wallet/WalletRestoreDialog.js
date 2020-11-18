@@ -615,7 +615,6 @@ export default class WalletRestoreDialog extends Component<Props, State> {
               <PopOver
                 content={<FormattedHTMLMessage {...messages.passwordTooltip} />}
                 key="tooltip"
-                contentClassName={styles.tooltip}
               >
                 <SVGInline svg={infoIconInline} className={styles.infoIcon} />
               </PopOver>

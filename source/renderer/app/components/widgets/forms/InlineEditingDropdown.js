@@ -67,7 +67,6 @@ export default class InlineEditingDropdown extends Component<Props> {
         <PopOver
           content={tooltip}
           key="tooltip"
-          contentClassName={styles.tooltip}
         >
           <SVGInline
             svg={questionMarkIcon}

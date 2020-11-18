@@ -238,9 +238,9 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
       isSubmitting ? styles.isSubmitting : null,
     ]);
 
-    const tooltipClasses = classnames([
-      styles.tooltip,
-      currentLocale === 'ja-JP' ? 'jpLangTooltipIcon' : '',
+    const spendingPasswordClasses = classnames([
+      styles.spendingPasswordField,
+      currentLocale === 'ja-JP' ? styles.jpLangTooltipIcon : '',
     ]);
 
     const newPasswordClasses = classnames(['newPassword', styles.newPassword]);
@@ -282,7 +282,7 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
       >
         <div className={styles.spendingPasswordFields}>
           {isSpendingPasswordSet && (
-            <div className={styles.spendingPasswordField}>
+            <div className={spendingPasswordClasses}>
               <Input
                 className={styles.currentPassword}
                 error={currentPasswordField.error || currentPasswordError}
@@ -292,7 +292,6 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
               <PopOver
                 content={<FormattedHTMLMessage {...messages.passwordTooltip} />}
                 key="tooltip"
-                contentClassName={tooltipClasses}
               >
                 <SVGInline svg={infoIconInline} className={styles.infoIcon} />
               </PopOver>
@@ -309,7 +308,6 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
                 <PopOver
                   content={<FormattedHTMLMessage {...messages.passwordTooltip} />}
                   key="tooltip"
-                  contentClassName={tooltipClasses}
                 >
                   <SVGInline svg={infoIconInline} className={styles.infoIcon} />
                 </PopOver>

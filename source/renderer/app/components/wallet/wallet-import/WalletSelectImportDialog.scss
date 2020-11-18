@@ -159,56 +159,6 @@
       }
     }
 
-    .unamedWalletsInputTooltip {
-      @extend .tooltip;
-
-      :global {
-        .SimpleTooltip_bubble {
-          > div {
-            left: 50%;
-            margin: 0;
-            transform: translateX(-50%);
-          }
-        }
-      }
-    }
-
-    .enterWalletNameTooltip,
-    .maxWalletsReachedTooltip {
-      @extend .tooltip;
-
-      :global {
-        .SimpleTooltip_bubble {
-          > div {
-            font-family: var(--font-regular);
-            font-size: 12px;
-            left: auto;
-            line-height: 1.17;
-            margin: 0;
-            right: -40px;
-            text-align: center;
-            transform: translateX(0);
-
-            [data-bubble-arrow]:before,
-            [data-bubble-arrow]:after {
-              left: auto;
-              right: 43px;
-            }
-          }
-        }
-      }
-    }
-
-    .maxWalletsReachedTooltip {
-      :global {
-        .SimpleTooltip_bubble {
-          > div {
-            width: 194px;
-          }
-        }
-      }
-    }
-
     .walletsContainer {
       margin-right: -28px;
       overflow-x: hidden;

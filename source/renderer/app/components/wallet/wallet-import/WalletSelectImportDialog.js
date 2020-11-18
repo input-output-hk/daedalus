@@ -213,11 +213,6 @@ export default class WalletSelectImportDialog extends Component<Props> {
       if (disabled) {
         statusIcon = (
           <PopOver
-            contentClassName={
-              walletNotSelectable
-                ? styles.maxWalletsReachedTooltip
-                : styles.enterWalletNameTooltip
-            }
             content={
               invalidWalletName ? (
                 this.context.intl.formatMessage(messages.enterWalletNameTooltip)
@@ -421,7 +416,6 @@ export default class WalletSelectImportDialog extends Component<Props> {
                     <div className={styles.walletsInputField}>
                       {!wallet.name ? (
                         <PopOver
-                          contentClassName={styles.unamedWalletsInputTooltip}
                           content={intl.formatMessage(
                             messages.enterWalletNameTooltip
                           )}

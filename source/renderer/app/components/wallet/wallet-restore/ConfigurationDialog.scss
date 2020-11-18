@@ -24,20 +24,18 @@
   .spendingPasswordField {
     display: flex;
 
-    .tooltip {
-      &:hover {
-        .infoIcon {
-          opacity: 0.8;
-        }
-      }
-    }
-
-    .tooltip {
+    > span {
       height: 12px;
-      left: -148px;
+      left: -154px;
       position: relative;
       top: 1px;
       width: 12px;
+    }
+
+    &.jpLangTooltipIcon {
+      > span {
+        left: -147px !important;
+      }
     }
 
     :global {
@@ -47,28 +45,15 @@
       }
     }
 
-    :global .InlineEditingDropdown-tooltip_bubble {
-      border-radius: 10px;
-      height: 87px;
-      left: 124px;
-      line-height: 1.2;
-      top: 69px;
-      white-space: normal;
-      width: 291.5px;
-
-      span[data-bubble-arrow]:before,
-      span[data-bubble-arrow]:after {
-        left: -4%;
-        top: 42%;
-        transform: rotate(90deg);
-      }
-    }
-
     .infoIcon {
       height: 14px;
       opacity: 0.4;
       transform: translateY(2px);
       width: 14px;
+
+      &:hover {
+        opacity: 0.8;
+      }
 
       path {
         fill: var(--theme-input-label-color);

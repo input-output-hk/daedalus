@@ -212,9 +212,9 @@ export default class WalletCreateDialog extends Component<Props, State> {
     const { onCancel, currentLocale } = this.props;
     const { isSubmitting } = this.state;
     const dialogClasses = classnames([styles.component, 'WalletCreateDialog']);
-    const tooltipClasses = classnames([
-      styles.tooltip,
-      currentLocale === 'ja-JP' ? 'jpLangTooltipIcon' : '',
+    const spendingPasswordClasses = classnames([
+      styles.spendingPasswordField,
+      currentLocale === 'ja-JP' ? styles.jpLangTooltipIcon : '',
     ]);
 
     const walletNameField = form.$('walletName');
@@ -268,7 +268,7 @@ export default class WalletCreateDialog extends Component<Props, State> {
           </div>
 
           <div className={styles.spendingPasswordFields}>
-            <div className={styles.spendingPasswordField}>
+            <div className={spendingPasswordClasses}>
               <PasswordInput
                 className="spendingPassword"
                 onKeyPress={this.handleSubmitOnEnter}
@@ -277,7 +277,6 @@ export default class WalletCreateDialog extends Component<Props, State> {
               <PopOver
                 content={<FormattedHTMLMessage {...messages.passwordTooltip} />}
                 key="tooltip"
-                contentClassName={tooltipClasses}
               >
                 <SVGInline svg={infoIconInline} className={styles.infoIcon} />
               </PopOver>

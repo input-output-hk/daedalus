@@ -236,8 +236,8 @@ export default class ConfigurationDialog extends Component<Props> {
       'repeatPassword',
     ]);
 
-    const tooltipClasses = classnames([
-      styles.tooltip,
+    const spendingPasswordClasses = classnames([
+      styles.spendingPasswordField,
       currentLocale === 'ja-JP' ? 'jpLangTooltipIcon' : '',
     ]);
 
@@ -279,7 +279,7 @@ export default class ConfigurationDialog extends Component<Props> {
 
           <div className={styles.spendingPasswordWrapper}>
             <div className={styles.spendingPasswordFields}>
-              <div className={styles.spendingPasswordField}>
+              <div className={spendingPasswordClasses}>
                 <PasswordInput
                   className={spendingPasswordFieldClasses}
                   onKeyPress={this.handleSubmitOnEnter}
@@ -288,7 +288,6 @@ export default class ConfigurationDialog extends Component<Props> {
                 <PopOver
                   content={<FormattedHTMLMessage {...messages.passwordTooltip} />}
                   key="tooltip"
-                  contentClassName={tooltipClasses}
                 >
                   <SVGInline svg={infoIconInline} className={styles.infoIcon} />
                 </PopOver>

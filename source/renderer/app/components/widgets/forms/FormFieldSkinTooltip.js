@@ -45,7 +45,6 @@ export const FormFieldSkin = (props: Props) => (
           <PopOver
             content={props.error}
             key="tooltip"
-            contentClassName={styles.tooltip}
             placement="bottom"
           >
             <SVGInline
