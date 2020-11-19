@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Improved form field feedback UX ([PR 2241](https://github.com/input-output-hk/daedalus/pull/2241))
 - Implemented "Filter and CSV export" feature on the "Transactions" screen ([PR 2207](https://github.com/input-output-hk/daedalus/pull/2207))
 
 ### Fixes

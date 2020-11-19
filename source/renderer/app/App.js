@@ -3,12 +3,13 @@ import React, { Component, Fragment } from 'react';
 import { Provider, observer } from 'mobx-react';
 import { ThemeProvider } from 'react-polymorph/lib/components/ThemeProvider';
 import { SimpleSkins } from 'react-polymorph/lib/skins/simple';
+import { SimpleDefaults } from 'react-polymorph/lib/themes/simple';
 import DevTools from 'mobx-react-devtools';
 import { Router } from 'react-router-dom';
 import { IntlProvider } from 'react-intl';
 import { Routes } from './Routes';
 import { daedalusTheme } from './themes/daedalus';
-import { themeOverrides } from './themes/overrides/index.js';
+import { themeOverrides } from './themes/overrides';
 import translations from './i18n/translations';
 import ThemeManager from './ThemeManager';
 import AboutDialog from './containers/static/AboutDialog';
@@ -54,6 +55,7 @@ export default class App extends Component<{
           <ThemeProvider
             theme={daedalusTheme}
             skins={SimpleSkins}
+            variables={SimpleDefaults}
             themeOverrides={themeOverrides}
           >
             <IntlProvider
