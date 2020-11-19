@@ -230,7 +230,7 @@ export default class ConfigurationDialog extends Component<Props> {
 
     const spendingPasswordClasses = classnames([
       styles.spendingPasswordField,
-      currentLocale === 'ja-JP' ? 'jpLangTooltipIcon' : '',
+      currentLocale === 'ja-JP' ? styles.jpLangTooltipIcon : '',
     ]);
 
     const buttonLabel = !isSubmitting ? (
