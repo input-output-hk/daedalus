@@ -70,13 +70,19 @@ export default class StakingRewardsPage extends Component<Props> {
       wallets,
     } = this.props.stores;
     const { isIncentivizedTestnet, isShelleyTestnet } = global;
-    const { isMainnet, isTestnet, isTest } = networkStatus.environment;
+    const {
+      isMainnet,
+      isTestnet,
+      isSelfnode,
+      isTest,
+    } = networkStatus.environment;
 
     if (
       isMainnet ||
       isTestnet ||
       isIncentivizedTestnet ||
       isShelleyTestnet ||
+      isSelfnode ||
       isTest
     ) {
       return (

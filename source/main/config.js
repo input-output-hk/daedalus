@@ -77,6 +77,7 @@ export type LauncherConfig = {
   isStaging: boolean,
   smashUrl?: string,
   updateRunnerBin: string,
+  selfnodeBin: string,
 };
 
 type WindowOptionsType = {

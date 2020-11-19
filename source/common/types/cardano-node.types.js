@@ -151,4 +151,4 @@ export const SHELLEY_TESTNET_NETWORK_ID = [1, 0, null];
 export const STAGING_MAGIC = [633343913, 1];
 
 // Cardano Selfnode network magic
-export const SELFNODE_MAGIC = 459045235;
+export const SELFNODE_MAGIC = MAINNET_MAGIC;

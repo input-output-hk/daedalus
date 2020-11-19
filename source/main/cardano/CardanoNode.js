@@ -7,6 +7,7 @@ import type { Launcher } from 'cardano-launcher';
 import { get, toInteger } from 'lodash';
 import moment from 'moment';
 import rfs from 'rotating-file-stream';
+import tcpPortUsed from 'tcp-port-used';
 import { environment } from '../environment';
 import {
   deriveProcessNames,
@@ -340,84 +341,140 @@ export class CardanoNode {
       );
       this._cardanoWalletLogFile = walletLogFile;
 
-      try {
-        const node = await CardanoWalletLauncher({
-          nodeImplementation,
-          nodeConfig,
-          cluster,
-          stateDir,
-          tlsPath,
-          block0Path,
-          block0Hash,
-          secretPath,
-          configPath,
-          syncTolerance,
-          nodeLogFile,
-          walletLogFile,
-          cliBin,
-          isStaging,
-          smashUrl,
-        });
-
-        this._node = node;
-
-        _log.info('Starting cardano-node now...');
-
-        // await promisedCondition(() => node.connected, startupTimeout);
-
-        node
-          .start()
-          .then((api) => {
-            const processes: {
-              wallet: ChildProcess,
-              node: ChildProcess,
-            } = {
-              wallet: node.walletService.getProcess(),
-              node: node.nodeService.getProcess(),
-            };
-
-            // Setup event handling
-            node.walletBackend.events.on('exit', (exitStatus) => {
-              _log.info('CardanoNode#exit', { exitStatus });
-              const { code, signal } = exitStatus.wallet;
-              this._handleCardanoNodeExit(code, signal);
-            });
-
-            node.pid = processes.node.pid;
-            node.wpid = processes.wallet.pid;
-            node.connected = true; // TODO: use processes.wallet.connected here
-            _log.info(
-              `CardanoNode#start: cardano-node child process spawned with PID ${processes.node.pid}`,
-              { pid: processes.node.pid }
-            );
-            _log.info(
-              `CardanoNode#start: cardano-wallet child process spawned with PID ${processes.wallet.pid}`,
-              { pid: processes.wallet.pid }
-            );
-            this._handleCardanoNodeMessage({
-              ReplyPort: api.requestParams.port,
-            });
-            resolve();
-          })
-          .catch((exitStatus) => {
-            _log.error('CardanoNode#start: Error while spawning cardano-node', {
-              exitStatus,
-            });
-            const { code, signal } = exitStatus.wallet || {};
-            this._handleCardanoNodeError(code, signal);
-            reject(
-              new Error('CardanoNode#start: Error while spawning cardano-node')
-            );
+      if (environment.isSelfnode) {
+        const CARDANO_WALLET_PORT = 8088;
+        const SHELLEY_TEST_DATA =
+          '/Users/nikola/sites/daedalus/utils/cardano/selfnode'; // ../utils/cardano/selfnode
+        const isSelfnodeRunning = await tcpPortUsed.check(CARDANO_WALLET_PORT);
+        if (isSelfnodeRunning) {
+          _log.info('Cardano-node is already running...');
+          this._handleCardanoNodeMessage({ ReplyPort: CARDANO_WALLET_PORT });
+          resolve();
+        } else {
+          _log.info('Starting cardano-node now...');
+          const node = spawn(launcherConfig.selfnodeBin, [], {
+            env: { ...process.env, CARDANO_WALLET_PORT, SHELLEY_TEST_DATA },
+            detached: true,
+            stdio: 'ignore',
           });
-      } catch (error) {
-        _log.error('CardanoNode#start: Unable to initialize cardano-launcher', {
-          error,
-        });
-        const { code, signal } = error || {};
-        this._handleCardanoNodeError(code, signal);
-        reject(
-          new Error('CardanoNode#start: Unable to initialize cardano-launcher')
-        );
+          node.unref();
+          this._node = node;
+          tcpPortUsed.waitUntilUsed(CARDANO_WALLET_PORT, 500, 60000).then(
+            () => {
+              _log.info(
+                `CardanoNode#start: cardano-wallet child process spawned with PID ${node.pid}`,
+                { pid: node.pid }
+              );
+              this._handleCardanoNodeMessage({
+                ReplyPort: CARDANO_WALLET_PORT,
+              });
+              resolve();
+            },
+            (exitStatus) => {
+              _log.error(
+                'CardanoNode#start: Error while spawning cardano-node',
+                { exitStatus }
+              );
+              const { code, message } = exitStatus;
+              this._handleCardanoNodeError(code, message);
+              reject(
+                new Error(
+                  'CardanoNode#start: Error while spawning cardano-node'
+                )
+              );
+            }
+          );
+        }
+      } else {
+        try {
+          const node = await CardanoWalletLauncher({
+            nodeImplementation,
+            nodeConfig,
+            cluster,
+            stateDir,
+            tlsPath,
+            block0Path,
+            block0Hash,
+            secretPath,
+            configPath,
+            syncTolerance,
+            nodeLogFile,
+            walletLogFile,
+            cliBin,
+            isStaging,
+            smashUrl,
+          });
+
+          this._node = node;
+
+          _log.info('Starting cardano-node now...');
+
+          // await promisedCondition(() => node.connected, startupTimeout);
+
+          node
+            .start()
+            .then((api) => {
+              const processes: {
+                wallet: ChildProcess,
+                node: ChildProcess,
+              } = {
+                wallet: node.walletService.getProcess(),
+                node: node.nodeService.getProcess(),
+              };
+
+              // Setup event handling
+              node.walletBackend.events.on('exit', (exitStatus) => {
+                _log.info('CardanoNode#exit', { exitStatus });
+                const { code, signal } = exitStatus.wallet;
+                this._handleCardanoNodeExit(code, signal);
+              });
+
+              node.pid = processes.node.pid;
+              node.wpid = processes.wallet.pid;
+              node.connected = true; // TODO: use processes.wallet.connected here
+              _log.info(
+                `CardanoNode#start: cardano-node child process spawned with PID ${processes.node.pid}`,
+                { pid: processes.node.pid }
+              );
+              _log.info(
+                `CardanoNode#start: cardano-wallet child process spawned with PID ${processes.wallet.pid}`,
+                { pid: processes.wallet.pid }
+              );
+              this._handleCardanoNodeMessage({
+                ReplyPort: api.requestParams.port,
+              });
+              resolve();
+            })
+            .catch((exitStatus) => {
+              _log.error(
+                'CardanoNode#start: Error while spawning cardano-node',
+                {
+                  exitStatus,
+                }
+              );
+              const { code, signal } = exitStatus.wallet || {};
+              this._handleCardanoNodeError(code, signal);
+              reject(
+                new Error(
+                  'CardanoNode#start: Error while spawning cardano-node'
+                )
+              );
+            });
+        } catch (error) {
+          _log.error(
+            'CardanoNode#start: Unable to initialize cardano-launcher',
+            {
+              error,
+            }
+          );
+          const { code, signal } = error || {};
+          this._handleCardanoNodeError(code, signal);
+          reject(
+            new Error(
+              'CardanoNode#start: Unable to initialize cardano-launcher'
+            )
+          );
+        }
       }
     });
   };
@@ -625,7 +682,8 @@ export class CardanoNode {
     const { _actions } = this;
     const { tlsPath } = this._config;
     this._tlsConfig =
-      nodeImplementation === CardanoNodeImplementationOptions.JORMUNGANDR
+      nodeImplementation === CardanoNodeImplementationOptions.JORMUNGANDR ||
+      environment.isSelfnode
         ? {
             ca: ('': any),
             key: ('': any),

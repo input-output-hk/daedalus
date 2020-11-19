@@ -1,0 +1,59 @@
+# IMPORTANT NOTES ABOUT THIS FILE
+#
+# a) cardano-node does not parse 'yaml' but only 'json'. We use yaml as a nicer/simpler format
+#    and convert it as json when generating the underlying configuration for the node.
+#
+# b) the `systemStart` is hard-coded here to please the parser but is replaced dynamically
+#    by the same code generating the final node configuration for integration.
+#
+
+---
+activeSlotsCoeff: 0.5
+protocolParams:
+  poolDeposit: 0
+  protocolVersion:
+    minor: 0
+    major: 0
+  minUTxOValue: 1000000
+  decentralisationParam: 0.25 # means 75% decentralised
+  maxTxSize: 4096
+  minFeeA: 100
+  maxBlockBodySize: 239857
+  minFeeB: 100000
+
+  # The epoch bound on pool retirements specifies how many epochs in advance
+  # retirements may be announced. For testing purposes, we allow retirements
+  # to be announced far into the future.
+  eMax: 1000000
+
+  extraEntropy:
+    tag: NeutralNonce
+  maxBlockHeaderSize: 217569
+  keyDeposit: 1000000
+  keyDecayRate: 0
+  nOpt: 3
+  rho: 0.178650067
+  poolMinRefund: 0
+  minPoolCost: 0
+  tau: 0.0
+  a0: 0.1
+genDelegs:
+  8ae01cab15f6235958b1147e979987bbdb90788f7c4e185f1632427a:
+    delegate: b7bf59bb963aa785afe220f5b0d3deb826fd0bcaeeee58cb81ab443d
+    vrf: 4ebcf8b4c13c24d89144d72f544d1c425b4a3aa1ace30af4eb72752e75b40d3e
+updateQuorum: 1
+maxMajorPV: 25446
+maxLovelaceSupply: 1000000000000000000
+protocolMagicId: 764824073
+networkMagic: 764824073
+networkId: Mainnet
+epochLength: 200
+staking:
+slotsPerKESPeriod: 86400
+slotLength: 0.2
+maxKESEvolutions: 90
+securityParam: 10
+systemStart: "2020-06-19T16:07:37.740128433Z"
+initialFunds: {}
+# For the Byron;Shelley test setup, funds have to be migrated from byron
+# using manually submitted transactions. The initialFunds field is ignored.

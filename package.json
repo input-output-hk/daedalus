@@ -168,7 +168,7 @@
   },
   "dependencies": {
     "aes-js": "3.1.2",
-    "bignumber.js": "5.0.0",
+    "bignumber.js": "9.0.1",
     "bip39": "3.0.2",
     "blakejs": "1.1.0",
     "bs58": "4.0.1",
@@ -232,6 +232,7 @@
     "shasum": "1.0.2",
     "source-map-support": "0.5.19",
     "spectron-fake-dialog": "0.0.1",
+    "tcp-port-used": "1.0.1",
     "unorm": "1.6.0",
     "validator": "13.1.17"
   },
