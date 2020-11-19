@@ -131,10 +131,15 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
         logger.info('Launching Wallet with --testnet flag');
       }
       if (smashUrl) {
+        // TODO: Update SMASH URLs in iohk-nix: https://jira.iohk.io/browse/DDW-482
+        const smashUrlApiPath = '/api/v1/metadata';
+        const smashUrlBase = smashUrl.replace(smashUrlApiPath, '');
         logger.info('Launching Wallet with --pool-metadata-fetching flag', {
-          poolMetadataSource: { smashUrl },
+          poolMetadataSource: { smashUrl, smashUrlBase },
         });
-        merge(launcherConfig, { poolMetadataSource: { smashUrl } });
+        merge(launcherConfig, {
+          poolMetadataSource: { smashUrl: smashUrlBase },
+        });
       }
       merge(launcherConfig, { nodeConfig, tlsConfiguration });
       break;
