@@ -10,9 +10,7 @@ module WindowsInstaller
 
 import           Universum hiding (pass, writeFile, stdout, FilePath, die, view)
 
-import           Control.Monad (unless)
 import qualified Data.List as L
-import           Data.Text (Text, unpack)
 import qualified Data.Text as T
 import           Data.Yaml                 (decodeFileThrow)
 import           Development.NSIS (Attrib (IconFile, IconIndex, RebootOK, Recursive, Required, StartOptions, Target),
@@ -40,7 +38,7 @@ import           Util
 daedalusShortcut :: Text -> [Attrib]
 daedalusShortcut installDir =
         [ Target "$INSTDIR\\cardano-launcher.exe"
-        , IconFile $ fromString $ unpack $ "$INSTDIR\\" <> installDir <> ".exe"
+        , IconFile $ fromString $ T.unpack $ "$INSTDIR\\" <> installDir <> ".exe"
         , StartOptions "SW_SHOWMINIMIZED"
         , IconIndex 0
         ]
@@ -50,9 +48,9 @@ writeUninstallerNSIS :: Version -> InstallerConfig -> IO ()
 writeUninstallerNSIS (Version fullVersion) installerConfig = do
     tempDir <- getTempDir
     IO.writeFile "uninstaller.nsi" $ nsis $ do
-        _ <- constantStr "Version" (str $ unpack fullVersion)
-        _ <- constantStr "InstallDir" (str $ unpack $ installDirectory installerConfig)
-        _ <- constantStr "SpacedName" (str $ unpack $ spacedName installerConfig)
+        _ <- constantStr "Version" (str $ T.unpack fullVersion)
+        _ <- constantStr "InstallDir" (str $ T.unpack $ installDirectory installerConfig)
+        _ <- constantStr "SpacedName" (str $ T.unpack $ spacedName installerConfig)
         unsafeInjectGlobal "Unicode true"
 
         loadLanguage "English"
@@ -66,7 +64,7 @@ writeUninstallerNSIS (Version fullVersion) installerConfig = do
         name "$SpacedName Uninstaller $Version"
         -- TODO, the nsis library doesn't support translation vars
         -- name "$InstallDir $(UninstallName) $Version"
-        --unsafeInjectGlobal $ unpack ( "Name \"" <> (installDirectory installerConfig) <> " $(UninstallName) " <> (fullVersion) <> "\"")
+        --unsafeInjectGlobal $ T.unpack ( "Name \"" <> (installDirectory installerConfig) <> " $(UninstallName) " <> (fullVersion) <> "\"")
         outFile . str . encodeString $ tempDir </> "tempinstaller.exe"
         unsafeInjectGlobal "!addplugindir \"nsis_plugins\\liteFirewall\\bin\""
         unsafeInjectGlobal "SetCompress off"
@@ -133,15 +131,15 @@ parseVersion ver =
 writeInstallerNSIS :: FilePath -> Version -> InstallerConfig -> Options -> Cluster -> IO ()
 writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,installDirectory,spacedName} Options{oBackend} clusterName = do
     tempDir <- getTempDir
-    let fullVersion = unpack fullVersion'
+    let fullVersion = T.unpack fullVersion'
         viProductVersion = L.intercalate "." $ parseVersion fullVersion'
     printf ("VIProductVersion: "%w%"\n") viProductVersion
 
     IO.writeFile "daedalus.nsi" $ nsis $ do
         _ <- constantStr "Version" (str fullVersion)
         _ <- constantStr "Cluster" (str $ lshow clusterName)
-        _ <- constantStr "InstallDir" (str $ unpack installDirectory)
-        _ <- constantStr "SpacedName" (str $ unpack spacedName)
+        _ <- constantStr "InstallDir" (str $ T.unpack installDirectory)
+        _ <- constantStr "SpacedName" (str $ T.unpack spacedName)
         name "$SpacedName ($Version)"                  -- The name of the installer
         outFile $ str $ encodeString outName        -- Where to produce the installer
         unsafeInjectGlobal $ "!define MUI_ICON \"icons\\" ++ lshow clusterName ++ "\\" ++ lshow clusterName ++ ".ico\""
@@ -189,7 +187,7 @@ writeInstallerNSIS outName (Version fullVersion') InstallerConfig{hasBlock0,inst
                 createDirectory "$APPDATA\\$InstallDir\\Logs\\pub"
                 onError (delete [] "$APPDATA\\$InstallDir\\daedalus_lockfile") $
                     --abort "$SpacedName $(AlreadyRunning)"
-                    unsafeInject $ unpack $ "Abort \" " <> installDirectory <> "$(AlreadyRunning)\""
+                    unsafeInject $ T.unpack $ "Abort \" " <> installDirectory <> "$(AlreadyRunning)\""
                 iff_ (fileExists "$APPDATA\\$InstallDir\\Wallet-1.0\\open\\*.*") $
                     rmdir [] "$APPDATA\\$InstallDir\\Wallet-1.0\\open"
                 case oBackend of
@@ -276,7 +274,7 @@ packageFrontend cluster installerConfig = do
     rewritePackageJson "../package.json" installDir
     echo "running yarn"
     shells ("yarn run package --icon " <> icon) empty
-    cp "../node_modules/ps-list/fastlist.exe" $ fromString $ unpack $ releaseDir <> "/resources/app/dist/main/fastlist.exe"
+    cp "../node_modules/ps-list/fastlist.exe" $ fromString $ T.unpack $ releaseDir <> "/resources/app/dist/main/fastlist.exe"
 
 -- | The contract of `main` is not to produce unsigned installer binaries.
 main :: Options -> IO ()
@@ -313,7 +311,7 @@ main opts@Options{..}  = do
     putStr rawnsi
     IO.hFlush IO.stdout
 
-    windowsRemoveDirectoryRecursive $ unpack $ "../release/win32-x64/" <> (installDirectory installerConfig) <> "-win32-x64/resources/app/installers/.stack-work"
+    windowsRemoveDirectoryRecursive $ T.unpack $ "../release/win32-x64/" <> (installDirectory installerConfig) <> "-win32-x64/resources/app/installers/.stack-work"
 
     echo "Generating NSIS installer"
     procs "C:\\Program Files (x86)\\NSIS\\makensis" ["daedalus.nsi", "-V4"] mempty
