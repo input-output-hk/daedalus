@@ -279,6 +279,7 @@ export class StakePoolsTable extends Component<Props, State> {
         name: 'ranking',
         title: (
           <PopOver
+            maxWidth={350}
             key="ranking"
             placement="bottom"
             content={
@@ -299,6 +300,7 @@ export class StakePoolsTable extends Component<Props, State> {
         name: 'saturation',
         title: (
           <PopOver
+            maxWidth={350}
             key="saturation"
             placement="bottom"
             content={intl.formatMessage(messages.tableHeaderSaturationTooltip)}
@@ -311,6 +313,7 @@ export class StakePoolsTable extends Component<Props, State> {
         name: 'cost',
         title: (
           <PopOver
+            maxWidth={350}
             key="cost"
             placement="bottom"
             content={intl.formatMessage(messages.tableHeaderCostTooltip)}
@@ -323,6 +326,7 @@ export class StakePoolsTable extends Component<Props, State> {
         name: 'profitMargin',
         title: (
           <PopOver
+            maxWidth={350}
             key="profitMargin"
             placement="bottom"
             content={intl.formatMessage(messages.tableHeaderMarginTooltip)}
@@ -335,6 +339,7 @@ export class StakePoolsTable extends Component<Props, State> {
         name: 'producedBlocks',
         title: (
           <PopOver
+            maxWidth={350}
             key="producedBlocks"
             placement="bottom"
             content={intl.formatMessage(messages.tableHeaderProducedBlocksTooltip)}
@@ -347,6 +352,7 @@ export class StakePoolsTable extends Component<Props, State> {
         name: 'nonMyopicMemberRewards',
         title: (
           <PopOver
+            maxWidth={350}
             key="nonMyopicMemberRewards"
             placement="bottom"
             content={intl.formatMessage(
@@ -361,6 +367,7 @@ export class StakePoolsTable extends Component<Props, State> {
         name: 'pledge',
         title: (
           <PopOver
+            maxWidth={350}
             key="pledge"
             placement="bottom"
             content={intl.formatMessage(messages.tableHeaderPledgeTooltip)}

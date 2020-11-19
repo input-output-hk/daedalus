@@ -550,7 +550,10 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               {getRow('platformVersion', platformVersion)}
               {getRow(
                 'cpu',
-                <PopOver content={cpu}>
+                <PopOver
+                  maxWidth={350}
+                  content={cpu}
+                >
                   {cpu}
                 </PopOver>
               )}
@@ -597,6 +600,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                   >
                     <div className={styles.stateDirectoryPath}>
                       <PopOver
+                        maxWidth={400}
                         content={
                           <div className={styles.tooltipLabelWrapper}>
                             <div>{daedalusStateDirectoryPath}</div>

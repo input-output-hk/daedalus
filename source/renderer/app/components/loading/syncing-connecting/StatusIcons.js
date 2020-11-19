@@ -244,6 +244,7 @@ export default class StatusIcons extends Component<Props> {
 
   getIconWithPopover = (icon: string, paramName: string) => (
     <PopOver
+      maxWidth={350}
       themeVariables={{
         '--rp-pop-over-bg-color':
           'var(--theme-loading-status-icons-tooltip-color)',

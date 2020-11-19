@@ -182,6 +182,7 @@ export default class WalletRow extends Component<Props> {
                   >
                     {delegatedStakePoolId ? (
                       <PopOver
+                        maxWidth={350}
                         content={
                           <div className={styles.tooltipLabelWrapper}>
                             <span>
@@ -254,6 +255,7 @@ export default class WalletRow extends Component<Props> {
                       ]);
                       return [
                         <PopOver
+                          maxWidth={350}
                           key="ticker"
                           content={
                             <div className={styles.tooltipLabelWrapper}>
@@ -326,6 +328,7 @@ export default class WalletRow extends Component<Props> {
             </Fragment>
           ) : (
             <PopOver
+              maxWidth={350}
               content={intl.formatMessage(messages.syncingTooltipLabel, {
                 syncingProgress,
               })}

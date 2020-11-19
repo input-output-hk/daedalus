@@ -290,6 +290,7 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
                 onKeyPress={this.handleSubmitOnEnter}
               />
               <PopOver
+                maxWidth={350}
                 content={<FormattedHTMLMessage {...messages.passwordTooltip} />}
                 key="tooltip"
               >
@@ -306,6 +307,7 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
               />
               {!isSpendingPasswordSet && (
                 <PopOver
+                  maxWidth={350}
                   content={<FormattedHTMLMessage {...messages.passwordTooltip} />}
                   key="tooltip"
                 >

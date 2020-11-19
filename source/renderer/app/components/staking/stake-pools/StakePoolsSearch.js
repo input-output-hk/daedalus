@@ -113,6 +113,7 @@ export class StakePoolsSearch extends Component<Props> {
             <div className={clearSearchClasses}>
               {this.hasSearchClearButton && (
                 <PopOver
+                  maxWidth={350}
                   content="Clear"
                   placement={isClearTooltipOpeningDownward ? 'bottom' : 'top'}
                 >

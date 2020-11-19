@@ -43,6 +43,7 @@ export const FormFieldSkin = (props: Props) => (
         {props.label}
         {props.error && (
           <PopOver
+            maxWidth={350}
             content={props.error}
             key="tooltip"
             placement="bottom"

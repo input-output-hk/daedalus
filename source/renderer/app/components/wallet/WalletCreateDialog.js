@@ -275,6 +275,7 @@ export default class WalletCreateDialog extends Component<Props, State> {
                 {...spendingPasswordField.bind()}
               />
               <PopOver
+                maxWidth={350}
                 content={<FormattedHTMLMessage {...messages.passwordTooltip} />}
                 key="tooltip"
               >

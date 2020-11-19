@@ -278,6 +278,7 @@ export default class ConfigurationDialog extends Component<Props> {
                   {...spendingPasswordField.bind()}
                 />
                 <PopOver
+                  maxWidth={350}
                   content={<FormattedHTMLMessage {...messages.passwordTooltip} />}
                   key="tooltip"
                 >

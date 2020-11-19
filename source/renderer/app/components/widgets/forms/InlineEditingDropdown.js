@@ -65,6 +65,7 @@ export default class InlineEditingDropdown extends Component<Props> {
       label,
       !!tooltip && (
         <PopOver
+          maxWidth={350}
           content={tooltip}
           key="tooltip"
         >
