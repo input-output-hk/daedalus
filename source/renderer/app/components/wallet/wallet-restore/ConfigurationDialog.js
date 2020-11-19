@@ -227,14 +227,6 @@ export default class ConfigurationDialog extends Component<Props> {
       styles.walletName,
       'walletName',
     ]);
-    const spendingPasswordFieldClasses = classnames([
-      styles.spendingPasswordField,
-      'spendingPassword',
-    ]);
-    const repeatPasswordFieldClasses = classnames([
-      styles.spendingPasswordField,
-      'repeatPassword',
-    ]);
 
     const spendingPasswordClasses = classnames([
       styles.spendingPasswordField,
@@ -281,7 +273,7 @@ export default class ConfigurationDialog extends Component<Props> {
             <div className={styles.spendingPasswordFields}>
               <div className={spendingPasswordClasses}>
                 <PasswordInput
-                  className={spendingPasswordFieldClasses}
+                  className="spendingPassword"
                   onKeyPress={this.handleSubmitOnEnter}
                   {...spendingPasswordField.bind()}
                 />
@@ -294,7 +286,7 @@ export default class ConfigurationDialog extends Component<Props> {
               </div>
               <div className={styles.spendingPasswordField}>
                 <PasswordInput
-                  className={repeatPasswordFieldClasses}
+                  className="repeatPassword"
                   onKeyPress={this.handleSubmitOnEnter}
                   {...repeatPasswordField.bind()}
                   repeatPassword={spendingPasswordField.value}
