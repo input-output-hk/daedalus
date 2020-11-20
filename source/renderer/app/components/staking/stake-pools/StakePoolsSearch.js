@@ -117,8 +117,14 @@ export class StakePoolsSearch extends Component<Props> {
                   content="Clear"
                   placement={isClearTooltipOpeningDownward ? 'bottom' : 'top'}
                 >
-                  <button onClick={onClearSearch} className={styles.clearSearchButton}>
-                    <SVGInline svg={closeIcon} className={styles.clearSearchIcon} />
+                  <button
+                    onClick={onClearSearch}
+                    className={styles.clearSearchButton}
+                  >
+                    <SVGInline
+                      svg={closeIcon}
+                      className={styles.clearSearchIcon}
+                    />
                   </button>
                 </PopOver>
               )}
