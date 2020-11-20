@@ -9,8 +9,6 @@ import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import classNames from 'classnames';
 import tooltipStyles from './FormFieldSkinTooltip-tooltip.scss';
 import styles from './PinCode.scss';
-import BigNumber from 'bignumber.js';
-import type { Node } from 'react';
 
 type Props = $Exact<{
   id: string,
@@ -50,7 +48,12 @@ export default class PinCode extends Component<Props> {
     const { value, length } = this.props;
     const key = value.toString().length;
     if (key > 0 && key < length) {
-      this.inputsRef[this.focusKey >= key ? key - 1 : key].focus();
+      const inputFocusKey = this.focusKey >= key ? key - 1 : key;
+      if (
+        Object.prototype.hasOwnProperty.call(this.inputsRef, inputFocusKey) &&
+        this.inputsRef[inputFocusKey]
+      )
+        this.inputsRef[inputFocusKey].focus();
       this.focusKey = key;
     }
     if (key === 0) this.focusKey = 0;
@@ -81,7 +84,7 @@ export default class PinCode extends Component<Props> {
             <NumericInput
               ref={(input) => {
                 if (
-                  !this.inputsRef.hasOwnProperty(key) ||
+                  !Object.prototype.hasOwnProperty.call(this.inputsRef, key) ||
                   this.inputsRef[key] !== input
                 )
                   this.inputsRef[key] = input;
