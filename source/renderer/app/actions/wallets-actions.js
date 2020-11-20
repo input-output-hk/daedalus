@@ -62,10 +62,16 @@ export default class WalletsActions {
     fileContent: CsvFileContent,
   }> = new Action();
   generateAddressPDF: Action<{
-    address: string,
     note: string,
+    address: string,
     filePath: string,
   }> = new Action();
+  generateAddressPDFSuccess: Action<{ walletAddress: string }> = new Action();
+  saveQRCodeImage: Action<{
+    address: string,
+    filePath: string,
+  }> = new Action();
+  saveQRCodeImageSuccess: Action<{ walletAddress: string }> = new Action();
   copyAddress: Action<{ address: string }> = new Action();
   updateCertificateStep: Action<any> = new Action();
   closeCertificateGeneration: Action<any> = new Action();

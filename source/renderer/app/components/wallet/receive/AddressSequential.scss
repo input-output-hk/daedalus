@@ -3,30 +3,39 @@ $bg0: rgba(0, 0, 0, 0);
 
 .component {
   box-sizing: border-box;
+  cursor: pointer;
   display: flex;
   justify-content: space-between;
   padding: 10.5px 0;
   word-break: break-all;
   &.usedWalletAddress {
-    .addressId,
-    .shareIcon {
+    .addressId {
       opacity: 0.4;
     }
-    .shareAddressLabel {
-      opacity: 0.2;
+  }
+  &:hover {
+    .addressId {
+      opacity: 1;
+    }
+    :global {
+      .AddressActions_shareIcon,
+      .AddressActions_shareAddressLabel {
+        opacity: 1;
+      }
     }
   }
 }
 .addressId {
-  cursor: default;
   display: flex;
   flex-direction: row;
   flex-grow: 1;
   font-family: var(--font-mono);
   letter-spacing: -0.4px;
   margin-right: 4px;
+  opacity: 1;
   overflow: hidden;
   position: relative;
+  transition: opacity 0.25s;
   user-select: none;
   white-space: nowrap;
 
