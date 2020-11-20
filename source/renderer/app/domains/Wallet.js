@@ -50,6 +50,7 @@ export type HwDeviceStatus =
   | 'verifying_transaction'
   | 'verifying_transaction_failed'
   | 'wrong_firmware'
+  | 'wrong_cardano_app_version'
   | 'unsupported_device'
   | 'verifying_transaction_succeeded';
 
@@ -64,6 +65,7 @@ export const HwDeviceStatuses: {
   VERIFYING_TRANSACTION_FAILED: HwDeviceStatus,
   VERIFYING_TRANSACTION_SUCCEEDED: HwDeviceStatus,
   WRONG_FIRMWARE: HwDeviceStatus,
+  WRONG_CARDANO_APP_VERSION: HwDeviceStatus,
   UNSUPPORTED_DEVICE: HwDeviceStatus,
   TREZOR_BRIDGE_FAILURE: HwDeviceStatus,
 } = {
@@ -74,6 +76,7 @@ export const HwDeviceStatuses: {
   EXPORTING_PUBLIC_KEY: 'exporting_public_key',
   EXPORTING_PUBLIC_KEY_FAILED: 'exporting_public_key_failed',
   WRONG_FIRMWARE: 'wrong_firmware',
+  WRONG_CARDANO_APP_VERSION: 'wrong_cardano_app_version',
   UNSUPPORTED_DEVICE: 'unsupported_device',
   READY: 'ready',
   VERIFYING_TRANSACTION: 'verifying_transaction',

@@ -507,17 +507,31 @@
         }
       },
       {
+        "defaultMessage": "!!!Unable to detect your hardware wallet device.",
+        "description": "\"Connect failed\" device state",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
+        "id": "wallet.hardware.deviceStatus.connecting.failed",
+        "start": {
+          "column": 21,
+          "line": 23
+        }
+      },
+      {
         "defaultMessage": "!!!Connect the \"{walletName}\" device",
         "description": "\"Connect the IOHK Trezor 1 device\" device state",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 33
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.connecting.known",
         "start": {
           "column": 20,
-          "line": 23
+          "line": 29
         }
       },
       {
@@ -525,13 +539,13 @@
         "description": "\"Launch Cardano application on your device\" device state",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 38
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.launching_cardano_app",
         "start": {
           "column": 25,
-          "line": 28
+          "line": 34
         }
       },
       {
@@ -539,13 +553,13 @@
         "description": "\"Confirm exporting your public key on your device\" device state",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 44
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.exporting_public_key",
         "start": {
           "column": 24,
-          "line": 33
+          "line": 39
         }
       },
       {
@@ -553,13 +567,13 @@
         "description": "\"Exporting public key failed\" device state",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 49
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.exporting_public_key_failed",
         "start": {
           "column": 31,
-          "line": 39
+          "line": 45
         }
       },
       {
@@ -567,13 +581,13 @@
         "description": "\"Disconnect and reconnect your device to start the process again\" device state",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 56
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.exportingPublicKeyError",
         "start": {
           "column": 27,
-          "line": 44
+          "line": 50
         }
       },
       {
@@ -581,13 +595,13 @@
         "description": "\"Device ready\" device state",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 61
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.ready",
         "start": {
           "column": 9,
-          "line": 51
+          "line": 57
         }
       },
       {
@@ -595,13 +609,13 @@
         "description": "\"Confirm the transaction using the IOHK Trezor 1 device\" device state",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 68
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.verifying_transaction",
         "start": {
           "column": 25,
-          "line": 56
+          "line": 62
         }
       },
       {
@@ -609,13 +623,13 @@
         "description": "\"Transaction verification and signing failed\" device state",
         "end": {
           "column": 3,
-          "line": 67
+          "line": 73
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.verifying_transaction_failed",
         "start": {
           "column": 32,
-          "line": 63
+          "line": 69
         }
       },
       {
@@ -623,13 +637,13 @@
         "description": "\"Transaction verified and signed\" device state",
         "end": {
           "column": 3,
-          "line": 72
+          "line": 78
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.verifying_transaction_succeeded",
         "start": {
           "column": 35,
-          "line": 68
+          "line": 74
         }
       },
       {
@@ -637,13 +651,13 @@
         "description": "\"Trezor Bridge not installed! {instructionsLink}\" device state",
         "end": {
           "column": 3,
-          "line": 78
+          "line": 84
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.trezor_bridge_failure",
         "start": {
           "column": 25,
-          "line": 73
+          "line": 79
         }
       },
       {
@@ -651,13 +665,13 @@
         "description": "Trezor Bridge installation instructions link label",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 89
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.trezor_bridge_failure.link.label",
         "start": {
           "column": 36,
-          "line": 79
+          "line": 85
         }
       },
       {
@@ -665,13 +679,13 @@
         "description": "URL for the \"Trezor Bridge\" update",
         "end": {
           "column": 3,
-          "line": 89
+          "line": 95
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.trezor_bridge_failure.link.url",
         "start": {
           "column": 34,
-          "line": 84
+          "line": 90
         }
       },
       {
@@ -679,13 +693,13 @@
         "description": "\"Unsupported firmware!\" device state",
         "end": {
           "column": 3,
-          "line": 94
+          "line": 100
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.wrong_firmware",
         "start": {
           "column": 18,
-          "line": 90
+          "line": 96
         }
       },
       {
@@ -693,13 +707,13 @@
         "description": "Firmware update installation instructions link label",
         "end": {
           "column": 3,
-          "line": 99
+          "line": 105
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.wrong_firmware.link.label",
         "start": {
           "column": 29,
-          "line": 95
+          "line": 101
         }
       },
       {
@@ -707,13 +721,13 @@
         "description": "URL for the \"Firmware Update\"",
         "end": {
           "column": 3,
-          "line": 105
+          "line": 111
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.wrong_firmware.link.url",
         "start": {
           "column": 27,
-          "line": 100
+          "line": 106
         }
       },
       {
@@ -721,13 +735,55 @@
         "description": "\"The device is not supported!\" device state",
         "end": {
           "column": 3,
-          "line": 110
+          "line": 116
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.unsupported_device",
         "start": {
           "column": 22,
-          "line": 106
+          "line": 112
+        }
+      },
+      {
+        "defaultMessage": "!!!Outdated Ledger software!! {instructionsLink}",
+        "description": "\"Unsupported firmware!\" device state",
+        "end": {
+          "column": 3,
+          "line": 122
+        },
+        "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
+        "id": "wallet.hardware.deviceStatus.wrong_cardano_app_version",
+        "start": {
+          "column": 29,
+          "line": 118
+        }
+      },
+      {
+        "defaultMessage": "!!!Software update instructions",
+        "description": "Firmware update installation instructions link label",
+        "end": {
+          "column": 3,
+          "line": 127
+        },
+        "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
+        "id": "wallet.hardware.deviceStatus.wrong_cardano_app_version.link.label",
+        "start": {
+          "column": 40,
+          "line": 123
+        }
+      },
+      {
+        "defaultMessage": "!!!https://support.ledger.com/hc/en-us/articles/360020095874-Cardano-ADA-",
+        "description": "URL for the \"Firmware Update\"",
+        "end": {
+          "column": 3,
+          "line": 133
+        },
+        "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
+        "id": "wallet.hardware.deviceStatus.wrong_cardano_app_version.link.url",
+        "start": {
+          "column": 38,
+          "line": 128
         }
       }
     ],
@@ -12275,7 +12331,7 @@
         }
       },
       {
-        "defaultMessage": "!!!<p><b>Daedalus currently supports only Trezor Model T hardware wallet devices.</b></p><p>If you are <b>pairing your device with Daedalus for the first time</b>, please follow the instructions below.</p><p>If you have <b>already paired your device with Daedalus</b>, you don’t need to repeat this step. Just connect your device when you need to confirm a transaction.</p>",
+        "defaultMessage": "!!!<p>Daedalus currently supports Ledger Nano S, Ledger Nano X, and Trezor Model T hardware wallet devices.</p>",
         "description": "Follow instructions label",
         "end": {
           "column": 3,

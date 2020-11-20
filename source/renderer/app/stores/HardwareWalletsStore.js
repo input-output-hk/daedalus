@@ -10,6 +10,8 @@ import {
   HW_SHELLEY_CONFIG,
   MINIMAL_TREZOR_FIRMWARE_VERSION,
   MINIMAL_LEDGER_FIRMWARE_VERSION,
+  MINIMAL_CARDANO_APP_VERSION,
+  WRONG_CARDANO_APP_VERSION,
   isHardwareWalletSupportEnabled,
   isTrezorEnabled,
   isLedgerEnabled,
@@ -644,6 +646,7 @@ export default class HardwareWalletsStore extends Store {
     this.hwDeviceStatus = HwDeviceStatuses.LAUNCHING_CARDANO_APP;
     try {
       const cardanoAdaApp = await getCardanoAdaAppChannel.request({ path });
+
       console.debug('>>> cardanoAdaApp RESPONSE: ', cardanoAdaApp);
       // @TODO - keep poller until app recognized or process exited
       this.stopCardanoAdaAppFetchPoller();
@@ -654,6 +657,23 @@ export default class HardwareWalletsStore extends Store {
           hardwareWalletsConnectionData: this.hardwareWalletsConnectionData,
           hardwareWalletDevices: this.hardwareWalletDevices,
         });
+
+        const cardanoAppVersion = `${cardanoAdaApp.major}.${cardanoAdaApp.minor}.${cardanoAdaApp.patch}`
+
+        console.debug('>>cardanoAppVersion: ', {cardanoAppVersion, MINIMAL_CARDANO_APP_VERSION})
+        const isValidAppVersion = semver.gte(
+          cardanoAppVersion,
+          MINIMAL_CARDANO_APP_VERSION
+        );
+        if (!isValidAppVersion) {
+          runInAction(
+            'HardwareWalletsStore:: set HW device CONNECTING FAILED - wrong firmware',
+            () => {
+              this.hwDeviceStatus = HwDeviceStatuses.WRONG_CARDANO_APP_VERSION;
+            }
+          );
+          throw new Error(`Cardano app must be ${MINIMAL_CARDANO_APP_VERSION} or greater!`);
+        }
 
         // CHECK if I have wallet with THIS deviceId
         const recognizedWallet = find(

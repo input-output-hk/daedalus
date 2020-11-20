@@ -22,7 +22,7 @@ const messages = defineMessages({
   },
   connecting_failed: {
     id: 'wallet.hardware.deviceStatus.connecting.failed',
-    defaultMessage: '!!!Connecting failed',
+    defaultMessage: '!!!Unable to detect your hardware wallet device. ',
     description:
       '"Connect failed" device state',
   },
@@ -114,6 +114,23 @@ const messages = defineMessages({
     defaultMessage: '!!!The device is not supported!',
     description: '"The device is not supported!" device state',
   },
+
+  wrong_cardano_app_version: {
+    id: 'wallet.hardware.deviceStatus.wrong_cardano_app_version',
+    defaultMessage: '!!!Outdated Ledger software!! {instructionsLink}',
+    description: '"Unsupported firmware!" device state',
+  },
+  wrong_cardano_app_version_link_label: {
+    id: 'wallet.hardware.deviceStatus.wrong_cardano_app_version.link.label',
+    defaultMessage: '!!!Software update instructions',
+    description: 'Firmware update installation instructions link label',
+  },
+  wrong_cardano_app_version_link_url: {
+    id: 'wallet.hardware.deviceStatus.wrong_cardano_app_version.link.url',
+    defaultMessage:
+      '!!!https://support.ledger.com/hc/en-us/articles/360020095874-Cardano-ADA-',
+    description: 'URL for the "Firmware Update"',
+  },
 });
 
 type Props = {
@@ -147,6 +164,7 @@ export default class HardwareWalletStatus extends Component<Props> {
       hwDeviceStatus === HwDeviceStatuses.CONNECTING_FAILED ||
       hwDeviceStatus === HwDeviceStatuses.TREZOR_BRIDGE_FAILURE ||
       hwDeviceStatus === HwDeviceStatuses.WRONG_FIRMWARE ||
+      hwDeviceStatus === HwDeviceStatuses.WRONG_CARDANO_APP_VERSION ||
       hwDeviceStatus === HwDeviceStatuses.UNSUPPORTED_DEVICE ||
       hwDeviceStatus === HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED;
 
@@ -158,6 +176,7 @@ export default class HardwareWalletStatus extends Component<Props> {
 
     const hasInstructionsLink =
       hwDeviceStatus === HwDeviceStatuses.TREZOR_BRIDGE_FAILURE ||
+      hwDeviceStatus === HwDeviceStatuses.WRONG_CARDANO_APP_VERSION ||
       hwDeviceStatus === HwDeviceStatuses.WRONG_FIRMWARE;
     let instructionsLink;
     let label;

@@ -509,6 +509,8 @@ export const handleHardwareWalletRequests = async (
 //    // END of test
 //    return;
     if (!devicesMemo[path]) {
+      console.debug('>>> Device not instantiated!');
+      // >>> USE FIRST @TODO
       throw new Error('Device not connected!');
     }
     console.debug('>>> GET CARDANO APP: ', {devicesMemo, path});

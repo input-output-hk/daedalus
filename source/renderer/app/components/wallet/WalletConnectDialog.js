@@ -43,7 +43,7 @@ const messages = defineMessages({
   instructions: {
     id: 'wallet.connect.dialog.instructions',
     defaultMessage:
-      '!!!<p><b>Daedalus currently supports only Trezor Model T hardware wallet devices.</b></p><p>If you are <b>pairing your device with Daedalus for the first time</b>, please follow the instructions below.</p><p>If you have <b>already paired your device with Daedalus</b>, you don’t need to repeat this step. Just connect your device when you need to confirm a transaction.</p>',
+      '!!!<p>Daedalus currently supports Ledger Nano S, Ledger Nano X, and Trezor Model T hardware wallet devices.</p>',
     description: 'Follow instructions label',
   },
 });
