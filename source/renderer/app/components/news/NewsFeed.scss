@@ -107,12 +107,12 @@
     }
 
     *::-webkit-scrollbar-track {
-      margin: 24px 0;
+      margin: 25px 0;
     }
 
     &.hasShadow {
       *::-webkit-scrollbar-track {
-        margin: 11px 0;
+        margin: 15px 0 11px;
       }
     }
 
@@ -161,7 +161,7 @@
       width: calc(100% - 20px);
 
       &.hasUpdate {
-        height: calc(100% - 200px);
+        height: calc(100% - 190px);
         margin-top: 85px;
       }
     }

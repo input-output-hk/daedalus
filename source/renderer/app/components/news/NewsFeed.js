@@ -92,7 +92,7 @@ export default class NewsFeed extends Component<Props, State> {
 
     if (this.scrollableDomElement) {
       const { scrollTop } = this.scrollableDomElement;
-      const hasShadow = scrollTop > 2;
+      const hasShadow = scrollTop > 3;
       if (currentHasShadow !== hasShadow) {
         this.setState({
           hasShadow,
