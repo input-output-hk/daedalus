@@ -141,35 +141,6 @@
       span {
         outline: none;
       }
-
-      :global {
-        .SimpleTooltip_bubble {
-          .SimpleBubble_bubble {
-            border-radius: 6px;
-            font-family: var(--font-regular);
-            font-size: 13px;
-            line-height: 1.15;
-          }
-        }
-
-        .Slider_minMark {
-          .SimpleTooltip_bubble {
-            .SimpleBubble_bubble {
-              left: -15px;
-              right: auto;
-            }
-          }
-        }
-
-        .Slider_maxMark {
-          .SimpleTooltip_bubble {
-            .SimpleBubble_bubble {
-              left: -50px;
-              right: auto;
-            }
-          }
-        }
-      }
     }
 
     .outOfRangeMaxAmount {
@@ -177,19 +148,6 @@
       line-height: 1.33;
       margin-bottom: 9px;
       text-align: right;
-
-      :global {
-        .SimpleTooltip_bubble {
-          .SimpleBubble_bubble {
-            border-radius: 6px;
-            font-family: var(--font-regular);
-            font-size: 13px;
-            left: auto;
-            line-height: 1.15;
-            right: -10px;
-          }
-        }
-      }
     }
 
     .outOfSliderRangeEnd {

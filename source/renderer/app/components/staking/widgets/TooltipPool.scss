@@ -50,12 +50,6 @@
       }
     }
 
-    .SimpleBubble_root {
-      .SimpleBubble_bubble {
-        margin-left: -40px;
-      }
-    }
-
     .TooltipPool_container > span {
       outline: none;
     }
@@ -116,12 +110,6 @@
 
   .noDataDashTooltip {
     padding: 0;
-
-    :global {
-      .SimpleBubble_bubble {
-        margin-bottom: -20px !important;
-      }
-    }
   }
 }
 
@@ -479,22 +467,6 @@
 
           & + p {
             margin-top: 6px;
-          }
-        }
-      }
-
-      :global {
-        .SimpleTooltip_root {
-          .SimpleTooltip_bubble {
-            transform: translate(calc(50% - 5px), 5px);
-
-            .SimpleBubble_bubble {
-              font-family: var(--font-regular);
-              margin-left: 40px;
-              transform: translate(-50%, 0);
-              white-space: normal;
-              width: 250px;
-            }
           }
         }
       }

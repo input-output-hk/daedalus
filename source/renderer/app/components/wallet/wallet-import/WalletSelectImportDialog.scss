@@ -145,20 +145,6 @@
       }
     }
 
-    .tooltip {
-      :global {
-        .SimpleBubble_bubble {
-          background: var(--theme-utxo-tooltip-background-color);
-        }
-
-        .SimpleBubble_root.SimpleBubble_transparent.SimpleBubble_openUpward
-          [data-bubble-arrow]:after {
-          border-color: var(--theme-utxo-tooltip-background-color) transparent
-            transparent transparent !important;
-        }
-      }
-    }
-
     .walletsContainer {
       margin-right: -28px;
       overflow-x: hidden;
