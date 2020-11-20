@@ -18,22 +18,16 @@ module MacInstaller
 import           Universum                 hiding (FilePath, toText, (<>))
 
 import           Control.Exception         (handle)
-import           Control.Monad             (unless)
-import           Data.Text                 (Text)
 import qualified Data.Text                 as T
 import           Data.Aeson                (FromJSON(parseJSON), genericParseJSON, defaultOptions, decodeFileStrict')
 import           Data.Yaml                 (decodeFileThrow)
 import           Text.RawString.QQ
-import           Filesystem.Path           (FilePath, dropExtension, (<.>),
-                                            (</>))
-import           Filesystem.Path.CurrentOS (encodeString)
 import           System.IO                 (BufferMode (NoBuffering),
                                             hSetBuffering)
 import           System.IO.Error           (IOError, isDoesNotExistError)
 import           System.Environment        (getEnv)
 import           System.Posix.Files
 import           Turtle                    hiding (e, prefix, stdout)
-import           Turtle.Line               (unsafeTextToLine)
 
 
 import           Config
