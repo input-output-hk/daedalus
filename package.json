@@ -67,7 +67,7 @@
     "create-news-verification-hashes": "node utils/create-news-verification-hashes/index.js",
     "lockfile:check": "node utils/lockfile-checker/index.js --check",
     "lockfile:fix": "node utils/lockfile-checker/index.js --fix",
-    "postinstall": "yarn build:electron"
+    "postinstall": "electron-rebuild -f -w usb"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"
