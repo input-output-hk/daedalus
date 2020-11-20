@@ -55,7 +55,6 @@ export default class AddressSequential extends Component<Props> {
       styles.component,
       address.used ? styles.usedWalletAddress : null,
     ]);
-    const addressIdClasses = classnames([styles.addressId]);
     return (
       <div
         className={addressClasses}
@@ -64,7 +63,7 @@ export default class AddressSequential extends Component<Props> {
         aria-hidden
       >
         <div
-          className={addressIdClasses}
+          className={styles.addressId}
           ref={(ref) => {
             this.addressContainerElement = ref;
           }}

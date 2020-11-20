@@ -670,7 +670,7 @@
   "wallet.notResponding.title": "The wallet is not responding.",
   "wallet.receive.dialog.copyAddressLabel": "Copy address",
   "wallet.receive.dialog.dialogTitle": "Share wallet address",
-  "wallet.receive.dialog.downloadPDFButton": "Download as PDF",
+  "wallet.receive.dialog.downloadPDFButton": "Save as PDF",
   "wallet.receive.dialog.inputLabel": "Note for the PDF",
   "wallet.receive.dialog.inputPlaceholder": "Add an optional note to be printed on the PDF document",
   "wallet.receive.dialog.saveQRCodeImage": "Save QR code image",
