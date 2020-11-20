@@ -191,11 +191,11 @@ export default class NewsFeed extends Component<Props, State> {
                   isUpdatePostponed={isUpdatePostponed}
                 />
               }
-              <hr className={separatorStyles} />
             </div>
           )}
           {items.length > 0 && (
             <div className={newsFeedListStyles}>
+              <hr className={separatorStyles} />
               {items.map((newsItem) => (
                 <NewsItem
                   key={newsItem.id}

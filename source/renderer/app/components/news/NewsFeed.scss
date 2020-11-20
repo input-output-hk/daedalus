@@ -162,12 +162,7 @@
 
       &.hasUpdate {
         height: calc(100% - 200px);
-        margin-top: 115px;
-      }
-
-      &.hasUpdate.hasShadow {
-        margin-top: 100px;
-        padding-top: 17px;
+        margin-top: 85px;
       }
     }
 
@@ -177,7 +172,9 @@
       padding: 20px 20px 15px;
 
       &.hasShadow {
+        background: var(--theme-news-feed-background-color);
         box-shadow: var(--theme-news-feed-header-box-shadow-color);
+        z-index: 1;
       }
     }
   }
@@ -195,7 +192,6 @@
 
     &.hidden {
       border: none;
-      margin: 0;
       opacity: 0;
       transition: visibility 0s 0.3s, opacity 0.3s linear;
       visibility: hidden;
