@@ -10,7 +10,7 @@ import type {
   NotificationConfig,
   NotificationId,
 } from '../../types/notificationTypes';
-import type { NotificationMessageProps } from '../../components/notifications/Notification.js';
+import type { NotificationMessageProps } from '../../components/notifications/Notification';
 
 const ICONS = {
   successIcon,
@@ -46,6 +46,20 @@ const messages = defineMessages({
       '!!!Address: <strong>{walletAddress}</strong> copied to clipboard',
     description:
       'Notification for the wallet address copy success in the Wallet Receive page.',
+  },
+  downloadAddressPDFSuccess: {
+    id: 'notification.downloadAddressPDFSuccess',
+    defaultMessage:
+      '!!!Address: <strong>{walletAddress}</strong> PDF successfully downloaded',
+    description:
+      'Notification for the wallet address PDF download success in the Wallet Receive page.',
+  },
+  downloadQRCodeImageSuccess: {
+    id: 'notification.downloadQRCodeImageSuccess',
+    defaultMessage:
+      '!!!Address: <strong>{walletAddress}</strong> QR code image successfully downloaded',
+    description:
+      'Notification for the wallet address PDF download success in the Wallet Receive page.',
   },
   copyStateDirectoryPath: {
     id: 'notification.copyStateDirectoryPath',
@@ -92,6 +106,17 @@ export default class NotificationsContainer extends Component<InjectedProps> {
       actionToListenAndOpen: this.props.actions.wallets.copyAddress,
     },
     {
+      id: 'downloadAddressPDFSuccess',
+      actionToListenAndOpen: this.props.actions.wallets
+        .generateAddressPDFSuccess,
+      actionToListenAndClose: this.props.actions.wallets.generateAddressPDF,
+    },
+    {
+      id: 'downloadQRCodeImageSuccess',
+      actionToListenAndOpen: this.props.actions.wallets.saveQRCodeImageSuccess,
+      actionToListenAndClose: this.props.actions.wallets.saveQRCodeImage,
+    },
+    {
       id: 'copyStateDirectoryPath',
       actionToListenAndOpen: this.props.actions.networkStatus
         .copyStateDirectoryPath,
@@ -126,7 +151,6 @@ export default class NotificationsContainer extends Component<InjectedProps> {
     const { stores, actions } = this.props;
     const { closeNotification } = actions.notifications;
     const { activeNotifications } = stores.uiNotifications;
-    Object.keys(activeNotifications);
     return (
       <div>
         {this.notificationsConfig.map(({ id }: NotificationConfig) => {
