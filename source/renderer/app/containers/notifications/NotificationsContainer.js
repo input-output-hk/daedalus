@@ -10,7 +10,7 @@ import type {
   NotificationConfig,
   NotificationId,
 } from '../../types/notificationTypes';
-import type { NotificationMessageProps } from '../../components/notifications/Notification.js';
+import type { NotificationMessageProps } from '../../components/notifications/Notification';
 
 const ICONS = {
   successIcon,
