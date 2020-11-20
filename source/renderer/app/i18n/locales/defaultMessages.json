@@ -8197,7 +8197,7 @@
         }
       },
       {
-        "defaultMessage": "!!!show used",
+        "defaultMessage": "!!!Show used",
         "description": "Label for \"show used\" wallet addresses link on the wallet \"Receive page\"",
         "end": {
           "column": 3,
@@ -8272,17 +8272,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Download as PDF",
-        "description": "downloadPDFButton on the wallet \"Share Address\" dialog",
+        "defaultMessage": "!!!Save QR code image",
+        "description": "saveQRCodeImage on the wallet \"Share Address\" dialog",
         "end": {
           "column": 3,
           "line": 33
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
+        "id": "wallet.receive.dialog.saveQRCodeImage",
+        "start": {
+          "column": 19,
+          "line": 29
+        }
+      },
+      {
+        "defaultMessage": "!!!Download as PDF",
+        "description": "downloadPDFButton on the wallet \"Share Address\" dialog",
+        "end": {
+          "column": 3,
+          "line": 38
+        },
+        "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.downloadPDFButton",
         "start": {
           "column": 21,
-          "line": 29
+          "line": 34
         }
       },
       {
@@ -8290,13 +8304,13 @@
         "description": "dialogTitle on the wallet \"Share Address\" dialog",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 43
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.dialogTitle",
         "start": {
           "column": 15,
-          "line": 34
+          "line": 39
         }
       },
       {
@@ -8304,13 +8318,13 @@
         "description": "Label for \"Copy address\" link on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 48
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.copyAddressLabel",
         "start": {
           "column": 20,
-          "line": 39
+          "line": 44
         }
       }
     ],
@@ -8375,7 +8389,7 @@
         }
       },
       {
-        "defaultMessage": "!!!show used",
+        "defaultMessage": "!!!Show used",
         "description": "Label for \"show used\" wallet addresses link on the wallet \"Receive page\"",
         "end": {
           "column": 3,
@@ -8464,7 +8478,7 @@
         }
       },
       {
-        "defaultMessage": "!!!show used",
+        "defaultMessage": "!!!Show used",
         "description": "Label for \"show used\" wallet addresses link on the wallet \"Receive page\"",
         "end": {
           "column": 3,
@@ -13319,17 +13333,45 @@
         }
       },
       {
+        "defaultMessage": "!!!Address: <strong>{walletAddress}</strong> PDF successfully downloaded",
+        "description": "Notification for the wallet address PDF download success in the Wallet Receive page.",
+        "end": {
+          "column": 3,
+          "line": 56
+        },
+        "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
+        "id": "notification.downloadAddressPDFSuccess",
+        "start": {
+          "column": 29,
+          "line": 50
+        }
+      },
+      {
+        "defaultMessage": "!!!Address: <strong>{walletAddress}</strong> QR code image successfully downloaded",
+        "description": "Notification for the wallet address PDF download success in the Wallet Receive page.",
+        "end": {
+          "column": 3,
+          "line": 63
+        },
+        "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
+        "id": "notification.downloadQRCodeImageSuccess",
+        "start": {
+          "column": 30,
+          "line": 57
+        }
+      },
+      {
         "defaultMessage": "!!!Daedalus state directory copied to clipboard",
         "description": "Notification for the state directory copy success in the Diagnostics page.",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 69
         },
         "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
         "id": "notification.copyStateDirectoryPath",
         "start": {
           "column": 26,
-          "line": 50
+          "line": 64
         }
       }
     ],
@@ -13518,6 +13560,25 @@
       }
     ],
     "path": "source/renderer/app/containers/staking/StakingRewardsPage.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Address",
+        "description": "\"Address\" word in the Address PDF export",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "source/renderer/app/containers/wallet/WalletReceivePage.js",
+        "id": "wallet.receive.pdf.filenamePrefix",
+        "start": {
+          "column": 11,
+          "line": 17
+        }
+      }
+    ],
+    "path": "source/renderer/app/containers/wallet/WalletReceivePage.json"
   },
   {
     "descriptors": [
