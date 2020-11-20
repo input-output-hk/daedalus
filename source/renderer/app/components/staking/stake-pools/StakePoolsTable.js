@@ -342,7 +342,9 @@ export class StakePoolsTable extends Component<Props, State> {
             maxWidth={350}
             key="producedBlocks"
             placement="bottom"
-            content={intl.formatMessage(messages.tableHeaderProducedBlocksTooltip)}
+            content={intl.formatMessage(
+              messages.tableHeaderProducedBlocksTooltip
+            )}
           >
             {intl.formatMessage(messages.tableHeaderProducedBlocks)}
           </PopOver>

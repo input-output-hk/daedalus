@@ -64,11 +64,7 @@ export default class InlineEditingDropdown extends Component<Props> {
     const labelText = [
       label,
       !!tooltip && (
-        <PopOver
-          maxWidth={350}
-          content={tooltip}
-          key="tooltip"
-        >
+        <PopOver maxWidth={350} content={tooltip} key="tooltip">
           <SVGInline
             svg={questionMarkIcon}
             className={styles.questionMarkIcon}

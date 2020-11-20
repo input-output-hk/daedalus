@@ -550,10 +550,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               {getRow('platformVersion', platformVersion)}
               {getRow(
                 'cpu',
-                <PopOver
-                  maxWidth={350}
-                  content={cpu}
-                >
+                <PopOver maxWidth={350} content={cpu}>
                   {cpu}
                 </PopOver>
               )}

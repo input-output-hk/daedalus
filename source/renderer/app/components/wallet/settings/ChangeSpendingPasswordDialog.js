@@ -308,7 +308,9 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
               {!isSpendingPasswordSet && (
                 <PopOver
                   maxWidth={350}
-                  content={<FormattedHTMLMessage {...messages.passwordTooltip} />}
+                  content={
+                    <FormattedHTMLMessage {...messages.passwordTooltip} />
+                  }
                   key="tooltip"
                 >
                   <SVGInline svg={infoIconInline} className={styles.infoIcon} />

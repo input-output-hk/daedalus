@@ -227,7 +227,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
               )
             }
             isBounded={walletNotSelectable}
-            placement={isOpeningUpward  ? 'top': 'bottom'}
+            placement={isOpeningUpward ? 'top' : 'bottom'}
           >
             {statusIcon}
           </PopOver>

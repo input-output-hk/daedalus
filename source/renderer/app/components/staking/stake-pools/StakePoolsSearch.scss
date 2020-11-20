@@ -48,7 +48,7 @@
 
 .clearSearchButton {
   background-color: var(
-      --theme-staking-stake-pools-search-clear-button-background-color
+    --theme-staking-stake-pools-search-clear-button-background-color
   );
   border-radius: 3px;
   cursor: pointer;
@@ -59,13 +59,13 @@
 
   &:hover {
     background-color: var(
-        --theme-staking-stake-pools-search-clear-button-hover-background-color
+      --theme-staking-stake-pools-search-clear-button-hover-background-color
     );
   }
 }
 
 .clearSearchIcon {
-  > svg  {
+  > svg {
     position: relative;
     top: 0.5px;
     width: 10px;
