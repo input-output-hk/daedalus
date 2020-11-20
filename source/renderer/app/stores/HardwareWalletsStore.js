@@ -597,15 +597,15 @@ export default class HardwareWalletsStore extends Store {
           // const devicePath = forcedDeviceData ? forcedDeviceData.path : transportDevice.path;
           const devicePath = transportDevice.path;
           const pendingId = forcedDeviceData ? forcedDeviceData.pendingId : null;
-          console.debug('>>> getCardanoAdaApp - from  establishHardwareWalletConnection');
-          if (!this.cardanoAdaAppPollingInterval) {
+          console.debug('>>> getCardanoAdaApp - from  establishHardwareWalletConnection: ', { cardanoAdaAppPollingInterval: this.cardanoAdaAppPollingInterval });
+          // if (!this.cardanoAdaAppPollingInterval) {
             this.cardanoAdaAppPollingInterval = setInterval(
               (path, pendingId) => this.getCardanoAdaApp({ path, pendingId }),
               CARDANO_ADA_APP_POLLING_INTERVAL,
               devicePath,
               forcedDeviceData ? forcedDeviceData.pendingId : null,
             );
-          }
+          // }
         }
       } else {
         runInAction(

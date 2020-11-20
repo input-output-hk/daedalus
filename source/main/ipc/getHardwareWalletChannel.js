@@ -110,30 +110,17 @@ class EventObserver {
     this.channel = {};
   }
   next = async (event) => {
-    console.debug('>>> Ledger NEXT: ', event);
+    const transportList = await TransportNodeHid.list();
+    console.debug('>>> Ledger NEXT: ', {event, transportList});
     const connectionChanged = event.type === 'add' || event.type === 'remove';
     if (connectionChanged) {
       const device = get(event, 'device', {});
       const deviceModel = get(event, 'deviceModel', {});
-      getHardwareWalletConnectionChannel.send(
-        {
-          disconnected: event.type === 'remove',
-          deviceType: 'ledger',
-          deviceId: null, // Available only when Cardano APP opened
-          deviceModel: deviceModel.id, // e.g. nanoS
-          deviceName: deviceModel.productName, // e.g. Test Name
-          path: device.path,
-        },
-        // $FlowFixMe
-        this.mainWindow
-      );
       this.test = 100;
 
-      const transportList = await TransportNodeHid.list();
-      console.debug('>>> CONSTRUCTOR transportList: ', transportList);
       if (event.type === 'add') {
-        console.debug('>>> CONSTRUCTOR ADD: ', device);
-        if (!includes(transportList, device.path) || !devicesMemo[device.path]) {
+        if (!devicesMemo[device.path]) {
+          console.debug('>>> CONSTRUCTOR ADD: ', { device, transportList, devicesMemo });
           try {
             const transport = await TransportNodeHid.open(device.path);
             const AdaConnection = new AppAda(transport);
@@ -141,6 +128,18 @@ class EventObserver {
               transport,
               AdaConnection: AdaConnection,
             };
+            getHardwareWalletConnectionChannel.send(
+              {
+                disconnected: false,
+                deviceType: 'ledger',
+                deviceId: null, // Available only when Cardano APP opened
+                deviceModel: deviceModel.id, // e.g. nanoS
+                deviceName: deviceModel.productName, // e.g. Test Name
+                path: device.path,
+              },
+              // $FlowFixMe
+              this.mainWindow
+            );
           } catch(e) {
             console.debug('>>> CONSTRUCTOR error: ', e);
           }
@@ -148,6 +147,18 @@ class EventObserver {
       } else {
         console.debug('>>> CONSTRUCTOR REMOVE: ', device);
         devicesMemo = omit(devicesMemo, [device.path]);
+        getHardwareWalletConnectionChannel.send(
+          {
+            disconnected: true,
+            deviceType: 'ledger',
+            deviceId: null, // Available only when Cardano APP opened
+            deviceModel: deviceModel.id, // e.g. nanoS
+            deviceName: deviceModel.productName, // e.g. Test Name
+            path: device.path,
+          },
+          // $FlowFixMe
+          this.mainWindow
+        );
       }
       console.debug('>>> CONSTRUCTOR Memo: ', {devicesMemo});
 
