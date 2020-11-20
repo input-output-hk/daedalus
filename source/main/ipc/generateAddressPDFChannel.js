@@ -132,13 +132,15 @@ export const handleAddressPDFRequests = () => {
           doc.moveDown();
 
           // Footer
-          doc
-            .fontSize(12)
-            .font(isMainnet ? fontBufferRegular : fontBufferMedium)
-            .fillColor(isMainnet ? textColor : textColorRed)
-            .text(`${networkLabel} ${networkName}`, {
-              align: 'right',
-            });
+          if (!isMainnet) {
+            doc
+              .fontSize(12)
+              .font(fontBufferMedium)
+              .fillColor(textColorRed)
+              .text(`${networkLabel} ${networkName}`, {
+                align: 'right',
+              });
+          }
 
           // Write file to disk
           const writeStream = fs.createWriteStream(filePath);
