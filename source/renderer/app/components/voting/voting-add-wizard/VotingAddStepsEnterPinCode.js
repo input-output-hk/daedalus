@@ -90,7 +90,7 @@ export default class VotingAddStepsEnterPinCode extends Component<Props> {
             ({ field, form }) => {
               const repeatPinCodeField = form.$('repeatPinCode');
               const isRepeatPinCodeFieldSet =
-                repeatPinCodeField.value.toString().length > 0;
+                field.value.toString().length === PIN_CODE_LENGTH;
               repeatPinCodeField.validate({
                 showErrors: isRepeatPinCodeFieldSet,
               });
@@ -180,7 +180,7 @@ export default class VotingAddStepsEnterPinCode extends Component<Props> {
               {...repeatPinCodeFieldProps}
               label={repeatPinCodeLabel}
               onChange={(...args) => repeatPinCodeFieldProps.onChange(...args)}
-              isDisabled={!pinCodeField.isValid}
+              disabled={!pinCodeField.isValid}
               error={repeatPinCodeField.error}
             />
           </div>

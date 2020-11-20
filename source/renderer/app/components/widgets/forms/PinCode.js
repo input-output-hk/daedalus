@@ -9,6 +9,8 @@ import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import classNames from 'classnames';
 import tooltipStyles from './FormFieldSkinTooltip-tooltip.scss';
 import styles from './PinCode.scss';
+import BigNumber from 'bignumber.js';
+import type { Node } from 'react';
 
 type Props = $Exact<{
   id: string,
@@ -18,7 +20,7 @@ type Props = $Exact<{
   onChange?: Function,
   label: string,
   length: number,
-  isDisabled: boolean,
+  disabled: boolean,
   value: number,
   error: string | null,
 }>;
@@ -26,19 +28,33 @@ type Props = $Exact<{
 export default class PinCode extends Component<Props> {
   static defaultProps = {
     length: 4,
-    isDisabled: false,
+    disabled: false,
   };
+
+  inputsRef = [];
+  focusKey = 0;
 
   onChange = (inputValue: ?number, key: number) => {
     const { value, onChange } = this.props;
 
-    const newValue = value.toString().split('');
+    let newValue = value.toString().split('');
     newValue[key] = inputValue ? inputValue.toString() : '';
+    newValue = newValue.join('') !== '' ? parseInt(newValue.join(''), 10) : '';
 
     if (onChange) {
-      onChange(parseInt(newValue.join(''), 10));
+      onChange(newValue);
     }
   };
+
+  componentDidUpdate() {
+    const { value, length } = this.props;
+    const key = value.toString().length;
+    if (key > 0 && key < length) {
+      this.inputsRef[this.focusKey >= key ? key - 1 : key].focus();
+      this.focusKey = key;
+    }
+    if (key === 0) this.focusKey = 0;
+  }
 
   generatePinCodeInput = () => {
     const {
@@ -49,7 +65,7 @@ export default class PinCode extends Component<Props> {
       length,
       error,
       value,
-      isDisabled,
+      disabled,
     } = this.props;
 
     const pinCodeClasses = classNames([
@@ -63,6 +79,13 @@ export default class PinCode extends Component<Props> {
           const inputValue = value ? value.toString().split('') : undefined;
           return (
             <NumericInput
+              ref={(input) => {
+                if (
+                  !this.inputsRef.hasOwnProperty(key) ||
+                  this.inputsRef[key] !== input
+                )
+                  this.inputsRef[key] = input;
+              }}
               id={id}
               name={name}
               type={type}
@@ -75,7 +98,7 @@ export default class PinCode extends Component<Props> {
               value={inputValue ? inputValue[key] : undefined}
               autoFocus={autoFocus && key === 0}
               disabled={
-                isDisabled ||
+                disabled ||
                 (key !== 0 &&
                   (!inputValue ||
                     !Object.prototype.hasOwnProperty.call(inputValue, key - 1)))
