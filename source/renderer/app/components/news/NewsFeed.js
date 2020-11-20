@@ -92,7 +92,7 @@ export default class NewsFeed extends Component<Props, State> {
 
     if (this.scrollableDomElement) {
       const { scrollTop } = this.scrollableDomElement;
-      const hasShadow = scrollTop > 3;
+      const hasShadow = scrollTop > 2;
       if (currentHasShadow !== hasShadow) {
         this.setState({
           hasShadow,
@@ -140,16 +140,23 @@ export default class NewsFeed extends Component<Props, State> {
     const newsFeedContainerStyles = classNames([
       styles.newsFeedContainer,
       !hasUpdateItem ? styles.noUpdateItem : null,
+      hasShadow ? styles.hasShadow : null,
     ]);
 
     const newsFeedListStyles = classNames([
       styles.newsFeedList,
       hasUpdateItem ? styles.hasUpdate : null,
+      hasShadow ? styles.hasShadow : null,
     ]);
 
     const newsFeedUpdateStyles = classNames([
       styles.updateItem,
       hasShadow ? styles.hasShadow : null,
+    ]);
+
+    const separatorStyles = classNames([
+      styles.separator,
+      hasShadow ? styles.hidden : null,
     ]);
 
     return (
@@ -184,6 +191,7 @@ export default class NewsFeed extends Component<Props, State> {
                   isUpdatePostponed={isUpdatePostponed}
                 />
               }
+              <hr className={separatorStyles} />
             </div>
           )}
           {items.length > 0 && (

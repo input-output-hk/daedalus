@@ -100,6 +100,10 @@
 
     &.noUpdateItem {
       padding: 10px 20px 0;
+
+      &.hasShadow {
+        padding: 0 20px;
+      }
     }
 
     &::-webkit-scrollbar-track {
@@ -149,7 +153,12 @@
 
       &.hasUpdate {
         height: calc(100% - 220px);
+        margin-top: 115px;
+      }
+
+      &.hasUpdate.hasShadow {
         margin-top: 100px;
+        padding-top: 17px;
       }
     }
 
@@ -167,5 +176,21 @@
 
   &.show {
     margin-right: 0;
+  }
+
+  .separator {
+    border: 1px solid var(--theme-news-item-title-color);
+    margin: 15px 0;
+    opacity: 0.2;
+    transition: opacity 0.3s linear;
+    visibility: visible;
+
+    &.hidden {
+      border: none;
+      margin: 0;
+      opacity: 0;
+      transition: visibility 0s 0.3s, opacity 0.3s linear;
+      visibility: hidden;
+    }
   }
 }
