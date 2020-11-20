@@ -7,7 +7,7 @@ import TrezorConnect, {
   TRANSPORT_EVENT,
   // $FlowFixMe
 } from 'trezor-connect';
-import { get, omit, last } from 'lodash';
+import { get, omit, last, includes } from 'lodash';
 import { derivePublic as deriveChildXpub } from 'cardano-crypto.js';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import {
@@ -132,17 +132,21 @@ class EventObserver {
       const transportList = await TransportNodeHid.list();
       console.debug('>>> CONSTRUCTOR transportList: ', transportList);
       if (event.type === 'add') {
-        try {
-          const transport = await TransportNodeHid.open(device.path);
-          const AdaConnection = new AppAda(transport);
-          devicesMemo[device.path] = {
-            transport,
-            AdaConnection: AdaConnection,
-          };
-        } catch(e) {
-          console.debug('>>> CONSTRUCTOR error: ', e);
+        console.debug('>>> CONSTRUCTOR ADD: ', device);
+        if (!includes(transportList, device.path) || !devicesMemo[device.path]) {
+          try {
+            const transport = await TransportNodeHid.open(device.path);
+            const AdaConnection = new AppAda(transport);
+            devicesMemo[device.path] = {
+              transport,
+              AdaConnection: AdaConnection,
+            };
+          } catch(e) {
+            console.debug('>>> CONSTRUCTOR error: ', e);
+          }
         }
       } else {
+        console.debug('>>> CONSTRUCTOR REMOVE: ', device);
         devicesMemo = omit(devicesMemo, [device.path]);
       }
       console.debug('>>> CONSTRUCTOR Memo: ', {devicesMemo});
@@ -264,14 +268,54 @@ export const handleHardwareWalletRequests = async (
 
       console.debug('>>> getHardwareWalletTransportChannel:: LEDGER: ', { devicesMemo });
       const transportList = await TransportNodeHid.list();
-      // let hw;
+      let hw;
+      let deviceConnection;
+      let transport;
 
-      const path = devicePath || last(transportList);
-      console.debug('>>> getHardwareWalletTransportChannel:: PATH: ', { path, transportList });
+      // const path = devicePath || last(transportList);
+      console.debug('>>> getHardwareWalletTransportChannel:: PATH: ', { devicePath, transportList });
+      let lastConnectedPath;
 
-      if (!path) return;
-      const hw = devicesMemo[path].transport;
-      const deviceConnection = devicesMemo[path].AdaConnection;
+      // const noInstance = (devicePath && !devicesMemo[devicePath]) || (!devicePath && !transportList.length);
+
+      if (transportList && !transportList.length) { // Establish connection with last device
+        try {
+          console.debug('>>> INIT NEW transport');
+            // hw = await TransportNodeHid.open(devicePath);
+          console.debug('>>> OPEN <<<: ', devicePath);
+          hw = await TransportNodeHid.create();
+          console.debug('>>> INIT NEW transport - DONE: ', hw);
+          const transportList = await TransportNodeHid.list();
+          lastConnectedPath = last(transportList);
+          console.debug('>>> !!! lastConnectedPath !!!: ', lastConnectedPath);
+
+          deviceConnection = new AppAda(hw);
+          devicesMemo[lastConnectedPath] = {
+            transport: hw,
+            AdaConnection: deviceConnection,
+          };
+
+        } catch (e) {
+          console.debug('>>> INIT NEW transport - ERROR: ', e);
+          throw e;
+        }
+        // throw new Error('DEVICE_NOT_CONNECTED');
+      } else if (!devicesMemo[devicePath]) {
+        console.debug('>>> USE First ');
+        // Use first like native usb nodeHID
+        lastConnectedPath = transportList[0];
+        // devicesMemo[lastConnectedPath]
+        if (devicesMemo[lastConnectedPath]) {
+          hw = devicesMemo[lastConnectedPath].transport;
+          deviceConnection = devicesMemo[lastConnectedPath].AdaConnection;
+        } else {
+          throw new Error('Device not connected!');
+        }
+      } else {
+        console.debug('>>> USE CURRENT CONNECTION');
+        hw = devicesMemo[devicePath].transport;
+        deviceConnection = devicesMemo[devicePath].AdaConnection;
+      }
 
       // No Device instance established at this point or disconnected flag set
       // if (
@@ -314,7 +358,7 @@ export const handleHardwareWalletRequests = async (
           deviceType: 'ledger',
           deviceModel: id, // e.g. nanoS
           deviceName: productName, // e.g. Ledger Nano S
-          path: null,
+          path: lastConnectedPath || devicePath,
           firmwareVersion: null,
         });
       }
@@ -453,6 +497,9 @@ export const handleHardwareWalletRequests = async (
 
 //    // END of test
 //    return;
+    if (!devicesMemo[path]) {
+      throw new Error('Device not connected!');
+    }
     console.debug('>>> GET CARDANO APP: ', {devicesMemo, path});
     deviceConnection = devicesMemo[path].AdaConnection;
     console.debug('>>> GET CARDANO APP - deviceConnection: ', {deviceConnection});
