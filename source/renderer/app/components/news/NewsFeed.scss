@@ -109,7 +109,7 @@
         padding: 0 20px;
 
         *::-webkit-scrollbar-track {
-          margin: -2px 0 12px;
+          margin: 1px 0 12px;
         }
       }
     }
@@ -120,7 +120,7 @@
 
     &.hasShadow {
       *::-webkit-scrollbar-track {
-        margin: 15px 0 11px;
+        margin: 20px 0 11px;
       }
     }
 
