@@ -131,11 +131,14 @@ class EventObserver {
           });
           try {
             const transport = await TransportNodeHid.open(device.path);
+            logger.info('>>> TRANSPORT: ', { transport });
             const AdaConnection = new AppAda(transport);
+            logger.info('>>> ADA CONNECTION: ', { AdaConnection });
             devicesMemo[device.path] = {
               transport,
               AdaConnection: AdaConnection,
             };
+            logger.info('>>> getHardwareWalletConnectionChannel 1');
             getHardwareWalletConnectionChannel.send(
               {
                 disconnected: false,
@@ -148,6 +151,7 @@ class EventObserver {
               // $FlowFixMe
               this.mainWindow
             );
+            logger.info('>>> getHardwareWalletConnectionChannel 2');
           } catch (e) {
             logger.info('>>> CONSTRUCTOR error: ', e);
           }
