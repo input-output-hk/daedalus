@@ -1,6 +1,7 @@
 // @flow
 import React, { Component, Fragment } from 'react';
 import path from 'path';
+import { defineMessages, intlShape } from 'react-intl';
 import { observer, inject } from 'mobx-react';
 import { showSaveDialogChannel } from '../../ipc/show-file-dialog-channels';
 import WalletReceiveRandom from '../../components/wallet/receive/WalletReceiveRandom';
@@ -12,6 +13,14 @@ import WalletAddress from '../../domains/WalletAddress';
 import { generateFileNameWithTimestamp } from '../../../../common/utils/files';
 import { ellipsis } from '../../utils/strings';
 
+const messages = defineMessages({
+  address: {
+    id: 'wallet.receive.pdf.filenamePrefix',
+    defaultMessage: '!!!Address',
+    description: '"Address" word in the Address PDF export',
+  },
+});
+
 type Props = InjectedProps;
 
 type State = {
@@ -22,6 +31,10 @@ type State = {
 @observer
 export default class WalletReceivePage extends Component<Props, State> {
   static defaultProps = { actions: null, stores: null };
+
+  static contextTypes = {
+    intl: intlShape.isRequired,
+  };
 
   state = {
     addressToShare: null,
@@ -58,35 +71,70 @@ export default class WalletReceivePage extends Component<Props, State> {
     this.props.actions.dialogs.closeActiveDialog.trigger();
   };
 
-  handleDownloadPDF = async (note: string) => {
+  getAddressAndFilepath = async (fileExtension?: string = 'pdf') => {
     const { addressToShare } = this.state;
+    const { activeWallet } = this;
+    const { intl } = this.context;
+    if (!activeWallet) return {};
+
+    const prefix = `${intl.formatMessage(messages.address)}-${
+      activeWallet.name
+    }`;
 
     const name = generateFileNameWithTimestamp({
-      prefix: 'daedalus-cardano-ada-address',
+      prefix,
       extension: '',
       isUTC: false,
     });
     const { desktopDirectoryPath } = this.props.stores.profile;
-    const defaultPath = path.join(desktopDirectoryPath, `${name}.pdf`);
+    const defaultPath = path.join(
+      desktopDirectoryPath,
+      `${name}.${fileExtension}`
+    );
     const params = {
       defaultPath,
       filters: [
         {
           name,
-          extensions: ['pdf'],
+          extensions: [fileExtension],
         },
       ],
     };
     const { filePath } = await showSaveDialogChannel.send(params);
 
-    // if cancel button is clicked or path is empty
-    if (!filePath || !addressToShare) return;
+    if (!filePath || !addressToShare) return {};
 
     const { id: address } = addressToShare;
 
-    this.props.actions.wallets.generateAddressPDF.trigger({
+    return {
+      filePath,
       address,
+    };
+  };
+
+  handleDownloadPDF = async (note: string) => {
+    const { address, filePath } = await this.getAddressAndFilepath();
+
+    // if cancel button is clicked or path is empty
+    if (!filePath || !address) return;
+
+    this.handleCloseShareAddress();
+    this.props.actions.wallets.generateAddressPDF.trigger({
       note,
+      address,
+      filePath,
+    });
+  };
+
+  handleSaveQRCodeImage = async () => {
+    const { address, filePath } = await this.getAddressAndFilepath('png');
+
+    // if cancel button is clicked or path is empty
+    if (!filePath || !address) return;
+
+    this.handleCloseShareAddress();
+    this.props.actions.wallets.saveQRCodeImage.trigger({
+      address,
       filePath,
     });
   };
@@ -153,6 +201,7 @@ export default class WalletReceivePage extends Component<Props, State> {
             address={addressToShare}
             onCopyAddress={this.handleCopyAddress}
             onDownloadPDF={this.handleDownloadPDF}
+            onSaveQRCodeImage={this.handleSaveQRCodeImage}
             onClose={this.handleCloseShareAddress}
           />
         )}

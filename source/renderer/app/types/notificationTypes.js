@@ -2,12 +2,14 @@
 import Action from '../actions/lib/Action';
 
 export type NotificationId =
+  | 'copyAddress'
+  | 'copyStateDirectoryPath'
+  | 'downloadAddressPDFSuccess'
   | 'downloadLogsProgress'
   | 'downloadLogsSuccess'
+  | 'downloadQRCodeImageSuccess'
   | 'downloadRewardsCSVSuccess'
-  | 'downloadTransactionsCSVSuccess'
-  | 'copyAddress'
-  | 'copyStateDirectoryPath';
+  | 'downloadTransactionsCSVSuccess';
 
 export type NotificationConfig = {
   id: NotificationId,
