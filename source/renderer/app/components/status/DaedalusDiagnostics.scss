@@ -270,14 +270,8 @@
 
     &:hover {
       .daedalusStateDirectoryPath {
-        &:after {
-          border-top: 1px solid var(--theme-network-window-white-color);
-          bottom: 6px;
-          content: '';
-          left: 0;
-          position: absolute;
-          right: 1px;
-        }
+        border-bottom: 1px solid var(--theme-network-window-white-color);
+        margin-bottom: -1px;
       }
 
       svg {
