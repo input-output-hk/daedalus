@@ -99,16 +99,15 @@
     padding: 20px;
 
     &.noUpdateItem {
-      padding: 10px 20px 0;
+      padding: 0 20px;
 
       *::-webkit-scrollbar-track {
-        margin: 3px 0;
+        margin: 13px 0;
       }
 
-      &.hasShadow {
-        *::-webkit-scrollbar-track {
-          margin: 1px 0 12px;
-        }
+      .newsFeedList {
+        height: calc(100% - 85px);
+        padding: 10px 20px 20px 0;
       }
     }
 
