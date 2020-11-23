@@ -1,6 +1,6 @@
 // @flow
 import { observable, action, runInAction, computed } from 'mobx';
-import { get, map, find, findLast } from 'lodash';
+import { get, map, find, findLast, filter } from 'lodash';
 import BigNumber from 'bignumber.js';
 import semver from 'semver';
 import Store from './lib/Store';
@@ -193,8 +193,24 @@ export default class HardwareWalletsStore extends Store {
 
   initLedger = async () => {
     console.debug('>>> HW STORE ACTIVE <<<');
+    await this.hardwareWalletDevicesRequest.execute();
+    const storedDevices = this.hardwareWalletDevicesRequest.result;
+    console.debug('>>> storedDevices: ', storedDevices);
+    // Remove all Ledger devices from LC
+    await Promise.all(
+      map(storedDevices, async (device) => {
+        if (device.deviceType === DeviceTypes.LEDGER) {
+          await this._unsetHardwareWalletDevice({ deviceId: device.id });
+        }
+      })
+    );
+    console.debug('>>> ALL LEDGERS REMOVED FROM LC <<<');
+    await this._refreshHardwareWalletsLocalData();
+    await this._refreshHardwareWalletDevices();
+
+
     if (isHardwareWalletSupportEnabled && isLedgerEnabled) {
-      console.debug('>>> start ledger');
+      console.debug('>>> INIT Ledger');
       await handleInitLedgerConnectChannel.request();
       await this.getAvailableDevices({ isTrezor: false });
     }
@@ -237,7 +253,7 @@ export default class HardwareWalletsStore extends Store {
             devicePath: device.path,
             isTrezor: true,
           });
-        } else {
+        }/* else {
           if (device.isPending) {
             console.debug('>>> UNSET pending')
             this._unsetHardwareWalletDevice({ deviceId: device.id });
@@ -246,15 +262,15 @@ export default class HardwareWalletsStore extends Store {
             console.debug('>>> getCardanoAdaApp - from  getAvailableDevices');
             this.getCardanoAdaApp({ path: device.path, isCheck: true });
           }
-        }
+        } */
       } catch (e) {
         // eslint-disable-next-line
         console.debug('getAvailableDevices::Error', e);
       }
     });
 
-    this._refreshHardwareWalletsLocalData();
-    this._refreshHardwareWalletDevices();
+    await this._refreshHardwareWalletsLocalData();
+    await this._refreshHardwareWalletDevices();
   };
 
   _sendMoney = async (params?: { isDelegationTransaction: boolean }) => {
@@ -403,7 +419,7 @@ export default class HardwareWalletsStore extends Store {
     }
   };
 
-  @action establishHardwareWalletConnection = async (forcedDeviceData?: { type?: string, path?: string, pendingId: number }) => {
+  @action establishHardwareWalletConnection = async () => {
     runInAction('HardwareWalletsStore:: set HW device CONNECTING', () => {
       this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
     });
@@ -440,91 +456,112 @@ export default class HardwareWalletsStore extends Store {
         );
       }
 
-      const lastUnpairedConnectedDevice = findLast(
+      const lastUnpairedDevice = findLast(
         this.hardwareWalletDevices,
         (hardwareWalletDevice) =>
           !hardwareWalletDevice.paired && !hardwareWalletDevice.disconnected
       );
 
-      console.debug('>>> establishHardwareWalletConnection:: START ', {recognizedPairedHardwareWallet, lastUnpairedConnectedDevice});
+      console.debug('>>> establishHardwareWalletConnection:: START ', {recognizedPairedHardwareWallet, lastUnpairedDevice});
 
-      // Special case! When device not connected and TxSend is initialized we need to hook this process before and return void just to indicate that txSend process can continue
+
+
+
+
+      // Tx Special cases!
+      // When device not connected and TxSend is initialized we need to hook this process before and return void just to indicate that txSend process can continue
+      // let transportDevice;
+      // if (
+      //   recognizedPairedHardwareWallet &&
+      //   recognizedPairedHardwareWallet.disconnected
+      // ) {
+      //   console.debug('>>> establishHardwareWalletConnection:: CASE 1 ', {recognizedPairedHardwareWallet});
+      //   // Device exist and but not physically connected - initiate listener to first recognized device and let txSend to reject wrong device
+      //   transportDevice = await getHardwareWalletTransportChannel.request({
+      //     devicePath: recognizedPairedHardwareWallet.path, // Path can change because device is disconnected now.
+      //     isTrezor:
+      //       recognizedPairedHardwareWallet.deviceType === DeviceTypes.TREZOR,
+      //   });
+      //   console.debug('>>> transportDevice: ', transportDevice);
+      //   return transportDevice; // Special Case when we are waiting on response return to continue with tx signing
+      // }
+      //
+      // if (this.isTransactionInitiated && !recognizedPairedHardwareWallet) {
+      //   console.debug('>>> establishHardwareWalletConnection:: CASE 2.1 - from txSend (1)', {recognizedPairedHardwareWallet});
+      //   return null; // Special Case when we are waiting on response return to continue with tx signing
+      // }
+      //
+      // if (this.isTransactionInitiated && recognizedPairedHardwareWallet && !recognizedPairedHardwareWallet.disconnected) {
+      //   console.debug('>>> establishHardwareWalletConnection:: CASE 2.2 - from txSend (2) ', {recognizedPairedHardwareWallet});
+      //   return recognizedPairedHardwareWallet; // Special Case when we are waiting on response return to continue with tx signing
+      // }
+      // End of Tx Special cases!
+
+
+      // if (this.isTransactionInitiated && recognizedPairedHardwareWallet && !recognizedPairedHardwareWallet.disconnected) {
+      //   return recognizedPairedHardwareWallet;
+      // } else {
+      //   return null
+      // }
+
+
+
+
+
+      // Tx Special cases!
+      // This means that transaction needs to be signed but we don't know device connected to Software wallet
       let transportDevice;
-      if (
-        recognizedPairedHardwareWallet &&
-        recognizedPairedHardwareWallet.disconnected
-      ) {
-        console.debug('>>> establishHardwareWalletConnection:: CASE 1 ', {recognizedPairedHardwareWallet});
-        // Device exist and but not physically connected - initiate listener to first recognized device and let txSend to reject wrong device
-        transportDevice = await getHardwareWalletTransportChannel.request({
-          devicePath: recognizedPairedHardwareWallet.path, // Path can change because device is disconnected now.
-          isTrezor:
-            recognizedPairedHardwareWallet.deviceType === DeviceTypes.TREZOR,
+      if (this.isTransactionInitiated) {
+        // if (!recognizedPairedHardwareWallet)
+        //   throw new Error('Wallet connection not recognized!');
+
+        if (recognizedPairedHardwareWallet) {
+          return recognizedPairedHardwareWallet;
+        }
+
+        console.debug('>>>> Connect - TRANSACTION initiated - return last device');
+        return await getHardwareWalletTransportChannel.request({
+          devicePath: lastUnpairedDevice.path, // Use last plugged device
+          isTrezor: lastUnpairedDevice.deviceType === DeviceTypes.TREZOR,
         });
-        console.debug('>>> transportDevice: ', transportDevice);
-        return transportDevice; // Special Case when we are waiting on response return to continue with tx signing
       }
+      // End of Tx Special cases!
 
-      if (this.isTransactionInitiated && !recognizedPairedHardwareWallet) {
-        console.debug('>>> establishHardwareWalletConnection:: CASE 2.1 - from txSend (1)', {recognizedPairedHardwareWallet});
-        return null; // Special Case when we are waiting on response return to continue with tx signing
-      }
 
-      if (this.isTransactionInitiated && recognizedPairedHardwareWallet && !recognizedPairedHardwareWallet.disconnected) {
-        console.debug('>>> establishHardwareWalletConnection:: CASE 2.2 - from txSend (2) ', {recognizedPairedHardwareWallet});
-        return recognizedPairedHardwareWallet; // Special Case when we are waiting on response return to continue with tx signing
-      }
 
-      // Cases for wallet create / restore - it is triggered after flag activation "isListeningForDevice"
-      if (lastUnpairedConnectedDevice || (forcedDeviceData)) {
-        console.debug('>>> establishHardwareWalletConnection:: CASE 3 ', { lastUnpairedConnectedDevice, forcedDeviceData });
-        // Start listeners for specific (last connected) device
+
+
+
+
+
+      // Cases for wallet create / restore
+      // it is triggered after flag activation "isListeningForDevice"
+      if (lastUnpairedDevice) {
+        console.debug('>>> establishHardwareWalletConnection:: CASE 3 - start process with last UNPAIRED device', { lastUnpairedDevice });
+        // Start listeners for specific (last pluged) device
         let devicePath = null;
         let isTrezor;
-        if (forcedDeviceData) {
-          devicePath = forcedDeviceData.path;
-          isTrezor = forcedDeviceData.type === DeviceTypes.TREZOR;
+
+        if (lastUnpairedDevice) {
+          devicePath = lastUnpairedDevice.path;
+          isTrezor = lastUnpairedDevice.deviceType === DeviceTypes.TREZOR;
         }
 
-        if (lastUnpairedConnectedDevice) {
-          devicePath = lastUnpairedConnectedDevice.path;
-          isTrezor = lastUnpairedConnectedDevice.deviceType === DeviceTypes.TREZOR;
-        }
+        console.debug('>>>> CASE WHEN LISTENING DEVICE <<<<: ', lastUnpairedDevice);
 
-        if (!isTrezor) {
-          transportDevice = null;
-        };
-
-
-        console.debug('>>>> CASE WHEN LISTENING DEVICE <<<<: ', lastUnpairedConnectedDevice);
-
-        if (lastUnpairedConnectedDevice.deviceType === DeviceTypes.TREZOR) {
+        if (lastUnpairedDevice.deviceType === DeviceTypes.TREZOR) {
           transportDevice = await getHardwareWalletTransportChannel.request({
             devicePath,
             isTrezor,
           });
         } else {
-          transportDevice = lastUnpairedConnectedDevice;
+          transportDevice = lastUnpairedDevice;
         }
 
 
         console.debug('>>> Transport: ', transportDevice);
-
-        // Only Ledger has Pending devices
-        // if (transportDevice && transportDevice.deviceType === DeviceTypes.LEDGER && lastUnpairedConnectedDevice && lastUnpairedConnectedDevice.isPending) {
-        //   // Override transport because of missing ID in other ADA lib methods
-        //   transportDevice = lastUnpairedConnectedDevice;
-        // }
-
       } else {
-        console.debug('>>> establishHardwareWalletConnection:: CASE 4');
-        // Start listeners for both device types
-        // Start Trezor listener
-        /* transportDevice = await getHardwareWalletTransportChannel.request({
-          devicePath: null,
-          isTrezor: true,
-        }); */
-
+        console.debug('>>> establishHardwareWalletConnection:: CASE 4 - set device listener');
         runInAction(
           'HardwareWalletsStore:: set device listener',
           () => {
@@ -532,16 +569,13 @@ export default class HardwareWalletsStore extends Store {
           }
         );
         return;
-
-        // @TODO - improve logic for Ledger (no devices -> connect device when connecting state initialized)
-        if (!transportDevice) {
-          // Start Ledger listener
-          // transportDevice = await getHardwareWalletTransportChannel.request({
-          //   devicePath: null,
-          //   isTrezor: false,
-          // });
-        }
       }
+      // End of Cases for wallet create / restore
+
+
+
+
+
 
       console.debug('>>> establishHardwareWalletConnection:: Exec: ', { transportDevice });
 
@@ -592,22 +626,17 @@ export default class HardwareWalletsStore extends Store {
 
         if (deviceType === DeviceTypes.TREZOR) {
           // Jump to exporting public key
-          await this._getExtendedPublicKey();
+          await this._getExtendedPublicKey(transportDevice.path);
         } else {
-          console.debug('>>> START cardano app poller: ', {forcedDeviceData});
+          console.debug('>>> START cardano app poller: ', { transportDevice });
           // Start poller to recognize if Cardano App is launched on device
-          // const devicePath = forcedDeviceData ? forcedDeviceData.path : transportDevice.path;
           const devicePath = transportDevice.path;
-          const pendingId = forcedDeviceData ? forcedDeviceData.pendingId : null;
           console.debug('>>> getCardanoAdaApp - from  establishHardwareWalletConnection: ', { cardanoAdaAppPollingInterval: this.cardanoAdaAppPollingInterval });
-          // if (!this.cardanoAdaAppPollingInterval) {
-            this.cardanoAdaAppPollingInterval = setInterval(
-              (path, pendingId) => this.getCardanoAdaApp({ path, pendingId }),
-              CARDANO_ADA_APP_POLLING_INTERVAL,
-              devicePath,
-              forcedDeviceData ? forcedDeviceData.pendingId : null,
-            );
-          // }
+          this.cardanoAdaAppPollingInterval = setInterval(
+            (path) => this.getCardanoAdaApp({ path }),
+            CARDANO_ADA_APP_POLLING_INTERVAL,
+            devicePath,
+          );
         }
       } else {
         runInAction(
@@ -643,13 +672,16 @@ export default class HardwareWalletsStore extends Store {
   @action getCardanoAdaApp = async (params?: { path?: string, isCheck?: boolean, pendingId?: boolean, walletId?: string }) => {
     const { path, isCheck, pendingId, walletId } = params;
     console.debug('>>> START FUNCTION getCardanoAdaApp PARAMS: ', params);
+
+
     this.hwDeviceStatus = HwDeviceStatuses.LAUNCHING_CARDANO_APP;
     try {
       const cardanoAdaApp = await getCardanoAdaAppChannel.request({ path });
 
       console.debug('>>> cardanoAdaApp RESPONSE: ', cardanoAdaApp);
-      // @TODO - keep poller until app recognized or process exited
+      // Cardano app recognized, stop poller
       this.stopCardanoAdaAppFetchPoller();
+
       if (cardanoAdaApp) {
         console.debug('>>> cardanoAdaApp - Set device: ', {
           cardanoAdaApp,
@@ -658,9 +690,8 @@ export default class HardwareWalletsStore extends Store {
           hardwareWalletDevices: this.hardwareWalletDevices,
         });
 
+        // Check is Cardano App version supported
         const cardanoAppVersion = `${cardanoAdaApp.major}.${cardanoAdaApp.minor}.${cardanoAdaApp.patch}`
-
-        console.debug('>>cardanoAppVersion: ', {cardanoAppVersion, MINIMAL_CARDANO_APP_VERSION})
         const isValidAppVersion = semver.gte(
           cardanoAppVersion,
           MINIMAL_CARDANO_APP_VERSION
@@ -675,7 +706,7 @@ export default class HardwareWalletsStore extends Store {
           throw new Error(`Cardano app must be ${MINIMAL_CARDANO_APP_VERSION} or greater!`);
         }
 
-        // CHECK if I have wallet with THIS deviceId
+        // Check if I have Software wallet with this deviceId
         const recognizedWallet = find(
           this.hardwareWalletsConnectionData,
           (hardwareWalletData) =>
@@ -684,65 +715,52 @@ export default class HardwareWalletsStore extends Store {
 
         console.debug('>>> cardanoAdaApp - I have recognized wallet: ', recognizedWallet);
 
-        let devicePath = path;
-
-        let isDisconnected = true
+        let isDisconnected = true;
         if (recognizedWallet) {
-          devicePath = path || recognizedWallet.device.path;
           isDisconnected = false;
-          console.debug('>>> SET 1: ', recognizedWallet);
+          console.debug('>>> cardanoAdaApp - SET Software wallet as connected: ', recognizedWallet);
           this._setHardwareWalletLocalData({
             walletId: recognizedWallet.id,
             data: {
               disconnected: false,
-              path: devicePath,
+              path,
               device: {
                 ...recognizedWallet.device,
-                path: devicePath,
+                path,
               }
             },
           });
+
+          // Delete initiate (pending) device with this path
+          const recognizedDevice = find(this.hardwareWalletDevices, (device => device.path === path));
+          console.debug('>>> cardanoAdaApp - UNSET Device with path: ', { path, recognizedDevice });
+          if (recognizedDevice) {
+            await this._unsetHardwareWalletDevice({ deviceId: recognizedDevice.id });
+          }
+
+          // Add PAIRED device to LC
+          if (recognizedDevice) {
+            await this._setHardwareWalletDevice({
+              deviceId: cardanoAdaApp.deviceId,
+              data: {
+                ...recognizedDevice,
+                id: cardanoAdaApp.deviceId,
+                path,
+                paired: recognizedWallet.id, // device paired with software wallet
+                disconnected: isDisconnected, // device physically disconnected
+                isPending: false,
+              },
+            });
+          }
         }
 
-        let pendingDevice;
-        if (pendingId) {
-          // Get all data from pending entry
-          pendingDevice = find(
-            this.hardwareWalletDevices,
-            (hardwareWalletDevice) =>
-              hardwareWalletDevice.id === pendingId
-          );
-          console.debug('>>>> PENDING DEVICE: ', pendingDevice);
-          // Remove pending device entry from LC
-          this._unsetHardwareWalletDevice({ deviceId: pendingId });
-        }
-
-        const deviceDate = pendingDevice || {};
-        this._setHardwareWalletDevice({
-          deviceId: cardanoAdaApp.deviceId,
-          data: {
-            ...deviceDate,
-            id: cardanoAdaApp.deviceId,
-            path: devicePath || deviceDate.path,
-            paired: recognizedWallet ? recognizedWallet.id : null, // device paired with software wallet
-            disconnected: isDisconnected, // device physically disconnected
-            isPending: false,
-          },
-        });
-
-        // While Cardano ADA app recognized on Ledger, proceed to exporting public key
-        if (!isCheck) {
-          await this._getExtendedPublicKey(devicePath);
-        }
         if (this.isTransactionInitiated) {
           // Check if sender wallet match transaction initialization
           if (!recognizedWallet || (recognizedWallet && recognizedWallet.id !== walletId)) {
+            console.debug('>>> Device not belongs to this wallet');
             // Stop poller
             this.stopCardanoAdaAppFetchPoller();
-            // Keep isTransactionInitiated active
-            // Set new device listener by initiating transaction
-            console.debug('>>> INITIATE TRANSACTION - from getCardanoAdaApp');
-            // this.initiateTransaction({ walletId })
+            // Keep isTransactionInitiated active & Set new device listener by initiating transaction
             // Show message to reconnect proper software wallet device pair
             runInAction(
             'HardwareWalletsStore:: set HW device CONNECTING FAILED',
@@ -758,9 +776,21 @@ export default class HardwareWalletsStore extends Store {
               this.isTransactionInitiated = false;
               this.unfinishedWalletTxSigning = null;
             });
-            this._signTransactionLedger(walletId, devicePath);
+            this._signTransactionLedger(walletId, path);
           }
 
+        } else if (recognizedWallet) {
+          // While Cardano ADA app recognized & existing wallet mathes device ID, set wallet as active
+          this.stores.wallets.goToWalletRoute(recognizedWallet.id);
+          runInAction(
+          'HardwareWalletsStore:: set HW device to initial state',
+            () => {
+              this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
+            }
+          );
+        } else {
+          // While Cardano ADA app recognized on Ledger, proceed to exporting public key
+          await this._getExtendedPublicKey(path);
         }
       }
     } catch (error) {
@@ -786,18 +816,19 @@ export default class HardwareWalletsStore extends Store {
     } = transportDevice;
     const isTrezor = deviceType === DeviceTypes.TREZOR;
 
+    const devicePath = forcedPath || path;
     try {
       const extendedPublicKey = await getExtendedPublicKeyChannel.request({
         path: "1852'/1815'/0'", // Shelley 1852 ADA 1815 indicator for account '0'
         isTrezor,
-        devicePath: forcedPath || path,
+        devicePath,
       });
 
       const deviceId = extendedPublicKey.deviceId || transportDevice.deviceId;
 
       console.debug('>>> EXPORT - deviceID: ', {deviceId, extendedPublicKey});
 
-      const recognizedDevice = find(
+      const recognizedStoredWallet = find(
         this.hardwareWalletsConnectionData,
         (hardwareWalletData) =>
           hardwareWalletData.extendedPublicKey.chainCodeHex ===
@@ -805,14 +836,15 @@ export default class HardwareWalletsStore extends Store {
           hardwareWalletData.extendedPublicKey.publicKeyHex ===
             extendedPublicKey.publicKeyHex
       );
-      const recognizedWallet = recognizedDevice
-        ? this.stores.wallets.getWalletById(recognizedDevice.id)
+
+      const recognizedWallet = recognizedStoredWallet
+        ? this.stores.wallets.getWalletById(recognizedStoredWallet.id)
         : null;
 
       // Check if public key matches already restored hardware wallet public key
+      // Update LC data and redirect to paired wallet
       if (recognizedWallet) {
-        console.debug('>>> I have recognized wallet: ', {recognizedWallet});
-        console.debug('>>> SET 2 _setHardwareWalletLocalData: ', recognizedWallet);
+        console.debug('>>> I have recognized wallet: ', { recognizedWallet });
         this._setHardwareWalletLocalData({
           walletId: recognizedWallet.id,
           data: {
@@ -821,7 +853,7 @@ export default class HardwareWalletsStore extends Store {
               deviceType,
               deviceModel,
               deviceName,
-              path: forcedPath || path,
+              path: devicePath,
               paired: recognizedWallet.id, // device paired with software wallet
               disconnected: false, // device physically disconnected
             },
@@ -837,18 +869,20 @@ export default class HardwareWalletsStore extends Store {
               deviceType,
               deviceModel,
               deviceName,
-              path: forcedPath || path,
+              path: devicePath,
               paired: recognizedWallet.id, // device paired with software wallet
               disconnected: false, // device physically disconnected
             },
           });
         }
-        this.stores.wallets.goToWalletRoute(recognizedDevice.id);
+
+        this.stores.wallets.goToWalletRoute(recognizedStoredWallet.id);
         this.actions.dialogs.closeActiveDialog.trigger();
         return;
       }
+
       console.debug('>>> I don not have recognized wallet - create new one: ', {transportDevice, deviceId});
-      // Active wallet not exist, create new one with default name
+      // Software Wallet not recognized, create new one with default name
       await this.actions.wallets.createHardwareWallet.trigger({
         walletName: deviceName || DEFAULT_HW_NAME,
         extendedPublicKey,
@@ -860,6 +894,13 @@ export default class HardwareWalletsStore extends Store {
           path: forcedPath || path,
         },
       });
+
+      // Get all Pending devices with this path and delete
+      const recognizedPendingDevice = find(this.hardwareWalletDevices, (device => device.path === devicePath));
+      console.debug('>>> Export key - UNSET Device with path: ', { path, recognizedPendingDevice });
+      if (recognizedPendingDevice && recognizedPendingDevice.isPending) {
+        await this._unsetHardwareWalletDevice({ deviceId: recognizedPendingDevice.id });
+      }
 
       this.resetInitializedConnection();
       this._refreshHardwareWalletsLocalData();
@@ -1152,7 +1193,6 @@ export default class HardwareWalletsStore extends Store {
         devicePath,
         walletId,
       );
-      // this._signTransactionLedger(id);
     }
   };
 
@@ -1179,17 +1219,6 @@ export default class HardwareWalletsStore extends Store {
     });
   };
 
-  changeLedgerStatus = async (params) => {
-    console.debug('>>> CHANGE Ledger status');
-    // Check is Cardano App started
-    // try {
-    //   const ca = await this.getCardanoAdaApp();
-    //   console.debug('>>> CHANGE Ledger status - SUCCESS: ', ca);
-    // } catch (e) {
-    //   console.debug('>>> CHANGE Ledger status - error: ', e);
-    // }
-  }
-
   @action _changeHardwareWalletConnectionStatus = async (
     params: HardwareWalletConnectionRequest
   ) => {
@@ -1205,13 +1234,8 @@ export default class HardwareWalletsStore extends Store {
 
     console.debug('>>> CHANGE status: ', params);
 
-    // if (deviceType === DeviceTypes.LEDGER) {
-    //   this.changeLedgerStatus(params);
-    //   return;
-    // }
-
-
-    if (error) {
+    // Handle Trezor Bridge instance checker
+    if (error && deviceType === DeviceTypes.TREZOR) {
       if (
         error.payload &&
         error.payload &&
@@ -1227,6 +1251,7 @@ export default class HardwareWalletsStore extends Store {
       return;
     }
 
+    // Unset Trezor Bridge instance checker
     if (deviceType === DeviceTypes.TREZOR && !this.isTrezorBridgeInstalled) {
       runInAction(
         'HardwareWalletsStore:: Mark Trezor Bridge as installed',
@@ -1236,23 +1261,14 @@ export default class HardwareWalletsStore extends Store {
       );
     }
 
-    // If Hardware Wallet exist and connected with device, set current connection status to LC
-    const activeHardwareWalletId = get(
-      this.stores,
-      ['wallets', 'active', 'id'],
-      null
-    );
-
     const { hardwareWalletsConnectionData, hardwareWalletDevices } = this;
     // Add new recognized device - not connected to software wallet
     // Or update recognized device while paired with existing software wallet
     const recognizedPairedHardwareWallet = find(
       hardwareWalletsConnectionData,
       (connection) => {
-        if (deviceType === DeviceTypes.LEDGER) {
-          // Ledger doesn't have ID in this phase
-          return path && connection.device.path === path
-        } else {
+        // We can not be sure that Ledger is right Wallet device because we don't have device ID at this point
+        if (deviceType === DeviceTypes.TREZOR) {
           return deviceId && connection.device.deviceId === deviceId;
         }
       }
@@ -1260,31 +1276,54 @@ export default class HardwareWalletsStore extends Store {
 
     console.debug('>>> recognizedPairedHardwareWallet: ', recognizedPairedHardwareWallet);
 
-    if (disconnected) {
-      // @TODO - This logic should be changed once we allow multiple hardware wallets
-      if (deviceType === DeviceTypes.LEDGER) {
-      //   this.stopCardanoAdaAppFetchPoller();
-//
-      //   // Get pending device by path
-        const recognizedPendingDevice = find(
-          hardwareWalletDevices,
-          (hardwareWalletDevice) => hardwareWalletDevice.isPending && hardwareWalletDevice.path === path
-        );
-        console.debug('>>> recognized PENDING device: ', recognizedPendingDevice);
-        // Delete disconnected pending device from LC
-        if (recognizedPendingDevice) {
-          this._unsetHardwareWalletDevice({ deviceId: recognizedPendingDevice.id });
+    if (disconnected && deviceType === DeviceTypes.LEDGER) {
+      // Remove all stored Ledger instances from LC - both pending and paired (with software Wallets)
+      const recognizedLedgerDevices = filter(
+        hardwareWalletDevices,
+        (hardwareWalletDevice) => hardwareWalletDevice.deviceType === DeviceTypes.LEDGER && hardwareWalletDevice.path === path
+      );
+
+      console.debug('>>> recognized PENDING device: ', recognizedLedgerDevices);
+
+      // Delete or pending or paired Ledger device
+      map(recognizedLedgerDevices, (recognizedLedgerDevice => {
+        console.debug('>>> UNSET: ', recognizedLedgerDevice.id);
+        return this._unsetHardwareWalletDevice({ deviceId: recognizedLedgerDevice.id });
+      }));
+
+      console.debug('>>> GET Paired and set to disconnected: ', {
+        hardwareWalletsConnectionData,
+        path,
+        deviceType
+      })
+      const recognizedLedgerWallet = find(
+        hardwareWalletsConnectionData,
+        (connection) => {
+          // We can not be sure that Ledger is right Wallet device because we don't have device ID at this point
+          if (deviceType === DeviceTypes.LEDGER) {
+            return path && connection.device.path === path;
+          }
         }
+      );
+
+      if (recognizedLedgerWallet) {
+        console.debug('>>> I have stored Ledger wallet');
+        await this._setHardwareWalletLocalData({
+          walletId: recognizedLedgerWallet.id,
+          data: {
+            deviceType,
+            deviceModel,
+            deviceName,
+            disconnected: true,
+            path,
+          },
+        });
       }
     }
 
-    // Check if plugged-in device match one already established connections
-    // If deviceId recognized - get software wallet and set to connected.
-    //   - update possible device changes
-    // Else deviceId not recognized - for now just break process
-
-    if (recognizedPairedHardwareWallet) {
-      // Change software wallet status paired with device
+    // Check if plugged-in device match one with already established wallet connection
+    if (recognizedPairedHardwareWallet && recognizedPairedHardwareWallet.deviceType === DeviceTypes.TREZOR) {
+      // Change software wallet status - paired with device
       console.debug('>>> SET 3 _setHardwareWalletLocalData: ', recognizedPairedHardwareWallet);
       await this._setHardwareWalletLocalData({
         walletId: recognizedPairedHardwareWallet.id,
@@ -1294,31 +1333,11 @@ export default class HardwareWalletsStore extends Store {
           deviceName,
           disconnected,
           path,
-          state: disconnected
-            ? HwDeviceStatuses.CONNECTING
-            : HwDeviceStatuses.READY,
         },
       });
     }
 
-    // Uncomment this to prevent PENDING devices
-    // if (deviceId && deviceType !== DeviceTypes.LEDGER) {
-    //   await this._setHardwareWalletDevice({
-    //     deviceId: deviceId || new Date().valueOf(), // device ID or timestamp (for pending devices without ID) - ledger Only
-    //     data: {
-    //       deviceType,
-    //       deviceModel,
-    //       deviceName,
-    //       path,
-    //       paired: recognizedPairedHardwareWallet
-    //         ? recognizedPairedHardwareWallet.id
-    //         : null, // device paired with software wallet
-    //       disconnected, // device physically disconnected
-    //       isPending: !deviceId,
-    //     },
-    //   });
-    // }
-
+    // Set Pending Ledger or Trezor device with ID
     let pendingId
     if (deviceId || (deviceType === DeviceTypes.LEDGER && (!disconnected || recognizedPairedHardwareWallet))) {
       pendingId = deviceType === DeviceTypes.LEDGER  && recognizedPairedHardwareWallet ? recognizedPairedHardwareWallet.device.deviceId : new Date().valueOf();
@@ -1342,9 +1361,10 @@ export default class HardwareWalletsStore extends Store {
     }
 
 
-    this._refreshHardwareWalletsLocalData();
+    await this._refreshHardwareWalletsLocalData();
     await this._refreshHardwareWalletDevices();
 
+    // Start connection establishing process if devices listener flag is UP
     if (this.isListeningForDevice && !disconnected) {
       runInAction(
         'HardwareWalletsStore:: remove device listener',
@@ -1355,14 +1375,14 @@ export default class HardwareWalletsStore extends Store {
 
       if (deviceType === DeviceTypes.LEDGER) {
         // To Force Ledger with manual parameters because ID is not available and device not stored to LC
-        // this.establishHardwareWalletConnection({ path, type: DeviceTypes.LEDGER});
         console.debug('>>> CALL establish connection with pendingID: ', pendingId);
-        this.establishHardwareWalletConnection({ pendingId });
+        this.establishHardwareWalletConnection();
       } else {
         this.establishHardwareWalletConnection();
       }
     }
 
+    // Case that allows us to re-trigger tx send process multiple times if device doesn't match sender wallet
     if (this.unfinishedWalletTxSigning && !disconnected) {
       console.debug('>>> Reinitialize TX signing: ', this.unfinishedWalletTxSigning);
       this.initiateTransaction({ walletId: this.unfinishedWalletTxSigning });
@@ -1372,13 +1392,6 @@ export default class HardwareWalletsStore extends Store {
           this.unfinishedWalletTxSigning = null;
         }
       );
-    }
-
-
-    // Check each Ledger listener on app start or on device change event
-    if (!disconnected && deviceType === DeviceTypes.LEDGER) {
-      console.debug('>>> Device changed from MAIN - check is Cardano APP opened: ', path);
-      // this.getCardanoAdaApp({ path, isCheck: true });
     }
   };
 
@@ -1497,6 +1510,7 @@ export default class HardwareWalletsStore extends Store {
     this._refreshHardwareWalletDevices();
   };
 
+  // For testing / development ONLY
   _resetHardwareWallets = async () => {
     if (global.environment.isDev) {
       await Promise.all(
