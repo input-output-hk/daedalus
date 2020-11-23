@@ -154,10 +154,6 @@ export default class NewsFeed extends Component<Props, State> {
       hasShadow ? styles.hasShadow : null,
     ]);
 
-    const separatorStyles = classNames([
-      styles.separator
-    ]);
-
     return (
       <div className={componentClasses}>
         <div className={newsFeedHeaderStyles}>
@@ -194,7 +190,7 @@ export default class NewsFeed extends Component<Props, State> {
           )}
           {items.length > 0 && (
             <div className={newsFeedListStyles}>
-              {hasUpdateItem && (<hr className={separatorStyles} />)}
+              {hasUpdateItem && (<hr className={styles.separator} />)}
               {items.map((newsItem) => (
                 <NewsItem
                   key={newsItem.id}
