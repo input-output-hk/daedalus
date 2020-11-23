@@ -106,8 +106,6 @@
       }
 
       &.hasShadow {
-        padding: 0 20px;
-
         *::-webkit-scrollbar-track {
           margin: 1px 0 12px;
         }
@@ -197,12 +195,5 @@
     opacity: 0.2;
     transition: opacity 0.3s linear;
     visibility: visible;
-
-    &.hidden {
-      border: none;
-      opacity: 0;
-      transition: visibility 0s 0.3s, opacity 0.3s linear;
-      visibility: hidden;
-    }
   }
 }

@@ -155,8 +155,7 @@ export default class NewsFeed extends Component<Props, State> {
     ]);
 
     const separatorStyles = classNames([
-      styles.separator,
-      hasShadow ? styles.hidden : null,
+      styles.separator
     ]);
 
     return (
