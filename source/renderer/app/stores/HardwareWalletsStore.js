@@ -423,7 +423,7 @@ export default class HardwareWalletsStore extends Store {
     runInAction('HardwareWalletsStore:: set HW device CONNECTING', () => {
       this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
     });
-    const { hardwareWalletDevices } = this;
+    const { hardwareWalletDevices, hardwareWalletsConnectionData } = this;
     const activeWallet = this.stores.wallets.active;
 
     console.debug('>>> establishHardwareWalletConnection: ', {
@@ -448,11 +448,17 @@ export default class HardwareWalletsStore extends Store {
     try {
       // Check if active wallet exist - this means that hw exist but we need to check if relevant device connected to it
       let recognizedPairedHardwareWallet;
+      let relatedConnectionData;
       if (activeWallet) {
         // Check if device connected to wallet
         recognizedPairedHardwareWallet = find(
           hardwareWalletDevices,
           (recognizedDevice) => recognizedDevice.paired === activeWallet.id
+        );
+
+        relatedConnectionData = find(
+          hardwareWalletsConnectionData,
+          (connection) => connection.id === activeWallet.id
         );
       }
 
@@ -519,11 +525,13 @@ export default class HardwareWalletsStore extends Store {
           return recognizedPairedHardwareWallet;
         }
 
+        const deviceData = lastUnpairedDevice || relatedConnectionData;
         console.debug('>>>> Connect - TRANSACTION initiated - return last device');
         return await getHardwareWalletTransportChannel.request({
-          devicePath: lastUnpairedDevice.path, // Use last plugged device
-          isTrezor: lastUnpairedDevice.deviceType === DeviceTypes.TREZOR,
+          devicePath: lastUnpairedDevice ? lastUnpairedDevice.path : null, // Use last plugged device
+          isTrezor: deviceData.deviceType === DeviceTypes.TREZOR,
         });
+        // relatedConnectionData.device.deviceType
       }
       // End of Tx Special cases!
 
