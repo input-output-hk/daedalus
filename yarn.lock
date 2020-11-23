@@ -8175,25 +8175,7 @@ inquirer@6.5.0:
     strip-ansi "^5.1.0"
     through "^2.3.6"
 
-inquirer@7.3.3:
-  version "7.3.3"
-  resolved "https://registry.yarnpkg.com/inquirer/-/inquirer-7.3.3.tgz#04d176b2af04afc157a83fd7c100e98ee0aad003"
-  dependencies:
-    ansi-escapes "^4.2.1"
-    chalk "^4.1.0"
-    cli-cursor "^3.1.0"
-    cli-width "^3.0.0"
-    external-editor "^3.0.3"
-    figures "^3.0.0"
-    lodash "^4.17.19"
-    mute-stream "0.0.8"
-    run-async "^2.4.0"
-    rxjs "^6.6.0"
-    string-width "^4.1.0"
-    strip-ansi "^6.0.0"
-    through "^2.3.6"
-
-inquirer@^7.0.0:
+inquirer@7.3.3, inquirer@^7.0.0:
   version "7.3.3"
   resolved "https://registry.yarnpkg.com/inquirer/-/inquirer-7.3.3.tgz#04d176b2af04afc157a83fd7c100e98ee0aad003"
   dependencies:
@@ -12527,9 +12509,9 @@ react-modal@3.1.12:
     prop-types "^15.5.10"
     warning "^3.0.0"
 
-react-polymorph@0.9.6-rc.3:
-  version "0.9.6-rc.3"
-  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-0.9.6-rc.3.tgz#dceb56aa8e7d83dc8251d7459257d0934c45b104"
+react-polymorph@0.9.7-rc.5:
+  version "0.9.7-rc.5"
+  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-0.9.7-rc.5.tgz#410d57262f2c21bee082749df095d41c35f5394b"
   dependencies:
     "@tippyjs/react" "4.2.0"
     create-react-context "0.2.2"
@@ -13415,7 +13397,7 @@ sane@~1.6.0:
     walker "~1.0.5"
     watch "~0.10.0"
 
-sanitize-filename@^1.6.0, sanitize-filename@^1.6.2:
+sanitize-filename@1.6.3, sanitize-filename@^1.6.0, sanitize-filename@^1.6.2:
   version "1.6.3"
   resolved "https://registry.yarnpkg.com/sanitize-filename/-/sanitize-filename-1.6.3.tgz#755ebd752045931977e30b2025d340d7c9090378"
   dependencies:

@@ -259,9 +259,9 @@ export default class WalletRecoveryPhraseVerificationWidget extends Component<Pr
               &nbsp;
               <PopOver
                 content={
-                  <span className={styles.paperWalletTooltip}>
+                  <div className={styles.paperWalletTooltip}>
                     {intl.formatMessage(messages.paperWalletDescription)}
-                  </span>
+                  </div>
                 }
               >
                 <div className={styles.paperWallet}>

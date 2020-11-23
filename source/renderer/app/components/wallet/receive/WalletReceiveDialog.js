@@ -26,6 +26,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Add a note to the sender',
     description: 'inputPlaceholder on the wallet "Share Address" dialog',
   },
+  saveQRCodeImage: {
+    id: 'wallet.receive.dialog.saveQRCodeImage',
+    defaultMessage: '!!!Save QR code image',
+    description: 'saveQRCodeImage on the wallet "Share Address" dialog',
+  },
   downloadPDFButton: {
     id: 'wallet.receive.dialog.downloadPDFButton',
     defaultMessage: '!!!Download as PDF',
@@ -49,6 +54,7 @@ type Props = {
   address: WalletAddress,
   onCopyAddress: Function,
   onDownloadPDF: Function,
+  onSaveQRCodeImage: Function,
   onClose: Function,
 };
 
@@ -72,9 +78,8 @@ export default class WalletReceiveDialog extends Component<Props> {
     this.form.submit({
       onSuccess: (form) => {
         const { noteInput } = form.values();
-        const { onDownloadPDF, onClose } = this.props;
+        const { onDownloadPDF } = this.props;
         onDownloadPDF(noteInput);
-        onClose();
       },
       onError: (err) => {
         throw new Error(err);
@@ -87,11 +92,15 @@ export default class WalletReceiveDialog extends Component<Props> {
   };
 
   render() {
-    const { address, onCopyAddress, onClose } = this.props;
+    const { address, onCopyAddress, onSaveQRCodeImage, onClose } = this.props;
     const { intl } = this.context;
     const noteInputField = this.form.$('noteInput');
 
     const actions = [
+      {
+        label: intl.formatMessage(messages.saveQRCodeImage),
+        onClick: () => onSaveQRCodeImage(),
+      },
       {
         className: 'downloadPDFButton',
         label: intl.formatMessage(messages.downloadPDFButton),

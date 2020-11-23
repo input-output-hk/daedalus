@@ -9,10 +9,13 @@ Changelog
 
 ### Features
 
+- Enabled the sharing functionality on the "Receive" screen ([PR 2245](https://github.com/input-output-hk/daedalus/pull/2245))
+- Improved form field feedback UX ([PR 2241](https://github.com/input-output-hk/daedalus/pull/2241))
 - Implemented "Filter and CSV export" feature on the "Transactions" screen ([PR 2207](https://github.com/input-output-hk/daedalus/pull/2207))
 
 ### Chores
 
+- Updated `cardano-wallet` to version `2020-11-17` ([PR 2246](https://github.com/input-output-hk/daedalus/pull/2246))
 - Implemented a tool for quickly copying css properties on theme files ([PR 2196](https://github.com/input-output-hk/daedalus/pull/2196))
 - Hid hardware wallet restoration support ([PR 2237](https://github.com/input-output-hk/daedalus/pull/2237))
 
