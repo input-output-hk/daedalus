@@ -654,6 +654,7 @@ export default class TooltipPool extends Component<Props, State> {
                 </div>
                 <PopOver
                   maxWidth={350}
+                  offset={[0, 10]}
                   key={field.key}
                   content={
                     <div className={styles.tooltipWithHTMLContent}>
