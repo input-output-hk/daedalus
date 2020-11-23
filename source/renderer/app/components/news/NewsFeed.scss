@@ -113,12 +113,13 @@
     }
 
     *::-webkit-scrollbar-track {
-      margin: 25px 0;
+      margin-top: 25px;
+      margin-bottom: 11px;
     }
 
     &.hasShadow {
       *::-webkit-scrollbar-track {
-        margin: 20px 0 11px;
+        margin-top: 22px;
       }
     }
 
