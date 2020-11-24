@@ -102,7 +102,12 @@ export default class NewsItem extends Component<Props, State> {
   };
 
   render() {
-    const { newsItem, expandWithoutTransition, currentDateFormat, hasUpdateItem } = this.props;
+    const {
+      newsItem,
+      expandWithoutTransition,
+      currentDateFormat,
+      hasUpdateItem,
+    } = this.props;
     const componentClasses = classNames([
       styles.component,
       newsItem.type ? styles[newsItem.type] : null,

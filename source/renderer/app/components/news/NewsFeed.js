@@ -190,7 +190,7 @@ export default class NewsFeed extends Component<Props, State> {
           )}
           {items.length > 0 && (
             <div className={newsFeedListStyles}>
-              {hasUpdateItem && (<hr className={styles.separator} />)}
+              {hasUpdateItem && <hr className={styles.separator} />}
               {items.map((newsItem) => (
                 <NewsItem
                   key={newsItem.id}
