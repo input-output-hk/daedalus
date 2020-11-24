@@ -92,7 +92,7 @@ export default class NewsFeed extends Component<Props, State> {
 
     if (this.scrollableDomElement) {
       const { scrollTop } = this.scrollableDomElement;
-      const hasShadow = scrollTop > 3;
+      const hasShadow = scrollTop > 0.5;
       if (currentHasShadow !== hasShadow) {
         this.setState({
           hasShadow,
@@ -134,12 +134,24 @@ export default class NewsFeed extends Component<Props, State> {
 
     const newsFeedHeaderStyles = classNames([
       styles.newsFeedHeader,
+      hasShadow && !hasUpdateItem ? styles.hasShadow : null,
+    ]);
+
+    const newsFeedContainerStyles = classNames([
+      styles.newsFeedContainer,
+      !hasUpdateItem ? styles.noUpdateItem : null,
       hasShadow ? styles.hasShadow : null,
     ]);
 
     const newsFeedListStyles = classNames([
       styles.newsFeedList,
       hasUpdateItem ? styles.hasUpdate : null,
+      hasShadow ? styles.hasShadow : null,
+    ]);
+
+    const newsFeedUpdateStyles = classNames([
+      styles.updateItem,
+      hasShadow ? styles.hasShadow : null,
     ]);
 
     return (
@@ -157,9 +169,9 @@ export default class NewsFeed extends Component<Props, State> {
             <SVGInline svg={closeCrossThin} />
           </button>
         </div>
-        <div className={styles.newsFeedContainer}>
+        <div className={newsFeedContainerStyles}>
           {hasUpdateItem && (
-            <>
+            <div className={newsFeedUpdateStyles}>
               {
                 <UpdateItem
                   key={update.id}
@@ -174,14 +186,15 @@ export default class NewsFeed extends Component<Props, State> {
                   isUpdatePostponed={isUpdatePostponed}
                 />
               }
-              <hr className={styles.separator} />
-            </>
+            </div>
           )}
           {items.length > 0 && (
             <div className={newsFeedListStyles}>
+              {hasUpdateItem && <hr className={styles.separator} />}
               {items.map((newsItem) => (
                 <NewsItem
                   key={newsItem.id}
+                  hasUpdateItem={hasUpdateItem}
                   newsItem={newsItem}
                   isNewsFeedOpen={isNewsFeedOpen}
                   onMarkNewsAsRead={onMarkNewsAsRead}
