@@ -14,20 +14,17 @@
     }
   }
 
-  .tooltip {
-    &:hover {
-      .questionMarkIcon {
-        opacity: 0.8;
-      }
-    }
-  }
-
   .questionMarkIcon {
     height: 14px;
     margin-left: 6px;
     opacity: 0.4;
     transform: translateY(2px);
     width: 14px;
+
+    &:hover {
+      opacity: 0.8;
+    }
+
     path {
       fill: var(--theme-input-icon-background-color);
     }

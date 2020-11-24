@@ -50,47 +50,36 @@
       }
     }
 
-    .SimpleBubble_root {
-      .SimpleBubble_bubble {
-        margin-left: -40px;
+    .TooltipPool_container > span {
+      outline: none;
+    }
+  }
+
+  .experimentalIcon {
+    padding: 0;
+
+    svg {
+      height: 14.5px;
+      width: 10px;
+
+      g {
+        path:nth-child(1) {
+          fill: var(
+            --theme-staking-stake-pool-tooltip-experimental-icon-background-color
+          );
+        }
+
+        path:nth-child(2) {
+          fill: var(
+            --theme-staking-stake-pool-tooltip-experimental-icon-lines-color
+          );
+        }
       }
     }
   }
 
-  .experimentalTooltip {
-    height: 14.5px;
-    padding: 0;
-    position: absolute;
-    right: -5px;
-    top: -6px;
-    width: 10px;
-
-    .experimentalIcon {
-      padding: 0;
-
-      svg {
-        height: 14.5px;
-        width: 10px;
-
-        g {
-          path:nth-child(1) {
-            fill: var(
-              --theme-staking-stake-pool-tooltip-experimental-icon-background-color
-            );
-          }
-
-          path:nth-child(2) {
-            fill: var(
-              --theme-staking-stake-pool-tooltip-experimental-icon-lines-color
-            );
-          }
-        }
-      }
-    }
-
-    .iconButton {
-      cursor: pointer;
-    }
+  .iconButton {
+    cursor: pointer;
   }
 
   .noDataDash {
@@ -121,12 +110,6 @@
 
   .noDataDashTooltip {
     padding: 0;
-
-    :global {
-      .SimpleBubble_bubble {
-        margin-bottom: -20px !important;
-      }
-    }
   }
 }
 
@@ -258,7 +241,6 @@
     background: var(--theme-staking-stake-pool-tooltip-background-color);
     height: 20px;
     left: 0;
-    margin-left: -20px;
     opacity: 0;
     position: absolute;
     right: 0;
@@ -310,6 +292,7 @@
 
     .hoverContent {
       height: 36px;
+      margin-left: 0;
       opacity: 1;
       transition: opacity 0s, height 0.25s;
       transition-delay: 0.25s;
@@ -442,13 +425,13 @@
 
       .fieldLabel {
         line-height: 1;
+        margin-right: 4px;
         opacity: 0.8;
       }
 
       .questionMark {
         display: none;
         height: 19px;
-        margin-left: 4px;
         width: 10px;
 
         :global {
@@ -484,22 +467,6 @@
 
           & + p {
             margin-top: 6px;
-          }
-        }
-      }
-
-      :global {
-        .SimpleTooltip_root {
-          .SimpleTooltip_bubble {
-            transform: translate(calc(50% - 5px), 5px);
-
-            .SimpleBubble_bubble {
-              font-family: var(--font-regular);
-              margin-left: 40px;
-              transform: translate(-50%, 0);
-              white-space: normal;
-              width: 250px;
-            }
           }
         }
       }

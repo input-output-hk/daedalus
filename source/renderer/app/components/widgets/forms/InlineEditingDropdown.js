@@ -3,14 +3,12 @@ import React, { Component } from 'react';
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
-import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import { Select } from 'react-polymorph/lib/components/Select';
 import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import styles from './InlineEditingDropdown.scss';
-import tooltipStyles from './InlineEditingDropdown-tooltip.scss';
 import questionMarkIcon from '../../../assets/images/question-mark.inline.svg';
 
 const messages = defineMessages({
@@ -66,18 +64,12 @@ export default class InlineEditingDropdown extends Component<Props> {
     const labelText = [
       label,
       !!tooltip && (
-        <Tooltip
-          skin={TooltipSkin}
-          themeOverrides={tooltipStyles}
-          tip={tooltip}
-          key="tooltip"
-          className={styles.tooltip}
-        >
+        <PopOver content={tooltip} key="tooltip">
           <SVGInline
             svg={questionMarkIcon}
             className={styles.questionMarkIcon}
           />
-        </Tooltip>
+        </PopOver>
       ),
     ];
 

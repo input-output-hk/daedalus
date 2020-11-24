@@ -2,7 +2,11 @@
 import { utils, cardano } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { encode } from 'borc';
 import blakejs from 'blakejs';
-import { derivationPathToLedgerPath, derivationPathToString, CERTIFICATE_TYPE } from './hardwareWalletUtils';
+import {
+  derivationPathToLedgerPath,
+  derivationPathToString,
+  CERTIFICATE_TYPE,
+} from './hardwareWalletUtils';
 import { deriveXpubChannel } from '../ipc/getHardwareWalletChannel';
 
 // Types
@@ -102,9 +106,7 @@ export const ShelleyTxInputFromUtxo = (utxoInput: CoinSelectionInput) => {
   };
 };
 
-export const ShelleyTxOutput = (
-  output: CoinSelectionOutput,
-) => {
+export const ShelleyTxOutput = (output: CoinSelectionOutput) => {
   const { address, amount, derivationPath } = output;
   const coins = amount.quantity;
 
@@ -117,9 +119,7 @@ export const ShelleyTxOutput = (
     address,
     coins,
     isChange,
-    spendingPath: isChange
-      ? derivationPathToLedgerPath(derivationPath)
-      : null,
+    spendingPath: isChange ? derivationPathToLedgerPath(derivationPath) : null,
     stakingPath: isChange ? [2147485500, 2147485463, 2147483648, 2, 0] : null,
     encodeCBOR,
   };
@@ -135,14 +135,16 @@ export const ShelleyTxCert = (cert) => {
   }
 
   function encodeCBOR(encoder) {
-    const accountAddressHash = utils.bech32_decodeAddress(accountAddress).slice(1)
-    const account = [0, accountAddressHash]
+    const accountAddressHash = utils
+      .bech32_decodeAddress(accountAddress)
+      .slice(1);
+    const account = [0, accountAddressHash];
     const encodedCertsTypes = {
       0: [type, account],
       1: [type, account],
       2: [type, account, hash],
-    }
-    return encoder.pushAny(encodedCertsTypes[type])
+    };
+    return encoder.pushAny(encodedCertsTypes[type]);
   }
   return {
     address: accountAddress,
@@ -150,14 +152,16 @@ export const ShelleyTxCert = (cert) => {
     accountAddress,
     poolHash: poolHash || null,
     encodeCBOR,
-  }
+  };
 };
 
 export const prepareLedgerCertificate = (cert: CoinSelectionCertificate) => {
   return {
     type: CERTIFICATE_TYPE[cert.certificateType],
     path: derivationPathToLedgerPath(cert.rewardAccountPath),
-    poolKeyHashHex: cert.pool ? utils.buf_to_hex(utils.bech32_decodeAddress(cert.pool)) : null,
+    poolKeyHashHex: cert.pool
+      ? utils.buf_to_hex(utils.bech32_decodeAddress(cert.pool))
+      : null,
   };
 };
 
@@ -287,9 +291,7 @@ export const indexIsHardened = (index: number) => {
   return index >= HARDENED_THRESHOLD;
 };
 
-export const prepareLedgerInput = (
-  input: CoinSelectionInput,
-) => {
+export const prepareLedgerInput = (input: CoinSelectionInput) => {
   return {
     txHashHex: input.id,
     outputIndex: input.index,
@@ -297,9 +299,7 @@ export const prepareLedgerInput = (
   };
 };
 
-export const prepareLedgerOutput = (
-  output: CoinSelectionOutput,
-) => {
+export const prepareLedgerOutput = (output: CoinSelectionOutput) => {
   const isChange = output.derivationPath !== null;
   if (isChange) {
     return {
