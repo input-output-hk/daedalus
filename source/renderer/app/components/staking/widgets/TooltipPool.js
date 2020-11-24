@@ -8,8 +8,7 @@ import {
   FormattedHTMLMessage,
 } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
-import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
-import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import classnames from 'classnames';
 import { capitalize } from 'lodash';
@@ -19,8 +18,6 @@ import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import styles from './TooltipPool.scss';
-import experimentalTooltipStyles from './TooltipPool-experimental-tooltip.scss';
-import isTooltipStyles from './TooltipPool-copyId-tooltip.scss';
 import StakePool from '../../../domains/StakePool';
 import closeCross from '../../../assets/images/close-cross.inline.svg';
 import noDataDashSmallImage from '../../../assets/images/no-data-dash-small.inline.svg';
@@ -553,12 +550,9 @@ export default class TooltipPool extends Component<Props, State> {
               </div>
             )}
             {isIncentivizedTestnet && (
-              <Tooltip
-                className={styles.experimentalTooltip}
+              <PopOver
                 key="experimentalTooltip"
-                themeOverrides={experimentalTooltipStyles}
-                skin={TooltipSkin}
-                tip={intl.formatMessage(messages.experimentalTooltipLabel)}
+                content={intl.formatMessage(messages.experimentalTooltipLabel)}
               >
                 <button className={styles.iconButton}>
                   <SVGInline
@@ -566,7 +560,7 @@ export default class TooltipPool extends Component<Props, State> {
                     className={styles.experimentalIcon}
                   />
                 </button>
-              </Tooltip>
+              </PopOver>
             )}
           </div>
         ),
@@ -653,26 +647,26 @@ export default class TooltipPool extends Component<Props, State> {
         {fields.map((field: { key: string, value: any }) => {
           const labelPart = (
             <div className={styles[`${field.key}Label`]}>
-              <Tooltip
-                key={field.key}
-                skin={TooltipSkin}
-                tip={
-                  <div className={styles.tooltipWithHTMLContent}>
-                    <FormattedHTMLMessage
-                      {...messages[`${field.key}Tooltip`]}
-                    />
-                  </div>
-                }
-              >
-                <div className={styles.labelContainer}>
-                  <div className={styles.fieldLabel}>
-                    {intl.formatMessage(messages[field.key])}
-                  </div>
+              <div className={styles.labelContainer}>
+                <div className={styles.fieldLabel}>
+                  {intl.formatMessage(messages[field.key])}
+                </div>
+                <PopOver
+                  offset={[0, 10]}
+                  key={field.key}
+                  content={
+                    <div className={styles.tooltipWithHTMLContent}>
+                      <FormattedHTMLMessage
+                        {...messages[`${field.key}Tooltip`]}
+                      />
+                    </div>
+                  }
+                >
                   <div className={styles.questionMark}>
                     <SVGInline svg={questionMarkIcon} />
                   </div>
-                </div>
-              </Tooltip>
+                </PopOver>
+              </div>
             </div>
           );
 
@@ -760,28 +754,25 @@ export default class TooltipPool extends Component<Props, State> {
               />
             </div>
           )}
-          <div
-            className={styles.id}
-            onMouseOut={this.onIdMouseOut}
-            onBlur={() => {}}
+          <PopOver
+            key="id"
+            content={intl.formatMessage(messages.copyIdTooltipLabel)}
           >
-            <p className={styles.ellipsisContent}>{ellipsis(id, 18, 18)}</p>
-            <CopyToClipboard text={id} onCopy={this.onCopyId}>
-              <Tooltip
-                className={styles.idTooltip}
-                key="id"
-                themeOverrides={isTooltipStyles}
-                skin={TooltipSkin}
-                tip={intl.formatMessage(messages.copyIdTooltipLabel)}
-              >
+            <div
+              className={styles.id}
+              onMouseOut={this.onIdMouseOut}
+              onBlur={() => {}}
+            >
+              <p className={styles.ellipsisContent}>{ellipsis(id, 18, 18)}</p>
+              <CopyToClipboard text={id} onCopy={this.onCopyId}>
                 <div className={hoverContentClassnames}>
                   <p className={styles.hoverContentBackground}>
                     {id} <SVGInline svg={idCopyIcon} />
                   </p>
                 </div>
-              </Tooltip>
-            </CopyToClipboard>
-          </div>
+              </CopyToClipboard>
+            </div>
+          </PopOver>
           <div className={styles.description}>{description}</div>
           <Link
             onClick={() => onOpenExternalLink(homepage)}

@@ -141,7 +141,6 @@ export class ThumbPool extends Component<Props, State> {
         {isHighlighted && (
           <TooltipPool
             stakePool={stakePool}
-            className={styles.tooltip}
             isVisible
             onClick={onClose}
             currentTheme={currentTheme}

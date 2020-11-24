@@ -5,9 +5,8 @@ import classnames from 'classnames';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { defineMessages, FormattedHTMLMessage, intlShape } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
-import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import SVGInline from 'react-svg-inline';
-import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
@@ -21,7 +20,6 @@ import { PasswordInput } from '../../widgets/forms/PasswordInput';
 import styles from './ChangeSpendingPasswordDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import { submitOnEnter } from '../../../utils/form';
-import tooltipStyles from '../../widgets/forms/InlineEditingDropdown-tooltip.scss';
 import infoIconInline from '../../../assets/images/info-icon.inline.svg';
 
 const messages = defineMessages({
@@ -240,9 +238,9 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
       isSubmitting ? styles.isSubmitting : null,
     ]);
 
-    const tooltipClasses = classnames([
-      styles.tooltip,
-      currentLocale === 'ja-JP' ? 'jpLangTooltipIcon' : '',
+    const spendingPasswordClasses = classnames([
+      styles.spendingPasswordField,
+      currentLocale === 'ja-JP' ? styles.jpLangTooltipIcon : '',
     ]);
 
     const newPasswordClasses = classnames(['newPassword', styles.newPassword]);
@@ -284,23 +282,19 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
       >
         <div className={styles.spendingPasswordFields}>
           {isSpendingPasswordSet && (
-            <div className={styles.spendingPasswordField}>
+            <div className={spendingPasswordClasses}>
               <Input
                 className={styles.currentPassword}
                 error={currentPasswordField.error || currentPasswordError}
                 {...currentPasswordField.bind()}
                 onKeyPress={this.handleSubmitOnEnter}
               />
-              <Tooltip
-                skin={TooltipSkin}
-                themeOverrides={tooltipStyles}
-                tip={<FormattedHTMLMessage {...messages.passwordTooltip} />}
+              <PopOver
+                content={<FormattedHTMLMessage {...messages.passwordTooltip} />}
                 key="tooltip"
-                className={tooltipClasses}
-                arrowRelativeToTip
               >
                 <SVGInline svg={infoIconInline} className={styles.infoIcon} />
-              </Tooltip>
+              </PopOver>
             </div>
           )}
 
@@ -311,16 +305,14 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
                 onKeyPress={this.handleSubmitOnEnter}
               />
               {!isSpendingPasswordSet && (
-                <Tooltip
-                  skin={TooltipSkin}
-                  themeOverrides={tooltipStyles}
-                  tip={<FormattedHTMLMessage {...messages.passwordTooltip} />}
+                <PopOver
+                  content={
+                    <FormattedHTMLMessage {...messages.passwordTooltip} />
+                  }
                   key="tooltip"
-                  className={tooltipClasses}
-                  arrowRelativeToTip
                 >
                   <SVGInline svg={infoIconInline} className={styles.infoIcon} />
-                </Tooltip>
+                </PopOver>
               )}
             </div>
           </div>
