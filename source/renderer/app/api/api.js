@@ -908,7 +908,7 @@ export default class AdaApi {
     const { addressId } = request;
     try {
       const response = await inspectAddress(this.config, {
-        addressId
+        addressId,
       });
       console.debug('>>> API:: inspectAddress RES: ', response);
       logger.debug('AdaApi::inspectAddress success', { response });
@@ -929,7 +929,9 @@ export default class AdaApi {
     const { walletId, role, index } = request;
     try {
       const response = await getPublicKey(this.config, {
-        walletId, role, index,
+        walletId,
+        role,
+        index,
       });
       console.debug('>>> API:: getPublicKey RES: ', response);
       logger.debug('AdaApi::getPublicKey success', { response });
@@ -948,10 +950,10 @@ export default class AdaApi {
       parameters: filterLogData(request),
     });
     const { data } = request;
-    console.debug('>>> SEND DATA: ', data)
+    console.debug('>>> SEND DATA: ', data);
     try {
       const response = await constructAddress(this.config, {
-        data
+        data,
       });
       console.debug('>>> API:: constructAddress RES: ', response);
       logger.debug('AdaApi::constructAddress success', { response });

@@ -7,7 +7,7 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import { get } from 'lodash';
 import ledgerIcon from '../../assets/images/hardware-wallet/ledger-cropped.inline.svg';
-import ledgerXIcon from '../../assets/images/hardware-wallet/ledger-x-cropped-outlines.inline.svg';
+import ledgerXIcon from '../../assets/images/hardware-wallet/ledger-x-cropped.inline.svg';
 import trezorIcon from '../../assets/images/hardware-wallet/trezor.inline.svg';
 import unknownDeviceIcon from '../../assets/images/hardware-wallet/trezor-ledger.inline.svg';
 import DialogCloseButton from '../widgets/DialogCloseButton';

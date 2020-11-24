@@ -12,5 +12,5 @@ export const constructAddress = (
       ...config,
     },
     {},
-    data,
+    data
   );
