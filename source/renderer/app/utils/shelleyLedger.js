@@ -4,7 +4,6 @@ import { encode } from 'borc';
 import blakejs from 'blakejs';
 import {
   derivationPathToLedgerPath,
-  derivationPathToString,
   CERTIFICATE_TYPE,
 } from './hardwareWalletUtils';
 import { deriveXpubChannel } from '../ipc/getHardwareWalletChannel';

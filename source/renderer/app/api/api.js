@@ -910,11 +910,9 @@ export default class AdaApi {
       const response = await inspectAddress(this.config, {
         addressId,
       });
-      console.debug('>>> API:: inspectAddress RES: ', response);
       logger.debug('AdaApi::inspectAddress success', { response });
       return response;
     } catch (error) {
-      console.debug('>>> API:: inspectAddress ERROR: ', error);
       logger.error('AdaApi::inspectAddress error', { error });
       throw new ApiError(error);
     }
@@ -933,11 +931,9 @@ export default class AdaApi {
         role,
         index,
       });
-      console.debug('>>> API:: getPublicKey RES: ', response);
       logger.debug('AdaApi::getPublicKey success', { response });
       return response;
     } catch (error) {
-      console.debug('>>> API:: getPublicKey ERROR: ', error);
       logger.error('AdaApi::getPublicKey error', { error });
       throw new ApiError(error);
     }
@@ -947,16 +943,13 @@ export default class AdaApi {
     request: any // @TODO
   ): Promise<any> => {
     const { data } = request;
-    console.debug('>>> SEND DATA: ', data);
     try {
       const response = await constructAddress(this.config, {
         data,
       });
-      console.debug('>>> API:: constructAddress RES: ', response);
       logger.debug('AdaApi::constructAddress success', { response });
       return response;
     } catch (error) {
-      console.debug('>>> API:: constructAddress ERROR: ', error);
       logger.error('AdaApi::constructAddress error', { error });
       throw new ApiError(error);
     }

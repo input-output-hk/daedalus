@@ -1,9 +1,6 @@
 // @flow
 import { map, join, takeRight } from 'lodash';
-import Ada, {
-  cardano,
-  utils,
-} from '@cardano-foundation/ledgerjs-hw-app-cardano';
+import { cardano } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { HARDENED } from '../config/hardwareWalletsConfig';
 
 // Constants
@@ -51,9 +48,6 @@ export const getParamsFromPath = (derivationPath: Array<string>) => {
 
 // [2147485500, 2147485463, 2147483648] => 1852'/1815'/0'
 export const hardenedPathToString = (hardendedPath: Array<string>) => {
-  const path = map(
-    hardendedPath,
-    (chunk, index) => (chunk - HARDENED).toString() + 'H'
-  );
+  const path = map(hardendedPath, (chunk) => `${chunk - HARDENED}H`);
   return derivationPathToString(path).replace('m/', '');
 };

@@ -111,8 +111,7 @@ class EventObserver {
     // INIT - 4
     // $FlowFixMe
     this.mainWindow = props;
-    this.test = null;
-    this.channel = {};
+    // this.channel = {};
   }
   next = async (event) => {
     const transportList = await TransportNodeHid.list();
@@ -121,7 +120,6 @@ class EventObserver {
     if (connectionChanged) {
       const device = get(event, 'device', {});
       const deviceModel = get(event, 'deviceModel', {});
-      this.test = 100;
 
       if (event.type === 'add') {
         if (!devicesMemo[device.path]) {
@@ -518,9 +516,6 @@ export const handleHardwareWalletRequests = async (
     //      throw error;
     //    }
 
-    //    // Some new test
-
-    //    // END of test
     //    return;
 
     //    if (!deviceConnection) {

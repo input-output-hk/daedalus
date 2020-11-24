@@ -1,7 +1,6 @@
 // @flow
 import Action from './lib/Action';
 import type { WalletExportTypeChoices } from '../types/walletExportTypes';
-import type { CsvRecord } from '../../../common/types/rewards-csv-request.types';
 import type {
   TransportDevice,
   HardwareWalletExtendedPublicKeyResponse,
