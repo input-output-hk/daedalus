@@ -5,15 +5,13 @@ import { isNil, get, map } from 'lodash';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
-import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
-import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import Wallet, { WalletDelegationStatuses } from '../../../domains/Wallet';
 import StakePool from '../../../domains/StakePool';
 import { getColorFromRange } from '../../../utils/colors';
 import adaIcon from '../../../assets/images/ada-symbol.inline.svg';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import styles from './WalletRow.scss';
-import tooltipStyles from './WalletRowTooltip.scss';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import arrow from '../../../assets/images/collapse-arrow.inline.svg';
 import hardwareWalletsIcon from '../../../assets/images/hardware-wallet/connect-ic.inline.svg';
@@ -193,9 +191,8 @@ export default class WalletRow extends Component<Props> {
                     className={classnames([styles.ticker, 'tickerText'])}
                   >
                     {delegatedStakePoolId ? (
-                      <Tooltip
-                        skin={TooltipSkin}
-                        tip={
+                      <PopOver
+                        content={
                           <div className={styles.tooltipLabelWrapper}>
                             <span>
                               {intl.formatMessage(
@@ -222,7 +219,7 @@ export default class WalletRow extends Component<Props> {
                               )}
                           ]
                         </div>
-                      </Tooltip>
+                      </PopOver>
                     ) : (
                       notDelegatedText
                     )}
@@ -266,10 +263,9 @@ export default class WalletRow extends Component<Props> {
                         'tickerText',
                       ]);
                       return [
-                        <Tooltip
-                          skin={TooltipSkin}
+                        <PopOver
                           key="ticker"
-                          tip={
+                          content={
                             <div className={styles.tooltipLabelWrapper}>
                               <FormattedMessage
                                 {...messages.TooltipPoolTickerEpoch}
@@ -294,7 +290,7 @@ export default class WalletRow extends Component<Props> {
                                 }]`
                               : notDelegatedText}
                           </span>
-                        </Tooltip>,
+                        </PopOver>,
                         !isLast && (
                           <SVGInline
                             key="arrow"
@@ -339,15 +335,13 @@ export default class WalletRow extends Component<Props> {
               </div>
             </Fragment>
           ) : (
-            <Tooltip
-              skin={TooltipSkin}
-              themeOverrides={tooltipStyles}
-              tip={intl.formatMessage(messages.syncingTooltipLabel, {
+            <PopOver
+              content={intl.formatMessage(messages.syncingTooltipLabel, {
                 syncingProgress,
               })}
             >
               <LoadingSpinner medium />
-            </Tooltip>
+            </PopOver>
           )}
         </div>
       </div>

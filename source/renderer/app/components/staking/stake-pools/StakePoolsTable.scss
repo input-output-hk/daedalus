@@ -127,35 +127,6 @@
             }
           }
         }
-
-        :global {
-          .SimpleTooltip_root {
-            .SimpleTooltip_bubble {
-              pointer-events: none;
-
-              .SimpleBubble_bubble {
-                font-family: var(--font-regular);
-                font-weight: 400;
-                line-height: 19.04px;
-                text-align: left;
-                text-transform: initial;
-                transform: translate(-50px, 0);
-                white-space: normal;
-                width: 230px;
-              }
-            }
-          }
-
-          th:nth-child(8) {
-            .SimpleTooltip_root {
-              .SimpleTooltip_bubble {
-                .SimpleBubble_bubble {
-                  margin-left: -35px;
-                }
-              }
-            }
-          }
-        }
       }
     }
 
