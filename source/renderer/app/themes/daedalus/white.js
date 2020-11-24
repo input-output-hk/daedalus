@@ -373,6 +373,8 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-news-feed-badge-text-color': '#ffffff',
     '--theme-news-feed-box-shadow-color': '-5px 0 20px 0 rgba(0, 0, 0, 0.08)',
     '--theme-news-feed-header-background-color': '#e9e9e9',
+    '--theme-news-feed-header-box-shadow-color':
+      '0 10px 10px -5px rgba(0, 0, 0, 0.08)',
     '--theme-news-feed-header-title-color': '#2d2d2d',
     '--theme-news-feed-icon-close-button-color': '#2d2d2d',
     '--theme-news-feed-icon-close-hover-background-color':
