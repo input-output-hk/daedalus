@@ -169,8 +169,6 @@ codeSignEntitlements = [r|<?xml version="1.0" encoding="UTF-8"?>
     <true/>
     <key>com.apple.security.cs.allow-dyld-environment-variables</key>
     <true/>
-    <key>com.apple.security.device.usb</key>
-    <true/>
   </dict>
 </plist>|]
 
