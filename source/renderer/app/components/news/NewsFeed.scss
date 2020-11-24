@@ -116,12 +116,6 @@
       margin-bottom: 11px;
     }
 
-    &.hasShadow {
-      *::-webkit-scrollbar-track {
-        margin-top: 22px;
-      }
-    }
-
     :global {
       *::-webkit-scrollbar-thumb {
         background-color: var(
