@@ -944,9 +944,6 @@ export default class AdaApi {
   constructAddress = async (
     request: any // @TODO
   ): Promise<any> => {
-    logger.debug('AdaApi::constructAddress called', {
-      parameters: filterLogData(request),
-    });
     const { data } = request;
     console.debug('>>> SEND DATA: ', data)
     try {

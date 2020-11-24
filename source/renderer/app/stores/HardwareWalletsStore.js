@@ -291,8 +291,6 @@ export default class HardwareWalletsStore extends Store {
       const transaction = await this.sendMoneyRequest.execute({
         signedTransactionBlob: this.txBody,
       });
-      logger.debug('>>> HWStore - SEND MONEY - DONE: ', { transaction, params });
-
       if (!isDelegationTransaction) {
         // Start interval to check transaction state every second
         this.checkTransactionTimeInterval = setInterval(
@@ -308,9 +306,13 @@ export default class HardwareWalletsStore extends Store {
       this.sendMoneyRequest.reset();
       return transaction;
     } catch (e) {
-      logger.debug('>>> HWStore - SEND MONEY ERROR: ', e);
       this.setTransactionPendingState(false);
-      this._resetTransaction();
+      // this._resetTransaction();
+      runInAction('HardwareWalletsStore:: reset Transaction verifying', () => {
+        this.txBody = null;
+        this.activeDevicePath = null;
+        this.unfinishedWalletTxSigning = null;
+      });
       throw e;
     }
   };
@@ -529,15 +531,27 @@ export default class HardwareWalletsStore extends Store {
 
         if (recognizedPairedHardwareWallet) {
           logger.debug('>>> HWStore - Establish connection:: Transaction initiated - Recognized device found: ', { recognizedPairedHardwareWallet });
-          if (recognizedPairedHardwareWallet.deviceType === DeviceTypes.TREZOR) {
-            logger.debug('>>> HWStore - Establish connection:: Check device - Device is Trezor');
-            // Path must be set to null otherwise trezor is not waiting for next device and will throw an error
-            return await getHardwareWalletTransportChannel.request({
-              devicePath: null,
-              isTrezor: true,
-            });
-          }
-          return recognizedPairedHardwareWallet;
+          // if (recognizedPairedHardwareWallet.deviceType === DeviceTypes.TREZOR) {
+          //   logger.debug('>>> HWStore - Establish connection:: Check device - Device is Trezor');
+          //   // Path must be set to null otherwise trezor is not waiting for next device and will throw an error
+          //   const trezorTransport = await getHardwareWalletTransportChannel.request({
+          //     devicePath: null,
+          //     isTrezor: true,
+          //   });
+          //   logger.debug('>>> I have TREZOR transport; ', trezorTransport);
+//
+          //   await this._refreshHardwareWalletsLocalData();
+//
+          //   // Return stored device because of path
+          //   const deviceTransport = find(
+          //     hardwareWalletDevices,
+          //     (recognizedDevice) => recognizedDevice.id === trezorTransport.deviceId
+          //   );
+          //   logger.debug('>>> Return new Transport: ', deviceTransport)
+          //   return deviceTransport;
+          // }
+          // return !recognizedPairedHardwareWallet.disconnected ? recognizedPairedHardwareWallet : lastUnpairedDevice;
+          return lastUnpairedDevice;
         }
 
         const deviceData = lastUnpairedDevice || relatedConnectionData;
@@ -785,6 +799,7 @@ export default class HardwareWalletsStore extends Store {
             this.stopCardanoAdaAppFetchPoller();
             // Keep isTransactionInitiated active & Set new device listener by initiating transaction
             // Show message to reconnect proper software wallet device pair
+            logger.debug('>>> unfinishedWalletTxSigning SET: ', walletId);
             runInAction(
             'HardwareWalletsStore:: set HW device CONNECTING FAILED',
               () => {
@@ -795,6 +810,7 @@ export default class HardwareWalletsStore extends Store {
             );
           } else {
             logger.debug('>>>>> HWStore - Transaction Initiated - Close: ', walletId);
+            logger.debug('>>> unfinishedWalletTxSigning UNSET');
             runInAction('HardwareWalletsStore:: Initiate transaction', () => {
               this.isTransactionInitiated = false;
               this.unfinishedWalletTxSigning = null;
@@ -955,11 +971,22 @@ export default class HardwareWalletsStore extends Store {
         logger.debug('>>> HWStore - Export:: WAIT FOR ANOTHER DEVICE')
         // Special case. E.g. device unplugged before cardano app is opened
         // Stop poller and re-initiate connecting state / don't kill devices listener
-        this.stopCardanoAdaAppFetchPoller();
-        runInAction('HardwareWalletsStore:: Re-run initiated connection', () => {
-          this.hwDeviceStatus = isAborted ? HwDeviceStatuses.CONNECTING : HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED;
-          this.isListeningForDevice = true;
-        });
+        if (isCancelled && isTrezor) {
+          // Skip Trezor device-change events when rejected
+          setTimeout(() => {
+            logger.debug('>>>> NOW RESET');
+            runInAction('HardwareWalletsStore:: Re-run initiated connection', () => {
+              this.hwDeviceStatus = isAborted ? HwDeviceStatuses.CONNECTING : HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED;
+              this.isListeningForDevice = true;
+            });
+          }, 2000);
+        } else {
+          this.stopCardanoAdaAppFetchPoller();
+          runInAction('HardwareWalletsStore:: Re-run initiated connection', () => {
+            this.hwDeviceStatus = isAborted ? HwDeviceStatuses.CONNECTING : HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED;
+            this.isListeningForDevice = true;
+          });
+        }
       } else {
         runInAction(
           'HardwareWalletsStore:: Cannot export extended public key',
@@ -974,11 +1001,13 @@ export default class HardwareWalletsStore extends Store {
   };
 
   // Trezor - Shelley only
-  @action _signTransactionTrezor = async (walletId: string) => {
+  @action _signTransactionTrezor = async (walletId: string, deviceId?: string) => {
     const { coinSelection } = this.txSignRequest;
     runInAction('HardwareWalletsStore:: set Transaction verifying', () => {
       this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION;
     });
+
+    logger.debug('>>> _signTransactionTrezor:: Execute');
 
     // @TODO - remove once signing delegation transaction will call coins selection
     // This case is covered in coins selection action
@@ -1011,6 +1040,41 @@ export default class HardwareWalletsStore extends Store {
       (hardwareWalletDevice) => hardwareWalletDevice.paired === walletId
     );
     const recognizedDevicePath = get(recognizedDevice, 'path', null);
+
+
+
+    // Check if I have Software wallet with this deviceId
+    // const recognizedWallet = find(
+    //   this.hardwareWalletsConnectionData,
+    //   (hardwareWalletData) =>
+    //     hardwareWalletData.device.deviceId === recognizedDevice.id
+    // );
+    logger.debug('>>> sign Trezor:: recognizedDevicePath and walelt: ', { recognizedDevice, walletId, deviceId, isTransactionInitiated: this.isTransactionInitiated });
+
+    if (this.isTransactionInitiated) {
+      // Check if sender wallet match transaction initialization
+      if (!recognizedDevice || (recognizedDevice && deviceId && (recognizedDevice.id !== deviceId))) {
+        logger.debug('>>> HWStore - Device not belongs to this wallet');
+        // Keep isTransactionInitiated active & Set new device listener by initiating transaction
+        // Show message to reconnect proper software wallet device pair
+        logger.debug('>>> unfinishedWalletTxSigning SET: ', walletId);
+        runInAction(
+        'HardwareWalletsStore:: set HW device CONNECTING FAILED',
+          () => {
+            this.hwDeviceStatus = HwDeviceStatuses.CONNECTING_FAILED;
+            this.activeDevicePath = null;
+            this.unfinishedWalletTxSigning = walletId;
+          }
+        );
+        return;
+      } else {
+        logger.debug('>>>>> HWStore - Transaction Initiated - RESET: ', walletId);
+        runInAction('HardwareWalletsStore:: Initiate transaction', () => {
+          this.isTransactionInitiated = false;
+          this.unfinishedWalletTxSigning = null;
+        });
+      }
+    }
 
     try {
       const signedTransaction = await signTransactionTrezorChannel.request({
@@ -1194,7 +1258,7 @@ export default class HardwareWalletsStore extends Store {
       walletId
     );
 
-    logger.debug('>>>> HWStore - initiateTransaction: ', {walletId, hardwareWalletConnectionData});
+    logger.debug('>>>> HWStore - initiateTransaction: ', {walletId, hardwareWalletConnectionData, status: this.hwDeviceStatus});
 
     // Guard against potential null value
     if (!hardwareWalletConnectionData)
@@ -1204,18 +1268,55 @@ export default class HardwareWalletsStore extends Store {
     const { deviceType } = device;
 
 
-
     let devicePath = hardwareWalletConnectionData.device.path;
+    let deviceId;
     if (disconnected) {
       logger.debug('>>>> HWStore - initiateTransaction - DISCONNECTED');
       // Wait for connection to be established and continue to signing process
       try {
-        const transportDevice = await this.establishHardwareWalletConnection();
-        logger.debug('>>>> HWStore - initiateTransaction - transportDevice: ', transportDevice);
+        // let transportDevice  = await this.establishHardwareWalletConnection();
+        // logger.debug('>>>> HWStore - initiateTransaction - transportDevice: ', transportDevice);
+        // if (!transportDevice && hardwareWalletConnectionData.device.deviceType === DeviceTypes.TREZOR) {
+        //   transportDevice = await getHardwareWalletTransportChannel.request({
+        //     devicePath: null,
+        //     isTrezor: true,
+        //   });
+        //   logger.debug('>>> INITIATE tx - I have transport: ', transportDevice);
+        //   // throw new Error('Signing device not recognized!');
+        // }
+
+        let transportDevice;
+        if (hardwareWalletConnectionData.device.deviceType === DeviceTypes.TREZOR) {
+          // Do I have unpaired Trezor devices
+          const lastUnpairedDevice = findLast(
+            this.hardwareWalletDevices,
+            (hardwareWalletDevice) =>
+              !hardwareWalletDevice.paired && !hardwareWalletDevice.disconnected
+          );
+
+          if (lastUnpairedDevice) {
+            logger.debug('>>> I HAVE UNPAIRED !!!!: ', lastUnpairedDevice);
+            transportDevice = lastUnpairedDevice;
+          } else {
+            logger.debug('>>> CHECK FOR NEXT device !!!!');
+            transportDevice = await getHardwareWalletTransportChannel.request({
+              devicePath: null,
+              isTrezor: true,
+            });
+          }
+          logger.debug('>>> INITIATE tx - I have transport: ', transportDevice);
+          // throw new Error('Signing device not recognized!');
+        } else {
+          transportDevice  = await this.establishHardwareWalletConnection();
+        }
+
         if (!transportDevice) {
+          logger.debug('>>> No new devices recognized for tx signing');
           throw new Error('Signing device not recognized!');
         }
+
         devicePath = transportDevice.path;
+        deviceId = transportDevice.id || transportDevice.deviceId
       } catch (e) {
         logger.debug('>>>> HWStore - initiateTransaction - DISCONNECTED - ERROR: ', e);
         runInAction('HardwareWalletsStore:: Initiate transaction', () => {
@@ -1232,7 +1333,8 @@ export default class HardwareWalletsStore extends Store {
 
     // Add more cases / edge cases if needed
     if (deviceType === DeviceTypes.TREZOR) {
-      this._signTransactionTrezor(id);
+      logger.debug('>>>> Sign Trezor: ', { id });
+      this._signTransactionTrezor(walletId, deviceId);
       runInAction('HardwareWalletsStore:: Initiate transaction', () => {
         this.isTransactionInitiated = false;
       });
@@ -1252,6 +1354,7 @@ export default class HardwareWalletsStore extends Store {
       cancelDeviceAction: boolean,
     }
   ) => {
+    logger.debug('>>> RESET TX')
     runInAction('HardwareWalletsStore:: Reset initiated transaction', () => {
       this.isTransactionInitiated = false;
     });
@@ -1262,6 +1365,7 @@ export default class HardwareWalletsStore extends Store {
     }
     this.sendMoneyRequest.reset();
     this.selectCoinsRequest.reset();
+    logger.debug('>>> unfinishedWalletTxSigning UNSET');
     runInAction('HardwareWalletsStore:: reset Transaction verifying', () => {
       this.hwDeviceStatus = HwDeviceStatuses.READY;
       this.txBody = null;
@@ -1435,14 +1539,16 @@ export default class HardwareWalletsStore extends Store {
 
     // Case that allows us to re-trigger tx send process multiple times if device doesn't match sender wallet
     if (this.unfinishedWalletTxSigning && !disconnected) {
-      logger.debug('>>> HWStore - Reinitialize TX signing: ', this.unfinishedWalletTxSigning);
-      this.initiateTransaction({ walletId: this.unfinishedWalletTxSigning });
+      logger.debug('>>> CHANGE STATUS to: ', HwDeviceStatuses.CONNECTING);
       runInAction(
-        'HardwareWalletsStore:: remove unfinished signing listener',
+        'HardwareWalletsStore:: Change status to Connecting',
         () => {
-          this.unfinishedWalletTxSigning = null;
+          this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
         }
       );
+      logger.debug('>>> HWStore - Reinitialize TX signing: ', this.unfinishedWalletTxSigning);
+      this.initiateTransaction({ walletId: this.unfinishedWalletTxSigning });
+      logger.debug('>>> unfinishedWalletTxSigning UNSET');
     }
   };
 

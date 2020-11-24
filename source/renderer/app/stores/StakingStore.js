@@ -151,7 +151,6 @@ export default class StakingStore extends Store {
           passphrase,
         });
       }
-
       // Start interval to check transaction state every second
       this.delegationCheckTimeInterval = setInterval(
         this.checkDelegationTransaction,
@@ -229,7 +228,7 @@ export default class StakingStore extends Store {
       clearInterval(this.delegationCheckTimeInterval);
       this.delegationCheckTimeInterval = null;
     }
-    this.stores.hardwareWallets._resetTransaction();
+    // this.stores.hardwareWallets._resetTransaction();
     this.stores.wallets.refreshWalletsData();
     this.isDelegationTransactionPending = false;
   };
