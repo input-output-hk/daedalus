@@ -42,12 +42,7 @@ export const FormFieldSkin = (props: Props) => (
       >
         {props.label}
         {props.error && (
-          <PopOver
-            maxWidth={350}
-            content={props.error}
-            key="tooltip"
-            placement="bottom"
-          >
+          <PopOver content={props.error} key="tooltip" placement="bottom">
             <SVGInline
               svg={exclamationPointIcon}
               className={styles.exclamationPointIcon}

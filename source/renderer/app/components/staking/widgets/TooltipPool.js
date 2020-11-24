@@ -551,7 +551,6 @@ export default class TooltipPool extends Component<Props, State> {
             )}
             {isIncentivizedTestnet && (
               <PopOver
-                maxWidth={350}
                 key="experimentalTooltip"
                 content={intl.formatMessage(messages.experimentalTooltipLabel)}
               >
@@ -653,7 +652,6 @@ export default class TooltipPool extends Component<Props, State> {
                   {intl.formatMessage(messages[field.key])}
                 </div>
                 <PopOver
-                  maxWidth={350}
                   offset={[0, 10]}
                   key={field.key}
                   content={
@@ -757,7 +755,6 @@ export default class TooltipPool extends Component<Props, State> {
             </div>
           )}
           <PopOver
-            maxWidth={350}
             key="id"
             content={intl.formatMessage(messages.copyIdTooltipLabel)}
           >

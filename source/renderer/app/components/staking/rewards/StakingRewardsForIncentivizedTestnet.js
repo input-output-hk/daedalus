@@ -253,7 +253,6 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
                             {isRestoring && (
                               <div className={styles.syncingProgress}>
                                 <PopOver
-                                  maxWidth={350}
                                   content={intl.formatMessage(
                                     messages.syncingTooltipLabel,
                                     {

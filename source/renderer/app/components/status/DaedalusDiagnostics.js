@@ -548,12 +548,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               {getSectionRow('cardanoNodeStatus')}
               {getRow('platform', platform)}
               {getRow('platformVersion', platformVersion)}
-              {getRow(
-                'cpu',
-                <PopOver maxWidth={350} content={cpu}>
-                  {cpu}
-                </PopOver>
-              )}
+              {getRow('cpu', <PopOver content={cpu}>{cpu}</PopOver>)}
               {getRow('ram', ram)}
               {getRow(
                 'availableDiskSpace',

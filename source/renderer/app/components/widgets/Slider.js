@@ -78,7 +78,7 @@ export default class Slider extends Component<Props> {
         <div className={styles.upperMarks}>
           <div className={styles.minMark}>
             {showTooltip ? (
-              <PopOver maxWidth={350} content={minTooltip}>
+              <PopOver content={minTooltip}>
                 {shortNumber(minDisplayValue || min)}
               </PopOver>
             ) : (
@@ -87,7 +87,7 @@ export default class Slider extends Component<Props> {
           </div>
           <div className={styles.maxMark}>
             {showTooltip ? (
-              <PopOver maxWidth={350} content={maxTooltip}>
+              <PopOver content={maxTooltip}>
                 {shortNumber(maxDisplayValue || max)}
               </PopOver>
             ) : (

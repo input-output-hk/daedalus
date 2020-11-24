@@ -399,7 +399,6 @@ export default class StakePoolsRanking extends Component<Props, State> {
             <div className={styles.col}>
               <div className={styles.outOfRangeMaxAmount}>
                 <PopOver
-                  maxWidth={350}
                   content={intl.formatMessage(messages.rankingExtraTooltip)}
                 >
                   {shortNumber(OUT_OF_RANGE_MAX_DELEGATION_FUNDS)}
