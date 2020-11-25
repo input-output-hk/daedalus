@@ -1,4 +1,4 @@
-const { isMainnet } = global.environment;
+const { isMainnet, isLinux } = global.environment;
 
 export const HARDENED_HEX = 0x80000000;
 export const HARDENED = 2147483648;
@@ -56,7 +56,7 @@ export const MINIMAL_LEDGER_FIRMWARE_VERSION = '1.6.1';
 export const MINIMAL_TREZOR_FIRMWARE_VERSION = '2.3.3';
 
 export const isTrezorEnabled = true;
-export const isLedgerEnabled = true;
+export const isLedgerEnabled = !isLinux;
 
 export const isHardwareWalletSupportEnabled =
   isMainnet && (isTrezorEnabled || isLedgerEnabled);

@@ -170,7 +170,7 @@ const onAppReady = async () => {
 
   // @TODO - uncomment once ledger should be enabled
   // Ledger INIT
-  // console.debug('>>> IS ENABLED: ', { isHardwareWalletSupportEnabled, isLedgerEnabled });
+  // console.debug('[HW-DEBUG] IS ENABLED: ', { isHardwareWalletSupportEnabled, isLedgerEnabled });
   // if (isHardwareWalletSupportEnabled, isLedgerEnabled) {
   //   const handleCheckHardwareWalletDevices = handleHardwareWalletDevices(
   //     mainWindow
