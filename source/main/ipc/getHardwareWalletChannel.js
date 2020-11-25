@@ -114,20 +114,17 @@ class EventObserver {
     // this.channel = {};
   }
   next = async (event) => {
+    logger.info('>>> Ledger NEXT');
     const transportList = await TransportNodeHid.list();
-    logger.info('>>> Ledger NEXT: ', { event, transportList });
     const connectionChanged = event.type === 'add' || event.type === 'remove';
     if (connectionChanged) {
+      logger.info('>>> Ledger NEXT - connection changed');
       const device = get(event, 'device', {});
       const deviceModel = get(event, 'deviceModel', {});
 
       if (event.type === 'add') {
         if (!devicesMemo[device.path]) {
-          logger.info('>>> CONSTRUCTOR ADD: ', {
-            device,
-            transportList,
-            devicesMemo,
-          });
+          logger.info('>>> CONSTRUCTOR ADD');
           try {
             const transport = await TransportNodeHid.open(device.path);
             const AdaConnection = new AppAda(transport);
@@ -148,11 +145,11 @@ class EventObserver {
               this.mainWindow
             );
           } catch (e) {
-            logger.info('>>> CONSTRUCTOR error: ', e);
+            logger.info('>>> CONSTRUCTOR error');
           }
         }
       } else {
-        logger.info('>>> CONSTRUCTOR REMOVE: ', device);
+        logger.info('>>> CONSTRUCTOR REMOVE');
         devicesMemo = omit(devicesMemo, [device.path]);
         getHardwareWalletConnectionChannel.send(
           {
@@ -167,7 +164,7 @@ class EventObserver {
           this.mainWindow
         );
       }
-      logger.info('>>> CONSTRUCTOR Memo: ', { devicesMemo });
+      logger.info('>>> CONSTRUCTOR Memo');
 
       // logger.info('>>> SET NEW CHANNEL INIT');
       // if (event.type === 'add') {
@@ -182,14 +179,16 @@ class EventObserver {
       //     },
       //   }
       // }
+    } else {
+      logger.info('>>> Ledger NEXT - connection NOT changed');
     }
   };
   error(e) {
-    logger.info('>>> Ledger NEXT error: ', e);
+    logger.info('>>> Ledger NEXT error');
     throw e;
   }
   complete(event) {
-    logger.info('>>> Ledger NEXT complete: ', event);
+    logger.info('>>> Ledger NEXT complete');
   }
 }
 
@@ -216,7 +215,7 @@ export const handleHardwareWalletRequests = async (
   let observer;
 
   getHardwareWalletTransportChannel.onRequest(async (request) => {
-    logger.info('>>> getHardwareWalletTransportChannel: ', request);
+    logger.info('>>> getHardwareWalletTransportChannel');
     // INIT - 6
     const { isTrezor, devicePath } = request;
     // Connected Trezor device info
@@ -227,7 +226,7 @@ export const handleHardwareWalletRequests = async (
         deviceFeatures = await TrezorConnect.getFeatures({
           device: { path: devicePath },
         });
-        logger.info('>>> Trezor connect success: ', deviceFeatures);
+        logger.info('>>> Trezor connect success');
         if (deviceFeatures && deviceFeatures.success) {
           const {
             major_version: majorVersion,
@@ -249,7 +248,7 @@ export const handleHardwareWalletRequests = async (
         }
         throw deviceFeatures.payload; // Error is in payload
       } catch (e) {
-        logger.info('>>> Trezor connect error: ', e);
+        logger.info('>>> Trezor connect error');
         throw e;
       }
     }
@@ -281,19 +280,14 @@ export const handleHardwareWalletRequests = async (
       //       return
       //       // END of try
 
-      logger.info('>>> getHardwareWalletTransportChannel:: LEDGER: ', {
-        devicesMemo,
-      });
+      logger.info('>>> getHardwareWalletTransportChannel:: LEDGER');
       const transportList = await TransportNodeHid.list();
       let hw;
       let deviceConnection;
       let transport;
 
       // const path = devicePath || last(transportList);
-      logger.info('>>> getHardwareWalletTransportChannel:: PATH: ', {
-        devicePath,
-        transportList,
-      });
+      logger.info('>>> getHardwareWalletTransportChannel:: PATH');
       let lastConnectedPath;
 
       // const noInstance = (devicePath && !devicesMemo[devicePath]) || (!devicePath && !transportList.length);
@@ -303,12 +297,12 @@ export const handleHardwareWalletRequests = async (
         try {
           logger.info('>>> INIT NEW transport');
           // hw = await TransportNodeHid.open(devicePath);
-          logger.info('>>> OPEN <<<: ', devicePath);
+          logger.info('>>> OPEN <<<');
           hw = await TransportNodeHid.create();
-          logger.info('>>> INIT NEW transport - DONE: ', hw);
+          logger.info('>>> INIT NEW transport - DONE');
           const transportList = await TransportNodeHid.list();
           lastConnectedPath = last(transportList);
-          logger.info('>>> !!! lastConnectedPath !!!: ', lastConnectedPath);
+          logger.info('>>> !!! lastConnectedPath !!!');
 
           deviceConnection = new AppAda(hw);
           devicesMemo[lastConnectedPath] = {
@@ -316,12 +310,12 @@ export const handleHardwareWalletRequests = async (
             AdaConnection: deviceConnection,
           };
         } catch (e) {
-          logger.info('>>> INIT NEW transport - ERROR: ', e);
+          logger.info('>>> INIT NEW transport - ERROR');
           throw e;
         }
         // throw new Error('DEVICE_NOT_CONNECTED');
       } else if (!devicesMemo[devicePath]) {
-        logger.info('>>> USE First ');
+        logger.info('>>> USE First');
         // Use first like native usb nodeHID
         lastConnectedPath = transportList[0];
         // devicesMemo[lastConnectedPath]
@@ -369,12 +363,9 @@ export const handleHardwareWalletRequests = async (
 
       const { deviceModel } = hw;
       if (deviceModel) {
-        logger.info(
-          '>>> getHardwareWalletTransportChannel:: LEDGER case RESPONSE: ',
-          hw
-        );
+        logger.info('>>> getHardwareWalletTransportChannel:: LEDGER case RESPONSE');
         const info = await hw.device.getDeviceInfo();
-        logger.info('>>> !!! INFO !!!: ', info);
+        logger.info('>>> !!! INFO !!!');
         const { id, productName } = deviceModel;
         return Promise.resolve({
           deviceId: null, // @TODO - to be defined
@@ -387,16 +378,13 @@ export const handleHardwareWalletRequests = async (
       }
       throw new Error('Missing device info');
     } catch (error) {
-      logger.info('>>> ERROR on getHardwareWalletTransportChannel: ', {
-        error,
-        deviceConnection,
-      });
+      logger.info('>>> ERROR on getHardwareWalletTransportChannel');
       throw error;
     }
   });
 
   handleInitTrezorConnectChannel.onRequest(async () => {
-    logger.info('>>> INIT TREZOR <<<');
+    logger.info('>>> INIT TREZOR');
     // Remove all listeners if exist - e.g. on app refresh
     TrezorConnect.removeAllListeners();
     // Initialize new device listeners
@@ -464,10 +452,15 @@ export const handleHardwareWalletRequests = async (
   });
 
   handleInitLedgerConnectChannel.onRequest(async () => {
-    logger.info('>>> INIT LEDGER <<<');
+    logger.info('>>> INIT LEDGER');
     observer = new EventObserver(mainWindow);
-    logger.info('>>> OBSERVER INIT: ', observer);
-    const listener = await TransportNodeHid.listen(observer);
+    try {
+      logger.info('>>> OBSERVER INIT');
+      await TransportNodeHid.listen(observer);
+      logger.info('>>> OBSERVER INIT - listener started');
+    } catch (e) {
+      logger.info('>>> OBSERVER INIT FAILED');
+    }
   });
 
   deriveXpubChannel.onRequest(async (params) => {
@@ -548,19 +541,17 @@ export const handleHardwareWalletRequests = async (
     try {
       if (!devicesMemo[path]) {
         logger.info('>>> Device not instantiated!');
-        // >>> USE FIRST @TODO
+        // >>> USE FIRST maybe @TODO
         throw { code: 'DEVICE_NOT_CONNECTED' };
       }
-      logger.info('>>> GET CARDANO APP: ', { devicesMemo, path });
+      logger.info('>>> GET CARDANO APP');
       deviceConnection = devicesMemo[path].AdaConnection;
-      logger.info('>>> GET CARDANO APP - deviceConnection: ', {
-        deviceConnection,
-      });
+      logger.info('>>> GET CARDANO APP - deviceConnection');
 
       const appVersion = await deviceConnection.getVersion();
-      logger.info('>>> getCardanoAdaAppChannel:: appVersion ', appVersion);
+      logger.info('>>> getCardanoAdaAppChannel:: appVersion');
       const deviceSerial = await deviceConnection.getSerial();
-      logger.info('>>> getCardanoAdaAppChannel:: deviceSerial ', deviceSerial);
+      logger.info('>>> getCardanoAdaAppChannel:: deviceSerial');
       const { minor, major, patch } = appVersion;
       return Promise.resolve({
         minor,
@@ -569,8 +560,9 @@ export const handleHardwareWalletRequests = async (
         deviceId: deviceSerial.serial,
       });
     } catch (error) {
-      logger.info('>>> ERROR2 : ', error);
+      logger.info('>>> ERROR in Cardano App');
       if (error.name === 'DisconnectedDevice') {
+        logger.info('>>> ERROR in Cardano App (CODE - DisconnectedDevice)');
         // Set old connection to null and force reinitialization once method called again
         // deviceConnection = null;
         //   const transport = await TransportNodeHid.open(device.path);
@@ -635,7 +627,7 @@ export const handleHardwareWalletRequests = async (
   getExtendedPublicKeyChannel.onRequest(async (params) => {
     // params example:
     // { path: "1852'/1815'/0'", isTrezor: false, devicePath: null }
-    logger.info('>>> getExtendedPublicKeyChannel: ', params);
+    logger.info('>>> getExtendedPublicKeyChannel');
     const { path, isTrezor, devicePath } = params;
     try {
       if (isTrezor) {
@@ -674,15 +666,13 @@ export const handleHardwareWalletRequests = async (
       // const deviceConnection = observer.channel[devicePath].AdaConnection;
       // logger.info('>>> CHANNEL: ', deviceConnection);
 
-      logger.info('>>> EXPORT KEY: ', { devicesMemo, path, devicePath });
+      logger.info('>>> EXPORT KEY');
       deviceConnection = devicesMemo[devicePath].AdaConnection;
-      logger.info('>>> EXPORT KEY - deviceConnection: ', { deviceConnection });
 
       // Check if Ledger instantiated
       if (!deviceConnection) {
         throw new Error('Ledger device not connected');
       }
-      logger.info('>>> PATH: ', { path, toPath: cardano.str_to_path(path) });
       const extendedPublicKey = await deviceConnection.getExtendedPublicKey(
         cardano.str_to_path(path)
       );
@@ -711,9 +701,8 @@ export const handleHardwareWalletRequests = async (
       devicePath,
     } = params;
 
-    logger.info('>>> SIGN: ', { devicesMemo, devicePath });
+    logger.info('>>> SIGN Ledger transaction');
     deviceConnection = devicesMemo[devicePath].AdaConnection;
-    logger.info('>>> SIGN - deviceConnection: ', { deviceConnection });
 
     try {
       if (!deviceConnection) {
