@@ -10,6 +10,7 @@ type Props = {
   topbar: Node,
   notification?: ?Node,
   contentDialogs?: ?Array<Node>,
+  onUiClicked?: () => any,
 };
 
 @observer
@@ -25,10 +26,11 @@ export default class SidebarLayout extends Component<Props> {
       topbar,
       notification,
       contentDialogs,
+      onUiClicked,
     } = this.props;
 
     return (
-      <div className={styles.component}>
+      <div className={styles.component} onClick={onUiClicked}>
         <div className={styles.sidebar}>{sidebar}</div>
         <div className={styles.main}>
           <div className={styles.topbar}>{topbar}</div>
