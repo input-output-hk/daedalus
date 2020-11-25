@@ -4,8 +4,7 @@ import { observer } from 'mobx-react';
 import { orderBy } from 'lodash';
 import classNames from 'classnames';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
-import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
-import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import styles from './StakePoolsTable.scss';
 import StakePool from '../../../domains/StakePool';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
@@ -279,18 +278,17 @@ export class StakePoolsTable extends Component<Props, State> {
       {
         name: 'ranking',
         title: (
-          <Tooltip
+          <PopOver
             key="ranking"
-            isOpeningUpward={false}
-            skin={TooltipSkin}
-            tip={
+            placement="bottom"
+            content={
               <div className={styles.tooltipWithHTMLContent}>
                 <FormattedHTMLMessage {...messages.tableHeaderRankTooltip} />
               </div>
             }
           >
             {intl.formatMessage(messages.tableHeaderRank)}
-          </Tooltip>
+          </PopOver>
         ),
       },
       {
@@ -300,81 +298,77 @@ export class StakePoolsTable extends Component<Props, State> {
       {
         name: 'saturation',
         title: (
-          <Tooltip
+          <PopOver
             key="saturation"
-            isOpeningUpward={false}
-            skin={TooltipSkin}
-            tip={intl.formatMessage(messages.tableHeaderSaturationTooltip)}
+            placement="bottom"
+            content={intl.formatMessage(messages.tableHeaderSaturationTooltip)}
           >
             {intl.formatMessage(messages.tableHeaderSaturation)}
-          </Tooltip>
+          </PopOver>
         ),
       },
       {
         name: 'cost',
         title: (
-          <Tooltip
+          <PopOver
             key="cost"
-            isOpeningUpward={false}
-            skin={TooltipSkin}
-            tip={intl.formatMessage(messages.tableHeaderCostTooltip)}
+            placement="bottom"
+            content={intl.formatMessage(messages.tableHeaderCostTooltip)}
           >
             {intl.formatMessage(messages.tableHeaderCost)}
-          </Tooltip>
+          </PopOver>
         ),
       },
       {
         name: 'profitMargin',
         title: (
-          <Tooltip
+          <PopOver
             key="profitMargin"
-            isOpeningUpward={false}
-            skin={TooltipSkin}
-            tip={intl.formatMessage(messages.tableHeaderMarginTooltip)}
+            placement="bottom"
+            content={intl.formatMessage(messages.tableHeaderMarginTooltip)}
           >
             {intl.formatMessage(messages.tableHeaderMargin)}
-          </Tooltip>
+          </PopOver>
         ),
       },
       {
         name: 'producedBlocks',
         title: (
-          <Tooltip
+          <PopOver
             key="producedBlocks"
-            isOpeningUpward={false}
-            skin={TooltipSkin}
-            tip={intl.formatMessage(messages.tableHeaderProducedBlocksTooltip)}
+            placement="bottom"
+            content={intl.formatMessage(
+              messages.tableHeaderProducedBlocksTooltip
+            )}
           >
             {intl.formatMessage(messages.tableHeaderProducedBlocks)}
-          </Tooltip>
+          </PopOver>
         ),
       },
       {
         name: 'nonMyopicMemberRewards',
         title: (
-          <Tooltip
+          <PopOver
             key="nonMyopicMemberRewards"
-            isOpeningUpward={false}
-            skin={TooltipSkin}
-            tip={intl.formatMessage(
+            placement="bottom"
+            content={intl.formatMessage(
               messages.tableHeaderPotentialRewardsTooltip
             )}
           >
             {intl.formatMessage(messages.tableHeaderPotentialRewards)}
-          </Tooltip>
+          </PopOver>
         ),
       },
       {
         name: 'pledge',
         title: (
-          <Tooltip
+          <PopOver
             key="pledge"
-            isOpeningUpward={false}
-            skin={TooltipSkin}
-            tip={intl.formatMessage(messages.tableHeaderPledgeTooltip)}
+            placement="bottom"
+            content={intl.formatMessage(messages.tableHeaderPledgeTooltip)}
           >
             {intl.formatMessage(messages.tableHeaderPledge)}
-          </Tooltip>
+          </PopOver>
         ),
       },
       {

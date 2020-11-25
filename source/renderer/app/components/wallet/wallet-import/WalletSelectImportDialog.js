@@ -9,8 +9,7 @@ import {
 import { observer } from 'mobx-react';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Button } from 'react-polymorph/lib/components/Button';
-import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
-import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { Link } from 'react-polymorph/lib/components/Link';
@@ -213,14 +212,8 @@ export default class WalletSelectImportDialog extends Component<Props> {
       );
       if (disabled) {
         statusIcon = (
-          <Tooltip
-            className={
-              walletNotSelectable
-                ? styles.maxWalletsReachedTooltip
-                : styles.enterWalletNameTooltip
-            }
-            skin={TooltipSkin}
-            tip={
+          <PopOver
+            content={
               invalidWalletName ? (
                 this.context.intl.formatMessage(messages.enterWalletNameTooltip)
               ) : (
@@ -233,11 +226,10 @@ export default class WalletSelectImportDialog extends Component<Props> {
               )
             }
             isBounded={walletNotSelectable}
-            isOpeningUpward={isOpeningUpward}
-            arrowRelativeToTip
+            placement={isOpeningUpward ? 'top' : 'bottom'}
           >
             {statusIcon}
-          </Tooltip>
+          </PopOver>
         );
       }
     } else if (wallet.import.status === WalletImportStatuses.RUNNING) {
@@ -423,13 +415,10 @@ export default class WalletSelectImportDialog extends Component<Props> {
                     </div>
                     <div className={styles.walletsInputField}>
                       {!wallet.name ? (
-                        <Tooltip
-                          className={styles.unamedWalletsInputTooltip}
-                          skin={TooltipSkin}
-                          tip={intl.formatMessage(
+                        <PopOver
+                          content={intl.formatMessage(
                             messages.enterWalletNameTooltip
                           )}
-                          arrowRelativeToTip
                         >
                           {this.getInlineEditingSmallInput(
                             wallet,
@@ -440,7 +429,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
                             nameValidator,
                             onWalletNameChange
                           )}
-                        </Tooltip>
+                        </PopOver>
                       ) : (
                         <>
                           {this.getInlineEditingSmallInput(

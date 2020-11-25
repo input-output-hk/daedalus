@@ -9,15 +9,17 @@ Changelog
 - Improved form field feedback UX ([PR 2241](https://github.com/input-output-hk/daedalus/pull/2241))
 - Implemented "Filter and CSV export" feature on the "Transactions" screen ([PR 2207](https://github.com/input-output-hk/daedalus/pull/2207))
 
-### Chores
-
-- Updated `cardano-wallet` to version `2020-11-17` ([PR 2246](https://github.com/input-output-hk/daedalus/pull/2246))
-- Implemented a tool for quickly copying css properties on theme files ([PR 2196](https://github.com/input-output-hk/daedalus/pull/2196))
-- Hid hardware wallet restoration support ([PR 2237](https://github.com/input-output-hk/daedalus/pull/2237))
-
 ### Fixes
 
 - Fixed visual glitch on the transaction list switching between filters ([PR 2249](https://github.com/input-output-hk/daedalus/pull/2249))
+- Fixed Newsfeed drop shadow when there is an update item ([PR 2242](https://github.com/input-output-hk/daedalus/pull/2242))
+
+### Chores
+
+- Implemented Smart Tooltips across whole application ([PR 2243](https://github.com/input-output-hk/daedalus/pull/2243))
+- Updated `cardano-wallet` to version `2020-11-17` ([PR 2246](https://github.com/input-output-hk/daedalus/pull/2246))
+- Implemented a tool for quickly copying css properties on theme files ([PR 2196](https://github.com/input-output-hk/daedalus/pull/2196))
+- Hid hardware wallet restoration support ([PR 2237](https://github.com/input-output-hk/daedalus/pull/2237))
 
 ## 2.4.1
 
