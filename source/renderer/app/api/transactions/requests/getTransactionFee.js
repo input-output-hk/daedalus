@@ -5,9 +5,7 @@ import { request } from '../../utils/request';
 
 export const getTransactionFee = (
   config: RequestConfig,
-  { walletId, data }: GetTransactionFeeParams,
-  onHttpRequestSent?: Function,
-  onHttpRequestComplete?: Function
+  { walletId, data }: GetTransactionFeeParams
 ): Promise<TransactionFee> =>
   request(
     {
@@ -16,7 +14,5 @@ export const getTransactionFee = (
       ...config,
     },
     {},
-    data,
-    onHttpRequestSent,
-    onHttpRequestComplete
+    data
   );

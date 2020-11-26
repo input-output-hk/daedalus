@@ -12,6 +12,7 @@ import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { WalletTransaction } from '../domains/WalletTransaction';
 import type {
+  GetTransactionFeeRequest,
   DeleteTransactionRequest,
   GetTransactionsResponse,
   GetWithdrawalsResponse,
@@ -93,7 +94,10 @@ export default class TransactionsStore extends Store {
 
   @observable _filterOptionsForWallets = {};
 
-  @observable transactionFeeCalculationRequest: any = null;
+  @observable
+  calculateTransactionFeeRequest: Request<GetTransactionFeeRequest> = new Request(
+    this.api.ada.calculateTransactionFee
+  );
 
   setup() {
     const {
@@ -271,18 +275,14 @@ export default class TransactionsStore extends Store {
       );
     }
 
-    this.destroyPendingTransactionFeeCalculationRequest();
+    this.calculateTransactionFeeRequest.reset();
 
-    return this.api.ada.calculateTransactionFee(
-      {
-        ...transactionFeeRequest,
-        walletBalance: wallet.amount,
-        availableBalance: wallet.availableAmount,
-        isLegacy: wallet.isLegacy,
-      },
-      this.onTransactionFeeCalculationRequestSent,
-      this.onTransactionFeeCalculationRequestComplete
-    );
+    return this.calculateTransactionFeeRequest.execute({
+      ...transactionFeeRequest,
+      walletBalance: wallet.amount,
+      availableBalance: wallet.availableAmount,
+      isLegacy: wallet.isLegacy,
+    });
   };
 
   deletePendingTransaction = async ({
@@ -332,23 +332,6 @@ export default class TransactionsStore extends Store {
       ...emptyTransactionFilterOptions,
     };
     return true;
-  };
-
-  destroyPendingTransactionFeeCalculationRequest = () => {
-    runInAction('destroy pending transaction fee calculation request', () => {
-      if (this.transactionFeeCalculationRequest) {
-        this.transactionFeeCalculationRequest.destroy();
-        this.transactionFeeCalculationRequest = null;
-      }
-    });
-  };
-
-  @action onTransactionFeeCalculationRequestSent = (request: any) => {
-    this.transactionFeeCalculationRequest = request;
-  };
-
-  @action onTransactionFeeCalculationRequestComplete = () => {
-    this.transactionFeeCalculationRequest = null;
   };
 
   @action _requestCSVFile = async () => {

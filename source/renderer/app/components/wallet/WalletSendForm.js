@@ -97,6 +97,8 @@ export const messages = defineMessages({
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
+const CALCULATE_TRANSACTION_FEE_DELAY = 1000;
+
 type Props = {
   currencyUnit: string,
   currencyMaxIntegerDigits?: number,
@@ -135,6 +137,8 @@ export default class WalletSendForm extends Component<Props, State> {
     transactionFeeError: null,
   };
 
+  calculateTransactionFeeTimeoutHandler = null;
+
   // We need to track the fee calculation state in order to disable
   // the "Submit" button as soon as either receiver or amount field changes.
   // This is required as we are using debounced validation and we need to
@@ -153,6 +157,10 @@ export default class WalletSendForm extends Component<Props, State> {
 
   componentWillUnmount() {
     this._isMounted = false;
+    if (this.calculateTransactionFeeTimeoutHandler) {
+      clearTimeout(this.calculateTransactionFeeTimeoutHandler);
+      this.calculateTransactionFeeTimeoutHandler = null;
+    }
   }
 
   handleOnSubmit = () => {
@@ -192,7 +200,7 @@ export default class WalletSendForm extends Component<Props, State> {
               const isAmountValid = amountField.isValid;
               const isValidAddress = await this.props.addressValidator(value);
               if (isValidAddress && isAmountValid) {
-                await this._calculateTransactionFee(value, amountValue);
+                this._calculateTransactionFee(value, amountValue);
               } else {
                 this._resetTransactionFee();
               }
@@ -228,7 +236,7 @@ export default class WalletSendForm extends Component<Props, State> {
               const receiverValue = receiverField.value;
               const isReceiverValid = receiverField.isValid;
               if (isValid && isReceiverValid) {
-                await this._calculateTransactionFee(receiverValue, amountValue);
+                this._calculateTransactionFee(receiverValue, amountValue);
               } else {
                 this._resetTransactionFee();
               }
@@ -302,7 +310,6 @@ export default class WalletSendForm extends Component<Props, State> {
                   {...receiverField.bind()}
                   error={receiverField.error}
                   onChange={(value) => {
-                    this._isCalculatingFee = true;
                     receiverField.onChange(value || '');
                   }}
                   skin={InputSkin}
@@ -321,7 +328,6 @@ export default class WalletSendForm extends Component<Props, State> {
                   }}
                   error={transactionFeeError || amountField.error}
                   onChange={(value) => {
-                    this._isCalculatingFee = true;
                     amountField.onChange(value);
                   }}
                   // AmountInputSkin props
@@ -371,45 +377,51 @@ export default class WalletSendForm extends Component<Props, State> {
     }
   }
 
-  async _calculateTransactionFee(address: string, amountValue: string) {
-    const amount = formattedAmountToLovelace(amountValue);
-    this.setState({
-      isCalculatingTransactionFee: true,
-      isTransactionFeeCalculated: false,
-      transactionFee: new BigNumber(0),
-      transactionFeeError: null,
-    });
-    try {
-      const fee = await this.props.calculateTransactionFee(address, amount);
-      if (this._isMounted) {
-        this._isCalculatingFee = false;
-        this.setState({
-          isTransactionFeeCalculated: true,
-          transactionFee: fee,
-          transactionFeeError: null,
-        });
-      }
-    } catch (error) {
-      const errorHasLink = !!get(error, ['values', 'linkLabel']);
-      const transactionFeeError = errorHasLink ? (
-        <FormattedHTMLMessageWithLink
-          message={error}
-          onExternalLinkClick={this.props.onExternalLinkClick}
-        />
-      ) : (
-        this.context.intl.formatMessage(error)
-      );
-      if (this._isMounted) {
-        this._isCalculatingFee = false;
-        this.setState({
-          isTransactionFeeCalculated: false,
-          transactionFee: new BigNumber(0),
-          transactionFeeError,
-        });
-      }
-    } finally {
-      this.setState({ isCalculatingTransactionFee: false });
+  _calculateTransactionFee(address: string, amountValue: string) {
+    if (this.calculateTransactionFeeTimeoutHandler) {
+      clearTimeout(this.calculateTransactionFeeTimeoutHandler);
     }
+    this.calculateTransactionFeeTimeoutHandler = setTimeout(async () => {
+      this._isCalculatingFee = true;
+      const amount = formattedAmountToLovelace(amountValue);
+      this.setState({
+        isCalculatingTransactionFee: true,
+        isTransactionFeeCalculated: false,
+        transactionFee: new BigNumber(0),
+        transactionFeeError: null,
+      });
+      try {
+        const fee = await this.props.calculateTransactionFee(address, amount);
+        if (this._isMounted) {
+          this._isCalculatingFee = false;
+          this.setState({
+            isTransactionFeeCalculated: true,
+            transactionFee: fee,
+            transactionFeeError: null,
+          });
+        }
+      } catch (error) {
+        const errorHasLink = !!get(error, ['values', 'linkLabel']);
+        const transactionFeeError = errorHasLink ? (
+          <FormattedHTMLMessageWithLink
+            message={error}
+            onExternalLinkClick={this.props.onExternalLinkClick}
+          />
+        ) : (
+          this.context.intl.formatMessage(error)
+        );
+        if (this._isMounted) {
+          this._isCalculatingFee = false;
+          this.setState({
+            isTransactionFeeCalculated: false,
+            transactionFee: new BigNumber(0),
+            transactionFeeError,
+          });
+        }
+      } finally {
+        this.setState({ isCalculatingTransactionFee: false });
+      }
+    }, CALCULATE_TRANSACTION_FEE_DELAY);
   }
 
   _getCurrentNumberFormat() {

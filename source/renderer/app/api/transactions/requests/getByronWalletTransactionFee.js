@@ -13,9 +13,7 @@ export type GetTransactionFeeParams = {
 
 export const getByronWalletTransactionFee = (
   config: RequestConfig,
-  { walletId, data }: GetTransactionFeeParams,
-  onHttpRequestSent?: Function,
-  onHttpRequestComplete?: Function
+  { walletId, data }: GetTransactionFeeParams
 ): Promise<TransactionFee> =>
   request(
     {
@@ -24,7 +22,5 @@ export const getByronWalletTransactionFee = (
       ...config,
     },
     {},
-    data,
-    onHttpRequestSent,
-    onHttpRequestComplete
+    data
   );
