@@ -40,6 +40,7 @@ import { setStateSnapshotLogChannel } from './ipc/set-log-state-snapshot';
 import { generateWalletMigrationReportChannel } from './ipc/generateWalletMigrationReportChannel';
 import { pauseActiveDownloads } from './ipc/downloadManagerChannel';
 // import { isHardwareWalletSupportEnabled, isLedgerEnabled } from '../renderer/app/config/hardwareWalletsConfig';
+import { HardwareWalletsHandler } from './utils/handleHardwareWallets';
 
 /* eslint-disable consistent-return */
 
@@ -167,6 +168,13 @@ const onAppReady = async () => {
   };
   mainErrorHandler(onMainError);
   await handleCheckDiskSpace();
+
+  const hwHandler = new HardwareWalletsHandler();
+  await hwHandler.initialize();
+  logger.info('[HW-HANDLER]:isReady', {
+    isReady: hwHandler.isReady,
+    hwHandler,
+  });
 
   // @TODO - uncomment once ledger should be enabled
   // Ledger INIT

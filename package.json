@@ -33,7 +33,7 @@
     "package:all": "yarn package --all",
     "cleanup": "mop -v",
     "lint": "eslint --format=node_modules/eslint-formatter-pretty source storybook utils *.js",
-    "flow:test": "flow; test $? -eq 0 -o $? -eq 2",
+    "flow:test": "flow --show-all-errors; test $? -eq 0 -o $? -eq 2",
     "prettier": "./node_modules/.bin/prettier \"**/*.*\"",
     "prettier:check": "yarn prettier --check",
     "prettier:format": "yarn prettier --write --loglevel warn",
