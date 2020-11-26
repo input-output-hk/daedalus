@@ -61,10 +61,14 @@
         color: var(--theme-hardware-wallet-message-color);
         font-family: var(--font-light);
         font-size: 16px;
-        line-height: 1.38;
+        line-height: 22px;
 
         b {
           font-family: var(--font-medium);
+        }
+
+        & + p {
+          margin-top: 11px;
         }
       }
     }
