@@ -6727,7 +6727,7 @@
         "description": "\"androidAppButtonUrl\" for the Catalyst voting app",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 56
         },
         "file": "source/renderer/app/components/voting/info/VotingInfo.js",
         "id": "voting.info.androidAppButtonUrl",
@@ -7259,7 +7259,7 @@
           "line": 59
         },
         "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsSign.js",
-        "id": "voting.votingAdd.sign.step.calculatingFees.learnMoreLink",
+        "id": "voting.votingAdd.sign.step.learnMoreLink",
         "start": {
           "column": 17,
           "line": 55
@@ -7273,7 +7273,7 @@
           "line": 65
         },
         "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsSign.js",
-        "id": "voting.votingAdd.sign.step.calculatingFees.learntMoreLinkUrl",
+        "id": "voting.votingAdd.sign.step.learntMoreLinkUrl",
         "start": {
           "column": 21,
           "line": 60

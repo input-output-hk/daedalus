@@ -53,12 +53,12 @@ const messages = defineMessages({
     description: '"Calculating fees" message in the "sign" step.',
   },
   learnMoreLink: {
-    id: 'voting.votingAdd.sign.step.calculatingFees.learnMoreLink',
+    id: 'voting.votingAdd.sign.step.learnMoreLink',
     defaultMessage: '!!!Learn more about this step in detail',
     description: '"Learn more" link on the "sign" step.',
   },
   learntMoreLinkUrl: {
-    id: 'voting.votingAdd.sign.step.calculatingFees.learntMoreLinkUrl',
+    id: 'voting.votingAdd.sign.step.learntMoreLinkUrl',
     defaultMessage:
       '!!!https://docs.google.com/document/d/1_syHaBNjhFcB5qg_NJoBfIZIBy_ha2n042XdrDASYgY/#heading=h.u296e49etfth',
     description: 'Learn more" link URL on the "sign" step.',
