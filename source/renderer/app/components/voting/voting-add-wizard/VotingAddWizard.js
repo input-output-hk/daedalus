@@ -32,6 +32,7 @@ type Props = {
   transactionError: ?LocalizableError,
   onRollback: Function,
   countdownRemaining: number,
+  onExternalLinkClick: Function,
 };
 
 @observer
@@ -56,6 +57,7 @@ export default class VotingAddWizard extends Component<Props> {
       transactionError,
       onRollback,
       countdownRemaining,
+      onExternalLinkClick,
     } = this.props;
 
     const selectedWalletId = get(selectedWallet, 'id', null);
@@ -82,6 +84,7 @@ export default class VotingAddWizard extends Component<Props> {
             onConfirm={onSubmit}
             transactionFee={transactionFee}
             transactionFeeError={transactionFeeError}
+            onExternalLinkClick={onExternalLinkClick}
           />
         );
         break;

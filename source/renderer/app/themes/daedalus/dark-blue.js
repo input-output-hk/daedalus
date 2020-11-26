@@ -978,7 +978,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-utxo-tooltip-text-color': '#fafbfc',
   },
   voting: {
-    '--theme-voting-info-icon-color': 'rgb(250, 251, 252)',
+    '--theme-voting-info-icon-color': '#ffffff',
     '--theme-voting-info-background-color': '#cecfd1b3',
     '--theme-voting-font-color-accent': '#cecfd1',
     '--theme-voting-font-color-regular': '#cecfd1',

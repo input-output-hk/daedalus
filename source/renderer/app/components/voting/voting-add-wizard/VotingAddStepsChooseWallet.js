@@ -31,21 +31,21 @@ const messages = defineMessages({
   errorMinVotingFunds: {
     id: 'voting.votingAdd.chooseWallet.step.errorMinVotingFunds',
     defaultMessage:
-      '!!!This wallet does not contain the minimum amount of {minVotingFunds} ADA which is required for voting to be available. Please select a wallet with <span>a minimum amount of {minVotingFunds} ADA</span> and click continue.',
+      '!!!This wallet does not contain the minimum amount of {minVotingFunds} ADA that is required for voting to be enabled. Please select a wallet with <span>a minimum amount of {minVotingFunds} ADA</span> and click Continue.',
     description:
       'errorMinVotingFunds Error Label on the voting add "choose wallet" step.',
   },
   errorMinVotingFundsRewardsOnly: {
     id: 'voting.votingAdd.chooseWallet.step.errorMinVotingFundsRewardsOnly',
     defaultMessage:
-      '!!!This wallet contains only rewards balances so it cannot be voting.',
+      '!!!This wallet contains rewards balances only, and cannot be used for voting purposes.',
     description:
       'errorMinVotingFundsRewardsOnly Error Label on the voting add "choose wallet" step.',
   },
   errorRestoringWallet: {
     id: 'voting.votingAdd.chooseWallet.step.errorRestoringWallet',
     defaultMessage:
-      '!!!This wallet can’t be used for voting while it’s being synced.',
+      '!!!The wallet cannot be used for voting purposes while it is being synced with the blockchain.',
     description:
       'RestoringWallet Error Label on the voting add "choose wallet" step.',
   },

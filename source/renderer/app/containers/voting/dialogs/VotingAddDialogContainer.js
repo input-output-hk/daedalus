@@ -155,7 +155,7 @@ export default class VotingAddDialogContainer extends Component<Props, State> {
       transactionFee,
       transactionFeeError,
     } = this.state;
-    const { wallets, staking, voting } = this.props.stores;
+    const { wallets, staking, voting, app } = this.props.stores;
 
     const { stakePools, getStakePoolById } = staking;
 
@@ -165,6 +165,8 @@ export default class VotingAddDialogContainer extends Component<Props, State> {
       qrCode,
       countdownRemaining,
     } = voting;
+
+    const { openExternalLink } = app;
 
     const selectedWallet = find(
       wallets.allWallets,
@@ -199,6 +201,7 @@ export default class VotingAddDialogContainer extends Component<Props, State> {
           }
           transactionError={votingSendTransactionRequest.error}
           countdownRemaining={countdownRemaining}
+          onExternalLinkClick={openExternalLink}
         />
       </VotingAddDialog>
     );

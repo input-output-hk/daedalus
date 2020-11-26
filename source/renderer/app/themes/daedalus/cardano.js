@@ -972,7 +972,7 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-utxo-tooltip-text-color': '#ffffff',
   },
   voting: {
-    '--theme-voting-info-icon-color': '#1F1D32',
+    '--theme-voting-info-icon-color': '#5C6464',
     '--theme-voting-info-background-color': '#5E60661A',
     '--theme-voting-font-color-accent': '#5e6066',
     '--theme-voting-font-color-regular': '#5e6066',

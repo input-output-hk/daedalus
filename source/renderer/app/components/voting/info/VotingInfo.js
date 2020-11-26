@@ -48,10 +48,17 @@ const messages = defineMessages({
       '!!!I confirm all steps have been completed. Continue with registration.',
     description: 'Button Label for Voting Catalyst steps',
   },
+  androidAppButtonUrl: {
+    id: 'voting.info.androidAppButtonUrl',
+    defaultMessage:
+      '!!!https://play.google.com/store/apps/details?id=io.iohk.vitvoting&hl=es_419&gl=US',
+    description: '"androidAppButtonUrl" for the Catalyst voting app',
+  },
 });
 
 type Props = {
   onRegisterToVoteClick: Function,
+  onExternalLinkClick: Function,
 };
 
 @observer
@@ -62,7 +69,7 @@ export default class VotingInfo extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { onRegisterToVoteClick } = this.props;
+    const { onRegisterToVoteClick, onExternalLinkClick } = this.props;
     const heading = intl.formatMessage(messages.heading);
     const description = intl.formatMessage(messages.description);
     const stepTitle1 = intl.formatMessage(messages.stepTitle1);
@@ -88,6 +95,11 @@ export default class VotingInfo extends Component<Props> {
                 <SVGInline
                   svg={downloadPlayStoreIcon}
                   className={styles.stepAppStoreIcon}
+                  onClick={() => {
+                    onExternalLinkClick(
+                      intl.formatMessage(messages.androidAppButtonUrl)
+                    );
+                  }}
                 />
               </div>
             </div>

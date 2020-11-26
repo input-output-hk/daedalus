@@ -22,6 +22,7 @@ export default class VotingAddPage extends Component<Props> {
   render() {
     const { actions, stores } = this.props;
     const { uiDialogs } = stores;
+    const { openExternalLink } = stores.app;
 
     return (
       <MainLayout>
@@ -30,6 +31,7 @@ export default class VotingAddPage extends Component<Props> {
             onRegisterToVoteClick={() =>
               actions.dialogs.open.trigger({ dialog: VotingAddDialog })
             }
+            onExternalLinkClick={openExternalLink}
           />
         </VerticalFlexContainer>
         {uiDialogs.isOpen(VotingAddDialog) && (

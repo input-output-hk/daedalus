@@ -6721,6 +6721,20 @@
           "column": 15,
           "line": 45
         }
+      },
+      {
+        "defaultMessage": "!!!https://play.google.com/store/apps/details?id=io.iohk.vitvoting&hl=es_419&gl=US",
+        "description": "\"androidAppButtonUrl\" for the Catalyst voting app",
+        "end": {
+          "column": 3,
+          "line": 55
+        },
+        "file": "source/renderer/app/components/voting/info/VotingInfo.js",
+        "id": "voting.info.androidAppButtonUrl",
+        "start": {
+          "column": 23,
+          "line": 51
+        }
       }
     ],
     "path": "source/renderer/app/components/voting/info/VotingInfo.json"
@@ -6770,7 +6784,7 @@
         }
       },
       {
-        "defaultMessage": "!!!This wallet does not contain the minimum amount of {minVotingFunds} ADA which is required for voting to be available. Please select a wallet with <span>a minimum amount of {minVotingFunds} ADA</span> and click continue.",
+        "defaultMessage": "!!!This wallet does not contain the minimum amount of {minVotingFunds} ADA that is required for voting to be enabled. Please select a wallet with <span>a minimum amount of {minVotingFunds} ADA</span> and click Continue.",
         "description": "errorMinVotingFunds Error Label on the voting add \"choose wallet\" step.",
         "end": {
           "column": 3,
@@ -6784,7 +6798,7 @@
         }
       },
       {
-        "defaultMessage": "!!!This wallet contains only rewards balances so it cannot be voting.",
+        "defaultMessage": "!!!This wallet contains rewards balances only, and cannot be used for voting purposes.",
         "description": "errorMinVotingFundsRewardsOnly Error Label on the voting add \"choose wallet\" step.",
         "end": {
           "column": 3,
@@ -6798,7 +6812,7 @@
         }
       },
       {
-        "defaultMessage": "!!!This wallet can’t be used for voting while it’s being synced.",
+        "defaultMessage": "!!!The wallet cannot be used for voting purposes while it is being synced with the blockchain.",
         "description": "RestoringWallet Error Label on the voting add \"choose wallet\" step.",
         "end": {
           "column": 3,
@@ -6919,7 +6933,7 @@
         "description": "Label for continue button countdown on the voting add \"confirm\" step.",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 59
         },
         "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsConfirm.js",
         "id": "voting.votingAdd.confirm.step.continueButtonCountDownLabel",
@@ -6933,13 +6947,13 @@
         "description": "Label for restart button on the voting add \"confirm\" step.",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 64
         },
         "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsConfirm.js",
         "id": "voting.votingAdd.confirm.step.restartButtonLabel",
         "start": {
           "column": 22,
-          "line": 58
+          "line": 60
         }
       }
     ],
@@ -7158,13 +7172,13 @@
         "description": "Description on the voting add \"sign\" step.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 29
         },
         "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsSign.js",
         "id": "voting.votingAdd.sign.step.description",
         "start": {
           "column": 15,
-          "line": 22
+          "line": 24
         }
       },
       {
@@ -7172,13 +7186,13 @@
         "description": "Label for continue button on the voting add \"sign\" step.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 34
         },
         "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsSign.js",
         "id": "voting.votingAdd.sign.step.continueButtonLabel",
         "start": {
           "column": 23,
-          "line": 28
+          "line": 30
         }
       },
       {
@@ -7186,13 +7200,13 @@
         "description": "Fees label on the voting add \"sign\" step.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 39
         },
         "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsSign.js",
         "id": "voting.votingAdd.sign.step.feesLabel",
         "start": {
           "column": 13,
-          "line": 33
+          "line": 35
         }
       },
       {
@@ -7200,13 +7214,13 @@
         "description": "Placeholder for \"spending password\"",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 44
         },
         "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsSign.js",
         "id": "voting.votingAdd.sign.step.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 38
+          "line": 40
         }
       },
       {
@@ -7214,13 +7228,13 @@
         "description": "Label for \"spending password\"",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 49
         },
         "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsSign.js",
         "id": "voting.votingAdd.sign.step.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 43
+          "line": 45
         }
       },
       {
@@ -7228,13 +7242,41 @@
         "description": "\"Calculating fees\" message in the \"sign\" step.",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 54
         },
         "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsSign.js",
         "id": "voting.votingAdd.sign.step.calculatingFees",
         "start": {
           "column": 19,
-          "line": 48
+          "line": 50
+        }
+      },
+      {
+        "defaultMessage": "!!!Learn more about this step in detail",
+        "description": "\"Learn more\" link on the \"sign\" step.",
+        "end": {
+          "column": 3,
+          "line": 59
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsSign.js",
+        "id": "voting.votingAdd.sign.step.calculatingFees.learnMoreLink",
+        "start": {
+          "column": 17,
+          "line": 55
+        }
+      },
+      {
+        "defaultMessage": "!!!https://docs.google.com/document/d/1_syHaBNjhFcB5qg_NJoBfIZIBy_ha2n042XdrDASYgY/#heading=h.u296e49etfth",
+        "description": "Learn more\" link URL on the \"sign\" step.",
+        "end": {
+          "column": 3,
+          "line": 65
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsSign.js",
+        "id": "voting.votingAdd.sign.step.calculatingFees.learntMoreLinkUrl",
+        "start": {
+          "column": 21,
+          "line": 60
         }
       }
     ],

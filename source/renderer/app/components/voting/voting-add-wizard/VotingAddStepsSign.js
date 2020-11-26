@@ -10,6 +10,8 @@ import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import BigNumber from 'bignumber.js';
 import { observer } from 'mobx-react';
+import { Link } from 'react-polymorph/lib/components/Link';
+import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import { submitOnEnter } from '../../../utils/form';
 import globalMessages from '../../../i18n/global-messages';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
@@ -50,6 +52,17 @@ const messages = defineMessages({
     defaultMessage: '!!!Calculating fees',
     description: '"Calculating fees" message in the "sign" step.',
   },
+  learnMoreLink: {
+    id: 'voting.votingAdd.sign.step.calculatingFees.learnMoreLink',
+    defaultMessage: '!!!Learn more about this step in detail',
+    description: '"Learn more" link on the "sign" step.',
+  },
+  learntMoreLinkUrl: {
+    id: 'voting.votingAdd.sign.step.calculatingFees.learntMoreLinkUrl',
+    defaultMessage:
+      '!!!https://docs.google.com/document/d/1_syHaBNjhFcB5qg_NJoBfIZIBy_ha2n042XdrDASYgY/#heading=h.u296e49etfth',
+    description: 'Learn more" link URL on the "sign" step.',
+  },
 });
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
@@ -58,6 +71,7 @@ type Props = {
   onConfirm: Function,
   transactionFee: ?BigNumber,
   transactionFeeError: string | Node | null,
+  onExternalLinkClick: Function,
 };
 
 @observer
@@ -116,9 +130,14 @@ export default class VotingAddStepsSign extends Component<Props> {
   render() {
     const { form } = this;
     const { intl } = this.context;
-    const { transactionFee, transactionFeeError } = this.props;
+    const {
+      transactionFee,
+      transactionFeeError,
+      onExternalLinkClick,
+    } = this.props;
     const spendingPasswordField = form.$('spendingPassword');
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
+    const learnMoreLinkUrl = intl.formatMessage(messages.learntMoreLinkUrl);
 
     const className = classNames([
       commonStyles.votingAddSteps,
@@ -133,6 +152,15 @@ export default class VotingAddStepsSign extends Component<Props> {
           <p className={styles.description}>
             <FormattedHTMLMessage {...messages.description} />
           </p>
+
+          <div className={styles.learnMoreWrapper}>
+            <Link
+              className={styles.externalLink}
+              onClick={(event) => onExternalLinkClick(learnMoreLinkUrl, event)}
+              label={intl.formatMessage(messages.learnMoreLink)}
+              skin={LinkSkin}
+            />
+          </div>
 
           <div className={styles.feesWrapper}>
             <p className={styles.feesLabel}>

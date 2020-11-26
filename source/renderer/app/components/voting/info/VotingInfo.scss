@@ -40,7 +40,7 @@
       height: 72px;
       svg {
         path {
-          stroke: var(--theme-voting-info-icon-color);
+          fill: var(--theme-voting-info-icon-color);
         }
       }
     }
@@ -63,6 +63,12 @@
       justify-content: space-around;
       .stepAppStoreIcon {
         width: 100px;
+        cursor: pointer;
+        svg {
+          path {
+            fill: var(--theme-voting-info-icon-color);
+          }
+        }
       }
     }
   }
