@@ -37,7 +37,7 @@ const messages = defineMessages({
   reminder: {
     id: 'voting.votingAdd.enterPinCode.step.reminder',
     defaultMessage:
-      "!!!<span>Don't forget your Pin Code.</span> If you lose it, you will not be able to proceed with the registration process and you will not be able to access the mobile app.",
+      '!!!<span>You need to remember your PIN Code.</span> If you lose it, you will not be able to proceed with the registration process and you will not be able to access the mobile app.',
     description: 'Reminder on the voting add "enter pin code" step.',
   },
   enterPinCodeLabel: {
@@ -59,7 +59,7 @@ const messages = defineMessages({
   },
   invalidRepeatPinCode: {
     id: 'voting.votingAdd.enterPinCode.step.errors.invalidRepeatPinCode',
-    defaultMessage: "!!!Pin doesn't match",
+    defaultMessage: '!!!PIN does not match',
     description: 'Error message shown when repeat pin code is invalid.',
   },
   continueButtonLabel: {

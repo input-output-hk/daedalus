@@ -22,7 +22,7 @@ const messages = defineMessages({
   description: {
     id: 'voting.info.description',
     defaultMessage:
-      '!!!Before you start you must first complete the steps below:',
+      '!!!Before you begin, you must first complete the steps below:',
     description: 'Info description for Voting Catalyst steps',
   },
   stepTitle1: {
@@ -39,13 +39,13 @@ const messages = defineMessages({
   stepTitle3: {
     id: 'voting.info.stepTitle3',
     defaultMessage:
-      '!!!Make sure you have 5 minutes for going through the process, and additional one hour wait time to receive a final confirmation.',
+      '!!!Ensure you have 5 minutes to complete the registration process, and an additional hour to receive a final confirmation.',
     description: 'Info step title 3 for Voting Catalyst steps',
   },
   buttonLabel: {
     id: 'voting.info.buttonLabel',
     defaultMessage:
-      "!!!I've completed all the steps. Continue with registration.",
+      '!!!I confirm all steps have been completed. Continue with registration.',
     description: 'Button Label for Voting Catalyst steps',
   },
 });

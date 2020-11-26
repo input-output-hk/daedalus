@@ -22,7 +22,7 @@ const messages = defineMessages({
   description: {
     id: 'voting.votingAdd.sign.step.description',
     defaultMessage:
-      "!!!By submitting this registration transaction. You will be creating a proof of your staking balance. The proof will be used to calculate your voting power. Except fees, there will no change in your wallet's balance.",
+      '!!!By submitting this registration transaction, you are creating a proof of your staking balance. This proof will be used to calculate your voting power. With the exception of fees, there will be no change to the balance of your wallet.',
     description: 'Description on the voting add "sign" step.',
   },
   continueButtonLabel: {

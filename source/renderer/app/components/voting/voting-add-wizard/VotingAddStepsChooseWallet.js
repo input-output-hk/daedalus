@@ -13,7 +13,7 @@ const messages = defineMessages({
   description: {
     id: 'voting.votingAdd.chooseWallet.step.description',
     defaultMessage:
-      '!!!For  <span>fund 2</span> voting you will be able to use only one wallet to register.',
+      '!!!For  <span>fund 2</span> voting you will only be able to use one wallet to register.',
     description: 'Description on the voting add "choose wallet" step.',
   },
   selectWalletInputLabel: {

@@ -23,7 +23,7 @@ const messages = defineMessages({
   message: {
     id: 'voting.votingAdd.qrCode.step.message',
     defaultMessage:
-      '!!!I understand that this QR is not saved anywhere, and I will not have access to it after closing this screen.',
+      '!!!This QR code is not saved anywhere, and you will not have access to it after closing this screen.',
     description: 'Qr code messakes of use on the voting add "qr code" step.',
   },
   takeScreenShotMessage: {

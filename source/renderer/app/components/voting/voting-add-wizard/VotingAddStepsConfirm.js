@@ -16,27 +16,27 @@ const messages = defineMessages({
   description: {
     id: 'voting.votingAdd.confirm.step.description',
     defaultMessage:
-      '!!!To ensure your registration is confirmed, you are required to wait 1 hour before proceeding.',
+      '!!!To ensure your registration is confirmed, you will need to wait 1 hour before proceeding.',
     description: 'Description voting add "confirm" step.',
   },
   descriptionRestart: {
     id: 'voting.votingAdd.confirm.step.descriptionRestart',
     defaultMessage:
-      '!!!Please restart the registration process by clicking on the restart registration button..',
+      '!!!Please restart the registration process by clicking the Restart Registration button.',
     description:
       'Message for restart voting registration on the voting add "confirm" step.',
   },
   importantInformation1: {
     id: 'voting.votingAdd.confirm.step.importantInformation1',
     defaultMessage:
-      '!!!If you close this window or the wallet, you will need to start registration again and resubmit your registration transaction.',
+      '!!!If you close this window, or the wallet, you will need to start the registration process again and resubmit your registration transaction.',
     description:
       'First messages for alert to users on the voting add "confirm" step.',
   },
   importantInformation2: {
     id: 'voting.votingAdd.confirm.step.importantInformation2',
     defaultMessage:
-      '!!!While the 1 hour wait time would suffice for 99.99% of cases, to insure 100% your registration is successful please wait a total of 18 hours before proceeding.',
+      '!!!In 99.99% of cases the 1 hour wait time should suffice, however if you want a 100% guarantee to ensure successful registration we recommend waiting for 18 hours before confirming.',
     description:
       'Second messages for alert the user on the voting add "confirm" step.',
   },
@@ -49,6 +49,13 @@ const messages = defineMessages({
     id: 'voting.votingAdd.confirm.step.continueButtonLabel',
     defaultMessage: '!!!Confirm registration Transaction',
     description: 'Label for continue button on the voting add "confirm" step.',
+  },
+  continueButtonCountDownLabel: {
+    id: 'voting.votingAdd.confirm.step.continueButtonCountDownLabel',
+    defaultMessage:
+      '!!![{countdownRemaining} seconds left before confirmation]',
+    description:
+      'Label for continue button countdown on the voting add "confirm" step.',
   },
   restartButtonLabel: {
     id: 'voting.votingAdd.confirm.step.restartButtonLabel',
@@ -91,6 +98,10 @@ export default class VotingAddStepsConfirm extends Component<Props> {
     const descriptionRestart = intl.formatMessage(messages.descriptionRestart);
     const errorMessage = intl.formatMessage(messages.errorMessage);
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
+    const buttonCountDownLabel = intl.formatMessage(
+      messages.continueButtonCountDownLabel,
+      { countdownRemaining }
+    );
     const restartButtonLabel = intl.formatMessage(messages.restartButtonLabel);
 
     const className = classNames([
@@ -102,7 +113,7 @@ export default class VotingAddStepsConfirm extends Component<Props> {
 
     const countdownDisplay =
       countdownRemaining > 0
-        ? `${buttonLabel} [${countdownRemaining} seconds left before confirmation]`
+        ? `${buttonLabel} ${buttonCountDownLabel}`
         : buttonLabel;
 
     return (
