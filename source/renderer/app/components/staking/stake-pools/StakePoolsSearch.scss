@@ -46,43 +46,32 @@
   }
 }
 
-.clearSearch {
-  margin-top: -2px;
+.clearSearchButton {
+  background-color: var(
+    --theme-staking-stake-pools-search-clear-button-background-color
+  );
+  border-radius: 3px;
+  cursor: pointer;
+  height: 28px;
+  position: relative;
+  top: -2px;
+  width: 28px;
 
-  > div > div {
-    margin-left: -19px !important;
-  }
-
-  button {
+  &:hover {
     background-color: var(
-      --theme-staking-stake-pools-search-clear-button-background-color
+      --theme-staking-stake-pools-search-clear-button-hover-background-color
     );
-    border-radius: 3px;
-    cursor: pointer;
-    height: 28px;
-    width: 28px;
-
-    &:hover {
-      background-color: var(
-        --theme-staking-stake-pools-search-clear-button-hover-background-color
-      );
-    }
   }
+}
 
-  svg {
+.clearSearchIcon {
+  > svg {
     position: relative;
     top: 0.5px;
     width: 10px;
 
     > g > g {
       fill: var(--theme-staking-stake-pools-search-clear-button-color);
-    }
-  }
-
-  &:hover {
-    > div > div {
-      height: 30px;
-      line-height: 1.3;
     }
   }
 }

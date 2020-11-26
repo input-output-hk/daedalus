@@ -5,9 +5,8 @@ import classnames from 'classnames';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
-import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
 import SVGInline from 'react-svg-inline';
-import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { PasswordInput } from '../../widgets/forms/PasswordInput';
 import WalletRestoreDialog from './widgets/WalletRestoreDialog';
 import styles from './ConfigurationDialog.scss';
@@ -23,7 +22,6 @@ import { submitOnEnter } from '../../../utils/form';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
-import tooltipStyles from '../../widgets/forms/InlineEditingDropdown-tooltip.scss';
 import infoIconInline from '../../../assets/images/info-icon.inline.svg';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 
@@ -230,9 +228,9 @@ export default class ConfigurationDialog extends Component<Props> {
       'walletName',
     ]);
 
-    const tooltipClasses = classnames([
-      styles.tooltip,
-      currentLocale === 'ja-JP' ? 'jpLangTooltipIcon' : '',
+    const spendingPasswordClasses = classnames([
+      styles.spendingPasswordField,
+      currentLocale === 'ja-JP' ? styles.jpLangTooltipIcon : '',
     ]);
 
     const buttonLabel = !isSubmitting ? (
@@ -273,22 +271,20 @@ export default class ConfigurationDialog extends Component<Props> {
 
           <div className={styles.spendingPasswordWrapper}>
             <div className={styles.spendingPasswordFields}>
-              <div className={styles.spendingPasswordField}>
+              <div className={spendingPasswordClasses}>
                 <PasswordInput
                   className="spendingPassword"
                   onKeyPress={this.handleSubmitOnEnter}
                   {...spendingPasswordField.bind()}
                 />
-                <Tooltip
-                  skin={TooltipSkin}
-                  themeOverrides={tooltipStyles}
-                  tip={<FormattedHTMLMessage {...messages.passwordTooltip} />}
+                <PopOver
+                  content={
+                    <FormattedHTMLMessage {...messages.passwordTooltip} />
+                  }
                   key="tooltip"
-                  className={tooltipClasses}
-                  arrowRelativeToTip
                 >
                   <SVGInline svg={infoIconInline} className={styles.infoIcon} />
-                </Tooltip>
+                </PopOver>
               </div>
               <div className={styles.spendingPasswordField}>
                 <PasswordInput
