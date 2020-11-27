@@ -6,6 +6,7 @@ Changelog
 ### Fixes
 
 - Fixed error message and validation on redeem rewards screen ([PR 2220](https://github.com/input-output-hk/daedalus/pull/2220))
+- Fixed the overlap of the "X" button in the stake pools search box ([PR 2251](https://github.com/input-output-hk/daedalus/pull/2251))
 
 ## 2.5.0
 
