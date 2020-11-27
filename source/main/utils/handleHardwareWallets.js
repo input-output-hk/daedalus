@@ -1,6 +1,6 @@
 // @flow
 import TransportNodeHid from '@ledgerhq/hw-transport-node-hid';
-import { reject, without } from 'lodash';
+import { includes, reject, without } from 'lodash';
 import { logger } from './logging';
 
 // Types
@@ -12,6 +12,7 @@ export type LedgerError = {
 };
 
 // Constants
+const UPDATE_DEVICE_PATHS_INTERVAL = 500; // unit: ms
 export const LEDGER_STATES: {
   PLUGGED_IN: LedgerState,
   UNLOCKED: LedgerState,
@@ -81,8 +82,8 @@ export class HardwareWalletsHandler {
 
     if (this._ledger.isSupported) {
       try {
-        // $FlowFixMe
-        this._ledger.devicePaths = await TransportNodeHid.list();
+        await this.updateDevicePaths();
+        setInterval(this.updateDevicePaths, UPDATE_DEVICE_PATHS_INTERVAL);
       } catch (error) {
         Object.assign(this._ledger, {
           isSupported: false,
@@ -105,27 +106,45 @@ export class HardwareWalletsHandler {
     logger.info('[HW-HANDLER]:initialize', { ledger: this._ledger });
   };
 
+  updateDevicePaths = async () => {
+    logger.info('[HW-HANDLER]:updateDevicePaths:start', {
+      devicePaths: this._ledger.devicePaths,
+    });
+    // $FlowFixMe
+    this._ledger.devicePaths = await TransportNodeHid.list();
+    logger.info('[HW-HANDLER]:updateDevicePaths:end', {
+      devicePaths: this._ledger.devicePaths,
+    });
+  };
+
   updateDevices = (device: Object, action: 'add' | 'remove') => {
     logger.info('[HW-HANDLER]:updateDevices:start', {
       action,
       device,
       devices: this._ledger.devices,
-      // devicePaths: this._ledger.devicePaths,
+      devicePaths: this._ledger.devicePaths,
     });
     if (action === 'add') {
-      // this._ledger.devicePaths.push(device.path);
       this._ledger.devices.push(device);
+      if (!includes(this._ledger.devicePaths, device.path)) {
+        this._ledger.devicePaths.push(device.path);
+      }
     } else {
-      // this._ledger.devicePaths = without(this._ledger.devicePaths, device.path);
       this._ledger.devices = reject(this._ledger.devices, {
         path: device.path,
       });
+      if (includes(this._ledger.devicePaths, device.path)) {
+        this._ledger.devicePaths = without(
+          this._ledger.devicePaths,
+          device.path
+        );
+      }
     }
     logger.info('[HW-HANDLER]:updateDevices:end', {
       action,
       device,
       devices: this._ledger.devices,
-      // devicePaths: this._ledger.devicePaths,
+      devicePaths: this._ledger.devicePaths,
     });
   };
 }
