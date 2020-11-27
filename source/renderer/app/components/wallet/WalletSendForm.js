@@ -121,6 +121,7 @@ type State = {
   isCalculatingTransactionFee: boolean,
   isTransactionFeeCalculated: boolean,
   transactionFee: BigNumber,
+  feeCalculationApiCallSeq: number,
   transactionFeeError: ?string | ?Node,
 };
 
@@ -134,6 +135,7 @@ export default class WalletSendForm extends Component<Props, State> {
     isCalculatingTransactionFee: false,
     isTransactionFeeCalculated: false,
     transactionFee: new BigNumber(0),
+    feeCalculationApiCallSeq: 0,
     transactionFeeError: null,
   };
 
@@ -384,15 +386,23 @@ export default class WalletSendForm extends Component<Props, State> {
     this.calculateTransactionFeeTimeoutHandler = setTimeout(async () => {
       this._isCalculatingFee = true;
       const amount = formattedAmountToLovelace(amountValue);
-      this.setState({
+      const {
+        feeCalculationApiCallSeq: prevFeeCalculationApiCallSeq,
+      } = this.state;
+      this.setState((prevState) => ({
         isCalculatingTransactionFee: true,
         isTransactionFeeCalculated: false,
         transactionFee: new BigNumber(0),
         transactionFeeError: null,
-      });
+        feeCalculationApiCallSeq: prevState.feeCalculationApiCallSeq + 1,
+      }));
       try {
         const fee = await this.props.calculateTransactionFee(address, amount);
-        if (this._isMounted) {
+        if (
+          this._isMounted &&
+          this.state.feeCalculationApiCallSeq - prevFeeCalculationApiCallSeq ===
+            1
+        ) {
           this._isCalculatingFee = false;
           this.setState({
             isTransactionFeeCalculated: true,
@@ -401,16 +411,20 @@ export default class WalletSendForm extends Component<Props, State> {
           });
         }
       } catch (error) {
-        const errorHasLink = !!get(error, ['values', 'linkLabel']);
-        const transactionFeeError = errorHasLink ? (
-          <FormattedHTMLMessageWithLink
-            message={error}
-            onExternalLinkClick={this.props.onExternalLinkClick}
-          />
-        ) : (
-          this.context.intl.formatMessage(error)
-        );
-        if (this._isMounted) {
+        if (
+          this._isMounted &&
+          this.state.feeCalculationApiCallSeq - prevFeeCalculationApiCallSeq ===
+            1
+        ) {
+          const errorHasLink = !!get(error, ['values', 'linkLabel']);
+          const transactionFeeError = errorHasLink ? (
+            <FormattedHTMLMessageWithLink
+              message={error}
+              onExternalLinkClick={this.props.onExternalLinkClick}
+            />
+          ) : (
+            this.context.intl.formatMessage(error)
+          );
           this._isCalculatingFee = false;
           this.setState({
             isTransactionFeeCalculated: false,
