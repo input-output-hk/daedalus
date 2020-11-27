@@ -1,11 +1,16 @@
 Changelog
 =========
 
-## 2.5.0
+## vNext
 
 ### Features
 
 - Close Newsfeed when clicking anywhere else in the UI ([PR 2250](https://github.com/input-output-hk/daedalus/pull/2250))
+
+## 2.5.0
+
+### Features
+
 - Enabled the sharing functionality on the "Receive" screen ([PR 2245](https://github.com/input-output-hk/daedalus/pull/2245))
 - Improved form field feedback UX ([PR 2241](https://github.com/input-output-hk/daedalus/pull/2241))
 - Implemented "Filter and CSV export" feature on the "Transactions" screen ([PR 2207](https://github.com/input-output-hk/daedalus/pull/2207))
