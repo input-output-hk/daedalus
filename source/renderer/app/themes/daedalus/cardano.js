@@ -388,6 +388,8 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-news-feed-badge-text-color': '#ffffff',
     '--theme-news-feed-box-shadow-color': '-5px 0 20px 0 rgba(0, 0, 0, 0.25)',
     '--theme-news-feed-header-background-color': '#202225',
+    '--theme-news-feed-header-box-shadow-color':
+      '0 10px 10px -5px rgba(0, 0, 0, 0.25)',
     '--theme-news-feed-header-title-color': '#ffffff',
     '--theme-news-feed-icon-close-button-color': '#fff',
     '--theme-news-feed-icon-close-hover-background-color': 'rgba(0, 0, 0, 0.1)',
@@ -954,6 +956,8 @@ export const CARDANO_THEME_OUTPUT = {
       'rgba(32, 34, 37, 0.12)',
     '--theme-transactions-transfer-funds-selected-wallet-background-color':
       '#5e60660d',
+    '--theme-transactions-header-background-color': '#efefef',
+    '--theme-transactions-header-texct-color': '#5e606680',
   },
   uploader: {
     '--theme-uploader-text-color': '#5e6066',

@@ -4,8 +4,7 @@ import SVGInline from 'react-svg-inline';
 import { defineMessages, intlShape } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
-import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
-import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import classnames from 'classnames';
 import styles from './StakePoolsSearch.scss';
 import searchIcon from '../../../assets/images/search.inline.svg';
@@ -113,16 +112,20 @@ export class StakePoolsSearch extends Component<Props> {
           {this.hasSearchClearButton && (
             <div className={clearSearchClasses}>
               {this.hasSearchClearButton && (
-                <Tooltip
-                  skin={TooltipSkin}
-                  tip="Clear"
-                  className={styles.clearSearch}
-                  isOpeningUpward={!isClearTooltipOpeningDownward}
+                <PopOver
+                  content="Clear"
+                  placement={isClearTooltipOpeningDownward ? 'bottom' : 'top'}
                 >
-                  <button onClick={onClearSearch}>
-                    <SVGInline svg={closeIcon} />
+                  <button
+                    onClick={onClearSearch}
+                    className={styles.clearSearchButton}
+                  >
+                    <SVGInline
+                      svg={closeIcon}
+                      className={styles.clearSearchIcon}
+                    />
                   </button>
-                </Tooltip>
+                </PopOver>
               )}
             </div>
           )}

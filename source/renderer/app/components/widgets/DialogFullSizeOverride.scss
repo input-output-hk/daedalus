@@ -99,12 +99,12 @@
     }
 
     // Border Color
-    .AutocompleteOverrides_autocompleteContent,
+    .AutocompleteOverrides_autocompleteContent:not(.SimpleAutocomplete_errored),
     .SelectOverrides_selectInput input,
     .SimpleInput_customValueBlock,
     .SimpleInput_customValueWrapper .SimpleInput_input,
-    .SimpleInput_input:focus,
-    .SimpleInput_input:hover,
+    .SimpleInput_input:focus:not(.SimpleInput_errored),
+    .SimpleInput_input:hover:not(.SimpleInput_errored),
     .SimpleLink_root,
     .SimpleOptions_option:after {
       background-color: transparent !important;

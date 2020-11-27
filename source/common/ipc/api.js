@@ -11,7 +11,8 @@ import type {
   SaveFileDialogResponseParams,
 } from '../types/file-dialog.types';
 import type { GenerateAddressPDFParams } from '../types/address-pdf-request.types';
-import type { GenerateRewardsCsvParams } from '../types/rewards-csv-request.types';
+import type { GenerateCsvParams } from '../types/csv-request.types';
+import type { GenerateQRCodeParams } from '../types/save-qrCode.types';
 import type {
   CardanoNodeState,
   CardanoStatus,
@@ -189,11 +190,18 @@ export type GenerateAddressPDFRendererRequest = GenerateAddressPDFParams;
 export type GenerateAddressPDFMainResponse = void;
 
 /**
- * Channel to generate and save a rewards csv
+ * Channel to generate and save a csv file
  */
-export const GENERATE_REWARDS_CSV_CHANNEL = 'GENERATE_REWARDS_CSV_CHANNEL';
-export type GenerateRewardsCsvRendererRequest = GenerateRewardsCsvParams;
-export type GenerateRewardsCsvMainResponse = void;
+export const GENERATE_CSV_CHANNEL = 'GENERATE_CSV_CHANNEL';
+export type GenerateCsvRendererRequest = GenerateCsvParams;
+export type GenerateCsvMainResponse = void;
+
+/**
+ * Channel to generate and save a QR code
+ */
+export const GENERATE_QRCODE_CHANNEL = 'GENERATE_QRCODE_CHANNEL';
+export type GenerateQRCodeRendererRequest = GenerateQRCodeParams;
+export type GenerateQRCodeMainResponse = void;
 
 /**
  * ====================== CARDANO IPC CHANNELS ======================

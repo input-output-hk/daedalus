@@ -19,6 +19,10 @@ import MnemonicsDialog from '../../../../source/renderer/app/components/wallet/w
 import ConfigurationDialog from '../../../../source/renderer/app/components/wallet/wallet-restore/ConfigurationDialog';
 import SuccessDialog from '../../../../source/renderer/app/components/wallet/wallet-restore/SuccessDialog';
 
+type Props = {
+  locale: string,
+};
+
 storiesOf('Wallets|Add Wallet', module)
   .addDecorator(WalletsWrapper)
   .add('Restore - Step 1', () => {
@@ -95,19 +99,22 @@ storiesOf('Wallets|Add Wallet', module)
       />
     );
   })
-  .add('Restore - Step 3', () => (
-    <ConfigurationDialog
-      isSubmitting={false}
-      onContinue={action('onContinue')}
-      onClose={action('onClose')}
-      onBack={action('onSetWalletKind')}
-      onChange={action('onSetWalletKind')}
-      repeatPassword=""
-      spendingPassword=""
-      walletName=""
-      currentLocale={'en-US'}
-    />
-  ))
+  .add('Restore - Step 3', (props: Props) => {
+    const { locale } = props;
+    return (
+      <ConfigurationDialog
+        isSubmitting={false}
+        onContinue={action('onContinue')}
+        onClose={action('onClose')}
+        onBack={action('onSetWalletKind')}
+        onChange={action('onSetWalletKind')}
+        repeatPassword=""
+        spendingPassword=""
+        walletName=""
+        currentLocale={locale}
+      />
+    );
+  })
   .add('Restore - Step 4', () => {
     const walletKindSelect = select(
       'Wallet Kind',

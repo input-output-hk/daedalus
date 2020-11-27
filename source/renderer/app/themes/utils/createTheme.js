@@ -676,6 +676,8 @@ export const createDaedalusComponentsTheme = (
       '--theme-news-feed-badge-text-color': '#ffffff',
       '--theme-news-feed-box-shadow-color': '-5px 0 20px 0 rgba(0, 0, 0, 0.25)',
       '--theme-news-feed-header-background-color': '#1e304a',
+      '--theme-news-feed-header-box-shadow-color':
+        '0 10px 10px -5px rgba(0, 0, 0, 0.25)',
       '--theme-news-feed-header-title-color': '#fafbfc',
       '--theme-news-feed-icon-close-button-color': '#fff',
       '--theme-news-feed-icon-close-hover-background-color':
@@ -1141,6 +1143,10 @@ export const createDaedalusComponentsTheme = (
       '--theme-topbar-logo-color': `${text.primary}`,
     },
     transactions: {
+      '--theme-transactions-header-background-color': `${background.primary.regular}`,
+      '--theme-transactions-header-texct-color': `${chroma(text.primary).alpha(
+        0.5
+      )}`,
       '--theme-transactions-list-background-color': `${background.primary.lightest}`,
       '--theme-transactions-list-border-color': `${border}`,
       '--theme-transactions-list-group-date-color': `${text.primary}`,

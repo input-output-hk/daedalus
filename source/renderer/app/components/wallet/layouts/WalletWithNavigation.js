@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import type { Node } from 'react';
+import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import WalletNavigation from '../navigation/WalletNavigation';
 import styles from './WalletWithNavigation.scss';
@@ -40,8 +41,10 @@ export default class WalletWithNavigation extends Component<Props> {
       onWalletNavItemClick,
     } = this.props;
 
+    const componentStyles = classnames([styles.component, styles[activeItem]]);
+
     return (
-      <div className={styles.component}>
+      <div className={componentStyles}>
         <div className={styles.navigation}>
           <WalletNavigation
             isActiveNavItem={isActiveScreen}

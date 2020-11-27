@@ -392,6 +392,8 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-news-feed-badge-text-color': '#e9f4fe',
     '--theme-news-feed-box-shadow-color': '-5px 0 20px 0 rgba(0, 0, 0, 0.25)',
     '--theme-news-feed-header-background-color': '#1b2430',
+    '--theme-news-feed-header-box-shadow-color':
+      '0 10px 10px -5px rgba(0, 0, 0, 0.25)',
     '--theme-news-feed-header-title-color': '#fafbfc',
     '--theme-news-feed-icon-close-button-color': '#fff',
     '--theme-news-feed-icon-close-hover-background-color': 'rgba(0, 0, 0, 0.1)',
@@ -960,6 +962,8 @@ export const DARK_BLUE_THEME_OUTPUT = {
       'rgba(233, 244, 254, 0.12)',
     '--theme-transactions-transfer-funds-selected-wallet-background-color':
       '#e9f4fe0d',
+    '--theme-transactions-header-background-color': '#263345',
+    '--theme-transactions-header-texct-color': '#e9f4fe80',
   },
   uploader: {
     '--theme-uploader-text-color': '#e9f4fe',

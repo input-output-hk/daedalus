@@ -56,11 +56,7 @@ export class VirtualTransactionList extends Component<Props> {
   }
 
   componentDidUpdate(prevProps: Props) {
-    // Recompute all row heights in case the number of rows has changed
-    const prevNumberOfRows = prevProps.rows.length;
-    const nextNumberOfRows = this.props.rows.length;
-    if (prevNumberOfRows && prevNumberOfRows !== nextNumberOfRows) {
-      this.rowHeights = this.estimateRowHeights(this.props.rows);
+    if (this.props.rows.length !== prevProps.rows.length) {
       this.recomputeVirtualRowHeights();
     }
   }
@@ -291,7 +287,7 @@ export class VirtualTransactionList extends Component<Props> {
     context: ScrollContextType,
     { scrollTop }: { scrollTop: number }
   ) => {
-    context.setFilterButtonFaded(scrollTop > 10);
+    context.setIsScrolling(scrollTop > 10);
   };
 
   // =============== REACT LIFECYCLE ================= //
@@ -301,6 +297,11 @@ export class VirtualTransactionList extends Component<Props> {
 
     // Prevent List rendering if we have no rows to render
     if (!rows.length) return false;
+
+    // Recompute all row heights in case the number of rows has changed
+    if (this.rowHeights.length !== rows.length) {
+      this.rowHeights = this.estimateRowHeights(rows);
+    }
 
     const componentStyles = classNames([
       styles.component,
