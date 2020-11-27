@@ -1,7 +1,10 @@
 // @flow
 import TransportNodeHid from '@ledgerhq/hw-transport-node-hid';
+// import { identifyUSBProductId } from '@ledgerhq/devices';
+import usb from 'usb';
 import { includes, reject, without } from 'lodash';
 import { logger } from './logging';
+import { environment } from '../environment';
 
 // Types
 export type LedgerState = 'plugged_in' | 'unlocked' | 'ready';
@@ -83,7 +86,9 @@ export class HardwareWalletsHandler {
     if (this._ledger.isSupported) {
       try {
         await this.updateDevicePaths();
-        setInterval(this.updateDevicePaths, UPDATE_DEVICE_PATHS_INTERVAL);
+        if (environment.isLinux) {
+          setInterval(this.updateDevicePaths, UPDATE_DEVICE_PATHS_INTERVAL);
+        }
       } catch (error) {
         Object.assign(this._ledger, {
           isSupported: false,
@@ -97,6 +102,31 @@ export class HardwareWalletsHandler {
       const observer = new LedgerEventObserver(this.updateDevices);
       TransportNodeHid.listen(observer);
       this._ledger.observer = observer;
+
+      if (environment.isLinux) {
+        usb.on('attach', (device) => {
+          logger.info('[HW-HANDLER]:usb:attach', { device });
+          // if (!device) return;
+          // const deviceModel = identifyUSBProductId(device.productId);
+          // observer.next({
+          //   type: 'add',
+          //   descriptor: device.path,
+          //   deviceModel,
+          //   device,
+          // });
+        });
+        usb.on('detach', (device) => {
+          logger.info('[HW-HANDLER]:usb:dettach', { device });
+          // if (!device) return;
+          // const deviceModel = identifyUSBProductId(device.productId);
+          // observer.next({
+          //   type: 'remove',
+          //   descriptor: device.path,
+          //   deviceModel,
+          //   device,
+          // });
+        });
+      }
     }
 
     this._ledger.isInitialized = true;
