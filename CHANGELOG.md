@@ -7,6 +7,10 @@ Changelog
 
 - Close Newsfeed when clicking anywhere else in the UI ([PR 2250](https://github.com/input-output-hk/daedalus/pull/2250))
 
+### Fixes
+
+- Fixed the overlap of the "X" button in the stake pools search box ([PR 2251](https://github.com/input-output-hk/daedalus/pull/2251))
+
 ## 2.5.0
 
 ### Features
