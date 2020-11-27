@@ -6,8 +6,7 @@ import { observer } from 'mobx-react';
 import { get, includes, upperFirst } from 'lodash';
 import { defineMessages, intlShape } from 'react-intl';
 import CopyToClipboard from 'react-copy-to-clipboard';
-import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
-import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import SVGInline from 'react-svg-inline';
@@ -549,12 +548,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               {getSectionRow('cardanoNodeStatus')}
               {getRow('platform', platform)}
               {getRow('platformVersion', platformVersion)}
-              {getRow(
-                'cpu',
-                <Tooltip skin={TooltipSkin} tip={cpu}>
-                  {cpu}
-                </Tooltip>
-              )}
+              {getRow('cpu', <PopOver content={cpu}>{cpu}</PopOver>)}
               {getRow('ram', ram)}
               {getRow(
                 'availableDiskSpace',
@@ -597,9 +591,9 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                     onCopy={onCopyStateDirectoryPath}
                   >
                     <div className={styles.stateDirectoryPath}>
-                      <Tooltip
-                        skin={TooltipSkin}
-                        tip={
+                      <PopOver
+                        maxWidth={400}
+                        content={
                           <div className={styles.tooltipLabelWrapper}>
                             <div>{daedalusStateDirectoryPath}</div>
                           </div>
@@ -609,7 +603,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                           {daedalusStateDirectoryPath}
                         </div>
                         <SVGInline svg={iconCopy} />
-                      </Tooltip>
+                      </PopOver>
                     </div>
                   </CopyToClipboard>
                 </Fragment>

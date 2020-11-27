@@ -13,7 +13,8 @@ import { handleBugReportRequests } from './bugReportRequestChannel';
 import { handleFileMetaRequests } from './generateFileMetaChannel';
 import { handlePaperWalletRequests } from './generatePaperWalletChannel';
 import { handleAddressPDFRequests } from './generateAddressPDFChannel';
-import { handleRewardsCsvRequests } from './generateRewardsCsvChannel';
+import { saveQRCodeImageRequests } from './saveQRCodeImageChannel';
+import { handleRewardsCsvRequests } from './generateCsvChannel';
 import { handleFileDialogRequests } from './show-file-dialog-channels';
 import { handleAddressIntrospectionRequests } from './introspect-address';
 import { handleManageAppUpdateRequests } from './manageAppUpdateChannel';
@@ -31,6 +32,7 @@ export default (window: BrowserWindow) => {
   handleFileMetaRequests();
   handlePaperWalletRequests();
   handleAddressPDFRequests();
+  saveQRCodeImageRequests();
   handleRewardsCsvRequests();
   handleFileDialogRequests(window);
   handleAddressIntrospectionRequests();

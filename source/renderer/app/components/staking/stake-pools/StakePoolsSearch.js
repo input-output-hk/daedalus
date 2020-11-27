@@ -4,11 +4,13 @@ import SVGInline from 'react-svg-inline';
 import { defineMessages, intlShape } from 'react-intl';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
-import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
-import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import classnames from 'classnames';
 import styles from './StakePoolsSearch.scss';
 import searchIcon from '../../../assets/images/search.inline.svg';
 import closeIcon from '../../../assets/images/close-cross.inline.svg';
+import gridIcon from '../../../assets/images/grid-ic.inline.svg';
+import listIcon from '../../../assets/images/list-ic.inline.svg';
 
 const messages = defineMessages({
   searchInputPlaceholder: {
@@ -32,8 +34,12 @@ type Props = {
   label?: string,
   placeholder?: string,
   isClearTooltipOpeningDownward?: boolean,
+  isListView?: boolean,
+  isGridView?: boolean,
   onSearch: Function,
   onClearSearch: Function,
+  onGridView?: Function,
+  onListView?: Function,
   search: string,
 };
 
@@ -57,10 +63,31 @@ export class StakePoolsSearch extends Component<Props> {
       label,
       onSearch,
       onClearSearch,
+      onGridView,
+      onListView,
       placeholder,
       search,
+      isListView,
+      isGridView,
       isClearTooltipOpeningDownward,
     } = this.props;
+
+    const gridButtonClasses = classnames([
+      styles.gridView,
+      isGridView ? styles.selected : null,
+    ]);
+
+    const listButtonClasses = classnames([
+      styles.listView,
+      isListView ? styles.selected : null,
+    ]);
+
+    const isBigSearchComponent = isListView || isGridView;
+
+    const clearSearchClasses = classnames([
+      styles.inputExtras,
+      isBigSearchComponent ? styles.inputExtrasSearch : null,
+    ]);
 
     return (
       <div className={styles.component}>
@@ -83,19 +110,34 @@ export class StakePoolsSearch extends Component<Props> {
             onFocus={this.autoSelectOnFocus}
           />
           {this.hasSearchClearButton && (
-            <div className={styles.inputExtras}>
+            <div className={clearSearchClasses}>
               {this.hasSearchClearButton && (
-                <Tooltip
-                  skin={TooltipSkin}
-                  tip="Clear"
-                  className={styles.clearSearch}
-                  isOpeningUpward={!isClearTooltipOpeningDownward}
+                <PopOver
+                  content="Clear"
+                  placement={isClearTooltipOpeningDownward ? 'bottom' : 'top'}
                 >
-                  <button onClick={onClearSearch}>
-                    <SVGInline svg={closeIcon} />
+                  <button
+                    onClick={onClearSearch}
+                    className={styles.clearSearchButton}
+                  >
+                    <SVGInline
+                      svg={closeIcon}
+                      className={styles.clearSearchIcon}
+                    />
                   </button>
-                </Tooltip>
+                </PopOver>
               )}
+            </div>
+          )}
+          {isBigSearchComponent && (
+            <div className={styles.viewButtons}>
+              <span className={styles.separator}>|</span>
+              <button className={gridButtonClasses} onClick={onGridView}>
+                <SVGInline svg={gridIcon} />
+              </button>
+              <button className={listButtonClasses} onClick={onListView}>
+                <SVGInline svg={listIcon} />
+              </button>
             </div>
           )}
         </div>

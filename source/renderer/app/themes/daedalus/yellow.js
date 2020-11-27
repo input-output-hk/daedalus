@@ -312,7 +312,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-loading-status-icons-off-color': '#ea4c5b',
     '--theme-loading-status-icons-unloaded-loading-color': '#2d2d2d',
     '--theme-loading-status-icons-unloaded-syncing-color': '#2d2d2d',
-    '--theme-loading-status-icons-tooltip-color': '#2d2d2d',
+    '--theme-loading-status-icons-tooltip-color': 'var(--rp-pop-over-bg-color)',
     '--theme-loading-spinner-color': '#2d2d2d',
     '--theme-loading-spinner-medium-color': '#2d2d2d',
   },
@@ -375,6 +375,8 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-news-feed-badge-text-color': '#ffffff',
     '--theme-news-feed-box-shadow-color': '-5px 0 20px 0 rgba(0, 0, 0, 0.25)',
     '--theme-news-feed-header-background-color': '#eda70e',
+    '--theme-news-feed-header-box-shadow-color':
+      '0 10px 10px -5px rgba(0, 0, 0, 0.25)',
     '--theme-news-feed-header-title-color': '#2d2d2d',
     '--theme-news-feed-icon-close-button-color': '#2d2d2d',
     '--theme-news-feed-icon-close-hover-background-color': 'rgba(0, 0, 0, 0.1)',
@@ -753,7 +755,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-staking-stake-pool-background-color': '#ffffff',
     '--theme-staking-stake-pool-border-color': '#e1dac6',
     '--theme-staking-stake-pool-glow-color': 'rgba(45, 45, 45, 0.14)',
-    '--theme-staking-stake-pool-grey-color': 'rgba(45, 45, 45, 0.5)',
+    '--theme-staking-stake-pool-grey-color': '#b2b3b6',
     '--theme-staking-stake-pool-grey-bg-color': 'rgba(45, 45, 45, 0.1)',
     '--theme-staking-stake-pools-search-icon-color': '#2d2d2d',
     '--theme-staking-stake-pool-saturation-background-color':
@@ -943,6 +945,8 @@ export const YELLOW_THEME_OUTPUT = {
       'rgba(45, 45, 45, 0.12)',
     '--theme-transactions-transfer-funds-selected-wallet-background-color':
       '#2d2d2d0d',
+    '--theme-transactions-header-background-color': '#f8f3ed',
+    '--theme-transactions-header-texct-color': '#2d2d2d80',
   },
   uploader: {
     '--theme-uploader-text-color': '#2d2d2d',
@@ -1052,6 +1056,10 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-news-overlay-update-button-hover-text-color': '#fafbfc',
     '--theme-news-overlay-update-button-background-color-hover': '#2d2d2d',
     '--theme-news-overlay-update-button-border-color': '#2d2d2d',
+  },
+  rpPopOver: {
+    '--rp-pop-over-bg-color': 'rgba(45,45,45,0.9)',
+    '--rp-pop-over-text-color': 'white',
   },
 };
 

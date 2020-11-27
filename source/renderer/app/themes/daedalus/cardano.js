@@ -323,7 +323,7 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-loading-status-icons-off-color': '#ea4c5b',
     '--theme-loading-status-icons-unloaded-loading-color': '#ffffff',
     '--theme-loading-status-icons-unloaded-syncing-color': '#5e6066',
-    '--theme-loading-status-icons-tooltip-color': '#5e6066',
+    '--theme-loading-status-icons-tooltip-color': 'rgba(0, 0, 0, 0.9)',
     '--theme-loading-spinner-color': '#5e6066',
     '--theme-loading-spinner-medium-color': '#fff',
   },
@@ -388,6 +388,8 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-news-feed-badge-text-color': '#ffffff',
     '--theme-news-feed-box-shadow-color': '-5px 0 20px 0 rgba(0, 0, 0, 0.25)',
     '--theme-news-feed-header-background-color': '#202225',
+    '--theme-news-feed-header-box-shadow-color':
+      '0 10px 10px -5px rgba(0, 0, 0, 0.25)',
     '--theme-news-feed-header-title-color': '#ffffff',
     '--theme-news-feed-icon-close-button-color': '#fff',
     '--theme-news-feed-icon-close-hover-background-color': 'rgba(0, 0, 0, 0.1)',
@@ -762,7 +764,7 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-staking-stake-pool-background-color': '#ffffff',
     '--theme-staking-stake-pool-border-color': '#d2d3d3',
     '--theme-staking-stake-pool-glow-color': '#7cfeb54c',
-    '--theme-staking-stake-pool-grey-color': 'rgba(94, 96, 102, 0.5)',
+    '--theme-staking-stake-pool-grey-color': '#b2b3b6',
     '--theme-staking-stake-pool-grey-bg-color': 'rgba(94, 96, 102, 0.1)',
     '--theme-staking-progress-label-light': '#ffffff',
     '--theme-staking-stake-pool-retirement-background-color': '#ea4c5b',
@@ -954,6 +956,8 @@ export const CARDANO_THEME_OUTPUT = {
       'rgba(32, 34, 37, 0.12)',
     '--theme-transactions-transfer-funds-selected-wallet-background-color':
       '#5e60660d',
+    '--theme-transactions-header-background-color': '#efefef',
+    '--theme-transactions-header-texct-color': '#5e606680',
   },
   uploader: {
     '--theme-uploader-text-color': '#5e6066',
@@ -1070,6 +1074,10 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-news-overlay-update-button-hover-text-color': '#273d5b',
     '--theme-news-overlay-update-button-background-color-hover': '#ffffff',
     '--theme-news-overlay-update-button-border-color': '#ffffff',
+  },
+  rpPopOver: {
+    '--rp-pop-over-bg-color': 'rgba(32, 34, 37, 0.9)',
+    '--rp-pop-over-text-color': '#ffffff',
   },
 };
 

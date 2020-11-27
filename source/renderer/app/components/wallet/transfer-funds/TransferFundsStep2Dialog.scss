@@ -91,20 +91,6 @@
     }
   }
 
-  .tooltip {
-    :global {
-      .SimpleTooltip_bubble {
-        left: 6px;
-        top: -9px;
-        .SimpleBubble_bubble {
-          margin-left: -71px;
-          white-space: normal;
-          width: 164px;
-        }
-      }
-    }
-  }
-
   .error {
     @include error-message;
     margin-top: 27px;

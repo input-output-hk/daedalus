@@ -1916,9 +1916,7 @@ const _createMigrationFeeFromServerData = action(
   (data: TransferFundsCalculateFeeApiResponse) => {
     const { quantity: feeAmount = 0 } = data.migration_cost;
     const fee = new BigNumber(feeAmount).dividedBy(LOVELACES_PER_ADA);
-    // const { quantity: leftoversAmount = 0 } = data.leftovers;
-    // @LEFTOVERS TODO: Dummy data for testing
-    const leftoversAmount = 45;
+    const { quantity: leftoversAmount = 0 } = data.leftovers;
     const leftovers = new BigNumber(leftoversAmount).dividedBy(
       LOVELACES_PER_ADA
     );
@@ -1949,11 +1947,17 @@ const _createStakePoolFromServerData = action(
     const {
       relative_stake: relativeStake,
       produced_blocks: producedBlocks,
+      non_myopic_member_rewards: nonMyopicMemberRewards,
       saturation,
     } = metrics; // eslint-disable-line
     const { name, description = '', ticker, homepage } = metadata;
     const relativeStakePercentage = get(relativeStake, 'quantity', 0);
     const producedBlocksCount = get(producedBlocks, 'quantity', 0);
+    const nonMyopicMemberRewardsQuantity = get(
+      nonMyopicMemberRewards,
+      'quantity',
+      0
+    );
     const costQuantity = get(cost, 'quantity', 0).toString();
     const pledgeQuantity = get(pledge, 'quantity', 0).toString();
     const profitMarginPercentage = get(profitMargin, 'quantity', 0);
@@ -1962,6 +1966,10 @@ const _createStakePoolFromServerData = action(
       id,
       relativeStake: relativeStakePercentage,
       producedBlocks: producedBlocksCount,
+      potentialRewards: new BigNumber(nonMyopicMemberRewardsQuantity).dividedBy(
+        LOVELACES_PER_ADA
+      ),
+      nonMyopicMemberRewards: nonMyopicMemberRewardsQuantity,
       ticker,
       homepage,
       cost: new BigNumber(costQuantity).dividedBy(LOVELACES_PER_ADA),

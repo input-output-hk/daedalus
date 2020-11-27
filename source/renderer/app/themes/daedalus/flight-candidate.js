@@ -309,7 +309,7 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-loading-status-icons-off-color': '#ea4c5b',
     '--theme-loading-status-icons-unloaded-loading-color': '#ffffff',
     '--theme-loading-status-icons-unloaded-syncing-color': '#ffffff',
-    '--theme-loading-status-icons-tooltip-color': '#56576b',
+    '--theme-loading-status-icons-tooltip-color': 'var(--rp-pop-over-bg-color)',
     '--theme-loading-spinner-color': '#ffffff',
     '--theme-loading-spinner-medium-color': '#ffffff',
   },
@@ -370,6 +370,8 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-news-feed-badge-text-color': '#ffffff',
     '--theme-news-feed-box-shadow-color': '-5px 0 20px 0 rgba(0, 0, 0, 0.25)',
     '--theme-news-feed-header-background-color': '#20212e',
+    '--theme-news-feed-header-box-shadow-color':
+      '0 10px 10px -5px rgba(0, 0, 0, 0.25)',
     '--theme-news-feed-header-title-color': '#fafbfc',
     '--theme-news-feed-icon-close-button-color': '#ffffff',
     '--theme-news-feed-icon-close-hover-background-color': 'rgba(0, 0, 0, 0.1)',
@@ -744,7 +746,7 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-staking-stake-pool-background-color': 'rgba(42, 43, 60, 1)',
     '--theme-staking-stake-pool-border-color': 'rgba(42, 43, 60, 1)',
     '--theme-staking-stake-pool-glow-color': '#ffb9234c',
-    '--theme-staking-stake-pool-grey-color': 'rgba(255, 255, 255, 0.5)',
+    '--theme-staking-stake-pool-grey-color': '#434554',
     '--theme-staking-stake-pool-grey-bg-color': 'rgba(255, 255, 255, 0.1)',
     '--theme-staking-stake-pools-search-icon-color': '#ffffff',
     '--theme-staking-stake-pool-saturation-background-color':
@@ -940,6 +942,8 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.12)',
     '--theme-transactions-transfer-funds-selected-wallet-background-color':
       '#ffffff0d',
+    '--theme-transactions-header-background-color': '#121326',
+    '--theme-transactions-header-texct-color': '#ffffff80',
   },
   uploader: {
     '--theme-uploader-text-color': '#ffffff',
@@ -1056,6 +1060,10 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-news-overlay-update-button-hover-text-color': '#273d5b',
     '--theme-news-overlay-update-button-background-color-hover': '#ffffff',
     '--theme-news-overlay-update-button-border-color': '#ffffff',
+  },
+  rpPopOver: {
+    '--rp-pop-over-bg-color': 'rgba(63,64,79,0.9)',
+    '--rp-pop-over-text-color': 'white',
   },
 };
 

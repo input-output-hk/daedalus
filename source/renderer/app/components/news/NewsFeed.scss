@@ -32,7 +32,7 @@
     z-index: 1;
 
     &.hasShadow {
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      box-shadow: var(--theme-news-feed-header-box-shadow-color);
     }
 
     .newsFeedTitle {
@@ -91,12 +91,43 @@
 
   .newsFeedContainer {
     background: var(--theme-news-feed-background-color);
+    display: flex;
+    flex: 1;
+    flex-direction: column;
     font-family: var(--font-regular);
     overflow: hidden;
     padding: 20px;
 
-    &::-webkit-scrollbar-track {
-      margin: 13px 0;
+    &.noUpdateItem {
+      padding: 0 20px;
+
+      *::-webkit-scrollbar-track {
+        margin: 13px 0;
+      }
+
+      .newsFeedList {
+        height: calc(100% - 85px);
+        padding: 10px 20px 20px 0;
+      }
+    }
+
+    *::-webkit-scrollbar-track {
+      margin-bottom: 11px;
+      margin-top: 25px;
+    }
+
+    :global {
+      *::-webkit-scrollbar-thumb {
+        background-color: var(
+          --theme-splash-network-scrollbar-thumb-background
+        );
+        min-height: 150px;
+        &:hover {
+          background-color: var(
+            --theme-splash-network-scrollbar-thumb-background-hover
+          );
+        }
+      }
     }
 
     .newsFeedEmptyContainer,
@@ -104,6 +135,7 @@
       align-items: center;
       display: flex;
       flex-direction: column;
+      flex-grow: 1;
       height: 100%;
       justify-content: center;
 
@@ -119,6 +151,7 @@
         text-align: center;
       }
     }
+
     .newsFeedList {
       height: calc(100% - 104px);
       overflow-x: hidden;
@@ -126,8 +159,22 @@
       padding: 0 20px 20px 0;
       position: absolute;
       width: calc(100% - 20px);
+
       &.hasUpdate {
-        height: calc(100% - 220px);
+        height: calc(100% - 190px);
+        margin-top: 85px;
+      }
+    }
+
+    .updateItem {
+      box-shadow: 0 0 0 rgba(0, 0, 0, 0.2);
+      margin: -20px;
+      padding: 20px 20px 15px;
+
+      &.hasShadow {
+        background: var(--theme-news-feed-background-color);
+        box-shadow: var(--theme-news-feed-header-box-shadow-color);
+        z-index: 1;
       }
     }
   }
@@ -140,5 +187,7 @@
     border: 1px solid var(--theme-news-item-title-color);
     margin: 15px 0;
     opacity: 0.2;
+    transition: opacity 0.3s linear;
+    visibility: visible;
   }
 }

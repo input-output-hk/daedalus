@@ -5,18 +5,73 @@ Changelog
 
 ### Features
 
-- Increased the maximum number of wallets limit to 100 ([PR 2208](https://github.com/input-output-hk/daedalus/pull/2208))
-- Re-enabled stake pool saturation info ([PR 2200](https://github.com/input-output-hk/daedalus/pull/2200))
-- Implemented the wallet migration leftovers handling ([PR 2178](https://github.com/input-output-hk/daedalus/pull/2178))
+- Increased the maximum number of wallets limit to 100 and optimized wallet data polling ([PR 2208](https://github.com/input-output-hk/daedalus/pull/2208))
 
 ### Fixes
 
+- Fixed the overlap of the "X" button in the stake pools search box ([PR 2251](https://github.com/input-output-hk/daedalus/pull/2251))
+
+## 2.5.0
+
+### Features
+
+- Enabled the sharing functionality on the "Receive" screen ([PR 2245](https://github.com/input-output-hk/daedalus/pull/2245))
+- Improved form field feedback UX ([PR 2241](https://github.com/input-output-hk/daedalus/pull/2241))
+- Implemented "Filter and CSV export" feature on the "Transactions" screen ([PR 2207](https://github.com/input-output-hk/daedalus/pull/2207))
+
+### Fixes
+
+- Fixed visual glitch on the transaction list switching between filters ([PR 2249](https://github.com/input-output-hk/daedalus/pull/2249))
+- Fixed Newsfeed drop shadow when there is an update item ([PR 2242](https://github.com/input-output-hk/daedalus/pull/2242))
+
+### Chores
+
+- Implemented Smart Tooltips across whole application ([PR 2243](https://github.com/input-output-hk/daedalus/pull/2243))
+- Updated `cardano-wallet` to version `2020-11-17` ([PR 2246](https://github.com/input-output-hk/daedalus/pull/2246))
+- Implemented a tool for quickly copying css properties on theme files ([PR 2196](https://github.com/input-output-hk/daedalus/pull/2196))
+- Hid hardware wallet restoration support ([PR 2237](https://github.com/input-output-hk/daedalus/pull/2237))
+
+## 2.4.1
+
+### Fixes
+
+- Fixed `leftovers` not being displayed correctly ([PR 2231](https://github.com/input-output-hk/daedalus/pull/2231))
+- Fixed prettier/flow linting issue ([PR 2232](https://github.com/input-output-hk/daedalus/pull/2232))
+
+## 2.4.1-FC1
+
+### Features
+
+- Updated stake pool ranking logic to display the same rank for all stake pools without potential rewards ([PR 2227](https://github.com/input-output-hk/daedalus/pull/2227))
+- Replaced several tooltips with new react-polymorph `PopOver` component ([PR 2210](https://github.com/input-output-hk/daedalus/pull/2210), [PR 2223](https://github.com/input-output-hk/daedalus/pull/2223))
+
+### Fixes
+
+- Fixed Address validation on Shelley QA network ([PR 2218](https://github.com/input-output-hk/daedalus/pull/2218))
+- Vertically centered empty news feed message ([PR 2216](https://github.com/input-output-hk/daedalus/pull/2216))
+- Fixed the fix missing space in the App Update Overlay error message ([PR 2219](https://github.com/input-output-hk/daedalus/pull/2219))
+
+## 2.4.0
+
+### Features
+
+- Added tooltips to stake pools table view headers ([PR 2214](https://github.com/input-output-hk/daedalus/pull/2214))
+- Added stake pools list view ([PR 2186](https://github.com/input-output-hk/daedalus/pull/2186), [PR 2215](https://github.com/input-output-hk/daedalus/pull/2215))
+- Implemented stake pool details explanation tooltips ([PR 2211](https://github.com/input-output-hk/daedalus/pull/2211))
+- Re-enabled stake pool saturation info ([PR 2200](https://github.com/input-output-hk/daedalus/pull/2200))
+- Implemented the wallet migration leftovers handling ([PR 2178](https://github.com/input-output-hk/daedalus/pull/2178))
+- Implemented hiding ranking info for pools without non myopic member rewards on the stake pool tooltip panel ([PR 2209](https://github.com/input-output-hk/daedalus/pull/2209))
+
+### Fixes
+
+- Fixed wrong number formatting on staking screens ([PR 2213](https://github.com/input-output-hk/daedalus/pull/2213))
+- Removed broken feature requests link ([PR 2212](https://github.com/input-output-hk/daedalus/pull/2212))
+- Fixed animation on wallet dropdown option during redemption process ([PR 2191](https://github.com/input-output-hk/daedalus/pull/2191))
 - Fixed Cardano Explorer URLs ([PR 2198](https://github.com/input-output-hk/daedalus/pull/2198))
 - Fixed Stake pool tooltip height issue ([PR 2203](https://github.com/input-output-hk/daedalus/pull/2203))
 
 ### Chores
 
-- Optimized wallet data polling ([PR 2208](https://github.com/input-output-hk/daedalus/pull/2208))
 - Updated `cardano-launcher` to version `0.20201014.0` ([PR 2205](https://github.com/input-output-hk/daedalus/pull/2205))
 - Updated `cardano-wallet` to version `2020-10-13` ([PR 2205](https://github.com/input-output-hk/daedalus/pull/2205))
 - Update Nix installation instructions ([PR 2200](https://github.com/input-output-hk/daedalus/pull/2200))
