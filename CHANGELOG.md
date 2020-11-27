@@ -1,7 +1,11 @@
 Changelog
 =========
 
-## vNext
+## 3.0.0-FC3
+
+### Features
+
+- Added hardware wallet support for "Ledger Nano S" and "Ledger Nano X" on Linux ([PR 2046](https://github.com/input-output-hk/daedalus/pull/2046))
 
 ### Fixes
 
