@@ -1,11 +1,32 @@
 Changelog
 =========
 
+## 3.0.0-FC3
+
+### Features
+
+- Added hardware wallet support for "Ledger Nano S" and "Ledger Nano X" on Linux ([PR 2046](https://github.com/input-output-hk/daedalus/pull/2046))
+
+### Fixes
+
+- Fixed the overlap of the "X" button in the stake pools search box ([PR 2251](https://github.com/input-output-hk/daedalus/pull/2251))
+
 ## 3.0.0-FC2
 
 ### Features
 
 - Added hardware wallet support for "Ledger Nano S" and "Ledger Nano X" on macOS and Windows ([PR 2046](https://github.com/input-output-hk/daedalus/pull/2046))
+
+## 3.0.0-FC1
+
+### Features
+
+- Added hardware wallet support for "Trezor model T" ([PR 2046](https://github.com/input-output-hk/daedalus/pull/2046))
+
+## 2.5.0
+
+### Features
+
 - Enabled the sharing functionality on the "Receive" screen ([PR 2245](https://github.com/input-output-hk/daedalus/pull/2245))
 - Improved form field feedback UX ([PR 2241](https://github.com/input-output-hk/daedalus/pull/2241))
 - Implemented "Filter and CSV export" feature on the "Transactions" screen ([PR 2207](https://github.com/input-output-hk/daedalus/pull/2207))
@@ -20,15 +41,6 @@ Changelog
 - Implemented Smart Tooltips across whole application ([PR 2243](https://github.com/input-output-hk/daedalus/pull/2243))
 - Updated `cardano-wallet` to version `2020-11-17` ([PR 2246](https://github.com/input-output-hk/daedalus/pull/2246))
 - Implemented a tool for quickly copying css properties on theme files ([PR 2196](https://github.com/input-output-hk/daedalus/pull/2196))
-
-## 3.0.0-FC1
-
-### Features
-
-- Added hardware wallet support for "Trezor model T" ([PR 2046](https://github.com/input-output-hk/daedalus/pull/2046))
-
-### Chores
-
 - Hid hardware wallet restoration support ([PR 2237](https://github.com/input-output-hk/daedalus/pull/2237))
 
 ## 2.4.1
