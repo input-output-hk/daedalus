@@ -43,7 +43,13 @@ const messages = defineMessages({
   instructions: {
     id: 'wallet.connect.dialog.instructions',
     defaultMessage:
-      '!!!<p>Daedalus currently supports Ledger Nano S, Ledger Nano X, and Trezor Model T hardware wallet devices.</p>',
+      '!!!<p>Daedalus currently supports Ledger Nano S, Ledger Nano X, and Trezor Model T hardware wallet devices.</p><p>If you are <b>pairing your device with Daedalus for the first time</b>, please follow the instructions below.</p><p>If you have <b>already paired your device with Daedalus</b>, you don’t need to repeat this step. Just connect your device when you need to confirm a transaction.</p>',
+    description: 'Follow instructions label',
+  },
+  instructionsTrezorOnly: {
+    id: 'wallet.connect.dialog.instructionsTrezorOnly',
+    defaultMessage:
+      '!!!<p><b>Daedalus currently supports only Trezor Model T hardware wallet devices.</b></p><p>If you are <b>pairing your device with Daedalus for the first time</b>, please follow the instructions below.</p><p>If you have <b>already paired your device with Daedalus</b>, you don’t need to repeat this step. Just connect your device when you need to confirm a transaction.</p>',
     description: 'Follow instructions label',
   },
 });
@@ -123,6 +129,10 @@ export default class WalletConnectDialog extends Component<Props> {
       return unknownDeviceElement;
     };
 
+    const instructions = isLedgerEnabled
+      ? messages.instructions
+      : messages.instructionsTrezorOnly;
+
     return (
       <Dialog
         className={dialogClasses}
@@ -155,7 +165,7 @@ export default class WalletConnectDialog extends Component<Props> {
           ) : (
             <div>
               <p className={styles.hardwareWalletMessage}>
-                <FormattedHTMLMessage {...messages.instructions} />
+                <FormattedHTMLMessage {...instructions} />
               </p>
               <div className={styles.hardwareWalletStatusWrapper}>
                 <HardwareWalletStatus
