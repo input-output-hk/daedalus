@@ -212,7 +212,7 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
               HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED) ||
           isSubmitting ||
           !transactionFee ||
-          error,
+          !!error,
       },
     ];
 
