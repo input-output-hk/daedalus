@@ -326,7 +326,9 @@ export const handleHardwareWalletRequests = async (
       // $FlowFixMe
       const { deviceModel } = hw;
       if (deviceModel) {
-        logger.info('[HW-DEBUG] getHardwareWalletTransportChannel:: LEDGER case RESPONSE');
+        logger.info(
+          '[HW-DEBUG] getHardwareWalletTransportChannel:: LEDGER case RESPONSE'
+        );
         const { id, productName } = deviceModel;
         return Promise.resolve({
           deviceId: null, // @TODO - to be defined
@@ -523,7 +525,9 @@ export const handleHardwareWalletRequests = async (
     } catch (error) {
       logger.info('[HW-DEBUG] ERROR in Cardano App');
       if (error.name === 'DisconnectedDevice' && path) {
-        logger.info('[HW-DEBUG] ERROR in Cardano App (CODE - DisconnectedDevice)');
+        logger.info(
+          '[HW-DEBUG] ERROR in Cardano App (CODE - DisconnectedDevice)'
+        );
         // Mutate / change old connection and force reinitialization once method called again
         const newTransport = await TransportNodeHid.open(path);
         deviceConnection = new AppAda(newTransport);
@@ -652,7 +656,9 @@ export const handleHardwareWalletRequests = async (
       devicePath,
     } = params;
     logger.info('[HW-DEBUG] SIGN Ledger transaction');
-    deviceConnection = devicePath ? devicesMemo[devicePath].AdaConnection : null;
+    deviceConnection = devicePath
+      ? devicesMemo[devicePath].AdaConnection
+      : null;
 
     try {
       if (!deviceConnection) {

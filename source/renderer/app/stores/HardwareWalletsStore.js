@@ -566,10 +566,12 @@ export default class HardwareWalletsStore extends Store {
         logger.debug(
           '[HW-DEBUG] HWStore - Connect - TRANSACTION initiated - return last device'
         );
-        const lastDeviceTransport = await getHardwareWalletTransportChannel.request({
-          devicePath: lastUnpairedDevice ? lastUnpairedDevice.path : null, // Use last plugged device
-          isTrezor: deviceData.deviceType === DeviceTypes.TREZOR,
-        });
+        const lastDeviceTransport = await getHardwareWalletTransportChannel.request(
+          {
+            devicePath: lastUnpairedDevice ? lastUnpairedDevice.path : null, // Use last plugged device
+            isTrezor: deviceData.deviceType === DeviceTypes.TREZOR,
+          }
+        );
         return lastDeviceTransport;
         // relatedConnectionData.device.deviceType
       }
@@ -833,7 +835,8 @@ export default class HardwareWalletsStore extends Store {
         if (this.isTransactionInitiated) {
           // Check if sender wallet match transaction initialization
           if (
-            !walletId || !recognizedWallet ||
+            !walletId ||
+            !recognizedWallet ||
             (recognizedWallet && recognizedWallet.id !== walletId)
           ) {
             logger.debug(
@@ -1479,8 +1482,7 @@ export default class HardwareWalletsStore extends Store {
       );
       if (walletId) {
         this.cardanoAdaAppPollingInterval = setInterval(
-          (path, wid) =>
-            this.getCardanoAdaApp({ path, walletId: wid }),
+          (path, wid) => this.getCardanoAdaApp({ path, walletId: wid }),
           CARDANO_ADA_APP_POLLING_INTERVAL,
           devicePath,
           walletId
@@ -1561,10 +1563,11 @@ export default class HardwareWalletsStore extends Store {
     // Or update recognized device while paired with existing software wallet
     const recognizedPairedHardwareWallet = find(
       hardwareWalletsConnectionData,
-      (connection) => (
+      (connection) =>
         // We can not be sure that Ledger is right Wallet device because we don't have device ID at this point
-        deviceType === DeviceTypes.TREZOR && deviceId && connection.device.deviceId === deviceId
-      )
+        deviceType === DeviceTypes.TREZOR &&
+        deviceId &&
+        connection.device.deviceId === deviceId
     );
 
     logger.debug(
@@ -1604,10 +1607,11 @@ export default class HardwareWalletsStore extends Store {
       );
       const recognizedLedgerWallet = find(
         hardwareWalletsConnectionData,
-        (connection) => (
+        (connection) =>
           // We can not be sure that Ledger is right Wallet device because we don't have device ID at this point
-          deviceType === DeviceTypes.LEDGER && path && connection.device.path === path
-        )
+          deviceType === DeviceTypes.LEDGER &&
+          path &&
+          connection.device.path === path
       );
 
       if (recognizedLedgerWallet) {

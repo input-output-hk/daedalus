@@ -124,7 +124,11 @@ export const ShelleyTxOutput = (output: CoinSelectionOutput) => {
   };
 };
 
-export const ShelleyTxCert = (cert: { type: string, accountAddress: string, pool: ?string}) => {
+export const ShelleyTxCert = (cert: {
+  type: string,
+  accountAddress: string,
+  pool: ?string,
+}) => {
   const { type, accountAddress, pool } = cert;
   let hash;
   let poolHash;
@@ -349,7 +353,7 @@ export const prepareTxAux = ({
 
 export const prepareBody = (
   unsignedTx: ShelleyTxAuxType,
-  txWitnesses: any, // @TODO - figure out fallback if is Map<number, ShelleyTxWitnessType> presented as empty array
+  txWitnesses: any // @TODO - figure out fallback if is Map<number, ShelleyTxWitnessType> presented as empty array
 ) => {
   const signedTransactionStructure = ShelleySignedTransactionStructured(
     unsignedTx,
