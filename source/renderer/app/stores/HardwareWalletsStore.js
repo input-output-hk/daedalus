@@ -198,7 +198,7 @@ export default class HardwareWalletsStore extends Store {
 
   initLedger = async () => {
     if (isHardwareWalletSupportEnabled && isLedgerEnabled) {
-      logger.debug('[HW-DEBUG] HWStore - HW STORE ACTIVE <<<');
+      logger.debug('[HW-DEBUG] HWStore - HW STORE ACTIVE');
       await this.hardwareWalletDevicesRequest.execute();
       const storedDevices = this.hardwareWalletDevicesRequest.result;
       logger.debug('[HW-DEBUG] HWStore - storedDevices fetched');
@@ -450,7 +450,7 @@ export default class HardwareWalletsStore extends Store {
       );
 
       logger.debug(
-        '[HW-DEBUG] HWStore - establishHardwareWalletConnection:: START '
+        '[HW-DEBUG] HWStore - establishHardwareWalletConnection:: START'
       );
 
       // Tx Special cases!
@@ -499,7 +499,7 @@ export default class HardwareWalletsStore extends Store {
         }
 
         logger.debug(
-          '[HW-DEBUG] HWStore - establishHardwareWalletConnection:: Listening for device '
+          '[HW-DEBUG] HWStore - establishHardwareWalletConnection:: Listening for device'
         );
 
         if (lastUnpairedDevice.deviceType === DeviceTypes.TREZOR) {
@@ -1710,7 +1710,7 @@ export default class HardwareWalletsStore extends Store {
   };
 
   stopCardanoAdaAppFetchPoller = () => {
-    logger.debug('[HW-DEBUG] HWStore - STOP Ada App poller: ');
+    logger.debug('[HW-DEBUG] HWStore - STOP Ada App poller');
     if (this.cardanoAdaAppPollingInterval) {
       clearInterval(this.cardanoAdaAppPollingInterval);
     }
