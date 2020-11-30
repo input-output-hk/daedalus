@@ -143,12 +143,9 @@ export const ShelleyTxCert = (cert: {
       .slice(1);
     const account = [0, accountAddressHash];
     const encodedCertsTypes = {
-      // $FlowFixMe
-      0: [type, account],
-      // $FlowFixMe
-      1: [type, account],
-      // $FlowFixMe
-      2: [type, account, hash],
+      [0]: [type, account],
+      [1]: [type, account],
+      [2]: [type, account, hash],
     };
     return encoder.pushAny(encodedCertsTypes[type]);
   }
