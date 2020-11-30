@@ -1350,7 +1350,7 @@ export default class AdaApi {
     } = wallet;
     const minRewardsReceiverBalance = new BigNumber(MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE);
     const amount = walletBalance.lessThan(minRewardsReceiverBalance.mul(MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE * 3)) ?
-      formattedAdaAmountToLovelace(walletBalance.toNumber()) :
+      formattedAdaAmountToLovelace(walletBalance) :
       REDEEM_ITN_REWARDS_AMOUNT;
     const payload = {
       address,
