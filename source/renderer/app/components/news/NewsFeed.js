@@ -81,7 +81,7 @@ export default class NewsFeed extends Component<Props, State> {
     this.scrollableDomElement.addEventListener('scroll', this.handleOnScroll);
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: Props) {
     if (!prevProps.isNewsFeedOpen && this.props.isNewsFeedOpen) {
       this.newsFeedOpenedAt = Date.now();
     }
