@@ -23,7 +23,6 @@ export default class AppStore extends Store {
   @observable gpuStatus: ?GpuStatus = null;
   @observable activeDialog: ApplicationDialog = null;
   @observable newsFeedIsOpen: boolean = false;
-  _newsFeedOpenedAt: number;
 
   setup() {
     this.actions.router.goToRoute.listen(this._updateRouteLocation);
@@ -51,8 +50,6 @@ export default class AppStore extends Store {
     this.actions.app.toggleNewsFeed.listen(this._toggleNewsFeed);
     this.actions.app.closeNewsFeed.listen(this._closeNewsFeed);
 
-    this.actions.app.onUiClicked.listen(this._onUiClicked);
-
     toggleUiPartChannel.onReceive(this.toggleUiPart);
     showUiPartChannel.onReceive(this.showUiPart);
   }
@@ -77,9 +74,6 @@ export default class AppStore extends Store {
 
   @action _toggleNewsFeed = () => {
     this.newsFeedIsOpen = !this.newsFeedIsOpen;
-    if (this.newsFeedIsOpen) {
-      this._newsFeedOpenedAt = Date.now();
-    }
   };
 
   @action _closeNewsFeed = () => {
@@ -127,17 +121,6 @@ export default class AppStore extends Store {
       default:
     }
     return Promise.resolve();
-  };
-
-  _onUiClicked = () => {
-    if (this.newsFeedIsOpen) {
-      // This is necessary otherwise the UI click on the newsfeed bell icon
-      // would immediately close the newsfeed again
-      const msSinceNewsFeedOpened = Date.now() - this._newsFeedOpenedAt;
-      if (msSinceNewsFeedOpened > 100) {
-        this._closeNewsFeed();
-      }
-    }
   };
 
   @computed get isSetupPage(): boolean {

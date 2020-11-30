@@ -113,7 +113,6 @@ export default class MainLayout extends Component<InjectedContainerProps> {
           />,
           <TransferFundsPage key="TransferFundsPage" />,
         ]}
-        onUiClicked={actions.app.onUiClicked.trigger}
       >
         {this.props.children}
       </SidebarLayout>

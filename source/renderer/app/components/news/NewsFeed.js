@@ -69,8 +69,11 @@ export default class NewsFeed extends Component<Props, State> {
   };
 
   scrollableDomElement: ?HTMLElement = null;
+  newsFeedRef = React.createRef<HTMLElement>();
+  newsFeedOpenedAt: number;
 
   componentDidMount() {
+    document.addEventListener('click', this.handleWindowClick);
     this.scrollableDomElement = document.querySelector(
       SCROLLABLE_DOM_ELEMENT_SELECTOR
     );
@@ -78,7 +81,14 @@ export default class NewsFeed extends Component<Props, State> {
     this.scrollableDomElement.addEventListener('scroll', this.handleOnScroll);
   }
 
+  componentDidUpdate(prevProps) {
+    if (!prevProps.isNewsFeedOpen && this.props.isNewsFeedOpen) {
+      this.newsFeedOpenedAt = Date.now();
+    }
+  }
+
   componentWillUnmount() {
+    document.removeEventListener('click', this.handleWindowClick);
     if (this.scrollableDomElement) {
       this.scrollableDomElement.removeEventListener(
         'scroll',
@@ -86,6 +96,26 @@ export default class NewsFeed extends Component<Props, State> {
       );
     }
   }
+
+  handleWindowClick = (event: MouseEvent) => {
+    const newsFeedElement = this.newsFeedRef.current;
+    const clickedElement = event.target;
+    const { isNewsFeedOpen } = this.props;
+    // Detect clicks outside of the newsfeed container
+    if (
+      isNewsFeedOpen &&
+      newsFeedElement &&
+      clickedElement instanceof Node &&
+      !newsFeedElement.contains(clickedElement)
+    ) {
+      // This is necessary otherwise the UI click on the newsfeed bell icon
+      // would immediately close the newsfeed again
+      const msSinceNewsFeedOpened = Date.now() - this.newsFeedOpenedAt;
+      if (msSinceNewsFeedOpened > 100) {
+        this.props.onClose();
+      }
+    }
+  };
 
   handleOnScroll = () => {
     const { hasShadow: currentHasShadow } = this.state;
@@ -155,7 +185,7 @@ export default class NewsFeed extends Component<Props, State> {
     ]);
 
     return (
-      <div className={componentClasses}>
+      <div className={componentClasses} ref={this.newsFeedRef}>
         <div className={newsFeedHeaderStyles}>
           <h3 className={styles.newsFeedTitle}>
             {intl.formatMessage(messages.newsFeedTitle)}
