@@ -3,6 +3,13 @@ Changelog
 
 ## vNext
 
+### Fixes
+
+- Fixed error message and validation on redeem rewards screen ([PR 2220](https://github.com/input-output-hk/daedalus/pull/2220))
+- Fixed the overlap of the "X" button in the stake pools search box ([PR 2251](https://github.com/input-output-hk/daedalus/pull/2251))
+
+## 2.5.0
+
 ### Features
 
 - Enabled the sharing functionality on the "Receive" screen ([PR 2245](https://github.com/input-output-hk/daedalus/pull/2245))
@@ -11,10 +18,12 @@ Changelog
 
 ### Fixes
 
-- Fixed error message and validation on redeem rewards screen ([PR 2220](https://github.com/input-output-hk/daedalus/pull/2220))
+- Fixed visual glitch on the transaction list switching between filters ([PR 2249](https://github.com/input-output-hk/daedalus/pull/2249))
+- Fixed Newsfeed drop shadow when there is an update item ([PR 2242](https://github.com/input-output-hk/daedalus/pull/2242))
 
 ### Chores
 
+- Implemented Smart Tooltips across whole application ([PR 2243](https://github.com/input-output-hk/daedalus/pull/2243))
 - Updated `cardano-wallet` to version `2020-11-17` ([PR 2246](https://github.com/input-output-hk/daedalus/pull/2246))
 - Implemented a tool for quickly copying css properties on theme files ([PR 2196](https://github.com/input-output-hk/daedalus/pull/2196))
 - Hid hardware wallet restoration support ([PR 2237](https://github.com/input-output-hk/daedalus/pull/2237))

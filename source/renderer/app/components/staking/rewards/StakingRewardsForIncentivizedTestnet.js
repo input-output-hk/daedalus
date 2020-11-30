@@ -5,8 +5,7 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import { get, map, orderBy } from 'lodash';
 import classNames from 'classnames';
-import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
-import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import moment from 'moment';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
@@ -18,7 +17,6 @@ import sortIcon from '../../../assets/images/ascending.inline.svg';
 import downloadIcon from '../../../assets/images/download-ic.inline.svg';
 import type { RewardForIncentivizedTestnet } from '../../../api/staking/types';
 import styles from './StakingRewardsForIncentivizedTestnet.scss';
-import tooltipStyles from './StakingRewardsForIncentivizedTestnetTooltip.scss';
 
 const messages = defineMessages({
   title: {
@@ -254,10 +252,8 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
                             {isRestoring ? '-' : `${rewardAmount} ADA`}
                             {isRestoring && (
                               <div className={styles.syncingProgress}>
-                                <Tooltip
-                                  skin={TooltipSkin}
-                                  themeOverrides={tooltipStyles}
-                                  tip={intl.formatMessage(
+                                <PopOver
+                                  content={intl.formatMessage(
                                     messages.syncingTooltipLabel,
                                     {
                                       syncingProgress,
@@ -265,7 +261,7 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
                                   )}
                                 >
                                   <LoadingSpinner medium />
-                                </Tooltip>
+                                </PopOver>
                               </div>
                             )}
                           </td>
