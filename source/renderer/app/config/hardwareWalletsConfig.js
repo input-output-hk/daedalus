@@ -13,6 +13,15 @@ export const HW_SHELLEY_CONFIG = {
       name: 'mainnet',
       networkId: 1,
       protocolMagic: 764824073,
+      trezorProtocolMagic: 764824073,
+      eraStartSlot: 4492800,
+      ttl: 3600,
+    },
+    TESTNET: {
+      name: 'testnet',
+      networkId: 0,
+      protocolMagic: 42,
+      trezorProtocolMagic: 1097911063,
       eraStartSlot: 4492800,
       ttl: 3600,
     },
@@ -58,7 +67,6 @@ export const MINIMAL_TREZOR_FIRMWARE_VERSION = '2.3.3';
 export const isTrezorEnabled = true;
 export const isLedgerEnabled = true;
 
-export const isHardwareWalletSupportEnabled =
-  isMainnet && (isTrezorEnabled || isLedgerEnabled);
+export const isHardwareWalletSupportEnabled = (isTrezorEnabled || isLedgerEnabled);
 
 export const isHardwareWalletIndicatorEnabled = false;
