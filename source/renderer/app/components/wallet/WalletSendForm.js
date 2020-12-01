@@ -11,7 +11,7 @@ import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import BigNumber from 'bignumber.js';
-import { get } from 'lodash';
+import { get, debounce } from 'lodash';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import { submitOnEnter } from '../../utils/form';
 import AmountInputSkin from './skins/AmountInputSkin';
@@ -97,7 +97,7 @@ export const messages = defineMessages({
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
-const CALCULATE_TRANSACTION_FEE_DELAY = 1000;
+const CALCULATE_TRANSACTION_FEE_DELAY = 500;
 
 type Props = {
   currencyUnit: string,
@@ -121,7 +121,7 @@ type State = {
   isCalculatingTransactionFee: boolean,
   isTransactionFeeCalculated: boolean,
   transactionFee: BigNumber,
-  feeCalculationApiCallSeq: number,
+  feeCalculationRequestQue: number,
   transactionFeeError: ?string | ?Node,
 };
 
@@ -135,11 +135,9 @@ export default class WalletSendForm extends Component<Props, State> {
     isCalculatingTransactionFee: false,
     isTransactionFeeCalculated: false,
     transactionFee: new BigNumber(0),
-    feeCalculationApiCallSeq: 0,
+    feeCalculationRequestQue: 0,
     transactionFeeError: null,
   };
-
-  calculateTransactionFeeTimeoutHandler = null;
 
   // We need to track the fee calculation state in order to disable
   // the "Submit" button as soon as either receiver or amount field changes.
@@ -159,10 +157,6 @@ export default class WalletSendForm extends Component<Props, State> {
 
   componentWillUnmount() {
     this._isMounted = false;
-    if (this.calculateTransactionFeeTimeoutHandler) {
-      clearTimeout(this.calculateTransactionFeeTimeoutHandler);
-      this.calculateTransactionFeeTimeoutHandler = null;
-    }
   }
 
   handleOnSubmit = () => {
@@ -191,7 +185,7 @@ export default class WalletSendForm extends Component<Props, State> {
             async ({ field, form }) => {
               const { value } = field;
               if (value === '') {
-                this._resetTransactionFee();
+                this.resetTransactionFee();
                 return [
                   false,
                   this.context.intl.formatMessage(messages.fieldIsRequired),
@@ -202,9 +196,9 @@ export default class WalletSendForm extends Component<Props, State> {
               const isAmountValid = amountField.isValid;
               const isValidAddress = await this.props.addressValidator(value);
               if (isValidAddress && isAmountValid) {
-                this._calculateTransactionFee(value, amountValue);
+                this.calculateTransactionFee(value, amountValue)();
               } else {
-                this._resetTransactionFee();
+                this.resetTransactionFee();
               }
               return [
                 isValidAddress,
@@ -218,13 +212,13 @@ export default class WalletSendForm extends Component<Props, State> {
         amount: {
           label: this.context.intl.formatMessage(messages.amountLabel),
           placeholder: `0${
-            this._getCurrentNumberFormat().decimalSeparator
+            this.getCurrentNumberFormat().decimalSeparator
           }${'0'.repeat(this.props.currencyMaxFractionalDigits)}`,
           value: null,
           validators: [
             async ({ field, form }) => {
               if (field.value === null) {
-                this._resetTransactionFee();
+                this.resetTransactionFee();
                 return [
                   false,
                   this.context.intl.formatMessage(messages.fieldIsRequired),
@@ -238,9 +232,9 @@ export default class WalletSendForm extends Component<Props, State> {
               const receiverValue = receiverField.value;
               const isReceiverValid = receiverField.isValid;
               if (isValid && isReceiverValid) {
-                this._calculateTransactionFee(receiverValue, amountValue);
+                this.calculateTransactionFee(receiverValue, amountValue)();
               } else {
-                this._resetTransactionFee();
+                this.resetTransactionFee();
               }
               return [
                 isValid,
@@ -324,7 +318,7 @@ export default class WalletSendForm extends Component<Props, State> {
                   {...amountFieldProps}
                   className="amount"
                   label={intl.formatMessage(messages.amountLabel)}
-                  numberFormat={this._getCurrentNumberFormat()}
+                  numberFormat={this.getCurrentNumberFormat()}
                   numberLocaleOptions={{
                     minimumFractionDigits: currencyMaxFractionalDigits,
                   }}
@@ -369,7 +363,7 @@ export default class WalletSendForm extends Component<Props, State> {
     );
   }
 
-  _resetTransactionFee() {
+  resetTransactionFee() {
     if (this._isMounted) {
       this.setState({
         isTransactionFeeCalculated: false,
@@ -379,66 +373,65 @@ export default class WalletSendForm extends Component<Props, State> {
     }
   }
 
-  _calculateTransactionFee(address: string, amountValue: string) {
-    if (this.calculateTransactionFeeTimeoutHandler) {
-      clearTimeout(this.calculateTransactionFeeTimeoutHandler);
-    }
-    this.calculateTransactionFeeTimeoutHandler = setTimeout(async () => {
-      this._isCalculatingFee = true;
-      const amount = formattedAmountToLovelace(amountValue);
-      const {
-        feeCalculationApiCallSeq: prevFeeCalculationApiCallSeq,
-      } = this.state;
-      this.setState((prevState) => ({
-        isCalculatingTransactionFee: true,
-        isTransactionFeeCalculated: false,
-        transactionFee: new BigNumber(0),
-        transactionFeeError: null,
-        feeCalculationApiCallSeq: prevState.feeCalculationApiCallSeq + 1,
-      }));
-      try {
-        const fee = await this.props.calculateTransactionFee(address, amount);
-        if (
-          this._isMounted &&
-          this.state.feeCalculationApiCallSeq - prevFeeCalculationApiCallSeq ===
-            1
-        ) {
-          this._isCalculatingFee = false;
-          this.setState({
-            isTransactionFeeCalculated: true,
-            transactionFee: fee,
-            transactionFeeError: null,
-          });
-        }
-      } catch (error) {
-        if (
-          this._isMounted &&
-          this.state.feeCalculationApiCallSeq - prevFeeCalculationApiCallSeq ===
-            1
-        ) {
-          const errorHasLink = !!get(error, ['values', 'linkLabel']);
-          const transactionFeeError = errorHasLink ? (
-            <FormattedHTMLMessageWithLink
-              message={error}
-              onExternalLinkClick={this.props.onExternalLinkClick}
-            />
-          ) : (
-            this.context.intl.formatMessage(error)
-          );
-          this._isCalculatingFee = false;
-          this.setState({
-            isTransactionFeeCalculated: false,
-            transactionFee: new BigNumber(0),
-            transactionFeeError,
-          });
-        }
-      } finally {
-        this.setState({ isCalculatingTransactionFee: false });
+  _calculateTransactionFee = async (address: string, amountValue: string) => {
+    this._isCalculatingFee = true;
+    const amount = formattedAmountToLovelace(amountValue);
+    const {
+      feeCalculationRequestQue: prevFeeCalculationRequestQue,
+    } = this.state;
+    this.setState((prevState) => ({
+      isCalculatingTransactionFee: true,
+      isTransactionFeeCalculated: false,
+      transactionFee: new BigNumber(0),
+      transactionFeeError: null,
+      feeCalculationRequestQue: prevState.feeCalculationRequestQue + 1,
+    }));
+    try {
+      const fee = await this.props.calculateTransactionFee(address, amount);
+      if (
+        this._isMounted &&
+        this.state.feeCalculationRequestQue - prevFeeCalculationRequestQue === 1
+      ) {
+        this._isCalculatingFee = false;
+        this.setState({
+          isTransactionFeeCalculated: true,
+          transactionFee: fee,
+          transactionFeeError: null,
+        });
       }
-    }, CALCULATE_TRANSACTION_FEE_DELAY);
-  }
+    } catch (error) {
+      if (
+        this._isMounted &&
+        this.state.feeCalculationRequestQue - prevFeeCalculationRequestQue === 1
+      ) {
+        const errorHasLink = !!get(error, ['values', 'linkLabel']);
+        const transactionFeeError = errorHasLink ? (
+          <FormattedHTMLMessageWithLink
+            message={error}
+            onExternalLinkClick={this.props.onExternalLinkClick}
+          />
+        ) : (
+          this.context.intl.formatMessage(error)
+        );
+        this._isCalculatingFee = false;
+        this.setState({
+          isTransactionFeeCalculated: false,
+          transactionFee: new BigNumber(0),
+          transactionFeeError,
+        });
+      }
+    } finally {
+      this.setState({ isCalculatingTransactionFee: false });
+    }
+  };
 
-  _getCurrentNumberFormat() {
+  calculateTransactionFee = (address: string, amountValue: string) =>
+    debounce(
+      () => this._calculateTransactionFee(address, amountValue),
+      CALCULATE_TRANSACTION_FEE_DELAY
+    );
+
+  getCurrentNumberFormat() {
     return NUMBER_FORMATS[this.props.currentNumberFormat];
   }
 }
