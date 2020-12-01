@@ -126,6 +126,7 @@ class EventObserver {
         if (!devicesMemo[device.path]) {
           logger.info('[HW-DEBUG] CONSTRUCTOR ADD');
           try {
+            // $FlowFixMe
             const transport = await TransportNodeHid.open(device.path);
             const AdaConnection = new AppAda(transport);
             devicesMemo[device.path] = {
@@ -427,12 +428,18 @@ export const handleHardwareWalletRequests = async (
         deviceId: deviceSerial.serial,
       });
     } catch (error) {
-      logger.info('[HW-DEBUG] ERROR in Cardano App');
-      if (error.name === 'DisconnectedDevice' && path) {
+      const isDisconnectError =
+        error.name === 'DisconnectedDevice' ||
+        (error.message && error.message.includes('Cannot write to hid device'));
+      const errorName = error.name || 'UknownErrorName';
+      const errorMessage = error.message || 'UknownErrorMessage';
+      logger.info('[HW-DEBUG] ERROR in Cardano App', { errorName, errorMessage, isDisconnectError, path });
+      if (isDisconnectError && path) {
         logger.info(
           '[HW-DEBUG] ERROR in Cardano App (CODE - DisconnectedDevice)'
         );
         // Mutate / change old connection and force reinitialization once method called again
+        // $FlowFixMe
         const newTransport = await TransportNodeHid.open(path);
         deviceConnection = new AppAda(newTransport);
 
