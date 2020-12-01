@@ -36,8 +36,11 @@ export default class PinCode extends Component<Props> {
     const { value, onChange } = this.props;
 
     let newValue = value.toString().split('');
-    newValue[key] = inputValue ? inputValue.toString() : '';
-    newValue = newValue.join('') !== '' ? parseInt(newValue.join(''), 10) : '';
+    newValue[key] =
+      inputValue !== null && inputValue !== undefined
+        ? inputValue.toString()
+        : '';
+    newValue = newValue.join('');
 
     if (onChange) {
       onChange(newValue);
