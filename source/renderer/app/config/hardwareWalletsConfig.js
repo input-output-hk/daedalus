@@ -1,4 +1,4 @@
-const { isMainnet } = global.environment;
+const { isMainnet, isTestnet } = global.environment;
 
 export const HARDENED_HEX = 0x80000000;
 export const HARDENED = 2147483648;
@@ -67,6 +67,6 @@ export const MINIMAL_TREZOR_FIRMWARE_VERSION = '2.3.3';
 export const isTrezorEnabled = true;
 export const isLedgerEnabled = true;
 
-export const isHardwareWalletSupportEnabled = (isTrezorEnabled || isLedgerEnabled);
+export const isHardwareWalletSupportEnabled = (isMainnet || isTestnet) && (isTrezorEnabled || isLedgerEnabled);
 
 export const isHardwareWalletIndicatorEnabled = false;
