@@ -428,12 +428,11 @@ export const handleHardwareWalletRequests = async (
         deviceId: deviceSerial.serial,
       });
     } catch (error) {
-      const isDisconnectError =
-        error.name === 'DisconnectedDevice' ||
-        (error.message &&
-          error.message.toLowerCase().includes('cannot write to hid device'));
       const errorName = error.name || 'UknownErrorName';
       const errorMessage = error.message || 'UknownErrorMessage';
+      const isDisconnectError =
+        errorName === 'DisconnectedDevice' ||
+        errorMessage.toLowerCase().includes('cannot write to hid device');
       logger.info('[HW-DEBUG] ERROR in Cardano App', {
         errorName,
         errorMessage,
@@ -444,6 +443,12 @@ export const handleHardwareWalletRequests = async (
         logger.info(
           '[HW-DEBUG] ERROR in Cardano App (CODE - DisconnectedDevice)'
         );
+
+        try {
+          const { transport } = devicesMemo[path];
+          await transport.close();
+        } catch (e) {} // eslint-disable-line
+
         // Mutate / change old connection and force reinitialization once method called again
         // $FlowFixMe
         const newTransport = await TransportNodeHid.open(path);
