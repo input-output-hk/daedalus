@@ -25,6 +25,7 @@ function typedRequest<Response>(
   httpOptions: RequestOptions,
   queryParams?: {},
   rawBodyParams?: any
+  // requestOptions?: { returnMeta: boolean }
 ): Promise<Response> {
   return new Promise((resolve, reject) => {
     const options: RequestOptions = Object.assign({}, httpOptions);
