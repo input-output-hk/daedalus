@@ -34,8 +34,9 @@ type Props = {
   isActive: boolean,
   inputFieldLabel: string,
   inputFieldValue: string,
-  onStartEditing: Function,
-  onStopEditing: Function,
+  inputFieldPlaceholder?: string,
+  onStartEditing?: Function,
+  onStopEditing?: Function,
   onCancelEditing: Function,
   onSubmit: Function,
   isValid: Function,
@@ -53,6 +54,11 @@ type State = {
 export default class InlineEditingInput extends Component<Props, State> {
   state = {
     isActive: false,
+  };
+
+  static defaultProps = {
+    onStartEditing: () => {},
+    onStopEditing: () => {},
   };
 
   static contextTypes = {
@@ -144,6 +150,7 @@ export default class InlineEditingInput extends Component<Props, State> {
       isActive,
       inputBlocked,
       maxLength,
+      inputFieldPlaceholder,
     } = this.props;
     let { successfullyUpdated } = this.props;
     const { intl } = this.context;
@@ -170,6 +177,7 @@ export default class InlineEditingInput extends Component<Props, State> {
       >
         <Input
           className={inputStyles}
+          placeholder={inputFieldPlaceholder || ''}
           themeOverrides={styles}
           type="text"
           maxLength={maxLength}

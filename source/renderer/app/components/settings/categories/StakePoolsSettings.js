@@ -3,11 +3,10 @@ import React, { Component } from 'react';
 import classnames from 'classnames';
 import { Select } from 'react-polymorph/lib/components/Select';
 import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
-import { Input } from 'react-polymorph/lib/components/Input';
-import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import { submitOnEnter } from '../../../utils/form';
+import { isValidUrl } from '../../../utils/validations';
+import InlineEditingInput from '../../widgets/forms/InlineEditingInput';
 import styles from './StakePoolsSettings.scss';
 import {
   INTERNAL_SMASH_SERVERS,
@@ -49,10 +48,22 @@ type Props = {
   onSelectSmashServerUrl: Function,
 };
 
+type State = {
+  isActive: boolean,
+  smashServerTypeInitial: SmashServerType,
+  smashServerUrlInitial: ?string,
+};
+
 @observer
 export default class StakePoolsSettings extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
+  };
+
+  state = {
+    isActive: false,
+    smashServerTypeInitial: this.props.smashServerType,
+    smashServerUrlInitial: this.props.smashServerUrl,
   };
 
   componentWillUnmount() {
@@ -63,28 +74,32 @@ export default class StakePoolsSettings extends Component<Props> {
     } = this.props;
 
     if (smashServerType === SMASH_SERVER_TYPES.CUSTOM && !smashServerUrl) {
-      onSelectSmashServerType({ smashServerType: SMASH_SERVER_TYPES.IOHK });
+      onSelectSmashServerType(SMASH_SERVER_TYPES.IOHK);
     }
   }
 
-  handleSubmit = () => {
-    console.log('handleSubmit');
-    // if (this.isConfirmDisabled()) {
-    //   return false;
-    // }
-
-    // return this.form.submit({
-    //   onSuccess: (form) => {
-    //     const { onConfirm } = this.props;
-    //     const { passphrase } = form.values();
-    //     onConfirm(passphrase);
-    //   },
-    //   onError: () => null,
-    // });
+  handleSubmit = (url: string) => {
+    if (!isValidUrl(url)) {
+      return false;
+    }
+    this.props.onSelectSmashServerUrl(url);
   };
 
-  handleSubmitOnEnter = (event: KeyboardEvent) =>
-    submitOnEnter(this.handleSubmit, event);
+  handleUrlStartEditing = () => {
+    this.setState({ isActive: true });
+  };
+
+  handleUrlStopEditing = () => {
+    this.setState({ isActive: false });
+  };
+
+  handleUrlCancelEditing = () => {
+    const { onSelectSmashServerUrl } = this.props;
+    const { smashServerUrlInitial } = this.state;
+    onSelectSmashServerUrl(smashServerUrlInitial);
+  };
+
+  handleUrlIsValid = (url: string) => isValidUrl(url);
 
   render() {
     const {
@@ -93,6 +108,7 @@ export default class StakePoolsSettings extends Component<Props> {
       onSelectSmashServerType,
       onSelectSmashServerUrl,
     } = this.props;
+    const { isActive, smashServerUrlInitial } = this.state;
     const { intl } = this.context;
 
     const smashSelectOptions = [
@@ -106,6 +122,11 @@ export default class StakePoolsSettings extends Component<Props> {
       },
     ];
 
+    const successfullyUpdated = smashServerUrl !== smashServerUrlInitial;
+
+    // @SMASH TODO
+    const validationErrorMessage = 'Something wrong is not right 🤔';
+
     return (
       <div className={styles.component}>
         <Select
@@ -113,19 +134,28 @@ export default class StakePoolsSettings extends Component<Props> {
           value={smashServerType}
           options={smashSelectOptions}
           onChange={(smashServerType: SmashServerType) => {
-            onSelectSmashServerType({ smashServerType });
+            onSelectSmashServerType(smashServerType);
           }}
           skin={SelectSkin}
           className={styles.select}
           optionHeight={50}
         />
         {smashServerType === SMASH_SERVER_TYPES.CUSTOM && (
-          <Input
-            value={smashServerUrl || ''}
-            label={intl.formatMessage(messages.smashURLSelectLabel)}
-            placeholder={intl.formatMessage(messages.smashUrlSelectPlaceholder)}
-            skin={InputSkin}
-            onKeyPress={this.handleSubmitOnEnter}
+          <InlineEditingInput
+            className={styles.smashServerUrl}
+            inputFieldLabel={intl.formatMessage(messages.smashURLSelectLabel)}
+            inputFieldValue={smashServerUrl || ''}
+            inputFieldPlaceholder={intl.formatMessage(
+              messages.smashUrlSelectPlaceholder
+            )}
+            onStartEditing={this.handleUrlStartEditing}
+            onStopEditing={this.handleUrlStopEditing}
+            onCancelEditing={this.handleUrlCancelEditing}
+            onSubmit={this.handleSubmit}
+            isValid={this.handleUrlIsValid}
+            validationErrorMessage={validationErrorMessage}
+            successfullyUpdated={successfullyUpdated}
+            isActive={isActive}
           />
         )}
       </div>

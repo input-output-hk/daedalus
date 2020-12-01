@@ -1,7 +1,6 @@
 .component {
-  :global {
-    .SimpleFormField_root:not(:first-child) {
-      margin-top: 20px;
-    }
-  }
+  margin-bottom: 20px;
+}
+.smashServerUrl {
+  margin-top: 20px;
 }
