@@ -78,6 +78,7 @@ export default class VotingAddDialogContainer extends Component<Props, State> {
   componentWillUnmount() {
     this._isMounted = false;
     this.props.stores.voting.votingSendTransactionRequest.reset();
+    this.props.stores.voting.signMetadataRequest.reset();
     this.props.actions.voting.resetVotingRegistration.trigger();
   }
 
@@ -114,6 +115,7 @@ export default class VotingAddDialogContainer extends Component<Props, State> {
 
   handleRollBack = () => {
     this.props.stores.voting.votingSendTransactionRequest.reset();
+    this.props.stores.voting.signMetadataRequest.reset();
     this.props.actions.voting.resetVotingRegistration.trigger();
     this.setState({ activeStep: 1 });
   };
@@ -161,6 +163,7 @@ export default class VotingAddDialogContainer extends Component<Props, State> {
 
     const {
       votingSendTransactionRequest,
+      signMetadataRequest,
       isVotingRegistrationTransactionPending,
       qrCode,
       countdownRemaining,
@@ -199,7 +202,11 @@ export default class VotingAddDialogContainer extends Component<Props, State> {
             votingSendTransactionRequest.isExecuting ||
             isVotingRegistrationTransactionPending
           }
-          transactionError={votingSendTransactionRequest.error}
+          transactionError={
+            votingSendTransactionRequest.error
+              ? votingSendTransactionRequest.error
+              : signMetadataRequest.error
+          }
           countdownRemaining={countdownRemaining}
           onExternalLinkClick={openExternalLink}
         />

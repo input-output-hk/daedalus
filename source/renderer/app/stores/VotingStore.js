@@ -16,10 +16,7 @@ import {
 } from '../config/votingConfig';
 
 // Voting Types
-import type {
-  GetWalletKeyRequest,
-  CreateWalletSignatureRequest,
-} from '../api/voting/types';
+import type { GetWalletKeyRequest } from '../api/voting/types';
 import type { GetTransactionRequest } from '../api/transactions/types';
 
 export default class VotingStore extends Store {
@@ -47,6 +44,11 @@ export default class VotingStore extends Store {
   @observable
   votingSendTransactionRequest: Request<WalletTransaction> = new Request(
     this.api.ada.createVotingRegistrationTransaction
+  );
+
+  @observable
+  signMetadataRequest: Request<Buffer> = new Request(
+    this.api.ada.createWalletSignature
   );
 
   // ACTIONS
@@ -127,7 +129,7 @@ export default class VotingStore extends Store {
 
       stakeKey = await this.getHexFromBech32(stakeKey);
 
-      const signature = await this._createWalletSignatureRequest({
+      const signature = await this.signMetadataRequest.execute({
         walletId,
         passphrase,
         votingKey,
@@ -172,15 +174,6 @@ export default class VotingStore extends Store {
     const response = await this.api.ada.getWalletKey(request);
     if (!response)
       throw new Error('Could not get the public key of the wallet.');
-    return response;
-  };
-
-  // Create wallet signature
-  _createWalletSignatureRequest = async (
-    request: CreateWalletSignatureRequest
-  ): Promise<Buffer> => {
-    const response = await this.api.ada.createWalletSignature(request);
-    if (!response) throw new Error('Could not generate a wallet signature.');
     return response;
   };
 
