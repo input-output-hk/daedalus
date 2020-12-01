@@ -430,10 +430,16 @@ export const handleHardwareWalletRequests = async (
     } catch (error) {
       const isDisconnectError =
         error.name === 'DisconnectedDevice' ||
-        (error.message && error.message.includes('Cannot write to hid device'));
+        (error.message &&
+          error.message.toLowerCase().includes('cannot write to hid device'));
       const errorName = error.name || 'UknownErrorName';
       const errorMessage = error.message || 'UknownErrorMessage';
-      logger.info('[HW-DEBUG] ERROR in Cardano App', { errorName, errorMessage, isDisconnectError, path });
+      logger.info('[HW-DEBUG] ERROR in Cardano App', {
+        errorName,
+        errorMessage,
+        isDisconnectError,
+        path,
+      });
       if (isDisconnectError && path) {
         logger.info(
           '[HW-DEBUG] ERROR in Cardano App (CODE - DisconnectedDevice)'
