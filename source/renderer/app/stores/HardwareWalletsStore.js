@@ -1067,7 +1067,7 @@ export default class HardwareWalletsStore extends Store {
         inputs: inputsData,
         outputs: outputsData,
         fee: formattedAmountToLovelace(fee.toString()).toString(),
-        ttl: '15000000',
+        ttl: '150000000',
         networkId: HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId,
         protocolMagic: HW_SHELLEY_CONFIG.NETWORK.MAINNET.protocolMagic,
         certificates: certificatesData,
