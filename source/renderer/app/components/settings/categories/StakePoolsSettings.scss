@@ -1,0 +1,7 @@
+.component {
+  :global {
+    .SimpleFormField_root:not(:first-child) {
+      margin-top: 20px;
+    }
+  }
+}

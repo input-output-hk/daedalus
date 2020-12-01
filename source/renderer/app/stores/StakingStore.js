@@ -20,7 +20,6 @@ import type {
   RewardForIncentivizedTestnet,
   JoinStakePoolRequest,
   GetDelegationFeeRequest,
-  QuitStakePoolRequest,
 } from '../api/staking/types';
 import Wallet from '../domains/Wallet';
 import StakePool from '../domains/StakePool';
@@ -29,7 +28,10 @@ import LocalizableError from '../i18n/LocalizableError';
 import { showSaveDialogChannel } from '../ipc/show-file-dialog-channels';
 import REWARDS from '../config/stakingRewards.dummy.json';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
-import type { RedeemItnRewardsStep } from '../types/stakingTypes';
+import type {
+  RedeemItnRewardsStep,
+  SmashServerType,
+} from '../types/stakingTypes';
 import type { CsvFileContent } from '../../../common/types/csv-request.types';
 
 export default class StakingStore extends Store {
@@ -39,6 +41,9 @@ export default class StakingStore extends Store {
   @observable selectedDelegationWalletId = null;
   @observable stake = INITIAL_DELEGATION_FUNDS;
   @observable isRanking = false;
+  // @SMASH TODO: Leave it null until the API response
+  @observable smashServerType: ?SmashServerType = 'iohk'; // null;
+  @observable smashServerUrl: ?string = null;
 
   /* ----------  Redeem ITN Rewards  ---------- */
   @observable redeemStep: ?RedeemItnRewardsStep = null;
@@ -87,6 +92,8 @@ export default class StakingStore extends Store {
     stakingActions.fakeStakePoolsLoading.listen(this._setFakePoller);
     stakingActions.updateDelegatingStake.listen(this._setStake);
     stakingActions.rankStakePools.listen(this._rankStakePools);
+    stakingActions.selectSmashServerType.listen(this._selectSmashServerType);
+    stakingActions.selectSmashServerUrl.listen(this._selectSmashServerUrl);
     stakingActions.selectDelegationWallet.listen(
       this._setSelectedDelegationWalletId
     );
@@ -130,6 +137,22 @@ export default class StakingStore extends Store {
   @action _rankStakePools = () => {
     this.isRanking = true;
     this.getStakePoolsData();
+  };
+
+  @action _selectSmashServerType = ({
+    smashServerType,
+  }: {
+    smashServerType: SmashServerType,
+  }) => {
+    this.smashServerType = smashServerType;
+  };
+
+  @action _selectSmashServerUrl = ({
+    smashServerUrl,
+  }: {
+    smashServerUrl: string,
+  }) => {
+    this.smashServerUrl = smashServerUrl;
   };
 
   @action _joinStakePool = async (request: JoinStakePoolRequest) => {

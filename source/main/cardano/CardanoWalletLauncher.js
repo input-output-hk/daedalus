@@ -59,6 +59,7 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
     isStaging,
     smashUrl,
   } = walletOpts;
+  console.log('smashUrl ------------', smashUrl);
   // TODO: Update launcher config to pass number
   const syncToleranceSeconds = parseInt(syncTolerance.replace('s', ''), 10);
 

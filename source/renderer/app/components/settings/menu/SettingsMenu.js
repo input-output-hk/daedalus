@@ -12,6 +12,11 @@ const messages = defineMessages({
     defaultMessage: '!!!General',
     description: 'Label for the "General" link in the settings menu.',
   },
+  stakePools: {
+    id: 'settings.menu.stakePools.link.label',
+    defaultMessage: '!!!Stake Pools',
+    description: 'Label for the "Support" link in the settings menu.',
+  },
   support: {
     id: 'settings.menu.support.link.label',
     defaultMessage: '!!!Support',
@@ -53,6 +58,12 @@ export default class SettingsMenu extends Component<Props> {
             onClick={() => onItemClick(ROUTES.SETTINGS.GENERAL)}
             active={isActiveItem(ROUTES.SETTINGS.GENERAL)}
             className="general"
+          />
+          <SettingsMenuItem
+            label={intl.formatMessage(messages.stakePools)}
+            onClick={() => onItemClick(ROUTES.SETTINGS.STAKE_POOLS)}
+            active={isActiveItem(ROUTES.SETTINGS.STAKE_POOLS)}
+            className="stakePools"
           />
           {!isFlight && !global.isShelleyTestnet && (
             <SettingsMenuItem
