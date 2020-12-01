@@ -1,5 +1,6 @@
 // @flow
 import { request } from '../../utils/request';
+import type { RequestConfig } from '../../common/types';
 
 export const constructAddress = (
   config: RequestConfig,

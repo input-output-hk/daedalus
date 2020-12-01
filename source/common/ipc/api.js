@@ -390,6 +390,12 @@ export type ManageAppUpdateMainResponse = {
   },
 };
 
+export type DeriveXpubRendererRequestType = {
+  parentXpubHex: string,
+  lastIndex: number,
+  derivationScheme: number,
+};
+
 /**
  * Channel for introspecting an address
  */
@@ -418,7 +424,7 @@ export type getExtendedPublicKeyRendererRequest = HardwareWalletExtendedPublicKe
 export type getExtendedPublicKeyMainResponse = HardwareWalletExtendedPublicKeyResponse;
 
 export const GET_CARDANO_ADA_APP_CHANNEL = 'GET_CARDANO_ADA_APP_CHANNEL';
-export type getCardanoAdaAppRendererRequest = void;
+export type getCardanoAdaAppRendererRequest = { path: ?string };
 export type getCardanoAdaAppMainResponse = HardwareWalletCardanoAdaAppResponse;
 
 export const GET_HARDWARE_WALLET_CONNECTION_CHANNEL =
@@ -447,8 +453,8 @@ export type handleInitLedgerConnectRendererRequest = void;
 export type handleInitLedgerConnectMainResponse = void;
 
 export const DERIVE_XPUB_CHANNEL = 'DERIVE_XPUB_CHANNEL';
-export type deriveXpubRendererRequest = void;
-export type deriveXpubMainResponse = void;
+export type deriveXpubRendererRequest = DeriveXpubRendererRequestType;
+export type deriveXpubMainResponse = string;
 
 export const RESET_ACTION_TREZOR_CHANNEL = 'RESET_ACTION_TREZOR_CHANNEL';
 export type resetTrezorActionRendererRequest = void;

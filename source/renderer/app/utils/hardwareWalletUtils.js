@@ -11,10 +11,10 @@ export const CERTIFICATE_TYPE = {
 };
 
 export const PATH_ROLE_IDENTITY = {
-  0: 'utxo_external', // address
-  1: 'utxo_internal', // change
-  2: 'mutable_account', // stake
-  3: 'multisig_script', // script
+  role0: 'utxo_external', // address
+  role1: 'utxo_internal', // change
+  role2: 'mutable_account', // stake
+  role3: 'multisig_script', // script
 };
 
 // Helpers
@@ -42,7 +42,7 @@ export const getParamsFromPath = (derivationPath: Array<string>) => {
   return {
     role: pathParams[0],
     index: pathParams[1],
-    roleIdentity: PATH_ROLE_IDENTITY[pathParams[0]],
+    roleIdentity: PATH_ROLE_IDENTITY[`role${pathParams[0]}`],
   };
 };
 

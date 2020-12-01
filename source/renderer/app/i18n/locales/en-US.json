@@ -642,7 +642,7 @@
   "wallet.dialog.passwordTooltip": "<b>We recommend using a password manager app</b> to manage and store your spending password. Generate a unique password using a password manager and paste it here. Passwords should never be reused.",
   "wallet.hardware.deviceStatus.connecting": "Connect your device and enter your PIN to unlock it",
   "wallet.hardware.deviceStatus.connecting.failed": "Unable to detect your hardware wallet device.",
-  "wallet.hardware.deviceStatus.connecting.known": "Connect the \"{walletName}\" device",
+  "wallet.hardware.deviceStatus.connecting.known": "Connect the \"{walletName}\" device and enter your PIN to unlock it",
   "wallet.hardware.deviceStatus.exportingPublicKeyError": "Disconnect and reconnect your hardware wallet to restart the process.",
   "wallet.hardware.deviceStatus.exporting_public_key": "Export the public key on your device",
   "wallet.hardware.deviceStatus.exporting_public_key_failed": "Exporting the public key failed",

@@ -62,11 +62,19 @@ export type TransportDevice = {
   firmwareVersion: ?string,
 };
 
-export type Certificate = {|
+/* export type Certificate = {|
   type: CertificateType,
   path: BIP32Path,
   poolKeyHashHex: ?string,
-|};
+|}; */
+
+export type Certificate = {
+  address: string,
+  type: string,
+  accountAddress: string,
+  poolHash: ?string,
+  encodeCBOR: Function,
+};
 
 export type Withdrawal = {|
   path: BIP32Path,
@@ -153,6 +161,7 @@ export type HardwareWalletExtendedPublicKeyRequest = {
 export type HardwareWalletExtendedPublicKeyResponse = {
   publicKeyHex: string,
   chainCodeHex: string,
+  deviceId?: string,
 };
 
 export type HardwareWalletCardanoAdaAppResponse = {
@@ -175,6 +184,7 @@ export type LedgerSignTransactionRequest = {
   withdrawals: Array<?Withdrawal>, // TODO - add once withdrawals defined
   metadataHashHex: ?string, // TODO - add once metadata defined
   reset?: boolean,
+  devicePath: ?string,
 };
 
 export type TrezorSignTransactionRequest = {
@@ -186,7 +196,7 @@ export type TrezorSignTransactionRequest = {
   protocolMagic: number,
   certificates: Array<?Certificate>,
   reset?: boolean,
-  devicePath: ?string,
+  devicePath: string,
 };
 
 export type LedgerSignTransactionResponse = {

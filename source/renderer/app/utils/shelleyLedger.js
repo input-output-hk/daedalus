@@ -124,7 +124,11 @@ export const ShelleyTxOutput = (output: CoinSelectionOutput) => {
   };
 };
 
-export const ShelleyTxCert = (cert) => {
+export const ShelleyTxCert = (cert: {
+  type: string,
+  accountAddress: string,
+  pool: ?string,
+}) => {
   const { type, accountAddress, pool } = cert;
   let hash;
   let poolHash;
@@ -139,9 +143,9 @@ export const ShelleyTxCert = (cert) => {
       .slice(1);
     const account = [0, accountAddressHash];
     const encodedCertsTypes = {
-      0: [type, account],
-      1: [type, account],
-      2: [type, account, hash],
+      [0]: [type, account],
+      [1]: [type, account],
+      [2]: [type, account, hash],
     };
     return encoder.pushAny(encodedCertsTypes[type]);
   }
@@ -276,6 +280,7 @@ export const CachedDeriveXpubFactory = (deriveXpubHardenedFn: Function) => {
         lastIndex,
         derivationScheme: derivationScheme.ed25519Mode,
       });
+      // $FlowFixMe
       return utils.hex_to_buf(derivedXpub);
     } catch (e) {
       throw e;
@@ -345,7 +350,7 @@ export const prepareTxAux = ({
 
 export const prepareBody = (
   unsignedTx: ShelleyTxAuxType,
-  txWitnesses: Map<number, ShelleyTxWitnessType>
+  txWitnesses: any // @TODO - figure out fallback if is Map<number, ShelleyTxWitnessType> presented as empty array
 ) => {
   const signedTransactionStructure = ShelleySignedTransactionStructured(
     unsignedTx,
