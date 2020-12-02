@@ -452,12 +452,19 @@ export const handleHardwareWalletRequests = async (
       if (path && !isDeviceDisconnected) {
         const deviceMemo = devicesMemo[path];
         const { device: oldDevice } = deviceMemo;
+
+        // $FlowFixMe
+        const newTrasportList = await TransportNodeHid.list();
         const deviceList = getDevices();
+
         const newDevice = find(deviceList, ['path', path]);
-        const hasDeviceChanged = !isEqual(oldDevice, newDevice);
+        const hasDeviceChanged = newDevice && !isEqual(oldDevice, newDevice);
         logger.info('[HW-DEBUG] ERROR in Cardano App (Device change check)', {
           isDisconnectError,
           hasDeviceChanged,
+          newTrasportList,
+          deviceList,
+          deviceListLength: deviceList.length,
           oldDevice,
           newDevice,
           path,
@@ -465,7 +472,7 @@ export const handleHardwareWalletRequests = async (
 
         // Launching Cardano App changes the device productId
         // and we need to close existing transport and open a new one
-        if (hasDeviceChanged && newDevice) {
+        if (hasDeviceChanged) {
           const { transport: oldTransport } = deviceMemo;
 
           try {
