@@ -85,18 +85,18 @@ export default class VotingAddStepsEnterPinCode extends Component<Props> {
       fields: {
         pinCode: {
           type: 'password',
-          value: '',
+          value: [],
           validators: [
             ({ field, form }) => {
+              const value = field.value ? field.value.join('') : '';
               const repeatPinCodeField = form.$('repeatPinCode');
-              const isRepeatPinCodeFieldSet =
-                field.value.toString().length === PIN_CODE_LENGTH;
+              const isRepeatPinCodeFieldSet = value.length === PIN_CODE_LENGTH;
               repeatPinCodeField.validate({
                 showErrors: isRepeatPinCodeFieldSet,
               });
 
               return [
-                isValidPinCode(field.value, PIN_CODE_LENGTH),
+                isValidPinCode(value, PIN_CODE_LENGTH),
                 this.context.intl.formatMessage(messages.invalidPinCode),
               ];
             },
@@ -104,12 +104,15 @@ export default class VotingAddStepsEnterPinCode extends Component<Props> {
         },
         repeatPinCode: {
           type: 'password',
-          value: '',
+          value: [],
           validators: [
             ({ field, form }) => {
-              const pinCode = form.$('pinCode').value;
+              const value = field.value ? field.value.join('') : '';
+              const pinCode = form.$('pinCode').value
+                ? form.$('pinCode').value.join('')
+                : '';
               return [
-                isValidRepeatPinCode(pinCode, field.value),
+                isValidRepeatPinCode(pinCode, value),
                 this.context.intl.formatMessage(messages.invalidRepeatPinCode),
               ];
             },
@@ -130,7 +133,7 @@ export default class VotingAddStepsEnterPinCode extends Component<Props> {
     this.form.submit({
       onSuccess: (form) => {
         const { pinCode } = form.values();
-        this.props.onSetPinCode(pinCode);
+        this.props.onSetPinCode(pinCode.join(''));
       },
     });
   };
@@ -180,7 +183,7 @@ export default class VotingAddStepsEnterPinCode extends Component<Props> {
               {...repeatPinCodeFieldProps}
               label={repeatPinCodeLabel}
               onChange={(...args) => repeatPinCodeFieldProps.onChange(...args)}
-              autoFocus={pinCodeField.isValid}
+              autoFocus={pinCodeField.isValid && !repeatPinCodeField.isValid}
               error={repeatPinCodeField.error}
             />
           </div>

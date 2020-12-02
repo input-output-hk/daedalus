@@ -19,7 +19,7 @@ type Props = $Exact<{
   label: string,
   length: number,
   disabled: boolean,
-  value: number,
+  value: Array<string>,
   error: string | null,
 }>;
 
@@ -27,39 +27,46 @@ export default class PinCode extends Component<Props> {
   static defaultProps = {
     length: 4,
     disabled: false,
+    value: [],
   };
 
   inputsRef = [];
   focusKey = 0;
+  add = false;
 
   onChange = (inputValue: ?number, key: number) => {
     const { value, onChange } = this.props;
-
-    let newValue = value.toString().split('');
-    newValue[key] =
+    const inputNewValue =
       inputValue !== null && inputValue !== undefined
         ? inputValue.toString()
         : '';
-    newValue = newValue.join('');
 
-    if (onChange) {
-      onChange(newValue);
+    if (
+      !Object.prototype.hasOwnProperty.call(value, key) ||
+      value[key] === '' ||
+      inputNewValue === ''
+    ) {
+      const newValue = value;
+      newValue[key] = inputNewValue;
+      if (onChange) {
+        onChange(newValue);
+      }
+      this.focusKey = key;
+      this.add = inputValue !== null && inputValue !== undefined;
     }
   };
 
   componentDidUpdate() {
     const { value, length } = this.props;
-    const key = value.toString().length;
+    const key = value.join('').length;
     if (key > 0 && key < length) {
-      const inputFocusKey = this.focusKey >= key ? key - 1 : key;
+      const inputFocusKey = this.add ? this.focusKey + 1 : this.focusKey - 1;
       if (
         Object.prototype.hasOwnProperty.call(this.inputsRef, inputFocusKey) &&
         this.inputsRef[inputFocusKey]
       )
         this.inputsRef[inputFocusKey].focus();
-      this.focusKey = key;
     }
-    if (key === 0) this.focusKey = 0;
   }
 
   generatePinCodeInput = () => {
@@ -82,7 +89,6 @@ export default class PinCode extends Component<Props> {
     return (
       <div className={styles.pinCodeInput}>
         {map(Array(length).fill(), (action, key) => {
-          const inputValue = value ? value.toString().split('') : undefined;
           return (
             <NumericInput
               ref={(input) => {
@@ -101,13 +107,13 @@ export default class PinCode extends Component<Props> {
               themeId={IDENTIFIERS.INPUT}
               skin={InputSkin}
               onChange={(number) => this.onChange(number, key)}
-              value={inputValue ? inputValue[key] : undefined}
+              value={value ? value[key] : undefined}
               autoFocus={autoFocus && key === 0}
               disabled={
                 disabled ||
                 (key !== 0 &&
-                  (!inputValue ||
-                    !Object.prototype.hasOwnProperty.call(inputValue, key - 1)))
+                  (!value ||
+                    !Object.prototype.hasOwnProperty.call(value, key - 1)))
               }
             />
           );

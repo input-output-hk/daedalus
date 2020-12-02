@@ -77,9 +77,9 @@ export const isValidAmountInLovelaces = (value: string) => {
   return numericValue.gte(minValue) && numericValue.lte(maxValue);
 };
 
-export const isValidPinCode = (pinCode: number, length: number): boolean => {
-  return pinCode.toString().length === length;
+export const isValidPinCode = (pinCode: string, length: number): boolean => {
+  return pinCode.length === length;
 };
 
-export const isValidRepeatPinCode = (pinCode: number, repeatPinCode: number) =>
+export const isValidRepeatPinCode = (pinCode: string, repeatPinCode: string) =>
   pinCode === repeatPinCode;
