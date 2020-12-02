@@ -774,7 +774,9 @@ export default class HardwareWalletsStore extends Store {
         }
       }
     } catch (error) {
-      logger.debug('[HW-DEBUG] HWStore - Cardano app fetching error');
+      logger.debug('[HW-DEBUG] HWStore - Cardano app fetching error', {
+        error,
+      });
       if (error.code === 'DEVICE_NOT_CONNECTED') {
         // Special case. E.g. device unplugged before cardano app is opened
         // Stop poller and re-initiate connecting state / don't kill devices listener
@@ -786,6 +788,25 @@ export default class HardwareWalletsStore extends Store {
             this.isListeningForDevice = true;
           }
         );
+      } else if (error.code === 'DEVICE_PATH_CHANGED' && error.path) {
+        // Special case on Windows where device path changes after opening Cardano app
+        // Stop poller and re-initiate connecting state / don't kill devices listener
+        this.stopCardanoAdaAppFetchPoller();
+
+        const pairedDevice = find(
+          this.hardwareWalletDevices,
+          (recognizedDevice) => recognizedDevice.path === path
+        );
+
+        await this._setHardwareWalletDevice({
+          deviceId: pairedDevice.id,
+          data: {
+            ...pairedDevice,
+            path: error.path,
+          },
+        });
+
+        this.getCardanoAdaApp({ path: error.path, walletId });
       }
       throw error;
     }

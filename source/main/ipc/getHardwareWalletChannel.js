@@ -493,6 +493,11 @@ export const handleHardwareWalletRequests = async (
           transport: newTransport,
           AdaConnection: newDeviceConnection,
         };
+
+        if (hasPathChanged) {
+          // eslint-disable-next-line
+          throw { code: 'DEVICE_PATH_CHANGED', path: newPath };
+        }
       }
       throw error;
     }
