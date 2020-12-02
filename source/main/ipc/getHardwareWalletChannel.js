@@ -433,21 +433,30 @@ export const handleHardwareWalletRequests = async (
         deviceId: deviceSerial.serial,
       });
     } catch (error) {
+      const errorCode = error.code || '';
       const errorName = error.name || 'UknownErrorName';
       const errorMessage = error.message || 'UknownErrorMessage';
+      const isDeviceDisconnected = errorCode === 'DEVICE_NOT_CONNECTED';
+      const isDisconnectError = errorName === 'DisconnectedDevice';
+      //  errorMessage.toLowerCase().includes('cannot open device with path') ||
+      //  errorMessage.toLowerCase().includes('cannot write to hid device') ||
+      //  errorMessage.toLowerCase().includes('cannot write to closed device');
       logger.info('[HW-DEBUG] ERROR in Cardano App', {
         errorName,
         errorMessage,
         path,
+        isDeviceDisconnected,
+        isDisconnectError,
       });
 
-      if (path && error.code !== 'DEVICE_NOT_CONNECTED') {
+      if (path && !isDeviceDisconnected) {
         const deviceMemo = devicesMemo[path];
         const { device: oldDevice } = deviceMemo;
         const deviceList = getDevices();
         const newDevice = find(deviceList, ['path', path]);
         const hasDeviceChanged = !isEqual(oldDevice, newDevice);
         logger.info('[HW-DEBUG] ERROR in Cardano App (Device change check)', {
+          isDisconnectError,
           hasDeviceChanged,
           oldDevice,
           newDevice,
@@ -456,7 +465,7 @@ export const handleHardwareWalletRequests = async (
 
         // Launching Cardano App changes the device productId
         // and we need to close existing transport and open a new one
-        if ((hasDeviceChanged && newDevice) || errorName === 'DisconnectedDevice') {
+        if ((hasDeviceChanged && newDevice) || isDisconnectError) {
           const { transport: oldTransport } = deviceMemo;
 
           try {
