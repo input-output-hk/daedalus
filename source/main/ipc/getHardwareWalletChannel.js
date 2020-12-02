@@ -11,7 +11,7 @@ import TrezorConnect, {
   TRANSPORT_EVENT,
   // $FlowFixMe
 } from 'trezor-connect';
-import { get, omit, last, find, isEqual } from 'lodash';
+import { get, omit, last, find, isEqual, includes } from 'lodash';
 import { derivePublic as deriveChildXpub } from 'cardano-crypto.js';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import {
@@ -448,17 +448,16 @@ export const handleHardwareWalletRequests = async (
         isDeviceDisconnected,
         isDisconnectError,
       });
-
       if (path && !isDeviceDisconnected) {
         const deviceMemo = devicesMemo[path];
         const { device: oldDevice } = deviceMemo;
-
         // $FlowFixMe
         const newTrasportList = await TransportNodeHid.list();
         const deviceList = getDevices();
-
-        const newDevice = find(deviceList, ['path', path]);
-        const hasDeviceChanged = newDevice && !isEqual(oldDevice, newDevice);
+        const hasPathChanged = !includes(newTrasportList, path);
+        const newPath = hasPathChanged ? last(newTrasportList) : path;
+        const newDevice = find(deviceList, ['path', newPath]);
+        const hasDeviceChanged = newDevice && (hasPathChanged || !isEqual(oldDevice, newDevice));
         logger.info('[HW-DEBUG] ERROR in Cardano App (Device change check)', {
           isDisconnectError,
           hasDeviceChanged,
@@ -467,34 +466,35 @@ export const handleHardwareWalletRequests = async (
           deviceListLength: deviceList.length,
           oldDevice,
           newDevice,
+          hasPathChanged,
           path,
+          newPath,
         });
-
         // Launching Cardano App changes the device productId
         // and we need to close existing transport and open a new one
         if (hasDeviceChanged) {
           const { transport: oldTransport } = deviceMemo;
-
           try {
             await oldTransport.close();
           } catch (e) {} // eslint-disable-line
-
           // $FlowFixMe
-          const newTransport = await TransportNodeHid.open(path);
+          const newTransport = await TransportNodeHid.open(newPath);
           const newDeviceConnection = new AppAda(newTransport);
-
           // TODO: remove
           deviceConnection = newDeviceConnection;
-
+          // Remove old path if changed
+          if (hasPathChanged) {
+            logger.info('[HW-DEBUG] ERROR in Cardano App (Remove old path)');
+            devicesMemo = omit(devicesMemo, [path]);
+          }
           // Update devicesMemo
-          devicesMemo[path] = {
+          devicesMemo[newPath] = {
             device: newDevice,
             transport: newTransport,
             AdaConnection: newDeviceConnection,
           };
         }
       }
-
       throw error;
     }
   });
