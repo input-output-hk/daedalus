@@ -1207,6 +1207,7 @@ export const createDaedalusComponentsTheme = (
       '--theme-voting-info-background-color': `${chroma(
         background.primary.darkest
       )}`,
+      '--theme-voting-info-font-color': `${chroma(background.primary.darkest)}`,
       '--theme-voting-font-color-accent': `${focus}`,
       '--theme-voting-font-color-regular': `${text.primary}`,
       '--theme-voting-font-color-light': `${chroma(text.primary).alpha(0.7)}`,

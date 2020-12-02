@@ -960,6 +960,7 @@ export const DARK_CARDANO_THEME_OUTPUT = {
   voting: {
     '--theme-voting-info-icon-color': '#ffffff',
     '--theme-voting-info-background-color': 'rgba(255,255,255,0.1)',
+    '--theme-voting-info-font-color': '#ffffff',
     '--theme-voting-font-color-accent': '#ffffff',
     '--theme-voting-font-color-regular': '#ffffff',
     '--theme-voting-font-color-light': '#ffffffb3',

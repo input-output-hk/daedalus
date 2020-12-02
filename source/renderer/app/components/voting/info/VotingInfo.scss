@@ -38,17 +38,13 @@
       margin: 20px auto 40px auto;
       width: 72px;
       height: 72px;
-      svg {
-        path {
-          fill: var(--theme-voting-info-icon-color);
-        }
-      }
     }
     p {
       @extend %regularText;
       color: var(--theme-voting-font-color-light);
     }
     .number {
+      color: var(--theme-voting-info-font-color);
       @extend %regularText;
       background: var(--theme-voting-info-background-color);
       border-radius: 100%;
@@ -64,11 +60,6 @@
       .stepAppStoreIcon {
         width: 100px;
         cursor: pointer;
-        svg {
-          path {
-            fill: var(--theme-voting-info-icon-color);
-          }
-        }
       }
     }
   }
