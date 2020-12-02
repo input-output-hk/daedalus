@@ -432,6 +432,7 @@ export const handleHardwareWalletRequests = async (
       const errorMessage = error.message || 'UknownErrorMessage';
       const isDisconnectError =
         errorName === 'DisconnectedDevice' ||
+        errorMessage.toLowerCase().includes('cannot open device with path') ||
         errorMessage.toLowerCase().includes('cannot write to hid device') ||
         errorMessage.toLowerCase().includes('cannot write to closed device');
       logger.info('[HW-DEBUG] ERROR in Cardano App', {
@@ -446,6 +447,9 @@ export const handleHardwareWalletRequests = async (
         );
 
         if (
+          !errorMessage
+            .toLowerCase()
+            .includes('cannot open device with path') &&
           !errorMessage.toLowerCase().includes('cannot write to closed device')
         ) {
           try {
