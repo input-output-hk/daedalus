@@ -9,7 +9,7 @@ import { isValidUrl } from '../../../utils/validations';
 import InlineEditingInput from '../../widgets/forms/InlineEditingInput';
 import styles from './StakePoolsSettings.scss';
 import {
-  INTERNAL_SMASH_SERVERS,
+  SMASH_SERVERS_LIST,
   SMASH_SERVER_TYPES,
 } from '../../../config/stakingConfig';
 import type { SmashServerType } from '../../../types/stakingTypes';
@@ -112,7 +112,7 @@ export default class StakePoolsSettings extends Component<Props> {
     const { intl } = this.context;
 
     const smashSelectOptions = [
-      ...INTERNAL_SMASH_SERVERS.map(({ name: label, id: value }) => ({
+      ...Object.entries(SMASH_SERVERS_LIST).map(([id, { name: label }]) => ({
         label,
         value,
       })),

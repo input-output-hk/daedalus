@@ -4,25 +4,27 @@ import type {
   SmashServerType,
 } from '../types/stakingTypes';
 
-// @SMASH TODO: Get CARDANO & IOHK servers URI
-export const SMASH_SERVER_TYPES: SmashServerType = {
-  IOHK: 'iohk',
-  CARDANO: 'cardano',
-  CUSTOM: 'custom',
+export const SMASH_SERVERS_LIST: {
+  [key: SmashServerType]: {
+    name: string,
+    url: string,
+  },
+} = {
+  iohk: {
+    name: 'IOHK',
+    url: 'https://smash.cardano-mainnet.iohk.io',
+  },
+  adaPools: {
+    name: 'AdaPools',
+    url: 'https://smash.adapools.org',
+  },
 };
 
-export const INTERNAL_SMASH_SERVERS: Array<{
-  id: SmashServerType,
-  name: string,
-  uri: string,
-}> = [
-  {
-    id: SMASH_SERVER_TYPES.CARDANO,
-    name: 'Cardano Foundation',
-    uri: 'https://smash.cardano-mainnet.iohk.io',
-  },
-  { id: SMASH_SERVER_TYPES.IOHK, name: 'IOHK', uri: 'http://smash.iohk.io' },
-];
+export const SMASH_SERVER_TYPES: SmashServerType = {
+  IOHK: 'iohk',
+  ADA_POOLS: 'adaPools',
+  CUSTOM: 'custom',
+};
 
 export const RANKING_SLIDER_RATIO = 60;
 export const MIN_DELEGATION_FUNDS_LOG = Math.log(10);

@@ -1352,13 +1352,14 @@ export default class AdaApi {
       logger.debug('AdaApi::smashSettings success', { poolMetadataSource });
       return poolMetadataSource;
     } catch (error) {
+      console.log('error', error);
       logger.error('AdaApi::smashSettings error', { error });
       throw new ApiError(error);
     }
   };
 
   checkSmashServerHealth = async (
-    url?: string
+    url: string
   ): Promise<CheckSmashServerHealthResponse> => {
     try {
       const response = await checkSmashServerHealth(this.config, url);

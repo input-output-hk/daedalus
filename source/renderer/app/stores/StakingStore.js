@@ -14,12 +14,15 @@ import {
   STAKE_POOLS_FAST_INTERVAL,
   REDEEM_ITN_REWARDS_STEPS as steps,
   INITIAL_DELEGATION_FUNDS,
+  SMASH_SERVERS_LIST,
+  SMASH_SERVER_TYPES,
 } from '../config/stakingConfig';
 import type {
   Reward,
   RewardForIncentivizedTestnet,
   JoinStakePoolRequest,
   GetDelegationFeeRequest,
+  PoolMetadataSource,
 } from '../api/staking/types';
 import Wallet from '../domains/Wallet';
 import StakePool from '../domains/StakePool';
@@ -66,7 +69,10 @@ export default class StakingStore extends Store {
   _delegationFeeCalculationWalletId: ?string = null;
 
   setup() {
-    const { staking: stakingActions } = this.actions;
+    const {
+      staking: stakingActions,
+      networkStatus: networkStatusActions,
+    } = this.actions;
 
     this.refreshPolling = setInterval(
       this.getStakePoolsData,
@@ -98,6 +104,7 @@ export default class StakingStore extends Store {
       this._setSelectedDelegationWalletId
     );
     stakingActions.requestCSVFile.listen(this._requestCSVFile);
+    networkStatusActions.isSyncedAndReady.listen(this._getSmashSettingsRequest);
 
     // ========== MOBX REACTIONS =========== //
     this.registerReactions([this._pollOnSync]);
@@ -123,8 +130,52 @@ export default class StakingStore extends Store {
   @observable requestRedeemItnRewardsRequest: Request<any> = new Request(
     this.api.ada.requestRedeemItnRewards
   );
+  @observable getSmashSettingsRequest: Request<any> = new Request(
+    this.api.ada.getSmashSettings
+  );
+  @observable checkSmashServerHealthRequest: Request<string> = new Request(
+    this.api.ada.checkSmashServerHealth
+  );
+  @observable
+  updateSmashSettingsRequest: Request<PoolMetadataSource> = new Request(
+    this.api.ada.updateSmashSettings
+  );
 
   // =================== PUBLIC API ==================== //
+
+  @action _getSmashSettingsRequest = async () => {
+    const apiPoolMetadataSource = await this.getSmashSettingsRequest.execute();
+    let smashServerType;
+    let smashServerUrl;
+    if (
+      apiPoolMetadataSource === 'none' ||
+      apiPoolMetadataSource === 'direct'
+    ) {
+      const poolMetadataSource = SMASH_SERVERS_LIST.iohk.url;
+      await this.updateSmashSettingsRequest.execute(poolMetadataSource);
+      smashServerType = SMASH_SERVER_TYPES.IOHK;
+    } else {
+      smashServerType = Object.entries(SMASH_SERVERS_LIST).reduce(
+        (result, [serverId, serverInfo]) => {
+          if (apiPoolMetadataSource === serverInfo.url) {
+            result = serverId;
+          }
+          return result;
+        },
+        SMASH_SERVER_TYPES.CUSTOM
+      );
+      if (smashServerType === SMASH_SERVER_TYPES.CUSTOM) {
+        smashServerUrl = poolMetadataSource;
+      }
+    }
+
+    console.log('smashServerType', smashServerType);
+    console.log('smashServerUrl', smashServerUrl);
+    runInAction(() => {
+      this.smashServerType = smashServerType;
+      this.smashServerUrl = smashServerUrl;
+    });
+  };
 
   @action _setSelectedDelegationWalletId = (walletId: string) => {
     this.selectedDelegationWalletId = walletId;
