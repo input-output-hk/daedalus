@@ -467,22 +467,25 @@ export const handleHardwareWalletRequests = async (
 
         const deviceList = getDevices();
         const newDevice = find(deviceList, ['path', newPath]);
+        const hasDeviceChanged = newDevice.productId !== oldDevice.productId;
 
         // TODO: remove
         deviceConnection = newDeviceConnection;
 
-        if (hasPathChanged) {
-          logger.info('[HW-DEBUG] ERROR in Cardano App (Path Change)', {
-            oldPath,
-            newPath,
-          });
-          devicesMemo = omit(devicesMemo, [oldPath]);
-        } else {
-          logger.info('[HW-DEBUG] ERROR in Cardano App (Device Change)', {
+        // Purge old device memo
+        devicesMemo = omit(devicesMemo, [oldPath]);
+
+        logger.info(
+          '[HW-DEBUG] ERROR in Cardano App (Re-establish Connection)',
+          {
+            hasPathChanged,
+            hasDeviceChanged,
+            oldPath: oldPath || 'UNKNOWN_PATH',
+            newPath: newPath || 'UNKNOWN_PATH',
             oldDevice: oldDevice || 'NOT_FOUND',
             newDevice: newDevice || 'NOT_FOUND',
-          });
-        }
+          }
+        );
 
         // Update devicesMemo
         devicesMemo[newPath] = {
