@@ -441,7 +441,7 @@ export const handleHardwareWalletRequests = async (
         path,
       });
 
-      if (path) {
+      if (path && error.code !== 'DEVICE_NOT_CONNECTED') {
         const deviceMemo = devicesMemo[path];
         const { device: oldDevice } = deviceMemo;
         const deviceList = getDevices();
@@ -456,7 +456,7 @@ export const handleHardwareWalletRequests = async (
 
         // Launching Cardano App changes the device productId
         // and we need to close existing transport and open a new one
-        if (hasDeviceChanged && newDevice) {
+        if ((hasDeviceChanged && newDevice) || errorName === 'DisconnectedDevice') {
           const { transport: oldTransport } = deviceMemo;
 
           try {

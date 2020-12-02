@@ -584,6 +584,7 @@ export default class HardwareWalletsStore extends Store {
           logger.debug(
             '[HW-DEBUG] HWStore - getCardanoAdaApp - from  establishHardwareWalletConnection'
           );
+          this.stopCardanoAdaAppFetchPoller();
           this.cardanoAdaAppPollingInterval = setInterval(
             (path) => this.getCardanoAdaApp({ path }),
             CARDANO_ADA_APP_POLLING_INTERVAL,
@@ -1338,6 +1339,7 @@ export default class HardwareWalletsStore extends Store {
         '[HW-DEBUG] HWStore - getCardanoAdaApp - from  initiateTransaction'
       );
       if (walletId) {
+        this.stopCardanoAdaAppFetchPoller();
         this.cardanoAdaAppPollingInterval = setInterval(
           (path, wid) => this.getCardanoAdaApp({ path, walletId: wid }),
           CARDANO_ADA_APP_POLLING_INTERVAL,
