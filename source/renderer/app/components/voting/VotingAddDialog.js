@@ -47,7 +47,7 @@ export default class VotingAddDialog extends Component<Props> {
       <Dialog
         className={styles.component}
         title={intl.formatMessage(messages.dialogTitle)}
-        closeOnOverlayClick
+        closeOnOverlayClick={false}
         onClose={onClose}
         closeButton={<DialogCloseButton />}
       >

@@ -154,7 +154,11 @@ export default class VotingAddStepsConfirm extends Component<Props> {
                 />
               </div>
               <div className={styles.errorMessage}>
-                <p>{errorMessage}</p>
+                <p>
+                  {intl.formatMessage(transactionError)
+                    ? intl.formatMessage(transactionError)
+                    : errorMessage}
+                </p>
               </div>
               <div className={styles.description}>
                 <p>{descriptionRestart}</p>
