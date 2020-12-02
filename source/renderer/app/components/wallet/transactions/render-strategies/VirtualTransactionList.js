@@ -38,7 +38,7 @@ export class VirtualTransactionList extends Component<Props> {
   rowHeights: RowHeight[] = [];
   txAddressHeight: number = 0;
   txIdHeight: number = 0;
-  visibleExpandedTx: Array<WalletTransaction>;
+  visibleExpandedTx: Array<WalletTransaction> = [];
   overscanStartIndex: number;
   overscanStopIndex: number;
 
@@ -154,10 +154,15 @@ export class VirtualTransactionList extends Component<Props> {
   /**
    * Gets a row height based on its type
    */
-  estimateRowHeight = (row: Row): number =>
-    row instanceof TransactionInfo
-      ? this.estimateHeightOfTxContractedRow(row)
-      : GROUP_DATE_HEIGHT;
+  estimateRowHeight = (row: Row): number => {
+    if (row instanceof TransactionInfo) {
+      if (this.visibleExpandedTx.includes(row.tx)) {
+        return this.estimateHeightOfTxExpandedRow(row, row.tx);
+      }
+      return this.estimateHeightOfTxContractedRow(row);
+    }
+    return GROUP_DATE_HEIGHT;
+  };
 
   /**
    * Maps over all rows and returns array of calculated heights.
