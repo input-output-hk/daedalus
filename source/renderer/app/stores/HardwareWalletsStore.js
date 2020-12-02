@@ -762,6 +762,7 @@ export default class HardwareWalletsStore extends Store {
         } else if (recognizedWallet) {
           // While Cardano ADA app recognized & existing wallet mathes device ID, set wallet as active
           this.stores.wallets.goToWalletRoute(recognizedWallet.id);
+          this.actions.dialogs.closeActiveDialog.trigger();
           runInAction(
             'HardwareWalletsStore:: set HW device to initial state',
             () => {
@@ -803,11 +804,13 @@ export default class HardwareWalletsStore extends Store {
           data: {
             ...pairedDevice,
             path: error.path,
+            isPending: false,
           },
         });
 
         this.cardanoAdaAppPollingInterval = setInterval(
-          (devicePath, txWalletId) => this.getCardanoAdaApp({ path: devicePath, walletId: txWalletId }),
+          (devicePath, txWalletId) =>
+            this.getCardanoAdaApp({ path: devicePath, walletId: txWalletId }),
           CARDANO_ADA_APP_POLLING_INTERVAL,
           error.path,
           walletId
