@@ -73,6 +73,8 @@ import { getDelegationFee } from './staking/requests/getDelegationFee';
 import { joinStakePool } from './staking/requests/joinStakePool';
 import { quitStakePool } from './staking/requests/quitStakePool';
 import { getSmashSettings } from './staking/requests/getSmashSettings';
+import { checkSmashServerHealth } from './staking/requests/checkSmashServerHealth';
+import { updateSmashSettings } from './staking/requests/updateSmashSettings';
 
 // Utility functions
 import { cardanoFaultInjectionChannel } from '../ipc/cardano.ipc';
@@ -172,6 +174,9 @@ import type {
   GetRedeemItnRewardsFeeResponse,
   RequestRedeemItnRewardsRequest,
   RequestRedeemItnRewardsResponse,
+  GetSmashSettingsApiResponse,
+  CheckSmashServerHealthResponse,
+  PoolMetadataSource,
 } from './staking/types';
 import type { StakePoolProps } from '../domains/StakePool';
 import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-node.types';
@@ -1339,17 +1344,44 @@ export default class AdaApi {
     }
   };
 
-  // @SMASH TODO: Flow notation
-  getSmashSettings = async () => {
+  getSmashSettings = async (): Promise<GetSmashSettingsApiResponse> => {
     try {
-      const smashSettings = await getSmashSettings();
-      console.log('smashSettings', smashSettings);
-      logger.debug('AdaApi::smashSettings success', { smashSettings });
-      return smashSettings;
+      const {
+        pool_metadata_source: poolMetadataSource,
+      } = await getSmashSettings(this.config);
+      logger.debug('AdaApi::smashSettings success', { poolMetadataSource });
+      return poolMetadataSource;
     } catch (error) {
-      console.log('error', error);
-      // logger.error('AdaApi::smashSettings error', { error });
-      // throw new ApiError(error);
+      logger.error('AdaApi::smashSettings error', { error });
+      throw new ApiError(error);
+    }
+  };
+
+  checkSmashServerHealth = async (
+    url?: string
+  ): Promise<CheckSmashServerHealthResponse> => {
+    try {
+      const response = await checkSmashServerHealth(this.config, url);
+      logger.debug('AdaApi::checkSmashServerHealth success', { response });
+      return response;
+    } catch (error) {
+      logger.error('AdaApi::checkSmashServerHealth error', { error });
+      throw new ApiError(error);
+    }
+  };
+
+  updateSmashSettings = async (
+    poolMetadataSource: PoolMetadataSource
+  ): Promise<any> => {
+    try {
+      await updateSmashSettings(this.config, poolMetadataSource);
+      logger.debug('AdaApi::updateSmashSettings success', {
+        poolMetadataSource,
+      });
+      return poolMetadataSource;
+    } catch (error) {
+      logger.error('AdaApi::updateSmashSettings error', { error });
+      throw new ApiError(error);
     }
   };
 
