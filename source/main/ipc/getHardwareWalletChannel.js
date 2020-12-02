@@ -465,7 +465,7 @@ export const handleHardwareWalletRequests = async (
 
         // Launching Cardano App changes the device productId
         // and we need to close existing transport and open a new one
-        if ((hasDeviceChanged && newDevice) || isDisconnectError) {
+        if (hasDeviceChanged && newDevice) {
           const { transport: oldTransport } = deviceMemo;
 
           try {
