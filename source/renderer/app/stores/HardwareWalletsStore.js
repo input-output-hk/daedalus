@@ -806,7 +806,12 @@ export default class HardwareWalletsStore extends Store {
           },
         });
 
-        this.getCardanoAdaApp({ path: error.path, walletId });
+        this.cardanoAdaAppPollingInterval = setInterval(
+          (devicePath, txWalletId) => this.getCardanoAdaApp({ path: devicePath, walletId: txWalletId }),
+          CARDANO_ADA_APP_POLLING_INTERVAL,
+          error.path,
+          walletId
+        );
       }
       throw error;
     }
