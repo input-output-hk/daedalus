@@ -72,6 +72,7 @@ import { getStakePools } from './staking/requests/getStakePools';
 import { getDelegationFee } from './staking/requests/getDelegationFee';
 import { joinStakePool } from './staking/requests/joinStakePool';
 import { quitStakePool } from './staking/requests/quitStakePool';
+import { getSmashSettings } from './staking/requests/getSmashSettings';
 
 // Utility functions
 import { cardanoFaultInjectionChannel } from '../ipc/cardano.ipc';
@@ -1335,6 +1336,20 @@ export default class AdaApi {
         .where('code', 'bad_request')
         .inc('message', 'passphrase is too short')
         .result();
+    }
+  };
+
+  // @SMASH TODO: Flow notation
+  getSmashSettings = async () => {
+    try {
+      const smashSettings = await getSmashSettings();
+      console.log('smashSettings', smashSettings);
+      logger.debug('AdaApi::smashSettings success', { smashSettings });
+      return smashSettings;
+    } catch (error) {
+      console.log('error', error);
+      // logger.error('AdaApi::smashSettings error', { error });
+      // throw new ApiError(error);
     }
   };
 
