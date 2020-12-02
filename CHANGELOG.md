@@ -5,6 +5,7 @@ Changelog
 
 ### Fixes
 
+- Fixed empty disk space calculation for some Linux distributions ([PR 2258](https://github.com/input-output-hk/daedalus/pull/2258))
 - Fixed the overlap of the "X" button in the stake pools search box ([PR 2251](https://github.com/input-output-hk/daedalus/pull/2251))
 
 ## 2.5.0
