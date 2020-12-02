@@ -51,7 +51,7 @@ export const RECOMMENDED_LEDGER_APP_VERSION = {
   patch: 4,
 };
 
-export const MINIMAL_CARDANO_APP_VERSION = '2.0.5';
+export const MINIMAL_CARDANO_APP_VERSION = '2.0.3';
 export const MINIMAL_LEDGER_FIRMWARE_VERSION = '1.6.1';
 export const MINIMAL_TREZOR_FIRMWARE_VERSION = '2.3.3';
 

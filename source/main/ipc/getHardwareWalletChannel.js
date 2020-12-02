@@ -11,7 +11,7 @@ import TrezorConnect, {
   TRANSPORT_EVENT,
   // $FlowFixMe
 } from 'trezor-connect';
-import { get, omit, last, find, isEqual, includes } from 'lodash';
+import { get, omit, last, find, includes } from 'lodash';
 import { derivePublic as deriveChildXpub } from 'cardano-crypto.js';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import {
@@ -442,58 +442,54 @@ export const handleHardwareWalletRequests = async (
       //  errorMessage.toLowerCase().includes('cannot write to hid device') ||
       //  errorMessage.toLowerCase().includes('cannot write to closed device');
       logger.info('[HW-DEBUG] ERROR in Cardano App', {
+        path,
         errorName,
         errorMessage,
-        path,
-        isDeviceDisconnected,
         isDisconnectError,
+        isDeviceDisconnected,
       });
-      if (path && !isDeviceDisconnected) {
-        const deviceMemo = devicesMemo[path];
-        const { device: oldDevice } = deviceMemo;
+      if (path && !isDeviceDisconnected && isDisconnectError) {
         // $FlowFixMe
-        const newTrasportList = await TransportNodeHid.list();
+        const oldPath = path;
+        const deviceMemo = devicesMemo[oldPath];
+        const devicePaths = await TransportNodeHid.list();
+        const hasPathChanged = !includes(devicePaths, oldPath);
+        const newPath = hasPathChanged ? last(devicePaths) : oldPath;
+
+        const { device: oldDevice, transport: oldTransport } = deviceMemo;
+        try {
+          await oldTransport.close();
+        } catch (e) {} // eslint-disable-line
+
+        // $FlowFixMe
+        const newTransport = await TransportNodeHid.open(newPath);
+        const newDeviceConnection = new AppAda(newTransport);
+
         const deviceList = getDevices();
-        const hasPathChanged = !includes(newTrasportList, path);
-        const newPath = hasPathChanged ? last(newTrasportList) : path;
         const newDevice = find(deviceList, ['path', newPath]);
-        const hasDeviceChanged = newDevice && (hasPathChanged || !isEqual(oldDevice, newDevice));
-        logger.info('[HW-DEBUG] ERROR in Cardano App (Device change check)', {
-          isDisconnectError,
-          hasDeviceChanged,
-          newTrasportList,
-          deviceList,
-          deviceListLength: deviceList.length,
-          oldDevice,
-          newDevice,
-          hasPathChanged,
-          path,
-          newPath,
-        });
-        // Launching Cardano App changes the device productId
-        // and we need to close existing transport and open a new one
-        if (hasDeviceChanged) {
-          const { transport: oldTransport } = deviceMemo;
-          try {
-            await oldTransport.close();
-          } catch (e) {} // eslint-disable-line
-          // $FlowFixMe
-          const newTransport = await TransportNodeHid.open(newPath);
-          const newDeviceConnection = new AppAda(newTransport);
-          // TODO: remove
-          deviceConnection = newDeviceConnection;
-          // Remove old path if changed
-          if (hasPathChanged) {
-            logger.info('[HW-DEBUG] ERROR in Cardano App (Remove old path)');
-            devicesMemo = omit(devicesMemo, [path]);
-          }
-          // Update devicesMemo
-          devicesMemo[newPath] = {
-            device: newDevice,
-            transport: newTransport,
-            AdaConnection: newDeviceConnection,
-          };
+
+        // TODO: remove
+        deviceConnection = newDeviceConnection;
+
+        if (hasPathChanged) {
+          logger.info('[HW-DEBUG] ERROR in Cardano App (Path Change)', {
+            oldPath,
+            newPath,
+          });
+          devicesMemo = omit(devicesMemo, [oldPath]);
+        } else {
+          logger.info('[HW-DEBUG] ERROR in Cardano App (Device Change)', {
+            oldDevice: oldDevice || 'NOT_FOUND',
+            newDevice: newDevice || 'NOT_FOUND',
+          });
         }
+
+        // Update devicesMemo
+        devicesMemo[newPath] = {
+          device: newDevice,
+          transport: newTransport,
+          AdaConnection: newDeviceConnection,
+        };
       }
       throw error;
     }

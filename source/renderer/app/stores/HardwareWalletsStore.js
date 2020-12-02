@@ -92,7 +92,7 @@ export type ByronSignedTransactionWitnesses = {
   xpub: HardwareWalletExtendedPublicKeyResponse,
 };
 
-const CARDANO_ADA_APP_POLLING_INTERVAL = 5 * 1000;
+const CARDANO_ADA_APP_POLLING_INTERVAL = 1000;
 const DEFAULT_HW_NAME = 'Hardware Wallet';
 
 export default class HardwareWalletsStore extends Store {
