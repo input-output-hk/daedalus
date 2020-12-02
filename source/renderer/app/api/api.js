@@ -181,7 +181,7 @@ import { getNewsHash } from './news/requests/getNewsHash';
 import { deleteTransaction } from './transactions/requests/deleteTransaction';
 import { WALLET_BYRON_KINDS } from '../config/walletRestoreConfig';
 import ApiError from '../domains/ApiError';
-import { formattedAdaAmountToLovelace } from '../utils/formatters';
+import { formattedAmountToLovelace } from '../utils/formatters';
 
 const { isIncentivizedTestnet } = global;
 
@@ -1349,8 +1349,8 @@ export default class AdaApi {
       availableAmount: availableBalance,
     } = wallet;
     const minRewardsReceiverBalance = new BigNumber(MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE);
-    const amount = walletBalance.lessThan(minRewardsReceiverBalance.mul(MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE * 3)) ?
-      formattedAdaAmountToLovelace(walletBalance) :
+    const amount = walletBalance.lessThan(minRewardsReceiverBalance.times(MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE * 3)) ?
+      formattedAmountToLovelace(walletBalance.toString()) :
       REDEEM_ITN_REWARDS_AMOUNT;
     const payload = {
       address,

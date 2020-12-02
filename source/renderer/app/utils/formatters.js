@@ -92,10 +92,7 @@ export const toFixedUserFormat = (number: number, digits: number) => {
 };
 
 export const formattedAmountToLovelace = (amount: string): number =>
-  parseInt(formattedAmountToBigNumber(amount).times(LOVELACES_PER_ADA), 10);
-
-export const formattedAdaAmountToLovelace = (adaAmount: BigNumber): number =>
-  adaAmount.mul(LOVELACES_PER_ADA).toNumber();
+  parseInt(formattedAmountToBigNumber(amount).times(LOVELACES_PER_ADA).toString(), 10);
 
 export const formattedLovelaceToAmount = (lovelace: number): number =>
   formattedAmountToBigNumber(String(lovelace))
