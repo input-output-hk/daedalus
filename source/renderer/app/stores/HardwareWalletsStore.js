@@ -213,9 +213,11 @@ export default class HardwareWalletsStore extends Store {
         if (device.deviceType === DeviceTypes.TREZOR) {
           devicesWithoutLedgers[device.id] = device;
         }
-      })
+      });
       logger.debug('[HW-DEBUG] HWStore - Remove all LEDGERS from LC');
-      await this.overrideHardwareWalletDevicesRequest.execute(devicesWithoutLedgers);
+      await this.overrideHardwareWalletDevicesRequest.execute(
+        devicesWithoutLedgers
+      );
 
       logger.debug('[HW-DEBUG] HWStore - Refresh LC');
       await this._refreshHardwareWalletsLocalData();
