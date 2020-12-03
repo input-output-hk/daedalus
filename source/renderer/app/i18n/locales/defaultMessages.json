@@ -10197,13 +10197,13 @@
         "description": "Label for the \"Today\" label on the wallet summary page.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 24
         },
         "file": "source/renderer/app/components/wallet/transactions/WalletTransactionsList.js",
         "id": "wallet.summary.page.todayLabel",
         "start": {
           "column": 9,
-          "line": 21
+          "line": 20
         }
       },
       {
@@ -10211,13 +10211,13 @@
         "description": "Label for the \"Yesterday\" label on the wallet summary page.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 29
         },
         "file": "source/renderer/app/components/wallet/transactions/WalletTransactionsList.js",
         "id": "wallet.summary.page.yesterdayLabel",
         "start": {
           "column": 13,
-          "line": 26
+          "line": 25
         }
       },
       {
@@ -10225,13 +10225,13 @@
         "description": "Label for the \"Show more transactions\" button on the wallet summary page.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 35
         },
         "file": "source/renderer/app/components/wallet/transactions/WalletTransactionsList.js",
         "id": "wallet.summary.page.showMoreTransactionsButtonLabel",
         "start": {
           "column": 35,
-          "line": 31
+          "line": 30
         }
       },
       {
@@ -10239,13 +10239,13 @@
         "description": "Syncing transactions message on async wallet restore.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 41
         },
         "file": "source/renderer/app/components/wallet/transactions/WalletTransactionsList.js",
         "id": "wallet.summary.page.syncingTransactionsMessage",
         "start": {
           "column": 30,
-          "line": 37
+          "line": 36
         }
       }
     ],
