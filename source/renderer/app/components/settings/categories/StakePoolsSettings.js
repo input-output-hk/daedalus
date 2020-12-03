@@ -105,6 +105,7 @@ export default class StakePoolsSettings extends Component<Props> {
     const { onSelectSmashServerUrl } = this.props;
     const { smashServerUrlInitial } = this.state;
     onSelectSmashServerUrl(smashServerUrlInitial);
+    this.setState({ isActive: false });
   };
 
   handleUrlIsValid = (url: string) => isValidUrl(url);

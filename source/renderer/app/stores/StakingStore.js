@@ -202,11 +202,11 @@ export default class StakingStore extends Store {
     smashServerType: SmashServerType,
   }) => {
     // Updates the Smash Server Type UI
-    this._updateSmashServerTypeUI(smashServerType);
+    this.smashServerType = smashServerType;
 
     if (smashServerType === SMASH_SERVER_TYPES.CUSTOM) {
       // For custom server, leaves the URL input empty
-      this._updateSmashServerUrlUI('');
+      this.smashServerUrl = '';
     } else {
       // Otherwise, retrieves the Server URL
       const smashServerUrl = get(
@@ -214,6 +214,7 @@ export default class StakingStore extends Store {
         [smashServerType, 'url'],
         ''
       );
+      this.smashServerUrl = smashServerUrl;
       this._selectSmashServerUrl({ smashServerUrl });
     }
   };
@@ -224,20 +225,22 @@ export default class StakingStore extends Store {
     smashServerUrl: string,
   }) => {
     try {
-      // Updates the Smash Server URL
-      this._updateSmashServerUrlUI(smashServerUrl);
       // For custom server, checks if the user typed a known server
       if (this.smashServerType === SMASH_SERVER_TYPES.CUSTOM) {
         const knownServer = Object.entries(SMASH_SERVERS_LIST).find(
           ([, { url }]) => url === smashServerUrl
         );
         if (knownServer) {
-          this._updateSmashServerTypeUI(knownServer[0]);
+          this.smashServerType = knownServer[0];
         }
       }
       // Retrieves the API update
       await this.updateSmashSettingsRequest.execute(smashServerUrl);
+      // Refreshes the Stake Pools list
+      this.getStakePoolsData();
+      // Updates the Smash Server URL
       runInAction(() => {
+        this.smashServerUrl = smashServerUrl;
         this.smashServerUrlError = null;
       });
     } catch (error) {
@@ -245,14 +248,6 @@ export default class StakingStore extends Store {
         this.smashServerUrlError = error;
       });
     }
-  };
-
-  @action _updateSmashServerTypeUI = (smashServerType: SmashServerType) => {
-    this.smashServerType = smashServerType;
-  };
-
-  @action _updateSmashServerUrlUI = (smashServerUrl: string) => {
-    this.smashServerUrl = smashServerUrl;
   };
 
   @action _joinStakePool = async (request: JoinStakePoolRequest) => {

@@ -1,5 +1,6 @@
 // @flow
 import React, { Component, Fragment } from 'react';
+import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import classnames from 'classnames';
@@ -13,7 +14,14 @@ import Wallet from '../../../domains/Wallet';
 import styles from './StakePools.scss';
 import { getFilteredStakePoolsList } from './helpers';
 import StakePool from '../../../domains/StakePool';
-import { IS_RANKING_DATA_AVAILABLE } from '../../../config/stakingConfig';
+import {
+  IS_RANKING_DATA_AVAILABLE,
+  SMASH_SERVER_TYPES,
+  SMASH_SERVERS_LIST,
+} from '../../../config/stakingConfig';
+import smashSettingsIcon from '../../../assets/images/smash-settings-ic.inline.svg';
+
+import type { SmashServerType } from '../../../types/stakingTypes';
 
 const messages = defineMessages({
   delegatingListTitle: {
@@ -58,6 +66,9 @@ type Props = {
   isRanking: boolean,
   stakePoolsDelegatingList: Array<StakePool>,
   getStakePoolById: Function,
+  onSmashSettingsClick: Function,
+  smashServerType: SmashServerType,
+  smashServerUrl: string,
 };
 
 type State = {
@@ -132,6 +143,9 @@ export default class StakePools extends Component<Props, State> {
       isRanking,
       stakePoolsDelegatingList,
       getStakePoolById,
+      smashServerType,
+      smashServerUrl,
+      onSmashSettingsClick,
     } = this.props;
     const {
       search,
@@ -169,6 +183,25 @@ export default class StakePools extends Component<Props, State> {
       isLoading ? styles.isLoading : null,
     ]);
 
+    const smashServer =
+      smashServerType === SMASH_SERVER_TYPES.CUSTOM
+        ? smashServerUrl
+        : SMASH_SERVERS_LIST[smashServerType].name;
+
+    const smashSettings = smashServer && (
+      <button
+        role="presentation"
+        onClick={onSmashSettingsClick}
+        className={styles.smashSettings}
+      >
+        <span>&nbsp;- {smashServer}</span>
+        <SVGInline
+          svg={smashSettingsIcon}
+          className={styles.smashSettingsIcon}
+        />
+      </button>
+    );
+
     return (
       <div className={componentClasses}>
         {isLoading ? (
@@ -205,12 +238,14 @@ export default class StakePools extends Component<Props, State> {
               onListView={this.handleListView}
               isListView={isListView}
               isGridView={isGridView}
+              smashServer={smashServer}
               isClearTooltipOpeningDownward
             />
             {stakePoolsDelegatingList.length > 0 && (
               <Fragment>
                 <h2 className={styles.listTitle}>
                   {intl.formatMessage(messages.delegatingListTitle)}
+                  {smashSettings}
                 </h2>
                 <StakePoolsList
                   listName={STAKE_POOLS_DELEGATING_LIST}
@@ -235,6 +270,7 @@ export default class StakePools extends Component<Props, State> {
                       pools: filteredStakePoolsList.length,
                     }}
                   />
+                  {smashSettings}
                 </h2>
                 <StakePoolsTable
                   listName={SELECTED_INDEX_TABLE}
@@ -262,6 +298,7 @@ export default class StakePools extends Component<Props, State> {
                       pools: filteredStakePoolsList.length,
                     }}
                   />
+                  {smashSettings}
                 </h2>
                 <StakePoolsList
                   showWithSelectButton
