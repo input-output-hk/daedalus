@@ -178,7 +178,6 @@ import type {
   RequestRedeemItnRewardsRequest,
   RequestRedeemItnRewardsResponse,
   GetSmashSettingsApiResponse,
-  CheckSmashServerHealthResponse,
   CheckSmashServerHealthApiResponse,
   PoolMetadataSource,
 } from './staking/types';
@@ -1362,9 +1361,7 @@ export default class AdaApi {
     }
   };
 
-  checkSmashServerHealth = async (
-    url: string
-  ): Promise<CheckSmashServerHealthApiResponse> => {
+  checkSmashServerIsValid = async (url: string): Promise<boolean> => {
     try {
       const {
         health,
@@ -1372,8 +1369,9 @@ export default class AdaApi {
         this.config,
         url
       );
-      logger.debug('AdaApi::checkSmashServerHealth success', { health });
-      return health;
+      const isValid = health === SMASH_SERVER_STATUSES.AVAILABLE;
+      logger.debug('AdaApi::checkSmashServerHealth success', { isValid });
+      return isValid;
     } catch (error) {
       logger.error('AdaApi::checkSmashServerHealth error', { error });
       throw new ApiError(error);
@@ -1384,11 +1382,14 @@ export default class AdaApi {
     poolMetadataSource: PoolMetadataSource
   ): Promise<any> => {
     try {
-      const health = await this.checkSmashServerHealth(poolMetadataSource);
-      if (health !== SMASH_SERVER_STATUSES.AVAILABLE) {
+      const isSmashServerValid = await this.checkSmashServerIsValid(
+        poolMetadataSource
+      );
+      if (!isSmashServerValid) {
         throw new ApiError(error);
       }
-      await updateSmashSettings(this.config, poolMetadataSource);
+      const update = await updateSmashSettings(this.config, poolMetadataSource);
+      console.log('update sth?', update);
       logger.debug('AdaApi::updateSmashSettings success', {
         poolMetadataSource,
       });

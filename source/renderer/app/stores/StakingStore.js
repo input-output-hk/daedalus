@@ -200,15 +200,19 @@ export default class StakingStore extends Store {
   }: {
     smashServerType: SmashServerType,
   }) => {
+    // Updates the Smash Server Type UI
     this._updateSmashServerTypeUI(smashServerType);
-    const smashServerUrl = get(
-      SMASH_SERVERS_LIST,
-      [smashServerType, 'url'],
-      ''
-    );
-    if (smashServerUrl === '') {
-      this._updateSmashServerUrlUI(smashServerUrl);
+
+    if (smashServerType === SMASH_SERVER_TYPES.CUSTOM) {
+      // For custom server, leaves the URL input empty
+      this._updateSmashServerUrlUI('');
     } else {
+      // Otherwise, retrieves the Server URL
+      const smashServerUrl = get(
+        SMASH_SERVERS_LIST,
+        [smashServerType, 'url'],
+        ''
+      );
       this._selectSmashServerUrl({ smashServerUrl });
     }
   };
@@ -218,20 +222,21 @@ export default class StakingStore extends Store {
   }: {
     smashServerUrl: string,
   }) => {
-    const updateSmashServer = await this.updateSmashSettingsRequest.execute(
-      smashServerUrl
-    );
-    console.log('updateSmashServer', updateSmashServer);
+    // Updates the Smash Server URL
     this._updateSmashServerUrlUI(smashServerUrl);
-    const knownServer = Object.entries(SMASH_SERVERS_LIST).find(
-      ([, { url }]) => url === smashServerUrl
-    );
-    if (knownServer) {
-      this._selectSmashServerType({
-        smashServerType: knownServer[0],
-        skipServerUrl: true,
-      });
+
+    // For custom server, checks if the user typed a known server
+    if (this.smashServerType === SMASH_SERVER_TYPES.CUSTOM) {
+      const knownServer = Object.entries(SMASH_SERVERS_LIST).find(
+        ([, { url }]) => url === smashServerUrl
+      );
+      if (knownServer) {
+        this._updateSmashServerTypeUI(knownServer[0]);
+      }
     }
+
+    // Retrieves the API update
+    await this.updateSmashSettingsRequest.execute(smashServerUrl);
   };
 
   @action _updateSmashServerTypeUI = (smashServerType: SmashServerType) => {
