@@ -11,6 +11,7 @@ import {
   MAX_ALLOWED_STALL_DURATION,
   DECENTRALIZATION_LEVEL_POLLING_INTERVAL,
 } from '../config/timingConfig';
+import { INITIAL_DESIRED_POOLS_NUMBER } from '../config/stakingConfig';
 import { logger } from '../utils/logging';
 import {
   cardanoStateChangeChannel,
@@ -20,8 +21,8 @@ import {
   setCachedCardanoStatusChannel,
 } from '../ipc/cardano.ipc';
 import { CardanoNodeStates } from '../../../common/types/cardano-node.types';
-import { getDiskSpaceStatusChannel } from '../ipc/getDiskSpaceChannel.js';
-import { getBlockReplayProgressChannel } from '../ipc/getBlockReplayChannel.js';
+import { getDiskSpaceStatusChannel } from '../ipc/getDiskSpaceChannel';
+import { getBlockReplayProgressChannel } from '../ipc/getBlockReplayChannel';
 import { getStateDirectoryPathChannel } from '../ipc/getStateDirectoryPathChannel';
 import type {
   GetNetworkInfoResponse,
@@ -99,6 +100,8 @@ export default class NetworkStatusStore extends Store {
   @observable lastSyncProgressChangeTimestamp = 0; // milliseconds
   @observable localTimeDifference: ?number = 0; // microseconds
   @observable decentralizationProgress: number = 0; // percentage
+  @observable desiredPoolNumber: number = INITIAL_DESIRED_POOLS_NUMBER;
+
   @observable
   getNetworkInfoRequest: Request<GetNetworkInfoResponse> = new Request(
     this.api.ada.getNetworkInfo
@@ -604,6 +607,7 @@ export default class NetworkStatusStore extends Store {
       let { isShelleyActivated, isShelleyPending } = this;
       const {
         decentralizationLevel,
+        desiredPoolNumber,
         hardforkAt,
         slotLength,
         epochLength,
@@ -617,14 +621,19 @@ export default class NetworkStatusStore extends Store {
         isShelleyPending = currentTimeStamp < hardforkStartTime;
       }
 
-      runInAction('Set Decentralization Progress', () => {
+      runInAction('Update Decentralization Progress', () => {
         this.decentralizationProgress = decentralizationLevel.quantity;
         this.isShelleyActivated = isShelleyActivated;
         this.isShelleyPending = isShelleyPending;
         this.shelleyActivationTime = epochStartTime;
       });
 
-      runInAction('Update Epoch config', () => {
+      runInAction('Update Desired Pool Number', () => {
+        this.desiredPoolNumber =
+          desiredPoolNumber || INITIAL_DESIRED_POOLS_NUMBER;
+      });
+
+      runInAction('Update Epoch Config', () => {
         this.slotLength = slotLength.quantity;
         this.epochLength = epochLength.quantity;
       });
