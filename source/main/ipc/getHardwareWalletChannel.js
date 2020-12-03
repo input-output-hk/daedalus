@@ -456,6 +456,20 @@ export const handleHardwareWalletRequests = async (
         const hasPathChanged = !includes(devicePaths, oldPath);
         const newPath = hasPathChanged ? last(devicePaths) : oldPath;
 
+        if (!newPath) {
+          logger.info(
+            '[HW-DEBUG] ERROR in Cardano App (Device paths list is empty)',
+            {
+              devicePaths,
+              oldPath,
+              newPath,
+              deviceList: getDevices(),
+            }
+          );
+          // eslint-disable-next-line
+          throw { code: 'NO_DEVICE_PATHS', errorCode, errorName };
+        }
+
         const { device: oldDevice } = deviceMemo;
 
         // @TODO - temp removed just for Windows testing
