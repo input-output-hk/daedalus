@@ -10,6 +10,7 @@ export default class AppActions {
   setIsDownloadingLogs: Action<boolean> = new Action();
   toggleNewsFeed: Action<boolean> = new Action();
   closeNewsFeed: Action<any> = new Action();
+  onUiClicked: Action<any> = new Action();
 
   // About dialog actions
   closeAboutDialog: Action<any> = new Action();

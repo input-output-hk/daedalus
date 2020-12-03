@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Close Newsfeed when clicking anywhere else in the UI ([PR 2250](https://github.com/input-output-hk/daedalus/pull/2250))
+
 ### Fixes
 
 - Fixed error message and validation on redeem rewards screen ([PR 2220](https://github.com/input-output-hk/daedalus/pull/2220))
