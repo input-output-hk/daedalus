@@ -90,7 +90,7 @@ import { filterLogData } from '../../../common/utils/logging';
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 import {
   MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE,
-  REWARDS_REDEEM_RECEIVER_AMOUNT,
+  REWARDS_REDEMPTION_FEE_CALCULATION_AMOUNT,
 } from '../config/stakingConfig';
 import {
   ADA_CERTIFICATE_MNEMONIC_LENGTH,
@@ -713,8 +713,8 @@ export default class AdaApi {
       );
       const fee = _createTransactionFeeFromServerData(response);
       const amountWithFee = formattedTxAmount.plus(fee);
-      const isRecoveryPhaseSet = Array.isArray(withdrawal);
-      if (!isRecoveryPhaseSet && amountWithFee.gt(walletBalance)) {
+      const isRewardsRedemptionRequest = Array.isArray(withdrawal);
+      if (!isRewardsRedemptionRequest && amountWithFee.gt(walletBalance)) {
         // Amount + fees exceeds walletBalance:
         // = show "Not enough Ada for fees. Try sending a smaller amount."
         throw new ApiError().result('cannotCoverFee');
@@ -1355,14 +1355,14 @@ export default class AdaApi {
     const minRewardsReceiverBalance = new BigNumber(
       MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE
     );
-    // Amount is set to either Wallet balance, if balance is less then 3 ADA, or 1 ADA in order to correctly calculate transaction fees
+    // Amount is set to either wallet's balance in case balance is less than 3 ADA or 1 ADA in order to avoid min UTXO affecting transaction fees calculation
     const amount = walletBalance.lessThan(
       minRewardsReceiverBalance.times(
         MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE * 3
       )
     )
       ? formattedAmountToLovelace(walletBalance.toString())
-      : REWARDS_REDEEM_RECEIVER_AMOUNT;
+      : REWARDS_REDEMPTION_FEE_CALCULATION_AMOUNT;
     const payload = {
       address,
       walletId,
@@ -1391,7 +1391,7 @@ export default class AdaApi {
       spendingPassword: passphrase,
       recoveryPhrase: withdrawal,
     } = request;
-    const amount = REWARDS_REDEEM_RECEIVER_AMOUNT;
+    const amount = REWARDS_REDEMPTION_FEE_CALCULATION_AMOUNT;
     try {
       const data = {
         payments: [
