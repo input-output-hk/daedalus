@@ -74,6 +74,7 @@ export default class StakePoolsSettings extends Component<Props> {
     } = this.props;
 
     if (smashServerType === SMASH_SERVER_TYPES.CUSTOM && !smashServerUrl) {
+      console.log('YES PLS!');
       onSelectSmashServerType(SMASH_SERVER_TYPES.IOHK);
     }
   }
@@ -108,11 +109,15 @@ export default class StakePoolsSettings extends Component<Props> {
       onSelectSmashServerType,
       onSelectSmashServerUrl,
     } = this.props;
-    const { isActive, smashServerUrlInitial } = this.state;
+    const {
+      isActive,
+      smashServerTypeInitial,
+      smashServerUrlInitial,
+    } = this.state;
     const { intl } = this.context;
 
     const smashSelectOptions = [
-      ...Object.entries(SMASH_SERVERS_LIST).map(([id, { name: label }]) => ({
+      ...Object.entries(SMASH_SERVERS_LIST).map(([value, { name: label }]) => ({
         label,
         value,
       })),
@@ -122,7 +127,9 @@ export default class StakePoolsSettings extends Component<Props> {
       },
     ];
 
-    const successfullyUpdated = smashServerUrl !== smashServerUrlInitial;
+    const successfullyUpdated =
+      smashServerType === smashServerTypeInitial &&
+      smashServerUrl !== smashServerUrlInitial;
 
     // @SMASH TODO
     const validationErrorMessage = 'Something wrong is not right 🤔';
@@ -140,24 +147,23 @@ export default class StakePoolsSettings extends Component<Props> {
           className={styles.select}
           optionHeight={50}
         />
-        {smashServerType === SMASH_SERVER_TYPES.CUSTOM && (
-          <InlineEditingInput
-            className={styles.smashServerUrl}
-            inputFieldLabel={intl.formatMessage(messages.smashURLSelectLabel)}
-            inputFieldValue={smashServerUrl || ''}
-            inputFieldPlaceholder={intl.formatMessage(
-              messages.smashUrlSelectPlaceholder
-            )}
-            onStartEditing={this.handleUrlStartEditing}
-            onStopEditing={this.handleUrlStopEditing}
-            onCancelEditing={this.handleUrlCancelEditing}
-            onSubmit={this.handleSubmit}
-            isValid={this.handleUrlIsValid}
-            validationErrorMessage={validationErrorMessage}
-            successfullyUpdated={successfullyUpdated}
-            isActive={isActive}
-          />
-        )}
+        <InlineEditingInput
+          className={styles.smashServerUrl}
+          inputFieldLabel={intl.formatMessage(messages.smashURLSelectLabel)}
+          inputFieldValue={smashServerUrl || ''}
+          inputFieldPlaceholder={intl.formatMessage(
+            messages.smashUrlSelectPlaceholder
+          )}
+          onStartEditing={this.handleUrlStartEditing}
+          onStopEditing={this.handleUrlStopEditing}
+          onCancelEditing={this.handleUrlCancelEditing}
+          onSubmit={this.handleSubmit}
+          isValid={this.handleUrlIsValid}
+          validationErrorMessage={validationErrorMessage}
+          successfullyUpdated={successfullyUpdated}
+          isActive={isActive}
+          readOnly={smashServerType !== SMASH_SERVER_TYPES.CUSTOM}
+        />
       </div>
     );
   }

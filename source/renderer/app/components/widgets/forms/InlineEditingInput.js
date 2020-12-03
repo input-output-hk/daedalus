@@ -43,6 +43,8 @@ type Props = {
   validationErrorMessage: string,
   successfullyUpdated: boolean,
   inputBlocked?: boolean,
+  disabled?: boolean,
+  readOnly?: boolean,
   maxLength?: number,
 };
 
@@ -115,6 +117,7 @@ export default class InlineEditingInput extends Component<Props, State> {
   };
 
   onFocus = () => {
+    if (this.props.readOnly) return;
     this.setState({ isActive: true });
     this.props.onStartEditing();
   };
@@ -132,7 +135,12 @@ export default class InlineEditingInput extends Component<Props, State> {
     this.props.onCancelEditing();
   };
 
-  componentDidUpdate() {
+  componentDidUpdate({ inputFieldValue: prevValue }: Props) {
+    const { inputFieldValue: nextValue } = this.props;
+    if (prevValue !== nextValue) {
+      const inputField = this.validator.$('inputField');
+      inputField.set(nextValue);
+    }
     if (this.props.isActive) {
       const { inputBlocked } = this.props;
       // eslint-disable-next-line no-unused-expressions
@@ -151,6 +159,8 @@ export default class InlineEditingInput extends Component<Props, State> {
       inputBlocked,
       maxLength,
       inputFieldPlaceholder,
+      disabled,
+      readOnly,
     } = this.props;
     let { successfullyUpdated } = this.props;
     const { intl } = this.context;
@@ -159,6 +169,7 @@ export default class InlineEditingInput extends Component<Props, State> {
       className,
       styles.component,
       isActive ? null : styles.inactive,
+      readOnly ? styles.readOnly : null,
     ]);
     const inputStyles = classnames([
       successfullyUpdated ? 'input_animateSuccess' : null,
@@ -188,7 +199,8 @@ export default class InlineEditingInput extends Component<Props, State> {
           onBlur={inputField.onBlur}
           onKeyDown={(event) => this.handleInputKeyDown(event)}
           error={isActive || inputBlocked ? inputField.error : null}
-          disabled={!isActive}
+          disabled={!isActive || disabled}
+          readOnly={readOnly}
           ref={(input) => {
             this.inputField = input;
           }}

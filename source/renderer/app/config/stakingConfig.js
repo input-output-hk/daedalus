@@ -4,6 +4,8 @@ import type {
   SmashServerType,
 } from '../types/stakingTypes';
 
+import type { SmashServerStatuses } from '../api/staking/types';
+
 export const SMASH_SERVERS_LIST: {
   [key: SmashServerType]: {
     name: string,
@@ -24,6 +26,15 @@ export const SMASH_SERVER_TYPES: SmashServerType = {
   IOHK: 'iohk',
   ADA_POOLS: 'adaPools',
   CUSTOM: 'custom',
+};
+
+export const SMASH_SERVER_STATUSES: {
+  [key: string]: SmashServerStatuses,
+} = {
+  AVAILABLE: 'available',
+  UNAVAILABLE: 'unavailable',
+  UNREACHABLE: 'unreachable',
+  NO_SMASH_CONFIGURED: 'no_smash_configured',
 };
 
 export const RANKING_SLIDER_RATIO = 60;

@@ -133,9 +133,6 @@ export default class StakingStore extends Store {
   @observable getSmashSettingsRequest: Request<any> = new Request(
     this.api.ada.getSmashSettings
   );
-  @observable checkSmashServerHealthRequest: Request<string> = new Request(
-    this.api.ada.checkSmashServerHealth
-  );
   @observable
   updateSmashSettingsRequest: Request<PoolMetadataSource> = new Request(
     this.api.ada.updateSmashSettings
@@ -147,6 +144,8 @@ export default class StakingStore extends Store {
     const apiPoolMetadataSource = await this.getSmashSettingsRequest.execute();
     let smashServerType;
     let smashServerUrl;
+
+    // If the server wasn't set, sets it for IOHK
     if (
       apiPoolMetadataSource === 'none' ||
       apiPoolMetadataSource === 'direct'
@@ -154,23 +153,29 @@ export default class StakingStore extends Store {
       const poolMetadataSource = SMASH_SERVERS_LIST.iohk.url;
       await this.updateSmashSettingsRequest.execute(poolMetadataSource);
       smashServerType = SMASH_SERVER_TYPES.IOHK;
-    } else {
-      smashServerType = Object.entries(SMASH_SERVERS_LIST).reduce(
-        (result, [serverId, serverInfo]) => {
-          if (apiPoolMetadataSource === serverInfo.url) {
-            result = serverId;
+    }
+
+    // Else runs through the known servers to match the current one
+    // Otherwise it's a custom server
+    else {
+      ({ smashServerType, smashServerUrl } = Object.entries(
+        SMASH_SERVERS_LIST
+      ).reduce(
+        (result, [serverId, { url }]) => {
+          if (apiPoolMetadataSource === url) {
+            result = {
+              smashServerType: serverId,
+              smashServerUrl: url,
+            };
           }
           return result;
         },
-        SMASH_SERVER_TYPES.CUSTOM
-      );
-      if (smashServerType === SMASH_SERVER_TYPES.CUSTOM) {
-        smashServerUrl = poolMetadataSource;
-      }
+        {
+          smashServerType: SMASH_SERVER_TYPES.CUSTOM,
+          smashServerUrl: apiPoolMetadataSource,
+        }
+      ));
     }
-
-    console.log('smashServerType', smashServerType);
-    console.log('smashServerUrl', smashServerUrl);
     runInAction(() => {
       this.smashServerType = smashServerType;
       this.smashServerUrl = smashServerUrl;
@@ -195,14 +200,45 @@ export default class StakingStore extends Store {
   }: {
     smashServerType: SmashServerType,
   }) => {
-    this.smashServerType = smashServerType;
+    this._updateSmashServerTypeUI(smashServerType);
+    const smashServerUrl = get(
+      SMASH_SERVERS_LIST,
+      [smashServerType, 'url'],
+      ''
+    );
+    if (smashServerUrl === '') {
+      this._updateSmashServerUrlUI(smashServerUrl);
+    } else {
+      this._selectSmashServerUrl({ smashServerUrl });
+    }
   };
 
-  @action _selectSmashServerUrl = ({
+  @action _selectSmashServerUrl = async ({
     smashServerUrl,
   }: {
     smashServerUrl: string,
   }) => {
+    const updateSmashServer = await this.updateSmashSettingsRequest.execute(
+      smashServerUrl
+    );
+    console.log('updateSmashServer', updateSmashServer);
+    this._updateSmashServerUrlUI(smashServerUrl);
+    const knownServer = Object.entries(SMASH_SERVERS_LIST).find(
+      ([, { url }]) => url === smashServerUrl
+    );
+    if (knownServer) {
+      this._selectSmashServerType({
+        smashServerType: knownServer[0],
+        skipServerUrl: true,
+      });
+    }
+  };
+
+  @action _updateSmashServerTypeUI = (smashServerType: SmashServerType) => {
+    this.smashServerType = smashServerType;
+  };
+
+  @action _updateSmashServerUrlUI = (smashServerUrl: string) => {
     this.smashServerUrl = smashServerUrl;
   };
 

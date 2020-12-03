@@ -91,7 +91,10 @@ import { filterLogData } from '../../../common/utils/logging';
 
 // Config constants
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
-import { REDEEM_ITN_REWARDS_AMOUNT } from '../config/stakingConfig';
+import {
+  REDEEM_ITN_REWARDS_AMOUNT,
+  SMASH_SERVER_STATUSES,
+} from '../config/stakingConfig';
 import {
   ADA_CERTIFICATE_MNEMONIC_LENGTH,
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
@@ -176,6 +179,7 @@ import type {
   RequestRedeemItnRewardsResponse,
   GetSmashSettingsApiResponse,
   CheckSmashServerHealthResponse,
+  CheckSmashServerHealthApiResponse,
   PoolMetadataSource,
 } from './staking/types';
 import type { StakePoolProps } from '../domains/StakePool';
@@ -1360,11 +1364,16 @@ export default class AdaApi {
 
   checkSmashServerHealth = async (
     url: string
-  ): Promise<CheckSmashServerHealthResponse> => {
+  ): Promise<CheckSmashServerHealthApiResponse> => {
     try {
-      const response = await checkSmashServerHealth(this.config, url);
-      logger.debug('AdaApi::checkSmashServerHealth success', { response });
-      return response;
+      const {
+        health,
+      }: CheckSmashServerHealthApiResponse = await checkSmashServerHealth(
+        this.config,
+        url
+      );
+      logger.debug('AdaApi::checkSmashServerHealth success', { health });
+      return health;
     } catch (error) {
       logger.error('AdaApi::checkSmashServerHealth error', { error });
       throw new ApiError(error);
@@ -1375,6 +1384,10 @@ export default class AdaApi {
     poolMetadataSource: PoolMetadataSource
   ): Promise<any> => {
     try {
+      const health = await this.checkSmashServerHealth(poolMetadataSource);
+      if (health !== SMASH_SERVER_STATUSES.AVAILABLE) {
+        throw new ApiError(error);
+      }
       await updateSmashSettings(this.config, poolMetadataSource);
       logger.debug('AdaApi::updateSmashSettings success', {
         poolMetadataSource,

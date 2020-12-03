@@ -125,6 +125,14 @@ export type GetSmashSettingsResponse = {
 
 export type GetSmashSettingsApiResponse = PoolMetadataSource;
 
-export type CheckSmashServerHealthResponse = {
-  health: 'available' | 'unavailable' | 'unreachable' | 'no_smash_configured',
+export type SmashServerStatuses =
+  | 'available'
+  | 'unavailable'
+  | 'unreachable'
+  | 'no_smash_configured';
+
+export type CheckSmashServerHealthApiResponse = {
+  health: SmashServerStatuses,
 };
+
+export type CheckSmashServerHealthResponse = boolean;

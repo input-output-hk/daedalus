@@ -16,6 +16,18 @@
     }
   }
 
+  &.readOnly {
+    input:read-only {
+      background: var(--rp-input-bg-color-disabled);
+      border: none;
+    }
+    &:hover {
+      input {
+        cursor: text;
+      }
+    }
+  }
+
   .button {
     bottom: 14px;
     color: var(--theme-label-button-color);
