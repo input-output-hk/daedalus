@@ -1,5 +1,6 @@
 // @flow
 import TransportNodeHid from '@ledgerhq/hw-transport-node-hid';
+import { getDevices } from '@ledgerhq/hw-transport-node-hid-noevents';
 import AppAda, {
   cardano,
   utils,
@@ -10,7 +11,7 @@ import TrezorConnect, {
   TRANSPORT_EVENT,
   // $FlowFixMe
 } from 'trezor-connect';
-import { get, omit, last } from 'lodash';
+import { get, omit, last, find, includes } from 'lodash';
 import { derivePublic as deriveChildXpub } from 'cardano-crypto.js';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import {
@@ -130,6 +131,7 @@ class EventObserver {
             const transport = await TransportNodeHid.open(device.path);
             const AdaConnection = new AppAda(transport);
             devicesMemo[device.path] = {
+              device,
               transport,
               AdaConnection,
             };
@@ -263,11 +265,14 @@ export const handleHardwareWalletRequests = async (
           hw = await TransportNodeHid.create();
           transportList = await TransportNodeHid.list();
           lastConnectedPath = last(transportList);
+          const deviceList = getDevices();
+          const device = find(deviceList, ['path', lastConnectedPath]);
           logger.info('[HW-DEBUG] INIT NEW transport - DONE');
 
           // $FlowFixMe
           deviceConnection = new AppAda(hw);
           devicesMemo[lastConnectedPath] = {
+            device,
             transport: hw,
             AdaConnection: deviceConnection,
           };
@@ -428,37 +433,88 @@ export const handleHardwareWalletRequests = async (
         deviceId: deviceSerial.serial,
       });
     } catch (error) {
+      const errorCode = error.code || '';
       const errorName = error.name || 'UknownErrorName';
       const errorMessage = error.message || 'UknownErrorMessage';
-      const isDisconnectError =
-        errorName === 'DisconnectedDevice' ||
-        errorMessage.toLowerCase().includes('cannot write to hid device');
+      const isDeviceDisconnected = errorCode === 'DEVICE_NOT_CONNECTED';
+      const isDisconnectError = errorName === 'DisconnectedDevice';
+      //  errorMessage.toLowerCase().includes('cannot open device with path') ||
+      //  errorMessage.toLowerCase().includes('cannot write to hid device') ||
+      //  errorMessage.toLowerCase().includes('cannot write to closed device');
       logger.info('[HW-DEBUG] ERROR in Cardano App', {
+        path,
         errorName,
         errorMessage,
         isDisconnectError,
-        path,
+        isDeviceDisconnected,
       });
-      if (isDisconnectError && path) {
+      if (path && !isDeviceDisconnected && isDisconnectError) {
+        // $FlowFixMe
+        const oldPath = path;
+        const deviceMemo = devicesMemo[oldPath];
+        const devicePaths = await TransportNodeHid.list();
+        const hasPathChanged = !includes(devicePaths, oldPath);
+        const newPath = hasPathChanged ? last(devicePaths) : oldPath;
+
+        if (!newPath) {
+          logger.info(
+            '[HW-DEBUG] ERROR in Cardano App (Device paths list is empty)',
+            {
+              devicePaths,
+              oldPath,
+              newPath,
+              deviceList: getDevices(),
+            }
+          );
+          // eslint-disable-next-line
+          throw { code: 'NO_DEVICE_PATHS', errorCode, errorName };
+        }
+
+        const { device: oldDevice } = deviceMemo;
+
+        // @TODO - temp removed just for Windows testing
+        // const { device: oldDevice, transport: oldTransport } = deviceMemo;
+        // try {
+        //   await oldTransport.close();
+        // } catch (e) {} // eslint-disable-line
+
+        // $FlowFixMe
+        const newTransport = await TransportNodeHid.open(newPath);
+        const newDeviceConnection = new AppAda(newTransport);
+
+        const deviceList = getDevices();
+        const newDevice = find(deviceList, ['path', newPath]);
+        const hasDeviceChanged = newDevice.productId !== oldDevice.productId;
+
+        // TODO: remove
+        deviceConnection = newDeviceConnection;
+
+        // Purge old device memo
+        devicesMemo = omit(devicesMemo, [oldPath]);
+
         logger.info(
-          '[HW-DEBUG] ERROR in Cardano App (CODE - DisconnectedDevice)'
+          '[HW-DEBUG] ERROR in Cardano App (Re-establish Connection)',
+          {
+            hasPathChanged,
+            hasDeviceChanged,
+            oldPath: oldPath || 'UNKNOWN_PATH',
+            newPath: newPath || 'UNKNOWN_PATH',
+            oldDevice: oldDevice || 'NOT_FOUND',
+            newDevice: newDevice || 'NOT_FOUND',
+          }
         );
 
-        try {
-          const { transport } = devicesMemo[path];
-          await transport.close();
-        } catch (e) {} // eslint-disable-line
-
-        // Mutate / change old connection and force reinitialization once method called again
-        // $FlowFixMe
-        const newTransport = await TransportNodeHid.open(path);
-        deviceConnection = new AppAda(newTransport);
-
         // Update devicesMemo
-        devicesMemo[path] = {
+        devicesMemo[newPath] = {
+          device: newDevice,
           transport: newTransport,
-          AdaConnection: deviceConnection,
+          AdaConnection: newDeviceConnection,
         };
+
+        if (hasPathChanged) {
+          // eslint-disable-next-line
+          throw { code: 'DEVICE_PATH_CHANGED', path: newPath };
+        }
       }
       throw error;
     }

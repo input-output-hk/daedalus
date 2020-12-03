@@ -620,7 +620,7 @@
   "wallet.byron.notification.moveFundsDescription.line2.link.label": "brand new wallet",
   "wallet.byron.notification.moveFundsTitle": "Move funds from \"{activeWalletName}\"",
   "wallet.connect.dialog.button.cancel": "Cancel",
-  "wallet.connect.dialog.instructions": "<p>Daedalus currently supports Ledger Nano S, Ledger Nano X, and Trezor Model T hardware wallet devices.</p><p>If you are <b>pairing your device with Daedalus for the first time</b>, please follow the instructions below.</p><p>If you have <b>already paired your device with Daedalus</b>, you don’t need to repeat this step. Just connect your device when you need to confirm a transaction.</p>",
+  "wallet.connect.dialog.instructions": "<p>Daedalus supports Ledger Nano S, Ledger Nano X, and Trezor Model T hardware wallet devices.</p><p>If you are <b>pairing your device with Daedalus for the first time</b>, please follow the instructions below.</p><p>If you have <b>already paired your device with Daedalus</b>, you don’t need to repeat this step. Just connect your device when you need to confirm a transaction.</p>",
   "wallet.connect.dialog.instructionsTrezorOnly": "<p><b>Daedalus currently supports only Trezor Model T hardware wallet devices.</b></p><p>If you are <b>pairing your device with Daedalus for the first time</b>, please follow the instructions below.</p><p>If you have <b>already paired your device with Daedalus</b>, you don’t need to repeat this step. Just connect your device when you need to confirm a transaction.</p>",
   "wallet.connect.dialog.title": "Pair a hardware wallet device",
   "wallet.create.dialog.configStep": "Config",
