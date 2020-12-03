@@ -88,7 +88,10 @@ import { filterLogData } from '../../../common/utils/logging';
 
 // Config constants
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
-import { MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE, REDEEM_ITN_REWARDS_AMOUNT } from '../config/stakingConfig';
+import {
+  MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE,
+  REDEEM_ITN_REWARDS_AMOUNT,
+} from '../config/stakingConfig';
 import {
   ADA_CERTIFICATE_MNEMONIC_LENGTH,
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
@@ -1348,10 +1351,16 @@ export default class AdaApi {
       amount: walletBalance,
       availableAmount: availableBalance,
     } = wallet;
-    const minRewardsReceiverBalance = new BigNumber(MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE);
-    const amount = walletBalance.lessThan(minRewardsReceiverBalance.times(MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE * 3)) ?
-      formattedAmountToLovelace(walletBalance.toString()) :
-      REDEEM_ITN_REWARDS_AMOUNT;
+    const minRewardsReceiverBalance = new BigNumber(
+      MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE
+    );
+    const amount = walletBalance.lessThan(
+      minRewardsReceiverBalance.times(
+        MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE * 3
+      )
+    )
+      ? formattedAmountToLovelace(walletBalance.toString())
+      : REDEEM_ITN_REWARDS_AMOUNT;
     const payload = {
       address,
       walletId,

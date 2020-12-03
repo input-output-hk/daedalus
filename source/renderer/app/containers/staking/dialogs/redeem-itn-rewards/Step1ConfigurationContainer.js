@@ -37,12 +37,11 @@ const messages = defineMessages({
 export default class Step1ConfigurationContainer extends Component<Props> {
   static defaultProps = DefaultProps;
 
-  onWalletAcceptable = (
-    walletAmount?: BigNumber
-  ) => {
-    const minRewardsFunds = new BigNumber(MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE);
-    return (walletAmount &&
-      walletAmount.gte(minRewardsFunds));
+  onWalletAcceptable = (walletAmount?: BigNumber) => {
+    const minRewardsFunds = new BigNumber(
+      MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE
+    );
+    return walletAmount && walletAmount.gte(minRewardsFunds);
   };
 
   render() {
@@ -68,7 +67,10 @@ export default class Step1ConfigurationContainer extends Component<Props> {
       else errorMessage = messages.errorMinRewardFunds;
     }
     const { openExternalLink } = stores.app;
-    const { onConfigurationContinue, onCalculateRedeemWalletFees } = actions.staking;
+    const {
+      onConfigurationContinue,
+      onCalculateRedeemWalletFees,
+    } = actions.staking;
     return (
       <Step1ConfigurationDialog
         error={errorMessage}

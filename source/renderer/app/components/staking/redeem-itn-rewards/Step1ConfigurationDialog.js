@@ -209,7 +209,7 @@ export default class Step1ConfigurationDialog extends Component<Props> {
 
   submit = () => {
     this.form.submit({
-      onSuccess: () => this.props.onContinue()
+      onSuccess: () => this.props.onContinue(),
     });
   };
 
@@ -248,21 +248,33 @@ export default class Step1ConfigurationDialog extends Component<Props> {
       error,
     } = this.props;
 
-    const calculatedMinRewardsReceiverBalance = new BigNumber(MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE);
+    const calculatedMinRewardsReceiverBalance = new BigNumber(
+      MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE
+    );
 
     let errorMessage;
-    if (!isCalculatingReedemFees && error && error.id === 'staking.redeemItnRewards.step1.errorRestoringWallet')
-      errorMessage = <p className={styles.error}>
-        {intl.formatMessage(error)}
-      </p>;
+    if (
+      !isCalculatingReedemFees &&
+      error &&
+      error.id === 'staking.redeemItnRewards.step1.errorRestoringWallet'
+    )
+      errorMessage = (
+        <p className={styles.error}>{intl.formatMessage(error)}</p>
+      );
 
-    if (!isCalculatingReedemFees && error && error.id === 'staking.redeemItnRewards.step1.errorMessage')
-      errorMessage = <p className={styles.errorMessage}>
-        <FormattedHTMLMessage
-          {...error}
-          values={{calculatedMinRewardsReceiverBalance}}
-        />
-      </p>;
+    if (
+      !isCalculatingReedemFees &&
+      error &&
+      error.id === 'staking.redeemItnRewards.step1.errorMessage'
+    )
+      errorMessage = (
+        <p className={styles.errorMessage}>
+          <FormattedHTMLMessage
+            {...error}
+            values={{ calculatedMinRewardsReceiverBalance }}
+          />
+        </p>
+      );
 
     const recoveryPhraseField = form.$('recoveryPhrase');
     const walletsDropdownField = form.$('walletsDropdown');
