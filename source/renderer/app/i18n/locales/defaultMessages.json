@@ -271,6 +271,20 @@
           "column": 20,
           "line": 102
         }
+      },
+      {
+        "defaultMessage": "!!!This URL is not a valid SMASH server",
+        "description": "\"This URL is not a valid SMASH server\" error message",
+        "end": {
+          "column": 3,
+          "line": 113
+        },
+        "file": "source/renderer/app/api/errors.js",
+        "id": "api.errors.invalidSmashServer",
+        "start": {
+          "column": 22,
+          "line": 109
+        }
       }
     ],
     "path": "source/renderer/app/api/errors.json"
@@ -1987,6 +2001,81 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Off-chain data server (SMASH)",
+        "description": "smashSelectLabel for the \"Smash\" selection on the Stake Pools settings page.",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "settings.stakePools.smash.select.label",
+        "start": {
+          "column": 20,
+          "line": 19
+        }
+      },
+      {
+        "defaultMessage": "!!!Custom server",
+        "description": "smashSelectCustomServer option for the \"Smash\" selection on the Stake Pools settings page.",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "settings.stakePools.smash.select.placeholder",
+        "start": {
+          "column": 27,
+          "line": 25
+        }
+      },
+      {
+        "defaultMessage": "!!!SMASH server URL",
+        "description": "smashURLInputLabel for the \"Smash Custom Server\" selection on the Stake Pools settings page.",
+        "end": {
+          "column": 3,
+          "line": 36
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "settings.stakePools.smashUrl.input.label",
+        "start": {
+          "column": 22,
+          "line": 31
+        }
+      },
+      {
+        "defaultMessage": "!!!Enter custom server",
+        "description": "smashUrlInputPlaceholder for the \"Smash Custom Server\" selection on the Stake Pools settings page.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "settings.stakePools.smashUrl.input.placeholder",
+        "start": {
+          "column": 28,
+          "line": 37
+        }
+      },
+      {
+        "defaultMessage": "!!!Invalid URL",
+        "description": "smashUrlInputInvalidUrl for the \"Smash Custom Server\" selection on the Stake Pools settings page.",
+        "end": {
+          "column": 3,
+          "line": 48
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "settings.stakePools.smashUrl.input.invalidUrl",
+        "start": {
+          "column": 27,
+          "line": 43
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/settings/categories/StakePoolsSettings.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Help and support",
         "description": "Title \"Help and support\" on the support settings page.",
         "end": {
@@ -2146,17 +2235,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Support",
+        "defaultMessage": "!!!Stake Pools",
         "description": "Label for the \"Support\" link in the settings menu.",
         "end": {
           "column": 3,
           "line": 19
         },
         "file": "source/renderer/app/components/settings/menu/SettingsMenu.js",
+        "id": "settings.menu.stakePools.link.label",
+        "start": {
+          "column": 14,
+          "line": 15
+        }
+      },
+      {
+        "defaultMessage": "!!!Support",
+        "description": "Label for the \"Support\" link in the settings menu.",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/components/settings/menu/SettingsMenu.js",
         "id": "settings.menu.support.link.label",
         "start": {
           "column": 11,
-          "line": 15
+          "line": 20
         }
       },
       {
@@ -2164,13 +2267,13 @@
         "description": "Label for the \"Terms of service\" link in the settings menu.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 29
         },
         "file": "source/renderer/app/components/settings/menu/SettingsMenu.js",
         "id": "settings.menu.termsOfUse.link.label",
         "start": {
           "column": 14,
-          "line": 20
+          "line": 25
         }
       },
       {
@@ -2178,13 +2281,13 @@
         "description": "Label for the \"Themes\" link in the settings menu.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 34
         },
         "file": "source/renderer/app/components/settings/menu/SettingsMenu.js",
         "id": "settings.menu.display.link.label",
         "start": {
           "column": 11,
-          "line": 25
+          "line": 30
         }
       }
     ],
@@ -5199,13 +5302,13 @@
         "description": "\"delegatingListTitle\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 31
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.delegatingListTitle",
         "start": {
           "column": 23,
-          "line": 19
+          "line": 27
         }
       },
       {
@@ -5213,13 +5316,13 @@
         "description": "\"listTitle\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 36
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.listTitle",
         "start": {
           "column": 13,
-          "line": 24
+          "line": 32
         }
       },
       {
@@ -5227,13 +5330,13 @@
         "description": "\"listTitle\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 41
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.listTitleWithSearch",
         "start": {
           "column": 23,
-          "line": 29
+          "line": 37
         }
       },
       {
@@ -5241,13 +5344,13 @@
         "description": "Loading stake pool message for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 47
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.loadingStakePoolsMessage",
         "start": {
           "column": 28,
-          "line": 34
+          "line": 42
         }
       }
     ],
