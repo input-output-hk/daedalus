@@ -1,5 +1,6 @@
 // @flow
 import TransportNodeHid from '@ledgerhq/hw-transport-node-hid';
+import { getDevices } from '@ledgerhq/hw-transport-node-hid-noevents';
 // import { identifyUSBProductId } from '@ledgerhq/devices';
 import usb from 'usb';
 import { includes, reject, without } from 'lodash';
@@ -86,6 +87,10 @@ export class HardwareWalletsHandler {
       try {
         await this.updateDevicePaths();
         setInterval(this.updateDevicePaths, UPDATE_DEVICE_PATHS_INTERVAL);
+        setInterval(() => {
+          const devices = getDevices();
+          logger.info('[HW-HANDLER]:devices', { devices });
+        }, UPDATE_DEVICE_PATHS_INTERVAL);
       } catch (error) {
         Object.assign(this._ledger, {
           isSupported: false,
