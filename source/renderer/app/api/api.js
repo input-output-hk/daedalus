@@ -90,7 +90,7 @@ import { filterLogData } from '../../../common/utils/logging';
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 import {
   MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE,
-  REDEEM_ITN_REWARDS_AMOUNT,
+  REWARDS_REDEEM_RECEIVER_AMOUNT,
 } from '../config/stakingConfig';
 import {
   ADA_CERTIFICATE_MNEMONIC_LENGTH,
@@ -713,7 +713,8 @@ export default class AdaApi {
       );
       const fee = _createTransactionFeeFromServerData(response);
       const amountWithFee = formattedTxAmount.plus(fee);
-      if (!Array.isArray(withdrawal) && amountWithFee.gt(walletBalance)) {
+      const isRecoveryPhaseSet = Array.isArray(withdrawal);
+      if (!isRecoveryPhaseSet && amountWithFee.gt(walletBalance)) {
         // Amount + fees exceeds walletBalance:
         // = show "Not enough Ada for fees. Try sending a smaller amount."
         throw new ApiError().result('cannotCoverFee');
@@ -1354,13 +1355,14 @@ export default class AdaApi {
     const minRewardsReceiverBalance = new BigNumber(
       MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE
     );
+    // Amount is set to either Wallet balance, if balance is less then 3 ADA, or 1 ADA in order to correctly calculate transaction fees
     const amount = walletBalance.lessThan(
       minRewardsReceiverBalance.times(
         MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE * 3
       )
     )
       ? formattedAmountToLovelace(walletBalance.toString())
-      : REDEEM_ITN_REWARDS_AMOUNT;
+      : REWARDS_REDEEM_RECEIVER_AMOUNT;
     const payload = {
       address,
       walletId,
@@ -1389,7 +1391,7 @@ export default class AdaApi {
       spendingPassword: passphrase,
       recoveryPhrase: withdrawal,
     } = request;
-    const amount = REDEEM_ITN_REWARDS_AMOUNT;
+    const amount = REWARDS_REDEEM_RECEIVER_AMOUNT;
     try {
       const data = {
         payments: [
