@@ -7,6 +7,10 @@ Changelog
 
 - Added hardware wallet support for "Ledger Nano S" and "Ledger Nano X" on Linux ([PR 2046](https://github.com/input-output-hk/daedalus/pull/2046))
 
+### Features
+
+- Close Newsfeed when clicking anywhere else in the UI ([PR 2250](https://github.com/input-output-hk/daedalus/pull/2250))
+
 ### Fixes
 
 - Fixed empty disk space calculation for some Linux distributions ([PR 2258](https://github.com/input-output-hk/daedalus/pull/2258))
