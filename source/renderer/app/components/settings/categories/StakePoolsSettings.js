@@ -12,6 +12,7 @@ import {
   SMASH_SERVERS_LIST,
   SMASH_SERVER_TYPES,
 } from '../../../config/stakingConfig';
+import LocalizableError from '../../../i18n/LocalizableError';
 import type { SmashServerType } from '../../../types/stakingTypes';
 
 const messages = defineMessages({
@@ -27,23 +28,30 @@ const messages = defineMessages({
     description:
       'smashSelectCustomServer option for the "Smash" selection on the Stake Pools settings page.',
   },
-  smashURLSelectLabel: {
-    id: 'settings.stakePools.smashUrl.select.label',
+  smashURLInputLabel: {
+    id: 'settings.stakePools.smashUrl.input.label',
     defaultMessage: '!!!SMASH server URL',
     description:
-      'smashURLSelectLabel for the "Smash Custom Server" selection on the Stake Pools settings page.',
+      'smashURLInputLabel for the "Smash Custom Server" selection on the Stake Pools settings page.',
   },
-  smashUrlSelectPlaceholder: {
-    id: 'settings.stakePools.smashUrl.select.placeholder',
+  smashUrlInputPlaceholder: {
+    id: 'settings.stakePools.smashUrl.input.placeholder',
     defaultMessage: '!!!Enter custom server',
     description:
-      'smashUrlSelectPlaceholder for the "Smash Custom Server" selection on the Stake Pools settings page.',
+      'smashUrlInputPlaceholder for the "Smash Custom Server" selection on the Stake Pools settings page.',
+  },
+  smashUrlInputInvalidUrl: {
+    id: 'settings.stakePools.smashUrl.input.invalidUrl',
+    defaultMessage: '!!!Invalid URL',
+    description:
+      'smashUrlInputInvalidUrl for the "Smash Custom Server" selection on the Stake Pools settings page.',
   },
 });
 
 type Props = {
   smashServerType: string,
   smashServerUrl?: string,
+  smashServerUrlError: LocalizableError,
   onSelectSmashServerType: Function,
   onSelectSmashServerUrl: Function,
 };
@@ -74,7 +82,6 @@ export default class StakePoolsSettings extends Component<Props> {
     } = this.props;
 
     if (smashServerType === SMASH_SERVER_TYPES.CUSTOM && !smashServerUrl) {
-      console.log('YES PLS!');
       onSelectSmashServerType(SMASH_SERVER_TYPES.IOHK);
     }
   }
@@ -106,6 +113,7 @@ export default class StakePoolsSettings extends Component<Props> {
     const {
       smashServerType,
       smashServerUrl,
+      smashServerUrlError,
       onSelectSmashServerType,
       onSelectSmashServerUrl,
     } = this.props;
@@ -131,8 +139,9 @@ export default class StakePoolsSettings extends Component<Props> {
       smashServerType === smashServerTypeInitial &&
       smashServerUrl !== smashServerUrlInitial;
 
-    // @SMASH TODO
-    const validationErrorMessage = 'Something wrong is not right 🤔';
+    const validationErrorMessage = intl.formatMessage(
+      messages.smashUrlInputInvalidUrl
+    );
 
     return (
       <div className={styles.component}>
@@ -149,10 +158,10 @@ export default class StakePoolsSettings extends Component<Props> {
         />
         <InlineEditingInput
           className={styles.smashServerUrl}
-          inputFieldLabel={intl.formatMessage(messages.smashURLSelectLabel)}
+          inputFieldLabel={intl.formatMessage(messages.smashURLInputLabel)}
           inputFieldValue={smashServerUrl || ''}
           inputFieldPlaceholder={intl.formatMessage(
-            messages.smashUrlSelectPlaceholder
+            messages.smashUrlInputPlaceholder
           )}
           onStartEditing={this.handleUrlStartEditing}
           onStopEditing={this.handleUrlStopEditing}
@@ -164,6 +173,12 @@ export default class StakePoolsSettings extends Component<Props> {
           isActive={isActive}
           readOnly={smashServerType !== SMASH_SERVER_TYPES.CUSTOM}
         />
+
+        {smashServerUrlError && (
+          <p className={styles.smashServerUrlError}>
+            {intl.formatMessage(smashServerUrlError)}
+          </p>
+        )}
       </div>
     );
   }

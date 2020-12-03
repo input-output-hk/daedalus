@@ -1355,7 +1355,6 @@ export default class AdaApi {
       logger.debug('AdaApi::smashSettings success', { poolMetadataSource });
       return poolMetadataSource;
     } catch (error) {
-      console.log('error', error);
       logger.error('AdaApi::smashSettings error', { error });
       throw new ApiError(error);
     }
@@ -1380,20 +1379,21 @@ export default class AdaApi {
 
   updateSmashSettings = async (
     poolMetadataSource: PoolMetadataSource
-  ): Promise<any> => {
+  ): Promise<void> => {
     try {
       const isSmashServerValid = await this.checkSmashServerIsValid(
         poolMetadataSource
       );
       if (!isSmashServerValid) {
+        const error = {
+          code: 'invalid_smash_server',
+        };
         throw new ApiError(error);
       }
-      const update = await updateSmashSettings(this.config, poolMetadataSource);
-      console.log('update sth?', update);
+      await updateSmashSettings(this.config, poolMetadataSource);
       logger.debug('AdaApi::updateSmashSettings success', {
         poolMetadataSource,
       });
-      return poolMetadataSource;
     } catch (error) {
       logger.error('AdaApi::updateSmashSettings error', { error });
       throw new ApiError(error);

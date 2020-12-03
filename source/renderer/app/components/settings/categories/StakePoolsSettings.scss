@@ -1,6 +1,13 @@
+@import '../../../themes/mixins/error-message';
+
 .component {
   margin-bottom: 20px;
 }
 .smashServerUrl {
   margin-top: 20px;
+}
+.smashServerUrlError {
+  @include error-message;
+  margin-bottom: 1rem;
+  text-align: center;
 }

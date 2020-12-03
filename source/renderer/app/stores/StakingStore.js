@@ -47,6 +47,7 @@ export default class StakingStore extends Store {
   // @SMASH TODO: Leave it null until the API response
   @observable smashServerType: ?SmashServerType = 'iohk'; // null;
   @observable smashServerUrl: ?string = null;
+  @observable smashServerUrlError: ?LocalizableError = null;
 
   /* ----------  Redeem ITN Rewards  ---------- */
   @observable redeemStep: ?RedeemItnRewardsStep = null;
@@ -222,21 +223,28 @@ export default class StakingStore extends Store {
   }: {
     smashServerUrl: string,
   }) => {
-    // Updates the Smash Server URL
-    this._updateSmashServerUrlUI(smashServerUrl);
-
-    // For custom server, checks if the user typed a known server
-    if (this.smashServerType === SMASH_SERVER_TYPES.CUSTOM) {
-      const knownServer = Object.entries(SMASH_SERVERS_LIST).find(
-        ([, { url }]) => url === smashServerUrl
-      );
-      if (knownServer) {
-        this._updateSmashServerTypeUI(knownServer[0]);
+    try {
+      // Updates the Smash Server URL
+      this._updateSmashServerUrlUI(smashServerUrl);
+      // For custom server, checks if the user typed a known server
+      if (this.smashServerType === SMASH_SERVER_TYPES.CUSTOM) {
+        const knownServer = Object.entries(SMASH_SERVERS_LIST).find(
+          ([, { url }]) => url === smashServerUrl
+        );
+        if (knownServer) {
+          this._updateSmashServerTypeUI(knownServer[0]);
+        }
       }
+      // Retrieves the API update
+      await this.updateSmashSettingsRequest.execute(smashServerUrl);
+      runInAction(() => {
+        this.smashServerUrlError = null;
+      });
+    } catch (error) {
+      runInAction(() => {
+        this.smashServerUrlError = error;
+      });
     }
-
-    // Retrieves the API update
-    await this.updateSmashSettingsRequest.execute(smashServerUrl);
   };
 
   @action _updateSmashServerTypeUI = (smashServerType: SmashServerType) => {
