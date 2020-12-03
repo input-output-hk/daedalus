@@ -133,6 +133,10 @@ export default class HardwareWalletsStore extends Store {
     this.api.localStorage.setHardwareWalletDevice
   );
   @observable
+  overrideHardwareWalletDevicesRequest: Request<any> = new Request(
+    this.api.localStorage.overrideHardwareWalletDevices
+  );
+  @observable
   unsetHardwareWalletDeviceRequest: Request<HardwareWalletLocalData> = new Request(
     this.api.localStorage.unsetHardwareWalletDevice
   );
@@ -202,15 +206,17 @@ export default class HardwareWalletsStore extends Store {
       await this.hardwareWalletDevicesRequest.execute();
       const storedDevices = this.hardwareWalletDevicesRequest.result;
       logger.debug('[HW-DEBUG] HWStore - storedDevices fetched');
-      // Remove all Ledger devices from LC
-      await Promise.all(
-        map(storedDevices, async (device) => {
-          if (device.deviceType === DeviceTypes.LEDGER) {
-            await this._unsetHardwareWalletDevice({ deviceId: device.id });
-          }
-        })
-      );
-      logger.debug('[HW-DEBUG] HWStore - ALL LEDGERS REMOVED FROM LC');
+
+      const devicesWithoutLedgers = {};
+      map(storedDevices, async (device) => {
+        if (device.deviceType === DeviceTypes.TREZOR) {
+          devicesWithoutLedgers[device.id] = device;
+        }
+      })
+      logger.debug('[HW-DEBUG] HWStore - Remove all LEDGERS from LC');
+      await this.overrideHardwareWalletDevicesRequest.execute(devicesWithoutLedgers);
+
+      logger.debug('[HW-DEBUG] HWStore - Refresh LC');
       await this._refreshHardwareWalletsLocalData();
       await this._refreshHardwareWalletDevices();
 

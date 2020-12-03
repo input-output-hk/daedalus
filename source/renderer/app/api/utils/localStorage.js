@@ -343,6 +343,16 @@ export default class LocalStorageApi {
     return deviceData;
   };
 
+  overrideHardwareWalletDevices = async (
+    data: Object
+  ): Promise<HardwareWalletLocalData> => {
+    await LocalStorageApi.set(
+      keys.HARDWARE_WALLET_DEVICES,
+      data,
+    );
+    return data;
+  };
+
   unsetHardwareWalletDevice = (deviceId: string): Promise<void> =>
     LocalStorageApi.unset(keys.HARDWARE_WALLET_DEVICES, deviceId);
 

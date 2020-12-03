@@ -456,10 +456,13 @@ export const handleHardwareWalletRequests = async (
         const hasPathChanged = !includes(devicePaths, oldPath);
         const newPath = hasPathChanged ? last(devicePaths) : oldPath;
 
-        const { device: oldDevice, transport: oldTransport } = deviceMemo;
-        try {
-          await oldTransport.close();
-        } catch (e) {} // eslint-disable-line
+        const { device: oldDevice } = deviceMemo;
+
+        // @TODO - temp removed just for Windows testing
+        // const { device: oldDevice, transport: oldTransport } = deviceMemo;
+        // try {
+        //   await oldTransport.close();
+        // } catch (e) {} // eslint-disable-line
 
         // $FlowFixMe
         const newTransport = await TransportNodeHid.open(newPath);
