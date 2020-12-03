@@ -60,6 +60,10 @@ export type HardwareWalletsLocalData = {
   [key: string]: HardwareWalletLocalData,
 };
 
+export type HardwareWalletDevicesType = {
+  [key: string]: TransportDevice,
+};
+
 /**
  * This api layer provides access to the electron local storage
  * for user settings that are not synced with any coin backend.
@@ -344,13 +348,13 @@ export default class LocalStorageApi {
   };
 
   overrideHardwareWalletDevices = async (
-    data: Object
-  ): Promise<HardwareWalletLocalData> => {
+    data: HardwareWalletDevicesType
+  ): Promise<void> => {
     await LocalStorageApi.set(
       keys.HARDWARE_WALLET_DEVICES,
       data,
     );
-    return data;
+    return;
   };
 
   unsetHardwareWalletDevice = (deviceId: string): Promise<void> =>

@@ -64,6 +64,7 @@ import type {
 import type {
   HardwareWalletLocalData,
   HardwareWalletsLocalData,
+  HardwareWalletDevicesType,
   SetHardwareWalletLocalDataRequestType,
   SetHardwareWalletDeviceRequestType,
 } from '../api/utils/localStorage';
@@ -133,7 +134,7 @@ export default class HardwareWalletsStore extends Store {
     this.api.localStorage.setHardwareWalletDevice
   );
   @observable
-  overrideHardwareWalletDevicesRequest: Request<any> = new Request(
+  overrideHardwareWalletDevicesRequest: Request<HardwareWalletDevicesType> = new Request(
     this.api.localStorage.overrideHardwareWalletDevices
   );
   @observable
