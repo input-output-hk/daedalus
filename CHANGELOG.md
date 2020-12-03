@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Chores
+
+- Reduced the size of Linux installer ([PR 2260](https://github.com/input-output-hk/daedalus/pull/2260))
+
 ### Features
 
 - Added hardware wallet support for Testnet network ([PR 2264](https://github.com/input-output-hk/daedalus/pull/2264))
