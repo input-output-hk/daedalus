@@ -67,6 +67,7 @@ export const MINIMAL_TREZOR_FIRMWARE_VERSION = '2.3.3';
 export const isTrezorEnabled = true;
 export const isLedgerEnabled = true;
 
-export const isHardwareWalletSupportEnabled = (isMainnet || isTestnet) && (isTrezorEnabled || isLedgerEnabled);
+export const isHardwareWalletSupportEnabled =
+  (isMainnet || isTestnet) && (isTrezorEnabled || isLedgerEnabled);
 
 export const isHardwareWalletIndicatorEnabled = false;

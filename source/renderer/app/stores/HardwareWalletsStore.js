@@ -64,6 +64,7 @@ import type {
 import type {
   HardwareWalletLocalData,
   HardwareWalletsLocalData,
+  HardwareWalletDevicesType,
   SetHardwareWalletLocalDataRequestType,
   SetHardwareWalletDeviceRequestType,
 } from '../api/utils/localStorage';
@@ -131,6 +132,10 @@ export default class HardwareWalletsStore extends Store {
   @observable
   setHardwareWalletDeviceRequest: Request<HardwareWalletLocalData> = new Request(
     this.api.localStorage.setHardwareWalletDevice
+  );
+  @observable
+  overrideHardwareWalletDevicesRequest: Request<HardwareWalletDevicesType> = new Request(
+    this.api.localStorage.overrideHardwareWalletDevices
   );
   @observable
   unsetHardwareWalletDeviceRequest: Request<HardwareWalletLocalData> = new Request(
@@ -202,15 +207,19 @@ export default class HardwareWalletsStore extends Store {
       await this.hardwareWalletDevicesRequest.execute();
       const storedDevices = this.hardwareWalletDevicesRequest.result;
       logger.debug('[HW-DEBUG] HWStore - storedDevices fetched');
-      // Remove all Ledger devices from LC
-      await Promise.all(
-        map(storedDevices, async (device) => {
-          if (device.deviceType === DeviceTypes.LEDGER) {
-            await this._unsetHardwareWalletDevice({ deviceId: device.id });
-          }
-        })
+
+      const devicesWithoutLedgers = {};
+      map(storedDevices, async (device) => {
+        if (device.deviceType === DeviceTypes.TREZOR) {
+          devicesWithoutLedgers[device.id] = device;
+        }
+      });
+      logger.debug('[HW-DEBUG] HWStore - Remove all LEDGERS from LC');
+      await this.overrideHardwareWalletDevicesRequest.execute(
+        devicesWithoutLedgers
       );
-      logger.debug('[HW-DEBUG] HWStore - ALL LEDGERS REMOVED FROM LC');
+
+      logger.debug('[HW-DEBUG] HWStore - Refresh LC');
       await this._refreshHardwareWalletsLocalData();
       await this._refreshHardwareWalletDevices();
 
@@ -584,6 +593,7 @@ export default class HardwareWalletsStore extends Store {
           logger.debug(
             '[HW-DEBUG] HWStore - getCardanoAdaApp - from  establishHardwareWalletConnection'
           );
+          this.stopCardanoAdaAppFetchPoller();
           this.cardanoAdaAppPollingInterval = setInterval(
             (path) => this.getCardanoAdaApp({ path }),
             CARDANO_ADA_APP_POLLING_INTERVAL,
@@ -761,6 +771,7 @@ export default class HardwareWalletsStore extends Store {
         } else if (recognizedWallet) {
           // While Cardano ADA app recognized & existing wallet mathes device ID, set wallet as active
           this.stores.wallets.goToWalletRoute(recognizedWallet.id);
+          this.actions.dialogs.closeActiveDialog.trigger();
           runInAction(
             'HardwareWalletsStore:: set HW device to initial state',
             () => {
@@ -773,7 +784,9 @@ export default class HardwareWalletsStore extends Store {
         }
       }
     } catch (error) {
-      logger.debug('[HW-DEBUG] HWStore - Cardano app fetching error');
+      logger.debug('[HW-DEBUG] HWStore - Cardano app fetching error', {
+        error,
+      });
       if (error.code === 'DEVICE_NOT_CONNECTED') {
         // Special case. E.g. device unplugged before cardano app is opened
         // Stop poller and re-initiate connecting state / don't kill devices listener
@@ -784,6 +797,32 @@ export default class HardwareWalletsStore extends Store {
             this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
             this.isListeningForDevice = true;
           }
+        );
+      } else if (error.code === 'DEVICE_PATH_CHANGED' && error.path) {
+        // Special case on Windows where device path changes after opening Cardano app
+        // Stop poller and re-initiate connecting state / don't kill devices listener
+        this.stopCardanoAdaAppFetchPoller();
+
+        const pairedDevice = find(
+          this.hardwareWalletDevices,
+          (recognizedDevice) => recognizedDevice.path === path
+        );
+
+        await this._setHardwareWalletDevice({
+          deviceId: pairedDevice.id,
+          data: {
+            ...pairedDevice,
+            path: error.path,
+            isPending: false,
+          },
+        });
+
+        this.cardanoAdaAppPollingInterval = setInterval(
+          (devicePath, txWalletId) =>
+            this.getCardanoAdaApp({ path: devicePath, walletId: txWalletId }),
+          CARDANO_ADA_APP_POLLING_INTERVAL,
+          error.path,
+          walletId
         );
       }
       throw error;
@@ -1062,14 +1101,20 @@ export default class HardwareWalletsStore extends Store {
       });
     }
 
+    const { isMainnet } = this.environment;
+
     try {
       const signedTransaction = await signTransactionTrezorChannel.request({
         inputs: inputsData,
         outputs: outputsData,
         fee: formattedAmountToLovelace(fee.toString()).toString(),
-        ttl: '15000000',
-        networkId: global.environment.isMainnet ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId : HW_SHELLEY_CONFIG.NETWORK.TESTNET.networkId,
-        protocolMagic: global.environment.isMainnet ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.trezorProtocolMagic : HW_SHELLEY_CONFIG.NETWORK.TESTNET.trezorProtocolMagic,
+        ttl: '150000000',
+        networkId: isMainnet
+          ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId
+          : HW_SHELLEY_CONFIG.NETWORK.TESTNET.networkId,
+        protocolMagic: isMainnet
+          ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.trezorProtocolMagic
+          : HW_SHELLEY_CONFIG.NETWORK.TESTNET.trezorProtocolMagic,
         certificates: certificatesData,
         devicePath: recognizedDevicePath,
       });
@@ -1201,8 +1246,12 @@ export default class HardwareWalletsStore extends Store {
         outputs: outputsData,
         fee: fee.toString(),
         ttl: ttl.toString(),
-        networkId: global.environment.isMainnet ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId : HW_SHELLEY_CONFIG.NETWORK.TESTNET.networkId,
-        protocolMagic: global.environment.isMainnet ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.protocolMagic : HW_SHELLEY_CONFIG.NETWORK.TESTNET.protocolMagic,
+        networkId: global.environment.isMainnet
+          ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId
+          : HW_SHELLEY_CONFIG.NETWORK.TESTNET.networkId,
+        protocolMagic: global.environment.isMainnet
+          ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.protocolMagic
+          : HW_SHELLEY_CONFIG.NETWORK.TESTNET.protocolMagic,
         certificates: certificatesData,
         withdrawals,
         metadataHashHex,
@@ -1338,6 +1387,7 @@ export default class HardwareWalletsStore extends Store {
         '[HW-DEBUG] HWStore - getCardanoAdaApp - from  initiateTransaction'
       );
       if (walletId) {
+        this.stopCardanoAdaAppFetchPoller();
         this.cardanoAdaAppPollingInterval = setInterval(
           (path, wid) => this.getCardanoAdaApp({ path, walletId: wid }),
           CARDANO_ADA_APP_POLLING_INTERVAL,
