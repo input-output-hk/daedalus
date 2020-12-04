@@ -16,6 +16,7 @@ import {
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import BorderedBox from '../../widgets/BorderedBox';
+import LoadingSpinner from '../../widgets/LoadingSpinner';
 import Tick from './WalletUtxoTick';
 import CustomTooltip from './WalletUtxoTooltip';
 import Cursor from './WalletUtxoCursor';
@@ -77,6 +78,7 @@ type Props = {
   chartData: Array<any>,
   onExternalLinkClick: Function,
   pendingTxnsCount: number,
+  isLoadingInitialUtxoData: boolean,
 };
 
 type State = {
@@ -118,6 +120,7 @@ export default class WalletUtxo extends Component<Props, State> {
   render() {
     const { intl } = this.context;
     const {
+      isLoadingInitialUtxoData,
       walletAmount,
       walletUtxosAmount,
       chartData,
@@ -139,6 +142,12 @@ export default class WalletUtxo extends Component<Props, State> {
         label={intl.formatMessage(messages.findOutMoreLink)}
         skin={LinkSkin}
       />
+    );
+
+    const emptyOrLoadingState = isLoadingInitialUtxoData ? (
+      <LoadingSpinner />
+    ) : (
+      <p>{intl.formatMessage(messages.emptyWallet)}</p>
     );
 
     return (
@@ -225,7 +234,7 @@ export default class WalletUtxo extends Component<Props, State> {
                 {this.renderPendingTxns(pendingTxnsCount)}
               </Fragment>
             ) : (
-              <p>{intl.formatMessage(messages.emptyWallet)}</p>
+              emptyOrLoadingState
             )}
           </div>
         </BorderedBox>
