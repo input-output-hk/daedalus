@@ -16,10 +16,10 @@ export const SMASH_SERVERS_LIST: {
     name: 'IOHK',
     url: 'https://smash.cardano-mainnet.iohk.io',
   },
-  adaPools: {
-    name: 'AdaPools',
-    url: 'https://smash.adapools.org',
-  },
+  // adaPools: {
+  //   name: 'AdaPools',
+  //   url: 'https://smash.adapools.org',
+  // },
 };
 
 export const SMASH_SERVER_TYPES: {
