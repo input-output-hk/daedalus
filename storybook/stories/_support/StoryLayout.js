@@ -23,10 +23,7 @@ import Wallet, {
 } from '../../../source/renderer/app/domains/Wallet.js';
 import NewsFeedIcon from '../../../source/renderer/app/components/widgets/NewsFeedIcon';
 import type { SidebarMenus } from '../../../source/renderer/app/components/sidebar/Sidebar';
-import type {
-  SidebarHardwareWalletType,
-  SidebarWalletType,
-} from '../../../source/renderer/app/types/sidebarTypes';
+import type { SidebarWalletType } from '../../../source/renderer/app/types/sidebarTypes';
 
 // Empty screen elements
 import TopBar from '../../../source/renderer/app/components/layout/TopBar';
@@ -52,14 +49,12 @@ type Props = {
 
 const CATEGORIES_COUNTDOWN = [
   CATEGORIES_BY_NAME.WALLETS,
-  CATEGORIES_BY_NAME.HARDWARE_WALLETS,
   CATEGORIES_BY_NAME.STAKING_DELEGATION_COUNTDOWN,
   CATEGORIES_BY_NAME.SETTINGS,
 ];
 
 const CATEGORIES = [
   CATEGORIES_BY_NAME.WALLETS,
-  CATEGORIES_BY_NAME.HARDWARE_WALLETS,
   CATEGORIES_BY_NAME.STAKING,
   CATEGORIES_BY_NAME.SETTINGS,
 ];
@@ -132,9 +127,7 @@ export default class StoryLayout extends Component<Props> {
   @observable isShowingSubMenus =
     this.props.activeSidebarCategory === '/wallets' && !!this.props.children;
 
-  getSidebarWallets = (
-    wallets: Array<Wallet>
-  ): Array<SidebarWalletType | SidebarHardwareWalletType> =>
+  getSidebarWallets = (wallets: Array<Wallet>): Array<SidebarWalletType> =>
     wallets.map((wallet: Wallet) => ({
       id: wallet.id,
       title: wallet.name,
@@ -153,7 +146,7 @@ export default class StoryLayout extends Component<Props> {
     }));
 
   getSidebarMenus = (
-    items: Array<SidebarWalletType | SidebarHardwareWalletType>,
+    items: Array<SidebarWalletType>,
     activeWalletId: string,
     setActiveWalletId: Function
   ) => ({
@@ -163,14 +156,6 @@ export default class StoryLayout extends Component<Props> {
       actions: {
         onAddWallet: action('toggleAddWallet'),
         onWalletItemClick: setActiveWalletId,
-      },
-    },
-    hardwareWallets: {
-      items,
-      activeWalletId,
-      actions: {
-        onAddWallet: action('toggleAddWallet'),
-        onHardwareWalletItemClick: setActiveWalletId,
       },
     },
   });

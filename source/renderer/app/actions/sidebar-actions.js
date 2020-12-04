@@ -11,5 +11,4 @@ export default class SidebarActions {
     showSubMenu?: boolean,
   }> = new Action();
   walletSelected: Action<{ walletId: string }> = new Action();
-  hardwareWalletSelected: Action<{ walletId: string }> = new Action();
 }

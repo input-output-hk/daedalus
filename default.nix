@@ -5,7 +5,6 @@ in
 { target ? builtins.currentSystem
 , nodeImplementation ? (getDefaultBackend cluster)
 , localLib ? import ./lib.nix { inherit nodeImplementation; }
-, config ? {}
 , cluster ? "mainnet"
 , version ? "versionNotSet"
 , buildNum ? null
@@ -28,6 +27,13 @@ let
     x86_64-windows = lib.systems.examples.mingwW64;
   };
   system = systemTable.${target} or target;
+  config = {
+    packageOverrides = super: {
+      systemd = super.systemd.overrideAttrs ({ patches ? [], ... }: {
+        patches = patches ++ [ ./nix/systemd.patch ];
+      });
+    };
+  };
   pkgs = localLib.iohkNix.getPkgsDefault { inherit system config; };
   pkgsNative = localLib.iohkNix.getPkgsDefault {};
   sources = localLib.sources;

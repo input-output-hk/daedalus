@@ -18,7 +18,7 @@ import {
   RECOVERY_PHRASE_VERIFICATION_TIMES as times,
 } from '../../../config/walletRecoveryPhraseVerificationConfig';
 import { getStatusFromWalletData } from '../../../utils/walletRecoveryPhraseVerificationUtils';
-import { LOCALES } from '../../../../../common/types/locales.types.js';
+import { LOCALES } from '../../../../../common/types/locales.types';
 
 export const messages = defineMessages({
   title: {

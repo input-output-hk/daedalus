@@ -24,7 +24,7 @@ export default class BigButtonForDialogs extends Component<Props> {
       className,
     } = this.props;
     const componentClasses = classnames([
-      className,
+      className ? styles[className] : null,
       styles.component,
       isDisabled ? styles.disabled : null,
     ]);

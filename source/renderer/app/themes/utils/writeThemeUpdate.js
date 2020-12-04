@@ -1,5 +1,5 @@
 // @flow
-import fs from 'fs';
+// import fs from 'fs';
 import path from 'path';
 import type { FormattedConstNames, WriteThemeUpdateParams } from '../types';
 
@@ -47,5 +47,7 @@ export const writeThemeUpdate = ({
     export default createTheme(${themeParams});
   `;
 
-  fs.writeFileSync(THEME_FILE, FILE_CONTENT, {});
+  // @TODO - remove flow fix and move fs to main process
+  // $FlowFixMe
+  fs.writeFileSync(THEME_FILE, FILE_CONTENT, {}); // eslint-disable-line
 };

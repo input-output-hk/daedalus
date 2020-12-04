@@ -222,6 +222,7 @@ export default (props: { currentTheme: string, locale: Locale }) => {
       locale={locale}
       wordCount={number('wordCount', 12)}
       shouldDisplayRecoveryPhrase={boolean('shouldDisplayRecoveryPhrase', true)}
+      isHardwareWallet={false}
     />
   );
 };
