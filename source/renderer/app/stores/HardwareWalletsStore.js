@@ -1101,14 +1101,20 @@ export default class HardwareWalletsStore extends Store {
       });
     }
 
+    const { isMainnet } = this.environment;
+
     try {
       const signedTransaction = await signTransactionTrezorChannel.request({
         inputs: inputsData,
         outputs: outputsData,
         fee: formattedAmountToLovelace(fee.toString()).toString(),
         ttl: '150000000',
-        networkId: HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId,
-        protocolMagic: HW_SHELLEY_CONFIG.NETWORK.MAINNET.protocolMagic,
+        networkId: isMainnet
+          ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId
+          : HW_SHELLEY_CONFIG.NETWORK.TESTNET.networkId,
+        protocolMagic: isMainnet
+          ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.trezorProtocolMagic
+          : HW_SHELLEY_CONFIG.NETWORK.TESTNET.trezorProtocolMagic,
         certificates: certificatesData,
         devicePath: recognizedDevicePath,
       });
@@ -1233,6 +1239,7 @@ export default class HardwareWalletsStore extends Store {
     const ttl = 150000000;
     const withdrawals = [];
     const metadataHashHex = null;
+    const { isMainnet } = this.environment;
 
     try {
       const signedTransaction = await signTransactionLedgerChannel.request({
@@ -1240,8 +1247,12 @@ export default class HardwareWalletsStore extends Store {
         outputs: outputsData,
         fee: fee.toString(),
         ttl: ttl.toString(),
-        networkId: HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId,
-        protocolMagic: HW_SHELLEY_CONFIG.NETWORK.MAINNET.protocolMagic,
+        networkId: isMainnet
+          ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId
+          : HW_SHELLEY_CONFIG.NETWORK.TESTNET.networkId,
+        protocolMagic: isMainnet
+          ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.protocolMagic
+          : HW_SHELLEY_CONFIG.NETWORK.TESTNET.protocolMagic,
         certificates: certificatesData,
         withdrawals,
         metadataHashHex,

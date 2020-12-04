@@ -1,4 +1,4 @@
-const { isMainnet } = global.environment;
+const { isMainnet, isTestnet } = global.environment;
 
 export const HARDENED_HEX = 0x80000000;
 export const HARDENED = 2147483648;
@@ -13,6 +13,15 @@ export const HW_SHELLEY_CONFIG = {
       name: 'mainnet',
       networkId: 1,
       protocolMagic: 764824073,
+      trezorProtocolMagic: 764824073,
+      eraStartSlot: 4492800,
+      ttl: 3600,
+    },
+    TESTNET: {
+      name: 'testnet',
+      networkId: 0,
+      protocolMagic: 42,
+      trezorProtocolMagic: 1097911063,
       eraStartSlot: 4492800,
       ttl: 3600,
     },
@@ -59,6 +68,6 @@ export const isTrezorEnabled = true;
 export const isLedgerEnabled = true;
 
 export const isHardwareWalletSupportEnabled =
-  isMainnet && (isTrezorEnabled || isLedgerEnabled);
+  (isMainnet || isTestnet) && (isTrezorEnabled || isLedgerEnabled);
 
 export const isHardwareWalletIndicatorEnabled = false;

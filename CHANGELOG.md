@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Added hardware wallet support for Testnet network ([PR 2264](https://github.com/input-output-hk/daedalus/pull/2264))
 - Close Newsfeed when clicking anywhere else in the UI ([PR 2250](https://github.com/input-output-hk/daedalus/pull/2250))
 
 ### Fixes
