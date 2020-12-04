@@ -276,7 +276,7 @@
   "settings.menu.stakePools.link.label": "ステークプール",
   "settings.menu.support.link.label": "ユーザーサポート",
   "settings.menu.termsOfUse.link.label": "サービス利用規約",
-  "settings.stakePools.smash.select.label": "オフチェーンメタデータサーバー（SMASH",
+  "settings.stakePools.smash.select.label": "オフチェーンメタデータサーバー（SMASH）",
   "settings.stakePools.smash.select.placeholder": "カスタムサーバー",
   "settings.stakePools.smashUrl.input.invalidUrl": "無効なURL",
   "settings.stakePools.smashUrl.input.label": "SMASHサーバーURL",
