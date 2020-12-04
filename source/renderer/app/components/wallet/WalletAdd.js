@@ -173,7 +173,7 @@ export default class WalletAdd extends Component<Props> {
               icon={importIcon}
               label={intl.formatMessage(messages.importLabel)}
               description={intl.formatMessage(messages.importDescription)}
-              isDisabled1={
+              isDisabled={
                 true || // This feature is currently unavailable as export tool is disabled
                 isMaxNumberOfWalletsReached ||
                 (isProduction && !(isMainnet || isTestnet))
