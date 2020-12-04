@@ -18,7 +18,7 @@ import type { SmashServerType } from '../../../types/stakingTypes';
 const messages = defineMessages({
   smashSelectLabel: {
     id: 'settings.stakePools.smash.select.label',
-    defaultMessage: '!!!Off-chain data server (SMASH)',
+    defaultMessage: '!!!Off-chain metadata server (SMASH)',
     description:
       'smashSelectLabel for the "Smash" selection on the Stake Pools settings page.',
   },
@@ -36,7 +36,7 @@ const messages = defineMessages({
   },
   smashUrlInputPlaceholder: {
     id: 'settings.stakePools.smashUrl.input.placeholder',
-    defaultMessage: '!!!Enter custom server',
+    defaultMessage: '!!!Enter custom server URL',
     description:
       'smashUrlInputPlaceholder for the "Smash Custom Server" selection on the Stake Pools settings page.',
   },

@@ -30,7 +30,7 @@
     line-height: 1.38;
     margin: 20px 0 10px;
     padding-left: 20px;
-    > span {
+    > span:not(.SVGInline) {
       opacity: 0.5;
     }
   }
@@ -38,7 +38,7 @@
   .smashSettings {
     font-size: 16px;
     cursor: pointer;
-    > span {
+    > span:not(.SVGInline) {
       display: inline-block;
       max-width: 570px;
       opacity: 0.5;
