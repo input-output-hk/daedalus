@@ -78,7 +78,7 @@ type Props = {
   chartData: Array<any>,
   onExternalLinkClick: Function,
   pendingTxnsCount: number,
-  isLoadingInitialUtxoData: boolean,
+  isLoadingInitialUtxoData?: boolean,
 };
 
 type State = {
