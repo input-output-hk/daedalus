@@ -45,8 +45,6 @@ export default class StakingStore extends Store {
   @observable selectedDelegationWalletId = null;
   @observable stake = INITIAL_DELEGATION_FUNDS;
   @observable isRanking = false;
-  // @SMASH TODO: Leave it null until the API response
-  @observable smashServerType: ?SmashServerType = 'iohk'; // null;
   @observable smashServerUrl: ?string = null;
   @observable smashServerUrlError: ?LocalizableError = null;
 
@@ -204,6 +202,9 @@ export default class StakingStore extends Store {
   }: {
     smashServerType: SmashServerType,
   }) => {
+    // @SMASH TODO: Implement a isSubmitting state
+    this.smashServerUrl = '...';
+
     // Updates the Smash Server Type UI
     this.smashServerType = smashServerType;
 
@@ -217,7 +218,6 @@ export default class StakingStore extends Store {
         [smashServerType, 'url'],
         ''
       );
-      this.smashServerUrl = smashServerUrl;
       this._selectSmashServerUrl({ smashServerUrl });
     }
   };
@@ -236,6 +236,7 @@ export default class StakingStore extends Store {
         );
         if (knownServer) {
           this.smashServerType = knownServer;
+          this.smashServerUrl = smashServerUrl;
         }
       }
       // Retrieves the API update

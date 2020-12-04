@@ -58,8 +58,9 @@ type Props = {
 
 type State = {
   isActive: boolean,
-  smashServerTypeInitial: SmashServerType,
-  smashServerUrlInitial: ?string,
+  lastValidServerUrl: ?string,
+  lastValidServerType: SmashServerType,
+  prevValidServerType: SmashServerType,
 };
 
 @observer
@@ -70,19 +71,41 @@ export default class StakePoolsSettings extends Component<Props, State> {
 
   state = {
     isActive: false,
-    smashServerTypeInitial: this.props.smashServerType,
-    smashServerUrlInitial: this.props.smashServerUrl,
+    // Last valid type and url
+    lastValidServerUrl: this.props.smashServerUrl,
+    lastValidServerType: this.props.smashServerType,
+    prevValidServerType: this.props.smashServerType,
   };
 
+  componentDidUpdate({ smashServerUrl: prevServerUrl }: Props) {
+    // The `smashServerUrl` prop only changes when it's a valid server
+    // unless it's empty
+    // so we update the `lastValidServerType` and `lastValidServerUrl` states
+    const {
+      smashServerUrl: nextValidServerUrl,
+      smashServerType: nextValidServerType,
+    } = this.props;
+    if (nextValidServerUrl && nextValidServerUrl !== prevServerUrl) {
+      this.setState(({ lastValidServerType }) => ({
+        lastValidServerUrl: nextValidServerUrl,
+        lastValidServerType: nextValidServerType,
+        prevValidServerType: lastValidServerType,
+      }));
+    }
+  }
+
   componentWillUnmount() {
+    // In case the `lastValidServerUrl` prop is empty
+    // we revert to the last valid state
     const {
       smashServerType,
       smashServerUrl,
       onSelectSmashServerType,
     } = this.props;
+    const { lastValidServerType } = this.state;
 
     if (smashServerType === SMASH_SERVER_TYPES.CUSTOM && !smashServerUrl) {
-      onSelectSmashServerType(SMASH_SERVER_TYPES.IOHK);
+      onSelectSmashServerType(lastValidServerType);
     }
   }
 
@@ -102,12 +125,22 @@ export default class StakePoolsSettings extends Component<Props, State> {
 
   handleUrlCancelEditing = () => {
     const { onSelectSmashServerUrl } = this.props;
-    const { smashServerUrlInitial } = this.state;
-    onSelectSmashServerUrl(smashServerUrlInitial);
+    const { lastValidServerUrl } = this.state;
+    onSelectSmashServerUrl(lastValidServerUrl);
     this.setState({ isActive: false });
   };
 
   handleUrlIsValid = (url: string) => isValidUrl(url);
+
+  // @SMASH TODO - Handle the success message
+  handleIsSuccessfullyUpdated = () => {
+    const { smashServerType, smashServerUrl } = this.props;
+    const { isActive, lastValidServerUrl, prevValidServerType } = this.state;
+    if (smashServerType === SMASH_SERVER_TYPES.CUSTOM) {
+      return smashServerUrl && smashServerUrl !== lastValidServerUrl;
+    }
+    return smashServerType !== prevValidServerType;
+  };
 
   render() {
     const {
@@ -116,11 +149,7 @@ export default class StakePoolsSettings extends Component<Props, State> {
       smashServerUrlError,
       onSelectSmashServerType,
     } = this.props;
-    const {
-      isActive,
-      smashServerTypeInitial,
-      smashServerUrlInitial,
-    } = this.state;
+    const { isActive, lastValidServerType, lastValidServerUrl } = this.state;
     const { intl } = this.context;
 
     const smashSelectOptions = [
@@ -133,10 +162,6 @@ export default class StakePoolsSettings extends Component<Props, State> {
         value: SMASH_SERVER_TYPES.CUSTOM,
       },
     ];
-
-    const successfullyUpdated =
-      smashServerType === smashServerTypeInitial &&
-      smashServerUrl !== smashServerUrlInitial;
 
     const validationErrorMessage = intl.formatMessage(
       messages.smashUrlInputInvalidUrl
@@ -168,7 +193,8 @@ export default class StakePoolsSettings extends Component<Props, State> {
           onSubmit={this.handleSubmit}
           isValid={this.handleUrlIsValid}
           validationErrorMessage={validationErrorMessage}
-          successfullyUpdated={successfullyUpdated}
+          successfullyUpdated={false}
+          successfullyUpdatedToDo={this.handleIsSuccessfullyUpdated}
           isActive={isActive}
           readOnly={smashServerType !== SMASH_SERVER_TYPES.CUSTOM}
         />
