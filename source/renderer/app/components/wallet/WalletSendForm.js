@@ -30,6 +30,7 @@ import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWit
 import { NUMBER_FORMATS } from '../../../../common/types/number.types';
 /* eslint-disable consistent-return */
 import { messages as apiErrorMessages } from '../../api/errors';
+import type { HwDeviceStatus } from '../../domains/Wallet';
 
 export const messages = defineMessages({
   titleLabel: {
@@ -113,6 +114,8 @@ type Props = {
   isDialogOpen: Function,
   onExternalLinkClick?: Function,
   isRestoreActive: boolean,
+  hwDeviceStatus: HwDeviceStatus,
+  isHardwareWallet: boolean,
 };
 
 type State = {
@@ -260,6 +263,8 @@ export default class WalletSendForm extends Component<Props, State> {
       isDialogOpen,
       isRestoreActive,
       onExternalLinkClick,
+      hwDeviceStatus,
+      isHardwareWallet,
     } = this.props;
     const {
       isCalculatingTransactionFee,
@@ -355,6 +360,8 @@ export default class WalletSendForm extends Component<Props, State> {
             amountToNaturalUnits={formattedAmountToNaturalUnits}
             currencyUnit={currencyUnit}
             onExternalLinkClick={onExternalLinkClick}
+            hwDeviceStatus={hwDeviceStatus}
+            isHardwareWallet={isHardwareWallet}
           />
         ) : null}
       </div>

@@ -30,7 +30,7 @@ export default class Root extends Component<Props> {
     const { isStakingPage, redeemStep } = staking;
     const { isProfilePage, isSettingsPage } = profile;
     const { displayAppUpdateOverlay } = appUpdate;
-    const { hasLoadedWallets, isHardwareWalletRoute } = wallets;
+    const { hasLoadedWallets } = wallets;
     const {
       isConnected,
       isNodeStopping,
@@ -43,9 +43,7 @@ export default class Root extends Component<Props> {
 
     const isWalletImportDialogOpen = uiDialogs.isOpen(WalletImportFileDialog);
     const isPageThatDoesntNeedWallets =
-      (isStakingPage || isSettingsPage || isHardwareWalletRoute) &&
-      hasLoadedWallets &&
-      isConnected;
+      (isStakingPage || isSettingsPage) && hasLoadedWallets && isConnected;
 
     // In case node is in stopping sequence we must show the "Connecting" screen
     // with the "Stopping Cardano node..." and "Cardano node stopped" messages
@@ -61,7 +59,7 @@ export default class Root extends Component<Props> {
       return <SplashNetworkPage />;
     }
 
-    if (redeemStep !== null) {
+    if (!isNodeInStoppingSequence && redeemStep !== null) {
       return <RedeemItnRewardsContainer />;
     }
 

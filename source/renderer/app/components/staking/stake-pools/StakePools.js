@@ -69,6 +69,7 @@ type Props = {
   onSmashSettingsClick: Function,
   smashServerType: SmashServerType,
   smashServerUrl: string,
+  maxDelegationFunds: number,
 };
 
 type State = {
@@ -146,6 +147,7 @@ export default class StakePools extends Component<Props, State> {
       smashServerType,
       smashServerUrl,
       onSmashSettingsClick,
+      maxDelegationFunds,
     } = this.props;
     const {
       search,
@@ -225,6 +227,8 @@ export default class StakePools extends Component<Props, State> {
               isRanking={isRanking}
               numberOfStakePools={stakePoolsList.length}
               getStakePoolById={getStakePoolById}
+              maxDelegationFunds={maxDelegationFunds}
+              maxDelegationFundsLog={Math.log(maxDelegationFunds)}
             />
             <StakePoolsSearch
               search={search}

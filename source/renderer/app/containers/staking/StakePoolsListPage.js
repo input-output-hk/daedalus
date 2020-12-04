@@ -67,6 +67,7 @@ export default class StakePoolsListPage extends Component<Props> {
       getStakePoolById,
       smashServerType,
       smashServerUrl,
+      maxDelegationFunds,
     } = staking;
     const { all } = wallets;
     const isLoading =
@@ -94,6 +95,7 @@ export default class StakePoolsListPage extends Component<Props> {
           smashServerType={smashServerType || SMASH_SERVER_TYPES.IOHK}
           smashServerUrl={smashServerUrl || ''}
           onSmashSettingsClick={this.handleSmashSettingsClick}
+          maxDelegationFunds={maxDelegationFunds}
         />
         {isRanking && <StakePoolsRankingLoader />}
         {uiDialogs.isOpen(DelegationSetupWizardDialog) ? (
