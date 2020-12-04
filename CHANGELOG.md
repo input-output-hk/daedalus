@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Fixes
+
+- Added initial loading state to UTXO page [PR 2265](https://github.com/input-output-hk/daedalus/pull/2265)
+
 ## 3.0.0
 
 ### Features
