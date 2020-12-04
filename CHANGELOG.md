@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## vNext
+## 2.6.0
 
 ### Features
 
