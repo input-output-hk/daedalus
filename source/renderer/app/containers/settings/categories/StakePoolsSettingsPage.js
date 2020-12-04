@@ -18,18 +18,18 @@ export default class StakePoolsSettingsPage extends Component<InjectedProps> {
       smashServerUrlError,
     } = stores.staking;
     const { selectSmashServerType, selectSmashServerUrl } = actions.staking;
-    // If `smashServerType` is null, waits for it to be set
-    if (!smashServerType) return false;
+    // If `smashServerType` or `smashServerUrl` is null, waits for it to be set
+    if (!smashServerType || !smashServerUrl) return false;
     return (
       <StakePoolsSettings
         smashServerType={smashServerType}
         smashServerUrl={smashServerUrl}
         smashServerUrlError={smashServerUrlError}
-        onSelectSmashServerType={(smashServerType: SmashServerType) =>
-          selectSmashServerType.trigger({ smashServerType })
+        onSelectSmashServerType={(type: SmashServerType) =>
+          selectSmashServerType.trigger({ smashServerType: type })
         }
-        onSelectSmashServerUrl={(smashServerUrl: string) =>
-          selectSmashServerUrl.trigger({ smashServerUrl })
+        onSelectSmashServerUrl={(url: string) =>
+          selectSmashServerUrl.trigger({ smashServerUrl: url })
         }
       />
     );

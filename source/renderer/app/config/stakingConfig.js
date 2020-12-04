@@ -22,7 +22,9 @@ export const SMASH_SERVERS_LIST: {
   },
 };
 
-export const SMASH_SERVER_TYPES: SmashServerType = {
+export const SMASH_SERVER_TYPES: {
+  [key: string]: SmashServerType | 'custom',
+} = {
   IOHK: 'iohk',
   ADA_POOLS: 'adaPools',
   CUSTOM: 'custom',

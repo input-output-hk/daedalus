@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import classnames from 'classnames';
+import { map } from 'lodash';
 import { Select } from 'react-polymorph/lib/components/Select';
 import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import { observer } from 'mobx-react';
@@ -49,9 +49,9 @@ const messages = defineMessages({
 });
 
 type Props = {
-  smashServerType: string,
+  smashServerType: SmashServerType,
   smashServerUrl?: string,
-  smashServerUrlError: LocalizableError,
+  smashServerUrlError: ?LocalizableError,
   onSelectSmashServerType: Function,
   onSelectSmashServerUrl: Function,
 };
@@ -63,7 +63,7 @@ type State = {
 };
 
 @observer
-export default class StakePoolsSettings extends Component<Props> {
+export default class StakePoolsSettings extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -87,10 +87,9 @@ export default class StakePoolsSettings extends Component<Props> {
   }
 
   handleSubmit = (url: string) => {
-    if (!isValidUrl(url)) {
-      return false;
+    if (isValidUrl(url)) {
+      this.props.onSelectSmashServerUrl(url);
     }
-    this.props.onSelectSmashServerUrl(url);
   };
 
   handleUrlStartEditing = () => {
@@ -116,7 +115,6 @@ export default class StakePoolsSettings extends Component<Props> {
       smashServerUrl,
       smashServerUrlError,
       onSelectSmashServerType,
-      onSelectSmashServerUrl,
     } = this.props;
     const {
       isActive,
@@ -126,7 +124,7 @@ export default class StakePoolsSettings extends Component<Props> {
     const { intl } = this.context;
 
     const smashSelectOptions = [
-      ...Object.entries(SMASH_SERVERS_LIST).map(([value, { name: label }]) => ({
+      ...map(SMASH_SERVERS_LIST, ({ name: label }, value) => ({
         label,
         value,
       })),
@@ -150,8 +148,8 @@ export default class StakePoolsSettings extends Component<Props> {
           label={intl.formatMessage(messages.smashSelectLabel)}
           value={smashServerType}
           options={smashSelectOptions}
-          onChange={(smashServerType: SmashServerType) => {
-            onSelectSmashServerType(smashServerType);
+          onChange={(type: SmashServerType) => {
+            onSelectSmashServerType(type);
           }}
           skin={SelectSkin}
           className={styles.select}

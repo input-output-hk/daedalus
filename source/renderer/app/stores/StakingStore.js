@@ -2,7 +2,7 @@
 import { computed, action, observable, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
 import path from 'path';
-import { orderBy, find, map, get } from 'lodash';
+import { orderBy, find, map, get, findKey } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { ROUTES } from '../routes-config';
@@ -22,6 +22,7 @@ import type {
   RewardForIncentivizedTestnet,
   JoinStakePoolRequest,
   GetDelegationFeeRequest,
+  QuitStakePoolRequest,
   PoolMetadataSource,
 } from '../api/staking/types';
 import Wallet from '../domains/Wallet';
@@ -143,8 +144,8 @@ export default class StakingStore extends Store {
 
   @action _getSmashSettingsRequest = async () => {
     const apiPoolMetadataSource = await this.getSmashSettingsRequest.execute();
-    let smashServerType;
-    let smashServerUrl;
+    let smashServerType: SmashServerType = SMASH_SERVER_TYPES.CUSTOM;
+    let smashServerUrl: string = '';
 
     // If the server wasn't set, sets it for IOHK
     if (
@@ -159,6 +160,8 @@ export default class StakingStore extends Store {
     // Else runs through the known servers to match the current one
     // Otherwise it's a custom server
     else {
+      // const smasgServerList: =
+
       ({ smashServerType, smashServerUrl } = Object.entries(
         SMASH_SERVERS_LIST
       ).reduce(
@@ -227,11 +230,12 @@ export default class StakingStore extends Store {
     try {
       // For custom server, checks if the user typed a known server
       if (this.smashServerType === SMASH_SERVER_TYPES.CUSTOM) {
-        const knownServer = Object.entries(SMASH_SERVERS_LIST).find(
-          ([, { url }]) => url === smashServerUrl
+        const knownServer = findKey(
+          SMASH_SERVERS_LIST,
+          ({ url }: { url: string }) => url === smashServerUrl
         );
         if (knownServer) {
-          this.smashServerType = knownServer[0];
+          this.smashServerType = knownServer;
         }
       }
       // Retrieves the API update

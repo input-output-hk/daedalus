@@ -189,11 +189,7 @@ export default class StakePools extends Component<Props, State> {
         : SMASH_SERVERS_LIST[smashServerType].name;
 
     const smashSettings = smashServer && (
-      <button
-        role="presentation"
-        onClick={onSmashSettingsClick}
-        className={styles.smashSettings}
-      >
+      <button onClick={onSmashSettingsClick} className={styles.smashSettings}>
         <span>&nbsp;- {smashServer}</span>
         <SVGInline
           svg={smashSettingsIcon}

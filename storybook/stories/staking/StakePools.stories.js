@@ -45,5 +45,8 @@ export const StakePoolsStory = (props: Props) => (
     rankStakePools={() => null}
     wallets={dummyWallets}
     getStakePoolById={() => null}
+    onSmashSettingsClick={action('onSmashSettingsClick')}
+    smashServerType="iohk"
+    smashServerUrl="https://smash.cardano-mainnet.iohk.io"
   />
 );

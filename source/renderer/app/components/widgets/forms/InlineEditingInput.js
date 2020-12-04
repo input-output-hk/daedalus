@@ -94,11 +94,12 @@ export default class InlineEditingInput extends Component<Props, State> {
     this.validator.submit({
       onSuccess: (form) => {
         const { inputField } = form.values();
+        const { onSubmit, onStopEditing, onCancelEditing } = this.props;
         if (inputField !== this.props.inputFieldValue) {
-          this.props.onSubmit(inputField);
-          this.props.onStopEditing();
+          onSubmit(inputField);
+          if (onStopEditing) onStopEditing();
         } else {
-          this.props.onCancelEditing();
+          onCancelEditing();
         }
         this.setState({ isActive: false });
       },
@@ -117,9 +118,10 @@ export default class InlineEditingInput extends Component<Props, State> {
   };
 
   onFocus = () => {
+    const { onStartEditing } = this.props;
     if (this.props.readOnly) return;
     this.setState({ isActive: true });
-    this.props.onStartEditing();
+    if (onStartEditing) onStartEditing();
   };
 
   onBlur = () => {
