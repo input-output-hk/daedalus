@@ -9,6 +9,7 @@ Changelog
 
 ### Fixes
 
+- Fixed removal of stake pools which have been delisted on SMASH ([PR 2263](https://github.com/input-output-hk/daedalus/pull/2263))
 - Fixed error message and validation on redeem rewards screen ([PR 2220](https://github.com/input-output-hk/daedalus/pull/2220))
 - Fixed empty disk space calculation for some Linux distributions ([PR 2258](https://github.com/input-output-hk/daedalus/pull/2258))
 - Fixed the overlap of the "X" button in the stake pools search box ([PR 2251](https://github.com/input-output-hk/daedalus/pull/2251))

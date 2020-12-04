@@ -8,6 +8,9 @@ export type DelegationAction =
   | 'removeDelegation'
   | 'delegate';
 
+export type AdaApiStakePoolFlag = 'delisted';
+export type AdaApiStakePoolFlags = Array<AdaApiStakePoolFlag>;
+
 export type AdaApiStakePool = {
   id: string,
   metrics: {
@@ -47,6 +50,7 @@ export type AdaApiStakePool = {
     epoch_number: number,
     epoch_start_time: string,
   },
+  flags: AdaApiStakePoolFlags,
 };
 export type AdaApiStakePools = Array<AdaApiStakePool>;
 
