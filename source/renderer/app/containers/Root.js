@@ -59,7 +59,7 @@ export default class Root extends Component<Props> {
       return <SplashNetworkPage />;
     }
 
-    if (redeemStep !== null) {
+    if (!isNodeInStoppingSequence && redeemStep !== null) {
       return <RedeemItnRewardsContainer />;
     }
 

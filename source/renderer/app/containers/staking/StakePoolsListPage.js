@@ -57,6 +57,7 @@ export default class StakePoolsListPage extends Component<Props> {
       fetchingStakePoolsFailed,
       recentStakePools,
       getStakePoolById,
+      maxDelegationFunds,
     } = staking;
     const { all } = wallets;
     const isLoading =
@@ -81,6 +82,7 @@ export default class StakePoolsListPage extends Component<Props> {
           isLoading={isLoading}
           isRanking={isRanking}
           getStakePoolById={getStakePoolById}
+          maxDelegationFunds={maxDelegationFunds}
         />
         {isRanking && <StakePoolsRankingLoader />}
         {uiDialogs.isOpen(DelegationSetupWizardDialog) ? (

@@ -58,6 +58,7 @@ type Props = {
   isRanking: boolean,
   stakePoolsDelegatingList: Array<StakePool>,
   getStakePoolById: Function,
+  maxDelegationFunds: number,
 };
 
 type State = {
@@ -132,6 +133,7 @@ export default class StakePools extends Component<Props, State> {
       isRanking,
       stakePoolsDelegatingList,
       getStakePoolById,
+      maxDelegationFunds,
     } = this.props;
     const {
       search,
@@ -196,6 +198,8 @@ export default class StakePools extends Component<Props, State> {
               isRanking={isRanking}
               numberOfStakePools={stakePoolsList.length}
               getStakePoolById={getStakePoolById}
+              maxDelegationFunds={maxDelegationFunds}
+              maxDelegationFundsLog={Math.log(maxDelegationFunds)}
             />
             <StakePoolsSearch
               search={search}
