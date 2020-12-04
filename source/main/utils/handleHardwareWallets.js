@@ -5,6 +5,7 @@ import { getDevices } from '@ledgerhq/hw-transport-node-hid-noevents';
 import usb from 'usb';
 import { includes, reject, without } from 'lodash';
 import { logger } from './logging';
+import { getDebugDataChannel } from '../ipc/getDebugDataChannel';
 
 // Types
 export type LedgerState = 'plugged_in' | 'unlocked' | 'ready';
@@ -15,7 +16,7 @@ export type LedgerError = {
 };
 
 // Constants
-const UPDATE_DEVICE_PATHS_INTERVAL = 500; // unit: ms
+const UPDATE_DEVICE_INFO_INTERVAL = 500; // unit: ms
 export const LEDGER_STATES: {
   PLUGGED_IN: LedgerState,
   UNLOCKED: LedgerState,
@@ -40,6 +41,7 @@ export class HardwareWalletsHandler {
     isReady: ?boolean,
     devicePaths: Array<string>,
     devices: Array<Object>, // TODO: Introduce Device type
+    rawDevices: Array<Object>, // TODO: Introduce Raw Device type
     observer: ?Function,
     error: ?LedgerError,
   } = {
@@ -48,6 +50,7 @@ export class HardwareWalletsHandler {
     isReady: null,
     devicePaths: [],
     devices: [],
+    rawDevices: [],
     observer: null,
     error: null,
   };
@@ -58,6 +61,9 @@ export class HardwareWalletsHandler {
 
   constructor() {
     logger.info('[HW-HANDLER]:constructor', { ledger: this._ledger });
+    getDebugDataChannel.onRequest(() =>
+      Promise.resolve(JSON.stringify({ data: this._ledger }))
+    );
   }
 
   initialize = async () => {
@@ -85,12 +91,8 @@ export class HardwareWalletsHandler {
 
     if (this._ledger.isSupported) {
       try {
-        await this.updateDevicePaths();
-        setInterval(this.updateDevicePaths, UPDATE_DEVICE_PATHS_INTERVAL);
-        setInterval(() => {
-          const devices = getDevices();
-          logger.info('[HW-HANDLER]:devices', { devices });
-        }, UPDATE_DEVICE_PATHS_INTERVAL);
+        await this.updateDevicesInfo();
+        setInterval(this.updateDevicesInfo, UPDATE_DEVICE_INFO_INTERVAL);
       } catch (error) {
         Object.assign(this._ledger, {
           isSupported: false,
@@ -120,24 +122,13 @@ export class HardwareWalletsHandler {
     logger.info('[HW-HANDLER]:initialize', { ledger: this._ledger });
   };
 
-  updateDevicePaths = async () => {
-    logger.info('[HW-HANDLER]:updateDevicePaths:start', {
-      devicePaths: this._ledger.devicePaths,
-    });
+  updateDevicesInfo = async () => {
     // $FlowFixMe
     this._ledger.devicePaths = await TransportNodeHid.list();
-    logger.info('[HW-HANDLER]:updateDevicePaths:end', {
-      devicePaths: this._ledger.devicePaths,
-    });
+    this._ledger.rawDevices = getDevices();
   };
 
   updateDevices = (device: Object, action: 'add' | 'remove') => {
-    logger.info('[HW-HANDLER]:updateDevices:start', {
-      action,
-      device,
-      devices: this._ledger.devices,
-      devicePaths: this._ledger.devicePaths,
-    });
     if (action === 'add') {
       this._ledger.devices.push(device);
       if (!includes(this._ledger.devicePaths, device.path)) {
@@ -154,11 +145,12 @@ export class HardwareWalletsHandler {
         );
       }
     }
-    logger.info('[HW-HANDLER]:updateDevices:end', {
+    logger.info('[HW-HANDLER]:updateDevices', {
       action,
       device,
       devices: this._ledger.devices,
       devicePaths: this._ledger.devicePaths,
+      rawDevices: this._ledger.rawDevices,
     });
   };
 }

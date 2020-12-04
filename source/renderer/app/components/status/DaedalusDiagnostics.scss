@@ -390,3 +390,30 @@ button.stateDirectoryOpenBtn {
   padding: 0;
   width: 36px;
 }
+
+.debugData {
+  background: rgba(0, 0, 0, 0.95);
+  border-radius: 5px;
+  bottom: 60px;
+  color: #fff;
+  font-family: var(--font-medium);
+  font-size: 14px;
+  left: 60px;
+  line-height: 1.5;
+  overflow-wrap: break-word;
+  overflow-x: auto;
+  padding: 20px;
+  position: fixed;
+  right: 60px;
+  top: 60px;
+
+  .debugDataRow {
+    b {
+      font-family: var(--font-bold);
+    }
+
+    & + .debugDataRow {
+      margin-top: 10px;
+    }
+  }
+}

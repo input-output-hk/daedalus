@@ -459,3 +459,7 @@ export type deriveXpubMainResponse = string;
 export const RESET_ACTION_TREZOR_CHANNEL = 'RESET_ACTION_TREZOR_CHANNEL';
 export type resetTrezorActionRendererRequest = void;
 export type resetTrezorActionMainResponse = void;
+
+export const GET_DEBUG_DATA_CHANNEL = 'GET_DEBUG_DATA_CHANNEL';
+export type GetDebugDataRendererRequest = void;
+export type GetDebugDataMainResponse = any;

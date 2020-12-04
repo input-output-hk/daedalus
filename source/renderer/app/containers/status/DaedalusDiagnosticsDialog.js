@@ -29,7 +29,7 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
     const { actions, stores } = this.props;
     const { closeDaedalusDiagnosticsDialog } = actions.app;
     const { restartNode } = actions.networkStatus;
-    const { app, networkStatus } = stores;
+    const { app, networkStatus, hardwareWallets } = stores;
     const { openExternalLink } = app;
     const {
       // Node state
@@ -58,6 +58,7 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
       stateDirectoryPath,
       getNetworkClockRequest,
     } = networkStatus;
+    const { debugData } = hardwareWallets;
 
     const systemInfo = {
       platform: environment.os,
@@ -105,6 +106,7 @@ export default class DaedalusDiagnosticsDialog extends Component<Props> {
         ariaHideApp={false}
       >
         <DaedalusDiagnostics
+          debugData={debugData}
           systemInfo={systemInfo}
           coreInfo={coreInfo}
           cardanoNodeState={cardanoNodeState}

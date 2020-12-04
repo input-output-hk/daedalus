@@ -339,6 +339,7 @@ const messages = defineMessages({
 });
 
 type Props = {
+  debugData?: Object,
   systemInfo: SystemInfo,
   coreInfo: CoreSystemInfo,
   cardanoNodeState: ?CardanoNodeState,
@@ -451,6 +452,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
     const { intl } = this.context;
 
     const {
+      debugData,
       systemInfo,
       coreInfo,
       cardanoNodeState,
@@ -775,6 +777,17 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
               {getRow('cardanoNodeInSync', isNodeInSync)}
             </div>
           </div>
+        </div>
+
+        <div className={styles.debugData}>
+          {debugData &&
+            Object.keys(debugData.data).map((key) => (
+              <div key={key} className={styles.debugDataRow}>
+                <b>{key}:</b>
+                <br />
+                {JSON.stringify(debugData.data[key])}
+              </div>
+            ))}
         </div>
       </div>
     );
