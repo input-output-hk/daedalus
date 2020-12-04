@@ -40,7 +40,7 @@ export const Step1ConfigurationDialogStory = () => {
       wallets={WALLETS}
       wallet={redeemWallet}
       isWalletValid={boolean('isWalletValid')}
-      isSubmitting={boolean('isSubmitting')}
+      isCalculatingReedemFees={boolean('isCalculatingReedemFees')}
       syncPercentage={99.55}
       mnemonicValidator={isValidMnemonic}
       onSelectWallet={action('onSelectWallet')}

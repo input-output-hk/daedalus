@@ -29,6 +29,7 @@ export const filterLogData = (data: Object): Object => {
     'recoveryPhrase',
     'passphrase',
     'password',
+    'withdrawal',
   ];
   return omitDeep(data, ...sensitiveData);
 };
