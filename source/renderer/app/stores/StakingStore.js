@@ -14,6 +14,7 @@ import {
   STAKE_POOLS_FAST_INTERVAL,
   REDEEM_ITN_REWARDS_STEPS as steps,
   INITIAL_DELEGATION_FUNDS,
+  CIRCULATING_SUPPLY,
 } from '../config/stakingConfig';
 import type {
   Reward,
@@ -307,6 +308,11 @@ export default class StakingStore extends Store {
 
   @computed get isStakingPage(): boolean {
     return this.currentRoute.indexOf(ROUTES.STAKING.ROOT) > -1;
+  }
+
+  @computed get maxDelegationFunds(): number {
+    const { desiredPoolNumber } = this.stores.networkStatus;
+    return Math.round(CIRCULATING_SUPPLY / desiredPoolNumber);
   }
 
   @computed get stakePools(): Array<StakePool> {

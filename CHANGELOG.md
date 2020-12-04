@@ -13,6 +13,11 @@ Changelog
 - Fixed empty disk space calculation for some Linux distributions ([PR 2258](https://github.com/input-output-hk/daedalus/pull/2258))
 - Fixed the overlap of the "X" button in the stake pools search box ([PR 2251](https://github.com/input-output-hk/daedalus/pull/2251))
 
+### Chores
+
+- Improved maximum delegation stake amount calculation ([PR 2262](https://github.com/input-output-hk/daedalus/pull/2262))
+- Updated `cardano-wallet` to version `2020-11-26` ([PR 2262](https://github.com/input-output-hk/daedalus/pull/2262))
+
 ## 2.5.0
 
 ### Features
