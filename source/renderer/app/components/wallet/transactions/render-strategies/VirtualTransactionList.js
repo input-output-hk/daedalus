@@ -53,14 +53,6 @@ export class VirtualTransactionList extends Component<Props> {
     window.removeEventListener('resize', this.onResize);
   }
 
-  componentDidUpdate(prevProps: Props) {
-    const { rows } = this.props;
-    if (rows.length !== prevProps.rows.length) {
-      this.rowHeights = this.estimateRowHeights(rows);
-      this.recomputeVirtualRowHeights();
-    }
-  }
-
   /**
    * Returns the row index of a given tx.
    */
@@ -305,6 +297,11 @@ export class VirtualTransactionList extends Component<Props> {
 
     // Prevent List rendering if we have no rows to render
     if (!rows.length) return false;
+
+    if (rows.length !== this.rowHeights.length) {
+      this.rowHeights = this.estimateRowHeights(rows);
+      this.updateVisibleExpandedTxRowHeights();
+    }
 
     const componentStyles = classNames([
       styles.component,
