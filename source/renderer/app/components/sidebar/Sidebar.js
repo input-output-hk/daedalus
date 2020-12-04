@@ -7,7 +7,7 @@ import styles from './Sidebar.scss';
 import SidebarCategory from './SidebarCategory';
 import SidebarCategoryNetworkInfo from './SidebarCategoryNetworkInfo';
 import SidebarWalletsMenu from './wallets/SidebarWalletsMenu';
-import { CATEGORIES_BY_NAME } from '../../config/sidebarConfig.js';
+import { CATEGORIES_BY_NAME } from '../../config/sidebarConfig';
 import { ROUTES } from '../../routes-config';
 import type { networkType } from '../../types/networkTypes';
 import type { SidebarCategoryInfo } from '../../config/sidebarConfig';

@@ -5,13 +5,12 @@ import type {
 } from '../types/stakingTypes';
 
 export const RANKING_SLIDER_RATIO = 60;
-export const MIN_DELEGATION_FUNDS_LOG = Math.log(10);
 export const MIN_DELEGATION_FUNDS = 10;
-export const INITIAL_DELEGATION_FUNDS_LOG = Math.log(1000);
+export const MIN_DELEGATION_FUNDS_LOG = Math.log(MIN_DELEGATION_FUNDS);
 export const INITIAL_DELEGATION_FUNDS = 1000;
-export const MAX_DELEGATION_FUNDS_LOG = Math.log(220000000);
-export const MAX_DELEGATION_FUNDS = 220000000;
-export const OUT_OF_RANGE_MAX_DELEGATION_FUNDS = 33000000000;
+export const INITIAL_DELEGATION_FUNDS_LOG = Math.log(INITIAL_DELEGATION_FUNDS);
+export const INITIAL_DESIRED_POOLS_NUMBER = 150;
+export const CIRCULATING_SUPPLY = 31736470500;
 export const ALL_WALLETS_SELECTION_ID = '0';
 
 // Dimensions
@@ -41,11 +40,11 @@ export const STAKE_POOL_TRANSACTION_CHECK_INTERVAL = 1 * 1000; // 1 second | uni
 export const STAKE_POOL_TRANSACTION_CHECKER_TIMEOUT = 30 * 1000; // 30 seconds | unit: milliseconds;
 export const STAKE_POOLS_INTERVAL = 1 * 60 * 1000; // 1 minute | unit: milliseconds;
 export const STAKE_POOLS_FAST_INTERVAL = 1 * 1000; // 1 second | unit: milliseconds;
-export const DELEGATION_DEPOSIT = 2; // In lovelaces
+
 // Redeem ITN Rewards
 
-export const REDEEM_ITN_REWARDS_AMOUNT = 1 * 1000000; // 1 ADA | unit: lovelace
-
+export const MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE = 1; // 1 ADA | unit: ADA
+export const REWARDS_REDEMPTION_FEE_CALCULATION_AMOUNT = 1 * 1000000; // 1 ADA | unit: lovelace
 export const REDEEM_ITN_REWARDS_STEPS: {
   [key: string]: RedeemItnRewardsStep,
 } = {
@@ -53,6 +52,8 @@ export const REDEEM_ITN_REWARDS_STEPS: {
   CONFIRMATION: 'confirmation',
   RESULT: 'result',
 };
+
+export const DELEGATION_DEPOSIT = 2; // 2 ADA | unit: lovelace
 
 export const DELEGATION_ACTIONS: {
   [key: string]: DelegationAction,
