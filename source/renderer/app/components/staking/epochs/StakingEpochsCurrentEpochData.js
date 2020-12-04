@@ -10,7 +10,7 @@ import {
   noDataExisting,
   hasDataExisting,
   sortData,
-} from './helpers.js';
+} from './helpers';
 import type { EpochData } from '../../../api/staking/types';
 import styles from './StakingEpochs.scss';
 

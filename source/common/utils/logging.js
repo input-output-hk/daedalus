@@ -34,6 +34,7 @@ export const filterLogData = (data: Object): Object => {
     'publicKeyHex',
     'chainCodeHex',
     'signedTransactionBlob',
+    'withdrawal',
   ];
   return omitDeep(data, ...sensitiveData);
 };
