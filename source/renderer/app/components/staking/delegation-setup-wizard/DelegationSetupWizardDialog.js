@@ -13,6 +13,8 @@ import LocalizableError from '../../../i18n/LocalizableError';
 import StakePool from '../../../domains/StakePool';
 import Wallet from '../../../domains/Wallet';
 
+import type { HwDeviceStatus } from '../../../domains/Wallet';
+
 type Props = {
   activeStep: number,
   isDisabled: boolean,
@@ -39,6 +41,7 @@ type Props = {
   futureEpochStartTime: string,
   currentLocale: string,
   getStakePoolById: Function,
+  hwDeviceStatus: HwDeviceStatus,
 };
 
 @observer
@@ -82,6 +85,7 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
       isSubmitting,
       error,
       getStakePoolById,
+      hwDeviceStatus,
     } = this.props;
 
     const selectedWalletId = get(selectedWallet, 'id', null);
@@ -141,6 +145,8 @@ export default class DelegationSetupWizardDialog extends Component<Props> {
             onBack={onBack}
             isSubmitting={isSubmitting}
             error={error}
+            hwDeviceStatus={hwDeviceStatus}
+            onExternalLinkClick={onOpenExternalLink}
           />
         );
         break;

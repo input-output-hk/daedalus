@@ -48,6 +48,18 @@ import type {
   IntrospectAddressRequest,
   IntrospectAddressResponse,
 } from '../types/address-introspection.types';
+import type {
+  HardwareWalletTransportDeviceRequest,
+  HardwareWalletTransportDeviceResponse,
+  HardwareWalletExtendedPublicKeyRequest,
+  HardwareWalletExtendedPublicKeyResponse,
+  HardwareWalletCardanoAdaAppResponse,
+  LedgerSignTransactionRequest,
+  LedgerSignTransactionResponse,
+  TrezorSignTransactionRequest,
+  TrezorSignTransactionResponse,
+  HardwareWalletConnectionRequest,
+} from '../types/hardware-wallets.types';
 
 /**
  * ======================= IPC CHANNELS API =========================
@@ -378,6 +390,12 @@ export type ManageAppUpdateMainResponse = {
   },
 };
 
+export type DeriveXpubRendererRequestType = {
+  parentXpubHex: string,
+  lastIndex: number,
+  derivationScheme: number,
+};
+
 /**
  * Channel for introspecting an address
  */
@@ -391,3 +409,53 @@ export type IntrospectAddressMainResponse = IntrospectAddressResponse;
 export const GET_BLOCK_REPLAY_STATUS_CHANNEL = 'GetBlockReplayProgressChannel';
 export type GetBlockReplayProgressRendererRequest = void;
 export type GetBlockReplayProgressMainResponse = number;
+
+/**
+ * Channels for connecting / interacting with Hardware Wallet devices
+ */
+export const GET_HARDWARE_WALLET_TRANSPORT_CHANNEL =
+  'GET_HARDWARE_WALLET_TRANSPORT_CHANNEL';
+export type getHardwareWalletTransportRendererRequest = HardwareWalletTransportDeviceRequest;
+export type getHardwareWalletTransportMainResponse = HardwareWalletTransportDeviceResponse;
+
+export const GET_EXTENDED_PUBLIC_KEY_CHANNEL =
+  'GET_EXTENDED_PUBLIC_KEY_CHANNEL';
+export type getExtendedPublicKeyRendererRequest = HardwareWalletExtendedPublicKeyRequest;
+export type getExtendedPublicKeyMainResponse = HardwareWalletExtendedPublicKeyResponse;
+
+export const GET_CARDANO_ADA_APP_CHANNEL = 'GET_CARDANO_ADA_APP_CHANNEL';
+export type getCardanoAdaAppRendererRequest = { path: ?string };
+export type getCardanoAdaAppMainResponse = HardwareWalletCardanoAdaAppResponse;
+
+export const GET_HARDWARE_WALLET_CONNECTION_CHANNEL =
+  'GET_HARDWARE_WALLET_CONNECTION_CHANNEL';
+export type getHardwareWalletConnectiontMainRequest = HardwareWalletConnectionRequest;
+export type getHardwareWalletConnectiontRendererResponse = Object;
+
+export const SIGN_TRANSACTION_LEDGER_CHANNEL =
+  'SIGN_TRANSACTION_LEDGER_CHANNEL';
+export type signTransactionLedgerRendererRequest = LedgerSignTransactionRequest;
+export type signTransactionLedgerMainResponse = LedgerSignTransactionResponse;
+
+export const SIGN_TRANSACTION_TREZOR_CHANNEL =
+  'SIGN_TRANSACTION_TREZOR_CHANNEL';
+export type signTransactionTrezorRendererRequest = TrezorSignTransactionRequest;
+export type signTransactionTrezorMainResponse = TrezorSignTransactionResponse;
+
+export const GET_INIT_TREZOR_CONNECT_CHANNEL =
+  'GET_INIT_TREZOR_CONNECT_CHANNEL';
+export type handleInitTrezorConnectRendererRequest = void;
+export type handleInitTrezorConnectMainResponse = void;
+
+export const GET_INIT_LEDGER_CONNECT_CHANNEL =
+  'GET_INIT_LEDGER_CONNECT_CHANNEL';
+export type handleInitLedgerConnectRendererRequest = void;
+export type handleInitLedgerConnectMainResponse = void;
+
+export const DERIVE_XPUB_CHANNEL = 'DERIVE_XPUB_CHANNEL';
+export type deriveXpubRendererRequest = DeriveXpubRendererRequestType;
+export type deriveXpubMainResponse = string;
+
+export const RESET_ACTION_TREZOR_CHANNEL = 'RESET_ACTION_TREZOR_CHANNEL';
+export type resetTrezorActionRendererRequest = void;
+export type resetTrezorActionMainResponse = void;

@@ -14,6 +14,7 @@ import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import styles from './WalletRow.scss';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import arrow from '../../../assets/images/collapse-arrow.inline.svg';
+import hardwareWalletsIcon from '../../../assets/images/hardware-wallet/connect-ic.inline.svg';
 
 const messages = defineMessages({
   walletAmount: {
@@ -101,6 +102,7 @@ export default class WalletRow extends Component<Props> {
         delegationStakePoolStatus,
         pendingDelegations,
         lastDelegationStakePoolId,
+        isHardwareWallet,
       },
       delegatedStakePool,
       numberOfStakePools,
@@ -153,7 +155,15 @@ export default class WalletRow extends Component<Props> {
     return (
       <div className={styles.component}>
         <div className={styles.left}>
-          <div className={styles.title}>{name}</div>
+          <div className={styles.title}>
+            {name}
+            {isHardwareWallet && (
+              <SVGInline
+                svg={hardwareWalletsIcon}
+                className={styles.hardwareWalletsIcon}
+              />
+            )}
+          </div>
           <div className={styles.description}>
             {!isRestoring ? (
               <FormattedMessage

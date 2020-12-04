@@ -35,6 +35,16 @@
     .title {
       @extend %accentText;
       margin-bottom: 4px;
+      .hardwareWalletsIcon {
+        svg {
+          height: 12px;
+          margin-left: 6px;
+          width: 12px;
+          path {
+            fill: var(--theme-staking-font-color-accent);
+          }
+        }
+      }
     }
 
     .description {

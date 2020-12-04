@@ -1,11 +1,12 @@
 {
   "name": "daedalus",
   "productName": "Daedalus",
-  "version": "2.5.0",
+  "version": "3.0.0",
   "description": "Cryptocurrency Wallet",
   "main": "./dist/main/index.js",
   "scripts": {
     "build": "gulp build",
+    "build:electron": "electron-rebuild -f -w usb",
     "check:all": "yarn prettier:check && yarn lint && yarn flow:test && yarn stylelint && yarn lockfile:check && yarn manage:translations",
     "start": "gulp start",
     "start:dev": "NODE_ENV=development gulp start",
@@ -65,7 +66,8 @@
     "js-launcher": "node utils/js-launcher/index.js",
     "create-news-verification-hashes": "node utils/create-news-verification-hashes/index.js",
     "lockfile:check": "node utils/lockfile-checker/index.js --check",
-    "lockfile:fix": "node utils/lockfile-checker/index.js --fix"
+    "lockfile:fix": "node utils/lockfile-checker/index.js --fix",
+    "postinstall": "yarn build:electron"
   },
   "bin": {
     "electron": "./node_modules/.bin/electron"
@@ -109,6 +111,7 @@
     "electron-connect": "0.6.3",
     "electron-devtools-installer": "2.2.4",
     "electron-packager": "14.2.1",
+    "electron-rebuild": "1.11.0",
     "eslint": "7.10.0",
     "eslint-config-airbnb": "18.2.0",
     "eslint-config-prettier": "6.12.0",
@@ -168,13 +171,18 @@
     "yarn-lockfile": "1.1.1"
   },
   "dependencies": {
+    "@cardano-foundation/ledgerjs-hw-app-cardano": "2.0.1",
     "aes-js": "3.1.2",
     "bignumber.js": "5.0.0",
-    "bip39": "3.0.2",
+    "bip39": "2.3.0",
+    "blake2b": "2.1.3",
     "blakejs": "1.1.0",
+    "borc": "2.1.2",
     "bs58": "4.0.1",
+    "cardano-crypto.js": "5.3.6-rc.6",
     "cardano-js": "0.4.5",
     "cardano-launcher": "0.20201014.0",
+    "cbor": "5.0.2",
     "check-disk-space": "2.1.0",
     "chroma-js": "2.1.0",
     "classnames": "2.2.6",
@@ -235,8 +243,12 @@
     "shasum": "1.0.2",
     "source-map-support": "0.5.19",
     "spectron-fake-dialog": "0.0.1",
+    "trezor-connect": "8.1.16-extended",
     "unorm": "1.6.0",
     "validator": "13.1.17"
+  },
+  "optionalDependencies": {
+    "@ledgerhq/hw-transport-node-hid": "5.26.0"
   },
   "devEngines": {
     "node": ">=12.13.0",

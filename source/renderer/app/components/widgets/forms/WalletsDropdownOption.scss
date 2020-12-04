@@ -93,3 +93,14 @@
     }
   }
 }
+
+.hardwareWalletsIcon {
+  svg {
+    height: 11px;
+    margin-left: 6px;
+    width: 11px;
+    path {
+      fill: var(--theme-staking-font-color-accent);
+    }
+  }
+}

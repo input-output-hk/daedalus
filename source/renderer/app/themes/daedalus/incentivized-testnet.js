@@ -192,7 +192,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.4)',
     '--theme-dialog-big-button-background-color': 'rgba(255, 255, 255, 0.05)',
     '--theme-dialog-big-button-border-color': 'none',
-    '--theme-dialog-big-button-label-color': 'rgba(255, 255, 255, 1)',
+    '--theme-dialog-big-button-label-color': '#ffffff',
     '--theme-dialog-big-button-description-color': 'rgba(255, 255, 255, 0.6)',
     '--theme-dialog-set-wallet-password-background-color':
       'rgba(18, 19, 38, 0.91)',
@@ -255,11 +255,10 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--font-mono': 'SFMono-Light',
   },
   hardwareWallet: {
-    '--theme-hardware-wallet-step-background-color': '#1e1f31',
-    '--theme-hardware-wallet-step-border-active-color':
-      'rgba(255, 255, 255, 0.5)',
-    '--theme-hardware-wallet-step-border-color': '#1e1f31',
-    '--theme-hardware-wallet-step-color': '#ffffff',
+    '--theme-hardware-wallet-status-background-color': '#1e1f31',
+    '--theme-hardware-wallet-status-border-color': 'rgba(255, 255, 255, 0.3)',
+    '--theme-hardware-wallet-status-color': '#ffffff',
+    '--theme-hardware-wallet-status-ready-color': '#2dc06c',
     '--theme-hardware-wallet-title-color': '#ffffff',
     '--theme-hardware-wallet-message-color': '#ffffff',
   },
@@ -271,7 +270,8 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-icon-node-update-notification-arrow-color': '#ffffff',
     '--theme-icon-add-wallet-from-sidebar-color': '#ffffff',
     '--theme-icon-ada-summary-wallet-amount-symbol-color': '#ffffff',
-    '--theme-icon-add-wallet-dialog-big-button-color': '#ffffff',
+    '--theme-icon-add-wallet-dialog-big-button-color':
+      'rgba(255, 255, 255, 0.5)',
     '--theme-icon-back-button-color': '#ffffff',
     '--theme-icon-close-button-color': '#ffffff',
     '--theme-icon-connecting-ada-api-logo-color': '#ffffff',
