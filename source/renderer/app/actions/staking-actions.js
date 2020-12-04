@@ -23,10 +23,11 @@ export default class StakingActions {
   requestCSVFileSuccess: Action<any> = new Action();
   /* ----------  Redeem ITN Rewards  ---------- */
   onRedeemStart: Action<any> = new Action();
-  onConfigurationContinue: Action<{
+  onConfigurationContinue: Action<any> = new Action();
+  onCalculateRedeemWalletFees: Action<{
+    walletId: string,
     recoveryPhrase: Array<string>,
   }> = new Action();
-  onSelectRedeemWallet: Action<{ walletId: string }> = new Action();
   onConfirmationContinue: Action<{ spendingPassword: string }> = new Action();
   onResultContinue: Action<any> = new Action();
   closeRedeemDialog: Action<any> = new Action();
