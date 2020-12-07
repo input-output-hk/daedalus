@@ -2,7 +2,7 @@
 import { computed, action, observable, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
 import path from 'path';
-import { orderBy, find, map, get, findKey } from 'lodash';
+import { orderBy, find, map, get, findKey, reduce } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { ROUTES } from '../routes-config';
@@ -46,6 +46,7 @@ export default class StakingStore extends Store {
   @observable selectedDelegationWalletId = null;
   @observable stake = INITIAL_DELEGATION_FUNDS;
   @observable isRanking = false;
+  @observable smashServerType: ?SmashServerType = null;
   @observable smashServerUrl: ?string = null;
   @observable smashServerUrlError: ?LocalizableError = null;
 
@@ -162,12 +163,9 @@ export default class StakingStore extends Store {
     // Else runs through the known servers to match the current one
     // Otherwise it's a custom server
     else {
-      // const smasgServerList: =
-
-      ({ smashServerType, smashServerUrl } = Object.entries(
-        SMASH_SERVERS_LIST
-      ).reduce(
-        (result, [serverId, { url }]) => {
+      ({ smashServerType, smashServerUrl } = reduce(
+        SMASH_SERVERS_LIST,
+        (result, { url }, serverId) => {
           if (apiPoolMetadataSource === url) {
             result = {
               smashServerType: serverId,
