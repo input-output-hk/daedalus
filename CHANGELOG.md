@@ -8,6 +8,10 @@ Changelog
 - Added hardware wallet support for "Ledger Nano S", "Ledger Nano X", and "Trezor model T" devices ([PR 2046](https://github.com/input-output-hk/daedalus/pull/2046))
 - Added hardware wallet support for Testnet network ([PR 2264](https://github.com/input-output-hk/daedalus/pull/2264))
 
+### Fixes
+
+- Fixed visual glitch on the transaction list switching between filters ([PR 2261](https://github.com/input-output-hk/daedalus/pull/2261))
+
 ### Chores
 
 - Reduced the size of Linux installer ([PR 2260](https://github.com/input-output-hk/daedalus/pull/2260))
@@ -64,7 +68,7 @@ Changelog
 
 ### Fixes
 
-- Fixed visual glitch on the transaction list switching between filters ([PR 2249](https://github.com/input-output-hk/daedalus/pull/2249), [PR 2261](https://github.com/input-output-hk/daedalus/pull/2261))
+- Fixed visual glitch on the transaction list switching between filters ([PR 2249](https://github.com/input-output-hk/daedalus/pull/2249))
 - Fixed Newsfeed drop shadow when there is an update item ([PR 2242](https://github.com/input-output-hk/daedalus/pull/2242))
 
 ### Chores
