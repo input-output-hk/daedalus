@@ -21,6 +21,47 @@ export default class WalletSendPage extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
+  calculateTransactionFee = async (params: {
+    walletId: string,
+    address: string,
+    amount: number,
+    isHardwareWallet: boolean,
+  }) => {
+    const { walletId, address, amount, isHardwareWallet } = params;
+    let fee;
+    if (isHardwareWallet) {
+      const coinsSelection = await this.props.stores.hardwareWallets.selectCoins(
+        {
+          walletId,
+          address,
+          amount,
+        }
+      );
+      fee = coinsSelection.fee;
+    } else {
+      fee = await this.props.stores.transactions.calculateTransactionFee({
+        walletId,
+        address,
+        amount,
+      });
+    }
+    return fee;
+  };
+
+  openDialog = (
+    dialog: Function,
+    isHardwareWallet: boolean,
+    walletId: string
+  ) => {
+    const { isFlight } = global;
+    this.props.actions.dialogs.open.trigger({
+      dialog,
+    });
+    if (isHardwareWallet && !isFlight) {
+      this.props.stores.hardwareWallets.initiateTransaction({ walletId });
+    }
+  };
+
   render() {
     const { intl } = this.context;
     const {
@@ -29,15 +70,17 @@ export default class WalletSendPage extends Component<Props> {
       transactions,
       app,
       profile,
+      hardwareWallets,
     } = this.props.stores;
-    const { actions } = this.props;
     const { isValidAddress } = wallets;
-    const { calculateTransactionFee, validateAmount } = transactions;
+    const { validateAmount } = transactions;
+    const { hwDeviceStatus } = hardwareWallets;
     const activeWallet = wallets.active;
 
     // Guard against potential null values
     if (!activeWallet)
       throw new Error('Active wallet required for WalletSendPage.');
+    const { isHardwareWallet } = activeWallet;
 
     return (
       <WalletSendForm
@@ -47,18 +90,23 @@ export default class WalletSendPage extends Component<Props> {
         currentNumberFormat={profile.currentNumberFormat}
         validateAmount={validateAmount}
         calculateTransactionFee={(address: string, amount: number) =>
-          calculateTransactionFee({
+          this.calculateTransactionFee({
             walletId: activeWallet.id,
             address,
             amount,
+            isHardwareWallet,
           })
         }
         walletAmount={activeWallet.amount}
         addressValidator={isValidAddress}
         isDialogOpen={uiDialogs.isOpen}
-        openDialogAction={actions.dialogs.open.trigger}
+        openDialogAction={(params) =>
+          this.openDialog(params.dialog, isHardwareWallet, activeWallet.id)
+        }
         isRestoreActive={activeWallet.isRestoring}
         onExternalLinkClick={app.openExternalLink}
+        hwDeviceStatus={hwDeviceStatus}
+        isHardwareWallet={isHardwareWallet}
       />
     );
   }

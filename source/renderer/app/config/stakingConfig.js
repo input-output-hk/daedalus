@@ -1,7 +1,8 @@
 // @flow
-import type { RedeemItnRewardsStep } from '../types/stakingTypes';
-
-export const MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE = 1; // 1 ADA | unit: ADA
+import type {
+  RedeemItnRewardsStep,
+  DelegationAction,
+} from '../types/stakingTypes';
 
 export const RANKING_SLIDER_RATIO = 60;
 export const MIN_DELEGATION_FUNDS = 10;
@@ -42,14 +43,23 @@ export const STAKE_POOLS_FAST_INTERVAL = 1 * 1000; // 1 second | unit: milliseco
 
 // Redeem ITN Rewards
 
+export const MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE = 1; // 1 ADA | unit: ADA
 export const REWARDS_REDEMPTION_FEE_CALCULATION_AMOUNT = 1 * 1000000; // 1 ADA | unit: lovelace
-
 export const REDEEM_ITN_REWARDS_STEPS: {
   [key: string]: RedeemItnRewardsStep,
 } = {
   CONFIGURATION: 'configuration',
   CONFIRMATION: 'confirmation',
   RESULT: 'result',
+};
+
+export const DELEGATION_DEPOSIT = 2; // 2 ADA | unit: lovelace
+
+export const DELEGATION_ACTIONS: {
+  [key: string]: DelegationAction,
+} = {
+  JOIN: 'join',
+  QUIT: 'quit',
 };
 
 export const IS_RANKING_DATA_AVAILABLE = true;

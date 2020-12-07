@@ -33,6 +33,9 @@ module.exports = {
   },
   externals: {
     'js-chain-libs-node': 'commonjs2 js-chain-libs-node',
+    // usb: 'commonjs2 usb',
+    // 'node-hid': 'commonjs2 node-hid',
+    'trezor-connect': 'commonjs2 trezor-connect',
   },
   module: {
     rules: [

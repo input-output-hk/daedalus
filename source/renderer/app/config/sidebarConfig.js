@@ -1,7 +1,6 @@
 // @flow
 import { ROUTES } from '../routes-config';
 import walletsIcon from '../assets/images/sidebar/wallet-ic.inline.svg';
-import hardwareWalletsIcon from '../assets/images/sidebar/hardware-wallet-ic.inline.svg';
 import redeemItnRewardsIcon from '../assets/images/sidebar/redeem-itn-rewards-ic.inline.svg';
 import settingsIcon from '../assets/images/sidebar/settings-ic.inline.svg';
 import paperWalletCertificateIcon from '../assets/images/sidebar/paper-certificate-ic.inline.svg';
@@ -20,11 +19,6 @@ export const CATEGORIES_BY_NAME = {
     name: 'WALLETS',
     icon: walletsIcon,
     route: ROUTES.WALLETS.ROOT,
-  },
-  HARDWARE_WALLETS: {
-    name: 'HARDWARE_WALLETS',
-    icon: hardwareWalletsIcon,
-    route: ROUTES.HARDWARE_WALLETS.ROOT,
   },
   REDEEM_ITN_REWARDS: {
     name: 'REDEEM_ITN_REWARDS',

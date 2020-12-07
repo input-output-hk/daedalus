@@ -2,6 +2,7 @@
 import BigNumber from 'bignumber.js';
 import { WalletTransaction } from '../../domains/WalletTransaction';
 import { WalletUnits } from '../../domains/Wallet';
+import type { DelegationAction } from '../../types/stakingTypes';
 
 export type TransactionAmount = {
   quantity: number,
@@ -80,6 +81,7 @@ export type GetTransactionsRequest = {
   fromDate: ?string,
   toDate: ?string,
   isLegacy: boolean,
+  isHardwareWallet?: boolean,
   // @API TODO - Params "pending" for V2
   // searchTerm: string,
   // skip: number,
@@ -148,6 +150,70 @@ export type TransactionPaymentData = {
 export type TransactionFee = {
   estimated_min: TransactionFeeAmount,
   estimated_max: TransactionFeeAmount,
+};
+
+export type CoinSelectionAmount = {
+  quantity: number,
+  unit: WalletUnits.LOVELACE,
+};
+
+export type CoinSelectionInput = {
+  address: string,
+  amount: CoinSelectionAmount,
+  id: string,
+  index: number,
+  derivationPath: Array<string>,
+};
+
+export type CoinSelectionOutput = {
+  address: string,
+  amount: CoinSelectionAmount,
+  derivationPath: Array<string>,
+};
+
+export type CertificateType =
+  | 'register_reward_account'
+  | 'quit_pool'
+  | 'join_pool';
+
+export type CoinSelectionCertificate = {
+  pool: string,
+  certificateType: CertificateType,
+  rewardAccountPath: Array<string>,
+};
+
+export type CoinSelectionCertificates = Array<CoinSelectionCertificate>;
+
+export type CoinSelectionsDelegationRequestType = {
+  walletId: string,
+  poolId: string,
+  delegationAction: DelegationAction,
+};
+
+export type CoinSelectionsPaymentRequestType = {
+  walletId: string,
+  address: string,
+  amount: number,
+};
+
+export type CoinSelectionsRequest =
+  | CoinSelectionsPaymentRequestType
+  | CoinSelectionsDelegationRequestType;
+
+export type CoinSelectionsResponse = {
+  inputs: Array<CoinSelectionInput>,
+  outputs: Array<CoinSelectionOutput>,
+  certificates: CoinSelectionCertificates,
+  feeWithDelegationDeposit: BigNumber,
+  fee: BigNumber,
+};
+
+export type CreateExternalTransactionRequest = {
+  signedTransactionBlob: Buffer,
+};
+
+export type CreateExternalTransactionResponse = {
+  id: string,
 };
 
 export type GetWithdrawalsRequest = {

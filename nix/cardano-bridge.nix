@@ -1,9 +1,9 @@
-{ target, pkgs, cardanoWalletPkgs, runCommand, cardano-wallet, cardano-node, cardano-shell, cardano-cli, cardano-address }:
+{ target, pkgs, cardanoWalletPkgs, runCommandCC, cardano-wallet, cardano-node, cardano-shell, cardano-cli, cardano-address, stdenv, lib }:
 
 let
   commonLib = import ../lib.nix {};
   pkgsCross = import cardanoWalletPkgs.path { crossSystem = cardanoWalletPkgs.lib.systems.examples.mingwW64; config = {}; overlays = []; };
-in runCommand "daedalus-cardano-bridge" {
+in runCommandCC "daedalus-cardano-bridge" {
   passthru = {
     node-version = cardano-node.passthru.identifier.version;
     wallet-version = cardano-wallet.version;
@@ -17,4 +17,11 @@ in runCommand "daedalus-cardano-bridge" {
   cp -f ${cardano-shell.haskellPackages.cardano-launcher.components.exes.cardano-launcher}/bin/cardano-launcher* .
   cp -f ${cardano-node}/bin/cardano-node* .
   cp -f ${cardano-cli}/bin/cardano-cli* .
+  ${lib.optionalString (target == "x86_64-linux") ''
+    chmod +w -R .
+    for x in cardano-address cardano-node cardano-launcher cardano-cli cardano-wallet; do
+      $STRIP $x
+      patchelf --shrink-rpath $x
+    done
+  ''}
 ''
