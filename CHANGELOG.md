@@ -8,13 +8,13 @@ Changelog
 - Added hardware wallet support for "Ledger Nano S", "Ledger Nano X", and "Trezor model T" devices ([PR 2046](https://github.com/input-output-hk/daedalus/pull/2046))
 - Added hardware wallet support for Testnet network ([PR 2264](https://github.com/input-output-hk/daedalus/pull/2264))
 
-### Chores
-
-- Reduced the size of Linux installer ([PR 2260](https://github.com/input-output-hk/daedalus/pull/2260))
-
 ### Fixes
 
 - Added initial loading state to UTXO page [PR 2265](https://github.com/input-output-hk/daedalus/pull/2265)
+
+### Chores
+
+- Reduced the size of Linux installer ([PR 2260](https://github.com/input-output-hk/daedalus/pull/2260))
 
 ## 3.0.0-FC4
 
