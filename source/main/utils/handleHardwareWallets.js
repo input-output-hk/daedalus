@@ -79,6 +79,7 @@ export class HardwareWalletsHandler {
 
     try {
       this._ledger.isSupported = await TransportNodeHid.isSupported();
+      TransportNodeHid.setListenDevicesDebounce(0); // 500 | 2000
     } catch (error) {
       Object.assign(this._ledger, {
         isSupported: false,
