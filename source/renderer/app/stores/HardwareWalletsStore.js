@@ -470,26 +470,31 @@ export default class HardwareWalletsStore extends Store {
           '[HW-DEBUG] HWStore - Establish connection:: Transaction initiated - check device'
         );
 
-        if (recognizedPairedHardwareWallet) {
+        // Return device that belongs to active hardwate wallet if is already plugged-in
+        if (recognizedPairedHardwareWallet && !recognizedPairedHardwareWallet.disconnected) {
           logger.debug(
             '[HW-DEBUG] HWStore - Establish connection:: Transaction initiated - Recognized device found'
           );
           return recognizedPairedHardwareWallet;
         }
 
-        const deviceData =
-          lastUnpairedDevice || get(relatedConnectionData, 'device', {});
-        logger.debug(
-          '[HW-DEBUG] HWStore - Connect - TRANSACTION initiated - return last device'
-        );
-        const lastDeviceTransport = await getHardwareWalletTransportChannel.request(
-          {
-            devicePath: lastUnpairedDevice ? lastUnpairedDevice.path : null, // Use last plugged device
-            isTrezor: deviceData.deviceType === DeviceTypes.TREZOR,
-          }
-        );
+        // Device not recognized or not plugged-in. Wait for next device (check by device type)
+        const relatedConnectionDataDeviceType  = get(relatedConnectionData, ['device', 'deviceType']);
+
+        let lastDeviceTransport = null;
+        if (relatedConnectionDataDeviceType) {
+          logger.debug(
+            '[HW-DEBUG] HWStore - Connect - TRANSACTION initiated - return last device'
+          );
+          lastDeviceTransport = await getHardwareWalletTransportChannel.request(
+            {
+              devicePath: null, // Use last plugged device
+              isTrezor: relatedConnectionDataDeviceType === DeviceTypes.TREZOR,
+            }
+          );
+        }
+
         return lastDeviceTransport;
-        // relatedConnectionData.device.deviceType
       }
       // End of Tx Special cases!
 
