@@ -8,6 +8,9 @@
     color: var(--theme-input-text-color);
   }
 
+  &.isSubmitting {
+  }
+
   &.inactive {
     &:hover {
       input {
@@ -28,19 +31,90 @@
     }
   }
 
-  .button {
-    bottom: 14px;
-    color: var(--theme-label-button-color);
-    cursor: pointer;
-    font-family: var(--font-light);
-    font-size: 16px;
-    line-height: 1.38;
-    opacity: 0.5;
+  .buttonsWrapper {
+    background: var(--rp-input-bg-color);
+    bottom: 10px;
+    height: 28px;
+    padding-right: 11px;
     position: absolute;
-    right: 22px;
-    text-transform: lowercase;
+    right: 1px;
+  }
+
+  .button {
+    background-color: var(--theme-button-flat-background-color);
+    border-radius: 3px;
+    cursor: pointer;
+    height: 28px;
+    margin-left: 11px;
+    width: 28px;
     &:hover {
-      opacity: 1;
+      background-color: var(--theme-button-flat-background-color-hover);
+    }
+    &:active {
+      background-color: var(--theme-button-flat-background-color-active);
+    }
+    .icon {
+      svg {
+        height: 12px;
+        position: relative;
+        top: 1px;
+        width: 12px;
+      }
+    }
+  }
+
+  .editButton {
+    .icon {
+      svg path {
+        stroke: var(--theme-button-flat-text-color);
+      }
+    }
+  }
+  .cancelButton {
+    .icon {
+      svg g {
+        fill: var(--theme-button-flat-text-color);
+      }
+    }
+  }
+  .okButton {
+    background-color: var(--theme-button-primary-background-color);
+    &:hover {
+      background-color: var(--theme-button-primary-background-color-hover);
+    }
+    &:active {
+      background-color: var(--theme-button-primary-background-color-active);
+    }
+    .icon {
+      svg path {
+        stroke: var(--theme-button-primary-text-color);
+      }
+    }
+  }
+  .submittingButton {
+    &:hover {
+      cursor: default;
+      background-color: var(--theme-button-flat-background-color);
+    }
+    &:active {
+      background-color: var(--theme-button-flat-background-color);
+    }
+    .icon {
+      animation: spinner 1.5s linear;
+      animation-iteration-count: infinite;
+      display: inline-block;
+      svg g {
+        stroke: var(--theme-button-flat-text-color);
+      }
+    }
+  }
+
+  @keyframes spinner {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
     }
   }
 

@@ -2,13 +2,20 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import { Button } from 'react-polymorph/lib/components/Button';
+import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import vjf from 'mobx-react-form/lib/validators/VJF';
+import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import styles from './InlineEditingInput.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
+import penIcon from '../../../assets/images/pen.inline.svg';
+import crossIcon from '../../../assets/images/close-cross.inline.svg';
+import arrowIcon from '../../../assets/images/arrow-right.inline.svg';
+import spinningIcon from '../../../assets/images/spinner-ic.inline.svg';
 
 const messages = defineMessages({
   change: {
@@ -46,6 +53,7 @@ type Props = {
   disabled?: boolean,
   readOnly?: boolean,
   maxLength?: number,
+  isSubmitting?: boolean,
 };
 
 type State = {
@@ -163,6 +171,7 @@ export default class InlineEditingInput extends Component<Props, State> {
       inputFieldPlaceholder,
       disabled,
       readOnly,
+      isSubmitting,
     } = this.props;
     let { successfullyUpdated } = this.props;
     const { intl } = this.context;
@@ -172,10 +181,18 @@ export default class InlineEditingInput extends Component<Props, State> {
       styles.component,
       isActive ? null : styles.inactive,
       readOnly ? styles.readOnly : null,
+      isSubmitting ? styles.isSubmitting : null,
     ]);
     const inputStyles = classnames([
       successfullyUpdated ? 'input_animateSuccess' : null,
       isActive ? null : 'input_cursorPointer',
+    ]);
+    const editButtonStyles = classnames([styles.button, styles.editButton]);
+    const cancelButtonStyles = classnames([styles.button, styles.cancelButton]);
+    const okButtonStyles = classnames([styles.button, styles.okButton]);
+    const submittingButtonStyles = classnames([
+      styles.button,
+      styles.submittingButton,
     ]);
 
     if (isActive) successfullyUpdated = false;
@@ -209,7 +226,43 @@ export default class InlineEditingInput extends Component<Props, State> {
           skin={InputSkin}
         />
 
-        {isActive && (
+        <div className={styles.buttonsWrapper}>
+          <Button
+            className={editButtonStyles}
+            onClick={(a, b, c) => {
+              console.log('a', a, 'b', b, 'c', c);
+            }}
+            label={<SVGInline svg={penIcon} className={styles.icon} />}
+            skin={ButtonSkin}
+          />
+          <Button
+            className={cancelButtonStyles}
+            onClick={(a, b, c) => {
+              console.log('a', a, 'b', b, 'c', c);
+            }}
+            label={<SVGInline svg={crossIcon} className={styles.icon} />}
+            skin={ButtonSkin}
+          />
+          <Button
+            className={okButtonStyles}
+            onClick={(a, b, c) => {
+              console.log('a', a, 'b', b, 'c', c);
+            }}
+            label={<SVGInline svg={arrowIcon} className={styles.icon} />}
+            skin={ButtonSkin}
+          />
+          <Button
+            className={submittingButtonStyles}
+            onClick={(a, b, c) => {
+              console.log('a', a, 'b', b, 'c', c);
+            }}
+            label={<SVGInline svg={spinningIcon} className={styles.icon} />}
+            label1=""
+            skin={ButtonSkin}
+          />
+        </div>
+
+        {/* isActive && (
           <button className={styles.button} onMouseDown={this.onCancel}>
             {intl.formatMessage(messages.cancel)}
           </button>
@@ -219,7 +272,7 @@ export default class InlineEditingInput extends Component<Props, State> {
           <div className={styles.savingResultLabel}>
             {intl.formatMessage(messages.changesSaved)}
           </div>
-        )}
+        ) */}
       </div>
     );
   }

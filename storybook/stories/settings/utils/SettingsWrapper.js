@@ -10,6 +10,7 @@ import SettingsMenu from '../../../../source/renderer/app/components/settings/me
 
 const pageNames = {
   '/settings/index': 'General',
+  '/settings/stake-pools': 'Stake Pools',
   '/settings/display': 'Themes',
   '/settings/terms-of-service': 'Terms of service',
   '/settings/support': 'Support',

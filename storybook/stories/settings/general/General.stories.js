@@ -11,11 +11,13 @@ import {
   NUMBER_OPTIONS,
   TIME_OPTIONS,
 } from '../../../../source/renderer/app/config/profileConfig';
+import { SMASH_SERVER_TYPES } from '../../../../source/renderer/app/config/stakingConfig';
 import { updateParam } from '../../../addons/DaedalusMenu';
 import { locales, themesIds } from '../../_support/config';
 
 // Screens
 import ProfileSettingsForm from '../../../../source/renderer/app/components/widgets/forms/ProfileSettingsForm';
+import StakePoolsSettings from '../../../../source/renderer/app/components/settings/categories/StakePoolsSettings';
 import DisplaySettings from '../../../../source/renderer/app/components/settings/categories/DisplaySettings';
 import SupportSettings from '../../../../source/renderer/app/components/settings/categories/SupportSettings';
 import TermsOfUseSettings from '../../../../source/renderer/app/components/settings/categories/TermsOfUseSettings';
@@ -45,6 +47,14 @@ storiesOf('Settings|General', module)
       currentLocale={LANGUAGE_OPTIONS[0].value}
       currentNumberFormat={NUMBER_OPTIONS[0].value}
       currentTimeFormat={TIME_OPTIONS[0].value}
+    />
+  ))
+  .add('Stake Pools', () => (
+    <StakePoolsSettings
+      smashServerType={SMASH_SERVER_TYPES.CUSTOM}
+      smashServerUrl="https://smash.cardano-mainnet.iohk.io"
+      onSelectSmashServerType={action('onSelectSmashServerType')}
+      onSelectSmashServerUrl={action('onSelectSmashServerUrl')}
     />
   ))
   .add('Themes', () => (
