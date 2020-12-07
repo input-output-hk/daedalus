@@ -487,25 +487,37 @@ export default class HardwareWalletsStore extends Store {
           '[HW-DEBUG] HWStore - Establish connection:: Transaction initiated - check device'
         );
 
-        if (recognizedPairedHardwareWallet) {
+        // Return device that belongs to active hardwate wallet if is already plugged-in
+        if (
+          recognizedPairedHardwareWallet &&
+          !recognizedPairedHardwareWallet.disconnected
+        ) {
           logger.debug(
             '[HW-DEBUG] HWStore - Establish connection:: Transaction initiated - Recognized device found'
           );
-          return lastUnpairedDevice;
+          return recognizedPairedHardwareWallet;
         }
 
-        const deviceData = lastUnpairedDevice || relatedConnectionData;
-        logger.debug(
-          '[HW-DEBUG] HWStore - Connect - TRANSACTION initiated - return last device'
-        );
-        const lastDeviceTransport = await getHardwareWalletTransportChannel.request(
-          {
-            devicePath: lastUnpairedDevice ? lastUnpairedDevice.path : null, // Use last plugged device
-            isTrezor: deviceData.deviceType === DeviceTypes.TREZOR,
-          }
-        );
+        // Device not recognized or not plugged-in. Wait for next device (check by device type)
+        const relatedConnectionDataDeviceType = get(relatedConnectionData, [
+          'device',
+          'deviceType',
+        ]);
+
+        let lastDeviceTransport = null;
+        if (relatedConnectionDataDeviceType) {
+          logger.debug(
+            '[HW-DEBUG] HWStore - Connect - TRANSACTION initiated - return last device'
+          );
+          lastDeviceTransport = await getHardwareWalletTransportChannel.request(
+            {
+              devicePath: null, // Use last plugged device
+              isTrezor: relatedConnectionDataDeviceType === DeviceTypes.TREZOR,
+            }
+          );
+        }
+
         return lastDeviceTransport;
-        // relatedConnectionData.device.deviceType
       }
       // End of Tx Special cases!
 
@@ -1118,14 +1130,20 @@ export default class HardwareWalletsStore extends Store {
       });
     }
 
+    const { isMainnet } = this.environment;
+
     try {
       const signedTransaction = await signTransactionTrezorChannel.request({
         inputs: inputsData,
         outputs: outputsData,
         fee: formattedAmountToLovelace(fee.toString()).toString(),
         ttl: '150000000',
-        networkId: HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId,
-        protocolMagic: HW_SHELLEY_CONFIG.NETWORK.MAINNET.protocolMagic,
+        networkId: isMainnet
+          ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId
+          : HW_SHELLEY_CONFIG.NETWORK.TESTNET.networkId,
+        protocolMagic: isMainnet
+          ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.trezorProtocolMagic
+          : HW_SHELLEY_CONFIG.NETWORK.TESTNET.trezorProtocolMagic,
         certificates: certificatesData,
         devicePath: recognizedDevicePath,
       });
@@ -1251,14 +1269,20 @@ export default class HardwareWalletsStore extends Store {
     const withdrawals = [];
     const metadataHashHex = null;
 
+    const { isMainnet } = this.environment;
+
     try {
       const signedTransaction = await signTransactionLedgerChannel.request({
         inputs: inputsData,
         outputs: outputsData,
         fee: fee.toString(),
         ttl: ttl.toString(),
-        networkId: HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId,
-        protocolMagic: HW_SHELLEY_CONFIG.NETWORK.MAINNET.protocolMagic,
+        networkId: isMainnet
+          ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId
+          : HW_SHELLEY_CONFIG.NETWORK.TESTNET.networkId,
+        protocolMagic: isMainnet
+          ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.protocolMagic
+          : HW_SHELLEY_CONFIG.NETWORK.TESTNET.protocolMagic,
         certificates: certificatesData,
         withdrawals,
         metadataHashHex,

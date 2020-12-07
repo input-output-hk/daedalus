@@ -1769,6 +1769,7 @@ export default class AdaApi {
       );
       const stakePools = response
         .filter(({ metadata }: AdaApiStakePool) => metadata !== undefined)
+        .filter(({ flags }: AdaApiStakePool) => !flags.includes('delisted'))
         .filter(
           ({ margin }: AdaApiStakePool) =>
             margin !== undefined && margin.quantity < 100
