@@ -1,12 +1,6 @@
 Changelog
 =========
 
-## vNext
-
-### Fixes
-
-- Added initial loading state to UTXO page [PR 2265](https://github.com/input-output-hk/daedalus/pull/2265)
-
 ## 3.0.0
 
 ### Features
@@ -17,6 +11,10 @@ Changelog
 ### Chores
 
 - Reduced the size of Linux installer ([PR 2260](https://github.com/input-output-hk/daedalus/pull/2260))
+
+### Fixes
+
+- Added initial loading state to UTXO page [PR 2265](https://github.com/input-output-hk/daedalus/pull/2265)
 
 ## 3.0.0-FC4
 
