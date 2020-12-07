@@ -69,6 +69,30 @@ export default class StakePoolsSettings extends Component<Props, State> {
     intl: intlShape.isRequired,
   };
 
+  static getDerivedStateFromProps(
+    {
+      smashServerUrl: nextValidServerUrl,
+      smashServerType: nextValidServerType,
+    }: Props,
+    { lastValidServerUrl, lastValidServerType }: State
+  ) {
+    // The `smashServerUrl` prop only changes when it's a valid server
+    // unless it's empty
+    // so we update the `lastValidServerType` and `lastValidServerUrl` states
+    if (
+      nextValidServerUrl &&
+      nextValidServerUrl !== '...' &&
+      nextValidServerUrl !== lastValidServerUrl
+    ) {
+      return {
+        lastValidServerUrl: nextValidServerUrl,
+        lastValidServerType: nextValidServerType,
+        prevValidServerType: lastValidServerType,
+      };
+    }
+    return null;
+  }
+
   state = {
     isActive: false,
     // Last valid type and url
@@ -76,23 +100,6 @@ export default class StakePoolsSettings extends Component<Props, State> {
     lastValidServerType: this.props.smashServerType,
     prevValidServerType: this.props.smashServerType,
   };
-
-  componentDidUpdate({ smashServerUrl: prevServerUrl }: Props) {
-    // The `smashServerUrl` prop only changes when it's a valid server
-    // unless it's empty
-    // so we update the `lastValidServerType` and `lastValidServerUrl` states
-    const {
-      smashServerUrl: nextValidServerUrl,
-      smashServerType: nextValidServerType,
-    } = this.props;
-    if (nextValidServerUrl && nextValidServerUrl !== prevServerUrl) {
-      this.setState(({ lastValidServerType }) => ({
-        lastValidServerUrl: nextValidServerUrl,
-        lastValidServerType: nextValidServerType,
-        prevValidServerType: lastValidServerType,
-      }));
-    }
-  }
 
   componentWillUnmount() {
     // In case the `lastValidServerUrl` prop is empty
@@ -135,7 +142,7 @@ export default class StakePoolsSettings extends Component<Props, State> {
   // @SMASH TODO - Handle the success message
   handleIsSuccessfullyUpdated = () => {
     const { smashServerType, smashServerUrl } = this.props;
-    const { isActive, lastValidServerUrl, prevValidServerType } = this.state;
+    const { lastValidServerUrl, prevValidServerType } = this.state;
     if (smashServerType === SMASH_SERVER_TYPES.CUSTOM) {
       return smashServerUrl && smashServerUrl !== lastValidServerUrl;
     }
@@ -149,7 +156,7 @@ export default class StakePoolsSettings extends Component<Props, State> {
       smashServerUrlError,
       onSelectSmashServerType,
     } = this.props;
-    const { isActive, lastValidServerType, lastValidServerUrl } = this.state;
+    const { isActive } = this.state;
     const { intl } = this.context;
 
     const smashSelectOptions = [
