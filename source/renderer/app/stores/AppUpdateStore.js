@@ -25,7 +25,7 @@ import {
   APP_UPDATE_DOWNLOAD_ID,
   UPDATE_INSTALLATION_STATUSES as statuses,
 } from '../../../common/config/appUpdateConfig';
-import { formattedDownloadData } from '../utils/formatters.js';
+import { formattedDownloadData } from '../utils/formatters';
 import {
   DOWNLOAD_EVENT_TYPES,
   DOWNLOAD_STATES,
@@ -35,7 +35,7 @@ import type {
   DownloadInfo,
   DownloadData,
 } from '../../../common/types/downloadManager.types';
-import type { FormattedDownloadData } from '../utils/formatters.js';
+import type { FormattedDownloadData } from '../utils/formatters';
 
 const { version: currentVersion, platform } = global.environment;
 const { News } = NewsDomains;

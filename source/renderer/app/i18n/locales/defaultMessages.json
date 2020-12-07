@@ -4413,13 +4413,13 @@
         "description": "Title for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 37
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.title",
         "start": {
           "column": 9,
-          "line": 32
+          "line": 33
         }
       },
       {
@@ -4427,13 +4427,13 @@
         "description": "description for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 43
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.description1",
         "start": {
           "column": 16,
-          "line": 37
+          "line": 38
         }
       },
       {
@@ -4441,13 +4441,13 @@
         "description": "description for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 49
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.description2",
         "start": {
           "column": 16,
-          "line": 43
+          "line": 44
         }
       },
       {
@@ -4455,13 +4455,13 @@
         "description": "descriptionItnLinkLabel for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 55
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.descriptionItnLinkLabel",
         "start": {
           "column": 27,
-          "line": 49
+          "line": 50
         }
       },
       {
@@ -4469,13 +4469,13 @@
         "description": "descriptionItnLinkUrl for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 61
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.descriptionItnLinkUrl",
         "start": {
           "column": 25,
-          "line": 55
+          "line": 56
         }
       },
       {
@@ -4483,13 +4483,13 @@
         "description": "recoveryPhraseLabel for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 66
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.recoveryPhraseLabel",
         "start": {
           "column": 23,
-          "line": 61
+          "line": 62
         }
       },
       {
@@ -4497,27 +4497,13 @@
         "description": "walletsDropdownLabel for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 71
+          "line": 72
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.walletsDropdownLabel",
         "start": {
           "column": 24,
-          "line": 66
-        }
-      },
-      {
-        "defaultMessage": "!!!The selected wallet does not have sufficient ada to cover the necessary transaction fees. Please choose another wallet or add more funds to this one.",
-        "description": "walletsDropdownError for Redeem Incentivized Testnet - Step 1",
-        "end": {
-          "column": 3,
-          "line": 78
-        },
-        "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
-        "id": "staking.redeemItnRewards.step1.walletsDropdownError",
-        "start": {
-          "column": 24,
-          "line": 72
+          "line": 67
         }
       },
       {
@@ -4525,13 +4511,13 @@
         "description": "checkbox1Label for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 84
+          "line": 78
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.checkbox1Label",
         "start": {
           "column": 18,
-          "line": 79
+          "line": 73
         }
       },
       {
@@ -4539,13 +4525,13 @@
         "description": "checkbox2Label for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 90
+          "line": 84
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.checkbox2Label",
         "start": {
           "column": 18,
-          "line": 85
+          "line": 79
         }
       },
       {
@@ -4553,13 +4539,13 @@
         "description": "continueButtonLabel for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 95
+          "line": 89
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.continueButton.label",
         "start": {
           "column": 23,
-          "line": 91
+          "line": 85
         }
       },
       {
@@ -4567,13 +4553,13 @@
         "description": "learnMoreLinkLabel for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 100
+          "line": 94
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.learnMoreLink.label",
         "start": {
           "column": 22,
-          "line": 96
+          "line": 90
         }
       },
       {
@@ -4581,13 +4567,13 @@
         "description": "learnMoreLinkUrl for Redeem Incentivized Testnet - Step 1",
         "end": {
           "column": 3,
-          "line": 106
+          "line": 100
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.learnMoreLink.url",
         "start": {
           "column": 20,
-          "line": 101
+          "line": 95
         }
       },
       {
@@ -4595,13 +4581,13 @@
         "description": "Hint \"Enter recovery phrase\" for the recovery phrase input on the wallet restore dialog.",
         "end": {
           "column": 3,
-          "line": 112
+          "line": 106
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.recoveryPhraseInputHint",
         "start": {
           "column": 27,
-          "line": 107
+          "line": 101
         }
       },
       {
@@ -4609,13 +4595,13 @@
         "description": "Placeholder \"Select Wallet\" for select input on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 118
+          "line": 112
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.selectWalletInputPlaceholder",
         "start": {
           "column": 32,
-          "line": 113
+          "line": 107
         }
       },
       {
@@ -4623,13 +4609,13 @@
         "description": "\"No results\" message for the recovery phrase input search results.",
         "end": {
           "column": 3,
-          "line": 124
+          "line": 118
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.noResults",
         "start": {
           "column": 13,
-          "line": 119
+          "line": 113
         }
       },
       {
@@ -4637,13 +4623,13 @@
         "description": "Error message shown when invalid recovery phrase was entered.",
         "end": {
           "column": 3,
-          "line": 130
+          "line": 124
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.redeemItnRewards.step1.invalidRecoveryPhrase",
         "start": {
           "column": 25,
-          "line": 125
+          "line": 119
         }
       },
       {
@@ -4651,13 +4637,13 @@
         "description": "Syncing wallet label on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 136
+          "line": 130
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step1ConfigurationDialog.js",
         "id": "staking.delegationSetup.chooseWallet.step.dialog.syncingWallet",
         "start": {
           "column": 17,
-          "line": 131
+          "line": 125
         }
       }
     ],
@@ -4670,13 +4656,13 @@
         "description": "title for Redeem Incentivized Testnet - Step 2",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 27
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog.js",
         "id": "staking.redeemItnRewards.step2.title",
         "start": {
           "column": 9,
-          "line": 22
+          "line": 23
         }
       },
       {
@@ -4684,13 +4670,13 @@
         "description": "walletToLabel for Redeem Incentivized Testnet - Step 2",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 32
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog.js",
         "id": "staking.redeemItnRewards.step2.walletToLabel",
         "start": {
           "column": 17,
-          "line": 27
+          "line": 28
         }
       },
       {
@@ -4698,13 +4684,13 @@
         "description": "walletToName for Redeem Incentivized Testnet - Step 2",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 37
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog.js",
         "id": "staking.redeemItnRewards.step2.walletToName",
         "start": {
           "column": 16,
-          "line": 32
+          "line": 33
         }
       },
       {
@@ -4712,13 +4698,13 @@
         "description": "transactionFees for Redeem Incentivized Testnet - Step 2",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 42
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog.js",
         "id": "staking.redeemItnRewards.step2.transactionFees",
         "start": {
           "column": 19,
-          "line": 37
+          "line": 38
         }
       },
       {
@@ -4726,13 +4712,13 @@
         "description": "spendingPasswordLabel for Redeem Incentivized Testnet - Step 2",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 49
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog.js",
         "id": "staking.redeemItnRewards.step2.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 42
+          "line": 43
         }
       },
       {
@@ -4740,13 +4726,13 @@
         "description": "spendingPasswordPlaceholder for Redeem Incentivized Testnet - Step 2",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 55
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog.js",
         "id": "staking.redeemItnRewards.step2.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 49
+          "line": 50
         }
       },
       {
@@ -4754,13 +4740,13 @@
         "description": "continueButtonLabel for Redeem Incentivized Testnet - Step 2",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 60
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog.js",
         "id": "staking.redeemItnRewards.step2.continueButtonLabel",
         "start": {
           "column": 23,
-          "line": 55
+          "line": 56
         }
       },
       {
@@ -4768,13 +4754,13 @@
         "description": "Label for the back button in the wallet send confirmation dialog.",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 66
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/Step2ConfirmationDialog.js",
         "id": "staking.redeemItnRewards.step2.backButtonLabel",
         "start": {
           "column": 19,
-          "line": 60
+          "line": 61
         }
       }
     ],
@@ -5260,13 +5246,13 @@
         "description": "All wallets item of dropdown.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 40
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingAllWallets",
         "start": {
           "column": 21,
-          "line": 38
+          "line": 36
         }
       },
       {
@@ -5274,13 +5260,13 @@
         "description": "All wallets description after dropdown.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 45
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingAllWalletsEnd",
         "start": {
           "column": 24,
-          "line": 43
+          "line": 41
         }
       },
       {
@@ -5288,13 +5274,13 @@
         "description": "All wallets description before dropdown.",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 51
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingAllWalletsStart",
         "start": {
           "column": 26,
-          "line": 48
+          "line": 46
         }
       },
       {
@@ -5302,13 +5288,13 @@
         "description": "Ranking description.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 57
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingDescription",
         "start": {
           "column": 22,
-          "line": 54
+          "line": 52
         }
       },
       {
@@ -5316,13 +5302,13 @@
         "description": "Ranking learn more url.",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 62
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingLearnMoreUrl",
         "start": {
           "column": 23,
-          "line": 60
+          "line": 58
         }
       },
       {
@@ -5330,13 +5316,13 @@
         "description": "One wallet description after dropdown.",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 67
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingOneWalletEnd",
         "start": {
           "column": 23,
-          "line": 65
+          "line": 63
         }
       },
       {
@@ -5344,13 +5330,13 @@
         "description": "One wallet description before dropdown.",
         "end": {
           "column": 3,
-          "line": 75
+          "line": 73
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingOneWalletStart",
         "start": {
           "column": 25,
-          "line": 70
+          "line": 68
         }
       },
       {
@@ -5358,13 +5344,13 @@
         "description": "Select wallet item of dropdown.",
         "end": {
           "column": 3,
-          "line": 80
+          "line": 78
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingSelectWallet",
         "start": {
           "column": 23,
-          "line": 76
+          "line": 74
         }
       },
       {
@@ -5372,13 +5358,13 @@
         "description": "Select wallet description after dropdown.",
         "end": {
           "column": 3,
-          "line": 85
+          "line": 83
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingSelectWalletEnd",
         "start": {
           "column": 26,
-          "line": 81
+          "line": 79
         }
       },
       {
@@ -5386,13 +5372,13 @@
         "description": "Select wallet description before dropdown.",
         "end": {
           "column": 3,
-          "line": 90
+          "line": 88
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingSelectWalletStart",
         "start": {
           "column": 28,
-          "line": 86
+          "line": 84
         }
       },
       {
@@ -5400,13 +5386,13 @@
         "description": "Circulating supply slider tooltip.",
         "end": {
           "column": 3,
-          "line": 95
+          "line": 93
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingExtraTooltip",
         "start": {
           "column": 23,
-          "line": 91
+          "line": 89
         }
       },
       {
@@ -5414,13 +5400,13 @@
         "description": "Saturation point slider tooltip.",
         "end": {
           "column": 3,
-          "line": 100
+          "line": 98
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingMaxTooltip",
         "start": {
           "column": 21,
-          "line": 96
+          "line": 94
         }
       },
       {
@@ -5428,13 +5414,13 @@
         "description": "Minimum ADA required for staking slider tooltip.",
         "end": {
           "column": 3,
-          "line": 105
+          "line": 103
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.rankingMinTooltip",
         "start": {
           "column": 21,
-          "line": 101
+          "line": 99
         }
       },
       {
@@ -5442,13 +5428,13 @@
         "description": "Learn more action of ranking panel.",
         "end": {
           "column": 3,
-          "line": 110
+          "line": 108
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePoolsRanking.js",
         "id": "staking.stakePools.learnMore",
         "start": {
           "column": 19,
-          "line": 106
+          "line": 104
         }
       }
     ],
@@ -13460,45 +13446,31 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!This wallet does not contain the minimum amount of {minDelegationFunds} ADA which is required for delegation to be available. Please select a wallet with <span>a minimum amount of {minDelegationFunds} ADA</span> and click continue.",
-        "description": "errorMinDelegationFunds Error Label on the delegation setup \"choose wallet\" step dialog.",
+        "defaultMessage": "!!!This wallet does not contain the minimum amount of {calculatedMinRewardsReceiverBalance} ADA which is required to cover the necessary transaction fees. Please select a wallet with <span>a minimum amount of {calculatedMinRewardsReceiverBalance} ADA</span> and click continue.",
+        "description": "errorMinRewardFunds Error Label on the delegation setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 25
         },
         "file": "source/renderer/app/containers/staking/dialogs/redeem-itn-rewards/Step1ConfigurationContainer.js",
-        "id": "staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFunds",
+        "id": "staking.redeemItnRewards.step1.errorMessage",
         "start": {
-          "column": 27,
+          "column": 23,
           "line": 19
         }
       },
       {
-        "defaultMessage": "!!!This wallet contains only rewards balances so it cannot be delegated.",
-        "description": "errorMinDelegationFundsRewardsOnly Error Label on the delegation setup \"choose wallet\" step dialog.",
+        "defaultMessage": "!!!This wallet can’t be used for rewards redemption while it’s being synced.",
+        "description": "RestoringWallet Error Label on the rewards redemption setup \"choose wallet\" step dialog.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 32
         },
         "file": "source/renderer/app/containers/staking/dialogs/redeem-itn-rewards/Step1ConfigurationContainer.js",
-        "id": "staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFundsRewardsOnly",
-        "start": {
-          "column": 38,
-          "line": 27
-        }
-      },
-      {
-        "defaultMessage": "!!!This wallet can’t be used for delegation while it’s being synced.",
-        "description": "RestoringWallet Error Label on the delegation setup \"choose wallet\" step dialog.",
-        "end": {
-          "column": 3,
-          "line": 41
-        },
-        "file": "source/renderer/app/containers/staking/dialogs/redeem-itn-rewards/Step1ConfigurationContainer.js",
-        "id": "staking.delegationSetup.chooseWallet.step.dialog.errorRestoringWallet",
+        "id": "staking.redeemItnRewards.step1.errorRestoringWallet",
         "start": {
           "column": 24,
-          "line": 35
+          "line": 26
         }
       }
     ],
@@ -14738,169 +14710,5 @@
       }
     ],
     "path": "source/renderer/app/utils/transactionsCsvGenerator.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Create",
-        "description": "Create label.",
-        "end": {
-          "column": 3,
-          "line": 36
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "global.labels.create",
-        "start": {
-          "column": 10,
-          "line": 32
-        }
-      },
-      {
-        "defaultMessage": "!!!Create a new wallet",
-        "description": "Create a new wallet description.",
-        "end": {
-          "column": 3,
-          "line": 41
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "wallet.add.dialog.create.description",
-        "start": {
-          "column": 19,
-          "line": 37
-        }
-      },
-      {
-        "defaultMessage": "!!!Join",
-        "description": "Join label.",
-        "end": {
-          "column": 3,
-          "line": 46
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "wallet.add.dialog.join.label",
-        "start": {
-          "column": 8,
-          "line": 42
-        }
-      },
-      {
-        "defaultMessage": "!!!Join a shared wallet",
-        "description": "Join a shared wallet description.",
-        "end": {
-          "column": 3,
-          "line": 51
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "wallet.add.dialog.join.description",
-        "start": {
-          "column": 20,
-          "line": 47
-        }
-      },
-      {
-        "defaultMessage": "!!!Import",
-        "description": "Import label.",
-        "end": {
-          "column": 3,
-          "line": 56
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "wallet.add.dialog.import.label",
-        "start": {
-          "column": 10,
-          "line": 52
-        }
-      },
-      {
-        "defaultMessage": "!!!Import wallets from an earlier version of Daedalus or the Daedalus state directory",
-        "description": "Import wallets from an earlier version of Daedalus or the Daedalus state directory description.",
-        "end": {
-          "column": 3,
-          "line": 63
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "wallet.add.dialog.import.description",
-        "start": {
-          "column": 24,
-          "line": 57
-        }
-      },
-      {
-        "defaultMessage": "!!!Recovery Phrase",
-        "description": "Recovery Phrase description.",
-        "end": {
-          "column": 3,
-          "line": 68
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "wallet.restore.dialog.mnemonicsStep",
-        "start": {
-          "column": 18,
-          "line": 64
-        }
-      },
-      {
-        "defaultMessage": "!!!Save",
-        "description": "Save description.",
-        "end": {
-          "column": 3,
-          "line": 73
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "global.labels.save",
-        "start": {
-          "column": 8,
-          "line": 69
-        }
-      }
-    ],
-    "path": "storybook/stories/common/Widgets.stories.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Read More",
-        "description": "Read More button label.",
-        "end": {
-          "column": 3,
-          "line": 37
-        },
-        "file": "storybook/stories/news/AlertsOverlay.stories.js",
-        "id": "global.labels.readMore",
-        "start": {
-          "column": 12,
-          "line": 33
-        }
-      },
-      {
-        "defaultMessage": "!!!Failure Alert",
-        "description": "Failure Alert title.",
-        "end": {
-          "column": 3,
-          "line": 42
-        },
-        "file": "storybook/stories/news/AlertsOverlay.stories.js",
-        "id": "global.errors.failureAlert",
-        "start": {
-          "column": 16,
-          "line": 38
-        }
-      },
-      {
-        "defaultMessage": "!!!Content",
-        "description": "Content.",
-        "end": {
-          "column": 3,
-          "line": 47
-        },
-        "file": "storybook/stories/news/AlertsOverlay.stories.js",
-        "id": "static.dummy.markdown",
-        "start": {
-          "column": 11,
-          "line": 43
-        }
-      }
-    ],
-    "path": "storybook/stories/news/AlertsOverlay.stories.json"
   }
 ]

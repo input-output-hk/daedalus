@@ -9,35 +9,26 @@ import type { InjectedDialogContainerStepProps } from '../../../../types/injecte
 import { InjectedDialogContainerStepDefaultProps } from '../../../../types/injectedPropsType';
 import validWords from '../../../../../../common/config/crypto/valid-words.en';
 import { isValidMnemonic } from '../../../../../../common/config/crypto/decrypt';
-import { MIN_DELEGATION_FUNDS } from '../../../../config/stakingConfig';
+import { MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE } from '../../../../config/stakingConfig';
 import Wallet from '../../../../domains/Wallet';
 
 type Props = InjectedDialogContainerStepProps;
 const DefaultProps = InjectedDialogContainerStepDefaultProps;
 
 const messages = defineMessages({
-  errorMinDelegationFunds: {
-    id:
-      'staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFunds',
+  errorMinRewardFunds: {
+    id: 'staking.redeemItnRewards.step1.errorMessage',
     defaultMessage:
-      '!!!This wallet does not contain the minimum amount of {minDelegationFunds} ADA which is required for delegation to be available. Please select a wallet with <span>a minimum amount of {minDelegationFunds} ADA</span> and click continue.',
+      '!!!This wallet does not contain the minimum amount of {calculatedMinRewardsReceiverBalance} ADA which is required to cover the necessary transaction fees. Please select a wallet with <span>a minimum amount of {calculatedMinRewardsReceiverBalance} ADA</span> and click continue.',
     description:
-      'errorMinDelegationFunds Error Label on the delegation setup "choose wallet" step dialog.',
-  },
-  errorMinDelegationFundsRewardsOnly: {
-    id:
-      'staking.delegationSetup.chooseWallet.step.dialog.errorMinDelegationFundsRewardsOnly',
-    defaultMessage:
-      '!!!This wallet contains only rewards balances so it cannot be delegated.',
-    description:
-      'errorMinDelegationFundsRewardsOnly Error Label on the delegation setup "choose wallet" step dialog.',
+      'errorMinRewardFunds Error Label on the delegation setup "choose wallet" step dialog.',
   },
   errorRestoringWallet: {
-    id: 'staking.delegationSetup.chooseWallet.step.dialog.errorRestoringWallet',
+    id: 'staking.redeemItnRewards.step1.errorRestoringWallet',
     defaultMessage:
-      '!!!This wallet can’t be used for delegation while it’s being synced.',
+      '!!!This wallet can’t be used for rewards redemption while it’s being synced.',
     description:
-      'RestoringWallet Error Label on the delegation setup "choose wallet" step dialog.',
+      'RestoringWallet Error Label on the rewards redemption setup "choose wallet" step dialog.',
   },
 });
 
@@ -46,52 +37,50 @@ const messages = defineMessages({
 export default class Step1ConfigurationContainer extends Component<Props> {
   static defaultProps = DefaultProps;
 
-  onWalletAcceptable = (
-    walletAmount?: BigNumber,
-    walletReward?: BigNumber = 0
-  ) =>
-    walletAmount &&
-    walletAmount.gte(new BigNumber(MIN_DELEGATION_FUNDS)) &&
-    !walletAmount.equals(walletReward);
+  onWalletAcceptable = (walletAmount?: BigNumber) => {
+    const minRewardsFunds = new BigNumber(
+      MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE
+    );
+    return walletAmount && walletAmount.gte(minRewardsFunds);
+  };
 
   render() {
     const { onClose, onBack, stores, actions } = this.props;
-    const { allWallets } = stores.wallets;
+    const { wallets, staking } = stores;
+    const { allWallets } = wallets;
     const {
       redeemWallet,
-      configurationStepError,
-      isSubmittingReedem,
+      isCalculatingReedemFees,
       redeemRecoveryPhrase,
-    } = stores.staking;
+    } = staking;
 
     const selectedWalletId = get(redeemWallet, 'id', null);
     const selectedWallet: ?Wallet = allWallets.find(
       (current: Wallet) => current && current.id === selectedWalletId
     );
-    const { amount, reward, isRestoring } = selectedWallet || {};
-    let errorMessage;
-    if (selectedWallet && !this.onWalletAcceptable(amount, reward)) {
+    const { amount, isRestoring } = selectedWallet || {};
+    let errorMessage = null;
+    if (selectedWallet && !this.onWalletAcceptable(amount)) {
       // Wallet is restoring
       if (isRestoring) errorMessage = messages.errorRestoringWallet;
-      // Wallet only has Reward balance
-      else if (!amount.isZero() && amount.equals(reward))
-        errorMessage = messages.errorMinDelegationFundsRewardsOnly;
       // Wallet balance < min delegation funds
-      else errorMessage = messages.errorMinDelegationFunds;
+      else errorMessage = messages.errorMinRewardFunds;
     }
     const { openExternalLink } = stores.app;
-    const { onConfigurationContinue, onSelectRedeemWallet } = actions.staking;
+    const {
+      onConfigurationContinue,
+      onCalculateRedeemWalletFees,
+    } = actions.staking;
     return (
       <Step1ConfigurationDialog
-        error={configurationStepError}
-        errorMessage={errorMessage}
-        isSubmitting={isSubmittingReedem}
+        error={errorMessage}
+        isCalculatingReedemFees={isCalculatingReedemFees}
         mnemonicValidator={isValidMnemonic}
         onBack={onBack}
         onClose={onClose}
         onContinue={onConfigurationContinue.trigger}
-        onSelectWallet={(walletId) =>
-          onSelectRedeemWallet.trigger({ walletId })
+        onSelectWallet={(walletId, recoveryPhrase) =>
+          onCalculateRedeemWalletFees.trigger({ walletId, recoveryPhrase })
         }
         suggestedMnemonics={validWords}
         wallet={redeemWallet}
