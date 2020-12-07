@@ -474,10 +474,11 @@ export default class HardwareWalletsStore extends Store {
           logger.debug(
             '[HW-DEBUG] HWStore - Establish connection:: Transaction initiated - Recognized device found'
           );
-          return lastUnpairedDevice;
+          return recognizedPairedHardwareWallet;
         }
 
-        const deviceData = lastUnpairedDevice || relatedConnectionData;
+        const deviceData =
+          lastUnpairedDevice || get(relatedConnectionData, 'device', {});
         logger.debug(
           '[HW-DEBUG] HWStore - Connect - TRANSACTION initiated - return last device'
         );
