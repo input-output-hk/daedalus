@@ -1,0 +1,95 @@
+.component {
+  position: relative;
+
+  .field {
+    &.valueHidden {
+      :global {
+        .SimpleInput_input {
+          pointer-events: none;
+        }
+      }
+    }
+    &.valueShown {
+      :global {
+        .SimpleInput_input {
+          color: var(--theme-input-text-color);
+          cursor: text;
+        }
+      }
+    }
+
+    :global {
+      .SimpleFormField_inputWrapper {
+        background-color: var(--rp-input-bg-color-disabled);
+      }
+      .SimpleInput_input {
+        background-color: transparent;
+        border: none;
+        width: calc(100% - 130px);
+      }
+    }
+  }
+
+  .addons {
+    align-items: center;
+    display: flex;
+    position: absolute;
+    right: 0;
+    top: 42px;
+
+    .imageButtonContainer {
+      margin-right: 10px;
+    }
+
+    .imageButton,
+    .button {
+      align-items: center;
+      display: flex;
+      height: 28px;
+      justify-content: center;
+    }
+
+    .button {
+      font-family: var(--font-bold);
+      font-size: 12px;
+      line-height: 1.33;
+      margin-right: 10px;
+      padding: 0 5px;
+      text-transform: uppercase;
+      width: auto;
+    }
+
+    .imageButton {
+      width: 28px;
+
+      :global {
+        .SVGInline {
+          svg {
+            g g,
+            path {
+              fill: var(--theme-button-flat-text-color);
+            }
+          }
+        }
+      }
+    }
+
+    .copyButton {
+      :global {
+        .SVGInline {
+          height: 14px;
+          width: 12px;
+        }
+      }
+    }
+
+    .qrCodeButton {
+      :global {
+        .SVGInline {
+          height: 14px;
+          width: 14px;
+        }
+      }
+    }
+  }
+}

@@ -3,12 +3,12 @@ import React, { Component } from 'react';
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import classNames from 'classnames';
 import moment from 'moment';
 import LocalizableError from '../../../i18n/LocalizableError';
 import BorderedBox from '../../widgets/BorderedBox';
 import InlineEditingInput from '../../widgets/forms/InlineEditingInput';
 import ReadOnlyInput from '../../widgets/forms/ReadOnlyInput';
+import WalletPublicKeyField from './WalletPublicKeyField';
 import DeleteWalletButton from './DeleteWalletButton';
 import DeleteWalletConfirmationDialog from './DeleteWalletConfirmationDialog';
 import ChangeSpendingPasswordDialog from './ChangeSpendingPasswordDialog';
@@ -134,6 +134,52 @@ export default class WalletSettings extends Component<Props, State> {
     this.setState({ isFormBlocked: false });
   };
 
+  renderWalletPublicKeyBox = () => {
+    const { openDialogAction, isDialogOpen } = this.props;
+
+    return (
+      <>
+        <BorderedBox className={styles.walletPublicKeyBox}>
+          <WalletPublicKeyField walletPublicKey="Fuck" />
+        </BorderedBox>
+      </>
+    );
+  };
+
+  renderDeleteWalletBox = () => {
+    const { intl } = this.context;
+    const {
+      openDialogAction,
+      isDialogOpen,
+      deleteWalletDialogContainer,
+    } = this.props;
+
+    return (
+      <>
+        <BorderedBox className={styles.deleteWalletBox}>
+          <span>{intl.formatMessage(messages.deleteWalletHeader)}</span>
+          <div className={styles.contentBox}>
+            <div>
+              <p>{intl.formatMessage(messages.deleteWalletWarning1)}</p>
+              <p>{intl.formatMessage(messages.deleteWalletWarning2)}</p>
+            </div>
+            <DeleteWalletButton
+              onClick={() => {
+                this.onBlockForm();
+                openDialogAction({
+                  dialog: DeleteWalletConfirmationDialog,
+                });
+              }}
+            />
+          </div>
+        </BorderedBox>
+        {isDialogOpen(DeleteWalletConfirmationDialog)
+          ? deleteWalletDialogContainer
+          : false}
+      </>
+    );
+  };
+
   render() {
     const { intl } = this.context;
     const {
@@ -141,8 +187,8 @@ export default class WalletSettings extends Component<Props, State> {
       creationDate,
       spendingPasswordUpdateDate,
       error,
-      openDialogAction,
       isDialogOpen,
+      openDialogAction,
       onFieldValueChange,
       onStartEditing,
       onStopEditing,
@@ -156,7 +202,6 @@ export default class WalletSettings extends Component<Props, State> {
       isLegacy,
       lastUpdatedField,
       changeSpendingPasswordDialog,
-      deleteWalletDialogContainer,
       recoveryPhraseVerificationDate,
       recoveryPhraseVerificationStatus,
       recoveryPhraseVerificationStatusType,
@@ -171,32 +216,10 @@ export default class WalletSettings extends Component<Props, State> {
     moment.locale(momentLocales[locale]);
 
     if (isLegacy && isIncentivizedTestnet) {
-      const deleteWalletBoxStyles = classNames([
-        styles.deleteWalletBox,
-        styles.legacyWallet,
-      ]);
       return (
         <div className={styles.component}>
-          <BorderedBox className={deleteWalletBoxStyles}>
-            <span>{intl.formatMessage(messages.deleteWalletHeader)}</span>
-            <div className={styles.contentBox}>
-              <div>
-                <p>{intl.formatMessage(messages.deleteWalletWarning1)}</p>
-                <p>{intl.formatMessage(messages.deleteWalletWarning2)}</p>
-              </div>
-              <DeleteWalletButton
-                onClick={() =>
-                  openDialogAction({
-                    dialog: DeleteWalletConfirmationDialog,
-                  })
-                }
-              />
-            </div>
-          </BorderedBox>
-
-          {isDialogOpen(DeleteWalletConfirmationDialog)
-            ? deleteWalletDialogContainer
-            : false}
+          {this.renderWalletPublicKeyBox()}
+          {this.renderDeleteWalletBox()}
         </div>
       );
     }
@@ -264,31 +287,12 @@ export default class WalletSettings extends Component<Props, State> {
           {error && <p className={styles.error}>{intl.formatMessage(error)}</p>}
         </BorderedBox>
 
-        <BorderedBox className={styles.deleteWalletBox}>
-          <span>{intl.formatMessage(messages.deleteWalletHeader)}</span>
-          <div className={styles.contentBox}>
-            <div>
-              <p>{intl.formatMessage(messages.deleteWalletWarning1)}</p>
-              <p>{intl.formatMessage(messages.deleteWalletWarning2)}</p>
-            </div>
-            <DeleteWalletButton
-              onClick={() => {
-                this.onBlockForm();
-                openDialogAction({
-                  dialog: DeleteWalletConfirmationDialog,
-                });
-              }}
-            />
-          </div>
-        </BorderedBox>
-
         {isDialogOpen(ChangeSpendingPasswordDialog)
           ? changeSpendingPasswordDialog
           : false}
 
-        {isDialogOpen(DeleteWalletConfirmationDialog)
-          ? deleteWalletDialogContainer
-          : false}
+        {this.renderWalletPublicKeyBox()}
+        {this.renderDeleteWalletBox()}
       </div>
     );
   }
