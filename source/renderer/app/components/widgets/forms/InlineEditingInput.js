@@ -4,6 +4,7 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
+import { get } from 'lodash';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
@@ -161,6 +162,7 @@ export default class InlineEditingInput extends Component<Props, State> {
   }
 
   inputField: Input;
+  inputFieldIsSet: boolean = false;
 
   render() {
     const { validator } = this;
@@ -227,10 +229,16 @@ export default class InlineEditingInput extends Component<Props, State> {
           disabled={!isActive || disabled}
           readOnly={readOnly}
           ref={(input) => {
-            const { getInputField } = this.props;
-            this.inputField = input;
-            if (getInputField) {
-              getInputField(input.inputElement);
+            if (!this.inputFieldIsSet) {
+              const { getInputField } = this.props;
+              this.inputField = input;
+              if (getInputField) {
+                const inputElement = get(input, 'inputElement.current');
+                if (inputElement) {
+                  getInputField(inputElement);
+                  this.inputFieldIsSet = true;
+                }
+              }
             }
           }}
           skin={InputSkin}

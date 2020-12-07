@@ -113,12 +113,12 @@ export default class StakePoolsSettings extends Component<Props, State> {
     const { smashServerUrlError } = this.props;
     const { inputField } = this.state;
     const hasError = !!smashServerUrlError;
-    console.log('hasError', hasError, smashServerUrlError);
-    console.log('!hasErrorPrev', !hasErrorPrev);
+    // console.log('hasError', hasError, smashServerUrlError);
+    // console.log('!hasErrorPrev', !hasErrorPrev);
     if (hasError && !hasErrorPrev) {
       console.log('FOCUS!');
+      console.log('inputField.focus', inputField.focus);
       if (inputField) inputField.focus();
-      console.log('inputField', inputField);
     }
   }
 
@@ -172,10 +172,11 @@ export default class StakePoolsSettings extends Component<Props, State> {
   };
 
   handleGetInputField = (inputField: HTMLInputElement) => {
-    console.log('inputField', inputField);
-    this.setState({
-      inputField,
-    });
+    if (!this.state.inputField) {
+      this.setState({
+        inputField,
+      });
+    }
   };
 
   render() {
