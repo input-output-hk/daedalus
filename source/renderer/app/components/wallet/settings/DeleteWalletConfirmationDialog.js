@@ -93,7 +93,8 @@ export default class DeleteWalletConfirmationDialog extends Component<Props> {
     const countdownDisplay =
       countdownRemaining > 0 ? ` (${countdownRemaining})` : '';
     const isCountdownFinished = countdownRemaining <= 0;
-    const isWalletNameConfirmationCorrect = confirmationValue === walletName;
+    const isWalletNameConfirmationCorrect =
+      confirmationValue.normalize('NFKC') === walletName.normalize('NFKC'); // Always normalize non-breaking space into regular space.
     const isDisabled =
       !isCountdownFinished ||
       !isBackupNoticeAccepted ||

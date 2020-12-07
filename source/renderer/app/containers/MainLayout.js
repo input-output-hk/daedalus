@@ -47,7 +47,7 @@ export default class MainLayout extends Component<InjectedContainerProps> {
     const { isShelleyActivated } = networkStatus;
     const { currentTheme } = profile;
     const {
-      environment: { network, isDev },
+      environment: { network },
     } = app;
 
     const appWallets =
@@ -63,22 +63,8 @@ export default class MainLayout extends Component<InjectedContainerProps> {
           }
         : null;
 
-    const hardwareWallets =
-      sidebar.hardwareWallets.length > 0
-        ? {
-            items: sidebar.hardwareWallets,
-            activeWalletId,
-            actions: {
-              onHardwareWalletItemClick: (walletId: string) => {
-                actions.sidebar.hardwareWalletSelected.trigger({ walletId });
-              },
-            },
-          }
-        : null;
-
     const sidebarMenus = {
       wallets: appWallets,
-      hardwareWallets: isDev ? hardwareWallets : null,
     };
 
     const sidebarComponent = (

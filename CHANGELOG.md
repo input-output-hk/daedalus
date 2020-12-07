@@ -1,7 +1,43 @@
 Changelog
 =========
 
-## vNext
+## 3.0.0
+
+### Features
+
+- Added hardware wallet support for "Ledger Nano S", "Ledger Nano X", and "Trezor model T" devices ([PR 2046](https://github.com/input-output-hk/daedalus/pull/2046))
+- Added hardware wallet support for Testnet network ([PR 2264](https://github.com/input-output-hk/daedalus/pull/2264))
+
+### Chores
+
+- Reduced the size of Linux installer ([PR 2260](https://github.com/input-output-hk/daedalus/pull/2260))
+- Canceled running fee estimation api requests once new request is made ([PR 2239](https://github.com/input-output-hk/daedalus/pull/2239))
+
+## 3.0.0-FC4
+
+### Fixes
+
+- Fixed Trezor transactions TTL ([PR 2046](https://github.com/input-output-hk/daedalus/pull/2046))
+
+## 3.0.0-FC3
+
+### Features
+
+- Added hardware wallet support for "Ledger Nano S" and "Ledger Nano X" on Linux ([PR 2046](https://github.com/input-output-hk/daedalus/pull/2046))
+
+## 3.0.0-FC2
+
+### Features
+
+- Added hardware wallet support for "Ledger Nano S" and "Ledger Nano X" on macOS and Windows ([PR 2046](https://github.com/input-output-hk/daedalus/pull/2046))
+
+## 3.0.0-FC1
+
+### Features
+
+- Added hardware wallet support for "Trezor model T" ([PR 2046](https://github.com/input-output-hk/daedalus/pull/2046))
+
+## 2.6.0
 
 ### Features
 
@@ -9,12 +45,15 @@ Changelog
 
 ### Fixes
 
+- Fixed removal of stake pools which have been delisted on SMASH ([PR 2263](https://github.com/input-output-hk/daedalus/pull/2263))
+- Fixed error message and validation on redeem rewards screen ([PR 2220](https://github.com/input-output-hk/daedalus/pull/2220))
 - Fixed empty disk space calculation for some Linux distributions ([PR 2258](https://github.com/input-output-hk/daedalus/pull/2258))
 - Fixed the overlap of the "X" button in the stake pools search box ([PR 2251](https://github.com/input-output-hk/daedalus/pull/2251))
 
 ### Chores
 
-- Canceled running fee estimation api requests once new request is made ([PR 2239](https://github.com/input-output-hk/daedalus/pull/2239))
+- Improved maximum delegation stake amount calculation ([PR 2262](https://github.com/input-output-hk/daedalus/pull/2262))
+- Updated `cardano-wallet` to version `2020-11-26` ([PR 2262](https://github.com/input-output-hk/daedalus/pull/2262))
 
 ## 2.5.0
 

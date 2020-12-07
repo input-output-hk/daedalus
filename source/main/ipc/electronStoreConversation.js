@@ -36,7 +36,9 @@ const reset = async () => {
   await unset(keys.USER_THEME);
   await unset(keys.DATA_LAYER_MIGRATION_ACCEPTANCE);
   await unset(keys.READ_NEWS);
+  await unset(keys.HARDWARE_WALLETS);
   await unset(keys.WALLET_MIGRATION_STATUS);
+  await unset(keys.HARDWARE_WALLET_DEVICES);
 };
 
 export const requestElectronStore = (request: ElectronStoreMessage) => {

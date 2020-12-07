@@ -11,6 +11,7 @@ import {
   generateWalletMigrationReport,
 } from './utils/setupLogging';
 import { handleDiskSpace } from './utils/handleDiskSpace';
+// import { handleHardwareWalletDevices } from './ipc/getHardwareWalletChannel';
 import { handleCheckBlockReplayProgress } from './utils/handleCheckBlockReplayProgress';
 import { createMainWindow } from './windows/main';
 import { installChromeExtensions } from './utils/installChromeExtensions';
@@ -38,6 +39,7 @@ import { logUsedVersion } from './utils/logUsedVersion';
 import { setStateSnapshotLogChannel } from './ipc/set-log-state-snapshot';
 import { generateWalletMigrationReportChannel } from './ipc/generateWalletMigrationReportChannel';
 import { pauseActiveDownloads } from './ipc/downloadManagerChannel';
+// import { isHardwareWalletSupportEnabled, isLedgerEnabled } from '../renderer/app/config/hardwareWalletsConfig';
 
 /* eslint-disable consistent-return */
 
@@ -165,6 +167,16 @@ const onAppReady = async () => {
   };
   mainErrorHandler(onMainError);
   await handleCheckDiskSpace();
+
+  // @TODO - uncomment once ledger should be enabled
+  // Ledger INIT
+  // console.debug('[HW-DEBUG] IS ENABLED: ', { isHardwareWalletSupportEnabled, isLedgerEnabled });
+  // if (isHardwareWalletSupportEnabled, isLedgerEnabled) {
+  //   const handleCheckHardwareWalletDevices = handleHardwareWalletDevices(
+  //     mainWindow
+  //   );
+  //   await handleCheckHardwareWalletDevices();
+  // }
 
   await handleCheckBlockReplayProgress(mainWindow, launcherConfig.logsPrefix);
 
