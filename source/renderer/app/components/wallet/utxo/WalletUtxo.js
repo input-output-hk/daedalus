@@ -160,7 +160,7 @@ export default class WalletUtxo extends Component<Props, State> {
           >
             <h1>{intl.formatMessage(messages.title)}</h1>
 
-            {!isEmpty ? (
+            {!isLoadingInitialUtxoData && !isEmpty ? (
               <Fragment>
                 <p>
                   <FormattedHTMLMessage
