@@ -57,6 +57,8 @@ type Props = {
 };
 
 type State = {
+  hasError: boolean,
+  inputField?: HTMLInputElement,
   isActive: boolean,
   lastValidServerUrl: ?string,
   lastValidServerType: SmashServerType,
@@ -73,8 +75,9 @@ export default class StakePoolsSettings extends Component<Props, State> {
     {
       smashServerUrl: nextValidServerUrl,
       smashServerType: nextValidServerType,
+      smashServerUrlError,
     }: Props,
-    { lastValidServerUrl, lastValidServerType }: State
+    { lastValidServerUrl, lastValidServerType, hasError }: State
   ) {
     // The `smashServerUrl` prop only changes when it's a valid server
     // unless it's empty
@@ -88,18 +91,36 @@ export default class StakePoolsSettings extends Component<Props, State> {
         lastValidServerUrl: nextValidServerUrl,
         lastValidServerType: nextValidServerType,
         prevValidServerType: lastValidServerType,
+        hasError,
       };
     }
-    return null;
+    return {
+      hasError,
+    };
   }
 
   state = {
+    hasError: false,
+    inputField: null,
     isActive: false,
     // Last valid type and url
     lastValidServerUrl: this.props.smashServerUrl,
     lastValidServerType: this.props.smashServerType,
     prevValidServerType: this.props.smashServerType,
   };
+
+  componentDidUpdate(prevProps, { hasError: hasErrorPrev }: State) {
+    const { smashServerUrlError } = this.props;
+    const { inputField } = this.state;
+    const hasError = !!smashServerUrlError;
+    console.log('hasError', hasError, smashServerUrlError);
+    console.log('!hasErrorPrev', !hasErrorPrev);
+    if (hasError && !hasErrorPrev) {
+      console.log('FOCUS!');
+      if (inputField) inputField.focus();
+      console.log('inputField', inputField);
+    }
+  }
 
   componentWillUnmount() {
     // In case the `lastValidServerUrl` prop is empty
@@ -132,12 +153,13 @@ export default class StakePoolsSettings extends Component<Props, State> {
 
   handleUrlCancelEditing = () => {
     const { onSelectSmashServerUrl } = this.props;
-    const { lastValidServerUrl } = this.state;
-    onSelectSmashServerUrl(lastValidServerUrl);
+    // const { lastValidServerUrl } = this.state;
+    onSelectSmashServerUrl('');
     this.setState({ isActive: false });
   };
 
-  handleUrlIsValid = (url: string) => isValidUrl(url);
+  handleIsValid = (url: string) =>
+    this.props.smashServerUrlError || isValidUrl(url);
 
   // @SMASH TODO - Handle the success message
   handleIsSuccessfullyUpdated = () => {
@@ -147,6 +169,13 @@ export default class StakePoolsSettings extends Component<Props, State> {
       return smashServerUrl && smashServerUrl !== lastValidServerUrl;
     }
     return smashServerType !== prevValidServerType;
+  };
+
+  handleGetInputField = (inputField: HTMLInputElement) => {
+    console.log('inputField', inputField);
+    this.setState({
+      inputField,
+    });
   };
 
   render() {
@@ -170,9 +199,9 @@ export default class StakePoolsSettings extends Component<Props, State> {
       },
     ];
 
-    const validationErrorMessage = intl.formatMessage(
-      messages.smashUrlInputInvalidUrl
-    );
+    const validationErrorMessage = smashServerUrlError
+      ? intl.formatMessage(smashServerUrlError)
+      : intl.formatMessage(messages.smashUrlInputInvalidUrl);
 
     return (
       <div className={styles.component}>
@@ -198,12 +227,14 @@ export default class StakePoolsSettings extends Component<Props, State> {
           onStopEditing={this.handleUrlStopEditing}
           onCancelEditing={this.handleUrlCancelEditing}
           onSubmit={this.handleSubmit}
-          isValid={this.handleUrlIsValid}
+          isValid={this.handleIsValid}
           validationErrorMessage={validationErrorMessage}
           successfullyUpdated={false}
           successfullyUpdatedToDo={this.handleIsSuccessfullyUpdated}
           isActive={isActive}
           readOnly={smashServerType !== SMASH_SERVER_TYPES.CUSTOM}
+          validateOnChange={false}
+          getInputField={this.handleGetInputField}
         />
 
         {smashServerUrlError && (

@@ -42,10 +42,12 @@ type Props = {
   inputFieldLabel: string,
   inputFieldValue: string,
   inputFieldPlaceholder?: string,
+  getInputField?: Function,
   onStartEditing?: Function,
   onStopEditing?: Function,
   onCancelEditing: Function,
   onSubmit: Function,
+  onSubmitEnd?: Function,
   isValid: Function,
   validationErrorMessage: string,
   successfullyUpdated: boolean,
@@ -69,6 +71,7 @@ export default class InlineEditingInput extends Component<Props, State> {
   static defaultProps = {
     onStartEditing: () => {},
     onStopEditing: () => {},
+    validateOnChange: true,
   };
 
   static contextTypes = {
@@ -92,7 +95,7 @@ export default class InlineEditingInput extends Component<Props, State> {
     {
       plugins: { vjf: vjf() },
       options: {
-        validateOnChange: true,
+        validateOnChange: this.props.validateOnChange,
         validationDebounceWait: FORM_VALIDATION_DEBOUNCE_WAIT,
       },
     }
@@ -102,14 +105,19 @@ export default class InlineEditingInput extends Component<Props, State> {
     this.validator.submit({
       onSuccess: (form) => {
         const { inputField } = form.values();
-        const { onSubmit, onStopEditing, onCancelEditing } = this.props;
+        const {
+          onSubmit,
+          onStopEditing,
+          onCancelEditing,
+          onSubmitEnd,
+        } = this.props;
         if (inputField !== this.props.inputFieldValue) {
           onSubmit(inputField);
           if (onStopEditing) onStopEditing();
         } else {
           onCancelEditing();
         }
-        this.setState({ isActive: false });
+        if (!onSubmitEnd) this.setState({ isActive: false });
       },
     });
   };
@@ -117,7 +125,7 @@ export default class InlineEditingInput extends Component<Props, State> {
   handleInputKeyDown = (event: KeyboardEvent) => {
     if (event.which === 13) {
       // ENTER key
-      this.onBlur();
+      this.submit();
     }
     if (event.which === 27) {
       // ESCAPE key
@@ -130,12 +138,6 @@ export default class InlineEditingInput extends Component<Props, State> {
     if (this.props.readOnly) return;
     this.setState({ isActive: true });
     if (onStartEditing) onStartEditing();
-  };
-
-  onBlur = () => {
-    if (this.state.isActive) {
-      this.submit();
-    }
   };
 
   onCancel = () => {
@@ -187,6 +189,10 @@ export default class InlineEditingInput extends Component<Props, State> {
       successfullyUpdated ? 'input_animateSuccess' : null,
       isActive ? null : 'input_cursorPointer',
     ]);
+    const buttonsWrapperStyles = classnames([
+      styles.buttonsWrapper,
+      readOnly ? styles.readOnly : null,
+    ]);
     const editButtonStyles = classnames([styles.button, styles.editButton]);
     const cancelButtonStyles = classnames([styles.button, styles.cancelButton]);
     const okButtonStyles = classnames([styles.button, styles.okButton]);
@@ -200,7 +206,7 @@ export default class InlineEditingInput extends Component<Props, State> {
     return (
       <div
         className={componentStyles}
-        onBlur={this.onBlur}
+        onBlur={this.onCancel}
         onMouseUp={this.onFocus}
         role="presentation"
         aria-hidden
@@ -215,64 +221,60 @@ export default class InlineEditingInput extends Component<Props, State> {
           value={inputField.value}
           onChange={inputField.onChange}
           onFocus={inputField.onFocus}
-          onBlur={inputField.onBlur}
+          onBlur={inputField.onCancel}
           onKeyDown={(event) => this.handleInputKeyDown(event)}
           error={isActive || inputBlocked ? inputField.error : null}
           disabled={!isActive || disabled}
           readOnly={readOnly}
           ref={(input) => {
+            const { getInputField } = this.props;
             this.inputField = input;
+            if (getInputField) {
+              getInputField(input.inputElement);
+            }
           }}
           skin={InputSkin}
+          autoFocus
         />
 
-        <div className={styles.buttonsWrapper}>
-          <Button
-            className={editButtonStyles}
-            onClick={(a, b, c) => {
-              console.log('a', a, 'b', b, 'c', c);
-            }}
-            label={<SVGInline svg={penIcon} className={styles.icon} />}
-            skin={ButtonSkin}
-          />
-          <Button
-            className={cancelButtonStyles}
-            onClick={(a, b, c) => {
-              console.log('a', a, 'b', b, 'c', c);
-            }}
-            label={<SVGInline svg={crossIcon} className={styles.icon} />}
-            skin={ButtonSkin}
-          />
-          <Button
-            className={okButtonStyles}
-            onClick={(a, b, c) => {
-              console.log('a', a, 'b', b, 'c', c);
-            }}
-            label={<SVGInline svg={arrowIcon} className={styles.icon} />}
-            skin={ButtonSkin}
-          />
-          <Button
-            className={submittingButtonStyles}
-            onClick={(a, b, c) => {
-              console.log('a', a, 'b', b, 'c', c);
-            }}
-            label={<SVGInline svg={spinningIcon} className={styles.icon} />}
-            label1=""
-            skin={ButtonSkin}
-          />
+        <div className={buttonsWrapperStyles}>
+          {!isActive &&
+            !isSubmitting &&
+            inputFieldLabel.length &&
+            !readOnly && (
+              <Button
+                className={editButtonStyles}
+                onClick={inputField.onFocus}
+                label={<SVGInline svg={penIcon} className={styles.icon} />}
+                skin={ButtonSkin}
+              />
+            )}
+          {isActive && (
+            <Button
+              className={cancelButtonStyles}
+              onClick={this.onCancel}
+              label={<SVGInline svg={crossIcon} className={styles.icon} />}
+              skin={ButtonSkin}
+            />
+          )}
+          {isActive && (
+            <Button
+              className={okButtonStyles}
+              onClick={this.submit}
+              label={<SVGInline svg={arrowIcon} className={styles.icon} />}
+              skin={ButtonSkin}
+            />
+          )}
+          {isSubmitting && (
+            <Button
+              className={submittingButtonStyles}
+              onClick={() => {}}
+              label={<SVGInline svg={spinningIcon} className={styles.icon} />}
+              label1=""
+              skin={ButtonSkin}
+            />
+          )}
         </div>
-
-        {/* isActive && (
-          <button className={styles.button} onMouseDown={this.onCancel}>
-            {intl.formatMessage(messages.cancel)}
-          </button>
-        )}
-
-        {successfullyUpdated && (
-          <div className={styles.savingResultLabel}>
-            {intl.formatMessage(messages.changesSaved)}
-          </div>
-        ) */}
       </div>
     );
   }

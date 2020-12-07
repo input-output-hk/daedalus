@@ -8,6 +8,17 @@
     color: var(--theme-input-text-color);
   }
 
+  &:hover {
+    .editButton {
+      background-color: var(--theme-button-primary-background-color-hover);
+      .icon {
+        svg path {
+          stroke: var(--theme-button-primary-text-color);
+        }
+      }
+    }
+  }
+
   &.isSubmitting {
   }
 
@@ -32,12 +43,15 @@
   }
 
   .buttonsWrapper {
-    background: var(--rp-input-bg-color);
+    // background: var(--rp-input-bg-color);
     bottom: 10px;
     height: 28px;
     padding-right: 11px;
     position: absolute;
     right: 1px;
+    &.readOnly {
+      // background: var(--rp-input-bg-color-disabled);
+    }
   }
 
   .button {
@@ -62,8 +76,15 @@
       }
     }
   }
-
   .editButton {
+    &:hover {
+      background-color: var(--theme-button-primary-background-color-hover);
+      .icon {
+        svg path {
+          stroke: var(--theme-button-primary-text-color);
+        }
+      }
+    }
     .icon {
       svg path {
         stroke: var(--theme-button-flat-text-color);
