@@ -102,17 +102,11 @@ const deriveXpubChannel: MainIpcChannel<
   deriveXpubMainResponse
 > = new MainIpcChannel(DERIVE_XPUB_CHANNEL);
 
-// Start Ledger listeners
-// @TODO - uncomment once ledger instantiated
-
 let devicesMemo = {};
-
 class EventObserver {
   constructor(props) {
-    // INIT - 4
     // $FlowFixMe
     this.mainWindow = props;
-    // this.channel = {};
   }
   next = async (event) => {
     const transportList = await TransportNodeHid.list();
@@ -168,20 +162,6 @@ class EventObserver {
         );
       }
       logger.info('[HW-DEBUG] CONSTRUCTOR Memo');
-
-      // logger.info('[HW-DEBUG] SET NEW CHANNEL INIT');
-      // if (event.type === 'add') {
-      //   const transport = await TransportNodeHid.open(device.path);
-      //   const AdaConnection = new AppAda(transport);
-      //   logger.info('[HW-DEBUG] SET NEW CHANNEL: ', {transport, AdaConnection});
-      //   this.channel = {
-      //     ...this.channel,
-      //     [device.path]: {
-      //       transport,
-      //       AdaConnection: AdaConnection,
-      //     },
-      //   }
-      // }
     } else {
       logger.info('[HW-DEBUG] Ledger NEXT - connection NOT changed');
     }
@@ -195,17 +175,6 @@ class EventObserver {
   }
 }
 
-export const handleHardwareWalletDevices = (mainWindow: BrowserWindow) => {
-  const handleCheckHardwareWalletDevices = async () => {
-    logger.info('[HW-DEBUG] handleCheckHardwareWalletDevices');
-    const observer = new EventObserver(mainWindow);
-    await TransportNodeHid.listen(observer);
-  };
-
-  return handleCheckHardwareWalletDevices;
-};
-
-// INIT - 1
 export const handleHardwareWalletRequests = async (
   mainWindow: BrowserWindow
 ) => {
@@ -214,7 +183,6 @@ export const handleHardwareWalletRequests = async (
 
   getHardwareWalletTransportChannel.onRequest(async (request) => {
     logger.info('[HW-DEBUG] getHardwareWalletTransportChannel');
-    // INIT - 6
     const { isTrezor, devicePath } = request;
     // Connected Trezor device info
     let deviceFeatures;
@@ -356,7 +324,7 @@ export const handleHardwareWalletRequests = async (
           {
             disconnected: event.type === 'device-disconnect',
             deviceType: 'trezor',
-            deviceId: event.payload.id, // 58E026E1F5CF549198EDCC35
+            deviceId: event.payload.id, // 123456ABCDEF
             deviceModel: event.payload.features.model, // e.g. T
             deviceName: event.payload.label, // e.g. Test Name
             path: event.payload.path,
@@ -472,12 +440,6 @@ export const handleHardwareWalletRequests = async (
         }
 
         const { device: oldDevice } = deviceMemo;
-
-        // @TODO - temp removed just for Windows testing
-        // const { device: oldDevice, transport: oldTransport } = deviceMemo;
-        // try {
-        //   await oldTransport.close();
-        // } catch (e) {} // eslint-disable-line
 
         // $FlowFixMe
         const newTransport = await TransportNodeHid.open(newPath);
