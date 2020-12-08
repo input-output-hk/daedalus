@@ -101,7 +101,7 @@ storiesOf('Common|Widgets', module)
 
   // ====== Stories ======
 
-  .add('InlineEditingInput', (props: { locale: string }) => (
+  .add('InlineEditingInput', () => (
     <div>
       <div style={{ width: '700px', height: '200px', display: 'flex' }}>
         <InlineEditingInput

@@ -5,6 +5,11 @@
 }
 .smashServerUrl {
   margin-top: 20px;
+  :global {
+    .SimpleInput_errored {
+      border-color: var(--rp-input-border-color-errored);
+    }
+  }
 }
 .smashServerUrlError {
   @include error-message;

@@ -51,14 +51,12 @@ const messages = defineMessages({
 type Props = {
   smashServerType: SmashServerType,
   smashServerUrl?: string,
-  smashServerUrlError: ?LocalizableError,
+  smashServerUrlError?: ?LocalizableError,
   onSelectSmashServerType: Function,
   onSelectSmashServerUrl: Function,
 };
 
 type State = {
-  hasError: boolean,
-  inputField?: HTMLInputElement,
   isActive: boolean,
   lastValidServerUrl: ?string,
   lastValidServerType: SmashServerType,
@@ -75,9 +73,8 @@ export default class StakePoolsSettings extends Component<Props, State> {
     {
       smashServerUrl: nextValidServerUrl,
       smashServerType: nextValidServerType,
-      smashServerUrlError,
     }: Props,
-    { lastValidServerUrl, lastValidServerType, hasError }: State
+    { lastValidServerUrl, lastValidServerType }: State
   ) {
     // The `smashServerUrl` prop only changes when it's a valid server
     // unless it's empty
@@ -91,36 +88,18 @@ export default class StakePoolsSettings extends Component<Props, State> {
         lastValidServerUrl: nextValidServerUrl,
         lastValidServerType: nextValidServerType,
         prevValidServerType: lastValidServerType,
-        hasError,
       };
     }
-    return {
-      hasError,
-    };
+    return null;
   }
 
   state = {
-    hasError: false,
-    inputField: null,
     isActive: false,
     // Last valid type and url
     lastValidServerUrl: this.props.smashServerUrl,
     lastValidServerType: this.props.smashServerType,
     prevValidServerType: this.props.smashServerType,
   };
-
-  componentDidUpdate(prevProps, { hasError: hasErrorPrev }: State) {
-    const { smashServerUrlError } = this.props;
-    const { inputField } = this.state;
-    const hasError = !!smashServerUrlError;
-    // console.log('hasError', hasError, smashServerUrlError);
-    // console.log('!hasErrorPrev', !hasErrorPrev);
-    if (hasError && !hasErrorPrev) {
-      console.log('FOCUS!');
-      console.log('inputField.focus', inputField.focus);
-      if (inputField) inputField.focus();
-    }
-  }
 
   componentWillUnmount() {
     // In case the `lastValidServerUrl` prop is empty
@@ -138,28 +117,31 @@ export default class StakePoolsSettings extends Component<Props, State> {
   }
 
   handleSubmit = (url: string) => {
-    if (isValidUrl(url)) {
+    if (isValidUrl(url || '')) {
       this.props.onSelectSmashServerUrl(url);
     }
   };
 
-  handleUrlStartEditing = () => {
+  handleStartEditing = () => {
     this.setState({ isActive: true });
   };
 
-  handleUrlStopEditing = () => {
+  handleStopEditing = () => {
     this.setState({ isActive: false });
   };
 
-  handleUrlCancelEditing = () => {
+  handleCancelEditing = () => {
     const { onSelectSmashServerUrl } = this.props;
-    // const { lastValidServerUrl } = this.state;
-    onSelectSmashServerUrl('');
+    const { lastValidServerUrl } = this.state;
+    onSelectSmashServerUrl(lastValidServerUrl);
     this.setState({ isActive: false });
   };
 
-  handleIsValid = (url: string) =>
-    this.props.smashServerUrlError || isValidUrl(url);
+  handleBlur = () => {
+    this.setState({ isActive: false });
+  };
+
+  handleIsValid = (url: string) => isValidUrl(url);
 
   // @SMASH TODO - Handle the success message
   handleIsSuccessfullyUpdated = () => {
@@ -169,14 +151,6 @@ export default class StakePoolsSettings extends Component<Props, State> {
       return smashServerUrl && smashServerUrl !== lastValidServerUrl;
     }
     return smashServerType !== prevValidServerType;
-  };
-
-  handleGetInputField = (inputField: HTMLInputElement) => {
-    if (!this.state.inputField) {
-      this.setState({
-        inputField,
-      });
-    }
   };
 
   render() {
@@ -200,9 +174,9 @@ export default class StakePoolsSettings extends Component<Props, State> {
       },
     ];
 
-    const validationErrorMessage = smashServerUrlError
+    const errorMessage = smashServerUrlError
       ? intl.formatMessage(smashServerUrlError)
-      : intl.formatMessage(messages.smashUrlInputInvalidUrl);
+      : null;
 
     return (
       <div className={styles.component}>
@@ -224,25 +198,22 @@ export default class StakePoolsSettings extends Component<Props, State> {
           inputFieldPlaceholder={intl.formatMessage(
             messages.smashUrlInputPlaceholder
           )}
-          onStartEditing={this.handleUrlStartEditing}
-          onStopEditing={this.handleUrlStopEditing}
-          onCancelEditing={this.handleUrlCancelEditing}
+          onStartEditing={this.handleStartEditing}
+          onStopEditing={this.handleStopEditing}
+          onCancelEditing={this.handleCancelEditing}
+          onBlur={this.handleBlur}
           onSubmit={this.handleSubmit}
           isValid={this.handleIsValid}
-          validationErrorMessage={validationErrorMessage}
+          valueErrorMessage={intl.formatMessage(
+            messages.smashUrlInputInvalidUrl
+          )}
+          errorMessage={errorMessage}
           successfullyUpdated={false}
           successfullyUpdatedToDo={this.handleIsSuccessfullyUpdated}
           isActive={isActive}
           readOnly={smashServerType !== SMASH_SERVER_TYPES.CUSTOM}
           validateOnChange={false}
-          getInputField={this.handleGetInputField}
         />
-
-        {smashServerUrlError && (
-          <p className={styles.smashServerUrlError}>
-            {intl.formatMessage(smashServerUrlError)}
-          </p>
-        )}
       </div>
     );
   }

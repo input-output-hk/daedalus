@@ -230,26 +230,31 @@ export default class StakingStore extends Store {
     smashServerUrl: string,
   }) => {
     try {
-      // For custom server, checks if the user typed a known server
-      if (this.smashServerType === SMASH_SERVER_TYPES.CUSTOM) {
-        const knownServer = findKey(
-          SMASH_SERVERS_LIST,
-          ({ url }: { url: string }) => url === smashServerUrl
-        );
-        if (knownServer) {
-          this.smashServerType = knownServer;
-          this.smashServerUrl = smashServerUrl;
+      if (smashServerUrl) {
+        // For custom server, checks if the user typed a known server
+        if (this.smashServerType === SMASH_SERVER_TYPES.CUSTOM) {
+          const knownServer = findKey(
+            SMASH_SERVERS_LIST,
+            ({ url }: { url: string }) => url === smashServerUrl
+          );
+          if (knownServer) {
+            this.smashServerType = knownServer;
+            this.smashServerUrl = smashServerUrl;
+          }
         }
-      }
-      // Retrieves the API update
-      await this.updateSmashSettingsRequest.execute(smashServerUrl);
-      // Refreshes the Stake Pools list
-      this.getStakePoolsData();
-      // Updates the Smash Server URL
-      runInAction(() => {
-        this.smashServerUrl = smashServerUrl;
+        // Retrieves the API update
+        await this.updateSmashSettingsRequest.execute(smashServerUrl);
+        // Refreshes the Stake Pools list
+        this.getStakePoolsData();
+        // Updates the Smash Server URL
+        runInAction(() => {
+          this.smashServerUrl = smashServerUrl;
+          this.smashServerUrlError = null;
+        });
+      } else {
+        this.smashServerUrl = '';
         this.smashServerUrlError = null;
-      });
+      }
     } catch (error) {
       runInAction(() => {
         this.smashServerUrlError = error;
