@@ -2,14 +2,12 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import CopyToClipboard from 'react-copy-to-clipboard';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import WalletPublicKeyFieldSkin from './WalletPublicKeyFieldSkin';
-import copyImage from '../../../assets/images/copy.inline.svg';
 import qrCodeImage from '../../../assets/images/qr-code.inline.svg';
 import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletPublicKeyField.scss';
@@ -76,11 +74,6 @@ export default class WalletPublicKeyField extends Component<Props, State> {
     const toggleButtonLabel = intl.formatMessage(
       globalMessages[walletPublicKeyHidden ? 'reveal' : 'hide']
     );
-    const copyButtonStyles = classnames([
-      styles.imageButton,
-      styles.copyButton,
-      'flat',
-    ]);
     const qrCodeButtonStyles = classnames([
       styles.imageButton,
       styles.qrCodeButton,
@@ -100,19 +93,8 @@ export default class WalletPublicKeyField extends Component<Props, State> {
           readOnly
           skin={WalletPublicKeyFieldSkin}
           tooltip={intl.formatMessage(globalMessages.copy)}
-          addOn={
-            !walletPublicKeyHidden && (
-              <CopyToClipboard
-                text={walletPublicKey}
-                onCopy={this.handleCopyWalletPublicKey}
-              >
-                <Button
-                  className={copyButtonStyles}
-                  label={<SVGInline svg={copyImage} />}
-                />
-              </CopyToClipboard>
-            )
-          }
+          valueVisible={!walletPublicKeyHidden}
+          onCopyValue={this.handleCopyWalletPublicKey}
         />
         <div className={styles.addons}>
           {!walletPublicKeyHidden && (

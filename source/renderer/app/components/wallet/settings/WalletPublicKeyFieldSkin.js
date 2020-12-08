@@ -1,27 +1,24 @@
 // @flow
 import React from 'react';
 import type { ElementRef } from 'react';
-
-// external libraries
 import classnames from 'classnames';
-
-// components
+import CopyToClipboard from 'react-copy-to-clipboard';
+import SVGInline from 'react-svg-inline';
+import { Button } from 'react-polymorph/lib/components/Button';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { FormField } from 'react-polymorph/lib/components/FormField';
 import type { InputProps } from 'react-polymorph/lib/components/Input';
-
-// skins
-import { FormFieldSkin } from 'react-polymorph/lib/skins/simple/FormFieldSkin';
-
-// internal utility functions
 import { pickDOMProps } from 'react-polymorph/lib/utils/props';
+import copyImage from '../../../assets/images/copy.inline.svg';
+import styles from './WalletPublicKeyField.scss';
 
 type Props = InputProps & {
   inputRef: ElementRef<'input'>,
   theme: Object,
   themeId: string,
   tooltip: Node,
-  addOn: Node,
+  valueVisible: boolean,
+  onCopyValue: Function,
 };
 
 export default (props: Props) => {
@@ -48,11 +45,28 @@ export default (props: Props) => {
     />
   );
   const render = () =>
-    props.addOn ? (
+    props.valueVisible ? (
       <PopOver content={props.tooltip}>
         <div>
           {renderInput()}
-          {props.addOn}
+          <CopyToClipboard
+            text={props.value}
+            onCopy={() => {
+              if (props.inputRef && props.inputRef.current) {
+                props.inputRef.current.select();
+              }
+              props.onCopyValue();
+            }}
+          >
+            <Button
+              className={classnames([
+                styles.imageButton,
+                styles.copyButton,
+                'flat',
+              ])}
+              label={<SVGInline svg={copyImage} />}
+            />
+          </CopyToClipboard>
         </div>
       </PopOver>
     ) : (
@@ -68,7 +82,6 @@ export default (props: Props) => {
       label={props.label}
       error={props.error}
       inputRef={props.inputRef}
-      skin={FormFieldSkin}
       theme={props.theme}
       render={render}
     />
