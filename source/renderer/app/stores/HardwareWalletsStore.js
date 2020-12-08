@@ -849,6 +849,16 @@ export default class HardwareWalletsStore extends Store {
           }
         };
 
+        if (this.isTransactionInitiated) {
+          logger.debug('[HW-DEBUG] Update connected wallet data with new path - Set to LC');
+          runInAction(
+            'HardwareWalletsStore:: Change active device path for Transaction send',
+            () => {
+              this.activeDevicePath = error.path;
+            }
+          );
+        }
+
         this.cardanoAdaAppPollingInterval = setInterval(
           (devicePath, txWalletId) =>
             this.getCardanoAdaApp({ path: devicePath, walletId: txWalletId }),
