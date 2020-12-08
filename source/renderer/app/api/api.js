@@ -57,6 +57,7 @@ import { updateByronWallet } from './wallets/requests/updateByronWallet';
 import { getWalletUtxos } from './wallets/requests/getWalletUtxos';
 import { getByronWalletUtxos } from './wallets/requests/getByronWalletUtxos';
 import { getWallet } from './wallets/requests/getWallet';
+import { getWalletPublicKey } from './wallets/requests/getWalletPublicKey';
 import { getLegacyWallet } from './wallets/requests/getLegacyWallet';
 import { transferFundsCalculateFee } from './wallets/requests/transferFundsCalculateFee';
 import { transferFunds } from './wallets/requests/transferFunds';
@@ -148,6 +149,7 @@ import type {
   ImportWalletFromFileRequest,
   GetWalletUtxosRequest,
   GetWalletRequest,
+  GetWalletPublicKeyRequest,
   TransferFundsCalculateFeeRequest,
   TransferFundsCalculateFeeApiResponse,
   TransferFundsCalculateFeeResponse,
@@ -259,6 +261,25 @@ export default class AdaApi {
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::getWallet error', { error });
+      throw new ApiError(error);
+    }
+  };
+
+  getWalletPublicKey = async (
+    request: GetWalletPublicKeyRequest
+  ): Promise<string> => {
+    logger.debug('AdaApi::getWalletPublicKey called', {
+      parameters: filterLogData(request),
+    });
+    try {
+      const { walletId } = request;
+      const walletPublicKey = await getWalletPublicKey(this.config, {
+        walletId,
+      });
+      logger.debug('AdaApi::getWalletPublicKey success', { walletPublicKey });
+      return walletPublicKey;
+    } catch (error) {
+      logger.error('AdaApi::getWalletPublicKey error', { error });
       throw new ApiError(error);
     }
   };

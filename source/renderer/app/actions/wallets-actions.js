@@ -12,6 +12,9 @@ export type WalletImportFromFileParams = {
 // ======= WALLET ACTIONS =======
 
 export default class WalletsActions {
+  /* ----------  Get Wallet Public Key  ---------- */
+  getWalletPublicKey: Action<any> = new Action();
+
   /* ----------  Create Wallet  ---------- */
   createWallet: Action<{
     name: string,

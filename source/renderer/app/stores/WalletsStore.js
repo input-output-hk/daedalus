@@ -65,11 +65,13 @@ export default class WalletsStore extends Store {
   WALLET_REFRESH_INTERVAL = 5000;
 
   @observable undelegateWalletSubmissionSuccess: ?boolean = null;
+
   // REQUESTS
-  @observable active: ?Wallet = null;
-  @observable activeValue: ?BigNumber = null;
   @observable walletsRequest: Request<Array<Wallet>> = new Request(
     this.api.ada.getWallets
+  );
+  @observable walletPublicKeyRequest: Request<string> = new Request(
+    this.api.ada.getWalletPublicKey
   );
   @observable importFromFileRequest: Request<Wallet> = new Request(
     this.api.ada.importWalletFromFile
@@ -124,6 +126,11 @@ export default class WalletsStore extends Store {
   @observable transferFundsRequest: Request<TransferFundsRequest> = new Request(
     this.api.ada.transferFunds
   );
+
+  /* ----------  Active Wallet  ---------- */
+  @observable active: ?Wallet = null;
+  @observable activeValue: ?BigNumber = null;
+  @observable activePublicKey: ?string = null;
 
   /* ----------  Create Wallet  ---------- */
   @observable createWalletStep = null;
@@ -210,6 +217,10 @@ export default class WalletsStore extends Store {
       app,
       networkStatus,
     } = this.actions;
+
+    // Get Wallet Public Key Action ---
+    walletsActions.getWalletPublicKey.listen(this._getWalletPublicKey);
+
     // Create Wallet Actions ---
     walletsActions.createWallet.listen(this._create);
     walletsActions.createWalletBegin.listen(this._createWalletBegin);
@@ -278,6 +289,17 @@ export default class WalletsStore extends Store {
       this._transferFundsCalculateFee
     );
   }
+
+  @action _getWalletPublicKey = async ({ walletId }: { walletId: string }) => {
+    try {
+      const walletPublicKey: string = await this.walletPublicKeyRequest.execute(
+        { walletId }
+      ).promise;
+      this.activePublicKey = walletPublicKey;
+    } catch (error) {
+      throw error;
+    }
+  };
 
   _create = async (params: { name: string, spendingPassword: string }) => {
     Object.assign(this._newWalletDetails, params);
@@ -811,6 +833,7 @@ export default class WalletsStore extends Store {
   goToWalletRoute(walletId: string) {
     const route = this.getWalletRoute(walletId);
     this.actions.router.goToRoute.trigger({ route });
+    this.actions.wallets.getWalletPublicKey.trigger({ walletId });
   }
 
   goToHardwareWalletRoute(walletId: string) {

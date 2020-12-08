@@ -41,6 +41,7 @@ export default class WalletSettingsPage extends Component<Props> {
       profile,
     } = this.props.stores;
     const activeWallet = wallets.active;
+    const activeWalletPublicKey = wallets.activePublicKey;
     let isLegacyWallet: boolean = false;
     if (activeWallet) {
       isLegacyWallet = activeWallet.isLegacy;
@@ -101,6 +102,7 @@ export default class WalletSettingsPage extends Component<Props> {
           isLegacy={isLegacyWallet}
           walletId={activeWallet.id}
           walletName={activeWallet.name}
+          walletPublicKey={activeWalletPublicKey}
           creationDate={creationDate}
           isIncentivizedTestnet={isIncentivizedTestnet}
           isSubmitting={updateWalletRequest.isExecuting}

@@ -66,6 +66,7 @@ export const messages = defineMessages({
 
 type Props = {
   walletName: string,
+  walletPublicKey: ?string,
   creationDate: Date,
   spendingPasswordUpdateDate: ?Date,
   error?: ?LocalizableError,
@@ -137,6 +138,7 @@ export default class WalletSettings extends Component<Props, State> {
 
   renderWalletPublicKeyBox = () => {
     const {
+      walletPublicKey,
       onCopyWalletPublicKey,
       openDialogAction,
       isDialogOpen,
@@ -146,7 +148,7 @@ export default class WalletSettings extends Component<Props, State> {
       <>
         <BorderedBox className={styles.walletPublicKeyBox}>
           <WalletPublicKeyField
-            walletPublicKey="tdfgfgjfkjdfjkdfjjtdfgfgjfkjdfjkdfjjtdfgfgjfkjdfjkdfjj"
+            walletPublicKey={walletPublicKey || ''}
             onCopyWalletPublicKey={onCopyWalletPublicKey}
           />
         </BorderedBox>
