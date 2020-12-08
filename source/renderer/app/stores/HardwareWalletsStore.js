@@ -471,7 +471,10 @@ export default class HardwareWalletsStore extends Store {
         );
 
         // Return device that belongs to active hardwate wallet if is already plugged-in
-        if (recognizedPairedHardwareWallet && !recognizedPairedHardwareWallet.disconnected) {
+        if (
+          recognizedPairedHardwareWallet &&
+          !recognizedPairedHardwareWallet.disconnected
+        ) {
           logger.debug(
             '[HW-DEBUG] HWStore - Establish connection:: Transaction initiated - Recognized device found'
           );
@@ -479,7 +482,10 @@ export default class HardwareWalletsStore extends Store {
         }
 
         // Device not recognized or not plugged-in. Wait for next device (check by device type)
-        const relatedConnectionDataDeviceType  = get(relatedConnectionData, ['device', 'deviceType']);
+        const relatedConnectionDataDeviceType = get(relatedConnectionData, [
+          'device',
+          'deviceType',
+        ]);
 
         let lastDeviceTransport = null;
         if (relatedConnectionDataDeviceType) {
@@ -834,7 +840,9 @@ export default class HardwareWalletsStore extends Store {
           );
 
           if (hardwareWalletConnectionData) {
-            logger.debug('[HW-DEBUG] Update connected wallet data with new path - Set to LC');
+            logger.debug(
+              '[HW-DEBUG] Update connected wallet data with new path - Set to LC'
+            );
             await this._setHardwareWalletLocalData({
               walletId,
               data: {
@@ -843,14 +851,16 @@ export default class HardwareWalletsStore extends Store {
                 device: {
                   ...hardwareWalletConnectionData.device,
                   path: error.path,
-                }
+                },
               },
             });
           }
-        };
+        }
 
         if (this.isTransactionInitiated) {
-          logger.debug('[HW-DEBUG] Update connected wallet data with new path - Set to LC');
+          logger.debug(
+            '[HW-DEBUG] Update connected wallet data with new path - Set to LC'
+          );
           runInAction(
             'HardwareWalletsStore:: Change active device path for Transaction send',
             () => {
