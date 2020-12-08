@@ -43,6 +43,10 @@ import type {
   TransferFundsCalculateFeeRequest,
   TransferFundsRequest,
 } from '../api/wallets/types';
+import type {
+  TransportDevice,
+  HardwareWalletExtendedPublicKeyResponse,
+} from '../../../common/types/hardware-wallets.types';
 import { introspectAddressChannel } from '../ipc/introspect-address';
 import { saveQRCodeImageChannel } from '../ipc/saveQRCodeImageChannel';
 import type { AddressStyle } from '../../../common/types/address-introspection.types';
@@ -126,6 +130,9 @@ export default class WalletsStore extends Store {
   @observable transferFundsRequest: Request<TransferFundsRequest> = new Request(
     this.api.ada.transferFunds
   );
+  @observable createHardwareWalletRequest: Request<Wallet> = new Request(
+    this.api.ada.createHardwareWallet
+  );
 
   /* ----------  Active Wallet  ---------- */
   @observable active: ?Wallet = null;
@@ -184,14 +191,6 @@ export default class WalletsStore extends Store {
   @observable transferFundsFee: ?BigNumber = null;
   @observable transferFundsLeftovers: ?BigNumber = null;
 
-  /* ----------  Hardware Wallet  ---------- */
-  @observable isExportingPublicKeyAborted = false;
-  @observable exportingExtendedPublicKey = false;
-  @observable isDeviceConnected = false;
-  @observable fetchingDevice = false;
-  @observable isTrezor = false;
-  @observable isLedger = false;
-
   /* ----------  Other  ---------- */
 
   _newWalletDetails: {
@@ -227,6 +226,7 @@ export default class WalletsStore extends Store {
     walletsActions.createWalletChangeStep.listen(this._createWalletChangeStep);
     walletsActions.createWalletAbort.listen(this._createWalletAbort);
     walletsActions.createWalletClose.listen(this._createWalletClose);
+    walletsActions.createHardwareWallet.listen(this._createHardwareWallet);
     // ---
     // Restore Wallet Actions ---
     walletsActions.restoreWallet.listen(this._restore);
@@ -452,6 +452,52 @@ export default class WalletsStore extends Store {
     }
   };
 
+  @action _createHardwareWallet = async (params: {
+    walletName: string,
+    extendedPublicKey: HardwareWalletExtendedPublicKeyResponse,
+    device: TransportDevice,
+  }) => {
+    const { walletName, extendedPublicKey, device } = params;
+    const { deviceId, deviceType, deviceModel, deviceName, path } = device;
+    const accountPublicKey =
+      extendedPublicKey.publicKeyHex + extendedPublicKey.chainCodeHex;
+    try {
+      const wallet = await this.createHardwareWalletRequest.execute({
+        walletName,
+        accountPublicKey,
+      });
+      await this.actions.hardwareWallets.setHardwareWalletLocalData.trigger({
+        walletId: wallet.id,
+        data: {
+          device,
+          extendedPublicKey,
+          disconnected: false,
+        },
+      });
+
+      await this.actions.hardwareWallets.setHardwareWalletDevice.trigger({
+        deviceId,
+        data: {
+          deviceType,
+          deviceModel,
+          deviceName,
+          path,
+          paired: wallet.id, // device paired with software wallet
+          disconnected: false, // device physically disconnected
+        },
+      });
+
+      if (wallet) {
+        await this._patchWalletRequestWithNewWallet(wallet);
+        this.goToWalletRoute(wallet.id);
+        this.refreshWalletsData();
+        this.actions.dialogs.closeActiveDialog.trigger();
+      }
+    } catch (error) {
+      throw error;
+    }
+  };
+
   _finishWalletBackup = async () => {
     this._newWalletDetails.mnemonic = this.stores.walletBackup.recoveryPhrase.join(
       ' '
@@ -488,6 +534,7 @@ export default class WalletsStore extends Store {
     await this.walletsRequest.patch((result) => {
       result.splice(indexOfWalletToDelete, 1);
     });
+
     runInAction('AdaWalletsStore::_deleteWallet', () => {
       this.isDeleting = false;
       if (this.hasAnyWallets) {
@@ -504,6 +551,9 @@ export default class WalletsStore extends Store {
     });
     this.actions.dialogs.closeActiveDialog.trigger();
     this.actions.walletsLocal.unsetWalletLocalData.trigger({
+      walletId: params.walletId,
+    });
+    this.actions.hardwareWallets.unsetHardwareWalletLocalData.trigger({
       walletId: params.walletId,
     });
     this._resumePolling();
@@ -785,11 +835,6 @@ export default class WalletsStore extends Store {
     return matchRoute(`${ROUTES.WALLETS.ROOT}(/*rest)`, currentRoute);
   }
 
-  @computed get isHardwareWalletRoute(): boolean {
-    const { currentRoute } = this.stores.app;
-    return matchRoute(`${ROUTES.HARDWARE_WALLETS.ROOT}(/*rest)`, currentRoute);
-  }
-
   @computed get restoreRequest(): Request {
     switch (this.walletKind) {
       case WALLET_KINDS.DAEDALUS:
@@ -823,22 +868,12 @@ export default class WalletsStore extends Store {
   getWalletRoute = (walletId: string, page: string = 'summary'): string =>
     buildRoute(ROUTES.WALLETS.PAGE, { id: walletId, page });
 
-  getHardwareWalletRoute = (
-    walletId: string,
-    page: string = 'summary'
-  ): string => buildRoute(ROUTES.HARDWARE_WALLETS.PAGE, { id: walletId, page });
-
   // ACTIONS
 
   goToWalletRoute(walletId: string) {
     const route = this.getWalletRoute(walletId);
     this.actions.router.goToRoute.trigger({ route });
     this.actions.wallets.getWalletPublicKey.trigger({ walletId });
-  }
-
-  goToHardwareWalletRoute(walletId: string) {
-    const route = this.getHardwareWalletRoute(walletId);
-    this.actions.router.goToRoute.trigger({ route });
   }
 
   // =================== PRIVATE API ==================== //
@@ -962,7 +997,9 @@ export default class WalletsStore extends Store {
             syncState.status !== WalletSyncStateStatuses.NOT_RESPONDING
         )
         .map((wallet: Wallet) => wallet.id);
+
       await this.actions.walletsLocal.refreshWalletsLocalData.trigger();
+
       runInAction('refresh active wallet', () => {
         if (this.active) {
           this._setActiveWallet({ walletId: this.active.id });

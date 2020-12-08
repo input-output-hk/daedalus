@@ -16,7 +16,11 @@ import styles from './WalletSendConfirmationDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { submitOnEnter } from '../../utils/form';
 import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
+import HardwareWalletStatus from '../hardware-wallet/HardwareWalletStatus';
 import LoadingSpinner from '../widgets/LoadingSpinner';
+import { HwDeviceStatuses } from '../../domains/Wallet';
+
+import type { HwDeviceStatus } from '../../domains/Wallet';
 
 export const messages = defineMessages({
   dialogTitle: {
@@ -107,12 +111,28 @@ type Props = {
   isFlight: boolean,
   error: ?LocalizableError,
   currencyUnit: string,
+  hwDeviceStatus: HwDeviceStatus,
+  isHardwareWallet: boolean,
+  onInitiateTransaction: Function,
+  walletName: string,
+  onExternalLinkClick: Function,
+};
+
+type State = {
+  areTermsAccepted: boolean,
 };
 
 @observer
-export default class WalletSendConfirmationDialog extends Component<Props> {
+export default class WalletSendConfirmationDialog extends Component<
+  Props,
+  State
+> {
   static contextTypes = {
     intl: intlShape.isRequired,
+  };
+
+  state = {
+    areTermsAccepted: false,
   };
 
   form = new ReactToolboxMobxForm(
@@ -127,6 +147,7 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
           value: '',
           validators: [
             ({ field }) => {
+              if (this.props.isHardwareWallet) return [true];
               if (field.value === '') {
                 return [
                   false,
@@ -157,12 +178,18 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
   submit = () => {
     this.form.submit({
       onSuccess: (form) => {
-        const { receiver, amount, amountToNaturalUnits } = this.props;
+        const {
+          receiver,
+          amount,
+          amountToNaturalUnits,
+          isHardwareWallet,
+        } = this.props;
         const { passphrase } = form.values();
         const transactionData = {
           receiver,
           amount: amountToNaturalUnits(amount),
           passphrase,
+          isHardwareWallet,
         };
         this.props.onSubmit(transactionData);
       },
@@ -171,11 +198,58 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
   };
 
   handleSubmitOnEnter = (event: {}) =>
-    this.form.$('passphrase').isValid && submitOnEnter(this.submit, event);
+    (this.props.isHardwareWallet || this.form.$('passphrase').isValid) &&
+    submitOnEnter(this.submit, event);
+
+  renderConfirmationElement = (isHardwareWallet: boolean) => {
+    const passphraseField = this.form.$('passphrase');
+    const { areTermsAccepted } = this.state;
+    const {
+      hwDeviceStatus,
+      isFlight,
+      onExternalLinkClick,
+      walletName,
+    } = this.props;
+
+    if (!isFlight || (isFlight && areTermsAccepted)) {
+      if (isHardwareWallet) {
+        return (
+          <div className={styles.hardwareWalletStatusWrapper}>
+            <HardwareWalletStatus
+              hwDeviceStatus={hwDeviceStatus}
+              walletName={walletName}
+              onExternalLinkClick={onExternalLinkClick}
+            />
+          </div>
+        );
+      }
+      return (
+        <Input
+          type="password"
+          className={styles.passphrase}
+          {...passphraseField.bind()}
+          error={passphraseField.error}
+          skin={InputSkin}
+          onKeyPress={this.handleSubmitOnEnter}
+          autoFocus
+        />
+      );
+    }
+    return null;
+  };
+
+  onCheckboxClick = (areTermsAccepted: boolean) => {
+    const { isHardwareWallet, onInitiateTransaction } = this.props;
+    this.setState({ areTermsAccepted });
+    if (isHardwareWallet) {
+      onInitiateTransaction();
+    }
+  };
 
   render() {
     const { form } = this;
     const { intl } = this.context;
+    const { areTermsAccepted } = this.state;
     const passphraseField = form.$('passphrase');
     const flightCandidateCheckboxField = form.$('flightCandidateCheckbox');
     const {
@@ -189,6 +263,8 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
       error,
       currencyUnit,
       onExternalLinkClick,
+      hwDeviceStatus,
+      isHardwareWallet,
     } = this.props;
 
     const buttonLabel = !isSubmitting ? (
@@ -208,8 +284,11 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
         primary: true,
         className: 'confirmButton',
         disabled:
-          !passphraseField.isValid ||
-          (!flightCandidateCheckboxField.value && isFlight),
+          (!isHardwareWallet && !passphraseField.isValid) ||
+          (isHardwareWallet &&
+            hwDeviceStatus !==
+              HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED) ||
+          (!areTermsAccepted && isFlight),
       },
     ];
 
@@ -282,30 +361,25 @@ export default class WalletSendConfirmationDialog extends Component<Props> {
             </div>
           </div>
 
-          <Input
-            type="password"
-            className={styles.passphrase}
-            {...passphraseField.bind()}
-            error={passphraseField.error}
-            skin={InputSkin}
-            onKeyPress={this.handleSubmitOnEnter}
-            autoFocus
-          />
-        </div>
+          {isFlight && (
+            <div className={styles.flightCandidateWarning}>
+              <FormattedHTMLMessage
+                {...messages.flightCandidateWarning}
+                tagName="p"
+              />
+              <Checkbox
+                {...flightCandidateCheckboxField.bind()}
+                error={flightCandidateCheckboxField.error}
+                skin={CheckboxSkin}
+                disabled={areTermsAccepted}
+                onChange={this.onCheckboxClick}
+                checked={areTermsAccepted}
+              />
+            </div>
+          )}
 
-        {isFlight && (
-          <div className={styles.flightCandidateWarning}>
-            <FormattedHTMLMessage
-              {...messages.flightCandidateWarning}
-              tagName="p"
-            />
-            <Checkbox
-              {...flightCandidateCheckboxField.bind()}
-              error={flightCandidateCheckboxField.error}
-              skin={CheckboxSkin}
-            />
-          </div>
-        )}
+          {this.renderConfirmationElement(isHardwareWallet)}
+        </div>
 
         {errorElement ? <p className={styles.error}>{errorElement}</p> : null}
       </Dialog>

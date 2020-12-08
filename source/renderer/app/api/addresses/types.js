@@ -16,6 +16,7 @@ export type GetAddressesRequest = {
   walletId: string,
   isLegacy: boolean,
   queryParams?: GetAddressesRequestQueryParams,
+  isHardwareWallet?: boolean,
 };
 
 // Byron related types

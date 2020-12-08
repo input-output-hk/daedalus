@@ -49,6 +49,7 @@ export type AdaWallet = {
   state: WalletSyncState,
   discovery: Discovery,
   isLegacy: boolean,
+  isHardwareWallet?: boolean,
 };
 
 export type LegacyAdaWallet = {
@@ -171,6 +172,7 @@ export type UpdateSpendingPasswordRequest = {
 export type DeleteWalletRequest = {
   walletId: string,
   isLegacy: boolean,
+  isHardwareWallet?: boolean,
 };
 
 export type GetWalletUtxosRequest = {
@@ -196,6 +198,7 @@ export type UpdateWalletRequest = {
   walletId: string,
   name: string,
   isLegacy: boolean,
+  isHardwareWallet?: boolean,
 };
 
 export type ImportWalletFromKeyRequest = {
@@ -282,4 +285,9 @@ export type TransferFundsResponse = {
   inputs: Array<Input>,
   outputs: Array<Output>,
   status: 'pending' | 'in_ledger',
+};
+
+export type CreateHardwareWalletRequest = {
+  walletName: string,
+  accountPublicKey: string,
 };

@@ -1,6 +1,10 @@
 // @flow
 import Action from './lib/Action';
 import type { WalletExportTypeChoices } from '../types/walletExportTypes';
+import type {
+  TransportDevice,
+  HardwareWalletExtendedPublicKeyResponse,
+} from '../../../common/types/hardware-wallets.types';
 import type { CsvFileContent } from '../../../common/types/csv-request.types';
 
 export type WalletImportFromFileParams = {
@@ -97,4 +101,9 @@ export default class WalletsActions {
   transferFundsClose: Action<any> = new Action();
   transferFundsCalculateFee: Action<{ sourceWalletId: string }> = new Action();
   transferFunds: Action<{ spendingPassword: string }> = new Action();
+  createHardwareWallet: Action<{
+    walletName: string,
+    extendedPublicKey: HardwareWalletExtendedPublicKeyResponse,
+    device: TransportDevice,
+  }> = new Action();
 }
