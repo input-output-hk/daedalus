@@ -393,6 +393,7 @@ export const handleHardwareWalletRequests = async (
     observer = new EventObserver(mainWindow);
     try {
       logger.info('[HW-DEBUG] OBSERVER INIT');
+      TransportNodeHid.setListenDevicesDebounce(1000); // Defaults to 500ms
       await TransportNodeHid.listen(observer);
       logger.info('[HW-DEBUG] OBSERVER INIT - listener started');
     } catch (e) {
