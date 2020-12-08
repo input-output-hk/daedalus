@@ -1,6 +1,7 @@
 // @flow
 import TransportNodeHid from '@ledgerhq/hw-transport-node-hid';
 import { getDevices } from '@ledgerhq/hw-transport-node-hid-noevents';
+import usb from 'usb';
 import AppAda, {
   cardano,
   utils,
@@ -361,6 +362,13 @@ export const handleHardwareWalletRequests = async (
     observer = new EventObserver(mainWindow);
     try {
       logger.info('[HW-DEBUG] OBSERVER INIT');
+      usb.on('attach', (device) => {
+        logger.info('[HW-DEBUG]:usb:attach', { device });
+      });
+      usb.on('detach', (device) => {
+        logger.info('[HW-DEBUG]:usb:dettach', { device });
+        // this.lastDetached = device;
+      });
       TransportNodeHid.setListenDevicesDebounce(1000); // Defaults to 500ms
       await TransportNodeHid.listen(observer);
       logger.info('[HW-DEBUG] OBSERVER INIT - listener started');
