@@ -10,7 +10,8 @@ Changelog
 
 ### Fixes
 
-- Added initial loading state to UTXO page [PR 2265](https://github.com/input-output-hk/daedalus/pull/2265)
+- Added initial loading state to UTXO screen [PR 2265](https://github.com/input-output-hk/daedalus/pull/2265)
+- Fixed visual glitch on the transaction list switching between filters ([PR 2261](https://github.com/input-output-hk/daedalus/pull/2261))
 
 ### Chores
 
