@@ -4,7 +4,6 @@ import type { ElementRef } from 'react';
 
 // external libraries
 import classnames from 'classnames';
-import { isFunction } from 'lodash';
 
 // components
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
@@ -22,44 +21,45 @@ type Props = InputProps & {
   theme: Object,
   themeId: string,
   tooltip: Node,
+  addOn: Node,
 };
 
 export default (props: Props) => {
   const renderInput = () => (
-    <PopOver content={props.tooltip}>
-      <input
-        ref={props.inputRef}
-        {...pickDOMProps(props)}
-        className={classnames([
-          props.theme[props.themeId].input,
-          props.disabled ? props.theme[props.themeId].disabled : null,
-          props.error || props.showErrorState
-            ? props.theme[props.themeId].errored
-            : null,
-        ])}
-        readOnly={props.readOnly}
-      />
-    </PopOver>
+    <input
+      ref={props.inputRef}
+      {...pickDOMProps(props)}
+      className={classnames([
+        props.theme[props.themeId].input,
+        props.disabled ? props.theme[props.themeId].disabled : null,
+        props.error || props.showErrorState
+          ? props.theme[props.themeId].errored
+          : null,
+      ])}
+      readOnly={props.readOnly}
+      onFocus={() => {
+        if (props.onFocus) {
+          props.onFocus();
+        }
+        if (props.inputRef && props.inputRef.current) {
+          props.inputRef.current.select();
+        }
+      }}
+    />
   );
-
-  const useSelectionRenderer = (option) => (
-    <div className={props.theme[props.themeId].customValueWrapper}>
-      {renderInput()}
-      <div className={props.theme[props.themeId].customValueBlock}>
-        {option && props.selectionRenderer && props.selectionRenderer(option)}
-      </div>
-    </div>
-  );
-
-  const render = () => {
-    // check if user has passed render prop "selectionRenderer"
-    const hasSelectionRenderer =
-      props.selectionRenderer && isFunction(props.selectionRenderer);
-    if (hasSelectionRenderer) {
-      return useSelectionRenderer(props.selectedOption);
-    }
-    return renderInput();
-  };
+  const render = () =>
+    props.addOn ? (
+      <PopOver content={props.tooltip}>
+        <div>
+          {renderInput()}
+          {props.addOn}
+        </div>
+      </PopOver>
+    ) : (
+      <span>
+        <div>{renderInput()}</div>
+      </span>
+    );
 
   return (
     <FormField

@@ -1,10 +1,13 @@
 .component {
+  height: 82px;
   position: relative;
+  width: 100%;
 
   .field {
     &.valueHidden {
       :global {
         .SimpleInput_input {
+          color: var(--rp-input-text-color-disabled);
           pointer-events: none;
         }
       }
@@ -13,7 +16,6 @@
       :global {
         .SimpleInput_input {
           color: var(--theme-input-text-color);
-          cursor: text;
         }
       }
     }
@@ -21,11 +23,70 @@
     :global {
       .SimpleFormField_inputWrapper {
         background-color: var(--rp-input-bg-color-disabled);
+        display: flex;
+        height: 50px;
+        justify-content: flex-end;
+        padding: 11px 0;
+
+        & > span {
+          display: block;
+          margin-right: 98px;
+          overflow: visible;
+          width: 28px;
+
+          .SimpleInput_input {
+            background-color: transparent;
+            border: none;
+            height: 28px;
+            left: 20px;
+            padding: 0;
+            position: absolute;
+            text-overflow: ellipsis;
+            top: 11px;
+            width: calc(100% - 171px);
+          }
+        }
       }
-      .SimpleInput_input {
-        background-color: transparent;
-        border: none;
-        width: calc(100% - 130px);
+    }
+  }
+
+  .imageButton,
+  .button {
+    align-items: center;
+    display: flex;
+    height: 28px;
+    justify-content: center;
+  }
+
+  .imageButton {
+    width: 28px;
+
+    :global {
+      .SVGInline {
+        svg {
+          g g,
+          path {
+            fill: var(--theme-button-flat-text-color);
+          }
+        }
+      }
+    }
+  }
+
+  .copyButton {
+    :global {
+      .SVGInline {
+        height: 14px;
+        width: 12px;
+      }
+    }
+  }
+
+  .qrCodeButton {
+    :global {
+      .SVGInline {
+        height: 14px;
+        width: 14px;
       }
     }
   }
@@ -35,18 +96,10 @@
     display: flex;
     position: absolute;
     right: 0;
-    top: 42px;
+    top: 43px;
 
     .imageButtonContainer {
       margin-right: 10px;
-    }
-
-    .imageButton,
-    .button {
-      align-items: center;
-      display: flex;
-      height: 28px;
-      justify-content: center;
     }
 
     .button {
@@ -57,39 +110,6 @@
       padding: 0 5px;
       text-transform: uppercase;
       width: auto;
-    }
-
-    .imageButton {
-      width: 28px;
-
-      :global {
-        .SVGInline {
-          svg {
-            g g,
-            path {
-              fill: var(--theme-button-flat-text-color);
-            }
-          }
-        }
-      }
-    }
-
-    .copyButton {
-      :global {
-        .SVGInline {
-          height: 14px;
-          width: 12px;
-        }
-      }
-    }
-
-    .qrCodeButton {
-      :global {
-        .SVGInline {
-          height: 14px;
-          width: 14px;
-        }
-      }
     }
   }
 }

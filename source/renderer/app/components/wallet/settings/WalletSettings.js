@@ -76,6 +76,7 @@ type Props = {
   onStopEditing: Function,
   onCancelEditing: Function,
   onVerifyRecoveryPhrase: Function,
+  onCopyWalletPublicKey: Function,
   nameValidator: Function,
   activeField: ?string,
   isSubmitting: boolean,
@@ -135,12 +136,19 @@ export default class WalletSettings extends Component<Props, State> {
   };
 
   renderWalletPublicKeyBox = () => {
-    const { openDialogAction, isDialogOpen } = this.props;
+    const {
+      onCopyWalletPublicKey,
+      openDialogAction,
+      isDialogOpen,
+    } = this.props;
 
     return (
       <>
         <BorderedBox className={styles.walletPublicKeyBox}>
-          <WalletPublicKeyField walletPublicKey="Fuck" />
+          <WalletPublicKeyField
+            walletPublicKey="tdfgfgjfkjdfjkdfjjtdfgfgjfkjdfjkdfjjtdfgfgjfkjdfjkdfjj"
+            onCopyWalletPublicKey={onCopyWalletPublicKey}
+          />
         </BorderedBox>
       </>
     );

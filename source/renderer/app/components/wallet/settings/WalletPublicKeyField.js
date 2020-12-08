@@ -2,12 +2,13 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import CopyToClipboard from 'react-copy-to-clipboard';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
-import InputSkin from './WalletPublicKeyFieldSkin';
+import WalletPublicKeyFieldSkin from './WalletPublicKeyFieldSkin';
 import copyImage from '../../../assets/images/copy.inline.svg';
 import qrCodeImage from '../../../assets/images/qr-code.inline.svg';
 import globalMessages from '../../../i18n/global-messages';
@@ -33,6 +34,7 @@ export const messages = defineMessages({
 
 type Props = {
   walletPublicKey: string,
+  onCopyWalletPublicKey: Function,
 };
 
 type State = {
@@ -53,6 +55,11 @@ export default class WalletPublicKeyField extends Component<Props, State> {
     this.setState((prevState) => ({
       walletPublicKeyHidden: !prevState.walletPublicKeyHidden,
     }));
+
+  handleCopyWalletPublicKey = () => {
+    const { walletPublicKey, onCopyWalletPublicKey } = this.props;
+    onCopyWalletPublicKey(walletPublicKey);
+  };
 
   render() {
     const { walletPublicKey } = this.props;
@@ -90,32 +97,34 @@ export default class WalletPublicKeyField extends Component<Props, State> {
           value={
             walletPublicKeyHidden ? hiddenValuePlaceholder : walletPublicKey
           }
-          disabled
-          skin={InputSkin}
+          readOnly
+          skin={WalletPublicKeyFieldSkin}
           tooltip={intl.formatMessage(globalMessages.copy)}
+          addOn={
+            !walletPublicKeyHidden && (
+              <CopyToClipboard
+                text={walletPublicKey}
+                onCopy={this.handleCopyWalletPublicKey}
+              >
+                <Button
+                  className={copyButtonStyles}
+                  label={<SVGInline svg={copyImage} />}
+                />
+              </CopyToClipboard>
+            )
+          }
         />
         <div className={styles.addons}>
           {!walletPublicKeyHidden && (
-            <>
-              <div className={styles.imageButtonContainer}>
-                <PopOver content={intl.formatMessage(globalMessages.copy)}>
-                  <Button
-                    className={copyButtonStyles}
-                    onClick={() => null}
-                    label={<SVGInline svg={copyImage} />}
-                  />
-                </PopOver>
-              </div>
-              <div className={styles.imageButtonContainer}>
-                <PopOver content={intl.formatMessage(messages.showQRCode)}>
-                  <Button
-                    className={qrCodeButtonStyles}
-                    onClick={() => null}
-                    label={<SVGInline svg={qrCodeImage} />}
-                  />
-                </PopOver>
-              </div>
-            </>
+            <div className={styles.imageButtonContainer}>
+              <PopOver content={intl.formatMessage(messages.showQRCode)}>
+                <Button
+                  className={qrCodeButtonStyles}
+                  onClick={() => null}
+                  label={<SVGInline svg={qrCodeImage} />}
+                />
+              </PopOver>
+            </div>
           )}
           <Button
             className={buttonStyles}

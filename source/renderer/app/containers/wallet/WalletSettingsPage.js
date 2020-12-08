@@ -4,6 +4,7 @@ import { observer, inject } from 'mobx-react';
 import WalletSettings from '../../components/wallet/settings/WalletSettings';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { isValidWalletName } from '../../utils/validations';
+import { ellipsis } from '../../utils/strings';
 import ChangeSpendingPasswordDialogContainer from './dialogs/settings/ChangeSpendingPasswordDialogContainer';
 import WalletRecoveryPhraseContainer from './dialogs/settings/WalletRecoveryPhraseContainer';
 import DeleteWalletDialogContainer from './dialogs/settings/DeleteWalletDialogContainer';
@@ -15,10 +16,21 @@ import {
 
 type Props = InjectedProps;
 
+const WALLET_PUBLIC_KEY_NOTIFICATION_MAX_LENGTH = 30;
+
 @inject('stores', 'actions')
 @observer
 export default class WalletSettingsPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
+
+  handleCopyWalletPublicKey = (walletPublicKey: string) => {
+    const { wallets } = this.props.actions;
+    const publicKey = ellipsis(
+      walletPublicKey,
+      WALLET_PUBLIC_KEY_NOTIFICATION_MAX_LENGTH
+    );
+    wallets.copyPublicKey.trigger({ publicKey });
+  };
 
   render() {
     const {
@@ -105,6 +117,7 @@ export default class WalletSettingsPage extends Component<Props> {
           onStopEditing={stopEditingWalletField.trigger}
           onCancelEditing={cancelEditingWalletField.trigger}
           onVerifyRecoveryPhrase={recoveryPhraseVerificationContinue.trigger}
+          onCopyWalletPublicKey={this.handleCopyWalletPublicKey}
           activeField={walletFieldBeingEdited}
           nameValidator={(name) => isValidWalletName(name)}
           changeSpendingPasswordDialog={

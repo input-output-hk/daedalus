@@ -72,6 +72,7 @@ export default class WalletsActions {
     filePath: string,
   }> = new Action();
   saveQRCodeImageSuccess: Action<{ walletAddress: string }> = new Action();
+  copyPublicKey: Action<{ publicKey: string }> = new Action();
   copyAddress: Action<{ address: string }> = new Action();
   updateCertificateStep: Action<any> = new Action();
   closeCertificateGeneration: Action<any> = new Action();
