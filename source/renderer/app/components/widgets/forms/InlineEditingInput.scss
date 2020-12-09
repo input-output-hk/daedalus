@@ -10,12 +10,7 @@
 
   &:hover {
     .editButton {
-      background-color: var(--theme-button-primary-background-color-hover);
-      .icon {
-        svg path {
-          stroke: var(--theme-button-primary-text-color);
-        }
-      }
+      opacity: 1;
     }
   }
 
@@ -43,15 +38,11 @@
   }
 
   .buttonsWrapper {
-    // background: var(--rp-input-bg-color);
     bottom: 10px;
     height: 28px;
     padding-right: 11px;
     position: absolute;
     right: 1px;
-    &.readOnly {
-      // background: var(--rp-input-bg-color-disabled);
-    }
   }
 
   .button {
@@ -77,13 +68,10 @@
     }
   }
   .editButton {
+    opacity: 0;
+    transition: opacity 0.25s;
     &:hover {
-      background-color: var(--theme-button-primary-background-color-hover);
-      .icon {
-        svg path {
-          stroke: var(--theme-button-primary-text-color);
-        }
-      }
+      opacity: 1;
     }
     .icon {
       svg path {
