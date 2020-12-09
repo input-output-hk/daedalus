@@ -39,23 +39,22 @@ const messages = defineMessages({
 type Props = {
   className?: string,
   isActive: boolean,
-  inputFieldLabel: string,
-  inputFieldValue: string,
-  inputFieldPlaceholder?: string,
+  label: string,
+  value: string,
+  placeholder?: string,
   onStartEditing?: Function,
   onStopEditing?: Function,
-  onCancelEditing: Function,
+  onCancelEditing?: Function,
   onBlur?: Function,
   onSubmit: Function,
   isValid: Function,
   valueErrorMessage?: string,
   errorMessage?: ?string,
   successfullyUpdated: boolean,
-  inputBlocked?: boolean,
   disabled?: boolean,
   readOnly?: boolean,
   maxLength?: number,
-  isSubmitting?: boolean,
+  isLoading?: boolean,
   validateOnChange?: boolean,
 };
 
@@ -74,7 +73,7 @@ export default class InlineEditingInput extends Component<Props> {
     {
       fields: {
         inputField: {
-          value: this.props.inputFieldValue,
+          value: this.props.value,
           validators: [
             ({ field }) => [
               this.props.isValid(field.value),
@@ -98,10 +97,10 @@ export default class InlineEditingInput extends Component<Props> {
       onSuccess: async (form) => {
         const { inputField } = form.values();
         const { onSubmit, onStopEditing, onCancelEditing } = this.props;
-        if (inputField !== this.props.inputFieldValue) {
+        if (inputField !== this.props.value) {
           onSubmit(inputField);
           if (onStopEditing) onStopEditing();
-        } else {
+        } else if (inputField !== '') {
           onCancelEditing();
         }
       },
@@ -119,34 +118,49 @@ export default class InlineEditingInput extends Component<Props> {
     }
   };
 
-  onFocus = () => {
+  onFocus = (e) => {
+    console.log('onFocus');
+    // e.persist()
+    // e.stopPropagation();
+    // e.preventDefault();
     const { onStartEditing } = this.props;
     if (this.props.readOnly) return;
     if (onStartEditing) onStartEditing();
   };
 
-  onBlur = () => {
+  onBlur = (e) => {
+    console.log('onBlur');
+    e.persist();
+    e.stopPropagation();
+    e.preventDefault();
     const { onBlur } = this.props;
-    const inputField = this.validator.$('inputField');
-    inputField.value = this.props.inputFieldValue;
     if (onBlur) onBlur();
   };
 
-  onCancel = () => {
-    this.onBlur();
-    this.props.onCancelEditing();
+  onCancel = (e) => {
+    console.log('onCancel');
+    // if (e) {
+    //   e.persist()
+    //   // e.stopPropagation();
+    //   e.preventDefault();
+    // }
+    const inputField = this.validator.$('inputField');
+    const { value, onCancelEditing } = this.props;
+    inputField.set(value);
+    inputField.onBlur();
+    console.log('inputField', inputField);
+    if (onCancelEditing) onCancelEditing();
   };
 
-  componentDidUpdate({ inputFieldValue: prevValue }: Props) {
-    const { inputFieldValue: nextValue } = this.props;
+  componentDidUpdate({ value: prevValue }: Props) {
+    const { value: nextValue } = this.props;
     const inputField = this.validator.$('inputField');
     if (prevValue !== nextValue) {
       inputField.set(nextValue);
     }
     if (this.props.isActive) {
-      const { inputBlocked } = this.props;
       // eslint-disable-next-line no-unused-expressions
-      this.inputField && !inputBlocked && this.inputField.focus();
+      this.inputField && this.inputField.focus();
     }
   }
 
@@ -157,14 +171,13 @@ export default class InlineEditingInput extends Component<Props> {
     const { validator } = this;
     const {
       className,
-      inputFieldLabel,
+      label,
       isActive,
-      inputBlocked,
       maxLength,
-      inputFieldPlaceholder,
+      placeholder,
       disabled,
       readOnly,
-      isSubmitting,
+      isLoading,
       errorMessage,
     } = this.props;
     let { successfullyUpdated } = this.props;
@@ -175,7 +188,7 @@ export default class InlineEditingInput extends Component<Props> {
       styles.component,
       isActive ? null : styles.inactive,
       readOnly ? styles.readOnly : null,
-      isSubmitting ? styles.isSubmitting : null,
+      isLoading ? styles.isLoading : null,
     ]);
     const inputStyles = classnames([
       successfullyUpdated ? 'input_animateSuccess' : null,
@@ -195,32 +208,23 @@ export default class InlineEditingInput extends Component<Props> {
 
     if (isActive) successfullyUpdated = false;
 
-    let error = errorMessage;
-    if ((isActive || inputBlocked) && inputField.error)
-      error = inputField.error;
+    let error = inputField.error ? inputField.error : errorMessage;
 
     return (
-      <div
-        className={componentStyles}
-        onBlur={this.onBlur}
-        onMouseUp={this.onFocus}
-        role="presentation"
-        aria-hidden
-      >
+      <div className={componentStyles} role="presentation" aria-hidden>
         <Input
+          {...inputField.bind()}
           className={inputStyles}
-          placeholder={inputFieldPlaceholder || ''}
+          placeholder={placeholder || ''}
           themeOverrides={styles}
           type="text"
           maxLength={maxLength}
-          label={inputFieldLabel}
-          value={inputField.value}
-          onChange={inputField.onChange}
-          onFocus={inputField.onFocus}
-          onBlur={inputField.onBlur}
+          label={label}
+          onMouseUp={this.onFocus}
+          onBlur={this.onBlur}
           onKeyDown={(event) => this.handleInputKeyDown(event)}
           error={error}
-          disabled={!isActive || disabled}
+          disabled={disabled}
           readOnly={readOnly}
           showErrorState={!!error}
           ref={(input) => {
@@ -229,22 +233,26 @@ export default class InlineEditingInput extends Component<Props> {
           skin={InputSkin}
         />
 
-        <div className={buttonsWrapperStyles}>
-          {!isActive &&
-            !isSubmitting &&
-            inputFieldLabel.length &&
-            !readOnly && (
-              <Button
-                className={editButtonStyles}
-                onClick={inputField.onFocus}
-                label={<SVGInline svg={penIcon} className={styles.icon} />}
-                skin={ButtonSkin}
-              />
-            )}
+        <div
+          className={buttonsWrapperStyles}
+          onMouseUp={(e) => {
+            console.log('CLICK buttonsWrapperStyles');
+            e.preventDefault();
+            e.stopPropagation();
+          }}
+        >
+          {!isActive && !isLoading && label.length && !readOnly && (
+            <Button
+              className={editButtonStyles}
+              onMouseUp={this.onFocus}
+              label={<SVGInline svg={penIcon} className={styles.icon} />}
+              skin={ButtonSkin}
+            />
+          )}
           {isActive && (
             <Button
               className={cancelButtonStyles}
-              onClick={this.onCancel}
+              onMouseUp={this.onCancel}
               label={<SVGInline svg={crossIcon} className={styles.icon} />}
               skin={ButtonSkin}
             />
@@ -252,15 +260,15 @@ export default class InlineEditingInput extends Component<Props> {
           {isActive && (
             <Button
               className={okButtonStyles}
-              onClick={this.submit}
+              onMouseUp={this.submit}
               label={<SVGInline svg={arrowIcon} className={styles.icon} />}
               skin={ButtonSkin}
             />
           )}
-          {isSubmitting && (
+          {isLoading && (
             <Button
               className={submittingButtonStyles}
-              onClick={() => {}}
+              onMouseUp={() => {}}
               label={<SVGInline svg={spinningIcon} className={styles.icon} />}
               label1=""
               skin={ButtonSkin}

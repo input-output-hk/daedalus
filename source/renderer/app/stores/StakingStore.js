@@ -49,6 +49,7 @@ export default class StakingStore extends Store {
   @observable smashServerType: ?SmashServerType = null;
   @observable smashServerUrl: ?string = null;
   @observable smashServerUrlError: ?LocalizableError = null;
+  @observable smashServerLoading: boolean = false;
 
   /* ----------  Redeem ITN Rewards  ---------- */
   @observable redeemStep: ?RedeemItnRewardsStep = null;
@@ -146,6 +147,7 @@ export default class StakingStore extends Store {
   // =================== PUBLIC API ==================== //
 
   @action _getSmashSettingsRequest = async () => {
+    this.smashServerLoading = true;
     const apiPoolMetadataSource = await this.getSmashSettingsRequest.execute();
     let smashServerType: SmashServerType = SMASH_SERVER_TYPES.CUSTOM;
     let smashServerUrl: string = '';
@@ -157,6 +159,7 @@ export default class StakingStore extends Store {
     ) {
       const poolMetadataSource = SMASH_SERVERS_LIST.iohk.url;
       await this.updateSmashSettingsRequest.execute(poolMetadataSource);
+
       smashServerType = SMASH_SERVER_TYPES.IOHK;
     }
 
@@ -183,6 +186,7 @@ export default class StakingStore extends Store {
     runInAction(() => {
       this.smashServerType = smashServerType;
       this.smashServerUrl = smashServerUrl;
+      this.smashServerLoading = false;
     });
   };
 
@@ -205,7 +209,7 @@ export default class StakingStore extends Store {
     smashServerType: SmashServerType,
   }) => {
     // @SMASH TODO: Implement a isSubmitting state
-    this.smashServerUrl = '...';
+    this.smashServerUrl = '';
 
     // Updates the Smash Server Type UI
     this.smashServerType = smashServerType;
@@ -243,6 +247,7 @@ export default class StakingStore extends Store {
           }
         }
         // Retrieves the API update
+        this.smashServerLoading = true;
         await this.updateSmashSettingsRequest.execute(smashServerUrl);
         // Refreshes the Stake Pools list
         this.getStakePoolsData();
@@ -250,6 +255,7 @@ export default class StakingStore extends Store {
         runInAction(() => {
           this.smashServerUrl = smashServerUrl;
           this.smashServerUrlError = null;
+          this.smashServerLoading = false;
         });
       } else {
         this.smashServerUrl = '';
@@ -258,6 +264,7 @@ export default class StakingStore extends Store {
     } catch (error) {
       runInAction(() => {
         this.smashServerUrlError = error;
+        this.smashServerLoading = false;
       });
     }
   };

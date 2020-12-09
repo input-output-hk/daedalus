@@ -216,8 +216,8 @@ export default class WalletSettings extends Component<Props, State> {
         <BorderedBox>
           <InlineEditingInput
             className="walletName"
-            inputFieldLabel={intl.formatMessage(messages.name)}
-            inputFieldValue={walletName}
+            label={intl.formatMessage(messages.name)}
+            value={walletName}
             maxLength={40}
             isActive={!isFormBlocked && activeField === 'name'}
             onStartEditing={() => onStartEditing('name')}
@@ -231,7 +231,7 @@ export default class WalletSettings extends Component<Props, State> {
             successfullyUpdated={
               !isSubmitting && !isInvalid && lastUpdatedField === 'name'
             }
-            inputBlocked={isFormBlocked}
+            readOnly={isFormBlocked}
           />
 
           {!isHardwareWallet && (
