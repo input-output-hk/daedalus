@@ -138,15 +138,37 @@ type Props = {
   walletName?: string,
 };
 
+type State = {
+  hwDeviceStatus: HwDeviceStatus,
+};
+
 @observer
-export default class HardwareWalletStatus extends Component<Props> {
+export default class HardwareWalletStatus extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
+  state = {
+    hwDeviceStatus: this.props.hwDeviceStatus,
+  };
+
+  // eslint-disable-next-line
+  UNSAFE_componentWillReceiveProps(nextProps: Props) {
+    if (nextProps.hwDeviceStatus !== this.props.hwDeviceStatus) {
+      // Set with delay
+      setTimeout(() => {
+        // Status remains unchanged in 1.5s - set as new status
+        if (nextProps.hwDeviceStatus === this.props.hwDeviceStatus) {
+          this.setState({ hwDeviceStatus: nextProps.hwDeviceStatus });
+        }
+      }, 1500);
+    }
+  }
+
   render() {
     const { intl } = this.context;
-    const { hwDeviceStatus, onExternalLinkClick, walletName } = this.props;
+    const { onExternalLinkClick, walletName } = this.props;
+    const { hwDeviceStatus } = this.state;
 
     const isLoading =
       hwDeviceStatus === HwDeviceStatuses.CONNECTING ||
