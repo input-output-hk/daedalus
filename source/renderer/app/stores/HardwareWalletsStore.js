@@ -803,13 +803,28 @@ export default class HardwareWalletsStore extends Store {
         // Special case. E.g. device unplugged before cardano app is opened
         // Stop poller and re-initiate connecting state / don't kill devices listener
         this.stopCardanoAdaAppFetchPoller();
+
         runInAction(
           'HardwareWalletsStore:: Re-run initiated connection',
           () => {
-            this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
             this.isListeningForDevice = true;
           }
         );
+
+        // Wait for 1.5 sec and switch to CONNECTING if status still in LAUNCHING_CARDANO_APP
+        setTimeout(() => {
+          logger.debug('[HW-DEBUG] SET AFTER DELAY')
+          if (this.hwDeviceStatus === HwDeviceStatuses.LAUNCHING_CARDANO_APP) {
+            logger.debug('[HW-DEBUG] YES - SET AFTER DELAY')
+            runInAction(
+              'HardwareWalletsStore:: Set connecting status',
+              () => {
+                this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
+              }
+            );
+          }
+        }, 1500);
+
       } else if (error.code === 'DEVICE_PATH_CHANGED' && error.path) {
         // Special case on Windows where device path changes after opening Cardano app
         // Stop poller and re-initiate connecting state / don't kill devices listener
