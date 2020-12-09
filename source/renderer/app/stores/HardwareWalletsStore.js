@@ -426,6 +426,7 @@ export default class HardwareWalletsStore extends Store {
   };
 
   @action establishHardwareWalletConnection = async () => {
+    console.debug('>>> ESTABLISH CONNECTION');
     runInAction('HardwareWalletsStore:: set HW device CONNECTING', () => {
       this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
     });
@@ -796,7 +797,7 @@ export default class HardwareWalletsStore extends Store {
         }
       }
     } catch (error) {
-      logger.debug('[HW-DEBUG] HWStore - Cardano app fetching error', {
+      console.debug('>>> [HW-DEBUG] HWStore - Cardano app fetching error', {
         error,
       });
       if (error.code === 'DEVICE_NOT_CONNECTED') {
@@ -804,22 +805,16 @@ export default class HardwareWalletsStore extends Store {
         // Stop poller and re-initiate connecting state / don't kill devices listener
         this.stopCardanoAdaAppFetchPoller();
 
-        runInAction(
-          'HardwareWalletsStore:: Re-run initiated connection',
-          () => {
-            this.isListeningForDevice = true;
-          }
-        );
-
         // Wait for 1.5 sec and switch to CONNECTING if status still in LAUNCHING_CARDANO_APP
         setTimeout(() => {
-          logger.debug('[HW-DEBUG] SET AFTER DELAY')
+          console.debug('>>> [HW-DEBUG] SET AFTER DELAY')
           if (this.hwDeviceStatus === HwDeviceStatuses.LAUNCHING_CARDANO_APP) {
-            logger.debug('[HW-DEBUG] YES - SET AFTER DELAY')
+            console.debug('>>> [HW-DEBUG] YES - SET AFTER DELAY')
             runInAction(
               'HardwareWalletsStore:: Set connecting status',
               () => {
                 this.hwDeviceStatus = HwDeviceStatuses.CONNECTING;
+                this.isListeningForDevice = true;
               }
             );
           }
