@@ -208,8 +208,10 @@ export default class WalletSettingsStore extends Store {
   };
 
   @action _clearWalletUtxoPollingInterval = () => {
-    if (this.pollingApiInterval) clearInterval(this.pollingApiInterval);
-    this.pollingApiInterval = null;
+    if (this.pollingApiInterval) {
+      clearInterval(this.pollingApiInterval);
+      this.pollingApiInterval = null;
+    }
   };
 
   @action _getWalletUtxoApiData = async () => {
