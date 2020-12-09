@@ -193,8 +193,8 @@ export default class WalletSettingsStore extends Store {
   };
 
   @action _startWalletUtxoPolling = () => {
+    this._clearWalletUtxoPollingInterval();
     this._getWalletUtxoApiData();
-    this._stopWalletUtxoPolling();
 
     this.pollingApiInterval = setInterval(
       this._getWalletUtxoApiData,
@@ -203,7 +203,13 @@ export default class WalletSettingsStore extends Store {
   };
 
   @action _stopWalletUtxoPolling = () => {
+    this._clearWalletUtxoPollingInterval();
+    this.getWalletUtxosRequest.reset();
+  };
+
+  @action _clearWalletUtxoPollingInterval = () => {
     if (this.pollingApiInterval) clearInterval(this.pollingApiInterval);
+    this.pollingApiInterval = null;
   };
 
   @action _getWalletUtxoApiData = async () => {
