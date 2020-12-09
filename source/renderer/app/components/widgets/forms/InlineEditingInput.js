@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import { get } from 'lodash';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import vjf from 'mobx-react-form/lib/validators/VJF';
@@ -38,13 +39,11 @@ const messages = defineMessages({
 
 type Props = {
   className?: string,
-  isActive: boolean,
   label: string,
   value: string,
   placeholder?: string,
-  onStartEditing?: Function,
-  onStopEditing?: Function,
-  onCancelEditing?: Function,
+  onFocus?: Function,
+  onCancel?: Function,
   onBlur?: Function,
   onSubmit: Function,
   isValid: Function,
@@ -58,8 +57,13 @@ type Props = {
   validateOnChange?: boolean,
 };
 
+type State = {
+  isActive: boolean,
+  hideErrorMessage: boolean,
+};
+
 @observer
-export default class InlineEditingInput extends Component<Props> {
+export default class InlineEditingInput extends Component<Props, State> {
   static defaultProps = {
     validateOnChange: true,
     valueErrorMessage: '',
@@ -67,6 +71,11 @@ export default class InlineEditingInput extends Component<Props> {
 
   static contextTypes = {
     intl: intlShape.isRequired,
+  };
+
+  state = {
+    isActive: false,
+    hideErrorMessage: false,
   };
 
   validator = new ReactToolboxMobxForm(
@@ -96,12 +105,15 @@ export default class InlineEditingInput extends Component<Props> {
     this.validator.submit({
       onSuccess: async (form) => {
         const { inputField } = form.values();
-        const { onSubmit, onStopEditing, onCancelEditing } = this.props;
+        const { onSubmit, onCancel } = this.props;
         if (inputField !== this.props.value) {
-          onSubmit(inputField);
-          if (onStopEditing) onStopEditing();
+          await onSubmit(inputField);
+          this.setState({
+            hideErrorMessage: false,
+          });
+          this.setInputBlur();
         } else if (inputField !== '') {
-          onCancelEditing();
+          onCancel();
         }
       },
     });
@@ -119,60 +131,66 @@ export default class InlineEditingInput extends Component<Props> {
   };
 
   onFocus = (e) => {
-    console.log('onFocus');
-    // e.persist()
-    // e.stopPropagation();
-    // e.preventDefault();
-    const { onStartEditing } = this.props;
-    if (this.props.readOnly) return;
-    if (onStartEditing) onStartEditing();
+    this.setState({
+      isActive: true,
+    });
+    const { onFocus, readOnly } = this.props;
+    if (onFocus && !readOnly) onFocus();
   };
 
   onBlur = (e) => {
-    console.log('onBlur');
     e.persist();
     e.stopPropagation();
     e.preventDefault();
+    this.setState({
+      isActive: false,
+    });
     const { onBlur } = this.props;
     if (onBlur) onBlur();
   };
 
   onCancel = (e) => {
-    console.log('onCancel');
-    // if (e) {
-    //   e.persist()
-    //   // e.stopPropagation();
-    //   e.preventDefault();
-    // }
+    const { value, onCancel } = this.props;
     const inputField = this.validator.$('inputField');
-    const { value, onCancelEditing } = this.props;
+    this.setInputBlur();
     inputField.set(value);
-    inputField.onBlur();
-    console.log('inputField', inputField);
-    if (onCancelEditing) onCancelEditing();
+    if (onCancel) onCancel();
   };
 
-  componentDidUpdate({ value: prevValue }: Props) {
-    const { value: nextValue } = this.props;
+  setInputBlur = () => {
+    const input = this.inputElement;
+    if (input instanceof HTMLElement) input.blur();
+  };
+
+  onChange = (...props) => {
+    this.setState({
+      hideErrorMessage: true,
+    });
     const inputField = this.validator.$('inputField');
+    inputField.onChange(...props);
+  };
+
+  componentDidUpdate({ value: prevValue, errorMessage: prevError }: Props) {
+    const { value: nextValue, errorMessage: nextError } = this.props;
+    const inputField = this.validator.$('inputField');
+    if (!prevError && nextError) {
+      const input = this.inputElement;
+      if (input instanceof HTMLElement) input.focus();
+    }
+    // In case the `value` prop was updated
+    // we need to manually update the ReactToolboxMobxForm input field
     if (prevValue !== nextValue) {
       inputField.set(nextValue);
     }
-    if (this.props.isActive) {
-      // eslint-disable-next-line no-unused-expressions
-      this.inputField && this.inputField.focus();
-    }
   }
 
-  inputField: Input;
-  inputFieldIsSet: boolean = false;
+  inputElement: HTMLElement;
 
   render() {
     const { validator } = this;
     const {
       className,
       label,
-      isActive,
       maxLength,
       placeholder,
       disabled,
@@ -180,6 +198,7 @@ export default class InlineEditingInput extends Component<Props> {
       isLoading,
       errorMessage,
     } = this.props;
+    const { isActive, hideErrorMessage } = this.state;
     let { successfullyUpdated } = this.props;
     const { intl } = this.context;
     const inputField = validator.$('inputField');
@@ -208,7 +227,9 @@ export default class InlineEditingInput extends Component<Props> {
 
     if (isActive) successfullyUpdated = false;
 
-    let error = inputField.error ? inputField.error : errorMessage;
+    let error;
+    if (inputField.error) error = inputField.error;
+    else if (!hideErrorMessage) error = errorMessage;
 
     return (
       <div className={componentStyles} role="presentation" aria-hidden>
@@ -220,23 +241,31 @@ export default class InlineEditingInput extends Component<Props> {
           type="text"
           maxLength={maxLength}
           label={label}
-          onMouseUp={this.onFocus}
+          onFocus={this.onFocus}
           onBlur={this.onBlur}
+          onChange={this.onChange}
           onKeyDown={(event) => this.handleInputKeyDown(event)}
           error={error}
           disabled={disabled}
           readOnly={readOnly}
           showErrorState={!!error}
           ref={(input) => {
-            this.inputField = input;
+            if (!this.inputElement) {
+              this.inputElement = get(input, 'inputElement.current');
+            }
           }}
           skin={InputSkin}
         />
 
         <div
           className={buttonsWrapperStyles}
+          onMouseDown={(e) => {
+            console.log('onMouseDown buttonsWrapperStyles');
+            e.preventDefault();
+            e.stopPropagation();
+          }}
           onMouseUp={(e) => {
-            console.log('CLICK buttonsWrapperStyles');
+            console.log('onMouseUp buttonsWrapperStyles');
             e.preventDefault();
             e.stopPropagation();
           }}

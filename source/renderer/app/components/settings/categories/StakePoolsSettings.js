@@ -58,7 +58,6 @@ type Props = {
 };
 
 type State = {
-  isActive: boolean,
   lastValidServerUrl: ?string,
   lastValidServerType: SmashServerType,
   prevValidServerType: SmashServerType,
@@ -119,18 +118,6 @@ export default class StakePoolsSettings extends Component<Props, State> {
     }
   };
 
-  handleStartEditing = () => {
-    this.setState({ isActive: true });
-  };
-
-  handleStopEditing = () => {
-    this.setState({ isActive: false });
-  };
-
-  handleBlur = () => {
-    this.setState({ isActive: false });
-  };
-
   handleIsValid = (url: string) => url === '' || isValidUrl(url);
 
   // @SMASH TODO - Handle the success message
@@ -151,7 +138,6 @@ export default class StakePoolsSettings extends Component<Props, State> {
       onSelectSmashServerType,
       isLoading,
     } = this.props;
-    const { isActive } = this.state;
     const { intl } = this.context;
 
     const smashSelectOptions = [
@@ -189,7 +175,7 @@ export default class StakePoolsSettings extends Component<Props, State> {
           placeholder={intl.formatMessage(messages.smashUrlInputPlaceholder)}
           onStartEditing={this.handleStartEditing}
           onStopEditing={this.handleStopEditing}
-          onCancelEditing={this.handleCancelEditing}
+          onCancel={this.handleCancelEditing}
           onBlur={this.handleBlur}
           onSubmit={this.handleSubmit}
           isValid={this.handleIsValid}
@@ -199,7 +185,6 @@ export default class StakePoolsSettings extends Component<Props, State> {
           errorMessage={errorMessage}
           successfullyUpdated={false}
           successfullyUpdatedToDo={this.handleIsSuccessfullyUpdated}
-          isActive={isActive}
           readOnly={isLoading || smashServerType !== SMASH_SERVER_TYPES.CUSTOM}
           validateOnChange={false}
           isLoading={isLoading}

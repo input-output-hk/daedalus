@@ -74,7 +74,7 @@ type Props = {
   onFieldValueChange: Function,
   onStartEditing: Function,
   onStopEditing: Function,
-  onCancelEditing: Function,
+  onCancel: Function,
   onVerifyRecoveryPhrase: Function,
   nameValidator: Function,
   activeField: ?string,
@@ -124,7 +124,7 @@ export default class WalletSettings extends Component<Props, State> {
 
   componentWillUnmount() {
     // This call is used to prevent display of old successfully-updated messages
-    this.props.onCancelEditing();
+    this.props.onCancel();
   }
 
   onBlockForm = () => {
@@ -147,7 +147,7 @@ export default class WalletSettings extends Component<Props, State> {
       onFieldValueChange,
       onStartEditing,
       onStopEditing,
-      onCancelEditing,
+      onCancel,
       onVerifyRecoveryPhrase,
       nameValidator,
       activeField,
@@ -219,10 +219,9 @@ export default class WalletSettings extends Component<Props, State> {
             label={intl.formatMessage(messages.name)}
             value={walletName}
             maxLength={40}
-            isActive={!isFormBlocked && activeField === 'name'}
-            onStartEditing={() => onStartEditing('name')}
-            onStopEditing={onStopEditing}
-            onCancelEditing={onCancelEditing}
+            onFocus={() => onStartEditing('name')}
+            onBlur={onStopEditing}
+            onCancel={onCancel}
             onSubmit={(value) => onFieldValueChange('name', value)}
             isValid={nameValidator}
             valueErrorMessage={intl.formatMessage(
