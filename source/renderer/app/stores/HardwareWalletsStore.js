@@ -823,7 +823,7 @@ export default class HardwareWalletsStore extends Store {
               }
             );
           }
-        }, 1500);
+        }, 3000);
 
       } else if (error.code === 'DEVICE_PATH_CHANGED' && error.path) {
         // Special case on Windows where device path changes after opening Cardano app
