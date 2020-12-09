@@ -9,6 +9,10 @@ Changelog
 - Added hardware wallet support for Testnet network ([PR 2264](https://github.com/input-output-hk/daedalus/pull/2264))
 - Implemented user configuration for the SMASH server ([PR 2259](https://github.com/input-output-hk/daedalus/pull/2259))
 
+### Fixes
+
+- Fixed visual glitch on the transaction list switching between filters ([PR 2261](https://github.com/input-output-hk/daedalus/pull/2261))
+
 ### Chores
 
 - Reduced the size of Linux installer ([PR 2260](https://github.com/input-output-hk/daedalus/pull/2260))
