@@ -235,6 +235,7 @@ export default class StakingStore extends Store {
   }) => {
     try {
       if (smashServerUrl) {
+        this.smashServerUrlError = null;
         // For custom server, checks if the user typed a known server
         if (this.smashServerType === SMASH_SERVER_TYPES.CUSTOM) {
           const knownServer = findKey(

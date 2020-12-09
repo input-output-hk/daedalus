@@ -104,16 +104,17 @@ export default class InlineEditingInput extends Component<Props, State> {
   submit = () => {
     this.validator.submit({
       onSuccess: async (form) => {
+        this.setInputBlur();
         const { inputField } = form.values();
-        const { onSubmit, onCancel } = this.props;
-        if (inputField !== this.props.value) {
+        const { onSubmit, errorMessage } = this.props;
+        if (inputField !== this.props.value || errorMessage) {
+          await this.setState({
+            hideErrorMessage: true,
+          });
           await onSubmit(inputField);
           this.setState({
             hideErrorMessage: false,
           });
-          this.setInputBlur();
-        } else if (inputField !== '') {
-          if (onCancel) onCancel();
         }
       },
     });
@@ -172,9 +173,11 @@ export default class InlineEditingInput extends Component<Props, State> {
   componentDidUpdate({ value: prevValue, errorMessage: prevError }: Props) {
     const { value: nextValue, errorMessage: nextError } = this.props;
     const inputField = this.validator.$('inputField');
-    if (!prevError && nextError) {
+    if (nextError) {
       const input = this.inputElement;
       if (input instanceof HTMLElement) input.focus();
+    } else if (prevError && !nextError) {
+      this.setInputBlur();
     }
     // In case the `value` prop was updated
     // we need to manually update the ReactToolboxMobxForm input field
