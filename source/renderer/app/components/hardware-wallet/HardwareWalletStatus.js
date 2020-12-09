@@ -156,12 +156,19 @@ export default class HardwareWalletStatus extends Component<Props, State> {
   UNSAFE_componentWillReceiveProps(nextProps: Props) {
     if (nextProps.hwDeviceStatus !== this.props.hwDeviceStatus) {
       // Set with delay
-      setTimeout(() => {
-        // Status remains unchanged in 1.5s - set as new status
-        if (nextProps.hwDeviceStatus === this.props.hwDeviceStatus) {
-          this.setState({ hwDeviceStatus: nextProps.hwDeviceStatus });
-        }
-      }, 1500);
+      if (
+        nextProps.hwDeviceStatus === HwDeviceStatuses.CONNECTING &&
+        this.props.hwDeviceStatus === HwDeviceStatuses.LAUNCHING_CARDANO_APP
+      ) {
+        setTimeout(() => {
+          // Status remains unchanged in 1.5s - set as new status
+          if (nextProps.hwDeviceStatus === this.props.hwDeviceStatus) {
+            this.setState({ hwDeviceStatus: nextProps.hwDeviceStatus });
+          }
+        }, 4000);
+      } else {
+        this.setState({ hwDeviceStatus: nextProps.hwDeviceStatus });
+      }
     }
   }
 
