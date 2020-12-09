@@ -113,7 +113,7 @@ export default class InlineEditingInput extends Component<Props, State> {
           });
           this.setInputBlur();
         } else if (inputField !== '') {
-          onCancel();
+          if (onCancel) onCancel();
         }
       },
     });
@@ -130,7 +130,7 @@ export default class InlineEditingInput extends Component<Props, State> {
     }
   };
 
-  onFocus = (e) => {
+  onFocus = () => {
     this.setState({
       isActive: true,
     });
@@ -138,10 +138,9 @@ export default class InlineEditingInput extends Component<Props, State> {
     if (onFocus && !readOnly) onFocus();
   };
 
-  onBlur = (e) => {
-    e.persist();
-    e.stopPropagation();
-    e.preventDefault();
+  onBlur = (event: InputEvent) => {
+    event.stopPropagation();
+    event.preventDefault();
     this.setState({
       isActive: false,
     });
@@ -149,11 +148,11 @@ export default class InlineEditingInput extends Component<Props, State> {
     if (onBlur) onBlur();
   };
 
-  onCancel = (e) => {
+  onCancel = () => {
     const { value, onCancel } = this.props;
     const inputField = this.validator.$('inputField');
-    this.setInputBlur();
     inputField.set(value);
+    this.setInputBlur();
     if (onCancel) onCancel();
   };
 
@@ -162,7 +161,7 @@ export default class InlineEditingInput extends Component<Props, State> {
     if (input instanceof HTMLElement) input.blur();
   };
 
-  onChange = (...props) => {
+  onChange = (...props: KeyboardEvent) => {
     this.setState({
       hideErrorMessage: true,
     });
@@ -259,15 +258,13 @@ export default class InlineEditingInput extends Component<Props, State> {
 
         <div
           className={buttonsWrapperStyles}
-          onMouseDown={(e) => {
-            console.log('onMouseDown buttonsWrapperStyles');
-            e.preventDefault();
-            e.stopPropagation();
+          onMouseDown={(event: KeyboardEvent) => {
+            event.preventDefault();
+            event.stopPropagation();
           }}
-          onMouseUp={(e) => {
-            console.log('onMouseUp buttonsWrapperStyles');
-            e.preventDefault();
-            e.stopPropagation();
+          onMouseUp={(event: KeyboardEvent) => {
+            event.preventDefault();
+            event.stopPropagation();
           }}
         >
           {!isActive && !isLoading && label.length && !readOnly && (

@@ -105,15 +105,9 @@ storiesOf('Common|Widgets', module)
     <div>
       <div style={{ width: '700px', height: '200px', display: 'flex' }}>
         <InlineEditingInput
-          inputFieldLabel={text('inputFieldLabel', 'Input label')}
-          inputFieldValue=""
-          inputFieldPlaceholder={text(
-            'inputFieldPlaceholder',
-            'Enter you text here'
-          )}
-          onStartEditing={action('onStartEditing')}
-          onStopEditing={action('onStopEditing')}
-          onCancelEditing={action('onCancelEditing')}
+          label={text('inputFieldLabel', 'Input label')}
+          value=""
+          placeholder={text('inputFieldPlaceholder', 'Enter you text here')}
           onSubmit={action('onSubmit')}
           isValid={(value) => value && value.length > 3 && value !== 'error'}
           validationErrorMessage={text('validationErrorMessage', 'Error!')}

@@ -90,7 +90,6 @@ export default class StakePoolsSettings extends Component<Props, State> {
   }
 
   state = {
-    isActive: false,
     // Last valid type and url
     lastValidServerUrl: this.props.smashServerUrl,
     lastValidServerType: this.props.smashServerType,
@@ -173,10 +172,6 @@ export default class StakePoolsSettings extends Component<Props, State> {
           label={intl.formatMessage(messages.smashURLInputLabel)}
           value={smashServerUrl || ''}
           placeholder={intl.formatMessage(messages.smashUrlInputPlaceholder)}
-          onStartEditing={this.handleStartEditing}
-          onStopEditing={this.handleStopEditing}
-          onCancel={this.handleCancelEditing}
-          onBlur={this.handleBlur}
           onSubmit={this.handleSubmit}
           isValid={this.handleIsValid}
           valueErrorMessage={intl.formatMessage(
