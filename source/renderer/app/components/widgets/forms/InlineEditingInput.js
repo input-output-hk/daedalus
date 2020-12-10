@@ -1,4 +1,5 @@
 // @flow
+// eslint-disable react/no-did-update-set-state
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
@@ -49,7 +50,6 @@ type Props = {
   isValid: Function,
   valueErrorMessage?: string,
   errorMessage?: ?string,
-  successfullyUpdated: boolean,
   disabled?: boolean,
   readOnly?: boolean,
   maxLength?: number,
@@ -59,7 +59,8 @@ type Props = {
 
 type State = {
   isActive: boolean,
-  hideErrorMessage: boolean,
+  hasChanged: boolean,
+  successfullyUpdated: boolean,
 };
 
 @observer
@@ -75,7 +76,8 @@ export default class InlineEditingInput extends Component<Props, State> {
 
   state = {
     isActive: false,
-    hideErrorMessage: false,
+    hasChanged: false,
+    successfullyUpdated: false,
   };
 
   validator = new ReactToolboxMobxForm(
@@ -109,11 +111,12 @@ export default class InlineEditingInput extends Component<Props, State> {
         const { onSubmit, errorMessage } = this.props;
         if (inputField !== this.props.value || errorMessage) {
           await this.setState({
-            hideErrorMessage: true,
+            hasChanged: true,
+            successfullyUpdated: false,
           });
           await onSubmit(inputField);
           this.setState({
-            hideErrorMessage: false,
+            hasChanged: false,
           });
         }
       },
@@ -144,10 +147,13 @@ export default class InlineEditingInput extends Component<Props, State> {
   onBlur = (event: InputEvent) => {
     event.stopPropagation();
     event.preventDefault();
+    const { onBlur, value } = this.props;
+    const inputField = this.validator.$('inputField');
+    const hasChanged = inputField.value !== value;
     this.setState({
       isActive: false,
+      hasChanged,
     });
-    const { onBlur } = this.props;
     if (onBlur) onBlur();
   };
 
@@ -166,7 +172,7 @@ export default class InlineEditingInput extends Component<Props, State> {
 
   onChange = (...props: KeyboardEvent) => {
     this.setState({
-      hideErrorMessage: true,
+      hasChanged: true,
     });
     const inputField = this.validator.$('inputField');
     inputField.onChange(...props);
@@ -175,16 +181,30 @@ export default class InlineEditingInput extends Component<Props, State> {
   componentDidUpdate({ value: prevValue, errorMessage: prevError }: Props) {
     const { value: nextValue, errorMessage: nextError } = this.props;
     const inputField = this.validator.$('inputField');
+
+    // If there's an error, we focus the input again
     if (nextError) {
       const input = this.inputElement;
       if (input instanceof HTMLElement) input.focus();
     } else if (prevError && !nextError) {
+      // else we blur it
       this.setInputBlur();
     }
+
     // In case the `value` prop was updated
     // we need to manually update the ReactToolboxMobxForm input field
     if (prevValue !== nextValue) {
       inputField.set(nextValue);
+    }
+
+    // If the `value` props was updated
+    // after a submit action
+    // we show the `success` message
+    const successfullyUpdated = !!nextValue && prevValue !== nextValue;
+    if (successfullyUpdated) {
+      this.setState({
+        successfullyUpdated,
+      });
     }
   }
 
@@ -202,8 +222,7 @@ export default class InlineEditingInput extends Component<Props, State> {
       isLoading,
       errorMessage,
     } = this.props;
-    const { isActive, hideErrorMessage } = this.state;
-    let { successfullyUpdated } = this.props;
+    const { isActive, hasChanged, successfullyUpdated } = this.state;
     const { intl } = this.context;
     const inputField = validator.$('inputField');
     const componentStyles = classnames([
@@ -229,11 +248,14 @@ export default class InlineEditingInput extends Component<Props, State> {
       styles.submittingButton,
     ]);
 
-    if (isActive) successfullyUpdated = false;
-
     let error;
     if (inputField.error) error = inputField.error;
-    else if (!hideErrorMessage) error = errorMessage;
+    else if (!hasChanged) error = errorMessage;
+
+    const showEditButton =
+      !isActive && !isLoading && !hasChanged && label.length && !readOnly;
+    const showFocusButtons = !isLoading && (isActive || hasChanged);
+    const showLoadingButton = isLoading;
 
     return (
       <div className={componentStyles}>
@@ -272,7 +294,7 @@ export default class InlineEditingInput extends Component<Props, State> {
             event.stopPropagation();
           }}
         >
-          {!isActive && !isLoading && label.length && !readOnly && (
+          {showEditButton && (
             <Button
               className={editButtonStyles}
               onMouseUp={this.onFocus}
@@ -280,7 +302,7 @@ export default class InlineEditingInput extends Component<Props, State> {
               skin={ButtonSkin}
             />
           )}
-          {isActive && (
+          {showFocusButtons && (
             <Button
               className={cancelButtonStyles}
               onClick={this.onCancel}
@@ -288,7 +310,7 @@ export default class InlineEditingInput extends Component<Props, State> {
               skin={ButtonSkin}
             />
           )}
-          {isActive && (
+          {showFocusButtons && (
             <Button
               className={okButtonStyles}
               onMouseUp={this.submit}
@@ -296,7 +318,7 @@ export default class InlineEditingInput extends Component<Props, State> {
               skin={ButtonSkin}
             />
           )}
-          {isLoading && (
+          {showLoadingButton && (
             <Button
               className={submittingButtonStyles}
               onMouseUp={() => {}}

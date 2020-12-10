@@ -77,11 +77,8 @@ type Props = {
   onCancel: Function,
   onVerifyRecoveryPhrase: Function,
   nameValidator: Function,
-  isSubmitting: boolean,
   isIncentivizedTestnet: boolean,
-  isInvalid: boolean,
   isLegacy: boolean,
-  lastUpdatedField: ?string,
   changeSpendingPasswordDialog: Node,
   deleteWalletDialogContainer: Node,
   shouldDisplayRecoveryPhrase: boolean,
@@ -149,11 +146,8 @@ export default class WalletSettings extends Component<Props, State> {
       onCancel,
       onVerifyRecoveryPhrase,
       nameValidator,
-      isSubmitting,
       isIncentivizedTestnet,
-      isInvalid,
       isLegacy,
-      lastUpdatedField,
       changeSpendingPasswordDialog,
       deleteWalletDialogContainer,
       recoveryPhraseVerificationDate,
@@ -225,9 +219,6 @@ export default class WalletSettings extends Component<Props, State> {
             valueErrorMessage={intl.formatMessage(
               globalMessages.invalidWalletName
             )}
-            successfullyUpdated={
-              !isSubmitting && !isInvalid && lastUpdatedField === 'name'
-            }
             readOnly={isFormBlocked}
           />
 

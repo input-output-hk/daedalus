@@ -60,7 +60,6 @@ type Props = {
 type State = {
   lastValidServerUrl: ?string,
   lastValidServerType: SmashServerType,
-  prevValidServerType: SmashServerType,
 };
 
 @observer
@@ -74,7 +73,7 @@ export default class StakePoolsSettings extends Component<Props, State> {
       smashServerUrl: nextValidServerUrl,
       smashServerType: nextValidServerType,
     }: Props,
-    { lastValidServerUrl, lastValidServerType }: State
+    { lastValidServerUrl }: State
   ) {
     // The `smashServerUrl` prop only changes when it's a valid server
     // unless it's empty
@@ -83,7 +82,6 @@ export default class StakePoolsSettings extends Component<Props, State> {
       return {
         lastValidServerUrl: nextValidServerUrl,
         lastValidServerType: nextValidServerType,
-        prevValidServerType: lastValidServerType,
       };
     }
     return null;
@@ -93,7 +91,6 @@ export default class StakePoolsSettings extends Component<Props, State> {
     // Last valid type and url
     lastValidServerUrl: this.props.smashServerUrl,
     lastValidServerType: this.props.smashServerType,
-    prevValidServerType: this.props.smashServerType,
   };
 
   componentWillUnmount() {
@@ -118,16 +115,6 @@ export default class StakePoolsSettings extends Component<Props, State> {
   };
 
   handleIsValid = (url: string) => url === '' || isValidUrl(url);
-
-  // @SMASH TODO - Handle the success message
-  handleIsSuccessfullyUpdated = () => {
-    const { smashServerType, smashServerUrl } = this.props;
-    const { lastValidServerUrl, prevValidServerType } = this.state;
-    if (smashServerType === SMASH_SERVER_TYPES.CUSTOM) {
-      return smashServerUrl && smashServerUrl !== lastValidServerUrl;
-    }
-    return smashServerType !== prevValidServerType;
-  };
 
   render() {
     const {
@@ -178,8 +165,6 @@ export default class StakePoolsSettings extends Component<Props, State> {
             messages.smashUrlInputInvalidUrl
           )}
           errorMessage={errorMessage}
-          successfullyUpdated={false}
-          successfullyUpdatedToDo={this.handleIsSuccessfullyUpdated}
           readOnly={isLoading || smashServerType !== SMASH_SERVER_TYPES.CUSTOM}
           validateOnChange={false}
           isLoading={isLoading}
