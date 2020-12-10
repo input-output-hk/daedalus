@@ -296,14 +296,17 @@ export default class WalletsStore extends Store {
     role: string,
     index: string,
   }) => {
-    try {
-      const walletPublicKey: string = await this.walletPublicKeyRequest.execute(
-        { walletId, role, index }
-      ).promise;
-      this.activePublicKey = walletPublicKey;
-    } catch (error) {
-      throw error;
-    }
+    // try {
+    //   const walletPublicKey: string = await this.walletPublicKeyRequest.execute(
+    //     { walletId, role, index }
+    //   ).promise;
+    //   this.activePublicKey = walletPublicKey;
+    // } catch (error) {
+    //   throw error;
+    // }
+    // @TODO: Uncomment above once the api is ready
+    this.activePublicKey =
+      '8edd9c9b73873ce8826cbe3e2e08534d35f1ba64cc94c063c0525865aa28e35527be51bb72ee9983d173f5617493bc6804a6750b359538c79cd5b43ccbbd48e5';
   };
 
   _create = async (params: { name: string, spendingPassword: string }) => {
@@ -946,6 +949,7 @@ export default class WalletsStore extends Store {
         }
       }
       if (this.active) {
+        // @TODO Once the api is ready, role and index values should be configured properly
         this._getWalletPublicKey({
           walletId: this.active.id,
           role: '',
