@@ -6,6 +6,9 @@
   .field {
     &.valueHidden {
       :global {
+        .SimpleFormField_label {
+          pointer-events: none;
+        }
         .SimpleInput_input {
           color: var(--rp-input-text-color-disabled);
           pointer-events: none;

@@ -9,6 +9,7 @@ import BorderedBox from '../../widgets/BorderedBox';
 import InlineEditingInput from '../../widgets/forms/InlineEditingInput';
 import ReadOnlyInput from '../../widgets/forms/ReadOnlyInput';
 import WalletPublicKeyField from './WalletPublicKeyField';
+import WalletPublicKeyQRCodeDialog from './WalletPublicKeyQRCodeDialog';
 import DeleteWalletButton from './DeleteWalletButton';
 import DeleteWalletConfirmationDialog from './DeleteWalletConfirmationDialog';
 import ChangeSpendingPasswordDialog from './ChangeSpendingPasswordDialog';
@@ -86,6 +87,7 @@ type Props = {
   isLegacy: boolean,
   lastUpdatedField: ?string,
   changeSpendingPasswordDialog: Node,
+  walletPublicKeyQRCodeDialogContainer: Node,
   deleteWalletDialogContainer: Node,
   shouldDisplayRecoveryPhrase: boolean,
   recoveryPhraseVerificationDate: ?Date,
@@ -143,6 +145,7 @@ export default class WalletSettings extends Component<Props, State> {
       onCopyWalletPublicKey,
       openDialogAction,
       isDialogOpen,
+      walletPublicKeyQRCodeDialogContainer,
     } = this.props;
 
     return (
@@ -151,8 +154,14 @@ export default class WalletSettings extends Component<Props, State> {
           <WalletPublicKeyField
             walletPublicKey={walletPublicKey || ''}
             onCopyWalletPublicKey={onCopyWalletPublicKey}
+            onShowQRCode={() =>
+              openDialogAction({ dialog: WalletPublicKeyQRCodeDialog })
+            }
           />
         </BorderedBox>
+        {isDialogOpen(WalletPublicKeyQRCodeDialog)
+          ? walletPublicKeyQRCodeDialogContainer
+          : false}
       </>
     );
   };

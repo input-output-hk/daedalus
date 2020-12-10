@@ -7,6 +7,7 @@ import { isValidWalletName } from '../../utils/validations';
 import { ellipsis } from '../../utils/strings';
 import ChangeSpendingPasswordDialogContainer from './dialogs/settings/ChangeSpendingPasswordDialogContainer';
 import WalletRecoveryPhraseContainer from './dialogs/settings/WalletRecoveryPhraseContainer';
+import WalletPublicKeyQRCodeDialogContainer from './dialogs/settings/WalletPublicKeyQRCodeDialogContainer';
 import DeleteWalletDialogContainer from './dialogs/settings/DeleteWalletDialogContainer';
 import ExportWalletToFileDialogContainer from './dialogs/settings/ExportWalletToFileDialogContainer';
 import {
@@ -123,6 +124,9 @@ export default class WalletSettingsPage extends Component<Props> {
           nameValidator={(name) => isValidWalletName(name)}
           changeSpendingPasswordDialog={
             <ChangeSpendingPasswordDialogContainer />
+          }
+          walletPublicKeyQRCodeDialogContainer={
+            <WalletPublicKeyQRCodeDialogContainer />
           }
           deleteWalletDialogContainer={<DeleteWalletDialogContainer />}
           exportWalletDialogContainer={<ExportWalletToFileDialogContainer />}

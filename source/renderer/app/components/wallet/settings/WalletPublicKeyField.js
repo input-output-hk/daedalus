@@ -33,6 +33,7 @@ export const messages = defineMessages({
 type Props = {
   walletPublicKey: string,
   onCopyWalletPublicKey: Function,
+  onShowQRCode: Function,
 };
 
 type State = {
@@ -60,7 +61,7 @@ export default class WalletPublicKeyField extends Component<Props, State> {
   };
 
   render() {
-    const { walletPublicKey } = this.props;
+    const { walletPublicKey, onShowQRCode } = this.props;
     const { walletPublicKeyHidden } = this.state;
     const { intl } = this.context;
     const label = intl.formatMessage(messages.walletPublicKey);
@@ -102,7 +103,7 @@ export default class WalletPublicKeyField extends Component<Props, State> {
               <PopOver content={intl.formatMessage(messages.showQRCode)}>
                 <Button
                   className={qrCodeButtonStyles}
-                  onClick={() => null}
+                  onClick={onShowQRCode}
                   label={<SVGInline svg={qrCodeImage} />}
                 />
               </PopOver>

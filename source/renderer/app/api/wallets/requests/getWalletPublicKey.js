@@ -4,10 +4,10 @@ import { request } from '../../utils/request';
 
 export const getWalletPublicKey = (
   config: RequestConfig,
-  { walletId }: { walletId: string }
+  { walletId, role, index }: { walletId: string, role: string, index: string }
 ): Promise<string> =>
   request({
     method: 'GET',
-    path: `/v2/wallets/${walletId}/keys`,
+    path: `/v2/wallets/${walletId}/keys/${role}/${index}`,
     ...config,
   });

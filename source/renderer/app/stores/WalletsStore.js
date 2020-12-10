@@ -217,9 +217,6 @@ export default class WalletsStore extends Store {
       networkStatus,
     } = this.actions;
 
-    // Get Wallet Public Key Action ---
-    walletsActions.getWalletPublicKey.listen(this._getWalletPublicKey);
-
     // Create Wallet Actions ---
     walletsActions.createWallet.listen(this._create);
     walletsActions.createWalletBegin.listen(this._createWalletBegin);
@@ -290,10 +287,18 @@ export default class WalletsStore extends Store {
     );
   }
 
-  @action _getWalletPublicKey = async ({ walletId }: { walletId: string }) => {
+  @action _getWalletPublicKey = async ({
+    walletId,
+    role,
+    index,
+  }: {
+    walletId: string,
+    role: string,
+    index: string,
+  }) => {
     try {
       const walletPublicKey: string = await this.walletPublicKeyRequest.execute(
-        { walletId }
+        { walletId, role, index }
       ).promise;
       this.activePublicKey = walletPublicKey;
     } catch (error) {
@@ -873,7 +878,6 @@ export default class WalletsStore extends Store {
   goToWalletRoute(walletId: string) {
     const route = this.getWalletRoute(walletId);
     this.actions.router.goToRoute.trigger({ route });
-    this.actions.wallets.getWalletPublicKey.trigger({ walletId });
   }
 
   // =================== PRIVATE API ==================== //
@@ -940,6 +944,13 @@ export default class WalletsStore extends Store {
         if (this.active) {
           this.goToWalletRoute(this.active.id);
         }
+      }
+      if (this.active) {
+        this._getWalletPublicKey({
+          walletId: this.active.id,
+          role: '',
+          index: '',
+        });
       }
     });
   };
@@ -1089,6 +1100,7 @@ export default class WalletsStore extends Store {
   @action _unsetActiveWallet = () => {
     this.active = null;
     this.activeValue = null;
+    this.activePublicKey = null;
     this.stores.addresses.lastGeneratedAddress = null;
   };
 
