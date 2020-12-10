@@ -3,6 +3,7 @@ import { observable, action } from 'mobx';
 import type Store from './lib/Store';
 import AddressesStore from './AddressesStore';
 import AppStore from './AppStore';
+import HardwareWalletsStore from './HardwareWalletsStore';
 import AppUpdateStore from './AppUpdateStore';
 import NetworkStatusStore from './NetworkStatusStore';
 import NewsFeedStore from './NewsFeedStore';
@@ -23,6 +24,7 @@ import WindowStore from './WindowStore';
 export const storeClasses = {
   addresses: AddressesStore,
   app: AppStore,
+  hardwareWallets: HardwareWalletsStore,
   appUpdate: AppUpdateStore,
   networkStatus: NetworkStatusStore,
   newsFeed: NewsFeedStore,
@@ -44,6 +46,8 @@ export const storeClasses = {
 export type StoresMap = {
   addresses: AddressesStore,
   app: AppStore,
+
+  hardwareWallets: HardwareWalletsStore,
   appUpdate: AppUpdateStore,
   networkStatus: NetworkStatusStore,
   newsFeed: NewsFeedStore,
@@ -87,6 +91,7 @@ export default action((api, actions, router): StoresMap => {
     uiNotifications: createStoreInstanceOf(UiNotificationsStore),
     addresses: createStoreInstanceOf(AddressesStore),
     app: createStoreInstanceOf(AppStore),
+    hardwareWallets: createStoreInstanceOf(HardwareWalletsStore),
     networkStatus: createStoreInstanceOf(NetworkStatusStore),
     newsFeed: createStoreInstanceOf(NewsFeedStore),
     appUpdate: createStoreInstanceOf(AppUpdateStore),

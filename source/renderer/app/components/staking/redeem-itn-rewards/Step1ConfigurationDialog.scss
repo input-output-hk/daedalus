@@ -31,6 +31,11 @@
 
   .walletsDropdown {
     margin-bottom: 20px;
+
+    &.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+    }
   }
 
   .checkbox {
@@ -39,6 +44,20 @@
     &:last-child {
       margin-bottom: 30px;
     }
+  }
+}
+
+.errorMessage {
+  color: var(--theme-delegation-steps-choose-wallet-error-message-light-color);
+  font-size: 14px;
+  letter-spacing: normal;
+  margin-bottom: 10px;
+  margin-top: -5px;
+
+  span {
+    color: var(--theme-delegation-steps-choose-wallet-error-message-color);
+    font-family: var(--font-medium);
+    font-weight: 500;
   }
 }
 
@@ -58,5 +77,16 @@
         --theme-dialog-fullsize-field-background-color
       ) !important;
     }
+  }
+
+  .SimpleOptions_option.SimpleOptions_selectedOption
+    .WalletsDropdownOption_component
+    .WalletsDropdownOption_topRow
+    .WalletsDropdownOption_topRowSync {
+    display: none;
+  }
+
+  .WalletsDropdownOption_component {
+    width: 100% !important;
   }
 }

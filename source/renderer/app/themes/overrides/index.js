@@ -11,7 +11,7 @@ import StepperOverrides from './StepperOverrides.scss';
 import SwitchOverrides from './SwitchOverrides.scss';
 import SelectOverrides from './SelectOverrides.scss';
 import OptionsOverrides from './OptionsOverrides.scss';
-import TooltipOverrides from './TooltipOverrides.scss';
+import PopOverOverrides from './PopOverOverrides.scss';
 
 const {
   AUTOCOMPLETE,
@@ -23,10 +23,10 @@ const {
   SWITCH,
   SELECT,
   OPTIONS,
+  POP_OVER,
   RADIO,
   SCROLLBAR,
   STEPPER,
-  TOOLTIP,
 } = IDENTIFIERS;
 
 export const themeOverrides = {
@@ -42,5 +42,5 @@ export const themeOverrides = {
   [SWITCH]: SwitchOverrides,
   [SELECT]: SelectOverrides,
   [OPTIONS]: OptionsOverrides,
-  [TOOLTIP]: TooltipOverrides,
+  [POP_OVER]: PopOverOverrides,
 };

@@ -36,7 +36,6 @@ where
 
 import           Universum                    hiding (FilePath)
 import qualified Data.Text                        as T
-import           Data.String                         (IsString)
 import           Filesystem.Path
 import           Filesystem.Path.CurrentOS           (fromText, encodeString)
 import           Turtle                              (pwd, cd)

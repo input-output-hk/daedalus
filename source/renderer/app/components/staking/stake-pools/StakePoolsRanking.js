@@ -1,12 +1,17 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import classnames from 'classnames';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
-import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
-import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
-import { shortNumber, generateThousands } from '../../../utils/formatters';
+import BigNumber from 'bignumber.js';
+import {
+  shortNumber,
+  generateThousands,
+  formattedWalletAmount,
+  toFixedUserFormat,
+} from '../../../utils/formatters';
 import {
   getFilteredWallets,
   getAllAmounts,
@@ -16,11 +21,9 @@ import {
   RANKING_SLIDER_RATIO,
   MIN_DELEGATION_FUNDS_LOG,
   MIN_DELEGATION_FUNDS,
-  MAX_DELEGATION_FUNDS_LOG,
-  MAX_DELEGATION_FUNDS,
   INITIAL_DELEGATION_FUNDS_LOG,
   INITIAL_DELEGATION_FUNDS,
-  OUT_OF_RANGE_MAX_DELEGATION_FUNDS,
+  CIRCULATING_SUPPLY,
   ALL_WALLETS_SELECTION_ID,
   IS_RANKING_DATA_AVAILABLE,
 } from '../../../config/stakingConfig';
@@ -49,7 +52,7 @@ const messages = defineMessages({
   rankingDescription: {
     id: 'staking.stakePools.rankingDescription',
     defaultMessage:
-      '!!!Use the slider to rank the stake pools based on the amount you intend to delegate.',
+      '!!!Use the slider to rank the stake pools and check the potential rewards <strong>based on the amount of stake you intend to delegate</strong>.',
     description: 'Ranking description.',
   },
   rankingLearnMoreUrl: {
@@ -122,11 +125,13 @@ type Props = {
   isRanking: boolean,
   numberOfStakePools: number,
   getStakePoolById: Function,
+  maxDelegationFunds: number,
+  maxDelegationFundsLog: number,
 };
 
 type State = {
   sliderValue: number,
-  amountValue: number,
+  displayValue: string,
 };
 
 @observer
@@ -143,15 +148,19 @@ export default class StakePoolsRanking extends Component<Props, State> {
     sliderValue: Math.round(
       INITIAL_DELEGATION_FUNDS_LOG * RANKING_SLIDER_RATIO
     ),
-    amountValue: INITIAL_DELEGATION_FUNDS,
+    displayValue: toFixedUserFormat(INITIAL_DELEGATION_FUNDS, 0),
   };
 
   componentDidMount() {
     const { stake } = this.props;
     if (stake) {
+      const hasDecimal = stake - Math.floor(stake);
+      const displayValue = hasDecimal
+        ? formattedWalletAmount(new BigNumber(stake), false)
+        : toFixedUserFormat(stake, 0);
       this.setState({
         sliderValue: Math.round(Math.log(stake) * RANKING_SLIDER_RATIO),
-        amountValue: stake,
+        displayValue,
       });
     }
   }
@@ -170,38 +179,52 @@ export default class StakePoolsRanking extends Component<Props, State> {
       updateDelegatingStake,
       rankStakePools,
       selectedDelegationWalletId,
+      maxDelegationFunds,
     } = this.props;
     const selectedWallet = wallets.find(
       (wallet) => wallet.id === selectedWalletId
     );
+    const hasSelectedWallet = !!selectedWallet;
+    const isAllWalletsSelected = selectedWalletId === ALL_WALLETS_SELECTION_ID;
+    const wasSelectedWalletChanged =
+      selectedWalletId !== selectedDelegationWalletId;
 
-    if (
-      selectedWalletId === selectedDelegationWalletId ||
-      (selectedWalletId !== ALL_WALLETS_SELECTION_ID && !selectedWallet)
-    ) {
+    // Prevent ranking stake pools if we don't have data for the selected wallet ready
+    if (wasSelectedWalletChanged && !isAllWalletsSelected && !hasSelectedWallet)
       return;
-    }
 
     let amountValue = 0;
     let sliderValue = 0;
-
     if (selectedWalletId === ALL_WALLETS_SELECTION_ID) {
       amountValue = Math.min(
         getAllAmounts(wallets).toNumber(),
-        MAX_DELEGATION_FUNDS
+        maxDelegationFunds
       );
     } else if (selectedWallet) {
       amountValue = selectedWallet.amount.toNumber();
     }
     amountValue = Math.max(amountValue, MIN_DELEGATION_FUNDS);
     sliderValue = Math.round(Math.log(amountValue) * RANKING_SLIDER_RATIO);
-    this.setState({ sliderValue, amountValue });
+    const hasSliderValueChanged = sliderValue !== this.state.sliderValue;
+
+    // Prevent ranking stake pools if selected wallet and slider value remains unchanged
+    if (!wasSelectedWalletChanged && !hasSliderValueChanged) return;
+
+    const displayValue = formattedWalletAmount(
+      new BigNumber(amountValue),
+      false
+    );
+    this.setState({ sliderValue, displayValue });
     updateDelegatingStake(selectedWalletId, amountValue);
     rankStakePools();
   };
 
   onSliderChange = (sliderValue: number) => {
-    const { updateDelegatingStake } = this.props;
+    const {
+      updateDelegatingStake,
+      maxDelegationFunds,
+      maxDelegationFundsLog,
+    } = this.props;
     let amountValue = null;
     if (
       sliderValue ===
@@ -209,16 +232,16 @@ export default class StakePoolsRanking extends Component<Props, State> {
     ) {
       amountValue = MIN_DELEGATION_FUNDS;
     } else if (
-      sliderValue ===
-      Math.round(MAX_DELEGATION_FUNDS_LOG * RANKING_SLIDER_RATIO)
+      sliderValue === Math.round(maxDelegationFundsLog * RANKING_SLIDER_RATIO)
     ) {
-      amountValue = MAX_DELEGATION_FUNDS;
+      amountValue = maxDelegationFunds;
     } else {
       amountValue = generateThousands(
         Math.exp(sliderValue / RANKING_SLIDER_RATIO)
       );
     }
-    this.setState({ sliderValue, amountValue });
+    const displayValue = toFixedUserFormat(amountValue, 0);
+    this.setState({ sliderValue, displayValue });
     updateDelegatingStake(null, amountValue);
   };
 
@@ -277,9 +300,10 @@ export default class StakePoolsRanking extends Component<Props, State> {
       numberOfStakePools,
       getStakePoolById,
       rankStakePools,
+      maxDelegationFunds,
+      maxDelegationFundsLog,
     } = this.props;
-    const { sliderValue, amountValue } = this.state;
-    const rankingDescription = intl.formatMessage(messages.rankingDescription);
+    const { sliderValue, displayValue } = this.state;
     const learnMoreButtonClasses = classnames(['flat', styles.actionLearnMore]);
     const {
       walletSelectorWallets,
@@ -298,7 +322,9 @@ export default class StakePoolsRanking extends Component<Props, State> {
         <div className={styles.upper}>
           <div className={styles.selectWallet}>
             <div className={styles.row}>
-              <div className={styles.col}>{rankingDescription}</div>
+              <div className={styles.col}>
+                <FormattedHTMLMessage {...messages.rankingDescription} />
+              </div>
             </div>
             {getFilteredWallets(wallets).length > 0 ? (
               <div className={styles.row}>
@@ -361,12 +387,10 @@ export default class StakePoolsRanking extends Component<Props, State> {
                   MIN_DELEGATION_FUNDS_LOG * RANKING_SLIDER_RATIO
                 )}
                 minDisplayValue={MIN_DELEGATION_FUNDS}
-                max={Math.round(
-                  MAX_DELEGATION_FUNDS_LOG * RANKING_SLIDER_RATIO
-                )}
-                maxDisplayValue={MAX_DELEGATION_FUNDS}
+                max={Math.round(maxDelegationFundsLog * RANKING_SLIDER_RATIO)}
+                maxDisplayValue={maxDelegationFunds}
                 value={sliderValue}
-                displayValue={amountValue}
+                displayValue={displayValue}
                 showRawValue
                 onChange={this.onSliderChange}
                 onAfterChange={rankStakePools}
@@ -378,12 +402,11 @@ export default class StakePoolsRanking extends Component<Props, State> {
             </div>
             <div className={styles.col}>
               <div className={styles.outOfRangeMaxAmount}>
-                <Tooltip
-                  skin={TooltipSkin}
-                  tip={intl.formatMessage(messages.rankingExtraTooltip)}
+                <PopOver
+                  content={intl.formatMessage(messages.rankingExtraTooltip)}
                 >
-                  {shortNumber(OUT_OF_RANGE_MAX_DELEGATION_FUNDS)}
-                </Tooltip>
+                  {shortNumber(CIRCULATING_SUPPLY)}
+                </PopOver>
               </div>
               <div className={styles.outOfSliderRangeEnd} />
             </div>

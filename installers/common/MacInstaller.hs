@@ -18,22 +18,16 @@ module MacInstaller
 import           Universum                 hiding (FilePath, toText, (<>))
 
 import           Control.Exception         (handle)
-import           Control.Monad             (unless)
-import           Data.Text                 (Text)
 import qualified Data.Text                 as T
 import           Data.Aeson                (FromJSON(parseJSON), genericParseJSON, defaultOptions, decodeFileStrict')
 import           Data.Yaml                 (decodeFileThrow)
 import           Text.RawString.QQ
-import           Filesystem.Path           (FilePath, dropExtension, (<.>),
-                                            (</>))
-import           Filesystem.Path.CurrentOS (encodeString)
 import           System.IO                 (BufferMode (NoBuffering),
                                             hSetBuffering)
 import           System.IO.Error           (IOError, isDoesNotExistError)
 import           System.Environment        (getEnv)
 import           System.Posix.Files
 import           Turtle                    hiding (e, prefix, stdout)
-import           Turtle.Line               (unsafeTextToLine)
 
 
 import           Config
@@ -149,6 +143,13 @@ eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Ver
 eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libswiftshader_libEGL.dylib\" $LOG"
 eval "$SIGN_CMD \"$ABS_PATH/Contents/Frameworks/Electron Framework.framework/Versions/A/Libraries/libswiftshader_libGLESv2.dylib\" $LOG"
 
+# Sign native electron bindings and supplementary binaries
+eval "$SIGN_CMD \"$ABS_PATH/Contents/Resources/app/build/usb_bindings.node\" $LOG"
+eval "$SIGN_CMD \"$ABS_PATH/Contents/Resources/app/build/HID.node\" $LOG"
+eval "$SIGN_CMD \"$ABS_PATH/Contents/Resources/app/node_modules/keccak/bin/darwin-x64-76/keccak.node\" $LOG"
+eval "$SIGN_CMD \"$ABS_PATH/Contents/Resources/app/node_modules/keccak/build/Release/addon.node\" $LOG"
+eval "$SIGN_CMD \"$ABS_PATH/Contents/Resources/app/node_modules/keccak/prebuilds/darwin-x64/node.napi.node\" $LOG"
+
 # Sign the whole component deeply
 eval "$SIGN_CMD \"$ABS_PATH\" $LOG"
 
@@ -165,6 +166,8 @@ codeSignEntitlements = [r|<?xml version="1.0" encoding="UTF-8"?>
 <plist version="1.0">
   <dict>
     <key>com.apple.security.cs.allow-unsigned-executable-memory</key>
+    <true/>
+    <key>com.apple.security.cs.allow-dyld-environment-variables</key>
     <true/>
   </dict>
 </plist>|]
@@ -224,7 +227,64 @@ buildElectronApp darwinConfig@DarwinConfig{dcAppName, dcAppNameApp} installerCon
     formatter = "../release/darwin-x64/" % s % "-darwin-x64/" % s
     pathtoapp :: Text
     pathtoapp = format formatter dcAppName dcAppNameApp
-  cptree "../node_modules/js-chain-libs-node" (fromText $ pathtoapp <> "/Contents/Resources/app/node_modules/js-chain-libs-node")
+    externalYarn :: [FilePath]
+    externalYarn =
+      [ "@babel"
+      , "regenerator-runtime"
+      , "node-fetch"
+      , "@trezor"
+      , "runtypes"
+      , "parse-uri"
+      , "randombytes"
+      , "safe-buffer"
+      , "bip66"
+      , "pushdata-bitcoin"
+      , "bitcoin-ops"
+      , "typeforce"
+      , "varuint-bitcoin"
+      , "bigi"
+      , "create-hash"
+      , "merkle-lib"
+      , "blake2b"
+      , "nanoassert"
+      , "blake2b-wasm"
+      , "bs58check"
+      , "bs58"
+      , "base-x"
+      , "create-hmac"
+      , "ecurve"
+      , "wif"
+      , "ms"
+      , "keccak"
+      , "trezor-link"
+      , "semver-compare"
+      , "protobufjs-old-fixed-webpack"
+      , "bytebuffer-old-fixed-webpack"
+      , "long"
+      , "object.values"
+      , "define-properties"
+      , "object-keys"
+      , "has"
+      , "function-bind"
+      , "es-abstract"
+      , "has-symbols"
+      , "json-stable-stringify"
+      , "tiny-worker"
+      , "hd-wallet"
+      , "cashaddrjs"
+      , "big-integer"
+      , "queue"
+      , "inherits"
+      , "bchaddrjs"
+      , "cross-fetch"
+      , "trezor-connect"
+      , "js-chain-libs-node"
+      ]
+  mapM_ (\lib -> do
+      cptree ("../node_modules" </> lib) ((fromText pathtoapp) </> "Contents/Resources/app/node_modules" </> lib)
+    ) externalYarn
+  mktree ((fromText pathtoapp) </> "Contents/Resources/app/build")
+  mapM_ (\(srcdir, name) -> cp ("../node_modules" </> srcdir </> name) ((fromText pathtoapp) </> "Contents/Resources/app/build" </> name)) [ ("usb/build/Release","usb_bindings.node"), ("node-hid/build/Release", "HID.node") ]
   rewritePackageJson (T.unpack $ pathtoapp <> "/Contents/Resources/app/package.json") (spacedName installerConfig)
   pure $ fromString $ T.unpack $ pathtoapp
 
@@ -238,6 +298,7 @@ npmPackage DarwinConfig{dcAppName} = do
   procs "yarn" ["run", "package", "--", "--name", dcAppName ] empty
   size <- inproc "du" ["-sh", "release"] empty
   printf ("Size of Electron app is " % l % "\n") size
+  procs "find" ["-name", "*.node"] empty
 
 getBackendVersion :: Backend -> IO Text
 getBackendVersion (Cardano     bridge) = readCardanoVersionFile bridge

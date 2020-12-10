@@ -191,7 +191,7 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.4)',
     '--theme-dialog-big-button-background-color': 'rgba(255, 255, 255, 0.05)',
     '--theme-dialog-big-button-border-color': 'none',
-    '--theme-dialog-big-button-label-color': 'rgba(255, 255, 255, 1)',
+    '--theme-dialog-big-button-label-color': '#ffffff',
     '--theme-dialog-big-button-description-color': 'rgba(255, 255, 255, 0.6)',
     '--theme-dialog-set-wallet-password-background-color':
       'rgba(42, 43, 60, 0.96)',
@@ -254,11 +254,10 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--font-mono': 'SFMono-Light',
   },
   hardwareWallet: {
-    '--theme-hardware-wallet-step-background-color': '#1e1f31',
-    '--theme-hardware-wallet-step-border-active-color':
-      'rgba(255, 255, 255, 0.5)',
-    '--theme-hardware-wallet-step-border-color': '#1e1f31',
-    '--theme-hardware-wallet-step-color': '#ffffff',
+    '--theme-hardware-wallet-status-background-color': '#1e1f31',
+    '--theme-hardware-wallet-status-border-color': 'rgba(255, 255, 255, 0.3)',
+    '--theme-hardware-wallet-status-color': '#ffffff',
+    '--theme-hardware-wallet-status-ready-color': '#2dc06c',
     '--theme-hardware-wallet-title-color': '#ffffff',
     '--theme-hardware-wallet-message-color': '#ffffff',
   },
@@ -270,7 +269,8 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-icon-node-update-notification-arrow-color': '#ffffff',
     '--theme-icon-add-wallet-from-sidebar-color': '#ffffff',
     '--theme-icon-ada-summary-wallet-amount-symbol-color': '#ffffff',
-    '--theme-icon-add-wallet-dialog-big-button-color': '#ffffff',
+    '--theme-icon-add-wallet-dialog-big-button-color':
+      'rgba(255, 255, 255, 0.5)',
     '--theme-icon-back-button-color': '#ffffff',
     '--theme-icon-close-button-color': '#ffffff',
     '--theme-icon-connecting-ada-api-logo-color': '#ffffff',
@@ -309,7 +309,7 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-loading-status-icons-off-color': '#ea4c5b',
     '--theme-loading-status-icons-unloaded-loading-color': '#ffffff',
     '--theme-loading-status-icons-unloaded-syncing-color': '#ffffff',
-    '--theme-loading-status-icons-tooltip-color': '#56576b',
+    '--theme-loading-status-icons-tooltip-color': 'var(--rp-pop-over-bg-color)',
     '--theme-loading-spinner-color': '#ffffff',
     '--theme-loading-spinner-medium-color': '#ffffff',
   },
@@ -370,6 +370,8 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-news-feed-badge-text-color': '#ffffff',
     '--theme-news-feed-box-shadow-color': '-5px 0 20px 0 rgba(0, 0, 0, 0.25)',
     '--theme-news-feed-header-background-color': '#20212e',
+    '--theme-news-feed-header-box-shadow-color':
+      '0 10px 10px -5px rgba(0, 0, 0, 0.25)',
     '--theme-news-feed-header-title-color': '#fafbfc',
     '--theme-news-feed-icon-close-button-color': '#ffffff',
     '--theme-news-feed-icon-close-hover-background-color': 'rgba(0, 0, 0, 0.1)',
@@ -744,7 +746,7 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-staking-stake-pool-background-color': 'rgba(42, 43, 60, 1)',
     '--theme-staking-stake-pool-border-color': 'rgba(42, 43, 60, 1)',
     '--theme-staking-stake-pool-glow-color': '#ffb9234c',
-    '--theme-staking-stake-pool-grey-color': 'rgba(255, 255, 255, 0.5)',
+    '--theme-staking-stake-pool-grey-color': '#434554',
     '--theme-staking-stake-pool-grey-bg-color': 'rgba(255, 255, 255, 0.1)',
     '--theme-staking-stake-pools-search-icon-color': '#ffffff',
     '--theme-staking-stake-pool-saturation-background-color':
@@ -940,6 +942,8 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.12)',
     '--theme-transactions-transfer-funds-selected-wallet-background-color':
       '#ffffff0d',
+    '--theme-transactions-header-background-color': '#121326',
+    '--theme-transactions-header-texct-color': '#ffffff80',
   },
   uploader: {
     '--theme-uploader-text-color': '#ffffff',
@@ -1072,6 +1076,10 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-news-overlay-update-button-hover-text-color': '#273d5b',
     '--theme-news-overlay-update-button-background-color-hover': '#ffffff',
     '--theme-news-overlay-update-button-border-color': '#ffffff',
+  },
+  rpPopOver: {
+    '--rp-pop-over-bg-color': 'rgba(63,64,79,0.9)',
+    '--rp-pop-over-text-color': 'white',
   },
 };
 

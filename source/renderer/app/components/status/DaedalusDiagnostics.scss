@@ -17,6 +17,7 @@
       border-color: var(--theme-network-window-white-color);
       color: var(--theme-network-window-white-color);
       line-height: 1.5;
+
       &:after {
         background-color: var(--theme-network-window-white-color);
       }
@@ -121,11 +122,17 @@
     font-weight: 500;
     text-align: right;
     user-select: text;
+
     &.red {
       color: var(--theme-network-window-red-color);
     }
+
     &.green {
       color: var(--theme-network-window-green-color);
+    }
+
+    > span:focus {
+      outline: none;
     }
   }
 
@@ -208,6 +215,7 @@
     polygon {
       stroke: var(--theme-network-window-white-color);
     }
+
     path {
       stroke: var(--theme-network-window-white-color);
     }
@@ -254,19 +262,18 @@
       display: flex;
       justify-content: space-between;
       width: 100%;
+
+      &:focus {
+        outline: none;
+      }
     }
 
     &:hover {
       .daedalusStateDirectoryPath {
-        &:after {
-          border-top: 1px solid var(--theme-network-window-white-color);
-          bottom: 6px;
-          content: '';
-          left: 0;
-          position: absolute;
-          right: 1px;
-        }
+        border-bottom: 1px solid var(--theme-network-window-white-color);
+        margin-bottom: -1px;
       }
+
       svg {
         opacity: 1;
       }
@@ -334,9 +341,11 @@
     height: 13px;
     position: relative;
     top: 0.5px;
+
     path:nth-child(1) {
       stroke: var(--theme-network-window-white-color);
     }
+
     path:nth-child(2) {
       fill: var(--theme-network-window-white-color);
     }

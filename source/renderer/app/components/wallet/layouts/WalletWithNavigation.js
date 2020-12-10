@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import type { Node } from 'react';
+import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import WalletNavigation from '../navigation/WalletNavigation';
 import styles from './WalletWithNavigation.scss';
@@ -15,6 +16,7 @@ type Props = {
   isActiveScreen: Function,
   isLegacy: boolean,
   isNotResponding: boolean,
+  isHardwareWallet: boolean,
   isSetWalletPasswordDialogOpen: boolean,
   onOpenExternalLink: Function,
   onRestartNode: Function,
@@ -33,6 +35,7 @@ export default class WalletWithNavigation extends Component<Props> {
       isActiveScreen,
       isLegacy,
       isNotResponding,
+      isHardwareWallet,
       isSetWalletPasswordDialogOpen,
       onOpenExternalLink,
       onRestartNode,
@@ -40,8 +43,10 @@ export default class WalletWithNavigation extends Component<Props> {
       onWalletNavItemClick,
     } = this.props;
 
+    const componentStyles = classnames([styles.component, styles[activeItem]]);
+
     return (
-      <div className={styles.component}>
+      <div className={componentStyles}>
         <div className={styles.navigation}>
           <WalletNavigation
             isActiveNavItem={isActiveScreen}
@@ -54,7 +59,7 @@ export default class WalletWithNavigation extends Component<Props> {
 
         <div className={styles.page}>{children}</div>
 
-        {!hasPassword && (
+        {!hasPassword && !isHardwareWallet && (
           <SetWalletPassword
             isSetWalletPasswordDialogOpen={isSetWalletPasswordDialogOpen}
             onSetWalletPassword={onSetWalletPassword}

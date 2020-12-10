@@ -84,11 +84,15 @@ export const formattedAmountToBigNumber = (amount: string) => {
   return new BigNumber(cleanedAmount !== '' ? cleanedAmount : 0);
 };
 
+export const toFixedUserFormat = (number: number, digits: number) => {
+  // This is necessary, because the BigNumber version we use
+  // can't receive numbers with more than 15 digits
+  const parsedNumber = parseFloat(number).toFixed(digits);
+  return new BigNumber(parsedNumber).toFormat(digits);
+};
+
 export const formattedAmountToLovelace = (amount: string): number =>
   parseInt(formattedAmountToBigNumber(amount).times(LOVELACES_PER_ADA), 10);
-
-export const formattedAdaAmountToLovelace = (adaAmount: number): number =>
-  adaAmount * LOVELACES_PER_ADA;
 
 export const formattedLovelaceToAmount = (lovelace: number): number =>
   formattedAmountToBigNumber(String(lovelace))

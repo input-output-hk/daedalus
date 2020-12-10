@@ -1,9 +1,8 @@
 // @flow
-import { split, get, map, last } from 'lodash';
+import { split, get, map, last, size, concat } from 'lodash';
 import { action } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
-
 // domains
 import Wallet, {
   WalletDelegationStatuses,
@@ -21,6 +20,8 @@ import WalletAddress from '../domains/WalletAddress';
 import { getAddresses } from './addresses/requests/getAddresses';
 import { getByronWalletAddresses } from './addresses/requests/getByronWalletAddresses';
 import { createByronWalletAddress } from './addresses/requests/createByronWalletAddress';
+import { constructAddress } from './addresses/requests/constructAddress';
+import { inspectAddress } from './addresses/requests/inspectAddress';
 
 // Network requests
 import { getNetworkInfo } from './network/requests/getNetworkInfo';
@@ -37,6 +38,9 @@ import { getWithdrawalHistory } from './transactions/requests/getWithdrawalHisto
 import { createTransaction } from './transactions/requests/createTransaction';
 import { createByronWalletTransaction } from './transactions/requests/createByronWalletTransaction';
 import { deleteLegacyTransaction } from './transactions/requests/deleteLegacyTransaction';
+import { selectCoins } from './transactions/requests/selectCoins';
+import { createExternalTransaction } from './transactions/requests/createExternalTransaction';
+import { getPublicKey } from './transactions/requests/getPublicKey';
 
 // Voting requests
 import { getWalletKey } from './voting/requests/getWalletKey';
@@ -65,6 +69,7 @@ import { getWallet } from './wallets/requests/getWallet';
 import { getLegacyWallet } from './wallets/requests/getLegacyWallet';
 import { transferFundsCalculateFee } from './wallets/requests/transferFundsCalculateFee';
 import { transferFunds } from './wallets/requests/transferFunds';
+import { createHardwareWallet } from './wallets/requests/createHardwareWallet';
 
 // Staking
 import StakePool from '../domains/StakePool';
@@ -93,7 +98,11 @@ import { filterLogData } from '../../../common/utils/logging';
 
 // Config constants
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
-import { REDEEM_ITN_REWARDS_AMOUNT } from '../config/stakingConfig';
+import {
+  DELEGATION_DEPOSIT,
+  MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE,
+  REWARDS_REDEMPTION_FEE_CALCULATION_AMOUNT,
+} from '../config/stakingConfig';
 import {
   ADA_CERTIFICATE_MNEMONIC_LENGTH,
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
@@ -130,6 +139,11 @@ import type {
   GetTransactionRequest,
   GetTransactionsRequest,
   GetTransactionsResponse,
+  CoinSelectionsPaymentRequestType,
+  CoinSelectionsDelegationRequestType,
+  CoinSelectionsResponse,
+  CreateExternalTransactionRequest,
+  CreateExternalTransactionResponse,
   GetWithdrawalsRequest,
   GetWithdrawalsResponse,
 } from './transactions/types';
@@ -138,6 +152,7 @@ import type {
 import type {
   AdaWallet,
   AdaWallets,
+  CreateHardwareWalletRequest,
   LegacyAdaWallet,
   LegacyAdaWallets,
   WalletUtxos,
@@ -195,6 +210,7 @@ import { getNewsHash } from './news/requests/getNewsHash';
 import { deleteTransaction } from './transactions/requests/deleteTransaction';
 import { WALLET_BYRON_KINDS } from '../config/walletRestoreConfig';
 import ApiError from '../domains/ApiError';
+import { formattedAmountToLovelace } from '../utils/formatters';
 
 const { isIncentivizedTestnet } = global;
 
@@ -234,7 +250,21 @@ export default class AdaApi {
         });
       });
 
-      return wallets.map(_createWalletFromServerData);
+      // @TODO - Remove this once we get hardware wallet flag from WBE
+      return await Promise.all(
+        wallets.map(async (wallet) => {
+          const { id } = wallet;
+          const {
+            getHardwareWalletLocalData,
+          } = global.daedalus.api.localStorage;
+          const walletData = await getHardwareWalletLocalData(id);
+          return _createWalletFromServerData({
+            ...wallet,
+            isHardwareWallet:
+              walletData && walletData.device && size(walletData.device) > 0,
+          });
+        })
+      );
     } catch (error) {
       logger.error('AdaApi::getWallets error', { error });
       throw new ApiError(error);
@@ -284,6 +314,7 @@ export default class AdaApi {
       parameters: filterLogData(request),
     });
     const { walletId, queryParams, isLegacy } = request;
+
     try {
       let response = [];
       if (isLegacy && !isIncentivizedTestnet) {
@@ -352,6 +383,7 @@ export default class AdaApi {
       } else {
         response = await getTransactionHistory(this.config, walletId, params);
       }
+
       logger.debug('AdaApi::getTransactions success', {
         transactions: response,
       });
@@ -725,6 +757,7 @@ export default class AdaApi {
           },
         ],
       };
+
       let response: TransactionFee;
       if (isLegacy) {
         response = await getByronWalletTransactionFee(this.config, {
@@ -743,7 +776,8 @@ export default class AdaApi {
       );
       const fee = _createTransactionFeeFromServerData(response);
       const amountWithFee = formattedTxAmount.plus(fee);
-      if (amountWithFee.gt(walletBalance)) {
+      const isRewardsRedemptionRequest = Array.isArray(withdrawal);
+      if (!isRewardsRedemptionRequest && amountWithFee.gt(walletBalance)) {
         // Amount + fees exceeds walletBalance:
         // = show "Not enough Ada for fees. Try sending a smaller amount."
         throw new ApiError().result('cannotCoverFee');
@@ -776,6 +810,185 @@ export default class AdaApi {
         .where('code', 'bad_request')
         .inc('message', 'Unable to decode Address')
         .result();
+    }
+  };
+
+  selectCoins = async (request: {
+    walletId: string,
+    payments?: CoinSelectionsPaymentRequestType,
+    delegation?: CoinSelectionsDelegationRequestType,
+  }): Promise<CoinSelectionsResponse> => {
+    logger.debug('AdaApi::selectCoins called', {
+      parameters: filterLogData(request),
+    });
+    const { walletId, payments, delegation } = request;
+
+    try {
+      let data;
+      if (delegation) {
+        data = {
+          delegation_action: {
+            action: delegation.delegationAction,
+            pool: delegation.poolId,
+          },
+        };
+      } else if (payments) {
+        data = {
+          payments: [
+            {
+              address: payments.address,
+              amount: {
+                quantity: payments.amount,
+                unit: WalletUnits.LOVELACE,
+              },
+            },
+          ],
+        };
+      } else {
+        throw new Error('Missing parameters!');
+      }
+      const response = await selectCoins(this.config, {
+        walletId,
+        data,
+      });
+
+      // @TODO - handle CHANGE paramete on smarter way and change corresponding downstream logic
+      const outputs = concat(response.outputs, response.change);
+
+      // Calculate fee from inputs and outputs
+      let totalInputs = 0;
+      let totalOutputs = 0;
+      const inputsData = [];
+      const outputsData = [];
+      const certificatesData = [];
+      map(response.inputs, (input) => {
+        totalInputs += input.amount.quantity;
+        const inputData = {
+          address: input.address,
+          amount: input.amount,
+          id: input.id,
+          index: input.index,
+          derivationPath: input.derivation_path,
+        };
+        inputsData.push(inputData);
+      });
+      map(outputs, (output) => {
+        totalOutputs += output.amount.quantity;
+        const outputData = {
+          address: output.address,
+          amount: output.amount,
+          derivationPath: output.derivation_path || null,
+        };
+        outputsData.push(outputData);
+      });
+      if (response.certificates) {
+        map(response.certificates, (certificate) => {
+          const certificateData = {
+            certificateType: certificate.certificate_type,
+            rewardAccountPath: certificate.reward_account_path,
+            pool: certificate.pool || null,
+          };
+          certificatesData.push(certificateData);
+        });
+      }
+      const fee = new BigNumber(totalInputs - totalOutputs).dividedBy(
+        LOVELACES_PER_ADA
+      );
+
+      let transactionFee;
+      if (delegation && delegation.delegationAction) {
+        const delegationDeposit = new BigNumber(DELEGATION_DEPOSIT);
+        const isDepositIncluded = fee.gt(delegationDeposit);
+        transactionFee = isDepositIncluded ? fee.minus(delegationDeposit) : fee;
+      } else {
+        transactionFee = fee;
+      }
+
+      // On first wallet delegation deposit is included in fee
+      const extendedResponse = {
+        inputs: inputsData,
+        outputs: outputsData,
+        certificates: certificatesData,
+        feeWithDelegationDeposit: fee,
+        fee: transactionFee,
+      };
+
+      logger.debug('AdaApi::selectCoins success', { extendedResponse });
+      return extendedResponse;
+    } catch (error) {
+      logger.error('AdaApi::selectCoins error', { error });
+      throw new ApiError(error);
+    }
+  };
+
+  createExternalTransaction = async (
+    request: CreateExternalTransactionRequest
+  ): Promise<CreateExternalTransactionResponse> => {
+    const { signedTransactionBlob } = request;
+    try {
+      const response = await createExternalTransaction(this.config, {
+        signedTransactionBlob,
+      });
+      return response;
+    } catch (error) {
+      logger.error('AdaApi::createExternalTransaction error', { error });
+      throw new ApiError(error);
+    }
+  };
+
+  inspectAddress = async (
+    request: any // @TODO
+  ): Promise<any> => {
+    logger.debug('AdaApi::inspectAddress called', {
+      parameters: filterLogData(request),
+    });
+    const { addressId } = request;
+    try {
+      const response = await inspectAddress(this.config, {
+        addressId,
+      });
+      logger.debug('AdaApi::inspectAddress success', { response });
+      return response;
+    } catch (error) {
+      logger.error('AdaApi::inspectAddress error', { error });
+      throw new ApiError(error);
+    }
+  };
+
+  getPublicKey = async (
+    request: any // @TODO
+  ): Promise<any> => {
+    logger.debug('AdaApi::getPublicKey called', {
+      parameters: filterLogData(request),
+    });
+    const { walletId, role, index } = request;
+    try {
+      const response = await getPublicKey(this.config, {
+        walletId,
+        role,
+        index,
+      });
+      logger.debug('AdaApi::getPublicKey success', { response });
+      return response;
+    } catch (error) {
+      logger.error('AdaApi::getPublicKey error', { error });
+      throw new ApiError(error);
+    }
+  };
+
+  constructAddress = async (
+    request: any // @TODO
+  ): Promise<any> => {
+    const { data } = request;
+    try {
+      const response = await constructAddress(this.config, {
+        data,
+      });
+      logger.debug('AdaApi::constructAddress success', { response });
+      return response;
+    } catch (error) {
+      logger.error('AdaApi::constructAddress error', { error });
+      throw new ApiError(error);
     }
   };
 
@@ -934,6 +1147,37 @@ export default class AdaApi {
         .set('forbiddenMnemonic')
         .where('code', 'invalid_restoration_parameters')
         .result();
+    }
+  };
+
+  createHardwareWallet = async (
+    request: CreateHardwareWalletRequest
+  ): Promise<Wallet> => {
+    logger.debug('AdaApi::createHardwareWallet called', {
+      parameters: filterLogData(request),
+    });
+    const { walletName, accountPublicKey } = request;
+    const walletInitData = {
+      name: walletName,
+      account_public_key: accountPublicKey,
+    };
+
+    try {
+      const hardwareWallet: AdaWallet = await createHardwareWallet(
+        this.config,
+        {
+          walletInitData,
+        }
+      );
+      const wallet = {
+        ...hardwareWallet,
+        isHardwareWallet: true,
+      };
+      logger.debug('AdaApi::createHardwareWallet success', { wallet });
+      return _createWalletFromServerData(wallet);
+    } catch (error) {
+      logger.error('AdaApi::createHardwareWallet error', { error });
+      throw new ApiError(error);
     }
   };
 
@@ -1278,6 +1522,7 @@ export default class AdaApi {
       parameters: filterLogData(request),
     });
     const { walletId, name, isLegacy } = request;
+
     try {
       let wallet: AdaWallet;
       if (isLegacy) {
@@ -1376,12 +1621,22 @@ export default class AdaApi {
     request: GetRedeemItnRewardsFeeRequest
   ): Promise<GetRedeemItnRewardsFeeResponse> => {
     const { address, wallet, recoveryPhrase: withdrawal } = request;
-    const amount = REDEEM_ITN_REWARDS_AMOUNT;
     const {
       id: walletId,
       amount: walletBalance,
       availableAmount: availableBalance,
     } = wallet;
+    const minRewardsReceiverBalance = new BigNumber(
+      MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE
+    );
+    // Amount is set to either wallet's balance in case balance is less than 3 ADA or 1 ADA in order to avoid min UTXO affecting transaction fees calculation
+    const amount = walletBalance.lessThan(
+      minRewardsReceiverBalance.times(
+        MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE * 3
+      )
+    )
+      ? formattedAmountToLovelace(walletBalance.toString())
+      : REWARDS_REDEMPTION_FEE_CALCULATION_AMOUNT;
     const payload = {
       address,
       walletId,
@@ -1410,7 +1665,7 @@ export default class AdaApi {
       spendingPassword: passphrase,
       recoveryPhrase: withdrawal,
     } = request;
-    const amount = REDEEM_ITN_REWARDS_AMOUNT;
+    const amount = REWARDS_REDEMPTION_FEE_CALCULATION_AMOUNT;
     try {
       const data = {
         payments: [
@@ -1548,6 +1803,7 @@ export default class AdaApi {
       );
       const stakePools = response
         .filter(({ metadata }: AdaApiStakePool) => metadata !== undefined)
+        .filter(({ flags }: AdaApiStakePool) => !flags.includes('delisted'))
         .filter(
           ({ margin }: AdaApiStakePool) =>
             margin !== undefined && margin.quantity < 100
@@ -1574,6 +1830,7 @@ export default class AdaApi {
           this.deleteWallet({
             walletId: wallet.id,
             isLegacy: wallet.isLegacy,
+            isHardwareWallet: wallet.isHardwareWallet,
           })
         )
       );
@@ -1982,6 +2239,7 @@ const _createWalletFromServerData = action(
       state: syncState,
       isLegacy = false,
       discovery,
+      isHardwareWallet = false,
     } = wallet;
 
     const id = isLegacy ? getLegacyWalletId(rawWalletId) : rawWalletId;
@@ -2024,9 +2282,10 @@ const _createWalletFromServerData = action(
       reward: walletRewardAmount,
       passwordUpdateDate:
         passphraseLastUpdatedAt && new Date(passphraseLastUpdatedAt),
-      hasPassword: passphraseLastUpdatedAt !== null,
+      hasPassword: isHardwareWallet || passphraseLastUpdatedAt !== null, // For HW set that wallet has password
       syncState,
       isLegacy,
+      isHardwareWallet,
       delegatedStakePoolId,
       delegationStakePoolStatus,
       lastDelegationStakePoolId,
@@ -2109,9 +2368,7 @@ const _createMigrationFeeFromServerData = action(
   (data: TransferFundsCalculateFeeApiResponse) => {
     const { quantity: feeAmount = 0 } = data.migration_cost;
     const fee = new BigNumber(feeAmount).dividedBy(LOVELACES_PER_ADA);
-    // const { quantity: leftoversAmount = 0 } = data.leftovers;
-    // @LEFTOVERS TODO: Dummy data for testing
-    const leftoversAmount = 45;
+    const { quantity: leftoversAmount = 0 } = data.leftovers;
     const leftovers = new BigNumber(leftoversAmount).dividedBy(
       LOVELACES_PER_ADA
     );
@@ -2142,11 +2399,17 @@ const _createStakePoolFromServerData = action(
     const {
       relative_stake: relativeStake,
       produced_blocks: producedBlocks,
+      non_myopic_member_rewards: nonMyopicMemberRewards,
       saturation,
     } = metrics; // eslint-disable-line
     const { name, description = '', ticker, homepage } = metadata;
     const relativeStakePercentage = get(relativeStake, 'quantity', 0);
     const producedBlocksCount = get(producedBlocks, 'quantity', 0);
+    const nonMyopicMemberRewardsQuantity = get(
+      nonMyopicMemberRewards,
+      'quantity',
+      0
+    );
     const costQuantity = get(cost, 'quantity', 0).toString();
     const pledgeQuantity = get(pledge, 'quantity', 0).toString();
     const profitMarginPercentage = get(profitMargin, 'quantity', 0);
@@ -2155,6 +2418,10 @@ const _createStakePoolFromServerData = action(
       id,
       relativeStake: relativeStakePercentage,
       producedBlocks: producedBlocksCount,
+      potentialRewards: new BigNumber(nonMyopicMemberRewardsQuantity).dividedBy(
+        LOVELACES_PER_ADA
+      ),
+      nonMyopicMemberRewards: nonMyopicMemberRewardsQuantity,
       ticker,
       homepage,
       cost: new BigNumber(costQuantity).dividedBy(LOVELACES_PER_ADA),

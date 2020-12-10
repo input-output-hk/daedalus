@@ -6,6 +6,8 @@ import WalletBackupDialog from '../../components/wallet/WalletBackupDialog';
 import WalletBackupDialogContainer from './dialogs/WalletBackupDialogContainer';
 import WalletCreateDialogContainer from './dialogs/WalletCreateDialogContainer';
 import WalletRestoreDialogContainer from './dialogs/WalletRestoreDialogContainer';
+import WalletConnectDialog from '../../components/wallet/WalletConnectDialog';
+import WalletConnectDialogContainer from './dialogs/WalletConnectDialogContainer';
 import Layout from '../MainLayout';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
@@ -55,6 +57,11 @@ export default class WalletAddPage extends Component<Props> {
     const onImportWallet = () =>
       actions.walletMigration.initiateMigration.trigger();
 
+    const onConnectWallet = () => {
+      actions.dialogs.open.trigger({ dialog: WalletConnectDialog });
+      stores.hardwareWallets.establishHardwareWalletConnection();
+    };
+
     let activeDialog = null;
 
     // TODO: Remove once the new wallet creation process is ready
@@ -70,6 +77,8 @@ export default class WalletAddPage extends Component<Props> {
       activeDialog = <WalletRestoreDialogContainer onClose={this.onClose} />;
     } else if (walletMigrationStep !== null) {
       activeDialog = <WalletImportDialogContainer onClose={this.onClose} />;
+    } else if (uiDialogs.isOpen(WalletConnectDialog)) {
+      activeDialog = <WalletConnectDialogContainer onClose={this.onClose} />;
     }
 
     return (
@@ -78,6 +87,7 @@ export default class WalletAddPage extends Component<Props> {
           onCreate={onCreateWallet}
           onRestore={onRestoreWallet}
           onImport={onImportWallet}
+          onConnect={onConnectWallet}
           isMaxNumberOfWalletsReached={wallets.hasMaxWallets}
           isMainnet={isMainnet}
           isTestnet={isTestnet}

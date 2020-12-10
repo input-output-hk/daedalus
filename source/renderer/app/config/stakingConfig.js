@@ -1,14 +1,16 @@
 // @flow
-import type { RedeemItnRewardsStep } from '../types/stakingTypes';
+import type {
+  RedeemItnRewardsStep,
+  DelegationAction,
+} from '../types/stakingTypes';
 
 export const RANKING_SLIDER_RATIO = 60;
-export const MIN_DELEGATION_FUNDS_LOG = Math.log(10);
 export const MIN_DELEGATION_FUNDS = 10;
-export const INITIAL_DELEGATION_FUNDS_LOG = Math.log(1000);
+export const MIN_DELEGATION_FUNDS_LOG = Math.log(MIN_DELEGATION_FUNDS);
 export const INITIAL_DELEGATION_FUNDS = 1000;
-export const MAX_DELEGATION_FUNDS_LOG = Math.log(220000000);
-export const MAX_DELEGATION_FUNDS = 220000000;
-export const OUT_OF_RANGE_MAX_DELEGATION_FUNDS = 33000000000;
+export const INITIAL_DELEGATION_FUNDS_LOG = Math.log(INITIAL_DELEGATION_FUNDS);
+export const INITIAL_DESIRED_POOLS_NUMBER = 150;
+export const CIRCULATING_SUPPLY = 31736470500;
 export const ALL_WALLETS_SELECTION_ID = '0';
 
 // Dimensions
@@ -23,6 +25,8 @@ export const ARROW_WIDTH = 22;
 export const ARROW_HEIGHT = 11;
 export const ARROW_OFFSET = ARROW_WIDTH / 2;
 export const TOOLTIP_DELTA = 5;
+export const LIST_VIEW_TOOLTIP_DELTA_TOP = 120;
+export const LIST_VIEW_ROW_HEIGHT = 36;
 export const TOOLTIP_MIN_HEIGHT = 287;
 export const TOOLTIP_MAX_HEIGHT = 370;
 export const TOOLTIP_AVG_HEIGHT = (TOOLTIP_MIN_HEIGHT + TOOLTIP_MAX_HEIGHT) / 2;
@@ -39,14 +43,23 @@ export const STAKE_POOLS_FAST_INTERVAL = 1 * 1000; // 1 second | unit: milliseco
 
 // Redeem ITN Rewards
 
-export const REDEEM_ITN_REWARDS_AMOUNT = 1 * 1000000; // 1 ADA | unit: lovelace
-
+export const MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE = 1; // 1 ADA | unit: ADA
+export const REWARDS_REDEMPTION_FEE_CALCULATION_AMOUNT = 1 * 1000000; // 1 ADA | unit: lovelace
 export const REDEEM_ITN_REWARDS_STEPS: {
   [key: string]: RedeemItnRewardsStep,
 } = {
   CONFIGURATION: 'configuration',
   CONFIRMATION: 'confirmation',
   RESULT: 'result',
+};
+
+export const DELEGATION_DEPOSIT = 2; // 2 ADA | unit: lovelace
+
+export const DELEGATION_ACTIONS: {
+  [key: string]: DelegationAction,
+} = {
+  JOIN: 'join',
+  QUIT: 'quit',
 };
 
 export const IS_RANKING_DATA_AVAILABLE = true;

@@ -47,7 +47,7 @@ export default class StakePoolsListPage extends Component<Props> {
       profile,
       wallets,
     } = this.props.stores;
-    const { currentTheme } = profile;
+    const { currentTheme, currentLocale } = profile;
     const { isSynced } = networkStatus;
     const {
       stakePoolsRequest,
@@ -57,6 +57,7 @@ export default class StakePoolsListPage extends Component<Props> {
       fetchingStakePoolsFailed,
       recentStakePools,
       getStakePoolById,
+      maxDelegationFunds,
     } = staking;
     const { all } = wallets;
     const isLoading =
@@ -68,7 +69,7 @@ export default class StakePoolsListPage extends Component<Props> {
       <Fragment>
         <StakePools
           wallets={all}
-          currentLocale={profile.currentLocale}
+          currentLocale={currentLocale}
           stakePoolsList={stakePools}
           stakePoolsDelegatingList={recentStakePools}
           onOpenExternalLink={app.openExternalLink}
@@ -81,6 +82,7 @@ export default class StakePoolsListPage extends Component<Props> {
           isLoading={isLoading}
           isRanking={isRanking}
           getStakePoolById={getStakePoolById}
+          maxDelegationFunds={maxDelegationFunds}
         />
         {isRanking && <StakePoolsRankingLoader />}
         {uiDialogs.isOpen(DelegationSetupWizardDialog) ? (

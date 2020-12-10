@@ -1,6 +1,7 @@
 // @flow
 import { computed, action, observable, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
+import path from 'path';
 import { orderBy, find, map, get } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
@@ -13,6 +14,7 @@ import {
   STAKE_POOLS_FAST_INTERVAL,
   REDEEM_ITN_REWARDS_STEPS as steps,
   INITIAL_DELEGATION_FUNDS,
+  CIRCULATING_SUPPLY,
 } from '../config/stakingConfig';
 import type {
   Reward,
@@ -21,12 +23,15 @@ import type {
   GetDelegationFeeRequest,
   QuitStakePoolRequest,
 } from '../api/staking/types';
-import type { RedeemItnRewardsStep } from '../types/stakingTypes';
 import Wallet from '../domains/Wallet';
 import StakePool from '../domains/StakePool';
 import { TransactionStates } from '../domains/WalletTransaction';
 import LocalizableError from '../i18n/LocalizableError';
+import { showSaveDialogChannel } from '../ipc/show-file-dialog-channels';
 import REWARDS from '../config/stakingRewards.dummy.json';
+import { generateFileNameWithTimestamp } from '../../../common/utils/files';
+import type { RedeemItnRewardsStep } from '../types/stakingTypes';
+import type { CsvFileContent } from '../../../common/types/csv-request.types';
 
 export default class StakingStore extends Store {
   @observable isDelegationTransactionPending = false;
@@ -44,6 +49,7 @@ export default class StakingStore extends Store {
   @observable transactionFees: ?BigNumber = null;
   @observable redeemedRewards: ?BigNumber = null;
   @observable isSubmittingReedem: boolean = false;
+  @observable isCalculatingReedemFees: boolean = false;
   @observable stakingSuccess: ?boolean = null;
   @observable configurationStepError: ?LocalizableError = null;
   @observable confirmationStepError: ?LocalizableError = null;
@@ -69,7 +75,9 @@ export default class StakingStore extends Store {
     stakingActions.onConfigurationContinue.listen(
       this._onConfigurationContinue
     );
-    stakingActions.onSelectRedeemWallet.listen(this._onSelectRedeemWallet);
+    stakingActions.onCalculateRedeemWalletFees.listen(
+      this._onCalculateRedeemWalletFees
+    );
     stakingActions.onConfirmationContinue.listen(this._onConfirmationContinue);
     stakingActions.onResultContinue.listen(this._onResultContinue);
     stakingActions.closeRedeemDialog.listen(this._closeRedeemDialog);
@@ -86,6 +94,7 @@ export default class StakingStore extends Store {
     stakingActions.selectDelegationWallet.listen(
       this._setSelectedDelegationWalletId
     );
+    stakingActions.requestCSVFile.listen(this._requestCSVFile);
 
     // ========== MOBX REACTIONS =========== //
     this.registerReactions([this._pollOnSync]);
@@ -128,17 +137,24 @@ export default class StakingStore extends Store {
   };
 
   @action _joinStakePool = async (request: JoinStakePoolRequest) => {
-    const { walletId, stakePoolId, passphrase } = request;
+    const { walletId, stakePoolId, passphrase, isHardwareWallet } = request;
 
     // Set join transaction in "PENDING" state
     this.isDelegationTransactionPending = true;
 
     try {
-      const joinTransaction = await this.joinStakePoolRequest.execute({
-        walletId,
-        stakePoolId,
-        passphrase,
-      });
+      let joinTransaction;
+      if (isHardwareWallet) {
+        joinTransaction = await this.stores.hardwareWallets._sendMoney({
+          isDelegationTransaction: true,
+        });
+      } else {
+        joinTransaction = await this.joinStakePoolRequest.execute({
+          walletId,
+          stakePoolId,
+          passphrase,
+        });
+      }
       // Start interval to check transaction state every second
       this.delegationCheckTimeInterval = setInterval(
         this.checkDelegationTransaction,
@@ -216,12 +232,48 @@ export default class StakingStore extends Store {
       clearInterval(this.delegationCheckTimeInterval);
       this.delegationCheckTimeInterval = null;
     }
+    // this.stores.hardwareWallets._resetTransaction();
     this.stores.wallets.refreshWalletsData();
     this.isDelegationTransactionPending = false;
   };
 
   @action markStakingExperimentAsRead = () => {
     this.isStakingExperimentRead = true;
+  };
+
+  @action _requestCSVFile = async ({
+    fileContent,
+    filenamePrefix: prefix,
+  }: {
+    fileContent: CsvFileContent,
+    filenamePrefix: string,
+  }) => {
+    const {
+      actions: { wallets },
+    } = this;
+    const fileName = generateFileNameWithTimestamp({
+      prefix,
+      extension: 'csv',
+      isUTC: true,
+    });
+    const { desktopDirectoryPath } = this.stores.profile;
+    const defaultPath = path.join(desktopDirectoryPath, fileName);
+    const params = {
+      defaultPath,
+      filters: [
+        {
+          extensions: ['csv'],
+        },
+      ],
+    };
+    const { filePath } = await showSaveDialogChannel.send(params);
+
+    // if cancel button is clicked or path is empty
+    if (!filePath) return;
+
+    await wallets.generateCsv.trigger({ fileContent, filePath });
+
+    this.actions.staking.requestCSVFileSuccess.trigger();
   };
 
   calculateDelegationFee = async (
@@ -264,6 +316,11 @@ export default class StakingStore extends Store {
 
   @computed get isStakingPage(): boolean {
     return this.currentRoute.indexOf(ROUTES.STAKING.ROOT) > -1;
+  }
+
+  @computed get maxDelegationFunds(): number {
+    const { desiredPoolNumber } = this.stores.networkStatus;
+    return Math.round(CIRCULATING_SUPPLY / desiredPoolNumber);
   }
 
   @computed get stakePools(): Array<StakePool> {
@@ -488,12 +545,37 @@ export default class StakingStore extends Store {
     this.redeemStep = steps.RESULT;
   };
 
-  @action _onSelectRedeemWallet = async ({
+  @action _onCalculateRedeemWalletFees = async ({
     walletId,
+    recoveryPhrase,
   }: {
     walletId: string,
+    recoveryPhrase: Array<string>,
   }) => {
     this.redeemWallet = this.stores.wallets.getWalletById(walletId);
+    this.redeemRecoveryPhrase = recoveryPhrase;
+    this.isCalculatingReedemFees = true;
+    try {
+      const [address] = await this.stores.addresses.getAddressesByWalletId(
+        walletId
+      );
+      const transactionFees = await this.getRedeemItnRewardsFeeRequest.execute({
+        wallet: this.redeemWallet,
+        recoveryPhrase,
+        address: address.id,
+      });
+      runInAction(() => {
+        this.confirmationStepError = null;
+        this.transactionFees = transactionFees;
+        this.isCalculatingReedemFees = false;
+      });
+    } catch (error) {
+      runInAction(() => {
+        this.configurationStepError = error;
+        this.transactionFees = null;
+        this.isCalculatingReedemFees = false;
+      });
+    }
   };
 
   @action _onRedeemStart = () => {
@@ -502,37 +584,11 @@ export default class StakingStore extends Store {
     this.redeemStep = steps.CONFIGURATION;
   };
 
-  @action _onConfigurationContinue = async ({
-    recoveryPhrase,
-  }: {
-    recoveryPhrase: Array<string>,
-  }) => {
-    this.isSubmittingReedem = true;
-    const { redeemWallet } = this;
-    if (!redeemWallet) throw new Error('Redeem wallet required');
-    try {
-      const [address] = await this.stores.addresses.getAddressesByWalletId(
-        redeemWallet.id
-      );
-      const transactionFees = await this.getRedeemItnRewardsFeeRequest.execute({
-        wallet: redeemWallet,
-        recoveryPhrase,
-        address: address.id,
-      });
-      runInAction(() => {
-        this.redeemRecoveryPhrase = recoveryPhrase;
-        this.transactionFees = transactionFees;
-        this.confirmationStepError = null;
-        this.redeemStep = steps.CONFIRMATION;
-        this.configurationStepError = null;
-        this.isSubmittingReedem = false;
-      });
-    } catch (error) {
-      runInAction(() => {
-        this.configurationStepError = error;
-        this.isSubmittingReedem = false;
-        this.redeemRecoveryPhrase = null;
-      });
+  @action _onConfigurationContinue = () => {
+    if (this.transactionFees && this.redeemRecoveryPhrase) {
+      this.redeemStep = steps.CONFIRMATION;
+      this.confirmationStepError = null;
+      this.configurationStepError = null;
     }
   };
 
@@ -587,6 +643,7 @@ export default class StakingStore extends Store {
 
   @action _resetRedeemItnRewards = () => {
     this.isSubmittingReedem = false;
+    this.isCalculatingReedemFees = false;
     this.stakingSuccess = null;
     this.redeemWallet = null;
     this.transactionFees = null;

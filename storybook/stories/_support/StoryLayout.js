@@ -2,14 +2,20 @@
 import React, { Component, Children } from 'react';
 import type { Node } from 'react';
 import { observable, runInAction } from 'mobx';
+import BigNumber from 'bignumber.js';
 import { observer, inject } from 'mobx-react';
 import { get } from 'lodash';
 import { action } from '@storybook/addon-actions';
-import { boolean } from '@storybook/addon-knobs';
+import { select, boolean } from '@storybook/addon-knobs';
 import { isIncentivizedTestnetTheme, isShelleyTestnetTheme } from './utils';
 
 // Assets and helpers
 import { CATEGORIES_BY_NAME } from '../../../source/renderer/app/config/sidebarConfig';
+import {
+  DEFAULT_NUMBER_FORMAT,
+  NUMBER_FORMATS,
+} from '../../../source/common/types/number.types';
+import { NUMBER_OPTIONS } from '../../../source/renderer/app/config/profileConfig';
 import { formattedWalletAmount } from '../../../source/renderer/app/utils/formatters';
 import NodeSyncStatusIcon from '../../../source/renderer/app/components/widgets/NodeSyncStatusIcon';
 import Wallet, {
@@ -17,10 +23,7 @@ import Wallet, {
 } from '../../../source/renderer/app/domains/Wallet.js';
 import NewsFeedIcon from '../../../source/renderer/app/components/widgets/NewsFeedIcon';
 import type { SidebarMenus } from '../../../source/renderer/app/components/sidebar/Sidebar';
-import type {
-  SidebarHardwareWalletType,
-  SidebarWalletType,
-} from '../../../source/renderer/app/types/sidebarTypes';
+import type { SidebarWalletType } from '../../../source/renderer/app/types/sidebarTypes';
 
 // Empty screen elements
 import TopBar from '../../../source/renderer/app/components/layout/TopBar';
@@ -46,14 +49,12 @@ type Props = {
 
 const CATEGORIES_COUNTDOWN = [
   CATEGORIES_BY_NAME.WALLETS,
-  CATEGORIES_BY_NAME.HARDWARE_WALLETS,
   CATEGORIES_BY_NAME.STAKING_DELEGATION_COUNTDOWN,
   CATEGORIES_BY_NAME.SETTINGS,
 ];
 
 const CATEGORIES = [
   CATEGORIES_BY_NAME.WALLETS,
-  CATEGORIES_BY_NAME.HARDWARE_WALLETS,
   CATEGORIES_BY_NAME.STAKING,
   CATEGORIES_BY_NAME.SETTINGS,
 ];
@@ -81,7 +82,19 @@ export default class StoryLayout extends Component<Props> {
       activeWalletId,
       setActiveWalletId
     );
-
+    const currentNumberFormat = select(
+      'currentNumberFormat',
+      NUMBER_OPTIONS.reduce((obj, option) => {
+        obj[option.label] = option.value;
+        return obj;
+      }, {}),
+      NUMBER_OPTIONS[0]
+    );
+    const FORMAT = {
+      ...DEFAULT_NUMBER_FORMAT,
+      ...NUMBER_FORMATS[currentNumberFormat],
+    };
+    BigNumber.config({ FORMAT });
     return (
       <div
         style={{
@@ -114,9 +127,7 @@ export default class StoryLayout extends Component<Props> {
   @observable isShowingSubMenus =
     this.props.activeSidebarCategory === '/wallets' && !!this.props.children;
 
-  getSidebarWallets = (
-    wallets: Array<Wallet>
-  ): Array<SidebarWalletType | SidebarHardwareWalletType> =>
+  getSidebarWallets = (wallets: Array<Wallet>): Array<SidebarWalletType> =>
     wallets.map((wallet: Wallet) => ({
       id: wallet.id,
       title: wallet.name,
@@ -135,7 +146,7 @@ export default class StoryLayout extends Component<Props> {
     }));
 
   getSidebarMenus = (
-    items: Array<SidebarWalletType | SidebarHardwareWalletType>,
+    items: Array<SidebarWalletType>,
     activeWalletId: string,
     setActiveWalletId: Function
   ) => ({
@@ -145,14 +156,6 @@ export default class StoryLayout extends Component<Props> {
       actions: {
         onAddWallet: action('toggleAddWallet'),
         onWalletItemClick: setActiveWalletId,
-      },
-    },
-    hardwareWallets: {
-      items,
-      activeWalletId,
-      actions: {
-        onAddWallet: action('toggleAddWallet'),
-        onHardwareWalletItemClick: setActiveWalletId,
       },
     },
   });

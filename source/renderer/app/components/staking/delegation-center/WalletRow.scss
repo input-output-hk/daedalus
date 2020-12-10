@@ -35,6 +35,16 @@
     .title {
       @extend %accentText;
       margin-bottom: 4px;
+      .hardwareWalletsIcon {
+        svg {
+          height: 12px;
+          margin-left: 6px;
+          width: 12px;
+          path {
+            fill: var(--theme-staking-font-color-accent);
+          }
+        }
+      }
     }
 
     .description {
@@ -60,13 +70,6 @@
       display: flex;
       justify-content: flex-end;
       margin-bottom: 4px;
-
-      :global {
-        .SimpleTooltip_root {
-          margin-right: 0;
-          margin-top: 2px;
-        }
-      }
 
       .ticker {
         background-color: var(
@@ -108,12 +111,6 @@
       > span:last-child > span {
         padding-bottom: 4px;
         padding-top: 3px;
-      }
-
-      > span :global {
-        .SimpleTooltip_root > div {
-          right: -80px;
-        }
       }
 
       .tooltipLabelWrapper {

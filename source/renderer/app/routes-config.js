@@ -33,12 +33,6 @@ export const ROUTES = {
   VOTING: {
     ADD: '/voting-catalyst/add',
   },
-  HARDWARE_WALLETS: {
-    ROOT: '/hardware-wallets',
-    ADD: '/hardware-wallets/add',
-    PAGE: '/hardware-wallets/:id/:page',
-    SUMMARY: '/hardware-wallets/:id/summary',
-  },
   SETTINGS: {
     ROOT: '/settings',
     GENERAL: '/settings/general',

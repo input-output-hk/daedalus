@@ -145,10 +145,10 @@ export const TESTNET_MAGIC = [1097911063, 0];
 export const ITN_MAGIC = 1;
 
 // Cardano Mainnet Candidate during the Shelley HF
-export const SHELLEY_TESTNET_NETWORK_ID = [1, null];
+export const SHELLEY_TESTNET_NETWORK_ID = [1, 0, null];
 
 // Cardano Staging network magic
-export const STAGING_MAGIC = 633343913;
+export const STAGING_MAGIC = [633343913, 1];
 
 // Cardano Selfnode network magic
 export const SELFNODE_MAGIC = 459045235;

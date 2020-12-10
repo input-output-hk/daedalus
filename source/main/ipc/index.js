@@ -9,11 +9,13 @@ import loadAsset from './load-asset';
 import getGpuStatus from './get-gpu-status';
 import { downloadManagerChannel } from './downloadManagerChannel';
 import getRecoveryWalletIdChannel from './getRecoveryWalletIdChannel';
+import { handleHardwareWalletRequests } from './getHardwareWalletChannel';
 import { handleBugReportRequests } from './bugReportRequestChannel';
 import { handleFileMetaRequests } from './generateFileMetaChannel';
 import { handlePaperWalletRequests } from './generatePaperWalletChannel';
 import { handleAddressPDFRequests } from './generateAddressPDFChannel';
-import { handleRewardsCsvRequests } from './generateRewardsCsvChannel';
+import { saveQRCodeImageRequests } from './saveQRCodeImageChannel';
+import { handleRewardsCsvRequests } from './generateCsvChannel';
 import { handleFileDialogRequests } from './show-file-dialog-channels';
 import { handleAddressIntrospectionRequests } from './introspect-address';
 import { handleManageAppUpdateRequests } from './manageAppUpdateChannel';
@@ -31,6 +33,7 @@ export default (window: BrowserWindow) => {
   handleFileMetaRequests();
   handlePaperWalletRequests();
   handleAddressPDFRequests();
+  saveQRCodeImageRequests();
   handleRewardsCsvRequests();
   handleFileDialogRequests(window);
   handleAddressIntrospectionRequests();
@@ -42,4 +45,5 @@ export default (window: BrowserWindow) => {
   downloadManagerChannel(window);
   getRecoveryWalletIdChannel();
   handleElectronStoreChannel();
+  handleHardwareWalletRequests(window);
 };

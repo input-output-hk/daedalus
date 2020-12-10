@@ -11,11 +11,13 @@
     "performance": 28,
     "pledge": "34",
     "producedBlocks": 7001674,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 3,
     "ranking": 1,
     "retiring": null,
     "saturation": 110.25,
-    "ticker": "CXGN"
+    "ticker": "CXGN",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 34,
@@ -29,11 +31,13 @@
     "performance": 87,
     "pledge": "62",
     "producedBlocks": 8761312,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 47,
     "ranking": 2,
     "retiring": null,
     "saturation": 8.34,
-    "ticker": "BKNQ"
+    "ticker": "BKNQ",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 65,
@@ -47,11 +51,13 @@
     "performance": 42,
     "pledge": "60",
     "producedBlocks": 5718810,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 16,
     "ranking": 3,
     "retiring": null,
     "saturation": 64.89,
-    "ticker": "PZPA"
+    "ticker": "PZPA",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 90,
@@ -65,11 +71,13 @@
     "performance": 13,
     "pledge": "92",
     "producedBlocks": 5974301,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 54,
     "ranking": 4,
     "retiring": null,
     "saturation": 77.53,
-    "ticker": "VRKJ"
+    "ticker": "VRKJ",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 88,
@@ -83,11 +91,13 @@
     "performance": 16,
     "pledge": "81",
     "producedBlocks": 7433654,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 61,
     "ranking": 5,
     "retiring": null,
     "saturation": 32.62,
-    "ticker": "IUJV"
+    "ticker": "IUJV",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 95,
@@ -101,11 +111,13 @@
     "performance": 100,
     "pledge": "21",
     "producedBlocks": 3845638,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 38,
     "ranking": 6,
     "retiring": null,
     "saturation": 12.94,
-    "ticker": "GBBT"
+    "ticker": "GBBT",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 83,
@@ -119,11 +131,13 @@
     "performance": 14,
     "pledge": "75",
     "producedBlocks": 4839317,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 86,
     "ranking": 7,
     "retiring": null,
     "saturation": 94.19,
-    "ticker": "IBJT"
+    "ticker": "IBJT",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 22,
@@ -137,11 +151,13 @@
     "performance": 56,
     "pledge": "16",
     "producedBlocks": 5456740,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 8,
     "ranking": 8,
     "retiring": null,
     "saturation": 100.64,
-    "ticker": "CNMR"
+    "ticker": "CNMR",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 97,
@@ -155,11 +171,13 @@
     "performance": 0,
     "pledge": "75",
     "producedBlocks": 8275175,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 7,
     "ranking": 9,
     "retiring": null,
     "saturation": 105.87,
-    "ticker": "CLXR"
+    "ticker": "CLXR",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 29,
@@ -173,11 +191,13 @@
     "performance": 47,
     "pledge": "61",
     "producedBlocks": 8155418,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 11,
     "ranking": 10,
     "retiring": null,
     "saturation": 58.620000000000005,
-    "ticker": "MIEF"
+    "ticker": "MIEF",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 98,
@@ -191,11 +211,13 @@
     "performance": 6,
     "pledge": "8",
     "producedBlocks": 7370918,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 72,
     "ranking": 11,
     "retiring": null,
     "saturation": 87.15,
-    "ticker": "IPIJ"
+    "ticker": "IPIJ",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 32,
@@ -209,11 +231,13 @@
     "performance": 12,
     "pledge": "99",
     "producedBlocks": 9973231,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 12,
     "ranking": 12,
     "retiring": null,
     "saturation": 7.51,
-    "ticker": "QYUY"
+    "ticker": "QYUY",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 44,
@@ -227,11 +251,13 @@
     "performance": 17,
     "pledge": "37",
     "producedBlocks": 3397094,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 56,
     "ranking": 13,
     "retiring": null,
     "saturation": 4.2,
-    "ticker": "TQLL"
+    "ticker": "TQLL",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 52,
@@ -245,11 +271,13 @@
     "performance": 70,
     "pledge": "31",
     "producedBlocks": 3354391,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 61,
     "ranking": 14,
     "retiring": null,
     "saturation": 12.040000000000001,
-    "ticker": "IFGL"
+    "ticker": "IFGL",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 94,
@@ -263,11 +291,13 @@
     "performance": 2,
     "pledge": "3",
     "producedBlocks": 9104916,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 73,
     "ranking": 15,
     "retiring": null,
     "saturation": 80.7,
-    "ticker": "QAMK"
+    "ticker": "QAMK",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 16,
@@ -281,11 +311,13 @@
     "performance": 0,
     "pledge": "64",
     "producedBlocks": 4797319,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 40,
     "ranking": 16,
     "retiring": null,
     "saturation": 8.05,
-    "ticker": "KMNC"
+    "ticker": "KMNC",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 33,
@@ -299,11 +331,13 @@
     "performance": 12,
     "pledge": "10",
     "producedBlocks": 2052058,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 75,
     "ranking": 17,
     "retiring": null,
     "saturation": 6.95,
-    "ticker": "YMQC"
+    "ticker": "YMQC",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 59,
@@ -317,11 +351,13 @@
     "performance": 59,
     "pledge": "73",
     "producedBlocks": 5610402,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 79,
     "ranking": 18,
     "retiring": null,
     "saturation": 23.09,
-    "ticker": "UADF"
+    "ticker": "UADF",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 25,
@@ -335,11 +371,13 @@
     "performance": 24,
     "pledge": "47",
     "producedBlocks": 8873896,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 51,
     "ranking": 19,
     "retiring": null,
     "saturation": 118.08,
-    "ticker": "AIJQ"
+    "ticker": "AIJQ",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 61,
@@ -353,11 +391,13 @@
     "performance": 39,
     "pledge": "74",
     "producedBlocks": 9899136,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 5,
     "ranking": 20,
     "retiring": null,
     "saturation": 98.77,
-    "ticker": "OBGW"
+    "ticker": "OBGW",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 48,
@@ -371,11 +411,13 @@
     "performance": 19,
     "pledge": "10",
     "producedBlocks": 9164434,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 42,
     "ranking": 21,
     "retiring": null,
     "saturation": 78.51,
-    "ticker": "PCHW"
+    "ticker": "PCHW",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 88,
@@ -389,11 +431,13 @@
     "performance": 96,
     "pledge": "37",
     "producedBlocks": 5629679,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 59,
     "ranking": 22,
     "retiring": null,
     "saturation": 30.080000000000002,
-    "ticker": "BQKJ"
+    "ticker": "BQKJ",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 82,
@@ -407,11 +451,13 @@
     "performance": 98,
     "pledge": "45",
     "producedBlocks": 417510,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 16,
     "ranking": 23,
     "retiring": null,
     "saturation": 85.99,
-    "ticker": "SZXL"
+    "ticker": "SZXL",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 75,
@@ -425,11 +471,13 @@
     "performance": 77,
     "pledge": "30",
     "producedBlocks": 8062712,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 21,
     "ranking": 24,
     "retiring": null,
     "saturation": 83.36,
-    "ticker": "HWZZ"
+    "ticker": "HWZZ",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 27,
@@ -443,11 +491,13 @@
     "performance": 87,
     "pledge": "84",
     "producedBlocks": 3781472,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 20,
     "ranking": 25,
     "retiring": null,
     "saturation": 90.63,
-    "ticker": "VQPY"
+    "ticker": "VQPY",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 42,
@@ -461,11 +511,13 @@
     "performance": 90,
     "pledge": "87",
     "producedBlocks": 1958707,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 19,
     "ranking": 26,
     "retiring": null,
     "saturation": 37.5,
-    "ticker": "DNSE"
+    "ticker": "DNSE",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 80,
@@ -479,11 +531,13 @@
     "performance": 83,
     "pledge": "28",
     "producedBlocks": 4211039,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 60,
     "ranking": 27,
     "retiring": null,
     "saturation": 81.60000000000001,
-    "ticker": "MVFY"
+    "ticker": "MVFY",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 21,
@@ -497,11 +551,13 @@
     "performance": 56,
     "pledge": "88",
     "producedBlocks": 5081022,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 10,
     "ranking": 28,
     "retiring": null,
     "saturation": 106.47,
-    "ticker": "RPED"
+    "ticker": "RPED",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 33,
@@ -515,11 +571,13 @@
     "performance": 58,
     "pledge": "72",
     "producedBlocks": 8751100,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 77,
     "ranking": 29,
     "retiring": null,
     "saturation": 20.5,
-    "ticker": "XDTC"
+    "ticker": "XDTC",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 60,
@@ -533,11 +591,13 @@
     "performance": 22,
     "pledge": "10",
     "producedBlocks": 6563623,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 43,
     "ranking": 30,
     "retiring": null,
     "saturation": 72.69,
-    "ticker": "IFLR"
+    "ticker": "IFLR",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 76,
@@ -551,11 +611,13 @@
     "performance": 45,
     "pledge": "8",
     "producedBlocks": 2845413,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 46,
     "ranking": 31,
     "retiring": null,
     "saturation": 53.58,
-    "ticker": "VPWM"
+    "ticker": "VPWM",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 21,
@@ -569,11 +631,13 @@
     "performance": 54,
     "pledge": "88",
     "producedBlocks": 8624801,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 43,
     "ranking": 32,
     "retiring": null,
     "saturation": 61.550000000000004,
-    "ticker": "ARKQ"
+    "ticker": "ARKQ",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 99,
@@ -587,11 +651,13 @@
     "performance": 85,
     "pledge": "16",
     "producedBlocks": 9043368,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 47,
     "ranking": 33,
     "retiring": null,
     "saturation": 38.97,
-    "ticker": "WOCL"
+    "ticker": "WOCL",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 30,
@@ -605,11 +671,13 @@
     "performance": 52,
     "pledge": "83",
     "producedBlocks": 3114914,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 31,
     "ranking": 34,
     "retiring": null,
     "saturation": 91.44,
-    "ticker": "NEUY"
+    "ticker": "NEUY",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 32,
@@ -623,11 +691,13 @@
     "performance": 7,
     "pledge": "37",
     "producedBlocks": 1048066,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 28,
     "ranking": 35,
     "retiring": null,
     "saturation": 24.580000000000002,
-    "ticker": "QMED"
+    "ticker": "QMED",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 38,
@@ -641,11 +711,13 @@
     "performance": 17,
     "pledge": "52",
     "producedBlocks": 1674357,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 48,
     "ranking": 36,
     "retiring": null,
     "saturation": 119.63,
-    "ticker": "XIUQ"
+    "ticker": "XIUQ",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 55,
@@ -659,11 +731,13 @@
     "performance": 97,
     "pledge": "50",
     "producedBlocks": 6823282,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 9,
     "ranking": 37,
     "retiring": null,
     "saturation": 108.54,
-    "ticker": "VDWB"
+    "ticker": "VDWB",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 14,
@@ -677,11 +751,13 @@
     "performance": 97,
     "pledge": "6",
     "producedBlocks": 5151241,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 88,
     "ranking": 38,
     "retiring": null,
     "saturation": 59.76,
-    "ticker": "KFSK"
+    "ticker": "KFSK",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 49,
@@ -695,11 +771,13 @@
     "performance": 34,
     "pledge": "95",
     "producedBlocks": 5499523,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 93,
     "ranking": 39,
     "retiring": null,
     "saturation": 116.95,
-    "ticker": "SWCR"
+    "ticker": "SWCR",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 61,
@@ -713,11 +791,13 @@
     "performance": 62,
     "pledge": "70",
     "producedBlocks": 5954878,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 31,
     "ranking": 40,
     "retiring": null,
     "saturation": 81.03,
-    "ticker": "MERV"
+    "ticker": "MERV",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 68,
@@ -731,11 +811,13 @@
     "performance": 37,
     "pledge": "100",
     "producedBlocks": 4216762,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 24,
     "ranking": 41,
     "retiring": null,
     "saturation": 82.06,
-    "ticker": "AJPG"
+    "ticker": "AJPG",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 27,
@@ -749,11 +831,13 @@
     "performance": 29,
     "pledge": "85",
     "producedBlocks": 3808831,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 84,
     "ranking": 42,
     "retiring": null,
     "saturation": 39.33,
-    "ticker": "GOZJ"
+    "ticker": "GOZJ",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 61,
@@ -767,11 +851,13 @@
     "performance": 36,
     "pledge": "77",
     "producedBlocks": 1452386,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 68,
     "ranking": 43,
     "retiring": null,
     "saturation": 67.06,
-    "ticker": "QUJG"
+    "ticker": "QUJG",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 11,
@@ -785,11 +871,13 @@
     "performance": 17,
     "pledge": "46",
     "producedBlocks": 7256292,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 70,
     "ranking": 44,
     "retiring": null,
     "saturation": 115.92,
-    "ticker": "IVHG"
+    "ticker": "IVHG",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 42,
@@ -803,11 +891,13 @@
     "performance": 70,
     "pledge": "69",
     "producedBlocks": 5482962,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 79,
     "ranking": 45,
     "retiring": null,
     "saturation": 6.93,
-    "ticker": "BLFN"
+    "ticker": "BLFN",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 33,
@@ -821,11 +911,13 @@
     "performance": 45,
     "pledge": "7",
     "producedBlocks": 9972560,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 91,
     "ranking": 46,
     "retiring": null,
     "saturation": 102.9,
-    "ticker": "LYVY"
+    "ticker": "LYVY",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 88,
@@ -839,11 +931,13 @@
     "performance": 22,
     "pledge": "44",
     "producedBlocks": 9527475,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 64,
     "ranking": 47,
     "retiring": null,
     "saturation": 75.38,
-    "ticker": "AYAT"
+    "ticker": "AYAT",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 76,
@@ -857,11 +951,13 @@
     "performance": 89,
     "pledge": "22",
     "producedBlocks": 8529744,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 36,
     "ranking": 48,
     "retiring": null,
     "saturation": 23.8,
-    "ticker": "HOYA"
+    "ticker": "HOYA",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 54,
@@ -875,11 +971,13 @@
     "performance": 18,
     "pledge": "7",
     "producedBlocks": 976292,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 44,
     "ranking": 49,
     "retiring": null,
     "saturation": 64.15,
-    "ticker": "CTMH"
+    "ticker": "CTMH",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 67,
@@ -893,11 +991,13 @@
     "performance": 45,
     "pledge": "13",
     "producedBlocks": 2282400,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 32,
     "ranking": 50,
     "retiring": null,
     "saturation": 18.12,
-    "ticker": "CQTT"
+    "ticker": "CQTT",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 1,
@@ -911,11 +1011,13 @@
     "performance": 17,
     "pledge": "100",
     "producedBlocks": 1223304,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 84,
     "ranking": 51,
     "retiring": null,
     "saturation": 84.15,
-    "ticker": "UDET"
+    "ticker": "UDET",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 7,
@@ -929,11 +1031,13 @@
     "performance": 81,
     "pledge": "71",
     "producedBlocks": 4665614,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 61,
     "ranking": 52,
     "retiring": null,
     "saturation": 0.44,
-    "ticker": "QYOM"
+    "ticker": "QYOM",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 6,
@@ -947,11 +1051,13 @@
     "performance": 46,
     "pledge": "31",
     "producedBlocks": 1173000,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 39,
     "ranking": 53,
     "retiring": null,
     "saturation": 33.63,
-    "ticker": "DIYL"
+    "ticker": "DIYL",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 75,
@@ -965,11 +1071,13 @@
     "performance": 46,
     "pledge": "99",
     "producedBlocks": 3117783,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 23,
     "ranking": 54,
     "retiring": null,
     "saturation": 30.18,
-    "ticker": "YHQI"
+    "ticker": "YHQI",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 46,
@@ -983,11 +1091,13 @@
     "performance": 44,
     "pledge": "83",
     "producedBlocks": 3632119,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 95,
     "ranking": 55,
     "retiring": null,
     "saturation": 49.5,
-    "ticker": "FELW"
+    "ticker": "FELW",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 32,
@@ -1001,11 +1111,13 @@
     "performance": 52,
     "pledge": "46",
     "producedBlocks": 2572315,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 65,
     "ranking": 56,
     "retiring": null,
     "saturation": 106.45,
-    "ticker": "MWOS"
+    "ticker": "MWOS",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 36,
@@ -1019,11 +1131,13 @@
     "performance": 12,
     "pledge": "86",
     "producedBlocks": 5772816,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 20,
     "ranking": 57,
     "retiring": null,
     "saturation": 40.5,
-    "ticker": "ODGS"
+    "ticker": "ODGS",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 97,
@@ -1037,11 +1151,13 @@
     "performance": 97,
     "pledge": "82",
     "producedBlocks": 5189150,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 74,
     "ranking": 58,
     "retiring": null,
     "saturation": 80.35000000000001,
-    "ticker": "AFPQ"
+    "ticker": "AFPQ",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 11,
@@ -1055,11 +1171,13 @@
     "performance": 65,
     "pledge": "16",
     "producedBlocks": 4925545,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 55,
     "ranking": 59,
     "retiring": null,
     "saturation": 96.79,
-    "ticker": "TROO"
+    "ticker": "TROO",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 14,
@@ -1073,11 +1191,13 @@
     "performance": 74,
     "pledge": "77",
     "producedBlocks": 4509773,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 42,
     "ranking": 60,
     "retiring": null,
     "saturation": 40.58,
-    "ticker": "LHMI"
+    "ticker": "LHMI",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 16,
@@ -1091,11 +1211,13 @@
     "performance": 57,
     "pledge": "26",
     "producedBlocks": 2140441,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 71,
     "ranking": 61,
     "retiring": null,
     "saturation": 114.75,
-    "ticker": "FEGG"
+    "ticker": "FEGG",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 42,
@@ -1109,11 +1231,13 @@
     "performance": 65,
     "pledge": "48",
     "producedBlocks": 4573146,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 87,
     "ranking": 62,
     "retiring": null,
     "saturation": 43.57,
-    "ticker": "RIQF"
+    "ticker": "RIQF",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 85,
@@ -1127,11 +1251,13 @@
     "performance": 36,
     "pledge": "10",
     "producedBlocks": 6889771,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 30,
     "ranking": 63,
     "retiring": null,
     "saturation": 100.23,
-    "ticker": "WSOA"
+    "ticker": "WSOA",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 32,
@@ -1145,11 +1271,13 @@
     "performance": 72,
     "pledge": "27",
     "producedBlocks": 563673,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 7,
     "ranking": 64,
     "retiring": null,
     "saturation": 69.91,
-    "ticker": "HYJT"
+    "ticker": "HYJT",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 21,
@@ -1163,11 +1291,13 @@
     "performance": 95,
     "pledge": "20",
     "producedBlocks": 3908848,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 69,
     "ranking": 65,
     "retiring": null,
     "saturation": 32.9,
-    "ticker": "WWQN"
+    "ticker": "WWQN",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 20,
@@ -1181,11 +1311,13 @@
     "performance": 87,
     "pledge": "35",
     "producedBlocks": 7532799,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 79,
     "ranking": 66,
     "retiring": null,
     "saturation": 23.76,
-    "ticker": "EOQG"
+    "ticker": "EOQG",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 11,
@@ -1199,11 +1331,13 @@
     "performance": 4,
     "pledge": "16",
     "producedBlocks": 4558934,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 51,
     "ranking": 67,
     "retiring": null,
     "saturation": 9.36,
-    "ticker": "YDFV"
+    "ticker": "YDFV",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 15,
@@ -1217,11 +1351,13 @@
     "performance": 27,
     "pledge": "86",
     "producedBlocks": 6199773,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 25,
     "ranking": 68,
     "retiring": null,
     "saturation": 118.76,
-    "ticker": "BTSD"
+    "ticker": "BTSD",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 36,
@@ -1235,11 +1371,13 @@
     "performance": 63,
     "pledge": "75",
     "producedBlocks": 7786045,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 100,
     "ranking": 69,
     "retiring": null,
     "saturation": 92.24,
-    "ticker": "PGSS"
+    "ticker": "PGSS",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 76,
@@ -1253,11 +1391,13 @@
     "performance": 45,
     "pledge": "95",
     "producedBlocks": 5430603,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 11,
     "ranking": 70,
     "retiring": null,
     "saturation": 103.98,
-    "ticker": "PTAB"
+    "ticker": "PTAB",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 24,
@@ -1271,11 +1411,13 @@
     "performance": 84,
     "pledge": "86",
     "producedBlocks": 7232609,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 17,
     "ranking": 71,
     "retiring": null,
     "saturation": 87.34,
-    "ticker": "WERO"
+    "ticker": "WERO",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 51,
@@ -1289,11 +1431,13 @@
     "performance": 22,
     "pledge": "66",
     "producedBlocks": 1339934,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 8,
     "ranking": 72,
     "retiring": null,
     "saturation": 78.17,
-    "ticker": "OAXK"
+    "ticker": "OAXK",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 10,
@@ -1307,11 +1451,13 @@
     "performance": 90,
     "pledge": "67",
     "producedBlocks": 3062897,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 9,
     "ranking": 73,
     "retiring": null,
     "saturation": 84.88,
-    "ticker": "YYNN"
+    "ticker": "YYNN",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 5,
@@ -1325,11 +1471,13 @@
     "performance": 67,
     "pledge": "32",
     "producedBlocks": 578199,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 30,
     "ranking": 74,
     "retiring": null,
     "saturation": 56.19,
-    "ticker": "FLGA"
+    "ticker": "FLGA",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 2,
@@ -1343,11 +1491,13 @@
     "performance": 72,
     "pledge": "83",
     "producedBlocks": 6848909,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 71,
     "ranking": 75,
     "retiring": null,
     "saturation": 115.18,
-    "ticker": "WLUO"
+    "ticker": "WLUO",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 21,
@@ -1361,11 +1511,13 @@
     "performance": 87,
     "pledge": "70",
     "producedBlocks": 9631629,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 53,
     "ranking": 76,
     "retiring": null,
     "saturation": 18.1,
-    "ticker": "DKJT"
+    "ticker": "DKJT",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 56,
@@ -1379,11 +1531,13 @@
     "performance": 44,
     "pledge": "14",
     "producedBlocks": 7341190,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 42,
     "ranking": 77,
     "retiring": null,
     "saturation": 84.76,
-    "ticker": "VEPB"
+    "ticker": "VEPB",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 55,
@@ -1397,11 +1551,13 @@
     "performance": 19,
     "pledge": "1",
     "producedBlocks": 831367,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 36,
     "ranking": 78,
     "retiring": null,
     "saturation": 30.46,
-    "ticker": "QJRV"
+    "ticker": "QJRV",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 33,
@@ -1415,11 +1571,13 @@
     "performance": 85,
     "pledge": "63",
     "producedBlocks": 7399360,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 60,
     "ranking": 79,
     "retiring": null,
     "saturation": 10.46,
-    "ticker": "OORQ"
+    "ticker": "OORQ",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 22,
@@ -1433,11 +1591,13 @@
     "performance": 45,
     "pledge": "63",
     "producedBlocks": 4606186,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 84,
     "ranking": 80,
     "retiring": null,
     "saturation": 109.89,
-    "ticker": "YHZC"
+    "ticker": "YHZC",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 1,
@@ -1451,11 +1611,13 @@
     "performance": 63,
     "pledge": "21",
     "producedBlocks": 8022616,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 58,
     "ranking": 81,
     "retiring": null,
     "saturation": 97.59,
-    "ticker": "OPPH"
+    "ticker": "OPPH",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 0,
@@ -1469,11 +1631,13 @@
     "performance": 8,
     "pledge": "14",
     "producedBlocks": 6806213,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 21,
     "ranking": 82,
     "retiring": null,
     "saturation": 24.45,
-    "ticker": "ELOD"
+    "ticker": "ELOD",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 15,
@@ -1487,11 +1651,13 @@
     "performance": 53,
     "pledge": "56",
     "producedBlocks": 8633892,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 12,
     "ranking": 83,
     "retiring": null,
     "saturation": 21.51,
-    "ticker": "AOVS"
+    "ticker": "AOVS",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 47,
@@ -1505,11 +1671,13 @@
     "performance": 3,
     "pledge": "75",
     "producedBlocks": 2076426,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 15,
     "ranking": 84,
     "retiring": null,
     "saturation": 12.15,
-    "ticker": "BAGU"
+    "ticker": "BAGU",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 74,
@@ -1523,11 +1691,13 @@
     "performance": 21,
     "pledge": "16",
     "producedBlocks": 1442379,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 93,
     "ranking": 85,
     "retiring": null,
     "saturation": 14.96,
-    "ticker": "RYKE"
+    "ticker": "RYKE",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 33,
@@ -1541,11 +1711,13 @@
     "performance": 47,
     "pledge": "12",
     "producedBlocks": 2659298,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 87,
     "ranking": 86,
     "retiring": null,
     "saturation": 34.46,
-    "ticker": "EBDS"
+    "ticker": "EBDS",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 2,
@@ -1559,11 +1731,13 @@
     "performance": 95,
     "pledge": "81",
     "producedBlocks": 5085715,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 24,
     "ranking": 87,
     "retiring": null,
     "saturation": 40.59,
-    "ticker": "ECPS"
+    "ticker": "ECPS",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 4,
@@ -1577,11 +1751,13 @@
     "performance": 38,
     "pledge": "11",
     "producedBlocks": 4192081,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 48,
     "ranking": 88,
     "retiring": null,
     "saturation": 33.46,
-    "ticker": "IJAF"
+    "ticker": "IJAF",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 5,
@@ -1595,11 +1771,13 @@
     "performance": 3,
     "pledge": "72",
     "producedBlocks": 168557,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 33,
     "ranking": 89,
     "retiring": null,
     "saturation": 113.27,
-    "ticker": "QUCT"
+    "ticker": "QUCT",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 43,
@@ -1613,11 +1791,13 @@
     "performance": 82,
     "pledge": "36",
     "producedBlocks": 7422185,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 3,
     "ranking": 90,
     "retiring": null,
     "saturation": 86.38,
-    "ticker": "JDLR"
+    "ticker": "JDLR",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 42,
@@ -1631,11 +1811,13 @@
     "performance": 6,
     "pledge": "32",
     "producedBlocks": 1213112,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 1,
     "ranking": 91,
     "retiring": null,
     "saturation": 33.53,
-    "ticker": "KQIQ"
+    "ticker": "KQIQ",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 77,
@@ -1649,11 +1831,13 @@
     "performance": 49,
     "pledge": "52",
     "producedBlocks": 7188630,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 50,
     "ranking": 92,
     "retiring": null,
     "saturation": 61.44,
-    "ticker": "BESR"
+    "ticker": "BESR",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 71,
@@ -1667,11 +1851,13 @@
     "performance": 56,
     "pledge": "38",
     "producedBlocks": 7373325,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 47,
     "ranking": 93,
     "retiring": null,
     "saturation": 29.12,
-    "ticker": "TDEO"
+    "ticker": "TDEO",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 61,
@@ -1685,11 +1871,13 @@
     "performance": 47,
     "pledge": "77",
     "producedBlocks": 4057911,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 69,
     "ranking": 94,
     "retiring": null,
     "saturation": 35.82,
-    "ticker": "ENOO"
+    "ticker": "ENOO",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 46,
@@ -1703,11 +1891,13 @@
     "performance": 38,
     "pledge": "81",
     "producedBlocks": 7039184,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 1,
     "ranking": 95,
     "retiring": null,
     "saturation": 95,
-    "ticker": "ESIO"
+    "ticker": "ESIO",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 64,
@@ -1721,11 +1911,13 @@
     "performance": 68,
     "pledge": "74",
     "producedBlocks": 3452524,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 16,
     "ranking": 96,
     "retiring": null,
     "saturation": 50.160000000000004,
-    "ticker": "TENW"
+    "ticker": "TENW",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 84,
@@ -1739,11 +1931,13 @@
     "performance": 28,
     "pledge": "63",
     "producedBlocks": 9455910,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 17,
     "ranking": 97,
     "retiring": null,
     "saturation": 117.23,
-    "ticker": "SAPU"
+    "ticker": "SAPU",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 22,
@@ -1757,11 +1951,13 @@
     "performance": 100,
     "pledge": "13",
     "producedBlocks": 3825482,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 59,
     "ranking": 98,
     "retiring": null,
     "saturation": 109.03,
-    "ticker": "XNTE"
+    "ticker": "XNTE",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 33,
@@ -1775,11 +1971,13 @@
     "performance": 95,
     "pledge": "12",
     "producedBlocks": 7056819,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 91,
     "ranking": 99,
     "retiring": null,
     "saturation": 51.7,
-    "ticker": "IOME"
+    "ticker": "IOME",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 2,
@@ -1793,11 +1991,13 @@
     "performance": 67,
     "pledge": "90",
     "producedBlocks": 3939868,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 21,
     "ranking": 100,
     "retiring": null,
     "saturation": 32.78,
-    "ticker": "EEOI"
+    "ticker": "EEOI",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 1,
@@ -1811,11 +2011,13 @@
     "performance": 41,
     "pledge": "5",
     "producedBlocks": 419290,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 23,
     "ranking": 101,
     "retiring": null,
     "saturation": 22.47,
-    "ticker": "LWSM"
+    "ticker": "LWSM",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 17,
@@ -1829,11 +2031,13 @@
     "performance": 33,
     "pledge": "0",
     "producedBlocks": 9507608,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 97,
     "ranking": 102,
     "retiring": null,
     "saturation": 44.93,
-    "ticker": "CVED"
+    "ticker": "CVED",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 3,
@@ -1847,11 +2051,13 @@
     "performance": 34,
     "pledge": "23",
     "producedBlocks": 1866360,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 22,
     "ranking": 103,
     "retiring": null,
     "saturation": 14.9,
-    "ticker": "GKZU"
+    "ticker": "GKZU",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 12,
@@ -1865,11 +2071,13 @@
     "performance": 27,
     "pledge": "9",
     "producedBlocks": 9059044,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 87,
     "ranking": 104,
     "retiring": null,
     "saturation": 70.98,
-    "ticker": "DDBK"
+    "ticker": "DDBK",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 5,
@@ -1883,11 +2091,13 @@
     "performance": 43,
     "pledge": "2",
     "producedBlocks": 6831062,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 79,
     "ranking": 105,
     "retiring": null,
     "saturation": 40.22,
-    "ticker": "BTTI"
+    "ticker": "BTTI",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 34,
@@ -1901,11 +2111,13 @@
     "performance": 74,
     "pledge": "88",
     "producedBlocks": 3194167,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 68,
     "ranking": 106,
     "retiring": null,
     "saturation": 55.94,
-    "ticker": "QHPS"
+    "ticker": "QHPS",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 22,
@@ -1919,11 +2131,13 @@
     "performance": 41,
     "pledge": "72",
     "producedBlocks": 3286568,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 91,
     "ranking": 107,
     "retiring": null,
     "saturation": 8.03,
-    "ticker": "SKRQ"
+    "ticker": "SKRQ",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 21,
@@ -1937,11 +2151,13 @@
     "performance": 32,
     "pledge": "12",
     "producedBlocks": 6680995,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 19,
     "ranking": 108,
     "retiring": null,
     "saturation": 107.63,
-    "ticker": "DSMZ"
+    "ticker": "DSMZ",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 41,
@@ -1955,11 +2171,13 @@
     "performance": 50,
     "pledge": "89",
     "producedBlocks": 8893379,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 5,
     "ranking": 109,
     "retiring": null,
     "saturation": 5.07,
-    "ticker": "DTZI"
+    "ticker": "DTZI",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 68,
@@ -1973,11 +2191,13 @@
     "performance": 47,
     "pledge": "15",
     "producedBlocks": 90623,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 97,
     "ranking": 110,
     "retiring": null,
     "saturation": 100.39,
-    "ticker": "WRCO"
+    "ticker": "WRCO",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 84,
@@ -1991,11 +2211,13 @@
     "performance": 72,
     "pledge": "82",
     "producedBlocks": 6378096,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 48,
     "ranking": 111,
     "retiring": null,
     "saturation": 26.03,
-    "ticker": "DSWX"
+    "ticker": "DSWX",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 67,
@@ -2009,11 +2231,13 @@
     "performance": 75,
     "pledge": "24",
     "producedBlocks": 8010837,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 12,
     "ranking": 112,
     "retiring": null,
     "saturation": 77.35000000000001,
-    "ticker": "CLML"
+    "ticker": "CLML",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 66,
@@ -2027,11 +2251,13 @@
     "performance": 51,
     "pledge": "13",
     "producedBlocks": 4945175,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 47,
     "ranking": 113,
     "retiring": null,
     "saturation": 101.08,
-    "ticker": "SMLT"
+    "ticker": "SMLT",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 5,
@@ -2045,11 +2271,13 @@
     "performance": 100,
     "pledge": "69",
     "producedBlocks": 1307518,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 0,
     "ranking": 114,
     "retiring": null,
     "saturation": 2.04,
-    "ticker": "QFQH"
+    "ticker": "QFQH",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 2,
@@ -2063,11 +2291,13 @@
     "performance": 67,
     "pledge": "63",
     "producedBlocks": 8964290,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 90,
     "ranking": 115,
     "retiring": null,
     "saturation": 76.53,
-    "ticker": "OROV"
+    "ticker": "OROV",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 31,
@@ -2081,11 +2311,13 @@
     "performance": 0,
     "pledge": "86",
     "producedBlocks": 3302195,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 22,
     "ranking": 116,
     "retiring": null,
     "saturation": 111.27,
-    "ticker": "WFIB"
+    "ticker": "WFIB",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 11,
@@ -2099,11 +2331,13 @@
     "performance": 30,
     "pledge": "90",
     "producedBlocks": 5964492,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 45,
     "ranking": 117,
     "retiring": null,
     "saturation": 49.71,
-    "ticker": "PZJU"
+    "ticker": "PZJU",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 53,
@@ -2117,11 +2351,13 @@
     "performance": 26,
     "pledge": "2",
     "producedBlocks": 89621,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 6,
     "ranking": 118,
     "retiring": null,
     "saturation": 3.84,
-    "ticker": "VHKK"
+    "ticker": "VHKK",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 35,
@@ -2135,11 +2371,13 @@
     "performance": 77,
     "pledge": "44",
     "producedBlocks": 6839500,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 48,
     "ranking": 119,
     "retiring": null,
     "saturation": 109.82000000000001,
-    "ticker": "CLOU"
+    "ticker": "CLOU",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 44,
@@ -2153,11 +2391,13 @@
     "performance": 79,
     "pledge": "32",
     "producedBlocks": 8341922,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 16,
     "ranking": 120,
     "retiring": null,
     "saturation": 44.910000000000004,
-    "ticker": "FADK"
+    "ticker": "FADK",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 3,
@@ -2171,11 +2411,13 @@
     "performance": 69,
     "pledge": "82",
     "producedBlocks": 4781520,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 25,
     "ranking": 121,
     "retiring": null,
     "saturation": 7.36,
-    "ticker": "XXYH"
+    "ticker": "XXYH",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 7,
@@ -2189,11 +2431,13 @@
     "performance": 23,
     "pledge": "49",
     "producedBlocks": 5603309,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 67,
     "ranking": 122,
     "retiring": null,
     "saturation": 0.99,
-    "ticker": "EQRV"
+    "ticker": "EQRV",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 9,
@@ -2207,11 +2451,13 @@
     "performance": 46,
     "pledge": "58",
     "producedBlocks": 4258397,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 12,
     "ranking": 123,
     "retiring": null,
     "saturation": 93.65,
-    "ticker": "NQKM"
+    "ticker": "NQKM",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 0,
@@ -2225,11 +2471,13 @@
     "performance": 63,
     "pledge": "51",
     "producedBlocks": 2894856,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 45,
     "ranking": 124,
     "retiring": null,
     "saturation": 49.99,
-    "ticker": "SPBV"
+    "ticker": "SPBV",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 90,
@@ -2243,11 +2491,13 @@
     "performance": 33,
     "pledge": "90",
     "producedBlocks": 3910698,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 63,
     "ranking": 125,
     "retiring": null,
     "saturation": 76.39,
-    "ticker": "KEAL"
+    "ticker": "KEAL",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 4,
@@ -2261,11 +2511,13 @@
     "performance": 92,
     "pledge": "27",
     "producedBlocks": 5718024,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 55,
     "ranking": 126,
     "retiring": null,
     "saturation": 110.08,
-    "ticker": "AMWD"
+    "ticker": "AMWD",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 2,
@@ -2279,11 +2531,13 @@
     "performance": 87,
     "pledge": "85",
     "producedBlocks": 7127116,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 49,
     "ranking": 127,
     "retiring": null,
     "saturation": 43.550000000000004,
-    "ticker": "FOIA"
+    "ticker": "FOIA",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 1,
@@ -2297,11 +2551,13 @@
     "performance": 35,
     "pledge": "22",
     "producedBlocks": 8083931,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 76,
     "ranking": 128,
     "retiring": null,
     "saturation": 27.400000000000002,
-    "ticker": "TRJM"
+    "ticker": "TRJM",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 4,
@@ -2315,11 +2571,13 @@
     "performance": 45,
     "pledge": "45",
     "producedBlocks": 9530471,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 27,
     "ranking": 129,
     "retiring": null,
     "saturation": 44.77,
-    "ticker": "ORQU"
+    "ticker": "ORQU",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 44,
@@ -2333,11 +2591,13 @@
     "performance": 10,
     "pledge": "4",
     "producedBlocks": 5560054,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 55,
     "ranking": 130,
     "retiring": null,
     "saturation": 38.08,
-    "ticker": "IVBC"
+    "ticker": "IVBC",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 52,
@@ -2351,11 +2611,13 @@
     "performance": 75,
     "pledge": "97",
     "producedBlocks": 7710349,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 41,
     "ranking": 131,
     "retiring": null,
     "saturation": 29.87,
-    "ticker": "EGML"
+    "ticker": "EGML",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 31,
@@ -2369,11 +2631,13 @@
     "performance": 75,
     "pledge": "76",
     "producedBlocks": 8877780,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 73,
     "ranking": 132,
     "retiring": null,
     "saturation": 7.01,
-    "ticker": "BZAA"
+    "ticker": "BZAA",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 33,
@@ -2387,11 +2651,13 @@
     "performance": 33,
     "pledge": "91",
     "producedBlocks": 460710,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 92,
     "ranking": 133,
     "retiring": null,
     "saturation": 71.23,
-    "ticker": "HUVF"
+    "ticker": "HUVF",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 6,
@@ -2405,11 +2671,13 @@
     "performance": 65,
     "pledge": "54",
     "producedBlocks": 8219837,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 44,
     "ranking": 134,
     "retiring": null,
     "saturation": 101.3,
-    "ticker": "QQBP"
+    "ticker": "QQBP",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 31,
@@ -2423,11 +2691,13 @@
     "performance": 73,
     "pledge": "21",
     "producedBlocks": 1556183,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 28,
     "ranking": 135,
     "retiring": null,
     "saturation": 24.48,
-    "ticker": "JXGC"
+    "ticker": "JXGC",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 22,
@@ -2441,11 +2711,13 @@
     "performance": 45,
     "pledge": "10",
     "producedBlocks": 6444258,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 52,
     "ranking": 136,
     "retiring": null,
     "saturation": 72.57000000000001,
-    "ticker": "QLRY"
+    "ticker": "QLRY",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 61,
@@ -2459,11 +2731,13 @@
     "performance": 54,
     "pledge": "2",
     "producedBlocks": 4396991,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 40,
     "ranking": 137,
     "retiring": null,
     "saturation": 16.61,
-    "ticker": "OZDO"
+    "ticker": "OZDO",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 3,
@@ -2477,11 +2751,13 @@
     "performance": 33,
     "pledge": "11",
     "producedBlocks": 9188815,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 39,
     "ranking": 138,
     "retiring": null,
     "saturation": 86.46000000000001,
-    "ticker": "RMAH"
+    "ticker": "RMAH",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 1,
@@ -2495,11 +2771,13 @@
     "performance": 93,
     "pledge": "72",
     "producedBlocks": 3799908,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 96,
     "ranking": 139,
     "retiring": null,
     "saturation": 103.52,
-    "ticker": "DFKS"
+    "ticker": "DFKS",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 4,
@@ -2513,11 +2791,13 @@
     "performance": 44,
     "pledge": "1",
     "producedBlocks": 9767748,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 15,
     "ranking": 140,
     "retiring": null,
     "saturation": 48.27,
-    "ticker": "KKTV"
+    "ticker": "KKTV",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 35,
@@ -2531,11 +2811,13 @@
     "performance": 41,
     "pledge": "66",
     "producedBlocks": 540185,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 26,
     "ranking": 141,
     "retiring": null,
     "saturation": 41.300000000000004,
-    "ticker": "JPIL"
+    "ticker": "JPIL",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 53,
@@ -2549,11 +2831,13 @@
     "performance": 72,
     "pledge": "3",
     "producedBlocks": 3531609,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 47,
     "ranking": 142,
     "retiring": null,
     "saturation": 63.4,
-    "ticker": "LAPY"
+    "ticker": "LAPY",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 14,
@@ -2567,11 +2851,13 @@
     "performance": 90,
     "pledge": "69",
     "producedBlocks": 484831,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 48,
     "ranking": 143,
     "retiring": null,
     "saturation": 14.950000000000001,
-    "ticker": "FKWN"
+    "ticker": "FKWN",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 44,
@@ -2585,11 +2871,13 @@
     "performance": 93,
     "pledge": "4",
     "producedBlocks": 5713960,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 8,
     "ranking": 144,
     "retiring": null,
     "saturation": 24.05,
-    "ticker": "CIRD"
+    "ticker": "CIRD",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 78,
@@ -2603,11 +2891,13 @@
     "performance": 55,
     "pledge": "29",
     "producedBlocks": 8130632,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 35,
     "ranking": 145,
     "retiring": null,
     "saturation": 10.21,
-    "ticker": "XTOK"
+    "ticker": "XTOK",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 8,
@@ -2621,11 +2911,13 @@
     "performance": 62,
     "pledge": "1",
     "producedBlocks": 620525,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 35,
     "ranking": 146,
     "retiring": null,
     "saturation": 53.620000000000005,
-    "ticker": "RPQE"
+    "ticker": "RPQE",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 3,
@@ -2639,11 +2931,13 @@
     "performance": 52,
     "pledge": "34",
     "producedBlocks": 6160552,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 96,
     "ranking": 147,
     "retiring": null,
     "saturation": 88.47,
-    "ticker": "ZZRK"
+    "ticker": "ZZRK",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 4,
@@ -2657,11 +2951,13 @@
     "performance": 44,
     "pledge": "78",
     "producedBlocks": 2810246,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 96,
     "ranking": 148,
     "retiring": null,
     "saturation": 32.74,
-    "ticker": "WZNT"
+    "ticker": "WZNT",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 5,
@@ -2675,11 +2971,13 @@
     "performance": 39,
     "pledge": "7",
     "producedBlocks": 4988316,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 99,
     "ranking": 149,
     "retiring": null,
     "saturation": 32.85,
-    "ticker": "WKPO"
+    "ticker": "WKPO",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 1,
@@ -2693,11 +2991,13 @@
     "performance": 76,
     "pledge": "83",
     "producedBlocks": 4120849,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 88,
     "ranking": 150,
     "retiring": null,
     "saturation": 3.85,
-    "ticker": "AEJL"
+    "ticker": "AEJL",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 33,
@@ -2711,11 +3011,13 @@
     "performance": 15,
     "pledge": "79",
     "producedBlocks": 8119036,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 95,
     "ranking": 151,
     "retiring": null,
     "saturation": 13.31,
-    "ticker": "DZKE"
+    "ticker": "DZKE",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 44,
@@ -2729,11 +3031,13 @@
     "performance": 44,
     "pledge": "34",
     "producedBlocks": 5609585,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 65,
     "ranking": 152,
     "retiring": null,
     "saturation": 16.830000000000002,
-    "ticker": "IQEE"
+    "ticker": "IQEE",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 34,
@@ -2747,11 +3051,13 @@
     "performance": 7,
     "pledge": "26",
     "producedBlocks": 6877817,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 37,
     "ranking": 153,
     "retiring": null,
     "saturation": 84.28,
-    "ticker": "CSFE"
+    "ticker": "CSFE",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 16,
@@ -2765,11 +3071,13 @@
     "performance": 48,
     "pledge": "21",
     "producedBlocks": 3318696,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 54,
     "ranking": 154,
     "retiring": null,
     "saturation": 103.34,
-    "ticker": "WJER"
+    "ticker": "WJER",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 44,
@@ -2783,11 +3091,13 @@
     "performance": 77,
     "pledge": "48",
     "producedBlocks": 9470415,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 44,
     "ranking": 155,
     "retiring": null,
     "saturation": 26.71,
-    "ticker": "BQRL"
+    "ticker": "BQRL",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 55,
@@ -2801,11 +3111,13 @@
     "performance": 51,
     "pledge": "16",
     "producedBlocks": 174869,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 85,
     "ranking": 156,
     "retiring": null,
     "saturation": 11.51,
-    "ticker": "HCDJ"
+    "ticker": "HCDJ",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 87,
@@ -2819,11 +3131,13 @@
     "performance": 93,
     "pledge": "9",
     "producedBlocks": 8346649,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 6,
     "ranking": 157,
     "retiring": null,
     "saturation": 4.4,
-    "ticker": "NRAC"
+    "ticker": "NRAC",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 78,
@@ -2837,11 +3151,13 @@
     "performance": 79,
     "pledge": "44",
     "producedBlocks": 205003,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 11,
     "ranking": 158,
     "retiring": null,
     "saturation": 70.02,
-    "ticker": "PSTV"
+    "ticker": "PSTV",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 45,
@@ -2855,11 +3171,13 @@
     "performance": 75,
     "pledge": "10",
     "producedBlocks": 6796945,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 65,
     "ranking": 159,
     "retiring": null,
     "saturation": 47.37,
-    "ticker": "YQGH"
+    "ticker": "YQGH",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 51,
@@ -2873,11 +3191,13 @@
     "performance": 74,
     "pledge": "6",
     "producedBlocks": 252708,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 9,
     "ranking": 160,
     "retiring": null,
     "saturation": 31.36,
-    "ticker": "EPMP"
+    "ticker": "EPMP",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 61,
@@ -2891,11 +3211,13 @@
     "performance": 53,
     "pledge": "23",
     "producedBlocks": 1849806,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 35,
     "ranking": 161,
     "retiring": null,
     "saturation": 71.22,
-    "ticker": "ZWQQ"
+    "ticker": "ZWQQ",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 1,
@@ -2909,11 +3231,13 @@
     "performance": 18,
     "pledge": "3",
     "producedBlocks": 7197214,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 20,
     "ranking": 162,
     "retiring": null,
     "saturation": 30.25,
-    "ticker": "ZHAE"
+    "ticker": "ZHAE",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 6,
@@ -2927,11 +3251,13 @@
     "performance": 55,
     "pledge": "44",
     "producedBlocks": 1651301,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 5,
     "ranking": 163,
     "retiring": null,
     "saturation": 17.37,
-    "ticker": "DTJD"
+    "ticker": "DTJD",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 5,
@@ -2945,11 +3271,13 @@
     "performance": 83,
     "pledge": "99",
     "producedBlocks": 5605459,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 96,
     "ranking": 164,
     "retiring": null,
     "saturation": 29.29,
-    "ticker": "VOEN"
+    "ticker": "VOEN",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 35,
@@ -2963,11 +3291,13 @@
     "performance": 69,
     "pledge": "27",
     "producedBlocks": 8057804,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 16,
     "ranking": 165,
     "retiring": null,
     "saturation": 24.36,
-    "ticker": "JEPP"
+    "ticker": "JEPP",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 72,
@@ -2981,11 +3311,13 @@
     "performance": 30,
     "pledge": "81",
     "producedBlocks": 1429257,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 88,
     "ranking": 166,
     "retiring": null,
     "saturation": 73.42,
-    "ticker": "ZQWB"
+    "ticker": "ZQWB",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 82,
@@ -2999,11 +3331,13 @@
     "performance": 75,
     "pledge": "4",
     "producedBlocks": 5422899,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 64,
     "ranking": 167,
     "retiring": null,
     "saturation": 24.09,
-    "ticker": "DHKB"
+    "ticker": "DHKB",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 61,
@@ -3017,11 +3351,13 @@
     "performance": 27,
     "pledge": "24",
     "producedBlocks": 4476196,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 20,
     "ranking": 168,
     "retiring": null,
     "saturation": 57.47,
-    "ticker": "WFVQ"
+    "ticker": "WFVQ",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 71,
@@ -3035,11 +3371,13 @@
     "performance": 2,
     "pledge": "49",
     "producedBlocks": 4445911,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 19,
     "ranking": 169,
     "retiring": null,
     "saturation": 77.15,
-    "ticker": "WZVT"
+    "ticker": "WZVT",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 7,
@@ -3053,11 +3391,13 @@
     "performance": 13,
     "pledge": "37",
     "producedBlocks": 72420,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 13,
     "ranking": 170,
     "retiring": null,
     "saturation": 67.04,
-    "ticker": "GJXH"
+    "ticker": "GJXH",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 24,
@@ -3071,11 +3411,13 @@
     "performance": 97,
     "pledge": "77",
     "producedBlocks": 8013590,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 23,
     "ranking": 171,
     "retiring": null,
     "saturation": 37.07,
-    "ticker": "OYQR"
+    "ticker": "OYQR",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 41,
@@ -3089,11 +3431,13 @@
     "performance": 25,
     "pledge": "52",
     "producedBlocks": 3292271,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 59,
     "ranking": 172,
     "retiring": null,
     "saturation": 115.5,
-    "ticker": "AZJQ"
+    "ticker": "AZJQ",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 55,
@@ -3107,11 +3451,13 @@
     "performance": 47,
     "pledge": "44",
     "producedBlocks": 3351247,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 46,
     "ranking": 173,
     "retiring": null,
     "saturation": 26.88,
-    "ticker": "TOFK"
+    "ticker": "TOFK",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 61,
@@ -3125,11 +3471,13 @@
     "performance": 15,
     "pledge": "83",
     "producedBlocks": 9957597,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 83,
     "ranking": 174,
     "retiring": null,
     "saturation": 27.6,
-    "ticker": "BJZN"
+    "ticker": "BJZN",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 5,
@@ -3143,11 +3491,13 @@
     "performance": 78,
     "pledge": "32",
     "producedBlocks": 8900078,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 13,
     "ranking": 175,
     "retiring": null,
     "saturation": 81.88,
-    "ticker": "UXKW"
+    "ticker": "UXKW",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 4,
@@ -3161,11 +3511,13 @@
     "performance": 36,
     "pledge": "45",
     "producedBlocks": 6273672,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 88,
     "ranking": 176,
     "retiring": null,
     "saturation": 85.37,
-    "ticker": "GEGT"
+    "ticker": "GEGT",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 3,
@@ -3179,11 +3531,13 @@
     "performance": 96,
     "pledge": "70",
     "producedBlocks": 4027,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 4,
     "ranking": 177,
     "retiring": null,
     "saturation": 48.74,
-    "ticker": "ZVBC"
+    "ticker": "ZVBC",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 1,
@@ -3197,11 +3551,13 @@
     "performance": 16,
     "pledge": "6",
     "producedBlocks": 4797794,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 72,
     "ranking": 178,
     "retiring": null,
     "saturation": 43.45,
-    "ticker": "KOYX"
+    "ticker": "KOYX",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 4,
@@ -3215,11 +3571,13 @@
     "performance": 30,
     "pledge": "16",
     "producedBlocks": 2271980,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 19,
     "ranking": 179,
     "retiring": null,
     "saturation": 1.99,
-    "ticker": "KKDU"
+    "ticker": "KKDU",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 5,
@@ -3233,11 +3591,13 @@
     "performance": 30,
     "pledge": "89",
     "producedBlocks": 7597877,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 100,
     "ranking": 180,
     "retiring": null,
     "saturation": 63.2,
-    "ticker": "OHDP"
+    "ticker": "OHDP",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 77,
@@ -3251,11 +3611,13 @@
     "performance": 54,
     "pledge": "17",
     "producedBlocks": 5753281,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 63,
     "ranking": 181,
     "retiring": null,
     "saturation": 109.37,
-    "ticker": "VXLH"
+    "ticker": "VXLH",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 63,
@@ -3269,11 +3631,13 @@
     "performance": 78,
     "pledge": "19",
     "producedBlocks": 2904949,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 19,
     "ranking": 182,
     "retiring": null,
     "saturation": 52.53,
-    "ticker": "ZCYY"
+    "ticker": "ZCYY",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 51,
@@ -3287,11 +3651,13 @@
     "performance": 98,
     "pledge": "86",
     "producedBlocks": 3873002,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 100,
     "ranking": 183,
     "retiring": null,
     "saturation": 21.86,
-    "ticker": "DQUG"
+    "ticker": "DQUG",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 11,
@@ -3305,11 +3671,13 @@
     "performance": 38,
     "pledge": "60",
     "producedBlocks": 2177361,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 28,
     "ranking": 184,
     "retiring": null,
     "saturation": 79.67,
-    "ticker": "QTTZ"
+    "ticker": "QTTZ",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 12,
@@ -3323,11 +3691,13 @@
     "performance": 89,
     "pledge": "6",
     "producedBlocks": 2521025,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 10,
     "ranking": 185,
     "retiring": null,
     "saturation": 30.330000000000002,
-    "ticker": "NBIH"
+    "ticker": "NBIH",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 31,
@@ -3341,11 +3711,13 @@
     "performance": 47,
     "pledge": "75",
     "producedBlocks": 6155824,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 96,
     "ranking": 186,
     "retiring": null,
     "saturation": 72.99,
-    "ticker": "YBDD"
+    "ticker": "YBDD",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 31,
@@ -3359,11 +3731,13 @@
     "performance": 31,
     "pledge": "64",
     "producedBlocks": 9225293,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 55,
     "ranking": 187,
     "retiring": null,
     "saturation": 99.74000000000001,
-    "ticker": "CNPK"
+    "ticker": "CNPK",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 55,
@@ -3377,11 +3751,13 @@
     "performance": 0,
     "pledge": "88",
     "producedBlocks": 868802,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 57,
     "ranking": 188,
     "retiring": null,
     "saturation": 64.91,
-    "ticker": "MMRM"
+    "ticker": "MMRM",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 66,
@@ -3395,11 +3771,13 @@
     "performance": 57,
     "pledge": "48",
     "producedBlocks": 9301346,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 8,
     "ranking": 189,
     "retiring": null,
     "saturation": 31.7,
-    "ticker": "JQRQ"
+    "ticker": "JQRQ",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 54,
@@ -3413,11 +3791,13 @@
     "performance": 82,
     "pledge": "51",
     "producedBlocks": 3481071,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 34,
     "ranking": 190,
     "retiring": null,
     "saturation": 94.81,
-    "ticker": "MVDJ"
+    "ticker": "MVDJ",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 45,
@@ -3431,11 +3811,13 @@
     "performance": 39,
     "pledge": "86",
     "producedBlocks": 2843698,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 2,
     "ranking": 191,
     "retiring": null,
     "saturation": 6.72,
-    "ticker": "GJTH"
+    "ticker": "GJTH",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 61,
@@ -3449,11 +3831,13 @@
     "performance": 46,
     "pledge": "26",
     "producedBlocks": 1484618,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 84,
     "ranking": 192,
     "retiring": null,
     "saturation": 49.69,
-    "ticker": "WJTY"
+    "ticker": "WJTY",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 51,
@@ -3467,11 +3851,13 @@
     "performance": 17,
     "pledge": "87",
     "producedBlocks": 3851745,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 31,
     "ranking": 193,
     "retiring": null,
     "saturation": 63.29,
-    "ticker": "VMEB"
+    "ticker": "VMEB",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 3,
@@ -3485,11 +3871,13 @@
     "performance": 79,
     "pledge": "66",
     "producedBlocks": 4883273,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 43,
     "ranking": 194,
     "retiring": null,
     "saturation": 25.72,
-    "ticker": "MRWK"
+    "ticker": "MRWK",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 1,
@@ -3503,11 +3891,13 @@
     "performance": 57,
     "pledge": "0",
     "producedBlocks": 5985464,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 57,
     "ranking": 195,
     "retiring": null,
     "saturation": 90.48,
-    "ticker": "MQIX"
+    "ticker": "MQIX",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 33,
@@ -3521,11 +3911,13 @@
     "performance": 79,
     "pledge": "96",
     "producedBlocks": 4374880,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 41,
     "ranking": 196,
     "retiring": null,
     "saturation": 1.1500000000000001,
-    "ticker": "BRHY"
+    "ticker": "BRHY",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 24,
@@ -3539,11 +3931,13 @@
     "performance": 65,
     "pledge": "76",
     "producedBlocks": 1588578,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 56,
     "ranking": 197,
     "retiring": null,
     "saturation": 99.51,
-    "ticker": "SNWB"
+    "ticker": "SNWB",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 25,
@@ -3557,11 +3951,13 @@
     "performance": 56,
     "pledge": "6",
     "producedBlocks": 1647236,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 46,
     "ranking": 198,
     "retiring": null,
     "saturation": 87.57000000000001,
-    "ticker": "BBNC"
+    "ticker": "BBNC",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 24,
@@ -3575,11 +3971,13 @@
     "performance": 93,
     "pledge": "5",
     "producedBlocks": 9909764,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 52,
     "ranking": 199,
     "retiring": null,
     "saturation": 102.05,
-    "ticker": "RRXU"
+    "ticker": "RRXU",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 51,
@@ -3593,11 +3991,13 @@
     "performance": 74,
     "pledge": "46",
     "producedBlocks": 3724572,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 37,
     "ranking": 200,
     "retiring": null,
     "saturation": 74.47,
-    "ticker": "UGAQ"
+    "ticker": "UGAQ",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 44,
@@ -3611,11 +4011,13 @@
     "performance": 25,
     "pledge": "83",
     "producedBlocks": 783110,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 3,
     "ranking": 201,
     "retiring": null,
     "saturation": 102.61,
-    "ticker": "HYUP"
+    "ticker": "HYUP",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 71,
@@ -3629,11 +4031,13 @@
     "performance": 29,
     "pledge": "24",
     "producedBlocks": 9724212,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 83,
     "ranking": 202,
     "retiring": null,
     "saturation": 100.3,
-    "ticker": "GODZ"
+    "ticker": "GODZ",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 1,
@@ -3647,11 +4051,13 @@
     "performance": 54,
     "pledge": "49",
     "producedBlocks": 3716378,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 23,
     "ranking": 203,
     "retiring": null,
     "saturation": 13.92,
-    "ticker": "QFHT"
+    "ticker": "QFHT",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 16,
@@ -3665,11 +4071,13 @@
     "performance": 90,
     "pledge": "77",
     "producedBlocks": 3043708,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 74,
     "ranking": 204,
     "retiring": null,
     "saturation": 80.48,
-    "ticker": "MDQZ"
+    "ticker": "MDQZ",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 31,
@@ -3683,11 +4091,13 @@
     "performance": 94,
     "pledge": "54",
     "producedBlocks": 7106018,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 79,
     "ranking": 205,
     "retiring": null,
     "saturation": 117.10000000000001,
-    "ticker": "JKSA"
+    "ticker": "JKSA",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 33,
@@ -3701,11 +4111,13 @@
     "performance": 9,
     "pledge": "43",
     "producedBlocks": 8827497,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 51,
     "ranking": 206,
     "retiring": null,
     "saturation": 117.54,
-    "ticker": "ROKU"
+    "ticker": "ROKU",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 55,
@@ -3719,11 +4131,13 @@
     "performance": 26,
     "pledge": "19",
     "producedBlocks": 9091051,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 76,
     "ranking": 207,
     "retiring": null,
     "saturation": 5.65,
-    "ticker": "GZGD"
+    "ticker": "GZGD",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 63,
@@ -3737,11 +4151,13 @@
     "performance": 24,
     "pledge": "86",
     "producedBlocks": 3670948,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 31,
     "ranking": 208,
     "retiring": null,
     "saturation": 45.33,
-    "ticker": "AFLR"
+    "ticker": "AFLR",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 5,
@@ -3755,11 +4171,13 @@
     "performance": 37,
     "pledge": "64",
     "producedBlocks": 677897,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 78,
     "ranking": 209,
     "retiring": null,
     "saturation": 93.04,
-    "ticker": "HLFO"
+    "ticker": "HLFO",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 0,
@@ -3773,11 +4191,13 @@
     "performance": 37,
     "pledge": "38",
     "producedBlocks": 4584777,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 83,
     "ranking": 210,
     "retiring": null,
     "saturation": 33.49,
-    "ticker": "HMFQ"
+    "ticker": "HMFQ",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 1,
@@ -3791,11 +4211,13 @@
     "performance": 4,
     "pledge": "94",
     "producedBlocks": 4152645,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 41,
     "ranking": 211,
     "retiring": null,
     "saturation": 116.92,
-    "ticker": "QCFD"
+    "ticker": "QCFD",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 41,
@@ -3809,11 +4231,13 @@
     "performance": 11,
     "pledge": "70",
     "producedBlocks": 8657511,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 55,
     "ranking": 212,
     "retiring": null,
     "saturation": 43.67,
-    "ticker": "WPLT"
+    "ticker": "WPLT",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 31,
@@ -3827,11 +4251,13 @@
     "performance": 7,
     "pledge": "75",
     "producedBlocks": 8617557,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 54,
     "ranking": 213,
     "retiring": null,
     "saturation": 11.02,
-    "ticker": "VIGR"
+    "ticker": "VIGR",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 11,
@@ -3845,11 +4271,13 @@
     "performance": 41,
     "pledge": "98",
     "producedBlocks": 3647723,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 64,
     "ranking": 214,
     "retiring": null,
     "saturation": 105.67,
-    "ticker": "HGAW"
+    "ticker": "HGAW",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 33,
@@ -3863,11 +4291,13 @@
     "performance": 60,
     "pledge": "88",
     "producedBlocks": 2427494,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 3,
     "ranking": 215,
     "retiring": null,
     "saturation": 26,
-    "ticker": "RQJN"
+    "ticker": "RQJN",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 88,
@@ -3881,11 +4311,13 @@
     "performance": 12,
     "pledge": "87",
     "producedBlocks": 111308,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 90,
     "ranking": 216,
     "retiring": null,
     "saturation": 100.05,
-    "ticker": "PDHC"
+    "ticker": "PDHC",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 75,
@@ -3899,11 +4331,13 @@
     "performance": 88,
     "pledge": "59",
     "producedBlocks": 4475100,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 1,
     "ranking": 217,
     "retiring": null,
     "saturation": 81.19,
-    "ticker": "FBTZ"
+    "ticker": "FBTZ",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 6,
@@ -3917,11 +4351,13 @@
     "performance": 88,
     "pledge": "50",
     "producedBlocks": 5193829,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 60,
     "ranking": 218,
     "retiring": null,
     "saturation": 11.69,
-    "ticker": "BTMK"
+    "ticker": "BTMK",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 5,
@@ -3935,11 +4371,13 @@
     "performance": 59,
     "pledge": "75",
     "producedBlocks": 5223556,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 85,
     "ranking": 219,
     "retiring": null,
     "saturation": 108.66,
-    "ticker": "ULKK"
+    "ticker": "ULKK",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 4,
@@ -3953,11 +4391,13 @@
     "performance": 10,
     "pledge": "63",
     "producedBlocks": 1547415,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 65,
     "ranking": 220,
     "retiring": null,
     "saturation": 68.36,
-    "ticker": "RSXU"
+    "ticker": "RSXU",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 3,
@@ -3971,11 +4411,13 @@
     "performance": 1,
     "pledge": "17",
     "producedBlocks": 4709154,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 94,
     "ranking": 221,
     "retiring": null,
     "saturation": 58.25,
-    "ticker": "SSZT"
+    "ticker": "SSZT",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 2,
@@ -3989,11 +4431,13 @@
     "performance": 24,
     "pledge": "96",
     "producedBlocks": 4059755,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 64,
     "ranking": 222,
     "retiring": null,
     "saturation": 47.54,
-    "ticker": "MXZE"
+    "ticker": "MXZE",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 1,
@@ -4007,11 +4451,13 @@
     "performance": 85,
     "pledge": "38",
     "producedBlocks": 475725,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 56,
     "ranking": 223,
     "retiring": null,
     "saturation": 37.76,
-    "ticker": "OGXL"
+    "ticker": "OGXL",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 66,
@@ -4025,11 +4471,13 @@
     "performance": 5,
     "pledge": "18",
     "producedBlocks": 4100590,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 99,
     "ranking": 224,
     "retiring": null,
     "saturation": 85.39,
-    "ticker": "ZDYA"
+    "ticker": "ZDYA",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 61,
@@ -4043,11 +4491,13 @@
     "performance": 29,
     "pledge": "12",
     "producedBlocks": 6747089,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 36,
     "ranking": 225,
     "retiring": null,
     "saturation": 40.42,
-    "ticker": "QDDR"
+    "ticker": "QDDR",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 34,
@@ -4061,11 +4511,13 @@
     "performance": 51,
     "pledge": "7",
     "producedBlocks": 4915404,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 57,
     "ranking": 226,
     "retiring": null,
     "saturation": 5.08,
-    "ticker": "QIVF"
+    "ticker": "QIVF",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 53,
@@ -4079,11 +4531,13 @@
     "performance": 70,
     "pledge": "40",
     "producedBlocks": 4255862,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 58,
     "ranking": 227,
     "retiring": null,
     "saturation": 110.56,
-    "ticker": "ECPT"
+    "ticker": "ECPT",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 33,
@@ -4097,11 +4551,13 @@
     "performance": 3,
     "pledge": "44",
     "producedBlocks": 6631849,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 47,
     "ranking": 228,
     "retiring": null,
     "saturation": 97.23,
-    "ticker": "WDBZ"
+    "ticker": "WDBZ",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 61,
@@ -4115,11 +4571,13 @@
     "performance": 74,
     "pledge": "8",
     "producedBlocks": 7377999,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 32,
     "ranking": 229,
     "retiring": null,
     "saturation": 33.08,
-    "ticker": "RGTI"
+    "ticker": "RGTI",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 51,
@@ -4133,11 +4591,13 @@
     "performance": 11,
     "pledge": "31",
     "producedBlocks": 3199577,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 5,
     "ranking": 230,
     "retiring": null,
     "saturation": 92.88,
-    "ticker": "BRFF"
+    "ticker": "BRFF",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 33,
@@ -4151,11 +4611,13 @@
     "performance": 63,
     "pledge": "31",
     "producedBlocks": 2117667,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 51,
     "ranking": 231,
     "retiring": null,
     "saturation": 12.83,
-    "ticker": "CLYK"
+    "ticker": "CLYK",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 13,
@@ -4169,11 +4631,13 @@
     "performance": 2,
     "pledge": "63",
     "producedBlocks": 8402886,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 50,
     "ranking": 232,
     "retiring": null,
     "saturation": 73.73,
-    "ticker": "KMTU"
+    "ticker": "KMTU",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 12,
@@ -4187,11 +4651,13 @@
     "performance": 65,
     "pledge": "35",
     "producedBlocks": 7585744,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 22,
     "ranking": 233,
     "retiring": null,
     "saturation": 48.13,
-    "ticker": "BNLW"
+    "ticker": "BNLW",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 7,
@@ -4205,11 +4671,13 @@
     "performance": 86,
     "pledge": "1",
     "producedBlocks": 3396848,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 41,
     "ranking": 234,
     "retiring": null,
     "saturation": 91.44,
-    "ticker": "NOGA"
+    "ticker": "NOGA",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 6,
@@ -4223,11 +4691,13 @@
     "performance": 41,
     "pledge": "53",
     "producedBlocks": 8325154,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 18,
     "ranking": 235,
     "retiring": null,
     "saturation": 53.550000000000004,
-    "ticker": "QNSQ"
+    "ticker": "QNSQ",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 5,
@@ -4241,11 +4711,13 @@
     "performance": 89,
     "pledge": "76",
     "producedBlocks": 9414158,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 11,
     "ranking": 236,
     "retiring": null,
     "saturation": 79.19,
-    "ticker": "LWYD"
+    "ticker": "LWYD",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 4,
@@ -4259,11 +4731,13 @@
     "performance": 0,
     "pledge": "71",
     "producedBlocks": 9852531,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 22,
     "ranking": 237,
     "retiring": null,
     "saturation": 16.13,
-    "ticker": "THOP"
+    "ticker": "THOP",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 3,
@@ -4277,11 +4751,13 @@
     "performance": 99,
     "pledge": "62",
     "producedBlocks": 950819,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 8,
     "ranking": 238,
     "retiring": null,
     "saturation": 103.22,
-    "ticker": "PVJW"
+    "ticker": "PVJW",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 2,
@@ -4295,11 +4771,13 @@
     "performance": 39,
     "pledge": "8",
     "producedBlocks": 6208567,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 96,
     "ranking": 239,
     "retiring": null,
     "saturation": 37.410000000000004,
-    "ticker": "TXBJ"
+    "ticker": "TXBJ",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 1,
@@ -4313,11 +4791,13 @@
     "performance": 39,
     "pledge": "77",
     "producedBlocks": 7033409,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 61,
     "ranking": 240,
     "retiring": null,
     "saturation": 47.64,
-    "ticker": "GSUL"
+    "ticker": "GSUL",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 0,
@@ -4331,11 +4811,13 @@
     "performance": 67,
     "pledge": "6",
     "producedBlocks": 7399160,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 55,
     "ranking": 241,
     "retiring": null,
     "saturation": 92.84,
-    "ticker": "MSSL"
+    "ticker": "MSSL",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 5,
@@ -4349,11 +4831,13 @@
     "performance": 30,
     "pledge": "73",
     "producedBlocks": 9651385,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 71,
     "ranking": 242,
     "retiring": null,
     "saturation": 106.86,
-    "ticker": "YXVN"
+    "ticker": "YXVN",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 37,
@@ -4367,11 +4851,13 @@
     "performance": 56,
     "pledge": "19",
     "producedBlocks": 900362,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 31,
     "ranking": 243,
     "retiring": null,
     "saturation": 59.94,
-    "ticker": "UDPS"
+    "ticker": "UDPS",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 27,
@@ -4385,11 +4871,13 @@
     "performance": 31,
     "pledge": "2",
     "producedBlocks": 2862895,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 5,
     "ranking": 244,
     "retiring": null,
     "saturation": 59.230000000000004,
-    "ticker": "XWDP"
+    "ticker": "XWDP",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 6,
@@ -4403,11 +4891,13 @@
     "performance": 0,
     "pledge": "13",
     "producedBlocks": 748900,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 75,
     "ranking": 245,
     "retiring": null,
     "saturation": 60,
-    "ticker": "SJXV"
+    "ticker": "SJXV",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 51,
@@ -4421,11 +4911,13 @@
     "performance": 21,
     "pledge": "47",
     "producedBlocks": 2912507,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 77,
     "ranking": 246,
     "retiring": null,
     "saturation": 40.72,
-    "ticker": "JTGG"
+    "ticker": "JTGG",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 33,
@@ -4439,11 +4931,13 @@
     "performance": 96,
     "pledge": "92",
     "producedBlocks": 1540018,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 22,
     "ranking": 247,
     "retiring": null,
     "saturation": 45.07,
-    "ticker": "JZWE"
+    "ticker": "JZWE",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 10,
@@ -4457,11 +4951,13 @@
     "performance": 56,
     "pledge": "60",
     "producedBlocks": 2912513,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 94,
     "ranking": 248,
     "retiring": null,
     "saturation": 40.1,
-    "ticker": "ZSGF"
+    "ticker": "ZSGF",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 11,
@@ -4475,11 +4971,13 @@
     "performance": 82,
     "pledge": "2",
     "producedBlocks": 6485847,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 20,
     "ranking": 249,
     "retiring": null,
     "saturation": 67.76,
-    "ticker": "APIS"
+    "ticker": "APIS",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 31,
@@ -4493,11 +4991,13 @@
     "performance": 82,
     "pledge": "6",
     "producedBlocks": 6320872,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 64,
     "ranking": 250,
     "retiring": null,
     "saturation": 76.89,
-    "ticker": "WZLU"
+    "ticker": "WZLU",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 33,
@@ -4511,11 +5011,13 @@
     "performance": 85,
     "pledge": "29",
     "producedBlocks": 7967327,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 24,
     "ranking": 251,
     "retiring": null,
     "saturation": 103.35000000000001,
-    "ticker": "OCCM"
+    "ticker": "OCCM",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 18,
@@ -4529,11 +5031,13 @@
     "performance": 79,
     "pledge": "91",
     "producedBlocks": 6568498,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 55,
     "ranking": 252,
     "retiring": null,
     "saturation": 54.82,
-    "ticker": "HWIH"
+    "ticker": "HWIH",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 21,
@@ -4547,11 +5051,13 @@
     "performance": 61,
     "pledge": "95",
     "producedBlocks": 5766711,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 32,
     "ranking": 253,
     "retiring": null,
     "saturation": 31.23,
-    "ticker": "ZDDD"
+    "ticker": "ZDDD",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 61,
@@ -4565,11 +5071,13 @@
     "performance": 84,
     "pledge": "23",
     "producedBlocks": 1641597,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 11,
     "ranking": 254,
     "retiring": null,
     "saturation": 78.48,
-    "ticker": "AVRC"
+    "ticker": "AVRC",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 55,
@@ -4583,11 +5091,13 @@
     "performance": 71,
     "pledge": "24",
     "producedBlocks": 4869513,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 98,
     "ranking": 255,
     "retiring": null,
     "saturation": 95.15,
-    "ticker": "YHXK"
+    "ticker": "YHXK",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 33,
@@ -4601,11 +5111,13 @@
     "performance": 4,
     "pledge": "71",
     "producedBlocks": 657555,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 69,
     "ranking": 256,
     "retiring": null,
     "saturation": 59.43,
-    "ticker": "RLHD"
+    "ticker": "RLHD",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 6,
@@ -4619,11 +5131,13 @@
     "performance": 35,
     "pledge": "24",
     "producedBlocks": 5416577,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 89,
     "ranking": 257,
     "retiring": null,
     "saturation": 56.47,
-    "ticker": "DEIQ"
+    "ticker": "DEIQ",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 15,
@@ -4637,11 +5151,13 @@
     "performance": 80,
     "pledge": "60",
     "producedBlocks": 7480976,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 80,
     "ranking": 258,
     "retiring": null,
     "saturation": 119.31,
-    "ticker": "ALXC"
+    "ticker": "ALXC",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 4,
@@ -4655,11 +5171,13 @@
     "performance": 18,
     "pledge": "66",
     "producedBlocks": 5835305,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 94,
     "ranking": 259,
     "retiring": null,
     "saturation": 13.39,
-    "ticker": "UZIQ"
+    "ticker": "UZIQ",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 14,
@@ -4673,11 +5191,13 @@
     "performance": 74,
     "pledge": "69",
     "producedBlocks": 4708691,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 29,
     "ranking": 260,
     "retiring": null,
     "saturation": 43.7,
-    "ticker": "CMDV"
+    "ticker": "CMDV",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 82,
@@ -4691,11 +5211,13 @@
     "performance": 58,
     "pledge": "46",
     "producedBlocks": 9085214,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 6,
     "ranking": 261,
     "retiring": null,
     "saturation": 21.19,
-    "ticker": "QAJZ"
+    "ticker": "QAJZ",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 19,
@@ -4709,11 +5231,13 @@
     "performance": 29,
     "pledge": "74",
     "producedBlocks": 9924986,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 41,
     "ranking": 262,
     "retiring": null,
     "saturation": 76.84,
-    "ticker": "LLDN"
+    "ticker": "LLDN",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 3,
@@ -4727,11 +5251,13 @@
     "performance": 44,
     "pledge": "45",
     "producedBlocks": 4798422,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 0,
     "ranking": 263,
     "retiring": null,
     "saturation": 119.31,
-    "ticker": "IWEM"
+    "ticker": "IWEM",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 31,
@@ -4745,11 +5271,13 @@
     "performance": 9,
     "pledge": "27",
     "producedBlocks": 1217660,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 4,
     "ranking": 264,
     "retiring": null,
     "saturation": 106.71000000000001,
-    "ticker": "QZAG"
+    "ticker": "QZAG",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 12,
@@ -4763,11 +5291,13 @@
     "performance": 21,
     "pledge": "47",
     "producedBlocks": 8711122,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 16,
     "ranking": 265,
     "retiring": null,
     "saturation": 85.51,
-    "ticker": "LHWX"
+    "ticker": "LHWX",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 0,
@@ -4781,11 +5311,13 @@
     "performance": 28,
     "pledge": "21",
     "producedBlocks": 9877767,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 29,
     "ranking": 266,
     "retiring": null,
     "saturation": 81.72,
-    "ticker": "SPNZ"
+    "ticker": "SPNZ",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 3,
@@ -4799,11 +5331,13 @@
     "performance": 5,
     "pledge": "86",
     "producedBlocks": 9420105,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 92,
     "ranking": 267,
     "retiring": null,
     "saturation": 38.04,
-    "ticker": "LZGG"
+    "ticker": "LZGG",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 51,
@@ -4817,11 +5351,13 @@
     "performance": 60,
     "pledge": "97",
     "producedBlocks": 1832161,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 97,
     "ranking": 268,
     "retiring": null,
     "saturation": 59.480000000000004,
-    "ticker": "XHWR"
+    "ticker": "XHWR",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 51,
@@ -4835,11 +5371,13 @@
     "performance": 98,
     "pledge": "79",
     "producedBlocks": 4273647,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 76,
     "ranking": 269,
     "retiring": null,
     "saturation": 78.05,
-    "ticker": "KEAB"
+    "ticker": "KEAB",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 35,
@@ -4853,11 +5391,13 @@
     "performance": 60,
     "pledge": "88",
     "producedBlocks": 2640062,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 91,
     "ranking": 270,
     "retiring": null,
     "saturation": 118.79,
-    "ticker": "HEIR"
+    "ticker": "HEIR",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 40,
@@ -4871,11 +5411,13 @@
     "performance": 0,
     "pledge": "57",
     "producedBlocks": 2999729,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 46,
     "ranking": 271,
     "retiring": null,
     "saturation": 76.74,
-    "ticker": "LMIC"
+    "ticker": "LMIC",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 47,
@@ -4889,11 +5431,13 @@
     "performance": 91,
     "pledge": "88",
     "producedBlocks": 1791845,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 17,
     "ranking": 272,
     "retiring": null,
     "saturation": 71.81,
-    "ticker": "CCME"
+    "ticker": "CCME",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 24,
@@ -4907,11 +5451,13 @@
     "performance": 65,
     "pledge": "18",
     "producedBlocks": 7540804,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 60,
     "ranking": 273,
     "retiring": null,
     "saturation": 76.71000000000001,
-    "ticker": "WPIG"
+    "ticker": "WPIG",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 15,
@@ -4925,11 +5471,13 @@
     "performance": 0,
     "pledge": "16",
     "producedBlocks": 6771281,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 15,
     "ranking": 274,
     "retiring": null,
     "saturation": 72.5,
-    "ticker": "WUKJ"
+    "ticker": "WUKJ",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 4,
@@ -4943,11 +5491,13 @@
     "performance": 50,
     "pledge": "43",
     "producedBlocks": 6265201,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 28,
     "ranking": 275,
     "retiring": null,
     "saturation": 113.13,
-    "ticker": "JFEI"
+    "ticker": "JFEI",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 15,
@@ -4961,11 +5511,13 @@
     "performance": 16,
     "pledge": "33",
     "producedBlocks": 713449,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 84,
     "ranking": 276,
     "retiring": null,
     "saturation": 9.73,
-    "ticker": "SLZH"
+    "ticker": "SLZH",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 51,
@@ -4979,11 +5531,13 @@
     "performance": 60,
     "pledge": "54",
     "producedBlocks": 19393,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 79,
     "ranking": 277,
     "retiring": null,
     "saturation": 117.10000000000001,
-    "ticker": "IMDI"
+    "ticker": "IMDI",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 12,
@@ -4997,11 +5551,13 @@
     "performance": 77,
     "pledge": "39",
     "producedBlocks": 5773463,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 4,
     "ranking": 278,
     "retiring": null,
     "saturation": 12.11,
-    "ticker": "CKFJ"
+    "ticker": "CKFJ",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 21,
@@ -5015,11 +5571,13 @@
     "performance": 70,
     "pledge": "56",
     "producedBlocks": 9364639,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 66,
     "ranking": 279,
     "retiring": null,
     "saturation": 89.02,
-    "ticker": "KBOI"
+    "ticker": "KBOI",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 0,
@@ -5033,11 +5591,13 @@
     "performance": 57,
     "pledge": "93",
     "producedBlocks": 2410369,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 2,
     "ranking": 280,
     "retiring": null,
     "saturation": 53.22,
-    "ticker": "WBJL"
+    "ticker": "WBJL",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 2,
@@ -5051,11 +5611,13 @@
     "performance": 48,
     "pledge": "37",
     "producedBlocks": 3141409,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 98,
     "ranking": 281,
     "retiring": null,
     "saturation": 31.740000000000002,
-    "ticker": "ZPQX"
+    "ticker": "ZPQX",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 4,
@@ -5069,11 +5631,13 @@
     "performance": 5,
     "pledge": "79",
     "producedBlocks": 8525633,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 83,
     "ranking": 282,
     "retiring": null,
     "saturation": 47.46,
-    "ticker": "PKXD"
+    "ticker": "PKXD",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 72,
@@ -5087,11 +5651,13 @@
     "performance": 69,
     "pledge": "50",
     "producedBlocks": 5476979,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 82,
     "ranking": 283,
     "retiring": null,
     "saturation": 37.99,
-    "ticker": "BDAP"
+    "ticker": "BDAP",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 66,
@@ -5105,11 +5671,13 @@
     "performance": 9,
     "pledge": "12",
     "producedBlocks": 3421913,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 76,
     "ranking": 284,
     "retiring": null,
     "saturation": 12.9,
-    "ticker": "CPCK"
+    "ticker": "CPCK",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 36,
@@ -5123,11 +5691,13 @@
     "performance": 81,
     "pledge": "82",
     "producedBlocks": 6868988,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 7,
     "ranking": 285,
     "retiring": null,
     "saturation": 66.59,
-    "ticker": "QSHI"
+    "ticker": "QSHI",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 23,
@@ -5141,11 +5711,13 @@
     "performance": 92,
     "pledge": "21",
     "producedBlocks": 269916,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 30,
     "ranking": 286,
     "retiring": null,
     "saturation": 100.84,
-    "ticker": "FAFG"
+    "ticker": "FAFG",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 94,
@@ -5159,11 +5731,13 @@
     "performance": 99,
     "pledge": "75",
     "producedBlocks": 5216413,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 0,
     "ranking": 287,
     "retiring": null,
     "saturation": 101.55,
-    "ticker": "HLGC"
+    "ticker": "HLGC",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 88,
@@ -5177,11 +5751,13 @@
     "performance": 38,
     "pledge": "87",
     "producedBlocks": 9807949,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 64,
     "ranking": 288,
     "retiring": null,
     "saturation": 49.49,
-    "ticker": "OCSL"
+    "ticker": "OCSL",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 66,
@@ -5195,11 +5771,13 @@
     "performance": 4,
     "pledge": "56",
     "producedBlocks": 6184855,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 40,
     "ranking": 289,
     "retiring": null,
     "saturation": 49.31,
-    "ticker": "RFDF"
+    "ticker": "RFDF",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 41,
@@ -5213,11 +5791,13 @@
     "performance": 23,
     "pledge": "70",
     "producedBlocks": 7419496,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 77,
     "ranking": 290,
     "retiring": null,
     "saturation": 41.78,
-    "ticker": "SKGQ"
+    "ticker": "SKGQ",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 31,
@@ -5231,11 +5811,13 @@
     "performance": 37,
     "pledge": "42",
     "producedBlocks": 467010,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 75,
     "ranking": 291,
     "retiring": null,
     "saturation": 2.85,
-    "ticker": "EWZG"
+    "ticker": "EWZG",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 53,
@@ -5249,11 +5831,13 @@
     "performance": 70,
     "pledge": "39",
     "producedBlocks": 7514979,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 41,
     "ranking": 292,
     "retiring": null,
     "saturation": 65.69,
-    "ticker": "MNZQ"
+    "ticker": "MNZQ",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 90,
@@ -5267,11 +5851,13 @@
     "performance": 30,
     "pledge": "0",
     "producedBlocks": 2593286,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 45,
     "ranking": 293,
     "retiring": null,
     "saturation": 69.81,
-    "ticker": "AKPF"
+    "ticker": "AKPF",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 0,
@@ -5285,11 +5871,13 @@
     "performance": 77,
     "pledge": "39",
     "producedBlocks": 1000283,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 67,
     "ranking": 294,
     "retiring": null,
     "saturation": 26.17,
-    "ticker": "UUHL"
+    "ticker": "UUHL",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 1,
@@ -5303,11 +5891,13 @@
     "performance": 66,
     "pledge": "61",
     "producedBlocks": 929715,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 57,
     "ranking": 295,
     "retiring": null,
     "saturation": 104.99000000000001,
-    "ticker": "GNAO"
+    "ticker": "GNAO",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 3,
@@ -5321,11 +5911,13 @@
     "performance": 88,
     "pledge": "64",
     "producedBlocks": 8595547,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 34,
     "ranking": 296,
     "retiring": null,
     "saturation": 84.54,
-    "ticker": "JDUG"
+    "ticker": "JDUG",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 5,
@@ -5339,11 +5931,13 @@
     "performance": 90,
     "pledge": "51",
     "producedBlocks": 4674945,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 92,
     "ranking": 297,
     "retiring": null,
     "saturation": 64.19,
-    "ticker": "GUEO"
+    "ticker": "GUEO",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 72,
@@ -5357,11 +5951,13 @@
     "performance": 8,
     "pledge": "16",
     "producedBlocks": 3790476,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 20,
     "ranking": 298,
     "retiring": null,
     "saturation": 51.1,
-    "ticker": "BXQE"
+    "ticker": "BXQE",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 76,
@@ -5375,11 +5971,13 @@
     "performance": 76,
     "pledge": "74",
     "producedBlocks": 2169895,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 10,
     "ranking": 299,
     "retiring": null,
     "saturation": 55.08,
-    "ticker": "LRFS"
+    "ticker": "LRFS",
+    "potentialRewards": 1
   },
   {
     "relativeStake": 54,
@@ -5393,10 +5991,12 @@
     "performance": 18,
     "pledge": "37",
     "producedBlocks": 2505580,
+    "nonMyopicMemberRewards": 2112234,
     "profitMargin": 53,
     "ranking": 300,
     "retiring": null,
     "saturation": 7.67,
-    "ticker": "GPLN"
+    "ticker": "GPLN",
+    "potentialRewards": 1
   }
 ]

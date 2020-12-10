@@ -50,6 +50,7 @@ export default class WalletWithNavigationLayout extends Component<Props> {
         onSetWalletPassword={() => {}}
         onOpenExternalLink={() => {}}
         onRestartNode={() => {}}
+        isHardwareWallet={false}
       >
         {Children.map(children, (child) =>
           React.cloneElement(child, {
