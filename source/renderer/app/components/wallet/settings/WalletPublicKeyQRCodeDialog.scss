@@ -1,18 +1,23 @@
 .dialog {
+  :global {
+    .Dialog_title {
+      margin-bottom: 0;
+    }
+  }
+
   .walletName {
-    font-family: var(--font-semibold);
+    font-family: var(--font-medium);
     font-size: 12px;
+    font-weight: 500;
     line-height: 1.83;
-    margin-bottom: 20px;
-    margin-top: 7px;
     text-align: center;
+    text-transform: uppercase;
   }
 
   .walletPublicKeyQRCode {
     align-items: center;
     display: flex;
     justify-content: center;
-    margin-bottom: 30px;
     margin-top: 20px;
   }
 }
