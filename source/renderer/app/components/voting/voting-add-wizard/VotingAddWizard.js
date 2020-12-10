@@ -28,7 +28,8 @@ type Props = {
   transactionFeeError: string | Node | null,
   onSubmit: Function,
   qrCode: string | null,
-  isSubmitting: Boolean,
+  isSubmitting: boolean,
+  isTransactionApproved: boolean,
   transactionError: ?LocalizableError,
   onRollback: Function,
   countdownRemaining: number,
@@ -54,6 +55,7 @@ export default class VotingAddWizard extends Component<Props> {
       onSubmit,
       qrCode,
       isSubmitting,
+      isTransactionApproved,
       transactionError,
       onRollback,
       countdownRemaining,
@@ -95,6 +97,7 @@ export default class VotingAddWizard extends Component<Props> {
             onConfirm={onContinue}
             onRollback={onRollback}
             isSubmitting={isSubmitting}
+            isTransactionApproved={isTransactionApproved}
             countdownRemaining={countdownRemaining}
           />
         );

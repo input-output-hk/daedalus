@@ -165,6 +165,7 @@ export default class VotingAddDialogContainer extends Component<Props, State> {
       votingSendTransactionRequest,
       signMetadataRequest,
       isVotingRegistrationTransactionPending,
+      isVotingRegistrationTransactionApproved,
       qrCode,
       countdownRemaining,
     } = voting;
@@ -202,6 +203,7 @@ export default class VotingAddDialogContainer extends Component<Props, State> {
             votingSendTransactionRequest.isExecuting ||
             isVotingRegistrationTransactionPending
           }
+          isTransactionApproved={isVotingRegistrationTransactionApproved}
           transactionError={
             votingSendTransactionRequest.error
               ? votingSendTransactionRequest.error

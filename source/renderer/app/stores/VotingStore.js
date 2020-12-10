@@ -1,6 +1,5 @@
 // @flow
 import { action, observable } from 'mobx';
-import { find } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import {
@@ -9,24 +8,20 @@ import {
 } from '../domains/WalletTransaction';
 import { formattedArrayBufferToHexString } from '../utils/formatters';
 import wallet from '../utils/wallet';
-import {
-  VOTING_REGISTRATION_TRANSACTION_CHECK_INTERVAL,
-  VOTING_REGISTRATION_TRANSACTION_CHECKER_TIMEOUT,
-  VOTING_COUNTDOWN_INTERVAL,
-} from '../config/votingConfig';
+import { VOTING_COUNTDOWN_INTERVAL } from '../config/votingConfig';
 
 // Voting Types
 import type { GetWalletKeyRequest } from '../api/voting/types';
-import type { GetTransactionRequest } from '../api/transactions/types';
 
 export default class VotingStore extends Store {
   @observable selectedVotingWalletId: ?string = null;
+  @observable transactionId: ?string = null;
   @observable isVotingRegistrationTransactionPending: boolean = false;
+  @observable isVotingRegistrationTransactionApproved: boolean = false;
   @observable votingRegistrationKey: any = null;
   @observable qrCode: string | null = null;
   @observable countdownRemaining = 0;
 
-  votingCheckTimeInterval: IntervalID | null = null;
   countdownTimerInterval: ?IntervalID = null;
 
   setup() {
@@ -59,7 +54,9 @@ export default class VotingStore extends Store {
 
   @action _resetVotingRegistration = () => {
     this.selectedVotingWalletId = null;
+    this.transactionId = null;
     this.isVotingRegistrationTransactionPending = false;
+    this.isVotingRegistrationTransactionApproved = false;
     this.votingRegistrationKey = null;
     this.qrCode = null;
   };
@@ -72,16 +69,17 @@ export default class VotingStore extends Store {
         action(() => this.countdownRemaining--)();
       } else if (this.countdownTimerInterval != null) {
         clearInterval(this.countdownTimerInterval);
+        this.checkVotingRegistrationTransaction();
       }
     }, 1000);
   };
 
-  @action setVotingCheckTimeInterval = (value: any) => {
-    this.votingCheckTimeInterval = value;
-  };
-
   @action setIsVotingRegistrationTransactionPending = (value: boolean) => {
     this.isVotingRegistrationTransactionPending = value;
+  };
+
+  @action setIsVotingRegistrationTransactionApproved = (value: boolean) => {
+    this.isVotingRegistrationTransactionApproved = value;
   };
 
   @action setVotingRegistrationKey = (value: any) => {
@@ -90,6 +88,10 @@ export default class VotingStore extends Store {
 
   @action setQrCode = (value: string | null) => {
     this.qrCode = value;
+  };
+
+  @action setTransactionId = (transactionId: string) => {
+    this.transactionId = transactionId;
   };
 
   /* ====  Private methods  ===== */
@@ -113,6 +115,7 @@ export default class VotingStore extends Store {
 
     // Set join transaction in "PENDING" state
     this.setIsVotingRegistrationTransactionPending(true);
+    this.setIsVotingRegistrationTransactionApproved(false);
 
     try {
       await this.generateVotingRegistrationKey();
@@ -148,21 +151,8 @@ export default class VotingStore extends Store {
         signature: signature.toString('hex'),
       });
 
-      // Start interval to check transaction state every second
-      this.setVotingCheckTimeInterval(
-        setInterval(
-          this.checkVotingRegistrationTransaction,
-          VOTING_REGISTRATION_TRANSACTION_CHECK_INTERVAL,
-          { transactionId: transaction.id, walletId }
-        )
-      );
-
-      // Reset transaction state check interval after 30 seconds
-      setTimeout(() => {
-        this.resetVotingRegistrationTransactionChecker();
-      }, VOTING_REGISTRATION_TRANSACTION_CHECKER_TIMEOUT);
+      this.setTransactionId(transaction.id);
     } catch (error) {
-      this.resetVotingRegistrationTransactionChecker();
       throw error;
     }
   };
@@ -175,13 +165,6 @@ export default class VotingStore extends Store {
     if (!response)
       throw new Error('Could not get the public key of the wallet.');
     return response;
-  };
-
-  _getTransaction = async (
-    request: GetTransactionRequest
-  ): Request<WalletTransaction> => {
-    const transaction = await this.api.ada.getTransaction(request);
-    return transaction || {};
   };
 
   _generateQrCode = async (pinCode: number) => {
@@ -201,29 +184,19 @@ export default class VotingStore extends Store {
   };
 
   // Check voting registration transaction state and reset pending state when transaction is "in_ledger"
-  checkVotingRegistrationTransaction = (request: {
-    transactionId: string,
-    walletId: string,
-  }) => {
-    const { transactionId, walletId } = request;
-    const recentTransactionsResponse = this.stores.transactions._getTransactionsRecentRequest(
-      walletId
-    ).result;
-    const recentTransactions = recentTransactionsResponse
-      ? recentTransactionsResponse.transactions
-      : [];
+  checkVotingRegistrationTransaction = async () => {
+    const transaction = await this.stores.transactions
+      ._getTransaction()
+      .execute({
+        walletId: this.selectedVotingWalletId,
+        transactionId: this.transactionId,
+      });
 
-    // Return stake pool transaction when state is not "PENDING"
-    const votingRegistrationTransaction = find(
-      recentTransactions,
-      (transaction) =>
-        transaction.id === transactionId &&
-        transaction.state === TransactionStates.OK
-    );
-
-    if (votingRegistrationTransaction) {
-      this.resetVotingRegistrationTransactionChecker();
+    // Return voting transaction when state is not "PENDING"
+    if (transaction.state === TransactionStates.OK) {
+      this.setIsVotingRegistrationTransactionApproved(true);
     }
+    this.setIsVotingRegistrationTransactionPending(false);
   };
 
   generateVotingRegistrationKey = async () => {
@@ -235,14 +208,5 @@ export default class VotingStore extends Store {
   getHexFromBech32 = async (key: string) => {
     const Modules = await wallet;
     return formattedArrayBufferToHexString(Modules.bech32_decode_to_bytes(key));
-  };
-
-  // Reset voting registration interval and refresh wallet data
-  resetVotingRegistrationTransactionChecker = () => {
-    if (this.votingCheckTimeInterval) {
-      clearInterval(this.votingCheckTimeInterval);
-      this.setVotingCheckTimeInterval(null);
-    }
-    this.setIsVotingRegistrationTransactionPending(false);
   };
 }

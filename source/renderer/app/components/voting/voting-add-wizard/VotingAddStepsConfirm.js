@@ -67,7 +67,8 @@ const messages = defineMessages({
 type Props = {
   onConfirm: Function,
   onRollback: Function,
-  isSubmitting: Boolean,
+  isSubmitting: boolean,
+  isTransactionApproved: boolean,
   transactionError: ?LocalizableError,
   countdownRemaining: number,
 };
@@ -84,6 +85,7 @@ export default class VotingAddStepsConfirm extends Component<Props> {
       onConfirm,
       onRollback,
       isSubmitting,
+      isTransactionApproved,
       transactionError,
       countdownRemaining,
     } = this.props;
@@ -119,7 +121,8 @@ export default class VotingAddStepsConfirm extends Component<Props> {
     return (
       <div className={className}>
         <div className={contentClassName}>
-          {!transactionError ? (
+          {!transactionError &&
+          (isTransactionApproved || countdownRemaining > 0 || isSubmitting) ? (
             <>
               <div className={styles.header}>
                 <SVGInline
@@ -155,7 +158,7 @@ export default class VotingAddStepsConfirm extends Component<Props> {
               </div>
               <div className={styles.errorMessage}>
                 <p>
-                  {intl.formatMessage(transactionError)
+                  {transactionError
                     ? intl.formatMessage(transactionError)
                     : errorMessage}
                 </p>
