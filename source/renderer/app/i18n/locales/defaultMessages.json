@@ -8993,6 +8993,72 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Wallet public key",
+        "description": "Wallet public key label.",
+        "end": {
+          "column": 3,
+          "line": 20
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletPublicKeyField.js",
+        "id": "wallet.settings.walletPublicKey",
+        "start": {
+          "column": 19,
+          "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!To show wallet public key click \"Reveal\" button",
+        "description": "Wallet public key show instruction.",
+        "end": {
+          "column": 3,
+          "line": 25
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletPublicKeyField.js",
+        "id": "wallet.settings.walletPublicKeyShowInstruction",
+        "start": {
+          "column": 34,
+          "line": 21
+        }
+      },
+      {
+        "defaultMessage": "!!!Show QR code",
+        "description": "Show QR code tooltip.",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletPublicKeyField.js",
+        "id": "wallet.settings.showQRCode",
+        "start": {
+          "column": 14,
+          "line": 26
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/settings/WalletPublicKeyField.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Wallet Public Key",
+        "description": "Title for the \"Wallet Public Key QR Code\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 16
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletPublicKeyQRCodeDialog.js",
+        "id": "wallet.settings.walletPublicKey",
+        "start": {
+          "column": 15,
+          "line": 12
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/settings/WalletPublicKeyQRCodeDialog.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Wallet recovery phrase verification",
         "description": "Label for the recoveryPhraseStep1Title on wallet settings.",
         "end": {
@@ -9526,13 +9592,13 @@
         "description": "Label for the \"Transaction assurance security level\" dropdown.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 28
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.assurance",
         "start": {
           "column": 23,
-          "line": 22
+          "line": 23
         }
       },
       {
@@ -9540,13 +9606,13 @@
         "description": "Delete wallet header on the wallet settings page.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 33
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.deleteWallet.header",
         "start": {
           "column": 22,
-          "line": 28
+          "line": 29
         }
       },
       {
@@ -9554,13 +9620,13 @@
         "description": "Delete wallet warning explaining the consequences.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 39
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.deleteWallet.warning1",
         "start": {
           "column": 24,
-          "line": 33
+          "line": 34
         }
       },
       {
@@ -9568,13 +9634,13 @@
         "description": "Delete wallet warning explaining the consequences.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 45
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.deleteWallet.warning2",
         "start": {
           "column": 24,
-          "line": 39
+          "line": 40
         }
       },
       {
@@ -9582,13 +9648,13 @@
         "description": "Label for the \"Name\" text input on the wallet settings page.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 50
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.name.label",
         "start": {
           "column": 8,
-          "line": 45
+          "line": 46
         }
       },
       {
@@ -9596,13 +9662,13 @@
         "description": "Label for the \"Password\" field.",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 55
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.password",
         "start": {
           "column": 17,
-          "line": 50
+          "line": 51
         }
       },
       {
@@ -9610,13 +9676,13 @@
         "description": "Last updated X time ago message.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 60
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.passwordLastUpdated",
         "start": {
           "column": 23,
-          "line": 55
+          "line": 56
         }
       },
       {
@@ -9624,13 +9690,13 @@
         "description": "You still don't have password set message.",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 65
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.passwordNotSet",
         "start": {
           "column": 18,
-          "line": 60
+          "line": 61
         }
       }
     ],
@@ -13571,17 +13637,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Address: <strong>{walletAddress}</strong> copied to clipboard",
-        "description": "Notification for the wallet address copy success in the Wallet Receive page.",
+        "defaultMessage": "!!!Public key: <strong>{publicKey}</strong> copied to clipboard",
+        "description": "Notification for the wallet public key copy success in the Wallet Settings page.",
         "end": {
           "column": 3,
           "line": 49
         },
         "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
+        "id": "notification.copyPublicKey",
+        "start": {
+          "column": 17,
+          "line": 43
+        }
+      },
+      {
+        "defaultMessage": "!!!Address: <strong>{address}</strong> copied to clipboard",
+        "description": "Notification for the wallet address copy success in the Wallet Receive page.",
+        "end": {
+          "column": 3,
+          "line": 56
+        },
+        "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
         "id": "notification.copyAddress",
         "start": {
           "column": 15,
-          "line": 43
+          "line": 50
         }
       },
       {
@@ -13589,13 +13669,13 @@
         "description": "Notification for the wallet address PDF download success in the Wallet Receive page.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 63
         },
         "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
         "id": "notification.downloadAddressPDFSuccess",
         "start": {
           "column": 29,
-          "line": 50
+          "line": 57
         }
       },
       {
@@ -13603,13 +13683,13 @@
         "description": "Notification for the wallet address PDF download success in the Wallet Receive page.",
         "end": {
           "column": 3,
-          "line": 63
+          "line": 70
         },
         "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
         "id": "notification.downloadQRCodeImageSuccess",
         "start": {
           "column": 30,
-          "line": 57
+          "line": 64
         }
       },
       {
@@ -13617,13 +13697,13 @@
         "description": "Notification for the state directory copy success in the Diagnostics page.",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 76
         },
         "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
         "id": "notification.copyStateDirectoryPath",
         "start": {
           "column": 26,
-          "line": 64
+          "line": 71
         }
       }
     ],
@@ -14621,6 +14701,48 @@
         "start": {
           "column": 9,
           "line": 300
+        }
+      },
+      {
+        "defaultMessage": "!!!Reveal",
+        "description": "Reveal label.",
+        "end": {
+          "column": 3,
+          "line": 309
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.labels.reveal",
+        "start": {
+          "column": 10,
+          "line": 305
+        }
+      },
+      {
+        "defaultMessage": "!!!Hide",
+        "description": "Hide label.",
+        "end": {
+          "column": 3,
+          "line": 314
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.labels.hide",
+        "start": {
+          "column": 8,
+          "line": 310
+        }
+      },
+      {
+        "defaultMessage": "!!!Copy",
+        "description": "Copy label.",
+        "end": {
+          "column": 3,
+          "line": 319
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.labels.copy",
+        "start": {
+          "column": 8,
+          "line": 315
         }
       }
     ],
