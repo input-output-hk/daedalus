@@ -5,13 +5,18 @@ Changelog
 
 ### Features
 
-- Added hardware wallet support for "Ledger Nano S", "Ledger Nano X", and "Trezor model T" devices ([PR 2046](https://github.com/input-output-hk/daedalus/pull/2046))
+- Added hardware wallet support for "Ledger Nano S", "Ledger Nano X", and "Trezor model T" devices ([PR 2046](https://github.com/input-output-hk/daedalus/pull/2046), [PR 2269](https://github.com/input-output-hk/daedalus/pull/2269))
 - Added hardware wallet support for Testnet network ([PR 2264](https://github.com/input-output-hk/daedalus/pull/2264))
+
+### Fixes
+
+- Fixed visual glitch on the transaction list switching between filters ([PR 2261](https://github.com/input-output-hk/daedalus/pull/2261))
 
 ### Chores
 
 - Reduced the size of Linux installer ([PR 2260](https://github.com/input-output-hk/daedalus/pull/2260))
 - Canceled running fee estimation api requests once new request is made ([PR 2239](https://github.com/input-output-hk/daedalus/pull/2239))
+- Bumped cardano-wallet to v2020-12-08 and cardano-node to 1.24.2 ([PR 2270](https://github.com/input-output-hk/daedalus/pull/2270))
 
 ## 3.0.0-FC4
 
