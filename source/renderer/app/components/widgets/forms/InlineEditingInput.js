@@ -1,5 +1,5 @@
 // @flow
-// eslint-disable react/no-did-update-set-state
+/* eslint-disable react/no-did-update-set-state */
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';

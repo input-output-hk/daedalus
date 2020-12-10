@@ -88,6 +88,10 @@ export default class StakePoolsSettings extends Component<Props, State> {
   }
 
   state = {
+    /* eslint-disable react/no-unused-state */
+    // Disabling eslint due to a [known issue](https://github.com/yannickcr/eslint-plugin-react/issues/2061)
+    // `smashServerUrl` is actually used in the `getDerivedStateFromProps` method
+
     // Last valid type and url
     lastValidServerUrl: this.props.smashServerUrl,
     lastValidServerType: this.props.smashServerType,
