@@ -695,6 +695,74 @@ export default class AdaApi {
     }
   };
 
+  // For testing purpose ONLY
+  createExpiredTransaction = async (request: any): Promise<*> => {
+    if (global.environment.isDev) {
+      logger.debug('AdaApi::createTransaction called', {
+        parameters: filterLogData(request),
+      });
+      const {
+        walletId,
+        address,
+        amount,
+        passphrase,
+        isLegacy,
+        withdrawal = TransactionWithdrawal,
+        ttl,
+      } = request;
+      try {
+        const data = {
+          payments: [
+            {
+              address,
+              amount: {
+                quantity: amount,
+                unit: WalletUnits.LOVELACE,
+              },
+            },
+          ],
+          passphrase,
+          time_to_live: {
+            quantity: ttl,
+            unit: 'second',
+          },
+        };
+
+        let response: Transaction;
+        if (isLegacy) {
+          response = await createByronWalletTransaction(this.config, {
+            walletId,
+            data,
+          });
+        } else {
+          response = await createTransaction(this.config, {
+            walletId,
+            data: { ...data, withdrawal },
+          });
+        }
+
+        logger.debug('AdaApi::createTransaction success', {
+          transaction: response,
+        });
+
+        return _createTransactionFromServerData(response);
+      } catch (error) {
+        logger.error('AdaApi::createTransaction error', { error });
+        throw new ApiError(error)
+          .set('wrongEncryptionPassphrase')
+          .where('code', 'bad_request')
+          .inc('message', 'passphrase is too short')
+          .set('transactionIsTooBig', true, {
+            linkLabel: 'tooBigTransactionErrorLinkLabel',
+            linkURL: 'tooBigTransactionErrorLinkURL',
+          })
+          .where('code', 'transaction_is_too_big')
+          .result();
+      }
+    }
+    return null;
+  };
+
   calculateTransactionFee = async (
     request: GetTransactionFeeRequest
   ): Promise<BigNumber> => {
