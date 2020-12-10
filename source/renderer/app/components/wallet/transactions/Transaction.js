@@ -198,7 +198,10 @@ export default class Transaction extends Component<Props, State> {
   deletePendingTransaction = async () => {
     const { data, walletId } = this.props;
     const { id: transactionId, state } = data;
-    if (state !== TransactionStates.PENDING) {
+    if (
+      state !== TransactionStates.PENDING &&
+      state !== TransactionStates.FAILED
+    ) {
       return this.hideConfirmationDialog();
     }
     await this.props.deletePendingTransaction({
