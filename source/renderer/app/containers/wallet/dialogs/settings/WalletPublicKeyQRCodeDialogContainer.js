@@ -22,6 +22,11 @@ export default class WalletPublicKeyQRCodeDialogContainer extends Component<Prop
         'Active wallet required for WalletPublicKeyQRCodeDialogContainer.'
       );
 
+    if (!activeWalletPublicKey)
+      throw new Error(
+        'Active wallet public key required for WalletPublicKeyQRCodeDialogContainer.'
+      );
+
     return (
       <WalletPublicKeyQRCodeDialog
         walletName={activeWallet.name}
