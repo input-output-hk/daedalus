@@ -132,11 +132,13 @@ export default class InlineEditingInput extends Component<Props, State> {
   };
 
   onFocus = () => {
-    this.setState({
-      isActive: true,
-    });
-    const { onFocus, readOnly } = this.props;
-    if (onFocus && !readOnly) onFocus();
+    const { disabled, onFocus, readOnly } = this.props;
+    if (!disabled && !readOnly) {
+      this.setState({
+        isActive: true,
+      });
+      if (onFocus) onFocus();
+    }
   };
 
   onBlur = (event: InputEvent) => {
@@ -234,7 +236,7 @@ export default class InlineEditingInput extends Component<Props, State> {
     else if (!hideErrorMessage) error = errorMessage;
 
     return (
-      <div className={componentStyles} role="presentation" aria-hidden>
+      <div className={componentStyles}>
         <Input
           {...inputField.bind()}
           className={inputStyles}
@@ -281,7 +283,7 @@ export default class InlineEditingInput extends Component<Props, State> {
           {isActive && (
             <Button
               className={cancelButtonStyles}
-              onMouseUp={this.onCancel}
+              onClick={this.onCancel}
               label={<SVGInline svg={crossIcon} className={styles.icon} />}
               skin={ButtonSkin}
             />
