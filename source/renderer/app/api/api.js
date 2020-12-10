@@ -2113,8 +2113,16 @@ const _createAddressFromServerData = action(
   }
 );
 
-const _conditionToTxState = (condition: string) =>
-  TransactionStates[condition === 'pending' ? 'PENDING' : 'OK'];
+const _conditionToTxState = (condition: string) => {
+  switch (condition) {
+    case 'pending':
+      return TransactionStates.PENDING;
+    case 'expired':
+      return TransactionStates.FAILED;
+    default:
+      return TransactionStates.OK;
+  }
+};
 
 const _createTransactionFromServerData = action(
   'AdaApi::_createTransactionFromServerData',

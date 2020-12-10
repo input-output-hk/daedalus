@@ -917,6 +917,8 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
       'rgba(255, 255, 255, 0.5)',
     '--theme-transactions-icon-type-pending-warning-background-color':
       'rgba(235, 74, 34, 0.8)',
+    '--theme-transactions-icon-type-failed-background-color':
+      'rgba(235, 74, 34, 1)',
     '--theme-transactions-list-background-color': '#1e1f31',
     '--theme-transactions-list-border-color': '1e1f31',
     '--theme-transactions-list-group-date-color': '#ffffff',
