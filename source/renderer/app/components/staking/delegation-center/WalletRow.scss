@@ -29,6 +29,7 @@
 
   .left {
     display: flex;
+    flex: 2.5;
     flex-direction: column;
     justify-content: space-evenly;
 
@@ -63,6 +64,16 @@
   .right {
     align-items: stretch;
     display: flex;
+    flex: 1.5;
+
+    .stakePoolTile {
+      background-color: var(--theme-button-flat-background-color-disabled);
+      border-radius: 4px;
+      height: 71px;
+      margin: 0 20px 11.5px 0;
+      padding: 24.5px 14px;
+      width: 80px;
+    }
 
     .status {
       @extend %regularText;
