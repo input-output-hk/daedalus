@@ -10,6 +10,8 @@ import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import WalletPublicKeyFieldSkin from './WalletPublicKeyFieldSkin';
 import qrCodeImage from '../../../assets/images/qr-code.inline.svg';
 import globalMessages from '../../../i18n/global-messages';
+import type { Locale } from '../../../../../common/types/locales.types';
+import { LOCALES } from '../../../../../common/types/locales.types';
 import styles from './WalletPublicKeyField.scss';
 
 export const messages = defineMessages({
@@ -32,6 +34,7 @@ export const messages = defineMessages({
 
 type Props = {
   walletPublicKey: string,
+  locale: Locale,
   onCopyWalletPublicKey: Function,
   onShowQRCode: Function,
 };
@@ -61,13 +64,14 @@ export default class WalletPublicKeyField extends Component<Props, State> {
   };
 
   render() {
-    const { walletPublicKey, onShowQRCode } = this.props;
+    const { walletPublicKey, onShowQRCode, locale } = this.props;
     const { walletPublicKeyHidden } = this.state;
     const { intl } = this.context;
     const label = intl.formatMessage(messages.walletPublicKey);
     const fieldStyles = classnames([
       styles.field,
       walletPublicKeyHidden ? styles.valueHidden : styles.valueShown,
+      locale === LOCALES.japanese ? styles.withBigToggleButton : null,
     ]);
     const hiddenValuePlaceholder = intl.formatMessage(
       messages.walletPublicKeyShowInstruction

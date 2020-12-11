@@ -22,6 +22,19 @@
         }
       }
     }
+    &.withBigToggleButton {
+      :global {
+        .SimpleFormField_inputWrapper {
+          & > span {
+            margin-right: 140px;
+
+            .SimpleInput_input {
+              width: calc(100% - 213px);
+            }
+          }
+        }
+      }
+    }
 
     :global {
       .SimpleFormField_inputWrapper {

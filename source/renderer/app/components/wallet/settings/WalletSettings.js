@@ -142,6 +142,7 @@ export default class WalletSettings extends Component<Props, State> {
   renderWalletPublicKeyBox = () => {
     const {
       walletPublicKey,
+      locale,
       onCopyWalletPublicKey,
       openDialogAction,
       isDialogOpen,
@@ -153,6 +154,7 @@ export default class WalletSettings extends Component<Props, State> {
         <BorderedBox className={styles.walletPublicKeyBox}>
           <WalletPublicKeyField
             walletPublicKey={walletPublicKey || ''}
+            locale={locale}
             onCopyWalletPublicKey={onCopyWalletPublicKey}
             onShowQRCode={() =>
               openDialogAction({ dialog: WalletPublicKeyQRCodeDialog })
