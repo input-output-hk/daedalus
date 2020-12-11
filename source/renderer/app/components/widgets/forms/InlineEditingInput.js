@@ -147,14 +147,13 @@ export default class InlineEditingInput extends Component<Props, State> {
   onBlur = (event: InputEvent) => {
     event.stopPropagation();
     event.preventDefault();
-    const { onBlur, value } = this.props;
-    const inputField = this.validator.$('inputField');
-    const hasChanged = inputField.value !== value;
+    const { disabled, readOnly, onBlur, value } = this.props;
     this.setState({
       isActive: false,
-      hasChanged,
     });
-    if (onBlur) onBlur();
+    if (!disabled && !readOnly && onBlur) {
+      onBlur();
+    }
   };
 
   onCancel = () => {
@@ -178,8 +177,16 @@ export default class InlineEditingInput extends Component<Props, State> {
     inputField.onChange(...props);
   };
 
-  componentDidUpdate({ value: prevValue, errorMessage: prevError }: Props) {
-    const { value: nextValue, errorMessage: nextError } = this.props;
+  componentDidUpdate({
+    value: prevValue,
+    errorMessage: prevError,
+    isLoading: prevLoading,
+  }: Props) {
+    const {
+      value: nextValue,
+      errorMessage: nextError,
+      isLoading: nextLoading,
+    } = this.props;
     const inputField = this.validator.$('inputField');
 
     // If there's an error, we focus the input again
@@ -195,6 +202,11 @@ export default class InlineEditingInput extends Component<Props, State> {
     // we need to manually update the ReactToolboxMobxForm input field
     if (prevValue !== nextValue) {
       inputField.set(nextValue);
+      if (nextValue === '') {
+        this.setState({
+          hasChanged: false,
+        });
+      }
     }
 
     // If the `value` props was updated
@@ -254,7 +266,8 @@ export default class InlineEditingInput extends Component<Props, State> {
 
     const showEditButton =
       !isActive && !isLoading && !hasChanged && label.length && !readOnly;
-    const showFocusButtons = !isLoading && (isActive || hasChanged);
+    const showFocusButtons =
+      !isLoading && !disabled && !readOnly && (isActive || hasChanged);
     const showLoadingButton = isLoading;
 
     return (

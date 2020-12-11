@@ -148,4 +148,10 @@
     text-align: right;
     top: 5px;
   }
+
+  :global {
+    .SimpleFormField_label {
+      display: inline-block;
+    }
+  }
 }
