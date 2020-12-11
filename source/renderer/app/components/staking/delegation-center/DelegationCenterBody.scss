@@ -25,7 +25,9 @@
     }
 
     .rightBodyTitle {
+      display: flex;
       flex: 1.6;
+      justify-content: space-around;
     }
   }
 
