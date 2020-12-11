@@ -142,13 +142,6 @@ export default class WalletSendForm extends Component<Props, State> {
     transactionFeeError: null,
   };
 
-  // We need to track the fee calculation state in order to disable
-  // the "Submit" button as soon as either receiver or amount field changes.
-  // This is required as we are using debounced validation and we need to
-  // disable the "Submit" button as soon as the value changes and then wait for
-  // the validation to end in order to see if the button should be enabled or not.
-  _isCalculatingFee = false;
-
   // We need to track the mounted state in order to avoid calling
   // setState promise handling code after the component was already unmounted:
   // Read more: https://facebook.github.io/react/blog/2015/12/16/ismounted-antipattern.html
@@ -174,7 +167,8 @@ export default class WalletSendForm extends Component<Props, State> {
   handleSubmitOnEnter = submitOnEnter.bind(this, this.handleOnSubmit);
 
   isDisabled = () =>
-    this._isCalculatingFee || !this.state.isTransactionFeeCalculated;
+    this.state.isCalculatingTransactionFee ||
+    !this.state.isTransactionFeeCalculated;
 
   // FORM VALIDATION
   form = new ReactToolboxMobxForm(
@@ -381,7 +375,6 @@ export default class WalletSendForm extends Component<Props, State> {
   }
 
   _calculateTransactionFee = async (address: string, amountValue: string) => {
-    this._isCalculatingFee = true;
     const amount = formattedAmountToLovelace(amountValue);
     const {
       feeCalculationRequestQue: prevFeeCalculationRequestQue,
@@ -399,8 +392,8 @@ export default class WalletSendForm extends Component<Props, State> {
         this._isMounted &&
         this.state.feeCalculationRequestQue - prevFeeCalculationRequestQue === 1
       ) {
-        this._isCalculatingFee = false;
         this.setState({
+          isCalculatingTransactionFee: false,
           isTransactionFeeCalculated: true,
           transactionFee: fee,
           transactionFeeError: null,
@@ -420,15 +413,13 @@ export default class WalletSendForm extends Component<Props, State> {
         ) : (
           this.context.intl.formatMessage(error)
         );
-        this._isCalculatingFee = false;
         this.setState({
+          isCalculatingTransactionFee: false,
           isTransactionFeeCalculated: false,
           transactionFee: new BigNumber(0),
           transactionFeeError,
         });
       }
-    } finally {
-      this.setState({ isCalculatingTransactionFee: false });
     }
   };
 
