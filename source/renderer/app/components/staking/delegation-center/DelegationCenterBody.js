@@ -3,16 +3,23 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
 import { defineMessages, intlShape } from 'react-intl';
+import { get } from 'lodash';
 import Wallet from '../../../domains/Wallet';
 import WalletRow from './WalletRow';
 import styles from './DelegationCenterBody.scss';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
+import type { FutureEpoch, NextEpoch } from '../../../api/network/types';
 
 const messages = defineMessages({
   bodyTitle: {
     id: 'staking.delegationCenter.bodyTitle',
     defaultMessage: '!!!Wallets',
     description: 'Title for the Delegation center body section.',
+  },
+  currentEpochTitle: {
+    id: 'staking.delegationCenter.currentEpochTitle',
+    defaultMessage: '!!!Now',
+    description: 'Title for the Delegation current epoch.',
   },
   loadingStakePoolsMessage: {
     id: 'staking.delegationCenter.loadingStakePoolsMessage',
@@ -29,6 +36,8 @@ type Props = {
   onUndelegate: Function,
   getStakePoolById: Function,
   isLoading: boolean,
+  nextEpoch: ?NextEpoch,
+  futureEpoch: ?FutureEpoch,
 };
 
 @observer
@@ -48,9 +57,16 @@ export default class DelegationCenterBody extends Component<Props> {
       onUndelegate,
       getStakePoolById,
       isLoading,
+      nextEpoch,
+      futureEpoch,
     } = this.props;
 
     const title = intl.formatMessage(messages.bodyTitle);
+
+    const currentEpochTitle = intl.formatMessage(messages.currentEpochTitle);
+
+    const nextEpochNumber = get(nextEpoch, 'epochNumber', 0);
+    const futureEpochNumber = get(futureEpoch, 'epochNumber', 0);
 
     const loadingSpinner = (
       <LoadingSpinner
@@ -76,8 +92,13 @@ export default class DelegationCenterBody extends Component<Props> {
         ) : (
           <div>
             <div className={styles.bodyTitle}>
-              <span>{title}</span>
-            </div>
+              <div className={styles.leftBodyTitle}>{title}</div>
+              <div className={styles.rightBodyTitle}>
+                <span>{currentEpochTitle}</span>
+                <span>{nextEpochNumber}</span>
+                <span>{futureEpochNumber}</span>
+              </div>
+              </div>
             <div className={styles.mainContent}>
               {wallets.map((wallet: Wallet) => (
                 <WalletRow

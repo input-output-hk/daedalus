@@ -287,6 +287,7 @@
   "sidebar.wallets.addWallet": "Add wallet",
   "staking.countdown.learnMore.linkUrl": "https://iohk.zendesk.com/hc/en-us",
   "staking.delegationCenter.bodyTitle": "Wallets",
+  "staking.delegationCenter.currentEpochTitle": "Now",
   "staking.delegationCenter.currentSlot": "Current slot",
   "staking.delegationCenter.delegate": "Delegate",
   "staking.delegationCenter.description": "Changes to delegation preferences will take effect after both the current and next Cardano epochs have completed. Epochs on the Cardano mainnet last 5 days. Any changes made now will take effect in {timeUntilFutureEpoch}.",

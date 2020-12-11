@@ -60,6 +60,8 @@ export default class DelegationCenter extends Component<Props> {
           onDelegate={onDelegate}
           onUndelegate={onUndelegate}
           getStakePoolById={getStakePoolById}
+          nextEpoch={nextEpoch}
+          futureEpoch={futureEpoch}
           isLoading={isLoading || !isEpochsInfoAvailable}
         />
       </Fragment>
