@@ -6,24 +6,24 @@
       text-align: center;
 
       .descriptionIcon {
+        height: 72px;
         margin: auto;
         width: 72px;
-        height: 72px;
       }
       .errorIcon {
+        height: 72px;
         margin: auto;
         width: 72px;
-        height: 72px;
       }
     }
 
     .description {
+      color: var(--theme-voting-steps-description-color);
       display: flex;
-      text-align: center;
       flex-direction: column;
       margin-bottom: 25px;
       margin-top: 40px;
-      color: var(--theme-voting-steps-description-color);
+      text-align: center;
     }
 
     .messages {
@@ -32,8 +32,8 @@
       margin-bottom: 15px;
       margin-top: 25px;
       p {
-        margin-top: 20px;
         color: var(--theme-voting-steps-warning-messages-font-color);
+        margin-top: 20px;
       }
     }
 

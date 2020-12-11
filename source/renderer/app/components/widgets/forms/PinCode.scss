@@ -11,30 +11,8 @@
       font-size: 14px;
       height: 50px;
       padding: 10px 10px;
-      width: 50px;
       text-align: center;
-    }
-
-    .SimpleTooltip_bubble {
-      .SimpleBubble_bubble {
-        padding: 8px;
-        left: 60px !important;
-        text-align: center;
-        border: none;
-        border-radius: 5px;
-        font-weight: bold;
-        background: var(--theme-color-error) !important;
-      }
-      span {
-        &:before {
-          border-color: transparent transparent
-            var(--theme-color-error, transparent) transparent !important;
-        }
-        &:after {
-          border-color: transparent transparent
-            var(--theme-color-error, rgba(94, 96, 102, 0.9)) transparent !important;
-        }
-      }
+      width: 50px;
     }
   }
 
@@ -50,9 +28,5 @@
         }
       }
     }
-  }
-
-  .tooltip {
-    display: inline-block !important;
   }
 }

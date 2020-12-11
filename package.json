@@ -173,6 +173,7 @@
   },
   "dependencies": {
     "@cardano-foundation/ledgerjs-hw-app-cardano": "2.0.1",
+    "@iohk-jormungandr/wallet-js": "0.5.0-pre7",
     "aes-js": "3.1.2",
     "bignumber.js": "5.0.0",
     "bip39": "2.3.0",

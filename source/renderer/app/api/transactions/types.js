@@ -64,7 +64,7 @@ export type TransactionWithdrawals = {
 };
 export type TransactionWithdrawalType = 'self' | Array<string>;
 
-export type TransactionState = 'pending' | 'in_ledger';
+export type TransactionState = 'pending' | 'in_ledger' | 'expired';
 
 export type TrasactionAddresses = {
   from: Array<?string>,

@@ -1165,6 +1165,9 @@ export const createDaedalusComponentsTheme = (
       '--theme-transactions-icon-type-pending-warning-background-color': `
         ${chroma(error.regular).alpha(0.8)}
       `,
+      '--theme-transactions-icon-type-failed-background-color': `
+        ${chroma(error.regular)}
+      `,
       '--theme-transactions-arrow-stroke-color': `${text.primary}`,
       '--theme-transactions-filter-button-color': `${background.primary.lightest}`,
       '--theme-transactions-filter-button-shadow-color': `${chroma(

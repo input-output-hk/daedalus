@@ -17,8 +17,8 @@
       margin-bottom: 25px;
       margin-top: 40px;
       .qrCodeMessageIcon {
-        width: 72px;
         height: 72px;
+        width: 72px;
         svg {
           path {
             stroke: var(--theme-voting-info-icon-color);
@@ -27,10 +27,10 @@
       }
       .qrCodeMessageText {
         display: flex;
-        text-align: left;
+        flex-direction: column;
         justify-content: flex-end;
         margin-left: 10px;
-        flex-direction: column;
+        text-align: left;
         p:last-child {
           color: var(--theme-voting-steps-description-color);
         }

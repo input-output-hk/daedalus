@@ -13,6 +13,7 @@ export const TransactionStates: EnumMap<string, TransactionState> = {
   PENDING: 'pending',
   OK: 'in_ledger',
   IN_LEDGER: 'in_ledger',
+  FAILED: 'expired',
 };
 
 export const TransactionTypes: EnumMap<string, TransactionType> = {

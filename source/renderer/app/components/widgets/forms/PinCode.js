@@ -4,10 +4,8 @@ import { map } from 'lodash';
 import { NumericInput } from 'react-polymorph/lib/components/NumericInput';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { IDENTIFIERS } from 'react-polymorph/lib/themes/API';
-import { Tooltip } from 'react-polymorph/lib/components/Tooltip';
-import { TooltipSkin } from 'react-polymorph/lib/skins/simple/TooltipSkin';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import classNames from 'classnames';
-import tooltipStyles from './FormFieldSkinTooltip-tooltip.scss';
 import styles from './PinCode.scss';
 
 type Props = $Exact<{
@@ -133,16 +131,15 @@ export default class PinCode extends Component<Props> {
           {label}
         </label>
         {error ? (
-          <Tooltip
-            skin={TooltipSkin}
-            themeOverrides={tooltipStyles}
-            tip={error}
-            key="tooltip"
-            className={styles.tooltip}
-            isOpeningUpward={false}
+          <PopOver
+            content={error}
+            placement="bottom"
+            themeVariables={{
+              '--rp-pop-over-bg-color': 'var(--theme-color-error)',
+            }}
           >
             {pinCode}
-          </Tooltip>
+          </PopOver>
         ) : (
           <>{pinCode}</>
         )}
