@@ -9,6 +9,7 @@ import WalletsWrapper from '../_utils/WalletsWrapper';
 import WalletSettingsScreen from './WalletSettingsScreen.stories.js';
 import './WalletDelete.stories';
 import './WalletRecoveryPhraseVerification.stories';
+import './WalletPublicKeyQRCode.stories';
 
 /* eslint-disable consistent-return */
 storiesOf('Wallets|Settings', module)
