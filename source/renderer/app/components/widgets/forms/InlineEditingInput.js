@@ -147,7 +147,7 @@ export default class InlineEditingInput extends Component<Props, State> {
   onBlur = (event: InputEvent) => {
     event.stopPropagation();
     event.preventDefault();
-    const { disabled, readOnly, onBlur, value } = this.props;
+    const { disabled, readOnly, onBlur } = this.props;
     this.setState({
       isActive: false,
     });
@@ -177,16 +177,8 @@ export default class InlineEditingInput extends Component<Props, State> {
     inputField.onChange(...props);
   };
 
-  componentDidUpdate({
-    value: prevValue,
-    errorMessage: prevError,
-    isLoading: prevLoading,
-  }: Props) {
-    const {
-      value: nextValue,
-      errorMessage: nextError,
-      isLoading: nextLoading,
-    } = this.props;
+  componentDidUpdate({ value: prevValue, errorMessage: prevError }: Props) {
+    const { value: nextValue, errorMessage: nextError } = this.props;
     const inputField = this.validator.$('inputField');
 
     // If there's an error, we focus the input again

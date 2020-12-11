@@ -264,6 +264,7 @@ export default class StakingStore extends Store {
         } else {
           this.smashServerUrl = '';
           this.smashServerUrlError = null;
+          this.smashServerLoading = false;
         }
       } catch (error) {
         runInAction(() => {
