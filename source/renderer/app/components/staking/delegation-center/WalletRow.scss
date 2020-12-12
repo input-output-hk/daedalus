@@ -63,7 +63,7 @@
   }
 
   .right {
-    align-items: stretch;
+    align-items: center;
     display: flex;
     flex: 1.5;
     justify-content: space-around;
@@ -228,15 +228,13 @@
   }
 
   .arrow {
-    height: 7px;
-    margin: 6px 6px 0;
+    height: 18px;
     opacity: 0.3;
-    position: relative;
-    width: 3.5px;
+    width: 6px;
 
     > svg {
-      height: 3.5px;
-      transform: rotate(90deg) translate(-11px, 2px);
+      height: 6px;
+      transform: rotate(90deg);
 
       path {
         stroke: var(--theme-staking-font-color-regular);
