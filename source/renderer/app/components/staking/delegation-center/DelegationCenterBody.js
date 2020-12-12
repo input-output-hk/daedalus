@@ -98,7 +98,7 @@ export default class DelegationCenterBody extends Component<Props> {
                 <span>{nextEpochNumber}</span>
                 <span>{futureEpochNumber}</span>
               </div>
-              </div>
+            </div>
             <div className={styles.mainContent}>
               {wallets.map((wallet: Wallet) => (
                 <WalletRow

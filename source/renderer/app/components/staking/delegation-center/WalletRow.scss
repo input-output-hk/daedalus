@@ -35,12 +35,13 @@
 
     .title {
       @extend %accentText;
-      margin-bottom: 4px;
+
       .hardwareWalletsIcon {
         svg {
           height: 12px;
           margin-left: 6px;
           width: 12px;
+
           path {
             fill: var(--theme-staking-font-color-accent);
           }
@@ -65,77 +66,69 @@
     align-items: stretch;
     display: flex;
     flex: 1.5;
+    justify-content: space-around;
 
     .stakePoolTile {
       background-color: var(--theme-button-flat-background-color-disabled);
       border-radius: 4px;
       height: 71px;
-      margin: 0 20px 11.5px 0;
-      padding: 24.5px 14px;
+      margin: 0 0 0 10px;
+      padding: 25px 11px;
+      text-align: center;
       width: 80px;
-    }
 
-    .status {
-      @extend %regularText;
-      align-items: center;
-      display: flex;
-      justify-content: flex-end;
-      margin-bottom: 4px;
+      .activeAdaSymbol {
+        svg {
+          height: 9px;
+          width: 8px;
 
-      .ticker {
-        background-color: var(
-          --theme-staking-wallet-row-ticker-background-color
-        );
-        border-radius: 2px;
-        color: var(--theme-staking-wallet-row-ticker-text-color);
-        font-family: var(--font-semibold);
-        font-size: 11px;
-        line-height: 14px;
-        padding: 0 8px 3px 8px;
-        position: relative;
-        text-transform: uppercase;
-
-        .activeAdaSymbol {
-          svg {
-            height: 10px;
-            margin-bottom: -1.5px;
-            margin-right: 8px;
-            width: 9px;
-
+          & > g {
             & > g {
-              & > g {
-                stroke: var(
-                  --theme-staking-wallet-row-ticker-ada-icon-fill-color
-                );
-              }
+              stroke: var(
+                --theme-staking-wallet-row-ticker-ada-icon-fill-color
+              );
             }
           }
         }
       }
 
-      > span:first-child {
-        height: 22px;
-        line-height: 2;
-        margin-top: 5.5px;
+      .nonDelegatedText,
+      .stakePoolUnknow {
+        @extend %accentText;
+        font-size: 8px;
+        line-height: 1.25;
+        text-transform: uppercase;
       }
 
-      > span:last-child > span {
-        padding-bottom: 4px;
-        padding-top: 3px;
-      }
-
-      .tooltipLabelWrapper {
-        font-family: var(--font-regular);
-        font-size: 13px;
-        text-transform: initial;
+      .stakePoolTicker {
+        @extend %accentText;
+        font-size: 14px;
+        letter-spacing: -0.5px;
+        line-height: 1.57;
+        padding-left: 4px;
       }
     }
 
-    .status,
+    > span:first-child {
+      height: 22px;
+      line-height: 2;
+      margin-top: 5.5px;
+    }
+
+    > span:last-child > span {
+      padding-bottom: 4px;
+      padding-top: 3px;
+    }
+
+    .tooltipLabelWrapper {
+      font-family: var(--font-regular);
+      font-size: 13px;
+      text-transform: initial;
+    }
+
     .action {
       .unknown {
         font-family: var(--font-bold);
-        text-transform: initial;
       }
     }
 
@@ -240,9 +233,11 @@
     opacity: 0.3;
     position: relative;
     width: 3.5px;
+
     > svg {
       height: 3.5px;
       transform: rotate(90deg) translate(-11px, 2px);
+
       path {
         stroke: var(--theme-staking-font-color-regular);
       }
