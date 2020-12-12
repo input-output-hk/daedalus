@@ -302,7 +302,7 @@
   "staking.delegationCenter.or": "or",
   "staking.delegationCenter.redelegate": "Redelegate",
   "staking.delegationCenter.removeDelegation": "Undelegate",
-  "staking.delegationCenter.stakePoolTooltipTickerEarningRewards": "Earning rewards",
+  "staking.delegationCenter.stakePoolTooltipTickerEarningRewards": "Currently earning rewards",
   "staking.delegationCenter.stakePoolTooltipTickerEpoch": "From epoch {fromEpoch}",
   "staking.delegationCenter.syncingTooltipLabel": "Syncing {syncingProgress}%",
   "staking.delegationCenter.totalSlots": "Total slots",
