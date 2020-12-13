@@ -1045,7 +1045,7 @@ export const createDaedalusComponentsTheme = (
       '--theme-staking-donut-ring-completed-color': `${error.regular}`,
       '--theme-staking-donut-ring-remaining-color': `${error.ultralight}`,
       '--theme-staking-wallet-row-border-color': `${border}`,
-      '--theme-staking-wallet-row-action-delegate-text-color': `${background.secondary.regular}`,
+      '--theme-staking-wallet-row-action-delegate-background-color': `${background.secondary.regular}`,
       '--theme-staking-wallet-row-action-undelegate-text-color': `${error.regular}`,
       '--theme-staking-wallet-row-ticker-background-color': `${background.primary.regular}`,
       '--theme-staking-wallet-row-ticker-text-color': `${text.primary}`,

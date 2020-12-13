@@ -852,7 +852,7 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-staking-countdown-widget-field-value-color': '#2d2d2d',
     '--theme-staking-export-button-shadow-color': 'rgba(0, 0, 0, 0.18)',
     '--theme-staking-export-button-color': '#fff',
-    '--theme-staking-wallet-row-action-delegate-text-color': '#29b595',
+    '--theme-staking-wallet-row-action-delegate-background-color': '#29b595',
     '--theme-staking-wallet-row-action-undelegate-text-color': '#ea4c5b',
     '--theme-staking-wallet-row-ticker-background-color':
       'rgba(45, 45, 45, 0.07)',

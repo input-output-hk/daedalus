@@ -32,6 +32,7 @@ const messages = defineMessages({
 type Props = {
   wallets: Array<Wallet>,
   numberOfStakePools: number,
+  numberOfRankedStakePools?: number,
   onDelegate: Function,
   onUndelegate: Function,
   getStakePoolById: Function,
@@ -53,6 +54,7 @@ export default class DelegationCenterBody extends Component<Props> {
     const {
       wallets,
       numberOfStakePools,
+      numberOfRankedStakePools,
       onDelegate,
       onUndelegate,
       getStakePoolById,
@@ -105,6 +107,7 @@ export default class DelegationCenterBody extends Component<Props> {
                   key={wallet.id}
                   wallet={wallet}
                   numberOfStakePools={numberOfStakePools}
+                  numberOfRankedStakePools={numberOfRankedStakePools}
                   onDelegate={() => onDelegate(wallet.id)}
                   onUndelegate={() => onUndelegate(wallet.id)}
                   delegatedStakePool={getStakePoolById(

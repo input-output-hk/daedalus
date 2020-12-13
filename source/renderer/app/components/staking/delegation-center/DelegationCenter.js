@@ -13,6 +13,7 @@ import type {
 type Props = {
   wallets: Array<Wallet>,
   numberOfStakePools: number,
+  numberOfRankedStakePools?: number,
   onDelegate: Function,
   onUndelegate: Function,
   networkTip: ?TipInfo,
@@ -31,6 +32,7 @@ export default class DelegationCenter extends Component<Props> {
     const {
       wallets,
       numberOfStakePools,
+      numberOfRankedStakePools,
       onDelegate,
       onUndelegate,
       networkTip,
@@ -57,6 +59,7 @@ export default class DelegationCenter extends Component<Props> {
         <DelegationCenterBody
           wallets={wallets}
           numberOfStakePools={numberOfStakePools}
+          numberOfRankedStakePools={numberOfRankedStakePools}
           onDelegate={onDelegate}
           onUndelegate={onUndelegate}
           getStakePoolById={getStakePoolById}

@@ -8,7 +8,10 @@ import UndelegateConfirmationDialog from '../../components/staking/delegation-ce
 import DelegationSetupWizardDialog from '../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
 import DelegationCenterNoWallets from '../../components/staking/delegation-center/DelegationCenterNoWallets';
 import { ROUTES } from '../../routes-config';
-import { MIN_DELEGATION_FUNDS } from '../../config/stakingConfig';
+import {
+  IS_RANKING_DATA_AVAILABLE,
+  MIN_DELEGATION_FUNDS,
+} from '../../config/stakingConfig';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 type Props = InjectedProps;
@@ -75,6 +78,11 @@ export default class DelegationCenterPage extends Component<Props> {
     } = networkStatus;
     const { currentLocale } = profile;
 
+    const numberOfRankedStakePools: number = stakePools.filter(
+      (stakePool) =>
+        IS_RANKING_DATA_AVAILABLE && stakePool.nonMyopicMemberRewards
+    ).length;
+
     if (!wallets.allWallets.length) {
       return (
         <DelegationCenterNoWallets
@@ -89,6 +97,7 @@ export default class DelegationCenterPage extends Component<Props> {
         <DelegationCenter
           wallets={wallets.allWallets}
           numberOfStakePools={stakePools.length}
+          numberOfRankedStakePools={numberOfRankedStakePools}
           onDelegate={this.handleDelegate}
           onUndelegate={this.handleUndelegate}
           networkTip={networkTip}
