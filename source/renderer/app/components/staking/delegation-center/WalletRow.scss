@@ -211,6 +211,14 @@
         .action {
           margin-top: 7px;
         }
+
+        &:hover {
+          padding-top: 15px;
+
+          .action {
+            margin-top: 17px;
+          }
+        }
       }
 
       &:hover {
