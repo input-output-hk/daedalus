@@ -95,11 +95,13 @@ export default class DelegationCenterBody extends Component<Props> {
           <div>
             <div className={styles.bodyTitle}>
               <div className={styles.leftBodyTitle}>{title}</div>
-              <div className={styles.rightBodyTitle}>
-                <span>{currentEpochTitle}</span>
-                <span>{nextEpochNumber}</span>
-                <span>{futureEpochNumber}</span>
-              </div>
+              {nextEpochNumber && futureEpochNumber && (
+                <div className={styles.rightBodyTitle}>
+                  <span>{currentEpochTitle}</span>
+                  <span>{nextEpochNumber}</span>
+                  <span>{futureEpochNumber}</span>
+                </div>
+              )}
             </div>
             <div className={styles.mainContent}>
               {wallets.map((wallet: Wallet) => (
