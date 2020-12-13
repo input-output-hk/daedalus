@@ -66,12 +66,13 @@
     align-items: center;
     display: flex;
     flex: 1.5;
-    justify-content: space-around;
+    justify-content: flex-end;
 
     .stakePoolTile {
       background-color: var(--theme-button-flat-background-color-disabled);
       border-radius: 4px;
       height: 71px;
+      margin: 0 20px;
       padding: 25px 11px;
       text-align: center;
       width: 80px;
@@ -107,12 +108,8 @@
         padding-left: 4px;
       }
 
-      &:first-child {
-        margin-left: 12px;
-      }
-
       &:last-child {
-        margin-right: 5px;
+        margin-right: 0;
       }
     }
 
@@ -236,9 +233,7 @@
 
   .arrow {
     height: 18px;
-    margin-left: -10px;
     opacity: 0.3;
-    width: 6px;
 
     > svg {
       height: 6px;

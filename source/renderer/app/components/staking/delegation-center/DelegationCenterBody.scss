@@ -28,7 +28,20 @@
     .rightBodyTitle {
       display: flex;
       flex: 1.5;
-      justify-content: space-around;
+      justify-content: flex-end;
+
+      > span:first-child  {
+        margin: 0 52px;
+      }
+
+      > span:nth-child(2)  {
+        margin: 0 50px;
+      }
+
+      > span:last-child  {
+        margin-left: 55px;
+        margin-right: 32px;
+      }
     }
   }
 
