@@ -338,26 +338,24 @@ export default class WalletRow extends Component<Props> {
                     {notDelegatedText}
                   </span>
                 )}
-                <div className={styles.action}>
-                  {isFutureDelegationDelegating && !isUndelegateBlocked && (
-                    <span
-                      className={styles.actionUndelegate}
-                      role="presentation"
-                      onClick={onUndelegate}
-                      key="undelegate"
-                    >
-                      {removeDelegationText}
-                    </span>
-                  )}
-                  <span
-                    className={styles.actionDelegate}
+                {isFutureDelegationDelegating && !isUndelegateBlocked && (
+                  <div
+                    className={styles.action}
                     role="presentation"
-                    onClick={onDelegate}
+                    onClick={onUndelegate}
+                    key="undelegate"
                   >
-                    {!isFutureDelegationDelegating
-                      ? delegateText
-                      : redelegateText}
-                  </span>
+                    {removeDelegationText}
+                  </div>
+                )}
+                <div
+                  className={styles.action}
+                  role="presentation"
+                  onClick={onDelegate}
+                >
+                  {!isFutureDelegationDelegating
+                    ? delegateText
+                    : redelegateText}
                 </div>
               </div>
             </Fragment>

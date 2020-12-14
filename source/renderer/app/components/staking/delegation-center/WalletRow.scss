@@ -246,27 +246,27 @@
     }
 
     .action {
+      @extend %accentText;
+      align-items: center;
       background-color: var(
         --theme-staking-wallet-row-action-delegate-background-color
       );
       border-radius: 0 0 4px 4px;
+      color: var(--theme-staking-stake-pool-background-color);
       cursor: pointer;
+      display: flex;
+      font-size: 8px;
+      font-weight: bold;
       height: 22px;
+      justify-content: center;
+      line-height: 1.25;
       margin-left: -12px;
       margin-top: -21px;
       opacity: 0;
       position: absolute;
+      text-transform: uppercase;
       transition: opacity 0.15s ease-in;
       width: 80px;
-
-      > span {
-        @extend %accentText;
-        color: var(--theme-staking-stake-pool-background-color);
-        font-size: 8px;
-        font-weight: bold;
-        line-height: 1.25;
-        text-transform: uppercase;
-      }
     }
 
     :global {
