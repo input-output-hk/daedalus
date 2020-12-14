@@ -7,6 +7,10 @@ Changelog
 
 - Added initial loading state to UTXO screen [PR 2265](https://github.com/input-output-hk/daedalus/pull/2265)
 
+### Chores
+
+- Updated `ini` package ([PR 2278](https://github.com/input-output-hk/daedalus/pull/2278))
+
 ## 3.0.0
 
 ### Features
