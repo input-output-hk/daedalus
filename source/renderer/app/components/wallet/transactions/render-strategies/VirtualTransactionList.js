@@ -12,10 +12,8 @@ import type { Row } from '../types';
 import { TransactionInfo, TransactionsGroup } from '../types';
 import styles from './VirtualTransactionList.scss';
 
-/* eslint-disable react/no-unused-prop-types */
-
 type Props = {
-  getExpandedTransactions: () => Array<any>,
+  getExpandedTransactions: () => Map<string, WalletTransaction>,
   renderRow: (Row) => Node,
   rows: Row[],
   isLoadingSpinnerShown?: boolean,
@@ -38,7 +36,7 @@ export class VirtualTransactionList extends Component<Props> {
   rowHeights: RowHeight[] = [];
   txAddressHeight: number = 0;
   txIdHeight: number = 0;
-  visibleExpandedTx: Array<WalletTransaction>;
+  visibleExpandedTx: Array<WalletTransaction> = [];
   overscanStartIndex: number;
   overscanStopIndex: number;
 
@@ -53,12 +51,6 @@ export class VirtualTransactionList extends Component<Props> {
 
   componentWillUnmount() {
     window.removeEventListener('resize', this.onResize);
-  }
-
-  componentDidUpdate(prevProps: Props) {
-    if (this.props.rows.length !== prevProps.rows.length) {
-      this.recomputeVirtualRowHeights();
-    }
   }
 
   /**
@@ -154,10 +146,16 @@ export class VirtualTransactionList extends Component<Props> {
   /**
    * Gets a row height based on its type
    */
-  estimateRowHeight = (row: Row): number =>
-    row instanceof TransactionInfo
-      ? this.estimateHeightOfTxContractedRow(row)
-      : GROUP_DATE_HEIGHT;
+  estimateRowHeight = (row: Row): number => {
+    if (row instanceof TransactionInfo) {
+      const expandedTxMap = this.props.getExpandedTransactions();
+      if (expandedTxMap.has(row.tx.id)) {
+        return this.estimateHeightOfTxExpandedRow(row, row.tx);
+      }
+      return this.estimateHeightOfTxContractedRow(row);
+    }
+    return GROUP_DATE_HEIGHT;
+  };
 
   /**
    * Maps over all rows and returns array of calculated heights.
@@ -221,8 +219,10 @@ export class VirtualTransactionList extends Component<Props> {
   };
 
   updateVisibleExpandedTxRowHeights = () => {
-    const expandedRows = this.props.getExpandedTransactions();
-    const visibleExpandedTx = expandedRows.filter((tx) => {
+    const expandedTxMap = this.props.getExpandedTransactions();
+    // This is needed because a spreaded Map results in an array of [key, value]
+    const expandedTxArray = [...expandedTxMap].map((mapValue) => mapValue[1]);
+    const visibleExpandedTx = expandedTxArray.filter((tx) => {
       const index = this.findIndexForTx(tx);
       return (
         index >= this.overscanStartIndex && index <= this.overscanStopIndex
@@ -248,7 +248,7 @@ export class VirtualTransactionList extends Component<Props> {
 
     // Subsequently resizes, updates the expanded rows heights if there is any expanded one
     const expandedTransactions = this.props.getExpandedTransactions();
-    if (!expandedTransactions.length) return;
+    if (!expandedTransactions.size) return;
     this.updateAddressesAndIdHeights();
     this.updateVisibleExpandedTxRowHeights();
   };
@@ -298,9 +298,9 @@ export class VirtualTransactionList extends Component<Props> {
     // Prevent List rendering if we have no rows to render
     if (!rows.length) return false;
 
-    // Recompute all row heights in case the number of rows has changed
-    if (this.rowHeights.length !== rows.length) {
+    if (rows.length !== this.rowHeights.length) {
       this.rowHeights = this.estimateRowHeights(rows);
+      this.updateVisibleExpandedTxRowHeights();
     }
 
     const componentStyles = classNames([

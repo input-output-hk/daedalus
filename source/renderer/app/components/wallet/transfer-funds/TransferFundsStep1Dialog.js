@@ -99,6 +99,7 @@ export default class TransferFundsStep1Dialog extends Component<Props> {
               sourceWallet.delegatedStakePoolId
             )}
             selected
+            isHardwareWallet={sourceWallet.isHardwareWallet}
           />
         </div>
         <WalletsDropdown

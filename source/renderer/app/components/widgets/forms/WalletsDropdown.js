@@ -51,6 +51,7 @@ type WalletOption = {
   value: string,
   syncing?: boolean,
   syncingLabel?: string,
+  isHardwareWallet: boolean,
 };
 
 export default class WalletsDropdown extends Component<Props> {
@@ -60,6 +61,7 @@ export default class WalletsDropdown extends Component<Props> {
       detail,
       numberOfStakePools,
       delegatedStakePool,
+      isHardwareWallet,
       syncing,
       syncingLabel,
     }: WalletOption) => (
@@ -69,6 +71,7 @@ export default class WalletsDropdown extends Component<Props> {
         numberOfStakePools={numberOfStakePools}
         detail={detail}
         delegatedStakePool={delegatedStakePool}
+        isHardwareWallet={isHardwareWallet}
         syncingLabel={syncingLabel}
       />
     ),
@@ -77,6 +80,7 @@ export default class WalletsDropdown extends Component<Props> {
       detail,
       numberOfStakePools,
       delegatedStakePool,
+      isHardwareWallet,
       syncing,
       syncingLabel,
     }: WalletOption) => (
@@ -87,6 +91,7 @@ export default class WalletsDropdown extends Component<Props> {
         numberOfStakePools={numberOfStakePools}
         detail={detail}
         delegatedStakePool={delegatedStakePool}
+        isHardwareWallet={isHardwareWallet}
         syncingLabel={syncingLabel}
       />
     ),
@@ -112,6 +117,7 @@ export default class WalletsDropdown extends Component<Props> {
         lastDelegationStakePoolId,
         pendingDelegations,
         isRestoring,
+        isHardwareWallet,
       }: Wallet) => {
         const hasPendingDelegations =
           pendingDelegations && pendingDelegations.length > 0;
@@ -128,6 +134,7 @@ export default class WalletsDropdown extends Component<Props> {
           value,
           numberOfStakePools,
           delegatedStakePool,
+          isHardwareWallet,
           syncingLabel: this.props.syncingLabel,
         };
       }

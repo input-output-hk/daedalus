@@ -202,7 +202,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-dialog-big-button-background-color': '#fafbfc',
     '--theme-dialog-big-button-border-color': '#c6cdd6',
     '--theme-dialog-big-button-label-color': '#5e6066',
-    '--theme-dialog-big-button-description-color': '#5e6066',
+    '--theme-dialog-big-button-description-color': 'rgba(94, 96, 102, 0.6)',
     '--theme-dialog-set-wallet-password-background-color':
       'rgba(36, 62, 98, 0.96)',
     '--theme-dialog-set-wallet-password-box-shadow': 'rgba(0, 0, 0, 0.25)',
@@ -267,11 +267,10 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--font-mono': 'SFMono-Light',
   },
   hardwareWallet: {
-    '--theme-hardware-wallet-step-background-color': '#fafbfc',
-    '--theme-hardware-wallet-step-border-active-color':
-      'rgba(94, 96, 102, 0.5)',
-    '--theme-hardware-wallet-step-border-color': '#c6cdd6',
-    '--theme-hardware-wallet-step-color': '#5e6066',
+    '--theme-hardware-wallet-status-background-color': '#fafbfc',
+    '--theme-hardware-wallet-status-border-color': 'rgba(94, 96, 102, 0.3)',
+    '--theme-hardware-wallet-status-color': '#5e6066',
+    '--theme-hardware-wallet-status-ready-color': '#2dc06c',
     '--theme-hardware-wallet-title-color': '#5e6066',
     '--theme-hardware-wallet-message-color': '#5e6066',
   },
@@ -283,7 +282,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-icon-node-update-notification-arrow-color': '#5e6066',
     '--theme-icon-add-wallet-from-sidebar-color': '#fafbfc',
     '--theme-icon-ada-summary-wallet-amount-symbol-color': '#5e6066',
-    '--theme-icon-add-wallet-dialog-big-button-color': '#8a98ab',
+    '--theme-icon-add-wallet-dialog-big-button-color': 'rgba(94, 96, 102, 0.5)',
     '--theme-icon-back-button-color': '#5e6066',
     '--theme-icon-close-button-color': '#5e6066',
     '--theme-icon-connecting-ada-api-logo-color': '#fafbfc',
@@ -934,6 +933,8 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
       'rgba(94, 96, 102, 0.5)',
     '--theme-transactions-icon-type-pending-warning-background-color':
       'rgba(236, 93, 107, 0.8)',
+    '--theme-transactions-icon-type-failed-background-color':
+      'rgba(236, 93, 107, 1)',
     '--theme-transactions-state-pending-warning-background-color': '#ec5d6b',
     '--theme-transactions-filter-button-shadow-color': 'rgba(0, 0, 0, 0.18)',
     '--theme-transactions-filter-button-color': '#fafbfc',
