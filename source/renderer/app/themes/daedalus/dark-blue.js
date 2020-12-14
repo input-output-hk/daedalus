@@ -271,11 +271,10 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--font-mono': 'SFMono-Light',
   },
   hardwareWallet: {
-    '--theme-hardware-wallet-step-background-color': '#263345',
-    '--theme-hardware-wallet-step-border-active-color':
-      'rgba(233, 244, 254, 0.5)',
-    '--theme-hardware-wallet-step-border-color': '#263345',
-    '--theme-hardware-wallet-step-color': '#e9f4fe',
+    '--theme-hardware-wallet-status-background-color': '#263345',
+    '--theme-hardware-wallet-status-border-color': 'rgba(233, 244, 254, 0.3)',
+    '--theme-hardware-wallet-status-color': '#e9f4fe',
+    '--theme-hardware-wallet-status-ready-color': '#2dc06c',
     '--theme-hardware-wallet-title-color': '#e9f4fe',
     '--theme-hardware-wallet-message-color': '#e9f4fe',
   },
@@ -288,7 +287,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-icon-add-wallet-from-sidebar-color': '#fafbfc',
     '--theme-icon-ada-summary-wallet-amount-symbol-color': '#e9f4fe',
     '--theme-icon-add-wallet-dialog-big-button-color':
-      'rgba(233, 244, 254, 0.8)',
+      'rgba(233, 244, 254, 0.5)',
     '--theme-icon-back-button-color': '#e9f4fe',
     '--theme-icon-close-button-color': '#fafbfc',
     '--theme-icon-connecting-ada-api-logo-color': '#fafbfc',
@@ -942,6 +941,8 @@ export const DARK_BLUE_THEME_OUTPUT = {
       'rgba(233, 244, 254, 0.3)',
     '--theme-transactions-icon-type-pending-warning-background-color':
       'rgba(236, 93, 107, 0.8)',
+    '--theme-transactions-icon-type-failed-background-color':
+      'rgba(236, 93, 107, 1)',
     '--theme-transactions-state-pending-warning-background-color': '#ec5d6b',
     '--theme-transactions-filter-button-shadow-color': 'rgba(0, 0, 0, 0.18)',
     '--theme-transactions-filter-button-color': '#fafbfc',

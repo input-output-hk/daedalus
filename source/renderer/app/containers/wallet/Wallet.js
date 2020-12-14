@@ -70,6 +70,7 @@ export default class Wallet extends Component<Props> {
       isRestoring,
       isLegacy,
       isNotResponding,
+      isHardwareWallet,
       hasPassword,
     } = activeWallet;
 
@@ -88,6 +89,7 @@ export default class Wallet extends Component<Props> {
           isActiveScreen={this.isActiveScreen}
           isLegacy={isLegacy}
           isNotResponding={isNotResponding}
+          isHardwareWallet={isHardwareWallet}
           isSetWalletPasswordDialogOpen={isDialogOpen(
             ChangeSpendingPasswordDialog
           )}

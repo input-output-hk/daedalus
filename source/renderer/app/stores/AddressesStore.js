@@ -1,5 +1,5 @@
 // @flow
-import { find, last, filter } from 'lodash';
+import { find, last, filter, findIndex } from 'lodash';
 import { observable, computed, action, runInAction } from 'mobx';
 import Store from './lib/Store';
 import CachedRequest from './lib/LocalizedCachedRequest';
@@ -113,6 +113,10 @@ export default class AddressesStore extends Store {
 
   @action _resetErrors = () => {
     this.error = null;
+  };
+
+  getAddressIndex = (address: string): number => {
+    return this.all.length - findIndex(this.all, { id: address }) - 1;
   };
 
   getAccountIndexByWalletId = async (walletId: string): Promise<?number> => {
