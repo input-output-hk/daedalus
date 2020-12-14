@@ -244,7 +244,7 @@ export default class WalletRow extends Component<Props> {
                         </>
                       ) : (
                         <span className={styles.stakePoolUnknown}>
-                          intl.formatMessage( messages.unknownStakePoolLabel )
+                          {intl.formatMessage(messages.unknownStakePoolLabel)}
                         </span>
                       )}
                     </div>
@@ -269,7 +269,7 @@ export default class WalletRow extends Component<Props> {
                       </span>
                     ) : (
                       <span className={styles.stakePoolUnknown}>
-                        intl.formatMessage( messages.unknownStakePoolLabel )
+                        {intl.formatMessage(messages.unknownStakePoolLabel)}
                       </span>
                     )}
                   </div>
@@ -329,7 +329,7 @@ export default class WalletRow extends Component<Props> {
                       </>
                     ) : (
                       <span className={styles.stakePoolUnknown}>
-                        intl.formatMessage( messages.unknownStakePoolLabel )
+                        {intl.formatMessage(messages.unknownStakePoolLabel)}
                       </span>
                     )}
                   </div>
