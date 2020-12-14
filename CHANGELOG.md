@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Chores
+
+- Canceled running fee estimation api requests once new request is made ([PR 2239](https://github.com/input-output-hk/daedalus/pull/2239))
+
 ## 3.0.0
 
 ### Features
@@ -16,7 +22,6 @@ Changelog
 ### Chores
 
 - Reduced the size of Linux installer ([PR 2260](https://github.com/input-output-hk/daedalus/pull/2260))
-- Canceled running fee estimation api requests once new request is made ([PR 2239](https://github.com/input-output-hk/daedalus/pull/2239))
 - Bumped cardano-wallet to v2020-12-08 and cardano-node to 1.24.2 ([PR 2270](https://github.com/input-output-hk/daedalus/pull/2270))
 
 ## 3.0.0-FC4
