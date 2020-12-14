@@ -7,6 +7,10 @@ Changelog
 
 - Added wallet public key viewing feature ([PR 2271](https://github.com/input-output-hk/daedalus/pull/2271))
 
+### Chores
+
+- Updated `ini` package ([PR 2278](https://github.com/input-output-hk/daedalus/pull/2278))
+
 ## 3.0.0
 
 ### Features
