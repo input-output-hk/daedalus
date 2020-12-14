@@ -13,7 +13,7 @@ type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
-export default class WalletSettingsPage extends Component<Props> {
+export default class WalletUtxoPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   componentDidMount() {
@@ -36,9 +36,13 @@ export default class WalletSettingsPage extends Component<Props> {
     const chartData = getUtxoChartData(distribution);
     const walletUtxosAmount = getWalletUtxosTotalAmount(distribution);
     const { pendingTransactionsCount: pendingTxnsCount } = transactions;
-
+    const { getWalletUtxosRequest } = walletSettings;
+    const isLoadingInitialUtxoData =
+      !getWalletUtxosRequest.wasExecuted ||
+      getWalletUtxosRequest.isExecutingFirstTime;
     return (
       <WalletUtxo
+        isLoadingInitialUtxoData={isLoadingInitialUtxoData}
         walletAmount={activeWallet.amount}
         walletUtxosAmount={walletUtxosAmount}
         chartData={chartData}
