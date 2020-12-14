@@ -11,6 +11,7 @@ Changelog
 
 ### Fixes
 
+- Fixed handling of expired transactions ([PR 2272](https://github.com/input-output-hk/daedalus/pull/2272))
 - Fixed visual glitch on the transaction list switching between filters ([PR 2261](https://github.com/input-output-hk/daedalus/pull/2261))
 
 ### Chores
