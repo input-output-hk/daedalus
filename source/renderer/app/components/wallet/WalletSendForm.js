@@ -380,7 +380,6 @@ export default class WalletSendForm extends Component<Props, State> {
       feeCalculationRequestQue: prevFeeCalculationRequestQue,
     } = this.state;
     this.setState((prevState) => ({
-      isCalculatingTransactionFee: true,
       isTransactionFeeCalculated: false,
       transactionFee: new BigNumber(0),
       transactionFeeError: null,
@@ -423,11 +422,13 @@ export default class WalletSendForm extends Component<Props, State> {
     }
   };
 
-  calculateTransactionFee = (address: string, amountValue: string) =>
-    debounce(
+  calculateTransactionFee = (address: string, amountValue: string) => {
+    this.setState({ isCalculatingTransactionFee: true });
+    return debounce(
       () => this._calculateTransactionFee(address, amountValue),
       CALCULATE_TRANSACTION_FEE_DELAY
     );
+  };
 
   getCurrentNumberFormat() {
     return NUMBER_FORMATS[this.props.currentNumberFormat];
