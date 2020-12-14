@@ -7,6 +7,10 @@ Changelog
 
 - Added tile view for delegated Stake pools in Delegation Center ([PR 2275](https://github.com/input-output-hk/daedalus/pull/2275))
 
+### Chores
+
+- Updated `ini` package ([PR 2278](https://github.com/input-output-hk/daedalus/pull/2278))
+
 ## 3.0.0
 
 ### Features
@@ -16,6 +20,7 @@ Changelog
 
 ### Fixes
 
+- Fixed handling of expired transactions ([PR 2272](https://github.com/input-output-hk/daedalus/pull/2272))
 - Fixed visual glitch on the transaction list switching between filters ([PR 2261](https://github.com/input-output-hk/daedalus/pull/2261))
 
 ### Chores
