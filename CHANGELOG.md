@@ -7,6 +7,10 @@ Changelog
 
 - Added tile view for delegated Stake pools in Delegation Center ([PR 2275](https://github.com/input-output-hk/daedalus/pull/2275))
 
+### Chores
+
+- Updated `ini` package ([PR 2278](https://github.com/input-output-hk/daedalus/pull/2278))
+
 ## 3.0.0
 
 ### Features
