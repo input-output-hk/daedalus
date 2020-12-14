@@ -9714,8 +9714,22 @@
         "file": "source/renderer/app/components/wallet/transactions/CancelTransactionButton.js",
         "id": "wallet.transaction.pending.cancelTransactionButton",
         "start": {
-          "column": 9,
+          "column": 15,
           "line": 9
+        }
+      },
+      {
+        "defaultMessage": "!!!Remove failed transaction",
+        "description": "Label for the remove failed transaction button",
+        "end": {
+          "column": 3,
+          "line": 18
+        },
+        "file": "source/renderer/app/components/wallet/transactions/CancelTransactionButton.js",
+        "id": "wallet.transaction.failed.removeTransactionButton",
+        "start": {
+          "column": 15,
+          "line": 14
         }
       }
     ],
@@ -10208,9 +10222,9 @@
           "line": 104
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
-        "id": "wallet.transaction.pending.supportArticleLink",
+        "id": "wallet.transaction.pending.cancelPendingTxnSupportArticle",
         "start": {
-          "column": 22,
+          "column": 34,
           "line": 100
         }
       },
@@ -10271,17 +10285,45 @@
         }
       },
       {
+        "defaultMessage": "!!!This transaction was submitted to the Cardano network, but it expired, so it failed. Transactions on the Cardano network have a ‘time to live’ attribute, which passed before the network processed the transaction. Please, remove it to release the funds (UTXOs) used by this transaction to use those funds in another transaction.",
+        "description": "Note to cancel a transaction that has been failed",
+        "end": {
+          "column": 3,
+          "line": 131
+        },
+        "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
+        "id": "wallet.transaction.failed.cancelFailedTxnNote",
+        "start": {
+          "column": 23,
+          "line": 126
+        }
+      },
+      {
+        "defaultMessage": "!!!Why should I cancel failed transactions?",
+        "description": "Link to support article for removing a failed transaction",
+        "end": {
+          "column": 3,
+          "line": 136
+        },
+        "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
+        "id": "wallet.transaction.failed.cancelFailedTxnSupportArticle",
+        "start": {
+          "column": 33,
+          "line": 132
+        }
+      },
+      {
         "defaultMessage": "!!!Transaction confirmed",
         "description": "Transaction state \"confirmed\"",
         "end": {
           "column": 3,
-          "line": 133
+          "line": 144
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.confirmed",
         "start": {
           "column": 26,
-          "line": 129
+          "line": 140
         }
       },
       {
@@ -10289,13 +10331,27 @@
         "description": "Transaction state \"pending\"",
         "end": {
           "column": 3,
-          "line": 138
+          "line": 149
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.pending",
         "start": {
           "column": 31,
-          "line": 134
+          "line": 145
+        }
+      },
+      {
+        "defaultMessage": "!!!Transaction failed",
+        "description": "Transaction state \"failed\"",
+        "end": {
+          "column": 3,
+          "line": 154
+        },
+        "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
+        "id": "wallet.transaction.state.failed",
+        "start": {
+          "column": 30,
+          "line": 150
         }
       }
     ],
@@ -10360,13 +10416,13 @@
         "description": "Label for the \"Today\" label on the wallet summary page.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 24
         },
         "file": "source/renderer/app/components/wallet/transactions/WalletTransactionsList.js",
         "id": "wallet.summary.page.todayLabel",
         "start": {
           "column": 9,
-          "line": 21
+          "line": 20
         }
       },
       {
@@ -10374,13 +10430,13 @@
         "description": "Label for the \"Yesterday\" label on the wallet summary page.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 29
         },
         "file": "source/renderer/app/components/wallet/transactions/WalletTransactionsList.js",
         "id": "wallet.summary.page.yesterdayLabel",
         "start": {
           "column": 13,
-          "line": 26
+          "line": 25
         }
       },
       {
@@ -10388,13 +10444,13 @@
         "description": "Label for the \"Show more transactions\" button on the wallet summary page.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 35
         },
         "file": "source/renderer/app/components/wallet/transactions/WalletTransactionsList.js",
         "id": "wallet.summary.page.showMoreTransactionsButtonLabel",
         "start": {
           "column": 35,
-          "line": 31
+          "line": 30
         }
       },
       {
@@ -10402,13 +10458,13 @@
         "description": "Syncing transactions message on async wallet restore.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 41
         },
         "file": "source/renderer/app/components/wallet/transactions/WalletTransactionsList.js",
         "id": "wallet.summary.page.syncingTransactionsMessage",
         "start": {
           "column": 30,
-          "line": 37
+          "line": 36
         }
       }
     ],

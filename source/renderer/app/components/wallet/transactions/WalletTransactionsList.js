@@ -7,7 +7,6 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
-import { set, omit, has } from 'lodash';
 import styles from './WalletTransactionsList.scss';
 import Transaction from './Transaction';
 import { WalletTransaction } from '../../../domains/WalletTransaction';
@@ -83,7 +82,7 @@ export default class WalletTransactionsList extends Component<Props> {
     onOpenExternalLink: () => {},
   };
 
-  expandedTransactions: { string: string } = {};
+  expandedTransactionIds: Map<string, WalletTransaction> = new Map();
   virtualList: ?VirtualTransactionList;
   simpleList: ?SimpleTransactionList;
   loadingSpinner: ?LoadingSpinner;
@@ -135,27 +134,14 @@ export default class WalletTransactionsList extends Component<Props> {
   }
 
   isTxExpanded = (tx: WalletTransaction) =>
-    has(this.expandedTransactions, tx.id);
-
-  registerTxAsExpanded = (tx: WalletTransaction) => {
-    this.expandedTransactions = {
-      ...this.expandedTransactions,
-      ...set({}, tx.id, tx),
-    };
-  };
-
-  removeTxFromExpanded = (tx: WalletTransaction) => {
-    this.expandedTransactions = {
-      ...omit(this.expandedTransactions, tx.id),
-    };
-  };
+    this.expandedTransactionIds.has(tx.id);
 
   toggleTransactionExpandedState = (tx: WalletTransaction) => {
     const isExpanded = this.isTxExpanded(tx);
     if (isExpanded) {
-      this.removeTxFromExpanded(tx);
+      this.expandedTransactionIds.delete(tx.id);
     } else {
-      this.registerTxAsExpanded(tx);
+      this.expandedTransactionIds.set(tx.id, tx);
     }
     if (this.virtualList) {
       this.virtualList.updateTxRowHeight(tx, !isExpanded, true);
@@ -170,8 +156,7 @@ export default class WalletTransactionsList extends Component<Props> {
     }
   };
 
-  getExpandedTransactions = (): Array<any> =>
-    Object.values(this.expandedTransactions);
+  getExpandedTransactions = () => this.expandedTransactionIds;
 
   renderGroup = (data: TransactionsGroup): Node => (
     <div className={styles.groupDate}>{this.localizedDate(data.date)}</div>
