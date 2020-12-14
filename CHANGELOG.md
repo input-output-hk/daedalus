@@ -6,6 +6,7 @@ Changelog
 ### Chores
 
 - Canceled running fee estimation api requests once new request is made ([PR 2239](https://github.com/input-output-hk/daedalus/pull/2239))
+- Updated `ini` package ([PR 2278](https://github.com/input-output-hk/daedalus/pull/2278))
 
 ## 3.0.0
 
