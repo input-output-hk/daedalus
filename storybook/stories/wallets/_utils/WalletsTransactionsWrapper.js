@@ -88,6 +88,12 @@ export default class WalletsTransactionsWrapper extends Component<
           TransactionStates.PENDING,
           true
         ),
+        generateTransaction(
+          TransactionTypes.EXPEND,
+          new Date(),
+          new BigNumber(13),
+          TransactionStates.FAILED
+        ),
       ],
       renderingManyTransactions: generateMultipleTransactions(500),
       unresolvedIncomeAddresses: [
