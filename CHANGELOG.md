@@ -1,13 +1,18 @@
 Changelog
 =========
 
+## vNext
+
+### Features
+
+- Implemented user configuration for the SMASH server ([PR 2259](https://github.com/input-output-hk/daedalus/pull/2259))
+
 ## 3.0.0
 
 ### Features
 
 - Added hardware wallet support for "Ledger Nano S", "Ledger Nano X", and "Trezor model T" devices ([PR 2046](https://github.com/input-output-hk/daedalus/pull/2046), [PR 2269](https://github.com/input-output-hk/daedalus/pull/2269))
 - Added hardware wallet support for Testnet network ([PR 2264](https://github.com/input-output-hk/daedalus/pull/2264))
-- Implemented user configuration for the SMASH server ([PR 2259](https://github.com/input-output-hk/daedalus/pull/2259))
 
 ### Fixes
 
