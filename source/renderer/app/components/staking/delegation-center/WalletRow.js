@@ -107,7 +107,6 @@ export default class WalletRow extends Component<Props> {
         isHardwareWallet,
       },
       delegatedStakePool,
-      numberOfStakePools,
       numberOfRankedStakePools,
       getStakePoolById,
       onDelegate,
