@@ -127,11 +127,6 @@ export default class WalletRow extends Component<Props> {
 
     const hasPendingDelegations =
       pendingDelegations && pendingDelegations.length > 0;
-    const futureDelegationStatus = hasPendingDelegations
-      ? pendingDelegations[pendingDelegations.length - 1].status
-      : delegationStakePoolStatus;
-    const isFutureDelegationDelegating =
-      futureDelegationStatus !== WalletDelegationStatuses.NOT_DELEGATING;
 
     let nextPendingDelegationStakePool;
     let futurePendingDelegationStakePool;
@@ -161,11 +156,17 @@ export default class WalletRow extends Component<Props> {
       );
     }
 
+    const futureDelegationStatus = hasPendingDelegations && futurePendingDelegationStakePool
+      ? futurePendingDelegationStakePool.status
+      : delegationStakePoolStatus;
+    const isFutureDelegationDelegating =
+      futureDelegationStatus !== WalletDelegationStatuses.NOT_DELEGATING;
+
     const stakePoolRankingColor = !futurePendingDelegationStakePool
       ? null
       : getColorFromRange(
           futurePendingDelegationStakePool.ranking,
-          numberOfStakePools
+          numberOfRankedStakePools
         );
 
     const saturationClassnames = classnames([
