@@ -925,6 +925,8 @@ export const YELLOW_THEME_OUTPUT = {
       'rgba(45, 45, 45, 0.5)',
     '--theme-transactions-icon-type-pending-warning-background-color':
       'rgba(236, 93, 107, 0.8)',
+    '--theme-transactions-icon-type-failed-background-color':
+      'rgba(236, 93, 107, 1)',
     '--theme-transactions-state-pending-warning-background-color': '#ec5d6b',
     '--theme-transactions-filter-button-shadow-color': 'rgba(45, 45, 45, 0.18)',
     '--theme-transactions-filter-button-color': '#f8f7f3',

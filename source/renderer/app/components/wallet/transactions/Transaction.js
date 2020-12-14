@@ -97,8 +97,8 @@ const messages = defineMessages({
       '!!!This transaction has been pending for a long time. To release the funds used by this transaction, you can try canceling it.',
     description: 'Note to cancel a transaction that has been pending too long',
   },
-  supportArticleLink: {
-    id: 'wallet.transaction.pending.supportArticleLink',
+  cancelPendingTxnSupportArticle: {
+    id: 'wallet.transaction.pending.cancelPendingTxnSupportArticle',
     defaultMessage: '!!!Why should I cancel this transaction?',
     description: 'Link to support article for canceling a pending transaction',
   },
@@ -123,6 +123,17 @@ const messages = defineMessages({
     defaultMessage: '!!!to see these addresses.',
     description: 'Unresolved Input Addresses additional label.',
   },
+  cancelFailedTxnNote: {
+    id: 'wallet.transaction.failed.cancelFailedTxnNote',
+    defaultMessage:
+      '!!!This transaction was submitted to the Cardano network, but it expired, so it failed. Transactions on the Cardano network have a ‘time to live’ attribute, which passed before the network processed the transaction. Please, remove it to release the funds (UTXOs) used by this transaction to use those funds in another transaction.',
+    description: 'Note to cancel a transaction that has been failed',
+  },
+  cancelFailedTxnSupportArticle: {
+    id: 'wallet.transaction.failed.cancelFailedTxnSupportArticle',
+    defaultMessage: '!!!Why should I cancel failed transactions?',
+    description: 'Link to support article for removing a failed transaction',
+  },
 });
 
 const stateTranslations = defineMessages({
@@ -135,6 +146,11 @@ const stateTranslations = defineMessages({
     id: 'wallet.transaction.state.pending',
     defaultMessage: '!!!Transaction pending',
     description: 'Transaction state "pending"',
+  },
+  [TransactionStates.FAILED]: {
+    id: 'wallet.transaction.state.failed',
+    defaultMessage: '!!!Transaction failed',
+    description: 'Transaction state "failed"',
   },
 });
 
@@ -182,7 +198,10 @@ export default class Transaction extends Component<Props, State> {
   deletePendingTransaction = async () => {
     const { data, walletId } = this.props;
     const { id: transactionId, state } = data;
-    if (state !== TransactionStates.PENDING) {
+    if (
+      state !== TransactionStates.PENDING &&
+      state !== TransactionStates.FAILED
+    ) {
       return this.hideConfirmationDialog();
     }
     await this.props.deletePendingTransaction({
@@ -222,33 +241,50 @@ export default class Transaction extends Component<Props, State> {
   };
 
   renderCancelPendingTxnContent = () => {
+    const { data } = this.props;
+    const { state } = data;
     const { intl } = this.context;
     const overPendingTimeLimit = this.hasExceededPendingTimeLimit();
 
-    if (!overPendingTimeLimit) return null;
-
-    return (
-      <Fragment>
-        <div className={styles.pendingTxnNote}>
-          {intl.formatMessage(messages.cancelPendingTxnNote)}
-          <Link
-            className={styles.articleLink}
-            onClick={this.handleOpenSupportArticle}
-            label={intl.formatMessage(messages.supportArticleLink)}
-            underlineOnHover
-            skin={LinkSkin}
-          />
-        </div>
-        <div>
-          <CancelTransactionButton onClick={this.showConfirmationDialog} />
-        </div>
-      </Fragment>
-    );
+    if (overPendingTimeLimit || state === TransactionStates.FAILED) {
+      return (
+        <Fragment>
+          <div className={styles.pendingTxnNote}>
+            {state === TransactionStates.PENDING
+              ? intl.formatMessage(messages.cancelPendingTxnNote)
+              : intl.formatMessage(messages.cancelFailedTxnNote)}
+            <Link
+              className={styles.articleLink}
+              onClick={this.handleOpenSupportArticle}
+              label={
+                state === TransactionStates.PENDING
+                  ? intl.formatMessage(messages.cancelPendingTxnSupportArticle)
+                  : intl.formatMessage(messages.cancelFailedTxnSupportArticle)
+              }
+              underlineOnHover
+              skin={LinkSkin}
+            />
+          </div>
+          <div>
+            <CancelTransactionButton
+              state={state === TransactionStates.PENDING ? 'cancel' : 'remove'}
+              onClick={
+                state === TransactionStates.PENDING
+                  ? this.showConfirmationDialog
+                  : this.deletePendingTransaction
+              }
+            />
+          </div>
+        </Fragment>
+      );
+    }
+    return null;
   };
 
   renderTxnStateTag = () => {
     const { intl } = this.context;
     const { state } = this.props;
+
     const styleLabel = this.hasExceededPendingTimeLimit()
       ? `${state}WarningLabel`
       : `${state}Label`;
@@ -275,8 +311,6 @@ export default class Transaction extends Component<Props, State> {
     const { intl } = this.context;
     const { showConfirmationDialog } = this.state;
 
-    const isPendingTransaction = state === TransactionStates.PENDING;
-
     const componentStyles = classNames([
       styles.component,
       isExpanded ? 'Transaction_expanded' : null,
@@ -302,9 +336,16 @@ export default class Transaction extends Component<Props, State> {
     const currency = intl.formatMessage(globalMessages.currency);
     const symbol = adaSymbol;
 
-    const iconType = isPendingTransaction
-      ? TransactionStates.PENDING
-      : data.type;
+    const getIconType = (txState) => {
+      switch (txState) {
+        case TransactionStates.PENDING:
+          return TransactionStates.PENDING;
+        case TransactionStates.FAILED:
+          return TransactionStates.FAILED;
+        default:
+          return data.type;
+      }
+    };
 
     const exceedsPendingTimeLimit = this.hasExceededPendingTimeLimit();
 
@@ -364,7 +405,7 @@ export default class Transaction extends Component<Props, State> {
           <div className={styles.toggler}>
             <TransactionTypeIcon
               exceedsPendingTimeLimit={exceedsPendingTimeLimit}
-              iconType={iconType}
+              iconType={getIconType(state)}
             />
 
             <div className={styles.togglerContent}>
