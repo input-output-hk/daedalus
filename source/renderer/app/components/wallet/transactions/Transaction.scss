@@ -80,6 +80,7 @@
 
 .pendingLabel,
 .okLabel,
+.expiredLabel,
 .in_ledgerLabel,
 .pendingWarningLabel {
   background-color: var(--theme-transactions-state-pending-background-color);
@@ -101,6 +102,12 @@
 }
 
 .pendingWarningLabel {
+  background-color: var(
+    --theme-transactions-state-pending-warning-background-color
+  );
+}
+
+.expiredLabel {
   background-color: var(
     --theme-transactions-state-pending-warning-background-color
   );
