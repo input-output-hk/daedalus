@@ -98,7 +98,7 @@ export const messages = defineMessages({
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
-const CALCULATE_TRANSACTION_FEE_DELAY = 500;
+const CALCULATE_TRANSACTION_FEE_DELAY = 1000;
 
 type Props = {
   currencyUnit: string,
@@ -164,7 +164,10 @@ export default class WalletSendForm extends Component<Props, State> {
     });
   };
 
-  handleSubmitOnEnter = submitOnEnter.bind(this, this.handleOnSubmit);
+  handleSubmitOnEnter = submitOnEnter.bind(
+    this,
+    debounce(() => this.handleOnSubmit(), CALCULATE_TRANSACTION_FEE_DELAY)
+  );
 
   isDisabled = () =>
     this.state.isCalculatingTransactionFee ||
