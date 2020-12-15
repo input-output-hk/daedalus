@@ -155,9 +155,10 @@ export default class WalletRow extends Component<Props> {
       );
     }
 
-    const futureDelegationStatus = hasPendingDelegations && futurePendingDelegationStakePool
-      ? futurePendingDelegationStakePool.status
-      : delegationStakePoolStatus;
+    const futureDelegationStatus =
+      hasPendingDelegations && futurePendingDelegationStakePool
+        ? futurePendingDelegationStakePool.status
+        : delegationStakePoolStatus;
     const isFutureDelegationDelegating =
       futureDelegationStatus !== WalletDelegationStatuses.NOT_DELEGATING;
 
