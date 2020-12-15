@@ -211,18 +211,6 @@
         .action {
           margin-top: 7px;
         }
-
-        &:hover {
-          .action {
-            margin-top: 17px;
-          }
-        }
-      }
-
-      &:hover {
-        .action {
-          opacity: 1 !important;
-        }
       }
     }
 
@@ -279,6 +267,12 @@
     &.isRestoring {
       display: flex;
       justify-content: center;
+    }
+  }
+
+  &:hover {
+    .action {
+      opacity: 1 !important;
     }
   }
 
