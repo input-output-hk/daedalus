@@ -193,7 +193,7 @@ export default class WalletSendForm extends Component<Props, State> {
               const isAmountValid = amountField.isValid;
               const isValidAddress = await this.props.addressValidator(value);
               if (isValidAddress && isAmountValid) {
-                this.calculateTransactionFee(value, amountValue)();
+                this.calculateTransactionFee(value, amountValue);
               } else {
                 this.resetTransactionFee();
               }
@@ -229,7 +229,7 @@ export default class WalletSendForm extends Component<Props, State> {
               const receiverValue = receiverField.value;
               const isReceiverValid = receiverField.isValid;
               if (isValid && isReceiverValid) {
-                this.calculateTransactionFee(receiverValue, amountValue)();
+                this.calculateTransactionFee(receiverValue, amountValue);
               } else {
                 this.resetTransactionFee();
               }
@@ -424,10 +424,7 @@ export default class WalletSendForm extends Component<Props, State> {
 
   calculateTransactionFee = (address: string, amountValue: string) => {
     this.setState({ isCalculatingTransactionFee: true });
-    return debounce(
-      () => this._calculateTransactionFee(address, amountValue),
-      CALCULATE_TRANSACTION_FEE_DELAY
-    );
+    this._calculateTransactionFee(address, amountValue);
   };
 
   getCurrentNumberFormat() {
