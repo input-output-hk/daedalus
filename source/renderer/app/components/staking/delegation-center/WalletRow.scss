@@ -277,6 +277,11 @@
         fill: var(--theme-loading-spinner-color);
       }
     }
+
+    &.isRestoring {
+      display: flex;
+      justify-content: center;
+    }
   }
 
   .arrow {

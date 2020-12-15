@@ -188,6 +188,11 @@ export default class WalletRow extends Component<Props> {
         : null,
     ]);
 
+    const rightContainerStyles = classnames([
+      styles.right,
+      isRestoring ? styles.isRestoring : null,
+    ]);
+
     return (
       <div className={styles.component}>
         <div className={styles.left}>
@@ -214,7 +219,7 @@ export default class WalletRow extends Component<Props> {
           </div>
         </div>
 
-        <div className={styles.right}>
+        <div className={rightContainerStyles}>
           {!isRestoring ? (
             <Fragment>
               <div className={styles.stakePoolTile}>
