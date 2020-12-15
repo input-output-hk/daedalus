@@ -14,8 +14,10 @@ export default class WalletPublicKeyQRCodeDialogContainer extends Component<Prop
   render() {
     const { actions, stores } = this.props;
     const { wallets } = stores;
-    const activeWallet = wallets.active;
-    const activeWalletPublicKey = wallets.activePublicKey;
+    const {
+      active: activeWallet,
+      activePublicKey: activeWalletPublicKey,
+    } = wallets;
 
     if (!activeWallet)
       throw new Error(

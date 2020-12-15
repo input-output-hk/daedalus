@@ -5,6 +5,7 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
 import LocalizableError from '../../../i18n/LocalizableError';
+import { WALLET_PUBLIC_KEY_SHARING_ENABLED } from '../../../config/walletsConfig';
 import BorderedBox from '../../widgets/BorderedBox';
 import InlineEditingInput from '../../widgets/forms/InlineEditingInput';
 import ReadOnlyInput from '../../widgets/forms/ReadOnlyInput';
@@ -148,6 +149,10 @@ export default class WalletSettings extends Component<Props, State> {
       isDialogOpen,
       walletPublicKeyQRCodeDialogContainer,
     } = this.props;
+
+    if (!WALLET_PUBLIC_KEY_SHARING_ENABLED) {
+      return null;
+    }
 
     return (
       <>

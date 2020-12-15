@@ -14,10 +14,9 @@ import {
   LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
 } from '../../config/cryptoConfig';
+import { WALLET_PUBLIC_KEY_NOTIFICATION_MAX_LENGTH } from '../../config/walletsConfig';
 
 type Props = InjectedProps;
-
-const WALLET_PUBLIC_KEY_NOTIFICATION_MAX_LENGTH = 30;
 
 @inject('stores', 'actions')
 @observer
@@ -41,8 +40,10 @@ export default class WalletSettingsPage extends Component<Props> {
       wallets,
       profile,
     } = this.props.stores;
-    const activeWallet = wallets.active;
-    const activeWalletPublicKey = wallets.activePublicKey;
+    const {
+      active: activeWallet,
+      activePublicKey: activeWalletPublicKey,
+    } = wallets;
 
     // Guard against potential null values
     if (!activeWallet)

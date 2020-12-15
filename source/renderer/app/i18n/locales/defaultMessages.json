@@ -9592,13 +9592,13 @@
         "description": "Label for the \"Transaction assurance security level\" dropdown.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 29
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.assurance",
         "start": {
           "column": 23,
-          "line": 23
+          "line": 24
         }
       },
       {
@@ -9606,13 +9606,13 @@
         "description": "Delete wallet header on the wallet settings page.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 34
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.deleteWallet.header",
         "start": {
           "column": 22,
-          "line": 29
+          "line": 30
         }
       },
       {
@@ -9620,13 +9620,13 @@
         "description": "Delete wallet warning explaining the consequences.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 40
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.deleteWallet.warning1",
         "start": {
           "column": 24,
-          "line": 34
+          "line": 35
         }
       },
       {
@@ -9634,13 +9634,13 @@
         "description": "Delete wallet warning explaining the consequences.",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 46
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.deleteWallet.warning2",
         "start": {
           "column": 24,
-          "line": 40
+          "line": 41
         }
       },
       {
@@ -9648,13 +9648,13 @@
         "description": "Label for the \"Name\" text input on the wallet settings page.",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 51
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.name.label",
         "start": {
           "column": 8,
-          "line": 46
+          "line": 47
         }
       },
       {
@@ -9662,13 +9662,13 @@
         "description": "Label for the \"Password\" field.",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 56
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.password",
         "start": {
           "column": 17,
-          "line": 51
+          "line": 52
         }
       },
       {
@@ -9676,13 +9676,13 @@
         "description": "Last updated X time ago message.",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 61
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.passwordLastUpdated",
         "start": {
           "column": 23,
-          "line": 56
+          "line": 57
         }
       },
       {
@@ -9690,13 +9690,13 @@
         "description": "You still don't have password set message.",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 66
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.passwordNotSet",
         "start": {
           "column": 18,
-          "line": 61
+          "line": 62
         }
       }
     ],
