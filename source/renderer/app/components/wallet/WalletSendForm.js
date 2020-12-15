@@ -155,19 +155,16 @@ export default class WalletSendForm extends Component<Props, State> {
     this._isMounted = false;
   }
 
-  handleOnSubmit = () => {
+  handleOnSubmit = debounce(() => {
     if (this.isDisabled()) {
       return false;
     }
     this.props.openDialogAction({
       dialog: WalletSendConfirmationDialog,
     });
-  };
+  }, CALCULATE_TRANSACTION_FEE_DELAY);
 
-  handleSubmitOnEnter = submitOnEnter.bind(
-    this,
-    debounce(() => this.handleOnSubmit(), CALCULATE_TRANSACTION_FEE_DELAY)
-  );
+  handleSubmitOnEnter = submitOnEnter.bind(this, this.handleOnSubmit);
 
   isDisabled = () =>
     this.state.isCalculatingTransactionFee ||
