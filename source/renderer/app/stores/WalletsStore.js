@@ -298,11 +298,14 @@ export default class WalletsStore extends Store {
     index: string,
   }) => {
     try {
-      this.activePublicKey = await this.walletPublicKeyRequest.execute({
+      const walletPublicKey = await this.walletPublicKeyRequest.execute({
         walletId,
         role,
         index,
       }).promise;
+      runInAction('update wallet public key', () => {
+        this.activePublicKey = walletPublicKey;
+      });
     } catch (error) {
       throw error;
     }
