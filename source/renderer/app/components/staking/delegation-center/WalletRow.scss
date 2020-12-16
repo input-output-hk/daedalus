@@ -271,6 +271,15 @@
   }
 
   &:hover {
+    .futureStakePoolTitleUndelegated,
+    .futureStakePoolTitleUndefined {
+      padding-top: 15px !important;
+
+      .action {
+        margin-top: 17px !important;
+      }
+    }
+
     .action {
       opacity: 1 !important;
     }
