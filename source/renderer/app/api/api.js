@@ -102,7 +102,10 @@ import {
   ADA_CERTIFICATE_MNEMONIC_LENGTH,
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
 } from '../config/cryptoConfig';
-import { SHELLEY_PURPOSE_INDEX, ADA_COIN_TYPE } from '../config/hardwareWalletsConfig';
+import {
+  SHELLEY_PURPOSE_INDEX,
+  ADA_COIN_TYPE,
+} from '../config/hardwareWalletsConfig';
 
 // Addresses Types
 import type {

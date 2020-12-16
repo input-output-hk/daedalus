@@ -52,10 +52,9 @@ storiesOf('Wallets|Receive', module)
             onSaveQRCodeImage={action('onSaveQRCodeImage')}
             onClose={action('onClose')}
             // @TODO - improve for address verification
-            hwDeviceStatus='connecting'
-            isHardwareWallet={false}
-            onVerifyAddress={action('onVerifyAddress')}
-            walletName='Wallet1'
+            hwDeviceStatus="connecting"
+            isAddressVerificationEnabled={false}
+            walletName="Wallet1"
           />
         )}
       </VerticalFlexContainer>

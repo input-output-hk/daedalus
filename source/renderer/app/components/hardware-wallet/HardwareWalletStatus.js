@@ -132,10 +132,8 @@ const messages = defineMessages({
   },
   verifying_address: {
     id: 'wallet.hardware.deviceStatus.verifying_address',
-    defaultMessage:
-      '!!!Verify address on your "{walletName}" device',
-    description:
-      '"Verify receiving address on your Hardware Wallet device',
+    defaultMessage: '!!!Verify address on your "{walletName}" device',
+    description: '"Verify receiving address on your Hardware Wallet device',
   },
   verifying_address_failed: {
     id: 'wallet.hardware.deviceStatus.verifying_address_failed',

@@ -98,7 +98,15 @@ export default class WalletReceiveDialog extends Component<Props> {
   };
 
   render() {
-    const { address, onCopyAddress, onSaveQRCodeImage, onClose, walletName, hwDeviceStatus, isAddressVerificationEnabled } = this.props;
+    const {
+      address,
+      onCopyAddress,
+      onSaveQRCodeImage,
+      onClose,
+      walletName,
+      hwDeviceStatus,
+      isAddressVerificationEnabled,
+    } = this.props;
     const { intl } = this.context;
     const noteInputField = this.form.$('noteInput');
 
@@ -145,14 +153,14 @@ export default class WalletReceiveDialog extends Component<Props> {
             />
           </div>
 
-          {isAddressVerificationEnabled &&
+          {isAddressVerificationEnabled && (
             <div className={styles.hardwareWalletStatusWrapper}>
               <HardwareWalletStatus
                 hwDeviceStatus={hwDeviceStatus}
                 walletName={walletName}
               />
             </div>
-          }
+          )}
 
           <div className={styles.address}>{address.id}</div>
 

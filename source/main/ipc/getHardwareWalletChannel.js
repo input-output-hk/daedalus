@@ -389,9 +389,19 @@ export const handleHardwareWalletRequests = async (
   });
 
   deriveAddressChannel.onRequest(async (params) => {
-    const { addressTypeNibble, networkIdOrProtocolMagic, spendingPathStr, stakingPathStr, devicePath, stakingKeyHashHex, stakingBlockchainPointer, isTrezor } = params;
+    const {
+      addressTypeNibble,
+      networkIdOrProtocolMagic,
+      spendingPathStr,
+      stakingPathStr,
+      devicePath,
+      stakingKeyHashHex,
+      stakingBlockchainPointer,
+      isTrezor,
+    } = params;
     const spendingPath = cardano.str_to_path(spendingPathStr);
-    const stakingPath = (stakingPathStr !== null) ? cardano.str_to_path(stakingPathStr) : null;
+    const stakingPath =
+      stakingPathStr !== null ? cardano.str_to_path(stakingPathStr) : null;
 
     try {
       deviceConnection = get(devicesMemo, [devicePath, 'AdaConnection']);
@@ -412,9 +422,11 @@ export const handleHardwareWalletRequests = async (
         spendingPath,
         stakingPath,
         stakingKeyHashHex,
-        stakingBlockchainPointer,
+        stakingBlockchainPointer
       );
-      const encodedAddress = utils.bech32_encodeAddress(utils.hex_to_buf(addressHex));
+      const encodedAddress = utils.bech32_encodeAddress(
+        utils.hex_to_buf(addressHex)
+      );
       return encodedAddress;
     } catch (e) {
       throw e;

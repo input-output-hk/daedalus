@@ -53,7 +53,7 @@ export const AddressTypeNibbles = {
   POINTER: 0b0100,
   ENTERPRISE: 0b0110,
   BYRON: 0b1000,
-  REWARD: 0b1110
+  REWARD: 0b1110,
 };
 
 export const MINIMAL_LEDGER_APP_VERSION = {

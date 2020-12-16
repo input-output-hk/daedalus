@@ -409,7 +409,7 @@ export type deriveAddressRendererRequestType = {
   spendingPathStr: string,
   stakingPathStr: ?string,
   stakingKeyHashHex: ?string,
-  stakingBlockchainPointer: StakingBlockchainPointer,
+  stakingBlockchainPointer: ?StakingBlockchainPointer,
   isTrezor: boolean,
 };
 

@@ -69,23 +69,24 @@ export default class WalletReceivePage extends Component<Props, State> {
       addressToShare,
     });
     const dialog = WalletReceiveDialog;
-    const showAddressVerification = hardwareWallets.isAddressVerificationEnabled(activeWallet.id);
-    if (showAddressVerification) {
-      hardwareWallets.initiateAddressVerification(addressToShare);
+    if (activeWallet) {
+      const showAddressVerification = hardwareWallets.isAddressVerificationEnabled(
+        activeWallet.id
+      );
+      if (showAddressVerification) {
+        hardwareWallets.initiateAddressVerification(addressToShare);
+      }
     }
     dialogs.open.trigger({ dialog });
   };
 
   handleCloseShareAddress = () => {
-    const { activeWallet } = this;
     const { actions, stores } = this.props;
     const { dialogs } = actions;
     const { hardwareWallets } = stores;
 
     dialogs.closeActiveDialog.trigger();
-    if (activeWallet.isHardwareWallet) {
-      hardwareWallets.resetInitializedAddressVerification();
-    }
+    hardwareWallets.resetInitializedAddressVerification();
   };
 
   getAddressAndFilepath = async (fileExtension?: string = 'pdf') => {
@@ -172,7 +173,11 @@ export default class WalletReceivePage extends Component<Props, State> {
     const { activeWallet } = this;
     const { addressToShare } = this.state;
     const { toggleSubMenus } = actions.sidebar;
-    const { isAddressVerificationEnabled, hwDeviceStatus, transportDevice } = hardwareWallets;
+    const {
+      isAddressVerificationEnabled,
+      hwDeviceStatus,
+      transportDevice,
+    } = hardwareWallets;
 
     // Guard against potential null values
     if (!activeWallet)
@@ -221,7 +226,9 @@ export default class WalletReceivePage extends Component<Props, State> {
             onDownloadPDF={this.handleDownloadPDF}
             onSaveQRCodeImage={this.handleSaveQRCodeImage}
             onClose={this.handleCloseShareAddress}
-            isAddressVerificationEnabled={isAddressVerificationEnabled(activeWallet.id)}
+            isAddressVerificationEnabled={isAddressVerificationEnabled(
+              activeWallet.id
+            )}
             walletName={activeWallet.name}
             hwDeviceStatus={hwDeviceStatus}
             transportDevice={transportDevice}
