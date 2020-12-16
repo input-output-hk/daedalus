@@ -1,10 +1,7 @@
 // @flow
 import TransportNodeHid from '@ledgerhq/hw-transport-node-hid';
 import { getDevices } from '@ledgerhq/hw-transport-node-hid-noevents';
-import AppAda, {
-  cardano,
-  utils,
-} from '@cardano-foundation/ledgerjs-hw-app-cardano';
+import AppAda, { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { BrowserWindow } from 'electron';
 import TrezorConnect, {
   DEVICE_EVENT,
@@ -526,7 +523,7 @@ export const handleHardwareWalletRequests = async (
         throw new Error('Ledger device not connected');
       }
       const extendedPublicKey = await deviceConnection.getExtendedPublicKey(
-        cardano.str_to_path(path)
+        utils.str_to_path(path)
       );
       const deviceSerial = await deviceConnection.getSerial();
       return Promise.resolve({

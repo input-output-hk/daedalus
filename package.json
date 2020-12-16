@@ -172,7 +172,7 @@
     "yarn-lockfile": "1.1.1"
   },
   "dependencies": {
-    "@cardano-foundation/ledgerjs-hw-app-cardano": "2.0.1",
+    "@cardano-foundation/ledgerjs-hw-app-cardano": "2.1.0",
     "@iohk-jormungandr/wallet-js": "0.5.0-pre7",
     "aes-js": "3.1.2",
     "bignumber.js": "5.0.0",
@@ -275,6 +275,7 @@
     "**/**/yargs-parser": "^20.2.0",
     "**/**/braces": "^2.3.1",
     "**/**/node-fetch": "^2.6.1",
-    "**/**/mobx-react-lite": "2.2.2"
+    "**/**/mobx-react-lite": "2.2.2",
+    "**/**/ini": "^1.3.8"
   }
 }
