@@ -10763,13 +10763,13 @@
         "description": "Title for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 32
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.title",
         "start": {
           "column": 9,
-          "line": 27
+          "line": 28
         }
       },
       {
@@ -10777,13 +10777,13 @@
         "description": "Description for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 38
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.description",
         "start": {
           "column": 15,
-          "line": 32
+          "line": 33
         }
       },
       {
@@ -10791,13 +10791,13 @@
         "description": "Empty wallet description for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 44
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.emptyWallet",
         "start": {
           "column": 15,
-          "line": 38
+          "line": 39
         }
       },
       {
@@ -10805,13 +10805,13 @@
         "description": "\"Find out more\" link on the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 49
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.findOutMoreLink",
         "start": {
           "column": 19,
-          "line": 44
+          "line": 45
         }
       },
       {
@@ -10819,13 +10819,13 @@
         "description": "\"Find out more\" link URL on the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 55
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.findOutMoreLinkUrl",
         "start": {
           "column": 22,
-          "line": 49
+          "line": 50
         }
       },
       {
@@ -10833,13 +10833,13 @@
         "description": "Label X for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 60
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.labelX",
         "start": {
           "column": 10,
-          "line": 55
+          "line": 56
         }
       },
       {
@@ -10847,13 +10847,13 @@
         "description": "Label Y for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 65
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.labelY",
         "start": {
           "column": 10,
-          "line": 60
+          "line": 61
         }
       },
       {
@@ -10861,13 +10861,13 @@
         "description": "Number of pending transactions for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 71
+          "line": 72
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.pendingTransactions",
         "start": {
           "column": 23,
-          "line": 65
+          "line": 66
         }
       }
     ],
@@ -15154,169 +15154,5 @@
       }
     ],
     "path": "source/renderer/app/utils/transactionsCsvGenerator.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Create",
-        "description": "Create label.",
-        "end": {
-          "column": 3,
-          "line": 36
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "global.labels.create",
-        "start": {
-          "column": 10,
-          "line": 32
-        }
-      },
-      {
-        "defaultMessage": "!!!Create a new wallet",
-        "description": "Create a new wallet description.",
-        "end": {
-          "column": 3,
-          "line": 41
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "wallet.add.dialog.create.description",
-        "start": {
-          "column": 19,
-          "line": 37
-        }
-      },
-      {
-        "defaultMessage": "!!!Join",
-        "description": "Join label.",
-        "end": {
-          "column": 3,
-          "line": 46
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "wallet.add.dialog.join.label",
-        "start": {
-          "column": 8,
-          "line": 42
-        }
-      },
-      {
-        "defaultMessage": "!!!Join a shared wallet",
-        "description": "Join a shared wallet description.",
-        "end": {
-          "column": 3,
-          "line": 51
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "wallet.add.dialog.join.description",
-        "start": {
-          "column": 20,
-          "line": 47
-        }
-      },
-      {
-        "defaultMessage": "!!!Import",
-        "description": "Import label.",
-        "end": {
-          "column": 3,
-          "line": 56
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "wallet.add.dialog.import.label",
-        "start": {
-          "column": 10,
-          "line": 52
-        }
-      },
-      {
-        "defaultMessage": "!!!Import wallets from an earlier version of Daedalus or the Daedalus state directory",
-        "description": "Import wallets from an earlier version of Daedalus or the Daedalus state directory description.",
-        "end": {
-          "column": 3,
-          "line": 63
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "wallet.add.dialog.import.description",
-        "start": {
-          "column": 24,
-          "line": 57
-        }
-      },
-      {
-        "defaultMessage": "!!!Recovery Phrase",
-        "description": "Recovery Phrase description.",
-        "end": {
-          "column": 3,
-          "line": 68
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "wallet.restore.dialog.mnemonicsStep",
-        "start": {
-          "column": 18,
-          "line": 64
-        }
-      },
-      {
-        "defaultMessage": "!!!Save",
-        "description": "Save description.",
-        "end": {
-          "column": 3,
-          "line": 73
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "global.labels.save",
-        "start": {
-          "column": 8,
-          "line": 69
-        }
-      }
-    ],
-    "path": "storybook/stories/common/Widgets.stories.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Read More",
-        "description": "Read More button label.",
-        "end": {
-          "column": 3,
-          "line": 37
-        },
-        "file": "storybook/stories/news/AlertsOverlay.stories.js",
-        "id": "global.labels.readMore",
-        "start": {
-          "column": 12,
-          "line": 33
-        }
-      },
-      {
-        "defaultMessage": "!!!Failure Alert",
-        "description": "Failure Alert title.",
-        "end": {
-          "column": 3,
-          "line": 42
-        },
-        "file": "storybook/stories/news/AlertsOverlay.stories.js",
-        "id": "global.errors.failureAlert",
-        "start": {
-          "column": 16,
-          "line": 38
-        }
-      },
-      {
-        "defaultMessage": "!!!Content",
-        "description": "Content.",
-        "end": {
-          "column": 3,
-          "line": 47
-        },
-        "file": "storybook/stories/news/AlertsOverlay.stories.js",
-        "id": "static.dummy.markdown",
-        "start": {
-          "column": 11,
-          "line": 43
-        }
-      }
-    ],
-    "path": "storybook/stories/news/AlertsOverlay.stories.json"
   }
 ]

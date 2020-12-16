@@ -14,7 +14,7 @@ import {
   LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
 } from '../../config/cryptoConfig';
-import { WALLET_PUBLIC_KEY_NOTIFICATION_MAX_LENGTH } from '../../config/walletsConfig';
+import { WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH } from '../../config/walletsConfig';
 
 type Props = InjectedProps;
 
@@ -27,7 +27,8 @@ export default class WalletSettingsPage extends Component<Props> {
     const { wallets } = this.props.actions;
     const publicKey = ellipsis(
       walletPublicKey,
-      WALLET_PUBLIC_KEY_NOTIFICATION_MAX_LENGTH
+      WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH,
+      WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH
     );
     wallets.copyPublicKey.trigger({ publicKey });
   };
