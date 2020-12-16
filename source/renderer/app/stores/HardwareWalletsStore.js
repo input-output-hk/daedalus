@@ -2,7 +2,6 @@
 import { observable, action, runInAction, computed } from 'mobx';
 import { get, map, find, findLast, filter } from 'lodash';
 import semver from 'semver';
-import { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { HwDeviceStatuses } from '../domains/Wallet';
@@ -794,7 +793,7 @@ export default class HardwareWalletsStore extends Store {
             this.isAddressVerificationInitiated = false;
             this.unfinishedWalletAddressVerification = address;
           });
-          this.verifyAddress({ address, path });
+          this.verifyAddress({ address, path, isTrezor: false });
         } else if (recognizedWallet) {
           // While Cardano ADA app recognized & existing wallet mathes device ID, set wallet as active
           this.stores.wallets.goToWalletRoute(recognizedWallet.id);
@@ -896,8 +895,17 @@ export default class HardwareWalletsStore extends Store {
     }
   };
 
+  isAddressVerificationEnabled = (walletId: string) => {
+    const hardwareWalletConnectionData = get(
+      this.hardwareWalletsConnectionData,
+      walletId,
+      {},
+    );
+    return hardwareWalletConnectionData.deviceType === DeviceTypes.LEDGER;
+  };
+
   initiateAddressVerification = async (address: WalletAddress) => {
-    console.debug('[HW-DEBUG] Initiate Address Verification: ', address)
+    logger.debug('[HW-DEBUG] Initiate Address Verification: ', { address });
     runInAction('HardwareWalletsStore:: Initiate Address Verification', () => {
       this.isAddressVerificationInitiated = true;
       this.unfinishedWalletAddressVerification = address;
@@ -957,8 +965,6 @@ export default class HardwareWalletsStore extends Store {
     }
   }
 
-
-
   @action verifyAddress = async (params: {
     address: WalletAddress,
     path: string,
@@ -978,15 +984,14 @@ export default class HardwareWalletsStore extends Store {
           : HW_SHELLEY_CONFIG.NETWORK.TESTNET.networkId,
         spendingPathStr: address.spendingPath,
         stakingPathStr: `${SHELLEY_PURPOSE_INDEX}'/${ADA_COIN_TYPE}'/0'/2/0`, // E.g. "1852'/1815'/0'/0/19",,
-        // stakingKeyHashHex,
-        // stakingBlockchainPointer,
+        stakingKeyHashHex: null,
+        stakingBlockchainPointer: null,
       });
 
-      const encodedAddress = utils.bech32_encodeAddress(utils.hex_to_buf(derivedAddress))
-      if (encodedAddress === address.id) {
+      if (derivedAddress === address.id) {
         logger.debug(
           '[HW-DEBUG] HWStore - Address successfully verified',
-          { address: encodedAddress }
+          { address: derivedAddress }
         );
         runInAction(
           'HardwareWalletsStore:: Address Verified and is correct',
@@ -1005,7 +1010,6 @@ export default class HardwareWalletsStore extends Store {
         );
       }
     } catch (error) {
-      console.debug('>>> Verify ERROR: ', error);
       logger.debug('[HW-DEBUG] HWStore - Verifying address error');
       /**
        * ============  Verifying aborted  =============

@@ -389,19 +389,17 @@ export const handleHardwareWalletRequests = async (
   });
 
   deriveAddressChannel.onRequest(async (params) => {
-    const { addressTypeNibble, networkIdOrProtocolMagic, spendingPathStr, stakingPathStr, devicePath } = params;
-    console.debug('>>> PARAMS: ', params);
-
+    const { addressTypeNibble, networkIdOrProtocolMagic, spendingPathStr, stakingPathStr, devicePath, stakingKeyHashHex, stakingBlockchainPointer, isTrezor } = params;
     const spendingPath = cardano.str_to_path(spendingPathStr);
     const stakingPath = (stakingPathStr !== null) ? cardano.str_to_path(stakingPathStr) : null;
-
-    console.debug('>>> spendingPath - stakingPath: ', { spendingPath, stakingPath });
-
-
 
     try {
       deviceConnection = get(devicesMemo, [devicePath, 'AdaConnection']);
       logger.info('[HW-DEBUG] DERIVE ADDRESS');
+
+      if (isTrezor) {
+        throw new Error('Address derivation not supported on Trezor devices');
+      }
 
       // Check if Ledger instantiated
       if (!deviceConnection) {
@@ -409,14 +407,15 @@ export const handleHardwareWalletRequests = async (
       }
 
       const { addressHex } = await deviceConnection.deriveAddress(
-        addressTypeNibble, // 0b0000 -BASE
-        networkIdOrProtocolMagic, //  - 0(testnet), 1(mainnet),
+        addressTypeNibble,
+        networkIdOrProtocolMagic,
         spendingPath,
         stakingPath,
-        null, // stakingKeyHashHex
-        null, // stakingBlockchainPointer
+        stakingKeyHashHex,
+        stakingBlockchainPointer,
       );
-      return addressHex;
+      const encodedAddress = utils.bech32_encodeAddress(utils.hex_to_buf(addressHex));
+      return encodedAddress;
     } catch (e) {
       throw e;
     }

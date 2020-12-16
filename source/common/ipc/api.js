@@ -396,12 +396,21 @@ export type DeriveXpubRendererRequestType = {
   derivationScheme: number,
 };
 
+export type StakingBlockchainPointer = {
+  blockIndex: number,
+  txIndex: number,
+  certificateIndex: number,
+};
+
 export type deriveAddressRendererRequestType = {
   devicePath: string,
   addressTypeNibble: number,
   networkIdOrProtocolMagic: number,
   spendingPathStr: string,
   stakingPathStr: ?string,
+  stakingKeyHashHex: ?string,
+  stakingBlockchainPointer: StakingBlockchainPointer,
+  isTrezor: boolean,
 };
 
 /**

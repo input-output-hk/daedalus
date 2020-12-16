@@ -55,14 +55,13 @@ messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
 type Props = {
   address: WalletAddress,
-  isHardwareWallet: boolean,
+  isAddressVerificationEnabled: boolean,
   walletName: string,
   hwDeviceStatus: HwDeviceStatus,
   onCopyAddress: Function,
   onDownloadPDF: Function,
   onSaveQRCodeImage: Function,
   onClose: Function,
-  onVerifyAddress: Function,
 };
 
 @observer
@@ -70,13 +69,6 @@ export default class WalletReceiveDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
-
-  UNSAFE_componentWillMount() {
-    console.debug('>>> Address to Check: ', this.props.address);
-    if (this.props.isHardwareWallet) {
-      this.props.onVerifyAddress(this.props.address);
-    }
-  }
 
   form = new ReactToolboxMobxForm({
     fields: {
@@ -106,16 +98,9 @@ export default class WalletReceiveDialog extends Component<Props> {
   };
 
   render() {
-    const { address, onCopyAddress, onSaveQRCodeImage, onClose, walletName, hwDeviceStatus, isHardwareWallet } = this.props;
+    const { address, onCopyAddress, onSaveQRCodeImage, onClose, walletName, hwDeviceStatus, isAddressVerificationEnabled } = this.props;
     const { intl } = this.context;
     const noteInputField = this.form.$('noteInput');
-
-
-    console.debug('>>> RECEIVE DIALOG: ', {
-      walletName,
-      hwDeviceStatus,
-      isHardwareWallet,
-    });
 
     const actions = [
       {
@@ -160,12 +145,14 @@ export default class WalletReceiveDialog extends Component<Props> {
             />
           </div>
 
-          <div className={styles.hardwareWalletStatusWrapper}>
-            <HardwareWalletStatus
-              hwDeviceStatus={hwDeviceStatus}
-              walletName={walletName}
-            />
-          </div>
+          {isAddressVerificationEnabled &&
+            <div className={styles.hardwareWalletStatusWrapper}>
+              <HardwareWalletStatus
+                hwDeviceStatus={hwDeviceStatus}
+                walletName={walletName}
+              />
+            </div>
+          }
 
           <div className={styles.address}>{address.id}</div>
 
