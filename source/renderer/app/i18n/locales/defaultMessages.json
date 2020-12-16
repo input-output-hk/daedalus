@@ -785,6 +785,48 @@
           "column": 38,
           "line": 127
         }
+      },
+      {
+        "defaultMessage": "!!!Verify address on your \"{walletName}\" device",
+        "description": "\"Verify receiving address on your Hardware Wallet device",
+        "end": {
+          "column": 3,
+          "line": 137
+        },
+        "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
+        "id": "wallet.hardware.deviceStatus.verifying_address",
+        "start": {
+          "column": 21,
+          "line": 133
+        }
+      },
+      {
+        "defaultMessage": "!!!Address verification failed",
+        "description": "\"Address verification failed\" device state",
+        "end": {
+          "column": 3,
+          "line": 142
+        },
+        "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
+        "id": "wallet.hardware.deviceStatus.verifying_address_failed",
+        "start": {
+          "column": 28,
+          "line": 138
+        }
+      },
+      {
+        "defaultMessage": "!!!Address verified",
+        "description": "\"Address verified\" device state",
+        "end": {
+          "column": 3,
+          "line": 147
+        },
+        "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
+        "id": "wallet.hardware.deviceStatus.verifying_address_succeeded",
+        "start": {
+          "column": 31,
+          "line": 143
+        }
       }
     ],
     "path": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.json"
@@ -8411,13 +8453,13 @@
         "description": "placeholder on the wallet \"Share Address\" dialog",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 26
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.inputLabel",
         "start": {
           "column": 14,
-          "line": 19
+          "line": 22
         }
       },
       {
@@ -8425,13 +8467,13 @@
         "description": "inputPlaceholder on the wallet \"Share Address\" dialog",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 31
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.inputPlaceholder",
         "start": {
           "column": 20,
-          "line": 24
+          "line": 27
         }
       },
       {
@@ -8439,13 +8481,13 @@
         "description": "saveQRCodeImage on the wallet \"Share Address\" dialog",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 36
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.saveQRCodeImage",
         "start": {
           "column": 19,
-          "line": 29
+          "line": 32
         }
       },
       {
@@ -8453,13 +8495,13 @@
         "description": "downloadPDFButton on the wallet \"Share Address\" dialog",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 41
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.downloadPDFButton",
         "start": {
           "column": 21,
-          "line": 34
+          "line": 37
         }
       },
       {
@@ -8467,13 +8509,13 @@
         "description": "dialogTitle on the wallet \"Share Address\" dialog",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 46
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.dialogTitle",
         "start": {
           "column": 15,
-          "line": 39
+          "line": 42
         }
       },
       {
@@ -8481,13 +8523,13 @@
         "description": "Label for \"Copy address\" link on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 51
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.copyAddressLabel",
         "start": {
           "column": 20,
-          "line": 44
+          "line": 47
         }
       }
     ],
