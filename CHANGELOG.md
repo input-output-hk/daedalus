@@ -3,8 +3,13 @@ Changelog
 
 ## vNext
 
+### Fixes
+
+- Added initial loading state to UTXO screen [PR 2265](https://github.com/input-output-hk/daedalus/pull/2265)
+
 ### Chores
 
+- Updated `@cardano-foundation/ledgerjs-hw-app-cardano` package to version `2.1.0` ([PR 2279](https://github.com/input-output-hk/daedalus/pull/2279))
 - Updated `ini` package ([PR 2278](https://github.com/input-output-hk/daedalus/pull/2278))
 
 ## 3.0.0
