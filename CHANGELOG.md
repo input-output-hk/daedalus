@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Improve Mnemonic Phrase Input UX [PR 2280](https://github.com/input-output-hk/daedalus/pull/2280)
+
 ### Fixes
 
 - Added initial loading state to UTXO screen ([PR 2265](https://github.com/input-output-hk/daedalus/pull/2265))
