@@ -17,6 +17,7 @@ import {
   FormattedHTMLMessage,
 } from 'react-intl';
 import { BigNumber } from 'bignumber.js';
+import { RECOVERY_PHRASE_WORD_COUNT_OPTIONS } from '../../../config/walletsConfig';
 import Wallet from '../../../domains/Wallet';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
@@ -356,6 +357,10 @@ export default class Step1ConfigurationDialog extends Component<Props> {
               this.recoveryPhraseAutocomplete = autocomplete;
             }}
             options={suggestedMnemonics}
+            requiredSelections={[ITN_WALLET_RECOVERY_PHRASE_WORD_COUNT]}
+            requiredSelectionsInfo={(required, actual) =>
+              `${actual} of ${required} words entered`
+            }
             maxSelections={ITN_WALLET_RECOVERY_PHRASE_WORD_COUNT}
             error={recoveryPhraseField.error}
             maxVisibleOptions={5}

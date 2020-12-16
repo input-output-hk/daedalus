@@ -178,6 +178,16 @@ export default class WalletRecoveryPhraseStep2Dialog extends Component<
           label={intl.formatMessage(messages.recoveryPhraseStep2Subtitle)}
           placeholder={intl.formatMessage(messages.recoveryPhraseInputHint)}
           options={suggestedMnemonics}
+          requiredSelections={
+            Array.isArray(expectedWordCount)
+              ? expectedWordCount
+              : [expectedWordCount]
+          }
+          requiredSelectionsInfo={(required, actual) =>
+            Array.isArray(expectedWordCount)
+              ? `${actual} words entered`
+              : `${actual} of ${required} words entered`
+          }
           maxSelections={maxSelections}
           error={recoveryPhraseField.error}
           maxVisibleOptions={5}

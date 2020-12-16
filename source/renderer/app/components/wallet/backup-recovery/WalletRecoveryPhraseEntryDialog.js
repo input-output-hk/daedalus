@@ -12,6 +12,7 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig';
 import suggestedMnemonics from '../../../../../common/config/crypto/valid-words.en';
 import { isValidMnemonic } from '../../../../../common/config/crypto/decrypt';
+import { RECOVERY_PHRASE_WORD_COUNT_OPTIONS } from '../../../config/walletsConfig';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import WalletRecoveryPhraseMnemonic from './WalletRecoveryPhraseMnemonic';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
@@ -227,6 +228,10 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
                 }
               )}
               options={suggestedMnemonics}
+              requiredSelections={[wordCount]}
+              requiredSelectionsInfo={(required, actual) =>
+                `${actual} of ${required} words entered`
+              }
               maxSelections={wordCount}
               error={recoveryPhraseField.error}
               maxVisibleOptions={5}

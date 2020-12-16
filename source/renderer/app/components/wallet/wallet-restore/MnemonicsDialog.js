@@ -5,6 +5,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
 import { AutocompleteSkin } from 'react-polymorph/lib/skins/simple/AutocompleteSkin';
+import { RECOVERY_PHRASE_WORD_COUNT_OPTIONS } from '../../../config/walletsConfig';
 import WalletRestoreDialog from './widgets/WalletRestoreDialog';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import globalMessages from '../../../i18n/global-messages';
@@ -167,6 +168,14 @@ export default class MnemonicsDialog extends Component<Props> {
                   })
             }
             options={validWords}
+            requiredSelections={
+              Array.isArray(expectedWordCount)
+                ? expectedWordCount
+                : [expectedWordCount]
+            }
+            requiredSelectionsInfo={(required, actual) =>
+              `${actual} of ${required} words entered`
+            }
             maxSelections={maxWordCount}
             error={recoveryPhraseField.error}
             maxVisibleOptions={5}
