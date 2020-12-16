@@ -25,6 +25,7 @@ import {
   GET_INIT_LEDGER_CONNECT_CHANNEL,
   DERIVE_XPUB_CHANNEL,
   RESET_ACTION_TREZOR_CHANNEL,
+  DERIVE_ADDRESS_CHANNEL,
 } from '../../common/ipc/api';
 
 import { logger } from '../utils/logging';
@@ -50,6 +51,8 @@ import type {
   resetTrezorActionMainResponse,
   deriveXpubRendererRequest,
   deriveXpubMainResponse,
+  deriveAddressRendererRequest,
+  deriveAddressMainResponse,
 } from '../../common/ipc/api';
 
 const getHardwareWalletTransportChannel: MainIpcChannel<
@@ -101,6 +104,11 @@ const deriveXpubChannel: MainIpcChannel<
   deriveXpubRendererRequest,
   deriveXpubMainResponse
 > = new MainIpcChannel(DERIVE_XPUB_CHANNEL);
+
+const deriveAddressChannel: MainIpcChannel<
+  deriveAddressRendererRequest,
+  deriveAddressMainResponse
+> = new MainIpcChannel(DERIVE_ADDRESS_CHANNEL);
 
 let devicesMemo = {};
 class EventObserver {
@@ -375,6 +383,40 @@ export const handleHardwareWalletRequests = async (
     try {
       const xpub = deriveChildXpub(parentXpub, lastIndex, derivationScheme);
       return utils.buf_to_hex(xpub);
+    } catch (e) {
+      throw e;
+    }
+  });
+
+  deriveAddressChannel.onRequest(async (params) => {
+    const { addressTypeNibble, networkIdOrProtocolMagic, spendingPathStr, stakingPathStr, devicePath } = params;
+    console.debug('>>> PARAMS: ', params);
+
+    const spendingPath = cardano.str_to_path(spendingPathStr);
+    const stakingPath = (stakingPathStr !== null) ? cardano.str_to_path(stakingPathStr) : null;
+
+    console.debug('>>> spendingPath - stakingPath: ', { spendingPath, stakingPath });
+
+
+
+    try {
+      deviceConnection = get(devicesMemo, [devicePath, 'AdaConnection']);
+      logger.info('[HW-DEBUG] DERIVE ADDRESS');
+
+      // Check if Ledger instantiated
+      if (!deviceConnection) {
+        throw new Error('Ledger device not connected');
+      }
+
+      const { addressHex } = await deviceConnection.deriveAddress(
+        addressTypeNibble, // 0b0000 -BASE
+        networkIdOrProtocolMagic, //  - 0(testnet), 1(mainnet),
+        spendingPath,
+        stakingPath,
+        null, // stakingKeyHashHex
+        null, // stakingBlockchainPointer
+      );
+      return addressHex;
     } catch (e) {
       throw e;
     }

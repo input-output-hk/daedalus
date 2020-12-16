@@ -52,7 +52,10 @@ export type HwDeviceStatus =
   | 'wrong_firmware'
   | 'wrong_cardano_app_version'
   | 'unsupported_device'
-  | 'verifying_transaction_succeeded';
+  | 'verifying_transaction_succeeded'
+  | 'verifying_address'
+  | 'verifying_address_failed'
+  | 'verifying_address_succeeded';
 
 export const HwDeviceStatuses: {
   CONNECTING: HwDeviceStatus,
@@ -68,6 +71,9 @@ export const HwDeviceStatuses: {
   WRONG_CARDANO_APP_VERSION: HwDeviceStatus,
   UNSUPPORTED_DEVICE: HwDeviceStatus,
   TREZOR_BRIDGE_FAILURE: HwDeviceStatus,
+  VERIFYING_ADDRESS: HwDeviceStatus,
+  VERIFYING_ADDRESS_FAILED: HwDeviceStatus,
+  VERIFYING_ADDRESS_SUCCEEDED: HwDeviceStatus,
 } = {
   CONNECTING: 'connecting',
   CONNECTING_FAILED: 'connecting_failed',
@@ -82,6 +88,9 @@ export const HwDeviceStatuses: {
   VERIFYING_TRANSACTION: 'verifying_transaction',
   VERIFYING_TRANSACTION_FAILED: 'verifying_transaction_failed',
   VERIFYING_TRANSACTION_SUCCEEDED: 'verifying_transaction_succeeded',
+  VERIFYING_ADDRESS: 'verifying_address',
+  VERIFYING_ADDRESS_FAILED: 'verifying_address_failed',
+  VERIFYING_ADDRESS_SUCCEEDED: 'verifying_address_succeeded',
 };
 
 export const WalletUnits: {

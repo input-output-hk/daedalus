@@ -133,6 +133,7 @@ export const generateAddress = (used: boolean = false): WalletAddress =>
   new WalletAddress({
     id: generateHash(),
     used,
+    spendingPath: "1852'/1815'/0'/0/19",
   });
 
 export const promise = (returnValue: any): (() => Promise<any>) => () =>

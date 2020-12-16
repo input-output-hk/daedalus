@@ -171,7 +171,6 @@ export default class WalletConnectDialog extends Component<Props> {
                 <HardwareWalletStatus
                   hwDeviceStatus={hwDeviceStatus}
                   onExternalLinkClick={onExternalLinkClick}
-                  isTransactionStatus={false}
                 />
               </div>
             </div>

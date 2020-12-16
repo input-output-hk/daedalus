@@ -11,6 +11,7 @@ import {
   GET_INIT_LEDGER_CONNECT_CHANNEL,
   RESET_ACTION_TREZOR_CHANNEL,
   DERIVE_XPUB_CHANNEL,
+  DERIVE_ADDRESS_CHANNEL,
 } from '../../../common/ipc/api';
 
 import type {
@@ -34,6 +35,8 @@ import type {
   deriveXpubRendererRequest,
   resetTrezorActionMainResponse,
   resetTrezorActionRendererRequest,
+  deriveAddressMainResponse,
+  deriveAddressRendererRequest,
 } from '../../../common/ipc/api';
 
 // IpcChannel<Incoming, Outgoing>
@@ -91,3 +94,8 @@ export const resetTrezorActionChannel: RendererIpcChannel<
   resetTrezorActionMainResponse,
   resetTrezorActionRendererRequest
 > = new RendererIpcChannel(RESET_ACTION_TREZOR_CHANNEL);
+
+export const deriveAddressChannel: RendererIpcChannel<
+  deriveAddressMainResponse,
+  deriveAddressRendererRequest
+> = new RendererIpcChannel(DERIVE_ADDRESS_CHANNEL);

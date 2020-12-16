@@ -68,7 +68,15 @@ export default class WalletReceivePage extends Component<Props, State> {
   };
 
   handleCloseShareAddress = () => {
-    this.props.actions.dialogs.closeActiveDialog.trigger();
+    const { activeWallet } = this;
+    const { actions, stores } = this.props;
+    const { dialogs } = actions;
+    const { hardwareWallets } = stores;
+
+    dialogs.closeActiveDialog.trigger();
+    if (activeWallet.isHardwareWallet) {
+      hardwareWallets.resetInitializedAddressVerification();
+    }
   };
 
   getAddressAndFilepath = async (fileExtension?: string = 'pdf') => {
@@ -151,10 +159,11 @@ export default class WalletReceivePage extends Component<Props, State> {
 
   render() {
     const { actions, stores } = this.props;
-    const { uiDialogs, addresses, sidebar } = stores;
+    const { uiDialogs, addresses, sidebar, hardwareWallets } = stores;
     const { activeWallet } = this;
     const { addressToShare } = this.state;
     const { toggleSubMenus } = actions.sidebar;
+    const { initiateAddressVerification, hwDeviceStatus, transportDevice } = hardwareWallets;
 
     // Guard against potential null values
     if (!activeWallet)
@@ -203,6 +212,13 @@ export default class WalletReceivePage extends Component<Props, State> {
             onDownloadPDF={this.handleDownloadPDF}
             onSaveQRCodeImage={this.handleSaveQRCodeImage}
             onClose={this.handleCloseShareAddress}
+
+
+            onVerifyAddress={initiateAddressVerification}
+            isHardwareWallet={activeWallet.isHardwareWallet}
+            walletName={activeWallet.name}
+            hwDeviceStatus={hwDeviceStatus}
+            transportDevice={transportDevice}
           />
         )}
       </Fragment>

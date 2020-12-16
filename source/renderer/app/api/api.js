@@ -102,6 +102,7 @@ import {
   ADA_CERTIFICATE_MNEMONIC_LENGTH,
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
 } from '../config/cryptoConfig';
+import { SHELLEY_PURPOSE_INDEX, ADA_COIN_TYPE } from '../config/hardwareWalletsConfig';
 
 // Addresses Types
 import type {
@@ -314,7 +315,11 @@ export default class AdaApi {
         response.reverse();
       }
       logger.debug('AdaApi::getAddresses success', { addresses: response });
-      return response.map(_createAddressFromServerData);
+
+      return response.map((address, index) => {
+        const addressIndex = response.length - index - 1;
+        return _createAddressFromServerData(address, addressIndex);
+      });
     } catch (error) {
       logger.error('AdaApi::getAddresses error', { error });
       throw new ApiError(error);
@@ -2172,11 +2177,12 @@ const _createWalletFromServerData = action(
 
 const _createAddressFromServerData = action(
   'AdaApi::_createAddressFromServerData',
-  (address: Address) => {
+  (address: Address, addressIndex: number) => {
     const { id, state } = address;
     return new WalletAddress({
       id,
       used: state === 'used',
+      spendingPath: `${SHELLEY_PURPOSE_INDEX}'/${ADA_COIN_TYPE}'/0'/0/${addressIndex}`, // E.g. "1852'/1815'/0'/0/19",
     });
   }
 );

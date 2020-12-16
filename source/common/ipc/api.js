@@ -396,6 +396,14 @@ export type DeriveXpubRendererRequestType = {
   derivationScheme: number,
 };
 
+export type deriveAddressRendererRequestType = {
+  devicePath: string,
+  addressTypeNibble: number,
+  networkIdOrProtocolMagic: number,
+  spendingPathStr: string,
+  stakingPathStr: ?string,
+};
+
 /**
  * Channel for introspecting an address
  */
@@ -459,3 +467,7 @@ export type deriveXpubMainResponse = string;
 export const RESET_ACTION_TREZOR_CHANNEL = 'RESET_ACTION_TREZOR_CHANNEL';
 export type resetTrezorActionRendererRequest = void;
 export type resetTrezorActionMainResponse = void;
+
+export const DERIVE_ADDRESS_CHANNEL = 'DERIVE_ADDRESS_CHANNEL';
+export type deriveAddressRendererRequest = deriveAddressRendererRequestType;
+export type deriveAddressMainResponse = string;
