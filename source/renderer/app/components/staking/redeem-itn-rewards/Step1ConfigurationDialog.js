@@ -17,7 +17,6 @@ import {
   FormattedHTMLMessage,
 } from 'react-intl';
 import { BigNumber } from 'bignumber.js';
-import { RECOVERY_PHRASE_WORD_COUNT_OPTIONS } from '../../../config/walletsConfig';
 import Wallet from '../../../domains/Wallet';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';

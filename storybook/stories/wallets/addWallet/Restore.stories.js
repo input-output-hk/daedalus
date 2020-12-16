@@ -4,7 +4,6 @@ import { action } from '@storybook/addon-actions';
 import { select } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
 import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../../source/renderer/app/config/cryptoConfig';
-import { RECOVERY_PHRASE_WORD_COUNT_OPTIONS } from '../../../../source/renderer/app/config/walletsConfig';
 
 // Helpers
 import WalletsWrapper from '../_utils/WalletsWrapper';
