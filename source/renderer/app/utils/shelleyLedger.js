@@ -1,5 +1,5 @@
 // @flow
-import { utils, cardano } from '@cardano-foundation/ledgerjs-hw-app-cardano';
+import { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { encode } from 'borc';
 import blakejs from 'blakejs';
 import {
@@ -310,7 +310,7 @@ export const prepareLedgerOutput = (output: CoinSelectionOutput) => {
       addressTypeNibble: 0,
       spendingPath: derivationPathToLedgerPath(output.derivationPath),
       amountStr: output.amount.quantity.toString(),
-      stakingPath: cardano.str_to_path("1852'/1815'/0'/2/0"),
+      stakingPath: utils.str_to_path("1852'/1815'/0'/2/0"),
     };
   }
   return {
