@@ -85,12 +85,6 @@
 
             .SimpleOptions_option {
               padding: 8px 20px;
-
-              span {
-                display: block;
-                overflow: hidden;
-                text-overflow: ellipsis;
-              }
             }
           }
         }
@@ -138,33 +132,8 @@
     .slider {
       flex: 1;
 
-      :global {
-        .SimpleTooltip_bubble {
-          .SimpleBubble_bubble {
-            border-radius: 6px;
-            font-family: var(--font-regular);
-            font-size: 13px;
-            line-height: 1.15;
-          }
-        }
-
-        .Slider_minMark {
-          .SimpleTooltip_bubble {
-            .SimpleBubble_bubble {
-              left: -15px;
-              right: auto;
-            }
-          }
-        }
-
-        .Slider_maxMark {
-          .SimpleTooltip_bubble {
-            .SimpleBubble_bubble {
-              left: -50px;
-              right: auto;
-            }
-          }
-        }
+      span {
+        outline: none;
       }
     }
 
@@ -173,19 +142,6 @@
       line-height: 1.33;
       margin-bottom: 9px;
       text-align: right;
-
-      :global {
-        .SimpleTooltip_bubble {
-          .SimpleBubble_bubble {
-            border-radius: 6px;
-            font-family: var(--font-regular);
-            font-size: 13px;
-            left: auto;
-            line-height: 1.15;
-            right: -10px;
-          }
-        }
-      }
     }
 
     .outOfSliderRangeEnd {
@@ -204,5 +160,9 @@
 
   .col {
     @extend %regularText;
+
+    span {
+      outline: none;
+    }
   }
 }

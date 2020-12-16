@@ -1,5 +1,5 @@
 // @flow
-import fs from 'fs';
+// import fs from 'fs';
 import path from 'path';
 import type { FormattedConstNames, WriteThemeUpdateParams } from '../types';
 
@@ -25,10 +25,12 @@ export const writeThemeUpdate = ({
   fileName,
   updatedThemeObj,
 }: WriteThemeUpdateParams) => {
-  const THEME_FILE = path.join(
-    __dirname,
-    `../../source/renderer/app/themes/daedalus/${fileName}.js`
-  );
+  const pathBase = __dirname.includes('dist')
+    ? '../../source/renderer/app/themes/daedalus'
+    : '../daedalus';
+
+  const THEME_FILE = path.join(__dirname, pathBase, `${fileName}.js`);
+
   const { themeOutput, themeParams } = formatConstNames(fileName);
   const FILE_CONTENT = `
     // @flow
@@ -45,5 +47,7 @@ export const writeThemeUpdate = ({
     export default createTheme(${themeParams});
   `;
 
-  fs.writeFileSync(THEME_FILE, FILE_CONTENT, {});
+  // @TODO - remove flow fix and move fs to main process
+  // $FlowFixMe
+  fs.writeFileSync(THEME_FILE, FILE_CONTENT, {}); // eslint-disable-line
 };

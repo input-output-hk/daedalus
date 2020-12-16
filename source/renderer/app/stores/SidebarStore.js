@@ -1,13 +1,11 @@
 // @flow
 import { action, computed, observable } from 'mobx';
+import { get } from 'lodash';
 import Store from './lib/Store';
 import { sidebarConfig } from '../config/sidebarConfig';
 import type { SidebarCategoryInfo } from '../config/sidebarConfig';
 import { formattedWalletAmount } from '../utils/formatters';
-import type {
-  SidebarHardwareWalletType,
-  SidebarWalletType,
-} from '../types/sidebarTypes';
+import type { SidebarWalletType } from '../types/sidebarTypes';
 
 export default class SidebarStore extends Store {
   @observable CATEGORIES: Array<any> = sidebarConfig.CATEGORIES_LIST;
@@ -22,9 +20,6 @@ export default class SidebarStore extends Store {
       this._onActivateSidebarCategory
     );
     sidebarActions.walletSelected.listen(this._onWalletSelected);
-    sidebarActions.hardwareWalletSelected.listen(
-      this._onHardwareWalletSelected
-    );
     this.registerReactions([
       this._syncSidebarRouteWithRouter,
       this._syncSidebarItemsWithShelleyActivation,
@@ -36,8 +31,19 @@ export default class SidebarStore extends Store {
   // for equality instead of idendity (which would always invalidate)
   // https://alexhisen.gitbooks.io/mobx-recipes/content/use-computedstruct-for-computed-objects.html
   @computed.struct get wallets(): Array<SidebarWalletType> {
-    const { networkStatus, wallets, walletSettings } = this.stores;
+    const {
+      networkStatus,
+      wallets,
+      walletSettings,
+      hardwareWallets,
+    } = this.stores;
+    const { hardwareWalletsConnectionData } = hardwareWallets;
     return wallets.all.map((wallet) => {
+      const isHardwareWalletDisconnected = get(
+        hardwareWalletsConnectionData,
+        [wallet.id, 'disconnected'],
+        true
+      );
       const {
         hasNotification,
       } = walletSettings.getWalletsRecoveryPhraseVerificationData(wallet.id);
@@ -50,38 +56,15 @@ export default class SidebarStore extends Store {
         restoreProgress: wallet.restorationProgress,
         isNotResponding: wallet.isNotResponding,
         isLegacy: wallet.isLegacy,
-        hasNotification,
-      };
-    });
-  }
-
-  @computed.struct get hardwareWallets(): Array<SidebarHardwareWalletType> {
-    const { networkStatus, wallets, walletSettings } = this.stores;
-    return wallets.all.map((wallet) => {
-      const {
-        hasNotification,
-      } = walletSettings.getWalletsRecoveryPhraseVerificationData(wallet.id);
-      return {
-        id: wallet.id,
-        title: wallet.name,
-        info: formattedWalletAmount(wallet.amount, true, false),
-        isConnected: networkStatus.isConnected,
-        isRestoreActive: wallet.isRestoring,
-        restoreProgress: wallet.restorationProgress,
-        isNotResponding: wallet.isNotResponding,
-        isLegacy: wallet.isLegacy,
+        isHardwareWallet: wallet.isHardwareWallet,
+        isHardwareWalletDisconnected,
         hasNotification,
       };
     });
   }
 
   @action _configureCategories = () => {
-    const {
-      isFlight,
-      isIncentivizedTestnet,
-      isShelleyTestnet,
-      environment: { isDev },
-    } = global;
+    const { isFlight, isIncentivizedTestnet, isShelleyTestnet } = global;
 
     const { isShelleyActivated, isShelleyPending } = this.stores.networkStatus;
 
@@ -94,7 +77,6 @@ export default class SidebarStore extends Store {
       [key: string]: boolean | Function,
     } = {
       [categories.WALLETS.name]: true,
-      [categories.HARDWARE_WALLETS.name]: isDev,
       [categories.PAPER_WALLET_CREATE_CERTIFICATE.name]: false,
       [categories.STAKING_DELEGATION_COUNTDOWN.name]: isShelleyPending,
       [categories.STAKING.name]: isShelleyActivated,
@@ -136,10 +118,6 @@ export default class SidebarStore extends Store {
 
   @action _onWalletSelected = ({ walletId }: { walletId: string }) => {
     this.stores.wallets.goToWalletRoute(walletId);
-  };
-
-  @action _onHardwareWalletSelected = ({ walletId }: { walletId: string }) => {
-    this.stores.wallets.goToHardwareWalletRoute(walletId);
   };
 
   @action _setActivateSidebarCategory = (category: string) => {

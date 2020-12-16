@@ -1,9 +1,11 @@
 // @flow
 import React, { Component } from 'react';
 import classnames from 'classnames';
+import SVGInline from 'react-svg-inline';
 import { getColorFromRange } from '../../../utils/colors';
 import styles from './WalletsDropdownOption.scss';
 import StakePool from '../../../domains/StakePool';
+import hardwareWalletsIcon from '../../../assets/images/hardware-wallet/connect-ic.inline.svg';
 import LoadingSpinner from '../LoadingSpinner';
 
 export type WalletOption = {
@@ -14,17 +16,38 @@ export type WalletOption = {
   selected?: boolean,
   isSyncing?: boolean,
   syncingLabel?: string,
+  isHardwareWallet: boolean,
 };
 
 export default class WalletsDropdownOption extends Component<WalletOption> {
-  renderLabel = (label: string) => {
-    return <div className={styles.label}>{label}</div>;
-  };
-
-  renderLabelSyncing = (label: string, syncingLabel: string) => {
+  renderLabel = (label: string, isHardwareWallet: boolean) => {
     return (
       <div className={styles.label}>
         {label}
+        {isHardwareWallet && (
+          <SVGInline
+            svg={hardwareWalletsIcon}
+            className={styles.hardwareWalletsIcon}
+          />
+        )}
+      </div>
+    );
+  };
+
+  renderLabelSyncing = (
+    label: string,
+    syncingLabel: string,
+    isHardwareWallet: boolean
+  ) => {
+    return (
+      <div className={styles.label}>
+        {label}
+        {isHardwareWallet && (
+          <SVGInline
+            svg={hardwareWalletsIcon}
+            className={styles.hardwareWalletsIcon}
+          />
+        )}
         <span className={styles.labelSync}> {syncingLabel}</span>
       </div>
     );
@@ -37,14 +60,15 @@ export default class WalletsDropdownOption extends Component<WalletOption> {
       numberOfStakePools,
       isSyncing,
       syncingLabel,
+      isHardwareWallet,
     } = this.props;
     if (!delegatedStakePool || !numberOfStakePools) {
       return (
         <div className={styles.topRow}>
           <div className={styles.topRowTicker}>
             {isSyncing && syncingLabel
-              ? this.renderLabelSyncing(label, syncingLabel)
-              : this.renderLabel(label)}
+              ? this.renderLabelSyncing(label, syncingLabel, isHardwareWallet)
+              : this.renderLabel(label, isHardwareWallet)}
           </div>
           <div className={styles.topRowSync}>
             {isSyncing && (
@@ -65,7 +89,15 @@ export default class WalletsDropdownOption extends Component<WalletOption> {
           <div style={{ color }} className={styles.ticker}>
             [{ticker}]
           </div>
-          <div className={styles.label}>{label}</div>
+          <div className={styles.label}>
+            {label}
+            {isHardwareWallet && (
+              <SVGInline
+                svg={hardwareWalletsIcon}
+                className={styles.hardwareWalletsIcon}
+              />
+            )}
+          </div>
         </div>
       </div>
     );

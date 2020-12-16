@@ -18,7 +18,7 @@ import {
   RECOVERY_PHRASE_VERIFICATION_TIMES as times,
 } from '../../../config/walletRecoveryPhraseVerificationConfig';
 import { getStatusFromWalletData } from '../../../utils/walletRecoveryPhraseVerificationUtils';
-import { LOCALES } from '../../../../../common/types/locales.types.js';
+import { LOCALES } from '../../../../../common/types/locales.types';
 
 export const messages = defineMessages({
   title: {
@@ -258,10 +258,11 @@ export default class WalletRecoveryPhraseVerificationWidget extends Component<Pr
             <>
               &nbsp;
               <PopOver
+                maxWidth={700}
                 content={
-                  <span className={styles.paperWalletTooltip}>
+                  <div className={styles.paperWalletTooltip}>
                     {intl.formatMessage(messages.paperWalletDescription)}
-                  </span>
+                  </div>
                 }
               >
                 <div className={styles.paperWallet}>

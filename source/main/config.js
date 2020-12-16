@@ -126,7 +126,6 @@ export const {
 export const appLogsFolderPath = logsPrefix;
 export const pubLogsFolderPath = path.join(appLogsFolderPath, 'pub');
 export const stateDirectoryPath = stateDir;
-export const stateDrive = isWindows ? stateDirectoryPath.slice(0, 2) : '/';
 export const buildLabel = getBuildLabel(
   build,
   network,

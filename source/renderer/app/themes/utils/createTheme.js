@@ -540,10 +540,10 @@ export const createDaedalusComponentsTheme = (
       '--font-mono': `${fonts.mono}`,
     },
     hardwareWallet: {
-      '--theme-hardware-wallet-step-background-color': '#fafbfc',
-      '--theme-hardware-wallet-step-border-active-color': '#296fd0',
-      '--theme-hardware-wallet-step-border-color': '#c6cdd6',
-      '--theme-hardware-wallet-step-color': '#5e6066',
+      '--theme-hardware-wallet-status-background-color': '#fafbfc',
+      '--theme-hardware-wallet-status-border-color': '#c6cdd6',
+      '--theme-hardware-wallet-status-color': '#5e6066',
+      '--theme-hardware-wallet-status-ready-color': '#2dc06c',
       '--theme-hardware-wallet-title-color': '#5e6066',
       '--theme-hardware-wallet-message-color': '#5e6066',
     },
@@ -676,6 +676,8 @@ export const createDaedalusComponentsTheme = (
       '--theme-news-feed-badge-text-color': '#ffffff',
       '--theme-news-feed-box-shadow-color': '-5px 0 20px 0 rgba(0, 0, 0, 0.25)',
       '--theme-news-feed-header-background-color': '#1e304a',
+      '--theme-news-feed-header-box-shadow-color':
+        '0 10px 10px -5px rgba(0, 0, 0, 0.25)',
       '--theme-news-feed-header-title-color': '#fafbfc',
       '--theme-news-feed-icon-close-button-color': '#fff',
       '--theme-news-feed-icon-close-hover-background-color':
@@ -1141,6 +1143,10 @@ export const createDaedalusComponentsTheme = (
       '--theme-topbar-logo-color': `${text.primary}`,
     },
     transactions: {
+      '--theme-transactions-header-background-color': `${background.primary.regular}`,
+      '--theme-transactions-header-texct-color': `${chroma(text.primary).alpha(
+        0.5
+      )}`,
       '--theme-transactions-list-background-color': `${background.primary.lightest}`,
       '--theme-transactions-list-border-color': `${border}`,
       '--theme-transactions-list-group-date-color': `${text.primary}`,
@@ -1158,6 +1164,9 @@ export const createDaedalusComponentsTheme = (
       `,
       '--theme-transactions-icon-type-pending-warning-background-color': `
         ${chroma(error.regular).alpha(0.8)}
+      `,
+      '--theme-transactions-icon-type-failed-background-color': `
+        ${chroma(error.regular)}
       `,
       '--theme-transactions-arrow-stroke-color': `${text.primary}`,
       '--theme-transactions-filter-button-color': `${background.primary.lightest}`,

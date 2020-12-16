@@ -7,8 +7,16 @@ import {
   TransactionTypes,
 } from '../domains/WalletTransaction';
 import { formattedWalletAmount } from './formatters';
-import type { TransactionFilterOptionsType } from '../stores/TransactionsStore';
 import { DateRangeTypes } from '../stores/TransactionsStore';
+import type { TransactionFilterOptionsType } from '../stores/TransactionsStore';
+import type {
+  ByronEncodeSignedTransactionRequest,
+  ByronSignedTransactionWitnesses,
+} from '../stores/HardwareWalletsStore';
+import type { CoinSelectionsResponse } from '../api/transactions/types';
+
+const cbor = require('cbor');
+const bs58 = require('bs58');
 
 const AMOUNT_RAW_LENGTH_LIMIT = 10;
 
@@ -269,4 +277,90 @@ export const validateFilterForm = (values: {
     isValid: !invalidFields.toDate && !invalidFields.toAmount,
     invalidFields,
   };
+};
+
+class List {
+  constructor(xs) {
+    // $FlowFixMe
+    this.elems = xs;
+  }
+  encodeCBOR(encoder) {
+    encoder.push(rawBuffer('9F')); // Begin Indefinite list
+    // $FlowFixMe
+    this.elems.forEach((el) => encoder.pushAny(el));
+    encoder.push(rawBuffer('FF')); // Break Indefinite list
+    return true;
+  }
+}
+
+export const thDataHexGenerator = (txData: CoinSelectionsResponse) => {
+  const txDataHex = encodeTransaction(txData).toString('hex');
+  return txDataHex;
+};
+
+export const encodeSignedTransaction = ({
+  txDataHex,
+  witnesses,
+}: ByronEncodeSignedTransactionRequest) => {
+  //  {
+  //    txDataHex: '01f54c866c778568c01b9e4c0a2cbab29e0af285623404e0ef922c6b63f9b222',
+  //    witnesses: [
+  //      {
+  //        signature: 'f89f0d3e2ad34a29c36d9eebdceb951088b52d33638d0f55d49ba2f8baff6e29056720be55fd2eb7198c05b424ce4308eaeed7195310e5879c41c1743245b000'
+  //        xpub: { // see 'getExtendedPublicKey'
+  //          publicKeyHex: '...', // hex-encoded string
+  //          chainCodeHex: '...', // hex-encoded string
+  //        }
+  //      }
+  //    ]
+  //  }
+  return Buffer.concat([
+    rawBuffer('82'),
+    rawBuffer(txDataHex),
+    cbor.encode(witnesses.map(encodeWitness)),
+  ]).toString('hex');
+};
+
+const rawBuffer = (str) => {
+  return Buffer.from(str, 'hex');
+};
+
+const encodeWitness = ({
+  signature,
+  xpub,
+}: ByronSignedTransactionWitnesses) => {
+  const witness = [
+    Buffer.concat([rawBuffer(xpub.publicKeyHex), rawBuffer(xpub.chainCodeHex)]),
+    rawBuffer(signature),
+  ];
+  return [0, new cbor.Tagged(24, cbor.encode(witness))];
+};
+
+const encodeTransaction = (data) => {
+  return cbor.encode([
+    encodeTransactionInputs(data.inputs),
+    encodeTransactionOutputs(data.outputs),
+    {}, // always empty in Byron
+  ]);
+};
+
+const encodeTransactionInputs = (inps) => {
+  return new List(
+    inps.map((i) => [0, new cbor.Tagged(24, encodeTransactionInput(i))])
+  );
+};
+
+const encodeTransactionInput = ({ id, index }) => {
+  return cbor.encode([rawBuffer(id), index]);
+};
+
+const encodeTransactionOutputs = (outs) => {
+  return new List(
+    outs.map((o) => [encodeTransactionAddress(o.address), o.amount.quantity])
+  );
+};
+
+const encodeTransactionAddress = (addr) => {
+  const bytes = bs58.decode(addr);
+  return cbor.decodeFirstSync(bytes);
 };

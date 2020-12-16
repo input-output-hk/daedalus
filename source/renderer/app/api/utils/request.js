@@ -24,8 +24,11 @@ const { isIncentivizedTestnet, isSelfnode } = global.environment;
 function typedRequest<Response>(
   httpOptions: RequestOptions,
   queryParams?: {},
-  rawBodyParams?: any
-  // requestOptions?: { returnMeta: boolean }
+  rawBodyParams?: any,
+  requestOptions?: {
+    returnMeta?: boolean,
+    isOctetStream?: boolean,
+  }
 ): Promise<Response> {
   return new Promise((resolve, reject) => {
     const options: RequestOptions = Object.assign({}, httpOptions);
@@ -38,7 +41,20 @@ function typedRequest<Response>(
     }
 
     // Handle raw body params
-    if (rawBodyParams) {
+    if (
+      requestOptions &&
+      requestOptions.isOctetStream &&
+      rawBodyParams &&
+      typeof rawBodyParams === 'string'
+    ) {
+      hasRequestBody = true;
+      requestBody = rawBodyParams;
+      options.headers = {
+        'Content-Length': requestBody.length / 2,
+        'Content-Type': 'application/octet-stream',
+        Accept: 'application/json; charset=utf-8',
+      };
+    } else if (rawBodyParams) {
       hasRequestBody = true;
       requestBody = JSON.stringify(rawBodyParams);
       options.headers = {
@@ -55,7 +71,11 @@ function typedRequest<Response>(
         : global.https.request(options);
 
     if (hasRequestBody) {
-      httpsRequest.write(requestBody);
+      if (requestOptions && requestOptions.isOctetStream) {
+        httpsRequest.write(requestBody, 'hex');
+      } else {
+        httpsRequest.write(requestBody);
+      }
     }
     httpsRequest.on('response', (response) => {
       let body = '';

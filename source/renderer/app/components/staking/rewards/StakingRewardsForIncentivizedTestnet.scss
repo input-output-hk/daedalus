@@ -18,6 +18,7 @@
     }
 
     & > .actionButton {
+      border-radius: 2px;
       box-shadow: 0 1.5px 5px 0 var(--theme-staking-export-button-shadow-color);
       display: flex;
       height: auto;
