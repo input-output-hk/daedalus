@@ -41,6 +41,7 @@ export default (props: Props) => {
         if (props.inputRef && props.inputRef.current) {
           props.inputRef.current.select();
         }
+        props.onCopyValue();
       }}
     />
   );

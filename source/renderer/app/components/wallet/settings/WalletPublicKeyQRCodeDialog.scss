@@ -19,5 +19,10 @@
     display: flex;
     justify-content: center;
     margin-top: 20px;
+
+    canvas {
+      border: 4px solid var(--theme-receive-qr-code-background-color);
+      box-sizing: content-box;
+    }
   }
 }
