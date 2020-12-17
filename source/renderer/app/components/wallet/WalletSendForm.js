@@ -11,7 +11,7 @@ import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import BigNumber from 'bignumber.js';
-import { get, debounce } from 'lodash';
+import { get } from 'lodash';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import { submitOnEnter } from '../../utils/form';
 import AmountInputSkin from './skins/AmountInputSkin';
@@ -25,10 +25,7 @@ import {
   formattedAmountToNaturalUnits,
   formattedAmountToLovelace,
 } from '../../utils/formatters';
-import {
-  FORM_VALIDATION_DEBOUNCE_WAIT,
-  TRANSACTION_FEE_CALCULATION_DEBOUNCE_WAIT,
-} from '../../config/timingConfig';
+import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
 import { NUMBER_FORMATS } from '../../../../common/types/number.types';
 /* eslint-disable consistent-return */
@@ -122,7 +119,6 @@ type Props = {
 };
 
 type State = {
-  isCalculatingTransactionFee: boolean,
   isTransactionFeeCalculated: boolean,
   transactionFee: BigNumber,
   feeCalculationRequestQue: number,
@@ -136,12 +132,13 @@ export default class WalletSendForm extends Component<Props, State> {
   };
 
   state = {
-    isCalculatingTransactionFee: false,
     isTransactionFeeCalculated: false,
     transactionFee: new BigNumber(0),
     feeCalculationRequestQue: 0,
     transactionFeeError: null,
   };
+
+  isCalculatingTransactionFee = false;
 
   // We need to track the mounted state in order to avoid calling
   // setState promise handling code after the component was already unmounted:
@@ -156,20 +153,19 @@ export default class WalletSendForm extends Component<Props, State> {
     this._isMounted = false;
   }
 
-  handleOnSubmit = debounce(() => {
+  handleOnSubmit = () => {
     if (this.isDisabled()) {
       return false;
     }
     this.props.openDialogAction({
       dialog: WalletSendConfirmationDialog,
     });
-  }, TRANSACTION_FEE_CALCULATION_DEBOUNCE_WAIT);
+  };
 
   handleSubmitOnEnter = submitOnEnter.bind(this, this.handleOnSubmit);
 
   isDisabled = () =>
-    this.state.isCalculatingTransactionFee ||
-    !this.state.isTransactionFeeCalculated;
+    this.isCalculatingTransactionFee || !this.state.isTransactionFeeCalculated;
 
   // FORM VALIDATION
   form = new ReactToolboxMobxForm(
@@ -266,7 +262,6 @@ export default class WalletSendForm extends Component<Props, State> {
       isHardwareWallet,
     } = this.props;
     const {
-      isCalculatingTransactionFee,
       isTransactionFeeCalculated,
       transactionFee,
       transactionFeeError,
@@ -306,6 +301,7 @@ export default class WalletSendForm extends Component<Props, State> {
                   {...receiverField.bind()}
                   error={receiverField.error}
                   onChange={(value) => {
+                    this.isCalculatingTransactionFee = true;
                     receiverField.onChange(value || '');
                   }}
                   skin={InputSkin}
@@ -324,6 +320,7 @@ export default class WalletSendForm extends Component<Props, State> {
                   }}
                   error={transactionFeeError || amountField.error}
                   onChange={(value) => {
+                    this.isCalculatingTransactionFee = true;
                     amountField.onChange(value);
                   }}
                   // AmountInputSkin props
@@ -333,7 +330,7 @@ export default class WalletSendForm extends Component<Props, State> {
                   skin={AmountInputSkin}
                   onKeyPress={this.handleSubmitOnEnter}
                   allowSigns={false}
-                  isCalculatingFees={isCalculatingTransactionFee}
+                  isCalculatingFees={this.isCalculatingTransactionFee}
                 />
               </div>
 
@@ -367,6 +364,7 @@ export default class WalletSendForm extends Component<Props, State> {
 
   resetTransactionFee() {
     if (this._isMounted) {
+      this.isCalculatingTransactionFee = false;
       this.setState({
         isTransactionFeeCalculated: false,
         transactionFee: new BigNumber(0),
@@ -375,7 +373,7 @@ export default class WalletSendForm extends Component<Props, State> {
     }
   }
 
-  _calculateTransactionFee = async (address: string, amountValue: string) => {
+  calculateTransactionFee = async (address: string, amountValue: string) => {
     const amount = formattedAmountToLovelace(amountValue);
     const {
       feeCalculationRequestQue: prevFeeCalculationRequestQue,
@@ -392,8 +390,8 @@ export default class WalletSendForm extends Component<Props, State> {
         this._isMounted &&
         this.state.feeCalculationRequestQue - prevFeeCalculationRequestQue === 1
       ) {
+        this.isCalculatingTransactionFee = false;
         this.setState({
-          isCalculatingTransactionFee: false,
           isTransactionFeeCalculated: true,
           transactionFee: fee,
           transactionFeeError: null,
@@ -413,19 +411,14 @@ export default class WalletSendForm extends Component<Props, State> {
         ) : (
           this.context.intl.formatMessage(error)
         );
+        this.isCalculatingTransactionFee = false;
         this.setState({
-          isCalculatingTransactionFee: false,
           isTransactionFeeCalculated: false,
           transactionFee: new BigNumber(0),
           transactionFeeError,
         });
       }
     }
-  };
-
-  calculateTransactionFee = (address: string, amountValue: string) => {
-    this.setState({ isCalculatingTransactionFee: true });
-    this._calculateTransactionFee(address, amountValue);
   };
 
   getCurrentNumberFormat() {
