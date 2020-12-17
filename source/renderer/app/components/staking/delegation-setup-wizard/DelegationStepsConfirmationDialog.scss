@@ -30,7 +30,7 @@
       .stakePoolId {
         color: var(--theme-delegation-steps-confirmation-description-color);
         font-family: var(--font-light);
-        line-height: 1.38;
+        user-select: text;
       }
 
       .calculatingFeesLabel {
