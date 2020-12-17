@@ -14,15 +14,23 @@
       }
     }
 
+    .stakePoolIdWrapper,
     .feesWrapper {
       font-family: var(--font-medium);
       font-weight: 500;
       line-height: 1.38;
       margin-bottom: 20px;
 
+      .stakePoolIdLabel,
       .feesLabel {
         color: var(--theme-delegation-steps-confirmation-fees-label-color);
         margin-bottom: 6px;
+      }
+
+      .stakePoolId {
+        color: var(--theme-delegation-steps-confirmation-description-color);
+        font-family: var(--font-light);
+        line-height: 1.38;
       }
 
       .calculatingFeesLabel {
