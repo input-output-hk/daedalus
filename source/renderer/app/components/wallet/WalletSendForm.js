@@ -25,7 +25,10 @@ import {
   formattedAmountToNaturalUnits,
   formattedAmountToLovelace,
 } from '../../utils/formatters';
-import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
+import {
+  FORM_VALIDATION_DEBOUNCE_WAIT,
+  TRANSACTION_FEE_CALCULATION_DEBOUNCE_WAIT,
+} from '../../config/timingConfig';
 import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
 import { NUMBER_FORMATS } from '../../../../common/types/number.types';
 /* eslint-disable consistent-return */
@@ -98,8 +101,6 @@ export const messages = defineMessages({
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
-const CALCULATE_TRANSACTION_FEE_DELAY = 1000;
-
 type Props = {
   currencyUnit: string,
   currencyMaxIntegerDigits?: number,
@@ -162,7 +163,7 @@ export default class WalletSendForm extends Component<Props, State> {
     this.props.openDialogAction({
       dialog: WalletSendConfirmationDialog,
     });
-  }, CALCULATE_TRANSACTION_FEE_DELAY);
+  }, TRANSACTION_FEE_CALCULATION_DEBOUNCE_WAIT);
 
   handleSubmitOnEnter = submitOnEnter.bind(this, this.handleOnSubmit);
 
