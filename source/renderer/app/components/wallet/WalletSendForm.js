@@ -138,19 +138,24 @@ export default class WalletSendForm extends Component<Props, State> {
     transactionFeeError: null,
   };
 
+  // We need to track the fee calculation state in order to disable
+  // the "Submit" button as soon as either receiver or amount field changes.
+  // This is required as we are using debounced validation and we need to
+  // disable the "Submit" button as soon as the value changes and then wait for
+  // the validation to end in order to see if the button should be enabled or not.
   isCalculatingTransactionFee = false;
 
   // We need to track the mounted state in order to avoid calling
   // setState promise handling code after the component was already unmounted:
   // Read more: https://facebook.github.io/react/blog/2015/12/16/ismounted-antipattern.html
-  _isMounted = false;
+  isMounted = false;
 
   componentDidMount() {
-    this._isMounted = true;
+    this.isMounted = true;
   }
 
   componentWillUnmount() {
-    this._isMounted = false;
+    this.isMounted = false;
   }
 
   handleOnSubmit = () => {
@@ -363,7 +368,7 @@ export default class WalletSendForm extends Component<Props, State> {
   }
 
   resetTransactionFee() {
-    if (this._isMounted) {
+    if (this.isMounted) {
       this.isCalculatingTransactionFee = false;
       this.setState({
         isTransactionFeeCalculated: false,
@@ -387,7 +392,7 @@ export default class WalletSendForm extends Component<Props, State> {
     try {
       const fee = await this.props.calculateTransactionFee(address, amount);
       if (
-        this._isMounted &&
+        this.isMounted &&
         this.state.feeCalculationRequestQue - prevFeeCalculationRequestQue === 1
       ) {
         this.isCalculatingTransactionFee = false;
@@ -399,7 +404,7 @@ export default class WalletSendForm extends Component<Props, State> {
       }
     } catch (error) {
       if (
-        this._isMounted &&
+        this.isMounted &&
         this.state.feeCalculationRequestQue - prevFeeCalculationRequestQue === 1
       ) {
         const errorHasLink = !!get(error, ['values', 'linkLabel']);
