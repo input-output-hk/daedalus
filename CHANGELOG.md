@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Added Hardware Wallet Receiving Address verification for "Ledger" devices ([PR 2282](https://github.com/input-output-hk/daedalus/pull/2282))
+
 ### Fixes
 
 - Added initial loading state to UTXO screen ([PR 2265](https://github.com/input-output-hk/daedalus/pull/2265))
