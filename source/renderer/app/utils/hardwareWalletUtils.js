@@ -1,6 +1,6 @@
 // @flow
 import { map, join, takeRight } from 'lodash';
-import { cardano } from '@cardano-foundation/ledgerjs-hw-app-cardano';
+import { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
 import { HARDENED } from '../config/hardwareWalletsConfig';
 
 // Constants
@@ -34,7 +34,7 @@ export const derivationPathToLedgerPath = (derivationPath: Array<string>) => {
     chunk.replace('H', "'")
   );
   const constructedPath = join(transformedPath, '/');
-  return cardano.str_to_path(constructedPath);
+  return utils.str_to_path(constructedPath);
 };
 
 export const getParamsFromPath = (derivationPath: Array<string>) => {
