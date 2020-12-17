@@ -396,9 +396,10 @@ export const handleHardwareWalletRequests = async (
       stakingBlockchainPointer,
       isTrezor,
     } = params;
-    const spendingPath = cardano.str_to_path(spendingPathStr);
-    const stakingPath =
-      stakingPathStr !== null ? cardano.str_to_path(stakingPathStr) : null;
+    const spendingPath = utils.str_to_path(spendingPathStr);
+    const stakingPath = stakingPathStr
+      ? utils.str_to_path(stakingPathStr)
+      : null;
 
     try {
       deviceConnection = get(devicesMemo, [devicePath, 'AdaConnection']);
