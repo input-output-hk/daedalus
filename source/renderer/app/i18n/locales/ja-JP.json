@@ -358,6 +358,7 @@
   "staking.delegationSetup.confirmation.step.dialog.feesLabel": "手数料",
   "staking.delegationSetup.confirmation.step.dialog.spendingPasswordLabel": "送信時パスワード",
   "staking.delegationSetup.confirmation.step.dialog.spendingPasswordPlaceholder": "パスワードを入力してください",
+  "staking.delegationSetup.confirmation.step.dialog.stakePoolIdLabel": "ステークプールID",
   "staking.delegationSetup.confirmation.step.dialog.stepIndicatorLabel": "ステップ{currentStep}/{totalSteps}",
   "staking.delegationSetup.confirmation.step.dialog.title": "委任を確認する",
   "staking.delegationSetup.intro.step.dialog.cancelButtonLabel": "キャンセル",
