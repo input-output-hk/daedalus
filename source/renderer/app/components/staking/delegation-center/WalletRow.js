@@ -96,6 +96,7 @@ type Props = {
   containerClassName: string,
   setListActive?: Function,
   listName?: string,
+  highlightOnHover?: boolean,
 };
 
 type WalletRowState = {
@@ -111,10 +112,7 @@ const initialWalletRowState = {
 };
 
 @observer
-export default class WalletRow extends Component<
-  Props,
-  WalletRowState,
-  > {
+export default class WalletRow extends Component<Props, WalletRowState> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -147,6 +145,7 @@ export default class WalletRow extends Component<
       onOpenExternalLink,
       showWithSelectButton,
       containerClassName,
+      highlightOnHover,
     } = this.props;
 
     // @TODO - remove once quit stake pool delegation is connected with rewards balance
@@ -227,7 +226,10 @@ export default class WalletRow extends Component<
       isRestoring ? styles.isRestoring : null,
     ]);
 
-    const isHighlighted = futurePendingDelegationStakePoolId && futurePendingDelegationStakePool ? this.getIsHighlighted(futurePendingDelegationStakePool.id) : false;
+    const isHighlighted =
+      futurePendingDelegationStakePoolId && futurePendingDelegationStakePool
+        ? this.getIsHighlighted(futurePendingDelegationStakePool.id)
+        : false;
     const { top, left } = this.state;
 
     return (
@@ -323,14 +325,23 @@ export default class WalletRow extends Component<
                 )}
               </div>
               <SVGInline svg={arrow} className={styles.arrow} />
-              <div className={futureStakePoolTileStyles}>
+              <div
+                className={futureStakePoolTileStyles}
+                onMouseLeave={highlightOnHover ? this.handleCloseTooltip : null}
+              >
                 {futurePendingDelegationStakePoolId ? (
                   <div
                     className={
                       !futurePendingDelegationStakePool ? styles.unknown : null
                     }
-                    onClick={(event) => this.handleOpenTooltip(event, futurePendingDelegationStakePool)}
-                    role="presentation"
+                    onMouseEnter={(event) =>
+                      highlightOnHover
+                        ? this.handleOpenTooltip(
+                            event,
+                            futurePendingDelegationStakePool
+                          )
+                        : null
+                    }
                   >
                     {futurePendingDelegationStakePool ? (
                       <>
@@ -445,7 +456,10 @@ export default class WalletRow extends Component<
     if (isListActive !== false && setListActive) setListActive(null);
   };
 
-  handleOpenTooltip = (poolId: SyntheticMouseEvent<HTMLElement>, futurePendingDelegationStakePool: StakePool) => {
+  handleOpenTooltip = (
+    poolId: SyntheticMouseEvent<HTMLElement>,
+    futurePendingDelegationStakePool: StakePool
+  ) => {
     const {
       isListActive,
       setListActive,
