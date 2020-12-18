@@ -243,7 +243,7 @@
     "shasum": "1.0.2",
     "source-map-support": "0.5.19",
     "spectron-fake-dialog": "0.0.1",
-    "trezor-connect": "8.1.16-extended",
+    "trezor-connect": "8.1.19-extended",
     "unorm": "1.6.0",
     "validator": "13.1.17"
   },

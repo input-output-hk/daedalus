@@ -6,6 +6,8 @@ import { BrowserWindow } from 'electron';
 import TrezorConnect, {
   DEVICE_EVENT,
   TRANSPORT_EVENT,
+  UI_EVENT,
+  UI,
   // $FlowFixMe
 } from 'trezor-connect';
 import { get, omit, last, find, includes } from 'lodash';
@@ -290,6 +292,17 @@ export const handleHardwareWalletRequests = async (
     // Remove all listeners if exist - e.g. on app refresh
     TrezorConnect.removeAllListeners();
     // Initialize new device listeners
+    TrezorConnect.on(UI_EVENT, (event) => {
+      if (event.type === UI.REQUEST_PASSPHRASE) {
+        if (event.payload && event.payload.device) {
+          TrezorConnect.uiResponse(
+            {
+              type: UI.RECEIVE_PASSPHRASE,
+              payload: { value: '', passphraseOnDevice: true },
+          })
+        }
+      }
+    });
     TrezorConnect.on(TRANSPORT_EVENT, (event) => {
       if (event.type === 'transport-error') {
         // Send Transport error to Renderer
@@ -492,7 +505,6 @@ export const handleHardwareWalletRequests = async (
           device: { path: devicePath },
         });
         if (deviceFeatures.success) {
-          // trezorConnected = true;
           const extendedPublicKeyResponse = await TrezorConnect.cardanoGetPublicKey(
             {
               path: `m/${path}`,
