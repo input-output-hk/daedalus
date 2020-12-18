@@ -16,6 +16,7 @@ import type {
   NextEpoch,
   TipInfo,
 } from '../../../source/renderer/app/api/network/types';
+import {number} from "@storybook/addon-knobs";
 
 const walletSyncedStateReady = { status: 'ready' };
 
@@ -221,10 +222,12 @@ export const StakingDelegationCenterStory = ({
   locale,
   isLoading,
   isEpochsInfoAvailable,
+  currentTheme,
 }: {
   locale: string,
   isLoading: boolean,
   isEpochsInfoAvailable: boolean,
+  currentTheme: string,
 }) => (
   <DelegationCenter
     wallets={wallets}
@@ -243,5 +246,19 @@ export const StakingDelegationCenterStory = ({
     isEpochsInfoAvailable={isEpochsInfoAvailable}
     slotLength={null}
     epochLength={null}
+    containerClassName="StakingWithNavigation_page"
+    currentTheme={currentTheme}
+    numberOfRankedStakePools={
+      STAKE_POOLS.slice(
+        0,
+        number('Pools', 300, {
+          range: true,
+          min: 37,
+          max: 300,
+          step: 1,
+        })
+      ).length
+    }
+    onOpenExternalLink={action('onOpenExternalLink')}
   />
 );

@@ -180,7 +180,7 @@ type Props = {
   color: string,
   containerClassName: string,
   numberOfRankedStakePools: number,
-  isListView: boolean,
+  isListView?: boolean,
   isDelegationView?: boolean,
 };
 

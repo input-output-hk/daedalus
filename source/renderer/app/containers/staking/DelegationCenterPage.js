@@ -130,7 +130,7 @@ export default class DelegationCenterPage extends Component<Props, State> {
             isEpochsInfoAvailable
           }
           currentLocale={currentLocale}
-          onExternalLinkClick={app.openExternalLink}
+          onOpenExternalLink={app.openExternalLink}
           currentTheme={currentTheme}
           listName={STAKE_POOLS_DELEGATING_LIST}
           isListActive={selectedList === STAKE_POOLS_DELEGATING_LIST}

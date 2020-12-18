@@ -32,7 +32,7 @@ const messages = defineMessages({
 type Props = {
   wallets: Array<Wallet>,
   numberOfStakePools: number,
-  numberOfRankedStakePools?: number,
+  numberOfRankedStakePools: number,
   onDelegate: Function,
   onUndelegate: Function,
   getStakePoolById: Function,

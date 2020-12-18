@@ -81,7 +81,7 @@ type Props = {
   wallet: Wallet,
   delegatedStakePool?: ?StakePool,
   numberOfStakePools: number,
-  numberOfRankedStakePools?: number,
+  numberOfRankedStakePools: number,
   onDelegate: Function,
   onUndelegate: Function,
   getStakePoolById: Function,
@@ -100,7 +100,7 @@ type Props = {
 };
 
 type WalletRowState = {
-  highlightedPoolId: ?number,
+  highlightedPoolId: ?string,
   top: number,
   left: number,
 };
@@ -212,13 +212,14 @@ export default class WalletRow extends Component<Props, WalletRowState> {
 
     const futureDelegationStatus =
       hasPendingDelegations && futurePendingDelegationStakePool
+      && futurePendingDelegationStakePool.status
         ? futurePendingDelegationStakePool.status
         : delegationStakePoolStatus;
     const isFutureDelegationDelegating =
       futureDelegationStatus !== WalletDelegationStatuses.NOT_DELEGATING;
 
     const stakePoolRankingColor = !futurePendingDelegationStakePool
-      ? null
+      ? ''
       : getColorFromRange(
           futurePendingDelegationStakePool.ranking,
           numberOfRankedStakePools
@@ -480,7 +481,7 @@ export default class WalletRow extends Component<Props, WalletRowState> {
 
   handleOpenTooltip = (
     poolId: SyntheticMouseEvent<HTMLElement>,
-    futurePendingDelegationStakePool: StakePool
+    futurePendingDelegationStakePool: ?StakePool
   ) => {
     const {
       isListActive,
