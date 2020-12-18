@@ -181,7 +181,7 @@ type Props = {
   containerClassName: string,
   numberOfRankedStakePools: number,
   isListView: boolean,
-  isDelegationView: boolean,
+  isDelegationView?: boolean,
 };
 
 type State = {

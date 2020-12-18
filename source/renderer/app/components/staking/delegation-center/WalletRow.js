@@ -194,7 +194,10 @@ export default class WalletRow extends Component<Props, WalletRowState> {
           futurePendingDelegationStakePool = delegatedStakePool;
           futurePendingDelegationStakePoolId = delegatedStakePoolId;
         }
-      } else if (nextPendingDelegationStakePool && !futurePendingDelegationStakePool) {
+      } else if (
+        nextPendingDelegationStakePool &&
+        !futurePendingDelegationStakePool
+      ) {
         futurePendingDelegationStakePool = nextPendingDelegationStakePool;
         futurePendingDelegationStakePoolId = nextPendingDelegationStakePoolId;
       }
