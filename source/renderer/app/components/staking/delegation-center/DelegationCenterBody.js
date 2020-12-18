@@ -39,6 +39,12 @@ type Props = {
   isLoading: boolean,
   nextEpoch: ?NextEpoch,
   futureEpoch: ?FutureEpoch,
+  isListActive?: boolean,
+  currentTheme: string,
+  onOpenExternalLink: Function,
+  containerClassName: string,
+  setListActive?: Function,
+  listName?: string,
 };
 
 @observer
@@ -61,6 +67,12 @@ export default class DelegationCenterBody extends Component<Props> {
       isLoading,
       nextEpoch,
       futureEpoch,
+      isListActive,
+      currentTheme,
+      onOpenExternalLink,
+      containerClassName,
+      setListActive,
+      listName,
     } = this.props;
 
     const title = intl.formatMessage(messages.bodyTitle);
@@ -118,6 +130,12 @@ export default class DelegationCenterBody extends Component<Props> {
                   getStakePoolById={getStakePoolById}
                   nextEpochNumber={nextEpochNumber}
                   futureEpochNumber={futureEpochNumber}
+                  currentTheme={currentTheme}
+                  isListActive={isListActive}
+                  listName={listName}
+                  onOpenExternalLink={onOpenExternalLink}
+                  containerClassName={containerClassName}
+                  setListActive={setListActive}
                 />
               ))}
             </div>

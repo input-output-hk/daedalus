@@ -24,6 +24,12 @@ type Props = {
   isLoading: boolean,
   currentLocale: string,
   isEpochsInfoAvailable: boolean,
+  isListActive?: boolean,
+  currentTheme: string,
+  onOpenExternalLink: Function,
+  containerClassName: string,
+  setListActive?: Function,
+  listName?: string,
 };
 
 @observer
@@ -43,6 +49,12 @@ export default class DelegationCenter extends Component<Props> {
       isLoading,
       currentLocale,
       isEpochsInfoAvailable,
+      isListActive,
+      currentTheme,
+      onOpenExternalLink,
+      containerClassName,
+      setListActive,
+      listName,
     } = this.props;
 
     return (
@@ -66,6 +78,12 @@ export default class DelegationCenter extends Component<Props> {
           nextEpoch={nextEpoch}
           futureEpoch={futureEpoch}
           isLoading={isLoading || !isEpochsInfoAvailable}
+          currentTheme={currentTheme}
+          isListActive={isListActive}
+          onOpenExternalLink={onOpenExternalLink}
+          containerClassName={containerClassName}
+          setListActive={setListActive}
+          listName={listName}
         />
       </Fragment>
     );

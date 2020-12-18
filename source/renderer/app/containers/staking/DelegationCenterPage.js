@@ -16,10 +16,25 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 
 type Props = InjectedProps;
 
+const STAKE_POOLS_DELEGATING_LIST = 'stakePoolsDelegatingList';
+
+type State = {
+  selectedList?: ?string,
+};
+
+const initialState = {
+  selectedList: null,
+};
+
 @inject('actions', 'stores')
 @observer
-export default class DelegationCenterPage extends Component<Props> {
+export default class DelegationCenterPage extends Component<Props, State> {
   static defaultProps = { stores: null };
+
+  state = { ...initialState };
+
+  handleSetListActive = (selectedList: string) =>
+    this.setState({ selectedList });
 
   handleDelegate = (walletId: string) => {
     const { actions } = this.props;
@@ -76,7 +91,9 @@ export default class DelegationCenterPage extends Component<Props> {
       isEpochsInfoAvailable,
       epochLength,
     } = networkStatus;
-    const { currentLocale } = profile;
+    const { currentLocale, currentTheme } = profile;
+
+    const { selectedList } = this.state;
 
     const numberOfRankedStakePools: number = stakePools.filter(
       (stakePool) =>
@@ -113,6 +130,12 @@ export default class DelegationCenterPage extends Component<Props> {
             isEpochsInfoAvailable
           }
           currentLocale={currentLocale}
+          onExternalLinkClick={app.openExternalLink}
+          currentTheme={currentTheme}
+          listName={STAKE_POOLS_DELEGATING_LIST}
+          isListActive={selectedList === STAKE_POOLS_DELEGATING_LIST}
+          containerClassName="StakingWithNavigation_page"
+          setListActive={this.handleSetListActive}
         />
         {uiDialogs.isOpen(UndelegateConfirmationDialog) ? (
           <UndelegateDialogContainer

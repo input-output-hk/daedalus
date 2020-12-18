@@ -20,6 +20,8 @@ import {
   IS_SATURATION_DATA_AVAILABLE,
 } from '../../../config/stakingConfig';
 import noDataDashBigImage from '../../../assets/images/no-data-dash-big.inline.svg';
+import TooltipPool from '../widgets/TooltipPool';
+import { getRelativePosition } from '../../../utils/domManipulation';
 
 const messages = defineMessages({
   walletAmount: {
@@ -85,12 +87,40 @@ type Props = {
   getStakePoolById: Function,
   nextEpochNumber: ?number,
   futureEpochNumber: ?number,
+  onSelect?: Function,
+  selectedPoolId?: ?number,
+  isListActive?: boolean,
+  currentTheme: string,
+  onOpenExternalLink: Function,
+  showWithSelectButton?: boolean,
+  containerClassName: string,
+  setListActive?: Function,
+  listName?: string,
+};
+
+type WalletRowState = {
+  highlightedPoolId: ?number,
+  top: number,
+  left: number,
+};
+
+const initialWalletRowState = {
+  highlightedPoolId: null,
+  top: 0,
+  left: 0,
 };
 
 @observer
-export default class WalletRow extends Component<Props> {
+export default class WalletRow extends Component<
+  Props,
+  WalletRowState,
+  > {
   static contextTypes = {
     intl: intlShape.isRequired,
+  };
+
+  state = {
+    ...initialWalletRowState,
   };
 
   render() {
@@ -113,6 +143,10 @@ export default class WalletRow extends Component<Props> {
       onUndelegate,
       nextEpochNumber,
       futureEpochNumber,
+      currentTheme,
+      onOpenExternalLink,
+      showWithSelectButton,
+      containerClassName,
     } = this.props;
 
     // @TODO - remove once quit stake pool delegation is connected with rewards balance
@@ -192,6 +226,9 @@ export default class WalletRow extends Component<Props> {
       styles.right,
       isRestoring ? styles.isRestoring : null,
     ]);
+
+    const isHighlighted = futurePendingDelegationStakePoolId && futurePendingDelegationStakePool ? this.getIsHighlighted(futurePendingDelegationStakePool.id) : false;
+    const { top, left } = this.state;
 
     return (
       <div className={styles.component}>
@@ -292,6 +329,8 @@ export default class WalletRow extends Component<Props> {
                     className={
                       !futurePendingDelegationStakePool ? styles.unknown : null
                     }
+                    onClick={(event) => this.handleOpenTooltip(event, futurePendingDelegationStakePool)}
+                    role="presentation"
                   >
                     {futurePendingDelegationStakePool ? (
                       <>
@@ -332,6 +371,22 @@ export default class WalletRow extends Component<Props> {
                           className={styles.stakePoolRankingIndicator}
                           style={{ background: stakePoolRankingColor }}
                         />
+                        {isHighlighted && (
+                          <TooltipPool
+                            stakePool={futurePendingDelegationStakePool}
+                            isVisible
+                            onClick={this.handleCloseTooltip}
+                            currentTheme={currentTheme}
+                            onOpenExternalLink={onOpenExternalLink}
+                            top={top}
+                            left={left}
+                            color={stakePoolRankingColor}
+                            showWithSelectButton={showWithSelectButton}
+                            containerClassName={containerClassName}
+                            numberOfRankedStakePools={numberOfRankedStakePools}
+                            isDelegationView
+                          />
+                        )}
                       </>
                     ) : (
                       <span className={styles.stakePoolUnknown}>
@@ -378,4 +433,47 @@ export default class WalletRow extends Component<Props> {
       </div>
     );
   }
+
+  getIsHighlighted = (id: string) =>
+    this.props.isListActive !== false && id === this.state.highlightedPoolId;
+
+  handleCloseTooltip = () => {
+    const { isListActive, setListActive } = this.props;
+    this.setState({
+      ...initialWalletRowState,
+    });
+    if (isListActive !== false && setListActive) setListActive(null);
+  };
+
+  handleOpenTooltip = (poolId: SyntheticMouseEvent<HTMLElement>, futurePendingDelegationStakePool: StakePool) => {
+    const {
+      isListActive,
+      setListActive,
+      listName,
+      containerClassName,
+    } = this.props;
+    if (poolId.target) {
+      poolId.persist();
+      const targetElement = poolId.target;
+      if (targetElement instanceof HTMLElement) {
+        const { top, left } = getRelativePosition(
+          targetElement,
+          `.${containerClassName}`
+        );
+        this.setState({ top, left });
+      }
+    }
+    if (isListActive === false && setListActive) setListActive(listName);
+    const targetEl = poolId.currentTarget;
+    const { parentElement } = targetEl;
+    if (parentElement) {
+      const highlightedPoolId = futurePendingDelegationStakePool
+        ? futurePendingDelegationStakePool.id
+        : null;
+      return this.setState({
+        highlightedPoolId,
+      });
+    }
+    return null;
+  };
 }
