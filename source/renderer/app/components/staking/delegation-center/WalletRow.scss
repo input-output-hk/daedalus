@@ -211,6 +211,7 @@
         background-color: var(--theme-staking-stake-pool-background-color);
         border: solid 1px var(--theme-staking-stake-pool-border-color);
         padding: 25px 11px;
+        transition: padding-top 400ms ease-in-out;
 
         .action {
           margin-left: -12px;
@@ -257,7 +258,7 @@
       padding: 0 !important;
       position: absolute;
       text-transform: uppercase;
-      transition: opacity 0.15s ease-in;
+      transition: opacity 0.4s ease-in;
       width: 80px;
     }
 
