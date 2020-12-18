@@ -13,6 +13,18 @@ export default defineMessages({
     description:
       'Error message shown when incomplete bip39 mnemonic was entered.',
   },
+  knownMnemonicWordCount: {
+    id: 'global.info.knownMnemonicWordCount',
+    defaultMessage: '!!!{actual} of {required} words entered',
+    description:
+      'Info message displayed above mnemonic inputs about actual vs. required words entered',
+  },
+  unknownMnemonicWordCount: {
+    id: 'global.info.unknownMnemonicWordCount',
+    defaultMessage: '!!!{actual} words entered',
+    description:
+      'Info message displayed above mnemonic inputs about how many words have been entered',
+  },
   invalidEmail: {
     id: 'global.errors.invalidEmail',
     defaultMessage: '!!!Invalid email entered, please check.',

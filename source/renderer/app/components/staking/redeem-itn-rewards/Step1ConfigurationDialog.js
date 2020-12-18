@@ -358,7 +358,10 @@ export default class Step1ConfigurationDialog extends Component<Props> {
             options={suggestedMnemonics}
             requiredSelections={[ITN_WALLET_RECOVERY_PHRASE_WORD_COUNT]}
             requiredSelectionsInfo={(required, actual) =>
-              `${actual} of ${required} words entered`
+              intl.formatMessage(globalMessages.knownMnemonicWordCount, {
+                actual,
+                required,
+              })
             }
             maxSelections={ITN_WALLET_RECOVERY_PHRASE_WORD_COUNT}
             error={recoveryPhraseField.error}

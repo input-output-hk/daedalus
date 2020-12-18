@@ -173,7 +173,10 @@ export default class MnemonicsDialog extends Component<Props> {
                 : [expectedWordCount]
             }
             requiredSelectionsInfo={(required, actual) =>
-              `${actual} of ${required} words entered`
+              intl.formatMessage(globalMessages.knownMnemonicWordCount, {
+                actual,
+                required,
+              })
             }
             maxSelections={maxWordCount}
             error={recoveryPhraseField.error}

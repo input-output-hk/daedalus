@@ -185,8 +185,13 @@ export default class WalletRecoveryPhraseStep2Dialog extends Component<
           }
           requiredSelectionsInfo={(required, actual) =>
             Array.isArray(expectedWordCount)
-              ? `${actual} words entered`
-              : `${actual} of ${required} words entered`
+              ? intl.formatMessage(globalMessages.unknownMnemonicWordCount, {
+                  actual,
+                })
+              : intl.formatMessage(globalMessages.knownMnemonicWordCount, {
+                  actual,
+                  required,
+                })
           }
           maxSelections={maxSelections}
           error={recoveryPhraseField.error}

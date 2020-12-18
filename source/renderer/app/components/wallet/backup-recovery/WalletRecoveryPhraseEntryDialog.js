@@ -229,7 +229,10 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
               options={suggestedMnemonics}
               requiredSelections={[wordCount]}
               requiredSelectionsInfo={(required, actual) =>
-                `${actual} of ${required} words entered`
+                intl.formatMessage(globalMessages.knownMnemonicWordCount, {
+                  actual,
+                  required,
+                })
               }
               maxSelections={wordCount}
               error={recoveryPhraseField.error}

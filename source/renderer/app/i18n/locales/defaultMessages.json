@@ -13938,17 +13938,45 @@
         }
       },
       {
+        "defaultMessage": "!!!{actual} of {required} words entered",
+        "description": "Info message displayed above mnemonic inputs about actual vs. required words entered",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.info.knownMnemonicWordCount",
+        "start": {
+          "column": 26,
+          "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!{actual} words entered",
+        "description": "Info message displayed above mnemonic inputs about how many words have been entered",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.info.unknownMnemonicWordCount",
+        "start": {
+          "column": 28,
+          "line": 22
+        }
+      },
+      {
         "defaultMessage": "!!!Invalid email entered, please check.",
         "description": "Error message shown when invalid email was entered.",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 32
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.errors.invalidEmail",
         "start": {
           "column": 16,
-          "line": 16
+          "line": 28
         }
       },
       {
@@ -13956,13 +13984,13 @@
         "description": "Error message shown when invalid wallet name was entered in create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 38
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.errors.invalidWalletName",
         "start": {
           "column": 21,
-          "line": 21
+          "line": 33
         }
       },
       {
@@ -13970,13 +13998,13 @@
         "description": "Error message shown when insecure wallet password was entered in a password input.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 44
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.errors.invalidSpendingPassword",
         "start": {
           "column": 27,
-          "line": 27
+          "line": 39
         }
       },
       {
@@ -13984,13 +14012,13 @@
         "description": "Error message shown when weak wallet password was entered in a password input.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 50
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.errors.weakSpendingPassword",
         "start": {
           "column": 24,
-          "line": 33
+          "line": 45
         }
       },
       {
@@ -13998,13 +14026,13 @@
         "description": "Error message shown when strong wallet password was entered in a password input.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 56
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.errors.strongSpendingPassword",
         "start": {
           "column": 26,
-          "line": 39
+          "line": 51
         }
       },
       {
@@ -14012,13 +14040,13 @@
         "description": "Error message shown when wallet password and repeat passwords don't match in create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 62
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.errors.invalidRepeatPassword",
         "start": {
           "column": 25,
-          "line": 45
+          "line": 57
         }
       },
       {
@@ -14026,13 +14054,13 @@
         "description": "Error message shown when the file the user tries to replace is open.",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 69
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.errors.paperWalletOpenPdfError",
         "start": {
           "column": 27,
-          "line": 51
+          "line": 63
         }
       },
       {
@@ -14040,13 +14068,13 @@
         "description": "Error message shown when the file the user tries to replace is open.",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 76
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.errors.rewardsOpenCsvError",
         "start": {
           "column": 23,
-          "line": 58
+          "line": 70
         }
       },
       {
@@ -14054,13 +14082,13 @@
         "description": "Password instructions note.",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 82
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.passwordInstructions",
         "start": {
           "column": 24,
-          "line": 65
+          "line": 77
         }
       },
       {
@@ -14068,13 +14096,13 @@
         "description": "The word \"cancel\" reused at several places (like cancel buttons)",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 88
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.cancel",
         "start": {
           "column": 10,
-          "line": 71
+          "line": 83
         }
       },
       {
@@ -14082,13 +14110,13 @@
         "description": "The word \"close\" reused at several places (like cancel buttons)",
         "end": {
           "column": 3,
-          "line": 82
+          "line": 94
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.close",
         "start": {
           "column": 9,
-          "line": 77
+          "line": 89
         }
       },
       {
@@ -14096,13 +14124,13 @@
         "description": "The word \"change\" reused at several places (like change buttons)",
         "end": {
           "column": 3,
-          "line": 88
+          "line": 100
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.change",
         "start": {
           "column": 10,
-          "line": 83
+          "line": 95
         }
       },
       {
@@ -14110,13 +14138,13 @@
         "description": "The word \"create\" reused at several places (like create buttons)",
         "end": {
           "column": 3,
-          "line": 94
+          "line": 106
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.create",
         "start": {
           "column": 10,
-          "line": 89
+          "line": 101
         }
       },
       {
@@ -14124,13 +14152,13 @@
         "description": "The word \"remove\" reused at several places (like remove buttons)",
         "end": {
           "column": 3,
-          "line": 100
+          "line": 112
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.remove",
         "start": {
           "column": 10,
-          "line": 95
+          "line": 107
         }
       },
       {
@@ -14138,13 +14166,13 @@
         "description": "The word \"save\" reused at several places (like save buttons)",
         "end": {
           "column": 3,
-          "line": 105
+          "line": 117
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.save",
         "start": {
           "column": 8,
-          "line": 101
+          "line": 113
         }
       },
       {
@@ -14152,13 +14180,13 @@
         "description": "Language name for \"English\" language.",
         "end": {
           "column": 3,
-          "line": 110
+          "line": 122
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.english",
         "start": {
           "column": 19,
-          "line": 106
+          "line": 118
         }
       },
       {
@@ -14166,13 +14194,13 @@
         "description": "Language name for \"Japanese\" language.",
         "end": {
           "column": 3,
-          "line": 115
+          "line": 127
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.japanese",
         "start": {
           "column": 20,
-          "line": 111
+          "line": 123
         }
       },
       {
@@ -14180,13 +14208,13 @@
         "description": "Language name for \"Chinese\" language.",
         "end": {
           "column": 3,
-          "line": 120
+          "line": 132
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.chinese",
         "start": {
           "column": 19,
-          "line": 116
+          "line": 128
         }
       },
       {
@@ -14194,13 +14222,13 @@
         "description": "Language name for \"Korean\" language.",
         "end": {
           "column": 3,
-          "line": 125
+          "line": 137
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.korean",
         "start": {
           "column": 18,
-          "line": 121
+          "line": 133
         }
       },
       {
@@ -14208,13 +14236,13 @@
         "description": "Language name for \"German\" language.",
         "end": {
           "column": 3,
-          "line": 130
+          "line": 142
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.german",
         "start": {
           "column": 18,
-          "line": 126
+          "line": 138
         }
       },
       {
@@ -14222,13 +14250,13 @@
         "description": "Language name for \"Croatian\" language.",
         "end": {
           "column": 3,
-          "line": 135
+          "line": 147
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.language.croatian",
         "start": {
           "column": 20,
-          "line": 131
+          "line": 143
         }
       },
       {
@@ -14236,13 +14264,13 @@
         "description": "Colon punctuation.",
         "end": {
           "column": 3,
-          "line": 140
+          "line": 152
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.punctuation.colon",
         "start": {
           "column": 20,
-          "line": 136
+          "line": 148
         }
       },
       {
@@ -14250,13 +14278,13 @@
         "description": "Final dot punctuation.",
         "end": {
           "column": 3,
-          "line": 145
+          "line": 157
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.punctuation.dot",
         "start": {
           "column": 18,
-          "line": 141
+          "line": 153
         }
       },
       {
@@ -14264,13 +14292,13 @@
         "description": "Name for \"ADA\" unit.",
         "end": {
           "column": 3,
-          "line": 150
+          "line": 162
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.unit.ada",
         "start": {
           "column": 11,
-          "line": 146
+          "line": 158
         }
       },
       {
@@ -14278,13 +14306,13 @@
         "description": "Title for the \"Recovery Phrase\" dialog.",
         "end": {
           "column": 3,
-          "line": 155
+          "line": 167
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "wallet.backup.recovery.phrase.dialog.title",
         "start": {
           "column": 29,
-          "line": 151
+          "line": 163
         }
       },
       {
@@ -14292,13 +14320,13 @@
         "description": "Label for the \"Wallet password\" input in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 161
+          "line": 173
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 156
+          "line": 168
         }
       },
       {
@@ -14306,13 +14334,13 @@
         "description": "Placeholder for the \"Password\" inputs in the create wallet dialog.",
         "end": {
           "column": 3,
-          "line": 167
+          "line": 179
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 162
+          "line": 174
         }
       },
       {
@@ -14320,13 +14348,13 @@
         "description": "Label \"Continue\" in dialogs.",
         "end": {
           "column": 3,
-          "line": 172
+          "line": 184
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.dialog.button.continue",
         "start": {
           "column": 29,
-          "line": 168
+          "line": 180
         }
       },
       {
@@ -14334,13 +14362,13 @@
         "description": "URL for the \"Known Issues\" link in the \"Help and support\" section on the support settings page",
         "end": {
           "column": 3,
-          "line": 179
+          "line": 191
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "settings.support.faq.faqLinkURL",
         "start": {
           "column": 14,
-          "line": 173
+          "line": 185
         }
       },
       {
@@ -14348,13 +14376,13 @@
         "description": "Name for \"Ada\" unit.",
         "end": {
           "column": 3,
-          "line": 184
+          "line": 196
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.currency.ada",
         "start": {
           "column": 12,
-          "line": 180
+          "line": 192
         }
       },
       {
@@ -14362,13 +14390,13 @@
         "description": "Name for \"Cardano\" client.",
         "end": {
           "column": 3,
-          "line": 189
+          "line": 201
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.apiName.cardano",
         "start": {
           "column": 11,
-          "line": 185
+          "line": 197
         }
       },
       {
@@ -14376,13 +14404,13 @@
         "description": "\"mainnet\" Cardano network",
         "end": {
           "column": 3,
-          "line": 194
+          "line": 206
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.mainnet",
         "start": {
           "column": 19,
-          "line": 190
+          "line": 202
         }
       },
       {
@@ -14390,13 +14418,13 @@
         "description": "\"staging\" Cardano network",
         "end": {
           "column": 3,
-          "line": 199
+          "line": 211
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.staging",
         "start": {
           "column": 19,
-          "line": 195
+          "line": 207
         }
       },
       {
@@ -14404,13 +14432,13 @@
         "description": "\"testnet\" Cardano network",
         "end": {
           "column": 3,
-          "line": 204
+          "line": 216
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.testnet",
         "start": {
           "column": 19,
-          "line": 200
+          "line": 212
         }
       },
       {
@@ -14418,13 +14446,13 @@
         "description": "\"Shelley Testnet\" Cardano network",
         "end": {
           "column": 3,
-          "line": 209
+          "line": 221
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.shelley_testnet",
         "start": {
           "column": 27,
-          "line": 205
+          "line": 217
         }
       },
       {
@@ -14432,13 +14460,13 @@
         "description": "\"Shelley QA\" Cardano network",
         "end": {
           "column": 3,
-          "line": 214
+          "line": 226
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.shelley_qa",
         "start": {
           "column": 22,
-          "line": 210
+          "line": 222
         }
       },
       {
@@ -14446,13 +14474,13 @@
         "description": "\"development\" Cardano network",
         "end": {
           "column": 3,
-          "line": 219
+          "line": 231
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.development",
         "start": {
           "column": 23,
-          "line": 215
+          "line": 227
         }
       },
       {
@@ -14460,13 +14488,13 @@
         "description": "\"itn_rewards_v1\" Cardano network",
         "end": {
           "column": 3,
-          "line": 224
+          "line": 236
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.itn_rewards_v1",
         "start": {
           "column": 26,
-          "line": 220
+          "line": 232
         }
       },
       {
@@ -14474,13 +14502,13 @@
         "description": "\"itn_selfnode\" Cardano network",
         "end": {
           "column": 3,
-          "line": 229
+          "line": 241
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.itn_selfnode",
         "start": {
           "column": 24,
-          "line": 225
+          "line": 237
         }
       },
       {
@@ -14488,13 +14516,13 @@
         "description": "\"selfnode\" Cardano network",
         "end": {
           "column": 3,
-          "line": 234
+          "line": 246
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.selfnode",
         "start": {
           "column": 20,
-          "line": 230
+          "line": 242
         }
       },
       {
@@ -14502,13 +14530,13 @@
         "description": "\"qa\" Cardano network",
         "end": {
           "column": 3,
-          "line": 239
+          "line": 251
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.qa",
         "start": {
           "column": 14,
-          "line": 235
+          "line": 247
         }
       },
       {
@@ -14516,13 +14544,13 @@
         "description": "\"nightly\" Cardano network",
         "end": {
           "column": 3,
-          "line": 244
+          "line": 256
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "environment.network.nightly",
         "start": {
           "column": 19,
-          "line": 240
+          "line": 252
         }
       },
       {
@@ -14530,13 +14558,13 @@
         "description": "Label for years value in duration.",
         "end": {
           "column": 3,
-          "line": 249
+          "line": 261
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.years",
         "start": {
           "column": 9,
-          "line": 245
+          "line": 257
         }
       },
       {
@@ -14544,13 +14572,13 @@
         "description": "Label for months value in duration.",
         "end": {
           "column": 3,
-          "line": 254
+          "line": 266
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.months",
         "start": {
           "column": 10,
-          "line": 250
+          "line": 262
         }
       },
       {
@@ -14558,13 +14586,13 @@
         "description": "Label for days value in duration.",
         "end": {
           "column": 3,
-          "line": 259
+          "line": 271
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.days",
         "start": {
           "column": 8,
-          "line": 255
+          "line": 267
         }
       },
       {
@@ -14572,13 +14600,13 @@
         "description": "Label for hours value in duration.",
         "end": {
           "column": 3,
-          "line": 264
+          "line": 276
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.hours",
         "start": {
           "column": 9,
-          "line": 260
+          "line": 272
         }
       },
       {
@@ -14586,13 +14614,13 @@
         "description": "Label for minutes value in duration.",
         "end": {
           "column": 3,
-          "line": 269
+          "line": 281
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.minutes",
         "start": {
           "column": 11,
-          "line": 265
+          "line": 277
         }
       },
       {
@@ -14600,13 +14628,13 @@
         "description": "Label for seconds value in duration.",
         "end": {
           "column": 3,
-          "line": 274
+          "line": 286
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.duration.seconds",
         "start": {
           "column": 11,
-          "line": 270
+          "line": 282
         }
       },
       {
@@ -14614,13 +14642,13 @@
         "description": "From label of range.",
         "end": {
           "column": 3,
-          "line": 279
+          "line": 291
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.range.from",
         "start": {
           "column": 13,
-          "line": 275
+          "line": 287
         }
       },
       {
@@ -14628,13 +14656,13 @@
         "description": "To label of range.",
         "end": {
           "column": 3,
-          "line": 284
+          "line": 296
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.range.to",
         "start": {
           "column": 11,
-          "line": 280
+          "line": 292
         }
       },
       {
@@ -14642,13 +14670,13 @@
         "description": "Filter label.",
         "end": {
           "column": 3,
-          "line": 289
+          "line": 301
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.filter",
         "start": {
           "column": 10,
-          "line": 285
+          "line": 297
         }
       },
       {
@@ -14656,13 +14684,13 @@
         "description": "All label.",
         "end": {
           "column": 3,
-          "line": 294
+          "line": 306
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.all",
         "start": {
           "column": 7,
-          "line": 290
+          "line": 302
         }
       },
       {
@@ -14670,13 +14698,13 @@
         "description": "Reset label.",
         "end": {
           "column": 3,
-          "line": 299
+          "line": 311
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.reset",
         "start": {
           "column": 9,
-          "line": 295
+          "line": 307
         }
       },
       {
@@ -14684,13 +14712,13 @@
         "description": "Token description.",
         "end": {
           "column": 3,
-          "line": 304
+          "line": 316
         },
         "file": "source/renderer/app/i18n/global-messages.js",
         "id": "global.labels.token",
         "start": {
           "column": 9,
-          "line": 300
+          "line": 312
         }
       }
     ],
