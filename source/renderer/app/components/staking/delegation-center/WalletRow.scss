@@ -109,7 +109,11 @@
       &.futureStakePoolTileDelegated {
         background-color: var(--theme-staking-stake-pool-background-color);
         border: solid 1px var(--theme-staking-stake-pool-border-color);
-        padding: 5px 11px 0 11px;
+        padding: 0;
+
+        > div {
+          padding: 7px 11px 0 11px;
+        }
 
         .stakePoolTicker {
           padding-left: 0;
@@ -246,9 +250,10 @@
       height: 22px;
       justify-content: center;
       line-height: 1.25;
-      margin-left: -12px;
+      margin-left: -1px;
       margin-top: -21px;
       opacity: 0;
+      padding: 0 !important;
       position: absolute;
       text-transform: uppercase;
       transition: opacity 0.15s ease-in;
