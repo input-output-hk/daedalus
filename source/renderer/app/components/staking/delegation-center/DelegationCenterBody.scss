@@ -20,15 +20,13 @@
     display: flex;
     margin: 0 0 10px 0;
     padding: 0 20px;
-
-    .leftBodyTitle {
-      flex: 2.5;
-    }
+    justify-content: space-between;
 
     .rightBodyTitle {
       display: flex;
-      flex: 1.5;
-      justify-content: flex-end;
+      justify-content: space-between;
+      padding: 0 30px;
+      width: 360px;
     }
   }
 
