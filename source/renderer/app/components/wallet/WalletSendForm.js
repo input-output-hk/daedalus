@@ -249,6 +249,80 @@ export default class WalletSendForm extends Component<Props, State> {
     }
   );
 
+  resetTransactionFee() {
+    if (this._isMounted) {
+      this.isCalculatingTransactionFee = false;
+      this.setState({
+        isTransactionFeeCalculated: false,
+        transactionFee: new BigNumber(0),
+        transactionFeeError: null,
+      });
+    }
+  }
+
+  isLatestTransactionFeeRequest = (
+    currentFeeCalculationRequestQue: number,
+    prevFeeCalculationRequestQue: number
+  ) => currentFeeCalculationRequestQue - prevFeeCalculationRequestQue === 1;
+
+  calculateTransactionFee = async (address: string, amountValue: string) => {
+    const amount = formattedAmountToLovelace(amountValue);
+    const {
+      feeCalculationRequestQue: prevFeeCalculationRequestQue,
+    } = this.state;
+    this.setState((prevState) => ({
+      isTransactionFeeCalculated: false,
+      transactionFee: new BigNumber(0),
+      transactionFeeError: null,
+      feeCalculationRequestQue: prevState.feeCalculationRequestQue + 1,
+    }));
+    try {
+      const fee = await this.props.calculateTransactionFee(address, amount);
+      if (
+        this._isMounted &&
+        this.isLatestTransactionFeeRequest(
+          this.state.feeCalculationRequestQue,
+          prevFeeCalculationRequestQue
+        )
+      ) {
+        this.isCalculatingTransactionFee = false;
+        this.setState({
+          isTransactionFeeCalculated: true,
+          transactionFee: fee,
+          transactionFeeError: null,
+        });
+      }
+    } catch (error) {
+      if (
+        this._isMounted &&
+        this.isLatestTransactionFeeRequest(
+          this.state.feeCalculationRequestQue,
+          prevFeeCalculationRequestQue
+        )
+      ) {
+        const errorHasLink = !!get(error, ['values', 'linkLabel']);
+        const transactionFeeError = errorHasLink ? (
+          <FormattedHTMLMessageWithLink
+            message={error}
+            onExternalLinkClick={this.props.onExternalLinkClick}
+          />
+        ) : (
+          this.context.intl.formatMessage(error)
+        );
+        this.isCalculatingTransactionFee = false;
+        this.setState({
+          isTransactionFeeCalculated: false,
+          transactionFee: new BigNumber(0),
+          transactionFeeError,
+        });
+      }
+    }
+  };
+
+  getCurrentNumberFormat() {
+    return NUMBER_FORMATS[this.props.currentNumberFormat];
+  }
+
   render() {
     const { form } = this;
     const { intl } = this.context;
@@ -360,68 +434,5 @@ export default class WalletSendForm extends Component<Props, State> {
         ) : null}
       </div>
     );
-  }
-
-  resetTransactionFee() {
-    if (this._isMounted) {
-      this.isCalculatingTransactionFee = false;
-      this.setState({
-        isTransactionFeeCalculated: false,
-        transactionFee: new BigNumber(0),
-        transactionFeeError: null,
-      });
-    }
-  }
-
-  calculateTransactionFee = async (address: string, amountValue: string) => {
-    const amount = formattedAmountToLovelace(amountValue);
-    const {
-      feeCalculationRequestQue: prevFeeCalculationRequestQue,
-    } = this.state;
-    this.setState((prevState) => ({
-      isTransactionFeeCalculated: false,
-      transactionFee: new BigNumber(0),
-      transactionFeeError: null,
-      feeCalculationRequestQue: prevState.feeCalculationRequestQue + 1,
-    }));
-    try {
-      const fee = await this.props.calculateTransactionFee(address, amount);
-      if (
-        this._isMounted &&
-        this.state.feeCalculationRequestQue - prevFeeCalculationRequestQue === 1
-      ) {
-        this.isCalculatingTransactionFee = false;
-        this.setState({
-          isTransactionFeeCalculated: true,
-          transactionFee: fee,
-          transactionFeeError: null,
-        });
-      }
-    } catch (error) {
-      if (
-        this._isMounted &&
-        this.state.feeCalculationRequestQue - prevFeeCalculationRequestQue === 1
-      ) {
-        const errorHasLink = !!get(error, ['values', 'linkLabel']);
-        const transactionFeeError = errorHasLink ? (
-          <FormattedHTMLMessageWithLink
-            message={error}
-            onExternalLinkClick={this.props.onExternalLinkClick}
-          />
-        ) : (
-          this.context.intl.formatMessage(error)
-        );
-        this.isCalculatingTransactionFee = false;
-        this.setState({
-          isTransactionFeeCalculated: false,
-          transactionFee: new BigNumber(0),
-          transactionFeeError,
-        });
-      }
-    }
-  };
-
-  getCurrentNumberFormat() {
-    return NUMBER_FORMATS[this.props.currentNumberFormat];
   }
 }
