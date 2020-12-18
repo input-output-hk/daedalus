@@ -3,6 +3,7 @@ import React from 'react';
 import { action } from '@storybook/addon-actions';
 import { find } from 'lodash';
 import BigNumber from 'bignumber.js';
+import { number } from "@storybook/addon-knobs";
 import DelegationCenter from '../../../source/renderer/app/components/staking/delegation-center/DelegationCenter';
 import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
 import Wallet, {
@@ -16,7 +17,6 @@ import type {
   NextEpoch,
   TipInfo,
 } from '../../../source/renderer/app/api/network/types';
-import {number} from "@storybook/addon-knobs";
 
 const walletSyncedStateReady = { status: 'ready' };
 
