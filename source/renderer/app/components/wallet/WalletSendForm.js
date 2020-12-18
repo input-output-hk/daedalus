@@ -138,7 +138,12 @@ export default class WalletSendForm extends Component<Props, State> {
     transactionFeeError: null,
   };
 
-  isCalculatingTransactionFee = false;
+  // We need to track the fee calculation state in order to disable
+  // the "Submit" button as soon as either receiver or amount field changes.
+  // This is required as we are using debounced validation and we need to
+  // disable the "Submit" button as soon as the value changes and then wait for
+  // the validation to end in order to see if the button should be enabled or not.
+  _isCalculatingTransactionFee = false;
 
   // We need to track the mounted state in order to avoid calling
   // setState promise handling code after the component was already unmounted:
@@ -165,7 +170,7 @@ export default class WalletSendForm extends Component<Props, State> {
   handleSubmitOnEnter = submitOnEnter.bind(this, this.handleOnSubmit);
 
   isDisabled = () =>
-    this.isCalculatingTransactionFee || !this.state.isTransactionFeeCalculated;
+    this._isCalculatingTransactionFee || !this.state.isTransactionFeeCalculated;
 
   // FORM VALIDATION
   form = new ReactToolboxMobxForm(
@@ -186,10 +191,10 @@ export default class WalletSendForm extends Component<Props, State> {
                 ];
               }
               const amountField = form.$('amount');
-              const amountValue = amountField.value.toString();
               const isAmountValid = amountField.isValid;
               const isValidAddress = await this.props.addressValidator(value);
               if (isValidAddress && isAmountValid) {
+                const amountValue = amountField.value.toString();
                 this.calculateTransactionFee(value, amountValue);
               } else {
                 this.resetTransactionFee();
@@ -251,7 +256,7 @@ export default class WalletSendForm extends Component<Props, State> {
 
   resetTransactionFee() {
     if (this._isMounted) {
-      this.isCalculatingTransactionFee = false;
+      this._isCalculatingTransactionFee = false;
       this.setState({
         isTransactionFeeCalculated: false,
         transactionFee: new BigNumber(0),
@@ -285,7 +290,7 @@ export default class WalletSendForm extends Component<Props, State> {
           prevFeeCalculationRequestQue
         )
       ) {
-        this.isCalculatingTransactionFee = false;
+        this._isCalculatingTransactionFee = false;
         this.setState({
           isTransactionFeeCalculated: true,
           transactionFee: fee,
@@ -309,7 +314,7 @@ export default class WalletSendForm extends Component<Props, State> {
         ) : (
           this.context.intl.formatMessage(error)
         );
-        this.isCalculatingTransactionFee = false;
+        this._isCalculatingTransactionFee = false;
         this.setState({
           isTransactionFeeCalculated: false,
           transactionFee: new BigNumber(0),
@@ -375,7 +380,7 @@ export default class WalletSendForm extends Component<Props, State> {
                   {...receiverField.bind()}
                   error={receiverField.error}
                   onChange={(value) => {
-                    this.isCalculatingTransactionFee = true;
+                    this._isCalculatingTransactionFee = true;
                     receiverField.onChange(value || '');
                   }}
                   skin={InputSkin}
@@ -394,7 +399,7 @@ export default class WalletSendForm extends Component<Props, State> {
                   }}
                   error={transactionFeeError || amountField.error}
                   onChange={(value) => {
-                    this.isCalculatingTransactionFee = true;
+                    this._isCalculatingTransactionFee = true;
                     amountField.onChange(value);
                   }}
                   // AmountInputSkin props
@@ -404,7 +409,7 @@ export default class WalletSendForm extends Component<Props, State> {
                   skin={AmountInputSkin}
                   onKeyPress={this.handleSubmitOnEnter}
                   allowSigns={false}
-                  isCalculatingFees={this.isCalculatingTransactionFee}
+                  isCalculatingFees={this._isCalculatingTransactionFee}
                 />
               </div>
 
