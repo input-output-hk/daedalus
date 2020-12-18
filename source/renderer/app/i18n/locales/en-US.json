@@ -356,6 +356,7 @@
   "staking.delegationSetup.confirmation.step.dialog.feesLabel": "Fees",
   "staking.delegationSetup.confirmation.step.dialog.spendingPasswordLabel": "Spending password",
   "staking.delegationSetup.confirmation.step.dialog.spendingPasswordPlaceholder": "Enter your password",
+  "staking.delegationSetup.confirmation.step.dialog.stakePoolIdLabel": "Stake pool ID",
   "staking.delegationSetup.confirmation.step.dialog.stepIndicatorLabel": "STEP {currentStep} OF {totalSteps}",
   "staking.delegationSetup.confirmation.step.dialog.title": "Confirm Delegation",
   "staking.delegationSetup.intro.step.dialog.cancelButtonLabel": "Cancel",
