@@ -33,6 +33,11 @@ export default class WalletSettingsPage extends Component<Props> {
     wallets.copyPublicKey.trigger({ publicKey });
   };
 
+  handleGetWalletPublicKey = () => {
+    const { wallets } = this.props.stores;
+    wallets._getWalletPublicKey();
+  };
+
   render() {
     const {
       uiDialogs,
@@ -122,6 +127,7 @@ export default class WalletSettingsPage extends Component<Props> {
           onCancelEditing={cancelEditingWalletField.trigger}
           onVerifyRecoveryPhrase={recoveryPhraseVerificationContinue.trigger}
           onCopyWalletPublicKey={this.handleCopyWalletPublicKey}
+          getWalletPublicKey={this.handleGetWalletPublicKey}
           activeField={walletFieldBeingEdited}
           nameValidator={(name) => isValidWalletName(name)}
           changeSpendingPasswordDialog={

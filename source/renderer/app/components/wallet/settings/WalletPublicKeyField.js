@@ -37,6 +37,7 @@ type Props = {
   locale: Locale,
   onCopyWalletPublicKey: Function,
   onShowQRCode: Function,
+  getWalletPublicKey: Function,
 };
 
 type State = {
@@ -53,10 +54,14 @@ export default class WalletPublicKeyField extends Component<Props, State> {
     walletPublicKeyHidden: true,
   };
 
-  toggleWalletPublicKeyVisibility = () =>
+  toggleWalletPublicKeyVisibility = () => {
+    if (this.state.walletPublicKeyHidden) {
+      this.props.getWalletPublicKey();
+    }
     this.setState((prevState) => ({
       walletPublicKeyHidden: !prevState.walletPublicKeyHidden,
     }));
+  };
 
   handleCopyWalletPublicKey = () => {
     const { walletPublicKey, onCopyWalletPublicKey } = this.props;

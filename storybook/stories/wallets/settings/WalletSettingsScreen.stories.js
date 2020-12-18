@@ -226,6 +226,7 @@ export default (props: { currentTheme: string, locale: Locale }) => {
       }
       onVerifyRecoveryPhrase={action('onVerifyRecoveryPhrase')}
       onCopyWalletPublicKey={() => null}
+      getWalletPublicKey={() => null}
       creationDate={creationDate}
       recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
       recoveryPhraseVerificationStatus={

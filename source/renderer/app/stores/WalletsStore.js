@@ -288,15 +288,16 @@ export default class WalletsStore extends Store {
     );
   }
 
-  @action _getWalletPublicKey = async ({
-    walletId,
-    role,
-    index,
-  }: {
-    walletId: string,
-    role: string,
-    index: string,
-  }) => {
+  @action _getWalletPublicKey = async () => {
+    if (!this.active || !WALLET_PUBLIC_KEY_SHARING_ENABLED) {
+      return;
+    }
+
+    // @TODO Once the api is ready, role and index values should be configured properly
+    const walletId = this.active.id;
+    const role = '';
+    const index = '';
+
     try {
       const walletPublicKey = await this.walletPublicKeyRequest.execute({
         walletId,
@@ -949,14 +950,6 @@ export default class WalletsStore extends Store {
         if (this.active) {
           this.goToWalletRoute(this.active.id);
         }
-      }
-      if (this.active && WALLET_PUBLIC_KEY_SHARING_ENABLED) {
-        // @TODO Once the api is ready, role and index values should be configured properly
-        this._getWalletPublicKey({
-          walletId: this.active.id,
-          role: '',
-          index: '',
-        });
       }
     });
   };
