@@ -53,6 +53,12 @@ const messages = defineMessages({
     description:
       'Description on the delegation setup "confirmation" step dialog.',
   },
+  stakePoolIdLabel: {
+    id: 'staking.delegationSetup.confirmation.step.dialog.stakePoolIdLabel',
+    defaultMessage: '!!!Stake pool ID',
+    description:
+      'Stake pool ID label on the delegation setup "confirmation" step dialog.',
+  },
   feesLabel: {
     id: 'staking.delegationSetup.confirmation.step.dialog.feesLabel',
     defaultMessage: '!!!Fees',
@@ -185,6 +191,7 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
     const selectedWalletName = get(selectedWallet, 'name');
     const isHardwareWallet = get(selectedWallet, 'isHardwareWallet');
     const selectedPoolTicker = get(selectedPool, 'ticker');
+    const selectedPoolId = get(selectedPool, 'id');
     const spendingPasswordField = form.$('spendingPassword');
 
     const buttonLabel = !isSubmitting ? (
@@ -261,6 +268,13 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
               }}
             />
           </p>
+
+          <div className={styles.stakePoolIdWrapper}>
+            <p className={styles.stakePoolIdLabel}>
+              {intl.formatMessage(messages.stakePoolIdLabel)}
+            </p>
+            <p className={styles.stakePoolId}>{selectedPoolId}</p>
+          </div>
 
           <div className={styles.feesWrapper}>
             <p className={styles.feesLabel}>
