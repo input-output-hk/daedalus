@@ -173,7 +173,6 @@ export default class WalletRow extends Component<Props, WalletRowState> {
         (item) =>
           get(item, ['changes_at', 'epoch_number'], 0) === futureEpochNumber
       );
-
       nextPendingDelegationStakePoolId = nextPendingDelegation.length
         ? nextPendingDelegation[0].target
         : null;
@@ -186,6 +185,26 @@ export default class WalletRow extends Component<Props, WalletRowState> {
       futurePendingDelegationStakePool = getStakePoolById(
         futurePendingDelegationStakePoolId
       );
+
+      if (delegatedStakePoolId) {
+        if (!nextPendingDelegationStakePool) {
+          nextPendingDelegationStakePool = delegatedStakePool;
+          nextPendingDelegationStakePoolId = delegatedStakePoolId;
+        } else if (!futurePendingDelegationStakePool) {
+          futurePendingDelegationStakePool = delegatedStakePool;
+          futurePendingDelegationStakePoolId = delegatedStakePoolId;
+        }
+      } else if (nextPendingDelegationStakePool && !futurePendingDelegationStakePool) {
+        futurePendingDelegationStakePool = nextPendingDelegationStakePool;
+        futurePendingDelegationStakePoolId = nextPendingDelegationStakePoolId;
+      }
+    }
+
+    if (!hasPendingDelegations && delegatedStakePoolId) {
+      nextPendingDelegationStakePool = delegatedStakePool;
+      nextPendingDelegationStakePoolId = delegatedStakePoolId;
+      futurePendingDelegationStakePool = delegatedStakePool;
+      futurePendingDelegationStakePoolId = delegatedStakePoolId;
     }
 
     const futureDelegationStatus =
@@ -202,7 +221,7 @@ export default class WalletRow extends Component<Props, WalletRowState> {
           numberOfRankedStakePools
         );
 
-    const saturationClassnames = classnames([
+    const saturationStyles = classnames([
       styles.saturationBar,
       futurePendingDelegationStakePool
         ? styles[
@@ -368,7 +387,7 @@ export default class WalletRow extends Component<Props, WalletRowState> {
                           </div>
                         )}
                         {IS_SATURATION_DATA_AVAILABLE && (
-                          <div className={saturationClassnames}>
+                          <div className={saturationStyles}>
                             <span
                               style={{
                                 width: `${parseFloat(
