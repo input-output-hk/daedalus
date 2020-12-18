@@ -211,8 +211,9 @@ export default class WalletRow extends Component<Props, WalletRowState> {
     }
 
     const futureDelegationStatus =
-      hasPendingDelegations && futurePendingDelegationStakePool
-      && futurePendingDelegationStakePool.status
+      hasPendingDelegations &&
+      futurePendingDelegationStakePool &&
+      futurePendingDelegationStakePool.status
         ? futurePendingDelegationStakePool.status
         : delegationStakePoolStatus;
     const isFutureDelegationDelegating =
