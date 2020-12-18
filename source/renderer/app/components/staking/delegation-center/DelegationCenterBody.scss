@@ -18,9 +18,9 @@
   .bodyTitle {
     @extend %regularLightColorText;
     display: flex;
+    justify-content: space-between;
     margin: 0 0 10px 0;
     padding: 0 20px;
-    justify-content: space-between;
 
     .rightBodyTitle {
       display: flex;
