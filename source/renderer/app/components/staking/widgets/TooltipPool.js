@@ -334,7 +334,6 @@ export default class TooltipPool extends Component<Props, State> {
       : THUMBNAIL_HEIGHT - ARROW_WIDTH - TOOLTIP_DELTA;
     const arrowTop = -(ARROW_WIDTH / 2);
     const arrowBottom = -(ARROW_WIDTH / 2);
-
     return {
       componentLeft,
       componentTop,
@@ -362,13 +361,12 @@ export default class TooltipPool extends Component<Props, State> {
       arrowTop = -componentTop + ARROW_WIDTH / 2;
     } else {
       componentBottom = isDelegationView
-        ? -((TOOLTIP_MAX_HEIGHT * bottom) / this.containerHeight) +
-          LIST_VIEW_TOOLTIP_DELTA_TOP
+        ? -((TOOLTIP_MAX_HEIGHT * bottom) / this.containerHeight) + THUMBNAIL_HEIGHT
         : -((TOOLTIP_MAX_HEIGHT * bottom) / this.containerHeight);
       arrowBottom = -componentBottom + ARROW_WIDTH / 2;
       if (fromStakePool) arrowBottom -= TOOLTIP_DELTA;
+      if (isDelegationView) arrowBottom -= TOOLTIP_DELTA;
     }
-
     const arrowLeft = -(ARROW_WIDTH / 2);
 
     return {
