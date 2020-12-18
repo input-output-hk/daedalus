@@ -295,11 +295,10 @@ export const handleHardwareWalletRequests = async (
     TrezorConnect.on(UI_EVENT, (event) => {
       if (event.type === UI.REQUEST_PASSPHRASE) {
         if (event.payload && event.payload.device) {
-          TrezorConnect.uiResponse(
-            {
-              type: UI.RECEIVE_PASSPHRASE,
-              payload: { value: '', passphraseOnDevice: true },
-          })
+          TrezorConnect.uiResponse({
+            type: UI.RECEIVE_PASSPHRASE,
+            payload: { value: '', passphraseOnDevice: true },
+          });
         }
       }
     });

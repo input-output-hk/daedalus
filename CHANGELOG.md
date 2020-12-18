@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Implement Trezor passphrase handling ([PR 2284](https://github.com/input-output-hk/daedalus/pull/2284))
+
 ### Fixes
 
 - Added initial loading state to UTXO screen ([PR 2265](https://github.com/input-output-hk/daedalus/pull/2265))
