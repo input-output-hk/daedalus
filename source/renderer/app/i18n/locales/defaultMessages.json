@@ -3882,17 +3882,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Fees",
-        "description": "Fees label on the delegation setup \"confirmation\" step dialog.",
+        "defaultMessage": "!!!Stake pool ID",
+        "description": "Stake pool ID label on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
           "line": 61
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
+        "id": "staking.delegationSetup.confirmation.step.dialog.stakePoolIdLabel",
+        "start": {
+          "column": 20,
+          "line": 56
+        }
+      },
+      {
+        "defaultMessage": "!!!Fees",
+        "description": "Fees label on the delegation setup \"confirmation\" step dialog.",
+        "end": {
+          "column": 3,
+          "line": 67
+        },
+        "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.feesLabel",
         "start": {
           "column": 13,
-          "line": 56
+          "line": 62
         }
       },
       {
@@ -3900,13 +3914,13 @@
         "description": "Placeholder for \"spending password\"",
         "end": {
           "column": 3,
-          "line": 67
+          "line": 73
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 62
+          "line": 68
         }
       },
       {
@@ -3914,13 +3928,13 @@
         "description": "Label for \"spending password\"",
         "end": {
           "column": 3,
-          "line": 73
+          "line": 79
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 68
+          "line": 74
         }
       },
       {
@@ -3928,13 +3942,13 @@
         "description": "Label for continue button on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 79
+          "line": 85
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.confirmButtonLabel",
         "start": {
           "column": 22,
-          "line": 74
+          "line": 80
         }
       },
       {
@@ -3942,13 +3956,13 @@
         "description": "Label for \"Cancel\" button on the delegation setup \"confirmation\" step dialog.",
         "end": {
           "column": 3,
-          "line": 85
+          "line": 91
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.cancelButtonLabel",
         "start": {
           "column": 21,
-          "line": 80
+          "line": 86
         }
       },
       {
@@ -3956,13 +3970,13 @@
         "description": "\"Calculating fees\" message in the \"Undelegate\" dialog.",
         "end": {
           "column": 3,
-          "line": 90
+          "line": 96
         },
         "file": "source/renderer/app/components/staking/delegation-setup-wizard/DelegationStepsConfirmationDialog.js",
         "id": "staking.delegationSetup.confirmation.step.dialog.calculatingFees",
         "start": {
           "column": 19,
-          "line": 86
+          "line": 92
         }
       }
     ],
@@ -10697,13 +10711,13 @@
         "description": "Title for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 32
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.title",
         "start": {
           "column": 9,
-          "line": 27
+          "line": 28
         }
       },
       {
@@ -10711,13 +10725,13 @@
         "description": "Description for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 38
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.description",
         "start": {
           "column": 15,
-          "line": 32
+          "line": 33
         }
       },
       {
@@ -10725,13 +10739,13 @@
         "description": "Empty wallet description for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 44
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.emptyWallet",
         "start": {
           "column": 15,
-          "line": 38
+          "line": 39
         }
       },
       {
@@ -10739,13 +10753,13 @@
         "description": "\"Find out more\" link on the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 49
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.findOutMoreLink",
         "start": {
           "column": 19,
-          "line": 44
+          "line": 45
         }
       },
       {
@@ -10753,13 +10767,13 @@
         "description": "\"Find out more\" link URL on the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 55
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.findOutMoreLinkUrl",
         "start": {
           "column": 22,
-          "line": 49
+          "line": 50
         }
       },
       {
@@ -10767,13 +10781,13 @@
         "description": "Label X for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 60
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.labelX",
         "start": {
           "column": 10,
-          "line": 55
+          "line": 56
         }
       },
       {
@@ -10781,13 +10795,13 @@
         "description": "Label Y for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 65
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.labelY",
         "start": {
           "column": 10,
-          "line": 60
+          "line": 61
         }
       },
       {
@@ -10795,13 +10809,13 @@
         "description": "Number of pending transactions for the \"Wallet Utxos\" screen.",
         "end": {
           "column": 3,
-          "line": 71
+          "line": 72
         },
         "file": "source/renderer/app/components/wallet/utxo/WalletUtxo.js",
         "id": "wallet.settings.utxos.pendingTransactions",
         "start": {
           "column": 23,
-          "line": 65
+          "line": 66
         }
       }
     ],
