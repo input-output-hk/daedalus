@@ -347,25 +347,27 @@ export default class TooltipPool extends Component<Props, State> {
   getLeftRightPosition = (top: number, isTopHalf: boolean, left: number) => {
     const { fromStakePool, isListView, isDelegationView } = this.props;
     const bottom = this.containerHeight - (top + THUMBNAIL_HEIGHT);
-    const componentLeft = fromStakePool
+    let componentLeft = fromStakePool
       ? -((TOOLTIP_WIDTH * left) / this.containerWidth) +
         THUMBNAIL_OFFSET_WIDTH +
         (left - THUMBNAIL_OFFSET_WIDTH + ARROW_HEIGHT)
       : THUMBNAIL_HEIGHT;
+    if (isDelegationView) componentLeft = LIST_VIEW_TOOLTIP_DELTA_TOP;
     let componentTop = 'auto';
     let componentBottom = 'auto';
     let arrowTop = 'auto';
     let arrowBottom = 'auto';
-    if (isTopHalf && !isListView && !isDelegationView) {
-      componentTop = -((TOOLTIP_MAX_HEIGHT * top) / this.containerHeight);
+    if (isTopHalf && !isListView) {
+      componentTop = isDelegationView
+        ? bottom - TOOLTIP_MAX_HEIGHT
+        : -((TOOLTIP_MAX_HEIGHT * top) / this.containerHeight);
       arrowTop = -componentTop + ARROW_WIDTH / 2;
     } else {
       componentBottom = isDelegationView
-        ? -((TOOLTIP_MAX_HEIGHT * bottom) / this.containerHeight) + THUMBNAIL_HEIGHT
+        ? top - TOOLTIP_MAX_HEIGHT
         : -((TOOLTIP_MAX_HEIGHT * bottom) / this.containerHeight);
       arrowBottom = -componentBottom + ARROW_WIDTH / 2;
       if (fromStakePool) arrowBottom -= TOOLTIP_DELTA;
-      if (isDelegationView) arrowBottom -= TOOLTIP_DELTA;
     }
     const arrowLeft = -(ARROW_WIDTH / 2);
 
