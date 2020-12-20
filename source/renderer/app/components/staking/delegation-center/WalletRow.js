@@ -186,29 +186,34 @@ export default class WalletRow extends Component<Props, WalletRowState> {
         futurePendingDelegationStakePoolId
       );
 
-      if (delegatedStakePoolId) {
-        if (!nextPendingDelegationStakePool) {
-          nextPendingDelegationStakePool = delegatedStakePool;
-          nextPendingDelegationStakePoolId = delegatedStakePoolId;
-        } else if (!futurePendingDelegationStakePool) {
-          futurePendingDelegationStakePool = delegatedStakePool;
-          futurePendingDelegationStakePoolId = delegatedStakePoolId;
-        }
-      } else if (
-        nextPendingDelegationStakePool &&
-        !futurePendingDelegationStakePool
-      ) {
-        futurePendingDelegationStakePool = nextPendingDelegationStakePool;
-        futurePendingDelegationStakePoolId = nextPendingDelegationStakePoolId;
-      }
+      const hasNextWithoutFutureDelegation =
+        nextPendingDelegationStakePool && !futurePendingDelegationStakePool;
+
+      futurePendingDelegationStakePool = hasNextWithoutFutureDelegation
+        ? nextPendingDelegationStakePool
+        : futurePendingDelegationStakePool;
+      futurePendingDelegationStakePoolId = hasNextWithoutFutureDelegation
+        ? nextPendingDelegationStakePoolId
+        : futurePendingDelegationStakePoolId;
     }
 
-    if (!hasPendingDelegations && delegatedStakePoolId) {
-      nextPendingDelegationStakePool = delegatedStakePool;
-      nextPendingDelegationStakePoolId = delegatedStakePoolId;
-      futurePendingDelegationStakePool = delegatedStakePool;
-      futurePendingDelegationStakePoolId = delegatedStakePoolId;
-    }
+    const hasCurrentWithoutNextDelegation =
+      delegatedStakePoolId && !nextPendingDelegationStakePool;
+    const hasCurrentWithoutFutureDelegation =
+      delegatedStakePoolId && !futurePendingDelegationStakePool;
+
+    nextPendingDelegationStakePool = hasCurrentWithoutNextDelegation
+      ? delegatedStakePool
+      : nextPendingDelegationStakePool;
+    nextPendingDelegationStakePoolId = hasCurrentWithoutNextDelegation
+      ? delegatedStakePoolId
+      : nextPendingDelegationStakePoolId;
+    futurePendingDelegationStakePool = hasCurrentWithoutFutureDelegation
+      ? delegatedStakePool
+      : futurePendingDelegationStakePool;
+    futurePendingDelegationStakePoolId = hasCurrentWithoutFutureDelegation
+      ? delegatedStakePoolId
+      : futurePendingDelegationStakePoolId;
 
     const futureDelegationStatus =
       hasPendingDelegations &&
