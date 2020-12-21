@@ -12,6 +12,7 @@ import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { WalletTransaction } from '../domains/WalletTransaction';
 import type {
+  GetTransactionFeeRequest,
   DeleteTransactionRequest,
   GetTransactionsResponse,
   CreateExternalTransactionRequest,
@@ -97,6 +98,11 @@ export default class TransactionsStore extends Store {
   );
 
   @observable _filterOptionsForWallets = {};
+
+  @observable
+  calculateTransactionFeeRequest: Request<GetTransactionFeeRequest> = new Request(
+    this.api.ada.calculateTransactionFee
+  );
 
   setup() {
     const {
@@ -274,7 +280,9 @@ export default class TransactionsStore extends Store {
       );
     }
 
-    return this.api.ada.calculateTransactionFee({
+    this.calculateTransactionFeeRequest.reset();
+
+    return this.calculateTransactionFeeRequest.execute({
       ...transactionFeeRequest,
       walletBalance: wallet.amount,
       availableBalance: wallet.availableAmount,
