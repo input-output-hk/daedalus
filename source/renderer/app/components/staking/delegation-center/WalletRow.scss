@@ -67,11 +67,19 @@
       border-radius: 4px;
       height: 71px;
       margin: 0 20px;
-      padding: 25px 11px;
+      padding: 25px 9px;
       text-align: center;
       width: 80px;
 
+      .stakePoolName {
+        align-items: center;
+        display: flex;
+        justify-content: center;
+      }
+
       .activeAdaSymbol {
+        margin-right: 4px;
+
         svg {
           height: 9px;
           width: 8px;
@@ -91,6 +99,7 @@
         @extend %accentBoldText;
         font-size: 8px;
         line-height: 1.25;
+        margin-top: 6px;
         text-transform: uppercase;
       }
 
@@ -99,7 +108,6 @@
         font-size: 14px;
         letter-spacing: -0.5px;
         line-height: 1.57;
-        padding-left: 4px;
       }
 
       &:last-child {
@@ -109,6 +117,9 @@
       &.futureStakePoolTileDelegated {
         background-color: var(--theme-staking-stake-pool-background-color);
         border: solid 1px var(--theme-staking-stake-pool-border-color);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
         padding: 0;
 
         > div {
@@ -117,6 +128,7 @@
 
         .stakePoolTicker {
           padding-left: 0;
+          transition: margin-top 400ms ease-in-out;
         }
 
         .ranking {
@@ -125,6 +137,7 @@
           font-weight: bold;
           line-height: 1.2;
           text-align: center;
+          transition: margin-top 400ms ease-in-out;
 
           sup {
             font-family: Verdana;
@@ -166,7 +179,7 @@
           );
           border-radius: 2px;
           height: 5px;
-          margin: 0 auto;
+          margin: 2px auto 0;
           overflow: hidden;
           position: relative;
           width: 40px;
@@ -201,8 +214,13 @@
           border-radius: 0 0 4px 4px;
           height: 5px;
           margin-left: -12px;
-          margin-top: 9px;
+          margin-top: 6px;
           width: 80px;
+        }
+
+        .action {
+          margin-top: 48px;
+          position: absolute;
         }
       }
 
@@ -210,12 +228,20 @@
       &.futureStakePoolTitleUndefined {
         background-color: var(--theme-staking-stake-pool-background-color);
         border: solid 1px var(--theme-staking-stake-pool-border-color);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
         padding: 25px 11px;
-        transition: padding-top 400ms ease-in-out;
+
+        .stakePoolUnknown,
+        .nonDelegatedText {
+          transition: margin-top 400ms ease-in-out;
+        }
 
         .action {
+          bottom: -26px;
           margin-left: -12px;
-          margin-top: 7px;
+          position: relative;
         }
       }
     }
@@ -278,17 +304,36 @@
   }
 
   &:hover {
-    .futureStakePoolTitleUndelegated,
-    .futureStakePoolTitleUndefined {
-      padding-top: 15px !important;
+    .right {
+      .stakePoolTile {
+        &.futureStakePoolTitleUndelegated,
+        &.futureStakePoolTitleUndefined {
+          .stakePoolUnknown,
+          .nonDelegatedText {
+            margin-top: -6px;
+          }
+        }
 
-      .action {
-        margin-top: 17px !important;
+        &.futureStakePoolTileDelegated {
+          .stakePoolTicker {
+            margin-top: -3px;
+          }
+
+          .ranking {
+            margin-top: -3px;
+            margin-bottom: 6px;
+          }
+
+          .saturationBar,
+          .stakePoolRankingIndicator {
+            opacity: 0;
+          }
+        }
+
+        .action {
+          opacity: 1 !important;
+        }
       }
-    }
-
-    .action {
-      opacity: 1 !important;
     }
   }
 

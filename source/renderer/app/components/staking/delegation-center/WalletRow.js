@@ -307,26 +307,26 @@ export default class WalletRow extends Component<Props, WalletRowState> {
                       className={!delegatedStakePool ? styles.unknown : null}
                     >
                       {delegatedStakePool ? (
-                        <>
+                        <div className={styles.stakePoolName}>
                           <SVGInline
                             svg={adaIcon}
                             className={styles.activeAdaSymbol}
                           />
-                          <span className={styles.stakePoolTicker}>
+                          <div className={styles.stakePoolTicker}>
                             {delegatedStakePool.ticker}
-                          </span>
-                        </>
+                          </div>
+                        </div>
                       ) : (
-                        <span className={styles.stakePoolUnknown}>
+                        <div className={styles.stakePoolUnknown}>
                           {intl.formatMessage(messages.unknownStakePoolLabel)}
-                        </span>
+                        </div>
                       )}
                     </div>
                   </PopOver>
                 ) : (
-                  <span className={styles.nonDelegatedText}>
+                  <div className={styles.nonDelegatedText}>
                     {notDelegatedText}
-                  </span>
+                  </div>
                 )}
               </div>
               <SVGInline svg={arrow} className={styles.arrow} />
@@ -338,19 +338,19 @@ export default class WalletRow extends Component<Props, WalletRowState> {
                     }
                   >
                     {nextPendingDelegationStakePool ? (
-                      <span className={styles.stakePoolTicker}>
+                      <div className={styles.stakePoolTicker}>
                         {nextPendingDelegationStakePool.ticker}
-                      </span>
+                      </div>
                     ) : (
-                      <span className={styles.stakePoolUnknown}>
+                      <div className={styles.stakePoolUnknown}>
                         {intl.formatMessage(messages.unknownStakePoolLabel)}
-                      </span>
+                      </div>
                     )}
                   </div>
                 ) : (
-                  <span className={styles.nonDelegatedText}>
+                  <div className={styles.nonDelegatedText}>
                     {notDelegatedText}
-                  </span>
+                  </div>
                 )}
               </div>
               <SVGInline svg={arrow} className={styles.arrow} />
@@ -374,9 +374,9 @@ export default class WalletRow extends Component<Props, WalletRowState> {
                   >
                     {futurePendingDelegationStakePool ? (
                       <>
-                        <span className={styles.stakePoolTicker}>
+                        <div className={styles.stakePoolTicker}>
                           {futurePendingDelegationStakePool.ticker}
-                        </span>
+                        </div>
                         {IS_RANKING_DATA_AVAILABLE ? (
                           <div
                             className={styles.ranking}
@@ -429,15 +429,15 @@ export default class WalletRow extends Component<Props, WalletRowState> {
                         )}
                       </>
                     ) : (
-                      <span className={styles.stakePoolUnknown}>
+                      <div className={styles.stakePoolUnknown}>
                         {intl.formatMessage(messages.unknownStakePoolLabel)}
-                      </span>
+                      </div>
                     )}
                   </div>
                 ) : (
-                  <span className={styles.nonDelegatedText}>
+                  <div className={styles.nonDelegatedText}>
                     {notDelegatedText}
-                  </span>
+                  </div>
                 )}
                 {isFutureDelegationDelegating && !isUndelegateBlocked && (
                   <div
