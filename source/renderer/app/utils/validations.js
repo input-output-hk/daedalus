@@ -78,4 +78,7 @@ export const isValidAmountInLovelaces = (value: string) => {
   return numericValue.gte(minValue) && numericValue.lte(maxValue);
 };
 
-export const isValidUrl = (url: string) => validator.isURL(url);
+export const isValidUrl = (url: string) =>
+  validator.isURL(url, {
+    require_protocol: true,
+  });

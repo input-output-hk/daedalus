@@ -36,16 +36,17 @@
   }
 
   .smashSettings {
-    font-size: 16px;
     cursor: pointer;
-    > span:not(.SVGInline) {
+    font-size: 16px;
+    > span:first-child {
+      color: var(--theme-staking-stake-pools-title-color);
       display: inline-block;
       max-width: 570px;
       opacity: 0.5;
       overflow: hidden;
       text-overflow: ellipsis;
-      white-space: nowrap;
       vertical-align: top;
+      white-space: nowrap;
     }
     &:hover {
       svg {
@@ -55,7 +56,7 @@
   }
   .smashSettingsIcon svg {
     margin-left: 4px;
-    width: 10px;
     opacity: 0.6;
+    width: 10px;
   }
 }

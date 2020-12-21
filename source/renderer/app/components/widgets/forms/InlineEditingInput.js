@@ -5,12 +5,10 @@ import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { get } from 'lodash';
 import { Button } from 'react-polymorph/lib/components/Button';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import { Input } from 'react-polymorph/lib/components/Input';
-import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import styles from './InlineEditingInput.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
@@ -18,6 +16,7 @@ import penIcon from '../../../assets/images/pen.inline.svg';
 import crossIcon from '../../../assets/images/close-cross.inline.svg';
 import arrowIcon from '../../../assets/images/arrow-right.inline.svg';
 import spinningIcon from '../../../assets/images/spinner-ic.inline.svg';
+import { ENTER_KEY_CODE, ESCAPE_KEY_CODE } from '../../../config/numbersConfig';
 
 const messages = defineMessages({
   change: {
@@ -110,7 +109,7 @@ export default class InlineEditingInput extends Component<Props, State> {
         const { inputField } = form.values();
         const { onSubmit, errorMessage } = this.props;
         if (inputField !== this.props.value || errorMessage) {
-          await this.setState({
+          this.setState({
             hasChanged: true,
             successfullyUpdated: false,
           });
@@ -124,12 +123,10 @@ export default class InlineEditingInput extends Component<Props, State> {
   };
 
   handleInputKeyDown = (event: KeyboardEvent) => {
-    if (event.which === 13) {
-      // ENTER key
+    if (event.which === ENTER_KEY_CODE) {
       this.submit();
     }
-    if (event.which === 27) {
-      // ESCAPE key
+    if (event.which === ESCAPE_KEY_CODE) {
       this.onCancel();
     }
   };
@@ -229,12 +226,24 @@ export default class InlineEditingInput extends Component<Props, State> {
     const { isActive, hasChanged, successfullyUpdated } = this.state;
     const { intl } = this.context;
     const inputField = validator.$('inputField');
+    let error;
+    if (inputField.error) error = inputField.error;
+    else if (!hasChanged) error = errorMessage;
+
+    const showEditButton =
+      !isActive && !isLoading && !hasChanged && label.length && !readOnly;
+    const showFocusButtons =
+      !isLoading && !disabled && !readOnly && (isActive || hasChanged);
+    const showLoadingButton = isLoading;
+
     const componentStyles = classnames([
       className,
       styles.component,
       isActive ? null : styles.inactive,
       readOnly ? styles.readOnly : null,
       isLoading ? styles.isLoading : null,
+      showEditButton || showLoadingButton ? styles.twoButtons : null,
+      showFocusButtons ? styles.twoButtons : null,
     ]);
     const inputStyles = classnames([
       successfullyUpdated ? 'input_animateSuccess' : null,
@@ -251,16 +260,6 @@ export default class InlineEditingInput extends Component<Props, State> {
       styles.button,
       styles.submittingButton,
     ]);
-
-    let error;
-    if (inputField.error) error = inputField.error;
-    else if (!hasChanged) error = errorMessage;
-
-    const showEditButton =
-      !isActive && !isLoading && !hasChanged && label.length && !readOnly;
-    const showFocusButtons =
-      !isLoading && !disabled && !readOnly && (isActive || hasChanged);
-    const showLoadingButton = isLoading;
 
     return (
       <div className={componentStyles}>
@@ -285,7 +284,6 @@ export default class InlineEditingInput extends Component<Props, State> {
               this.inputElement = get(input, 'inputElement.current');
             }
           }}
-          skin={InputSkin}
         />
 
         <div
@@ -304,7 +302,6 @@ export default class InlineEditingInput extends Component<Props, State> {
               className={editButtonStyles}
               onMouseUp={this.onFocus}
               label={<SVGInline svg={penIcon} className={styles.icon} />}
-              skin={ButtonSkin}
             />
           )}
           {showFocusButtons && (
@@ -312,7 +309,6 @@ export default class InlineEditingInput extends Component<Props, State> {
               className={cancelButtonStyles}
               onClick={this.onCancel}
               label={<SVGInline svg={crossIcon} className={styles.icon} />}
-              skin={ButtonSkin}
             />
           )}
           {showFocusButtons && (
@@ -320,7 +316,6 @@ export default class InlineEditingInput extends Component<Props, State> {
               className={okButtonStyles}
               onMouseUp={this.submit}
               label={<SVGInline svg={arrowIcon} className={styles.icon} />}
-              skin={ButtonSkin}
             />
           )}
           {showLoadingButton && (
@@ -329,7 +324,6 @@ export default class InlineEditingInput extends Component<Props, State> {
               onMouseUp={() => {}}
               label={<SVGInline svg={spinningIcon} className={styles.icon} />}
               label1=""
-              skin={ButtonSkin}
             />
           )}
         </div>

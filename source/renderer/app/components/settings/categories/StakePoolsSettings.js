@@ -170,7 +170,6 @@ export default class StakePoolsSettings extends Component<Props, State> {
           )}
           errorMessage={errorMessage}
           readOnly={isLoading || smashServerType !== SMASH_SERVER_TYPES.CUSTOM}
-          validateOnChange={false}
           isLoading={isLoading}
         />
       </div>

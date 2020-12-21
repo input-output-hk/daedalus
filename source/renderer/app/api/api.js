@@ -1706,6 +1706,17 @@ export default class AdaApi {
         poolMetadataSource,
       });
     } catch (error) {
+      const id = get(error, 'id');
+      const message = get(error, 'values.message');
+      if (
+        id === 'api.errors.GenericApiError' &&
+        message ===
+          'Error parsing query parameter url failed: URI must not contain a path/query/fragment.'
+      ) {
+        throw new ApiError({
+          code: 'invalid_smash_server',
+        });
+      }
       logger.error('AdaApi::updateSmashSettings error', { error });
       throw new ApiError(error);
     }
