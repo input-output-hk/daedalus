@@ -119,9 +119,9 @@ type Props = {
 };
 
 type State = {
-  isCalculatingTransactionFee: boolean,
   isTransactionFeeCalculated: boolean,
   transactionFee: BigNumber,
+  feeCalculationRequestQue: number,
   transactionFeeError: ?string | ?Node,
 };
 
@@ -132,9 +132,9 @@ export default class WalletSendForm extends Component<Props, State> {
   };
 
   state = {
-    isCalculatingTransactionFee: false,
     isTransactionFeeCalculated: false,
     transactionFee: new BigNumber(0),
+    feeCalculationRequestQue: 0,
     transactionFeeError: null,
   };
 
@@ -143,7 +143,7 @@ export default class WalletSendForm extends Component<Props, State> {
   // This is required as we are using debounced validation and we need to
   // disable the "Submit" button as soon as the value changes and then wait for
   // the validation to end in order to see if the button should be enabled or not.
-  _isCalculatingFee = false;
+  _isCalculatingTransactionFee = false;
 
   // We need to track the mounted state in order to avoid calling
   // setState promise handling code after the component was already unmounted:
@@ -170,7 +170,7 @@ export default class WalletSendForm extends Component<Props, State> {
   handleSubmitOnEnter = submitOnEnter.bind(this, this.handleOnSubmit);
 
   isDisabled = () =>
-    this._isCalculatingFee || !this.state.isTransactionFeeCalculated;
+    this._isCalculatingTransactionFee || !this.state.isTransactionFeeCalculated;
 
   // FORM VALIDATION
   form = new ReactToolboxMobxForm(
@@ -184,20 +184,20 @@ export default class WalletSendForm extends Component<Props, State> {
             async ({ field, form }) => {
               const { value } = field;
               if (value === '') {
-                this._resetTransactionFee();
+                this.resetTransactionFee();
                 return [
                   false,
                   this.context.intl.formatMessage(messages.fieldIsRequired),
                 ];
               }
               const amountField = form.$('amount');
-              const amountValue = amountField.value.toString();
               const isAmountValid = amountField.isValid;
               const isValidAddress = await this.props.addressValidator(value);
               if (isValidAddress && isAmountValid) {
-                await this._calculateTransactionFee(value, amountValue);
+                const amountValue = amountField.value.toString();
+                this.calculateTransactionFee(value, amountValue);
               } else {
-                this._resetTransactionFee();
+                this.resetTransactionFee();
               }
               return [
                 isValidAddress,
@@ -211,13 +211,13 @@ export default class WalletSendForm extends Component<Props, State> {
         amount: {
           label: this.context.intl.formatMessage(messages.amountLabel),
           placeholder: `0${
-            this._getCurrentNumberFormat().decimalSeparator
+            this.getCurrentNumberFormat().decimalSeparator
           }${'0'.repeat(this.props.currencyMaxFractionalDigits)}`,
           value: null,
           validators: [
             async ({ field, form }) => {
               if (field.value === null) {
-                this._resetTransactionFee();
+                this.resetTransactionFee();
                 return [
                   false,
                   this.context.intl.formatMessage(messages.fieldIsRequired),
@@ -231,9 +231,9 @@ export default class WalletSendForm extends Component<Props, State> {
               const receiverValue = receiverField.value;
               const isReceiverValid = receiverField.isValid;
               if (isValid && isReceiverValid) {
-                await this._calculateTransactionFee(receiverValue, amountValue);
+                this.calculateTransactionFee(receiverValue, amountValue);
               } else {
-                this._resetTransactionFee();
+                this.resetTransactionFee();
               }
               return [
                 isValid,
@@ -254,6 +254,80 @@ export default class WalletSendForm extends Component<Props, State> {
     }
   );
 
+  resetTransactionFee() {
+    if (this._isMounted) {
+      this._isCalculatingTransactionFee = false;
+      this.setState({
+        isTransactionFeeCalculated: false,
+        transactionFee: new BigNumber(0),
+        transactionFeeError: null,
+      });
+    }
+  }
+
+  isLatestTransactionFeeRequest = (
+    currentFeeCalculationRequestQue: number,
+    prevFeeCalculationRequestQue: number
+  ) => currentFeeCalculationRequestQue - prevFeeCalculationRequestQue === 1;
+
+  calculateTransactionFee = async (address: string, amountValue: string) => {
+    const amount = formattedAmountToLovelace(amountValue);
+    const {
+      feeCalculationRequestQue: prevFeeCalculationRequestQue,
+    } = this.state;
+    this.setState((prevState) => ({
+      isTransactionFeeCalculated: false,
+      transactionFee: new BigNumber(0),
+      transactionFeeError: null,
+      feeCalculationRequestQue: prevState.feeCalculationRequestQue + 1,
+    }));
+    try {
+      const fee = await this.props.calculateTransactionFee(address, amount);
+      if (
+        this._isMounted &&
+        this.isLatestTransactionFeeRequest(
+          this.state.feeCalculationRequestQue,
+          prevFeeCalculationRequestQue
+        )
+      ) {
+        this._isCalculatingTransactionFee = false;
+        this.setState({
+          isTransactionFeeCalculated: true,
+          transactionFee: fee,
+          transactionFeeError: null,
+        });
+      }
+    } catch (error) {
+      if (
+        this._isMounted &&
+        this.isLatestTransactionFeeRequest(
+          this.state.feeCalculationRequestQue,
+          prevFeeCalculationRequestQue
+        )
+      ) {
+        const errorHasLink = !!get(error, ['values', 'linkLabel']);
+        const transactionFeeError = errorHasLink ? (
+          <FormattedHTMLMessageWithLink
+            message={error}
+            onExternalLinkClick={this.props.onExternalLinkClick}
+          />
+        ) : (
+          this.context.intl.formatMessage(error)
+        );
+        this._isCalculatingTransactionFee = false;
+        this.setState({
+          isTransactionFeeCalculated: false,
+          transactionFee: new BigNumber(0),
+          transactionFeeError,
+        });
+      }
+    }
+  };
+
+  getCurrentNumberFormat() {
+    return NUMBER_FORMATS[this.props.currentNumberFormat];
+  }
+
   render() {
     const { form } = this;
     const { intl } = this.context;
@@ -267,7 +341,6 @@ export default class WalletSendForm extends Component<Props, State> {
       isHardwareWallet,
     } = this.props;
     const {
-      isCalculatingTransactionFee,
       isTransactionFeeCalculated,
       transactionFee,
       transactionFeeError,
@@ -307,7 +380,7 @@ export default class WalletSendForm extends Component<Props, State> {
                   {...receiverField.bind()}
                   error={receiverField.error}
                   onChange={(value) => {
-                    this._isCalculatingFee = true;
+                    this._isCalculatingTransactionFee = true;
                     receiverField.onChange(value || '');
                   }}
                   skin={InputSkin}
@@ -320,13 +393,13 @@ export default class WalletSendForm extends Component<Props, State> {
                   {...amountFieldProps}
                   className="amount"
                   label={intl.formatMessage(messages.amountLabel)}
-                  numberFormat={this._getCurrentNumberFormat()}
+                  numberFormat={this.getCurrentNumberFormat()}
                   numberLocaleOptions={{
                     minimumFractionDigits: currencyMaxFractionalDigits,
                   }}
                   error={transactionFeeError || amountField.error}
                   onChange={(value) => {
-                    this._isCalculatingFee = true;
+                    this._isCalculatingTransactionFee = true;
                     amountField.onChange(value);
                   }}
                   // AmountInputSkin props
@@ -336,7 +409,7 @@ export default class WalletSendForm extends Component<Props, State> {
                   skin={AmountInputSkin}
                   onKeyPress={this.handleSubmitOnEnter}
                   allowSigns={false}
-                  isCalculatingFees={isCalculatingTransactionFee}
+                  isCalculatingFees={this._isCalculatingTransactionFee}
                 />
               </div>
 
@@ -366,60 +439,5 @@ export default class WalletSendForm extends Component<Props, State> {
         ) : null}
       </div>
     );
-  }
-
-  _resetTransactionFee() {
-    if (this._isMounted) {
-      this.setState({
-        isTransactionFeeCalculated: false,
-        transactionFee: new BigNumber(0),
-        transactionFeeError: null,
-      });
-    }
-  }
-
-  async _calculateTransactionFee(address: string, amountValue: string) {
-    const amount = formattedAmountToLovelace(amountValue);
-    this.setState({
-      isCalculatingTransactionFee: true,
-      isTransactionFeeCalculated: false,
-      transactionFee: new BigNumber(0),
-      transactionFeeError: null,
-    });
-    try {
-      const fee = await this.props.calculateTransactionFee(address, amount);
-      if (this._isMounted) {
-        this._isCalculatingFee = false;
-        this.setState({
-          isTransactionFeeCalculated: true,
-          transactionFee: fee,
-          transactionFeeError: null,
-        });
-      }
-    } catch (error) {
-      const errorHasLink = !!get(error, ['values', 'linkLabel']);
-      const transactionFeeError = errorHasLink ? (
-        <FormattedHTMLMessageWithLink
-          message={error}
-          onExternalLinkClick={this.props.onExternalLinkClick}
-        />
-      ) : (
-        this.context.intl.formatMessage(error)
-      );
-      if (this._isMounted) {
-        this._isCalculatingFee = false;
-        this.setState({
-          isTransactionFeeCalculated: false,
-          transactionFee: new BigNumber(0),
-          transactionFeeError,
-        });
-      }
-    } finally {
-      this.setState({ isCalculatingTransactionFee: false });
-    }
-  }
-
-  _getCurrentNumberFormat() {
-    return NUMBER_FORMATS[this.props.currentNumberFormat];
   }
 }

@@ -1,6 +1,20 @@
 Changelog
 =========
 
+## vNext
+
+### Fixes
+
+- Added initial loading state to UTXO screen ([PR 2265](https://github.com/input-output-hk/daedalus/pull/2265))
+
+### Chores
+
+- Canceled running fee estimation api requests once new request is made ([PR 2239](https://github.com/input-output-hk/daedalus/pull/2239))
+- Included stake pool ID on the "Confirmation" step of the "Delegation" wizard and enabled search by stake pool ID on the "Stake Pools" screen ([PR 2281](https://github.com/input-output-hk/daedalus/pull/2281))
+- Updated `iohk-nix` in order to fix `cardano-node` logging levels ([PR 2283](https://github.com/input-output-hk/daedalus/pull/2283))
+- Updated `@cardano-foundation/ledgerjs-hw-app-cardano` package to version `2.1.0` ([PR 2279](https://github.com/input-output-hk/daedalus/pull/2279))
+- Updated `ini` package ([PR 2278](https://github.com/input-output-hk/daedalus/pull/2278))
+
 ## 3.0.0
 
 ### Features
@@ -11,12 +25,13 @@ Changelog
 
 ### Fixes
 
+- Fixed handling of expired transactions ([PR 2272](https://github.com/input-output-hk/daedalus/pull/2272))
 - Fixed visual glitch on the transaction list switching between filters ([PR 2261](https://github.com/input-output-hk/daedalus/pull/2261))
 
 ### Chores
 
 - Reduced the size of Linux installer ([PR 2260](https://github.com/input-output-hk/daedalus/pull/2260))
-- Bumped cardano-wallet to v2020-12-08 and cardano-node to 1.24.2 ([PR 2270](https://github.com/input-output-hk/daedalus/pull/2270))
+- Bumped `cardano-wallet` to version `2020-12-08` and `cardano-node` to version `1.24.2` ([PR 2270](https://github.com/input-output-hk/daedalus/pull/2270))
 
 ## 3.0.0-FC4
 
