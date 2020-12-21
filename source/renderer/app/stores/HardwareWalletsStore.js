@@ -904,7 +904,11 @@ export default class HardwareWalletsStore extends Store {
       walletId,
       {}
     );
-    return hardwareWalletConnectionData.deviceType === DeviceTypes.LEDGER;
+    const deviceType = get(hardwareWalletConnectionData, [
+      'device',
+      'deviceType',
+    ]);
+    return deviceType === DeviceTypes.LEDGER;
   };
 
   initiateAddressVerification = async (
