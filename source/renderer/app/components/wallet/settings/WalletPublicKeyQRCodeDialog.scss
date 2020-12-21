@@ -25,4 +25,41 @@
       box-sizing: content-box;
     }
   }
+
+  .walletPublicKey {
+    font-family: var(--font-mono);
+    font-size: 19px;
+    line-height: 1.37;
+    margin: 30px 0 10px;
+    text-align: center;
+    word-wrap: break-word;
+  }
+
+  .copyPublicKey {
+    display: block;
+    text-align: center;
+    width: 100%;
+
+    .copyIcon {
+      cursor: pointer;
+      margin-left: 4px;
+      object-fit: contain;
+      & > svg {
+        height: 12px;
+        width: 10px;
+        path {
+          fill: var(--theme-icon-copy-address-color);
+        }
+      }
+    }
+
+    .copyPublicKeyLabel {
+      color: var(--theme-label-button-color);
+      cursor: pointer;
+      font-family: var(--font-regular);
+      font-size: 14px;
+      opacity: 0.5;
+      padding-left: 6px;
+    }
+  }
 }

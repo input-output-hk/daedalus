@@ -2,9 +2,12 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import CopyToClipboard from 'react-copy-to-clipboard';
+import SVGInline from 'react-svg-inline';
 import QRCode from 'qrcode.react';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
+import iconCopy from '../../../assets/images/clipboard-ic.inline.svg';
 import styles from './WalletPublicKeyQRCodeDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
 
@@ -14,11 +17,17 @@ const messages = defineMessages({
     defaultMessage: '!!!Wallet Public Key',
     description: 'Title for the "Wallet Public Key QR Code" dialog.',
   },
+  copyPublicKeyLabel: {
+    id: 'wallet.settings.copyPublicKey',
+    defaultMessage: '!!!Copy public key',
+    description: 'Copy public key label.',
+  },
 });
 
 type Props = {
   walletName: string,
   walletPublicKey: string,
+  onCopyWalletPublicKey: Function,
   onClose: Function,
 };
 
@@ -30,7 +39,12 @@ export default class WalletPublicKeyQRCodeDialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { walletName, walletPublicKey, onClose } = this.props;
+    const {
+      walletName,
+      walletPublicKey,
+      onCopyWalletPublicKey,
+      onClose,
+    } = this.props;
     const actions = [
       {
         label: intl.formatMessage(globalMessages.close),
@@ -67,6 +81,15 @@ export default class WalletPublicKeyQRCodeDialog extends Component<Props> {
             size={192}
           />
         </div>
+        <div className={styles.walletPublicKey}>{walletPublicKey}</div>
+        <CopyToClipboard text={walletPublicKey} onCopy={onCopyWalletPublicKey}>
+          <span className={styles.copyPublicKey}>
+            <SVGInline svg={iconCopy} className={styles.copyIcon} />
+            <span className={styles.copyPublicKeyLabel}>
+              {intl.formatMessage(messages.copyPublicKeyLabel)}
+            </span>
+          </span>
+        </CopyToClipboard>
       </Dialog>
     );
   }

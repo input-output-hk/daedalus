@@ -9058,13 +9058,27 @@
         "description": "Title for the \"Wallet Public Key QR Code\" dialog.",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 19
         },
         "file": "source/renderer/app/components/wallet/settings/WalletPublicKeyQRCodeDialog.js",
         "id": "wallet.settings.walletPublicKey",
         "start": {
           "column": 15,
-          "line": 12
+          "line": 15
+        }
+      },
+      {
+        "defaultMessage": "!!!Copy public key",
+        "description": "Copy public key label.",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletPublicKeyQRCodeDialog.js",
+        "id": "wallet.settings.copyPublicKey",
+        "start": {
+          "column": 22,
+          "line": 20
         }
       }
     ],

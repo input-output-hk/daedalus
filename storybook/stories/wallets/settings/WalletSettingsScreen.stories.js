@@ -187,6 +187,7 @@ export default (props: { currentTheme: string, locale: Locale }) => {
             walletPublicKeyId
           )}
           walletPublicKey={walletPublicKeyId}
+          onCopyWalletPublicKey={action('Wallet Public Key QR Code - copy')}
           onClose={action('Wallet Public Key QR Code - onClose')}
         />
       }
