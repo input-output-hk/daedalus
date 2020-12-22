@@ -94,8 +94,12 @@
   }
   .cancelButton {
     .icon {
-      svg g {
-        fill: var(--theme-button-flat-text-color);
+      svg {
+        height: 10px;
+        width: 10px;
+        g {
+          fill: var(--theme-button-flat-text-color);
+        }
       }
     }
   }
