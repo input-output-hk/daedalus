@@ -15,6 +15,15 @@
   width: 280px;
   z-index: 1000;
 
+  &.delegationViewTooltip {
+    background: none;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+    position: initial;
+  }
+
   :global {
     button.SimpleButton_root {
       background-color: var(
