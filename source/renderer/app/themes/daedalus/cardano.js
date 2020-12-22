@@ -92,7 +92,7 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-button-flat-background-color-disabled': 'rgba(32, 34, 37, 0.1)',
     '--theme-button-flat-text-color-disabled': '#5e6066',
     '--theme-button-flat-text-color': '#5e6066',
-    '--theme-button-flat-outline-color': '#e1e4e6',
+    '--theme-button-flat-outline-color': 'rgba(94, 96, 102, 0.2)',
   },
   buttonPrimary: {
     '--theme-button-primary-background-color': '#2cbb69',
