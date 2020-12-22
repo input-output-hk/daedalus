@@ -128,7 +128,7 @@
 
         .stakePoolTicker {
           padding-left: 0;
-          transition: margin-top 400ms ease-in-out;
+          transition: margin-top 200ms ease-in-out;
         }
 
         .ranking {
@@ -137,7 +137,7 @@
           font-weight: bold;
           line-height: 1.2;
           text-align: center;
-          transition: margin-top 400ms ease-in-out;
+          transition: margin-top 200ms ease-in-out;
 
           sup {
             font-family: Verdana;
@@ -235,13 +235,19 @@
 
         .stakePoolUnknown,
         .nonDelegatedText {
-          transition: margin-top 400ms ease-in-out;
+          transition: margin-top 200ms ease-in-out;
         }
 
         .action {
           bottom: -26px;
           margin-left: -12px;
           position: relative;
+        }
+      }
+
+      .stakePoolTooltip  {
+        :global {
+
         }
       }
     }
