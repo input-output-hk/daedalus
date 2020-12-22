@@ -96,7 +96,6 @@ type Props = {
   containerClassName: string,
   setListActive?: Function,
   listName?: string,
-  highlightOnHover?: boolean,
 };
 
 type WalletRowState = {
@@ -145,7 +144,6 @@ export default class WalletRow extends Component<Props, WalletRowState> {
       onOpenExternalLink,
       showWithSelectButton,
       containerClassName,
-      highlightOnHover,
     } = this.props;
 
     // @TODO - remove once quit stake pool delegation is connected with rewards balance
@@ -255,10 +253,6 @@ export default class WalletRow extends Component<Props, WalletRowState> {
       isRestoring ? styles.isRestoring : null,
     ]);
 
-    const isHighlighted =
-      futurePendingDelegationStakePoolId && futurePendingDelegationStakePool
-        ? this.getIsHighlighted(futurePendingDelegationStakePool.id)
-        : false;
     const { top, left } = this.state;
 
     return (
@@ -356,24 +350,44 @@ export default class WalletRow extends Component<Props, WalletRowState> {
               <SVGInline svg={arrow} className={styles.arrow} />
               <div
                 className={futureStakePoolTileStyles}
-                onMouseLeave={highlightOnHover ? this.handleCloseTooltip : null}
               >
                 {futurePendingDelegationStakePoolId ? (
-                  <div
-                    className={
-                      !futurePendingDelegationStakePool ? styles.unknown : null
-                    }
-                    onMouseEnter={(event) =>
-                      highlightOnHover
-                        ? this.handleOpenTooltip(
-                            event,
-                            futurePendingDelegationStakePool
-                          )
-                        : null
-                    }
-                  >
+                  <div>
                     {futurePendingDelegationStakePool ? (
-                      <>
+                      <PopOver
+                        key="stakePoolTooltip"
+                        placement="auto"
+                        maxWidth={300}
+                        popperOptions={{
+                          strategy: "fixed",
+                        }}
+                        zIndex={1}
+                        themeVariables={{
+                          '--rp-pop-over-bg-color':
+                            'var(--theme-staking-stake-pool-tooltip-background-color)',
+                          '--rp-pop-over-box-shadow': '0 1.5px 5px 0 var(--theme-staking-stake-pool-tooltip-shadow-color)',
+                          '--rp-pop-over-border-color': 'var(--theme-staking-stake-pool-tooltip-border-color)',
+                          '--rp-pop-over-border-radius': '5px',
+                          '--rp-pop-over-border-style': 'solid',
+                        }}
+                        allowHTML
+                        content={
+                          <TooltipPool
+                            stakePool={futurePendingDelegationStakePool}
+                            isVisible
+                            onClick={this.handleCloseTooltip}
+                            currentTheme={currentTheme}
+                            onOpenExternalLink={onOpenExternalLink}
+                            top={top}
+                            left={left}
+                            color={stakePoolRankingColor}
+                            showWithSelectButton={showWithSelectButton}
+                            containerClassName={containerClassName}
+                            numberOfRankedStakePools={numberOfRankedStakePools}
+                            isDelegationView
+                          />
+                        }
+                      >
                         <div className={styles.stakePoolTicker}>
                           {futurePendingDelegationStakePool.ticker}
                         </div>
@@ -411,23 +425,7 @@ export default class WalletRow extends Component<Props, WalletRowState> {
                           className={styles.stakePoolRankingIndicator}
                           style={{ background: stakePoolRankingColor }}
                         />
-                        {isHighlighted && (
-                          <TooltipPool
-                            stakePool={futurePendingDelegationStakePool}
-                            isVisible
-                            onClick={this.handleCloseTooltip}
-                            currentTheme={currentTheme}
-                            onOpenExternalLink={onOpenExternalLink}
-                            top={top}
-                            left={left}
-                            color={stakePoolRankingColor}
-                            showWithSelectButton={showWithSelectButton}
-                            containerClassName={containerClassName}
-                            numberOfRankedStakePools={numberOfRankedStakePools}
-                            isDelegationView
-                          />
-                        )}
-                      </>
+                      </PopOver>
                     ) : (
                       <div className={styles.stakePoolUnknown}>
                         {intl.formatMessage(messages.unknownStakePoolLabel)}

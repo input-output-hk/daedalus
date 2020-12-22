@@ -136,7 +136,6 @@ export default class DelegationCenterBody extends Component<Props> {
                   onOpenExternalLink={onOpenExternalLink}
                   containerClassName={containerClassName}
                   setListActive={setListActive}
-                  highlightOnHover
                 />
               ))}
             </div>

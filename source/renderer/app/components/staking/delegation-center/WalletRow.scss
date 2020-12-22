@@ -123,7 +123,7 @@
         padding: 0;
 
         > div {
-          padding: 7px 11px 0 11px;
+          padding: 7px 0 0 0;
         }
 
         .stakePoolTicker {
@@ -213,7 +213,7 @@
         .stakePoolRankingIndicator {
           border-radius: 0 0 4px 4px;
           height: 5px;
-          margin-left: -12px;
+          margin-left: -1px;
           margin-top: 6px;
           width: 80px;
         }
