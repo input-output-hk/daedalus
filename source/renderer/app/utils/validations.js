@@ -53,11 +53,11 @@ export const isUnicaseString = (password: string) =>
   every(password.split(''), (char) => isCaselessString(char));
 
 /**
- * Enforces passwords without spaces and a minimum of 10 characters.
+ * Enforces passwords without spaces and a minimum of 10 characters and a maximum of 255 characters.
  */
 export const isValidSpendingPassword = (password: string): boolean => {
   // Should contain at least 10 characters
-  return password.length >= 10;
+  return password.length >= 10 && password.length <= 255;
 };
 
 // eslint-disable-next-line max-len
