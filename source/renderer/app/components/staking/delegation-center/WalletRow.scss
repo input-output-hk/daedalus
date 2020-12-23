@@ -291,6 +291,14 @@
       text-transform: uppercase;
       transition: opacity 0.2s ease-in;
       width: 80px;
+
+      &:hover {
+        background-color: var(--theme-button-primary-background-color-hover);
+      }
+
+      &:active {
+        background-color: var(--theme-button-primary-background-color-active);
+      }
     }
 
     :global {
