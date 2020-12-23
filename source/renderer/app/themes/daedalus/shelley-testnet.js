@@ -846,7 +846,6 @@ export const SHELLEY_TESTNET_THEME_OUTPUT = {
     '--theme-staking-countdown-widget-field-value-color': '#ffffff',
     '--theme-staking-export-button-shadow-color': 'rgba(137, 142, 230, 0.18)',
     '--theme-staking-export-button-color': 'rgba(18, 19, 38, 1)',
-    '--theme-staking-wallet-row-action-delegate-background-color': '#898ee6',
     '--theme-staking-wallet-row-action-undelegate-text-color': '#ea4c5b',
     '--theme-staking-wallet-row-ticker-background-color':
       'rgba(255, 255, 255, 0.07)',

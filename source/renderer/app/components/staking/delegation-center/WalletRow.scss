@@ -267,7 +267,7 @@
       @extend %accentText;
       align-items: center;
       background-color: var(
-        --theme-staking-wallet-row-action-delegate-background-color
+          --theme-button-primary-background-color
       );
       border-radius: 0 0 4px 4px;
       color: var(--theme-staking-stake-pool-background-color);

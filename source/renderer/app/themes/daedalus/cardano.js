@@ -862,7 +862,6 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-staking-countdown-widget-field-value-color': '#5e6066',
     '--theme-staking-export-button-shadow-color': 'rgba(0, 0, 0, 0.18)',
     '--theme-staking-export-button-color': '#fafbfc',
-    '--theme-staking-wallet-row-action-delegate-background-color': '#2cbb69',
     '--theme-staking-wallet-row-action-undelegate-text-color': '#ea4c5b',
     '--theme-staking-wallet-row-ticker-background-color': '#efefef',
     '--theme-staking-wallet-row-ticker-text-color': '#5e6066',
