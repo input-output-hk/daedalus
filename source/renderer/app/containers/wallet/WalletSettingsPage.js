@@ -4,14 +4,17 @@ import { observer, inject } from 'mobx-react';
 import WalletSettings from '../../components/wallet/settings/WalletSettings';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { isValidWalletName } from '../../utils/validations';
+import { ellipsis } from '../../utils/strings';
 import ChangeSpendingPasswordDialogContainer from './dialogs/settings/ChangeSpendingPasswordDialogContainer';
 import WalletRecoveryPhraseContainer from './dialogs/settings/WalletRecoveryPhraseContainer';
+import WalletPublicKeyQRCodeDialogContainer from './dialogs/settings/WalletPublicKeyQRCodeDialogContainer';
 import DeleteWalletDialogContainer from './dialogs/settings/DeleteWalletDialogContainer';
 import ExportWalletToFileDialogContainer from './dialogs/settings/ExportWalletToFileDialogContainer';
 import {
   LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
 } from '../../config/cryptoConfig';
+import { WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH } from '../../config/walletsConfig';
 
 type Props = InjectedProps;
 
@@ -19,6 +22,21 @@ type Props = InjectedProps;
 @observer
 export default class WalletSettingsPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
+
+  handleCopyWalletPublicKey = (walletPublicKey: string) => {
+    const { wallets } = this.props.actions;
+    const publicKey = ellipsis(
+      walletPublicKey,
+      WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH,
+      WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH
+    );
+    wallets.copyPublicKey.trigger({ publicKey });
+  };
+
+  handleGetWalletPublicKey = () => {
+    const { wallets } = this.props.stores;
+    wallets._getWalletPublicKey();
+  };
 
   render() {
     const {
@@ -28,7 +46,10 @@ export default class WalletSettingsPage extends Component<Props> {
       wallets,
       profile,
     } = this.props.stores;
-    const activeWallet = wallets.active;
+    const {
+      active: activeWallet,
+      activePublicKey: activeWalletPublicKey,
+    } = wallets;
 
     // Guard against potential null values
     if (!activeWallet)
@@ -88,6 +109,7 @@ export default class WalletSettingsPage extends Component<Props> {
           isLegacy={isLegacy}
           walletId={activeWallet.id}
           walletName={activeWallet.name}
+          walletPublicKey={activeWalletPublicKey}
           creationDate={creationDate}
           isIncentivizedTestnet={isIncentivizedTestnet}
           isSubmitting={updateWalletRequest.isExecuting}
@@ -104,10 +126,15 @@ export default class WalletSettingsPage extends Component<Props> {
           onStopEditing={stopEditingWalletField.trigger}
           onCancelEditing={cancelEditingWalletField.trigger}
           onVerifyRecoveryPhrase={recoveryPhraseVerificationContinue.trigger}
+          onCopyWalletPublicKey={this.handleCopyWalletPublicKey}
+          getWalletPublicKey={this.handleGetWalletPublicKey}
           activeField={walletFieldBeingEdited}
           nameValidator={(name) => isValidWalletName(name)}
           changeSpendingPasswordDialog={
             <ChangeSpendingPasswordDialogContainer />
+          }
+          walletPublicKeyQRCodeDialogContainer={
+            <WalletPublicKeyQRCodeDialogContainer />
           }
           deleteWalletDialogContainer={<DeleteWalletDialogContainer />}
           exportWalletDialogContainer={<ExportWalletToFileDialogContainer />}

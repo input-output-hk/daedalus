@@ -314,4 +314,19 @@ export default defineMessages({
     defaultMessage: '!!!Token',
     description: 'Token description.',
   },
+  reveal: {
+    id: 'global.labels.reveal',
+    defaultMessage: '!!!Reveal',
+    description: 'Reveal label.',
+  },
+  hide: {
+    id: 'global.labels.hide',
+    defaultMessage: '!!!Hide',
+    description: 'Hide label.',
+  },
+  copy: {
+    id: 'global.labels.copy',
+    defaultMessage: '!!!Copy',
+    description: 'Copy label.',
+  },
 });
