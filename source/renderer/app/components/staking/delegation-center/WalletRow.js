@@ -359,7 +359,6 @@ export default class WalletRow extends Component<Props, WalletRowState> {
                         popperOptions={{
                           strategy: 'fixed',
                         }}
-                        zIndex={1000}
                         themeVariables={{
                           '--rp-pop-over-bg-color':
                             'var(--theme-staking-stake-pool-tooltip-background-color)',
