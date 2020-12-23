@@ -746,7 +746,7 @@ export default class TooltipPool extends Component<Props, State> {
         style={componentStyle}
       >
         <div className={colorBandClassnames} style={colorBandStyle} />
-        {hasArrow && (<div className={arrowClassnames} style={arrowStyle} />)}
+        {hasArrow && <div className={arrowClassnames} style={arrowStyle} />}
         <div className={styles.container}>
           <h3 className={styles.name}>{name}</h3>
           <button className={styles.closeButton} onClick={onClick}>

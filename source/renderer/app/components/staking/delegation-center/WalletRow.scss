@@ -266,9 +266,7 @@
     .action {
       @extend %accentText;
       align-items: center;
-      background-color: var(
-          --theme-button-primary-background-color
-      );
+      background-color: var(--theme-button-primary-background-color);
       border-radius: 0 0 4px 4px;
       color: var(--theme-staking-stake-pool-background-color);
       cursor: pointer;

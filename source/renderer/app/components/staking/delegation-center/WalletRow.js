@@ -348,9 +348,7 @@ export default class WalletRow extends Component<Props, WalletRowState> {
                 )}
               </div>
               <SVGInline svg={arrow} className={styles.arrow} />
-              <div
-                className={futureStakePoolTileStyles}
-              >
+              <div className={futureStakePoolTileStyles}>
                 {futurePendingDelegationStakePoolId ? (
                   <div>
                     {futurePendingDelegationStakePool ? (
@@ -359,14 +357,16 @@ export default class WalletRow extends Component<Props, WalletRowState> {
                         placement="auto"
                         maxWidth={300}
                         popperOptions={{
-                          strategy: "fixed",
+                          strategy: 'fixed',
                         }}
                         zIndex={1000}
                         themeVariables={{
                           '--rp-pop-over-bg-color':
                             'var(--theme-staking-stake-pool-tooltip-background-color)',
-                          '--rp-pop-over-box-shadow': '0 1.5px 5px 0 var(--theme-staking-stake-pool-tooltip-shadow-color)',
-                          '--rp-pop-over-border-color': 'var(--theme-staking-stake-pool-tooltip-border-color)',
+                          '--rp-pop-over-box-shadow':
+                            '0 1.5px 5px 0 var(--theme-staking-stake-pool-tooltip-shadow-color)',
+                          '--rp-pop-over-border-color':
+                            'var(--theme-staking-stake-pool-tooltip-border-color)',
                           '--rp-pop-over-border-radius': '5px',
                           '--rp-pop-over-border-style': 'solid',
                         }}
