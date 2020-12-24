@@ -120,6 +120,45 @@ export default class WalletRow extends Component<Props, WalletRowState> {
     ...initialWalletRowState,
   };
 
+  getPendingStakePool = (
+    epochNumber: number,
+    fallbackStakePool: ?StakePool
+  ) => {
+    const {
+      wallet: { delegatedStakePoolId, pendingDelegations },
+      delegatedStakePool,
+      getStakePoolById,
+    } = this.props;
+
+    let stakePoolId;
+    let stakePool;
+    const hasPendingDelegations =
+      pendingDelegations && pendingDelegations.length;
+
+    if (hasPendingDelegations) {
+      const pendingDelegation = pendingDelegations.filter(
+        (item) => get(item, ['changes_at', 'epoch_number'], 0) === epochNumber
+      );
+      stakePoolId = get(pendingDelegation, '[0].target');
+      stakePool = getStakePoolById(stakePoolId);
+    }
+
+    if (!stakePool && fallbackStakePool) {
+      stakePoolId = fallbackStakePool.id;
+      stakePool = fallbackStakePool;
+    }
+
+    if (!stakePool && delegatedStakePoolId) {
+      stakePoolId = delegatedStakePoolId;
+      stakePool = delegatedStakePool;
+    }
+
+    return {
+      stakePoolId,
+      stakePool,
+    };
+  };
+
   render() {
     const { intl } = this.context;
     const {
@@ -135,7 +174,6 @@ export default class WalletRow extends Component<Props, WalletRowState> {
       },
       delegatedStakePool,
       numberOfRankedStakePools,
-      getStakePoolById,
       onDelegate,
       onUndelegate,
       nextEpochNumber,
@@ -155,66 +193,22 @@ export default class WalletRow extends Component<Props, WalletRowState> {
     const delegateText = intl.formatMessage(messages.delegate);
     const redelegateText = intl.formatMessage(messages.redelegate);
 
-    const hasPendingDelegations =
-      pendingDelegations && pendingDelegations.length > 0;
+    const {
+      stakePoolId: nextPendingDelegationStakePoolId,
+      stakePool: nextPendingDelegationStakePool,
+    } = this.getPendingStakePool(nextEpochNumber || 0);
 
-    let nextPendingDelegationStakePool;
-    let futurePendingDelegationStakePool;
-    let nextPendingDelegationStakePoolId;
-    let futurePendingDelegationStakePoolId;
-    if (hasPendingDelegations) {
-      const nextPendingDelegation = pendingDelegations.filter(
-        (item) =>
-          get(item, ['changes_at', 'epoch_number'], 0) === nextEpochNumber
-      );
-      const futurePendingDelegation = pendingDelegations.filter(
-        (item) =>
-          get(item, ['changes_at', 'epoch_number'], 0) === futureEpochNumber
-      );
-      nextPendingDelegationStakePoolId = nextPendingDelegation.length
-        ? nextPendingDelegation[0].target
-        : null;
-      futurePendingDelegationStakePoolId = futurePendingDelegation.length
-        ? futurePendingDelegation[0].target
-        : null;
-      nextPendingDelegationStakePool = getStakePoolById(
-        nextPendingDelegationStakePoolId
-      );
-      futurePendingDelegationStakePool = getStakePoolById(
-        futurePendingDelegationStakePoolId
-      );
-
-      const hasNextWithoutFutureDelegation =
-        nextPendingDelegationStakePool && !futurePendingDelegationStakePool;
-
-      futurePendingDelegationStakePool = hasNextWithoutFutureDelegation
-        ? nextPendingDelegationStakePool
-        : futurePendingDelegationStakePool;
-      futurePendingDelegationStakePoolId = hasNextWithoutFutureDelegation
-        ? nextPendingDelegationStakePoolId
-        : futurePendingDelegationStakePoolId;
-    }
-
-    const hasCurrentWithoutNextDelegation =
-      delegatedStakePoolId && !nextPendingDelegationStakePool;
-    const hasCurrentWithoutFutureDelegation =
-      delegatedStakePoolId && !futurePendingDelegationStakePool;
-
-    nextPendingDelegationStakePool = hasCurrentWithoutNextDelegation
-      ? delegatedStakePool
-      : nextPendingDelegationStakePool;
-    nextPendingDelegationStakePoolId = hasCurrentWithoutNextDelegation
-      ? delegatedStakePoolId
-      : nextPendingDelegationStakePoolId;
-    futurePendingDelegationStakePool = hasCurrentWithoutFutureDelegation
-      ? delegatedStakePool
-      : futurePendingDelegationStakePool;
-    futurePendingDelegationStakePoolId = hasCurrentWithoutFutureDelegation
-      ? delegatedStakePoolId
-      : futurePendingDelegationStakePoolId;
+    const {
+      stakePoolId: futurePendingDelegationStakePoolId,
+      stakePool: futurePendingDelegationStakePool,
+    } = this.getPendingStakePool(
+      futureEpochNumber || 0,
+      nextPendingDelegationStakePool
+    );
 
     const futureDelegationStatus =
-      hasPendingDelegations &&
+      pendingDelegations &&
+      pendingDelegations.length &&
       futurePendingDelegationStakePool &&
       futurePendingDelegationStakePool.status
         ? futurePendingDelegationStakePool.status
@@ -222,12 +216,12 @@ export default class WalletRow extends Component<Props, WalletRowState> {
     const isFutureDelegationDelegating =
       futureDelegationStatus !== WalletDelegationStatuses.NOT_DELEGATING;
 
-    const stakePoolRankingColor = !futurePendingDelegationStakePool
-      ? ''
-      : getColorFromRange(
+    const stakePoolRankingColor = futurePendingDelegationStakePool
+      ? getColorFromRange(
           futurePendingDelegationStakePool.ranking,
           numberOfRankedStakePools
-        );
+        )
+      : '';
 
     const saturationStyles = classnames([
       styles.saturationBar,
