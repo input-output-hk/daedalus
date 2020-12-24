@@ -124,6 +124,13 @@
 
         > div {
           padding: 7px 0 0 0;
+
+          > span {
+            align-items: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+          }
         }
 
         .stakePoolTicker {
@@ -179,9 +186,9 @@
           );
           border-radius: 2px;
           height: 5px;
-          margin: 2px auto 0;
+          margin: 46px auto 0;
           overflow: hidden;
-          position: relative;
+          position: absolute;
           width: 40px;
 
           span {
@@ -213,8 +220,8 @@
         .stakePoolRankingIndicator {
           border-radius: 0 0 4px 4px;
           height: 5px;
-          margin-left: -1px;
-          margin-top: 6px;
+          margin-top: 58px;
+          position: absolute;
           width: 80px;
         }
 
@@ -268,7 +275,7 @@
       align-items: center;
       background-color: var(--theme-button-primary-background-color);
       border-radius: 0 0 4px 4px;
-      color: var(--theme-staking-stake-pool-background-color);
+      color: var(--theme-button-primary-text-color);
       cursor: pointer;
       display: flex;
       font-size: 8px;
@@ -282,8 +289,16 @@
       padding: 0 !important;
       position: absolute;
       text-transform: uppercase;
-      transition: opacity 0.4s ease-in;
+      transition: opacity 0.2s ease-in;
       width: 80px;
+
+      &:hover {
+        background-color: var(--theme-button-primary-background-color-hover);
+      }
+
+      &:active {
+        background-color: var(--theme-button-primary-background-color-active);
+      }
     }
 
     :global {
