@@ -5,7 +5,7 @@ import { find } from 'lodash';
 import BigNumber from 'bignumber.js';
 import { number } from '@storybook/addon-knobs';
 import DelegationCenter from '../../../source/renderer/app/components/staking/delegation-center/DelegationCenter';
-import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
+import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.js';
 import Wallet, {
   WalletDelegationStatuses,
 } from '../../../source/renderer/app/domains/Wallet';
