@@ -120,45 +120,6 @@ export default class WalletRow extends Component<Props, WalletRowState> {
     ...initialWalletRowState,
   };
 
-  getPendingStakePool = (
-    epochNumber: number,
-    fallbackStakePool: ?StakePool
-  ) => {
-    const {
-      wallet: { delegatedStakePoolId, pendingDelegations },
-      delegatedStakePool,
-      getStakePoolById,
-    } = this.props;
-
-    let stakePoolId;
-    let stakePool;
-    const hasPendingDelegations =
-      pendingDelegations && pendingDelegations.length;
-
-    if (hasPendingDelegations) {
-      const pendingDelegation = pendingDelegations.filter(
-        (item) => get(item, ['changes_at', 'epoch_number'], 0) === epochNumber
-      );
-      stakePoolId = get(pendingDelegation, '[0].target');
-      stakePool = getStakePoolById(stakePoolId);
-    }
-
-    if (!stakePool && fallbackStakePool) {
-      stakePoolId = fallbackStakePool.id;
-      stakePool = fallbackStakePool;
-    }
-
-    if (!stakePool && delegatedStakePoolId) {
-      stakePoolId = delegatedStakePoolId;
-      stakePool = delegatedStakePool;
-    }
-
-    return {
-      stakePoolId,
-      stakePool,
-    };
-  };
-
   render() {
     const { intl } = this.context;
     const {
@@ -464,6 +425,45 @@ export default class WalletRow extends Component<Props, WalletRowState> {
       </div>
     );
   }
+
+  getPendingStakePool = (
+    epochNumber: number,
+    fallbackStakePool: ?StakePool
+  ) => {
+    const {
+      wallet: { delegatedStakePoolId, pendingDelegations },
+      delegatedStakePool,
+      getStakePoolById,
+    } = this.props;
+
+    let stakePoolId;
+    let stakePool;
+    const hasPendingDelegations =
+      pendingDelegations && pendingDelegations.length;
+
+    if (hasPendingDelegations) {
+      const pendingDelegation = pendingDelegations.filter(
+        (item) => get(item, ['changes_at', 'epoch_number'], 0) === epochNumber
+      );
+      stakePoolId = get(pendingDelegation, '[0].target');
+      stakePool = getStakePoolById(stakePoolId);
+    }
+
+    if (!stakePool && fallbackStakePool) {
+      stakePoolId = fallbackStakePool.id;
+      stakePool = fallbackStakePool;
+    }
+
+    if (!stakePool && delegatedStakePoolId) {
+      stakePoolId = delegatedStakePoolId;
+      stakePool = delegatedStakePool;
+    }
+
+    return {
+      stakePoolId,
+      stakePool,
+    };
+  };
 
   getIsHighlighted = (id: string) =>
     this.props.isListActive !== false && id === this.state.highlightedPoolId;
