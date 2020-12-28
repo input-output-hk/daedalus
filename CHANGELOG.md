@@ -13,6 +13,7 @@ Changelog
 
 ### Chores
 
+- Applied validation to spending password to be not longer than 255 characters ([PR 2287](https://github.com/input-output-hk/daedalus/pull/2287))
 - Canceled running fee estimation api requests once new request is made ([PR 2239](https://github.com/input-output-hk/daedalus/pull/2239))
 - Included stake pool ID on the "Confirmation" step of the "Delegation" wizard and enabled search by stake pool ID on the "Stake Pools" screen ([PR 2281](https://github.com/input-output-hk/daedalus/pull/2281))
 - Updated `iohk-nix` in order to fix `cardano-node` logging levels ([PR 2283](https://github.com/input-output-hk/daedalus/pull/2283))
