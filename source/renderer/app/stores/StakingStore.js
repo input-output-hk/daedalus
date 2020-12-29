@@ -100,6 +100,7 @@ export default class StakingStore extends Store {
     stakingActions.updateDelegatingStake.listen(this._setStake);
     stakingActions.rankStakePools.listen(this._rankStakePools);
     stakingActions.selectSmashServerUrl.listen(this._selectSmashServerUrl);
+    stakingActions.resetSmashServerError.listen(this._resetSmashServerError);
     stakingActions.selectDelegationWallet.listen(
       this._setSelectedDelegationWalletId
     );
@@ -213,6 +214,11 @@ export default class StakingStore extends Store {
         }
       }
     }
+  };
+
+  @action _resetSmashServerError = () => {
+    this.smashServerUrlError = null;
+    this.smashServerLoading = false;
   };
 
   @action _joinStakePool = async (request: JoinStakePoolRequest) => {

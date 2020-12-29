@@ -54,11 +54,14 @@ type Props = {
   smashServerUrl: string,
   smashServerUrlError?: ?LocalizableError,
   onSelectSmashServerUrl: Function,
-  isLoading?: boolean,
+  onResetSmashServerError: Function,
+  isLoading: boolean,
 };
 
 type State = {
   editingSmashServerUrl: string,
+  successfullyUpdated: boolean,
+  wasLoading: boolean,
 };
 
 @observer
@@ -67,9 +70,30 @@ export default class StakePoolsSettings extends Component<Props, State> {
     intl: intlShape.isRequired,
   };
 
+  /* eslint-disable react/no-unused-state */
+  // Disabling eslint due to a [known issue](https://github.com/yannickcr/eslint-plugin-react/issues/2061)
+  // `wasLoading` is actually used in the `getDerivedStateFromProps` method
+  static getDerivedStateFromProps(
+    { isLoading, smashServerUrlError }: Props,
+    { wasLoading }: State
+  ) {
+    const successfullyUpdated =
+      wasLoading && !isLoading && !smashServerUrlError;
+    return {
+      successfullyUpdated,
+      wasLoading: isLoading,
+    };
+  }
+
   state = {
     editingSmashServerUrl: this.props.smashServerUrl,
+    successfullyUpdated: false,
+    wasLoading: false,
   };
+
+  componentWillUnmount() {
+    this.props.onResetSmashServerError();
+  }
 
   handleSubmit = (url: string) => {
     if (isValidUrl(url || '')) {
@@ -97,7 +121,7 @@ export default class StakePoolsSettings extends Component<Props, State> {
   render() {
     const { smashServerUrlError, isLoading } = this.props;
     const { intl } = this.context;
-    const { editingSmashServerUrl } = this.state;
+    const { editingSmashServerUrl, successfullyUpdated } = this.state;
     const smashServerType = getSmashServerIdFromUrl(editingSmashServerUrl);
 
     const smashSelectOptions = [
@@ -139,6 +163,7 @@ export default class StakePoolsSettings extends Component<Props, State> {
           errorMessage={errorMessage}
           readOnly={isLoading || smashServerType !== SMASH_SERVER_TYPES.CUSTOM}
           isLoading={isLoading}
+          successfullyUpdated={successfullyUpdated}
         />
       </div>
     );

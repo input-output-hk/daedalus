@@ -16,7 +16,7 @@ export default class StakePoolsSettingsPage extends Component<InjectedProps> {
       smashServerUrlError,
       smashServerLoading,
     } = stores.staking;
-    const { selectSmashServerUrl } = actions.staking;
+    const { selectSmashServerUrl, resetSmashServerError } = actions.staking;
     // If `smashServerUrl` is null, waits for it to be set
     if (!smashServerUrl) return false;
     return (
@@ -26,6 +26,7 @@ export default class StakePoolsSettingsPage extends Component<InjectedProps> {
         onSelectSmashServerUrl={(url: string) =>
           selectSmashServerUrl.trigger({ smashServerUrl: url })
         }
+        onResetSmashServerError={resetSmashServerError.trigger}
         isLoading={smashServerLoading}
       />
     );

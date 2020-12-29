@@ -51,8 +51,9 @@ storiesOf('Settings|General', module)
   .add('Stake Pools', () => (
     <StakePoolsSettings
       smashServerUrl="https://smash.cardano-mainnet.iohk.io"
-      onSelectSmashServerType={action('onSelectSmashServerType')}
       onSelectSmashServerUrl={action('onSelectSmashServerUrl')}
+      onResetSmashServerError={action('onResetSmashServerError')}
+      isLoading={false}
     />
   ))
   .add('Themes', () => (

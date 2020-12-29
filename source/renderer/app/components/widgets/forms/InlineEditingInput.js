@@ -54,6 +54,7 @@ type Props = {
   maxLength?: number,
   isLoading?: boolean,
   validateOnChange?: boolean,
+  successfullyUpdated?: boolean,
 };
 
 type State = {
@@ -223,7 +224,11 @@ export default class InlineEditingInput extends Component<Props, State> {
       isLoading,
       errorMessage,
     } = this.props;
-    const { isActive, hasChanged, successfullyUpdated } = this.state;
+    const { isActive, hasChanged } = this.state;
+    let { successfullyUpdated } = this.props;
+    if (successfullyUpdated === undefined) {
+      ({ successfullyUpdated } = this.state);
+    }
     const { intl } = this.context;
     const inputField = validator.$('inputField');
     let error;
