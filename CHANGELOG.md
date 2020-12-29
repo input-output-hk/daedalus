@@ -6,6 +6,7 @@ Changelog
 ### Features
 
 - Implemented user configuration for the SMASH server ([PR 2259](https://github.com/input-output-hk/daedalus/pull/2259))
+- Added wallet public key viewing feature ([PR 2271](https://github.com/input-output-hk/daedalus/pull/2271))
 
 ### Fixes
 
