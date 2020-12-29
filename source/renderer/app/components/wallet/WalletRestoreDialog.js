@@ -20,6 +20,8 @@ import {
   isValidWalletName,
   isValidSpendingPassword,
   isValidRepeatPassword,
+  errorOrIncompleteMarker,
+  validateMnemonics,
 } from '../../utils/validations';
 import globalMessages from '../../i18n/global-messages';
 import LocalizableError from '../../i18n/LocalizableError';
@@ -245,30 +247,22 @@ export default class WalletRestoreDialog extends Component<Props, State> {
         recoveryPhrase: {
           value: [],
           validators: ({ field }) => {
-            const { intl } = this.context;
-            const { walletType } = this.state;
-            const enteredWords = field.value;
-            const wordCount = enteredWords.length;
             const expectedWordCount =
-              RECOVERY_PHRASE_WORD_COUNT_OPTIONS[walletType];
-            const value = join(enteredWords, ' ');
-            // Regular mnemonics have 12 and paper wallet recovery needs 27 words
-            const isPhraseComplete = wordCount === expectedWordCount;
-            if (!isPhraseComplete) {
-              return [
-                false,
-                intl.formatMessage(globalMessages.incompleteMnemonic, {
-                  expected: expectedWordCount,
-                }),
-              ];
-            }
-            return [
-              // TODO: we should also validate paper wallets mnemonics here!
-              !this.isCertificate()
-                ? this.props.mnemonicValidator(value, expectedWordCount)
-                : true,
-              this.context.intl.formatMessage(messages.invalidRecoveryPhrase),
-            ];
+              RECOVERY_PHRASE_WORD_COUNT_OPTIONS[this.state.walletType];
+            return validateMnemonics({
+              requiredWords: expectedWordCount,
+              providedWords: field.value,
+              validator: (providedWords) => [
+                // TODO: we should also validate paper wallets mnemonics here!
+                !this.isCertificate()
+                  ? this.props.mnemonicValidator(
+                      providedWords,
+                      expectedWordCount
+                    )
+                  : true,
+                this.context.intl.formatMessage(messages.invalidRecoveryPhrase),
+              ],
+            });
           },
         },
         spendingPassword: {
@@ -595,7 +589,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
             })
           }
           maxSelections={RECOVERY_PHRASE_WORD_COUNT_OPTIONS[walletType]}
-          error={recoveryPhraseField.error}
+          error={errorOrIncompleteMarker(recoveryPhraseField.error)}
           maxVisibleOptions={5}
           noResultsMessage={intl.formatMessage(
             messages.recoveryPhraseNoResults

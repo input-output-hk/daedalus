@@ -7,12 +7,6 @@ export default defineMessages({
     defaultMessage: '!!!This field is required.',
     description: 'Error message when required fields are left empty.',
   },
-  incompleteMnemonic: {
-    id: 'global.errors.incompleteMnemonic',
-    defaultMessage: '!!!Please enter all {expected} words.',
-    description:
-      'Error message shown when incomplete bip39 mnemonic was entered.',
-  },
   knownMnemonicWordCount: {
     id: 'global.info.knownMnemonicWordCount',
     defaultMessage: '!!!{actual} of {required} words entered',
