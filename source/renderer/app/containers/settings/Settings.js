@@ -28,8 +28,9 @@ export default class Settings extends Component<InjectedContainerProps> {
   render() {
     const { isFlight } = global;
     const { actions, stores, children } = this.props;
-    const { isSynced } = stores.networkStatus;
-    const { currentRoute } = stores.app;
+    const { networkStatus, app } = stores;
+    const { isSynced } = networkStatus;
+    const { currentRoute } = app;
     const menu = (
       <SettingsMenu
         isSyncing={!isSynced}
