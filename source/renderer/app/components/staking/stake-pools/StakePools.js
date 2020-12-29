@@ -14,14 +14,9 @@ import Wallet from '../../../domains/Wallet';
 import styles from './StakePools.scss';
 import { getFilteredStakePoolsList } from './helpers';
 import StakePool from '../../../domains/StakePool';
-import {
-  IS_RANKING_DATA_AVAILABLE,
-  SMASH_SERVER_TYPES,
-  SMASH_SERVERS_LIST,
-} from '../../../config/stakingConfig';
+import { IS_RANKING_DATA_AVAILABLE } from '../../../config/stakingConfig';
 import smashSettingsIcon from '../../../assets/images/smash-settings-ic.inline.svg';
-
-import type { SmashServerType } from '../../../types/stakingTypes';
+import { getSmashServerNameFromUrl } from '../../../utils/staking';
 
 const messages = defineMessages({
   delegatingListTitle: {
@@ -67,8 +62,7 @@ type Props = {
   stakePoolsDelegatingList: Array<StakePool>,
   getStakePoolById: Function,
   onSmashSettingsClick: Function,
-  smashServerType: SmashServerType,
-  smashServerUrl: string,
+  smashServerUrl: ?string,
   maxDelegationFunds: number,
 };
 
@@ -144,7 +138,6 @@ export default class StakePools extends Component<Props, State> {
       isRanking,
       stakePoolsDelegatingList,
       getStakePoolById,
-      smashServerType,
       smashServerUrl,
       onSmashSettingsClick,
       maxDelegationFunds,
@@ -185,10 +178,9 @@ export default class StakePools extends Component<Props, State> {
       isLoading ? styles.isLoading : null,
     ]);
 
-    const smashServer =
-      smashServerType === SMASH_SERVER_TYPES.CUSTOM
-        ? smashServerUrl
-        : SMASH_SERVERS_LIST[smashServerType].name;
+    const smashServer = smashServerUrl
+      ? getSmashServerNameFromUrl(smashServerUrl)
+      : null;
 
     const smashSettings = smashServer && (
       <button onClick={onSmashSettingsClick} className={styles.smashSettings}>

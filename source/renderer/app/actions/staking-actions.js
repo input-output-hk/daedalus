@@ -4,7 +4,6 @@ import type {
   JoinStakePoolRequest,
   QuitStakePoolRequest,
 } from '../api/staking/types';
-import type { SmashServerType } from '../types/stakingTypes';
 import type { CsvFileContent } from '../../../common/types/csv-request.types';
 // ======= STAKING ACTIONS =======
 
@@ -22,9 +21,6 @@ export default class StakingActions {
     filenamePrefix: string,
   }> = new Action();
   requestCSVFileSuccess: Action<any> = new Action();
-  selectSmashServerType: Action<{
-    smashServerType: SmashServerType,
-  }> = new Action();
   selectSmashServerUrl: Action<{ smashServerUrl: string }> = new Action();
   /* ----------  Redeem ITN Rewards  ---------- */
   onRedeemStart: Action<any> = new Action();

@@ -11,7 +11,6 @@ import {
   NUMBER_OPTIONS,
   TIME_OPTIONS,
 } from '../../../../source/renderer/app/config/profileConfig';
-import { SMASH_SERVER_TYPES } from '../../../../source/renderer/app/config/stakingConfig';
 import { updateParam } from '../../../addons/DaedalusMenu';
 import { locales, themesIds } from '../../_support/config';
 
@@ -51,7 +50,6 @@ storiesOf('Settings|General', module)
   ))
   .add('Stake Pools', () => (
     <StakePoolsSettings
-      smashServerType={SMASH_SERVER_TYPES.CUSTOM}
       smashServerUrl="https://smash.cardano-mainnet.iohk.io"
       onSelectSmashServerType={action('onSelectSmashServerType')}
       onSelectSmashServerUrl={action('onSelectSmashServerUrl')}

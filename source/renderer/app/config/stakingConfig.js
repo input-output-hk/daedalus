@@ -7,6 +7,9 @@ import type {
 
 import type { SmashServerStatuses } from '../api/staking/types';
 
+const { isTestnet } = global.environment;
+
+// @SMASH TODO - remove testing server
 export const SMASH_SERVERS_LIST: {
   [key: SmashServerType]: {
     name: string,
@@ -15,7 +18,13 @@ export const SMASH_SERVERS_LIST: {
 } = {
   iohk: {
     name: 'IOHK',
-    url: 'https://smash.cardano-mainnet.iohk.io',
+    url: isTestnet
+      ? 'https://smash.cardano-testnet.iohkdev.io'
+      : 'https://smash.cardano-mainnet.iohk.io',
+  },
+  testingKnown: {
+    name: 'Testing Known Server',
+    url: 'https://test-known.com',
   },
   // adaPools: {
   //   name: 'AdaPools',
@@ -23,11 +32,13 @@ export const SMASH_SERVERS_LIST: {
   // },
 };
 
+// @SMASH TODO - remove testing server
 export const SMASH_SERVER_TYPES: {
-  [key: string]: SmashServerType | 'custom',
+  [key: string]: SmashServerType,
 } = {
   IOHK: 'iohk',
   ADA_POOLS: 'adaPools',
+  TESTING_KNOWN: 'testingKnown',
   CUSTOM: 'custom',
 };
 

@@ -2,7 +2,7 @@
 import { computed, action, observable, runInAction } from 'mobx';
 import BigNumber from 'bignumber.js';
 import path from 'path';
-import { orderBy, find, map, get, findKey, reduce } from 'lodash';
+import { orderBy, find, map, get } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
 import { ROUTES } from '../routes-config';
@@ -15,7 +15,6 @@ import {
   REDEEM_ITN_REWARDS_STEPS as steps,
   INITIAL_DELEGATION_FUNDS,
   SMASH_SERVERS_LIST,
-  SMASH_SERVER_TYPES,
   CIRCULATING_SUPPLY,
 } from '../config/stakingConfig';
 import type {
@@ -33,10 +32,7 @@ import LocalizableError from '../i18n/LocalizableError';
 import { showSaveDialogChannel } from '../ipc/show-file-dialog-channels';
 import REWARDS from '../config/stakingRewards.dummy.json';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
-import type {
-  RedeemItnRewardsStep,
-  SmashServerType,
-} from '../types/stakingTypes';
+import type { RedeemItnRewardsStep } from '../types/stakingTypes';
 import type { CsvFileContent } from '../../../common/types/csv-request.types';
 
 export default class StakingStore extends Store {
@@ -46,7 +42,6 @@ export default class StakingStore extends Store {
   @observable selectedDelegationWalletId = null;
   @observable stake = INITIAL_DELEGATION_FUNDS;
   @observable isRanking = false;
-  @observable smashServerType: ?SmashServerType = null;
   @observable smashServerUrl: ?string = null;
   @observable smashServerUrlError: ?LocalizableError = null;
   @observable smashServerLoading: boolean = false;
@@ -104,7 +99,6 @@ export default class StakingStore extends Store {
     stakingActions.fakeStakePoolsLoading.listen(this._setFakePoller);
     stakingActions.updateDelegatingStake.listen(this._setStake);
     stakingActions.rankStakePools.listen(this._rankStakePools);
-    stakingActions.selectSmashServerType.listen(this._selectSmashServerType);
     stakingActions.selectSmashServerUrl.listen(this._selectSmashServerUrl);
     stakingActions.selectDelegationWallet.listen(
       this._setSelectedDelegationWalletId
@@ -148,43 +142,21 @@ export default class StakingStore extends Store {
 
   @action _getSmashSettingsRequest = async () => {
     this.smashServerLoading = true;
-    const apiPoolMetadataSource = await this.getSmashSettingsRequest.execute();
-    let smashServerType: SmashServerType = SMASH_SERVER_TYPES.CUSTOM;
-    let smashServerUrl: string = '';
+    let smashServerUrl: string = await this.getSmashSettingsRequest.execute();
 
     // If the server wasn't set, sets it for IOHK
     if (
-      apiPoolMetadataSource === 'none' ||
-      apiPoolMetadataSource === 'direct'
+      !smashServerUrl ||
+      smashServerUrl === 'none' ||
+      smashServerUrl === 'direct'
     ) {
       const poolMetadataSource = SMASH_SERVERS_LIST.iohk.url;
       await this.updateSmashSettingsRequest.execute(poolMetadataSource);
 
-      smashServerType = SMASH_SERVER_TYPES.IOHK;
+      smashServerUrl = SMASH_SERVERS_LIST.iohk.url;
     }
 
-    // Else runs through the known servers to match the current one
-    // Otherwise it's a custom server
-    else {
-      ({ smashServerType, smashServerUrl } = reduce(
-        SMASH_SERVERS_LIST,
-        (result, { url }, serverId) => {
-          if (apiPoolMetadataSource === url) {
-            result = {
-              smashServerType: serverId,
-              smashServerUrl: url,
-            };
-          }
-          return result;
-        },
-        {
-          smashServerType: SMASH_SERVER_TYPES.CUSTOM,
-          smashServerUrl: apiPoolMetadataSource,
-        }
-      ));
-    }
     runInAction(() => {
-      this.smashServerType = smashServerType;
       this.smashServerUrl = smashServerUrl;
       this.smashServerLoading = false;
     });
@@ -203,74 +175,42 @@ export default class StakingStore extends Store {
     this.getStakePoolsData();
   };
 
-  @action _selectSmashServerType = ({
-    smashServerType,
-  }: {
-    smashServerType: SmashServerType,
-  }) => {
-    if (smashServerType !== this.smashServerType) {
-      // @SMASH TODO: Implement a isSubmitting state
-      this.smashServerUrl = '';
-
-      // Updates the Smash Server Type UI
-      this.smashServerType = smashServerType;
-
-      if (smashServerType === SMASH_SERVER_TYPES.CUSTOM) {
-        // For custom server, leaves the URL input empty
-        this.smashServerUrl = '';
-      } else {
-        // Otherwise, retrieves the Server URL
-        const smashServerUrl = get(
-          SMASH_SERVERS_LIST,
-          [smashServerType, 'url'],
-          ''
-        );
-        this._selectSmashServerUrl({ smashServerUrl });
-      }
-    }
-  };
-
   @action _selectSmashServerUrl = async ({
     smashServerUrl,
   }: {
     smashServerUrl: string,
   }) => {
-    if (smashServerUrl !== this.smashServerUrl || this.smashServerUrlError) {
+    if (smashServerUrl !== this.smashServerUrl) {
       try {
-        if (smashServerUrl) {
+        this.smashServerUrlError = null;
+        // Retrieves the API update
+        this.smashServerLoading = true;
+        await this.updateSmashSettingsRequest.execute(smashServerUrl);
+        // Refreshes the Stake Pools list
+        this.getStakePoolsData();
+        // Updates the Smash Server URL
+        runInAction(() => {
+          this.smashServerUrl = smashServerUrl;
           this.smashServerUrlError = null;
-          // For custom server, checks if the user typed a known server
-          if (this.smashServerType === SMASH_SERVER_TYPES.CUSTOM) {
-            const knownServer = findKey(
-              SMASH_SERVERS_LIST,
-              ({ url }: { url: string }) => url === smashServerUrl
-            );
-            if (knownServer) {
-              this.smashServerType = knownServer;
-              this.smashServerUrl = smashServerUrl;
-            }
-          }
-          // Retrieves the API update
-          this.smashServerLoading = true;
-          await this.updateSmashSettingsRequest.execute(smashServerUrl);
-          // Refreshes the Stake Pools list
-          this.getStakePoolsData();
-          // Updates the Smash Server URL
+          this.smashServerLoading = false;
+        });
+      } catch (error) {
+        // @SMASH TODO - remove testing servers
+        if (
+          smashServerUrl === 'https://test-custom.com' ||
+          smashServerUrl === 'https://test-known.com'
+        ) {
           runInAction(() => {
             this.smashServerUrl = smashServerUrl;
             this.smashServerUrlError = null;
             this.smashServerLoading = false;
           });
         } else {
-          this.smashServerUrl = '';
-          this.smashServerUrlError = null;
-          this.smashServerLoading = false;
+          runInAction(() => {
+            this.smashServerUrlError = error;
+            this.smashServerLoading = false;
+          });
         }
-      } catch (error) {
-        runInAction(() => {
-          this.smashServerUrlError = error;
-          this.smashServerLoading = false;
-        });
       }
     }
   };

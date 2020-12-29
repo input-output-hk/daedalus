@@ -6,14 +6,16 @@ import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { isValidUrl } from '../../../utils/validations';
+import { getSmashServerIdFromUrl } from '../../../utils/staking';
 import InlineEditingInput from '../../widgets/forms/InlineEditingInput';
 import styles from './StakePoolsSettings.scss';
 import {
   SMASH_SERVERS_LIST,
   SMASH_SERVER_TYPES,
 } from '../../../config/stakingConfig';
-import LocalizableError from '../../../i18n/LocalizableError';
 import type { SmashServerType } from '../../../types/stakingTypes';
+
+import LocalizableError from '../../../i18n/LocalizableError';
 
 const messages = defineMessages({
   smashSelectLabel: {
@@ -49,17 +51,14 @@ const messages = defineMessages({
 });
 
 type Props = {
-  smashServerType: SmashServerType,
-  smashServerUrl?: string,
+  smashServerUrl: string,
   smashServerUrlError?: ?LocalizableError,
-  onSelectSmashServerType: Function,
   onSelectSmashServerUrl: Function,
   isLoading?: boolean,
 };
 
 type State = {
-  lastValidServerUrl: ?string,
-  lastValidServerType: SmashServerType,
+  editingSmashServerUrl: string,
 };
 
 @observer
@@ -68,67 +67,38 @@ export default class StakePoolsSettings extends Component<Props, State> {
     intl: intlShape.isRequired,
   };
 
-  static getDerivedStateFromProps(
-    {
-      smashServerUrl: nextValidServerUrl,
-      smashServerType: nextValidServerType,
-    }: Props,
-    { lastValidServerUrl }: State
-  ) {
-    // The `smashServerUrl` prop only changes when it's a valid server
-    // unless it's empty
-    // so we update the `lastValidServerType` and `lastValidServerUrl` states
-    if (nextValidServerUrl && nextValidServerUrl !== lastValidServerUrl) {
-      return {
-        lastValidServerUrl: nextValidServerUrl,
-        lastValidServerType: nextValidServerType,
-      };
-    }
-    return null;
-  }
-
   state = {
-    /* eslint-disable react/no-unused-state */
-    // Disabling eslint due to a [known issue](https://github.com/yannickcr/eslint-plugin-react/issues/2061)
-    // `smashServerUrl` is actually used in the `getDerivedStateFromProps` method
-
-    // Last valid type and url
-    lastValidServerUrl: this.props.smashServerUrl,
-    lastValidServerType: this.props.smashServerType,
+    editingSmashServerUrl: this.props.smashServerUrl,
   };
-
-  componentWillUnmount() {
-    // In case the `lastValidServerUrl` prop is empty
-    // we revert to the last valid state
-    const {
-      smashServerType,
-      smashServerUrl,
-      onSelectSmashServerType,
-    } = this.props;
-    const { lastValidServerType } = this.state;
-
-    if (smashServerType === SMASH_SERVER_TYPES.CUSTOM && !smashServerUrl) {
-      onSelectSmashServerType(lastValidServerType);
-    }
-  }
 
   handleSubmit = (url: string) => {
     if (isValidUrl(url || '')) {
+      this.setState({
+        editingSmashServerUrl: url,
+      });
       this.props.onSelectSmashServerUrl(url);
     }
+  };
+
+  handleOnSelectSmashServerType = (smashServerType: SmashServerType) => {
+    const { onSelectSmashServerUrl } = this.props;
+    let editingSmashServerUrl = '';
+    if (smashServerType !== SMASH_SERVER_TYPES.CUSTOM) {
+      editingSmashServerUrl = SMASH_SERVERS_LIST[smashServerType].url;
+      onSelectSmashServerUrl(editingSmashServerUrl);
+    }
+    this.setState({
+      editingSmashServerUrl,
+    });
   };
 
   handleIsValid = (url: string) => url === '' || isValidUrl(url);
 
   render() {
-    const {
-      smashServerType,
-      smashServerUrl,
-      smashServerUrlError,
-      onSelectSmashServerType,
-      isLoading,
-    } = this.props;
+    const { smashServerUrlError, isLoading } = this.props;
     const { intl } = this.context;
+    const { editingSmashServerUrl } = this.state;
+    const smashServerType = getSmashServerIdFromUrl(editingSmashServerUrl);
 
     const smashSelectOptions = [
       ...map(SMASH_SERVERS_LIST, ({ name: label }, value) => ({
@@ -151,9 +121,7 @@ export default class StakePoolsSettings extends Component<Props, State> {
           label={intl.formatMessage(messages.smashSelectLabel)}
           value={smashServerType}
           options={smashSelectOptions}
-          onChange={(type: SmashServerType) => {
-            onSelectSmashServerType(type);
-          }}
+          onChange={this.handleOnSelectSmashServerType}
           skin={SelectSkin}
           className={styles.select}
           optionHeight={50}
@@ -161,7 +129,7 @@ export default class StakePoolsSettings extends Component<Props, State> {
         <InlineEditingInput
           className={styles.smashServerUrl}
           label={intl.formatMessage(messages.smashURLInputLabel)}
-          value={smashServerUrl || ''}
+          value={editingSmashServerUrl}
           placeholder={intl.formatMessage(messages.smashUrlInputPlaceholder)}
           onSubmit={this.handleSubmit}
           isValid={this.handleIsValid}

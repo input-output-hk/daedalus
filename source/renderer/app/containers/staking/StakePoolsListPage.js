@@ -6,7 +6,6 @@ import StakePoolsRankingLoader from '../../components/staking/stake-pools/StakeP
 import DelegationSetupWizardDialogContainer from './dialogs/DelegationSetupWizardDialogContainer';
 import DelegationSetupWizardDialog from '../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
 import { ROUTES } from '../../routes-config';
-import { SMASH_SERVER_TYPES } from '../../config/stakingConfig';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 type Props = InjectedProps;
@@ -65,7 +64,6 @@ export default class StakePoolsListPage extends Component<Props> {
       fetchingStakePoolsFailed,
       recentStakePools,
       getStakePoolById,
-      smashServerType,
       smashServerUrl,
       maxDelegationFunds,
     } = staking;
@@ -92,8 +90,7 @@ export default class StakePoolsListPage extends Component<Props> {
           isLoading={isLoading}
           isRanking={isRanking}
           getStakePoolById={getStakePoolById}
-          smashServerType={smashServerType || SMASH_SERVER_TYPES.IOHK}
-          smashServerUrl={smashServerUrl || ''}
+          smashServerUrl={smashServerUrl}
           onSmashSettingsClick={this.handleSmashSettingsClick}
           maxDelegationFunds={maxDelegationFunds}
         />
