@@ -80,5 +80,6 @@ export const isValidAmountInLovelaces = (value: string) => {
 
 export const isValidUrl = (url: string) =>
   validator.isURL(url, {
+    protocols: ['http', 'https'],
     require_protocol: true,
   });
