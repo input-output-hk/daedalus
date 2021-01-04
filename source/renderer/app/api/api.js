@@ -319,6 +319,10 @@ export default class AdaApi {
     }
   };
 
+  getCurrencyApiStatus = async () => {
+    return true;
+  };
+
   getAddresses = async (
     request: GetAddressesRequest
   ): Promise<Array<WalletAddress>> => {

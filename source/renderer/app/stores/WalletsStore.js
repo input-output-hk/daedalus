@@ -36,6 +36,7 @@ import type {
   WalletYoroiKind,
   WalletHardwareKind,
 } from '../types/walletRestoreTypes';
+import { Currency } from '../types/walletCurrenciesTypes';
 import type { CsvFileContent } from '../../../common/types/csv-request.types';
 import type { WalletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
@@ -140,6 +141,11 @@ export default class WalletsStore extends Store {
   @observable activeValue: ?BigNumber = null;
   @observable activePublicKey: ?string = null;
 
+  /* ------------  Currencies  ----------- */
+  @observable areCurrenciesAvailable: boolean = true;
+  @observable currenciesList: Array<Currency> = [];
+  @observable currentCurrency: ?Currency = null;
+
   /* ----------  Create Wallet  ---------- */
   @observable createWalletStep = null;
   @observable createWalletShowAbortConfirmation = false;
@@ -209,6 +215,7 @@ export default class WalletsStore extends Store {
     setInterval(this._pollRefresh, this.WALLET_REFRESH_INTERVAL);
 
     this.registerReactions([this._updateActiveWalletOnRouteChanges]);
+    this.getCurrencyApiStatus();
 
     const {
       router,
@@ -310,6 +317,10 @@ export default class WalletsStore extends Store {
     } catch (error) {
       throw error;
     }
+  };
+
+  @action getCurrencyApiStatus = async () => {
+    const isActive = await this.api.ada.getCurrencyApiStatus;
   };
 
   _create = async (params: { name: string, spendingPassword: string }) => {
