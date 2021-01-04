@@ -23,9 +23,7 @@ export default class StakePoolsSettingsPage extends Component<InjectedProps> {
       <StakePoolsSettings
         smashServerUrl={smashServerUrl}
         smashServerUrlError={smashServerUrlError}
-        onSelectSmashServerUrl={(url: string) =>
-          selectSmashServerUrl.trigger({ smashServerUrl: url })
-        }
+        onSelectSmashServerUrl={selectSmashServerUrl.trigger}
         onResetSmashServerError={resetSmashServerError.trigger}
         isLoading={smashServerLoading}
       />
