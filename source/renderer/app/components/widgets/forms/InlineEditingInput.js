@@ -126,8 +126,7 @@ export default class InlineEditingInput extends Component<Props, State> {
   handleInputKeyDown = (event: KeyboardEvent) => {
     if (event.which === ENTER_KEY_CODE) {
       this.submit();
-    }
-    if (event.which === ESCAPE_KEY_CODE) {
+    } else if (event.which === ESCAPE_KEY_CODE) {
       this.onCancel();
     }
   };
@@ -212,6 +211,11 @@ export default class InlineEditingInput extends Component<Props, State> {
 
   inputElement: HTMLElement;
 
+  preventDefaultHelper = (event: KeyboardEvent) => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
   render() {
     const { validator } = this;
     const {
@@ -293,14 +297,8 @@ export default class InlineEditingInput extends Component<Props, State> {
 
         <div
           className={buttonsWrapperStyles}
-          onMouseDown={(event: KeyboardEvent) => {
-            event.preventDefault();
-            event.stopPropagation();
-          }}
-          onMouseUp={(event: KeyboardEvent) => {
-            event.preventDefault();
-            event.stopPropagation();
-          }}
+          onMouseDown={this.preventDefaultHelper}
+          onMouseUp={this.preventDefaultHelper}
         >
           {showEditButton && (
             <Button
