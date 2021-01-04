@@ -32,6 +32,10 @@ export const MAINNET_NEWS_HASH_URL = 'newsfeed.daedaluswallet.io';
 export const TESTNET_NEWS_HASH_URL = 'newsfeed.daedaluswallet.io';
 export const STAGING_NEWS_HASH_URL = 'newsfeed.daedaluswallet.io';
 
+// EXCHANGE API's
+export const NOMICS_API_URL = 'https://api.nomics.com';
+export const COINGECKO_API_URL = 'https://api.coingecko.com/api';
+
 export const ALLOWED_EXTERNAL_HOSTNAMES = [
   MAINNET_EXPLORER_URL,
   STAGING_EXPLORER_URL,
@@ -51,4 +55,6 @@ export const ALLOWED_EXTERNAL_HOSTNAMES = [
   MAINNET_NEWS_HASH_URL,
   TESTNET_NEWS_HASH_URL,
   STAGING_NEWS_HASH_URL,
+  NOMICS_API_URL,
+  COINGECKO_API_URL,
 ];
