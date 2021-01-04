@@ -25,12 +25,15 @@
 
 .walletAmount {
   color: var(--theme-bordered-box-text-color);
-  font-family: var(--font-ultralight);
-  font-size: 40px;
-  line-height: 1;
+  font-family: var(--font-medium);
+  font-size: 22px;
+  line-height: 1.41;
   margin-bottom: 11px;
   user-select: text;
   word-break: break-all;
+  font-weight: bold;
+  font-stretch: normal;
+  font-style: normal;
 
   & > .decimal {
     font-family: var(--font-medium);
@@ -48,12 +51,24 @@
       }
     }
   }
+
+  span {
+    color: var(--theme-icon-add-wallet-dialog-big-button-color);
+    font-size: 16px;
+  }
 }
 
 .transactionsCountWrapper {
   .numberOfTransactions,
   .numberOfPendingTransactions {
-    @extend %smallText;
+    color: var(--theme-icon-add-wallet-dialog-big-button-color);
+    font-family: var(--font-medium);
+    font-size: 14px;
+    font-weight: 500;
+    height: 19px;
+    letter-spacing: 0.5px;
+    line-height: 1.36;
+
     &.isLoadingNumberOfTransactions {
       @include animated-ellipsis($width: 16px);
     }

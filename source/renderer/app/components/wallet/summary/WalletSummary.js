@@ -2,13 +2,12 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
-import adaSymbolBig from '../../../assets/images/ada-symbol-big-dark.inline.svg';
 import BorderedBox from '../../widgets/BorderedBox';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import styles from './WalletSummary.scss';
 import Wallet from '../../../domains/Wallet';
+import globalMessages from '../../../i18n/global-messages';
 
 const messages = defineMessages({
   transactionsLabel: {
@@ -64,10 +63,7 @@ export default class WalletSummary extends Component<Props> {
             {isRestoreActive
               ? '-'
               : wallet.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
-            <SVGInline
-              svg={adaSymbolBig}
-              className={styles.currencySymbolBig}
-            />
+              <span>&nbsp;{intl.formatMessage(globalMessages.unitAda)}</span>
           </div>
 
           {!isLoadingTransactions ? (
