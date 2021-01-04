@@ -134,7 +134,7 @@
   "global.errors.rewardsOpenCsvError": "The file you are trying to replace is open. Please close it and try again.",
   "global.errors.strongSpendingPassword": "Strong",
   "global.errors.weakSpendingPassword": "Weak",
-  "global.info.knownMnemonicWordCount": "{actual} of {required} {actual, plural, one {word} other {words}} entered",
+  "global.info.knownMnemonicWordCount": "{actual} of {required} {required, plural, one {word} other {words}} entered",
   "global.info.unknownMnemonicWordCount": "{actual} {actual, plural, one {word} other {words}} entered",
   "global.labels.all": "All",
   "global.labels.cancel": "Cancel",
