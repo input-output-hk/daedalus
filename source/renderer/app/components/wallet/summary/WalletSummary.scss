@@ -27,13 +27,11 @@
   color: var(--theme-bordered-box-text-color);
   font-family: var(--font-medium);
   font-size: 22px;
+  font-weight: bold;
   line-height: 1.41;
   margin-bottom: 11px;
   user-select: text;
   word-break: break-all;
-  font-weight: bold;
-  font-stretch: normal;
-  font-style: normal;
 
   & > .decimal {
     font-family: var(--font-medium);

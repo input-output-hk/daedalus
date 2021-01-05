@@ -9770,13 +9770,13 @@
         "description": "\"Number of transactions\" label on Wallet summary page",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 17
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
         "id": "wallet.summary.page.transactionsLabel",
         "start": {
           "column": 21,
-          "line": 14
+          "line": 13
         }
       },
       {
@@ -9784,13 +9784,13 @@
         "description": "\"Number of pending transactions\" label on Wallet summary page",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 23
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
         "id": "wallet.summary.page.pendingTransactionsLabel",
         "start": {
           "column": 28,
-          "line": 19
+          "line": 18
         }
       }
     ],

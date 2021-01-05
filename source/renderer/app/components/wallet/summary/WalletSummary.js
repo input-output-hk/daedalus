@@ -63,7 +63,7 @@ export default class WalletSummary extends Component<Props> {
             {isRestoreActive
               ? '-'
               : wallet.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
-              <span>&nbsp;{intl.formatMessage(globalMessages.unitAda)}</span>
+            <span>&nbsp;{intl.formatMessage(globalMessages.unitAda)}</span>
           </div>
 
           {!isLoadingTransactions ? (
