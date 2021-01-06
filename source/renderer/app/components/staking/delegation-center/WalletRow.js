@@ -210,6 +210,17 @@ export default class WalletRow extends Component<Props, WalletRowState> {
 
     const { top, left } = this.state;
 
+    const popOverThemeVariables = {
+      '--rp-pop-over-bg-color':
+        'var(--theme-staking-stake-pool-tooltip-background-color)',
+      '--rp-pop-over-box-shadow':
+        '0 1.5px 5px 0 var(--theme-staking-stake-pool-tooltip-shadow-color)',
+      '--rp-pop-over-border-color':
+        'var(--theme-staking-stake-pool-tooltip-border-color)',
+      '--rp-pop-over-border-radius': '5px',
+      '--rp-pop-over-border-style': 'solid',
+    };
+
     return (
       <div className={styles.component}>
         <div className={styles.left}>
@@ -314,16 +325,7 @@ export default class WalletRow extends Component<Props, WalletRowState> {
                         popperOptions={{
                           strategy: 'fixed',
                         }}
-                        themeVariables={{
-                          '--rp-pop-over-bg-color':
-                            'var(--theme-staking-stake-pool-tooltip-background-color)',
-                          '--rp-pop-over-box-shadow':
-                            '0 1.5px 5px 0 var(--theme-staking-stake-pool-tooltip-shadow-color)',
-                          '--rp-pop-over-border-color':
-                            'var(--theme-staking-stake-pool-tooltip-border-color)',
-                          '--rp-pop-over-border-radius': '5px',
-                          '--rp-pop-over-border-style': 'solid',
-                        }}
+                        themeVariables={popOverThemeVariables}
                         allowHTML
                         content={
                           <TooltipPool
