@@ -144,12 +144,13 @@ export default class WalletsStore extends Store {
   /* ------------  Currencies  ----------- */
   @observable isCurrencyAvailable: boolean = true;
   @observable currencyList: Array<Currency> = [];
-  // @observable currentCurrency: ?Currency = null;
-  @observable currentCurrency: ?Currency = {
+  // @observable currency: ?Currency = null;
+  @observable currency: ?Currency = {
     id: 'uniswap-state-dollar',
     symbol: 'usd',
     name: 'unified Stable Dollar',
   };
+  @observable currencyRate: ?number = null;
 
   /* ----------  Create Wallet  ---------- */
   @observable createWalletStep = null;
@@ -300,6 +301,7 @@ export default class WalletsStore extends Store {
 
     this.getCurrencyApiStatus();
     this.getCurrencyList();
+    this.getCurrencyRate();
   }
 
   @action _getWalletPublicKey = async () => {
@@ -334,14 +336,22 @@ export default class WalletsStore extends Store {
   };
 
   @action getCurrencyList = async () => {
-    if (this.isCurrencyAvailable) {
-      const currencyList = await this.api.ada.getCurrencyList();
-      console.log('currencyList', currencyList);
+    const currencyList = await this.api.ada.getCurrencyList();
+    runInAction(() => {
+      this.currencyList = currencyList;
+    });
+  };
+
+  @action getCurrencyRate = async () => {
+    const { currency } = this;
+    console.log('currency', currency);
+    if (currency && currency.symbol) {
+      console.log('currency.id', currency.symbol);
+      const currencyRate = await this.api.ada.getCurrencyRate(currency);
+      console.log('getCurrencyRate', getCurrencyRate);
       runInAction(() => {
-        this.currencyList = currencyList;
+        this.currencyRate = currencyRate;
       });
-    } else {
-      console.log('🥺');
     }
   };
 
