@@ -2,6 +2,7 @@
 import BigNumber from 'bignumber.js';
 import { WalletUnits } from '../../domains/Wallet';
 import type { ExportedByronWallet } from '../../types/walletExportTypes';
+import type { Currency } from '../../types/currencyTypes';
 
 export type Block = {
   slot_number: number,
@@ -293,3 +294,10 @@ export type CreateHardwareWalletRequest = {
   walletName: string,
   accountPublicKey: string,
 };
+
+export type GetCurrencyApiStatusResponse = boolean;
+
+export type GetCurrencyListResponse = Array<Currency>;
+
+export type GetCurrencyRateRequest = Currency;
+export type GetCurrencyRateResponse = number;

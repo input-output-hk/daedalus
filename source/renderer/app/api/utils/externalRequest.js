@@ -19,10 +19,9 @@ export const externalRequest = (
   raw: boolean = false
 ): Promise<any> =>
   new Promise((resolve, reject) => {
-    console.log('httpOptions.hostname', httpOptions.hostname);
-    // if (!ALLOWED_EXTERNAL_HOSTNAMES.includes(httpOptions.hostname)) {
-    //   return reject(new Error('Hostname not allowed'));
-    // }
+    if (!ALLOWED_EXTERNAL_HOSTNAMES.includes(httpOptions.hostname)) {
+      return reject(new Error('Hostname not allowed'));
+    }
 
     const { protocol = 'https' } = httpOptions;
     const options = omit(httpOptions, 'protocol');

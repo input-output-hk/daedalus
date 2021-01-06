@@ -36,7 +36,7 @@ import type {
   WalletYoroiKind,
   WalletHardwareKind,
 } from '../types/walletRestoreTypes';
-import { Currency } from '../types/walletCurrenciesTypes';
+import type { Currency } from '../types/currencyTypes.js';
 import type { CsvFileContent } from '../../../common/types/csv-request.types';
 import type { WalletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
@@ -142,9 +142,14 @@ export default class WalletsStore extends Store {
   @observable activePublicKey: ?string = null;
 
   /* ------------  Currencies  ----------- */
-  @observable areCurrenciesAvailable: boolean = true;
-  @observable currenciesList: Array<Currency> = [];
-  @observable currentCurrency: ?Currency = null;
+  @observable isCurrencyAvailable: boolean = true;
+  @observable currencyList: Array<Currency> = [];
+  // @observable currentCurrency: ?Currency = null;
+  @observable currentCurrency: ?Currency = {
+    id: 'uniswap-state-dollar',
+    symbol: 'usd',
+    name: 'unified Stable Dollar',
+  };
 
   /* ----------  Create Wallet  ---------- */
   @observable createWalletStep = null;
@@ -215,7 +220,6 @@ export default class WalletsStore extends Store {
     setInterval(this._pollRefresh, this.WALLET_REFRESH_INTERVAL);
 
     this.registerReactions([this._updateActiveWalletOnRouteChanges]);
-    this.getCurrencyApiStatus();
 
     const {
       router,
@@ -293,6 +297,9 @@ export default class WalletsStore extends Store {
     walletsActions.transferFundsCalculateFee.listen(
       this._transferFundsCalculateFee
     );
+
+    this.getCurrencyApiStatus();
+    this.getCurrencyList();
   }
 
   @action _getWalletPublicKey = async () => {
@@ -320,7 +327,22 @@ export default class WalletsStore extends Store {
   };
 
   @action getCurrencyApiStatus = async () => {
-    const isActive = await this.api.ada.getCurrencyApiStatus;
+    const isAvailable = await this.api.ada.getCurrencyApiStatus();
+    runInAction(() => {
+      this.isCurrencyAvailable = isAvailable;
+    });
+  };
+
+  @action getCurrencyList = async () => {
+    if (this.isCurrencyAvailable) {
+      const currencyList = await this.api.ada.getCurrencyList();
+      console.log('currencyList', currencyList);
+      runInAction(() => {
+        this.currencyList = currencyList;
+      });
+    } else {
+      console.log('🥺');
+    }
   };
 
   _create = async (params: { name: string, spendingPassword: string }) => {

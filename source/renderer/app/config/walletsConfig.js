@@ -5,7 +5,6 @@ import {
   LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
   YOROI_WALLET_RECOVERY_PHRASE_WORD_COUNT,
 } from './cryptoConfig';
-import { NOMICS_API_URL, COINGECKO_API_URL } from './urlsConfig';
 
 export const CREATE_WALLET_STEPS = [
   'instructions',
@@ -34,21 +33,3 @@ export const RECOVERY_PHRASE_WORD_COUNT_OPTIONS = {
 
 export const WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH = 15;
 export const WALLET_PUBLIC_KEY_SHARING_ENABLED = false;
-
-// Exchange APIs Config
-export const AVAILABLE_APIS: {
-  [key: string]: {
-    id: string,
-    url: string,
-  },
-} = {
-  NOMICS: {
-    id: 'nomics',
-    url: NOMICS_API_URL,
-  },
-  COINGECKO: {
-    id: 'coingecko',
-    url: COINGECKO_API_URL,
-  },
-};
-export const ACTIVE_EXCHANGE_API = AVAILABLE_APIS.COINGECKO;

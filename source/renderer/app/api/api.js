@@ -67,6 +67,8 @@ import { transferFundsCalculateFee } from './wallets/requests/transferFundsCalcu
 import { transferFunds } from './wallets/requests/transferFunds';
 import { createHardwareWallet } from './wallets/requests/createHardwareWallet';
 import { getCurrencyApiStatus } from './wallets/requests/getCurrencyApiStatus';
+import { getCurrencyList } from './wallets/requests/getCurrencyList';
+import { getCurrencyRate } from './wallets/requests/getCurrencyRate';
 
 // Staking
 import StakePool from '../domains/StakePool';
@@ -104,6 +106,7 @@ import {
   ADA_CERTIFICATE_MNEMONIC_LENGTH,
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
 } from '../config/cryptoConfig';
+import { currencyConfig } from '../config/currencyConfig';
 
 // Addresses Types
 import type {
@@ -172,6 +175,10 @@ import type {
   TransferFundsRequest,
   TransferFundsResponse,
   UpdateWalletRequest,
+  GetCurrencyApiStatusResponse,
+  GetCurrencyListResponse,
+  GetCurrencyRateRequest,
+  GetCurrencyRateResponse,
 } from './wallets/types';
 import type { WalletProps } from '../domains/Wallet';
 
@@ -1242,8 +1249,48 @@ export default class AdaApi {
     }
   };
 
-  getCurrencyApiStatus = async () => {
-    const response = await getCurrencyApiStatus();
+  getCurrencyApiStatus = async (): Promise<GetCurrencyApiStatusResponse> => {
+    try {
+      const apiResponse = await getCurrencyApiStatus();
+      const response: GetCurrencyApiStatusResponse = currencyConfig.responses.status(
+        apiResponse
+      );
+      logger.debug('AdaApi::getCurrencyApiStatus success', { response });
+      return response;
+    } catch (error) {
+      logger.error('AdaApi::getCurrencyApiStatus error', { error });
+      throw new ApiError(error);
+    }
+  };
+
+  getCurrencyList = async (): Promise<GetCurrencyListResponse> => {
+    try {
+      const apiResponse = await getCurrencyList();
+      const response: GetCurrencyListResponse = currencyConfig.responses.list(
+        apiResponse
+      );
+      logger.debug('AdaApi::getCurrencyList success', { response });
+      return response;
+    } catch (error) {
+      logger.error('AdaApi::getCurrencyList error', { error });
+      throw new ApiError(error);
+    }
+  };
+
+  getCurrencyRate = async (
+    currency: GetCurrencyRateRequest
+  ): Promise<GetCurrencyRateResponse> => {
+    try {
+      const apiResponse = await getCurrencyRate(currency);
+      const response: GetCurrencyRateResponse = currencyConfig.responses.rate(
+        apiResponse
+      );
+      logger.debug('AdaApi::getCurrencyRate success', { response });
+      return response;
+    } catch (error) {
+      logger.error('AdaApi::getCurrencyRate error', { error });
+      throw new ApiError(error);
+    }
   };
 
   restoreLegacyWallet = async (

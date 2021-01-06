@@ -12,6 +12,8 @@ export const ITN_QA_EXPLORER_URL = 'shelley-testnet-explorer-qa.netlify.com';
 export const ITN_NIGHTLY_EXPLORER_URL =
   'shelley-testnet-explorer-nightly.netlify.com';
 
+import { currencyConfig } from './currencyConfig';
+
 export const DEVELOPMENT_EKG_URL = 'http://localhost:8085';
 export const STAGING_EKG_URL = 'http://localhost:8082';
 export const TESTNET_EKG_URL = 'http://localhost:8081';
@@ -32,10 +34,6 @@ export const MAINNET_NEWS_HASH_URL = 'newsfeed.daedaluswallet.io';
 export const TESTNET_NEWS_HASH_URL = 'newsfeed.daedaluswallet.io';
 export const STAGING_NEWS_HASH_URL = 'newsfeed.daedaluswallet.io';
 
-// EXCHANGE API's
-export const NOMICS_API_URL = 'https://api.nomics.com';
-export const COINGECKO_API_URL = 'https://api.coingecko.com/api';
-
 export const ALLOWED_EXTERNAL_HOSTNAMES = [
   MAINNET_EXPLORER_URL,
   STAGING_EXPLORER_URL,
@@ -55,6 +53,5 @@ export const ALLOWED_EXTERNAL_HOSTNAMES = [
   MAINNET_NEWS_HASH_URL,
   TESTNET_NEWS_HASH_URL,
   STAGING_NEWS_HASH_URL,
-  NOMICS_API_URL,
-  COINGECKO_API_URL,
+  currencyConfig.hostname,
 ];
