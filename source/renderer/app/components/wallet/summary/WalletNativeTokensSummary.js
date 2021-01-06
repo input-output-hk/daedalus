@@ -57,9 +57,7 @@ export default class WalletNativeTokensSummary extends Component<Props> {
 
     return (
       <Fragment>
-        <div className={styles.numberOfTokens}>
-          Tokens (4)
-        </div>
+        <div className={styles.numberOfTokens}>Tokens (4)</div>
         <div className={styles.component}>
           <BorderedBox>
             <div className={styles.walletName}>{wallet.name}</div>

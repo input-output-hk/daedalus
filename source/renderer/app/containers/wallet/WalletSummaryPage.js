@@ -124,7 +124,9 @@ export default class WalletSummaryPage extends Component<Props> {
             numberOfRecentTransactions={recent.length}
             numberOfTransactions={totalAvailable}
             numberOfPendingTransactions={pendingTransactionsCount}
-            isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
+            isLoadingTransactions={
+              recentTransactionsRequest.isExecutingFirstTime
+            }
           />
         )}
         {walletTransactions}

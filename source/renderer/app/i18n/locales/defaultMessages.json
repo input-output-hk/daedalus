@@ -9772,6 +9772,39 @@
           "column": 3,
           "line": 17
         },
+        "file": "source/renderer/app/components/wallet/summary/WalletNativeTokensSummary.js",
+        "id": "wallet.summary.page.transactionsLabel",
+        "start": {
+          "column": 21,
+          "line": 13
+        }
+      },
+      {
+        "defaultMessage": "!!!Number of pending transactions",
+        "description": "\"Number of pending transactions\" label on Wallet summary page",
+        "end": {
+          "column": 3,
+          "line": 23
+        },
+        "file": "source/renderer/app/components/wallet/summary/WalletNativeTokensSummary.js",
+        "id": "wallet.summary.page.pendingTransactionsLabel",
+        "start": {
+          "column": 28,
+          "line": 18
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/summary/WalletNativeTokensSummary.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Number of transactions",
+        "description": "\"Number of transactions\" label on Wallet summary page",
+        "end": {
+          "column": 3,
+          "line": 17
+        },
         "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
         "id": "wallet.summary.page.transactionsLabel",
         "start": {
@@ -13989,13 +14022,13 @@
         "description": "Message shown when wallet has no transactions on wallet summary page.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 24
         },
         "file": "source/renderer/app/containers/wallet/WalletSummaryPage.js",
         "id": "wallet.summary.no.transactions",
         "start": {
           "column": 18,
-          "line": 17
+          "line": 19
         }
       }
     ],
