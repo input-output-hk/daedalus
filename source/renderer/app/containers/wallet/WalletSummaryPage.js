@@ -12,6 +12,8 @@ import { ROUTES } from '../../routes-config';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { formattedWalletAmount } from '../../utils/formatters';
 import { getNetworkExplorerUrlByType } from '../../utils/network';
+import { WALLET_NATIVE_TOKENS_ENABLED } from '../../config/walletsConfig';
+import WalletNativeTokensSummary from '../../components/wallet/summary/WalletNativeTokensSummary';
 
 export const messages = defineMessages({
   noTransactions: {
@@ -59,6 +61,7 @@ export default class WalletSummaryPage extends Component<Props> {
     } = transactions;
     const wallet = wallets.active;
     const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
+    const hasNativeTokens = WALLET_NATIVE_TOKENS_ENABLED;
     // Guard against potential null values
     if (!wallet)
       throw new Error('Active wallet required for WalletSummaryPage.');
@@ -115,6 +118,15 @@ export default class WalletSummaryPage extends Component<Props> {
           numberOfPendingTransactions={pendingTransactionsCount}
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
         />
+        {hasNativeTokens && (
+          <WalletNativeTokensSummary
+            wallet={wallet}
+            numberOfRecentTransactions={recent.length}
+            numberOfTransactions={totalAvailable}
+            numberOfPendingTransactions={pendingTransactionsCount}
+            isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
+          />
+        )}
         {walletTransactions}
       </VerticalFlexContainer>
     );

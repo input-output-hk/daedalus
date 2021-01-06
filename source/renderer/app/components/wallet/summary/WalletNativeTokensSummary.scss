@@ -1,0 +1,82 @@
+@import '../../../themes/mixins/animations';
+
+%smallText {
+  color: var(--theme-bordered-box-text-color);
+  font-family: var(--font-regular);
+  font-size: 14px;
+  height: 19px;
+  letter-spacing: 0.5px;
+  line-height: 1.36;
+}
+
+.component {
+  padding: 20px;
+}
+
+.numberOfTokens {
+  color: var(--theme-transactions-list-group-date-color);
+  font-family: var(--font-regular);
+  font-size: 16px;
+  opacity: 0.5;
+  padding: 0 0 0 40px;
+}
+
+.walletName {
+  color: var(--theme-bordered-box-text-color);
+  font-family: var(--font-bold);
+  font-size: 16px;
+  letter-spacing: 0.5px;
+  line-height: 1.38;
+  margin-bottom: 11px;
+  user-select: text;
+}
+
+.walletAmount {
+  color: var(--theme-bordered-box-text-color);
+  font-family: var(--font-medium);
+  font-size: 22px;
+  font-weight: bold;
+  line-height: 1.41;
+  margin-bottom: 11px;
+  user-select: text;
+  word-break: break-all;
+
+  & > .decimal {
+    font-family: var(--font-medium);
+    font-size: 18px;
+  }
+
+  & > .currencySymbolBig {
+    display: inline-block;
+    margin-left: 10px;
+    & > svg {
+      height: 27.5px;
+      width: 25px;
+      & > g > g {
+        stroke: var(--theme-icon-ada-summary-wallet-amount-symbol-color);
+      }
+    }
+  }
+
+  span {
+    color: var(--theme-icon-add-wallet-dialog-big-button-color);
+    font-size: 16px;
+  }
+}
+
+.transactionsCountWrapper {
+  .numberOfTransactions,
+  .numberOfPendingTransactions {
+    color: var(--theme-icon-add-wallet-dialog-big-button-color);
+    font-family: var(--font-medium);
+    font-size: 14px;
+    font-weight: 500;
+    height: 19px;
+    letter-spacing: 0.5px;
+    line-height: 1.36;
+
+    &.isLoadingNumberOfTransactions {
+      @include animated-ellipsis($width: 16px);
+    }
+  }
+}

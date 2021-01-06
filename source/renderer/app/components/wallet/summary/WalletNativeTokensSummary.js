@@ -1,0 +1,90 @@
+// @flow
+import React, { Component, Fragment } from 'react';
+import { observer } from 'mobx-react';
+import { defineMessages, intlShape } from 'react-intl';
+import classnames from 'classnames';
+import BorderedBox from '../../widgets/BorderedBox';
+import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
+import styles from './WalletNativeTokensSummary.scss';
+import Wallet from '../../../domains/Wallet';
+import globalMessages from '../../../i18n/global-messages';
+
+const messages = defineMessages({
+  transactionsLabel: {
+    id: 'wallet.summary.page.transactionsLabel',
+    defaultMessage: '!!!Number of transactions',
+    description: '"Number of transactions" label on Wallet summary page',
+  },
+  pendingTransactionsLabel: {
+    id: 'wallet.summary.page.pendingTransactionsLabel',
+    defaultMessage: '!!!Number of pending transactions',
+    description:
+      '"Number of pending transactions" label on Wallet summary page',
+  },
+});
+
+type Props = {
+  wallet: Wallet,
+  numberOfRecentTransactions: number,
+  numberOfTransactions?: number,
+  numberOfPendingTransactions: number,
+  isLoadingTransactions: boolean,
+};
+
+@observer
+export default class WalletNativeTokensSummary extends Component<Props> {
+  static contextTypes = {
+    intl: intlShape.isRequired,
+  };
+
+  render() {
+    const {
+      wallet,
+      numberOfPendingTransactions,
+      numberOfRecentTransactions,
+      numberOfTransactions,
+      isLoadingTransactions,
+    } = this.props;
+    const { intl } = this.context;
+    const isLoadingAllTransactions =
+      numberOfRecentTransactions && !numberOfTransactions;
+    const numberOfTransactionsStyles = classnames([
+      styles.numberOfTransactions,
+      isLoadingAllTransactions ? styles.isLoadingNumberOfTransactions : null,
+    ]);
+
+    const isRestoreActive = wallet.isRestoring;
+
+    return (
+      <Fragment>
+        <div className={styles.numberOfTokens}>
+          Tokens (4)
+        </div>
+        <div className={styles.component}>
+          <BorderedBox>
+            <div className={styles.walletName}>{wallet.name}</div>
+            <div className={styles.walletAmount}>
+              {isRestoreActive
+                ? '-'
+                : wallet.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
+              <span>&nbsp;{intl.formatMessage(globalMessages.unitAda)}</span>
+            </div>
+
+            {!isLoadingTransactions ? (
+              <div className={styles.transactionsCountWrapper}>
+                <div className={styles.numberOfPendingTransactions}>
+                  {intl.formatMessage(messages.pendingTransactionsLabel)}:&nbsp;
+                  {numberOfPendingTransactions}
+                </div>
+                <div className={numberOfTransactionsStyles}>
+                  {intl.formatMessage(messages.transactionsLabel)}:&nbsp;
+                  {numberOfTransactions || numberOfRecentTransactions}
+                </div>
+              </div>
+            ) : null}
+          </BorderedBox>
+        </div>
+      </Fragment>
+    );
+  }
+}
