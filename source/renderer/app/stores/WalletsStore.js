@@ -29,6 +29,7 @@ import {
   WALLET_HARDWARE_KINDS,
   RESTORE_WALLET_STEPS,
 } from '../config/walletRestoreConfig';
+import { WALLET_PUBLIC_KEY_SHARING_ENABLED } from '../config/walletsConfig';
 import type {
   WalletKind,
   WalletDaedalusKind,
@@ -69,11 +70,13 @@ export default class WalletsStore extends Store {
   WALLET_REFRESH_INTERVAL = 5000;
 
   @observable undelegateWalletSubmissionSuccess: ?boolean = null;
+
   // REQUESTS
-  @observable active: ?Wallet = null;
-  @observable activeValue: ?BigNumber = null;
   @observable walletsRequest: Request<Array<Wallet>> = new Request(
     this.api.ada.getWallets
+  );
+  @observable walletPublicKeyRequest: Request<string> = new Request(
+    this.api.ada.getWalletPublicKey
   );
   @observable importFromFileRequest: Request<Wallet> = new Request(
     this.api.ada.importWalletFromFile
@@ -131,6 +134,11 @@ export default class WalletsStore extends Store {
   @observable createHardwareWalletRequest: Request<Wallet> = new Request(
     this.api.ada.createHardwareWallet
   );
+
+  /* ----------  Active Wallet  ---------- */
+  @observable active: ?Wallet = null;
+  @observable activeValue: ?BigNumber = null;
+  @observable activePublicKey: ?string = null;
 
   /* ----------  Create Wallet  ---------- */
   @observable createWalletStep = null;
@@ -209,6 +217,7 @@ export default class WalletsStore extends Store {
       app,
       networkStatus,
     } = this.actions;
+
     // Create Wallet Actions ---
     walletsActions.createWallet.listen(this._create);
     walletsActions.createWalletBegin.listen(this._createWalletBegin);
@@ -278,6 +287,30 @@ export default class WalletsStore extends Store {
       this._transferFundsCalculateFee
     );
   }
+
+  @action _getWalletPublicKey = async () => {
+    if (!this.active || !WALLET_PUBLIC_KEY_SHARING_ENABLED) {
+      return;
+    }
+
+    // @TODO Once the api is ready, role and index values should be configured properly
+    const walletId = this.active.id;
+    const role = '';
+    const index = '';
+
+    try {
+      const walletPublicKey = await this.walletPublicKeyRequest.execute({
+        walletId,
+        role,
+        index,
+      }).promise;
+      runInAction('update wallet public key', () => {
+        this.activePublicKey = walletPublicKey;
+      });
+    } catch (error) {
+      throw error;
+    }
+  };
 
   _create = async (params: { name: string, spendingPassword: string }) => {
     Object.assign(this._newWalletDetails, params);
@@ -1066,6 +1099,7 @@ export default class WalletsStore extends Store {
   @action _unsetActiveWallet = () => {
     this.active = null;
     this.activeValue = null;
+    this.activePublicKey = null;
     this.stores.addresses.lastGeneratedAddress = null;
   };
 
