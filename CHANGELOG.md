@@ -1,15 +1,17 @@
 Changelog
 =========
 
+## vNext
+
+### Features
+
+- Added wallet public key viewing feature ([PR 2271](https://github.com/input-output-hk/daedalus/pull/2271))
+
 ## 3.1.0
 
 ### Features
 
 - Included stake pool ID on the "Confirmation" step of the "Delegation" wizard and enabled search by stake pool ID on the "Stake Pools" screen ([PR 2281](https://github.com/input-output-hk/daedalus/pull/2281))
-
-### Features
-
-- Added wallet public key viewing feature ([PR 2271](https://github.com/input-output-hk/daedalus/pull/2271))
 
 ### Fixes
 
