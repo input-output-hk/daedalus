@@ -1,4 +1,16 @@
 // @flow
+
+/**
+ *
+ * CoingGecko API
+ *
+ * https://www.coingecko.com/en/api
+ *
+ * check `currencyConfig.js` for more info
+ *
+ */
+
+import { logger } from '../utils/logging';
 import type { Currency, CurrencyApiConfig } from '../types/currencyTypes.js';
 import type {
   GetCurrencyApiStatusResponse,
@@ -6,40 +18,16 @@ import type {
   GetCurrencyRateResponse,
 } from '../api/wallets/types';
 
+// For the complete response, check
+// https://api.coingecko.com/api/v3/coins/markets?ids=cardano&vs_currency=usd
 type CurrencyRateGeckoResponse = Array<{
-  id: string,
-  symbol: string,
-  name: string,
-  image: string,
   current_price: number,
-  market_cap: number,
-  market_cap_rank: number,
-  fully_diluted_valuation: Object,
-  total_volume: number,
-  high_24h: number,
-  low_24h: number,
-  price_change_24h: number,
-  price_change_percentage_24h: number,
-  market_cap_change_24h: number,
-  market_cap_change_percentage_24h: number,
-  circulating_supply: number,
-  total_supply: number,
-  max_supply: Object,
-  ath: number,
-  ath_change_percentage: number,
-  ath_date: string,
-  atl: number,
-  atl_change_percentage: number,
-  atl_date: string,
-  roi: Object,
-  last_updated: string,
 }>;
 
 const id = 'coingecko';
 const hostname = 'api.coingecko.com';
 const version = 'v3';
 const pathBase = `api/${version}`;
-const url = `${hostname}/${version}`;
 
 const requests = {
   status: {
@@ -68,7 +56,24 @@ const requests = {
 
 const responses = {
   status: (): GetCurrencyApiStatusResponse => true,
-  list: (list): GetCurrencyListResponse => list,
+  list: (apiResponse: Array<Object>): GetCurrencyListResponse => {
+    try {
+      if (!Array.isArray(apiResponse) || apiResponse.length < 2) {
+        throw new Error('unexpected API response');
+      }
+      const [completeList, vsCurrencies] = apiResponse;
+      const list = vsCurrencies
+        .map((symbol) =>
+          completeList.find((currency) => currency.symbol === symbol)
+        )
+        .filter((item) => !!item);
+      logger.debug('Currency::CoingGecko::List success', { list });
+      return list;
+    } catch (error) {
+      logger.error('Currency::CoingGecko::List error', { error });
+      return null;
+    }
+  },
   rate: (apiResponse: CurrencyRateGeckoResponse): GetCurrencyRateResponse =>
     apiResponse[0].current_price,
 };

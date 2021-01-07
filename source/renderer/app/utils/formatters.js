@@ -8,6 +8,7 @@ import {
 import { momentLocales } from '../../../common/types/locales.types';
 import type { DownloadData } from '../../../common/types/downloadManager.types';
 import type { Locale } from '../../../common/types/locales.types';
+import type { Currency } from '../types/currencyTypes.js';
 
 export const formattedWalletAmount = (
   amount: BigNumber,
@@ -29,6 +30,13 @@ export const formattedWalletAmount = (
   }
   return formattedAmount.toString();
 };
+
+export const formattedWalletCurrencyAmount = (
+  amount: BigNumber,
+  currency: Currency,
+  currencyRate: number
+) =>
+  `${amount.times(currencyRate).toFormat(2)} ${currency.symbol.toUpperCase()}`;
 
 // Symbol   Name                Scientific Notation
 // K        Thousand            1.00E+03

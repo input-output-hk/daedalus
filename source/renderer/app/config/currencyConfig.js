@@ -1,5 +1,11 @@
 // @flow
 
+/**
+ *
+ * This file imports the external currency API used
+ *
+ */
+
 // Available APIS
 import coingeckoConfig from './currencyConfig.coingecko';
 // import nomicsConfig from './currencyConfig.nomics';
@@ -27,14 +33,14 @@ export const genericCurrencyRequest = (
   if (Array.isArray(request)) {
     response = [];
     for (const req of request) {
-      const responseItem = await externalRequest(req, true);
+      const responseItem = await externalRequest(req);
       response.push(responseItem);
     }
   } else if (typeof request === 'function') {
     const req = request(payload);
     response = await externalRequest(req);
   } else {
-    response = await externalRequest(request, true);
+    response = await externalRequest(request);
   }
   return response;
 };

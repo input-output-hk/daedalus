@@ -144,13 +144,14 @@ export default class WalletsStore extends Store {
   /* ------------  Currencies  ----------- */
   @observable isCurrencyAvailable: boolean = true;
   @observable currencyList: Array<Currency> = [];
-  // @observable currency: ?Currency = null;
-  @observable currency: ?Currency = {
-    id: 'uniswap-state-dollar',
-    symbol: 'usd',
-    name: 'unified Stable Dollar',
-  };
-  @observable currencyRate: ?number = null;
+  @observable currencySelected: ?Currency = null;
+  // @observable currencySelected: ?Currency = {
+  //   id: 'uniswap-state-dollar',
+  //   symbol: 'usd',
+  //   name: 'unified Stable Dollar',
+  // };
+  // @observable currencyRate: ?number = null;
+  @observable currencyRate: ?number = 0.318799;
 
   /* ----------  Create Wallet  ---------- */
   @observable createWalletStep = null;
@@ -302,6 +303,7 @@ export default class WalletsStore extends Store {
     this.getCurrencyApiStatus();
     this.getCurrencyList();
     this.getCurrencyRate();
+    this.getCurrencySelected();
   }
 
   @action _getWalletPublicKey = async () => {
@@ -344,15 +346,24 @@ export default class WalletsStore extends Store {
 
   @action getCurrencyRate = async () => {
     const { currency } = this;
-    console.log('currency', currency);
     if (currency && currency.symbol) {
-      console.log('currency.id', currency.symbol);
       const currencyRate = await this.api.ada.getCurrencyRate(currency);
-      console.log('getCurrencyRate', getCurrencyRate);
       runInAction(() => {
         this.currencyRate = currencyRate;
       });
     }
+  };
+
+  @action getCurrencySelected = async () => {
+    const currency = await this.api.localStorage.getCurrencySelected();
+    runInAction(() => {
+      this.currencySelected = currency;
+    });
+  };
+
+  @action setCurrencySelected = async (currency: Currency) => {
+    this.currencySelected = currency;
+    await this.api.localStorage.setCurrencySelected(currency);
   };
 
   _create = async (params: { name: string, spendingPassword: string }) => {
