@@ -7,6 +7,10 @@ Changelog
 
 - Added wallet public key viewing feature ([PR 2271](https://github.com/input-output-hk/daedalus/pull/2271))
 
+### Chores
+
+- Update `axios` package ([PR 2291](https://github.com/input-output-hk/daedalus/pull/2291))
+
 ## 3.1.0
 
 ### Features
