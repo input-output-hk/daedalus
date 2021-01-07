@@ -91,7 +91,7 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-button-flat-background-color-disabled': 'rgba(68, 91, 124, 0.1)',
     '--theme-button-flat-text-color-disabled': '#5e6066',
     '--theme-button-flat-text-color': '#5e6066',
-    '--theme-button-flat-outline-color': '#e1e4e6',
+    '--theme-button-flat-outline-color': 'rgba(94, 96, 102, 0.2)',
   },
   buttonPrimary: {
     '--theme-button-primary-background-color': '#243e62',
