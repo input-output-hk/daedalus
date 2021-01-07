@@ -7,6 +7,10 @@ Changelog
 
 - Added wallet public key viewing feature ([PR 2271](https://github.com/input-output-hk/daedalus/pull/2271))
 
+### Chores
+
+- Applied validation to spending password to be not longer than 255 characters ([PR 2287](https://github.com/input-output-hk/daedalus/pull/2287))
+
 ## 3.1.0
 
 ### Features
@@ -19,7 +23,6 @@ Changelog
 
 ### Chores
 
-- Applied validation to spending password to be not longer than 255 characters ([PR 2287](https://github.com/input-output-hk/daedalus/pull/2287))
 - Canceled running fee estimation api requests once new request is made ([PR 2239](https://github.com/input-output-hk/daedalus/pull/2239))
 - Updated `iohk-nix` in order to fix `cardano-node` logging levels ([PR 2283](https://github.com/input-output-hk/daedalus/pull/2283))
 - Updated `@cardano-foundation/ledgerjs-hw-app-cardano` package to version `2.1.0` ([PR 2279](https://github.com/input-output-hk/daedalus/pull/2279))
