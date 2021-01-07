@@ -3,6 +3,9 @@ import BigNumber from 'bignumber.js';
 import isInt from 'validator/lib/isInt';
 import { every } from 'lodash';
 
+const MIN_PASSWORD_LENGTH = 10;
+const MAX_PASSWORD_LENGTH = 255;
+
 export const isValidWalletName = (walletName: string) => {
   const nameLength = walletName.length;
   return nameLength >= 3 && nameLength <= 40;
@@ -57,7 +60,10 @@ export const isUnicaseString = (password: string) =>
  */
 export const isValidSpendingPassword = (password: string): boolean => {
   // Should contain at least 10 characters
-  return password.length >= 10 && password.length <= 255;
+  return (
+    password.length >= MIN_PASSWORD_LENGTH &&
+    password.length <= MAX_PASSWORD_LENGTH
+  );
 };
 
 // eslint-disable-next-line max-len
