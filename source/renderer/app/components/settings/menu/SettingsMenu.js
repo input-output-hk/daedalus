@@ -12,6 +12,11 @@ const messages = defineMessages({
     defaultMessage: '!!!General',
     description: 'Label for the "General" link in the settings menu.',
   },
+  wallets: {
+    id: 'settings.menu.support.link.wallets',
+    defaultMessage: '!!!Wallets',
+    description: 'Label for the "Wallets" link in the settings menu.',
+  },
   support: {
     id: 'settings.menu.support.link.label',
     defaultMessage: '!!!Support',
@@ -53,6 +58,12 @@ export default class SettingsMenu extends Component<Props> {
             onClick={() => onItemClick(ROUTES.SETTINGS.GENERAL)}
             active={isActiveItem(ROUTES.SETTINGS.GENERAL)}
             className="general"
+          />
+          <SettingsMenuItem
+            label={intl.formatMessage(messages.wallets)}
+            onClick={() => onItemClick(ROUTES.SETTINGS.WALLETS)}
+            active={isActiveItem(ROUTES.SETTINGS.WALLETS)}
+            className="wallets"
           />
           {!isFlight && !global.isShelleyTestnet && (
             <SettingsMenuItem

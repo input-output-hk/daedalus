@@ -25,8 +25,8 @@
 
 .walletAmount {
   color: var(--theme-bordered-box-text-color);
-  font-family: var(--font-ultralight);
-  font-size: 40px;
+  font-family: var(--font-bold);
+  font-size: 22px;
   line-height: 1;
   margin-bottom: 11px;
   user-select: text;
@@ -48,6 +48,10 @@
       }
     }
   }
+}
+.walletAmountSymbol {
+  font-size: 16px;
+  opacity: 0.7;
 }
 
 .transactionsCountWrapper {

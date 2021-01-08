@@ -9,6 +9,10 @@ import BorderedBox from '../../widgets/BorderedBox';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import styles from './WalletSummary.scss';
 import Wallet from '../../../domains/Wallet';
+import {
+  formattedWalletAmount,
+  formattedWalletCurrencyAmount,
+} from '../../../utils/formatters';
 
 const messages = defineMessages({
   transactionsLabel: {
@@ -30,6 +34,8 @@ type Props = {
   numberOfTransactions?: number,
   numberOfPendingTransactions: number,
   isLoadingTransactions: boolean,
+  currencySelected: ?Currency,
+  currencyRate: ?number,
 };
 
 @observer
@@ -45,6 +51,8 @@ export default class WalletSummary extends Component<Props> {
       numberOfRecentTransactions,
       numberOfTransactions,
       isLoadingTransactions,
+      currencySelected,
+      currencyRate,
     } = this.props;
     const { intl } = this.context;
     const isLoadingAllTransactions =
@@ -55,19 +63,34 @@ export default class WalletSummary extends Component<Props> {
     ]);
 
     const isRestoreActive = wallet.isRestoring;
+    const hasCurrency = !!currencySelected && !!currencyRate;
+
+    let walletAmount = '-';
+    if (!isRestoreActive) {
+      if (hasCurrency) {
+        walletAmount = formattedWalletCurrencyAmount(
+          wallet.amount,
+          currencyRate
+        );
+      } else {
+        walletAmount = formattedWalletAmount(wallet.amount, false);
+      }
+    }
+    const walletAmountSymbol = hasCurrency ? (
+      currencySelected.symbol.toUpperCase()
+    ) : (
+      <SVGInline svg={adaSymbolBig} className={styles.currencySymbolBig} />
+    );
 
     return (
       <div className={styles.component}>
         <BorderedBox>
           <div className={styles.walletName}>{wallet.name}</div>
           <div className={styles.walletAmount}>
-            {isRestoreActive
-              ? '-'
-              : wallet.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
-            <SVGInline
-              svg={adaSymbolBig}
-              className={styles.currencySymbolBig}
-            />
+            {walletAmount}
+            <span className={styles.walletAmountSymbol}>
+              {walletAmountSymbol}
+            </span>
           </div>
 
           {!isLoadingTransactions ? (

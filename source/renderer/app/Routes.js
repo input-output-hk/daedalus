@@ -8,6 +8,7 @@ import Root from './containers/Root';
 import InitialSettingsPage from './containers/profile/InitialSettingsPage';
 import Settings from './containers/settings/Settings';
 import GeneralSettingsPage from './containers/settings/categories/GeneralSettingsPage';
+import WalletsSettingsPage from './containers/settings/categories/WalletsSettingsPage';
 import SupportSettingsPage from './containers/settings/categories/SupportSettingsPage';
 import TermsOfUseSettingsPage from './containers/settings/categories/TermsOfUseSettingsPage';
 import TermsOfUsePage from './containers/profile/TermsOfUsePage';
@@ -87,6 +88,10 @@ export const Routes = withRouter(() => (
             <Route
               path={ROUTES.SETTINGS.GENERAL}
               component={GeneralSettingsPage}
+            />
+            <Route
+              path={ROUTES.SETTINGS.WALLETS}
+              component={WalletsSettingsPage}
             />
             <Route
               path={ROUTES.SETTINGS.TERMS_OF_USE}

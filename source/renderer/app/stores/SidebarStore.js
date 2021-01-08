@@ -4,7 +4,10 @@ import { get } from 'lodash';
 import Store from './lib/Store';
 import { sidebarConfig } from '../config/sidebarConfig';
 import type { SidebarCategoryInfo } from '../config/sidebarConfig';
-import { formattedWalletAmount } from '../utils/formatters';
+import {
+  formattedWalletAmount,
+  formattedWalletCurrencyAmount,
+} from '../utils/formatters';
 import type { SidebarWalletType } from '../types/sidebarTypes';
 
 export default class SidebarStore extends Store {
@@ -38,19 +41,28 @@ export default class SidebarStore extends Store {
       hardwareWallets,
     } = this.stores;
     const { hardwareWalletsConnectionData } = hardwareWallets;
-    return wallets.all.map((wallet) => {
+    const { currencySelected, currencyRate, all } = wallets;
+    return all.map((wallet) => {
       const isHardwareWalletDisconnected = get(
         hardwareWalletsConnectionData,
         [wallet.id, 'disconnected'],
         true
       );
+      const info =
+        !!currencySelected && !!currencyRate
+          ? formattedWalletCurrencyAmount(
+              wallet.amount,
+              currencyRate,
+              currencySelected
+            )
+          : formattedWalletAmount(wallet.amount, true, false);
       const {
         hasNotification,
       } = walletSettings.getWalletsRecoveryPhraseVerificationData(wallet.id);
       return {
         id: wallet.id,
         title: wallet.name,
-        info: formattedWalletAmount(wallet.amount, true, false),
+        info,
         isConnected: networkStatus.isConnected,
         isRestoreActive: wallet.isRestoring,
         restoreProgress: wallet.restorationProgress,

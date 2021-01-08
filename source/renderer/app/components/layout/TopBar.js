@@ -25,7 +25,7 @@ type Props = {
   hasRewardsWallets?: boolean,
   onLearnMore?: Function,
   isShelleyActivated: boolean,
-  currencySymbol: ?Currency,
+  currencySelected: ?Currency,
   currencyRate: ?number,
 };
 
@@ -42,7 +42,7 @@ export default class TopBar extends Component<Props> {
       onWalletAdd,
       onLearnMore,
       isShelleyActivated,
-      currency,
+      currencySelected,
       currencyRate,
     } = this.props;
     const { isIncentivizedTestnet } = global;
@@ -69,12 +69,12 @@ export default class TopBar extends Component<Props> {
     let walletAmount = '-';
     if (!isRestoreActive && activeWallet && activeWallet.amount) {
       walletAmount =
-        !!currency && !!currencyRate
+        !!currencySelected && !!currencyRate
           ? // show currency in the user's format
             formattedWalletCurrencyAmount(
               activeWallet.amount,
-              currency,
-              currencyRate
+              currencyRate,
+              currencySelected
             )
           : // show currency and use long format
             formattedWalletAmount(activeWallet.amount);

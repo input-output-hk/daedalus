@@ -33,10 +33,12 @@ export const formattedWalletAmount = (
 
 export const formattedWalletCurrencyAmount = (
   amount: BigNumber,
-  currency: Currency,
-  currencyRate: number
+  currencyRate: number,
+  currency: ?Currency
 ) =>
-  `${amount.times(currencyRate).toFormat(2)} ${currency.symbol.toUpperCase()}`;
+  `${amount.times(currencyRate).toFormat(2)} ${
+    currency ? currency.symbol.toUpperCase() : ''
+  }`;
 
 // Symbol   Name                Scientific Notation
 // K        Thousand            1.00E+03

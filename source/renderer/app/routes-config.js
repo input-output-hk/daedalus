@@ -32,6 +32,7 @@ export const ROUTES = {
   },
   SETTINGS: {
     ROOT: '/settings',
+    WALLETS: '/wallets',
     GENERAL: '/settings/general',
     TERMS_OF_USE: '/settings/terms-of-service',
     SUPPORT: '/settings/support',
