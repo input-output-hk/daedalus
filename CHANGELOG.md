@@ -15,6 +15,7 @@ Changelog
 
 ### Fixes
 
+- Fixed Daedalus development environment issues on OSX Big Sur ([PR 2288](https://github.com/input-output-hk/daedalus/pull/2288))
 - Added initial loading state to UTXO screen ([PR 2265](https://github.com/input-output-hk/daedalus/pull/2265))
 
 ### Chores
