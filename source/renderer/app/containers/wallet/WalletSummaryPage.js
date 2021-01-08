@@ -121,12 +121,7 @@ export default class WalletSummaryPage extends Component<Props> {
         {hasNativeTokens && (
           <WalletNativeTokensSummary
             wallet={wallet}
-            numberOfRecentTransactions={recent.length}
-            numberOfTransactions={totalAvailable}
-            numberOfPendingTransactions={pendingTransactionsCount}
-            isLoadingTransactions={
-              recentTransactionsRequest.isExecutingFirstTime
-            }
+            nativeTokens={[]}
           />
         )}
         {walletTransactions}

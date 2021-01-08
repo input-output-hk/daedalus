@@ -915,6 +915,7 @@
   "wallet.summary.page.showMoreTransactionsButtonLabel": "もっと表示",
   "wallet.summary.page.syncingTransactionsMessage": "ウォレットのトランザクション履歴は現在ブロックチェーンと同期中です。",
   "wallet.summary.page.todayLabel": "今日",
+  "wallet.summary.page.tokensTitle": "トークン",
   "wallet.summary.page.transactionsLabel": "トランザクション数",
   "wallet.summary.page.yesterdayLabel": "昨日",
   "wallet.transaction.address.from": "送信元",

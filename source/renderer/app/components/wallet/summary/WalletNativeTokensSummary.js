@@ -2,7 +2,6 @@
 import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
-import classnames from 'classnames';
 import BorderedBox from '../../widgets/BorderedBox';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import styles from './WalletNativeTokensSummary.scss';
@@ -21,14 +20,16 @@ const messages = defineMessages({
     description:
       '"Number of pending transactions" label on Wallet summary page',
   },
+  tokensTitle: {
+    id: 'wallet.summary.page.tokensTitle',
+    defaultMessage: '!!!Tokens',
+    description: 'Number of native tokens title on Wallet summary page',
+  },
 });
 
 type Props = {
   wallet: Wallet,
-  numberOfRecentTransactions: number,
-  numberOfTransactions?: number,
-  numberOfPendingTransactions: number,
-  isLoadingTransactions: boolean,
+  nativeTokens?: Array<any>,
 };
 
 @observer
@@ -40,24 +41,17 @@ export default class WalletNativeTokensSummary extends Component<Props> {
   render() {
     const {
       wallet,
-      numberOfPendingTransactions,
-      numberOfRecentTransactions,
-      numberOfTransactions,
-      isLoadingTransactions,
+      nativeTokens,
     } = this.props;
     const { intl } = this.context;
-    const isLoadingAllTransactions =
-      numberOfRecentTransactions && !numberOfTransactions;
-    const numberOfTransactionsStyles = classnames([
-      styles.numberOfTransactions,
-      isLoadingAllTransactions ? styles.isLoadingNumberOfTransactions : null,
-    ]);
 
     const isRestoreActive = wallet.isRestoring;
 
+    const numberOfNativeTokens = nativeTokens.length;
+
     return (
       <Fragment>
-        <div className={styles.numberOfTokens}>Tokens (4)</div>
+        <div className={styles.numberOfTokens}>{intl.formatMessage(messages.tokensTitle)} ({numberOfNativeTokens})</div>
         <div className={styles.component}>
           <BorderedBox>
             <div className={styles.walletName}>{wallet.name}</div>
@@ -67,19 +61,6 @@ export default class WalletNativeTokensSummary extends Component<Props> {
                 : wallet.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
               <span>&nbsp;{intl.formatMessage(globalMessages.unitAda)}</span>
             </div>
-
-            {!isLoadingTransactions ? (
-              <div className={styles.transactionsCountWrapper}>
-                <div className={styles.numberOfPendingTransactions}>
-                  {intl.formatMessage(messages.pendingTransactionsLabel)}:&nbsp;
-                  {numberOfPendingTransactions}
-                </div>
-                <div className={numberOfTransactionsStyles}>
-                  {intl.formatMessage(messages.transactionsLabel)}:&nbsp;
-                  {numberOfTransactions || numberOfRecentTransactions}
-                </div>
-              </div>
-            ) : null}
           </BorderedBox>
         </div>
       </Fragment>

@@ -71,6 +71,34 @@ export const generateWallet = (
     delegatedStakePoolId: get(delegatedStakePool, 'id'),
   });
 
+export const generateNativeTokenWallet = (
+  name: string,
+  amount: string,
+  reward?: number = 0,
+  delegatedStakePool?: StakePool,
+  hasPassword?: boolean,
+  status?: SyncStateStatus = WalletSyncStateStatuses.READY
+) =>
+  new Wallet({
+    id: generateHash(),
+    addressPoolGap: 20,
+    amount: new BigNumber(amount).dividedBy(LOVELACES_PER_ADA),
+    availableAmount: new BigNumber(amount).dividedBy(LOVELACES_PER_ADA),
+    reward: new BigNumber(reward).dividedBy(LOVELACES_PER_ADA),
+    createdAt: new Date(),
+    name,
+    hasPassword: hasPassword || false,
+    passwordUpdateDate: new Date(),
+    syncState: { status, ...statusProgress(status) },
+    isLegacy: false,
+    discovery: 'random',
+    recoveryPhraseVerificationDate: new Date(),
+    recoveryPhraseVerificationStatus: RECOVERY_PHRASE_VERIFICATION_STATUSES.OK,
+    recoveryPhraseVerificationStatusType:
+    RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_VERIFIED,
+    delegatedStakePoolId: get(delegatedStakePool, 'id'),
+  });
+
 export const generateTransaction = (
   type: TransactionType = TransactionTypes.INCOME,
   date: Date = faker.date.past(),
