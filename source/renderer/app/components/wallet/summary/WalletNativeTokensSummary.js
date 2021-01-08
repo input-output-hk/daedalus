@@ -7,7 +7,6 @@ import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import styles from './WalletNativeTokensSummary.scss';
 import Wallet from '../../../domains/Wallet';
 import globalMessages from '../../../i18n/global-messages';
-import NewsItem from "../../news/NewsItem";
 
 const messages = defineMessages({
   transactionsLabel: {
