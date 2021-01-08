@@ -33,6 +33,5 @@ Feature: Spending password validation
     Examples:
       | PASSWORD       |
       | 2Short         |
-      | S p a c 3 s    |
       | 学年別漢字配当表  |
       | mix学年別漢字配  |
