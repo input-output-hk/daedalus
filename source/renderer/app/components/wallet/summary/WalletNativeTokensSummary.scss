@@ -10,7 +10,19 @@
 }
 
 .component {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
   padding: 20px;
+  width: 100%;
+
+  .nativeTokenContainer {
+    height: 76px;
+    margin-bottom: 20px;
+    padding: 15px 20px;
+    width: 49%;
+  }
 }
 
 .numberOfTokens {
@@ -28,17 +40,16 @@
   font-size: 16px;
   letter-spacing: 0.5px;
   line-height: 1.38;
-  margin-bottom: 11px;
   user-select: text;
 }
 
 .walletAmount {
   color: var(--theme-bordered-box-text-color);
-  font-family: var(--font-medium);
-  font-size: 22px;
-  font-weight: bold;
-  line-height: 1.41;
-  margin-bottom: 11px;
+  font-family: var(--font-regular);
+  font-size: 16px;
+  font-weight: 300;
+  letter-spacing: 0.5px;
+  line-height: 1.38;
   user-select: text;
   word-break: break-all;
 
@@ -58,26 +69,8 @@
       }
     }
   }
-
-  span {
-    color: var(--theme-icon-add-wallet-dialog-big-button-color);
-    font-size: 16px;
-  }
 }
 
 .transactionsCountWrapper {
-  .numberOfTransactions,
-  .numberOfPendingTransactions {
-    color: var(--theme-icon-add-wallet-dialog-big-button-color);
-    font-family: var(--font-medium);
-    font-size: 14px;
-    font-weight: 500;
-    height: 19px;
-    letter-spacing: 0.5px;
-    line-height: 1.36;
 
-    &.isLoadingNumberOfTransactions {
-      @include animated-ellipsis($width: 16px);
-    }
-  }
 }

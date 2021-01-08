@@ -121,7 +121,7 @@ export default class WalletSummaryPage extends Component<Props> {
         {hasNativeTokens && (
           <WalletNativeTokensSummary
             wallet={wallet}
-            nativeTokens={[]}
+            nativeTokens={wallets.all}
           />
         )}
         {walletTransactions}

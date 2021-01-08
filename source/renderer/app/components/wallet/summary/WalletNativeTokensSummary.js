@@ -7,6 +7,7 @@ import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import styles from './WalletNativeTokensSummary.scss';
 import Wallet from '../../../domains/Wallet';
 import globalMessages from '../../../i18n/global-messages';
+import NewsItem from "../../news/NewsItem";
 
 const messages = defineMessages({
   transactionsLabel: {
@@ -29,7 +30,7 @@ const messages = defineMessages({
 
 type Props = {
   wallet: Wallet,
-  nativeTokens?: Array<any>,
+  nativeTokens: Array<any>,
 };
 
 @observer
@@ -46,22 +47,23 @@ export default class WalletNativeTokensSummary extends Component<Props> {
     const { intl } = this.context;
 
     const isRestoreActive = wallet.isRestoring;
-
     const numberOfNativeTokens = nativeTokens.length;
 
     return (
       <Fragment>
         <div className={styles.numberOfTokens}>{intl.formatMessage(messages.tokensTitle)} ({numberOfNativeTokens})</div>
         <div className={styles.component}>
-          <BorderedBox>
-            <div className={styles.walletName}>{wallet.name}</div>
-            <div className={styles.walletAmount}>
-              {isRestoreActive
-                ? '-'
-                : wallet.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
-              <span>&nbsp;{intl.formatMessage(globalMessages.unitAda)}</span>
-            </div>
-          </BorderedBox>
+          {nativeTokens.map((token) => (
+            <BorderedBox className={styles.nativeTokenContainer} key={token.id}>
+              <div className={styles.walletName}>{token.name}</div>
+              <div className={styles.walletAmount}>
+                {isRestoreActive
+                  ? '-'
+                  : token.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
+                <span>&nbsp;{intl.formatMessage(globalMessages.unitAda)}</span>
+              </div>
+            </BorderedBox>
+          ))}
         </div>
       </Fragment>
     );
