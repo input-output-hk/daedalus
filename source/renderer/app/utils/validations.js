@@ -76,3 +76,32 @@ export const isValidAmountInLovelaces = (value: string) => {
   const maxValue = new BigNumber(45000000000000000);
   return numericValue.gte(minValue) && numericValue.lte(maxValue);
 };
+
+/**
+ * Mnemonics validation
+ */
+type ValidateMnemonicsParams = {
+  requiredWords: number | number[],
+  providedWords: string[],
+  validator: (providedWords: string[]) => [boolean, string],
+};
+
+export const INCOMPLETE_MNEMONIC_MARKER = 'INCOMPLETE_MNEMONIC_MARKER';
+
+export function validateMnemonics(params: ValidateMnemonicsParams) {
+  const { requiredWords, providedWords } = params;
+  const providedWordsCount = providedWords.length;
+
+  const isPhraseComplete = Array.isArray(requiredWords)
+    ? requiredWords.includes(providedWordsCount)
+    : providedWordsCount === requiredWords;
+
+  if (!isPhraseComplete) {
+    return INCOMPLETE_MNEMONIC_MARKER;
+  }
+  return params.validator(providedWords);
+}
+
+export function errorOrIncompleteMarker(error: string) {
+  return error === INCOMPLETE_MNEMONIC_MARKER ? null : error;
+}
