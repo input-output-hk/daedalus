@@ -83,3 +83,32 @@ export const isValidUrl = (url: string) =>
     protocols: ['http', 'https'],
     require_protocol: true,
   });
+
+/**
+ * Mnemonics validation
+ */
+type ValidateMnemonicsParams = {
+  requiredWords: number | number[],
+  providedWords: string[],
+  validator: (providedWords: string[]) => [boolean, string],
+};
+
+export const INCOMPLETE_MNEMONIC_MARKER = 'INCOMPLETE_MNEMONIC_MARKER';
+
+export function validateMnemonics(params: ValidateMnemonicsParams) {
+  const { requiredWords, providedWords } = params;
+  const providedWordsCount = providedWords.length;
+
+  const isPhraseComplete = Array.isArray(requiredWords)
+    ? requiredWords.includes(providedWordsCount)
+    : providedWordsCount === requiredWords;
+
+  if (!isPhraseComplete) {
+    return INCOMPLETE_MNEMONIC_MARKER;
+  }
+  return params.validator(providedWords);
+}
+
+export function errorOrIncompleteMarker(error: string) {
+  return error === INCOMPLETE_MNEMONIC_MARKER ? null : error;
+}

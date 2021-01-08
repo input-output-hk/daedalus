@@ -6,6 +6,7 @@ Changelog
 ### Features
 
 - Implemented user configuration for the SMASH server ([PR 2259](https://github.com/input-output-hk/daedalus/pull/2259))
+- Improve Mnemonic Phrase Input UX [PR 2280](https://github.com/input-output-hk/daedalus/pull/2280)
 - Added wallet public key viewing feature ([PR 2271](https://github.com/input-output-hk/daedalus/pull/2271))
 
 ## 3.1.0
@@ -16,6 +17,7 @@ Changelog
 
 ### Fixes
 
+- Fixed Daedalus development environment issues on OSX Big Sur ([PR 2288](https://github.com/input-output-hk/daedalus/pull/2288))
 - Added initial loading state to UTXO screen ([PR 2265](https://github.com/input-output-hk/daedalus/pull/2265))
 
 ### Chores

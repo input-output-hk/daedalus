@@ -65,6 +65,10 @@ export const createReactPolymorphTheme = (
       '--rp-autocomplete-selected-word-dialog-text-color': `${text.secondary}`,
       '--rp-autocomplete-selected-word-text-color': `${text.secondary}`,
       '--rp-autocomplete-selected-words-font-family': `${fonts.regular}`,
+      '--rp-autocomplete-required-words-color': `${chroma(text.primary).alpha(
+        0.5
+      )}`,
+      '--rp-autocomplete-required-words-offset-top': '2px',
     },
     rpBubble: {
       '--rp-bubble-bg-color': `${background.primary.lightest}`,
