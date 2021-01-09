@@ -18,10 +18,34 @@
   width: 100%;
 
   .nativeTokenContainer {
+    align-items: center;
+    display: flex;
     height: 76px;
+    justify-content: space-between;
     margin-bottom: 20px;
-    padding: 15px 20px;
+    padding: 20px 30px 20px 20px;
     width: 49%;
+
+    .nativeTokenRightContainer {
+      .nativeTokenSendButton {
+        background-color: var(--theme-report-issue-button-background-color);
+        border-radius: 3px;
+        color: var(--theme-report-issue-connecting-text-color);
+        cursor: pointer;
+        height: 21px;
+        padding: 3px 18px;
+        text-transform: uppercase;
+        width: 67px;
+
+        &:hover {
+          background-color: var(--theme-report-issue-button-background-color-hover);
+        }
+
+        &:active {
+          background-color: var(--theme-report-issue-button-background-color-active);
+        }
+      }
+    }
   }
 }
 
@@ -69,8 +93,4 @@
       }
     }
   }
-}
-
-.transactionsCountWrapper {
-
 }

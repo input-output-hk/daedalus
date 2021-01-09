@@ -915,6 +915,7 @@
   "wallet.summary.page.showMoreTransactionsButtonLabel": "Show more transactions",
   "wallet.summary.page.syncingTransactionsMessage": "Your transaction history for this wallet is being synced with the blockchain.",
   "wallet.summary.page.todayLabel": "Today",
+  "wallet.summary.page.tokenSendButton": "Send",
   "wallet.summary.page.tokensTitle": "Tokens",
   "wallet.summary.page.transactionsLabel": "Number of transactions",
   "wallet.summary.page.yesterdayLabel": "Yesterday",

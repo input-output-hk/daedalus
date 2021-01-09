@@ -25,6 +25,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Tokens',
     description: 'Number of native tokens title on Wallet summary page',
   },
+  tokenSendButton: {
+    id: 'wallet.summary.page.tokenSendButton',
+    defaultMessage: '!!!Send',
+    description: 'Send button on Wallet summary page',
+  },
 });
 
 type Props = {
@@ -54,12 +59,22 @@ export default class WalletNativeTokensSummary extends Component<Props> {
         <div className={styles.component}>
           {nativeTokens.map((token) => (
             <BorderedBox className={styles.nativeTokenContainer} key={token.id}>
-              <div className={styles.walletName}>{token.name}</div>
-              <div className={styles.walletAmount}>
-                {isRestoreActive
-                  ? '-'
-                  : token.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
-                <span>&nbsp;{intl.formatMessage(globalMessages.unitAda)}</span>
+              <div className={styles.nativeTokenLeftContainer}>
+                <div className={styles.walletName}>{token.name}</div>
+                <div className={styles.walletAmount}>
+                  {isRestoreActive
+                    ? '-'
+                    : token.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
+                  <span>&nbsp;{intl.formatMessage(globalMessages.unitAda)}</span>
+                </div>
+              </div>
+              <div className={styles.nativeTokenRightContainer}>
+                <button
+                  className={styles.nativeTokenSendButton}
+                  onClick={() => {}}
+                >
+                  {intl.formatMessage(messages.tokenSendButton)}
+                </button>
               </div>
             </BorderedBox>
           ))}
