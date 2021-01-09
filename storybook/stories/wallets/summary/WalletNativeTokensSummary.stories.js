@@ -16,6 +16,6 @@ storiesOf('Wallets Native Token|Summary', module)
   .add('Wallet Native Token Summary', () => (
     <WalletNativeTokensSummary
       wallet={generateWallet('Wallet name', '45119903750165')}
-      nativeTokens={[]}
+      nativeTokens={[generateWallet('ADA', '55119903750165'), generateWallet('Tether', '25119903750165'), generateWallet('TrueUSD', '15119903750165'), generateWallet('USD Coin', '85119903750165')]}
     />
   ));
