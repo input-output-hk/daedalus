@@ -43,11 +43,12 @@ export default class WalletNativeTokensSummary extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
+  openSendTokenDialog = (token: Wallet) => {
+    // @todo
+  };
+
   render() {
-    const {
-      wallet,
-      nativeTokens,
-    } = this.props;
+    const { wallet, nativeTokens } = this.props;
     const { intl } = this.context;
 
     const isRestoreActive = wallet.isRestoring;
@@ -55,7 +56,9 @@ export default class WalletNativeTokensSummary extends Component<Props> {
 
     return (
       <Fragment>
-        <div className={styles.numberOfTokens}>{intl.formatMessage(messages.tokensTitle)} ({numberOfNativeTokens})</div>
+        <div className={styles.numberOfTokens}>
+          {intl.formatMessage(messages.tokensTitle)} ({numberOfNativeTokens})
+        </div>
         <div className={styles.component}>
           {nativeTokens.map((token) => (
             <BorderedBox className={styles.nativeTokenContainer} key={token.id}>
@@ -65,13 +68,15 @@ export default class WalletNativeTokensSummary extends Component<Props> {
                   {isRestoreActive
                     ? '-'
                     : token.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
-                  <span>&nbsp;{intl.formatMessage(globalMessages.unitAda)}</span>
+                  <span>
+                    &nbsp;{intl.formatMessage(globalMessages.unitAda)}
+                  </span>
                 </div>
               </div>
               <div className={styles.nativeTokenRightContainer}>
                 <button
                   className={styles.nativeTokenSendButton}
-                  onClick={() => {}}
+                  onClick={() => this.openSendTokenDialog(token)}
                 >
                   {intl.formatMessage(messages.tokenSendButton)}
                 </button>
