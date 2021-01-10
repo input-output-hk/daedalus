@@ -2,6 +2,7 @@
 import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import classNames from 'classnames';
 import BorderedBox from '../../widgets/BorderedBox';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import styles from './WalletNativeTokensSummary.scss';
@@ -43,7 +44,7 @@ export default class WalletNativeTokensSummary extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
-  openSendTokenDialog = (token: Wallet) => {
+  openSendTokenDialog = () => {
     // @todo
   };
 
@@ -75,7 +76,10 @@ export default class WalletNativeTokensSummary extends Component<Props> {
               </div>
               <div className={styles.nativeTokenRightContainer}>
                 <button
-                  className={styles.nativeTokenSendButton}
+                  className={classNames([
+                    styles.nativeTokenSendButton,
+                    token.amount.isZero() ? styles.disabled : null,
+                  ])}
                   onClick={() => this.openSendTokenDialog(token)}
                 >
                   {intl.formatMessage(messages.tokenSendButton)}

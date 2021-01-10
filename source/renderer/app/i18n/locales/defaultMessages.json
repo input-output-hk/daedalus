@@ -9792,6 +9792,34 @@
           "column": 28,
           "line": 18
         }
+      },
+      {
+        "defaultMessage": "!!!Tokens",
+        "description": "Number of native tokens title on Wallet summary page",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "source/renderer/app/components/wallet/summary/WalletNativeTokensSummary.js",
+        "id": "wallet.summary.page.tokensTitle",
+        "start": {
+          "column": 15,
+          "line": 24
+        }
+      },
+      {
+        "defaultMessage": "!!!Send",
+        "description": "Send button on Wallet summary page",
+        "end": {
+          "column": 3,
+          "line": 33
+        },
+        "file": "source/renderer/app/components/wallet/summary/WalletNativeTokensSummary.js",
+        "id": "wallet.summary.page.tokenSendButton",
+        "start": {
+          "column": 19,
+          "line": 29
+        }
       }
     ],
     "path": "source/renderer/app/components/wallet/summary/WalletNativeTokensSummary.json"

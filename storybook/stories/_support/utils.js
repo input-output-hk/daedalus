@@ -95,7 +95,7 @@ export const generateNativeTokenWallet = (
     recoveryPhraseVerificationDate: new Date(),
     recoveryPhraseVerificationStatus: RECOVERY_PHRASE_VERIFICATION_STATUSES.OK,
     recoveryPhraseVerificationStatusType:
-    RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_VERIFIED,
+      RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_VERIFIED,
     delegatedStakePoolId: get(delegatedStakePool, 'id'),
   });
 
