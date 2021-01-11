@@ -273,6 +273,7 @@
   "settings.display.themeNames.shelleyTestnet": "Shelley Testnet",
   "settings.display.themeNames.white": "White",
   "settings.display.themeNames.yellow": "Yellow",
+  "settings.menu.wallets.link.label": "Wallets",
   "settings.menu.display.link.label": "Themes",
   "settings.menu.general.link.label": "General",
   "settings.menu.support.link.label": "Support",

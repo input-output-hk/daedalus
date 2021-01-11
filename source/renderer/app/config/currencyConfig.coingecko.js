@@ -10,6 +10,7 @@
  *
  */
 
+import { get } from 'lodash';
 import { logger } from '../utils/logging';
 import type { Currency, CurrencyApiConfig } from '../types/currencyTypes.js';
 import type {
@@ -75,7 +76,7 @@ const responses = {
     }
   },
   rate: (apiResponse: CurrencyRateGeckoResponse): GetCurrencyRateResponse =>
-    apiResponse[0].current_price,
+    get(apiResponse, '[0].current_price', 0),
 };
 
 export default ({

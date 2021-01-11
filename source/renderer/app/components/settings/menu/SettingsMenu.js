@@ -13,7 +13,7 @@ const messages = defineMessages({
     description: 'Label for the "General" link in the settings menu.',
   },
   wallets: {
-    id: 'settings.menu.support.link.wallets',
+    id: 'settings.menu.wallets.link.label',
     defaultMessage: '!!!Wallets',
     description: 'Label for the "Wallets" link in the settings menu.',
   },
