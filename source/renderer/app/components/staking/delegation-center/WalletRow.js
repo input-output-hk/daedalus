@@ -21,7 +21,6 @@ import {
 } from '../../../config/stakingConfig';
 import noDataDashBigImage from '../../../assets/images/no-data-dash-big.inline.svg';
 import TooltipPool from '../widgets/TooltipPool';
-import { getRelativePosition } from '../../../utils/domManipulation';
 
 const messages = defineMessages({
   walletAmount: {
@@ -173,10 +172,10 @@ export default class WalletRow extends Component<Props, WalletRowState> {
       futurePendingDelegationStakePool &&
       futurePendingDelegationStakePool.status
         ? futurePendingDelegationStakePool.status
-        : delegationStakePoolStatus;
+        : null;
     const isFutureDelegationDelegating =
       futureDelegationStatus !== WalletDelegationStatuses.NOT_DELEGATING;
-
+    debugger;
     const stakePoolRankingColor = futurePendingDelegationStakePool
       ? getColorFromRange(
           futurePendingDelegationStakePool.ranking,
@@ -465,51 +464,5 @@ export default class WalletRow extends Component<Props, WalletRowState> {
       stakePoolId,
       stakePool,
     };
-  };
-
-  getIsHighlighted = (id: string) =>
-    this.props.isListActive !== false && id === this.state.highlightedPoolId;
-
-  handleCloseTooltip = () => {
-    const { isListActive, setListActive } = this.props;
-    this.setState({
-      ...initialWalletRowState,
-    });
-    if (isListActive !== false && setListActive) setListActive(null);
-  };
-
-  handleOpenTooltip = (
-    poolId: SyntheticMouseEvent<HTMLElement>,
-    futurePendingDelegationStakePool: ?StakePool
-  ) => {
-    const {
-      isListActive,
-      setListActive,
-      listName,
-      containerClassName,
-    } = this.props;
-    if (poolId.target) {
-      poolId.persist();
-      const targetElement = poolId.target;
-      if (targetElement instanceof HTMLElement) {
-        const { top, left } = getRelativePosition(
-          targetElement,
-          `.${containerClassName}`
-        );
-        this.setState({ top, left });
-      }
-    }
-    if (isListActive === false && setListActive) setListActive(listName);
-    const targetEl = poolId.currentTarget;
-    const { parentElement } = targetEl;
-    if (parentElement) {
-      const highlightedPoolId = futurePendingDelegationStakePool
-        ? futurePendingDelegationStakePool.id
-        : null;
-      return this.setState({
-        highlightedPoolId,
-      });
-    }
-    return null;
   };
 }
