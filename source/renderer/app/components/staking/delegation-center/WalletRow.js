@@ -171,7 +171,8 @@ export default class WalletRow extends Component<Props, WalletRowState> {
       futurePendingDelegationStakePool &&
       futurePendingDelegationStakePool.status
         ? futurePendingDelegationStakePool.status
-        : null;
+        : false;
+
     const isFutureDelegationDelegating =
       futureDelegationStatus !== WalletDelegationStatuses.NOT_DELEGATING;
     const stakePoolRankingColor = futurePendingDelegationStakePool
