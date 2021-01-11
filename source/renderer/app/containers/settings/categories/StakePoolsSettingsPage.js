@@ -9,6 +9,10 @@ import type { InjectedProps } from '../../../types/injectedPropsType';
 export default class StakePoolsSettingsPage extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
 
+  handleSelectSmashServerUrl = (smashServerUrl: string) => {
+    this.props.actions.staking.selectSmashServerUrl.trigger({ smashServerUrl });
+  };
+
   render() {
     const { stores, actions } = this.props;
     const {
@@ -16,14 +20,14 @@ export default class StakePoolsSettingsPage extends Component<InjectedProps> {
       smashServerUrlError,
       smashServerLoading,
     } = stores.staking;
-    const { selectSmashServerUrl, resetSmashServerError } = actions.staking;
+    const { resetSmashServerError } = actions.staking;
     // If `smashServerUrl` is null, waits for it to be set
     if (!smashServerUrl) return false;
     return (
       <StakePoolsSettings
         smashServerUrl={smashServerUrl}
         smashServerUrlError={smashServerUrlError}
-        onSelectSmashServerUrl={selectSmashServerUrl.trigger}
+        onSelectSmashServerUrl={this.handleSelectSmashServerUrl}
         onResetSmashServerError={resetSmashServerError.trigger}
         isLoading={smashServerLoading}
       />

@@ -22,14 +22,21 @@ export const SMASH_SERVERS_LIST: {
       ? 'https://smash.cardano-testnet.iohkdev.io'
       : 'https://smash.cardano-mainnet.iohk.io',
   },
+  // @SMASH TODO - remove it!
   testingKnown: {
     name: 'Testing Known Server',
     url: 'https://test-known.com',
   },
-  // adaPools: {
-  //   name: 'AdaPools',
-  //   url: 'https://smash.adapools.org',
-  // },
+  // Metadata is fetched directly in URLs registered on chain,
+  direct: {
+    name: 'Direct',
+    url: 'direct',
+  },
+  // Metadata is not fetched at all,
+  none: {
+    name: 'None',
+    url: 'none',
+  },
 };
 
 // @SMASH TODO - remove testing server
@@ -40,6 +47,8 @@ export const SMASH_SERVER_TYPES: {
   ADA_POOLS: 'adaPools',
   TESTING_KNOWN: 'testingKnown',
   CUSTOM: 'custom',
+  DIRECT: 'direct',
+  NONE: 'none',
 };
 
 export const SMASH_SERVER_STATUSES: {

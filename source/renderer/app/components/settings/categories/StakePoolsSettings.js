@@ -96,7 +96,7 @@ export default class StakePoolsSettings extends Component<Props, State> {
   }
 
   handleSubmit = (url: string) => {
-    if (isValidUrl(url || '')) {
+    if (this.handleIsValid(url)) {
       this.setState({
         editingSmashServerUrl: url,
       });
@@ -116,7 +116,11 @@ export default class StakePoolsSettings extends Component<Props, State> {
     });
   };
 
-  handleIsValid = (url: string) => url === '' || isValidUrl(url);
+  handleIsValid = (url: string) =>
+    url === '' ||
+    isValidUrl(url) ||
+    url === SMASH_SERVERS_LIST.direct.url ||
+    url === SMASH_SERVERS_LIST.none.url;
 
   render() {
     const { smashServerUrlError, isLoading } = this.props;

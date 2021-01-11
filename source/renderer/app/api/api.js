@@ -99,6 +99,7 @@ import { filterLogData } from '../../../common/utils/logging';
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 import {
   SMASH_SERVER_STATUSES,
+  SMASH_SERVERS_LIST,
   DELEGATION_DEPOSIT,
   MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE,
   REWARDS_REDEMPTION_FEE_CALCULATION_AMOUNT,
@@ -1699,6 +1700,12 @@ export default class AdaApi {
 
   checkSmashServerIsValid = async (url: string): Promise<boolean> => {
     try {
+      if (
+        url === SMASH_SERVERS_LIST.direct.url ||
+        url === SMASH_SERVERS_LIST.none.url
+      ) {
+        return true;
+      }
       const {
         health,
       }: CheckSmashServerHealthApiResponse = await checkSmashServerHealth(
