@@ -128,7 +128,6 @@ export default class WalletRow extends Component<Props, WalletRowState> {
         isRestoring,
         syncState,
         delegatedStakePoolId,
-        delegationStakePoolStatus,
         pendingDelegations,
         isHardwareWallet,
       },
@@ -175,7 +174,6 @@ export default class WalletRow extends Component<Props, WalletRowState> {
         : null;
     const isFutureDelegationDelegating =
       futureDelegationStatus !== WalletDelegationStatuses.NOT_DELEGATING;
-    debugger;
     const stakePoolRankingColor = futurePendingDelegationStakePool
       ? getColorFromRange(
           futurePendingDelegationStakePool.ranking,
