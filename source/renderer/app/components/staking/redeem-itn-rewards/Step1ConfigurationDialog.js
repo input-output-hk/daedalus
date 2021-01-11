@@ -18,6 +18,10 @@ import {
 } from 'react-intl';
 import { BigNumber } from 'bignumber.js';
 import Wallet from '../../../domains/Wallet';
+import {
+  errorOrIncompleteMarker,
+  validateMnemonics,
+} from '../../../utils/validations';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import Dialog from '../../widgets/Dialog';
@@ -163,26 +167,18 @@ export default class Step1ConfigurationDialog extends Component<Props> {
         recoveryPhrase: {
           value: [...(this.props.recoveryPhrase || [])],
           label: this.context.intl.formatMessage(messages.recoveryPhraseLabel),
-          validators: ({ field }) => {
-            const { intl } = this.context;
-            const enteredWords = field.value;
-            const wordCount = enteredWords.length;
-            const expectedWordCount = ITN_WALLET_RECOVERY_PHRASE_WORD_COUNT;
-            const value = enteredWords.join(' ');
-            const isPhraseComplete = wordCount === expectedWordCount;
-            if (!isPhraseComplete) {
-              return [
-                false,
-                intl.formatMessage(globalMessages.incompleteMnemonic, {
-                  expected: expectedWordCount,
-                }),
-              ];
-            }
-            return [
-              this.props.mnemonicValidator(value, expectedWordCount),
-              this.context.intl.formatMessage(messages.invalidRecoveryPhrase),
-            ];
-          },
+          validators: ({ field }) =>
+            validateMnemonics({
+              requiredWords: ITN_WALLET_RECOVERY_PHRASE_WORD_COUNT,
+              providedWords: field.value,
+              validator: (providedWords) => [
+                this.props.mnemonicValidator(
+                  providedWords.join(' '),
+                  providedWords.length
+                ),
+                this.context.intl.formatMessage(messages.invalidRecoveryPhrase),
+              ],
+            }),
         },
         walletsDropdown: {
           type: 'select',
@@ -356,8 +352,15 @@ export default class Step1ConfigurationDialog extends Component<Props> {
               this.recoveryPhraseAutocomplete = autocomplete;
             }}
             options={suggestedMnemonics}
+            requiredSelections={[ITN_WALLET_RECOVERY_PHRASE_WORD_COUNT]}
+            requiredSelectionsInfo={(required, actual) =>
+              intl.formatMessage(globalMessages.knownMnemonicWordCount, {
+                actual,
+                required,
+              })
+            }
             maxSelections={ITN_WALLET_RECOVERY_PHRASE_WORD_COUNT}
-            error={recoveryPhraseField.error}
+            error={errorOrIncompleteMarker(recoveryPhraseField.error)}
             maxVisibleOptions={5}
             noResultsMessage={intl.formatMessage(messages.noResults)}
             className={styles.recoveryPhrase}
