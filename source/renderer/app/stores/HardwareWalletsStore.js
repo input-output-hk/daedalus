@@ -1253,6 +1253,13 @@ export default class HardwareWalletsStore extends Store {
       walletId,
     });
 
+    // eslint-disable-next-line
+    console.debug('coinSelection: ', JSON.stringify({
+      inputs,
+      outputs,
+      flatFee,
+    }));
+
     const unsignedTxInputs = [];
     const inputsData = map(inputs, (input) => {
       const shelleyTxInput = ShelleyTxInputFromUtxo(input);
@@ -1269,6 +1276,11 @@ export default class HardwareWalletsStore extends Store {
       });
       const shelleyTxOutput = ShelleyTxOutput(output, addressStyle);
       unsignedTxOutputs.push(shelleyTxOutput);
+      // eslint-disable-next-line
+      console.debug('>>> _outputsData addresses: ', {
+        addressStyle,
+        address: output.address,
+      })
       return prepareLedgerOutput(output, addressStyle);
     });
     const outputsData = await Promise.all(_outputsData);
@@ -1295,6 +1307,24 @@ export default class HardwareWalletsStore extends Store {
     const withdrawals = [];
     const metadataHashHex = null;
     const { isMainnet } = this.environment;
+
+    // eslint-disable-next-line
+    console.debug('>>> Data to Sign: ', JSON.stringify({
+      inputs: inputsData,
+      outputs: outputsData,
+      fee: fee.toString(),
+      ttl: ttl.toString(),
+      networkId: isMainnet
+        ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId
+        : HW_SHELLEY_CONFIG.NETWORK.TESTNET.networkId,
+      protocolMagic: isMainnet
+        ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.protocolMagic
+        : HW_SHELLEY_CONFIG.NETWORK.TESTNET.protocolMagic,
+      certificates: certificatesData,
+      withdrawals,
+      metadataHashHex,
+      devicePath,
+    }))
 
     try {
       const signedTransaction = await signTransactionLedgerChannel.request({
@@ -1333,6 +1363,9 @@ export default class HardwareWalletsStore extends Store {
 
       // Prepare serialized transaction with unsigned data and signed witnesses
       const txBody = await prepareBody(unsignedTx, txWitnesses);
+
+// eslint-disable-next-line
+      console.debug('>> txBody: ', txBody);
 
       runInAction('HardwareWalletsStore:: set Transaction verified', () => {
         this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED;
