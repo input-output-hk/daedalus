@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Implemented screens for native tokens [PR 2292](https://github.com/input-output-hk/daedalus/pull/2292)
 - Improve Mnemonic Phrase Input UX [PR 2280](https://github.com/input-output-hk/daedalus/pull/2280)
 - Added wallet public key viewing feature ([PR 2271](https://github.com/input-output-hk/daedalus/pull/2271))
 
