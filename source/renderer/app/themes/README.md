@@ -22,4 +22,4 @@ How to use the `themes:check:createTheme` script.
 [video](https://youtu.be/C1OfIggOOGE)
 
 # Copy Themes tool
-The `yarn copy:themes` command is a tool for quickly copying css properties from an element into another in all theme files. Simply run the command and follow the CLI instructions.
+The `yarn themes:copy` command is a tool for quickly copying css properties from an element into another in all theme files. Simply run the command and follow the CLI instructions.

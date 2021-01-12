@@ -536,6 +536,8 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--rp-autocomplete-selected-word-text-color': '#fafbfc',
     '--rp-autocomplete-selected-words-font-family':
       'NotoSans-Regular, NotoSansCJKjp-Regular',
+    '--rp-autocomplete-required-words-color': 'rgba(233, 244, 254, 0.5)',
+    '--rp-autocomplete-required-words-offset-top': '2px',
   },
   rpBubble: {
     '--rp-bubble-bg-color': '#263345',
