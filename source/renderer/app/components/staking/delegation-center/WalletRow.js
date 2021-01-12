@@ -426,6 +426,14 @@ export default class WalletRow extends Component<Props, WalletRowState> {
     );
   }
 
+  handleCloseTooltip = () => {
+    const { isListActive, setListActive } = this.props;
+    this.setState({
+      ...initialWalletRowState,
+    });
+    if (isListActive !== false && setListActive) setListActive(null);
+  };
+
   getPendingStakePool = (
     epochNumber: number,
     fallbackStakePool: ?StakePool
