@@ -7,6 +7,11 @@ Changelog
 
 - Added wallet public key viewing feature ([PR 2271](https://github.com/input-output-hk/daedalus/pull/2271))
 
+### Chores
+
+- Disabled and hided copy and paste context menu items on some scenarios ([PR 2300](https://github.com/input-output-hk/daedalus/pull/2300))
+
+
 ## 3.1.0
 
 ### Features
