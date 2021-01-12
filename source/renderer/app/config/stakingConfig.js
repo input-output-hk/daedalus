@@ -7,7 +7,8 @@ import type {
 
 import type { SmashServerStatuses } from '../api/staking/types';
 
-const { isTestnet } = global.environment;
+const { smashUrl } = global;
+const { isTestnet } = environment;
 
 // @SMASH TODO - remove testing server
 export const SMASH_SERVERS_LIST: {
@@ -18,9 +19,7 @@ export const SMASH_SERVERS_LIST: {
 } = {
   iohk: {
     name: 'IOHK',
-    url: isTestnet
-      ? 'https://smash.cardano-testnet.iohkdev.io'
-      : 'https://smash.cardano-mainnet.iohk.io',
+    url: smashUrl,
   },
   // @SMASH TODO - remove it!
   testingKnown: {

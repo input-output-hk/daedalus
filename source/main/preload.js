@@ -1,5 +1,6 @@
 // @flow
 import os from 'os';
+import { get } from 'lodash';
 import _https from 'https';
 import _http from 'http';
 import { ipcRenderer } from 'electron';
@@ -11,6 +12,7 @@ import {
   legacyStateDir,
   nodeImplementation,
   isFlight,
+  launcherConfig,
 } from './config';
 import {
   SHELLEY_LOCAL,
@@ -18,6 +20,8 @@ import {
   SHELLEY_QA,
 } from '../common/types/environment.types';
 import { CardanoNodeImplementationOptions } from '../common/types/cardano-node.types';
+
+const { smashUrl } = launcherConfig || {};
 
 const _process = process;
 const _isShelleyTestnet =
@@ -58,7 +62,9 @@ process.once('loaded', () => {
     isIncentivizedTestnet: _isIncentivizedTestnet,
     isFlight,
     legacyStateDir,
+    smashUrl,
   });
+  // console.log('PRELOAD poolMetadataSource', poolMetadataSource);
   // Expose require for Spectron!
   if (_process.env.NODE_ENV === 'test') {
     // $FlowFixMe
