@@ -110,10 +110,6 @@ export default class HardwareWalletsStore extends Store {
   constructAddressRequest: Request<any> = new Request(
     this.api.ada.constructAddress
   );
-  // @TODO - improve types
-  inspectAddressRequest: Request<any> = new Request(
-    this.api.ada.inspectAddress
-  );
   @observable
   hardwareWalletsLocalDataRequest: Request<HardwareWalletsLocalData> = new Request(
     this.api.localStorage.getHardwareWalletsLocalData
@@ -1265,11 +1261,17 @@ export default class HardwareWalletsStore extends Store {
     });
 
     const unsignedTxOutputs = [];
-    const outputsData = map(outputs, (output) => {
-      const shelleyTxOutput = ShelleyTxOutput(output);
+    const _outputsData = map(outputs, async (output) => {
+      const {
+        address_style: addressStyle,
+      } = await this.stores.addresses._inspectAddress({
+        addressId: output.address,
+      });
+      const shelleyTxOutput = ShelleyTxOutput(output, addressStyle);
       unsignedTxOutputs.push(shelleyTxOutput);
-      return prepareLedgerOutput(output);
+      return prepareLedgerOutput(output, addressStyle);
     });
+    const outputsData = await Promise.all(_outputsData);
 
     const unsignedTxCerts = [];
     const _certificatesData = map(certificates, async (certificate) => {
