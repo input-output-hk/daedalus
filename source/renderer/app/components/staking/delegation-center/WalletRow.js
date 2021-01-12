@@ -6,7 +6,7 @@ import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
-import Wallet, { WalletDelegationStatuses } from '../../../domains/Wallet';
+import Wallet from '../../../domains/Wallet';
 import StakePool from '../../../domains/StakePool';
 import { getColorFromRange, getSaturationColor } from '../../../utils/colors';
 import adaIcon from '../../../assets/images/ada-symbol.inline.svg';
@@ -128,7 +128,6 @@ export default class WalletRow extends Component<Props, WalletRowState> {
         isRestoring,
         syncState,
         delegatedStakePoolId,
-        pendingDelegations,
         isHardwareWallet,
       },
       delegatedStakePool,
@@ -165,16 +164,6 @@ export default class WalletRow extends Component<Props, WalletRowState> {
       nextPendingDelegationStakePool
     );
 
-    const futureDelegationStatus =
-      pendingDelegations &&
-      pendingDelegations.length &&
-      futurePendingDelegationStakePool &&
-      futurePendingDelegationStakePool.status
-        ? futurePendingDelegationStakePool.status
-        : false;
-
-    const isFutureDelegationDelegating =
-      futureDelegationStatus !== WalletDelegationStatuses.NOT_DELEGATING;
     const stakePoolRankingColor = futurePendingDelegationStakePool
       ? getColorFromRange(
           futurePendingDelegationStakePool.ranking,
@@ -391,7 +380,7 @@ export default class WalletRow extends Component<Props, WalletRowState> {
                     {notDelegatedText}
                   </div>
                 )}
-                {isFutureDelegationDelegating && !isUndelegateBlocked && (
+                {futurePendingDelegationStakePoolId && !isUndelegateBlocked && (
                   <div
                     className={styles.action}
                     role="presentation"
@@ -406,7 +395,7 @@ export default class WalletRow extends Component<Props, WalletRowState> {
                   role="presentation"
                   onClick={onDelegate}
                 >
-                  {!isFutureDelegationDelegating
+                  {!futurePendingDelegationStakePool
                     ? delegateText
                     : redelegateText}
                 </div>
