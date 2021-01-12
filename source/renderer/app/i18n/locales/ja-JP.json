@@ -156,7 +156,7 @@
   "global.language.german": "ドイツ語",
   "global.language.japanese": "日本語",
   "global.language.korean": "韓国語",
-  "global.passwordInstructions": "パスワードは<strong>10文字以上</strong>で設定してください。",
+  "global.passwordInstructions": "パスワードは<strong>10文字以上255文字以内</strong>で設定してください。",
   "global.punctuation.colon": "：",
   "global.punctuation.dot": "。",
   "global.range.from": "開始",

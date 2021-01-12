@@ -14247,7 +14247,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Note that password needs to be at least 10 characters long.",
+        "defaultMessage": "!!!Note that password needs to be at least 10 characters and at most 255 characters long.",
         "description": "Password instructions note.",
         "end": {
           "column": 3,
