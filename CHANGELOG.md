@@ -11,6 +11,7 @@ Changelog
 
 ### Chores
 
+- Applied validation to spending password to be not longer than 255 characters ([PR 2287](https://github.com/input-output-hk/daedalus/pull/2287))
 - Update `axios` package ([PR 2291](https://github.com/input-output-hk/daedalus/pull/2291))
 
 ## 3.1.0
