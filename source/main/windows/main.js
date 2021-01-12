@@ -84,9 +84,21 @@ export const createMainWindow = (locale: string) => {
   window.setTitle(getWindowTitle(locale));
 
   window.webContents.on('context-menu', (e, props) => {
+    const { canCopy, canPaste } = props.editFlags;
     const contextMenuOptions = [
-      { label: 'Copy', accelerator: 'CmdOrCtrl+C', role: 'copy' },
-      { label: 'Paste', accelerator: 'CmdOrCtrl+V', role: 'paste' },
+      {
+        label: 'Copy',
+        accelerator: 'CmdOrCtrl+C',
+        role: 'copy',
+        enabled: canCopy,
+      },
+      {
+        label: 'Paste',
+        accelerator: 'CmdOrCtrl+V',
+        role: 'paste',
+        enabled: canPaste,
+        visible: canPaste,
+      },
     ];
 
     if (isDev || isTest) {
