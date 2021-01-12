@@ -23,7 +23,6 @@
 
   .left {
     display: flex;
-    flex: 2.5;
     flex-direction: column;
     justify-content: space-evenly;
 
@@ -59,8 +58,9 @@
   .right {
     align-items: center;
     display: flex;
-    flex: 1.5;
     justify-content: space-between;
+    max-width: 332px;
+    width: 100%;
 
     .stakePoolTile {
       background-color: var(--theme-button-flat-background-color-disabled);
@@ -93,12 +93,19 @@
         }
       }
 
-      .nonDelegatedText,
-      .stakePoolUnknown {
+      .nonDelegatedText {
         @extend %accentBoldText;
         font-size: 8px;
         line-height: 1.25;
         margin-top: 6px;
+        text-transform: uppercase;
+      }
+
+      .stakePoolUnknown {
+        @extend %accentBoldText;
+        font-size: 8px;
+        line-height: 1.25;
+        margin-top: 23px;
         text-transform: uppercase;
       }
 
@@ -152,6 +159,10 @@
             position: absolute;
             top: -2px;
           }
+        }
+
+        .stakePoolUnknown {
+          transition: margin-top 200ms ease-in-out;
         }
 
         .noDataDash {
@@ -230,8 +241,8 @@
         }
       }
 
-      &.futureStakePoolTitleUndelegated,
-      &.futureStakePoolTitleUndefined {
+      &.futureStakePoolTileUndelegated,
+      &.futureStakePoolTileUndefined {
         background-color: var(--theme-staking-stake-pool-background-color);
         border: solid 1px var(--theme-staking-stake-pool-border-color);
         display: flex;
@@ -318,11 +329,14 @@
   &:hover {
     .right {
       .stakePoolTile {
-        &.futureStakePoolTitleUndelegated,
-        &.futureStakePoolTitleUndefined {
-          .stakePoolUnknown,
-          .nonDelegatedText {
+        &.futureStakePoolTileUndelegated,
+        &.futureStakePoolTileUndefined {
+          .stakePoolUnknown {
             margin-top: -6px;
+          }
+
+          .nonDelegatedText {
+            margin-top: -3px;
           }
         }
 
@@ -339,6 +353,10 @@
           .saturationBar,
           .stakePoolRankingIndicator {
             opacity: 0;
+          }
+
+          .stakePoolUnknown {
+            margin-top: 13px;
           }
         }
 

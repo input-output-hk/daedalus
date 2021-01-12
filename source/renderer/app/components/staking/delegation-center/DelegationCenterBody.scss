@@ -22,14 +22,11 @@
     margin: 0 0 10px 0;
     padding: 0 22px 0 20px;
 
-    .leftBodyTitle {
-      flex: 2.5;
-    }
-
     .rightBodyTitle {
       display: flex;
-      flex: 1.5;
       justify-content: space-between;
+      max-width: 332px;
+      width: 100%;
 
       span {
         display: flex;

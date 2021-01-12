@@ -184,9 +184,9 @@ export default class WalletRow extends Component<Props, WalletRowState> {
       styles.stakePoolTile,
       futurePendingDelegationStakePoolId && futurePendingDelegationStakePool
         ? styles.futureStakePoolTileDelegated
-        : styles.futureStakePoolTitleUndelegated,
+        : styles.futureStakePoolTileUndelegated,
       futurePendingDelegationStakePoolId && !futurePendingDelegationStakePool
-        ? styles.futureStakePoolTitleUndefined
+        ? styles.futureStakePoolTileUndefined
         : null,
     ]);
 
@@ -395,7 +395,7 @@ export default class WalletRow extends Component<Props, WalletRowState> {
                   role="presentation"
                   onClick={onDelegate}
                 >
-                  {!futurePendingDelegationStakePool
+                  {!futurePendingDelegationStakePoolId
                     ? delegateText
                     : redelegateText}
                 </div>
