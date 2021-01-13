@@ -1296,37 +1296,13 @@
   version "0.14.0"
   resolved "https://registry.yarnpkg.com/@sindresorhus/is/-/is-0.14.0.tgz#9fb3a3cf3132328151f353de4632e01e52102bea"
 
-"@sinonjs/commons@^1":
+"@sinonjs/commons@^1", "@sinonjs/commons@^1.6.0", "@sinonjs/commons@^1.7.0", "@sinonjs/commons@^1.8.1":
   version "1.8.1"
   resolved "https://registry.yarnpkg.com/@sinonjs/commons/-/commons-1.8.1.tgz#e7df00f98a203324f6dc7cc606cad9d4a8ab2217"
   dependencies:
     type-detect "4.0.8"
 
-"@sinonjs/commons@^1.6.0":
-  version "1.8.1"
-  resolved "https://registry.yarnpkg.com/@sinonjs/commons/-/commons-1.8.1.tgz#e7df00f98a203324f6dc7cc606cad9d4a8ab2217"
-  dependencies:
-    type-detect "4.0.8"
-
-"@sinonjs/commons@^1.7.0":
-  version "1.8.1"
-  resolved "https://registry.yarnpkg.com/@sinonjs/commons/-/commons-1.8.1.tgz#e7df00f98a203324f6dc7cc606cad9d4a8ab2217"
-  dependencies:
-    type-detect "4.0.8"
-
-"@sinonjs/commons@^1.8.1":
-  version "1.8.1"
-  resolved "https://registry.yarnpkg.com/@sinonjs/commons/-/commons-1.8.1.tgz#e7df00f98a203324f6dc7cc606cad9d4a8ab2217"
-  dependencies:
-    type-detect "4.0.8"
-
-"@sinonjs/fake-timers@^6.0.0":
-  version "6.0.1"
-  resolved "https://registry.yarnpkg.com/@sinonjs/fake-timers/-/fake-timers-6.0.1.tgz#293674fccb3262ac782c7aadfdeca86b10c75c40"
-  dependencies:
-    "@sinonjs/commons" "^1.7.0"
-
-"@sinonjs/fake-timers@^6.0.1":
+"@sinonjs/fake-timers@^6.0.0", "@sinonjs/fake-timers@^6.0.1":
   version "6.0.1"
   resolved "https://registry.yarnpkg.com/@sinonjs/fake-timers/-/fake-timers-6.0.1.tgz#293674fccb3262ac782c7aadfdeca86b10c75c40"
   dependencies:
@@ -1339,15 +1315,7 @@
     "@sinonjs/commons" "^1"
     "@sinonjs/samsam" "^5.0.2"
 
-"@sinonjs/samsam@^5.0.2":
-  version "5.3.0"
-  resolved "https://registry.yarnpkg.com/@sinonjs/samsam/-/samsam-5.3.0.tgz#1d2f0743dc54bf13fe9d508baefacdffa25d4329"
-  dependencies:
-    "@sinonjs/commons" "^1.6.0"
-    lodash.get "^4.4.2"
-    type-detect "^4.0.8"
-
-"@sinonjs/samsam@^5.3.0":
+"@sinonjs/samsam@^5.0.2", "@sinonjs/samsam@^5.3.0":
   version "5.3.0"
   resolved "https://registry.yarnpkg.com/@sinonjs/samsam/-/samsam-5.3.0.tgz#1d2f0743dc54bf13fe9d508baefacdffa25d4329"
   dependencies:
@@ -12586,9 +12554,9 @@ react-modal@3.1.12:
     prop-types "^15.5.10"
     warning "^3.0.0"
 
-react-polymorph@0.9.7-rc.10:
-  version "0.9.7-rc.10"
-  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-0.9.7-rc.10.tgz#78080178047d20fc02db3f666a35d430f0f28fb8"
+react-polymorph@0.9.7-rc.11:
+  version "0.9.7-rc.11"
+  resolved "https://registry.yarnpkg.com/react-polymorph/-/react-polymorph-0.9.7-rc.11.tgz#e297dd5cbe0dc359dff10e881c5558c2080b7d38"
   dependencies:
     "@tippyjs/react" "4.2.0"
     create-react-context "0.2.2"
