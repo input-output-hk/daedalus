@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { map } from 'lodash';
 import { Select } from 'react-polymorph/lib/components/Select';
-import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { isValidUrl } from '../../../utils/validations';
@@ -143,6 +142,12 @@ export default class StakePoolsSettings extends Component<Props, State> {
       ? intl.formatMessage(smashServerUrlError)
       : null;
 
+    const smashServerUrlValue =
+      editingSmashServerUrl === SMASH_SERVERS_LIST.direct.url ||
+      editingSmashServerUrl === SMASH_SERVERS_LIST.none.url
+        ? '-'
+        : editingSmashServerUrl;
+
     return (
       <div className={styles.component}>
         <Select
@@ -150,14 +155,13 @@ export default class StakePoolsSettings extends Component<Props, State> {
           value={smashServerType}
           options={smashSelectOptions}
           onChange={this.handleOnSelectSmashServerType}
-          skin={SelectSkin}
           className={styles.select}
           optionHeight={50}
         />
         <InlineEditingInput
           className={styles.smashServerUrl}
           label={intl.formatMessage(messages.smashURLInputLabel)}
-          value={editingSmashServerUrl}
+          value={smashServerUrlValue}
           placeholder={intl.formatMessage(messages.smashUrlInputPlaceholder)}
           onSubmit={this.handleSubmit}
           isValid={this.handleIsValid}

@@ -12,6 +12,8 @@ import {
   STAKE_POOL_TRANSACTION_CHECKER_TIMEOUT,
   STAKE_POOLS_INTERVAL,
   STAKE_POOLS_FAST_INTERVAL,
+  STAKE_POOLS_FETCH_TRACKER,
+  STAKE_POOLS_FETCH_TRACKER_CYCLES,
   REDEEM_ITN_REWARDS_STEPS as steps,
   INITIAL_DELEGATION_FUNDS,
   SMASH_SERVERS_LIST,
@@ -59,11 +61,17 @@ export default class StakingStore extends Store {
   @observable configurationStepError: ?LocalizableError = null;
   @observable confirmationStepError: ?LocalizableError = null;
 
+  /*----------  Stake Pools Fetching Tracker  ----------*/
+  @observable isFetchingStakePools: boolean = false;
+  @observable numberOfStakePoolsFetched: number = 0;
+  @observable cyclesWithoutIncreasingStakePools: number = 0;
+
   pollingStakePoolsInterval: ?IntervalID = null;
   refreshPolling: ?IntervalID = null;
   delegationCheckTimeInterval: ?IntervalID = null;
   adaValue: BigNumber = new BigNumber(82650.15);
   percentage: number = 14;
+  stakePoolsFetchTrackerInterval: ?IntervalID = null;
 
   _delegationFeeCalculationWalletId: ?string = null;
 
@@ -188,6 +196,7 @@ export default class StakingStore extends Store {
         // Retrieves the API update
         this.smashServerLoading = true;
         await this.updateSmashSettingsRequest.execute(smashServerUrl);
+        this._startStakePoolsFetchTracker();
         // Refreshes the Stake Pools list
         this.getStakePoolsData();
         // Updates the Smash Server URL
@@ -215,6 +224,43 @@ export default class StakingStore extends Store {
         }
       }
     }
+  };
+
+  @action _startStakePoolsFetchTracker = () => {
+    this.isFetchingStakePools = true;
+    console.log('_START', this.stakePools.length);
+    this.numberOfStakePoolsFetched = 0;
+    this.cyclesWithoutIncreasingStakePools = 0;
+    this.stakePoolsFetchTrackerInterval = setInterval(
+      this._stakePoolsFetchTracker,
+      STAKE_POOLS_FETCH_TRACKER
+    );
+  };
+
+  @action _stakePoolsFetchTracker = () => {
+    console.log('----> _TRACKER');
+    const lastNumberOfStakePoolsFetched = this.numberOfStakePoolsFetched;
+    console.log('lastNumberOfStakePoolsFetched', lastNumberOfStakePoolsFetched);
+    this.numberOfStakePoolsFetched = this.stakePools.length;
+    console.log('numberOfStakePoolsFetched', this.numberOfStakePoolsFetched);
+    if (lastNumberOfStakePoolsFetched === this.numberOfStakePoolsFetched) {
+      this.cyclesWithoutIncreasingStakePools++;
+    }
+    if (
+      this.cyclesWithoutIncreasingStakePools ===
+      STAKE_POOLS_FETCH_TRACKER_CYCLES
+    ) {
+      this._stopStakePoolsFetchTracker();
+    } else {
+      console.log('not yet!');
+    }
+  };
+
+  @action _stopStakePoolsFetchTracker = () => {
+    console.log('----> _STOP');
+    clearInterval(this.stakePoolsFetchTrackerInterval);
+    this.numberOfStakePoolsFetched = 0;
+    this.cyclesWithoutIncreasingStakePools = 0;
   };
 
   @action _resetSmashServerError = () => {
@@ -481,6 +527,7 @@ export default class StakingStore extends Store {
         10
       );
       await this.stakePoolsRequest.execute(stakeInLovelace).promise;
+      this._startTrackingStakePoolsFetching();
       this._resetPolling(false);
     } catch (error) {
       this._resetPolling(true);
