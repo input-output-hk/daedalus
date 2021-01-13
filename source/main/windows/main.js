@@ -85,21 +85,21 @@ export const createMainWindow = (locale: string) => {
 
   window.webContents.on('context-menu', (e, props) => {
     const { canCopy, canPaste } = props.editFlags;
-    const contextMenuOptions = [
-      {
+    const contextMenuOptions = [];
+    if (canCopy && props.selectionText) {
+      contextMenuOptions.push({
         label: 'Copy',
         accelerator: 'CmdOrCtrl+C',
         role: 'copy',
-        enabled: canCopy,
-      },
-      {
+      });
+    }
+    if (canPaste) {
+      contextMenuOptions.push({
         label: 'Paste',
         accelerator: 'CmdOrCtrl+V',
         role: 'paste',
-        enabled: canPaste,
-        visible: canPaste,
-      },
-    ];
+      });
+    }
 
     if (isDev || isTest) {
       const { x, y } = props;
