@@ -62,6 +62,7 @@ data Cluster
   | Shelley_Testnet
   | Shelley_Testnet_v6
   | Testnet
+  | Launchpad
   deriving (Bounded, Enum, Eq, Read, Show)
 
 -- | The wallet backend to include in the installer.
@@ -119,6 +120,7 @@ clusterNetwork Shelley_QA = "shelley_qa"
 clusterNetwork Shelley_Testnet = "shelley_testnet"
 clusterNetwork Shelley_Testnet_v6 = "shelley_testnet_v6"
 clusterNetwork Testnet = "testnet"
+clusterNetwork Launchpad = "launchpad"
 
 packageFileName :: OS -> Cluster -> Version -> Backend -> Text -> Maybe BuildJob -> FilePath
 packageFileName _os cluster ver backend _backendVer build = fromText name <.> ext

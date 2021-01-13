@@ -60,6 +60,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Cardano mainnet - Daedalus Flight',
     description: 'Label for Daedalus Flight with version.',
   },
+  launchpad: {
+    id: 'test.environment.daedalusLaunchpadLabel',
+    defaultMessage: '!!!Cardano Launchpad - Daedalus Launchpad',
+    description: 'Label for Daedalus Launchpad with version.',
+  },
 });
 
 type Props = {

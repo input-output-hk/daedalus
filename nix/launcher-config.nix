@@ -86,6 +86,7 @@ let
       shelley_testnet = "Shelley Testnet";
       shelley_testnet_v6 = "Shelley Testnet v6";
       shelley_qa = "Shelley QA";
+      launchpad = "Launchpad";
     };
     unsupported = "Unsupported";
     networkSupported = __hasAttr network supportedNetworks;

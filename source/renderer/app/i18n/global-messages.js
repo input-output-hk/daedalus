@@ -248,6 +248,11 @@ export default defineMessages({
     defaultMessage: '!!!Nightly',
     description: '"nightly" Cardano network',
   },
+  network_launchpad: {
+    id: 'environment.network.launchpad',
+    defaultMessage: '!!!Launchpad',
+    description: '"launchpad" Cardano network',
+  },
   years: {
     id: 'global.duration.years',
     defaultMessage: '!!!years',
