@@ -575,3 +575,7 @@
   background: var(--theme-staking-stake-pool-tooltip-neutral-background-color);
   color: var(--theme-staking-stake-pool-tooltip-neutral-text-color);
 }
+
+.tooltipWithHTMLContent {
+  padding: 10px;
+}

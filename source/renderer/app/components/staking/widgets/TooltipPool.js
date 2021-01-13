@@ -556,7 +556,11 @@ export default class TooltipPool extends Component<Props, State> {
             {isIncentivizedTestnet && (
               <PopOver
                 key="experimentalTooltip"
-                content={intl.formatMessage(messages.experimentalTooltipLabel)}
+                content={
+                  <div className={styles.tooltipWithHTMLContent}>
+                    {intl.formatMessage(messages.experimentalTooltipLabel)}
+                  </div>
+                }
               >
                 <button className={styles.iconButton}>
                   <SVGInline
@@ -763,7 +767,11 @@ export default class TooltipPool extends Component<Props, State> {
           )}
           <PopOver
             key="id"
-            content={intl.formatMessage(messages.copyIdTooltipLabel)}
+            content={
+              <div className={styles.tooltipWithHTMLContent}>
+                {intl.formatMessage(messages.copyIdTooltipLabel)}
+              </div>
+            }
           >
             <div
               className={styles.id}
