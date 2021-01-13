@@ -303,18 +303,20 @@ export default class WalletRow extends Component<Props, WalletRowState> {
               <SVGInline svg={arrow} className={styles.arrow} />
               <div className={futureStakePoolTileStyles}>
                 {futurePendingDelegationStakePoolId ? (
-                  <div onClick={highlightedPoolId ? this.handleHideTooltip : this.handleShowTooltip}>
+                  <div
+                    onMouseEnter={this.handleShowTooltip}
+                    onMouseLeave={this.handleHideTooltip}
+                  >
                     {futurePendingDelegationStakePool ? (
                       <PopOver
                         key="stakePoolTooltip"
                         placement="auto"
-                        maxWidth={300}
+                        maxWidth={280}
                         popperOptions={{
                           strategy: 'fixed',
                         }}
                         isShowingOnHover={false}
                         isVisible={highlightedPoolId}
-                        onClickOutside={this.handleHideTooltip}
                         themeVariables={popOverThemeVariables}
                         allowHTML
                         content={
@@ -322,6 +324,7 @@ export default class WalletRow extends Component<Props, WalletRowState> {
                             stakePool={futurePendingDelegationStakePool}
                             isVisible
                             currentTheme={currentTheme}
+                            onClick={this.handleHideTooltip}
                             onOpenExternalLink={onOpenExternalLink}
                             top={top}
                             left={left}
@@ -427,14 +430,6 @@ export default class WalletRow extends Component<Props, WalletRowState> {
     this.setState({
       highlightedPoolId: false,
     });
-  };
-
-  handleCloseTooltip = () => {
-    const { isListActive, setListActive } = this.props;
-    this.setState({
-      ...initialWalletRowState,
-    });
-    if (isListActive !== false && setListActive) setListActive(null);
   };
 
   getPendingStakePool = (
