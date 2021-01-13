@@ -111,7 +111,9 @@ export const createMainWindow = (locale: string) => {
       });
     }
 
-    Menu.buildFromTemplate(contextMenuOptions).popup(window);
+    if (contextMenuOptions.length) {
+      Menu.buildFromTemplate(contextMenuOptions).popup(window);
+    }
   });
 
   window.webContents.on('did-frame-finish-load', () => {
