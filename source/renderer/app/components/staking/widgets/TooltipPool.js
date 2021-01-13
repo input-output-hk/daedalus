@@ -239,13 +239,13 @@ export default class TooltipPool extends Component<Props, State> {
   }
 
   handleInputKeyDown = (event: KeyboardEvent) => {
-    if (event.key === 'Escape' && this.props.onClick) {
+    if (event.key === 'Escape') {
       this.props.onClick();
     }
   };
 
   handleOutterClick = () => {
-    if (!this.tooltipClick && this.props.onClick) {
+    if (!this.tooltipClick) {
       this.props.onClick();
     } else {
       this.tooltipClick = false;
