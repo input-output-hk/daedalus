@@ -98,13 +98,13 @@ type Props = {
 };
 
 type WalletRowState = {
-  highlightedPoolId: ?string,
+  highlightedPoolId: boolean,
   top: number,
   left: number,
 };
 
 const initialWalletRowState = {
-  highlightedPoolId: null,
+  highlightedPoolId: false,
   top: 0,
   left: 0,
 };
@@ -195,7 +195,7 @@ export default class WalletRow extends Component<Props, WalletRowState> {
       isRestoring ? styles.isRestoring : null,
     ]);
 
-    const { top, left } = this.state;
+    const { top, left, highlightedPoolId } = this.state;
 
     const popOverThemeVariables = {
       '--rp-pop-over-bg-color':
@@ -303,7 +303,7 @@ export default class WalletRow extends Component<Props, WalletRowState> {
               <SVGInline svg={arrow} className={styles.arrow} />
               <div className={futureStakePoolTileStyles}>
                 {futurePendingDelegationStakePoolId ? (
-                  <div>
+                  <div onClick={highlightedPoolId ? this.handleHideTooltip : this.handleShowTooltip}>
                     {futurePendingDelegationStakePool ? (
                       <PopOver
                         key="stakePoolTooltip"
@@ -312,13 +312,15 @@ export default class WalletRow extends Component<Props, WalletRowState> {
                         popperOptions={{
                           strategy: 'fixed',
                         }}
+                        isShowingOnHover={false}
+                        isVisible={highlightedPoolId}
+                        onClickOutside={this.handleHideTooltip}
                         themeVariables={popOverThemeVariables}
                         allowHTML
                         content={
                           <TooltipPool
                             stakePool={futurePendingDelegationStakePool}
                             isVisible
-                            onClick={this.handleCloseTooltip}
                             currentTheme={currentTheme}
                             onOpenExternalLink={onOpenExternalLink}
                             top={top}
@@ -414,6 +416,18 @@ export default class WalletRow extends Component<Props, WalletRowState> {
       </div>
     );
   }
+
+  handleShowTooltip = () => {
+    this.setState({
+      highlightedPoolId: true,
+    });
+  };
+
+  handleHideTooltip = () => {
+    this.setState({
+      highlightedPoolId: false,
+    });
+  };
 
   handleCloseTooltip = () => {
     const { isListActive, setListActive } = this.props;
