@@ -12,10 +12,6 @@
   overflow-x: hidden;
   overflow-y: overlay;
   padding: 20px 20px 20px 0;
-  &::-webkit-scrollbar-button {
-    display: block;
-    height: 7px;
-  }
 }
 
 .settingsPane {
