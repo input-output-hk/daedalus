@@ -84,10 +84,22 @@ export const createMainWindow = (locale: string) => {
   window.setTitle(getWindowTitle(locale));
 
   window.webContents.on('context-menu', (e, props) => {
-    const contextMenuOptions = [
-      { label: 'Copy', accelerator: 'CmdOrCtrl+C', role: 'copy' },
-      { label: 'Paste', accelerator: 'CmdOrCtrl+V', role: 'paste' },
-    ];
+    const { canCopy, canPaste } = props.editFlags;
+    const contextMenuOptions = [];
+    if (canCopy && props.selectionText) {
+      contextMenuOptions.push({
+        label: 'Copy',
+        accelerator: 'CmdOrCtrl+C',
+        role: 'copy',
+      });
+    }
+    if (canPaste) {
+      contextMenuOptions.push({
+        label: 'Paste',
+        accelerator: 'CmdOrCtrl+V',
+        role: 'paste',
+      });
+    }
 
     if (isDev || isTest) {
       const { x, y } = props;
@@ -99,7 +111,9 @@ export const createMainWindow = (locale: string) => {
       });
     }
 
-    Menu.buildFromTemplate(contextMenuOptions).popup(window);
+    if (contextMenuOptions.length) {
+      Menu.buildFromTemplate(contextMenuOptions).popup(window);
+    }
   });
 
   window.webContents.on('did-frame-finish-load', () => {
