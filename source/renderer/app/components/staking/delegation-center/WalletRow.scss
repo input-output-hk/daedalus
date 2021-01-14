@@ -243,6 +243,27 @@
           margin-top: 48px;
           position: absolute;
         }
+
+        &.active {
+          cursor: pointer;
+
+          .stakePoolTicker {
+            top: -5px;
+          }
+
+          .ranking {
+            top: -7px;
+          }
+
+          .saturationBar,
+          .stakePoolRankingIndicator {
+            opacity: 0;
+          }
+
+          .stakePoolUnknown {
+            margin-top: 12px;
+          }
+        }
       }
 
       &.futureStakePoolTileUndelegated,
@@ -313,6 +334,10 @@
       &:active {
         background-color: var(--theme-button-primary-background-color-active);
       }
+
+      &.active {
+        opacity: 1;
+      }
     }
 
     :global {
@@ -348,11 +373,11 @@
           cursor: pointer;
 
           .stakePoolTicker {
-            top: -3px;
+            top: -5px;
           }
 
           .ranking {
-            top: -3px;
+            top: -7px;
           }
 
           .saturationBar,

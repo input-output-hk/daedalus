@@ -164,6 +164,8 @@ export default class WalletRow extends Component<Props, WalletRowState> {
       nextPendingDelegationStakePool
     );
 
+    const { top, left, highlightedPoolId } = this.state;
+
     const stakePoolRankingColor = futurePendingDelegationStakePool
       ? getColorFromRange(
           futurePendingDelegationStakePool.ranking,
@@ -182,6 +184,7 @@ export default class WalletRow extends Component<Props, WalletRowState> {
 
     const futureStakePoolTileStyles = classnames([
       styles.stakePoolTile,
+      highlightedPoolId ? styles.active : null,
       futurePendingDelegationStakePoolId && futurePendingDelegationStakePool
         ? styles.futureStakePoolTileDelegated
         : styles.futureStakePoolTileUndelegated,
@@ -195,7 +198,10 @@ export default class WalletRow extends Component<Props, WalletRowState> {
       isRestoring ? styles.isRestoring : null,
     ]);
 
-    const { top, left, highlightedPoolId } = this.state;
+    const actionButtonStyles = classnames([
+      styles.action,
+      highlightedPoolId ? styles.active : null,
+    ]);
 
     const popOverThemeVariables = {
       '--rp-pop-over-bg-color':
@@ -384,7 +390,7 @@ export default class WalletRow extends Component<Props, WalletRowState> {
                 )}
                 {futurePendingDelegationStakePoolId && !isUndelegateBlocked && (
                   <div
-                    className={styles.action}
+                    className={actionButtonStyles}
                     role="presentation"
                     onClick={onUndelegate}
                     key="undelegate"
@@ -393,7 +399,7 @@ export default class WalletRow extends Component<Props, WalletRowState> {
                   </div>
                 )}
                 <div
-                  className={styles.action}
+                  className={actionButtonStyles}
                   role="presentation"
                   onClick={onDelegate}
                 >
