@@ -20,7 +20,7 @@ export default class SettingsLayout extends Component<Props> {
     );
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps: Props) {
     const didActivePageChange = this.props.activePage !== prevProps.activePage;
     if (
       this.scrollableDomElement instanceof HTMLElement &&

@@ -10,6 +10,7 @@ Changelog
 
 ### Chores
 
+- Updated `cardano-wallet` to version `2021-01-12` ([PR 2303](https://github.com/input-output-hk/daedalus/pull/2303))
 - Improved "Settings" screen scrolling actions ([PR 2302](https://github.com/input-output-hk/daedalus/pull/2302))
 - Improved scrollable dialogs ([PR 2285](https://github.com/input-output-hk/daedalus/pull/2285))
 - Disabled and hid copy and paste context menu items on some scenarios ([PR 2300](https://github.com/input-output-hk/daedalus/pull/2300))

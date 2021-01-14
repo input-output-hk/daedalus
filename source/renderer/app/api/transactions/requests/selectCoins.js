@@ -1,4 +1,5 @@
 // @flow
+import { WalletUnits } from '../../../domains/Wallet';
 import type { RequestConfig } from '../../common/types';
 import type { TransactionPaymentData, CoinSelectionAmount } from '../types';
 import type { DelegationAction } from '../../../types/stakingTypes';
@@ -42,6 +43,10 @@ export type SelectCoinsResponseType = {
     pool?: string,
     certificate_type: DelegationAction,
     reward_account_path: Array<string>,
+  }>,
+  deposits?: Array<{
+    quantity: number,
+    unit: WalletUnits.LOVELACE,
   }>,
 };
 
