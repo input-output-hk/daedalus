@@ -113,7 +113,11 @@ export default class Dialog extends Component<Props> {
             </div>
           )}
 
-          {children && <div className={styles.content}>{children}</div>}
+          {children && (
+            <div className={styles.contentWrapper}>
+              <div className={styles.content}>{children}</div>
+            </div>
+          )}
           {footer && <div className={styles.footer}>{footer}</div>}
 
           {items && (

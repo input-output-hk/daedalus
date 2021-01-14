@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { join } from 'lodash';
 import classnames from 'classnames';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import { Autocomplete } from 'react-polymorph/lib/components/Autocomplete';
@@ -13,6 +12,10 @@ import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../config/cryptoConfig'
 import suggestedMnemonics from '../../../../../common/config/crypto/valid-words.en';
 import { isValidMnemonic } from '../../../../../common/config/crypto/decrypt';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
+import {
+  errorOrIncompleteMarker,
+  validateMnemonics,
+} from '../../../utils/validations';
 import WalletRecoveryPhraseMnemonic from './WalletRecoveryPhraseMnemonic';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import DialogBackButton from '../../widgets/DialogBackButton';
@@ -115,32 +118,20 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
         recoveryPhrase: {
           value: [],
           validators: ({ field }) => {
-            const { intl } = this.context;
             const enteredWords = field.value;
-            const wordCount = enteredWords.length;
-            const expectedWordCount = WALLET_RECOVERY_PHRASE_WORD_COUNT;
-            const value = join(enteredWords, ' ');
-
             this.props.onUpdateVerificationPhrase({
               verificationPhrase: enteredWords,
             });
-
-            // Check if recovery phrase contains the expected words
-            if (wordCount !== expectedWordCount) {
-              return [
-                false,
-                intl.formatMessage(globalMessages.incompleteMnemonic, {
-                  expected: expectedWordCount,
-                }),
-              ];
-            }
-
-            return [
-              isValidMnemonic(value, wordCount),
-              this.context.intl.formatMessage(
-                messages.recoveryPhraseInvalidMnemonics
-              ),
-            ];
+            return validateMnemonics({
+              requiredWords: WALLET_RECOVERY_PHRASE_WORD_COUNT,
+              providedWords: field.value,
+              validator: () => [
+                isValidMnemonic(enteredWords.join(' '), enteredWords.length),
+                this.context.intl.formatMessage(
+                  messages.recoveryPhraseInvalidMnemonics
+                ),
+              ],
+            });
           },
         },
       },
@@ -227,8 +218,15 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
                 }
               )}
               options={suggestedMnemonics}
+              requiredSelections={[wordCount]}
+              requiredSelectionsInfo={(required, actual) =>
+                intl.formatMessage(globalMessages.knownMnemonicWordCount, {
+                  actual,
+                  required,
+                })
+              }
               maxSelections={wordCount}
-              error={recoveryPhraseField.error}
+              error={errorOrIncompleteMarker(recoveryPhraseField.error)}
               maxVisibleOptions={5}
               noResultsMessage={intl.formatMessage(
                 messages.recoveryPhraseNoResults

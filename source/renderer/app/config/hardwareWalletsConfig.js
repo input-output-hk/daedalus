@@ -20,7 +20,7 @@ export const HW_SHELLEY_CONFIG = {
     TESTNET: {
       name: 'testnet',
       networkId: 0,
-      protocolMagic: 42,
+      protocolMagic: 1097911063,
       trezorProtocolMagic: 1097911063,
       eraStartSlot: 4492800,
       ttl: 3600,
