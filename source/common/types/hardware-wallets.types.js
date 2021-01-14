@@ -109,9 +109,9 @@ export type StakingBlockchainPointer = {|
 
 export type LedgerSignTransactionInputsType = Array<LedgerSignTransactionInputType>;
 
-export type LedgerSignTransactionOutputsType = [] | Array<
-  LedgerOutputTypeAddress | LedgerOutputTypeChange
->;
+export type LedgerSignTransactionOutputsType =
+  | []
+  | Array<LedgerOutputTypeAddress | LedgerOutputTypeChange>;
 
 export type TrezorSignTransactionInputType = {
   path: string,
