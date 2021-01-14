@@ -20,7 +20,8 @@
     border: none;
     border-radius: 0;
     box-shadow: none;
-    padding: 10px;
+    margin-left: -12px;
+    padding: 5px;
     pointer-events: initial;
     position: initial;
   }
@@ -574,8 +575,4 @@
 .defaultColorContent {
   background: var(--theme-staking-stake-pool-tooltip-neutral-background-color);
   color: var(--theme-staking-stake-pool-tooltip-neutral-text-color);
-}
-
-.tooltipWithHTMLContent {
-  padding: 8px 10px;
 }
