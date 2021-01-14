@@ -26,11 +26,21 @@
 
   & > .contentWrapper {
     flex: 1;
-    margin-right: -25px;
+    margin-right: -17px;
     overflow-x: hidden;
     overflow-y: overlay;
-    padding-right: 25px;
+    padding-right: 17px;
     scroll-behavior: smooth;
+
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    &::-webkit-scrollbar-thumb:vertical {
+      border: 0;
+      border-bottom: 20px solid transparent;
+      border-radius: 0;
+    }
 
     .content {
       margin-bottom: 20px;
