@@ -9,6 +9,10 @@ Changelog
 - Added wallet public key viewing feature ([PR 2271](https://github.com/input-output-hk/daedalus/pull/2271))
 - Added tile view for delegated Stake pools in Delegation Center ([PR 2275](https://github.com/input-output-hk/daedalus/pull/2275))
 
+### Fixes
+
+- Fixed Ledger TXs to Byron addresses ([PR 2299](https://github.com/input-output-hk/daedalus/pull/2299))
+
 ### Chores
 
 - Improved "Settings" screen scrolling actions ([PR 2302](https://github.com/input-output-hk/daedalus/pull/2302))
