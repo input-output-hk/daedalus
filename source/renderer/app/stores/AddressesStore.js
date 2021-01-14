@@ -6,7 +6,7 @@ import CachedRequest from './lib/LocalizedCachedRequest';
 import WalletAddress from '../domains/WalletAddress';
 import Request from './lib/LocalizedRequest';
 import LocalizableError from '../i18n/LocalizableError';
-import type { Address } from '../api/addresses/types';
+import type { Address, InspectAddressResponse } from '../api/addresses/types';
 
 export default class AddressesStore extends Store {
   @observable lastGeneratedAddress: ?WalletAddress = null;
@@ -20,6 +20,10 @@ export default class AddressesStore extends Store {
   // REQUESTS
   @observable createByronWalletAddressRequest: Request<Address> = new Request(
     this.api.ada.createAddress
+  );
+  @observable
+  inspectAddressRequest: Request<InspectAddressResponse> = new Request(
+    this.api.ada.inspectAddress
   );
 
   setup() {
@@ -56,6 +60,15 @@ export default class AddressesStore extends Store {
         this.error = error;
       });
     }
+  };
+
+  _inspectAddress = async (params: { addressId: string }) => {
+    const { addressId } = params;
+    this.inspectAddressRequest.reset();
+    const addressDetails = await this.inspectAddressRequest.execute({
+      addressId,
+    }).promise;
+    return addressDetails;
   };
 
   @computed get all(): Array<WalletAddress> {
