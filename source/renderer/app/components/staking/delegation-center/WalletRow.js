@@ -312,9 +312,6 @@ export default class WalletRow extends Component<Props, WalletRowState> {
                         key="stakePoolTooltip"
                         placement="auto"
                         maxWidth={280}
-                        popperOptions={{
-                          strategy: 'fixed',
-                        }}
                         isShowingOnHover={false}
                         isVisible={highlightedPoolId}
                         themeVariables={popOverThemeVariables}

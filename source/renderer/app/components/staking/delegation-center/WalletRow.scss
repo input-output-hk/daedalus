@@ -141,7 +141,9 @@
 
         .stakePoolTicker {
           padding-left: 0;
-          transition: margin-top 200ms ease-in-out;
+          position: relative;
+          top: 0;
+          transition: top 200ms ease-in-out;
         }
 
         .ranking {
@@ -149,8 +151,10 @@
           font-size: 20px;
           font-weight: bold;
           line-height: 1.2;
+          position: relative;
           text-align: center;
-          transition: margin-top 200ms ease-in-out;
+          top: 0;
+          transition: top 200ms ease-in-out;
 
           sup {
             font-family: Verdana;
@@ -344,12 +348,11 @@
           cursor: pointer;
 
           .stakePoolTicker {
-            margin-top: -3px;
+            top: -3px;
           }
 
           .ranking {
-            margin-bottom: 6px;
-            margin-top: -3px;
+            top: -3px;
           }
 
           .saturationBar,
