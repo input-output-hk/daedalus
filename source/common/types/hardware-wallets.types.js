@@ -109,7 +109,7 @@ export type StakingBlockchainPointer = {|
 
 export type LedgerSignTransactionInputsType = Array<LedgerSignTransactionInputType>;
 
-export type LedgerSignTransactionOutputsType = Array<
+export type LedgerSignTransactionOutputsType = [] | Array<
   LedgerOutputTypeAddress | LedgerOutputTypeChange
 >;
 

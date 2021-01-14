@@ -1268,22 +1268,31 @@ export default class HardwareWalletsStore extends Store {
     });
 
     const unsignedTxOutputs = [];
-    const _outputsData = map(outputs, async (output) => {
+    const outputsData = [];
+    for (const output of outputs) {
+      // eslint-disable-next-line
+      console.debug('>>> ADDRESS: ', output.address);
       const {
         address_style: addressStyle,
       } = await this.stores.addresses._inspectAddress({
         addressId: output.address,
       });
+      // eslint-disable-next-line
+      console.debug('>>> ADDRESS Details: ', addressStyle);
+
       const shelleyTxOutput = ShelleyTxOutput(output, addressStyle);
       unsignedTxOutputs.push(shelleyTxOutput);
       // eslint-disable-next-line
-      console.debug('>>> _outputsData addresses: ', {
+      console.debug('>>> Store to output: ', {
         addressStyle,
         address: output.address,
       })
-      return prepareLedgerOutput(output, addressStyle);
-    });
-    const outputsData = await Promise.all(_outputsData);
+      const ledgerOutput = prepareLedgerOutput(output, addressStyle);
+      outputsData.push(ledgerOutput);
+    }
+
+    // eslint-disable-next-line
+    console.debug('>>> outputsData: ', outputsData);
 
     const unsignedTxCerts = [];
     const _certificatesData = map(certificates, async (certificate) => {
@@ -1343,6 +1352,7 @@ export default class HardwareWalletsStore extends Store {
         metadataHashHex,
         devicePath,
       });
+
       // Prepare unsigned transaction structure for serialzation
       const unsignedTx = prepareTxAux({
         txInputs: unsignedTxInputs,
@@ -1352,6 +1362,9 @@ export default class HardwareWalletsStore extends Store {
         certificates: unsignedTxCerts,
         withdrawals,
       });
+
+      // eslint-disable-next-line
+      console.debug('>> UnsignetTX: ', JSON.stringify(unsignedTx));
 
       const signedWitnesses = await this._signWitnesses(
         signedTransaction.witnesses
@@ -1364,7 +1377,7 @@ export default class HardwareWalletsStore extends Store {
       // Prepare serialized transaction with unsigned data and signed witnesses
       const txBody = await prepareBody(unsignedTx, txWitnesses);
 
-// eslint-disable-next-line
+      // eslint-disable-next-line
       console.debug('>> txBody: ', txBody);
 
       runInAction('HardwareWalletsStore:: set Transaction verified', () => {
