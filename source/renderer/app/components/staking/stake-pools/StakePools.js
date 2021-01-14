@@ -16,6 +16,7 @@ import { getFilteredStakePoolsList } from './helpers';
 import StakePool from '../../../domains/StakePool';
 import { IS_RANKING_DATA_AVAILABLE } from '../../../config/stakingConfig';
 import smashSettingsIcon from '../../../assets/images/smash-settings-ic.inline.svg';
+import tinySpinnerIcon from '../../../assets/images/spinner-tiny.inline.svg';
 import { getSmashServerNameFromUrl } from '../../../utils/staking';
 
 const messages = defineMessages({
@@ -58,6 +59,7 @@ type Props = {
   stake?: ?number,
   onDelegate: Function,
   isLoading: boolean,
+  isFetching: boolean,
   isRanking: boolean,
   stakePoolsDelegatingList: Array<StakePool>,
   getStakePoolById: Function,
@@ -135,6 +137,7 @@ export default class StakePools extends Component<Props, State> {
       onOpenExternalLink,
       currentTheme,
       isLoading,
+      isFetching,
       isRanking,
       stakePoolsDelegatingList,
       getStakePoolById,
@@ -181,6 +184,10 @@ export default class StakePools extends Component<Props, State> {
     const smashServer = smashServerUrl
       ? getSmashServerNameFromUrl(smashServerUrl)
       : null;
+
+    const tinyLoadingSpinner = isFetching && (
+      <SVGInline svg={tinySpinnerIcon} className={styles.tinySpinner} />
+    );
 
     const smashSettings = smashServer && (
       <button onClick={onSmashSettingsClick} className={styles.smashSettings}>
@@ -236,7 +243,9 @@ export default class StakePools extends Component<Props, State> {
             {stakePoolsDelegatingList.length > 0 && (
               <Fragment>
                 <h2 className={styles.listTitle}>
-                  {intl.formatMessage(messages.delegatingListTitle)}
+                  <span>
+                    {intl.formatMessage(messages.delegatingListTitle)}
+                  </span>
                 </h2>
                 <StakePoolsList
                   listName={STAKE_POOLS_DELEGATING_LIST}

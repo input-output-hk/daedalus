@@ -66,6 +66,7 @@ export default class StakePoolsListPage extends Component<Props> {
       getStakePoolById,
       smashServerUrl,
       maxDelegationFunds,
+      isFetchingStakePools,
     } = staking;
     const { all } = wallets;
     const isLoading =
@@ -88,6 +89,7 @@ export default class StakePoolsListPage extends Component<Props> {
           stake={stake}
           onDelegate={this.handleDelegate}
           isLoading={isLoading}
+          isFetching={isFetchingStakePools}
           isRanking={isRanking}
           getStakePoolById={getStakePoolById}
           smashServerUrl={smashServerUrl}

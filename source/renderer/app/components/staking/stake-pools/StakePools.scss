@@ -59,4 +59,23 @@
     opacity: 0.6;
     width: 10px;
   }
+  .tinySpinner {
+    display: inline-block;
+    margin: -6px 0 0 4px;
+    vertical-align: middle;
+    svg {
+      animation: rotating-spinner 1.2s linear infinite;
+      height: 8px;
+      width: 8px;
+    }
+  }
+
+  @keyframes rotating-spinner {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
 }
