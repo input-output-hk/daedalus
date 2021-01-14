@@ -3,6 +3,7 @@ import React from 'react';
 import { action } from '@storybook/addon-actions';
 import { select } from '@storybook/addon-knobs';
 import { storiesOf } from '@storybook/react';
+import { WALLET_RECOVERY_PHRASE_WORD_COUNT } from '../../../../source/renderer/app/config/cryptoConfig';
 
 // Helpers
 import WalletsWrapper from '../_utils/WalletsWrapper';
@@ -93,8 +94,8 @@ storiesOf('Wallets|Add Wallet', module)
         walletKindYoroi={walletKindSpecificSelect}
         walletKindHardware={walletKindSpecificSelect}
         mnemonics={[]}
-        expectedWordCount={0}
-        maxWordCount={0}
+        expectedWordCount={WALLET_RECOVERY_PHRASE_WORD_COUNT}
+        maxWordCount={WALLET_RECOVERY_PHRASE_WORD_COUNT}
         onValidateMnemonics={action('onValidateMnemonics')}
       />
     );
