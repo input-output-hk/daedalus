@@ -10,14 +10,6 @@
     .Dialog_subtitle {
       color: var(--theme-delegation-steps-choose-wallet-steps-indicator-color);
     }
-
-    .Dialog_content {
-      padding: 0 25px 4px 4px;
-    }
-
-    .Dialog_actions button {
-      margin-top: 10px !important;
-    }
   }
 
   .stakePoolsListWrapper {
@@ -26,7 +18,6 @@
 
   .content {
     color: var(--theme-delegation-steps-choose-stake-pool-title-color);
-    margin-bottom: 20px;
 
     .description {
       font-family: var(--font-medium);
