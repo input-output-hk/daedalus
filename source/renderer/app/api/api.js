@@ -114,6 +114,7 @@ import type {
   Address,
   GetAddressesRequest,
   CreateByronWalletAddressRequest,
+  InspectAddressResponse,
 } from './addresses/types';
 
 // Common Types
@@ -1004,9 +1005,9 @@ export default class AdaApi {
     }
   };
 
-  inspectAddress = async (
-    request: any // @TODO
-  ): Promise<any> => {
+  inspectAddress = async (request: {
+    addressId: string,
+  }): Promise<InspectAddressResponse> => {
     logger.debug('AdaApi::inspectAddress called', {
       parameters: filterLogData(request),
     });

@@ -8,7 +8,6 @@ import type {
 import type { SmashServerStatuses } from '../api/staking/types';
 
 const { smashUrl } = global;
-const { isTestnet } = environment;
 
 // @SMASH TODO - remove testing server
 export const SMASH_SERVERS_LIST: {

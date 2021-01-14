@@ -24,19 +24,32 @@
     text-align: center;
   }
 
-  & > .content {
+  & > .contentWrapper {
     flex: 1;
     margin-right: -25px;
     overflow-x: hidden;
     overflow-y: overlay;
-    padding-bottom: 30px;
     padding-right: 25px;
     scroll-behavior: smooth;
+
+    &::-webkit-scrollbar-button {
+      display: none;
+    }
+
+    &::-webkit-scrollbar-track {
+      margin-bottom: 12px;
+      margin-top: -8px;
+    }
+
+    .content {
+      margin-bottom: 20px;
+    }
   }
 
   & > .actions {
     display: flex;
     flex-shrink: 0;
+    margin-top: 10px;
 
     &.columnDirection {
       align-items: center;

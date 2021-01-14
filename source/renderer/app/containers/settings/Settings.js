@@ -28,9 +28,10 @@ export default class Settings extends Component<InjectedContainerProps> {
   render() {
     const { isFlight } = global;
     const { actions, stores, children } = this.props;
-    const { networkStatus, app } = stores;
+    const { networkStatus, app, router } = stores;
     const { isSynced } = networkStatus;
     const { currentRoute } = app;
+    const { location } = router;
     const menu = (
       <SettingsMenu
         isSyncing={!isSynced}
@@ -42,7 +43,9 @@ export default class Settings extends Component<InjectedContainerProps> {
     );
     return (
       <Layout>
-        <SettingsLayout menu={menu}>{children}</SettingsLayout>
+        <SettingsLayout menu={menu} activePage={location.pathname}>
+          {children}
+        </SettingsLayout>
       </Layout>
     );
   }
