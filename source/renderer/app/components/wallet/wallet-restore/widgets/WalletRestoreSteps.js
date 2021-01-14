@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import { defineMessages, intlShape } from 'react-intl';
 import { Stepper } from 'react-polymorph/lib/components/Stepper';
 import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
 import styles from './WalletRestoreSteps.scss';
@@ -12,25 +12,20 @@ type Props = {
 };
 
 const messages = defineMessages({
-  stepsCounter: {
-    id: 'wallet.restore.dialog.stepsCounter',
-    defaultMessage: '!!!Step {currentStep} of {totalSteps}',
-    description: 'Step couters in the wallet create dialog.',
-  },
   typeStep: {
     id: 'wallet.restore.dialog.typeStep',
     defaultMessage: '!!!Type',
-    description: 'Step "Type" in the wallet create dialog.',
+    description: 'Step "Type" in the wallet restore dialog.',
   },
   mnemonicsStep: {
     id: 'wallet.restore.dialog.mnemonicsStep',
     defaultMessage: '!!!Recovery Phrase',
-    description: 'Step "Recovery Phrase" in the wallet create dialog.',
+    description: 'Step "Recovery Phrase" in the wallet restore dialog.',
   },
   configurationStep: {
     id: 'wallet.restore.dialog.configurationStep',
     defaultMessage: '!!!Configuration',
-    description: 'Step "Configuration" in the wallet create dialog.',
+    description: 'Step "Configuration" in the wallet restore dialog.',
   },
 });
 
@@ -52,18 +47,8 @@ export default class WalletRestoreSteps extends Component<Props> {
   render() {
     const { stepNumber } = this.props;
     const currentStep = stepNumber + 1;
-    const totalSteps = this.filteredSteps.length;
     return (
       <div className={styles.component}>
-        <div className={styles.stepCounter}>
-          <FormattedHTMLMessage
-            {...messages.stepsCounter}
-            values={{
-              currentStep,
-              totalSteps,
-            }}
-          />
-        </div>
         <Stepper
           steps={this.stepsList}
           activeStep={currentStep}

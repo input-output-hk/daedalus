@@ -265,6 +265,11 @@ body,
     width: 20px;
   }
 
+  &::-webkit-scrollbar-button {
+    display: block;
+    height: 6px;
+  }
+
   &::-webkit-scrollbar-track {
     background-color: transparent;
   }
