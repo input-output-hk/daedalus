@@ -111,6 +111,10 @@
       }
     }
 
+    *::-webkit-scrollbar-button {
+      display: none;
+    }
+
     *::-webkit-scrollbar-track {
       margin-bottom: 11px;
       margin-top: 25px;
@@ -122,6 +126,7 @@
           --theme-splash-network-scrollbar-thumb-background
         );
         min-height: 150px;
+
         &:hover {
           background-color: var(
             --theme-splash-network-scrollbar-thumb-background-hover

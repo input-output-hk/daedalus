@@ -12131,30 +12131,44 @@
     "descriptors": [
       {
         "defaultMessage": "!!!Restore a wallet",
-        "description": "Title \"Create a new wallet\" in the wallet create form.",
+        "description": "Title \"Create a new wallet\" in the wallet restore form.",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 19
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/widgets/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.title",
         "start": {
           "column": 15,
-          "line": 13
+          "line": 15
         }
       },
       {
         "defaultMessage": "!!!Restore a wallet",
-        "description": "Title \"Create a new wallet\" in the wallet create form.",
+        "description": "Title \"Create a new wallet\" in the wallet restore form.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 24
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/widgets/WalletRestoreDialog.js",
         "id": "wallet.restore.dialog.titleSuccess",
         "start": {
           "column": 22,
-          "line": 18
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!Step {currentStep} of {totalSteps}",
+        "description": "Step couters in the wallet restore dialog.",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/components/wallet/wallet-restore/widgets/WalletRestoreDialog.js",
+        "id": "wallet.restore.dialog.stepsCounter",
+        "start": {
+          "column": 16,
+          "line": 25
         }
       }
     ],
@@ -12163,59 +12177,45 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Step {currentStep} of {totalSteps}",
-        "description": "Step couters in the wallet create dialog.",
+        "defaultMessage": "!!!Type",
+        "description": "Step \"Type\" in the wallet restore dialog.",
         "end": {
           "column": 3,
           "line": 19
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/widgets/WalletRestoreSteps.js",
-        "id": "wallet.restore.dialog.stepsCounter",
+        "id": "wallet.restore.dialog.typeStep",
         "start": {
-          "column": 16,
+          "column": 12,
           "line": 15
         }
       },
       {
-        "defaultMessage": "!!!Type",
-        "description": "Step \"Type\" in the wallet create dialog.",
+        "defaultMessage": "!!!Recovery Phrase",
+        "description": "Step \"Recovery Phrase\" in the wallet restore dialog.",
         "end": {
           "column": 3,
           "line": 24
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/widgets/WalletRestoreSteps.js",
-        "id": "wallet.restore.dialog.typeStep",
+        "id": "wallet.restore.dialog.mnemonicsStep",
         "start": {
-          "column": 12,
+          "column": 17,
           "line": 20
         }
       },
       {
-        "defaultMessage": "!!!Recovery Phrase",
-        "description": "Step \"Recovery Phrase\" in the wallet create dialog.",
+        "defaultMessage": "!!!Configuration",
+        "description": "Step \"Configuration\" in the wallet restore dialog.",
         "end": {
           "column": 3,
           "line": 29
         },
         "file": "source/renderer/app/components/wallet/wallet-restore/widgets/WalletRestoreSteps.js",
-        "id": "wallet.restore.dialog.mnemonicsStep",
-        "start": {
-          "column": 17,
-          "line": 25
-        }
-      },
-      {
-        "defaultMessage": "!!!Configuration",
-        "description": "Step \"Configuration\" in the wallet create dialog.",
-        "end": {
-          "column": 3,
-          "line": 34
-        },
-        "file": "source/renderer/app/components/wallet/wallet-restore/widgets/WalletRestoreSteps.js",
         "id": "wallet.restore.dialog.configurationStep",
         "start": {
           "column": 21,
-          "line": 30
+          "line": 25
         }
       }
     ],
