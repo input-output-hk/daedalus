@@ -318,7 +318,7 @@ export default class WalletRow extends Component<Props, WalletRowState> {
                         key="stakePoolTooltip"
                         placement="auto"
                         maxWidth={280}
-                        appendTo={"parent"}
+                        appendTo={'parent'}
                         isShowingOnHover={false}
                         isVisible={highlightedPoolId}
                         themeVariables={popOverThemeVariables}
