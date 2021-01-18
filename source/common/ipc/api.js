@@ -296,6 +296,20 @@ export type GenerateWalletMigrationReportRendererRequest = WalletMigrationReport
 export type GenerateWalletMigrationReportMainResponse = void;
 
 /**
+ * Channel for entering terms of use page
+ */
+export const ENTER_TERMS_OF_USE_CHANNEL = 'ENTER_TERMS_OF_USE_CHANNEL';
+export type EnterTermsOfUseRendererRequest = void;
+export type EnterTermsOfUseMainResponse = void;
+
+/**
+ * Channel for exiting from terms of use page
+ */
+export const EXIT_FROM_TERMS_OF_USE_CHANNEL = 'EXIT_FROM_TERMS_OF_USE_CHANNEL';
+export type ExitFromTermsOfUseRendererRequest = void;
+export type ExitFromTermsOfUseMainResponse = void;
+
+/**
  * Channel for generating wallet migration report
  */
 export const GET_WASM_BINARY_CHANNEL = 'GET_WASM_BINARY_CHANNEL';

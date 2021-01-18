@@ -19,6 +19,7 @@ export const winLinuxMenu = (
   translations: {},
   locale: string,
   isUpdateAvailable: boolean,
+  isOnTermsOfUse: boolean,
   translation: Function = getTranslation(translations, id)
 ) => [
   {
@@ -29,7 +30,7 @@ export const winLinuxMenu = (
         click() {
           actions.openAboutDialog();
         },
-        enabled: !isUpdateAvailable,
+        enabled: !isUpdateAvailable && !isOnTermsOfUse,
       },
       {
         label: translation('daedalus.close'),
@@ -97,7 +98,7 @@ export const winLinuxMenu = (
         click() {
           actions.openSettingsPage();
         },
-        enabled: !isUpdateAvailable,
+        enabled: !isUpdateAvailable && !isOnTermsOfUse,
       },
       {
         label: translation('daedalus.walletSettings'),
@@ -105,7 +106,7 @@ export const winLinuxMenu = (
         click() {
           actions.openWalletSettingsPage();
         },
-        enabled: !isUpdateAvailable,
+        enabled: !isUpdateAvailable && !isOnTermsOfUse,
       },
       {
         type: 'separator',
@@ -201,7 +202,7 @@ export const winLinuxMenu = (
         click() {
           actions.openDaedalusDiagnosticsDialog();
         },
-        enabled: !isUpdateAvailable,
+        enabled: !isUpdateAvailable && !isOnTermsOfUse,
       },
     ]),
   },

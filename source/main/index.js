@@ -37,6 +37,8 @@ import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types
 import { logUsedVersion } from './utils/logUsedVersion';
 import { setStateSnapshotLogChannel } from './ipc/set-log-state-snapshot';
 import { generateWalletMigrationReportChannel } from './ipc/generateWalletMigrationReportChannel';
+import { enterTermsOfUseChannel } from './ipc/enterTermsOfUseChannel';
+import { exitFromTermsOfUseChannel } from './ipc/exitFromTermsOfUseChannel';
 import { pauseActiveDownloads } from './ipc/downloadManagerChannel';
 // import { isHardwareWalletSupportEnabled, isLedgerEnabled } from '../renderer/app/config/hardwareWalletsConfig';
 
@@ -202,7 +204,32 @@ const onAppReady = async () => {
     await safeExit();
   });
 
-  buildAppMenus(mainWindow, cardanoNode, locale, { isUpdateAvailable: false });
+  buildAppMenus(mainWindow, cardanoNode, locale, {
+    isUpdateAvailable: false,
+    isOnTermsOfUse: false,
+  });
+
+  await enterTermsOfUseChannel.onReceive(
+    () =>
+      new Promise((resolve) => {
+        buildAppMenus(mainWindow, cardanoNode, locale, {
+          isUpdateAvailable: false,
+          isOnTermsOfUse: true,
+        });
+        resolve();
+      })
+  );
+
+  await exitFromTermsOfUseChannel.onReceive(
+    () =>
+      new Promise((resolve) => {
+        buildAppMenus(mainWindow, cardanoNode, locale, {
+          isUpdateAvailable: false,
+          isOnTermsOfUse: false,
+        });
+        resolve();
+      })
+  );
 
   await rebuildApplicationMenu.onReceive(
     (data) =>
@@ -210,6 +237,7 @@ const onAppReady = async () => {
         locale = getLocale(network);
         buildAppMenus(mainWindow, cardanoNode, locale, {
           isUpdateAvailable: data.isUpdateAvailable,
+          isOnTermsOfUse: false,
         });
         mainWindow.updateTitle(locale);
         resolve();
