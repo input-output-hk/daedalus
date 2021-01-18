@@ -17,6 +17,12 @@ import type { SmashServerType } from '../../../types/stakingTypes';
 import LocalizableError from '../../../i18n/LocalizableError';
 
 const messages = defineMessages({
+  description: {
+    id: 'settings.stakePools.description',
+    defaultMessage:
+      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ',
+    description: 'description for the Stake Pools settings page.',
+  },
   smashSelectLabel: {
     id: 'settings.stakePools.smash.select.label',
     defaultMessage: '!!!Off-chain metadata server (SMASH)',
@@ -150,6 +156,9 @@ export default class StakePoolsSettings extends Component<Props, State> {
 
     return (
       <div className={styles.component}>
+        <div className={styles.description}>
+          {intl.formatMessage(messages.description)}
+        </div>
         <Select
           label={intl.formatMessage(messages.smashSelectLabel)}
           value={smashServerType}

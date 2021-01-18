@@ -41,6 +41,11 @@ const messages = defineMessages({
     description:
       'Loading stake pool message for the Delegation center body section.',
   },
+  curatedBy: {
+    id: 'staking.stakePools.curatedBy',
+    defaultMessage: '!!!Curated by',
+    description: 'curatedBy message for the Delegation center body section.',
+  },
 });
 
 const SELECTED_INDEX_TABLE = 'selectedIndexTable';
@@ -191,7 +196,9 @@ export default class StakePools extends Component<Props, State> {
 
     const smashSettings = smashServer && (
       <button onClick={onSmashSettingsClick} className={styles.smashSettings}>
-        <span>&nbsp;- {smashServer}</span>
+        <span>
+          <em>{intl.formatMessage(messages.curatedBy)}</em> {smashServer}
+        </span>
         <SVGInline
           svg={smashSettingsIcon}
           className={styles.smashSettingsIcon}
@@ -243,7 +250,7 @@ export default class StakePools extends Component<Props, State> {
             {stakePoolsDelegatingList.length > 0 && (
               <Fragment>
                 <h2 className={styles.listTitle}>
-                  <span>
+                  <span className={styles.leftContent}>
                     {intl.formatMessage(messages.delegatingListTitle)}
                   </span>
                 </h2>
@@ -264,12 +271,15 @@ export default class StakePools extends Component<Props, State> {
             {isListView && (
               <Fragment>
                 <h2>
-                  <FormattedMessage
-                    {...listTitleMessage}
-                    values={{
-                      pools: filteredStakePoolsList.length,
-                    }}
-                  />
+                  <span className={styles.leftContent}>
+                    <FormattedMessage
+                      {...listTitleMessage}
+                      values={{
+                        pools: filteredStakePoolsList.length,
+                      }}
+                    />
+                    {tinyLoadingSpinner}
+                  </span>
                   {smashSettings}
                 </h2>
                 <StakePoolsTable
@@ -292,12 +302,15 @@ export default class StakePools extends Component<Props, State> {
             {isGridView && (
               <Fragment>
                 <h2>
-                  <FormattedMessage
-                    {...listTitleMessage}
-                    values={{
-                      pools: filteredStakePoolsList.length,
-                    }}
-                  />
+                  <span className={styles.leftContent}>
+                    <FormattedMessage
+                      {...listTitleMessage}
+                      values={{
+                        pools: filteredStakePoolsList.length,
+                      }}
+                    />
+                    {tinyLoadingSpinner}
+                  </span>
                   {smashSettings}
                 </h2>
                 <StakePoolsList

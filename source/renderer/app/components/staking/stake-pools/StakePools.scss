@@ -27,15 +27,19 @@
 
   h2 {
     color: var(--theme-staking-stake-pools-title-color);
+    display: flex;
+    justify-content: space-between;
     line-height: 1.38;
     margin: 20px 0 10px;
-    padding-left: 20px;
-    > span:not(.SVGInline) {
-      opacity: 0.5;
-    }
+    padding: 0 20px;
+  }
+
+  .leftContent {
+    opacity: 0.5;
   }
 
   .smashSettings {
+    display: flex;
     cursor: pointer;
     font-size: 16px;
     > span:first-child {
@@ -47,6 +51,9 @@
       text-overflow: ellipsis;
       vertical-align: top;
       white-space: nowrap;
+    }
+    em {
+      font-size: 13px;
     }
     &:hover {
       svg {

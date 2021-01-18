@@ -3,6 +3,14 @@
 .component {
   margin-bottom: 20px;
 }
+.description {
+  color: var(--theme-support-settings-text-color);
+  display: block;
+  font-family: var(--font-light);
+  font-size: 16px;
+  line-height: 1.38;
+  margin-bottom: 20px;
+}
 .smashServerUrl {
   margin-top: 20px;
   :global {
