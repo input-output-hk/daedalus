@@ -85,7 +85,6 @@ export default class StakingStore extends Store {
       this.getStakePoolsData,
       STAKE_POOLS_FAST_INTERVAL
     );
-    this._startStakePoolsFetchTracker();
 
     // Redeem ITN Rewards actions
     stakingActions.onRedeemStart.listen(this._onRedeemStart);
@@ -230,20 +229,17 @@ export default class StakingStore extends Store {
 
   @action _startStakePoolsFetchTracker = () => {
     this._stopStakePoolsFetchTracker();
-    console.log('* _START', this.stakePools.length);
     this.isFetchingStakePools = true;
     this.stakePoolsFetchTrackerInterval = setInterval(
       this._stakePoolsFetchTracker,
       STAKE_POOLS_FETCH_TRACKER_INTERVAL
     );
+    this.getStakePoolsData(true);
   };
 
   @action _stakePoolsFetchTracker = () => {
-    console.log('* _TRACKER');
     const lastNumberOfStakePoolsFetched = this.numberOfStakePoolsFetched;
-    console.log('lastNumberOfStakePoolsFetched', lastNumberOfStakePoolsFetched);
     this.numberOfStakePoolsFetched = this.stakePools.length;
-    console.log('numberOfStakePoolsFetched', this.numberOfStakePoolsFetched);
     if (
       lastNumberOfStakePoolsFetched === this.numberOfStakePoolsFetched &&
       this.numberOfStakePoolsFetched > 0
@@ -254,18 +250,15 @@ export default class StakingStore extends Store {
       this.cyclesWithoutIncreasingStakePools >= STAKE_POOLS_FETCH_TRACKER_CYCLES
     ) {
       this._stopStakePoolsFetchTracker();
-    } else {
-      console.log('not yet!');
-      console.log('cycles', this.cyclesWithoutIncreasingStakePools);
     }
   };
 
   @action _stopStakePoolsFetchTracker = () => {
-    console.log('* _STOP');
     clearInterval(this.stakePoolsFetchTrackerInterval);
     this.numberOfStakePoolsFetched = 0;
     this.cyclesWithoutIncreasingStakePools = 0;
     this.isFetchingStakePools = false;
+    this.getStakePoolsData();
   };
 
   @action _resetSmashServerError = () => {
@@ -514,8 +507,7 @@ export default class StakingStore extends Store {
     return isShelleyPending;
   }
 
-  @action getStakePoolsData = async () => {
-    console.log('---> getStakePoolsData');
+  @action getStakePoolsData = async (isSmash?: boolean) => {
     const {
       isConnected,
       isSynced,
@@ -533,16 +525,16 @@ export default class StakingStore extends Store {
         10
       );
       await this.stakePoolsRequest.execute(stakeInLovelace).promise;
-      this._resetPolling(false);
+      this._resetPolling(isSmash ? 'smash' : 'regular');
     } catch (error) {
-      this._resetPolling(true);
+      this._resetPolling('failed');
     }
     this._resetIsRanking();
   };
 
-  @action _resetPolling = (fetchFailed: boolean, kill?: boolean) => {
-    if (kill) {
-      this.fetchingStakePoolsFailed = fetchFailed;
+  @action _resetPolling = (type?: 'regular' | 'failed' | 'kill' | 'smash') => {
+    if (type === 'kill') {
+      this.fetchingStakePoolsFailed = true;
       if (this.pollingStakePoolsInterval) {
         clearInterval(this.pollingStakePoolsInterval);
         this.pollingStakePoolsInterval = null;
@@ -552,8 +544,7 @@ export default class StakingStore extends Store {
         this.refreshPolling = null;
       }
       return;
-    }
-    if (fetchFailed) {
+    } else if (type === 'failed') {
       this.fetchingStakePoolsFailed = true;
       if (this.pollingStakePoolsInterval) {
         clearInterval(this.pollingStakePoolsInterval);
@@ -571,12 +562,15 @@ export default class StakingStore extends Store {
         clearInterval(this.refreshPolling);
         this.refreshPolling = null;
       }
-      if (!this.pollingStakePoolsInterval) {
-        this.pollingStakePoolsInterval = setInterval(
-          this.getStakePoolsData,
-          STAKE_POOLS_INTERVAL
-        );
-      }
+      clearInterval(this.pollingStakePoolsInterval);
+      const isSmash = type === 'smash';
+      const interval = isSmash
+        ? STAKE_POOLS_FETCH_TRACKER_INTERVAL
+        : STAKE_POOLS_INTERVAL;
+      this.pollingStakePoolsInterval = setInterval(
+        () => this.getStakePoolsData(isSmash),
+        interval
+      );
     }
   };
 
@@ -609,7 +603,7 @@ export default class StakingStore extends Store {
 
       // Regular fetching way with faked response that throws error.
       if ((_pollingBlocked || !isConnected) && !this.refreshPolling) {
-        this._resetPolling(true);
+        this._resetPolling('failed');
         return;
       }
 
@@ -617,7 +611,7 @@ export default class StakingStore extends Store {
         throw new Error('Faked "Stake pools" fetch error');
       } catch (error) {
         if (!this.refreshPolling) {
-          this._resetPolling(true);
+          this._resetPolling('failed');
         }
       }
     }
@@ -804,7 +798,7 @@ export default class StakingStore extends Store {
       this.getStakePoolsData();
     } else {
       this._resetIsRanking();
-      this._resetPolling(true, true);
+      this._resetPolling('kill');
     }
   };
 
