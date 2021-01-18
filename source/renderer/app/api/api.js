@@ -109,6 +109,7 @@ import type {
   Address,
   GetAddressesRequest,
   CreateByronWalletAddressRequest,
+  InspectAddressResponse,
 } from './addresses/types';
 
 // Common Types
@@ -996,9 +997,9 @@ export default class AdaApi {
     }
   };
 
-  inspectAddress = async (
-    request: any // @TODO
-  ): Promise<any> => {
+  inspectAddress = async (request: {
+    addressId: string,
+  }): Promise<InspectAddressResponse> => {
     logger.debug('AdaApi::inspectAddress called', {
       parameters: filterLogData(request),
     });
@@ -1993,7 +1994,7 @@ export default class AdaApi {
         blockchain_start_time, // eslint-disable-line
         slot_length: slotLength,
         epoch_length: epochLength,
-        epoch_stability: epochStability,
+        security_parameter: securityParameter,
         active_slot_coefficient: activeSlotCoefficient,
         decentralization_level: decentralizationLevel,
         desired_pool_number: desiredPoolNumber,
@@ -2007,7 +2008,7 @@ export default class AdaApi {
         blockchainStartTime,
         slotLength,
         epochLength,
-        epochStability,
+        securityParameter,
         activeSlotCoefficient,
         decentralizationLevel,
         desiredPoolNumber,
