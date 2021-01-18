@@ -42,6 +42,13 @@ export default class WalletSummaryPage extends Component<Props> {
     });
   };
 
+  handleOpenWalletTokenSend = (token: Wallet) => {
+    this.props.actions.router.goToRoute.trigger({
+      route: ROUTES.WALLETS.PAGE,
+      params: { id: token.id, token, isToken: true }
+    });
+};
+
   render() {
     const { intl } = this.context;
     const { stores } = this.props;
@@ -122,6 +129,7 @@ export default class WalletSummaryPage extends Component<Props> {
           <WalletNativeTokensSummary
             wallet={wallet}
             nativeTokens={wallets.all}
+            handleOpenWalletTokenSend={this.handleOpenWalletTokenSend}
           />
         )}
         {walletTransactions}

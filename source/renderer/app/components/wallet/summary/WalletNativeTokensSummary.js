@@ -8,6 +8,7 @@ import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import styles from './WalletNativeTokensSummary.scss';
 import Wallet from '../../../domains/Wallet';
 import globalMessages from '../../../i18n/global-messages';
+import {ROUTES} from "../../../routes-config";
 
 const messages = defineMessages({
   transactionsLabel: {
@@ -36,6 +37,7 @@ const messages = defineMessages({
 type Props = {
   wallet: Wallet,
   nativeTokens: Array<any>,
+  handleOpenWalletTokenSend: Function,
 };
 
 @observer
@@ -44,12 +46,8 @@ export default class WalletNativeTokensSummary extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
-  openSendTokenDialog = () => {
-    // @todo
-  };
-
   render() {
-    const { wallet, nativeTokens } = this.props;
+    const { wallet, nativeTokens, handleOpenWalletTokenSend } = this.props;
     const { intl } = this.context;
 
     const isRestoreActive = wallet.isRestoring;
@@ -80,7 +78,7 @@ export default class WalletNativeTokensSummary extends Component<Props> {
                     styles.nativeTokenSendButton,
                     token.amount.isZero() ? styles.disabled : null,
                   ])}
-                  onClick={() => this.openSendTokenDialog(token)}
+                  onClick={() => handleOpenWalletTokenSend(token)}
                 >
                   {intl.formatMessage(messages.tokenSendButton)}
                 </button>

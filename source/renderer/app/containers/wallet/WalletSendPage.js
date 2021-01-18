@@ -64,6 +64,7 @@ export default class WalletSendPage extends Component<Props> {
 
   render() {
     const { intl } = this.context;
+    debugger;
     const {
       uiDialogs,
       wallets,
