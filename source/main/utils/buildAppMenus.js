@@ -16,12 +16,12 @@ export const buildAppMenus = async (
   locale: string,
   data: {
     isUpdateAvailable: boolean,
-    isOnTermsOfUse: boolean,
+    isOnInitialSettings: boolean,
   }
 ) => {
   const { ABOUT, DAEDALUS_DIAGNOSTICS } = DIALOGS;
   const { SETTINGS, WALLET_SETTINGS } = PAGES;
-  const { isUpdateAvailable, isOnTermsOfUse } = data;
+  const { isUpdateAvailable, isOnInitialSettings } = data;
 
   const { isMacOS, isBlankScreenFixActive } = environment;
   const translations = require(`../locales/${locale}`);
@@ -108,7 +108,7 @@ export const buildAppMenus = async (
         translations,
         locale,
         isUpdateAvailable,
-        isOnTermsOfUse
+        isOnInitialSettings
       )
     );
     Menu.setApplicationMenu(menu);
@@ -121,7 +121,7 @@ export const buildAppMenus = async (
         translations,
         locale,
         isUpdateAvailable,
-        isOnTermsOfUse
+        isOnInitialSettings
       )
     );
     mainWindow.setMenu(menu);

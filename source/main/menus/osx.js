@@ -19,7 +19,7 @@ export const osxMenu = (
   translations: {},
   locale: string,
   isUpdateAvailable: boolean,
-  isOnTermsOfUse: boolean,
+  isOnInitialSettings: boolean,
   translation: Function = getTranslation(translations, id)
 ) => [
   {
@@ -30,7 +30,7 @@ export const osxMenu = (
         click() {
           actions.openAboutDialog();
         },
-        enabled: !isUpdateAvailable && !isOnTermsOfUse,
+        enabled: !isUpdateAvailable && !isOnInitialSettings,
       },
       { type: 'separator' },
       {
@@ -39,7 +39,7 @@ export const osxMenu = (
         click() {
           actions.openSettingsPage();
         },
-        enabled: !isUpdateAvailable && !isOnTermsOfUse,
+        enabled: !isUpdateAvailable && !isOnInitialSettings,
       },
       {
         label: translation('daedalus.walletSettings'),
@@ -47,7 +47,7 @@ export const osxMenu = (
         click() {
           actions.openWalletSettingsPage();
         },
-        enabled: !isUpdateAvailable && !isOnTermsOfUse,
+        enabled: !isUpdateAvailable && !isOnInitialSettings,
       },
       { type: 'separator' },
       {
@@ -191,7 +191,7 @@ export const osxMenu = (
         click() {
           actions.openDaedalusDiagnosticsDialog();
         },
-        enabled: !isUpdateAvailable && !isOnTermsOfUse,
+        enabled: !isUpdateAvailable && !isOnInitialSettings,
       },
     ]),
   },

@@ -37,8 +37,8 @@ import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types
 import { logUsedVersion } from './utils/logUsedVersion';
 import { setStateSnapshotLogChannel } from './ipc/set-log-state-snapshot';
 import { generateWalletMigrationReportChannel } from './ipc/generateWalletMigrationReportChannel';
-import { enterTermsOfUseChannel } from './ipc/enterTermsOfUseChannel';
-import { exitFromTermsOfUseChannel } from './ipc/exitFromTermsOfUseChannel';
+import { enterInitialSettingsChannel } from './ipc/enterInitialSettingsChannel';
+import { exitFromInitialSettingsChannel } from './ipc/exitFromInitialSettingsChannel';
 import { pauseActiveDownloads } from './ipc/downloadManagerChannel';
 // import { isHardwareWalletSupportEnabled, isLedgerEnabled } from '../renderer/app/config/hardwareWalletsConfig';
 
@@ -206,26 +206,26 @@ const onAppReady = async () => {
 
   buildAppMenus(mainWindow, cardanoNode, locale, {
     isUpdateAvailable: false,
-    isOnTermsOfUse: false,
+    isOnInitialSettings: false,
   });
 
-  await enterTermsOfUseChannel.onReceive(
+  await enterInitialSettingsChannel.onReceive(
     () =>
       new Promise((resolve) => {
         buildAppMenus(mainWindow, cardanoNode, locale, {
           isUpdateAvailable: false,
-          isOnTermsOfUse: true,
+          isOnInitialSettings: true,
         });
         resolve();
       })
   );
 
-  await exitFromTermsOfUseChannel.onReceive(
+  await exitFromInitialSettingsChannel.onReceive(
     () =>
       new Promise((resolve) => {
         buildAppMenus(mainWindow, cardanoNode, locale, {
           isUpdateAvailable: false,
-          isOnTermsOfUse: false,
+          isOnInitialSettings: false,
         });
         resolve();
       })
@@ -237,7 +237,7 @@ const onAppReady = async () => {
         locale = getLocale(network);
         buildAppMenus(mainWindow, cardanoNode, locale, {
           isUpdateAvailable: data.isUpdateAvailable,
-          isOnTermsOfUse: false,
+          isOnInitialSettings: false,
         });
         mainWindow.updateTitle(locale);
         resolve();

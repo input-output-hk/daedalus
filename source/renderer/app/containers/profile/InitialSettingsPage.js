@@ -4,6 +4,7 @@ import { inject, observer } from 'mobx-react';
 import TopBar from '../../components/layout/TopBar';
 import TopBarLayout from '../../components/layout/TopBarLayout';
 import InitialSettings from '../../components/profile/initial-settings/InitialSettings';
+import { enterInitialSettingsChannel } from '../../ipc/enterInitialSettingsChannel';
 import { rebuildApplicationMenu } from '../../ipc/rebuild-application-menu';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
@@ -11,6 +12,10 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 @observer
 export default class InitialSettingsPage extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
+
+  async componentDidMount() {
+    await enterInitialSettingsChannel.send();
+  }
 
   onSubmit = async () => {
     const { actions } = this.props;
