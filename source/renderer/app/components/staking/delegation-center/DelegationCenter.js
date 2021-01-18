@@ -13,6 +13,7 @@ import type {
 type Props = {
   wallets: Array<Wallet>,
   numberOfStakePools: number,
+  numberOfRankedStakePools: number,
   onDelegate: Function,
   onUndelegate: Function,
   networkTip: ?TipInfo,
@@ -23,6 +24,12 @@ type Props = {
   isLoading: boolean,
   currentLocale: string,
   isEpochsInfoAvailable: boolean,
+  isListActive?: boolean,
+  currentTheme: string,
+  onOpenExternalLink: Function,
+  containerClassName: string,
+  setListActive?: Function,
+  listName?: string,
 };
 
 @observer
@@ -31,6 +38,7 @@ export default class DelegationCenter extends Component<Props> {
     const {
       wallets,
       numberOfStakePools,
+      numberOfRankedStakePools,
       onDelegate,
       onUndelegate,
       networkTip,
@@ -41,6 +49,12 @@ export default class DelegationCenter extends Component<Props> {
       isLoading,
       currentLocale,
       isEpochsInfoAvailable,
+      isListActive,
+      currentTheme,
+      onOpenExternalLink,
+      containerClassName,
+      setListActive,
+      listName,
     } = this.props;
 
     return (
@@ -57,10 +71,19 @@ export default class DelegationCenter extends Component<Props> {
         <DelegationCenterBody
           wallets={wallets}
           numberOfStakePools={numberOfStakePools}
+          numberOfRankedStakePools={numberOfRankedStakePools}
           onDelegate={onDelegate}
           onUndelegate={onUndelegate}
           getStakePoolById={getStakePoolById}
+          nextEpoch={nextEpoch}
+          futureEpoch={futureEpoch}
           isLoading={isLoading || !isEpochsInfoAvailable}
+          currentTheme={currentTheme}
+          isListActive={isListActive}
+          onOpenExternalLink={onOpenExternalLink}
+          containerClassName={containerClassName}
+          setListActive={setListActive}
+          listName={listName}
         />
       </Fragment>
     );

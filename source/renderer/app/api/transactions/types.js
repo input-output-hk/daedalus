@@ -22,6 +22,14 @@ export type TransactionInsertionBlock = {
 export type Transaction = {
   id: string,
   amount: TransactionAmount,
+  fee: {
+    quantity: number,
+    unit: WalletUnits.LOVELACE,
+  },
+  deposit: {
+    quantity: number,
+    unit: WalletUnits.LOVELACE,
+  },
   inserted_at?: {
     time: Date,
     block: TransactionInsertionBlock,
@@ -150,6 +158,10 @@ export type TransactionPaymentData = {
 export type TransactionFee = {
   estimated_min: TransactionFeeAmount,
   estimated_max: TransactionFeeAmount,
+  deposit: {
+    quantity: number,
+    unit: WalletUnits.LOVELACE,
+  },
 };
 
 export type CoinSelectionAmount = {

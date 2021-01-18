@@ -2072,7 +2072,7 @@ export default class AdaApi {
         blockchain_start_time, // eslint-disable-line
         slot_length: slotLength,
         epoch_length: epochLength,
-        epoch_stability: epochStability,
+        security_parameter: securityParameter,
         active_slot_coefficient: activeSlotCoefficient,
         decentralization_level: decentralizationLevel,
         desired_pool_number: desiredPoolNumber,
@@ -2086,7 +2086,7 @@ export default class AdaApi {
         blockchainStartTime,
         slotLength,
         epochLength,
-        epochStability,
+        securityParameter,
         activeSlotCoefficient,
         decentralizationLevel,
         desiredPoolNumber,
