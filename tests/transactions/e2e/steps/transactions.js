@@ -234,7 +234,7 @@ Then(/^the latest transaction should show:$/, async function(table) {
   // NOTE: we use "add()" as this is outgoing transaction and amount is a negative value!
   const transactionAmount = new BigNumber(transactionAmounts[0]);
   const transactionAmountWithoutFees = transactionAmount
-    .add(this.fees)
+    .plus(this.fees)
     .toFormat(DECIMAL_PLACES_IN_ADA);
   expect(expectedData.amountWithoutFees).to.equal(transactionAmountWithoutFees);
 });

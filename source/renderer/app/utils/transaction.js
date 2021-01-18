@@ -85,10 +85,10 @@ export const isTransactionAmountInFilterRange = (
       ? new BigNumber(0)
       : new BigNumber(toAmount);
   const compareFrom = fromAmount
-    ? amount.absoluteValue().greaterThanOrEqualTo(min)
+    ? amount.absoluteValue().isGreaterThanOrEqualTo(min)
     : true;
   const compareTo = toAmount
-    ? amount.absoluteValue().lessThanOrEqualTo(max)
+    ? amount.absoluteValue().isLessThanOrEqualTo(max)
     : true;
 
   return compareFrom && compareTo;
