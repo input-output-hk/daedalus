@@ -1,6 +1,7 @@
 // @flow
 import hash from 'hash.js';
 import faker from 'faker';
+import JSONBigIntLibrary from 'json-bigint';
 import moment from 'moment';
 import { random, get } from 'lodash';
 import BigNumber from 'bignumber.js';
@@ -24,6 +25,8 @@ import type {
   TransactionState,
 } from '../../../source/renderer/app/api/transactions/types';
 import type { SyncStateStatus } from '../../../source/renderer/app/api/wallets/types';
+
+const JSONBigInt = JSONBigIntLibrary({ stireAsString: true });
 
 export const generateHash = () => {
   const now = new Date().valueOf().toString();
@@ -113,6 +116,7 @@ export const generateTransaction = (
             faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100),
           ],
     },
+    metadata: JSONBigInt.parse('{ "9": 999999999999999999999999999999999999 }'),
   });
 
 export const generateRandomTransaction = (index: number) =>

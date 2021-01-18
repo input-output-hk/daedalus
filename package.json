@@ -201,6 +201,7 @@
     "history": "4.10.1",
     "humanize-duration": "3.23.1",
     "inquirer": "7.3.3",
+    "json-bigint": "^1.0.0",
     "lodash": "4.17.20",
     "lodash-es": "4.17.15",
     "mime-types": "2.1.27",

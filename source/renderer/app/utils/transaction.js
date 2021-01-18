@@ -364,3 +364,11 @@ const encodeTransactionAddress = (addr) => {
   const bytes = bs58.decode(addr);
   return cbor.decodeFirstSync(bytes);
 };
+
+type MetadataKey = number;
+type MetadataValue =
+  | number
+  | string
+  | MetadataValue[]
+  | $Exact<{ k: MetadataValue, v: MetadataValue }>;
+export type TransactionMetadata = { [MetadataKey]: MetadataValue };

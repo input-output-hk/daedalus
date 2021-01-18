@@ -46,6 +46,22 @@ const messages = defineMessages({
     defaultMessage: '!!!Transaction ID',
     description: 'Transaction ID.',
   },
+  metadataLabel: {
+    id: 'wallet.transaction.metadataLabel',
+    defaultMessage: '!!!Transaction metadata',
+    description: 'Transaction metadata label',
+  },
+  metadataDisclaimer: {
+    id: 'wallet.transaction.metadataDisclaimer',
+    defaultMessage:
+      '!!!Transaction metadata is not moderated and may contain inappropriate content. Lorem ipsum dolor sit amet.',
+    description: 'Transaction metadata disclaimer',
+  },
+  metadataConfirmationLabel: {
+    id: 'wallet.transaction.metadataConfirmationLabel',
+    defaultMessage: '!!!Show unmoderated content',
+    description: 'Transaction metadata confirmation toggle',
+  },
   conversionRate: {
     id: 'wallet.transaction.conversion.rate',
     defaultMessage: '!!!Conversion rate',
@@ -442,7 +458,7 @@ export default class Transaction extends Component<Props, State> {
               role="presentation"
               aria-hidden
             >
-              <div>
+              <p>
                 <h2>{intl.formatMessage(messages.fromAddresses)}</h2>
                 {fromAddresses(data.addresses.from, data.id)}
 
@@ -498,7 +514,20 @@ export default class Transaction extends Component<Props, State> {
                   />
                 </div>
                 {this.renderCancelPendingTxnContent()}
-              </div>
+
+                <h2>{intl.formatMessage(messages.metadataLabel)}</h2>
+                <p className={styles.metadataDisclaimer}>
+                  {intl.formatMessage(messages.metadataDisclaimer)}
+                </p>
+                <Link
+                  isUnderlined={false}
+                  hasIconAfter={false}
+                  underlineOnHover
+                  label={intl.formatMessage(messages.metadataConfirmationLabel)}
+                  onClick={(e) => e.preventDefault()}
+                />
+                <p>{JSON.stringify(data.metadata)}</p>
+              </p>
             </div>
             <SVGInline svg={arrow} className={arrowStyles} />
           </div>
