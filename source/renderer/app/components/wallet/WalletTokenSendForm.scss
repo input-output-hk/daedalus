@@ -61,6 +61,10 @@
     .SimpleFormField_error a {
       color: var(--rp-formfield-error-text-color, rgba(222, 50, 38, 0.5));
     }
+
+    .SimpleInput_disabled {
+      font-family: var(--font-regular);
+    }
   }
 }
 
@@ -68,7 +72,8 @@
 .depositInput {
   :global {
     .AmountInputSkin_total {
-      left: 180px;
+      font-family: var(--font-regular);
+      left: 95px;
     }
   }
 }

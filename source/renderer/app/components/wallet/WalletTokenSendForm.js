@@ -268,7 +268,9 @@ export default class WalletTokenSendForm extends Component<Props, State> {
           placeholder: `0${
             this.getCurrentNumberFormat().decimalSeparator
           }${'0'.repeat(this.props.currencyMaxFractionalDigits)}`,
-          value: '1',
+          value: `1${
+            this.getCurrentNumberFormat().decimalSeparator
+          }${'0'.repeat(this.props.currencyMaxFractionalDigits)}`,
         },
         estimatedFee: {
           label: this.context.intl.formatMessage(messages.estimatedFeeLabel),
