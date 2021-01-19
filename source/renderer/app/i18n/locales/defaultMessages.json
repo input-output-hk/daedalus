@@ -2178,17 +2178,129 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Off-chain metadata server (SMASH)",
-        "description": "smashSelectLabel for the \"Smash\" selection on the Stake Pools settings page.",
+        "defaultMessage": "!!!The Stakepool Metadata Aggregation Server (SMASH) is an off-chain metadata server for:",
+        "description": "description for the Stake Pools settings page.",
         "end": {
           "column": 3,
           "line": 26
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "settings.stakePools.smash.description1",
+        "start": {
+          "column": 16,
+          "line": 21
+        }
+      },
+      {
+        "defaultMessage": "!!!Curating the server list.",
+        "description": "description for the Stake Pools settings page.",
+        "end": {
+          "column": 3,
+          "line": 31
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "settings.stakePools.smash.descriptionItem1Title",
+        "start": {
+          "column": 25,
+          "line": 27
+        }
+      },
+      {
+        "defaultMessage": "!!!Every server has a different curation policy. For example, the IOHK server ensures that registered stake pools are valid, helps to avoid duplicated ticker names or trademarks, and checks that the pools do not feature potentially offensive or harmful.<br />Scams, trolls, and abusive behavior are unfortunately part of the online ecosystem, we had to find a way to filter potentially problematic actors out of the playing field.",
+        "description": "description for the Stake Pools settings page.",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "settings.stakePools.smash.descriptionItem1Content",
+        "start": {
+          "column": 27,
+          "line": 32
+        }
+      },
+      {
+        "defaultMessage": "!!!Enabling faster loading of stake pools.",
+        "description": "description for the Stake Pools settings page.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "settings.stakePools.smash.descriptionItem2Title",
+        "start": {
+          "column": 25,
+          "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!Your Daedalus client does not fetch the stake pool data individually from every stake pool. Rather, it loads off-chain data for all of the stake pools found in the selected server.",
+        "description": "description for the Stake Pools settings page.",
+        "end": {
+          "column": 3,
+          "line": 48
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "settings.stakePools.smash.descriptionItem2Content",
+        "start": {
+          "column": 27,
+          "line": 43
+        }
+      },
+      {
+        "defaultMessage": "!!!If you decide not to use an off-chain metadata server, your Daedalus client will be forced to fetch this data by contacting every stake pool individually, which is a very slow and resource-consuming process. The list of stake pools received is not curated, so Daedalus will get legitimate, duplicates, and fake pools. An added risk to this process is that your antivirus or antimalware software could recognize making thousands of network requests as malicious behavior by the Daedalus client.",
+        "description": "description for the Stake Pools settings page.",
+        "end": {
+          "column": 3,
+          "line": 54
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "settings.stakePools.smash.description2",
+        "start": {
+          "column": 16,
+          "line": 49
+        }
+      },
+      {
+        "defaultMessage": "!!!Off-chain metadata server (SMASH)",
+        "description": "smashSelectLabel for the \"Smash\" selection on the Stake Pools settings page.",
+        "end": {
+          "column": 3,
+          "line": 60
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smash.select.label",
         "start": {
           "column": 20,
-          "line": 21
+          "line": 55
+        }
+      },
+      {
+        "defaultMessage": "!!!IOHK",
+        "description": "smashSelectCustomServer option for the \"Smash\" selection on the Stake Pools settings page.",
+        "end": {
+          "column": 3,
+          "line": 66
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "settings.stakePools.smash.select.IOHKServer",
+        "start": {
+          "column": 25,
+          "line": 61
+        }
+      },
+      {
+        "defaultMessage": "!!!None - let my Daedalus client fetch the data",
+        "description": "smashSelectCustomServer option for the \"Smash\" selection on the Stake Pools settings page.",
+        "end": {
+          "column": 3,
+          "line": 72
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "settings.stakePools.smash.select.direct",
+        "start": {
+          "column": 21,
+          "line": 67
         }
       },
       {
@@ -2196,13 +2308,13 @@
         "description": "smashSelectCustomServer option for the \"Smash\" selection on the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 32
+          "line": 78
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
-        "id": "settings.stakePools.smash.select.placeholder",
+        "id": "settings.stakePools.smash.select.customServer",
         "start": {
           "column": 27,
-          "line": 27
+          "line": 73
         }
       },
       {
@@ -2210,13 +2322,13 @@
         "description": "smashURLInputLabel for the \"Smash Custom Server\" selection on the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 84
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smashUrl.input.label",
         "start": {
           "column": 22,
-          "line": 33
+          "line": 79
         }
       },
       {
@@ -2224,13 +2336,13 @@
         "description": "smashUrlInputPlaceholder for the \"Smash Custom Server\" selection on the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 90
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smashUrl.input.placeholder",
         "start": {
           "column": 28,
-          "line": 39
+          "line": 85
         }
       },
       {
@@ -2238,13 +2350,13 @@
         "description": "smashUrlInputInvalidUrl for the \"Smash Custom Server\" selection on the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 96
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smashUrl.input.invalidUrl",
         "start": {
           "column": 27,
-          "line": 45
+          "line": 91
         }
       }
     ],
@@ -5479,13 +5591,13 @@
         "description": "\"delegatingListTitle\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 27
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.delegatingListTitle",
         "start": {
           "column": 23,
-          "line": 22
+          "line": 23
         }
       },
       {
@@ -5493,13 +5605,13 @@
         "description": "\"listTitle\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 32
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.listTitle",
         "start": {
           "column": 13,
-          "line": 27
+          "line": 28
         }
       },
       {
@@ -5507,13 +5619,13 @@
         "description": "\"listTitle\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 37
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.listTitleWithSearch",
         "start": {
           "column": 23,
-          "line": 32
+          "line": 33
         }
       },
       {
@@ -5521,13 +5633,27 @@
         "description": "Loading stake pool message for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 43
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.loadingStakePoolsMessage",
         "start": {
           "column": 28,
-          "line": 37
+          "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!Curated by",
+        "description": "curatedBy message for the Delegation center body section.",
+        "end": {
+          "column": 3,
+          "line": 48
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
+        "id": "staking.stakePools.curatedBy",
+        "start": {
+          "column": 13,
+          "line": 44
         }
       }
     ],

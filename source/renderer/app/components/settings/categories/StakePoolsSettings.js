@@ -4,6 +4,7 @@ import { map } from 'lodash';
 import { Select } from 'react-polymorph/lib/components/Select';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import RadioSet from '../../widgets/RadioSet';
 import { isValidUrl } from '../../../utils/validations';
 import { getSmashServerIdFromUrl } from '../../../utils/staking';
 import InlineEditingInput from '../../widgets/forms/InlineEditingInput';
@@ -17,10 +18,44 @@ import type { SmashServerType } from '../../../types/stakingTypes';
 import LocalizableError from '../../../i18n/LocalizableError';
 
 const messages = defineMessages({
-  description: {
-    id: 'settings.stakePools.description',
+  description1: {
+    id: 'settings.stakePools.smash.description1',
     defaultMessage:
-      'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ',
+      '!!!The Stakepool Metadata Aggregation Server (SMASH) is an off-chain metadata server for:',
+    description: 'description for the Stake Pools settings page.',
+  },
+  descriptionItem1Title: {
+    id: 'settings.stakePools.smash.descriptionItem1Title',
+    defaultMessage: '!!!Curating the server list.',
+    description: 'description for the Stake Pools settings page.',
+  },
+  descriptionItem1Content1: {
+    id: 'settings.stakePools.smash.descriptionItem1Content1',
+    defaultMessage:
+      '!!!Every server has a different curation policy. For example, the IOHK server ensures that registered stake pools are valid, helps to avoid duplicated ticker names or trademarks, and checks that the pools do not feature potentially offensive or harmful.',
+    description: 'description for the Stake Pools settings page.',
+  },
+  descriptionItem1Content2: {
+    id: 'settings.stakePools.smash.descriptionItem1Content2',
+    defaultMessage:
+      '!!!Scams, trolls, and abusive behavior are unfortunately part of the online ecosystem, we had to find a way to filter potentially problematic actors out of the playing field.',
+    description: 'description for the Stake Pools settings page.',
+  },
+  descriptionItem2Title: {
+    id: 'settings.stakePools.smash.descriptionItem2Title',
+    defaultMessage: '!!!Enabling faster loading of stake pools.',
+    description: 'description for the Stake Pools settings page.',
+  },
+  descriptionItem2Content: {
+    id: 'settings.stakePools.smash.descriptionItem2Content',
+    defaultMessage:
+      '!!!Your Daedalus client does not fetch the stake pool data individually from every stake pool. Rather, it loads off-chain data for all of the stake pools found in the selected server.',
+    description: 'description for the Stake Pools settings page.',
+  },
+  description2: {
+    id: 'settings.stakePools.smash.description2',
+    defaultMessage:
+      '!!!If you decide not to use an off-chain metadata server, your Daedalus client will be forced to fetch this data by contacting every stake pool individually, which is a very slow and resource-consuming process. The list of stake pools received is not curated, so Daedalus will get legitimate, duplicates, and fake pools. An added risk to this process is that your antivirus or antimalware software could recognize making thousands of network requests as malicious behavior by the Daedalus client.',
     description: 'description for the Stake Pools settings page.',
   },
   smashSelectLabel: {
@@ -29,8 +64,20 @@ const messages = defineMessages({
     description:
       'smashSelectLabel for the "Smash" selection on the Stake Pools settings page.',
   },
+  smashSelectIOHKServer: {
+    id: 'settings.stakePools.smash.select.IOHKServer',
+    defaultMessage: '!!!IOHK',
+    description:
+      'smashSelectCustomServer option for the "Smash" selection on the Stake Pools settings page.',
+  },
+  smashSelectDirect: {
+    id: 'settings.stakePools.smash.select.direct',
+    defaultMessage: '!!!None - let my Daedalus client fetch the data',
+    description:
+      'smashSelectCustomServer option for the "Smash" selection on the Stake Pools settings page.',
+  },
   smashSelectCustomServer: {
-    id: 'settings.stakePools.smash.select.placeholder',
+    id: 'settings.stakePools.smash.select.customServer',
     defaultMessage: '!!!Custom server',
     description:
       'smashSelectCustomServer option for the "Smash" selection on the Stake Pools settings page.',
@@ -156,10 +203,61 @@ export default class StakePoolsSettings extends Component<Props, State> {
 
     return (
       <div className={styles.component}>
+        <RadioSet
+          label={intl.formatMessage(messages.smashSelectLabel)}
+          items={[
+            {
+              key: SMASH_SERVER_TYPES.IOHK,
+              label: intl.formatMessage(messages.smashSelectIOHKServer),
+              selected: smashServerType === SMASH_SERVER_TYPES.IOHK,
+              onChange: (a, b, c) => {
+                console.log('a', a);
+                console.log('b', b);
+                console.log('c', c);
+              },
+            },
+            {
+              key: SMASH_SERVER_TYPES.CUSTOM,
+              label: intl.formatMessage(messages.smashSelectCustomServer),
+              selected: smashServerType === SMASH_SERVER_TYPES.CUSTOM,
+              onChange: (a, b, c) => {
+                console.log('a', a);
+                console.log('b', b);
+                console.log('c', c);
+              },
+            },
+            {
+              key: SMASH_SERVER_TYPES.DIRECT,
+              label: intl.formatMessage(messages.smashSelectDirect),
+              selected: smashServerType === SMASH_SERVER_TYPES.DIRECT,
+              onChange: (a, b, c) => {
+                console.log('a', a);
+                console.log('b', b);
+                console.log('c', c);
+              },
+            },
+          ]}
+        />
         <div className={styles.description}>
-          {intl.formatMessage(messages.description)}
+          <p>{intl.formatMessage(messages.description1)}</p>
+          <ol className={styles.description}>
+            <li>
+              <p>
+                <b>{intl.formatMessage(messages.descriptionItem1Title)}</b>
+              </p>
+              <p>{intl.formatMessage(messages.descriptionItem1Content1)}</p>
+              <p>{intl.formatMessage(messages.descriptionItem1Content2)}</p>
+            </li>
+            <li>
+              <p>
+                <b>{intl.formatMessage(messages.descriptionItem2Title)}</b>
+              </p>
+              <p>{intl.formatMessage(messages.descriptionItem2Content)}</p>
+            </li>
+          </ol>
+          <p>{intl.formatMessage(messages.description2)}</p>
         </div>
-        <Select
+        {/*<Select
           label={intl.formatMessage(messages.smashSelectLabel)}
           value={smashServerType}
           options={smashSelectOptions}
@@ -181,7 +279,7 @@ export default class StakePoolsSettings extends Component<Props, State> {
           readOnly={isLoading || smashServerType !== SMASH_SERVER_TYPES.CUSTOM}
           isLoading={isLoading}
           successfullyUpdated={successfullyUpdated}
-        />
+        />*/}
       </div>
     );
   }

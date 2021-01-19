@@ -10,6 +10,16 @@
   font-size: 16px;
   line-height: 1.38;
   margin-bottom: 20px;
+  p {
+    margin-bottom: 12px;
+  }
+  b {
+    font-family: var(--font-regular);
+  }
+  li {
+    list-style: decimal;
+    margin-left: 20px;
+  }
 }
 .smashServerUrl {
   margin-top: 20px;
@@ -23,4 +33,9 @@
   @include error-message;
   margin-bottom: 1rem;
   text-align: center;
+}
+:global {
+  .RadioSet_radiosContainer {
+    flex-direction: column;
+  }
 }
