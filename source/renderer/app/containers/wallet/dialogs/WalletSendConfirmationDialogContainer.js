@@ -20,7 +20,7 @@ type Props = {
   onExternalLinkClick: Function,
   hwDeviceStatus: HwDeviceStatus,
   isHardwareWallet: boolean,
-  nativeTokens: Array<Wallet>,
+  nativeTokens?: Array<Wallet>,
 };
 
 @inject('actions', 'stores')

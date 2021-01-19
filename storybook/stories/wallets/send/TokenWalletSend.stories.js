@@ -4,7 +4,7 @@ import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { boolean } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
-import { promise } from '../../_support/utils';
+import { generateWallet, promise } from '../../_support/utils';
 
 // Assets and helpers
 import WalletsWrapper from '../_utils/WalletsWrapper';
@@ -31,5 +31,11 @@ storiesOf('Token Wallets|Send', module)
       walletAmount={new BigNumber(123)}
       hwDeviceStatus={HwDeviceStatuses.READY}
       isHardwareWallet={boolean('isHardwareWallet', false)}
+      nativeTokens={[
+        generateWallet('ADA', '55119903750165'),
+        generateWallet('Tether', '25119903750165'),
+        generateWallet('TrueUSD', '15119903750165'),
+        generateWallet('USD Coin', '0'),
+      ]}
     />
   ));
