@@ -8,7 +8,6 @@ import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import styles from './WalletNativeTokensSummary.scss';
 import Wallet from '../../../domains/Wallet';
 import globalMessages from '../../../i18n/global-messages';
-import {ROUTES} from "../../../routes-config";
 
 const messages = defineMessages({
   transactionsLabel: {
@@ -59,7 +58,7 @@ export default class WalletNativeTokensSummary extends Component<Props> {
           {intl.formatMessage(messages.tokensTitle)} ({numberOfNativeTokens})
         </div>
         <div className={styles.component}>
-          {nativeTokens.map((token) => (
+          {nativeTokens.map((token: Wallet) => (
             <BorderedBox className={styles.nativeTokenContainer} key={token.id}>
               <div className={styles.nativeTokenLeftContainer}>
                 <div className={styles.walletName}>{token.name}</div>

@@ -340,6 +340,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
       hwDeviceStatus,
       isHardwareWallet,
     } = this.props;
+
     const {
       isTransactionFeeCalculated,
       transactionFee,

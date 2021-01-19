@@ -3,6 +3,7 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 
 // Assets and helpers
+import { action } from '@storybook/addon-actions';
 import { generateWallet } from '../../_support/utils';
 import WalletsWrapper from '../_utils/WalletsWrapper';
 
@@ -21,5 +22,6 @@ storiesOf('Wallets Native Token|Summary', module)
         generateWallet('TrueUSD', '15119903750165'),
         generateWallet('USD Coin', '0'),
       ]}
+      handleOpenWalletTokenSend={action('onContinue')}
     />
   ));

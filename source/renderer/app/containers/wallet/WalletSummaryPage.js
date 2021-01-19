@@ -14,6 +14,7 @@ import { formattedWalletAmount } from '../../utils/formatters';
 import { getNetworkExplorerUrlByType } from '../../utils/network';
 import { WALLET_NATIVE_TOKENS_ENABLED } from '../../config/walletsConfig';
 import WalletNativeTokensSummary from '../../components/wallet/summary/WalletNativeTokensSummary';
+import Wallet from '../../domains/Wallet';
 
 export const messages = defineMessages({
   noTransactions: {
@@ -43,11 +44,15 @@ export default class WalletSummaryPage extends Component<Props> {
   };
 
   handleOpenWalletTokenSend = (token: Wallet) => {
+    this.props.actions.wallets.setNativeTokenWallet.trigger({
+      walletId: token.id,
+    });
+
     this.props.actions.router.goToRoute.trigger({
       route: ROUTES.WALLETS.PAGE,
-      params: { id: token.id, token, isToken: true }
+      params: { id: token.id, page: 'send' },
     });
-};
+  };
 
   render() {
     const { intl } = this.context;
@@ -125,7 +130,7 @@ export default class WalletSummaryPage extends Component<Props> {
           numberOfPendingTransactions={pendingTransactionsCount}
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
         />
-        {hasNativeTokens && (
+        {hasNativeTokens && wallets.all && (
           <WalletNativeTokensSummary
             wallet={wallet}
             nativeTokens={wallets.all}

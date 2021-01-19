@@ -185,6 +185,9 @@ export default class WalletsStore extends Store {
   @observable certificateTemplate = null;
   @observable additionalMnemonicWords = null;
 
+  /* ----------  Native Token Wallet  ---------- */
+  @observable isNativeTokenWallet = false;
+
   /* ----------  Transfer Funds  ---------- */
   @observable transferFundsSourceWalletId: string = '';
   @observable transferFundsTargetWalletId: string = '';
@@ -250,6 +253,8 @@ export default class WalletsStore extends Store {
     walletsActions.sendMoney.listen(this._sendMoney);
     walletsActions.importWalletFromFile.listen(this._importWalletFromFile);
     walletsActions.chooseWalletExportType.listen(this._chooseWalletExportType);
+
+    walletsActions.setNativeTokenWallet.listen(this._setNativeTokenWallet);
 
     walletsActions.generateCertificate.listen(this._generateCertificate);
     walletsActions.generateAddressPDF.listen(this._generateAddressPDF);
@@ -1424,5 +1429,14 @@ export default class WalletsStore extends Store {
   @action _resetRewardsCsvData = () => {
     this.generatingRewardsCsvInProgress = false;
     this._updateGeneratingRewardsCsvError();
+  };
+
+  @action _setNativeTokenWallet = (params: { walletId: string }) => {
+    const nativeWallet = this.getWalletById(params.walletId);
+    if (nativeWallet) {
+      runInAction('AdaWalletsStore::isNativeTokenWallet', () => {
+        nativeWallet.isNativeTokenWallet = true;
+      });
+    }
   };
 }

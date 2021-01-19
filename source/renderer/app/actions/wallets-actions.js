@@ -60,6 +60,7 @@ export default class WalletsActions {
   chooseWalletExportType: Action<{
     walletExportType: WalletExportTypeChoices,
   }> = new Action();
+  setNativeTokenWallet: Action<{ walletId: string }> = new Action();
   generateCertificate: Action<{ filePath: string }> = new Action();
   generateCsv: Action<{
     filePath: string,

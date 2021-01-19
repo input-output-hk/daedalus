@@ -12,13 +12,13 @@ import { NUMBER_OPTIONS } from '../../../../source/renderer/app/config/profileCo
 import { HwDeviceStatuses } from '../../../../source/renderer/app/domains/Wallet';
 
 // Screens
-import WalletTokenSendForm from "../../../../source/renderer/app/components/wallet/WalletTokenSendForm";
+import WalletTokenSendForm from '../../../../source/renderer/app/components/wallet/WalletTokenSendForm';
 
-storiesOf('Wallets|Send', module)
+storiesOf('Token Wallets|Send', module)
   .addDecorator(WalletsWrapper)
   .add('Send', () => (
     <WalletTokenSendForm
-      currencyUnit="Ada"
+      currencyUnit="USDC"
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
       currentNumberFormat={NUMBER_OPTIONS[0].value}

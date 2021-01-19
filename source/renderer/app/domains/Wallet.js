@@ -109,6 +109,7 @@ export type WalletProps = {
   discovery: Discovery,
   hasPassword: boolean,
   walletNotConnected?: boolean,
+  isNativeTokenWallet?: boolean,
 };
 
 export default class Wallet {
@@ -129,6 +130,7 @@ export default class Wallet {
   @observable hasPassword: boolean;
   @observable walletNotConnected: boolean;
   @observable isHardwareWallet: boolean;
+  @observable isNativeTokenWallet: boolean;
 
   constructor(data: WalletProps) {
     Object.assign(this, data);
@@ -155,6 +157,7 @@ export default class Wallet {
         'hasPassword',
         'walletNotConnected',
         'isHardwareWallet',
+        'isNativeTokenWallet',
       ])
     );
   }

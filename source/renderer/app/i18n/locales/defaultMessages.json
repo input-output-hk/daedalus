@@ -13393,6 +13393,165 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Title",
+        "description": "Label for the \"Title\" text input in the wallet send form.",
+        "end": {
+          "column": 3,
+          "line": 40
+        },
+        "file": "source/renderer/app/components/wallet/WalletTokenSendForm.js",
+        "id": "wallet.send.form.title.label",
+        "start": {
+          "column": 14,
+          "line": 36
+        }
+      },
+      {
+        "defaultMessage": "!!!E.g: Money for Frank",
+        "description": "Hint inside the \"Receiver\" text input in the wallet send form.",
+        "end": {
+          "column": 3,
+          "line": 46
+        },
+        "file": "source/renderer/app/components/wallet/WalletTokenSendForm.js",
+        "id": "wallet.send.form.title.hint",
+        "start": {
+          "column": 13,
+          "line": 41
+        }
+      },
+      {
+        "defaultMessage": "!!!Receiver",
+        "description": "Label for the \"Receiver\" text input in the wallet send form.",
+        "end": {
+          "column": 3,
+          "line": 51
+        },
+        "file": "source/renderer/app/components/wallet/WalletTokenSendForm.js",
+        "id": "wallet.send.form.receiver.label",
+        "start": {
+          "column": 17,
+          "line": 47
+        }
+      },
+      {
+        "defaultMessage": "!!!Wallet Address",
+        "description": "Hint inside the \"Receiver\" text input in the wallet send form.",
+        "end": {
+          "column": 3,
+          "line": 57
+        },
+        "file": "source/renderer/app/components/wallet/WalletTokenSendForm.js",
+        "id": "wallet.send.form.receiver.hint",
+        "start": {
+          "column": 16,
+          "line": 52
+        }
+      },
+      {
+        "defaultMessage": "!!!Amount",
+        "description": "Label for the \"Amount\" number input in the wallet send form.",
+        "end": {
+          "column": 3,
+          "line": 62
+        },
+        "file": "source/renderer/app/components/wallet/WalletTokenSendForm.js",
+        "id": "wallet.send.form.amount.label",
+        "start": {
+          "column": 15,
+          "line": 58
+        }
+      },
+      {
+        "defaultMessage": "!!!Description",
+        "description": "Label for the \"description\" text area in the wallet send form.",
+        "end": {
+          "column": 3,
+          "line": 68
+        },
+        "file": "source/renderer/app/components/wallet/WalletTokenSendForm.js",
+        "id": "wallet.send.form.description.label",
+        "start": {
+          "column": 20,
+          "line": 63
+        }
+      },
+      {
+        "defaultMessage": "!!!You can add a message if you want",
+        "description": "Hint in the \"description\" text area in the wallet send form.",
+        "end": {
+          "column": 3,
+          "line": 73
+        },
+        "file": "source/renderer/app/components/wallet/WalletTokenSendForm.js",
+        "id": "wallet.send.form.description.hint",
+        "start": {
+          "column": 19,
+          "line": 69
+        }
+      },
+      {
+        "defaultMessage": "!!!Next",
+        "description": "Label for the next button on the wallet send form.",
+        "end": {
+          "column": 3,
+          "line": 78
+        },
+        "file": "source/renderer/app/components/wallet/WalletTokenSendForm.js",
+        "id": "wallet.send.form.next",
+        "start": {
+          "column": 19,
+          "line": 74
+        }
+      },
+      {
+        "defaultMessage": "!!!Please enter a valid amount.",
+        "description": "Error message shown when invalid amount was entered.",
+        "end": {
+          "column": 3,
+          "line": 83
+        },
+        "file": "source/renderer/app/components/wallet/WalletTokenSendForm.js",
+        "id": "wallet.send.form.errors.invalidAmount",
+        "start": {
+          "column": 17,
+          "line": 79
+        }
+      },
+      {
+        "defaultMessage": "!!!Please enter a title with at least 3 characters.",
+        "description": "Error message shown when invalid transaction title was entered.",
+        "end": {
+          "column": 3,
+          "line": 89
+        },
+        "file": "source/renderer/app/components/wallet/WalletTokenSendForm.js",
+        "id": "wallet.send.form.errors.invalidTitle",
+        "start": {
+          "column": 16,
+          "line": 84
+        }
+      },
+      {
+        "defaultMessage": "!!!This wallet is currently being synced with the blockchain. While synchronisation is in progress transacting is not possible and transaction history is not complete.",
+        "description": "Syncing transactions message shown during async wallet restore in the wallet send form.",
+        "end": {
+          "column": 3,
+          "line": 96
+        },
+        "file": "source/renderer/app/components/wallet/WalletTokenSendForm.js",
+        "id": "wallet.send.form.syncingTransactionsMessage",
+        "start": {
+          "column": 30,
+          "line": 90
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/WalletTokenSendForm.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Back to top",
         "description": "\"backToTop\" button label.",
         "end": {
@@ -14036,13 +14195,13 @@
         "description": "Message shown when wallet has no transactions on wallet summary page.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 25
         },
         "file": "source/renderer/app/containers/wallet/WalletSummaryPage.js",
         "id": "wallet.summary.no.transactions",
         "start": {
           "column": 18,
-          "line": 19
+          "line": 20
         }
       }
     ],
