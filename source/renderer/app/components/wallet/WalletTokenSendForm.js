@@ -19,7 +19,6 @@ import BorderedBox from '../widgets/BorderedBox';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import styles from './WalletTokenSendForm.scss';
 import globalMessages from '../../i18n/global-messages';
-import WalletSendConfirmationDialog from './WalletSendConfirmationDialog';
 import WalletSendConfirmationDialogContainer from '../../containers/wallet/dialogs/WalletSendConfirmationDialogContainer';
 import {
   formattedAmountToNaturalUnits,
@@ -31,6 +30,8 @@ import { NUMBER_FORMATS } from '../../../../common/types/number.types';
 /* eslint-disable consistent-return */
 import { messages as apiErrorMessages } from '../../api/errors';
 import type { HwDeviceStatus } from '../../domains/Wallet';
+import WalletTokenSendConfirmationDialog from './WalletTokenSendConfirmationDialog';
+import Wallet from '../../domains/Wallet';
 
 export const messages = defineMessages({
   titleLabel: {
@@ -86,10 +87,10 @@ export const messages = defineMessages({
     defaultMessage: '!!!Reset',
     description: 'Label for the reset button on the wallet send form.',
   },
-  nextButtonLabel: {
-    id: 'wallet.send.form.next',
-    defaultMessage: '!!!Next',
-    description: 'Label for the next button on the wallet send form.',
+  sendButtonLabel: {
+    id: 'wallet.send.form.send',
+    defaultMessage: '!!!Send',
+    description: 'Label for the send button on the wallet send form.',
   },
   invalidAmount: {
     id: 'wallet.send.form.errors.invalidAmount',
@@ -131,6 +132,7 @@ type Props = {
   isRestoreActive: boolean,
   hwDeviceStatus: HwDeviceStatus,
   isHardwareWallet: boolean,
+  nativeTokens: Array<Wallet>,
 };
 
 type State = {
@@ -178,7 +180,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
       return false;
     }
     this.props.openDialogAction({
-      dialog: WalletSendConfirmationDialog,
+      dialog: WalletTokenSendConfirmationDialog,
     });
   };
 
@@ -372,6 +374,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
       onExternalLinkClick,
       hwDeviceStatus,
       isHardwareWallet,
+      nativeTokens,
     } = this.props;
 
     const {
@@ -487,14 +490,14 @@ export default class WalletTokenSendForm extends Component<Props, State> {
               </div>
               <div className={styles.buttonsContainer}>
                 <Button
-                  className={styles.resetButton}
+                  className="flat"
                   label={intl.formatMessage(messages.resetButtonLabel)}
                   onClick={this.handleOnReset}
                   skin={ButtonSkin}
                 />
                 <Button
                   className={buttonClasses}
-                  label={intl.formatMessage(messages.nextButtonLabel)}
+                  label={intl.formatMessage(messages.sendButtonLabel)}
                   onClick={this.handleOnSubmit}
                   skin={ButtonSkin}
                   disabled={this.isDisabled()}
@@ -504,7 +507,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
           </BorderedBox>
         )}
 
-        {isDialogOpen(WalletSendConfirmationDialog) ? (
+        {isDialogOpen(WalletTokenSendConfirmationDialog) ? (
           <WalletSendConfirmationDialogContainer
             amount={amount.toFormat(currencyMaxFractionalDigits)}
             receiver={receiverFieldProps.value}
@@ -515,6 +518,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
             onExternalLinkClick={onExternalLinkClick}
             hwDeviceStatus={hwDeviceStatus}
             isHardwareWallet={isHardwareWallet}
+            nativeTokens={nativeTokens}
           />
         ) : null}
       </div>

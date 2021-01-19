@@ -89,10 +89,9 @@
 .buttonsContainer {
   align-items: center;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
 
-  .nextButton,
-  .resetButton {
-    margin: 0 30px;
+  button {
+    margin: 0 10px;
   }
 }
