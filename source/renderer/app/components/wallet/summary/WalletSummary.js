@@ -65,32 +65,41 @@ export default class WalletSummary extends Component<Props> {
     const isRestoreActive = wallet.isRestoring;
     const hasCurrency = !!currencySelected && !!currencyRate;
 
-    let walletAmount = '-';
-    if (!isRestoreActive) {
-      if (hasCurrency) {
-        walletAmount = formattedWalletCurrencyAmount(
-          wallet.amount,
-          currencyRate
-        );
-      } else {
-        walletAmount = formattedWalletAmount(wallet.amount, false);
-      }
-    }
-    const walletAmountSymbol = hasCurrency ? (
-      currencySelected.symbol.toUpperCase()
-    ) : (
+    let walletAmount = isRestoreActive
+      ? '-'
+      : formattedWalletAmount(wallet.amount, false);
+
+    const currencyWalletAmount = hasCurrency
+      ? formattedWalletCurrencyAmount(wallet.amount, currencyRate)
+      : null;
+    const walletAmountSymbol = (
       <SVGInline svg={adaSymbolBig} className={styles.currencySymbolBig} />
     );
+    const currencyWalletAmountSymbol = currencySelected.symbol.toUpperCase();
 
     return (
       <div className={styles.component}>
         <BorderedBox>
-          <div className={styles.walletName}>{wallet.name}</div>
-          <div className={styles.walletAmount}>
-            {walletAmount}
-            <span className={styles.walletAmountSymbol}>
-              {walletAmountSymbol}
-            </span>
+          <div className={styles.walletContent}>
+            <div>
+              <div className={styles.walletName}>{wallet.name}</div>
+              <div className={styles.walletAmount}>
+                {walletAmount}
+                <span className={styles.currencySymbol}>ADA</span>
+              </div>
+            </div>
+
+            {hasCurrency && (
+              <div className={styles.currency}>
+                <div className={styles.currencyTitle}>
+                  Estimated conversion:
+                </div>
+                <div className={styles.currencyWalletAmount}>
+                  {currencyWalletAmount}
+                </div>
+                <span className={styles.currencySymbol}>ADA</span>
+              </div>
+            )}
           </div>
 
           {!isLoadingTransactions ? (

@@ -13,6 +13,12 @@
   padding: 20px;
 }
 
+.walletContent {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
 .walletName {
   color: var(--theme-bordered-box-text-color);
   font-family: var(--font-bold);
@@ -52,6 +58,30 @@
 .walletAmountSymbol {
   font-size: 16px;
   opacity: 0.7;
+}
+
+.currency {
+  color: var(--theme-bordered-box-text-color);
+  font-family: var(--font-bold);
+  font-size: 22px;
+  line-height: 1;
+  margin-bottom: 11px;
+  user-select: text;
+  word-break: break-all;
+}
+.currencyTitle {
+  font-family: var(--font-bold);
+  font-size: 12px;
+  font-stretch: normal;
+  font-style: normal;
+  line-height: 1.67;
+  letter-spacing: normal;
+  text-align: right;
+  color: var(--theme-bordered-box-text-color);
+}
+.currencyWalletAmount {
+  @extend .walletAmount;
+  font-size: 16px;
 }
 
 .transactionsCountWrapper {
