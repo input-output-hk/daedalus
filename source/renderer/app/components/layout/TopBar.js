@@ -8,12 +8,8 @@ import LegacyBadge, { LEGACY_BADGE_MODES } from '../notifications/LegacyBadge';
 import LegacyNotification from '../notifications/LegacyNotification';
 import Wallet from '../../domains/Wallet';
 import styles from './TopBar.scss';
-import {
-  formattedWalletAmount,
-  formattedWalletCurrencyAmount,
-} from '../../utils/formatters';
+import { formattedWalletAmount } from '../../utils/formatters';
 import headerLogo from '../../assets/images/header-logo.inline.svg';
-import type { Currency } from '../../types/currencyTypes.js';
 
 type Props = {
   onLeftIconClick?: ?Function,
@@ -25,8 +21,6 @@ type Props = {
   hasRewardsWallets?: boolean,
   onLearnMore?: Function,
   isShelleyActivated: boolean,
-  currencySelected: ?Currency,
-  currencyRate: ?number,
 };
 
 @observer
@@ -42,8 +36,6 @@ export default class TopBar extends Component<Props> {
       onWalletAdd,
       onLearnMore,
       isShelleyActivated,
-      currencySelected,
-      currencyRate,
     } = this.props;
     const { isIncentivizedTestnet } = global;
     const topBarStyles = classNames([
@@ -66,20 +58,6 @@ export default class TopBar extends Component<Props> {
 
     const isRestoreActive = activeWallet ? activeWallet.isRestoring : false;
 
-    let walletAmount = '-';
-    if (!isRestoreActive && activeWallet && activeWallet.amount) {
-      walletAmount =
-        !!currencySelected && !!currencyRate
-          ? // show currency in the user's format
-            formattedWalletCurrencyAmount(
-              activeWallet.amount,
-              currencyRate,
-              currencySelected
-            )
-          : // show currency and use long format
-            formattedWalletAmount(activeWallet.amount);
-    }
-
     const topBarTitle = activeWallet ? (
       <span className={styles.walletInfo}>
         <span className={styles.walletName}>
@@ -88,7 +66,12 @@ export default class TopBar extends Component<Props> {
             <LegacyBadge mode={LEGACY_BADGE_MODES.NATURAL} />
           )}
         </span>
-        <span className={styles.walletAmount}>{walletAmount}</span>
+        <span className={styles.walletAmount}>
+          {
+            // show currency and use long format
+            isRestoreActive ? '-' : formattedWalletAmount(activeWallet.amount)
+          }
+        </span>
       </span>
     ) : null;
 
