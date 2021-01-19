@@ -13,7 +13,7 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 import { formattedWalletAmount } from '../../utils/formatters';
 import { getNetworkExplorerUrlByType } from '../../utils/network';
 import { WALLET_NATIVE_TOKENS_ENABLED } from '../../config/walletsConfig';
-import WalletNativeTokensSummary from '../../components/wallet/summary/WalletNativeTokensSummary';
+import TokensWalletSummary from '../../components/wallet/summary/TokensWalletSummary';
 import Wallet from '../../domains/Wallet';
 
 export const messages = defineMessages({
@@ -131,7 +131,7 @@ export default class WalletSummaryPage extends Component<Props> {
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
         />
         {hasNativeTokens && wallets.all && (
-          <WalletNativeTokensSummary
+          <TokensWalletSummary
             wallet={wallet}
             nativeTokens={wallets.all}
             handleOpenWalletTokenSend={this.handleOpenWalletTokenSend}

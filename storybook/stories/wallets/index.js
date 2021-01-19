@@ -2,9 +2,7 @@
 
 // Screens sets
 import './summary/WalletSummary.stories';
-import './summary/WalletNativeTokensSummary.stories';
 import './send/WalletSend.stories';
-import './send/TokenWalletSend.stories';
 import './receive/WalletReceive.stories';
 import './transactions/WalletTransactions.stories';
 import './settings/WalletSettings.stories';

@@ -5,7 +5,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
 import BorderedBox from '../../widgets/BorderedBox';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
-import styles from './WalletNativeTokensSummary.scss';
+import styles from './TokensWalletSummary.scss';
 import Wallet from '../../../domains/Wallet';
 import globalMessages from '../../../i18n/global-messages';
 
@@ -40,7 +40,7 @@ type Props = {
 };
 
 @observer
-export default class WalletNativeTokensSummary extends Component<Props> {
+export default class TokensWalletSummary extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
