@@ -33,6 +33,10 @@
     .SimpleFormField_error a {
       color: var(--rp-formfield-error-text-color, rgba(222, 50, 38, 0.5));
     }
+
+    .AmountInputSkin_total {
+      left: 180px;
+    }
   }
 }
 

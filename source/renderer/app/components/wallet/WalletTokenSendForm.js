@@ -60,6 +60,16 @@ export const messages = defineMessages({
     defaultMessage: '!!!Amount',
     description: 'Label for the "Amount" number input in the wallet send form.',
   },
+  depositLabel: {
+    id: 'wallet.send.form.deposit.label',
+    defaultMessage: '!!!Deposit',
+    description: 'Label for the "Deposit" number input in the wallet send form.',
+  },
+  estimatedFeeLabel: {
+    id: 'wallet.send.form.estimatedFee.label',
+    defaultMessage: '!!!Estimated fees',
+    description: 'Label for the "Estimated fees" number input in the wallet send form.',
+  },
   descriptionLabel: {
     id: 'wallet.send.form.description.label',
     defaultMessage: '!!!Description',
@@ -242,6 +252,20 @@ export default class WalletTokenSendForm extends Component<Props, State> {
             },
           ],
         },
+        deposit: {
+          label: this.context.intl.formatMessage(messages.depositLabel),
+          placeholder: `0${
+            this.getCurrentNumberFormat().decimalSeparator
+          }${'0'.repeat(this.props.currencyMaxFractionalDigits)}`,
+          value: '1',
+        },
+        estimatedFee: {
+          label: this.context.intl.formatMessage(messages.estimatedFeeLabel),
+          placeholder: `0${
+            this.getCurrentNumberFormat().decimalSeparator
+          }${'0'.repeat(this.props.currencyMaxFractionalDigits)}`,
+          value: null,
+        },
       },
     },
     {
@@ -348,8 +372,12 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     } = this.state;
     const amountField = form.$('amount');
     const receiverField = form.$('receiver');
+    const estimatedField = form.$('estimatedFee');
+    const depositField = form.$('deposit');
     const receiverFieldProps = receiverField.bind();
     const amountFieldProps = amountField.bind();
+    const estimatedFieldProps = estimatedField.bind();
+    const depositFieldProps = depositField.bind();
 
     const amount = new BigNumber(amountFieldProps.value || 0);
 
@@ -403,7 +431,6 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                     this._isCalculatingTransactionFee = true;
                     amountField.onChange(value);
                   }}
-                  // AmountInputSkin props
                   currency={currencyUnit}
                   fees={fees}
                   total={total}
@@ -411,6 +438,39 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                   onKeyPress={this.handleSubmitOnEnter}
                   allowSigns={false}
                   isCalculatingFees={this._isCalculatingTransactionFee}
+                />
+              </div>
+              <div className={styles.amountInput}>
+                <NumericInput
+                  {...depositFieldProps}
+                  className="deposit"
+                  label={intl.formatMessage(messages.depositLabel)}
+                  numberFormat={this.getCurrentNumberFormat()}
+                  numberLocaleOptions={{
+                    minimumFractionDigits: currencyMaxFractionalDigits,
+                  }}
+                  currency={intl.formatMessage(globalMessages.unitAda)}
+                  total={total}
+                  skin={AmountInputSkin}
+                  disabled
+                />
+              </div>
+
+              <div className={styles.amountInput}>
+                <NumericInput
+                  {...estimatedFieldProps}
+                  className="estimatedFee"
+                  label={intl.formatMessage(messages.estimatedFeeLabel)}
+                  numberFormat={this.getCurrentNumberFormat()}
+                  numberLocaleOptions={{
+                    minimumFractionDigits: currencyMaxFractionalDigits,
+                  }}
+                  error={transactionFeeError || amountField.error}
+                  currency={currencyUnit}
+                  fees={fees}
+                  total={total}
+                  skin={AmountInputSkin}
+                  disabled
                 />
               </div>
 
