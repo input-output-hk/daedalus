@@ -12,6 +12,8 @@ import { defineMessages, intlShape } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import BigNumber from 'bignumber.js';
 import { get } from 'lodash';
+import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import SVGInline from 'react-svg-inline';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import { submitOnEnter } from '../../utils/form';
 import AmountInputSkin from './skins/AmountInputSkin';
@@ -32,6 +34,7 @@ import { messages as apiErrorMessages } from '../../api/errors';
 import type { HwDeviceStatus } from '../../domains/Wallet';
 import WalletTokenSendConfirmationDialog from './WalletTokenSendConfirmationDialog';
 import Wallet from '../../domains/Wallet';
+import closeIcon from '../../assets/images/close-cross.inline.svg';
 
 export const messages = defineMessages({
   titleLabel: {
@@ -133,6 +136,7 @@ type Props = {
   hwDeviceStatus: HwDeviceStatus,
   isHardwareWallet: boolean,
   nativeTokens: Array<Wallet>,
+  isClearTooltipOpeningDownward?: boolean,
 };
 
 type State = {
@@ -182,6 +186,10 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     this.props.openDialogAction({
       dialog: WalletTokenSendConfirmationDialog,
     });
+  };
+
+  clearReceiverAddress = (receiverField) => {
+    receiverField.clear();
   };
 
   handleOnReset = () => {
@@ -365,6 +373,11 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     return NUMBER_FORMATS[this.props.currentNumberFormat];
   }
 
+  get hasReceiverClearButton() {
+    const receiverField = this.form.$('receiver');
+    return receiverField.value.length > 0;
+  }
+
   render() {
     const { form } = this;
     const { intl } = this.context;
@@ -377,6 +390,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
       hwDeviceStatus,
       isHardwareWallet,
       nativeTokens,
+      isClearTooltipOpeningDownward,
     } = this.props;
 
     const {
@@ -401,8 +415,6 @@ export default class WalletTokenSendForm extends Component<Props, State> {
       fees = transactionFee.toFormat(currencyMaxFractionalDigits);
       total = amount.add(transactionFee).toFormat(currencyMaxFractionalDigits);
     }
-
-    const buttonClasses = classnames(['primary', styles.nextButton]);
 
     return (
       <div className={styles.component}>
@@ -432,6 +444,24 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                       skin={InputSkin}
                       onKeyPress={this.handleSubmitOnEnter}
                     />
+                    {this.hasReceiverClearButton && (
+                      <div className={styles.clearReceiverContainer}>
+                        <PopOver
+                          content="Clear"
+                          placement={isClearTooltipOpeningDownward ? 'bottom' : 'top'}
+                        >
+                          <button
+                            onClick={() => this.clearReceiverAddress(receiverField)}
+                            className={styles.clearReceiverButton}
+                          >
+                            <SVGInline
+                              svg={closeIcon}
+                              className={styles.clearReceiverIcon}
+                            />
+                          </button>
+                        </PopOver>
+                      </div>
+                    )}
                   </div>
                   <div className={styles.amountInput}>
                     <NumericInput
@@ -498,7 +528,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                   skin={ButtonSkin}
                 />
                 <Button
-                  className={buttonClasses}
+                  className="primary"
                   label={intl.formatMessage(messages.sendButtonLabel)}
                   onClick={this.handleOnSubmit}
                   skin={ButtonSkin}
