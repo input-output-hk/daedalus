@@ -22,10 +22,38 @@
       text-align: center;
     }
   }
+
+  .walletTokenSendForm {
+    padding-right: 10px;
+
+    .walletTokenSendFormContainer {
+      display: flex;
+      width: 100%;
+    }
+
+    .fieldsLine {
+      border-bottom: 1px solid #c6cdd6;
+      border-left: 1px solid #c6cdd6;
+      border-top: 1px solid #c6cdd6;
+      border-radius: 2px;
+      height: 202px;
+      margin-right: 12px;
+      margin-top: 55px;
+      width: 6px;
+    }
+
+    .fieldsContainer {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+  }
 }
 
 .amountInput,
-.receiverInput {
+.receiverInput,
+.estimatedFeeInput,
+.depositInput {
   margin-bottom: 20px;
   position: relative;
 
@@ -33,11 +61,20 @@
     .SimpleFormField_error a {
       color: var(--rp-formfield-error-text-color, rgba(222, 50, 38, 0.5));
     }
+  }
+}
 
+.estimatedFeeInput,
+.depositInput {
+  :global {
     .AmountInputSkin_total {
       left: 180px;
     }
   }
+}
+
+.estimatedFeeInput {
+  padding-left: 18px;
 }
 
 .adaLabel {
@@ -49,7 +86,13 @@
   text-transform: uppercase;
 }
 
-.nextButton {
-  display: block !important;
-  margin: 30px auto 0;
+.buttonsContainer {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+
+  .nextButton,
+  .resetButton {
+    margin: 0 30px;
+  }
 }

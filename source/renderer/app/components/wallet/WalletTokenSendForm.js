@@ -81,6 +81,11 @@ export const messages = defineMessages({
     defaultMessage: '!!!You can add a message if you want',
     description: 'Hint in the "description" text area in the wallet send form.',
   },
+  resetButtonLabel: {
+    id: 'wallet.send.form.reset',
+    defaultMessage: '!!!Reset',
+    description: 'Label for the reset button on the wallet send form.',
+  },
   nextButtonLabel: {
     id: 'wallet.send.form.next',
     defaultMessage: '!!!Next',
@@ -175,6 +180,10 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     this.props.openDialogAction({
       dialog: WalletSendConfirmationDialog,
     });
+  };
+
+  handleOnReset = () => {
+    this.form.reset();
   };
 
   handleSubmitOnEnter = submitOnEnter.bind(this, this.handleOnSubmit);
@@ -401,62 +410,65 @@ export default class WalletTokenSendForm extends Component<Props, State> {
           </div>
         ) : (
           <BorderedBox>
-            <div className="WalletSendForm">
-              <div className={styles.receiverInput}>
-                <Input
-                  className="receiver"
-                  label={intl.formatMessage(messages.receiverLabel)}
-                  {...receiverField.bind()}
-                  error={receiverField.error}
-                  onChange={(value) => {
-                    this._isCalculatingTransactionFee = true;
-                    receiverField.onChange(value || '');
-                  }}
-                  skin={InputSkin}
-                  onKeyPress={this.handleSubmitOnEnter}
-                />
+            <div className={styles.walletTokenSendForm}>
+              <div className={styles.walletTokenSendFormContainer}>
+                <div className={styles.fieldsLine} />
+                <div className={styles.fieldsContainer}>
+                  <div className={styles.receiverInput}>
+                    <Input
+                      className="receiver"
+                      label={intl.formatMessage(messages.receiverLabel)}
+                      {...receiverField.bind()}
+                      error={receiverField.error}
+                      onChange={(value) => {
+                        this._isCalculatingTransactionFee = true;
+                        receiverField.onChange(value || '');
+                      }}
+                      skin={InputSkin}
+                      onKeyPress={this.handleSubmitOnEnter}
+                    />
+                  </div>
+                  <div className={styles.amountInput}>
+                    <NumericInput
+                      {...amountFieldProps}
+                      className="amount"
+                      label={intl.formatMessage(messages.amountLabel)}
+                      numberFormat={this.getCurrentNumberFormat()}
+                      numberLocaleOptions={{
+                        minimumFractionDigits: currencyMaxFractionalDigits,
+                      }}
+                      error={transactionFeeError || amountField.error}
+                      onChange={(value) => {
+                        this._isCalculatingTransactionFee = true;
+                        amountField.onChange(value);
+                      }}
+                      currency={currencyUnit}
+                      fees={fees}
+                      total={total}
+                      skin={AmountInputSkin}
+                      onKeyPress={this.handleSubmitOnEnter}
+                      allowSigns={false}
+                      isCalculatingFees={this._isCalculatingTransactionFee}
+                    />
+                  </div>
+                  <div className={styles.depositInput}>
+                    <NumericInput
+                      {...depositFieldProps}
+                      className="deposit"
+                      label={intl.formatMessage(messages.depositLabel)}
+                      numberFormat={this.getCurrentNumberFormat()}
+                      numberLocaleOptions={{
+                        minimumFractionDigits: currencyMaxFractionalDigits,
+                      }}
+                      currency={intl.formatMessage(globalMessages.unitAda)}
+                      total={total}
+                      skin={AmountInputSkin}
+                      disabled
+                    />
+                  </div>
+                </div>
               </div>
-
-              <div className={styles.amountInput}>
-                <NumericInput
-                  {...amountFieldProps}
-                  className="amount"
-                  label={intl.formatMessage(messages.amountLabel)}
-                  numberFormat={this.getCurrentNumberFormat()}
-                  numberLocaleOptions={{
-                    minimumFractionDigits: currencyMaxFractionalDigits,
-                  }}
-                  error={transactionFeeError || amountField.error}
-                  onChange={(value) => {
-                    this._isCalculatingTransactionFee = true;
-                    amountField.onChange(value);
-                  }}
-                  currency={currencyUnit}
-                  fees={fees}
-                  total={total}
-                  skin={AmountInputSkin}
-                  onKeyPress={this.handleSubmitOnEnter}
-                  allowSigns={false}
-                  isCalculatingFees={this._isCalculatingTransactionFee}
-                />
-              </div>
-              <div className={styles.amountInput}>
-                <NumericInput
-                  {...depositFieldProps}
-                  className="deposit"
-                  label={intl.formatMessage(messages.depositLabel)}
-                  numberFormat={this.getCurrentNumberFormat()}
-                  numberLocaleOptions={{
-                    minimumFractionDigits: currencyMaxFractionalDigits,
-                  }}
-                  currency={intl.formatMessage(globalMessages.unitAda)}
-                  total={total}
-                  skin={AmountInputSkin}
-                  disabled
-                />
-              </div>
-
-              <div className={styles.amountInput}>
+              <div className={styles.estimatedFeeInput}>
                 <NumericInput
                   {...estimatedFieldProps}
                   className="estimatedFee"
@@ -473,14 +485,21 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                   disabled
                 />
               </div>
-
-              <Button
-                className={buttonClasses}
-                label={intl.formatMessage(messages.nextButtonLabel)}
-                onClick={this.handleOnSubmit}
-                skin={ButtonSkin}
-                disabled={this.isDisabled()}
-              />
+              <div className={styles.buttonsContainer}>
+                <Button
+                  className={styles.resetButton}
+                  label={intl.formatMessage(messages.resetButtonLabel)}
+                  onClick={this.handleOnReset}
+                  skin={ButtonSkin}
+                />
+                <Button
+                  className={buttonClasses}
+                  label={intl.formatMessage(messages.nextButtonLabel)}
+                  onClick={this.handleOnSubmit}
+                  skin={ButtonSkin}
+                  disabled={this.isDisabled()}
+                />
+              </div>
             </div>
           </BorderedBox>
         )}

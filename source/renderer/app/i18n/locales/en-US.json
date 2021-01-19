@@ -828,6 +828,7 @@
   "wallet.send.form.next": "Next",
   "wallet.send.form.receiver.hint": "Wallet Address",
   "wallet.send.form.receiver.label": "Receiver",
+  "wallet.send.form.reset": "Reset",
   "wallet.send.form.syncingTransactionsMessage": "The balance and transaction history of this wallet is being synced with the blockchain.",
   "wallet.send.form.title.hint": "E.g: Money for Frank",
   "wallet.send.form.title.label": "Title",
