@@ -32,7 +32,7 @@ const messages = defineMessages({
   },
   type: {
     id: 'wallet.transaction.type',
-    defaultMessage: '!!!{currency} transaction',
+    defaultMessage: '!!!{typeOfTransaction} transaction',
     description: 'Transaction type shown for {currency} transactions.',
   },
   exchange: {
@@ -53,13 +53,13 @@ const messages = defineMessages({
   },
   sent: {
     id: 'wallet.transaction.sent',
-    defaultMessage: '!!!{currency} sent',
-    description: 'Label "{currency} sent" for the transaction.',
+    defaultMessage: '!!!{transactionsType} sent',
+    description: 'Label "{transactionsType} sent" for the transaction.',
   },
   received: {
     id: 'wallet.transaction.received',
-    defaultMessage: '!!!{currency} received',
-    description: 'Label "{currency} received" for the transaction.',
+    defaultMessage: '!!!{transactionsType} received',
+    description: 'Label "{transactionsType} received" for the transaction.',
   },
   fromAddress: {
     id: 'wallet.transaction.address.from',
@@ -90,6 +90,16 @@ const messages = defineMessages({
     id: 'wallet.transaction.transactionAmount',
     defaultMessage: '!!!Transaction amount',
     description: 'Transaction amount.',
+  },
+  multipleTokens: {
+    id: 'wallet.transaction.multipleTokens',
+    defaultMessage: '!!!Multiple tokens',
+    description: 'Multiple tokens.',
+  },
+  multipleTokensType: {
+    id: 'wallet.transaction.multipleTokensType',
+    defaultMessage: '!!!Multiple-token',
+    description: 'Multiple tokens.',
   },
   cancelPendingTxnNote: {
     id: 'wallet.transaction.pending.cancelPendingTxnNote',
@@ -168,6 +178,7 @@ type Props = {
   currentTimeFormat: string,
   walletId: string,
   isDeletingTransaction: boolean,
+  hasNativeTokens?: boolean,
 };
 
 type State = {
@@ -307,6 +318,7 @@ export default class Transaction extends Component<Props, State> {
       isExpanded,
       isDeletingTransaction,
       currentTimeFormat,
+      hasNativeTokens,
     } = this.props;
     const { intl } = this.context;
     const { showConfirmationDialog } = this.state;
@@ -333,7 +345,8 @@ export default class Transaction extends Component<Props, State> {
       isExpanded ? styles.arrowExpanded : null,
     ]);
 
-    const currency = intl.formatMessage(globalMessages.currency);
+    const transactionsType = hasNativeTokens ? intl.formatMessage(messages.multipleTokens) : intl.formatMessage(globalMessages.currency);
+    const typeOfTransaction = hasNativeTokens ? intl.formatMessage(messages.multipleTokensType) : intl.formatMessage(globalMessages.currency);
     const symbol = adaSymbol;
 
     const getIconType = (txState) => {
@@ -412,8 +425,8 @@ export default class Transaction extends Component<Props, State> {
               <div className={styles.header}>
                 <div className={styles.title}>
                   {data.type === TransactionTypes.EXPEND
-                    ? intl.formatMessage(messages.sent, { currency })
-                    : intl.formatMessage(messages.received, { currency })}
+                    ? intl.formatMessage(messages.sent, { transactionsType })
+                    : intl.formatMessage(messages.received, { transactionsType })}
                 </div>
                 <div className={styles.amount}>
                   {
@@ -426,7 +439,7 @@ export default class Transaction extends Component<Props, State> {
 
               <div className={styles.details}>
                 <div className={styles.type}>
-                  {intl.formatMessage(messages.type, { currency })},{' '}
+                  {intl.formatMessage(messages.type, { typeOfTransaction })},{' '}
                   {moment(data.date).format(currentTimeFormat)}
                 </div>
                 {this.renderTxnStateTag()}
