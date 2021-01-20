@@ -66,12 +66,14 @@ export const messages = defineMessages({
   depositLabel: {
     id: 'wallet.send.form.deposit.label',
     defaultMessage: '!!!Deposit',
-    description: 'Label for the "Deposit" number input in the wallet send form.',
+    description:
+      'Label for the "Deposit" number input in the wallet send form.',
   },
   estimatedFeeLabel: {
     id: 'wallet.send.form.estimatedFee.label',
     defaultMessage: '!!!Estimated fees',
-    description: 'Label for the "Estimated fees" number input in the wallet send form.',
+    description:
+      'Label for the "Estimated fees" number input in the wallet send form.',
   },
   descriptionLabel: {
     id: 'wallet.send.form.description.label',
@@ -187,7 +189,8 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     });
   };
 
-  clearReceiverAddress = (receiverField) => {
+  clearReceiverAddress = () => {
+    const receiverField = this.form.$('receiver');
     receiverField.clear();
   };
 
@@ -447,10 +450,14 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                       <div className={styles.clearReceiverContainer}>
                         <PopOver
                           content="Clear"
-                          placement={isClearTooltipOpeningDownward ? 'bottom' : 'top'}
+                          placement={
+                            isClearTooltipOpeningDownward ? 'bottom' : 'top'
+                          }
                         >
                           <button
-                            onClick={() => this.clearReceiverAddress(receiverField)}
+                            onClick={() =>
+                              this.clearReceiverAddress()
+                            }
                             className={styles.clearReceiverButton}
                           >
                             <SVGInline

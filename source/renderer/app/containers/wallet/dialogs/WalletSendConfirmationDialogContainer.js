@@ -93,7 +93,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
         onCancel={() => {
           actions.dialogs.closeActiveDialog.trigger();
           sendMoneyRequest.reset();
-          resetHardwareWalletTransaction({cancelDeviceAction: true});
+          resetHardwareWalletTransaction({ cancelDeviceAction: true });
         }}
         error={error}
         currencyUnit={currencyUnit}
@@ -117,7 +117,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
         onCancel={() => {
           actions.dialogs.closeActiveDialog.trigger();
           sendMoneyRequest.reset();
-          resetHardwareWalletTransaction({cancelDeviceAction: true});
+          resetHardwareWalletTransaction({ cancelDeviceAction: true });
         }}
         error={error}
         currencyUnit={currencyUnit}

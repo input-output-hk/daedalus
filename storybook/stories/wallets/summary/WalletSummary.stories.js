@@ -4,7 +4,7 @@ import { storiesOf } from '@storybook/react';
 import { boolean, number } from '@storybook/addon-knobs';
 
 // Assets and helpers
-import { action } from "@storybook/addon-actions";
+import { action } from '@storybook/addon-actions';
 import { generateWallet } from '../../_support/utils';
 import WalletsWrapper from '../_utils/WalletsWrapper';
 

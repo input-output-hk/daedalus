@@ -116,7 +116,7 @@ type Props = {
   onInitiateTransaction: Function,
   walletName: string,
   onExternalLinkClick: Function,
-  nativeTokens: Array<Wallet>;
+  nativeTokens: Array<Wallet>,
 };
 
 type State = {

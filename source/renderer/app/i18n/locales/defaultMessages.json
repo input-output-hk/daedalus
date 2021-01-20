@@ -9772,7 +9772,7 @@
           "column": 3,
           "line": 17
         },
-        "file": "source/renderer/app/components/wallet/summary/WalletNativeTokensSummary.js",
+        "file": "source/renderer/app/components/wallet/summary/TokensWalletSummary.js",
         "id": "wallet.summary.page.transactionsLabel",
         "start": {
           "column": 21,
@@ -9786,7 +9786,7 @@
           "column": 3,
           "line": 23
         },
-        "file": "source/renderer/app/components/wallet/summary/WalletNativeTokensSummary.js",
+        "file": "source/renderer/app/components/wallet/summary/TokensWalletSummary.js",
         "id": "wallet.summary.page.pendingTransactionsLabel",
         "start": {
           "column": 28,
@@ -9800,7 +9800,7 @@
           "column": 3,
           "line": 28
         },
-        "file": "source/renderer/app/components/wallet/summary/WalletNativeTokensSummary.js",
+        "file": "source/renderer/app/components/wallet/summary/TokensWalletSummary.js",
         "id": "wallet.summary.page.tokensTitle",
         "start": {
           "column": 15,
@@ -9814,7 +9814,7 @@
           "column": 3,
           "line": 33
         },
-        "file": "source/renderer/app/components/wallet/summary/WalletNativeTokensSummary.js",
+        "file": "source/renderer/app/components/wallet/summary/TokensWalletSummary.js",
         "id": "wallet.summary.page.tokenSendButton",
         "start": {
           "column": 19,
@@ -9822,7 +9822,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/summary/WalletNativeTokensSummary.json"
+    "path": "source/renderer/app/components/wallet/summary/TokensWalletSummary.json"
   },
   {
     "descriptors": [
@@ -13393,17 +13393,190 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Confirm transaction",
+        "description": "Title for the \"Confirm transaction\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "source/renderer/app/components/wallet/WalletTokenSendConfirmationDialog.js",
+        "id": "wallet.send.confirmationDialog.title",
+        "start": {
+          "column": 15,
+          "line": 26
+        }
+      },
+      {
+        "defaultMessage": "!!!Spending password",
+        "description": "Label for the \"Spending password\" input in the wallet send confirmation dialog.",
+        "end": {
+          "column": 3,
+          "line": 36
+        },
+        "file": "source/renderer/app/components/wallet/WalletTokenSendConfirmationDialog.js",
+        "id": "wallet.send.confirmationDialog.passphraseLabel",
+        "start": {
+          "column": 19,
+          "line": 31
+        }
+      },
+      {
+        "defaultMessage": "!!!To",
+        "description": "Label for the \"To\" in the wallet send confirmation dialog.",
+        "end": {
+          "column": 3,
+          "line": 41
+        },
+        "file": "source/renderer/app/components/wallet/WalletTokenSendConfirmationDialog.js",
+        "id": "wallet.send.confirmationDialog.addressToLabel",
+        "start": {
+          "column": 18,
+          "line": 37
+        }
+      },
+      {
+        "defaultMessage": "!!!Amount",
+        "description": "Label for the \"Amount\" in the wallet send confirmation dialog.",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "source/renderer/app/components/wallet/WalletTokenSendConfirmationDialog.js",
+        "id": "wallet.send.confirmationDialog.amountLabel",
+        "start": {
+          "column": 15,
+          "line": 42
+        }
+      },
+      {
+        "defaultMessage": "!!!Fees",
+        "description": "Label for the \"Fees\" in the wallet send confirmation dialog.",
+        "end": {
+          "column": 3,
+          "line": 52
+        },
+        "file": "source/renderer/app/components/wallet/WalletTokenSendConfirmationDialog.js",
+        "id": "wallet.send.confirmationDialog.feesLabel",
+        "start": {
+          "column": 13,
+          "line": 48
+        }
+      },
+      {
+        "defaultMessage": "!!!Total",
+        "description": "Label for the \"Total\" in the wallet send confirmation dialog.",
+        "end": {
+          "column": 3,
+          "line": 58
+        },
+        "file": "source/renderer/app/components/wallet/WalletTokenSendConfirmationDialog.js",
+        "id": "wallet.send.confirmationDialog.totalLabel",
+        "start": {
+          "column": 14,
+          "line": 53
+        }
+      },
+      {
+        "defaultMessage": "!!!Type your spending password",
+        "description": "Placeholder for the \"Spending password\" inputs in the wallet send confirmation dialog.",
+        "end": {
+          "column": 3,
+          "line": 64
+        },
+        "file": "source/renderer/app/components/wallet/WalletTokenSendConfirmationDialog.js",
+        "id": "wallet.send.confirmationDialog.passphraseFieldPlaceholder",
+        "start": {
+          "column": 30,
+          "line": 59
+        }
+      },
+      {
+        "defaultMessage": "!!!{Warning}, flight candidate versions of Daedalus are connected to Cardano mainnet. If you confirm this transaction, your ada will be sent for real.",
+        "description": "Text for the \"Flight candidate\" warning in the wallet send confirmation dialog.",
+        "end": {
+          "column": 3,
+          "line": 71
+        },
+        "file": "source/renderer/app/components/wallet/WalletTokenSendConfirmationDialog.js",
+        "id": "wallet.send.confirmationDialog.flightCandidateWarning",
+        "start": {
+          "column": 26,
+          "line": 65
+        }
+      },
+      {
+        "defaultMessage": "!!!I understand that real ada will be moved as part of this transaction and that this action is irreversible.",
+        "description": "Label for the \"Flight candidate\" warning checkbox in the wallet send confirmation dialog.",
+        "end": {
+          "column": 3,
+          "line": 78
+        },
+        "file": "source/renderer/app/components/wallet/WalletTokenSendConfirmationDialog.js",
+        "id": "wallet.send.confirmationDialog.flightCandidateCheckboxLabel",
+        "start": {
+          "column": 32,
+          "line": 72
+        }
+      },
+      {
+        "defaultMessage": "!!!Send",
+        "description": "Label for the send button in the wallet send confirmation dialog.",
+        "end": {
+          "column": 3,
+          "line": 84
+        },
+        "file": "source/renderer/app/components/wallet/WalletTokenSendConfirmationDialog.js",
+        "id": "wallet.send.confirmationDialog.submit",
+        "start": {
+          "column": 19,
+          "line": 79
+        }
+      },
+      {
+        "defaultMessage": "!!!Back",
+        "description": "Label for the back button in the wallet send confirmation dialog.",
+        "end": {
+          "column": 3,
+          "line": 90
+        },
+        "file": "source/renderer/app/components/wallet/WalletTokenSendConfirmationDialog.js",
+        "id": "wallet.send.confirmationDialog.back",
+        "start": {
+          "column": 19,
+          "line": 85
+        }
+      },
+      {
+        "defaultMessage": "!!!Incorrect spending password.",
+        "description": "Label for password error in the wallet send confirmation dialog.",
+        "end": {
+          "column": 3,
+          "line": 96
+        },
+        "file": "source/renderer/app/components/wallet/WalletTokenSendConfirmationDialog.js",
+        "id": "wallet.send.confirmationDialog.passwordError",
+        "start": {
+          "column": 24,
+          "line": 91
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/WalletTokenSendConfirmationDialog.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Title",
         "description": "Label for the \"Title\" text input in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 43
         },
         "file": "source/renderer/app/components/wallet/WalletTokenSendForm.js",
         "id": "wallet.send.form.title.label",
         "start": {
           "column": 14,
-          "line": 36
+          "line": 39
         }
       },
       {
@@ -13411,13 +13584,13 @@
         "description": "Hint inside the \"Receiver\" text input in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 49
         },
         "file": "source/renderer/app/components/wallet/WalletTokenSendForm.js",
         "id": "wallet.send.form.title.hint",
         "start": {
           "column": 13,
-          "line": 41
+          "line": 44
         }
       },
       {
@@ -13425,13 +13598,13 @@
         "description": "Label for the \"Receiver\" text input in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 54
         },
         "file": "source/renderer/app/components/wallet/WalletTokenSendForm.js",
         "id": "wallet.send.form.receiver.label",
         "start": {
           "column": 17,
-          "line": 47
+          "line": 50
         }
       },
       {
@@ -13439,13 +13612,13 @@
         "description": "Hint inside the \"Receiver\" text input in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 60
         },
         "file": "source/renderer/app/components/wallet/WalletTokenSendForm.js",
         "id": "wallet.send.form.receiver.hint",
         "start": {
           "column": 16,
-          "line": 52
+          "line": 55
         }
       },
       {
@@ -13453,13 +13626,41 @@
         "description": "Label for the \"Amount\" number input in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 65
         },
         "file": "source/renderer/app/components/wallet/WalletTokenSendForm.js",
         "id": "wallet.send.form.amount.label",
         "start": {
           "column": 15,
-          "line": 58
+          "line": 61
+        }
+      },
+      {
+        "defaultMessage": "!!!Deposit",
+        "description": "Label for the \"Deposit\" number input in the wallet send form.",
+        "end": {
+          "column": 3,
+          "line": 70
+        },
+        "file": "source/renderer/app/components/wallet/WalletTokenSendForm.js",
+        "id": "wallet.send.form.deposit.label",
+        "start": {
+          "column": 16,
+          "line": 66
+        }
+      },
+      {
+        "defaultMessage": "!!!Estimated fees",
+        "description": "Label for the \"Estimated fees\" number input in the wallet send form.",
+        "end": {
+          "column": 3,
+          "line": 75
+        },
+        "file": "source/renderer/app/components/wallet/WalletTokenSendForm.js",
+        "id": "wallet.send.form.estimatedFee.label",
+        "start": {
+          "column": 21,
+          "line": 71
         }
       },
       {
@@ -13467,13 +13668,13 @@
         "description": "Label for the \"description\" text area in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 68
+          "line": 81
         },
         "file": "source/renderer/app/components/wallet/WalletTokenSendForm.js",
         "id": "wallet.send.form.description.label",
         "start": {
           "column": 20,
-          "line": 63
+          "line": 76
         }
       },
       {
@@ -13481,27 +13682,41 @@
         "description": "Hint in the \"description\" text area in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 73
+          "line": 86
         },
         "file": "source/renderer/app/components/wallet/WalletTokenSendForm.js",
         "id": "wallet.send.form.description.hint",
         "start": {
           "column": 19,
-          "line": 69
+          "line": 82
         }
       },
       {
-        "defaultMessage": "!!!Next",
-        "description": "Label for the next button on the wallet send form.",
+        "defaultMessage": "!!!Reset",
+        "description": "Label for the reset button on the wallet send form.",
         "end": {
           "column": 3,
-          "line": 78
+          "line": 91
         },
         "file": "source/renderer/app/components/wallet/WalletTokenSendForm.js",
-        "id": "wallet.send.form.next",
+        "id": "wallet.send.form.reset",
+        "start": {
+          "column": 20,
+          "line": 87
+        }
+      },
+      {
+        "defaultMessage": "!!!Send",
+        "description": "Label for the send button on the wallet send form.",
+        "end": {
+          "column": 3,
+          "line": 96
+        },
+        "file": "source/renderer/app/components/wallet/WalletTokenSendForm.js",
+        "id": "wallet.send.form.send",
         "start": {
           "column": 19,
-          "line": 74
+          "line": 92
         }
       },
       {
@@ -13509,13 +13724,13 @@
         "description": "Error message shown when invalid amount was entered.",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 101
         },
         "file": "source/renderer/app/components/wallet/WalletTokenSendForm.js",
         "id": "wallet.send.form.errors.invalidAmount",
         "start": {
           "column": 17,
-          "line": 79
+          "line": 97
         }
       },
       {
@@ -13523,13 +13738,13 @@
         "description": "Error message shown when invalid transaction title was entered.",
         "end": {
           "column": 3,
-          "line": 89
+          "line": 107
         },
         "file": "source/renderer/app/components/wallet/WalletTokenSendForm.js",
         "id": "wallet.send.form.errors.invalidTitle",
         "start": {
           "column": 16,
-          "line": 84
+          "line": 102
         }
       },
       {
@@ -13537,13 +13752,13 @@
         "description": "Syncing transactions message shown during async wallet restore in the wallet send form.",
         "end": {
           "column": 3,
-          "line": 96
+          "line": 114
         },
         "file": "source/renderer/app/components/wallet/WalletTokenSendForm.js",
         "id": "wallet.send.form.syncingTransactionsMessage",
         "start": {
           "column": 30,
-          "line": 90
+          "line": 108
         }
       }
     ],
