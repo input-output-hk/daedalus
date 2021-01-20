@@ -45,6 +45,7 @@ type Props = {
   populatedFilterOptions: TransactionFilterOptionsType,
   totalAvailable: number,
   transactions: Array<WalletTransaction>,
+  hasNativeTokens?: boolean,
 };
 
 type State = {
@@ -104,6 +105,7 @@ export default class WalletTransactions extends Component<Props, State> {
       onRequestCSVFile,
       defaultFilterOptions,
       populatedFilterOptions,
+      hasNativeTokens,
     } = this.props;
 
     // Guard against potential null values
@@ -144,6 +146,7 @@ export default class WalletTransactions extends Component<Props, State> {
           currentLocale={currentLocale}
           currentTimeFormat={currentTimeFormat}
           currentDateFormat={currentDateFormat}
+          hasNativeTokens={hasNativeTokens}
           isRenderingAsVirtualList
         />
       );

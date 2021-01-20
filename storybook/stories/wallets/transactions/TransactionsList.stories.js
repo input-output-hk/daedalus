@@ -20,6 +20,7 @@ import type { TransactionFilterOptionsType } from '../../../../source/renderer/a
 
 // Screens
 import WalletTransactions from '../../../../source/renderer/app/components/wallet/transactions/WalletTransactions';
+import { WALLET_NATIVE_TOKENS_ENABLED } from '../../../../source/renderer/app/config/walletsConfig';
 
 type Props = {
   defaultFilterOptions: TransactionFilterOptionsType,
@@ -93,4 +94,41 @@ storiesOf('Wallets|Transactions', module)
         transactions={transactions}
       />
     );
-  });
+  })
+  .add('Transactions List with native tokens', (props: Props) => {
+    const {
+      defaultFilterOptions,
+      filterOptions,
+      locale,
+      onFilter,
+      populatedFilterOptions,
+      transactions,
+      totalAvailable,
+    } = props;
+    const hasNativeTokens = WALLET_NATIVE_TOKENS_ENABLED;
+    return (
+      <WalletTransactions
+        activeWallet={generateWallet('Wallet name', '45119903750165')}
+        currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
+        currentLocale={locale}
+        currentNumberFormat={NUMBER_OPTIONS[0].value}
+        currentTimeFormat={TIME_OPTIONS[0].value}
+        defaultFilterOptions={defaultFilterOptions}
+        filterOptions={filterOptions}
+        deletePendingTransaction={action('deletePendingTransaction')}
+        formattedWalletAmount={formattedWalletAmount}
+        getUrlByType={action('getUrlByType')}
+        hasMoreToLoad={false}
+        isDeletingTransaction={false}
+        isLoadingTransactions={false}
+        onFilter={onFilter}
+        onLoadMore={action('onLoadMore')}
+        onOpenExternalLink={action('onOpenExternalLink')}
+        onRequestCSVFile={action('onRequestCSVFile')}
+        populatedFilterOptions={populatedFilterOptions}
+        totalAvailable={totalAvailable}
+        transactions={transactions}
+        hasNativeTokens={hasNativeTokens}
+      />
+    );
+  })

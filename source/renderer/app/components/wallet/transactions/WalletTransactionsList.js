@@ -65,6 +65,7 @@ type Props = {
   isDeletingTransaction: boolean,
   currentDateFormat: string,
   currentTimeFormat: string,
+  hasNativeTokens?: boolean,
 };
 
 const DATE_FORMAT = 'YYYY-MM-DD';
@@ -219,6 +220,7 @@ export default class WalletTransactionsList extends Component<Props> {
       showMoreTransactionsButton,
       transactions,
       walletId,
+      hasNativeTokens,
     } = this.props;
 
     const { intl } = this.context;

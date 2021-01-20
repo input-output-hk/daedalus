@@ -10,6 +10,7 @@ import {
   MAX_INTEGER_PLACES_IN_ADA,
 } from '../../config/numbersConfig';
 import WalletTokenSendForm from '../../components/wallet/WalletTokenSendForm';
+import { WALLET_NATIVE_TOKENS_ENABLED } from '../../config/walletsConfig';
 
 type Props = InjectedProps;
 
@@ -82,7 +83,8 @@ export default class WalletSendPage extends Component<Props> {
     );
 
     // @todo - Remove hardcoded nativeTokens value after hooking up real data
-    if (!nativeTokens.length) {
+    const hasNativeTokens = WALLET_NATIVE_TOKENS_ENABLED;
+    if (!nativeTokens.length && hasNativeTokens) {
       nativeTokens = [wallets.all[0]];
     }
 
