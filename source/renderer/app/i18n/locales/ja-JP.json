@@ -963,6 +963,8 @@
   "wallet.transaction.state.pending": "トランザクション処理中",
   "wallet.transaction.transactionAmount": "トランザクション額",
   "wallet.transaction.transactionId": "トランザクションID",
+  "wallet.transaction.transactionMetadata": "トランザクション Metadata",
+  "wallet.transaction.transactionMetadataDescription": "トランザクション Metadata、不適切なコンテンツが含まれている可能性があります。モデレートされていないコンテンツを表示します。",
   "wallet.transaction.type": "{typeOfTransaction}トランザクション",
   "wallet.transaction.type.card": "カード支払い",
   "wallet.transaction.type.exchange": "換金",

@@ -46,6 +46,16 @@ const messages = defineMessages({
     defaultMessage: '!!!Transaction ID',
     description: 'Transaction ID.',
   },
+  transactionMetadata: {
+    id: 'wallet.transaction.transactionMetadata',
+    defaultMessage: '!!!Transaction Metadata',
+    description: 'Transaction Metadata.',
+  },
+  transactionMetadataDescription: {
+    id: 'wallet.transaction.transactionMetadataDescription',
+    defaultMessage: 'Transaction metadata is not moderated and may contain inappropriate content. Show unmoderated content.',
+    description: ''
+  },
   conversionRate: {
     id: 'wallet.transaction.conversion.rate',
     defaultMessage: '!!!Conversion rate',
@@ -367,7 +377,7 @@ export default class Transaction extends Component<Props, State> {
 
     const fromAddresses = (addresses, transactionId) => {
       if (addresses.length > 0) {
-        return includesUnresolvedAddresses(addresses) ? (
+        return (hasNativeTokens || includesUnresolvedAddresses(addresses)) ? (
           <div className={styles.explorerLinkRow}>
             <Link
               className={styles.explorerLink}
@@ -510,6 +520,14 @@ export default class Transaction extends Component<Props, State> {
                     skin={LinkSkin}
                   />
                 </div>
+
+                <h2>{intl.formatMessage(messages.transactionMetadata)}</h2>
+                <div className={styles.transactionIdRow}>
+                  <div className={styles.transactionMetadata}>
+                    {intl.formatMessage(messages.transactionMetadataDescription)}
+                  </div>
+                </div>
+
                 {this.renderCancelPendingTxnContent()}
               </div>
             </div>

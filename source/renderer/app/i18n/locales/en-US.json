@@ -963,6 +963,8 @@
   "wallet.transaction.state.pending": "Transaction pending",
   "wallet.transaction.transactionAmount": "Transaction amount",
   "wallet.transaction.transactionId": "Transaction ID",
+  "wallet.transaction.transactionMetadata": "Transaction Metadata",
+  "wallet.transaction.transactionMetadataDescription": "Transaction metadata is not moderated and may contain inappropriate content. Show unmoderated content.",
   "wallet.transaction.type": "{typeOfTransaction} transaction",
   "wallet.transaction.type.card": "Card Payment",
   "wallet.transaction.type.exchange": "Exchange",
