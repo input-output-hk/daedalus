@@ -14,3 +14,4 @@ import './legacyWallets/LegacyNotification.stories';
 import './paperWallets/PaperWallets.stories';
 import './hardwareWallets/HardwareWallets.stories';
 import './setPassword/SetWalletPassword.stories';
+import './confirmations/WalletTokenSendConfirmationDialog.stories';
