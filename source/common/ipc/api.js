@@ -298,18 +298,18 @@ export type GenerateWalletMigrationReportMainResponse = void;
 /**
  * Channel for entering terms of use page
  */
-export const DISABLE_TERMS_AGREED_USER_MENU_ITEMS_CHANNEL =
-  'DISABLE_TERMS_AGREED_USER_MENU_ITEMS_CHANNEL';
-export type DisableTermsAgreedUserMenuItemsRendererRequest = void;
-export type DisableTermsAgreedUserMenuItemsMainResponse = void;
+export const DISABLE_APPLICATION_MENU_NAVIGATION_CHANNEL =
+  'DISABLE_APPLICATION_MENU_NAVIGATION_CHANNEL';
+export type DisableApplicationMenuNavigationRendererRequest = void;
+export type DisableApplicationMenuNavigationMainResponse = void;
 
 /**
  * Channel for exiting from terms of use page
  */
-export const ENABLE_TERMS_AGREED_USER_MENU_ITEMS_CHANNEL =
-  'ENABLE_TERMS_AGREED_USER_MENU_ITEMS_CHANNEL';
-export type EnableTermsAgreedUserMenuItemsRendererRequest = void;
-export type EnableTermsAgreedUserMenuItemsMainResponse = void;
+export const ENABLE_APPLICATION_MENU_NAVIGATION_CHANNEL =
+  'ENABLE_APPLICATION_MENU_NAVIGATION_CHANNEL';
+export type EnableApplicationMenuNavigationRendererRequest = void;
+export type EnableApplicationMenuNavigationMainResponse = void;
 
 /**
  * Channel for generating wallet migration report

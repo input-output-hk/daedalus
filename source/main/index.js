@@ -37,8 +37,8 @@ import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types
 import { logUsedVersion } from './utils/logUsedVersion';
 import { setStateSnapshotLogChannel } from './ipc/set-log-state-snapshot';
 import { generateWalletMigrationReportChannel } from './ipc/generateWalletMigrationReportChannel';
-import { disableTermsAgreedUserMenuItemsChannel } from './ipc/disableTermsAgreedUserMenuItemsChannel';
-import { enableTermsAgreedUserMenuItemsChannel } from './ipc/enableTermsAgreedUserMenuItemsChannel';
+import { disableApplicationMenuNavigationChannel } from './ipc/disableApplicationMenuNavigationChannel';
+import { enableApplicationMenuNavigationChannel } from './ipc/enableApplicationMenuNavigationChannel';
 import { pauseActiveDownloads } from './ipc/downloadManagerChannel';
 // import { isHardwareWalletSupportEnabled, isLedgerEnabled } from '../renderer/app/config/hardwareWalletsConfig';
 
@@ -206,26 +206,26 @@ const onAppReady = async () => {
 
   buildAppMenus(mainWindow, cardanoNode, locale, {
     isUpdateAvailable: false,
-    isOnInitialSettings: false,
+    isNavigationEnabled: true,
   });
 
-  await disableTermsAgreedUserMenuItemsChannel.onReceive(
+  await disableApplicationMenuNavigationChannel.onReceive(
     () =>
       new Promise((resolve) => {
         buildAppMenus(mainWindow, cardanoNode, locale, {
           isUpdateAvailable: false,
-          isOnInitialSettings: true,
+          isNavigationEnabled: false,
         });
         resolve();
       })
   );
 
-  await enableTermsAgreedUserMenuItemsChannel.onReceive(
+  await enableApplicationMenuNavigationChannel.onReceive(
     () =>
       new Promise((resolve) => {
         buildAppMenus(mainWindow, cardanoNode, locale, {
           isUpdateAvailable: false,
-          isOnInitialSettings: false,
+          isNavigationEnabled: true,
         });
         resolve();
       })
@@ -237,7 +237,7 @@ const onAppReady = async () => {
         locale = getLocale(network);
         buildAppMenus(mainWindow, cardanoNode, locale, {
           isUpdateAvailable: data.isUpdateAvailable,
-          isOnInitialSettings: false,
+          isNavigationEnabled: true,
         });
         mainWindow.updateTitle(locale);
         resolve();
