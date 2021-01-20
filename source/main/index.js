@@ -206,7 +206,7 @@ const onAppReady = async () => {
 
   buildAppMenus(mainWindow, cardanoNode, locale, {
     isUpdateAvailable: false,
-    isNavigationEnabled: true,
+    isNavigationEnabled: false,
   });
 
   await disableApplicationMenuNavigationChannel.onReceive(
