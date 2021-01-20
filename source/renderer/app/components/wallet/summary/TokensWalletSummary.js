@@ -67,7 +67,7 @@ export default class TokensWalletSummary extends Component<Props> {
                     ? '-'
                     : token.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
                   <span>
-                    &nbsp;{intl.formatMessage(globalMessages.unitAda)}
+                    &nbsp;{token.name}
                   </span>
                 </div>
               </div>
