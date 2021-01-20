@@ -37,8 +37,8 @@ import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types
 import { logUsedVersion } from './utils/logUsedVersion';
 import { setStateSnapshotLogChannel } from './ipc/set-log-state-snapshot';
 import { generateWalletMigrationReportChannel } from './ipc/generateWalletMigrationReportChannel';
-import { enterInitialSettingsChannel } from './ipc/enterInitialSettingsChannel';
-import { exitFromInitialSettingsChannel } from './ipc/exitFromInitialSettingsChannel';
+import { disableTermsAgreedUserMenuItemsChannel } from './ipc/disableTermsAgreedUserMenuItemsChannel';
+import { enableTermsAgreedUserMenuItemsChannel } from './ipc/enableTermsAgreedUserMenuItemsChannel';
 import { pauseActiveDownloads } from './ipc/downloadManagerChannel';
 // import { isHardwareWalletSupportEnabled, isLedgerEnabled } from '../renderer/app/config/hardwareWalletsConfig';
 
@@ -209,7 +209,7 @@ const onAppReady = async () => {
     isOnInitialSettings: false,
   });
 
-  await enterInitialSettingsChannel.onReceive(
+  await disableTermsAgreedUserMenuItemsChannel.onReceive(
     () =>
       new Promise((resolve) => {
         buildAppMenus(mainWindow, cardanoNode, locale, {
@@ -220,7 +220,7 @@ const onAppReady = async () => {
       })
   );
 
-  await exitFromInitialSettingsChannel.onReceive(
+  await enableTermsAgreedUserMenuItemsChannel.onReceive(
     () =>
       new Promise((resolve) => {
         buildAppMenus(mainWindow, cardanoNode, locale, {

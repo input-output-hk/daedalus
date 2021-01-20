@@ -298,17 +298,18 @@ export type GenerateWalletMigrationReportMainResponse = void;
 /**
  * Channel for entering terms of use page
  */
-export const ENTER_INITIAL_SETTINGS_CHANNEL = 'ENTER_INITIAL_SETTINGS_CHANNEL';
-export type EnterInitialSettingsRendererRequest = void;
-export type EnterInitialSettingsMainResponse = void;
+export const DISABLE_TERMS_AGREED_USER_MENU_ITEMS_CHANNEL =
+  'DISABLE_TERMS_AGREED_USER_MENU_ITEMS_CHANNEL';
+export type DisableTermsAgreedUserMenuItemsRendererRequest = void;
+export type DisableTermsAgreedUserMenuItemsMainResponse = void;
 
 /**
  * Channel for exiting from terms of use page
  */
-export const EXIT_FROM_INITIAL_SETTINGS_CHANNEL =
-  'EXIT_FROM_INITIAL_SETTINGS_CHANNEL';
-export type ExitFromInitialSettingsRendererRequest = void;
-export type ExitFromInitialSettingsMainResponse = void;
+export const ENABLE_TERMS_AGREED_USER_MENU_ITEMS_CHANNEL =
+  'ENABLE_TERMS_AGREED_USER_MENU_ITEMS_CHANNEL';
+export type EnableTermsAgreedUserMenuItemsRendererRequest = void;
+export type EnableTermsAgreedUserMenuItemsMainResponse = void;
 
 /**
  * Channel for generating wallet migration report

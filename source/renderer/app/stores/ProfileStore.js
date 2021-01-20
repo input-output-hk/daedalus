@@ -14,6 +14,8 @@ import { logger } from '../utils/logging';
 import { setStateSnapshotLogChannel } from '../ipc/setStateSnapshotLogChannel';
 import { getDesktopDirectoryPathChannel } from '../ipc/getDesktopDirectoryPathChannel';
 import { getSystemLocaleChannel } from '../ipc/getSystemLocaleChannel';
+import { disableTermsAgreedUserMenuItemsChannel } from '../ipc/disableTermsAgreedUserMenuItemsChannel';
+import { enableTermsAgreedUserMenuItemsChannel } from '../ipc/enableTermsAgreedUserMenuItemsChannel';
 import { LOCALES } from '../../../common/types/locales.types';
 import {
   compressLogsChannel,
@@ -302,10 +304,16 @@ export default class ProfileStore extends Store {
   _acceptTermsOfUse = async () => {
     await this.setTermsOfUseAcceptanceRequest.execute();
     await this.getTermsOfUseAcceptanceRequest.execute();
+    await enableTermsAgreedUserMenuItemsChannel.send();
   };
 
-  _getTermsOfUseAcceptance = () => {
-    this.getTermsOfUseAcceptanceRequest.execute();
+  _getTermsOfUseAcceptance = async () => {
+    await this.getTermsOfUseAcceptanceRequest.execute();
+    if (this.getTermsOfUseAcceptanceRequest.result) {
+      await enableTermsAgreedUserMenuItemsChannel.send();
+    } else {
+      await disableTermsAgreedUserMenuItemsChannel.send();
+    }
   };
 
   _acceptDataLayerMigration = async () => {
