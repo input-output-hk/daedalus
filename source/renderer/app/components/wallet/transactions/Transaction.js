@@ -21,6 +21,7 @@ import globalMessages from '../../../i18n/global-messages';
 import type { TransactionState } from '../../../api/transactions/types';
 import { PENDING_TIME_LIMIT } from '../../../config/txnsConfig';
 import CancelTransactionConfirmationDialog from './CancelTransactionConfirmationDialog';
+import { ellipsis } from '../../../utils/strings';
 
 /* eslint-disable consistent-return */
 
@@ -355,9 +356,13 @@ export default class Transaction extends Component<Props, State> {
       isExpanded ? styles.arrowExpanded : null,
     ]);
 
+    // @todo Remove hardcoded values
+    data.currency = 'USDC';
+
     const transactionsType = hasNativeTokens ? intl.formatMessage(messages.multipleTokens) : intl.formatMessage(globalMessages.currency);
     const typeOfTransaction = hasNativeTokens ? intl.formatMessage(messages.multipleTokensType) : intl.formatMessage(globalMessages.currency);
     const symbol = adaSymbol;
+    const currency = hasNativeTokens ? data.currency : adaSymbol;
 
     const getIconType = (txState) => {
       switch (txState) {
@@ -503,9 +508,14 @@ export default class Transaction extends Component<Props, State> {
                       onClick={() =>
                         onOpenExternalLink(getUrlByType('address', address))
                       }
-                      label={address}
+                      label={ellipsis(address, 30, 30)}
                       skin={LinkSkin}
                     />
+                    <div className={styles.amountFeesWrapper}>
+                      <div className={styles.amount}>
+                        {formattedWalletAmount(data.amount, false)}&nbsp; {currency}
+                      </div>
+                    </div>
                   </div>
                 ))}
 

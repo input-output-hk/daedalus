@@ -25,18 +25,23 @@
   text-align: center;
   width: 74px;
   z-index: 1;
+
   > svg {
     height: 8px;
     width: 25px;
+
     path {
       stroke: var(--theme-transactions-arrow-stroke-color);
     }
   }
+
   .component:hover & {
     opacity: 0.2;
   }
+
   .content:hover & {
     opacity: 0.1;
+
     &:hover {
       opacity: 0.2;
     }
@@ -103,13 +108,13 @@
 
 .pendingWarningLabel {
   background-color: var(
-    --theme-transactions-state-pending-warning-background-color
+      --theme-transactions-state-pending-warning-background-color
   );
 }
 
 .expiredLabel {
   background-color: var(
-    --theme-transactions-state-pending-warning-background-color
+      --theme-transactions-state-pending-warning-background-color
   );
 }
 
@@ -159,7 +164,12 @@
 
   .addressRow,
   .explorerLinkRow {
-    padding-bottom: 6px;
+    padding-bottom: 10px;
+  }
+
+  .addressRow {
+    display: flex;
+    justify-content: space-between;
   }
 
   .addressRow,
@@ -222,6 +232,10 @@
 .detailsExpanded {
   max-height: 100%;
   padding: 10px 10px 0;
+
+  > div {
+    width: 100%;
+  }
 }
 
 .conversion {
@@ -236,9 +250,11 @@
   display: inline-block;
   margin-bottom: -1px;
   margin-left: 4px;
+
   & > svg {
     height: 12px;
     width: 12px;
+
     & > g > g {
       stroke: var(--theme-icon-transactions-ada-symbol-color);
     }
@@ -250,4 +266,40 @@
   font-size: 16px;
   font-weight: 300;
   line-height: 1.38;
+}
+
+.amountFeesWrapper {
+  background-color: var(--theme-staking-stake-pool-grey-bg-color);
+  border-radius: 3px;
+  display: flex;
+  flex-direction: row;
+  height: 21px;
+  justify-content: center;
+  max-width: 130px;
+  padding: 3px 9px;
+  width: 100%;
+
+  .amountLabel,
+  .feesLabel {
+    line-height: 1.38;
+  }
+
+  .amount {
+    font-size: 11px;
+    font-weight: bold;
+    line-height: 1.36;
+    margin-left: initial;
+  }
+
+  .fees {
+    color: var(--theme-send-confirmation-dialog-send-values-color);
+    line-height: 1.38;
+    margin-top: 6px;
+    user-select: text;
+    word-break: break-word;
+  }
+
+  .fees {
+    opacity: 0.5;
+  }
 }
