@@ -222,7 +222,6 @@ export default class WalletTransactionsList extends Component<Props> {
       showMoreTransactionsButton,
       transactions,
       walletId,
-      hasNativeTokens,
     } = this.props;
 
     const { intl } = this.context;
