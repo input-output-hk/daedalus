@@ -130,6 +130,28 @@
   padding-left: 18px;
 }
 
+.depositInput {
+  .depositAdaTotal {
+    color: var(--theme-input-right-floating-text-color);
+    font-family: var(--font-regular);
+    font-size: 14px;
+    line-height: 1.36;
+    position: absolute;
+    right: 18px;
+  }
+}
+
+.amountInput {
+  .amountTokenTotal {
+    color: var(--theme-input-right-floating-text-color);
+    font-family: var(--font-regular);
+    font-size: 14px;
+    line-height: 1.36;
+    position: absolute;
+    right: 18px;
+  }
+}
+
 .adaLabel {
   bottom: 16px;
   color: var(--theme-input-right-floating-text-color);

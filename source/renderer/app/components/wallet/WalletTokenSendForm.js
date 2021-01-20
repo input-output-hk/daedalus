@@ -24,6 +24,7 @@ import WalletSendConfirmationDialogContainer from '../../containers/wallet/dialo
 import {
   formattedAmountToNaturalUnits,
   formattedAmountToLovelace,
+  formattedWalletAmount,
 } from '../../utils/formatters';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
@@ -74,6 +75,12 @@ export const messages = defineMessages({
     defaultMessage: '!!!Estimated fees',
     description:
       'Label for the "Estimated fees" number input in the wallet send form.',
+  },
+  ofLabel: {
+    id: 'wallet.send.form.of.label',
+    defaultMessage: '!!!of',
+    description:
+      'Label for the "of" max ADA value in the wallet send form.',
   },
   descriptionLabel: {
     id: 'wallet.send.form.description.label',
@@ -393,6 +400,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
       isHardwareWallet,
       nativeTokens,
       isClearTooltipOpeningDownward,
+      walletAmount,
     } = this.props;
 
     const {
@@ -417,6 +425,8 @@ export default class WalletTokenSendForm extends Component<Props, State> {
       fees = transactionFee.toFormat(currencyMaxFractionalDigits);
       total = amount.add(transactionFee).toFormat(currencyMaxFractionalDigits);
     }
+
+    const selectedNativeToken = nativeTokens && nativeTokens.length ? nativeTokens[0] : null;
 
     return (
       <div className={styles.component}>
@@ -470,6 +480,11 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                     )}
                   </div>
                   <div className={styles.amountInput}>
+                    {selectedNativeToken && <div className={styles.amountTokenTotal}>
+                      {intl.formatMessage(messages.ofLabel)}&nbsp;{formattedWalletAmount(selectedNativeToken.amount, false)}
+                      &nbsp;{currencyUnit}
+                    </div>
+                    }
                     <NumericInput
                       {...amountFieldProps}
                       className="amount"
@@ -482,6 +497,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                       onChange={(value) => {
                         this._isCalculatingTransactionFee = true;
                         amountField.onChange(value);
+                        estimatedField.onChange(fees);
                       }}
                       currency={currencyUnit}
                       fees={fees}
@@ -493,6 +509,9 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                     />
                   </div>
                   <div className={styles.depositInput}>
+                    <div className={styles.depositAdaTotal}>
+                      {intl.formatMessage(messages.ofLabel)}&nbsp;{formattedWalletAmount(walletAmount)}
+                    </div>
                     <NumericInput
                       {...depositFieldProps}
                       className="deposit"

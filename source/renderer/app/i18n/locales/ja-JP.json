@@ -826,6 +826,7 @@
   "wallet.send.form.errors.invalidTitle": "タイトルを3字以上で入力してください。",
   "wallet.send.form.estimatedFee.label": "推定料金",
   "wallet.send.form.next": "続ける",
+  "wallet.send.form.of.label": "/",
   "wallet.send.form.receiver.hint": "ウォレットアドレス",
   "wallet.send.form.receiver.label": "送金先",
   "wallet.send.form.receiver.placeholder": "アドレスを貼り付けるか、他のウォレットを選択してください",
