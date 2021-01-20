@@ -7,7 +7,6 @@ import BorderedBox from '../../widgets/BorderedBox';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import styles from './TokensWalletSummary.scss';
 import Wallet from '../../../domains/Wallet';
-import globalMessages from '../../../i18n/global-messages';
 
 const messages = defineMessages({
   transactionsLabel: {
