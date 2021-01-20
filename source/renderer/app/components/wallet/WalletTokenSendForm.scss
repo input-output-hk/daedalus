@@ -32,10 +32,10 @@
     }
 
     .fieldsLine {
-      border-bottom: 1px solid var(--theme-bordered-box-border);
-      border-left: 1px solid var(--theme-bordered-box-border);
+      border-bottom: var(--theme-bordered-box-border);
+      border-left: var(--theme-bordered-box-border);
       border-radius: 2px;
-      border-top: 1px solid var(--theme-bordered-box-border);
+      border-top: var(--theme-bordered-box-border);
       height: 202px;
       margin-right: 12px;
       margin-top: 55px;
