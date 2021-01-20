@@ -79,8 +79,7 @@ export const messages = defineMessages({
   ofLabel: {
     id: 'wallet.send.form.of.label',
     defaultMessage: '!!!of',
-    description:
-      'Label for the "of" max ADA value in the wallet send form.',
+    description: 'Label for the "of" max ADA value in the wallet send form.',
   },
   descriptionLabel: {
     id: 'wallet.send.form.description.label',
@@ -102,6 +101,11 @@ export const messages = defineMessages({
     id: 'wallet.send.form.send',
     defaultMessage: '!!!Send',
     description: 'Label for the send button on the wallet send form.',
+  },
+  maxButton: {
+    id: 'wallet.send.form.maxButton',
+    defaultMessage: '!!!Max',
+    description: 'Max button label on the wallet send form',
   },
   invalidAmount: {
     id: 'wallet.send.form.errors.invalidAmount',
@@ -199,6 +203,16 @@ export default class WalletTokenSendForm extends Component<Props, State> {
   clearReceiverAddress = () => {
     const receiverField = this.form.$('receiver');
     receiverField.clear();
+  };
+
+  addMaxAmount = () => {
+    const amountField = this.form.$('amount');
+    const { nativeTokens } = this.props;
+    const maxWalletAmount =
+      nativeTokens && nativeTokens.length ? nativeTokens[0].amount : null;
+    const formattedMaxWalletAmount = maxWalletAmount.toNumber();
+    if (maxWalletAmount && maxWalletAmount.gte(0))
+      amountField.set(formattedMaxWalletAmount);
   };
 
   handleOnReset = () => {
@@ -426,7 +440,8 @@ export default class WalletTokenSendForm extends Component<Props, State> {
       total = amount.add(transactionFee).toFormat(currencyMaxFractionalDigits);
     }
 
-    const selectedNativeToken = nativeTokens && nativeTokens.length ? nativeTokens[0] : null;
+    const selectedNativeToken =
+      nativeTokens && nativeTokens.length ? nativeTokens[0] : null;
 
     return (
       <div className={styles.component}>
@@ -465,9 +480,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                           }
                         >
                           <button
-                            onClick={() =>
-                              this.clearReceiverAddress()
-                            }
+                            onClick={() => this.clearReceiverAddress()}
                             className={styles.clearReceiverButton}
                           >
                             <SVGInline
@@ -480,11 +493,16 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                     )}
                   </div>
                   <div className={styles.amountInput}>
-                    {selectedNativeToken && <div className={styles.amountTokenTotal}>
-                      {intl.formatMessage(messages.ofLabel)}&nbsp;{formattedWalletAmount(selectedNativeToken.amount, false)}
-                      &nbsp;{currencyUnit}
-                    </div>
-                    }
+                    {selectedNativeToken && (
+                      <div className={styles.amountTokenTotal}>
+                        {intl.formatMessage(messages.ofLabel)}&nbsp;
+                        {formattedWalletAmount(
+                          selectedNativeToken.amount,
+                          false
+                        )}
+                        &nbsp;{currencyUnit}
+                      </div>
+                    )}
                     <NumericInput
                       {...amountFieldProps}
                       className="amount"
@@ -507,10 +525,26 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                       allowSigns={false}
                       isCalculatingFees={this._isCalculatingTransactionFee}
                     />
+                    <div className={styles.maxAmountContainer}>
+                      <PopOver
+                        content="Max"
+                        placement={
+                          isClearTooltipOpeningDownward ? 'bottom' : 'top'
+                        }
+                      >
+                        <button
+                          onClick={() => this.addMaxAmount()}
+                          className={styles.maxAmountButton}
+                        >
+                          {intl.formatMessage(messages.maxButton)}
+                        </button>
+                      </PopOver>
+                    </div>
                   </div>
                   <div className={styles.depositInput}>
                     <div className={styles.depositAdaTotal}>
-                      {intl.formatMessage(messages.ofLabel)}&nbsp;{formattedWalletAmount(walletAmount)}
+                      {intl.formatMessage(messages.ofLabel)}&nbsp;
+                      {formattedWalletAmount(walletAmount)}
                     </div>
                     <NumericInput
                       {...depositFieldProps}
@@ -521,7 +555,6 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                         minimumFractionDigits: currencyMaxFractionalDigits,
                       }}
                       currency={intl.formatMessage(globalMessages.unitAda)}
-                      total={total}
                       skin={AmountInputSkin}
                       disabled
                     />
@@ -537,7 +570,6 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                   numberLocaleOptions={{
                     minimumFractionDigits: currencyMaxFractionalDigits,
                   }}
-                  error={transactionFeeError || amountField.error}
                   currency={currencyUnit}
                   fees={fees}
                   total={total}

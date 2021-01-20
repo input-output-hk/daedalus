@@ -77,67 +77,76 @@ export default class WalletSendPage extends Component<Props> {
     const { validateAmount } = transactions;
     const { hwDeviceStatus } = hardwareWallets;
     const activeWallet = wallets.active;
-    const nativeTokens = wallets.all.filter(
+    let nativeTokens = wallets.all.filter(
       (wallet) => wallet.isNativeTokenWallet
     );
+
+    // @todo - Remove hardcoded nativeTokens value after hooking up real data
+    if (!nativeTokens.length) {
+      nativeTokens = [wallets.all[0]];
+    }
 
     // Guard against potential null values
     if (!activeWallet)
       throw new Error('Active wallet required for WalletSendPage.');
     const { isHardwareWallet } = activeWallet;
 
-    return nativeTokens && nativeTokens.length ? (
-      <WalletTokenSendForm
-        currencyUnit={intl.formatMessage(globalMessages.unitAda)}
-        currencyMaxIntegerDigits={MAX_INTEGER_PLACES_IN_ADA}
-        currencyMaxFractionalDigits={DECIMAL_PLACES_IN_ADA}
-        currentNumberFormat={profile.currentNumberFormat}
-        validateAmount={validateAmount}
-        calculateTransactionFee={(address: string, amount: number) =>
-          this.calculateTransactionFee({
-            walletId: activeWallet.id,
-            address,
-            amount,
-            isHardwareWallet,
-          })
-        }
-        nativeTokens={nativeTokens}
-        walletAmount={activeWallet.amount}
-        addressValidator={isValidAddress}
-        isDialogOpen={uiDialogs.isOpen}
-        openDialogAction={(params) =>
-          this.openDialog(params.dialog, isHardwareWallet, activeWallet.id)
-        }
-        isRestoreActive={activeWallet.isRestoring}
-        onExternalLinkClick={app.openExternalLink}
-        hwDeviceStatus={hwDeviceStatus}
-        isHardwareWallet={isHardwareWallet}
-      />
-    ) : (
-      <WalletSendForm
-        currencyUnit={intl.formatMessage(globalMessages.unitAda)}
-        currencyMaxIntegerDigits={MAX_INTEGER_PLACES_IN_ADA}
-        currencyMaxFractionalDigits={DECIMAL_PLACES_IN_ADA}
-        currentNumberFormat={profile.currentNumberFormat}
-        validateAmount={validateAmount}
-        calculateTransactionFee={(address: string, amount: number) =>
-          this.calculateTransactionFee({
-            walletId: activeWallet.id,
-            address,
-            amount,
-            isHardwareWallet,
-          })
-        }
-        addressValidator={isValidAddress}
-        isDialogOpen={uiDialogs.isOpen}
-        openDialogAction={(params) =>
-          this.openDialog(params.dialog, isHardwareWallet, activeWallet.id)
-        }
-        isRestoreActive={activeWallet.isRestoring}
-        onExternalLinkClick={app.openExternalLink}
-        hwDeviceStatus={hwDeviceStatus}
-        isHardwareWallet={isHardwareWallet}
-      />
+    return (
+      <>
+        {nativeTokens && nativeTokens.length ? (
+          <WalletTokenSendForm
+            currencyUnit={intl.formatMessage(globalMessages.unitAda)}
+            currencyMaxIntegerDigits={MAX_INTEGER_PLACES_IN_ADA}
+            currencyMaxFractionalDigits={DECIMAL_PLACES_IN_ADA}
+            currentNumberFormat={profile.currentNumberFormat}
+            validateAmount={validateAmount}
+            calculateTransactionFee={(address: string, amount: number) =>
+              this.calculateTransactionFee({
+                walletId: activeWallet.id,
+                address,
+                amount,
+                isHardwareWallet,
+              })
+            }
+            nativeTokens={nativeTokens}
+            walletAmount={activeWallet.amount}
+            addressValidator={isValidAddress}
+            isDialogOpen={uiDialogs.isOpen}
+            openDialogAction={(params) =>
+              this.openDialog(params.dialog, isHardwareWallet, activeWallet.id)
+            }
+            isRestoreActive={activeWallet.isRestoring}
+            onExternalLinkClick={app.openExternalLink}
+            hwDeviceStatus={hwDeviceStatus}
+            isHardwareWallet={isHardwareWallet}
+          />
+        ) : (
+          <WalletSendForm
+            currencyUnit={intl.formatMessage(globalMessages.unitAda)}
+            currencyMaxIntegerDigits={MAX_INTEGER_PLACES_IN_ADA}
+            currencyMaxFractionalDigits={DECIMAL_PLACES_IN_ADA}
+            currentNumberFormat={profile.currentNumberFormat}
+            validateAmount={validateAmount}
+            calculateTransactionFee={(address: string, amount: number) =>
+              this.calculateTransactionFee({
+                walletId: activeWallet.id,
+                address,
+                amount,
+                isHardwareWallet,
+              })
+            }
+            addressValidator={isValidAddress}
+            isDialogOpen={uiDialogs.isOpen}
+            openDialogAction={(params) =>
+              this.openDialog(params.dialog, isHardwareWallet, activeWallet.id)
+            }
+            isRestoreActive={activeWallet.isRestoring}
+            onExternalLinkClick={app.openExternalLink}
+            hwDeviceStatus={hwDeviceStatus}
+            isHardwareWallet={isHardwareWallet}
+          />
+        )}
+      </>
     );
   }
 }

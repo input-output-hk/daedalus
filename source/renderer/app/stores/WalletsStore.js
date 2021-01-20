@@ -1431,7 +1431,7 @@ export default class WalletsStore extends Store {
     this._updateGeneratingRewardsCsvError();
   };
 
-  @action _setNativeTokenWallet = (params: { walletId: string }) => {
+  @action _setNativeTokenWallet = async (params: { walletId: string }) => {
     const nativeWallet = this.getWalletById(params.walletId);
     if (nativeWallet) {
       runInAction('AdaWalletsStore::isNativeTokenWallet', () => {

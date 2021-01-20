@@ -43,8 +43,8 @@ export default class WalletSummaryPage extends Component<Props> {
     });
   };
 
-  handleOpenWalletTokenSend = (token: Wallet) => {
-    this.props.actions.wallets.setNativeTokenWallet.trigger({
+  handleOpenWalletTokenSend = async (token: Wallet) => {
+    await this.props.actions.wallets.setNativeTokenWallet.trigger({
       walletId: token.id,
     });
 

@@ -126,12 +126,8 @@
   }
 }
 
-.estimatedFeeInput {
-  padding-left: 18px;
-}
-
-.depositInput {
-  .depositAdaTotal {
+.amountInput {
+  .amountTokenTotal {
     color: var(--theme-input-right-floating-text-color);
     font-family: var(--font-regular);
     font-size: 14px;
@@ -139,10 +135,42 @@
     position: absolute;
     right: 18px;
   }
+
+  .maxAmountContainer {
+    bottom: 0.5px;
+    display: flex;
+    height: 48px;
+    line-height: 48px;
+    padding-left: 20px;
+    position: absolute;
+    right: 80px;
+
+    .maxAmountButton {
+      background-color: var(
+        --theme-staking-stake-pools-search-clear-button-background-color
+      );
+      border-radius: 3px;
+      color: var(--theme-staking-stake-pools-search-clear-button-color);
+      cursor: pointer;
+      height: 28px;
+      padding: 0 5px;
+      text-transform: uppercase;
+
+      &:hover {
+        background-color: var(
+          --theme-staking-stake-pools-search-clear-button-hover-background-color
+        );
+      }
+    }
+  }
 }
 
-.amountInput {
-  .amountTokenTotal {
+.estimatedFeeInput {
+  padding-left: 18px;
+}
+
+.depositInput {
+  .depositAdaTotal {
     color: var(--theme-input-right-floating-text-color);
     font-family: var(--font-regular);
     font-size: 14px;
