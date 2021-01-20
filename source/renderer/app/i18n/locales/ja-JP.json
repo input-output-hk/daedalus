@@ -280,7 +280,7 @@
   "settings.menu.support.link.label": "ユーザーサポート",
   "settings.menu.termsOfUse.link.label": "サービス利用規約",
   "settings.stakePools.smash.description1": "ステークプールメタデータアグリゲーションサーバー（SMASH）は以下のためのオフチェーンメタデータサーバーです。",
-  "settings.stakePools.smash.description2": "!!!If you decide not to use an off-chain metadata server, your Daedalus client will be forced to fetch this data by contacting every stake pool individually, which is a very slow and resource-consuming process. The list of stake pools received is not curated, so Daedalus will get legitimate, duplicates, and fake pools. An added risk to this process is that your antivirus or antimalware software could recognize making thousands of network requests as malicious behavior by the Daedalus client.",
+  "settings.stakePools.smash.description2": "オフチェーンメタデータサーバーを使用しない場合、Daedalusクライアントはすべてのステークプールと個別に接触してこのデータをフェッチすることになります。このプロセスは大量の時間とリソースを消費します。受信したステークプールのリストはキュレーションされていないため、Daedalusは合法的なプールも、重複やフェイクのプールもすべて取得します。このプロセスの追加的リスクとして、ウィルス対策ソフトウェアが何千ものネットワークリクエストを、Daedalusクライアントによる悪意のある行動と見なす可能性があります。",
   "settings.stakePools.smash.descriptionItem1Content1": "すべてのサーバーは、個別のキュレーションポリシーを採用しています。例えば、IOHKサーバーは、登録されたステークプールが有効であることを確実にし、ティッカー名や商標の重複を回避し、プールが攻撃的または害となる可能性のある機能を有していないかチェックします。",
   "settings.stakePools.smash.descriptionItem1Content2": "不運なことに、詐欺や荒らし、虐待行為もオンラインエコシステムの一部であることを受け、問題となる恐れのあるアクターを活動の場からふるい落とす方法を見つける必要がありました。",
   "settings.stakePools.smash.descriptionItem1Title": "サーバーリストのキュレーション",

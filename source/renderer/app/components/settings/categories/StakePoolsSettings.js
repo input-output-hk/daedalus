@@ -21,7 +21,34 @@ const messages = defineMessages({
   description1: {
     id: 'settings.stakePools.smash.description1',
     defaultMessage:
-      '!!!The Stakepool Metadata Aggregation Server (SMASH) is an off-chain metadata server for:',
+      '!!!The Stakepool Metadata Aggregation Server (SMASH) is an off-chain metadata server. It enables a faster loading of stake pools and can be used to improve security and the quality of the results. Every server has a different curation policy.',
+    description: 'description for the Stake Pools settings page.',
+  },
+  descriptionLinkLabel: {
+    id: 'settings.stakePools.smash.descriptionLinkLabel',
+    defaultMessage: '!!!Find out more.',
+    description: 'description for the Stake Pools settings page.',
+  },
+  descriptionLinkUrl: {
+    id: 'settings.stakePools.smash.descriptionLinkUrl',
+    defaultMessage:
+      '!!!https://iohk.io/en/blog/posts/2020/11/17/in-pools-we-trust/',
+    description: 'description for the Stake Pools settings page.',
+  },
+  descriptionIOHKcontent: {
+    id: 'settings.stakePools.smash.descriptionIOHKcontent',
+    defaultMessage: '!!!...',
+    description: 'description for the Stake Pools settings page.',
+  },
+  descriptionIOHKurl: {
+    id: 'settings.stakePools.smash.descriptionIOHKurl',
+    defaultMessage:
+      '!!!https://iohk.io/en/blog/posts/2020/11/17/in-pools-we-trust/',
+    description: 'description for the Stake Pools settings page.',
+  },
+  descriptionNone: {
+    id: 'settings.stakePools.smash.descriptionNone',
+    defaultMessage: '!!!...',
     description: 'description for the Stake Pools settings page.',
   },
   descriptionItem1Title: {
@@ -66,7 +93,7 @@ const messages = defineMessages({
   },
   smashSelectIOHKServer: {
     id: 'settings.stakePools.smash.select.IOHKServer',
-    defaultMessage: '!!!IOHK',
+    defaultMessage: '!!!IOHK (Recommended)',
     description:
       'smashSelectCustomServer option for the "Smash" selection on the Stake Pools settings page.',
   },
@@ -169,10 +196,14 @@ export default class StakePoolsSettings extends Component<Props, State> {
   };
 
   handleIsValid = (url: string) =>
-    url === '' ||
-    isValidUrl(url) ||
-    url === SMASH_SERVERS_LIST.direct.url ||
-    url === SMASH_SERVERS_LIST.none.url;
+    url === '' || isValidUrl(url) || url === SMASH_SERVERS_LIST.direct.url;
+
+  smashSelectMessages = {
+    iohk: this.context.intl.formatMessage(messages.smashSelectIOHKServer),
+    testingKnown: SMASH_SERVERS_LIST.testingKnown.name,
+    direct: this.context.intl.formatMessage(messages.smashSelectDirect),
+    custom: this.context.intl.formatMessage(messages.smashSelectCustomServer),
+  };
 
   render() {
     const { smashServerUrlError, isLoading } = this.props;
@@ -180,65 +211,56 @@ export default class StakePoolsSettings extends Component<Props, State> {
     const { editingSmashServerUrl, successfullyUpdated } = this.state;
     const smashServerType = getSmashServerIdFromUrl(editingSmashServerUrl);
 
-    const smashSelectOptions = [
-      ...map(SMASH_SERVERS_LIST, ({ name: label }, value) => ({
-        label,
-        value,
-      })),
-      {
-        label: intl.formatMessage(messages.smashSelectCustomServer),
-        value: SMASH_SERVER_TYPES.CUSTOM,
-      },
-    ];
+    const smashSelectOptions = map(SMASH_SERVER_TYPES, (value) => ({
+      label: this.smashSelectMessages[value] || value,
+      value,
+    }));
 
     const errorMessage = smashServerUrlError
       ? intl.formatMessage(smashServerUrlError)
       : null;
 
-    const smashServerUrlValue =
-      editingSmashServerUrl === SMASH_SERVERS_LIST.direct.url ||
-      editingSmashServerUrl === SMASH_SERVERS_LIST.none.url
-        ? '-'
-        : editingSmashServerUrl;
-
     return (
       <div className={styles.component}>
-        <RadioSet
-          label={intl.formatMessage(messages.smashSelectLabel)}
-          items={[
-            {
-              key: SMASH_SERVER_TYPES.IOHK,
-              label: intl.formatMessage(messages.smashSelectIOHKServer),
-              selected: smashServerType === SMASH_SERVER_TYPES.IOHK,
-              onChange: (a, b, c) => {
-                console.log('a', a);
-                console.log('b', b);
-                console.log('c', c);
-              },
-            },
-            {
-              key: SMASH_SERVER_TYPES.CUSTOM,
-              label: intl.formatMessage(messages.smashSelectCustomServer),
-              selected: smashServerType === SMASH_SERVER_TYPES.CUSTOM,
-              onChange: (a, b, c) => {
-                console.log('a', a);
-                console.log('b', b);
-                console.log('c', c);
-              },
-            },
-            {
-              key: SMASH_SERVER_TYPES.DIRECT,
-              label: intl.formatMessage(messages.smashSelectDirect),
-              selected: smashServerType === SMASH_SERVER_TYPES.DIRECT,
-              onChange: (a, b, c) => {
-                console.log('a', a);
-                console.log('b', b);
-                console.log('c', c);
-              },
-            },
-          ]}
-        />
         <div className={styles.description}>
+          <p>
+            {intl.formatMessage(messages.description1)} <em>Find out more.</em>
+          </p>
+        </div>
+        <Select
+          label={intl.formatMessage(messages.smashSelectLabel)}
+          value={smashServerType}
+          options={smashSelectOptions}
+          onChange={this.handleOnSelectSmashServerType}
+          className={styles.select}
+          optionHeight={50}
+        />
+        {smashServerType === SMASH_SERVER_TYPES.CUSTOM && (
+          <InlineEditingInput
+            className={styles.smashServerUrl}
+            label={intl.formatMessage(messages.smashURLInputLabel)}
+            value={editingSmashServerUrl}
+            placeholder={intl.formatMessage(messages.smashUrlInputPlaceholder)}
+            onSubmit={this.handleSubmit}
+            isValid={this.handleIsValid}
+            valueErrorMessage={intl.formatMessage(
+              messages.smashUrlInputInvalidUrl
+            )}
+            errorMessage={errorMessage}
+            readOnly={
+              isLoading || smashServerType !== SMASH_SERVER_TYPES.CUSTOM
+            }
+            isLoading={isLoading}
+            successfullyUpdated={successfullyUpdated}
+          />
+        )}
+        <div className={styles.optionDescription}>
+          {smashServerType === SMASH_SERVER_TYPES.IOHK &&
+            intl.formatMessage(messages.descriptionIOHKcontent)}
+          {smashServerType === SMASH_SERVER_TYPES.DIRECT &&
+            intl.formatMessage(messages.descriptionNone)}
+        </div>
+        {/*<div className={styles.description}>
           <p>{intl.formatMessage(messages.description1)}</p>
           <ol className={styles.description}>
             <li>
@@ -256,30 +278,7 @@ export default class StakePoolsSettings extends Component<Props, State> {
             </li>
           </ol>
           <p>{intl.formatMessage(messages.description2)}</p>
-        </div>
-        {/*<Select
-          label={intl.formatMessage(messages.smashSelectLabel)}
-          value={smashServerType}
-          options={smashSelectOptions}
-          onChange={this.handleOnSelectSmashServerType}
-          className={styles.select}
-          optionHeight={50}
-        />
-        <InlineEditingInput
-          className={styles.smashServerUrl}
-          label={intl.formatMessage(messages.smashURLInputLabel)}
-          value={smashServerUrlValue}
-          placeholder={intl.formatMessage(messages.smashUrlInputPlaceholder)}
-          onSubmit={this.handleSubmit}
-          isValid={this.handleIsValid}
-          valueErrorMessage={intl.formatMessage(
-            messages.smashUrlInputInvalidUrl
-          )}
-          errorMessage={errorMessage}
-          readOnly={isLoading || smashServerType !== SMASH_SERVER_TYPES.CUSTOM}
-          isLoading={isLoading}
-          successfullyUpdated={successfullyUpdated}
-        />*/}
+        </div>*/}
       </div>
     );
   }

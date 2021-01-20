@@ -20,6 +20,9 @@
     list-style: decimal;
     margin-left: 20px;
   }
+  em {
+    color: var(--theme-delegation-steps-intro-link-color);
+  }
 }
 .smashServerUrl {
   margin-top: 20px;
@@ -38,4 +41,13 @@
   .RadioSet_radiosContainer {
     flex-direction: column;
   }
+}
+
+.optionDescription {
+  color: var(--theme-support-settings-text-color);
+  display: block;
+  font-family: var(--font-regular);
+  font-size: 14px;
+  line-height: 1.38;
+  margin-top: 20px;
 }

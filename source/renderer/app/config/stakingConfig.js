@@ -22,18 +22,13 @@ export const SMASH_SERVERS_LIST: {
   },
   // @SMASH TODO - remove it!
   testingKnown: {
-    name: 'Testing Known Server',
+    name: 'Known Server for testing',
     url: 'https://test-known.com',
   },
   // Metadata is fetched directly in URLs registered on chain,
   direct: {
     name: 'Direct',
     url: 'direct',
-  },
-  // Metadata is not fetched at all,
-  none: {
-    name: 'None',
-    url: 'none',
   },
 };
 
@@ -42,11 +37,9 @@ export const SMASH_SERVER_TYPES: {
   [key: string]: SmashServerType,
 } = {
   IOHK: 'iohk',
-  ADA_POOLS: 'adaPools',
   TESTING_KNOWN: 'testingKnown',
   CUSTOM: 'custom',
   DIRECT: 'direct',
-  NONE: 'none',
 };
 
 export const SMASH_SERVER_STATUSES: {
