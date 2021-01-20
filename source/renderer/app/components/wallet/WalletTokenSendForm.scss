@@ -32,10 +32,10 @@
     }
 
     .fieldsLine {
-      border-bottom: 1px solid #c6cdd6;
-      border-left: 1px solid #c6cdd6;
+      border-bottom: 1px solid var(--theme-bordered-box-border);
+      border-left: 1px solid var(--theme-bordered-box-border);
       border-radius: 2px;
-      border-top: 1px solid #c6cdd6;
+      border-top: 1px solid var(--theme-bordered-box-border);
       height: 202px;
       margin-right: 12px;
       margin-top: 55px;
@@ -69,6 +69,14 @@
 }
 
 .receiverInput {
+  input {
+    display: flex;
+    overflow: hidden;
+    padding-right: 60px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   .clearReceiverContainer {
     bottom: 0.5px;
     display: flex;

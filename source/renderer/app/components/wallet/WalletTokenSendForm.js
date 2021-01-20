@@ -53,8 +53,8 @@ export const messages = defineMessages({
     description: 'Label for the "Receiver" text input in the wallet send form.',
   },
   receiverHint: {
-    id: 'wallet.send.form.receiver.hint',
-    defaultMessage: '!!!Wallet Address',
+    id: 'wallet.send.form.receiver.placeholder',
+    defaultMessage: '!!!Paste address or select your other wallet',
     description:
       'Hint inside the "Receiver" text input in the wallet send form.',
   },
