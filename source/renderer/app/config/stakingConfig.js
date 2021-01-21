@@ -51,6 +51,10 @@ export const SMASH_SERVER_STATUSES: {
   NO_SMASH_CONFIGURED: 'no_smash_configured',
 };
 
+export const SMASH_URL_VALIDATOR = new RegExp(
+  '^(direct|https?://[a-zA-Z0-9-_~.]+(:[0-9]+)?/?)$'
+);
+
 export const RANKING_SLIDER_RATIO = 60;
 export const MIN_DELEGATION_FUNDS = 10;
 export const MIN_DELEGATION_FUNDS_LOG = Math.log(MIN_DELEGATION_FUNDS);

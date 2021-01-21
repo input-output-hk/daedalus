@@ -12,13 +12,13 @@ import {
   FormattedHTMLMessage,
 } from 'react-intl';
 import RadioSet from '../../widgets/RadioSet';
-import { isValidUrl } from '../../../utils/validations';
 import { getSmashServerIdFromUrl } from '../../../utils/staking';
 import InlineEditingInput from '../../widgets/forms/InlineEditingInput';
 import styles from './StakePoolsSettings.scss';
 import {
   SMASH_SERVERS_LIST,
   SMASH_SERVER_TYPES,
+  SMASH_URL_VALIDATOR,
 } from '../../../config/stakingConfig';
 import type { SmashServerType } from '../../../types/stakingTypes';
 
@@ -182,8 +182,7 @@ export default class StakePoolsSettings extends Component<Props, State> {
     });
   };
 
-  handleIsValid = (url: string) =>
-    url === '' || isValidUrl(url) || url === SMASH_SERVERS_LIST.direct.url;
+  handleIsValid = (url: string) => url === '' || SMASH_URL_VALIDATOR.test(url);
 
   smashSelectMessages = {
     iohk: <FormattedHTMLMessage {...messages.smashSelectIOHKServer} />,

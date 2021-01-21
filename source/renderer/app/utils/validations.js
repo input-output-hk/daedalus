@@ -1,5 +1,4 @@
 // @flow
-import validator from 'validator';
 import BigNumber from 'bignumber.js';
 import isInt from 'validator/lib/isInt';
 import { every } from 'lodash';
@@ -83,12 +82,6 @@ export const isValidAmountInLovelaces = (value: string) => {
   const maxValue = new BigNumber(45000000000000000);
   return numericValue.gte(minValue) && numericValue.lte(maxValue);
 };
-
-export const isValidUrl = (url: string) =>
-  validator.isURL(url, {
-    protocols: ['http', 'https'],
-    require_protocol: true,
-  });
 
 /**
  * Mnemonics validation
