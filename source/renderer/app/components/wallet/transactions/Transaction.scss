@@ -238,6 +238,29 @@
   }
 }
 
+.receiverRow {
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+
+  .receiverRowItem {
+    align-items: flex-start;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+
+    h2 {
+      display: flex;
+    }
+
+    .receiverRowItemAddresses {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+    }
+  }
+}
+
 .conversion {
   display: flex;
 }

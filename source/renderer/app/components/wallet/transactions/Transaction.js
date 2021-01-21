@@ -97,6 +97,11 @@ const messages = defineMessages({
     defaultMessage: '!!!To addresses',
     description: 'To addresses',
   },
+  receiverLabel: {
+    id: 'wallet.transaction.receiverLabel',
+    defaultMessage: '!!!Receiver',
+    description: 'Receiver',
+  },
   transactionAmount: {
     id: 'wallet.transaction.transactionAmount',
     defaultMessage: '!!!Transaction amount',
@@ -509,27 +514,54 @@ export default class Transaction extends Component<Props, State> {
                   </>
                 ) : null}
 
-                <h2>{intl.formatMessage(messages.toAddresses)}</h2>
+                {!hasNativeTokens && <h2>{intl.formatMessage(messages.toAddresses)}</h2>}
                 {data.addresses.to.map((address, addressIndex) => (
-                  <div
-                    // eslint-disable-next-line react/no-array-index-key
-                    key={`${data.id}-to-${address}-${addressIndex}`}
-                    className={styles.addressRow}
-                  >
-                    <Link
-                      className={styles.address}
-                      onClick={() =>
-                        onOpenExternalLink(getUrlByType('address', address))
-                      }
-                      label={ellipsis(address, 30, 30)}
-                      skin={LinkSkin}
-                    />
-                    <div className={styles.amountFeesWrapper}>
-                      <div className={styles.amount}>
-                        {formattedWalletAmount(data.amount, false)}&nbsp; {currency}
+                  (hasNativeTokens ? (
+                    <div
+                      // eslint-disable-next-line react/no-array-index-key
+                      key={`${data.id}-to-${address}-${addressIndex}`}
+                      className={styles.receiverRow}
+                    >
+                      <div className={styles.receiverRowItem}>
+                        <h2>{intl.formatMessage(messages.receiverLabel)}{data.addresses.to.length > 1 && <div>&nbsp;#{addressIndex + 1}</div>}</h2>
+                        <div className={styles.receiverRowItemAddresses}>
+                          <Link
+                            className={styles.address}
+                            onClick={() =>
+                              onOpenExternalLink(getUrlByType('address', address))
+                            }
+                            label={ellipsis(address, 30, 30)}
+                            skin={LinkSkin}
+                          />
+                          <div className={styles.amountFeesWrapper}>
+                            <div className={styles.amount}>
+                              {formattedWalletAmount(data.amount, false)}&nbsp; {currency}
+                            </div>
+                          </div>
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  ) : (
+                    <div
+                      // eslint-disable-next-line react/no-array-index-key
+                      key={`${data.id}-to-${address}-${addressIndex}`}
+                      className={styles.addressRow}
+                    >
+                      <Link
+                        className={styles.address}
+                        onClick={() =>
+                          onOpenExternalLink(getUrlByType('address', address))
+                        }
+                        label={ellipsis(address, 30, 30)}
+                        skin={LinkSkin}
+                      />
+                      <div className={styles.amountFeesWrapper}>
+                        <div className={styles.amount}>
+                          {formattedWalletAmount(data.amount, false)}&nbsp; {currency}
+                        </div>
+                      </div>
+                    </div>
+                  ))
                 ))}
 
                 <h2>{intl.formatMessage(messages.transactionId)}</h2>
