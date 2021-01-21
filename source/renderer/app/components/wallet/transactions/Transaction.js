@@ -104,12 +104,7 @@ const messages = defineMessages({
   },
   multipleTokens: {
     id: 'wallet.transaction.multipleTokens',
-    defaultMessage: '!!!Multiple tokens',
-    description: 'Multiple tokens.',
-  },
-  multipleTokensType: {
-    id: 'wallet.transaction.multipleTokensType',
-    defaultMessage: '!!!Multiple-token',
+    defaultMessage: '!!!Multiple assets',
     description: 'Multiple tokens.',
   },
   cancelPendingTxnNote: {
@@ -171,6 +166,24 @@ const stateTranslations = defineMessages({
   [TransactionStates.FAILED]: {
     id: 'wallet.transaction.state.failed',
     defaultMessage: '!!!Transaction failed',
+    description: 'Transaction state "failed"',
+  },
+});
+
+const headerStateTranslations = defineMessages({
+  [TransactionStates.OK]: {
+    id: 'wallet.transaction.state.confirmedHeading',
+    defaultMessage: '!!!Confirmed',
+    description: 'Transaction state "confirmed"',
+  },
+  [TransactionStates.PENDING]: {
+    id: 'wallet.transaction.state.failedHeading',
+    defaultMessage: '!!!Pending',
+    description: 'Transaction state "pending"',
+  },
+  [TransactionStates.FAILED]: {
+    id: 'wallet.transaction.state.pendingHeading',
+    defaultMessage: '!!!Failed',
     description: 'Transaction state "failed"',
   },
 });
@@ -360,7 +373,7 @@ export default class Transaction extends Component<Props, State> {
     data.currency = 'USDC';
 
     const transactionsType = hasNativeTokens ? intl.formatMessage(messages.multipleTokens) : intl.formatMessage(globalMessages.currency);
-    const typeOfTransaction = hasNativeTokens ? intl.formatMessage(messages.multipleTokensType) : intl.formatMessage(globalMessages.currency);
+    const typeOfTransaction = hasNativeTokens ? intl.formatMessage(headerStateTranslations[state]) : intl.formatMessage(globalMessages.currency);
     const symbol = adaSymbol;
     const currency = hasNativeTokens ? data.currency : adaSymbol;
 
