@@ -2178,87 +2178,115 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!The Stakepool Metadata Aggregation Server (SMASH) is an off-chain metadata server for:",
+        "defaultMessage": "!!!The {link} is an off-chain metadata server that enables the fast loading of stake pool details. Stake pools are also curated and each server has a different curation policy.",
         "description": "description for the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 33
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
-        "id": "settings.stakePools.smash.description1",
+        "id": "settings.stakePools.smash.description",
         "start": {
-          "column": 16,
-          "line": 21
+          "column": 15,
+          "line": 28
         }
       },
       {
-        "defaultMessage": "!!!Curating the server list.",
+        "defaultMessage": "!!!Stakepool Metadata Aggregation Server (SMASH)",
         "description": "description for the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 31
-        },
-        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
-        "id": "settings.stakePools.smash.descriptionItem1Title",
-        "start": {
-          "column": 25,
-          "line": 27
-        }
-      },
-      {
-        "defaultMessage": "!!!Every server has a different curation policy. For example, the IOHK server ensures that registered stake pools are valid, helps to avoid duplicated ticker names or trademarks, and checks that the pools do not feature potentially offensive or harmful.<br />Scams, trolls, and abusive behavior are unfortunately part of the online ecosystem, we had to find a way to filter potentially problematic actors out of the playing field.",
-        "description": "description for the Stake Pools settings page.",
-        "end": {
-          "column": 3,
-          "line": 37
-        },
-        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
-        "id": "settings.stakePools.smash.descriptionItem1Content",
-        "start": {
-          "column": 27,
-          "line": 32
-        }
-      },
-      {
-        "defaultMessage": "!!!Enabling faster loading of stake pools.",
-        "description": "description for the Stake Pools settings page.",
-        "end": {
-          "column": 3,
-          "line": 42
-        },
-        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
-        "id": "settings.stakePools.smash.descriptionItem2Title",
-        "start": {
-          "column": 25,
           "line": 38
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "settings.stakePools.smash.descriptionLinkLabel",
+        "start": {
+          "column": 24,
+          "line": 34
         }
       },
       {
-        "defaultMessage": "!!!Your Daedalus client does not fetch the stake pool data individually from every stake pool. Rather, it loads off-chain data for all of the stake pools found in the selected server.",
+        "defaultMessage": "!!!https://iohk.io/en/blog/posts/2020/11/17/in-pools-we-trust/",
         "description": "description for the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 44
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
-        "id": "settings.stakePools.smash.descriptionItem2Content",
+        "id": "settings.stakePools.smash.descriptionLinkUrl",
+        "start": {
+          "column": 22,
+          "line": 39
+        }
+      },
+      {
+        "defaultMessage": "!!!The IOHK server ensures that registered stake pools are valid, helps to avoid duplicated ticker names or trademarks, and checks that the pools do not feature potentially offensive or harmful information.",
+        "description": "description for the Stake Pools settings page.",
+        "end": {
+          "column": 3,
+          "line": 50
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "settings.stakePools.smash.descriptionIOHKContent1",
         "start": {
           "column": 27,
-          "line": 43
+          "line": 45
         }
       },
       {
-        "defaultMessage": "!!!If you decide not to use an off-chain metadata server, your Daedalus client will be forced to fetch this data by contacting every stake pool individually, which is a very slow and resource-consuming process. The list of stake pools received is not curated, so Daedalus will get legitimate, duplicates, and fake pools. An added risk to this process is that your antivirus or antimalware software could recognize making thousands of network requests as malicious behavior by the Daedalus client.",
+        "defaultMessage": "!!!This allows us to deal with any scams, trolls, or abusive behavior by filtering out potentially problematic actors. {link} about the IOHK SMASH server.",
         "description": "description for the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 56
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
-        "id": "settings.stakePools.smash.description2",
+        "id": "settings.stakePools.smash.descriptionIOHKContent2",
         "start": {
-          "column": 16,
-          "line": 49
+          "column": 27,
+          "line": 51
+        }
+      },
+      {
+        "defaultMessage": "!!!Read more",
+        "description": "description for the Stake Pools settings page.",
+        "end": {
+          "column": 3,
+          "line": 61
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "settings.stakePools.smash.descriptionIOHKLinkLabel",
+        "start": {
+          "column": 28,
+          "line": 57
+        }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.io/en/blog/posts/2020/11/17/in-pools-we-trust/",
+        "description": "description for the Stake Pools settings page.",
+        "end": {
+          "column": 3,
+          "line": 67
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "settings.stakePools.smash.descriptionIOHKLinkUrl",
+        "start": {
+          "column": 26,
+          "line": 62
+        }
+      },
+      {
+        "defaultMessage": "!!!<b>This option is not recommended!</b> Without the off-chain metadata server your Daedalus client will fetch this data by contacting every stake pool individually, which is a very slow and resource-consuming process. The list of stake pools received is not curated, so Daedalus will receive legitimate pools, duplicates, and fake pools. An added risk to this process is that your antivirus or antimalware software could recognize the thousands of network requests as malicious behavior by the Daedalus client.",
+        "description": "description for the Stake Pools settings page.",
+        "end": {
+          "column": 3,
+          "line": 73
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "settings.stakePools.smash.descriptionNone",
+        "start": {
+          "column": 19,
+          "line": 68
         }
       },
       {
@@ -2266,27 +2294,27 @@
         "description": "smashSelectLabel for the \"Smash\" selection on the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 79
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smash.select.label",
         "start": {
           "column": 20,
-          "line": 55
+          "line": 74
         }
       },
       {
-        "defaultMessage": "!!!IOHK",
+        "defaultMessage": "!!!IOHK (Recommended)",
         "description": "smashSelectCustomServer option for the \"Smash\" selection on the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 85
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smash.select.IOHKServer",
         "start": {
           "column": 25,
-          "line": 61
+          "line": 80
         }
       },
       {
@@ -2294,13 +2322,13 @@
         "description": "smashSelectCustomServer option for the \"Smash\" selection on the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 72
+          "line": 91
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smash.select.direct",
         "start": {
           "column": 21,
-          "line": 67
+          "line": 86
         }
       },
       {
@@ -2308,13 +2336,13 @@
         "description": "smashSelectCustomServer option for the \"Smash\" selection on the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 78
+          "line": 97
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smash.select.customServer",
         "start": {
           "column": 27,
-          "line": 73
+          "line": 92
         }
       },
       {
@@ -2322,13 +2350,13 @@
         "description": "smashURLInputLabel for the \"Smash Custom Server\" selection on the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 84
+          "line": 103
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smashUrl.input.label",
         "start": {
           "column": 22,
-          "line": 79
+          "line": 98
         }
       },
       {
@@ -2336,13 +2364,13 @@
         "description": "smashUrlInputPlaceholder for the \"Smash Custom Server\" selection on the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 90
+          "line": 109
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smashUrl.input.placeholder",
         "start": {
           "column": 28,
-          "line": 85
+          "line": 104
         }
       },
       {
@@ -2350,13 +2378,13 @@
         "description": "smashUrlInputInvalidUrl for the \"Smash Custom Server\" selection on the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 96
+          "line": 115
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smashUrl.input.invalidUrl",
         "start": {
           "column": 27,
-          "line": 91
+          "line": 110
         }
       }
     ],

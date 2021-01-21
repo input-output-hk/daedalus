@@ -2,6 +2,15 @@
 
 .component {
   margin-bottom: 20px;
+
+  :global {
+    .RadioSet_radiosContainer {
+      flex-direction: column;
+    }
+    .SimpleOptions_option em {
+      opacity: 0.5;
+    }
+  }
 }
 .description {
   color: var(--theme-support-settings-text-color);
@@ -36,11 +45,6 @@
   @include error-message;
   margin-bottom: 1rem;
   text-align: center;
-}
-:global {
-  .RadioSet_radiosContainer {
-    flex-direction: column;
-  }
 }
 
 .optionDescription {
