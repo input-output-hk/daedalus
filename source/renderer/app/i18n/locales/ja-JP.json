@@ -472,7 +472,7 @@
   "staking.rewards.tableHeader.reward": "報酬",
   "staking.rewards.tableHeader.wallet": "ウォレット",
   "staking.rewards.title": "獲得した委任報酬",
-  "staking.stakePools.curatedBy": " ",
+  "staking.stakePools.curatedBy": "{serverName}によりキュレーション済み",
   "staking.stakePools.delegatingListTitle": "現在委任しているステークプール",
   "staking.stakePools.learnMore": "もっと知る",
   "staking.stakePools.listTitle": "ステークプール ({pools})",
