@@ -27,7 +27,8 @@ export default class Settings extends Component<InjectedContainerProps> {
 
   render() {
     const { isFlight } = global;
-    const { actions, children } = this.props;
+    const { actions, children, stores } = this.props;
+    const { location } = stores.router;
     const menu = (
       <SettingsMenu
         isFlight={isFlight}
@@ -37,7 +38,9 @@ export default class Settings extends Component<InjectedContainerProps> {
     );
     return (
       <Layout>
-        <SettingsLayout menu={menu}>{children}</SettingsLayout>
+        <SettingsLayout menu={menu} activePage={location.pathname}>
+          {children}
+        </SettingsLayout>
       </Layout>
     );
   }

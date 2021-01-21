@@ -9,6 +9,7 @@ import type { Locale } from '../../../../source/common/types/locales.types';
 // Screens
 import WalletSettings from '../../../../source/renderer/app/components/wallet/settings/WalletSettings';
 import ChangeSpendingPasswordDialog from '../../../../source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog';
+import WalletPublicKeyQRCodeDialog from '../../../../source/renderer/app/components/wallet/settings/WalletPublicKeyQRCodeDialog';
 import DeleteWalletConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
 import WalletRecoveryPhraseStep1Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep1Dialog';
 import WalletRecoveryPhraseStep2Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog';
@@ -25,6 +26,7 @@ import {
 const basicSettingsId = 'Basic Settings';
 const changePasswordId = 'Change Password';
 const deleteWalletId = 'Delete Wallet';
+const walletPublicKeyId = 'Wallet Public Key';
 const recoveryPhraseId = 'Recovery Phrase';
 
 const recoveryPhraseVerificationDateOptions = {
@@ -144,6 +146,7 @@ export default (props: { currentTheme: string, locale: Locale }) => {
       onStopEditing={() => {}}
       openDialogAction={() => {}}
       walletName={text('Wallet Name', 'Wallet Name', basicSettingsId)}
+      walletPublicKey={walletPublicKeyId}
       spendingPasswordUpdateDate={moment().subtract(1, 'month').toDate()}
       isSpendingPasswordSet={boolean(
         'isSpendingPasswordSet',
@@ -174,6 +177,18 @@ export default (props: { currentTheme: string, locale: Locale }) => {
           )}
           error={null}
           currentLocale={'en-US'}
+        />
+      }
+      walletPublicKeyQRCodeDialogContainer={
+        <WalletPublicKeyQRCodeDialog
+          walletName={text(
+            'WalletPublicKeyQRCodeDialog: Wallet Name',
+            'Wallet',
+            walletPublicKeyId
+          )}
+          walletPublicKey={walletPublicKeyId}
+          onCopyWalletPublicKey={action('Wallet Public Key QR Code - copy')}
+          onClose={action('Wallet Public Key QR Code - onClose')}
         />
       }
       deleteWalletDialogContainer={
@@ -211,6 +226,8 @@ export default (props: { currentTheme: string, locale: Locale }) => {
         />
       }
       onVerifyRecoveryPhrase={action('onVerifyRecoveryPhrase')}
+      onCopyWalletPublicKey={() => null}
+      getWalletPublicKey={() => null}
       creationDate={creationDate}
       recoveryPhraseVerificationDate={recoveryPhraseVerificationDate}
       recoveryPhraseVerificationStatus={

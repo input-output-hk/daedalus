@@ -3,8 +3,9 @@ import React from 'react';
 import { action } from '@storybook/addon-actions';
 import { find } from 'lodash';
 import BigNumber from 'bignumber.js';
+import { number } from '@storybook/addon-knobs';
 import DelegationCenter from '../../../source/renderer/app/components/staking/delegation-center/DelegationCenter';
-import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
+import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.js';
 import Wallet, {
   WalletDelegationStatuses,
 } from '../../../source/renderer/app/domains/Wallet';
@@ -221,10 +222,12 @@ export const StakingDelegationCenterStory = ({
   locale,
   isLoading,
   isEpochsInfoAvailable,
+  currentTheme,
 }: {
   locale: string,
   isLoading: boolean,
   isEpochsInfoAvailable: boolean,
+  currentTheme: string,
 }) => (
   <DelegationCenter
     wallets={wallets}
@@ -243,5 +246,19 @@ export const StakingDelegationCenterStory = ({
     isEpochsInfoAvailable={isEpochsInfoAvailable}
     slotLength={null}
     epochLength={null}
+    containerClassName="StakingWithNavigation_page"
+    currentTheme={currentTheme}
+    numberOfRankedStakePools={
+      STAKE_POOLS.slice(
+        0,
+        number('Pools', 300, {
+          range: true,
+          min: 37,
+          max: 300,
+          step: 1,
+        })
+      ).length
+    }
+    onOpenExternalLink={action('onOpenExternalLink')}
   />
 );

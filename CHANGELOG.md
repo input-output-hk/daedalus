@@ -1,6 +1,27 @@
 Changelog
 =========
 
+## 3.2.0-FC1
+
+### Features
+
+- Improve Mnemonic Phrase Input UX [PR 2280](https://github.com/input-output-hk/daedalus/pull/2280)
+- Added wallet public key viewing feature ([PR 2271](https://github.com/input-output-hk/daedalus/pull/2271))
+- Added tile view for delegated Stake pools in Delegation Center ([PR 2275](https://github.com/input-output-hk/daedalus/pull/2275))
+
+### Fixes
+
+- Fixed Ledger TXs to Byron addresses ([PR 2299](https://github.com/input-output-hk/daedalus/pull/2299))
+
+### Chores
+
+- Updated `cardano-wallet` to version `2021-01-12` ([PR 2303](https://github.com/input-output-hk/daedalus/pull/2303))
+- Improved "Settings" screen scrolling actions ([PR 2302](https://github.com/input-output-hk/daedalus/pull/2302))
+- Improved scrollable dialogs ([PR 2285](https://github.com/input-output-hk/daedalus/pull/2285))
+- Disabled and hid copy and paste context menu items on some scenarios ([PR 2300](https://github.com/input-output-hk/daedalus/pull/2300))
+- Applied validation to spending password to be not longer than 255 characters ([PR 2287](https://github.com/input-output-hk/daedalus/pull/2287))
+- Update `axios` package ([PR 2291](https://github.com/input-output-hk/daedalus/pull/2291))
+
 ## 3.1.0
 
 ### Features
@@ -9,6 +30,7 @@ Changelog
 
 ### Fixes
 
+- Fixed Daedalus development environment issues on OSX Big Sur ([PR 2288](https://github.com/input-output-hk/daedalus/pull/2288))
 - Added initial loading state to UTXO screen ([PR 2265](https://github.com/input-output-hk/daedalus/pull/2265))
 
 ### Chores

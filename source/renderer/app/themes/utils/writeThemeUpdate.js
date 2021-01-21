@@ -1,5 +1,5 @@
 // @flow
-// import fs from 'fs';
+import fs from 'fs';
 import path from 'path';
 import type { FormattedConstNames, WriteThemeUpdateParams } from '../types';
 

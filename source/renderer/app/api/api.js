@@ -61,6 +61,7 @@ import { updateByronWallet } from './wallets/requests/updateByronWallet';
 import { getWalletUtxos } from './wallets/requests/getWalletUtxos';
 import { getByronWalletUtxos } from './wallets/requests/getByronWalletUtxos';
 import { getWallet } from './wallets/requests/getWallet';
+import { getWalletPublicKey } from './wallets/requests/getWalletPublicKey';
 import { getLegacyWallet } from './wallets/requests/getLegacyWallet';
 import { transferFundsCalculateFee } from './wallets/requests/transferFundsCalculateFee';
 import { transferFunds } from './wallets/requests/transferFunds';
@@ -108,6 +109,7 @@ import type {
   Address,
   GetAddressesRequest,
   CreateByronWalletAddressRequest,
+  InspectAddressResponse,
 } from './addresses/types';
 
 // Common Types
@@ -163,6 +165,7 @@ import type {
   ImportWalletFromFileRequest,
   GetWalletUtxosRequest,
   GetWalletRequest,
+  GetWalletPublicKeyRequest,
   TransferFundsCalculateFeeRequest,
   TransferFundsCalculateFeeApiResponse,
   TransferFundsCalculateFeeResponse,
@@ -290,6 +293,30 @@ export default class AdaApi {
     } catch (error) {
       logger.error('AdaApi::getWallet error', { error });
       throw new ApiError(error);
+    }
+  };
+
+  getWalletPublicKey = async (
+    request: GetWalletPublicKeyRequest
+  ): Promise<string> => {
+    logger.debug('AdaApi::getWalletPublicKey called', {
+      parameters: filterLogData(request),
+    });
+    try {
+      const { walletId, role, index } = request;
+      const walletPublicKey = await getWalletPublicKey(this.config, {
+        walletId,
+        role,
+        index,
+      });
+      logger.debug('AdaApi::getWalletPublicKey success', { walletPublicKey });
+      return walletPublicKey;
+    } catch (error) {
+      logger.error('AdaApi::getWalletPublicKey error', { error });
+      // @TODO: Uncomment this when api is ready
+      // throw new ApiError(error);
+      // @TODO: Delete this when api is ready
+      return '8edd9c9b73873ce8826cbe3e2e08534d35f1ba64cc94c063c0525865aa28e35527be51bb72ee9983d173f5617493bc6804a6750b359538c79cd5b43ccbbd48e5';
     }
   };
 
@@ -970,9 +997,9 @@ export default class AdaApi {
     }
   };
 
-  inspectAddress = async (
-    request: any // @TODO
-  ): Promise<any> => {
+  inspectAddress = async (request: {
+    addressId: string,
+  }): Promise<InspectAddressResponse> => {
     logger.debug('AdaApi::inspectAddress called', {
       parameters: filterLogData(request),
     });
@@ -1967,7 +1994,7 @@ export default class AdaApi {
         blockchain_start_time, // eslint-disable-line
         slot_length: slotLength,
         epoch_length: epochLength,
-        epoch_stability: epochStability,
+        security_parameter: securityParameter,
         active_slot_coefficient: activeSlotCoefficient,
         decentralization_level: decentralizationLevel,
         desired_pool_number: desiredPoolNumber,
@@ -1981,7 +2008,7 @@ export default class AdaApi {
         blockchainStartTime,
         slotLength,
         epochLength,
-        epochStability,
+        securityParameter,
         activeSlotCoefficient,
         decentralizationLevel,
         desiredPoolNumber,

@@ -518,6 +518,8 @@ export const YELLOW_THEME_OUTPUT = {
     '--rp-autocomplete-selected-word-text-color': '#fafbfc',
     '--rp-autocomplete-selected-words-font-family':
       'NotoSans-Regular, NotoSansCJKjp-Regular',
+    '--rp-autocomplete-required-words-color': 'rgba(45, 45, 45, 0.5)',
+    '--rp-autocomplete-required-words-offset-top': '2px',
   },
   rpBubble: {
     '--rp-bubble-bg-color': '#fff',
@@ -851,7 +853,6 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-staking-countdown-widget-field-value-color': '#2d2d2d',
     '--theme-staking-export-button-shadow-color': 'rgba(45, 45, 45, 0.18)',
     '--theme-staking-export-button-color': '#f8f7f3',
-    '--theme-staking-wallet-row-action-delegate-text-color': '#d6902f',
     '--theme-staking-wallet-row-action-undelegate-text-color': '#ea4c5b',
     '--theme-staking-wallet-row-ticker-background-color':
       'rgba(45, 45, 45, 0.07)',
