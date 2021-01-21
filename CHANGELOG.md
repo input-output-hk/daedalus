@@ -5,7 +5,12 @@ Changelog
 
 ### Features
 
-- Implemented screens for native tokens [PR 2292](https://github.com/input-output-hk/daedalus/pull/2292)
+- Implemented UI for native token features [PR 2292](https://github.com/input-output-hk/daedalus/pull/2292)
+
+## 3.2.0-FC1
+
+### Features
+
 - Improve Mnemonic Phrase Input UX [PR 2280](https://github.com/input-output-hk/daedalus/pull/2280)
 - Added wallet public key viewing feature ([PR 2271](https://github.com/input-output-hk/daedalus/pull/2271))
 - Added tile view for delegated Stake pools in Delegation Center ([PR 2275](https://github.com/input-output-hk/daedalus/pull/2275))
