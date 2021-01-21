@@ -37,7 +37,6 @@ import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types
 import { logUsedVersion } from './utils/logUsedVersion';
 import { setStateSnapshotLogChannel } from './ipc/set-log-state-snapshot';
 import { generateWalletMigrationReportChannel } from './ipc/generateWalletMigrationReportChannel';
-import { disableApplicationMenuNavigationChannel } from './ipc/disableApplicationMenuNavigationChannel';
 import { enableApplicationMenuNavigationChannel } from './ipc/enableApplicationMenuNavigationChannel';
 import { pauseActiveDownloads } from './ipc/downloadManagerChannel';
 // import { isHardwareWalletSupportEnabled, isLedgerEnabled } from '../renderer/app/config/hardwareWalletsConfig';
@@ -208,17 +207,6 @@ const onAppReady = async () => {
     isUpdateAvailable: false,
     isNavigationEnabled: false,
   });
-
-  await disableApplicationMenuNavigationChannel.onReceive(
-    () =>
-      new Promise((resolve) => {
-        buildAppMenus(mainWindow, cardanoNode, locale, {
-          isUpdateAvailable: false,
-          isNavigationEnabled: false,
-        });
-        resolve();
-      })
-  );
 
   await enableApplicationMenuNavigationChannel.onReceive(
     () =>

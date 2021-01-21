@@ -14,7 +14,6 @@ import { logger } from '../utils/logging';
 import { setStateSnapshotLogChannel } from '../ipc/setStateSnapshotLogChannel';
 import { getDesktopDirectoryPathChannel } from '../ipc/getDesktopDirectoryPathChannel';
 import { getSystemLocaleChannel } from '../ipc/getSystemLocaleChannel';
-import { disableApplicationMenuNavigationChannel } from '../ipc/disableApplicationMenuNavigationChannel';
 import { enableApplicationMenuNavigationChannel } from '../ipc/enableApplicationMenuNavigationChannel';
 import { LOCALES } from '../../../common/types/locales.types';
 import {
@@ -311,8 +310,6 @@ export default class ProfileStore extends Store {
     await this.getTermsOfUseAcceptanceRequest.execute();
     if (this.getTermsOfUseAcceptanceRequest.result) {
       await enableApplicationMenuNavigationChannel.send();
-    } else {
-      await disableApplicationMenuNavigationChannel.send();
     }
   };
 

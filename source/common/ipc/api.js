@@ -296,14 +296,6 @@ export type GenerateWalletMigrationReportRendererRequest = WalletMigrationReport
 export type GenerateWalletMigrationReportMainResponse = void;
 
 /**
- * Channel for entering terms of use page
- */
-export const DISABLE_APPLICATION_MENU_NAVIGATION_CHANNEL =
-  'DISABLE_APPLICATION_MENU_NAVIGATION_CHANNEL';
-export type DisableApplicationMenuNavigationRendererRequest = void;
-export type DisableApplicationMenuNavigationMainResponse = void;
-
-/**
  * Channel for exiting from terms of use page
  */
 export const ENABLE_APPLICATION_MENU_NAVIGATION_CHANNEL =
