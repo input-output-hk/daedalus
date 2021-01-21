@@ -2,7 +2,7 @@
 import { Given, When, Then } from 'cucumber';
 import { expect } from 'chai';
 import { sampleSize } from 'lodash';
-import sinon from "sinon";
+import sinon from 'sinon';
 import validWords from '../../../../source/common/config/crypto/valid-words.en';
 import { validateMnemonics, INCOMPLETE_MNEMONIC_MARKER } from "../../../../source/renderer/app/utils/validations";
 
