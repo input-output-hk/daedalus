@@ -13,10 +13,15 @@ export default class GeneralSettingsPage extends Component<InjectedProps> {
   handleSelectItem = async (param: string, value: string) => {
     const { actions, stores } = this.props;
     const { isUpdateAvailable } = stores.appUpdate;
+    const { areTermsOfUseAccepted: isNavigationEnabled } = stores.profile;
     const { updateUserLocalSetting } = actions.profile;
+
     updateUserLocalSetting.trigger({ param, value });
     if (param === 'locale') {
-      await rebuildApplicationMenu.send({ isUpdateAvailable });
+      await rebuildApplicationMenu.send({
+        isUpdateAvailable,
+        isNavigationEnabled,
+      });
     }
   };
 
