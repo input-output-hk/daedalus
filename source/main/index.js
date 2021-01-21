@@ -225,7 +225,7 @@ const onAppReady = async () => {
         locale = getLocale(network);
         buildAppMenus(mainWindow, cardanoNode, locale, {
           isUpdateAvailable: data.isUpdateAvailable,
-          isNavigationEnabled: true,
+          isNavigationEnabled: data.isNavigationEnabled,
         });
         mainWindow.updateTitle(locale);
         resolve();
