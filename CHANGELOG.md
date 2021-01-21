@@ -6,6 +6,7 @@ Changelog
 ### Chores
 
 - Fixed number format for syncing percentage and stake pools ([PR 2313](https://github.com/input-output-hk/daedalus/pull/2313))
+- Disabled application menu navigation before the "Terms of use" have been accepted ([PR 2304](https://github.com/input-output-hk/daedalus/pull/2304))
 
 ## 3.2.0-FC1
 
