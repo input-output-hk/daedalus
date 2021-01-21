@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Features
+
+- Increased the maximum number of wallets limit to 100 and optimized wallet data polling ([PR 2208](https://github.com/input-output-hk/daedalus/pull/2208))
+
 ## 3.2.0-FC1
 
 ### Features
@@ -86,10 +92,6 @@ Changelog
 ### Features
 
 - Close Newsfeed when clicking anywhere else in the UI ([PR 2250](https://github.com/input-output-hk/daedalus/pull/2250))
-
-### Features
-
-- Increased the maximum number of wallets limit to 100 and optimized wallet data polling ([PR 2208](https://github.com/input-output-hk/daedalus/pull/2208))
 
 ### Fixes
 
