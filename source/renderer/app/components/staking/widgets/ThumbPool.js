@@ -142,6 +142,7 @@ export class ThumbPool extends Component<Props, State> {
           <TooltipPool
             stakePool={stakePool}
             isVisible
+            hasArrow
             onClick={onClose}
             currentTheme={currentTheme}
             onOpenExternalLink={onOpenExternalLink}

@@ -232,6 +232,7 @@ export class StakePoolsTableBody extends Component<
               <TooltipPool
                 stakePool={stakePool}
                 isVisible
+                hasArrow
                 onClick={this.handleCloseTooltip}
                 currentTheme={currentTheme}
                 onOpenExternalLink={onOpenExternalLink}

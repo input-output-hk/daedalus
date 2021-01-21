@@ -271,6 +271,14 @@ export type TransferFundsResponse = {
     quantity: number,
     unit: WalletUnits.LOVELACE,
   },
+  fee: {
+    quantity: number,
+    unit: WalletUnits.LOVELACE,
+  },
+  deposit: {
+    quantity: number,
+    unit: WalletUnits.LOVELACE,
+  },
   inserted_at?: {
     time: Date,
     block: Block,
