@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Chores
+
+- Updated `bignumber.js` package ([PR 2305](https://github.com/input-output-hk/daedalus/pull/2305))
+
 ## 3.2.0-FC1
 
 ### Features
