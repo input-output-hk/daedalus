@@ -50,4 +50,24 @@
   font-size: 14px;
   line-height: 1.38;
   margin-top: 20px;
+  p {
+    margin-bottom: 12px;
+  }
+  b {
+    font-family: var(--font-bold);
+  }
+}
+
+.selectionRenderer {
+  color: var(--rp-input-text-color, #5e6066);
+  font-family: var(
+    --rp-input-font-family,
+    var(--rp-theme-font-regular, 'NotoSans-Regular, NotoSansCJKjp-Regular'),
+    sans-serif
+  );
+  line-height: var(--rp-input-line-height, normal);
+  padding: 14px 20px 0;
+  em {
+    opacity: 0.5;
+  }
 }
