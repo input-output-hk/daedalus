@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import SVGInline from 'react-svg-inline';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
+import BigNumber from 'bignumber.js';
 import spinnerIcon from '../../assets/images/top-bar/node-sync-spinner.inline.svg';
 import syncedIcon from '../../assets/images/top-bar/node-sync-synced.inline.svg';
 import styles from './NodeSyncStatusIcon.scss';
@@ -41,7 +42,7 @@ export default class NodeSyncStatusIcon extends Component<Props> {
         <SVGInline className={styles.icon} svg={statusIcon} />
         <div className={styles.info}>
           {intl.formatMessage(messages.blocksSynced, {
-            percentage,
+            percentage: new BigNumber(percentage).toFormat(),
           })}
         </div>
       </div>

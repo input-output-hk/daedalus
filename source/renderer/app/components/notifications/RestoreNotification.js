@@ -4,6 +4,7 @@ import classnames from 'classnames';
 import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
 import { defineMessages, intlShape } from 'react-intl';
+import BigNumber from 'bignumber.js';
 import spinnerIcon from '../../assets/images/spinner-dark.inline.svg';
 import styles from './RestoreNotification.scss';
 
@@ -40,7 +41,7 @@ export default class RestoreNotification extends Component<Props> {
       <div className={restoreNotificationClasses}>
         <span className={styles.text}>
           {intl.formatMessage(messages.activeRestoreMessage, {
-            percentage: restoreProgress,
+            percentage: new BigNumber(restoreProgress).toFormat(),
           })}
         </span>
         <SVGInline svg={spinnerIcon} className={styles.icon} />

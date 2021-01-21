@@ -3,6 +3,7 @@ import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
 import classnames from 'classnames';
+import BigNumber from 'bignumber.js';
 import StakePoolsRanking from './StakePoolsRanking';
 import { StakePoolsList } from './StakePoolsList';
 import { StakePoolsTable } from './StakePoolsTable';
@@ -236,7 +237,9 @@ export default class StakePools extends Component<Props, State> {
                   <FormattedMessage
                     {...listTitleMessage}
                     values={{
-                      pools: filteredStakePoolsList.length,
+                      pools: new BigNumber(
+                        filteredStakePoolsList.length
+                      ).toFormat(),
                     }}
                   />
                 </h2>
@@ -263,7 +266,9 @@ export default class StakePools extends Component<Props, State> {
                   <FormattedMessage
                     {...listTitleMessage}
                     values={{
-                      pools: filteredStakePoolsList.length,
+                      pools: new BigNumber(
+                        filteredStakePoolsList.length
+                      ).toFormat(),
                     }}
                   />
                 </h2>
