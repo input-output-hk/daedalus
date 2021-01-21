@@ -1,7 +1,7 @@
 Changelog
 =========
 
-## vNext
+## 3.2.0-FC1
 
 ### Features
 
