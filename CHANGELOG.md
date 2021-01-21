@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Features
+
+- Added display of wallet balance in other currencies ([PR 2290](https://github.com/input-output-hk/daedalus/pull/2290))
+
 ## 3.2.0-FC1
 
 ### Features
