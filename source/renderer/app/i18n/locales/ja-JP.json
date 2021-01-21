@@ -292,7 +292,7 @@
   "sidebar.wallets.addWallet": "ウォレット追加",
   "staking.countdown.learnMore.linkUrl": "https://iohk.zendesk.com/hc/ja",
   "staking.delegationCenter.bodyTitle": "ウォレット",
-  "staking.delegationCenter.currentEpochTitle": "今",
+  "staking.delegationCenter.currentEpochTitle": "現在",
   "staking.delegationCenter.currentSlot": "現行スロット",
   "staking.delegationCenter.delegate": "委任する",
   "staking.delegationCenter.description": "変更した委任設定は、現行の次のCardanoエポックが終了すると有効になります。Cardanoメインネットにおける1エポックは5日です。今回の変更はすべて{timeUntilFutureEpoch}後に有効になります。",
