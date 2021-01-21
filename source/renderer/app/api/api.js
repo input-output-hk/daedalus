@@ -1701,10 +1701,7 @@ export default class AdaApi {
 
   checkSmashServerIsValid = async (url: string): Promise<boolean> => {
     try {
-      if (
-        url === SMASH_SERVERS_LIST.direct.url ||
-        url === SMASH_SERVERS_LIST.none.url
-      ) {
+      if (url === SMASH_SERVERS_LIST.direct.url) {
         return true;
       }
       const {

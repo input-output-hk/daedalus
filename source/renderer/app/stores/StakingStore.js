@@ -153,18 +153,15 @@ export default class StakingStore extends Store {
     this.smashServerLoading = true;
     let smashServerUrl: string = await this.getSmashSettingsRequest.execute();
 
-    // @SMASH TODO - Add this back after testing
     // If the server wasn't set, sets it for IOHK
-    // if (
-    //   !smashServerUrl ||
-    //   smashServerUrl === 'none' ||
-    //   smashServerUrl === 'direct'
-    // ) {
-    //   const poolMetadataSource = SMASH_SERVERS_LIST.iohk.url;
-    //   await this.updateSmashSettingsRequest.execute(poolMetadataSource);
-
-    //   smashServerUrl = SMASH_SERVERS_LIST.iohk.url;
-    // }
+    if (
+      !smashServerUrl ||
+      smashServerUrl === 'none' ||
+      smashServerUrl === 'direct'
+    ) {
+      smashServerUrl = SMASH_SERVERS_LIST.iohk.url;
+      await this.updateSmashSettingsRequest.execute(smashServerUrl);
+    }
 
     runInAction(() => {
       this.smashServerUrl = smashServerUrl;
