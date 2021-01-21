@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Chores
+
+- Disable certain menu items when accepting terms of use ([PR 2304](https://github.com/input-output-hk/daedalus/pull/2304))
+
 ## 3.2.0-FC1
 
 ### Features
@@ -15,7 +21,6 @@ Changelog
 
 ### Chores
 
-- Disable certain menu items when accepting terms of use ([PR 2304](https://github.com/input-output-hk/daedalus/pull/2304))
 - Updated `cardano-wallet` to version `2021-01-12` ([PR 2303](https://github.com/input-output-hk/daedalus/pull/2303))
 - Improved "Settings" screen scrolling actions ([PR 2302](https://github.com/input-output-hk/daedalus/pull/2302))
 - Improved scrollable dialogs ([PR 2285](https://github.com/input-output-hk/daedalus/pull/2285))
