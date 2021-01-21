@@ -112,6 +112,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Multiple assets',
     description: 'Multiple tokens.',
   },
+  transactionFee: {
+    id: 'wallet.transaction.transactionFee',
+    defaultMessage: '!!!Transaction fee',
+    description: 'Transaction fee.',
+  },
   cancelPendingTxnNote: {
     id: 'wallet.transaction.pending.cancelPendingTxnNote',
     defaultMessage:
@@ -208,6 +213,7 @@ type Props = {
   walletId: string,
   isDeletingTransaction: boolean,
   hasNativeTokens?: boolean,
+  transactions?: TransactionsStore,
 };
 
 type State = {
@@ -382,6 +388,8 @@ export default class Transaction extends Component<Props, State> {
     const symbol = adaSymbol;
     const currency = hasNativeTokens ? data.currency : adaSymbol;
 
+    const fees = hasNativeTokens ? '0.202481' : null;
+
     const getIconType = (txState) => {
       switch (txState) {
         case TransactionStates.PENDING:
@@ -552,17 +560,25 @@ export default class Transaction extends Component<Props, State> {
                         onClick={() =>
                           onOpenExternalLink(getUrlByType('address', address))
                         }
-                        label={ellipsis(address, 30, 30)}
+                        label={address}
                         skin={LinkSkin}
                       />
-                      <div className={styles.amountFeesWrapper}>
-                        <div className={styles.amount}>
-                          {formattedWalletAmount(data.amount, false)}&nbsp; {currency}
-                        </div>
-                      </div>
                     </div>
                   ))
                 ))}
+
+                {hasNativeTokens && (
+                  <>
+                    <h2>{intl.formatMessage(messages.transactionFee)}</h2>
+                    {fees && (
+                      <div className={styles.transactionIdRow}>
+                        <div className={styles.transactionFeeValue}>
+                          {fees}&nbsp;{intl.formatMessage(globalMessages.unitAda)}
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
 
                 <h2>{intl.formatMessage(messages.transactionId)}</h2>
                 <div className={styles.transactionIdRow}>
@@ -576,12 +592,16 @@ export default class Transaction extends Component<Props, State> {
                   />
                 </div>
 
-                <h2>{intl.formatMessage(messages.transactionMetadata)}</h2>
-                <div className={styles.transactionIdRow}>
-                  <div className={styles.transactionMetadata}>
-                    {intl.formatMessage(messages.transactionMetadataDescription)}
-                  </div>
-                </div>
+                {hasNativeTokens && (
+                  <>
+                    <h2>{intl.formatMessage(messages.transactionMetadata)}</h2>
+                    <div className={styles.transactionIdRow}>
+                      <div className={styles.transactionMetadata}>
+                        {intl.formatMessage(messages.transactionMetadataDescription)}
+                      </div>
+                    </div>
+                  </>
+                )}
 
                 {this.renderCancelPendingTxnContent()}
               </div>

@@ -1,4 +1,5 @@
 @import '../../../themes/mixins/link';
+@import '../../../themes/mixins/error-message';
 
 .component {
   color: var(--theme-transactions-list-item-details-color);
@@ -282,6 +283,10 @@
       stroke: var(--theme-icon-transactions-ada-symbol-color);
     }
   }
+}
+
+.transactionFeeValue {
+  @include error-message;
 }
 
 .transactionMetadata {
