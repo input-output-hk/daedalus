@@ -1710,7 +1710,9 @@ export default class AdaApi {
         this.config,
         url
       );
-      const isValid = health === SMASH_SERVER_STATUSES.AVAILABLE;
+      const isValid =
+        health === SMASH_SERVER_STATUSES.AVAILABLE ||
+        health === SMASH_SERVER_STATUSES.UNREACHABLE;
       logger.debug('AdaApi::checkSmashServerHealth success', { isValid });
       return isValid;
     } catch (error) {
@@ -1732,7 +1734,7 @@ export default class AdaApi {
         };
         throw new ApiError(error);
       }
-      await updateSmashSettings(this.config, poolMetadataSource);
+      const FOI = await updateSmashSettings(this.config, poolMetadataSource);
       logger.debug('AdaApi::updateSmashSettings success', {
         poolMetadataSource,
       });

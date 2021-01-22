@@ -27,7 +27,7 @@ export const SMASH_SERVERS_LIST: {
   },
   // Metadata is fetched directly in URLs registered on chain,
   direct: {
-    name: 'Direct',
+    name: 'direct',
     url: 'direct',
   },
 };

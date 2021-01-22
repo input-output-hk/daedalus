@@ -46,6 +46,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Curated by',
     description: 'curatedBy message for the Delegation center body section.',
   },
+  notCurated: {
+    id: 'staking.stakePools.notCurated',
+    defaultMessage: '!!!Not curated',
+    description: 'notCurated message for the Delegation center body section.',
+  },
 });
 
 const SELECTED_INDEX_TABLE = 'selectedIndexTable';
@@ -194,10 +199,13 @@ export default class StakePools extends Component<Props, State> {
       <SVGInline svg={tinySpinnerIcon} className={styles.tinySpinner} />
     );
 
-    const smashSettings = smashServer && (
+    console.log('smashServer', smashServer);
+    const smashSettings = (
       <button onClick={onSmashSettingsClick} className={styles.smashSettings}>
         <span>
-          {intl.formatMessage(messages.curatedBy)} {smashServer}
+          {smashServer && smashServer !== 'direct'
+            ? `${intl.formatMessage(messages.curatedBy)} ${smashServer}`
+            : intl.formatMessage(messages.notCurated)}
         </span>
         <SVGInline
           svg={smashSettingsIcon}
