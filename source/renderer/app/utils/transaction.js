@@ -268,7 +268,7 @@ export const validateFilterForm = (values: {
   if (
     fromAmount &&
     toAmount &&
-    new BigNumber(fromAmount).greaterThan(new BigNumber(toAmount))
+    new BigNumber(fromAmount).isGreaterThan(new BigNumber(toAmount))
   ) {
     invalidFields.toAmount = true;
   }
