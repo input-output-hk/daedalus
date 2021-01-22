@@ -199,7 +199,6 @@ export default class StakePools extends Component<Props, State> {
       <SVGInline svg={tinySpinnerIcon} className={styles.tinySpinner} />
     );
 
-    console.log('smashServer', smashServer);
     const smashSettings = (
       <button onClick={onSmashSettingsClick} className={styles.smashSettings}>
         <span>
