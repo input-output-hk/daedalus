@@ -1,0 +1,61 @@
+.votingAddStepsQrCodeWrapper {
+  .content {
+    .qrCode {
+      display: flex;
+      text-align: center;
+
+      canvas {
+        border: 4px solid var(--theme-receive-qr-code-background-color);
+        box-sizing: content-box;
+        margin: auto;
+      }
+    }
+
+    .qrCodeDescription {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 25px;
+      margin-top: 40px;
+      .qrCodeMessageIcon {
+        width: 72px;
+        height: 72px;
+        svg {
+          path {
+            stroke: var(--theme-voting-info-icon-color);
+          }
+        }
+      }
+      .qrCodeMessageText {
+        display: flex;
+        text-align: left;
+        justify-content: flex-end;
+        margin-left: 10px;
+        flex-direction: column;
+        p:last-child {
+          color: var(--theme-voting-steps-description-color);
+        }
+      }
+    }
+
+    .messages {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 15px;
+      margin-top: 25px;
+      p {
+        margin-top: 20px;
+      }
+      p.secondaryWarning {
+        font-weight: bold;
+      }
+      p.primaryWarning {
+        color: var(--theme-voting-steps-warning-messages-font-color);
+      }
+    }
+
+    .separator {
+      margin: 15px 0;
+      opacity: 0.2;
+    }
+  }
+}

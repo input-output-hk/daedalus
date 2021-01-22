@@ -11,6 +11,7 @@ type Props = {
   onNavItemClick: Function,
   isActiveNavItem: Function,
   isIncentivizedTestnet: boolean,
+  isCatalyst: boolean,
 };
 
 type State = {
@@ -27,6 +28,8 @@ export const StakingPageScrollContext = React.createContext<ContextValue>({
 
 @observer
 export default class StakingWithNavigation extends Component<Props, State> {
+  static defaultProps = { isCatalyst: false };
+
   constructor(props: Props) {
     super(props);
     this.state = {
@@ -45,6 +48,7 @@ export default class StakingWithNavigation extends Component<Props, State> {
       activeItem,
       isActiveNavItem,
       isIncentivizedTestnet,
+      isCatalyst,
     } = this.props;
     const { scrollTop } = this.state;
 
@@ -57,6 +61,7 @@ export default class StakingWithNavigation extends Component<Props, State> {
               onNavItemClick={onNavItemClick}
               activeItem={activeItem}
               isIncentivizedTestnet={isIncentivizedTestnet}
+              isCatalyst={isCatalyst}
             />
           </div>
           <div className={styles.page} onScroll={this.handleScroll}>

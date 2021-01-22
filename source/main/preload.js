@@ -10,6 +10,7 @@ import {
   cluster,
   legacyStateDir,
   nodeImplementation,
+  isCatalyst,
   isFlight,
 } from './config';
 import {
@@ -56,6 +57,7 @@ process.once('loaded', () => {
     },
     isShelleyTestnet: _isShelleyTestnet,
     isIncentivizedTestnet: _isIncentivizedTestnet,
+    isCatalyst,
     isFlight,
     legacyStateDir,
   });

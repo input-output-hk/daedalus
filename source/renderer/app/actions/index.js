@@ -16,6 +16,7 @@ import WalletBackupActions from './wallet-backup-actions';
 import WalletMigrationActions from './wallet-migration-actions';
 import WalletSettingsActions from './wallet-settings-actions';
 import WindowActions from './window-actions';
+import VotingActions from './voting-actions';
 
 export type ActionsMap = {
   addresses: AddressesActions,
@@ -29,6 +30,7 @@ export type ActionsMap = {
   sidebar: SidebarActions,
   staking: StakingActions,
   transactions: TransactionsActions,
+  voting: VotingActions,
   wallets: WalletsActions,
   walletsLocal: WalletsLocalAction,
   walletBackup: WalletBackupActions,
@@ -49,6 +51,7 @@ const actionsMap: ActionsMap = {
   sidebar: new SidebarActions(),
   staking: new StakingActions(),
   transactions: new TransactionsActions(),
+  voting: new VotingActions(),
   wallets: new WalletsActions(),
   walletsLocal: new WalletsLocalAction(),
   walletBackup: new WalletBackupActions(),

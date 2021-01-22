@@ -21,6 +21,8 @@ export default class Staking extends Component<Props> {
   }
 
   handleDelegationRoute = () => {
+    const { isCatalyst } = global;
+
     const {
       actions,
       stores: { staking },
@@ -33,6 +35,12 @@ export default class Staking extends Component<Props> {
     }
 
     if (!staking.showCountdown() && staking.isStakingDelegationCountdown) {
+      return actions.router.goToRoute.trigger({
+        route: ROUTES.STAKING.INFO,
+      });
+    }
+
+    if (isCatalyst) {
       return actions.router.goToRoute.trigger({
         route: ROUTES.STAKING.INFO,
       });
@@ -96,6 +104,7 @@ export default class Staking extends Component<Props> {
             onNavItemClick={this.handleNavItemClick}
             activeItem={app.currentPage}
             isIncentivizedTestnet={global.isIncentivizedTestnet}
+            isCatalyst={global.isCatalyst}
           >
             {children}
           </StakingWithNavigation>

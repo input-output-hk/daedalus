@@ -344,6 +344,10 @@ export default class TransactionsStore extends Store {
     return new Request(this.api.ada.getWithdrawals);
   };
 
+  _getTransaction = (): Request<WalletTransaction> => {
+    return new Request(this.api.ada.getTransaction);
+  };
+
   // ======================= REACTIONS ========================== //
 
   /**

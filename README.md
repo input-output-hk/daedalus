@@ -51,6 +51,11 @@ Daedalus - Cryptocurrency Wallet
 1. Run `yarn nix:mainnet` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
 
+#### Catalyst
+
+1. Run `yarn nix:catalyst` from `daedalus`.
+2. Run `yarn dev` from the subsequent `nix-shell`
+
 #### Flight
 
 1. Run `yarn nix:flight` from `daedalus`.

@@ -30,6 +30,9 @@ export const ROUTES = {
     SETTINGS: '/wallets/:id/settings',
     UTXO: '/wallets/:id/utxo',
   },
+  VOTING: {
+    ADD: '/voting-catalyst/add',
+  },
   HARDWARE_WALLETS: {
     ROOT: '/hardware-wallets',
     ADD: '/hardware-wallets/add',

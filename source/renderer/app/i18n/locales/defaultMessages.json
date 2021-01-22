@@ -6639,6 +6639,685 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Register to vote",
+        "description": "Headline for Voting Catalyst steps",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "source/renderer/app/components/voting/info/VotingInfo.js",
+        "id": "voting.info.heading",
+        "start": {
+          "column": 11,
+          "line": 17
+        }
+      },
+      {
+        "defaultMessage": "!!!Before you begin, you must first complete the steps below:",
+        "description": "Info description for Voting Catalyst steps",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/components/voting/info/VotingInfo.js",
+        "id": "voting.info.description",
+        "start": {
+          "column": 15,
+          "line": 22
+        }
+      },
+      {
+        "defaultMessage": "!!!Download the Catalyst Voting App",
+        "description": "Info step title 2 for Voting Catalyst steps",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "source/renderer/app/components/voting/info/VotingInfo.js",
+        "id": "voting.info.stepTitle1",
+        "start": {
+          "column": 14,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!Open the Catalyst Voting App and click on the complete registration button.",
+        "description": "Info step title 2 for Voting Catalyst steps",
+        "end": {
+          "column": 3,
+          "line": 38
+        },
+        "file": "source/renderer/app/components/voting/info/VotingInfo.js",
+        "id": "voting.info.stepTitle2",
+        "start": {
+          "column": 14,
+          "line": 33
+        }
+      },
+      {
+        "defaultMessage": "!!!Ensure you have 5 minutes to complete the registration process, and an additional hour to receive a final confirmation.",
+        "description": "Info step title 3 for Voting Catalyst steps",
+        "end": {
+          "column": 3,
+          "line": 44
+        },
+        "file": "source/renderer/app/components/voting/info/VotingInfo.js",
+        "id": "voting.info.stepTitle3",
+        "start": {
+          "column": 14,
+          "line": 39
+        }
+      },
+      {
+        "defaultMessage": "!!!I confirm all steps have been completed. Continue with registration.",
+        "description": "Button Label for Voting Catalyst steps",
+        "end": {
+          "column": 3,
+          "line": 50
+        },
+        "file": "source/renderer/app/components/voting/info/VotingInfo.js",
+        "id": "voting.info.buttonLabel",
+        "start": {
+          "column": 15,
+          "line": 45
+        }
+      },
+      {
+        "defaultMessage": "!!!https://play.google.com/store/apps/details?id=io.iohk.vitvoting&hl=es_419&gl=US",
+        "description": "\"androidAppButtonUrl\" for the Catalyst voting app",
+        "end": {
+          "column": 3,
+          "line": 56
+        },
+        "file": "source/renderer/app/components/voting/info/VotingInfo.js",
+        "id": "voting.info.androidAppButtonUrl",
+        "start": {
+          "column": 23,
+          "line": 51
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/voting/info/VotingInfo.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!For  <span>fund 2</span> voting you will only be able to use one wallet to register.",
+        "description": "Description on the voting add \"choose wallet\" step.",
+        "end": {
+          "column": 3,
+          "line": 18
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsChooseWallet.js",
+        "id": "voting.votingAdd.chooseWallet.step.description",
+        "start": {
+          "column": 15,
+          "line": 13
+        }
+      },
+      {
+        "defaultMessage": "!!!Select wallet",
+        "description": "Label \"Wallet\" for select input on thevoting add \"choose wallet\" step.",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsChooseWallet.js",
+        "id": "voting.votingAdd.chooseWallet.step.selectWalletInputLabel",
+        "start": {
+          "column": 26,
+          "line": 19
+        }
+      },
+      {
+        "defaultMessage": "!!!Select Wallet",
+        "description": "Placeholder \"Select Wallet\" for select input on the voting add \"choose wallet\" step.",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsChooseWallet.js",
+        "id": "voting.votingAdd.chooseWallet.step.selectWalletInputPlaceholder",
+        "start": {
+          "column": 32,
+          "line": 25
+        }
+      },
+      {
+        "defaultMessage": "!!!This wallet does not contain the minimum amount of {minVotingFunds} ADA that is required for voting to be enabled. Please select a wallet with <span>a minimum amount of {minVotingFunds} ADA</span> and click Continue.",
+        "description": "errorMinVotingFunds Error Label on the voting add \"choose wallet\" step.",
+        "end": {
+          "column": 3,
+          "line": 37
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsChooseWallet.js",
+        "id": "voting.votingAdd.chooseWallet.step.errorMinVotingFunds",
+        "start": {
+          "column": 23,
+          "line": 31
+        }
+      },
+      {
+        "defaultMessage": "!!!This wallet contains rewards balances only, and cannot be used for voting purposes.",
+        "description": "errorMinVotingFundsRewardsOnly Error Label on the voting add \"choose wallet\" step.",
+        "end": {
+          "column": 3,
+          "line": 44
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsChooseWallet.js",
+        "id": "voting.votingAdd.chooseWallet.step.errorMinVotingFundsRewardsOnly",
+        "start": {
+          "column": 34,
+          "line": 38
+        }
+      },
+      {
+        "defaultMessage": "!!!The wallet cannot be used for voting purposes while it is being synced with the blockchain.",
+        "description": "RestoringWallet Error Label on the voting add \"choose wallet\" step.",
+        "end": {
+          "column": 3,
+          "line": 51
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsChooseWallet.js",
+        "id": "voting.votingAdd.chooseWallet.step.errorRestoringWallet",
+        "start": {
+          "column": 24,
+          "line": 45
+        }
+      },
+      {
+        "defaultMessage": "!!!Continue",
+        "description": "Label for continue button on the voting add \"choose wallet\" step.",
+        "end": {
+          "column": 3,
+          "line": 57
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsChooseWallet.js",
+        "id": "voting.votingAdd.chooseWallet.step.continueButtonLabel",
+        "start": {
+          "column": 23,
+          "line": 52
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsChooseWallet.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!To ensure your registration is confirmed, you will need to wait 1 hour before proceeding.",
+        "description": "Description voting add \"confirm\" step.",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsConfirm.js",
+        "id": "voting.votingAdd.confirm.step.description",
+        "start": {
+          "column": 15,
+          "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!Please restart the registration process by clicking the Restart Registration button.",
+        "description": "Message for restart voting registration on the voting add \"confirm\" step.",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsConfirm.js",
+        "id": "voting.votingAdd.confirm.step.descriptionRestart",
+        "start": {
+          "column": 22,
+          "line": 22
+        }
+      },
+      {
+        "defaultMessage": "!!!If you close this window, or the wallet, you will need to start the registration process again and resubmit your registration transaction.",
+        "description": "First messages for alert to users on the voting add \"confirm\" step.",
+        "end": {
+          "column": 3,
+          "line": 35
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsConfirm.js",
+        "id": "voting.votingAdd.confirm.step.importantInformation1",
+        "start": {
+          "column": 25,
+          "line": 29
+        }
+      },
+      {
+        "defaultMessage": "!!!In 99.99% of cases the 1 hour wait time should suffice, however if you want a 100% guarantee to ensure successful registration we recommend waiting for 18 hours before confirming.",
+        "description": "Second messages for alert the user on the voting add \"confirm\" step.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsConfirm.js",
+        "id": "voting.votingAdd.confirm.step.importantInformation2",
+        "start": {
+          "column": 25,
+          "line": 36
+        }
+      },
+      {
+        "defaultMessage": "!!!Registration transaction was not registered correctly.",
+        "description": "Error message on the voting add \"confirm\" step.",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsConfirm.js",
+        "id": "voting.votingAdd.confirm.step.errorMessage",
+        "start": {
+          "column": 16,
+          "line": 43
+        }
+      },
+      {
+        "defaultMessage": "!!!Confirm registration Transaction",
+        "description": "Label for continue button on the voting add \"confirm\" step.",
+        "end": {
+          "column": 3,
+          "line": 52
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsConfirm.js",
+        "id": "voting.votingAdd.confirm.step.continueButtonLabel",
+        "start": {
+          "column": 23,
+          "line": 48
+        }
+      },
+      {
+        "defaultMessage": "!!![{countdownRemaining} seconds left before confirmation]",
+        "description": "Label for continue button countdown on the voting add \"confirm\" step.",
+        "end": {
+          "column": 3,
+          "line": 59
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsConfirm.js",
+        "id": "voting.votingAdd.confirm.step.continueButtonCountDownLabel",
+        "start": {
+          "column": 32,
+          "line": 53
+        }
+      },
+      {
+        "defaultMessage": "!!!Restart Registration",
+        "description": "Label for restart button on the voting add \"confirm\" step.",
+        "end": {
+          "column": 3,
+          "line": 64
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsConfirm.js",
+        "id": "voting.votingAdd.confirm.step.restartButtonLabel",
+        "start": {
+          "column": 22,
+          "line": 60
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsConfirm.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Congratulations!",
+        "description": "Title on the voting add \"enter pin code\" step.",
+        "end": {
+          "column": 3,
+          "line": 25
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsEnterPinCode.js",
+        "id": "voting.votingAdd.enterPinCode.step.title",
+        "start": {
+          "column": 9,
+          "line": 21
+        }
+      },
+      {
+        "defaultMessage": "!!!Your registration transaction was confirmed.",
+        "description": "Subtitle on the voting add \"enter pin code\" step.",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsEnterPinCode.js",
+        "id": "voting.votingAdd.enterPinCode.step.subtitle",
+        "start": {
+          "column": 12,
+          "line": 26
+        }
+      },
+      {
+        "defaultMessage": "!!!Please create a voting PIN code. This code will be used to access the Catalyst Voting App and decrypt your QR code.",
+        "description": "Description on the voting add \"enter pin code\" step.",
+        "end": {
+          "column": 3,
+          "line": 36
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsEnterPinCode.js",
+        "id": "voting.votingAdd.enterPinCode.step.description",
+        "start": {
+          "column": 15,
+          "line": 31
+        }
+      },
+      {
+        "defaultMessage": "!!!<span>You need to remember your PIN Code.</span> If you lose it, you will not be able to proceed with the registration process and you will not be able to access the mobile app.",
+        "description": "Reminder on the voting add \"enter pin code\" step.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsEnterPinCode.js",
+        "id": "voting.votingAdd.enterPinCode.step.reminder",
+        "start": {
+          "column": 12,
+          "line": 37
+        }
+      },
+      {
+        "defaultMessage": "!!!Enter PIN code",
+        "description": "Label for pin code input on the voting add \"enter pin code\" step.",
+        "end": {
+          "column": 3,
+          "line": 48
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsEnterPinCode.js",
+        "id": "voting.votingAdd.enterPinCode.step.enterPinCodeLabel",
+        "start": {
+          "column": 21,
+          "line": 43
+        }
+      },
+      {
+        "defaultMessage": "!!!Repeat PIN code",
+        "description": "Label for repeat pin code on the voting add \"enter pin code\" step.",
+        "end": {
+          "column": 3,
+          "line": 54
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsEnterPinCode.js",
+        "id": "voting.votingAdd.enterPinCode.step.repeatPinCodeLabel",
+        "start": {
+          "column": 22,
+          "line": 49
+        }
+      },
+      {
+        "defaultMessage": "!!!Invalid pin code",
+        "description": "Error message shown when repeat pin code is invalid.",
+        "end": {
+          "column": 3,
+          "line": 59
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsEnterPinCode.js",
+        "id": "voting.votingAdd.enterPinCode.step.errors.invalidPinCode",
+        "start": {
+          "column": 18,
+          "line": 55
+        }
+      },
+      {
+        "defaultMessage": "!!!PIN does not match",
+        "description": "Error message shown when repeat pin code is invalid.",
+        "end": {
+          "column": 3,
+          "line": 64
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsEnterPinCode.js",
+        "id": "voting.votingAdd.enterPinCode.step.errors.invalidRepeatPinCode",
+        "start": {
+          "column": 24,
+          "line": 60
+        }
+      },
+      {
+        "defaultMessage": "!!!Create PIN code",
+        "description": "Label for continue button on the voting add \"enter pin code\" step.",
+        "end": {
+          "column": 3,
+          "line": 70
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsEnterPinCode.js",
+        "id": "voting.votingAdd.enterPinCode.step.continueButtonLabel",
+        "start": {
+          "column": 23,
+          "line": 65
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsEnterPinCode.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Please complete your registration now.",
+        "description": "Qr code title on the voting add \"qr code\" step.",
+        "end": {
+          "column": 3,
+          "line": 17
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsQrCode.js",
+        "id": "voting.votingAdd.qrCode.step.qrCodeTitle",
+        "start": {
+          "column": 15,
+          "line": 13
+        }
+      },
+      {
+        "defaultMessage": "!!!Scan the QR code using the Catalyst Voting app.",
+        "description": "Qr code description of use on the voting add \"qr code\" step.",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsQrCode.js",
+        "id": "voting.votingAdd.qrCode.step.qrCodeDescription",
+        "start": {
+          "column": 21,
+          "line": 18
+        }
+      },
+      {
+        "defaultMessage": "!!!This QR code is not saved anywhere, and you will not have access to it after closing this screen.",
+        "description": "Qr code messakes of use on the voting add \"qr code\" step.",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsQrCode.js",
+        "id": "voting.votingAdd.qrCode.step.message",
+        "start": {
+          "column": 11,
+          "line": 23
+        }
+      },
+      {
+        "defaultMessage": "!!!Take a screenshot of the QR code if you want to access it later.",
+        "description": "Qr code second message for take a screen shot used on the voting add \"qr code\" step.",
+        "end": {
+          "column": 3,
+          "line": 35
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsQrCode.js",
+        "id": "voting.votingAdd.qrCode.step.takeScreenShotMessage",
+        "start": {
+          "column": 25,
+          "line": 29
+        }
+      },
+      {
+        "defaultMessage": "!!!If you lose access to the QR code, you will need to register again in order to generate a new QR code.",
+        "description": "Qr code warning messages of use on the voting add \"qr code\" step.",
+        "end": {
+          "column": 3,
+          "line": 42
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsQrCode.js",
+        "id": "voting.votingAdd.qrCode.step.warningMessage",
+        "start": {
+          "column": 18,
+          "line": 36
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsQrCode.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!By submitting this registration transaction, you are creating a proof of your staking balance. This proof will be used to calculate your voting power. With the exception of fees, there will be no change to the balance of your wallet.",
+        "description": "Description on the voting add \"sign\" step.",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsSign.js",
+        "id": "voting.votingAdd.sign.step.description",
+        "start": {
+          "column": 15,
+          "line": 24
+        }
+      },
+      {
+        "defaultMessage": "!!!Submit Registration Transaction",
+        "description": "Label for continue button on the voting add \"sign\" step.",
+        "end": {
+          "column": 3,
+          "line": 34
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsSign.js",
+        "id": "voting.votingAdd.sign.step.continueButtonLabel",
+        "start": {
+          "column": 23,
+          "line": 30
+        }
+      },
+      {
+        "defaultMessage": "!!!Fees",
+        "description": "Fees label on the voting add \"sign\" step.",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsSign.js",
+        "id": "voting.votingAdd.sign.step.feesLabel",
+        "start": {
+          "column": 13,
+          "line": 35
+        }
+      },
+      {
+        "defaultMessage": "!!!Spending password",
+        "description": "Placeholder for \"spending password\"",
+        "end": {
+          "column": 3,
+          "line": 44
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsSign.js",
+        "id": "voting.votingAdd.sign.step.spendingPasswordPlaceholder",
+        "start": {
+          "column": 31,
+          "line": 40
+        }
+      },
+      {
+        "defaultMessage": "!!!Spending password",
+        "description": "Label for \"spending password\"",
+        "end": {
+          "column": 3,
+          "line": 49
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsSign.js",
+        "id": "voting.votingAdd.sign.step.spendingPasswordLabel",
+        "start": {
+          "column": 25,
+          "line": 45
+        }
+      },
+      {
+        "defaultMessage": "!!!Calculating fees",
+        "description": "\"Calculating fees\" message in the \"sign\" step.",
+        "end": {
+          "column": 3,
+          "line": 54
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsSign.js",
+        "id": "voting.votingAdd.sign.step.calculatingFees",
+        "start": {
+          "column": 19,
+          "line": 50
+        }
+      },
+      {
+        "defaultMessage": "!!!Learn more about this step in detail",
+        "description": "\"Learn more\" link on the \"sign\" step.",
+        "end": {
+          "column": 3,
+          "line": 59
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsSign.js",
+        "id": "voting.votingAdd.sign.step.learnMoreLink",
+        "start": {
+          "column": 17,
+          "line": 55
+        }
+      },
+      {
+        "defaultMessage": "!!!https://docs.google.com/document/d/1_syHaBNjhFcB5qg_NJoBfIZIBy_ha2n042XdrDASYgY/#heading=h.u296e49etfth",
+        "description": "Learn more\" link URL on the \"sign\" step.",
+        "end": {
+          "column": 3,
+          "line": 65
+        },
+        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsSign.js",
+        "id": "voting.votingAdd.sign.step.learntMoreLinkUrl",
+        "start": {
+          "column": 21,
+          "line": 60
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsSign.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Register to vote",
+        "description": "Tile \"Register to vote\" for Voting add",
+        "end": {
+          "column": 3,
+          "line": 17
+        },
+        "file": "source/renderer/app/components/voting/VotingAddDialog.js",
+        "id": "voting.votingAdd.dialog.dialogTitle",
+        "start": {
+          "column": 15,
+          "line": 13
+        }
+      },
+      {
+        "defaultMessage": "!!!Step {step} of {stepCount}",
+        "description": "Sub title for Voting add",
+        "end": {
+          "column": 3,
+          "line": 22
+        },
+        "file": "source/renderer/app/components/voting/VotingAddDialog.js",
+        "id": "voting.votingAdd.dialog.subtitle",
+        "start": {
+          "column": 12,
+          "line": 18
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/voting/VotingAddDialog.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!On the following screen, you will be given a list of {walletRecoveryPhraseWordCount}  words to write down on paper and keep in a safe place. This list of words is the wallet recovery phrase for the wallet you are creating.",
         "description": "Instructions for backing up wallet recovery phrase on dialog that displays wallet recovery phrase.",
         "end": {
@@ -12739,17 +13418,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Cardano mainnet - Daedalus Flight",
-        "description": "Label for Daedalus Flight with version.",
+        "defaultMessage": "!!!Cardano mainnet - Daedalus Catalyst",
+        "description": "Label for Daedalus Catalyst with version.",
         "end": {
           "column": 3,
           "line": 62
         },
         "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
+        "id": "test.environment.daedalusCatalystLabel",
+        "start": {
+          "column": 12,
+          "line": 58
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano mainnet - Daedalus Flight",
+        "description": "Label for Daedalus Flight with version.",
+        "end": {
+          "column": 3,
+          "line": 67
+        },
+        "file": "source/renderer/app/components/widgets/WalletTestEnvironmentLabel.js",
         "id": "test.environment.daedalusFlightLabel",
         "start": {
           "column": 10,
-          "line": 58
+          "line": 63
         }
       }
     ],
@@ -12952,6 +13645,81 @@
       }
     ],
     "path": "source/renderer/app/containers/staking/StakingRewardsPage.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Wallet",
+        "description": "Step 1 label text on voting add.",
+        "end": {
+          "column": 3,
+          "line": 23
+        },
+        "file": "source/renderer/app/containers/voting/dialogs/VotingAddDialogContainer.js",
+        "id": "voting.votingAdd.steps.step.1.label",
+        "start": {
+          "column": 23,
+          "line": 19
+        }
+      },
+      {
+        "defaultMessage": "!!!Sign",
+        "description": "Step 2 label text on voting add.",
+        "end": {
+          "column": 3,
+          "line": 28
+        },
+        "file": "source/renderer/app/containers/voting/dialogs/VotingAddDialogContainer.js",
+        "id": "voting.votingAdd.steps.step.2.label",
+        "start": {
+          "column": 23,
+          "line": 24
+        }
+      },
+      {
+        "defaultMessage": "!!!Confirm",
+        "description": "Step 3 label text on voting add.",
+        "end": {
+          "column": 3,
+          "line": 33
+        },
+        "file": "source/renderer/app/containers/voting/dialogs/VotingAddDialogContainer.js",
+        "id": "voting.votingAdd.steps.step.3.label",
+        "start": {
+          "column": 23,
+          "line": 29
+        }
+      },
+      {
+        "defaultMessage": "!!!PIN code",
+        "description": "Step 4 label text on voting add.",
+        "end": {
+          "column": 3,
+          "line": 38
+        },
+        "file": "source/renderer/app/containers/voting/dialogs/VotingAddDialogContainer.js",
+        "id": "voting.votingAdd.steps.step.4.label",
+        "start": {
+          "column": 23,
+          "line": 34
+        }
+      },
+      {
+        "defaultMessage": "QR code",
+        "description": "Step 5 label text on voting add.",
+        "end": {
+          "column": 3,
+          "line": 43
+        },
+        "file": "source/renderer/app/containers/voting/dialogs/VotingAddDialogContainer.js",
+        "id": "voting.votingAdd.steps.step.5.label",
+        "start": {
+          "column": 23,
+          "line": 39
+        }
+      }
+    ],
+    "path": "source/renderer/app/containers/voting/dialogs/VotingAddDialogContainer.json"
   },
   {
     "descriptors": [
@@ -13929,183 +14697,5 @@
       }
     ],
     "path": "source/renderer/app/utils/paperWalletPdfGenerator.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Create",
-        "description": "Create label.",
-        "end": {
-          "column": 3,
-          "line": 36
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "global.labels.create",
-        "start": {
-          "column": 10,
-          "line": 32
-        }
-      },
-      {
-        "defaultMessage": "!!!Create a new wallet",
-        "description": "Create a new wallet description.",
-        "end": {
-          "column": 3,
-          "line": 41
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "wallet.add.dialog.create.description",
-        "start": {
-          "column": 19,
-          "line": 37
-        }
-      },
-      {
-        "defaultMessage": "!!!Join",
-        "description": "Join label.",
-        "end": {
-          "column": 3,
-          "line": 46
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "wallet.add.dialog.join.label",
-        "start": {
-          "column": 8,
-          "line": 42
-        }
-      },
-      {
-        "defaultMessage": "!!!Join a shared wallet",
-        "description": "Join a shared wallet description.",
-        "end": {
-          "column": 3,
-          "line": 51
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "wallet.add.dialog.join.description",
-        "start": {
-          "column": 20,
-          "line": 47
-        }
-      },
-      {
-        "defaultMessage": "!!!Import",
-        "description": "Import label.",
-        "end": {
-          "column": 3,
-          "line": 56
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "wallet.add.dialog.import.label",
-        "start": {
-          "column": 10,
-          "line": 52
-        }
-      },
-      {
-        "defaultMessage": "!!!Import wallets from an earlier version of Daedalus or the Daedalus state directory",
-        "description": "Import wallets from an earlier version of Daedalus or the Daedalus state directory description.",
-        "end": {
-          "column": 3,
-          "line": 63
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "wallet.add.dialog.import.description",
-        "start": {
-          "column": 24,
-          "line": 57
-        }
-      },
-      {
-        "defaultMessage": "!!!Recovery Phrase",
-        "description": "Recovery Phrase description.",
-        "end": {
-          "column": 3,
-          "line": 68
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "wallet.restore.dialog.mnemonicsStep",
-        "start": {
-          "column": 18,
-          "line": 64
-        }
-      },
-      {
-        "defaultMessage": "!!!Save",
-        "description": "Save description.",
-        "end": {
-          "column": 3,
-          "line": 73
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "global.labels.save",
-        "start": {
-          "column": 8,
-          "line": 69
-        }
-      },
-      {
-        "defaultMessage": "!!!Follow instructions and manually update",
-        "description": "Follow instructions and manually update description.",
-        "end": {
-          "column": 3,
-          "line": 78
-        },
-        "file": "storybook/stories/common/Widgets.stories.js",
-        "id": "manualUpdate.button.label",
-        "start": {
-          "column": 22,
-          "line": 74
-        }
-      }
-    ],
-    "path": "storybook/stories/common/Widgets.stories.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Read More",
-        "description": "Read More button label.",
-        "end": {
-          "column": 3,
-          "line": 37
-        },
-        "file": "storybook/stories/news/AlertsOverlay.stories.js",
-        "id": "global.labels.readMore",
-        "start": {
-          "column": 12,
-          "line": 33
-        }
-      },
-      {
-        "defaultMessage": "!!!Failure Alert",
-        "description": "Failure Alert title.",
-        "end": {
-          "column": 3,
-          "line": 42
-        },
-        "file": "storybook/stories/news/AlertsOverlay.stories.js",
-        "id": "global.errors.failureAlert",
-        "start": {
-          "column": 16,
-          "line": 38
-        }
-      },
-      {
-        "defaultMessage": "!!!Content",
-        "description": "Content.",
-        "end": {
-          "column": 3,
-          "line": 47
-        },
-        "file": "storybook/stories/news/AlertsOverlay.stories.js",
-        "id": "static.dummy.markdown",
-        "start": {
-          "column": 11,
-          "line": 43
-        }
-      }
-    ],
-    "path": "storybook/stories/news/AlertsOverlay.stories.json"
   }
 ]

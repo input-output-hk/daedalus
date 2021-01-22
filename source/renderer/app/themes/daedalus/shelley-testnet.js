@@ -956,6 +956,22 @@ export const SHELLEY_TESTNET_THEME_OUTPUT = {
     '--theme-utxo-tooltip-shadow-color': 'rgba(0, 0, 0, 0.18)',
     '--theme-utxo-tooltip-text-color': '#fff',
   },
+  voting: {
+    '--theme-voting-info-icon-color': '#ffffff',
+    '--theme-voting-info-background-color': '#E3E3E5',
+    '--theme-voting-info-font-color': '#1E1F31',
+    '--theme-voting-font-color-accent': '#ffffff',
+    '--theme-voting-font-color-regular': '#ffffff',
+    '--theme-voting-font-color-light': '#ffffffb3',
+    '--theme-voting-steps-warning-messages-font-color': '#ea4c5b',
+    '--theme-voting-steps-description-highlighted-color': '#ffffff',
+    '--theme-voting-steps-description-color': '#ffffffcc',
+    '--theme-voting-steps-activation-steps-indicator-color': '#ffffff',
+    '--theme-voting-steps-choose-wallet-error-message-light-color': '#ea4c5bb3',
+    '--theme-voting-steps-choose-wallet-error-message-color': '#ea4c5b',
+    '--theme-voting-steps-deposit-fees-label-color': '#ffffff',
+    '--theme-voting-steps-deposit-fees-amount-color': '#ea4c5b',
+  },
   recoveryPhrase: {
     '--theme-recovery-phrase-normal-background-color':
       'rgba(255, 255, 255, .1)',

@@ -12,6 +12,7 @@ import StakingStore from './StakingStore';
 import TransactionsStore from './TransactionsStore';
 import UiDialogsStore from './UiDialogsStore';
 import UiNotificationsStore from './UiNotificationsStore';
+import VotingStore from './VotingStore';
 import WalletsStore from './WalletsStore';
 import WalletsLocalStore from './WalletsLocalStore';
 import WalletBackupStore from './WalletBackupStore';
@@ -31,6 +32,7 @@ export const storeClasses = {
   transactions: TransactionsStore,
   uiDialogs: UiDialogsStore,
   uiNotifications: UiNotificationsStore,
+  voting: VotingStore,
   wallets: WalletsStore,
   walletsLocal: WalletsLocalStore,
   walletBackup: WalletBackupStore,
@@ -52,6 +54,7 @@ export type StoresMap = {
   transactions: TransactionsStore,
   uiDialogs: UiDialogsStore,
   uiNotifications: UiNotificationsStore,
+  voting: VotingStore,
   wallets: WalletsStore,
   walletsLocal: WalletsLocalStore,
   walletBackup: WalletBackupStore,
@@ -99,6 +102,7 @@ export default action((api, actions, router): StoresMap => {
     walletMigration: createStoreInstanceOf(WalletMigrationStore),
     walletSettings: createStoreInstanceOf(WalletSettingsStore),
     window: createStoreInstanceOf(WindowStore),
+    voting: createStoreInstanceOf(VotingStore),
   });
   // Configure and initialize all stores
   executeOnEveryStore((store) => {

@@ -57,6 +57,7 @@ data Cluster
   | Selfnode
   | ITN_Selfnode
   | Mainnet
+  | Mainnet_Catalyst
   | Mainnet_Flight
   | Staging
   | Shelley_QA
@@ -114,6 +115,7 @@ clusterNetwork QA = "qa"
 clusterNetwork ITN_Selfnode = "itn_selfnode"
 clusterNetwork Selfnode = "selfnode"
 clusterNetwork Mainnet = "mainnet"
+clusterNetwork Mainnet_Catalyst = "mainnet_catalyst"
 clusterNetwork Mainnet_Flight = "mainnet_flight"
 clusterNetwork Staging = "staging"
 clusterNetwork Shelley_QA = "shelley_qa"

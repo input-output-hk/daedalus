@@ -151,3 +151,20 @@ export const generateThousands = (value: number) => {
 
   return Math.round(value / 1000) * 1000;
 };
+
+export const formattedArrayBufferToHexString = (arrayBuffer: Uint8Array) => {
+  const buff = new Uint8Array(arrayBuffer);
+  const byteToHex = [];
+  const hexOctets = [];
+
+  for (let n = 0; n <= 0xff; ++n) {
+    const hexOctet = `0${n.toString(16)}`.slice(-2);
+    byteToHex.push(hexOctet);
+  }
+
+  for (let i = 0; i < buff.length; ++i) {
+    hexOctets.push(byteToHex[buff[i]]);
+  }
+
+  return hexOctets.join('');
+};

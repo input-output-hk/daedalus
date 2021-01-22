@@ -1,0 +1,63 @@
+.votingAddStepsConfirmWrapper {
+  .content {
+    margin-top: 40px;
+    .header {
+      display: flex;
+      text-align: center;
+
+      .descriptionIcon {
+        margin: auto;
+        width: 72px;
+        height: 72px;
+      }
+      .errorIcon {
+        margin: auto;
+        width: 72px;
+        height: 72px;
+      }
+    }
+
+    .description {
+      display: flex;
+      text-align: center;
+      flex-direction: column;
+      margin-bottom: 25px;
+      margin-top: 40px;
+      color: var(--theme-voting-steps-description-color);
+    }
+
+    .messages {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 15px;
+      margin-top: 25px;
+      p {
+        margin-top: 20px;
+        color: var(--theme-voting-steps-warning-messages-font-color);
+      }
+    }
+
+    .separator {
+      margin: 15px 0;
+      opacity: 0.2;
+    }
+
+    .errorMessage {
+      margin-top: 25px;
+      text-align: center;
+      p {
+        color: var(--theme-color-error);
+        font-family: var(--font-medium);
+        font-weight: 500;
+      }
+    }
+
+    .buttonContainer {
+      margin-top: 30px;
+      text-align: center;
+      .buttonConfirmStyles {
+        width: 510px;
+      }
+    }
+  }
+}

@@ -1,10 +1,11 @@
 Changelog
 =========
 
-## vNext
+## 1.0.0-CT
 
 ### Features
 
+- Implemented Voting Centar ([PR 2204](https://github.com/input-output-hk/daedalus/pull/2204))
 - Re-enabled stake pool saturation info ([PR 2200](https://github.com/input-output-hk/daedalus/pull/2200))
 - Implemented the wallet migration leftovers handling ([PR 2178](https://github.com/input-output-hk/daedalus/pull/2178))
 
