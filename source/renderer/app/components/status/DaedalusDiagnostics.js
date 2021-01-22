@@ -18,6 +18,7 @@ import closeCrossThin from '../../assets/images/close-cross-thin.inline.svg';
 import iconCopy from '../../assets/images/clipboard-ic.inline.svg';
 import sandClockIcon from '../../assets/images/sand-clock-xs.inline.svg';
 import LocalizableError from '../../i18n/LocalizableError';
+import { formattedNumber, formattedCpuModel } from '../../utils/formatters';
 import { CardanoNodeStates } from '../../../../common/types/cardano-node.types';
 import styles from './DaedalusDiagnostics.scss';
 import type { CardanoNodeState } from '../../../../common/types/cardano-node.types';
@@ -479,10 +480,12 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
     const {
       platform,
       platformVersion,
-      cpu,
+      cpu: originalFormatCpu,
       ram,
       availableDiskSpace,
     } = systemInfo;
+
+    const cpu = formattedCpuModel(originalFormatCpu);
 
     const {
       daedalusVersion,
@@ -671,7 +674,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                 <Fragment>
                   <span>{intl.formatMessage(messages.epoch)}:</span>{' '}
                   {localTip && localTip.epoch ? (
-                    localTip.epoch
+                    formattedNumber(localTip.epoch)
                   ) : (
                     <SVGInline
                       svg={sandClockIcon}
@@ -680,7 +683,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                   )}
                   <span>{intl.formatMessage(messages.slot)}:</span>{' '}
                   {localTip && localTip.slot ? (
-                    localTip.slot
+                    formattedNumber(localTip.slot)
                   ) : (
                     <SVGInline
                       svg={sandClockIcon}
@@ -719,9 +722,7 @@ export default class DaedalusDiagnostics extends Component<Props, State> {
                   ) : (
                     <span className={localTimeDifferenceClasses}>
                       {isNTPServiceReachable
-                        ? `${new BigNumber(
-                            localTimeDifference || 0
-                          ).toFormat()} μs`
+                        ? `${formattedNumber(localTimeDifference || 0)} μs`
                         : intl.formatMessage(messages.serviceUnreachable)}
                     </span>
                   )}
