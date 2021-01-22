@@ -40,10 +40,17 @@ const messages = defineMessages({
     defaultMessage: '!!!CSV file successfully downloaded',
     description: 'Notification for download Transactions CSV file.',
   },
+  copyPublicKey: {
+    id: 'notification.copyPublicKey',
+    defaultMessage:
+      '!!!Public key: <strong>{publicKey}</strong> copied to clipboard',
+    description:
+      'Notification for the wallet public key copy success in the Wallet Settings page.',
+  },
   copyAddress: {
     id: 'notification.copyAddress',
     defaultMessage:
-      '!!!Address: <strong>{walletAddress}</strong> copied to clipboard',
+      '!!!Address: <strong>{address}</strong> copied to clipboard',
     description:
       'Notification for the wallet address copy success in the Wallet Receive page.',
   },
@@ -100,6 +107,10 @@ export default class NotificationsContainer extends Component<InjectedProps> {
       actionToListenAndOpen: this.props.actions.transactions
         .requestCSVFileSuccess,
       actionToListenAndClose: this.props.actions.transactions.requestCSVFile,
+    },
+    {
+      id: 'copyPublicKey',
+      actionToListenAndOpen: this.props.actions.wallets.copyPublicKey,
     },
     {
       id: 'copyAddress',

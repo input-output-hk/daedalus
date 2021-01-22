@@ -7,6 +7,7 @@ import {
   CERTIFICATE_TYPE,
 } from './hardwareWalletUtils';
 import { deriveXpubChannel } from '../ipc/getHardwareWalletChannel';
+import { AddressStyles } from '../domains/WalletAddress';
 
 // Types
 import type {
@@ -18,6 +19,7 @@ import type {
   BIP32Path,
   Certificate,
 } from '../../../common/types/hardware-wallets.types';
+import type { AddressStyle } from '../api/addresses/types';
 
 export type ShelleyTxInputType = {
   coins: number,
@@ -105,12 +107,18 @@ export const ShelleyTxInputFromUtxo = (utxoInput: CoinSelectionInput) => {
   };
 };
 
-export const ShelleyTxOutput = (output: CoinSelectionOutput) => {
+export const ShelleyTxOutput = (
+  output: CoinSelectionOutput,
+  addressStyle: AddressStyle
+) => {
   const { address, amount, derivationPath } = output;
   const coins = amount.quantity;
 
   function encodeCBOR(encoder: any) {
-    const addressBuff = utils.bech32_decodeAddress(address);
+    const addressBuff =
+      addressStyle === AddressStyles.ADDRESS_SHELLEY
+        ? utils.bech32_decodeAddress(address)
+        : utils.base58_decode(address);
     return encoder.pushAny([addressBuff, coins]);
   }
   const isChange = derivationPath !== null;
@@ -303,7 +311,10 @@ export const prepareLedgerInput = (input: CoinSelectionInput) => {
   };
 };
 
-export const prepareLedgerOutput = (output: CoinSelectionOutput) => {
+export const prepareLedgerOutput = (
+  output: CoinSelectionOutput,
+  addressStyle: AddressStyle
+) => {
   const isChange = output.derivationPath !== null;
   if (isChange) {
     return {
@@ -313,9 +324,14 @@ export const prepareLedgerOutput = (output: CoinSelectionOutput) => {
       stakingPath: utils.str_to_path("1852'/1815'/0'/2/0"),
     };
   }
+
+  const isSheeleyAddress = addressStyle === AddressStyles.ADDRESS_SHELLEY;
+  const decodedAddress = isSheeleyAddress
+    ? utils.bech32_decodeAddress(output.address)
+    : utils.base58_decode(output.address);
   return {
     amountStr: output.amount.quantity.toString(),
-    addressHex: utils.buf_to_hex(utils.bech32_decodeAddress(output.address)),
+    addressHex: utils.buf_to_hex(decodedAddress),
   };
 };
 

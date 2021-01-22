@@ -3,6 +3,9 @@ import BigNumber from 'bignumber.js';
 import isInt from 'validator/lib/isInt';
 import { every } from 'lodash';
 
+const MIN_PASSWORD_LENGTH = 10;
+const MAX_PASSWORD_LENGTH = 255;
+
 export const isValidWalletName = (walletName: string) => {
   const nameLength = walletName.length;
   return nameLength >= 3 && nameLength <= 40;
@@ -53,11 +56,14 @@ export const isUnicaseString = (password: string) =>
   every(password.split(''), (char) => isCaselessString(char));
 
 /**
- * Enforces passwords without spaces and a minimum of 10 characters.
+ * Enforces passwords without spaces and a minimum of 10 characters and a maximum of 255 characters.
  */
 export const isValidSpendingPassword = (password: string): boolean => {
   // Should contain at least 10 characters
-  return password.length >= 10;
+  return (
+    password.length >= MIN_PASSWORD_LENGTH &&
+    password.length <= MAX_PASSWORD_LENGTH
+  );
 };
 
 // eslint-disable-next-line max-len
@@ -77,6 +83,38 @@ export const isValidAmountInLovelaces = (value: string) => {
   return numericValue.gte(minValue) && numericValue.lte(maxValue);
 };
 
+/**
+ * Mnemonics validation
+ */
+type ValidateMnemonicsParams = {
+  requiredWords: number | number[],
+  providedWords: string[],
+  validator: (providedWords: string[]) => [boolean, string],
+};
+
+export const INCOMPLETE_MNEMONIC_MARKER = 'INCOMPLETE_MNEMONIC_MARKER';
+
+export function validateMnemonics(params: ValidateMnemonicsParams) {
+  const { requiredWords, providedWords } = params;
+  const providedWordsCount = providedWords.length;
+
+  const isPhraseComplete = Array.isArray(requiredWords)
+    ? requiredWords.includes(providedWordsCount)
+    : providedWordsCount === requiredWords;
+
+  if (!isPhraseComplete) {
+    return INCOMPLETE_MNEMONIC_MARKER;
+  }
+  return params.validator(providedWords);
+}
+
+export function errorOrIncompleteMarker(error: string) {
+  return error === INCOMPLETE_MNEMONIC_MARKER ? null : error;
+}
+
+/**
+ * Voting PIN code validation
+ */
 export const isValidPinCode = (pinCode: string, length: number): boolean => {
   return pinCode.length === length;
 };

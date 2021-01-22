@@ -92,7 +92,7 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-button-flat-background-color-disabled': 'rgba(32, 34, 37, 0.1)',
     '--theme-button-flat-text-color-disabled': '#5e6066',
     '--theme-button-flat-text-color': '#5e6066',
-    '--theme-button-flat-outline-color': '#e1e4e6',
+    '--theme-button-flat-outline-color': 'rgba(94, 96, 102, 0.2)',
   },
   buttonPrimary: {
     '--theme-button-primary-background-color': '#2cbb69',
@@ -533,6 +533,8 @@ export const CARDANO_THEME_OUTPUT = {
     '--rp-autocomplete-selected-word-text-color': '#ffffff',
     '--rp-autocomplete-selected-words-font-family':
       'NotoSans-Regular, NotoSansCJKjp-Regular',
+    '--rp-autocomplete-required-words-color': 'rgba(94, 96, 102, 0.5)',
+    '--rp-autocomplete-required-words-offset-top': '2px',
   },
   rpBubble: {
     '--rp-bubble-bg-color': '#fff',
@@ -862,7 +864,6 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-staking-countdown-widget-field-value-color': '#5e6066',
     '--theme-staking-export-button-shadow-color': 'rgba(0, 0, 0, 0.18)',
     '--theme-staking-export-button-color': '#fafbfc',
-    '--theme-staking-wallet-row-action-delegate-text-color': '#2cbb69',
     '--theme-staking-wallet-row-action-undelegate-text-color': '#ea4c5b',
     '--theme-staking-wallet-row-ticker-background-color': '#efefef',
     '--theme-staking-wallet-row-ticker-text-color': '#5e6066',

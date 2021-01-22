@@ -7,11 +7,17 @@ export default defineMessages({
     defaultMessage: '!!!This field is required.',
     description: 'Error message when required fields are left empty.',
   },
-  incompleteMnemonic: {
-    id: 'global.errors.incompleteMnemonic',
-    defaultMessage: '!!!Please enter all {expected} words.',
+  knownMnemonicWordCount: {
+    id: 'global.info.knownMnemonicWordCount',
+    defaultMessage: '!!!{actual} of {required} words entered',
     description:
-      'Error message shown when incomplete bip39 mnemonic was entered.',
+      'Info message displayed above mnemonic inputs about actual vs. required words entered',
+  },
+  unknownMnemonicWordCount: {
+    id: 'global.info.unknownMnemonicWordCount',
+    defaultMessage: '!!!{actual} words entered',
+    description:
+      'Info message displayed above mnemonic inputs about how many words have been entered',
   },
   invalidEmail: {
     id: 'global.errors.invalidEmail',
@@ -65,7 +71,7 @@ export default defineMessages({
   passwordInstructions: {
     id: 'global.passwordInstructions',
     defaultMessage:
-      '!!!Note that password needs to be at least 10 characters long.',
+      '!!!Note that password needs to be at least 10 characters and at most 255 characters long.',
     description: 'Password instructions note.',
   },
   cancel: {
@@ -301,5 +307,20 @@ export default defineMessages({
     id: 'global.labels.token',
     defaultMessage: '!!!Token',
     description: 'Token description.',
+  },
+  reveal: {
+    id: 'global.labels.reveal',
+    defaultMessage: '!!!Reveal',
+    description: 'Reveal label.',
+  },
+  hide: {
+    id: 'global.labels.hide',
+    defaultMessage: '!!!Hide',
+    description: 'Hide label.',
+  },
+  copy: {
+    id: 'global.labels.copy',
+    defaultMessage: '!!!Copy',
+    description: 'Copy label.',
   },
 });

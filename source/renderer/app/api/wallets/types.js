@@ -233,6 +233,12 @@ export type GetWalletRequest = {
   isLegacy: boolean,
 };
 
+export type GetWalletPublicKeyRequest = {
+  walletId: string,
+  role: string,
+  index: string,
+};
+
 export type TransferFundsCalculateFeeRequest = {
   sourceWalletId: string,
 };
@@ -262,6 +268,14 @@ export type TransferFundsRequest = {
 export type TransferFundsResponse = {
   id: string,
   amount: {
+    quantity: number,
+    unit: WalletUnits.LOVELACE,
+  },
+  fee: {
+    quantity: number,
+    unit: WalletUnits.LOVELACE,
+  },
+  deposit: {
     quantity: number,
     unit: WalletUnits.LOVELACE,
   },

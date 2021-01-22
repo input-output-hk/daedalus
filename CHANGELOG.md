@@ -7,12 +7,46 @@ Changelog
 
 - Implemented Voting Centar ([PR 2204](https://github.com/input-output-hk/daedalus/pull/2204))
 
+### Chores
+
+- Disabled application menu navigation before the "Terms of use" have been accepted ([PR 2304](https://github.com/input-output-hk/daedalus/pull/2304))
+
+## 3.2.0-FC1
+
+### Features
+
+- Improve Mnemonic Phrase Input UX [PR 2280](https://github.com/input-output-hk/daedalus/pull/2280)
+- Added wallet public key viewing feature ([PR 2271](https://github.com/input-output-hk/daedalus/pull/2271))
+- Added tile view for delegated Stake pools in Delegation Center ([PR 2275](https://github.com/input-output-hk/daedalus/pull/2275))
+
 ### Fixes
 
-- Added initial loading state to UTXO screen [PR 2265](https://github.com/input-output-hk/daedalus/pull/2265)
+- Fixed Ledger TXs to Byron addresses ([PR 2299](https://github.com/input-output-hk/daedalus/pull/2299))
 
 ### Chores
 
+- Updated `cardano-wallet` to version `2021-01-12` ([PR 2303](https://github.com/input-output-hk/daedalus/pull/2303))
+- Improved "Settings" screen scrolling actions ([PR 2302](https://github.com/input-output-hk/daedalus/pull/2302))
+- Improved scrollable dialogs ([PR 2285](https://github.com/input-output-hk/daedalus/pull/2285))
+- Disabled and hid copy and paste context menu items on some scenarios ([PR 2300](https://github.com/input-output-hk/daedalus/pull/2300))
+- Applied validation to spending password to be not longer than 255 characters ([PR 2287](https://github.com/input-output-hk/daedalus/pull/2287))
+- Update `axios` package ([PR 2291](https://github.com/input-output-hk/daedalus/pull/2291))
+
+## 3.1.0
+
+### Features
+
+- Included stake pool ID on the "Confirmation" step of the "Delegation" wizard and enabled search by stake pool ID on the "Stake Pools" screen ([PR 2281](https://github.com/input-output-hk/daedalus/pull/2281))
+
+### Fixes
+
+- Fixed Daedalus development environment issues on OSX Big Sur ([PR 2288](https://github.com/input-output-hk/daedalus/pull/2288))
+- Added initial loading state to UTXO screen ([PR 2265](https://github.com/input-output-hk/daedalus/pull/2265))
+
+### Chores
+
+- Canceled running fee estimation api requests once new request is made ([PR 2239](https://github.com/input-output-hk/daedalus/pull/2239))
+- Updated `iohk-nix` in order to fix `cardano-node` logging levels ([PR 2283](https://github.com/input-output-hk/daedalus/pull/2283))
 - Updated `@cardano-foundation/ledgerjs-hw-app-cardano` package to version `2.1.0` ([PR 2279](https://github.com/input-output-hk/daedalus/pull/2279))
 - Updated `ini` package ([PR 2278](https://github.com/input-output-hk/daedalus/pull/2278))
 
@@ -31,7 +65,7 @@ Changelog
 ### Chores
 
 - Reduced the size of Linux installer ([PR 2260](https://github.com/input-output-hk/daedalus/pull/2260))
-- Bumped cardano-wallet to v2020-12-08 and cardano-node to 1.24.2 ([PR 2270](https://github.com/input-output-hk/daedalus/pull/2270))
+- Bumped `cardano-wallet` to version `2020-12-08` and `cardano-node` to version `1.24.2` ([PR 2270](https://github.com/input-output-hk/daedalus/pull/2270))
 
 ## 3.0.0-FC4
 

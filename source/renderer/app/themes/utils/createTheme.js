@@ -65,6 +65,10 @@ export const createReactPolymorphTheme = (
       '--rp-autocomplete-selected-word-dialog-text-color': `${text.secondary}`,
       '--rp-autocomplete-selected-word-text-color': `${text.secondary}`,
       '--rp-autocomplete-selected-words-font-family': `${fonts.regular}`,
+      '--rp-autocomplete-required-words-color': `${chroma(text.primary).alpha(
+        0.5
+      )}`,
+      '--rp-autocomplete-required-words-offset-top': '2px',
     },
     rpBubble: {
       '--rp-bubble-bg-color': `${background.primary.lightest}`,
@@ -1045,7 +1049,6 @@ export const createDaedalusComponentsTheme = (
       '--theme-staking-donut-ring-completed-color': `${error.regular}`,
       '--theme-staking-donut-ring-remaining-color': `${error.ultralight}`,
       '--theme-staking-wallet-row-border-color': `${border}`,
-      '--theme-staking-wallet-row-action-delegate-text-color': `${background.secondary.regular}`,
       '--theme-staking-wallet-row-action-undelegate-text-color': `${error.regular}`,
       '--theme-staking-wallet-row-ticker-background-color': `${background.primary.regular}`,
       '--theme-staking-wallet-row-ticker-text-color': `${text.primary}`,
