@@ -1,11 +1,11 @@
 Changelog
 =========
 
-## 3.0.0-CT
+## vNext
 
 ### Features
 
-- Implemented Voting Centar ([PR 2204](https://github.com/input-output-hk/daedalus/pull/2204))
+- Implemented Voting Centar ([PR 2315](https://github.com/input-output-hk/daedalus/pull/2315))
 
 ### Chores
 
