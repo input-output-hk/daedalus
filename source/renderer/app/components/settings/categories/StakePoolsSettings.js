@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { map } from 'lodash';
 import { Select } from 'react-polymorph/lib/components/Select';
 import { Link } from 'react-polymorph/lib/components/Link';
-import { Input } from 'react-polymorph/lib/components/Input';
 import { observer } from 'mobx-react';
 import {
   defineMessages,
@@ -11,7 +10,6 @@ import {
   FormattedMessage,
   FormattedHTMLMessage,
 } from 'react-intl';
-import RadioSet from '../../widgets/RadioSet';
 import { getSmashServerIdFromUrl } from '../../../utils/staking';
 import InlineEditingInput from '../../widgets/forms/InlineEditingInput';
 import styles from './StakePoolsSettings.scss';

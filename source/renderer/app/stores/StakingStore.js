@@ -61,7 +61,7 @@ export default class StakingStore extends Store {
   @observable configurationStepError: ?LocalizableError = null;
   @observable confirmationStepError: ?LocalizableError = null;
 
-  /*----------  Stake Pools Fetching Tracker  ----------*/
+  /* ----------  Stake Pools Fetching Tracker  ---------- */
   @observable isFetchingStakePools: boolean = false;
   @observable numberOfStakePoolsFetched: number = 0;
   @observable cyclesWithoutIncreasingStakePools: number = 0;
@@ -540,7 +540,6 @@ export default class StakingStore extends Store {
         clearInterval(this.refreshPolling);
         this.refreshPolling = null;
       }
-      return;
     } else if (type === 'failed') {
       this.fetchingStakePoolsFailed = true;
       if (this.pollingStakePoolsInterval) {

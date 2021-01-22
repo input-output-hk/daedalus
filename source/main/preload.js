@@ -1,6 +1,5 @@
 // @flow
 import os from 'os';
-import { get } from 'lodash';
 import _https from 'https';
 import _http from 'http';
 import { ipcRenderer } from 'electron';

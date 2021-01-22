@@ -1,6 +1,6 @@
 // @flow
 import React from 'react';
-import { number } from '@storybook/addon-knobs';
+import { number, boolean } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 
 import StakePools from '../../../source/renderer/app/components/staking/stake-pools/StakePools';
@@ -43,6 +43,7 @@ export const StakePoolsStory = (props: Props) => (
       STAKE_POOLS[20],
       STAKE_POOLS[36],
     ]}
+    isFetching={boolean('isFetching', false)}
     onOpenExternalLink={action('onOpenExternalLink')}
     currentTheme={props.currentTheme}
     currentLocale={props.locale}
@@ -54,7 +55,6 @@ export const StakePoolsStory = (props: Props) => (
     wallets={dummyWallets}
     getStakePoolById={() => null}
     onSmashSettingsClick={action('onSmashSettingsClick')}
-    smashServerType="iohk"
     smashServerUrl="https://smash.cardano-mainnet.iohk.io"
     maxDelegationFunds={maxDelegationFunds}
   />
