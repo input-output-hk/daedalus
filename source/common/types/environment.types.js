@@ -43,7 +43,6 @@ export const TEST = 'test';
 
 // cardano-node networks
 export const MAINNET = 'mainnet';
-export const MAINNET_CATALYST = 'mainnet_catalyst';
 export const MAINNET_FLIGHT = 'mainnet_flight';
 export const SELFNODE = 'selfnode';
 export const STAGING = 'staging';
@@ -72,7 +71,6 @@ export type Platform = 'darwin' | 'win32' | 'linux';
 
 export type Network =
   | 'mainnet'
-  | 'mainnet_catalyst'
   | 'mainnet_flight'
   | 'selfnode'
   | 'staging'

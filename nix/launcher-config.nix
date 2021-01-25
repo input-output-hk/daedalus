@@ -22,11 +22,6 @@
 
 let
   clusterOverrides = {
-    mainnet_catalyst = {
-      cardanoEnv = cardanoLib.environments.mainnet;
-      cluster = "mainnet";
-      networkName = "mainnet";
-    };
     mainnet_flight = {
       cardanoEnv = cardanoLib.environments.mainnet;
       cluster = "mainnet";
@@ -79,7 +74,6 @@ let
   installDirectorySuffix = let
     supportedNetworks = {
       mainnet = "Mainnet";
-      mainnet_catalyst = "Catalyst";
       mainnet_flight = "Flight";
       qa = "QA";
       selfnode = "Selfnode";
@@ -168,7 +162,6 @@ let
     tlsPath = "${dataDir}${dirSep}tls";
     cluster = if __hasAttr network clusterOverrides then clusterOverrides.${network}.cluster else network;
     networkName = if __hasAttr network clusterOverrides then clusterOverrides.${network}.networkName else network;
-    isCatalyst = network == "mainnet_catalyst";
     isFlight = network == "mainnet_flight";
     isStaging = (envCfg.nodeConfig.RequiresNetworkMagic == "RequiresNoMagic");
     nodeImplementation = backend;
@@ -227,7 +220,7 @@ let
       ''}
     '';
 
-    legacyStateDir = if (network == "mainnet_catalyst") || (network == "mainnet_flight") || (network == "mainnet") then legacyDataDir else dataDir;
+    legacyStateDir = if (network == "mainnet_flight") || (network == "mainnet") then legacyDataDir else dataDir;
 
     legacyWalletDB = let
       path.linux = "Wallet";

@@ -139,12 +139,7 @@ export default class SyncingConnecting extends Component<Props, State> {
           (connectingTime >= REPORT_ISSUE_TIME_TRIGGER ||
             cardanoNodeState === CardanoNodeStates.UNRECOVERABLE)));
 
-    if (
-      isFlight ||
-      isIncentivizedTestnet ||
-      global.isCatalyst ||
-      global.isShelleyTestnet
-    ) {
+    if (isFlight || isIncentivizedTestnet || global.isShelleyTestnet) {
       return canReportConnectingIssue;
     }
     return canReportConnectingIssue;

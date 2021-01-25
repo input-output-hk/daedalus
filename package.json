@@ -51,7 +51,6 @@
     "nix:nightly": "NETWORK=nightly nix-shell --argstr nodeImplementation jormungandr --argstr cluster nightly",
     "nix:qa": "NETWORK=qa nix-shell --argstr nodeImplementation jormungandr --argstr cluster qa",
     "nix:mainnet": "NETWORK=mainnet nix-shell --argstr nodeImplementation cardano --argstr cluster mainnet",
-    "nix:catalyst": "NETWORK=mainnet nix-shell --argstr nodeImplementation cardano --argstr cluster mainnet_catalyst",
     "nix:flight": "NETWORK=mainnet nix-shell --argstr nodeImplementation cardano --argstr cluster mainnet_flight",
     "nix:selfnode": "NETWORK=selfnode nix-shell --argstr nodeImplementation cardano --argstr cluster selfnode",
     "nix:shelley_local": "NETWORK=shelley_testnet nix-shell --arg configOverride state-cluster/config.json --arg genesisOverride state-cluster/keys/genesis.json --argstr nodeImplementation cardano --argstr cluster local --arg useLocalNode true",

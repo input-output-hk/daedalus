@@ -55,11 +55,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Development vx',
     description: 'Label for ITN Rewards V1 with version.',
   },
-  catalyst: {
-    id: 'test.environment.daedalusCatalystLabel',
-    defaultMessage: '!!!Cardano mainnet - Daedalus Catalyst',
-    description: 'Label for Daedalus Catalyst with version.',
-  },
   flight: {
     id: 'test.environment.daedalusFlightLabel',
     defaultMessage: '!!!Cardano mainnet - Daedalus Flight',
@@ -77,12 +72,11 @@ export default class WalletTestEnvironmentLabel extends Component<Props> {
   };
 
   render() {
-    const { isCatalyst, isFlight } = global;
+    const { isFlight } = global;
     const { network } = this.props;
     const { intl } = this.context;
 
     let labelMessageId = network;
-    if (isCatalyst) labelMessageId = 'catalyst';
     if (isFlight) labelMessageId = 'flight';
     const label = messages[labelMessageId];
 

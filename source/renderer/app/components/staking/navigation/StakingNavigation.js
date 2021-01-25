@@ -39,7 +39,6 @@ type Props = {
   onNavItemClick: Function,
   isActiveNavItem: Function,
   isIncentivizedTestnet: boolean,
-  isCatalyst: boolean,
 };
 
 @observer
@@ -48,28 +47,19 @@ export default class StakingNavigation extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
-  static defaultProps = { isCatalyst: false };
-
   render() {
     const {
       onNavItemClick,
       activeItem,
       isActiveNavItem,
       isIncentivizedTestnet,
-      isCatalyst,
     } = this.props;
     const { intl } = this.context;
-
-    const navigationItems = [];
-
-    if (!isCatalyst) {
-      navigationItems.push({
+    const navigationItems = [
+      {
         id: 'delegation-center',
         label: intl.formatMessage(messages.delegation_center),
-      });
-    }
-
-    navigationItems.push(
+      },
       {
         id: 'stake-pools',
         label: intl.formatMessage(messages.stake_pools),
@@ -77,8 +67,8 @@ export default class StakingNavigation extends Component<Props> {
       {
         id: 'rewards',
         label: intl.formatMessage(messages.rewards),
-      }
-    );
+      },
+    ];
     // navigationItems.push({
     //   id: 'epochs',
     //   label: intl.formatMessage(messages.epochs),

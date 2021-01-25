@@ -46,10 +46,9 @@ export default class TopBarContainer extends Component<Props> {
       ? menuIconOpened
       : menuIconClosed;
     const leftIcon = showSubMenuToggle ? leftIconSVG : null;
-    const testnetLabel =
-      global.isCatalyst || !isMainnet ? (
-        <WalletTestEnvironmentLabel network={network} />
-      ) : null;
+    const testnetLabel = !isMainnet ? (
+      <WalletTestEnvironmentLabel network={network} />
+    ) : null;
 
     const onWalletAdd = () => {
       actions.router.goToRoute.trigger({

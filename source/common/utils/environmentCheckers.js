@@ -5,7 +5,6 @@ import {
   LINUX,
   MAC_OS,
   MAINNET,
-  MAINNET_CATALYST,
   MAINNET_FLIGHT,
   PRODUCTION,
   SHELLEY_TESTNET,
@@ -31,7 +30,7 @@ export const evaluateNetwork = (network: ?string) => {
   if (network === QA || network === NIGHTLY || network === ITN_SELFNODE) {
     currentNetwork = ITN_REWARDS_V1;
   }
-  if (network === MAINNET_CATALYST || network === MAINNET_FLIGHT) {
+  if (network === MAINNET_FLIGHT) {
     currentNetwork = MAINNET;
   }
   if (network === SHELLEY_TESTNET_V6) {
@@ -44,13 +43,11 @@ export const getBuildLabel = (
   build: string,
   network: string,
   currentNodeEnv: string,
-  isCatalyst: boolean,
   isFlight: boolean,
   version: string
 ) => {
   const networkLabel = isFlight ? 'Flight' : networkPrettyNames[network];
-  const networkLabelSuffix = isCatalyst ? ' - Catalyst' : '';
-  let buildLabel = `Daedalus ${networkLabel}${networkLabelSuffix} (${version}#${build})`;
+  let buildLabel = `Daedalus ${networkLabel} (${version}#${build})`;
   if (!checkIsProduction(currentNodeEnv))
     buildLabel += ` ${upperFirst(currentNodeEnv)}`;
   return buildLabel;

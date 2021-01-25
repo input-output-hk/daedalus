@@ -7,7 +7,6 @@ import {
   DEVELOPMENT,
   OS_NAMES,
   MAINNET,
-  MAINNET_CATALYST,
   MAINNET_FLIGHT,
   SHELLEY_TESTNET,
   SHELLEY_TESTNET_V6,
@@ -38,10 +37,7 @@ import {
 // environment variables
 const CURRENT_NODE_ENV = process.env.NODE_ENV || DEVELOPMENT;
 let RAW_NETWORK =
-  process.env.NETWORK === MAINNET_CATALYST ||
-  process.env.NETWORK === MAINNET_FLIGHT
-    ? MAINNET
-    : process.env.NETWORK || '';
+  process.env.NETWORK === MAINNET_FLIGHT ? MAINNET : process.env.NETWORK || '';
 if (process.env.NETWORK === SHELLEY_TESTNET_V6) {
   RAW_NETWORK = SHELLEY_TESTNET;
 }
