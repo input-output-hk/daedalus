@@ -413,6 +413,17 @@ export type deriveAddressRendererRequestType = {
   isTrezor: boolean,
 };
 
+export type showAddressRendererRequestType = {
+  devicePath: string,
+  addressTypeNibble: number,
+  networkIdOrProtocolMagic: number,
+  spendingPathStr: string,
+  stakingPathStr: ?string,
+  stakingKeyHashHex: ?string,
+  stakingBlockchainPointer: ?StakingBlockchainPointer,
+  isTrezor: boolean,
+};
+
 /**
  * Channel for introspecting an address
  */
@@ -480,3 +491,7 @@ export type resetTrezorActionMainResponse = void;
 export const DERIVE_ADDRESS_CHANNEL = 'DERIVE_ADDRESS_CHANNEL';
 export type deriveAddressRendererRequest = deriveAddressRendererRequestType;
 export type deriveAddressMainResponse = string;
+
+export const SHOW_ADDRESS_CHANNEL = 'SHOW_ADDRESS_CHANNEL';
+export type showAddressRendererRequest = showAddressRendererRequestType;
+export type showAddressMainResponse = void;

@@ -55,6 +55,9 @@ storiesOf('Wallets|Receive', module)
             hwDeviceStatus={HwDeviceStatuses.CONNECTING}
             isAddressVerificationEnabled={false}
             walletName="Wallet 1"
+            isAddressDerived={false}
+            isAddressChecked={false}
+            onChangeVerificationStatus={action('onChangeVerificationStatus')}
           />
         )}
       </VerticalFlexContainer>
@@ -101,6 +104,9 @@ storiesOf('Wallets|Receive', module)
             )}
             isAddressVerificationEnabled
             walletName="Ledger Nano S"
+            isAddressDerived={false}
+            isAddressChecked={false}
+            onChangeVerificationStatus={action('onChangeVerificationStatus')}
           />
         </VerticalFlexContainer>
       );

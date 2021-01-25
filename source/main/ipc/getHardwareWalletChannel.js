@@ -23,6 +23,7 @@ import {
   DERIVE_XPUB_CHANNEL,
   RESET_ACTION_TREZOR_CHANNEL,
   DERIVE_ADDRESS_CHANNEL,
+  SHOW_ADDRESS_CHANNEL,
 } from '../../common/ipc/api';
 
 import { logger } from '../utils/logging';
@@ -50,6 +51,8 @@ import type {
   deriveXpubMainResponse,
   deriveAddressRendererRequest,
   deriveAddressMainResponse,
+  showAddressRendererRequest,
+  showAddressMainResponse,
 } from '../../common/ipc/api';
 
 const getHardwareWalletTransportChannel: MainIpcChannel<
@@ -106,6 +109,11 @@ const deriveAddressChannel: MainIpcChannel<
   deriveAddressRendererRequest,
   deriveAddressMainResponse
 > = new MainIpcChannel(DERIVE_ADDRESS_CHANNEL);
+
+const showAddressChannel: MainIpcChannel<
+  showAddressRendererRequest,
+  showAddressMainResponse
+> = new MainIpcChannel(SHOW_ADDRESS_CHANNEL);
 
 let devicesMemo = {};
 class EventObserver {
@@ -406,7 +414,7 @@ export const handleHardwareWalletRequests = async (
       logger.info('[HW-DEBUG] DERIVE ADDRESS');
 
       if (isTrezor) {
-        throw new Error('Address derivation not supported on Trezor devices');
+        throw new Error('Address verification not supported on Trezor devices');
       }
 
       // Check if Ledger instantiated
@@ -422,10 +430,54 @@ export const handleHardwareWalletRequests = async (
         stakingKeyHashHex,
         stakingBlockchainPointer
       );
+
       const encodedAddress = utils.bech32_encodeAddress(
         utils.hex_to_buf(addressHex)
       );
       return encodedAddress;
+    } catch (e) {
+      throw e;
+    }
+  });
+
+  showAddressChannel.onRequest(async (params) => {
+    const {
+      addressTypeNibble,
+      networkIdOrProtocolMagic,
+      spendingPathStr,
+      stakingPathStr,
+      devicePath,
+      stakingKeyHashHex,
+      stakingBlockchainPointer,
+      isTrezor,
+    } = params;
+    const spendingPath = utils.str_to_path(spendingPathStr);
+    const stakingPath = stakingPathStr
+      ? utils.str_to_path(stakingPathStr)
+      : null;
+
+    try {
+      deviceConnection = get(devicesMemo, [devicePath, 'AdaConnection']);
+      logger.info('[HW-DEBUG] SHOW ADDRESS');
+
+      if (isTrezor) {
+        throw new Error('Address verification not supported on Trezor devices');
+      }
+
+      // Check if Ledger instantiated
+      if (!deviceConnection) {
+        throw new Error('Ledger device not connected');
+      }
+
+      await deviceConnection.showAddress(
+        addressTypeNibble,
+        networkIdOrProtocolMagic,
+        spendingPath,
+        stakingPath,
+        stakingKeyHashHex,
+        stakingBlockchainPointer
+      );
+      return;
     } catch (e) {
       throw e;
     }

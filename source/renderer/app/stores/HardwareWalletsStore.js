@@ -29,6 +29,7 @@ import {
   handleInitLedgerConnectChannel,
   resetTrezorActionChannel,
   deriveAddressChannel,
+  showAddressChannel,
 } from '../ipc/getHardwareWalletChannel';
 import {
   prepareLedgerInput,
@@ -98,6 +99,24 @@ export type ByronSignedTransactionWitnesses = {
   xpub: HardwareWalletExtendedPublicKeyResponse,
 };
 
+export type AddressVerificationCheckStatus = 'valid' | 'invalid' | 'reverify';
+
+export type TempAddressToVerify = {
+  address: WalletAddress,
+  path: string,
+  isTrezor: boolean,
+};
+
+export const AddressVerificationCheckStatuses: {
+  VALID: string,
+  INVALID: string,
+  REVERIFY: string,
+} = {
+  VALID: 'valid',
+  INVALID: 'invalid',
+  REVERIFY: 'reverify',
+};
+
 const CARDANO_ADA_APP_POLLING_INTERVAL = 1000;
 const DEFAULT_HW_NAME = 'Hardware Wallet';
 
@@ -165,6 +184,10 @@ export default class HardwareWalletsStore extends Store {
   @observable isConnectInitiated: boolean = false;
   @observable isAddressVerificationInitiated: boolean = false;
   @observable unfinishedWalletAddressVerification: ?WalletAddress = null;
+  @observable isAddressDerived: boolean = false;
+  @observable isAddressChecked: boolean = false;
+  @observable isAddressCorrect: ?boolean = null;
+  @observable tempAddressToVerify: TempAddressToVerify = {};
 
   cardanoAdaAppPollingInterval: ?IntervalID = null;
   checkTransactionTimeInterval: ?IntervalID = null;
@@ -983,6 +1006,7 @@ export default class HardwareWalletsStore extends Store {
     logger.debug('[HW-DEBUG] - VERIFY Address');
     const { address, path, isTrezor } = params;
     this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_ADDRESS;
+    this.tempAddressToVerify = params;
 
     try {
       const derivedAddress = await deriveAddressChannel.request({
@@ -998,6 +1022,7 @@ export default class HardwareWalletsStore extends Store {
         stakingBlockchainPointer: null,
       });
 
+      // Derive address from path and check
       if (derivedAddress === address.id) {
         logger.debug('[HW-DEBUG] HWStore - Address successfully verified', {
           address: derivedAddress,
@@ -1005,15 +1030,17 @@ export default class HardwareWalletsStore extends Store {
         runInAction(
           'HardwareWalletsStore:: Address Verified and is correct',
           () => {
-            this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_ADDRESS_SUCCEEDED;
-            this.isAddressVerificationInitiated = false;
-            this.unfinishedWalletAddressVerification = null;
+            this.isAddressDerived = true;
           }
         );
+        this.showAddress(params);
       } else {
         runInAction(
           'HardwareWalletsStore:: Address Verified but not correct',
           () => {
+            this.isAddressDerived = false;
+            this.isAddressChecked = false;
+            this.isAddressCorrect = false;
             this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_ADDRESS_FAILED;
           }
         );
@@ -1046,18 +1073,104 @@ export default class HardwareWalletsStore extends Store {
         runInAction(
           'HardwareWalletsStore:: Re-run initiated connection',
           () => {
-            this.hwDeviceStatus = isAborted
-              ? HwDeviceStatuses.CONNECTING
-              : HwDeviceStatuses.VERIFYING_ADDRESS_FAILED;
+            this.isAddressDerived = false;
+            this.isAddressChecked = false;
+            this.isAddressCorrect = false;
             this.isListeningForDevice = true;
+            // this.hwDeviceStatus = isAborted
+            //   ? HwDeviceStatuses.CONNECTING
+            //   : HwDeviceStatuses.VERIFYING_ADDRESS_FAILED;
+            this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_ADDRESS_ABORTED;
           }
         );
       } else {
         runInAction('HardwareWalletsStore:: Cannot Verify Address', () => {
           this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_ADDRESS_FAILED;
+          this.isAddressDerived = false;
+          this.isAddressChecked = false;
+          this.isAddressCorrect = false;
         });
       }
       throw error;
+    }
+  };
+
+  @action showAddress = async (params: {
+    address: WalletAddress,
+    path: string,
+    isTrezor: boolean,
+  }) => {
+    logger.debug('[HW-DEBUG] - SHOW Address');
+    const { address, path, isTrezor } = params;
+
+    try {
+      await showAddressChannel.request({
+        devicePath: path,
+        isTrezor,
+        addressTypeNibble: AddressTypeNibbles.BASE, // BASE
+        networkIdOrProtocolMagic: this.environment.isMainnet
+          ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId
+          : HW_SHELLEY_CONFIG.NETWORK.TESTNET.networkId,
+        spendingPathStr: address.spendingPath,
+        stakingPathStr: `${SHELLEY_PURPOSE_INDEX}'/${ADA_COIN_TYPE}'/0'/2/0`, // E.g. "1852'/1815'/0'/0/19",,
+        stakingKeyHashHex: null,
+        stakingBlockchainPointer: null,
+      });
+
+      runInAction(
+        'HardwareWalletsStore:: Address show process finished',
+        () => {
+          this.isAddressChecked = true;
+          this.isListeningForDevice = true;
+        }
+      );
+    } catch (error) {
+      logger.debug('[HW-DEBUG] HWStore - Show address error');
+      runInAction('HardwareWalletsStore:: Showing address failed', () => {
+        this.isAddressChecked = false;
+        this.isAddressCorrect = false;
+        this.isListeningForDevice = true;
+        this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_ADDRESS_FAILED;
+      });
+      throw error;
+    }
+  };
+
+  @action setAddressVerificationCheckStatus = (
+    checkStatus: AddressVerificationCheckStatus
+  ) => {
+    // Yes / No - Reverify / No - Invalid
+    if (checkStatus === AddressVerificationCheckStatuses.VALID) {
+      runInAction(
+        'HardwareWalletsStore:: Set address verification status CORRECT',
+        () => {
+          this.isAddressCorrect = true;
+          this.isListeningForDevice = true;
+          this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_ADDRESS_SUCCEEDED;
+        }
+      );
+    }
+    if (checkStatus === AddressVerificationCheckStatuses.INVALID) {
+      runInAction(
+        'HardwareWalletsStore:: Set address verification status CORRECT',
+        () => {
+          this.isAddressCorrect = false;
+          this.isListeningForDevice = true;
+          this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_ADDRESS_ABORTED;
+        }
+      );
+    }
+    if (checkStatus === AddressVerificationCheckStatuses.REVERIFY) {
+      runInAction(
+        'HardwareWalletsStore:: Set address verification status CORRECT',
+        () => {
+          this.isAddressDerived = false;
+          this.isAddressChecked = false;
+          this.isAddressCorrect = null;
+          this.isListeningForDevice = true;
+        }
+      );
+      this.verifyAddress(this.tempAddressToVerify);
     }
   };
 

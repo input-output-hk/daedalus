@@ -62,12 +62,6 @@ export type TransportDevice = {
   firmwareVersion: ?string,
 };
 
-/* export type Certificate = {|
-  type: CertificateType,
-  path: BIP32Path,
-  poolKeyHashHex: ?string,
-|}; */
-
 export type Certificate = {
   address: string,
   type: string,

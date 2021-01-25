@@ -12,6 +12,7 @@ import {
   RESET_ACTION_TREZOR_CHANNEL,
   DERIVE_XPUB_CHANNEL,
   DERIVE_ADDRESS_CHANNEL,
+  SHOW_ADDRESS_CHANNEL,
 } from '../../../common/ipc/api';
 
 import type {
@@ -37,6 +38,8 @@ import type {
   resetTrezorActionRendererRequest,
   deriveAddressMainResponse,
   deriveAddressRendererRequest,
+  showAddressMainResponse,
+  showAddressRendererRequest,
 } from '../../../common/ipc/api';
 
 // IpcChannel<Incoming, Outgoing>
@@ -99,3 +102,8 @@ export const deriveAddressChannel: RendererIpcChannel<
   deriveAddressMainResponse,
   deriveAddressRendererRequest
 > = new RendererIpcChannel(DERIVE_ADDRESS_CHANNEL);
+
+export const showAddressChannel: RendererIpcChannel<
+  showAddressMainResponse,
+  showAddressRendererRequest
+> = new RendererIpcChannel(SHOW_ADDRESS_CHANNEL);

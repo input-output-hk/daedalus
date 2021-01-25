@@ -140,6 +140,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Address verification failed',
     description: '"Address verification failed" device state',
   },
+  verifying_address_aborted: {
+    id: 'wallet.hardware.deviceStatus.verifying_address_aborted',
+    defaultMessage: '!!!Verification was aborted by the user',
+    description: '"Address verification aborted" device state',
+  },
   verifying_address_succeeded: {
     id: 'wallet.hardware.deviceStatus.verifying_address_succeeded',
     defaultMessage: '!!!Address verified',
@@ -212,7 +217,8 @@ export default class HardwareWalletStatus extends Component<Props, State> {
       hwDeviceStatus === HwDeviceStatuses.WRONG_CARDANO_APP_VERSION ||
       hwDeviceStatus === HwDeviceStatuses.UNSUPPORTED_DEVICE ||
       hwDeviceStatus === HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED ||
-      hwDeviceStatus === HwDeviceStatuses.VERIFYING_ADDRESS_FAILED;
+      hwDeviceStatus === HwDeviceStatuses.VERIFYING_ADDRESS_FAILED ||
+      hwDeviceStatus === HwDeviceStatuses.VERIFYING_ADDRESS_ABORTED;
 
     const componentClasses = classnames([
       styles.component,

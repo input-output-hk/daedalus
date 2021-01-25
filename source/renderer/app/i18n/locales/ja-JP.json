@@ -702,6 +702,8 @@
   "wallet.receive.dialog.inputLabel": "PDF用メモ",
   "wallet.receive.dialog.inputPlaceholder": "PDF文書上に表示するメモを追加できます",
   "wallet.receive.dialog.saveQRCodeImage": "QRコードの画像を保存する",
+  "wallet.receive.dialog.spendingPathTooltip": "入金先アドレスのパス",
+  "wallet.receive.dialog.stakingPathTooltip": "報酬アドレスのパス",
   "wallet.receive.page.addresses.addressesTitle": "入金先アドレス",
   "wallet.receive.page.copyAddressLabel": "アドレスをコピーする",
   "wallet.receive.page.generateNewAddressButtonLabel": "新しいアドレスを生成する",

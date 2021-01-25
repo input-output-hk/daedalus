@@ -177,6 +177,9 @@ export default class WalletReceivePage extends Component<Props, State> {
       isAddressVerificationEnabled,
       hwDeviceStatus,
       transportDevice,
+      isAddressDerived,
+      isAddressChecked,
+      setAddressVerificationCheckStatus,
     } = hardwareWallets;
 
     // Guard against potential null values
@@ -232,6 +235,9 @@ export default class WalletReceivePage extends Component<Props, State> {
             walletName={activeWallet.name}
             hwDeviceStatus={hwDeviceStatus}
             transportDevice={transportDevice}
+            isAddressDerived={isAddressDerived}
+            isAddressChecked={isAddressChecked}
+            onChangeVerificationStatus={setAddressVerificationCheckStatus}
           />
         )}
       </Fragment>

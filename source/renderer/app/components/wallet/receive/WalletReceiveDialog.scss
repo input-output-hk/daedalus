@@ -1,4 +1,25 @@
 .container {
+  :global {
+    .attention {
+      color: var(
+        --theme-button-attention-delete-text-color-disabled
+      ) !important;
+      &:not([disabled]) {
+        color: var(--theme-button-attention-delete-text-color) !important;
+      }
+    }
+    .LoadingSpinner_component {
+      .LoadingSpinner_icon {
+        svg {
+          path {
+            fill: var(
+              --theme-button-attention-delete-text-color-disabled
+            ) !important;
+          }
+        }
+      }
+    }
+  }
   .qrCode {
     display: flex;
     justify-content: center;
@@ -6,6 +27,22 @@
     canvas {
       border: 4px solid var(--theme-receive-qr-code-background-color);
       box-sizing: content-box;
+    }
+  }
+  .addressPathsWrapper {
+    display: flex;
+    justify-content: center;
+    margin: 20px 0;
+    .spendingPath,
+    .stakingPath {
+      color: var(--theme-dialog-text-color);
+      font-family: var(--font-medium);
+      font-size: 12px;
+      line-height: 1.83;
+      padding: 0 15px;
+      b {
+        font-family: var(--font-bold);
+      }
     }
   }
   .address {
@@ -21,24 +58,31 @@
     margin-bottom: 20px;
     text-align: center;
     width: 100%;
-  }
-  .copyAddressLabel {
-    color: var(--theme-label-button-color);
-    cursor: pointer;
-    font-family: var(--font-regular);
-    font-size: 14px;
-    opacity: 0.5;
-    padding-left: 6px;
-  }
-  .copyIcon {
-    cursor: pointer;
-    margin-left: 4px;
-    object-fit: contain;
-    & > svg {
-      height: 12px;
-      width: 10px;
-      path {
-        fill: var(--theme-icon-copy-address-color);
+    .copyAddressLabel {
+      color: var(--theme-label-button-color);
+      cursor: pointer;
+      font-family: var(--font-regular);
+      font-size: 14px;
+      opacity: 0.5;
+      padding-left: 6px;
+    }
+    .copyIcon {
+      cursor: pointer;
+      margin-left: 4px;
+      object-fit: contain;
+      & > svg {
+        height: 12px;
+        width: 10px;
+        path {
+          fill: var(--theme-icon-copy-address-color);
+        }
+      }
+    }
+    &.disabled {
+      .copyAddressLabel,
+      .copyIcon {
+        opacity: 0.2;
+        cursor: default;
       }
     }
   }
@@ -46,10 +90,77 @@
     background: transparent;
     font-family: var(--font-regular);
   }
-
   .hardwareWalletStatusWrapper {
-    margin-bottom: 20px;
     max-width: 640px;
     width: 100%;
+    .verificationCheckboxes {
+      display: flex;
+      margin: 20px 0;
+      :global {
+        .SimpleCheckbox_root {
+          width: 50%;
+          .SimpleCheckbox_check {
+            border: 2px solid var(--rp-button-bg-color);
+            opacity: 0.3;
+          }
+          &.SimpleCheckbox_disabled {
+            label {
+              color: var(--rp-checkbox-label-text-color);
+            }
+            .SimpleCheckbox_checked {
+              background-color: var(--rp-button-bg-color);
+            }
+          }
+        }
+      }
+    }
+    .verificationInstructions {
+      font-family: var(--font-light);
+      line-height: 1.38;
+      margin: 20px 0 12px;
+      b {
+        font-family: var(--font-medium);
+      }
+    }
+    :global {
+      .RadioSet_component {
+        margin-bottom: 0;
+        .RadioSet_label {
+          margin: 0 0 20px 0;
+        }
+        .SimpleRadio_root {
+          margin-bottom: 20px;
+          .SimpleRadio_label {
+            line-height: 1.38;
+          }
+        }
+      }
+    }
+  }
+  .warningWrapper {
+    border-top: 1px solid var(--theme-dialog-border-color);
+    :global {
+      .SimpleCheckbox_root {
+        margin-top: 20px;
+        .SimpleCheckbox_check {
+          border-color: var(--theme-input-remove-color-light);
+          &.SimpleCheckbox_checked {
+            background: var(--theme-input-remove-color-light);
+          }
+        }
+      }
+    }
+    .warningDescriptionWrapper {
+      color: var(--theme-input-remove-color-light);
+      font-family: var(--font-light);
+      margin-top: 20px;
+      .warningTitle {
+        font-family: var(--font-medium);
+        margin-bottom: 12px;
+      }
+      p {
+        line-height: 1.36;
+      }
+    }
   }
 }

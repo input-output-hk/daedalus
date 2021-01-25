@@ -55,6 +55,7 @@ export type HwDeviceStatus =
   | 'verifying_transaction_succeeded'
   | 'verifying_address'
   | 'verifying_address_failed'
+  | 'verifying_address_aborted'
   | 'verifying_address_succeeded';
 
 export const HwDeviceStatuses: {
@@ -73,6 +74,7 @@ export const HwDeviceStatuses: {
   TREZOR_BRIDGE_FAILURE: HwDeviceStatus,
   VERIFYING_ADDRESS: HwDeviceStatus,
   VERIFYING_ADDRESS_FAILED: HwDeviceStatus,
+  VERIFYING_ADDRESS_ABORTED: HwDeviceStatus,
   VERIFYING_ADDRESS_SUCCEEDED: HwDeviceStatus,
 } = {
   CONNECTING: 'connecting',
@@ -90,6 +92,7 @@ export const HwDeviceStatuses: {
   VERIFYING_TRANSACTION_SUCCEEDED: 'verifying_transaction_succeeded',
   VERIFYING_ADDRESS: 'verifying_address',
   VERIFYING_ADDRESS_FAILED: 'verifying_address_failed',
+  VERIFYING_ADDRESS_ABORTED: 'verifying_address_aborted',
   VERIFYING_ADDRESS_SUCCEEDED: 'verifying_address_succeeded',
 };
 

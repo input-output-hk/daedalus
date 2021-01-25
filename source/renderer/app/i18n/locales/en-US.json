@@ -702,6 +702,8 @@
   "wallet.receive.dialog.inputLabel": "Note for the PDF",
   "wallet.receive.dialog.inputPlaceholder": "Add an optional note to be printed on the PDF document",
   "wallet.receive.dialog.saveQRCodeImage": "Save QR code image",
+  "wallet.receive.dialog.spendingPathTooltip": "Receiving address path",
+  "wallet.receive.dialog.stakingPathTooltip": "Rewards address path",
   "wallet.receive.page.addresses.addressesTitle": "Receiving addresses",
   "wallet.receive.page.copyAddressLabel": "Copy address",
   "wallet.receive.page.generateNewAddressButtonLabel": "Generate a new address",

@@ -8467,13 +8467,13 @@
         "description": "placeholder on the wallet \"Share Address\" dialog",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 31
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.inputLabel",
         "start": {
           "column": 14,
-          "line": 22
+          "line": 27
         }
       },
       {
@@ -8481,13 +8481,13 @@
         "description": "inputPlaceholder on the wallet \"Share Address\" dialog",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 36
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.inputPlaceholder",
         "start": {
           "column": 20,
-          "line": 27
+          "line": 32
         }
       },
       {
@@ -8495,13 +8495,13 @@
         "description": "saveQRCodeImage on the wallet \"Share Address\" dialog",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 41
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.saveQRCodeImage",
         "start": {
           "column": 19,
-          "line": 32
+          "line": 37
         }
       },
       {
@@ -8509,13 +8509,13 @@
         "description": "downloadPDFButton on the wallet \"Share Address\" dialog",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 46
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.downloadPDFButton",
         "start": {
           "column": 21,
-          "line": 37
+          "line": 42
         }
       },
       {
@@ -8523,13 +8523,13 @@
         "description": "dialogTitle on the wallet \"Share Address\" dialog",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 51
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.dialogTitle",
         "start": {
           "column": 15,
-          "line": 42
+          "line": 47
         }
       },
       {
@@ -8537,13 +8537,41 @@
         "description": "Label for \"Copy address\" link on the wallet \"Receive page\"",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 56
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.copyAddressLabel",
         "start": {
           "column": 20,
-          "line": 47
+          "line": 52
+        }
+      },
+      {
+        "defaultMessage": "!!!Receiving address path",
+        "description": "Tooltip for the receiving address path",
+        "end": {
+          "column": 3,
+          "line": 61
+        },
+        "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
+        "id": "wallet.receive.dialog.spendingPathTooltip",
+        "start": {
+          "column": 23,
+          "line": 57
+        }
+      },
+      {
+        "defaultMessage": "!!!Rewards address path",
+        "description": "Tooltip for the rewards address path",
+        "end": {
+          "column": 3,
+          "line": 66
+        },
+        "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
+        "id": "wallet.receive.dialog.stakingPathTooltip",
+        "start": {
+          "column": 22,
+          "line": 62
         }
       }
     ],
