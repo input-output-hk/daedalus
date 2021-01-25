@@ -8,12 +8,8 @@ export const getTransaction = (
   walletId: string,
   transactionId: string
 ): Promise<Transaction> =>
-  request(
-    {
-      method: 'GET',
-      path: `/v2/wallets/${walletId}/transactions/${transactionId}`,
-      ...config,
-    },
-    {},
-    null
-  );
+  request({
+    method: 'GET',
+    path: `/v2/wallets/${walletId}/transactions/${transactionId}`,
+    ...config,
+  });
