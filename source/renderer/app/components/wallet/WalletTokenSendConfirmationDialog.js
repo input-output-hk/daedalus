@@ -19,7 +19,6 @@ import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWit
 import HardwareWalletStatus from '../hardware-wallet/HardwareWalletStatus';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import Wallet, { HwDeviceStatuses } from '../../domains/Wallet';
-
 import type { HwDeviceStatus } from '../../domains/Wallet';
 
 export const messages = defineMessages({
@@ -50,6 +49,11 @@ export const messages = defineMessages({
     description:
       'Label for the "Amount" in the wallet send confirmation dialog.',
   },
+  assetLabel: {
+    id: 'wallet.send.confirmationDialog.assetLabel',
+    defaultMessage: '!!!Asset',
+    description: 'Asset',
+  },
   feesLabel: {
     id: 'wallet.send.confirmationDialog.feesLabel',
     defaultMessage: '!!!Transaction fee',
@@ -60,6 +64,11 @@ export const messages = defineMessages({
     defaultMessage: '!!!Total',
     description:
       'Label for the "Total" in the wallet send confirmation dialog.',
+  },
+  receiverLabel: {
+    id: 'wallet.send.confirmationDialog.receiver.label',
+    defaultMessage: '!!!Receiver',
+    description: 'Label for the "Receiver" in the wallet send confirmation dialog.',
   },
   passphraseFieldPlaceholder: {
     id: 'wallet.send.confirmationDialog.passphraseFieldPlaceholder',
@@ -106,8 +115,7 @@ messages.fieldIsRequired = globalMessages.fieldIsRequired;
 type Props = {
   amount: string,
   sender: string,
-  receiver: string,
-  totalAmount: ?string,
+  receivers: Array<string>,
   transactionFee: ?string,
   onSubmit: Function,
   amountToNaturalUnits: (amountWithFractions: string) => string,
@@ -186,14 +194,14 @@ export default class WalletTokenSendConfirmationDialog extends Component<
     this.form.submit({
       onSuccess: (form) => {
         const {
-          receiver,
+          receivers,
           amount,
           amountToNaturalUnits,
           isHardwareWallet,
         } = this.props;
         const { passphrase } = form.values();
         const transactionData = {
-          receiver,
+          receivers,
           amount: amountToNaturalUnits(amount),
           passphrase,
           isHardwareWallet,
@@ -263,8 +271,7 @@ export default class WalletTokenSendConfirmationDialog extends Component<
       onCancel,
       amount,
       sender,
-      receiver,
-      totalAmount,
+      receivers,
       transactionFee,
       isSubmitting,
       isFlight,
@@ -331,24 +338,49 @@ export default class WalletTokenSendConfirmationDialog extends Component<
             <div className={styles.addressTo}>{sender}</div>
           </div>
           <div className={styles.addressToLabelWrapper}>
-            <div className={styles.addressToLabel}>
-              {intl.formatMessage(messages.addressToLabel)}
-            </div>
-            <div className={styles.addressTo}>{receiver}</div>
-          </div>
-
-          <div className={styles.amountFeesWrapper}>
-            <div className={styles.amountWrapper}>
-              <div className={styles.amountLabel}>
-                {intl.formatMessage(messages.amountLabel)}
-              </div>
-              <div className={styles.amount}>
-                {amount}
-                <span className={styles.currencySymbol}>
-                  &nbsp;{currencyUnit}
-                </span>
-              </div>
-            </div>
+            {receivers.map((address, addressIndex) => (
+                <div
+                  // eslint-disable-next-line react/no-array-index-key
+                  key={`${address}-${addressIndex}`}
+                  className={styles.receiverRow}
+                >
+                  <div className={styles.receiverRowItem}>
+                    <h2>
+                      {intl.formatMessage(messages.receiverLabel)}
+                      {receivers.length > 1 && (
+                        <div>&nbsp;#{addressIndex + 1}</div>
+                      )}
+                    </h2>
+                    <div className={styles.receiverRowItemAddresses}>
+                      <div className={styles.addressTo}>
+                        {address}
+                      </div>
+                      <div className={styles.assetsWrapper}>
+                        <div className={styles.assetsSeparator} />
+                        {receivers.map((assets, assetsIndex) => (
+                          <div
+                            // eslint-disable-next-line react/no-array-index-key
+                            key={`${assets}-${assetsIndex}`}
+                            className={styles.assetsContainer}
+                          >
+                            <h3>
+                              {intl.formatMessage(messages.assetLabel)}
+                              &nbsp;#{assetsIndex + 1}
+                            </h3>
+                            <div className={styles.amountFeesWrapper}>
+                              <div className={styles.amount}>
+                                {amount}
+                                &nbsp; {currencyUnit}
+                              </div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )
+            )}
           </div>
 
           <div className={styles.feesWrapper}>

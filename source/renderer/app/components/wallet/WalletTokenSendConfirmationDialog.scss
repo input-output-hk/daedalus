@@ -15,8 +15,7 @@
     text-transform: uppercase;
   }
 
-  .addressToLabelWrapper,
-  .amountFeesWrapper {
+  .addressToLabelWrapper {
     margin-bottom: 20px;
   }
 
@@ -28,10 +27,11 @@
   .addressTo {
     font-family: var(--font-light);
     line-height: 1.38;
+    margin-bottom: 10px;
     margin-top: 6px;
-    opacity: 0.5;
     user-select: text;
     word-wrap: break-word;
+    word-break: break-all;
   }
 
   .amountFeesWrapper {
@@ -52,11 +52,96 @@
     }
 
     .amount {
+      line-height: 1.38;
+      user-select: text;
+      word-break: break-word;
+    }
+  }
+
+  .receiverRow {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+
+    .receiverRowItem {
+      align-items: flex-start;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+
+      h2 {
+        display: flex;
+      }
+
+      .receiverRowItemAddresses {
+        align-items: flex-start;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        width: 100%;
+      }
+    }
+  }
+
+  .assetsWrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+
+    .assetsSeparator {
+      border-bottom: 1px solid var(--theme-transactions-list-item-details-color);
+      border-left: 1px solid var(--theme-transactions-list-item-details-color);
+      height: 39px;
+      margin-left: 5px;
+      margin-top: 8px;
+      opacity: 0.3;
+      position: absolute;
+      width: 6px;
+    }
+
+    .assetsContainer {
+      display: flex;
+      justify-content: space-between;
+      padding: 5px 0 5px 20px;
+      width: 100%;
+    }
+  }
+
+  .amountFeesWrapper {
+    align-items: center;
+    background-color: var(--theme-staking-stake-pool-grey-bg-color);
+    border-radius: 3px;
+    display: flex;
+    flex-direction: row;
+    height: 21px;
+    justify-content: center;
+    max-width: 140px;
+    padding: 3px 9px;
+    width: 100%;
+
+    .amountLabel,
+    .feesLabel {
+      line-height: 1.38;
+    }
+
+    .amount {
+      font-size: 11px;
+      font-weight: bold;
+      line-height: 1.36;
+      margin-left: initial;
+    }
+
+    .fees {
       color: var(--theme-send-confirmation-dialog-send-values-color);
       line-height: 1.38;
       margin-top: 6px;
       user-select: text;
       word-break: break-word;
+    }
+
+    .fees {
+      opacity: 0.5;
     }
   }
 

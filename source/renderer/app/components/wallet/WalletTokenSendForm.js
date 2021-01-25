@@ -600,6 +600,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
           <WalletSendConfirmationDialogContainer
             amount={amount.toFormat(currencyMaxFractionalDigits)}
             receiver={receiverFieldProps.value}
+            receivers={[receiverFieldProps.value, receiverFieldProps.value]}
             totalAmount={total}
             transactionFee={fees}
             amountToNaturalUnits={formattedAmountToNaturalUnits}

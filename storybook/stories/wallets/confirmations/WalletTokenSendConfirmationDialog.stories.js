@@ -21,9 +21,7 @@ storiesOf('Wallet Token Dialog|Send Confirmation', module)
         amount={new BigNumber(100100).toFormat(DECIMAL_PLACES_IN_ADA)}
         sender={generateWallet('Wallet name', '45119903750165').id}
         receiver={generateHash()}
-        totalAmount={new BigNumber(100100)
-          .add(new BigNumber(0.101))
-          .toFormat(DECIMAL_PLACES_IN_ADA)}
+        receivers={[generateHash(), generateHash()]}
         transactionFee={new BigNumber(0.101).toFormat(DECIMAL_PLACES_IN_ADA)}
         amountToNaturalUnits={formattedAmountToNaturalUnits}
         onSubmit={() => null}
