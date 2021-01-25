@@ -1,4 +1,5 @@
 // @flow
+import BigNumber from 'bignumber.js';
 /* eslint-disable jsx-a11y/label-has-associated-control, jsx-a11y/label-has-for */
 import React, { Component } from 'react';
 import type { ElementRef } from 'react';
@@ -233,12 +234,12 @@ export default class FilterDialog extends Component<Props> {
         fromAmount: {
           type: 'number',
           label: '',
-          value: fromAmount ? Number(fromAmount) : '',
+          value: bigNumberOrNull(fromAmount),
         },
         toAmount: {
           type: 'number',
           label: '',
-          value: toAmount ? Number(toAmount) : '',
+          value: bigNumberOrNull(toAmount),
         },
       },
     });
@@ -287,8 +288,8 @@ export default class FilterDialog extends Component<Props> {
     this.form.select('dateRange').set(dateRange);
     this.form.select('fromDate').set(fromDate);
     this.form.select('toDate').set(toDate);
-    this.form.select('fromAmount').set(fromAmount ? Number(fromAmount) : '');
-    this.form.select('toAmount').set(toAmount ? Number(toAmount) : '');
+    this.form.select('fromAmount').set(bigNumberOrNull(fromAmount));
+    this.form.select('toAmount').set(bigNumberOrNull(toAmount));
     this.form.select('incomingChecked').set(incomingChecked);
     this.form.select('outgoingChecked').set(outgoingChecked);
   };
@@ -489,24 +490,22 @@ export default class FilterDialog extends Component<Props> {
           <div className={fromAmountClassNames}>
             <TinyInput
               {...fromAmountField.bind()}
+              value={bigNumberOrNull(fromAmountField.value)}
               onSubmit={this.handleSubmit}
               label={intl.formatMessage(globalMessages.rangeFrom)}
-              numberFormat={NUMBER_FORMATS[numberFormat]}
-              numberLocaleOptions={{
-                minimumFractionDigits: DECIMAL_PLACES_IN_ADA,
-              }}
+              bigNumberFormat={NUMBER_FORMATS[numberFormat]}
+              decimalPlaces={DECIMAL_PLACES_IN_ADA}
               allowSigns={false}
             />
           </div>
           <div className={toAmountClassNames}>
             <TinyInput
               {...toAmountField.bind()}
+              value={bigNumberOrNull(toAmountField.value)}
               onSubmit={this.handleSubmit}
               label={intl.formatMessage(globalMessages.rangeTo)}
-              numberFormat={NUMBER_FORMATS[numberFormat]}
-              numberLocaleOptions={{
-                minimumFractionDigits: DECIMAL_PLACES_IN_ADA,
-              }}
+              bigNumberFormat={NUMBER_FORMATS[numberFormat]}
+              decimalPlaces={DECIMAL_PLACES_IN_ADA}
               allowSigns={false}
               error={invalidFields.toAmount}
             />
@@ -580,4 +579,8 @@ export default class FilterDialog extends Component<Props> {
       </Dialog>
     );
   }
+}
+
+function bigNumberOrNull(value?: string) {
+  return value != null && value !== '' ? new BigNumber(value) : null;
 }
