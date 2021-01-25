@@ -2,7 +2,7 @@
 import React, { Component, Fragment } from 'react';
 import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape, FormattedMessage } from 'react-intl';
+import { defineMessages, intlShape } from 'react-intl';
 import classnames from 'classnames';
 import StakePoolsRanking from './StakePoolsRanking';
 import { StakePoolsList } from './StakePoolsList';

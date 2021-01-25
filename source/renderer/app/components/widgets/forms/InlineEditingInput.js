@@ -174,8 +174,8 @@ export default class InlineEditingInput extends Component<Props, State> {
     inputField.onChange(...props);
   };
 
-  componentDidUpdate({ value: prevValue, errorMessage: prevError }: Props) {
-    const { value: nextValue, errorMessage: nextError } = this.props;
+  componentDidUpdate({ value: prevValue }: Props) {
+    const { value: nextValue } = this.props;
     const inputField = this.validator.$('inputField');
 
     // In case the `value` prop was updated
