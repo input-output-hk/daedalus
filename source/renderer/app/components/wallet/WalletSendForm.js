@@ -355,7 +355,7 @@ export default class WalletSendForm extends Component<Props, State> {
     let total = null;
     if (isTransactionFeeCalculated) {
       fees = transactionFee.toFormat(currencyMaxFractionalDigits);
-      total = amount.add(transactionFee).toFormat(currencyMaxFractionalDigits);
+      total = amount.plus(transactionFee).toFormat(currencyMaxFractionalDigits);
     }
 
     const buttonClasses = classnames(['primary', styles.nextButton]);
