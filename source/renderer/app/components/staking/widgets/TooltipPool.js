@@ -180,7 +180,9 @@ type Props = {
   color: string,
   containerClassName: string,
   numberOfRankedStakePools: number,
-  isListView: boolean,
+  isListView?: boolean,
+  isDelegationView?: boolean,
+  hasArrow?: boolean,
 };
 
 type State = {
@@ -333,7 +335,6 @@ export default class TooltipPool extends Component<Props, State> {
       : THUMBNAIL_HEIGHT - ARROW_WIDTH - TOOLTIP_DELTA;
     const arrowTop = -(ARROW_WIDTH / 2);
     const arrowBottom = -(ARROW_WIDTH / 2);
-
     return {
       componentLeft,
       componentTop,
@@ -345,27 +346,30 @@ export default class TooltipPool extends Component<Props, State> {
   };
 
   getLeftRightPosition = (top: number, isTopHalf: boolean, left: number) => {
-    const { fromStakePool, isListView } = this.props;
+    const { fromStakePool, isListView, isDelegationView } = this.props;
     const bottom = this.containerHeight - (top + THUMBNAIL_HEIGHT);
-    const componentLeft = fromStakePool
+    let componentLeft = fromStakePool
       ? -((TOOLTIP_WIDTH * left) / this.containerWidth) +
         THUMBNAIL_OFFSET_WIDTH +
         (left - THUMBNAIL_OFFSET_WIDTH + ARROW_HEIGHT)
       : THUMBNAIL_HEIGHT;
+    if (isDelegationView) componentLeft = LIST_VIEW_TOOLTIP_DELTA_TOP;
     let componentTop = 'auto';
     let componentBottom = 'auto';
     let arrowTop = 'auto';
     let arrowBottom = 'auto';
-
     if (isTopHalf && !isListView) {
-      componentTop = -((TOOLTIP_MAX_HEIGHT * top) / this.containerHeight);
+      componentTop = isDelegationView
+        ? bottom - TOOLTIP_MAX_HEIGHT
+        : -((TOOLTIP_MAX_HEIGHT * top) / this.containerHeight);
       arrowTop = -componentTop + ARROW_WIDTH / 2;
     } else {
-      componentBottom = -((TOOLTIP_MAX_HEIGHT * bottom) / this.containerHeight);
+      componentBottom = isDelegationView
+        ? top - TOOLTIP_MAX_HEIGHT
+        : -((TOOLTIP_MAX_HEIGHT * bottom) / this.containerHeight);
       arrowBottom = -componentBottom + ARROW_WIDTH / 2;
       if (fromStakePool) arrowBottom -= TOOLTIP_DELTA;
     }
-
     const arrowLeft = -(ARROW_WIDTH / 2);
 
     return {
@@ -552,7 +556,11 @@ export default class TooltipPool extends Component<Props, State> {
             {isIncentivizedTestnet && (
               <PopOver
                 key="experimentalTooltip"
-                content={intl.formatMessage(messages.experimentalTooltipLabel)}
+                content={
+                  <div className={styles.tooltipWithHTMLContent}>
+                    {intl.formatMessage(messages.experimentalTooltipLabel)}
+                  </div>
+                }
               >
                 <button className={styles.iconButton}>
                   <SVGInline
@@ -694,6 +702,8 @@ export default class TooltipPool extends Component<Props, State> {
       onOpenExternalLink,
       onSelect,
       showWithSelectButton,
+      hasArrow,
+      isDelegationView,
     } = this.props;
     const {
       componentStyle,
@@ -708,6 +718,7 @@ export default class TooltipPool extends Component<Props, State> {
     const componentClassnames = classnames([
       styles.component,
       isVisible ? styles.isVisible : null,
+      isDelegationView ? styles.delegationViewTooltip : null,
     ]);
 
     const arrowClassnames = classnames([
@@ -739,7 +750,7 @@ export default class TooltipPool extends Component<Props, State> {
         style={componentStyle}
       >
         <div className={colorBandClassnames} style={colorBandStyle} />
-        <div className={arrowClassnames} style={arrowStyle} />
+        {hasArrow && <div className={arrowClassnames} style={arrowStyle} />}
         <div className={styles.container}>
           <h3 className={styles.name}>{name}</h3>
           <button className={styles.closeButton} onClick={onClick}>
@@ -756,7 +767,11 @@ export default class TooltipPool extends Component<Props, State> {
           )}
           <PopOver
             key="id"
-            content={intl.formatMessage(messages.copyIdTooltipLabel)}
+            content={
+              <div className={styles.tooltipWithHTMLContent}>
+                {intl.formatMessage(messages.copyIdTooltipLabel)}
+              </div>
+            }
           >
             <div
               className={styles.id}
