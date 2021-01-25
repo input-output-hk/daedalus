@@ -209,9 +209,10 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     const amountField = this.form.$('amount');
     const { nativeTokens } = this.props;
     const maxWalletAmount =
-      nativeTokens && nativeTokens.length ? nativeTokens[0].amount.toNumber() : null;
-    if (maxWalletAmount)
-      amountField.set(maxWalletAmount);
+      nativeTokens && nativeTokens.length
+        ? nativeTokens[0].amount.toNumber()
+        : null;
+    if (maxWalletAmount) amountField.set(maxWalletAmount);
   };
 
   handleOnReset = () => {

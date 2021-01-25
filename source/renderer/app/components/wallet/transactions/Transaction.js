@@ -54,8 +54,9 @@ const messages = defineMessages({
   },
   transactionMetadataDescription: {
     id: 'wallet.transaction.transactionMetadataDescription',
-    defaultMessage: 'Transaction metadata is not moderated and may contain inappropriate content. Show unmoderated content.',
-    description: ''
+    defaultMessage:
+      'Transaction metadata is not moderated and may contain inappropriate content. Show unmoderated content.',
+    description: '',
   },
   conversionRate: {
     id: 'wallet.transaction.conversion.rate',
@@ -218,7 +219,6 @@ type Props = {
   walletId: string,
   isDeletingTransaction: boolean,
   hasNativeTokens?: boolean,
-  transactions?: TransactionsStore,
 };
 
 type State = {
@@ -385,13 +385,14 @@ export default class Transaction extends Component<Props, State> {
       isExpanded ? styles.arrowExpanded : null,
     ]);
 
-    // @todo Remove hardcoded values
-    data.currency = 'USDC';
-
-    const transactionsType = hasNativeTokens ? intl.formatMessage(messages.multipleTokens) : intl.formatMessage(globalMessages.currency);
-    const typeOfTransaction = hasNativeTokens ? intl.formatMessage(headerStateTranslations[state]) : intl.formatMessage(globalMessages.currency);
+    const transactionsType = hasNativeTokens
+      ? intl.formatMessage(messages.multipleTokens)
+      : intl.formatMessage(globalMessages.currency);
+    const typeOfTransaction = hasNativeTokens
+      ? intl.formatMessage(headerStateTranslations[state])
+      : intl.formatMessage(globalMessages.currency);
     const symbol = adaSymbol;
-    const currency = hasNativeTokens ? data.currency : adaSymbol;
+    const currency = hasNativeTokens ? 'USDC' : adaSymbol;
 
     const fees = hasNativeTokens ? '0.202481' : null;
 
@@ -413,7 +414,7 @@ export default class Transaction extends Component<Props, State> {
 
     const fromAddresses = (addresses, transactionId) => {
       if (addresses.length > 0) {
-        return (hasNativeTokens || includesUnresolvedAddresses(addresses)) ? (
+        return hasNativeTokens || includesUnresolvedAddresses(addresses) ? (
           <div className={styles.explorerLinkRow}>
             <Link
               className={styles.explorerLink}
@@ -472,7 +473,9 @@ export default class Transaction extends Component<Props, State> {
                 <div className={styles.title}>
                   {data.type === TransactionTypes.EXPEND
                     ? intl.formatMessage(messages.sent, { transactionsType })
-                    : intl.formatMessage(messages.received, { transactionsType })}
+                    : intl.formatMessage(messages.received, {
+                        transactionsType,
+                      })}
                 </div>
                 <div className={styles.amount}>
                   {
@@ -527,41 +530,55 @@ export default class Transaction extends Component<Props, State> {
                   </>
                 ) : null}
 
-                {!hasNativeTokens && <h2>{intl.formatMessage(messages.toAddresses)}</h2>}
-                {data.addresses.to.map((address, addressIndex) => (
-                  (hasNativeTokens ? (
+                {!hasNativeTokens && (
+                  <h2>{intl.formatMessage(messages.toAddresses)}</h2>
+                )}
+                {data.addresses.to.map((address, addressIndex) =>
+                  hasNativeTokens ? (
                     <div
                       // eslint-disable-next-line react/no-array-index-key
                       key={`${data.id}-to-${address}-${addressIndex}`}
                       className={styles.receiverRow}
                     >
                       <div className={styles.receiverRowItem}>
-                        <h2>{intl.formatMessage(messages.receiverLabel)}{data.addresses.to.length > 1 && <div>&nbsp;#{addressIndex + 1}</div>}</h2>
+                        <h2>
+                          {intl.formatMessage(messages.receiverLabel)}
+                          {data.addresses.to.length > 1 && (
+                            <div>&nbsp;#{addressIndex + 1}</div>
+                          )}
+                        </h2>
                         <div className={styles.receiverRowItemAddresses}>
                           <Link
                             className={styles.address}
                             onClick={() =>
-                              onOpenExternalLink(getUrlByType('address', address))
+                              onOpenExternalLink(
+                                getUrlByType('address', address)
+                              )
                             }
                             label={ellipsis(address, 30, 30)}
                             skin={LinkSkin}
                           />
-                            <div className={styles.assetsWrapper}>
-                              <div className={styles.assetsSeparator} />
-                              {data.addresses.to.map((assets, assetsIndex) => (
-                                <div
-                                  // eslint-disable-next-line react/no-array-index-key
-                                  key={`${data.id}-to-${assets}-${assetsIndex}`}
-                                  className={styles.assetsContainer}>
-                                  <h3>{intl.formatMessage(messages.assetLabel)}&nbsp;#{assetsIndex + 1}</h3>
-                                  <div className={styles.amountFeesWrapper}>
-                                    <div className={styles.amount}>
-                                      {formattedWalletAmount(data.amount, false)}&nbsp; {currency}
-                                    </div>
+                          <div className={styles.assetsWrapper}>
+                            <div className={styles.assetsSeparator} />
+                            {data.addresses.to.map((assets, assetsIndex) => (
+                              <div
+                                // eslint-disable-next-line react/no-array-index-key
+                                key={`${data.id}-to-${assets}-${assetsIndex}`}
+                                className={styles.assetsContainer}
+                              >
+                                <h3>
+                                  {intl.formatMessage(messages.assetLabel)}
+                                  &nbsp;#{assetsIndex + 1}
+                                </h3>
+                                <div className={styles.amountFeesWrapper}>
+                                  <div className={styles.amount}>
+                                    {formattedWalletAmount(data.amount, false)}
+                                    &nbsp; {currency}
                                   </div>
                                 </div>
-                              ))}
-                            </div>
+                              </div>
+                            ))}
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -580,8 +597,8 @@ export default class Transaction extends Component<Props, State> {
                         skin={LinkSkin}
                       />
                     </div>
-                  ))
-                ))}
+                  )
+                )}
 
                 {hasNativeTokens && (
                   <>
@@ -589,7 +606,8 @@ export default class Transaction extends Component<Props, State> {
                     {fees && (
                       <div className={styles.transactionIdRow}>
                         <div className={styles.transactionFeeValue}>
-                          {fees}&nbsp;{intl.formatMessage(globalMessages.unitAda)}
+                          {fees}&nbsp;
+                          {intl.formatMessage(globalMessages.unitAda)}
                         </div>
                       </div>
                     )}
@@ -613,7 +631,9 @@ export default class Transaction extends Component<Props, State> {
                     <h2>{intl.formatMessage(messages.transactionMetadata)}</h2>
                     <div className={styles.transactionIdRow}>
                       <div className={styles.transactionMetadata}>
-                        {intl.formatMessage(messages.transactionMetadataDescription)}
+                        {intl.formatMessage(
+                          messages.transactionMetadataDescription
+                        )}
                       </div>
                     </div>
                   </>

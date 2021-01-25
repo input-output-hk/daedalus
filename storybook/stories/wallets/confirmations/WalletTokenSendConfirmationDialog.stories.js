@@ -7,10 +7,9 @@ import BigNumber from 'bignumber.js';
 import StoryDecorator from '../../_support/StoryDecorator';
 
 // Screens
-import WalletTokenSendConfirmationDialog
-  from '../../../../source/renderer/app/components/wallet/WalletTokenSendConfirmationDialog';
+import WalletTokenSendConfirmationDialog from '../../../../source/renderer/app/components/wallet/WalletTokenSendConfirmationDialog';
 import { DECIMAL_PLACES_IN_ADA } from '../../../../source/renderer/app/config/numbersConfig';
-import { HwDeviceStatuses} from '../../../../source/renderer/app/domains/Wallet';
+import { HwDeviceStatuses } from '../../../../source/renderer/app/domains/Wallet';
 import { generateHash, generateWallet } from '../../_support/utils';
 import { formattedAmountToNaturalUnits } from '../../../../source/renderer/app/utils/formatters';
 
@@ -21,11 +20,14 @@ storiesOf('Wallet Token Dialog|Send Confirmation', module)
       <WalletTokenSendConfirmationDialog
         amount={new BigNumber(100100).toFormat(DECIMAL_PLACES_IN_ADA)}
         receiver={generateHash()}
-        totalAmount={new BigNumber(100100).add(new BigNumber(0.10100)).toFormat(DECIMAL_PLACES_IN_ADA)}
-        transactionFee={new BigNumber(0.10100).toFormat(DECIMAL_PLACES_IN_ADA)}
-        amountToNaturalUnits={formattedAmountToNaturalUnits(new BigNumber(100100).toString())}
+        totalAmount={new BigNumber(100100)
+          .add(new BigNumber(0.101))
+          .toFormat(DECIMAL_PLACES_IN_ADA)}
+        transactionFee={new BigNumber(0.101).toFormat(DECIMAL_PLACES_IN_ADA)}
+        amountToNaturalUnits={formattedAmountToNaturalUnits}
         onSubmit={() => null}
         isSubmitting={false}
+        error={null}
         isFlight={false}
         onCancel={() => null}
         currencyUnit="USDC"

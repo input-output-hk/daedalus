@@ -131,4 +131,4 @@ storiesOf('Wallets|Transactions', module)
         hasNativeTokens={hasNativeTokens}
       />
     );
-  })
+  });

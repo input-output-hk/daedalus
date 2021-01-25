@@ -65,9 +65,7 @@ export default class TokensWalletSummary extends Component<Props> {
                   {isRestoreActive
                     ? '-'
                     : token.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
-                  <span>
-                    &nbsp;{token.name}
-                  </span>
+                  <span>&nbsp;{token.name}</span>
                 </div>
               </div>
               <div className={styles.nativeTokenRightContainer}>
