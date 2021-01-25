@@ -1,16 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="16" height="16" viewBox="0 0 16 16">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20" viewBox="0 0 20 20">
     <defs>
-        <path id="xmhcx0ia9a" d="M0 0L16 16 0 16z"/>
+        <path id="bby5nfezea" d="M0 0L20 20 0 20z"/>
     </defs>
     <g fill="none" fill-rule="evenodd" opacity=".6">
         <g>
             <g>
                 <g>
-                    <g transform="translate(-542 -707) translate(168) translate(80 692) translate(294 15)">
-                        <mask id="oy8nq4yvgb" fill="#fff">
-                            <use xlink:href="#xmhcx0ia9a"/>
+                    <g transform="translate(-670 -705) translate(168) translate(80 692) translate(422 13)">
+                        <mask id="7l3zb20xlb" fill="#fff">
+                            <use xlink:href="#bby5nfezea"/>
                         </mask>
-                        <circle cx="8" cy="8" r="7" stroke="#5E6066" stroke-width="2" mask="url(#oy8nq4yvgb)"/>
+                        <circle cx="10" cy="10" r="9" stroke="#5E6066" stroke-width="2" mask="url(#7l3zb20xlb)"/>
                     </g>
                 </g>
             </g>

@@ -9,7 +9,6 @@ import type { SmashServerStatuses } from '../api/staking/types';
 
 const { smashUrl } = global;
 
-// @SMASH TODO - remove testing server
 export const SMASH_SERVERS_LIST: {
   [key: SmashServerType]: {
     name: string,
@@ -20,11 +19,6 @@ export const SMASH_SERVERS_LIST: {
     name: 'IOHK',
     url: smashUrl,
   },
-  // @SMASH TODO - remove it!
-  testingKnown: {
-    name: 'Known Server for testing',
-    url: 'https://test-known.com',
-  },
   // Metadata is fetched directly in URLs registered on chain,
   direct: {
     name: 'direct',
@@ -32,12 +26,10 @@ export const SMASH_SERVERS_LIST: {
   },
 };
 
-// @SMASH TODO - remove testing server
 export const SMASH_SERVER_TYPES: {
   [key: string]: SmashServerType,
 } = {
   IOHK: 'iohk',
-  TESTING_KNOWN: 'testingKnown',
   CUSTOM: 'custom',
   DIRECT: 'direct',
 };

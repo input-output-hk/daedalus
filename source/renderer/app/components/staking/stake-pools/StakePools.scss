@@ -67,12 +67,12 @@
   }
   .tinySpinner {
     display: inline-block;
-    margin: -6px 0 0 5px;
+    margin: -5px 0 0 6px;
     vertical-align: middle;
     svg {
       animation: rotating-spinner 1.2s linear infinite;
-      height: 8px;
-      width: 8px;
+      height: 10px;
+      width: 10px;
     }
   }
 

@@ -204,22 +204,10 @@ export default class StakingStore extends Store {
           this.smashServerLoading = false;
         });
       } catch (error) {
-        // @SMASH TODO - remove testing servers
-        if (
-          smashServerUrl === 'https://test-custom.com' ||
-          smashServerUrl === 'https://test-known.com'
-        ) {
-          runInAction(() => {
-            this.smashServerUrl = smashServerUrl;
-            this.smashServerUrlError = null;
-            this.smashServerLoading = false;
-          });
-        } else {
-          runInAction(() => {
-            this.smashServerUrlError = error;
-            this.smashServerLoading = false;
-          });
-        }
+        runInAction(() => {
+          this.smashServerUrlError = error;
+          this.smashServerLoading = false;
+        });
       }
     }
   };

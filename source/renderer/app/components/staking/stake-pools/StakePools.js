@@ -27,13 +27,23 @@ const messages = defineMessages({
   },
   listTitle: {
     id: 'staking.stakePools.listTitle',
-    defaultMessage: '!!!Stake pools ({pools})',
+    defaultMessage: '!!!Stake pools',
     description: '"listTitle" for the Stake Pools page.',
   },
-  listTitleWithSearch: {
-    id: 'staking.stakePools.listTitleWithSearch',
-    defaultMessage: '!!!Stake pools. Search results: ({pools})',
-    description: '"listTitle" for the Stake Pools page.',
+  listTitleLoading: {
+    id: 'staking.stakePools.listTitleLoading',
+    defaultMessage: '!!!Loading stake pools',
+    description: '"listTitleLoading" for the Stake Pools page.',
+  },
+  listTitleSearch: {
+    id: 'staking.stakePools.listTitleSearch',
+    defaultMessage: '!!!Stake pools. Search results:',
+    description: '"listTitleSearch" for the Stake Pools page.',
+  },
+  listTitleStakePools: {
+    id: 'staking.stakePools.listTitleStakePools',
+    defaultMessage: '!!!({pools})',
+    description: '"listTitleStakePools" for the Stake Pools page.',
   },
   loadingStakePoolsMessage: {
     id: 'staking.stakePools.loadingStakePoolsMessage',
@@ -41,15 +51,15 @@ const messages = defineMessages({
     description:
       'Loading stake pool message for the Delegation center body section.',
   },
-  curatedBy: {
-    id: 'staking.stakePools.curatedBy',
-    defaultMessage: '!!!Curated by',
-    description: 'curatedBy message for the Delegation center body section.',
+  moderatedBy: {
+    id: 'staking.stakePools.moderatedBy',
+    defaultMessage: '!!!Moderated by',
+    description: 'moderatedBy message for the Delegation center body section.',
   },
-  notCurated: {
-    id: 'staking.stakePools.notCurated',
-    defaultMessage: '!!!Not curated',
-    description: 'notCurated message for the Delegation center body section.',
+  unmoderated: {
+    id: 'staking.stakePools.unmoderated',
+    defaultMessage: '!!!Unmoderated',
+    description: 'unmoderated message for the Delegation center body section.',
   },
 });
 
@@ -173,9 +183,12 @@ export default class StakePools extends Component<Props, State> {
         IS_RANKING_DATA_AVAILABLE && stakePool.nonMyopicMemberRewards
     ).length;
 
-    const listTitleMessage = search.trim().length
-      ? messages.listTitleWithSearch
+    const listTitleMessage = isFetching
+      ? messages.listTitleLoading
       : messages.listTitle;
+
+    const listTitleSearchMessage =
+      !!search.trim().length && intl.formatMessage(messages.listTitleSearch);
 
     const loadingSpinner = (
       <LoadingSpinner
@@ -203,8 +216,8 @@ export default class StakePools extends Component<Props, State> {
       <button onClick={onSmashSettingsClick} className={styles.smashSettings}>
         <span>
           {smashServer && smashServer !== 'direct'
-            ? `${intl.formatMessage(messages.curatedBy)} ${smashServer}`
-            : intl.formatMessage(messages.notCurated)}
+            ? intl.formatMessage(messages.moderatedBy, { smashServer })
+            : intl.formatMessage(messages.unmoderated)}
         </span>
         <SVGInline
           svg={smashSettingsIcon}
@@ -281,12 +294,13 @@ export default class StakePools extends Component<Props, State> {
               <Fragment>
                 <h2>
                   <span className={styles.leftContent}>
-                    <FormattedMessage
-                      {...listTitleMessage}
-                      values={{
+                    <span>
+                      {intl.formatMessage(listTitleMessage)}
+                      {listTitleSearchMessage}
+                      {intl.formatMessage(messages.listTitleStakePools, {
                         pools: filteredStakePoolsList.length,
-                      }}
-                    />
+                      })}
+                    </span>
                     {tinyLoadingSpinner}
                   </span>
                   {smashSettings}
@@ -312,12 +326,13 @@ export default class StakePools extends Component<Props, State> {
               <Fragment>
                 <h2>
                   <span className={styles.leftContent}>
-                    <FormattedMessage
-                      {...listTitleMessage}
-                      values={{
+                    <span>
+                      {intl.formatMessage(listTitleMessage)}
+                      {listTitleSearchMessage}
+                      {intl.formatMessage(messages.listTitleStakePools, {
                         pools: filteredStakePoolsList.length,
-                      }}
-                    />
+                      })}
+                    </span>
                     {tinyLoadingSpinner}
                   </span>
                   {smashSettings}

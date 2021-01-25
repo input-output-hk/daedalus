@@ -213,6 +213,7 @@ export default class StakePoolsSettings extends Component<Props, State> {
             values={{
               link: (
                 <Link
+                  className={styles.link}
                   onClick={() =>
                     onOpenExternalLink(
                       intl.formatMessage(messages.descriptionLinkUrl)

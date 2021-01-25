@@ -32,6 +32,9 @@
   em {
     color: var(--theme-delegation-steps-intro-link-color);
   }
+  .link {
+    font-size: 16px;
+  }
 }
 .smashServerUrl {
   margin-top: 20px;
@@ -75,3 +78,9 @@
     opacity: 0.5;
   }
 }
+
+// :global {
+//   [data-tippy-root] {
+//     z-index: 10 !important;
+//   }
+// }

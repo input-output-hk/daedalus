@@ -1710,9 +1710,7 @@ export default class AdaApi {
         this.config,
         url
       );
-      const isValid =
-        health === SMASH_SERVER_STATUSES.AVAILABLE ||
-        health === SMASH_SERVER_STATUSES.UNREACHABLE;
+      const isValid = health === SMASH_SERVER_STATUSES.AVAILABLE;
       logger.debug('AdaApi::checkSmashServerHealth success', { isValid });
       return isValid;
     } catch (error) {
