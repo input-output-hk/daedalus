@@ -111,6 +111,12 @@ const messages = defineMessages({
     description:
       'smashUrlInputInvalidUrl for the "Smash Custom Server" selection on the Stake Pools settings page.',
   },
+  changesSaved: {
+    id: 'inline.editing.input.changesSaved',
+    defaultMessage: '!!!Your changes have been saved',
+    description:
+      'Message "Your changes have been saved" for inline editing (eg. on Profile Settings page).',
+  },
 });
 
 type Props = {
@@ -224,7 +230,16 @@ export default class StakePoolsSettings extends Component<Props, State> {
           />
         </div>
         <Select
-          label={intl.formatMessage(messages.smashSelectLabel)}
+          label={
+            <div>
+              {intl.formatMessage(messages.smashSelectLabel)}
+              {successfullyUpdated && (
+                <span className={styles.savingResultLabel}>
+                  {intl.formatMessage(messages.changesSaved)}
+                </span>
+              )}
+            </div>
+          }
           value={smashServerType}
           options={smashSelectOptions}
           onChange={this.handleOnSelectSmashServerType}
@@ -247,11 +262,8 @@ export default class StakePoolsSettings extends Component<Props, State> {
               messages.smashUrlInputInvalidUrl
             )}
             errorMessage={errorMessage}
-            readOnly={
-              isLoading || smashServerType !== SMASH_SERVER_TYPES.CUSTOM
-            }
+            readOnly={isLoading}
             isLoading={isLoading}
-            successfullyUpdated={successfullyUpdated}
           />
         )}
         {smashServerType === SMASH_SERVER_TYPES.IOHK && (
