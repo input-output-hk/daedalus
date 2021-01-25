@@ -258,7 +258,9 @@ export default class StakePools extends Component<Props, State> {
               <Fragment>
                 <h2 className={styles.listTitle}>
                   <span className={styles.leftContent}>
-                    {intl.formatMessage(messages.delegatingListTitle)}
+                    <span>
+                      {intl.formatMessage(messages.delegatingListTitle)}
+                    </span>
                   </span>
                 </h2>
                 <StakePoolsList

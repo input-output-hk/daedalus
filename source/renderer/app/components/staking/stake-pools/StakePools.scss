@@ -35,7 +35,9 @@
   }
 
   .leftContent {
-    opacity: 0.5;
+    > span:first-child {
+      opacity: 0.5;
+    }
   }
 
   .smashSettings {
@@ -65,7 +67,7 @@
   }
   .tinySpinner {
     display: inline-block;
-    margin: -6px 0 0 4px;
+    margin: -6px 0 0 5px;
     vertical-align: middle;
     svg {
       animation: rotating-spinner 1.2s linear infinite;
