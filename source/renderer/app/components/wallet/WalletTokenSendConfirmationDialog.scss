@@ -209,7 +209,7 @@
 
         .SimpleCheckbox_checked {
           background-color: var(
-              --theme-send-confirmation-dialog-send-values-color
+            --theme-send-confirmation-dialog-send-values-color
           );
         }
       }
@@ -222,7 +222,7 @@
         svg {
           path {
             fill: var(
-                --theme-button-attention-delete-text-color-disabled
+              --theme-button-attention-delete-text-color-disabled
             ) !important;
           }
         }

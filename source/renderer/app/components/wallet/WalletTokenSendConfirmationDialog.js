@@ -68,7 +68,8 @@ export const messages = defineMessages({
   receiverLabel: {
     id: 'wallet.send.confirmationDialog.receiver.label',
     defaultMessage: '!!!Receiver',
-    description: 'Label for the "Receiver" in the wallet send confirmation dialog.',
+    description:
+      'Label for the "Receiver" in the wallet send confirmation dialog.',
   },
   passphraseFieldPlaceholder: {
     id: 'wallet.send.confirmationDialog.passphraseFieldPlaceholder',
@@ -115,7 +116,7 @@ messages.fieldIsRequired = globalMessages.fieldIsRequired;
 type Props = {
   amount: string,
   sender: string,
-  receivers: Array<string>,
+  receivers?: Array<string>,
   transactionFee: ?string,
   onSubmit: Function,
   amountToNaturalUnits: (amountWithFractions: string) => string,
@@ -337,8 +338,9 @@ export default class WalletTokenSendConfirmationDialog extends Component<
             </div>
             <div className={styles.addressTo}>{sender}</div>
           </div>
-          <div className={styles.addressToLabelWrapper}>
-            {receivers.map((address, addressIndex) => (
+          {receivers && (
+            <div className={styles.addressToLabelWrapper}>
+              {receivers.map((address, addressIndex) => (
                 <div
                   // eslint-disable-next-line react/no-array-index-key
                   key={`${address}-${addressIndex}`}
@@ -352,9 +354,7 @@ export default class WalletTokenSendConfirmationDialog extends Component<
                       )}
                     </h2>
                     <div className={styles.receiverRowItemAddresses}>
-                      <div className={styles.addressTo}>
-                        {address}
-                      </div>
+                      <div className={styles.addressTo}>{address}</div>
                       <div className={styles.assetsWrapper}>
                         <div className={styles.assetsSeparator} />
                         {receivers.map((assets, assetsIndex) => (
@@ -379,9 +379,9 @@ export default class WalletTokenSendConfirmationDialog extends Component<
                     </div>
                   </div>
                 </div>
-              )
-            )}
-          </div>
+              ))}
+            </div>
+          )}
 
           <div className={styles.feesWrapper}>
             <div className={styles.feesLabel}>
@@ -390,8 +390,8 @@ export default class WalletTokenSendConfirmationDialog extends Component<
             <div className={styles.fees}>
               +{transactionFee}
               <span className={styles.currencySymbol}>
-                  &nbsp;{intl.formatMessage(globalMessages.unitAda)}
-                </span>
+                &nbsp;{intl.formatMessage(globalMessages.unitAda)}
+              </span>
             </div>
           </div>
 
