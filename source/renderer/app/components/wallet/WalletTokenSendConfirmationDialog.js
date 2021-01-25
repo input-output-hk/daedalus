@@ -34,6 +34,11 @@ export const messages = defineMessages({
     description:
       'Label for the "Spending password" input in the wallet send confirmation dialog.',
   },
+  addressFromLabel: {
+    id: 'wallet.send.confirmationDialog.addressFromLabel',
+    defaultMessage: '!!!From address',
+    description: 'Label for the "From" in the wallet send confirmation dialog.',
+  },
   addressToLabel: {
     id: 'wallet.send.confirmationDialog.addressToLabel',
     defaultMessage: '!!!To',
@@ -47,7 +52,7 @@ export const messages = defineMessages({
   },
   feesLabel: {
     id: 'wallet.send.confirmationDialog.feesLabel',
-    defaultMessage: '!!!Fees',
+    defaultMessage: '!!!Transaction fee',
     description: 'Label for the "Fees" in the wallet send confirmation dialog.',
   },
   totalLabel: {
@@ -100,6 +105,7 @@ messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
 type Props = {
   amount: string,
+  sender: string,
   receiver: string,
   totalAmount: ?string,
   transactionFee: ?string,
@@ -256,6 +262,7 @@ export default class WalletTokenSendConfirmationDialog extends Component<
     const {
       onCancel,
       amount,
+      sender,
       receiver,
       totalAmount,
       transactionFee,
@@ -319,6 +326,12 @@ export default class WalletTokenSendConfirmationDialog extends Component<
         <div className={styles.passphraseFields}>
           <div className={styles.addressToLabelWrapper}>
             <div className={styles.addressToLabel}>
+              {intl.formatMessage(messages.addressFromLabel)}
+            </div>
+            <div className={styles.addressTo}>{sender}</div>
+          </div>
+          <div className={styles.addressToLabelWrapper}>
+            <div className={styles.addressToLabel}>
               {intl.formatMessage(messages.addressToLabel)}
             </div>
             <div className={styles.addressTo}>{receiver}</div>
@@ -336,29 +349,17 @@ export default class WalletTokenSendConfirmationDialog extends Component<
                 </span>
               </div>
             </div>
-
-            <div className={styles.feesWrapper}>
-              <div className={styles.feesLabel}>
-                {intl.formatMessage(messages.feesLabel)}
-              </div>
-              <div className={styles.fees}>
-                +{transactionFee}
-                <span className={styles.currencySymbol}>
-                  &nbsp;{currencyUnit}
-                </span>
-              </div>
-            </div>
           </div>
 
-          <div className={styles.totalAmountWrapper}>
-            <div className={styles.totalAmountLabel}>
-              {intl.formatMessage(messages.totalLabel)}
+          <div className={styles.feesWrapper}>
+            <div className={styles.feesLabel}>
+              {intl.formatMessage(messages.feesLabel)}
             </div>
-            <div className={styles.totalAmount}>
-              {totalAmount}
+            <div className={styles.fees}>
+              +{transactionFee}
               <span className={styles.currencySymbol}>
-                &nbsp;{currencyUnit}
-              </span>
+                  &nbsp;{intl.formatMessage(globalMessages.unitAda)}
+                </span>
             </div>
           </div>
 

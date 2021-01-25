@@ -37,31 +37,35 @@
   .amountFeesWrapper {
     display: flex;
     flex-direction: row;
-    .amountWrapper,
-    .feesWrapper {
+
+    .amountWrapper {
       width: 50%;
     }
+
     .amountWrapper {
       margin-right: 10px;
     }
-    .feesWrapper {
-      margin-left: 10px;
-    }
+
     .amountLabel,
     .feesLabel {
       line-height: 1.38;
     }
-    .amount,
-    .fees {
+
+    .amount {
       color: var(--theme-send-confirmation-dialog-send-values-color);
       line-height: 1.38;
       margin-top: 6px;
       user-select: text;
       word-break: break-word;
     }
-    .fees {
-      opacity: 0.5;
-    }
+  }
+
+  .fees {
+    color: var(--theme-send-confirmation-dialog-send-values-color);
+    line-height: 1.38;
+    margin-top: 6px;
+    user-select: text;
+    word-break: break-word;
   }
 
   .totalAmountLabel {
@@ -94,27 +98,32 @@
 
   .flightCandidateWarning {
     margin-top: 20px;
+
     p {
       color: var(--theme-send-confirmation-dialog-send-values-color);
       font-family: var(--font-regular);
       line-height: 1.23;
       margin-bottom: 20px;
+
       b {
         font-family: var(--font-bold);
       }
     }
+
     em {
       color: var(--theme-send-confirmation-dialog-send-values-color);
       font-family: var(--font-light);
     }
+
     > div {
       :global {
         .SimpleCheckbox_check {
           border-color: var(--theme-send-confirmation-dialog-send-values-color);
         }
+
         .SimpleCheckbox_checked {
           background-color: var(
-            --theme-send-confirmation-dialog-send-values-color
+              --theme-send-confirmation-dialog-send-values-color
           );
         }
       }
@@ -127,7 +136,7 @@
         svg {
           path {
             fill: var(
-              --theme-button-attention-delete-text-color-disabled
+                --theme-button-attention-delete-text-color-disabled
             ) !important;
           }
         }
