@@ -102,6 +102,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Receiver',
     description: 'Receiver',
   },
+  assetLabel: {
+    id: 'wallet.transaction.assetLabel',
+    defaultMessage: '!!!Asset',
+    description: 'Asset',
+  },
   transactionAmount: {
     id: 'wallet.transaction.transactionAmount',
     defaultMessage: '!!!Transaction amount',
@@ -541,11 +546,22 @@ export default class Transaction extends Component<Props, State> {
                             label={ellipsis(address, 30, 30)}
                             skin={LinkSkin}
                           />
-                          <div className={styles.amountFeesWrapper}>
-                            <div className={styles.amount}>
-                              {formattedWalletAmount(data.amount, false)}&nbsp; {currency}
+                            <div className={styles.assetsWrapper}>
+                              <div className={styles.assetsSeparator} />
+                              {data.addresses.to.map((assets, assetsIndex) => (
+                                <div
+                                  // eslint-disable-next-line react/no-array-index-key
+                                  key={`${data.id}-to-${assets}-${assetsIndex}`}
+                                  className={styles.assetsContainer}>
+                                  <h3>{intl.formatMessage(messages.assetLabel)}&nbsp;#{assetsIndex + 1}</h3>
+                                  <div className={styles.amountFeesWrapper}>
+                                    <div className={styles.amount}>
+                                      {formattedWalletAmount(data.amount, false)}&nbsp; {currency}
+                                    </div>
+                                  </div>
+                                </div>
+                              ))}
                             </div>
-                          </div>
                         </div>
                       </div>
                     </div>

@@ -163,6 +163,12 @@
     margin-bottom: 8px;
   }
 
+  h3 {
+    font-family: var(--font-light);
+    font-size: 16px;
+    margin-bottom: 8px;
+  }
+
   .addressRow,
   .explorerLinkRow {
     padding-bottom: 10px;
@@ -201,6 +207,7 @@
       font-family: var(--font-mono);
       letter-spacing: 0.5px;
       line-height: 1.4;
+      margin-bottom: 2px;
     }
 
     &.explorerLink {
@@ -255,7 +262,9 @@
     }
 
     .receiverRowItemAddresses {
+      align-items: flex-start;
       display: flex;
+      flex-direction: column;
       justify-content: space-between;
       width: 100%;
     }
@@ -294,6 +303,31 @@
   font-size: 16px;
   font-weight: 300;
   line-height: 1.38;
+}
+
+.assetsWrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 100%;
+
+  .assetsSeparator {
+    border-bottom: 1px solid var(--theme-transactions-list-item-details-color);
+    border-left: 1px solid var(--theme-transactions-list-item-details-color);
+    height: 39px;
+    margin-left: 5px;
+    margin-top: 8px;
+    opacity: 0.3;
+    position: absolute;
+    width: 6px;
+  }
+
+  .assetsContainer {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0 5px 20px;
+    width: 100%;
+  }
 }
 
 .amountFeesWrapper {

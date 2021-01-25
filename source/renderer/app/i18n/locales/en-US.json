@@ -956,6 +956,7 @@
   "wallet.transaction.pending.supportArticleUrl": "https://iohk.zendesk.com/hc/en-us/articles/360038113814",
   "wallet.transaction.received": "{transactionsType} received",
   "wallet.transaction.receiverLabel": "Receiver",
+  "wallet.transaction.assetLabel": "Asset",
   "wallet.transaction.rewards.from": "From rewards",
   "wallet.transaction.sent": "{transactionsType} sent",
   "wallet.transaction.state.confirmed": "Transaction confirmed",
