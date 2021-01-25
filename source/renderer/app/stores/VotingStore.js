@@ -10,9 +10,6 @@ import { formattedArrayBufferToHexString } from '../utils/formatters';
 import wallet from '../utils/wallet';
 import { VOTING_COUNTDOWN_INTERVAL } from '../config/votingConfig';
 
-// Voting Types
-import type { GetWalletKeyRequest } from '../api/voting/types';
-
 export default class VotingStore extends Store {
   @observable selectedVotingWalletId: ?string = null;
   @observable transactionId: ?string = null;
@@ -35,6 +32,9 @@ export default class VotingStore extends Store {
   }
 
   // REQUESTS
+  @observable walletPublicKeyRequest: Request<string> = new Request(
+    this.api.ada.getWalletPublicKey
+  );
 
   @observable
   votingSendTransactionRequest: Request<WalletTransaction> = new Request(
@@ -47,7 +47,6 @@ export default class VotingStore extends Store {
   );
 
   // ACTIONS
-
   @action _setSelectedVotingWalletId = (walletId: string) => {
     this.selectedVotingWalletId = walletId;
   };
@@ -124,12 +123,11 @@ export default class VotingStore extends Store {
         this.votingRegistrationKey.public().bytes()
       );
 
-      let stakeKey = await this._getWalletKeyRequest({
+      let stakeKey = await this.walletPublicKeyRequest.execute({
         walletId,
         role: 'mutable_account',
         index: '0',
       });
-
       stakeKey = await this.getHexFromBech32(stakeKey);
 
       const signature = await this.signMetadataRequest.execute({
@@ -155,16 +153,6 @@ export default class VotingStore extends Store {
     } catch (error) {
       throw error;
     }
-  };
-
-  // Get wallet stake key
-  _getWalletKeyRequest = async (
-    request: GetWalletKeyRequest
-  ): Promise<string> => {
-    const response = await this.api.ada.getWalletKey(request);
-    if (!response)
-      throw new Error('Could not get the public key of the wallet.');
-    return response;
   };
 
   _generateQrCode = async (pinCode: number) => {

@@ -43,7 +43,6 @@ import { createExternalTransaction } from './transactions/requests/createExterna
 import { getPublicKey } from './transactions/requests/getPublicKey';
 
 // Voting requests
-import { getWalletKey } from './voting/requests/getWalletKey';
 import { createWalletSignature } from './voting/requests/createWalletSignature';
 
 // Wallets requests
@@ -200,7 +199,6 @@ import type {
 // Voting Types
 import type {
   CreateVotingRegistrationRequest,
-  GetWalletKeyRequest,
   CreateWalletSignatureRequest,
 } from './voting/types';
 
@@ -318,7 +316,7 @@ export default class AdaApi {
     });
     try {
       const { walletId, role, index } = request;
-      const walletPublicKey = await getWalletPublicKey(this.config, {
+      const walletPublicKey: string = await getWalletPublicKey(this.config, {
         walletId,
         role,
         index,
@@ -327,10 +325,7 @@ export default class AdaApi {
       return walletPublicKey;
     } catch (error) {
       logger.error('AdaApi::getWalletPublicKey error', { error });
-      // @TODO: Uncomment this when api is ready
-      // throw new ApiError(error);
-      // @TODO: Delete this when api is ready
-      return '8edd9c9b73873ce8826cbe3e2e08534d35f1ba64cc94c063c0525865aa28e35527be51bb72ee9983d173f5617493bc6804a6750b359538c79cd5b43ccbbd48e5';
+      throw new ApiError(error);
     }
   };
 
@@ -2134,26 +2129,6 @@ export default class AdaApi {
         .where('code', 'bad_request')
         .inc('message', 'passphrase is too short')
         .result();
-    }
-  };
-
-  getWalletKey = async (request: GetWalletKeyRequest): Promise<string> => {
-    const { walletId, role, index } = request;
-    logger.debug('AdaApi::getWalletKey called', {
-      parameters: filterLogData(request),
-    });
-    try {
-      const response: string = await getWalletKey(this.config, {
-        walletId,
-        role,
-        index,
-      });
-
-      logger.debug('AdaApi::getWalletKey success', { response });
-      return response;
-    } catch (error) {
-      logger.error('AdaApi::getWalletKey error', { error });
-      throw new ApiError(error);
     }
   };
 

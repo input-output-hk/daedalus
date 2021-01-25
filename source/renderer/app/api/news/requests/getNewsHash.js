@@ -5,9 +5,9 @@ import { getNewsHashURL } from '../../../utils/network';
 const { isFlight, environment } = global;
 const { network } = environment;
 const hostname = getNewsHashURL(network);
-
-let path = `/newsfeed-verification/${network}`;
-if (isFlight) path = '/newsfeed-verification/mainnet_flight';
+const path = isFlight
+  ? '/newsfeed-verification/mainnet_flight'
+  : `/newsfeed-verification/${network}`;
 
 export const getNewsHash = (timestamp: number): Promise<string> =>
   externalRequest(
