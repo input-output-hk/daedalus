@@ -264,6 +264,7 @@ export default class StakePoolsSettings extends Component<Props, State> {
             errorMessage={errorMessage}
             readOnly={isLoading}
             isLoading={isLoading}
+            successfullyUpdated={false}
           />
         )}
         {smashServerType === SMASH_SERVER_TYPES.IOHK && (

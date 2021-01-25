@@ -1732,7 +1732,7 @@ export default class AdaApi {
         };
         throw new ApiError(error);
       }
-      const FOI = await updateSmashSettings(this.config, poolMetadataSource);
+      await updateSmashSettings(this.config, poolMetadataSource);
       logger.debug('AdaApi::updateSmashSettings success', {
         poolMetadataSource,
       });

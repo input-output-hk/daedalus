@@ -88,7 +88,7 @@ export default class InlineEditingInput extends Component<Props, State> {
           validators: [
             ({ field }) => [
               this.props.isValid(field.value),
-              this.props.valueErrorMessage,
+              this.state.isActive ? this.props.valueErrorMessage : null,
             ],
           ],
         },
@@ -154,10 +154,10 @@ export default class InlineEditingInput extends Component<Props, State> {
   };
 
   onCancel = () => {
-    const { value, onCancel } = this.props;
+    const { value, onCancel, errorMessage } = this.props;
     const inputField = this.validator.$('inputField');
-    inputField.set(value);
-    this.setInputBlur();
+    const newValue = !errorMessage ? value : '';
+    inputField.set(newValue);
     if (onCancel) onCancel();
   };
 
@@ -177,15 +177,6 @@ export default class InlineEditingInput extends Component<Props, State> {
   componentDidUpdate({ value: prevValue, errorMessage: prevError }: Props) {
     const { value: nextValue, errorMessage: nextError } = this.props;
     const inputField = this.validator.$('inputField');
-
-    // If there's an error, we focus the input again
-    if (nextError) {
-      const input = this.inputElement;
-      if (input instanceof HTMLElement) input.focus();
-    } else if (prevError && !nextError) {
-      // else we blur it
-      this.setInputBlur();
-    }
 
     // In case the `value` prop was updated
     // we need to manually update the ReactToolboxMobxForm input field
@@ -237,7 +228,7 @@ export default class InlineEditingInput extends Component<Props, State> {
     const inputField = validator.$('inputField');
     let error;
     if (inputField.error) error = inputField.error;
-    else if (!hasChanged) error = errorMessage;
+    else if (!hasChanged) error = !!errorMessage;
 
     const showEditButton =
       !isActive && !isLoading && !hasChanged && label.length && !readOnly;
@@ -334,6 +325,10 @@ export default class InlineEditingInput extends Component<Props, State> {
           <div className={styles.savingResultLabel}>
             {intl.formatMessage(messages.changesSaved)}
           </div>
+        )}
+
+        {errorMessage && (
+          <div className={styles.errorMessage}>{errorMessage}</div>
         )}
       </div>
     );

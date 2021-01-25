@@ -1,3 +1,5 @@
+@import '../../../themes/mixins/error-message';
+
 .component {
   margin-bottom: 20px;
   position: relative;
@@ -51,12 +53,12 @@
   }
 
   .buttonsWrapper {
-    bottom: 10px;
     cursor: text;
     height: 28px;
     margin-right: 11px;
     position: absolute;
     right: 1px;
+    top: 42px;
   }
 
   .button {
@@ -174,4 +176,10 @@
       display: inline-block;
     }
   }
+}
+
+.errorMessage {
+  @include error-message;
+  margin-top: 20px;
+  text-align: center;
 }
