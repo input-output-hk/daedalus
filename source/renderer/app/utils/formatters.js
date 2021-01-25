@@ -51,31 +51,31 @@ export const shortNumber = (value: number | BigNumber): string => {
   let formattedAmount = '';
   if (amount.isZero()) {
     formattedAmount = '0';
-  } else if (amount.lessThan(1000)) {
-    formattedAmount = `${amount.round(
+  } else if (amount.isLessThan(1000)) {
+    formattedAmount = `${amount.decimalPlaces(
       DECIMAL_PLACES_IN_ADA,
       BigNumber.ROUND_DOWN
     )}`;
-  } else if (amount.lessThan(1000000)) {
+  } else if (amount.isLessThan(1000000)) {
     formattedAmount = `${amount
       .dividedBy(1000)
-      .round(1, BigNumber.ROUND_DOWN)}K`;
-  } else if (amount.lessThan(1000000000)) {
+      .decimalPlaces(1, BigNumber.ROUND_DOWN)}K`;
+  } else if (amount.isLessThan(1000000000)) {
     formattedAmount = `${amount
       .dividedBy(1000000)
-      .round(1, BigNumber.ROUND_DOWN)}M`;
-  } else if (amount.lessThan(1000000000000)) {
+      .decimalPlaces(1, BigNumber.ROUND_DOWN)}M`;
+  } else if (amount.isLessThan(1000000000000)) {
     formattedAmount = `${amount
       .dividedBy(1000000000)
-      .round(1, BigNumber.ROUND_DOWN)}B`;
-  } else if (amount.lessThan(1000000000000000)) {
+      .decimalPlaces(1, BigNumber.ROUND_DOWN)}B`;
+  } else if (amount.isLessThan(1000000000000000)) {
     formattedAmount = `${amount
       .dividedBy(1000000000000)
-      .round(1, BigNumber.ROUND_DOWN)}T`;
+      .decimalPlaces(1, BigNumber.ROUND_DOWN)}T`;
   } else {
     formattedAmount = `${amount
       .dividedBy(1000000000000000)
-      .round(1, BigNumber.ROUND_DOWN)}Q`;
+      .decimalPlaces(1, BigNumber.ROUND_DOWN)}Q`;
   }
   return formattedAmount;
 };

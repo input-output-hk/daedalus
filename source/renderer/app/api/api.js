@@ -570,7 +570,7 @@ export default class AdaApi {
           const withdrawal = new BigNumber(w.amount.quantity).dividedBy(
             LOVELACES_PER_ADA
           );
-          withdrawals = withdrawals.add(withdrawal);
+          withdrawals = withdrawals.plus(withdrawal);
         });
       });
       return { withdrawals };
@@ -1743,7 +1743,7 @@ export default class AdaApi {
       MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE
     );
     // Amount is set to either wallet's balance in case balance is less than 3 ADA or 1 ADA in order to avoid min UTXO affecting transaction fees calculation
-    const amount = walletBalance.lessThan(
+    const amount = walletBalance.isLessThan(
       minRewardsReceiverBalance.times(
         MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE * 3
       )
