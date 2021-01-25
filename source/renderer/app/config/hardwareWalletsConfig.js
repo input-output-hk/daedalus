@@ -1,5 +1,4 @@
-const { environment } = global;
-const { isMainnet, isTestnet } = environment;
+const { isMainnet, isTestnet } = global.environment;
 
 export const HARDENED_HEX = 0x80000000;
 export const HARDENED = 2147483648;

@@ -3,8 +3,8 @@ import { observable, action } from 'mobx';
 import type Store from './lib/Store';
 import AddressesStore from './AddressesStore';
 import AppStore from './AppStore';
-import HardwareWalletsStore from './HardwareWalletsStore';
 import AppUpdateStore from './AppUpdateStore';
+import HardwareWalletsStore from './HardwareWalletsStore';
 import NetworkStatusStore from './NetworkStatusStore';
 import NewsFeedStore from './NewsFeedStore';
 import ProfileStore from './ProfileStore';
@@ -24,8 +24,8 @@ import WindowStore from './WindowStore';
 export const storeClasses = {
   addresses: AddressesStore,
   app: AppStore,
-  hardwareWallets: HardwareWalletsStore,
   appUpdate: AppUpdateStore,
+  hardwareWallets: HardwareWalletsStore,
   networkStatus: NetworkStatusStore,
   newsFeed: NewsFeedStore,
   profile: ProfileStore,
@@ -46,9 +46,8 @@ export const storeClasses = {
 export type StoresMap = {
   addresses: AddressesStore,
   app: AppStore,
-
-  hardwareWallets: HardwareWalletsStore,
   appUpdate: AppUpdateStore,
+  hardwareWallets: HardwareWalletsStore,
   networkStatus: NetworkStatusStore,
   newsFeed: NewsFeedStore,
   profile: ProfileStore,
@@ -88,26 +87,26 @@ export default action((api, actions, router): StoresMap => {
 
   // Create fresh instances of all stores
   stores = observable({
-    uiNotifications: createStoreInstanceOf(UiNotificationsStore),
     addresses: createStoreInstanceOf(AddressesStore),
     app: createStoreInstanceOf(AppStore),
+    appUpdate: createStoreInstanceOf(AppUpdateStore),
     hardwareWallets: createStoreInstanceOf(HardwareWalletsStore),
     networkStatus: createStoreInstanceOf(NetworkStatusStore),
     newsFeed: createStoreInstanceOf(NewsFeedStore),
-    appUpdate: createStoreInstanceOf(AppUpdateStore),
     profile: createStoreInstanceOf(ProfileStore),
     router,
     sidebar: createStoreInstanceOf(SidebarStore),
     staking: createStoreInstanceOf(StakingStore),
     transactions: createStoreInstanceOf(TransactionsStore),
     uiDialogs: createStoreInstanceOf(UiDialogsStore),
+    uiNotifications: createStoreInstanceOf(UiNotificationsStore),
+    voting: createStoreInstanceOf(VotingStore),
     wallets: createStoreInstanceOf(WalletsStore),
     walletsLocal: createStoreInstanceOf(WalletsLocalStore),
     walletBackup: createStoreInstanceOf(WalletBackupStore),
     walletMigration: createStoreInstanceOf(WalletMigrationStore),
     walletSettings: createStoreInstanceOf(WalletSettingsStore),
     window: createStoreInstanceOf(WindowStore),
-    voting: createStoreInstanceOf(VotingStore),
   });
   // Configure and initialize all stores
   executeOnEveryStore((store) => {

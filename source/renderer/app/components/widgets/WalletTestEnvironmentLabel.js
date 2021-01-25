@@ -75,11 +75,7 @@ export default class WalletTestEnvironmentLabel extends Component<Props> {
     const { isFlight } = global;
     const { network } = this.props;
     const { intl } = this.context;
-
-    let labelMessageId = network;
-    if (isFlight) labelMessageId = 'flight';
-    const label = messages[labelMessageId];
-
+    const label = messages[isFlight ? 'flight' : network];
     return <div className={styles.component}>{intl.formatMessage(label)}</div>;
   }
 }

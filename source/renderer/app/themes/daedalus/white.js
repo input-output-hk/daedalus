@@ -971,7 +971,7 @@ export const WHITE_THEME_OUTPUT = {
   voting: {
     '--theme-voting-info-icon-color': '#2d2d2d',
     '--theme-voting-info-background-color': '#2d2d2db3',
-    '--theme-voting-info-font-color': '#1E1F31',
+    '--theme-voting-info-font-color': '#1e1f31',
     '--theme-voting-font-color-accent': '#2d2d2d',
     '--theme-voting-font-color-regular': '#2d2d2d',
     '--theme-voting-font-color-light': '#2d2d2db3',

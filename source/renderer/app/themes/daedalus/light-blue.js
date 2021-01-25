@@ -976,9 +976,9 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--theme-utxo-tooltip-text-color': '#fafbfc',
   },
   voting: {
-    '--theme-voting-info-icon-color': '#5C6464',
-    '--theme-voting-info-background-color': '#5E60661A',
-    '--theme-voting-info-font-color': '#1E1F31',
+    '--theme-voting-info-icon-color': '#5c6464',
+    '--theme-voting-info-background-color': '#5e60661a',
+    '--theme-voting-info-font-color': '#1e1f31',
     '--theme-voting-font-color-accent': '#5e6066',
     '--theme-voting-font-color-regular': '#5e6066',
     '--theme-voting-font-color-light': 'rgba(94, 96, 102, 0.7)',
