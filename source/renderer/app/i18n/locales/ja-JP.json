@@ -476,7 +476,7 @@
   "staking.stakePools.delegatingListTitle": "現在委任しているステークプール",
   "staking.stakePools.learnMore": "もっと知る",
   "staking.stakePools.listTitle": "ステークプール",
-  "staking.stakePools.listTitleLoading": "ロード中のステークプール",
+  "staking.stakePools.listTitleLoading": "ステークプールをロード中",
   "staking.stakePools.listTitleSearch": "。検索結果：",
   "staking.stakePools.listTitleStakePools": "（{pools}）",
   "staking.stakePools.loadingStakePoolsMessage": "ステークプールをロードしています",
