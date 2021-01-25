@@ -122,7 +122,7 @@ export default class VotingAddStepsChooseWallet extends Component<
       // Wallet is restoring
       if (isRestoring) errorMessage = messages.errorRestoringWallet;
       // Wallet only has Reward balance
-      else if (!amount.isZero() && amount.equals(reward))
+      else if (!amount.isZero() && amount.isEqualTo(reward))
         errorMessage = messages.errorMinVotingFundsRewardsOnly;
       // Wallet balance < min delegation funds
       else errorMessage = messages.errorMinVotingFunds;

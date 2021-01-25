@@ -88,7 +88,7 @@ export default class VotingAddDialogContainer extends Component<Props, State> {
   ) =>
     walletAmount &&
     walletAmount.gte(new BigNumber(MIN_VOTING_FUNDS)) &&
-    !walletAmount.equals(walletReward);
+    !walletAmount.isEqualTo(walletReward);
 
   get selectedWalletId() {
     return get(
