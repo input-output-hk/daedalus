@@ -823,6 +823,7 @@
   "wallet.send.confirmationDialog.totalLabel": "Total",
   "wallet.send.form.amount.label": "Amount",
   "wallet.send.form.button.addNewReceiver": "+ Add another receiver",
+  "wallet.send.form.button.removeReceiver": "Remove",
   "wallet.send.form.deposit.label": "Deposit",
   "wallet.send.form.description.hint": "You can type a message here, if you want.",
   "wallet.send.form.description.label": "Description",

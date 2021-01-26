@@ -77,6 +77,12 @@ export const messages = defineMessages({
     description:
       'Label for the "+ Add another receiver" button in the wallet send form.',
   },
+  removeReceiverButtonLabel: {
+    id: 'wallet.send.form.button.removeReceiver',
+    defaultMessage: '!!!Remove',
+    description:
+      'Label for the "Remove" button in the wallet send form.',
+  },
   estimatedFeeLabel: {
     id: 'wallet.send.form.estimatedFee.label',
     defaultMessage: '!!!Estimated fees',
@@ -416,6 +422,10 @@ export default class WalletTokenSendForm extends Component<Props, State> {
 
   }
 
+  removeReceiverRow() {
+
+  }
+
   render() {
     const { form } = this;
     const { intl } = this.context;
@@ -458,6 +468,11 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     // const selectedNativeToken =
     //  nativeTokens && nativeTokens.length ? nativeTokens[0] : null;
 
+    const removeReceiverButtonClasses = classNames([
+      styles.removeReceiverButton,
+      'flat',
+    ]);
+
     const newReceiverButtonClasses = classNames([
       styles.addNewReceiverButton,
       'flat',
@@ -479,6 +494,14 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                 {/* <div className={styles.fieldsLine} /> */}
                 <div className={styles.fieldsContainer}>
                   <div className={styles.receiverInput}>
+                    {this.hasReceiverClearButton && (
+                      <Button
+                        className={removeReceiverButtonClasses}
+                        label={intl.formatMessage(messages.removeReceiverButtonLabel)}
+                        onClick={this.removeReceiverRow}
+                        skin={ButtonSkin}
+                      />
+                    )}
                     <Input
                       className="receiver"
                       label={intl.formatMessage(messages.receiverLabel)}
