@@ -398,7 +398,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
 
   get hasAssetValue() {
     const assetField = this.form.$('asset');
-    return assetField.value.toString().length > 0;
+    return !!assetField.value;
   }
 
   showRemoveButton = () => {
