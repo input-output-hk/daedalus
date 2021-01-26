@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## 3.2.0
+
+### Chores
+
+- Daedalus version change from `3.2.0-FC1` to `3.2.0`
+
 ## 3.2.0-FC1
 
 ### Features
