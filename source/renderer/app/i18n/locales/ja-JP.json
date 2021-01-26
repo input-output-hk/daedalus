@@ -822,6 +822,7 @@
   "wallet.send.confirmationDialog.title": "トランザクションの確認",
   "wallet.send.confirmationDialog.totalLabel": "合計",
   "wallet.send.form.amount.label": "金額",
+  "wallet.send.form.asset.label": "資産",
   "wallet.send.form.button.addNewReceiver": "+別のレシーバーを追加する",
   "wallet.send.form.button.removeReceiver": "削除",
   "wallet.send.form.deposit.label": "預り金",

@@ -34,11 +34,12 @@
     .fieldsLine {
       border-bottom: var(--theme-bordered-box-border);
       border-left: var(--theme-bordered-box-border);
-      border-radius: 2px;
-      border-top: var(--theme-bordered-box-border);
-      height: 202px;
-      margin-right: 12px;
-      margin-top: 55px;
+      border-radius: 0 0 2px 2px;
+      height: 100%;
+      left: 50px;
+      max-height: 120px;
+      position: absolute;
+      top: 130px;
       width: 6px;
     }
 
@@ -50,7 +51,7 @@
   }
 }
 
-.amountInput,
+.assetInput,
 .receiverInput,
 .estimatedFeeInput,
 .depositInput {
@@ -126,7 +127,9 @@
   }
 }
 
-.amountInput {
+.assetInput {
+  margin-left: 25px;
+
   .amountTokenTotal {
     color: var(--theme-input-right-floating-text-color);
     font-family: var(--font-regular);
@@ -186,6 +189,7 @@
 }
 
 .removeReceiverButton {
+  display: none;
   font-family: var(--font-semibold);
   font-size: 10px;
   font-weight: 500;
@@ -198,9 +202,14 @@
   top: 2px;
   width: 61.5px;
   z-index: 1;
+
+  &.active {
+    display: block;
+  }
 }
 
 .addNewReceiverButton {
+  margin: 20px 0;
   width: 100%;
 }
 

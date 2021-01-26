@@ -822,6 +822,7 @@
   "wallet.send.confirmationDialog.title": "Confirm transaction",
   "wallet.send.confirmationDialog.totalLabel": "Total",
   "wallet.send.form.amount.label": "Amount",
+  "wallet.send.form.asset.label": "Asset",
   "wallet.send.form.button.addNewReceiver": "+ Add another receiver",
   "wallet.send.form.button.removeReceiver": "Remove",
   "wallet.send.form.deposit.label": "Deposit",
