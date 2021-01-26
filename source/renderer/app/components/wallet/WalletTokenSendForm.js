@@ -132,6 +132,12 @@ export const messages = defineMessages({
     description:
       'Syncing transactions message shown during async wallet restore in the wallet send form.',
   },
+  calculatingFeesLabel: {
+    id: 'wallet.send.form.calculatingFeesLabel',
+    defaultMessage: '!!!Calculating fees',
+    description:
+      'Label for the "Calculating fees" message for amount input field.',
+  },
 });
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
@@ -479,6 +485,11 @@ export default class WalletTokenSendForm extends Component<Props, State> {
       'primary',
     ]);
 
+    const calculatingFeesSpinnerButtonClasses = classNames([
+      styles.calculatingFeesSpinnerButton,
+      styles.spinning,
+    ]);
+
     return (
       <div className={styles.component}>
         {isRestoreActive ? (
@@ -565,7 +576,6 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                           numberLocaleOptions={{
                             minimumFractionDigits: currencyMaxFractionalDigits,
                           }}
-                          error={transactionFeeError || assetField.error}
                           onChange={(value) => {
                             this._isCalculatingTransactionFee = true;
                             assetField.onChange(value);
@@ -575,12 +585,9 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                             }
                           }}
                           currency={currencyUnit}
-                          fees={fees}
-                          total={total}
                           skin={AmountInputSkin}
                           onKeyPress={this.handleSubmitOnEnter}
                           allowSigns={false}
-                          isCalculatingFees={this._isCalculatingTransactionFee}
                         />
                         {this.hasAssetValue && (
                           <div className={styles.clearAssetContainer}>
@@ -632,12 +639,26 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                   numberLocaleOptions={{
                     minimumFractionDigits: currencyMaxFractionalDigits,
                   }}
+                  error={transactionFeeError || assetField.error}
                   currency={intl.formatMessage(globalMessages.unitAda)}
                   fees={fees}
                   total={total}
                   skin={AmountInputSkin}
                   disabled
                 />
+                {this._isCalculatingTransactionFee && (
+                  <div className={styles.calculatingFeesContainer}>
+                    <PopOver
+                      content={intl.formatMessage(
+                        messages.calculatingFeesLabel
+                      )}
+                    >
+                      <button
+                        className={calculatingFeesSpinnerButtonClasses}
+                      />
+                    </PopOver>
+                  </div>
+                )}
               </div>
               <div className={styles.buttonsContainer}>
                 <Button

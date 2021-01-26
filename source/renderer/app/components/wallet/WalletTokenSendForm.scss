@@ -191,6 +191,51 @@
   }
 }
 
+.calculatingFeesContainer {
+  bottom: 0.5px;
+  display: flex;
+  height: 48px;
+  line-height: 48px;
+  padding-left: 20px;
+  position: absolute;
+  right: 11px;
+
+  .calculatingFeesSpinnerButton {
+    background-color: var(
+        --theme-staking-stake-pools-search-clear-button-background-color
+    );
+    border-radius: 3px;
+    bottom: 5px;
+    cursor: pointer;
+    height: 28px;
+    position: relative;
+    width: 28px;
+
+    &:hover {
+      background-color: var(
+          --theme-staking-stake-pools-search-clear-button-hover-background-color
+      );
+    }
+
+    .calculatingFeesSpinnerIcon {
+      svg {
+        position: relative;
+        height: 10px;
+        top: 0.5px;
+        width: 10px;
+
+        path {
+          stroke: var(--theme-staking-stake-pools-search-clear-button-color);
+        }
+      }
+    }
+
+    &.spinning {
+      @include loading-spinner('../../assets/images/spinner-dark.svg');
+    }
+  }
+}
+
 .adaLabel {
   bottom: 16px;
   color: var(--theme-input-right-floating-text-color);
@@ -232,5 +277,15 @@
 
   button {
     margin: 0 10px;
+  }
+}
+
+:global {
+  .WalletTokenSendForm_calculatingFeesContainer .WalletTokenSendForm_calculatingFeesSpinnerButton.WalletTokenSendForm_spinning:after {
+    background-size: 12px !important;
+    height: 12px !important;
+    left: calc(50% - 6px) !important;
+    top: calc(50% - 6px) !important;
+    width: 12px !important;
   }
 }
