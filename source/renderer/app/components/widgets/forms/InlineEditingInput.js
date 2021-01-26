@@ -109,7 +109,7 @@ export default class InlineEditingInput extends Component<Props, State> {
         this.setInputBlur();
         const { inputField } = form.values();
         const { onSubmit, errorMessage } = this.props;
-        if (inputField !== this.props.value || errorMessage) {
+        if (!!inputField && (inputField !== this.props.value || errorMessage)) {
           this.setState({
             hasChanged: true,
             successfullyUpdated: false,
@@ -159,6 +159,9 @@ export default class InlineEditingInput extends Component<Props, State> {
     const newValue = !errorMessage ? value : '';
     inputField.set(newValue);
     if (onCancel) onCancel();
+    this.setState({
+      hasChanged: true,
+    });
   };
 
   setInputBlur = () => {
@@ -174,9 +177,18 @@ export default class InlineEditingInput extends Component<Props, State> {
     inputField.onChange(...props);
   };
 
-  componentDidUpdate({ value: prevValue }: Props) {
-    const { value: nextValue } = this.props;
+  componentDidUpdate({ value: prevValue, errorMessage: prevError }: Props) {
+    const { value: nextValue, errorMessage: nextError } = this.props;
     const inputField = this.validator.$('inputField');
+
+    // If there's an error, we focus the input again
+    if (nextError) {
+      const input = this.inputElement;
+      if (input instanceof HTMLElement) input.focus();
+    } else if (prevError && !nextError) {
+      // else we blur it
+      this.setInputBlur();
+    }
 
     // In case the `value` prop was updated
     // we need to manually update the ReactToolboxMobxForm input field
@@ -327,7 +339,7 @@ export default class InlineEditingInput extends Component<Props, State> {
           </div>
         )}
 
-        {errorMessage && (
+        {errorMessage && !hasChanged && (
           <div className={styles.errorMessage}>{errorMessage}</div>
         )}
       </div>

@@ -189,7 +189,7 @@ export default class StakingStore extends Store {
   }: {
     smashServerUrl: string,
   }) => {
-    if (smashServerUrl !== this.smashServerUrl) {
+    if (smashServerUrl && smashServerUrl !== this.smashServerUrl) {
       try {
         this.smashServerUrlError = null;
         // Retrieves the API update
