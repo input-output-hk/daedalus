@@ -65,12 +65,6 @@ export const messages = defineMessages({
     defaultMessage: '!!!Asset',
     description: 'Label for the "Asset" number input in the wallet send form.',
   },
-  depositLabel: {
-    id: 'wallet.send.form.deposit.label',
-    defaultMessage: '!!!Deposit',
-    description:
-      'Label for the "Deposit" number input in the wallet send form.',
-  },
   addNewReceiverButtonLabel: {
     id: 'wallet.send.form.button.addNewReceiver',
     defaultMessage: '!!!+ Add another receiver',
@@ -309,15 +303,6 @@ export default class WalletTokenSendForm extends Component<Props, State> {
             },
           ],
         },
-        deposit: {
-          label: this.context.intl.formatMessage(messages.depositLabel),
-          placeholder: `0${
-            this.getCurrentNumberFormat().decimalSeparator
-          }${'0'.repeat(this.props.currencyMaxFractionalDigits)}`,
-          value: `1${
-            this.getCurrentNumberFormat().decimalSeparator
-          }${'0'.repeat(this.props.currencyMaxFractionalDigits)}`,
-        },
         estimatedFee: {
           label: this.context.intl.formatMessage(messages.estimatedFeeLabel),
           placeholder: `0${
@@ -436,9 +421,9 @@ export default class WalletTokenSendForm extends Component<Props, State> {
 
   };
 
-  removeReceiverRow() {
-
-  }
+  removeReceiverRow = () => {
+    this.clearReceiverAddress();
+  };
 
   render() {
     const { form } = this;
@@ -465,11 +450,9 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     const assetField = form.$('asset');
     const receiverField = form.$('receiver');
     const estimatedField = form.$('estimatedFee');
-    // const depositField = form.$('deposit');
     const receiverFieldProps = receiverField.bind();
     const assetFieldProps = assetField.bind();
     const estimatedFieldProps = estimatedField.bind();
-    // const depositFieldProps = depositField.bind();
 
     const amount = new BigNumber(assetFieldProps.value || 0);
 
@@ -557,77 +540,59 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                     )}
                   </div>
                   {this.hasReceiverValue && (
-                    <div className={styles.fieldsLine}/>
-                  )}
-                  <div className={styles.assetInput}>
-                    {selectedNativeToken && (
-                      <div className={styles.amountTokenTotal}>
-                        {intl.formatMessage(messages.ofLabel)}&nbsp;
-                        {formattedWalletAmount(
-                          selectedNativeToken.amount,
-                          false
+                    <>
+                      <div className={styles.fieldsLine}/>
+                      <div className={styles.assetInput}>
+                        {selectedNativeToken && (
+                          <div className={styles.amountTokenTotal}>
+                            {intl.formatMessage(messages.ofLabel)}&nbsp;
+                            {formattedWalletAmount(
+                              selectedNativeToken.amount,
+                              false
+                            )}
+                            &nbsp;{currencyUnit}
+                          </div>
                         )}
-                        &nbsp;{currencyUnit}
+                        <NumericInput
+                          {...assetFieldProps}
+                          className="asset"
+                          label={intl.formatMessage(messages.assetLabel)}
+                          numberFormat={this.getCurrentNumberFormat()}
+                          numberLocaleOptions={{
+                            minimumFractionDigits: currencyMaxFractionalDigits,
+                          }}
+                          error={transactionFeeError || assetField.error}
+                          onChange={(value) => {
+                            this._isCalculatingTransactionFee = true;
+                            assetField.onChange(value);
+                            estimatedField.onChange(fees);
+                          }}
+                          currency={currencyUnit}
+                          fees={fees}
+                          total={total}
+                          skin={AmountInputSkin}
+                          onKeyPress={this.handleSubmitOnEnter}
+                          allowSigns={false}
+                          isCalculatingFees={this._isCalculatingTransactionFee}
+                        />
+                        <div className={styles.maxAmountContainer}>
+                          <PopOver
+                            content="Max"
+                            placement={
+                              isClearTooltipOpeningDownward ? 'bottom' : 'top'
+                            }
+                          >
+                            <button
+                              onClick={() => this.addMaxAmount()}
+                              className={styles.maxAmountButton}
+                            >
+                              {intl.formatMessage(messages.maxButton)}
+                            </button>
+                          </PopOver>
+                        </div>
                       </div>
-                    )}
-                    <NumericInput
-                      {...assetFieldProps}
-                      className="asset"
-                      label={intl.formatMessage(messages.assetLabel)}
-                      numberFormat={this.getCurrentNumberFormat()}
-                      numberLocaleOptions={{
-                        minimumFractionDigits: currencyMaxFractionalDigits,
-                      }}
-                      error={transactionFeeError || assetField.error}
-                      onChange={(value) => {
-                        this._isCalculatingTransactionFee = true;
-                        assetField.onChange(value);
-                        estimatedField.onChange(fees);
-                      }}
-                      currency={currencyUnit}
-                      fees={fees}
-                      total={total}
-                      skin={AmountInputSkin}
-                      onKeyPress={this.handleSubmitOnEnter}
-                      allowSigns={false}
-                      isCalculatingFees={this._isCalculatingTransactionFee}
-                    />
-                    <div className={styles.maxAmountContainer}>
-                      <PopOver
-                        content="Max"
-                        placement={
-                          isClearTooltipOpeningDownward ? 'bottom' : 'top'
-                        }
-                      >
-                        <button
-                          onClick={() => this.addMaxAmount()}
-                          className={styles.maxAmountButton}
-                        >
-                          {intl.formatMessage(messages.maxButton)}
-                        </button>
-                      </PopOver>
-                    </div>
-                  </div>
-                  { /*
-                  <div className={styles.depositInput}>
-                    <div className={styles.depositAdaTotal}>
-                      {intl.formatMessage(messages.ofLabel)}&nbsp;
-                      {formattedWalletAmount(walletAmount)}
-                    </div>
-                    <NumericInput
-                      {...depositFieldProps}
-                      className="deposit"
-                      label={intl.formatMessage(messages.depositLabel)}
-                      numberFormat={this.getCurrentNumberFormat()}
-                      numberLocaleOptions={{
-                        minimumFractionDigits: currencyMaxFractionalDigits,
-                      }}
-                      currency={intl.formatMessage(globalMessages.unitAda)}
-                      skin={AmountInputSkin}
-                      disabled
-                    />
-                  </div>
-                  */ }
+                    </>
+                  )}
                 </div>
               </div>
               {this.hasReceiverValue && (
