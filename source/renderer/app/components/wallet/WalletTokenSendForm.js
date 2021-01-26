@@ -76,6 +76,12 @@ export const messages = defineMessages({
     defaultMessage: '!!!Remove',
     description: 'Label for the "Remove" button in the wallet send form.',
   },
+  addAssetButtonLabel: {
+    id: 'wallet.send.form.button.addAssetButtonLabel',
+    defaultMessage: '!!!+ Add another asset',
+    description:
+      'Label for the "+ Add another asset" button in the wallet send form.',
+  },
   estimatedFeeLabel: {
     id: 'wallet.send.form.estimatedFee.label',
     defaultMessage: '!!!Estimated fees',
@@ -415,6 +421,8 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     this.clearReceiverAddress();
   };
 
+  addAssetRow = () => {};
+
   render() {
     const { form } = this;
     const { intl } = this.context;
@@ -464,6 +472,11 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     const newReceiverButtonClasses = classNames([
       styles.addNewReceiverButton,
       'flat',
+    ]);
+
+    const addAssetButtonClasses = classNames([
+      styles.addAssetButton,
+      'primary',
     ]);
 
     return (
@@ -589,6 +602,14 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                             </PopOver>
                           </div>
                         )}
+                        <Button
+                          className={addAssetButtonClasses}
+                          label={intl.formatMessage(
+                            messages.addAssetButtonLabel
+                          )}
+                          onClick={this.addAssetRow}
+                          skin={ButtonSkin}
+                        />
                       </div>
                     </>
                   )}

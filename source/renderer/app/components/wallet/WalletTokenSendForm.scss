@@ -39,7 +39,7 @@
       left: 50px;
       max-height: 120px;
       position: absolute;
-      top: 130px;
+      top: 136px;
       width: 6px;
     }
 
@@ -138,6 +138,18 @@
     position: absolute;
     right: 18px;
   }
+}
+
+.addAssetButton {
+  font-family: var(--font-semibold);
+  font-size: 10px;
+  font-weight: 500;
+  height: 20px;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+  margin-top: 24px;
+  text-transform: uppercase;
+  width: 143px;
 }
 
 .clearAssetContainer {
