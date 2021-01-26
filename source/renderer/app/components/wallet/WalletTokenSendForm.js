@@ -109,11 +109,6 @@ export const messages = defineMessages({
     defaultMessage: '!!!Send',
     description: 'Label for the send button on the wallet send form.',
   },
-  maxButton: {
-    id: 'wallet.send.form.maxButton',
-    defaultMessage: '!!!Max',
-    description: 'Max button label on the wallet send form',
-  },
   invalidAmount: {
     id: 'wallet.send.form.errors.invalidAmount',
     defaultMessage: '!!!Please enter a valid amount.',
@@ -214,14 +209,9 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     receiverField.clear();
   };
 
-  addMaxAmount = () => {
-    const amountField = this.form.$('amount');
-    const { nativeTokens } = this.props;
-    const maxWalletAmount =
-      nativeTokens && nativeTokens.length
-        ? nativeTokens[0].amount.toNumber()
-        : null;
-    if (maxWalletAmount) amountField.set(maxWalletAmount);
+  clearAssetValue = () => {
+    const assetField = this.form.$('asset');
+    assetField.clear();
   };
 
   handleOnReset = () => {
@@ -401,6 +391,11 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     return receiverField.value.length > 0;
   }
 
+  get hasAssetValue() {
+    const assetField = this.form.$('asset');
+    return assetField.value.length > 0;
+  }
+
   showRemoveButton = () => {
     this.setState({
       showReceiverRemoveBtn: true,
@@ -438,7 +433,6 @@ export default class WalletTokenSendForm extends Component<Props, State> {
       isHardwareWallet,
       nativeTokens,
       isClearTooltipOpeningDownward,
-      // walletAmount,
     } = this.props;
 
     const {
@@ -575,21 +569,26 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                           allowSigns={false}
                           isCalculatingFees={this._isCalculatingTransactionFee}
                         />
-                        <div className={styles.maxAmountContainer}>
-                          <PopOver
-                            content="Max"
-                            placement={
-                              isClearTooltipOpeningDownward ? 'bottom' : 'top'
-                            }
-                          >
-                            <button
-                              onClick={() => this.addMaxAmount()}
-                              className={styles.maxAmountButton}
+                        {this.hasAssetValue && (
+                          <div className={styles.clearAssetContainer}>
+                            <PopOver
+                              content="Clear"
+                              placement={
+                                isClearTooltipOpeningDownward ? 'bottom' : 'top'
+                              }
                             >
-                              {intl.formatMessage(messages.maxButton)}
-                            </button>
-                          </PopOver>
-                        </div>
+                              <button
+                                onClick={() => this.clearAssetValue()}
+                                className={styles.clearAssetButton}
+                              >
+                                <SVGInline
+                                  svg={closeIcon}
+                                  className={styles.clearReceiverIcon}
+                                />
+                              </button>
+                            </PopOver>
+                          </div>
+                        )}
                       </div>
                     </>
                   )}

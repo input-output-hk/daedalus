@@ -139,7 +139,7 @@
     right: 18px;
   }
 
-  .maxAmountContainer {
+  .clearAssetContainer {
     bottom: 0.5px;
     display: flex;
     height: 48px;
@@ -148,34 +148,33 @@
     position: absolute;
     right: 80px;
 
-    .maxAmountButton {
+    .clearAssetButton {
       background-color: var(
-        --theme-staking-stake-pools-search-clear-button-background-color
+          --theme-staking-stake-pools-search-clear-button-background-color
       );
       border-radius: 3px;
-      color: var(--theme-staking-stake-pools-search-clear-button-color);
       cursor: pointer;
       height: 28px;
-      padding: 0 5px;
-      text-transform: uppercase;
+      width: 28px;
 
       &:hover {
         background-color: var(
-          --theme-staking-stake-pools-search-clear-button-hover-background-color
+            --theme-staking-stake-pools-search-clear-button-hover-background-color
         );
       }
-    }
-  }
-}
 
-.depositInput {
-  .depositAdaTotal {
-    color: var(--theme-input-right-floating-text-color);
-    font-family: var(--font-regular);
-    font-size: 14px;
-    line-height: 1.36;
-    position: absolute;
-    right: 18px;
+      .clearReceiverIcon {
+        > svg {
+          position: relative;
+          top: 0.5px;
+          width: 10px;
+
+          > g > g {
+            fill: var(--theme-staking-stake-pools-search-clear-button-color);
+          }
+        }
+      }
+    }
   }
 }
 
