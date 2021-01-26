@@ -13,6 +13,7 @@ import BigNumber from 'bignumber.js';
 import { get } from 'lodash';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import SVGInline from 'react-svg-inline';
+import classNames from 'classnames';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import { submitOnEnter } from '../../utils/form';
 import AmountInputSkin from './skins/AmountInputSkin';
@@ -24,7 +25,7 @@ import WalletSendConfirmationDialogContainer from '../../containers/wallet/dialo
 import {
   formattedAmountToNaturalUnits,
   formattedAmountToLovelace,
-  formattedWalletAmount,
+  // formattedWalletAmount,
 } from '../../utils/formatters';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
@@ -55,7 +56,7 @@ export const messages = defineMessages({
   },
   receiverHint: {
     id: 'wallet.send.form.receiver.placeholder',
-    defaultMessage: '!!!Paste address or select your other wallet',
+    defaultMessage: '!!!Paste an address',
     description:
       'Hint inside the "Receiver" text input in the wallet send form.',
   },
@@ -69,6 +70,12 @@ export const messages = defineMessages({
     defaultMessage: '!!!Deposit',
     description:
       'Label for the "Deposit" number input in the wallet send form.',
+  },
+  addNewReceiverButtonLabel: {
+    id: 'wallet.send.form.button.addNewReceiver',
+    defaultMessage: '!!!+ Add another receiver',
+    description:
+      'Label for the "+ Add another receiver" button in the wallet send form.',
   },
   estimatedFeeLabel: {
     id: 'wallet.send.form.estimatedFee.label',
@@ -401,6 +408,14 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     return receiverField.value.length > 0;
   }
 
+  renderAssetRow() {
+
+  }
+
+  renderReceiverRow() {
+
+  }
+
   render() {
     const { form } = this;
     const { intl } = this.context;
@@ -414,7 +429,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
       isHardwareWallet,
       nativeTokens,
       isClearTooltipOpeningDownward,
-      walletAmount,
+      // walletAmount,
     } = this.props;
 
     const {
@@ -425,11 +440,11 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     const amountField = form.$('amount');
     const receiverField = form.$('receiver');
     const estimatedField = form.$('estimatedFee');
-    const depositField = form.$('deposit');
+    // const depositField = form.$('deposit');
     const receiverFieldProps = receiverField.bind();
     const amountFieldProps = amountField.bind();
     const estimatedFieldProps = estimatedField.bind();
-    const depositFieldProps = depositField.bind();
+    // const depositFieldProps = depositField.bind();
 
     const amount = new BigNumber(amountFieldProps.value || 0);
 
@@ -440,8 +455,13 @@ export default class WalletTokenSendForm extends Component<Props, State> {
       total = amount.add(transactionFee).toFormat(currencyMaxFractionalDigits);
     }
 
-    const selectedNativeToken =
-      nativeTokens && nativeTokens.length ? nativeTokens[0] : null;
+    // const selectedNativeToken =
+    //  nativeTokens && nativeTokens.length ? nativeTokens[0] : null;
+
+    const newReceiverButtonClasses = classNames([
+      styles.addNewReceiverButton,
+      'flat',
+    ]);
 
     return (
       <div className={styles.component}>
@@ -456,7 +476,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
           <BorderedBox>
             <div className={styles.walletTokenSendForm}>
               <div className={styles.walletTokenSendFormContainer}>
-                <div className={styles.fieldsLine} />
+                {/* <div className={styles.fieldsLine} /> */}
                 <div className={styles.fieldsContainer}>
                   <div className={styles.receiverInput}>
                     <Input
@@ -467,6 +487,9 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                       onChange={(value) => {
                         this._isCalculatingTransactionFee = true;
                         receiverField.onChange(value || '');
+                        if (value) {
+                          this.renderAssetRow();
+                        }
                       }}
                       skin={InputSkin}
                       onKeyPress={this.handleSubmitOnEnter}
@@ -492,6 +515,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                       </div>
                     )}
                   </div>
+                  { /*
                   <div className={styles.amountInput}>
                     {selectedNativeToken && (
                       <div className={styles.amountTokenTotal}>
@@ -540,7 +564,8 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                         </button>
                       </PopOver>
                     </div>
-                  </div>
+                  </div> */ }
+                  { /*
                   <div className={styles.depositInput}>
                     <div className={styles.depositAdaTotal}>
                       {intl.formatMessage(messages.ofLabel)}&nbsp;
@@ -559,6 +584,15 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                       disabled
                     />
                   </div>
+                  */ }
+                  {this.hasReceiverClearButton && (
+                    <Button
+                      className={newReceiverButtonClasses}
+                      label={intl.formatMessage(messages.addNewReceiverButtonLabel)}
+                      onClick={this.renderReceiverRow}
+                      skin={ButtonSkin}
+                    />
+                  )}
                 </div>
               </div>
               <div className={styles.estimatedFeeInput}>
@@ -570,7 +604,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                   numberLocaleOptions={{
                     minimumFractionDigits: currencyMaxFractionalDigits,
                   }}
-                  currency={currencyUnit}
+                  currency={intl.formatMessage(globalMessages.unitAda)}
                   fees={fees}
                   total={total}
                   skin={AmountInputSkin}

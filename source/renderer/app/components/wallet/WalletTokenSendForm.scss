@@ -165,10 +165,6 @@
   }
 }
 
-.estimatedFeeInput {
-  padding-left: 18px;
-}
-
 .depositInput {
   .depositAdaTotal {
     color: var(--theme-input-right-floating-text-color);
@@ -187,6 +183,10 @@
   position: absolute;
   right: 20px;
   text-transform: uppercase;
+}
+
+.addNewReceiverButton {
+  width: 100%;
 }
 
 .buttonsContainer {
