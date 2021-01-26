@@ -53,7 +53,7 @@
 .optionDescription {
   color: var(--theme-support-settings-text-color);
   display: block;
-  font-family: var(--font-regular);
+  font-family: var(--font-light);
   font-size: 14px;
   line-height: 1.38;
   margin-top: 20px;
@@ -62,6 +62,11 @@
   }
   b {
     font-family: var(--font-bold);
+  }
+  :global {
+    .SimpleLink_root {
+      font-family: var(--font-regular);
+    }
   }
 }
 
