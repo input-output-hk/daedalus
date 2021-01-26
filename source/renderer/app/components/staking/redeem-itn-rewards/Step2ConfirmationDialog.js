@@ -156,7 +156,7 @@ export default class Step2ConfirmationDialog extends Component<Props> {
       MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE
     );
     const differenceBetweenAmountAndFee = amount.minus(transactionFees);
-    const calculatedTransactionFees = differenceBetweenAmountAndFee.lessThan(
+    const calculatedTransactionFees = differenceBetweenAmountAndFee.isLessThan(
       minRewardsReceiverBalance
     )
       ? amount
