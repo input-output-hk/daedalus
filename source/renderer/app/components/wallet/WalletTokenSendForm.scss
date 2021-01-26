@@ -138,40 +138,40 @@
     position: absolute;
     right: 18px;
   }
+}
 
-  .clearAssetContainer {
-    bottom: 0.5px;
-    display: flex;
-    height: 48px;
-    line-height: 48px;
-    padding-left: 20px;
-    position: absolute;
-    right: 80px;
+.clearAssetContainer {
+  bottom: 0.5px;
+  display: flex;
+  height: 48px;
+  line-height: 48px;
+  padding-left: 20px;
+  position: absolute;
+  right: 80px;
 
-    .clearAssetButton {
+  .clearAssetButton {
+    background-color: var(
+        --theme-staking-stake-pools-search-clear-button-background-color
+    );
+    border-radius: 3px;
+    cursor: pointer;
+    height: 28px;
+    width: 28px;
+
+    &:hover {
       background-color: var(
-          --theme-staking-stake-pools-search-clear-button-background-color
+          --theme-staking-stake-pools-search-clear-button-hover-background-color
       );
-      border-radius: 3px;
-      cursor: pointer;
-      height: 28px;
-      width: 28px;
+    }
 
-      &:hover {
-        background-color: var(
-            --theme-staking-stake-pools-search-clear-button-hover-background-color
-        );
-      }
+    .clearReceiverIcon {
+      > svg {
+        position: relative;
+        top: 0.5px;
+        width: 10px;
 
-      .clearReceiverIcon {
-        > svg {
-          position: relative;
-          top: 0.5px;
-          width: 10px;
-
-          > g > g {
-            fill: var(--theme-staking-stake-pools-search-clear-button-color);
-          }
+        > g > g {
+          fill: var(--theme-staking-stake-pools-search-clear-button-color);
         }
       }
     }

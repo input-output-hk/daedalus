@@ -74,8 +74,7 @@ export const messages = defineMessages({
   removeReceiverButtonLabel: {
     id: 'wallet.send.form.button.removeReceiver',
     defaultMessage: '!!!Remove',
-    description:
-      'Label for the "Remove" button in the wallet send form.',
+    description: 'Label for the "Remove" button in the wallet send form.',
   },
   estimatedFeeLabel: {
     id: 'wallet.send.form.estimatedFee.label',
@@ -393,7 +392,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
 
   get hasAssetValue() {
     const assetField = this.form.$('asset');
-    return assetField.value.length > 0;
+    return assetField.value.toString().length > 0;
   }
 
   showRemoveButton = () => {
@@ -408,13 +407,9 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     });
   };
 
-  renderAssetRow = () => {
+  renderAssetRow = () => {};
 
-  };
-
-  renderReceiverRow = () => {
-
-  };
+  renderReceiverRow = () => {};
 
   removeReceiverRow = () => {
     this.clearReceiverAddress();
@@ -488,11 +483,14 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                   <div
                     onMouseEnter={this.showRemoveButton}
                     onMouseLeave={this.hideRemoveButton}
-                    className={styles.receiverInput}>
+                    className={styles.receiverInput}
+                  >
                     {this.hasReceiverValue && (
                       <Button
                         className={removeReceiverButtonClasses}
-                        label={intl.formatMessage(messages.removeReceiverButtonLabel)}
+                        label={intl.formatMessage(
+                          messages.removeReceiverButtonLabel
+                        )}
                         onClick={this.removeReceiverRow}
                         skin={ButtonSkin}
                       />
@@ -503,7 +501,6 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                       {...receiverField.bind()}
                       error={receiverField.error}
                       onChange={(value) => {
-                        this._isCalculatingTransactionFee = true;
                         receiverField.onChange(value || '');
                         if (value) {
                           this.renderAssetRow();
@@ -535,7 +532,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                   </div>
                   {this.hasReceiverValue && (
                     <>
-                      <div className={styles.fieldsLine}/>
+                      <div className={styles.fieldsLine} />
                       <div className={styles.assetInput}>
                         {selectedNativeToken && (
                           <div className={styles.amountTokenTotal}>
@@ -560,6 +557,9 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                             this._isCalculatingTransactionFee = true;
                             assetField.onChange(value);
                             estimatedField.onChange(fees);
+                            if (value) {
+                              this.renderAssetRow();
+                            }
                           }}
                           currency={currencyUnit}
                           fees={fees}
