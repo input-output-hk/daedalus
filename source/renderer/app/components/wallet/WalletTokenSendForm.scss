@@ -89,7 +89,7 @@
 
     .clearReceiverButton {
       background-color: var(
-        --theme-staking-stake-pools-search-clear-button-background-color
+          --theme-staking-stake-pools-search-clear-button-background-color
       );
       border-radius: 3px;
       cursor: pointer;
@@ -98,7 +98,7 @@
 
       &:hover {
         background-color: var(
-          --theme-staking-stake-pools-search-clear-button-hover-background-color
+            --theme-staking-stake-pools-search-clear-button-hover-background-color
         );
       }
 
@@ -159,7 +159,7 @@
   line-height: 48px;
   padding-left: 20px;
   position: absolute;
-  right: 80px;
+  right: 110px;
   top: 31px;
 
   .clearAssetButton {
@@ -189,6 +189,15 @@
       }
     }
   }
+}
+
+.separator {
+  background: var(--theme-bordered-box-border);
+  height: 20px;
+  left: 20px;
+  position: relative;
+  top: 15px;
+  width: 1px;
 }
 
 .calculatingFeesContainer {
@@ -281,8 +290,26 @@
 }
 
 .walletsDropdownWrapper {
-  .walletsDropdown {
+  bottom: 42px;
+  display: flex;
+  position: absolute;
+  right: 0;
 
+  .walletsDropdown {
+    input {
+      border-left: none;
+      height: 48px;
+    }
+
+    :global {
+      .SimpleSelect_selectInput.SelectOverrides_selectInput .WalletsDropdownOption_selected .WalletsDropdownOption_topRow {
+        width: 50px !important;
+      }
+
+      .SimpleSelect_selectInput.SelectOverrides_selectInput .WalletsDropdownOption_detail {
+        display: none !important;
+      }
+    }
   }
 }
 

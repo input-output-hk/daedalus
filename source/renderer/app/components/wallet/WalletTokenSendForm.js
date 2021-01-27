@@ -641,6 +641,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                                 />
                               </button>
                             </PopOver>
+                            <div className={styles.separator} />
                           </div>
                         )}
                         <div className={styles.walletsDropdownWrapper}>
