@@ -11,7 +11,7 @@ import {
   legacyStateDir,
   nodeImplementation,
   isFlight,
-  launcherConfig,
+  smashUrl,
 } from './config';
 import {
   SHELLEY_LOCAL,
@@ -19,8 +19,6 @@ import {
   SHELLEY_QA,
 } from '../common/types/environment.types';
 import { CardanoNodeImplementationOptions } from '../common/types/cardano-node.types';
-
-const { smashUrl } = launcherConfig || {};
 
 const _process = process;
 const _isShelleyTestnet =
