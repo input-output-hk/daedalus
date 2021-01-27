@@ -1,7 +1,7 @@
 // @flow
 import type { RequestConfig } from '../../common/types';
 import type { SignatureParams } from '../types';
-import { request } from '../../utils/requestBinary';
+import { request } from '../../utils/request';
 
 export const createWalletSignature = (
   config: RequestConfig,
@@ -14,5 +14,6 @@ export const createWalletSignature = (
       ...config,
     },
     {},
-    data
+    data,
+    { isOctetStreamResponse: true }
   );

@@ -2166,12 +2166,11 @@ export default class AdaApi {
           },
         },
       };
-
       const response = await createWalletSignature(this.config, {
         walletId,
         role,
         index,
-        data: { ...data },
+        data,
       });
       logger.debug('AdaApi::createWalletSignature success', { response });
       return response;
