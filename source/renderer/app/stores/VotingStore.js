@@ -7,7 +7,7 @@ import {
   WalletTransaction,
 } from '../domains/WalletTransaction';
 import { formattedArrayBufferToHexString } from '../utils/formatters';
-import wallet from '../utils/wallet';
+import walletUtils from '../utils/walletUtils';
 import {
   VOTING_REGISTRATION_CONFIRMATION_DURATION,
   VOTING_REGISTRATION_CONFIRMATION_CHECK_INTERVAL,
@@ -162,20 +162,20 @@ export default class VotingStore extends Store {
   };
 
   _generateQrCode = async (pinCode: number) => {
-    const Modules = await wallet;
-    const PASSWORD = new Uint8Array(4);
+    const { symmetric_encrypt: symmetricEncrypt } = await walletUtils;
+    const password = new Uint8Array(4);
     pinCode
       .toString()
       .split('')
       .forEach((value: string, index: number) => {
-        PASSWORD[index] = parseInt(value, 10);
+        password[index] = parseInt(value, 10);
       });
     if (!this.votingRegistrationKey)
       throw new Error(
         'Failed to generate QR code due to missing voting registration key.'
       );
-    const encrypt = Modules.symmetric_encrypt(
-      PASSWORD,
+    const encrypt = symmetricEncrypt(
+      password,
       this.votingRegistrationKey.bytes()
     );
     this.setQrCode(formattedArrayBufferToHexString(encrypt));
@@ -198,13 +198,12 @@ export default class VotingStore extends Store {
   };
 
   generateVotingRegistrationKey = async () => {
-    const Modules = await wallet;
-    const key = Modules.Ed25519ExtendedPrivate;
-    this.setVotingRegistrationKey(key.generate());
+    const { Ed25519ExtendedPrivate: extendedPrivateKey } = await walletUtils;
+    this.setVotingRegistrationKey(extendedPrivateKey.generate());
   };
 
   getHexFromBech32 = async (key: string): Promise<string> => {
-    const Modules = await wallet;
-    return formattedArrayBufferToHexString(Modules.bech32_decode_to_bytes(key));
+    const { bech32_decode_to_bytes: decodeBech32ToBytes } = await walletUtils;
+    return formattedArrayBufferToHexString(decodeBech32ToBytes(key));
   };
 }
