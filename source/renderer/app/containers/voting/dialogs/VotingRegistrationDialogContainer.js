@@ -144,14 +144,12 @@ export default class VotingRegistrationDialogContainer extends Component<
     const amount = formattedAmountToLovelace(
       `${VOTING_REGISTRATION_FEE_CALCULATION_AMOUNT}`
     );
-
     this.props.stores.voting.votingSendTransactionRequest.reset();
     this.props.actions.voting.sendTransaction.trigger({
-      passphrase: spendingPassword,
       amount,
+      passphrase: spendingPassword,
     });
     this.props.actions.voting.initializeCountdownInterval.trigger();
-
     this.handleContinue();
   };
 

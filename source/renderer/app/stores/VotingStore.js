@@ -105,7 +105,6 @@ export default class VotingStore extends Store {
   }: {
     amount: number,
     passphrase: string,
-    amount: number,
   }) => {
     const walletId = this.selectedVotingWalletId;
     if (!walletId)
@@ -193,8 +192,8 @@ export default class VotingStore extends Store {
     // Return voting transaction when state is not "PENDING"
     if (transaction.state === TransactionStates.OK) {
       this.setIsVotingRegistrationTransactionApproved(true);
+      this.setIsVotingRegistrationTransactionPending(false);
     }
-    this.setIsVotingRegistrationTransactionPending(false);
   };
 
   generateVotingRegistrationKey = async () => {
