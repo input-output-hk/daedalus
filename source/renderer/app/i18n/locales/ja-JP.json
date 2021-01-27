@@ -842,6 +842,7 @@
   "wallet.send.form.reset": "リセット",
   "wallet.send.form.send": "送信",
   "wallet.send.form.syncingTransactionsMessage": "ウォレットの残高とトランザクション履歴は現在ブロックチェーンと同期中です。",
+  "wallet.send.form.syncingWallet": "同期",
   "wallet.send.form.title.hint": "例：太郎用資金",
   "wallet.send.form.title.label": "タイトル",
   "wallet.settings.assurance": "!!!Transaction assurance security level",

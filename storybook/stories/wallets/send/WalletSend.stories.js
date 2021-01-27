@@ -15,6 +15,13 @@ import { HwDeviceStatuses } from '../../../../source/renderer/app/domains/Wallet
 import WalletSendForm from '../../../../source/renderer/app/components/wallet/WalletSendForm';
 import WalletTokenSendForm from '../../../../source/renderer/app/components/wallet/WalletTokenSendForm';
 
+const nativeTokens = [
+  generateWallet('ADA', '55119903750165'),
+  generateWallet('Tether', '25119903750165'),
+  generateWallet('TrueUSD', '15119903750165'),
+  generateWallet('USD Coin', '0'),
+];
+
 storiesOf('Wallets|Send', module)
   .addDecorator(WalletsWrapper)
   .add('Send', () => (
@@ -100,11 +107,7 @@ storiesOf('Wallets|Send', module)
       walletAmount={new BigNumber(123)}
       hwDeviceStatus={HwDeviceStatuses.READY}
       isHardwareWallet={boolean('isHardwareWallet', false)}
-      nativeTokens={[
-        generateWallet('ADA', '55119903750165'),
-        generateWallet('Tether', '25119903750165'),
-        generateWallet('TrueUSD', '15119903750165'),
-        generateWallet('USD Coin', '0'),
-      ]}
+      selectedWallet={nativeTokens[0]}
+      nativeTokens={nativeTokens}
     />
   ));

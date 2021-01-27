@@ -77,6 +77,7 @@ export default class WalletSendPage extends Component<Props> {
     const { isValidAddress } = wallets;
     const { validateAmount } = transactions;
     const { hwDeviceStatus } = hardwareWallets;
+    const { getWalletById } = wallets;
     const activeWallet = wallets.active;
     let nativeTokens = wallets.all.filter(
       (wallet) => wallet.isNativeTokenWallet
@@ -84,9 +85,11 @@ export default class WalletSendPage extends Component<Props> {
 
     // @todo - Remove hardcoded nativeTokens value after hooking up real data
     const hasNativeTokens = WALLET_NATIVE_TOKENS_ENABLED;
-    if (!nativeTokens.length && hasNativeTokens) {
+    if (hasNativeTokens && (!nativeTokens || !nativeTokens.length)) {
       nativeTokens = [wallets.all[0]];
     }
+
+    const selectedNativeTokenWallet = nativeTokens && nativeTokens.length ? getWalletById(nativeTokens[0].id) : null;
 
     // Guard against potential null values
     if (!activeWallet)
@@ -95,7 +98,7 @@ export default class WalletSendPage extends Component<Props> {
 
     return (
       <>
-        {nativeTokens && nativeTokens.length ? (
+        {hasNativeTokens && nativeTokens && nativeTokens.length ? (
           <WalletTokenSendForm
             currencyUnit={intl.formatMessage(globalMessages.unitAda)}
             currencyMaxIntegerDigits={MAX_INTEGER_PLACES_IN_ADA}
@@ -111,6 +114,7 @@ export default class WalletSendPage extends Component<Props> {
               })
             }
             nativeTokens={nativeTokens}
+            selectedWallet={selectedNativeTokenWallet}
             walletAmount={activeWallet.amount}
             addressValidator={isValidAddress}
             isDialogOpen={uiDialogs.isOpen}

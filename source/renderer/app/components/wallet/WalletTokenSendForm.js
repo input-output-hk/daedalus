@@ -36,6 +36,7 @@ import type { HwDeviceStatus } from '../../domains/Wallet';
 import WalletTokenSendConfirmationDialog from './WalletTokenSendConfirmationDialog';
 import Wallet from '../../domains/Wallet';
 import closeIcon from '../../assets/images/close-cross.inline.svg';
+import WalletsDropdown from "../widgets/forms/WalletsDropdown";
 
 export const messages = defineMessages({
   titleLabel: {
@@ -138,6 +139,12 @@ export const messages = defineMessages({
     description:
       'Label for the "Calculating fees" message for amount input field.',
   },
+  syncingWallet: {
+    id: 'wallet.send.form.syncingWallet',
+    defaultMessage: '!!!syncing',
+    description:
+      'Syncing wallet label on the send tokens form.',
+  },
 });
 
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
@@ -162,6 +169,7 @@ type Props = {
   isHardwareWallet: boolean,
   nativeTokens: Array<Wallet>,
   isClearTooltipOpeningDownward?: boolean,
+  selectedWallet: Wallet,
 };
 
 type State = {
@@ -170,6 +178,7 @@ type State = {
   feeCalculationRequestQue: number,
   transactionFeeError: ?string | ?Node,
   showReceiverRemoveBtn: boolean,
+  selectedWalletId: ?string,
 };
 
 @observer
@@ -184,6 +193,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     feeCalculationRequestQue: 0,
     transactionFeeError: null,
     showReceiverRemoveBtn: false,
+    selectedWalletId: null,
   };
 
   // We need to track the fee calculation state in order to disable
@@ -200,6 +210,16 @@ export default class WalletTokenSendForm extends Component<Props, State> {
 
   componentDidMount() {
     this._isMounted = true;
+    const { selectedWallet, nativeTokens } = this.props;
+    if (selectedWallet) {
+      this.onSelectWallet(selectedWallet.id);
+    }
+
+    // @todo Remove hardcoded values for currencies
+    if (nativeTokens && nativeTokens.length) {
+      // eslint-disable-next-line no-return-assign
+      nativeTokens.forEach((token) => token.currencyUnit = token.name);
+    }
   }
 
   componentWillUnmount() {
@@ -303,6 +323,9 @@ export default class WalletTokenSendForm extends Component<Props, State> {
               ];
             },
           ],
+        },
+        walletsDropdown: {
+          type: 'select',
         },
         estimatedFee: {
           label: this.context.intl.formatMessage(messages.estimatedFeeLabel),
@@ -424,16 +447,25 @@ export default class WalletTokenSendForm extends Component<Props, State> {
   renderReceiverRow = () => {};
 
   removeReceiverRow = () => {
+    this.clearAssetValue();
     this.clearReceiverAddress();
   };
 
   addAssetRow = () => {};
 
+  onSelectWallet = (walletId: string) => {
+    this.setState({ selectedWalletId: walletId });
+  };
+
+  getNativeTokenWalletById = (selectedWalletId: string): ?Wallet  => {
+   const { nativeTokens } = this.props;
+   return nativeTokens.find((token) => token.id === selectedWalletId);
+  };
+
   render() {
     const { form } = this;
     const { intl } = this.context;
     const {
-      currencyUnit,
       currencyMaxFractionalDigits,
       isDialogOpen,
       isRestoreActive,
@@ -449,13 +481,16 @@ export default class WalletTokenSendForm extends Component<Props, State> {
       transactionFee,
       transactionFeeError,
       showReceiverRemoveBtn,
+      selectedWalletId,
     } = this.state;
     const assetField = form.$('asset');
     const receiverField = form.$('receiver');
     const estimatedField = form.$('estimatedFee');
+    const walletsDropdownField = form.$('walletsDropdown');
     const receiverFieldProps = receiverField.bind();
     const assetFieldProps = assetField.bind();
     const estimatedFieldProps = estimatedField.bind();
+    const walletsDropdownFieldProps = walletsDropdownField.bind();
 
     const amount = new BigNumber(assetFieldProps.value || 0);
 
@@ -466,8 +501,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
       total = amount.add(transactionFee).toFormat(currencyMaxFractionalDigits);
     }
 
-    const selectedNativeToken =
-      nativeTokens && nativeTokens.length ? nativeTokens[0] : null;
+    const selectedNativeToken = selectedWalletId && nativeTokens && nativeTokens.length ? this.getNativeTokenWalletById(selectedWalletId) : null;
 
     const removeReceiverButtonClasses = classNames([
       styles.removeReceiverButton,
@@ -565,7 +599,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                               selectedNativeToken.amount,
                               false
                             )}
-                            &nbsp;{currencyUnit}
+                            &nbsp;{selectedNativeToken.currencyUnit}
                           </div>
                         )}
                         <NumericInput
@@ -584,7 +618,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                               this.renderAssetRow();
                             }
                           }}
-                          currency={currencyUnit}
+                          currency={selectedNativeToken.currencyUnit}
                           skin={AmountInputSkin}
                           onKeyPress={this.handleSubmitOnEnter}
                           allowSigns={false}
@@ -609,6 +643,19 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                             </PopOver>
                           </div>
                         )}
+                        <div className={styles.walletsDropdownWrapper}>
+                          <WalletsDropdown
+                            className={styles.walletsDropdown}
+                            {...walletsDropdownFieldProps}
+                            numberOfStakePools={4}
+                            wallets={nativeTokens}
+                            onChange={(id) => this.onSelectWallet(id)}
+                            syncingLabel={intl.formatMessage(messages.syncingWallet)}
+                            value={selectedWalletId}
+                            getStakePoolById={() => {}}
+                            errorPosition="bottom"
+                          />
+                        </div>
                         <Button
                           className={addAssetButtonClasses}
                           label={intl.formatMessage(
@@ -687,7 +734,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
             totalAmount={total}
             transactionFee={fees}
             amountToNaturalUnits={formattedAmountToNaturalUnits}
-            currencyUnit={currencyUnit}
+            currencyUnit={selectedNativeToken.currencyUnit}
             onExternalLinkClick={onExternalLinkClick}
             hwDeviceStatus={hwDeviceStatus}
             isHardwareWallet={isHardwareWallet}
