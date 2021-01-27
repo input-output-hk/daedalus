@@ -8,8 +8,8 @@ import BigNumber from 'bignumber.js';
 import VotingRegistrationDialog from '../../../components/voting/VotingRegistrationDialog';
 import VotingRegistrationWizard from '../../../components/voting/voting-registration-wizard/VotingRegistrationWizard';
 import {
-  MIN_VOTING_FUNDS,
-  VOTING_FEE_FOR_CALCULATE,
+  MIN_VOTING_REGISTRATION_FUNDS,
+  VOTING_REGISTRATION_FEE_CALCULATION_AMOUNT,
 } from '../../../config/votingConfig';
 import { FormattedHTMLMessageWithLink } from '../../../components/widgets/FormattedHTMLMessageWithLink';
 import { formattedAmountToLovelace } from '../../../utils/formatters';
@@ -90,7 +90,7 @@ export default class VotingRegistrationDialogContainer extends Component<
     walletReward?: BigNumber = 0
   ) =>
     walletAmount &&
-    walletAmount.gte(new BigNumber(MIN_VOTING_FUNDS)) &&
+    walletAmount.gte(new BigNumber(MIN_VOTING_REGISTRATION_FUNDS)) &&
     !walletAmount.isEqualTo(walletReward);
 
   get selectedWalletId() {
@@ -141,7 +141,9 @@ export default class VotingRegistrationDialogContainer extends Component<
   };
 
   handleDeposit = (spendingPassword: string) => {
-    const amount = formattedAmountToLovelace(`${VOTING_FEE_FOR_CALCULATE}`);
+    const amount = formattedAmountToLovelace(
+      `${VOTING_REGISTRATION_FEE_CALCULATION_AMOUNT}`
+    );
 
     this.props.stores.voting.votingSendTransactionRequest.reset();
     this.props.actions.voting.sendTransaction.trigger({
@@ -190,7 +192,7 @@ export default class VotingRegistrationDialogContainer extends Component<
           stakePoolsList={stakePools}
           wallets={wallets.allWallets}
           activeStep={activeStep}
-          minVotingFunds={MIN_VOTING_FUNDS}
+          minVotingRegistrationFunds={MIN_VOTING_REGISTRATION_FUNDS}
           isWalletAcceptable={this.handleIsWalletAcceptable}
           selectedWallet={selectedWallet}
           getStakePoolById={getStakePoolById}
@@ -223,7 +225,9 @@ export default class VotingRegistrationDialogContainer extends Component<
     const { transactions, addresses, app } = this.props.stores;
     const { calculateTransactionFee } = transactions;
     const { getAddressesByWalletId } = addresses;
-    const amount = formattedAmountToLovelace(`${VOTING_FEE_FOR_CALCULATE}`);
+    const amount = formattedAmountToLovelace(
+      `${VOTING_REGISTRATION_FEE_CALCULATION_AMOUNT}`
+    );
     this.setState({
       transactionFee: null,
       transactionFeeError: null,

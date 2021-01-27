@@ -63,7 +63,7 @@ export default class Step1ConfigurationContainer extends Component<Props> {
     if (selectedWallet && !this.onWalletAcceptable(amount)) {
       // Wallet is restoring
       if (isRestoring) errorMessage = messages.errorRestoringWallet;
-      // Wallet balance < min delegation funds
+      // Wallet balance < min rewards redemption funds
       else errorMessage = messages.errorMinRewardFunds;
     }
     const { openExternalLink } = stores.app;

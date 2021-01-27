@@ -13,7 +13,7 @@ import {
   isValidRepeatPinCode,
 } from '../../../utils/validations';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
-import { PIN_CODE_LENGTH } from '../../../config/votingConfig';
+import { VOTIGN_REGISTRATION_PIN_CODE_LENGTH } from '../../../config/votingConfig';
 import commonStyles from './VotingRegistrationSteps.scss';
 import styles from './VotingRegistrationStepsEnterPinCode.scss';
 
@@ -92,13 +92,14 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<Props
             ({ field, form }) => {
               const value = field.value ? field.value.join('') : '';
               const repeatPinCodeField = form.$('repeatPinCode');
-              const isRepeatPinCodeFieldSet = value.length === PIN_CODE_LENGTH;
+              const isRepeatPinCodeFieldSet =
+                value.length === VOTIGN_REGISTRATION_PIN_CODE_LENGTH;
               repeatPinCodeField.validate({
                 showErrors: isRepeatPinCodeFieldSet,
               });
 
               return [
-                isValidPinCode(value, PIN_CODE_LENGTH),
+                isValidPinCode(value, VOTIGN_REGISTRATION_PIN_CODE_LENGTH),
                 this.context.intl.formatMessage(messages.invalidPinCode),
               ];
             },

@@ -156,7 +156,9 @@ export const generateThousands = (value: number) => {
   return Math.round(value / 1000) * 1000;
 };
 
-export const formattedArrayBufferToHexString = (arrayBuffer: Uint8Array) => {
+export const formattedArrayBufferToHexString = (
+  arrayBuffer: Uint8Array
+): string => {
   const buff = new Uint8Array(arrayBuffer);
   const byteToHex = [];
   const hexOctets = [];

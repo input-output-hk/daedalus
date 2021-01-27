@@ -7400,7 +7400,7 @@
         }
       },
       {
-        "defaultMessage": "!!!This wallet does not contain the minimum amount of {minVotingFunds} ADA that is required for voting to be enabled. Please select a wallet with <span>a minimum amount of {minVotingFunds} ADA</span> and click Continue.",
+        "defaultMessage": "!!!This wallet does not contain the minimum amount of {minVotingRegistrationFunds} ADA that is required for voting to be enabled. Please select a wallet with <span>a minimum amount of {minVotingRegistrationFunds} ADA</span> and click Continue.",
         "description": "errorMinVotingFunds Error Label on the voting registration \"choose wallet\" step.",
         "end": {
           "column": 3,

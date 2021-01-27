@@ -21,7 +21,7 @@ type Props = {
   wallets: Array<Wallet>,
   selectedWallet: ?Wallet,
   onSetPinCode: Function,
-  minVotingFunds: number,
+  minVotingRegistrationFunds: number,
   stakePoolsList: Array<StakePool>,
   getStakePoolById: Function,
   transactionFee: ?BigNumber,
@@ -48,7 +48,7 @@ export default class VotingRegistrationWizard extends Component<Props> {
       selectedWallet,
       isWalletAcceptable,
       stakePoolsList,
-      minVotingFunds,
+      minVotingRegistrationFunds,
       getStakePoolById,
       transactionFee,
       transactionFeeError,
@@ -71,7 +71,7 @@ export default class VotingRegistrationWizard extends Component<Props> {
           <VotingRegistrationStepsChooseWallet
             numberOfStakePools={stakePoolsList.length}
             wallets={wallets}
-            minVotingFunds={minVotingFunds}
+            minVotingRegistrationFunds={minVotingRegistrationFunds}
             selectedWalletId={selectedWalletId}
             onContinue={onContinue}
             onSelectWallet={onSelectWallet}

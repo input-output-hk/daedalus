@@ -32,7 +32,7 @@ const messages = defineMessages({
   errorMinVotingFunds: {
     id: 'voting.votingRegistration.chooseWallet.step.errorMinVotingFunds',
     defaultMessage:
-      '!!!This wallet does not contain the minimum amount of {minVotingFunds} ADA that is required for voting to be enabled. Please select a wallet with <span>a minimum amount of {minVotingFunds} ADA</span> and click Continue.',
+      '!!!This wallet does not contain the minimum amount of {minVotingRegistrationFunds} ADA that is required for voting to be enabled. Please select a wallet with <span>a minimum amount of {minVotingRegistrationFunds} ADA</span> and click Continue.',
     description:
       'errorMinVotingFunds Error Label on the voting registration "choose wallet" step.',
   },
@@ -64,7 +64,7 @@ type Props = {
   onSelectWallet: Function,
   onContinue: Function,
   wallets: Array<Wallet>,
-  minVotingFunds: number,
+  minVotingRegistrationFunds: number,
   selectedWalletId: ?string,
   isWalletAcceptable: Function,
   getStakePoolById: Function,
@@ -105,7 +105,7 @@ export default class VotingRegistrationStepsChooseWallet extends Component<
     const { selectedWalletId } = this.state;
     const {
       wallets,
-      minVotingFunds,
+      minVotingRegistrationFunds,
       isWalletAcceptable,
       numberOfStakePools,
       getStakePoolById,
@@ -126,13 +126,16 @@ export default class VotingRegistrationStepsChooseWallet extends Component<
       // Wallet only has Reward balance
       else if (!amount.isZero() && amount.isEqualTo(reward))
         errorMessage = messages.errorMinVotingFundsRewardsOnly;
-      // Wallet balance < min delegation funds
+      // Wallet balance < min voting registration funds
       else errorMessage = messages.errorMinVotingFunds;
     }
 
     const error = errorMessage && (
       <p className={styles.errorMessage}>
-        <FormattedHTMLMessage {...errorMessage} values={{ minVotingFunds }} />
+        <FormattedHTMLMessage
+          {...errorMessage}
+          values={{ minVotingRegistrationFunds }}
+        />
       </p>
     );
 

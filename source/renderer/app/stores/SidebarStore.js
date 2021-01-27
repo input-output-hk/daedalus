@@ -64,7 +64,12 @@ export default class SidebarStore extends Store {
   }
 
   @action _configureCategories = () => {
-    const { isFlight, isIncentivizedTestnet, isShelleyTestnet } = global;
+    const {
+      isFlight,
+      isIncentivizedTestnet,
+      isShelleyTestnet,
+      environment: { isDev, isMainnet, isTestnet },
+    } = global;
 
     const { isShelleyActivated, isShelleyPending } = this.stores.networkStatus;
 
@@ -82,7 +87,7 @@ export default class SidebarStore extends Store {
       [categories.STAKING.name]: isShelleyActivated,
       [categories.REDEEM_ITN_REWARDS.name]: true,
       [categories.SETTINGS.name]: true,
-      [categories.VOTING.name]: true,
+      [categories.VOTING.name]: isFlight || isMainnet || isTestnet || isDev,
       [categories.NETWORK_INFO.name]:
         isFlight || isIncentivizedTestnet || isShelleyTestnet,
     };

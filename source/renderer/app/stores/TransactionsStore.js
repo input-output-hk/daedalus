@@ -395,7 +395,7 @@ export default class TransactionsStore extends Store {
     return new Request(this.api.ada.getWithdrawals);
   };
 
-  _getTransaction = (): Request<WalletTransaction> => {
+  _getTransactionRequest = (): Request<WalletTransaction> => {
     return new Request(this.api.ada.getTransaction);
   };
 
