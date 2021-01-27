@@ -14,7 +14,10 @@ import Wallet from '../../../domains/Wallet';
 import styles from './StakePools.scss';
 import { getFilteredStakePoolsList } from './helpers';
 import StakePool from '../../../domains/StakePool';
-import { IS_RANKING_DATA_AVAILABLE } from '../../../config/stakingConfig';
+import {
+  IS_RANKING_DATA_AVAILABLE,
+  SMASH_SERVER_TYPES,
+} from '../../../config/stakingConfig';
 import smashSettingsIcon from '../../../assets/images/smash-settings-ic.inline.svg';
 import tinySpinnerIcon from '../../../assets/images/spinner-tiny.inline.svg';
 import { getSmashServerNameFromUrl } from '../../../utils/staking';
@@ -215,7 +218,7 @@ export default class StakePools extends Component<Props, State> {
     const smashSettings = (
       <button onClick={onSmashSettingsClick} className={styles.smashSettings}>
         <span>
-          {smashServer && smashServer !== 'direct'
+          {smashServer && smashServer !== SMASH_SERVER_TYPES.DIRECT
             ? intl.formatMessage(messages.moderatedBy, { smashServer })
             : intl.formatMessage(messages.unmoderated)}
         </span>

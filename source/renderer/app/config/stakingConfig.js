@@ -34,6 +34,12 @@ export const SMASH_SERVER_TYPES: {
   DIRECT: 'direct',
 };
 
+export const SMASH_SERVER_INVALID_TYPES: {
+  [key: string]: SmashServerType,
+} = {
+  NONE: 'none',
+};
+
 export const SMASH_SERVER_STATUSES: {
   [key: string]: SmashServerStatuses,
 } = {

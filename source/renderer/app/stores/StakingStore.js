@@ -17,6 +17,8 @@ import {
   REDEEM_ITN_REWARDS_STEPS as steps,
   INITIAL_DELEGATION_FUNDS,
   SMASH_SERVERS_LIST,
+  SMASH_SERVER_TYPES,
+  SMASH_SERVER_INVALID_TYPES,
   CIRCULATING_SUPPLY,
 } from '../config/stakingConfig';
 import type {
@@ -158,8 +160,9 @@ export default class StakingStore extends Store {
     // If the server wasn't set, sets it for IOHK
     if (
       !smashServerUrl ||
-      smashServerUrl === 'none' ||
-      (smashServerUrl === 'direct' && localSmashServer !== 'direct')
+      smashServerUrl === SMASH_SERVER_INVALID_TYPES.NONE ||
+      (smashServerUrl === SMASH_SERVER_TYPES.DIRECT &&
+        localSmashServer !== SMASH_SERVER_TYPES.DIRECT)
     ) {
       smashServerUrl = SMASH_SERVERS_LIST.iohk.url;
       await this.updateSmashSettingsRequest.execute(smashServerUrl);
