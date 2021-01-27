@@ -2,7 +2,9 @@
 import React, { Component } from 'react';
 import { map } from 'lodash';
 import { Select } from 'react-polymorph/lib/components/Select';
+import { Input } from 'react-polymorph/lib/components/Input';
 import { Link } from 'react-polymorph/lib/components/Link';
+import SVGInline from 'react-svg-inline';
 import { observer } from 'mobx-react';
 import {
   defineMessages,
@@ -19,6 +21,7 @@ import {
   SMASH_URL_VALIDATOR,
 } from '../../../config/stakingConfig';
 import type { SmashServerType } from '../../../types/stakingTypes';
+import spinningIcon from '../../../assets/images/spinner-ic.inline.svg';
 
 import LocalizableError from '../../../i18n/LocalizableError';
 
@@ -201,6 +204,9 @@ export default class StakePoolsSettings extends Component<Props, State> {
     const { editingSmashServerUrl, successfullyUpdated } = this.state;
     const smashServerType = getSmashServerIdFromUrl(editingSmashServerUrl);
 
+    const selectedLabel =
+      this.smashSelectMessages[smashServerType] || smashServerType;
+
     const smashSelectOptions = map(SMASH_SERVER_TYPES, (value) => ({
       label: this.smashSelectMessages[value] || value,
       value,
@@ -230,26 +236,43 @@ export default class StakePoolsSettings extends Component<Props, State> {
             }}
           />
         </div>
-        <Select
-          label={
-            <div>
-              {intl.formatMessage(messages.smashSelectLabel)}
-              {successfullyUpdated && (
-                <span className={styles.savingResultLabel}>
-                  {intl.formatMessage(messages.changesSaved)}
-                </span>
-              )}
-            </div>
-          }
-          value={smashServerType}
-          options={smashSelectOptions}
-          onChange={this.handleOnSelectSmashServerType}
-          className={styles.select}
-          optionHeight={50}
-          selectionRenderer={({ label }) => (
-            <div className={styles.selectionRenderer}>{label}</div>
-          )}
-        />
+
+        {!isLoading ? (
+          <Select
+            label={
+              <div>
+                {intl.formatMessage(messages.smashSelectLabel)}
+                {successfullyUpdated && (
+                  <span className={styles.savingResultLabel}>
+                    {intl.formatMessage(messages.changesSaved)}
+                  </span>
+                )}
+              </div>
+            }
+            value={smashServerType}
+            options={smashSelectOptions}
+            onChange={this.handleOnSelectSmashServerType}
+            className={styles.select}
+            optionHeight={50}
+            selectionRenderer={({ label }) => (
+              <div className={styles.selectionRenderer}>{label}</div>
+            )}
+          />
+        ) : (
+          <Input
+            label={intl.formatMessage(messages.smashSelectLabel)}
+            value={selectedLabel}
+            className={styles.disabledInput}
+            selectionRenderer={(label) => (
+              <div className={styles.selectionRenderer}>
+                {label}
+                <SVGInline svg={spinningIcon} className={styles.icon} />
+              </div>
+            )}
+            selectedOption={selectedLabel}
+            disabled
+          />
+        )}
 
         {smashServerType === SMASH_SERVER_TYPES.CUSTOM && (
           <InlineEditingInput

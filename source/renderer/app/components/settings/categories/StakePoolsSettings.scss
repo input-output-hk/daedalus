@@ -72,16 +72,51 @@
 }
 
 .selectionRenderer {
-  color: var(--rp-input-text-color, #5e6066);
-  font-family: var(
-    --rp-input-font-family,
-    var(--rp-theme-font-regular, 'NotoSans-Regular, NotoSansCJKjp-Regular'),
-    sans-serif
-  );
-  line-height: var(--rp-input-line-height, normal);
+  color: var(--theme-support-settings-text-color);
+  font-family: var(--rp-theme-font-regular);
+  line-height: var(--rp-input-line-height);
   padding: 14px 20px 0;
+  position: relative;
   em {
     opacity: 0.5;
+  }
+  .icon {
+    display: inline-block;
+    position: absolute;
+    right: 20px;
+    svg {
+      animation: spinner 1.5s linear infinite;
+      height: 12px;
+      position: relative;
+      top: 1px;
+      width: 12px;
+      g {
+        stroke: var(--rp-select-arrow-bg-color);
+      }
+    }
+  }
+}
+
+@keyframes spinner {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.disabledInput {
+  input {
+    height: 50px;
+    background-color: var(--rp-input-bg-color, #fafbfc);
+    border: 1px solid var(--rp-input-border-color, #c6cdd6);
+    color: var(--rp-input-text-color);
+  }
+  :global {
+    .SimpleFormField_inputWrapper {
+      height: 50px;
+    }
   }
 }
 

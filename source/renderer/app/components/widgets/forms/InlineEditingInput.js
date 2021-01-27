@@ -333,7 +333,6 @@ export default class InlineEditingInput extends Component<Props, State> {
               className={submittingButtonStyles}
               onMouseUp={() => {}}
               label={<SVGInline svg={spinningIcon} className={styles.icon} />}
-              label1=""
             />
           )}
         </div>
