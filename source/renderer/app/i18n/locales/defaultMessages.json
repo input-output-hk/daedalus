@@ -7359,13 +7359,13 @@
     "descriptors": [
       {
         "defaultMessage": "!!!For  <span>fund 2</span> voting you will only be able to use one wallet to register.",
-        "description": "Description on the voting add \"choose wallet\" step.",
+        "description": "Description on the voting registration \"choose wallet\" step.",
         "end": {
           "column": 3,
           "line": 18
         },
-        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsChooseWallet.js",
-        "id": "voting.votingAdd.chooseWallet.step.description",
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsChooseWallet.js",
+        "id": "voting.votingRegistration.chooseWallet.step.description",
         "start": {
           "column": 15,
           "line": 13
@@ -7373,13 +7373,13 @@
       },
       {
         "defaultMessage": "!!!Select wallet",
-        "description": "Label \"Wallet\" for select input on thevoting add \"choose wallet\" step.",
+        "description": "Label \"Wallet\" for select input on the voting registration \"choose wallet\" step.",
         "end": {
           "column": 3,
           "line": 24
         },
-        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsChooseWallet.js",
-        "id": "voting.votingAdd.chooseWallet.step.selectWalletInputLabel",
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsChooseWallet.js",
+        "id": "voting.votingRegistration.chooseWallet.step.selectWalletInputLabel",
         "start": {
           "column": 26,
           "line": 19
@@ -7387,13 +7387,13 @@
       },
       {
         "defaultMessage": "!!!Select Wallet",
-        "description": "Placeholder \"Select Wallet\" for select input on the voting add \"choose wallet\" step.",
+        "description": "Placeholder \"Select Wallet\" for select input on the voting registration \"choose wallet\" step.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 31
         },
-        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsChooseWallet.js",
-        "id": "voting.votingAdd.chooseWallet.step.selectWalletInputPlaceholder",
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsChooseWallet.js",
+        "id": "voting.votingRegistration.chooseWallet.step.selectWalletInputPlaceholder",
         "start": {
           "column": 32,
           "line": 25
@@ -7401,74 +7401,74 @@
       },
       {
         "defaultMessage": "!!!This wallet does not contain the minimum amount of {minVotingFunds} ADA that is required for voting to be enabled. Please select a wallet with <span>a minimum amount of {minVotingFunds} ADA</span> and click Continue.",
-        "description": "errorMinVotingFunds Error Label on the voting add \"choose wallet\" step.",
+        "description": "errorMinVotingFunds Error Label on the voting registration \"choose wallet\" step.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 38
         },
-        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsChooseWallet.js",
-        "id": "voting.votingAdd.chooseWallet.step.errorMinVotingFunds",
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsChooseWallet.js",
+        "id": "voting.votingRegistration.chooseWallet.step.errorMinVotingFunds",
         "start": {
           "column": 23,
-          "line": 31
+          "line": 32
         }
       },
       {
         "defaultMessage": "!!!This wallet contains rewards balances only, and cannot be used for voting purposes.",
-        "description": "errorMinVotingFundsRewardsOnly Error Label on the voting add \"choose wallet\" step.",
+        "description": "errorMinVotingFundsRewardsOnly Error Label on the voting registration \"choose wallet\" step.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 46
         },
-        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsChooseWallet.js",
-        "id": "voting.votingAdd.chooseWallet.step.errorMinVotingFundsRewardsOnly",
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsChooseWallet.js",
+        "id": "voting.votingRegistration.chooseWallet.step.errorMinVotingFundsRewardsOnly",
         "start": {
           "column": 34,
-          "line": 38
+          "line": 39
         }
       },
       {
         "defaultMessage": "!!!The wallet cannot be used for voting purposes while it is being synced with the blockchain.",
-        "description": "RestoringWallet Error Label on the voting add \"choose wallet\" step.",
+        "description": "RestoringWallet Error Label on the voting registration \"choose wallet\" step.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 53
         },
-        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsChooseWallet.js",
-        "id": "voting.votingAdd.chooseWallet.step.errorRestoringWallet",
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsChooseWallet.js",
+        "id": "voting.votingRegistration.chooseWallet.step.errorRestoringWallet",
         "start": {
           "column": 24,
-          "line": 45
+          "line": 47
         }
       },
       {
         "defaultMessage": "!!!Continue",
-        "description": "Label for continue button on the voting add \"choose wallet\" step.",
+        "description": "Label for continue button on the voting registration \"choose wallet\" step.",
         "end": {
           "column": 3,
-          "line": 57
+          "line": 59
         },
-        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsChooseWallet.js",
-        "id": "voting.votingAdd.chooseWallet.step.continueButtonLabel",
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsChooseWallet.js",
+        "id": "voting.votingRegistration.chooseWallet.step.continueButtonLabel",
         "start": {
           "column": 23,
-          "line": 52
+          "line": 54
         }
       }
     ],
-    "path": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsChooseWallet.json"
+    "path": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsChooseWallet.json"
   },
   {
     "descriptors": [
       {
         "defaultMessage": "!!!To ensure your registration is confirmed, you will need to wait 1 hour before proceeding.",
-        "description": "Description voting add \"confirm\" step.",
+        "description": "Description voting registration \"confirm\" step.",
         "end": {
           "column": 3,
           "line": 21
         },
-        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsConfirm.js",
-        "id": "voting.votingAdd.confirm.step.description",
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsConfirm.js",
+        "id": "voting.votingRegistration.confirm.step.description",
         "start": {
           "column": 15,
           "line": 16
@@ -7476,13 +7476,13 @@
       },
       {
         "defaultMessage": "!!!Please restart the registration process by clicking the Restart Registration button.",
-        "description": "Message for restart voting registration on the voting add \"confirm\" step.",
+        "description": "Message for restart voting registration on the voting registration \"confirm\" step.",
         "end": {
           "column": 3,
           "line": 28
         },
-        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsConfirm.js",
-        "id": "voting.votingAdd.confirm.step.descriptionRestart",
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsConfirm.js",
+        "id": "voting.votingRegistration.confirm.step.descriptionRestart",
         "start": {
           "column": 22,
           "line": 22
@@ -7490,13 +7490,13 @@
       },
       {
         "defaultMessage": "!!!If you close this window, or the wallet, you will need to start the registration process again and resubmit your registration transaction.",
-        "description": "First messages for alert to users on the voting add \"confirm\" step.",
+        "description": "First messages for alert to users on the voting registration \"confirm\" step.",
         "end": {
           "column": 3,
           "line": 35
         },
-        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsConfirm.js",
-        "id": "voting.votingAdd.confirm.step.importantInformation1",
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsConfirm.js",
+        "id": "voting.votingRegistration.confirm.step.importantInformation1",
         "start": {
           "column": 25,
           "line": 29
@@ -7504,13 +7504,13 @@
       },
       {
         "defaultMessage": "!!!In 99.99% of cases the 1 hour wait time should suffice, however if you want a 100% guarantee to ensure successful registration we recommend waiting for 18 hours before confirming.",
-        "description": "Second messages for alert the user on the voting add \"confirm\" step.",
+        "description": "Second messages for alert the user on the voting registration \"confirm\" step.",
         "end": {
           "column": 3,
           "line": 42
         },
-        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsConfirm.js",
-        "id": "voting.votingAdd.confirm.step.importantInformation2",
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsConfirm.js",
+        "id": "voting.votingRegistration.confirm.step.importantInformation2",
         "start": {
           "column": 25,
           "line": 36
@@ -7518,13 +7518,13 @@
       },
       {
         "defaultMessage": "!!!Registration transaction was not registered correctly.",
-        "description": "Error message on the voting add \"confirm\" step.",
+        "description": "Error message on the voting registration \"confirm\" step.",
         "end": {
           "column": 3,
           "line": 47
         },
-        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsConfirm.js",
-        "id": "voting.votingAdd.confirm.step.errorMessage",
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsConfirm.js",
+        "id": "voting.votingRegistration.confirm.step.errorMessage",
         "start": {
           "column": 16,
           "line": 43
@@ -7532,13 +7532,13 @@
       },
       {
         "defaultMessage": "!!!Confirm registration Transaction",
-        "description": "Label for continue button on the voting add \"confirm\" step.",
+        "description": "Label for continue button on the voting registration \"confirm\" step.",
         "end": {
           "column": 3,
-          "line": 52
+          "line": 53
         },
-        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsConfirm.js",
-        "id": "voting.votingAdd.confirm.step.continueButtonLabel",
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsConfirm.js",
+        "id": "voting.votingRegistration.confirm.step.continueButtonLabel",
         "start": {
           "column": 23,
           "line": 48
@@ -7546,46 +7546,46 @@
       },
       {
         "defaultMessage": "!!![{countdownRemaining} seconds left before confirmation]",
-        "description": "Label for continue button countdown on the voting add \"confirm\" step.",
+        "description": "Label for continue button countdown on the voting registration \"confirm\" step.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 60
         },
-        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsConfirm.js",
-        "id": "voting.votingAdd.confirm.step.continueButtonCountDownLabel",
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsConfirm.js",
+        "id": "voting.votingRegistration.confirm.step.continueButtonCountDownLabel",
         "start": {
           "column": 32,
-          "line": 53
+          "line": 54
         }
       },
       {
         "defaultMessage": "!!!Restart Registration",
-        "description": "Label for restart button on the voting add \"confirm\" step.",
+        "description": "Label for restart button on the voting registration \"confirm\" step.",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 66
         },
-        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsConfirm.js",
-        "id": "voting.votingAdd.confirm.step.restartButtonLabel",
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsConfirm.js",
+        "id": "voting.votingRegistration.confirm.step.restartButtonLabel",
         "start": {
           "column": 22,
-          "line": 60
+          "line": 61
         }
       }
     ],
-    "path": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsConfirm.json"
+    "path": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsConfirm.json"
   },
   {
     "descriptors": [
       {
         "defaultMessage": "!!!Congratulations!",
-        "description": "Title on the voting add \"enter pin code\" step.",
+        "description": "Title on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
           "line": 25
         },
-        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsEnterPinCode.js",
-        "id": "voting.votingAdd.enterPinCode.step.title",
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsEnterPinCode.js",
+        "id": "voting.votingRegistration.enterPinCode.step.title",
         "start": {
           "column": 9,
           "line": 21
@@ -7593,13 +7593,13 @@
       },
       {
         "defaultMessage": "!!!Your registration transaction was confirmed.",
-        "description": "Subtitle on the voting add \"enter pin code\" step.",
+        "description": "Subtitle on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
           "line": 30
         },
-        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsEnterPinCode.js",
-        "id": "voting.votingAdd.enterPinCode.step.subtitle",
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsEnterPinCode.js",
+        "id": "voting.votingRegistration.enterPinCode.step.subtitle",
         "start": {
           "column": 12,
           "line": 26
@@ -7607,13 +7607,13 @@
       },
       {
         "defaultMessage": "!!!Please create a voting PIN code. This code will be used to access the Catalyst Voting App and decrypt your QR code.",
-        "description": "Description on the voting add \"enter pin code\" step.",
+        "description": "Description on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 37
         },
-        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsEnterPinCode.js",
-        "id": "voting.votingAdd.enterPinCode.step.description",
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsEnterPinCode.js",
+        "id": "voting.votingRegistration.enterPinCode.step.description",
         "start": {
           "column": 15,
           "line": 31
@@ -7621,44 +7621,44 @@
       },
       {
         "defaultMessage": "!!!<span>You need to remember your PIN Code.</span> If you lose it, you will not be able to proceed with the registration process and you will not be able to access the mobile app.",
-        "description": "Reminder on the voting add \"enter pin code\" step.",
+        "description": "Reminder on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 43
         },
-        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsEnterPinCode.js",
-        "id": "voting.votingAdd.enterPinCode.step.reminder",
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsEnterPinCode.js",
+        "id": "voting.votingRegistration.enterPinCode.step.reminder",
         "start": {
           "column": 12,
-          "line": 37
+          "line": 38
         }
       },
       {
         "defaultMessage": "!!!Enter PIN code",
-        "description": "Label for pin code input on the voting add \"enter pin code\" step.",
+        "description": "Label for pin code input on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 49
         },
-        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsEnterPinCode.js",
-        "id": "voting.votingAdd.enterPinCode.step.enterPinCodeLabel",
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsEnterPinCode.js",
+        "id": "voting.votingRegistration.enterPinCode.step.enterPinCodeLabel",
         "start": {
           "column": 21,
-          "line": 43
+          "line": 44
         }
       },
       {
         "defaultMessage": "!!!Repeat PIN code",
-        "description": "Label for repeat pin code on the voting add \"enter pin code\" step.",
+        "description": "Label for repeat pin code on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 55
         },
-        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsEnterPinCode.js",
-        "id": "voting.votingAdd.enterPinCode.step.repeatPinCodeLabel",
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsEnterPinCode.js",
+        "id": "voting.votingRegistration.enterPinCode.step.repeatPinCodeLabel",
         "start": {
           "column": 22,
-          "line": 49
+          "line": 50
         }
       },
       {
@@ -7666,13 +7666,13 @@
         "description": "Error message shown when repeat pin code is invalid.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 60
         },
-        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsEnterPinCode.js",
-        "id": "voting.votingAdd.enterPinCode.step.errors.invalidPinCode",
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsEnterPinCode.js",
+        "id": "voting.votingRegistration.enterPinCode.step.errors.invalidPinCode",
         "start": {
           "column": 18,
-          "line": 55
+          "line": 56
         }
       },
       {
@@ -7680,43 +7680,43 @@
         "description": "Error message shown when repeat pin code is invalid.",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 66
         },
-        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsEnterPinCode.js",
-        "id": "voting.votingAdd.enterPinCode.step.errors.invalidRepeatPinCode",
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsEnterPinCode.js",
+        "id": "voting.votingRegistration.enterPinCode.step.errors.invalidRepeatPinCode",
         "start": {
           "column": 24,
-          "line": 60
+          "line": 61
         }
       },
       {
         "defaultMessage": "!!!Create PIN code",
-        "description": "Label for continue button on the voting add \"enter pin code\" step.",
+        "description": "Label for continue button on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 72
         },
-        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsEnterPinCode.js",
-        "id": "voting.votingAdd.enterPinCode.step.continueButtonLabel",
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsEnterPinCode.js",
+        "id": "voting.votingRegistration.enterPinCode.step.continueButtonLabel",
         "start": {
           "column": 23,
-          "line": 65
+          "line": 67
         }
       }
     ],
-    "path": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsEnterPinCode.json"
+    "path": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsEnterPinCode.json"
   },
   {
     "descriptors": [
       {
         "defaultMessage": "!!!Please complete your registration now.",
-        "description": "Qr code title on the voting add \"qr code\" step.",
+        "description": "Qr code title on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
           "line": 17
         },
-        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsQrCode.js",
-        "id": "voting.votingAdd.qrCode.step.qrCodeTitle",
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsQrCode.js",
+        "id": "voting.votingRegistration.qrCode.step.qrCodeTitle",
         "start": {
           "column": 15,
           "line": 13
@@ -7724,13 +7724,13 @@
       },
       {
         "defaultMessage": "!!!Scan the QR code using the Catalyst Voting app.",
-        "description": "Qr code description of use on the voting add \"qr code\" step.",
+        "description": "Qr code description of use on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 23
         },
-        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsQrCode.js",
-        "id": "voting.votingAdd.qrCode.step.qrCodeDescription",
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsQrCode.js",
+        "id": "voting.votingRegistration.qrCode.step.qrCodeDescription",
         "start": {
           "column": 21,
           "line": 18
@@ -7738,60 +7738,60 @@
       },
       {
         "defaultMessage": "!!!This QR code is not saved anywhere, and you will not have access to it after closing this screen.",
-        "description": "Qr code messakes of use on the voting add \"qr code\" step.",
+        "description": "Qr code messakes of use on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 30
         },
-        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsQrCode.js",
-        "id": "voting.votingAdd.qrCode.step.message",
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsQrCode.js",
+        "id": "voting.votingRegistration.qrCode.step.message",
         "start": {
           "column": 11,
-          "line": 23
+          "line": 24
         }
       },
       {
         "defaultMessage": "!!!Take a screenshot of the QR code if you want to access it later.",
-        "description": "Qr code second message for take a screen shot used on the voting add \"qr code\" step.",
+        "description": "Qr code second message for take a screen shot used on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 37
         },
-        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsQrCode.js",
-        "id": "voting.votingAdd.qrCode.step.takeScreenShotMessage",
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsQrCode.js",
+        "id": "voting.votingRegistration.qrCode.step.takeScreenShotMessage",
         "start": {
           "column": 25,
-          "line": 29
+          "line": 31
         }
       },
       {
         "defaultMessage": "!!!If you lose access to the QR code, you will need to register again in order to generate a new QR code.",
-        "description": "Qr code warning messages of use on the voting add \"qr code\" step.",
+        "description": "Qr code warning messages of use on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 44
         },
-        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsQrCode.js",
-        "id": "voting.votingAdd.qrCode.step.warningMessage",
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsQrCode.js",
+        "id": "voting.votingRegistration.qrCode.step.warningMessage",
         "start": {
           "column": 18,
-          "line": 36
+          "line": 38
         }
       }
     ],
-    "path": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsQrCode.json"
+    "path": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsQrCode.json"
   },
   {
     "descriptors": [
       {
         "defaultMessage": "!!!By submitting this registration transaction, you are creating a proof of your staking balance. This proof will be used to calculate your voting power. With the exception of fees, there will be no change to the balance of your wallet.",
-        "description": "Description on the voting add \"sign\" step.",
+        "description": "Description on the voting registration \"sign\" step.",
         "end": {
           "column": 3,
           "line": 29
         },
-        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsSign.js",
-        "id": "voting.votingAdd.sign.step.description",
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsSign.js",
+        "id": "voting.votingRegistration.sign.step.description",
         "start": {
           "column": 15,
           "line": 24
@@ -7799,13 +7799,13 @@
       },
       {
         "defaultMessage": "!!!Submit Registration Transaction",
-        "description": "Label for continue button on the voting add \"sign\" step.",
+        "description": "Label for continue button on the voting registration \"sign\" step.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 35
         },
-        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsSign.js",
-        "id": "voting.votingAdd.sign.step.continueButtonLabel",
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsSign.js",
+        "id": "voting.votingRegistration.sign.step.continueButtonLabel",
         "start": {
           "column": 23,
           "line": 30
@@ -7813,16 +7813,16 @@
       },
       {
         "defaultMessage": "!!!Fees",
-        "description": "Fees label on the voting add \"sign\" step.",
+        "description": "Fees label on the voting registration \"sign\" step.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 40
         },
-        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsSign.js",
-        "id": "voting.votingAdd.sign.step.feesLabel",
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsSign.js",
+        "id": "voting.votingRegistration.sign.step.feesLabel",
         "start": {
           "column": 13,
-          "line": 35
+          "line": 36
         }
       },
       {
@@ -7830,13 +7830,13 @@
         "description": "Placeholder for \"spending password\"",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 45
         },
-        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsSign.js",
-        "id": "voting.votingAdd.sign.step.spendingPasswordPlaceholder",
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsSign.js",
+        "id": "voting.votingRegistration.sign.step.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 40
+          "line": 41
         }
       },
       {
@@ -7844,13 +7844,13 @@
         "description": "Label for \"spending password\"",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 50
         },
-        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsSign.js",
-        "id": "voting.votingAdd.sign.step.spendingPasswordLabel",
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsSign.js",
+        "id": "voting.votingRegistration.sign.step.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 45
+          "line": 46
         }
       },
       {
@@ -7858,13 +7858,13 @@
         "description": "\"Calculating fees\" message in the \"sign\" step.",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 55
         },
-        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsSign.js",
-        "id": "voting.votingAdd.sign.step.calculatingFees",
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsSign.js",
+        "id": "voting.votingRegistration.sign.step.calculatingFees",
         "start": {
           "column": 19,
-          "line": 50
+          "line": 51
         }
       },
       {
@@ -7872,13 +7872,13 @@
         "description": "\"Learn more\" link on the \"sign\" step.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 60
         },
-        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsSign.js",
-        "id": "voting.votingAdd.sign.step.learnMoreLink",
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsSign.js",
+        "id": "voting.votingRegistration.sign.step.learnMoreLink",
         "start": {
           "column": 17,
-          "line": 55
+          "line": 56
         }
       },
       {
@@ -7886,29 +7886,29 @@
         "description": "Learn more\" link URL on the \"sign\" step.",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 66
         },
-        "file": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsSign.js",
-        "id": "voting.votingAdd.sign.step.learntMoreLinkUrl",
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsSign.js",
+        "id": "voting.votingRegistration.sign.step.learntMoreLinkUrl",
         "start": {
           "column": 21,
-          "line": 60
+          "line": 61
         }
       }
     ],
-    "path": "source/renderer/app/components/voting/voting-add-wizard/VotingAddStepsSign.json"
+    "path": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsSign.json"
   },
   {
     "descriptors": [
       {
         "defaultMessage": "!!!Register to vote",
-        "description": "Tile \"Register to vote\" for Voting add",
+        "description": "Tile \"Register to vote\" for voting registration",
         "end": {
           "column": 3,
           "line": 17
         },
-        "file": "source/renderer/app/components/voting/VotingAddDialog.js",
-        "id": "voting.votingAdd.dialog.dialogTitle",
+        "file": "source/renderer/app/components/voting/VotingRegistrationDialog.js",
+        "id": "voting.votingRegistration.dialog.dialogTitle",
         "start": {
           "column": 15,
           "line": 13
@@ -7916,20 +7916,20 @@
       },
       {
         "defaultMessage": "!!!Step {step} of {stepCount}",
-        "description": "Sub title for Voting add",
+        "description": "Sub title for voting registration",
         "end": {
           "column": 3,
           "line": 22
         },
-        "file": "source/renderer/app/components/voting/VotingAddDialog.js",
-        "id": "voting.votingAdd.dialog.subtitle",
+        "file": "source/renderer/app/components/voting/VotingRegistrationDialog.js",
+        "id": "voting.votingRegistration.dialog.subtitle",
         "start": {
           "column": 12,
           "line": 18
         }
       }
     ],
-    "path": "source/renderer/app/components/voting/VotingAddDialog.json"
+    "path": "source/renderer/app/components/voting/VotingRegistrationDialog.json"
   },
   {
     "descriptors": [
@@ -14632,76 +14632,76 @@
     "descriptors": [
       {
         "defaultMessage": "!!!Wallet",
-        "description": "Step 1 label text on voting add.",
+        "description": "Step 1 label text on voting registration.",
         "end": {
           "column": 3,
           "line": 23
         },
-        "file": "source/renderer/app/containers/voting/dialogs/VotingAddDialogContainer.js",
-        "id": "voting.votingAdd.steps.step.1.label",
+        "file": "source/renderer/app/containers/voting/dialogs/VotingRegistrationDialogContainer.js",
+        "id": "voting.votingRegistration.steps.step.1.label",
         "start": {
-          "column": 23,
+          "column": 32,
           "line": 19
         }
       },
       {
         "defaultMessage": "!!!Sign",
-        "description": "Step 2 label text on voting add.",
+        "description": "Step 2 label text on voting registration.",
         "end": {
           "column": 3,
           "line": 28
         },
-        "file": "source/renderer/app/containers/voting/dialogs/VotingAddDialogContainer.js",
-        "id": "voting.votingAdd.steps.step.2.label",
+        "file": "source/renderer/app/containers/voting/dialogs/VotingRegistrationDialogContainer.js",
+        "id": "voting.votingRegistration.steps.step.2.label",
         "start": {
-          "column": 23,
+          "column": 32,
           "line": 24
         }
       },
       {
         "defaultMessage": "!!!Confirm",
-        "description": "Step 3 label text on voting add.",
+        "description": "Step 3 label text on voting registration.",
         "end": {
           "column": 3,
           "line": 33
         },
-        "file": "source/renderer/app/containers/voting/dialogs/VotingAddDialogContainer.js",
-        "id": "voting.votingAdd.steps.step.3.label",
+        "file": "source/renderer/app/containers/voting/dialogs/VotingRegistrationDialogContainer.js",
+        "id": "voting.votingRegistration.steps.step.3.label",
         "start": {
-          "column": 23,
+          "column": 32,
           "line": 29
         }
       },
       {
         "defaultMessage": "!!!PIN code",
-        "description": "Step 4 label text on voting add.",
+        "description": "Step 4 label text on voting registration.",
         "end": {
           "column": 3,
           "line": 38
         },
-        "file": "source/renderer/app/containers/voting/dialogs/VotingAddDialogContainer.js",
-        "id": "voting.votingAdd.steps.step.4.label",
+        "file": "source/renderer/app/containers/voting/dialogs/VotingRegistrationDialogContainer.js",
+        "id": "voting.votingRegistration.steps.step.4.label",
         "start": {
-          "column": 23,
+          "column": 32,
           "line": 34
         }
       },
       {
         "defaultMessage": "QR code",
-        "description": "Step 5 label text on voting add.",
+        "description": "Step 5 label text on voting registration.",
         "end": {
           "column": 3,
           "line": 43
         },
-        "file": "source/renderer/app/containers/voting/dialogs/VotingAddDialogContainer.js",
-        "id": "voting.votingAdd.steps.step.5.label",
+        "file": "source/renderer/app/containers/voting/dialogs/VotingRegistrationDialogContainer.js",
+        "id": "voting.votingRegistration.steps.step.5.label",
         "start": {
-          "column": 23,
+          "column": 32,
           "line": 39
         }
       }
     ],
-    "path": "source/renderer/app/containers/voting/dialogs/VotingAddDialogContainer.json"
+    "path": "source/renderer/app/containers/voting/dialogs/VotingRegistrationDialogContainer.json"
   },
   {
     "descriptors": [

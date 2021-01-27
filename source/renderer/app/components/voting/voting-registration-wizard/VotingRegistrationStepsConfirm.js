@@ -9,58 +9,60 @@ import SVGInline from 'react-svg-inline';
 import confirmMessageIcon from '../../../assets/images/voting/confirm-step-message-ic.inline.svg';
 import confirmErrorMessageIcon from '../../../assets/images/voting/confirm-step-error-message-ic.inline.svg';
 import LocalizableError from '../../../i18n/LocalizableError';
-import styles from './VotingAddStepsConfirm.scss';
-import commonStyles from './VotingAddSteps.scss';
+import styles from './VotingRegistrationStepsConfirm.scss';
+import commonStyles from './VotingRegistrationSteps.scss';
 
 const messages = defineMessages({
   description: {
-    id: 'voting.votingAdd.confirm.step.description',
+    id: 'voting.votingRegistration.confirm.step.description',
     defaultMessage:
       '!!!To ensure your registration is confirmed, you will need to wait 1 hour before proceeding.',
-    description: 'Description voting add "confirm" step.',
+    description: 'Description voting registration "confirm" step.',
   },
   descriptionRestart: {
-    id: 'voting.votingAdd.confirm.step.descriptionRestart',
+    id: 'voting.votingRegistration.confirm.step.descriptionRestart',
     defaultMessage:
       '!!!Please restart the registration process by clicking the Restart Registration button.',
     description:
-      'Message for restart voting registration on the voting add "confirm" step.',
+      'Message for restart voting registration on the voting registration "confirm" step.',
   },
   importantInformation1: {
-    id: 'voting.votingAdd.confirm.step.importantInformation1',
+    id: 'voting.votingRegistration.confirm.step.importantInformation1',
     defaultMessage:
       '!!!If you close this window, or the wallet, you will need to start the registration process again and resubmit your registration transaction.',
     description:
-      'First messages for alert to users on the voting add "confirm" step.',
+      'First messages for alert to users on the voting registration "confirm" step.',
   },
   importantInformation2: {
-    id: 'voting.votingAdd.confirm.step.importantInformation2',
+    id: 'voting.votingRegistration.confirm.step.importantInformation2',
     defaultMessage:
       '!!!In 99.99% of cases the 1 hour wait time should suffice, however if you want a 100% guarantee to ensure successful registration we recommend waiting for 18 hours before confirming.',
     description:
-      'Second messages for alert the user on the voting add "confirm" step.',
+      'Second messages for alert the user on the voting registration "confirm" step.',
   },
   errorMessage: {
-    id: 'voting.votingAdd.confirm.step.errorMessage',
+    id: 'voting.votingRegistration.confirm.step.errorMessage',
     defaultMessage: '!!!Registration transaction was not registered correctly.',
-    description: 'Error message on the voting add "confirm" step.',
+    description: 'Error message on the voting registration "confirm" step.',
   },
   continueButtonLabel: {
-    id: 'voting.votingAdd.confirm.step.continueButtonLabel',
+    id: 'voting.votingRegistration.confirm.step.continueButtonLabel',
     defaultMessage: '!!!Confirm registration Transaction',
-    description: 'Label for continue button on the voting add "confirm" step.',
+    description:
+      'Label for continue button on the voting registration "confirm" step.',
   },
   continueButtonCountDownLabel: {
-    id: 'voting.votingAdd.confirm.step.continueButtonCountDownLabel',
+    id: 'voting.votingRegistration.confirm.step.continueButtonCountDownLabel',
     defaultMessage:
       '!!![{countdownRemaining} seconds left before confirmation]',
     description:
-      'Label for continue button countdown on the voting add "confirm" step.',
+      'Label for continue button countdown on the voting registration "confirm" step.',
   },
   restartButtonLabel: {
-    id: 'voting.votingAdd.confirm.step.restartButtonLabel',
+    id: 'voting.votingRegistration.confirm.step.restartButtonLabel',
     defaultMessage: '!!!Restart Registration',
-    description: 'Label for restart button on the voting add "confirm" step.',
+    description:
+      'Label for restart button on the voting registration "confirm" step.',
   },
 });
 
@@ -74,7 +76,7 @@ type Props = {
 };
 
 @observer
-export default class VotingAddStepsConfirm extends Component<Props> {
+export default class VotingRegistrationStepsConfirm extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -107,8 +109,8 @@ export default class VotingAddStepsConfirm extends Component<Props> {
     const restartButtonLabel = intl.formatMessage(messages.restartButtonLabel);
 
     const className = classNames([
-      commonStyles.votingAddSteps,
-      styles.votingAddStepsConfirmWrapper,
+      commonStyles.votingRegistrationSteps,
+      styles.votingRegistrationStepsConfirmWrapper,
     ]);
 
     const contentClassName = classNames([commonStyles.content, styles.content]);

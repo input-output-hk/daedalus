@@ -5,14 +5,14 @@ import MainLayout from '../MainLayout';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import VotingInfo from '../../components/voting/info/VotingInfo';
 import type { InjectedProps } from '../../types/injectedPropsType';
-import VotingAddDialogContainer from './dialogs/VotingAddDialogContainer';
-import VotingAddDialog from '../../components/voting/VotingAddDialog';
+import VotingRegistrationDialogContainer from './dialogs/VotingRegistrationDialogContainer';
+import VotingRegistrationDialog from '../../components/voting/VotingRegistrationDialog';
 
 type Props = InjectedProps;
 
 @inject('stores', 'actions')
 @observer
-export default class VotingAddPage extends Component<Props> {
+export default class VotingRegistrationPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
   onClose = () => {
@@ -29,13 +29,13 @@ export default class VotingAddPage extends Component<Props> {
         <VerticalFlexContainer>
           <VotingInfo
             onRegisterToVoteClick={() =>
-              actions.dialogs.open.trigger({ dialog: VotingAddDialog })
+              actions.dialogs.open.trigger({ dialog: VotingRegistrationDialog })
             }
             onExternalLinkClick={openExternalLink}
           />
         </VerticalFlexContainer>
-        {uiDialogs.isOpen(VotingAddDialog) && (
-          <VotingAddDialogContainer onClose={this.onClose} />
+        {uiDialogs.isOpen(VotingRegistrationDialog) && (
+          <VotingRegistrationDialogContainer onClose={this.onClose} />
         )}
       </MainLayout>
     );

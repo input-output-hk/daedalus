@@ -4,11 +4,11 @@ import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import { get } from 'lodash';
 import { BigNumber } from 'bignumber.js';
-import VotingAddStepsChooseWallet from './VotingAddStepsChooseWallet';
-import VotingAddStepsSign from './VotingAddStepsSign';
-import VotingAddStepsConfirm from './VotingAddStepsConfirm';
-import VotingAddStepsEnterPinCode from './VotingAddStepsEnterPinCode';
-import VotingAddStepsQrCode from './VotingAddStepsQrCode';
+import VotingRegistrationStepsChooseWallet from './VotingRegistrationStepsChooseWallet';
+import VotingRegistrationStepsSign from './VotingRegistrationStepsSign';
+import VotingRegistrationStepsConfirm from './VotingRegistrationStepsConfirm';
+import VotingRegistrationStepsEnterPinCode from './VotingRegistrationStepsEnterPinCode';
+import VotingRegistrationStepsQrCode from './VotingRegistrationStepsQrCode';
 import StakePool from '../../../domains/StakePool';
 import LocalizableError from '../../../i18n/LocalizableError';
 import Wallet from '../../../domains/Wallet';
@@ -37,7 +37,7 @@ type Props = {
 };
 
 @observer
-export default class VotingAddWizard extends Component<Props> {
+export default class VotingRegistrationWizard extends Component<Props> {
   render() {
     const {
       activeStep,
@@ -68,7 +68,7 @@ export default class VotingAddWizard extends Component<Props> {
     switch (activeStep) {
       case 1:
         content = (
-          <VotingAddStepsChooseWallet
+          <VotingRegistrationStepsChooseWallet
             numberOfStakePools={stakePoolsList.length}
             wallets={wallets}
             minVotingFunds={minVotingFunds}
@@ -82,7 +82,7 @@ export default class VotingAddWizard extends Component<Props> {
         break;
       case 2:
         content = (
-          <VotingAddStepsSign
+          <VotingRegistrationStepsSign
             onConfirm={onSubmit}
             transactionFee={transactionFee}
             transactionFeeError={transactionFeeError}
@@ -92,7 +92,7 @@ export default class VotingAddWizard extends Component<Props> {
         break;
       case 3:
         content = (
-          <VotingAddStepsConfirm
+          <VotingRegistrationStepsConfirm
             transactionError={transactionError}
             onConfirm={onContinue}
             onRollback={onRollback}
@@ -103,10 +103,12 @@ export default class VotingAddWizard extends Component<Props> {
         );
         break;
       case 4:
-        content = <VotingAddStepsEnterPinCode onSetPinCode={onSetPinCode} />;
+        content = (
+          <VotingRegistrationStepsEnterPinCode onSetPinCode={onSetPinCode} />
+        );
         break;
       case 5:
-        content = <VotingAddStepsQrCode qrCode={qrCode} />;
+        content = <VotingRegistrationStepsQrCode qrCode={qrCode} />;
         break;
       default:
         content = <></>;

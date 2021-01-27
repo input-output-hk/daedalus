@@ -23,7 +23,6 @@ export default class VotingStore extends Store {
 
   setup() {
     const { voting: votingActions } = this.actions;
-
     votingActions.selectVotingWallet.listen(this._setSelectedVotingWalletId);
     votingActions.generateQrCode.listen(this._generateQrCode);
     votingActions.sendTransaction.listen(this._sendTransaction);

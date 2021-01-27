@@ -5,20 +5,20 @@ import type { Node } from 'react';
 import { Stepper } from 'react-polymorph/lib/components/Stepper';
 import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
 import { defineMessages, FormattedMessage, intlShape } from 'react-intl';
-import styles from './VotingAddDialog.scss';
+import styles from './VotingRegistrationDialog.scss';
 import Dialog from '../widgets/Dialog';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 
 const messages = defineMessages({
   dialogTitle: {
-    id: 'voting.votingAdd.dialog.dialogTitle',
+    id: 'voting.votingRegistration.dialog.dialogTitle',
     defaultMessage: '!!!Register to vote',
-    description: 'Tile "Register to vote" for Voting add',
+    description: 'Tile "Register to vote" for voting registration',
   },
   subtitle: {
-    id: 'voting.votingAdd.dialog.subtitle',
+    id: 'voting.votingRegistration.dialog.subtitle',
     defaultMessage: '!!!Step {step} of {stepCount}',
-    description: 'Sub title for Voting add',
+    description: 'Sub title for voting registration',
   },
 });
 
@@ -30,7 +30,7 @@ type Props = {
 };
 
 @observer
-export default class VotingAddDialog extends Component<Props> {
+export default class VotingRegistrationDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -57,7 +57,7 @@ export default class VotingAddDialog extends Component<Props> {
             values={{ step: activeStep, stepCount: stepsList.length }}
           />
         </div>
-        <div className={styles.votingAddStepsIndicatorWrapper}>
+        <div className={styles.votingRegistrationStepsIndicatorWrapper}>
           <Stepper
             steps={stepsList}
             activeStep={activeStep}

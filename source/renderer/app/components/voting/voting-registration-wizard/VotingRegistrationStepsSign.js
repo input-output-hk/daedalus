@@ -17,48 +17,49 @@ import globalMessages from '../../../i18n/global-messages';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { formattedWalletAmount } from '../../../utils/formatters';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
-import commonStyles from './VotingAddSteps.scss';
-import styles from './VotingAddStepsSign.scss';
+import commonStyles from './VotingRegistrationSteps.scss';
+import styles from './VotingRegistrationStepsSign.scss';
 
 const messages = defineMessages({
   description: {
-    id: 'voting.votingAdd.sign.step.description',
+    id: 'voting.votingRegistration.sign.step.description',
     defaultMessage:
       '!!!By submitting this registration transaction, you are creating a proof of your staking balance. This proof will be used to calculate your voting power. With the exception of fees, there will be no change to the balance of your wallet.',
-    description: 'Description on the voting add "sign" step.',
+    description: 'Description on the voting registration "sign" step.',
   },
   continueButtonLabel: {
-    id: 'voting.votingAdd.sign.step.continueButtonLabel',
+    id: 'voting.votingRegistration.sign.step.continueButtonLabel',
     defaultMessage: '!!!Submit Registration Transaction',
-    description: 'Label for continue button on the voting add "sign" step.',
+    description:
+      'Label for continue button on the voting registration "sign" step.',
   },
   feesLabel: {
-    id: 'voting.votingAdd.sign.step.feesLabel',
+    id: 'voting.votingRegistration.sign.step.feesLabel',
     defaultMessage: '!!!Fees',
-    description: 'Fees label on the voting add "sign" step.',
+    description: 'Fees label on the voting registration "sign" step.',
   },
   spendingPasswordPlaceholder: {
-    id: 'voting.votingAdd.sign.step.spendingPasswordPlaceholder',
+    id: 'voting.votingRegistration.sign.step.spendingPasswordPlaceholder',
     defaultMessage: '!!!Spending password',
     description: 'Placeholder for "spending password"',
   },
   spendingPasswordLabel: {
-    id: 'voting.votingAdd.sign.step.spendingPasswordLabel',
+    id: 'voting.votingRegistration.sign.step.spendingPasswordLabel',
     defaultMessage: '!!!Spending password',
     description: 'Label for "spending password"',
   },
   calculatingFees: {
-    id: 'voting.votingAdd.sign.step.calculatingFees',
+    id: 'voting.votingRegistration.sign.step.calculatingFees',
     defaultMessage: '!!!Calculating fees',
     description: '"Calculating fees" message in the "sign" step.',
   },
   learnMoreLink: {
-    id: 'voting.votingAdd.sign.step.learnMoreLink',
+    id: 'voting.votingRegistration.sign.step.learnMoreLink',
     defaultMessage: '!!!Learn more about this step in detail',
     description: '"Learn more" link on the "sign" step.',
   },
   learntMoreLinkUrl: {
-    id: 'voting.votingAdd.sign.step.learntMoreLinkUrl',
+    id: 'voting.votingRegistration.sign.step.learntMoreLinkUrl',
     defaultMessage:
       '!!!https://docs.google.com/document/d/1_syHaBNjhFcB5qg_NJoBfIZIBy_ha2n042XdrDASYgY/#heading=h.u296e49etfth',
     description: 'Learn more" link URL on the "sign" step.',
@@ -75,7 +76,7 @@ type Props = {
 };
 
 @observer
-export default class VotingAddStepsSign extends Component<Props> {
+export default class VotingRegistrationStepsSign extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -140,8 +141,8 @@ export default class VotingAddStepsSign extends Component<Props> {
     const learnMoreLinkUrl = intl.formatMessage(messages.learntMoreLinkUrl);
 
     const className = classNames([
-      commonStyles.votingAddSteps,
-      styles.votingAddStepsDepositWrapper,
+      commonStyles.votingRegistrationSteps,
+      styles.votingRegistrationStepsDepositWrapper,
     ]);
 
     const contentClassName = classNames([commonStyles.content, styles.content]);

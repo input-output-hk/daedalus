@@ -6,39 +6,41 @@ import QRCode from 'qrcode.react';
 import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
 import openAppIcon from '../../../assets/images/voting/open-app-ic.inline.svg';
-import commonStyles from './VotingAddSteps.scss';
-import styles from './VotingAddStepsQrCode.scss';
+import commonStyles from './VotingRegistrationSteps.scss';
+import styles from './VotingRegistrationStepsQrCode.scss';
 
 const messages = defineMessages({
   qrCodeTitle: {
-    id: 'voting.votingAdd.qrCode.step.qrCodeTitle',
+    id: 'voting.votingRegistration.qrCode.step.qrCodeTitle',
     defaultMessage: '!!!Please complete your registration now.',
-    description: 'Qr code title on the voting add "qr code" step.',
+    description: 'Qr code title on the voting registration "qr code" step.',
   },
   qrCodeDescription: {
-    id: 'voting.votingAdd.qrCode.step.qrCodeDescription',
+    id: 'voting.votingRegistration.qrCode.step.qrCodeDescription',
     defaultMessage: '!!!Scan the QR code using the Catalyst Voting app.',
-    description: 'Qr code description of use on the voting add "qr code" step.',
+    description:
+      'Qr code description of use on the voting registration "qr code" step.',
   },
   message: {
-    id: 'voting.votingAdd.qrCode.step.message',
+    id: 'voting.votingRegistration.qrCode.step.message',
     defaultMessage:
       '!!!This QR code is not saved anywhere, and you will not have access to it after closing this screen.',
-    description: 'Qr code messakes of use on the voting add "qr code" step.',
+    description:
+      'Qr code messakes of use on the voting registration "qr code" step.',
   },
   takeScreenShotMessage: {
-    id: 'voting.votingAdd.qrCode.step.takeScreenShotMessage',
+    id: 'voting.votingRegistration.qrCode.step.takeScreenShotMessage',
     defaultMessage:
       '!!!Take a screenshot of the QR code if you want to access it later.',
     description:
-      'Qr code second message for take a screen shot used on the voting add "qr code" step.',
+      'Qr code second message for take a screen shot used on the voting registration "qr code" step.',
   },
   warningMessage: {
-    id: 'voting.votingAdd.qrCode.step.warningMessage',
+    id: 'voting.votingRegistration.qrCode.step.warningMessage',
     defaultMessage:
       '!!!If you lose access to the QR code, you will need to register again in order to generate a new QR code.',
     description:
-      'Qr code warning messages of use on the voting add "qr code" step.',
+      'Qr code warning messages of use on the voting registration "qr code" step.',
   },
 });
 
@@ -47,7 +49,7 @@ type Props = {
 };
 
 @observer
-export default class VotingAddStepsQrCode extends Component<Props> {
+export default class VotingRegistrationStepsQrCode extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -65,8 +67,8 @@ export default class VotingAddStepsQrCode extends Component<Props> {
     const warningMessage = intl.formatMessage(messages.warningMessage);
 
     const className = classNames([
-      commonStyles.votingAddSteps,
-      styles.votingAddStepsQrCodeWrapper,
+      commonStyles.votingRegistrationSteps,
+      styles.votingRegistrationStepsQrCodeWrapper,
     ]);
 
     const contentClassName = classNames([commonStyles.content, styles.content]);

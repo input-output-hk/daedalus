@@ -14,59 +14,61 @@ import {
 } from '../../../utils/validations';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import { PIN_CODE_LENGTH } from '../../../config/votingConfig';
-import commonStyles from './VotingAddSteps.scss';
-import styles from './VotingAddStepsEnterPinCode.scss';
+import commonStyles from './VotingRegistrationSteps.scss';
+import styles from './VotingRegistrationStepsEnterPinCode.scss';
 
 const messages = defineMessages({
   title: {
-    id: 'voting.votingAdd.enterPinCode.step.title',
+    id: 'voting.votingRegistration.enterPinCode.step.title',
     defaultMessage: '!!!Congratulations!',
-    description: 'Title on the voting add "enter pin code" step.',
+    description: 'Title on the voting registration "enter pin code" step.',
   },
   subtitle: {
-    id: 'voting.votingAdd.enterPinCode.step.subtitle',
+    id: 'voting.votingRegistration.enterPinCode.step.subtitle',
     defaultMessage: '!!!Your registration transaction was confirmed.',
-    description: 'Subtitle on the voting add "enter pin code" step.',
+    description: 'Subtitle on the voting registration "enter pin code" step.',
   },
   description: {
-    id: 'voting.votingAdd.enterPinCode.step.description',
+    id: 'voting.votingRegistration.enterPinCode.step.description',
     defaultMessage:
       '!!!Please create a voting PIN code. This code will be used to access the Catalyst Voting App and decrypt your QR code.',
-    description: 'Description on the voting add "enter pin code" step.',
+    description:
+      'Description on the voting registration "enter pin code" step.',
   },
   reminder: {
-    id: 'voting.votingAdd.enterPinCode.step.reminder',
+    id: 'voting.votingRegistration.enterPinCode.step.reminder',
     defaultMessage:
       '!!!<span>You need to remember your PIN Code.</span> If you lose it, you will not be able to proceed with the registration process and you will not be able to access the mobile app.',
-    description: 'Reminder on the voting add "enter pin code" step.',
+    description: 'Reminder on the voting registration "enter pin code" step.',
   },
   enterPinCodeLabel: {
-    id: 'voting.votingAdd.enterPinCode.step.enterPinCodeLabel',
+    id: 'voting.votingRegistration.enterPinCode.step.enterPinCodeLabel',
     defaultMessage: '!!!Enter PIN code',
     description:
-      'Label for pin code input on the voting add "enter pin code" step.',
+      'Label for pin code input on the voting registration "enter pin code" step.',
   },
   repeatPinCodeLabel: {
-    id: 'voting.votingAdd.enterPinCode.step.repeatPinCodeLabel',
+    id: 'voting.votingRegistration.enterPinCode.step.repeatPinCodeLabel',
     defaultMessage: '!!!Repeat PIN code',
     description:
-      'Label for repeat pin code on the voting add "enter pin code" step.',
+      'Label for repeat pin code on the voting registration "enter pin code" step.',
   },
   invalidPinCode: {
-    id: 'voting.votingAdd.enterPinCode.step.errors.invalidPinCode',
+    id: 'voting.votingRegistration.enterPinCode.step.errors.invalidPinCode',
     defaultMessage: '!!!Invalid pin code',
     description: 'Error message shown when repeat pin code is invalid.',
   },
   invalidRepeatPinCode: {
-    id: 'voting.votingAdd.enterPinCode.step.errors.invalidRepeatPinCode',
+    id:
+      'voting.votingRegistration.enterPinCode.step.errors.invalidRepeatPinCode',
     defaultMessage: '!!!PIN does not match',
     description: 'Error message shown when repeat pin code is invalid.',
   },
   continueButtonLabel: {
-    id: 'voting.votingAdd.enterPinCode.step.continueButtonLabel',
+    id: 'voting.votingRegistration.enterPinCode.step.continueButtonLabel',
     defaultMessage: '!!!Create PIN code',
     description:
-      'Label for continue button on the voting add "enter pin code" step.',
+      'Label for continue button on the voting registration "enter pin code" step.',
   },
 });
 
@@ -75,7 +77,7 @@ type Props = {
 };
 
 @observer
-export default class VotingAddStepsEnterPinCode extends Component<Props> {
+export default class VotingRegistrationStepsEnterPinCode extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -154,8 +156,8 @@ export default class VotingAddStepsEnterPinCode extends Component<Props> {
     const repeatPinCodeFieldProps = repeatPinCodeField.bind();
 
     const className = classNames([
-      commonStyles.votingAddSteps,
-      styles.votingAddStepsEnterPinCodeWrapper,
+      commonStyles.votingRegistrationSteps,
+      styles.votingRegistrationStepsEnterPinCodeWrapper,
     ]);
 
     const contentClassName = classNames([commonStyles.content, styles.content]);

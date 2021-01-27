@@ -5,8 +5,8 @@ import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { find, get } from 'lodash';
 import BigNumber from 'bignumber.js';
-import VotingAddDialog from '../../../components/voting/VotingAddDialog';
-import VotingAddWizard from '../../../components/voting/voting-add-wizard/VotingAddWizard';
+import VotingRegistrationDialog from '../../../components/voting/VotingRegistrationDialog';
+import VotingRegistrationWizard from '../../../components/voting/voting-registration-wizard/VotingRegistrationWizard';
 import {
   MIN_VOTING_FUNDS,
   VOTING_FEE_FOR_CALCULATE,
@@ -16,30 +16,30 @@ import { formattedAmountToLovelace } from '../../../utils/formatters';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
 
 const messages = defineMessages({
-  votingAddStep1Label: {
-    id: 'voting.votingAdd.steps.step.1.label',
+  votingRegistrationStep1Label: {
+    id: 'voting.votingRegistration.steps.step.1.label',
     defaultMessage: '!!!Wallet',
-    description: 'Step 1 label text on voting add.',
+    description: 'Step 1 label text on voting registration.',
   },
-  votingAddStep2Label: {
-    id: 'voting.votingAdd.steps.step.2.label',
+  votingRegistrationStep2Label: {
+    id: 'voting.votingRegistration.steps.step.2.label',
     defaultMessage: '!!!Sign',
-    description: 'Step 2 label text on voting add.',
+    description: 'Step 2 label text on voting registration.',
   },
-  votingAddStep3Label: {
-    id: 'voting.votingAdd.steps.step.3.label',
+  votingRegistrationStep3Label: {
+    id: 'voting.votingRegistration.steps.step.3.label',
     defaultMessage: '!!!Confirm',
-    description: 'Step 3 label text on voting add.',
+    description: 'Step 3 label text on voting registration.',
   },
-  votingAddStep4Label: {
-    id: 'voting.votingAdd.steps.step.4.label',
+  votingRegistrationStep4Label: {
+    id: 'voting.votingRegistration.steps.step.4.label',
     defaultMessage: '!!!PIN code',
-    description: 'Step 4 label text on voting add.',
+    description: 'Step 4 label text on voting registration.',
   },
-  votingAddStep5Label: {
-    id: 'voting.votingAdd.steps.step.5.label',
+  votingRegistrationStep5Label: {
+    id: 'voting.votingRegistration.steps.step.5.label',
     defaultMessage: 'QR code',
-    description: 'Step 5 label text on voting add.',
+    description: 'Step 5 label text on voting registration.',
   },
 });
 
@@ -54,7 +54,10 @@ type State = {
 
 @inject('stores', 'actions')
 @observer
-export default class VotingAddDialogContainer extends Component<Props, State> {
+export default class VotingRegistrationDialogContainer extends Component<
+  Props,
+  State
+> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -106,11 +109,11 @@ export default class VotingAddDialogContainer extends Component<Props, State> {
   };
 
   STEPS_LIST = [
-    this.context.intl.formatMessage(messages.votingAddStep1Label),
-    this.context.intl.formatMessage(messages.votingAddStep2Label),
-    this.context.intl.formatMessage(messages.votingAddStep3Label),
-    this.context.intl.formatMessage(messages.votingAddStep4Label),
-    this.context.intl.formatMessage(messages.votingAddStep5Label),
+    this.context.intl.formatMessage(messages.votingRegistrationStep1Label),
+    this.context.intl.formatMessage(messages.votingRegistrationStep2Label),
+    this.context.intl.formatMessage(messages.votingRegistrationStep3Label),
+    this.context.intl.formatMessage(messages.votingRegistrationStep4Label),
+    this.context.intl.formatMessage(messages.votingRegistrationStep5Label),
   ];
 
   handleRollBack = () => {
@@ -178,12 +181,12 @@ export default class VotingAddDialogContainer extends Component<Props, State> {
     );
 
     return (
-      <VotingAddDialog
+      <VotingRegistrationDialog
         onClose={this.props.onClose}
         stepsList={this.STEPS_LIST}
         activeStep={activeStep}
       >
-        <VotingAddWizard
+        <VotingRegistrationWizard
           stakePoolsList={stakePools}
           wallets={wallets.allWallets}
           activeStep={activeStep}
@@ -212,7 +215,7 @@ export default class VotingAddDialogContainer extends Component<Props, State> {
           countdownRemaining={countdownRemaining}
           onExternalLinkClick={openExternalLink}
         />
-      </VotingAddDialog>
+      </VotingRegistrationDialog>
     );
   }
 

@@ -6,54 +6,56 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import Wallet from '../../../domains/Wallet';
-import commonStyles from './VotingAddSteps.scss';
-import styles from './VotingAddStepsChooseWallet.scss';
+import commonStyles from './VotingRegistrationSteps.scss';
+import styles from './VotingRegistrationStepsChooseWallet.scss';
 
 const messages = defineMessages({
   description: {
-    id: 'voting.votingAdd.chooseWallet.step.description',
+    id: 'voting.votingRegistration.chooseWallet.step.description',
     defaultMessage:
       '!!!For  <span>fund 2</span> voting you will only be able to use one wallet to register.',
-    description: 'Description on the voting add "choose wallet" step.',
+    description: 'Description on the voting registration "choose wallet" step.',
   },
   selectWalletInputLabel: {
-    id: 'voting.votingAdd.chooseWallet.step.selectWalletInputLabel',
+    id: 'voting.votingRegistration.chooseWallet.step.selectWalletInputLabel',
     defaultMessage: '!!!Select wallet',
     description:
-      'Label "Wallet" for select input on thevoting add "choose wallet" step.',
+      'Label "Wallet" for select input on the voting registration "choose wallet" step.',
   },
   selectWalletInputPlaceholder: {
-    id: 'voting.votingAdd.chooseWallet.step.selectWalletInputPlaceholder',
+    id:
+      'voting.votingRegistration.chooseWallet.step.selectWalletInputPlaceholder',
     defaultMessage: '!!!Select Wallet',
     description:
-      'Placeholder "Select Wallet" for select input on the voting add "choose wallet" step.',
+      'Placeholder "Select Wallet" for select input on the voting registration "choose wallet" step.',
   },
   errorMinVotingFunds: {
-    id: 'voting.votingAdd.chooseWallet.step.errorMinVotingFunds',
+    id: 'voting.votingRegistration.chooseWallet.step.errorMinVotingFunds',
     defaultMessage:
       '!!!This wallet does not contain the minimum amount of {minVotingFunds} ADA that is required for voting to be enabled. Please select a wallet with <span>a minimum amount of {minVotingFunds} ADA</span> and click Continue.',
     description:
-      'errorMinVotingFunds Error Label on the voting add "choose wallet" step.',
+      'errorMinVotingFunds Error Label on the voting registration "choose wallet" step.',
   },
   errorMinVotingFundsRewardsOnly: {
-    id: 'voting.votingAdd.chooseWallet.step.errorMinVotingFundsRewardsOnly',
+    id:
+      'voting.votingRegistration.chooseWallet.step.errorMinVotingFundsRewardsOnly',
     defaultMessage:
       '!!!This wallet contains rewards balances only, and cannot be used for voting purposes.',
     description:
-      'errorMinVotingFundsRewardsOnly Error Label on the voting add "choose wallet" step.',
+      'errorMinVotingFundsRewardsOnly Error Label on the voting registration "choose wallet" step.',
   },
   errorRestoringWallet: {
-    id: 'voting.votingAdd.chooseWallet.step.errorRestoringWallet',
+    id: 'voting.votingRegistration.chooseWallet.step.errorRestoringWallet',
     defaultMessage:
       '!!!The wallet cannot be used for voting purposes while it is being synced with the blockchain.',
     description:
-      'RestoringWallet Error Label on the voting add "choose wallet" step.',
+      'RestoringWallet Error Label on the voting registration "choose wallet" step.',
   },
   continueButtonLabel: {
-    id: 'voting.votingAdd.chooseWallet.step.continueButtonLabel',
+    id: 'voting.votingRegistration.chooseWallet.step.continueButtonLabel',
     defaultMessage: '!!!Continue',
     description:
-      'Label for continue button on the voting add "choose wallet" step.',
+      'Label for continue button on the voting registration "choose wallet" step.',
   },
 });
 
@@ -72,7 +74,7 @@ type State = {
   selectedWalletId: ?string,
 };
 
-export default class VotingAddStepsChooseWallet extends Component<
+export default class VotingRegistrationStepsChooseWallet extends Component<
   Props,
   State
 > {
@@ -135,8 +137,8 @@ export default class VotingAddStepsChooseWallet extends Component<
     );
 
     const className = classNames([
-      commonStyles.votingAddSteps,
-      styles.votingAddStepsChooseWalletWrapper,
+      commonStyles.votingRegistrationSteps,
+      styles.votingRegistrationStepsChooseWalletWrapper,
     ]);
 
     const contentClassName = classNames([commonStyles.content, styles.content]);
