@@ -33,7 +33,7 @@ const messages = defineMessages({
 });
 
 type Props = {
-  wallet: Wallet,
+  wallet: any, // @todo check to proper type Wallet|Token when implementing real data from api
   nativeTokens: Array<any>,
   handleOpenWalletTokenSend: Function,
 };
@@ -65,7 +65,8 @@ export default class TokensWalletSummary extends Component<Props> {
                   {isRestoreActive
                     ? '-'
                     : token.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
-                  <span>&nbsp;{token.name}</span>
+                  {/* @todo Fallback for token ticker - change it to token name */}
+                  <span>&nbsp;{token.ticker ? token.ticker : token.name}</span>
                 </div>
               </div>
               <div className={styles.nativeTokenRightContainer}>

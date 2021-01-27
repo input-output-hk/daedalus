@@ -77,7 +77,8 @@ export const generateNativeTokenWallet = (
   reward?: number = 0,
   delegatedStakePool?: StakePool,
   hasPassword?: boolean,
-  status?: SyncStateStatus = WalletSyncStateStatuses.READY
+  status?: SyncStateStatus = WalletSyncStateStatuses.READY,
+  ticker?: string,
 ) =>
   new Wallet({
     id: generateHash(),
@@ -87,6 +88,7 @@ export const generateNativeTokenWallet = (
     reward: new BigNumber(reward).dividedBy(LOVELACES_PER_ADA),
     createdAt: new Date(),
     name,
+    ticker,
     hasPassword: hasPassword || false,
     passwordUpdateDate: new Date(),
     syncState: { status, ...statusProgress(status) },

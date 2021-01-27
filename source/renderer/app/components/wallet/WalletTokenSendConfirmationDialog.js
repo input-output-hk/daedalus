@@ -388,7 +388,7 @@ export default class WalletTokenSendConfirmationDialog extends Component<
               {intl.formatMessage(messages.feesLabel)}
             </div>
             <div className={styles.fees}>
-              +{transactionFee}
+              {transactionFee}
               <span className={styles.currencySymbol}>
                 &nbsp;{intl.formatMessage(globalMessages.unitAda)}
               </span>

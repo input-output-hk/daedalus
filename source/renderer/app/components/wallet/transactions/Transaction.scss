@@ -166,7 +166,6 @@
   h3 {
     font-family: var(--font-light);
     font-size: 16px;
-    margin-top: 4px;
   }
 
   .addressRow,
@@ -310,7 +309,7 @@
     border-bottom: 1px solid var(--theme-transactions-list-item-details-color);
     border-left: 1px solid var(--theme-transactions-list-item-details-color);
     display: none;
-    height: 39px;
+    height: 32px;
     margin-left: 5px;
     margin-top: 8px;
     opacity: 0.3;
@@ -325,7 +324,7 @@
   .assetsContainer {
     display: flex;
     justify-content: space-between;
-    padding: 5px 0 5px 20px;
+    padding: 3px 0 3px 20px;
     width: 100%;
   }
 }

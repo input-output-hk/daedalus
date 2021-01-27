@@ -96,6 +96,7 @@ export type WalletProps = {
   id: string,
   addressPoolGap: number,
   name: string,
+  ticker?: ?string,
   amount: BigNumber,
   availableAmount: BigNumber,
   reward: BigNumber,
@@ -116,6 +117,7 @@ export default class Wallet {
   id: string = '';
   @observable addressPoolGap: number;
   @observable name: string = '';
+  @observable ticker: string = '';
   @observable amount: BigNumber;
   @observable availableAmount: BigNumber;
   @observable reward: BigNumber;
@@ -143,6 +145,7 @@ export default class Wallet {
         'id',
         'addressPoolGap',
         'name',
+        'ticker',
         'amount',
         'availableAmount',
         'reward',
