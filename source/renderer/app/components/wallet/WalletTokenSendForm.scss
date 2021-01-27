@@ -192,7 +192,7 @@
 }
 
 .separator {
-  background: var(--theme-bordered-box-border);
+  background: var(--rp-input-border-color);
   height: 20px;
   left: 20px;
   position: relative;
@@ -308,6 +308,12 @@
 
       .SimpleSelect_selectInput.SelectOverrides_selectInput .WalletsDropdownOption_detail {
         display: none !important;
+      }
+
+      .OptionsOverrides_options {
+        width: 289px !important;
+        left: auto !important;
+        right: 50px !important;
       }
     }
   }
