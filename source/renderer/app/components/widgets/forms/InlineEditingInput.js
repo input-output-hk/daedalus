@@ -159,9 +159,15 @@ export default class InlineEditingInput extends Component<Props, State> {
     const newValue = !errorMessage ? value : '';
     inputField.set(newValue);
     if (onCancel) onCancel();
+    this.setInputFocus();
     this.setState({
       hasChanged: true,
     });
+  };
+
+  setInputFocus = () => {
+    const input = this.inputElement;
+    if (input instanceof HTMLElement) input.focus();
   };
 
   setInputBlur = () => {
@@ -183,8 +189,7 @@ export default class InlineEditingInput extends Component<Props, State> {
 
     // If there's an error, we focus the input again
     if (nextError) {
-      const input = this.inputElement;
-      if (input instanceof HTMLElement) input.focus();
+      this.setInputFocus();
     } else if (prevError && !nextError) {
       // else we blur it
       this.setInputBlur();
@@ -305,7 +310,7 @@ export default class InlineEditingInput extends Component<Props, State> {
           {showEditButton && (
             <Button
               className={editButtonStyles}
-              onMouseUp={this.onFocus}
+              onMouseUp={this.setInputFocus}
               label={<SVGInline svg={penIcon} className={styles.icon} />}
             />
           )}

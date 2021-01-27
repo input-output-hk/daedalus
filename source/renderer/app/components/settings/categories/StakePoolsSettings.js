@@ -175,7 +175,8 @@ export default class StakePoolsSettings extends Component<Props, State> {
   };
 
   handleOnSelectSmashServerType = (smashServerType: SmashServerType) => {
-    const { onSelectSmashServerUrl } = this.props;
+    const { onSelectSmashServerUrl, onResetSmashServerError } = this.props;
+    onResetSmashServerError();
     let editingSmashServerUrl = '';
     if (smashServerType !== SMASH_SERVER_TYPES.CUSTOM) {
       editingSmashServerUrl = SMASH_SERVERS_LIST[smashServerType].url;
