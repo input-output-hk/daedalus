@@ -79,12 +79,12 @@ export const formattedAmountToNaturalUnits = (amount: string): string => {
   return cleanedAmount === '' ? '0' : cleanedAmount;
 };
 
-export const formattedAmountToBigNumber = (amount: string) => {
+export const formattedAmountToBigNumber = (amount: string): BigNumber => {
   const cleanedAmount = amount.replace(/,/g, '');
   return new BigNumber(cleanedAmount !== '' ? cleanedAmount : 0);
 };
 
-export const toFixedUserFormat = (number: number, digits: number) => {
+export const toFixedUserFormat = (number: number, digits: number): string => {
   // This is necessary, because the BigNumber version we use
   // can't receive numbers with more than 15 digits
   const parsedNumber = parseFloat(number).toFixed(digits);
@@ -148,7 +148,7 @@ export const formattedDownloadData = (
   };
 };
 
-export const generateThousands = (value: number) => {
+export const generateThousands = (value: number): number => {
   if (value <= 1000) {
     return Math.round(value);
   }
