@@ -36,7 +36,7 @@ import type { HwDeviceStatus } from '../../domains/Wallet';
 import WalletTokenSendConfirmationDialog from './WalletTokenSendConfirmationDialog';
 import Wallet from '../../domains/Wallet';
 import closeIcon from '../../assets/images/close-cross.inline.svg';
-import WalletsDropdown from "../widgets/forms/WalletsDropdown";
+import WalletsDropdown from '../widgets/forms/WalletsDropdown';
 
 export const messages = defineMessages({
   titleLabel: {
@@ -142,8 +142,7 @@ export const messages = defineMessages({
   syncingWallet: {
     id: 'wallet.send.form.syncingWallet',
     defaultMessage: '!!!syncing',
-    description:
-      'Syncing wallet label on the send tokens form.',
+    description: 'Syncing wallet label on the send tokens form.',
   },
 });
 
@@ -218,7 +217,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     // @todo Remove hardcoded values for currencies
     if (nativeTokens && nativeTokens.length) {
       // eslint-disable-next-line no-return-assign
-      nativeTokens.forEach((token) => token.currencyUnit = token.name);
+      nativeTokens.forEach((token) => (token.currencyUnit = token.name));
     }
   }
 
@@ -457,9 +456,9 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     this.setState({ selectedWalletId: walletId });
   };
 
-  getNativeTokenWalletById = (selectedWalletId: string): ?Wallet  => {
-   const { nativeTokens } = this.props;
-   return nativeTokens.find((token) => token.id === selectedWalletId);
+  getNativeTokenWalletById = (selectedWalletId: string): ?Wallet => {
+    const { nativeTokens } = this.props;
+    return nativeTokens.find((token) => token.id === selectedWalletId);
   };
 
   render() {
@@ -501,7 +500,10 @@ export default class WalletTokenSendForm extends Component<Props, State> {
       total = amount.add(transactionFee).toFormat(currencyMaxFractionalDigits);
     }
 
-    const selectedNativeToken = selectedWalletId && nativeTokens && nativeTokens.length ? this.getNativeTokenWalletById(selectedWalletId) : null;
+    const selectedNativeToken =
+      selectedWalletId && nativeTokens && nativeTokens.length
+        ? this.getNativeTokenWalletById(selectedWalletId)
+        : null;
 
     const removeReceiverButtonClasses = classNames([
       styles.removeReceiverButton,
@@ -651,7 +653,9 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                             numberOfStakePools={4}
                             wallets={nativeTokens}
                             onChange={(id) => this.onSelectWallet(id)}
-                            syncingLabel={intl.formatMessage(messages.syncingWallet)}
+                            syncingLabel={intl.formatMessage(
+                              messages.syncingWallet
+                            )}
                             value={selectedWalletId}
                             getStakePoolById={() => {}}
                             errorPosition="bottom"
@@ -701,9 +705,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                         messages.calculatingFeesLabel
                       )}
                     >
-                      <button
-                        className={calculatingFeesSpinnerButtonClasses}
-                      />
+                      <button className={calculatingFeesSpinnerButtonClasses} />
                     </PopOver>
                   </div>
                 )}

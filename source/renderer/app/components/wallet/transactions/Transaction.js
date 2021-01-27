@@ -385,6 +385,11 @@ export default class Transaction extends Component<Props, State> {
       isExpanded ? styles.arrowExpanded : null,
     ]);
 
+    const assetsSeparatorStyles = classNames([
+      styles.assetsSeparator,
+      isExpanded ? styles.expanded : null,
+    ]);
+
     const transactionsType = hasNativeTokens
       ? intl.formatMessage(messages.multipleTokens)
       : intl.formatMessage(globalMessages.currency);
@@ -559,7 +564,7 @@ export default class Transaction extends Component<Props, State> {
                             skin={LinkSkin}
                           />
                           <div className={styles.assetsWrapper}>
-                            <div className={styles.assetsSeparator} />
+                            <div className={assetsSeparatorStyles} />
                             {data.addresses.to.map((assets, assetsIndex) => (
                               <div
                                 // eslint-disable-next-line react/no-array-index-key

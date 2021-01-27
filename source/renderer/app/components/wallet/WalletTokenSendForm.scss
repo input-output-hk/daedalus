@@ -89,7 +89,7 @@
 
     .clearReceiverButton {
       background-color: var(
-          --theme-staking-stake-pools-search-clear-button-background-color
+        --theme-staking-stake-pools-search-clear-button-background-color
       );
       border-radius: 3px;
       cursor: pointer;
@@ -98,7 +98,7 @@
 
       &:hover {
         background-color: var(
-            --theme-staking-stake-pools-search-clear-button-hover-background-color
+          --theme-staking-stake-pools-search-clear-button-hover-background-color
         );
       }
 
@@ -164,7 +164,7 @@
 
   .clearAssetButton {
     background-color: var(
-        --theme-staking-stake-pools-search-clear-button-background-color
+      --theme-staking-stake-pools-search-clear-button-background-color
     );
     border-radius: 3px;
     cursor: pointer;
@@ -173,7 +173,7 @@
 
     &:hover {
       background-color: var(
-          --theme-staking-stake-pools-search-clear-button-hover-background-color
+        --theme-staking-stake-pools-search-clear-button-hover-background-color
       );
     }
 
@@ -211,7 +211,7 @@
 
   .calculatingFeesSpinnerButton {
     background-color: var(
-        --theme-staking-stake-pools-search-clear-button-background-color
+      --theme-staking-stake-pools-search-clear-button-background-color
     );
     border-radius: 3px;
     bottom: 5px;
@@ -222,14 +222,14 @@
 
     &:hover {
       background-color: var(
-          --theme-staking-stake-pools-search-clear-button-hover-background-color
+        --theme-staking-stake-pools-search-clear-button-hover-background-color
       );
     }
 
     .calculatingFeesSpinnerIcon {
       svg {
-        position: relative;
         height: 10px;
+        position: relative;
         top: 0.5px;
         width: 10px;
 
@@ -302,25 +302,33 @@
     }
 
     :global {
-      .SimpleSelect_selectInput.SelectOverrides_selectInput .WalletsDropdownOption_selected .WalletsDropdownOption_topRow {
+      .SimpleSelect_selectInput.SelectOverrides_selectInput
+        .WalletsDropdownOption_selected
+        .WalletsDropdownOption_topRow {
         width: 50px !important;
       }
 
-      .SimpleSelect_selectInput.SelectOverrides_selectInput .WalletsDropdownOption_detail {
+      .SimpleSelect_selectInput.SelectOverrides_selectInput
+        .WalletsDropdownOption_detail {
         display: none !important;
       }
 
       .OptionsOverrides_options {
-        width: 289px !important;
         left: auto !important;
         right: 50px !important;
+        width: 289px !important;
+      }
+
+      .SimpleBubble_root:not(.SimpleBubble_openUpward) .SimpleBubble_bubble {
+        border-radius: 2px;
       }
     }
   }
 }
 
 :global {
-  .WalletTokenSendForm_calculatingFeesContainer .WalletTokenSendForm_calculatingFeesSpinnerButton.WalletTokenSendForm_spinning:after {
+  .WalletTokenSendForm_calculatingFeesContainer
+    .WalletTokenSendForm_calculatingFeesSpinnerButton.WalletTokenSendForm_spinning:after {
     background-size: 12px !important;
     height: 12px !important;
     left: calc(50% - 6px) !important;

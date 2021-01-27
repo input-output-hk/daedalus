@@ -166,17 +166,12 @@
   h3 {
     font-family: var(--font-light);
     font-size: 16px;
-    margin-bottom: 8px;
+    margin-top: 4px;
   }
 
   .addressRow,
   .explorerLinkRow {
-    padding-bottom: 10px;
-  }
-
-  .addressRow {
-    display: flex;
-    justify-content: space-between;
+    padding-bottom: 6px;
   }
 
   .addressRow,
@@ -314,12 +309,17 @@
   .assetsSeparator {
     border-bottom: 1px solid var(--theme-transactions-list-item-details-color);
     border-left: 1px solid var(--theme-transactions-list-item-details-color);
+    display: none;
     height: 39px;
     margin-left: 5px;
     margin-top: 8px;
     opacity: 0.3;
     position: absolute;
     width: 6px;
+
+    &.expanded {
+      display: block;
+    }
   }
 
   .assetsContainer {

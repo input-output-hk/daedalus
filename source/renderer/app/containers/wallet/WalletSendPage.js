@@ -89,7 +89,10 @@ export default class WalletSendPage extends Component<Props> {
       nativeTokens = [wallets.all[0]];
     }
 
-    const selectedNativeTokenWallet = nativeTokens && nativeTokens.length ? getWalletById(nativeTokens[0].id) : null;
+    const selectedNativeTokenWallet =
+      nativeTokens && nativeTokens.length
+        ? getWalletById(nativeTokens[0].id)
+        : null;
 
     // Guard against potential null values
     if (!activeWallet)
