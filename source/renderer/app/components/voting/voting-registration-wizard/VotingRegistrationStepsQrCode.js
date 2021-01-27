@@ -45,7 +45,7 @@ const messages = defineMessages({
 });
 
 type Props = {
-  qrCode: string | null,
+  qrCode: ?string,
 };
 
 @observer

@@ -968,20 +968,24 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-utxo-tooltip-text-color': '#fff',
   },
   voting: {
-    '--theme-voting-info-icon-color': '#ffffff',
+    '--theme-voting-font-color-accent': '#ffffff',
+    '--theme-voting-font-color-light': '#ffffffb3',
+    '--theme-voting-font-color-regular': '#ffffff',
     '--theme-voting-info-background-color': '#ffffffb3',
     '--theme-voting-info-font-color': '#1e1f31',
-    '--theme-voting-font-color-accent': '#ffffff',
-    '--theme-voting-font-color-regular': '#ffffff',
-    '--theme-voting-font-color-light': '#ffffffb3',
-    '--theme-voting-steps-warning-messages-font-color': '#ea4c5b',
-    '--theme-voting-steps-description-highlighted-color': '#ffffff',
-    '--theme-voting-steps-description-color': '#ffffffcc',
-    '--theme-voting-steps-activation-steps-indicator-color': '#ffffff',
-    '--theme-voting-steps-choose-wallet-error-message-light-color': '#eb4a22b3',
-    '--theme-voting-steps-choose-wallet-error-message-color': '#eb4a22',
-    '--theme-voting-steps-deposit-fees-label-color': '#ffffff',
-    '--theme-voting-steps-deposit-fees-amount-color': '#ea4c5b',
+    '--theme-voting-info-icon-color': '#ffffff',
+    '--theme-voting-registration-steps-activation-steps-indicator-color':
+      '#ffffff',
+    '--theme-voting-registration-steps-choose-wallet-error-message-color':
+      '#eb4a22',
+    '--theme-voting-registration-steps-choose-wallet-error-message-light-color':
+      '#eb4a22b3',
+    '--theme-voting-registration-steps-deposit-fees-amount-color': '#ea4c5b',
+    '--theme-voting-registration-steps-deposit-fees-label-color': '#ffffff',
+    '--theme-voting-registration-steps-description-color': '#ffffffcc',
+    '--theme-voting-registration-steps-description-highlighted-color':
+      '#ffffff',
+    '--theme-voting-registration-steps-warning-messages-font-color': '#ea4c5b',
   },
   recoveryPhrase: {
     '--theme-recovery-phrase-normal-background-color':

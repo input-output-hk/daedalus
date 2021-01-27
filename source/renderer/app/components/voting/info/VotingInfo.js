@@ -17,36 +17,36 @@ const messages = defineMessages({
   heading: {
     id: 'voting.info.heading',
     defaultMessage: '!!!Register to vote',
-    description: 'Headline for Voting Catalyst steps',
+    description: 'Headline for voting registration steps',
   },
   description: {
     id: 'voting.info.description',
     defaultMessage:
       '!!!Before you begin, you must first complete the steps below:',
-    description: 'Info description for Voting Catalyst steps',
+    description: 'Info description for voting registration steps',
   },
   stepTitle1: {
     id: 'voting.info.stepTitle1',
     defaultMessage: '!!!Download the Catalyst Voting App',
-    description: 'Info step title 2 for Voting Catalyst steps',
+    description: 'Info step title 2 for voting registration steps',
   },
   stepTitle2: {
     id: 'voting.info.stepTitle2',
     defaultMessage:
       '!!!Open the Catalyst Voting App and click on the complete registration button.',
-    description: 'Info step title 2 for Voting Catalyst steps',
+    description: 'Info step title 2 for voting registration steps',
   },
   stepTitle3: {
     id: 'voting.info.stepTitle3',
     defaultMessage:
       '!!!Ensure you have 5 minutes to complete the registration process, and an additional hour to receive a final confirmation.',
-    description: 'Info step title 3 for Voting Catalyst steps',
+    description: 'Info step title 3 for voting registration steps',
   },
   buttonLabel: {
     id: 'voting.info.buttonLabel',
     defaultMessage:
       '!!!I confirm all steps have been completed. Continue with registration.',
-    description: 'Button Label for Voting Catalyst steps',
+    description: 'Button Label for voting registration steps',
   },
   androidAppButtonUrl: {
     id: 'voting.info.androidAppButtonUrl',

@@ -32,7 +32,7 @@
         margin-left: 10px;
         text-align: left;
         p:last-child {
-          color: var(--theme-voting-steps-description-color);
+          color: var(--theme-voting-registration-steps-description-color);
         }
       }
     }
@@ -49,7 +49,9 @@
         font-weight: bold;
       }
       p.primaryWarning {
-        color: var(--theme-voting-steps-warning-messages-font-color);
+        color: var(
+          --theme-voting-registration-steps-warning-messages-font-color
+        );
       }
     }
 

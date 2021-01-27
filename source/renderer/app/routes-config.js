@@ -31,7 +31,7 @@ export const ROUTES = {
     UTXO: '/wallets/:id/utxo',
   },
   VOTING: {
-    ADD: '/voting-catalyst/add',
+    REGISTRATION: '/voting/registration',
   },
   SETTINGS: {
     ROOT: '/settings',

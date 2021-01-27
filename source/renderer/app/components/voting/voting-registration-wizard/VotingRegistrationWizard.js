@@ -27,7 +27,7 @@ type Props = {
   transactionFee: ?BigNumber,
   transactionFeeError: string | Node | null,
   onSubmit: Function,
-  qrCode: string | null,
+  qrCode: ?string,
   isSubmitting: boolean,
   isTransactionApproved: boolean,
   transactionError: ?LocalizableError,

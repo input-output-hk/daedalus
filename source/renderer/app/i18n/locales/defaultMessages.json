@@ -7256,7 +7256,7 @@
     "descriptors": [
       {
         "defaultMessage": "!!!Register to vote",
-        "description": "Headline for Voting Catalyst steps",
+        "description": "Headline for voting registration steps",
         "end": {
           "column": 3,
           "line": 21
@@ -7270,7 +7270,7 @@
       },
       {
         "defaultMessage": "!!!Before you begin, you must first complete the steps below:",
-        "description": "Info description for Voting Catalyst steps",
+        "description": "Info description for voting registration steps",
         "end": {
           "column": 3,
           "line": 27
@@ -7284,7 +7284,7 @@
       },
       {
         "defaultMessage": "!!!Download the Catalyst Voting App",
-        "description": "Info step title 2 for Voting Catalyst steps",
+        "description": "Info step title 2 for voting registration steps",
         "end": {
           "column": 3,
           "line": 32
@@ -7298,7 +7298,7 @@
       },
       {
         "defaultMessage": "!!!Open the Catalyst Voting App and click on the complete registration button.",
-        "description": "Info step title 2 for Voting Catalyst steps",
+        "description": "Info step title 2 for voting registration steps",
         "end": {
           "column": 3,
           "line": 38
@@ -7312,7 +7312,7 @@
       },
       {
         "defaultMessage": "!!!Ensure you have 5 minutes to complete the registration process, and an additional hour to receive a final confirmation.",
-        "description": "Info step title 3 for Voting Catalyst steps",
+        "description": "Info step title 3 for voting registration steps",
         "end": {
           "column": 3,
           "line": 44
@@ -7326,7 +7326,7 @@
       },
       {
         "defaultMessage": "!!!I confirm all steps have been completed. Continue with registration.",
-        "description": "Button Label for Voting Catalyst steps",
+        "description": "Button Label for voting registration steps",
         "end": {
           "column": 3,
           "line": 50

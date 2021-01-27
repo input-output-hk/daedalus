@@ -18,7 +18,7 @@
     }
 
     .description {
-      color: var(--theme-voting-steps-description-color);
+      color: var(--theme-voting-registration-steps-description-color);
       display: flex;
       flex-direction: column;
       margin-bottom: 25px;
@@ -32,7 +32,9 @@
       margin-bottom: 15px;
       margin-top: 25px;
       p {
-        color: var(--theme-voting-steps-warning-messages-font-color);
+        color: var(
+          --theme-voting-registration-steps-warning-messages-font-color
+        );
         margin-top: 20px;
       }
     }

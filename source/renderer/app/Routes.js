@@ -140,7 +140,10 @@ export const Routes = withRouter(() => (
             component={RedeemItnRewardsContainer}
           />
         </Route>
-        <Route path={ROUTES.VOTING.ADD} component={VotingRegistrationPage} />
+        <Route
+          path={ROUTES.VOTING.REGISTRATION}
+          component={VotingRegistrationPage}
+        />
       </Switch>
     </Root>
   </Route>

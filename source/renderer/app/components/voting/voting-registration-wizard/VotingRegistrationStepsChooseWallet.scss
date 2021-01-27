@@ -9,9 +9,11 @@
 
   .content {
     .description {
-      color: var(--theme-voting-steps-description-color);
+      color: var(--theme-voting-registration-steps-description-color);
       span > span {
-        color: var(--theme-voting-steps-description-highlighted-color);
+        color: var(
+          --theme-voting-registration-steps-description-highlighted-color
+        );
         font-family: var(--font-medium);
         font-weight: 500;
       }
@@ -34,12 +36,16 @@
     }
 
     .errorMessage {
-      color: var(--theme-voting-steps-choose-wallet-error-message-light-color);
+      color: var(
+        --theme-voting-registration-steps-choose-wallet-error-message-light-color
+      );
       font-size: 14px;
       letter-spacing: normal;
       margin-top: 10px;
       span > span {
-        color: var(--theme-voting-steps-choose-wallet-error-message-color);
+        color: var(
+          --theme-voting-registration-steps-choose-wallet-error-message-color
+        );
         font-family: var(--font-medium);
         font-weight: 500;
       }

@@ -4,7 +4,7 @@
 .votingRegistrationStepsDepositWrapper {
   .content {
     .description {
-      color: var(--theme-voting-steps-description-color);
+      color: var(--theme-voting-registration-steps-description-color);
     }
   }
 
@@ -16,7 +16,7 @@
     margin-top: 20px;
 
     .feesLabel {
-      color: var(--theme-voting-steps-deposit-fees-label-color);
+      color: var(--theme-voting-registration-steps-deposit-fees-label-color);
       margin-bottom: 6px;
     }
 
@@ -26,7 +26,7 @@
     }
 
     .feesAmount {
-      color: var(--theme-voting-steps-deposit-fees-amount-color);
+      color: var(--theme-voting-registration-steps-deposit-fees-amount-color);
       user-select: text;
 
       .feesAmountLabel {
