@@ -66,6 +66,7 @@
   :global {
     .SimpleLink_root {
       font-family: var(--font-regular);
+      word-break: break-word;
     }
   }
 }
