@@ -210,7 +210,10 @@ export default class WalletSendForm extends Component<Props, State> {
         },
         amount: {
           label: this.context.intl.formatMessage(messages.amountLabel),
-          value: new BigNumber(0),
+          placeholder: `0${
+            this.getCurrentNumberFormat().decimalSeparator
+          }${'0'.repeat(this.props.currencyMaxFractionalDigits)}`,
+          value: '',
           validators: [
             async ({ field, form }) => {
               if (field.value === null) {
@@ -346,7 +349,7 @@ export default class WalletSendForm extends Component<Props, State> {
     const receiverField = form.$('receiver');
     const receiverFieldProps = receiverField.bind();
     const amountFieldProps = amountField.bind();
-    const amount = amountFieldProps.value;
+    const amount = new BigNumber(amountFieldProps.value);
 
     let fees = null;
     let total = null;
@@ -387,6 +390,7 @@ export default class WalletSendForm extends Component<Props, State> {
               <div className={styles.amountInput}>
                 <NumericInput
                   {...amountFieldProps}
+                  value={amount}
                   className="amount"
                   label={intl.formatMessage(messages.amountLabel)}
                   bigNumberFormat={this.getCurrentNumberFormat()}

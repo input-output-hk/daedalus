@@ -234,12 +234,12 @@ export default class FilterDialog extends Component<Props> {
         fromAmount: {
           type: 'number',
           label: '',
-          value: bigNumberOrNull(fromAmount),
+          value: fromAmount,
         },
         toAmount: {
           type: 'number',
           label: '',
-          value: bigNumberOrNull(toAmount),
+          value: toAmount,
         },
       },
     });
@@ -288,8 +288,8 @@ export default class FilterDialog extends Component<Props> {
     this.form.select('dateRange').set(dateRange);
     this.form.select('fromDate').set(fromDate);
     this.form.select('toDate').set(toDate);
-    this.form.select('fromAmount').set(bigNumberOrNull(fromAmount));
-    this.form.select('toAmount').set(bigNumberOrNull(toAmount));
+    this.form.select('fromAmount').set(fromAmount);
+    this.form.select('toAmount').set(toAmount);
     this.form.select('incomingChecked').set(incomingChecked);
     this.form.select('outgoingChecked').set(outgoingChecked);
   };
@@ -490,7 +490,7 @@ export default class FilterDialog extends Component<Props> {
           <div className={fromAmountClassNames}>
             <TinyInput
               {...fromAmountField.bind()}
-              value={bigNumberOrNull(fromAmountField.value)}
+              value={fromAmountField.value}
               onSubmit={this.handleSubmit}
               label={intl.formatMessage(globalMessages.rangeFrom)}
               bigNumberFormat={NUMBER_FORMATS[numberFormat]}
@@ -501,7 +501,7 @@ export default class FilterDialog extends Component<Props> {
           <div className={toAmountClassNames}>
             <TinyInput
               {...toAmountField.bind()}
-              value={bigNumberOrNull(toAmountField.value)}
+              value={toAmountField.value}
               onSubmit={this.handleSubmit}
               label={intl.formatMessage(globalMessages.rangeTo)}
               bigNumberFormat={NUMBER_FORMATS[numberFormat]}
@@ -579,8 +579,4 @@ export default class FilterDialog extends Component<Props> {
       </Dialog>
     );
   }
-}
-
-function bigNumberOrNull(value?: string) {
-  return value != null && value !== '' ? new BigNumber(value) : null;
 }
