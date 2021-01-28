@@ -23,8 +23,13 @@ export default class InitialSettingsPage extends Component<InjectedProps> {
     const { updateUserLocalSetting } = actions.profile;
     updateUserLocalSetting.trigger({ param, value });
     const { isUpdateAvailable } = stores.appUpdate;
+    const { areTermsOfUseAccepted: isNavigationEnabled } = stores.profile;
+
     if (param === 'locale') {
-      await rebuildApplicationMenu.send({ isUpdateAvailable });
+      await rebuildApplicationMenu.send({
+        isUpdateAvailable,
+        isNavigationEnabled,
+      });
     }
   };
 

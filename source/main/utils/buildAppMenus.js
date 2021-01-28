@@ -16,11 +16,12 @@ export const buildAppMenus = async (
   locale: string,
   data: {
     isUpdateAvailable: boolean,
+    isNavigationEnabled: boolean,
   }
 ) => {
   const { ABOUT, DAEDALUS_DIAGNOSTICS } = DIALOGS;
   const { SETTINGS, WALLET_SETTINGS } = PAGES;
-  const { isUpdateAvailable } = data;
+  const { isUpdateAvailable, isNavigationEnabled } = data;
 
   const { isMacOS, isBlankScreenFixActive } = environment;
   const translations = require(`../locales/${locale}`);
@@ -106,7 +107,8 @@ export const buildAppMenus = async (
         menuActions,
         translations,
         locale,
-        isUpdateAvailable
+        isUpdateAvailable,
+        isNavigationEnabled
       )
     );
     Menu.setApplicationMenu(menu);
@@ -118,7 +120,8 @@ export const buildAppMenus = async (
         menuActions,
         translations,
         locale,
-        isUpdateAvailable
+        isUpdateAvailable,
+        isNavigationEnabled
       )
     );
     mainWindow.setMenu(menu);
