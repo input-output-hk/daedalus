@@ -336,7 +336,7 @@ export default class WalletTokenSendConfirmationDialog extends Component<
             <div className={styles.addressToLabel}>
               {intl.formatMessage(messages.addressFromLabel)}
             </div>
-            <div className={styles.addressTo}>{sender}</div>
+            <div className={styles.addressFrom}>{sender}</div>
           </div>
           {receivers && (
             <div className={styles.addressToLabelWrapper}>
