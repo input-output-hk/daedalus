@@ -37,6 +37,7 @@ import type { CheckDiskSpaceResponse } from '../common/types/no-disk-space.types
 import { logUsedVersion } from './utils/logUsedVersion';
 import { setStateSnapshotLogChannel } from './ipc/set-log-state-snapshot';
 import { generateWalletMigrationReportChannel } from './ipc/generateWalletMigrationReportChannel';
+import { enableApplicationMenuNavigationChannel } from './ipc/enableApplicationMenuNavigationChannel';
 import { pauseActiveDownloads } from './ipc/downloadManagerChannel';
 // import { isHardwareWalletSupportEnabled, isLedgerEnabled } from '../renderer/app/config/hardwareWalletsConfig';
 import { HardwareWalletsHandler } from './utils/handleHardwareWallets';
@@ -210,7 +211,21 @@ const onAppReady = async () => {
     await safeExit();
   });
 
-  buildAppMenus(mainWindow, cardanoNode, locale, { isUpdateAvailable: false });
+  buildAppMenus(mainWindow, cardanoNode, locale, {
+    isUpdateAvailable: false,
+    isNavigationEnabled: false,
+  });
+
+  await enableApplicationMenuNavigationChannel.onReceive(
+    () =>
+      new Promise((resolve) => {
+        buildAppMenus(mainWindow, cardanoNode, locale, {
+          isUpdateAvailable: false,
+          isNavigationEnabled: true,
+        });
+        resolve();
+      })
+  );
 
   await rebuildApplicationMenu.onReceive(
     (data) =>
@@ -218,6 +233,7 @@ const onAppReady = async () => {
         locale = getLocale(network);
         buildAppMenus(mainWindow, cardanoNode, locale, {
           isUpdateAvailable: data.isUpdateAvailable,
+          isNavigationEnabled: data.isNavigationEnabled,
         });
         mainWindow.updateTitle(locale);
         resolve();

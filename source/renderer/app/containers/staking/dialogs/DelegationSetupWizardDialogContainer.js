@@ -68,7 +68,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
   ) =>
     walletAmount &&
     walletAmount.gte(new BigNumber(MIN_DELEGATION_FUNDS)) &&
-    !walletAmount.equals(walletReward);
+    !walletAmount.isEqualTo(walletReward);
 
   get selectedWalletId() {
     return get(

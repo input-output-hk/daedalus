@@ -151,7 +151,7 @@ export default class DelegationStepsChooseWalletDialog extends Component<
       // Wallet is restoring
       if (isRestoring) errorMessage = messages.errorRestoringWallet;
       // Wallet only has Reward balance
-      else if (!amount.isZero() && amount.equals(reward))
+      else if (!amount.isZero() && amount.isEqualTo(reward))
         errorMessage = messages.errorMinDelegationFundsRewardsOnly;
       // Wallet balance < min delegation funds
       else errorMessage = messages.errorMinDelegationFunds;
