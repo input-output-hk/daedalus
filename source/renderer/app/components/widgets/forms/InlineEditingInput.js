@@ -87,8 +87,8 @@ export default class InlineEditingInput extends Component<Props, State> {
           value: this.props.value,
           validators: [
             ({ field }) => [
-              this.props.isValid(field.value),
-              this.state.isActive ? this.props.valueErrorMessage : null,
+              this.props.isValid(field.value) && this.state.isActive,
+              this.props.valueErrorMessage || null,
             ],
           ],
         },
