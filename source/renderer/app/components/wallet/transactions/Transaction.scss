@@ -364,3 +364,13 @@
     opacity: 0.5;
   }
 }
+
+:global {
+  .SimpleLink_root.SimpleLink_underlined {
+    border-bottom: none !important;
+
+    &:hover {
+      border-bottom: 1px solid var(--rp-link-color) !important;
+    }
+  }
+}
