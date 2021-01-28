@@ -7,6 +7,17 @@ Changelog
 
 - Increased the maximum number of wallets limit to 100 and optimized wallet data polling ([PR 2208](https://github.com/input-output-hk/daedalus/pull/2208))
 
+### Chores
+
+- Updated `bignumber.js` package ([PR 2305](https://github.com/input-output-hk/daedalus/pull/2305))
+- Disabled application menu navigation before the "Terms of use" have been accepted ([PR 2304](https://github.com/input-output-hk/daedalus/pull/2304))
+
+## 3.2.0
+
+### Chores
+
+- Daedalus version change from `3.2.0-FC1` to `3.2.0`
+
 ## 3.2.0-FC1
 
 ### Features

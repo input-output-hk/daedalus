@@ -95,7 +95,7 @@ Then(/^I should see increased rewards wallet balance and 0 ADA in Daedalus Balan
   async function() {
     const rewardsSelector = '.SidebarWalletsMenu_wallets button:nth-child(1) .SidebarWalletMenuItem_info';
     const balanceSelector = '.SidebarWalletsMenu_wallets button:nth-child(2) .SidebarWalletMenuItem_info';
-    const transferSumWithoutFees = this.rewardsWalletAmount.add(this.balanceWalletAmount);
+    const transferSumWithoutFees = this.rewardsWalletAmount.plus(this.balanceWalletAmount);
     const transferSumWithFees = transferSumWithoutFees.minus(this.transferFee);
     const initialRewardsFormattedAmount = formattedWalletAmount(this.rewardsWalletAmount, true, false);
     const initialBallanceFormattedAmount = formattedWalletAmount(this.balanceWalletAmount, true, false);
