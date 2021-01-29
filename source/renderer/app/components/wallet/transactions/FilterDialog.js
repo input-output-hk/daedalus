@@ -233,12 +233,12 @@ export default class FilterDialog extends Component<Props> {
         fromAmount: {
           type: 'number',
           label: '',
-          value: fromAmount ? Number(fromAmount) : '',
+          value: fromAmount,
         },
         toAmount: {
           type: 'number',
           label: '',
-          value: toAmount ? Number(toAmount) : '',
+          value: toAmount,
         },
       },
     });
@@ -287,8 +287,8 @@ export default class FilterDialog extends Component<Props> {
     this.form.select('dateRange').set(dateRange);
     this.form.select('fromDate').set(fromDate);
     this.form.select('toDate').set(toDate);
-    this.form.select('fromAmount').set(fromAmount ? Number(fromAmount) : '');
-    this.form.select('toAmount').set(toAmount ? Number(toAmount) : '');
+    this.form.select('fromAmount').set(fromAmount);
+    this.form.select('toAmount').set(toAmount);
     this.form.select('incomingChecked').set(incomingChecked);
     this.form.select('outgoingChecked').set(outgoingChecked);
   };
@@ -489,24 +489,22 @@ export default class FilterDialog extends Component<Props> {
           <div className={fromAmountClassNames}>
             <TinyInput
               {...fromAmountField.bind()}
+              value={fromAmountField.value}
               onSubmit={this.handleSubmit}
               label={intl.formatMessage(globalMessages.rangeFrom)}
-              numberFormat={NUMBER_FORMATS[numberFormat]}
-              numberLocaleOptions={{
-                minimumFractionDigits: DECIMAL_PLACES_IN_ADA,
-              }}
+              bigNumberFormat={NUMBER_FORMATS[numberFormat]}
+              decimalPlaces={DECIMAL_PLACES_IN_ADA}
               allowSigns={false}
             />
           </div>
           <div className={toAmountClassNames}>
             <TinyInput
               {...toAmountField.bind()}
+              value={toAmountField.value}
               onSubmit={this.handleSubmit}
               label={intl.formatMessage(globalMessages.rangeTo)}
-              numberFormat={NUMBER_FORMATS[numberFormat]}
-              numberLocaleOptions={{
-                minimumFractionDigits: DECIMAL_PLACES_IN_ADA,
-              }}
+              bigNumberFormat={NUMBER_FORMATS[numberFormat]}
+              decimalPlaces={DECIMAL_PLACES_IN_ADA}
               allowSigns={false}
               error={invalidFields.toAmount}
             />
