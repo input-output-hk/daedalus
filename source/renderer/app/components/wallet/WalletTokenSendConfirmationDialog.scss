@@ -102,6 +102,7 @@
 
     .assetsSeparator {
       border-bottom: 1px solid var(--theme-transactions-list-item-details-color);
+      border-bottom-left-radius: 2px;
       border-left: 1px solid var(--theme-transactions-list-item-details-color);
       height: 39px;
       margin-left: 5px;
