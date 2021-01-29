@@ -1,5 +1,4 @@
 // @flow
-import BigNumber from 'bignumber.js';
 /* eslint-disable jsx-a11y/label-has-associated-control, jsx-a11y/label-has-for */
 import React, { Component } from 'react';
 import type { ElementRef } from 'react';
