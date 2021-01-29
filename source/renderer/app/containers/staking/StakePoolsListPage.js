@@ -5,6 +5,7 @@ import StakePools from '../../components/staking/stake-pools/StakePools';
 import StakePoolsRankingLoader from '../../components/staking/stake-pools/StakePoolsRankingLoader';
 import DelegationSetupWizardDialogContainer from './dialogs/DelegationSetupWizardDialogContainer';
 import DelegationSetupWizardDialog from '../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
+import { ROUTES } from '../../routes-config';
 import type { InjectedProps } from '../../types/injectedPropsType';
 
 type Props = InjectedProps;
@@ -38,6 +39,12 @@ export default class StakePoolsListPage extends Component<Props> {
     stakingActions.rankStakePools.trigger();
   };
 
+  handleSmashSettingsClick = () => {
+    this.props.actions.router.goToRoute.trigger({
+      route: ROUTES.SETTINGS.STAKE_POOLS,
+    });
+  };
+
   render() {
     const {
       uiDialogs,
@@ -57,11 +64,12 @@ export default class StakePoolsListPage extends Component<Props> {
       fetchingStakePoolsFailed,
       recentStakePools,
       getStakePoolById,
+      smashServerUrl,
       maxDelegationFunds,
+      isFetchingStakePools,
     } = staking;
     const { all } = wallets;
-    const isLoading =
-      !isSynced || fetchingStakePoolsFailed || stakePools.length === 0;
+    const isLoading = !isSynced || fetchingStakePoolsFailed;
     const isRanking =
       !isLoading && staking.isRanking && stakePoolsRequest.isExecuting;
 
@@ -80,8 +88,11 @@ export default class StakePoolsListPage extends Component<Props> {
           stake={stake}
           onDelegate={this.handleDelegate}
           isLoading={isLoading}
+          isFetching={isFetchingStakePools}
           isRanking={isRanking}
           getStakePoolById={getStakePoolById}
+          smashServerUrl={smashServerUrl}
+          onSmashSettingsClick={this.handleSmashSettingsClick}
           maxDelegationFunds={maxDelegationFunds}
         />
         {isRanking && <StakePoolsRankingLoader />}
