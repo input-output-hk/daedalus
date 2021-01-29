@@ -120,5 +120,10 @@ export type GetNetworkParametersApiResponse = {
   decentralization_level: DecentralizationLevel,
   desired_pool_number: number,
   minimum_utxo_value: MinimumUtxoValue,
-  hardfork_at?: HardforkAt,
+  eras: {
+    byron?: HardforkAt,
+    shelley?: HardforkAt,
+    allegra?: HardforkAt,
+    mary?: HardforkAt,
+  },
 };
