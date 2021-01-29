@@ -22,7 +22,7 @@ const messages = defineMessages({
   },
   tokensTitle: {
     id: 'wallet.summary.page.tokensTitle',
-    defaultMessage: '!!!Tokens',
+    defaultMessage: '!!!Assets',
     description: 'Number of native tokens title on Wallet summary page',
   },
   tokenSendButton: {

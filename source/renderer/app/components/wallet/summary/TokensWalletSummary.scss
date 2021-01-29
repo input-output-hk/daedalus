@@ -14,7 +14,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
-  padding: 20px;
+  padding: 10px;
   width: 100%;
 
   .nativeTokenContainer {
@@ -22,9 +22,9 @@
     display: flex;
     height: 76px;
     justify-content: space-between;
-    margin-bottom: 20px;
+    margin: 10px;
     padding: 20px 30px 20px 20px;
-    width: 49%;
+    width: calc(50% - 20px);
 
     .nativeTokenRightContainer {
       .nativeTokenSendButton {
