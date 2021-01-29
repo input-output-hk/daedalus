@@ -370,7 +370,7 @@ export default class WalletTokenSendConfirmationDialog extends Component<
                             <div className={styles.amountFeesWrapper}>
                               <div className={styles.amount}>
                                 {amount}
-                                &nbsp; {currencyUnit}
+                                &nbsp;{currencyUnit}
                               </div>
                             </div>
                           </div>

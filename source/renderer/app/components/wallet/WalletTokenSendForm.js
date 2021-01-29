@@ -251,11 +251,13 @@ export default class WalletTokenSendForm extends Component<Props, State> {
   clearReceiverAddress = () => {
     const receiverField = this.form.$('receiver');
     receiverField.clear();
+    receiverField.focus();
   };
 
   clearAssetValue = () => {
     const assetField = this.form.$('asset');
     assetField.clear();
+    assetField.focus();
   };
 
   handleOnReset = () => {
@@ -624,7 +626,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                       </div>
                     )}
                   </div>
-                  {this.isReceiverValid && showReceiverField && (
+                  {this.hasReceiverValue && showReceiverField && (
                     <>
                       <div className={styles.fieldsLine} />
                       <div className={styles.assetInput}>
@@ -635,7 +637,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                               selectedNativeToken.amount,
                               false
                             )}
-                            &nbsp;{selectedNativeToken.currencyUnit}
+                            &nbsp;{selectedNativeToken.ticker}
                           </div>
                         )}
                         <NumericInput
@@ -690,6 +692,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                             syncingLabel={intl.formatMessage(
                               messages.syncingWallet
                             )}
+                            hasNativeTokens
                             value={selectedWalletId}
                             getStakePoolById={() => {}}
                             errorPosition="bottom"

@@ -7,7 +7,7 @@ import { omit } from 'lodash';
 import WalletsDropdownOption from './WalletsDropdownOption';
 import styles from './WalletsDropdown.scss';
 
-import { formattedWalletAmount } from '../../../utils/formatters';
+import { formattedTokenWalletAmount, formattedWalletAmount } from '../../../utils/formatters';
 import Wallet from '../../../domains/Wallet';
 import StakePool from '../../../domains/StakePool';
 
@@ -52,6 +52,7 @@ type WalletOption = {
   syncing?: boolean,
   syncingLabel?: string,
   isHardwareWallet: boolean,
+  hasNativeTokens?: boolean,
 };
 
 export default class WalletsDropdown extends Component<Props> {
@@ -106,6 +107,7 @@ export default class WalletsDropdown extends Component<Props> {
       getStakePoolById,
       error,
       errorPosition,
+      hasNativeTokens,
       ...props
     } = this.props;
     const walletsData = wallets.map(
@@ -118,6 +120,7 @@ export default class WalletsDropdown extends Component<Props> {
         pendingDelegations,
         isRestoring,
         isHardwareWallet,
+        ticker,
       }: Wallet) => {
         const hasPendingDelegations =
           pendingDelegations && pendingDelegations.length > 0;
@@ -126,7 +129,8 @@ export default class WalletsDropdown extends Component<Props> {
           currentStakePoolId = lastDelegationStakePoolId;
         }
         const delegatedStakePool = getStakePoolById(currentStakePoolId);
-        const detail = !isRestoring ? formattedWalletAmount(amount) : null;
+        const formatedAmount = hasNativeTokens ? formattedTokenWalletAmount(amount, ticker) : formattedWalletAmount(amount);
+        const detail = !isRestoring ? formatedAmount : null;
         return {
           detail,
           syncing: isRestoring,

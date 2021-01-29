@@ -30,6 +30,21 @@ export const formattedWalletAmount = (
   return formattedAmount.toString();
 };
 
+export const formattedTokenWalletAmount = (
+  amount: BigNumber,
+  currency: string,
+) => {
+  let formattedAmount = amount.toFormat(DECIMAL_PLACES_IN_ADA);
+  const { decimalSeparator } = BigNumber.config().FORMAT;
+  if (decimalSeparator !== '.') {
+    // Only BigNumber.toFormat() method is applying correct separators.
+    // Since this method is not used for condensed format (long = false)
+    // the correct number format has to be applied manually.
+    formattedAmount = formattedAmount.split('.').join(decimalSeparator);
+  }
+  return `${formattedAmount} ${currency}`;
+};
+
 // Symbol   Name                Scientific Notation
 // K        Thousand            1.00E+03
 // M        Million             1.00E+06
