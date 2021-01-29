@@ -6,6 +6,7 @@ Changelog
 ### Features
 
 - Added address verification for "Ledger" hardware wallet devices ([PR 2282](https://github.com/input-output-hk/daedalus/pull/2282))
+- Added SMASH server configuration options ([PR 2259](https://github.com/input-output-hk/daedalus/pull/2259))
 
 ### Chores
 
