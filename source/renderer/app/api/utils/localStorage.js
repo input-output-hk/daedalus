@@ -275,6 +275,15 @@ export default class LocalStorageApi {
   unsetAppUpdateCompleted = (): Promise<void> =>
     LocalStorageApi.unset(keys.APP_UPDATE_COMPLETED);
 
+  getSmashServer = (): Promise<string> =>
+    LocalStorageApi.get(keys.SMASH_SERVER);
+
+  setSmashServer = (smashServerUrl: string): Promise<void> =>
+    LocalStorageApi.set(keys.SMASH_SERVER, smashServerUrl);
+
+  unsetSmashServer = (): Promise<void> =>
+    LocalStorageApi.unset(keys.SMASH_SERVER);
+
   // Paired Hardware wallets (software <-> hardware wallet / device)
   getHardwareWalletsLocalData = (): Promise<HardwareWalletsLocalData> =>
     LocalStorageApi.get(keys.HARDWARE_WALLETS, {});
