@@ -82,6 +82,9 @@ import { getStakePools } from './staking/requests/getStakePools';
 import { getDelegationFee } from './staking/requests/getDelegationFee';
 import { joinStakePool } from './staking/requests/joinStakePool';
 import { quitStakePool } from './staking/requests/quitStakePool';
+import { getSmashSettings } from './staking/requests/getSmashSettings';
+import { checkSmashServerHealth } from './staking/requests/checkSmashServerHealth';
+import { updateSmashSettings } from './staking/requests/updateSmashSettings';
 
 // Utility functions
 import { cardanoFaultInjectionChannel } from '../ipc/cardano.ipc';
@@ -99,6 +102,8 @@ import { filterLogData } from '../../../common/utils/logging';
 // Config constants
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 import {
+  SMASH_SERVER_STATUSES,
+  SMASH_SERVERS_LIST,
   DELEGATION_DEPOSIT,
   MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE,
   REWARDS_REDEMPTION_FEE_CALCULATION_AMOUNT,
@@ -194,6 +199,9 @@ import type {
   GetRedeemItnRewardsFeeResponse,
   RequestRedeemItnRewardsRequest,
   RequestRedeemItnRewardsResponse,
+  GetSmashSettingsApiResponse,
+  CheckSmashServerHealthApiResponse,
+  PoolMetadataSource,
 } from './staking/types';
 
 // Voting Types
@@ -1704,6 +1712,80 @@ export default class AdaApi {
         .where('code', 'bad_request')
         .inc('message', 'passphrase is too short')
         .result();
+    }
+  };
+
+  getSmashSettings = async (): Promise<GetSmashSettingsApiResponse> => {
+    logger.debug('AdaApi::getSmashSettings called');
+    try {
+      const {
+        pool_metadata_source: poolMetadataSource,
+      } = await getSmashSettings(this.config);
+      logger.debug('AdaApi::getSmashSettings success', { poolMetadataSource });
+      return poolMetadataSource;
+    } catch (error) {
+      logger.error('AdaApi::getSmashSettings error', { error });
+      throw new ApiError(error);
+    }
+  };
+
+  checkSmashServerIsValid = async (url: string): Promise<boolean> => {
+    logger.debug('AdaApi::checkSmashServerIsValid called', {
+      parameters: { url },
+    });
+    try {
+      if (url === SMASH_SERVERS_LIST.direct.url) {
+        return true;
+      }
+      const {
+        health,
+      }: CheckSmashServerHealthApiResponse = await checkSmashServerHealth(
+        this.config,
+        url
+      );
+      const isValid = health === SMASH_SERVER_STATUSES.AVAILABLE;
+      logger.debug('AdaApi::checkSmashServerIsValid success', { isValid });
+      return isValid;
+    } catch (error) {
+      logger.error('AdaApi::checkSmashServerIsValid error', { error });
+      throw new ApiError(error);
+    }
+  };
+
+  updateSmashSettings = async (
+    poolMetadataSource: PoolMetadataSource
+  ): Promise<void> => {
+    logger.debug('AdaApi::updateSmashSettings called', {
+      parameters: { poolMetadataSource },
+    });
+    try {
+      const isSmashServerValid = await this.checkSmashServerIsValid(
+        poolMetadataSource
+      );
+      if (!isSmashServerValid) {
+        const error = {
+          code: 'invalid_smash_server',
+        };
+        throw new ApiError(error);
+      }
+      await updateSmashSettings(this.config, poolMetadataSource);
+      logger.debug('AdaApi::updateSmashSettings success', {
+        poolMetadataSource,
+      });
+    } catch (error) {
+      const id = get(error, 'id');
+      const message = get(error, 'values.message');
+      if (
+        id === 'api.errors.GenericApiError' &&
+        message ===
+          'Error parsing query parameter url failed: URI must not contain a path/query/fragment.'
+      ) {
+        throw new ApiError({
+          code: 'invalid_smash_server',
+        });
+      }
+      logger.error('AdaApi::updateSmashSettings error', { error });
+      throw new ApiError(error);
     }
   };
 

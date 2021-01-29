@@ -78,16 +78,12 @@ type Props = {
   onFieldValueChange: Function,
   onStartEditing: Function,
   onStopEditing: Function,
-  onCancelEditing: Function,
+  onCancel: Function,
   onVerifyRecoveryPhrase: Function,
   onCopyWalletPublicKey: Function,
   nameValidator: Function,
-  activeField: ?string,
-  isSubmitting: boolean,
   isIncentivizedTestnet: boolean,
-  isInvalid: boolean,
   isLegacy: boolean,
-  lastUpdatedField: ?string,
   changeSpendingPasswordDialog: Node,
   walletPublicKeyQRCodeDialogContainer: Node,
   deleteWalletDialogContainer: Node,
@@ -130,7 +126,7 @@ export default class WalletSettings extends Component<Props, State> {
 
   componentWillUnmount() {
     // This call is used to prevent display of old successfully-updated messages
-    this.props.onCancelEditing();
+    this.props.onCancel();
   }
 
   onBlockForm = () => {
@@ -222,15 +218,11 @@ export default class WalletSettings extends Component<Props, State> {
       onFieldValueChange,
       onStartEditing,
       onStopEditing,
-      onCancelEditing,
+      onCancel,
       onVerifyRecoveryPhrase,
       nameValidator,
-      activeField,
-      isSubmitting,
       isIncentivizedTestnet,
-      isInvalid,
       isLegacy,
-      lastUpdatedField,
       changeSpendingPasswordDialog,
       recoveryPhraseVerificationDate,
       recoveryPhraseVerificationStatus,
@@ -268,22 +260,18 @@ export default class WalletSettings extends Component<Props, State> {
         <BorderedBox>
           <InlineEditingInput
             className="walletName"
-            inputFieldLabel={intl.formatMessage(messages.name)}
-            inputFieldValue={walletName}
+            label={intl.formatMessage(messages.name)}
+            value={walletName}
             maxLength={40}
-            isActive={!isFormBlocked && activeField === 'name'}
-            onStartEditing={() => onStartEditing('name')}
-            onStopEditing={onStopEditing}
-            onCancelEditing={onCancelEditing}
+            onFocus={() => onStartEditing('name')}
+            onBlur={onStopEditing}
+            onCancel={onCancel}
             onSubmit={(value) => onFieldValueChange('name', value)}
             isValid={nameValidator}
-            validationErrorMessage={intl.formatMessage(
+            valueErrorMessage={intl.formatMessage(
               globalMessages.invalidWalletName
             )}
-            successfullyUpdated={
-              !isSubmitting && !isInvalid && lastUpdatedField === 'name'
-            }
-            inputBlocked={isFormBlocked}
+            readOnly={isFormBlocked}
           />
 
           {!isHardwareWallet && (
