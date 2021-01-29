@@ -6,6 +6,7 @@ Changelog
 ### Features
 
 - Implemented Trezor passphrase handling ([PR 2284](https://github.com/input-output-hk/daedalus/pull/2284))
+- Added SMASH server configuration options ([PR 2259](https://github.com/input-output-hk/daedalus/pull/2259))
 
 ### Chores
 
