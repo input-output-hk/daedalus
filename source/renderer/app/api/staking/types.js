@@ -115,3 +115,29 @@ export type RequestRedeemItnRewardsRequest = {
 };
 
 export type RequestRedeemItnRewardsResponse = BigNumber;
+
+export type PoolMetadataSource = 'none' | 'direct' | string;
+
+export type UpdateSmashSettingsRequest = {
+  settings: {
+    pool_metadata_source: PoolMetadataSource,
+  },
+};
+
+export type GetSmashSettingsResponse = {
+  pool_metadata_source: PoolMetadataSource,
+};
+
+export type GetSmashSettingsApiResponse = PoolMetadataSource;
+
+export type SmashServerStatuses =
+  | 'available'
+  | 'unavailable'
+  | 'unreachable'
+  | 'no_smash_configured';
+
+export type CheckSmashServerHealthApiResponse = {
+  health: SmashServerStatuses,
+};
+
+export type CheckSmashServerHealthResponse = boolean;

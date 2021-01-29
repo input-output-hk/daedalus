@@ -34,6 +34,7 @@ export const ROUTES = {
     ROOT: '/settings',
     WALLETS: '/wallets',
     GENERAL: '/settings/general',
+    STAKE_POOLS: '/settings/stake-pools',
     TERMS_OF_USE: '/settings/terms-of-service',
     SUPPORT: '/settings/support',
     DISPLAY: '/settings/display',

@@ -17,6 +17,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Wallets',
     description: 'Label for the "Wallets" link in the settings menu.',
   },
+  stakePools: {
+    id: 'settings.menu.stakePools.link.label',
+    defaultMessage: '!!!Stake Pools',
+    description: 'Label for the "Support" link in the settings menu.',
+  },
   support: {
     id: 'settings.menu.support.link.label',
     defaultMessage: '!!!Support',
@@ -36,6 +41,8 @@ const messages = defineMessages({
 
 type Props = {
   isFlight: boolean,
+  isSyncing: boolean,
+  currentRoute: string,
   isActiveItem: Function,
   onItemClick: Function,
 };
@@ -46,9 +53,16 @@ export default class SettingsMenu extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
+  componentDidUpdate() {
+    const { isSyncing, currentRoute, onItemClick } = this.props;
+    if (currentRoute === ROUTES.SETTINGS.STAKE_POOLS && isSyncing) {
+      onItemClick(ROUTES.SETTINGS.GENERAL);
+    }
+  }
+
   render() {
     const { intl } = this.context;
-    const { onItemClick, isActiveItem, isFlight } = this.props;
+    const { onItemClick, isActiveItem, isFlight, isSyncing } = this.props;
 
     return (
       <div>
@@ -65,6 +79,14 @@ export default class SettingsMenu extends Component<Props> {
             active={isActiveItem(ROUTES.SETTINGS.WALLETS)}
             className="wallets"
           />
+          {!isSyncing && (
+            <SettingsMenuItem
+              label={intl.formatMessage(messages.stakePools)}
+              onClick={() => onItemClick(ROUTES.SETTINGS.STAKE_POOLS)}
+              active={isActiveItem(ROUTES.SETTINGS.STAKE_POOLS)}
+              className="stakePools"
+            />
+          )}
           {!isFlight && !global.isShelleyTestnet && (
             <SettingsMenuItem
               label={intl.formatMessage(messages.display)}
