@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Added SMASH server configuration options ([PR 2259](https://github.com/input-output-hk/daedalus/pull/2259))
+
 ### Chores
 
 - Fixed number format for syncing percentage and stake pools count ([PR 2313](https://github.com/input-output-hk/daedalus/pull/2313))

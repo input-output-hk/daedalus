@@ -1,0 +1,145 @@
+@import '../../../themes/mixins/error-message';
+
+.component {
+  margin-bottom: 20px;
+
+  :global {
+    .RadioSet_radiosContainer {
+      flex-direction: column;
+    }
+    .SimpleOptions_option em {
+      opacity: 0.5;
+    }
+  }
+}
+.description {
+  color: var(--theme-support-settings-text-color);
+  display: block;
+  font-family: var(--font-light);
+  font-size: 16px;
+  line-height: 1.38;
+  margin-bottom: 20px;
+  p {
+    margin-bottom: 12px;
+  }
+  b {
+    font-family: var(--font-regular);
+  }
+  li {
+    list-style: decimal;
+    margin-left: 20px;
+  }
+  em {
+    color: var(--theme-delegation-steps-intro-link-color);
+  }
+  .link {
+    font-size: 16px;
+  }
+}
+.smashServerUrl {
+  margin-top: 20px;
+  :global {
+    .SimpleInput_errored {
+      border-color: var(--rp-input-border-color-errored);
+    }
+  }
+}
+.smashServerUrlError {
+  @include error-message;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.optionDescription {
+  color: var(--theme-support-settings-text-color);
+  display: block;
+  font-family: var(--font-light);
+  font-size: 14px;
+  line-height: 1.38;
+  margin-top: 20px;
+  p {
+    margin-bottom: 12px;
+  }
+  b {
+    font-family: var(--font-bold);
+  }
+  :global {
+    .SimpleLink_root {
+      font-family: var(--font-regular);
+      word-break: break-word;
+    }
+  }
+}
+
+.selectionRenderer {
+  color: var(--theme-support-settings-text-color);
+  font-family: var(--rp-theme-font-regular);
+  line-height: var(--rp-input-line-height);
+  padding: 14px 20px 0;
+  position: relative;
+  em {
+    opacity: 0.5;
+  }
+  .icon {
+    display: inline-block;
+    position: absolute;
+    right: 20px;
+    svg {
+      animation: spinner 1.5s linear infinite;
+      height: 12px;
+      position: relative;
+      top: 1px;
+      width: 12px;
+      g {
+        stroke: var(--rp-select-arrow-bg-color);
+      }
+    }
+  }
+}
+
+@keyframes spinner {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.disabledInput {
+  input {
+    background-color: var(--rp-input-bg-color, #fafbfc);
+    border: 1px solid var(--rp-input-border-color, #c6cdd6);
+    color: var(--rp-input-text-color);
+    height: 50px;
+  }
+  :global {
+    .SimpleFormField_inputWrapper {
+      height: 50px;
+    }
+  }
+}
+
+@keyframes animateSavingResultLabel {
+  0% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.savingResultLabel {
+  animation: animateSavingResultLabel 3s;
+  color: var(--theme-input-right-floating-text-success-color);
+  font-family: var(--font-regular);
+  font-size: 13px;
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  text-align: right;
+  top: 5px;
+}

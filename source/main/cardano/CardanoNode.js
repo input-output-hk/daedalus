@@ -81,7 +81,6 @@ export type CardanoNodeConfig = {
   syncTolerance: string,
   cliBin: string, // Path to cardano-cli executable
   isStaging: boolean,
-  smashUrl?: string,
 };
 
 const CARDANO_UPDATE_EXIT_CODE = 20;
@@ -297,7 +296,6 @@ export class CardanoNode {
       syncTolerance,
       cliBin,
       isStaging,
-      smashUrl,
     } = config;
 
     this._config = config;
@@ -356,7 +354,6 @@ export class CardanoNode {
           walletLogFile,
           cliBin,
           isStaging,
-          smashUrl,
         });
 
         this._node = node;
