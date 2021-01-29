@@ -478,6 +478,9 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     this.hideReceiverField();
     this.clearAssetValue();
     this.clearReceiverAddress();
+    this.setState({
+      isResetButtonDisabled: true,
+    });
   };
 
   addAssetRow = () => {};
@@ -733,6 +736,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                   }}
                   error={transactionFeeError || assetField.error}
                   currency={intl.formatMessage(globalMessages.unitAda)}
+                  tabIndex={-1}
                   fees={fees}
                   total={total}
                   skin={AmountInputSkin}
