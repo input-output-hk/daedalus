@@ -121,6 +121,7 @@ export const {
   legacyStateDir,
   logsPrefix,
   isFlight,
+  smashUrl,
 } = launcherConfig;
 export const appLogsFolderPath = logsPrefix;
 export const pubLogsFolderPath = path.join(appLogsFolderPath, 'pub');

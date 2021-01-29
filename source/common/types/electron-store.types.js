@@ -19,7 +19,8 @@ export type StorageKey =
   | 'WALLET-MIGRATION-STATUS'
   | 'DOWNLOAD-MANAGER'
   | 'APP-AUTOMATIC-UPDATE-FAILED'
-  | 'APP-UPDATE-COMPLETED';
+  | 'APP-UPDATE-COMPLETED'
+  | 'SMASH-SERVER';
 
 export type StoreMessage = {
   type: StorageType,

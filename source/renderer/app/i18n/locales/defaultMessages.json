@@ -271,6 +271,20 @@
           "column": 20,
           "line": 102
         }
+      },
+      {
+        "defaultMessage": "!!!This URL is not a valid SMASH server",
+        "description": "\"This URL is not a valid SMASH server\" error message",
+        "end": {
+          "column": 3,
+          "line": 113
+        },
+        "file": "source/renderer/app/api/errors.js",
+        "id": "api.errors.invalidSmashServer",
+        "start": {
+          "column": 22,
+          "line": 109
+        }
       }
     ],
     "path": "source/renderer/app/api/errors.json"
@@ -2164,6 +2178,235 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!The {link} is an off-chain metadata server that enables the fast loading of stake pool details. Stake pools are also curated and each server has a different curation policy.",
+        "description": "description for the Stake Pools settings page.",
+        "end": {
+          "column": 3,
+          "line": 34
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "settings.stakePools.smash.description",
+        "start": {
+          "column": 15,
+          "line": 29
+        }
+      },
+      {
+        "defaultMessage": "!!!Stakepool Metadata Aggregation Server (SMASH)",
+        "description": "description for the Stake Pools settings page.",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "settings.stakePools.smash.descriptionLinkLabel",
+        "start": {
+          "column": 24,
+          "line": 35
+        }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.io/en/blog/posts/2020/11/17/in-pools-we-trust/",
+        "description": "description for the Stake Pools settings page.",
+        "end": {
+          "column": 3,
+          "line": 45
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "settings.stakePools.smash.descriptionLinkUrl",
+        "start": {
+          "column": 22,
+          "line": 40
+        }
+      },
+      {
+        "defaultMessage": "!!!The IOHK server ensures that registered stake pools are valid, helps to avoid duplicated ticker names or trademarks, and checks that the pools do not feature potentially offensive or harmful information.",
+        "description": "description for the Stake Pools settings page.",
+        "end": {
+          "column": 3,
+          "line": 51
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "settings.stakePools.smash.descriptionIOHKContent1",
+        "start": {
+          "column": 27,
+          "line": 46
+        }
+      },
+      {
+        "defaultMessage": "!!!This allows us to deal with any scams, trolls, or abusive behavior by filtering out potentially problematic actors. {link} about the IOHK SMASH server.",
+        "description": "description for the Stake Pools settings page.",
+        "end": {
+          "column": 3,
+          "line": 57
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "settings.stakePools.smash.descriptionIOHKContent2",
+        "start": {
+          "column": 27,
+          "line": 52
+        }
+      },
+      {
+        "defaultMessage": "!!!Read more",
+        "description": "description for the Stake Pools settings page.",
+        "end": {
+          "column": 3,
+          "line": 62
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "settings.stakePools.smash.descriptionIOHKLinkLabel",
+        "start": {
+          "column": 28,
+          "line": 58
+        }
+      },
+      {
+        "defaultMessage": "!!!https://iohk.io/en/blog/posts/2020/11/17/in-pools-we-trust/",
+        "description": "description for the Stake Pools settings page.",
+        "end": {
+          "column": 3,
+          "line": 68
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "settings.stakePools.smash.descriptionIOHKLinkUrl",
+        "start": {
+          "column": 26,
+          "line": 63
+        }
+      },
+      {
+        "defaultMessage": "!!!<b>This option is not recommended!</b> Without the off-chain metadata server your Daedalus client will fetch this data by contacting every stake pool individually, which is a very slow and resource-consuming process. The list of stake pools received is not curated, so Daedalus will receive legitimate pools, duplicates, and fake pools. An added risk to this process is that your antivirus or antimalware software could recognize the thousands of network requests as malicious behavior by the Daedalus client.",
+        "description": "description for the Stake Pools settings page.",
+        "end": {
+          "column": 3,
+          "line": 74
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "settings.stakePools.smash.descriptionNone",
+        "start": {
+          "column": 19,
+          "line": 69
+        }
+      },
+      {
+        "defaultMessage": "!!!Off-chain metadata server (SMASH)",
+        "description": "smashSelectLabel for the \"Smash\" selection on the Stake Pools settings page.",
+        "end": {
+          "column": 3,
+          "line": 80
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "settings.stakePools.smash.select.label",
+        "start": {
+          "column": 20,
+          "line": 75
+        }
+      },
+      {
+        "defaultMessage": "!!!IOHK (Recommended)",
+        "description": "smashSelectCustomServer option for the \"Smash\" selection on the Stake Pools settings page.",
+        "end": {
+          "column": 3,
+          "line": 86
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "settings.stakePools.smash.select.IOHKServer",
+        "start": {
+          "column": 25,
+          "line": 81
+        }
+      },
+      {
+        "defaultMessage": "!!!None - let my Daedalus client fetch the data",
+        "description": "smashSelectCustomServer option for the \"Smash\" selection on the Stake Pools settings page.",
+        "end": {
+          "column": 3,
+          "line": 92
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "settings.stakePools.smash.select.direct",
+        "start": {
+          "column": 21,
+          "line": 87
+        }
+      },
+      {
+        "defaultMessage": "!!!Custom server",
+        "description": "smashSelectCustomServer option for the \"Smash\" selection on the Stake Pools settings page.",
+        "end": {
+          "column": 3,
+          "line": 98
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "settings.stakePools.smash.select.customServer",
+        "start": {
+          "column": 27,
+          "line": 93
+        }
+      },
+      {
+        "defaultMessage": "!!!SMASH server URL",
+        "description": "smashURLInputLabel for the \"Smash Custom Server\" selection on the Stake Pools settings page.",
+        "end": {
+          "column": 3,
+          "line": 104
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "settings.stakePools.smashUrl.input.label",
+        "start": {
+          "column": 22,
+          "line": 99
+        }
+      },
+      {
+        "defaultMessage": "!!!Enter custom server URL",
+        "description": "smashUrlInputPlaceholder for the \"Smash Custom Server\" selection on the Stake Pools settings page.",
+        "end": {
+          "column": 3,
+          "line": 110
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "settings.stakePools.smashUrl.input.placeholder",
+        "start": {
+          "column": 28,
+          "line": 105
+        }
+      },
+      {
+        "defaultMessage": "!!!Invalid URL",
+        "description": "smashUrlInputInvalidUrl for the \"Smash Custom Server\" selection on the Stake Pools settings page.",
+        "end": {
+          "column": 3,
+          "line": 116
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "settings.stakePools.smashUrl.input.invalidUrl",
+        "start": {
+          "column": 27,
+          "line": 111
+        }
+      },
+      {
+        "defaultMessage": "!!!Your changes have been saved",
+        "description": "Message \"Your changes have been saved\" for inline editing (eg. on Profile Settings page).",
+        "end": {
+          "column": 3,
+          "line": 122
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "inline.editing.input.changesSaved",
+        "start": {
+          "column": 16,
+          "line": 117
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/settings/categories/StakePoolsSettings.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!Help and support",
         "description": "Title \"Help and support\" on the support settings page.",
         "end": {
@@ -2323,17 +2566,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Support",
+        "defaultMessage": "!!!Stake Pools",
         "description": "Label for the \"Support\" link in the settings menu.",
         "end": {
           "column": 3,
           "line": 19
         },
         "file": "source/renderer/app/components/settings/menu/SettingsMenu.js",
+        "id": "settings.menu.stakePools.link.label",
+        "start": {
+          "column": 14,
+          "line": 15
+        }
+      },
+      {
+        "defaultMessage": "!!!Support",
+        "description": "Label for the \"Support\" link in the settings menu.",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/components/settings/menu/SettingsMenu.js",
         "id": "settings.menu.support.link.label",
         "start": {
           "column": 11,
-          "line": 15
+          "line": 20
         }
       },
       {
@@ -2341,13 +2598,13 @@
         "description": "Label for the \"Terms of service\" link in the settings menu.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 29
         },
         "file": "source/renderer/app/components/settings/menu/SettingsMenu.js",
         "id": "settings.menu.termsOfUse.link.label",
         "start": {
           "column": 14,
-          "line": 20
+          "line": 25
         }
       },
       {
@@ -2355,13 +2612,13 @@
         "description": "Label for the \"Themes\" link in the settings menu.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 34
         },
         "file": "source/renderer/app/components/settings/menu/SettingsMenu.js",
         "id": "settings.menu.display.link.label",
         "start": {
           "column": 11,
-          "line": 25
+          "line": 30
         }
       }
     ],
@@ -5376,41 +5633,69 @@
         "description": "\"delegatingListTitle\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 30
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.delegatingListTitle",
         "start": {
           "column": 23,
-          "line": 19
+          "line": 26
         }
       },
       {
-        "defaultMessage": "!!!Stake pools ({pools})",
+        "defaultMessage": "!!!Stake pools",
         "description": "\"listTitle\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 35
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.listTitle",
         "start": {
           "column": 13,
-          "line": 24
+          "line": 31
         }
       },
       {
-        "defaultMessage": "!!!Stake pools. Search results: ({pools})",
-        "description": "\"listTitle\" for the Stake Pools page.",
+        "defaultMessage": "!!!Loading stake pools",
+        "description": "\"listTitleLoading\" for the Stake Pools page.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 40
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
-        "id": "staking.stakePools.listTitleWithSearch",
+        "id": "staking.stakePools.listTitleLoading",
+        "start": {
+          "column": 20,
+          "line": 36
+        }
+      },
+      {
+        "defaultMessage": "!!!Stake pools. Search results:",
+        "description": "\"listTitleSearch\" for the Stake Pools page.",
+        "end": {
+          "column": 3,
+          "line": 45
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
+        "id": "staking.stakePools.listTitleSearch",
+        "start": {
+          "column": 19,
+          "line": 41
+        }
+      },
+      {
+        "defaultMessage": "!!!({pools})",
+        "description": "\"listTitleStakePools\" for the Stake Pools page.",
+        "end": {
+          "column": 3,
+          "line": 50
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
+        "id": "staking.stakePools.listTitleStakePools",
         "start": {
           "column": 23,
-          "line": 29
+          "line": 46
         }
       },
       {
@@ -5418,13 +5703,41 @@
         "description": "Loading stake pool message for the Delegation center body section.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 56
         },
         "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
         "id": "staking.stakePools.loadingStakePoolsMessage",
         "start": {
           "column": 28,
-          "line": 34
+          "line": 51
+        }
+      },
+      {
+        "defaultMessage": "!!!Moderated by",
+        "description": "moderatedBy message for the Delegation center body section.",
+        "end": {
+          "column": 3,
+          "line": 61
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
+        "id": "staking.stakePools.moderatedBy",
+        "start": {
+          "column": 15,
+          "line": 57
+        }
+      },
+      {
+        "defaultMessage": "!!!Unmoderated",
+        "description": "unmoderated message for the Delegation center body section.",
+        "end": {
+          "column": 3,
+          "line": 66
+        },
+        "file": "source/renderer/app/components/staking/stake-pools/StakePools.js",
+        "id": "staking.stakePools.unmoderated",
+        "start": {
+          "column": 15,
+          "line": 62
         }
       }
     ],
@@ -13355,13 +13668,13 @@
         "description": "Label \"change\" on inline editing inputs in inactive state.",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 26
         },
         "file": "source/renderer/app/components/widgets/forms/InlineEditingInput.js",
         "id": "inline.editing.input.change.label",
         "start": {
           "column": 10,
-          "line": 14
+          "line": 22
         }
       },
       {
@@ -13369,13 +13682,13 @@
         "description": "Label \"cancel\" on inline editing inputs in inactive state.",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 31
         },
         "file": "source/renderer/app/components/widgets/forms/InlineEditingInput.js",
         "id": "inline.editing.input.cancel.label",
         "start": {
           "column": 10,
-          "line": 19
+          "line": 27
         }
       },
       {
@@ -13383,13 +13696,13 @@
         "description": "Message \"Your changes have been saved\" for inline editing (eg. on Profile Settings page).",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 37
         },
         "file": "source/renderer/app/components/widgets/forms/InlineEditingInput.js",
         "id": "inline.editing.input.changesSaved",
         "start": {
           "column": 16,
-          "line": 24
+          "line": 32
         }
       }
     ],
