@@ -7,7 +7,10 @@ import { omit } from 'lodash';
 import WalletsDropdownOption from './WalletsDropdownOption';
 import styles from './WalletsDropdown.scss';
 
-import { formattedTokenWalletAmount, formattedWalletAmount } from '../../../utils/formatters';
+import {
+  formattedTokenWalletAmount,
+  formattedWalletAmount,
+} from '../../../utils/formatters';
 import Wallet from '../../../domains/Wallet';
 import StakePool from '../../../domains/StakePool';
 
@@ -41,6 +44,7 @@ type Props = {
   wallets: Array<$Shape<Wallet>>,
   getStakePoolById: Function,
   syncingLabel?: string,
+  hasNativeTokens?: string,
 };
 
 type WalletOption = {
@@ -129,8 +133,11 @@ export default class WalletsDropdown extends Component<Props> {
           currentStakePoolId = lastDelegationStakePoolId;
         }
         const delegatedStakePool = getStakePoolById(currentStakePoolId);
-        const formatedAmount = hasNativeTokens ? formattedTokenWalletAmount(amount, ticker) : formattedWalletAmount(amount);
-        const detail = !isRestoring ? formatedAmount : null;
+        const formattedAmount =
+          hasNativeTokens && ticker
+            ? formattedTokenWalletAmount(amount, ticker)
+            : formattedWalletAmount(amount);
+        const detail = !isRestoring ? formattedAmount : null;
         return {
           detail,
           syncing: isRestoring,

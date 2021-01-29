@@ -129,7 +129,6 @@ storiesOf('Wallets|Send', module)
   ))
   .add('Tokens Wallet Send', () => (
     <WalletTokenSendForm
-      currencyUnit="USDC"
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
       currentNumberFormat={NUMBER_OPTIONS[0].value}

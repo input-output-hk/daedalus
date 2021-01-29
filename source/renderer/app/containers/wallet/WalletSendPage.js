@@ -103,7 +103,6 @@ export default class WalletSendPage extends Component<Props> {
       <>
         {hasNativeTokens && nativeTokens && nativeTokens.length ? (
           <WalletTokenSendForm
-            currencyUnit={intl.formatMessage(globalMessages.unitAda)}
             currencyMaxIntegerDigits={MAX_INTEGER_PLACES_IN_ADA}
             currencyMaxFractionalDigits={DECIMAL_PLACES_IN_ADA}
             currentNumberFormat={profile.currentNumberFormat}

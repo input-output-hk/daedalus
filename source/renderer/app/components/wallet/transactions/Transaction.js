@@ -448,7 +448,11 @@ export default class Transaction extends Component<Props, State> {
                 onClick={() =>
                   onOpenExternalLink(getUrlByType('address', address))
                 }
-                label={hasNativeTokens ? ellipsis(address, 30, 30) : address}
+                label={
+                  hasNativeTokens && address
+                    ? ellipsis(address, 30, 30)
+                    : address
+                }
                 skin={LinkSkin}
               />
             </div>
@@ -615,7 +619,9 @@ export default class Transaction extends Component<Props, State> {
                       <div className={styles.transactionIdRow}>
                         <div className={styles.transactionFeeValue}>
                           {fees}&nbsp;
-                          <span>{intl.formatMessage(globalMessages.unitAda)}</span>
+                          <span>
+                            {intl.formatMessage(globalMessages.unitAda)}
+                          </span>
                         </div>
                       </div>
                     )}

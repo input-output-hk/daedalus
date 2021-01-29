@@ -149,7 +149,6 @@ export const messages = defineMessages({
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
 type Props = {
-  currencyUnit: string,
   currencyMaxIntegerDigits?: number,
   currencyMaxFractionalDigits: number,
   validateAmount: (amountInNaturalUnits: string) => Promise<boolean>,
@@ -196,7 +195,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     showReceiverRemoveBtn: false,
     selectedWalletId: null,
     showReceiverField: false,
-    tokens: []
+    tokens: [],
   };
 
   // We need to track the fee calculation state in order to disable
@@ -220,17 +219,8 @@ export default class WalletTokenSendForm extends Component<Props, State> {
 
     // @TODO Remove hardcoded setter of values for token currencies
     if (nativeTokens && nativeTokens.length) {
-      const filteredTokens = [];
-      // eslint-disable-next-line no-return-assign
-      nativeTokens.forEach((token) => {
-        const nativeToken = {
-          ...token,
-          currencyUnit: token.name,
-        };
-        filteredTokens.push(nativeToken);
-      });
       this.setState({
-        tokens: filteredTokens,
+        tokens: [...nativeTokens],
       });
     }
   }
@@ -656,7 +646,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                               this.renderAssetRow();
                             }
                           }}
-                          currency={selectedNativeToken.currencyUnit}
+                          currency={selectedNativeToken.ticker}
                           skin={AmountInputSkin}
                           onKeyPress={this.handleSubmitOnEnter}
                           allowSigns={false}
@@ -773,7 +763,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
             totalAmount={total}
             transactionFee={fees}
             amountToNaturalUnits={formattedAmountToNaturalUnits}
-            currencyUnit={selectedNativeToken.currencyUnit}
+            currencyUnit={selectedNativeToken.ticker}
             onExternalLinkClick={onExternalLinkClick}
             hwDeviceStatus={hwDeviceStatus}
             isHardwareWallet={isHardwareWallet}
