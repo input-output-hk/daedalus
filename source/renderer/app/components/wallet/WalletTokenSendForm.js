@@ -179,6 +179,7 @@ type State = {
   selectedWalletId: ?string,
   showReceiverField: boolean,
   tokens: Array<Wallet>,
+  isResetButtonDisabled: boolean,
 };
 
 @observer
@@ -196,6 +197,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     selectedWalletId: null,
     showReceiverField: false,
     tokens: [],
+    isResetButtonDisabled: true,
   };
 
   // We need to track the fee calculation state in order to disable
@@ -252,6 +254,10 @@ export default class WalletTokenSendForm extends Component<Props, State> {
 
   handleOnReset = () => {
     this.form.reset();
+    this.setState({
+      isResetButtonDisabled: true,
+    });
+    this.hideReceiverField();
   };
 
   handleSubmitOnEnter = submitOnEnter.bind(this, this.handleOnSubmit);
@@ -506,6 +512,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
       selectedWalletId,
       showReceiverField,
       tokens,
+      isResetButtonDisabled,
     } = this.state;
     const assetField = form.$('asset');
     const receiverField = form.$('receiver');
@@ -587,6 +594,9 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                       error={receiverField.error}
                       onChange={(value) => {
                         receiverField.onChange(value || '');
+                        this.setState({
+                          isResetButtonDisabled: false,
+                        });
                         if (value) {
                           this.showReceiverField();
                           this.renderAssetRow();
@@ -616,7 +626,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                       </div>
                     )}
                   </div>
-                  {this.hasReceiverValue && showReceiverField && (
+                  {showReceiverField && (
                     <>
                       <div className={styles.fieldsLine} />
                       <div className={styles.assetInput}>
@@ -640,6 +650,9 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                           }}
                           onChange={(value) => {
                             this._isCalculatingTransactionFee = true;
+                            this.setState({
+                              isResetButtonDisabled: false,
+                            });
                             assetField.onChange(value);
                             estimatedField.onChange(fees);
                             if (value) {
@@ -701,7 +714,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                   )}
                 </div>
               </div>
-              {this.isReceiverValid && showReceiverField && (
+              {showReceiverField && (
                 <Button
                   className={newReceiverButtonClasses}
                   label={intl.formatMessage(messages.addNewReceiverButtonLabel)}
@@ -742,6 +755,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                   label={intl.formatMessage(messages.resetButtonLabel)}
                   onClick={this.handleOnReset}
                   skin={ButtonSkin}
+                  disabled={isResetButtonDisabled}
                 />
                 <Button
                   className="primary"
