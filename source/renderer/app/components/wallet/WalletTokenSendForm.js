@@ -179,6 +179,7 @@ type State = {
   showReceiverRemoveBtn: boolean,
   selectedWalletId: ?string,
   showReceiverField: boolean,
+  tokens: Array<Wallet>,
 };
 
 @observer
@@ -195,6 +196,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     showReceiverRemoveBtn: false,
     selectedWalletId: null,
     showReceiverField: false,
+    tokens: []
   };
 
   // We need to track the fee calculation state in order to disable
@@ -216,10 +218,20 @@ export default class WalletTokenSendForm extends Component<Props, State> {
       this.onSelectWallet(selectedWallet.id);
     }
 
-    // @TODO Remove hardcoded values for currencies
+    // @TODO Remove hardcoded setter of values for token currencies
     if (nativeTokens && nativeTokens.length) {
+      const filteredTokens = [];
       // eslint-disable-next-line no-return-assign
-      nativeTokens.forEach((token) => (token.currencyUnit = token.name));
+      nativeTokens.forEach((token) => {
+        const nativeToken = {
+          ...token,
+          currencyUnit: token.name,
+        };
+        filteredTokens.push(nativeToken);
+      });
+      this.setState({
+        tokens: filteredTokens,
+      });
     }
   }
 
@@ -438,6 +450,11 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     return receiverField.value.length > 0;
   }
 
+  get isReceiverValid() {
+    const receiverField = this.form.$('receiver');
+    return receiverField.isValid;
+  }
+
   get hasAssetValue() {
     const assetField = this.form.$('asset');
     return !!assetField.value;
@@ -472,8 +489,8 @@ export default class WalletTokenSendForm extends Component<Props, State> {
   };
 
   getNativeTokenWalletById = (selectedWalletId: string): ?Wallet => {
-    const { nativeTokens } = this.props;
-    return nativeTokens.find((token) => token.id === selectedWalletId);
+    const { tokens } = this.state;
+    return tokens.find((token) => token.id === selectedWalletId);
   };
 
   render() {
@@ -486,7 +503,6 @@ export default class WalletTokenSendForm extends Component<Props, State> {
       onExternalLinkClick,
       hwDeviceStatus,
       isHardwareWallet,
-      nativeTokens,
       isClearTooltipOpeningDownward,
     } = this.props;
 
@@ -497,6 +513,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
       showReceiverRemoveBtn,
       selectedWalletId,
       showReceiverField,
+      tokens,
     } = this.state;
     const assetField = form.$('asset');
     const receiverField = form.$('receiver');
@@ -517,7 +534,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     }
 
     const selectedNativeToken: any =
-      selectedWalletId && nativeTokens && nativeTokens.length
+      selectedWalletId && tokens && tokens.length
         ? this.getNativeTokenWalletById(selectedWalletId)
         : null;
 
@@ -607,7 +624,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                       </div>
                     )}
                   </div>
-                  {showReceiverField && (
+                  {this.isReceiverValid && showReceiverField && (
                     <>
                       <div className={styles.fieldsLine} />
                       <div className={styles.assetInput}>
@@ -668,7 +685,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                             className={styles.walletsDropdown}
                             {...walletsDropdownFieldProps}
                             numberOfStakePools={4}
-                            wallets={nativeTokens}
+                            wallets={tokens}
                             onChange={(id) => this.onSelectWallet(id)}
                             syncingLabel={intl.formatMessage(
                               messages.syncingWallet
@@ -691,7 +708,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                   )}
                 </div>
               </div>
-              {showReceiverField && (
+              {this.isReceiverValid && showReceiverField && (
                 <Button
                   className={newReceiverButtonClasses}
                   label={intl.formatMessage(messages.addNewReceiverButtonLabel)}
@@ -757,7 +774,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
             onExternalLinkClick={onExternalLinkClick}
             hwDeviceStatus={hwDeviceStatus}
             isHardwareWallet={isHardwareWallet}
-            nativeTokens={nativeTokens}
+            nativeTokens={tokens}
           />
         ) : null}
       </div>
