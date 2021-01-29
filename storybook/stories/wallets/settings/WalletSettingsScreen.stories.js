@@ -140,7 +140,7 @@ export default (props: { currentTheme: string, locale: Locale }) => {
       isSubmitting={false}
       lastUpdatedField={null}
       nameValidator={() => true}
-      onCancelEditing={() => {}}
+      onCancel={() => {}}
       onFieldValueChange={() => {}}
       onStartEditing={() => {}}
       onStopEditing={() => {}}
