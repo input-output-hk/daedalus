@@ -10,7 +10,6 @@ import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import CancelTransactionButton from './CancelTransactionButton';
 import styles from './Transaction.scss';
 import TransactionTypeIcon from './TransactionTypeIcon';
-import adaSymbol from '../../../assets/images/ada-symbol.inline.svg';
 import arrow from '../../../assets/images/collapse-arrow.inline.svg';
 import {
   TransactionStates,
@@ -396,9 +395,9 @@ export default class Transaction extends Component<Props, State> {
     const typeOfTransaction = hasNativeTokens
       ? intl.formatMessage(headerStateTranslations[state])
       : intl.formatMessage(globalMessages.currency);
-    const symbol = adaSymbol;
-    const currency = hasNativeTokens ? 'USDC' : adaSymbol;
-
+    const currency = hasNativeTokens
+      ? 'USDC'
+      : intl.formatMessage(globalMessages.currency);
     const fees = hasNativeTokens ? '0.202481' : null;
 
     const getIconType = (txState) => {
@@ -487,7 +486,7 @@ export default class Transaction extends Component<Props, State> {
                     // hide currency (we are showing symbol instead)
                     formattedWalletAmount(data.amount, false)
                   }
-                  <SVGInline svg={symbol} className={styles.currencySymbol} />
+                  <span>{intl.formatMessage(globalMessages.currency)}</span>
                 </div>
               </div>
 
@@ -565,6 +564,7 @@ export default class Transaction extends Component<Props, State> {
                           />
                           <div className={styles.assetsWrapper}>
                             <div className={assetsSeparatorStyles} />
+                            {/* @todo - Replace with real values - data.addresses.to is just a placeholder */}
                             {data.addresses.to.map((assets, assetsIndex) => (
                               <div
                                 // eslint-disable-next-line react/no-array-index-key
@@ -578,7 +578,10 @@ export default class Transaction extends Component<Props, State> {
                                 <div className={styles.amountFeesWrapper}>
                                   <div className={styles.amount}>
                                     {formattedWalletAmount(data.amount, false)}
-                                    &nbsp; {currency}
+                                    &nbsp;{' '}
+                                    {data.addresses.currencies
+                                      ? data.addresses.currencies[assetsIndex]
+                                      : currency}
                                   </div>
                                 </div>
                               </div>

@@ -33,8 +33,8 @@ const messages = defineMessages({
 });
 
 type Props = {
-  wallet: any, // @todo check to proper type Wallet|Token when implementing real data from api
-  nativeTokens: Array<any>,
+  wallet: Wallet,
+  nativeTokens: Array<Wallet>,
   handleOpenWalletTokenSend: Function,
 };
 
@@ -72,6 +72,7 @@ export default class TokensWalletSummary extends Component<Props> {
               <div className={styles.nativeTokenRightContainer}>
                 <button
                   className={classNames([
+                    'primary',
                     styles.nativeTokenSendButton,
                     token.amount.isZero() ? styles.disabled : null,
                   ])}

@@ -131,10 +131,9 @@
     display: flex;
     flex-direction: row;
     height: 21px;
-    justify-content: center;
-    max-width: 140px;
+    justify-content: flex-end;
+    max-width: 250px;
     padding: 3px 9px;
-    width: 100%;
 
     .amountLabel,
     .feesLabel {

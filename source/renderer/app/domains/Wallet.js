@@ -111,13 +111,14 @@ export type WalletProps = {
   hasPassword: boolean,
   walletNotConnected?: boolean,
   isNativeTokenWallet?: boolean,
+  currencyUnit?: string,
 };
 
 export default class Wallet {
   id: string = '';
   @observable addressPoolGap: number;
   @observable name: string = '';
-  @observable ticker: string = '';
+  @observable ticker: ?string = '';
   @observable amount: BigNumber;
   @observable availableAmount: BigNumber;
   @observable reward: BigNumber;
@@ -132,7 +133,8 @@ export default class Wallet {
   @observable hasPassword: boolean;
   @observable walletNotConnected: boolean;
   @observable isHardwareWallet: boolean;
-  @observable isNativeTokenWallet: boolean;
+  @observable isNativeTokenWallet: ?boolean;
+  @observable currencyUnit: ?string;
 
   constructor(data: WalletProps) {
     Object.assign(this, data);
@@ -161,6 +163,7 @@ export default class Wallet {
         'walletNotConnected',
         'isHardwareWallet',
         'isNativeTokenWallet',
+        'currencyUnit',
       ])
     );
   }

@@ -83,7 +83,7 @@ export default class WalletSendPage extends Component<Props> {
       (wallet) => wallet.isNativeTokenWallet
     );
 
-    // @todo - Remove hardcoded nativeTokens value after hooking up real data
+    // @TODO - Remove hardcoded nativeTokens value after hooking up real data
     const hasNativeTokens = WALLET_NATIVE_TOKENS_ENABLED;
     if (hasNativeTokens && (!nativeTokens || !nativeTokens.length)) {
       nativeTokens = [wallets.all[0]];

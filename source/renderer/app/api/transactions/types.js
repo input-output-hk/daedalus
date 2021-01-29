@@ -74,10 +74,18 @@ export type TransactionWithdrawalType = 'self' | Array<string>;
 
 export type TransactionState = 'pending' | 'in_ledger' | 'expired';
 
-export type TrasactionAddresses = {
+export type TransactionAddresses = {
   from: Array<?string>,
   to: Array<string>,
   withdrawals: Array<string>,
+  currencies?: Array<string>,
+};
+
+export type TransactionTokenAddresses = {
+  from: Array<?string>,
+  to: Array<string>,
+  withdrawals: Array<string>,
+  currencies: Array<string>,
 };
 
 export type TransactionType = 'card' | 'expend' | 'income' | 'exchange';

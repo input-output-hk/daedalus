@@ -2,7 +2,7 @@
 import { observable } from 'mobx';
 import BigNumber from 'bignumber.js';
 import type {
-  TrasactionAddresses,
+  TransactionAddresses,
   TransactionType,
   TransactionDepth,
   TransactionState,
@@ -32,10 +32,11 @@ export class WalletTransaction {
   @observable amount: BigNumber;
   @observable date: ?Date;
   @observable description: string = '';
-  @observable addresses: TrasactionAddresses = {
+  @observable addresses: TransactionAddresses = {
     from: [],
     to: [],
     withdrawals: [],
+    currencies: [],
   };
   @observable state: TransactionState;
   @observable depth: TransactionDepth;
@@ -49,7 +50,7 @@ export class WalletTransaction {
     amount: BigNumber,
     date: ?Date,
     description: string,
-    addresses: TrasactionAddresses,
+    addresses: TransactionAddresses,
     state: TransactionState,
     depth: TransactionDepth,
     slotNumber: ?number,

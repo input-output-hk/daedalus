@@ -75,10 +75,10 @@ export const generateNativeTokenWallet = (
   name: string,
   amount: string,
   reward?: number = 0,
-  delegatedStakePool?: StakePool,
+  delegatedStakePool?: ?StakePool,
   hasPassword?: boolean,
   status?: SyncStateStatus = WalletSyncStateStatuses.READY,
-  ticker?: string,
+  ticker?: string
 ) =>
   new Wallet({
     id: generateHash(),
@@ -142,6 +142,52 @@ export const generateTransaction = (
             faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100),
             faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100),
           ],
+    },
+  });
+
+export const generateNativeTokensTransaction = (
+  type: TransactionType = TransactionTypes.INCOME,
+  date: Date = faker.date.past(),
+  amount: BigNumber = new BigNumber(faker.finance.amount()),
+  state: TransactionState = TransactionStates.OK,
+  hasUnresolvedIncomeAddresses: boolean = false,
+  noIncomeAddresses: boolean = false,
+  noWithdrawals: boolean = true,
+  currencies: Array<string> = ['USDT', 'ADA']
+) =>
+  new WalletTransaction({
+    id: faker.random.uuid(),
+    title: '',
+    type,
+    amount,
+    date,
+    state,
+    depth: {
+      quantity: 0,
+      unit: 'block',
+    },
+    epochNumber: 0,
+    slotNumber: 0,
+    description: '',
+    addresses: {
+      from: noIncomeAddresses
+        ? []
+        : [
+            hasUnresolvedIncomeAddresses
+              ? ''
+              : faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100),
+          ],
+      to: [
+        faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100),
+        faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100),
+      ],
+      withdrawals: noWithdrawals
+        ? []
+        : [
+            faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100),
+            faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100),
+          ],
+      currencies,
     },
   });
 

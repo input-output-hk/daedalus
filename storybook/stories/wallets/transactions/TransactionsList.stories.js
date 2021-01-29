@@ -95,7 +95,7 @@ storiesOf('Wallets|Transactions', module)
       />
     );
   })
-  .add('Transactions List with native tokens', (props: Props) => {
+  .add('Tokens Transactions List', (props: Props) => {
     const {
       defaultFilterOptions,
       filterOptions,

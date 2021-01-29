@@ -13,9 +13,9 @@ import { HwDeviceStatuses } from '../../../../source/renderer/app/domains/Wallet
 import { generateHash, generateWallet } from '../../_support/utils';
 import { formattedAmountToNaturalUnits } from '../../../../source/renderer/app/utils/formatters';
 
-storiesOf('Wallet Token Dialog|Send Confirmation', module)
+storiesOf('Tokens Wallet Dialog|Send Confirmation', module)
   .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
-  .add('Wallet Token Send Confirmation Dialog', () => (
+  .add('Tokens Wallet Send Confirmation Dialog', () => (
     <div>
       <WalletTokenSendConfirmationDialog
         amount={new BigNumber(100100).toFormat(DECIMAL_PLACES_IN_ADA)}

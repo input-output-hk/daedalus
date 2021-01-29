@@ -8,6 +8,7 @@ import moment from 'moment';
 import {
   generateTransaction,
   generateMultipleTransactions,
+  generateNativeTokensTransaction,
 } from '../../_support/utils';
 import {
   generateFilterOptions,
@@ -20,6 +21,7 @@ import {
 
 import { emptyTransactionFilterOptions } from '../../../../source/renderer/app/stores/TransactionsStore';
 import type { TransactionFilterOptionsType } from '../../../../source/renderer/app/stores/TransactionsStore';
+import { WALLET_NATIVE_TOKENS_ENABLED } from '../../../../source/renderer/app/config/walletsConfig';
 
 type Props = {
   getStory: Function,
@@ -153,6 +155,172 @@ export default class WalletsTransactionsWrapper extends Component<
     };
   }
 
+  get transactionsNativeTokensOptions() {
+    return {
+      groupedByDays: [
+        generateNativeTokensTransaction(
+          TransactionTypes.INCOME,
+          new Date(),
+          new BigNumber(2),
+          TransactionStates.OK,
+          false,
+          false,
+          true,
+          ['USDT', 'ADA']
+        ),
+        generateNativeTokensTransaction(
+          TransactionTypes.EXPEND,
+          moment().subtract(1, 'days').toDate(),
+          new BigNumber(2),
+          TransactionStates.OK,
+          false,
+          false,
+          true,
+          ['USDC', 'ADA']
+        ),
+        generateNativeTokensTransaction(
+          TransactionTypes.INCOME,
+          new Date(),
+          new BigNumber(2),
+          TransactionStates.OK,
+          false,
+          false,
+          true,
+          ['DAI', 'ADA']
+        ),
+        generateNativeTokensTransaction(
+          TransactionTypes.EXPEND,
+          moment().subtract(2, 'days').toDate(),
+          new BigNumber(2),
+          TransactionStates.OK,
+          false,
+          false,
+          true,
+          ['USDT', 'ADA']
+        ),
+        generateNativeTokensTransaction(
+          TransactionTypes.INCOME,
+          moment().subtract(1, 'days').toDate(),
+          new BigNumber(2),
+          TransactionStates.OK,
+          false,
+          false,
+          true,
+          ['USDC', 'ADA']
+        ),
+      ],
+      confirmedAndPendingTransactions: [
+        generateNativeTokensTransaction(
+          TransactionTypes.INCOME,
+          new Date(),
+          new BigNumber(2),
+          TransactionStates.OK,
+          false,
+          false,
+          true,
+          ['USDT', 'ADA']
+        ),
+        generateNativeTokensTransaction(
+          TransactionTypes.EXPEND,
+          new Date(),
+          new BigNumber(2),
+          TransactionStates.PENDING,
+          false,
+          false,
+          true,
+          ['DAI', 'ADA']
+        ),
+        generateNativeTokensTransaction(
+          TransactionTypes.INCOME,
+          new Date(2019, 10, 8, 20),
+          new BigNumber(2),
+          TransactionStates.PENDING,
+          true,
+          false,
+          true,
+          ['USDC', 'ADA']
+        ),
+        generateNativeTokensTransaction(
+          TransactionTypes.EXPEND,
+          new Date(),
+          new BigNumber(13),
+          TransactionStates.FAILED,
+          false,
+          false,
+          true,
+          ['USDT', 'ADA']
+        ),
+      ],
+      renderingManyTransactions: generateMultipleTransactions(500),
+      unresolvedIncomeAddresses: [
+        generateNativeTokensTransaction(
+          TransactionTypes.EXPEND,
+          new Date(),
+          new BigNumber(2),
+          TransactionStates.OK,
+          true,
+          false,
+          true,
+          ['DAI', 'ADA']
+        ),
+        generateNativeTokensTransaction(
+          TransactionTypes.INCOME,
+          new Date(),
+          new BigNumber(2),
+          TransactionStates.OK,
+          true,
+          false,
+          true,
+          ['USDT', 'ADA']
+        ),
+      ],
+      withoutIncomeAddresses: [
+        generateNativeTokensTransaction(
+          TransactionTypes.INCOME,
+          new Date(),
+          new BigNumber(2),
+          TransactionStates.OK,
+          false,
+          true,
+          true,
+          ['USDC', 'ADA']
+        ),
+        generateNativeTokensTransaction(
+          TransactionTypes.INCOME,
+          new Date(),
+          new BigNumber(2),
+          TransactionStates.OK,
+          false,
+          true,
+          true,
+          ['USDT', 'ADA']
+        ),
+      ],
+      withWithdrawalAddresses: [
+        generateNativeTokensTransaction(
+          TransactionTypes.INCOME,
+          new Date(),
+          new BigNumber(2),
+          TransactionStates.OK,
+          false,
+          false,
+          false,
+          ['USDT', 'ADA']
+        ),
+        generateNativeTokensTransaction(
+          TransactionTypes.INCOME,
+          new Date(),
+          new BigNumber(2),
+          TransactionStates.OK,
+          false,
+          false,
+          false,
+          ['USDC', 'ADA']
+        ),
+      ],
+    };
+  }
+
   get totalAvailable() {
     const { transactionsOption } = this.props;
     return this.transactionsOptions[transactionsOption].length;
@@ -161,7 +329,10 @@ export default class WalletsTransactionsWrapper extends Component<
   get transactions() {
     const { transactionsOption } = this.props;
     const { filterOptions = emptyTransactionFilterOptions } = this.state || {};
-    const transactionsList = this.transactionsOptions[transactionsOption];
+    const hasNativeTokens = WALLET_NATIVE_TOKENS_ENABLED;
+    const transactionsList = hasNativeTokens
+      ? this.transactionsNativeTokensOptions[transactionsOption]
+      : this.transactionsOptions[transactionsOption];
     return transactionsList.filter((transaction) =>
       isTransactionInFilterRange(filterOptions, transaction)
     );

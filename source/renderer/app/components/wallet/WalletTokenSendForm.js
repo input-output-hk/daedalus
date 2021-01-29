@@ -168,7 +168,7 @@ type Props = {
   isHardwareWallet: boolean,
   nativeTokens: Array<Wallet>,
   isClearTooltipOpeningDownward?: boolean,
-  selectedWallet: Wallet,
+  selectedWallet: ?Wallet,
 };
 
 type State = {
@@ -214,7 +214,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
       this.onSelectWallet(selectedWallet.id);
     }
 
-    // @todo Remove hardcoded values for currencies
+    // @TODO Remove hardcoded values for currencies
     if (nativeTokens && nativeTokens.length) {
       // eslint-disable-next-line no-return-assign
       nativeTokens.forEach((token) => (token.currencyUnit = token.name));
@@ -500,7 +500,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
       total = amount.add(transactionFee).toFormat(currencyMaxFractionalDigits);
     }
 
-    const selectedNativeToken =
+    const selectedNativeToken: any =
       selectedWalletId && nativeTokens && nativeTokens.length
         ? this.getNativeTokenWalletById(selectedWalletId)
         : null;
@@ -685,7 +685,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
               <div className={styles.estimatedFeeInput}>
                 <NumericInput
                   {...estimatedFieldProps}
-                  className="estimatedFee"
+                  className={styles.estimatedFee}
                   label={intl.formatMessage(messages.estimatedFeeLabel)}
                   numberFormat={this.getCurrentNumberFormat()}
                   numberLocaleOptions={{
@@ -696,7 +696,6 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                   fees={fees}
                   total={total}
                   skin={AmountInputSkin}
-                  disabled
                 />
                 {this._isCalculatingTransactionFee && (
                   <div className={styles.calculatingFeesContainer}>
