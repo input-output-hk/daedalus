@@ -213,7 +213,7 @@ export default class WalletSendForm extends Component<Props, State> {
           placeholder: `0${
             this.getCurrentNumberFormat().decimalSeparator
           }${'0'.repeat(this.props.currencyMaxFractionalDigits)}`,
-          value: null,
+          value: '',
           validators: [
             async ({ field, form }) => {
               if (field.value === null) {
@@ -349,8 +349,7 @@ export default class WalletSendForm extends Component<Props, State> {
     const receiverField = form.$('receiver');
     const receiverFieldProps = receiverField.bind();
     const amountFieldProps = amountField.bind();
-
-    const amount = new BigNumber(amountFieldProps.value || 0);
+    const amount = new BigNumber(amountFieldProps.value);
 
     let fees = null;
     let total = null;
@@ -391,12 +390,11 @@ export default class WalletSendForm extends Component<Props, State> {
               <div className={styles.amountInput}>
                 <NumericInput
                   {...amountFieldProps}
+                  value={amount}
                   className="amount"
                   label={intl.formatMessage(messages.amountLabel)}
-                  numberFormat={this.getCurrentNumberFormat()}
-                  numberLocaleOptions={{
-                    minimumFractionDigits: currencyMaxFractionalDigits,
-                  }}
+                  bigNumberFormat={this.getCurrentNumberFormat()}
+                  decimalPlaces={currencyMaxFractionalDigits}
                   error={transactionFeeError || amountField.error}
                   onChange={(value) => {
                     this._isCalculatingTransactionFee = true;
