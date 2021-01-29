@@ -294,6 +294,11 @@
 
 .transactionFeeValue {
   @include error-message;
+  font-family: var(--font-medium);
+
+  span {
+    font-family: var(--font-light);
+  }
 }
 
 .transactionMetadata {

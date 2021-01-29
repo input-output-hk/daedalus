@@ -615,7 +615,7 @@ export default class Transaction extends Component<Props, State> {
                       <div className={styles.transactionIdRow}>
                         <div className={styles.transactionFeeValue}>
                           {fees}&nbsp;
-                          {intl.formatMessage(globalMessages.unitAda)}
+                          <span>{intl.formatMessage(globalMessages.unitAda)}</span>
                         </div>
                       </div>
                     )}
