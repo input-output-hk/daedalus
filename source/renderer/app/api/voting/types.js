@@ -2,6 +2,7 @@
 export type CreateVotingRegistrationRequest = {
   walletId: string,
   address: string,
+  addressHex: string,
   amount: number,
   passphrase: string,
   votingKey: string,
@@ -16,6 +17,7 @@ export type CreateWalletSignatureRequest = {
   passphrase: string,
   votingKey: string,
   stakeKey: string,
+  addressHex: string,
 };
 
 export type SignatureParams = {

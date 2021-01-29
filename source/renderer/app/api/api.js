@@ -2220,7 +2220,7 @@ export default class AdaApi {
     logger.debug('AdaApi::createWalletSignature called', {
       parameters: filterLogData(request),
     });
-    const { walletId, role, index, passphrase, votingKey, stakeKey } = request;
+    const { walletId, role, index, passphrase, votingKey, stakeKey, addressHex } = request;
 
     try {
       const data = {
@@ -2242,6 +2242,14 @@ export default class AdaApi {
                 },
                 v: {
                   bytes: stakeKey,
+                },
+              },
+              {
+                k: {
+                  int: 3,
+                },
+                v: {
+                  bytes: addressHex,
                 },
               },
             ],
@@ -2271,6 +2279,7 @@ export default class AdaApi {
     const {
       walletId,
       address,
+      addressHex,
       amount,
       passphrase,
       votingKey,
@@ -2307,6 +2316,14 @@ export default class AdaApi {
                 },
                 v: {
                   bytes: stakeKey,
+                },
+              },
+              {
+                k: {
+                  int: 3,
+                },
+                v: {
+                  bytes: addressHex,
                 },
               },
             ],

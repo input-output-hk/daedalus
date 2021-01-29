@@ -134,8 +134,10 @@ export default class VotingStore extends Store {
         index: '0',
       });
       stakeKey = await this.getHexFromBech32(stakeKey);
+      let addressHex = await this.getHexFromBech32(address.id);
 
       const signature = await this.signMetadataRequest.execute({
+        addressHex: addressHex,
         walletId,
         passphrase,
         votingKey,
@@ -146,6 +148,7 @@ export default class VotingStore extends Store {
 
       const transaction = await this.votingSendTransactionRequest.execute({
         address: address.id,
+        addressHex: addressHex,
         amount,
         passphrase,
         walletId,
