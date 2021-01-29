@@ -6,6 +6,7 @@ Changelog
 ### Features
 
 - Implemented UI for native token features [PR 2292](https://github.com/input-output-hk/daedalus/pull/2292)
+- Added SMASH server configuration options ([PR 2259](https://github.com/input-output-hk/daedalus/pull/2259))
 
 ### Chores
 

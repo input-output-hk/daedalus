@@ -38,7 +38,6 @@ export type WalletOpts = {
   walletLogFile: WriteStream,
   cliBin: string,
   isStaging: boolean,
-  smashUrl?: string,
 };
 
 export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
@@ -57,7 +56,6 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
     walletLogFile,
     cliBin,
     isStaging,
-    smashUrl,
   } = walletOpts;
   // TODO: Update launcher config to pass number
   const syncToleranceSeconds = parseInt(syncTolerance.replace('s', ''), 10);
@@ -129,14 +127,6 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
         // All clusters not flagged as staging except for Mainnet are treated as "Testnets"
         launcherConfig.networkName = TESTNET;
         logger.info('Launching Wallet with --testnet flag');
-      }
-      if (smashUrl) {
-        logger.info('Launching Wallet with --pool-metadata-fetching flag', {
-          poolMetadataSource: { smashUrl },
-        });
-        merge(launcherConfig, {
-          poolMetadataSource: { smashUrl },
-        });
       }
       merge(launcherConfig, { nodeConfig, tlsConfiguration });
       break;
