@@ -100,7 +100,7 @@
 
     .clearReceiverButton {
       background-color: var(
-          --theme-staking-stake-pools-search-clear-button-background-color
+        --theme-staking-stake-pools-search-clear-button-background-color
       );
       border-radius: 3px;
       cursor: pointer;
@@ -109,7 +109,7 @@
 
       &:hover {
         background-color: var(
-            --theme-staking-stake-pools-search-clear-button-hover-background-color
+          --theme-staking-stake-pools-search-clear-button-hover-background-color
         );
       }
 
@@ -175,7 +175,7 @@
 
   .clearAssetButton {
     background-color: var(
-        --theme-staking-stake-pools-search-clear-button-background-color
+      --theme-staking-stake-pools-search-clear-button-background-color
     );
     border-radius: 3px;
     cursor: pointer;
@@ -184,7 +184,7 @@
 
     &:hover {
       background-color: var(
-          --theme-staking-stake-pools-search-clear-button-hover-background-color
+        --theme-staking-stake-pools-search-clear-button-hover-background-color
       );
     }
 
@@ -222,7 +222,7 @@
 
   .calculatingFeesSpinnerButton {
     background-color: var(
-        --theme-staking-stake-pools-search-clear-button-background-color
+      --theme-staking-stake-pools-search-clear-button-background-color
     );
     border-radius: 3px;
     bottom: 5px;
@@ -233,7 +233,7 @@
 
     &:hover {
       background-color: var(
-          --theme-staking-stake-pools-search-clear-button-hover-background-color
+        --theme-staking-stake-pools-search-clear-button-hover-background-color
       );
     }
 
@@ -314,13 +314,13 @@
 
     :global {
       .SimpleSelect_selectInput.SelectOverrides_selectInput
-      .WalletsDropdownOption_selected
-      .WalletsDropdownOption_topRow {
+        .WalletsDropdownOption_selected
+        .WalletsDropdownOption_topRow {
         width: 50px !important;
       }
 
       .SimpleSelect_selectInput.SelectOverrides_selectInput
-      .WalletsDropdownOption_detail {
+        .WalletsDropdownOption_detail {
         display: none !important;
       }
 
@@ -339,7 +339,7 @@
 
 :global {
   .WalletTokenSendForm_calculatingFeesContainer
-  .WalletTokenSendForm_calculatingFeesSpinnerButton.WalletTokenSendForm_spinning:after {
+    .WalletTokenSendForm_calculatingFeesSpinnerButton.WalletTokenSendForm_spinning:after {
     background-size: 12px !important;
     height: 12px !important;
     left: calc(50% - 6px) !important;

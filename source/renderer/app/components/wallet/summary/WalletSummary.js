@@ -31,7 +31,7 @@ type Props = {
   numberOfTransactions?: number,
   numberOfPendingTransactions: number,
   isLoadingTransactions: boolean,
-  hasNativeTokens?: boolean;
+  hasNativeTokens?: boolean,
 };
 
 @observer
@@ -85,7 +85,7 @@ export default class WalletSummary extends Component<Props> {
               : wallet.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
             {hasNativeTokens ? (
               <span>&nbsp;{intl.formatMessage(globalMessages.unitAda)}</span>
-            ): (
+            ) : (
               <SVGInline
                 svg={adaSymbolBig}
                 className={styles.currencySymbolBig}
@@ -96,12 +96,18 @@ export default class WalletSummary extends Component<Props> {
           {!isLoadingTransactions ? (
             <div className={styles.transactionsCountWrapper}>
               <div className={numberOfPendingTransactionsStyles}>
-                <span>{intl.formatMessage(messages.pendingTransactionsLabel)}</span>:&nbsp;
+                <span>
+                  {intl.formatMessage(messages.pendingTransactionsLabel)}
+                </span>
+                :&nbsp;
                 <span>{numberOfPendingTransactions}</span>
               </div>
               <div className={numberOfTransactionsStyles}>
-                <span>{intl.formatMessage(messages.transactionsLabel)}</span>:&nbsp;
-                <span>{numberOfTransactions || numberOfRecentTransactions}</span>
+                <span>{intl.formatMessage(messages.transactionsLabel)}</span>
+                :&nbsp;
+                <span>
+                  {numberOfTransactions || numberOfRecentTransactions}
+                </span>
               </div>
             </div>
           ) : null}

@@ -32,7 +32,7 @@ export const formattedWalletAmount = (
 
 export const formattedTokenWalletAmount = (
   amount: BigNumber,
-  currency: string,
+  currency: string
 ) => {
   let formattedAmount = amount.toFormat(DECIMAL_PLACES_IN_ADA);
   const { decimalSeparator } = BigNumber.config().FORMAT;
