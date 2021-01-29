@@ -418,7 +418,7 @@ export default class Transaction extends Component<Props, State> {
 
     const fromAddresses = (addresses, transactionId) => {
       if (addresses.length > 0) {
-        return hasNativeTokens || includesUnresolvedAddresses(addresses) ? (
+        return includesUnresolvedAddresses(addresses) ? (
           <div className={styles.explorerLinkRow}>
             <Link
               className={styles.explorerLink}
@@ -448,7 +448,7 @@ export default class Transaction extends Component<Props, State> {
                 onClick={() =>
                   onOpenExternalLink(getUrlByType('address', address))
                 }
-                label={address}
+                label={hasNativeTokens ? ellipsis(address, 30, 30) : address}
                 skin={LinkSkin}
               />
             </div>
