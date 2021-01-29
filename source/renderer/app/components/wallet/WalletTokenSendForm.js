@@ -178,6 +178,7 @@ type State = {
   transactionFeeError: ?string | ?Node,
   showReceiverRemoveBtn: boolean,
   selectedWalletId: ?string,
+  showReceiverField: boolean,
 };
 
 @observer
@@ -193,6 +194,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     transactionFeeError: null,
     showReceiverRemoveBtn: false,
     selectedWalletId: null,
+    showReceiverField: false,
   };
 
   // We need to track the fee calculation state in order to disable
@@ -419,6 +421,18 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     return NUMBER_FORMATS[this.props.currentNumberFormat];
   }
 
+  showReceiverField = () => {
+    this.setState({
+      showReceiverField: true,
+    });
+  };
+
+  hideReceiverField = () => {
+    this.setState({
+      showReceiverField: false,
+    });
+  };
+
   get hasReceiverValue() {
     const receiverField = this.form.$('receiver');
     return receiverField.value.length > 0;
@@ -446,6 +460,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
   renderReceiverRow = () => {};
 
   removeReceiverRow = () => {
+    this.hideReceiverField();
     this.clearAssetValue();
     this.clearReceiverAddress();
   };
@@ -481,6 +496,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
       transactionFeeError,
       showReceiverRemoveBtn,
       selectedWalletId,
+      showReceiverField,
     } = this.state;
     const assetField = form.$('asset');
     const receiverField = form.$('receiver');
@@ -545,7 +561,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                     onMouseLeave={this.hideRemoveButton}
                     className={styles.receiverInput}
                   >
-                    {this.hasReceiverValue && (
+                    {showReceiverField && (
                       <Button
                         className={removeReceiverButtonClasses}
                         label={intl.formatMessage(
@@ -563,6 +579,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                       onChange={(value) => {
                         receiverField.onChange(value || '');
                         if (value) {
+                          this.showReceiverField();
                           this.renderAssetRow();
                         }
                       }}
@@ -590,7 +607,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                       </div>
                     )}
                   </div>
-                  {this.hasReceiverValue && (
+                  {showReceiverField && (
                     <>
                       <div className={styles.fieldsLine} />
                       <div className={styles.assetInput}>
@@ -674,7 +691,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                   )}
                 </div>
               </div>
-              {this.hasReceiverValue && (
+              {showReceiverField && (
                 <Button
                   className={newReceiverButtonClasses}
                   label={intl.formatMessage(messages.addNewReceiverButtonLabel)}
