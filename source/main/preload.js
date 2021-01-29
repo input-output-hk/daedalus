@@ -61,7 +61,7 @@ process.once('loaded', () => {
     legacyStateDir,
     smashUrl,
   });
-  // console.log('PRELOAD poolMetadataSource', poolMetadataSource);
+
   // Expose require for Spectron!
   if (_process.env.NODE_ENV === 'test') {
     // $FlowFixMe

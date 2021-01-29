@@ -196,6 +196,7 @@ export default class StakePoolsSettings extends Component<Props, State> {
     iohk: <FormattedHTMLMessage {...messages.smashSelectIOHKServer} />,
     direct: this.context.intl.formatMessage(messages.smashSelectDirect),
     custom: this.context.intl.formatMessage(messages.smashSelectCustomServer),
+    none: null,
   };
 
   render() {

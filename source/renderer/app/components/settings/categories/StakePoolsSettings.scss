@@ -108,10 +108,10 @@
 
 .disabledInput {
   input {
-    height: 50px;
     background-color: var(--rp-input-bg-color, #fafbfc);
     border: 1px solid var(--rp-input-border-color, #c6cdd6);
     color: var(--rp-input-text-color);
+    height: 50px;
   }
   :global {
     .SimpleFormField_inputWrapper {

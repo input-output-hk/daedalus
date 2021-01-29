@@ -41,8 +41,8 @@
   }
 
   .smashSettings {
-    display: flex;
     cursor: pointer;
+    display: flex;
     font-size: 16px;
     > span:first-child {
       color: var(--theme-staking-stake-pools-title-color);

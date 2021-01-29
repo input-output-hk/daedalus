@@ -122,8 +122,8 @@
   }
   .submittingButton {
     &:hover {
-      cursor: default;
       background-color: var(--theme-button-flat-background-color);
+      cursor: default;
     }
     &:active {
       background-color: var(--theme-button-flat-background-color);

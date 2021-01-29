@@ -1687,19 +1687,23 @@ export default class AdaApi {
   };
 
   getSmashSettings = async (): Promise<GetSmashSettingsApiResponse> => {
+    logger.debug('AdaApi::getSmashSettings called');
     try {
       const {
         pool_metadata_source: poolMetadataSource,
       } = await getSmashSettings(this.config);
-      logger.debug('AdaApi::smashSettings success', { poolMetadataSource });
+      logger.debug('AdaApi::getSmashSettings success', { poolMetadataSource });
       return poolMetadataSource;
     } catch (error) {
-      logger.error('AdaApi::smashSettings error', { error });
+      logger.error('AdaApi::getSmashSettings error', { error });
       throw new ApiError(error);
     }
   };
 
   checkSmashServerIsValid = async (url: string): Promise<boolean> => {
+    logger.debug('AdaApi::checkSmashServerIsValid called', {
+      parameters: { url },
+    });
     try {
       if (url === SMASH_SERVERS_LIST.direct.url) {
         return true;
@@ -1711,10 +1715,10 @@ export default class AdaApi {
         url
       );
       const isValid = health === SMASH_SERVER_STATUSES.AVAILABLE;
-      logger.debug('AdaApi::checkSmashServerHealth success', { isValid });
+      logger.debug('AdaApi::checkSmashServerIsValid success', { isValid });
       return isValid;
     } catch (error) {
-      logger.error('AdaApi::checkSmashServerHealth error', { error });
+      logger.error('AdaApi::checkSmashServerIsValid error', { error });
       throw new ApiError(error);
     }
   };
@@ -1722,6 +1726,9 @@ export default class AdaApi {
   updateSmashSettings = async (
     poolMetadataSource: PoolMetadataSource
   ): Promise<void> => {
+    logger.debug('AdaApi::updateSmashSettings called', {
+      parameters: { poolMetadataSource },
+    });
     try {
       const isSmashServerValid = await this.checkSmashServerIsValid(
         poolMetadataSource
