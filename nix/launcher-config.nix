@@ -27,10 +27,10 @@ let
       cluster = "mainnet";
       networkName = "mainnet";
     };
-    shelley_qa = {
-      cardanoEnv = cardanoLib.environments.mary_qa;
-      cluster = "shelley_qa";
-      networkName = "shelley_qa";
+    shelley_testnet_v6 = {
+      cardanoEnv = cardanoLib.environments.mainnet_candidate_4;
+      cluster = "shelley_testnet";
+      networkName = "shelley_testnet";
     };
   };
   dirSep = if os == "windows" then "\\" else "/";

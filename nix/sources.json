@@ -34,7 +34,7 @@
         "type": "tarball",
         "url": "https://github.com/input-output-hk/cardano-wallet/archive/e82e58a9032627e2ae56e52d39cf303898b50f88.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz",
-        "version": "v2021-01-12"
+        "version": "v2021-01-28"
     },
     "gitignore": {
         "branch": "master",
