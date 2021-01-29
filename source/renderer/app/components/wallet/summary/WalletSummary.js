@@ -2,7 +2,9 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
+import adaSymbolBig from '../../../assets/images/ada-symbol-big-dark.inline.svg';
 import BorderedBox from '../../widgets/BorderedBox';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import styles from './WalletSummary.scss';
@@ -29,6 +31,7 @@ type Props = {
   numberOfTransactions?: number,
   numberOfPendingTransactions: number,
   isLoadingTransactions: boolean,
+  hasNativeTokens?: boolean;
 };
 
 @observer
@@ -44,6 +47,7 @@ export default class WalletSummary extends Component<Props> {
       numberOfRecentTransactions,
       numberOfTransactions,
       isLoadingTransactions,
+      hasNativeTokens,
     } = this.props;
     const { intl } = this.context;
     const isLoadingAllTransactions =
@@ -51,6 +55,22 @@ export default class WalletSummary extends Component<Props> {
     const numberOfTransactionsStyles = classnames([
       styles.numberOfTransactions,
       isLoadingAllTransactions ? styles.isLoadingNumberOfTransactions : null,
+      hasNativeTokens ? styles.nativeTokens : null,
+    ]);
+
+    const numberOfPendingTransactionsStyles = classnames([
+      styles.numberOfPendingTransactions,
+      hasNativeTokens ? styles.nativeTokens : null,
+    ]);
+
+    const walletNameStyles = classnames([
+      styles.walletName,
+      hasNativeTokens ? styles.nativeTokens : null,
+    ]);
+
+    const walletAmountStyles = classnames([
+      styles.walletAmount,
+      hasNativeTokens ? styles.nativeTokens : null,
     ]);
 
     const isRestoreActive = wallet.isRestoring;
@@ -58,23 +78,30 @@ export default class WalletSummary extends Component<Props> {
     return (
       <div className={styles.component}>
         <BorderedBox>
-          <div className={styles.walletName}>{wallet.name}</div>
-          <div className={styles.walletAmount}>
+          <div className={walletNameStyles}>{wallet.name}</div>
+          <div className={walletAmountStyles}>
             {isRestoreActive
               ? '-'
               : wallet.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
-            <span>&nbsp;{intl.formatMessage(globalMessages.unitAda)}</span>
+            {hasNativeTokens ? (
+              <span>&nbsp;{intl.formatMessage(globalMessages.unitAda)}</span>
+            ): (
+              <SVGInline
+                svg={adaSymbolBig}
+                className={styles.currencySymbolBig}
+              />
+            )}
           </div>
 
           {!isLoadingTransactions ? (
             <div className={styles.transactionsCountWrapper}>
-              <div className={styles.numberOfPendingTransactions}>
-                {intl.formatMessage(messages.pendingTransactionsLabel)}:&nbsp;
-                {numberOfPendingTransactions}
+              <div className={numberOfPendingTransactionsStyles}>
+                <span>{intl.formatMessage(messages.pendingTransactionsLabel)}</span>:&nbsp;
+                <span>{numberOfPendingTransactions}</span>
               </div>
               <div className={numberOfTransactionsStyles}>
-                {intl.formatMessage(messages.transactionsLabel)}:&nbsp;
-                {numberOfTransactions || numberOfRecentTransactions}
+                <span>{intl.formatMessage(messages.transactionsLabel)}</span>:&nbsp;
+                <span>{numberOfTransactions || numberOfRecentTransactions}</span>
               </div>
             </div>
           ) : null}

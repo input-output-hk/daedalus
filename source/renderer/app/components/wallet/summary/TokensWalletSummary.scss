@@ -70,7 +70,7 @@
 
 .walletName {
   color: var(--theme-bordered-box-text-color);
-  font-family: var(--font-bold);
+  font-family: var(--font-semibold);
   font-size: 16px;
   letter-spacing: 0.5px;
   line-height: 1.38;
@@ -79,13 +79,17 @@
 
 .walletAmount {
   color: var(--theme-bordered-box-text-color);
-  font-family: var(--font-regular);
+  font-family: var(--font-semibold);
   font-size: 16px;
   font-weight: 300;
   letter-spacing: 0.5px;
   line-height: 1.38;
   user-select: text;
   word-break: break-all;
+
+  .span {
+    font-family: var(--font-light);
+  }
 
   & > .decimal {
     font-family: var(--font-medium);

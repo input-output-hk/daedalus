@@ -39,6 +39,7 @@ storiesOf('Wallets|Summary', module)
         )}
         numberOfPendingTransactions={number('Number of transactions', 3)}
         isLoadingTransactions={boolean('isLoadingTransactions', false)}
+        hasNativeTokens
       />
       <TokensWalletSummary
         wallet={generateWallet('Wallet name', '45119903750165')}
