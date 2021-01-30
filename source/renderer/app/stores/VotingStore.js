@@ -120,8 +120,9 @@ export default class VotingStore extends Store {
     this.setIsVotingRegistrationTransactionApproved(false);
 
     try {
-      await this.generateVotingRegistrationKey();
+      const addressHex = await this.getHexFromBech32(address.id);
 
+      await this.generateVotingRegistrationKey();
       if (!this.votingRegistrationKey)
         throw new Error('Failed to generate voting registration key.');
       const votingKey = formattedArrayBufferToHexString(
@@ -134,7 +135,6 @@ export default class VotingStore extends Store {
         index: '0',
       });
       stakeKey = await this.getHexFromBech32(stakeKey);
-      const addressHex = await this.getHexFromBech32(address.id);
 
       const signature = await this.signMetadataRequest.execute({
         addressHex,
