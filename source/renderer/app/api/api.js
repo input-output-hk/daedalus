@@ -2514,9 +2514,10 @@ const _createTransactionFromServerData = action(
     const date = get(stateInfo, 'time');
     const slotNumber = get(stateInfo, ['block', 'slot_number'], null);
     const epochNumber = get(stateInfo, ['block', 'epoch_number'], null);
+    const confirmations = get(depth, 'quantity', 0);
     return new WalletTransaction({
       id,
-      depth,
+      confirmations,
       slotNumber,
       epochNumber,
       title: direction === 'outgoing' ? 'Ada sent' : 'Ada received',

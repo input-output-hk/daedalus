@@ -4,7 +4,6 @@ import BigNumber from 'bignumber.js';
 import type {
   TrasactionAddresses,
   TransactionType,
-  TransactionDepth,
   TransactionState,
   TransactionWithdrawalType,
 } from '../api/transactions/types';
@@ -37,7 +36,7 @@ export class WalletTransaction {
     withdrawals: [],
   };
   @observable state: TransactionState;
-  @observable depth: TransactionDepth;
+  @observable confirmations: number;
   @observable slotNumber: ?number;
   @observable epochNumber: ?number;
 
@@ -50,7 +49,7 @@ export class WalletTransaction {
     description: string,
     addresses: TrasactionAddresses,
     state: TransactionState,
-    depth: TransactionDepth,
+    confirmations: number,
     slotNumber: ?number,
     epochNumber: ?number,
   }) {
