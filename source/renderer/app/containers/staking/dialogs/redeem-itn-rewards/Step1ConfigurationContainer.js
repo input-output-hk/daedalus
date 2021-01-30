@@ -45,14 +45,19 @@ export default class Step1ConfigurationContainer extends Component<Props> {
   };
 
   render() {
-    const { onClose, onBack, stores, actions } = this.props;
-    const { wallets, staking } = stores;
+    const { actions, stores, onBack, onClose } = this.props;
+    const { app, staking, wallets } = stores;
     const { allWallets } = wallets;
     const {
       redeemWallet,
       isCalculatingReedemFees,
       redeemRecoveryPhrase,
     } = staking;
+    const { openExternalLink } = app;
+    const {
+      onConfigurationContinue,
+      onCalculateRedeemWalletFees,
+    } = actions.staking;
 
     const selectedWalletId = get(redeemWallet, 'id', null);
     const selectedWallet: ?Wallet = allWallets.find(
@@ -66,11 +71,7 @@ export default class Step1ConfigurationContainer extends Component<Props> {
       // Wallet balance < min rewards redemption funds
       else errorMessage = messages.errorMinRewardFunds;
     }
-    const { openExternalLink } = stores.app;
-    const {
-      onConfigurationContinue,
-      onCalculateRedeemWalletFees,
-    } = actions.staking;
+
     return (
       <Step1ConfigurationDialog
         error={errorMessage}

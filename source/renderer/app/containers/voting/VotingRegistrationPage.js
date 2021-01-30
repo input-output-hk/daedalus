@@ -1,9 +1,10 @@
 // @flow
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
-import MainLayout from '../MainLayout';
+import Layout from '../MainLayout';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
-import VotingInfo from '../../components/voting/info/VotingInfo';
+import VotingInfo from '../../components/voting/VotingInfo';
+import VotingUnavailable from '../../components/voting/VotingUnavailable';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import VotingRegistrationDialogContainer from './dialogs/VotingRegistrationDialogContainer';
 import VotingRegistrationDialog from '../../components/voting/VotingRegistrationDialog';
@@ -21,11 +22,26 @@ export default class VotingRegistrationPage extends Component<Props> {
 
   render() {
     const { actions, stores } = this.props;
-    const { uiDialogs } = stores;
-    const { openExternalLink } = stores.app;
+    const { app, networkStatus, uiDialogs } = stores;
+    const { openExternalLink } = app;
+    const { isSynced, syncPercentage } = networkStatus;
+
+    const isVotingRegistrationDialogOpen = uiDialogs.isOpen(
+      VotingRegistrationDialog
+    );
+
+    if (!isSynced && !isVotingRegistrationDialogOpen) {
+      return (
+        <Layout>
+          <VerticalFlexContainer>
+            <VotingUnavailable syncPercentage={syncPercentage} />
+          </VerticalFlexContainer>
+        </Layout>
+      );
+    }
 
     return (
-      <MainLayout>
+      <Layout>
         <VerticalFlexContainer>
           <VotingInfo
             onRegisterToVoteClick={() =>
@@ -34,10 +50,11 @@ export default class VotingRegistrationPage extends Component<Props> {
             onExternalLinkClick={openExternalLink}
           />
         </VerticalFlexContainer>
+
         {uiDialogs.isOpen(VotingRegistrationDialog) && (
           <VotingRegistrationDialogContainer onClose={this.onClose} />
         )}
-      </MainLayout>
+      </Layout>
     );
   }
 }

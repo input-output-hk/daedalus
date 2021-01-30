@@ -86,9 +86,13 @@ export default class VotingRegistrationDialogContainer extends Component<
   }
 
   handleIsWalletAcceptable = (
+    isLegacy?: boolean,
+    isHardwareWallet?: boolean,
     walletAmount?: BigNumber,
     walletReward?: BigNumber = 0
   ) =>
+    !isLegacy &&
+    !isHardwareWallet &&
     walletAmount &&
     walletAmount.gte(new BigNumber(MIN_VOTING_REGISTRATION_FUNDS)) &&
     !walletAmount.isEqualTo(walletReward);
@@ -161,9 +165,8 @@ export default class VotingRegistrationDialogContainer extends Component<
       transactionFeeError,
     } = this.state;
     const { wallets, staking, voting, app } = this.props.stores;
-
+    const { all } = wallets;
     const { stakePools, getStakePoolById } = staking;
-
     const {
       votingSendTransactionRequest,
       signMetadataRequest,
@@ -172,11 +175,10 @@ export default class VotingRegistrationDialogContainer extends Component<
       qrCode,
       countdownRemaining,
     } = voting;
-
     const { openExternalLink } = app;
 
     const selectedWallet = find(
-      wallets.allWallets,
+      all,
       (wallet) => wallet.id === selectedWalletId
     );
 
@@ -188,7 +190,7 @@ export default class VotingRegistrationDialogContainer extends Component<
       >
         <VotingRegistrationWizard
           stakePoolsList={stakePools}
-          wallets={wallets.allWallets}
+          wallets={all}
           activeStep={activeStep}
           minVotingRegistrationFunds={MIN_VOTING_REGISTRATION_FUNDS}
           isWalletAcceptable={this.handleIsWalletAcceptable}

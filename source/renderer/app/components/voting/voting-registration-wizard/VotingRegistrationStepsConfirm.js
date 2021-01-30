@@ -139,7 +139,7 @@ export default class VotingRegistrationStepsConfirm extends Component<Props> {
                 <p>{importantInformation1}</p>
                 <p>{importantInformation2}</p>
               </div>
-              <hr className={styles.separator} />
+
               <div className={styles.buttonContainer}>
                 <Button
                   className={styles.buttonConfirmStyles}

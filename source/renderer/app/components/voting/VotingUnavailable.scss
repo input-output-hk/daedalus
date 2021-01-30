@@ -1,0 +1,20 @@
+@import './votingConfig';
+
+.component {
+  @extend %regularText;
+  align-items: center;
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+
+  b {
+    @extend %accentText;
+  }
+
+  .description {
+    max-width: 80%;
+  }
+}

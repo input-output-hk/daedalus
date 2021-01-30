@@ -7568,109 +7568,6 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Register to vote",
-        "description": "Headline for voting registration steps",
-        "end": {
-          "column": 3,
-          "line": 21
-        },
-        "file": "source/renderer/app/components/voting/info/VotingInfo.js",
-        "id": "voting.info.heading",
-        "start": {
-          "column": 11,
-          "line": 17
-        }
-      },
-      {
-        "defaultMessage": "!!!Before you begin, you must first complete the steps below:",
-        "description": "Info description for voting registration steps",
-        "end": {
-          "column": 3,
-          "line": 27
-        },
-        "file": "source/renderer/app/components/voting/info/VotingInfo.js",
-        "id": "voting.info.description",
-        "start": {
-          "column": 15,
-          "line": 22
-        }
-      },
-      {
-        "defaultMessage": "!!!Download the Catalyst Voting App",
-        "description": "Info step title 2 for voting registration steps",
-        "end": {
-          "column": 3,
-          "line": 32
-        },
-        "file": "source/renderer/app/components/voting/info/VotingInfo.js",
-        "id": "voting.info.stepTitle1",
-        "start": {
-          "column": 14,
-          "line": 28
-        }
-      },
-      {
-        "defaultMessage": "!!!Open the Catalyst Voting App and click on the complete registration button.",
-        "description": "Info step title 2 for voting registration steps",
-        "end": {
-          "column": 3,
-          "line": 38
-        },
-        "file": "source/renderer/app/components/voting/info/VotingInfo.js",
-        "id": "voting.info.stepTitle2",
-        "start": {
-          "column": 14,
-          "line": 33
-        }
-      },
-      {
-        "defaultMessage": "!!!Ensure you have 5 minutes to complete the registration process, and an additional hour to receive a final confirmation.",
-        "description": "Info step title 3 for voting registration steps",
-        "end": {
-          "column": 3,
-          "line": 44
-        },
-        "file": "source/renderer/app/components/voting/info/VotingInfo.js",
-        "id": "voting.info.stepTitle3",
-        "start": {
-          "column": 14,
-          "line": 39
-        }
-      },
-      {
-        "defaultMessage": "!!!I confirm all steps have been completed. Continue with registration.",
-        "description": "Button Label for voting registration steps",
-        "end": {
-          "column": 3,
-          "line": 50
-        },
-        "file": "source/renderer/app/components/voting/info/VotingInfo.js",
-        "id": "voting.info.buttonLabel",
-        "start": {
-          "column": 15,
-          "line": 45
-        }
-      },
-      {
-        "defaultMessage": "!!!https://play.google.com/store/apps/details?id=io.iohk.vitvoting&hl=es_419&gl=US",
-        "description": "\"androidAppButtonUrl\" for the Catalyst voting app",
-        "end": {
-          "column": 3,
-          "line": 56
-        },
-        "file": "source/renderer/app/components/voting/info/VotingInfo.js",
-        "id": "voting.info.androidAppButtonUrl",
-        "start": {
-          "column": 23,
-          "line": 51
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/voting/info/VotingInfo.json"
-  },
-  {
-    "descriptors": [
-      {
         "defaultMessage": "!!!For  <span>fund 2</span> voting you will only be able to use one wallet to register.",
         "description": "Description on the voting registration \"choose wallet\" step.",
         "end": {
@@ -7741,17 +7638,45 @@
         }
       },
       {
-        "defaultMessage": "!!!The wallet cannot be used for voting purposes while it is being synced with the blockchain.",
-        "description": "RestoringWallet Error Label on the voting registration \"choose wallet\" step.",
+        "defaultMessage": "!!!This wallet cannot be registered for voting because it is a legacy Byron wallet.",
+        "description": "Byron wallet error message on the voting registration \"choose wallet\" step.",
         "end": {
           "column": 3,
           "line": 53
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsChooseWallet.js",
+        "id": "voting.votingRegistration.chooseWallet.step.errorLegacyWallet",
+        "start": {
+          "column": 21,
+          "line": 47
+        }
+      },
+      {
+        "defaultMessage": "!!!This wallet cannot be registered for voting because it is a hardware wallet. <span>Hardware wallets will be supported in the future.</span>",
+        "description": "Hardware wallet error message on the voting registration \"choose wallet\" step.",
+        "end": {
+          "column": 3,
+          "line": 60
+        },
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsChooseWallet.js",
+        "id": "voting.votingRegistration.chooseWallet.step.errorHardwareWallet",
+        "start": {
+          "column": 23,
+          "line": 54
+        }
+      },
+      {
+        "defaultMessage": "!!!The wallet cannot be used for voting purposes while it is being synced with the blockchain.",
+        "description": "Restoring wallet error message on the voting registration \"choose wallet\" step.",
+        "end": {
+          "column": 3,
+          "line": 67
+        },
+        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsChooseWallet.js",
         "id": "voting.votingRegistration.chooseWallet.step.errorRestoringWallet",
         "start": {
           "column": 24,
-          "line": 47
+          "line": 61
         }
       },
       {
@@ -7759,13 +7684,13 @@
         "description": "Label for continue button on the voting registration \"choose wallet\" step.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 73
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsChooseWallet.js",
         "id": "voting.votingRegistration.chooseWallet.step.continueButtonLabel",
         "start": {
           "column": 23,
-          "line": 54
+          "line": 68
         }
       }
     ],
@@ -8215,6 +8140,109 @@
     "descriptors": [
       {
         "defaultMessage": "!!!Register to vote",
+        "description": "Headline for voting registration steps",
+        "end": {
+          "column": 3,
+          "line": 21
+        },
+        "file": "source/renderer/app/components/voting/VotingInfo.js",
+        "id": "voting.info.heading",
+        "start": {
+          "column": 11,
+          "line": 17
+        }
+      },
+      {
+        "defaultMessage": "!!!Before you begin, you must first complete the steps below:",
+        "description": "Info description for voting registration steps",
+        "end": {
+          "column": 3,
+          "line": 27
+        },
+        "file": "source/renderer/app/components/voting/VotingInfo.js",
+        "id": "voting.info.description",
+        "start": {
+          "column": 15,
+          "line": 22
+        }
+      },
+      {
+        "defaultMessage": "!!!Download the Catalyst Voting App",
+        "description": "Info step title 2 for voting registration steps",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "source/renderer/app/components/voting/VotingInfo.js",
+        "id": "voting.info.stepTitle1",
+        "start": {
+          "column": 14,
+          "line": 28
+        }
+      },
+      {
+        "defaultMessage": "!!!Open the Catalyst Voting App and click on the complete registration button.",
+        "description": "Info step title 2 for voting registration steps",
+        "end": {
+          "column": 3,
+          "line": 38
+        },
+        "file": "source/renderer/app/components/voting/VotingInfo.js",
+        "id": "voting.info.stepTitle2",
+        "start": {
+          "column": 14,
+          "line": 33
+        }
+      },
+      {
+        "defaultMessage": "!!!Ensure you have 5 minutes to complete the registration process, and an additional hour to receive a final confirmation.",
+        "description": "Info step title 3 for voting registration steps",
+        "end": {
+          "column": 3,
+          "line": 44
+        },
+        "file": "source/renderer/app/components/voting/VotingInfo.js",
+        "id": "voting.info.stepTitle3",
+        "start": {
+          "column": 14,
+          "line": 39
+        }
+      },
+      {
+        "defaultMessage": "!!!I confirm all steps have been completed. Continue with registration.",
+        "description": "Button Label for voting registration steps",
+        "end": {
+          "column": 3,
+          "line": 50
+        },
+        "file": "source/renderer/app/components/voting/VotingInfo.js",
+        "id": "voting.info.buttonLabel",
+        "start": {
+          "column": 15,
+          "line": 45
+        }
+      },
+      {
+        "defaultMessage": "!!!https://play.google.com/store/apps/details?id=io.iohk.vitvoting&hl=es_419&gl=US",
+        "description": "\"androidAppButtonUrl\" for the Catalyst voting app",
+        "end": {
+          "column": 3,
+          "line": 56
+        },
+        "file": "source/renderer/app/components/voting/VotingInfo.js",
+        "id": "voting.info.androidAppButtonUrl",
+        "start": {
+          "column": 23,
+          "line": 51
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/voting/VotingInfo.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Register to vote",
         "description": "Tile \"Register to vote\" for voting registration",
         "end": {
           "column": 3,
@@ -8243,6 +8271,25 @@
       }
     ],
     "path": "source/renderer/app/components/voting/VotingRegistrationDialog.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Before registering for voting, Daedalus first needs to synchronize with the blockchain. The synchronization process is now underway and it is currently {syncPercentage}% complete. As soon as this process is fully complete, you’ll be able to register with Fund3. Please wait for this process to complete before returning here.",
+        "description": "Description for voting registration unavailable screen",
+        "end": {
+          "column": 3,
+          "line": 13
+        },
+        "file": "source/renderer/app/components/voting/VotingUnavailable.js",
+        "id": "voting.unavailable.description",
+        "start": {
+          "column": 15,
+          "line": 8
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/voting/VotingUnavailable.json"
   },
   {
     "descriptors": [
