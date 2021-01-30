@@ -712,6 +712,9 @@ export default class StakingStore extends Store {
       this.redeemStep = steps.CONFIRMATION;
       this.confirmationStepError = null;
       this.configurationStepError = null;
+    } else {
+      this.stakingSuccess = false;
+      this.redeemStep = steps.RESULT;
     }
   };
 
