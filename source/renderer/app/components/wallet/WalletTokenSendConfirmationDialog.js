@@ -125,7 +125,7 @@ type Props = {
   isSubmitting: boolean,
   isFlight: boolean,
   error: ?LocalizableError,
-  currencyUnit: string,
+  currencyUnit: ?string,
   hwDeviceStatus: HwDeviceStatus,
   isHardwareWallet: boolean,
   onInitiateTransaction: Function,

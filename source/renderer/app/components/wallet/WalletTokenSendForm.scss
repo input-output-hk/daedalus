@@ -149,6 +149,12 @@
     position: absolute;
     right: 18px;
   }
+
+  :global {
+    .AmountInputSkin_total {
+      display: none;
+    }
+  }
 }
 
 .addAssetButton {
@@ -170,7 +176,7 @@
   line-height: 48px;
   padding-left: 20px;
   position: absolute;
-  right: 110px;
+  right: 120px;
   top: 31px;
 
   .clearAssetButton {
@@ -205,7 +211,7 @@
 .separator {
   background: var(--rp-input-border-color);
   height: 20px;
-  left: 20px;
+  left: 15px;
   position: relative;
   top: 15px;
   width: 1px;
@@ -308,7 +314,7 @@
 
   .walletsDropdown {
     input {
-      border-left: none;
+      border: none;
       height: 48px;
     }
 
@@ -316,7 +322,7 @@
       .SimpleSelect_selectInput.SelectOverrides_selectInput
         .WalletsDropdownOption_selected
         .WalletsDropdownOption_topRow {
-        width: 50px !important;
+        width: 70px !important;
       }
 
       .SimpleSelect_selectInput.SelectOverrides_selectInput
@@ -332,6 +338,10 @@
 
       .SimpleBubble_root:not(.SimpleBubble_openUpward) .SimpleBubble_bubble {
         border-radius: 2px;
+      }
+
+      .SelectOverrides_selectInput .SimpleInput_customValueBlock {
+        background: transparent;
       }
     }
   }

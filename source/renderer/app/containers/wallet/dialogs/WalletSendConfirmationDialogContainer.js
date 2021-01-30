@@ -17,7 +17,7 @@ type Props = {
   totalAmount: ?string,
   transactionFee: ?string,
   amountToNaturalUnits: (amountWithFractions: string) => string,
-  currencyUnit: string,
+  currencyUnit: ?string,
   onExternalLinkClick: Function,
   hwDeviceStatus: HwDeviceStatus,
   isHardwareWallet: boolean,

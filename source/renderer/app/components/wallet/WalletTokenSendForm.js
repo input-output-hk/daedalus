@@ -535,7 +535,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
       total = amount.add(transactionFee).toFormat(currencyMaxFractionalDigits);
     }
 
-    const selectedNativeToken: any =
+    const selectedNativeToken =
       selectedWalletId && tokens && tokens.length
         ? this.getNativeTokenWalletById(selectedWalletId)
         : null;
@@ -662,7 +662,11 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                               this.renderAssetRow();
                             }
                           }}
-                          currency={selectedNativeToken.ticker}
+                          currency={
+                            selectedNativeToken
+                              ? selectedNativeToken.ticker
+                              : null
+                          }
                           skin={AmountInputSkin}
                           onKeyPress={this.handleSubmitOnEnter}
                           allowSigns={false}
@@ -781,7 +785,9 @@ export default class WalletTokenSendForm extends Component<Props, State> {
             totalAmount={total}
             transactionFee={fees}
             amountToNaturalUnits={formattedAmountToNaturalUnits}
-            currencyUnit={selectedNativeToken.ticker}
+            currencyUnit={
+              selectedNativeToken ? selectedNativeToken.ticker : null
+            }
             onExternalLinkClick={onExternalLinkClick}
             hwDeviceStatus={hwDeviceStatus}
             isHardwareWallet={isHardwareWallet}

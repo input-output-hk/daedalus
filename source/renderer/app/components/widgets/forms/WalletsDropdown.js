@@ -141,7 +141,7 @@ export default class WalletsDropdown extends Component<Props> {
         return {
           detail,
           syncing: isRestoring,
-          label,
+          label: hasNativeTokens ? ticker : label,
           value,
           numberOfStakePools,
           delegatedStakePool,
