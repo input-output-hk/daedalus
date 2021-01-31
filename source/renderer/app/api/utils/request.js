@@ -122,17 +122,23 @@ function typedRequest<Response>(
               }
               resolve(JSON.parse(body));
             }
-          } else if (body) {
-            // Error response with a body
-            const parsedBody = JSON.parse(body);
-            if (parsedBody.code && parsedBody.message) {
-              reject(parsedBody);
+          } else {
+            if (isOctetStreamResponse) {
+              // Error response with a stream
+              const parsedStream = JSON.parse(stream.toString());
+              reject(parsedStream);
+            } else if (body) {
+              // Error response with a body
+              const parsedBody = JSON.parse(body);
+              if (parsedBody.code && parsedBody.message) {
+                reject(parsedBody);
+              } else {
+                reject(new Error('Unknown API response'));
+              }
             } else {
+              // Error response without a body
               reject(new Error('Unknown API response'));
             }
-          } else {
-            // Error response without a body
-            reject(new Error('Unknown API response'));
           }
         } catch (error) {
           // Handle internal server errors (e.g. HTTP 500 - 'Something went wrong')
