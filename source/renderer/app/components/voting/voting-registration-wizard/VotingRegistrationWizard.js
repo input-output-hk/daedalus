@@ -28,11 +28,11 @@ type Props = {
   transactionFeeError: string | Node | null,
   onSubmit: Function,
   qrCode: ?string,
-  isSubmitting: boolean,
-  isTransactionApproved: boolean,
+  isTransactionPending: boolean,
+  isTransactionConfirmed: boolean,
+  transactionConfirmations: number,
   transactionError: ?LocalizableError,
   onRollback: Function,
-  countdownRemaining: number,
   onExternalLinkClick: Function,
 };
 
@@ -54,11 +54,11 @@ export default class VotingRegistrationWizard extends Component<Props> {
       transactionFeeError,
       onSubmit,
       qrCode,
-      isSubmitting,
-      isTransactionApproved,
+      isTransactionPending,
+      isTransactionConfirmed,
+      transactionConfirmations,
       transactionError,
       onRollback,
-      countdownRemaining,
       onExternalLinkClick,
     } = this.props;
 
@@ -93,12 +93,12 @@ export default class VotingRegistrationWizard extends Component<Props> {
       case 3:
         content = (
           <VotingRegistrationStepsConfirm
+            isTransactionPending={isTransactionPending}
+            isTransactionConfirmed={isTransactionConfirmed}
+            transactionConfirmations={transactionConfirmations}
             transactionError={transactionError}
             onConfirm={onContinue}
             onRollback={onRollback}
-            isSubmitting={isSubmitting}
-            isTransactionApproved={isTransactionApproved}
-            countdownRemaining={countdownRemaining}
           />
         );
         break;

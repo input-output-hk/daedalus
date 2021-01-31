@@ -618,7 +618,6 @@
   "voting.votingRegistration.chooseWallet.step.errorRestoringWallet": "このウォレットはブロックチェーンと同期中のため、投票用に使用することはできません。",
   "voting.votingRegistration.chooseWallet.step.selectWalletInputLabel": "ウォレットを選択する",
   "voting.votingRegistration.chooseWallet.step.selectWalletInputPlaceholder": "ウォレットを選択する",
-  "voting.votingRegistration.confirm.step.continueButtonCountDownLabel": "[{countdownRemaining}確認まであとx秒]",
   "voting.votingRegistration.confirm.step.continueButtonLabel": "登録トランザクションを確認する",
   "voting.votingRegistration.confirm.step.description": "登録が確認されるまで次の段階に進む前に1時間お待ちください。",
   "voting.votingRegistration.confirm.step.descriptionRestart": "[登録をやり直す]ボタンをクリックして、登録プロセスをやり直してください。",

@@ -7703,13 +7703,13 @@
         "description": "Description voting registration \"confirm\" step.",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 22
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsConfirm.js",
         "id": "voting.votingRegistration.confirm.step.description",
         "start": {
           "column": 15,
-          "line": 16
+          "line": 17
         }
       },
       {
@@ -7717,13 +7717,13 @@
         "description": "Message for restart voting registration on the voting registration \"confirm\" step.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 29
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsConfirm.js",
         "id": "voting.votingRegistration.confirm.step.descriptionRestart",
         "start": {
           "column": 22,
-          "line": 22
+          "line": 23
         }
       },
       {
@@ -7731,13 +7731,13 @@
         "description": "First messages for alert to users on the voting registration \"confirm\" step.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 36
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsConfirm.js",
         "id": "voting.votingRegistration.confirm.step.importantInformation1",
         "start": {
           "column": 25,
-          "line": 29
+          "line": 30
         }
       },
       {
@@ -7745,13 +7745,13 @@
         "description": "Second messages for alert the user on the voting registration \"confirm\" step.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 43
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsConfirm.js",
         "id": "voting.votingRegistration.confirm.step.importantInformation2",
         "start": {
           "column": 25,
-          "line": 36
+          "line": 37
         }
       },
       {
@@ -7759,13 +7759,13 @@
         "description": "Error message on the voting registration \"confirm\" step.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 48
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsConfirm.js",
         "id": "voting.votingRegistration.confirm.step.errorMessage",
         "start": {
           "column": 16,
-          "line": 43
+          "line": 44
         }
       },
       {
@@ -7773,27 +7773,13 @@
         "description": "Label for continue button on the voting registration \"confirm\" step.",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 54
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsConfirm.js",
         "id": "voting.votingRegistration.confirm.step.continueButtonLabel",
         "start": {
           "column": 23,
-          "line": 48
-        }
-      },
-      {
-        "defaultMessage": "!!![{countdownRemaining} seconds left before confirmation]",
-        "description": "Label for continue button countdown on the voting registration \"confirm\" step.",
-        "end": {
-          "column": 3,
-          "line": 60
-        },
-        "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsConfirm.js",
-        "id": "voting.votingRegistration.confirm.step.continueButtonCountDownLabel",
-        "start": {
-          "column": 32,
-          "line": 54
+          "line": 49
         }
       },
       {
@@ -7801,13 +7787,13 @@
         "description": "Label for restart button on the voting registration \"confirm\" step.",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 60
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsConfirm.js",
         "id": "voting.votingRegistration.confirm.step.restartButtonLabel",
         "start": {
           "column": 22,
-          "line": 61
+          "line": 55
         }
       }
     ],

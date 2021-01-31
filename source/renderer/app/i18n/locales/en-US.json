@@ -618,7 +618,6 @@
   "voting.votingRegistration.chooseWallet.step.errorRestoringWallet": "The wallet cannot be used for voting purposes while it is being synced with the blockchain.",
   "voting.votingRegistration.chooseWallet.step.selectWalletInputLabel": "Select wallet",
   "voting.votingRegistration.chooseWallet.step.selectWalletInputPlaceholder": "Select Wallet",
-  "voting.votingRegistration.confirm.step.continueButtonCountDownLabel": "[{countdownRemaining} seconds left before confirmation]",
   "voting.votingRegistration.confirm.step.continueButtonLabel": "Confirm Registration Transaction",
   "voting.votingRegistration.confirm.step.description": "To ensure your registration is confirmed, you will need to wait 1 hour before proceeding.",
   "voting.votingRegistration.confirm.step.descriptionRestart": "Please restart the registration process by clicking the Restart Registration button.",

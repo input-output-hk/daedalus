@@ -8,6 +8,7 @@ import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
 import confirmMessageIcon from '../../../assets/images/voting/confirm-step-message-ic.inline.svg';
 import confirmErrorMessageIcon from '../../../assets/images/voting/confirm-step-error-message-ic.inline.svg';
+import { VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS } from '../../../config/votingConfig';
 import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './VotingRegistrationStepsConfirm.scss';
 import commonStyles from './VotingRegistrationSteps.scss';
@@ -51,13 +52,6 @@ const messages = defineMessages({
     description:
       'Label for continue button on the voting registration "confirm" step.',
   },
-  continueButtonCountDownLabel: {
-    id: 'voting.votingRegistration.confirm.step.continueButtonCountDownLabel',
-    defaultMessage:
-      '!!![{countdownRemaining} seconds left before confirmation]',
-    description:
-      'Label for continue button countdown on the voting registration "confirm" step.',
-  },
   restartButtonLabel: {
     id: 'voting.votingRegistration.confirm.step.restartButtonLabel',
     defaultMessage: '!!!Restart Registration',
@@ -67,12 +61,12 @@ const messages = defineMessages({
 });
 
 type Props = {
+  isTransactionPending: boolean,
+  isTransactionConfirmed: boolean,
+  transactionConfirmations: number,
+  transactionError: ?LocalizableError,
   onConfirm: Function,
   onRollback: Function,
-  isSubmitting: boolean,
-  isTransactionApproved: boolean,
-  transactionError: ?LocalizableError,
-  countdownRemaining: number,
 };
 
 @observer
@@ -86,10 +80,10 @@ export default class VotingRegistrationStepsConfirm extends Component<Props> {
     const {
       onConfirm,
       onRollback,
-      isSubmitting,
-      isTransactionApproved,
+      isTransactionPending,
+      isTransactionConfirmed,
+      transactionConfirmations,
       transactionError,
-      countdownRemaining,
     } = this.props;
 
     const description = intl.formatMessage(messages.description);
@@ -102,10 +96,6 @@ export default class VotingRegistrationStepsConfirm extends Component<Props> {
     const descriptionRestart = intl.formatMessage(messages.descriptionRestart);
     const errorMessage = intl.formatMessage(messages.errorMessage);
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
-    const buttonCountDownLabel = intl.formatMessage(
-      messages.continueButtonCountDownLabel,
-      { countdownRemaining }
-    );
     const restartButtonLabel = intl.formatMessage(messages.restartButtonLabel);
 
     const className = classNames([
@@ -115,42 +105,10 @@ export default class VotingRegistrationStepsConfirm extends Component<Props> {
 
     const contentClassName = classNames([commonStyles.content, styles.content]);
 
-    const countdownDisplay =
-      countdownRemaining > 0
-        ? `${buttonLabel} ${buttonCountDownLabel}`
-        : buttonLabel;
-
     return (
       <div className={className}>
         <div className={contentClassName}>
-          {!transactionError &&
-          (isTransactionApproved || countdownRemaining > 0 || isSubmitting) ? (
-            <>
-              <div className={styles.header}>
-                <SVGInline
-                  svg={confirmMessageIcon}
-                  className={styles.descriptionIcon}
-                />
-              </div>
-              <div className={styles.description}>
-                <p>{description}</p>
-              </div>
-              <div className={styles.messages}>
-                <p>{importantInformation1}</p>
-                <p>{importantInformation2}</p>
-              </div>
-
-              <div className={styles.buttonContainer}>
-                <Button
-                  className={styles.buttonConfirmStyles}
-                  onClick={onConfirm}
-                  skin={ButtonSkin}
-                  label={countdownDisplay}
-                  disabled={isSubmitting || countdownRemaining > 0}
-                />
-              </div>
-            </>
-          ) : (
+          {transactionError ? (
             <>
               <div className={styles.header}>
                 <SVGInline
@@ -173,6 +131,39 @@ export default class VotingRegistrationStepsConfirm extends Component<Props> {
                   onClick={onRollback}
                   skin={ButtonSkin}
                   label={restartButtonLabel}
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              <div className={styles.header}>
+                <SVGInline
+                  svg={confirmMessageIcon}
+                  className={styles.descriptionIcon}
+                />
+              </div>
+              <div className={styles.description}>
+                <p>{description}</p>
+              </div>
+              <div className={styles.messages}>
+                <p>{importantInformation1}</p>
+                <p>{importantInformation2}</p>
+                <p>
+                  Transaction state:{' '}
+                  {isTransactionPending ? '<pending>' : '<confirming>'}
+                  <br />
+                  Transaction confirmations: {transactionConfirmations}/
+                  {VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS}
+                </p>
+              </div>
+
+              <div className={styles.buttonContainer}>
+                <Button
+                  className={styles.buttonConfirmStyles}
+                  onClick={onConfirm}
+                  skin={ButtonSkin}
+                  label={buttonLabel}
+                  disabled={!isTransactionConfirmed}
                 />
               </div>
             </>

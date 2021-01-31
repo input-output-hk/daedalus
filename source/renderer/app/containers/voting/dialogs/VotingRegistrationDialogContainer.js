@@ -8,7 +8,7 @@ import BigNumber from 'bignumber.js';
 import VotingRegistrationDialog from '../../../components/voting/VotingRegistrationDialog';
 import VotingRegistrationWizard from '../../../components/voting/voting-registration-wizard/VotingRegistrationWizard';
 import {
-  MIN_VOTING_REGISTRATION_FUNDS,
+  VOTING_REGISTRATION_MIN_WALLET_FUNDS,
   VOTING_REGISTRATION_FEE_CALCULATION_AMOUNT,
 } from '../../../config/votingConfig';
 import { FormattedHTMLMessageWithLink } from '../../../components/widgets/FormattedHTMLMessageWithLink';
@@ -80,9 +80,7 @@ export default class VotingRegistrationDialogContainer extends Component<
 
   componentWillUnmount() {
     this._isMounted = false;
-    this.props.stores.voting.votingSendTransactionRequest.reset();
-    this.props.stores.voting.signMetadataRequest.reset();
-    this.props.actions.voting.resetVotingRegistration.trigger();
+    this.props.actions.voting.resetRegistration.trigger();
   }
 
   handleIsWalletAcceptable = (
@@ -94,15 +92,11 @@ export default class VotingRegistrationDialogContainer extends Component<
     !isLegacy &&
     !isHardwareWallet &&
     walletAmount &&
-    walletAmount.gte(new BigNumber(MIN_VOTING_REGISTRATION_FUNDS)) &&
+    walletAmount.gte(new BigNumber(VOTING_REGISTRATION_MIN_WALLET_FUNDS)) &&
     !walletAmount.isEqualTo(walletReward);
 
   get selectedWalletId() {
-    return get(
-      this.props,
-      ['stores', 'voting', 'selectedVotingWalletId'],
-      null
-    );
+    return get(this.props, ['stores', 'voting', 'selectedWalletId'], null);
   }
 
   state = {
@@ -121,9 +115,7 @@ export default class VotingRegistrationDialogContainer extends Component<
   ];
 
   handleRollBack = () => {
-    this.props.stores.voting.votingSendTransactionRequest.reset();
-    this.props.stores.voting.signMetadataRequest.reset();
-    this.props.actions.voting.resetVotingRegistration.trigger();
+    this.props.actions.voting.resetRegistration.trigger();
     this.setState({ activeStep: 1 });
   };
 
@@ -134,7 +126,7 @@ export default class VotingRegistrationDialogContainer extends Component<
 
   handleSelectWallet = (walletId: string) => {
     this.setState({ selectedWalletId: walletId });
-    this.props.actions.voting.selectVotingWallet.trigger(walletId);
+    this.props.actions.voting.selectWallet.trigger(walletId);
     this._handleCalculateTransactionFee();
     this.handleContinue();
   };
@@ -148,12 +140,10 @@ export default class VotingRegistrationDialogContainer extends Component<
     const amount = formattedAmountToLovelace(
       `${VOTING_REGISTRATION_FEE_CALCULATION_AMOUNT}`
     );
-    this.props.stores.voting.votingSendTransactionRequest.reset();
     this.props.actions.voting.sendTransaction.trigger({
       amount,
       passphrase: spendingPassword,
     });
-    this.props.actions.voting.initializeCountdownInterval.trigger();
     this.handleContinue();
   };
 
@@ -168,12 +158,13 @@ export default class VotingRegistrationDialogContainer extends Component<
     const { all } = wallets;
     const { stakePools, getStakePoolById } = staking;
     const {
-      votingSendTransactionRequest,
+      getWalletPublicKeyRequest,
+      createVotingRegistrationTransactionRequest,
       signMetadataRequest,
-      isVotingRegistrationTransactionPending,
-      isVotingRegistrationTransactionApproved,
+      isTransactionPending,
+      isTransactionConfirmed,
+      transactionConfirmations,
       qrCode,
-      countdownRemaining,
     } = voting;
     const { openExternalLink } = app;
 
@@ -192,7 +183,7 @@ export default class VotingRegistrationDialogContainer extends Component<
           stakePoolsList={stakePools}
           wallets={all}
           activeStep={activeStep}
-          minVotingRegistrationFunds={MIN_VOTING_REGISTRATION_FUNDS}
+          minVotingRegistrationFunds={VOTING_REGISTRATION_MIN_WALLET_FUNDS}
           isWalletAcceptable={this.handleIsWalletAcceptable}
           selectedWallet={selectedWallet}
           getStakePoolById={getStakePoolById}
@@ -204,17 +195,14 @@ export default class VotingRegistrationDialogContainer extends Component<
           transactionFee={transactionFee}
           transactionFeeError={transactionFeeError}
           qrCode={qrCode}
-          isSubmitting={
-            votingSendTransactionRequest.isExecuting ||
-            isVotingRegistrationTransactionPending
-          }
-          isTransactionApproved={isVotingRegistrationTransactionApproved}
+          isTransactionPending={isTransactionPending}
+          isTransactionConfirmed={isTransactionConfirmed}
+          transactionConfirmations={transactionConfirmations}
           transactionError={
-            votingSendTransactionRequest.error
-              ? votingSendTransactionRequest.error
-              : signMetadataRequest.error
+            getWalletPublicKeyRequest.error ||
+            createVotingRegistrationTransactionRequest.error ||
+            signMetadataRequest.error
           }
-          countdownRemaining={countdownRemaining}
           onExternalLinkClick={openExternalLink}
         />
       </VotingRegistrationDialog>
