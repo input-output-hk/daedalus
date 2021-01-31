@@ -69,9 +69,9 @@ const messages = defineMessages({
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
 type Props = {
-  onConfirm: Function,
   transactionFee: ?BigNumber,
   transactionFeeError: string | Node | null,
+  onConfirm: Function,
   onExternalLinkClick: Function,
 };
 

@@ -32,7 +32,7 @@ type Props = {
   isTransactionConfirmed: boolean,
   transactionConfirmations: number,
   transactionError: ?LocalizableError,
-  onRollback: Function,
+  onRestart: Function,
   onExternalLinkClick: Function,
 };
 
@@ -58,7 +58,7 @@ export default class VotingRegistrationWizard extends Component<Props> {
       isTransactionConfirmed,
       transactionConfirmations,
       transactionError,
-      onRollback,
+      onRestart,
       onExternalLinkClick,
     } = this.props;
 
@@ -83,9 +83,9 @@ export default class VotingRegistrationWizard extends Component<Props> {
       case 2:
         content = (
           <VotingRegistrationStepsSign
-            onConfirm={onSubmit}
             transactionFee={transactionFee}
             transactionFeeError={transactionFeeError}
+            onConfirm={onSubmit}
             onExternalLinkClick={onExternalLinkClick}
           />
         );
@@ -98,7 +98,7 @@ export default class VotingRegistrationWizard extends Component<Props> {
             transactionConfirmations={transactionConfirmations}
             transactionError={transactionError}
             onConfirm={onContinue}
-            onRollback={onRollback}
+            onRestart={onRestart}
           />
         );
         break;

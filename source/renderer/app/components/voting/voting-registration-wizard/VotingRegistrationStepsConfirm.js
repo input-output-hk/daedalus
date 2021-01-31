@@ -66,7 +66,7 @@ type Props = {
   transactionConfirmations: number,
   transactionError: ?LocalizableError,
   onConfirm: Function,
-  onRollback: Function,
+  onRestart: Function,
 };
 
 @observer
@@ -79,7 +79,7 @@ export default class VotingRegistrationStepsConfirm extends Component<Props> {
     const { intl } = this.context;
     const {
       onConfirm,
-      onRollback,
+      onRestart,
       isTransactionPending,
       isTransactionConfirmed,
       transactionConfirmations,
@@ -128,7 +128,7 @@ export default class VotingRegistrationStepsConfirm extends Component<Props> {
               </div>
               <div className={styles.buttonContainer}>
                 <Button
-                  onClick={onRollback}
+                  onClick={onRestart}
                   skin={ButtonSkin}
                   label={restartButtonLabel}
                 />

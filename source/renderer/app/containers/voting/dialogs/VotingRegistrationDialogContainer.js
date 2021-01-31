@@ -114,7 +114,7 @@ export default class VotingRegistrationDialogContainer extends Component<
     this.context.intl.formatMessage(messages.votingRegistrationStep5Label),
   ];
 
-  handleRollBack = () => {
+  handleRestart = () => {
     this.props.actions.voting.resetRegistration.trigger();
     this.setState({ activeStep: 1 });
   };
@@ -136,7 +136,7 @@ export default class VotingRegistrationDialogContainer extends Component<
     this.handleContinue();
   };
 
-  handleDeposit = (spendingPassword: string) => {
+  handleSendTransaction = (spendingPassword: string) => {
     const amount = formattedAmountToLovelace(
       `${VOTING_REGISTRATION_FEE_CALCULATION_AMOUNT}`
     );
@@ -190,8 +190,8 @@ export default class VotingRegistrationDialogContainer extends Component<
           onContinue={this.handleContinue}
           onSelectWallet={this.handleSelectWallet}
           onSetPinCode={this.handleSetPinCode}
-          onSubmit={this.handleDeposit}
-          onRollback={this.handleRollBack}
+          onSubmit={this.handleSendTransaction}
+          onRestart={this.handleRestart}
           transactionFee={transactionFee}
           transactionFeeError={transactionFeeError}
           qrCode={qrCode}
