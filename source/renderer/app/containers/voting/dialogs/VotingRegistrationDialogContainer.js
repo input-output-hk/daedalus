@@ -46,7 +46,6 @@ const messages = defineMessages({
 type Props = InjectedDialogContainerProps;
 
 type State = {
-  activeStep: number,
   selectedWalletId: string,
   transactionFee: BigNumber,
   transactionFeeError: string | Node | null,
@@ -100,7 +99,6 @@ export default class VotingRegistrationDialogContainer extends Component<
   }
 
   state = {
-    activeStep: 1,
     selectedWalletId: this.selectedWalletId,
     transactionFee: null,
     transactionFeeError: null,
@@ -116,12 +114,10 @@ export default class VotingRegistrationDialogContainer extends Component<
 
   handleRestart = () => {
     this.props.actions.voting.resetRegistration.trigger();
-    this.setState({ activeStep: 1 });
   };
 
   handleContinue = () => {
-    const { activeStep } = this.state;
-    this.setState({ activeStep: activeStep + 1 });
+    this.props.actions.voting.continueRegistration.trigger();
   };
 
   handleSelectWallet = (walletId: string) => {
@@ -133,7 +129,6 @@ export default class VotingRegistrationDialogContainer extends Component<
 
   handleSetPinCode = (code: number) => {
     this.props.actions.voting.generateQrCode.trigger(code);
-    this.handleContinue();
   };
 
   handleSendTransaction = (spendingPassword: string) => {
@@ -144,12 +139,10 @@ export default class VotingRegistrationDialogContainer extends Component<
       amount,
       passphrase: spendingPassword,
     });
-    this.handleContinue();
   };
 
   render() {
     const {
-      activeStep,
       selectedWalletId,
       transactionFee,
       transactionFeeError,
@@ -158,6 +151,7 @@ export default class VotingRegistrationDialogContainer extends Component<
     const { all } = wallets;
     const { stakePools, getStakePoolById } = staking;
     const {
+      registrationStep,
       getWalletPublicKeyRequest,
       createVotingRegistrationTransactionRequest,
       signMetadataRequest,
@@ -177,12 +171,12 @@ export default class VotingRegistrationDialogContainer extends Component<
       <VotingRegistrationDialog
         onClose={this.props.onClose}
         stepsList={this.STEPS_LIST}
-        activeStep={activeStep}
+        activeStep={registrationStep}
       >
         <VotingRegistrationWizard
           stakePoolsList={stakePools}
           wallets={all}
-          activeStep={activeStep}
+          activeStep={registrationStep}
           minVotingRegistrationFunds={VOTING_REGISTRATION_MIN_WALLET_FUNDS}
           isWalletAcceptable={this.handleIsWalletAcceptable}
           selectedWallet={selectedWallet}

@@ -76,7 +76,6 @@ const messages = defineMessages({
 type Props = {
   numberOfStakePools: number,
   onSelectWallet: Function,
-  onContinue: Function,
   wallets: Array<Wallet>,
   minVotingRegistrationFunds: number,
   selectedWalletId: ?string,
@@ -107,11 +106,6 @@ export default class VotingRegistrationStepsChooseWallet extends Component<
   onSelectWallet = () => {
     const { selectedWalletId } = this.state;
     this.props.onSelectWallet(selectedWalletId);
-  };
-
-  onSubmit = () => {
-    this.props.onContinue();
-    this.onSelectWallet();
   };
 
   render() {
@@ -195,7 +189,7 @@ export default class VotingRegistrationStepsChooseWallet extends Component<
         </div>
         <Button
           label={buttonLabel}
-          onClick={this.onSubmit}
+          onClick={this.onSelectWallet}
           disabled={!selectedWalletId || !!error}
           skin={ButtonSkin}
         />

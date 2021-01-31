@@ -1,4 +1,5 @@
 @import '../../../themes/mixins/animations';
+@import '../../../themes/mixins/loading-spinner';
 @import '../../../themes/mixins/error-message';
 
 .votingRegistrationStepsDepositWrapper {
@@ -36,7 +37,9 @@
   }
 
   .errorMessage {
-    margin-top: 10px;
+    margin-top: 20px;
+    text-align: center;
+
     p {
       color: var(--theme-color-error);
       font-family: var(--font-medium);
@@ -50,5 +53,10 @@
       font-family: var(--font-regular);
       font-size: 16px;
     }
+  }
+
+  .isSubmitting {
+    box-shadow: none !important;
+    @include loading-spinner('../../../assets/images/spinner-light.svg');
   }
 }

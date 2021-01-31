@@ -17,6 +17,7 @@ import globalMessages from '../../../i18n/global-messages';
 import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { formattedWalletAmount } from '../../../utils/formatters';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
+import LocalizableError from '../../../i18n/LocalizableError';
 import commonStyles from './VotingRegistrationSteps.scss';
 import styles from './VotingRegistrationStepsSign.scss';
 
@@ -71,6 +72,8 @@ messages.fieldIsRequired = globalMessages.fieldIsRequired;
 type Props = {
   transactionFee: ?BigNumber,
   transactionFeeError: string | Node | null,
+  transactionError: ?LocalizableError,
+  isSubmitting: boolean,
   onConfirm: Function,
   onExternalLinkClick: Function,
 };
@@ -134,6 +137,8 @@ export default class VotingRegistrationStepsSign extends Component<Props> {
     const {
       transactionFee,
       transactionFeeError,
+      transactionError,
+      isSubmitting,
       onExternalLinkClick,
     } = this.props;
     const spendingPasswordField = form.$('spendingPassword');
@@ -146,6 +151,11 @@ export default class VotingRegistrationStepsSign extends Component<Props> {
     ]);
 
     const contentClassName = classNames([commonStyles.content, styles.content]);
+
+    const buttonClasses = classNames([
+      'primary',
+      isSubmitting ? styles.isSubmitting : null,
+    ]);
 
     return (
       <div className={className}>
@@ -190,18 +200,28 @@ export default class VotingRegistrationStepsSign extends Component<Props> {
             error={spendingPasswordField.error}
             onKeyPress={this.handleSubmitOnEnter}
           />
+
           {transactionFeeError ? (
             <div className={styles.errorMessage}>
               <p>{transactionFeeError}</p>
             </div>
           ) : null}
+
+          {transactionError ? (
+            <div className={styles.errorMessage}>
+              <p>{intl.formatMessage(transactionError)}</p>
+            </div>
+          ) : null}
         </div>
 
         <Button
+          className={buttonClasses}
           skin={ButtonSkin}
           label={buttonLabel}
           onClick={this.submit}
-          disabled={!spendingPasswordField.isValid || !transactionFee}
+          disabled={
+            !spendingPasswordField.isValid || !transactionFee || isSubmitting
+          }
         />
       </div>
     );

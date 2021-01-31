@@ -8,5 +8,6 @@ export default class VotingActions {
     amount: number,
     passphrase: string,
   }> = new Action();
+  continueRegistration: Action<any> = new Action();
   resetRegistration: Action<any> = new Action();
 }

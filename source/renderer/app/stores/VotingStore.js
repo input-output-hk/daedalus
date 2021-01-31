@@ -16,6 +16,7 @@ import {
 export type VotingRegistrationKeyType = { bytes: Function, public: Function };
 
 export default class VotingStore extends Store {
+  @observable registrationStep: number = 1;
   @observable selectedWalletId: ?string = null;
   @observable transactionId: ?string = null;
   @observable transactionConfirmations: number = 0;
@@ -31,6 +32,7 @@ export default class VotingStore extends Store {
     votingActions.selectWallet.listen(this._setSelectedWalletId);
     votingActions.sendTransaction.listen(this._sendTransaction);
     votingActions.generateQrCode.listen(this._generateQrCode);
+    votingActions.continueRegistration.listen(this._continueRegistration);
     votingActions.resetRegistration.listen(this._resetRegistration);
   }
 
@@ -54,7 +56,12 @@ export default class VotingStore extends Store {
     this.selectedWalletId = walletId;
   };
 
+  @action _continueRegistration = () => {
+    this.registrationStep++;
+  };
+
   @action _resetRegistration = () => {
+    this.registrationStep = 1;
     this.selectedWalletId = null;
     this.transactionId = null;
     this.transactionConfirmations = 0;
@@ -168,7 +175,15 @@ export default class VotingStore extends Store {
 
       this._setTransactionId(transaction.id);
       this._startTransactionPolling();
+      this._continueRegistration();
     } catch (error) {
+      if (error.code === 'wrong_encryption_passphrase') {
+        // In case of a invalid spending password we stay on the same screen
+        this._setIsTransactionPending(false);
+      } else {
+        // For any other error code we proceed to the next screen
+        this._continueRegistration();
+      }
       throw error;
     }
   };
@@ -191,6 +206,7 @@ export default class VotingStore extends Store {
       this.votingRegistrationKey.bytes()
     );
     this._setQrCode(formattedArrayBufferToHexString(encrypt));
+    this._continueRegistration();
   };
 
   _checkVotingRegistrationTransaction = async () => {
@@ -205,15 +221,20 @@ export default class VotingStore extends Store {
       });
 
     // Update voting registration confirmations count
-    this._setTransactionConfirmations(confirmations);
+    if (this.transactionConfirmations !== confirmations) {
+      this._setTransactionConfirmations(confirmations);
+    }
 
     // Update voting registration pending state
-    if (state === TransactionStates.OK) {
+    if (this.isTransactionPending && state === TransactionStates.OK) {
       this._setIsTransactionPending(false);
     }
 
     // Update voting registration confirmed state
-    if (confirmations >= VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS) {
+    if (
+      !this.isTransactionConfirmed &&
+      confirmations >= VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS
+    ) {
       this._setIsTransactionConfirmed(true);
     }
   };

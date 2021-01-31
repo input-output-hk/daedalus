@@ -73,7 +73,6 @@ export default class VotingRegistrationWizard extends Component<Props> {
             wallets={wallets}
             minVotingRegistrationFunds={minVotingRegistrationFunds}
             selectedWalletId={selectedWalletId}
-            onContinue={onContinue}
             onSelectWallet={onSelectWallet}
             isWalletAcceptable={isWalletAcceptable}
             getStakePoolById={getStakePoolById}
@@ -85,6 +84,8 @@ export default class VotingRegistrationWizard extends Component<Props> {
           <VotingRegistrationStepsSign
             transactionFee={transactionFee}
             transactionFeeError={transactionFeeError}
+            transactionError={transactionError}
+            isSubmitting={isTransactionPending}
             onConfirm={onSubmit}
             onExternalLinkClick={onExternalLinkClick}
           />

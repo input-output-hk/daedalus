@@ -8012,13 +8012,13 @@
         "description": "Description on the voting registration \"sign\" step.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 30
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsSign.js",
         "id": "voting.votingRegistration.sign.step.description",
         "start": {
           "column": 15,
-          "line": 24
+          "line": 25
         }
       },
       {
@@ -8026,13 +8026,13 @@
         "description": "Label for continue button on the voting registration \"sign\" step.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 36
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsSign.js",
         "id": "voting.votingRegistration.sign.step.continueButtonLabel",
         "start": {
           "column": 23,
-          "line": 30
+          "line": 31
         }
       },
       {
@@ -8040,13 +8040,13 @@
         "description": "Fees label on the voting registration \"sign\" step.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 41
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsSign.js",
         "id": "voting.votingRegistration.sign.step.feesLabel",
         "start": {
           "column": 13,
-          "line": 36
+          "line": 37
         }
       },
       {
@@ -8054,13 +8054,13 @@
         "description": "Placeholder for \"spending password\"",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 46
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsSign.js",
         "id": "voting.votingRegistration.sign.step.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 41
+          "line": 42
         }
       },
       {
@@ -8068,13 +8068,13 @@
         "description": "Label for \"spending password\"",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 51
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsSign.js",
         "id": "voting.votingRegistration.sign.step.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 46
+          "line": 47
         }
       },
       {
@@ -8082,13 +8082,13 @@
         "description": "\"Calculating fees\" message in the \"sign\" step.",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 56
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsSign.js",
         "id": "voting.votingRegistration.sign.step.calculatingFees",
         "start": {
           "column": 19,
-          "line": 51
+          "line": 52
         }
       },
       {
@@ -8096,13 +8096,13 @@
         "description": "\"Learn more\" link on the \"sign\" step.",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 61
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsSign.js",
         "id": "voting.votingRegistration.sign.step.learnMoreLink",
         "start": {
           "column": 17,
-          "line": 56
+          "line": 57
         }
       },
       {
@@ -8110,13 +8110,13 @@
         "description": "Learn more\" link URL on the \"sign\" step.",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 67
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard/VotingRegistrationStepsSign.js",
         "id": "voting.votingRegistration.sign.step.learntMoreLinkUrl",
         "start": {
           "column": 21,
-          "line": 61
+          "line": 62
         }
       }
     ],
