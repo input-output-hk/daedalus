@@ -244,13 +244,17 @@ export default class WalletTokenSendForm extends Component<Props, State> {
   clearReceiverAddress = () => {
     const receiverField = this.form.$('receiver');
     receiverField.clear();
-    receiverField.focus();
+    if (this.receiverFieldRef && this.receiverFieldRef.focus) {
+      setTimeout(() => this.receiverFieldRef.focus(), 500);
+    }
   };
 
   clearAssetValue = () => {
     const assetField = this.form.$('asset');
     assetField.clear();
-    assetField.focus();
+    if (this.assetFieldRef && this.assetFieldRef.focus) {
+      setTimeout(() => this.assetFieldRef.focus(), 500);
+    }
   };
 
   handleOnReset = () => {
@@ -266,6 +270,10 @@ export default class WalletTokenSendForm extends Component<Props, State> {
       isResetButtonDisabled: true,
     });
   };
+
+  receiverFieldRef = Input;
+
+  assetFieldRef = NumericInput;
 
   handleSubmitOnEnter = submitOnEnter.bind(this, this.handleOnSubmit);
 
@@ -598,6 +606,9 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                       className="receiver"
                       label={intl.formatMessage(messages.receiverLabel)}
                       {...receiverField.bind()}
+                      ref={(input) => {
+                        this.receiverFieldRef = input;
+                      }}
                       error={receiverField.error}
                       onChange={(value) => {
                         receiverField.onChange(value || '');
@@ -650,8 +661,12 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                         <NumericInput
                           {...assetFieldProps}
                           className="asset"
+                          ref={(input) => {
+                            this.assetFieldRef = input;
+                          }}
                           label={intl.formatMessage(messages.assetLabel)}
-                          numberFormat={this.getCurrentNumberFormat()}
+                          bigNumberFormat={this.getCurrentNumberFormat()}
+                          decimalPlaces={currencyMaxFractionalDigits}
                           numberLocaleOptions={{
                             minimumFractionDigits: currencyMaxFractionalDigits,
                           }}
@@ -671,6 +686,8 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                               ? selectedNativeToken.ticker
                               : null
                           }
+                          value={amount}
+                          error={assetField.error}
                           skin={AmountInputSkin}
                           onKeyPress={this.handleSubmitOnEnter}
                           allowSigns={false}
