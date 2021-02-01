@@ -107,7 +107,7 @@ export const formattedBytesToSize = (bytes: number): string => {
     10
   );
   if (i === 0) return `${bytes} ${sizes[i]})`;
-  return `${(bytes / 1024 ** i).toFixed(1)} ${sizes[i]}`;
+  return `${formattedNumber(bytes / 1024 ** i, 1)} ${sizes[i]}`;
 };
 
 export type FormattedDownloadData = {
@@ -154,4 +154,34 @@ export const generateThousands = (value: number) => {
   }
 
   return Math.round(value / 1000) * 1000;
+};
+
+export const formattedNumber = (value: number | string, dp?: number): string =>
+  new BigNumber(value).toFormat(dp);
+
+export const formattedCpuModel = (model: string): string => {
+  const atCharPosition = model.indexOf('@');
+  const speedSection = model.substring(atCharPosition);
+  const speedNumbers = speedSection.match(/[\d,.]+/g);
+  const speedNumber = speedNumbers ? speedNumbers[0] : '';
+  const formattedSpeedNumber = formattedNumber(speedNumber, 2);
+  const formattedSpeedSection = speedSection.replace(
+    /[\d,.]+/,
+    formattedSpeedNumber
+  );
+  const formattedModel = `${model.substring(
+    0,
+    atCharPosition
+  )}${formattedSpeedSection}`;
+
+  return formattedModel;
+};
+
+export const formattedSize = (size: string): string => {
+  const sizeNumbers = size.match(/[\d,.]+/g);
+  const sizeNumber = sizeNumbers ? sizeNumbers[0] : '';
+  const formattedSizeNumber = formattedNumber(sizeNumber);
+  const formattedResult = size.replace(/[\d,.]+/, formattedSizeNumber);
+
+  return formattedResult;
 };
