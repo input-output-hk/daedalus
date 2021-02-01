@@ -21,15 +21,6 @@
     }
   }
 
-  .progressContent {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 4px;
-    p {
-      font-size: 14px;
-    }
-  }
-
   .progressData {
     color: var(--theme-app-update-overlay-opacity-text-color);
     b {
@@ -47,13 +38,9 @@
   }
 
   .messages {
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 15px;
-    margin-top: 25px;
+    margin-top: 20px;
     p {
-      color: var(--theme-voting-registration-steps-warning-messages-font-color);
-      margin-top: 20px;
+      margin-bottom: 20px;
     }
   }
 

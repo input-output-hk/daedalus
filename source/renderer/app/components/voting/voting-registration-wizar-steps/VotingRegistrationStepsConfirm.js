@@ -25,19 +25,12 @@ const messages = defineMessages({
     description:
       'Message for restart voting registration on the voting registration "confirm" step.',
   },
-  importantInformation1: {
-    id: 'voting.votingRegistration.confirm.step.importantInformation1',
+  message1: {
+    id: 'voting.votingRegistration.confirm.step.message1',
     defaultMessage:
-      '!!!If you close this window, or the wallet, you will need to start the registration process again and resubmit your registration transaction.',
+      '!!!Approximately 5 minutes of waiting is required for your voting registration to be confirmed. Please leave Daedalus running.',
     description:
-      'First messages for alert to users on the voting registration "confirm" step.',
-  },
-  importantInformation2: {
-    id: 'voting.votingRegistration.confirm.step.importantInformation2',
-    defaultMessage:
-      '!!!In 99.99% of cases the 1 hour wait time should suffice, however if you want a 100% guarantee to ensure successful registration we recommend waiting for 18 hours before confirming.',
-    description:
-      'Second messages for alert the user on the voting registration "confirm" step.',
+      'message1 for alert to users on the voting registration "confirm" step.',
   },
   errorMessage: {
     id: 'voting.votingRegistration.confirm.step.errorMessage',
@@ -65,7 +58,7 @@ type Props = {
   isTransactionPending: boolean,
   isTransactionConfirmed: boolean,
   transactionConfirmations: number,
-  transactionError: ?LocalizableError,
+  transactionError: ?boolean | ?LocalizableError,
   onConfirm: Function,
   onRestart: Function,
 };
@@ -91,14 +84,10 @@ export default class VotingRegistrationStepsConfirm extends Component<Props> {
     } = this.props;
 
     const description = intl.formatMessage(messages.description);
-    const importantInformation1 = intl.formatMessage(
-      messages.importantInformation1
-    );
-    const importantInformation2 = intl.formatMessage(
-      messages.importantInformation2
-    );
+    const message1 = intl.formatMessage(messages.message1);
     const descriptionRestart = intl.formatMessage(messages.descriptionRestart);
     const errorMessage = intl.formatMessage(messages.errorMessage);
+
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
     const restartButtonLabel = intl.formatMessage(messages.restartButtonLabel);
 
@@ -111,12 +100,23 @@ export default class VotingRegistrationStepsConfirm extends Component<Props> {
         : {
             label: buttonLabel,
             onClick: onConfirm,
-            // @VOTING TODO: unselect it
-            // disabled: !isTransactionConfirmed,
+            disabled: !isTransactionConfirmed,
             className: styles.buttonConfirmStyles,
             primary: true,
           },
     ];
+
+    const progressBarLeftLabel = isTransactionPending
+      ? 'Transaction pending...'
+      : 'Waiting for confirmations...';
+
+    const progressBarRightLabel = isTransactionPending
+      ? ''
+      : `${transactionConfirmations} of ${VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS}`;
+
+    const progress =
+      (transactionConfirmations * 100) /
+      VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS;
 
     return (
       <VotingRegistrationDialog
@@ -135,11 +135,7 @@ export default class VotingRegistrationStepsConfirm extends Component<Props> {
               />
             </div>
             <div className={styles.errorMessage}>
-              <p>
-                {transactionError
-                  ? intl.formatMessage(transactionError)
-                  : errorMessage}
-              </p>
+              <p>{errorMessage}</p>
             </div>
             <div className={styles.description}>
               <p>{descriptionRestart}</p>
@@ -147,32 +143,14 @@ export default class VotingRegistrationStepsConfirm extends Component<Props> {
           </Fragment>
         ) : (
           <Fragment>
-            <div className={styles.header}>
-              <SVGInline
-                svg={confirmMessageIcon}
-                className={styles.descriptionIcon}
-              />
-            </div>
-            <div className={styles.description}>
-              <p>{description}</p>
-            </div>
-            <div className={styles.progressContent}>
-              <ProgressBarLarge
-                leftLabel="Waiting for confirmations..."
-                rightLabel1="1 or 30"
-                progress={50}
-              />
-            </div>
+            <ProgressBarLarge
+              leftLabel={progressBarLeftLabel}
+              rightLabel1={progressBarRightLabel}
+              loading={isTransactionPending}
+              progress={progress}
+            />
             <div className={styles.messages}>
-              <p>{importantInformation1}</p>
-              <p>{importantInformation2}</p>
-              <p>
-                Transaction state:{' '}
-                {isTransactionPending ? '<pending>' : '<confirming>'}
-                <br />
-                Transaction confirmations: {transactionConfirmations}/
-                {VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS}
-              </p>
+              <p>{message1}</p>
             </div>
           </Fragment>
         )}

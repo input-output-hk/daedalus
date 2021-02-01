@@ -11,6 +11,7 @@ type Props = {
   rightLabel1?: string,
   rightLabel2?: string,
   isDarkMode?: boolean,
+  loading?: boolean,
 };
 
 @observer
@@ -27,11 +28,18 @@ export default class ProgressBarLarge extends Component<Props> {
       rightLabel1,
       rightLabel2,
       isDarkMode,
+      loading,
     } = this.props;
 
     const progressStyles = classnames([
       styles.progress,
       isDarkMode ? styles.progressDarkMode : styles.progressLightMode,
+      loading ? styles.loading : null,
+    ]);
+
+    const progressBarContainerStyles = classnames([
+      styles.progressBarContainer,
+      loading ? styles.loading : null,
     ]);
 
     return (
@@ -42,13 +50,14 @@ export default class ProgressBarLarge extends Component<Props> {
             <b>{rightLabel1}</b> {rightLabel2}
           </p>
         </div>
-
-        <div className={styles.progressBarContainer}>
-          <div className={progressStyles} style={{ width: `${progress}%` }}>
-            {showProgressLabel && (
-              <div className={styles.progressLabel}>{progress}%</div>
-            )}
-          </div>
+        <div className={progressBarContainerStyles}>
+          {!loading && (
+            <div className={progressStyles} style={{ width: `${progress}%` }}>
+              {showProgressLabel && (
+                <div className={styles.progressLabel}>{progress}%</div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     );

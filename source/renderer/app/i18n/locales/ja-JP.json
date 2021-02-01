@@ -622,8 +622,6 @@
   "voting.votingRegistration.confirm.step.description": "登録が確認されるまで次の段階に進む前に1時間お待ちください。",
   "voting.votingRegistration.confirm.step.descriptionRestart": "[登録をやり直す]ボタンをクリックして、登録プロセスをやり直してください。",
   "voting.votingRegistration.confirm.step.errorMessage": "登録トランザクションは正しく登録されませんでした。",
-  "voting.votingRegistration.confirm.step.importantInformation1": "この画面、またはウォレットを閉じると、登録プロセスをやり直し、登録トランザクションを再度送信する必要が生じます。",
-  "voting.votingRegistration.confirm.step.importantInformation2": "99.99%の場合待機時間は1時間で十分ですが、登録が成功したことを100%確実にしたい場合は、18時間待ってから確認ボタンを押してください。",
   "voting.votingRegistration.confirm.step.restartButtonLabel": "登録をやり直す",
   "voting.votingRegistration.dialog.dialogTitle": "投票の登録をする",
   "voting.votingRegistration.dialog.subtitle": "ステップ{step}/{stepCount}",
