@@ -515,7 +515,11 @@ export default class Transaction extends Component<Props, State> {
             >
               <div>
                 <h2>{intl.formatMessage(messages.fromAddresses)}</h2>
-                {fromAddresses(data.addresses.from, data.id, hasNativeTokens ? data.type : null)}
+                {fromAddresses(
+                  data.addresses.from,
+                  data.id,
+                  hasNativeTokens ? data.type : null
+                )}
 
                 {data.addresses.withdrawals.length ? (
                   <>
