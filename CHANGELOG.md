@@ -10,6 +10,8 @@ Changelog
 
 ### Chores
 
+- Fixed number format for syncing percentage and stake pools count ([PR 2313](https://github.com/input-output-hk/daedalus/pull/2313))
+- Updated `cardano-wallet` to version `2021-01-28` and `cardano-node` to version `1.25.1` ([PR 2270](https://github.com/input-output-hk/daedalus/pull/2270))
 - Updated `react-polymorph` package ([PR 2318](https://github.com/input-output-hk/daedalus/pull/2318))
 - Updated `bignumber.js` package ([PR 2305](https://github.com/input-output-hk/daedalus/pull/2305))
 - Disabled application menu navigation before the "Terms of use" have been accepted ([PR 2304](https://github.com/input-output-hk/daedalus/pull/2304))

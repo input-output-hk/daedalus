@@ -13,6 +13,7 @@ import LoadingSpinner from '../../widgets/LoadingSpinner';
 import Wallet from '../../../domains/Wallet';
 import styles from './StakePools.scss';
 import { getFilteredStakePoolsList } from './helpers';
+import { formattedNumber } from '../../../utils/formatters';
 import StakePool from '../../../domains/StakePool';
 import {
   IS_RANKING_DATA_AVAILABLE,
@@ -301,7 +302,7 @@ export default class StakePools extends Component<Props, State> {
                       {intl.formatMessage(listTitleMessage)}
                       {listTitleSearchMessage}
                       {intl.formatMessage(messages.listTitleStakePools, {
-                        pools: filteredStakePoolsList.length,
+                        pools: formattedNumber(filteredStakePoolsList.length),
                       })}
                     </span>
                     {tinyLoadingSpinner}
@@ -333,7 +334,7 @@ export default class StakePools extends Component<Props, State> {
                       {intl.formatMessage(listTitleMessage)}
                       {listTitleSearchMessage}
                       {intl.formatMessage(messages.listTitleStakePools, {
-                        pools: filteredStakePoolsList.length,
+                        pools: formattedNumber(filteredStakePoolsList.length),
                       })}
                     </span>
                     {tinyLoadingSpinner}
