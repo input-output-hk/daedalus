@@ -11,7 +11,7 @@ import confirmErrorMessageIcon from '../../../assets/images/voting/confirm-step-
 import { VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS } from '../../../config/votingConfig';
 import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './VotingRegistrationStepsConfirm.scss';
-import commonStyles from './VotingRegistrationSteps.scss';
+import VotingRegistrationDialog from './widgets/VotingRegistrationDialog';
 
 const messages = defineMessages({
   description: {
@@ -81,6 +81,9 @@ export default class VotingRegistrationStepsConfirm extends Component<Props> {
   render() {
     const { intl } = this.context;
     const {
+      onClose,
+      stepsList,
+      activeStep,
       onConfirm,
       onRestart,
       isTransactionPending,
@@ -101,78 +104,75 @@ export default class VotingRegistrationStepsConfirm extends Component<Props> {
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
     const restartButtonLabel = intl.formatMessage(messages.restartButtonLabel);
 
-    const className = classNames([
-      commonStyles.votingRegistrationSteps,
-      styles.votingRegistrationStepsConfirmWrapper,
-    ]);
-
-    const contentClassName = classNames([commonStyles.content, styles.content]);
+    const actions = [
+      {
+        label: buttonLabel,
+        onClick: onConfirm,
+        disabled: !isTransactionConfirmed,
+        className: styles.buttonConfirmStyles,
+        primary: true,
+      },
+    ];
 
     return (
-      <div className={className}>
-        <div className={contentClassName}>
-          {transactionError ? (
-            <>
-              <div className={styles.header}>
-                <SVGInline
-                  svg={confirmErrorMessageIcon}
-                  className={styles.errorIcon}
-                />
-              </div>
-              <div className={styles.errorMessage}>
-                <p>
-                  {transactionError
-                    ? intl.formatMessage(transactionError)
-                    : errorMessage}
-                </p>
-              </div>
-              <div className={styles.description}>
-                <p>{descriptionRestart}</p>
-              </div>
-              <div className={styles.buttonContainer}>
-                <Button
-                  onClick={onRestart}
-                  skin={ButtonSkin}
-                  label={restartButtonLabel}
-                />
-              </div>
-            </>
-          ) : (
-            <>
-              <div className={styles.header}>
-                <SVGInline
-                  svg={confirmMessageIcon}
-                  className={styles.descriptionIcon}
-                />
-              </div>
-              <div className={styles.description}>
-                <p>{description}</p>
-              </div>
-              <div className={styles.messages}>
-                <p>{importantInformation1}</p>
-                <p>{importantInformation2}</p>
-                <p>
-                  Transaction state:{' '}
-                  {isTransactionPending ? '<pending>' : '<confirming>'}
-                  <br />
-                  Transaction confirmations: {transactionConfirmations}/
-                  {VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS}
-                </p>
-              </div>
-
-              <div className={styles.buttonContainer}>
-                <Button
-                  className={styles.buttonConfirmStyles}
-                  onClick={onConfirm}
-                  skin={ButtonSkin}
-                  label={buttonLabel}
-                  disabled={!isTransactionConfirmed}
-                />
-              </div>
-            </>
-          )}
-        </div>
-      </div>
+      <VotingRegistrationDialog
+        onClose={onClose}
+        stepsList={stepsList}
+        activeStep={activeStep}
+        actions={actions}
+        containerClassName={styles.component}
+      >
+        {transactionError ? (
+          <>
+            <div className={styles.header}>
+              <SVGInline
+                svg={confirmErrorMessageIcon}
+                className={styles.errorIcon}
+              />
+            </div>
+            <div className={styles.errorMessage}>
+              <p>
+                {transactionError
+                  ? intl.formatMessage(transactionError)
+                  : errorMessage}
+              </p>
+            </div>
+            <div className={styles.description}>
+              <p>{descriptionRestart}</p>
+            </div>
+            <div className={styles.buttonContainer}>
+              <Button
+                onClick={onRestart}
+                skin={ButtonSkin}
+                label={restartButtonLabel}
+              />
+            </div>
+          </>
+        ) : (
+          <>
+            <div className={styles.header}>
+              <SVGInline
+                svg={confirmMessageIcon}
+                className={styles.descriptionIcon}
+              />
+            </div>
+            <div className={styles.description}>
+              <p>{description}</p>
+            </div>
+            <div className={styles.messages}>
+              <p>{importantInformation1}</p>
+              <p>{importantInformation2}</p>
+              <p>
+                Transaction state:{' '}
+                {isTransactionPending ? '<pending>' : '<confirming>'}
+                <br />
+                Transaction confirmations: {transactionConfirmations}/
+                {VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS}
+              </p>
+            </div>
+          </>
+        )}
+      </VotingRegistrationDialog>
     );
   }
 }
