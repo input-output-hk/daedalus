@@ -59,7 +59,7 @@ export default class StakingStore extends Store {
   @observable redeemedRewards: ?BigNumber = null;
   @observable isSubmittingReedem: boolean = false;
   @observable isCalculatingReedemFees: boolean = false;
-  @observable stakingSuccess: ?boolean = null;
+  @observable redeemSuccess: ?boolean = null;
   @observable configurationStepError: ?LocalizableError = null;
   @observable confirmationStepError: ?LocalizableError = null;
 
@@ -713,7 +713,7 @@ export default class StakingStore extends Store {
       this.confirmationStepError = null;
       this.configurationStepError = null;
     } else {
-      this.stakingSuccess = false;
+      this.redeemSuccess = false;
       this.redeemStep = steps.RESULT;
     }
   };
@@ -742,7 +742,7 @@ export default class StakingStore extends Store {
       );
       runInAction(() => {
         this.redeemedRewards = redeemedRewards;
-        this.stakingSuccess = true;
+        this.redeemSuccess = true;
         this.redeemStep = steps.RESULT;
         this.confirmationStepError = null;
         this.isSubmittingReedem = false;
@@ -752,7 +752,7 @@ export default class StakingStore extends Store {
         this.confirmationStepError = error;
         this.isSubmittingReedem = false;
         if (error.id !== 'api.errors.IncorrectPasswordError') {
-          this.stakingSuccess = false;
+          this.redeemSuccess = false;
           this.redeemStep = steps.RESULT;
         }
       });
@@ -770,7 +770,7 @@ export default class StakingStore extends Store {
   @action _resetRedeemItnRewards = () => {
     this.isSubmittingReedem = false;
     this.isCalculatingReedemFees = false;
-    this.stakingSuccess = null;
+    this.redeemSuccess = null;
     this.redeemWallet = null;
     this.transactionFees = null;
     this.redeemedRewards = null;
