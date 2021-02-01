@@ -14,17 +14,6 @@ import styles from './VotingRegistrationStepsChooseWallet.scss';
 import VotingRegistrationDialog from './widgets/VotingRegistrationDialog';
 
 const messages = defineMessages({
-  dialogTitle: {
-    id: 'voting.votingRegistration.dialog.dialogTitle',
-    defaultMessage: '!!!Register to vote',
-    description: 'Tile "Register to vote" for voting registration',
-  },
-  subtitle: {
-    id: 'voting.votingRegistration.dialog.subtitle',
-    defaultMessage: '!!!Step {step} of {stepCount}',
-    description: 'Sub title for voting registration',
-  },
-
   description: {
     id: 'voting.votingRegistration.chooseWallet.step.description',
     defaultMessage:
