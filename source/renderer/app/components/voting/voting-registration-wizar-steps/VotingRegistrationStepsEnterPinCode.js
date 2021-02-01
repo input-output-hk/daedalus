@@ -14,8 +14,8 @@ import {
 } from '../../../utils/validations';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import { VOTING_REGISTRATION_PIN_CODE_LENGTH } from '../../../config/votingConfig';
-import commonStyles from './VotingRegistrationSteps.scss';
 import styles from './VotingRegistrationStepsEnterPinCode.scss';
+import VotingRegistrationDialog from './widgets/VotingRegistrationDialog';
 
 const messages = defineMessages({
   title: {
@@ -147,6 +147,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<Props
   render() {
     const { form } = this;
     const { intl } = this.context;
+    const { onClose, stepsList, activeStep } = this.props;
 
     const title = intl.formatMessage(messages.title);
     const subtitle = intl.formatMessage(messages.subtitle);
@@ -159,52 +160,51 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<Props
     const pinCodeFieldProps = pinCodeField.bind();
     const repeatPinCodeFieldProps = repeatPinCodeField.bind();
 
-    const className = classNames([
-      commonStyles.votingRegistrationSteps,
-      styles.votingRegistrationStepsEnterPinCodeWrapper,
-    ]);
-
-    const contentClassName = classNames([commonStyles.content, styles.content]);
+    const actions = [
+      {
+        label: buttonLabel,
+        onClick: this.submit,
+        primary: true,
+      },
+    ];
 
     return (
-      <div className={className}>
-        <div className={contentClassName}>
-          <div className={styles.headingDescription}>
-            <p>{title}</p>
-            <p>{subtitle}</p>
-          </div>
-          <hr className={styles.separator} />
-          <p className={styles.description}>
-            <FormattedHTMLMessage {...messages.description} />
-          </p>
-
-          <div className={styles.pinCode}>
-            <PinCode
-              {...pinCodeFieldProps}
-              label={enterPinCodeLabel}
-              autoFocus
-              onChange={(...args) => pinCodeFieldProps.onChange(...args)}
-            />
-            <PinCode
-              {...repeatPinCodeFieldProps}
-              label={repeatPinCodeLabel}
-              onChange={(...args) => repeatPinCodeFieldProps.onChange(...args)}
-              autoFocus={pinCodeField.isValid && !repeatPinCodeField.isValid}
-              error={repeatPinCodeField.error}
-            />
-          </div>
-
-          <p className={styles.reminder}>
-            <FormattedHTMLMessage {...messages.reminder} />
-          </p>
+      <VotingRegistrationDialog
+        onClose={onClose}
+        stepsList={stepsList}
+        activeStep={activeStep}
+        actions={actions}
+        containerClassName={styles.component}
+      >
+        <div className={styles.headingDescription}>
+          <p>{title}</p>
+          <p>{subtitle}</p>
         </div>
-        <Button
-          onClick={this.submit}
-          skin={ButtonSkin}
-          label={buttonLabel}
-          disabled={!form.isValid}
-        />
-      </div>
+        <hr className={styles.separator} />
+        <p className={styles.description}>
+          <FormattedHTMLMessage {...messages.description} />
+        </p>
+
+        <div className={styles.pinCode}>
+          <PinCode
+            {...pinCodeFieldProps}
+            label={enterPinCodeLabel}
+            autoFocus
+            onChange={(...args) => pinCodeFieldProps.onChange(...args)}
+          />
+          <PinCode
+            {...repeatPinCodeFieldProps}
+            label={repeatPinCodeLabel}
+            onChange={(...args) => repeatPinCodeFieldProps.onChange(...args)}
+            autoFocus={pinCodeField.isValid && !repeatPinCodeField.isValid}
+            error={repeatPinCodeField.error}
+          />
+        </div>
+
+        <p className={styles.reminder}>
+          <FormattedHTMLMessage {...messages.reminder} />
+        </p>
+      </VotingRegistrationDialog>
     );
   }
 }
