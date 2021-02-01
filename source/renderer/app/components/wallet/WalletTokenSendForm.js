@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import { Button } from 'react-polymorph/lib/components/Button';
@@ -10,7 +10,7 @@ import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import BigNumber from 'bignumber.js';
-import { get } from 'lodash';
+import { get, uniqueId } from 'lodash';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
@@ -177,8 +177,9 @@ type State = {
   feeCalculationRequestQue: number,
   transactionFeeError: ?string | ?Node,
   showReceiverRemoveBtn: boolean,
+  sendFormFields: Array<any>,
   selectedWalletId: ?string,
-  showReceiverField: boolean,
+  showReceiverField: Array<boolean>,
   tokens: Array<Wallet>,
   isResetButtonDisabled: boolean,
 };
@@ -195,8 +196,9 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     feeCalculationRequestQue: 0,
     transactionFeeError: null,
     showReceiverRemoveBtn: false,
+    sendFormFields: [],
     selectedWalletId: null,
-    showReceiverField: false,
+    showReceiverField: [],
     tokens: [],
     isResetButtonDisabled: true,
   };
@@ -220,6 +222,8 @@ export default class WalletTokenSendForm extends Component<Props, State> {
       this.onSelectWallet(selectedWallet.id);
     }
 
+    this.setFormFields(false);
+
     // @TODO Remove hardcoded setter of values for token currencies
     if (nativeTokens && nativeTokens.length) {
       this.setState({
@@ -241,19 +245,27 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     });
   };
 
-  clearReceiverAddress = () => {
-    const receiverField = this.form.$('receiver');
-    receiverField.clear();
-    if (this.receiverFieldRef && this.receiverFieldRef.focus) {
-      setTimeout(() => this.receiverFieldRef.focus(), 500);
+  clearReceiverAddress = (index?: number) => {
+    const receiverField = this.form.$(index ? `receiver${index}` :'receiver');
+    if (receiverField) {
+      receiverField.clear();
+      if (this.receiverFieldRef && this.receiverFieldRef.focus) {
+        setTimeout(() => this.receiverFieldRef.focus(), 500);
+      }
     }
   };
 
-  clearAssetValue = () => {
-    const assetField = this.form.$('asset');
-    assetField.clear();
-    if (this.assetFieldRef && this.assetFieldRef.focus) {
-      setTimeout(() => this.assetFieldRef.focus(), 500);
+  clearAssetValue = (index?: number) => {
+    const assetField = this.form.$(index ? `asset${index}` : 'asset');
+    if (assetField) {
+      assetField.clear();
+      if (this.assetFieldRef && this.assetFieldRef.focus) {
+        setTimeout(() => {
+          if (this.assetFieldRef) {
+            this.assetFieldRef.focus();
+          }
+        }, 500);
+      }
     }
   };
 
@@ -263,12 +275,45 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     this.hideReceiverField();
     this.clearAssetValue();
     this.clearReceiverAddress();
+    this.setFormFields(true);
   };
 
   disableResetButton = () => {
     this.setState({
       isResetButtonDisabled: true,
     });
+  };
+
+  setFormFields = (resetFormFields: boolean, id?: string) => {
+    const formFields = this.form.fields;
+    const receiverField = id ? formFields.get(`receiver${id}`) : formFields.get('receiver');
+    const assetField = id ? formFields.get(`asset${id}`) : formFields.get('asset');
+    const walletsDropdownField = id ? formFields.get(`walletsDropdown${id}`) : formFields.get('walletsDropdown');
+    const { selectedWallet } = this.props;
+    if (resetFormFields) {
+      this.setState({
+        sendFormFields: [
+          {
+            receiver: receiverField,
+            asset: assetField,
+            walletsDropdown: walletsDropdownField,
+            selectedWallet,
+          }
+        ],
+      });
+    } else {
+      this.setState( (prevState) => ({
+        sendFormFields: [
+          ...prevState.sendFormFields,
+          {
+            receiver: receiverField,
+            asset: assetField,
+            walletsDropdown: walletsDropdownField,
+            selectedWallet,
+          },
+        ],
+      }));
+    }
   };
 
   receiverFieldRef = Input;
@@ -446,16 +491,30 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     return NUMBER_FORMATS[this.props.currentNumberFormat];
   }
 
-  showReceiverField = () => {
-    this.setState({
-      showReceiverField: true,
-    });
+  showReceiverField = (index?: number) => {
+    this.setState((prevState) => ({
+      showReceiverField: [
+        ...prevState.showReceiverField,
+        prevState.showReceiverField[index] = true,
+      ],
+    }));
   };
 
-  hideReceiverField = () => {
-    this.setState({
-      showReceiverField: false,
-    });
+  hideReceiverField = (index?: number) => {
+    if (index) {
+      const receiverToDelete = `receiver${index}`;
+      this.form.del(receiverToDelete);
+      const { showReceiverField } = this.state;
+      const filteredReceiverFields = showReceiverField;
+      delete filteredReceiverFields[index - 1];
+      this.setState({
+        showReceiverField: filteredReceiverFields,
+      });
+    } else {
+      this.setState({
+        showReceiverField: [],
+      });
+    }
   };
 
   get hasReceiverValue() {
@@ -487,16 +546,303 @@ export default class WalletTokenSendForm extends Component<Props, State> {
 
   renderAssetRow = () => {};
 
-  renderReceiverRow = () => {};
+  renderReceiverRow = (row, index): Node => {
+    const { intl } = this.context;
 
-  removeReceiverRow = () => {
-    this.hideReceiverField();
-    this.clearAssetValue();
-    this.clearReceiverAddress();
+    const { isClearTooltipOpeningDownward, currencyMaxFractionalDigits } = this.props;
+
+    const { showReceiverField, showReceiverRemoveBtn, tokens, selectedWalletId, isTransactionFeeCalculated, transactionFee, sendFormFields } = this.state;
+
+    const { receiver, asset, walletsDropdown, selectedWallet } = row;
+
+    const walletsDropdownFieldProps = walletsDropdown.bind();
+
+    const receiverField = receiver;
+
+    const assetFieldProps = asset.bind();
+
+    const estimatedField = this.form.$('estimatedFee');
+
+    const amount = new BigNumber(assetFieldProps.value || 0);
+
+    const showReceiverLabelNumber = sendFormFields && sendFormFields.length > 1;
+
+    const receiverLabel = showReceiverLabelNumber ? `${intl.formatMessage(messages.receiverLabel)} #${index + 1}` : intl.formatMessage(messages.receiverLabel);
+
+    let fees = null;
+    if (isTransactionFeeCalculated) {
+      fees = transactionFee.toFormat(currencyMaxFractionalDigits);
+    }
+
+    const removeReceiverButtonClasses = classNames([
+      styles.removeReceiverButton,
+      'flat',
+      showReceiverRemoveBtn ? styles.active : null,
+    ]);
+
+    const addAssetButtonClasses = classNames([
+      styles.addAssetButton,
+      'primary',
+    ]);
+
+    return (
+      <div className={styles.fieldsContainer}>
+        <div
+          onMouseEnter={this.showRemoveButton}
+          onMouseLeave={this.hideRemoveButton}
+          className={styles.receiverInput}
+        >
+          {showReceiverField && showReceiverField[index] && (
+            <Button
+              className={removeReceiverButtonClasses}
+              label={intl.formatMessage(
+                messages.removeReceiverButtonLabel
+              )}
+              onClick={() => this.removeReceiverRow(index + 1)}
+              skin={ButtonSkin}
+            />
+          )}
+          <Input
+            className="receiver"
+            label={receiverLabel}
+            {...receiverField.bind()}
+            ref={(input) => {
+              this.receiverFieldRef = input;
+            }}
+            error={receiverField.error}
+            onChange={(value) => {
+              receiverField.onChange(value || '');
+              this.setState({
+                isResetButtonDisabled: false,
+              });
+              if (value) {
+                this.showReceiverField(index);
+                this.renderAssetRow();
+              }
+            }}
+            skin={InputSkin}
+            onKeyPress={this.handleSubmitOnEnter}
+          />
+          {this.hasReceiverValue && (
+            <div className={styles.clearReceiverContainer}>
+              <PopOver
+                content="Clear"
+                placement={
+                  isClearTooltipOpeningDownward ? 'bottom' : 'top'
+                }
+              >
+                <button
+                  onClick={() => this.clearReceiverAddress(index)}
+                  className={styles.clearReceiverButton}
+                >
+                  <SVGInline
+                    svg={closeIcon}
+                    className={styles.clearReceiverIcon}
+                  />
+                </button>
+              </PopOver>
+            </div>
+          )}
+        </div>
+        {showReceiverField && showReceiverField[index] && (
+          <>
+            <div className={styles.fieldsLine} />
+            <div className={styles.assetInput}>
+              {selectedWallet && (
+                <div className={styles.amountTokenTotal}>
+                  {intl.formatMessage(messages.ofLabel)}&nbsp;
+                  {formattedWalletAmount(
+                    selectedWallet.amount,
+                    false
+                  )}
+                  &nbsp;{selectedWallet.ticker}
+                </div>
+              )}
+              <NumericInput
+                {...assetFieldProps}
+                className="asset"
+                ref={(input) => {
+                  this.assetFieldRef = input;
+                }}
+                label={intl.formatMessage(messages.assetLabel)}
+                bigNumberFormat={this.getCurrentNumberFormat()}
+                decimalPlaces={currencyMaxFractionalDigits}
+                numberLocaleOptions={{
+                  minimumFractionDigits: currencyMaxFractionalDigits,
+                }}
+                onChange={(value) => {
+                  this._isCalculatingTransactionFee = true;
+                  this.setState({
+                    isResetButtonDisabled: false,
+                  });
+                  asset.onChange(value);
+                  estimatedField.onChange(fees);
+                  if (value) {
+                    this.renderAssetRow();
+                  }
+                }}
+                currency={
+                  selectedWallet
+                    ? selectedWallet.ticker
+                    : null
+                }
+                value={amount}
+                error={asset.error}
+                skin={AmountInputSkin}
+                onKeyPress={this.handleSubmitOnEnter}
+                allowSigns={false}
+              />
+              {this.hasAssetValue && (
+                <div className={styles.clearAssetContainer}>
+                  <PopOver
+                    content="Clear"
+                    placement={
+                      isClearTooltipOpeningDownward ? 'bottom' : 'top'
+                    }
+                  >
+                    <button
+                      onClick={() => this.clearAssetValue(index + 1)}
+                      className={styles.clearAssetButton}
+                    >
+                      <SVGInline
+                        svg={closeIcon}
+                        className={styles.clearReceiverIcon}
+                      />
+                    </button>
+                  </PopOver>
+                  <div className={styles.separator} />
+                </div>
+              )}
+              <div className={styles.walletsDropdownWrapper}>
+                <WalletsDropdown
+                  className={styles.walletsDropdown}
+                  {...walletsDropdownFieldProps}
+                  numberOfStakePools={4}
+                  wallets={tokens}
+                  onChange={(id) => this.onSelectWallet(id)}
+                  syncingLabel={intl.formatMessage(
+                    messages.syncingWallet
+                  )}
+                  hasNativeTokens
+                  value={selectedWalletId}
+                  getStakePoolById={() => {}}
+                  errorPosition="bottom"
+                />
+              </div>
+              <Button
+                className={addAssetButtonClasses}
+                label={intl.formatMessage(messages.addAssetButtonLabel)}
+                onClick={() => this.addAssetRow(index)}
+                skin={ButtonSkin}
+              />
+            </div>
+          </>
+        )}
+      </div>
+    );
+  };
+
+  removeReceiverRow = (index: number) => {
+    this.clearAssetValue(index);
+    this.clearReceiverAddress(index);
+    this.hideReceiverField(index);
+    this.removeFormField(index);
     this.disableResetButton();
   };
 
-  addAssetRow = () => {};
+  removeFormField = (index: number) => {
+    const assetFieldToDelete = `asset${index}`;
+    this.form.del(assetFieldToDelete);
+    const walletsDropdownFieldToDelete = `walletsDropdown${index}`;
+    this.form.del(walletsDropdownFieldToDelete);
+  };
+
+  addNewReceiverField = (index: number) => {
+    const newReceiver = `receiver${index}`;
+    this.form.add({ name: newReceiver, value: '', key: newReceiver });
+    this.form.$(newReceiver).set('label', this.context.intl.formatMessage(messages.receiverLabel));
+    this.form.$(newReceiver).set('placeholder', this.context.intl.formatMessage(messages.receiverHint));
+    this.form.$(newReceiver).set('validators', [
+      async ({ field, form }) => {
+        const { value } = field;
+        if (value === '') {
+          this.resetTransactionFee();
+          return [
+            false,
+            this.context.intl.formatMessage(messages.fieldIsRequired),
+          ];
+        }
+        const assetField = form.$('asset');
+        const isAmountValid = assetField.isValid;
+        const isValidAddress = await this.props.addressValidator(value);
+        if (isValidAddress && isAmountValid) {
+          const amountValue = assetField.value.toString();
+          this.calculateTransactionFee(value, amountValue);
+        } else {
+          this.resetTransactionFee();
+        }
+        return [
+          isValidAddress,
+          this.context.intl.formatMessage(
+            apiErrorMessages.invalidAddress
+          ),
+        ];
+      },
+    ]);
+  };
+
+  addNewAssetField = (index: number) => {
+    const newAsset = `asset${index}`;
+    this.form.add({ name: newAsset, value: null, key: newAsset });
+    this.form.$(newAsset).set('label', this.context.intl.formatMessage(messages.assetLabel));
+    this.form.$(newAsset).set('placeholder', `0${
+      this.getCurrentNumberFormat().decimalSeparator
+    }${'0'.repeat(this.props.currencyMaxFractionalDigits)}`);
+    this.form.$(newAsset).set('validators', [
+      async ({ field, form }) => {
+        if (field.value === null) {
+          this.resetTransactionFee();
+          return [
+            false,
+            this.context.intl.formatMessage(messages.fieldIsRequired),
+          ];
+        }
+        const amountValue = field.value.toString();
+        const isValid = await this.props.validateAmount(
+          formattedAmountToNaturalUnits(amountValue)
+        );
+        const receiverField = form.$('receiver');
+        const receiverValue = receiverField.value;
+        const isReceiverValid = receiverField.isValid;
+        if (isValid && isReceiverValid) {
+          this.calculateTransactionFee(receiverValue, amountValue);
+        } else {
+          this.resetTransactionFee();
+        }
+        return [
+          isValid,
+          this.context.intl.formatMessage(messages.invalidAmount),
+        ];
+      },
+    ]);
+  };
+
+  addNewWalletsDropdownField = (index: number) => {
+    const newWalletsDropdown = `walletsDropdown${index}`;
+    this.form.add({ name: newWalletsDropdown, value: null, key: newWalletsDropdown });
+    this.form.$(newWalletsDropdown).set('type', 'select');
+  };
+
+  addNewReceiverRow = (index: number) => {
+    this.addNewReceiverField(index);
+    this.addNewAssetField(index);
+    this.addNewWalletsDropdownField(index);
+    this.setFormFields(false, index);
+  };
+
+  addAssetRow = () => {
+
+  };
 
   onSelectWallet = (walletId: string) => {
     this.setState({ selectedWalletId: walletId });
@@ -517,26 +863,22 @@ export default class WalletTokenSendForm extends Component<Props, State> {
       onExternalLinkClick,
       hwDeviceStatus,
       isHardwareWallet,
-      isClearTooltipOpeningDownward,
     } = this.props;
 
     const {
       isTransactionFeeCalculated,
       transactionFee,
       transactionFeeError,
-      showReceiverRemoveBtn,
       selectedWalletId,
       showReceiverField,
       tokens,
       isResetButtonDisabled,
+      sendFormFields,
     } = this.state;
     const assetField = form.$('asset');
     const receiverField = form.$('receiver');
-    const estimatedField = form.$('estimatedFee');
-    const walletsDropdownField = form.$('walletsDropdown');
     const receiverFieldProps = receiverField.bind();
     const assetFieldProps = assetField.bind();
-    const walletsDropdownFieldProps = walletsDropdownField.bind();
 
     const amount = new BigNumber(assetFieldProps.value || 0);
 
@@ -552,20 +894,9 @@ export default class WalletTokenSendForm extends Component<Props, State> {
         ? this.getNativeTokenWalletById(selectedWalletId)
         : null;
 
-    const removeReceiverButtonClasses = classNames([
-      styles.removeReceiverButton,
-      'flat',
-      showReceiverRemoveBtn ? styles.active : null,
-    ]);
-
     const newReceiverButtonClasses = classNames([
       styles.addNewReceiverButton,
       'flat',
-    ]);
-
-    const addAssetButtonClasses = classNames([
-      styles.addAssetButton,
-      'primary',
     ]);
 
     const calculatingFeesSpinnerButtonClasses = classNames([
@@ -585,168 +916,14 @@ export default class WalletTokenSendForm extends Component<Props, State> {
         ) : (
           <BorderedBox>
             <div className={styles.walletTokenSendForm}>
-              <div className={styles.walletTokenSendFormContainer}>
-                <div className={styles.fieldsContainer}>
-                  <div
-                    onMouseEnter={this.showRemoveButton}
-                    onMouseLeave={this.hideRemoveButton}
-                    className={styles.receiverInput}
-                  >
-                    {showReceiverField && (
-                      <Button
-                        className={removeReceiverButtonClasses}
-                        label={intl.formatMessage(
-                          messages.removeReceiverButtonLabel
-                        )}
-                        onClick={this.removeReceiverRow}
-                        skin={ButtonSkin}
-                      />
-                    )}
-                    <Input
-                      className="receiver"
-                      label={intl.formatMessage(messages.receiverLabel)}
-                      {...receiverField.bind()}
-                      ref={(input) => {
-                        this.receiverFieldRef = input;
-                      }}
-                      error={receiverField.error}
-                      onChange={(value) => {
-                        receiverField.onChange(value || '');
-                        this.setState({
-                          isResetButtonDisabled: false,
-                        });
-                        if (value) {
-                          this.showReceiverField();
-                          this.renderAssetRow();
-                        }
-                      }}
-                      skin={InputSkin}
-                      onKeyPress={this.handleSubmitOnEnter}
-                    />
-                    {this.hasReceiverValue && (
-                      <div className={styles.clearReceiverContainer}>
-                        <PopOver
-                          content="Clear"
-                          placement={
-                            isClearTooltipOpeningDownward ? 'bottom' : 'top'
-                          }
-                        >
-                          <button
-                            onClick={() => this.clearReceiverAddress()}
-                            className={styles.clearReceiverButton}
-                          >
-                            <SVGInline
-                              svg={closeIcon}
-                              className={styles.clearReceiverIcon}
-                            />
-                          </button>
-                        </PopOver>
-                      </div>
-                    )}
-                  </div>
-                  {showReceiverField && (
-                    <>
-                      <div className={styles.fieldsLine} />
-                      <div className={styles.assetInput}>
-                        {selectedNativeToken && (
-                          <div className={styles.amountTokenTotal}>
-                            {intl.formatMessage(messages.ofLabel)}&nbsp;
-                            {formattedWalletAmount(
-                              selectedNativeToken.amount,
-                              false
-                            )}
-                            &nbsp;{selectedNativeToken.ticker}
-                          </div>
-                        )}
-                        <NumericInput
-                          {...assetFieldProps}
-                          className="asset"
-                          ref={(input) => {
-                            this.assetFieldRef = input;
-                          }}
-                          label={intl.formatMessage(messages.assetLabel)}
-                          bigNumberFormat={this.getCurrentNumberFormat()}
-                          decimalPlaces={currencyMaxFractionalDigits}
-                          numberLocaleOptions={{
-                            minimumFractionDigits: currencyMaxFractionalDigits,
-                          }}
-                          onChange={(value) => {
-                            this._isCalculatingTransactionFee = true;
-                            this.setState({
-                              isResetButtonDisabled: false,
-                            });
-                            assetField.onChange(value);
-                            estimatedField.onChange(fees);
-                            if (value) {
-                              this.renderAssetRow();
-                            }
-                          }}
-                          currency={
-                            selectedNativeToken
-                              ? selectedNativeToken.ticker
-                              : null
-                          }
-                          value={amount}
-                          error={assetField.error}
-                          skin={AmountInputSkin}
-                          onKeyPress={this.handleSubmitOnEnter}
-                          allowSigns={false}
-                        />
-                        {this.hasAssetValue && (
-                          <div className={styles.clearAssetContainer}>
-                            <PopOver
-                              content="Clear"
-                              placement={
-                                isClearTooltipOpeningDownward ? 'bottom' : 'top'
-                              }
-                            >
-                              <button
-                                onClick={() => this.clearAssetValue()}
-                                className={styles.clearAssetButton}
-                              >
-                                <SVGInline
-                                  svg={closeIcon}
-                                  className={styles.clearReceiverIcon}
-                                />
-                              </button>
-                            </PopOver>
-                            <div className={styles.separator} />
-                          </div>
-                        )}
-                        <div className={styles.walletsDropdownWrapper}>
-                          <WalletsDropdown
-                            className={styles.walletsDropdown}
-                            {...walletsDropdownFieldProps}
-                            numberOfStakePools={4}
-                            wallets={tokens}
-                            onChange={(id) => this.onSelectWallet(id)}
-                            syncingLabel={intl.formatMessage(
-                              messages.syncingWallet
-                            )}
-                            hasNativeTokens
-                            value={selectedWalletId}
-                            getStakePoolById={() => {}}
-                            errorPosition="bottom"
-                          />
-                        </div>
-                        <Button
-                          className={addAssetButtonClasses}
-                          label={intl.formatMessage(
-                            messages.addAssetButtonLabel
-                          )}
-                          onClick={this.addAssetRow}
-                          skin={ButtonSkin}
-                        />
-                      </div>
-                    </>
-                  )}
-                </div>
-              </div>
-              {showReceiverField && (
+              {sendFormFields.map((row, index) => (
+                <Fragment key={uniqueId()}>{this.renderReceiverRow(row, index)}</Fragment>
+              ))}
+              {showReceiverField && showReceiverField.length > 0 && (
                 <Button
                   className={newReceiverButtonClasses}
                   label={intl.formatMessage(messages.addNewReceiverButtonLabel)}
-                  onClick={this.renderReceiverRow}
+                  onClick={() => this.addNewReceiverRow(sendFormFields.length + 1)}
                   skin={ButtonSkin}
                 />
               )}
@@ -780,14 +957,14 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                 <Button
                   className="flat"
                   label={intl.formatMessage(messages.resetButtonLabel)}
-                  onClick={this.handleOnReset}
+                  onClick={() => this.handleOnReset()}
                   skin={ButtonSkin}
                   disabled={isResetButtonDisabled}
                 />
                 <Button
                   className="primary"
                   label={intl.formatMessage(messages.sendButtonLabel)}
-                  onClick={this.handleOnSubmit}
+                  onClick={{}}
                   skin={ButtonSkin}
                   disabled={this.isDisabled()}
                 />
