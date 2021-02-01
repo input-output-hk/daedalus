@@ -176,3 +176,12 @@ export const formattedCpuModel = (model: string): string => {
 
   return formattedModel;
 };
+
+export const formattedSize = (size: string): string => {
+  const sizeNumbers = size.match(/[\d,.]+/g);
+  const sizeNumber = sizeNumbers ? sizeNumbers[0] : '';
+  const formattedSizeNumber = formattedNumber(sizeNumber);
+  const formattedResult = size.replace(/[\d,.]+/, formattedSizeNumber);
+
+  return formattedResult;
+};
