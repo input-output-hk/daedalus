@@ -6,14 +6,13 @@ import type { ActionsMap } from '../../../actions/index';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
 import WalletSendConfirmationDialog from '../../../components/wallet/WalletSendConfirmationDialog';
 import WalletTokenSendConfirmationDialog from '../../../components/wallet/WalletTokenSendConfirmationDialog';
-import Wallet from '../../../domains/Wallet';
 
 type Props = {
   stores: any | StoresMap,
   actions: any | ActionsMap,
   amount: string,
   receiver: string,
-  receivers?: Array<string>,
+  multipleReceivers?: Array<string>,
   totalAmount: ?string,
   transactionFee: ?string,
   amountToNaturalUnits: (amountWithFractions: string) => string,
@@ -21,7 +20,6 @@ type Props = {
   onExternalLinkClick: Function,
   hwDeviceStatus: HwDeviceStatus,
   isHardwareWallet: boolean,
-  nativeTokens?: Array<Wallet>,
 };
 
 @inject('actions', 'stores')
@@ -51,7 +49,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
       actions,
       amount,
       receiver,
-      receivers,
+      multipleReceivers,
       totalAmount,
       onExternalLinkClick,
       transactionFee,
@@ -59,7 +57,6 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
       currencyUnit,
       hwDeviceStatus,
       isHardwareWallet,
-      nativeTokens,
     } = this.props;
     const { stores } = this.props;
     const { sendMoneyRequest, active: activeWallet } = stores.wallets;
@@ -84,11 +81,11 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
 
     return (
       <>
-        {nativeTokens && nativeTokens.length ? (
+        {multipleReceivers && multipleReceivers.length ? (
           <WalletTokenSendConfirmationDialog
             amount={amount}
             sender={activeWallet.id}
-            receivers={receivers}
+            receivers={multipleReceivers}
             transactionFee={transactionFee}
             amountToNaturalUnits={amountToNaturalUnits}
             onSubmit={this.handleWalletSendFormSubmit}
@@ -106,7 +103,6 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
             isHardwareWallet={isHardwareWallet}
             onInitiateTransaction={this.handleInitiateTransaction}
             walletName={activeWallet.name}
-            nativeTokens={nativeTokens}
           />
         ) : (
           <WalletSendConfirmationDialog

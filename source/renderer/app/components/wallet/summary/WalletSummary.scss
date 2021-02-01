@@ -21,6 +21,10 @@
   line-height: 1.38;
   margin-bottom: 11px;
   user-select: text;
+
+  &.nativeTokens {
+    margin-bottom: 6px;
+  }
 }
 
 .walletAmount {
@@ -36,6 +40,7 @@
     font-family: var(--font-bold);
     font-size: 22px;
     line-height: 1.41;
+    margin-bottom: 8px;
   }
 
   & > .decimal {

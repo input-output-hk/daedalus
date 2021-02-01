@@ -279,6 +279,7 @@ export default class WalletSettings extends Component<Props, State> {
               label={intl.formatMessage(messages.passwordLabel)}
               value={passwordMessage}
               isSet={isSpendingPasswordSet}
+              withButton
               onClick={() => {
                 this.onBlockForm();
                 openDialogAction({

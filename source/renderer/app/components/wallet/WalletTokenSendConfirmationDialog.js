@@ -18,7 +18,7 @@ import { submitOnEnter } from '../../utils/form';
 import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
 import HardwareWalletStatus from '../hardware-wallet/HardwareWalletStatus';
 import LoadingSpinner from '../widgets/LoadingSpinner';
-import Wallet, { HwDeviceStatuses } from '../../domains/Wallet';
+import { HwDeviceStatuses } from '../../domains/Wallet';
 import type { HwDeviceStatus } from '../../domains/Wallet';
 
 export const messages = defineMessages({
@@ -131,7 +131,6 @@ type Props = {
   onInitiateTransaction: Function,
   walletName: string,
   onExternalLinkClick: Function,
-  nativeTokens: Array<Wallet>,
 };
 
 type State = {

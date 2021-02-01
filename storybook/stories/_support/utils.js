@@ -145,7 +145,7 @@ export const generateTransaction = (
     },
   });
 
-export const generateNativeTokensTransaction = (
+export const generateNativeTokenTransaction = (
   type: TransactionType = TransactionTypes.INCOME,
   date: Date = faker.date.past(),
   amount: BigNumber = new BigNumber(faker.finance.amount()),

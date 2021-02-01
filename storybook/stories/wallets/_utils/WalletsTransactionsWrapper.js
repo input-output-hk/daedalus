@@ -8,7 +8,7 @@ import moment from 'moment';
 import {
   generateTransaction,
   generateMultipleTransactions,
-  generateNativeTokensTransaction,
+  generateNativeTokenTransaction,
 } from '../../_support/utils';
 import {
   generateFilterOptions,
@@ -158,7 +158,7 @@ export default class WalletsTransactionsWrapper extends Component<
   get transactionsNativeTokensOptions() {
     return {
       groupedByDays: [
-        generateNativeTokensTransaction(
+        generateNativeTokenTransaction(
           TransactionTypes.INCOME,
           new Date(),
           new BigNumber(2),
@@ -168,7 +168,7 @@ export default class WalletsTransactionsWrapper extends Component<
           true,
           ['USDT', 'ADA']
         ),
-        generateNativeTokensTransaction(
+        generateNativeTokenTransaction(
           TransactionTypes.EXPEND,
           moment().subtract(1, 'days').toDate(),
           new BigNumber(2),
@@ -178,7 +178,7 @@ export default class WalletsTransactionsWrapper extends Component<
           true,
           ['USDC', 'ADA']
         ),
-        generateNativeTokensTransaction(
+        generateNativeTokenTransaction(
           TransactionTypes.INCOME,
           new Date(),
           new BigNumber(2),
@@ -188,7 +188,7 @@ export default class WalletsTransactionsWrapper extends Component<
           true,
           ['DAI', 'ADA']
         ),
-        generateNativeTokensTransaction(
+        generateNativeTokenTransaction(
           TransactionTypes.EXPEND,
           moment().subtract(2, 'days').toDate(),
           new BigNumber(2),
@@ -198,7 +198,7 @@ export default class WalletsTransactionsWrapper extends Component<
           true,
           ['USDT', 'ADA']
         ),
-        generateNativeTokensTransaction(
+        generateNativeTokenTransaction(
           TransactionTypes.INCOME,
           moment().subtract(1, 'days').toDate(),
           new BigNumber(2),
@@ -210,7 +210,7 @@ export default class WalletsTransactionsWrapper extends Component<
         ),
       ],
       confirmedAndPendingTransactions: [
-        generateNativeTokensTransaction(
+        generateNativeTokenTransaction(
           TransactionTypes.INCOME,
           new Date(),
           new BigNumber(2),
@@ -220,7 +220,7 @@ export default class WalletsTransactionsWrapper extends Component<
           true,
           ['USDT', 'ADA']
         ),
-        generateNativeTokensTransaction(
+        generateNativeTokenTransaction(
           TransactionTypes.EXPEND,
           new Date(),
           new BigNumber(2),
@@ -230,7 +230,7 @@ export default class WalletsTransactionsWrapper extends Component<
           true,
           ['DAI', 'ADA']
         ),
-        generateNativeTokensTransaction(
+        generateNativeTokenTransaction(
           TransactionTypes.INCOME,
           new Date(2019, 10, 8, 20),
           new BigNumber(2),
@@ -240,7 +240,7 @@ export default class WalletsTransactionsWrapper extends Component<
           true,
           ['USDC', 'ADA']
         ),
-        generateNativeTokensTransaction(
+        generateNativeTokenTransaction(
           TransactionTypes.EXPEND,
           new Date(),
           new BigNumber(13),
@@ -253,7 +253,7 @@ export default class WalletsTransactionsWrapper extends Component<
       ],
       renderingManyTransactions: generateMultipleTransactions(500),
       unresolvedIncomeAddresses: [
-        generateNativeTokensTransaction(
+        generateNativeTokenTransaction(
           TransactionTypes.EXPEND,
           new Date(),
           new BigNumber(2),
@@ -263,7 +263,7 @@ export default class WalletsTransactionsWrapper extends Component<
           true,
           ['DAI', 'ADA']
         ),
-        generateNativeTokensTransaction(
+        generateNativeTokenTransaction(
           TransactionTypes.INCOME,
           new Date(),
           new BigNumber(2),
@@ -275,7 +275,7 @@ export default class WalletsTransactionsWrapper extends Component<
         ),
       ],
       withoutIncomeAddresses: [
-        generateNativeTokensTransaction(
+        generateNativeTokenTransaction(
           TransactionTypes.INCOME,
           new Date(),
           new BigNumber(2),
@@ -285,7 +285,7 @@ export default class WalletsTransactionsWrapper extends Component<
           true,
           ['USDC', 'ADA']
         ),
-        generateNativeTokensTransaction(
+        generateNativeTokenTransaction(
           TransactionTypes.INCOME,
           new Date(),
           new BigNumber(2),
@@ -297,7 +297,7 @@ export default class WalletsTransactionsWrapper extends Component<
         ),
       ],
       withWithdrawalAddresses: [
-        generateNativeTokensTransaction(
+        generateNativeTokenTransaction(
           TransactionTypes.INCOME,
           new Date(),
           new BigNumber(2),
@@ -307,7 +307,7 @@ export default class WalletsTransactionsWrapper extends Component<
           false,
           ['USDT', 'ADA']
         ),
-        generateNativeTokensTransaction(
+        generateNativeTokenTransaction(
           TransactionTypes.INCOME,
           new Date(),
           new BigNumber(2),

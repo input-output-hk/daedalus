@@ -150,6 +150,13 @@
     right: 18px;
   }
 
+  input {
+    overflow: hidden;
+    padding-right: 140px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
   :global {
     .AmountInputSkin_total {
       display: none;
@@ -176,7 +183,7 @@
   line-height: 48px;
   padding-left: 20px;
   position: absolute;
-  right: 120px;
+  right: 98px;
   top: 31px;
 
   .clearAssetButton {
@@ -322,6 +329,7 @@
       .SimpleSelect_selectInput.SelectOverrides_selectInput
         .WalletsDropdownOption_selected
         .WalletsDropdownOption_topRow {
+        justify-content: flex-end;
         width: 70px !important;
       }
 

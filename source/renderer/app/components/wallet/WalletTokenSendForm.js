@@ -37,6 +37,7 @@ import WalletTokenSendConfirmationDialog from './WalletTokenSendConfirmationDial
 import Wallet from '../../domains/Wallet';
 import closeIcon from '../../assets/images/close-cross.inline.svg';
 import WalletsDropdown from '../widgets/forms/WalletsDropdown';
+import ReadOnlyInput from '../widgets/forms/ReadOnlyInput';
 
 export const messages = defineMessages({
   titleLabel: {
@@ -254,10 +255,16 @@ export default class WalletTokenSendForm extends Component<Props, State> {
 
   handleOnReset = () => {
     this.form.reset();
+    this.disableResetButton();
+    this.hideReceiverField();
+    this.clearAssetValue();
+    this.clearReceiverAddress();
+  };
+
+  disableResetButton = () => {
     this.setState({
       isResetButtonDisabled: true,
     });
-    this.hideReceiverField();
   };
 
   handleSubmitOnEnter = submitOnEnter.bind(this, this.handleOnSubmit);
@@ -478,9 +485,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     this.hideReceiverField();
     this.clearAssetValue();
     this.clearReceiverAddress();
-    this.setState({
-      isResetButtonDisabled: true,
-    });
+    this.disableResetButton();
   };
 
   addAssetRow = () => {};
@@ -523,7 +528,6 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     const walletsDropdownField = form.$('walletsDropdown');
     const receiverFieldProps = receiverField.bind();
     const assetFieldProps = assetField.bind();
-    const estimatedFieldProps = estimatedField.bind();
     const walletsDropdownFieldProps = walletsDropdownField.bind();
 
     const amount = new BigNumber(assetFieldProps.value || 0);
@@ -730,20 +734,18 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                 />
               )}
               <div className={styles.estimatedFeeInput}>
-                <NumericInput
-                  {...estimatedFieldProps}
-                  className={styles.estimatedFee}
+                <ReadOnlyInput
                   label={intl.formatMessage(messages.estimatedFeeLabel)}
-                  numberFormat={this.getCurrentNumberFormat()}
-                  numberLocaleOptions={{
-                    minimumFractionDigits: currencyMaxFractionalDigits,
-                  }}
-                  error={transactionFeeError || assetField.error}
-                  currency={intl.formatMessage(globalMessages.unitAda)}
-                  tabIndex={-1}
-                  fees={fees}
-                  total={total}
-                  skin={AmountInputSkin}
+                  value={
+                    fees && !transactionFeeError
+                      ? `${fees} ${intl.formatMessage(globalMessages.unitAda)}`
+                      : `0${
+                          this.getCurrentNumberFormat().decimalSeparator
+                        }${'0'.repeat(
+                          this.props.currencyMaxFractionalDigits
+                        )} ${intl.formatMessage(globalMessages.unitAda)}`
+                  }
+                  isSet
                 />
                 {this._isCalculatingTransactionFee && (
                   <div className={styles.calculatingFeesContainer}>
@@ -781,7 +783,10 @@ export default class WalletTokenSendForm extends Component<Props, State> {
           <WalletSendConfirmationDialogContainer
             amount={amount.toFormat(currencyMaxFractionalDigits)}
             receiver={receiverFieldProps.value}
-            receivers={[receiverFieldProps.value, receiverFieldProps.value]}
+            multipleReceivers={[
+              receiverFieldProps.value,
+              receiverFieldProps.value,
+            ]}
             totalAmount={total}
             transactionFee={fees}
             amountToNaturalUnits={formattedAmountToNaturalUnits}
@@ -791,7 +796,6 @@ export default class WalletTokenSendForm extends Component<Props, State> {
             onExternalLinkClick={onExternalLinkClick}
             hwDeviceStatus={hwDeviceStatus}
             isHardwareWallet={isHardwareWallet}
-            nativeTokens={tokens}
           />
         ) : null}
       </div>

@@ -4,7 +4,12 @@ import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { boolean } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
-import { generateHash, generateNativeTokenWallet, generateWallet, promise } from '../../_support/utils';
+import {
+  generateHash,
+  generateNativeTokenWallet,
+  generateWallet,
+  promise,
+} from '../../_support/utils';
 
 // Assets and helpers
 import WalletsWrapper from '../_utils/WalletsWrapper';
@@ -17,8 +22,7 @@ import {
 // Screens
 import WalletSendForm from '../../../../source/renderer/app/components/wallet/WalletSendForm';
 import WalletTokenSendForm from '../../../../source/renderer/app/components/wallet/WalletTokenSendForm';
-import WalletTokenSendConfirmationDialog
-  from '../../../../source/renderer/app/components/wallet/WalletTokenSendConfirmationDialog';
+import WalletTokenSendConfirmationDialog from '../../../../source/renderer/app/components/wallet/WalletTokenSendConfirmationDialog';
 import { DECIMAL_PLACES_IN_ADA } from '../../../../source/renderer/app/config/numbersConfig';
 import { formattedAmountToNaturalUnits } from '../../../../source/renderer/app/utils/formatters';
 
@@ -155,7 +159,12 @@ storiesOf('Wallets|Send', module)
         amount={new BigNumber(100100).toFormat(DECIMAL_PLACES_IN_ADA)}
         sender={generateWallet('Wallet name', '45119903750165').id}
         receiver={generateHash()}
-        receivers={[generateHash(), generateHash()]}
+        receivers={[
+          generateHash(),
+          generateHash(),
+          generateHash(),
+          generateHash(),
+        ]}
         transactionFee={new BigNumber(0.101).toFormat(DECIMAL_PLACES_IN_ADA)}
         amountToNaturalUnits={formattedAmountToNaturalUnits}
         onSubmit={() => null}
@@ -169,12 +178,6 @@ storiesOf('Wallets|Send', module)
         isHardwareWallet={false}
         onInitiateTransaction={() => null}
         walletName={generateWallet('TrueUSD', '15119903750165').name}
-        nativeTokens={[
-          generateWallet('ADA', '55119903750165'),
-          generateWallet('Tether', '25119903750165'),
-          generateWallet('TrueUSD', '15119903750165'),
-          generateWallet('USD Coin', '0'),
-        ]}
       />
     </div>
   ));

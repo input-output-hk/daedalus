@@ -11,8 +11,9 @@ import styles from './ReadOnlyInput.scss';
 type Props = {
   label: string,
   value: string,
-  onClick: Function,
+  onClick?: Function,
   isSet: boolean,
+  withButton?: boolean,
 };
 
 @observer
@@ -22,7 +23,7 @@ export default class ReadOnlyInput extends Component<Props> {
   };
 
   render() {
-    const { label, value, onClick, isSet } = this.props;
+    const { label, value, onClick, isSet, withButton } = this.props;
     const { intl } = this.context;
 
     const buttonLabel = intl.formatMessage(
@@ -45,9 +46,11 @@ export default class ReadOnlyInput extends Component<Props> {
           skin={InputSkin}
         />
 
-        <button className={styles.button} onClick={onClick}>
-          {buttonLabel}
-        </button>
+        {withButton && (
+          <button className={styles.button} onClick={onClick}>
+            {buttonLabel}
+          </button>
+        )}
       </div>
     );
   }
