@@ -1,10 +1,11 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
 import confirmMessageIcon from '../../../assets/images/voting/confirm-step-message-ic.inline.svg';
 import confirmErrorMessageIcon from '../../../assets/images/voting/confirm-step-error-message-ic.inline.svg';
+import ProgressBarLarge from '../../widgets/ProgressBarLarge';
 import { VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS } from '../../../config/votingConfig';
 import LocalizableError from '../../../i18n/LocalizableError';
 import styles from './VotingRegistrationStepsConfirm.scss';
@@ -110,6 +111,8 @@ export default class VotingRegistrationStepsConfirm extends Component<Props> {
         : {
             label: buttonLabel,
             onClick: onConfirm,
+            // @VOTING TODO: unselect it
+            // disabled: !isTransactionConfirmed,
             className: styles.buttonConfirmStyles,
             primary: true,
           },
@@ -124,7 +127,7 @@ export default class VotingRegistrationStepsConfirm extends Component<Props> {
         containerClassName={styles.component}
       >
         {transactionError ? (
-          <>
+          <Fragment>
             <div className={styles.header}>
               <SVGInline
                 svg={confirmErrorMessageIcon}
@@ -141,9 +144,9 @@ export default class VotingRegistrationStepsConfirm extends Component<Props> {
             <div className={styles.description}>
               <p>{descriptionRestart}</p>
             </div>
-          </>
+          </Fragment>
         ) : (
-          <>
+          <Fragment>
             <div className={styles.header}>
               <SVGInline
                 svg={confirmMessageIcon}
@@ -152,6 +155,13 @@ export default class VotingRegistrationStepsConfirm extends Component<Props> {
             </div>
             <div className={styles.description}>
               <p>{description}</p>
+            </div>
+            <div className={styles.progressContent}>
+              <ProgressBarLarge
+                leftLabel="Waiting for confirmations..."
+                rightLabel1="1 or 30"
+                progress={50}
+              />
             </div>
             <div className={styles.messages}>
               <p>{importantInformation1}</p>
@@ -164,7 +174,7 @@ export default class VotingRegistrationStepsConfirm extends Component<Props> {
                 {VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS}
               </p>
             </div>
-          </>
+          </Fragment>
         )}
       </VotingRegistrationDialog>
     );

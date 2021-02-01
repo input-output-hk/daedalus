@@ -830,6 +830,10 @@ export const createDaedalusComponentsTheme = (
       ).alpha(0.7)}`,
       '--theme-progress-bar-large-progress-stripe1': '#e0e5eb',
       '--theme-progress-bar-large-progress-stripe2': '#fafbfc',
+      '--theme-progress-bar-large-progress-dark-stripe1': '#e0e5eb',
+      '--theme-progress-bar-large-progress-dark-stripe2': '#fafbfc',
+      '--theme-progress-bar-large-progress-light-stripe-1': `${background.secondary.dark}`,
+      '--theme-progress-bar-large-progress-light-stripe-2': `${background.secondary.regular}`,
       '--theme-progress-bar-large-background-color': 'rgba(0, 0, 0, 0.1)',
     },
     receiveQRCode: {

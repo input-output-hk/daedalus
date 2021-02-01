@@ -506,6 +506,11 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-progress-bar-large-progress-stripe1': '#e0e5ea',
     '--theme-progress-bar-large-progress-stripe2': '#fafbfc',
     '--theme-progress-bar-large-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-progress-bar-large-progress-dark-stripe1': '#e0e5ea',
+    '--theme-progress-bar-large-progress-dark-stripe2': '#fafbfc',
+    '--theme-progress-bar-large-progress-light-stripe-1': '#259c59',
+    '--theme-progress-bar-large-progress-light-stripe-2-background-color':
+      '#2cbb69',
   },
   receiveQRCode: {
     '--theme-receive-qr-code-background-color': 'transparent',

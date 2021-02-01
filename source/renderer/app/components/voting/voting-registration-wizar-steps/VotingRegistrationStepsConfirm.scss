@@ -21,6 +21,22 @@
     }
   }
 
+  .progressContent {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+    p {
+      font-size: 14px;
+    }
+  }
+
+  .progressData {
+    color: var(--theme-app-update-overlay-opacity-text-color);
+    b {
+      font-family: var(--font-bold);
+    }
+  }
+
   .description {
     color: var(--theme-voting-registration-steps-description-color);
     display: flex;

@@ -1,24 +1,32 @@
 .component {
-  height: 24px;
+  width: 100%;
+}
+
+.content {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+  p {
+    font-size: 14px;
+  }
+}
+
+.rightLabel {
+  b {
+    font-family: var(--font-bold);
+  }
 }
 
 .progressBarContainer {
   background-color: var(--theme-progress-bar-large-background-color);
   border-radius: 5px;
-  height: 100%;
+  height: 24px;
   position: relative;
   width: 100%;
 }
 
 .progress {
   align-items: center;
-  background: repeating-linear-gradient(
-    -63deg,
-    var(--theme-progress-bar-large-progress-stripe1),
-    var(--theme-progress-bar-large-progress-stripe1) 10px,
-    var(--theme-progress-bar-large-progress-stripe2) 10px,
-    var(--theme-progress-bar-large-progress-stripe2) 20px
-  );
   border-radius: 5px;
   display: flex;
   height: 100%;
@@ -26,10 +34,29 @@
   transition: width 0.24s;
 }
 
+.progressDarkMode {
+  background: repeating-linear-gradient(
+    -63deg,
+    var(--theme-progress-bar-large-progress-dark-stripe1),
+    var(--theme-progress-bar-large-progress-dark-stripe1) 10px,
+    var(--theme-progress-bar-large-progress-dark-stripe2) 10px,
+    var(--theme-progress-bar-large-progress-dark-stripe2) 20px
+  );
+}
+
+.progressLightMode {
+  background: repeating-linear-gradient(
+    -63deg,
+    var(--theme-staking-progress-stripe-dark-1-background-color),
+    var(--theme-staking-progress-stripe-dark-1-background-color) 10px,
+    var(--theme-staking-progress-stripe-dark-2-background-color) 10px,
+    var(--theme-staking-progress-stripe-dark-2-background-color) 20px
+  );
+}
+
 .progressLabel {
   transform: translateX(calc(100% + 8px));
 }
-
 .progressLabelWhite {
   color: var(--theme-staking-progress-label-light);
   transform: translateX(-8px);

@@ -488,6 +488,13 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-progress-bar-large-progress-stripe1': '#e0e5eb',
     '--theme-progress-bar-large-progress-stripe2': '#fafbfc',
     '--theme-progress-bar-large-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-progress-bar-large-progress-dark-stripe1': '#e0e5eb',
+    '--theme-progress-bar-large-progress-dark-stripe2': '#fafbfc',
+    '--theme-progress-bar-large-progress-light-stripe1': '#e0e5eb',
+    '--theme-progress-bar-large-progress-light-stripe2': '#fafbfc',
+    '--theme-progress-bar-large-progress-light-stripe-1': '#0da2a4',
+    '--theme-progress-bar-large-progress-light-stripe-2-background-color':
+      '#1fc1c3',
   },
   receiveQRCode: {
     '--theme-receive-qr-code-background-color': '#fff',

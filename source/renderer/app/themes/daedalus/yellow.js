@@ -493,6 +493,11 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-progress-bar-large-progress-stripe1': '#2d2d2d',
     '--theme-progress-bar-large-progress-stripe2': '#3f3e3e',
     '--theme-progress-bar-large-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-progress-bar-large-progress-dark-stripe1': '#2d2d2d',
+    '--theme-progress-bar-large-progress-dark-stripe2': '#3f3e3e',
+    '--theme-progress-bar-large-progress-light-stripe-1': '#000000',
+    '--theme-progress-bar-large-progress-light-stripe-2-background-color':
+      '#2d2d2d',
   },
   receiveQRCode: {
     '--theme-receive-qr-code-background-color': 'transparent',
