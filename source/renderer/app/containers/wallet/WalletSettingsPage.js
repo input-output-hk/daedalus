@@ -124,7 +124,7 @@ export default class WalletSettingsPage extends Component<Props> {
           }
           onStartEditing={(field) => startEditingWalletField.trigger({ field })}
           onStopEditing={stopEditingWalletField.trigger}
-          onCancelEditing={cancelEditingWalletField.trigger}
+          onCancel={cancelEditingWalletField.trigger}
           onVerifyRecoveryPhrase={recoveryPhraseVerificationContinue.trigger}
           onCopyWalletPublicKey={this.handleCopyWalletPublicKey}
           getWalletPublicKey={this.handleGetWalletPublicKey}

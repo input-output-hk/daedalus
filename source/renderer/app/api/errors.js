@@ -106,4 +106,9 @@ export const messages = defineMessages({
     description:
       '"Funds cannot be transferred from this wallet because it contains some unspent transaction outputs (UTXOs), with amounts of ada that are too small to be migrated." error message',
   },
+  invalidSmashServer: {
+    id: 'api.errors.invalidSmashServer',
+    defaultMessage: '!!!This URL is not a valid SMASH server',
+    description: '"This URL is not a valid SMASH server" error message',
+  },
 });
