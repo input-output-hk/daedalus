@@ -1,11 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import {
-  defineMessages,
-  intlShape,
-  FormattedHTMLMessage,
-  FormattedMessage,
-} from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import classNames from 'classnames';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import Wallet from '../../../domains/Wallet';
