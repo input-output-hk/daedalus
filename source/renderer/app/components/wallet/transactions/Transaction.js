@@ -416,9 +416,10 @@ export default class Transaction extends Component<Props, State> {
     const includesUnresolvedAddresses = (addresses) =>
       includes(addresses, null);
 
-    const fromAddresses = (addresses, transactionId) => {
+    const fromAddresses = (addresses, transactionId, type?) => {
       if (addresses.length > 0) {
-        return includesUnresolvedAddresses(addresses) ? (
+        const hasUnresolvedAddresses = includesUnresolvedAddresses(addresses);
+        return type !== TransactionTypes.EXPEND && hasUnresolvedAddresses ? (
           <div className={styles.explorerLinkRow}>
             <Link
               className={styles.explorerLink}
@@ -514,7 +515,7 @@ export default class Transaction extends Component<Props, State> {
             >
               <div>
                 <h2>{intl.formatMessage(messages.fromAddresses)}</h2>
-                {fromAddresses(data.addresses.from, data.id)}
+                {fromAddresses(data.addresses.from, data.id, hasNativeTokens ? data.type : null)}
 
                 {data.addresses.withdrawals.length ? (
                   <>
