@@ -6,8 +6,9 @@ import { Stepper } from 'react-polymorph/lib/components/Stepper';
 import { StepperSkin } from 'react-polymorph/lib/skins/simple/StepperSkin';
 import { defineMessages, FormattedMessage, intlShape } from 'react-intl';
 import styles from './VotingRegistrationDialog.scss';
-import Dialog from '../widgets/Dialog';
-import DialogCloseButton from '../widgets/DialogCloseButton';
+import Dialog from '../../../widgets/Dialog';
+import DialogCloseButton from '../../../widgets/DialogCloseButton';
+import type { DialogActions } from '../../../widgets/Dialog';
 
 const messages = defineMessages({
   dialogTitle: {
@@ -27,6 +28,7 @@ type Props = {
   onClose: Function,
   stepsList: Array<string>,
   activeStep: number,
+  actions: DialogActions,
 };
 
 @observer
@@ -41,7 +43,7 @@ export default class VotingRegistrationDialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { children, onClose, activeStep, stepsList } = this.props;
+    const { children, onClose, activeStep, stepsList, actions } = this.props;
 
     return (
       <Dialog
@@ -50,6 +52,7 @@ export default class VotingRegistrationDialog extends Component<Props> {
         closeOnOverlayClick={false}
         onClose={onClose}
         closeButton={<DialogCloseButton />}
+        actions={actions}
       >
         <div className={styles.subtitle}>
           <FormattedMessage

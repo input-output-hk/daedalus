@@ -1,21 +1,7 @@
-@import './votingConfig';
+@import '../../votingConfig';
 
 .component {
   text-align: center;
-
-  :global {
-    .Dialog_title {
-      margin-bottom: 0;
-    }
-
-    .Dialog_contentWrapper > .Dialog_content {
-      margin-bottom: 0;
-    }
-
-    .Dialog_actions {
-      display: none;
-    }
-  }
 
   .heading {
     @extend %accentText;

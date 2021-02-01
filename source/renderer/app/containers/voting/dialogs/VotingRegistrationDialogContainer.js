@@ -5,8 +5,7 @@ import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { find, get } from 'lodash';
 import BigNumber from 'bignumber.js';
-import VotingRegistrationDialog from '../../../components/voting/VotingRegistrationDialog';
-import VotingRegistrationWizard from '../../../components/voting/voting-registration-wizard/VotingRegistrationWizard';
+import VotingRegistrationDialogWizard from '../../../components/voting/voting-registration-wizard/VotingRegistrationDialogWizard';
 import {
   VOTING_REGISTRATION_MIN_WALLET_FUNDS,
   VOTING_REGISTRATION_FEE_CALCULATION_AMOUNT,
@@ -168,38 +167,35 @@ export default class VotingRegistrationDialogContainer extends Component<
     );
 
     return (
-      <VotingRegistrationDialog
+      <VotingRegistrationDialogWizard
         onClose={this.props.onClose}
         stepsList={this.STEPS_LIST}
         activeStep={registrationStep}
-      >
-        <VotingRegistrationWizard
-          stakePoolsList={stakePools}
-          wallets={all}
-          activeStep={registrationStep}
-          minVotingRegistrationFunds={VOTING_REGISTRATION_MIN_WALLET_FUNDS}
-          isWalletAcceptable={this.handleIsWalletAcceptable}
-          selectedWallet={selectedWallet}
-          getStakePoolById={getStakePoolById}
-          onContinue={this.handleContinue}
-          onSelectWallet={this.handleSelectWallet}
-          onSetPinCode={this.handleSetPinCode}
-          onSubmit={this.handleSendTransaction}
-          onRestart={this.handleRestart}
-          transactionFee={transactionFee}
-          transactionFeeError={transactionFeeError}
-          qrCode={qrCode}
-          isTransactionPending={isTransactionPending}
-          isTransactionConfirmed={isTransactionConfirmed}
-          transactionConfirmations={transactionConfirmations}
-          transactionError={
-            getWalletPublicKeyRequest.error ||
-            createVotingRegistrationTransactionRequest.error ||
-            signMetadataRequest.error
-          }
-          onExternalLinkClick={openExternalLink}
-        />
-      </VotingRegistrationDialog>
+        stakePoolsList={stakePools}
+        wallets={all}
+        activeStep={registrationStep}
+        minVotingRegistrationFunds={VOTING_REGISTRATION_MIN_WALLET_FUNDS}
+        isWalletAcceptable={this.handleIsWalletAcceptable}
+        selectedWallet={selectedWallet}
+        getStakePoolById={getStakePoolById}
+        onContinue={this.handleContinue}
+        onSelectWallet={this.handleSelectWallet}
+        onSetPinCode={this.handleSetPinCode}
+        onSubmit={this.handleSendTransaction}
+        onRestart={this.handleRestart}
+        transactionFee={transactionFee}
+        transactionFeeError={transactionFeeError}
+        qrCode={qrCode}
+        isTransactionPending={isTransactionPending}
+        isTransactionConfirmed={isTransactionConfirmed}
+        transactionConfirmations={transactionConfirmations}
+        transactionError={
+          getWalletPublicKeyRequest.error ||
+          createVotingRegistrationTransactionRequest.error ||
+          signMetadataRequest.error
+        }
+        onExternalLinkClick={openExternalLink}
+      />
     );
   }
 

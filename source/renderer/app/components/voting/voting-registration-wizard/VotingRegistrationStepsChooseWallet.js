@@ -1,15 +1,30 @@
 // @flow
 import React, { Component } from 'react';
-import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import {
+  defineMessages,
+  intlShape,
+  FormattedHTMLMessage,
+  FormattedMessage,
+} from 'react-intl';
 import classNames from 'classnames';
-import { Button } from 'react-polymorph/lib/components/Button';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import Wallet from '../../../domains/Wallet';
 import commonStyles from './VotingRegistrationSteps.scss';
 import styles from './VotingRegistrationStepsChooseWallet.scss';
+import VotingRegistrationDialog from './widgets/VotingRegistrationDialog';
 
 const messages = defineMessages({
+  dialogTitle: {
+    id: 'voting.votingRegistration.dialog.dialogTitle',
+    defaultMessage: '!!!Register to vote',
+    description: 'Tile "Register to vote" for voting registration',
+  },
+  subtitle: {
+    id: 'voting.votingRegistration.dialog.subtitle',
+    defaultMessage: '!!!Step {step} of {stepCount}',
+    description: 'Sub title for voting registration',
+  },
+
   description: {
     id: 'voting.votingRegistration.chooseWallet.step.description',
     defaultMessage:
@@ -74,6 +89,9 @@ const messages = defineMessages({
 });
 
 type Props = {
+  onClose: Function,
+  stepsList: Array<string>,
+  activeStep: number,
   numberOfStakePools: number,
   onSelectWallet: Function,
   wallets: Array<Wallet>,
@@ -112,6 +130,9 @@ export default class VotingRegistrationStepsChooseWallet extends Component<
     const { intl } = this.context;
     const { selectedWalletId } = this.state;
     const {
+      onClose,
+      stepsList,
+      activeStep,
       wallets,
       minVotingRegistrationFunds,
       isWalletAcceptable,
@@ -167,33 +188,42 @@ export default class VotingRegistrationStepsChooseWallet extends Component<
       error ? styles.error : null,
     ]);
 
+    const actions = [
+      {
+        label: buttonLabel,
+        onClick: this.onSelectWallet,
+        disabled: !selectedWalletId || !!error,
+      },
+    ];
+
     return (
-      <div className={className}>
-        <div className={contentClassName}>
-          <p className={styles.description}>
-            <FormattedHTMLMessage {...messages.description} />
-          </p>
-          <WalletsDropdown
-            className={walletSelectClasses}
-            label={intl.formatMessage(messages.selectWalletInputLabel)}
-            numberOfStakePools={numberOfStakePools}
-            wallets={wallets}
-            onChange={(walletId: string) => this.onWalletChange(walletId)}
-            placeholder={intl.formatMessage(
-              messages.selectWalletInputPlaceholder
-            )}
-            value={selectedWalletId}
-            getStakePoolById={getStakePoolById}
-          />
-          {error}
+      <VotingRegistrationDialog
+        onClose={onClose}
+        stepsList={stepsList}
+        activeStep={activeStep}
+        actions={actions}
+      >
+        <div className={className}>
+          <div className={contentClassName}>
+            <p className={styles.description}>
+              <FormattedHTMLMessage {...messages.description} />
+            </p>
+            <WalletsDropdown
+              className={walletSelectClasses}
+              label={intl.formatMessage(messages.selectWalletInputLabel)}
+              numberOfStakePools={numberOfStakePools}
+              wallets={wallets}
+              onChange={(walletId: string) => this.onWalletChange(walletId)}
+              placeholder={intl.formatMessage(
+                messages.selectWalletInputPlaceholder
+              )}
+              value={selectedWalletId}
+              getStakePoolById={getStakePoolById}
+            />
+            {error}
+          </div>
         </div>
-        <Button
-          label={buttonLabel}
-          onClick={this.onSelectWallet}
-          disabled={!selectedWalletId || !!error}
-          skin={ButtonSkin}
-        />
-      </div>
+      </VotingRegistrationDialog>
     );
   }
 }

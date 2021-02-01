@@ -14,6 +14,8 @@ import LocalizableError from '../../../i18n/LocalizableError';
 import Wallet from '../../../domains/Wallet';
 
 type Props = {
+  onClose: Function,
+  stepsList: Array<string>,
   activeStep: number,
   onContinue: Function,
   onSelectWallet: Function,
@@ -37,9 +39,11 @@ type Props = {
 };
 
 @observer
-export default class VotingRegistrationWizard extends Component<Props> {
+export default class VotingRegistrationDialogWizard extends Component<Props> {
   render() {
     const {
+      onClose,
+      stepsList,
       activeStep,
       onContinue,
       onSelectWallet,
@@ -69,6 +73,9 @@ export default class VotingRegistrationWizard extends Component<Props> {
       case 1:
         content = (
           <VotingRegistrationStepsChooseWallet
+            onClose={onClose}
+            stepsList={stepsList}
+            activeStep={activeStep}
             numberOfStakePools={stakePoolsList.length}
             wallets={wallets}
             minVotingRegistrationFunds={minVotingRegistrationFunds}
