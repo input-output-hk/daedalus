@@ -4,6 +4,7 @@ import SVGInline from 'react-svg-inline';
 import type { Node } from 'react';
 import classNames from 'classnames';
 import { observer } from 'mobx-react';
+import { IS_BYRON_WALLET_MIGRATION_ENABLED } from '../../config/walletsConfig';
 import LegacyBadge, { LEGACY_BADGE_MODES } from '../notifications/LegacyBadge';
 import LegacyNotification from '../notifications/LegacyNotification';
 import Wallet from '../../domains/Wallet';
@@ -94,15 +95,17 @@ export default class TopBar extends Component<Props> {
           )}
           {children}
         </div>
-        {hasLegacyNotification && activeWallet && (
-          <LegacyNotification
-            activeWalletName={activeWallet.name}
-            onLearnMore={onLearnMore}
-            onTransferFunds={onTransferFundsFn}
-            hasRewardsWallets={hasRewardsWallets}
-            onWalletAdd={onWalletAdd}
-          />
-        )}
+        {IS_BYRON_WALLET_MIGRATION_ENABLED &&
+          hasLegacyNotification &&
+          activeWallet && (
+            <LegacyNotification
+              activeWalletName={activeWallet.name}
+              onLearnMore={onLearnMore}
+              onTransferFunds={onTransferFundsFn}
+              hasRewardsWallets={hasRewardsWallets}
+              onWalletAdd={onWalletAdd}
+            />
+          )}
       </header>
     );
   }
