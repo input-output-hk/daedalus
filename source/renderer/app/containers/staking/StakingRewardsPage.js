@@ -41,14 +41,16 @@ export default class StakingRewardsPage extends Component<Props> {
     const { isIncentivizedTestnet, isShelleyTestnet } = global;
     const {
       isMainnet,
-      isTestnet,
       isSelfnode,
+      isStaging,
+      isTestnet,
       isTest,
     } = networkStatus.environment;
     const { requestCSVFile } = this.props.actions.staking;
 
     if (
       isMainnet ||
+      isStaging ||
       isTestnet ||
       isIncentivizedTestnet ||
       isShelleyTestnet ||
