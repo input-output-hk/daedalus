@@ -102,13 +102,17 @@ export default class VotingRegistrationStepsConfirm extends Component<Props> {
     const restartButtonLabel = intl.formatMessage(messages.restartButtonLabel);
 
     const actions = [
-      {
-        label: transactionError ? restartButtonLabel : buttonLabel,
-        onClick: transactionError ? onRestart : onConfirm,
-        disabled: !isTransactionConfirmed,
-        className: styles.buttonConfirmStyles,
-        primary: true,
-      },
+      transactionError
+        ? {
+            label: restartButtonLabel,
+            onClick: onRestart,
+          }
+        : {
+            label: buttonLabel,
+            onClick: onConfirm,
+            className: styles.buttonConfirmStyles,
+            primary: true,
+          },
     ];
 
     return (
