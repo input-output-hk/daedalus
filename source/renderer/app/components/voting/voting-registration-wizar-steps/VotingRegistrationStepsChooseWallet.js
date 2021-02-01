@@ -4,7 +4,6 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import classNames from 'classnames';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import Wallet from '../../../domains/Wallet';
-import commonStyles from './VotingRegistrationSteps.scss';
 import styles from './VotingRegistrationStepsChooseWallet.scss';
 import VotingRegistrationDialog from './widgets/VotingRegistrationDialog';
 

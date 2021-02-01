@@ -1,9 +1,6 @@
 // @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
-import classNames from 'classnames';
-import { Button } from 'react-polymorph/lib/components/Button';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { observer } from 'mobx-react';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import PinCode from '../../widgets/forms/PinCode';

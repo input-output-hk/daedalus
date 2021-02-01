@@ -1,10 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
-import { Button } from 'react-polymorph/lib/components/Button';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { observer } from 'mobx-react';
-import classNames from 'classnames';
 import SVGInline from 'react-svg-inline';
 import confirmMessageIcon from '../../../assets/images/voting/confirm-step-message-ic.inline.svg';
 import confirmErrorMessageIcon from '../../../assets/images/voting/confirm-step-error-message-ic.inline.svg';
@@ -106,10 +103,9 @@ export default class VotingRegistrationStepsConfirm extends Component<Props> {
 
     const actions = [
       {
-        label: buttonLabel,
-        onClick: onConfirm,
-        // @VOTING TODO: unselect it
-        // disabled: !isTransactionConfirmed,
+        label: transactionError ? restartButtonLabel : buttonLabel,
+        onClick: transactionError ? onRestart : onConfirm,
+        disabled: !isTransactionConfirmed,
         className: styles.buttonConfirmStyles,
         primary: true,
       },
@@ -140,13 +136,6 @@ export default class VotingRegistrationStepsConfirm extends Component<Props> {
             </div>
             <div className={styles.description}>
               <p>{descriptionRestart}</p>
-            </div>
-            <div className={styles.buttonContainer}>
-              <Button
-                onClick={onRestart}
-                skin={ButtonSkin}
-                label={restartButtonLabel}
-              />
             </div>
           </>
         ) : (

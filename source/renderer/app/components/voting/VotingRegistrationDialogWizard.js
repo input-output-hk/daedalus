@@ -136,6 +136,8 @@ export default class VotingRegistrationDialogWizard extends Component<Props> {
           />
         );
         break;
+      default:
+        content = <></>;
     }
 
     return content;

@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
-import classNames from 'classnames';
 import QRCode from 'qrcode.react';
 import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';

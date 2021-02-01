@@ -173,7 +173,6 @@ export default class VotingRegistrationDialogContainer extends Component<
         activeStep={registrationStep}
         stakePoolsList={stakePools}
         wallets={all}
-        activeStep={registrationStep}
         minVotingRegistrationFunds={VOTING_REGISTRATION_MIN_WALLET_FUNDS}
         isWalletAcceptable={this.handleIsWalletAcceptable}
         selectedWallet={selectedWallet}
