@@ -23,6 +23,12 @@
 
   .recoveryPhrase {
     margin-bottom: 20px;
+
+    :global {
+      .SimpleOptions_option {
+        padding: 14px 20px;
+      }
+    }
   }
 
   .walletsDropdownWrapper {

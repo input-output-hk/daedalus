@@ -2089,7 +2089,7 @@ export default class AdaApi {
         decentralization_level: decentralizationLevel,
         desired_pool_number: desiredPoolNumber,
         minimum_utxo_value: minimumUtxoValue,
-        hardfork_at: hardforkAt,
+        eras,
       } = networkParameters;
       const blockchainStartTime = moment(blockchain_start_time).valueOf();
 
@@ -2103,7 +2103,7 @@ export default class AdaApi {
         decentralizationLevel,
         desiredPoolNumber,
         minimumUtxoValue,
-        hardforkAt: hardforkAt || null,
+        hardforkAt: eras.shelley || null,
       };
     } catch (error) {
       logger.error('AdaApi::getNetworkParameters error', { error });
