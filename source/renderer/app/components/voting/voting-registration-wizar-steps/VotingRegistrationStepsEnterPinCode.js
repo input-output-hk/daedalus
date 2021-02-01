@@ -164,6 +164,7 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<Props
       {
         label: buttonLabel,
         onClick: this.submit,
+        disabled: !form.isValid,
         primary: true,
       },
     ];

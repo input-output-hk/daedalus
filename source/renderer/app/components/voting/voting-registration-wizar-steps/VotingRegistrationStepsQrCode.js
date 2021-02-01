@@ -6,8 +6,8 @@ import QRCode from 'qrcode.react';
 import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
 import openAppIcon from '../../../assets/images/voting/open-app-ic.inline.svg';
-import commonStyles from './VotingRegistrationSteps.scss';
 import styles from './VotingRegistrationStepsQrCode.scss';
+import VotingRegistrationDialog from './widgets/VotingRegistrationDialog';
 
 const messages = defineMessages({
   qrCodeTitle: {
@@ -59,7 +59,7 @@ export default class VotingRegistrationStepsQrCode extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { qrCode } = this.props;
+    const { onClose, stepsList, activeStep, qrCode } = this.props;
 
     const qrCodeTitle = intl.formatMessage(messages.qrCodeTitle);
     const qrCodeDescription = intl.formatMessage(messages.qrCodeDescription);
@@ -68,13 +68,6 @@ export default class VotingRegistrationStepsQrCode extends Component<Props> {
       messages.takeScreenShotMessage
     );
     const warningMessage = intl.formatMessage(messages.warningMessage);
-
-    const className = classNames([
-      commonStyles.votingRegistrationSteps,
-      styles.votingRegistrationStepsQrCodeWrapper,
-    ]);
-
-    const contentClassName = classNames([commonStyles.content, styles.content]);
 
     // Get QRCode color value from active theme's CSS variable
     const qrCodeBackgroundColor = document.documentElement
@@ -88,34 +81,50 @@ export default class VotingRegistrationStepsQrCode extends Component<Props> {
         )
       : '#000';
 
+    const actions = [
+      {
+        label: 'Close',
+        onClick: onClose,
+      },
+      {
+        label: 'Save as PDF',
+        onClick: () => {},
+        primary: true,
+      },
+    ];
+
     return (
-      <div className={className}>
-        <div className={contentClassName}>
-          <div className={styles.qrCode}>
-            {qrCode && (
-              <QRCode
-                value={qrCode}
-                bgColor={qrCodeBackgroundColor}
-                fgColor={qrCodeForegroundColor}
-                size={152}
-              />
-            )}
-          </div>
-          <div className={styles.qrCodeDescription}>
-            <SVGInline svg={openAppIcon} className={styles.qrCodeMessageIcon} />
-            <div className={styles.qrCodeMessageText}>
-              <p>{qrCodeTitle}</p>
-              <p>{qrCodeDescription}</p>
-            </div>
-          </div>
-          <hr className={styles.separator} />
-          <div className={styles.messages}>
-            <p>{message}</p>
-            <p className={styles.secondaryWarning}>{takeScreenShotMessage}</p>
-            <p className={styles.primaryWarning}>{warningMessage}</p>
+      <VotingRegistrationDialog
+        onClose={onClose}
+        stepsList={stepsList}
+        activeStep={activeStep}
+        actions={actions}
+        containerClassName={styles.component}
+      >
+        <div className={styles.qrCode}>
+          {qrCode && (
+            <QRCode
+              value={qrCode}
+              bgColor={qrCodeBackgroundColor}
+              fgColor={qrCodeForegroundColor}
+              size={152}
+            />
+          )}
+        </div>
+        <div className={styles.qrCodeDescription}>
+          <SVGInline svg={openAppIcon} className={styles.qrCodeMessageIcon} />
+          <div className={styles.qrCodeMessageText}>
+            <p>{qrCodeTitle}</p>
+            <p>{qrCodeDescription}</p>
           </div>
         </div>
-      </div>
+        <hr className={styles.separator} />
+        <div className={styles.messages}>
+          <p>{message}</p>
+          <p className={styles.secondaryWarning}>{takeScreenShotMessage}</p>
+          <p className={styles.primaryWarning}>{warningMessage}</p>
+        </div>
+      </VotingRegistrationDialog>
     );
   }
 }
