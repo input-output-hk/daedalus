@@ -160,13 +160,6 @@ export default class VotingRegistrationStepsChooseWallet extends Component<
       </p>
     );
 
-    const className = classNames([
-      commonStyles.votingRegistrationSteps,
-      styles.votingRegistrationStepsChooseWalletWrapper,
-    ]);
-
-    const contentClassName = classNames([commonStyles.content, styles.content]);
-
     const walletSelectClasses = classNames([
       styles.walletSelect,
       error ? styles.error : null,
@@ -177,6 +170,7 @@ export default class VotingRegistrationStepsChooseWallet extends Component<
         label: buttonLabel,
         onClick: this.onSelectWallet,
         disabled: !selectedWalletId || !!error,
+        primary: true,
       },
     ];
 
@@ -186,27 +180,24 @@ export default class VotingRegistrationStepsChooseWallet extends Component<
         stepsList={stepsList}
         activeStep={activeStep}
         actions={actions}
+        containerClassName={styles.component}
       >
-        <div className={className}>
-          <div className={contentClassName}>
-            <p className={styles.description}>
-              <FormattedHTMLMessage {...messages.description} />
-            </p>
-            <WalletsDropdown
-              className={walletSelectClasses}
-              label={intl.formatMessage(messages.selectWalletInputLabel)}
-              numberOfStakePools={numberOfStakePools}
-              wallets={wallets}
-              onChange={(walletId: string) => this.onWalletChange(walletId)}
-              placeholder={intl.formatMessage(
-                messages.selectWalletInputPlaceholder
-              )}
-              value={selectedWalletId}
-              getStakePoolById={getStakePoolById}
-            />
-            {error}
-          </div>
-        </div>
+        <p className={styles.description}>
+          <FormattedHTMLMessage {...messages.description} />
+        </p>
+        <WalletsDropdown
+          className={walletSelectClasses}
+          label={intl.formatMessage(messages.selectWalletInputLabel)}
+          numberOfStakePools={numberOfStakePools}
+          wallets={wallets}
+          onChange={(walletId: string) => this.onWalletChange(walletId)}
+          placeholder={intl.formatMessage(
+            messages.selectWalletInputPlaceholder
+          )}
+          value={selectedWalletId}
+          getStakePoolById={getStakePoolById}
+        />
+        {error}
       </VotingRegistrationDialog>
     );
   }

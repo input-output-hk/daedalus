@@ -5,7 +5,7 @@ import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { find, get } from 'lodash';
 import BigNumber from 'bignumber.js';
-import VotingRegistrationDialogWizard from '../../../components/voting/voting-registration-wizard/VotingRegistrationDialogWizard';
+import VotingRegistrationDialogWizard from '../../../components/voting/VotingRegistrationDialogWizard';
 import {
   VOTING_REGISTRATION_MIN_WALLET_FUNDS,
   VOTING_REGISTRATION_FEE_CALCULATION_AMOUNT,

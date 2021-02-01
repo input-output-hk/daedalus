@@ -33,4 +33,16 @@
       text-align: center;
     }
   }
+
+  .container {
+    font-family: var(--font-regular);
+    text-align: center;
+  }
+  .content {
+    font-size: 16px;
+    line-height: 1.38;
+    margin-bottom: 24px;
+    margin-top: 20px;
+    text-align: left;
+  }
 }

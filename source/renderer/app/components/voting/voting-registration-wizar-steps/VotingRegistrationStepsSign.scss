@@ -2,11 +2,9 @@
 @import '../../../themes/mixins/loading-spinner';
 @import '../../../themes/mixins/error-message';
 
-.votingRegistrationStepsDepositWrapper {
-  .content {
-    .description {
-      color: var(--theme-voting-registration-steps-description-color);
-    }
+.component {
+  .description {
+    color: var(--theme-voting-registration-steps-description-color);
   }
 
   .feesWrapper {

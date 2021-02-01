@@ -7,7 +7,6 @@ import VotingInfo from '../../components/voting/VotingInfo';
 import VotingUnavailable from '../../components/voting/VotingUnavailable';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import VotingRegistrationDialogContainer from './dialogs/VotingRegistrationDialogContainer';
-// import VotingRegistrationDialog from '../../components/voting/VotingRegistrationDialog';
 
 type Props = InjectedProps;
 

@@ -3,8 +3,6 @@ import React, { Component } from 'react';
 import type { Node } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import classNames from 'classnames';
-import { Button } from 'react-polymorph/lib/components/Button';
-import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { Input } from 'react-polymorph/lib/components/Input';
 import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import vjf from 'mobx-react-form/lib/validators/VJF';
@@ -18,8 +16,8 @@ import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { formattedWalletAmount } from '../../../utils/formatters';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import LocalizableError from '../../../i18n/LocalizableError';
-import commonStyles from './VotingRegistrationSteps.scss';
 import styles from './VotingRegistrationStepsSign.scss';
+import VotingRegistrationDialog from './widgets/VotingRegistrationDialog';
 
 const messages = defineMessages({
   description: {
@@ -70,6 +68,9 @@ const messages = defineMessages({
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
 type Props = {
+  onClose: Function,
+  stepsList: Array<string>,
+  activeStep: number,
   transactionFee: ?BigNumber,
   transactionFeeError: string | Node | null,
   transactionError: ?LocalizableError,
@@ -140,90 +141,85 @@ export default class VotingRegistrationStepsSign extends Component<Props> {
       transactionError,
       isSubmitting,
       onExternalLinkClick,
+      onClose,
+      stepsList,
+      activeStep,
     } = this.props;
     const spendingPasswordField = form.$('spendingPassword');
     const buttonLabel = intl.formatMessage(messages.continueButtonLabel);
     const learnMoreLinkUrl = intl.formatMessage(messages.learntMoreLinkUrl);
 
-    const className = classNames([
-      commonStyles.votingRegistrationSteps,
-      styles.votingRegistrationStepsDepositWrapper,
-    ]);
-
-    const contentClassName = classNames([commonStyles.content, styles.content]);
-
-    const buttonClasses = classNames([
-      'primary',
-      isSubmitting ? styles.isSubmitting : null,
-    ]);
+    const actions = [
+      {
+        label: buttonLabel,
+        onClick: this.submit,
+        disabled:
+          !spendingPasswordField.isValid || !transactionFee || isSubmitting,
+        primary: true,
+      },
+    ];
 
     return (
-      <div className={className}>
-        <div className={contentClassName}>
-          <p className={styles.description}>
-            <FormattedHTMLMessage {...messages.description} />
-          </p>
+      <VotingRegistrationDialog
+        onClose={onClose}
+        stepsList={stepsList}
+        activeStep={activeStep}
+        actions={actions}
+        containerClassName={styles.component}
+      >
+        <p className={styles.description}>
+          <FormattedHTMLMessage {...messages.description} />
+        </p>
 
-          <div className={styles.learnMoreWrapper}>
-            <Link
-              className={styles.externalLink}
-              onClick={(event) => onExternalLinkClick(learnMoreLinkUrl, event)}
-              label={intl.formatMessage(messages.learnMoreLink)}
-              skin={LinkSkin}
-            />
-          </div>
-
-          <div className={styles.feesWrapper}>
-            <p className={styles.feesLabel}>
-              {intl.formatMessage(messages.feesLabel)}
-            </p>
-            <p className={styles.feesAmount}>
-              {!transactionFee ? (
-                <span className={styles.calculatingFeesLabel}>
-                  {intl.formatMessage(messages.calculatingFees)}
-                </span>
-              ) : (
-                <>
-                  <span>{formattedWalletAmount(transactionFee, false)}</span>
-                  <span className={styles.feesAmountLabel}>
-                    &nbsp;{intl.formatMessage(globalMessages.unitAda)}
-                  </span>
-                </>
-              )}
-            </p>
-          </div>
-
-          <Input
-            {...spendingPasswordField.bind()}
-            autoFocus
-            skin={InputSkin}
-            error={spendingPasswordField.error}
-            onKeyPress={this.handleSubmitOnEnter}
+        <div className={styles.learnMoreWrapper}>
+          <Link
+            className={styles.externalLink}
+            onClick={(event) => onExternalLinkClick(learnMoreLinkUrl, event)}
+            label={intl.formatMessage(messages.learnMoreLink)}
+            skin={LinkSkin}
           />
-
-          {transactionFeeError ? (
-            <div className={styles.errorMessage}>
-              <p>{transactionFeeError}</p>
-            </div>
-          ) : null}
-
-          {transactionError ? (
-            <div className={styles.errorMessage}>
-              <p>{intl.formatMessage(transactionError)}</p>
-            </div>
-          ) : null}
         </div>
 
-        <Button
-          className={buttonClasses}
-          skin={ButtonSkin}
-          label={buttonLabel}
-          onClick={this.submit}
-          disabled={
-            !spendingPasswordField.isValid || !transactionFee || isSubmitting
-          }
+        <div className={styles.feesWrapper}>
+          <p className={styles.feesLabel}>
+            {intl.formatMessage(messages.feesLabel)}
+          </p>
+          <p className={styles.feesAmount}>
+            {!transactionFee ? (
+              <span className={styles.calculatingFeesLabel}>
+                {intl.formatMessage(messages.calculatingFees)}
+              </span>
+            ) : (
+              <>
+                <span>{formattedWalletAmount(transactionFee, false)}</span>
+                <span className={styles.feesAmountLabel}>
+                  &nbsp;{intl.formatMessage(globalMessages.unitAda)}
+                </span>
+              </>
+            )}
+          </p>
+        </div>
+
+        <Input
+          {...spendingPasswordField.bind()}
+          autoFocus
+          skin={InputSkin}
+          error={spendingPasswordField.error}
+          onKeyPress={this.handleSubmitOnEnter}
         />
-      </div>
+
+        {transactionFeeError ? (
+          <div className={styles.errorMessage}>
+            <p>{transactionFeeError}</p>
+          </div>
+        ) : null}
+
+        {transactionError ? (
+          <div className={styles.errorMessage}>
+            <p>{intl.formatMessage(transactionError)}</p>
+          </div>
+        ) : null}
+      </VotingRegistrationDialog>
     );
   }
 }

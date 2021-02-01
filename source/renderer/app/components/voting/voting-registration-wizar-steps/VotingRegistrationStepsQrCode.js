@@ -45,6 +45,9 @@ const messages = defineMessages({
 });
 
 type Props = {
+  onClose: Function,
+  stepsList: Array<string>,
+  activeStep: number,
   qrCode: ?string,
 };
 

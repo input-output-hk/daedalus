@@ -4,14 +4,14 @@ import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import { get } from 'lodash';
 import { BigNumber } from 'bignumber.js';
-import VotingRegistrationStepsChooseWallet from './VotingRegistrationStepsChooseWallet';
-import VotingRegistrationStepsSign from './VotingRegistrationStepsSign';
-import VotingRegistrationStepsConfirm from './VotingRegistrationStepsConfirm';
-import VotingRegistrationStepsEnterPinCode from './VotingRegistrationStepsEnterPinCode';
-import VotingRegistrationStepsQrCode from './VotingRegistrationStepsQrCode';
-import StakePool from '../../../domains/StakePool';
-import LocalizableError from '../../../i18n/LocalizableError';
-import Wallet from '../../../domains/Wallet';
+import VotingRegistrationStepsChooseWallet from './voting-registration-wizar-steps/VotingRegistrationStepsChooseWallet';
+import VotingRegistrationStepsSign from './voting-registration-wizar-steps/VotingRegistrationStepsSign';
+import VotingRegistrationStepsConfirm from './voting-registration-wizar-steps/VotingRegistrationStepsConfirm';
+import VotingRegistrationStepsEnterPinCode from './voting-registration-wizar-steps/VotingRegistrationStepsEnterPinCode';
+import VotingRegistrationStepsQrCode from './voting-registration-wizar-steps/VotingRegistrationStepsQrCode';
+import StakePool from '../../domains/StakePool';
+import LocalizableError from '../../i18n/LocalizableError';
+import Wallet from '../../domains/Wallet';
 
 type Props = {
   onClose: Function,
@@ -89,6 +89,9 @@ export default class VotingRegistrationDialogWizard extends Component<Props> {
       case 2:
         content = (
           <VotingRegistrationStepsSign
+            onClose={onClose}
+            stepsList={stepsList}
+            activeStep={activeStep}
             transactionFee={transactionFee}
             transactionFeeError={transactionFeeError}
             transactionError={transactionError}
@@ -101,6 +104,9 @@ export default class VotingRegistrationDialogWizard extends Component<Props> {
       case 3:
         content = (
           <VotingRegistrationStepsConfirm
+            onClose={onClose}
+            stepsList={stepsList}
+            activeStep={activeStep}
             isTransactionPending={isTransactionPending}
             isTransactionConfirmed={isTransactionConfirmed}
             transactionConfirmations={transactionConfirmations}
@@ -112,14 +118,23 @@ export default class VotingRegistrationDialogWizard extends Component<Props> {
         break;
       case 4:
         content = (
-          <VotingRegistrationStepsEnterPinCode onSetPinCode={onSetPinCode} />
+          <VotingRegistrationStepsEnterPinCode
+            onSetPinCode={onSetPinCode}
+            onClose={onClose}
+            stepsList={stepsList}
+            activeStep={activeStep}
+          />
         );
         break;
       case 5:
-        content = <VotingRegistrationStepsQrCode qrCode={qrCode} />;
-        break;
-      default:
-        content = <></>;
+        content = (
+          <VotingRegistrationStepsQrCode
+            qrCode={qrCode}
+            onClose={onClose}
+            stepsList={stepsList}
+            activeStep={activeStep}
+          />
+        );
         break;
     }
 
