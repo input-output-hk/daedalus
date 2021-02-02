@@ -100,7 +100,6 @@ import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 import {
   SMASH_SERVER_STATUSES,
   SMASH_SERVERS_LIST,
-  DELEGATION_DEPOSIT,
   MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE,
   REWARDS_REDEMPTION_FEE_CALCULATION_AMOUNT,
 } from '../config/stakingConfig';
@@ -207,7 +206,10 @@ import { getNewsHash } from './news/requests/getNewsHash';
 import { deleteTransaction } from './transactions/requests/deleteTransaction';
 import { WALLET_BYRON_KINDS } from '../config/walletRestoreConfig';
 import ApiError from '../domains/ApiError';
-import { formattedAmountToLovelace } from '../utils/formatters';
+import {
+  formattedAmountToLovelace,
+  formattedLovelaceToAmount,
+} from '../utils/formatters';
 
 const { isIncentivizedTestnet } = global;
 
@@ -964,16 +966,26 @@ export default class AdaApi {
         LOVELACES_PER_ADA
       );
 
+      let delegationDepositSum = 0;
+      if (response.deposits) {
+        map(response.deposits, (deposit) => {
+          delegationDepositSum += deposit.quantity;
+        });
+      }
+      const formattedDelegationDeposit = formattedLovelaceToAmount(
+        delegationDepositSum
+      );
+      const delegationDeposit = new BigNumber(formattedDelegationDeposit);
+
+      // On first wallet delegation fee also includes a deposit
       let transactionFee;
       if (delegation && delegation.delegationAction) {
-        const delegationDeposit = new BigNumber(DELEGATION_DEPOSIT);
         const isDepositIncluded = fee.gt(delegationDeposit);
         transactionFee = isDepositIncluded ? fee.minus(delegationDeposit) : fee;
       } else {
         transactionFee = fee;
       }
 
-      // On first wallet delegation deposit is included in fee
       const extendedResponse = {
         inputs: inputsData,
         outputs: outputsData,
