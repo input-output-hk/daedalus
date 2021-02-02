@@ -53,6 +53,7 @@ export default (api: AdaApi) => {
         networkTip: {
           epoch: get(network_tip, 'epoch_number', null),
           slot: get(network_tip, 'slot_number', null),
+          absoluteSlotNumber: get(network_tip, 'absolute_slot_number', 0),
         },
         nextEpoch: {
           // N+1 epoch
