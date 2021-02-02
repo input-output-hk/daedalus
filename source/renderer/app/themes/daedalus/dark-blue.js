@@ -1008,6 +1008,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-voting-registration-steps-description-highlighted-color':
       '#e9f4fe',
     '--theme-voting-registration-steps-warning-messages-font-color': '#ea4c5b',
+    '--theme-voting-separator-color': 'rgba(233, 244, 254, 0.15)',
   },
   recoveryPhrase: {
     '--theme-recovery-phrase-normal-background-color': 'rgba(83, 99, 112, .3)',

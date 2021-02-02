@@ -990,6 +990,7 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-voting-registration-steps-description-highlighted-color':
       '#ffffff',
     '--theme-voting-registration-steps-warning-messages-font-color': '#ea4c5b',
+    '--theme-voting-separator-color': 'rgba(255, 255, 255, 0.15)',
   },
   recoveryPhrase: {
     '--theme-recovery-phrase-normal-background-color':

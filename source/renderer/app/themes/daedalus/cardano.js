@@ -1002,6 +1002,7 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-voting-registration-steps-description-highlighted-color':
       '#5e6066',
     '--theme-voting-registration-steps-warning-messages-font-color': '#ea4c5b',
+    '--theme-voting-separator-color': 'rgba(94, 96, 102, 0.15)',
   },
   recoveryPhrase: {
     '--theme-recovery-phrase-normal-background-color': 'transparent',

@@ -11,6 +11,7 @@ import VotingRegistrationStepsSign from '../../../source/renderer/app/components
 import VotingRegistrationStepsConfirm from '../../../source/renderer/app/components/voting/voting-registration-wizar-steps/VotingRegistrationStepsConfirm';
 import VotingRegistrationStepsEnterPinCode from '../../../source/renderer/app/components/voting/voting-registration-wizar-steps/VotingRegistrationStepsEnterPinCode';
 import VotingRegistrationStepsQrCode from '../../../source/renderer/app/components/voting/voting-registration-wizar-steps/VotingRegistrationStepsQrCode';
+import VotingInfo from '../../../source/renderer/app/components/voting/VotingInfo';
 
 import {
   VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS,
@@ -97,5 +98,18 @@ storiesOf('Voting|Voting Registration Wizard', module)
       stepsList={stepsList}
       activeStep={2}
       qrCode="djkhfkwdjhfkwdhfkwjdhfkwdhf9wdyf9wdh9u3h03hd0f3hd0h30hf30dhf03dhf03dhf03dhf03dhf0u3dhf0u3dhf0u3dfh30uhfd30uh"
+    />
+  ));
+
+storiesOf('Voting|Voting Info', module)
+  .addDecorator((story) => <StoryDecorator>{story()}</StoryDecorator>)
+  .addDecorator(withKnobs)
+
+  // ====== Stories ======
+
+  .add('Voting Info', () => (
+    <VotingInfo
+      onRegisterToVoteClick={action('onRegisterToVoteClick')}
+      onExternalLinkClick={action('onExternalLinkClick')}
     />
   ));

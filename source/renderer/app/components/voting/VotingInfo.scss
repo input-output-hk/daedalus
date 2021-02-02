@@ -17,12 +17,6 @@
   text-transform: uppercase;
 }
 
-.description {
-  @extend %regularText;
-  color: var(--theme-voting-font-color-light);
-  margin-bottom: 32px;
-}
-
 .stepsContainer {
   display: flex;
   justify-content: space-around;
@@ -33,7 +27,7 @@
     flex-direction: column;
     padding: 0 30px;
     text-align: center;
-    width: 33%;
+    width: 50%;
     .stepIcon {
       height: 72px;
       margin: 20px auto 40px auto;
@@ -41,7 +35,8 @@
     }
     p {
       @extend %regularText;
-      color: var(--theme-voting-font-color-light);
+      font-family: var(--font-light);
+      color: var(--theme-voting-font-color-regular);
     }
     .number {
       background: var(--theme-voting-info-background-color);
@@ -57,19 +52,94 @@
       display: flex;
       justify-content: space-around;
       margin-top: 10px;
-      .stepAppStoreIcon {
+      .appStoreItem {
         cursor: pointer;
         width: 100px;
       }
     }
   }
 }
+.learnMoreLink {
+}
+.separator {
+  margin: 20px 0;
+  opacity: 0.2;
+}
 
-@media (max-width: 950px) {
-  .stepsContainer {
-    flex-direction: column;
-    .step {
-      width: 100%;
+.bottomContent {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  .leftContent {
+    max-width: 500px;
+    text-align: left;
+    > p {
+      @extend %regularText;
+      color: var(--theme-voting-font-color-regular);
+      font-family: var(--font-medium);
+      margin-bottom: 11px;
+    }
+    > span {
+      color: var(--theme-voting-font-color-regular);
+      display: block;
+      font-family: var(--font-light);
+      line-height: 1.38;
+      margin: 0 20px 20px 0;
+      b {
+        font-family: var(--font-medium);
+      }
+    }
+  }
+  .rightContent {
+    .appStore {
+      display: flex;
+      justify-content: flex-end;
+      flex-direction: row;
+      .appStoreItem {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        &:first-child {
+          border-right: 1px solid var(--theme-voting-separator-color);
+          padding-right: 30px;
+        }
+        &:last-child {
+          margin-left: 30px;
+        }
+        .appStoreButton {
+          cursor: pointer;
+          > span {
+            height: 30px;
+            display: block;
+          }
+          svg {
+            height: 30px;
+            width: 90px;
+            &:last-child {
+              width: 100px;
+            }
+            path {
+              fill: var(--theme-voting-font-color-regular);
+            }
+          }
+        }
+        .qrCode {
+          margin-top: 10px;
+          svg {
+            height: 75px;
+            width: 75px;
+            path:first-child {
+              fill: var(--theme-receive-qr-code-background-color);
+            }
+            path:last-child {
+              fill: var(--theme-receive-qr-code-foreground-color);
+            }
+          }
+        }
+        canvas {
+          margin-top: 10px;
+        }
+      }
     }
   }
 }
