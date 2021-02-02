@@ -630,6 +630,7 @@
   "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInputHint": "{numberOfWords}語のウォレット復元フレーズを入力してください",
   "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInputLabel": "復元フレーズを検証してください",
   "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInputNoResults": "該当するフレーズは見つかりませんでした",
+  "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInputPlaceholder": "{wordNumber}番目の単語を入力",
   "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInvalidMnemonics": "無効な復元フレーズ",
   "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.offline": "ウォレット復元フレーズを安全に保管する最もシンプルな方法はデジタルまたはオンラインに保存しないことであることを理解しました。暗号化データベース付きパスワードマネージャーなどオンラインサービスを使用する場合は、自己責任で適切に使用します。",
   "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.recovery": "コンピューターが喪失、故障、盗難、作動不能などとなった場合、ウォレットは復元フレーズを使用することによってのみ復元することができることを理解しました。",

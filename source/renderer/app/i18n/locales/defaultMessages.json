@@ -7719,7 +7719,7 @@
       },
       {
         "defaultMessage": "!!!Enter your {numberOfWords}-word recovery phrase",
-        "description": "Placeholder for the mnemonics autocomplete.",
+        "description": "Placeholder hint for the mnemonics autocomplete.",
         "end": {
           "column": 3,
           "line": 46
@@ -7732,17 +7732,31 @@
         }
       },
       {
+        "defaultMessage": "!!!Enter word #{wordNumber}",
+        "description": "Placeholder for the mnemonics autocomplete.",
+        "end": {
+          "column": 3,
+          "line": 52
+        },
+        "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
+        "id": "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInputPlaceholder",
+        "start": {
+          "column": 34,
+          "line": 47
+        }
+      },
+      {
         "defaultMessage": "!!!No results",
         "description": "\"No results\" message for the recovery phrase input search results.",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 59
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInputNoResults",
         "start": {
           "column": 27,
-          "line": 47
+          "line": 53
         }
       },
       {
@@ -7750,13 +7764,13 @@
         "description": "Error message shown when invalid recovery phrase was entered.",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 66
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInvalidMnemonics",
         "start": {
           "column": 34,
-          "line": 54
+          "line": 60
         }
       },
       {
@@ -7764,13 +7778,13 @@
         "description": "Label for button \"Confirm\" on wallet backup dialog",
         "end": {
           "column": 3,
-          "line": 65
+          "line": 71
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.recovery.phrase.show.entry.dialog.button.labelConfirm",
         "start": {
           "column": 22,
-          "line": 61
+          "line": 67
         }
       },
       {
@@ -7778,13 +7792,13 @@
         "description": "Term on wallet creation to store recovery phrase offline",
         "end": {
           "column": 3,
-          "line": 72
+          "line": 78
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.offline",
         "start": {
           "column": 15,
-          "line": 66
+          "line": 72
         }
       },
       {
@@ -7792,13 +7806,13 @@
         "description": "Term and condition on wallet backup dialog describing that wallet can only be recovered with a security phrase",
         "end": {
           "column": 3,
-          "line": 80
+          "line": 86
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.recovery",
         "start": {
           "column": 16,
-          "line": 73
+          "line": 79
         }
       },
       {
@@ -7806,13 +7820,13 @@
         "description": "Term and condition on wallet backup dialog describing that wallet can only be recovered with a security phrase",
         "end": {
           "column": 3,
-          "line": 87
+          "line": 93
         },
         "file": "source/renderer/app/components/wallet/backup-recovery/WalletRecoveryPhraseEntryDialog.js",
         "id": "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.rewards",
         "start": {
           "column": 15,
-          "line": 81
+          "line": 87
         }
       }
     ],

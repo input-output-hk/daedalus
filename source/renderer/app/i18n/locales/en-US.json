@@ -630,6 +630,7 @@
   "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInputHint": "Enter your {numberOfWords}-word recovery phrase",
   "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInputLabel": "Verify your recovery phrase",
   "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInputNoResults": "No results",
+  "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInputPlaceholder": "Enter word #{wordNumber}",
   "wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInvalidMnemonics": "Invalid recovery phrase",
   "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.offline": "I understand that the simplest way to keep my wallet recovery phrase secure is to never store it digitally or online. If I decide to use an online service, such as a password manager with an encrypted database, it is my responsibility to make sure that I use it correctly.",
   "wallet.backup.recovery.phrase.entry.dialog.terms.and.condition.recovery": "I understand that the only way to recover my wallet if my computer is lost, broken, stolen, or stops working is to use my wallet recovery phrase.",
