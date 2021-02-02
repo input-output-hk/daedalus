@@ -62,6 +62,16 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     onClose: () => {},
   };
 
+  isMounted = false;
+
+  componentDidMount() {
+    this.isMounted = true;
+  }
+
+  componentWillUnmount() {
+    this.isMounted = false;
+  }
+
   handleIsWalletAcceptable = (
     walletAmount?: BigNumber,
     walletReward?: BigNumber = 0
@@ -258,7 +268,11 @@ export default class DelegationSetupWizardDialogContainer extends Component<
 
     // Update state only if DelegationSetupWizardDialog is still active
     // and fee calculation was successful
-    if (isOpen(DelegationSetupWizardDialog) && stakePoolJoinFee) {
+    if (
+      this.isMounted &&
+      isOpen(DelegationSetupWizardDialog) &&
+      stakePoolJoinFee
+    ) {
       this.setState({ stakePoolJoinFee });
     }
   }
