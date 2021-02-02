@@ -499,17 +499,22 @@ export default class HardwareWalletsStore extends Store {
           logger.debug(
             '[HW-DEBUG] HWStore - Connect - TRANSACTION initiated - return last device'
           );
-          console.debug(
-            '[HW-DEBUG] HWStore - Connect - TRANSACTION initiated - return last device'
-          );
           lastDeviceTransport = await getHardwareWalletTransportChannel.request(
             {
               devicePath: null, // Use last plugged device
               isTrezor: relatedConnectionDataDeviceType === DeviceTypes.TREZOR,
             }
           );
-        }
+          console.debug(
+            '>>> HWStore - Connect - TRANSACTION initiated - return last device', {
+              lastDeviceTransport
+            }
+          );
+          runInAction('HardwareWalletsStore:: Set transport device', () => {
+            this.transportDevice = lastDeviceTransport;
+          });
 
+        }
         return lastDeviceTransport;
       }
       // End of Tx Special cases!
@@ -922,6 +927,9 @@ export default class HardwareWalletsStore extends Store {
     logger.debug('[HW-DEBUG] - extendedPublicKey');
     this.hwDeviceStatus = HwDeviceStatuses.EXPORTING_PUBLIC_KEY;
     const { transportDevice } = this;
+
+    console.debug('>>>> _getExtendedPublicKey transportDevice: ', transportDevice);
+
     if (!transportDevice) {
       throw new Error(
         'Can not export extended public key: Device not recognized!'
@@ -1069,6 +1077,7 @@ export default class HardwareWalletsStore extends Store {
               this._signTransactionLedger(walletId, devicePath);
             }
           }
+          return;
         }
 
         // --> Else
@@ -1077,7 +1086,7 @@ export default class HardwareWalletsStore extends Store {
         return;
       }
 
-      console.debug('>>> _getExtendedPublicKey - Software Wallet NOT recognized - Create / Restore new one');
+      console.debug('>>> _getExtendedPublicKey - Software Wallet NOT recognized - create new one or reject TX ?');
       logger.debug(
         '[HW-DEBUG] HWStore - I don not have recognized wallet - create new one or reject TX: ',
         { deviceId }
@@ -1085,6 +1094,7 @@ export default class HardwareWalletsStore extends Store {
 
       // Software Wallet not recognized and TX initiated. Show error
       if (this.isTransactionInitiated) {
+        console.debug('>>> _getExtendedPublicKey - Software Wallet NOT recognized - reject TX');
         logger.debug(
           '[HW-DEBUG] HWStore - Device not belongs to this wallet'
         );
@@ -1100,6 +1110,7 @@ export default class HardwareWalletsStore extends Store {
         );
         return;
       }
+      console.debug('>>> _getExtendedPublicKey - Software Wallet NOT recognized - Create / Restore new one');
 
       // Software Wallet not recognized, create new one with default name
       await this.actions.wallets.createHardwareWallet.trigger({
@@ -1503,6 +1514,11 @@ export default class HardwareWalletsStore extends Store {
       walletId,
     });
 
+    console.debug('>>> INITIATE TRANSACTION: ', {
+      walletId,
+      hardwareWalletConnectionData,
+    });
+
     // Guard against potential null value
     if (!hardwareWalletConnectionData)
       throw new Error('Wallet not paired or Device not connected');
@@ -1513,6 +1529,7 @@ export default class HardwareWalletsStore extends Store {
     let devicePath = hardwareWalletConnectionData.device.path;
     let deviceId;
     if (disconnected) {
+      console.debug('>>> INITIATE TRANSACTION - disconnected');
       logger.debug('[HW-DEBUG] HWStore - initiateTransaction - DISCONNECTED');
       // Wait for connection to be established and continue to signing process
       try {
@@ -1538,9 +1555,10 @@ export default class HardwareWalletsStore extends Store {
             });
           }
           logger.debug('[HW-DEBUG] INITIATE tx - I have transport');
-          // throw new Error('Signing device not recognized!');
         } else {
+          console.debug('>>> INITIATE TRANSACTION - establish connection');
           transportDevice = await this.establishHardwareWalletConnection();
+          console.debug('>>> INITIATE TRANSACTION - establish connection DONE: ', transportDevice);
         }
 
         if (!transportDevice) {
@@ -1572,10 +1590,19 @@ export default class HardwareWalletsStore extends Store {
     // Add more cases / edge cases if needed
     if (deviceType === DeviceTypes.TREZOR && walletId) {
       logger.debug('[HW-DEBUG] Sign Trezor: ', { id });
-      this._signTransactionTrezor(walletId, deviceId);
-      runInAction('HardwareWalletsStore:: Initiate transaction', () => {
-        this.isTransactionInitiated = false;
+      console.debug('>>> TEST 1: ', transportDevice);
+
+      const transportDevice = await this.establishHardwareWalletConnection();
+      runInAction('HardwareWalletsStore:: Set transport device fomr tx init', () => {
+        this.transportDevice = transportDevice;
       });
+      console.debug('>>> TEST 2: ', transportDevice);
+      await this._getExtendedPublicKey(transportDevice.path, walletId);
+
+      // this._signTransactionTrezor(walletId, deviceId);
+      // runInAction('HardwareWalletsStore:: Initiate transaction', () => {
+      //   this.isTransactionInitiated = false;
+      // });
     } else {
       logger.debug(
         '[HW-DEBUG] HWStore - getCardanoAdaApp - from  initiateTransaction',
