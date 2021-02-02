@@ -62,14 +62,17 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     onClose: () => {},
   };
 
-  isMounted = false;
+  // We need to track the mounted state in order to avoid calling
+  // setState promise handling code after the component was already unmounted:
+  // Read more: https://facebook.github.io/react/blog/2015/12/16/ismounted-antipattern.html
+  _isMounted = false;
 
   componentDidMount() {
-    this.isMounted = true;
+    this._isMounted = true;
   }
 
   componentWillUnmount() {
-    this.isMounted = false;
+    this._isMounted = false;
   }
 
   handleIsWalletAcceptable = (
@@ -266,10 +269,10 @@ export default class DelegationSetupWizardDialogContainer extends Component<
       });
     }
 
-    // Update state only if DelegationSetupWizardDialog is still active
+    // Update state only if DelegationSetupWizardDialog is still mounted and active
     // and fee calculation was successful
     if (
-      this.isMounted &&
+      this._isMounted &&
       isOpen(DelegationSetupWizardDialog) &&
       stakePoolJoinFee
     ) {
