@@ -175,14 +175,6 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
     ]);
     const wordCount = WALLET_RECOVERY_PHRASE_WORD_COUNT;
     const enteredPhraseString = enteredPhrase.join(' ');
-    const recoveryPhraseInputPlaceholder = enteredPhrase.length
-      ? intl.formatMessage(messages.recoveryPhraseInputPlaceholder, {
-          wordNumber: enteredPhrase.length + 1,
-        })
-      : intl.formatMessage(messages.recoveryPhraseInputHint, {
-          numberOfWords: wordCount,
-        });
-
     const buttonLabel = !isSubmitting ? (
       intl.formatMessage(messages.buttonLabelConfirm)
     ) : (
@@ -224,7 +216,12 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
             <Autocomplete
               {...recoveryPhraseField.bind()}
               label={intl.formatMessage(messages.recoveryPhraseInputLabel)}
-              placeholder={recoveryPhraseInputPlaceholder}
+              placeholder={intl.formatMessage(
+                messages.recoveryPhraseInputPlaceholder,
+                {
+                  wordNumber: enteredPhrase.length + 1,
+                }
+              )}
               options={suggestedMnemonics}
               requiredSelections={[wordCount]}
               requiredSelectionsInfo={(required, actual) =>

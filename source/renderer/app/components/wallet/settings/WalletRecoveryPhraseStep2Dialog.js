@@ -155,7 +155,6 @@ export default class WalletRecoveryPhraseStep2Dialog extends Component<
         <div className={styles.subtitle}>
           <p>{intl.formatMessage(messages.recoveryPhraseStep2Description)}</p>
         </div>
-
         <Autocomplete
           {...recoveryPhraseField.bind()}
           label={intl.formatMessage(messages.recoveryPhraseStep2Subtitle)}
