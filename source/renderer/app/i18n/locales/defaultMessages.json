@@ -5357,13 +5357,13 @@
         "description": "Title \"Earned delegation rewards\" label on the staking rewards page.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 28
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.title",
         "start": {
           "column": 9,
-          "line": 19
+          "line": 23
         }
       },
       {
@@ -5371,13 +5371,13 @@
         "description": "Label for the \"Export CSV\" button on the staking rewards page.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 34
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.exportButtonLabel",
         "start": {
           "column": 21,
-          "line": 25
+          "line": 29
         }
       },
       {
@@ -5385,13 +5385,13 @@
         "description": "\"No rewards\" rewards label on staking rewards page.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 39
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.no.rewards",
         "start": {
           "column": 13,
-          "line": 31
+          "line": 35
         }
       },
       {
@@ -5399,13 +5399,13 @@
         "description": "Table header \"Date\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 44
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.date",
         "start": {
           "column": 19,
-          "line": 36
+          "line": 40
         }
       },
       {
@@ -5413,13 +5413,13 @@
         "description": "Table header \"Stake pool\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 49
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.pool",
         "start": {
           "column": 19,
-          "line": 41
+          "line": 45
         }
       },
       {
@@ -5427,13 +5427,13 @@
         "description": "Table header \"Wallet\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 50
+          "line": 54
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.wallet",
         "start": {
           "column": 21,
-          "line": 46
+          "line": 50
         }
       },
       {
@@ -5441,13 +5441,13 @@
         "description": "Table header \"Reward\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 59
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.tableHeader.reward",
         "start": {
           "column": 21,
-          "line": 51
+          "line": 55
         }
       },
       {
@@ -5455,13 +5455,13 @@
         "description": "Label for \"Learn more\" button on staking rewards page",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 64
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.learnMore.ButtonLabel",
         "start": {
           "column": 24,
-          "line": 56
+          "line": 60
         }
       },
       {
@@ -5469,13 +5469,13 @@
         "description": "Rewards description text on staking rewards page",
         "end": {
           "column": 3,
-          "line": 66
+          "line": 70
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewards.js",
         "id": "staking.rewards.note",
         "start": {
           "column": 8,
-          "line": 61
+          "line": 65
         }
       }
     ],
@@ -5488,13 +5488,13 @@
         "description": "Title \"Earned delegation rewards\" label on the staking rewards page.",
         "end": {
           "column": 3,
-          "line": 27
+          "line": 31
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.title",
         "start": {
           "column": 9,
-          "line": 22
+          "line": 26
         }
       },
       {
@@ -5502,13 +5502,13 @@
         "description": "Filename prefix for the \"Export CSV\" on the staking rewards page.",
         "end": {
           "column": 3,
-          "line": 33
+          "line": 37
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.csvFilenamePrefix",
         "start": {
           "column": 21,
-          "line": 28
+          "line": 32
         }
       },
       {
@@ -5516,13 +5516,13 @@
         "description": "Label for the \"Export CSV\" button on the staking rewards page.",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 43
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.exportButtonLabel",
         "start": {
           "column": 21,
-          "line": 34
+          "line": 38
         }
       },
       {
@@ -5530,13 +5530,13 @@
         "description": "\"No rewards\" rewards label on staking rewards page.",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 48
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.no.rewards",
         "start": {
           "column": 13,
-          "line": 40
+          "line": 44
         }
       },
       {
@@ -5544,13 +5544,13 @@
         "description": "Table header \"Wallet\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 53
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.tableHeader.wallet",
         "start": {
           "column": 21,
-          "line": 45
+          "line": 49
         }
       },
       {
@@ -5558,13 +5558,13 @@
         "description": "Table header \"Reward\" label on staking rewards page",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 58
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.tableHeader.reward",
         "start": {
           "column": 21,
-          "line": 50
+          "line": 54
         }
       },
       {
@@ -5572,13 +5572,13 @@
         "description": "Table header \"Date\" label in exported csv file",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 63
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.tableHeader.date",
         "start": {
           "column": 19,
-          "line": 55
+          "line": 59
         }
       },
       {
@@ -5586,13 +5586,13 @@
         "description": "Label for \"Learn more\" button on staking rewards page",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 68
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.learnMore.ButtonLabel",
         "start": {
           "column": 24,
-          "line": 60
+          "line": 64
         }
       },
       {
@@ -5600,13 +5600,13 @@
         "description": "Rewards description text on staking rewards page",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 74
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.rewards.note",
         "start": {
           "column": 8,
-          "line": 65
+          "line": 69
         }
       },
       {
@@ -5614,13 +5614,13 @@
         "description": "unknown stake pool label on staking rewards page.",
         "end": {
           "column": 3,
-          "line": 75
+          "line": 79
         },
         "file": "source/renderer/app/components/staking/rewards/StakingRewardsForIncentivizedTestnet.js",
         "id": "staking.delegationCenter.syncingTooltipLabel",
         "start": {
           "column": 23,
-          "line": 71
+          "line": 75
         }
       }
     ],
