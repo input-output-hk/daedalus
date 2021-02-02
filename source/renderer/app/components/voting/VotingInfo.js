@@ -9,9 +9,6 @@ import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import SVGInline from 'react-svg-inline';
 import BorderedBox from '../widgets/BorderedBox';
 import styles from './VotingInfo.scss';
-import downloadAppIcon from '../../assets/images/voting/download-app-ic.inline.svg';
-import openAppIcon from '../../assets/images/voting/open-app-ic.inline.svg';
-import waitIcon from '../../assets/images/voting/wait-ic.inline.svg';
 import downloadAppStoreIcon from '../../assets/images/voting/download-app-store-icon-ic.inline.svg';
 import downloadPlayStoreIcon from '../../assets/images/voting/download-play-store-icon-ic.inline.svg';
 

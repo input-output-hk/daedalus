@@ -3,7 +3,6 @@ import React, { Component, Fragment } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import { observer } from 'mobx-react';
 import SVGInline from 'react-svg-inline';
-import confirmMessageIcon from '../../../assets/images/voting/confirm-step-message-ic.inline.svg';
 import confirmErrorMessageIcon from '../../../assets/images/voting/confirm-step-error-message-ic.inline.svg';
 import ProgressBarLarge from '../../widgets/ProgressBarLarge';
 import { VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS } from '../../../config/votingConfig';
@@ -83,7 +82,6 @@ export default class VotingRegistrationStepsConfirm extends Component<Props> {
       transactionError,
     } = this.props;
 
-    const description = intl.formatMessage(messages.description);
     const message1 = intl.formatMessage(messages.message1);
     const descriptionRestart = intl.formatMessage(messages.descriptionRestart);
     const errorMessage = intl.formatMessage(messages.errorMessage);

@@ -2,8 +2,7 @@
 import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
-import { withKnobs, boolean, number, text } from '@storybook/addon-knobs';
-import { observable } from 'mobx';
+import { withKnobs, boolean, number } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
 import StoryDecorator from '../_support/StoryDecorator';
 import VotingRegistrationStepsChooseWallet from '../../../source/renderer/app/components/voting/voting-registration-wizar-steps/VotingRegistrationStepsChooseWallet';
@@ -41,7 +40,7 @@ storiesOf('Voting|Voting Registration Wizard', module)
       onSelectWallet={action('onSelectWallet')}
       wallets={WALLETS}
       minVotingRegistrationFunds={VOTING_REGISTRATION_MIN_WALLET_FUNDS}
-      selectedWalletId={WALLETS[0]}
+      selectedWalletId={WALLETS[0].id}
       isWalletAcceptable={action('isWalletAcceptable')}
       getStakePoolById={action('getStakePoolById')}
     />
