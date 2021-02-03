@@ -26,8 +26,8 @@ function BytesView({ value }: { value: MetadataBytes }) {
 function ListView({ value }: { value: MetadataList }) {
   return (
     <ol className={styles.list}>
-      {value.list.map((v) => (
-        <li>
+      {value.list.map((v, index) => (
+        <li key={index}>
           <MetadataValueView value={v} />
         </li>
       ))}
@@ -38,8 +38,8 @@ function ListView({ value }: { value: MetadataList }) {
 function MapView({ value }: { value: MetadataMap }) {
   return (
     <ol className={styles.map}>
-      {value.map.map((v) => (
-        <li>
+      {value.map.map((v, index) => (
+        <li key={index}>
           <MetadataValueView value={v.k} />: <MetadataValueView value={v.v} />
         </li>
       ))}
@@ -71,7 +71,7 @@ export function TransactionMetadataView(props: { data: TransactionMetadata }) {
   return (
     <div className={styles.root}>
       {Object.keys(props.data).map((key: string) => (
-        <MetadataValueView value={props.data[key]} />
+        <MetadataValueView key={key} value={props.data[key]} />
       ))}
     </div>
   );

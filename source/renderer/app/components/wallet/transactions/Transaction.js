@@ -207,9 +207,10 @@ export default class Transaction extends Component<Props, State> {
     // Tell parent components that meta data was toggled
     if (
       !prevState.showUnmoderatedMetadata &&
-      this.state.showUnmoderatedMetadata
+      this.state.showUnmoderatedMetadata &&
+      this.props.onShowMetadata
     ) {
-      this.props?.onShowMetadata();
+      this.props.onShowMetadata();
     }
   }
 
