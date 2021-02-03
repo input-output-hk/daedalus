@@ -3,8 +3,15 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import {
+  defineMessages,
+  intlShape,
+  FormattedHTMLMessage,
+  FormattedMessage,
+} from 'react-intl';
 import SVGInline from 'react-svg-inline';
+import { Link } from 'react-polymorph/lib/components/Link';
+import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import { get } from 'lodash';
 import ledgerIcon from '../../assets/images/hardware-wallet/ledger-cropped.inline.svg';
 import ledgerXIcon from '../../assets/images/hardware-wallet/ledger-x-cropped.inline.svg';
@@ -51,6 +58,22 @@ const messages = defineMessages({
     defaultMessage:
       '!!!<p><b>Daedalus currently supports only Trezor Model T hardware wallet devices.</b></p><p>If you are <b>pairing your device with Daedalus for the first time</b>, please follow the instructions below.</p><p>If you have <b>already paired your device with Daedalus</b>, you don’t need to repeat this step. Just connect your device when you need to confirm a transaction.</p>',
     description: 'Follow instructions label',
+  },
+  connectingIssueSupportLabel: {
+    id: 'wallet.connect.dialog.connectingIssueSupportLabel',
+    defaultMessage:
+      '!!!If you are experiencing issues pairing your hardware wallet device, please {supportLink}',
+    description: 'Connecting issue support description',
+  },
+  connectingIssueSupportLink: {
+    id: 'wallet.connect.dialog.connectingIssueSupportLink',
+    defaultMessage: '!!!read the instructions.',
+    description: 'Connecting issue support link',
+  },
+  connectingIssueSupportLinkUrl: {
+    id: 'wallet.connect.dialog.connectingIssueSupportLinkUrl',
+    defaultMessage: 'https://support.ledger.com/hc/en-us/articles/115005165269',
+    description: 'Link to support article',
   },
 });
 
@@ -133,6 +156,19 @@ export default class WalletConnectDialog extends Component<Props> {
       ? messages.instructions
       : messages.instructionsTrezorOnly;
 
+    const supportLink = (
+      <Link
+        className={styles.externalLink}
+        onClick={() =>
+          onExternalLinkClick(
+            intl.formatMessage(messages.connectingIssueSupportLinkUrl)
+          )
+        }
+        label={intl.formatMessage(messages.connectingIssueSupportLink)}
+        skin={LinkSkin}
+      />
+    );
+
     return (
       <Dialog
         className={dialogClasses}
@@ -173,6 +209,14 @@ export default class WalletConnectDialog extends Component<Props> {
                   onExternalLinkClick={onExternalLinkClick}
                   isTransactionStatus={false}
                 />
+              </div>
+              <div className={styles.hardwareWalletIssueArticleWrapper}>
+                <p>
+                  <FormattedMessage
+                    {...messages.connectingIssueSupportLabel}
+                    values={{ supportLink }}
+                  />
+                </p>
               </div>
             </div>
           )}
