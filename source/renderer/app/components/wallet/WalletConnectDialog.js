@@ -164,7 +164,6 @@ export default class WalletConnectDialog extends Component<Props> {
             intl.formatMessage(messages.connectingIssueSupportLinkUrl)
           )
         }
-        hasIconAfter={false}
         label={intl.formatMessage(messages.connectingIssueSupportLink)}
         skin={LinkSkin}
       />
