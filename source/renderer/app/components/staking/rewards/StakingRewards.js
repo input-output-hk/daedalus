@@ -3,11 +3,15 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
-import { get, map, orderBy } from 'lodash';
+import { get, map } from 'lodash';
 import classNames from 'classnames';
-import { BigNumber } from 'bignumber.js';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
+import {
+  bigNumberComparator,
+  stringComparator,
+  dateComparator,
+} from '../../../utils/sortComparators';
 import BorderedBox from '../../widgets/BorderedBox';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import sortIcon from '../../../assets/images/ascending.inline.svg';
@@ -66,6 +70,21 @@ const messages = defineMessages({
   },
 });
 
+const REWARD_FIELDS = {
+  WALLET_NAME: 'wallet',
+  IS_RESTORING: 'isRestoring',
+  POOL: 'pool',
+  NAME: 'name',
+  TICKER: 'ticker',
+  REWARD: 'reward',
+  DATE: 'date',
+};
+
+const REWARD_ORDERS = {
+  ASCENDING: 'asc',
+  DESCENDING: 'desc',
+};
+
 type Props = {
   rewards: Array<Reward>,
   isLoading: boolean,
@@ -87,46 +106,89 @@ export default class StakingRewards extends Component<Props, State> {
     isLoading: false,
   };
 
-  constructor() {
-    super();
+  constructor(props: Props) {
+    super(props);
     this.state = {
-      rewardsOrder: 'desc',
-      rewardsSortBy: 'date',
+      rewardsOrder: REWARD_ORDERS.DESCENDING,
+      rewardsSortBy: REWARD_FIELDS.DATE,
     };
   }
 
-  render() {
+  getSortedRewards = (): Array<Reward> => {
+    const { rewards } = this.props;
     const { rewardsOrder, rewardsSortBy } = this.state;
-    const { rewards, isLoading, onLearnMoreClick } = this.props;
+    return rewards.slice().sort((rewardA: Reward, rewardB: Reward) => {
+      const rewardCompareResult = bigNumberComparator(
+        rewardA.reward,
+        rewardB.reward,
+        rewardsOrder === REWARD_ORDERS.ASCENDING
+      );
+      const walletNameCompareResult = stringComparator(
+        rewardA.wallet,
+        rewardB.wallet,
+        rewardsOrder === REWARD_ORDERS.ASCENDING
+      );
+      const poolCompareResult = stringComparator(
+        rewardA.pool.name,
+        rewardB.pool.name,
+        rewardsOrder === REWARD_ORDERS.ASCENDING
+      );
+      const dateCompareResult = dateComparator(
+        rewardA.date,
+        rewardB.date,
+        rewardsOrder === REWARD_ORDERS.ASCENDING
+      );
+      if (rewardsSortBy === REWARD_FIELDS.REWARD) {
+        if (rewardCompareResult === 0) {
+          return walletNameCompareResult;
+        }
+        return rewardCompareResult;
+      }
+      if (rewardsSortBy === REWARD_FIELDS.WALLET_NAME) {
+        if (walletNameCompareResult === 0) {
+          return rewardCompareResult;
+        }
+        return walletNameCompareResult;
+      }
+      if (rewardsSortBy === REWARD_FIELDS.DATE) {
+        if (dateCompareResult === 0) {
+          return walletNameCompareResult;
+        }
+        return dateCompareResult;
+      }
+      if (rewardsSortBy === REWARD_FIELDS.POOL) {
+        if (poolCompareResult === 0) {
+          return walletNameCompareResult;
+        }
+        return poolCompareResult;
+      }
 
+      return 0;
+    });
+  };
+
+  render() {
+    const { rewards, isLoading, onLearnMoreClick } = this.props;
+    const { rewardsOrder, rewardsSortBy } = this.state;
     const { intl } = this.context;
     const noRewards = !isLoading && ((rewards && !rewards.length) || !rewards);
     const showRewards = rewards && rewards.length > 0 && !isLoading;
-
-    let sortedRewards;
-    if (showRewards) {
-      sortedRewards = orderBy(
-        rewards,
-        rewardsSortBy === 'pool' ? 'pool.name' : rewardsSortBy,
-        rewardsOrder
-      );
-    }
-
+    const sortedRewards = showRewards ? this.getSortedRewards() : [];
     const availableTableHeaders = [
       {
-        name: 'date',
+        name: REWARD_FIELDS.DATE,
         title: intl.formatMessage(messages.tableHeaderDate),
       },
       {
-        name: 'pool',
+        name: REWARD_FIELDS.POOL,
         title: intl.formatMessage(messages.tableHeaderPool),
       },
       {
-        name: 'wallet',
+        name: REWARD_FIELDS.WALLET_NAME,
         title: intl.formatMessage(messages.tableHeaderWallet),
       },
       {
-        name: 'reward',
+        name: REWARD_FIELDS.REWARD,
         title: intl.formatMessage(messages.tableHeaderReward),
       },
     ];
@@ -179,12 +241,28 @@ export default class StakingRewards extends Component<Props, State> {
               </thead>
               <tbody>
                 {map(sortedRewards, (reward, key) => {
-                  const rewardDate = get(reward, 'date', '');
-                  const rewardPoolTicker = get(reward, ['pool', 'ticker'], '');
-                  const rewardPoolName = get(reward, ['pool', 'name'], '');
-                  const rewardWallet = get(reward, 'wallet', '');
-                  const rewardAmount = get(reward, 'reward', '');
-                  const isRestoring = get(reward, 'isRestoring');
+                  const rewardDate = get(reward, REWARD_FIELDS.DATE, '');
+                  const rewardPoolTicker = get(
+                    reward,
+                    [REWARD_FIELDS.POOL, REWARD_FIELDS.TICKER],
+                    ''
+                  );
+                  const rewardPoolName = get(
+                    reward,
+                    [REWARD_FIELDS.POOL, REWARD_FIELDS.NAME],
+                    ''
+                  );
+                  const rewardWallet = get(
+                    reward,
+                    REWARD_FIELDS.WALLET_NAME,
+                    ''
+                  );
+                  const isRestoring = get(reward, REWARD_FIELDS.IS_RESTORING);
+                  const rewardAmount = get(
+                    reward,
+                    REWARD_FIELDS.REWARD
+                  ).toFormat(DECIMAL_PLACES_IN_ADA);
+
                   return (
                     <tr key={key}>
                       <td>{rewardDate}</td>
@@ -197,13 +275,7 @@ export default class StakingRewards extends Component<Props, State> {
                         </p>
                       </td>
                       <td>{rewardWallet}</td>
-                      <td>
-                        {isRestoring
-                          ? '-'
-                          : `${new BigNumber(rewardAmount).toFormat(
-                              DECIMAL_PLACES_IN_ADA
-                            )} ADA`}
-                      </td>
+                      <td>{isRestoring ? '-' : `${rewardAmount} ADA`}</td>
                     </tr>
                   );
                 })}
