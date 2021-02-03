@@ -9,6 +9,7 @@ import { defineMessages, FormattedMessage, intlShape } from 'react-intl';
 import styles from './VotingRegistrationDialog.scss';
 import Dialog from '../../../widgets/Dialog';
 import DialogCloseButton from '../../../widgets/DialogCloseButton';
+import DialogBackButton from '../../../widgets/DialogBackButton';
 import type { DialogActions } from '../../../widgets/Dialog';
 
 const messages = defineMessages({
@@ -26,12 +27,14 @@ const messages = defineMessages({
 
 type Props = {
   children: Node,
-  onClose: Function,
   stepsList: Array<string>,
   activeStep: number,
   actions: DialogActions,
+  onClose: Function,
+  onBack?: Function,
   containerClassName?: ?string,
   contentClassName?: ?string,
+  hideSteps?: boolean,
 };
 
 @observer
@@ -48,12 +51,14 @@ export default class VotingRegistrationDialog extends Component<Props> {
     const { intl } = this.context;
     const {
       children,
-      onClose,
       activeStep,
       stepsList,
       actions,
+      onClose,
+      onBack,
       containerClassName,
       contentClassName,
+      hideSteps,
     } = this.props;
     const containerStyles = classnames([styles.container, containerClassName]);
     const contentStyles = classnames([styles.content, contentClassName]);
@@ -65,22 +70,27 @@ export default class VotingRegistrationDialog extends Component<Props> {
         closeOnOverlayClick={false}
         onClose={onClose}
         closeButton={<DialogCloseButton />}
+        backButton={onBack && <DialogBackButton onBack={onBack} />}
         actions={actions}
       >
-        <div className={styles.subtitle}>
-          <FormattedMessage
-            {...messages.subtitle}
-            values={{ step: activeStep, stepCount: stepsList.length }}
-          />
-        </div>
-        <div className={styles.votingRegistrationStepsIndicatorWrapper}>
-          <Stepper
-            steps={stepsList}
-            activeStep={activeStep}
-            skin={StepperSkin}
-            labelDisabled
-          />
-        </div>
+        {!hideSteps && (
+          <>
+            <div className={styles.subtitle}>
+              <FormattedMessage
+                {...messages.subtitle}
+                values={{ step: activeStep, stepCount: stepsList.length }}
+              />
+            </div>
+            <div className={styles.votingRegistrationStepsIndicatorWrapper}>
+              <Stepper
+                steps={stepsList}
+                activeStep={activeStep}
+                skin={StepperSkin}
+                labelDisabled
+              />
+            </div>
+          </>
+        )}
         <div className={containerStyles}>
           <div className={contentStyles}>{children}</div>
         </div>

@@ -49,6 +49,7 @@ storiesOf('Voting|Voting Registration Wizard', module)
   .add('Voting Registration - Step 2', () => (
     <VotingRegistrationStepsRegister
       onClose={action('onClose')}
+      onBack={action('onBack')}
       stepsList={stepsList}
       activeStep={2}
       transactionFee={

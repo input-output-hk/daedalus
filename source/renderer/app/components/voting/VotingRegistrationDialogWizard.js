@@ -14,10 +14,11 @@ import LocalizableError from '../../i18n/LocalizableError';
 import Wallet from '../../domains/Wallet';
 
 type Props = {
-  onClose: Function,
   stepsList: Array<string>,
   activeStep: number,
   onContinue: Function,
+  onClose: Function,
+  onBack: Function,
   onSelectWallet: Function,
   isWalletAcceptable: Function,
   wallets: Array<Wallet>,
@@ -42,7 +43,6 @@ type Props = {
 export default class VotingRegistrationDialogWizard extends Component<Props> {
   render() {
     const {
-      onClose,
       stepsList,
       activeStep,
       onContinue,
@@ -64,6 +64,8 @@ export default class VotingRegistrationDialogWizard extends Component<Props> {
       transactionError,
       onRestart,
       onExternalLinkClick,
+      onClose,
+      onBack,
     } = this.props;
 
     const selectedWalletId = get(selectedWallet, 'id', null);
@@ -97,6 +99,7 @@ export default class VotingRegistrationDialogWizard extends Component<Props> {
             transactionError={transactionError}
             isSubmitting={isTransactionPending}
             onConfirm={onSubmit}
+            onBack={onBack}
             onExternalLinkClick={onExternalLinkClick}
           />
         );

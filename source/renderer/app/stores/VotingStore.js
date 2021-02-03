@@ -33,7 +33,10 @@ export default class VotingStore extends Store {
     votingActions.selectWallet.listen(this._setSelectedWalletId);
     votingActions.sendTransaction.listen(this._sendTransaction);
     votingActions.generateQrCode.listen(this._generateQrCode);
-    votingActions.continueRegistration.listen(this._continueRegistration);
+    votingActions.nextRegistrationStep.listen(this._nextRegistrationStep);
+    votingActions.previousRegistrationStep.listen(
+      this._previousRegistrationStep
+    );
     votingActions.resetRegistration.listen(this._resetRegistration);
     votingActions.showConfirmationDialog.listen(this._showConfirmationDialog);
     votingActions.closeConfirmationDialog.listen(this._closeConfirmationDialog);
@@ -67,8 +70,12 @@ export default class VotingStore extends Store {
     this.selectedWalletId = walletId;
   };
 
-  @action _continueRegistration = () => {
+  @action _nextRegistrationStep = () => {
     this.registrationStep++;
+  };
+
+  @action _previousRegistrationStep = () => {
+    this.registrationStep--;
   };
 
   @action _resetRegistration = () => {
@@ -187,14 +194,14 @@ export default class VotingStore extends Store {
 
       this._setTransactionId(transaction.id);
       this._startTransactionPolling();
-      this._continueRegistration();
+      this._nextRegistrationStep();
     } catch (error) {
       if (error.code === 'wrong_encryption_passphrase') {
         // In case of a invalid spending password we stay on the same screen
         this._setIsTransactionPending(false);
       } else {
         // For any other error code we proceed to the next screen
-        this._continueRegistration();
+        this._nextRegistrationStep();
       }
       throw error;
     }
@@ -218,7 +225,7 @@ export default class VotingStore extends Store {
       this.votingRegistrationKey.bytes()
     );
     this._setQrCode(formattedArrayBufferToHexString(encrypt));
-    this._continueRegistration();
+    this._nextRegistrationStep();
   };
 
   _checkVotingRegistrationTransaction = async () => {

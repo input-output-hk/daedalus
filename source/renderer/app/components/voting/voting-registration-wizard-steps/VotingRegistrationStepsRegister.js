@@ -67,7 +67,6 @@ const messages = defineMessages({
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
 type Props = {
-  onClose: Function,
   stepsList: Array<string>,
   activeStep: number,
   transactionFee: ?BigNumber,
@@ -75,6 +74,8 @@ type Props = {
   transactionError?: ?LocalizableError,
   isSubmitting: boolean,
   onConfirm: Function,
+  onClose: Function,
+  onBack: Function,
   onExternalLinkClick: Function,
 };
 
@@ -141,6 +142,7 @@ export default class VotingRegistrationStepsRegister extends Component<Props> {
       isSubmitting,
       onExternalLinkClick,
       onClose,
+      onBack,
       stepsList,
       activeStep,
     } = this.props;
@@ -167,6 +169,7 @@ export default class VotingRegistrationStepsRegister extends Component<Props> {
         stepsList={stepsList}
         activeStep={activeStep}
         actions={actions}
+        onBack={onBack}
         containerClassName={styles.component}
       >
         <p className={styles.description}>

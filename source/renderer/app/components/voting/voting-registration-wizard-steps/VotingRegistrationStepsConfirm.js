@@ -82,7 +82,6 @@ export default class VotingRegistrationStepsConfirm extends Component<Props> {
   render() {
     const { intl } = this.context;
     const {
-      onClose,
       stepsList,
       activeStep,
       onConfirm,
@@ -91,6 +90,7 @@ export default class VotingRegistrationStepsConfirm extends Component<Props> {
       isTransactionConfirmed,
       transactionConfirmations,
       transactionError,
+      onClose,
     } = this.props;
 
     const description = intl.formatMessage(messages.description);
@@ -135,11 +135,14 @@ export default class VotingRegistrationStepsConfirm extends Component<Props> {
 
     return (
       <VotingRegistrationDialog
-        onClose={onClose}
+        onClose={() => {
+          onClose(!transactionError);
+        }}
         stepsList={stepsList}
         activeStep={activeStep}
         actions={actions}
         containerClassName={styles.component}
+        hideSteps={!!transactionError}
       >
         {transactionError ? (
           <Fragment>

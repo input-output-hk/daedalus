@@ -125,7 +125,11 @@ export default class VotingRegistrationDialogContainer extends Component<
   };
 
   handleContinue = () => {
-    this.props.actions.voting.continueRegistration.trigger();
+    this.props.actions.voting.nextRegistrationStep.trigger();
+  };
+
+  handleBack = () => {
+    this.props.actions.voting.previousRegistrationStep.trigger();
   };
 
   handleSelectWallet = (walletId: string) => {
@@ -193,6 +197,7 @@ export default class VotingRegistrationDialogContainer extends Component<
           onSetPinCode={this.handleSetPinCode}
           onSubmit={this.handleSendTransaction}
           onRestart={this.handleRestart}
+          onBack={this.handleBack}
           transactionFee={transactionFee}
           transactionFeeError={transactionFeeError}
           qrCode={qrCode}

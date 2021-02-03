@@ -8204,13 +8204,13 @@
         "description": "Tile \"Register to vote\" for voting registration",
         "end": {
           "column": 3,
-          "line": 19
+          "line": 20
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/widgets/VotingRegistrationDialog.js",
         "id": "voting.votingRegistration.dialog.dialogTitle",
         "start": {
           "column": 15,
-          "line": 15
+          "line": 16
         }
       },
       {
@@ -8218,13 +8218,13 @@
         "description": "Sub title for voting registration",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 25
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/widgets/VotingRegistrationDialog.js",
         "id": "voting.votingRegistration.dialog.subtitle",
         "start": {
           "column": 12,
-          "line": 20
+          "line": 21
         }
       }
     ],

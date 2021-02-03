@@ -8,7 +8,8 @@ export default class VotingActions {
     amount: number,
     passphrase: string,
   }> = new Action();
-  continueRegistration: Action<any> = new Action();
+  nextRegistrationStep: Action<any> = new Action();
+  previousRegistrationStep: Action<any> = new Action();
   resetRegistration: Action<any> = new Action();
   showConfirmationDialog: Action<any> = new Action();
   closeConfirmationDialog: Action<any> = new Action();

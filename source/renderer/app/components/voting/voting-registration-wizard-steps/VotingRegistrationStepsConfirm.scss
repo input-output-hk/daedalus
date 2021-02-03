@@ -35,6 +35,11 @@
   .description {
     color: var(--theme-voting-registration-steps-description-color);
     margin-top: 15px;
+
+    span > span {
+      font-family: var(--font-medium);
+      font-weight: bold;
+    }
   }
 
   .errorMessage {
