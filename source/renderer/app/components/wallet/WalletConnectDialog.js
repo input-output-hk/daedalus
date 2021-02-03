@@ -3,8 +3,15 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import classnames from 'classnames';
-import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import {
+  defineMessages,
+  intlShape,
+  FormattedHTMLMessage,
+  FormattedMessage,
+} from 'react-intl';
 import SVGInline from 'react-svg-inline';
+import { Link } from 'react-polymorph/lib/components/Link';
+import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import { get } from 'lodash';
 import ledgerIcon from '../../assets/images/hardware-wallet/ledger-cropped.inline.svg';
 import ledgerXIcon from '../../assets/images/hardware-wallet/ledger-x-cropped.inline.svg';
@@ -52,6 +59,28 @@ const messages = defineMessages({
       '!!!<p><b>Daedalus currently supports only Trezor Model T hardware wallet devices.</b></p><p>If you are <b>pairing your device with Daedalus for the first time</b>, please follow the instructions below.</p><p>If you have <b>already paired your device with Daedalus</b>, you don’t need to repeat this step. Just connect your device when you need to confirm a transaction.</p>',
     description: 'Follow instructions label',
   },
+  connectingIssueSupportLabel: {
+    id: 'wallet.connect.dialog.connectingIssueSupportLabel',
+    defaultMessage:
+      '!!!If you are experiencing issues pairing your device, please {supportLink}',
+    description: 'Connecting issue support description',
+  },
+  connectingIssueSupportLink: {
+    id: 'wallet.connect.dialog.connectingIssueSupportLink',
+    defaultMessage: '!!!read instructions',
+    description: 'Connecting issue support link',
+  },
+  connectingIssueSupportLinkUrl: {
+    id: 'wallet.connect.dialog.connectingIssueSupportLinkUrl',
+    defaultMessage: 'https://support.ledger.com/hc/en-us/articles/115005165269',
+    description: 'Link to support article',
+  },
+  connectingIssueSupportLinuxLinkUrl: {
+    id: 'wallet.connect.dialog.connectingIssueSupportLinuxLinkUrl',
+    defaultMessage:
+      'https://raw.githubusercontent.com/LedgerHQ/udev-rules/master/add_udev_rules.sh',
+    description: 'Link to Linux support article',
+  },
 });
 
 type Props = {
@@ -61,12 +90,21 @@ type Props = {
   transportDevice: ?TransportDevice,
   error: ?LocalizableError,
   onExternalLinkClick: Function,
+  isLinux: boolean,
 };
 
 @observer
 export default class WalletConnectDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
+  };
+
+  onSupportLinkClick = () => {
+    const { onExternalLinkClick, isLinux } = this.props;
+    const supportLinkUrl = isLinux
+      ? messages.connectingIssueSupportLinuxLinkUrl
+      : messages.connectingIssueSupportLinkUrl;
+    onExternalLinkClick(this.context.intl.formatMessage(supportLinkUrl));
   };
 
   render() {
@@ -133,6 +171,16 @@ export default class WalletConnectDialog extends Component<Props> {
       ? messages.instructions
       : messages.instructionsTrezorOnly;
 
+    const supportLink = (
+      <Link
+        className={styles.externalLink}
+        onClick={this.onSupportLinkClick}
+        hasIconAfter={false}
+        label={intl.formatMessage(messages.connectingIssueSupportLink)}
+        skin={LinkSkin}
+      />
+    );
+
     return (
       <Dialog
         className={dialogClasses}
@@ -163,9 +211,15 @@ export default class WalletConnectDialog extends Component<Props> {
           {error ? (
             <p className={styles.error}>{intl.formatMessage(error)}</p>
           ) : (
-            <div>
-              <p className={styles.hardwareWalletMessage}>
+            <div className={styles.hardwareWalletMessage}>
+              <p>
                 <FormattedHTMLMessage {...instructions} />
+              </p>
+              <p>
+                <FormattedMessage
+                  {...messages.connectingIssueSupportLabel}
+                  values={{ supportLink }}
+                />
               </p>
               <div className={styles.hardwareWalletStatusWrapper}>
                 <HardwareWalletStatus
