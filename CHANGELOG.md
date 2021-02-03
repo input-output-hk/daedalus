@@ -7,9 +7,15 @@ Changelog
 
 - Added SMASH server configuration options ([PR 2259](https://github.com/input-output-hk/daedalus/pull/2259))
 
+### Fixes
+
+- Removed steps counter from the "Success" wallet restoration dialog step ([PR 2335](https://github.com/input-output-hk/daedalus/pull/2335))
+
 ### Chores
 
-- Implemented dynamic TTL for Hardware Wallets transactions ([PR 2331](https://github.com/input-output-hk/daedalus/pull/2331))
+- Implemented dynamic TTL calculation for hardware wallets transactions ([PR 2331](https://github.com/input-output-hk/daedalus/pull/2331))
+- Updated recovery phrase entry ([PR 2334](https://github.com/input-output-hk/daedalus/pull/2334))
+- Adjusted sorting of table values on the "Rewards" screen ([PR 2333](https://github.com/input-output-hk/daedalus/pull/2333))
 - Fixed error thrown when closing delegation wizard while transaction fees are being calculated ([PR 2330](https://github.com/input-output-hk/daedalus/pull/2330))
 - Fixed number format for syncing percentage and stake pools count ([PR 2313](https://github.com/input-output-hk/daedalus/pull/2313))
 - Updated `cardano-wallet` to version `2021-01-28` and `cardano-node` to version `1.25.1` ([PR 2270](https://github.com/input-output-hk/daedalus/pull/2270))
