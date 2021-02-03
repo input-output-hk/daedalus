@@ -9531,16 +9531,16 @@
         }
       },
       {
-        "defaultMessage": "!!!Enter recovery phrase",
-        "description": "Hint \"Enter recovery phrase\" for the recovery phrase input on the wallet restore dialog.",
+        "defaultMessage": "!!!Enter word #{wordNumber}",
+        "description": "Placeholder \"Enter word #{wordNumber}\" for the recovery phrase input on the verification dialog.",
         "end": {
           "column": 3,
           "line": 49
         },
         "file": "source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog.js",
-        "id": "wallet.settings.recoveryPhraseInputHint",
+        "id": "wallet.settings.recoveryPhraseInputPlaceholder",
         "start": {
-          "column": 27,
+          "column": 34,
           "line": 44
         }
       },
