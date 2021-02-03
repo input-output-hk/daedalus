@@ -863,6 +863,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     this.setFormFields(false, index);
   };
 
+  // eslint-disable-next-line no-unused-vars
   addAssetRow = (index: number) => {};
 
   onSelectWallet = (walletId: string) => {
