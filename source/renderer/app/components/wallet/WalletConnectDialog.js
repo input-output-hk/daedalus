@@ -62,24 +62,18 @@ const messages = defineMessages({
   connectingIssueSupportLabel: {
     id: 'wallet.connect.dialog.connectingIssueSupportLabel',
     defaultMessage:
-      '!!!If you are experiencing issues pairing your device, please {supportLink}',
+      '!!!If you are experiencing issues pairing your hardware wallet device, please {supportLink}',
     description: 'Connecting issue support description',
   },
   connectingIssueSupportLink: {
     id: 'wallet.connect.dialog.connectingIssueSupportLink',
-    defaultMessage: '!!!read instructions',
+    defaultMessage: '!!!read the instructions.',
     description: 'Connecting issue support link',
   },
   connectingIssueSupportLinkUrl: {
     id: 'wallet.connect.dialog.connectingIssueSupportLinkUrl',
     defaultMessage: 'https://support.ledger.com/hc/en-us/articles/115005165269',
     description: 'Link to support article',
-  },
-  connectingIssueSupportLinuxLinkUrl: {
-    id: 'wallet.connect.dialog.connectingIssueSupportLinuxLinkUrl',
-    defaultMessage:
-      'https://raw.githubusercontent.com/LedgerHQ/udev-rules/master/add_udev_rules.sh',
-    description: 'Link to Linux support article',
   },
 });
 
@@ -90,21 +84,12 @@ type Props = {
   transportDevice: ?TransportDevice,
   error: ?LocalizableError,
   onExternalLinkClick: Function,
-  isLinux: boolean,
 };
 
 @observer
 export default class WalletConnectDialog extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
-  };
-
-  onSupportLinkClick = () => {
-    const { onExternalLinkClick, isLinux } = this.props;
-    const supportLinkUrl = isLinux
-      ? messages.connectingIssueSupportLinuxLinkUrl
-      : messages.connectingIssueSupportLinkUrl;
-    onExternalLinkClick(this.context.intl.formatMessage(supportLinkUrl));
   };
 
   render() {
@@ -174,7 +159,11 @@ export default class WalletConnectDialog extends Component<Props> {
     const supportLink = (
       <Link
         className={styles.externalLink}
-        onClick={this.onSupportLinkClick}
+        onClick={() =>
+          onExternalLinkClick(
+            intl.formatMessage(messages.connectingIssueSupportLinkUrl)
+          )
+        }
         hasIconAfter={false}
         label={intl.formatMessage(messages.connectingIssueSupportLink)}
         skin={LinkSkin}
@@ -211,15 +200,9 @@ export default class WalletConnectDialog extends Component<Props> {
           {error ? (
             <p className={styles.error}>{intl.formatMessage(error)}</p>
           ) : (
-            <div className={styles.hardwareWalletMessage}>
-              <p>
+            <div>
+              <p className={styles.hardwareWalletMessage}>
                 <FormattedHTMLMessage {...instructions} />
-              </p>
-              <p>
-                <FormattedMessage
-                  {...messages.connectingIssueSupportLabel}
-                  values={{ supportLink }}
-                />
               </p>
               <div className={styles.hardwareWalletStatusWrapper}>
                 <HardwareWalletStatus
@@ -227,6 +210,14 @@ export default class WalletConnectDialog extends Component<Props> {
                   onExternalLinkClick={onExternalLinkClick}
                   isTransactionStatus={false}
                 />
+              </div>
+              <div className={styles.hardwareWalletIssueArticleWrapper}>
+                <p>
+                  <FormattedMessage
+                    {...messages.connectingIssueSupportLabel}
+                    values={{ supportLink }}
+                  />
+                </p>
               </div>
             </div>
           )}

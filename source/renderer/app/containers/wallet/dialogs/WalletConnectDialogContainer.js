@@ -26,7 +26,6 @@ export default class WalletConnectDialogContainer extends Component<Props> {
     const { hardwareWallets, wallets, app } = stores;
     const { hwDeviceStatus, transportDevice } = hardwareWallets;
     const { createHardwareWalletRequest } = wallets;
-    const { isLinux } = app.environment;
 
     return (
       <WalletConnectDialog
@@ -35,7 +34,6 @@ export default class WalletConnectDialogContainer extends Component<Props> {
         onClose={this.onClose}
         hwDeviceStatus={hwDeviceStatus}
         transportDevice={transportDevice}
-        isLinux={isLinux}
         onExternalLinkClick={app.openExternalLink}
       />
     );

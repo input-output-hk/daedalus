@@ -71,18 +71,30 @@
           margin-top: 11px;
         }
       }
-
-      .externalLink {
-        font-family: var(--font-regular);
-        font-size: 16px;
-        margin-right: 4px;
-        word-break: break-word;
-      }
     }
 
     .hardwareWalletStatusWrapper {
       margin-top: 20px;
       width: 100%;
+    }
+
+    .hardwareWalletIssueArticleWrapper {
+      margin-top: 20px;
+
+      p {
+        color: var(--theme-hardware-wallet-message-color);
+        font-family: var(--font-light);
+        font-size: 16px;
+        line-height: 22px;
+      }
+
+      .externalLink {
+        border-bottom: none;
+        font-family: var(--font-regular);
+        font-size: 16px;
+        margin-right: 4px;
+        word-break: break-word;
+      }
     }
 
     .error {

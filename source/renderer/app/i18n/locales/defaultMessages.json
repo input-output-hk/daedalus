@@ -12808,7 +12808,7 @@
         }
       },
       {
-        "defaultMessage": "!!!If you are experiencing issues pairing your device, please {supportLink}",
+        "defaultMessage": "!!!If you are experiencing issues pairing your hardware wallet device, please {supportLink}",
         "description": "Connecting issue support description",
         "end": {
           "column": 3,
@@ -12822,7 +12822,7 @@
         }
       },
       {
-        "defaultMessage": "!!!read instructions",
+        "defaultMessage": "!!!read the instructions.",
         "description": "Connecting issue support link",
         "end": {
           "column": 3,
@@ -12847,20 +12847,6 @@
         "start": {
           "column": 33,
           "line": 73
-        }
-      },
-      {
-        "defaultMessage": "https://raw.githubusercontent.com/LedgerHQ/udev-rules/master/add_udev_rules.sh",
-        "description": "Link to Linux support article",
-        "end": {
-          "column": 3,
-          "line": 83
-        },
-        "file": "source/renderer/app/components/wallet/WalletConnectDialog.js",
-        "id": "wallet.connect.dialog.connectingIssueSupportLinuxLinkUrl",
-        "start": {
-          "column": 38,
-          "line": 78
         }
       }
     ],
