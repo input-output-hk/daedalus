@@ -1,5 +1,5 @@
 // @flow
-import { split, get, map, last, size, concat } from 'lodash';
+import { split, get, map, last, size, concat, sumBy } from 'lodash';
 import { action } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
@@ -206,10 +206,7 @@ import { getNewsHash } from './news/requests/getNewsHash';
 import { deleteTransaction } from './transactions/requests/deleteTransaction';
 import { WALLET_BYRON_KINDS } from '../config/walletRestoreConfig';
 import ApiError from '../domains/ApiError';
-import {
-  formattedAmountToLovelace,
-  formattedLovelaceToAmount,
-} from '../utils/formatters';
+import { formattedAmountToLovelace } from '../utils/formatters';
 
 const { isIncentivizedTestnet } = global;
 
@@ -962,36 +959,21 @@ export default class AdaApi {
           certificatesData.push(certificateData);
         });
       }
-      const fee = new BigNumber(totalInputs - totalOutputs).dividedBy(
-        LOVELACES_PER_ADA
-      );
 
-      let delegationDepositSum = 0;
-      if (response.deposits) {
-        map(response.deposits, (deposit) => {
-          delegationDepositSum += deposit.quantity;
-        });
-      }
-      const formattedDelegationDeposit = formattedLovelaceToAmount(
-        delegationDepositSum
-      );
-      const delegationDeposit = new BigNumber(formattedDelegationDeposit);
-
-      // On first wallet delegation fee also includes a deposit
-      let transactionFee;
-      if (delegation && delegation.delegationAction) {
-        const isDepositIncluded = fee.gt(delegationDeposit);
-        transactionFee = isDepositIncluded ? fee.minus(delegationDeposit) : fee;
-      } else {
-        transactionFee = fee;
-      }
+      const totalDeposits = sumBy(response.deposits, 'quantity');
+      const feeWithDeposits = new BigNumber(
+        totalInputs - totalOutputs
+      ).dividedBy(LOVELACES_PER_ADA);
+      const fee = new BigNumber(
+        totalInputs - totalOutputs - totalDeposits
+      ).dividedBy(LOVELACES_PER_ADA);
 
       const extendedResponse = {
         inputs: inputsData,
         outputs: outputsData,
         certificates: certificatesData,
-        feeWithDelegationDeposit: fee,
-        fee: transactionFee,
+        feeWithDeposits,
+        fee,
       };
 
       logger.debug('AdaApi::selectCoins success', { extendedResponse });
