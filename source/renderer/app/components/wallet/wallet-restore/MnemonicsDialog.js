@@ -23,7 +23,7 @@ import type {
 const messages = defineMessages({
   autocompletePlaceholder: {
     id: 'wallet.restore.dialog.step.mnemonics.autocomplete.placeholder',
-    defaultMessage: '!!!Enter your {numberOfWords}-word recovery phrase',
+    defaultMessage: '!!!Enter word #{wordNumber}',
     description: 'Placeholder for the mnemonics autocomplete.',
   },
   autocompleteMultiLengthPhrase: {
@@ -138,7 +138,7 @@ export default class MnemonicsDialog extends Component<Props> {
               Array.isArray(expectedWordCount)
                 ? intl.formatMessage(messages.autocompleteMultiLengthPhrase)
                 : intl.formatMessage(messages.autocompletePlaceholder, {
-                    numberOfWords: expectedWordCount,
+                    wordNumber: mnemonics.length + 1,
                   })
             }
             options={validWords}
