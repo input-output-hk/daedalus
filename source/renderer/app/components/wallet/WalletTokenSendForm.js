@@ -246,7 +246,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
   };
 
   clearReceiverAddress = (index?: number) => {
-    const receiverField = this.form.$(index ? `receiver${index}` :'receiver');
+    const receiverField = this.form.$(index ? `receiver${index}` : 'receiver');
     if (receiverField) {
       receiverField.clear();
       if (this.receiverFieldRef && this.receiverFieldRef.focus) {
@@ -286,9 +286,15 @@ export default class WalletTokenSendForm extends Component<Props, State> {
 
   setFormFields = (resetFormFields: boolean, id?: string) => {
     const formFields = this.form.fields;
-    const receiverField = id ? formFields.get(`receiver${id}`) : formFields.get('receiver');
-    const assetField = id ? formFields.get(`asset${id}`) : formFields.get('asset');
-    const walletsDropdownField = id ? formFields.get(`walletsDropdown${id}`) : formFields.get('walletsDropdown');
+    const receiverField = id
+      ? formFields.get(`receiver${id}`)
+      : formFields.get('receiver');
+    const assetField = id
+      ? formFields.get(`asset${id}`)
+      : formFields.get('asset');
+    const walletsDropdownField = id
+      ? formFields.get(`walletsDropdown${id}`)
+      : formFields.get('walletsDropdown');
     const { selectedWallet } = this.props;
     if (resetFormFields) {
       this.setState({
@@ -298,11 +304,11 @@ export default class WalletTokenSendForm extends Component<Props, State> {
             asset: assetField,
             walletsDropdown: walletsDropdownField,
             selectedWallet,
-          }
+          },
         ],
       });
     } else {
-      this.setState( (prevState) => ({
+      this.setState((prevState) => ({
         sendFormFields: [
           ...prevState.sendFormFields,
           {
@@ -495,7 +501,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     this.setState((prevState) => ({
       showReceiverField: [
         ...prevState.showReceiverField,
-        prevState.showReceiverField[index] = true,
+        (prevState.showReceiverField[index] = true),
       ],
     }));
   };
@@ -546,12 +552,23 @@ export default class WalletTokenSendForm extends Component<Props, State> {
 
   renderAssetRow = () => {};
 
-  renderReceiverRow = (row, index): Node => {
+  renderReceiverRow = (row, index: number): Node => {
     const { intl } = this.context;
 
-    const { isClearTooltipOpeningDownward, currencyMaxFractionalDigits } = this.props;
+    const {
+      isClearTooltipOpeningDownward,
+      currencyMaxFractionalDigits,
+    } = this.props;
 
-    const { showReceiverField, showReceiverRemoveBtn, tokens, selectedWalletId, isTransactionFeeCalculated, transactionFee, sendFormFields } = this.state;
+    const {
+      showReceiverField,
+      showReceiverRemoveBtn,
+      tokens,
+      selectedWalletId,
+      isTransactionFeeCalculated,
+      transactionFee,
+      sendFormFields,
+    } = this.state;
 
     const { receiver, asset, walletsDropdown, selectedWallet } = row;
 
@@ -567,7 +584,9 @@ export default class WalletTokenSendForm extends Component<Props, State> {
 
     const showReceiverLabelNumber = sendFormFields && sendFormFields.length > 1;
 
-    const receiverLabel = showReceiverLabelNumber ? `${intl.formatMessage(messages.receiverLabel)} #${index + 1}` : intl.formatMessage(messages.receiverLabel);
+    const receiverLabel = showReceiverLabelNumber
+      ? `${intl.formatMessage(messages.receiverLabel)} #${index + 1}`
+      : intl.formatMessage(messages.receiverLabel);
 
     let fees = null;
     if (isTransactionFeeCalculated) {
@@ -595,9 +614,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
           {showReceiverField && showReceiverField[index] && (
             <Button
               className={removeReceiverButtonClasses}
-              label={intl.formatMessage(
-                messages.removeReceiverButtonLabel
-              )}
+              label={intl.formatMessage(messages.removeReceiverButtonLabel)}
               onClick={() => this.removeReceiverRow(index + 1)}
               skin={ButtonSkin}
             />
@@ -627,9 +644,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
             <div className={styles.clearReceiverContainer}>
               <PopOver
                 content="Clear"
-                placement={
-                  isClearTooltipOpeningDownward ? 'bottom' : 'top'
-                }
+                placement={isClearTooltipOpeningDownward ? 'bottom' : 'top'}
               >
                 <button
                   onClick={() => this.clearReceiverAddress(index)}
@@ -651,10 +666,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
               {selectedWallet && (
                 <div className={styles.amountTokenTotal}>
                   {intl.formatMessage(messages.ofLabel)}&nbsp;
-                  {formattedWalletAmount(
-                    selectedWallet.amount,
-                    false
-                  )}
+                  {formattedWalletAmount(selectedWallet.amount, false)}
                   &nbsp;{selectedWallet.ticker}
                 </div>
               )}
@@ -681,11 +693,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                     this.renderAssetRow();
                   }
                 }}
-                currency={
-                  selectedWallet
-                    ? selectedWallet.ticker
-                    : null
-                }
+                currency={selectedWallet ? selectedWallet.ticker : null}
                 value={amount}
                 error={asset.error}
                 skin={AmountInputSkin}
@@ -696,9 +704,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                 <div className={styles.clearAssetContainer}>
                   <PopOver
                     content="Clear"
-                    placement={
-                      isClearTooltipOpeningDownward ? 'bottom' : 'top'
-                    }
+                    placement={isClearTooltipOpeningDownward ? 'bottom' : 'top'}
                   >
                     <button
                       onClick={() => this.clearAssetValue(index + 1)}
@@ -720,9 +726,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                   numberOfStakePools={4}
                   wallets={tokens}
                   onChange={(id) => this.onSelectWallet(id)}
-                  syncingLabel={intl.formatMessage(
-                    messages.syncingWallet
-                  )}
+                  syncingLabel={intl.formatMessage(messages.syncingWallet)}
                   hasNativeTokens
                   value={selectedWalletId}
                   getStakePoolById={() => {}}
@@ -760,8 +764,15 @@ export default class WalletTokenSendForm extends Component<Props, State> {
   addNewReceiverField = (index: number) => {
     const newReceiver = `receiver${index}`;
     this.form.add({ name: newReceiver, value: '', key: newReceiver });
-    this.form.$(newReceiver).set('label', this.context.intl.formatMessage(messages.receiverLabel));
-    this.form.$(newReceiver).set('placeholder', this.context.intl.formatMessage(messages.receiverHint));
+    this.form
+      .$(newReceiver)
+      .set('label', this.context.intl.formatMessage(messages.receiverLabel));
+    this.form
+      .$(newReceiver)
+      .set(
+        'placeholder',
+        this.context.intl.formatMessage(messages.receiverHint)
+      );
     this.form.$(newReceiver).set('validators', [
       async ({ field, form }) => {
         const { value } = field;
@@ -783,9 +794,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
         }
         return [
           isValidAddress,
-          this.context.intl.formatMessage(
-            apiErrorMessages.invalidAddress
-          ),
+          this.context.intl.formatMessage(apiErrorMessages.invalidAddress),
         ];
       },
     ]);
@@ -794,10 +803,17 @@ export default class WalletTokenSendForm extends Component<Props, State> {
   addNewAssetField = (index: number) => {
     const newAsset = `asset${index}`;
     this.form.add({ name: newAsset, value: null, key: newAsset });
-    this.form.$(newAsset).set('label', this.context.intl.formatMessage(messages.assetLabel));
-    this.form.$(newAsset).set('placeholder', `0${
-      this.getCurrentNumberFormat().decimalSeparator
-    }${'0'.repeat(this.props.currencyMaxFractionalDigits)}`);
+    this.form
+      .$(newAsset)
+      .set('label', this.context.intl.formatMessage(messages.assetLabel));
+    this.form
+      .$(newAsset)
+      .set(
+        'placeholder',
+        `0${this.getCurrentNumberFormat().decimalSeparator}${'0'.repeat(
+          this.props.currencyMaxFractionalDigits
+        )}`
+      );
     this.form.$(newAsset).set('validators', [
       async ({ field, form }) => {
         if (field.value === null) {
@@ -829,7 +845,11 @@ export default class WalletTokenSendForm extends Component<Props, State> {
 
   addNewWalletsDropdownField = (index: number) => {
     const newWalletsDropdown = `walletsDropdown${index}`;
-    this.form.add({ name: newWalletsDropdown, value: null, key: newWalletsDropdown });
+    this.form.add({
+      name: newWalletsDropdown,
+      value: null,
+      key: newWalletsDropdown,
+    });
     this.form.$(newWalletsDropdown).set('type', 'select');
   };
 
@@ -840,9 +860,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     this.setFormFields(false, index);
   };
 
-  addAssetRow = () => {
-
-  };
+  addAssetRow = () => {};
 
   onSelectWallet = (walletId: string) => {
     this.setState({ selectedWalletId: walletId });
@@ -917,13 +935,17 @@ export default class WalletTokenSendForm extends Component<Props, State> {
           <BorderedBox>
             <div className={styles.walletTokenSendForm}>
               {sendFormFields.map((row, index) => (
-                <Fragment key={uniqueId()}>{this.renderReceiverRow(row, index)}</Fragment>
+                <Fragment key={uniqueId()}>
+                  {this.renderReceiverRow(row, index)}
+                </Fragment>
               ))}
               {showReceiverField && showReceiverField.length > 0 && (
                 <Button
                   className={newReceiverButtonClasses}
                   label={intl.formatMessage(messages.addNewReceiverButtonLabel)}
-                  onClick={() => this.addNewReceiverRow(sendFormFields.length + 1)}
+                  onClick={() =>
+                    this.addNewReceiverRow(sendFormFields.length + 1)
+                  }
                   skin={ButtonSkin}
                 />
               )}
