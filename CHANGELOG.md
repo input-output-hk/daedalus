@@ -7,6 +7,10 @@ Changelog
 
 - Added SMASH server configuration options ([PR 2259](https://github.com/input-output-hk/daedalus/pull/2259))
 
+### Fixes
+
+- Removed steps counter from the "Success" wallet restoration dialog step ([PR 2335](https://github.com/input-output-hk/daedalus/pull/2335))
+
 ### Chores
 
 - Added "Fix connection Issues" link to the hardware wallet pairing dialog ([PR 2336](https://github.com/input-output-hk/daedalus/pull/2336))
