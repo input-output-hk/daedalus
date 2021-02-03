@@ -13,7 +13,7 @@ Changelog
 
 ### Chores
 
-- Added connecting issues support link to the hardware wallet pairing dialog ([PR 2336](https://github.com/input-output-hk/daedalus/pull/2336))
+- Added link to connecting issues support article on the hardware wallet "Pairing" dialog ([PR 2336](https://github.com/input-output-hk/daedalus/pull/2336))
 - Updated recovery phrase entry ([PR 2334](https://github.com/input-output-hk/daedalus/pull/2334))
 - Adjusted sorting of table values on the "Rewards" screen ([PR 2333](https://github.com/input-output-hk/daedalus/pull/2333))
 - Fixed error thrown when closing delegation wizard while transaction fees are being calculated ([PR 2330](https://github.com/input-output-hk/daedalus/pull/2330))
