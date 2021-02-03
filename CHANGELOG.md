@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Show transaction metadata ([PR 2338](https://github.com/input-output-hk/daedalus/pull/2338))
 - Added SMASH server configuration options ([PR 2259](https://github.com/input-output-hk/daedalus/pull/2259))
 
 ### Fixes
