@@ -150,6 +150,18 @@ export default class WalletTransactionsList extends Component<Props> {
     }
   };
 
+  /**
+   * Update the height of the transaction when metadata is shown
+   * @param tx
+   */
+  onShowMetadata = (tx: WalletTransaction) => {
+    if (this.virtualList) {
+      this.virtualList.updateTxRowHeight(tx, true, true);
+    } else if (this.simpleList) {
+      this.simpleList.forceUpdate();
+    }
+  };
+
   onShowMoreTransactions = (walletId: string) => {
     if (this.props.onShowMoreTransactions) {
       this.props.onShowMoreTransactions(walletId);
@@ -190,6 +202,7 @@ export default class WalletTransactionsList extends Component<Props> {
           isRestoreActive={isRestoreActive}
           onDetailsToggled={() => this.toggleTransactionExpandedState(tx)}
           onOpenExternalLink={onOpenExternalLink}
+          onShowMetadata={() => this.onShowMetadata(tx)}
           getUrlByType={getUrlByType}
           state={tx.state}
           walletId={walletId}

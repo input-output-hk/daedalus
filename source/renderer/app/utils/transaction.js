@@ -1,19 +1,19 @@
 // @flow
-import React from 'react';
-import moment from 'moment';
 import BigNumber from 'bignumber.js';
+import moment from 'moment';
+import React from 'react';
+import type { CoinSelectionsResponse } from '../api/transactions/types';
 import {
-  WalletTransaction,
   TransactionTypes,
+  WalletTransaction,
 } from '../domains/WalletTransaction';
-import { formattedWalletAmount } from './formatters';
-import { DateRangeTypes } from '../stores/TransactionsStore';
-import type { TransactionFilterOptionsType } from '../stores/TransactionsStore';
 import type {
   ByronEncodeSignedTransactionRequest,
   ByronSignedTransactionWitnesses,
 } from '../stores/HardwareWalletsStore';
-import type { CoinSelectionsResponse } from '../api/transactions/types';
+import type { TransactionFilterOptionsType } from '../stores/TransactionsStore';
+import { DateRangeTypes } from '../stores/TransactionsStore';
+import { formattedWalletAmount } from './formatters';
 
 const cbor = require('cbor');
 const bs58 = require('bs58');
@@ -364,11 +364,3 @@ const encodeTransactionAddress = (addr) => {
   const bytes = bs58.decode(addr);
   return cbor.decodeFirstSync(bytes);
 };
-
-type MetadataKey = number;
-type MetadataValue =
-  | number
-  | string
-  | MetadataValue[]
-  | $Exact<{ k: MetadataValue, v: MetadataValue }>;
-export type TransactionMetadata = { [MetadataKey]: MetadataValue };

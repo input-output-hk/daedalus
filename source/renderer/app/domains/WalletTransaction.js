@@ -8,7 +8,7 @@ import type {
   TransactionState,
   TransactionWithdrawalType,
 } from '../api/transactions/types';
-import type { TransactionMetadata } from '../utils/transaction';
+import type { TransactionMetadata } from '../types/TransactionMetadata';
 
 export const TransactionStates: EnumMap<string, TransactionState> = {
   PENDING: 'pending',

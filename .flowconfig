@@ -23,5 +23,6 @@ flow/declarations/
 
 [options]
 esproposal.decorators=ignore
+esproposal.optional_chaining=enable
 module.ignore_non_literal_requires=true
 module.name_mapper.extension='scss' -> '<PROJECT_ROOT>/flow/mappers/CSSModule.js.flow'
