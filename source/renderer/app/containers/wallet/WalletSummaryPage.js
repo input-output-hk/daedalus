@@ -44,7 +44,7 @@ export default class WalletSummaryPage extends Component<Props> {
   };
 
   handleOpenWalletTokenSend = async (token: Wallet) => {
-    await this.props.actions.wallets.setNativeTokenWallet.trigger({
+    await this.props.actions.wallets.openSendFormWithNativeAssets.trigger({
       walletId: token.id,
     });
 

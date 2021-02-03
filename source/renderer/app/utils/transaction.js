@@ -76,7 +76,6 @@ export const isTransactionAmountInFilterRange = (
   transaction: WalletTransaction
 ) => {
   const { amount } = transaction;
-  const amountAbsoluteValue = amount ? amount.absoluteValue() : null;
   const min =
     fromAmount === '.' || fromAmount === ''
       ? new BigNumber(0)
@@ -85,16 +84,12 @@ export const isTransactionAmountInFilterRange = (
     toAmount === '.' || toAmount === ''
       ? new BigNumber(0)
       : new BigNumber(toAmount);
-  const compareFrom =
-    fromAmount &&
-    amountAbsoluteValue &&
-    amountAbsoluteValue.isGreaterThanOrEqualTo
-      ? amountAbsoluteValue.isGreaterThanOrEqualTo(min)
-      : true;
-  const compareTo =
-    toAmount && amountAbsoluteValue && amountAbsoluteValue.isLessThanOrEqualTo
-      ? amountAbsoluteValue.isLessThanOrEqualTo(max)
-      : true;
+  const compareFrom = fromAmount
+    ? amount.absoluteValue().isGreaterThanOrEqualTo(min)
+    : true;
+  const compareTo = toAmount
+    ? amount.absoluteValue().isLessThanOrEqualTo(max)
+    : true;
 
   return compareFrom && compareTo;
 };

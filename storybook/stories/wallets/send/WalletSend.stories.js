@@ -6,7 +6,7 @@ import { boolean } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
 import {
   generateHash,
-  generateNativeTokenWallet,
+  generateNativeAsset,
   generateWallet,
   promise,
 } from '../../_support/utils';
@@ -27,7 +27,7 @@ import { DECIMAL_PLACES_IN_ADA } from '../../../../source/renderer/app/config/nu
 import { formattedAmountToNaturalUnits } from '../../../../source/renderer/app/utils/formatters';
 
 const nativeTokens = [
-  generateNativeTokenWallet(
+  generateNativeAsset(
     'Cardano',
     '55119903750165',
     0,
@@ -36,7 +36,7 @@ const nativeTokens = [
     WalletSyncStateStatuses.READY,
     'ADA'
   ),
-  generateNativeTokenWallet(
+  generateNativeAsset(
     'Tether',
     '25119903750165',
     0,
@@ -45,7 +45,7 @@ const nativeTokens = [
     WalletSyncStateStatuses.READY,
     'USDT'
   ),
-  generateNativeTokenWallet(
+  generateNativeAsset(
     'TrueUSD',
     '15119903750165',
     0,
@@ -54,7 +54,7 @@ const nativeTokens = [
     WalletSyncStateStatuses.READY,
     'TUSD'
   ),
-  generateNativeTokenWallet(
+  generateNativeAsset(
     'USD Coin',
     '0',
     0,

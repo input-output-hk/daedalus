@@ -108,6 +108,7 @@ type Props = {
     amount: number
   ) => Promise<BigNumber>,
   currentNumberFormat: string,
+  walletAmount: BigNumber,
   addressValidator: Function,
   openDialogAction: Function,
   isDialogOpen: Function,
