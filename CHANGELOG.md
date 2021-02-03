@@ -7,6 +7,10 @@ Changelog
 
 - Added SMASH server configuration options ([PR 2259](https://github.com/input-output-hk/daedalus/pull/2259))
 
+### Fixes
+
+- Removed steps counter from the "Success" wallet restoration dialog step ([PR 2335](https://github.com/input-output-hk/daedalus/pull/2335))
+
 ### Chores
 
 - Fixed error thrown when closing delegation wizard while transaction fees are being calculated ([PR 2330](https://github.com/input-output-hk/daedalus/pull/2330))
