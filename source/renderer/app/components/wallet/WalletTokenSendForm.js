@@ -284,7 +284,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     });
   };
 
-  setFormFields = (resetFormFields: boolean, id?: string) => {
+  setFormFields = (resetFormFields: boolean, id?: number) => {
     const formFields = this.form.fields;
     const receiverField = id
       ? formFields.get(`receiver${id}`)
@@ -497,13 +497,16 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     return NUMBER_FORMATS[this.props.currentNumberFormat];
   }
 
-  showReceiverField = (index?: number) => {
-    this.setState((prevState) => ({
-      showReceiverField: [
-        ...prevState.showReceiverField,
-        (prevState.showReceiverField[index] = true),
-      ],
-    }));
+  showReceiverField = (index: number) => {
+    this.setState((prevState) => {
+      // eslint-disable-next-line no-return-assign
+      return {
+        showReceiverField: [
+          ...prevState.showReceiverField,
+          (prevState.showReceiverField[index] = true),
+        ],
+      };
+    });
   };
 
   hideReceiverField = (index?: number) => {
@@ -552,7 +555,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
 
   renderAssetRow = () => {};
 
-  renderReceiverRow = (row, index: number): Node => {
+  renderReceiverRow = (row: any, index: number): Node => {
     const { intl } = this.context;
 
     const {
@@ -860,7 +863,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     this.setFormFields(false, index);
   };
 
-  addAssetRow = () => {};
+  addAssetRow = (index: number) => {};
 
   onSelectWallet = (walletId: string) => {
     this.setState({ selectedWalletId: walletId });
@@ -934,7 +937,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
         ) : (
           <BorderedBox>
             <div className={styles.walletTokenSendForm}>
-              {sendFormFields.map((row, index) => (
+              {sendFormFields.map((row: any, index: number) => (
                 <Fragment key={uniqueId()}>
                   {this.renderReceiverRow(row, index)}
                 </Fragment>
