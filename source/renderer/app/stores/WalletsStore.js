@@ -254,7 +254,7 @@ export default class WalletsStore extends Store {
     walletsActions.importWalletFromFile.listen(this._importWalletFromFile);
     walletsActions.chooseWalletExportType.listen(this._chooseWalletExportType);
 
-    walletsActions.openSendFormWithNativeAssets.listen(this._openSendFormWithNativeAssets);
+    walletsActions.openSendFormWithAssets.listen(this._openSendFormWithAssets);
 
     walletsActions.generateCertificate.listen(this._generateCertificate);
     walletsActions.generateAddressPDF.listen(this._generateAddressPDF);
@@ -1431,7 +1431,7 @@ export default class WalletsStore extends Store {
     this._updateGeneratingRewardsCsvError();
   };
 
-  @action _openSendFormWithNativeAssets = async (params: { walletId: string }) => {
+  @action _openSendFormWithAssets = async (params: { walletId: string }) => {
     const nativeWallet = this.getWalletById(params.walletId);
     if (nativeWallet) {
       runInAction('AdaWalletsStore::isNativeTokenWallet', () => {
