@@ -10,4 +10,6 @@ export default class VotingActions {
   }> = new Action();
   continueRegistration: Action<any> = new Action();
   resetRegistration: Action<any> = new Action();
+  showConfirmationDialog: Action<any> = new Action();
+  closeConfirmationDialog: Action<any> = new Action();
 }

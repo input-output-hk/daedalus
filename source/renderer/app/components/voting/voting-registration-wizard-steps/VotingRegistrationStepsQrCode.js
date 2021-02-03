@@ -3,10 +3,9 @@ import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import QRCode from 'qrcode.react';
 import { observer } from 'mobx-react';
-import SVGInline from 'react-svg-inline';
-import openAppIcon from '../../../assets/images/voting/open-app-ic.inline.svg';
-import styles from './VotingRegistrationStepsQrCode.scss';
+import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import VotingRegistrationDialog from './widgets/VotingRegistrationDialog';
+import styles from './VotingRegistrationStepsQrCode.scss';
 
 const messages = defineMessages({
   qrCodeTitle: {
@@ -16,30 +15,36 @@ const messages = defineMessages({
   },
   qrCodeDescription: {
     id: 'voting.votingRegistration.qrCode.step.qrCodeDescription',
-    defaultMessage: '!!!Scan the QR code using the Catalyst Voting app.',
+    defaultMessage:
+      '!!!Open the Catalyst Voting app on your smartphone, scan the QR code and use the PIN to complete the voting registration.',
     description:
       'Qr code description of use on the voting registration "qr code" step.',
   },
-  message: {
-    id: 'voting.votingRegistration.qrCode.step.message',
+  checkbox1Label: {
+    id: 'voting.votingRegistration.qrCode.step.checkbox1Label',
     defaultMessage:
-      '!!!This QR code is not saved anywhere, and you will not have access to it after closing this screen.',
+      '!!!I understand that I will not be able to get this QR code again after closing this window.',
     description:
-      'Qr code messakes of use on the voting registration "qr code" step.',
+      'First checkbox label on the voting registration "qr code" step.',
   },
-  takeScreenShotMessage: {
-    id: 'voting.votingRegistration.qrCode.step.takeScreenShotMessage',
+  checkbox2Label: {
+    id: 'voting.votingRegistration.qrCode.step.checkbox2Label',
     defaultMessage:
-      '!!!Take a screenshot of the QR code if you want to access it later.',
+      '!!!I acknowledge that I need to have the downloaded PDF with the QR code to be able to vote with Fund3 ',
     description:
-      'Qr code second message for take a screen shot used on the voting registration "qr code" step.',
+      'Second checkbox label on the voting registration "qr code" step.',
   },
-  warningMessage: {
-    id: 'voting.votingRegistration.qrCode.step.warningMessage',
-    defaultMessage:
-      '!!!If you lose access to the QR code, you will need to register again in order to generate a new QR code.',
+  closeButtonLabel: {
+    id: 'voting.votingRegistration.qrCode.step.closeButtonLabel',
+    defaultMessage: '!!!Close',
     description:
-      'Qr code warning messages of use on the voting registration "qr code" step.',
+      '"Close" button label on the voting registration "qr code" step.',
+  },
+  saveAsPdfButtonLabel: {
+    id: 'voting.votingRegistration.qrCode.step.saveAsPdfButtonLabel',
+    defaultMessage: '!!!Save as PDF',
+    description:
+      '"Save as PDF" button label on the voting registration "qr code" step.',
   },
 });
 
@@ -56,17 +61,22 @@ export default class VotingRegistrationStepsQrCode extends Component<Props> {
     intl: intlShape.isRequired,
   };
 
+  handleClose = () => {
+    this.props.onClose(true);
+  };
+
   render() {
     const { intl } = this.context;
-    const { onClose, stepsList, activeStep, qrCode } = this.props;
+    const { stepsList, activeStep, qrCode } = this.props;
 
     const qrCodeTitle = intl.formatMessage(messages.qrCodeTitle);
     const qrCodeDescription = intl.formatMessage(messages.qrCodeDescription);
-    const message = intl.formatMessage(messages.message);
-    const takeScreenShotMessage = intl.formatMessage(
-      messages.takeScreenShotMessage
+    const checkbox1Label = intl.formatMessage(messages.checkbox1Label);
+    const checkbox2Label = intl.formatMessage(messages.checkbox2Label);
+    const closeButtonLabel = intl.formatMessage(messages.closeButtonLabel);
+    const saveAsPdfButtonLabel = intl.formatMessage(
+      messages.saveAsPdfButtonLabel
     );
-    const warningMessage = intl.formatMessage(messages.warningMessage);
 
     // Get QRCode color value from active theme's CSS variable
     const qrCodeBackgroundColor = document.documentElement
@@ -82,11 +92,12 @@ export default class VotingRegistrationStepsQrCode extends Component<Props> {
 
     const actions = [
       {
-        label: 'Close',
-        onClick: onClose,
+        label: closeButtonLabel,
+        onClick: this.handleClose,
+        disabled: true,
       },
       {
-        label: 'Save as PDF',
+        label: saveAsPdfButtonLabel,
         onClick: () => {},
         primary: true,
       },
@@ -94,7 +105,7 @@ export default class VotingRegistrationStepsQrCode extends Component<Props> {
 
     return (
       <VotingRegistrationDialog
-        onClose={onClose}
+        onClose={this.handleClose}
         stepsList={stepsList}
         activeStep={activeStep}
         actions={actions}
@@ -111,17 +122,24 @@ export default class VotingRegistrationStepsQrCode extends Component<Props> {
           )}
         </div>
         <div className={styles.qrCodeDescription}>
-          <SVGInline svg={openAppIcon} className={styles.qrCodeMessageIcon} />
-          <div className={styles.qrCodeMessageText}>
-            <p>{qrCodeTitle}</p>
-            <p>{qrCodeDescription}</p>
-          </div>
+          <p className={styles.boldText}>{qrCodeTitle}</p>
+          <p>{qrCodeDescription}</p>
         </div>
         <hr className={styles.separator} />
-        <div className={styles.messages}>
-          <p>{message}</p>
-          <p className={styles.secondaryWarning}>{takeScreenShotMessage}</p>
-          <p className={styles.primaryWarning}>{warningMessage}</p>
+        <div className={styles.checkboxes}>
+          <Checkbox
+            label={checkbox1Label}
+            onChange={() => {}}
+            className={styles.checkbox}
+            checked={false}
+          />
+          <Checkbox
+            label={checkbox2Label}
+            onChange={() => {}}
+            className={styles.checkbox}
+            checked={false}
+            disabled
+          />
         </div>
       </VotingRegistrationDialog>
     );

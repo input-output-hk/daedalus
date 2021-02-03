@@ -978,7 +978,6 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-voting-font-color-regular': '#2d2d2d',
     '--theme-voting-info-background-color': '#5e60661a',
     '--theme-voting-info-font-color': '#1e1f31',
-    '--theme-voting-info-icon-color': '#2d2d2d',
     '--theme-voting-registration-steps-activation-steps-indicator-color':
       '#2d2d2d',
     '--theme-voting-registration-steps-choose-wallet-error-message-color':
@@ -990,7 +989,6 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-voting-registration-steps-description-color': '#2d2d2dcc',
     '--theme-voting-registration-steps-description-highlighted-color':
       '#2d2d2d',
-    '--theme-voting-registration-steps-warning-messages-font-color': '#ea4c5b',
     '--theme-voting-separator-color': 'rgba(45, 45, 45, 0.15)',
   },
   recoveryPhrase: {

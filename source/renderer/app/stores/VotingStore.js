@@ -24,6 +24,7 @@ export default class VotingStore extends Store {
   @observable isTransactionConfirmed: boolean = false;
   @observable votingRegistrationKey: ?VotingRegistrationKeyType = null;
   @observable qrCode: ?string = null;
+  @observable isConfirmationDialogOpen: boolean = false;
 
   transactionPollingInterval: ?IntervalID = null;
 
@@ -34,6 +35,8 @@ export default class VotingStore extends Store {
     votingActions.generateQrCode.listen(this._generateQrCode);
     votingActions.continueRegistration.listen(this._continueRegistration);
     votingActions.resetRegistration.listen(this._resetRegistration);
+    votingActions.showConfirmationDialog.listen(this._showConfirmationDialog);
+    votingActions.closeConfirmationDialog.listen(this._closeConfirmationDialog);
   }
 
   // REQUESTS
@@ -52,6 +55,14 @@ export default class VotingStore extends Store {
   );
 
   // ACTIONS
+  @action _showConfirmationDialog = () => {
+    this.isConfirmationDialogOpen = true;
+  };
+
+  @action _closeConfirmationDialog = () => {
+    this.isConfirmationDialogOpen = false;
+  };
+
   @action _setSelectedWalletId = (walletId: string) => {
     this.selectedWalletId = walletId;
   };
@@ -61,6 +72,7 @@ export default class VotingStore extends Store {
   };
 
   @action _resetRegistration = () => {
+    this.isConfirmationDialogOpen = false;
     this.registrationStep = 1;
     this.selectedWalletId = null;
     this.transactionId = null;

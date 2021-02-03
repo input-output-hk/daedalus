@@ -1,28 +1,32 @@
 .content {
-  margin-top: 40px;
   background: green;
+  margin-top: 40px;
 }
 
 .component {
   margin-top: 40px;
-  .header {
-    display: flex;
-    text-align: center;
 
-    .descriptionIcon {
-      height: 72px;
-      margin: auto;
-      width: 72px;
-    }
-    .errorIcon {
-      height: 72px;
-      margin: auto;
-      width: 72px;
+  .sadLogoContainer {
+    display: flex;
+    justify-content: center;
+    margin: 5px 0 25px;
+
+    .sadLogoIcon {
+      height: 80px;
+      opacity: 0.7;
+      width: 80px;
+
+      svg {
+        path {
+          fill: var(--theme-dialog-text-color);
+        }
+      }
     }
   }
 
   .progressData {
     color: var(--theme-app-update-overlay-opacity-text-color);
+
     b {
       font-family: var(--font-bold);
     }
@@ -30,23 +34,12 @@
 
   .description {
     color: var(--theme-voting-registration-steps-description-color);
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 25px;
-    margin-top: 40px;
-    text-align: center;
-  }
-
-  .messages {
-    margin-top: 20px;
-    p {
-      margin-bottom: 20px;
-    }
+    margin-top: 15px;
   }
 
   .errorMessage {
     margin-top: 25px;
-    text-align: center;
+
     p {
       color: var(--theme-color-error);
       font-family: var(--font-medium);
@@ -57,6 +50,7 @@
   .buttonContainer {
     margin-top: 30px;
     text-align: center;
+
     .buttonConfirmStyles {
       width: 510px;
     }

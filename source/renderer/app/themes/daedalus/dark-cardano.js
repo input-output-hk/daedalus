@@ -977,7 +977,6 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-voting-font-color-regular': '#ffffff',
     '--theme-voting-info-background-color': 'rgba(255,255,255,0.1)',
     '--theme-voting-info-font-color': '#ffffff',
-    '--theme-voting-info-icon-color': '#ffffff',
     '--theme-voting-registration-steps-activation-steps-indicator-color':
       '#ffffff',
     '--theme-voting-registration-steps-choose-wallet-error-message-color':
@@ -989,7 +988,6 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--theme-voting-registration-steps-description-color': '#ffffffcc',
     '--theme-voting-registration-steps-description-highlighted-color':
       '#ffffff',
-    '--theme-voting-registration-steps-warning-messages-font-color': '#ea4c5b',
     '--theme-voting-separator-color': 'rgba(255, 255, 255, 0.15)',
   },
   recoveryPhrase: {

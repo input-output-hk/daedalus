@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import BigNumber from 'bignumber.js';
 import classNames from 'classnames';
 import WalletsDropdown from '../../widgets/forms/WalletsDropdown';
 import Wallet from '../../../domains/Wallet';
@@ -11,26 +12,26 @@ const messages = defineMessages({
   description: {
     id: 'voting.votingRegistration.chooseWallet.step.description',
     defaultMessage:
-      '!!!For  <span>fund 2</span> voting you will only be able to use one wallet to register.',
+      '!!!You can only use one wallet when registering.<br>To maximize rewards and voting power, choose your largest wallet.',
     description: 'Description on the voting registration "choose wallet" step.',
   },
   selectWalletInputLabel: {
     id: 'voting.votingRegistration.chooseWallet.step.selectWalletInputLabel',
-    defaultMessage: '!!!Select wallet',
+    defaultMessage: '!!!Select a wallet',
     description:
       'Label "Wallet" for select input on the voting registration "choose wallet" step.',
   },
   selectWalletInputPlaceholder: {
     id:
       'voting.votingRegistration.chooseWallet.step.selectWalletInputPlaceholder',
-    defaultMessage: '!!!Select Wallet',
+    defaultMessage: '!!!Select a wallet',
     description:
       'Placeholder "Select Wallet" for select input on the voting registration "choose wallet" step.',
   },
   errorMinVotingFunds: {
     id: 'voting.votingRegistration.chooseWallet.step.errorMinVotingFunds',
     defaultMessage:
-      '!!!This wallet does not contain the minimum amount of {minVotingRegistrationFunds} ADA that is required for voting to be enabled. Please select a wallet with <span>a minimum amount of {minVotingRegistrationFunds} ADA</span> and click Continue.',
+      '!!!This wallet does not contain the minimum required amount of <span>{minVotingRegistrationFunds} ADA</span>. Please select a different wallet with <span>a minimum balance of {minVotingRegistrationFunds} ADA</span>.',
     description:
       'errorMinVotingFunds Error Label on the voting registration "choose wallet" step.',
   },
@@ -154,7 +155,11 @@ export default class VotingRegistrationStepsChooseWallet extends Component<
       <p className={styles.errorMessage}>
         <FormattedHTMLMessage
           {...errorMessage}
-          values={{ minVotingRegistrationFunds }}
+          values={{
+            minVotingRegistrationFunds: new BigNumber(
+              minVotingRegistrationFunds
+            ).toFormat(0),
+          }}
         />
       </p>
     );
@@ -175,7 +180,9 @@ export default class VotingRegistrationStepsChooseWallet extends Component<
 
     return (
       <VotingRegistrationDialog
-        onClose={onClose}
+        onClose={() => {
+          onClose();
+        }}
         stepsList={stepsList}
         activeStep={activeStep}
         actions={actions}

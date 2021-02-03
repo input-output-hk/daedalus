@@ -15,49 +15,49 @@ import ReactToolboxMobxForm from '../../../utils/ReactToolboxMobxForm';
 import { formattedWalletAmount } from '../../../utils/formatters';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../../config/timingConfig';
 import LocalizableError from '../../../i18n/LocalizableError';
-import styles from './VotingRegistrationStepsSign.scss';
+import styles from './VotingRegistrationStepsRegister.scss';
 import VotingRegistrationDialog from './widgets/VotingRegistrationDialog';
 
 const messages = defineMessages({
   description: {
-    id: 'voting.votingRegistration.sign.step.description',
+    id: 'voting.votingRegistration.register.step.description',
     defaultMessage:
-      '!!!By submitting this registration transaction, you are creating a proof of your staking balance. This proof will be used to calculate your voting power. With the exception of fees, there will be no change to the balance of your wallet.',
+      '!!!Please sign the voting registration transaction to link your wallet balance with your Fund3 voting registration as a proof of your voting power. No funds will leave your wallet but registering requires paying transaction fees displayed on the screen.',
     description: 'Description on the voting registration "sign" step.',
   },
   continueButtonLabel: {
-    id: 'voting.votingRegistration.sign.step.continueButtonLabel',
-    defaultMessage: '!!!Submit Registration Transaction',
+    id: 'voting.votingRegistration.register.step.continueButtonLabel',
+    defaultMessage: '!!!Submit registration transaction',
     description:
       'Label for continue button on the voting registration "sign" step.',
   },
   feesLabel: {
-    id: 'voting.votingRegistration.sign.step.feesLabel',
+    id: 'voting.votingRegistration.register.step.feesLabel',
     defaultMessage: '!!!Fees',
     description: 'Fees label on the voting registration "sign" step.',
   },
   spendingPasswordPlaceholder: {
-    id: 'voting.votingRegistration.sign.step.spendingPasswordPlaceholder',
+    id: 'voting.votingRegistration.register.step.spendingPasswordPlaceholder',
     defaultMessage: '!!!Spending password',
     description: 'Placeholder for "spending password"',
   },
   spendingPasswordLabel: {
-    id: 'voting.votingRegistration.sign.step.spendingPasswordLabel',
+    id: 'voting.votingRegistration.register.step.spendingPasswordLabel',
     defaultMessage: '!!!Spending password',
     description: 'Label for "spending password"',
   },
   calculatingFees: {
-    id: 'voting.votingRegistration.sign.step.calculatingFees',
+    id: 'voting.votingRegistration.register.step.calculatingFees',
     defaultMessage: '!!!Calculating fees',
     description: '"Calculating fees" message in the "sign" step.',
   },
   learnMoreLink: {
-    id: 'voting.votingRegistration.sign.step.learnMoreLink',
-    defaultMessage: '!!!Learn more about this step in detail',
+    id: 'voting.votingRegistration.register.step.learnMoreLink',
+    defaultMessage: '!!!Learn more',
     description: '"Learn more" link on the "sign" step.',
   },
   learntMoreLinkUrl: {
-    id: 'voting.votingRegistration.sign.step.learntMoreLinkUrl',
+    id: 'voting.votingRegistration.register.step.learntMoreLinkUrl',
     defaultMessage:
       '!!!https://docs.google.com/document/d/1_syHaBNjhFcB5qg_NJoBfIZIBy_ha2n042XdrDASYgY/#heading=h.u296e49etfth',
     description: 'Learn more" link URL on the "sign" step.',
@@ -79,7 +79,7 @@ type Props = {
 };
 
 @observer
-export default class VotingRegistrationStepsSign extends Component<Props> {
+export default class VotingRegistrationStepsRegister extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -150,6 +150,7 @@ export default class VotingRegistrationStepsSign extends Component<Props> {
 
     const actions = [
       {
+        className: isSubmitting ? styles.isSubmitting : null,
         label: buttonLabel,
         onClick: this.submit,
         disabled:
@@ -160,7 +161,9 @@ export default class VotingRegistrationStepsSign extends Component<Props> {
 
     return (
       <VotingRegistrationDialog
-        onClose={onClose}
+        onClose={() => {
+          onClose();
+        }}
         stepsList={stepsList}
         activeStep={activeStep}
         actions={actions}

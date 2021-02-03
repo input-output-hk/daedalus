@@ -1230,7 +1230,6 @@ export const createDaedalusComponentsTheme = (
         background.primary.darkest
       )}`,
       '--theme-voting-info-font-color': `${chroma(background.primary.darkest)}`,
-      '--theme-voting-info-icon-color': `${text.primary}`,
       '--theme-voting-registration-steps-activation-steps-indicator-color': `${text.primary}`,
       '--theme-voting-registration-steps-choose-wallet-error-message-color': `${error.regular}`,
       '--theme-voting-registration-steps-choose-wallet-error-message-light-color': `${chroma(
@@ -1242,7 +1241,7 @@ export const createDaedalusComponentsTheme = (
         text.primary
       ).alpha(0.8)}`,
       '--theme-voting-registration-steps-description-highlighted-color': `${text.primary}`,
-      '--theme-voting-registration-steps-warning-messages-font-color': `${error.regular}`,
+      '--theme-voting-separator-color': `${chroma(text.primary).alpha(0.15)}`,
     },
     walletRestoreDialog: {
       '--theme-wallet-restore-dialog-new-label-background-color': `${chroma(

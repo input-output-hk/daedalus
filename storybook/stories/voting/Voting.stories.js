@@ -5,11 +5,11 @@ import { action } from '@storybook/addon-actions';
 import { withKnobs, boolean, number } from '@storybook/addon-knobs';
 import BigNumber from 'bignumber.js';
 import StoryDecorator from '../_support/StoryDecorator';
-import VotingRegistrationStepsChooseWallet from '../../../source/renderer/app/components/voting/voting-registration-wizar-steps/VotingRegistrationStepsChooseWallet';
-import VotingRegistrationStepsSign from '../../../source/renderer/app/components/voting/voting-registration-wizar-steps/VotingRegistrationStepsSign';
-import VotingRegistrationStepsConfirm from '../../../source/renderer/app/components/voting/voting-registration-wizar-steps/VotingRegistrationStepsConfirm';
-import VotingRegistrationStepsEnterPinCode from '../../../source/renderer/app/components/voting/voting-registration-wizar-steps/VotingRegistrationStepsEnterPinCode';
-import VotingRegistrationStepsQrCode from '../../../source/renderer/app/components/voting/voting-registration-wizar-steps/VotingRegistrationStepsQrCode';
+import VotingRegistrationStepsChooseWallet from '../../../source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsChooseWallet';
+import VotingRegistrationStepsRegister from '../../../source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsRegister';
+import VotingRegistrationStepsConfirm from '../../../source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsConfirm';
+import VotingRegistrationStepsEnterPinCode from '../../../source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode';
+import VotingRegistrationStepsQrCode from '../../../source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode';
 import VotingInfo from '../../../source/renderer/app/components/voting/VotingInfo';
 
 import {
@@ -47,7 +47,7 @@ storiesOf('Voting|Voting Registration Wizard', module)
   ))
 
   .add('Voting Registration - Step 2', () => (
-    <VotingRegistrationStepsSign
+    <VotingRegistrationStepsRegister
       onClose={action('onClose')}
       stepsList={stepsList}
       activeStep={2}

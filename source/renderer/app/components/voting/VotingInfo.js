@@ -53,7 +53,7 @@ const messages = defineMessages({
   },
   checkboxLabel: {
     id: 'voting.info.checkboxLabel',
-    defaultMessage: '!!!"I have the app installed"',
+    defaultMessage: '!!!I have installed the Catalyst Voting app',
     description: 'checkboxLabel for voting registration steps',
   },
   buttonLabel: {

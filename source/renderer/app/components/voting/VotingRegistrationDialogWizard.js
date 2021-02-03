@@ -4,11 +4,11 @@ import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import { get } from 'lodash';
 import { BigNumber } from 'bignumber.js';
-import VotingRegistrationStepsChooseWallet from './voting-registration-wizar-steps/VotingRegistrationStepsChooseWallet';
-import VotingRegistrationStepsSign from './voting-registration-wizar-steps/VotingRegistrationStepsSign';
-import VotingRegistrationStepsConfirm from './voting-registration-wizar-steps/VotingRegistrationStepsConfirm';
-import VotingRegistrationStepsEnterPinCode from './voting-registration-wizar-steps/VotingRegistrationStepsEnterPinCode';
-import VotingRegistrationStepsQrCode from './voting-registration-wizar-steps/VotingRegistrationStepsQrCode';
+import VotingRegistrationStepsChooseWallet from './voting-registration-wizard-steps/VotingRegistrationStepsChooseWallet';
+import VotingRegistrationStepsRegister from './voting-registration-wizard-steps/VotingRegistrationStepsRegister';
+import VotingRegistrationStepsConfirm from './voting-registration-wizard-steps/VotingRegistrationStepsConfirm';
+import VotingRegistrationStepsEnterPinCode from './voting-registration-wizard-steps/VotingRegistrationStepsEnterPinCode';
+import VotingRegistrationStepsQrCode from './voting-registration-wizard-steps/VotingRegistrationStepsQrCode';
 import StakePool from '../../domains/StakePool';
 import LocalizableError from '../../i18n/LocalizableError';
 import Wallet from '../../domains/Wallet';
@@ -88,7 +88,7 @@ export default class VotingRegistrationDialogWizard extends Component<Props> {
         break;
       case 2:
         content = (
-          <VotingRegistrationStepsSign
+          <VotingRegistrationStepsRegister
             onClose={onClose}
             stepsList={stepsList}
             activeStep={activeStep}

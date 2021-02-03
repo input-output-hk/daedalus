@@ -5,11 +5,12 @@ import { observer, inject } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import { find, get } from 'lodash';
 import BigNumber from 'bignumber.js';
-import VotingRegistrationDialogWizard from '../../../components/voting/VotingRegistrationDialogWizard';
 import {
   VOTING_REGISTRATION_MIN_WALLET_FUNDS,
   VOTING_REGISTRATION_FEE_CALCULATION_AMOUNT,
 } from '../../../config/votingConfig';
+import VotingRegistrationDialogWizard from '../../../components/voting/VotingRegistrationDialogWizard';
+import ConfirmationDialog from '../../../components/voting/voting-registration-wizard-steps/widgets/ConfirmationDialog';
 import { FormattedHTMLMessageWithLink } from '../../../components/widgets/FormattedHTMLMessageWithLink';
 import { formattedAmountToLovelace } from '../../../utils/formatters';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
@@ -22,7 +23,7 @@ const messages = defineMessages({
   },
   votingRegistrationStep2Label: {
     id: 'voting.votingRegistration.steps.step.2.label',
-    defaultMessage: '!!!Sign',
+    defaultMessage: '!!!Register',
     description: 'Step 2 label text on voting registration.',
   },
   votingRegistrationStep3Label: {
@@ -32,7 +33,7 @@ const messages = defineMessages({
   },
   votingRegistrationStep4Label: {
     id: 'voting.votingRegistration.steps.step.4.label',
-    defaultMessage: '!!!PIN code',
+    defaultMessage: '!!!PIN',
     description: 'Step 4 label text on voting registration.',
   },
   votingRegistrationStep5Label: {
@@ -111,6 +112,14 @@ export default class VotingRegistrationDialogContainer extends Component<
     this.context.intl.formatMessage(messages.votingRegistrationStep5Label),
   ];
 
+  handleClose = (showConfirmationDialog?: boolean) => {
+    if (showConfirmationDialog) {
+      this.props.actions.voting.showConfirmationDialog.trigger();
+    } else {
+      this.props.actions.dialogs.closeActiveDialog.trigger();
+    }
+  };
+
   handleRestart = () => {
     this.props.actions.voting.resetRegistration.trigger();
   };
@@ -150,6 +159,7 @@ export default class VotingRegistrationDialogContainer extends Component<
     const { all } = wallets;
     const { stakePools, getStakePoolById } = staking;
     const {
+      isConfirmationDialogOpen,
       registrationStep,
       getWalletPublicKeyRequest,
       createVotingRegistrationTransactionRequest,
@@ -167,34 +177,47 @@ export default class VotingRegistrationDialogContainer extends Component<
     );
 
     return (
-      <VotingRegistrationDialogWizard
-        onClose={this.props.onClose}
-        stepsList={this.STEPS_LIST}
-        activeStep={registrationStep}
-        stakePoolsList={stakePools}
-        wallets={all}
-        minVotingRegistrationFunds={VOTING_REGISTRATION_MIN_WALLET_FUNDS}
-        isWalletAcceptable={this.handleIsWalletAcceptable}
-        selectedWallet={selectedWallet}
-        getStakePoolById={getStakePoolById}
-        onContinue={this.handleContinue}
-        onSelectWallet={this.handleSelectWallet}
-        onSetPinCode={this.handleSetPinCode}
-        onSubmit={this.handleSendTransaction}
-        onRestart={this.handleRestart}
-        transactionFee={transactionFee}
-        transactionFeeError={transactionFeeError}
-        qrCode={qrCode}
-        isTransactionPending={isTransactionPending}
-        isTransactionConfirmed={isTransactionConfirmed}
-        transactionConfirmations={transactionConfirmations}
-        transactionError={
-          getWalletPublicKeyRequest.error ||
-          createVotingRegistrationTransactionRequest.error ||
-          signMetadataRequest.error
-        }
-        onExternalLinkClick={openExternalLink}
-      />
+      <>
+        <VotingRegistrationDialogWizard
+          onClose={this.handleClose}
+          stepsList={this.STEPS_LIST}
+          activeStep={registrationStep}
+          stakePoolsList={stakePools}
+          wallets={all}
+          minVotingRegistrationFunds={VOTING_REGISTRATION_MIN_WALLET_FUNDS}
+          isWalletAcceptable={this.handleIsWalletAcceptable}
+          selectedWallet={selectedWallet}
+          getStakePoolById={getStakePoolById}
+          onContinue={this.handleContinue}
+          onSelectWallet={this.handleSelectWallet}
+          onSetPinCode={this.handleSetPinCode}
+          onSubmit={this.handleSendTransaction}
+          onRestart={this.handleRestart}
+          transactionFee={transactionFee}
+          transactionFeeError={transactionFeeError}
+          qrCode={qrCode}
+          isTransactionPending={isTransactionPending}
+          isTransactionConfirmed={isTransactionConfirmed}
+          transactionConfirmations={transactionConfirmations}
+          transactionError={
+            getWalletPublicKeyRequest.error ||
+            createVotingRegistrationTransactionRequest.error ||
+            signMetadataRequest.error
+          }
+          onExternalLinkClick={openExternalLink}
+        />
+        {isConfirmationDialogOpen && (
+          <ConfirmationDialog
+            isDaedalusClosing={false}
+            onConfirm={() => {
+              this.props.actions.voting.closeConfirmationDialog.trigger();
+            }}
+            onCancel={() => {
+              this.props.actions.dialogs.closeActiveDialog.trigger();
+            }}
+          />
+        )}
+      </>
     );
   }
 

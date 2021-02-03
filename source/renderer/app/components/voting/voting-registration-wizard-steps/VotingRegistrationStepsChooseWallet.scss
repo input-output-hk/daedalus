@@ -9,6 +9,7 @@
 
   .description {
     color: var(--theme-voting-registration-steps-description-color);
+
     span > span {
       color: var(
         --theme-voting-registration-steps-description-highlighted-color
@@ -20,16 +21,27 @@
 
   .walletSelect {
     margin-top: 20px;
+
     &.error {
       input {
         border-color: var(--theme-color-error);
       }
+
       :global {
         .SimpleSelect_selectInput {
           &:after {
             background-color: var(--theme-color-error);
           }
         }
+      }
+    }
+
+    :global {
+      .SimpleOptions_option {
+        display: flex;
+        height: 50px;
+        padding-bottom: 0;
+        padding-top: 0;
       }
     }
   }
@@ -41,6 +53,7 @@
     font-size: 14px;
     letter-spacing: normal;
     margin-top: 10px;
+
     span > span {
       color: var(
         --theme-voting-registration-steps-choose-wallet-error-message-color

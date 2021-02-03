@@ -2,13 +2,15 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, FormattedHTMLMessage } from 'react-intl';
+import BigNumber from 'bignumber.js';
+import LoadingSpinner from '../widgets/LoadingSpinner';
 import styles from './VotingUnavailable.scss';
 
 const messages = defineMessages({
   description: {
     id: 'voting.unavailable.description',
     defaultMessage:
-      '!!!Before registering for voting, Daedalus first needs to synchronize with the blockchain. The synchronization process is now underway and it is currently {syncPercentage}% complete. As soon as this process is fully complete, you’ll be able to register with Fund3. Please wait for this process to complete before returning here.',
+      '!!!Daedalus is synchronizing with the Cardano blockchain, and the process is currently {syncPercentage}% complete. This feature will become available once Daedalus is fully synchronized.',
     description: 'Description for voting registration unavailable screen',
   },
 });
@@ -24,11 +26,12 @@ export default class VotingUnavailable extends Component<Props> {
 
     return (
       <div className={styles.component}>
+        <LoadingSpinner big />
         <div className={styles.description}>
           <FormattedHTMLMessage
             {...messages.description}
             values={{
-              syncPercentage: parseFloat(syncPercentage).toFixed(2),
+              syncPercentage: new BigNumber(syncPercentage).toFormat(2),
             }}
           />
         </div>

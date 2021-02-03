@@ -15,10 +15,6 @@ type Props = InjectedProps;
 export default class VotingRegistrationPage extends Component<Props> {
   static defaultProps = { actions: null, stores: null };
 
-  onClose = () => {
-    this.props.actions.dialogs.closeActiveDialog.trigger();
-  };
-
   render() {
     const { actions, stores } = this.props;
     const { app, networkStatus, uiDialogs } = stores;
@@ -53,8 +49,8 @@ export default class VotingRegistrationPage extends Component<Props> {
           />
         </VerticalFlexContainer>
 
-        {uiDialogs.isOpen('VotingRegistrationDialog') && (
-          <VotingRegistrationDialogContainer onClose={this.onClose} />
+        {isVotingRegistrationDialogOpen && (
+          <VotingRegistrationDialogContainer />
         )}
       </Layout>
     );

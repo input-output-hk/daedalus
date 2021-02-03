@@ -14,7 +14,7 @@ import type { DialogActions } from '../../../widgets/Dialog';
 const messages = defineMessages({
   dialogTitle: {
     id: 'voting.votingRegistration.dialog.dialogTitle',
-    defaultMessage: '!!!Register to vote',
+    defaultMessage: '!!!Register for Fund3 voting',
     description: 'Tile "Register to vote" for voting registration',
   },
   subtitle: {
