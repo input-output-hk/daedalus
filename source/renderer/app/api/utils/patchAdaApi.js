@@ -49,6 +49,7 @@ export default (api: AdaApi) => {
         localTip: {
           epoch: get(node_tip, 'epoch_number', 0),
           slot: get(node_tip, 'slot_number', 0),
+          absoluteSlotNumber: get(node_tip, 'absolute_slot_number', 0),
         },
         networkTip: {
           epoch: get(network_tip, 'epoch_number', null),

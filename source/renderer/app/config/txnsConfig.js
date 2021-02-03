@@ -1,2 +1,2 @@
 export const PENDING_TIME_LIMIT = 10 * 60 * 1000; // 10 minutes | unit: milliseconds
-export const TX_DURATION = 2 * 60 * 60; // 2 hours | unit: seconds (7200)
+export const TIME_TO_LIVE = 2 * 60 * 60; // 2 hours | unit: seconds (7200)

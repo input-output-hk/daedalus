@@ -2,7 +2,7 @@
 export type TipInfo = {
   epoch: number,
   slot: number,
-  absoluteSlotNumber?: number,
+  absoluteSlotNumber: number,
 };
 
 export type NextEpoch = {

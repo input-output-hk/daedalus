@@ -14,7 +14,7 @@ import {
   isTrezorEnabled,
   isLedgerEnabled,
 } from '../config/hardwareWalletsConfig';
-import { TX_DURATION } from '../config/txnsConfig';
+import { TIME_TO_LIVE } from '../config/txnsConfig';
 import {
   getHardwareWalletTransportChannel,
   getExtendedPublicKeyChannel,
@@ -1739,10 +1739,10 @@ export default class HardwareWalletsStore extends Store {
     return type;
   };
 
-  _getTtl = () => {
+  _getTtl = (): number => {
     const { networkTip } = this.stores.networkStatus;
     const absoluteSlotNumber = get(networkTip, 'absoluteSlotNumber', 0);
-    const ttl = absoluteSlotNumber + TX_DURATION;
+    const ttl = absoluteSlotNumber + TIME_TO_LIVE;
     return ttl;
   };
 

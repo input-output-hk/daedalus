@@ -2010,6 +2010,7 @@ export default class AdaApi {
         localTip: {
           epoch: get(nodeTip, 'epoch_number', 0),
           slot: get(nodeTip, 'slot_number', 0),
+          absoluteSlotNumber: get(nodeTip, 'absolute_slot_number', 0),
         },
         networkTip: networkTip
           ? {
