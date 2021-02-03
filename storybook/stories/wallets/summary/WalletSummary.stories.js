@@ -6,7 +6,7 @@ import { boolean, number } from '@storybook/addon-knobs';
 // Assets and helpers
 import { action } from '@storybook/addon-actions';
 import {
-  generateNativeAsset,
+  generateAsset,
   generateWallet,
 } from '../../_support/utils';
 import WalletsWrapper from '../_utils/WalletsWrapper';
@@ -44,7 +44,7 @@ storiesOf('Wallets|Summary', module)
       <TokensWalletSummary
         wallet={generateWallet('Wallet name', '45119903750165')}
         nativeTokens={[
-          generateNativeAsset(
+          generateAsset(
             'Cardano',
             '55119903750165',
             0,
@@ -53,7 +53,7 @@ storiesOf('Wallets|Summary', module)
             WalletSyncStateStatuses.READY,
             'ADA'
           ),
-          generateNativeAsset(
+          generateAsset(
             'Tether',
             '25119903750165',
             0,
@@ -62,7 +62,7 @@ storiesOf('Wallets|Summary', module)
             WalletSyncStateStatuses.READY,
             'USDT'
           ),
-          generateNativeAsset(
+          generateAsset(
             'TrueUSD',
             '15119903750165',
             0,
@@ -71,7 +71,7 @@ storiesOf('Wallets|Summary', module)
             WalletSyncStateStatuses.READY,
             'TUSD'
           ),
-          generateNativeAsset(
+          generateAsset(
             'USD Coin',
             '0',
             0,

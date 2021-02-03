@@ -71,7 +71,7 @@ export const generateWallet = (
     delegatedStakePoolId: get(delegatedStakePool, 'id'),
   });
 
-export const generateNativeAsset = (
+export const generateAsset = (
   name: string,
   amount: string,
   reward?: number = 0,
