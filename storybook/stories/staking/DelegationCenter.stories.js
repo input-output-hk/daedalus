@@ -32,6 +32,7 @@ const walletSyncedStateRestoring = {
 const networkTip: TipInfo = {
   epoch: 1232,
   slot: 123,
+  absoluteSlotNumber: 15000000,
 };
 
 const nextEpochDate = new Date();
