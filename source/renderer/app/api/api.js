@@ -1,5 +1,5 @@
 // @flow
-import { split, get, map, last, size, concat, sumBy } from 'lodash';
+import { split, get, map, last, size, concat } from 'lodash';
 import { action } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
@@ -890,7 +890,6 @@ export default class AdaApi {
       parameters: filterLogData(request),
     });
     const { walletId, payments, delegation } = request;
-
     try {
       let data;
       if (delegation) {
@@ -924,13 +923,15 @@ export default class AdaApi {
       const outputs = concat(response.outputs, response.change);
 
       // Calculate fee from inputs and outputs
-      let totalInputs = 0;
-      let totalOutputs = 0;
       const inputsData = [];
       const outputsData = [];
       const certificatesData = [];
+      let totalInputs = new BigNumber(0);
+      let totalOutputs = new BigNumber(0);
+
       map(response.inputs, (input) => {
-        totalInputs += input.amount.quantity;
+        const inputAmount = new BigNumber(input.amount.quantity);
+        totalInputs = totalInputs.plus(inputAmount);
         const inputData = {
           address: input.address,
           amount: input.amount,
@@ -940,8 +941,10 @@ export default class AdaApi {
         };
         inputsData.push(inputData);
       });
+
       map(outputs, (output) => {
-        totalOutputs += output.amount.quantity;
+        const outputAmount = new BigNumber(output.amount.quantity);
+        totalOutputs = totalOutputs.plus(outputAmount);
         const outputData = {
           address: output.address,
           amount: output.amount,
@@ -949,6 +952,7 @@ export default class AdaApi {
         };
         outputsData.push(outputData);
       });
+
       if (response.certificates) {
         map(response.certificates, (certificate) => {
           const certificateData = {
@@ -960,22 +964,20 @@ export default class AdaApi {
         });
       }
 
-      const totalDeposits = sumBy(response.deposits, 'quantity');
-      const feeWithDeposits = new BigNumber(
-        totalInputs - totalOutputs
-      ).dividedBy(LOVELACES_PER_ADA);
-      const fee = new BigNumber(
-        totalInputs - totalOutputs - totalDeposits
-      ).dividedBy(LOVELACES_PER_ADA);
+      const deposits = map(response.deposits, (deposit) => deposit.quantity);
+      const totalDeposits = deposits.length
+        ? BigNumber.sum.apply(null, deposits)
+        : new BigNumber(0);
+      const feeWithDeposits = totalInputs.minus(totalOutputs);
+      const fee = feeWithDeposits.minus(totalDeposits);
 
       const extendedResponse = {
         inputs: inputsData,
         outputs: outputsData,
         certificates: certificatesData,
-        feeWithDeposits,
-        fee,
+        feeWithDeposits: feeWithDeposits.dividedBy(LOVELACES_PER_ADA),
+        fee: fee.dividedBy(LOVELACES_PER_ADA),
       };
-
       logger.debug('AdaApi::selectCoins success', { extendedResponse });
       return extendedResponse;
     } catch (error) {
