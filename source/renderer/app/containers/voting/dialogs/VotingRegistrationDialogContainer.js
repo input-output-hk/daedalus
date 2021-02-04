@@ -160,6 +160,7 @@ export default class VotingRegistrationDialogContainer extends Component<
       transactionFeeError,
     } = this.state;
     const { wallets, staking, voting, app } = this.props.stores;
+    const { closeConfirmationDialog, saveAsPDF } = this.props.actions.voting;
     const { all } = wallets;
     const { stakePools, getStakePoolById } = staking;
     const {
@@ -201,6 +202,7 @@ export default class VotingRegistrationDialogContainer extends Component<
           transactionFee={transactionFee}
           transactionFeeError={transactionFeeError}
           qrCode={qrCode}
+          onDownloadPDF={saveAsPDF.trigger}
           isTransactionPending={isTransactionPending}
           isTransactionConfirmed={isTransactionConfirmed}
           transactionConfirmations={transactionConfirmations}
@@ -213,9 +215,7 @@ export default class VotingRegistrationDialogContainer extends Component<
         />
         {isConfirmationDialogOpen && (
           <ConfirmationDialog
-            onConfirm={() => {
-              this.props.actions.voting.closeConfirmationDialog.trigger();
-            }}
+            onConfirm={closeConfirmationDialog.trigger}
             onCancel={() => {
               this.props.actions.dialogs.closeActiveDialog.trigger();
             }}

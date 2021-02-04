@@ -35,6 +35,7 @@ type Props = {
   isTransactionConfirmed: boolean,
   transactionConfirmations: number,
   transactionError: ?LocalizableError,
+  onDownloadPDF: Function,
   onRestart: Function,
   onExternalLinkClick: Function,
 };
@@ -62,6 +63,7 @@ export default class VotingRegistrationDialogWizard extends Component<Props> {
       isTransactionConfirmed,
       transactionConfirmations,
       transactionError,
+      onDownloadPDF,
       onRestart,
       onExternalLinkClick,
       onClose,
@@ -134,6 +136,7 @@ export default class VotingRegistrationDialogWizard extends Component<Props> {
           <VotingRegistrationStepsQrCode
             qrCode={qrCode}
             onClose={onClose}
+            onDownloadPDF={onDownloadPDF}
             stepsList={stepsList}
             activeStep={activeStep}
           />

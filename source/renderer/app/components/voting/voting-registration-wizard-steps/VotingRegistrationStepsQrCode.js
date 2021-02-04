@@ -51,6 +51,7 @@ const messages = defineMessages({
 
 type Props = {
   onClose: Function,
+  onDownloadPDF: Function,
   stepsList: Array<string>,
   activeStep: number,
   qrCode: ?string,
@@ -85,15 +86,10 @@ export default class VotingRegistrationStepsQrCode extends Component<
     }
   };
 
-  handleSaveAsPdf = () => {
-    // eslint-disable-next-line
-    alert('TODO');
-  };
-
   render() {
     const { intl } = this.context;
     const { isCheckbox1Accepted, isCheckbox2Accepted } = this.state;
-    const { stepsList, activeStep, qrCode } = this.props;
+    const { stepsList, activeStep, qrCode, onDownloadPDF } = this.props;
 
     const qrCodeTitle = intl.formatMessage(messages.qrCodeTitle);
     const qrCodeDescription = intl.formatMessage(messages.qrCodeDescription);
@@ -127,7 +123,7 @@ export default class VotingRegistrationStepsQrCode extends Component<
       },
       {
         label: saveAsPdfButtonLabel,
-        onClick: this.handleSaveAsPdf,
+        onClick: onDownloadPDF,
         primary: true,
       },
     ];

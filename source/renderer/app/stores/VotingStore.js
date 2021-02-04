@@ -11,7 +11,10 @@ import walletUtils from '../utils/walletUtils';
 import {
   VOTING_REGISTRATION_TRANSACTION_POLLING_INTERVAL,
   VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS,
+  VOTING_FUND_NUMBER,
 } from '../config/votingConfig';
+import { votingPDFGenerator } from '../utils/votingPDFGenerator';
+import { i18nContext } from '../utils/i18nContext';
 
 export type VotingRegistrationKeyType = { bytes: Function, public: Function };
 
@@ -33,6 +36,7 @@ export default class VotingStore extends Store {
     votingActions.selectWallet.listen(this._setSelectedWalletId);
     votingActions.sendTransaction.listen(this._sendTransaction);
     votingActions.generateQrCode.listen(this._generateQrCode);
+    votingActions.saveAsPDF.listen(this._saveAsPDF);
     votingActions.nextRegistrationStep.listen(this._nextRegistrationStep);
     votingActions.previousRegistrationStep.listen(
       this._previousRegistrationStep
@@ -226,6 +230,41 @@ export default class VotingStore extends Store {
     );
     this._setQrCode(formattedArrayBufferToHexString(encrypt));
     this._nextRegistrationStep();
+  };
+
+  _saveAsPDF = async () => {
+    const { qrCode, selectedWalletId } = this;
+    if (!qrCode || !selectedWalletId) return;
+    const selectedWallet = this.stores.wallets.getWalletById(selectedWalletId);
+    if (!selectedWallet) return;
+    const { name: walletName } = selectedWallet;
+    const { desktopDirectoryPath } = this.stores.profile;
+    const {
+      currentLocale,
+      currentDateFormat,
+      currentTimeFormat,
+    } = this.stores.profile;
+    const fundNumber = VOTING_FUND_NUMBER;
+    const { network, isMainnet } = this.environment;
+    const intl = i18nContext(currentLocale);
+
+    try {
+      await votingPDFGenerator({
+        fundNumber,
+        qrCode,
+        walletName,
+        currentLocale,
+        currentDateFormat,
+        currentTimeFormat,
+        desktopDirectoryPath,
+        network,
+        isMainnet,
+        intl,
+      });
+      this.actions.voting.saveAsPDFSuccess.trigger();
+    } catch (error) {
+      throw new Error(error);
+    }
   };
 
   _checkVotingRegistrationTransaction = async () => {

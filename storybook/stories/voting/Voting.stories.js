@@ -95,6 +95,7 @@ storiesOf('Voting|Voting Registration Wizard', module)
   .add('Voting Registration - Step 5', () => (
     <VotingRegistrationStepsQrCode
       onClose={action('onClose')}
+      onDownloadPDF={action('onDownloadPDF')}
       stepsList={stepsList}
       activeStep={2}
       qrCode="djkhfkwdjhfkwdhfkwjdhfkwdhf9wdyf9wdh9u3h03hd0f3hd0h30hf30dhf03dhf03dhf03dhf03dhf0u3dhf0u3dhf0u3dfh30uhfd30uh"
