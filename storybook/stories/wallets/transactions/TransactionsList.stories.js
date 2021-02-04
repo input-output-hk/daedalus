@@ -130,7 +130,7 @@ storiesOf('Wallets|Transactions', module)
       />
     );
   })
-  .add('Tokens Transactions List', (props: Props) => {
+  .add('Wallet Assets Transactions List', (props: Props) => {
     const {
       defaultFilterOptions,
       filterOptions,
