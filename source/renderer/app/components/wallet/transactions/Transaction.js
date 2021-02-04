@@ -178,6 +178,7 @@ type Props = {
   isExpanded: boolean,
   isRestoreActive: boolean,
   isLastInList: boolean,
+  isShowingMetadata: boolean,
   formattedWalletAmount: Function,
   onDetailsToggled: ?Function,
   onOpenExternalLink: Function,
@@ -331,6 +332,7 @@ export default class Transaction extends Component<Props, State> {
     const {
       data,
       isLastInList,
+      isShowingMetadata,
       state,
       formattedWalletAmount,
       onOpenExternalLink,
@@ -473,7 +475,7 @@ export default class Transaction extends Component<Props, State> {
               role="presentation"
               aria-hidden
             >
-              <p>
+              <div>
                 <h2>{intl.formatMessage(messages.fromAddresses)}</h2>
                 {fromAddresses(data.addresses.from, data.id)}
 
@@ -530,10 +532,10 @@ export default class Transaction extends Component<Props, State> {
                 </div>
                 {this.renderCancelPendingTxnContent()}
 
-                <h2>{intl.formatMessage(messages.metadataLabel)}</h2>
-                <p className={styles.metadata}>
-                  {data.metadata != null &&
-                    (this.state.showUnmoderatedMetadata ? (
+                {data.metadata != null && (
+                  <div className={styles.metadata}>
+                    <h2>{intl.formatMessage(messages.metadataLabel)}</h2>
+                    {data.metadata && isShowingMetadata ? (
                       <TransactionMetadataView data={data.metadata} />
                     ) : (
                       <>
@@ -553,9 +555,10 @@ export default class Transaction extends Component<Props, State> {
                           }}
                         />
                       </>
-                    ))}
-                </p>
-              </p>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
             <SVGInline svg={arrow} className={arrowStyles} />
           </div>

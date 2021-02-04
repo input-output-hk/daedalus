@@ -1,77 +1,41 @@
 // @flow
 import React from 'react';
+import JSONBigInt from 'json-bigint';
 import type {
-  MetadataBytes,
-  MetadataInteger,
-  MetadataList,
-  MetadataMap,
-  MetadataString,
+  MetadataMapValue,
   MetadataValue,
   TransactionMetadata,
 } from '../../../../types/TransactionMetadata';
 import styles from './TransactionMetadataView.scss';
 
-function IntegerView({ value }: { value: MetadataInteger }) {
-  return <p>{value.int}</p>;
-}
-
-function StringView({ value }: { value: MetadataString }) {
-  return <p>{value.string}</p>;
-}
-
-function BytesView({ value }: { value: MetadataBytes }) {
-  return <p>{value.bytes}</p>;
-}
-
-function ListView({ value }: { value: MetadataList }) {
-  return (
-    <ol className={styles.list}>
-      {value.list.map((v, index) => (
-        <li key={index}>
-          <MetadataValueView value={v} />
-        </li>
-      ))}
-    </ol>
-  );
-}
-
-function MapView({ value }: { value: MetadataMap }) {
-  return (
-    <ol className={styles.map}>
-      {value.map.map((v, index) => (
-        <li key={index}>
-          <MetadataValueView value={v.k} />: <MetadataValueView value={v.v} />
-        </li>
-      ))}
-    </ol>
-  );
-}
-
-function MetadataValueView(props: { value: MetadataValue }) {
-  const { value } = props;
-  if (value.int) {
-    return <IntegerView value={value} />;
+function flattenMetadata(data: MetadataValue) {
+  if (data.int) {
+    return data.int;
   }
-  if (value.string) {
-    return <StringView value={value} />;
+  if (data.string) {
+    return data.string;
   }
-  if (value.bytes) {
-    return <BytesView value={value} />;
+  if (data.bytes) {
+    return data.bytes;
   }
-  if (value.list) {
-    return <ListView value={value} />;
+  if (data.list) {
+    return data.list.map((v: MetadataValue) => flattenMetadata(v));
   }
-  if (value.map) {
-    return <MapView value={value} />;
+  if (data.map) {
+    return data.map.map((v: MetadataMapValue) => ({
+      key: flattenMetadata(v.k),
+      value: flattenMetadata(v.v),
+    }));
   }
-  return null;
 }
 
 export function TransactionMetadataView(props: { data: TransactionMetadata }) {
   return (
     <div className={styles.root}>
       {Object.keys(props.data).map((key: string) => (
-        <MetadataValueView key={key} value={props.data[key]} />
+        <pre key={key}>
+          {JSONBigInt.stringify(flattenMetadata(props.data[key]), null, 2)}
+        </pre>
       ))}
     </div>
   );

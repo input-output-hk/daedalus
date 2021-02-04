@@ -1,7 +1,7 @@
 // @flow
 import hash from 'hash.js';
 import faker from 'faker';
-import JSONBigIntLibrary from 'json-bigint';
+import JSONBigInt from 'json-bigint';
 import moment from 'moment';
 import { random, get } from 'lodash';
 import BigNumber from 'bignumber.js';
@@ -26,8 +26,6 @@ import type {
 } from '../../../source/renderer/app/api/transactions/types';
 import type { SyncStateStatus } from '../../../source/renderer/app/api/wallets/types';
 import type { TransactionMetadata } from '../../../source/renderer/app/types/TransactionMetadata';
-
-const JSONBigInt = JSONBigIntLibrary({ storeAsString: true });
 
 export const EXAMPLE_METADATA = JSONBigInt.parse(`{
       "0": {
