@@ -137,7 +137,7 @@ storiesOf('Wallets|Summary', module)
         )}
         numberOfPendingTransactions={number('Number of transactions', 3)}
         isLoadingTransactions={boolean('isLoadingTransactions', false)}
-        hasAssetsEnabled={hasAssetsEnabled && walletAssets && walletAssets.total && walletAssets.total.length}
+        hasAssetsEnabled={hasAssetsEnabled && walletAssets && walletAssets.total && walletAssets.total.length > 0}
       />
       <AssetsWalletSummary
         wallet={generateWallet('Wallet name', '45119903750165', assets)}
