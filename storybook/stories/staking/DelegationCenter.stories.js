@@ -60,18 +60,22 @@ const wallets = [
     availableAmount: new BigNumber(100100),
     reward: new BigNumber(100),
     assets: {
-      available: [{
-        id: generateHash(),
-        policyId: generatePolicyIdHash(),
-        assetName: '',
-        quantity: 300,
-      }],
-      total: [{
-        id: generateHash(),
-        policyId: generatePolicyIdHash(),
-        assetName: '',
-        quantity: 300,
-      }],
+      available: [
+        {
+          id: generateHash(),
+          policyId: generatePolicyIdHash(),
+          assetName: '',
+          quantity: 300,
+        },
+      ],
+      total: [
+        {
+          id: generateHash(),
+          policyId: generatePolicyIdHash(),
+          assetName: '',
+          quantity: 300,
+        },
+      ],
     },
     hasPassword: true,
     passwordUpdateDate: new Date(),
@@ -105,18 +109,22 @@ const wallets = [
     availableAmount: new BigNumber(100100),
     reward: new BigNumber(100),
     assets: {
-      available: [{
-        id: generateHash(),
-        policyId: generatePolicyIdHash(),
-        assetName: '',
-        quantity: 300,
-      }],
-      total: [{
-        id: generateHash(),
-        policyId: generatePolicyIdHash(),
-        assetName: '',
-        quantity: 300,
-      }],
+      available: [
+        {
+          id: generateHash(),
+          policyId: generatePolicyIdHash(),
+          assetName: '',
+          quantity: 300,
+        },
+      ],
+      total: [
+        {
+          id: generateHash(),
+          policyId: generatePolicyIdHash(),
+          assetName: '',
+          quantity: 300,
+        },
+      ],
     },
     hasPassword: true,
     passwordUpdateDate: new Date(),
@@ -150,18 +158,22 @@ const wallets = [
     availableAmount: new BigNumber(10100.2),
     reward: new BigNumber(50),
     assets: {
-      available: [{
-        id: generateHash(),
-        policyId: generatePolicyIdHash(),
-        assetName: '',
-        quantity: 300,
-      }],
-      total: [{
-        id: generateHash(),
-        policyId: generatePolicyIdHash(),
-        assetName: '',
-        quantity: 300,
-      }],
+      available: [
+        {
+          id: generateHash(),
+          policyId: generatePolicyIdHash(),
+          assetName: '',
+          quantity: 300,
+        },
+      ],
+      total: [
+        {
+          id: generateHash(),
+          policyId: generatePolicyIdHash(),
+          assetName: '',
+          quantity: 300,
+        },
+      ],
     },
     hasPassword: true,
     passwordUpdateDate: new Date(),
@@ -194,18 +206,22 @@ const wallets = [
     availableAmount: new BigNumber(5001000),
     reward: new BigNumber(30),
     assets: {
-      available: [{
-        id: generateHash(),
-        policyId: generatePolicyIdHash(),
-        assetName: '',
-        quantity: 300,
-      }],
-      total: [{
-        id: generateHash(),
-        policyId: generatePolicyIdHash(),
-        assetName: '',
-        quantity: 300,
-      }],
+      available: [
+        {
+          id: generateHash(),
+          policyId: generatePolicyIdHash(),
+          assetName: '',
+          quantity: 300,
+        },
+      ],
+      total: [
+        {
+          id: generateHash(),
+          policyId: generatePolicyIdHash(),
+          assetName: '',
+          quantity: 300,
+        },
+      ],
     },
     hasPassword: true,
     passwordUpdateDate: new Date(),
@@ -229,18 +245,22 @@ const wallets = [
     availableAmount: new BigNumber(5001000),
     reward: new BigNumber(30),
     assets: {
-      available: [{
-        id: generateHash(),
-        policyId: generatePolicyIdHash(),
-        assetName: '',
-        quantity: 300,
-      }],
-      total: [{
-        id: generateHash(),
-        policyId: generatePolicyIdHash(),
-        assetName: '',
-        quantity: 300,
-      }],
+      available: [
+        {
+          id: generateHash(),
+          policyId: generatePolicyIdHash(),
+          assetName: '',
+          quantity: 300,
+        },
+      ],
+      total: [
+        {
+          id: generateHash(),
+          policyId: generatePolicyIdHash(),
+          assetName: '',
+          quantity: 300,
+        },
+      ],
     },
     hasPassword: true,
     passwordUpdateDate: new Date(),
@@ -264,18 +284,22 @@ const wallets = [
     availableAmount: new BigNumber(10100.2),
     reward: new BigNumber(50),
     assets: {
-      available: [{
-        id: generateHash(),
-        policyId: generatePolicyIdHash(),
-        assetName: '',
-        quantity: 300,
-      }],
-      total: [{
-        id: generateHash(),
-        policyId: generatePolicyIdHash(),
-        assetName: '',
-        quantity: 300,
-      }],
+      available: [
+        {
+          id: generateHash(),
+          policyId: generatePolicyIdHash(),
+          assetName: '',
+          quantity: 300,
+        },
+      ],
+      total: [
+        {
+          id: generateHash(),
+          policyId: generatePolicyIdHash(),
+          assetName: '',
+          quantity: 300,
+        },
+      ],
     },
     hasPassword: true,
     passwordUpdateDate: new Date(),

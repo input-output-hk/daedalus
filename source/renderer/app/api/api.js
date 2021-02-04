@@ -2278,21 +2278,21 @@ const _createWalletFromServerData = action(
 
     // Mapping asset items from server data
     const walletAssets = {
-      available: assets.available.map(item => {
+      available: assets.available.map((item) => {
         return {
           id: item.id,
           policyId: item.policy_id,
           assetName: item.asset_name,
           quantity: item.quantity,
-        }
+        };
       }),
-      total: assets.total.map(item => {
+      total: assets.total.map((item) => {
         return {
           id: item.id,
           policyId: item.policy_id,
           assetName: item.asset_name,
           quantity: item.quantity,
-        }
+        };
       }),
     };
 

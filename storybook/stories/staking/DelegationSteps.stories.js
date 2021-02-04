@@ -15,7 +15,11 @@ import DelegationStepsSuccessDialog from '../../../source/renderer/app/component
 import { MIN_DELEGATION_FUNDS } from '../../../source/renderer/app/config/stakingConfig';
 import translations from '../../../source/renderer/app/i18n/translations';
 import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
-import { generateHash, generatePolicyIdHash, generateWallet } from '../_support/utils';
+import {
+  generateHash,
+  generatePolicyIdHash,
+  generateWallet,
+} from '../_support/utils';
 import {
   WalletSyncStateStatuses,
   HwDeviceStatuses,
@@ -49,20 +53,32 @@ const assets = {
       assetName: '',
       quantity: 200,
     },
-  ]
+  ],
 };
 
 const WALLETS = [
-  generateWallet('Wallet 1', '1000000000', assets,0, STAKE_POOLS[0]),
+  generateWallet('Wallet 1', '1000000000', assets, 0, STAKE_POOLS[0]),
   generateWallet(
     'Wallet 2 - Rewards Only',
     '500000000',
     assets,
     500000000,
-    STAKE_POOLS[100],
+    STAKE_POOLS[100]
   ),
-  generateWallet('Wallet 3 - Min Amount - Rewards', '10', assets, 10, STAKE_POOLS[150]),
-  generateWallet('Wallet 4 - Min Amount - No Reward', '0', assets, 0, STAKE_POOLS[290]),
+  generateWallet(
+    'Wallet 3 - Min Amount - Rewards',
+    '10',
+    assets,
+    10,
+    STAKE_POOLS[150]
+  ),
+  generateWallet(
+    'Wallet 4 - Min Amount - No Reward',
+    '0',
+    assets,
+    0,
+    STAKE_POOLS[290]
+  ),
   generateWallet(
     'Wallet 5 - Restoring',
     '0',
@@ -70,7 +86,7 @@ const WALLETS = [
     0,
     STAKE_POOLS[290],
     true,
-    WalletSyncStateStatuses.RESTORING,
+    WalletSyncStateStatuses.RESTORING
   ),
 ];
 

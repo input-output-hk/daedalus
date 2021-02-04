@@ -5,7 +5,12 @@ import { boolean, number } from '@storybook/addon-knobs';
 
 // Assets and helpers
 import { action } from '@storybook/addon-actions';
-import {generateAsset, generateHash, generatePolicyIdHash, generateWallet} from '../../_support/utils';
+import {
+  generateAsset,
+  generateHash,
+  generatePolicyIdHash,
+  generateWallet,
+} from '../../_support/utils';
 import WalletsWrapper from '../_utils/WalletsWrapper';
 
 // Screens
@@ -40,7 +45,7 @@ const assets = {
       assetName: '',
       quantity: 200,
     },
-  ]
+  ],
 };
 
 /* eslint-disable consistent-return */
@@ -80,11 +85,11 @@ storiesOf('Wallets|Summary', module)
               description: 'Test description',
               unit: {
                 name: 'TUSD',
-                decimals: 6
+                decimals: 6,
               },
               url: 'http://example.com',
-              logo: ''
-            },
+              logo: '',
+            }
           ),
           generateAsset(
             '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
@@ -95,11 +100,11 @@ storiesOf('Wallets|Summary', module)
               description: 'Test description',
               unit: {
                 name: 'USDT',
-                decimals: 6
+                decimals: 6,
               },
               url: 'http://example.com',
-              logo: ''
-            },
+              logo: '',
+            }
           ),
           generateAsset(
             '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
@@ -110,11 +115,11 @@ storiesOf('Wallets|Summary', module)
               description: 'Test description',
               unit: {
                 name: 'USDC',
-                decimals: 6
+                decimals: 6,
               },
               url: 'http://example.com',
-              logo: ''
-            },
+              logo: '',
+            }
           ),
           generateAsset(
             '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
@@ -125,11 +130,11 @@ storiesOf('Wallets|Summary', module)
               description: 'Test description',
               unit: {
                 name: 'DAI',
-                decimals: 6
+                decimals: 6,
               },
               url: 'http://example.com',
-              logo: ''
-            },
+              logo: '',
+            }
           ),
         ]}
         handleOpenWalletTokenSend={action('onContinue')}

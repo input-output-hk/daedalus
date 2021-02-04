@@ -177,9 +177,7 @@ export default class Wallet {
   }
 
   @computed get hasAssets(): boolean {
-    return (
-      get(this, 'assets.total', []).length > 0
-    );
+    return get(this, 'assets.total', []).length > 0;
   }
 
   @computed get isRestoring(): boolean {

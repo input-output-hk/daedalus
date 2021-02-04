@@ -7,7 +7,11 @@ import { boolean, withKnobs } from '@storybook/addon-knobs';
 import SetWalletPassword from '../../../../source/renderer/app/components/wallet/settings/SetWalletPassword';
 import StoryDecorator from '../../_support/StoryDecorator';
 import ChangeSpendingPasswordDialog from '../../../../source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog';
-import {generateHash, generatePolicyIdHash, generateWallet} from '../../_support/utils';
+import {
+  generateHash,
+  generatePolicyIdHash,
+  generateWallet,
+} from '../../_support/utils';
 import STAKE_POOLS from '../../../../source/renderer/app/config/stakingStakePools.dummy';
 import Wallet from '../../../../source/renderer/app/domains/Wallet';
 
@@ -39,11 +43,18 @@ const assets = {
       assetName: '',
       quantity: 200,
     },
-  ]
+  ],
 };
 
 const WALLETS = [
-  generateWallet('First Wallet', '1000000000', assets, 0, STAKE_POOLS[0], false),
+  generateWallet(
+    'First Wallet',
+    '1000000000',
+    assets,
+    0,
+    STAKE_POOLS[0],
+    false
+  ),
 ];
 
 const activeWallet: Wallet = WALLETS[0];

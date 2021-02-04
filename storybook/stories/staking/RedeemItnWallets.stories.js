@@ -15,7 +15,11 @@ import RedemptionUnavailableDialog from '../../../source/renderer/app/components
 // Helpers
 import { isValidMnemonic } from '../../../source/common/config/crypto/decrypt';
 import validWords from '../../../source/common/config/crypto/valid-words.en';
-import {generateHash, generatePolicyIdHash, generateWallet} from '../_support/utils';
+import {
+  generateHash,
+  generatePolicyIdHash,
+  generateWallet,
+} from '../_support/utils';
 
 const assets = {
   available: [
@@ -45,7 +49,7 @@ const assets = {
       assetName: '',
       quantity: 200,
     },
-  ]
+  ],
 };
 
 const WALLETS = [

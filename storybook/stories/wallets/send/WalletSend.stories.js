@@ -8,15 +8,14 @@ import {
   generateHash,
   generateAsset,
   generateWallet,
-  promise, generatePolicyIdHash,
+  promise,
+  generatePolicyIdHash,
 } from '../../_support/utils';
 
 // Assets and helpers
 import WalletsWrapper from '../_utils/WalletsWrapper';
 import { NUMBER_OPTIONS } from '../../../../source/renderer/app/config/profileConfig';
-import {
-  HwDeviceStatuses,
-} from '../../../../source/renderer/app/domains/Wallet';
+import { HwDeviceStatuses } from '../../../../source/renderer/app/domains/Wallet';
 
 // Screens
 import WalletSendForm from '../../../../source/renderer/app/components/wallet/WalletSendForm';
@@ -53,7 +52,7 @@ const assets = {
       assetName: '',
       quantity: 200,
     },
-  ]
+  ],
 };
 
 const nativeTokens = [
@@ -66,11 +65,11 @@ const nativeTokens = [
       description: 'Test description',
       unit: {
         name: 'TUSD',
-        decimals: 6
+        decimals: 6,
       },
       url: 'http://example.com',
-      logo: ''
-    },
+      logo: '',
+    }
   ),
   generateAsset(
     '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
@@ -81,11 +80,11 @@ const nativeTokens = [
       description: 'Test description',
       unit: {
         name: 'USDT',
-        decimals: 6
+        decimals: 6,
       },
       url: 'http://example.com',
-      logo: ''
-    },
+      logo: '',
+    }
   ),
   generateAsset(
     '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
@@ -96,11 +95,11 @@ const nativeTokens = [
       description: 'Test description',
       unit: {
         name: 'USDC',
-        decimals: 6
+        decimals: 6,
       },
       url: 'http://example.com',
-      logo: ''
-    },
+      logo: '',
+    }
   ),
   generateAsset(
     '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
@@ -111,11 +110,11 @@ const nativeTokens = [
       description: 'Test description',
       unit: {
         name: 'DAI',
-        decimals: 6
+        decimals: 6,
       },
       url: 'http://example.com',
-      logo: ''
-    },
+      logo: '',
+    }
   ),
 ];
 

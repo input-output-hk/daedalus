@@ -21,9 +21,7 @@ import {
 
 import { emptyTransactionFilterOptions } from '../../../../source/renderer/app/stores/TransactionsStore';
 import type { TransactionFilterOptionsType } from '../../../../source/renderer/app/stores/TransactionsStore';
-import {
-  WALLET_ASSETS_ENABLED
-} from '../../../../source/renderer/app/config/walletsConfig';
+import { WALLET_ASSETS_ENABLED } from '../../../../source/renderer/app/config/walletsConfig';
 
 type Props = {
   getStory: Function,

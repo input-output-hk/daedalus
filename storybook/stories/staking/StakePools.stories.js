@@ -9,7 +9,11 @@ import {
   INITIAL_DESIRED_POOLS_NUMBER,
 } from '../../../source/renderer/app/config/stakingConfig';
 import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
-import {generateHash, generatePolicyIdHash, generateWallet} from '../_support/utils';
+import {
+  generateHash,
+  generatePolicyIdHash,
+  generateWallet,
+} from '../_support/utils';
 
 const assets = {
   available: [
@@ -39,7 +43,7 @@ const assets = {
       assetName: '',
       quantity: 200,
     },
-  ]
+  ],
 };
 
 const dummyWallets = [

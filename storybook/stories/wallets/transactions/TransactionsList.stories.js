@@ -5,7 +5,11 @@ import { action } from '@storybook/addon-actions';
 import { withKnobs, select } from '@storybook/addon-knobs';
 
 // Assets and helpers
-import {generateHash, generatePolicyIdHash, generateWallet} from '../../_support/utils';
+import {
+  generateHash,
+  generatePolicyIdHash,
+  generateWallet,
+} from '../../_support/utils';
 import { formattedWalletAmount } from '../../../../source/renderer/app/utils/formatters';
 import WalletsWrapper from '../_utils/WalletsWrapper';
 import WalletsTransactionsWrapper from '../_utils/WalletsTransactionsWrapper';
@@ -20,9 +24,7 @@ import type { TransactionFilterOptionsType } from '../../../../source/renderer/a
 
 // Screens
 import WalletTransactions from '../../../../source/renderer/app/components/wallet/transactions/WalletTransactions';
-import {
-  WALLET_ASSETS_ENABLED
-} from '../../../../source/renderer/app/config/walletsConfig';
+import { WALLET_ASSETS_ENABLED } from '../../../../source/renderer/app/config/walletsConfig';
 
 type Props = {
   defaultFilterOptions: TransactionFilterOptionsType,
@@ -62,7 +64,7 @@ const assets = {
       assetName: '',
       quantity: 200,
     },
-  ]
+  ],
 };
 
 /* eslint-disable consistent-return */

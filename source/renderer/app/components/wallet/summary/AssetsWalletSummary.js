@@ -7,7 +7,7 @@ import BorderedBox from '../../widgets/BorderedBox';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import styles from './AssetsWalletSummary.scss';
 import Wallet from '../../../domains/Wallet';
-import type {WalletAssets} from "../../../api/assets/types";
+import type { WalletAssets } from '../../../api/assets/types';
 
 const messages = defineMessages({
   transactionsLabel: {
@@ -51,42 +51,49 @@ export default class AssetsWalletSummary extends Component<Props> {
     const { total } = assets;
 
     const isRestoreActive = wallet.isRestoring;
-    const numberOfNativeTokens = total.length;
+    const numberOfNativeTokens = total ? total.length : null;
 
     return (
-      <Fragment>
-        <div className={styles.numberOfTokens}>
-          {intl.formatMessage(messages.tokensTitle)} ({numberOfNativeTokens})
-        </div>
-        <div className={styles.component}>
-          {assets.total.map((token: any) => (
-            <BorderedBox className={styles.nativeTokenContainer} key={token.id}>
-              <div className={styles.nativeTokenLeftContainer}>
-                <div className={styles.walletName}>{token.name}</div>
-                <div className={styles.walletAmount}>
-                  {isRestoreActive
-                    ? '-'
-                    : token.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
-                  {/* @todo Fallback for token ticker - change it to token name */}
-                  <span>&nbsp;{token.ticker ? token.ticker : token.name}</span>
+      numberOfNativeTokens && (
+        <Fragment>
+          <div className={styles.numberOfTokens}>
+            {intl.formatMessage(messages.tokensTitle)} ({numberOfNativeTokens})
+          </div>
+          <div className={styles.component}>
+            {assets.total.map((token: any) => (
+              <BorderedBox
+                className={styles.nativeTokenContainer}
+                key={token.id}
+              >
+                <div className={styles.nativeTokenLeftContainer}>
+                  <div className={styles.walletName}>{token.name}</div>
+                  <div className={styles.walletAmount}>
+                    {isRestoreActive
+                      ? '-'
+                      : token.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
+                    {/* @todo Fallback for token ticker - change it to token name */}
+                    <span>
+                      &nbsp;{token.ticker ? token.ticker : token.name}
+                    </span>
+                  </div>
                 </div>
-              </div>
-              <div className={styles.nativeTokenRightContainer}>
-                <button
-                  className={classNames([
-                    'primary',
-                    styles.nativeTokenSendButton,
-                    token.amount.isZero() ? styles.disabled : null,
-                  ])}
-                  onClick={() => handleOpenWalletTokenSend(token)}
-                >
-                  {intl.formatMessage(messages.tokenSendButton)}
-                </button>
-              </div>
-            </BorderedBox>
-          ))}
-        </div>
-      </Fragment>
+                <div className={styles.nativeTokenRightContainer}>
+                  <button
+                    className={classNames([
+                      'primary',
+                      styles.nativeTokenSendButton,
+                      token.amount.isZero() ? styles.disabled : null,
+                    ])}
+                    onClick={() => handleOpenWalletTokenSend(token)}
+                  >
+                    {intl.formatMessage(messages.tokenSendButton)}
+                  </button>
+                </div>
+              </BorderedBox>
+            ))}
+          </div>
+        </Fragment>
+      )
     );
   }
 }

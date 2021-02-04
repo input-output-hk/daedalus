@@ -25,7 +25,10 @@ import type {
 } from '../../../source/renderer/app/api/transactions/types';
 import type { SyncStateStatus } from '../../../source/renderer/app/api/wallets/types';
 import Asset from '../../../source/renderer/app/domains/Asset';
-import type { AssetMetadata, WalletAssets } from '../../../source/renderer/app/api/assets/types';
+import type {
+  AssetMetadata,
+  WalletAssets,
+} from '../../../source/renderer/app/api/assets/types';
 
 export const generateHash = () => {
   const now = new Date().valueOf().toString();
@@ -60,7 +63,7 @@ export const generateWallet = (
   reward?: number = 0,
   delegatedStakePool?: StakePool,
   hasPassword?: boolean,
-  status?: SyncStateStatus = WalletSyncStateStatuses.READY,
+  status?: SyncStateStatus = WalletSyncStateStatuses.READY
 ) =>
   new Wallet({
     id: generateHash(),
@@ -86,7 +89,7 @@ export const generateWallet = (
 export const generateAsset = (
   policyId: string,
   assetName: string = '',
-  metadata?: AssetMetadata,
+  metadata?: AssetMetadata
 ) =>
   new Asset({
     id: generateHash(),
