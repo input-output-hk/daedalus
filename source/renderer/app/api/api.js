@@ -100,7 +100,6 @@ import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 import {
   SMASH_SERVER_STATUSES,
   SMASH_SERVERS_LIST,
-  DELEGATION_DEPOSIT,
   MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE,
   REWARDS_REDEMPTION_FEE_CALCULATION_AMOUNT,
 } from '../config/stakingConfig';
@@ -891,7 +890,6 @@ export default class AdaApi {
       parameters: filterLogData(request),
     });
     const { walletId, payments, delegation } = request;
-
     try {
       let data;
       if (delegation) {
@@ -925,13 +923,15 @@ export default class AdaApi {
       const outputs = concat(response.outputs, response.change);
 
       // Calculate fee from inputs and outputs
-      let totalInputs = 0;
-      let totalOutputs = 0;
       const inputsData = [];
       const outputsData = [];
       const certificatesData = [];
+      let totalInputs = new BigNumber(0);
+      let totalOutputs = new BigNumber(0);
+
       map(response.inputs, (input) => {
-        totalInputs += input.amount.quantity;
+        const inputAmount = new BigNumber(input.amount.quantity);
+        totalInputs = totalInputs.plus(inputAmount);
         const inputData = {
           address: input.address,
           amount: input.amount,
@@ -941,8 +941,10 @@ export default class AdaApi {
         };
         inputsData.push(inputData);
       });
+
       map(outputs, (output) => {
-        totalOutputs += output.amount.quantity;
+        const outputAmount = new BigNumber(output.amount.quantity);
+        totalOutputs = totalOutputs.plus(outputAmount);
         const outputData = {
           address: output.address,
           amount: output.amount,
@@ -950,6 +952,7 @@ export default class AdaApi {
         };
         outputsData.push(outputData);
       });
+
       if (response.certificates) {
         map(response.certificates, (certificate) => {
           const certificateData = {
@@ -960,28 +963,21 @@ export default class AdaApi {
           certificatesData.push(certificateData);
         });
       }
-      const fee = new BigNumber(totalInputs - totalOutputs).dividedBy(
-        LOVELACES_PER_ADA
-      );
 
-      let transactionFee;
-      if (delegation && delegation.delegationAction) {
-        const delegationDeposit = new BigNumber(DELEGATION_DEPOSIT);
-        const isDepositIncluded = fee.gt(delegationDeposit);
-        transactionFee = isDepositIncluded ? fee.minus(delegationDeposit) : fee;
-      } else {
-        transactionFee = fee;
-      }
+      const deposits = map(response.deposits, (deposit) => deposit.quantity);
+      const totalDeposits = deposits.length
+        ? BigNumber.sum.apply(null, deposits)
+        : new BigNumber(0);
+      const feeWithDeposits = totalInputs.minus(totalOutputs);
+      const fee = feeWithDeposits.minus(totalDeposits);
 
-      // On first wallet delegation deposit is included in fee
       const extendedResponse = {
         inputs: inputsData,
         outputs: outputsData,
         certificates: certificatesData,
-        feeWithDelegationDeposit: fee,
-        fee: transactionFee,
+        feeWithDeposits: feeWithDeposits.dividedBy(LOVELACES_PER_ADA),
+        fee: fee.dividedBy(LOVELACES_PER_ADA),
       };
-
       logger.debug('AdaApi::selectCoins success', { extendedResponse });
       return extendedResponse;
     } catch (error) {
