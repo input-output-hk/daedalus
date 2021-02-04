@@ -21,7 +21,9 @@ import {
 
 import { emptyTransactionFilterOptions } from '../../../../source/renderer/app/stores/TransactionsStore';
 import type { TransactionFilterOptionsType } from '../../../../source/renderer/app/stores/TransactionsStore';
-import { WALLET_NATIVE_TOKENS_ENABLED } from '../../../../source/renderer/app/config/walletsConfig';
+import {
+  WALLET_ASSETS_ENABLED
+} from '../../../../source/renderer/app/config/walletsConfig';
 
 type Props = {
   getStory: Function,
@@ -329,8 +331,8 @@ export default class WalletsTransactionsWrapper extends Component<
   get transactions() {
     const { transactionsOption } = this.props;
     const { filterOptions = emptyTransactionFilterOptions } = this.state || {};
-    const hasNativeTokens = WALLET_NATIVE_TOKENS_ENABLED;
-    const transactionsList = hasNativeTokens
+    const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
+    const transactionsList = hasAssetsEnabled
       ? this.transactionsNativeTokensOptions[transactionsOption]
       : this.transactionsOptions[transactionsOption];
     return transactionsList.filter((transaction) =>

@@ -10,7 +10,7 @@ import WalletsWrapper from '../_utils/WalletsWrapper';
 
 // Screens
 import WalletSummary from '../../../../source/renderer/app/components/wallet/summary/WalletSummary';
-import TokensWalletSummary from '../../../../source/renderer/app/components/wallet/summary/TokensWalletSummary';
+import AssetsWalletSummary from '../../../../source/renderer/app/components/wallet/summary/AssetsWalletSummary';
 
 const assets = {
   available: [
@@ -66,11 +66,11 @@ storiesOf('Wallets|Summary', module)
         )}
         numberOfPendingTransactions={number('Number of transactions', 3)}
         isLoadingTransactions={boolean('isLoadingTransactions', false)}
-        hasNativeTokens
+        hasAssetsEnabled
       />
-      <TokensWalletSummary
+      <AssetsWalletSummary
         wallet={generateWallet('Wallet name', '45119903750165', assets)}
-        nativeTokens={[
+        assets={[
           generateAsset(
             '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
             '',

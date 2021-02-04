@@ -217,7 +217,7 @@ type Props = {
   currentTimeFormat: string,
   walletId: string,
   isDeletingTransaction: boolean,
-  hasNativeTokens?: boolean,
+  hasAssetsEnabled?: boolean,
 };
 
 type State = {
@@ -357,7 +357,7 @@ export default class Transaction extends Component<Props, State> {
       isExpanded,
       isDeletingTransaction,
       currentTimeFormat,
-      hasNativeTokens,
+      hasAssetsEnabled,
     } = this.props;
     const { intl } = this.context;
     const { showConfirmationDialog } = this.state;
@@ -389,16 +389,16 @@ export default class Transaction extends Component<Props, State> {
       isExpanded ? styles.expanded : null,
     ]);
 
-    const transactionsType = hasNativeTokens
+    const transactionsType = hasAssetsEnabled
       ? intl.formatMessage(messages.multipleTokens)
       : intl.formatMessage(globalMessages.currency);
-    const typeOfTransaction = hasNativeTokens
+    const typeOfTransaction = hasAssetsEnabled
       ? intl.formatMessage(headerStateTranslations[state])
       : intl.formatMessage(globalMessages.currency);
-    const currency = hasNativeTokens
+    const currency = hasAssetsEnabled
       ? 'USDC'
       : intl.formatMessage(globalMessages.currency);
-    const fees = hasNativeTokens ? '0.202481' : null;
+    const fees = hasAssetsEnabled ? '0.202481' : null;
 
     const getIconType = (txState) => {
       switch (txState) {
@@ -450,7 +450,7 @@ export default class Transaction extends Component<Props, State> {
                   onOpenExternalLink(getUrlByType('address', address))
                 }
                 label={
-                  hasNativeTokens && address
+                  hasAssetsEnabled && address
                     ? ellipsis(address, 30, 30)
                     : address
                 }
@@ -518,7 +518,7 @@ export default class Transaction extends Component<Props, State> {
                 {fromAddresses(
                   data.addresses.from,
                   data.id,
-                  hasNativeTokens ? data.type : null
+                  hasAssetsEnabled ? data.type : null
                 )}
 
                 {data.addresses.withdrawals.length ? (
@@ -543,11 +543,11 @@ export default class Transaction extends Component<Props, State> {
                   </>
                 ) : null}
 
-                {!hasNativeTokens && (
+                {!hasAssetsEnabled && (
                   <h2>{intl.formatMessage(messages.toAddresses)}</h2>
                 )}
                 {data.addresses.to.map((address, addressIndex) =>
-                  hasNativeTokens ? (
+                  hasAssetsEnabled ? (
                     <div
                       // eslint-disable-next-line react/no-array-index-key
                       key={`${data.id}-to-${address}-${addressIndex}`}
@@ -617,7 +617,7 @@ export default class Transaction extends Component<Props, State> {
                   )
                 )}
 
-                {hasNativeTokens && (
+                {hasAssetsEnabled && (
                   <>
                     <h2>{intl.formatMessage(messages.transactionFee)}</h2>
                     {fees && (
@@ -645,7 +645,7 @@ export default class Transaction extends Component<Props, State> {
                   />
                 </div>
 
-                {hasNativeTokens && (
+                {hasAssetsEnabled && (
                   <>
                     <h2>{intl.formatMessage(messages.transactionMetadata)}</h2>
                     <div className={styles.transactionIdRow}>

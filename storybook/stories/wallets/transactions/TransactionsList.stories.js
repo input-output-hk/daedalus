@@ -20,7 +20,9 @@ import type { TransactionFilterOptionsType } from '../../../../source/renderer/a
 
 // Screens
 import WalletTransactions from '../../../../source/renderer/app/components/wallet/transactions/WalletTransactions';
-import { WALLET_NATIVE_TOKENS_ENABLED } from '../../../../source/renderer/app/config/walletsConfig';
+import {
+  WALLET_ASSETS_ENABLED
+} from '../../../../source/renderer/app/config/walletsConfig';
 
 type Props = {
   defaultFilterOptions: TransactionFilterOptionsType,
@@ -136,7 +138,7 @@ storiesOf('Wallets|Transactions', module)
       transactions,
       totalAvailable,
     } = props;
-    const hasNativeTokens = WALLET_NATIVE_TOKENS_ENABLED;
+    const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
     return (
       <WalletTransactions
         activeWallet={generateWallet('Wallet name', '45119903750165', assets)}
@@ -159,7 +161,7 @@ storiesOf('Wallets|Transactions', module)
         populatedFilterOptions={populatedFilterOptions}
         totalAvailable={totalAvailable}
         transactions={transactions}
-        hasNativeTokens={hasNativeTokens}
+        hasAssetsEnabled={hasAssetsEnabled}
       />
     );
   });

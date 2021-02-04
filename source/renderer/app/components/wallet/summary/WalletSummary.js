@@ -31,7 +31,7 @@ type Props = {
   numberOfTransactions?: number,
   numberOfPendingTransactions: number,
   isLoadingTransactions: boolean,
-  hasNativeTokens?: boolean,
+  hasAssetsEnabled?: boolean,
 };
 
 @observer
@@ -47,7 +47,7 @@ export default class WalletSummary extends Component<Props> {
       numberOfRecentTransactions,
       numberOfTransactions,
       isLoadingTransactions,
-      hasNativeTokens,
+      hasAssetsEnabled,
     } = this.props;
     const { intl } = this.context;
     const isLoadingAllTransactions =
@@ -55,22 +55,22 @@ export default class WalletSummary extends Component<Props> {
     const numberOfTransactionsStyles = classnames([
       styles.numberOfTransactions,
       isLoadingAllTransactions ? styles.isLoadingNumberOfTransactions : null,
-      hasNativeTokens ? styles.nativeTokens : null,
+      hasAssetsEnabled ? styles.nativeTokens : null,
     ]);
 
     const numberOfPendingTransactionsStyles = classnames([
       styles.numberOfPendingTransactions,
-      hasNativeTokens ? styles.nativeTokens : null,
+      hasAssetsEnabled ? styles.nativeTokens : null,
     ]);
 
     const walletNameStyles = classnames([
       styles.walletName,
-      hasNativeTokens ? styles.nativeTokens : null,
+      hasAssetsEnabled ? styles.nativeTokens : null,
     ]);
 
     const walletAmountStyles = classnames([
       styles.walletAmount,
-      hasNativeTokens ? styles.nativeTokens : null,
+      hasAssetsEnabled ? styles.nativeTokens : null,
     ]);
 
     const isRestoreActive = wallet.isRestoring;
@@ -83,7 +83,7 @@ export default class WalletSummary extends Component<Props> {
             {isRestoreActive
               ? '-'
               : wallet.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
-            {hasNativeTokens ? (
+            {hasAssetsEnabled ? (
               <span>&nbsp;{intl.formatMessage(globalMessages.unitAda)}</span>
             ) : (
               <SVGInline

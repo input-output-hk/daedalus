@@ -12,8 +12,8 @@ import { ROUTES } from '../../routes-config';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import { formattedWalletAmount } from '../../utils/formatters';
 import { getNetworkExplorerUrlByType } from '../../utils/network';
-import { WALLET_NATIVE_TOKENS_ENABLED } from '../../config/walletsConfig';
-import TokensWalletSummary from '../../components/wallet/summary/TokensWalletSummary';
+import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
+import AssetsWalletSummary from '../../components/wallet/summary/AssetsWalletSummary';
 import Wallet from '../../domains/Wallet';
 
 export const messages = defineMessages({
@@ -73,7 +73,7 @@ export default class WalletSummaryPage extends Component<Props> {
     } = transactions;
     const wallet = wallets.active;
     const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
-    const hasNativeTokens = WALLET_NATIVE_TOKENS_ENABLED;
+    const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
     // Guard against potential null values
     if (!wallet)
       throw new Error('Active wallet required for WalletSummaryPage.');
@@ -129,12 +129,12 @@ export default class WalletSummaryPage extends Component<Props> {
           numberOfTransactions={totalAvailable}
           numberOfPendingTransactions={pendingTransactionsCount}
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
-          hasNativeTokens={hasNativeTokens}
+          hasAssetsEnabled={hasAssetsEnabled}
         />
-        {hasNativeTokens && wallets.all && (
-          <TokensWalletSummary
+        {hasAssetsEnabled && wallet.assets && (
+          <AssetsWalletSummary
             wallet={wallet}
-            nativeTokens={wallets.all}
+            assets={wallet.assets}
             handleOpenWalletTokenSend={this.handleOpenWalletTokenSend}
           />
         )}

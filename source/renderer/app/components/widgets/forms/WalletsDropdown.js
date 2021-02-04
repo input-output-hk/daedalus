@@ -44,7 +44,7 @@ type Props = {
   wallets: Array<$Shape<Wallet>>,
   getStakePoolById: Function,
   syncingLabel?: string,
-  hasNativeTokens?: string,
+  hasAssetsEnabled?: string,
 };
 
 type WalletOption = {
@@ -56,7 +56,7 @@ type WalletOption = {
   syncing?: boolean,
   syncingLabel?: string,
   isHardwareWallet: boolean,
-  hasNativeTokens?: boolean,
+  hasAssetsEnabled?: boolean,
 };
 
 export default class WalletsDropdown extends Component<Props> {
@@ -111,7 +111,7 @@ export default class WalletsDropdown extends Component<Props> {
       getStakePoolById,
       error,
       errorPosition,
-      hasNativeTokens,
+      hasAssetsEnabled,
       ...props
     } = this.props;
     const walletsData = wallets.map(
@@ -134,14 +134,14 @@ export default class WalletsDropdown extends Component<Props> {
         }
         const delegatedStakePool = getStakePoolById(currentStakePoolId);
         const formattedAmount =
-          hasNativeTokens && ticker
+          hasAssetsEnabled && ticker
             ? formattedTokenWalletAmount(amount, ticker)
             : formattedWalletAmount(amount);
         const detail = !isRestoring ? formattedAmount : null;
         return {
           detail,
           syncing: isRestoring,
-          label: hasNativeTokens ? ticker : label,
+          label: hasAssetsEnabled ? ticker : label,
           value,
           numberOfStakePools,
           delegatedStakePool,

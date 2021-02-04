@@ -34,8 +34,8 @@ export const RECOVERY_PHRASE_WORD_COUNT_OPTIONS = {
 export const WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH = 15;
 export const WALLET_PUBLIC_KEY_SHARING_ENABLED = false;
 
-// Native tokens feature toggle enable/disable
-export const WALLET_NATIVE_TOKENS_ENABLED = true;
+// Wallet assets feature toggle enable/disable
+export const WALLET_ASSETS_ENABLED = true;
 
 // Byron wallet migration has been temporarily disabled due to missing Api support after Mary HF
 export const IS_BYRON_WALLET_MIGRATION_ENABLED = false;

@@ -5,9 +5,9 @@ import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
 import BorderedBox from '../../widgets/BorderedBox';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
-import styles from './TokensWalletSummary.scss';
+import styles from './AssetsWalletSummary.scss';
 import Wallet from '../../../domains/Wallet';
-import Asset from '../../../domains/Asset';
+import type {WalletAssets} from "../../../api/assets/types";
 
 const messages = defineMessages({
   transactionsLabel: {
@@ -24,7 +24,7 @@ const messages = defineMessages({
   tokensTitle: {
     id: 'wallet.summary.page.tokensTitle',
     defaultMessage: '!!!Assets',
-    description: 'Number of native tokens title on Wallet summary page',
+    description: 'Number of assets title on Wallet summary page',
   },
   tokenSendButton: {
     id: 'wallet.summary.page.tokenSendButton',
@@ -35,22 +35,23 @@ const messages = defineMessages({
 
 type Props = {
   wallet: Wallet,
-  nativeTokens: Array<any>,
+  assets: WalletAssets,
   handleOpenWalletTokenSend: Function,
 };
 
 @observer
-export default class TokensWalletSummary extends Component<Props> {
+export default class AssetsWalletSummary extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
   render() {
-    const { wallet, nativeTokens, handleOpenWalletTokenSend } = this.props;
+    const { wallet, assets, handleOpenWalletTokenSend } = this.props;
     const { intl } = this.context;
+    const { total } = assets;
 
     const isRestoreActive = wallet.isRestoring;
-    const numberOfNativeTokens = nativeTokens.length;
+    const numberOfNativeTokens = total.length;
 
     return (
       <Fragment>
@@ -58,7 +59,7 @@ export default class TokensWalletSummary extends Component<Props> {
           {intl.formatMessage(messages.tokensTitle)} ({numberOfNativeTokens})
         </div>
         <div className={styles.component}>
-          {nativeTokens.map((token: any) => (
+          {assets.total.map((token: any) => (
             <BorderedBox className={styles.nativeTokenContainer} key={token.id}>
               <div className={styles.nativeTokenLeftContainer}>
                 <div className={styles.walletName}>{token.name}</div>

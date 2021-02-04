@@ -65,7 +65,7 @@ type Props = {
   isDeletingTransaction: boolean,
   currentDateFormat: string,
   currentTimeFormat: string,
-  hasNativeTokens?: boolean,
+  hasAssetsEnabled?: boolean,
 };
 
 const DATE_FORMAT = 'YYYY-MM-DD';
@@ -173,7 +173,7 @@ export default class WalletTransactionsList extends Component<Props> {
       walletId,
       isDeletingTransaction,
       currentTimeFormat,
-      hasNativeTokens,
+      hasAssetsEnabled,
     } = this.props;
     const { isFirstInGroup, isLastInGroup, tx } = data;
     const txClasses = classnames([
@@ -197,7 +197,7 @@ export default class WalletTransactionsList extends Component<Props> {
           walletId={walletId}
           isDeletingTransaction={isDeletingTransaction}
           currentTimeFormat={currentTimeFormat}
-          hasNativeTokens={hasNativeTokens}
+          hasAssetsEnabled={hasAssetsEnabled}
         />
       </div>
     );

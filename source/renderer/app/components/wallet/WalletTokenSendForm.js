@@ -731,7 +731,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
                   wallets={tokens}
                   onChange={(id) => this.onSelectWallet(id)}
                   syncingLabel={intl.formatMessage(messages.syncingWallet)}
-                  hasNativeTokens
+                  hasAssetsEnabled
                   value={selectedWalletId}
                   getStakePoolById={() => {}}
                   errorPosition="bottom"
