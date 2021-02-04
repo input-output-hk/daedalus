@@ -141,11 +141,13 @@ const walletAssets = assets.total.map((assetTotal) => {
   );
   return {
     id: assetData ? assetData.id : '',
-    metadata: assetData ? assetData.metadata : {
-      name: '',
-      acronym: '',
-      description: '',
-    },
+    metadata: assetData
+      ? assetData.metadata
+      : {
+          name: '',
+          acronym: '',
+          description: '',
+        },
     total: assetTotal || {},
   };
 });
@@ -176,10 +178,7 @@ storiesOf('Wallets|Summary', module)
         numberOfPendingTransactions={number('Number of transactions', 3)}
         isLoadingTransactions={boolean('isLoadingTransactions', false)}
         hasAssetsEnabled={
-          hasAssetsEnabled &&
-          assets &&
-          assets.total &&
-          assets.total.length > 0
+          hasAssetsEnabled && assets && assets.total && assets.total.length > 0
         }
       />
       <AssetsWalletSummary

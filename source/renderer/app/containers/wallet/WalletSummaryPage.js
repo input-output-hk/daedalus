@@ -90,11 +90,13 @@ export default class WalletSummaryPage extends Component<Props> {
       );
       return {
         id: assetData ? assetData.id : '',
-        metadata: assetData ? assetData.metadata : {
-          name: '',
-          acronym: '',
-          description: '',
-        },
+        metadata: assetData
+          ? assetData.metadata
+          : {
+              name: '',
+              acronym: '',
+              description: '',
+            },
         total: assetTotal || {},
       };
     });

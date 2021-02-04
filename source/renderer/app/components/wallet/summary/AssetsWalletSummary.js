@@ -7,9 +7,7 @@ import BigNumber from 'bignumber.js';
 import BorderedBox from '../../widgets/BorderedBox';
 import styles from './AssetsWalletSummary.scss';
 import Wallet from '../../../domains/Wallet';
-import type {
-  AssetMetadata, WalletAssetItem,
-} from '../../../api/assets/types';
+import type { AssetMetadata, WalletAssetItem } from '../../../api/assets/types';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 
 const messages = defineMessages({
@@ -72,16 +70,20 @@ export default class AssetsWalletSummary extends Component<Props> {
               <BorderedBox className={styles.assetsContainer} key={asset.id}>
                 {asset.metadata && asset.total && (
                   <div className={styles.assetsLeftContainer}>
-                    <div className={styles.assetName}>{asset.metadata.name}</div>
+                    <div className={styles.assetName}>
+                      {asset.metadata.name}
+                    </div>
                     <div className={styles.assetAmount}>
                       {isRestoreActive
                         ? '-'
                         : new BigNumber(asset.total.quantity).toFormat(
-                          asset.metadata.unit ? asset.metadata.unit.decimals : DECIMAL_PLACES_IN_ADA
+                            asset.metadata.unit
+                              ? asset.metadata.unit.decimals
+                              : DECIMAL_PLACES_IN_ADA
                           )}
                       <span>&nbsp;{asset.metadata.acronym}</span>
                     </div>
-                </div>
+                  </div>
                 )}
                 {asset.total && (
                   <div className={styles.assetRightContainer}>
