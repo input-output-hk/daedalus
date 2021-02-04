@@ -55,22 +55,22 @@ export default class WalletSummary extends Component<Props> {
     const numberOfTransactionsStyles = classnames([
       styles.numberOfTransactions,
       isLoadingAllTransactions ? styles.isLoadingNumberOfTransactions : null,
-      hasAssetsEnabled ? styles.nativeTokens : null,
+      hasAssetsEnabled ? styles.assets : null,
     ]);
 
     const numberOfPendingTransactionsStyles = classnames([
       styles.numberOfPendingTransactions,
-      hasAssetsEnabled ? styles.nativeTokens : null,
+      hasAssetsEnabled ? styles.assets : null,
     ]);
 
     const walletNameStyles = classnames([
       styles.walletName,
-      hasAssetsEnabled ? styles.nativeTokens : null,
+      hasAssetsEnabled ? styles.assets : null,
     ]);
 
     const walletAmountStyles = classnames([
       styles.walletAmount,
-      hasAssetsEnabled ? styles.nativeTokens : null,
+      hasAssetsEnabled ? styles.assets : null,
     ]);
 
     const isRestoreActive = wallet.isRestoring;

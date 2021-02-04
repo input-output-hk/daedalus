@@ -22,7 +22,7 @@
   margin-bottom: 11px;
   user-select: text;
 
-  &.nativeTokens {
+  &.assets {
     margin-bottom: 6px;
   }
 }
@@ -36,7 +36,7 @@
   user-select: text;
   word-break: break-all;
 
-  &.nativeTokens {
+  &.assets {
     font-family: var(--font-bold);
     font-size: 22px;
     line-height: 1.41;
@@ -71,7 +71,7 @@
   .numberOfPendingTransactions {
     @extend %smallText;
 
-    &.nativeTokens {
+    &.assets {
       span:first-child {
         font-family: var(--font-medium);
         opacity: 0.7;

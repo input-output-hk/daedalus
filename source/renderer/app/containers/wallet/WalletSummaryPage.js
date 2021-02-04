@@ -43,7 +43,7 @@ export default class WalletSummaryPage extends Component<Props> {
     });
   };
 
-  handleOpenWalletTokenSend = async (token: Wallet) => {
+  handleOpenAssetSend = async (token: Wallet) => {
     await this.props.actions.wallets.openSendFormWithAssets.trigger({
       walletId: token.id,
     });
@@ -74,6 +74,7 @@ export default class WalletSummaryPage extends Component<Props> {
     const wallet = wallets.active;
     const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
+    const { hasAssets } = wallet;
     // Guard against potential null values
     if (!wallet)
       throw new Error('Active wallet required for WalletSummaryPage.');
@@ -129,13 +130,13 @@ export default class WalletSummaryPage extends Component<Props> {
           numberOfTransactions={totalAvailable}
           numberOfPendingTransactions={pendingTransactionsCount}
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
-          hasAssetsEnabled={hasAssetsEnabled}
+          hasAssetsEnabled={hasAssetsEnabled && hasAssets}
         />
-        {hasAssetsEnabled && wallet.assets && (
+        {hasAssetsEnabled && hasAssets && (
           <AssetsWalletSummary
             wallet={wallet}
             assets={wallet.assets}
-            handleOpenWalletTokenSend={this.handleOpenWalletTokenSend}
+            handleOpenAssetSend={this.handleOpenAssetSend}
           />
         )}
         {walletTransactions}

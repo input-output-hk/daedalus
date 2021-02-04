@@ -36,7 +36,7 @@ const messages = defineMessages({
 type Props = {
   wallet: Wallet,
   assets: WalletAssets,
-  handleOpenWalletTokenSend: Function,
+  handleOpenAssetSend: Function,
 };
 
 @observer
@@ -46,45 +46,45 @@ export default class AssetsWalletSummary extends Component<Props> {
   };
 
   render() {
-    const { wallet, assets, handleOpenWalletTokenSend } = this.props;
+    const { wallet, assets, handleOpenAssetSend } = this.props;
     const { intl } = this.context;
     const { total } = assets;
 
     const isRestoreActive = wallet.isRestoring;
-    const numberOfNativeTokens = total ? total.length : null;
+    const numberOfAssets = total ? total.length : null;
 
     return (
-      numberOfNativeTokens && (
+      numberOfAssets && (
         <Fragment>
-          <div className={styles.numberOfTokens}>
-            {intl.formatMessage(messages.tokensTitle)} ({numberOfNativeTokens})
+          <div className={styles.numberOfAssets}>
+            {intl.formatMessage(messages.tokensTitle)} ({numberOfAssets})
           </div>
           <div className={styles.component}>
-            {assets.total.map((token: any) => (
+            {assets.total.map((asset: any) => (
               <BorderedBox
-                className={styles.nativeTokenContainer}
-                key={token.id}
+                className={styles.assetsContainer}
+                key={asset.id}
               >
-                <div className={styles.nativeTokenLeftContainer}>
-                  <div className={styles.walletName}>{token.name}</div>
-                  <div className={styles.walletAmount}>
+                <div className={styles.assetsLeftContainer}>
+                  <div className={styles.assetName}>{asset.name}</div>
+                  <div className={styles.assetAmount}>
                     {isRestoreActive
                       ? '-'
-                      : token.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
-                    {/* @todo Fallback for token ticker - change it to token name */}
+                      : asset.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
+                    {/* @todo Fallback for asset ticker - change it to asset name */}
                     <span>
-                      &nbsp;{token.ticker ? token.ticker : token.name}
+                      &nbsp;{asset.ticker ? asset.ticker : asset.name}
                     </span>
                   </div>
                 </div>
-                <div className={styles.nativeTokenRightContainer}>
+                <div className={styles.assetRightContainer}>
                   <button
                     className={classNames([
                       'primary',
-                      styles.nativeTokenSendButton,
-                      token.amount.isZero() ? styles.disabled : null,
+                      styles.assetSendButton,
+                      asset.amount.isZero() ? styles.disabled : null,
                     ])}
-                    onClick={() => handleOpenWalletTokenSend(token)}
+                    onClick={() => handleOpenAssetSend(asset)}
                   >
                     {intl.formatMessage(messages.tokenSendButton)}
                   </button>
