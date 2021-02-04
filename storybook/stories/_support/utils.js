@@ -50,8 +50,8 @@ export const EXAMPLE_METADATA = JSONBigInt.parse(`{
       "4": {
         "map": [
           {
-            "k": { "string": "key" },
-            "v": { "string": "value" }
+            "k": { "int": "5" },
+            "v": { "bytes": "2512a00e9653fe49a44a5886202e24d77eeb998f" }
           },
           {
             "k": { "map": [
@@ -64,7 +64,9 @@ export const EXAMPLE_METADATA = JSONBigInt.parse(`{
           },
           {
             "k": { "string": "key" },
-            "v": { "string": "value" }
+            "v": { "list": [
+            { "string": "nested list" }
+          ] }
           }
         ]
       }
