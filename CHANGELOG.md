@@ -15,6 +15,7 @@ Changelog
 
 ### Chores
 
+- Updated Hardware Wallets delegation deposit calculation ([PR 2332](https://github.com/input-output-hk/daedalus/pull/2332))
 - Implemented dynamic TTL calculation for hardware wallets transactions ([PR 2331](https://github.com/input-output-hk/daedalus/pull/2331))
 - Added link to connecting issues support article on the hardware wallet "Pairing" dialog ([PR 2336](https://github.com/input-output-hk/daedalus/pull/2336))
 - Updated recovery phrase entry ([PR 2334](https://github.com/input-output-hk/daedalus/pull/2334))
