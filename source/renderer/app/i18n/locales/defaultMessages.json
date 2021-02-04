@@ -4814,27 +4814,13 @@
         "description": "Title for Redeem Incentivized Testnet - redemptionUnavailable",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 17
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/RedemptionUnavailableDialog.js",
         "id": "staking.redeemItnRewards.redemptionUnavailable.title",
         "start": {
           "column": 9,
-          "line": 10
-        }
-      },
-      {
-        "defaultMessage": "!!!Before you can redeem your Incentivized Testnet rewards, Daedalus first needs to synchronize with the blockchain. The synchronization process is now underway and is currently {syncPercentage}% complete. As soon as this process is fully complete, you’ll be able to redeem your Incentivized Testnet rewards. Please wait for this process to complete before returning here to redeem your rewards.",
-        "description": "description for Redeem Incentivized Testnet - redemptionUnavailable",
-        "end": {
-          "column": 3,
-          "line": 22
-        },
-        "file": "source/renderer/app/components/staking/redeem-itn-rewards/RedemptionUnavailableDialog.js",
-        "id": "staking.redeemItnRewards.redemptionUnavailable.description",
-        "start": {
-          "column": 15,
-          "line": 16
+          "line": 12
         }
       },
       {
@@ -4842,13 +4828,13 @@
         "description": "closeButtonLabel for Redeem Incentivized Testnet - redemptionUnavailable",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 23
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/RedemptionUnavailableDialog.js",
         "id": "staking.redeemItnRewards.redemptionUnavailable.closeButton.label",
         "start": {
           "column": 20,
-          "line": 23
+          "line": 18
         }
       }
     ],
@@ -8388,25 +8374,6 @@
       }
     ],
     "path": "source/renderer/app/components/voting/VotingInfo.json"
-  },
-  {
-    "descriptors": [
-      {
-        "defaultMessage": "!!!Daedalus is synchronizing with the Cardano blockchain, and the process is currently {syncPercentage}% complete. This feature will become available once Daedalus is fully synchronized.",
-        "description": "Description for voting registration unavailable screen",
-        "end": {
-          "column": 3,
-          "line": 15
-        },
-        "file": "source/renderer/app/components/voting/VotingUnavailable.js",
-        "id": "voting.unavailable.description",
-        "start": {
-          "column": 15,
-          "line": 10
-        }
-      }
-    ],
-    "path": "source/renderer/app/components/voting/VotingUnavailable.json"
   },
   {
     "descriptors": [
@@ -16128,6 +16095,20 @@
         "start": {
           "column": 8,
           "line": 321
+        }
+      },
+      {
+        "defaultMessage": "!!!Daedalus is synchronizing with the Cardano blockchain, and the process is currently <span>{syncPercentage}%</span> complete. This feature will become available once Daedalus is fully synchronized.",
+        "description": "Info message displayed for features which are unavailable while Daedalus is syncing",
+        "end": {
+          "column": 3,
+          "line": 332
+        },
+        "file": "source/renderer/app/i18n/global-messages.js",
+        "id": "global.info.featureUnavailableWhileSyncing",
+        "start": {
+          "column": 34,
+          "line": 326
         }
       }
     ],

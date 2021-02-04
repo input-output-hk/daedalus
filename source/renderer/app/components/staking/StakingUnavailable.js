@@ -5,14 +5,14 @@ import { FormattedHTMLMessage } from 'react-intl';
 import BigNumber from 'bignumber.js';
 import globalMessages from '../../i18n/global-messages';
 import LoadingSpinner from '../widgets/LoadingSpinner';
-import styles from './VotingUnavailable.scss';
+import styles from './StakingUnavailable.scss';
 
 type Props = {
   syncPercentage: number,
 };
 
 @observer
-export default class VotingUnavailable extends Component<Props> {
+export default class StakingUnavailable extends Component<Props> {
   render() {
     const { syncPercentage } = this.props;
 

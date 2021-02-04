@@ -5,6 +5,7 @@ import Layout from '../MainLayout';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import VotingInfo from '../../components/voting/VotingInfo';
 import VotingUnavailable from '../../components/voting/VotingUnavailable';
+import VotingRegistrationDialog from '../../components/voting/voting-registration-wizard-steps/widgets/VotingRegistrationDialog';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import VotingRegistrationDialogContainer from './dialogs/VotingRegistrationDialogContainer';
 
@@ -21,9 +22,8 @@ export default class VotingRegistrationPage extends Component<Props> {
     const { openExternalLink } = app;
     const { isSynced, syncPercentage } = networkStatus;
 
-    // @VOTING TODO: Improve it
     const isVotingRegistrationDialogOpen = uiDialogs.isOpen(
-      'VotingRegistrationDialog'
+      VotingRegistrationDialog
     );
 
     if (!isSynced && !isVotingRegistrationDialogOpen) {
@@ -42,7 +42,7 @@ export default class VotingRegistrationPage extends Component<Props> {
           <VotingInfo
             onRegisterToVoteClick={() =>
               actions.dialogs.open.trigger({
-                dialog: 'VotingRegistrationDialog',
+                dialog: VotingRegistrationDialog,
               })
             }
             onExternalLinkClick={openExternalLink}

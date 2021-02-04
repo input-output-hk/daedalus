@@ -109,6 +109,7 @@ export default class VotingRegistrationStepsQrCode extends Component<Props> {
         stepsList={stepsList}
         activeStep={activeStep}
         actions={actions}
+        closeOnOverlayClick
         containerClassName={styles.component}
       >
         <div className={styles.qrCode}>
