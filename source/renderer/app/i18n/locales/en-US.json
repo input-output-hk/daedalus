@@ -656,7 +656,7 @@
   "voting.votingRegistration.qrCode.step.closeButtonLabel": "Close",
   "voting.votingRegistration.qrCode.step.qrCodeDescription": "Open the Catalyst Voting app on your smartphone, scan the QR code, and use the PIN to complete the voting registration process.",
   "voting.votingRegistration.qrCode.step.qrCodeTitle": "Please complete your registration now.",
-  "voting.votingRegistration.qrCode.step.qrCodeWarning": "<span>Warning:</span> After closing this window the QR code will no longer be available. <span>If you do not keep a PDF copy of the QR code, you might not be able to participate in voting.</span>",
+  "voting.votingRegistration.qrCode.step.qrCodeWarning": "<span>Warning:</span> After closing this window the QR code will no longer be available. If you do not keep a PDF copy of the QR code, you might not be able to participate in voting.",
   "voting.votingRegistration.qrCode.step.saveAsPdfButtonLabel": "Save as PDF",
   "voting.votingRegistration.register.step.calculatingFees": "Calculating fees",
   "voting.votingRegistration.register.step.continueButtonLabel": "Submit registration transaction",

@@ -976,8 +976,8 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-voting-font-color-accent': '#2d2d2d',
     '--theme-voting-font-color-light': '#2d2d2db3',
     '--theme-voting-font-color-regular': '#2d2d2d',
-    '--theme-voting-info-background-color': '#5e60661a',
-    '--theme-voting-info-font-color': '#1e1f31',
+    '--theme-voting-info-background-color': 'rgba(45, 45, 45, 0.1)',
+    '--theme-voting-info-font-color': '#2d2d2d',
     '--theme-voting-registration-steps-activation-steps-indicator-color':
       '#2d2d2d',
     '--theme-voting-registration-steps-choose-wallet-error-message-color':

@@ -986,8 +986,8 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-voting-font-color-accent': '#5e6066',
     '--theme-voting-font-color-light': 'rgba(94, 96, 102, 0.7)',
     '--theme-voting-font-color-regular': '#5e6066',
-    '--theme-voting-info-background-color': '#5e60661a',
-    '--theme-voting-info-font-color': '#1e1f31',
+    '--theme-voting-info-background-color': 'rgba(94, 96, 102, 0.1)',
+    '--theme-voting-info-font-color': '#5e6066',
     '--theme-voting-registration-steps-activation-steps-indicator-color':
       '#5e6066',
     '--theme-voting-registration-steps-choose-wallet-error-message-color':

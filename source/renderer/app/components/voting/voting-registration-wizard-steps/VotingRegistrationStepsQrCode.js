@@ -24,7 +24,7 @@ const messages = defineMessages({
   qrCodeWarning: {
     id: 'voting.votingRegistration.qrCode.step.qrCodeWarning',
     defaultMessage:
-      '!!!<span>Warning:</span> After closing this window the QR code will no longer be available. <span>If you do not keep a PDF copy of the QR code, you might not be able to participate in voting.</span>',
+      '!!!<span>Warning:</span> After closing this window the QR code will no longer be available. If you do not keep a PDF copy of the QR code, you might not be able to participate in voting.',
     description: 'Qr code warning on the voting registration "qr code" step.',
   },
   checkbox1Label: {
@@ -157,7 +157,7 @@ export default class VotingRegistrationStepsQrCode extends Component<
         <div className={styles.qrCodeDescription}>
           <p className={styles.boldText}>{qrCodeTitle}</p>
           <p>{qrCodeDescription}</p>
-          <p>{qrCodeWarning}</p>
+          <p className={styles.warning}>{qrCodeWarning}</p>
         </div>
         <hr className={styles.separator} />
         <div className={styles.checkboxes}>

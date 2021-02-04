@@ -65,10 +65,18 @@ export default class VotingRegistrationDialog extends Component<Props> {
     const containerStyles = classnames([styles.container, containerClassName]);
     const contentStyles = classnames([styles.content, contentClassName]);
 
+    const stepsIndicatorLabel = (
+      <FormattedMessage
+        {...messages.subtitle}
+        values={{ step: activeStep, stepCount: stepsList.length }}
+      />
+    );
+
     return (
       <Dialog
         className={styles.component}
         title={intl.formatMessage(messages.dialogTitle)}
+        subtitle={!hideSteps && stepsIndicatorLabel}
         onClose={onClose}
         closeOnOverlayClick={false}
         closeButton={hideCloseButton ? null : <DialogCloseButton />}
@@ -76,22 +84,14 @@ export default class VotingRegistrationDialog extends Component<Props> {
         actions={actions}
       >
         {!hideSteps && (
-          <>
-            <div className={styles.subtitle}>
-              <FormattedMessage
-                {...messages.subtitle}
-                values={{ step: activeStep, stepCount: stepsList.length }}
-              />
-            </div>
-            <div className={styles.votingRegistrationStepsIndicatorWrapper}>
-              <Stepper
-                steps={stepsList}
-                activeStep={activeStep}
-                skin={StepperSkin}
-                labelDisabled
-              />
-            </div>
-          </>
+          <div className={styles.votingRegistrationStepsIndicatorWrapper}>
+            <Stepper
+              steps={stepsList}
+              activeStep={activeStep}
+              skin={StepperSkin}
+              labelDisabled
+            />
+          </div>
         )}
         <div className={containerStyles}>
           <div className={contentStyles}>{children}</div>

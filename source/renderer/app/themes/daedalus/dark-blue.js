@@ -992,8 +992,8 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-voting-font-color-accent': '#cecfd1',
     '--theme-voting-font-color-light': 'rgba(233, 244, 254, 0.7)',
     '--theme-voting-font-color-regular': '#cecfd1',
-    '--theme-voting-info-background-color': '#cecfd1b3',
-    '--theme-voting-info-font-color': '#1e1f31',
+    '--theme-voting-info-background-color': 'rgba(233, 244, 254, 0.1)',
+    '--theme-voting-info-font-color': '#e9f4fe',
     '--theme-voting-registration-steps-activation-steps-indicator-color':
       '#e9f4fe',
     '--theme-voting-registration-steps-choose-wallet-error-message-color':

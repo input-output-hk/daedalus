@@ -11,11 +11,12 @@
   }
 
   .qrCodeDescription {
-    margin-bottom: 25px;
-    margin-top: 40px;
-    text-align: center;
+    margin-bottom: 20px;
+    margin-top: 20px;
 
     p {
+      margin-bottom: 11px;
+
       &.boldText,
       span > span {
         font-weight: bold;
@@ -25,8 +26,8 @@
         color: var(--theme-voting-registration-steps-description-color);
       }
 
-      &:last-child {
-        margin-top: 15px;
+      &.warning {
+        color: var(--theme-color-error);
       }
     }
   }
@@ -40,6 +41,6 @@
   .separator {
     border: none;
     border-bottom: 1px solid var(--theme-voting-separator-color);
-    margin: 15px 0 25px;
+    margin: 20px 0;
   }
 }

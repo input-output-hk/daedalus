@@ -656,7 +656,7 @@
   "voting.votingRegistration.qrCode.step.closeButtonLabel": "閉じる",
   "voting.votingRegistration.qrCode.step.qrCodeDescription": "スマートフォンでCatalyst Votingアプリを開き、QRコードをスキャンし、PINコードを使用して有権者登録手続きを完了してください。",
   "voting.votingRegistration.qrCode.step.qrCodeTitle": "登録を完了してください",
-  "voting.votingRegistration.qrCode.step.qrCodeWarning": "<span>警告：</span>このウィンドウを閉じるとQRコードを再び表示することはできません。<span>QRコードのPDFコピーを保存していない場合、投票に参加できなくなる可能性があります。</span>",
+  "voting.votingRegistration.qrCode.step.qrCodeWarning": "<span>警告：</span>このウィンドウを閉じるとQRコードを再び表示することはできません。QRコードのPDFコピーを保存していない場合、投票に参加できなくなる可能性があります。",
   "voting.votingRegistration.qrCode.step.saveAsPdfButtonLabel": "PDFで保存する",
   "voting.votingRegistration.register.step.calculatingFees": "手数料を計算しています",
   "voting.votingRegistration.register.step.continueButtonLabel": "登録トランザクションを送信する",

@@ -6,11 +6,11 @@
 %accentText {
   @extend %baseTypography;
   color: var(--theme-voting-font-color-accent);
-  font-family: var(--font-semibold);
+  font-family: var(--font-medium);
 }
 
 %regularText {
   @extend %baseTypography;
   color: var(--theme-voting-font-color-regular);
-  font-family: var(--font-regular);
+  font-family: var(--font-light);
 }
