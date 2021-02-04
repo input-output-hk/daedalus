@@ -14,19 +14,20 @@ const messages = defineMessages({
   description: {
     id: 'voting.votingRegistration.confirm.step.description',
     defaultMessage:
-      '!!!Approximately 5 minutes of waiting is required for your voting registration to be confirmed. Please leave Daedalus running.',
+      '!!!Confirmation of voting registration requires approximately 5 minutes. Please leave Daedalus running.',
     description: 'Description voting registration "confirm" step.',
   },
   descriptionRestart: {
     id: 'voting.votingRegistration.confirm.step.descriptionRestart',
     defaultMessage:
-      '!!!Please restart the registration process by clicking the <span>Restart registration</span> button.',
+      '!!!Please restart the voting registration process by clicking <span>Restart voting registration</span>.',
     description:
       'Message for restart voting registration on the voting registration "confirm" step.',
   },
   errorMessage: {
     id: 'voting.votingRegistration.confirm.step.errorMessage',
-    defaultMessage: '!!!Voting registration was not completed correctly.',
+    defaultMessage:
+      '!!!The voting registration process was not completed correctly.',
     description: 'Error message on the voting registration "confirm" step.',
   },
   continueButtonLabel: {
@@ -37,7 +38,7 @@ const messages = defineMessages({
   },
   restartButtonLabel: {
     id: 'voting.votingRegistration.confirm.step.restartButtonLabel',
-    defaultMessage: '!!!Restart registration',
+    defaultMessage: '!!!Restart voting registration',
     description:
       'Label for restart button on the voting registration "confirm" step.',
   },
@@ -49,7 +50,7 @@ const messages = defineMessages({
   },
   waitingForConfirmationsLabel: {
     id: 'voting.votingRegistration.confirm.step.waitingForConfirmationsLabel',
-    defaultMessage: '!!!Waiting for confirmations...',
+    defaultMessage: '!!!Waiting for confirmation...',
     description:
       'Label for confirming transaction state on the voting registration "confirm" step.',
   },

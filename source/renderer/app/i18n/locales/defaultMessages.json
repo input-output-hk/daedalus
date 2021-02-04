@@ -3395,7 +3395,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Create a wallet",
+        "defaultMessage": "!!!Create wallet",
         "description": "Label for \"Create New Wallet\" button on the Delegation centre Page.",
         "end": {
           "column": 3,
@@ -7554,7 +7554,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!You can only use one wallet when registering. To maximize rewards and voting power, choose your largest wallet.",
+        "defaultMessage": "!!!You can only use one wallet when registering. To maximize rewards and voting power, choose the wallet with the largest balance.",
         "description": "Description on the voting registration \"choose wallet\" step.",
         "end": {
           "column": 3,
@@ -7610,7 +7610,7 @@
         }
       },
       {
-        "defaultMessage": "!!!This wallet contains rewards balances only, and cannot be used for voting purposes.",
+        "defaultMessage": "!!!This wallet cannot be registered for voting as it contains rewards balance only.",
         "description": "errorMinVotingFundsRewardsOnly Error Label on the voting registration \"choose wallet\" step.",
         "end": {
           "column": 3,
@@ -7624,7 +7624,7 @@
         }
       },
       {
-        "defaultMessage": "!!!This wallet cannot be registered for voting because it is a legacy Byron wallet.",
+        "defaultMessage": "!!!This wallet cannot be registered for voting as it is a legacy Byron wallet.",
         "description": "Byron wallet error message on the voting registration \"choose wallet\" step.",
         "end": {
           "column": 3,
@@ -7638,7 +7638,7 @@
         }
       },
       {
-        "defaultMessage": "!!!This wallet cannot be registered for voting because it is a hardware wallet. <span>Hardware wallets will be supported in the future.</span>",
+        "defaultMessage": "!!!This wallet cannot be registered for voting as it is a hardware wallet. <span>Hardware wallets will be supported in the future.</span>",
         "description": "Hardware wallet error message on the voting registration \"choose wallet\" step.",
         "end": {
           "column": 3,
@@ -7652,7 +7652,7 @@
         }
       },
       {
-        "defaultMessage": "!!!The wallet cannot be used for voting purposes while it is being synced with the blockchain.",
+        "defaultMessage": "!!!The wallet cannot be registered for voting while it is being synced with the blockchain.",
         "description": "Restoring wallet error message on the voting registration \"choose wallet\" step.",
         "end": {
           "column": 3,
@@ -7685,7 +7685,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Approximately 5 minutes of waiting is required for your voting registration to be confirmed. Please leave Daedalus running.",
+        "defaultMessage": "!!!Confirmation of voting registration requires approximately 5 minutes. Please leave Daedalus running.",
         "description": "Description voting registration \"confirm\" step.",
         "end": {
           "column": 3,
@@ -7699,7 +7699,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Please restart the registration process by clicking the <span>Restart registration</span> button.",
+        "defaultMessage": "!!!Please restart the voting registration process by clicking <span>Restart voting registration</span>.",
         "description": "Message for restart voting registration on the voting registration \"confirm\" step.",
         "end": {
           "column": 3,
@@ -7713,11 +7713,11 @@
         }
       },
       {
-        "defaultMessage": "!!!Voting registration was not completed correctly.",
+        "defaultMessage": "!!!The voting registration process was not completed correctly.",
         "description": "Error message on the voting registration \"confirm\" step.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 32
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsConfirm.js",
         "id": "voting.votingRegistration.confirm.step.errorMessage",
@@ -7731,27 +7731,27 @@
         "description": "Label for continue button on the voting registration \"confirm\" step.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 38
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsConfirm.js",
         "id": "voting.votingRegistration.confirm.step.continueButtonLabel",
         "start": {
           "column": 23,
-          "line": 32
+          "line": 33
         }
       },
       {
-        "defaultMessage": "!!!Restart registration",
+        "defaultMessage": "!!!Restart voting registration",
         "description": "Label for restart button on the voting registration \"confirm\" step.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 44
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsConfirm.js",
         "id": "voting.votingRegistration.confirm.step.restartButtonLabel",
         "start": {
           "column": 22,
-          "line": 38
+          "line": 39
         }
       },
       {
@@ -7759,27 +7759,27 @@
         "description": "Label for pending transaction state on the voting registration \"confirm\" step.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 50
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsConfirm.js",
         "id": "voting.votingRegistration.confirm.step.transactionPendingLabel",
         "start": {
           "column": 27,
-          "line": 44
+          "line": 45
         }
       },
       {
-        "defaultMessage": "!!!Waiting for confirmations...",
+        "defaultMessage": "!!!Waiting for confirmation...",
         "description": "Label for confirming transaction state on the voting registration \"confirm\" step.",
         "end": {
           "column": 3,
-          "line": 55
+          "line": 56
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsConfirm.js",
         "id": "voting.votingRegistration.confirm.step.waitingForConfirmationsLabel",
         "start": {
           "column": 32,
-          "line": 50
+          "line": 51
         }
       },
       {
@@ -7787,13 +7787,13 @@
         "description": "Label for number of confirmations on the voting registration \"confirm\" step.",
         "end": {
           "column": 3,
-          "line": 61
+          "line": 62
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsConfirm.js",
         "id": "voting.votingRegistration.confirm.step.confirmationsCountLabel",
         "start": {
           "column": 27,
-          "line": 56
+          "line": 57
         }
       }
     ],
@@ -7802,7 +7802,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Please enter a PIN code for your Fund3 voting registration. The PIN you set here and the QR code which you will get in the next step will be required for you to vote using the Catalyst Voting app on your smartphone.",
+        "defaultMessage": "!!!Please enter a PIN for your Fund3 voting registration. The PIN you set here, and the QR code which you will get in the next step, will be required for you to vote using the Catalyst Voting app on your smartphone.",
         "description": "Description on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
@@ -7816,7 +7816,7 @@
         }
       },
       {
-        "defaultMessage": "!!!<span>Please, don’t forget your PIN.</span> In case you forget your PIN you will not be able to use this registration for voting and you will need to go through the registration process again.",
+        "defaultMessage": "!!!<span>It is important to remember your PIN.</span> If you forget your PIN, you will not be able to use this registration for voting, and you will need to repeat the registration process.",
         "description": "Reminder on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
@@ -7830,7 +7830,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Enter the PIN",
+        "defaultMessage": "!!!Enter PIN",
         "description": "Label for pin code input on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
@@ -7844,7 +7844,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Repeat the PIN",
+        "defaultMessage": "!!!Repeat PIN",
         "description": "Label for repeat pin code on the voting registration \"enter pin code\" step.",
         "end": {
           "column": 3,
@@ -7858,7 +7858,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Invalid pin code",
+        "defaultMessage": "!!!Invalid PIN",
         "description": "Error message shown when repeat pin code is invalid.",
         "end": {
           "column": 3,
@@ -7872,7 +7872,7 @@
         }
       },
       {
-        "defaultMessage": "!!!PIN does not match",
+        "defaultMessage": "!!!PIN doesn’t match",
         "description": "Error message shown when repeat pin code is invalid.",
         "end": {
           "column": 3,
@@ -7919,7 +7919,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Open the Catalyst Voting app on your smartphone, scan the QR code and use the PIN to complete the voting registration.",
+        "defaultMessage": "!!!Open the Catalyst Voting app on your smartphone, scan the QR code, and use the PIN to complete the voting registration process.",
         "description": "Qr code description of use on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
@@ -7933,31 +7933,45 @@
         }
       },
       {
-        "defaultMessage": "!!!I understand that I will not be able to get this QR code again after closing this window.",
+        "defaultMessage": "!!!<span>Warning:</span> After closing this window the QR code will no longer be available. <span>If you do not keep a PDF copy of the QR code, you might not be able to participate in voting.</span>",
+        "description": "Qr code warning on the voting registration \"qr code\" step.",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
+        "id": "voting.votingRegistration.qrCode.step.qrCodeWarning",
+        "start": {
+          "column": 17,
+          "line": 24
+        }
+      },
+      {
+        "defaultMessage": "!!!I understand that I will not be able to retrieve this QR code again after closing this window.",
         "description": "First checkbox label on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 36
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
         "id": "voting.votingRegistration.qrCode.step.checkbox1Label",
         "start": {
           "column": 18,
-          "line": 24
+          "line": 30
         }
       },
       {
-        "defaultMessage": "!!!I acknowledge that I need to have the downloaded PDF with the QR code to be able to vote with Fund3",
+        "defaultMessage": "!!!I acknowledge that I must have the downloaded PDF with the QR code, to vote with Fund3.",
         "description": "Second checkbox label on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 43
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
         "id": "voting.votingRegistration.qrCode.step.checkbox2Label",
         "start": {
           "column": 18,
-          "line": 31
+          "line": 37
         }
       },
       {
@@ -7965,13 +7979,13 @@
         "description": "\"Close\" button label on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 43
+          "line": 49
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
         "id": "voting.votingRegistration.qrCode.step.closeButtonLabel",
         "start": {
           "column": 20,
-          "line": 38
+          "line": 44
         }
       },
       {
@@ -7979,13 +7993,13 @@
         "description": "\"Save as PDF\" button label on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 49
+          "line": 55
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
         "id": "voting.votingRegistration.qrCode.step.saveAsPdfButtonLabel",
         "start": {
           "column": 24,
-          "line": 44
+          "line": 50
         }
       }
     ],
@@ -7994,7 +8008,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Please sign the voting registration transaction to link your wallet balance with your Fund3 voting registration as a proof of your voting power. No funds will leave your wallet but registering requires paying transaction fees displayed on the screen.",
+        "defaultMessage": "!!!Please sign the voting registration transaction. This transaction links your wallet balance with your Fund3 voting registration, as a proof of your voting power. Funds will not leave your wallet, but registration requires paying transaction fees, as displayed on-screen.",
         "description": "Description on the voting registration \"sign\" step.",
         "end": {
           "column": 3,
@@ -8111,7 +8125,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Abort Fund3 Voting Registration?",
+        "defaultMessage": "!!!Cancel Fund3 voting registration?",
         "description": "Headline for the voting registration cancellation confirmation dialog.",
         "end": {
           "column": 3,
@@ -8125,7 +8139,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Are you sure that you want to abort Fund3 voting registration? The transaction fee you paid for the voting registration will go to waste and you will need to start the registration from the beginning if you decide to register for Fund3 voting.",
+        "defaultMessage": "!!!Are you sure that you want to cancel Fund3 voting registration? The transaction fee you paid for the voting registration transaction will be lost and you will need to repeat the registration from the beginning.",
         "description": "Content for the voting registration cancellation confirmation dialog.",
         "end": {
           "column": 3,
@@ -8139,8 +8153,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Abort registration",
-        "description": "\"Abort registration\" button label for the voting registration cancellation confirmation dialog.",
+        "defaultMessage": "!!!Cancel registration",
+        "description": "\"Cancel registration\" button label for the voting registration cancellation confirmation dialog.",
         "end": {
           "column": 3,
           "line": 29
@@ -8219,7 +8233,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Decide which innovative ideas to improve Cardano will receive funding.",
+        "defaultMessage": "!!!Decide which innovative ideas for Cardano will receive funding.",
         "description": "Info step title 2 for voting registration steps",
         "end": {
           "column": 3,
@@ -8275,7 +8289,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Download Catalyst Voting app on your smartphone",
+        "defaultMessage": "!!!Download the Catalyst Voting app on your smartphone",
         "description": "bottomContentTitle for voting registration steps",
         "end": {
           "column": 3,
@@ -8289,7 +8303,7 @@
         }
       },
       {
-        "defaultMessage": "!!!To register to vote for Catalyst Fund3 you first need to download the <p>Catalyst Voting</p> app on your Android or iOS smartphone.",
+        "defaultMessage": "!!!To register to vote for Catalyst Fund3 you first need to download the <b>Catalyst Voting</b> app on your Android or iOS smartphone.",
         "description": "bottomContentDescription for voting registration steps",
         "end": {
           "column": 3,
@@ -8317,7 +8331,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Register for Fund3 voting",
+        "defaultMessage": "!!!Register to vote",
         "description": "Button Label for voting registration steps",
         "end": {
           "column": 3,
@@ -8364,7 +8378,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Voting registration for Fund3 is not available because you currently do not have any Shelley-compatible wallets.",
+        "defaultMessage": "!!!Voting registration for Fund3 is not available as you currently do not have any Shelley-compatible wallets.",
         "description": "\"No wallets\" headLine on the voting info page.",
         "end": {
           "column": 3,
@@ -8392,7 +8406,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Create a wallet",
+        "defaultMessage": "!!!Create wallet",
         "description": "Label for \"Create New Wallet\" button on the voting info page.",
         "end": {
           "column": 3,

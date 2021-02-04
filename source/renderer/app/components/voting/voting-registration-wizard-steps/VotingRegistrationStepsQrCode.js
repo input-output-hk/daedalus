@@ -1,6 +1,6 @@
 // @flow
 import React, { Component } from 'react';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import QRCode from 'qrcode.react';
 import { set } from 'lodash';
 import { observer } from 'mobx-react';
@@ -17,21 +17,27 @@ const messages = defineMessages({
   qrCodeDescription: {
     id: 'voting.votingRegistration.qrCode.step.qrCodeDescription',
     defaultMessage:
-      '!!!Open the Catalyst Voting app on your smartphone, scan the QR code and use the PIN to complete the voting registration.',
+      '!!!Open the Catalyst Voting app on your smartphone, scan the QR code, and use the PIN to complete the voting registration process.',
     description:
       'Qr code description of use on the voting registration "qr code" step.',
+  },
+  qrCodeWarning: {
+    id: 'voting.votingRegistration.qrCode.step.qrCodeWarning',
+    defaultMessage:
+      '!!!<span>Warning:</span> After closing this window the QR code will no longer be available. <span>If you do not keep a PDF copy of the QR code, you might not be able to participate in voting.</span>',
+    description: 'Qr code warning on the voting registration "qr code" step.',
   },
   checkbox1Label: {
     id: 'voting.votingRegistration.qrCode.step.checkbox1Label',
     defaultMessage:
-      '!!!I understand that I will not be able to get this QR code again after closing this window.',
+      '!!!I understand that I will not be able to retrieve this QR code again after closing this window.',
     description:
       'First checkbox label on the voting registration "qr code" step.',
   },
   checkbox2Label: {
     id: 'voting.votingRegistration.qrCode.step.checkbox2Label',
     defaultMessage:
-      '!!!I acknowledge that I need to have the downloaded PDF with the QR code to be able to vote with Fund3 ',
+      '!!!I acknowledge that I must have the downloaded PDF with the QR code, to vote with Fund3.',
     description:
       'Second checkbox label on the voting registration "qr code" step.',
   },
@@ -93,6 +99,7 @@ export default class VotingRegistrationStepsQrCode extends Component<
 
     const qrCodeTitle = intl.formatMessage(messages.qrCodeTitle);
     const qrCodeDescription = intl.formatMessage(messages.qrCodeDescription);
+    const qrCodeWarning = <FormattedHTMLMessage {...messages.qrCodeWarning} />;
     const checkbox1Label = intl.formatMessage(messages.checkbox1Label);
     const checkbox2Label = intl.formatMessage(messages.checkbox2Label);
     const closeButtonLabel = intl.formatMessage(messages.closeButtonLabel);
@@ -150,6 +157,7 @@ export default class VotingRegistrationStepsQrCode extends Component<
         <div className={styles.qrCodeDescription}>
           <p className={styles.boldText}>{qrCodeTitle}</p>
           <p>{qrCodeDescription}</p>
+          <p>{qrCodeWarning}</p>
         </div>
         <hr className={styles.separator} />
         <div className={styles.checkboxes}>

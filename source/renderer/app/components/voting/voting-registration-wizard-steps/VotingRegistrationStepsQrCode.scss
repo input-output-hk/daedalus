@@ -15,12 +15,19 @@
     margin-top: 40px;
     text-align: center;
 
-    p.boldText {
-      font-weight: bold;
-    }
+    p {
+      &.boldText,
+      span > span {
+        font-weight: bold;
+      }
 
-    p:last-child {
-      color: var(--theme-voting-registration-steps-description-color);
+      &:not(.boldText) {
+        color: var(--theme-voting-registration-steps-description-color);
+      }
+
+      &:last-child {
+        margin-top: 15px;
+      }
     }
   }
 

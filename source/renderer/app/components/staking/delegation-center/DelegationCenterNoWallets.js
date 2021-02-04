@@ -23,7 +23,7 @@ const messages = defineMessages({
   },
   createWalletButtonLabel: {
     id: 'staking.delegationCenter.noWallets.createWalletButtonLabel',
-    defaultMessage: '!!!Create a wallet',
+    defaultMessage: '!!!Create wallet',
     description:
       'Label for "Create New Wallet" button on the Delegation centre Page.',
   },

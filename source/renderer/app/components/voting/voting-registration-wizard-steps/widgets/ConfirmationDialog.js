@@ -9,23 +9,23 @@ import styles from './ConfirmationDialog.scss';
 const messages = defineMessages({
   headline: {
     id: 'voting.votingRegistration.dialog.confirmation.headline',
-    defaultMessage: '!!!Abort Fund3 Voting Registration?',
+    defaultMessage: '!!!Cancel Fund3 voting registration?',
     description:
       'Headline for the voting registration cancellation confirmation dialog.',
   },
   content: {
     id: 'voting.votingRegistration.dialog.confirmation.content',
     defaultMessage:
-      '!!!Are you sure that you want to abort Fund3 voting registration? The transaction fee you paid for the voting registration will go to waste and you will need to start the registration from the beginning if you decide to register for Fund3 voting.',
+      '!!!Are you sure that you want to cancel Fund3 voting registration? The transaction fee you paid for the voting registration transaction will be lost and you will need to repeat the registration from the beginning.',
     description:
       'Content for the voting registration cancellation confirmation dialog.',
   },
   cancelButtonLabel: {
     id:
       'voting.votingRegistration.dialog.confirmation.button.cancelButtonLabel',
-    defaultMessage: '!!!Abort registration',
+    defaultMessage: '!!!Cancel registration',
     description:
-      '"Abort registration" button label for the voting registration cancellation confirmation dialog.',
+      '"Cancel registration" button label for the voting registration cancellation confirmation dialog.',
   },
   confirmButtonLabel: {
     id:

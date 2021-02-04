@@ -12,7 +12,7 @@ const messages = defineMessages({
   headLine: {
     id: 'voting.info.noWallets.headLine',
     defaultMessage:
-      '!!!Voting registration for Fund3 is not available because you currently do not have any Shelley-compatible wallets.',
+      '!!!Voting registration for Fund3 is not available as you currently do not have any Shelley-compatible wallets.',
     description: '"No wallets" headLine on the voting info page.',
   },
   instructions: {
@@ -23,7 +23,7 @@ const messages = defineMessages({
   },
   createWalletButtonLabel: {
     id: 'voting.info.noWallets.createWalletButtonLabel',
-    defaultMessage: '!!!Create a wallet',
+    defaultMessage: '!!!Create wallet',
     description:
       'Label for "Create New Wallet" button on the voting info page.',
   },
