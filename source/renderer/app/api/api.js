@@ -642,14 +642,16 @@ export default class AdaApi {
               policy_id: '',
               asset_name: '',
               quantity: 0,
-            }],
+            },
+          ],
           total: [
             {
               id: '',
               policy_id: '',
               asset_name: '',
               quantity: 0,
-            }],
+            },
+          ],
         },
       };
       const wallet: AdaWallet = {
@@ -2234,6 +2236,7 @@ const _createWalletFromServerData = action(
       address_pool_gap: addressPoolGap,
       balance,
       name,
+      assets,
       passphrase,
       delegation,
       state: syncState,
@@ -2273,6 +2276,26 @@ const _createWalletFromServerData = action(
     const lastTarget = get(lastPendingStakePool, 'target', null);
     const lastDelegationStakePoolId = isLegacy ? null : lastTarget;
 
+    // Mapping asset items from server data
+    const walletAssets = {
+      available: assets.available.map(item => {
+        return {
+          id: item.id,
+          policyId: item.policy_id,
+          assetName: item.asset_name,
+          quantity: item.quantity,
+        }
+      }),
+      total: assets.total.map(item => {
+        return {
+          id: item.id,
+          policyId: item.policy_id,
+          assetName: item.asset_name,
+          quantity: item.quantity,
+        }
+      }),
+    };
+
     return new Wallet({
       id,
       addressPoolGap,
@@ -2280,6 +2303,7 @@ const _createWalletFromServerData = action(
       amount: walletTotalAmount,
       availableAmount: walletAvailableAmount,
       reward: walletRewardAmount,
+      assets: walletAssets,
       passwordUpdateDate:
         passphraseLastUpdatedAt && new Date(passphraseLastUpdatedAt),
       hasPassword: isHardwareWallet || passphraseLastUpdatedAt !== null, // For HW set that wallet has password

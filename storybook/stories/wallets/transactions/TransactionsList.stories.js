@@ -5,7 +5,7 @@ import { action } from '@storybook/addon-actions';
 import { withKnobs, select } from '@storybook/addon-knobs';
 
 // Assets and helpers
-import { generateWallet } from '../../_support/utils';
+import {generateHash, generatePolicyIdHash, generateWallet} from '../../_support/utils';
 import { formattedWalletAmount } from '../../../../source/renderer/app/utils/formatters';
 import WalletsWrapper from '../_utils/WalletsWrapper';
 import WalletsTransactionsWrapper from '../_utils/WalletsTransactionsWrapper';
@@ -30,6 +30,37 @@ type Props = {
   populatedFilterOptions: TransactionFilterOptionsType,
   transactions: Array<WalletTransaction>,
   totalAvailable: number,
+};
+
+const assets = {
+  available: [
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: 200,
+    },
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: 200,
+    },
+  ],
+  total: [
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: 200,
+    },
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: 200,
+    },
+  ]
 };
 
 /* eslint-disable consistent-return */
@@ -72,7 +103,7 @@ storiesOf('Wallets|Transactions', module)
     } = props;
     return (
       <WalletTransactions
-        activeWallet={generateWallet('Wallet name', '45119903750165')}
+        activeWallet={generateWallet('Wallet name', '45119903750165', assets)}
         currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
         currentLocale={locale}
         currentNumberFormat={NUMBER_OPTIONS[0].value}
@@ -108,7 +139,7 @@ storiesOf('Wallets|Transactions', module)
     const hasNativeTokens = WALLET_NATIVE_TOKENS_ENABLED;
     return (
       <WalletTransactions
-        activeWallet={generateWallet('Wallet name', '45119903750165')}
+        activeWallet={generateWallet('Wallet name', '45119903750165', assets)}
         currentDateFormat={DATE_ENGLISH_OPTIONS[0].value}
         currentLocale={locale}
         currentNumberFormat={NUMBER_OPTIONS[0].value}

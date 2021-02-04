@@ -5,23 +5,50 @@ import { boolean, number } from '@storybook/addon-knobs';
 
 // Assets and helpers
 import { action } from '@storybook/addon-actions';
-import {
-  generateAsset,
-  generateWallet,
-} from '../../_support/utils';
+import {generateAsset, generateHash, generatePolicyIdHash, generateWallet} from '../../_support/utils';
 import WalletsWrapper from '../_utils/WalletsWrapper';
 
 // Screens
 import WalletSummary from '../../../../source/renderer/app/components/wallet/summary/WalletSummary';
 import TokensWalletSummary from '../../../../source/renderer/app/components/wallet/summary/TokensWalletSummary';
-import { WalletSyncStateStatuses } from '../../../../source/renderer/app/domains/Wallet';
+
+const assets = {
+  available: [
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: 200,
+    },
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: 200,
+    },
+  ],
+  total: [
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: 200,
+    },
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: 200,
+    },
+  ]
+};
 
 /* eslint-disable consistent-return */
 storiesOf('Wallets|Summary', module)
   .addDecorator(WalletsWrapper)
   .add('Wallet Summary', () => (
     <WalletSummary
-      wallet={generateWallet('Wallet name', '45119903750165')}
+      wallet={generateWallet('Wallet name', '45119903750165', assets)}
       numberOfTransactions={number('Number of transactions', 100)}
       numberOfRecentTransactions={number('Number of Recent transactions', 100)}
       numberOfPendingTransactions={number('Number of transactions', 3)}
@@ -31,7 +58,7 @@ storiesOf('Wallets|Summary', module)
   .add('Tokens Wallet Summary', () => (
     <>
       <WalletSummary
-        wallet={generateWallet('Wallet name', '45119903750165')}
+        wallet={generateWallet('Wallet name', '45119903750165', assets)}
         numberOfTransactions={number('Number of transactions', 100)}
         numberOfRecentTransactions={number(
           'Number of Recent transactions',
@@ -42,43 +69,67 @@ storiesOf('Wallets|Summary', module)
         hasNativeTokens
       />
       <TokensWalletSummary
-        wallet={generateWallet('Wallet name', '45119903750165')}
+        wallet={generateWallet('Wallet name', '45119903750165', assets)}
         nativeTokens={[
           generateAsset(
-            'Cardano',
-            '55119903750165',
-            0,
-            null,
-            false,
-            WalletSyncStateStatuses.READY,
-            'ADA'
+            '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
+            '',
+            {
+              name: 'TrueUSD',
+              acronym: 'TUSD',
+              description: 'Test description',
+              unit: {
+                name: 'TUSD',
+                decimals: 6
+              },
+              url: 'http://example.com',
+              logo: ''
+            },
           ),
           generateAsset(
-            'Tether',
-            '25119903750165',
-            0,
-            null,
-            false,
-            WalletSyncStateStatuses.READY,
-            'USDT'
+            '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
+            '',
+            {
+              name: 'Tether',
+              acronym: 'USDT',
+              description: 'Test description',
+              unit: {
+                name: 'USDT',
+                decimals: 6
+              },
+              url: 'http://example.com',
+              logo: ''
+            },
           ),
           generateAsset(
-            'TrueUSD',
-            '15119903750165',
-            0,
-            null,
-            false,
-            WalletSyncStateStatuses.READY,
-            'TUSD'
+            '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
+            '',
+            {
+              name: 'USD Coin',
+              acronym: 'USDC',
+              description: 'Test description',
+              unit: {
+                name: 'USDC',
+                decimals: 6
+              },
+              url: 'http://example.com',
+              logo: ''
+            },
           ),
           generateAsset(
-            'USD Coin',
-            '0',
-            0,
-            null,
-            false,
-            WalletSyncStateStatuses.READY,
-            'USDC'
+            '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
+            '',
+            {
+              name: 'MakerDAO',
+              acronym: 'DAI',
+              description: 'Test description',
+              unit: {
+                name: 'DAI',
+                decimals: 6
+              },
+              url: 'http://example.com',
+              logo: ''
+            },
           ),
         ]}
         handleOpenWalletTokenSend={action('onContinue')}

@@ -12,10 +12,9 @@ export type AssetProps = {
 
 export default class Asset {
   id: string = '';
-  @observable policyId: string= '';
+  @observable policyId: string = '';
   @observable assetName: string = '';
   @observable metadata: ?AssetMetadata;
-
 
   constructor(data: AssetProps) {
     Object.assign(this, data);
@@ -24,12 +23,7 @@ export default class Asset {
   @action update(other: Asset) {
     Object.assign(
       this,
-      pick(other, [
-        'id',
-        'policyId',
-        'assetName',
-        'metadata',
-      ])
+      pick(other, ['id', 'policyId', 'assetName', 'metadata'])
     );
   }
 }

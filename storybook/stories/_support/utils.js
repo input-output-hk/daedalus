@@ -24,11 +24,21 @@ import type {
   TransactionState,
 } from '../../../source/renderer/app/api/transactions/types';
 import type { SyncStateStatus } from '../../../source/renderer/app/api/wallets/types';
+import Asset from '../../../source/renderer/app/domains/Asset';
+import type { AssetMetadata, WalletAssets } from '../../../source/renderer/app/api/assets/types';
 
 export const generateHash = () => {
   const now = new Date().valueOf().toString();
   return hash
     .sha512()
+    .update(now + random(0.1, 0.9))
+    .digest('hex');
+};
+
+export const generatePolicyIdHash = () => {
+  const now = new Date().valueOf().toString();
+  return hash
+    .sha224()
     .update(now + random(0.1, 0.9))
     .digest('hex');
 };
@@ -46,10 +56,11 @@ const statusProgress = (status) =>
 export const generateWallet = (
   name: string,
   amount: string,
+  assets: WalletAssets,
   reward?: number = 0,
   delegatedStakePool?: StakePool,
   hasPassword?: boolean,
-  status?: SyncStateStatus = WalletSyncStateStatuses.READY
+  status?: SyncStateStatus = WalletSyncStateStatuses.READY,
 ) =>
   new Wallet({
     id: generateHash(),
@@ -57,6 +68,7 @@ export const generateWallet = (
     amount: new BigNumber(amount).dividedBy(LOVELACES_PER_ADA),
     availableAmount: new BigNumber(amount).dividedBy(LOVELACES_PER_ADA),
     reward: new BigNumber(reward).dividedBy(LOVELACES_PER_ADA),
+    assets,
     createdAt: new Date(),
     name,
     hasPassword: hasPassword || false,
@@ -72,33 +84,15 @@ export const generateWallet = (
   });
 
 export const generateAsset = (
-  name: string,
-  amount: string,
-  reward?: number = 0,
-  delegatedStakePool?: ?StakePool,
-  hasPassword?: boolean,
-  status?: SyncStateStatus = WalletSyncStateStatuses.READY,
-  ticker?: string
+  policyId: string,
+  assetName: string = '',
+  metadata?: AssetMetadata,
 ) =>
-  new Wallet({
+  new Asset({
     id: generateHash(),
-    addressPoolGap: 20,
-    amount: new BigNumber(amount).dividedBy(LOVELACES_PER_ADA),
-    availableAmount: new BigNumber(amount).dividedBy(LOVELACES_PER_ADA),
-    reward: new BigNumber(reward).dividedBy(LOVELACES_PER_ADA),
-    createdAt: new Date(),
-    name,
-    ticker,
-    hasPassword: hasPassword || false,
-    passwordUpdateDate: new Date(),
-    syncState: { status, ...statusProgress(status) },
-    isLegacy: false,
-    discovery: 'random',
-    recoveryPhraseVerificationDate: new Date(),
-    recoveryPhraseVerificationStatus: RECOVERY_PHRASE_VERIFICATION_STATUSES.OK,
-    recoveryPhraseVerificationStatusType:
-      RECOVERY_PHRASE_VERIFICATION_TYPES.NEVER_VERIFIED,
-    delegatedStakePoolId: get(delegatedStakePool, 'id'),
+    policyId: generatePolicyIdHash(),
+    assetName,
+    metadata,
   });
 
 export const generateTransaction = (

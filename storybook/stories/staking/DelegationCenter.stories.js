@@ -17,6 +17,7 @@ import type {
   NextEpoch,
   TipInfo,
 } from '../../../source/renderer/app/api/network/types';
+import { generateHash, generatePolicyIdHash } from '../_support/utils';
 
 const walletSyncedStateReady = { status: 'ready' };
 
@@ -58,6 +59,20 @@ const wallets = [
     amount: new BigNumber(100100),
     availableAmount: new BigNumber(100100),
     reward: new BigNumber(100),
+    assets: {
+      available: [{
+        id: generateHash(),
+        policyId: generatePolicyIdHash(),
+        assetName: '',
+        quantity: 300,
+      }],
+      total: [{
+        id: generateHash(),
+        policyId: generatePolicyIdHash(),
+        assetName: '',
+        quantity: 300,
+      }],
+    },
     hasPassword: true,
     passwordUpdateDate: new Date(),
     isLegacy: false,
@@ -89,6 +104,20 @@ const wallets = [
     amount: new BigNumber(100100),
     availableAmount: new BigNumber(100100),
     reward: new BigNumber(100),
+    assets: {
+      available: [{
+        id: generateHash(),
+        policyId: generatePolicyIdHash(),
+        assetName: '',
+        quantity: 300,
+      }],
+      total: [{
+        id: generateHash(),
+        policyId: generatePolicyIdHash(),
+        assetName: '',
+        quantity: 300,
+      }],
+    },
     hasPassword: true,
     passwordUpdateDate: new Date(),
     isLegacy: false,
@@ -120,6 +149,20 @@ const wallets = [
     amount: new BigNumber(10100.2),
     availableAmount: new BigNumber(10100.2),
     reward: new BigNumber(50),
+    assets: {
+      available: [{
+        id: generateHash(),
+        policyId: generatePolicyIdHash(),
+        assetName: '',
+        quantity: 300,
+      }],
+      total: [{
+        id: generateHash(),
+        policyId: generatePolicyIdHash(),
+        assetName: '',
+        quantity: 300,
+      }],
+    },
     hasPassword: true,
     passwordUpdateDate: new Date(),
     isLegacy: false,
@@ -150,6 +193,20 @@ const wallets = [
     amount: new BigNumber(5001000),
     availableAmount: new BigNumber(5001000),
     reward: new BigNumber(30),
+    assets: {
+      available: [{
+        id: generateHash(),
+        policyId: generatePolicyIdHash(),
+        assetName: '',
+        quantity: 300,
+      }],
+      total: [{
+        id: generateHash(),
+        policyId: generatePolicyIdHash(),
+        assetName: '',
+        quantity: 300,
+      }],
+    },
     hasPassword: true,
     passwordUpdateDate: new Date(),
     isLegacy: false,
@@ -171,6 +228,20 @@ const wallets = [
     amount: new BigNumber(5001000),
     availableAmount: new BigNumber(5001000),
     reward: new BigNumber(30),
+    assets: {
+      available: [{
+        id: generateHash(),
+        policyId: generatePolicyIdHash(),
+        assetName: '',
+        quantity: 300,
+      }],
+      total: [{
+        id: generateHash(),
+        policyId: generatePolicyIdHash(),
+        assetName: '',
+        quantity: 300,
+      }],
+    },
     hasPassword: true,
     passwordUpdateDate: new Date(),
     isLegacy: false,
@@ -192,6 +263,20 @@ const wallets = [
     amount: new BigNumber(10100.2),
     availableAmount: new BigNumber(10100.2),
     reward: new BigNumber(50),
+    assets: {
+      available: [{
+        id: generateHash(),
+        policyId: generatePolicyIdHash(),
+        assetName: '',
+        quantity: 300,
+      }],
+      total: [{
+        id: generateHash(),
+        policyId: generatePolicyIdHash(),
+        assetName: '',
+        quantity: 300,
+      }],
+    },
     hasPassword: true,
     passwordUpdateDate: new Date(),
     isLegacy: false,

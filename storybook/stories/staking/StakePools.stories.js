@@ -9,11 +9,42 @@ import {
   INITIAL_DESIRED_POOLS_NUMBER,
 } from '../../../source/renderer/app/config/stakingConfig';
 import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
-import { generateWallet } from '../_support/utils';
+import {generateHash, generatePolicyIdHash, generateWallet} from '../_support/utils';
+
+const assets = {
+  available: [
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: 200,
+    },
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: 200,
+    },
+  ],
+  total: [
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: 200,
+    },
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: 200,
+    },
+  ]
+};
 
 const dummyWallets = [
-  generateWallet('Dummy1', '1000000000000'),
-  generateWallet('Dummy2', '2000000000000'),
+  generateWallet('Dummy1', '1000000000000', assets),
+  generateWallet('Dummy2', '2000000000000', assets),
 ];
 
 const maxDelegationFunds = Math.round(

@@ -8,7 +8,7 @@ import {
   generateHash,
   generateAsset,
   generateWallet,
-  promise,
+  promise, generatePolicyIdHash,
 } from '../../_support/utils';
 
 // Assets and helpers
@@ -16,7 +16,6 @@ import WalletsWrapper from '../_utils/WalletsWrapper';
 import { NUMBER_OPTIONS } from '../../../../source/renderer/app/config/profileConfig';
 import {
   HwDeviceStatuses,
-  WalletSyncStateStatuses,
 } from '../../../../source/renderer/app/domains/Wallet';
 
 // Screens
@@ -26,42 +25,97 @@ import WalletTokenSendConfirmationDialog from '../../../../source/renderer/app/c
 import { DECIMAL_PLACES_IN_ADA } from '../../../../source/renderer/app/config/numbersConfig';
 import { formattedAmountToNaturalUnits } from '../../../../source/renderer/app/utils/formatters';
 
+const assets = {
+  available: [
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: 200,
+    },
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: 200,
+    },
+  ],
+  total: [
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: 200,
+    },
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: 200,
+    },
+  ]
+};
+
 const nativeTokens = [
   generateAsset(
-    'Cardano',
-    '55119903750165',
-    0,
-    null,
-    false,
-    WalletSyncStateStatuses.READY,
-    'ADA'
+    '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
+    '',
+    {
+      name: 'TrueUSD',
+      acronym: 'TUSD',
+      description: 'Test description',
+      unit: {
+        name: 'TUSD',
+        decimals: 6
+      },
+      url: 'http://example.com',
+      logo: ''
+    },
   ),
   generateAsset(
-    'Tether',
-    '25119903750165',
-    0,
-    null,
-    false,
-    WalletSyncStateStatuses.READY,
-    'USDT'
+    '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
+    '',
+    {
+      name: 'Tether',
+      acronym: 'USDT',
+      description: 'Test description',
+      unit: {
+        name: 'USDT',
+        decimals: 6
+      },
+      url: 'http://example.com',
+      logo: ''
+    },
   ),
   generateAsset(
-    'TrueUSD',
-    '15119903750165',
-    0,
-    null,
-    false,
-    WalletSyncStateStatuses.READY,
-    'TUSD'
+    '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
+    '',
+    {
+      name: 'USD Coin',
+      acronym: 'USDC',
+      description: 'Test description',
+      unit: {
+        name: 'USDC',
+        decimals: 6
+      },
+      url: 'http://example.com',
+      logo: ''
+    },
   ),
   generateAsset(
-    'USD Coin',
-    '0',
-    0,
-    null,
-    false,
-    WalletSyncStateStatuses.READY,
-    'USDC'
+    '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
+    '',
+    {
+      name: 'MakerDAO',
+      acronym: 'DAI',
+      description: 'Test description',
+      unit: {
+        name: 'DAI',
+        decimals: 6
+      },
+      url: 'http://example.com',
+      logo: ''
+    },
   ),
 ];
 
@@ -149,7 +203,7 @@ storiesOf('Wallets|Send', module)
       walletAmount={new BigNumber(123)}
       hwDeviceStatus={HwDeviceStatuses.READY}
       isHardwareWallet={boolean('isHardwareWallet', false)}
-      selectedWallet={nativeTokens[0]}
+      selectedWallet={generateWallet('Wallet name', '45119903750165', assets)}
       nativeTokens={nativeTokens}
     />
   ))
@@ -157,7 +211,7 @@ storiesOf('Wallets|Send', module)
     <div>
       <WalletTokenSendConfirmationDialog
         amount={new BigNumber(100100).toFormat(DECIMAL_PLACES_IN_ADA)}
-        sender={generateWallet('Wallet name', '45119903750165').id}
+        sender={generateWallet('Wallet name', '45119903750165', assets).id}
         receiver={generateHash()}
         receivers={[
           generateHash(),
@@ -177,7 +231,7 @@ storiesOf('Wallets|Send', module)
         hwDeviceStatus={HwDeviceStatuses.CONNECTING}
         isHardwareWallet={false}
         onInitiateTransaction={() => null}
-        walletName={generateWallet('TrueUSD', '15119903750165').name}
+        walletName={generateWallet('TrueUSD', '15119903750165', assets).name}
       />
     </div>
   ));

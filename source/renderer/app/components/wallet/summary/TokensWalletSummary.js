@@ -7,6 +7,7 @@ import BorderedBox from '../../widgets/BorderedBox';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import styles from './TokensWalletSummary.scss';
 import Wallet from '../../../domains/Wallet';
+import Asset from '../../../domains/Asset';
 
 const messages = defineMessages({
   transactionsLabel: {
@@ -34,7 +35,7 @@ const messages = defineMessages({
 
 type Props = {
   wallet: Wallet,
-  nativeTokens: Array<Wallet>,
+  nativeTokens: Array<any>,
   handleOpenWalletTokenSend: Function,
 };
 
@@ -57,7 +58,7 @@ export default class TokensWalletSummary extends Component<Props> {
           {intl.formatMessage(messages.tokensTitle)} ({numberOfNativeTokens})
         </div>
         <div className={styles.component}>
-          {nativeTokens.map((token: Wallet) => (
+          {nativeTokens.map((token: any) => (
             <BorderedBox className={styles.nativeTokenContainer} key={token.id}>
               <div className={styles.nativeTokenLeftContainer}>
                 <div className={styles.walletName}>{token.name}</div>

@@ -11,12 +11,12 @@ export type AssetMetadata = {
   name: string,
   acronym: string,
   description: string,
-  unit: {
+  unit?: {
     decimals: number,
     name: string,
   },
-  url: string,
-  logo: string,
+  url?: string,
+  logo?: string,
 };
 
 export type AssetItem = {
@@ -26,9 +26,23 @@ export type AssetItem = {
   quantity: number,
 };
 
+export type WalletAssetItem = {
+  id: string,
+  policyId: string,
+  assetName: string,
+  quantity: number,
+};
+
 export type Assets = Array<Asset>;
 
 export type AssetItems = Array<AssetItem>;
+
+export type WalletAssetItems = Array<WalletAssetItem>;
+
+export type WalletAssets = {
+  available: WalletAssetItems,
+  total: WalletAssetItems,
+};
 
 export type GetAssetRequest = {
   walletId: string,

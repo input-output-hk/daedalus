@@ -10,6 +10,7 @@ import type {
   WalletPendingDelegations,
   Discovery,
 } from '../api/wallets/types';
+import type { WalletAssets } from '../api/assets/types';
 
 export const WalletDiscovery: {
   RANDOM: Discovery,
@@ -100,6 +101,7 @@ export type WalletProps = {
   amount: BigNumber,
   availableAmount: BigNumber,
   reward: BigNumber,
+  assets: WalletAssets,
   passwordUpdateDate: ?Date,
   syncState: WalletSyncState,
   isLegacy: boolean,
@@ -122,6 +124,7 @@ export default class Wallet {
   @observable amount: BigNumber;
   @observable availableAmount: BigNumber;
   @observable reward: BigNumber;
+  @observable assets: WalletAssets;
   @observable passwordUpdateDate: ?Date;
   @observable syncState: WalletSyncState;
   @observable isLegacy: boolean;
@@ -151,6 +154,7 @@ export default class Wallet {
         'amount',
         'availableAmount',
         'reward',
+        'assets',
         'passwordUpdateDate',
         'syncState',
         'isLegacy',
@@ -170,6 +174,12 @@ export default class Wallet {
 
   @computed get hasFunds(): boolean {
     return this.amount.gt(0);
+  }
+
+  @computed get hasAssets(): boolean {
+    return (
+      get(this, 'assets.total', []).length > 0
+    );
   }
 
   @computed get isRestoring(): boolean {
