@@ -41,6 +41,7 @@ function flattenMetadata(data: MetadataValue) {
       return null;
     });
   }
+  return null;
 }
 
 export function TransactionMetadataView(props: { data: TransactionMetadata }) {
