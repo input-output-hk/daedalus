@@ -133,10 +133,10 @@ const walletAssets = assets.map((assetTotal) => {
     metadata: assetData
       ? assetData.metadata
       : {
-        name: '',
-        acronym: '',
-        description: '',
-      },
+          name: '',
+          acronym: '',
+          description: '',
+        },
     total: assetTotal || {},
   };
 });

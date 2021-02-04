@@ -107,7 +107,7 @@ export const generateTransaction = (
   hasUnresolvedIncomeAddresses: boolean = false,
   noIncomeAddresses: boolean = false,
   noWithdrawals: boolean = true,
-  assets?: Array<WalletTransactionAsset>,
+  assets?: Array<WalletTransactionAsset>
 ) =>
   new WalletTransaction({
     id: faker.random.uuid(),

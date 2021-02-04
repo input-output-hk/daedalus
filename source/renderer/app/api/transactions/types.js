@@ -162,7 +162,7 @@ export type GetTransactionFeeParams = {
 export type TransactionPaymentData = {
   address: string,
   amount: TransactionFeeAmount,
-  assets: AssetItems;
+  assets: AssetItems,
 };
 
 export type TransactionFee = {
