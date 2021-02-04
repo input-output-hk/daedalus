@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js';
 import { WalletTransaction } from '../../domains/WalletTransaction';
 import { WalletUnits } from '../../domains/Wallet';
 import type { DelegationAction } from '../../types/stakingTypes';
+import type { AssetItems } from '../assets/types';
 
 export type TransactionAmount = {
   quantity: number,
@@ -22,6 +23,7 @@ export type TransactionInsertionBlock = {
 export type Transaction = {
   id: string,
   amount: TransactionAmount,
+  assets: AssetItems,
   fee: {
     quantity: number,
     unit: WalletUnits.LOVELACE,
@@ -78,7 +80,6 @@ export type TransactionAddresses = {
   from: Array<?string>,
   to: Array<string>,
   withdrawals: Array<string>,
-  currencies?: Array<string>,
 };
 
 export type TransactionTokenAddresses = {
@@ -161,6 +162,7 @@ export type GetTransactionFeeParams = {
 export type TransactionPaymentData = {
   address: string,
   amount: TransactionFeeAmount,
+  assets: AssetItems;
 };
 
 export type TransactionFee = {

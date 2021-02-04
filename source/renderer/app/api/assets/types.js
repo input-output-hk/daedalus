@@ -44,6 +44,18 @@ export type WalletAssets = {
   total: WalletAssetItems,
 };
 
+export type WalletSummaryAsset = {
+  id: string,
+  metadata: ?AssetMetadata,
+  total: WalletAssetItem,
+};
+
+export type WalletTransactionAsset = {
+  id: string,
+  metadata: ?AssetMetadata,
+  total: WalletAssetItem,
+};
+
 export type GetAssetRequest = {
   walletId: string,
   policyId: string,

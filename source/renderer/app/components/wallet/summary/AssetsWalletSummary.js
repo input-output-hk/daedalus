@@ -7,7 +7,7 @@ import BigNumber from 'bignumber.js';
 import BorderedBox from '../../widgets/BorderedBox';
 import styles from './AssetsWalletSummary.scss';
 import Wallet from '../../../domains/Wallet';
-import type { AssetMetadata, WalletAssetItem } from '../../../api/assets/types';
+import type { WalletSummaryAsset } from '../../../api/assets/types';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 
 const messages = defineMessages({
@@ -33,12 +33,6 @@ const messages = defineMessages({
     description: 'Send button on Wallet summary page',
   },
 });
-
-type WalletSummaryAsset = {
-  id: string,
-  metadata: ?AssetMetadata,
-  total: WalletAssetItem,
-};
 
 type Props = {
   wallet: Wallet,

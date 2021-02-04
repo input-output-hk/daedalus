@@ -8,7 +8,8 @@ import moment from 'moment';
 import {
   generateTransaction,
   generateMultipleTransactions,
-  generateNativeTokenTransaction,
+  generateHash,
+  generatePolicyIdHash, generateAsset,
 } from '../../_support/utils';
 import {
   generateFilterOptions,
@@ -32,6 +33,113 @@ type Props = {
 type State = {
   filterOptions: TransactionFilterOptionsType,
 };
+
+const allAssets = [
+  generateAsset(
+    '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
+    '',
+    {
+      name: 'TrueUSD',
+      acronym: 'TUSD',
+      description: 'Test description',
+      unit: {
+        name: 'TUSD',
+        decimals: 6,
+      },
+      url: 'http://example.com',
+      logo: '',
+    }
+  ),
+  generateAsset(
+    '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
+    '',
+    {
+      name: 'Tether',
+      acronym: 'USDT',
+      description: 'Test description',
+      unit: {
+        name: 'USDT',
+        decimals: 6,
+      },
+      url: 'http://example.com',
+      logo: '',
+    }
+  ),
+  generateAsset(
+    '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
+    '',
+    {
+      name: 'USD Coin',
+      acronym: 'USDC',
+      description: 'Test description',
+      unit: {
+        name: 'USDC',
+        decimals: 6,
+      },
+      url: 'http://example.com',
+      logo: '',
+    }
+  ),
+  generateAsset(
+    '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
+    '',
+    {
+      name: 'MakerDAO',
+      acronym: 'DAI',
+      description: 'Test description',
+      unit: {
+        name: 'DAI',
+        decimals: 6,
+      },
+      url: 'http://example.com',
+      logo: '',
+    }
+  ),
+];
+
+const assets = [
+  {
+    id: generateHash(),
+    policyId: '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
+    assetName: '',
+    quantity: 100,
+  },
+  {
+    id: generateHash(),
+    policyId: '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
+    assetName: '',
+    quantity: 200,
+  },
+  {
+    id: generateHash(),
+    policyId: '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
+    assetName: '',
+    quantity: 300,
+  },
+  {
+    id: generateHash(),
+    policyId: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
+    assetName: '',
+    quantity: 400,
+  },
+];
+
+const walletAssets = assets.map((assetTotal) => {
+  const assetData = allAssets.find(
+    (item) => item.policyId === assetTotal.policyId
+  );
+  return {
+    id: assetData ? assetData.id : '',
+    metadata: assetData
+      ? assetData.metadata
+      : {
+        name: '',
+        acronym: '',
+        description: '',
+      },
+    total: assetTotal || {},
+  };
+});
 
 export default class WalletsTransactionsWrapper extends Component<
   Props,
@@ -155,10 +263,10 @@ export default class WalletsTransactionsWrapper extends Component<
     };
   }
 
-  get transactionsNativeTokensOptions() {
+  get transactionsWithAssetsOptions() {
     return {
       groupedByDays: [
-        generateNativeTokenTransaction(
+        generateTransaction(
           TransactionTypes.INCOME,
           new Date(),
           new BigNumber(2),
@@ -166,9 +274,9 @@ export default class WalletsTransactionsWrapper extends Component<
           false,
           false,
           true,
-          ['USDT', 'ADA']
+          walletAssets
         ),
-        generateNativeTokenTransaction(
+        generateTransaction(
           TransactionTypes.EXPEND,
           moment().subtract(1, 'days').toDate(),
           new BigNumber(2),
@@ -176,9 +284,9 @@ export default class WalletsTransactionsWrapper extends Component<
           false,
           false,
           true,
-          ['USDC', 'ADA']
+          walletAssets
         ),
-        generateNativeTokenTransaction(
+        generateTransaction(
           TransactionTypes.INCOME,
           new Date(),
           new BigNumber(2),
@@ -186,9 +294,9 @@ export default class WalletsTransactionsWrapper extends Component<
           false,
           false,
           true,
-          ['DAI', 'ADA']
+          walletAssets
         ),
-        generateNativeTokenTransaction(
+        generateTransaction(
           TransactionTypes.EXPEND,
           moment().subtract(2, 'days').toDate(),
           new BigNumber(2),
@@ -196,9 +304,9 @@ export default class WalletsTransactionsWrapper extends Component<
           false,
           false,
           true,
-          ['USDT', 'ADA']
+          walletAssets
         ),
-        generateNativeTokenTransaction(
+        generateTransaction(
           TransactionTypes.INCOME,
           moment().subtract(1, 'days').toDate(),
           new BigNumber(2),
@@ -206,11 +314,11 @@ export default class WalletsTransactionsWrapper extends Component<
           false,
           false,
           true,
-          ['USDC', 'ADA']
+          walletAssets
         ),
       ],
       confirmedAndPendingTransactions: [
-        generateNativeTokenTransaction(
+        generateTransaction(
           TransactionTypes.INCOME,
           new Date(),
           new BigNumber(2),
@@ -218,9 +326,9 @@ export default class WalletsTransactionsWrapper extends Component<
           false,
           false,
           true,
-          ['USDT', 'ADA']
+          walletAssets
         ),
-        generateNativeTokenTransaction(
+        generateTransaction(
           TransactionTypes.EXPEND,
           new Date(),
           new BigNumber(2),
@@ -228,9 +336,9 @@ export default class WalletsTransactionsWrapper extends Component<
           false,
           false,
           true,
-          ['DAI', 'ADA']
+          walletAssets
         ),
-        generateNativeTokenTransaction(
+        generateTransaction(
           TransactionTypes.INCOME,
           new Date(2019, 10, 8, 20),
           new BigNumber(2),
@@ -238,9 +346,9 @@ export default class WalletsTransactionsWrapper extends Component<
           true,
           false,
           true,
-          ['USDC', 'ADA']
+          walletAssets
         ),
-        generateNativeTokenTransaction(
+        generateTransaction(
           TransactionTypes.EXPEND,
           new Date(),
           new BigNumber(13),
@@ -248,12 +356,12 @@ export default class WalletsTransactionsWrapper extends Component<
           false,
           false,
           true,
-          ['USDT', 'ADA']
+          walletAssets
         ),
       ],
       renderingManyTransactions: generateMultipleTransactions(500),
       unresolvedIncomeAddresses: [
-        generateNativeTokenTransaction(
+        generateTransaction(
           TransactionTypes.EXPEND,
           new Date(),
           new BigNumber(2),
@@ -261,9 +369,9 @@ export default class WalletsTransactionsWrapper extends Component<
           true,
           false,
           true,
-          ['DAI', 'ADA']
+          walletAssets
         ),
-        generateNativeTokenTransaction(
+        generateTransaction(
           TransactionTypes.INCOME,
           new Date(),
           new BigNumber(2),
@@ -271,11 +379,11 @@ export default class WalletsTransactionsWrapper extends Component<
           true,
           false,
           true,
-          ['USDT', 'ADA']
+          walletAssets
         ),
       ],
       withoutIncomeAddresses: [
-        generateNativeTokenTransaction(
+        generateTransaction(
           TransactionTypes.INCOME,
           new Date(),
           new BigNumber(2),
@@ -283,9 +391,9 @@ export default class WalletsTransactionsWrapper extends Component<
           false,
           true,
           true,
-          ['USDC', 'ADA']
+          walletAssets
         ),
-        generateNativeTokenTransaction(
+        generateTransaction(
           TransactionTypes.INCOME,
           new Date(),
           new BigNumber(2),
@@ -293,11 +401,11 @@ export default class WalletsTransactionsWrapper extends Component<
           false,
           true,
           true,
-          ['USDT', 'ADA']
+          walletAssets
         ),
       ],
       withWithdrawalAddresses: [
-        generateNativeTokenTransaction(
+        generateTransaction(
           TransactionTypes.INCOME,
           new Date(),
           new BigNumber(2),
@@ -305,9 +413,9 @@ export default class WalletsTransactionsWrapper extends Component<
           false,
           false,
           false,
-          ['USDT', 'ADA']
+          walletAssets
         ),
-        generateNativeTokenTransaction(
+        generateTransaction(
           TransactionTypes.INCOME,
           new Date(),
           new BigNumber(2),
@@ -315,7 +423,7 @@ export default class WalletsTransactionsWrapper extends Component<
           false,
           false,
           false,
-          ['USDC', 'ADA']
+          walletAssets
         ),
       ],
     };
@@ -331,7 +439,7 @@ export default class WalletsTransactionsWrapper extends Component<
     const { filterOptions = emptyTransactionFilterOptions } = this.state || {};
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
     const transactionsList = hasAssetsEnabled
-      ? this.transactionsNativeTokensOptions[transactionsOption]
+      ? this.transactionsWithAssetsOptions[transactionsOption]
       : this.transactionsOptions[transactionsOption];
     return transactionsList.filter((transaction) =>
       isTransactionInFilterRange(filterOptions, transaction)

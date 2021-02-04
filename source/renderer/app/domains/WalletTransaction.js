@@ -8,6 +8,7 @@ import type {
   TransactionState,
   TransactionWithdrawalType,
 } from '../api/transactions/types';
+import type { WalletAssetItems } from '../api/assets/types';
 
 export const TransactionStates: EnumMap<string, TransactionState> = {
   PENDING: 'pending',
@@ -30,6 +31,7 @@ export class WalletTransaction {
   @observable type: TransactionType;
   @observable title: string = '';
   @observable amount: BigNumber;
+  @observable assets: ?WalletAssetItems;
   @observable date: ?Date;
   @observable description: string = '';
   @observable addresses: TransactionAddresses = {
@@ -48,6 +50,7 @@ export class WalletTransaction {
     type: TransactionType,
     title: string,
     amount: BigNumber,
+    assets: ?WalletAssetItems,
     date: ?Date,
     description: string,
     addresses: TransactionAddresses,

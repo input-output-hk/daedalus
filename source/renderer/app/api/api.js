@@ -2349,6 +2349,7 @@ const _createTransactionFromServerData = action(
     const {
       id,
       amount,
+      assets,
       inserted_at, // eslint-disable-line camelcase
       pending_since, // eslint-disable-line camelcase
       depth,
@@ -2364,6 +2365,17 @@ const _createTransactionFromServerData = action(
     const date = get(stateInfo, 'time');
     const slotNumber = get(stateInfo, ['block', 'slot_number'], null);
     const epochNumber = get(stateInfo, ['block', 'epoch_number'], null);
+
+    // Mapping asset items from server data
+    const transactionAssets = assets.map((item) => {
+      return {
+        id: item.id,
+        policyId: item.policy_id,
+        assetName: item.asset_name,
+        quantity: item.quantity,
+      };
+    });
+
     return new WalletTransaction({
       id,
       depth,
@@ -2377,6 +2389,7 @@ const _createTransactionFromServerData = action(
       amount: new BigNumber(
         direction === 'outgoing' ? amount.quantity * -1 : amount.quantity
       ).dividedBy(LOVELACES_PER_ADA),
+      assets: transactionAssets,
       date: utcStringToDate(date),
       description: '',
       addresses: {

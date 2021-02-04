@@ -28,6 +28,7 @@ import Asset from '../../../source/renderer/app/domains/Asset';
 import type {
   AssetMetadata,
   WalletAssets,
+  WalletTransactionAsset,
 } from '../../../source/renderer/app/api/assets/types';
 
 export const generateHash = () => {
@@ -105,58 +106,15 @@ export const generateTransaction = (
   state: TransactionState = TransactionStates.OK,
   hasUnresolvedIncomeAddresses: boolean = false,
   noIncomeAddresses: boolean = false,
-  noWithdrawals: boolean = true
-) =>
-  new WalletTransaction({
-    id: faker.random.uuid(),
-    title: '',
-    type,
-    amount,
-    date,
-    state,
-    depth: {
-      quantity: 0,
-      unit: 'block',
-    },
-    epochNumber: 0,
-    slotNumber: 0,
-    description: '',
-    addresses: {
-      from: noIncomeAddresses
-        ? []
-        : [
-            hasUnresolvedIncomeAddresses
-              ? ''
-              : faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100),
-          ],
-      to: [
-        faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100),
-        faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100),
-      ],
-      withdrawals: noWithdrawals
-        ? []
-        : [
-            faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100),
-            faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100),
-          ],
-    },
-  });
-
-export const generateNativeTokenTransaction = (
-  type: TransactionType = TransactionTypes.INCOME,
-  date: Date = faker.date.past(),
-  amount: BigNumber = new BigNumber(faker.finance.amount()),
-  state: TransactionState = TransactionStates.OK,
-  hasUnresolvedIncomeAddresses: boolean = false,
-  noIncomeAddresses: boolean = false,
   noWithdrawals: boolean = true,
-  currencies: Array<string> = ['USDT', 'ADA']
+  assets?: Array<WalletTransactionAsset>,
 ) =>
   new WalletTransaction({
     id: faker.random.uuid(),
     title: '',
     type,
     amount,
+    assets,
     date,
     state,
     depth: {
@@ -184,7 +142,6 @@ export const generateNativeTokenTransaction = (
             faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100),
             faker.random.alphaNumeric(Math.round(Math.random() * 10) + 100),
           ],
-      currencies,
     },
   });
 
