@@ -2371,12 +2371,13 @@ const _createMigrationFeeFromServerData = action(
 const _createDelegationFeeFromServerData = action(
   'AdaApi::_createDelegationFeeFromServerData',
   (data: TransactionFee) => {
-    const fee = BigNumber(
+    const feeWithDeposit = new BigNumber(
       get(data, ['estimated_max', 'quantity'], 0)
     ).dividedBy(LOVELACES_PER_ADA);
-    const deposit = BigNumber(get(data, ['deposit', 'quantity'], 0)).dividedBy(
-      LOVELACES_PER_ADA
-    );
+    const deposit = new BigNumber(
+      get(data, ['deposit', 'quantity'], 0)
+    ).dividedBy(LOVELACES_PER_ADA);
+    const fee = feeWithDeposit.minus(deposit);
     return { fee, deposit };
   }
 );
