@@ -12770,13 +12770,13 @@
         "description": "Title \"Connect a hardware wallet device\" in the connect wallet dialog.",
         "end": {
           "column": 3,
-          "line": 37
+          "line": 44
         },
         "file": "source/renderer/app/components/wallet/WalletConnectDialog.js",
         "id": "wallet.connect.dialog.title",
         "start": {
           "column": 15,
-          "line": 32
+          "line": 39
         }
       },
       {
@@ -12784,13 +12784,13 @@
         "description": "Label for the \"Cancel\" button in the connect wallet dialog",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 49
         },
         "file": "source/renderer/app/components/wallet/WalletConnectDialog.js",
         "id": "wallet.connect.dialog.button.cancel",
         "start": {
           "column": 16,
-          "line": 38
+          "line": 45
         }
       },
       {
@@ -12798,13 +12798,13 @@
         "description": "Follow instructions label",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 55
         },
         "file": "source/renderer/app/components/wallet/WalletConnectDialog.js",
         "id": "wallet.connect.dialog.instructions",
         "start": {
           "column": 16,
-          "line": 43
+          "line": 50
         }
       },
       {
@@ -12812,13 +12812,55 @@
         "description": "Follow instructions label",
         "end": {
           "column": 3,
-          "line": 54
+          "line": 61
         },
         "file": "source/renderer/app/components/wallet/WalletConnectDialog.js",
         "id": "wallet.connect.dialog.instructionsTrezorOnly",
         "start": {
           "column": 26,
-          "line": 49
+          "line": 56
+        }
+      },
+      {
+        "defaultMessage": "!!!If you are experiencing issues pairing your hardware wallet device, please {supportLink}",
+        "description": "Connecting issue support description",
+        "end": {
+          "column": 3,
+          "line": 67
+        },
+        "file": "source/renderer/app/components/wallet/WalletConnectDialog.js",
+        "id": "wallet.connect.dialog.connectingIssueSupportLabel",
+        "start": {
+          "column": 31,
+          "line": 62
+        }
+      },
+      {
+        "defaultMessage": "!!!read the instructions.",
+        "description": "Connecting issue support link",
+        "end": {
+          "column": 3,
+          "line": 72
+        },
+        "file": "source/renderer/app/components/wallet/WalletConnectDialog.js",
+        "id": "wallet.connect.dialog.connectingIssueSupportLink",
+        "start": {
+          "column": 30,
+          "line": 68
+        }
+      },
+      {
+        "defaultMessage": "https://support.ledger.com/hc/en-us/articles/115005165269",
+        "description": "Link to support article",
+        "end": {
+          "column": 3,
+          "line": 77
+        },
+        "file": "source/renderer/app/components/wallet/WalletConnectDialog.js",
+        "id": "wallet.connect.dialog.connectingIssueSupportLinkUrl",
+        "start": {
+          "column": 33,
+          "line": 73
         }
       }
     ],
