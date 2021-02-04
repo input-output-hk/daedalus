@@ -16533,13 +16533,13 @@
         "description": "PDF title",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 16
         },
         "file": "source/renderer/app/utils/votingPDFGenerator.js",
         "id": "voting.votingRegistration.pdf.title",
         "start": {
           "column": 9,
-          "line": 11
+          "line": 12
         }
       },
       {
@@ -16547,13 +16547,13 @@
         "description": "PDF wallet name title",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 21
         },
         "file": "source/renderer/app/utils/votingPDFGenerator.js",
         "id": "voting.votingRegistration.pdf.walletNameLabel",
         "start": {
           "column": 19,
-          "line": 16
+          "line": 17
         }
       },
       {
@@ -16561,13 +16561,13 @@
         "description": "PDF filename title",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 26
         },
         "file": "source/renderer/app/utils/votingPDFGenerator.js",
         "id": "voting.votingRegistration.pdf.filename",
         "start": {
           "column": 12,
-          "line": 21
+          "line": 22
         }
       },
       {
@@ -16575,13 +16575,13 @@
         "description": "PDF networkLabel label",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 31
         },
         "file": "source/renderer/app/utils/votingPDFGenerator.js",
         "id": "voting.votingRegistration.pdf.networkLabel",
         "start": {
           "column": 16,
-          "line": 26
+          "line": 27
         }
       },
       {
@@ -16589,13 +16589,13 @@
         "description": "PDF author",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 36
         },
         "file": "source/renderer/app/utils/votingPDFGenerator.js",
         "id": "voting.votingRegistration.pdf.author",
         "start": {
           "column": 10,
-          "line": 31
+          "line": 32
         }
       }
     ],
