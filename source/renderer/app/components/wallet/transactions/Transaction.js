@@ -535,7 +535,9 @@ export default class Transaction extends Component<Props, State> {
                 {data.metadata != null && (
                   <div className={styles.metadata}>
                     <h2>{intl.formatMessage(messages.metadataLabel)}</h2>
-                    {data.metadata && isShowingMetadata ? (
+                    {data.metadata &&
+                    (this.state.showUnmoderatedMetadata ||
+                      isShowingMetadata) ? (
                       <TransactionMetadataView data={data.metadata} />
                     ) : (
                       <>
