@@ -38,7 +38,6 @@ import Wallet from '../../domains/Wallet';
 import closeIcon from '../../assets/images/close-cross.inline.svg';
 import WalletsDropdown from '../widgets/forms/WalletsDropdown';
 import ReadOnlyInput from '../widgets/forms/ReadOnlyInput';
-import Asset from '../../domains/Asset';
 
 export const messages = defineMessages({
   titleLabel: {
