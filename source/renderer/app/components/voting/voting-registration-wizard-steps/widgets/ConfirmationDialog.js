@@ -23,16 +23,9 @@ const messages = defineMessages({
   cancelButtonLabel: {
     id:
       'voting.votingRegistration.dialog.confirmation.button.cancelButtonLabel',
-    defaultMessage: '!!!Close window',
+    defaultMessage: '!!!Abort registration',
     description:
-      '"Close window" button label for the voting registration cancellation confirmation dialog.',
-  },
-  cancelButtonLabelVariation: {
-    id:
-      'voting.votingRegistration.dialog.confirmation.button.cancelButtonLabelVariation',
-    defaultMessage: '!!!Close Daedalus',
-    description:
-      '"Close Daedalus" button label for the voting registration cancellation confirmation dialog.',
+      '"Abort registration" button label for the voting registration cancellation confirmation dialog.',
   },
   confirmButtonLabel: {
     id:
@@ -44,7 +37,6 @@ const messages = defineMessages({
 });
 
 type Props = {
-  isDaedalusClosing: boolean,
   onConfirm: Function,
   onCancel: Function,
 };
@@ -57,7 +49,7 @@ export default class ConfirmationDialog extends Component<Props> {
 
   render() {
     const { intl } = this.context;
-    const { isDaedalusClosing, onConfirm, onCancel } = this.props;
+    const { onConfirm, onCancel } = this.props;
 
     const dialogClasses = classnames([styles.component, 'ConfirmDialog']);
 
@@ -67,14 +59,10 @@ export default class ConfirmationDialog extends Component<Props> {
       styles.confirmButton,
     ]);
 
-    const cancelButtonLabel = isDaedalusClosing
-      ? intl.formatMessage(messages.cancelButtonLabelVariation)
-      : intl.formatMessage(messages.cancelButtonLabel);
-
     const actions = [
       {
         className: 'cancelButton',
-        label: cancelButtonLabel,
+        label: intl.formatMessage(messages.cancelButtonLabel),
         onClick: onCancel,
       },
       {
@@ -91,7 +79,7 @@ export default class ConfirmationDialog extends Component<Props> {
         title={intl.formatMessage(messages.headline)}
         actions={actions}
         closeOnOverlayClick={false}
-        onClose={onCancel}
+        onClose={onConfirm}
       >
         <p>{intl.formatMessage(messages.content)}</p>
       </Dialog>

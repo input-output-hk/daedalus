@@ -169,7 +169,6 @@ export default class VotingRegistrationStepsRegister extends Component<Props> {
         activeStep={activeStep}
         actions={actions}
         onBack={onBack}
-        closeOnOverlayClick
         containerClassName={styles.component}
       >
         <p className={styles.description}>

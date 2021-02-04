@@ -213,7 +213,6 @@ export default class VotingRegistrationDialogContainer extends Component<
         />
         {isConfirmationDialogOpen && (
           <ConfirmationDialog
-            isDaedalusClosing={false}
             onConfirm={() => {
               this.props.actions.voting.closeConfirmationDialog.trigger();
             }}

@@ -141,7 +141,6 @@ export default class VotingRegistrationStepsConfirm extends Component<Props> {
         stepsList={stepsList}
         activeStep={activeStep}
         actions={actions}
-        closeOnOverlayClick
         containerClassName={styles.component}
         hideSteps={!!transactionError}
       >

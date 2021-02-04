@@ -186,7 +186,6 @@ export default class VotingRegistrationStepsChooseWallet extends Component<
         stepsList={stepsList}
         activeStep={activeStep}
         actions={actions}
-        closeOnOverlayClick
         containerClassName={styles.component}
       >
         <p className={styles.description}>

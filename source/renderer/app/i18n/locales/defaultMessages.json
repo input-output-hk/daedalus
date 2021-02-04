@@ -3371,13 +3371,13 @@
         "description": "\"No wallets\" headLine on the Delegation centre Page.",
         "end": {
           "column": 3,
-          "line": 16
+          "line": 17
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterNoWallets.js",
         "id": "staking.delegationCenter.noWallets.headLine",
         "start": {
           "column": 12,
-          "line": 11
+          "line": 12
         }
       },
       {
@@ -3385,13 +3385,13 @@
         "description": "\"No wallets\" instructions on the Delegation centre Page.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 23
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterNoWallets.js",
         "id": "staking.delegationCenter.noWallets.instructions",
         "start": {
           "column": 16,
-          "line": 17
+          "line": 18
         }
       },
       {
@@ -3399,13 +3399,13 @@
         "description": "Label for \"Create New Wallet\" button on the Delegation centre Page.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 29
         },
         "file": "source/renderer/app/components/staking/delegation-center/DelegationCenterNoWallets.js",
         "id": "staking.delegationCenter.noWallets.createWalletButtonLabel",
         "start": {
           "column": 27,
-          "line": 23
+          "line": 24
         }
       }
     ],
@@ -7909,13 +7909,13 @@
         "description": "Qr code title on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 15
+          "line": 16
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
         "id": "voting.votingRegistration.qrCode.step.qrCodeTitle",
         "start": {
           "column": 15,
-          "line": 11
+          "line": 12
         }
       },
       {
@@ -7923,13 +7923,13 @@
         "description": "Qr code description of use on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 23
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
         "id": "voting.votingRegistration.qrCode.step.qrCodeDescription",
         "start": {
           "column": 21,
-          "line": 16
+          "line": 17
         }
       },
       {
@@ -7937,13 +7937,13 @@
         "description": "First checkbox label on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 30
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
         "id": "voting.votingRegistration.qrCode.step.checkbox1Label",
         "start": {
           "column": 18,
-          "line": 23
+          "line": 24
         }
       },
       {
@@ -7951,13 +7951,13 @@
         "description": "Second checkbox label on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 37
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
         "id": "voting.votingRegistration.qrCode.step.checkbox2Label",
         "start": {
           "column": 18,
-          "line": 30
+          "line": 31
         }
       },
       {
@@ -7965,13 +7965,13 @@
         "description": "\"Close\" button label on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 43
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
         "id": "voting.votingRegistration.qrCode.step.closeButtonLabel",
         "start": {
           "column": 20,
-          "line": 37
+          "line": 38
         }
       },
       {
@@ -7979,13 +7979,13 @@
         "description": "\"Save as PDF\" button label on the voting registration \"qr code\" step.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 49
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsQrCode.js",
         "id": "voting.votingRegistration.qrCode.step.saveAsPdfButtonLabel",
         "start": {
           "column": 24,
-          "line": 43
+          "line": 44
         }
       }
     ],
@@ -8139,8 +8139,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Close window",
-        "description": "\"Close window\" button label for the voting registration cancellation confirmation dialog.",
+        "defaultMessage": "!!!Abort registration",
+        "description": "\"Abort registration\" button label for the voting registration cancellation confirmation dialog.",
         "end": {
           "column": 3,
           "line": 29
@@ -8153,31 +8153,17 @@
         }
       },
       {
-        "defaultMessage": "!!!Close Daedalus",
-        "description": "\"Close Daedalus\" button label for the voting registration cancellation confirmation dialog.",
+        "defaultMessage": "!!!Continue registration",
+        "description": "\"Continue registration\" button label for the voting registration cancellation confirmation dialog.",
         "end": {
           "column": 3,
           "line": 36
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/widgets/ConfirmationDialog.js",
-        "id": "voting.votingRegistration.dialog.confirmation.button.cancelButtonLabelVariation",
-        "start": {
-          "column": 30,
-          "line": 30
-        }
-      },
-      {
-        "defaultMessage": "!!!Continue registration",
-        "description": "\"Continue registration\" button label for the voting registration cancellation confirmation dialog.",
-        "end": {
-          "column": 3,
-          "line": 43
-        },
-        "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/widgets/ConfirmationDialog.js",
         "id": "voting.votingRegistration.dialog.confirmation.button.confirmButtonLabel",
         "start": {
           "column": 22,
-          "line": 37
+          "line": 30
         }
       }
     ],
@@ -8374,6 +8360,53 @@
       }
     ],
     "path": "source/renderer/app/components/voting/VotingInfo.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Voting registration for Fund3 is not available because you currently do not have any Shelley-compatible wallets.",
+        "description": "\"No wallets\" headLine on the voting info page.",
+        "end": {
+          "column": 3,
+          "line": 17
+        },
+        "file": "source/renderer/app/components/voting/VotingNoWallets.js",
+        "id": "voting.info.noWallets.headLine",
+        "start": {
+          "column": 12,
+          "line": 12
+        }
+      },
+      {
+        "defaultMessage": "!!!Create a new wallet and transfer a minimum of {minVotingFunds} ADA (or restore an existing wallet with funds), then return here to register for voting.",
+        "description": "\"No wallets\" instructions on the voting info page.",
+        "end": {
+          "column": 3,
+          "line": 23
+        },
+        "file": "source/renderer/app/components/voting/VotingNoWallets.js",
+        "id": "voting.info.noWallets.instructions",
+        "start": {
+          "column": 16,
+          "line": 18
+        }
+      },
+      {
+        "defaultMessage": "!!!Create a wallet",
+        "description": "Label for \"Create New Wallet\" button on the voting info page.",
+        "end": {
+          "column": 3,
+          "line": 29
+        },
+        "file": "source/renderer/app/components/voting/VotingNoWallets.js",
+        "id": "voting.info.noWallets.createWalletButtonLabel",
+        "start": {
+          "column": 27,
+          "line": 24
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/voting/VotingNoWallets.json"
   },
   {
     "descriptors": [

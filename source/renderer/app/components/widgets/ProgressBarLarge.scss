@@ -24,7 +24,9 @@
   height: 24px;
   position: relative;
   width: 100%;
+
   &.loading {
+    animation: animatedStripesBackground 2s linear infinite;
     background: repeating-linear-gradient(
       -63deg,
       var(--theme-staking-progress-stripe-dark-1-background-color),
@@ -68,7 +70,17 @@
 .progressLabel {
   transform: translateX(calc(100% + 8px));
 }
+
 .progressLabelWhite {
   color: var(--theme-staking-progress-label-light);
   transform: translateX(-8px);
+}
+
+@keyframes animatedStripesBackground {
+  0% {
+    background-position-x: 0;
+  }
+  100% {
+    background-position-x: 67px;
+  }
 }

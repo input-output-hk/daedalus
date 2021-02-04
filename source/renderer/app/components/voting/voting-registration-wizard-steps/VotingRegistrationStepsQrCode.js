@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import QRCode from 'qrcode.react';
+import { set } from 'lodash';
 import { observer } from 'mobx-react';
 import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import VotingRegistrationDialog from './widgets/VotingRegistrationDialog';
@@ -55,18 +56,43 @@ type Props = {
   qrCode: ?string,
 };
 
+type State = {
+  isCheckbox1Accepted: boolean,
+  isCheckbox2Accepted: boolean,
+};
+
 @observer
-export default class VotingRegistrationStepsQrCode extends Component<Props> {
+export default class VotingRegistrationStepsQrCode extends Component<
+  Props,
+  State
+> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
 
+  state = {
+    isCheckbox1Accepted: false,
+    isCheckbox2Accepted: false,
+  };
+
+  toggleAcceptance = (param: 'isCheckbox1Accepted' | 'isCheckbox2Accepted') =>
+    this.setState((currentState) => set({}, param, !currentState[param]));
+
   handleClose = () => {
-    this.props.onClose(true);
+    const { isCheckbox1Accepted, isCheckbox2Accepted } = this.state;
+    if (isCheckbox1Accepted && isCheckbox2Accepted) {
+      this.props.onClose();
+    }
+  };
+
+  handleSaveAsPdf = () => {
+    // eslint-disable-next-line
+    alert('TODO');
   };
 
   render() {
     const { intl } = this.context;
+    const { isCheckbox1Accepted, isCheckbox2Accepted } = this.state;
     const { stepsList, activeStep, qrCode } = this.props;
 
     const qrCodeTitle = intl.formatMessage(messages.qrCodeTitle);
@@ -77,6 +103,9 @@ export default class VotingRegistrationStepsQrCode extends Component<Props> {
     const saveAsPdfButtonLabel = intl.formatMessage(
       messages.saveAsPdfButtonLabel
     );
+
+    const areBothCheckboxesAccepted =
+      isCheckbox1Accepted && isCheckbox2Accepted;
 
     // Get QRCode color value from active theme's CSS variable
     const qrCodeBackgroundColor = document.documentElement
@@ -94,11 +123,11 @@ export default class VotingRegistrationStepsQrCode extends Component<Props> {
       {
         label: closeButtonLabel,
         onClick: this.handleClose,
-        disabled: true,
+        disabled: !areBothCheckboxesAccepted,
       },
       {
         label: saveAsPdfButtonLabel,
-        onClick: () => {},
+        onClick: this.handleSaveAsPdf,
         primary: true,
       },
     ];
@@ -109,8 +138,8 @@ export default class VotingRegistrationStepsQrCode extends Component<Props> {
         stepsList={stepsList}
         activeStep={activeStep}
         actions={actions}
-        closeOnOverlayClick
         containerClassName={styles.component}
+        hideCloseButton={!areBothCheckboxesAccepted}
       >
         <div className={styles.qrCode}>
           {qrCode && (
@@ -130,16 +159,15 @@ export default class VotingRegistrationStepsQrCode extends Component<Props> {
         <div className={styles.checkboxes}>
           <Checkbox
             label={checkbox1Label}
-            onChange={() => {}}
+            onChange={() => this.toggleAcceptance('isCheckbox1Accepted')}
             className={styles.checkbox}
-            checked={false}
+            checked={isCheckbox1Accepted}
           />
           <Checkbox
             label={checkbox2Label}
-            onChange={() => {}}
+            onChange={() => this.toggleAcceptance('isCheckbox2Accepted')}
             className={styles.checkbox}
-            checked={false}
-            disabled
+            checked={isCheckbox2Accepted}
           />
         </div>
       </VotingRegistrationDialog>

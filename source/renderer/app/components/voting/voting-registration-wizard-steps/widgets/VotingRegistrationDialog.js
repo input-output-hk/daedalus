@@ -32,9 +32,9 @@ type Props = {
   actions: DialogActions,
   onClose: Function,
   onBack?: Function,
-  closeOnOverlayClick?: boolean,
   containerClassName?: ?string,
   contentClassName?: ?string,
+  hideCloseButton?: boolean,
   hideSteps?: boolean,
 };
 
@@ -57,9 +57,9 @@ export default class VotingRegistrationDialog extends Component<Props> {
       actions,
       onClose,
       onBack,
-      closeOnOverlayClick,
       containerClassName,
       contentClassName,
+      hideCloseButton,
       hideSteps,
     } = this.props;
     const containerStyles = classnames([styles.container, containerClassName]);
@@ -69,9 +69,9 @@ export default class VotingRegistrationDialog extends Component<Props> {
       <Dialog
         className={styles.component}
         title={intl.formatMessage(messages.dialogTitle)}
-        closeOnOverlayClick={closeOnOverlayClick}
         onClose={onClose}
-        closeButton={<DialogCloseButton />}
+        closeOnOverlayClick={false}
+        closeButton={hideCloseButton ? null : <DialogCloseButton />}
         backButton={onBack && <DialogBackButton onBack={onBack} />}
         actions={actions}
       >

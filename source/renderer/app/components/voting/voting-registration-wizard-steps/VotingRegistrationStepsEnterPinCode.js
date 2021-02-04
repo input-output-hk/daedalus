@@ -162,7 +162,6 @@ export default class VotingRegistrationStepsEnterPinCode extends Component<Props
         stepsList={stepsList}
         activeStep={activeStep}
         actions={actions}
-        closeOnOverlayClick
         containerClassName={styles.component}
       >
         <p className={styles.description}>
