@@ -3,11 +3,11 @@ import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
+import BigNumber from 'bignumber.js';
 import BorderedBox from '../../widgets/BorderedBox';
-import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import styles from './AssetsWalletSummary.scss';
 import Wallet from '../../../domains/Wallet';
-import type { WalletAssets } from '../../../api/assets/types';
+import type { AssetMetadata, WalletAssetItems } from '../../../api/assets/types';
 
 const messages = defineMessages({
   transactionsLabel: {
@@ -33,9 +33,15 @@ const messages = defineMessages({
   },
 });
 
+type WalletSummaryAsset = {
+  id: string,
+  metadata: AssetMetadata,
+  total: WalletAssetItems,
+};
+
 type Props = {
   wallet: Wallet,
-  assets: WalletAssets,
+  assets: Array<WalletSummaryAsset>,
   handleOpenAssetSend: Function,
 };
 
@@ -48,10 +54,9 @@ export default class AssetsWalletSummary extends Component<Props> {
   render() {
     const { wallet, assets, handleOpenAssetSend } = this.props;
     const { intl } = this.context;
-    const { total } = assets;
 
     const isRestoreActive = wallet.isRestoring;
-    const numberOfAssets = total ? total.length : null;
+    const numberOfAssets = assets ? assets.length : null;
 
     return (
       numberOfAssets && (
@@ -60,20 +65,19 @@ export default class AssetsWalletSummary extends Component<Props> {
             {intl.formatMessage(messages.tokensTitle)} ({numberOfAssets})
           </div>
           <div className={styles.component}>
-            {assets.total.map((asset: any) => (
+            {assets.map((asset: WalletSummaryAsset) => (
               <BorderedBox
                 className={styles.assetsContainer}
                 key={asset.id}
               >
                 <div className={styles.assetsLeftContainer}>
-                  <div className={styles.assetName}>{asset.name}</div>
+                  <div className={styles.assetName}>{asset.metadata.name}</div>
                   <div className={styles.assetAmount}>
                     {isRestoreActive
                       ? '-'
-                      : asset.amount.toFormat(DECIMAL_PLACES_IN_ADA)}
-                    {/* @todo Fallback for asset ticker - change it to asset name */}
+                      : new BigNumber(asset.total.quantity).toFormat(asset.metadata.unit.decimals)}
                     <span>
-                      &nbsp;{asset.ticker ? asset.ticker : asset.name}
+                      &nbsp;{asset.metadata.acronym}
                     </span>
                   </div>
                 </div>
@@ -82,7 +86,7 @@ export default class AssetsWalletSummary extends Component<Props> {
                     className={classNames([
                       'primary',
                       styles.assetSendButton,
-                      asset.amount.isZero() ? styles.disabled : null,
+                      new BigNumber(asset.total.quantity).isZero() ? styles.disabled : null,
                     ])}
                     onClick={() => handleOpenAssetSend(asset)}
                   >

@@ -8,7 +8,6 @@ import { action } from '@storybook/addon-actions';
 import {
   generateAsset,
   generateHash,
-  generatePolicyIdHash,
   generateWallet,
 } from '../../_support/utils';
 import WalletsWrapper from '../_utils/WalletsWrapper';
@@ -18,7 +17,7 @@ import WalletSummary from '../../../../source/renderer/app/components/wallet/sum
 import AssetsWalletSummary from '../../../../source/renderer/app/components/wallet/summary/AssetsWalletSummary';
 import { WALLET_ASSETS_ENABLED } from '../../../../source/renderer/app/config/walletsConfig';
 
-const assets = [
+const allAssets = [
   generateAsset(
     '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
@@ -81,36 +80,69 @@ const assets = [
   ),
 ];
 
-const walletAssets = {
+const assets = {
   available: [
     {
       id: generateHash(),
-      policyId: generatePolicyIdHash(),
+      policyId: '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
+      assetName: '',
+      quantity: 100,
+    },
+    {
+      id: generateHash(),
+      policyId: '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       assetName: '',
       quantity: 200,
     },
     {
       id: generateHash(),
-      policyId: generatePolicyIdHash(),
+      policyId: '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
       assetName: '',
-      quantity: 200,
+      quantity: 300,
+    },
+    {
+      id: generateHash(),
+      policyId: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
+      assetName: '',
+      quantity: 400,
     },
   ],
   total: [
     {
       id: generateHash(),
-      policyId: generatePolicyIdHash(),
+      policyId: '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
+      assetName: '',
+      quantity: 100,
+    },
+    {
+      id: generateHash(),
+      policyId: '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       assetName: '',
       quantity: 200,
     },
     {
       id: generateHash(),
-      policyId: generatePolicyIdHash(),
+      policyId: '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
       assetName: '',
-      quantity: 200,
+      quantity: 300,
+    },
+    {
+      id: generateHash(),
+      policyId: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
+      assetName: '',
+      quantity: 400,
     },
   ],
 };
+
+const walletAssets = assets.total.map(assetTotal => {
+  const assetData = allAssets.find(item => item.policyId === assetTotal.policyId);
+  return {
+    id: assetData.id,
+    metadata: assetData.metadata,
+    total: assetTotal,
+  }
+});
 
 const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
 

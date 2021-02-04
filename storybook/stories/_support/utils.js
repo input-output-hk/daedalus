@@ -93,7 +93,7 @@ export const generateAsset = (
 ) =>
   new Asset({
     id: generateHash(),
-    policyId: generatePolicyIdHash(),
+    policyId,
     assetName,
     metadata,
   });
