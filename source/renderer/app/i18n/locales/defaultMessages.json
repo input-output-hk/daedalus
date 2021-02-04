@@ -14989,17 +14989,31 @@
         }
       },
       {
+        "defaultMessage": "!!!PDF successfully downloaded",
+        "description": "Notification for the wallet voting PDF download success in the Voting Registration dialog.",
+        "end": {
+          "column": 3,
+          "line": 69
+        },
+        "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
+        "id": "notification.downloadVotingPDFSuccess",
+        "start": {
+          "column": 28,
+          "line": 64
+        }
+      },
+      {
         "defaultMessage": "!!!Address: <strong>{walletAddress}</strong> QR code image successfully downloaded",
         "description": "Notification for the wallet address PDF download success in the Wallet Receive page.",
         "end": {
           "column": 3,
-          "line": 70
+          "line": 76
         },
         "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
         "id": "notification.downloadQRCodeImageSuccess",
         "start": {
           "column": 30,
-          "line": 64
+          "line": 70
         }
       },
       {
@@ -15007,13 +15021,13 @@
         "description": "Notification for the state directory copy success in the Diagnostics page.",
         "end": {
           "column": 3,
-          "line": 76
+          "line": 82
         },
         "file": "source/renderer/app/containers/notifications/NotificationsContainer.js",
         "id": "notification.copyStateDirectoryPath",
         "start": {
           "column": 26,
-          "line": 71
+          "line": 77
         }
       }
     ],
@@ -16511,5 +16525,80 @@
       }
     ],
     "path": "source/renderer/app/utils/transactionsCsvGenerator.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Fund{fundNumber} Voting Registration",
+        "description": "PDF title",
+        "end": {
+          "column": 3,
+          "line": 15
+        },
+        "file": "source/renderer/app/utils/votingPDFGenerator.js",
+        "id": "voting.votingRegistration.pdf.title",
+        "start": {
+          "column": 9,
+          "line": 11
+        }
+      },
+      {
+        "defaultMessage": "!!!Wallet name",
+        "description": "PDF wallet name title",
+        "end": {
+          "column": 3,
+          "line": 20
+        },
+        "file": "source/renderer/app/utils/votingPDFGenerator.js",
+        "id": "voting.votingRegistration.pdf.walletNameLabel",
+        "start": {
+          "column": 19,
+          "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!voting-registration",
+        "description": "PDF filename title",
+        "end": {
+          "column": 3,
+          "line": 25
+        },
+        "file": "source/renderer/app/utils/votingPDFGenerator.js",
+        "id": "voting.votingRegistration.pdf.filename",
+        "start": {
+          "column": 12,
+          "line": 21
+        }
+      },
+      {
+        "defaultMessage": "!!!Cardano network:",
+        "description": "PDF networkLabel label",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "source/renderer/app/utils/votingPDFGenerator.js",
+        "id": "voting.votingRegistration.pdf.networkLabel",
+        "start": {
+          "column": 16,
+          "line": 26
+        }
+      },
+      {
+        "defaultMessage": "!!!Daedalus wallet",
+        "description": "PDF author",
+        "end": {
+          "column": 3,
+          "line": 35
+        },
+        "file": "source/renderer/app/utils/votingPDFGenerator.js",
+        "id": "voting.votingRegistration.pdf.author",
+        "start": {
+          "column": 10,
+          "line": 31
+        }
+      }
+    ],
+    "path": "source/renderer/app/utils/votingPDFGenerator.json"
   }
 ]
