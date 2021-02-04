@@ -12,7 +12,7 @@ const messages = defineMessages({
   description: {
     id: 'voting.votingRegistration.chooseWallet.step.description',
     defaultMessage:
-      '!!!You can only use one wallet when registering. To maximize rewards and voting power, choose your largest wallet.',
+      '!!!You can only use one wallet when registering. To maximize rewards and voting power, choose the wallet with the largest balance.',
     description: 'Description on the voting registration "choose wallet" step.',
   },
   selectWalletInputLabel: {
@@ -39,28 +39,28 @@ const messages = defineMessages({
     id:
       'voting.votingRegistration.chooseWallet.step.errorMinVotingFundsRewardsOnly',
     defaultMessage:
-      '!!!This wallet contains rewards balances only, and cannot be used for voting purposes.',
+      '!!!This wallet cannot be registered for voting as it contains rewards balance only.',
     description:
       'errorMinVotingFundsRewardsOnly Error Label on the voting registration "choose wallet" step.',
   },
   errorLegacyWallet: {
     id: 'voting.votingRegistration.chooseWallet.step.errorLegacyWallet',
     defaultMessage:
-      '!!!This wallet cannot be registered for voting because it is a legacy Byron wallet.',
+      '!!!This wallet cannot be registered for voting as it is a legacy Byron wallet.',
     description:
       'Byron wallet error message on the voting registration "choose wallet" step.',
   },
   errorHardwareWallet: {
     id: 'voting.votingRegistration.chooseWallet.step.errorHardwareWallet',
     defaultMessage:
-      '!!!This wallet cannot be registered for voting because it is a hardware wallet. <span>Hardware wallets will be supported in the future.</span>',
+      '!!!This wallet cannot be registered for voting as it is a hardware wallet. <span>Hardware wallets will be supported in the future.</span>',
     description:
       'Hardware wallet error message on the voting registration "choose wallet" step.',
   },
   errorRestoringWallet: {
     id: 'voting.votingRegistration.chooseWallet.step.errorRestoringWallet',
     defaultMessage:
-      '!!!The wallet cannot be used for voting purposes while it is being synced with the blockchain.',
+      '!!!The wallet cannot be registered for voting while it is being synced with the blockchain.',
     description:
       'Restoring wallet error message on the voting registration "choose wallet" step.',
   },

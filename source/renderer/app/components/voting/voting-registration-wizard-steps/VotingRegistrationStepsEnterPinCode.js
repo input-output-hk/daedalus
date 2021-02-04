@@ -18,37 +18,37 @@ const messages = defineMessages({
   description: {
     id: 'voting.votingRegistration.enterPinCode.step.description',
     defaultMessage:
-      '!!!Please enter a PIN code for your Fund3 voting registration. The PIN you set here and the QR code which you will get in the next step will be required for you to vote using the Catalyst Voting app on your smartphone.',
+      '!!!Please enter a PIN for your Fund3 voting registration. The PIN you set here, and the QR code which you will get in the next step, will be required for you to vote using the Catalyst Voting app on your smartphone.',
     description:
       'Description on the voting registration "enter pin code" step.',
   },
   reminder: {
     id: 'voting.votingRegistration.enterPinCode.step.reminder',
     defaultMessage:
-      '!!!<span>Please, don’t forget your PIN.</span> In case you forget your PIN you will not be able to use this registration for voting and you will need to go through the registration process again.',
+      '!!!<span>It is important to remember your PIN.</span> If you forget your PIN, you will not be able to use this registration for voting, and you will need to repeat the registration process.',
     description: 'Reminder on the voting registration "enter pin code" step.',
   },
   enterPinCodeLabel: {
     id: 'voting.votingRegistration.enterPinCode.step.enterPinCodeLabel',
-    defaultMessage: '!!!Enter the PIN',
+    defaultMessage: '!!!Enter PIN',
     description:
       'Label for pin code input on the voting registration "enter pin code" step.',
   },
   repeatPinCodeLabel: {
     id: 'voting.votingRegistration.enterPinCode.step.repeatPinCodeLabel',
-    defaultMessage: '!!!Repeat the PIN',
+    defaultMessage: '!!!Repeat PIN',
     description:
       'Label for repeat pin code on the voting registration "enter pin code" step.',
   },
   invalidPinCode: {
     id: 'voting.votingRegistration.enterPinCode.step.errors.invalidPinCode',
-    defaultMessage: '!!!Invalid pin code',
+    defaultMessage: '!!!Invalid PIN',
     description: 'Error message shown when repeat pin code is invalid.',
   },
   invalidRepeatPinCode: {
     id:
       'voting.votingRegistration.enterPinCode.step.errors.invalidRepeatPinCode',
-    defaultMessage: '!!!PIN does not match',
+    defaultMessage: '!!!PIN doesn’t match',
     description: 'Error message shown when repeat pin code is invalid.',
   },
   continueButtonLabel: {

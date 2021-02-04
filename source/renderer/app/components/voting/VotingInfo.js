@@ -21,7 +21,7 @@ const messages = defineMessages({
   stepTitle1: {
     id: 'voting.info.stepTitle1',
     defaultMessage:
-      '!!!Decide which innovative ideas to improve Cardano will receive funding.',
+      '!!!Decide which innovative ideas for Cardano will receive funding.',
     description: 'Info step title 2 for voting registration steps',
   },
   stepTitle2: {
@@ -42,13 +42,13 @@ const messages = defineMessages({
   },
   bottomContentTitle: {
     id: 'voting.info.bottomContentTitle',
-    defaultMessage: '!!!Download Catalyst Voting app on your smartphone',
+    defaultMessage: '!!!Download the Catalyst Voting app on your smartphone',
     description: 'bottomContentTitle for voting registration steps',
   },
   bottomContentDescription: {
     id: 'voting.info.bottomContentDescription',
     defaultMessage:
-      '!!!To register to vote for Catalyst Fund3 you first need to download the <p>Catalyst Voting</p> app on your Android or iOS smartphone.',
+      '!!!To register to vote for Catalyst Fund3 you first need to download the <b>Catalyst Voting</b> app on your Android or iOS smartphone.',
     description: 'bottomContentDescription for voting registration steps',
   },
   checkboxLabel: {
@@ -58,7 +58,7 @@ const messages = defineMessages({
   },
   buttonLabel: {
     id: 'voting.info.buttonLabel',
-    defaultMessage: '!!!Register for Fund3 voting',
+    defaultMessage: '!!!Register to vote',
     description: 'Button Label for voting registration steps',
   },
   androidAppButtonUrl: {
