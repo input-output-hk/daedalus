@@ -9,7 +9,7 @@ import {
   generateTransaction,
   generateMultipleTransactions,
   generateHash,
-  generatePolicyIdHash, generateAsset,
+  generateAsset,
 } from '../../_support/utils';
 import {
   generateFilterOptions,

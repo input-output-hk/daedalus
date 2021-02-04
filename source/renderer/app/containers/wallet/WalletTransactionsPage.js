@@ -77,7 +77,7 @@ export default class WalletTransactionsPage extends Component<Props> {
         onFilter={filterTransactions.trigger}
         onRequestCSVFile={requestCSVFile.trigger}
         isRenderingAsVirtualList
-        hasAssetsEnabled
+        hasAssetsEnabled={hasAssetsEnabled}
       />
     );
   }
