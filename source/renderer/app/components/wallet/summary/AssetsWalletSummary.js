@@ -8,9 +8,9 @@ import BorderedBox from '../../widgets/BorderedBox';
 import styles from './AssetsWalletSummary.scss';
 import Wallet from '../../../domains/Wallet';
 import type {
-  AssetMetadata,
-  WalletAssetItems,
+  AssetMetadata, WalletAssetItem,
 } from '../../../api/assets/types';
+import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 
 const messages = defineMessages({
   transactionsLabel: {
@@ -38,8 +38,8 @@ const messages = defineMessages({
 
 type WalletSummaryAsset = {
   id: string,
-  metadata: AssetMetadata,
-  total: WalletAssetItems,
+  metadata: ?AssetMetadata,
+  total: WalletAssetItem,
 };
 
 type Props = {
@@ -70,31 +70,35 @@ export default class AssetsWalletSummary extends Component<Props> {
           <div className={styles.component}>
             {assets.map((asset: WalletSummaryAsset) => (
               <BorderedBox className={styles.assetsContainer} key={asset.id}>
-                <div className={styles.assetsLeftContainer}>
-                  <div className={styles.assetName}>{asset.metadata.name}</div>
-                  <div className={styles.assetAmount}>
-                    {isRestoreActive
-                      ? '-'
-                      : new BigNumber(asset.total.quantity).toFormat(
-                          asset.metadata.unit.decimals
-                        )}
-                    <span>&nbsp;{asset.metadata.acronym}</span>
+                {asset.metadata && asset.total && (
+                  <div className={styles.assetsLeftContainer}>
+                    <div className={styles.assetName}>{asset.metadata.name}</div>
+                    <div className={styles.assetAmount}>
+                      {isRestoreActive
+                        ? '-'
+                        : new BigNumber(asset.total.quantity).toFormat(
+                          asset.metadata.unit ? asset.metadata.unit.decimals : DECIMAL_PLACES_IN_ADA
+                          )}
+                      <span>&nbsp;{asset.metadata.acronym}</span>
+                    </div>
+                </div>
+                )}
+                {asset.total && (
+                  <div className={styles.assetRightContainer}>
+                    <button
+                      className={classNames([
+                        'primary',
+                        styles.assetSendButton,
+                        new BigNumber(asset.total.quantity).isZero()
+                          ? styles.disabled
+                          : null,
+                      ])}
+                      onClick={() => handleOpenAssetSend(asset)}
+                    >
+                      {intl.formatMessage(messages.tokenSendButton)}
+                    </button>
                   </div>
-                </div>
-                <div className={styles.assetRightContainer}>
-                  <button
-                    className={classNames([
-                      'primary',
-                      styles.assetSendButton,
-                      new BigNumber(asset.total.quantity).isZero()
-                        ? styles.disabled
-                        : null,
-                    ])}
-                    onClick={() => handleOpenAssetSend(asset)}
-                  >
-                    {intl.formatMessage(messages.tokenSendButton)}
-                  </button>
-                </div>
+                )}
               </BorderedBox>
             ))}
           </div>

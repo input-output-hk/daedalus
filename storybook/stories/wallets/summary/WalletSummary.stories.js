@@ -140,9 +140,13 @@ const walletAssets = assets.total.map((assetTotal) => {
     (item) => item.policyId === assetTotal.policyId
   );
   return {
-    id: assetData.id,
-    metadata: assetData.metadata,
-    total: assetTotal,
+    id: assetData ? assetData.id : '',
+    metadata: assetData ? assetData.metadata : {
+      name: '',
+      acronym: '',
+      description: '',
+    },
+    total: assetTotal || {},
   };
 });
 
@@ -173,9 +177,9 @@ storiesOf('Wallets|Summary', module)
         isLoadingTransactions={boolean('isLoadingTransactions', false)}
         hasAssetsEnabled={
           hasAssetsEnabled &&
-          walletAssets &&
-          walletAssets.total &&
-          walletAssets.total.length > 0
+          assets &&
+          assets.total &&
+          assets.total.length > 0
         }
       />
       <AssetsWalletSummary

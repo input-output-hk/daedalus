@@ -74,13 +74,30 @@ export default class WalletSummaryPage extends Component<Props> {
     const wallet = wallets.active;
     const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
-    const { hasAssets } = wallet;
     // Guard against potential null values
     if (!wallet)
       throw new Error('Active wallet required for WalletSummaryPage.');
-
+    const { hasAssets } = wallet;
     let walletTransactions = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
+
+    // @todo - allAssets should be extracted and used from AssetsStore
+    const allAssets = [];
+
+    const walletAssets = wallet.assets.total.map((assetTotal) => {
+      const assetData = allAssets.find(
+        (item) => item.policyId === assetTotal.policyId
+      );
+      return {
+        id: assetData ? assetData.id : '',
+        metadata: assetData ? assetData.metadata : {
+          name: '',
+          acronym: '',
+          description: '',
+        },
+        total: assetTotal || {},
+      };
+    });
 
     const getUrlByType = (type: 'tx' | 'address', param: string) =>
       getNetworkExplorerUrlByType(
@@ -135,7 +152,7 @@ export default class WalletSummaryPage extends Component<Props> {
         {hasAssetsEnabled && hasAssets && (
           <AssetsWalletSummary
             wallet={wallet}
-            assets={wallet.assets}
+            assets={walletAssets}
             handleOpenAssetSend={this.handleOpenAssetSend}
           />
         )}
