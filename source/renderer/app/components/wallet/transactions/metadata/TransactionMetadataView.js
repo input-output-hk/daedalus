@@ -16,7 +16,7 @@ function flattenMetadata(data: MetadataValue) {
     return data.string;
   }
   if (data.bytes) {
-    return data.bytes;
+    return `0x${data.bytes}`;
   }
   if (data.list) {
     return data.list.map((v: MetadataValue) => flattenMetadata(v));
