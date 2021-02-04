@@ -22,10 +22,24 @@ function flattenMetadata(data: MetadataValue) {
     return data.list.map((v: MetadataValue) => flattenMetadata(v));
   }
   if (data.map) {
-    return data.map.map((v: MetadataMapValue) => ({
-      key: flattenMetadata(v.k),
-      value: flattenMetadata(v.v),
-    }));
+    return data.map.map((v: MetadataMapValue) => {
+      if (v.k.list || v.k.map) {
+        return {
+          key: flattenMetadata(v.k),
+          value: flattenMetadata(v.v),
+        };
+      }
+      if (v.k.int) {
+        return { [v.k.int]: flattenMetadata(v.v) };
+      }
+      if (v.k.string) {
+        return { [v.k.string]: flattenMetadata(v.v) };
+      }
+      if (v.k.bytes) {
+        return { [v.k.bytes]: flattenMetadata(v.v) };
+      }
+      return null;
+    });
   }
 }
 
