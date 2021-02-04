@@ -5,7 +5,6 @@ import PDFDocument from 'pdfkit';
 import qr from 'qr-image';
 import { MainIpcChannel } from './lib/MainIpcChannel';
 import { GENERATE_VOTING_PDF_CHANNEL } from '../../common/ipc/api';
-import { getHeightOfString } from '../utils/pdf';
 import type {
   GenerateVotingPDFRendererRequest,
   GenerateVotingPDFMainResponse,
@@ -13,7 +12,6 @@ import type {
 import fontRegularEn from '../../common/assets/pdf/NotoSans-Regular.ttf';
 import fontMediumEn from '../../common/assets/pdf/NotoSans-Medium.ttf';
 import fontUnicode from '../../common/assets/pdf/arial-unicode.ttf';
-import fontMono from '../../common/assets/pdf/NotoSansMono-Regular.ttf';
 
 export const generateVotingPDFChannel: // IpcChannel<Incoming, Outgoing>
 MainIpcChannel<
@@ -63,8 +61,6 @@ export const handleVotingPDFRequests = () => {
         try {
           const fontBufferMedium = readAssetSync(fontMedium);
           const fontBufferRegular = readAssetSync(fontRegular);
-          const fontBufferMono = readAssetSync(fontMono);
-          const fontBufferUnicode = readAssetSync(fontUnicode);
 
           const textColor = '#5e6066';
           const textColorRed = '#ea4c5b';
@@ -105,6 +101,18 @@ export const handleVotingPDFRequests = () => {
           doc.image(qrCodeImage, {
             fit: [width - 60, 192],
             align: 'center',
+          });
+
+          doc.moveDown();
+
+          // Wallet name
+          doc.font(fontBufferMedium).fontSize(14).text(walletNameLabel, {
+            align: 'center',
+            characterSpacing: 0.6,
+          });
+          doc.font(fontBufferRegular).text(walletName, {
+            align: 'center',
+            characterSpacing: 0.6,
           });
 
           doc.moveDown();
