@@ -309,27 +309,23 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
                 )}
               </p>
             </div>
-            <div className={styles.depositWrapper}>
-              <p className={styles.depositLabel}>
-                {intl.formatMessage(messages.depositLabel)}
-              </p>
-              <p className={styles.depositAmount}>
-                {!transactionFee ? (
-                  <span className={styles.calculatingDepositLabel}>
-                    {intl.formatMessage(messages.calculatingDeposit)}
-                  </span>
-                ) : (
-                  <>
+            {transactionFee && !transactionFee.deposit.isZero() && (
+              <>
+                <div className={styles.depositWrapper}>
+                  <p className={styles.depositLabel}>
+                    {intl.formatMessage(messages.depositLabel)}
+                  </p>
+                  <p className={styles.depositAmount}>
                     <span>
                       {formattedWalletAmount(transactionFee.deposit, false)}
                     </span>
                     <span className={styles.depositAmountLabel}>
                       &nbsp;{intl.formatMessage(globalMessages.unitAda)}
                     </span>
-                  </>
-                )}
-              </p>
-            </div>
+                  </p>
+                </div>
+              </>
+            )}
           </div>
 
           {isHardwareWallet ? (
