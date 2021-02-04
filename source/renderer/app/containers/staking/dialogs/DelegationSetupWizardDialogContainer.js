@@ -263,7 +263,7 @@ export default class DelegationSetupWizardDialogContainer extends Component<
       });
       const { feeWithDeposits, fee } = coinsSelection;
       stakePoolJoinFee = {
-        fee: feeWithDeposits,
+        fee,
         deposit: feeWithDeposits.minus(fee),
       };
       // Initiate Transaction (Delegation)
