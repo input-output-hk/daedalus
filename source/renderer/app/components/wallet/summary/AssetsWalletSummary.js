@@ -7,7 +7,10 @@ import BigNumber from 'bignumber.js';
 import BorderedBox from '../../widgets/BorderedBox';
 import styles from './AssetsWalletSummary.scss';
 import Wallet from '../../../domains/Wallet';
-import type { AssetMetadata, WalletAssetItems } from '../../../api/assets/types';
+import type {
+  AssetMetadata,
+  WalletAssetItems,
+} from '../../../api/assets/types';
 
 const messages = defineMessages({
   transactionsLabel: {
@@ -66,19 +69,16 @@ export default class AssetsWalletSummary extends Component<Props> {
           </div>
           <div className={styles.component}>
             {assets.map((asset: WalletSummaryAsset) => (
-              <BorderedBox
-                className={styles.assetsContainer}
-                key={asset.id}
-              >
+              <BorderedBox className={styles.assetsContainer} key={asset.id}>
                 <div className={styles.assetsLeftContainer}>
                   <div className={styles.assetName}>{asset.metadata.name}</div>
                   <div className={styles.assetAmount}>
                     {isRestoreActive
                       ? '-'
-                      : new BigNumber(asset.total.quantity).toFormat(asset.metadata.unit.decimals)}
-                    <span>
-                      &nbsp;{asset.metadata.acronym}
-                    </span>
+                      : new BigNumber(asset.total.quantity).toFormat(
+                          asset.metadata.unit.decimals
+                        )}
+                    <span>&nbsp;{asset.metadata.acronym}</span>
                   </div>
                 </div>
                 <div className={styles.assetRightContainer}>
@@ -86,7 +86,9 @@ export default class AssetsWalletSummary extends Component<Props> {
                     className={classNames([
                       'primary',
                       styles.assetSendButton,
-                      new BigNumber(asset.total.quantity).isZero() ? styles.disabled : null,
+                      new BigNumber(asset.total.quantity).isZero()
+                        ? styles.disabled
+                        : null,
                     ])}
                     onClick={() => handleOpenAssetSend(asset)}
                   >

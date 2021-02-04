@@ -135,13 +135,15 @@ const assets = {
   ],
 };
 
-const walletAssets = assets.total.map(assetTotal => {
-  const assetData = allAssets.find(item => item.policyId === assetTotal.policyId);
+const walletAssets = assets.total.map((assetTotal) => {
+  const assetData = allAssets.find(
+    (item) => item.policyId === assetTotal.policyId
+  );
   return {
     id: assetData.id,
     metadata: assetData.metadata,
     total: assetTotal,
-  }
+  };
 });
 
 const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
@@ -169,7 +171,12 @@ storiesOf('Wallets|Summary', module)
         )}
         numberOfPendingTransactions={number('Number of transactions', 3)}
         isLoadingTransactions={boolean('isLoadingTransactions', false)}
-        hasAssetsEnabled={hasAssetsEnabled && walletAssets && walletAssets.total && walletAssets.total.length > 0}
+        hasAssetsEnabled={
+          hasAssetsEnabled &&
+          walletAssets &&
+          walletAssets.total &&
+          walletAssets.total.length > 0
+        }
       />
       <AssetsWalletSummary
         wallet={generateWallet('Wallet name', '45119903750165', assets)}
