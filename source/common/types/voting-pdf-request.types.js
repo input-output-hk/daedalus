@@ -8,7 +8,7 @@ export type GenerateVotingPDFParams = {
   walletName: string,
   isMainnet: boolean,
   networkLabel: string,
-  network: string,
+  networkName: string,
   filePath: string,
   author: string,
 };

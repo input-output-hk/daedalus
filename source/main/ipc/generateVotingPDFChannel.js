@@ -33,7 +33,7 @@ export const handleVotingPDFRequests = () => {
           walletName,
           isMainnet,
           networkLabel,
-          network,
+          networkName,
           filePath,
           author,
         } = request;
@@ -123,8 +123,8 @@ export const handleVotingPDFRequests = () => {
               .fontSize(12)
               .font(fontBufferMedium)
               .fillColor(textColorRed)
-              .text(`${networkLabel} ${network}`, {
-                align: 'right',
+              .text(`${networkLabel} ${networkName}`, {
+                align: 'center',
               });
           }
 

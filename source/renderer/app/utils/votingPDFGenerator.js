@@ -6,6 +6,7 @@ import { generateVotingPDFChannel } from '../ipc/generateVotingPDFChannel';
 import type { Network } from '../../../common/types/environment.types';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
 import { showSaveDialogChannel } from '../ipc/show-file-dialog-channels';
+import globalMessages from '../i18n/global-messages';
 
 const messages = defineMessages({
   title: {
@@ -67,6 +68,7 @@ export const votingPDFGenerator = async ({
   );
   const walletNameLabel = intl.formatMessage(messages.walletNameLabel);
   const networkLabel = intl.formatMessage(messages.networkLabel);
+  const networkName = intl.formatMessage(globalMessages[`network_${network}`]);
   const author = intl.formatMessage(messages.author);
 
   // Generate the filePath
@@ -103,7 +105,7 @@ export const votingPDFGenerator = async ({
     walletName,
     isMainnet,
     networkLabel,
-    network,
+    networkName,
     filePath,
     author,
   });
