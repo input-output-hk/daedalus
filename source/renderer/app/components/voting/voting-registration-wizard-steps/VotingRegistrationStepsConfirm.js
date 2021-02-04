@@ -26,7 +26,7 @@ const messages = defineMessages({
   },
   errorMessage: {
     id: 'voting.votingRegistration.confirm.step.errorMessage',
-    defaultMessage: '!!!Registration transaction was not registered correctly.',
+    defaultMessage: '!!!Voting registration was not completed correctly.',
     description: 'Error message on the voting registration "confirm" step.',
   },
   continueButtonLabel: {

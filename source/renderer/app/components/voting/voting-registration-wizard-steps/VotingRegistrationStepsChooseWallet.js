@@ -12,7 +12,7 @@ const messages = defineMessages({
   description: {
     id: 'voting.votingRegistration.chooseWallet.step.description',
     defaultMessage:
-      '!!!You can only use one wallet when registering.<br>To maximize rewards and voting power, choose your largest wallet.',
+      '!!!You can only use one wallet when registering. To maximize rewards and voting power, choose your largest wallet.',
     description: 'Description on the voting registration "choose wallet" step.',
   },
   selectWalletInputLabel: {

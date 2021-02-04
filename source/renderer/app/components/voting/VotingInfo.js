@@ -21,13 +21,13 @@ const messages = defineMessages({
   stepTitle1: {
     id: 'voting.info.stepTitle1',
     defaultMessage:
-      '!!!Decide how to allocate $200K for innovative ideas to improve Cardano.',
+      '!!!Decide which innovative ideas to improve Cardano will receive funding.',
     description: 'Info step title 2 for voting registration steps',
   },
   stepTitle2: {
     id: 'voting.info.stepTitle2',
     defaultMessage:
-      '!!!$70,000 worth of ada rewards will be distributed between all who register.',
+      '!!!$70.000 worth of ada rewards will be distributed between ada holders who register their vote.',
     description: 'Info step title 2 for voting registration steps',
   },
   learnMoreLinkLabel: {

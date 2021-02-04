@@ -4814,13 +4814,13 @@
         "description": "Title for Redeem Incentivized Testnet - redemptionUnavailable",
         "end": {
           "column": 3,
-          "line": 17
+          "line": 18
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/RedemptionUnavailableDialog.js",
         "id": "staking.redeemItnRewards.redemptionUnavailable.title",
         "start": {
           "column": 9,
-          "line": 12
+          "line": 13
         }
       },
       {
@@ -4828,13 +4828,13 @@
         "description": "closeButtonLabel for Redeem Incentivized Testnet - redemptionUnavailable",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 24
         },
         "file": "source/renderer/app/components/staking/redeem-itn-rewards/RedemptionUnavailableDialog.js",
         "id": "staking.redeemItnRewards.redemptionUnavailable.closeButton.label",
         "start": {
           "column": 20,
-          "line": 18
+          "line": 19
         }
       }
     ],
@@ -7554,7 +7554,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!You can only use one wallet when registering.<br>To maximize rewards and voting power, choose your largest wallet.",
+        "defaultMessage": "!!!You can only use one wallet when registering. To maximize rewards and voting power, choose your largest wallet.",
         "description": "Description on the voting registration \"choose wallet\" step.",
         "end": {
           "column": 3,
@@ -7713,7 +7713,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Registration transaction was not registered correctly.",
+        "defaultMessage": "!!!Voting registration was not completed correctly.",
         "description": "Error message on the voting registration \"confirm\" step.",
         "end": {
           "column": 3,
@@ -8092,11 +8092,11 @@
         }
       },
       {
-        "defaultMessage": "!!!https://docs.google.com/document/d/1_syHaBNjhFcB5qg_NJoBfIZIBy_ha2n042XdrDASYgY/#heading=h.u296e49etfth",
+        "defaultMessage": "!!!https://cardano.ideascale.com/a/index",
         "description": "Learn more\" link URL on the \"sign\" step.",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 63
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsRegister.js",
         "id": "voting.votingRegistration.register.step.learntMoreLinkUrl",
@@ -8233,7 +8233,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Decide how to allocate $200K for innovative ideas to improve Cardano.",
+        "defaultMessage": "!!!Decide which innovative ideas to improve Cardano will receive funding.",
         "description": "Info step title 2 for voting registration steps",
         "end": {
           "column": 3,
@@ -8247,7 +8247,7 @@
         }
       },
       {
-        "defaultMessage": "!!!$70,000 worth of ada rewards will be distributed between all who register.",
+        "defaultMessage": "!!!$70.000 worth of ada rewards will be distributed between ada holders who register their vote.",
         "description": "Info step title 2 for voting registration steps",
         "end": {
           "column": 3,
@@ -16098,7 +16098,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Daedalus is synchronizing with the Cardano blockchain, and the process is currently <span>{syncPercentage}%</span> complete. This feature will become available once Daedalus is fully synchronized.",
+        "defaultMessage": "!!!Daedalus is synchronizing with the Cardano blockchain, and the process is currently <b>{syncPercentage}%</b> complete. This feature will become available once Daedalus is fully synchronized.",
         "description": "Info message displayed for features which are unavailable while Daedalus is syncing",
         "end": {
           "column": 3,

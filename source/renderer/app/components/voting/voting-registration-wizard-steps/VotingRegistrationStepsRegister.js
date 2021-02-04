@@ -58,8 +58,7 @@ const messages = defineMessages({
   },
   learntMoreLinkUrl: {
     id: 'voting.votingRegistration.register.step.learntMoreLinkUrl',
-    defaultMessage:
-      '!!!https://docs.google.com/document/d/1_syHaBNjhFcB5qg_NJoBfIZIBy_ha2n042XdrDASYgY/#heading=h.u296e49etfth',
+    defaultMessage: '!!!https://cardano.ideascale.com/a/index',
     description: 'Learn more" link URL on the "sign" step.',
   },
 });
