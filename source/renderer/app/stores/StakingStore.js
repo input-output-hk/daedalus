@@ -26,6 +26,7 @@ import type {
   RewardForIncentivizedTestnet,
   JoinStakePoolRequest,
   GetDelegationFeeRequest,
+  DelegationCalculateFeeResponse,
   QuitStakePoolRequest,
   PoolMetadataSource,
 } from '../api/staking/types';
@@ -131,7 +132,8 @@ export default class StakingStore extends Store {
   @observable stakePoolsRequest: Request<Array<StakePool>> = new Request(
     this.api.ada.getStakePools
   );
-  @observable calculateDelegationFeeRequest: Request<BigNumber> = new Request(
+  @observable
+  calculateDelegationFeeRequest: Request<DelegationCalculateFeeResponse> = new Request(
     this.api.ada.calculateDelegationFee
   );
   // @REDEEM TODO: Proper type it when the API endpoint is implemented.
@@ -400,7 +402,7 @@ export default class StakingStore extends Store {
 
   calculateDelegationFee = async (
     delegationFeeRequest: GetDelegationFeeRequest
-  ): ?BigNumber => {
+  ): Promise<?DelegationCalculateFeeResponse> => {
     const { walletId } = delegationFeeRequest;
     const wallet = this.stores.wallets.getWalletById(walletId);
     this._delegationFeeCalculationWalletId = walletId;
@@ -416,7 +418,7 @@ export default class StakingStore extends Store {
     }
 
     try {
-      const delegationFee: BigNumber = await this.calculateDelegationFeeRequest.execute(
+      const delegationFee: DelegationCalculateFeeResponse = await this.calculateDelegationFeeRequest.execute(
         { ...delegationFeeRequest }
       ).promise;
 

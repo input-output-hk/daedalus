@@ -923,6 +923,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-transactions-list-border-color': '1e1f31',
     '--theme-transactions-list-group-date-color': '#ffffff',
     '--theme-transactions-list-item-details-color': '#ffffff',
+    '--theme-transactions-list-item-highlight-color': '#ea4c5b',
     '--theme-transactions-search-background-color': '#121326',
     '--theme-transactions-state-ok-background-color': '#2cbb69',
     '--theme-transactions-state-pending-background-color':
