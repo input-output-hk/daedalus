@@ -4,7 +4,6 @@ import path from 'path';
 import { defineMessages } from 'react-intl';
 import { generateVotingPDFChannel } from '../ipc/generateVotingPDFChannel';
 import type { Network } from '../../../common/types/environment.types';
-import globalMessages from '../i18n/global-messages';
 import { generateFileNameWithTimestamp } from '../../../common/utils/files';
 import { showSaveDialogChannel } from '../ipc/show-file-dialog-channels';
 
@@ -92,7 +91,8 @@ export const votingPDFGenerator = async ({
       },
     ],
   };
-  const { filePath } = await showSaveDialogChannel.send(params);
+  const dialogPath = await showSaveDialogChannel.send(params);
+  const filePath = dialogPath.filePath || '';
 
   await generateVotingPDFChannel.send({
     title,
