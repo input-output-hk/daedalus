@@ -2505,6 +2505,7 @@ const _createTransactionFromServerData = action(
       outputs,
       withdrawals,
       status,
+      metadata,
     } = data;
     const state = _conditionToTxState(status);
     const stateInfo =
@@ -2536,6 +2537,7 @@ const _createTransactionFromServerData = action(
         withdrawals: withdrawals.map(({ stake_address: address }) => address),
       },
       state,
+      metadata,
     });
   }
 );
