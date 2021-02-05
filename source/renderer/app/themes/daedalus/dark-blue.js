@@ -934,6 +934,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-transactions-list-border-color': '#263345',
     '--theme-transactions-list-group-date-color': '#7a8691',
     '--theme-transactions-list-item-details-color': '#e9f4fe',
+    '--theme-transactions-list-item-highlight-color': '#ea4c5b',
     '--theme-transactions-state-ok-background-color': '#274c2d',
     '--theme-transactions-state-pending-background-color':
       'rgba(233, 244, 254, 0.3)',

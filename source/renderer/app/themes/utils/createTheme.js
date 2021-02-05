@@ -1158,6 +1158,7 @@ export const createDaedalusComponentsTheme = (
       '--theme-transactions-list-border-color': `${border}`,
       '--theme-transactions-list-group-date-color': `${text.primary}`,
       '--theme-transactions-list-item-details-color': `${text.primary}`,
+      '--theme-transactions-list-item-highlight-color': `${error.regular}`,
       '--theme-transactions-state-ok-background-color': '#007600',
       '--theme-transactions-state-pending-background-color': `${background.primary.dark}`,
       '--theme-transactions-state-pending-warning-background-color': '#ec5d6b',

@@ -179,6 +179,18 @@
     }
   }
 
+  .transactionFeeRow,
+  .depositRow {
+    .amount {
+      color: var(--theme-transactions-list-item-highlight-color);
+
+      .currency {
+        font-family: var(--font-light);
+        margin-left: 5px;
+      }
+    }
+  }
+
   span {
     font-family: var(--font-light);
     font-size: 15px;
