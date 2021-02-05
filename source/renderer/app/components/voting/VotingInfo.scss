@@ -142,9 +142,11 @@
         }
 
         .qrCode {
+          border: 2px solid var(--theme-receive-qr-code-background-color);
           margin-top: 10px;
 
           svg {
+            display: block;
             height: 75px;
             width: 75px;
 
