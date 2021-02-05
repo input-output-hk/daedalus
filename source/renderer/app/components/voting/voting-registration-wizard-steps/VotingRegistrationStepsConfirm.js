@@ -138,7 +138,10 @@ export default class VotingRegistrationStepsConfirm extends Component<Props> {
     const progressBarRightLabel = isTransactionPending
       ? ''
       : intl.formatMessage(messages.confirmationsCountLabel, {
-          currentCount: transactionConfirmations,
+          currentCount: Math.min(
+            transactionConfirmations,
+            VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS
+          ),
           expectedCount: VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS,
         });
 
@@ -175,7 +178,7 @@ export default class VotingRegistrationStepsConfirm extends Component<Props> {
               leftLabel={progressBarLeftLabel}
               rightLabel1={progressBarRightLabel}
               loading={isTransactionPending}
-              progress={progress}
+              progress={Math.min(progress, 100)}
             />
             <div className={styles.description}>
               <p>{description}</p>
