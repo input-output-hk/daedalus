@@ -1,5 +1,7 @@
 // @flow
 
+export const CURRENCY_IS_ACTIVE_BY_DEFAULT = true;
+
 /**
  *
  * This file imports the external currency API used

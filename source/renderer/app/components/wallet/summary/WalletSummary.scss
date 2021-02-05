@@ -14,6 +14,7 @@
 }
 
 .walletContent {
+  align-items: center;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -21,8 +22,9 @@
 
 .walletName {
   color: var(--theme-bordered-box-text-color);
-  font-family: var(--font-bold);
+  font-family: var(--font-regular);
   font-size: 16px;
+  font-weight: 600;
   letter-spacing: 0.5px;
   line-height: 1.38;
   margin-bottom: 11px;
@@ -37,6 +39,12 @@
   margin-bottom: 11px;
   user-select: text;
   word-break: break-all;
+
+  span {
+    font-size: 16px;
+    margin-left: 6px;
+    opacity: 0.7;
+  }
 
   & > .decimal {
     font-family: var(--font-medium);
@@ -66,22 +74,66 @@
   font-size: 22px;
   line-height: 1;
   margin-bottom: 11px;
-  user-select: text;
+  user-select: none;
   word-break: break-all;
+
+  .currencySymbol {
+    font-size: 12px;
+    margin-left: 0px;
+  }
 }
 .currencyTitle {
+  color: var(--theme-bordered-box-text-color);
   font-family: var(--font-bold);
   font-size: 12px;
   font-stretch: normal;
   font-style: normal;
-  line-height: 1.67;
   letter-spacing: normal;
+  line-height: 1.67;
+  margin-bottom: 5px;
+  opacity: 0.7;
   text-align: right;
-  color: var(--theme-bordered-box-text-color);
 }
+
 .currencyWalletAmount {
   @extend .walletAmount;
   font-size: 16px;
+  margin-bottom: 5px;
+  text-align: right;
+}
+
+.currencyRate {
+  font-family: var(--font-bold);
+  font-size: 12px;
+  line-height: 1.67;
+  margin-bottom: -6px;
+  opacity: 0.7;
+  text-align: right;
+}
+
+.currencyFetched {
+  cursor: pointer;
+  font-family: var(--font-bold);
+  font-size: 12px;
+  line-height: 1.67;
+  text-align: right;
+  opacity: 0.5;
+
+  &:hover {
+    opacity: 0.7;
+  }
+}
+
+.currencySettingsIcon {
+  margin-left: 4px;
+  vertical-align: middle;
+  svg {
+    width: 10px;
+    height: 10px;
+    g {
+      opacity: 1;
+    }
+  }
 }
 
 .transactionsCountWrapper {

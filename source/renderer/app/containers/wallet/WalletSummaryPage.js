@@ -40,6 +40,13 @@ export default class WalletSummaryPage extends Component<Props> {
     });
   };
 
+  handleCurrencySettingsClick = () => {
+    this.props.actions.router.goToRoute.trigger({
+      route: ROUTES.SETTINGS.GENERAL,
+      // route: ROUTES.SETTINGS.WALLETS,
+    });
+  };
+
   render() {
     const { intl } = this.context;
     const { stores } = this.props;
@@ -100,6 +107,7 @@ export default class WalletSummaryPage extends Component<Props> {
           totalAvailable={totalAvailable}
           currentTimeFormat={currentTimeFormat}
           currentDateFormat={currentDateFormat}
+          onCurrencySettingClick={this.handleCurrencySettingsClick}
         />
       );
     } else if (!hasAny) {

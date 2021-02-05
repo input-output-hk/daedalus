@@ -29,6 +29,7 @@ import {
   WALLET_HARDWARE_KINDS,
   RESTORE_WALLET_STEPS,
 } from '../config/walletRestoreConfig';
+import { CURRENCY_IS_ACTIVE_BY_DEFAULT } from '../config/walletRestoreConfig';
 import { WALLET_PUBLIC_KEY_SHARING_ENABLED } from '../config/walletsConfig';
 import type {
   WalletKind,
@@ -142,7 +143,10 @@ export default class WalletsStore extends Store {
   @observable activePublicKey: ?string = null;
 
   /* ------------  Currencies  ----------- */
-  @observable isCurrencyAvailable: boolean = true;
+  @observable currencyIsFetching: boolean = false;
+  @observable currencyIsAvailable: boolean = true;
+  @observable currencyIsActive: boolean = CURRENCY_IS_ACTIVE_BY_DEFAULT;
+
   @observable currencyList: Array<Currency> = [];
   @observable currencySelected: ?Currency = null;
   // @observable currencySelected: ?Currency = {
@@ -152,6 +156,7 @@ export default class WalletsStore extends Store {
   // };
   // @observable currencyRate: ?number = null;
   @observable currencyRate: ?number = 0.318799;
+  @observable currencyLastFetched: ?date = null;
 
   /* ----------  Create Wallet  ---------- */
   @observable createWalletStep = null;
@@ -300,10 +305,7 @@ export default class WalletsStore extends Store {
       this._transferFundsCalculateFee
     );
 
-    this.getCurrencyApiStatus();
-    this.getCurrencyList();
-    this.getCurrencyRate();
-    this.getCurrencySelected();
+    this.setupCurrency();
   }
 
   @action _getWalletPublicKey = async () => {
@@ -330,11 +332,29 @@ export default class WalletsStore extends Store {
     }
   };
 
-  @action getCurrencyApiStatus = async () => {
-    const isAvailable = await this.api.ada.getCurrencyApiStatus();
+  @action setupCurrency = async () => {
+    // Check if the user has enabled currencies
+    const currencyIsActive = await this.api.localStorage.getCurrencyIsActive();
+
+    // Check if the user has already selected a currency
+    const currencySelected = await this.api.localStorage.getCurrencySelected();
+
+    // Fetch the currency list
+    this.getCurrencyList();
+
+    const defaultCurrencySelected = {
+      id: 'uniswap-state-dollar',
+      symbol: 'usd',
+      name: 'unified Stable Dollar',
+    };
+
     runInAction(() => {
-      this.isCurrencyAvailable = isAvailable;
+      this.currencyIsActive = currencyIsActive;
+      this.currencySelected = currencySelected || defaultCurrencySelected;
     });
+
+    // this.getCurrencyRate();
+    // this.getCurrencySelected();
   };
 
   @action getCurrencyList = async () => {
@@ -350,16 +370,17 @@ export default class WalletsStore extends Store {
       const currencyRate = await this.api.ada.getCurrencyRate(currency);
       runInAction(() => {
         this.currencyRate = currencyRate;
+        this.currencyLastFetched = new Date();
       });
     }
   };
 
-  @action getCurrencySelected = async () => {
-    const currency = await this.api.localStorage.getCurrencySelected();
-    runInAction(() => {
-      this.currencySelected = currency;
-    });
-  };
+  // @action getCurrencySelected = async () => {
+  //   const currency = await this.api.localStorage.getCurrencySelected();
+  //   runInAction(() => {
+  //     this.currencySelected = currency;
+  //   });
+  // };
 
   @action setCurrencySelected = async (currency: Currency) => {
     this.currencySelected = currency;
