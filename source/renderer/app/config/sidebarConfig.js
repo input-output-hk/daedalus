@@ -7,6 +7,7 @@ import paperWalletCertificateIcon from '../assets/images/sidebar/paper-certifica
 import delegationIcon from '../assets/images/sidebar/delegation-ic.inline.svg';
 import delegationProgressIcon from '../assets/images/sidebar/delegation-progress-ic.inline.svg';
 import networkInfoLogo from '../assets/images/sidebar/network-info-logo-cardano-ic.inline.svg';
+import votingIcon from '../assets/images/sidebar/voting-ic.inline.svg';
 
 export type SidebarCategoryInfo = {
   name: string,
@@ -50,6 +51,11 @@ export const CATEGORIES_BY_NAME = {
     icon: networkInfoLogo,
     route: ROUTES.NETWORK_INFO,
   },
+  VOTING: {
+    name: 'VOTING',
+    icon: votingIcon,
+    route: ROUTES.VOTING.REGISTRATION,
+  },
 };
 
 export const CATEGORIES_WITH_DELEGATION_COUNTDOWN = [
@@ -71,6 +77,7 @@ export const CATEGORIES_LIST = [
   CATEGORIES_BY_NAME.STAKING_DELEGATION_COUNTDOWN,
   CATEGORIES_BY_NAME.STAKING,
   CATEGORIES_BY_NAME.REDEEM_ITN_REWARDS,
+  CATEGORIES_BY_NAME.VOTING,
   CATEGORIES_BY_NAME.SETTINGS,
   CATEGORIES_BY_NAME.NETWORK_INFO,
 ];

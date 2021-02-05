@@ -2,8 +2,11 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
+import BigNumber from 'bignumber.js';
+import globalMessages from '../../../i18n/global-messages';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
+import LoadingSpinner from '../../widgets/LoadingSpinner';
 import styles from './RedemptionUnavailableDialog.scss';
 
 const messages = defineMessages({
@@ -12,13 +15,6 @@ const messages = defineMessages({
     defaultMessage: '!!!Redeem Incentivized Testnet rewards',
     description:
       'Title for Redeem Incentivized Testnet - redemptionUnavailable',
-  },
-  description: {
-    id: 'staking.redeemItnRewards.redemptionUnavailable.description',
-    defaultMessage:
-      '!!!Before you can redeem your Incentivized Testnet rewards, Daedalus first needs to synchronize with the blockchain. The synchronization process is now underway and is currently {syncPercentage}% complete. As soon as this process is fully complete, you’ll be able to redeem your Incentivized Testnet rewards. Please wait for this process to complete before returning here to redeem your rewards.',
-    description:
-      'description for Redeem Incentivized Testnet - redemptionUnavailable',
   },
   closeButtonLabel: {
     id: 'staking.redeemItnRewards.redemptionUnavailable.closeButton.label',
@@ -61,12 +57,15 @@ export default class RedemptionUnavailableDialog extends Component<Props> {
         fullSize
       >
         <div className={styles.component}>
-          <FormattedHTMLMessage
-            {...messages.description}
-            values={{
-              syncPercentage: parseFloat(syncPercentage).toFixed(2),
-            }}
-          />
+          <LoadingSpinner big />
+          <div className={styles.description}>
+            <FormattedHTMLMessage
+              {...globalMessages.featureUnavailableWhileSyncing}
+              values={{
+                syncPercentage: new BigNumber(syncPercentage).toFormat(2),
+              }}
+            />
+          </div>
         </div>
       </Dialog>
     );

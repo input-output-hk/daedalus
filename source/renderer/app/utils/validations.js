@@ -111,3 +111,13 @@ export function validateMnemonics(params: ValidateMnemonicsParams) {
 export function errorOrIncompleteMarker(error: string) {
   return error === INCOMPLETE_MNEMONIC_MARKER ? null : error;
 }
+
+/**
+ * Voting PIN code validation
+ */
+export const isValidPinCode = (pinCode: string, length: number): boolean => {
+  return pinCode.length === length;
+};
+
+export const isValidRepeatPinCode = (pinCode: string, repeatPinCode: string) =>
+  pinCode === repeatPinCode;

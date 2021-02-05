@@ -14,6 +14,7 @@ import { handleBugReportRequests } from './bugReportRequestChannel';
 import { handleFileMetaRequests } from './generateFileMetaChannel';
 import { handlePaperWalletRequests } from './generatePaperWalletChannel';
 import { handleAddressPDFRequests } from './generateAddressPDFChannel';
+import { handleVotingPDFRequests } from './generateVotingPDFChannel';
 import { saveQRCodeImageRequests } from './saveQRCodeImageChannel';
 import { handleRewardsCsvRequests } from './generateCsvChannel';
 import { handleFileDialogRequests } from './show-file-dialog-channels';
@@ -33,6 +34,7 @@ export default (window: BrowserWindow) => {
   handleFileMetaRequests();
   handlePaperWalletRequests();
   handleAddressPDFRequests();
+  handleVotingPDFRequests();
   saveQRCodeImageRequests();
   handleRewardsCsvRequests();
   handleFileDialogRequests(window);

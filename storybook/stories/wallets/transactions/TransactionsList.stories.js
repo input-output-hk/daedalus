@@ -3,7 +3,6 @@ import React from 'react';
 import { storiesOf } from '@storybook/react';
 import { action } from '@storybook/addon-actions';
 import { withKnobs, select } from '@storybook/addon-knobs';
-
 // Assets and helpers
 import { generateWallet } from '../../_support/utils';
 import { formattedWalletAmount } from '../../../../source/renderer/app/utils/formatters';
@@ -17,7 +16,6 @@ import {
 } from '../../../../source/renderer/app/config/profileConfig';
 import { WalletTransaction } from '../../../../source/renderer/app/domains/WalletTransaction';
 import type { TransactionFilterOptionsType } from '../../../../source/renderer/app/stores/TransactionsStore';
-
 // Screens
 import WalletTransactions from '../../../../source/renderer/app/components/wallet/transactions/WalletTransactions';
 
