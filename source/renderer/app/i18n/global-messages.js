@@ -323,4 +323,11 @@ export default defineMessages({
     defaultMessage: '!!!Copy',
     description: 'Copy label.',
   },
+  featureUnavailableWhileSyncing: {
+    id: 'global.info.featureUnavailableWhileSyncing',
+    defaultMessage:
+      '!!!Daedalus is synchronizing with the Cardano blockchain, and the process is currently <b>{syncPercentage}%</b> complete. This feature will become available once Daedalus is fully synchronized.',
+    description:
+      'Info message displayed for features which are unavailable while Daedalus is syncing',
+  },
 });

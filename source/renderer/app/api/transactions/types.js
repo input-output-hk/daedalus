@@ -102,6 +102,11 @@ export type GetTransactionsRequest = {
   // cachedTransactions: Array<WalletTransaction>,
 };
 
+export type GetTransactionRequest = {
+  walletId: string,
+  transactionId: string,
+};
+
 export type GetTransactionFeeRequest = {
   walletId: string,
   address: string,

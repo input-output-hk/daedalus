@@ -32,6 +32,7 @@
     height: 24px;
     width: 24px;
 
+    & > path,
     & > g > path {
       fill: var(--theme-icon-sidebar-color);
     }

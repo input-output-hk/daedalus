@@ -139,10 +139,7 @@ export const generateTransaction = (
     deposit,
     date,
     state,
-    depth: {
-      quantity: 0,
-      unit: 'block',
-    },
+    confirmations: 0,
     epochNumber: 0,
     slotNumber: 0,
     description: '',

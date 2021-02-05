@@ -9,6 +9,7 @@ export type NotificationId =
   | 'downloadLogsProgress'
   | 'downloadLogsSuccess'
   | 'downloadQRCodeImageSuccess'
+  | 'downloadVotingPDFSuccess'
   | 'downloadRewardsCSVSuccess'
   | 'downloadTransactionsCSVSuccess';
 
