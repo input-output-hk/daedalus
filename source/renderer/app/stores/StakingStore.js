@@ -26,6 +26,7 @@ import type {
   RewardForIncentivizedTestnet,
   JoinStakePoolRequest,
   GetDelegationFeeRequest,
+  DelegationCalculateFeeResponse,
   QuitStakePoolRequest,
   PoolMetadataSource,
 } from '../api/staking/types';
@@ -59,7 +60,7 @@ export default class StakingStore extends Store {
   @observable redeemedRewards: ?BigNumber = null;
   @observable isSubmittingReedem: boolean = false;
   @observable isCalculatingReedemFees: boolean = false;
-  @observable stakingSuccess: ?boolean = null;
+  @observable redeemSuccess: ?boolean = null;
   @observable configurationStepError: ?LocalizableError = null;
   @observable confirmationStepError: ?LocalizableError = null;
 
@@ -131,7 +132,8 @@ export default class StakingStore extends Store {
   @observable stakePoolsRequest: Request<Array<StakePool>> = new Request(
     this.api.ada.getStakePools
   );
-  @observable calculateDelegationFeeRequest: Request<BigNumber> = new Request(
+  @observable
+  calculateDelegationFeeRequest: Request<DelegationCalculateFeeResponse> = new Request(
     this.api.ada.calculateDelegationFee
   );
   // @REDEEM TODO: Proper type it when the API endpoint is implemented.
@@ -400,7 +402,7 @@ export default class StakingStore extends Store {
 
   calculateDelegationFee = async (
     delegationFeeRequest: GetDelegationFeeRequest
-  ): ?BigNumber => {
+  ): Promise<?DelegationCalculateFeeResponse> => {
     const { walletId } = delegationFeeRequest;
     const wallet = this.stores.wallets.getWalletById(walletId);
     this._delegationFeeCalculationWalletId = walletId;
@@ -416,7 +418,7 @@ export default class StakingStore extends Store {
     }
 
     try {
-      const delegationFee: BigNumber = await this.calculateDelegationFeeRequest.execute(
+      const delegationFee: DelegationCalculateFeeResponse = await this.calculateDelegationFeeRequest.execute(
         { ...delegationFeeRequest }
       ).promise;
 
@@ -712,6 +714,9 @@ export default class StakingStore extends Store {
       this.redeemStep = steps.CONFIRMATION;
       this.confirmationStepError = null;
       this.configurationStepError = null;
+    } else {
+      this.redeemSuccess = false;
+      this.redeemStep = steps.RESULT;
     }
   };
 
@@ -739,7 +744,7 @@ export default class StakingStore extends Store {
       );
       runInAction(() => {
         this.redeemedRewards = redeemedRewards;
-        this.stakingSuccess = true;
+        this.redeemSuccess = true;
         this.redeemStep = steps.RESULT;
         this.confirmationStepError = null;
         this.isSubmittingReedem = false;
@@ -749,7 +754,7 @@ export default class StakingStore extends Store {
         this.confirmationStepError = error;
         this.isSubmittingReedem = false;
         if (error.id !== 'api.errors.IncorrectPasswordError') {
-          this.stakingSuccess = false;
+          this.redeemSuccess = false;
           this.redeemStep = steps.RESULT;
         }
       });
@@ -767,7 +772,7 @@ export default class StakingStore extends Store {
   @action _resetRedeemItnRewards = () => {
     this.isSubmittingReedem = false;
     this.isCalculatingReedemFees = false;
-    this.stakingSuccess = null;
+    this.redeemSuccess = null;
     this.redeemWallet = null;
     this.transactionFees = null;
     this.redeemedRewards = null;

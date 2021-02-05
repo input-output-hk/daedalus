@@ -299,7 +299,7 @@ export default class ChangeSpendingPasswordDialog extends Component<Props> {
           )}
 
           <div className={newPasswordClasses}>
-            <div className={styles.spendingPasswordField}>
+            <div className={spendingPasswordClasses}>
               <PasswordInput
                 {...newPasswordField.bind()}
                 onKeyPress={this.handleSubmitOnEnter}

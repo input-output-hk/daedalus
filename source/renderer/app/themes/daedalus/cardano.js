@@ -923,6 +923,7 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-transactions-list-border-color': '#d2d3d3',
     '--theme-transactions-list-group-date-color': '#5e6066',
     '--theme-transactions-list-item-details-color': '#5e6066',
+    '--theme-transactions-list-item-highlight-color': '#ea4c5b',
     '--theme-transactions-state-ok-background-color': '#007600',
     '--theme-transactions-state-pending-background-color':
       'rgba(94, 96, 102, 0.5)',

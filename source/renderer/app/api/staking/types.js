@@ -94,6 +94,11 @@ export type GetDelegationFeeRequest = {
   walletId: string,
 };
 
+export type DelegationCalculateFeeResponse = {
+  fee: BigNumber,
+  deposit: BigNumber,
+};
+
 export type QuitStakePoolRequest = {
   walletId: string,
   passphrase: string,
