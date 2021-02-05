@@ -136,7 +136,13 @@ export default class VotingRegistrationStepsChooseWallet extends Component<
     let errorMessage;
     if (
       selectedWallet &&
-      !isWalletAcceptable(isLegacy, isHardwareWallet, amount, reward)
+      !isWalletAcceptable(
+        isLegacy,
+        isHardwareWallet,
+        isRestoring,
+        amount,
+        reward
+      )
     ) {
       // Wallet is a legacy wallet
       if (isLegacy) errorMessage = messages.errorLegacyWallet;

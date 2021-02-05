@@ -85,11 +85,13 @@ export default class VotingRegistrationDialogContainer extends Component<
   handleIsWalletAcceptable = (
     isLegacy?: boolean,
     isHardwareWallet?: boolean,
+    isRestoring?: boolean,
     walletAmount?: BigNumber,
     walletReward?: BigNumber = 0
   ) =>
     !isLegacy &&
     !isHardwareWallet &&
+    !isRestoring &&
     walletAmount &&
     walletAmount.gte(new BigNumber(VOTING_REGISTRATION_MIN_WALLET_FUNDS)) &&
     !walletAmount.isEqualTo(walletReward);
