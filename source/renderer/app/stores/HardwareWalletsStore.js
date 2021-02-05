@@ -159,6 +159,7 @@ export default class HardwareWalletsStore extends Store {
   @observable unfinishedWalletTxSigning: ?string = null;
   @observable isListeningForDevice: boolean = false;
   @observable isConnectInitiated: boolean = false;
+  @observable isExportKeyAborted: boolean = false;
 
   cardanoAdaAppPollingInterval: ?IntervalID = null;
   checkTransactionTimeInterval: ?IntervalID = null;
@@ -235,6 +236,7 @@ export default class HardwareWalletsStore extends Store {
     // Set all logical HW into disconnected state
     logger.debug('[HW-DEBUG] HWStore - Set Hardware Wallets local data');
     map(this.hardwareWalletsConnectionData, async (connectedWallet) => {
+      console.debug('>>> SET Disconnected: ', connectedWallet);
       await this._setHardwareWalletLocalData({
         walletId: connectedWallet.id,
         data: {
@@ -485,7 +487,27 @@ export default class HardwareWalletsStore extends Store {
           logger.debug(
             '[HW-DEBUG] HWStore - Establish connection:: Transaction initiated - Recognized device found'
           );
-          console.debug('>>> establishHardwareWalletConnection - TX initiated - Device found / return device data');
+          console.debug('>>> establishHardwareWalletConnection - TX initiated - Device found / return device data: ', {isListeningForDevice: this.isListeningForDevice});
+
+          runInAction('HardwareWalletsStore:: Set transport device', () => {
+            this.transportDevice = recognizedPairedHardwareWallet;
+          });
+
+          const isTrezor = recognizedPairedHardwareWallet.deviceType === DeviceTypes.TREZOR;
+          if (this.isExportKeyAborted) {
+            console.debug('>>> FORCE KEY EXPORT: ', { recognizedPairedHardwareWallet: recognizedPairedHardwareWallet.path, activeWallet: activeWallet.id })
+            if (isTrezor) {
+              await this._getExtendedPublicKey(recognizedPairedHardwareWallet.path, activeWallet.id);
+            } else {
+              this.cardanoAdaAppPollingInterval = setInterval(
+                (devicePath, txWalletId) =>
+                  this.getCardanoAdaApp({ path: devicePath, walletId: txWalletId }),
+                CARDANO_ADA_APP_POLLING_INTERVAL,
+                recognizedPairedHardwareWallet.path,
+                activeWallet.id
+              );
+            }
+          }
           return recognizedPairedHardwareWallet;
         }
 
@@ -494,6 +516,7 @@ export default class HardwareWalletsStore extends Store {
           'device',
           'deviceType',
         ]);
+        const isTrezor = relatedConnectionDataDeviceType === DeviceTypes.TREZOR;
 
         let lastDeviceTransport = null;
         if (relatedConnectionDataDeviceType) {
@@ -503,7 +526,7 @@ export default class HardwareWalletsStore extends Store {
           lastDeviceTransport = await getHardwareWalletTransportChannel.request(
             {
               devicePath: null, // Use last plugged device
-              isTrezor: relatedConnectionDataDeviceType === DeviceTypes.TREZOR,
+              isTrezor,
             }
           );
           console.debug(
@@ -514,7 +537,19 @@ export default class HardwareWalletsStore extends Store {
           runInAction('HardwareWalletsStore:: Set transport device', () => {
             this.transportDevice = lastDeviceTransport;
           });
-
+        }
+        if (this.isExportKeyAborted) {
+          if (isTrezor) {
+            await this._getExtendedPublicKey(lastDeviceTransport.path, activeWallet.id);
+          } else {
+            this.cardanoAdaAppPollingInterval = setInterval(
+              (devicePath, txWalletId) =>
+                this.getCardanoAdaApp({ path: devicePath, walletId: txWalletId }),
+              CARDANO_ADA_APP_POLLING_INTERVAL,
+              lastDeviceTransport.path,
+              activeWallet.id
+            );
+          }
         }
         return lastDeviceTransport;
       }
@@ -834,6 +869,11 @@ export default class HardwareWalletsStore extends Store {
         //   // While Cardano ADA app recognized on Ledger, proceed to exporting public key
         //   await this._getExtendedPublicKey(path);
         // }
+
+        console.debug('>>> Call Key EXPORT from Cardano APP: ', {
+          path,
+          walletId,
+        })
         await this._getExtendedPublicKey(path, walletId);
       }
     } catch (error) {
@@ -929,7 +969,7 @@ export default class HardwareWalletsStore extends Store {
     this.hwDeviceStatus = HwDeviceStatuses.EXPORTING_PUBLIC_KEY;
     const { transportDevice } = this;
 
-    console.debug('>>>> _getExtendedPublicKey transportDevice: ', transportDevice);
+    console.debug('>>>> _getExtendedPublicKey: ', { transportDevice, forcedPath, walletId });
 
     if (!transportDevice) {
       throw new Error(
@@ -937,15 +977,11 @@ export default class HardwareWalletsStore extends Store {
       );
     }
 
-    console.debug('>>> _getExtendedPublicKey - INIT', {
-      transportDevice,
-      forcedPath,
-    });
-
     const { deviceType, path, deviceName, deviceModel } = transportDevice;
     const isTrezor = deviceType === DeviceTypes.TREZOR;
 
     const devicePath = forcedPath || path;
+    console.debug('>>> _getExtendedPublicKey - INIT ', {isTrezor, devicePath});
     try {
       const extendedPublicKey = await getExtendedPublicKeyChannel.request({
         path: "1852'/1815'/0'", // Shelley 1852 ADA 1815 indicator for account '0'
@@ -1058,6 +1094,7 @@ export default class HardwareWalletsStore extends Store {
                 this.hwDeviceStatus = HwDeviceStatuses.CONNECTING_FAILED;
                 this.activeDevicePath = null;
                 this.unfinishedWalletTxSigning = walletId;
+                this.isExportKeyAborted = false;
               }
             );
           } else {
@@ -1069,6 +1106,7 @@ export default class HardwareWalletsStore extends Store {
             runInAction('HardwareWalletsStore:: Initiate transaction', () => {
               this.isTransactionInitiated = false;
               this.unfinishedWalletTxSigning = null;
+              this.isExportKeyAborted = false;
             });
 
             // @TODO - FORCE - send to corresponding device
@@ -1107,6 +1145,7 @@ export default class HardwareWalletsStore extends Store {
             this.hwDeviceStatus = HwDeviceStatuses.CONNECTING_FAILED;
             this.activeDevicePath = null;
             this.unfinishedWalletTxSigning = walletId;
+            this.isExportKeyAborted = false;
           }
         );
         return;
@@ -1183,6 +1222,7 @@ export default class HardwareWalletsStore extends Store {
                   ? HwDeviceStatuses.CONNECTING
                   : HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED;
                 this.isListeningForDevice = true;
+                this.isExportKeyAborted = true;
               }
             );
           }, 2000);
@@ -1195,6 +1235,7 @@ export default class HardwareWalletsStore extends Store {
                 ? HwDeviceStatuses.CONNECTING
                 : HwDeviceStatuses.EXPORTING_PUBLIC_KEY_FAILED;
               this.isListeningForDevice = true;
+              this.isExportKeyAborted = true;
             }
           );
         }
@@ -1858,6 +1899,7 @@ export default class HardwareWalletsStore extends Store {
     this.extendedPublicKey = null;
     this.transportDevice = {};
     this.isListeningForDevice = false;
+    this.isExportKeyAborted = false;
   };
 
   @action _refreshHardwareWalletsLocalData = async () => {
