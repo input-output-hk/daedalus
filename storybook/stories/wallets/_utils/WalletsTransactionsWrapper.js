@@ -274,7 +274,11 @@ export default class WalletsTransactionsWrapper extends Component<
           false,
           false,
           true,
-          assets
+          new BigNumber(0.012345),
+          {
+            input: assets,
+            output: null,
+          }
         ),
         generateTransaction(
           TransactionTypes.EXPEND,
@@ -284,7 +288,11 @@ export default class WalletsTransactionsWrapper extends Component<
           false,
           false,
           true,
-          assets
+          new BigNumber(0.012345),
+          {
+            input: null,
+            output: assets,
+          }
         ),
         generateTransaction(
           TransactionTypes.INCOME,
@@ -294,7 +302,11 @@ export default class WalletsTransactionsWrapper extends Component<
           false,
           false,
           true,
-          assets
+          new BigNumber(0.012345),
+          {
+            input: assets,
+            output: null,
+          }
         ),
         generateTransaction(
           TransactionTypes.EXPEND,
@@ -304,7 +316,11 @@ export default class WalletsTransactionsWrapper extends Component<
           false,
           false,
           true,
-          assets
+          new BigNumber(0.012345),
+          {
+            input: null,
+            output: assets,
+          }
         ),
         generateTransaction(
           TransactionTypes.INCOME,
@@ -314,7 +330,11 @@ export default class WalletsTransactionsWrapper extends Component<
           false,
           false,
           true,
-          assets
+          new BigNumber(0.012345),
+          {
+            input: assets,
+            output: null,
+          }
         ),
       ],
       confirmedAndPendingTransactions: [
@@ -326,7 +346,11 @@ export default class WalletsTransactionsWrapper extends Component<
           false,
           false,
           true,
-          assets
+          new BigNumber(0.012345),
+          {
+            input: assets,
+            output: null,
+          }
         ),
         generateTransaction(
           TransactionTypes.EXPEND,
@@ -336,7 +360,11 @@ export default class WalletsTransactionsWrapper extends Component<
           false,
           false,
           true,
-          assets
+          new BigNumber(0.012345),
+          {
+            input: null,
+            output: assets,
+          }
         ),
         generateTransaction(
           TransactionTypes.INCOME,
@@ -346,7 +374,11 @@ export default class WalletsTransactionsWrapper extends Component<
           true,
           false,
           true,
-          assets
+          new BigNumber(0.012345),
+          {
+            input: assets,
+            output: null,
+          }
         ),
         generateTransaction(
           TransactionTypes.EXPEND,
@@ -356,7 +388,11 @@ export default class WalletsTransactionsWrapper extends Component<
           false,
           false,
           true,
-          assets
+          new BigNumber(0.012345),
+          {
+            input: null,
+            output: assets,
+          }
         ),
       ],
       renderingManyTransactions: generateMultipleTransactions(500),
@@ -369,7 +405,11 @@ export default class WalletsTransactionsWrapper extends Component<
           true,
           false,
           true,
-          assets
+          new BigNumber(0.012345),
+          {
+            input: null,
+            output: assets,
+          }
         ),
         generateTransaction(
           TransactionTypes.INCOME,
@@ -379,7 +419,11 @@ export default class WalletsTransactionsWrapper extends Component<
           true,
           false,
           true,
-          assets
+          new BigNumber(0.012345),
+          {
+            input: assets,
+            output: null,
+          }
         ),
       ],
       withoutIncomeAddresses: [
@@ -391,7 +435,11 @@ export default class WalletsTransactionsWrapper extends Component<
           false,
           true,
           true,
-          assets
+          new BigNumber(0.012345),
+          {
+            input: assets,
+            output: null,
+          }
         ),
         generateTransaction(
           TransactionTypes.INCOME,
@@ -401,7 +449,11 @@ export default class WalletsTransactionsWrapper extends Component<
           false,
           true,
           true,
-          assets
+          new BigNumber(0.012345),
+          {
+            input: assets,
+            output: null,
+          }
         ),
       ],
       withWithdrawalAddresses: [
@@ -413,7 +465,11 @@ export default class WalletsTransactionsWrapper extends Component<
           false,
           false,
           false,
-          assets
+          new BigNumber(0.012345),
+          {
+            input: assets,
+            output: null,
+          }
         ),
         generateTransaction(
           TransactionTypes.INCOME,
@@ -423,7 +479,11 @@ export default class WalletsTransactionsWrapper extends Component<
           false,
           false,
           false,
-          assets
+          new BigNumber(0.012345),
+          {
+            input: assets,
+            output: null,
+          }
         ),
       ],
     };

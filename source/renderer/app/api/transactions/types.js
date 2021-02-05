@@ -23,7 +23,6 @@ export type TransactionInsertionBlock = {
 export type Transaction = {
   id: string,
   amount: TransactionAmount,
-  assets: AssetItems,
   fee: {
     quantity: number,
     unit: WalletUnits.LOVELACE,
@@ -108,6 +107,7 @@ export type GetTransactionFeeRequest = {
   walletId: string,
   address: string,
   amount: number,
+  assets?: AssetItems,
   walletBalance: BigNumber,
   availableBalance: BigNumber,
   isLegacy: boolean,

@@ -618,19 +618,17 @@ export default class Transaction extends Component<Props, State> {
                   )
                 )}
 
-                {hasAssetsEnabled && (
+                {hasAssetsEnabled && fees && (
                   <>
                     <h2>{intl.formatMessage(messages.transactionFee)}</h2>
-                    {fees && (
-                      <div className={styles.transactionIdRow}>
-                        <div className={styles.transactionFeeValue}>
-                          {fees}&nbsp;
-                          <span>
-                            {intl.formatMessage(globalMessages.unitAda)}
-                          </span>
-                        </div>
+                    <div className={styles.transactionIdRow}>
+                      <div className={styles.transactionFeeValue}>
+                        {fees}&nbsp;
+                        <span>
+                          {intl.formatMessage(globalMessages.unitAda)}
+                        </span>
                       </div>
-                    )}
+                    </div>
                   </>
                 )}
 

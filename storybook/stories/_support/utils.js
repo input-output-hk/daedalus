@@ -26,7 +26,8 @@ import type {
 import type { SyncStateStatus } from '../../../source/renderer/app/api/wallets/types';
 import Asset from '../../../source/renderer/app/domains/Asset';
 import type {
-  AssetMetadata, WalletAssetItems,
+  AssetMetadata,
+  WalletAssetItems,
   WalletAssets,
 } from '../../../source/renderer/app/api/assets/types';
 
@@ -106,13 +107,18 @@ export const generateTransaction = (
   hasUnresolvedIncomeAddresses: boolean = false,
   noIncomeAddresses: boolean = false,
   noWithdrawals: boolean = true,
-  assets?: WalletAssetItems
+  fee: BigNumber = new BigNumber(0.012345),
+  assets?: {
+    input: ?WalletAssetItems,
+    output: ?WalletAssetItems,
+  }
 ) =>
   new WalletTransaction({
     id: faker.random.uuid(),
     title: '',
     type,
     amount,
+    fee,
     assets,
     date,
     state,

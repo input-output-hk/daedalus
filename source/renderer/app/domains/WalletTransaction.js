@@ -9,6 +9,7 @@ import type {
   TransactionWithdrawalType,
 } from '../api/transactions/types';
 import type { WalletAssetItems } from '../api/assets/types';
+import { WalletUnits } from './Wallet';
 
 export const TransactionStates: EnumMap<string, TransactionState> = {
   PENDING: 'pending',
@@ -31,7 +32,14 @@ export class WalletTransaction {
   @observable type: TransactionType;
   @observable title: string = '';
   @observable amount: BigNumber;
-  @observable assets: ?WalletAssetItems;
+  @observable assets: {
+    input: ?WalletAssetItems,
+    output: ?WalletAssetItems,
+  };
+  @observable fee: {
+    quantity: number,
+    unit: WalletUnits.LOVELACE,
+  };
   @observable date: ?Date;
   @observable description: string = '';
   @observable addresses: TransactionAddresses = {
@@ -50,7 +58,14 @@ export class WalletTransaction {
     type: TransactionType,
     title: string,
     amount: BigNumber,
-    assets: ?WalletAssetItems,
+    fee: {
+      quantity: number,
+      unit: WalletUnits.LOVELACE,
+    };
+    assets?: {
+      input: ?WalletAssetItems,
+      output: ?WalletAssetItems,
+    },
     date: ?Date,
     description: string,
     addresses: TransactionAddresses,

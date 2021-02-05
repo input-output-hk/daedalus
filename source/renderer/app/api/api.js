@@ -826,6 +826,7 @@ export default class AdaApi {
       walletId,
       address,
       amount,
+      assets,
       walletBalance,
       availableBalance,
       isLegacy,
@@ -841,6 +842,7 @@ export default class AdaApi {
               quantity: amount,
               unit: WalletUnits.LOVELACE,
             },
+            assets,
           },
         ],
       };
@@ -2349,7 +2351,7 @@ const _createTransactionFromServerData = action(
     const {
       id,
       amount,
-      assets,
+      fee,
       inserted_at, // eslint-disable-line camelcase
       pending_since, // eslint-disable-line camelcase
       depth,
@@ -2367,7 +2369,9 @@ const _createTransactionFromServerData = action(
     const epochNumber = get(stateInfo, ['block', 'epoch_number'], null);
 
     // Mapping asset items from server data
-    const transactionAssets = assets.map((item) => {
+    const inputAssets = inputs.map(({ assets }) => assets);
+    const outputAssets = inputs.map(({ assets }) => assets);
+    const transactionInputAssets = inputAssets.map((item) => {
       return {
         id: item.id,
         policyId: item.policy_id,
@@ -2375,6 +2379,20 @@ const _createTransactionFromServerData = action(
         quantity: item.quantity,
       };
     });
+
+    const transactionOutputAssets = outputAssets.map((item) => {
+      return {
+        id: item.id,
+        policyId: item.policy_id,
+        assetName: item.asset_name,
+        quantity: item.quantity,
+      };
+    });
+
+    const transactionAssets = {
+      input: transactionInputAssets,
+      output: transactionOutputAssets,
+    };
 
     return new WalletTransaction({
       id,
@@ -2389,6 +2407,7 @@ const _createTransactionFromServerData = action(
       amount: new BigNumber(
         direction === 'outgoing' ? amount.quantity * -1 : amount.quantity
       ).dividedBy(LOVELACES_PER_ADA),
+      fee,
       assets: transactionAssets,
       date: utcStringToDate(date),
       description: '',
