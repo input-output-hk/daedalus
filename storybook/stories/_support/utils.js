@@ -122,6 +122,8 @@ export const generateTransaction = (
   type: TransactionType = TransactionTypes.INCOME,
   date: Date = faker.date.past(),
   amount: BigNumber = new BigNumber(faker.finance.amount()),
+  fee: BigNumber = new BigNumber(faker.finance.amount()),
+  deposit: BigNumber = new BigNumber(faker.finance.amount()),
   state: TransactionState = TransactionStates.OK,
   hasUnresolvedIncomeAddresses: boolean = false,
   noIncomeAddresses: boolean = false,
@@ -133,6 +135,8 @@ export const generateTransaction = (
     title: '',
     type,
     amount,
+    fee,
+    deposit,
     date,
     state,
     depth: {

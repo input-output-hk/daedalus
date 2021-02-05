@@ -103,6 +103,16 @@ const messages = defineMessages({
     defaultMessage: '!!!To addresses',
     description: 'To addresses',
   },
+  transactionFee: {
+    id: 'wallet.transaction.transactionFee',
+    defaultMessage: '!!!Transaction fee',
+    description: 'Transaction fee',
+  },
+  deposit: {
+    id: 'wallet.transaction.deposit',
+    defaultMessage: '!!!Deposit',
+    description: 'Deposit',
+  },
   transactionAmount: {
     id: 'wallet.transaction.transactionAmount',
     defaultMessage: '!!!Transaction amount',
@@ -518,6 +528,30 @@ export default class Transaction extends Component<Props, State> {
                     />
                   </div>
                 ))}
+
+                {data.type === TransactionTypes.EXPEND && (
+                  <>
+                    <h2>{intl.formatMessage(messages.transactionFee)}</h2>
+                    <div className={styles.transactionFeeRow}>
+                      <div className={styles.amount}>
+                        {formattedWalletAmount(data.fee, false)}
+                        <span className={styles.currency}>ADA</span>
+                      </div>
+                    </div>
+                  </>
+                )}
+
+                {!data.deposit.isZero() && (
+                  <>
+                    <h2>{intl.formatMessage(messages.deposit)}</h2>
+                    <div className={styles.depositRow}>
+                      <div className={styles.amount}>
+                        {formattedWalletAmount(data.deposit, false)}
+                        <span className={styles.currency}>ADA</span>
+                      </div>
+                    </div>
+                  </>
+                )}
 
                 <h2>{intl.formatMessage(messages.transactionId)}</h2>
                 <div className={styles.transactionIdRow}>
