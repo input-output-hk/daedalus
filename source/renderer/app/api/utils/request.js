@@ -1,5 +1,6 @@
 // @flow
 import { includes, omit, size } from 'lodash';
+import JSONBigInt from 'json-bigint';
 import querystring from 'querystring';
 import { getContentLength } from '.';
 
@@ -27,12 +28,16 @@ function typedRequest<Response>(
   rawBodyParams?: any,
   requestOptions?: {
     returnMeta?: boolean,
-    isOctetStream?: boolean,
+    isOctetStreamRequest?: boolean,
+    isOctetStreamResponse?: boolean,
   }
 ): Promise<Response> {
   return new Promise((resolve, reject) => {
     const options: RequestOptions = Object.assign({}, httpOptions);
-    // const { returnMeta } = Object.assign({}, requestOptions);
+    const { isOctetStreamRequest, isOctetStreamResponse } = Object.assign(
+      {},
+      requestOptions
+    );
     let hasRequestBody = false;
     let requestBody = '';
 
@@ -41,26 +46,27 @@ function typedRequest<Response>(
     }
 
     // Handle raw body params
-    if (
-      requestOptions &&
-      requestOptions.isOctetStream &&
-      rawBodyParams &&
-      typeof rawBodyParams === 'string'
-    ) {
+    if (rawBodyParams) {
       hasRequestBody = true;
-      requestBody = rawBodyParams;
+      if (isOctetStreamRequest) {
+        requestBody = rawBodyParams;
+        options.headers = {
+          'Content-Length': requestBody.length / 2,
+          'Content-Type': 'application/octet-stream',
+        };
+      } else {
+        requestBody = JSON.stringify(rawBodyParams);
+        options.headers = {
+          'Content-Length': getContentLength(requestBody),
+          'Content-Type': 'application/json; charset=utf-8',
+        };
+      }
+
       options.headers = {
-        'Content-Length': requestBody.length / 2,
-        'Content-Type': 'application/octet-stream',
-        Accept: 'application/json; charset=utf-8',
-      };
-    } else if (rawBodyParams) {
-      hasRequestBody = true;
-      requestBody = JSON.stringify(rawBodyParams);
-      options.headers = {
-        'Content-Length': getContentLength(requestBody),
-        'Content-Type': 'application/json; charset=utf-8',
-        Accept: 'application/json; charset=utf-8',
+        ...options.headers,
+        Accept: isOctetStreamResponse
+          ? 'application/octet-stream'
+          : 'application/json; charset=utf-8',
       };
     }
 
@@ -71,17 +77,23 @@ function typedRequest<Response>(
         : global.https.request(options);
 
     if (hasRequestBody) {
-      if (requestOptions && requestOptions.isOctetStream) {
+      if (isOctetStreamRequest) {
         httpsRequest.write(requestBody, 'hex');
       } else {
         httpsRequest.write(requestBody);
       }
     }
+
     httpsRequest.on('response', (response) => {
       let body = '';
-      // Cardano-sl returns chunked requests, so we need to concat them
+      let stream;
+      // cardano-wallet returns chunked requests, so we need to concat them
       response.on('data', (chunk) => {
-        body += chunk;
+        if (isOctetStreamResponse) {
+          stream = chunk;
+        } else {
+          body += chunk;
+        }
       });
       // Reject errors
       response.on('error', (error) => reject(error));
@@ -95,29 +107,37 @@ function typedRequest<Response>(
               includes(ALLOWED_ERROR_EXCEPTION_PATHS, options.path));
 
           if (isSuccessResponse) {
-            const data =
-              statusCode === 404
-                ? 'null'
-                : `"statusCode: ${statusCode} -- statusMessage: ${statusMessage}"`;
-            // When deleting a wallet, the API does not return any data in body
-            // even if it was successful
-            if (!body) {
-              body = `{
-                "status": ${statusCode},
-                "data": ${data}
-              }`;
+            if (isOctetStreamResponse) {
+              resolve(stream);
+            } else {
+              const data =
+                statusCode === 404
+                  ? 'null'
+                  : `"statusCode: ${statusCode} -- statusMessage: ${statusMessage}"`;
+              // When deleting a wallet, the API does not return any data in body
+              // even if it was successful
+              if (!body) {
+                body = `{
+                  "status": ${statusCode},
+                  "data": ${data}
+                }`;
+              }
+              resolve(JSONBigInt.parse(body));
             }
-            resolve(JSON.parse(body));
+          } else if (stream) {
+            // Error response with a stream
+            const parsedStream = JSONBigInt.parse(stream.toString());
+            reject(parsedStream);
           } else if (body) {
             // Error response with a body
-            const parsedBody = JSON.parse(body);
+            const parsedBody = JSONBigInt.parse(body);
             if (parsedBody.code && parsedBody.message) {
               reject(parsedBody);
             } else {
               reject(new Error('Unknown API response'));
             }
           } else {
-            // Error response without a body
+            // Error response without a stream or body
             reject(new Error('Unknown API response'));
           }
         } catch (error) {

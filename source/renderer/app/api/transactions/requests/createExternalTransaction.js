@@ -13,10 +13,10 @@ export const createExternalTransaction = (
   request(
     {
       method: 'POST',
-      path: `/v2/proxy/transactions`,
+      path: '/v2/proxy/transactions',
       ...config,
     },
     {},
     signedTransactionBlob,
-    { isOctetStream: true }
+    { isOctetStreamRequest: true }
   );

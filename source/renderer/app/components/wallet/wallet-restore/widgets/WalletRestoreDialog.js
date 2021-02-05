@@ -69,7 +69,7 @@ export default class WalletRestoreDialog extends Component<Props> {
       <Dialog
         className={styles.component}
         title={title}
-        subtitle={subTitle}
+        subtitle={hasStep && subTitle}
         actions={actions}
         closeOnOverlayClick={false}
         onClose={onClose}

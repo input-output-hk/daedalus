@@ -5,6 +5,7 @@ import './summary/WalletSummary.stories';
 import './send/WalletSend.stories';
 import './receive/WalletReceive.stories';
 import './transactions/WalletTransactions.stories';
+import './transactions/TransactionMetadata.stories';
 import './settings/WalletSettings.stories';
 import './addWallet/AddWallet.stories';
 import './import/WalletImportFile.stories';
