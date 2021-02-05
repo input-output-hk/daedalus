@@ -208,6 +208,10 @@ import { deleteTransaction } from './transactions/requests/deleteTransaction';
 import { WALLET_BYRON_KINDS } from '../config/walletRestoreConfig';
 import ApiError from '../domains/ApiError';
 import { formattedAmountToLovelace } from '../utils/formatters';
+import type { GetAssetRequest, GetAssetResponse, GetAssetsRequest, GetAssetsResponse } from './assets/types';
+import Asset from '../domains/Asset';
+import { getAssets } from './assets/requests/getAssets';
+import { getAsset } from './assets/requests/getAsset';
 
 const { isIncentivizedTestnet } = global;
 
@@ -548,6 +552,53 @@ export default class AdaApi {
     //   logger.error('AdaApi::searchHistory error', { error });
     //   throw new GenericApiError(error);
     // }
+  };
+
+  getAssets = async (
+    request: GetAssetsRequest
+  ): Promise<GetAssetsResponse> => {
+    logger.debug('AdaApi::getAssets called', { parameters: request });
+    const { walletId } = request;
+
+    try {
+      const response = await getAssets(this.config, walletId);
+
+      logger.debug('AdaApi::getAssets success', {
+        assets: response,
+      });
+      const assets = response.map((asset) =>
+        _createAssetFromServerData(asset)
+      );
+      return new Promise((resolve) =>
+        resolve({ assets, total: response.length })
+      );
+    } catch (error) {
+      logger.error('AdaApi::getAssets error', { error });
+      throw new ApiError(error);
+    }
+  };
+
+  getAsset = async (
+    request: GetAssetRequest
+  ): Promise<GetAssetResponse> => {
+    logger.debug('AdaApi::getAsset called', { parameters: request });
+    const { walletId, policyId, assetName } = request;
+    try {
+      const response = await getAsset(this.config, {
+        walletId,
+        policyId,
+        assetName
+      });
+      logger.debug('AdaApi::getAsset success', {
+        asset: response,
+      });
+      const asset = _createAssetFromServerData(response);
+      return new Promise((resolve) =>
+        resolve({ asset })
+      );
+    } catch (error) {
+      logger.error('AdaApi::getAsset error', { error });
+    }
   };
 
   getWithdrawals = async (
@@ -2417,6 +2468,25 @@ const _createTransactionFromServerData = action(
         withdrawals: withdrawals.map(({ stake_address: address }) => address),
       },
       state,
+    });
+  }
+);
+
+const _createAssetFromServerData = action(
+  'AdaApi::_createAssetFromServerData',
+  (data: Asset) => {
+    const {
+      id,
+      policyId,
+      assetName,
+      metadata,
+    } = data;
+
+    return new Asset({
+      id,
+      policyId,
+      assetName,
+      metadata,
     });
   }
 );

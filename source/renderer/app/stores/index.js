@@ -11,6 +11,7 @@ import ProfileStore from './ProfileStore';
 import SidebarStore from './SidebarStore';
 import StakingStore from './StakingStore';
 import TransactionsStore from './TransactionsStore';
+import AssetsStore from './AssetsStore';
 import UiDialogsStore from './UiDialogsStore';
 import UiNotificationsStore from './UiNotificationsStore';
 import WalletsStore from './WalletsStore';
@@ -23,6 +24,7 @@ import WindowStore from './WindowStore';
 export const storeClasses = {
   addresses: AddressesStore,
   app: AppStore,
+  assets: AssetsStore,
   hardwareWallets: HardwareWalletsStore,
   appUpdate: AppUpdateStore,
   networkStatus: NetworkStatusStore,
@@ -44,7 +46,7 @@ export const storeClasses = {
 export type StoresMap = {
   addresses: AddressesStore,
   app: AppStore,
-
+  assets: AssetsStore,
   hardwareWallets: HardwareWalletsStore,
   appUpdate: AppUpdateStore,
   networkStatus: NetworkStatusStore,
@@ -88,6 +90,7 @@ export default action((api, actions, router): StoresMap => {
     uiNotifications: createStoreInstanceOf(UiNotificationsStore),
     addresses: createStoreInstanceOf(AddressesStore),
     app: createStoreInstanceOf(AppStore),
+    assets: createStoreInstanceOf(AssetsStore),
     hardwareWallets: createStoreInstanceOf(HardwareWalletsStore),
     networkStatus: createStoreInstanceOf(NetworkStatusStore),
     newsFeed: createStoreInstanceOf(NewsFeedStore),

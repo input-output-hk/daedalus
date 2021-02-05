@@ -1,6 +1,8 @@
 // @flow
 
-export type Asset = {
+import Asset from '../../domains/Asset';
+
+export type SingleAsset = {
   id: string,
   policy_id: string,
   asset_name: string,
@@ -33,7 +35,7 @@ export type WalletAssetItem = {
   quantity: number,
 };
 
-export type Assets = Array<Asset>;
+export type Assets = Array<SingleAsset>;
 
 export type AssetItems = Array<AssetItem>;
 
@@ -71,4 +73,13 @@ export type GetUnknownAssetRequest = {
 
 export type GetAssetsRequest = {
   walletId: string,
+};
+
+export type GetAssetsResponse = {
+  assets: Array<Asset>,
+  total: number,
+};
+
+export type GetAssetResponse = {
+  asset: Asset,
 };
