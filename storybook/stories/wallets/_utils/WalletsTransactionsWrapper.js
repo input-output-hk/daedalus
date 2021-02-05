@@ -124,7 +124,7 @@ const assets = [
   },
 ];
 
-const walletAssets = assets.map((assetTotal) => {
+/* const walletAssets = assets.map((assetTotal) => {
   const assetData = allAssets.find(
     (item) => item.policyId === assetTotal.policyId
   );
@@ -139,7 +139,7 @@ const walletAssets = assets.map((assetTotal) => {
         },
     total: assetTotal || {},
   };
-});
+}) */
 
 export default class WalletsTransactionsWrapper extends Component<
   Props,

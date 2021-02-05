@@ -359,7 +359,7 @@ export default class Transaction extends Component<Props, State> {
       isExpanded,
       isDeletingTransaction,
       currentTimeFormat,
-      transactionAssets,
+      // transactionAssets,
       hasAssetsEnabled,
     } = this.props;
     const { intl } = this.context;
