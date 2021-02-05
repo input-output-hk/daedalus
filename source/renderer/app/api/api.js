@@ -598,6 +598,7 @@ export default class AdaApi {
       );
     } catch (error) {
       logger.error('AdaApi::getAsset error', { error });
+      throw new ApiError(error);
     }
   };
 

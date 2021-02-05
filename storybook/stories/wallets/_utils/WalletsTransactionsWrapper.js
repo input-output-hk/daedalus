@@ -34,7 +34,7 @@ type State = {
   filterOptions: TransactionFilterOptionsType,
 };
 
-const allAssets = [
+/* const allAssets = [
   generateAsset(
     '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
@@ -95,7 +95,7 @@ const allAssets = [
       logo: '',
     }
   ),
-];
+]; */
 
 const assets = [
   {

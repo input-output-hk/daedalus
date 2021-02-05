@@ -218,7 +218,7 @@ type Props = {
   currentTimeFormat: string,
   walletId: string,
   isDeletingTransaction: boolean,
-  transactionAssets?: Array<WalletTransactionAsset>,
+  // transactionAssets?: Array<WalletTransactionAsset>,
   hasAssetsEnabled?: boolean,
 };
 
