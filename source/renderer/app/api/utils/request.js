@@ -110,7 +110,7 @@ function typedRequest<Response>(
             resolve(JSONBigInt.parse(body));
           } else if (body) {
             // Error response with a body
-            const parsedBody = JSON.parse(body);
+            const parsedBody = JSONBigInt.parse(body);
             if (parsedBody.code && parsedBody.message) {
               reject(parsedBody);
             } else {

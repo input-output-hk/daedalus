@@ -33,6 +33,7 @@ function ListView({ value }: { value: MetadataList }) {
   return (
     <ol className={styles.list}>
       {value.list.map((v, index) => (
+        // eslint-disable-next-line react/no-array-index-key
         <li key={index}>
           <MetadataValueView value={v} />
         </li>
@@ -45,6 +46,7 @@ function MapView({ value }: { value: MetadataMap }) {
   return (
     <ol className={styles.map}>
       {value.map.map((v, index) => (
+        // eslint-disable-next-line react/no-array-index-key
         <li key={index}>
           <MetadataValueView value={v.k} />: <MetadataValueView value={v.v} />
         </li>

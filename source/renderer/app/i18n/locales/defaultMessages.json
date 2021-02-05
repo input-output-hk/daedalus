@@ -10510,7 +10510,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Transaction metadata is not moderated and may contain inappropriate content. Lorem ipsum dolor sit amet.",
+        "defaultMessage": "!!!Transaction metadata is not moderated and may contain inappropriate content.",
         "description": "Transaction metadata disclaimer",
         "end": {
           "column": 3,

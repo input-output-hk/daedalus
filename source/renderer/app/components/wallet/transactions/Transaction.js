@@ -55,7 +55,7 @@ const messages = defineMessages({
   metadataDisclaimer: {
     id: 'wallet.transaction.metadataDisclaimer',
     defaultMessage:
-      '!!!Transaction metadata is not moderated and may contain inappropriate content. Lorem ipsum dolor sit amet.',
+      '!!!Transaction metadata is not moderated and may contain inappropriate content.',
     description: 'Transaction metadata disclaimer',
   },
   metadataConfirmationLabel: {

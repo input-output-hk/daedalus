@@ -966,7 +966,7 @@
   "wallet.transaction.filter.selectTimeRange": "Select time range",
   "wallet.transaction.filter.thisYear": "This year",
   "wallet.transaction.metadataConfirmationLabel": "Show unmoderated content",
-  "wallet.transaction.metadataDisclaimer": "Transaction metadata is not moderated and may contain inappropriate content. Lorem ipsum dolor sit amet.",
+  "wallet.transaction.metadataDisclaimer": "Transaction metadata is not moderated and may contain inappropriate content.",
   "wallet.transaction.metadataLabel": "Transaction metadata",
   "wallet.transaction.noInputAddressesLabel": "No addresses",
   "wallet.transaction.pending.cancelPendingTxnNote": "This transaction has been pending for a long time. To release the funds used by this transaction, you can try canceling it.",

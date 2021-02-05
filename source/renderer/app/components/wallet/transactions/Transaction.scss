@@ -253,4 +253,9 @@
 
 .metadata {
   margin-top: 20px;
+
+  pre {
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
 }
