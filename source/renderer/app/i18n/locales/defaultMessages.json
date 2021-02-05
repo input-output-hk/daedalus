@@ -7769,17 +7769,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Waiting for confirmation...",
-        "description": "Label for confirming transaction state on the voting registration \"confirm\" step.",
+        "defaultMessage": "!!!Transaction confirmed",
+        "description": "Label for confirmed transaction state on the voting registration \"confirm\" step.",
         "end": {
           "column": 3,
           "line": 56
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsConfirm.js",
+        "id": "voting.votingRegistration.confirm.step.transactionConfirmedLabel",
+        "start": {
+          "column": 29,
+          "line": 51
+        }
+      },
+      {
+        "defaultMessage": "!!!Waiting for confirmation...",
+        "description": "Label for confirming transaction state on the voting registration \"confirm\" step.",
+        "end": {
+          "column": 3,
+          "line": 62
+        },
+        "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsConfirm.js",
         "id": "voting.votingRegistration.confirm.step.waitingForConfirmationsLabel",
         "start": {
           "column": 32,
-          "line": 51
+          "line": 57
         }
       },
       {
@@ -7787,13 +7801,13 @@
         "description": "Label for number of confirmations on the voting registration \"confirm\" step.",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 68
         },
         "file": "source/renderer/app/components/voting/voting-registration-wizard-steps/VotingRegistrationStepsConfirm.js",
         "id": "voting.votingRegistration.confirm.step.confirmationsCountLabel",
         "start": {
           "column": 27,
-          "line": 57
+          "line": 63
         }
       }
     ],

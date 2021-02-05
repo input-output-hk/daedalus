@@ -48,6 +48,12 @@ const messages = defineMessages({
     description:
       'Label for pending transaction state on the voting registration "confirm" step.',
   },
+  transactionConfirmedLabel: {
+    id: 'voting.votingRegistration.confirm.step.transactionConfirmedLabel',
+    defaultMessage: '!!!Transaction confirmed',
+    description:
+      'Label for confirmed transaction state on the voting registration "confirm" step.',
+  },
   waitingForConfirmationsLabel: {
     id: 'voting.votingRegistration.confirm.step.waitingForConfirmationsLabel',
     defaultMessage: '!!!Waiting for confirmation...',
@@ -119,9 +125,15 @@ export default class VotingRegistrationStepsConfirm extends Component<Props> {
           },
     ];
 
-    const progressBarLeftLabel = isTransactionPending
-      ? intl.formatMessage(messages.transactionPendingLabel)
-      : intl.formatMessage(messages.waitingForConfirmationsLabel);
+    let progressBarLeftLabelMessage;
+    if (isTransactionConfirmed)
+      progressBarLeftLabelMessage = messages.transactionConfirmedLabel;
+    else if (isTransactionPending)
+      progressBarLeftLabelMessage = messages.transactionPendingLabel;
+    else progressBarLeftLabelMessage = messages.waitingForConfirmationsLabel;
+    const progressBarLeftLabel = intl.formatMessage(
+      progressBarLeftLabelMessage
+    );
 
     const progressBarRightLabel = isTransactionPending
       ? ''
@@ -163,7 +175,7 @@ export default class VotingRegistrationStepsConfirm extends Component<Props> {
               leftLabel={progressBarLeftLabel}
               rightLabel1={progressBarRightLabel}
               loading={isTransactionPending}
-              progress={Math.min(progress, 100)}
+              progress={progress}
             />
             <div className={styles.description}>
               <p>{description}</p>

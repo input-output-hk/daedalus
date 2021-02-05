@@ -291,9 +291,11 @@ export default class VotingStore extends Store {
     // Update voting registration confirmed state
     if (
       !this.isTransactionConfirmed &&
-      confirmations >= VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS
+      confirmations === VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS
     ) {
       this._setIsTransactionConfirmed(true);
+      if (this.transactionPollingInterval)
+        clearInterval(this.transactionPollingInterval);
     }
   };
 

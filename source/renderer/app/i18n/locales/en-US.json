@@ -631,6 +631,7 @@
   "voting.votingRegistration.confirm.step.descriptionRestart": "Please restart the voting registration process by clicking <span>Restart voting registration</span>.",
   "voting.votingRegistration.confirm.step.errorMessage": "The voting registration process was not completed correctly.",
   "voting.votingRegistration.confirm.step.restartButtonLabel": "Restart voting registration",
+  "voting.votingRegistration.confirm.step.transactionConfirmedLabel": "Transaction confirmed",
   "voting.votingRegistration.confirm.step.transactionPendingLabel": "Transaction pending...",
   "voting.votingRegistration.confirm.step.waitingForConfirmationsLabel": "Waiting for confirmation...",
   "voting.votingRegistration.dialog.confirmation.button.cancelButtonLabel": "Cancel registration",

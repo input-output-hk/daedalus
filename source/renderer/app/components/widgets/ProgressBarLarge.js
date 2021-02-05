@@ -31,8 +31,11 @@ export default class ProgressBarLarge extends Component<Props> {
       loading,
     } = this.props;
 
+    const isComplete = progress >= 100;
+
     const progressStyles = classnames([
       styles.progress,
+      isComplete ? styles.isComplete : null,
       isDarkMode ? styles.progressDarkMode : styles.progressLightMode,
       loading ? styles.loading : null,
     ]);

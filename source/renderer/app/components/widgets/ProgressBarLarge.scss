@@ -40,12 +40,15 @@
 
 .progress {
   align-items: center;
-  animation: animatedStripesBackground 2s linear infinite;
   border-radius: 5px;
   display: flex;
   height: 100%;
   justify-content: flex-end;
   transition: width 0.24s;
+
+  &:not(.isComplete) {
+    animation: animatedStripesBackground 2s linear infinite;
+  }
 }
 
 .progressDarkMode {
