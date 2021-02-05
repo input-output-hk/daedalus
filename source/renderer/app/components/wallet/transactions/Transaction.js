@@ -21,6 +21,7 @@ import type { TransactionState } from '../../../api/transactions/types';
 import { PENDING_TIME_LIMIT } from '../../../config/txnsConfig';
 import CancelTransactionConfirmationDialog from './CancelTransactionConfirmationDialog';
 import { ellipsis } from '../../../utils/strings';
+import type { WalletTransactionAsset } from '../../../api/assets/types';
 
 /* eslint-disable consistent-return */
 
@@ -217,6 +218,7 @@ type Props = {
   currentTimeFormat: string,
   walletId: string,
   isDeletingTransaction: boolean,
+  transactionAssets?: Array<WalletTransactionAsset>,
   hasAssetsEnabled?: boolean,
 };
 
@@ -357,6 +359,7 @@ export default class Transaction extends Component<Props, State> {
       isExpanded,
       isDeletingTransaction,
       currentTimeFormat,
+      transactionAssets,
       hasAssetsEnabled,
     } = this.props;
     const { intl } = this.context;
@@ -588,9 +591,9 @@ export default class Transaction extends Component<Props, State> {
                                   <div className={styles.amount}>
                                     {formattedWalletAmount(data.amount, false)}
                                     &nbsp;{' '}
-                                    {data.addresses.currencies
+                                    { /* data.addresses.currencies
                                       ? data.addresses.currencies[assetsIndex]
-                                      : currency}
+                                      : currency */ }
                                   </div>
                                 </div>
                               </div>

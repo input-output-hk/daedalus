@@ -15,6 +15,7 @@ import { VirtualTransactionList } from './render-strategies/VirtualTransactionLi
 import { SimpleTransactionList } from './render-strategies/SimpleTransactionList';
 import { TransactionInfo, TransactionsGroup } from './types';
 import type { Row } from './types';
+import Asset from "../../../domains/Asset";
 
 const messages = defineMessages({
   today: {
@@ -66,6 +67,7 @@ type Props = {
   currentDateFormat: string,
   currentTimeFormat: string,
   hasAssetsEnabled?: boolean,
+  allAssets?: Array<Asset>,
 };
 
 const DATE_FORMAT = 'YYYY-MM-DD';
@@ -174,6 +176,7 @@ export default class WalletTransactionsList extends Component<Props> {
       isDeletingTransaction,
       currentTimeFormat,
       hasAssetsEnabled,
+      allAssets,
     } = this.props;
     const { isFirstInGroup, isLastInGroup, tx } = data;
     const txClasses = classnames([
@@ -181,6 +184,22 @@ export default class WalletTransactionsList extends Component<Props> {
       isFirstInGroup ? styles.firstInGroup : null,
       isLastInGroup ? styles.lastInGroup : null,
     ]);
+    const { assets } = tx;
+    const transactionAssets = assets && allAssets ? assets.map((asset) => {
+      const assetData = allAssets.find(
+        (item) => item.policyId === asset.policyId
+      );
+      return {
+        ...asset,
+        metadata: assetData
+          ? assetData.metadata
+          : {
+            name: '',
+            acronym: '',
+            description: '',
+          },
+      };
+    }) : [];
     return (
       <div id={`tx-${tx.id}`} className={txClasses}>
         <Transaction
@@ -197,6 +216,7 @@ export default class WalletTransactionsList extends Component<Props> {
           walletId={walletId}
           isDeletingTransaction={isDeletingTransaction}
           currentTimeFormat={currentTimeFormat}
+          transactionAssets={transactionAssets}
           hasAssetsEnabled={hasAssetsEnabled}
         />
       </div>

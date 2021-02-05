@@ -26,9 +26,8 @@ import type {
 import type { SyncStateStatus } from '../../../source/renderer/app/api/wallets/types';
 import Asset from '../../../source/renderer/app/domains/Asset';
 import type {
-  AssetMetadata,
+  AssetMetadata, WalletAssetItems,
   WalletAssets,
-  WalletTransactionAsset,
 } from '../../../source/renderer/app/api/assets/types';
 
 export const generateHash = () => {
@@ -107,7 +106,7 @@ export const generateTransaction = (
   hasUnresolvedIncomeAddresses: boolean = false,
   noIncomeAddresses: boolean = false,
   noWithdrawals: boolean = true,
-  assets?: Array<WalletTransactionAsset>
+  assets?: WalletAssetItems
 ) =>
   new WalletTransaction({
     id: faker.random.uuid(),

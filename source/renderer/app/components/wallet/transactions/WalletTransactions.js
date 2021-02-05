@@ -16,6 +16,7 @@ import { WalletTransaction } from '../../../domains/WalletTransaction';
 import Wallet from '../../../domains/Wallet';
 import styles from './WalletTransactions.scss';
 import type { TransactionFilterOptionsType } from '../../../stores/TransactionsStore';
+import Asset from '../../../domains/Asset';
 
 export const messages = defineMessages({
   noTransactions: {
@@ -46,6 +47,7 @@ type Props = {
   totalAvailable: number,
   transactions: Array<WalletTransaction>,
   hasAssetsEnabled?: boolean,
+  allAssets?: Array<Asset>,
 };
 
 type State = {
@@ -106,6 +108,7 @@ export default class WalletTransactions extends Component<Props, State> {
       defaultFilterOptions,
       populatedFilterOptions,
       hasAssetsEnabled,
+      allAssets,
     } = this.props;
 
     // Guard against potential null values
@@ -147,6 +150,7 @@ export default class WalletTransactions extends Component<Props, State> {
           currentTimeFormat={currentTimeFormat}
           currentDateFormat={currentDateFormat}
           hasAssetsEnabled={hasAssetsEnabled}
+          allAssets={allAssets}
           isRenderingAsVirtualList
         />
       );

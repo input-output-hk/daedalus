@@ -59,6 +59,7 @@ export type Transactions = Array<Transaction>;
 export type TransactionInputs = {
   address: string,
   amount?: TransactionAmount,
+  assets?: AssetItems,
   id: string,
   index: number,
 };
@@ -66,6 +67,7 @@ export type TransactionInputs = {
 export type TransactionOutputs = {
   address: string,
   amount: TransactionAmount,
+  assets?: AssetItems,
 };
 
 export type TransactionWithdrawals = {
@@ -80,13 +82,6 @@ export type TransactionAddresses = {
   from: Array<?string>,
   to: Array<string>,
   withdrawals: Array<string>,
-};
-
-export type TransactionTokenAddresses = {
-  from: Array<?string>,
-  to: Array<string>,
-  withdrawals: Array<string>,
-  currencies: Array<string>,
 };
 
 export type TransactionType = 'card' | 'expend' | 'income' | 'exchange';
@@ -162,7 +157,7 @@ export type GetTransactionFeeParams = {
 export type TransactionPaymentData = {
   address: string,
   amount: TransactionFeeAmount,
-  assets: AssetItems,
+  assets?: AssetItems,
 };
 
 export type TransactionFee = {

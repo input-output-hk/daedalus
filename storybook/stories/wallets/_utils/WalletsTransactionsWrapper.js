@@ -274,7 +274,7 @@ export default class WalletsTransactionsWrapper extends Component<
           false,
           false,
           true,
-          walletAssets
+          assets
         ),
         generateTransaction(
           TransactionTypes.EXPEND,
@@ -284,7 +284,7 @@ export default class WalletsTransactionsWrapper extends Component<
           false,
           false,
           true,
-          walletAssets
+          assets
         ),
         generateTransaction(
           TransactionTypes.INCOME,
@@ -294,7 +294,7 @@ export default class WalletsTransactionsWrapper extends Component<
           false,
           false,
           true,
-          walletAssets
+          assets
         ),
         generateTransaction(
           TransactionTypes.EXPEND,
@@ -304,7 +304,7 @@ export default class WalletsTransactionsWrapper extends Component<
           false,
           false,
           true,
-          walletAssets
+          assets
         ),
         generateTransaction(
           TransactionTypes.INCOME,
@@ -314,7 +314,7 @@ export default class WalletsTransactionsWrapper extends Component<
           false,
           false,
           true,
-          walletAssets
+          assets
         ),
       ],
       confirmedAndPendingTransactions: [
@@ -326,7 +326,7 @@ export default class WalletsTransactionsWrapper extends Component<
           false,
           false,
           true,
-          walletAssets
+          assets
         ),
         generateTransaction(
           TransactionTypes.EXPEND,
@@ -336,7 +336,7 @@ export default class WalletsTransactionsWrapper extends Component<
           false,
           false,
           true,
-          walletAssets
+          assets
         ),
         generateTransaction(
           TransactionTypes.INCOME,
@@ -346,7 +346,7 @@ export default class WalletsTransactionsWrapper extends Component<
           true,
           false,
           true,
-          walletAssets
+          assets
         ),
         generateTransaction(
           TransactionTypes.EXPEND,
@@ -356,7 +356,7 @@ export default class WalletsTransactionsWrapper extends Component<
           false,
           false,
           true,
-          walletAssets
+          assets
         ),
       ],
       renderingManyTransactions: generateMultipleTransactions(500),
@@ -369,7 +369,7 @@ export default class WalletsTransactionsWrapper extends Component<
           true,
           false,
           true,
-          walletAssets
+          assets
         ),
         generateTransaction(
           TransactionTypes.INCOME,
@@ -379,7 +379,7 @@ export default class WalletsTransactionsWrapper extends Component<
           true,
           false,
           true,
-          walletAssets
+          assets
         ),
       ],
       withoutIncomeAddresses: [
@@ -391,7 +391,7 @@ export default class WalletsTransactionsWrapper extends Component<
           false,
           true,
           true,
-          walletAssets
+          assets
         ),
         generateTransaction(
           TransactionTypes.INCOME,
@@ -401,7 +401,7 @@ export default class WalletsTransactionsWrapper extends Component<
           false,
           true,
           true,
-          walletAssets
+          assets
         ),
       ],
       withWithdrawalAddresses: [
@@ -413,7 +413,7 @@ export default class WalletsTransactionsWrapper extends Component<
           false,
           false,
           false,
-          walletAssets
+          assets
         ),
         generateTransaction(
           TransactionTypes.INCOME,
@@ -423,7 +423,7 @@ export default class WalletsTransactionsWrapper extends Component<
           false,
           false,
           false,
-          walletAssets
+          assets
         ),
       ],
     };
