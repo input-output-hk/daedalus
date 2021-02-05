@@ -913,6 +913,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-transactions-list-border-color': '#e1dac6',
     '--theme-transactions-list-group-date-color': '#2d2d2d',
     '--theme-transactions-list-item-details-color': '#2d2d2d',
+    '--theme-transactions-list-item-highlight-color': '#ea4c5b',
     '--theme-transactions-state-ok-background-color': '#007600',
     '--theme-transactions-state-pending-background-color':
       'rgba(45, 45, 45, 0.5)',

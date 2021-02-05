@@ -30,6 +30,8 @@ export class WalletTransaction {
   @observable type: TransactionType;
   @observable title: string = '';
   @observable amount: BigNumber;
+  @observable fee: BigNumber;
+  @observable deposit: BigNumber;
   @observable date: ?Date;
   @observable description: string = '';
   @observable addresses: TrasactionAddresses = {
@@ -47,6 +49,8 @@ export class WalletTransaction {
     type: TransactionType,
     title: string,
     amount: BigNumber,
+    fee: BigNumber,
+    deposit: BigNumber,
     date: ?Date,
     description: string,
     addresses: TrasactionAddresses,

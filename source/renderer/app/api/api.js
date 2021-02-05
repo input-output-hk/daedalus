@@ -186,6 +186,7 @@ import type { GetNewsResponse } from './news/types';
 import type {
   JoinStakePoolRequest,
   GetDelegationFeeRequest,
+  DelegationCalculateFeeResponse,
   AdaApiStakePools,
   AdaApiStakePool,
   QuitStakePoolRequest,
@@ -390,9 +391,7 @@ export default class AdaApi {
       const transactions = response.map((tx) =>
         _createTransactionFromServerData(tx)
       );
-      return new Promise((resolve) =>
-        resolve({ transactions, total: response.length })
-      );
+      return Promise.resolve({ transactions, total: response.length });
     } catch (error) {
       logger.error('AdaApi::getTransactions error', { error });
       throw new ApiError(error);
@@ -2139,7 +2138,7 @@ export default class AdaApi {
 
   calculateDelegationFee = async (
     request: GetDelegationFeeRequest
-  ): Promise<BigNumber> => {
+  ): Promise<DelegationCalculateFeeResponse> => {
     logger.debug('AdaApi::calculateDelegationFee called', {
       parameters: filterLogData(request),
     });
@@ -2148,8 +2147,7 @@ export default class AdaApi {
         walletId: request.walletId,
       });
       logger.debug('AdaApi::calculateDelegationFee success', { response });
-      const delegationFee = _createDelegationFeeFromServerData(response);
-      return delegationFee;
+      return _createDelegationFeeFromServerData(response);
     } catch (error) {
       logger.error('AdaApi::calculateDelegationFee error', { error });
       throw new ApiError(error);
@@ -2305,6 +2303,8 @@ const _createTransactionFromServerData = action(
     const {
       id,
       amount,
+      fee,
+      deposit,
       inserted_at, // eslint-disable-line camelcase
       pending_since, // eslint-disable-line camelcase
       depth,
@@ -2333,6 +2333,8 @@ const _createTransactionFromServerData = action(
       amount: new BigNumber(
         direction === 'outgoing' ? amount.quantity * -1 : amount.quantity
       ).dividedBy(LOVELACES_PER_ADA),
+      fee: new BigNumber(fee.quantity).dividedBy(LOVELACES_PER_ADA),
+      deposit: new BigNumber(deposit.quantity).dividedBy(LOVELACES_PER_ADA),
       date: utcStringToDate(date),
       description: '',
       addresses: {
@@ -2369,8 +2371,14 @@ const _createMigrationFeeFromServerData = action(
 const _createDelegationFeeFromServerData = action(
   'AdaApi::_createDelegationFeeFromServerData',
   (data: TransactionFee) => {
-    const amount = get(data, ['estimated_max', 'quantity'], 0);
-    return new BigNumber(amount).dividedBy(LOVELACES_PER_ADA);
+    const feeWithDeposit = new BigNumber(
+      get(data, ['estimated_max', 'quantity'], 0)
+    ).dividedBy(LOVELACES_PER_ADA);
+    const deposit = new BigNumber(
+      get(data, ['deposit', 'quantity'], 0)
+    ).dividedBy(LOVELACES_PER_ADA);
+    const fee = feeWithDeposit.minus(deposit);
+    return { fee, deposit };
   }
 );
 
