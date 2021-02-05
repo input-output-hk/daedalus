@@ -8,6 +8,7 @@ import classNames from 'classnames';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import CancelTransactionButton from './CancelTransactionButton';
+import { TransactionMetadataView } from './metadata/TransactionMetadataView';
 import styles from './Transaction.scss';
 import TransactionTypeIcon from './TransactionTypeIcon';
 import adaSymbol from '../../../assets/images/ada-symbol.inline.svg';
@@ -45,6 +46,22 @@ const messages = defineMessages({
     id: 'wallet.transaction.transactionId',
     defaultMessage: '!!!Transaction ID',
     description: 'Transaction ID.',
+  },
+  metadataLabel: {
+    id: 'wallet.transaction.metadataLabel',
+    defaultMessage: '!!!Transaction metadata',
+    description: 'Transaction metadata label',
+  },
+  metadataDisclaimer: {
+    id: 'wallet.transaction.metadataDisclaimer',
+    defaultMessage:
+      '!!!Transaction metadata is not moderated and may contain inappropriate content.',
+    description: 'Transaction metadata disclaimer',
+  },
+  metadataConfirmationLabel: {
+    id: 'wallet.transaction.metadataConfirmationLabel',
+    defaultMessage: '!!!Show unmoderated content',
+    description: 'Transaction metadata confirmation toggle',
   },
   conversionRate: {
     id: 'wallet.transaction.conversion.rate',
@@ -171,9 +188,11 @@ type Props = {
   isExpanded: boolean,
   isRestoreActive: boolean,
   isLastInList: boolean,
+  isShowingMetadata: boolean,
   formattedWalletAmount: Function,
   onDetailsToggled: ?Function,
   onOpenExternalLink: Function,
+  onShowMetadata: () => void,
   getUrlByType: Function,
   currentTimeFormat: string,
   walletId: string,
@@ -182,6 +201,7 @@ type Props = {
 
 type State = {
   showConfirmationDialog: boolean,
+  showUnmoderatedMetadata: boolean,
 };
 
 export default class Transaction extends Component<Props, State> {
@@ -191,7 +211,19 @@ export default class Transaction extends Component<Props, State> {
 
   state = {
     showConfirmationDialog: false,
+    showUnmoderatedMetadata: false,
   };
+
+  componentDidUpdate(prevProps: Props, prevState: State) {
+    // Tell parent components that meta data was toggled
+    if (
+      !prevState.showUnmoderatedMetadata &&
+      this.state.showUnmoderatedMetadata &&
+      this.props.onShowMetadata
+    ) {
+      this.props.onShowMetadata();
+    }
+  }
 
   toggleDetails() {
     const { onDetailsToggled } = this.props;
@@ -310,6 +342,7 @@ export default class Transaction extends Component<Props, State> {
     const {
       data,
       isLastInList,
+      isShowingMetadata,
       state,
       formattedWalletAmount,
       onOpenExternalLink,
@@ -532,6 +565,35 @@ export default class Transaction extends Component<Props, State> {
                   />
                 </div>
                 {this.renderCancelPendingTxnContent()}
+
+                {data.metadata != null && (
+                  <div className={styles.metadata}>
+                    <h2>{intl.formatMessage(messages.metadataLabel)}</h2>
+                    {data.metadata &&
+                    (this.state.showUnmoderatedMetadata ||
+                      isShowingMetadata) ? (
+                      <TransactionMetadataView data={data.metadata} />
+                    ) : (
+                      <>
+                        <p className={styles.metadataDisclaimer}>
+                          {intl.formatMessage(messages.metadataDisclaimer)}
+                        </p>
+                        <Link
+                          isUnderlined={false}
+                          hasIconAfter={false}
+                          underlineOnHover
+                          label={intl.formatMessage(
+                            messages.metadataConfirmationLabel
+                          )}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            this.setState({ showUnmoderatedMetadata: true });
+                          }}
+                        />
+                      </>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
             <SVGInline svg={arrow} className={arrowStyles} />

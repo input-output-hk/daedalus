@@ -1,0 +1,65 @@
+.root {
+  font-family: var(--font-light);
+  & > * {
+    margin-bottom: 5px;
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+/**
+ * NOTE: These styles are currently not used because we simply
+ * JSON.stringify the metadata for transactions. This can be
+ * used as the basis for a more sophisticated implementation
+ * later on:
+ */
+
+//.list {
+//  &::before {
+//    content: '[';
+//    display: inline;
+//  }
+//  &::after {
+//    content: ']';
+//    display: inline;
+//  }
+//  li::after {
+//    content: ',';
+//    display: inline;
+//  }
+//  li:last-child::after {
+//    content: '';
+//  }
+//  li {
+//    padding-left: 10px;
+//  }
+//  li > * {
+//    display: inline-block;
+//  }
+//}
+//
+//.map {
+//  vertical-align: top;
+//  &::before {
+//    content: '{';
+//    display: inline;
+//  }
+//  &::after {
+//    content: '}';
+//    display: inline;
+//  }
+//  li::after {
+//    content: ',';
+//    display: inline;
+//  }
+//  li:last-child::after {
+//    content: '';
+//  }
+//  li {
+//    padding-left: 10px;
+//  }
+//  li > * {
+//    display: inline-block;
+//  }
+//}

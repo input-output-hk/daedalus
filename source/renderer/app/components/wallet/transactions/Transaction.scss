@@ -256,3 +256,18 @@
     }
   }
 }
+
+.metadataDisclaimer {
+  font-family: var(--font-light);
+  font-size: 16px;
+  line-height: 22px;
+}
+
+.metadata {
+  margin-top: 20px;
+
+  pre {
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+}
