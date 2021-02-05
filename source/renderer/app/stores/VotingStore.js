@@ -1,7 +1,8 @@
 // @flow
-import { action, observable } from 'mobx';
+import { action, computed, observable } from 'mobx';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
+import { ROUTES } from '../routes-config';
 import {
   TransactionStates,
   WalletTransaction,
@@ -47,6 +48,7 @@ export default class VotingStore extends Store {
   }
 
   // REQUESTS
+
   @observable getWalletPublicKeyRequest: Request<string> = new Request(
     this.api.ada.getWalletPublicKey
   );
@@ -62,6 +64,7 @@ export default class VotingStore extends Store {
   );
 
   // ACTIONS
+
   @action _showConfirmationDialog = () => {
     this.isConfirmationDialogOpen = true;
   };
@@ -308,4 +311,14 @@ export default class VotingStore extends Store {
     const { bech32_decode_to_bytes: decodeBech32ToBytes } = await walletUtils;
     return formattedArrayBufferToHexString(decodeBech32ToBytes(key));
   };
+
+  // GETTERS
+
+  @computed get currentRoute(): string {
+    return this.stores.router.location.pathname;
+  }
+
+  @computed get isVotingPage(): boolean {
+    return this.currentRoute.indexOf(ROUTES.VOTING.REGISTRATION) > -1;
+  }
 }
