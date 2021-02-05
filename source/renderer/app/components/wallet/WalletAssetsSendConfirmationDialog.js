@@ -12,7 +12,7 @@ import Dialog from '../widgets/Dialog';
 import DialogCloseButton from '../widgets/DialogCloseButton';
 import globalMessages from '../../i18n/global-messages';
 import LocalizableError from '../../i18n/LocalizableError';
-import styles from './WalletTokenSendConfirmationDialog.scss';
+import styles from './WalletAssetsSendConfirmationDialog.scss';
 import { FORM_VALIDATION_DEBOUNCE_WAIT } from '../../config/timingConfig';
 import { submitOnEnter } from '../../utils/form';
 import { FormattedHTMLMessageWithLink } from '../widgets/FormattedHTMLMessageWithLink';
@@ -138,7 +138,7 @@ type State = {
 };
 
 @observer
-export default class WalletTokenSendConfirmationDialog extends Component<
+export default class WalletAssetsSendConfirmationDialog extends Component<
   Props,
   State
 > {

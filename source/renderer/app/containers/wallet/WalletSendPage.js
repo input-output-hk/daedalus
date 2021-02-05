@@ -9,7 +9,7 @@ import {
   DECIMAL_PLACES_IN_ADA,
   MAX_INTEGER_PLACES_IN_ADA,
 } from '../../config/numbersConfig';
-import WalletTokenSendForm from '../../components/wallet/WalletTokenSendForm';
+import WalletAssetsSendForm from '../../components/wallet/WalletAssetsSendForm';
 import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
 
 type Props = InjectedProps;
@@ -79,19 +79,19 @@ export default class WalletSendPage extends Component<Props> {
     const { hwDeviceStatus } = hardwareWallets;
     const { getWalletById } = wallets;
     const activeWallet = wallets.active;
-    let nativeTokens = wallets.all.filter(
+    let assets = wallets.all.filter(
       (wallet) => wallet.isNativeTokenWallet
     );
 
-    // @TODO - Remove hardcoded nativeTokens value after hooking up real data
+    // @TODO - Remove hardcoded assets value after hooking up real data
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
-    if (hasAssetsEnabled && (!nativeTokens || !nativeTokens.length)) {
-      nativeTokens = [wallets.all[0]];
+    if (hasAssetsEnabled && (!assets || !assets.length)) {
+      assets = [wallets.all[0]];
     }
 
     const selectedNativeTokenWallet =
-      nativeTokens && nativeTokens.length
-        ? getWalletById(nativeTokens[0].id)
+      assets && assets.length
+        ? getWalletById(assets[0].id)
         : null;
 
     // Guard against potential null values
@@ -101,8 +101,8 @@ export default class WalletSendPage extends Component<Props> {
 
     return (
       <>
-        {hasAssetsEnabled && nativeTokens && nativeTokens.length ? (
-          <WalletTokenSendForm
+        {hasAssetsEnabled && assets && assets.length ? (
+          <WalletAssetsSendForm
             currencyMaxIntegerDigits={MAX_INTEGER_PLACES_IN_ADA}
             currencyMaxFractionalDigits={DECIMAL_PLACES_IN_ADA}
             currentNumberFormat={profile.currentNumberFormat}
@@ -115,7 +115,7 @@ export default class WalletSendPage extends Component<Props> {
                 isHardwareWallet,
               })
             }
-            nativeTokens={nativeTokens}
+            assets={assets}
             selectedWallet={selectedNativeTokenWallet}
             walletAmount={activeWallet.amount}
             addressValidator={isValidAddress}

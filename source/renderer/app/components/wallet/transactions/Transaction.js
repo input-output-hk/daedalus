@@ -398,9 +398,7 @@ export default class Transaction extends Component<Props, State> {
     const typeOfTransaction = hasAssetsEnabled
       ? intl.formatMessage(headerStateTranslations[state])
       : intl.formatMessage(globalMessages.currency);
-    const currency = hasAssetsEnabled
-      ? 'USDC'
-      : intl.formatMessage(globalMessages.currency);
+
     const fees = hasAssetsEnabled ? '0.202481' : null;
 
     const getIconType = (txState) => {
@@ -593,7 +591,7 @@ export default class Transaction extends Component<Props, State> {
                                     &nbsp;{' '}
                                     { /* data.addresses.currencies
                                       ? data.addresses.currencies[assetsIndex]
-                                      : currency */ }
+                                      : intl.formatMessage(globalMessages.currency) */ }
                                   </div>
                                 </div>
                               </div>

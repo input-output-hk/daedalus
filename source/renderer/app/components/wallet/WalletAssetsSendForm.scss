@@ -23,7 +23,7 @@
     }
   }
 
-  .walletTokenSendForm {
+  .walletAssetsSendForm {
     padding: 0 10px;
 
     .fieldsLine {
@@ -351,8 +351,8 @@
 }
 
 :global {
-  .WalletTokenSendForm_calculatingFeesContainer
-    .WalletTokenSendForm_calculatingFeesSpinnerButton.WalletTokenSendForm_spinning:after {
+  .WalletAssetsSendForm_calculatingFeesContainer
+    .WalletAssetsSendForm_calculatingFeesSpinnerButton.WalletAssetsSendForm_spinning:after {
     background-size: 12px !important;
     height: 12px !important;
     left: calc(50% - 6px) !important;

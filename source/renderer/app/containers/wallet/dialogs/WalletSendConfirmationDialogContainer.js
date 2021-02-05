@@ -5,7 +5,7 @@ import type { StoresMap } from '../../../stores/index';
 import type { ActionsMap } from '../../../actions/index';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
 import WalletSendConfirmationDialog from '../../../components/wallet/WalletSendConfirmationDialog';
-import WalletTokenSendConfirmationDialog from '../../../components/wallet/WalletTokenSendConfirmationDialog';
+import WalletAssetsSendConfirmationDialog from '../../../components/wallet/WalletAssetsSendConfirmationDialog';
 
 type Props = {
   stores: any | StoresMap,
@@ -82,7 +82,7 @@ export default class WalletSendConfirmationDialogContainer extends Component<Pro
     return (
       <>
         {multipleReceivers && multipleReceivers.length ? (
-          <WalletTokenSendConfirmationDialog
+          <WalletAssetsSendConfirmationDialog
             amount={amount}
             sender={activeWallet.id}
             receivers={multipleReceivers}

@@ -9,7 +9,6 @@ import {
   generateAsset,
   generateWallet,
   promise,
-  generatePolicyIdHash,
 } from '../../_support/utils';
 
 // Assets and helpers
@@ -19,43 +18,12 @@ import { HwDeviceStatuses } from '../../../../source/renderer/app/domains/Wallet
 
 // Screens
 import WalletSendForm from '../../../../source/renderer/app/components/wallet/WalletSendForm';
-import WalletTokenSendForm from '../../../../source/renderer/app/components/wallet/WalletTokenSendForm';
-import WalletTokenSendConfirmationDialog from '../../../../source/renderer/app/components/wallet/WalletTokenSendConfirmationDialog';
+import WalletAssetsSendForm from '../../../../source/renderer/app/components/wallet/WalletAssetsSendForm';
+import WalletAssetsSendConfirmationDialog from '../../../../source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog';
 import { DECIMAL_PLACES_IN_ADA } from '../../../../source/renderer/app/config/numbersConfig';
 import { formattedAmountToNaturalUnits } from '../../../../source/renderer/app/utils/formatters';
 
-const assets = {
-  available: [
-    {
-      id: generateHash(),
-      policyId: generatePolicyIdHash(),
-      assetName: '',
-      quantity: 200,
-    },
-    {
-      id: generateHash(),
-      policyId: generatePolicyIdHash(),
-      assetName: '',
-      quantity: 200,
-    },
-  ],
-  total: [
-    {
-      id: generateHash(),
-      policyId: generatePolicyIdHash(),
-      assetName: '',
-      quantity: 200,
-    },
-    {
-      id: generateHash(),
-      policyId: generatePolicyIdHash(),
-      assetName: '',
-      quantity: 200,
-    },
-  ],
-};
-
-const nativeTokens = [
+const assets = [
   generateAsset(
     '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
@@ -189,7 +157,7 @@ storiesOf('Wallets|Send', module)
     />
   ))
   .add('Wallet Assets Send', () => (
-    <WalletTokenSendForm
+    <WalletAssetsSendForm
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
       currentNumberFormat={NUMBER_OPTIONS[0].value}
@@ -203,12 +171,12 @@ storiesOf('Wallets|Send', module)
       hwDeviceStatus={HwDeviceStatuses.READY}
       isHardwareWallet={boolean('isHardwareWallet', false)}
       selectedWallet={generateWallet('Wallet name', '45119903750165', assets)}
-      nativeTokens={nativeTokens}
+      assets={assets}
     />
   ))
   .add('Wallet Assets Send Confirmation Dialog', () => (
     <div>
-      <WalletTokenSendConfirmationDialog
+      <WalletAssetsSendConfirmationDialog
         amount={new BigNumber(100100).toFormat(DECIMAL_PLACES_IN_ADA)}
         sender={generateWallet('Wallet name', '45119903750165', assets).id}
         receiver={generateHash()}

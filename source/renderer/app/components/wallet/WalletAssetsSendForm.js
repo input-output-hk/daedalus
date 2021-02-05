@@ -19,7 +19,7 @@ import { submitOnEnter } from '../../utils/form';
 import AmountInputSkin from './skins/AmountInputSkin';
 import BorderedBox from '../widgets/BorderedBox';
 import LoadingSpinner from '../widgets/LoadingSpinner';
-import styles from './WalletTokenSendForm.scss';
+import styles from './WalletAssetsSendForm.scss';
 import globalMessages from '../../i18n/global-messages';
 import WalletSendConfirmationDialogContainer from '../../containers/wallet/dialogs/WalletSendConfirmationDialogContainer';
 import {
@@ -33,7 +33,7 @@ import { NUMBER_FORMATS } from '../../../../common/types/number.types';
 /* eslint-disable consistent-return */
 import { messages as apiErrorMessages } from '../../api/errors';
 import type { HwDeviceStatus } from '../../domains/Wallet';
-import WalletTokenSendConfirmationDialog from './WalletTokenSendConfirmationDialog';
+import WalletAssetsSendConfirmationDialog from './WalletAssetsSendConfirmationDialog';
 import Wallet from '../../domains/Wallet';
 import closeIcon from '../../assets/images/close-cross.inline.svg';
 import WalletsDropdown from '../widgets/forms/WalletsDropdown';
@@ -166,7 +166,7 @@ type Props = {
   isRestoreActive: boolean,
   hwDeviceStatus: HwDeviceStatus,
   isHardwareWallet: boolean,
-  nativeTokens: Array<any>,
+  assets: Array<any>,
   isClearTooltipOpeningDownward?: boolean,
   selectedWallet: ?Wallet,
 };
@@ -185,7 +185,7 @@ type State = {
 };
 
 @observer
-export default class WalletTokenSendForm extends Component<Props, State> {
+export default class WalletAssetsSendForm extends Component<Props, State> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -217,7 +217,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
 
   componentDidMount() {
     this._isMounted = true;
-    const { selectedWallet, nativeTokens } = this.props;
+    const { selectedWallet, assets } = this.props;
     if (selectedWallet) {
       this.onSelectWallet(selectedWallet.id);
     }
@@ -225,9 +225,9 @@ export default class WalletTokenSendForm extends Component<Props, State> {
     this.setFormFields(false);
 
     // @TODO Remove hardcoded setter of values for token currencies
-    if (nativeTokens && nativeTokens.length) {
+    if (assets && assets.length) {
       this.setState({
-        tokens: [...nativeTokens],
+        tokens: [...assets],
       });
     }
   }
@@ -241,7 +241,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
       return false;
     }
     this.props.openDialogAction({
-      dialog: WalletTokenSendConfirmationDialog,
+      dialog: WalletAssetsSendConfirmationDialog,
     });
   };
 
@@ -937,7 +937,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
           </div>
         ) : (
           <BorderedBox>
-            <div className={styles.walletTokenSendForm}>
+            <div className={styles.walletAssetsSendForm}>
               {sendFormFields.map((row: any, index: number) => (
                 <Fragment key={uniqueId()}>
                   {this.renderReceiverRow(row, index)}
@@ -999,7 +999,7 @@ export default class WalletTokenSendForm extends Component<Props, State> {
           </BorderedBox>
         )}
 
-        {isDialogOpen(WalletTokenSendConfirmationDialog) ? (
+        {isDialogOpen(WalletAssetsSendConfirmationDialog) ? (
           <WalletSendConfirmationDialogContainer
             amount={amount.toFormat(currencyMaxFractionalDigits)}
             receiver={receiverFieldProps.value}
