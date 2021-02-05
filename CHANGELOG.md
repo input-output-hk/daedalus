@@ -11,6 +11,7 @@ Changelog
 
 ### Fixes
 
+- Fixed logging issue with too few `cardano-wallet` logs being packed into logs zip archive ([PR 2340](https://github.com/input-output-hk/daedalus/pull/2340))
 - Fixed misalignment of the "i" icon on the "Set password" dialog ([PR 2337](https://github.com/input-output-hk/daedalus/pull/2337))
 - Removed steps counter from the "Success" wallet restoration dialog step ([PR 2335](https://github.com/input-output-hk/daedalus/pull/2335))
 
