@@ -15,14 +15,15 @@
     }
 
     .stakePoolIdWrapper,
-    .feesWrapper {
+    .feesRow {
       font-family: var(--font-medium);
       font-weight: 500;
       line-height: 1.38;
       margin-bottom: 20px;
 
       .stakePoolIdLabel,
-      .feesLabel {
+      .feesLabel,
+      .depositLabel {
         color: var(--theme-delegation-steps-confirmation-fees-label-color);
         margin-bottom: 6px;
       }
@@ -33,18 +34,32 @@
         user-select: text;
       }
 
-      .calculatingFeesLabel {
+      .calculatingFeesLabel,
+      .calculatingDepositLabel {
         @include animated-ellipsis($duration: 1500, $width: 20px);
         --webkit-backface-visibility: hidden;
       }
 
-      .feesAmount {
+      .feesAmount,
+      .depositAmount {
         color: var(--theme-delegation-steps-confirmation-fees-amount-color);
         user-select: text;
 
-        .feesAmountLabel {
+        .feesAmountLabel,
+        .depositAmountLabel {
           font-family: var(--font-light);
         }
+      }
+    }
+
+    .feesRow {
+      align-items: center;
+      display: flex;
+      justify-content: space-between;
+
+      .feesWrapper,
+      .depositWrapper {
+        flex: 1;
       }
     }
 

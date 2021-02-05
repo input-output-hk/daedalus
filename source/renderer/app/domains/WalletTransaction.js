@@ -8,6 +8,7 @@ import type {
   TransactionState,
   TransactionWithdrawalType,
 } from '../api/transactions/types';
+import type { TransactionMetadata } from '../types/TransactionMetadata';
 
 export const TransactionStates: EnumMap<string, TransactionState> = {
   PENDING: 'pending',
@@ -30,6 +31,8 @@ export class WalletTransaction {
   @observable type: TransactionType;
   @observable title: string = '';
   @observable amount: BigNumber;
+  @observable fee: BigNumber;
+  @observable deposit: BigNumber;
   @observable date: ?Date;
   @observable description: string = '';
   @observable addresses: TrasactionAddresses = {
@@ -41,12 +44,15 @@ export class WalletTransaction {
   @observable depth: TransactionDepth;
   @observable slotNumber: ?number;
   @observable epochNumber: ?number;
+  @observable metadata: ?TransactionMetadata;
 
   constructor(data: {
     id: string,
     type: TransactionType,
     title: string,
     amount: BigNumber,
+    fee: BigNumber,
+    deposit: BigNumber,
     date: ?Date,
     description: string,
     addresses: TrasactionAddresses,
@@ -54,6 +60,7 @@ export class WalletTransaction {
     depth: TransactionDepth,
     slotNumber: ?number,
     epochNumber: ?number,
+    metadata: ?TransactionMetadata,
   }) {
     Object.assign(this, data);
   }

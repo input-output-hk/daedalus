@@ -1,7 +1,8 @@
 // @flow
 export type TipInfo = {
-  epoch: ?number,
-  slot: ?number,
+  epoch: number,
+  slot: number,
+  absoluteSlotNumber: number,
 };
 
 export type NextEpoch = {

@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
-import { get, map, orderBy } from 'lodash';
+import { get, map } from 'lodash';
 import classNames from 'classnames';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import moment from 'moment';
@@ -11,6 +11,10 @@ import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import { StakingPageScrollContext } from '../layouts/StakingWithNavigation';
+import {
+  bigNumberComparator,
+  stringComparator,
+} from '../../../utils/sortComparators';
 import BorderedBox from '../../widgets/BorderedBox';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 import sortIcon from '../../../assets/images/ascending.inline.svg';
@@ -75,6 +79,18 @@ const messages = defineMessages({
   },
 });
 
+const REWARD_FIELDS = {
+  WALLET_NAME: 'wallet',
+  IS_RESTORING: 'isRestoring',
+  SYNCING_PROGRESS: 'syncingProgress',
+  REWARD: 'reward',
+};
+
+const REWARD_ORDERS = {
+  ASCENDING: 'asc',
+  DESCENDING: 'desc',
+};
+
 type Props = {
   rewards: Array<RewardForIncentivizedTestnet>,
   isLoading: boolean,
@@ -101,11 +117,11 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
     isExporting: false,
   };
 
-  constructor() {
-    super();
+  constructor(props: Props) {
+    super(props);
     this.state = {
-      rewardsOrder: 'desc',
-      rewardsSortBy: 'wallet',
+      rewardsOrder: REWARD_ORDERS.DESCENDING,
+      rewardsSortBy: REWARD_FIELDS.WALLET_NAME,
     };
   }
 
@@ -121,9 +137,9 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
     ];
     const date = `${moment().utc().format('YYYY-MM-DDTHHmmss.0SSS')}Z`;
     const exportedBody = sortedRewards.map((reward) => {
-      const rewardWallet = get(reward, 'wallet');
-      const isRestoring = get(reward, 'isRestoring');
-      const rewardAmount = get(reward, 'reward').toFormat(
+      const rewardWallet = get(reward, REWARD_FIELDS.WALLET_NAME);
+      const isRestoring = get(reward, REWARD_FIELDS.IS_RESTORING);
+      const rewardAmount = get(reward, REWARD_FIELDS.REWARD).toFormat(
         DECIMAL_PLACES_IN_ADA
       );
       return [rewardWallet, isRestoring ? '-' : `${rewardAmount} ADA`, date];
@@ -134,6 +150,43 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
       fileContent: exportedContent,
       filenamePrefix: intl.formatMessage(messages.csvFilenamePrefix),
     });
+  };
+
+  getSortedRewards = (): Array<RewardForIncentivizedTestnet> => {
+    const { rewards } = this.props;
+    const { rewardsOrder, rewardsSortBy } = this.state;
+    return rewards
+      .slice()
+      .sort(
+        (
+          rewardA: RewardForIncentivizedTestnet,
+          rewardB: RewardForIncentivizedTestnet
+        ) => {
+          const rewardCompareResult = bigNumberComparator(
+            rewardA.reward,
+            rewardB.reward,
+            rewardsOrder === REWARD_ORDERS.ASCENDING
+          );
+          const walletNameCompareResult = stringComparator(
+            rewardA.wallet,
+            rewardB.wallet,
+            rewardsOrder === REWARD_ORDERS.ASCENDING
+          );
+          if (rewardsSortBy === REWARD_FIELDS.REWARD) {
+            if (rewardCompareResult === 0) {
+              return walletNameCompareResult;
+            }
+            return rewardCompareResult;
+          }
+          if (rewardsSortBy === REWARD_FIELDS.WALLET_NAME) {
+            if (walletNameCompareResult === 0) {
+              return rewardCompareResult;
+            }
+            return walletNameCompareResult;
+          }
+          return 0;
+        }
+      );
   };
 
   render() {
@@ -147,16 +200,14 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
     const { intl } = this.context;
     const noRewards = !isLoading && ((rewards && !rewards.length) || !rewards);
     const showRewards = rewards && rewards.length > 0 && !isLoading;
-    const sortedRewards = showRewards
-      ? orderBy(rewards, rewardsSortBy, rewardsOrder)
-      : [];
+    const sortedRewards = showRewards ? this.getSortedRewards() : [];
     const availableTableHeaders = [
       {
-        name: 'wallet',
+        name: REWARD_FIELDS.WALLET_NAME,
         title: intl.formatMessage(messages.tableHeaderWallet),
       },
       {
-        name: 'reward',
+        name: REWARD_FIELDS.REWARD,
         title: intl.formatMessage(messages.tableHeaderReward),
       },
     ];
@@ -238,12 +289,22 @@ export default class StakingRewardsForIncentivizedTestnet extends Component<
                   </thead>
                   <tbody>
                     {map(sortedRewards, (reward, key) => {
-                      const rewardWallet = get(reward, 'wallet');
-                      const isRestoring = get(reward, 'isRestoring');
-                      const syncingProgress = get(reward, 'syncingProgress');
-                      const rewardAmount = get(reward, 'reward').toFormat(
-                        DECIMAL_PLACES_IN_ADA
+                      const rewardWallet = get(
+                        reward,
+                        REWARD_FIELDS.WALLET_NAME
                       );
+                      const isRestoring = get(
+                        reward,
+                        REWARD_FIELDS.IS_RESTORING
+                      );
+                      const syncingProgress = get(
+                        reward,
+                        REWARD_FIELDS.SYNCING_PROGRESS
+                      );
+                      const rewardAmount = get(
+                        reward,
+                        REWARD_FIELDS.REWARD
+                      ).toFormat(DECIMAL_PLACES_IN_ADA);
 
                       return (
                         <tr key={key}>

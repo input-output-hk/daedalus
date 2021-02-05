@@ -128,7 +128,6 @@ export class VirtualTransactionList extends Component<Props> {
       ? this.estimateHeightOfTxExpandedRow(row, tx)
       : this.estimateHeightOfTxContractedRow(row);
     this.recomputeVirtualRowHeights();
-
     // In case transaction has just been manually expanded we need to schedule
     // another row height calculation if the transaction still isn't fully
     // expanded in the moment of the initial execution of this method
