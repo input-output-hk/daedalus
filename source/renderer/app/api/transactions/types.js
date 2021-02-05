@@ -3,6 +3,7 @@ import BigNumber from 'bignumber.js';
 import { WalletTransaction } from '../../domains/WalletTransaction';
 import { WalletUnits } from '../../domains/Wallet';
 import type { DelegationAction } from '../../types/stakingTypes';
+import type { TransactionMetadata } from '../../types/TransactionMetadata';
 
 export type TransactionAmount = {
   quantity: number,
@@ -50,6 +51,7 @@ export type Transaction = {
   outputs: Array<TransactionOutputs>,
   withdrawals: Array<TransactionWithdrawals>,
   status: TransactionState,
+  metadata?: TransactionMetadata,
 };
 
 export type Transactions = Array<Transaction>;
@@ -98,6 +100,11 @@ export type GetTransactionsRequest = {
   // isRestoreActive: boolean,
   // isRestoreCompleted: boolean,
   // cachedTransactions: Array<WalletTransaction>,
+};
+
+export type GetTransactionRequest = {
+  walletId: string,
+  transactionId: string,
 };
 
 export type GetTransactionFeeRequest = {
@@ -216,7 +223,7 @@ export type CoinSelectionsResponse = {
   inputs: Array<CoinSelectionInput>,
   outputs: Array<CoinSelectionOutput>,
   certificates: CoinSelectionCertificates,
-  feeWithDelegationDeposit: BigNumber,
+  feeWithDeposits: BigNumber,
   fee: BigNumber,
 };
 

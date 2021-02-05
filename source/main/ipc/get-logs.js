@@ -4,10 +4,12 @@ import fs from 'fs';
 import path from 'path';
 import {
   pubLogsFolderPath,
-  MAX_NODE_LOGS_ALLOWED,
   ALLOWED_LOGS,
   ALLOWED_NODE_LOGS,
+  ALLOWED_WALLET_LOGS,
   ALLOWED_LAUNCHER_LOGS,
+  MAX_NODE_LOGS_ALLOWED,
+  MAX_WALLET_LOGS_ALLOWED,
   MAX_LAUNCHER_LOGS_ALLOWED,
 } from '../config';
 import { MainIpcChannel } from './lib/MainIpcChannel';
@@ -50,6 +52,10 @@ const isFileAllowed = (fileName: string) =>
 const isFileNodeLog = (fileName: string, nodeLogsIncluded: number) =>
   ALLOWED_NODE_LOGS.test(fileName) && nodeLogsIncluded < MAX_NODE_LOGS_ALLOWED;
 
+const isFileWalletLog = (fileName: string, walletLogsIncluded: number) =>
+  ALLOWED_WALLET_LOGS.test(fileName) &&
+  walletLogsIncluded < MAX_WALLET_LOGS_ALLOWED;
+
 const isFileLauncherLog = (fileName: string, nodeLogsIncluded: number) =>
   ALLOWED_LAUNCHER_LOGS.test(fileName) &&
   nodeLogsIncluded < MAX_LAUNCHER_LOGS_ALLOWED;
@@ -62,6 +68,7 @@ export default () => {
       const files = fs.readdirSync(pubLogsFolderPath).sort().reverse();
 
       let nodeLogsIncluded = 0;
+      let walletLogsIncluded = 0;
       let launcherLogsIncluded = 0;
       for (let i = 0; i < files.length; i++) {
         const currentFile = path.join(pubLogsFolderPath, files[i]);
@@ -72,6 +79,9 @@ export default () => {
           } else if (isFileNodeLog(fileName, nodeLogsIncluded)) {
             logFiles.push(fileName);
             nodeLogsIncluded++;
+          } else if (isFileWalletLog(fileName, walletLogsIncluded)) {
+            logFiles.push(fileName);
+            walletLogsIncluded++;
           } else if (isFileLauncherLog(fileName, launcherLogsIncluded)) {
             logFiles.push(fileName);
             launcherLogsIncluded++;

@@ -179,6 +179,18 @@
     }
   }
 
+  .transactionFeeRow,
+  .depositRow {
+    .amount {
+      color: var(--theme-transactions-list-item-highlight-color);
+
+      .currency {
+        font-family: var(--font-light);
+        margin-left: 5px;
+      }
+    }
+  }
+
   span {
     font-family: var(--font-light);
     font-size: 15px;
@@ -242,5 +254,20 @@
     & > g > g {
       stroke: var(--theme-icon-transactions-ada-symbol-color);
     }
+  }
+}
+
+.metadataDisclaimer {
+  font-family: var(--font-light);
+  font-size: 16px;
+  line-height: 22px;
+}
+
+.metadata {
+  margin-top: 20px;
+
+  pre {
+    white-space: pre-wrap;
+    word-break: break-all;
   }
 }

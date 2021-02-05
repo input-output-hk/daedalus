@@ -11,6 +11,9 @@ import './nodes';
 // Staking
 import './staking/Staking.stories';
 
+// Voting
+import './voting/Voting.stories';
+
 // Settings
 import './settings';
 

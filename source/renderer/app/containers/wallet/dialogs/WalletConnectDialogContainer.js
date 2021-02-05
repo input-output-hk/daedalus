@@ -26,6 +26,7 @@ export default class WalletConnectDialogContainer extends Component<Props> {
     const { hardwareWallets, wallets, app } = stores;
     const { hwDeviceStatus, transportDevice } = hardwareWallets;
     const { createHardwareWalletRequest } = wallets;
+
     return (
       <WalletConnectDialog
         isSubmitting={createHardwareWalletRequest.isExecuting}

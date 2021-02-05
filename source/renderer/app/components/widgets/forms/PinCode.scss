@@ -1,0 +1,33 @@
+.component {
+  width: 240px;
+
+  :global {
+    .SimpleFormField_label {
+      width: 100%;
+    }
+
+    .SimpleInput_input {
+      font-family: var(--font-regular);
+      font-size: 14px;
+      height: 50px;
+      padding: 10px 10px;
+      text-align: center;
+      width: 50px;
+    }
+  }
+
+  .pinCodeInput {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    width: 240px;
+
+    .pinCode {
+      &.error {
+        input {
+          border-color: var(--theme-color-error);
+        }
+      }
+    }
+  }
+}
