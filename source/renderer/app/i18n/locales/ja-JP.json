@@ -631,7 +631,7 @@
   "voting.votingRegistration.confirm.step.descriptionRestart": "<span>[有権者登録をやり直す]</span>をクリックして、有権者登録手続きをやり直してください。",
   "voting.votingRegistration.confirm.step.errorMessage": "有権者登録手続きは正しく完了しませんでした。",
   "voting.votingRegistration.confirm.step.restartButtonLabel": "有権者登録をやり直す",
-  "voting.votingRegistration.confirm.step.transactionConfirmedLabel": "!!!Transaction confirmed",
+  "voting.votingRegistration.confirm.step.transactionConfirmedLabel": "トランザクションが確認されました",
   "voting.votingRegistration.confirm.step.transactionPendingLabel": "トランザクション保留中...",
   "voting.votingRegistration.confirm.step.waitingForConfirmationsLabel": "確認を待っています...",
   "voting.votingRegistration.dialog.confirmation.button.cancelButtonLabel": "登録をキャンセルする",
