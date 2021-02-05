@@ -64,9 +64,12 @@ export default class SidebarStore extends Store {
   }
 
   @action _configureCategories = () => {
-    const { isFlight, isIncentivizedTestnet, isShelleyTestnet } = global;
-
-    const { isShelleyActivated, isShelleyPending } = this.stores.networkStatus;
+    const {
+      isFlight,
+      isIncentivizedTestnet,
+      isShelleyTestnet,
+      environment: { isDev, isMainnet, isTestnet },
+    } = global;
 
     const {
       CATEGORIES_BY_NAME: categories,
@@ -78,10 +81,11 @@ export default class SidebarStore extends Store {
     } = {
       [categories.WALLETS.name]: true,
       [categories.PAPER_WALLET_CREATE_CERTIFICATE.name]: false,
-      [categories.STAKING_DELEGATION_COUNTDOWN.name]: isShelleyPending,
-      [categories.STAKING.name]: isShelleyActivated,
+      [categories.STAKING_DELEGATION_COUNTDOWN.name]: false,
+      [categories.STAKING.name]: true,
       [categories.REDEEM_ITN_REWARDS.name]: true,
       [categories.SETTINGS.name]: true,
+      [categories.VOTING.name]: isFlight || isMainnet || isTestnet || isDev,
       [categories.NETWORK_INFO.name]:
         isFlight || isIncentivizedTestnet || isShelleyTestnet,
     };

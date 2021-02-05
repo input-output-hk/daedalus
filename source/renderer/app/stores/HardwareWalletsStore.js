@@ -14,6 +14,7 @@ import {
   isTrezorEnabled,
   isLedgerEnabled,
 } from '../config/hardwareWalletsConfig';
+import { TIME_TO_LIVE } from '../config/txnsConfig';
 import {
   getHardwareWalletTransportChannel,
   getExtendedPublicKeyChannel,
@@ -1168,13 +1169,14 @@ export default class HardwareWalletsStore extends Store {
     }
 
     const { isMainnet } = this.environment;
+    const ttl = this._getTtl();
 
     try {
       const signedTransaction = await signTransactionTrezorChannel.request({
         inputs: inputsData,
         outputs: outputsData,
         fee: formattedAmountToLovelace(fee.toString()).toString(),
-        ttl: '150000000',
+        ttl: ttl.toString(),
         networkId: isMainnet
           ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId
           : HW_SHELLEY_CONFIG.NETWORK.TESTNET.networkId,
@@ -1307,9 +1309,8 @@ export default class HardwareWalletsStore extends Store {
     });
 
     const certificatesData = await Promise.all(_certificatesData);
-
     const fee = formattedAmountToLovelace(flatFee.toString());
-    const ttl = 150000000;
+    const ttl = this._getTtl();
     const withdrawals = [];
     const metadataHashHex = null;
 
@@ -1754,6 +1755,13 @@ export default class HardwareWalletsStore extends Store {
         type = null;
     }
     return type;
+  };
+
+  _getTtl = (): number => {
+    const { networkTip } = this.stores.networkStatus;
+    const absoluteSlotNumber = get(networkTip, 'absoluteSlotNumber', 0);
+    const ttl = absoluteSlotNumber + TIME_TO_LIVE;
+    return ttl;
   };
 
   _setHardwareWalletLocalData = async ({

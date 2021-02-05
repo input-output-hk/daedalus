@@ -42,6 +42,12 @@ const messages = defineMessages({
   recoveryPhraseInputHint: {
     id: 'wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInputHint',
     defaultMessage: '!!!Enter your {numberOfWords}-word recovery phrase',
+    description: 'Placeholder hint for the mnemonics autocomplete.',
+  },
+  recoveryPhraseInputPlaceholder: {
+    id:
+      'wallet.backup.recovery.phrase.entry.dialog.recoveryPhraseInputPlaceholder',
+    defaultMessage: '!!!Enter word #{wordNumber}',
     description: 'Placeholder for the mnemonics autocomplete.',
   },
   recoveryPhraseNoResults: {
@@ -169,7 +175,6 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
     ]);
     const wordCount = WALLET_RECOVERY_PHRASE_WORD_COUNT;
     const enteredPhraseString = enteredPhrase.join(' ');
-
     const buttonLabel = !isSubmitting ? (
       intl.formatMessage(messages.buttonLabelConfirm)
     ) : (
@@ -212,9 +217,9 @@ export default class WalletRecoveryPhraseEntryDialog extends Component<Props> {
               {...recoveryPhraseField.bind()}
               label={intl.formatMessage(messages.recoveryPhraseInputLabel)}
               placeholder={intl.formatMessage(
-                messages.recoveryPhraseInputHint,
+                messages.recoveryPhraseInputPlaceholder,
                 {
-                  numberOfWords: wordCount,
+                  wordNumber: enteredPhrase.length + 1,
                 }
               )}
               options={suggestedMnemonics}

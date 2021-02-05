@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
+import BigNumber from 'bignumber.js';
 import { Button } from 'react-polymorph/lib/components/Button';
 import { ButtonSkin } from 'react-polymorph/lib/skins/simple/ButtonSkin';
 import styles from './DelegationCenterNoWallets.scss';
@@ -22,7 +23,7 @@ const messages = defineMessages({
   },
   createWalletButtonLabel: {
     id: 'staking.delegationCenter.noWallets.createWalletButtonLabel',
-    defaultMessage: '!!!Create a wallet',
+    defaultMessage: '!!!Create wallet',
     description:
       'Label for "Create New Wallet" button on the Delegation centre Page.',
   },
@@ -47,7 +48,9 @@ export default class DelegationCenterNoWallets extends Component<Props> {
         <SVGInline svg={icon} className={styles.icon} />
         <h1>{intl.formatMessage(messages.headLine)}</h1>
         <p>
-          {intl.formatMessage(messages.instructions, { minDelegationFunds })}
+          {intl.formatMessage(messages.instructions, {
+            minDelegationFunds: new BigNumber(minDelegationFunds).toFormat(0),
+          })}
         </p>
         <Button
           className="primary"
