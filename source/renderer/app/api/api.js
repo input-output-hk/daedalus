@@ -100,7 +100,6 @@ import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 import {
   SMASH_SERVER_STATUSES,
   SMASH_SERVERS_LIST,
-  DELEGATION_DEPOSIT,
   MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE,
   REWARDS_REDEMPTION_FEE_CALCULATION_AMOUNT,
 } from '../config/stakingConfig';
@@ -191,6 +190,7 @@ import type { GetNewsResponse } from './news/types';
 import type {
   JoinStakePoolRequest,
   GetDelegationFeeRequest,
+  DelegationCalculateFeeResponse,
   AdaApiStakePools,
   AdaApiStakePool,
   QuitStakePoolRequest,
@@ -399,9 +399,7 @@ export default class AdaApi {
       const transactions = response.map((tx) =>
         _createTransactionFromServerData(tx)
       );
-      return new Promise((resolve) =>
-        resolve({ transactions, total: response.length })
-      );
+      return Promise.resolve({ transactions, total: response.length });
     } catch (error) {
       logger.error('AdaApi::getTransactions error', { error });
       throw new ApiError(error);
@@ -899,7 +897,6 @@ export default class AdaApi {
       parameters: filterLogData(request),
     });
     const { walletId, payments, delegation } = request;
-
     try {
       let data;
       if (delegation) {
@@ -933,13 +930,15 @@ export default class AdaApi {
       const outputs = concat(response.outputs, response.change);
 
       // Calculate fee from inputs and outputs
-      let totalInputs = 0;
-      let totalOutputs = 0;
       const inputsData = [];
       const outputsData = [];
       const certificatesData = [];
+      let totalInputs = new BigNumber(0);
+      let totalOutputs = new BigNumber(0);
+
       map(response.inputs, (input) => {
-        totalInputs += input.amount.quantity;
+        const inputAmount = new BigNumber(input.amount.quantity);
+        totalInputs = totalInputs.plus(inputAmount);
         const inputData = {
           address: input.address,
           amount: input.amount,
@@ -949,8 +948,10 @@ export default class AdaApi {
         };
         inputsData.push(inputData);
       });
+
       map(outputs, (output) => {
-        totalOutputs += output.amount.quantity;
+        const outputAmount = new BigNumber(output.amount.quantity);
+        totalOutputs = totalOutputs.plus(outputAmount);
         const outputData = {
           address: output.address,
           amount: output.amount,
@@ -958,6 +959,7 @@ export default class AdaApi {
         };
         outputsData.push(outputData);
       });
+
       if (response.certificates) {
         map(response.certificates, (certificate) => {
           const certificateData = {
@@ -968,28 +970,21 @@ export default class AdaApi {
           certificatesData.push(certificateData);
         });
       }
-      const fee = new BigNumber(totalInputs - totalOutputs).dividedBy(
-        LOVELACES_PER_ADA
-      );
 
-      let transactionFee;
-      if (delegation && delegation.delegationAction) {
-        const delegationDeposit = new BigNumber(DELEGATION_DEPOSIT);
-        const isDepositIncluded = fee.gt(delegationDeposit);
-        transactionFee = isDepositIncluded ? fee.minus(delegationDeposit) : fee;
-      } else {
-        transactionFee = fee;
-      }
+      const deposits = map(response.deposits, (deposit) => deposit.quantity);
+      const totalDeposits = deposits.length
+        ? BigNumber.sum.apply(null, deposits)
+        : new BigNumber(0);
+      const feeWithDeposits = totalInputs.minus(totalOutputs);
+      const fee = feeWithDeposits.minus(totalDeposits);
 
-      // On first wallet delegation deposit is included in fee
       const extendedResponse = {
         inputs: inputsData,
         outputs: outputsData,
         certificates: certificatesData,
-        feeWithDelegationDeposit: fee,
-        fee: transactionFee,
+        feeWithDeposits: feeWithDeposits.dividedBy(LOVELACES_PER_ADA),
+        fee: fee.dividedBy(LOVELACES_PER_ADA),
       };
-
       logger.debug('AdaApi::selectCoins success', { extendedResponse });
       return extendedResponse;
     } catch (error) {
@@ -2018,11 +2013,13 @@ export default class AdaApi {
         localTip: {
           epoch: get(nodeTip, 'epoch_number', 0),
           slot: get(nodeTip, 'slot_number', 0),
+          absoluteSlotNumber: get(nodeTip, 'absolute_slot_number', 0),
         },
         networkTip: networkTip
           ? {
-              epoch: get(networkTip, 'epoch_number', null),
-              slot: get(networkTip, 'slot_number', null),
+              epoch: get(networkTip, 'epoch_number', 0),
+              slot: get(networkTip, 'slot_number', 0),
+              absoluteSlotNumber: get(networkTip, 'absolute_slot_number', 0),
             }
           : null,
         nextEpoch: nextEpoch
@@ -2149,7 +2146,7 @@ export default class AdaApi {
 
   calculateDelegationFee = async (
     request: GetDelegationFeeRequest
-  ): Promise<BigNumber> => {
+  ): Promise<DelegationCalculateFeeResponse> => {
     logger.debug('AdaApi::calculateDelegationFee called', {
       parameters: filterLogData(request),
     });
@@ -2158,8 +2155,7 @@ export default class AdaApi {
         walletId: request.walletId,
       });
       logger.debug('AdaApi::calculateDelegationFee success', { response });
-      const delegationFee = _createDelegationFeeFromServerData(response);
-      return delegationFee;
+      return _createDelegationFeeFromServerData(response);
     } catch (error) {
       logger.error('AdaApi::calculateDelegationFee error', { error });
       throw new ApiError(error);
@@ -2316,6 +2312,8 @@ const _createTransactionFromServerData = action(
     const {
       id,
       amount,
+      fee,
+      deposit,
       inserted_at, // eslint-disable-line camelcase
       pending_since, // eslint-disable-line camelcase
       depth,
@@ -2324,6 +2322,7 @@ const _createTransactionFromServerData = action(
       outputs,
       withdrawals,
       status,
+      metadata,
     } = data;
     const state = _conditionToTxState(status);
     const stateInfo =
@@ -2344,6 +2343,8 @@ const _createTransactionFromServerData = action(
       amount: new BigNumber(
         direction === 'outgoing' ? amount.quantity * -1 : amount.quantity
       ).dividedBy(LOVELACES_PER_ADA),
+      fee: new BigNumber(fee.quantity).dividedBy(LOVELACES_PER_ADA),
+      deposit: new BigNumber(deposit.quantity).dividedBy(LOVELACES_PER_ADA),
       date: utcStringToDate(date),
       description: '',
       addresses: {
@@ -2352,6 +2353,7 @@ const _createTransactionFromServerData = action(
         withdrawals: withdrawals.map(({ stake_address: address }) => address),
       },
       state,
+      metadata,
     });
   }
 );
@@ -2380,8 +2382,14 @@ const _createMigrationFeeFromServerData = action(
 const _createDelegationFeeFromServerData = action(
   'AdaApi::_createDelegationFeeFromServerData',
   (data: TransactionFee) => {
-    const amount = get(data, ['estimated_max', 'quantity'], 0);
-    return new BigNumber(amount).dividedBy(LOVELACES_PER_ADA);
+    const feeWithDeposit = new BigNumber(
+      get(data, ['estimated_max', 'quantity'], 0)
+    ).dividedBy(LOVELACES_PER_ADA);
+    const deposit = new BigNumber(
+      get(data, ['deposit', 'quantity'], 0)
+    ).dividedBy(LOVELACES_PER_ADA);
+    const fee = feeWithDeposit.minus(deposit);
+    return { fee, deposit };
   }
 );
 

@@ -10,6 +10,7 @@ import {
   RECENT_STAKE_POOLS_COUNT,
   DELEGATION_ACTIONS,
 } from '../../../config/stakingConfig';
+import type { DelegationCalculateFeeResponse } from '../../../api/staking/types';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
 
 const messages = defineMessages({
@@ -40,7 +41,7 @@ type State = {
   activeStep: number,
   selectedWalletId: string,
   selectedPoolId: string,
-  stakePoolJoinFee: ?BigNumber,
+  stakePoolJoinFee: ?DelegationCalculateFeeResponse,
 };
 
 type Props = InjectedDialogContainerProps;
@@ -61,6 +62,19 @@ export default class DelegationSetupWizardDialogContainer extends Component<
     children: null,
     onClose: () => {},
   };
+
+  // We need to track the mounted state in order to avoid calling
+  // setState promise handling code after the component was already unmounted:
+  // Read more: https://facebook.github.io/react/blog/2015/12/16/ismounted-antipattern.html
+  _isMounted = false;
+
+  componentDidMount() {
+    this._isMounted = true;
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
+  }
 
   handleIsWalletAcceptable = (
     walletAmount?: BigNumber,
@@ -247,7 +261,11 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         poolId,
         delegationAction: DELEGATION_ACTIONS.JOIN,
       });
-      stakePoolJoinFee = coinsSelection.feeWithDelegationDeposit;
+      const { feeWithDeposits, fee } = coinsSelection;
+      stakePoolJoinFee = {
+        fee,
+        deposit: feeWithDeposits.minus(fee),
+      };
       // Initiate Transaction (Delegation)
       hardwareWallets.initiateTransaction({ walletId: selectedWalletId });
     } else {
@@ -256,9 +274,13 @@ export default class DelegationSetupWizardDialogContainer extends Component<
       });
     }
 
-    // Update state only if DelegationSetupWizardDialog is still active
+    // Update state only if DelegationSetupWizardDialog is still mounted and active
     // and fee calculation was successful
-    if (isOpen(DelegationSetupWizardDialog) && stakePoolJoinFee) {
+    if (
+      this._isMounted &&
+      isOpen(DelegationSetupWizardDialog) &&
+      stakePoolJoinFee
+    ) {
       this.setState({ stakePoolJoinFee });
     }
   }

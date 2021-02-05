@@ -34,7 +34,6 @@ import {
 } from '../../config/walletsConfig';
 import {
   LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
-  PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT,
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
   YOROI_WALLET_RECOVERY_PHRASE_WORD_COUNT,
 } from '../../config/cryptoConfig';
@@ -175,6 +174,12 @@ const messages = defineMessages({
       '!!!Enter your {numberOfWords}-word paper wallet recovery phrase',
     description:
       'Hint "Enter your 27-word paper wallet recovery phrase." for the recovery phrase input on the wallet restore dialog.',
+  },
+  shieldedRecoveryPhraseInputPlaceholder: {
+    id: 'wallet.restore.dialog.shielded.recovery.phrase.input.placeholder',
+    defaultMessage: '!!!Enter word #{wordNumber}',
+    description:
+      'Placeholder "Enter word #" for the recovery phrase input on the wallet restore dialog.',
   },
   restorePaperWalletButtonLabel: {
     id: 'wallet.restore.dialog.paper.wallet.button.label',
@@ -387,9 +392,7 @@ export default class WalletRestoreDialog extends Component<Props, State> {
     const label = this.isCertificate()
       ? this.context.intl.formatMessage(messages.restorePaperWalletButtonLabel)
       : this.context.intl.formatMessage(messages.importButtonLabel);
-
     const buttonLabel = !isSubmitting ? label : <LoadingSpinner />;
-
     const actions = [
       {
         label: buttonLabel,
@@ -576,9 +579,12 @@ export default class WalletRestoreDialog extends Component<Props, State> {
           placeholder={
             !this.isCertificate()
               ? intl.formatMessage(messages.recoveryPhraseInputHint)
-              : intl.formatMessage(messages.shieldedRecoveryPhraseInputHint, {
-                  numberOfWords: PAPER_WALLET_RECOVERY_PHRASE_WORD_COUNT,
-                })
+              : intl.formatMessage(
+                  messages.shieldedRecoveryPhraseInputPlaceholder,
+                  {
+                    wordNumber: recoveryPhraseField.value.length + 1,
+                  }
+                )
           }
           options={suggestedMnemonics}
           requiredSelections={[RECOVERY_PHRASE_WORD_COUNT_OPTIONS[walletType]]}

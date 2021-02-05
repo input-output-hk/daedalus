@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { BigNumber } from 'bignumber.js';
 import { get } from 'lodash';
 import DelegationStepsSuccessDialog from './DelegationStepsSuccessDialog';
 import DelegationStepsChooseWalletDialog from './DelegationStepsChooseWalletDialog';
@@ -13,6 +12,7 @@ import LocalizableError from '../../../i18n/LocalizableError';
 import StakePool from '../../../domains/StakePool';
 import Wallet from '../../../domains/Wallet';
 
+import type { DelegationCalculateFeeResponse } from '../../../api/staking/types';
 import type { HwDeviceStatus } from '../../../domains/Wallet';
 
 type Props = {
@@ -35,7 +35,7 @@ type Props = {
   currentTheme: string,
   selectedWallet: ?Wallet,
   selectedPool: ?StakePool,
-  stakePoolJoinFee: ?BigNumber,
+  stakePoolJoinFee: ?DelegationCalculateFeeResponse,
   isSubmitting: boolean,
   error: ?LocalizableError,
   futureEpochStartTime: string,
