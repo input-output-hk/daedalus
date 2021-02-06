@@ -10,6 +10,7 @@ import {
   RECENT_STAKE_POOLS_COUNT,
   DELEGATION_ACTIONS,
 } from '../../../config/stakingConfig';
+import type { DelegationCalculateFeeResponse } from '../../../api/staking/types';
 import type { InjectedDialogContainerProps } from '../../../types/injectedPropsType';
 
 const messages = defineMessages({
@@ -40,7 +41,7 @@ type State = {
   activeStep: number,
   selectedWalletId: string,
   selectedPoolId: string,
-  stakePoolJoinFee: ?BigNumber,
+  stakePoolJoinFee: ?DelegationCalculateFeeResponse,
 };
 
 type Props = InjectedDialogContainerProps;
@@ -260,7 +261,11 @@ export default class DelegationSetupWizardDialogContainer extends Component<
         poolId,
         delegationAction: DELEGATION_ACTIONS.JOIN,
       });
-      stakePoolJoinFee = coinsSelection.feeWithDelegationDeposit;
+      const { feeWithDeposits, fee } = coinsSelection;
+      stakePoolJoinFee = {
+        fee,
+        deposit: feeWithDeposits.minus(fee),
+      };
       // Initiate Transaction (Delegation)
       hardwareWallets.initiateTransaction({ walletId: selectedWalletId });
     } else {

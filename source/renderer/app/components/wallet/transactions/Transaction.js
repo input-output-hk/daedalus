@@ -8,6 +8,7 @@ import classNames from 'classnames';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
 import CancelTransactionButton from './CancelTransactionButton';
+import { TransactionMetadataView } from './metadata/TransactionMetadataView';
 import styles from './Transaction.scss';
 import TransactionTypeIcon from './TransactionTypeIcon';
 import arrow from '../../../assets/images/collapse-arrow.inline.svg';
@@ -57,6 +58,22 @@ const messages = defineMessages({
     defaultMessage:
       'Transaction metadata is not moderated and may contain inappropriate content. Show unmoderated content.',
     description: '',
+  },
+  metadataLabel: {
+    id: 'wallet.transaction.metadataLabel',
+    defaultMessage: '!!!Transaction metadata',
+    description: 'Transaction metadata label',
+  },
+  metadataDisclaimer: {
+    id: 'wallet.transaction.metadataDisclaimer',
+    defaultMessage:
+      '!!!Transaction metadata is not moderated and may contain inappropriate content.',
+    description: 'Transaction metadata disclaimer',
+  },
+  metadataConfirmationLabel: {
+    id: 'wallet.transaction.metadataConfirmationLabel',
+    defaultMessage: '!!!Show unmoderated content',
+    description: 'Transaction metadata confirmation toggle',
   },
   conversionRate: {
     id: 'wallet.transaction.conversion.rate',
@@ -108,6 +125,16 @@ const messages = defineMessages({
     defaultMessage: '!!!Asset',
     description: 'Asset',
   },
+  transactionFee: {
+    id: 'wallet.transaction.transactionFee',
+    defaultMessage: '!!!Transaction fee',
+    description: 'Transaction fee',
+  },
+  deposit: {
+    id: 'wallet.transaction.deposit',
+    defaultMessage: '!!!Deposit',
+    description: 'Deposit',
+  },
   transactionAmount: {
     id: 'wallet.transaction.transactionAmount',
     defaultMessage: '!!!Transaction amount',
@@ -117,11 +144,6 @@ const messages = defineMessages({
     id: 'wallet.transaction.multipleTokens',
     defaultMessage: '!!!Multiple assets',
     description: 'Multiple tokens.',
-  },
-  transactionFee: {
-    id: 'wallet.transaction.transactionFee',
-    defaultMessage: '!!!Transaction fee',
-    description: 'Transaction fee.',
   },
   cancelPendingTxnNote: {
     id: 'wallet.transaction.pending.cancelPendingTxnNote',
@@ -211,9 +233,11 @@ type Props = {
   isExpanded: boolean,
   isRestoreActive: boolean,
   isLastInList: boolean,
+  isShowingMetadata: boolean,
   formattedWalletAmount: Function,
   onDetailsToggled: ?Function,
   onOpenExternalLink: Function,
+  onShowMetadata: () => void,
   getUrlByType: Function,
   currentTimeFormat: string,
   walletId: string,
@@ -224,6 +248,7 @@ type Props = {
 
 type State = {
   showConfirmationDialog: boolean,
+  showUnmoderatedMetadata: boolean,
 };
 
 export default class Transaction extends Component<Props, State> {
@@ -233,7 +258,19 @@ export default class Transaction extends Component<Props, State> {
 
   state = {
     showConfirmationDialog: false,
+    showUnmoderatedMetadata: false,
   };
+
+  componentDidUpdate(prevProps: Props, prevState: State) {
+    // Tell parent components that meta data was toggled
+    if (
+      !prevState.showUnmoderatedMetadata &&
+      this.state.showUnmoderatedMetadata &&
+      this.props.onShowMetadata
+    ) {
+      this.props.onShowMetadata();
+    }
+  }
 
   toggleDetails() {
     const { onDetailsToggled } = this.props;
@@ -352,6 +389,7 @@ export default class Transaction extends Component<Props, State> {
     const {
       data,
       isLastInList,
+      isShowingMetadata,
       state,
       formattedWalletAmount,
       onOpenExternalLink,
@@ -589,9 +627,9 @@ export default class Transaction extends Component<Props, State> {
                                   <div className={styles.amount}>
                                     {formattedWalletAmount(data.amount, false)}
                                     &nbsp;{' '}
-                                    { /* data.addresses.currencies
+                                    {/* data.addresses.currencies
                                       ? data.addresses.currencies[assetsIndex]
-                                      : intl.formatMessage(globalMessages.currency) */ }
+                                      : intl.formatMessage(globalMessages.currency) */}
                                   </div>
                                 </div>
                               </div>
@@ -616,6 +654,18 @@ export default class Transaction extends Component<Props, State> {
                       />
                     </div>
                   )
+                )}
+
+                {!hasAssetsEnabled && !data.deposit.isZero() && (
+                  <>
+                    <h2>{intl.formatMessage(messages.deposit)}</h2>
+                    <div className={styles.depositRow}>
+                      <div className={styles.amount}>
+                        {formattedWalletAmount(data.deposit, false)}
+                        <span className={styles.currency}>ADA</span>
+                      </div>
+                    </div>
+                  </>
                 )}
 
                 {hasAssetsEnabled && fees && (
@@ -643,21 +693,36 @@ export default class Transaction extends Component<Props, State> {
                     skin={LinkSkin}
                   />
                 </div>
-
-                {hasAssetsEnabled && (
-                  <>
-                    <h2>{intl.formatMessage(messages.transactionMetadata)}</h2>
-                    <div className={styles.transactionIdRow}>
-                      <div className={styles.transactionMetadata}>
-                        {intl.formatMessage(
-                          messages.transactionMetadataDescription
-                        )}
-                      </div>
-                    </div>
-                  </>
-                )}
-
                 {this.renderCancelPendingTxnContent()}
+
+                {data.metadata != null && (
+                  <div className={styles.metadata}>
+                    <h2>{intl.formatMessage(messages.metadataLabel)}</h2>
+                    {data.metadata &&
+                    (this.state.showUnmoderatedMetadata ||
+                      isShowingMetadata) ? (
+                      <TransactionMetadataView data={data.metadata} />
+                    ) : (
+                      <>
+                        <p className={styles.metadataDisclaimer}>
+                          {intl.formatMessage(messages.metadataDisclaimer)}
+                        </p>
+                        <Link
+                          isUnderlined={false}
+                          hasIconAfter={false}
+                          underlineOnHover
+                          label={intl.formatMessage(
+                            messages.metadataConfirmationLabel
+                          )}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            this.setState({ showUnmoderatedMetadata: true });
+                          }}
+                        />
+                      </>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
             <SVGInline svg={arrow} className={arrowStyles} />

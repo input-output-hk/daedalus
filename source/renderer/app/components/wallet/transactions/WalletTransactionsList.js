@@ -15,7 +15,7 @@ import { VirtualTransactionList } from './render-strategies/VirtualTransactionLi
 import { SimpleTransactionList } from './render-strategies/SimpleTransactionList';
 import { TransactionInfo, TransactionsGroup } from './types';
 import type { Row } from './types';
-import Asset from "../../../domains/Asset";
+import Asset from '../../../domains/Asset';
 
 const messages = defineMessages({
   today: {
@@ -86,6 +86,7 @@ export default class WalletTransactionsList extends Component<Props> {
   };
 
   expandedTransactionIds: Map<string, WalletTransaction> = new Map();
+  transactionsShowingMetadata: Map<string, WalletTransaction> = new Map();
   virtualList: ?VirtualTransactionList;
   simpleList: ?SimpleTransactionList;
   loadingSpinner: ?LoadingSpinner;
@@ -139,6 +140,9 @@ export default class WalletTransactionsList extends Component<Props> {
   isTxExpanded = (tx: WalletTransaction) =>
     this.expandedTransactionIds.has(tx.id);
 
+  isTxShowingMetadata = (tx: WalletTransaction) =>
+    this.transactionsShowingMetadata.has(tx.id);
+
   toggleTransactionExpandedState = (tx: WalletTransaction) => {
     const isExpanded = this.isTxExpanded(tx);
     if (isExpanded) {
@@ -148,6 +152,19 @@ export default class WalletTransactionsList extends Component<Props> {
     }
     if (this.virtualList) {
       this.virtualList.updateTxRowHeight(tx, !isExpanded, true);
+    } else if (this.simpleList) {
+      this.simpleList.forceUpdate();
+    }
+  };
+
+  /**
+   * Update the height of the transaction when metadata is shown
+   * @param tx
+   */
+  onShowMetadata = (tx: WalletTransaction) => {
+    this.transactionsShowingMetadata.set(tx.id, tx);
+    if (this.virtualList) {
+      this.virtualList.updateTxRowHeight(tx, true, true);
     } else if (this.simpleList) {
       this.simpleList.forceUpdate();
     }
@@ -185,21 +202,24 @@ export default class WalletTransactionsList extends Component<Props> {
       isLastInGroup ? styles.lastInGroup : null,
     ]);
     const { assets } = tx;
-    const transactionAssets = assets && allAssets ? assets.map((asset) => {
-      const assetData = allAssets.find(
-        (item) => item.policyId === asset.policyId
-      );
-      return {
-        ...asset,
-        metadata: assetData
-          ? assetData.metadata
-          : {
-            name: '',
-            acronym: '',
-            description: '',
-          },
-      };
-    }) : [];
+    const transactionAssets =
+      assets && allAssets
+        ? assets.map((asset) => {
+            const assetData = allAssets.find(
+              (item) => item.policyId === asset.policyId
+            );
+            return {
+              ...asset,
+              metadata: assetData
+                ? assetData.metadata
+                : {
+                    name: '',
+                    acronym: '',
+                    description: '',
+                  },
+            };
+          })
+        : [];
     return (
       <div id={`tx-${tx.id}`} className={txClasses}>
         <Transaction
@@ -207,10 +227,12 @@ export default class WalletTransactionsList extends Component<Props> {
           deletePendingTransaction={deletePendingTransaction}
           formattedWalletAmount={formattedWalletAmount}
           isExpanded={this.isTxExpanded(tx)}
+          isShowingMetadata={this.isTxShowingMetadata(tx)}
           isLastInList={isLastInGroup}
           isRestoreActive={isRestoreActive}
           onDetailsToggled={() => this.toggleTransactionExpandedState(tx)}
           onOpenExternalLink={onOpenExternalLink}
+          onShowMetadata={() => this.onShowMetadata(tx)}
           getUrlByType={getUrlByType}
           state={tx.state}
           walletId={walletId}

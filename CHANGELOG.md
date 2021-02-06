@@ -5,16 +5,26 @@ Changelog
 
 ### Features
 
-- Implemented UI for native token features [PR 2292](https://github.com/input-output-hk/daedalus/pull/2292)
+- Implemented UI for assets (native tokens) features [PR 2292](https://github.com/input-output-hk/daedalus/pull/2292)
+
+## 3.3.0
+
+### Features
+
+- Implemented Voting Centar ([PR 2315](https://github.com/input-output-hk/daedalus/pull/2315))
+- Implemented transaction metadata display ([PR 2338](https://github.com/input-output-hk/daedalus/pull/2338))
+- Displayed fee and deposit info in transaction details and in the delegation wizard ([PR 2339](https://github.com/input-output-hk/daedalus/pull/2339))
 - Added SMASH server configuration options ([PR 2259](https://github.com/input-output-hk/daedalus/pull/2259))
 
 ### Fixes
 
+- Fixed logging issue with too few `cardano-wallet` logs being packed into logs zip archive ([PR 2341](https://github.com/input-output-hk/daedalus/pull/2341))
 - Fixed misalignment of the "i" icon on the "Set password" dialog ([PR 2337](https://github.com/input-output-hk/daedalus/pull/2337))
 - Removed steps counter from the "Success" wallet restoration dialog step ([PR 2335](https://github.com/input-output-hk/daedalus/pull/2335))
 
 ### Chores
 
+- Updated Hardware Wallets delegation deposit calculation ([PR 2332](https://github.com/input-output-hk/daedalus/pull/2332))
 - Implemented dynamic TTL calculation for hardware wallets transactions ([PR 2331](https://github.com/input-output-hk/daedalus/pull/2331))
 - Added link to connecting issues support article on the hardware wallet "Pairing" dialog ([PR 2336](https://github.com/input-output-hk/daedalus/pull/2336))
 - Updated recovery phrase entry ([PR 2334](https://github.com/input-output-hk/daedalus/pull/2334))
