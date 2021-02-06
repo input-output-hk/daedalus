@@ -79,9 +79,7 @@ export default class WalletSendPage extends Component<Props> {
     const { hwDeviceStatus } = hardwareWallets;
     const { getWalletById } = wallets;
     const activeWallet = wallets.active;
-    let assets = wallets.all.filter(
-      (wallet) => wallet.isNativeTokenWallet
-    );
+    let assets = wallets.all.filter((wallet) => wallet.isNativeTokenWallet);
 
     // @TODO - Remove hardcoded assets value after hooking up real data
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
@@ -90,9 +88,7 @@ export default class WalletSendPage extends Component<Props> {
     }
 
     const selectedNativeTokenWallet =
-      assets && assets.length
-        ? getWalletById(assets[0].id)
-        : null;
+      assets && assets.length ? getWalletById(assets[0].id) : null;
 
     // Guard against potential null values
     if (!activeWallet)

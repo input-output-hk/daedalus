@@ -1,15 +1,9 @@
 // @flow
-import {
-  observable,
-  computed,
-} from 'mobx';
+import { observable, computed } from 'mobx';
 import { find } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import type {
-  GetAssetRequest,
-  GetAssetsResponse,
-} from '../api/assets/types';
+import type { GetAssetRequest, GetAssetsResponse } from '../api/assets/types';
 import Asset from '../domains/Asset';
 
 export default class AssetsStore extends Store {
@@ -23,8 +17,7 @@ export default class AssetsStore extends Store {
     this.api.ada.getAsset
   );
 
-  setup() {
-  }
+  setup() {}
 
   @computed get all(): Array<Asset> {
     const wallet = this.stores.wallets.active;
@@ -42,9 +35,7 @@ export default class AssetsStore extends Store {
     return results ? results.total : 0;
   }
 
-  _getAssetsAllRequest = (
-    walletId: string
-  ): Request<GetAssetsResponse> => {
+  _getAssetsAllRequest = (walletId: string): Request<GetAssetsResponse> => {
     const foundRequest = find(this.assetsRequests, { walletId });
     if (foundRequest && foundRequest.allRequest) return foundRequest.allRequest;
     return new Request(this.api.ada.getAssets);
@@ -53,17 +44,15 @@ export default class AssetsStore extends Store {
   getSingleAsset = async ({
     walletId,
     policyId,
-    assetName
-    }: {
+    assetName,
+  }: {
     walletId: string,
     policyId: string,
     assetName: string,
   }) => {
     const wallet = this.stores.wallets.getWalletById(walletId);
     if (!wallet) {
-      throw new Error(
-        'Active wallet required before fetching single asset.'
-      );
+      throw new Error('Active wallet required before fetching single asset.');
     }
     await this.getSingleAssetRequest.execute({
       walletId,
