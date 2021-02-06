@@ -21,7 +21,7 @@ import type { TransactionState } from '../../../api/transactions/types';
 import { PENDING_TIME_LIMIT } from '../../../config/txnsConfig';
 import CancelTransactionConfirmationDialog from './CancelTransactionConfirmationDialog';
 import { ellipsis } from '../../../utils/strings';
-import type { WalletTransactionAsset } from '../../../api/assets/types';
+// import type { WalletTransactionAsset } from '../../../api/assets/types';
 
 /* eslint-disable consistent-return */
 

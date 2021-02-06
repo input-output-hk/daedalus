@@ -561,7 +561,7 @@ export default class AdaApi {
     const { walletId } = request;
 
     try {
-      const response = await getAssets(this.config, walletId);
+      const response = await getAssets(this.config, { walletId });
 
       logger.debug('AdaApi::getAssets success', {
         assets: response,
