@@ -57,7 +57,8 @@ export default class WalletSummaryPage extends Component<Props> {
   render() {
     const { intl } = this.context;
     const { stores } = this.props;
-    const { app, wallets, transactions, profile } = stores;
+    const { app, wallets, transactions, profile, assets } = stores;
+    const { all } = assets;
     const {
       openExternalLink,
       environment: { network, rawNetwork },
@@ -81,13 +82,12 @@ export default class WalletSummaryPage extends Component<Props> {
     let walletTransactions = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
 
-    // @todo - allAssets should be extracted and used from AssetsStore
-    const allAssets = [];
-
+    const allAssets = all;
     const walletAssets = wallet.assets.total.map((assetTotal) => {
       const assetData = allAssets.find(
         (item) => item.policyId === assetTotal.policyId
       );
+
       return {
         id: assetData ? assetData.id : '',
         metadata: assetData

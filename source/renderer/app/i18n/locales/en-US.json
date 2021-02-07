@@ -1031,6 +1031,7 @@
   "wallet.summary.page.tokenSendButton": "Send",
   "wallet.summary.page.tokensTitle": "Assets",
   "wallet.summary.page.transactionsLabel": "Number of transactions",
+  "wallet.summary.page.unknownLabel": "Unknown",
   "wallet.summary.page.yesterdayLabel": "Yesterday",
   "wallet.transaction.address.from": "From address",
   "wallet.transaction.address.to": "To address",

@@ -1044,6 +1044,13 @@ export default class WalletsStore extends Store {
         );
         this.stores.transactions._refreshTransactionData();
       });
+      runInAction('refresh assets data', () => {
+        this.stores.assets.assetsRequests = walletIds.map((walletId) => ({
+          walletId,
+          allRequest: this.stores.assets._getAssetsAllRequest(walletId),
+        }));
+        this.stores.assets._refreshAssets();
+      });
     }
   };
 

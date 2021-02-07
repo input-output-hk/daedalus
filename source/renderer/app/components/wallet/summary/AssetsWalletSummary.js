@@ -32,6 +32,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Send',
     description: 'Send button on Wallet summary page',
   },
+  unknownLabel: {
+    id: 'wallet.summary.page.unknownLabel',
+    defaultMessage: '!!!Unknown',
+    description: 'Unknown label on Wallet summary page',
+  }
 });
 
 type Props = {
@@ -61,11 +66,14 @@ export default class AssetsWalletSummary extends Component<Props> {
           </div>
           <div className={styles.component}>
             {assets.map((asset: WalletSummaryAsset) => (
-              <BorderedBox className={styles.assetsContainer} key={asset.id}>
+              <BorderedBox className={styles.assetsContainer} key={asset.total.assetName}>
                 {asset.metadata && asset.total && (
                   <div className={styles.assetsLeftContainer}>
                     <div className={styles.assetName}>
-                      {asset.metadata.name}
+                      {asset.metadata.name ?
+                        asset.metadata.name :
+                        intl.formatMessage(messages.unknownLabel)
+                      }
                     </div>
                     <div className={styles.assetAmount}>
                       {isRestoreActive

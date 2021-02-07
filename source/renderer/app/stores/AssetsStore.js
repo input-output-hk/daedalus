@@ -1,5 +1,5 @@
 // @flow
-import { observable, computed } from 'mobx';
+import {observable, computed, action} from 'mobx';
 import { find } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
@@ -25,7 +25,7 @@ export default class AssetsStore extends Store {
     if (!request.result) {
       return [];
     }
-    return request.result.transactions || [];
+    return request.result.assets || [];
   }
 
   @computed get totalAvailable(): number {
@@ -34,6 +34,17 @@ export default class AssetsStore extends Store {
     const results = this._getAssetsAllRequest(wallet.id).result;
     return results ? results.total : 0;
   }
+
+  @action _refreshAssets = () => {
+    if (this.stores.networkStatus.isConnected) {
+      const { all } = this.stores.wallets;
+      for (const wallet of all) {
+        const { id: walletId } = wallet;
+        const allRequest = this._getAssetsAllRequest(walletId);
+        allRequest.execute({ walletId });
+      }
+    }
+  };
 
   _getAssetsAllRequest = (walletId: string): Request<GetAssetsResponse> => {
     const foundRequest = find(this.assetsRequests, { walletId });

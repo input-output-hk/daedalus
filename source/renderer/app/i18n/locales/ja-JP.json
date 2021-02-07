@@ -1031,6 +1031,7 @@
   "wallet.summary.page.tokenSendButton": "送金",
   "wallet.summary.page.tokensTitle": "資産",
   "wallet.summary.page.transactionsLabel": "トランザクション数",
+  "wallet.summary.page.unknownLabel": "不明",
   "wallet.summary.page.yesterdayLabel": "昨日",
   "wallet.transaction.address.from": "送信元",
   "wallet.transaction.address.to": "送信先",

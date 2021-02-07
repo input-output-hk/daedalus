@@ -2608,22 +2608,22 @@ const _createTransactionFromServerData = action(
 
     // Mapping asset items from server data
     const inputAssets = inputs.map(({ assets }) => assets);
-    const outputAssets = inputs.map(({ assets }) => assets);
+    const outputAssets = outputs.map(({ assets }) => assets);
     const transactionInputAssets = inputAssets.map((item) => {
       return {
-        id: item.id,
-        policyId: item.policy_id,
-        assetName: item.asset_name,
-        quantity: item.quantity,
+        id: item ? item.id : '',
+        policyId: item ? item.policy_id : '',
+        assetName: item ? item.asset_name : '',
+        quantity: item ? item.quantity: '',
       };
     });
 
     const transactionOutputAssets = outputAssets.map((item) => {
       return {
-        id: item.id,
-        policyId: item.policy_id,
-        assetName: item.asset_name,
-        quantity: item.quantity,
+        id: item ? item.id : '',
+        policyId: item ? item.policy_id : '',
+        assetName: item ? item.asset_name : '',
+        quantity: item ? item.quantity: '',
       };
     });
 
@@ -2664,12 +2664,12 @@ const _createTransactionFromServerData = action(
 const _createAssetFromServerData = action(
   'AdaApi::_createAssetFromServerData',
   (data: Asset) => {
-    const { id, policyId, assetName, metadata } = data;
-
+    // eslint-disable-next-line camelcase
+    const { id, policy_id, asset_name, metadata } = data;
     return new Asset({
       id,
-      policyId,
-      assetName,
+      policyId: policy_id,
+      assetName: asset_name,
       metadata,
     });
   }
