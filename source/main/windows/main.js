@@ -130,7 +130,7 @@ export const createMainWindow = (locale: string) => {
   });
 
   window.webContents.on('did-finish-load', () => {
-    if (isTest) {
+    if (isTest || isDev) {
       window.showInactive(); // show without focusing the window
     } else {
       window.show(); // show also focuses the window

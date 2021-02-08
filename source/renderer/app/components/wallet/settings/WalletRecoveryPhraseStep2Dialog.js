@@ -41,11 +41,11 @@ export const messages = defineMessages({
     defaultMessage: '!!!Verify',
     description: 'Label for the recoveryPhraseStep2Button on wallet settings.',
   },
-  recoveryPhraseInputHint: {
-    id: 'wallet.settings.recoveryPhraseInputHint',
-    defaultMessage: '!!!Enter recovery phrase',
+  recoveryPhraseInputPlaceholder: {
+    id: 'wallet.settings.recoveryPhraseInputPlaceholder',
+    defaultMessage: '!!!Enter word #{wordNumber}',
     description:
-      'Hint "Enter recovery phrase" for the recovery phrase input on the wallet restore dialog.',
+      'Placeholder "Enter word #{wordNumber}" for the recovery phrase input on the verification dialog.',
   },
   recoveryPhraseNoResults: {
     id: 'wallet.settings.recoveryPhraseInputNoResults',
@@ -155,11 +155,15 @@ export default class WalletRecoveryPhraseStep2Dialog extends Component<
         <div className={styles.subtitle}>
           <p>{intl.formatMessage(messages.recoveryPhraseStep2Description)}</p>
         </div>
-
         <Autocomplete
           {...recoveryPhraseField.bind()}
           label={intl.formatMessage(messages.recoveryPhraseStep2Subtitle)}
-          placeholder={intl.formatMessage(messages.recoveryPhraseInputHint)}
+          placeholder={intl.formatMessage(
+            messages.recoveryPhraseInputPlaceholder,
+            {
+              wordNumber: enteredWordCount + 1,
+            }
+          )}
           options={suggestedMnemonics}
           requiredSelections={
             Array.isArray(expectedWordCount)

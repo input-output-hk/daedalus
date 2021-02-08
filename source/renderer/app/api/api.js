@@ -31,6 +31,7 @@ import { getNetworkParameters } from './network/requests/getNetworkParameters';
 // Transactions requests
 import { getTransactionFee } from './transactions/requests/getTransactionFee';
 import { getByronWalletTransactionFee } from './transactions/requests/getByronWalletTransactionFee';
+import { getTransaction } from './transactions/requests/getTransaction';
 import { getTransactionHistory } from './transactions/requests/getTransactionHistory';
 import { getLegacyWalletTransactionHistory } from './transactions/requests/getLegacyWalletTransactionHistory';
 import { getWithdrawalHistory } from './transactions/requests/getWithdrawalHistory';
@@ -40,6 +41,9 @@ import { deleteLegacyTransaction } from './transactions/requests/deleteLegacyTra
 import { selectCoins } from './transactions/requests/selectCoins';
 import { createExternalTransaction } from './transactions/requests/createExternalTransaction';
 import { getPublicKey } from './transactions/requests/getPublicKey';
+
+// Voting requests
+import { createWalletSignature } from './voting/requests/createWalletSignature';
 
 // Wallets requests
 import { updateSpendingPassword } from './wallets/requests/updateSpendingPassword';
@@ -78,6 +82,9 @@ import { getStakePools } from './staking/requests/getStakePools';
 import { getDelegationFee } from './staking/requests/getDelegationFee';
 import { joinStakePool } from './staking/requests/joinStakePool';
 import { quitStakePool } from './staking/requests/quitStakePool';
+import { getSmashSettings } from './staking/requests/getSmashSettings';
+import { checkSmashServerHealth } from './staking/requests/checkSmashServerHealth';
+import { updateSmashSettings } from './staking/requests/updateSmashSettings';
 
 // Utility functions
 import { cardanoFaultInjectionChannel } from '../ipc/cardano.ipc';
@@ -95,7 +102,8 @@ import { filterLogData } from '../../../common/utils/logging';
 // Config constants
 import { LOVELACES_PER_ADA } from '../config/numbersConfig';
 import {
-  DELEGATION_DEPOSIT,
+  SMASH_SERVER_STATUSES,
+  SMASH_SERVERS_LIST,
   MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE,
   REWARDS_REDEMPTION_FEE_CALCULATION_AMOUNT,
 } from '../config/stakingConfig';
@@ -137,6 +145,7 @@ import type {
   GetTransactionFeeRequest,
   CreateTransactionRequest,
   DeleteTransactionRequest,
+  GetTransactionRequest,
   GetTransactionsRequest,
   GetTransactionsResponse,
   CoinSelectionsPaymentRequestType,
@@ -186,6 +195,7 @@ import type { GetNewsResponse } from './news/types';
 import type {
   JoinStakePoolRequest,
   GetDelegationFeeRequest,
+  DelegationCalculateFeeResponse,
   AdaApiStakePools,
   AdaApiStakePool,
   QuitStakePoolRequest,
@@ -193,7 +203,17 @@ import type {
   GetRedeemItnRewardsFeeResponse,
   RequestRedeemItnRewardsRequest,
   RequestRedeemItnRewardsResponse,
+  GetSmashSettingsApiResponse,
+  CheckSmashServerHealthApiResponse,
+  PoolMetadataSource,
 } from './staking/types';
+
+// Voting Types
+import type {
+  CreateVotingRegistrationRequest,
+  CreateWalletSignatureRequest,
+} from './voting/types';
+
 import type { StakePoolProps } from '../domains/StakePool';
 import type { FaultInjectionIpcRequest } from '../../../common/types/cardano-node.types';
 
@@ -308,7 +328,7 @@ export default class AdaApi {
     });
     try {
       const { walletId, role, index } = request;
-      const walletPublicKey = await getWalletPublicKey(this.config, {
+      const walletPublicKey: string = await getWalletPublicKey(this.config, {
         walletId,
         role,
         index,
@@ -317,10 +337,7 @@ export default class AdaApi {
       return walletPublicKey;
     } catch (error) {
       logger.error('AdaApi::getWalletPublicKey error', { error });
-      // @TODO: Uncomment this when api is ready
-      // throw new ApiError(error);
-      // @TODO: Delete this when api is ready
-      return '8edd9c9b73873ce8826cbe3e2e08534d35f1ba64cc94c063c0525865aa28e35527be51bb72ee9983d173f5617493bc6804a6750b359538c79cd5b43ccbbd48e5';
+      throw new ApiError(error);
     }
   };
 
@@ -352,6 +369,26 @@ export default class AdaApi {
       });
     } catch (error) {
       logger.error('AdaApi::getAddresses error', { error });
+      throw new ApiError(error);
+    }
+  };
+
+  getTransaction = async (
+    request: GetTransactionRequest
+  ): Promise<WalletTransaction> => {
+    logger.debug('AdaApi::getTransaction called', { parameters: request });
+    const { walletId, transactionId } = request;
+
+    try {
+      const response = await getTransaction(
+        this.config,
+        walletId,
+        transactionId
+      );
+      logger.debug('AdaApi::getTransaction success', { response });
+      return _createTransactionFromServerData(response);
+    } catch (error) {
+      logger.error('AdaApi::getTransaction error', { error });
       throw new ApiError(error);
     }
   };
@@ -391,9 +428,7 @@ export default class AdaApi {
       const transactions = response.map((tx) =>
         _createTransactionFromServerData(tx)
       );
-      return new Promise((resolve) =>
-        resolve({ transactions, total: response.length })
-      );
+      return Promise.resolve({ transactions, total: response.length });
     } catch (error) {
       logger.error('AdaApi::getTransactions error', { error });
       throw new ApiError(error);
@@ -891,7 +926,6 @@ export default class AdaApi {
       parameters: filterLogData(request),
     });
     const { walletId, payments, delegation } = request;
-
     try {
       let data;
       if (delegation) {
@@ -925,13 +959,15 @@ export default class AdaApi {
       const outputs = concat(response.outputs, response.change);
 
       // Calculate fee from inputs and outputs
-      let totalInputs = 0;
-      let totalOutputs = 0;
       const inputsData = [];
       const outputsData = [];
       const certificatesData = [];
+      let totalInputs = new BigNumber(0);
+      let totalOutputs = new BigNumber(0);
+
       map(response.inputs, (input) => {
-        totalInputs += input.amount.quantity;
+        const inputAmount = new BigNumber(input.amount.quantity);
+        totalInputs = totalInputs.plus(inputAmount);
         const inputData = {
           address: input.address,
           amount: input.amount,
@@ -941,8 +977,10 @@ export default class AdaApi {
         };
         inputsData.push(inputData);
       });
+
       map(outputs, (output) => {
-        totalOutputs += output.amount.quantity;
+        const outputAmount = new BigNumber(output.amount.quantity);
+        totalOutputs = totalOutputs.plus(outputAmount);
         const outputData = {
           address: output.address,
           amount: output.amount,
@@ -950,6 +988,7 @@ export default class AdaApi {
         };
         outputsData.push(outputData);
       });
+
       if (response.certificates) {
         map(response.certificates, (certificate) => {
           const certificateData = {
@@ -960,28 +999,21 @@ export default class AdaApi {
           certificatesData.push(certificateData);
         });
       }
-      const fee = new BigNumber(totalInputs - totalOutputs).dividedBy(
-        LOVELACES_PER_ADA
-      );
 
-      let transactionFee;
-      if (delegation && delegation.delegationAction) {
-        const delegationDeposit = new BigNumber(DELEGATION_DEPOSIT);
-        const isDepositIncluded = fee.gt(delegationDeposit);
-        transactionFee = isDepositIncluded ? fee.minus(delegationDeposit) : fee;
-      } else {
-        transactionFee = fee;
-      }
+      const deposits = map(response.deposits, (deposit) => deposit.quantity);
+      const totalDeposits = deposits.length
+        ? BigNumber.sum.apply(null, deposits)
+        : new BigNumber(0);
+      const feeWithDeposits = totalInputs.minus(totalOutputs);
+      const fee = feeWithDeposits.minus(totalDeposits);
 
-      // On first wallet delegation deposit is included in fee
       const extendedResponse = {
         inputs: inputsData,
         outputs: outputsData,
         certificates: certificatesData,
-        feeWithDelegationDeposit: fee,
-        fee: transactionFee,
+        feeWithDeposits: feeWithDeposits.dividedBy(LOVELACES_PER_ADA),
+        fee: fee.dividedBy(LOVELACES_PER_ADA),
       };
-
       logger.debug('AdaApi::selectCoins success', { extendedResponse });
       return extendedResponse;
     } catch (error) {
@@ -1686,6 +1718,80 @@ export default class AdaApi {
     }
   };
 
+  getSmashSettings = async (): Promise<GetSmashSettingsApiResponse> => {
+    logger.debug('AdaApi::getSmashSettings called');
+    try {
+      const {
+        pool_metadata_source: poolMetadataSource,
+      } = await getSmashSettings(this.config);
+      logger.debug('AdaApi::getSmashSettings success', { poolMetadataSource });
+      return poolMetadataSource;
+    } catch (error) {
+      logger.error('AdaApi::getSmashSettings error', { error });
+      throw new ApiError(error);
+    }
+  };
+
+  checkSmashServerIsValid = async (url: string): Promise<boolean> => {
+    logger.debug('AdaApi::checkSmashServerIsValid called', {
+      parameters: { url },
+    });
+    try {
+      if (url === SMASH_SERVERS_LIST.direct.url) {
+        return true;
+      }
+      const {
+        health,
+      }: CheckSmashServerHealthApiResponse = await checkSmashServerHealth(
+        this.config,
+        url
+      );
+      const isValid = health === SMASH_SERVER_STATUSES.AVAILABLE;
+      logger.debug('AdaApi::checkSmashServerIsValid success', { isValid });
+      return isValid;
+    } catch (error) {
+      logger.error('AdaApi::checkSmashServerIsValid error', { error });
+      throw new ApiError(error);
+    }
+  };
+
+  updateSmashSettings = async (
+    poolMetadataSource: PoolMetadataSource
+  ): Promise<void> => {
+    logger.debug('AdaApi::updateSmashSettings called', {
+      parameters: { poolMetadataSource },
+    });
+    try {
+      const isSmashServerValid = await this.checkSmashServerIsValid(
+        poolMetadataSource
+      );
+      if (!isSmashServerValid) {
+        const error = {
+          code: 'invalid_smash_server',
+        };
+        throw new ApiError(error);
+      }
+      await updateSmashSettings(this.config, poolMetadataSource);
+      logger.debug('AdaApi::updateSmashSettings success', {
+        poolMetadataSource,
+      });
+    } catch (error) {
+      const id = get(error, 'id');
+      const message = get(error, 'values.message');
+      if (
+        id === 'api.errors.GenericApiError' &&
+        message ===
+          'Error parsing query parameter url failed: URI must not contain a path/query/fragment.'
+      ) {
+        throw new ApiError({
+          code: 'invalid_smash_server',
+        });
+      }
+      logger.error('AdaApi::updateSmashSettings error', { error });
+      throw new ApiError(error);
+    }
+  };
+
   getRedeemItnRewardsFee = async (
     request: GetRedeemItnRewardsFeeRequest
   ): Promise<GetRedeemItnRewardsFeeResponse> => {
@@ -1936,11 +2042,13 @@ export default class AdaApi {
         localTip: {
           epoch: get(nodeTip, 'epoch_number', 0),
           slot: get(nodeTip, 'slot_number', 0),
+          absoluteSlotNumber: get(nodeTip, 'absolute_slot_number', 0),
         },
         networkTip: networkTip
           ? {
-              epoch: get(networkTip, 'epoch_number', null),
-              slot: get(networkTip, 'slot_number', null),
+              epoch: get(networkTip, 'epoch_number', 0),
+              slot: get(networkTip, 'slot_number', 0),
+              absoluteSlotNumber: get(networkTip, 'absolute_slot_number', 0),
             }
           : null,
         nextEpoch: nextEpoch
@@ -2007,7 +2115,7 @@ export default class AdaApi {
         decentralization_level: decentralizationLevel,
         desired_pool_number: desiredPoolNumber,
         minimum_utxo_value: minimumUtxoValue,
-        hardfork_at: hardforkAt,
+        eras,
       } = networkParameters;
       const blockchainStartTime = moment(blockchain_start_time).valueOf();
 
@@ -2021,7 +2129,7 @@ export default class AdaApi {
         decentralizationLevel,
         desiredPoolNumber,
         minimumUtxoValue,
-        hardforkAt: hardforkAt || null,
+        hardforkAt: eras.shelley || null,
       };
     } catch (error) {
       logger.error('AdaApi::getNetworkParameters error', { error });
@@ -2067,7 +2175,7 @@ export default class AdaApi {
 
   calculateDelegationFee = async (
     request: GetDelegationFeeRequest
-  ): Promise<BigNumber> => {
+  ): Promise<DelegationCalculateFeeResponse> => {
     logger.debug('AdaApi::calculateDelegationFee called', {
       parameters: filterLogData(request),
     });
@@ -2076,8 +2184,7 @@ export default class AdaApi {
         walletId: request.walletId,
       });
       logger.debug('AdaApi::calculateDelegationFee success', { response });
-      const delegationFee = _createDelegationFeeFromServerData(response);
-      return delegationFee;
+      return _createDelegationFeeFromServerData(response);
     } catch (error) {
       logger.error('AdaApi::calculateDelegationFee error', { error });
       throw new ApiError(error);
@@ -2107,6 +2214,169 @@ export default class AdaApi {
         .set('wrongEncryptionPassphrase')
         .where('code', 'bad_request')
         .inc('message', 'passphrase is too short')
+        .result();
+    }
+  };
+
+  createWalletSignature = async (
+    request: CreateWalletSignatureRequest
+  ): Promise<Buffer> => {
+    logger.debug('AdaApi::createWalletSignature called', {
+      parameters: filterLogData(request),
+    });
+    const {
+      walletId,
+      role,
+      index,
+      passphrase,
+      votingKey,
+      stakeKey,
+      addressHex,
+    } = request;
+
+    try {
+      const data = {
+        passphrase,
+        metadata: {
+          [61284]: {
+            map: [
+              {
+                k: {
+                  int: 1,
+                },
+                v: {
+                  bytes: votingKey,
+                },
+              },
+              {
+                k: {
+                  int: 2,
+                },
+                v: {
+                  bytes: stakeKey,
+                },
+              },
+              {
+                k: {
+                  int: 3,
+                },
+                v: {
+                  bytes: addressHex,
+                },
+              },
+            ],
+          },
+        },
+      };
+      const response = await createWalletSignature(this.config, {
+        walletId,
+        role,
+        index,
+        data,
+      });
+      logger.debug('AdaApi::createWalletSignature success', { response });
+      return response;
+    } catch (error) {
+      logger.error('AdaApi::createWalletSignature error', { error });
+      throw new ApiError(error);
+    }
+  };
+
+  createVotingRegistrationTransaction = async (
+    request: CreateVotingRegistrationRequest
+  ): Promise<WalletTransaction> => {
+    logger.debug('AdaApi::createVotingRegistrationTransaction called', {
+      parameters: filterLogData(request),
+    });
+    const {
+      walletId,
+      address,
+      addressHex,
+      amount,
+      passphrase,
+      votingKey,
+      stakeKey,
+      signature,
+    } = request;
+
+    try {
+      const data = {
+        payments: [
+          {
+            address,
+            amount: {
+              quantity: amount,
+              unit: WalletUnits.LOVELACE,
+            },
+          },
+        ],
+        passphrase,
+        metadata: {
+          [61284]: {
+            map: [
+              {
+                k: {
+                  int: 1,
+                },
+                v: {
+                  bytes: votingKey,
+                },
+              },
+              {
+                k: {
+                  int: 2,
+                },
+                v: {
+                  bytes: stakeKey,
+                },
+              },
+              {
+                k: {
+                  int: 3,
+                },
+                v: {
+                  bytes: addressHex,
+                },
+              },
+            ],
+          },
+          [61285]: {
+            map: [
+              {
+                k: {
+                  int: 1,
+                },
+                v: {
+                  bytes: signature,
+                },
+              },
+            ],
+          },
+        },
+      };
+      const response: Transaction = await createTransaction(this.config, {
+        walletId,
+        data: { ...data },
+      });
+
+      logger.debug('AdaApi::createVotingRegistrationTransaction success', {
+        transaction: response,
+      });
+
+      return _createTransactionFromServerData(response);
+    } catch (error) {
+      logger.error('AdaApi::createVotingRegistrationTransaction error', {
+        error,
+      });
+      throw new ApiError(error)
+        .set('wrongEncryptionPassphrase')
+        .where('code', 'bad_request')
+        .inc('message', 'passphrase is too short')
+        .set('transactionIsTooBig', true, {
+          linkLabel: 'tooBigTransactionErrorLinkLabel',
+          linkURL: 'tooBigTransactionErrorLinkURL',
+        })
+        .where('code', 'transaction_is_too_big')
         .result();
     }
   };
@@ -2234,6 +2504,8 @@ const _createTransactionFromServerData = action(
     const {
       id,
       amount,
+      fee,
+      deposit,
       inserted_at, // eslint-disable-line camelcase
       pending_since, // eslint-disable-line camelcase
       depth,
@@ -2242,6 +2514,7 @@ const _createTransactionFromServerData = action(
       outputs,
       withdrawals,
       status,
+      metadata,
     } = data;
     const state = _conditionToTxState(status);
     const stateInfo =
@@ -2249,9 +2522,10 @@ const _createTransactionFromServerData = action(
     const date = get(stateInfo, 'time');
     const slotNumber = get(stateInfo, ['block', 'slot_number'], null);
     const epochNumber = get(stateInfo, ['block', 'epoch_number'], null);
+    const confirmations = get(depth, 'quantity', 0);
     return new WalletTransaction({
       id,
-      depth,
+      confirmations,
       slotNumber,
       epochNumber,
       title: direction === 'outgoing' ? 'Ada sent' : 'Ada received',
@@ -2262,6 +2536,8 @@ const _createTransactionFromServerData = action(
       amount: new BigNumber(
         direction === 'outgoing' ? amount.quantity * -1 : amount.quantity
       ).dividedBy(LOVELACES_PER_ADA),
+      fee: new BigNumber(fee.quantity).dividedBy(LOVELACES_PER_ADA),
+      deposit: new BigNumber(deposit.quantity).dividedBy(LOVELACES_PER_ADA),
       date: utcStringToDate(date),
       description: '',
       addresses: {
@@ -2270,6 +2546,7 @@ const _createTransactionFromServerData = action(
         withdrawals: withdrawals.map(({ stake_address: address }) => address),
       },
       state,
+      metadata,
     });
   }
 );
@@ -2298,8 +2575,14 @@ const _createMigrationFeeFromServerData = action(
 const _createDelegationFeeFromServerData = action(
   'AdaApi::_createDelegationFeeFromServerData',
   (data: TransactionFee) => {
-    const amount = get(data, ['estimated_max', 'quantity'], 0);
-    return new BigNumber(amount).dividedBy(LOVELACES_PER_ADA);
+    const feeWithDeposit = new BigNumber(
+      get(data, ['estimated_max', 'quantity'], 0)
+    ).dividedBy(LOVELACES_PER_ADA);
+    const deposit = new BigNumber(
+      get(data, ['deposit', 'quantity'], 0)
+    ).dividedBy(LOVELACES_PER_ADA);
+    const fee = feeWithDeposit.minus(deposit);
+    return { fee, deposit };
   }
 );
 

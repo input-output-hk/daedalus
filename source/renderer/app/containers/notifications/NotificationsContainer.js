@@ -61,6 +61,12 @@ const messages = defineMessages({
     description:
       'Notification for the wallet address PDF download success in the Wallet Receive page.',
   },
+  downloadVotingPDFSuccess: {
+    id: 'notification.downloadVotingPDFSuccess',
+    defaultMessage: '!!!PDF successfully downloaded',
+    description:
+      'Notification for the wallet voting PDF download success in the Voting Registration dialog.',
+  },
   downloadQRCodeImageSuccess: {
     id: 'notification.downloadQRCodeImageSuccess',
     defaultMessage:
@@ -121,6 +127,11 @@ export default class NotificationsContainer extends Component<InjectedProps> {
       actionToListenAndOpen: this.props.actions.wallets
         .generateAddressPDFSuccess,
       actionToListenAndClose: this.props.actions.wallets.generateAddressPDF,
+    },
+    {
+      id: 'downloadVotingPDFSuccess',
+      actionToListenAndOpen: this.props.actions.voting.saveAsPDFSuccess,
+      actionToListenAndClose: this.props.actions.voting.saveAsPDF,
     },
     {
       id: 'downloadQRCodeImageSuccess',

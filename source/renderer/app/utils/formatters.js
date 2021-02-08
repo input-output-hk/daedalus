@@ -79,12 +79,12 @@ export const formattedAmountToNaturalUnits = (amount: string): string => {
   return cleanedAmount === '' ? '0' : cleanedAmount;
 };
 
-export const formattedAmountToBigNumber = (amount: string) => {
+export const formattedAmountToBigNumber = (amount: string): BigNumber => {
   const cleanedAmount = amount.replace(/,/g, '');
   return new BigNumber(cleanedAmount !== '' ? cleanedAmount : 0);
 };
 
-export const toFixedUserFormat = (number: number, digits: number) => {
+export const toFixedUserFormat = (number: number, digits: number): string => {
   // This is necessary, because the BigNumber version we use
   // can't receive numbers with more than 15 digits
   const parsedNumber = parseFloat(number).toFixed(digits);
@@ -107,7 +107,7 @@ export const formattedBytesToSize = (bytes: number): string => {
     10
   );
   if (i === 0) return `${bytes} ${sizes[i]})`;
-  return `${(bytes / 1024 ** i).toFixed(1)} ${sizes[i]}`;
+  return `${formattedNumber(bytes / 1024 ** i, 1)} ${sizes[i]}`;
 };
 
 export type FormattedDownloadData = {
@@ -148,10 +148,59 @@ export const formattedDownloadData = (
   };
 };
 
-export const generateThousands = (value: number) => {
+export const generateThousands = (value: number): number => {
   if (value <= 1000) {
     return Math.round(value);
   }
 
   return Math.round(value / 1000) * 1000;
+};
+
+export const formattedArrayBufferToHexString = (
+  arrayBuffer: Uint8Array
+): string => {
+  const buff = new Uint8Array(arrayBuffer);
+  const byteToHex = [];
+  const hexOctets = [];
+
+  for (let n = 0; n <= 0xff; ++n) {
+    const hexOctet = `0${n.toString(16)}`.slice(-2);
+    byteToHex.push(hexOctet);
+  }
+
+  for (let i = 0; i < buff.length; ++i) {
+    hexOctets.push(byteToHex[buff[i]]);
+  }
+
+  return hexOctets.join('');
+};
+
+export const formattedNumber = (value: number | string, dp?: number): string =>
+  new BigNumber(value).toFormat(dp);
+
+export const formattedCpuModel = (model: string): string => {
+  const atCharPosition = model.indexOf('@');
+  const speedSection = model.substring(atCharPosition);
+  const speedNumbers = speedSection.match(/[\d,.]+/g);
+  const speedNumber = speedNumbers ? speedNumbers[0] : '';
+  const formattedSpeedNumber = formattedNumber(speedNumber, 2);
+  const formattedSpeedSection = speedSection.replace(
+    /[\d,.]+/,
+    formattedSpeedNumber
+  );
+  const formattedModel = `${model.substring(
+    0,
+    atCharPosition
+  )}${formattedSpeedSection}`;
+
+  return formattedModel;
+};
+
+export const formattedSize = (size: string): string => {
+  const sizeNumbers = size.match(/[\d,.]+/g);
+  const sizeNumber = sizeNumbers ? sizeNumbers[0] : '';
+  const formattedSizeNumber = formattedNumber(sizeNumber);
+  const formattedResult = size.replace(/[\d,.]+/, formattedSizeNumber);
+
+  return formattedResult;
 };

@@ -1,7 +1,20 @@
 Changelog
 =========
 
-## vNext
+## 3.3.0
+
+### Features
+
+- Implemented Voting Centar ([PR 2315](https://github.com/input-output-hk/daedalus/pull/2315))
+- Implemented transaction metadata display ([PR 2338](https://github.com/input-output-hk/daedalus/pull/2338))
+- Displayed fee and deposit info in transaction details and in the delegation wizard ([PR 2339](https://github.com/input-output-hk/daedalus/pull/2339))
+- Added SMASH server configuration options ([PR 2259](https://github.com/input-output-hk/daedalus/pull/2259))
+
+### Fixes
+
+- Fixed logging issue with too few `cardano-wallet` logs being packed into logs zip archive ([PR 2341](https://github.com/input-output-hk/daedalus/pull/2341))
+- Fixed misalignment of the "i" icon on the "Set password" dialog ([PR 2337](https://github.com/input-output-hk/daedalus/pull/2337))
+- Removed steps counter from the "Success" wallet restoration dialog step ([PR 2335](https://github.com/input-output-hk/daedalus/pull/2335))
 
 ### Features
 
@@ -9,8 +22,23 @@ Changelog
 
 ### Chores
 
+- Updated Hardware Wallets delegation deposit calculation ([PR 2332](https://github.com/input-output-hk/daedalus/pull/2332))
+- Implemented dynamic TTL calculation for hardware wallets transactions ([PR 2331](https://github.com/input-output-hk/daedalus/pull/2331))
+- Added link to connecting issues support article on the hardware wallet "Pairing" dialog ([PR 2336](https://github.com/input-output-hk/daedalus/pull/2336))
+- Updated recovery phrase entry ([PR 2334](https://github.com/input-output-hk/daedalus/pull/2334))
+- Adjusted sorting of table values on the "Rewards" screen ([PR 2333](https://github.com/input-output-hk/daedalus/pull/2333))
+- Fixed error thrown when closing delegation wizard while transaction fees are being calculated ([PR 2330](https://github.com/input-output-hk/daedalus/pull/2330))
+- Fixed number format for syncing percentage and stake pools count ([PR 2313](https://github.com/input-output-hk/daedalus/pull/2313))
+- Updated `cardano-wallet` to version `2021-01-28` and `cardano-node` to version `1.25.1` ([PR 2270](https://github.com/input-output-hk/daedalus/pull/2270))
+- Updated `react-polymorph` package ([PR 2318](https://github.com/input-output-hk/daedalus/pull/2318))
 - Updated `bignumber.js` package ([PR 2305](https://github.com/input-output-hk/daedalus/pull/2305))
 - Disabled application menu navigation before the "Terms of use" have been accepted ([PR 2304](https://github.com/input-output-hk/daedalus/pull/2304))
+
+## 3.2.0
+
+### Chores
+
+- Daedalus version change from `3.2.0-FC1` to `3.2.0`
 
 ## 3.2.0-FC1
 

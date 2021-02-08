@@ -21,6 +21,8 @@ export default class StakingActions {
     filenamePrefix: string,
   }> = new Action();
   requestCSVFileSuccess: Action<any> = new Action();
+  selectSmashServerUrl: Action<{ smashServerUrl: string }> = new Action();
+  resetSmashServerError: Action<any> = new Action();
   /* ----------  Redeem ITN Rewards  ---------- */
   onRedeemStart: Action<any> = new Action();
   onConfigurationContinue: Action<any> = new Action();

@@ -1,7 +1,7 @@
 {
   "name": "daedalus",
   "productName": "Daedalus",
-  "version": "3.2.0-FC1",
+  "version": "3.3.0",
   "description": "Cryptocurrency Wallet",
   "main": "./dist/main/index.js",
   "scripts": {
@@ -173,6 +173,7 @@
   },
   "dependencies": {
     "@cardano-foundation/ledgerjs-hw-app-cardano": "2.1.0",
+    "@iohk-jormungandr/wallet-js": "0.5.0-pre7",
     "aes-js": "3.1.2",
     "bignumber.js": "9.0.1",
     "bip39": "2.3.0",
@@ -201,6 +202,7 @@
     "history": "4.10.1",
     "humanize-duration": "3.23.1",
     "inquirer": "7.3.3",
+    "json-bigint": "1.0.0",
     "lodash": "4.17.20",
     "lodash-es": "4.17.15",
     "mime-types": "2.1.27",
@@ -228,7 +230,7 @@
     "react-intl": "2.7.2",
     "react-lottie": "1.2.3",
     "react-markdown": "4.3.1",
-    "react-polymorph": "0.9.7-rc.11",
+    "react-polymorph": "0.9.7-rc.17",
     "react-router": "5.2.0",
     "react-router-dom": "5.2.0",
     "react-svg-inline": "2.1.1",
