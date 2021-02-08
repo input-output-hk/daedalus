@@ -6,8 +6,11 @@ import type { InjectedProps } from '../../../types/injectedPropsType';
 
 @inject('stores', 'actions')
 @observer
-export default class DisplaySettingsPage extends Component<InjectedProps> {
+export default class WalletsSettingsPage extends Component<InjectedProps> {
   static defaultProps = { actions: null, stores: null };
+
+  handleSelectCurrency = (currencyId: string) =>
+    this.props.actions.wallets.setCurrencySelected.trigger({ currencyId });
 
   render() {
     const {
@@ -20,6 +23,7 @@ export default class DisplaySettingsPage extends Component<InjectedProps> {
         currencySelected={currencySelected}
         currencyRate={currencyRate}
         currencyList={currencyList}
+        onSelectCurrency={this.handleSelectCurrency}
       />
     );
   }

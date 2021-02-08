@@ -1,0 +1,13 @@
+.component {
+  font-family: var(--font-regular);
+  color: var(--theme-support-settings-text-color);
+  label {
+    font-family: var(--font-semibold);
+    font-size: 16px;
+    line-height: 1.38;
+    margin-bottom: 14px;
+  }
+  p {
+    margin-bottom: 20px;
+  }
+}

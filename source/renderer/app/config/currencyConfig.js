@@ -1,7 +1,5 @@
 // @flow
 
-export const CURRENCY_IS_ACTIVE_BY_DEFAULT = true;
-
 /**
  *
  * This file imports the external currency API used
@@ -23,8 +21,14 @@ export const REQUESTS: {
   RATE: 'rate',
 };
 
-// Defines which API is going to be used
+// Definitions
 export const currencyConfig = coingeckoConfig;
+export const CURRENCY_IS_ACTIVE_BY_DEFAULT = true;
+export const DEFAULT_CURRENCY_SELECTED = {
+  id: 'uniswap-state-dollar',
+  symbol: 'usd',
+  name: 'unified Stable Dollar',
+};
 
 // Generic function for all the Currency requests
 export const genericCurrencyRequest = (

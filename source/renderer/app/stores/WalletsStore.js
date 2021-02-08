@@ -29,7 +29,10 @@ import {
   WALLET_HARDWARE_KINDS,
   RESTORE_WALLET_STEPS,
 } from '../config/walletRestoreConfig';
-import { CURRENCY_IS_ACTIVE_BY_DEFAULT } from '../config/walletRestoreConfig';
+import {
+  CURRENCY_IS_ACTIVE_BY_DEFAULT,
+  DEFAULT_CURRENCY_SELECTED,
+} from '../config/walletRestoreConfig';
 import { WALLET_PUBLIC_KEY_SHARING_ENABLED } from '../config/walletsConfig';
 import type {
   WalletKind,
@@ -143,19 +146,14 @@ export default class WalletsStore extends Store {
   @observable activePublicKey: ?string = null;
 
   /* ------------  Currencies  ----------- */
-  @observable currencyIsFetching: boolean = false;
+  @observable currencyIsFetchingList: boolean = false;
+  @observable currencyIsFetchingRate: boolean = false;
   @observable currencyIsAvailable: boolean = true;
-  @observable currencyIsActive: boolean = CURRENCY_IS_ACTIVE_BY_DEFAULT;
+  @observable currencyIsActive: boolean = null;
 
   @observable currencyList: Array<Currency> = [];
   @observable currencySelected: ?Currency = null;
-  // @observable currencySelected: ?Currency = {
-  //   id: 'uniswap-state-dollar',
-  //   symbol: 'usd',
-  //   name: 'unified Stable Dollar',
-  // };
-  // @observable currencyRate: ?number = null;
-  @observable currencyRate: ?number = 0.318799;
+  @observable currencyRate: ?number = null;
   @observable currencyLastFetched: ?date = null;
 
   /* ----------  Create Wallet  ---------- */
@@ -304,6 +302,7 @@ export default class WalletsStore extends Store {
     walletsActions.transferFundsCalculateFee.listen(
       this._transferFundsCalculateFee
     );
+    walletsActions.setCurrencySelected.listen(this._setCurrencySelected);
 
     this.setupCurrency();
   }
@@ -334,57 +333,61 @@ export default class WalletsStore extends Store {
 
   @action setupCurrency = async () => {
     // Check if the user has enabled currencies
+    // Otherwise applies the default config
     const currencyIsActive = await this.api.localStorage.getCurrencyIsActive();
 
     // Check if the user has already selected a currency
+    // Otherwise applies the default currency
     const currencySelected = await this.api.localStorage.getCurrencySelected();
 
-    // Fetch the currency list
-    this.getCurrencyList();
-
-    const defaultCurrencySelected = {
-      id: 'uniswap-state-dollar',
-      symbol: 'usd',
-      name: 'unified Stable Dollar',
-    };
-
     runInAction(() => {
-      this.currencyIsActive = currencyIsActive;
-      this.currencySelected = currencySelected || defaultCurrencySelected;
+      this.currencyIsActive = currencyIsActive || CURRENCY_IS_ACTIVE_BY_DEFAULT;
+      this.currencySelected = currencySelected || DEFAULT_CURRENCY_SELECTED;
     });
 
-    // this.getCurrencyRate();
-    // this.getCurrencySelected();
+    // Fetch the currency list and rate
+    this.getCurrencyList();
+    this.getCurrencyRate();
   };
 
   @action getCurrencyList = async () => {
+    this.currencyIsFetchingList = true;
     const currencyList = await this.api.ada.getCurrencyList();
     runInAction(() => {
       this.currencyList = currencyList;
+      this.currencyIsFetchingList = false;
     });
   };
 
   @action getCurrencyRate = async () => {
-    const { currency } = this;
-    if (currency && currency.symbol) {
-      const currencyRate = await this.api.ada.getCurrencyRate(currency);
+    this.currencyIsFetchingRate = true;
+    this.currencyRate = null;
+    const { currencySelected } = this;
+    if (currencySelected && currencySelected.symbol) {
+      const currencyRate = await this.api.ada.getCurrencyRate(currencySelected);
       runInAction(() => {
-        this.currencyRate = currencyRate;
+        this.currencyIsFetchingRate = false;
         this.currencyLastFetched = new Date();
+        if (currencyRate) {
+          this.currencyRate = currencyRate;
+          this.currencyIsAvailable = true;
+        } else {
+          this.currencyIsAvailable = false;
+        }
       });
     }
   };
 
-  // @action getCurrencySelected = async () => {
-  //   const currency = await this.api.localStorage.getCurrencySelected();
-  //   runInAction(() => {
-  //     this.currencySelected = currency;
-  //   });
-  // };
-
-  @action setCurrencySelected = async (currency: Currency) => {
-    this.currencySelected = currency;
-    await this.api.localStorage.setCurrencySelected(currency);
+  @action _setCurrencySelected = async ({
+    currencyId,
+  }: {
+    currencyId: string,
+  }) => {
+    const { currencyList } = this;
+    const currencySelected = currencyList.find(({ id }) => currencyId === id);
+    this.currencySelected = currencySelected;
+    this.getCurrencyRate();
+    await this.api.localStorage.setCurrencySelected(currencySelected);
   };
 
   _create = async (params: { name: string, spendingPassword: string }) => {

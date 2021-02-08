@@ -20,6 +20,7 @@ import StakePoolsSettings from '../../../../source/renderer/app/components/setti
 import DisplaySettings from '../../../../source/renderer/app/components/settings/categories/DisplaySettings';
 import SupportSettings from '../../../../source/renderer/app/components/settings/categories/SupportSettings';
 import TermsOfUseSettings from '../../../../source/renderer/app/components/settings/categories/TermsOfUseSettings';
+import WalletSettings from '../../../../source/renderer/app/components/settings/categories/WalletSettings';
 
 const getParamName = (obj, itemName): any =>
   Object.entries(obj).find((entry: [any, any]) => itemName === entry[1]);
@@ -46,6 +47,17 @@ storiesOf('Settings|General', module)
       currentLocale={LANGUAGE_OPTIONS[0].value}
       currentNumberFormat={NUMBER_OPTIONS[0].value}
       currentTimeFormat={TIME_OPTIONS[0].value}
+    />
+  ))
+  .add('Wallets', () => (
+    <WalletSettings
+      currencySelected={{
+        id: 'uniswap-state-dollar',
+        symbol: 'usd',
+        name: 'unified Stable Dollar',
+      }}
+      currencyRate={0.321}
+      currencyList={[]}
     />
   ))
   .add('Stake Pools', () => (
