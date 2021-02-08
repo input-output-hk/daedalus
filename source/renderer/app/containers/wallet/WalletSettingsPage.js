@@ -8,6 +8,7 @@ import { ellipsis } from '../../utils/strings';
 import ChangeSpendingPasswordDialogContainer from './dialogs/settings/ChangeSpendingPasswordDialogContainer';
 import WalletRecoveryPhraseContainer from './dialogs/settings/WalletRecoveryPhraseContainer';
 import WalletPublicKeyQRCodeDialogContainer from './dialogs/settings/WalletPublicKeyQRCodeDialogContainer';
+import UndelegateWalletDialogContainer from './dialogs/settings/UndelegateWalletDialogContainer';
 import DeleteWalletDialogContainer from './dialogs/settings/DeleteWalletDialogContainer';
 import ExportWalletToFileDialogContainer from './dialogs/settings/ExportWalletToFileDialogContainer';
 import {
@@ -45,11 +46,13 @@ export default class WalletSettingsPage extends Component<Props> {
       app,
       wallets,
       profile,
+      staking,
     } = this.props.stores;
     const {
       active: activeWallet,
       activePublicKey: activeWalletPublicKey,
     } = wallets;
+    const { calculateDelegationFee } = staking;
 
     // Guard against potential null values
     if (!activeWallet)
@@ -97,6 +100,10 @@ export default class WalletSettingsPage extends Component<Props> {
         <WalletSettings
           error={updateWalletRequest.error}
           openDialogAction={actions.dialogs.open.trigger}
+          updateDataForActiveDialog={
+            actions.dialogs.updateDataForActiveDialog.trigger
+          }
+          calculateDelegationFee={calculateDelegationFee}
           isHardwareWallet={isHardwareWallet}
           isSpendingPasswordSet={activeWallet.hasPassword}
           spendingPasswordUpdateDate={activeWallet.passwordUpdateDate}
@@ -135,6 +142,11 @@ export default class WalletSettingsPage extends Component<Props> {
           }
           walletPublicKeyQRCodeDialogContainer={
             <WalletPublicKeyQRCodeDialogContainer />
+          }
+          undelegateWalletDialogContainer={
+            <UndelegateWalletDialogContainer
+              onExternalLinkClick={app.openExternalLink}
+            />
           }
           deleteWalletDialogContainer={<DeleteWalletDialogContainer />}
           exportWalletDialogContainer={<ExportWalletToFileDialogContainer />}

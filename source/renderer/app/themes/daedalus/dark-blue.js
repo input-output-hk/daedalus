@@ -710,6 +710,8 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-settings-menu-item-left-border-color-active': '#536370',
     '--theme-settings-theme-select-title-color': '#cecfd1',
     '--theme-settings-theme-select-border-color': 'rgba(102, 122, 138, 0.3)',
+    '--theme-settings-undelegate-wallet-divider-border-color': '#334152',
+    '--theme-settings-undelegate-wallet-fees-amount-color': '#ea4c5b',
   },
   sidebar: {
     '--theme-sidebar-background-color': '#314259',

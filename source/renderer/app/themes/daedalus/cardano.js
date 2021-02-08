@@ -706,6 +706,8 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-settings-menu-item-left-border-color-active': '#2cbb69',
     '--theme-settings-theme-select-title-color': '#5e6066',
     '--theme-settings-theme-select-border-color': '#d2d3d3',
+    '--theme-settings-undelegate-wallet-divider-border-color': '#dfe4e8',
+    '--theme-settings-undelegate-wallet-fees-amount-color': '#ea4c5b',
   },
   sidebar: {
     '--theme-sidebar-background-color': '#4a5058',

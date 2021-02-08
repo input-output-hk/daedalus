@@ -2,6 +2,7 @@
 import React from 'react';
 import { text, boolean, number, select } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
+import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import { isIncentivizedTestnetTheme } from '../../_support/utils';
 import type { Locale } from '../../../../source/common/types/locales.types';
@@ -10,6 +11,7 @@ import type { Locale } from '../../../../source/common/types/locales.types';
 import WalletSettings from '../../../../source/renderer/app/components/wallet/settings/WalletSettings';
 import ChangeSpendingPasswordDialog from '../../../../source/renderer/app/components/wallet/settings/ChangeSpendingPasswordDialog';
 import WalletPublicKeyQRCodeDialog from '../../../../source/renderer/app/components/wallet/settings/WalletPublicKeyQRCodeDialog';
+import UndelegateWalletConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog';
 import DeleteWalletConfirmationDialog from '../../../../source/renderer/app/components/wallet/settings/DeleteWalletConfirmationDialog';
 import WalletRecoveryPhraseStep1Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep1Dialog';
 import WalletRecoveryPhraseStep2Dialog from '../../../../source/renderer/app/components/wallet/settings/WalletRecoveryPhraseStep2Dialog';
@@ -25,6 +27,7 @@ import {
 
 const basicSettingsId = 'Basic Settings';
 const changePasswordId = 'Change Password';
+const undelegateWalletId = 'Undelegate Wallet';
 const deleteWalletId = 'Delete Wallet';
 const walletPublicKeyId = 'Wallet Public Key';
 const recoveryPhraseId = 'Recovery Phrase';
@@ -145,6 +148,9 @@ export default (props: { currentTheme: string, locale: Locale }) => {
       onStartEditing={() => {}}
       onStopEditing={() => {}}
       openDialogAction={() => {}}
+      walletId="walletId"
+      updateDataForActiveDialog={() => null}
+      calculateDelegationFee={() => null}
       walletName={text('Wallet Name', 'Wallet Name', basicSettingsId)}
       walletPublicKey={walletPublicKeyId}
       spendingPasswordUpdateDate={moment().subtract(1, 'month').toDate()}
@@ -189,6 +195,35 @@ export default (props: { currentTheme: string, locale: Locale }) => {
           walletPublicKey={walletPublicKeyId}
           onCopyWalletPublicKey={action('Wallet Public Key QR Code - copy')}
           onClose={action('Wallet Public Key QR Code - onClose')}
+        />
+      }
+      undelegateWalletDialogContainer={
+        <UndelegateWalletConfirmationDialog
+          walletName={text(
+            'UndelegateWalletConfirmationDialog: Wallet Name',
+            'Wallet To Undelegate',
+            undelegateWalletId
+          )}
+          stakePoolName={text(
+            'UndelegateWalletConfirmationDialog: Stake Pool Name',
+            'Stake Pool Name'
+          )}
+          stakePoolTicker={text(
+            'UndelegateWalletConfirmationDialog: Stake Pool Ticker',
+            'Stake Pool Ticker'
+          )}
+          onConfirm={action('Undelegate Wallet - onConfirm')}
+          onCancel={action('Undelegate Wallet - onCancel')}
+          onExternalLinkClick={action(
+            'Undelegate Wallet - onExternalLinkClick'
+          )}
+          submitting={boolean(
+            'Undelegate Wallet - submitting',
+            false,
+            undelegateWalletId
+          )}
+          error={null}
+          fees={new BigNumber(10)}
         />
       }
       deleteWalletDialogContainer={

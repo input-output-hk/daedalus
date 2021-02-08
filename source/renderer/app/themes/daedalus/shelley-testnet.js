@@ -687,6 +687,9 @@ export const SHELLEY_TESTNET_THEME_OUTPUT = {
     '--theme-settings-menu-item-left-border-color-active': '#898ee6',
     '--theme-settings-theme-select-title-color': '#ffffff',
     '--theme-settings-theme-select-border-color': 'rgba(255, 255, 255, 0.2)',
+    '--theme-settings-undelegate-wallet-divider-border-color':
+      'rgba(255, 255, 255, 0.2)',
+    '--theme-settings-undelegate-wallet-fees-amount-color': '#ea4c5b',
   },
   sidebar: {
     '--theme-sidebar-background-color': '#36374d',

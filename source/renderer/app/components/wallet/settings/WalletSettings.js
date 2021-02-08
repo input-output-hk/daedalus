@@ -11,7 +11,9 @@ import InlineEditingInput from '../../widgets/forms/InlineEditingInput';
 import ReadOnlyInput from '../../widgets/forms/ReadOnlyInput';
 import WalletPublicKeyField from './WalletPublicKeyField';
 import WalletPublicKeyQRCodeDialog from './WalletPublicKeyQRCodeDialog';
+import UndelegateWalletButton from './UndelegateWalletButton';
 import DeleteWalletButton from './DeleteWalletButton';
+import UndelegateWalletConfirmationDialog from './UndelegateWalletConfirmationDialog';
 import DeleteWalletConfirmationDialog from './DeleteWalletConfirmationDialog';
 import ChangeSpendingPasswordDialog from './ChangeSpendingPasswordDialog';
 import globalMessages from '../../../i18n/global-messages';
@@ -26,6 +28,17 @@ export const messages = defineMessages({
     defaultMessage: '!!!Transaction assurance security level',
     description:
       'Label for the "Transaction assurance security level" dropdown.',
+  },
+  undelegateWalletHeader: {
+    id: 'wallet.settings.undelegateWallet.header',
+    defaultMessage: '!!!Undelegate wallet',
+    description: 'Undelegate wallet header on the wallet settings page.',
+  },
+  undelegateWalletWarning: {
+    id: 'wallet.settings.undelegateWallet.warning',
+    defaultMessage:
+      '!!!If you are planning to stop using this wallet and remove all funds, you should first undelegate it to recover your 2 ada deposit. You will continue getting delegation rewards during the three Cardano epochs after undelegating your wallet.',
+    description: 'Undelegate wallet warning explaining the consequences.',
   },
   deleteWalletHeader: {
     id: 'wallet.settings.deleteWallet.header',
@@ -67,6 +80,7 @@ export const messages = defineMessages({
 });
 
 type Props = {
+  walletId: string,
   walletName: string,
   walletPublicKey: ?string,
   creationDate: Date,
@@ -74,6 +88,8 @@ type Props = {
   error?: ?LocalizableError,
   getWalletPublicKey: Function,
   openDialogAction: Function,
+  updateDataForActiveDialog: Function,
+  calculateDelegationFee: Function,
   isDialogOpen: Function,
   onFieldValueChange: Function,
   onStartEditing: Function,
@@ -86,6 +102,7 @@ type Props = {
   isLegacy: boolean,
   changeSpendingPasswordDialog: Node,
   walletPublicKeyQRCodeDialogContainer: Node,
+  undelegateWalletDialogContainer: Node,
   deleteWalletDialogContainer: Node,
   shouldDisplayRecoveryPhrase: boolean,
   recoveryPhraseVerificationDate: ?Date,
@@ -167,6 +184,58 @@ export default class WalletSettings extends Component<Props, State> {
         </BorderedBox>
         {isDialogOpen(WalletPublicKeyQRCodeDialog)
           ? walletPublicKeyQRCodeDialogContainer
+          : false}
+      </>
+    );
+  };
+
+  onUndelegateWalletClick = async () => {
+    const {
+      walletId,
+      openDialogAction,
+      isDialogOpen,
+      updateDataForActiveDialog,
+      calculateDelegationFee,
+    } = this.props;
+    this.onBlockForm();
+    openDialogAction({
+      dialog: UndelegateWalletConfirmationDialog,
+    });
+    const dialogData = {
+      walletId,
+      stakePoolQuitFee: null,
+    };
+    updateDataForActiveDialog({ data: dialogData });
+
+    const stakePoolQuitFee = await calculateDelegationFee({ walletId });
+
+    if (isDialogOpen(UndelegateWalletConfirmationDialog) && stakePoolQuitFee) {
+      updateDataForActiveDialog({
+        data: {
+          ...dialogData,
+          stakePoolQuitFee,
+        },
+      });
+    }
+  };
+
+  renderUndelegateWalletBox = () => {
+    const { intl } = this.context;
+    const { isDialogOpen, undelegateWalletDialogContainer } = this.props;
+
+    return (
+      <>
+        <BorderedBox className={styles.undelegateWalletBox}>
+          <span>{intl.formatMessage(messages.undelegateWalletHeader)}</span>
+          <div className={styles.contentBox}>
+            <div>
+              <p>{intl.formatMessage(messages.undelegateWalletWarning)}</p>
+            </div>
+            <UndelegateWalletButton onClick={this.onUndelegateWalletClick} />
+          </div>
+        </BorderedBox>
+        {isDialogOpen(UndelegateWalletConfirmationDialog)
+          ? undelegateWalletDialogContainer
           : false}
       </>
     );
@@ -313,6 +382,7 @@ export default class WalletSettings extends Component<Props, State> {
           : false}
 
         {this.renderWalletPublicKeyBox()}
+        {this.renderUndelegateWalletBox()}
         {this.renderDeleteWalletBox()}
       </div>
     );

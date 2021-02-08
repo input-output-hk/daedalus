@@ -689,6 +689,9 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-settings-menu-item-left-border-color-active': '#eb2256',
     '--theme-settings-theme-select-title-color': '#ffffff',
     '--theme-settings-theme-select-border-color': 'rgba(255, 255, 255, 0.2)',
+    '--theme-settings-undelegate-wallet-divider-border-color':
+      'rgba(255, 255, 255, 0.2)',
+    '--theme-settings-undelegate-wallet-fees-amount-color': '#eb4a22',
   },
   sidebar: {
     '--theme-sidebar-background-color': '#36374d',

@@ -913,6 +913,8 @@ export const createDaedalusComponentsTheme = (
       '--theme-settings-menu-item-left-border-color-active': `${background.secondary.regular}`,
       '--theme-settings-theme-select-title-color': `${text.primary}`,
       '--theme-settings-theme-select-border-color': `${border}`,
+      '--theme-settings-undelegate-wallet-divider-border-color': `${border}`,
+      '--theme-settings-undelegate-wallet-fees-amount-color': `${error.regular}`,
     },
     sidebar: {
       '--theme-sidebar-background-color': `${background.secondary.regular}`,
