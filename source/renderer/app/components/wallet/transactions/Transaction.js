@@ -420,7 +420,6 @@ export default class Transaction extends Component<Props, State> {
 
     const detailsStyles = classNames([
       styles.details,
-      styles.clickable,
       isExpanded ? styles.detailsExpanded : styles.detailsClosed,
     ]);
 
@@ -434,6 +433,10 @@ export default class Transaction extends Component<Props, State> {
       isExpanded ? styles.expanded : null,
     ]);
 
+    const assetsSeparatorBasicHeight = 27;
+    const assetsSeparatorCalculatedHeight = transactionAssets && transactionAssets.length ?
+      (assetsSeparatorBasicHeight * transactionAssets.length) - 18 :
+      assetsSeparatorBasicHeight;
     const transactionsType = hasMultipleAssets
       ? intl.formatMessage(messages.multipleTokens)
       : intl.formatMessage(globalMessages.currency);
@@ -615,7 +618,7 @@ export default class Transaction extends Component<Props, State> {
                             skin={LinkSkin}
                           />
                           <div className={styles.assetsWrapper}>
-                            <div className={assetsSeparatorStyles} />
+                            <div className={assetsSeparatorStyles} style={{ height: `${assetsSeparatorCalculatedHeight}px` }} />
                             {transactionAssets.map((asset, assetIndex) => (
                               <div
                                 // eslint-disable-next-line react/no-array-index-key

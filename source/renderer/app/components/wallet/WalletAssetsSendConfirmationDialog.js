@@ -307,6 +307,11 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
       },
     ];
 
+    const assetsSeparatorBasicHeight = 27;
+    const assetsSeparatorCalculatedHeight = receivers && receivers.length ?
+      (assetsSeparatorBasicHeight * receivers.length) - 18 :
+      assetsSeparatorBasicHeight;
+
     let errorElement = null;
     if (error) {
       const errorHasLink = !!error.values.linkLabel;
@@ -355,7 +360,11 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
                     <div className={styles.receiverRowItemAddresses}>
                       <div className={styles.addressTo}>{address}</div>
                       <div className={styles.assetsWrapper}>
-                        <div className={styles.assetsSeparator} />
+                        <div className={styles.assetsSeparator} style={{
+                          height: `${assetsSeparatorCalculatedHeight}px`,
+                          top: `${assetsSeparatorCalculatedHeight + 5}px`,
+                          marginTop: `-${assetsSeparatorCalculatedHeight + 5}px`
+                        }} />
                         {receivers.map((assets, assetsIndex) => (
                           <div
                             // eslint-disable-next-line react/no-array-index-key
