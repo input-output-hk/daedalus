@@ -5,8 +5,13 @@ import { observer } from 'mobx-react';
 import { map } from 'lodash';
 import { defineMessages, intlShape } from 'react-intl';
 import { Select } from 'react-polymorph/lib/components/Select';
+import NormalSwitch from '../../widgets/forms/NormalSwitch';
 import styles from './WalletsSettings.scss';
 
+// /Users/danilo/iohk/daedalus/source/renderer/app/components/widgets/forms/NormalSwitch.js
+// /Users/danilo/iohk/daedalus/source/renderer/app/components/settings/categories/WalletsSettings.js
+
+console.log('NormalSwitch', NormalSwitch);
 const messages = defineMessages({
   currencyTitleLabel: {
     id: 'settings.wallets.currency.titleLabel',
@@ -33,7 +38,9 @@ type Props = {
   currencySelected: string,
   currencyRate: number,
   currencyList: Array<any>,
+  currencyIsActive: boolean,
   onSelectCurrency: Function,
+  onToggleCurrencyIsActive: Function,
 };
 
 @observer
@@ -48,7 +55,9 @@ export default class WalletSettings extends Component<Props> {
       currencySelected,
       currencyRate,
       currencyList,
+      currencyIsActive,
       onSelectCurrency,
+      onToggleCurrencyIsActive,
     } = this.props;
 
     const currencyOptions = map(currencyList, ({ id, symbol, name }) => {
@@ -61,7 +70,14 @@ export default class WalletSettings extends Component<Props> {
     return (
       <div className={styles.component}>
         <label>{intl.formatMessage(messages.currencyTitleLabel)}</label>
-        <p>{intl.formatMessage(messages.currencyDescription)}</p>
+        <div className={styles.description}>
+          <p>{intl.formatMessage(messages.currencyDescription)}</p>
+          <NormalSwitch
+            checked={currencyIsActive}
+            onChange={onToggleCurrencyIsActive}
+            className={styles.switch}
+          />
+        </div>
         <Select
           label={intl.formatMessage(messages.currencySelectLabel)}
           value={currencySelected ? currencySelected.id : null}

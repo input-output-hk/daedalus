@@ -85,6 +85,7 @@ export default class WalletsActions {
   finishCertificate: Action<any> = new Action();
   finishRewardsCsv: Action<any> = new Action();
   setCurrencySelected: Action<{ currencyId: string }> = new Action();
+  toggleCurrencyIsActive: Action<any> = new Action();
 
   /* ----------  Transfer Funds  ---------- */
   transferFundsNextStep: Action<any> = new Action();

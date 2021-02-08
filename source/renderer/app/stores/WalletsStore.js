@@ -303,6 +303,7 @@ export default class WalletsStore extends Store {
       this._transferFundsCalculateFee
     );
     walletsActions.setCurrencySelected.listen(this._setCurrencySelected);
+    walletsActions.toggleCurrencyIsActive.listen(this._toggleCurrencyIsActive);
 
     this.setupCurrency();
   }
@@ -388,6 +389,10 @@ export default class WalletsStore extends Store {
     this.currencySelected = currencySelected;
     this.getCurrencyRate();
     await this.api.localStorage.setCurrencySelected(currencySelected);
+  };
+
+  @action _toggleCurrencyIsActive = () => {
+    this.currencyIsActive = !this.currencyIsActive;
   };
 
   _create = async (params: { name: string, spendingPassword: string }) => {

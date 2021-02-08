@@ -1,7 +1,16 @@
 .component {
   font-family: var(--font-regular);
   color: var(--theme-support-settings-text-color);
+  .description {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+  .switch {
+    margin: 0;
+  }
   label {
+    display: block;
     font-family: var(--font-semibold);
     font-size: 16px;
     line-height: 1.38;

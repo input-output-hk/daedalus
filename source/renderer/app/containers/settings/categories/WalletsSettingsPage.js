@@ -12,18 +12,24 @@ export default class WalletsSettingsPage extends Component<InjectedProps> {
   handleSelectCurrency = (currencyId: string) =>
     this.props.actions.wallets.setCurrencySelected.trigger({ currencyId });
 
+  handleToggleCurrencyIsActive = () =>
+    this.props.actions.wallets.toggleCurrencyIsActive.trigger();
+
   render() {
     const {
       currencySelected,
       currencyRate,
       currencyList,
+      currencyIsActive,
     } = this.props.stores.wallets;
     return (
       <WalletsSettings
         currencySelected={currencySelected}
         currencyRate={currencyRate}
         currencyList={currencyList}
+        currencyIsActive={currencyIsActive}
         onSelectCurrency={this.handleSelectCurrency}
+        onToggleCurrencyIsActive={this.handleToggleCurrencyIsActive}
       />
     );
   }
