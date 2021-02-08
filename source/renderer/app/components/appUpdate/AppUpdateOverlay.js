@@ -158,24 +158,19 @@ export default class AppUpdateOverlay extends Component<Props, State> {
       downloadProgress,
     } = this.props;
     return (
-      <div className={styles.downloadProgress}>
-        <div className={styles.downloadProgressContent}>
-          <p className={styles.downloadProgressLabel}>
-            {intl.formatMessage(messages.downloadProgressLabel)}
-          </p>
-          <p className={styles.downloadProgressData}>
-            <b>
-              {intl.formatMessage(messages.downloadTimeLeft, {
-                downloadTimeLeft,
-              })}
-            </b>{' '}
-            {intl.formatMessage(messages.downloadProgressData, {
-              totalDownloaded,
-              totalDownloadSize,
-            })}
-          </p>
-        </div>
-        <ProgressBarLarge progress={downloadProgress} />
+      <div className={styles.progressBar}>
+        <ProgressBarLarge
+          leftLabel={intl.formatMessage(messages.downloadProgressLabel)}
+          rightLabel1={intl.formatMessage(messages.downloadTimeLeft, {
+            downloadTimeLeft,
+          })}
+          rightLabel2={intl.formatMessage(messages.downloadProgressData, {
+            totalDownloaded,
+            totalDownloadSize,
+          })}
+          progress={downloadProgress}
+          isDarkMode
+        />
       </div>
     );
   };
@@ -234,14 +229,13 @@ export default class AppUpdateOverlay extends Component<Props, State> {
           />
         )}
         {isLinux && isWaitingToQuitDaedalus ? (
-          <>
-            <div className={styles.downloadProgressContent}>
-              <p className={styles.downloadProgressLabel}>
-                {intl.formatMessage(messages.installingUpdateLabel)}
-              </p>
-            </div>
-            <ProgressBarLarge progress={installationProgress} />
-          </>
+          <div className={styles.progressBar}>
+            <ProgressBarLarge
+              progress={installationProgress}
+              labelLeft={intl.formatMessage(messages.installingUpdateLabel)}
+              isDarkMode
+            />
+          </div>
         ) : (
           <>
             <Button

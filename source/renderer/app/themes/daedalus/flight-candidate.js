@@ -488,6 +488,11 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-progress-bar-large-progress-stripe1': '#e0e5eb',
     '--theme-progress-bar-large-progress-stripe2': '#fafbfc',
     '--theme-progress-bar-large-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-progress-bar-large-progress-dark-stripe1': '#e0e5eb',
+    '--theme-progress-bar-large-progress-dark-stripe2': '#fafbfc',
+    '--theme-progress-bar-large-progress-light-stripe-1': '#e6a009',
+    '--theme-progress-bar-large-progress-light-stripe-2-background-color':
+      '#ffc64d',
   },
   receiveQRCode: {
     '--theme-receive-qr-code-background-color': '#fff',
@@ -912,6 +917,7 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-transactions-list-border-color': '1e1f31',
     '--theme-transactions-list-group-date-color': '#ffffff',
     '--theme-transactions-list-item-details-color': '#ffffff',
+    '--theme-transactions-list-item-highlight-color': '#ea4c5b',
     '--theme-transactions-state-ok-background-color': '#2cbb69',
     '--theme-transactions-state-pending-background-color':
       'rgba(255, 255, 255, 0.5)',
@@ -966,6 +972,25 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
     '--theme-utxo-tooltip-background-color': 'rgba(63, 64, 79, 0.9)',
     '--theme-utxo-tooltip-shadow-color': 'rgba(0, 0, 0, 0.18)',
     '--theme-utxo-tooltip-text-color': '#fff',
+  },
+  voting: {
+    '--theme-voting-font-color-accent': '#ffffff',
+    '--theme-voting-font-color-light': '#ffffffb3',
+    '--theme-voting-font-color-regular': '#ffffff',
+    '--theme-voting-info-background-color': 'rgba(255, 255, 255, 0.1)',
+    '--theme-voting-info-font-color': '#ffffff',
+    '--theme-voting-registration-steps-activation-steps-indicator-color':
+      '#ffffff',
+    '--theme-voting-registration-steps-choose-wallet-error-message-color':
+      '#ea4c5b',
+    '--theme-voting-registration-steps-choose-wallet-error-message-light-color':
+      '#ea4c5bb3',
+    '--theme-voting-registration-steps-deposit-fees-amount-color': '#ea4c5b',
+    '--theme-voting-registration-steps-deposit-fees-label-color': '#ffffff',
+    '--theme-voting-registration-steps-description-color': '#ffffffcc',
+    '--theme-voting-registration-steps-description-highlighted-color':
+      '#ffffff',
+    '--theme-voting-separator-color': 'rgba(255, 255, 255, 0.15)',
   },
   recoveryPhrase: {
     '--theme-recovery-phrase-normal-background-color':

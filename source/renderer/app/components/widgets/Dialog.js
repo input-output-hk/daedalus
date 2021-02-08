@@ -34,12 +34,14 @@ export type DialogActionOptions = {
   direction?: ActionDirection,
 };
 
+export type DialogActions = DialogActionItems | DialogActionOptions;
+
 type Props = {
   title?: string,
   subtitle?: string | Node,
   children?: Node,
   footer?: Node,
-  actions?: DialogActionItems | DialogActionOptions,
+  actions?: DialogActions,
   closeButton?: ?Element<any>,
   backButton?: Node,
   className?: string,

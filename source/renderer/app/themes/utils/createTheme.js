@@ -830,6 +830,10 @@ export const createDaedalusComponentsTheme = (
       ).alpha(0.7)}`,
       '--theme-progress-bar-large-progress-stripe1': '#e0e5eb',
       '--theme-progress-bar-large-progress-stripe2': '#fafbfc',
+      '--theme-progress-bar-large-progress-dark-stripe1': '#e0e5eb',
+      '--theme-progress-bar-large-progress-dark-stripe2': '#fafbfc',
+      '--theme-progress-bar-large-progress-light-stripe-1': `${background.secondary.dark}`,
+      '--theme-progress-bar-large-progress-light-stripe-2': `${background.secondary.regular}`,
       '--theme-progress-bar-large-background-color': 'rgba(0, 0, 0, 0.1)',
     },
     receiveQRCode: {
@@ -1156,6 +1160,7 @@ export const createDaedalusComponentsTheme = (
       '--theme-transactions-list-border-color': `${border}`,
       '--theme-transactions-list-group-date-color': `${text.primary}`,
       '--theme-transactions-list-item-details-color': `${text.primary}`,
+      '--theme-transactions-list-item-highlight-color': `${error.regular}`,
       '--theme-transactions-state-ok-background-color': '#007600',
       '--theme-transactions-state-pending-background-color': `${background.primary.dark}`,
       '--theme-transactions-state-pending-warning-background-color': '#ec5d6b',
@@ -1219,6 +1224,27 @@ export const createDaedalusComponentsTheme = (
       )}`,
       '--theme-utxo-tooltip-shadow-color': 'rgba(0, 0, 0, 0.18)',
       '--theme-utxo-tooltip-text-color': `${text.secondary}`,
+    },
+    voting: {
+      '--theme-voting-font-color-accent': `${focus}`,
+      '--theme-voting-font-color-light': `${chroma(text.primary).alpha(0.7)}`,
+      '--theme-voting-font-color-regular': `${text.primary}`,
+      '--theme-voting-info-background-color': `${chroma(
+        background.primary.darkest
+      )}`,
+      '--theme-voting-info-font-color': `${chroma(background.primary.darkest)}`,
+      '--theme-voting-registration-steps-activation-steps-indicator-color': `${text.primary}`,
+      '--theme-voting-registration-steps-choose-wallet-error-message-color': `${error.regular}`,
+      '--theme-voting-registration-steps-choose-wallet-error-message-light-color': `${chroma(
+        error.regular
+      ).alpha(0.7)}`,
+      '--theme-voting-registration-steps-deposit-fees-amount-color': `${error.regular}`,
+      '--theme-voting-registration-steps-deposit-fees-label-color': `${text.primary}`,
+      '--theme-voting-registration-steps-description-color': `${chroma(
+        text.primary
+      ).alpha(0.8)}`,
+      '--theme-voting-registration-steps-description-highlighted-color': `${text.primary}`,
+      '--theme-voting-separator-color': `${chroma(text.primary).alpha(0.15)}`,
     },
     walletRestoreDialog: {
       '--theme-wallet-restore-dialog-new-label-background-color': `${chroma(

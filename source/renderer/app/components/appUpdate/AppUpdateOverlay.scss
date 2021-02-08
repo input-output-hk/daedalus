@@ -109,30 +109,13 @@
     }
   }
 
-  .downloadProgress {
+  .progressBar {
     width: 608px;
-  }
-  .downloadProgressContent {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 4px;
-    p {
-      font-size: 14px;
-    }
-  }
-  .downloadProgressData {
-    color: var(--theme-app-update-overlay-opacity-text-color);
-    b {
-      font-family: var(--font-bold);
-    }
   }
 
   .actions {
     text-align: center;
     width: 540px;
-    &.progressBar {
-      width: 608px;
-    }
     .checkbox {
       margin-bottom: 30px;
       &.disabled {

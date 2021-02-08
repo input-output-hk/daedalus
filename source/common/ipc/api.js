@@ -11,6 +11,7 @@ import type {
   SaveFileDialogResponseParams,
 } from '../types/file-dialog.types';
 import type { GenerateAddressPDFParams } from '../types/address-pdf-request.types';
+import type { GenerateVotingPDFParams } from '../types/voting-pdf-request.types';
 import type { GenerateCsvParams } from '../types/csv-request.types';
 import type { GenerateQRCodeParams } from '../types/save-qrCode.types';
 import type {
@@ -203,6 +204,13 @@ export type GeneratePaperWalletMainResponse = void;
 export const GENERATE_ADDRESS_PDF_CHANNEL = 'GENERATE_ADDRESS_PDF_CHANNEL';
 export type GenerateAddressPDFRendererRequest = GenerateAddressPDFParams;
 export type GenerateAddressPDFMainResponse = void;
+
+/**
+ * Channel to generate and save a share voting PDF
+ */
+export const GENERATE_VOTING_PDF_CHANNEL = 'GENERATE_VOTING_PDF_CHANNEL';
+export type GenerateVotingPDFRendererRequest = GenerateVotingPDFParams;
+export type GenerateVotingPDFMainResponse = void;
 
 /**
  * Channel to generate and save a csv file

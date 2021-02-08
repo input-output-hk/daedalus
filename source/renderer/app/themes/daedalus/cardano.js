@@ -506,6 +506,11 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-progress-bar-large-progress-stripe1': '#e0e5ea',
     '--theme-progress-bar-large-progress-stripe2': '#fafbfc',
     '--theme-progress-bar-large-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-progress-bar-large-progress-dark-stripe1': '#e0e5ea',
+    '--theme-progress-bar-large-progress-dark-stripe2': '#fafbfc',
+    '--theme-progress-bar-large-progress-light-stripe-1': '#259c59',
+    '--theme-progress-bar-large-progress-light-stripe-2-background-color':
+      '#2cbb69',
   },
   receiveQRCode: {
     '--theme-receive-qr-code-background-color': 'transparent',
@@ -925,6 +930,7 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-transactions-list-border-color': '#d2d3d3',
     '--theme-transactions-list-group-date-color': '#5e6066',
     '--theme-transactions-list-item-details-color': '#5e6066',
+    '--theme-transactions-list-item-highlight-color': '#ea4c5b',
     '--theme-transactions-state-ok-background-color': '#007600',
     '--theme-transactions-state-pending-background-color':
       'rgba(94, 96, 102, 0.5)',
@@ -978,6 +984,26 @@ export const CARDANO_THEME_OUTPUT = {
     '--theme-utxo-tooltip-background-color': 'rgba(94, 96, 102, 0.9)',
     '--theme-utxo-tooltip-shadow-color': 'rgba(0, 0, 0, 0.18)',
     '--theme-utxo-tooltip-text-color': '#ffffff',
+  },
+  voting: {
+    '--theme-voting-font-color-accent': '#5e6066',
+    '--theme-voting-font-color-light': 'rgba(94, 96, 102, 0.7)',
+    '--theme-voting-font-color-regular': '#5e6066',
+    '--theme-voting-info-background-color': 'rgba(94, 96, 102, 0.1)',
+    '--theme-voting-info-font-color': '#5e6066',
+    '--theme-voting-registration-steps-activation-steps-indicator-color':
+      '#5e6066',
+    '--theme-voting-registration-steps-choose-wallet-error-message-color':
+      '#ea4c5b',
+    '--theme-voting-registration-steps-choose-wallet-error-message-light-color':
+      'rgba(234, 76, 91, 0.7)',
+    '--theme-voting-registration-steps-deposit-fees-amount-color': '#ea4c5b',
+    '--theme-voting-registration-steps-deposit-fees-label-color': '#5e6066',
+    '--theme-voting-registration-steps-description-color':
+      'rgba(94, 96, 102, 0.8)',
+    '--theme-voting-registration-steps-description-highlighted-color':
+      '#5e6066',
+    '--theme-voting-separator-color': 'rgba(94, 96, 102, 0.15)',
   },
   recoveryPhrase: {
     '--theme-recovery-phrase-normal-background-color': 'transparent',
