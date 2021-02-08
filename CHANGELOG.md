@@ -1,16 +1,18 @@
 Changelog
 =========
 
-## vNext
+## 3.3.0
 
 ### Features
 
+- Implemented Voting Centar ([PR 2315](https://github.com/input-output-hk/daedalus/pull/2315))
 - Implemented transaction metadata display ([PR 2338](https://github.com/input-output-hk/daedalus/pull/2338))
 - Displayed fee and deposit info in transaction details and in the delegation wizard ([PR 2339](https://github.com/input-output-hk/daedalus/pull/2339))
 - Added SMASH server configuration options ([PR 2259](https://github.com/input-output-hk/daedalus/pull/2259))
 
 ### Fixes
 
+- Fixed logging issue with too few `cardano-wallet` logs being packed into logs zip archive ([PR 2341](https://github.com/input-output-hk/daedalus/pull/2341))
 - Fixed misalignment of the "i" icon on the "Set password" dialog ([PR 2337](https://github.com/input-output-hk/daedalus/pull/2337))
 - Removed steps counter from the "Success" wallet restoration dialog step ([PR 2335](https://github.com/input-output-hk/daedalus/pull/2335))
 

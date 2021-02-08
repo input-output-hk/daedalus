@@ -24,9 +24,11 @@ export default class Root extends Component<Props> {
       networkStatus,
       profile,
       staking,
+      voting,
       uiDialogs,
       wallets,
     } = stores;
+    const { isVotingPage } = voting;
     const { isStakingPage, redeemStep } = staking;
     const { isProfilePage, isSettingsPage } = profile;
     const { displayAppUpdateOverlay } = appUpdate;
@@ -43,7 +45,9 @@ export default class Root extends Component<Props> {
 
     const isWalletImportDialogOpen = uiDialogs.isOpen(WalletImportFileDialog);
     const isPageThatDoesntNeedWallets =
-      (isStakingPage || isSettingsPage) && hasLoadedWallets && isConnected;
+      (isStakingPage || isSettingsPage || isVotingPage) &&
+      hasLoadedWallets &&
+      isConnected;
 
     // In case node is in stopping sequence we must show the "Connecting" screen
     // with the "Stopping Cardano node..." and "Cardano node stopped" messages
