@@ -10364,17 +10364,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Spending password",
-        "description": "Spending password label in the \"Undelegate wallet\" dialog.",
+        "defaultMessage": "!!!Deposit",
+        "description": "Deposit label in the \"Undelegate wallet\" dialog.",
         "end": {
           "column": 3,
           "line": 77
         },
         "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.js",
+        "id": "wallet.settings.undelegate.dialog.depositLabel",
+        "start": {
+          "column": 16,
+          "line": 73
+        }
+      },
+      {
+        "defaultMessage": "!!!Spending password",
+        "description": "Spending password label in the \"Undelegate wallet\" dialog.",
+        "end": {
+          "column": 3,
+          "line": 82
+        },
+        "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.js",
         "id": "wallet.settings.undelegate.dialog.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 73
+          "line": 78
         }
       },
       {
@@ -10382,13 +10396,13 @@
         "description": "Spending password placeholder in the \"Undelegate wallet\" dialog.",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 88
         },
         "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.js",
         "id": "wallet.settings.undelegate.dialog.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 78
+          "line": 83
         }
       },
       {
@@ -10396,13 +10410,13 @@
         "description": "Label for password error in the \"Undelegate wallet\" dialog.",
         "end": {
           "column": 3,
-          "line": 88
+          "line": 93
         },
         "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.js",
         "id": "wallet.settings.undelegate.dialog.passwordError",
         "start": {
           "column": 24,
-          "line": 84
+          "line": 89
         }
       },
       {
@@ -10410,13 +10424,13 @@
         "description": "\"Calculating fees\" message in the \"Undelegate wallet\" dialog.",
         "end": {
           "column": 3,
-          "line": 94
+          "line": 99
         },
         "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.js",
         "id": "wallet.settings.undelegate.dialog.calculatingFees",
         "start": {
           "column": 19,
-          "line": 89
+          "line": 94
         }
       }
     ],
@@ -11085,13 +11099,13 @@
         "description": "Label for the \"Transaction assurance security level\" dropdown.",
         "end": {
           "column": 3,
-          "line": 31
+          "line": 32
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.assurance",
         "start": {
           "column": 23,
-          "line": 26
+          "line": 27
         }
       },
       {
@@ -11099,13 +11113,13 @@
         "description": "Undelegate wallet header on the wallet settings page.",
         "end": {
           "column": 3,
-          "line": 36
+          "line": 37
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.undelegateWallet.header",
         "start": {
           "column": 26,
-          "line": 32
+          "line": 33
         }
       },
       {
@@ -11113,13 +11127,13 @@
         "description": "Undelegate wallet warning explaining the consequences.",
         "end": {
           "column": 3,
-          "line": 42
+          "line": 43
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.undelegateWallet.warning",
         "start": {
           "column": 27,
-          "line": 37
+          "line": 38
         }
       },
       {
@@ -11127,13 +11141,13 @@
         "description": "Delete wallet header on the wallet settings page.",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 48
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.deleteWallet.header",
         "start": {
           "column": 22,
-          "line": 43
+          "line": 44
         }
       },
       {
@@ -11141,13 +11155,13 @@
         "description": "Delete wallet warning explaining the consequences.",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 54
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.deleteWallet.warning1",
         "start": {
           "column": 24,
-          "line": 48
+          "line": 49
         }
       },
       {
@@ -11155,13 +11169,13 @@
         "description": "Delete wallet warning explaining the consequences.",
         "end": {
           "column": 3,
-          "line": 59
+          "line": 60
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.deleteWallet.warning2",
         "start": {
           "column": 24,
-          "line": 54
+          "line": 55
         }
       },
       {
@@ -11169,13 +11183,13 @@
         "description": "Label for the \"Name\" text input on the wallet settings page.",
         "end": {
           "column": 3,
-          "line": 64
+          "line": 65
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.name.label",
         "start": {
           "column": 8,
-          "line": 60
+          "line": 61
         }
       },
       {
@@ -11183,13 +11197,13 @@
         "description": "Label for the \"Password\" field.",
         "end": {
           "column": 3,
-          "line": 69
+          "line": 70
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.password",
         "start": {
           "column": 17,
-          "line": 65
+          "line": 66
         }
       },
       {
@@ -11197,13 +11211,13 @@
         "description": "Last updated X time ago message.",
         "end": {
           "column": 3,
-          "line": 74
+          "line": 75
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.passwordLastUpdated",
         "start": {
           "column": 23,
-          "line": 70
+          "line": 71
         }
       },
       {
@@ -11211,13 +11225,13 @@
         "description": "You still don't have password set message.",
         "end": {
           "column": 3,
-          "line": 79
+          "line": 80
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.passwordNotSet",
         "start": {
           "column": 18,
-          "line": 75
+          "line": 76
         }
       }
     ],

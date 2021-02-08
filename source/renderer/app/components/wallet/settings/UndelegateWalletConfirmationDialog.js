@@ -3,7 +3,6 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { get } from 'lodash';
-import BigNumber from 'bignumber.js';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import classnames from 'classnames';
@@ -15,6 +14,7 @@ import { formattedWalletAmount } from '../../../utils/formatters';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import { FormattedHTMLMessageWithLink } from '../../widgets/FormattedHTMLMessageWithLink';
 import Dialog from '../../widgets/Dialog';
+import type { DelegationCalculateFeeResponse } from '../../../api/staking/types';
 import styles from './UndelegateWalletConfirmationDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
@@ -70,6 +70,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Fees',
     description: 'Fees label in the "Undelegate wallet" dialog.',
   },
+  depositLabel: {
+    id: 'wallet.settings.undelegate.dialog.depositLabel',
+    defaultMessage: '!!!Deposit',
+    description: 'Deposit label in the "Undelegate wallet" dialog.',
+  },
   spendingPasswordLabel: {
     id: 'wallet.settings.undelegate.dialog.spendingPasswordLabel',
     defaultMessage: '!!!Spending password',
@@ -105,7 +110,7 @@ type Props = {
   onExternalLinkClick: Function,
   submitting: boolean,
   error: ?LocalizableError,
-  fees: ?BigNumber,
+  fees: ?DelegationCalculateFeeResponse,
 };
 
 @observer
@@ -315,25 +320,43 @@ export default class UndelegateWalletConfirmationDialog extends Component<Props>
           error={ineligibleCheckboxField.error}
         />
         <div className={styles.divider} />
-        <div className={styles.feesWrapper}>
-          <label className="SimpleFormField_label">
-            {intl.formatMessage(messages.feesLabel)}
-          </label>
-          <p className={styles.feesAmount}>
-            {!fees ? (
-              <span className={styles.calculatingFeesLabel}>
-                {intl.formatMessage(messages.calculatingFees)}
-              </span>
-            ) : (
-              <>
-                <span>{formattedWalletAmount(fees, false)}</span>
-                <span className={styles.feesAmountLabel}>
-                  {` `}
-                  {intl.formatMessage(globalMessages.unitAda)}
+        <div className={styles.feesRow}>
+          <div className={styles.feesWrapper}>
+            <p className={styles.feesLabel}>
+              {intl.formatMessage(messages.feesLabel)}
+            </p>
+            <p className={styles.feesAmount}>
+              {!fees ? (
+                <span className={styles.calculatingFeesLabel}>
+                  {intl.formatMessage(messages.calculatingFees)}
                 </span>
-              </>
-            )}
-          </p>
+              ) : (
+                <>
+                  <span>{formattedWalletAmount(fees.fee, false)}</span>
+                  <span className={styles.feesAmountLabel}>
+                    {` `}
+                    {intl.formatMessage(globalMessages.unitAda)}
+                  </span>
+                </>
+              )}
+            </p>
+          </div>
+          {fees && !fees.deposit.isZero() && (
+            <>
+              <div className={styles.depositWrapper}>
+                <p className={styles.depositLabel}>
+                  {intl.formatMessage(messages.depositLabel)}
+                </p>
+                <p className={styles.depositAmount}>
+                  <span>{formattedWalletAmount(fees.deposit, false)}</span>
+                  <span className={styles.depositAmountLabel}>
+                    {` `}
+                    {intl.formatMessage(globalMessages.unitAda)}
+                  </span>
+                </p>
+              </div>
+            </>
+          )}
         </div>
         <Input
           type="password"

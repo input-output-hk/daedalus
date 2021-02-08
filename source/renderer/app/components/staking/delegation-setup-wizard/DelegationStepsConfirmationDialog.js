@@ -303,7 +303,8 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
                       {formattedWalletAmount(transactionFee.fee, false)}
                     </span>
                     <span className={styles.feesAmountLabel}>
-                      &nbsp;{intl.formatMessage(globalMessages.unitAda)}
+                      {` `}
+                      {intl.formatMessage(globalMessages.unitAda)}
                     </span>
                   </>
                 )}
@@ -320,7 +321,8 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
                       {formattedWalletAmount(transactionFee.deposit, false)}
                     </span>
                     <span className={styles.depositAmountLabel}>
-                      &nbsp;{intl.formatMessage(globalMessages.unitAda)}
+                      {` `}
+                      {intl.formatMessage(globalMessages.unitAda)}
                     </span>
                   </p>
                 </div>

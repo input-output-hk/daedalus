@@ -116,6 +116,7 @@ export default class WalletSettingsPage extends Component<Props> {
           isLegacy={isLegacy}
           walletId={activeWallet.id}
           walletName={activeWallet.name}
+          activeWallet={activeWallet}
           walletPublicKey={activeWalletPublicKey}
           creationDate={creationDate}
           isIncentivizedTestnet={isIncentivizedTestnet}

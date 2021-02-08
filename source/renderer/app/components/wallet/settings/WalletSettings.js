@@ -20,6 +20,7 @@ import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletSettings.scss';
 import WalletRecoveryPhraseVerificationWidget from './WalletRecoveryPhraseVerificationWidget';
 import { momentLocales } from '../../../../../common/types/locales.types';
+import type { DelegationCalculateFeeResponse } from '../../../api/staking/types';
 import type { Locale } from '../../../../../common/types/locales.types';
 
 export const messages = defineMessages({
@@ -207,7 +208,9 @@ export default class WalletSettings extends Component<Props, State> {
     };
     updateDataForActiveDialog({ data: dialogData });
 
-    const stakePoolQuitFee = await calculateDelegationFee({ walletId });
+    const stakePoolQuitFee: DelegationCalculateFeeResponse = await calculateDelegationFee(
+      { walletId }
+    );
 
     if (isDialogOpen(UndelegateWalletConfirmationDialog) && stakePoolQuitFee) {
       updateDataForActiveDialog({

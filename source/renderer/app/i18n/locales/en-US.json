@@ -999,6 +999,7 @@
   "wallet.settings.undelegate.dialog.confirmButtonLabel": "Undelegate",
   "wallet.settings.undelegate.dialog.confirmIneligibleNotice": "I understand that I will not be eligible to earn rewards when my stake is undelegated.",
   "wallet.settings.undelegate.dialog.confirmUnsupportNotice": "I understand that I am not supporting the Cardano network when my stake is undelegated.",
+  "wallet.settings.undelegate.dialog.depositLabel": "Deposit",
   "wallet.settings.undelegate.dialog.descriptionWithTicker": "<p>The stake from your wallet <strong>{walletName}</strong> is currently delegated to the <strong>[{stakePoolTicker}] {stakePoolName}</strong> stake pool.</p><p>Do you want to undelegate your stake and stop earning rewards?</p>",
   "wallet.settings.undelegate.dialog.descriptionWithUnknownTicker": "<p>The stake from your wallet <strong>{walletName}</strong> is currently delegated to the <strong>{stakePoolTicker}</strong> stake pool.</p><p>Do you want to undelegate your stake and stop earning rewards?</p>",
   "wallet.settings.undelegate.dialog.feesLabel": "Fees",
