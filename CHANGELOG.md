@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Implement `Undelegate Wallet` on wallet settings screen ([PR 2351](https://github.com/input-output-hk/daedalus/pull/2351))
 - Added SMASH server configuration options ([PR 2259](https://github.com/input-output-hk/daedalus/pull/2259))
 
 ### Fixes
