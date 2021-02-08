@@ -404,6 +404,9 @@ export default class Transaction extends Component<Props, State> {
     const { intl } = this.context;
     const { showConfirmationDialog } = this.state;
 
+    const hasMultipleAssets =
+      hasAssetsEnabled && transactionAssets && transactionAssets.length > 0;
+
     const componentStyles = classNames([
       styles.component,
       isExpanded ? 'Transaction_expanded' : null,
@@ -431,10 +434,10 @@ export default class Transaction extends Component<Props, State> {
       isExpanded ? styles.expanded : null,
     ]);
 
-    const transactionsType = hasAssetsEnabled
+    const transactionsType = hasMultipleAssets
       ? intl.formatMessage(messages.multipleTokens)
       : intl.formatMessage(globalMessages.currency);
-    const typeOfTransaction = hasAssetsEnabled
+    const typeOfTransaction = hasMultipleAssets
       ? intl.formatMessage(headerStateTranslations[state])
       : intl.formatMessage(globalMessages.currency);
 
@@ -488,7 +491,7 @@ export default class Transaction extends Component<Props, State> {
                   onOpenExternalLink(getUrlByType('address', address))
                 }
                 label={
-                  hasAssetsEnabled && address
+                  hasMultipleAssets && address
                     ? ellipsis(address, 30, 30)
                     : address
                 }
@@ -524,13 +527,15 @@ export default class Transaction extends Component<Props, State> {
                         transactionsType,
                       })}
                 </div>
-                {data.amount && (<div className={styles.amount}>
-                  {
-                    // hide currency (we are showing symbol instead)
-                    formattedWalletAmount(data.amount, false)
-                  }
-                  <span>{intl.formatMessage(globalMessages.currency)}</span>
-                </div>)}
+                {data.amount && (
+                  <div className={styles.amount}>
+                    {
+                      // hide currency (we are showing symbol instead)
+                      formattedWalletAmount(data.amount, false)
+                    }
+                    <span>{intl.formatMessage(globalMessages.currency)}</span>
+                  </div>
+                )}
               </div>
 
               <div className={styles.details}>
@@ -556,7 +561,7 @@ export default class Transaction extends Component<Props, State> {
                 {fromAddresses(
                   data.addresses.from,
                   data.id,
-                  hasAssetsEnabled ? data.type : null
+                  hasMultipleAssets ? data.type : null
                 )}
 
                 {data.addresses.withdrawals.length ? (
@@ -581,11 +586,11 @@ export default class Transaction extends Component<Props, State> {
                   </>
                 ) : null}
 
-                {!hasAssetsEnabled && (
+                {!hasMultipleAssets && (
                   <h2>{intl.formatMessage(messages.toAddresses)}</h2>
                 )}
                 {data.addresses.to.map((address, addressIndex) =>
-                  hasAssetsEnabled ? (
+                  hasMultipleAssets ? (
                     <div
                       // eslint-disable-next-line react/no-array-index-key
                       key={`${data.id}-to-${address}-${addressIndex}`}
@@ -621,15 +626,22 @@ export default class Transaction extends Component<Props, State> {
                                   {intl.formatMessage(messages.assetLabel)}
                                   &nbsp;#{assetIndex + 1}
                                 </h3>
-                                {asset.quantity && (<div className={styles.amountFeesWrapper}>
-                                  <div className={styles.amount}>
-                                    {formattedWalletAmount(BigNumber(asset.quantity), false)}
-                                    &nbsp;{' '}
-                                    {asset.metadata && asset.metadata.acronym
-                                      ? asset.metadata.acronym
-                                      : intl.formatMessage(globalMessages.currency)}
+                                {asset.quantity && (
+                                  <div className={styles.amountFeesWrapper}>
+                                    <div className={styles.amount}>
+                                      {formattedWalletAmount(
+                                        BigNumber(asset.quantity),
+                                        false
+                                      )}
+                                      &nbsp;{' '}
+                                      {asset.metadata && asset.metadata.acronym
+                                        ? asset.metadata.acronym
+                                        : intl.formatMessage(
+                                            globalMessages.currency
+                                          )}
+                                    </div>
                                   </div>
-                                </div>)}
+                                )}
                               </div>
                             ))}
                           </div>
@@ -654,7 +666,7 @@ export default class Transaction extends Component<Props, State> {
                   )
                 )}
 
-                {!hasAssetsEnabled && data.deposit && !data.deposit.isZero() && (
+                {!hasMultipleAssets && data.deposit && !data.deposit.isZero() && (
                   <>
                     <h2>{intl.formatMessage(messages.deposit)}</h2>
                     <div className={styles.depositRow}>
@@ -666,7 +678,7 @@ export default class Transaction extends Component<Props, State> {
                   </>
                 )}
 
-                {hasAssetsEnabled && data.fee && (
+                {hasMultipleAssets && data.fee && (
                   <>
                     <h2>{intl.formatMessage(messages.transactionFee)}</h2>
                     <div className={styles.transactionIdRow}>

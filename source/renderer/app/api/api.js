@@ -2614,7 +2614,7 @@ const _createTransactionFromServerData = action(
         id: item ? item.id : '',
         policyId: item ? item.policy_id : '',
         assetName: item ? item.asset_name : '',
-        quantity: item ? item.quantity: '',
+        quantity: item ? item.quantity : '',
       };
     });
 
@@ -2623,7 +2623,7 @@ const _createTransactionFromServerData = action(
         id: item ? item.id : '',
         policyId: item ? item.policy_id : '',
         assetName: item ? item.asset_name : '',
-        quantity: item ? item.quantity: '',
+        quantity: item ? item.quantity : '',
       };
     });
 

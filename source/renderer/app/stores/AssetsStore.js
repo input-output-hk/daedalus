@@ -1,5 +1,5 @@
 // @flow
-import {observable, computed, action} from 'mobx';
+import { observable, computed, action } from 'mobx';
 import { find } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
