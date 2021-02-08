@@ -238,6 +238,8 @@ export default class WalletSettings extends Component<Props, State> {
       return null;
     }
 
+    const undelegationDisabled = false;
+
     return (
       <>
         <BorderedBox className={styles.undelegateWalletBox}>
@@ -246,7 +248,10 @@ export default class WalletSettings extends Component<Props, State> {
             <div>
               <p>{intl.formatMessage(messages.undelegateWalletWarning)}</p>
             </div>
-            <UndelegateWalletButton onClick={this.onUndelegateWalletClick} />
+            <UndelegateWalletButton
+              disabled={undelegationDisabled}
+              onClick={this.onUndelegateWalletClick}
+            />
           </div>
         </BorderedBox>
         {isDialogOpen(UndelegateWalletConfirmationDialog)
