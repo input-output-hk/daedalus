@@ -83,6 +83,8 @@ export const messages = defineMessages({
 type Props = {
   walletId: string,
   walletName: string,
+  delegationStakePoolStatus: ?string,
+  isRestoring: boolean,
   walletPublicKey: ?string,
   creationDate: Date,
   spendingPasswordUpdateDate: ?Date,
@@ -224,7 +226,17 @@ export default class WalletSettings extends Component<Props, State> {
 
   renderUndelegateWalletBox = () => {
     const { intl } = this.context;
-    const { isDialogOpen, undelegateWalletDialogContainer } = this.props;
+    const {
+      delegationStakePoolStatus,
+      isRestoring,
+      isLegacy,
+      isDialogOpen,
+      undelegateWalletDialogContainer,
+    } = this.props;
+
+    if (isLegacy) {
+      return null;
+    }
 
     return (
       <>
