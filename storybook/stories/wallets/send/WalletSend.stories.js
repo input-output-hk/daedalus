@@ -23,7 +23,7 @@ import WalletAssetsSendConfirmationDialog from '../../../../source/renderer/app/
 import { DECIMAL_PLACES_IN_ADA } from '../../../../source/renderer/app/config/numbersConfig';
 import { formattedAmountToNaturalUnits } from '../../../../source/renderer/app/utils/formatters';
 
-const assets = [
+const allAssets = [
   generateAsset(
     '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
@@ -85,6 +85,79 @@ const assets = [
     }
   ),
 ];
+
+const assets = {
+  available: [
+    {
+      id: generateHash(),
+      policyId: '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
+      assetName: '',
+      quantity: 100,
+    },
+    {
+      id: generateHash(),
+      policyId: '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
+      assetName: '',
+      quantity: 200,
+    },
+    {
+      id: generateHash(),
+      policyId: '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
+      assetName: '',
+      quantity: 300,
+    },
+    {
+      id: generateHash(),
+      policyId: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
+      assetName: '',
+      quantity: 400,
+    },
+  ],
+  total: [
+    {
+      id: generateHash(),
+      policyId: '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
+      assetName: '',
+      quantity: 100,
+    },
+    {
+      id: generateHash(),
+      policyId: '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
+      assetName: '',
+      quantity: 200,
+    },
+    {
+      id: generateHash(),
+      policyId: '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
+      assetName: '',
+      quantity: 300,
+    },
+    {
+      id: generateHash(),
+      policyId: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
+      assetName: '',
+      quantity: 400,
+    },
+  ],
+};
+
+const confirmationAssets = assets.total.map((assetTotal) => {
+  const assetData = allAssets.find(
+    (item) => item.policyId === assetTotal.policyId
+  );
+  return {
+    id: assetData ? assetData.id : '',
+    metadata: assetData
+      ? assetData.metadata
+      : {
+        name: '',
+        acronym: '',
+        description: '',
+      },
+    total: assetTotal || {},
+  };
+});
+
 
 storiesOf('Wallets|Send', module)
   .addDecorator(WalletsWrapper)
@@ -171,7 +244,7 @@ storiesOf('Wallets|Send', module)
       hwDeviceStatus={HwDeviceStatuses.READY}
       isHardwareWallet={boolean('isHardwareWallet', false)}
       selectedWallet={generateWallet('Wallet name', '45119903750165', assets)}
-      assets={assets}
+      assets={allAssets}
     />
   ))
   .add('Wallet Assets Send Confirmation Dialog', () => (
@@ -179,21 +252,20 @@ storiesOf('Wallets|Send', module)
       <WalletAssetsSendConfirmationDialog
         amount={new BigNumber(100100).toFormat(DECIMAL_PLACES_IN_ADA)}
         sender={generateWallet('Wallet name', '45119903750165', assets).id}
-        receiver={generateHash()}
         receivers={[
           generateHash(),
           generateHash(),
           generateHash(),
           generateHash(),
         ]}
-        transactionFee={new BigNumber(0.101).toFormat(DECIMAL_PLACES_IN_ADA)}
+        assets={confirmationAssets}
+        transactionFee={new BigNumber(1).toFormat(DECIMAL_PLACES_IN_ADA)}
         amountToNaturalUnits={formattedAmountToNaturalUnits}
         onSubmit={() => null}
         isSubmitting={false}
         error={null}
         isFlight={false}
         onCancel={() => null}
-        currencyUnit="USDC"
         onExternalLinkClick={() => null}
         hwDeviceStatus={HwDeviceStatuses.CONNECTING}
         isHardwareWallet={false}

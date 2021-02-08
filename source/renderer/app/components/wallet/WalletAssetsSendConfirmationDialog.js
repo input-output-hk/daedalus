@@ -7,6 +7,7 @@ import { Checkbox } from 'react-polymorph/lib/components/Checkbox';
 import { CheckboxSkin } from 'react-polymorph/lib/skins/simple/CheckboxSkin';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
+import { BigNumber } from 'bignumber.js';
 import ReactToolboxMobxForm from '../../utils/ReactToolboxMobxForm';
 import Dialog from '../widgets/Dialog';
 import DialogCloseButton from '../widgets/DialogCloseButton';
@@ -20,6 +21,8 @@ import HardwareWalletStatus from '../hardware-wallet/HardwareWalletStatus';
 import LoadingSpinner from '../widgets/LoadingSpinner';
 import { HwDeviceStatuses } from '../../domains/Wallet';
 import type { HwDeviceStatus } from '../../domains/Wallet';
+import type { WalletTransactionAsset } from '../../api/assets/types';
+import { DECIMAL_PLACES_IN_ADA } from "../../config/numbersConfig";
 
 export const messages = defineMessages({
   dialogTitle: {
@@ -117,6 +120,7 @@ type Props = {
   amount: string,
   sender: string,
   receivers?: Array<string>,
+  assets?: Array<WalletTransactionAsset>,
   transactionFee: ?string,
   onSubmit: Function,
   amountToNaturalUnits: (amountWithFractions: string) => string,
@@ -125,7 +129,6 @@ type Props = {
   isSubmitting: boolean,
   isFlight: boolean,
   error: ?LocalizableError,
-  currencyUnit: ?string,
   hwDeviceStatus: HwDeviceStatus,
   isHardwareWallet: boolean,
   onInitiateTransaction: Function,
@@ -269,14 +272,13 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
     const flightCandidateCheckboxField = form.$('flightCandidateCheckbox');
     const {
       onCancel,
-      amount,
       sender,
+      assets,
       receivers,
       transactionFee,
       isSubmitting,
       isFlight,
       error,
-      currencyUnit,
       onExternalLinkClick,
       hwDeviceStatus,
       isHardwareWallet,
@@ -308,8 +310,8 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
     ];
 
     const assetsSeparatorBasicHeight = 27;
-    const assetsSeparatorCalculatedHeight = receivers && receivers.length ?
-      (assetsSeparatorBasicHeight * receivers.length) - 18 :
+    const assetsSeparatorCalculatedHeight = assets && assets.length ?
+      (assetsSeparatorBasicHeight * assets.length) - 18 :
       assetsSeparatorBasicHeight;
 
     let errorElement = null;
@@ -342,9 +344,9 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
             </div>
             <div className={styles.addressFrom}>{sender}</div>
           </div>
-          {receivers && (
+          {assets && (
             <div className={styles.addressToLabelWrapper}>
-              {receivers.map((address, addressIndex) => (
+              {assets.map((address, addressIndex) => (
                 <div
                   // eslint-disable-next-line react/no-array-index-key
                   key={`${address}-${addressIndex}`}
@@ -353,34 +355,40 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
                   <div className={styles.receiverRowItem}>
                     <h2>
                       {intl.formatMessage(messages.receiverLabel)}
-                      {receivers.length > 1 && (
+                      {assets.length > 1 && (
                         <div>&nbsp;#{addressIndex + 1}</div>
                       )}
                     </h2>
                     <div className={styles.receiverRowItemAddresses}>
-                      <div className={styles.addressTo}>{address}</div>
+                      <div className={styles.addressTo}>{receivers[addressIndex]}</div>
                       <div className={styles.assetsWrapper}>
                         <div className={styles.assetsSeparator} style={{
                           height: `${assetsSeparatorCalculatedHeight}px`,
                           top: `${assetsSeparatorCalculatedHeight + 5}px`,
                           marginTop: `-${assetsSeparatorCalculatedHeight + 5}px`
                         }} />
-                        {receivers.map((assets, assetsIndex) => (
+                        {assets.map((asset, assetIndex) => (
                           <div
                             // eslint-disable-next-line react/no-array-index-key
-                            key={`${assets}-${assetsIndex}`}
+                            key={`${assets}-${assetIndex}`}
                             className={styles.assetsContainer}
                           >
                             <h3>
                               {intl.formatMessage(messages.assetLabel)}
-                              &nbsp;#{assetsIndex + 1}
+                              &nbsp;#{assetIndex + 1}
                             </h3>
-                            <div className={styles.amountFeesWrapper}>
+                            {asset.total && (<div className={styles.amountFeesWrapper}>
                               <div className={styles.amount}>
-                                {amount}
-                                &nbsp;{currencyUnit}
+                                {new BigNumber(asset.total.quantity).toFormat(
+                                  asset.metadata && asset.metadata.unit
+                                    ? asset.metadata.unit.decimals
+                                    : DECIMAL_PLACES_IN_ADA
+                                )}
+                                {asset.metadata && (
+                                  <span>&nbsp;{asset.metadata.acronym}</span>
+                                )}
                               </div>
-                            </div>
+                            </div>)}
                           </div>
                         ))}
                       </div>
