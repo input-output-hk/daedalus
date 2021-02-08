@@ -17,6 +17,18 @@ export function decodeKeystore (bytes : Buffer) : Promise<[EncryptedSecretKey]> 
     .then(obj => obj[0][2].map(toEncryptedSecretKey));
 }
 
+export function prettyKeystore(keystore : [EncryptedSecretKey]) : String {
+  const prettyESK = ({ encryptedPayload, passphraseHash, walletId, isEmptyPassphrase }) => {
+    return {
+      name: walletId,
+      encrypted_root_private_key: encryptedPayload.toString('hex'),
+      passphrase_hash: passphraseHash.toString('hex'),
+      is_empty_passphrase: isEmptyPassphrase
+    }
+  };
+  return JSON.stringify(keystore.map(prettyESK), null, 4);
+}
+
 //
 // Internals
 //
