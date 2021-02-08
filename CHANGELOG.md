@@ -3,7 +3,7 @@ Changelog
 
 ## vNext
 
-### Chores
+### Features
 
 - Added address verification for "Ledger" hardware wallet devices ([PR 2282](https://github.com/input-output-hk/daedalus/pull/2282))
 
