@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Chores
+
+- Added public key export to every interaction with hardware wallet device ([PR 2342](https://github.com/input-output-hk/daedalus/pull/2342))
+
 ## 3.3.0
 
 ### Features
