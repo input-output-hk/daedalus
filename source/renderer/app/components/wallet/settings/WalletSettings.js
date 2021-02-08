@@ -6,6 +6,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
 import LocalizableError from '../../../i18n/LocalizableError';
 import { WALLET_PUBLIC_KEY_SHARING_ENABLED } from '../../../config/walletsConfig';
+import { WalletDelegationStatuses } from '../../../domains/Wallet';
 import BorderedBox from '../../widgets/BorderedBox';
 import InlineEditingInput from '../../widgets/forms/InlineEditingInput';
 import ReadOnlyInput from '../../widgets/forms/ReadOnlyInput';
@@ -238,7 +239,9 @@ export default class WalletSettings extends Component<Props, State> {
       return null;
     }
 
-    const undelegationDisabled = false;
+    const undelegationDisabled =
+      isRestoring ||
+      delegationStakePoolStatus !== WalletDelegationStatuses.DELEGATING;
 
     return (
       <>
