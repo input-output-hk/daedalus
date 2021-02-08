@@ -202,14 +202,22 @@ export default class WalletTransactionsList extends Component<Props> {
       isLastInGroup ? styles.lastInGroup : null,
     ]);
     const { assets } = tx;
+    const { inputs, outputs } = assets;
+    let availableTransactions = [];
+    if (inputs && inputs.length) {
+      availableTransactions = inputs;
+    }
+    if (outputs && outputs.length) {
+      availableTransactions = outputs;
+    }
     const transactionAssets =
-      assets && allAssets
-        ? assets.map((asset) => {
+      availableTransactions && allAssets
+        ? availableTransactions.map((txData) => {
             const assetData = allAssets.find(
-              (item) => item.policyId === asset.policyId
+              (item) => item.policyId === txData.policyId
             );
             return {
-              ...asset,
+              ...txData,
               metadata: assetData
                 ? assetData.metadata
                 : {

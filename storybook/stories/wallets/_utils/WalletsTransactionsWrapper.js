@@ -9,7 +9,6 @@ import {
   generateTransaction,
   generateMultipleTransactions,
   generateHash,
-  // generateAsset,
 } from '../../_support/utils';
 import {
   generateFilterOptions,
@@ -33,69 +32,6 @@ type Props = {
 type State = {
   filterOptions: TransactionFilterOptionsType,
 };
-
-/* const allAssets = [
-  generateAsset(
-    '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
-    '',
-    {
-      name: 'TrueUSD',
-      acronym: 'TUSD',
-      description: 'Test description',
-      unit: {
-        name: 'TUSD',
-        decimals: 6,
-      },
-      url: 'http://example.com',
-      logo: '',
-    }
-  ),
-  generateAsset(
-    '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
-    '',
-    {
-      name: 'Tether',
-      acronym: 'USDT',
-      description: 'Test description',
-      unit: {
-        name: 'USDT',
-        decimals: 6,
-      },
-      url: 'http://example.com',
-      logo: '',
-    }
-  ),
-  generateAsset(
-    '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
-    '',
-    {
-      name: 'USD Coin',
-      acronym: 'USDC',
-      description: 'Test description',
-      unit: {
-        name: 'USDC',
-        decimals: 6,
-      },
-      url: 'http://example.com',
-      logo: '',
-    }
-  ),
-  generateAsset(
-    '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
-    '',
-    {
-      name: 'MakerDAO',
-      acronym: 'DAI',
-      description: 'Test description',
-      unit: {
-        name: 'DAI',
-        decimals: 6,
-      },
-      url: 'http://example.com',
-      logo: '',
-    }
-  ),
-]; */
 
 const assets = [
   {
@@ -123,23 +59,6 @@ const assets = [
     quantity: 400,
   },
 ];
-
-/* const walletAssets = assets.map((assetTotal) => {
-  const assetData = allAssets.find(
-    (item) => item.policyId === assetTotal.policyId
-  );
-  return {
-    id: assetData ? assetData.id : '',
-    metadata: assetData
-      ? assetData.metadata
-      : {
-          name: '',
-          acronym: '',
-          description: '',
-        },
-    total: assetTotal || {},
-  };
-}) */
 
 export default class WalletsTransactionsWrapper extends Component<
   Props,
@@ -277,71 +196,76 @@ export default class WalletsTransactionsWrapper extends Component<
         generateTransaction(
           TransactionTypes.INCOME,
           new Date(),
-          new BigNumber(2),
+          new BigNumber(200),
+          new BigNumber(1),
           TransactionStates.OK,
           false,
           false,
           true,
           new BigNumber(0.012345),
           {
-            input: assets,
-            output: null,
+            inputs: assets,
+            outputs: null,
           }
         ),
         generateTransaction(
           TransactionTypes.EXPEND,
           moment().subtract(1, 'days').toDate(),
-          new BigNumber(2),
+          new BigNumber(200),
+          new BigNumber(1),
           TransactionStates.OK,
           false,
           false,
           true,
           new BigNumber(0.012345),
           {
-            input: null,
-            output: assets,
+            inputs: null,
+            outputs: assets,
           }
         ),
         generateTransaction(
           TransactionTypes.INCOME,
           new Date(),
-          new BigNumber(2),
+          new BigNumber(200),
+          new BigNumber(1),
           TransactionStates.OK,
           false,
           false,
           true,
           new BigNumber(0.012345),
           {
-            input: assets,
-            output: null,
+            inputs: assets,
+            outputs: null,
           }
         ),
         generateTransaction(
           TransactionTypes.EXPEND,
           moment().subtract(2, 'days').toDate(),
-          new BigNumber(2),
+          new BigNumber(200),
+          new BigNumber(1),
           TransactionStates.OK,
           false,
           false,
           true,
           new BigNumber(0.012345),
           {
-            input: null,
-            output: assets,
+            inputs: null,
+            outputs: assets,
           }
         ),
         generateTransaction(
           TransactionTypes.INCOME,
           moment().subtract(1, 'days').toDate(),
-          new BigNumber(2),
+          new BigNumber(200),
+          new BigNumber(1),
           TransactionStates.OK,
           false,
           false,
           true,
           new BigNumber(0.012345),
           {
-            input: assets,
-            output: null,
+            inputs: assets,
+            outputs: null,
           }
         ),
       ],
@@ -349,57 +273,61 @@ export default class WalletsTransactionsWrapper extends Component<
         generateTransaction(
           TransactionTypes.INCOME,
           new Date(),
-          new BigNumber(2),
+          new BigNumber(200),
+          new BigNumber(1),
           TransactionStates.OK,
           false,
           false,
           true,
           new BigNumber(0.012345),
           {
-            input: assets,
-            output: null,
+            inputs: assets,
+            outputs: null,
           }
         ),
         generateTransaction(
           TransactionTypes.EXPEND,
           new Date(),
-          new BigNumber(2),
+          new BigNumber(200),
+          new BigNumber(1),
           TransactionStates.PENDING,
           false,
           false,
           true,
           new BigNumber(0.012345),
           {
-            input: null,
-            output: assets,
+            inputs: null,
+            outputs: assets,
           }
         ),
         generateTransaction(
           TransactionTypes.INCOME,
           new Date(2019, 10, 8, 20),
-          new BigNumber(2),
+          new BigNumber(200),
+          new BigNumber(1),
           TransactionStates.PENDING,
           true,
           false,
           true,
           new BigNumber(0.012345),
           {
-            input: assets,
-            output: null,
+            inputs: assets,
+            outputs: null,
           }
         ),
         generateTransaction(
           TransactionTypes.EXPEND,
           new Date(),
           new BigNumber(13),
+          new BigNumber(1),
           TransactionStates.FAILED,
           false,
           false,
           true,
           new BigNumber(0.012345),
           {
-            input: null,
-            output: assets,
+            inputs: null,
+            outputs: assets,
           }
         ),
       ],
@@ -408,29 +336,31 @@ export default class WalletsTransactionsWrapper extends Component<
         generateTransaction(
           TransactionTypes.EXPEND,
           new Date(),
-          new BigNumber(2),
+          new BigNumber(200),
+          new BigNumber(1),
           TransactionStates.OK,
           true,
           false,
           true,
           new BigNumber(0.012345),
           {
-            input: null,
-            output: assets,
+            inputs: null,
+            outputs: assets,
           }
         ),
         generateTransaction(
           TransactionTypes.INCOME,
           new Date(),
-          new BigNumber(2),
+          new BigNumber(200),
+          new BigNumber(1),
           TransactionStates.OK,
           true,
           false,
           true,
           new BigNumber(0.012345),
           {
-            input: assets,
-            output: null,
+            inputs: assets,
+            outputs: null,
           }
         ),
       ],
@@ -438,29 +368,31 @@ export default class WalletsTransactionsWrapper extends Component<
         generateTransaction(
           TransactionTypes.INCOME,
           new Date(),
-          new BigNumber(2),
+          new BigNumber(200),
+          new BigNumber(1),
           TransactionStates.OK,
           false,
           true,
           true,
           new BigNumber(0.012345),
           {
-            input: assets,
-            output: null,
+            inputs: assets,
+            outputs: null,
           }
         ),
         generateTransaction(
           TransactionTypes.INCOME,
           new Date(),
-          new BigNumber(2),
+          new BigNumber(200),
+          new BigNumber(1),
           TransactionStates.OK,
           false,
           true,
           true,
           new BigNumber(0.012345),
           {
-            input: assets,
-            output: null,
+            inputs: assets,
+            outputs: null,
           }
         ),
       ],
@@ -468,29 +400,31 @@ export default class WalletsTransactionsWrapper extends Component<
         generateTransaction(
           TransactionTypes.INCOME,
           new Date(),
-          new BigNumber(2),
+          new BigNumber(200),
+          new BigNumber(1),
           TransactionStates.OK,
           false,
           false,
           false,
           new BigNumber(0.012345),
           {
-            input: assets,
-            output: null,
+            inputs: assets,
+            outputs: null,
           }
         ),
         generateTransaction(
           TransactionTypes.INCOME,
           new Date(),
-          new BigNumber(2),
+          new BigNumber(200),
+          new BigNumber(1),
           TransactionStates.OK,
           false,
           false,
           false,
           new BigNumber(0.012345),
           {
-            input: assets,
-            output: null,
+            inputs: assets,
+            outputs: null,
           }
         ),
       ],

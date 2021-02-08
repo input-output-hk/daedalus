@@ -7,6 +7,7 @@ import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
 import { Link } from 'react-polymorph/lib/components/Link';
 import { LinkSkin } from 'react-polymorph/lib/skins/simple/LinkSkin';
+import BigNumber from 'bignumber.js';
 import CancelTransactionButton from './CancelTransactionButton';
 import { TransactionMetadataView } from './metadata/TransactionMetadataView';
 import styles from './Transaction.scss';
@@ -22,7 +23,7 @@ import type { TransactionState } from '../../../api/transactions/types';
 import { PENDING_TIME_LIMIT } from '../../../config/txnsConfig';
 import CancelTransactionConfirmationDialog from './CancelTransactionConfirmationDialog';
 import { ellipsis } from '../../../utils/strings';
-// import type { WalletTransactionAsset } from '../../../api/assets/types';
+import type { WalletTransactionAsset } from '../../../api/assets/types';
 
 /* eslint-disable consistent-return */
 
@@ -242,7 +243,7 @@ type Props = {
   currentTimeFormat: string,
   walletId: string,
   isDeletingTransaction: boolean,
-  // transactionAssets?: Array<WalletTransactionAsset>,
+  transactionAssets?: Array<WalletTransactionAsset>,
   hasAssetsEnabled?: boolean,
 };
 
@@ -397,7 +398,7 @@ export default class Transaction extends Component<Props, State> {
       isExpanded,
       isDeletingTransaction,
       currentTimeFormat,
-      // transactionAssets,
+      transactionAssets,
       hasAssetsEnabled,
     } = this.props;
     const { intl } = this.context;
@@ -436,8 +437,6 @@ export default class Transaction extends Component<Props, State> {
     const typeOfTransaction = hasAssetsEnabled
       ? intl.formatMessage(headerStateTranslations[state])
       : intl.formatMessage(globalMessages.currency);
-
-    const fees = hasAssetsEnabled ? '0.202481' : null;
 
     const getIconType = (txState) => {
       switch (txState) {
@@ -525,13 +524,13 @@ export default class Transaction extends Component<Props, State> {
                         transactionsType,
                       })}
                 </div>
-                <div className={styles.amount}>
+                {data.amount && (<div className={styles.amount}>
                   {
                     // hide currency (we are showing symbol instead)
                     formattedWalletAmount(data.amount, false)
                   }
                   <span>{intl.formatMessage(globalMessages.currency)}</span>
-                </div>
+                </div>)}
               </div>
 
               <div className={styles.details}>
@@ -612,26 +611,25 @@ export default class Transaction extends Component<Props, State> {
                           />
                           <div className={styles.assetsWrapper}>
                             <div className={assetsSeparatorStyles} />
-                            {/* @todo - Replace with real values - data.addresses.to is just a placeholder */}
-                            {data.addresses.to.map((assets, assetsIndex) => (
+                            {transactionAssets.map((asset, assetIndex) => (
                               <div
                                 // eslint-disable-next-line react/no-array-index-key
-                                key={`${data.id}-to-${assets}-${assetsIndex}`}
+                                key={`${data.id}-to-${asset}-${assetIndex}`}
                                 className={styles.assetsContainer}
                               >
                                 <h3>
                                   {intl.formatMessage(messages.assetLabel)}
-                                  &nbsp;#{assetsIndex + 1}
+                                  &nbsp;#{assetIndex + 1}
                                 </h3>
-                                <div className={styles.amountFeesWrapper}>
+                                {asset.quantity && (<div className={styles.amountFeesWrapper}>
                                   <div className={styles.amount}>
-                                    {formattedWalletAmount(data.amount, false)}
+                                    {formattedWalletAmount(BigNumber(asset.quantity), false)}
                                     &nbsp;{' '}
-                                    {/* data.addresses.currencies
-                                      ? data.addresses.currencies[assetsIndex]
-                                      : intl.formatMessage(globalMessages.currency) */}
+                                    {asset.metadata && asset.metadata.acronym
+                                      ? asset.metadata.acronym
+                                      : intl.formatMessage(globalMessages.currency)}
                                   </div>
-                                </div>
+                                </div>)}
                               </div>
                             ))}
                           </div>
@@ -656,7 +654,7 @@ export default class Transaction extends Component<Props, State> {
                   )
                 )}
 
-                {!hasAssetsEnabled && !data.deposit.isZero() && (
+                {!hasAssetsEnabled && data.deposit && !data.deposit.isZero() && (
                   <>
                     <h2>{intl.formatMessage(messages.deposit)}</h2>
                     <div className={styles.depositRow}>
@@ -668,12 +666,12 @@ export default class Transaction extends Component<Props, State> {
                   </>
                 )}
 
-                {hasAssetsEnabled && fees && (
+                {hasAssetsEnabled && data.fee && (
                   <>
                     <h2>{intl.formatMessage(messages.transactionFee)}</h2>
                     <div className={styles.transactionIdRow}>
                       <div className={styles.transactionFeeValue}>
-                        {fees}&nbsp;
+                        {formattedWalletAmount(data.fee, false)}&nbsp;
                         <span>
                           {intl.formatMessage(globalMessages.unitAda)}
                         </span>

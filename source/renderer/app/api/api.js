@@ -2628,8 +2628,8 @@ const _createTransactionFromServerData = action(
     });
 
     const transactionAssets = {
-      input: transactionInputAssets,
-      output: transactionOutputAssets,
+      inputs: transactionInputAssets,
+      outputs: transactionOutputAssets,
     };
 
     return new WalletTransaction({
