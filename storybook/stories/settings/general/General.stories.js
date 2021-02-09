@@ -20,7 +20,7 @@ import StakePoolsSettings from '../../../../source/renderer/app/components/setti
 import DisplaySettings from '../../../../source/renderer/app/components/settings/categories/DisplaySettings';
 import SupportSettings from '../../../../source/renderer/app/components/settings/categories/SupportSettings';
 import TermsOfUseSettings from '../../../../source/renderer/app/components/settings/categories/TermsOfUseSettings';
-import WalletSettings from '../../../../source/renderer/app/components/settings/categories/WalletSettings';
+import WalletsSettings from '../../../../source/renderer/app/components/settings/categories/WalletsSettings';
 
 const getParamName = (obj, itemName): any =>
   Object.entries(obj).find((entry: [any, any]) => itemName === entry[1]);
@@ -50,7 +50,7 @@ storiesOf('Settings|General', module)
     />
   ))
   .add('Wallets', () => (
-    <WalletSettings
+    <WalletsSettings
       currencySelected={{
         id: 'uniswap-state-dollar',
         symbol: 'usd',
@@ -58,6 +58,9 @@ storiesOf('Settings|General', module)
       }}
       currencyRate={0.321}
       currencyList={[]}
+      currencyIsActive
+      onSelectCurrency={action('onSelectCurrency')}
+      onToggleCurrencyIsActive={action('onToggleCurrencyIsActive')}
     />
   ))
   .add('Stake Pools', () => (

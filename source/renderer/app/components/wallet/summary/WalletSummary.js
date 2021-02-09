@@ -7,7 +7,6 @@ import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import currencySettingsIcon from '../../../assets/images/currency-settings-ic.inline.svg';
 import BorderedBox from '../../widgets/BorderedBox';
-import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import styles from './WalletSummary.scss';
 import Wallet from '../../../domains/Wallet';
 import {
@@ -27,9 +26,15 @@ const messages = defineMessages({
     description:
       '"Number of pending transactions" label on Wallet summary page',
   },
-  currencyFetched: {
-    id: 'wallet.summary.page.currencyFetched',
+  currencyLastFetched: {
+    id: 'wallet.summary.page.currencyLastFetched',
     defaultMessage: '!!!Fetched {fetchedTimeAgo}',
+    description:
+      '"Number of pending transactions" label on Wallet summary page',
+  },
+  currencyFetching: {
+    id: 'wallet.summary.page.currencyFetching',
+    defaultMessage: '!!!Fetching...',
     description:
       '"Number of pending transactions" label on Wallet summary page',
   },
@@ -41,8 +46,12 @@ type Props = {
   numberOfTransactions?: number,
   numberOfPendingTransactions: number,
   isLoadingTransactions: boolean,
+  currencyIsFetchingRate: boolean,
+  currencyIsAvailable: boolean,
+  currencyIsActive: boolean,
   currencySelected: ?Currency,
   currencyRate: ?number,
+  currencyLastFetched: ?Date,
   onCurrencySettingClick: Function,
 };
 
@@ -59,10 +68,13 @@ export default class WalletSummary extends Component<Props> {
       numberOfRecentTransactions,
       numberOfTransactions,
       isLoadingTransactions,
-      currencySelected,
+      currencyIsActive,
+      currencyIsAvailable,
+      currencyIsFetchingRate,
+      currencyLastFetched,
       currencyRate,
+      currencySelected,
       onCurrencySettingClick,
-      // currencyFetched,
     } = this.props;
     const { intl } = this.context;
     const isLoadingAllTransactions =
@@ -72,12 +84,14 @@ export default class WalletSummary extends Component<Props> {
       isLoadingAllTransactions ? styles.isLoadingNumberOfTransactions : null,
     ]);
 
-    const currencyFetched = moment().subtract(5, 'minutes');
-
     const isRestoreActive = wallet.isRestoring;
-    const hasCurrency = !!currencySelected && !!currencyRate;
+    const hasCurrency =
+      currencyIsActive &&
+      currencyIsAvailable &&
+      !!currencySelected &&
+      (!!currencyRate || currencyIsFetchingRate);
 
-    let walletAmount = isRestoreActive
+    const walletAmount = isRestoreActive
       ? '-'
       : formattedWalletAmount(wallet.amount, false);
 
@@ -85,7 +99,7 @@ export default class WalletSummary extends Component<Props> {
       ? formattedWalletCurrencyAmount(wallet.amount, currencyRate)
       : null;
     const currencyWalletAmountSymbol = currencySelected.symbol.toUpperCase();
-    const fetchedTimeAgo = moment().fromNow();
+    const fetchedTimeAgo = moment(currencyLastFetched).fromNow();
 
     return (
       <div className={styles.component}>
@@ -119,18 +133,22 @@ export default class WalletSummary extends Component<Props> {
                 </div>
                 <div className={styles.currencyWalletAmount}>
                   {currencyWalletAmount}
-                  <span className={styles.currencySymbol}>ADA</span>
+                  <span className={styles.currencySymbol}>
+                    {currencyWalletAmountSymbol}
+                  </span>
                 </div>
                 <div className={styles.currencyRate}>
                   1 ADA = {currencyRate} {currencyWalletAmountSymbol}
                 </div>
                 <button
-                  className={styles.currencyFetched}
+                  className={styles.currencyLastFetched}
                   onClick={onCurrencySettingClick}
                 >
-                  {intl.formatMessage(messages.currencyFetched, {
-                    fetchedTimeAgo,
-                  })}
+                  {currencyIsFetchingRate
+                    ? intl.formatMessage(messages.currencyFetching)
+                    : intl.formatMessage(messages.currencyLastFetched, {
+                        fetchedTimeAgo,
+                      })}
                   <SVGInline
                     svg={currencySettingsIcon}
                     className={styles.currencySettingsIcon}

@@ -74,6 +74,7 @@
   font-size: 22px;
   line-height: 1;
   margin-bottom: 11px;
+  text-align: right;
   user-select: none;
   word-break: break-all;
 
@@ -111,7 +112,7 @@
   text-align: right;
 }
 
-.currencyFetched {
+.currencyLastFetched {
   cursor: pointer;
   font-family: var(--font-bold);
   font-size: 12px;

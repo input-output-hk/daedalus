@@ -32,7 +32,7 @@ import {
 import {
   CURRENCY_IS_ACTIVE_BY_DEFAULT,
   DEFAULT_CURRENCY_SELECTED,
-} from '../config/walletRestoreConfig';
+} from '../config/currencyConfig';
 import { WALLET_PUBLIC_KEY_SHARING_ENABLED } from '../config/walletsConfig';
 import type {
   WalletKind,
@@ -154,7 +154,7 @@ export default class WalletsStore extends Store {
   @observable currencyList: Array<Currency> = [];
   @observable currencySelected: ?Currency = null;
   @observable currencyRate: ?number = null;
-  @observable currencyLastFetched: ?date = null;
+  @observable currencyLastFetched: ?Date = null;
 
   /* ----------  Create Wallet  ---------- */
   @observable createWalletStep = null;
