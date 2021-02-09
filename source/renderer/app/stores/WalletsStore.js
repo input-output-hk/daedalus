@@ -149,7 +149,7 @@ export default class WalletsStore extends Store {
   @observable currencyIsFetchingList: boolean = false;
   @observable currencyIsFetchingRate: boolean = false;
   @observable currencyIsAvailable: boolean = true;
-  @observable currencyIsActive: boolean = null;
+  @observable currencyIsActive: boolean = false;
 
   @observable currencyList: Array<Currency> = [];
   @observable currencySelected: ?Currency = null;
@@ -388,13 +388,16 @@ export default class WalletsStore extends Store {
     const currencySelected = currencyList.find(
       ({ symbol }) => currencySymbol === symbol
     );
-    this.currencySelected = currencySelected;
-    this.getCurrencyRate();
-    await this.api.localStorage.setCurrencySelected(currencySelected);
+    if (currencySelected) {
+      this.currencySelected = currencySelected;
+      this.getCurrencyRate();
+      await this.api.localStorage.setCurrencySelected(currencySelected);
+    }
   };
 
   @action _toggleCurrencyIsActive = () => {
     this.currencyIsActive = !this.currencyIsActive;
+    this.api.localStorage.toggleCurrencyIsActive();
   };
 
   _create = async (params: { name: string, spendingPassword: string }) => {

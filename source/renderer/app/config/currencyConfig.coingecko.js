@@ -77,7 +77,7 @@ const responses = {
       return list;
     } catch (error) {
       logger.error('Currency::CoingGecko::List error', { error });
-      return null;
+      throw new Error(error);
     }
   },
   rate: (apiResponse: CurrencyRateGeckoResponse): GetCurrencyRateResponse =>

@@ -61,6 +61,7 @@ storiesOf('Settings|General', module)
       currencyIsActive
       onSelectCurrency={action('onSelectCurrency')}
       onToggleCurrencyIsActive={action('onToggleCurrencyIsActive')}
+      onOpenExternalLink={action('onOpenExternalLink')}
     />
   ))
   .add('Stake Pools', () => (

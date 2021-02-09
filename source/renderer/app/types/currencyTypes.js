@@ -5,6 +5,7 @@ export type Currency = {
   id: string,
   symbol: string,
   name: string,
+  decimalDigits?: number,
 };
 
 export type Request = HttpOptions | Function;

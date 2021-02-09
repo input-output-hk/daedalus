@@ -13,6 +13,7 @@ import {
   formattedWalletAmount,
   formattedWalletCurrencyAmount,
 } from '../../../utils/formatters';
+import type { Currency } from '../../../types/currencyTypes';
 
 const messages = defineMessages({
   transactionsLabel: {
@@ -95,14 +96,17 @@ export default class WalletSummary extends Component<Props> {
       ? '-'
       : formattedWalletAmount(wallet.amount, false);
 
-    const currencyWalletAmount = hasCurrency
-      ? formattedWalletCurrencyAmount(
-          wallet.amount,
-          currencyRate,
-          currencySelected
-        )
-      : null;
-    const currencyWalletAmountSymbol = currencySelected.symbol.toUpperCase();
+    const currencyWalletAmount =
+      hasCurrency && currencyRate
+        ? formattedWalletCurrencyAmount(
+            wallet.amount,
+            currencyRate,
+            currencySelected
+          )
+        : null;
+    const currencyWalletAmountSymbol = currencySelected
+      ? currencySelected.symbol.toUpperCase()
+      : '';
     const fetchedTimeAgo = moment(currencyLastFetched).fromNow();
 
     const buttonClasses = classnames([

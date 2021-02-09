@@ -8,6 +8,7 @@ import { Link } from 'react-polymorph/lib/components/Link';
 import NormalSwitch from '../../widgets/forms/NormalSwitch';
 import styles from './WalletsSettings.scss';
 import { currencyConfig } from '../../../config/currencyConfig';
+import type { Currency } from '../../../types/currencyTypes';
 
 const messages = defineMessages({
   currencyTitleLabel: {
@@ -38,7 +39,7 @@ const messages = defineMessages({
 });
 
 type Props = {
-  currencySelected: string,
+  currencySelected: ?Currency,
   currencyList: Array<any>,
   currencyIsActive: boolean,
   onSelectCurrency: Function,

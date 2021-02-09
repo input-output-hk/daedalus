@@ -38,7 +38,11 @@ export const formattedWalletCurrencyAmount = (
 ) =>
   `${
     amount
-      ? amount.times(currencyRate).toFormat(currency.decimal_digits || 2)
+      ? amount
+          .times(currencyRate)
+          .toFormat(
+            currency && currency.decimalDigits ? currency.decimalDigits : 2
+          )
       : 0
   } ${currency ? currency.symbol.toUpperCase() : ''}`;
 
