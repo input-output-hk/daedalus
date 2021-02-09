@@ -123,6 +123,11 @@
   &:hover {
     opacity: 0.7;
   }
+
+  &.currencyIsFetchingRate em {
+    margin-right: 13px;
+    @include animated-ellipsis($width: 16px);
+  }
 }
 
 .currencySettingsIcon {

@@ -945,7 +945,7 @@
   "wallet.summary.no.transactions": "No recent transactions",
   "wallet.summary.page.pendingTransactionsLabel": "Number of pending transactions",
   "wallet.summary.page.currencyLastFetched": "Fetched {fetchedTimeAgo}",
-  "wallet.summary.page.currencyFetching": "Fetching...",
+  "wallet.summary.page.currencyFetching": "Fetching",
   "wallet.summary.page.showMoreTransactionsButtonLabel": "Show more transactions",
   "wallet.summary.page.syncingTransactionsMessage": "Your transaction history for this wallet is being synced with the blockchain.",
   "wallet.summary.page.todayLabel": "Today",

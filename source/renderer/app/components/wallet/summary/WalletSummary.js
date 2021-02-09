@@ -32,9 +32,9 @@ const messages = defineMessages({
     description:
       '"Number of pending transactions" label on Wallet summary page',
   },
-  currencyFetching: {
-    id: 'wallet.summary.page.currencyFetching',
-    defaultMessage: '!!!Fetching...',
+  currencyIsFetchingRate: {
+    id: 'wallet.summary.page.currencyIsFetchingRate',
+    defaultMessage: '!!!Fetching',
     description:
       '"Number of pending transactions" label on Wallet summary page',
   },
@@ -101,6 +101,11 @@ export default class WalletSummary extends Component<Props> {
     const currencyWalletAmountSymbol = currencySelected.symbol.toUpperCase();
     const fetchedTimeAgo = moment(currencyLastFetched).fromNow();
 
+    const buttonClasses = classnames([
+      styles.currencyLastFetched,
+      currencyIsFetchingRate ? styles.currencyIsFetchingRate : null,
+    ]);
+
     return (
       <div className={styles.component}>
         <BorderedBox>
@@ -141,14 +146,16 @@ export default class WalletSummary extends Component<Props> {
                   1 ADA = {currencyRate} {currencyWalletAmountSymbol}
                 </div>
                 <button
-                  className={styles.currencyLastFetched}
+                  className={buttonClasses}
                   onClick={onCurrencySettingClick}
                 >
-                  {currencyIsFetchingRate
-                    ? intl.formatMessage(messages.currencyFetching)
-                    : intl.formatMessage(messages.currencyLastFetched, {
-                        fetchedTimeAgo,
-                      })}
+                  <em>
+                    {currencyIsFetchingRate
+                      ? intl.formatMessage(messages.currencyIsFetchingRate)
+                      : intl.formatMessage(messages.currencyLastFetched, {
+                          fetchedTimeAgo,
+                        })}
+                  </em>
                   <SVGInline
                     svg={currencySettingsIcon}
                     className={styles.currencySettingsIcon}
