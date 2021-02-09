@@ -332,7 +332,7 @@
   "staking.delegationCenter.undelegate.dialog.calculatingFees": "Calculating fees",
   "staking.delegationCenter.undelegate.dialog.confirmButtonLabel": "Undelegate",
   "staking.delegationCenter.undelegate.dialog.confirmIneligibleCheck": "I understand that I will not be eligible to earn rewards when my stake is undelegated.",
-  "staking.delegationCenter.undelegate.dialog.confirmUnsupportCheck": "I understand that I am not supporting the Cardano network when my stake is undelegated.",
+  "staking.delegationCenter.undelegate.dialog.confirmUnsupportCheck": "I understand that I am not supporting the security of the Cardano network when my stake is undelegated.",
   "staking.delegationCenter.undelegate.dialog.descriptionWithTicker": "<p>The stake from your wallet <strong>{walletName}</strong> is currently delegated to the <strong>[{stakePoolTicker}] {stakePoolName}</strong> stake pool.</p><p>Do you want to undelegate your stake and stop earning rewards?</p>",
   "staking.delegationCenter.undelegate.dialog.descriptionWithUnknownTicker": "<p>The stake from your wallet <strong>{walletName}</strong> is currently delegated to the <strong>{stakePoolTicker}</strong> stake pool.</p><p>Do you want to undelegate your stake and stop earning rewards?</p>",
   "staking.delegationCenter.undelegate.dialog.feesLabel": "Fees",
