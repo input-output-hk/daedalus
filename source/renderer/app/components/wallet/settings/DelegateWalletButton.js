@@ -2,13 +2,13 @@
 import React, { Component } from 'react';
 import { defineMessages, intlShape } from 'react-intl';
 import { Button } from 'react-polymorph/lib/components/Button';
-import styles from './UndelegateWalletButton.scss';
+import styles from './DelegateWalletButton.scss';
 
 const messages = defineMessages({
   label: {
-    id: 'wallet.settings.undelegateWalletButtonLabel',
-    defaultMessage: '!!!Undelegate',
-    description: 'Label for the undelegate button on wallet settings',
+    id: 'wallet.settings.delegateWalletButtonLabel',
+    defaultMessage: '!!!Delegate',
+    description: 'Label for the delegate button on wallet settings',
   },
 });
 
@@ -17,7 +17,7 @@ type Props = {
   onClick: Function,
 };
 
-export default class UndelegateWalletButton extends Component<Props> {
+export default class DelegateWalletButton extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
@@ -27,7 +27,6 @@ export default class UndelegateWalletButton extends Component<Props> {
     const label = this.context.intl.formatMessage(messages.label);
     return (
       <Button
-        className="flat"
         label={label}
         disabled={disabled}
         onClick={onClick}

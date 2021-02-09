@@ -15,6 +15,7 @@ import {
   LEGACY_WALLET_RECOVERY_PHRASE_WORD_COUNT,
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
 } from '../../config/cryptoConfig';
+import { ROUTES } from '../../routes-config';
 import { WALLET_PUBLIC_KEY_NOTIFICATION_SEGMENT_LENGTH } from '../../config/walletsConfig';
 
 type Props = InjectedProps;
@@ -37,6 +38,11 @@ export default class WalletSettingsPage extends Component<Props> {
   handleGetWalletPublicKey = () => {
     const { wallets } = this.props.stores;
     wallets._getWalletPublicKey();
+  };
+
+  handleDelegateClick = () => {
+    const { goToRoute } = this.props.actions.router;
+    goToRoute.trigger({ route: ROUTES.STAKING.DELEGATION_CENTER });
   };
 
   render() {
@@ -136,6 +142,7 @@ export default class WalletSettingsPage extends Component<Props> {
           onCancel={cancelEditingWalletField.trigger}
           onVerifyRecoveryPhrase={recoveryPhraseVerificationContinue.trigger}
           onCopyWalletPublicKey={this.handleCopyWalletPublicKey}
+          onDelegateClick={this.handleDelegateClick}
           getWalletPublicKey={this.handleGetWalletPublicKey}
           activeField={walletFieldBeingEdited}
           nameValidator={(name) => isValidWalletName(name)}

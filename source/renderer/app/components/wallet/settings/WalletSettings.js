@@ -13,6 +13,7 @@ import ReadOnlyInput from '../../widgets/forms/ReadOnlyInput';
 import WalletPublicKeyField from './WalletPublicKeyField';
 import WalletPublicKeyQRCodeDialog from './WalletPublicKeyQRCodeDialog';
 import UndelegateWalletButton from './UndelegateWalletButton';
+import DelegateWalletButton from './DelegateWalletButton';
 import DeleteWalletButton from './DeleteWalletButton';
 import UndelegateWalletConfirmationDialog from './UndelegateWalletConfirmationDialog';
 import DeleteWalletConfirmationDialog from './DeleteWalletConfirmationDialog';
@@ -33,7 +34,7 @@ export const messages = defineMessages({
   },
   undelegateWalletHeader: {
     id: 'wallet.settings.undelegateWallet.header',
-    defaultMessage: '!!!Undelegate wallet',
+    defaultMessage: '!!!Undelegating your wallet',
     description: 'Undelegate wallet header on the wallet settings page.',
   },
   undelegateWalletWarning: {
@@ -41,6 +42,24 @@ export const messages = defineMessages({
     defaultMessage:
       '!!!If you are planning to stop using this wallet and remove all funds, you should first undelegate it to recover your 2 ada deposit. You will continue getting delegation rewards during the three Cardano epochs after undelegating your wallet.',
     description: 'Undelegate wallet warning explaining the consequences.',
+  },
+  undelegateWalletDisabledWarning: {
+    id: 'wallet.settings.undelegateWallet.disabledWarning',
+    defaultMessage:
+      "!!!This wallet is synchronizing with the blockchain, so this wallet's delegation status is currently unknown, and undelegation is not possible.",
+    description:
+      'Undelegate wallet disabled warning explaining why it is disabled.',
+  },
+  delegateWalletHeader: {
+    id: 'wallet.settings.delegateWallet.header',
+    defaultMessage: '!!!Delegate your wallet',
+    description: 'Delegate wallet header on the wallet settings page.',
+  },
+  delegateWalletWarning: {
+    id: 'wallet.settings.delegateWallet.warning',
+    defaultMessage:
+      "!!!This wallet is not delegated. Please, delegate the stake from this wallet to earn rewards and support the Cardano network's security.",
+    description: 'Delegate wallet warning.',
   },
   deleteWalletHeader: {
     id: 'wallet.settings.deleteWallet.header',
@@ -101,6 +120,7 @@ type Props = {
   onCancel: Function,
   onVerifyRecoveryPhrase: Function,
   onCopyWalletPublicKey: Function,
+  onDelegateClick: Function,
   nameValidator: Function,
   isIncentivizedTestnet: boolean,
   isLegacy: boolean,
@@ -232,6 +252,7 @@ export default class WalletSettings extends Component<Props, State> {
       isRestoring,
       isLegacy,
       isDialogOpen,
+      onDelegateClick,
       undelegateWalletDialogContainer,
     } = this.props;
 
@@ -239,22 +260,37 @@ export default class WalletSettings extends Component<Props, State> {
       return null;
     }
 
-    const undelegationDisabled =
-      isRestoring ||
-      delegationStakePoolStatus !== WalletDelegationStatuses.DELEGATING;
+    const notDelegating =
+      delegationStakePoolStatus === WalletDelegationStatuses.NOT_DELEGATING;
+    let headerMessage = null;
+    let warningMessage = null;
+
+    if (notDelegating) {
+      headerMessage = intl.formatMessage(messages.delegateWalletHeader);
+      warningMessage = intl.formatMessage(messages.delegateWalletWarning);
+    } else {
+      headerMessage = intl.formatMessage(messages.undelegateWalletHeader);
+      warningMessage = isRestoring
+        ? intl.formatMessage(messages.undelegateWalletDisabledWarning)
+        : intl.formatMessage(messages.undelegateWalletWarning);
+    }
 
     return (
       <>
         <BorderedBox className={styles.undelegateWalletBox}>
-          <span>{intl.formatMessage(messages.undelegateWalletHeader)}</span>
+          <span>{headerMessage}</span>
           <div className={styles.contentBox}>
             <div>
-              <p>{intl.formatMessage(messages.undelegateWalletWarning)}</p>
+              <p>{warningMessage}</p>
             </div>
-            <UndelegateWalletButton
-              disabled={undelegationDisabled}
-              onClick={this.onUndelegateWalletClick}
-            />
+            {notDelegating ? (
+              <DelegateWalletButton onClick={onDelegateClick} />
+            ) : (
+              <UndelegateWalletButton
+                disabled={isRestoring}
+                onClick={this.onUndelegateWalletClick}
+              />
+            )}
           </div>
         </BorderedBox>
         {isDialogOpen(UndelegateWalletConfirmationDialog)
