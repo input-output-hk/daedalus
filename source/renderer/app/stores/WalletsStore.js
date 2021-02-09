@@ -380,12 +380,14 @@ export default class WalletsStore extends Store {
   };
 
   @action _setCurrencySelected = async ({
-    currencyId,
+    currencySymbol,
   }: {
-    currencyId: string,
+    currencySymbol: string,
   }) => {
     const { currencyList } = this;
-    const currencySelected = currencyList.find(({ id }) => currencyId === id);
+    const currencySelected = currencyList.find(
+      ({ symbol }) => currencySymbol === symbol
+    );
     this.currencySelected = currencySelected;
     this.getCurrencyRate();
     await this.api.localStorage.setCurrencySelected(currencySelected);

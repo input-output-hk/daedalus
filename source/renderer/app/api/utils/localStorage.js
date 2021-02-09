@@ -19,7 +19,7 @@ import type {
 } from '../../../../common/types/hardware-wallets.types';
 import type { StorageKey } from '../../../../common/types/electron-store.types';
 import { Currency } from '../../types/currencyTypes';
-import { CURRENCY_IS_ACTIVE_BY_DEFAULT } from '../../config/walletRestoreConfig';
+import { CURRENCY_IS_ACTIVE_BY_DEFAULT } from '../../config/currencyConfig';
 
 export type WalletLocalData = {
   id: string,

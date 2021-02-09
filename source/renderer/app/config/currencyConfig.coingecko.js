@@ -18,6 +18,7 @@ import type {
   GetCurrencyListResponse,
   GetCurrencyRateResponse,
 } from '../api/wallets/types';
+import currenciesList from './currenciesList.json';
 
 // For the complete response, check
 // https://api.coingecko.com/api/v3/coins/markets?ids=cardano&vs_currency=usd
@@ -66,8 +67,10 @@ const responses = {
       }
       const [completeList, vsCurrencies] = apiResponse;
       const list = vsCurrencies
-        .map((symbol) =>
-          completeList.find((currency) => currency.symbol === symbol)
+        .map(
+          (symbol) =>
+            currenciesList[symbol] ||
+            completeList.find((currency) => currency.symbol === symbol)
         )
         .filter((item) => !!item);
       logger.debug('Currency::CoingGecko::List success', { list });

@@ -96,7 +96,11 @@ export default class WalletSummary extends Component<Props> {
       : formattedWalletAmount(wallet.amount, false);
 
     const currencyWalletAmount = hasCurrency
-      ? formattedWalletCurrencyAmount(wallet.amount, currencyRate)
+      ? formattedWalletCurrencyAmount(
+          wallet.amount,
+          currencyRate,
+          currencySelected
+        )
       : null;
     const currencyWalletAmountSymbol = currencySelected.symbol.toUpperCase();
     const fetchedTimeAgo = moment(currencyLastFetched).fromNow();

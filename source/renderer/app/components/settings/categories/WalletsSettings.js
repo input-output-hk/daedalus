@@ -63,10 +63,10 @@ export default class WalletSettings extends Component<Props> {
       onOpenExternalLink,
     } = this.props;
 
-    const currencyOptions = map(currencyList, ({ id, symbol, name }) => {
+    const currencyOptions = map(currencyList, ({ symbol, name }) => {
       return {
         label: `${symbol.toUpperCase()} - ${name}`,
-        value: id,
+        value: symbol,
       };
     });
 
@@ -85,7 +85,7 @@ export default class WalletSettings extends Component<Props> {
         </div>
         <Select
           label={intl.formatMessage(messages.currencySelectLabel)}
-          value={currencySelected ? currencySelected.id : null}
+          value={currencySelected ? currencySelected.symbol : null}
           options={currencyOptions}
           onChange={onSelectCurrency}
         />
