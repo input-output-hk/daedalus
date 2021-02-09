@@ -6,6 +6,10 @@
 , jormungandrLib
 , launcherConfigs
 , linuxClusterBinName
+, gsettings-desktop-schemas
+, gtk3
+, hicolor-icon-theme
+, xfce
 }:
 
 let
@@ -41,6 +45,7 @@ let
     export           CLUSTER=${cluster'}
     export      DAEDALUS_DIR="''${XDG_DATA_HOME}/Daedalus"
     export   DAEDALUS_CONFIG=${if sandboxed then "/nix/var/nix/profiles/profile-${linuxClusterBinName}/etc" else daedalus-config}
+    export     XDG_DATA_DIRS=${gsettings-desktop-schemas}/share/gsettings-schemas/${gsettings-desktop-schemas.name}:${gtk3}/share/gsettings-schemas/${gtk3.name}:${hicolor-icon-theme}/share:${xfce.xfce4-icon-theme}/share
 
     mkdir -p "''${DAEDALUS_DIR}/${cluster}/"{Logs/pub,Secrets}
     cd "''${DAEDALUS_DIR}/${cluster}/"
