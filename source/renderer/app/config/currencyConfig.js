@@ -11,7 +11,7 @@ import coingeckoConfig from './currencyConfig.coingecko';
 // import nomicsConfig from './currencyConfig.nomics';
 
 import { externalRequest } from '../api/utils/externalRequest';
-import type { Request, RequestName } from '../types/currencyTypes';
+import type { RequestName } from '../types/currencyTypes';
 
 export const REQUESTS: {
   [key: string]: RequestName,

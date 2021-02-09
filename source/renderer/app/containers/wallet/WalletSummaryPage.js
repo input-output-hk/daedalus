@@ -64,10 +64,13 @@ export default class WalletSummaryPage extends Component<Props> {
       pendingTransactionsCount,
     } = transactions;
     const {
-      currencySelected,
-      currencyRate,
       active: wallet,
+      currencyIsActive,
+      currencyIsAvailable,
+      currencyIsFetchingRate,
       currencyLastFetched,
+      currencyRate,
+      currencySelected,
     } = wallets;
     const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
     // Guard against potential null values
@@ -125,9 +128,12 @@ export default class WalletSummaryPage extends Component<Props> {
           numberOfTransactions={totalAvailable}
           numberOfPendingTransactions={pendingTransactionsCount}
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
-          currencySelected={currencySelected}
+          currencyIsActive={currencyIsActive}
+          currencyIsAvailable={currencyIsAvailable}
+          currencyIsFetchingRate={currencyIsFetchingRate}
           currencyLastFetched={currencyLastFetched}
           currencyRate={currencyRate}
+          currencySelected={currencySelected}
           onCurrencySettingClick={this.handleCurrencySettingsClick}
         />
         {walletTransactions}

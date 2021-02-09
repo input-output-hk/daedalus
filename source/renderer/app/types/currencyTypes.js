@@ -13,7 +13,9 @@ export type RequestName = 'status' | 'list' | 'rate';
 
 export type CurrencyApiConfig = {
   id: string,
+  name: string,
   hostname: string,
+  website: string,
   requests: {
     status: Request,
     list: Request,

@@ -7,8 +7,9 @@ import type { CurrencyApiConfig } from '../types/currencyTypes.js';
 // } from '../api/wallets/types';
 
 const id = 'nomics';
+const name = 'Nomics';
 const hostname = 'https://api.nomics.com';
-const url = hostname;
+const website = 'https://nomics.com/docs/';
 
 const requests = {
   status: {
@@ -33,7 +34,9 @@ const responses = {
 
 export default ({
   id,
+  name,
   hostname,
+  website,
   requests,
   responses,
 }: CurrencyApiConfig);

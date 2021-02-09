@@ -16,12 +16,14 @@ export default class WalletsSettingsPage extends Component<InjectedProps> {
     this.props.actions.wallets.toggleCurrencyIsActive.trigger();
 
   render() {
+    const { stores } = this.props;
     const {
       currencySelected,
       currencyRate,
       currencyList,
       currencyIsActive,
-    } = this.props.stores.wallets;
+    } = stores.wallets;
+    const { openExternalLink } = stores.app;
     return (
       <WalletsSettings
         currencySelected={currencySelected}
@@ -30,6 +32,7 @@ export default class WalletsSettingsPage extends Component<InjectedProps> {
         currencyIsActive={currencyIsActive}
         onSelectCurrency={this.handleSelectCurrency}
         onToggleCurrencyIsActive={this.handleToggleCurrencyIsActive}
+        onOpenExternalLink={openExternalLink}
       />
     );
   }

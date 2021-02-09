@@ -4,8 +4,10 @@ import { observer } from 'mobx-react';
 import { map } from 'lodash';
 import { defineMessages, intlShape } from 'react-intl';
 import { Select } from 'react-polymorph/lib/components/Select';
+import { Link } from 'react-polymorph/lib/components/Link';
 import NormalSwitch from '../../widgets/forms/NormalSwitch';
 import styles from './WalletsSettings.scss';
+import { currencyConfig } from '../../../config/currencyConfig';
 
 const messages = defineMessages({
   currencyTitleLabel: {
@@ -27,6 +29,12 @@ const messages = defineMessages({
     description:
       'currencySelectLabel for the Currency settings in the Wallets settings page.',
   },
+  currencyPoweredByLabel: {
+    id: 'settings.wallets.currency.poweredBy.label',
+    defaultMessage: '!!!Powered by ',
+    description:
+      'currencyPoweredByLabel for the Currency settings in the Wallets settings page.',
+  },
 });
 
 type Props = {
@@ -35,6 +43,7 @@ type Props = {
   currencyIsActive: boolean,
   onSelectCurrency: Function,
   onToggleCurrencyIsActive: Function,
+  onOpenExternalLink: Function,
 };
 
 @observer
@@ -51,6 +60,7 @@ export default class WalletSettings extends Component<Props> {
       currencyIsActive,
       onSelectCurrency,
       onToggleCurrencyIsActive,
+      onOpenExternalLink,
     } = this.props;
 
     const currencyOptions = map(currencyList, ({ id, symbol, name }) => {
@@ -79,6 +89,14 @@ export default class WalletSettings extends Component<Props> {
           options={currencyOptions}
           onChange={onSelectCurrency}
         />
+        <div className={styles.currencyPoweredBy}>
+          {intl.formatMessage(messages.currencyPoweredByLabel)}
+          <Link
+            className={styles.currencyPoweredByLink}
+            onClick={() => onOpenExternalLink(currencyConfig.website)}
+            label={currencyConfig.name}
+          />
+        </div>
       </div>
     );
   }

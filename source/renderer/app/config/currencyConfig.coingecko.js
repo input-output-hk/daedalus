@@ -26,7 +26,9 @@ type CurrencyRateGeckoResponse = Array<{
 }>;
 
 const id = 'coingecko';
+const name = 'CoingGecko';
 const hostname = 'api.coingecko.com';
+const website = 'https://www.coingecko.com/en/api';
 const version = 'v3';
 const pathBase = `api/${version}`;
 
@@ -81,7 +83,9 @@ const responses = {
 
 export default ({
   id,
+  name,
   hostname,
+  website,
   requests,
   responses,
 }: CurrencyApiConfig);
