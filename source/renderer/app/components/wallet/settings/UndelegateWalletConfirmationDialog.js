@@ -23,7 +23,7 @@ import { submitOnEnter } from '../../../utils/form';
 const messages = defineMessages({
   title: {
     id: 'wallet.settings.undelegate.dialog.title',
-    defaultMessage: '!!!Undelegate Wallet',
+    defaultMessage: '!!!Undelegate',
     description: 'Title for the "Undelegate wallet" dialog.',
   },
   confirmButtonLabel: {

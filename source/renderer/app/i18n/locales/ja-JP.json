@@ -1009,7 +1009,7 @@
   "wallet.settings.undelegate.dialog.passwordError": "送金時パスワードが間違っています。",
   "wallet.settings.undelegate.dialog.spendingPasswordLabel": "送信時パスワード",
   "wallet.settings.undelegate.dialog.spendingPasswordPlaceholder": "送金時パスワードを入力して下さい",
-  "wallet.settings.undelegate.dialog.title": "ウォレットの委任設定を解除する",
+  "wallet.settings.undelegate.dialog.title": "委任設定を解除する",
   "wallet.settings.undelegate.dialog.unknownStakePoolLabel": "不明の",
   "wallet.settings.undelegate.result.dialog.description1": "<strong>{walletName}</strong>ウォレットのステークは現在委任されておらず、まもなくこのウォレットへの報酬は停止されます。",
   "wallet.settings.undelegate.result.dialog.description2": "新しい委任設定はブロックチェーンに送信され、<strong>現行のCardanoエポックと次のエポックが{timeUntilNextEpochStart}後に終了となり次第有効になります。</strong>それまでは、変更前の委任設定が有効のままとなります。",
