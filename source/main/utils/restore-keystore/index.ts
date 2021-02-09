@@ -3,7 +3,7 @@ import * as blake2b from 'blake2b';
 import * as crypto from 'crypto';
 
 export type EncryptedSecretKey = {
-  encryptedPayload: Buffer,
+  encryptedPayload,
   passphraseHash: Buffer,
   isEmptyPassphrase: Boolean,
   walletId: WalletId

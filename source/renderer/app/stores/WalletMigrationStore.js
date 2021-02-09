@@ -28,6 +28,7 @@ import {
   ImportFromOptions,
 } from '../types/walletExportTypes';
 import { IMPORT_WALLET_STEPS } from '../config/walletRestoreConfig';
+import { IS_AUTOMATIC_WALLET_MIGRATION_ENABLED } from '../config/walletsConfig';
 import type { ImportWalletStep } from '../types/walletRestoreTypes';
 
 export type WalletMigrationStatus =
@@ -381,8 +382,7 @@ export default class WalletMigrationStore extends Store {
   };
 
   @action _startMigration = async () => {
-    // eslint-disable-next-line
-    if (true) return; // This feature is currently unavailable as export tool is disabled
+    if (!IS_AUTOMATIC_WALLET_MIGRATION_ENABLED) return;
 
     const { isMainnet, isTestnet, isTest } = this.environment;
     if (isMainnet || isTestnet || (isTest && this.isTestMigrationEnabled)) {
