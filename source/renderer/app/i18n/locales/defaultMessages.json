@@ -2552,6 +2552,67 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Show ada price in other currency",
+        "description": "titleLabel for the Currency settings in the Wallets settings page.",
+        "end": {
+          "column": 3,
+          "line": 19
+        },
+        "file": "source/renderer/app/components/settings/categories/WalletsSettings.js",
+        "id": "settings.wallets.currency.titleLabel",
+        "start": {
+          "column": 22,
+          "line": 14
+        }
+      },
+      {
+        "defaultMessage": "!!!This feature does… Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+        "description": "currencyDescription for the Currency settings in the Wallets settings page.",
+        "end": {
+          "column": 3,
+          "line": 26
+        },
+        "file": "source/renderer/app/components/settings/categories/WalletsSettings.js",
+        "id": "settings.wallets.currency.description",
+        "start": {
+          "column": 23,
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!Countervalue",
+        "description": "currencySelectLabel for the Currency settings in the Wallets settings page.",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "source/renderer/app/components/settings/categories/WalletsSettings.js",
+        "id": "settings.wallets.currency.selectLabel",
+        "start": {
+          "column": 23,
+          "line": 27
+        }
+      },
+      {
+        "defaultMessage": "!!!Powered by",
+        "description": "currencyPoweredByLabel for the Currency settings in the Wallets settings page.",
+        "end": {
+          "column": 3,
+          "line": 38
+        },
+        "file": "source/renderer/app/components/settings/categories/WalletsSettings.js",
+        "id": "settings.wallets.currency.poweredBy.label",
+        "start": {
+          "column": 26,
+          "line": 33
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/settings/categories/WalletsSettings.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!General",
         "description": "Label for the \"General\" link in the settings menu.",
         "end": {
@@ -11010,13 +11071,13 @@
         "description": "\"Number of transactions\" label on Wallet summary page",
         "end": {
           "column": 3,
-          "line": 22
+          "line": 23
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
         "id": "wallet.summary.page.transactionsLabel",
         "start": {
           "column": 21,
-          "line": 18
+          "line": 19
         }
       },
       {
@@ -11024,13 +11085,41 @@
         "description": "\"Number of pending transactions\" label on Wallet summary page",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 29
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
         "id": "wallet.summary.page.pendingTransactionsLabel",
         "start": {
           "column": 28,
-          "line": 23
+          "line": 24
+        }
+      },
+      {
+        "defaultMessage": "!!!Fetched {fetchedTimeAgo}",
+        "description": "\"Number of pending transactions\" label on Wallet summary page",
+        "end": {
+          "column": 3,
+          "line": 35
+        },
+        "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
+        "id": "wallet.summary.page.currencyLastFetched",
+        "start": {
+          "column": 23,
+          "line": 30
+        }
+      },
+      {
+        "defaultMessage": "!!!Fetching",
+        "description": "\"Number of pending transactions\" label on Wallet summary page",
+        "end": {
+          "column": 3,
+          "line": 41
+        },
+        "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
+        "id": "wallet.summary.page.currencyIsFetchingRate",
+        "start": {
+          "column": 26,
+          "line": 36
         }
       }
     ],
