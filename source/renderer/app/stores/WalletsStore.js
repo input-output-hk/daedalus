@@ -31,7 +31,7 @@ import {
 } from '../config/walletRestoreConfig';
 import {
   CURRENCY_IS_ACTIVE_BY_DEFAULT,
-  DEFAULT_CURRENCY_SELECTED,
+  CURRENCY_DEFAULT_SELECTED,
 } from '../config/currencyConfig';
 import { WALLET_PUBLIC_KEY_SHARING_ENABLED } from '../config/walletsConfig';
 import type {
@@ -343,7 +343,7 @@ export default class WalletsStore extends Store {
 
     runInAction(() => {
       this.currencyIsActive = currencyIsActive || CURRENCY_IS_ACTIVE_BY_DEFAULT;
-      this.currencySelected = currencySelected || DEFAULT_CURRENCY_SELECTED;
+      this.currencySelected = currencySelected || CURRENCY_DEFAULT_SELECTED;
     });
 
     // Fetch the currency list and rate

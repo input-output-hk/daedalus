@@ -9,12 +9,10 @@
  * check `currencyConfig.js` for more info
  *
  */
-
 import { get } from 'lodash';
 import { logger } from '../utils/logging';
 import type { Currency, CurrencyApiConfig } from '../types/currencyTypes.js';
 import type {
-  GetCurrencyApiStatusResponse,
   GetCurrencyListResponse,
   GetCurrencyRateResponse,
 } from '../api/wallets/types';
@@ -28,17 +26,12 @@ type CurrencyRateGeckoResponse = Array<{
 
 const id = 'coingecko';
 const name = 'CoingGecko';
-const hostname = 'api.coingecko.com';
 const website = 'https://www.coingecko.com/en/api';
+const hostname = 'api.coingecko.com';
 const version = 'v3';
 const pathBase = `api/${version}`;
 
 const requests = {
-  status: {
-    hostname,
-    method: 'GET',
-    path: `/${pathBase}/ping`,
-  },
   list: [
     {
       hostname,
@@ -59,7 +52,6 @@ const requests = {
 };
 
 const responses = {
-  status: (): GetCurrencyApiStatusResponse => true,
   list: (apiResponse: Array<Object>): GetCurrencyListResponse => {
     try {
       if (!Array.isArray(apiResponse) || apiResponse.length < 2) {

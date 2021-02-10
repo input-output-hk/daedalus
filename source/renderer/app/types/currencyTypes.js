@@ -10,7 +10,7 @@ export type Currency = {
 
 export type Request = HttpOptions | Function;
 
-export type RequestName = 'status' | 'list' | 'rate';
+export type RequestName = 'list' | 'rate';
 
 export type CurrencyApiConfig = {
   id: string,
@@ -18,12 +18,10 @@ export type CurrencyApiConfig = {
   hostname: string,
   website: string,
   requests: {
-    status: Request,
-    list: Request,
+    list?: Request,
     rate: Request,
   },
   responses: {
-    status: Function,
     list: Function,
     rate: Function,
   },

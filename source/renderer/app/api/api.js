@@ -70,7 +70,6 @@ import { getLegacyWallet } from './wallets/requests/getLegacyWallet';
 import { transferFundsCalculateFee } from './wallets/requests/transferFundsCalculateFee';
 import { transferFunds } from './wallets/requests/transferFunds';
 import { createHardwareWallet } from './wallets/requests/createHardwareWallet';
-import { getCurrencyApiStatus } from './wallets/requests/getCurrencyApiStatus';
 import { getCurrencyList } from './wallets/requests/getCurrencyList';
 import { getCurrencyRate } from './wallets/requests/getCurrencyRate';
 
@@ -185,7 +184,6 @@ import type {
   TransferFundsRequest,
   TransferFundsResponse,
   UpdateWalletRequest,
-  GetCurrencyApiStatusResponse,
   GetCurrencyListResponse,
   GetCurrencyRateRequest,
   GetCurrencyRateResponse,
@@ -1278,20 +1276,6 @@ export default class AdaApi {
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::createHardwareWallet error', { error });
-      throw new ApiError(error);
-    }
-  };
-
-  getCurrencyApiStatus = async (): Promise<GetCurrencyApiStatusResponse> => {
-    try {
-      const apiResponse = await getCurrencyApiStatus();
-      const response: GetCurrencyApiStatusResponse = currencyConfig.responses.status(
-        apiResponse
-      );
-      logger.debug('AdaApi::getCurrencyApiStatus success', { response });
-      return response;
-    } catch (error) {
-      logger.error('AdaApi::getCurrencyApiStatus error', { error });
       throw new ApiError(error);
     }
   };

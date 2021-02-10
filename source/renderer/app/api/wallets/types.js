@@ -303,8 +303,6 @@ export type CreateHardwareWalletRequest = {
   accountPublicKey: string,
 };
 
-export type GetCurrencyApiStatusResponse = boolean;
-
 export type GetCurrencyListResponse = Array<Currency>;
 
 export type GetCurrencyRateRequest = Currency;
