@@ -18,7 +18,7 @@ export function decodeKeystore (bytes : Buffer) : Promise<[EncryptedSecretKey]> 
 }
 
 export function prettyKeystore(keystore : [EncryptedSecretKey]) : String {
-  const prettyESK = ({ encryptedPayload, passphraseHash, walletId, isEmptyPassphrase }) => {
+  const prettyESK = ({ encryptedPayload, passphraseHash, walletId, isEmptyPassphrase } : EncryptedSecretKey) => {
     return {
       name: walletId,
       encrypted_root_private_key: encryptedPayload.toString('hex'),

@@ -246,7 +246,7 @@ export default class WalletMigrationStore extends Store {
             : WalletImportStatuses.UNSTARTED;
           return { ...wallet, hasName, import: { status, error: null } };
         }),
-        ['hasName', 'id', 'name', 'is_passphrase_empty'],
+        ['hasName', 'id', 'name', 'isEmptyPassphrase'],
         ['desc', 'asc', 'asc', 'asc']
       );
 
@@ -287,7 +287,7 @@ export default class WalletMigrationStore extends Store {
           {
             id: wallet.id,
             name: wallet.name,
-            hasPassword: wallet.is_passphrase_empty,
+            hasPassword: !wallet.isEmptyPassphrase,
           }
         );
         return this._restoreWallet(wallet);
@@ -334,7 +334,7 @@ export default class WalletMigrationStore extends Store {
       });
     } catch (error) {
       runInAction('update restorationErrors', () => {
-        const { name, is_passphrase_empty: hasPassword } = exportedWallet;
+        const { name, isEmptyPassphrase } = exportedWallet;
         this._updateWalletImportStatus(
           index,
           WalletImportStatuses.ERRORED,
@@ -342,7 +342,7 @@ export default class WalletMigrationStore extends Store {
         );
         this.restorationErrors.push({
           error,
-          wallet: { id, name, hasPassword },
+          wallet: { id, name, hasPassword: !isEmptyPassphrase },
         });
       });
     }
@@ -514,7 +514,7 @@ export default class WalletMigrationStore extends Store {
     return this.exportedWallets.map((wallet) => ({
       id: wallet.id,
       name: wallet.name,
-      hasPassword: wallet.is_passphrase_empty,
+      hasPassword: !wallet.isEmptyPassphrase,
       import: wallet.import,
     }));
   }

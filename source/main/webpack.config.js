@@ -38,7 +38,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.(js|ts|jsx|tsx)?$/,
+        test: /\.jsx?$/,
         include: /source/,
         exclude: /source\/renderer/,
         use: (isCi ? [] : ['cache-loader']).concat(['babel-loader']),

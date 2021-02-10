@@ -1,10 +1,10 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { decodeKeystore } from '.';
+import { decodeKeystore } from '../src';
 
 let keystore;
 beforeAll(async () => {
-  const bytes = fs.readFileSync(path.join(__dirname, "__test__", "secret.key"));
+  const bytes = fs.readFileSync(path.join(__dirname, "secrets", "secret.key"));
   keystore = await decodeKeystore(bytes);
 });
 

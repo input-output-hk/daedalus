@@ -6,7 +6,7 @@ import { spawnSync } from 'child_process';
 import { logger } from '../utils/logging';
 import { getTranslation } from '../utils/getTranslation';
 import ensureDirectoryExists from '../utils/ensureDirectoryExists';
-import { decodeKeystore } from '../utils/restore-keystore';
+import { decodeKeystore } from '../../../utils/restore-keystore/dist';
 import type { LauncherConfig } from '../config';
 import type { ExportWalletsMainResponse } from '../../common/ipc/api';
 import type {
@@ -20,7 +20,6 @@ import {
   CardanoProcessNameOptions,
   CardanoNodeImplementationOptions,
   NetworkNameOptions,
-  TESTNET_MAGIC,
 } from '../../common/types/cardano-node.types';
 
 export type Process = {
@@ -176,11 +175,7 @@ export const exportWallets = async (
   mainWindow: BrowserWindow,
   locale: string
 ): Promise<ExportWalletsMainResponse> => {
-  const keystore = decodeKeystore(exportSourcePath);
-  console.debug(keystore);
-
   const {
-    exportWalletsBin,
     legacySecretKey,
     legacyWalletDB,
     stateDir,
@@ -190,7 +185,6 @@ export const exportWallets = async (
 
   logger.info('ipcMain: Starting wallets export...', {
     exportSourcePath,
-    exportWalletsBin,
     legacySecretKey,
     legacyWalletDB,
     stateDir,
@@ -230,41 +224,37 @@ export const exportWallets = async (
     }
   }
 
-  // Export tool flags
-  const exportWalletsBinFlags = [];
-
-  // Cluster flags
-  if (cluster === 'testnet') {
-    exportWalletsBinFlags.push('--testnet', TESTNET_MAGIC.toString());
-  } else {
-    exportWalletsBinFlags.push('--mainnet');
-  }
-
-  // Secret key flags
-  exportWalletsBinFlags.push('--keyfile', legacySecretKeyPath);
-
-  // Wallet DB flags
   const legacyWalletDBPathExists = await fs.pathExists(
     `${legacyWalletDBPath}-acid`
   );
-  if (legacyWalletDBPathExists) {
-    exportWalletsBinFlags.push('--wallet-db-path', legacyWalletDBPath);
-  }
 
   logger.info('ipcMain: Exporting wallets...', {
-    exportWalletsBin,
-    exportWalletsBinFlags,
+    legacySecretKeyPath,
+    legacyWalletDBPath,
+    legacyWalletDBPathExists,
   });
 
-  const { stdout, stderr } = spawnSync(exportWalletsBin, exportWalletsBinFlags);
-  const wallets = JSON.parse(stdout.toString() || '[]');
-  const errors = stderr.toString();
+  let wallets = [];
+  let errors = '';
+  try {
+    const legacySecretKeyFile = fs.readFileSync(legacySecretKeyPath);
+    const rawWallets = await decodeKeystore(legacySecretKeyFile);
+    wallets = rawWallets.map((w) => ({
+      name: null,
+      id: w.walletId,
+      isEmptyPassphrase: w.isEmptyPassphrase,
+      passphrase_hash: w.passphraseHash.toString('hex'),
+      encrypted_root_private_key: w.encryptedPayload.toString('hex'),
+    }));
+  } catch (error) {
+    errors = error.toString();
+  }
 
   logger.info(`ipcMain: Exported ${wallets.length} wallets`, {
     walletsData: wallets.map((w) => ({
       name: w.name,
       id: w.id,
-      hasPassword: w.is_passphrase_empty,
+      hasPassword: !w.isEmptyPassphrase,
     })),
     errors,
   });
