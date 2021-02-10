@@ -166,7 +166,7 @@ storiesOf('Wallets|Summary', module)
       isLoadingTransactions={boolean('isLoadingTransactions', false)}
     />
   ))
-  .add('Wallet Assets Summary Loading', () => (
+  .add('Wallet Tokens Summary Loading', () => (
     <>
       <WalletSummary
         wallet={generateWallet('Wallet name', '45119903750165', assets)}
@@ -189,7 +189,7 @@ storiesOf('Wallets|Summary', module)
       />
     </>
   ))
-  .add('Wallet Assets Summary', () => (
+  .add('Wallet Tokens Summary', () => (
     <>
       <WalletSummary
         wallet={generateWallet('Wallet name', '45119903750165', assets)}

@@ -192,7 +192,7 @@ storiesOf('Wallets|Transactions', module)
       />
     );
   })
-  .add('Wallet Assets Transactions List', (props: Props) => {
+  .add('Wallet Tokens Transactions List', (props: Props) => {
     const {
       defaultFilterOptions,
       filterOptions,

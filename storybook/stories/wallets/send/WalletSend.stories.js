@@ -229,7 +229,7 @@ storiesOf('Wallets|Send', module)
       isHardwareWallet={boolean('isHardwareWallet', true)}
     />
   ))
-  .add('Wallet Assets Send', () => (
+  .add('Wallet Tokens Send', () => (
     <WalletAssetsSendForm
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
@@ -247,7 +247,7 @@ storiesOf('Wallets|Send', module)
       assets={allAssets}
     />
   ))
-  .add('Wallet Assets Send Confirmation Dialog', () => (
+  .add('Wallet Tokens Send Confirmation Dialog', () => (
     <div>
       <WalletAssetsSendConfirmationDialog
         amount={new BigNumber(100100).toFormat(DECIMAL_PLACES_IN_ADA)}
