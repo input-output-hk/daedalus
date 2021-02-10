@@ -22,11 +22,11 @@ const allAssets = [
     '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
     {
-      name: 'TrueUSD',
-      acronym: 'TUSD',
+      name: 'ADA',
+      acronym: 'ADA',
       description: 'Test description',
       unit: {
-        name: 'TUSD',
+        name: 'ADA',
         decimals: 6,
       },
       url: 'http://example.com',
@@ -86,7 +86,7 @@ const assets = {
       id: generateHash(),
       policyId: '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       assetName: '',
-      quantity: 100,
+      quantity: 45119903.750165,
     },
     {
       id: generateHash(),
@@ -112,7 +112,7 @@ const assets = {
       id: generateHash(),
       policyId: '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       assetName: '',
-      quantity: 100,
+      quantity: 45119903.750165,
     },
     {
       id: generateHash(),
