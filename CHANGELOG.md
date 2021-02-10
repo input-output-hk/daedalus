@@ -5,7 +5,7 @@ Changelog
 
 ### Features
 
-- Implemented UI for assets (native tokens) features [PR 2292](https://github.com/input-output-hk/daedalus/pull/2292)
+- Implemented UI for native tokens feature [PR 2292](https://github.com/input-output-hk/daedalus/pull/2292)
 
 ## 3.3.0
 

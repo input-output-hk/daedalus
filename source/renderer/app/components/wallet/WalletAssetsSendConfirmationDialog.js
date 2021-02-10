@@ -54,8 +54,8 @@ export const messages = defineMessages({
   },
   assetLabel: {
     id: 'wallet.send.confirmationDialog.assetLabel',
-    defaultMessage: '!!!Asset',
-    description: 'Asset',
+    defaultMessage: '!!!Token',
+    description: 'Token',
   },
   feesLabel: {
     id: 'wallet.send.confirmationDialog.feesLabel',

@@ -64,8 +64,8 @@ export const messages = defineMessages({
   },
   assetLabel: {
     id: 'wallet.send.form.asset.label',
-    defaultMessage: '!!!Asset',
-    description: 'Label for the "Asset" number input in the wallet send form.',
+    defaultMessage: '!!!Token',
+    description: 'Label for the "Token" number input in the wallet send form.',
   },
   addNewReceiverButtonLabel: {
     id: 'wallet.send.form.button.addNewReceiver',
@@ -80,9 +80,9 @@ export const messages = defineMessages({
   },
   addAssetButtonLabel: {
     id: 'wallet.send.form.button.addAssetButtonLabel',
-    defaultMessage: '!!!+ Add another asset',
+    defaultMessage: '!!!+ Add another token',
     description:
-      'Label for the "+ Add another asset" button in the wallet send form.',
+      'Label for the "+ Add another token" button in the wallet send form.',
   },
   estimatedFeeLabel: {
     id: 'wallet.send.form.estimatedFee.label',

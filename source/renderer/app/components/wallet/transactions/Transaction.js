@@ -143,7 +143,7 @@ const messages = defineMessages({
   },
   multipleTokens: {
     id: 'wallet.transaction.multipleTokens',
-    defaultMessage: '!!!Multiple assets',
+    defaultMessage: '!!!Multiple tokens',
     description: 'Multiple tokens.',
   },
   cancelPendingTxnNote: {
