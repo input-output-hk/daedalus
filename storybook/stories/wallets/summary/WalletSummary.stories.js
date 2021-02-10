@@ -72,16 +72,3 @@ storiesOf('Wallets|Summary', module)
       />
     );
   });
-
-// wallet: Wallet,
-// numberOfRecentTransactions: number,
-// numberOfTransactions?: number,
-// numberOfPendingTransactions: number,
-// isLoadingTransactions: boolean,
-// currencyIsFetchingRate: boolean,
-// currencyIsAvailable: boolean,
-// currencyIsActive: boolean,
-// currencySelected: ?Currency,
-// currencyRate: ?number,
-// currencyLastFetched: ?Date,
-// onCurrencySettingClick: Function,
