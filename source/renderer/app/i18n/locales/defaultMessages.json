@@ -11095,31 +11095,45 @@
         }
       },
       {
-        "defaultMessage": "!!!Fetched {fetchedTimeAgo}",
-        "description": "\"Number of pending transactions\" label on Wallet summary page",
+        "defaultMessage": "!!!Estimated conversion:",
+        "description": "\"Currency - title\" label on Wallet summary page",
         "end": {
           "column": 3,
           "line": 35
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
-        "id": "wallet.summary.page.currencyLastFetched",
+        "id": "wallet.summary.page.currency.title",
         "start": {
-          "column": 23,
+          "column": 17,
           "line": 30
         }
       },
       {
-        "defaultMessage": "!!!Fetching",
-        "description": "\"Number of pending transactions\" label on Wallet summary page",
+        "defaultMessage": "!!!Fetched {fetchedTimeAgo}",
+        "description": "\"Currency - last fetched\" label on Wallet summary page",
         "end": {
           "column": 3,
           "line": 41
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
-        "id": "wallet.summary.page.currencyIsFetchingRate",
+        "id": "wallet.summary.page.currency.lastFetched",
+        "start": {
+          "column": 23,
+          "line": 36
+        }
+      },
+      {
+        "defaultMessage": "!!!Fetching",
+        "description": "\"Currency - Fetching\" label on Wallet summary page",
+        "end": {
+          "column": 3,
+          "line": 47
+        },
+        "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
+        "id": "wallet.summary.page.currency.isFetchingRate",
         "start": {
           "column": 26,
-          "line": 36
+          "line": 42
         }
       }
     ],

@@ -27,17 +27,20 @@ const messages = defineMessages({
     description:
       '"Number of pending transactions" label on Wallet summary page',
   },
+  currencyTitle: {
+    id: 'wallet.summary.page.currency.title',
+    defaultMessage: '!!!Estimated conversion:',
+    description: '"Currency - title" label on Wallet summary page',
+  },
   currencyLastFetched: {
-    id: 'wallet.summary.page.currencyLastFetched',
+    id: 'wallet.summary.page.currency.lastFetched',
     defaultMessage: '!!!Fetched {fetchedTimeAgo}',
-    description:
-      '"Number of pending transactions" label on Wallet summary page',
+    description: '"Currency - last fetched" label on Wallet summary page',
   },
   currencyIsFetchingRate: {
-    id: 'wallet.summary.page.currencyIsFetchingRate',
+    id: 'wallet.summary.page.currency.isFetchingRate',
     defaultMessage: '!!!Fetching',
-    description:
-      '"Number of pending transactions" label on Wallet summary page',
+    description: '"Currency - Fetching" label on Wallet summary page',
   },
 });
 
@@ -144,7 +147,7 @@ export default class WalletSummary extends Component<Props> {
             {hasCurrency && (
               <div className={styles.currency}>
                 <div className={styles.currencyTitle}>
-                  Estimated conversion:
+                  {intl.formatMessage(messages.currencyTitle)}
                 </div>
                 <div className={styles.currencyWalletAmount}>
                   {currencyWalletAmount}
