@@ -72,8 +72,16 @@ const responses = {
       throw new Error(error);
     }
   },
-  rate: (apiResponse: CurrencyRateGeckoResponse): GetCurrencyRateResponse =>
-    get(apiResponse, '[0].current_price', 0),
+  rate: (apiResponse: CurrencyRateGeckoResponse): GetCurrencyRateResponse => {
+    try {
+      const rate = get(apiResponse, '[0].current_price', 0);
+      logger.debug('Currency::CoingGecko::Rate success', { rate });
+      return rate;
+    } catch (error) {
+      logger.error('Currency::CoingGecko::Rate error', { error });
+      throw new Error(error);
+    }
+  },
 };
 
 export default ({

@@ -19,7 +19,10 @@ import type {
 } from '../../../../common/types/hardware-wallets.types';
 import type { StorageKey } from '../../../../common/types/electron-store.types';
 import type { Currency } from '../../types/currencyTypes';
-import { CURRENCY_IS_ACTIVE_BY_DEFAULT } from '../../config/currencyConfig';
+import {
+  CURRENCY_IS_ACTIVE_BY_DEFAULT,
+  CURRENCY_DEFAULT_SELECTED,
+} from '../../config/currencyConfig';
 
 export type WalletLocalData = {
   id: string,
@@ -184,7 +187,7 @@ export default class LocalStorageApi {
     LocalStorageApi.unset(keys.DATA_LAYER_MIGRATION_ACCEPTANCE);
 
   getCurrencySelected = (): Promise<Currency> =>
-    LocalStorageApi.get(keys.CURRENCY_SELECTED);
+    LocalStorageApi.get(keys.CURRENCY_SELECTED, CURRENCY_DEFAULT_SELECTED);
 
   setCurrencySelected = (currency: Currency): Promise<void> =>
     LocalStorageApi.set(keys.CURRENCY_SELECTED, currency);
@@ -194,6 +197,9 @@ export default class LocalStorageApi {
 
   getCurrencyIsActive = (): Promise<boolean> =>
     LocalStorageApi.get(keys.CURRENCY_ACTIVE, CURRENCY_IS_ACTIVE_BY_DEFAULT);
+
+  unsetCurrencyIsActive = (): Promise<void> =>
+    LocalStorageApi.unset(keys.CURRENCY_SELECTED);
 
   toggleCurrencyIsActive = async (): Promise<boolean> => {
     const currencyIsActive = await this.getCurrencyIsActive();

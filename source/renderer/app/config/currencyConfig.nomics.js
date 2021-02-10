@@ -9,15 +9,24 @@
  * check `currencyConfig.js` for more info
  *
  */
-import { values, get } from 'lodash';
+import { get, values, keys } from 'lodash';
+import { logger } from '../utils/logging';
 import type { Currency, CurrencyApiConfig } from '../types/currencyTypes.js';
-import type { GetCurrencyRateResponse } from '../api/wallets/types';
+import type {
+  GetCurrencyListResponse,
+  GetCurrencyRateResponse,
+} from '../api/wallets/types';
 import currenciesList from './currenciesList.json';
 
 // For the complete response, check
 // https://nomics.com/docs/#operation/getCurrenciesTicker
 type CurrencyRateNomicsResponse = Array<{
   price: string,
+}>;
+
+type CurrencyListNomicsResponse = Array<{
+  id: string,
+  name: string,
 }>;
 
 const id = 'nomics';
@@ -37,9 +46,26 @@ const requests = {
 };
 
 const responses = {
-  list: () => values(currenciesList),
-  rate: (apiResponse: CurrencyRateNomicsResponse): GetCurrencyRateResponse =>
-    parseFloat(get(apiResponse, '[0].price', 0)),
+  list: (): GetCurrencyListResponse => {
+    try {
+      const list = values(currenciesList);
+      logger.debug('Currency::Nomics::List success', { list });
+      return list;
+    } catch (error) {
+      logger.error('Currency::Nomics::List error', { error });
+      throw new Error(error);
+    }
+  },
+  rate: (apiResponse: CurrencyRateNomicsResponse): GetCurrencyRateResponse => {
+    try {
+      const rate = parseFloat(get(apiResponse, '[0].price', 0));
+      logger.debug('Currency::CoingGecko::Rate success', { rate });
+      return rate;
+    } catch (error) {
+      logger.error('Currency::CoingGecko::Rate error', { error });
+      throw new Error(error);
+    }
+  },
 };
 
 export default ({

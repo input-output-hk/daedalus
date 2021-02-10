@@ -29,10 +29,7 @@ import {
   WALLET_HARDWARE_KINDS,
   RESTORE_WALLET_STEPS,
 } from '../config/walletRestoreConfig';
-import {
-  CURRENCY_IS_ACTIVE_BY_DEFAULT,
-  CURRENCY_DEFAULT_SELECTED,
-} from '../config/currencyConfig';
+import { CURRENCY_REQUEST_RATE_INTERVAL } from '../config/currencyConfig';
 import { WALLET_PUBLIC_KEY_SHARING_ENABLED } from '../config/walletsConfig';
 import type {
   WalletKind,
@@ -333,6 +330,8 @@ export default class WalletsStore extends Store {
   };
 
   @action setupCurrency = async () => {
+    // CURRENCY_REQUEST_RATE_INTERVAL
+
     // Check if the user has enabled currencies
     // Otherwise applies the default config
     const currencyIsActive = await this.api.localStorage.getCurrencyIsActive();
@@ -342,8 +341,8 @@ export default class WalletsStore extends Store {
     const currencySelected = await this.api.localStorage.getCurrencySelected();
 
     runInAction(() => {
-      this.currencyIsActive = currencyIsActive || CURRENCY_IS_ACTIVE_BY_DEFAULT;
-      this.currencySelected = currencySelected || CURRENCY_DEFAULT_SELECTED;
+      this.currencyIsActive = currencyIsActive;
+      this.currencySelected = currencySelected;
     });
 
     // Fetch the currency list and rate

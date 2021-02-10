@@ -7,8 +7,8 @@
  */
 
 // Available APIS
-import coingeckoConfig from './currencyConfig.coingecko';
-// import nomicsConfig from './currencyConfig.nomics';
+// import coingeckoConfig from './currencyConfig.coingecko';
+import nomicsConfig from './currencyConfig.nomics';
 
 import { externalRequest } from '../api/utils/externalRequest';
 import currenciesList from './currenciesList.json';
@@ -22,7 +22,7 @@ export const REQUESTS: {
 };
 
 // Definitions
-export const currencyConfig = coingeckoConfig;
+export const currencyConfig = nomicsConfig;
 export const CURRENCY_IS_ACTIVE_BY_DEFAULT = true;
 export const CURRENCY_DEFAULT_SELECTED = currenciesList.usd;
 export const CURRENCY_REQUEST_RATE_INTERVAL = 60 * 1000; // 1 minute | unit: milliseconds
