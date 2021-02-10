@@ -1,4 +1,6 @@
 // @flow
+import { currencyConfig } from './currencyConfig';
+
 export const MAINNET_EXPLORER_URL = 'explorer.cardano.org';
 export const STAGING_EXPLORER_URL = 'explorer.awstest.iohkdev.io';
 export const TESTNET_EXPLORER_URL = 'explorer.cardano-testnet.iohkdev.io';
@@ -11,8 +13,6 @@ export const ITN_EXPLORER_URL = 'shelleyexplorer.cardano.org';
 export const ITN_QA_EXPLORER_URL = 'shelley-testnet-explorer-qa.netlify.com';
 export const ITN_NIGHTLY_EXPLORER_URL =
   'shelley-testnet-explorer-nightly.netlify.com';
-
-import { currencyConfig } from './currencyConfig';
 
 export const DEVELOPMENT_EKG_URL = 'http://localhost:8085';
 export const STAGING_EKG_URL = 'http://localhost:8082';

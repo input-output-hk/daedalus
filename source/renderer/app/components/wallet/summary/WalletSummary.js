@@ -1,7 +1,6 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { get } from 'lodash';
 import moment from 'moment';
 import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';

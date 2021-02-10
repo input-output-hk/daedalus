@@ -217,6 +217,7 @@ export default class WalletsStore extends Store {
     spendingPassword: '',
   };
   _pollingBlocked = false;
+  _getCurrencyRateInterval: ?IntervalID = null;
 
   setup() {
     setInterval(this._pollRefresh, this.WALLET_REFRESH_INTERVAL);
@@ -344,6 +345,12 @@ export default class WalletsStore extends Store {
       this.currencyIsActive = currencyIsActive;
       this.currencySelected = currencySelected;
     });
+
+    clearInterval(this._getCurrencyRateInterval);
+    this._getCurrencyRateInterval = setInterval(
+      this.getCurrencyRate,
+      CURRENCY_REQUEST_RATE_INTERVAL
+    );
 
     // Fetch the currency list and rate
     this.getCurrencyList();
