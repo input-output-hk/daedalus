@@ -158,6 +158,22 @@ const confirmationAssets = assets.total.map((assetTotal) => {
   };
 });
 
+const sendFormAssetData = assets.total.map((assetTotal) => {
+  const assetData = allAssets.find(
+    (item) => item.policyId === assetTotal.policyId
+  );
+  return {
+    id: assetData ? assetData.id : '',
+    metadata: assetData
+      ? assetData.metadata
+      : {
+        name: '',
+        acronym: '',
+        description: '',
+      },
+    total: assetTotal || {},
+  };
+});
 
 storiesOf('Wallets|Send', module)
   .addDecorator(WalletsWrapper)
@@ -244,7 +260,7 @@ storiesOf('Wallets|Send', module)
       hwDeviceStatus={HwDeviceStatuses.READY}
       isHardwareWallet={boolean('isHardwareWallet', false)}
       selectedWallet={generateWallet('Wallet name', '45119903750165', assets)}
-      assets={allAssets}
+      assets={sendFormAssetData}
     />
   ))
   .add('Wallet Tokens Send Confirmation Dialog', () => (

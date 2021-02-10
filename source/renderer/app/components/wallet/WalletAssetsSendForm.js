@@ -1001,7 +1001,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
 
         {isDialogOpen(WalletAssetsSendConfirmationDialog) ? (
           <WalletSendConfirmationDialogContainer
-            amount={amount ? amount.toFormat(currencyMaxFractionalDigits) : ''}
+            amount={amount.toFormat(currencyMaxFractionalDigits)}
             receiver={receiverFieldProps.value}
             multipleReceivers={[
               receiverFieldProps.value,

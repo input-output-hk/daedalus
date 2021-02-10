@@ -4,6 +4,7 @@ import type { Element } from 'react';
 import { Select } from 'react-polymorph/lib/components/Select';
 import { SelectSkin } from 'react-polymorph/lib/skins/simple/SelectSkin';
 import { omit } from 'lodash';
+import { BigNumber } from 'bignumber.js';
 import WalletsDropdownOption from './WalletsDropdownOption';
 import styles from './WalletsDropdown.scss';
 
@@ -134,9 +135,9 @@ export default class WalletsDropdown extends Component<Props> {
         }
         const delegatedStakePool = getStakePoolById(currentStakePoolId);
         const formattedAmount =
-          hasAssetsEnabled && ticker && amount
+          hasAssetsEnabled && ticker
             ? formattedTokenWalletAmount(amount, ticker)
-            : formattedWalletAmount(amount);
+            : formattedWalletAmount(amount || new BigNumber(1));
         const detail = !isRestoring ? formattedAmount : null;
         return {
           detail,
