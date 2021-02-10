@@ -113,6 +113,7 @@ let
       mkdir -p Release/
       ln -sv $PWD/node_modules/usb/build/Release/usb_bindings.node Release/
       ln -sv $PWD/node_modules/node-hid/build/Release/HID.node Release/
+      ln -sv $PWD/utils/restore-keystore/dist/index.js Release/restore-keystore.js
       ${pkgs.lib.optionalString (nodeImplementation == "cardano") ''
         source <(cardano-node --bash-completion-script `type -p cardano-node`)
       ''}

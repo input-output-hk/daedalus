@@ -6,7 +6,8 @@ import { spawnSync } from 'child_process';
 import { logger } from '../utils/logging';
 import { getTranslation } from '../utils/getTranslation';
 import ensureDirectoryExists from '../utils/ensureDirectoryExists';
-import { decodeKeystore } from '../../../utils/restore-keystore/dist/index.js';
+// import { decodeKeystore } from '../../../utils/restore-keystore/dist/index';
+import { decodeKeystore } from '../../../Release/restore-keystore';
 import type { LauncherConfig } from '../config';
 import type { ExportWalletsMainResponse } from '../../common/ipc/api';
 import type {
