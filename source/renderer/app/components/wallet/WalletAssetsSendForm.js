@@ -592,7 +592,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       : intl.formatMessage(messages.receiverLabel);
 
     let fees = null;
-    if (isTransactionFeeCalculated) {
+    if (isTransactionFeeCalculated && transactionFee) {
       fees = transactionFee.toFormat(currencyMaxFractionalDigits);
     }
 
@@ -906,7 +906,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
 
     let fees = null;
     let total = null;
-    if (isTransactionFeeCalculated) {
+    if (isTransactionFeeCalculated && transactionFee) {
       fees = transactionFee.toFormat(currencyMaxFractionalDigits);
       total = amount.add(transactionFee).toFormat(currencyMaxFractionalDigits);
     }
@@ -1001,7 +1001,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
 
         {isDialogOpen(WalletAssetsSendConfirmationDialog) ? (
           <WalletSendConfirmationDialogContainer
-            amount={amount.toFormat(currencyMaxFractionalDigits)}
+            amount={amount ? amount.toFormat(currencyMaxFractionalDigits) : ''}
             receiver={receiverFieldProps.value}
             multipleReceivers={[
               receiverFieldProps.value,

@@ -134,7 +134,7 @@ export default class WalletsDropdown extends Component<Props> {
         }
         const delegatedStakePool = getStakePoolById(currentStakePoolId);
         const formattedAmount =
-          hasAssetsEnabled && ticker
+          hasAssetsEnabled && ticker && amount
             ? formattedTokenWalletAmount(amount, ticker)
             : formattedWalletAmount(amount);
         const detail = !isRestoring ? formattedAmount : null;
