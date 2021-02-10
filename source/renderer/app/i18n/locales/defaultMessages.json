@@ -11099,7 +11099,7 @@
         "description": "\"Currency - title\" label on Wallet summary page",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 34
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
         "id": "wallet.summary.page.currency.title",
@@ -11113,13 +11113,13 @@
         "description": "\"Currency - last fetched\" label on Wallet summary page",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 39
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
         "id": "wallet.summary.page.currency.lastFetched",
         "start": {
           "column": 23,
-          "line": 36
+          "line": 35
         }
       },
       {
@@ -11127,13 +11127,13 @@
         "description": "\"Currency - Fetching\" label on Wallet summary page",
         "end": {
           "column": 3,
-          "line": 47
+          "line": 44
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
         "id": "wallet.summary.page.currency.isFetchingRate",
         "start": {
           "column": 26,
-          "line": 42
+          "line": 40
         }
       }
     ],

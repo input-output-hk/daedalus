@@ -145,7 +145,7 @@ export default class WalletsStore extends Store {
   /* ------------  Currencies  ----------- */
   @observable currencyIsFetchingList: boolean = false;
   @observable currencyIsFetchingRate: boolean = false;
-  @observable currencyIsAvailable: boolean = true;
+  @observable currencyIsAvailable: boolean = false;
   @observable currencyIsActive: boolean = false;
 
   @observable currencyList: Array<Currency> = [];
@@ -367,21 +367,31 @@ export default class WalletsStore extends Store {
   };
 
   @action getCurrencyRate = async () => {
-    this.currencyIsFetchingRate = true;
-    this.currencyRate = null;
     const { currencySelected } = this;
     if (currencySelected && currencySelected.symbol) {
-      const currencyRate = await this.api.ada.getCurrencyRate(currencySelected);
-      runInAction(() => {
-        this.currencyIsFetchingRate = false;
-        this.currencyLastFetched = new Date();
-        if (currencyRate) {
-          this.currencyRate = currencyRate;
-          this.currencyIsAvailable = true;
-        } else {
+      try {
+        this.currencyIsFetchingRate = true;
+        this.currencyRate = null;
+        const currencyRate = await this.api.ada.getCurrencyRate(
+          currencySelected
+        );
+        runInAction(() => {
+          this.currencyIsFetchingRate = false;
+          this.currencyLastFetched = new Date();
+          if (currencyRate) {
+            this.currencyRate = currencyRate;
+            this.currencyIsAvailable = true;
+          } else {
+            throw new Error('Error fetching the Currency rate');
+          }
+        });
+      } catch (error) {
+        runInAction(() => {
+          this.currencyRate = null;
           this.currencyIsAvailable = false;
-        }
-      });
+        });
+        clearInterval(this._getCurrencyRateInterval);
+      }
     }
   };
 
