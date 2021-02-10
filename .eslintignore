@@ -10,5 +10,4 @@ tests/paper-wallets/e2e/documents/*
 tests/wallets/e2e/documents/*
 mainnet-genesis-dryrun-with-stakeholders.json
 source/renderer/app/i18n/locales
-utils/restore-keystore/*
 nodemon.json
