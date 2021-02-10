@@ -166,6 +166,29 @@ storiesOf('Wallets|Summary', module)
       isLoadingTransactions={boolean('isLoadingTransactions', false)}
     />
   ))
+  .add('Wallet Assets Summary Loading', () => (
+    <>
+      <WalletSummary
+        wallet={generateWallet('Wallet name', '45119903750165', assets)}
+        numberOfTransactions={number('Number of transactions', 100)}
+        numberOfRecentTransactions={number(
+          'Number of Recent transactions',
+          100
+        )}
+        numberOfPendingTransactions={number('Number of transactions', 3)}
+        isLoadingTransactions={boolean('isLoadingTransactions', true)}
+        hasAssetsEnabled={
+          hasAssetsEnabled && assets && assets.total && assets.total.length > 0
+        }
+      />
+      <AssetsWalletSummary
+        wallet={generateWallet('Wallet name', '45119903750165', assets)}
+        assets={walletAssets}
+        isLoading={boolean('isLoading', true)}
+        handleOpenAssetSend={action('handleOpenAssetSend')}
+      />
+    </>
+  ))
   .add('Wallet Assets Summary', () => (
     <>
       <WalletSummary

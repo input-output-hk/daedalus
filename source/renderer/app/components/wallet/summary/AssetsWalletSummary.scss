@@ -9,6 +9,16 @@
   line-height: 1.36;
 }
 
+.syncingWrapper {
+  margin-bottom: 20px;
+
+  :global {
+    .LoadingSpinner_component {
+      margin-top: 10px;
+    }
+  }
+}
+
 .component {
   align-items: center;
   display: flex;

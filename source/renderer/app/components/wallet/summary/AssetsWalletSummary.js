@@ -9,6 +9,7 @@ import styles from './AssetsWalletSummary.scss';
 import Wallet from '../../../domains/Wallet';
 import type { WalletSummaryAsset } from '../../../api/assets/types';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
+import LoadingSpinner from '../../widgets/LoadingSpinner';
 
 const messages = defineMessages({
   transactionsLabel: {
@@ -43,6 +44,7 @@ type Props = {
   wallet: Wallet,
   assets: Array<WalletSummaryAsset>,
   handleOpenAssetSend: Function,
+  isLoading?: boolean,
 };
 
 @observer
@@ -52,7 +54,7 @@ export default class AssetsWalletSummary extends Component<Props> {
   };
 
   render() {
-    const { wallet, assets, handleOpenAssetSend } = this.props;
+    const { wallet, assets, handleOpenAssetSend, isLoading } = this.props;
     const { intl } = this.context;
 
     const isRestoreActive = wallet.isRestoring;
@@ -61,10 +63,17 @@ export default class AssetsWalletSummary extends Component<Props> {
     return (
       numberOfAssets && (
         <Fragment>
-          <div className={styles.numberOfAssets}>
-            {intl.formatMessage(messages.tokensTitle)} ({numberOfAssets})
-          </div>
-          <div className={styles.component}>
+          {!isLoading && (
+            <div className={styles.numberOfAssets}>
+              {intl.formatMessage(messages.tokensTitle)} ({numberOfAssets})
+            </div>
+          )}
+          {isLoading ? (
+            <div className={styles.syncingWrapper}>
+              <LoadingSpinner />
+            </div>
+          ) : (
+            <div className={styles.component}>
             {assets.map((asset: WalletSummaryAsset) => (
               <BorderedBox
                 className={styles.assetsContainer}
@@ -117,7 +126,7 @@ export default class AssetsWalletSummary extends Component<Props> {
                 )}
               </BorderedBox>
             ))}
-          </div>
+          </div>)}
         </Fragment>
       )
     );
