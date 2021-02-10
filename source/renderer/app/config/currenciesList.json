@@ -85,11 +85,13 @@
   },
   "bmd": {
     "symbol": "bmd",
-    "name": "Bermudian dollar"
+    "name": "Bermudian dollar",
+    "decimalDigits": 2
   },
   "bnb": {
     "symbol": "bnb",
     "name": "Binance Coin",
+    "decimalDigits": 2,
     "id": "binancecoin"
   },
   "bnd": {
@@ -209,6 +211,7 @@
   "dot": {
     "symbol": "dot",
     "name": "Polkadot",
+    "decimalDigits": 2,
     "id": "polkadot"
   },
   "dzd": {
@@ -232,6 +235,7 @@
   "eos": {
     "symbol": "eos",
     "name": "EOS",
+    "decimalDigits": 2,
     "id": "eos"
   },
   "ern": {
@@ -411,7 +415,8 @@
   "link": {
     "symbol": "link",
     "name": "Chainlink",
-    "id": "chainlink"
+    "id": "chainlink",
+    "decimalDigits": 2
   },
   "lkr": {
     "symbol": "lkr",
@@ -619,6 +624,7 @@
   },
   "sats": {
     "symbol": "sats",
+    "decimalDigits": 2,
     "name": "Satoshi"
   },
   "sdg": {
@@ -749,11 +755,13 @@
   },
   "xau": {
     "symbol": "xau",
-    "name": "Xaucoin"
+    "name": "Xaucoin",
+    "decimalDigits": 2
   },
   "xdr": {
     "symbol": "xdr",
-    "name": "Xandereum"
+    "name": "Xandereum",
+    "decimalDigits": 2
   },
   "xlm": {
     "symbol": "xlm",
@@ -782,6 +790,7 @@
   "yfi": {
     "symbol": "yfi",
     "name": "yearn.finance",
+    "decimalDigits": 2,
     "id": "yearn-finance"
   },
   "zar": {

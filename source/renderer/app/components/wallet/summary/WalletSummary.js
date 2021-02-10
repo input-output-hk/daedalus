@@ -98,7 +98,6 @@ export default class WalletSummary extends Component<Props> {
       : formattedWalletAmount(wallet.amount, false);
 
     const { decimalDigits } = currencySelected || {};
-    console.log('decimalDigits', decimalDigits);
 
     const currencyWalletAmount =
       hasCurrency && currencyRate
