@@ -76,7 +76,7 @@ export default class WalletSummaryPage extends Component<Props> {
     const wallet = wallets.active;
     const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
-    const isLoading = isSynced || recentTransactionsRequest.isExecutingFirstTime;
+    const isLoading = !isSynced || recentTransactionsRequest.isExecutingFirstTime;
     // Guard against potential null values
     if (!wallet)
       throw new Error('Active wallet required for WalletSummaryPage.');
