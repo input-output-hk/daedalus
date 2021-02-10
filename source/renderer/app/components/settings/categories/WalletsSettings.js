@@ -84,20 +84,24 @@ export default class WalletSettings extends Component<Props> {
             className={styles.switch}
           />
         </div>
-        <Select
-          label={intl.formatMessage(messages.currencySelectLabel)}
-          value={currencySelected ? currencySelected.symbol : null}
-          options={currencyOptions}
-          onChange={onSelectCurrency}
-        />
-        <div className={styles.currencyPoweredBy}>
-          {intl.formatMessage(messages.currencyPoweredByLabel)}
-          <Link
-            className={styles.currencyPoweredByLink}
-            onClick={() => onOpenExternalLink(currencyConfig.website)}
-            label={currencyConfig.name}
-          />
-        </div>
+        {currencyIsActive && (
+          <>
+            <Select
+              label={intl.formatMessage(messages.currencySelectLabel)}
+              value={currencySelected ? currencySelected.symbol : null}
+              options={currencyOptions}
+              onChange={onSelectCurrency}
+            />
+            <div className={styles.currencyPoweredBy}>
+              {intl.formatMessage(messages.currencyPoweredByLabel)}
+              <Link
+                className={styles.currencyPoweredByLink}
+                onClick={() => onOpenExternalLink(currencyConfig.website)}
+                label={currencyConfig.name}
+              />
+            </div>
+          </>
+        )}
       </div>
     );
   }

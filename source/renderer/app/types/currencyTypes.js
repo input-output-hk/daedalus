@@ -2,10 +2,10 @@
 import type { HttpOptions } from '../api/utils/externalRequest';
 
 export type Currency = {
-  id: string,
   symbol: string,
   name: string,
   decimalDigits?: number,
+  id?: string,
 };
 
 export type Request = HttpOptions | Function;

@@ -1,6 +1,7 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
+import { get } from 'lodash';
 import moment from 'moment';
 import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
@@ -96,12 +97,15 @@ export default class WalletSummary extends Component<Props> {
       ? '-'
       : formattedWalletAmount(wallet.amount, false);
 
+    const { decimalDigits } = currencySelected || {};
+    console.log('decimalDigits', decimalDigits);
+
     const currencyWalletAmount =
       hasCurrency && currencyRate
         ? formattedWalletCurrencyAmount(
             wallet.amount,
             currencyRate,
-            currencySelected
+            decimalDigits
           )
         : null;
     const currencyWalletAmountSymbol = currencySelected
