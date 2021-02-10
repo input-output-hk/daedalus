@@ -1150,6 +1150,10 @@
   version "0.2.4"
   resolved "https://registry.yarnpkg.com/@icons/material/-/material-0.2.4.tgz#e90c9f71768b3736e76d7dd6783fc6c2afa88bc8"
 
+"@iohk-jormungandr/wallet-js@0.5.0-pre7":
+  version "0.5.0-pre7"
+  resolved "https://registry.yarnpkg.com/@iohk-jormungandr/wallet-js/-/wallet-js-0.5.0-pre7.tgz#a004a6c9d19c28f902076f538c40aa67fd819a30"
+
 "@ledgerhq/devices@^5.26.0":
   version "5.26.0"
   resolved "https://registry.yarnpkg.com/@ledgerhq/devices/-/devices-5.26.0.tgz#6c25ee48d0d2f49a8fa1abc11f3efd888f3fea68"

@@ -95,12 +95,12 @@ export const formattedAmountToNaturalUnits = (amount: string): string => {
   return cleanedAmount === '' ? '0' : cleanedAmount;
 };
 
-export const formattedAmountToBigNumber = (amount: string) => {
+export const formattedAmountToBigNumber = (amount: string): BigNumber => {
   const cleanedAmount = amount.replace(/,/g, '');
   return new BigNumber(cleanedAmount !== '' ? cleanedAmount : 0);
 };
 
-export const toFixedUserFormat = (number: number, digits: number) => {
+export const toFixedUserFormat = (number: number, digits: number): string => {
   // This is necessary, because the BigNumber version we use
   // can't receive numbers with more than 15 digits
   const parsedNumber = parseFloat(number).toFixed(digits);
@@ -164,12 +164,31 @@ export const formattedDownloadData = (
   };
 };
 
-export const generateThousands = (value: number) => {
+export const generateThousands = (value: number): number => {
   if (value <= 1000) {
     return Math.round(value);
   }
 
   return Math.round(value / 1000) * 1000;
+};
+
+export const formattedArrayBufferToHexString = (
+  arrayBuffer: Uint8Array
+): string => {
+  const buff = new Uint8Array(arrayBuffer);
+  const byteToHex = [];
+  const hexOctets = [];
+
+  for (let n = 0; n <= 0xff; ++n) {
+    const hexOctet = `0${n.toString(16)}`.slice(-2);
+    byteToHex.push(hexOctet);
+  }
+
+  for (let i = 0; i < buff.length; ++i) {
+    hexOctets.push(byteToHex[buff[i]]);
+  }
+
+  return hexOctets.join('');
 };
 
 export const formattedNumber = (value: number | string, dp?: number): string =>

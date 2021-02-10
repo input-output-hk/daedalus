@@ -494,6 +494,11 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-progress-bar-large-progress-stripe1': '#29b595',
     '--theme-progress-bar-large-progress-stripe2': '#69cbb4',
     '--theme-progress-bar-large-background-color': 'rgba(0, 0, 0, 0.1)',
+    '--theme-progress-bar-large-progress-dark-stripe1': '#29b595',
+    '--theme-progress-bar-large-progress-dark-stripe2': '#69cbb4',
+    '--theme-progress-bar-large-progress-light-stripe-1': '#29b595',
+    '--theme-progress-bar-large-progress-light-stripe-2-background-color':
+      '#69cbb4',
   },
   receiveQRCode: {
     '--theme-receive-qr-code-background-color': 'transparent',
@@ -968,6 +973,25 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-utxo-tooltip-background-color': 'rgba(45, 45, 45, 0.9)',
     '--theme-utxo-tooltip-shadow-color': 'rgba(0, 0, 0, 0.18)',
     '--theme-utxo-tooltip-text-color': '#fafbfc',
+  },
+  voting: {
+    '--theme-voting-font-color-accent': '#2d2d2d',
+    '--theme-voting-font-color-light': '#2d2d2db3',
+    '--theme-voting-font-color-regular': '#2d2d2d',
+    '--theme-voting-info-background-color': 'rgba(45, 45, 45, 0.1)',
+    '--theme-voting-info-font-color': '#2d2d2d',
+    '--theme-voting-registration-steps-activation-steps-indicator-color':
+      '#2d2d2d',
+    '--theme-voting-registration-steps-choose-wallet-error-message-color':
+      '#ea4c5b',
+    '--theme-voting-registration-steps-choose-wallet-error-message-light-color':
+      '#ea4c5bb3',
+    '--theme-voting-registration-steps-deposit-fees-amount-color': '#ea4c5b',
+    '--theme-voting-registration-steps-deposit-fees-label-color': '#2d2d2d',
+    '--theme-voting-registration-steps-description-color': '#2d2d2dcc',
+    '--theme-voting-registration-steps-description-highlighted-color':
+      '#2d2d2d',
+    '--theme-voting-separator-color': 'rgba(45, 45, 45, 0.15)',
   },
   recoveryPhrase: {
     '--theme-recovery-phrase-normal-background-color': 'rgba(45, 45, 45, .1)',

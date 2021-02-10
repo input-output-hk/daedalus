@@ -1,0 +1,46 @@
+.component {
+  .qrCode {
+    display: flex;
+    text-align: center;
+
+    canvas {
+      border: 4px solid var(--theme-receive-qr-code-background-color);
+      box-sizing: content-box;
+      margin: auto;
+    }
+  }
+
+  .qrCodeDescription {
+    margin-bottom: 20px;
+    margin-top: 20px;
+
+    p {
+      margin-bottom: 11px;
+
+      &.boldText,
+      span > span {
+        font-weight: bold;
+      }
+
+      &:not(.boldText) {
+        color: var(--theme-voting-registration-steps-description-color);
+      }
+
+      &.warning {
+        color: var(--theme-color-error);
+      }
+    }
+  }
+
+  .checkboxes {
+    .checkbox {
+      margin-top: 15px;
+    }
+  }
+
+  .separator {
+    border: none;
+    border-bottom: 1px solid var(--theme-voting-separator-color);
+    margin: 20px 0;
+  }
+}
