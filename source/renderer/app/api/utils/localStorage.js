@@ -85,7 +85,7 @@ export default class LocalStorageApi {
       key,
       id,
     });
-    if (!value) return fallbackValue || '';
+    if (value === undefined) return fallbackValue || '';
     return value;
   };
 
@@ -198,14 +198,11 @@ export default class LocalStorageApi {
   getCurrencyIsActive = (): Promise<boolean> =>
     LocalStorageApi.get(keys.CURRENCY_ACTIVE, CURRENCY_IS_ACTIVE_BY_DEFAULT);
 
-  unsetCurrencyIsActive = (): Promise<void> =>
-    LocalStorageApi.unset(keys.CURRENCY_SELECTED);
+  setCurrencyIsActive = async (isActive: boolean): Promise<void> =>
+    LocalStorageApi.set(keys.CURRENCY_ACTIVE, isActive);
 
-  toggleCurrencyIsActive = async (): Promise<boolean> => {
-    const currencyIsActive = await this.getCurrencyIsActive();
-    await LocalStorageApi.set(keys.CURRENCY_ACTIVE, !currencyIsActive);
-    return currencyIsActive;
-  };
+  unsetCurrencyIsActive = (): Promise<void> =>
+    LocalStorageApi.unset(keys.CURRENCY_ACTIVE);
 
   getWalletsLocalData = (): Promise<Object> =>
     LocalStorageApi.get(keys.WALLETS, {});

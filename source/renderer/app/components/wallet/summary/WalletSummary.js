@@ -101,18 +101,20 @@ export default class WalletSummary extends Component<Props> {
 
     const { decimalDigits } = currencySelected || {};
 
-    const currencyWalletAmount =
-      hasCurrency && currencyRate
-        ? formattedWalletCurrencyAmount(
-            wallet.amount,
-            currencyRate,
-            decimalDigits
-          )
-        : null;
+    let currencyWalletAmount;
+    if (isRestoreActive) currencyWalletAmount = '-';
+    else if (hasCurrency && currencyRate)
+      currencyWalletAmount = formattedWalletCurrencyAmount(
+        wallet.amount,
+        currencyRate,
+        decimalDigits
+      );
     const currencyWalletAmountSymbol = currencySelected
       ? currencySelected.symbol.toUpperCase()
       : '';
-    const fetchedTimeAgo = moment(currencyLastFetched).fromNow();
+    const fetchedTimeAgo = moment(currencyLastFetched)
+      .locale(intl.locale)
+      .fromNow();
 
     const buttonClasses = classnames([
       styles.currencyLastFetched,

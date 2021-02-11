@@ -36,8 +36,9 @@
     line-height: 1.38;
     margin-top: 2px;
     position: absolute;
+    right: 0;
     text-align: right;
-    width: 100%;
+    z-index: 2;
   }
   .currencyPoweredByLink {
     font-size: 14px;

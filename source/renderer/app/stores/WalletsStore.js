@@ -336,6 +336,7 @@ export default class WalletsStore extends Store {
     // Check if the user has enabled currencies
     // Otherwise applies the default config
     const currencyIsActive = await this.api.localStorage.getCurrencyIsActive();
+    console.log('currencyIsActive', currencyIsActive);
 
     // Check if the user has already selected a currency
     // Otherwise applies the default currency
@@ -412,7 +413,7 @@ export default class WalletsStore extends Store {
 
   @action _toggleCurrencyIsActive = () => {
     this.currencyIsActive = !this.currencyIsActive;
-    this.api.localStorage.toggleCurrencyIsActive();
+    this.api.localStorage.setCurrencyIsActive(this.currencyIsActive);
   };
 
   _create = async (params: { name: string, spendingPassword: string }) => {
