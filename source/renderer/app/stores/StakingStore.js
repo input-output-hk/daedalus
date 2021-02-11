@@ -338,11 +338,11 @@ export default class StakingStore extends Store {
     walletId: string,
   }) => {
     const { transactionId, walletId } = request;
-    const recenttransactionsResponse = this.stores.transactions._getTransactionsRecentRequest(
+    const recentTransactionsResponse = this.stores.transactions._getTransactionsRecentRequest(
       walletId
     ).result;
-    const recentTransactions = recenttransactionsResponse
-      ? recenttransactionsResponse.transactions
+    const recentTransactions = recentTransactionsResponse
+      ? recentTransactionsResponse.transactions
       : [];
 
     // Return stake pool transaction when state is not "PENDING"
