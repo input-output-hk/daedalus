@@ -184,6 +184,12 @@
           display: flex;
           padding-right: 20px;
 
+          :global {
+            .InlineEditingSmallInput_component {
+              margin-bottom: 0 !important;
+            }
+          }
+
           .walletsInputFieldInner {
             input {
               color: var(--theme-wallet-import-button-text-color);
@@ -256,6 +262,14 @@
                   --theme-wallet-import-checkbox-check-color
                 ) !important;
                 margin-top: -3px;
+              }
+            }
+
+            .LoadingSpinner_component {
+              margin: 0 !important;
+
+              .LoadingSpinner_icon svg path {
+                fill: var(--theme-wallet-import-button-text-color) !important;
               }
             }
           }
