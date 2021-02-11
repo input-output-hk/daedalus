@@ -371,7 +371,6 @@ export default class WalletsStore extends Store {
     if (currencySelected && currencySelected.symbol) {
       try {
         this.currencyIsFetchingRate = true;
-        this.currencyRate = null;
         const currencyRate = await this.api.ada.getCurrencyRate(
           currencySelected
         );

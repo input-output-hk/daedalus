@@ -25,7 +25,7 @@ type CurrencyRateGeckoResponse = Array<{
 }>;
 
 const id = 'coingecko';
-const name = 'CoingGecko';
+const name = 'CoinGecko';
 const website = 'https://www.coingecko.com/en/api';
 const hostname = 'api.coingecko.com';
 const version = 'v3';

@@ -14,7 +14,6 @@
 }
 
 .walletContent {
-  align-items: center;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
@@ -113,6 +112,7 @@
 }
 
 .currencyLastFetched {
+  color: var(--theme-bordered-box-text-color);
   cursor: pointer;
   font-family: var(--font-bold);
   font-size: 12px;
@@ -127,6 +127,10 @@
   &.currencyIsFetchingRate em {
     margin-right: 13px;
     @include animated-ellipsis($width: 16px);
+  }
+
+  svg g > g {
+    fill: var(--theme-bordered-box-text-color);
   }
 }
 
