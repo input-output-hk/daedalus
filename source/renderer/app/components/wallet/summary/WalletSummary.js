@@ -29,7 +29,7 @@ const messages = defineMessages({
   },
   currencyTitle: {
     id: 'wallet.summary.page.currency.title',
-    defaultMessage: '!!!Estimated conversion:',
+    defaultMessage: '!!!Converts as',
     description: '"Currency - title" label on Wallet summary page',
   },
   currencyLastFetched: {

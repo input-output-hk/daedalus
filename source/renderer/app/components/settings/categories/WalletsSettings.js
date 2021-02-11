@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { map } from 'lodash';
-import { defineMessages, intlShape } from 'react-intl';
+import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import { Select } from 'react-polymorph/lib/components/Select';
 import { Link } from 'react-polymorph/lib/components/Link';
 import NormalSwitch from '../../widgets/forms/NormalSwitch';
@@ -13,22 +13,29 @@ import type { Currency } from '../../../types/currencyTypes';
 const messages = defineMessages({
   currencyTitleLabel: {
     id: 'settings.wallets.currency.titleLabel',
-    defaultMessage: '!!!Show ada price in other currency',
+    defaultMessage: '!!!Display ada balances in other currency',
     description:
       'titleLabel for the Currency settings in the Wallets settings page.',
   },
   currencyDescription: {
     id: 'settings.wallets.currency.description',
     defaultMessage:
-      '!!!This feature does… Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+      '!!!Select a conversion currency for displaying your ada balances.',
     description:
       'currencyDescription for the Currency settings in the Wallets settings page.',
   },
   currencySelectLabel: {
     id: 'settings.wallets.currency.selectLabel',
-    defaultMessage: '!!!Countervalue',
+    defaultMessage: '!!!Select currency',
     description:
       'currencySelectLabel for the Currency settings in the Wallets settings page.',
+  },
+  currencyDisclaimer: {
+    id: 'settings.wallets.currency.disclaimer',
+    defaultMessage:
+      '!!!Conversion rates are provided by CoinGecko without any warranty. Please use the calculated conversion value only as a reference. Converted balances reflect the current global average price of ada on active cryptocurrency exchanges, as tracked by CoinGecko. Ada conversion is available only to fiat and cryptocurrencies that are supported by CoinGecko, other local currency conversions may not be available.',
+    description:
+      'currencyDisclaimer for the Currency settings in the Wallets settings page.',
   },
   currencyPoweredByLabel: {
     id: 'settings.wallets.currency.poweredBy.label',
@@ -85,13 +92,8 @@ export default class WalletSettings extends Component<Props> {
           />
         </div>
         {currencyIsActive && (
-          <>
-            <Select
-              label={intl.formatMessage(messages.currencySelectLabel)}
-              value={currencySelected ? currencySelected.symbol : null}
-              options={currencyOptions}
-              onChange={onSelectCurrency}
-            />
+          <div className={styles.content}>
+            <hr className={styles.separator} />
             <div className={styles.currencyPoweredBy}>
               {intl.formatMessage(messages.currencyPoweredByLabel)}
               <Link
@@ -100,7 +102,19 @@ export default class WalletSettings extends Component<Props> {
                 label={currencyConfig.name}
               />
             </div>
-          </>
+            <Select
+              label={intl.formatMessage(messages.currencySelectLabel)}
+              value={currencySelected ? currencySelected.symbol : null}
+              options={currencyOptions}
+              onChange={onSelectCurrency}
+            />
+            <div className={styles.disclaimer}>
+              <FormattedHTMLMessage
+                {...messages.currencyDisclaimer}
+                values={{ currencyApiName: currencyConfig.name }}
+              />
+            </div>
+          </div>
         )}
       </div>
     );
