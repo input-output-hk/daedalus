@@ -149,7 +149,7 @@ export default class WalletSelectImportDialog extends Component<Props> {
       walletStatus = alreadyExistsStatus;
     } else if (wallet.import.status === WalletImportStatuses.COMPLETED) {
       walletStatus = walletImportedStatus;
-    } else if (wallet.is_passphrase_empty) {
+    } else if (wallet.isEmptyPassphrase) {
       walletStatus = noPasswordStatus;
     } else {
       walletStatus = hasPasswordStatus;
