@@ -48,6 +48,7 @@ export default class WalletsActions {
     walletId: string,
     stakePoolId: string,
     passphrase: string,
+    isHardwareWallet: boolean,
   }> = new Action();
   setUndelegateWalletSubmissionSuccess: Action<{
     result: boolean,

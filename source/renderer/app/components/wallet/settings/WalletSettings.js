@@ -22,7 +22,7 @@ import globalMessages from '../../../i18n/global-messages';
 import styles from './WalletSettings.scss';
 import WalletRecoveryPhraseVerificationWidget from './WalletRecoveryPhraseVerificationWidget';
 import { momentLocales } from '../../../../../common/types/locales.types';
-import type { DelegationCalculateFeeResponse } from '../../../api/staking/types';
+
 import type { Locale } from '../../../../../common/types/locales.types';
 
 export const messages = defineMessages({
@@ -101,7 +101,6 @@ export const messages = defineMessages({
 });
 
 type Props = {
-  walletId: string,
   walletName: string,
   delegationStakePoolStatus: ?string,
   isRestoring: boolean,
@@ -111,8 +110,6 @@ type Props = {
   error?: ?LocalizableError,
   getWalletPublicKey: Function,
   openDialogAction: Function,
-  updateDataForActiveDialog: Function,
-  calculateDelegationFee: Function,
   isDialogOpen: Function,
   onFieldValueChange: Function,
   onStartEditing: Function,
@@ -214,35 +211,11 @@ export default class WalletSettings extends Component<Props, State> {
   };
 
   onUndelegateWalletClick = async () => {
-    const {
-      walletId,
-      openDialogAction,
-      isDialogOpen,
-      updateDataForActiveDialog,
-      calculateDelegationFee,
-    } = this.props;
+    const { openDialogAction } = this.props;
     this.onBlockForm();
     openDialogAction({
       dialog: UndelegateWalletConfirmationDialog,
     });
-    const dialogData = {
-      walletId,
-      stakePoolQuitFee: null,
-    };
-    updateDataForActiveDialog({ data: dialogData });
-
-    const stakePoolQuitFee: DelegationCalculateFeeResponse = await calculateDelegationFee(
-      { walletId }
-    );
-
-    if (isDialogOpen(UndelegateWalletConfirmationDialog) && stakePoolQuitFee) {
-      updateDataForActiveDialog({
-        data: {
-          ...dialogData,
-          stakePoolQuitFee,
-        },
-      });
-    }
   };
 
   renderUndelegateWalletBox = () => {

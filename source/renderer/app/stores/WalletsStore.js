@@ -576,6 +576,7 @@ export default class WalletsStore extends Store {
     walletId: string,
     stakePoolId: string,
     passphrase: string,
+    isHardwareWallet: boolean,
   }) => {
     const { quitStakePoolRequest } = this.stores.staking;
     const { quitStakePool } = this.actions.staking;

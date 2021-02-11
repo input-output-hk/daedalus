@@ -148,9 +148,6 @@ export default (props: { currentTheme: string, locale: Locale }) => {
       onStartEditing={() => {}}
       onStopEditing={() => {}}
       openDialogAction={() => {}}
-      walletId="walletId"
-      updateDataForActiveDialog={() => null}
-      calculateDelegationFee={() => null}
       walletName={text('Wallet Name', 'Wallet Name', basicSettingsId)}
       delegationStakePoolStatus="not_delegating"
       isRestoring={false}

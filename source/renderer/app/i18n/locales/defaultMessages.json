@@ -10275,13 +10275,13 @@
         "description": "Title for the \"Undelegate wallet\" dialog.",
         "end": {
           "column": 3,
-          "line": 28
+          "line": 31
         },
         "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.js",
         "id": "wallet.settings.undelegate.dialog.title",
         "start": {
           "column": 9,
-          "line": 24
+          "line": 27
         }
       },
       {
@@ -10289,13 +10289,13 @@
         "description": "Label for the \"Undelegate\" button in the undelegate wallet dialog.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 37
         },
         "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.js",
         "id": "wallet.settings.undelegate.dialog.confirmButtonLabel",
         "start": {
           "column": 22,
-          "line": 29
+          "line": 32
         }
       },
       {
@@ -10303,13 +10303,13 @@
         "description": "Description of current delegation of wallet in the \"Undelegate wallet\" dialog.",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 44
         },
         "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.js",
         "id": "wallet.settings.undelegate.dialog.descriptionWithTicker",
         "start": {
           "column": 25,
-          "line": 35
+          "line": 38
         }
       },
       {
@@ -10317,13 +10317,13 @@
         "description": "Description of current delegation of wallet in the \"Undelegate wallet\" dialog.",
         "end": {
           "column": 3,
-          "line": 48
+          "line": 51
         },
         "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.js",
         "id": "wallet.settings.undelegate.dialog.descriptionWithUnknownTicker",
         "start": {
           "column": 32,
-          "line": 42
+          "line": 45
         }
       },
       {
@@ -10331,13 +10331,13 @@
         "description": "unknown stake pool label in the \"Undelegate wallet\" dialog.",
         "end": {
           "column": 3,
-          "line": 53
+          "line": 56
         },
         "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.js",
         "id": "wallet.settings.undelegate.dialog.unknownStakePoolLabel",
         "start": {
           "column": 25,
-          "line": 49
+          "line": 52
         }
       },
       {
@@ -10345,13 +10345,13 @@
         "description": "Notice to confirm if the user understands unsupporting Cardano network after undelegation",
         "end": {
           "column": 3,
-          "line": 60
+          "line": 63
         },
         "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.js",
         "id": "wallet.settings.undelegate.dialog.confirmUnsupportNotice",
         "start": {
           "column": 26,
-          "line": 54
+          "line": 57
         }
       },
       {
@@ -10359,13 +10359,13 @@
         "description": "Notice to confirm if the user understands non-earning rewards after undelegation",
         "end": {
           "column": 3,
-          "line": 67
+          "line": 70
         },
         "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.js",
         "id": "wallet.settings.undelegate.dialog.confirmIneligibleNotice",
         "start": {
           "column": 27,
-          "line": 61
+          "line": 64
         }
       },
       {
@@ -10373,13 +10373,13 @@
         "description": "Fees label in the \"Undelegate wallet\" dialog.",
         "end": {
           "column": 3,
-          "line": 72
+          "line": 75
         },
         "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.js",
         "id": "wallet.settings.undelegate.dialog.feesLabel",
         "start": {
           "column": 13,
-          "line": 68
+          "line": 71
         }
       },
       {
@@ -10387,13 +10387,13 @@
         "description": "Deposit label in the \"Undelegate wallet\" dialog.",
         "end": {
           "column": 3,
-          "line": 77
+          "line": 80
         },
         "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.js",
         "id": "wallet.settings.undelegate.dialog.depositLabel",
         "start": {
           "column": 16,
-          "line": 73
+          "line": 76
         }
       },
       {
@@ -10401,13 +10401,13 @@
         "description": "Spending password label in the \"Undelegate wallet\" dialog.",
         "end": {
           "column": 3,
-          "line": 82
+          "line": 85
         },
         "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.js",
         "id": "wallet.settings.undelegate.dialog.spendingPasswordLabel",
         "start": {
           "column": 25,
-          "line": 78
+          "line": 81
         }
       },
       {
@@ -10415,13 +10415,13 @@
         "description": "Spending password placeholder in the \"Undelegate wallet\" dialog.",
         "end": {
           "column": 3,
-          "line": 88
+          "line": 91
         },
         "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.js",
         "id": "wallet.settings.undelegate.dialog.spendingPasswordPlaceholder",
         "start": {
           "column": 31,
-          "line": 83
+          "line": 86
         }
       },
       {
@@ -10429,13 +10429,13 @@
         "description": "Label for password error in the \"Undelegate wallet\" dialog.",
         "end": {
           "column": 3,
-          "line": 93
+          "line": 96
         },
         "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.js",
         "id": "wallet.settings.undelegate.dialog.passwordError",
         "start": {
           "column": 24,
-          "line": 89
+          "line": 92
         }
       },
       {
@@ -10443,13 +10443,13 @@
         "description": "\"Calculating fees\" message in the \"Undelegate wallet\" dialog.",
         "end": {
           "column": 3,
-          "line": 99
+          "line": 102
         },
         "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog.js",
         "id": "wallet.settings.undelegate.dialog.calculatingFees",
         "start": {
           "column": 19,
-          "line": 94
+          "line": 97
         }
       }
     ],

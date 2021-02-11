@@ -52,13 +52,11 @@ export default class WalletSettingsPage extends Component<Props> {
       app,
       wallets,
       profile,
-      staking,
     } = this.props.stores;
     const {
       active: activeWallet,
       activePublicKey: activeWalletPublicKey,
     } = wallets;
-    const { calculateDelegationFee } = staking;
 
     // Guard against potential null values
     if (!activeWallet)
@@ -106,10 +104,6 @@ export default class WalletSettingsPage extends Component<Props> {
         <WalletSettings
           error={updateWalletRequest.error}
           openDialogAction={actions.dialogs.open.trigger}
-          updateDataForActiveDialog={
-            actions.dialogs.updateDataForActiveDialog.trigger
-          }
-          calculateDelegationFee={calculateDelegationFee}
           isHardwareWallet={isHardwareWallet}
           isSpendingPasswordSet={activeWallet.hasPassword}
           spendingPasswordUpdateDate={activeWallet.passwordUpdateDate}
@@ -120,7 +114,6 @@ export default class WalletSettingsPage extends Component<Props> {
           }
           isDialogOpen={uiDialogs.isOpen}
           isLegacy={isLegacy}
-          walletId={activeWallet.id}
           walletName={activeWallet.name}
           delegationStakePoolStatus={activeWallet.delegationStakePoolStatus}
           isRestoring={activeWallet.isRestoring}

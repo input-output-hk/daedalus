@@ -14,7 +14,10 @@ import { formattedWalletAmount } from '../../../utils/formatters';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import { FormattedHTMLMessageWithLink } from '../../widgets/FormattedHTMLMessageWithLink';
 import Dialog from '../../widgets/Dialog';
+import Wallet, { HwDeviceStatuses } from '../../../domains/Wallet';
+import HardwareWalletStatus from '../../hardware-wallet/HardwareWalletStatus';
 import type { DelegationCalculateFeeResponse } from '../../../api/staking/types';
+import type { HwDeviceStatus } from '../../../domains/Wallet';
 import styles from './UndelegateWalletConfirmationDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
 import LocalizableError from '../../../i18n/LocalizableError';
@@ -102,7 +105,7 @@ const messages = defineMessages({
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
 type Props = {
-  walletName: string,
+  selectedWallet: ?Wallet,
   stakePoolName: ?string,
   stakePoolTicker: ?string,
   onConfirm: Function,
@@ -111,6 +114,7 @@ type Props = {
   submitting: boolean,
   error: ?LocalizableError,
   fees: ?DelegationCalculateFeeResponse,
+  hwDeviceStatus: HwDeviceStatus,
 };
 
 @observer
@@ -169,6 +173,11 @@ export default class UndelegateWalletConfirmationDialog extends Component<Props>
           value: '',
           validators: [
             ({ field }) => {
+              const isHardwareWallet = get(
+                this.props.selectedWallet,
+                'isHardwareWallet'
+              );
+              if (isHardwareWallet) return [true];
               if (field.value === '') {
                 return [
                   false,
@@ -192,7 +201,7 @@ export default class UndelegateWalletConfirmationDialog extends Component<Props>
 
   confirmationDisabled = () => {
     const { form } = this;
-    const { fees, submitting } = this.props;
+    const { fees, submitting, hwDeviceStatus, selectedWallet } = this.props;
     const { isValid: unsupportCheckboxIsValid } = form.$(
       'confirmUnsupportChecked'
     );
@@ -200,6 +209,13 @@ export default class UndelegateWalletConfirmationDialog extends Component<Props>
       'confirmIneligibleChecked'
     );
     const { isValid: passphraseIsValid } = form.$('passphrase');
+    const isHardwareWallet = get(selectedWallet, 'isHardwareWallet');
+
+    if (isHardwareWallet) {
+      return (
+        hwDeviceStatus !== HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED
+      );
+    }
 
     return (
       submitting ||
@@ -217,9 +233,10 @@ export default class UndelegateWalletConfirmationDialog extends Component<Props>
 
     return this.form.submit({
       onSuccess: (form) => {
-        const { onConfirm } = this.props;
+        const { selectedWallet, onConfirm } = this.props;
+        const isHardwareWallet = get(selectedWallet, 'isHardwareWallet');
         const { passphrase } = form.values();
-        onConfirm(passphrase);
+        onConfirm(passphrase, isHardwareWallet);
       },
       onError: () => null,
     });
@@ -255,13 +272,17 @@ export default class UndelegateWalletConfirmationDialog extends Component<Props>
     const ineligibleCheckboxField = form.$('confirmIneligibleChecked');
     const passphraseField = form.$('passphrase');
     const {
-      walletName,
+      selectedWallet,
       stakePoolName,
       stakePoolTicker,
       onCancel,
       submitting,
       fees,
+      hwDeviceStatus,
+      onExternalLinkClick,
     } = this.props;
+    const walletName = get(selectedWallet, 'name');
+    const isHardwareWallet = get(selectedWallet, 'isHardwareWallet');
     const confirmationDisabled = this.confirmationDisabled();
     const buttonClasses = classnames([
       'attention',
@@ -360,12 +381,22 @@ export default class UndelegateWalletConfirmationDialog extends Component<Props>
             </>
           )}
         </div>
-        <Input
-          type="password"
-          {...passphraseField.bind()}
-          error={passphraseField.error}
-          onKeyPress={this.handleSubmitOnEnter}
-        />
+        {isHardwareWallet ? (
+          <div className={styles.hardwareWalletStatusWrapper}>
+            <HardwareWalletStatus
+              hwDeviceStatus={hwDeviceStatus}
+              walletName={walletName}
+              onExternalLinkClick={onExternalLinkClick}
+            />
+          </div>
+        ) : (
+          <Input
+            type="password"
+            {...passphraseField.bind()}
+            error={passphraseField.error}
+            onKeyPress={this.handleSubmitOnEnter}
+          />
+        )}
         {errorElement && <p className={styles.error}>{errorElement}</p>}
       </Dialog>
     );
