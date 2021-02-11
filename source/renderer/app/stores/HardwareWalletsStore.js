@@ -1522,9 +1522,7 @@ export default class HardwareWalletsStore extends Store {
     } = params;
 
     logger.debug('[HW-DEBUG] HWStore - CHANGE status: ', {
-      disconnected,
-      deviceId,
-      deviceType,
+      params,
     });
 
     // Handle Trezor Bridge instance checker
@@ -1625,7 +1623,7 @@ export default class HardwareWalletsStore extends Store {
           deviceType,
           deviceModel,
           deviceName,
-          disconnected,
+          disconnected: true, // Always reset connecting state to force re-connect
           path,
         },
       });
@@ -1656,9 +1654,10 @@ export default class HardwareWalletsStore extends Store {
             deviceModel,
             deviceName,
             path,
-            paired: recognizedPairedHardwareWallet
-              ? recognizedPairedHardwareWallet.id
-              : null, // device paired with software wallet
+            // paired: (recognizedPairedHardwareWallet && deviceType === DeviceTypes.LEDGER)
+            //   ? recognizedPairedHardwareWallet.id
+            //   : null, // Always reset pairing indication on Trezor to force re-connect and set if exist for Ledger
+            paired: null, // Always reset pairing indication to force re-connect
             disconnected, // device physically disconnected
             isPending: !deviceId && !recognizedPairedHardwareWallet,
           },
