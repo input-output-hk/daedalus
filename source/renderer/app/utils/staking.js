@@ -27,3 +27,11 @@ export const getSmashServerIdFromUrl = (
     },
     SMASH_SERVER_TYPES.CUSTOM
   );
+
+export const getUrlParts = (url: string) => {
+  try {
+    return new URL(url);
+  } catch (error) {
+    return {};
+  }
+};
