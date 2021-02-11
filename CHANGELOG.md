@@ -21,6 +21,7 @@ Changelog
 
 ### Chores
 
+- Updated `cardano-wallet` to revision `1ea5e882` ([PR 2356](https://github.com/input-output-hk/daedalus/pull/2356))
 - Force public key export on every interaction with hardware wallet device ([PR 2342](https://github.com/input-output-hk/daedalus/pull/2342))
 - Updated Hardware Wallets delegation deposit calculation ([PR 2332](https://github.com/input-output-hk/daedalus/pull/2332))
 - Implemented dynamic TTL calculation for hardware wallets transactions ([PR 2331](https://github.com/input-output-hk/daedalus/pull/2331))
