@@ -30,12 +30,12 @@
       border-bottom: var(--theme-bordered-box-border);
       border-left: var(--theme-bordered-box-border);
       border-radius: 0 0 2px 2px;
-      height: 100%;
-      left: 50px;
-      max-height: 120px;
-      position: absolute;
-      top: 136px;
+      height: 125px;
+      left: 10px;
       width: 6px;
+      position: relative;
+      top: 115px;
+      margin-top: -125px;
     }
 
     .fieldsContainer {

@@ -594,6 +594,11 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       'primary',
     ]);
 
+    const assetsSeparatorBasicHeight = 125;
+    /* const assetsSeparatorCalculatedHeight = assets && assets.length ?
+      (assetsSeparatorBasicHeight * assets.length) - 18 :
+      assetsSeparatorBasicHeight; */
+
     return showReceiverField && index > 0 && showReceiverField[index] || index === 0 ? (
       <div className={styles.fieldsContainer}>
         <div
@@ -651,7 +656,11 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         </div>
         {showReceiverField && showReceiverField[index] && (
           <>
-            <div className={styles.fieldsLine} />
+            <div className={styles.fieldsLine} style={{
+              height: `${assetsSeparatorBasicHeight}px`,
+              top: `${assetsSeparatorBasicHeight - 10}px`,
+              marginTop: `-${assetsSeparatorBasicHeight}px`
+            }}  />
             <div className={styles.assetInput}>
               {selectedNativeToken && selectedNativeToken.total && selectedNativeToken.metadata && (
                 <div className={styles.amountTokenTotal}>
