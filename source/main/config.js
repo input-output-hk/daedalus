@@ -69,7 +69,6 @@ export type LauncherConfig = {
   configPath: string,
   syncTolerance: string,
   cliBin: string,
-  exportWalletsBin: string,
   legacyStateDir: string,
   legacySecretKey: string,
   legacyWalletDB: string,
