@@ -39,3 +39,5 @@ export const IS_AUTOMATIC_WALLET_MIGRATION_ENABLED = false;
 
 // Byron wallet migration has been temporarily disabled due to missing Api support after Mary HF
 export const IS_BYRON_WALLET_MIGRATION_ENABLED = false;
+
+export const WALLET_DELETATION_UNDELEGATION_ENABLED_ON_SETTINGS = true;

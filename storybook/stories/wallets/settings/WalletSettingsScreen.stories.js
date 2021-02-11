@@ -161,6 +161,7 @@ export default (props: { currentTheme: string, locale: Locale }) => {
       openDialogAction={() => {}}
       walletId="walletid"
       walletName={text('Wallet Name', 'Wallet Name', basicSettingsId)}
+      walletReward={new BigNumber(0)}
       delegationStakePoolStatus="not_delegating"
       isRestoring={false}
       walletPublicKey={walletPublicKeyId}

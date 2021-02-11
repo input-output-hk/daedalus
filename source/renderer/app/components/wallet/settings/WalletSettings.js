@@ -4,8 +4,12 @@ import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
+import BigNumber from 'bignumber.js';
 import LocalizableError from '../../../i18n/LocalizableError';
-import { WALLET_PUBLIC_KEY_SHARING_ENABLED } from '../../../config/walletsConfig';
+import {
+  WALLET_PUBLIC_KEY_SHARING_ENABLED,
+  WALLET_DELETATION_UNDELEGATION_ENABLED_ON_SETTINGS,
+} from '../../../config/walletsConfig';
 import { WalletDelegationStatuses } from '../../../domains/Wallet';
 import BorderedBox from '../../widgets/BorderedBox';
 import InlineEditingInput from '../../widgets/forms/InlineEditingInput';
@@ -103,6 +107,7 @@ export const messages = defineMessages({
 type Props = {
   walletId: string,
   walletName: string,
+  walletReward: BigNumber,
   delegationStakePoolStatus: ?string,
   isRestoring: boolean,
   walletPublicKey: ?string,
@@ -233,17 +238,22 @@ export default class WalletSettings extends Component<Props, State> {
       delegationStakePoolStatus,
       isRestoring,
       isLegacy,
+      walletReward,
       isDialogOpen,
       onDelegateClick,
       undelegateWalletDialogContainer,
     } = this.props;
+    const notDelegating =
+      delegationStakePoolStatus === WalletDelegationStatuses.NOT_DELEGATING;
 
-    if (isLegacy) {
+    if (!WALLET_DELETATION_UNDELEGATION_ENABLED_ON_SETTINGS) {
       return null;
     }
 
-    const notDelegating =
-      delegationStakePoolStatus === WalletDelegationStatuses.NOT_DELEGATING;
+    if (isLegacy || (!notDelegating && !walletReward.isZero())) {
+      return null;
+    }
+
     let headerMessage = null;
     let warningMessage = null;
 
