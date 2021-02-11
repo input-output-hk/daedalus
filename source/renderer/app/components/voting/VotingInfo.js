@@ -64,7 +64,7 @@ const messages = defineMessages({
   androidAppButtonUrl: {
     id: 'voting.info.androidAppButtonUrl',
     defaultMessage:
-      '!!!https://play.google.com/store/apps/details?id=io.iohk.vitvoting&hl=es_419&gl=US',
+      '!!!https://play.google.com/store/apps/details?id=io.iohk.vitvoting',
     description: '"androidAppButtonUrl" for the Catalyst voting app',
   },
   appleAppButtonUrl: {

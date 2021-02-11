@@ -604,7 +604,7 @@
   "test.environment.shelleyTestnetLabel": "Shelleyテストネット",
   "test.environment.stagingLabel": "ステージング",
   "test.environment.testnetLabel": "テストネット",
-  "voting.info.androidAppButtonUrl": "https://play.google.com/store/apps/details?id=io.iohk.vitvoting&hl=es_419&gl=US",
+  "voting.info.androidAppButtonUrl": "https://play.google.com/store/apps/details?id=io.iohk.vitvoting",
   "voting.info.appleAppButtonUrl": "https://apps.apple.com/in/app/catalyst-voting/id1517473397",
   "voting.info.bottomContentDescription": "Catalyst Fund3に有権者登録を行うためには、まずAndroidまたはiOSのスマートフォンに<b>Catalyst Voting</b>アプリをダウンロードする必要があります。",
   "voting.info.bottomContentTitle": "スマートフォンにCatalyst Votingアプリをダウンロードします",
