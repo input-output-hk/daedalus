@@ -169,7 +169,7 @@ export default class UndelegateWalletDialogContainer extends Component<
           });
         }}
         onExternalLinkClick={onExternalLinkClick}
-        submitting={
+        isSubmitting={
           quitStakePoolRequest.isExecuting ||
           sendMoneyRequest.isExecuting ||
           isDelegationTransactionPending

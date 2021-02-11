@@ -225,7 +225,7 @@ export default (props: { currentTheme: string, locale: Locale }) => {
           onExternalLinkClick={action(
             'Undelegate Wallet - onExternalLinkClick'
           )}
-          submitting={boolean(
+          isSubmitting={boolean(
             'Undelegate Wallet - submitting',
             false,
             undelegateWalletId

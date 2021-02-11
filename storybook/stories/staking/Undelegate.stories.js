@@ -30,7 +30,7 @@ export const StakingUndelegateConfirmationStory = (props: {
     )}
     onCancel={() => null}
     onExternalLinkClick={() => null}
-    submitting={false}
+    isSubmitting={false}
     error={null}
     fees={new BigNumber(33333.33)}
     hwDeviceStatus="ready"

@@ -111,7 +111,7 @@ type Props = {
   onConfirm: Function,
   onCancel: Function,
   onExternalLinkClick: Function,
-  submitting: boolean,
+  isSubmitting: boolean,
   error: ?LocalizableError,
   fees: ?DelegationCalculateFeeResponse,
   hwDeviceStatus: HwDeviceStatus,
@@ -201,7 +201,7 @@ export default class UndelegateWalletConfirmationDialog extends Component<Props>
 
   confirmationDisabled = () => {
     const { form } = this;
-    const { fees, submitting, hwDeviceStatus, selectedWallet } = this.props;
+    const { fees, isSubmitting, hwDeviceStatus, selectedWallet } = this.props;
     const { isValid: unsupportCheckboxIsValid } = form.$(
       'confirmUnsupportChecked'
     );
@@ -218,7 +218,7 @@ export default class UndelegateWalletConfirmationDialog extends Component<Props>
     }
 
     return (
-      submitting ||
+      isSubmitting ||
       !fees ||
       !unsupportCheckboxIsValid ||
       !ineligibleCheckboxIsValid ||
@@ -276,7 +276,7 @@ export default class UndelegateWalletConfirmationDialog extends Component<Props>
       stakePoolName,
       stakePoolTicker,
       onCancel,
-      submitting,
+      isSubmitting,
       fees,
       hwDeviceStatus,
       onExternalLinkClick,
@@ -286,12 +286,12 @@ export default class UndelegateWalletConfirmationDialog extends Component<Props>
     const confirmationDisabled = this.confirmationDisabled();
     const buttonClasses = classnames([
       'attention',
-      submitting ? styles.submitting : null,
+      isSubmitting ? styles.isSubmitting : null,
     ]);
     const actions = [
       {
         label: intl.formatMessage(globalMessages.cancel),
-        onClick: !submitting ? onCancel : () => null,
+        onClick: !isSubmitting ? onCancel : () => null,
       },
       {
         className: buttonClasses,
@@ -308,10 +308,10 @@ export default class UndelegateWalletConfirmationDialog extends Component<Props>
         title={intl.formatMessage(messages.title)}
         actions={actions}
         closeOnOverlayClick
-        onClose={!submitting ? onCancel : () => null}
+        onClose={!isSubmitting ? onCancel : () => null}
         className={styles.dialog}
         closeButton={
-          <DialogCloseButton onClose={!submitting ? onCancel : () => null} />
+          <DialogCloseButton onClose={!isSubmitting ? onCancel : () => null} />
         }
       >
         <div className={styles.description}>
