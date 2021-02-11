@@ -752,7 +752,7 @@
   "wallet.hardware.deviceStatus.wrong_firmware.link.label": "ファームウェア更新ガイド",
   "wallet.hardware.deviceStatus.wrong_firmware.link.url": "https://trezor.io/start/",
   "wallet.import.file.dialog.buttonLabel": "ウォレットをインポートする",
-  "wallet.import.file.dialog.description": "<p>この機能により、Daedalusの旧バージョン、Daedalusステータスディレクトリー、またはsecret.keyファイルからウォレットをインポートすることができます。</p> <p>各ウォレットの復元フレーズを入力せずに素早くウォレットをインポートできるほか、復元フレーズを紛失したウォレットのインポートも可能です。</p> <p>復元フレーズを紛失したウォレットをインポートした場合は、インポート後に新規ウォレットを作成してすべての資金を旧ウォレットから移し、<strong>新しいウォレットの復元フレーズを安全な場所に保管してください。</strong></p>",
+  "wallet.import.file.dialog.description": "<p>この機能により、Daedalus旧バージョン（Daedalus 0.15.1以前）の「secret.key」からウォレットをインポートすることができます。Daedalus 1.0以降のステータスディレクトリーからのウォレットインポートは現在サポートされていません。</p> <p>各ウォレットの復元フレーズを入力せずに素早くウォレットをインポートできるほか、復元フレーズを紛失したウォレットのインポートも可能です。</p> <p>復元フレーズを紛失したウォレットをインポートした場合は、インポート後に新規ウォレットを作成してすべての資金を旧ウォレットから移し、<strong>新しいウォレットの復元フレーズを安全な場所に保管してください。</strong></p>",
   "wallet.import.file.dialog.importFromLabel": "インポート元：",
   "wallet.import.file.dialog.linkLabel": "もっと知る",
   "wallet.import.file.dialog.linkUrl": "https://iohk.zendesk.com/hc/ja/articles/900000623463",

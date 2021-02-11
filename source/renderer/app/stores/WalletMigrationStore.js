@@ -28,6 +28,7 @@ import {
   ImportFromOptions,
 } from '../types/walletExportTypes';
 import { IMPORT_WALLET_STEPS } from '../config/walletRestoreConfig';
+import { IS_AUTOMATIC_WALLET_MIGRATION_ENABLED } from '../config/walletsConfig';
 import type { ImportWalletStep } from '../types/walletRestoreTypes';
 
 export type WalletMigrationStatus =
@@ -245,7 +246,7 @@ export default class WalletMigrationStore extends Store {
             : WalletImportStatuses.UNSTARTED;
           return { ...wallet, hasName, import: { status, error: null } };
         }),
-        ['hasName', 'id', 'name', 'is_passphrase_empty'],
+        ['hasName', 'id', 'name', 'isEmptyPassphrase'],
         ['desc', 'asc', 'asc', 'asc']
       );
 
@@ -286,7 +287,7 @@ export default class WalletMigrationStore extends Store {
           {
             id: wallet.id,
             name: wallet.name,
-            hasPassword: wallet.is_passphrase_empty,
+            hasPassword: !wallet.isEmptyPassphrase,
           }
         );
         return this._restoreWallet(wallet);
@@ -333,7 +334,7 @@ export default class WalletMigrationStore extends Store {
       });
     } catch (error) {
       runInAction('update restorationErrors', () => {
-        const { name, is_passphrase_empty: hasPassword } = exportedWallet;
+        const { name, isEmptyPassphrase } = exportedWallet;
         this._updateWalletImportStatus(
           index,
           WalletImportStatuses.ERRORED,
@@ -341,7 +342,7 @@ export default class WalletMigrationStore extends Store {
         );
         this.restorationErrors.push({
           error,
-          wallet: { id, name, hasPassword },
+          wallet: { id, name, hasPassword: !isEmptyPassphrase },
         });
       });
     }
@@ -381,8 +382,7 @@ export default class WalletMigrationStore extends Store {
   };
 
   @action _startMigration = async () => {
-    // eslint-disable-next-line
-    if (true) return; // This feature is currently unavailable as export tool is disabled
+    if (!IS_AUTOMATIC_WALLET_MIGRATION_ENABLED) return;
 
     const { isMainnet, isTestnet, isTest } = this.environment;
     if (isMainnet || isTestnet || (isTest && this.isTestMigrationEnabled)) {
@@ -514,7 +514,7 @@ export default class WalletMigrationStore extends Store {
     return this.exportedWallets.map((wallet) => ({
       id: wallet.id,
       name: wallet.name,
-      hasPassword: wallet.is_passphrase_empty,
+      hasPassword: !wallet.isEmptyPassphrase,
       import: wallet.import,
     }));
   }
