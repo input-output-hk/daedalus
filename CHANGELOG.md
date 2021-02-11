@@ -6,7 +6,7 @@ Changelog
 ### Features
 
 - Re-enabled "Wallet import" feature ([PR 2308](https://github.com/input-output-hk/daedalus/pull/2308))
-- Implemented Voting Centar ([PR 2315](https://github.com/input-output-hk/daedalus/pull/2315))
+- Implemented Voting Centar ([PR 2315](https://github.com/input-output-hk/daedalus/pull/2315), [PR 2353](https://github.com/input-output-hk/daedalus/pull/2353))
 - Implemented transaction metadata display ([PR 2338](https://github.com/input-output-hk/daedalus/pull/2338))
 - Displayed fee and deposit info in transaction details and in the delegation wizard ([PR 2339](https://github.com/input-output-hk/daedalus/pull/2339))
 - Added SMASH server configuration options ([PR 2259](https://github.com/input-output-hk/daedalus/pull/2259))
