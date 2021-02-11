@@ -16,11 +16,42 @@ import {
   VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS,
   VOTING_REGISTRATION_MIN_WALLET_FUNDS,
 } from '../../../source/renderer/app/config/votingConfig';
-import { generateWallet } from '../_support/utils';
+import {generateHash, generatePolicyIdHash, generateWallet} from '../_support/utils';
+
+const assets = {
+  available: [
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: 200,
+    },
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: 200,
+    },
+  ],
+  total: [
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: 200,
+    },
+    {
+      id: generateHash(),
+      policyId: generatePolicyIdHash(),
+      assetName: '',
+      quantity: 200,
+    },
+  ],
+};
 
 const WALLETS = [
-  generateWallet('Wallet 1', '100000000000', 0),
-  generateWallet('Wallet 2', '100', 0),
+  generateWallet('Wallet 1', '100000000000', assets, 0),
+  generateWallet('Wallet 2', '100', assets, 0),
 ];
 
 const stepsList = ['Wallet', 'Sign', 'Confirm', 'PIN code', 'QR code'];

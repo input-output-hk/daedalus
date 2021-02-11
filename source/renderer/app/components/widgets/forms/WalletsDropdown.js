@@ -14,6 +14,7 @@ import {
 } from '../../../utils/formatters';
 import Wallet from '../../../domains/Wallet';
 import StakePool from '../../../domains/StakePool';
+import type { WalletSummaryAsset } from '../../../api/assets/types';
 
 type SelectProps = {
   allowBlank?: boolean,
@@ -42,7 +43,8 @@ type SelectProps = {
 type Props = {
   ...$Shape<SelectProps>,
   numberOfStakePools: number,
-  wallets: Array<$Shape<Wallet>>,
+  wallets?: Array<$Shape<Wallet>>,
+  assets?: Array<$Shape<WalletSummaryAsset>>,
   getStakePoolById: Function,
   syncingLabel?: string,
   hasAssetsEnabled?: string,
@@ -108,6 +110,7 @@ export default class WalletsDropdown extends Component<Props> {
   render() {
     const {
       wallets,
+      assets,
       numberOfStakePools,
       getStakePoolById,
       error,
@@ -115,7 +118,7 @@ export default class WalletsDropdown extends Component<Props> {
       hasAssetsEnabled,
       ...props
     } = this.props;
-    const walletsData = wallets.map(
+    const walletsData = wallets ? wallets.map(
       ({
         name: label,
         id: value,
@@ -125,7 +128,6 @@ export default class WalletsDropdown extends Component<Props> {
         pendingDelegations,
         isRestoring,
         isHardwareWallet,
-        ticker,
       }: Wallet) => {
         const hasPendingDelegations =
           pendingDelegations && pendingDelegations.length > 0;
@@ -134,15 +136,11 @@ export default class WalletsDropdown extends Component<Props> {
           currentStakePoolId = lastDelegationStakePoolId;
         }
         const delegatedStakePool = getStakePoolById(currentStakePoolId);
-        const formattedAmount =
-          hasAssetsEnabled && ticker
-            ? formattedTokenWalletAmount(amount, ticker)
-            : formattedWalletAmount(amount || new BigNumber(1));
-        const detail = !isRestoring ? formattedAmount : null;
+        const detail = !isRestoring ? formattedWalletAmount(amount) : null;
         return {
           detail,
           syncing: isRestoring,
-          label: hasAssetsEnabled ? ticker : label,
+          label,
           value,
           numberOfStakePools,
           delegatedStakePool,
@@ -150,7 +148,21 @@ export default class WalletsDropdown extends Component<Props> {
           syncingLabel: this.props.syncingLabel,
         };
       }
-    );
+    ) : null;
+    const assetsData = assets ? assets.map(
+      ({
+         metadata,
+         id,
+         total,
+       }: Wallet) => {
+        const formattedAmount = formattedTokenWalletAmount(new BigNumber(total.quantity), metadata.acronym);
+        return {
+          detail: formattedAmount,
+          label: metadata.acronym,
+          value: id,
+        };
+      }
+    ) : null;
     let topError;
     let bottomError;
     if (errorPosition === 'bottom') bottomError = error;
@@ -158,7 +170,7 @@ export default class WalletsDropdown extends Component<Props> {
     const selectOptions = omit({ ...props, topError }, 'options');
     return (
       <>
-        <Select options={walletsData} {...selectOptions} optionHeight={50} />
+        <Select options={hasAssetsEnabled && assetsData ? assetsData : walletsData} {...selectOptions} optionHeight={50} />
         {bottomError && <div className={styles.error}>{bottomError}</div>}
       </>
     );

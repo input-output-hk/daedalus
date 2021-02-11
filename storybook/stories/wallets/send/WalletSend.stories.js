@@ -256,10 +256,9 @@ storiesOf('Wallets|Send', module)
       openDialogAction={action('openDialogAction')}
       isDialogOpen={() => boolean('isDialogOpen', false)}
       isRestoreActive={boolean('isRestoreActive', false)}
-      walletAmount={new BigNumber(123)}
       hwDeviceStatus={HwDeviceStatuses.READY}
       isHardwareWallet={boolean('isHardwareWallet', false)}
-      selectedWallet={generateWallet('Wallet name', '45119903750165', assets)}
+      selectedNativeToken={sendFormAssetData[0]}
       assets={sendFormAssetData}
     />
   ))

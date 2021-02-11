@@ -185,9 +185,6 @@ export default class WalletsStore extends Store {
   @observable certificateTemplate = null;
   @observable additionalMnemonicWords = null;
 
-  /* ----------  Native Token Wallet  ---------- */
-  @observable isNativeTokenWallet = false;
-
   /* ----------  Transfer Funds  ---------- */
   @observable transferFundsSourceWalletId: string = '';
   @observable transferFundsTargetWalletId: string = '';
@@ -1441,9 +1438,7 @@ export default class WalletsStore extends Store {
   @action _openSendFormWithAssets = async (params: { walletId: string }) => {
     const nativeWallet = this.getWalletById(params.walletId);
     if (nativeWallet) {
-      runInAction('AdaWalletsStore::isNativeTokenWallet', () => {
-        nativeWallet.isNativeTokenWallet = true;
-      });
+      debugger;
     }
   };
 }

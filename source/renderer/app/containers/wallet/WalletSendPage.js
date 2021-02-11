@@ -73,23 +73,38 @@ export default class WalletSendPage extends Component<Props> {
       app,
       profile,
       hardwareWallets,
+      assets,
     } = this.props.stores;
     const { isValidAddress } = wallets;
     const { validateAmount } = transactions;
     const { hwDeviceStatus } = hardwareWallets;
-    const { getWalletById } = wallets;
     const activeWallet = wallets.active;
-    let assets = wallets.all.filter((wallet) => wallet.isNativeTokenWallet);
-
-    // @TODO - Remove hardcoded assets value after hooking up real data
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
-    if (hasAssetsEnabled && (!assets || !assets.length)) {
-      assets = [wallets.all[0]];
-    }
+    debugger;
+    const { all } = assets;
+    const allAssets = all;
+    const walletAssets = activeWallet.assets.total.map((assetTotal) => {
+      const assetData = allAssets.find(
+        (item) => item.policyId === assetTotal.policyId
+      );
 
-    const selectedNativeTokenWallet =
-      assets && assets.length ? getWalletById(assets[0].id) : null;
+      return {
+        id: assetData ? assetData.id : '',
+        metadata: assetData
+          ? assetData.metadata
+          : {
+            name: '',
+            acronym: '',
+            description: '',
+          },
+        total: assetTotal || {},
+      };
+    });
 
+
+    const selectedNativeToken =
+      walletAssets && walletAssets.length ? walletAssets[0] : null;
+    debugger;
     // Guard against potential null values
     if (!activeWallet)
       throw new Error('Active wallet required for WalletSendPage.');
@@ -111,9 +126,8 @@ export default class WalletSendPage extends Component<Props> {
                 isHardwareWallet,
               })
             }
-            assets={assets}
-            selectedWallet={selectedNativeTokenWallet}
-            walletAmount={activeWallet.amount}
+            assets={walletAssets}
+            selectedNativeToken={selectedNativeToken}
             addressValidator={isValidAddress}
             isDialogOpen={uiDialogs.isOpen}
             openDialogAction={(params) =>
