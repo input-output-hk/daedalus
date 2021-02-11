@@ -7,8 +7,8 @@ import moment from 'moment';
 import BigNumber from 'bignumber.js';
 import LocalizableError from '../../../i18n/LocalizableError';
 import {
-  WALLET_PUBLIC_KEY_SHARING_ENABLED,
-  WALLET_DELETATION_UNDELEGATION_ENABLED_ON_SETTINGS,
+  IS_WALLET_PUBLIC_KEY_SHARING_ENABLED,
+  IS_WALLET_UNDELEGATION_ENABLED,
 } from '../../../config/walletsConfig';
 import { WalletDelegationStatuses } from '../../../domains/Wallet';
 import BorderedBox from '../../widgets/BorderedBox';
@@ -193,7 +193,7 @@ export default class WalletSettings extends Component<Props, State> {
       walletPublicKeyQRCodeDialogContainer,
     } = this.props;
 
-    if (!WALLET_PUBLIC_KEY_SHARING_ENABLED) {
+    if (!IS_WALLET_PUBLIC_KEY_SHARING_ENABLED) {
       return null;
     }
 
@@ -246,7 +246,7 @@ export default class WalletSettings extends Component<Props, State> {
     const notDelegating =
       delegationStakePoolStatus === WalletDelegationStatuses.NOT_DELEGATING;
 
-    if (!WALLET_DELETATION_UNDELEGATION_ENABLED_ON_SETTINGS) {
+    if (!IS_WALLET_UNDELEGATION_ENABLED) {
       return null;
     }
 

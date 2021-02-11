@@ -29,7 +29,7 @@ import {
   WALLET_HARDWARE_KINDS,
   RESTORE_WALLET_STEPS,
 } from '../config/walletRestoreConfig';
-import { WALLET_PUBLIC_KEY_SHARING_ENABLED } from '../config/walletsConfig';
+import { IS_WALLET_PUBLIC_KEY_SHARING_ENABLED } from '../config/walletsConfig';
 import type {
   WalletKind,
   WalletDaedalusKind,
@@ -290,7 +290,7 @@ export default class WalletsStore extends Store {
   }
 
   @action _getWalletPublicKey = async () => {
-    if (!this.active || !WALLET_PUBLIC_KEY_SHARING_ENABLED) {
+    if (!this.active || !IS_WALLET_PUBLIC_KEY_SHARING_ENABLED) {
       return;
     }
 
