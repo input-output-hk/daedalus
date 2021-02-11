@@ -16,7 +16,11 @@ import {
   VOTING_REGISTRATION_MIN_TRANSACTION_CONFIRMATIONS,
   VOTING_REGISTRATION_MIN_WALLET_FUNDS,
 } from '../../../source/renderer/app/config/votingConfig';
-import {generateHash, generatePolicyIdHash, generateWallet} from '../_support/utils';
+import {
+  generateHash,
+  generatePolicyIdHash,
+  generateWallet,
+} from '../_support/utils';
 
 const assets = {
   available: [

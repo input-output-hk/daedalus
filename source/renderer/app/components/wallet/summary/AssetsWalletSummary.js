@@ -74,59 +74,60 @@ export default class AssetsWalletSummary extends Component<Props> {
             </div>
           ) : (
             <div className={styles.component}>
-            {assets.map((asset: WalletSummaryAsset) => (
-              <BorderedBox
-                className={styles.assetsContainer}
-                key={asset.total.assetName}
-              >
-                {asset.total && (
-                  <div className={styles.assetsLeftContainer}>
-                    <div className={styles.assetName}>
-                      {asset.metadata && asset.metadata.name
-                        ? asset.metadata.name
-                        : intl.formatMessage(messages.unknownLabel)}
+              {assets.map((asset: WalletSummaryAsset) => (
+                <BorderedBox
+                  className={styles.assetsContainer}
+                  key={asset.total.assetName}
+                >
+                  {asset.total && (
+                    <div className={styles.assetsLeftContainer}>
+                      <div className={styles.assetName}>
+                        {asset.metadata && asset.metadata.name
+                          ? asset.metadata.name
+                          : intl.formatMessage(messages.unknownLabel)}
+                      </div>
+                      <div className={styles.assetAmount}>
+                        {isRestoreActive
+                          ? '-'
+                          : new BigNumber(asset.total.quantity).toFormat(
+                              asset.metadata && asset.metadata.unit
+                                ? asset.metadata.unit.decimals
+                                : DECIMAL_PLACES_IN_ADA
+                            )}
+                        {asset.metadata ? (
+                          <span>&nbsp;{asset.metadata.acronym}</span>
+                        ) : (
+                          <span>
+                            &nbsp;
+                            {intl
+                              .formatMessage(messages.unknownLabel)
+                              .toString()
+                              .substr(0, 3)}
+                          </span>
+                        )}
+                      </div>
                     </div>
-                    <div className={styles.assetAmount}>
-                      {isRestoreActive
-                        ? '-'
-                        : new BigNumber(asset.total.quantity).toFormat(
-                            asset.metadata && asset.metadata.unit
-                              ? asset.metadata.unit.decimals
-                              : DECIMAL_PLACES_IN_ADA
-                          )}
-                      {asset.metadata ? (
-                        <span>&nbsp;{asset.metadata.acronym}</span>
-                      ) : (
-                        <span>
-                          &nbsp;
-                          {intl
-                            .formatMessage(messages.unknownLabel)
-                            .toString()
-                            .substr(0, 3)}
-                        </span>
-                      )}
+                  )}
+                  {asset.total && (
+                    <div className={styles.assetRightContainer}>
+                      <button
+                        className={classNames([
+                          'primary',
+                          styles.assetSendButton,
+                          new BigNumber(asset.total.quantity).isZero()
+                            ? styles.disabled
+                            : null,
+                        ])}
+                        onClick={() => handleOpenAssetSend(asset)}
+                      >
+                        {intl.formatMessage(messages.tokenSendButton)}
+                      </button>
                     </div>
-                  </div>
-                )}
-                {asset.total && (
-                  <div className={styles.assetRightContainer}>
-                    <button
-                      className={classNames([
-                        'primary',
-                        styles.assetSendButton,
-                        new BigNumber(asset.total.quantity).isZero()
-                          ? styles.disabled
-                          : null,
-                      ])}
-                      onClick={() => handleOpenAssetSend(asset)}
-                    >
-                      {intl.formatMessage(messages.tokenSendButton)}
-                    </button>
-                  </div>
-                )}
-              </BorderedBox>
-            ))}
-          </div>)}
+                  )}
+                </BorderedBox>
+              ))}
+            </div>
+          )}
         </Fragment>
       )
     );

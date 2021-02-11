@@ -93,14 +93,13 @@ export default class WalletSendPage extends Component<Props> {
         metadata: assetData
           ? assetData.metadata
           : {
-            name: '',
-            acronym: '',
-            description: '',
-          },
+              name: '',
+              acronym: '',
+              description: '',
+            },
         total: assetTotal || {},
       };
     });
-
 
     const selectedNativeToken =
       walletAssets && walletAssets.length ? walletAssets[0] : null;

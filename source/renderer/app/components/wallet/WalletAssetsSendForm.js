@@ -307,7 +307,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     sendFormFieldRow.selectedNativeToken = selectedNativeTokenItem;
     sendFormFields[id] = sendFormFieldRow;
     this.setState({
-      sendFormFields
+      sendFormFields,
     });
   };
 
@@ -490,7 +490,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     const { showReceiverField } = this.state;
     showReceiverField[index] = true;
     this.setState({
-      showReceiverField
+      showReceiverField,
     });
   };
 
@@ -599,7 +599,8 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       (assetsSeparatorBasicHeight * assets.length) - 18 :
       assetsSeparatorBasicHeight; */
 
-    return showReceiverField && index > 0 && showReceiverField[index] || index === 0 ? (
+    return (showReceiverField && index > 0 && showReceiverField[index]) ||
+      index === 0 ? (
       <div className={styles.fieldsContainer}>
         <div
           onMouseEnter={this.showRemoveButton}
@@ -656,19 +657,27 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         </div>
         {showReceiverField && showReceiverField[index] && (
           <>
-            <div className={styles.fieldsLine} style={{
-              height: `${assetsSeparatorBasicHeight}px`,
-              top: `${assetsSeparatorBasicHeight - 10}px`,
-              marginTop: `-${assetsSeparatorBasicHeight}px`
-            }}  />
+            <div
+              className={styles.fieldsLine}
+              style={{
+                height: `${assetsSeparatorBasicHeight}px`,
+                top: `${assetsSeparatorBasicHeight - 10}px`,
+                marginTop: `-${assetsSeparatorBasicHeight}px`,
+              }}
+            />
             <div className={styles.assetInput}>
-              {selectedNativeToken && selectedNativeToken.total && selectedNativeToken.metadata && (
-                <div className={styles.amountTokenTotal}>
-                  {intl.formatMessage(messages.ofLabel)}&nbsp;
-                  {formattedWalletAmount(new BigNumber(selectedNativeToken.total.quantity), false)}
-                  &nbsp;{selectedNativeToken.metadata.acronym}
-                </div>
-              )}
+              {selectedNativeToken &&
+                selectedNativeToken.total &&
+                selectedNativeToken.metadata && (
+                  <div className={styles.amountTokenTotal}>
+                    {intl.formatMessage(messages.ofLabel)}&nbsp;
+                    {formattedWalletAmount(
+                      new BigNumber(selectedNativeToken.total.quantity),
+                      false
+                    )}
+                    &nbsp;{selectedNativeToken.metadata.acronym}
+                  </div>
+                )}
               <NumericInput
                 {...assetFieldProps}
                 className="asset"
@@ -692,7 +701,11 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                     this.renderAssetRow();
                   }
                 }}
-                currency={selectedNativeToken && selectedNativeToken.metadata ? selectedNativeToken.metadata.acronym : null}
+                currency={
+                  selectedNativeToken && selectedNativeToken.metadata
+                    ? selectedNativeToken.metadata.acronym
+                    : null
+                }
                 value={amount}
                 error={asset.error}
                 skin={AmountInputSkin}
@@ -945,16 +958,20 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                   {this.renderReceiverRow(row, index)}
                 </Fragment>
               ))}
-              {showReceiverField && showReceiverField[0] && showReceiverField.length > 0 && (
-                <Button
-                  className={newReceiverButtonClasses}
-                  label={intl.formatMessage(messages.addNewReceiverButtonLabel)}
-                  onClick={() =>
-                    this.addNewReceiverRow(sendFormFields.length + 1)
-                  }
-                  skin={ButtonSkin}
-                />
-              )}
+              {showReceiverField &&
+                showReceiverField[0] &&
+                showReceiverField.length > 0 && (
+                  <Button
+                    className={newReceiverButtonClasses}
+                    label={intl.formatMessage(
+                      messages.addNewReceiverButtonLabel
+                    )}
+                    onClick={() =>
+                      this.addNewReceiverRow(sendFormFields.length + 1)
+                    }
+                    skin={ButtonSkin}
+                  />
+                )}
               <div className={styles.estimatedFeeInput}>
                 <ReadOnlyInput
                   label={intl.formatMessage(messages.estimatedFeeLabel)}
@@ -1013,7 +1030,9 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
             transactionFee={fees}
             amountToNaturalUnits={formattedAmountToNaturalUnits}
             currencyUnit={
-              selectedNativeTokenItem && selectedNativeTokenItem.metadata ? selectedNativeTokenItem.metadata.acronym : null
+              selectedNativeTokenItem && selectedNativeTokenItem.metadata
+                ? selectedNativeTokenItem.metadata.acronym
+                : null
             }
             onExternalLinkClick={onExternalLinkClick}
             hwDeviceStatus={hwDeviceStatus}

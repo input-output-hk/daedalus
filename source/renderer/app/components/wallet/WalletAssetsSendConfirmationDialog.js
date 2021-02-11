@@ -22,7 +22,7 @@ import LoadingSpinner from '../widgets/LoadingSpinner';
 import { HwDeviceStatuses } from '../../domains/Wallet';
 import type { HwDeviceStatus } from '../../domains/Wallet';
 import type { WalletTransactionAsset } from '../../api/assets/types';
-import { DECIMAL_PLACES_IN_ADA } from "../../config/numbersConfig";
+import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 
 export const messages = defineMessages({
   dialogTitle: {
@@ -310,9 +310,10 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
     ];
 
     const assetsSeparatorBasicHeight = 27;
-    const assetsSeparatorCalculatedHeight = assets && assets.length ?
-      (assetsSeparatorBasicHeight * assets.length) - 18 :
-      assetsSeparatorBasicHeight;
+    const assetsSeparatorCalculatedHeight =
+      assets && assets.length
+        ? assetsSeparatorBasicHeight * assets.length - 18
+        : assetsSeparatorBasicHeight;
 
     let errorElement = null;
     if (error) {
@@ -360,13 +361,20 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
                       )}
                     </h2>
                     <div className={styles.receiverRowItemAddresses}>
-                      <div className={styles.addressTo}>{receivers[addressIndex]}</div>
+                      <div className={styles.addressTo}>
+                        {receivers[addressIndex]}
+                      </div>
                       <div className={styles.assetsWrapper}>
-                        <div className={styles.assetsSeparator} style={{
-                          height: `${assetsSeparatorCalculatedHeight}px`,
-                          top: `${assetsSeparatorCalculatedHeight + 5}px`,
-                          marginTop: `-${assetsSeparatorCalculatedHeight + 5}px`
-                        }} />
+                        <div
+                          className={styles.assetsSeparator}
+                          style={{
+                            height: `${assetsSeparatorCalculatedHeight}px`,
+                            top: `${assetsSeparatorCalculatedHeight + 5}px`,
+                            marginTop: `-${
+                              assetsSeparatorCalculatedHeight + 5
+                            }px`,
+                          }}
+                        />
                         {assets.map((asset, assetIndex) => (
                           <div
                             // eslint-disable-next-line react/no-array-index-key
@@ -377,18 +385,20 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
                               {intl.formatMessage(messages.assetLabel)}
                               &nbsp;#{assetIndex + 1}
                             </h3>
-                            {asset.total && (<div className={styles.amountFeesWrapper}>
-                              <div className={styles.amount}>
-                                {new BigNumber(asset.total.quantity).toFormat(
-                                  asset.metadata && asset.metadata.unit
-                                    ? asset.metadata.unit.decimals
-                                    : DECIMAL_PLACES_IN_ADA
-                                )}
-                                {asset.metadata && (
-                                  <span>&nbsp;{asset.metadata.acronym}</span>
-                                )}
+                            {asset.total && (
+                              <div className={styles.amountFeesWrapper}>
+                                <div className={styles.amount}>
+                                  {new BigNumber(asset.total.quantity).toFormat(
+                                    asset.metadata && asset.metadata.unit
+                                      ? asset.metadata.unit.decimals
+                                      : DECIMAL_PLACES_IN_ADA
+                                  )}
+                                  {asset.metadata && (
+                                    <span>&nbsp;{asset.metadata.acronym}</span>
+                                  )}
+                                </div>
                               </div>
-                            </div>)}
+                            )}
                           </div>
                         ))}
                       </div>
