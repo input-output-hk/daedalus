@@ -117,8 +117,8 @@
   font-family: var(--font-bold);
   font-size: 12px;
   line-height: 1.67;
-  text-align: right;
   opacity: 0.5;
+  text-align: right;
 
   &:hover {
     opacity: 0.7;
@@ -138,8 +138,8 @@
   margin-left: 4px;
   vertical-align: middle;
   svg {
-    width: 10px;
     height: 10px;
+    width: 10px;
     g {
       opacity: 1;
     }

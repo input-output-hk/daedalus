@@ -2552,7 +2552,7 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Show ada price in other currency",
+        "defaultMessage": "!!!Display ada balances in other currency",
         "description": "titleLabel for the Currency settings in the Wallets settings page.",
         "end": {
           "column": 3,
@@ -2566,7 +2566,7 @@
         }
       },
       {
-        "defaultMessage": "!!!This feature does… Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+        "defaultMessage": "!!!Select a conversion currency for displaying your ada balances.",
         "description": "currencyDescription for the Currency settings in the Wallets settings page.",
         "end": {
           "column": 3,
@@ -2580,7 +2580,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Countervalue",
+        "defaultMessage": "!!!Select currency",
         "description": "currencySelectLabel for the Currency settings in the Wallets settings page.",
         "end": {
           "column": 3,
@@ -2594,17 +2594,31 @@
         }
       },
       {
+        "defaultMessage": "!!!Conversion rates are provided by CoinGecko without any warranty. Please use the calculated conversion value only as a reference. Converted balances reflect the current global average price of ada on active cryptocurrency exchanges, as tracked by CoinGecko. Ada conversion is available only to fiat and cryptocurrencies that are supported by CoinGecko, other local currency conversions may not be available.",
+        "description": "currencyDisclaimer for the Currency settings in the Wallets settings page.",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "source/renderer/app/components/settings/categories/WalletsSettings.js",
+        "id": "settings.wallets.currency.disclaimer",
+        "start": {
+          "column": 22,
+          "line": 33
+        }
+      },
+      {
         "defaultMessage": "!!!Powered by",
         "description": "currencyPoweredByLabel for the Currency settings in the Wallets settings page.",
         "end": {
           "column": 3,
-          "line": 38
+          "line": 45
         },
         "file": "source/renderer/app/components/settings/categories/WalletsSettings.js",
         "id": "settings.wallets.currency.poweredBy.label",
         "start": {
           "column": 26,
-          "line": 33
+          "line": 40
         }
       }
     ],
@@ -11095,7 +11109,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Estimated conversion:",
+        "defaultMessage": "!!!Converts as",
         "description": "\"Currency - title\" label on Wallet summary page",
         "end": {
           "column": 3,
