@@ -101,7 +101,7 @@ export type DelegationCalculateFeeResponse = {
 
 export type QuitStakePoolRequest = {
   walletId: string,
-  stakePoolId: string,
+  stakePoolId?: string,
   passphrase: string,
   isHardwareWallet?: boolean,
 };

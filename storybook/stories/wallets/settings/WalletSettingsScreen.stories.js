@@ -4,7 +4,11 @@ import { text, boolean, number, select } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
-import { isIncentivizedTestnetTheme } from '../../_support/utils';
+import {
+  isIncentivizedTestnetTheme,
+  generateWallet,
+} from '../../_support/utils';
+import STAKE_POOLS from '../../../../source/renderer/app/config/stakingStakePools.dummy.json';
 import type { Locale } from '../../../../source/common/types/locales.types';
 
 // Screens
@@ -66,6 +70,13 @@ const recoveryDialogOptions = {
   'Step 3 - Verification successful': 3,
   'Step 4 - Verification failure': 4,
 };
+
+const selectedWallet = generateWallet(
+  'Wallet 1',
+  '1000000000',
+  0,
+  STAKE_POOLS[0]
+);
 
 const getWalletDates = (type: string, status: string) => {
   let date = new Date();
@@ -148,6 +159,7 @@ export default (props: { currentTheme: string, locale: Locale }) => {
       onStartEditing={() => {}}
       onStopEditing={() => {}}
       openDialogAction={() => {}}
+      walletId="walletid"
       walletName={text('Wallet Name', 'Wallet Name', basicSettingsId)}
       delegationStakePoolStatus="not_delegating"
       isRestoring={false}
@@ -198,11 +210,7 @@ export default (props: { currentTheme: string, locale: Locale }) => {
       }
       undelegateWalletDialogContainer={
         <UndelegateWalletConfirmationDialog
-          walletName={text(
-            'UndelegateWalletConfirmationDialog: Wallet Name',
-            'Wallet To Undelegate',
-            undelegateWalletId
-          )}
+          selectedWallet={selectedWallet}
           stakePoolName={text(
             'UndelegateWalletConfirmationDialog: Stake Pool Name',
             'Stake Pool Name'
@@ -223,6 +231,7 @@ export default (props: { currentTheme: string, locale: Locale }) => {
           )}
           error={null}
           fees={new BigNumber(10)}
+          hwDeviceStatus="ready"
         />
       }
       deleteWalletDialogContainer={
@@ -261,6 +270,7 @@ export default (props: { currentTheme: string, locale: Locale }) => {
       }
       onVerifyRecoveryPhrase={action('onVerifyRecoveryPhrase')}
       onCopyWalletPublicKey={() => null}
+      updateDataForActiveDialogAction={() => null}
       onDelegateClick={() => null}
       getWalletPublicKey={() => null}
       creationDate={creationDate}

@@ -44,7 +44,11 @@ export default class UndelegateWalletDialogContainer extends Component<
   }
 
   get selectedWalletId() {
-    return get(this.props, ['stores', 'wallets', 'active', 'id'], null);
+    return get(
+      this.props,
+      ['stores', 'uiDialogs', 'dataForActiveDialog', 'walletId'],
+      null
+    );
   }
 
   async _handleCalculateTransactionFee() {
@@ -149,7 +153,7 @@ export default class UndelegateWalletDialogContainer extends Component<
         selectedWallet={walletToBeUndelegated}
         stakePoolName={stakePoolName}
         stakePoolTicker={stakePoolTicker}
-        onConfirm={(passphrase: ?string, isHardwareWallet: boolean) => {
+        onConfirm={(passphrase: string, isHardwareWallet: boolean) => {
           actions.wallets.undelegateWallet.trigger({
             walletId: this.selectedWalletId,
             stakePoolId,

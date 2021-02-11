@@ -44,6 +44,7 @@ import type {
   TransferFundsCalculateFeeRequest,
   TransferFundsRequest,
 } from '../api/wallets/types';
+import type { QuitStakePoolRequest } from '../api/staking/types';
 import type {
   TransportDevice,
   HardwareWalletExtendedPublicKeyResponse,
@@ -572,12 +573,7 @@ export default class WalletsStore extends Store {
     this.refreshWalletsData();
   };
 
-  _undelegateWallet = async (params: {
-    walletId: string,
-    stakePoolId: string,
-    passphrase: string,
-    isHardwareWallet: boolean,
-  }) => {
+  _undelegateWallet = async (params: QuitStakePoolRequest) => {
     const { quitStakePoolRequest } = this.stores.staking;
     const { quitStakePool } = this.actions.staking;
     const walletToUndelegate = this.getWalletById(params.walletId);

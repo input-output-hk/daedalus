@@ -114,6 +114,7 @@ export default class WalletSettingsPage extends Component<Props> {
           }
           isDialogOpen={uiDialogs.isOpen}
           isLegacy={isLegacy}
+          walletId={activeWallet.id}
           walletName={activeWallet.name}
           delegationStakePoolStatus={activeWallet.delegationStakePoolStatus}
           isRestoring={activeWallet.isRestoring}
@@ -135,6 +136,9 @@ export default class WalletSettingsPage extends Component<Props> {
           onCancel={cancelEditingWalletField.trigger}
           onVerifyRecoveryPhrase={recoveryPhraseVerificationContinue.trigger}
           onCopyWalletPublicKey={this.handleCopyWalletPublicKey}
+          updateDataForActiveDialogAction={
+            actions.dialogs.updateDataForActiveDialog.trigger
+          }
           onDelegateClick={this.handleDelegateClick}
           getWalletPublicKey={this.handleGetWalletPublicKey}
           activeField={walletFieldBeingEdited}

@@ -6,6 +6,7 @@ import type {
   HardwareWalletExtendedPublicKeyResponse,
 } from '../../../common/types/hardware-wallets.types';
 import type { CsvFileContent } from '../../../common/types/csv-request.types';
+import type { QuitStakePoolRequest } from '../api/staking/types';
 
 export type WalletImportFromFileParams = {
   filePath: string,
@@ -44,12 +45,7 @@ export default class WalletsActions {
   restoreWallet: Action<any> = new Action();
   importWalletFromFile: Action<WalletImportFromFileParams> = new Action();
   deleteWallet: Action<{ walletId: string, isLegacy: boolean }> = new Action();
-  undelegateWallet: Action<{
-    walletId: string,
-    stakePoolId: string,
-    passphrase: string,
-    isHardwareWallet: boolean,
-  }> = new Action();
+  undelegateWallet: Action<QuitStakePoolRequest> = new Action();
   setUndelegateWalletSubmissionSuccess: Action<{
     result: boolean,
   }> = new Action();

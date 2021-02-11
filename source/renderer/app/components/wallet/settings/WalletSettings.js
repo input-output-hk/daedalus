@@ -101,6 +101,7 @@ export const messages = defineMessages({
 });
 
 type Props = {
+  walletId: string,
   walletName: string,
   delegationStakePoolStatus: ?string,
   isRestoring: boolean,
@@ -117,6 +118,7 @@ type Props = {
   onCancel: Function,
   onVerifyRecoveryPhrase: Function,
   onCopyWalletPublicKey: Function,
+  updateDataForActiveDialogAction: Function,
   onDelegateClick: Function,
   nameValidator: Function,
   isIncentivizedTestnet: boolean,
@@ -211,10 +213,17 @@ export default class WalletSettings extends Component<Props, State> {
   };
 
   onUndelegateWalletClick = async () => {
-    const { openDialogAction } = this.props;
+    const {
+      walletId,
+      openDialogAction,
+      updateDataForActiveDialogAction,
+    } = this.props;
     this.onBlockForm();
     openDialogAction({
       dialog: UndelegateWalletConfirmationDialog,
+    });
+    updateDataForActiveDialogAction({
+      data: { walletId },
     });
   };
 
