@@ -300,10 +300,7 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
                 ) : (
                   <>
                     <span>
-                      {formattedWalletAmount(
-                        transactionFee.fee.absoluteValue(),
-                        false
-                      )}
+                      {formattedWalletAmount(transactionFee.fee, false)}
                     </span>
                     <span className={styles.feesAmountLabel}>
                       {` `}
