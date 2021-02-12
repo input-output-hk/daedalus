@@ -243,14 +243,14 @@ export default class WalletSettings extends Component<Props, State> {
       onDelegateClick,
       undelegateWalletDialogContainer,
     } = this.props;
-    const notDelegating =
-      lastDelegationStakePoolStatus === WalletDelegationStatuses.NOT_DELEGATING;
+    const isDelegating =
+      lastDelegationStakePoolStatus === WalletDelegationStatuses.DELEGATING;
 
     /// @TODO: Once undelegation for rewarded wallet works fine with api, remove reward checking and config
     if (
       !IS_WALLET_UNDELEGATION_ENABLED ||
       isLegacy ||
-      (!notDelegating && !walletReward.isZero())
+      (isDelegating && !walletReward.isZero())
     ) {
       return null;
     }
@@ -258,14 +258,14 @@ export default class WalletSettings extends Component<Props, State> {
     let headerMessage = null;
     let warningMessage = null;
 
-    if (notDelegating) {
-      headerMessage = intl.formatMessage(messages.delegateWalletHeader);
-      warningMessage = intl.formatMessage(messages.delegateWalletWarning);
-    } else {
+    if (isDelegating) {
       headerMessage = intl.formatMessage(messages.undelegateWalletHeader);
       warningMessage = isRestoring
         ? intl.formatMessage(messages.undelegateWalletDisabledWarning)
         : intl.formatMessage(messages.undelegateWalletWarning);
+    } else {
+      headerMessage = intl.formatMessage(messages.delegateWalletHeader);
+      warningMessage = intl.formatMessage(messages.delegateWalletWarning);
     }
 
     return (
@@ -276,13 +276,13 @@ export default class WalletSettings extends Component<Props, State> {
             <div>
               <p>{warningMessage}</p>
             </div>
-            {notDelegating ? (
-              <DelegateWalletButton onDelegate={onDelegateClick} />
-            ) : (
+            {isDelegating ? (
               <UndelegateWalletButton
                 disabled={isRestoring}
                 onUndelegate={this.onUndelegateWalletClick}
               />
+            ) : (
+              <DelegateWalletButton onDelegate={onDelegateClick} />
             )}
           </div>
         </BorderedBox>
