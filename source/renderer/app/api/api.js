@@ -70,6 +70,8 @@ import { getLegacyWallet } from './wallets/requests/getLegacyWallet';
 import { transferFundsCalculateFee } from './wallets/requests/transferFundsCalculateFee';
 import { transferFunds } from './wallets/requests/transferFunds';
 import { createHardwareWallet } from './wallets/requests/createHardwareWallet';
+import { getCurrencyList } from './wallets/requests/getCurrencyList';
+import { getCurrencyRate } from './wallets/requests/getCurrencyRate';
 
 // Staking
 import StakePool from '../domains/StakePool';
@@ -111,6 +113,7 @@ import {
   ADA_CERTIFICATE_MNEMONIC_LENGTH,
   WALLET_RECOVERY_PHRASE_WORD_COUNT,
 } from '../config/cryptoConfig';
+import { currencyConfig } from '../config/currencyConfig';
 
 // Addresses Types
 import type {
@@ -181,6 +184,9 @@ import type {
   TransferFundsRequest,
   TransferFundsResponse,
   UpdateWalletRequest,
+  GetCurrencyListResponse,
+  GetCurrencyRateRequest,
+  GetCurrencyRateResponse,
 } from './wallets/types';
 import type { WalletProps } from '../domains/Wallet';
 
@@ -1270,6 +1276,36 @@ export default class AdaApi {
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::createHardwareWallet error', { error });
+      throw new ApiError(error);
+    }
+  };
+
+  getCurrencyList = async (): Promise<GetCurrencyListResponse> => {
+    try {
+      const apiResponse = await getCurrencyList();
+      const response: GetCurrencyListResponse = currencyConfig.responses.list(
+        apiResponse
+      );
+      logger.debug('AdaApi::getCurrencyList success', { response });
+      return response;
+    } catch (error) {
+      logger.error('AdaApi::getCurrencyList error', { error });
+      throw new ApiError(error);
+    }
+  };
+
+  getCurrencyRate = async (
+    currency: GetCurrencyRateRequest
+  ): Promise<GetCurrencyRateResponse> => {
+    try {
+      const apiResponse = await getCurrencyRate(currency);
+      const response: GetCurrencyRateResponse = currencyConfig.responses.rate(
+        apiResponse
+      );
+      logger.debug('AdaApi::getCurrencyRate success', { response });
+      return response;
+    } catch (error) {
+      logger.error('AdaApi::getCurrencyRate error', { error });
       throw new ApiError(error);
     }
   };

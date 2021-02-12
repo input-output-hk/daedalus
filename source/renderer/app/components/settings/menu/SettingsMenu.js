@@ -12,6 +12,11 @@ const messages = defineMessages({
     defaultMessage: '!!!General',
     description: 'Label for the "General" link in the settings menu.',
   },
+  wallets: {
+    id: 'settings.menu.wallets.link.label',
+    defaultMessage: '!!!Wallets',
+    description: 'Label for the "Wallets" link in the settings menu.',
+  },
   stakePools: {
     id: 'settings.menu.stakePools.link.label',
     defaultMessage: '!!!Stake Pools',
@@ -67,6 +72,12 @@ export default class SettingsMenu extends Component<Props> {
             onClick={() => onItemClick(ROUTES.SETTINGS.GENERAL)}
             active={isActiveItem(ROUTES.SETTINGS.GENERAL)}
             className="general"
+          />
+          <SettingsMenuItem
+            label={intl.formatMessage(messages.wallets)}
+            onClick={() => onItemClick(ROUTES.SETTINGS.WALLETS)}
+            active={isActiveItem(ROUTES.SETTINGS.WALLETS)}
+            className="wallets"
           />
           {!isSyncing && (
             <SettingsMenuItem

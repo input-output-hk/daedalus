@@ -5,6 +5,7 @@ Changelog
 
 ### Features
 
+- Added display of wallet balance in other currencies ([PR 2290](https://github.com/input-output-hk/daedalus/pull/2290))
 - Implemented alternate Ledger wallet handling ([PR 2342](https://github.com/input-output-hk/daedalus/pull/2342))
 - Re-enabled "Wallet import" feature ([PR 2308](https://github.com/input-output-hk/daedalus/pull/2308))
 - Implemented Voting Centar ([PR 2315](https://github.com/input-output-hk/daedalus/pull/2315), [PR 2353](https://github.com/input-output-hk/daedalus/pull/2353), [PR 2354](https://github.com/input-output-hk/daedalus/pull/2354))
