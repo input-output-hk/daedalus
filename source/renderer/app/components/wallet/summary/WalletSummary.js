@@ -6,6 +6,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import currencySettingsIcon from '../../../assets/images/currency-settings-ic.inline.svg';
+import globalMessages from '../../../i18n/global-messages';
 import BorderedBox from '../../widgets/BorderedBox';
 import styles from './WalletSummary.scss';
 import Wallet from '../../../domains/Wallet';
@@ -34,12 +35,12 @@ const messages = defineMessages({
   },
   currencyLastFetched: {
     id: 'wallet.summary.page.currency.lastFetched',
-    defaultMessage: '!!!Fetched {fetchedTimeAgo}',
+    defaultMessage: '!!!converted {fetchedTimeAgo}',
     description: '"Currency - last fetched" label on Wallet summary page',
   },
   currencyIsFetchingRate: {
     id: 'wallet.summary.page.currency.isFetchingRate',
-    defaultMessage: '!!!Fetching',
+    defaultMessage: '!!!Fetching conversion rates',
     description: '"Currency - Fetching" label on Wallet summary page',
   },
 });
@@ -158,7 +159,8 @@ export default class WalletSummary extends Component<Props> {
                   </span>
                 </div>
                 <div className={styles.currencyRate}>
-                  1 ADA = {currencyRate} {currencyWalletAmountSymbol}
+                  1 {intl.formatMessage(globalMessages.unitAda)} ={' '}
+                  {currencyRate} {currencyWalletAmountSymbol}
                 </div>
                 <button
                   className={buttonClasses}

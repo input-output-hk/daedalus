@@ -11085,13 +11085,13 @@
         "description": "\"Number of transactions\" label on Wallet summary page",
         "end": {
           "column": 3,
-          "line": 23
+          "line": 24
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
         "id": "wallet.summary.page.transactionsLabel",
         "start": {
           "column": 21,
-          "line": 19
+          "line": 20
         }
       },
       {
@@ -11099,13 +11099,13 @@
         "description": "\"Number of pending transactions\" label on Wallet summary page",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 30
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
         "id": "wallet.summary.page.pendingTransactionsLabel",
         "start": {
           "column": 28,
-          "line": 24
+          "line": 25
         }
       },
       {
@@ -11113,41 +11113,41 @@
         "description": "\"Currency - title\" label on Wallet summary page",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 35
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
         "id": "wallet.summary.page.currency.title",
         "start": {
           "column": 17,
-          "line": 30
+          "line": 31
         }
       },
       {
-        "defaultMessage": "!!!Fetched {fetchedTimeAgo}",
+        "defaultMessage": "!!!converted {fetchedTimeAgo}",
         "description": "\"Currency - last fetched\" label on Wallet summary page",
         "end": {
           "column": 3,
-          "line": 39
+          "line": 40
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
         "id": "wallet.summary.page.currency.lastFetched",
         "start": {
           "column": 23,
-          "line": 35
+          "line": 36
         }
       },
       {
-        "defaultMessage": "!!!Fetching",
+        "defaultMessage": "!!!Fetching conversion rates",
         "description": "\"Currency - Fetching\" label on Wallet summary page",
         "end": {
           "column": 3,
-          "line": 44
+          "line": 45
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
         "id": "wallet.summary.page.currency.isFetchingRate",
         "start": {
           "column": 26,
-          "line": 40
+          "line": 41
         }
       }
     ],
