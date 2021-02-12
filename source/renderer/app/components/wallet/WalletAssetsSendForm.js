@@ -579,6 +579,8 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       ? `${intl.formatMessage(messages.receiverLabel)} #${index + 1}`
       : intl.formatMessage(messages.receiverLabel);
 
+    receiverField.set('label', receiverLabel);
+
     let fees = null;
     if (isTransactionFeeCalculated && transactionFee) {
       fees = transactionFee.toFormat(currencyMaxFractionalDigits);
@@ -612,7 +614,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
             <Button
               className={removeReceiverButtonClasses}
               label={intl.formatMessage(messages.removeReceiverButtonLabel)}
-              onClick={() => this.removeReceiverRow(index + 1)}
+              onClick={() => this.removeReceiverRow(index + 1, row)}
               skin={ButtonSkin}
             />
           )}
@@ -759,14 +761,25 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     ) : null;
   };
 
-  removeReceiverRow = (index: number) => {
+  removeReceiverRow = (index: number, receiverId: string) => {
     this.clearAssetValue(index);
     this.clearReceiverAddress(index);
     this.hideReceiverField(index);
     if (index > 1) {
       this.removeFormField(index);
+      this.removeSendFormField(receiverId);
     } else {
       this.disableResetButton();
+    }
+  };
+
+  removeSendFormField = (receiverId: number) => {
+    const { sendFormFields } = this.state;
+    if (sendFormFields && sendFormFields[receiverId]) {
+      delete sendFormFields[receiverId];
+      this.setState({
+        sendFormFields,
+      });
     }
   };
 
@@ -843,13 +856,16 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         const isValid = await this.props.validateAmount(
           formattedAmountToNaturalUnits(amountValue)
         );
-        const receiverField = form.$(`receiver${index}`);
-        const receiverValue = receiverField.value;
-        const isReceiverValid = receiverField.isValid;
-        if (isValid && isReceiverValid) {
-          this.calculateTransactionFee(receiverValue, amountValue);
-        } else {
-          this.resetTransactionFee();
+        const { sendFormFields } = this.state;
+        if (sendFormFields && sendFormFields[`receiver${index}`]) {
+          const receiverField = form.$(`receiver${index}`);
+          const receiverValue = receiverField.value;
+          const isReceiverValid = receiverField.isValid;
+          if (isValid && isReceiverValid) {
+            this.calculateTransactionFee(receiverValue, amountValue);
+          } else {
+            this.resetTransactionFee();
+          }
         }
         return [
           isValid,
