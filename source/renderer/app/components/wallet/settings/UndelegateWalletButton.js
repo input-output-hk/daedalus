@@ -14,7 +14,7 @@ const messages = defineMessages({
 
 type Props = {
   disabled?: boolean,
-  onClick: Function,
+  onUndelegate: Function,
 };
 
 export default class UndelegateWalletButton extends Component<Props> {
@@ -23,14 +23,14 @@ export default class UndelegateWalletButton extends Component<Props> {
   };
 
   render() {
-    const { disabled, onClick } = this.props;
+    const { disabled, onUndelegate } = this.props;
     const label = this.context.intl.formatMessage(messages.label);
     return (
       <Button
         className="flat"
         label={label}
         disabled={disabled}
-        onClick={onClick}
+        onClick={onUndelegate}
         themeOverrides={styles}
       />
     );

@@ -276,11 +276,11 @@ export default class WalletSettings extends Component<Props, State> {
               <p>{warningMessage}</p>
             </div>
             {notDelegating ? (
-              <DelegateWalletButton onClick={onDelegateClick} />
+              <DelegateWalletButton onDelegate={onDelegateClick} />
             ) : (
               <UndelegateWalletButton
                 disabled={isRestoring}
-                onClick={this.onUndelegateWalletClick}
+                onUndelegate={this.onUndelegateWalletClick}
               />
             )}
           </div>

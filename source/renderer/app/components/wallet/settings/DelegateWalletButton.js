@@ -14,7 +14,7 @@ const messages = defineMessages({
 
 type Props = {
   disabled?: boolean,
-  onClick: Function,
+  onDelegate: Function,
 };
 
 export default class DelegateWalletButton extends Component<Props> {
@@ -23,13 +23,13 @@ export default class DelegateWalletButton extends Component<Props> {
   };
 
   render() {
-    const { disabled, onClick } = this.props;
+    const { disabled, onDelegate } = this.props;
     const label = this.context.intl.formatMessage(messages.label);
     return (
       <Button
         label={label}
         disabled={disabled}
-        onClick={onClick}
+        onClick={onDelegate}
         themeOverrides={styles}
       />
     );
