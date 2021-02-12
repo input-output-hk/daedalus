@@ -126,7 +126,8 @@ export default (props: { currentTheme: string, locale: Locale }) => {
       Delegating: 'delegating',
       'Not delegating': 'not_delegating',
     },
-    'delegating'
+    'delegating',
+    undelegateWalletId
   );
 
   return (
