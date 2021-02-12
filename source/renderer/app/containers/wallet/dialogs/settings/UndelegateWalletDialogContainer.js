@@ -156,7 +156,6 @@ export default class UndelegateWalletDialogContainer extends Component<
         onConfirm={(passphrase: string, isHardwareWallet: boolean) => {
           actions.wallets.undelegateWallet.trigger({
             walletId: this.selectedWalletId,
-            stakePoolId,
             passphrase,
             isHardwareWallet,
           });
