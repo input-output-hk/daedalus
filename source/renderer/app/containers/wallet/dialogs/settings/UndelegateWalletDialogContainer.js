@@ -2,16 +2,14 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { get, find } from 'lodash';
-import type { StoresMap } from '../../../../stores/index';
-import type { ActionsMap } from '../../../../actions/index';
+import type { InjectedProps } from '../../../../types/injectedPropsType';
 import type { DelegationCalculateFeeResponse } from '../../../../api/staking/types';
 import UndelegateWalletConfirmationDialog from '../../../../components/wallet/settings/UndelegateWalletConfirmationDialog';
 import UndelegateWalletSuccessDialog from '../../../../components/wallet/settings/UndelegateWalletSuccessDialog';
 import { DELEGATION_ACTIONS } from '../../../../config/stakingConfig';
 
 type Props = {
-  stores: any | StoresMap,
-  actions: any | ActionsMap,
+  ...InjectedProps,
   onExternalLinkClick: Function,
 };
 
