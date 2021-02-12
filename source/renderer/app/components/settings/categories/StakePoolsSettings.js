@@ -122,21 +122,16 @@ const messages = defineMessages({
   },
   invalidUrlPrefix: {
     id: 'settings.stakePools.smashUrl.input.invalidUrlPrefix',
-    defaultMessage: '!!!The URL needs to start with "https://"',
+    defaultMessage: '!!!The URL should start with "https://"',
     description:
       'invalidUrlPrefix for the "Smash Custom Server" selection on the Stake Pools settings page.',
   },
   invalidUrlParameter: {
     id: 'settings.stakePools.smashUrl.input.invalidUrlParameter',
-    defaultMessage: '!!!The URL cannot have a parameter',
+    defaultMessage:
+      '!!!Only "https://" protocol and hostname (e.g. domain.com) are allowed',
     description:
       'invalidUrlParameter for the "Smash Custom Server" selection on the Stake Pools settings page.',
-  },
-  invalidUrlQuerystring: {
-    id: 'settings.stakePools.smashUrl.input.invalidUrlQuerystring',
-    defaultMessage: '!!!The URL cannot have a querystring',
-    description:
-      'invalidUrlQuerystring for the "Smash Custom Server" selection on the Stake Pools settings page.',
   },
 });
 
@@ -215,9 +210,8 @@ export default class StakePoolsSettings extends Component<Props, State> {
     let errorMessage = messages.invalidUrl;
     const { pathname, search } = getUrlParts(value);
     if (!/^https:\/\//i.test(value)) errorMessage = messages.invalidUrlPrefix;
-    else if (pathname && pathname.slice(1))
+    else if (search || (pathname && pathname.slice(1)))
       errorMessage = messages.invalidUrlParameter;
-    else if (search) errorMessage = messages.invalidUrlQuerystring;
     return intl.formatMessage(errorMessage);
   };
 
