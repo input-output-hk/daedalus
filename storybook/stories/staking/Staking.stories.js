@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { withKnobs, date, number } from '@storybook/addon-knobs';
+import { withKnobs, date, number, boolean } from '@storybook/addon-knobs';
 import { action } from '@storybook/addon-actions';
 import StoryLayout from '../_support/StoryLayout';
 import StoryProvider from '../_support/StoryProvider';
@@ -237,9 +237,18 @@ storiesOf('Decentralization | Staking', module)
       id: 'wizard',
     }
   )
-  .add('Undelegate Confirmation', StakingUndelegateConfirmationStory, {
-    id: 'undelegate-confirmation',
-  })
+  .add(
+    'Undelegate Confirmation',
+    (props) => (
+      <StakingUndelegateConfirmationStory
+        {...props}
+        isHardwareWallet={boolean('isHardwareWallet', false)}
+      />
+    ),
+    {
+      id: 'undelegate-confirmation',
+    }
+  )
 
   .add(
     'Undelegate Confirmation - unknownn stake pool',

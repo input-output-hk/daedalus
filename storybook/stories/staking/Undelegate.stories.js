@@ -11,18 +11,28 @@ import { generateWallet } from '../_support/utils';
 import UndelegateWalletConfirmationDialog from '../../../source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog';
 import UndelegateWalletSuccessDialog from '../../../source/renderer/app/components/wallet/settings/UndelegateWalletSuccessDialog';
 
-const selectedWallet = generateWallet(
+const generalWallet = generateWallet(
   'Wallet 1',
   '1000000000',
   0,
   STAKE_POOLS[0]
 );
+const hardwareWallet = generateWallet(
+  'Wallet 1',
+  '10000000',
+  0,
+  STAKE_POOLS[0],
+  false,
+  'ready',
+  true
+);
 
 export const StakingUndelegateConfirmationStory = (props: {
   unknownStakePool?: boolean,
+  isHardwareWallet?: boolean,
 }) => (
   <UndelegateWalletConfirmationDialog
-    selectedWallet={selectedWallet}
+    selectedWallet={props.isHardwareWallet ? hardwareWallet : generalWallet}
     stakePoolName={!props.unknownStakePool ? 'Lush 1' : null}
     stakePoolTicker={!props.unknownStakePool ? 'LSH1' : null}
     onConfirm={linkTo(

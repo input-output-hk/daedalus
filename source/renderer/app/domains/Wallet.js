@@ -102,6 +102,7 @@ export type WalletProps = {
   passwordUpdateDate: ?Date,
   syncState: WalletSyncState,
   isLegacy: boolean,
+  isHardwareWallet?: boolean,
   delegatedStakePoolId?: ?string,
   delegationStakePoolStatus?: ?string,
   lastDelegationStakePoolId?: ?string,
