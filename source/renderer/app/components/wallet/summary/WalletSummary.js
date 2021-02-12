@@ -40,7 +40,7 @@ const messages = defineMessages({
   },
   currencyIsFetchingRate: {
     id: 'wallet.summary.page.currency.isFetchingRate',
-    defaultMessage: '!!!Fetching conversion rates',
+    defaultMessage: '!!!fetching conversion rates',
     description: '"Currency - Fetching" label on Wallet summary page',
   },
 });
@@ -103,7 +103,7 @@ export default class WalletSummary extends Component<Props> {
     const { decimalDigits } = currencySelected || {};
 
     let currencyWalletAmount;
-    if (isRestoreActive) currencyWalletAmount = '-';
+    if (isRestoreActive) currencyWalletAmount = '- ';
     else if (hasCurrency && currencyRate)
       currencyWalletAmount = formattedWalletCurrencyAmount(
         wallet.amount,
@@ -130,7 +130,9 @@ export default class WalletSummary extends Component<Props> {
               <div className={styles.walletName}>{wallet.name}</div>
               <div className={styles.walletAmount}>
                 {walletAmount}
-                <span className={styles.currencySymbol}>ADA</span>
+                <span className={styles.currencySymbol}>
+                  {intl.formatMessage(globalMessages.unitAda)}
+                </span>
               </div>
               {!isLoadingTransactions ? (
                 <div className={styles.transactionsCountWrapper}>

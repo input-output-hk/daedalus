@@ -11137,7 +11137,7 @@
         }
       },
       {
-        "defaultMessage": "!!!Fetching conversion rates",
+        "defaultMessage": "!!!fetching conversion rates",
         "description": "\"Currency - Fetching\" label on Wallet summary page",
         "end": {
           "column": 3,
