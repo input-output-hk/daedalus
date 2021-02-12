@@ -6,7 +6,7 @@ import type { StoresMap } from '../../../../stores/index';
 import type { ActionsMap } from '../../../../actions/index';
 import type { DelegationCalculateFeeResponse } from '../../../../api/staking/types';
 import UndelegateWalletConfirmationDialog from '../../../../components/wallet/settings/UndelegateWalletConfirmationDialog';
-import UndelegateWalletConfirmationResultDialog from '../../../../components/wallet/settings/UndelegateWalletConfirmationResultDialog';
+import UndelegateWalletSuccessDialog from '../../../../components/wallet/settings/UndelegateWalletSuccessDialog';
 import { DELEGATION_ACTIONS } from '../../../../config/stakingConfig';
 
 type Props = {
@@ -129,7 +129,7 @@ export default class UndelegateWalletDialogContainer extends Component<
       !quitStakePoolRequest.error
     ) {
       return (
-        <UndelegateWalletConfirmationResultDialog
+        <UndelegateWalletSuccessDialog
           walletName={walletName}
           futureEpochStartTime={futureEpochStartTime}
           currentLocale={currentLocale}

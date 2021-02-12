@@ -10244,7 +10244,7 @@
           "column": 3,
           "line": 19
         },
-        "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationResultDialog.js",
+        "file": "source/renderer/app/components/wallet/settings/UndelegateWalletSuccessDialog.js",
         "id": "wallet.settings.undelegate.result.dialog.title",
         "start": {
           "column": 9,
@@ -10258,7 +10258,7 @@
           "column": 3,
           "line": 25
         },
-        "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationResultDialog.js",
+        "file": "source/renderer/app/components/wallet/settings/UndelegateWalletSuccessDialog.js",
         "id": "wallet.settings.undelegate.result.dialog.description1",
         "start": {
           "column": 16,
@@ -10272,7 +10272,7 @@
           "column": 3,
           "line": 31
         },
-        "file": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationResultDialog.js",
+        "file": "source/renderer/app/components/wallet/settings/UndelegateWalletSuccessDialog.js",
         "id": "wallet.settings.undelegate.result.dialog.description2",
         "start": {
           "column": 16,
@@ -10280,7 +10280,7 @@
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationResultDialog.json"
+    "path": "source/renderer/app/components/wallet/settings/UndelegateWalletSuccessDialog.json"
   },
   {
     "descriptors": [

@@ -5,7 +5,7 @@ import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import SVGInline from 'react-svg-inline';
 import DialogCloseButton from '../../widgets/DialogCloseButton';
 import Dialog from '../../widgets/Dialog';
-import styles from './UndelegateWalletConfirmationResultDialog.scss';
+import styles from './UndelegateWalletSuccessDialog.scss';
 import globalMessages from '../../../i18n/global-messages';
 import sadLogo from '../../../assets/images/untada.inline.svg';
 import humanizeDurationByLocale from '../../../utils/humanizeDurationByLocale';
@@ -40,7 +40,7 @@ type Props = {
 type State = { timeUntilNextEpochStart: number };
 
 @observer
-export default class UndelegateWalletConfirmationResultDialog extends Component<
+export default class UndelegateWalletSuccessDialog extends Component<
   Props,
   State
 > {

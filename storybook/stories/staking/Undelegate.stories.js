@@ -8,7 +8,7 @@ import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.d
 import { generateWallet } from '../_support/utils';
 // Screens
 import UndelegateWalletConfirmationDialog from '../../../source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog';
-import UndelegateWalletConfirmationResultDialog from '../../../source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationResultDialog';
+import UndelegateWalletSuccessDialog from '../../../source/renderer/app/components/wallet/settings/UndelegateWalletSuccessDialog';
 
 const selectedWallet = generateWallet(
   'Wallet 1',
@@ -42,7 +42,7 @@ export const StakingUndelegateConfirmationResultStory = ({
 }: {
   locale: string,
 }) => (
-  <UndelegateWalletConfirmationResultDialog
+  <UndelegateWalletSuccessDialog
     walletName="Darko's ADA"
     slotLength={null}
     onClose={() => null}
