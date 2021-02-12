@@ -3,6 +3,7 @@ import React from 'react';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import { linkTo } from '@storybook/addon-links';
+import { number } from '@storybook/addon-knobs';
 
 import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
 import { generateWallet } from '../_support/utils';
@@ -32,7 +33,10 @@ export const StakingUndelegateConfirmationStory = (props: {
     onExternalLinkClick={() => null}
     isSubmitting={false}
     error={null}
-    fees={new BigNumber(33333.33)}
+    fees={{
+      fee: new BigNumber(number('fee', 3)),
+      deposit: new BigNumber(number('deposit', 10)),
+    }}
     hwDeviceStatus="ready"
   />
 );

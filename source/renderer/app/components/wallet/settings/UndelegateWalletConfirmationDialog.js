@@ -347,7 +347,7 @@ export default class UndelegateWalletConfirmationDialog extends Component<Props>
               {intl.formatMessage(messages.feesLabel)}
             </p>
             <p className={styles.feesAmount}>
-              {!fees ? (
+              {!fees || !fees.fee ? (
                 <span className={styles.calculatingFeesLabel}>
                   {intl.formatMessage(messages.calculatingFees)}
                 </span>
