@@ -246,11 +246,12 @@ export default class WalletSettings extends Component<Props, State> {
     const notDelegating =
       delegationStakePoolStatus === WalletDelegationStatuses.NOT_DELEGATING;
 
-    if (!IS_WALLET_UNDELEGATION_ENABLED) {
-      return null;
-    }
-
-    if (isLegacy || (!notDelegating && !walletReward.isZero())) {
+    /// @TODO: Once undelegation for rewarded wallet works fine with api, remove reward checking and config
+    if (
+      !IS_WALLET_UNDELEGATION_ENABLED ||
+      isLegacy ||
+      (!notDelegating && !walletReward.isZero())
+    ) {
       return null;
     }
 
