@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Chores
+
+- Updated `cardano-wallet` to version `2021-02-12` ([PR 2358](https://github.com/input-output-hk/daedalus/pull/2358))
+
 ## 3.3.0
 
 ### Features
