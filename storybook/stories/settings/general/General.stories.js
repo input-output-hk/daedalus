@@ -20,6 +20,7 @@ import StakePoolsSettings from '../../../../source/renderer/app/components/setti
 import DisplaySettings from '../../../../source/renderer/app/components/settings/categories/DisplaySettings';
 import SupportSettings from '../../../../source/renderer/app/components/settings/categories/SupportSettings';
 import TermsOfUseSettings from '../../../../source/renderer/app/components/settings/categories/TermsOfUseSettings';
+import WalletsSettings from '../../../../source/renderer/app/components/settings/categories/WalletsSettings';
 
 const getParamName = (obj, itemName): any =>
   Object.entries(obj).find((entry: [any, any]) => itemName === entry[1]);
@@ -46,6 +47,21 @@ storiesOf('Settings|General', module)
       currentLocale={LANGUAGE_OPTIONS[0].value}
       currentNumberFormat={NUMBER_OPTIONS[0].value}
       currentTimeFormat={TIME_OPTIONS[0].value}
+    />
+  ))
+  .add('Wallets', () => (
+    <WalletsSettings
+      currencySelected={{
+        id: 'uniswap-state-dollar',
+        symbol: 'usd',
+        name: 'unified Stable Dollar',
+      }}
+      currencyRate={0.321}
+      currencyList={[]}
+      currencyIsActive
+      onSelectCurrency={action('onSelectCurrency')}
+      onToggleCurrencyIsActive={action('onToggleCurrencyIsActive')}
+      onOpenExternalLink={action('onOpenExternalLink')}
     />
   ))
   .add('Stake Pools', () => (
