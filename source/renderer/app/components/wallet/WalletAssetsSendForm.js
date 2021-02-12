@@ -264,7 +264,11 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     });
   };
 
-  setFormFields = (resetFormFields: boolean, id: number, receiverId: string) => {
+  setFormFields = (
+    resetFormFields: boolean,
+    id: number,
+    receiverId: string
+  ) => {
     const formFields = this.form.fields;
     const receiverField = formFields.get(`receiver${id}`);
     const assetField = formFields.get(`asset${id}`);
@@ -273,13 +277,13 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     if (resetFormFields) {
       this.setState({
         sendFormFields: {
-            [receiverId]: {
-              receiver: receiverField,
-              asset: assetField,
-              walletsDropdown: walletsDropdownField,
-              selectedNativeToken,
-            }
+          [receiverId]: {
+            receiver: receiverField,
+            asset: assetField,
+            walletsDropdown: walletsDropdownField,
+            selectedNativeToken,
           },
+        },
       });
     } else {
       this.setState((prevState) => ({
@@ -290,7 +294,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
             asset: assetField,
             walletsDropdown: walletsDropdownField,
             selectedNativeToken,
-          }
+          },
         },
       }));
     }
@@ -561,7 +565,12 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       sendFormFields,
     } = this.state;
 
-    const { receiver, asset, walletsDropdown, selectedNativeToken } = sendFormFields[receiverId];
+    const {
+      receiver,
+      asset,
+      walletsDropdown,
+      selectedNativeToken,
+    } = sendFormFields[receiverId];
 
     const walletsDropdownFieldProps = walletsDropdown.bind();
 
@@ -681,73 +690,77 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                     &nbsp;{selectedNativeToken.metadata.acronym}
                   </div>
                 )}
-              <NumericInput
-                {...assetFieldProps}
-                className="asset"
-                ref={(input) => {
-                  this.assetFieldRef[index] = input;
-                }}
-                label={intl.formatMessage(messages.assetLabel)}
-                bigNumberFormat={this.getCurrentNumberFormat()}
-                decimalPlaces={currencyMaxFractionalDigits}
-                numberLocaleOptions={{
-                  minimumFractionDigits: currencyMaxFractionalDigits,
-                }}
-                onChange={(value) => {
-                  this._isCalculatingTransactionFee = true;
-                  this.setState({
-                    isResetButtonDisabled: false,
-                  });
-                  asset.onChange(value);
-                  estimatedField.onChange(fees);
-                  if (value) {
-                    this.renderAssetRow();
+              <Fragment>
+                <NumericInput
+                  {...assetFieldProps}
+                  className="asset"
+                  ref={(input) => {
+                    this.assetFieldRef[index] = input;
+                  }}
+                  label={intl.formatMessage(messages.assetLabel)}
+                  bigNumberFormat={this.getCurrentNumberFormat()}
+                  decimalPlaces={currencyMaxFractionalDigits}
+                  numberLocaleOptions={{
+                    minimumFractionDigits: currencyMaxFractionalDigits,
+                  }}
+                  onChange={(value) => {
+                    this._isCalculatingTransactionFee = true;
+                    this.setState({
+                      isResetButtonDisabled: false,
+                    });
+                    asset.onChange(value);
+                    estimatedField.onChange(fees);
+                    if (value) {
+                      this.renderAssetRow();
+                    }
+                  }}
+                  currency={
+                    selectedNativeToken && selectedNativeToken.metadata
+                      ? selectedNativeToken.metadata.acronym
+                      : null
                   }
-                }}
-                currency={
-                  selectedNativeToken && selectedNativeToken.metadata
-                    ? selectedNativeToken.metadata.acronym
-                    : null
-                }
-                value={amount}
-                error={asset.error}
-                skin={AmountInputSkin}
-                onKeyPress={this.handleSubmitOnEnter}
-                allowSigns={false}
-              />
-              {this.hasAssetValue && (
-                <div className={styles.clearAssetContainer}>
-                  <PopOver
-                    content="Clear"
-                    placement={isClearTooltipOpeningDownward ? 'bottom' : 'top'}
-                  >
-                    <button
-                      onClick={() => this.clearAssetValue(index + 1)}
-                      className={styles.clearAssetButton}
-                    >
-                      <SVGInline
-                        svg={closeIcon}
-                        className={styles.clearReceiverIcon}
-                      />
-                    </button>
-                  </PopOver>
-                  <div className={styles.separator} />
-                </div>
-              )}
-              <div className={styles.walletsDropdownWrapper}>
-                <WalletsDropdown
-                  className={styles.walletsDropdown}
-                  {...walletsDropdownFieldProps}
-                  numberOfStakePools={4}
-                  assets={assets}
-                  onChange={(id) => this.onSelectAsset(id, index, receiverId)}
-                  syncingLabel={intl.formatMessage(messages.syncingWallet)}
-                  hasAssetsEnabled
-                  value={selectedAssetId}
-                  getStakePoolById={() => {}}
-                  errorPosition="bottom"
+                  value={amount}
+                  error={asset.error}
+                  skin={AmountInputSkin}
+                  onKeyPress={this.handleSubmitOnEnter}
+                  allowSigns={false}
                 />
-              </div>
+                {this.hasAssetValue && (
+                  <div className={styles.clearAssetContainer}>
+                    <PopOver
+                      content="Clear"
+                      placement={
+                        isClearTooltipOpeningDownward ? 'bottom' : 'top'
+                      }
+                    >
+                      <button
+                        onClick={() => this.clearAssetValue(index + 1)}
+                        className={styles.clearAssetButton}
+                      >
+                        <SVGInline
+                          svg={closeIcon}
+                          className={styles.clearReceiverIcon}
+                        />
+                      </button>
+                    </PopOver>
+                    <div className={styles.separator} />
+                  </div>
+                )}
+                <div className={styles.walletsDropdownWrapper}>
+                  <WalletsDropdown
+                    className={styles.walletsDropdown}
+                    {...walletsDropdownFieldProps}
+                    numberOfStakePools={4}
+                    assets={assets}
+                    onChange={(id) => this.onSelectAsset(id, index, receiverId)}
+                    syncingLabel={intl.formatMessage(messages.syncingWallet)}
+                    hasAssetsEnabled
+                    value={selectedAssetId}
+                    getStakePoolById={() => {}}
+                    errorPosition="bottom"
+                  />
+                </div>
+              </Fragment>
               <Button
                 className={addAssetButtonClasses}
                 label={intl.formatMessage(messages.addAssetButtonLabel)}
@@ -970,11 +983,13 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         ) : (
           <BorderedBox>
             <div className={styles.walletAssetsSendForm}>
-              {Object.keys(sendFormFields).map((receiverId: string, index: number) => (
-                <Fragment key={receiverId}>
-                  {this.renderReceiverRow(receiverId, index)}
-                </Fragment>
-              ))}
+              {Object.keys(sendFormFields).map(
+                (receiverId: string, index: number) => (
+                  <Fragment key={receiverId}>
+                    {this.renderReceiverRow(receiverId, index)}
+                  </Fragment>
+                )
+              )}
               {showReceiverField &&
                 showReceiverField[0] &&
                 showReceiverField.length > 0 && (
@@ -984,7 +999,10 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                       messages.addNewReceiverButtonLabel
                     )}
                     onClick={() =>
-                      this.addNewReceiverRow(Object.keys(sendFormFields).length + 1, `receiver${Object.keys(sendFormFields).length + 1}`)
+                      this.addNewReceiverRow(
+                        Object.keys(sendFormFields).length + 1,
+                        `receiver${Object.keys(sendFormFields).length + 1}`
+                      )
                     }
                     skin={ButtonSkin}
                   />
