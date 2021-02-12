@@ -120,6 +120,15 @@ export default (props: { currentTheme: string, locale: Locale }) => {
     recoveryPhraseId
   );
 
+  const lastDelegationStakePoolStatus = select(
+    'Delegation status',
+    {
+      Delegating: 'delegating',
+      'Not delegating': 'not_delegating',
+    },
+    'delegating'
+  );
+
   return (
     <WalletSettings
       isIncentivizedTestnet={isIncentivizedTestnetTheme(currentTheme)}
@@ -162,7 +171,7 @@ export default (props: { currentTheme: string, locale: Locale }) => {
       walletId="walletid"
       walletName={text('Wallet Name', 'Wallet Name', basicSettingsId)}
       walletReward={new BigNumber(0)}
-      delegationStakePoolStatus="not_delegating"
+      lastDelegationStakePoolStatus={lastDelegationStakePoolStatus}
       isRestoring={false}
       walletPublicKey={walletPublicKeyId}
       spendingPasswordUpdateDate={moment().subtract(1, 'month').toDate()}

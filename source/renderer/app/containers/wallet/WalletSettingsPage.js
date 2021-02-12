@@ -117,7 +117,9 @@ export default class WalletSettingsPage extends Component<Props> {
           walletId={activeWallet.id}
           walletName={activeWallet.name}
           walletReward={activeWallet.reward}
-          delegationStakePoolStatus={activeWallet.delegationStakePoolStatus}
+          lastDelegationStakePoolStatus={
+            activeWallet.lastDelegationStakePoolStatus
+          }
           isRestoring={activeWallet.isRestoring}
           walletPublicKey={activeWalletPublicKey}
           creationDate={creationDate}
