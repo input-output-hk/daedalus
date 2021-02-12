@@ -544,7 +544,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
 
   renderAssetRow = () => {};
 
-  renderReceiverRow = (row: string, index: number): Node => {
+  renderReceiverRow = (receiverId: string, index: number): Node => {
     const { intl } = this.context;
     const {
       isClearTooltipOpeningDownward,
@@ -561,7 +561,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       sendFormFields,
     } = this.state;
 
-    const { receiver, asset, walletsDropdown, selectedNativeToken } = sendFormFields[row];
+    const { receiver, asset, walletsDropdown, selectedNativeToken } = sendFormFields[receiverId];
 
     const walletsDropdownFieldProps = walletsDropdown.bind();
 
@@ -614,7 +614,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
             <Button
               className={removeReceiverButtonClasses}
               label={intl.formatMessage(messages.removeReceiverButtonLabel)}
-              onClick={() => this.removeReceiverRow(index + 1, row)}
+              onClick={() => this.removeReceiverRow(index + 1, receiverId)}
               skin={ButtonSkin}
             />
           )}
@@ -740,7 +740,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                   {...walletsDropdownFieldProps}
                   numberOfStakePools={4}
                   assets={assets}
-                  onChange={(id) => this.onSelectAsset(id, index, row)}
+                  onChange={(id) => this.onSelectAsset(id, index, receiverId)}
                   syncingLabel={intl.formatMessage(messages.syncingWallet)}
                   hasAssetsEnabled
                   value={selectedAssetId}
@@ -751,7 +751,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
               <Button
                 className={addAssetButtonClasses}
                 label={intl.formatMessage(messages.addAssetButtonLabel)}
-                onClick={() => this.addAssetRow(index)}
+                onClick={() => this.addNewAssetRow(index, receiverId)}
                 skin={ButtonSkin}
               />
             </div>
@@ -790,19 +790,18 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     this.form.del(walletsDropdownFieldToDelete);
   };
 
-  addNewReceiverField = (index: number) => {
-    const newReceiver = `receiver${index}`;
-    this.form.add({ name: newReceiver, value: '', key: newReceiver });
+  addNewReceiverField = (receiverId: string) => {
+    this.form.add({ name: receiverId, value: '', key: receiverId });
     this.form
-      .$(newReceiver)
+      .$(receiverId)
       .set('label', this.context.intl.formatMessage(messages.receiverLabel));
     this.form
-      .$(newReceiver)
+      .$(receiverId)
       .set(
         'placeholder',
         this.context.intl.formatMessage(messages.receiverHint)
       );
-    this.form.$(newReceiver).set('validators', [
+    this.form.$(receiverId).set('validators', [
       async ({ field, form }) => {
         const { value } = field;
         if (value === '') {
@@ -812,11 +811,11 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
             this.context.intl.formatMessage(messages.fieldIsRequired),
           ];
         }
-        const assetField = form.$(`asset${index}`);
-        const isAmountValid = assetField.isValid;
+        const receiverField = form.$(receiverId);
+        const isAmountValid = receiverField.isValid;
         const isValidAddress = await this.props.addressValidator(value);
         if (isValidAddress && isAmountValid) {
-          const amountValue = assetField.value.toString();
+          const amountValue = receiverField.value.toString();
           this.calculateTransactionFee(value, amountValue);
         } else {
           this.resetTransactionFee();
@@ -829,7 +828,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     ]);
   };
 
-  addNewAssetField = (index: number) => {
+  addNewAssetField = (index: number, receiverId?: string) => {
     const newAsset = `asset${index}`;
     this.form.add({ name: newAsset, value: null, key: newAsset });
     this.form
@@ -875,7 +874,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     ]);
   };
 
-  addNewWalletsDropdownField = (index: number) => {
+  addNewWalletsDropdownField = (index: number, receiverId?: string) => {
     const newWalletsDropdown = `walletsDropdown${index}`;
     this.form.add({
       name: newWalletsDropdown,
@@ -886,15 +885,18 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
   };
 
   addNewReceiverRow = (index: number, receiverId: string) => {
-    this.addNewReceiverField(index);
+    this.addNewReceiverField(receiverId);
     this.addNewAssetField(index);
     this.addNewWalletsDropdownField(index);
     this.showReceiverField(index - 1);
     this.setFormFields(false, index, receiverId);
   };
 
-  // eslint-disable-next-line no-unused-vars
-  addAssetRow = (index: number) => {};
+  addNewAssetRow = (index: number, receiverId: string) => {
+    this.addNewAssetField(index, receiverId);
+    this.addNewWalletsDropdownField(index, receiverId);
+    this.setFormFields(false, index, receiverId);
+  };
 
   onSelectAsset = (assetId: string, id: number, receiverId: string) => {
     this.setState({ selectedAssetId: assetId });
@@ -968,9 +970,9 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         ) : (
           <BorderedBox>
             <div className={styles.walletAssetsSendForm}>
-              {Object.keys(sendFormFields).map((row: string, index: number) => (
-                <Fragment key={row}>
-                  {this.renderReceiverRow(row, index)}
+              {Object.keys(sendFormFields).map((receiverId: string, index: number) => (
+                <Fragment key={receiverId}>
+                  {this.renderReceiverRow(receiverId, index)}
                 </Fragment>
               ))}
               {showReceiverField &&
