@@ -2420,7 +2420,7 @@
         "description": "invalidUrlParameter for the \"Smash Custom Server\" selection on the Stake Pools settings page.",
         "end": {
           "column": 3,
-          "line": 134
+          "line": 135
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
         "id": "settings.stakePools.smashUrl.input.invalidUrlParameter",
