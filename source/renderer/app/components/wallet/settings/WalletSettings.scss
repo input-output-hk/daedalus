@@ -21,12 +21,12 @@
   }
 
   .walletPublicKeyBox {
-    margin: 20px 0;
+    margin-top: 20px;
   }
 
   .undelegateWalletBox,
   .deleteWalletBox {
-    margin-bottom: 20px;
+    margin-top: 20px;
 
     span {
       color: var(--theme-input-label-color);
@@ -49,6 +49,10 @@
         margin-bottom: 15px;
       }
     }
+  }
+
+  .deleteWalletBox {
+    margin-bottom: 20px;
   }
 }
 
