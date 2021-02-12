@@ -51,6 +51,14 @@
     }
   }
 
+  .undelegateWalletBox {
+    :global {
+      .SimpleButton_root.flat {
+        color: var(--theme-color-error);
+      }
+    }
+  }
+
   .deleteWalletBox {
     margin-bottom: 20px;
   }
