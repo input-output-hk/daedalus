@@ -6,6 +6,7 @@ Changelog
 ### Features
 
 - Implemented `Undelegate Wallet` on wallet settings screen ([PR 2351](https://github.com/input-output-hk/daedalus/pull/2351))
+- Added display of wallet balance in other currencies ([PR 2290](https://github.com/input-output-hk/daedalus/pull/2290))
 - Implemented alternate Ledger wallet handling ([PR 2342](https://github.com/input-output-hk/daedalus/pull/2342))
 - Re-enabled "Wallet import" feature ([PR 2308](https://github.com/input-output-hk/daedalus/pull/2308))
 - Implemented Voting Centar ([PR 2315](https://github.com/input-output-hk/daedalus/pull/2315), [PR 2353](https://github.com/input-output-hk/daedalus/pull/2353), [PR 2354](https://github.com/input-output-hk/daedalus/pull/2354))
@@ -15,6 +16,7 @@ Changelog
 
 ### Fixes
 
+- Fixed an automatic update failure ([PR 2352](https://github.com/input-output-hk/daedalus/pull/2352))
 - Fixed logging issue with too few `cardano-wallet` logs being packed into logs zip archive ([PR 2341](https://github.com/input-output-hk/daedalus/pull/2341))
 - Fixed misalignment of the "i" icon on the "Set password" dialog ([PR 2337](https://github.com/input-output-hk/daedalus/pull/2337))
 - Removed steps counter from the "Success" wallet restoration dialog step ([PR 2335](https://github.com/input-output-hk/daedalus/pull/2335))

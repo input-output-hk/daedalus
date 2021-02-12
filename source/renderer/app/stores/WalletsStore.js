@@ -30,12 +30,14 @@ import {
   RESTORE_WALLET_STEPS,
 } from '../config/walletRestoreConfig';
 import { IS_WALLET_PUBLIC_KEY_SHARING_ENABLED } from '../config/walletsConfig';
+import { CURRENCY_REQUEST_RATE_INTERVAL } from '../config/currencyConfig';
 import type {
   WalletKind,
   WalletDaedalusKind,
   WalletYoroiKind,
   WalletHardwareKind,
 } from '../types/walletRestoreTypes';
+import type { Currency } from '../types/currencyTypes.js';
 import type { CsvFileContent } from '../../../common/types/csv-request.types';
 import type { WalletExportTypeChoices } from '../types/walletExportTypes';
 import type { WalletImportFromFileParams } from '../actions/wallets-actions';
@@ -141,6 +143,17 @@ export default class WalletsStore extends Store {
   @observable activeValue: ?BigNumber = null;
   @observable activePublicKey: ?string = null;
 
+  /* ------------  Currencies  ----------- */
+  @observable currencyIsFetchingList: boolean = false;
+  @observable currencyIsFetchingRate: boolean = false;
+  @observable currencyIsAvailable: boolean = false;
+  @observable currencyIsActive: boolean = false;
+
+  @observable currencyList: Array<Currency> = [];
+  @observable currencySelected: ?Currency = null;
+  @observable currencyRate: ?number = null;
+  @observable currencyLastFetched: ?Date = null;
+
   /* ----------  Create Wallet  ---------- */
   @observable createWalletStep = null;
   @observable createWalletShowAbortConfirmation = false;
@@ -205,6 +218,7 @@ export default class WalletsStore extends Store {
     spendingPassword: '',
   };
   _pollingBlocked = false;
+  _getCurrencyRateInterval: ?IntervalID = null;
 
   setup() {
     setInterval(this._pollRefresh, this.WALLET_REFRESH_INTERVAL);
@@ -287,6 +301,10 @@ export default class WalletsStore extends Store {
     walletsActions.transferFundsCalculateFee.listen(
       this._transferFundsCalculateFee
     );
+    walletsActions.setCurrencySelected.listen(this._setCurrencySelected);
+    walletsActions.toggleCurrencyIsActive.listen(this._toggleCurrencyIsActive);
+
+    this.setupCurrency();
   }
 
   @action _getWalletPublicKey = async () => {
@@ -311,6 +329,91 @@ export default class WalletsStore extends Store {
     } catch (error) {
       throw error;
     }
+  };
+
+  @action setupCurrency = async () => {
+    // CURRENCY_REQUEST_RATE_INTERVAL
+
+    // Check if the user has enabled currencies
+    // Otherwise applies the default config
+    const currencyIsActive = await this.api.localStorage.getCurrencyIsActive();
+
+    // Check if the user has already selected a currency
+    // Otherwise applies the default currency
+    const currencySelected = await this.api.localStorage.getCurrencySelected();
+
+    runInAction(() => {
+      this.currencyIsActive = currencyIsActive;
+      this.currencySelected = currencySelected;
+    });
+
+    clearInterval(this._getCurrencyRateInterval);
+    this._getCurrencyRateInterval = setInterval(
+      this.getCurrencyRate,
+      CURRENCY_REQUEST_RATE_INTERVAL
+    );
+
+    // Fetch the currency list and rate
+    this.getCurrencyList();
+    this.getCurrencyRate();
+  };
+
+  @action getCurrencyList = async () => {
+    this.currencyIsFetchingList = true;
+    const currencyList = await this.api.ada.getCurrencyList();
+    runInAction(() => {
+      this.currencyList = currencyList;
+      this.currencyIsFetchingList = false;
+    });
+  };
+
+  @action getCurrencyRate = async () => {
+    const { currencySelected } = this;
+    if (currencySelected && currencySelected.symbol) {
+      try {
+        this.currencyIsFetchingRate = true;
+        const currencyRate = await this.api.ada.getCurrencyRate(
+          currencySelected
+        );
+        runInAction(() => {
+          this.currencyIsFetchingRate = false;
+          this.currencyLastFetched = new Date();
+          if (currencyRate) {
+            this.currencyRate = currencyRate;
+            this.currencyIsAvailable = true;
+          } else {
+            throw new Error('Error fetching the Currency rate');
+          }
+        });
+      } catch (error) {
+        runInAction(() => {
+          this.currencyRate = null;
+          this.currencyIsAvailable = false;
+        });
+        clearInterval(this._getCurrencyRateInterval);
+      }
+    }
+  };
+
+  @action _setCurrencySelected = async ({
+    currencySymbol,
+  }: {
+    currencySymbol: string,
+  }) => {
+    const { currencyList } = this;
+    const currencySelected = currencyList.find(
+      ({ symbol }) => currencySymbol === symbol
+    );
+    if (currencySelected) {
+      this.currencySelected = currencySelected;
+      this.getCurrencyRate();
+      await this.api.localStorage.setCurrencySelected(currencySelected);
+    }
+  };
+
+  @action _toggleCurrencyIsActive = () => {
+    this.currencyIsActive = !this.currencyIsActive;
+    this.api.localStorage.setCurrencyIsActive(this.currencyIsActive);
   };
 
   _create = async (params: { name: string, spendingPassword: string }) => {

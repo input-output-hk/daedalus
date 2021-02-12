@@ -2552,6 +2552,81 @@
   {
     "descriptors": [
       {
+        "defaultMessage": "!!!Display ada balances in other currency",
+        "description": "titleLabel for the Currency settings in the Wallets settings page.",
+        "end": {
+          "column": 3,
+          "line": 19
+        },
+        "file": "source/renderer/app/components/settings/categories/WalletsSettings.js",
+        "id": "settings.wallets.currency.titleLabel",
+        "start": {
+          "column": 22,
+          "line": 14
+        }
+      },
+      {
+        "defaultMessage": "!!!Select a conversion currency for displaying your ada balances.",
+        "description": "currencyDescription for the Currency settings in the Wallets settings page.",
+        "end": {
+          "column": 3,
+          "line": 26
+        },
+        "file": "source/renderer/app/components/settings/categories/WalletsSettings.js",
+        "id": "settings.wallets.currency.description",
+        "start": {
+          "column": 23,
+          "line": 20
+        }
+      },
+      {
+        "defaultMessage": "!!!Select currency",
+        "description": "currencySelectLabel for the Currency settings in the Wallets settings page.",
+        "end": {
+          "column": 3,
+          "line": 32
+        },
+        "file": "source/renderer/app/components/settings/categories/WalletsSettings.js",
+        "id": "settings.wallets.currency.selectLabel",
+        "start": {
+          "column": 23,
+          "line": 27
+        }
+      },
+      {
+        "defaultMessage": "!!!Conversion rates are provided by CoinGecko without any warranty. Please use the calculated conversion value only as a reference. Converted balances reflect the current global average price of ada on active cryptocurrency exchanges, as tracked by CoinGecko. Ada conversion is available only to fiat and cryptocurrencies that are supported by CoinGecko, other local currency conversions may not be available.",
+        "description": "currencyDisclaimer for the Currency settings in the Wallets settings page.",
+        "end": {
+          "column": 3,
+          "line": 39
+        },
+        "file": "source/renderer/app/components/settings/categories/WalletsSettings.js",
+        "id": "settings.wallets.currency.disclaimer",
+        "start": {
+          "column": 22,
+          "line": 33
+        }
+      },
+      {
+        "defaultMessage": "!!!Powered by",
+        "description": "currencyPoweredByLabel for the Currency settings in the Wallets settings page.",
+        "end": {
+          "column": 3,
+          "line": 45
+        },
+        "file": "source/renderer/app/components/settings/categories/WalletsSettings.js",
+        "id": "settings.wallets.currency.poweredBy.label",
+        "start": {
+          "column": 26,
+          "line": 40
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/settings/categories/WalletsSettings.json"
+  },
+  {
+    "descriptors": [
+      {
         "defaultMessage": "!!!General",
         "description": "Label for the \"General\" link in the settings menu.",
         "end": {
@@ -2566,17 +2641,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Stake Pools",
-        "description": "Label for the \"Support\" link in the settings menu.",
+        "defaultMessage": "!!!Wallets",
+        "description": "Label for the \"Wallets\" link in the settings menu.",
         "end": {
           "column": 3,
           "line": 19
         },
         "file": "source/renderer/app/components/settings/menu/SettingsMenu.js",
+        "id": "settings.menu.wallets.link.label",
+        "start": {
+          "column": 11,
+          "line": 15
+        }
+      },
+      {
+        "defaultMessage": "!!!Stake Pools",
+        "description": "Label for the \"Support\" link in the settings menu.",
+        "end": {
+          "column": 3,
+          "line": 24
+        },
+        "file": "source/renderer/app/components/settings/menu/SettingsMenu.js",
         "id": "settings.menu.stakePools.link.label",
         "start": {
           "column": 14,
-          "line": 15
+          "line": 20
         }
       },
       {
@@ -2584,13 +2673,13 @@
         "description": "Label for the \"Support\" link in the settings menu.",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 29
         },
         "file": "source/renderer/app/components/settings/menu/SettingsMenu.js",
         "id": "settings.menu.support.link.label",
         "start": {
           "column": 11,
-          "line": 20
+          "line": 25
         }
       },
       {
@@ -2598,13 +2687,13 @@
         "description": "Label for the \"Terms of service\" link in the settings menu.",
         "end": {
           "column": 3,
-          "line": 29
+          "line": 34
         },
         "file": "source/renderer/app/components/settings/menu/SettingsMenu.js",
         "id": "settings.menu.termsOfUse.link.label",
         "start": {
           "column": 14,
-          "line": 25
+          "line": 30
         }
       },
       {
@@ -2612,13 +2701,13 @@
         "description": "Label for the \"Themes\" link in the settings menu.",
         "end": {
           "column": 3,
-          "line": 34
+          "line": 39
         },
         "file": "source/renderer/app/components/settings/menu/SettingsMenu.js",
         "id": "settings.menu.display.link.label",
         "start": {
           "column": 11,
-          "line": 30
+          "line": 35
         }
       }
     ],
@@ -11118,13 +11207,13 @@
         "description": "\"Number of transactions\" label on Wallet summary page",
         "end": {
           "column": 3,
-          "line": 18
+          "line": 24
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
         "id": "wallet.summary.page.transactionsLabel",
         "start": {
           "column": 21,
-          "line": 14
+          "line": 20
         }
       },
       {
@@ -11132,13 +11221,55 @@
         "description": "\"Number of pending transactions\" label on Wallet summary page",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 30
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
         "id": "wallet.summary.page.pendingTransactionsLabel",
         "start": {
           "column": 28,
-          "line": 19
+          "line": 25
+        }
+      },
+      {
+        "defaultMessage": "!!!Converts as",
+        "description": "\"Currency - title\" label on Wallet summary page",
+        "end": {
+          "column": 3,
+          "line": 35
+        },
+        "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
+        "id": "wallet.summary.page.currency.title",
+        "start": {
+          "column": 17,
+          "line": 31
+        }
+      },
+      {
+        "defaultMessage": "!!!converted {fetchedTimeAgo}",
+        "description": "\"Currency - last fetched\" label on Wallet summary page",
+        "end": {
+          "column": 3,
+          "line": 40
+        },
+        "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
+        "id": "wallet.summary.page.currency.lastFetched",
+        "start": {
+          "column": 23,
+          "line": 36
+        }
+      },
+      {
+        "defaultMessage": "!!!fetching conversion rates",
+        "description": "\"Currency - Fetching\" label on Wallet summary page",
+        "end": {
+          "column": 3,
+          "line": 45
+        },
+        "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
+        "id": "wallet.summary.page.currency.isFetchingRate",
+        "start": {
+          "column": 26,
+          "line": 41
         }
       }
     ],
