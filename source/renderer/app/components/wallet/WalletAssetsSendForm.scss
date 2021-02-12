@@ -44,6 +44,12 @@
       width: 100%;
     }
   }
+
+  :global {
+    .AmountInputSkin_total {
+      text-transform: initial !important;
+    }
+  }
 }
 
 .estimatedFeeInput {
@@ -358,9 +364,5 @@
     left: calc(50% - 6px) !important;
     top: calc(50% - 6px) !important;
     width: 12px !important;
-  }
-
-  .AmountInputSkin_total {
-    text-transform: initial !important;
   }
 }
