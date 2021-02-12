@@ -80,14 +80,12 @@ export default class WalletSendPage extends Component<Props> {
     const { hwDeviceStatus } = hardwareWallets;
     const activeWallet = wallets.active;
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
-    debugger;
     const { all } = assets;
     const allAssets = all;
     const walletAssets = activeWallet.assets.total.map((assetTotal) => {
       const assetData = allAssets.find(
         (item) => item.policyId === assetTotal.policyId
       );
-
       return {
         id: assetData ? assetData.id : '',
         metadata: assetData
@@ -103,7 +101,6 @@ export default class WalletSendPage extends Component<Props> {
 
     const selectedNativeToken =
       walletAssets && walletAssets.length ? walletAssets[0] : null;
-    debugger;
     // Guard against potential null values
     if (!activeWallet)
       throw new Error('Active wallet required for WalletSendPage.');

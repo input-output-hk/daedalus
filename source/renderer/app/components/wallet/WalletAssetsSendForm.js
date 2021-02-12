@@ -10,7 +10,7 @@ import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import BigNumber from 'bignumber.js';
-import { get, uniqueId } from 'lodash';
+import { get } from 'lodash';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
@@ -177,7 +177,7 @@ type State = {
   feeCalculationRequestQue: number,
   transactionFeeError: ?string | ?Node,
   showReceiverRemoveBtn: boolean,
-  sendFormFields: Array<any>,
+  sendFormFields: Object,
   selectedAssetId: ?string,
   showReceiverField: Array<boolean>,
   isResetButtonDisabled: boolean,
@@ -195,7 +195,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     feeCalculationRequestQue: 0,
     transactionFeeError: null,
     showReceiverRemoveBtn: false,
-    sendFormFields: [],
+    sendFormFields: {},
     selectedAssetId: null,
     showReceiverField: [],
     isResetButtonDisabled: true,
@@ -217,9 +217,9 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     this._isMounted = true;
     const { selectedNativeToken } = this.props;
     if (selectedNativeToken) {
-      this.onSelectAsset(selectedNativeToken.id);
+      this.onSelectAsset(selectedNativeToken.id, 0, 'receiver1');
     }
-    this.setFormFields(false, 1);
+    this.setFormFields(false, 1, 'receiver1');
   }
 
   componentWillUnmount() {
@@ -255,7 +255,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     this.hideReceiverField();
     this.clearAssetValue();
     this.clearReceiverAddress();
-    this.setFormFields(true, 1);
+    this.setFormFields(true, 1, 'receiver1');
   };
 
   disableResetButton = () => {
@@ -264,7 +264,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     });
   };
 
-  setFormFields = (resetFormFields: boolean, id: number) => {
+  setFormFields = (resetFormFields: boolean, id: number, receiverId: string) => {
     const formFields = this.form.fields;
     const receiverField = formFields.get(`receiver${id}`);
     const assetField = formFields.get(`asset${id}`);
@@ -272,43 +272,45 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     const { selectedNativeToken } = this.props;
     if (resetFormFields) {
       this.setState({
-        sendFormFields: [
-          {
-            receiver: receiverField,
-            asset: assetField,
-            walletsDropdown: walletsDropdownField,
-            selectedNativeToken,
+        sendFormFields: {
+            [receiverId]: {
+              receiver: receiverField,
+              asset: assetField,
+              walletsDropdown: walletsDropdownField,
+              selectedNativeToken,
+            }
           },
-        ],
       });
     } else {
       this.setState((prevState) => ({
-        sendFormFields: [
+        sendFormFields: {
           ...prevState.sendFormFields,
-          {
+          [receiverId]: {
             receiver: receiverField,
             asset: assetField,
             walletsDropdown: walletsDropdownField,
             selectedNativeToken,
-          },
-        ],
+          }
+        },
       }));
     }
   };
 
-  updateFormFields = (id: number, assetId: string) => {
+  updateFormFields = (id: string, assetId: string, receiverId: string) => {
     const { assets } = this.props;
     const { sendFormFields } = this.state;
-    const selectedNativeTokenItem =
-      assetId && assets && assets.length
-        ? this.getNativeTokenById(assetId)
-        : null;
-    const sendFormFieldRow = sendFormFields[id];
-    sendFormFieldRow.selectedNativeToken = selectedNativeTokenItem;
-    sendFormFields[id] = sendFormFieldRow;
-    this.setState({
-      sendFormFields,
-    });
+    if (sendFormFields && sendFormFields[receiverId]) {
+      const selectedNativeTokenItem =
+        assetId && assets && assets.length
+          ? this.getNativeTokenById(assetId)
+          : null;
+      const sendFormFieldItem = sendFormFields[receiverId];
+      sendFormFieldItem.selectedNativeToken = selectedNativeTokenItem;
+      sendFormFields[receiverId] = sendFormFieldItem;
+      this.setState({
+        sendFormFields,
+      });
+    }
   };
 
   receiverFieldRef: Array<Input> = [];
@@ -542,9 +544,8 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
 
   renderAssetRow = () => {};
 
-  renderReceiverRow = (row: any, index: number): Node => {
+  renderReceiverRow = (row: string, index: number): Node => {
     const { intl } = this.context;
-
     const {
       isClearTooltipOpeningDownward,
       currencyMaxFractionalDigits,
@@ -560,7 +561,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       sendFormFields,
     } = this.state;
 
-    const { receiver, asset, walletsDropdown, selectedNativeToken } = row;
+    const { receiver, asset, walletsDropdown, selectedNativeToken } = sendFormFields[row];
 
     const walletsDropdownFieldProps = walletsDropdown.bind();
 
@@ -572,7 +573,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
 
     const amount = new BigNumber(assetFieldProps.value || 0);
 
-    const showReceiverLabelNumber = sendFormFields && sendFormFields.length > 1;
+    const showReceiverLabelNumber = Object.keys(sendFormFields).length > 1;
 
     const receiverLabel = showReceiverLabelNumber
       ? `${intl.formatMessage(messages.receiverLabel)} #${index + 1}`
@@ -737,7 +738,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                   {...walletsDropdownFieldProps}
                   numberOfStakePools={4}
                   assets={assets}
-                  onChange={(id) => this.onSelectAsset(id, index)}
+                  onChange={(id) => this.onSelectAsset(id, index, row)}
                   syncingLabel={intl.formatMessage(messages.syncingWallet)}
                   hasAssetsEnabled
                   value={selectedAssetId}
@@ -842,7 +843,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         const isValid = await this.props.validateAmount(
           formattedAmountToNaturalUnits(amountValue)
         );
-        const receiverField = form.$(`receiver1${index}`);
+        const receiverField = form.$(`receiver${index}`);
         const receiverValue = receiverField.value;
         const isReceiverValid = receiverField.isValid;
         if (isValid && isReceiverValid) {
@@ -868,22 +869,20 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     this.form.$(newWalletsDropdown).set('type', 'select');
   };
 
-  addNewReceiverRow = (index: number) => {
+  addNewReceiverRow = (index: number, receiverId: string) => {
     this.addNewReceiverField(index);
     this.addNewAssetField(index);
     this.addNewWalletsDropdownField(index);
     this.showReceiverField(index - 1);
-    this.setFormFields(false, index);
+    this.setFormFields(false, index, receiverId);
   };
 
   // eslint-disable-next-line no-unused-vars
   addAssetRow = (index: number) => {};
 
-  onSelectAsset = (assetId: string, id?: number) => {
+  onSelectAsset = (assetId: string, id: number, receiverId: string) => {
     this.setState({ selectedAssetId: assetId });
-    if (id >= 0) {
-      this.updateFormFields(id, assetId);
-    }
+    this.updateFormFields(id, assetId, receiverId);
   };
 
   getNativeTokenById = (selectedAssetId: string): ?Asset => {
@@ -953,8 +952,8 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         ) : (
           <BorderedBox>
             <div className={styles.walletAssetsSendForm}>
-              {sendFormFields.map((row: any, index: number) => (
-                <Fragment key={uniqueId()}>
+              {Object.keys(sendFormFields).map((row: string, index: number) => (
+                <Fragment key={row}>
                   {this.renderReceiverRow(row, index)}
                 </Fragment>
               ))}
@@ -967,7 +966,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                       messages.addNewReceiverButtonLabel
                     )}
                     onClick={() =>
-                      this.addNewReceiverRow(sendFormFields.length + 1)
+                      this.addNewReceiverRow(Object.keys(sendFormFields).length + 1, `receiver${Object.keys(sendFormFields).length + 1}`)
                     }
                     skin={ButtonSkin}
                   />

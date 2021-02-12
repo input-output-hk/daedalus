@@ -14,7 +14,7 @@ import { formattedWalletAmount } from '../../utils/formatters';
 import { getNetworkExplorerUrlByType } from '../../utils/network';
 import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
 import AssetsWalletSummary from '../../components/wallet/summary/AssetsWalletSummary';
-import Wallet from '../../domains/Wallet';
+import type { WalletSummaryAsset } from '../../api/assets/types';
 
 export const messages = defineMessages({
   noTransactions: {
@@ -43,14 +43,10 @@ export default class WalletSummaryPage extends Component<Props> {
     });
   };
 
-  handleOpenAssetSend = async (token: Wallet) => {
-    await this.props.actions.wallets.openSendFormWithAssets.trigger({
-      walletId: token.id,
-    });
-
+  handleOpenAssetSend = async (asset: WalletSummaryAsset) => {
     this.props.actions.router.goToRoute.trigger({
       route: ROUTES.WALLETS.PAGE,
-      params: { id: token.id, page: 'send' },
+      params: { asset, page: 'send' },
     });
   };
 

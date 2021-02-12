@@ -251,8 +251,6 @@ export default class WalletsStore extends Store {
     walletsActions.importWalletFromFile.listen(this._importWalletFromFile);
     walletsActions.chooseWalletExportType.listen(this._chooseWalletExportType);
 
-    walletsActions.openSendFormWithAssets.listen(this._openSendFormWithAssets);
-
     walletsActions.generateCertificate.listen(this._generateCertificate);
     walletsActions.generateAddressPDF.listen(this._generateAddressPDF);
     walletsActions.saveQRCodeImage.listen(this._saveQRCodeImage);
@@ -1433,12 +1431,5 @@ export default class WalletsStore extends Store {
   @action _resetRewardsCsvData = () => {
     this.generatingRewardsCsvInProgress = false;
     this._updateGeneratingRewardsCsvError();
-  };
-
-  @action _openSendFormWithAssets = async (params: { walletId: string }) => {
-    const nativeWallet = this.getWalletById(params.walletId);
-    if (nativeWallet) {
-      debugger;
-    }
   };
 }
