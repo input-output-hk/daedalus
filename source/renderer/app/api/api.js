@@ -70,6 +70,8 @@ import { getLegacyWallet } from './wallets/requests/getLegacyWallet';
 import { transferFundsCalculateFee } from './wallets/requests/transferFundsCalculateFee';
 import { transferFunds } from './wallets/requests/transferFunds';
 import { createHardwareWallet } from './wallets/requests/createHardwareWallet';
+import { getCurrencyList } from './wallets/requests/getCurrencyList';
+import { getCurrencyRate } from './wallets/requests/getCurrencyRate';
 
 // Staking
 import StakePool from '../domains/StakePool';
@@ -115,6 +117,7 @@ import {
   SHELLEY_PURPOSE_INDEX,
   ADA_COIN_TYPE,
 } from '../config/hardwareWalletsConfig';
+import { currencyConfig } from '../config/currencyConfig';
 
 // Addresses Types
 import type {
@@ -185,6 +188,9 @@ import type {
   TransferFundsRequest,
   TransferFundsResponse,
   UpdateWalletRequest,
+  GetCurrencyListResponse,
+  GetCurrencyRateRequest,
+  GetCurrencyRateResponse,
 } from './wallets/types';
 import type { WalletProps } from '../domains/Wallet';
 
@@ -1278,6 +1284,36 @@ export default class AdaApi {
       return _createWalletFromServerData(wallet);
     } catch (error) {
       logger.error('AdaApi::createHardwareWallet error', { error });
+      throw new ApiError(error);
+    }
+  };
+
+  getCurrencyList = async (): Promise<GetCurrencyListResponse> => {
+    try {
+      const apiResponse = await getCurrencyList();
+      const response: GetCurrencyListResponse = currencyConfig.responses.list(
+        apiResponse
+      );
+      logger.debug('AdaApi::getCurrencyList success', { response });
+      return response;
+    } catch (error) {
+      logger.error('AdaApi::getCurrencyList error', { error });
+      throw new ApiError(error);
+    }
+  };
+
+  getCurrencyRate = async (
+    currency: GetCurrencyRateRequest
+  ): Promise<GetCurrencyRateResponse> => {
+    try {
+      const apiResponse = await getCurrencyRate(currency);
+      const response: GetCurrencyRateResponse = currencyConfig.responses.rate(
+        apiResponse
+      );
+      logger.debug('AdaApi::getCurrencyRate success', { response });
+      return response;
+    } catch (error) {
+      logger.error('AdaApi::getCurrencyRate error', { error });
       throw new ApiError(error);
     }
   };
@@ -2575,13 +2611,12 @@ const _createMigrationFeeFromServerData = action(
 const _createDelegationFeeFromServerData = action(
   'AdaApi::_createDelegationFeeFromServerData',
   (data: TransactionFee) => {
-    const feeWithDeposit = new BigNumber(
+    const fee = new BigNumber(
       get(data, ['estimated_max', 'quantity'], 0)
     ).dividedBy(LOVELACES_PER_ADA);
     const deposit = new BigNumber(
       get(data, ['deposit', 'quantity'], 0)
     ).dividedBy(LOVELACES_PER_ADA);
-    const fee = feeWithDeposit.minus(deposit);
     return { fee, deposit };
   }
 );
