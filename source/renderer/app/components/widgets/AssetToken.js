@@ -12,6 +12,7 @@ type Props = {
   // In case it's not possible to calculate the container width
   // this props defines after how many characters the text will cut off
   policyIdEllipsisLeft?: number,
+  hideTooltip?: boolean,
 };
 
 @observer
@@ -34,27 +35,61 @@ export default class AssetToken extends Component<Props> {
     );
   }
 
-  popOverRender() {
+  tooltipRender() {
     const { asset } = this.props;
     const { fingerprint, policyId, assetName, metadata } = asset;
-    console.log('metadata', metadata);
+    const { name, acronym, description } = metadata || {};
     return (
-      <div className={styles.popOverContent}>
+      <div className={styles.tooltipContent}>
         <div className={styles.fingerprint}>{fingerprint}</div>
-        <div className={styles.policyId}>{policyId}</div>
-        <div className={styles.assetName}>{assetName}</div>
+        <dl>
+          <dt>Policy Id</dt>
+          <dd>
+            <em>{policyId}</em>
+          </dd>
+          {assetName && (
+            <>
+              <dt>Asset name</dt>
+              <dd>{assetName}</dd>
+            </>
+          )}
+          {name && (
+            <>
+              <dt>Name</dt>
+              <dd>{name}</dd>
+            </>
+          )}
+          {acronym && (
+            <>
+              <dt>Acronym</dt>
+              <dd>{acronym}</dd>
+            </>
+          )}
+          {description && (
+            <>
+              <dt>Description</dt>
+              <dd>{description}</dd>
+            </>
+          )}
+        </dl>
       </div>
     );
   }
 
   render() {
+    const { hideTooltip } = this.props;
     const children = this.contentRender();
-    const popOverContent = this.popOverRender();
+    const tooltipContent = this.tooltipRender();
+    if (hideTooltip) return children;
     return (
       <PopOver
-        themeVariables={{}}
+        themeVariables={{
+          '--rp-pop-over-bg-color':
+            'var(--theme-bordered-box-background-color)',
+          '--rp-pop-over-text-color': 'var(--theme-bordered-box-text-color)',
+        }}
         contentClassName={styles.popOver}
-        content={popOverContent}
+        content={tooltipContent}
       >
         {children}
       </PopOver>
@@ -63,6 +98,22 @@ export default class AssetToken extends Component<Props> {
 }
 
 // @TOKEN TODO: Remove it
+
+// export type PopOverProps = {
+//   allowHTML?: boolean,
+//   children?: ReactElement<any>,
+//   contentClassName?: string,
+//   content: ReactNode,
+//   context?: ThemeContextProp,
+//   isShowingOnHover?: boolean,
+//   isVisible?: boolean,
+//   popperOptions: PopperOptions,
+//   skin?: ComponentType<any>,
+//   theme?: ?Object,
+//   themeId?: string,
+//   themeOverrides?: { [index: string]: string },
+//   themeVariables?: { [index: string]: string },
+// };
 
 // const popperOptions = {
 //   placement?: Placement;

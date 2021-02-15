@@ -22,17 +22,17 @@ const allAssets = [
   generateAsset(
     '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
-    'token2542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b'
+    'token1rjklcrnsdzqp65wjgrg55sy9723kw09m5z1234'
   ),
   generateAsset(
     '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
-    'token2542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b'
+    'token1rjklcrnsdzqp65wjgrg55sy9723kw09m5z2345'
   ),
   generateAsset(
     '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
     '',
-    'token2542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
+    'token1rjklcrnsdzqp65wjgrg55sy9723kw09m5z3456',
     {
       name: 'USD Coin',
       acronym: 'USDC',
@@ -48,7 +48,7 @@ const allAssets = [
   generateAsset(
     '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
     '',
-    'token2542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
+    'token1rjklcrnsdzqp65wjgrg55sy9723kw09m5z4567',
     {
       name: 'MakerDAO',
       acronym: 'DAI',
@@ -68,25 +68,21 @@ const assets = {
     {
       policyId: '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       assetName: '',
-      fingerprint: generateHash(),
       quantity: 45119903.750165,
     },
     {
       policyId: '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       assetName: '',
-      fingerprint: generateHash(),
       quantity: 200,
     },
     {
       policyId: '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
       assetName: '',
-      fingerprint: generateHash(),
       quantity: 300,
     },
     {
       policyId: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
       assetName: '',
-      fingerprint: generateHash(),
       quantity: 400,
     },
   ],
@@ -94,25 +90,21 @@ const assets = {
     {
       policyId: '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       assetName: '',
-      fingerprint: generateHash(),
       quantity: 45119903.750165,
     },
     {
       policyId: '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       assetName: '',
-      fingerprint: generateHash(),
       quantity: 200,
     },
     {
       policyId: '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
       assetName: '',
-      fingerprint: generateHash(),
       quantity: 300,
     },
     {
       policyId: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
       assetName: '',
-      fingerprint: generateHash(),
       quantity: 400,
     },
   ],
@@ -122,8 +114,8 @@ const walletAssets = assets.total.map((assetTotal) => {
   const assetData = allAssets.find(
     (item) => item.policyId === assetTotal.policyId
   );
-  const { policyId, assetName, fingerprint, quantity } = assetTotal;
-  const { metadata } = assetData || {};
+  const { policyId, assetName, quantity } = assetTotal;
+  const { metadata, fingerprint } = assetData || {};
   return {
     policyId,
     assetName,

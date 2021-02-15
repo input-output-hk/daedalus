@@ -108,15 +108,21 @@ export default class WalletSummaryPage extends Component<Props> {
       const assetData = allAssets.find(
         (item) => item.policyId === assetTotal.policyId
       );
-      if (!assetData) {
-        hasAssets = false;
+      let fingerprint;
+      if (!assetData || !assetData.fingerprint) {
+        hasAssets = !!assetData;
+        fingerprint = `token${assetTotal.policyId}${assetTotal.assetName}`.substr(
+          0,
+          44
+        );
+      } else {
+        fingerprint = assetData.fingerprint;
       }
 
       return {
         policyId: assetTotal.policyId,
         assetName: assetTotal.assetName,
-        // @TOKEN TODO: get fingerprint from `assetData`
-        fingerprint: `token${assetTotal.policyId}${assetTotal.assetName}`,
+        fingerprint,
         quantity: assetTotal.quantity,
         metadata: assetData
           ? assetData.metadata
