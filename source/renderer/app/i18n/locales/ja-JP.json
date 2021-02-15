@@ -295,6 +295,8 @@
   "settings.stakePools.smash.select.direct": "使用しない（直接データをフェッチする）",
   "settings.stakePools.smash.select.label": "オフチェーンメタデータサーバー（SMASH）",
   "settings.stakePools.smashUrl.input.invalidUrl": "無効なURL",
+  "settings.stakePools.smashUrl.input.invalidUrlParameter": "「https://」プロトコルおよびホスト名（例：domain.com）のみ使用できます",
+  "settings.stakePools.smashUrl.input.invalidUrlPrefix": "URLは「https://」から始めてください",
   "settings.stakePools.smashUrl.input.label": "SMASHサーバーURL",
   "settings.stakePools.smashUrl.input.placeholder": "カスタムサーバーを入力してください",
   "settings.support.faq.content": "問題が発生している場合は、サポートページにある{faqLink}リストを参照して解決方法を探してください。解決方法が見つからない場合はサポートリクエストを送信してください。",

@@ -3,6 +3,12 @@ Changelog
 
 ## 3.3.0
 
+### Chores
+
+- Improved the error messages for the custom SMASH server url input ([PR 2355](https://github.com/input-output-hk/daedalus/pull/2355))
+
+## 3.3.0-FC1
+
 ### Features
 
 - Implemented "Undelegate wallet" feature on "Wallet settings" screen ([PR 2351](https://github.com/input-output-hk/daedalus/pull/2351))
