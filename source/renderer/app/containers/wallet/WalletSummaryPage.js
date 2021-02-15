@@ -98,20 +98,26 @@ export default class WalletSummaryPage extends Component<Props> {
     // Guard against potential null values
     if (!wallet)
       throw new Error('Active wallet required for WalletSummaryPage.');
-    const { hasAssets } = wallet;
     let walletTransactions = null;
     const noTransactionsLabel = intl.formatMessage(messages.noTransactions);
 
     const allAssets = all;
+    // @TOKEN TODO: Fix data not available sometimes
+    let { hasAssets } = wallet;
     const walletAssets = wallet.assets.total.map((assetTotal) => {
       const assetData = allAssets.find(
         (item) => item.policyId === assetTotal.policyId
       );
+      if (!assetData) {
+        hasAssets = false;
+      }
 
       return {
-        id: assetData ? assetData.id : '',
-        policyId: assetData.policyId,
-        assetName: assetData.assetName,
+        policyId: assetTotal.policyId,
+        assetName: assetTotal.assetName,
+        // @TOKEN TODO: get fingerprint from `assetData`
+        fingerprint: `token${assetTotal.policyId}${assetTotal.assetName}`,
+        quantity: assetTotal.quantity,
         metadata: assetData
           ? assetData.metadata
           : {
@@ -119,7 +125,6 @@ export default class WalletSummaryPage extends Component<Props> {
               acronym: '',
               description: '',
             },
-        total: assetTotal || {},
       };
     });
 

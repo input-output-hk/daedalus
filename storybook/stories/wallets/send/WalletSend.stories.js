@@ -150,7 +150,6 @@ const confirmationAssets = assets.total.map((assetTotal) => {
     (item) => item.policyId === assetTotal.policyId
   );
   return {
-    id: assetData ? assetData.id : '',
     metadata: assetData
       ? assetData.metadata
       : {
@@ -167,7 +166,6 @@ const sendFormAssetData = assets.total.map((assetTotal) => {
     (item) => item.policyId === assetTotal.policyId
   );
   return {
-    id: assetData ? assetData.id : '',
     metadata: assetData
       ? assetData.metadata
       : {

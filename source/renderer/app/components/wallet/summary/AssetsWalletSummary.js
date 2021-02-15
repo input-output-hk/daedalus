@@ -56,8 +56,6 @@ export default class AssetsWalletSummary extends Component<Props> {
 
   render() {
     const { wallet, assets, handleOpenAssetSend, isLoading } = this.props;
-    console.log('wallet', wallet);
-    console.log('assets', assets);
     const { intl } = this.context;
 
     const isRestoreActive = wallet.isRestoring;
@@ -80,17 +78,15 @@ export default class AssetsWalletSummary extends Component<Props> {
               {assets.map((asset: WalletSummaryAsset) => (
                 <BorderedBox
                   className={styles.assetsContainer}
-                  key={asset.total.assetName}
+                  key={asset.fingerprint}
                 >
-                  {asset.total && (
+                  {asset.fingerprint && (
                     <div className={styles.assetsLeftContainer}>
-                      <div className={styles.assetToken}>
-                        <AssetToken asset={asset} />
-                      </div>
+                      <AssetToken asset={asset} />
                       <div className={styles.assetAmount}>
                         {isRestoreActive
                           ? '-'
-                          : new BigNumber(asset.total.quantity).toFormat(
+                          : new BigNumber(asset.quantity).toFormat(
                               asset.metadata && asset.metadata.unit
                                 ? asset.metadata.unit.decimals
                                 : DECIMAL_PLACES_IN_ADA
@@ -109,13 +105,13 @@ export default class AssetsWalletSummary extends Component<Props> {
                       </div>
                     </div>
                   )}
-                  {asset.total && (
+                  {asset.fingerprint && (
                     <div className={styles.assetRightContainer}>
                       <button
                         className={classNames([
                           'primary',
                           styles.assetSendButton,
-                          new BigNumber(asset.total.quantity).isZero()
+                          new BigNumber(asset.quantity).isZero()
                             ? styles.disabled
                             : null,
                         ])}

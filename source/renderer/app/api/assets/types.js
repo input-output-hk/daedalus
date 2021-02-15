@@ -54,13 +54,14 @@ export type WalletAssets = {
 };
 
 export type WalletSummaryAsset = {
-  id: string,
+  policyId: string,
+  assetName: string,
+  fingerprint: string,
+  quantity: number,
   metadata: ?AssetMetadata,
-  total: WalletAssetItem,
 };
 
 export type WalletTransactionAsset = {
-  id: string,
   policyId: string,
   assetName: string,
   quantity: number,
