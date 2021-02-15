@@ -85,7 +85,7 @@ export default class SidebarStore extends Store {
       [categories.STAKING.name]: true,
       [categories.REDEEM_ITN_REWARDS.name]: true,
       [categories.SETTINGS.name]: true,
-      [categories.VOTING.name]: (isMainnet && !isFlight) || isTestnet || isDev,
+      [categories.VOTING.name]: isMainnet || isTestnet || isDev,
       [categories.NETWORK_INFO.name]:
         isFlight || isIncentivizedTestnet || isShelleyTestnet,
     };
