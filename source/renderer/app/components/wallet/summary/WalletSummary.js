@@ -146,7 +146,7 @@ export default class WalletSummary extends Component<Props> {
           <div className={styles.walletContent}>
             <div>
               <div className={walletNameStyles}>{wallet.name}</div>
-              <div className={styles.walletAmount}>
+              <div className={walletAmountStyles}>
                 {walletAmount}
                 {hasAssetsEnabled ? (
                   <span>
@@ -154,11 +154,11 @@ export default class WalletSummary extends Component<Props> {
                   </span>
                 ) : (
                   <span className={styles.currencySymbol}>
-                    {intl.formatMessage(globalMessage.unitAda)}
+                    {intl.formatMessage(globalMessages.unitAda)}
                   </span>
                 )}
               </div>
-              {!isLoadingTransactions ? (
+              {!isLoadingTransactions && (
                 <div className={styles.transactionsCountWrapper}>
                   <div className={numberOfPendingTransactionsStyles}>
                     <span>
@@ -177,7 +177,7 @@ export default class WalletSummary extends Component<Props> {
                     </span>
                   </div>
                 </div>
-              ) : null}
+              )}
             </div>
 
             {hasCurrency && (
