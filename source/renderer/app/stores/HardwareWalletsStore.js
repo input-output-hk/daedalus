@@ -1111,7 +1111,7 @@ export default class HardwareWalletsStore extends Store {
   @action _getExtendedPublicKey = async (
     forcedPath: ?string,
     walletId?: string,
-    address?: WalletAddress,
+    address?: WalletAddress
   ) => {
     logger.debug('[HW-DEBUG] - extendedPublicKey');
     this.hwDeviceStatus = HwDeviceStatuses.EXPORTING_PUBLIC_KEY;
