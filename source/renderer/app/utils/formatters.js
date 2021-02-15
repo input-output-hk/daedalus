@@ -30,6 +30,16 @@ export const formattedWalletAmount = (
   return formattedAmount.toString();
 };
 
+export const formattedWalletCurrencyAmount = (
+  amount: BigNumber,
+  currencyRate: number,
+  decimalDigits?: ?number,
+  currencySymbol?: ?string
+) =>
+  `${amount ? amount.times(currencyRate).toFormat(decimalDigits || 2) : 0} ${
+    currencySymbol || ''
+  }`;
+
 export const formattedTokenWalletAmount = (
   amount: BigNumber,
   currency: string

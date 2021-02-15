@@ -43,6 +43,12 @@ export default class WalletSummaryPage extends Component<Props> {
     });
   };
 
+  handleCurrencySettingsClick = () => {
+    this.props.actions.router.goToRoute.trigger({
+      route: ROUTES.SETTINGS.WALLETS,
+    });
+  };
+
   handleOpenAssetSend = async (asset: WalletSummaryAsset) => {
     this.props.actions.router.goToRoute.trigger({
       route: ROUTES.WALLETS.PAGE,
@@ -76,7 +82,15 @@ export default class WalletSummaryPage extends Component<Props> {
       deleteTransactionRequest,
       pendingTransactionsCount,
     } = transactions;
-    const wallet = wallets.active;
+    const {
+      active: wallet,
+      currencyIsActive,
+      currencyIsAvailable,
+      currencyIsFetchingRate,
+      currencyLastFetched,
+      currencyRate,
+      currencySelected,
+    } = wallets;
     const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
     const isLoading =
@@ -156,6 +170,13 @@ export default class WalletSummaryPage extends Component<Props> {
           numberOfPendingTransactions={pendingTransactionsCount}
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
           hasAssetsEnabled={hasAssetsEnabled && hasAssets}
+          currencyIsActive={currencyIsActive}
+          currencyIsAvailable={currencyIsAvailable}
+          currencyIsFetchingRate={currencyIsFetchingRate}
+          currencyLastFetched={currencyLastFetched}
+          currencyRate={currencyRate}
+          currencySelected={currencySelected}
+          onCurrencySettingClick={this.handleCurrencySettingsClick}
         />
         {hasAssetsEnabled && hasAssets && (
           <AssetsWalletSummary

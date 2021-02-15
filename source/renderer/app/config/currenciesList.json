@@ -1,0 +1,814 @@
+{
+  "aed": {
+    "symbol": "aed",
+    "name": "United Arab Emirates Dirham",
+    "decimalDigits": 2,
+    "symbolNative": "د.إ.‏"
+  },
+  "afn": {
+    "symbol": "afn",
+    "name": "Afghan Afghani",
+    "decimalDigits": 0,
+    "symbolNative": "؋"
+  },
+  "all": {
+    "symbol": "all",
+    "name": "Albanian Lek",
+    "decimalDigits": 0,
+    "symbolNative": "Lek"
+  },
+  "amd": {
+    "symbol": "amd",
+    "name": "Armenian Dram",
+    "decimalDigits": 0,
+    "symbolNative": "դր."
+  },
+  "ars": {
+    "symbol": "ars",
+    "name": "Argentine Peso",
+    "decimalDigits": 2,
+    "symbolNative": "$"
+  },
+  "aud": {
+    "symbol": "aud",
+    "name": "Australian Dollar",
+    "decimalDigits": 2,
+    "symbolNative": "$"
+  },
+  "azn": {
+    "symbol": "azn",
+    "name": "Azerbaijani Manat",
+    "decimalDigits": 2,
+    "symbolNative": "ман."
+  },
+  "bam": {
+    "symbol": "bam",
+    "name": "Bosnia-Herzegovina Convertible Mark",
+    "decimalDigits": 2,
+    "symbolNative": "KM"
+  },
+  "bch": {
+    "symbol": "bch",
+    "name": "Bitcoin Cash",
+    "decimalDigits": 8,
+    "id": "bitcoin-cash"
+  },
+  "bdt": {
+    "symbol": "bdt",
+    "name": "Bangladeshi Taka",
+    "decimalDigits": 2,
+    "symbolNative": "৳"
+  },
+  "bgn": {
+    "symbol": "bgn",
+    "name": "Bulgarian Lev",
+    "decimalDigits": 2,
+    "symbolNative": "лв."
+  },
+  "bhd": {
+    "symbol": "bhd",
+    "name": "Bahraini Dinar",
+    "decimalDigits": 3,
+    "symbolNative": "د.ب.‏"
+  },
+  "bif": {
+    "symbol": "bif",
+    "name": "Burundian Franc",
+    "decimalDigits": 0,
+    "symbolNative": "FBu"
+  },
+  "bits": {
+    "symbol": "bits",
+    "name": "Bitcoinus",
+    "decimalDigits": 10,
+    "id": "bitcoinus"
+  },
+  "bmd": {
+    "symbol": "bmd",
+    "name": "Bermudian dollar",
+    "decimalDigits": 2
+  },
+  "bnb": {
+    "symbol": "bnb",
+    "name": "Binance Coin",
+    "decimalDigits": 2,
+    "id": "binancecoin"
+  },
+  "bnd": {
+    "symbol": "bnd",
+    "name": "Brunei Dollar",
+    "decimalDigits": 2,
+    "symbolNative": "$"
+  },
+  "bob": {
+    "symbol": "bob",
+    "name": "Bolivian Boliviano",
+    "decimalDigits": 2,
+    "symbolNative": "Bs"
+  },
+  "brl": {
+    "symbol": "brl",
+    "name": "Brazilian Real",
+    "decimalDigits": 2,
+    "symbolNative": "R$"
+  },
+  "btc": {
+    "symbol": "btc",
+    "name": "Bitcoin",
+    "decimalDigits": 8,
+    "id": "bitcoin"
+  },
+  "bwp": {
+    "symbol": "bwp",
+    "name": "Botswanan Pula",
+    "decimalDigits": 2,
+    "symbolNative": "P"
+  },
+  "byn": {
+    "symbol": "byn",
+    "name": "Belarusian Ruble",
+    "decimalDigits": 2,
+    "symbolNative": "руб."
+  },
+  "bzd": {
+    "symbol": "bzd",
+    "name": "Belize Dollar",
+    "decimalDigits": 2,
+    "symbolNative": "$"
+  },
+  "cad": {
+    "symbol": "cad",
+    "name": "Canadian Dollar",
+    "decimalDigits": 2,
+    "symbolNative": "$"
+  },
+  "cdf": {
+    "symbol": "cdf",
+    "name": "Congolese Franc",
+    "decimalDigits": 2,
+    "symbolNative": "FrCD"
+  },
+  "chf": {
+    "symbol": "chf",
+    "name": "Swiss Franc",
+    "decimalDigits": 2,
+    "symbolNative": "CHF"
+  },
+  "clp": {
+    "symbol": "clp",
+    "name": "Chilean Peso",
+    "decimalDigits": 0,
+    "symbolNative": "$"
+  },
+  "cny": {
+    "symbol": "cny",
+    "name": "Chinese Yuan",
+    "decimalDigits": 2,
+    "symbolNative": "CN¥"
+  },
+  "cop": {
+    "symbol": "cop",
+    "name": "Colombian Peso",
+    "decimalDigits": 0,
+    "symbolNative": "$"
+  },
+  "crc": {
+    "symbol": "crc",
+    "name": "Costa Rican Colón",
+    "decimalDigits": 0,
+    "symbolNative": "₡"
+  },
+  "cve": {
+    "symbol": "cve",
+    "name": "Cape Verdean Escudo",
+    "decimalDigits": 2,
+    "symbolNative": "CV$"
+  },
+  "czk": {
+    "symbol": "czk",
+    "name": "Czech Republic Koruna",
+    "decimalDigits": 2,
+    "symbolNative": "Kč"
+  },
+  "djf": {
+    "symbol": "djf",
+    "name": "Djiboutian Franc",
+    "decimalDigits": 0,
+    "symbolNative": "Fdj"
+  },
+  "dkk": {
+    "symbol": "dkk",
+    "name": "Danish Krone",
+    "decimalDigits": 2,
+    "symbolNative": "kr"
+  },
+  "dop": {
+    "symbol": "dop",
+    "name": "Dominican Peso",
+    "decimalDigits": 2,
+    "symbolNative": "RD$"
+  },
+  "dot": {
+    "symbol": "dot",
+    "name": "Polkadot",
+    "decimalDigits": 2,
+    "id": "polkadot"
+  },
+  "dzd": {
+    "symbol": "dzd",
+    "name": "Algerian Dinar",
+    "decimalDigits": 2,
+    "symbolNative": "د.ج.‏"
+  },
+  "eek": {
+    "symbol": "eek",
+    "name": "Estonian Kroon",
+    "decimalDigits": 2,
+    "symbolNative": "kr"
+  },
+  "egp": {
+    "symbol": "egp",
+    "name": "Egyptian Pound",
+    "decimalDigits": 2,
+    "symbolNative": "ج.م.‏"
+  },
+  "eos": {
+    "symbol": "eos",
+    "name": "EOS",
+    "decimalDigits": 2,
+    "id": "eos"
+  },
+  "ern": {
+    "symbol": "ern",
+    "name": "Eritrean Nakfa",
+    "decimalDigits": 2,
+    "symbolNative": "Nfk"
+  },
+  "etb": {
+    "symbol": "etb",
+    "name": "Ethiopian Birr",
+    "decimalDigits": 2,
+    "symbolNative": "Br"
+  },
+  "eth": {
+    "symbol": "eth",
+    "name": "Ethereum",
+    "decimalDigits": 18,
+    "id": "ethereum"
+  },
+  "eur": {
+    "symbol": "eur",
+    "name": "Euro",
+    "decimalDigits": 2,
+    "symbolNative": "€"
+  },
+  "gbp": {
+    "symbol": "gbp",
+    "name": "British Pound Sterling",
+    "decimalDigits": 2,
+    "symbolNative": "£"
+  },
+  "gel": {
+    "symbol": "gel",
+    "name": "Georgian Lari",
+    "decimalDigits": 2,
+    "symbolNative": "GEL"
+  },
+  "ghs": {
+    "symbol": "ghs",
+    "name": "Ghanaian Cedi",
+    "decimalDigits": 2,
+    "symbolNative": "GH₵"
+  },
+  "gnf": {
+    "symbol": "gnf",
+    "name": "Guinean Franc",
+    "decimalDigits": 0,
+    "symbolNative": "FG"
+  },
+  "gtq": {
+    "symbol": "gtq",
+    "name": "Guatemalan Quetzal",
+    "decimalDigits": 2,
+    "symbolNative": "Q"
+  },
+  "hkd": {
+    "symbol": "hkd",
+    "name": "Hong Kong Dollar",
+    "decimalDigits": 2,
+    "symbolNative": "$"
+  },
+  "hnl": {
+    "symbol": "hnl",
+    "name": "Honduran Lempira",
+    "decimalDigits": 2,
+    "symbolNative": "L"
+  },
+  "hrk": {
+    "symbol": "hrk",
+    "name": "Croatian Kuna",
+    "decimalDigits": 2,
+    "symbolNative": "kn"
+  },
+  "huf": {
+    "symbol": "huf",
+    "name": "Hungarian Forint",
+    "decimalDigits": 0,
+    "symbolNative": "Ft"
+  },
+  "idr": {
+    "symbol": "idr",
+    "name": "Indonesian Rupiah",
+    "decimalDigits": 0,
+    "symbolNative": "Rp"
+  },
+  "ils": {
+    "symbol": "ils",
+    "name": "Israeli New Sheqel",
+    "decimalDigits": 2,
+    "symbolNative": "₪"
+  },
+  "inr": {
+    "symbol": "inr",
+    "name": "Indian Rupee",
+    "decimalDigits": 2,
+    "symbolNative": "টকা"
+  },
+  "iqd": {
+    "symbol": "iqd",
+    "name": "Iraqi Dinar",
+    "decimalDigits": 0,
+    "symbolNative": "د.ع.‏"
+  },
+  "irr": {
+    "symbol": "irr",
+    "name": "Iranian Rial",
+    "decimalDigits": 0,
+    "symbolNative": "﷼"
+  },
+  "isk": {
+    "symbol": "isk",
+    "name": "Icelandic Króna",
+    "decimalDigits": 0,
+    "symbolNative": "kr"
+  },
+  "jmd": {
+    "symbol": "jmd",
+    "name": "Jamaican Dollar",
+    "decimalDigits": 2,
+    "symbolNative": "$"
+  },
+  "jod": {
+    "symbol": "jod",
+    "name": "Jordanian Dinar",
+    "decimalDigits": 3,
+    "symbolNative": "د.أ.‏"
+  },
+  "jpy": {
+    "symbol": "jpy",
+    "name": "Japanese Yen",
+    "decimalDigits": 0,
+    "symbolNative": "￥"
+  },
+  "kes": {
+    "symbol": "kes",
+    "name": "Kenyan Shilling",
+    "decimalDigits": 2,
+    "symbolNative": "Ksh"
+  },
+  "khr": {
+    "symbol": "khr",
+    "name": "Cambodian Riel",
+    "decimalDigits": 2,
+    "symbolNative": "៛"
+  },
+  "kmf": {
+    "symbol": "kmf",
+    "name": "Comorian Franc",
+    "decimalDigits": 0,
+    "symbolNative": "FC"
+  },
+  "krw": {
+    "symbol": "krw",
+    "name": "South Korean Won",
+    "decimalDigits": 0,
+    "symbolNative": "₩"
+  },
+  "kwd": {
+    "symbol": "kwd",
+    "name": "Kuwaiti Dinar",
+    "decimalDigits": 3,
+    "symbolNative": "د.ك.‏"
+  },
+  "kzt": {
+    "symbol": "kzt",
+    "name": "Kazakhstani Tenge",
+    "decimalDigits": 2,
+    "symbolNative": "тңг."
+  },
+  "lbp": {
+    "symbol": "lbp",
+    "name": "Lebanese Pound",
+    "decimalDigits": 0,
+    "symbolNative": "ل.ل.‏"
+  },
+  "link": {
+    "symbol": "link",
+    "name": "Chainlink",
+    "id": "chainlink",
+    "decimalDigits": 2
+  },
+  "lkr": {
+    "symbol": "lkr",
+    "name": "Sri Lankan Rupee",
+    "decimalDigits": 2,
+    "symbolNative": "SL Re"
+  },
+  "ltc": {
+    "symbol": "ltc",
+    "name": "Litecoin",
+    "decimalDigits": 8,
+    "id": "litecoin"
+  },
+  "ltl": {
+    "symbol": "ltl",
+    "name": "Lithuanian Litas",
+    "decimalDigits": 2,
+    "symbolNative": "Lt"
+  },
+  "lvl": {
+    "symbol": "lvl",
+    "name": "Latvian Lats",
+    "decimalDigits": 2,
+    "symbolNative": "Ls"
+  },
+  "lyd": {
+    "symbol": "lyd",
+    "name": "Libyan Dinar",
+    "decimalDigits": 3,
+    "symbolNative": "د.ل.‏"
+  },
+  "mad": {
+    "symbol": "mad",
+    "name": "Moroccan Dirham",
+    "decimalDigits": 2,
+    "symbolNative": "د.م.‏"
+  },
+  "mdl": {
+    "symbol": "mdl",
+    "name": "Moldovan Leu",
+    "decimalDigits": 2,
+    "symbolNative": "MDL"
+  },
+  "mga": {
+    "symbol": "mga",
+    "name": "Malagasy Ariary",
+    "decimalDigits": 0,
+    "symbolNative": "MGA"
+  },
+  "mkd": {
+    "symbol": "mkd",
+    "name": "Macedonian Denar",
+    "decimalDigits": 2,
+    "symbolNative": "MKD"
+  },
+  "mmk": {
+    "symbol": "mmk",
+    "name": "Myanma Kyat",
+    "decimalDigits": 0,
+    "symbolNative": "K"
+  },
+  "mop": {
+    "symbol": "mop",
+    "name": "Macanese Pataca",
+    "decimalDigits": 2,
+    "symbolNative": "MOP$"
+  },
+  "mur": {
+    "symbol": "mur",
+    "name": "Mauritian Rupee",
+    "decimalDigits": 0,
+    "symbolNative": "MURs"
+  },
+  "mxn": {
+    "symbol": "mxn",
+    "name": "Mexican Peso",
+    "decimalDigits": 2,
+    "symbolNative": "$"
+  },
+  "myr": {
+    "symbol": "myr",
+    "name": "Malaysian Ringgit",
+    "decimalDigits": 2,
+    "symbolNative": "RM"
+  },
+  "mzn": {
+    "symbol": "mzn",
+    "name": "Mozambican Metical",
+    "decimalDigits": 2,
+    "symbolNative": "MTn"
+  },
+  "nad": {
+    "symbol": "nad",
+    "name": "Namibian Dollar",
+    "decimalDigits": 2,
+    "symbolNative": "N$"
+  },
+  "ngn": {
+    "symbol": "ngn",
+    "name": "Nigerian Naira",
+    "decimalDigits": 2,
+    "symbolNative": "₦"
+  },
+  "nio": {
+    "symbol": "nio",
+    "name": "Nicaraguan Córdoba",
+    "decimalDigits": 2,
+    "symbolNative": "C$"
+  },
+  "nok": {
+    "symbol": "nok",
+    "name": "Norwegian Krone",
+    "decimalDigits": 2,
+    "symbolNative": "kr"
+  },
+  "npr": {
+    "symbol": "npr",
+    "name": "Nepalese Rupee",
+    "decimalDigits": 2,
+    "symbolNative": "नेरू"
+  },
+  "nzd": {
+    "symbol": "nzd",
+    "name": "New Zealand Dollar",
+    "decimalDigits": 2,
+    "symbolNative": "$"
+  },
+  "omr": {
+    "symbol": "omr",
+    "name": "Omani Rial",
+    "decimalDigits": 3,
+    "symbolNative": "ر.ع.‏"
+  },
+  "pab": {
+    "symbol": "pab",
+    "name": "Panamanian Balboa",
+    "decimalDigits": 2,
+    "symbolNative": "B/."
+  },
+  "pen": {
+    "symbol": "pen",
+    "name": "Peruvian Nuevo Sol",
+    "decimalDigits": 2,
+    "symbolNative": "S/."
+  },
+  "php": {
+    "symbol": "php",
+    "name": "Philippine Peso",
+    "decimalDigits": 2,
+    "symbolNative": "₱"
+  },
+  "pkr": {
+    "symbol": "pkr",
+    "name": "Pakistani Rupee",
+    "decimalDigits": 0,
+    "symbolNative": "₨"
+  },
+  "pln": {
+    "symbol": "pln",
+    "name": "Polish Zloty",
+    "decimalDigits": 2,
+    "symbolNative": "zł"
+  },
+  "pyg": {
+    "symbol": "pyg",
+    "name": "Paraguayan Guarani",
+    "decimalDigits": 0,
+    "symbolNative": "₲"
+  },
+  "qar": {
+    "symbol": "qar",
+    "name": "Qatari Rial",
+    "decimalDigits": 2,
+    "symbolNative": "ر.ق.‏"
+  },
+  "ron": {
+    "symbol": "ron",
+    "name": "Romanian Leu",
+    "decimalDigits": 2,
+    "symbolNative": "RON"
+  },
+  "rsd": {
+    "symbol": "rsd",
+    "name": "Serbian Dinar",
+    "decimalDigits": 0,
+    "symbolNative": "дин."
+  },
+  "rub": {
+    "symbol": "rub",
+    "name": "Russian Ruble",
+    "decimalDigits": 2,
+    "symbolNative": "₽."
+  },
+  "rwf": {
+    "symbol": "rwf",
+    "name": "Rwandan Franc",
+    "decimalDigits": 0,
+    "symbolNative": "FR"
+  },
+  "sar": {
+    "symbol": "sar",
+    "name": "Saudi Riyal",
+    "decimalDigits": 2,
+    "symbolNative": "ر.س.‏"
+  },
+  "sats": {
+    "symbol": "sats",
+    "decimalDigits": 2,
+    "name": "Satoshi"
+  },
+  "sdg": {
+    "symbol": "sdg",
+    "name": "Sudanese Pound",
+    "decimalDigits": 2,
+    "symbolNative": "SDG"
+  },
+  "sek": {
+    "symbol": "sek",
+    "name": "Swedish Krona",
+    "decimalDigits": 2,
+    "symbolNative": "kr"
+  },
+  "sgd": {
+    "symbol": "sgd",
+    "name": "Singapore Dollar",
+    "decimalDigits": 2,
+    "symbolNative": "$"
+  },
+  "sos": {
+    "symbol": "sos",
+    "name": "Somali Shilling",
+    "decimalDigits": 0,
+    "symbolNative": "Ssh"
+  },
+  "syp": {
+    "symbol": "syp",
+    "name": "Syrian Pound",
+    "decimalDigits": 0,
+    "symbolNative": "ل.س.‏"
+  },
+  "thb": {
+    "symbol": "thb",
+    "name": "Thai Baht",
+    "decimalDigits": 2,
+    "symbolNative": "฿"
+  },
+  "tnd": {
+    "symbol": "tnd",
+    "name": "Tunisian Dinar",
+    "decimalDigits": 3,
+    "symbolNative": "د.ت.‏"
+  },
+  "top": {
+    "symbol": "top",
+    "name": "Tongan Paʻanga",
+    "decimalDigits": 2,
+    "symbolNative": "T$"
+  },
+  "try": {
+    "symbol": "try",
+    "name": "Turkish Lira",
+    "decimalDigits": 2,
+    "symbolNative": "TL"
+  },
+  "ttd": {
+    "symbol": "ttd",
+    "name": "Trinidad and Tobago Dollar",
+    "decimalDigits": 2,
+    "symbolNative": "$"
+  },
+  "twd": {
+    "symbol": "twd",
+    "name": "New Taiwan Dollar",
+    "decimalDigits": 2,
+    "symbolNative": "NT$"
+  },
+  "tzs": {
+    "symbol": "tzs",
+    "name": "Tanzanian Shilling",
+    "decimalDigits": 0,
+    "symbolNative": "TSh"
+  },
+  "uah": {
+    "symbol": "uah",
+    "name": "Ukrainian Hryvnia",
+    "decimalDigits": 2,
+    "symbolNative": "₴"
+  },
+  "ugx": {
+    "symbol": "ugx",
+    "name": "Ugandan Shilling",
+    "decimalDigits": 0,
+    "symbolNative": "USh"
+  },
+  "usd": {
+    "symbol": "usd",
+    "name": "US Dollar",
+    "decimalDigits": 2,
+    "symbolNative": "$"
+  },
+  "uyu": {
+    "symbol": "uyu",
+    "name": "Uruguayan Peso",
+    "decimalDigits": 2,
+    "symbolNative": "$"
+  },
+  "uzs": {
+    "symbol": "uzs",
+    "name": "Uzbekistan Som",
+    "decimalDigits": 0,
+    "symbolNative": "UZS"
+  },
+  "vef": {
+    "symbol": "vef",
+    "name": "Venezuelan Bolívar",
+    "decimalDigits": 2,
+    "symbolNative": "Bs.F."
+  },
+  "vnd": {
+    "symbol": "vnd",
+    "name": "Vietnamese Dong",
+    "decimalDigits": 0,
+    "symbolNative": "₫"
+  },
+  "xaf": {
+    "symbol": "xaf",
+    "name": "CFA Franc BEAC",
+    "decimalDigits": 0,
+    "symbolNative": "FCFA"
+  },
+  "xag": {
+    "symbol": "xag",
+    "name": "Xrpalike Gene",
+    "decimalDigits": 5,
+    "id": "xrpalike-gene"
+  },
+  "xau": {
+    "symbol": "xau",
+    "name": "Xaucoin",
+    "decimalDigits": 2
+  },
+  "xdr": {
+    "symbol": "xdr",
+    "name": "Xandereum",
+    "decimalDigits": 2
+  },
+  "xlm": {
+    "symbol": "xlm",
+    "name": "Stellar",
+    "decimalDigits": 4,
+    "id": "stellar"
+  },
+  "xof": {
+    "symbol": "xof",
+    "name": "CFA Franc BCEAO",
+    "decimalDigits": 0,
+    "symbolNative": "CFA"
+  },
+  "xrp": {
+    "symbol": "xrp",
+    "name": "XRP",
+    "decimalDigits": 5,
+    "id": "ripple"
+  },
+  "yer": {
+    "symbol": "yer",
+    "name": "Yemeni Rial",
+    "decimalDigits": 0,
+    "symbolNative": "ر.ي.‏"
+  },
+  "yfi": {
+    "symbol": "yfi",
+    "name": "yearn.finance",
+    "decimalDigits": 2,
+    "id": "yearn-finance"
+  },
+  "zar": {
+    "symbol": "zar",
+    "name": "South African Rand",
+    "decimalDigits": 2,
+    "symbolNative": "R"
+  },
+  "zmk": {
+    "symbol": "zmk",
+    "name": "Zambian Kwacha",
+    "decimalDigits": 0,
+    "symbolNative": "ZK"
+  },
+  "zwl": {
+    "symbol": "zwl",
+    "name": "Zimbabwean Dollar",
+    "decimalDigits": 0,
+    "symbolNative": "ZWL$"
+  }
+}

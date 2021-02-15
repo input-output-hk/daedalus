@@ -1,7 +1,7 @@
 // @flow
 import React from 'react';
 import { storiesOf } from '@storybook/react';
-import { boolean, number } from '@storybook/addon-knobs';
+import { boolean, number, select } from '@storybook/addon-knobs';
 
 // Assets and helpers
 import { action } from '@storybook/addon-actions';
@@ -11,6 +11,7 @@ import {
   generateWallet,
 } from '../../_support/utils';
 import WalletsWrapper from '../_utils/WalletsWrapper';
+import currencyList from '../_utils/currencies.json';
 
 // Screens
 import WalletSummary from '../../../../source/renderer/app/components/wallet/summary/WalletSummary';
@@ -157,42 +158,46 @@ const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
 /* eslint-disable consistent-return */
 storiesOf('Wallets|Summary', module)
   .addDecorator(WalletsWrapper)
-  .add('Wallet Summary', () => (
-    <WalletSummary
-      wallet={generateWallet('Wallet name', '45119903750165', assets)}
-      numberOfTransactions={number('Number of transactions', 100)}
-      numberOfRecentTransactions={number('Number of Recent transactions', 100)}
-      numberOfPendingTransactions={number('Number of transactions', 3)}
-      isLoadingTransactions={boolean('isLoadingTransactions', false)}
-    />
-  ))
-  .add('Wallet Tokens Summary Loading', () => (
-    <>
+  .add('Wallet Summary', () => {
+    const currencyState = select(
+      'Currency state',
+      {
+        Fetched: 'fetched',
+        'Fetching rate': 'loading',
+        'Disabled or unavailable': 'off',
+      },
+      'fetched'
+    );
+
+    let currencyIsFetchingRate = false;
+    let currencyIsAvailable = true;
+    let currencyIsActive = true;
+    let currencyLastFetched = new Date();
+
+    if (currencyState === 'loading') {
+      currencyIsFetchingRate = true;
+      currencyLastFetched = null;
+    } else if (currencyState === 'off') {
+      currencyIsAvailable = false;
+      currencyIsActive = false;
+    }
+
+    const currencySelected = select(
+      'currencySelected',
+      currencyList.reduce((obj, currency) => {
+        obj[`${currency.id} - ${currency.name}`] = currency;
+        return obj;
+      }, {}),
+      {
+        id: 'uniswap-state-dollar',
+        symbol: 'usd',
+        name: 'unified Stable Dollar',
+      }
+    );
+
+    return (
       <WalletSummary
-        wallet={generateWallet('Wallet name', '45119903750165', assets)}
-        numberOfTransactions={number('Number of transactions', 100)}
-        numberOfRecentTransactions={number(
-          'Number of Recent transactions',
-          100
-        )}
-        numberOfPendingTransactions={number('Number of transactions', 3)}
-        isLoadingTransactions={boolean('isLoadingTransactions', true)}
-        hasAssetsEnabled={
-          hasAssetsEnabled && assets && assets.total && assets.total.length > 0
-        }
-      />
-      <AssetsWalletSummary
-        wallet={generateWallet('Wallet name', '45119903750165', assets)}
-        assets={walletAssets}
-        isLoading={boolean('isLoading', true)}
-        handleOpenAssetSend={action('handleOpenAssetSend')}
-      />
-    </>
-  ))
-  .add('Wallet Tokens Summary', () => (
-    <>
-      <WalletSummary
-        wallet={generateWallet('Wallet name', '45119903750165', assets)}
+        wallet={generateWallet('Wallet name', '45119903750165')}
         numberOfTransactions={number('Number of transactions', 100)}
         numberOfRecentTransactions={number(
           'Number of Recent transactions',
@@ -200,14 +205,154 @@ storiesOf('Wallets|Summary', module)
         )}
         numberOfPendingTransactions={number('Number of transactions', 3)}
         isLoadingTransactions={boolean('isLoadingTransactions', false)}
-        hasAssetsEnabled={
-          hasAssetsEnabled && assets && assets.total && assets.total.length > 0
-        }
+        currencyIsFetchingRate={currencyIsFetchingRate}
+        currencyIsAvailable={currencyIsAvailable}
+        currencyIsActive={currencyIsActive}
+        currencySelected={currencySelected}
+        currencyRate={0.321}
+        currencyLastFetched={currencyLastFetched}
+        onCurrencySettingClick={action('onCurrencySettingClick')}
       />
-      <AssetsWalletSummary
-        wallet={generateWallet('Wallet name', '45119903750165', assets)}
-        assets={walletAssets}
-        handleOpenAssetSend={action('handleOpenAssetSend')}
-      />
-    </>
-  ));
+    );
+  })
+  .add('Wallet Tokens Summary Loading', () => {
+    const currencyState = select(
+      'Currency state',
+      {
+        Fetched: 'fetched',
+        'Fetching rate': 'loading',
+        'Disabled or unavailable': 'off',
+      },
+      'fetched'
+    );
+
+    let currencyIsFetchingRate = false;
+    let currencyIsAvailable = true;
+    let currencyIsActive = true;
+    let currencyLastFetched = new Date();
+
+    if (currencyState === 'loading') {
+      currencyIsFetchingRate = true;
+      currencyLastFetched = null;
+    } else if (currencyState === 'off') {
+      currencyIsAvailable = false;
+      currencyIsActive = false;
+    }
+
+    const currencySelected = select(
+      'currencySelected',
+      currencyList.reduce((obj, currency) => {
+        obj[`${currency.id} - ${currency.name}`] = currency;
+        return obj;
+      }, {}),
+      {
+        id: 'uniswap-state-dollar',
+        symbol: 'usd',
+        name: 'unified Stable Dollar',
+      }
+    );
+
+    return (
+      <>
+        <WalletSummary
+          wallet={generateWallet('Wallet name', '45119903750165', assets)}
+          numberOfTransactions={number('Number of transactions', 100)}
+          numberOfRecentTransactions={number(
+            'Number of Recent transactions',
+            100
+          )}
+          numberOfPendingTransactions={number('Number of transactions', 3)}
+          isLoadingTransactions={boolean('isLoadingTransactions', true)}
+          hasAssetsEnabled={
+            hasAssetsEnabled &&
+            assets &&
+            assets.total &&
+            assets.total.length > 0
+          }
+          currencyIsFetchingRate={currencyIsFetchingRate}
+          currencyIsAvailable={currencyIsAvailable}
+          currencyIsActive={currencyIsActive}
+          currencySelected={currencySelected}
+          currencyRate={0.321}
+          currencyLastFetched={currencyLastFetched}
+          onCurrencySettingClick={action('onCurrencySettingClick')}
+        />
+        <AssetsWalletSummary
+          wallet={generateWallet('Wallet name', '45119903750165', assets)}
+          assets={walletAssets}
+          isLoading={boolean('isLoading', true)}
+          handleOpenAssetSend={action('handleOpenAssetSend')}
+        />
+      </>
+    );
+  })
+  .add('Wallet Tokens Summary', () => {
+    const currencyState = select(
+      'Currency state',
+      {
+        Fetched: 'fetched',
+        'Fetching rate': 'loading',
+        'Disabled or unavailable': 'off',
+      },
+      'fetched'
+    );
+
+    let currencyIsFetchingRate = false;
+    let currencyIsAvailable = true;
+    let currencyIsActive = true;
+    let currencyLastFetched = new Date();
+
+    if (currencyState === 'loading') {
+      currencyIsFetchingRate = true;
+      currencyLastFetched = null;
+    } else if (currencyState === 'off') {
+      currencyIsAvailable = false;
+      currencyIsActive = false;
+    }
+
+    const currencySelected = select(
+      'currencySelected',
+      currencyList.reduce((obj, currency) => {
+        obj[`${currency.id} - ${currency.name}`] = currency;
+        return obj;
+      }, {}),
+      {
+        id: 'uniswap-state-dollar',
+        symbol: 'usd',
+        name: 'unified Stable Dollar',
+      }
+    );
+
+    return (
+      <>
+        <WalletSummary
+          wallet={generateWallet('Wallet name', '45119903750165', assets)}
+          numberOfTransactions={number('Number of transactions', 100)}
+          numberOfRecentTransactions={number(
+            'Number of Recent transactions',
+            100
+          )}
+          numberOfPendingTransactions={number('Number of transactions', 3)}
+          isLoadingTransactions={boolean('isLoadingTransactions', false)}
+          hasAssetsEnabled={
+            hasAssetsEnabled &&
+            assets &&
+            assets.total &&
+            assets.total.length > 0
+          }
+          currencyIsFetchingRate={currencyIsFetchingRate}
+          currencyIsAvailable={currencyIsAvailable}
+          currencyIsActive={currencyIsActive}
+          currencySelected={currencySelected}
+          currencyRate={0.321}
+          currencyLastFetched={currencyLastFetched}
+          onCurrencySettingClick={action('onCurrencySettingClick')}
+        />
+        <AssetsWalletSummary
+          wallet={generateWallet('Wallet name', '45119903750165', assets)}
+          assets={walletAssets}
+          handleOpenAssetSend={action('handleOpenAssetSend')}
+        />
+      </>
+    );
+  });
