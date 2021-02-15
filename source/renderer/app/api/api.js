@@ -231,6 +231,7 @@ import type {
   GetAssetResponse,
   GetAssetsRequest,
   GetAssetsResponse,
+  ApiAsset,
 } from './assets/types';
 import Asset from '../domains/Asset';
 import { getAssets } from './assets/requests/getAssets';
@@ -2699,13 +2700,17 @@ const _createTransactionFromServerData = action(
 
 const _createAssetFromServerData = action(
   'AdaApi::_createAssetFromServerData',
-  (data: Asset) => {
-    // eslint-disable-next-line camelcase
-    const { id, policy_id, asset_name, metadata } = data;
+  (data: ApiAsset) => {
+    const {
+      policy_id: policyId,
+      asset_name: assetName,
+      fingerprint,
+      metadata,
+    } = data;
     return new Asset({
-      id,
-      policyId: policy_id,
-      assetName: asset_name,
+      policyId,
+      assetName,
+      fingerprint,
       metadata,
     });
   }

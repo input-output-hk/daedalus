@@ -137,12 +137,13 @@ export const generateWallet = (
 export const generateAsset = (
   policyId: string,
   assetName: string = '',
+  fingerprint: string = '',
   metadata?: AssetMetadata
 ) =>
   new Asset({
-    id: generateHash(),
     policyId,
     assetName,
+    fingerprint,
     metadata,
   });
 

@@ -4,16 +4,16 @@ import { observable, action } from 'mobx';
 import type { AssetMetadata } from '../api/assets/types';
 
 export type AssetProps = {
-  id: string,
   policyId: string,
   assetName: string,
+  fingerprint: string,
   metadata?: ?AssetMetadata,
 };
 
 export default class Asset {
-  id: string = '';
   @observable policyId: string = '';
   @observable assetName: string = '';
+  @observable fingerprint: string = '';
   @observable metadata: ?AssetMetadata;
 
   constructor(data: AssetProps) {
@@ -23,7 +23,7 @@ export default class Asset {
   @action update(other: Asset) {
     Object.assign(
       this,
-      pick(other, ['id', 'policyId', 'assetName', 'metadata'])
+      pick(other, ['id', 'policyId', 'assetName', 'fingerprint', 'metadata'])
     );
   }
 }

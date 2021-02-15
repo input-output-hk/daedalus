@@ -3,7 +3,11 @@ import { observable, computed, action } from 'mobx';
 import { find } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import type { GetAssetRequest, GetAssetsResponse } from '../api/assets/types';
+import type {
+  GetAssetRequest,
+  GetAssetsResponse,
+  WalletAssetItem,
+} from '../api/assets/types';
 import Asset from '../domains/Asset';
 
 export default class AssetsStore extends Store {
@@ -21,7 +25,9 @@ export default class AssetsStore extends Store {
 
   @computed get all(): Array<Asset> {
     const wallet = this.stores.wallets.active;
-    if (!wallet) return [];
+    if (!wallet) {
+      return [];
+    }
     const request = this._getAssetsAllRequest(wallet.id);
     if (!request.result) {
       return [];
@@ -51,6 +57,15 @@ export default class AssetsStore extends Store {
     const foundRequest = find(this.assetsRequests, { walletId });
     if (foundRequest && foundRequest.allRequest) return foundRequest.allRequest;
     return new Request(this.api.ada.getAssets);
+  };
+
+  _getAssetFingerprint = (asset: WalletAssetItem): string => {
+    const assetDetail =
+      this.all.find(
+        ({ policyId, assetName }) =>
+          asset.policyId === policyId && asset.assetName === assetName
+      ) || {};
+    return assetDetail.fingerprint;
   };
 
   getSingleAsset = async ({

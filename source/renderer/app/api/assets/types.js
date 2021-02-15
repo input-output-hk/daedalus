@@ -9,6 +9,13 @@ export type SingleAsset = {
   metadata?: ?AssetMetadata,
 };
 
+export type ApiAsset = {
+  policy_id: string,
+  asset_name: string,
+  fingerprint: string,
+  metadata?: ?AssetMetadata,
+};
+
 export type AssetMetadata = {
   name: string,
   acronym: string,
