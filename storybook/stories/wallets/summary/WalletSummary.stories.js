@@ -22,34 +22,12 @@ const allAssets = [
   generateAsset(
     '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
-    'token2542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
-    {
-      name: 'ADA',
-      acronym: 'ADA',
-      description: 'Test description',
-      unit: {
-        name: 'ADA',
-        decimals: 6,
-      },
-      url: 'http://example.com',
-      logo: '',
-    }
+    'token2542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b'
   ),
   generateAsset(
     '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
-    'token2542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
-    {
-      name: 'Tether',
-      acronym: 'USDT',
-      description: 'Test description',
-      unit: {
-        name: 'USDT',
-        decimals: 6,
-      },
-      url: 'http://example.com',
-      logo: '',
-    }
+    'token2542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b'
   ),
   generateAsset(
     '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
