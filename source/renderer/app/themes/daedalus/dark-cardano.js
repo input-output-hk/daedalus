@@ -1095,6 +1095,10 @@ export const DARK_CARDANO_THEME_OUTPUT = {
     '--rp-pop-over-bg-color': 'rgba(63,64,79,0.9)',
     '--rp-pop-over-text-color': 'white',
   },
+  widgets: {
+    '--theme-widgets-asset-token-background-color': 'rgba(255,255,255,0.1)',
+    '--theme-widgets-asset-token-text-color': '#ffffff',
+  },
 };
 
 const DARK_CARDANO_THEME_PARAMS: CreateThemeParams = {

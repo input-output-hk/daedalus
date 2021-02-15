@@ -7,6 +7,7 @@ import BigNumber from 'bignumber.js';
 import BorderedBox from '../../widgets/BorderedBox';
 import styles from './AssetsWalletSummary.scss';
 import Wallet from '../../../domains/Wallet';
+import AssetToken from '../../widgets/AssetToken';
 import type { WalletSummaryAsset } from '../../../api/assets/types';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
@@ -55,6 +56,8 @@ export default class AssetsWalletSummary extends Component<Props> {
 
   render() {
     const { wallet, assets, handleOpenAssetSend, isLoading } = this.props;
+    console.log('wallet', wallet);
+    console.log('assets', assets);
     const { intl } = this.context;
 
     const isRestoreActive = wallet.isRestoring;
@@ -81,10 +84,8 @@ export default class AssetsWalletSummary extends Component<Props> {
                 >
                   {asset.total && (
                     <div className={styles.assetsLeftContainer}>
-                      <div className={styles.assetName}>
-                        {asset.metadata && asset.metadata.name
-                          ? asset.metadata.name
-                          : intl.formatMessage(messages.unknownLabel)}
+                      <div className={styles.assetToken}>
+                        <AssetToken asset={asset} />
                       </div>
                       <div className={styles.assetAmount}>
                         {isRestoreActive

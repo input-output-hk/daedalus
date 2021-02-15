@@ -85,25 +85,25 @@ const assets = {
   available: [
     {
       id: generateHash(),
-      policyId: '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
+      policyId: 'token2542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       assetName: '',
       quantity: 45119903.750165,
     },
     {
       id: generateHash(),
-      policyId: '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
+      policyId: 'token2542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       assetName: '',
       quantity: 200,
     },
     {
       id: generateHash(),
-      policyId: '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
+      policyId: 'token2542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
       assetName: '',
       quantity: 300,
     },
     {
       id: generateHash(),
-      policyId: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
+      policyId: 'token2542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
       assetName: '',
       quantity: 400,
     },
@@ -111,25 +111,25 @@ const assets = {
   total: [
     {
       id: generateHash(),
-      policyId: '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
+      policyId: 'token2542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       assetName: '',
       quantity: 45119903.750165,
     },
     {
       id: generateHash(),
-      policyId: '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
+      policyId: 'token2542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       assetName: '',
       quantity: 200,
     },
     {
       id: generateHash(),
-      policyId: '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
+      policyId: 'token2542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
       assetName: '',
       quantity: 300,
     },
     {
       id: generateHash(),
-      policyId: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
+      policyId: 'token2542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
       assetName: '',
       quantity: 400,
     },

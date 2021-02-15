@@ -833,7 +833,7 @@ export const createDaedalusComponentsTheme = (
       '--theme-progress-bar-large-progress-dark-stripe1': '#e0e5eb',
       '--theme-progress-bar-large-progress-dark-stripe2': '#fafbfc',
       '--theme-progress-bar-large-progress-light-stripe-1': `${background.secondary.dark}`,
-      '--theme-progress-bar-large-progress-light-stripe-2': `${background.secondary.regular}`,
+      '--theme-progress-bar-large-progress-light-stripe-2-background-color': `${background.secondary.regular}`,
       '--theme-progress-bar-large-background-color': 'rgba(0, 0, 0, 0.1)',
     },
     receiveQRCode: {
@@ -1272,6 +1272,12 @@ export const createDaedalusComponentsTheme = (
       '--theme-wallet-not-responding-icon-color': `${text.secondary}`,
       '--theme-wallet-not-responding-link-text-color': `${text.secondary}`,
       '--theme-wallet-not-responding-title-text-color': `${text.secondary}`,
+    },
+    widgets: {
+      '--theme-widgets-asset-token-background-color': `rgba(${chroma(focus)
+        .alpha(0.1)
+        .rgba()})`,
+      '--theme-widgets-asset-token-text-color': `${text.primary}`,
     },
   };
 };

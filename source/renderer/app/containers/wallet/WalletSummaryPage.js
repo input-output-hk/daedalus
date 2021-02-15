@@ -110,6 +110,8 @@ export default class WalletSummaryPage extends Component<Props> {
 
       return {
         id: assetData ? assetData.id : '',
+        policyId: assetData.policyId,
+        assetName: assetData.assetName,
         metadata: assetData
           ? assetData.metadata
           : {

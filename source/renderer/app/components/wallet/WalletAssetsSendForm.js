@@ -255,7 +255,13 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     this.hideReceiverField();
     this.clearAssetValue();
     this.clearReceiverAddress();
-    this.setFormFields(true, 1, 'receiver1', 'receiver1_asset1', 'receiver1_walletsDropdown1');
+    this.setFormFields(
+      true,
+      1,
+      'receiver1',
+      'receiver1_asset1',
+      'receiver1_walletsDropdown1'
+    );
   };
 
   disableResetButton = () => {
@@ -269,7 +275,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     id: number,
     receiverId: string,
     assetId: string,
-    dropdownId: string,
+    dropdownId: string
   ) => {
     const formFields = this.form.fields;
     const receiverField = formFields.get(`receiver${id}`);
@@ -516,7 +522,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
   hasReceiverValue = (index: number) => {
     const receiverField = this.form.$(`receiver${index}`);
     return receiverField.value.length > 0;
-  }
+  };
 
   get isReceiverValid() {
     const receiverField = this.form.$('receiver1');
@@ -566,13 +572,17 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
 
     const receiverField = receiver;
 
-    const walletsDropdownFieldProps = walletsDropdown.map(dropdown => dropdown.bind());
+    const walletsDropdownFieldProps = walletsDropdown.map((dropdown) =>
+      dropdown.bind()
+    );
 
-    const assetFieldProps = asset.map(singleAsset => singleAsset.bind());
+    const assetFieldProps = asset.map((singleAsset) => singleAsset.bind());
 
     const estimatedField = this.form.$('estimatedFee');
 
-    const amount = assetFieldProps.map(assetField => new BigNumber(assetField.value || 0));
+    const amount = assetFieldProps.map(
+      (assetField) => new BigNumber(assetField.value || 0)
+    );
 
     const showReceiverLabelNumber = Object.keys(sendFormFields).length > 1;
 
@@ -679,84 +689,93 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                   </div>
                 )}
               <Fragment>
-                {asset.map(
-                  (singleAsset: any, assetIndex: number) => (
-                    // eslint-disable-next-line react/no-array-index-key
-                    <Fragment key={`${receiverId}_asset${assetIndex}`}>
-                      <NumericInput
-                        {...assetFieldProps[assetIndex]}
-                        className="asset"
-                        ref={(input) => {
-                          this.assetFieldRef[index] = input;
-                        }}
-                        label={intl.formatMessage(messages.assetLabel)}
-                        bigNumberFormat={this.getCurrentNumberFormat()}
-                        decimalPlaces={currencyMaxFractionalDigits}
-                        numberLocaleOptions={{
-                          minimumFractionDigits: currencyMaxFractionalDigits,
-                        }}
-                        onChange={(value) => {
-                          this._isCalculatingTransactionFee = true;
-                          this.setState({
-                            isResetButtonDisabled: false,
-                          });
-                          asset[assetIndex].onChange(value);
-                          estimatedField.onChange(fees);
-                        }}
-                        currency={
-                          selectedNativeToken && selectedNativeToken.metadata
-                            ? selectedNativeToken.metadata.acronym
-                            : null
-                        }
-                        value={amount[index]}
-                        error={asset.error}
-                        skin={AmountInputSkin}
-                        onKeyPress={this.handleSubmitOnEnter}
-                        allowSigns={false}
-                      />
-                      {this.hasAssetValue && (
-                        <div className={styles.clearAssetContainer}>
-                          <PopOver
-                            content="Clear"
-                            placement={
-                              isClearTooltipOpeningDownward ? 'bottom' : 'top'
-                            }
+                {asset.map((singleAsset: any, assetIndex: number) => (
+                  // eslint-disable-next-line react/no-array-index-key
+                  <Fragment key={`${receiverId}_asset${assetIndex}`}>
+                    <NumericInput
+                      {...assetFieldProps[assetIndex]}
+                      className="asset"
+                      ref={(input) => {
+                        this.assetFieldRef[index] = input;
+                      }}
+                      label={intl.formatMessage(messages.assetLabel)}
+                      bigNumberFormat={this.getCurrentNumberFormat()}
+                      decimalPlaces={currencyMaxFractionalDigits}
+                      numberLocaleOptions={{
+                        minimumFractionDigits: currencyMaxFractionalDigits,
+                      }}
+                      onChange={(value) => {
+                        this._isCalculatingTransactionFee = true;
+                        this.setState({
+                          isResetButtonDisabled: false,
+                        });
+                        asset[assetIndex].onChange(value);
+                        estimatedField.onChange(fees);
+                      }}
+                      currency={
+                        selectedNativeToken && selectedNativeToken.metadata
+                          ? selectedNativeToken.metadata.acronym
+                          : null
+                      }
+                      value={amount[index]}
+                      error={asset.error}
+                      skin={AmountInputSkin}
+                      onKeyPress={this.handleSubmitOnEnter}
+                      allowSigns={false}
+                    />
+                    {this.hasAssetValue && (
+                      <div className={styles.clearAssetContainer}>
+                        <PopOver
+                          content="Clear"
+                          placement={
+                            isClearTooltipOpeningDownward ? 'bottom' : 'top'
+                          }
+                        >
+                          <button
+                            onClick={() => this.clearAssetValue(singleAsset)}
+                            className={styles.clearAssetButton}
                           >
-                            <button
-                              onClick={() => this.clearAssetValue(singleAsset)}
-                              className={styles.clearAssetButton}
-                            >
-                              <SVGInline
-                                svg={closeIcon}
-                                className={styles.clearReceiverIcon}
-                              />
-                            </button>
-                          </PopOver>
-                          <div className={styles.separator} />
-                        </div>
-                      )}
-                      <div className={styles.walletsDropdownWrapper}>
-                        <WalletsDropdown
-                          className={styles.walletsDropdown}
-                          {...walletsDropdownFieldProps[index]}
-                          numberOfStakePools={4}
-                          assets={assets}
-                          onChange={(id) => this.onSelectAsset(id, index, receiverId)}
-                          syncingLabel={intl.formatMessage(messages.syncingWallet)}
-                          hasAssetsEnabled
-                          value={selectedAssetId}
-                          getStakePoolById={() => {}}
-                          errorPosition="bottom"
-                        />
+                            <SVGInline
+                              svg={closeIcon}
+                              className={styles.clearReceiverIcon}
+                            />
+                          </button>
+                        </PopOver>
+                        <div className={styles.separator} />
                       </div>
-                    </Fragment>
-                  )
-                )}
+                    )}
+                    <div className={styles.walletsDropdownWrapper}>
+                      <WalletsDropdown
+                        className={styles.walletsDropdown}
+                        {...walletsDropdownFieldProps[index]}
+                        numberOfStakePools={4}
+                        assets={assets}
+                        onChange={(id) =>
+                          this.onSelectAsset(id, index, receiverId)
+                        }
+                        syncingLabel={intl.formatMessage(
+                          messages.syncingWallet
+                        )}
+                        hasAssetsEnabled
+                        value={selectedAssetId}
+                        getStakePoolById={() => {}}
+                        errorPosition="bottom"
+                      />
+                    </div>
+                  </Fragment>
+                ))}
               </Fragment>
               <Button
                 className={addAssetButtonClasses}
                 label={intl.formatMessage(messages.addAssetButtonLabel)}
-                onClick={() => this.addNewAssetRow(index + 1, `asset${asset.length + 1}`, receiverId, `walletsDropdown${walletsDropdown.length + 1}`)}
+                onClick={() =>
+                  this.addNewAssetRow(
+                    index + 1,
+                    `asset${asset.length + 1}`,
+                    receiverId,
+                    `walletsDropdown${walletsDropdown.length + 1}`
+                  )
+                }
                 skin={ButtonSkin}
               />
             </div>
@@ -770,7 +789,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     const { sendFormFields } = this.state;
     const receiver = sendFormFields[receiverId];
     const assets = receiver.asset;
-    assets.map(singleAsset => this.clearAssetValue(singleAsset));
+    assets.map((singleAsset) => this.clearAssetValue(singleAsset));
     this.clearReceiverAddress(index);
     this.hideReceiverField(index);
     if (index > 1) {
@@ -881,7 +900,12 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     this.form.$(newWalletsDropdown).set('type', 'select');
   };
 
-  addNewReceiverRow = (index: number, receiverId: string, assetId: string, dropdownId: string) => {
+  addNewReceiverRow = (
+    index: number,
+    receiverId: string,
+    assetId: string,
+    dropdownId: string
+  ) => {
     this.addNewReceiverField(receiverId);
     this.addNewAssetField(receiverId, assetId);
     this.addNewWalletsDropdownField(receiverId, dropdownId);
@@ -889,7 +913,12 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     this.setFormFields(false, index, receiverId, assetId, dropdownId);
   };
 
-  addNewAssetRow = (index: number, assetId: string, receiverId: string, dropdownId: string) => {
+  addNewAssetRow = (
+    index: number,
+    assetId: string,
+    receiverId: string,
+    dropdownId: string
+  ) => {
     this.addNewAssetField(receiverId, assetId);
     this.addNewWalletsDropdownField(receiverId, dropdownId);
     this.setFormFields(false, index, receiverId, assetId, dropdownId);
@@ -974,22 +1003,20 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                 )
               )}
               {Object.keys(sendFormFields).length > 0 && (
-                  <Button
-                    className={newReceiverButtonClasses}
-                    label={intl.formatMessage(
-                      messages.addNewReceiverButtonLabel
-                    )}
-                    onClick={() =>
-                      this.addNewReceiverRow(
-                        Object.keys(sendFormFields).length + 1,
-                        `receiver${Object.keys(sendFormFields).length + 1}`,
-                        'asset1',
-                        'walletsDropdown1'
-                      )
-                    }
-                    skin={ButtonSkin}
-                  />
-                )}
+                <Button
+                  className={newReceiverButtonClasses}
+                  label={intl.formatMessage(messages.addNewReceiverButtonLabel)}
+                  onClick={() =>
+                    this.addNewReceiverRow(
+                      Object.keys(sendFormFields).length + 1,
+                      `receiver${Object.keys(sendFormFields).length + 1}`,
+                      'asset1',
+                      'walletsDropdown1'
+                    )
+                  }
+                  skin={ButtonSkin}
+                />
+              )}
               <div className={styles.estimatedFeeInput}>
                 <ReadOnlyInput
                   label={intl.formatMessage(messages.estimatedFeeLabel)}

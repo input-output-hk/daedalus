@@ -21,6 +21,7 @@ export default class AssetsStore extends Store {
 
   @computed get all(): Array<Asset> {
     const wallet = this.stores.wallets.active;
+    if (!wallet) return [];
     const request = this._getAssetsAllRequest(wallet.id);
     if (!request.result) {
       return [];

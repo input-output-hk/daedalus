@@ -1103,6 +1103,10 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--rp-pop-over-bg-color': 'rgba(94,96,102,0.9)',
     '--rp-pop-over-text-color': '#fafbfc',
   },
+  widgets: {
+    '--theme-widgets-asset-token-background-color': 'rgba(94,96,102,0.1)',
+    '--theme-widgets-asset-token-text-color': '#5e6066',
+  },
 };
 
 const LIGHT_BLUE_THEME_PARAMS: CreateThemeParams = {
