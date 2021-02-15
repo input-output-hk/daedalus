@@ -47,7 +47,7 @@ type Props = {
   onBlur?: Function,
   onSubmit: Function,
   isValid: Function,
-  valueErrorMessage?: string,
+  valueErrorMessage?: string | Function,
   errorMessage?: ?string,
   disabled?: boolean,
   readOnly?: boolean,
@@ -86,10 +86,18 @@ export default class InlineEditingInput extends Component<Props, State> {
         inputField: {
           value: this.props.value,
           validators: [
-            ({ field }) => [
-              this.props.isValid(field.value) && this.state.isActive,
-              this.props.valueErrorMessage || null,
-            ],
+            ({ field }) => {
+              const { value } = field;
+              const { valueErrorMessage } = this.props;
+              const errorMessage =
+                typeof valueErrorMessage === 'function'
+                  ? valueErrorMessage(value)
+                  : valueErrorMessage;
+              return [
+                this.props.isValid(value) && this.state.isActive,
+                errorMessage || null,
+              ];
+            },
           ],
         },
       },
