@@ -19,7 +19,6 @@ export default class AssetToken extends Component<Props> {
   render() {
     const { asset, className, policyIdEllipsisLeft } = this.props;
     const { fingerprint, policyId, metadata } = asset;
-    console.log('asset', asset);
     const componentClasses = classnames([styles.component, className]);
     return (
       <div className={componentClasses}>

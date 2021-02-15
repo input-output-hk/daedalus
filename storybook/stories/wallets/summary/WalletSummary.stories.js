@@ -144,16 +144,14 @@ const walletAssets = assets.total.map((assetTotal) => {
   const assetData = allAssets.find(
     (item) => item.policyId === assetTotal.policyId
   );
+  const { policyId, assetName, fingerprint, quantity } = assetTotal;
+  const { metadata } = assetData || {};
   return {
-    id: assetData ? assetData.id : '',
-    metadata: assetData
-      ? assetData.metadata
-      : {
-          name: '',
-          acronym: '',
-          description: '',
-        },
-    total: assetTotal || {},
+    policyId,
+    assetName,
+    fingerprint,
+    quantity,
+    metadata,
   };
 });
 
