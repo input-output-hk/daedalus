@@ -108,6 +108,8 @@ import {
   SMASH_SERVERS_LIST,
   MIN_REWARDS_REDEMPTION_RECEIVER_BALANCE,
   REWARDS_REDEMPTION_FEE_CALCULATION_AMOUNT,
+  DELEGATION_DEPOSIT,
+  DELEGATION_ACTIONS,
 } from '../config/stakingConfig';
 import {
   ADA_CERTIFICATE_MNEMONIC_LENGTH,
@@ -997,20 +999,27 @@ export default class AdaApi {
           certificatesData.push(certificateData);
         });
       }
-
-      const deposits = map(response.deposits, (deposit) => deposit.quantity);
-      const totalDeposits = deposits.length
-        ? BigNumber.sum.apply(null, deposits)
+      const depositsArr = map(response.deposits, (deposit) => deposit.quantity);
+      const deposits = depositsArr.length
+        ? BigNumber.sum.apply(null, depositsArr)
         : new BigNumber(0);
-      const feeWithDeposits = totalInputs.minus(totalOutputs);
-      const fee = feeWithDeposits.minus(totalDeposits);
+      // @TODO - Use api response when api is ready
+      const depositsReclaimed =
+        delegation && delegation.delegationAction === DELEGATION_ACTIONS.QUIT
+          ? new BigNumber(DELEGATION_DEPOSIT).multipliedBy(LOVELACES_PER_ADA)
+          : new BigNumber(0);
+      const fee =
+        delegation && delegation.delegationAction === DELEGATION_ACTIONS.QUIT
+          ? totalInputs.minus(totalOutputs).plus(depositsReclaimed)
+          : totalInputs.minus(totalOutputs).minus(deposits);
 
       const extendedResponse = {
         inputs: inputsData,
         outputs: outputsData,
         certificates: certificatesData,
-        feeWithDeposits: feeWithDeposits.dividedBy(LOVELACES_PER_ADA),
         fee: fee.dividedBy(LOVELACES_PER_ADA),
+        deposits: deposits.dividedBy(LOVELACES_PER_ADA),
+        depositsReclaimed: depositsReclaimed.dividedBy(LOVELACES_PER_ADA),
       };
       logger.debug('AdaApi::selectCoins success', { extendedResponse });
       return extendedResponse;
