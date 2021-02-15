@@ -258,7 +258,9 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
         onClose={!isSubmitting ? onClose : () => {}}
         className={dialogClassName}
         closeButton={<DialogCloseButton onClose={onClose} />}
-        backButton={<DialogBackButton onBack={onBack} />}
+        backButton={
+          <DialogBackButton onBack={!isSubmitting ? onBack : () => {}} />
+        }
       >
         <div className={commonStyles.delegationStepsIndicatorWrapper}>
           <Stepper
