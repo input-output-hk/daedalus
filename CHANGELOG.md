@@ -1,11 +1,16 @@
 Changelog
 =========
 
+## 3.3.0
+
+### Features
+
+- Implemented "Undelegate wallet" feature on "Wallet settings" screen ([PR 2351](https://github.com/input-output-hk/daedalus/pull/2351))
+
 ## 3.3.0-FC1
 
 ### Features
 
-- Implemented `Undelegate Wallet` on wallet settings screen ([PR 2351](https://github.com/input-output-hk/daedalus/pull/2351))
 - Added display of wallet balance in other currencies ([PR 2290](https://github.com/input-output-hk/daedalus/pull/2290))
 - Implemented alternate Ledger wallet handling ([PR 2342](https://github.com/input-output-hk/daedalus/pull/2342))
 - Re-enabled "Wallet import" feature ([PR 2308](https://github.com/input-output-hk/daedalus/pull/2308))
