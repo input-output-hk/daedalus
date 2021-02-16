@@ -320,6 +320,25 @@
   }
 }
 
+.removeAssetButton {
+  display: none;
+  font-family: var(--font-semibold);
+  font-size: 10px;
+  font-weight: 500;
+  height: 20px;
+  left: 95px;
+  letter-spacing: 0.5px;
+  line-height: 1.2;
+  text-transform: uppercase;
+  top: 2px;
+  width: 61.5px;
+  z-index: 1;
+
+  &.active {
+    display: block;
+  }
+}
+
 .addNewReceiverButton {
   margin-bottom: 20px;
   width: 100%;
@@ -405,6 +424,10 @@
 
 .assetItem {
   margin-bottom: 20px;
+
+  &.hasButton {
+    margin-top: -20px;
+  }
 }
 
 .minAdaTooltipContent {

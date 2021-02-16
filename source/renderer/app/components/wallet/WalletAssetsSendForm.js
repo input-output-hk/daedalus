@@ -192,6 +192,7 @@ type State = {
   feeCalculationRequestQue: number,
   transactionFeeError: ?string | ?Node,
   showReceiverRemoveBtn: boolean,
+  showAssetRemoveBtn: Array<boolean>,
   sendFormFields: Object,
   selectedAssetId: ?string,
   showReceiverField: Array<boolean>,
@@ -210,6 +211,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     feeCalculationRequestQue: 0,
     transactionFeeError: null,
     showReceiverRemoveBtn: false,
+    showAssetRemoveBtn: [],
     sendFormFields: {},
     selectedAssetId: null,
     showReceiverField: [],
@@ -600,9 +602,8 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     return receiverField.isValid;
   }
 
-  hasAssetValue = (receiverId: string, assetId: string) => {
-    const assetField = this.form.$(`${receiverId}_asset${assetId}`);
-    return !!assetField.value;
+  hasAssetValue = (asset: any) => {
+    return asset && asset.value;
   };
 
   showRemoveButton = () => {
@@ -614,6 +615,24 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
   hideRemoveButton = () => {
     this.setState({
       showReceiverRemoveBtn: false,
+    });
+  };
+
+  showAssetRemoveButton = (assetId: number) => {
+    const { showAssetRemoveBtn } = this.state;
+    showAssetRemoveBtn[assetId] = true;
+    const newShowAssetRemoveBtn = showAssetRemoveBtn;
+    this.setState({
+      showAssetRemoveBtn: newShowAssetRemoveBtn,
+    });
+  };
+
+  hideAssetRemoveButton = (assetId: number) => {
+    const { showAssetRemoveBtn } = this.state;
+    showAssetRemoveBtn[assetId] = false;
+    const newShowAssetRemoveBtn = showAssetRemoveBtn;
+    this.setState({
+      showAssetRemoveBtn: newShowAssetRemoveBtn,
     });
   };
 
@@ -809,7 +828,11 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
               <Fragment>
                 {asset.map((singleAsset: any, assetIndex: number) => (
                   // eslint-disable-next-line react/no-array-index-key
-                  <Fragment key={`${receiverId}_asset${assetIndex}`}>
+                  <div
+                    key={`${receiverId}_asset${assetIndex}`}
+                    onMouseEnter={() => this.showAssetRemoveButton(assetIndex)}
+                    onMouseLeave={() => this.hideAssetRemoveButton(assetIndex)}
+                  >
                     {selectedNativeToken &&
                       selectedNativeToken.quantity &&
                       selectedNativeToken.metadata && (
@@ -822,9 +845,22 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                           &nbsp;{selectedNativeToken.metadata.acronym}
                         </div>
                       )}
+                    <Button
+                      className={classNames([
+                        styles.removeAssetButton,
+                        'flat',
+                        this.state.showAssetRemoveBtn && this.state.showAssetRemoveBtn[assetIndex] ? styles.active : null,
+                      ])}
+                      label={intl.formatMessage(messages.removeReceiverButtonLabel)}
+                      onClick={() => this.removeAssetRow(index + 1, receiverId, assetIndex)}
+                      skin={ButtonSkin}
+                    />
                     <NumericInput
                       {...assetFieldProps[assetIndex]}
-                      className={styles.assetItem}
+                      className={classNames([
+                        styles.assetItem,
+                        this.state.showAssetRemoveBtn && this.state.showAssetRemoveBtn[assetIndex] ? styles.hasButton : null,
+                      ])}
                       label={`${intl.formatMessage(messages.assetLabel)} #${
                         assetIndex + 2
                       }`}
@@ -852,7 +888,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                       onKeyPress={this.handleSubmitOnEnter}
                       allowSigns={false}
                     />
-                    {this.hasAssetValue(receiverId, assetIndex + 1) && (
+                    {this.hasAssetValue(assetFieldProps[assetIndex]) && (
                       <div className={styles.clearAssetContainer}>
                         <PopOver
                           content="Clear"
@@ -891,7 +927,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                         errorPosition="bottom"
                       />
                     </div>
-                  </Fragment>
+                  </div>
                 ))}
               </Fragment>
               <Button
@@ -922,10 +958,21 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     this.clearReceiverAddress(index);
     this.hideReceiverField(index);
     if (index > 1) {
-      this.removeFormField(index);
+      this.removeFormField(index, receiverId);
       this.removeSendFormField(receiverId);
     } else {
       this.disableResetButton();
+    }
+  };
+
+  removeAssetRow = (index: number, receiverId: string, assetIndex: number) => {
+    const { sendFormFields } = this.state;
+    const receiver = sendFormFields[receiverId];
+    const assets = receiver.asset;
+    if (assets[assetIndex]) {
+      this.clearAssetValue(assets[assetIndex]);
+      this.removeFormField(assetIndex + 1, receiverId);
+      this.updateAssetsStateFormFields(index, receiverId, assetIndex);
     }
   };
 
@@ -939,11 +986,25 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     }
   };
 
-  removeFormField = (index: number) => {
-    const assetFieldToDelete = `asset${index}`;
+  removeFormField = (index: number, receiverId: string) => {
+    const assetFieldToDelete = `${receiverId}_asset${index}`;
     this.form.del(assetFieldToDelete);
-    const walletsDropdownFieldToDelete = `receiver1_walletsDropdown${index}`;
+    const walletsDropdownFieldToDelete = `${receiverId}_walletsDropdown${index}`;
     this.form.del(walletsDropdownFieldToDelete);
+  };
+
+  updateAssetsStateFormFields = (index: number, receiverId: string, assetIndex: number) => {
+    const { sendFormFields } = this.state;
+    const receiverFields = sendFormFields[receiverId];
+    if (receiverFields) {
+      const receiversAssets = receiverFields.asset;
+      if (receiversAssets) {
+        sendFormFields[receiverId].asset.splice(assetIndex,1);
+        this.setState({
+          sendFormFields,
+        });
+      }
+    }
   };
 
   addNewReceiverField = (receiverId: string) => {
@@ -1085,11 +1146,11 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       sendFormFields,
     } = this.state;
 
-    const assetField = form.$('receiver1_asset1');
     const receiverField = form.$('receiver1');
+    const adaAssetField = form.$('receiver1__adaAsset');
     const receiverFieldProps = receiverField.bind();
-    const assetFieldProps = assetField.bind();
-    const amount = new BigNumber(assetFieldProps.value || 0);
+    const adaAssetFieldProps = adaAssetField.bind();
+    const amount = new BigNumber(adaAssetFieldProps.value || 0);
 
     let fees = null;
     let total = null;
