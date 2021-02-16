@@ -1099,7 +1099,7 @@ export const INCENTIVIZED_TESTNET_THEME_OUTPUT = {
     '--theme-widgets-asset-token-fingerprint-background-color':
       'rgba(255,255,255,0.1)',
     '--theme-widgets-asset-token-text-color': '#ffffff',
-    '--theme-widgets-asset-token-background-color': '#f4f4f4',
+    '--theme-widgets-asset-token-background-color': 'rgba(42, 43, 60, 0.98)',
   },
 };
 

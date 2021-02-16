@@ -1116,7 +1116,7 @@ export const DARK_BLUE_THEME_OUTPUT = {
     '--theme-widgets-asset-token-fingerprint-background-color':
       'rgba(102,122,138,0.1)',
     '--theme-widgets-asset-token-text-color': '#e9f4fe',
-    '--theme-widgets-asset-token-background-color': '#323c4c',
+    '--theme-widgets-asset-token-background-color': 'rgba(83, 99, 112, 0.98)',
   },
 };
 

@@ -1097,7 +1097,7 @@ export const SHELLEY_TESTNET_THEME_OUTPUT = {
     '--theme-widgets-asset-token-fingerprint-background-color':
       'rgba(255,255,255,0.1)',
     '--theme-widgets-asset-token-text-color': '#ffffff',
-    '--theme-widgets-asset-token-background-color': '#292a3b',
+    '--theme-widgets-asset-token-background-color': 'rgba(42, 43, 60, 0.98)',
   },
 };
 

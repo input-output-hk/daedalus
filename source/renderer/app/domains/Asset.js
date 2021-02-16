@@ -23,7 +23,7 @@ export default class Asset {
   @action update(other: Asset) {
     Object.assign(
       this,
-      pick(other, ['id', 'policyId', 'assetName', 'fingerprint', 'metadata'])
+      pick(other, ['policyId', 'assetName', 'fingerprint', 'metadata'])
     );
   }
 }

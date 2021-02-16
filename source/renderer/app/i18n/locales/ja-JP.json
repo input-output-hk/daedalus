@@ -195,6 +195,7 @@
   "noDiskSpace.error.overlayContent": "<b>Daedalusを動作させるには、ハードディスクに{diskSpaceRequired}以上の空き容量が必要です。ご使用のコンピューターには空き容量が{diskSpaceMissing}不足しています。Daedalusのご利用を続けるためには、ファイルをいくつか削除して空き容量を増やしてください。</b><br /><br />オペレーティングシステムとインストール済みプログラムを正常かつ安定した状態で動作させるには、ハードディスクに少なくとも15%（ご使用のコンピューターの場合は{diskSpaceRecommended}）の空き容量が必要です。ハードディスクにこれ以上の空き容量を確保してください。",
   "noDiskSpace.error.overlayTitle": "ハードディスクの空き容量が不足しているためDaedalusを作動できません",
   "notification.copyAddress": "アドレス：<strong>{address}</strong>をクリップボードにコピーしました",
+  "notification.copyAssetItem": "!!!{assetItem}: <strong>{value}</strong> copied to clipboard",
   "notification.copyPublicKey": "公開鍵： <strong>{publicKey}</strong> をクリップボードにコピーしました",
   "notification.copyStateDirectoryPath": "Daedalusステータスディレクトリーをクリップボードにコピーしました",
   "notification.downloadAddressPDFSuccess": "アドレス：<strong></strong>{walletAddress}<strong></strong> PDFをダウンロードしました",
@@ -1130,5 +1131,11 @@
   "wallet.transferFunds.dialog2.passphraseLabel": "送信時パスワード",
   "wallet.transferFunds.dialog2.sourceWalletAmount.label": "{sourceWalletName}の額",
   "wallet.transferFunds.dialog2.title": "資金を移す",
-  "wallet.transferFunds.dialog2.total.label": "合計"
+  "wallet.transferFunds.dialog2.total.label": "合計",
+  "widgets.assetToken.item.acronym": "!!!Acronym",
+  "widgets.assetToken.item.assetName": "!!!Asset Name",
+  "widgets.assetToken.item.description": "!!!Description",
+  "widgets.assetToken.item.fingerprint": "!!!Fingerprint",
+  "widgets.assetToken.item.name": "!!!Name",
+  "widgets.assetToken.item.policyId": "!!!Policy Id"
 }

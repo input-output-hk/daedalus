@@ -1099,7 +1099,7 @@ export const WHITE_THEME_OUTPUT = {
     '--theme-widgets-asset-token-fingerprint-background-color':
       'rgba(45,45,45,0.1)',
     '--theme-widgets-asset-token-text-color': '#2d2d2d',
-    '--theme-widgets-asset-token-background-color': '#f4f4f4',
+    '--theme-widgets-asset-token-background-color': '#fff',
   },
 };
 
