@@ -201,12 +201,15 @@
 .clearAssetContainer {
   bottom: 0.5px;
   display: flex;
+  float: right;
   height: 48px;
+  justify-content: flex-end;
   line-height: 48px;
-  margin-bottom: 40px;
   padding-left: 20px;
-  position: absolute;
+  position: relative;
+  top: -68px;
   right: 98px;
+  width: 50px;
 
   .clearAssetButton {
     background-color: var(
@@ -355,11 +358,16 @@
 }
 
 .walletsDropdownWrapper {
-  bottom: 38px;
+  bottom: 68px;
   display: flex;
-  position: absolute;
-  right: 0;
+  float: right;
+  position: relative;
+  left: 10px;
   width: 100px;
+
+  &.hasValue {
+    left: 60px;
+  }
 
   > div {
     width: 100px;
