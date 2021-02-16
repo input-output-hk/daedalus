@@ -999,6 +999,7 @@ export default class AdaApi {
           certificatesData.push(certificateData);
         });
       }
+
       const depositsArr = map(response.deposits, (deposit) => deposit.quantity);
       const deposits = depositsArr.length
         ? BigNumber.sum.apply(null, depositsArr)
@@ -2617,10 +2618,12 @@ const _createDelegationFeeFromServerData = action(
     const fee = new BigNumber(
       get(data, ['estimated_max', 'quantity'], 0)
     ).dividedBy(LOVELACES_PER_ADA);
-    const deposit = new BigNumber(
+    const deposits = new BigNumber(
       get(data, ['deposit', 'quantity'], 0)
     ).dividedBy(LOVELACES_PER_ADA);
-    return { fee, deposit };
+    // @TODO Use api response data when api is ready
+    const depositsReclaimed = new BigNumber(0);
+    return { fee, deposits, depositsReclaimed };
   }
 );
 

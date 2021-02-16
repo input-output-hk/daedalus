@@ -995,7 +995,7 @@
   "wallet.settings.undelegate.dialog.confirmButtonLabel": "委任設定を解除する",
   "wallet.settings.undelegate.dialog.confirmIneligibleNotice": "ステークを委任していないと、報酬を得られないことを理解しました。",
   "wallet.settings.undelegate.dialog.confirmUnsupportNotice": "ステークを委任していないと、Cardanoネットワークをサポートできないことを理解しました。",
-  "wallet.settings.undelegate.dialog.depositLabel": "デポジット",
+  "wallet.settings.undelegate.dialog.depositLabel": "デポジットは返還されました",
   "wallet.settings.undelegate.dialog.descriptionWithTicker": "<p><strong>{walletName}</strong>ウォレットのステークは現在<strong>[{stakePoolTicker}] {stakePoolName}</strong>ステークプールに委任されています。</p><p>ステークの委任を解除し、報酬獲得を停止しますか。</p>",
   "wallet.settings.undelegate.dialog.descriptionWithUnknownTicker": "<p><strong>{walletName}</strong>ウォレットのステークは現在<strong>{stakePoolTicker}</strong>ステークプールに委任されています。</p><p>ステークの委任を解除して報酬の獲得を停止しますか。</p>",
   "wallet.settings.undelegate.dialog.feesLabel": "手数料",

@@ -312,7 +312,7 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
                 )}
               </p>
             </div>
-            {transactionFee && !transactionFee.deposit.isZero() && (
+            {transactionFee && !transactionFee.deposits.isZero() && (
               <>
                 <div className={styles.depositWrapper}>
                   <p className={styles.depositLabel}>
@@ -320,7 +320,7 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
                   </p>
                   <p className={styles.depositAmount}>
                     <span>
-                      {formattedWalletAmount(transactionFee.deposit, false)}
+                      {formattedWalletAmount(transactionFee.deposits, false)}
                     </span>
                     <span className={styles.depositAmountLabel}>
                       {` `}

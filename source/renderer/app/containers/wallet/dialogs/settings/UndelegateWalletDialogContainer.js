@@ -2,11 +2,15 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
 import { get, find } from 'lodash';
+import BigNumber from 'bignumber.js';
 import type { InjectedProps } from '../../../../types/injectedPropsType';
 import type { DelegationCalculateFeeResponse } from '../../../../api/staking/types';
 import UndelegateWalletConfirmationDialog from '../../../../components/wallet/settings/UndelegateWalletConfirmationDialog';
 import UndelegateWalletSuccessDialog from '../../../../components/wallet/settings/UndelegateWalletSuccessDialog';
-import { DELEGATION_ACTIONS } from '../../../../config/stakingConfig';
+import {
+  DELEGATION_ACTIONS,
+  DELEGATION_DEPOSIT,
+} from '../../../../config/stakingConfig';
 
 type Props = {
   ...InjectedProps,
@@ -67,16 +71,17 @@ export default class UndelegateWalletDialogContainer extends Component<
         poolId,
         delegationAction: DELEGATION_ACTIONS.QUIT,
       });
-      const { depositsReclaimed, fee } = coinsSelection;
-      stakePoolQuitFee = {
-        fee,
-        deposit: depositsReclaimed,
-      };
+      const { deposits, depositsReclaimed, fee } = coinsSelection;
+      stakePoolQuitFee = { deposits, depositsReclaimed, fee };
       hardwareWallets.initiateTransaction({ walletId: this.selectedWalletId });
     } else {
       stakePoolQuitFee = await calculateDelegationFee({
         walletId: this.selectedWalletId,
       });
+      // @TODO Remove this when api returns depositsReclaimed value
+      if (stakePoolQuitFee) {
+        stakePoolQuitFee.depositsReclaimed = new BigNumber(DELEGATION_DEPOSIT);
+      }
     }
 
     if (this._isMounted && stakePoolQuitFee) {

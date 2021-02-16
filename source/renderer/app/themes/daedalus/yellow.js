@@ -700,6 +700,7 @@ export const YELLOW_THEME_OUTPUT = {
     '--theme-settings-theme-select-title-color': '#2d2d2d',
     '--theme-settings-theme-select-border-color': '#e1dac6',
     '--theme-settings-undelegate-wallet-divider-border-color': '#e1dac6',
+    '--theme-settings-undelegate-wallet-deposit-amount-color': '#009900',
     '--theme-settings-undelegate-wallet-fees-amount-color': '#ea4c5b',
   },
   sidebar: {

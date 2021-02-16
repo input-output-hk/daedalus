@@ -63,13 +63,20 @@
 
     .feesAmount,
     .depositAmount {
-      color: var(--theme-settings-undelegate-wallet-fees-amount-color);
       user-select: text;
 
       .feesAmountLabel,
       .depositAmountLabel {
         font-family: var(--font-light);
       }
+    }
+
+    .feesAmount {
+      color: var(--theme-settings-undelegate-wallet-fees-amount-color);
+    }
+
+    .depositAmount {
+      color: var(--theme-settings-undelegate-wallet-deposit-amount-color);
     }
   }
 

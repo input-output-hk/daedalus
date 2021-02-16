@@ -75,8 +75,8 @@ const messages = defineMessages({
   },
   depositLabel: {
     id: 'wallet.settings.undelegate.dialog.depositLabel',
-    defaultMessage: '!!!Deposit',
-    description: 'Deposit label in the "Undelegate wallet" dialog.',
+    defaultMessage: '!!!Deposits reclaimed',
+    description: 'Deposits reclaimed label in the "Undelegate wallet" dialog.',
   },
   spendingPasswordLabel: {
     id: 'wallet.settings.undelegate.dialog.spendingPasswordLabel',
@@ -362,14 +362,16 @@ export default class UndelegateWalletConfirmationDialog extends Component<Props>
               )}
             </p>
           </div>
-          {fees && !fees.deposit.isZero() && (
+          {fees && !fees.depositsReclaimed.isZero() && (
             <>
               <div className={styles.depositWrapper}>
                 <p className={styles.depositLabel}>
                   {intl.formatMessage(messages.depositLabel)}
                 </p>
                 <p className={styles.depositAmount}>
-                  <span>{formattedWalletAmount(fees.deposit, false)}</span>
+                  <span>
+                    {formattedWalletAmount(fees.depositsReclaimed, false)}
+                  </span>
                   <span className={styles.depositAmountLabel}>
                     {` `}
                     {intl.formatMessage(globalMessages.unitAda)}

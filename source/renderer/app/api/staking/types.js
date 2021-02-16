@@ -96,7 +96,8 @@ export type GetDelegationFeeRequest = {
 
 export type DelegationCalculateFeeResponse = {
   fee: BigNumber,
-  deposit: BigNumber,
+  deposits: BigNumber,
+  depositsReclaimed: BigNumber,
 };
 
 export type QuitStakePoolRequest = {

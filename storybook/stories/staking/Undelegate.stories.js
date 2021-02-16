@@ -45,7 +45,8 @@ export const StakingUndelegateConfirmationStory = (props: {
     error={null}
     fees={{
       fee: new BigNumber(number('fee', 3)),
-      deposit: new BigNumber(number('deposit', 10)),
+      deposits: new BigNumber(0),
+      depositsReclaimed: new BigNumber(number('depositsReclaimed', 10)),
     }}
     hwDeviceStatus="ready"
   />
