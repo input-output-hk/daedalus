@@ -78,13 +78,6 @@
         }
       }
     }
-    &.disabled {
-      .copyAddressLabel,
-      .copyIcon {
-        opacity: 0.2;
-        cursor: default;
-      }
-    }
   }
   .noteInput textarea {
     background: transparent;

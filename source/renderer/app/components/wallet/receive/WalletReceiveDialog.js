@@ -2,7 +2,7 @@
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
 import { utils } from '@cardano-foundation/ledgerjs-hw-app-cardano';
-import { map, keys } from 'lodash';
+import { map, filter } from 'lodash';
 import { defineMessages, intlShape, FormattedHTMLMessage } from 'react-intl';
 import classnames from 'classnames';
 import CopyToClipboard from 'react-copy-to-clipboard';
@@ -151,6 +151,7 @@ type Props = {
 type State = {
   selectedVerificationStatus: ?AddressVerificationCheckStatus,
   isInvalidAddressConfirmed: boolean,
+  isReverifying: boolean,
 };
 
 @observer
@@ -162,6 +163,7 @@ export default class WalletReceiveDialog extends Component<Props, State> {
   state = {
     selectedVerificationStatus: null,
     isInvalidAddressConfirmed: false,
+    isReverifying: false,
   };
 
   form = new ReactToolboxMobxForm({
@@ -238,6 +240,7 @@ export default class WalletReceiveDialog extends Component<Props, State> {
       selectedVerificationStatus:
         status === AddressVerificationCheckStatuses.REVERIFY ? null : status,
       isInvalidAddressConfirmed: false,
+      isReverifying: status === AddressVerificationCheckStatuses.REVERIFY,
     });
     this.props.onChangeVerificationStatus(status);
   };
@@ -263,6 +266,7 @@ export default class WalletReceiveDialog extends Component<Props, State> {
     const {
       selectedVerificationStatus,
       isInvalidAddressConfirmed,
+      isReverifying,
     } = this.state;
     const { intl } = this.context;
     const noteInputField = this.form.$('noteInput');
@@ -278,8 +282,8 @@ export default class WalletReceiveDialog extends Component<Props, State> {
     );
     const isSupportRequestButton =
       selectedVerificationStatus === AddressVerificationCheckStatuses.INVALID;
-    let actions;
 
+    let actions;
     if (isSupportRequestButton) {
       actions = [
         {
@@ -319,33 +323,37 @@ export default class WalletReceiveDialog extends Component<Props, State> {
 
     const constructedPaths = this.constructPaths(address);
 
-    const isCopyAddressEnabled =
-      !isAddressVerificationEnabled ||
-      (isAddressVerificationEnabled &&
-        selectedVerificationStatus === AddressVerificationCheckStatuses.VALID);
-
-    const copyAddressStyles = classnames([
-      styles.copyAddress,
-      !isCopyAddressEnabled ? styles.disabled : null,
-    ]);
-
     const verificationOptions = [
       {
-        [AddressVerificationCheckStatuses.VALID]: intl.formatMessage(
-          messages.verificationCheckOptionValid
-        ),
+        status: AddressVerificationCheckStatuses.VALID,
+        label: intl.formatMessage(messages.verificationCheckOptionValid),
       },
       {
-        [AddressVerificationCheckStatuses.REVERIFY]: intl.formatMessage(
-          messages.verificationCheckOptionReverify
-        ),
+        status: AddressVerificationCheckStatuses.REVERIFY,
+        label: intl.formatMessage(messages.verificationCheckOptionReverify),
       },
       {
-        [AddressVerificationCheckStatuses.INVALID]: intl.formatMessage(
-          messages.verificationCheckOptionInvalid
-        ),
+        status: AddressVerificationCheckStatuses.INVALID,
+        label: intl.formatMessage(messages.verificationCheckOptionInvalid),
       },
     ];
+
+    const filteredVerificationOptions = filter(
+      verificationOptions,
+      (option) => {
+        const isInvalidOption =
+          option.status === AddressVerificationCheckStatuses.INVALID;
+        if (
+          (!selectedVerificationStatus &&
+            (!isInvalidOption || (isInvalidOption && isReverifying))) ||
+          (selectedVerificationStatus &&
+            selectedVerificationStatus === option.status)
+        ) {
+          return option;
+        }
+        return null;
+      }
+    );
 
     const showActions =
       !isAddressVerificationEnabled ||
@@ -354,6 +362,11 @@ export default class WalletReceiveDialog extends Component<Props, State> {
           AddressVerificationCheckStatuses.INVALID ||
           selectedVerificationStatus ===
             AddressVerificationCheckStatuses.VALID));
+
+    const isAddressConfirmed =
+      isAddressChecked &&
+      isAddressDerived &&
+      selectedVerificationStatus !== null;
 
     return (
       <Dialog
@@ -391,9 +404,9 @@ export default class WalletReceiveDialog extends Component<Props, State> {
 
           <CopyToClipboard
             text={address.id}
-            onCopy={() => isCopyAddressEnabled && onCopyAddress(address.id)}
+            onCopy={() => onCopyAddress(address.id)}
           >
-            <span className={copyAddressStyles}>
+            <span className={styles.copyAddress}>
               <SVGInline svg={iconCopy} className={styles.copyIcon} />
               <span className={styles.copyAddressLabel}>
                 {intl.formatMessage(messages.copyAddressLabel)}
@@ -416,7 +429,7 @@ export default class WalletReceiveDialog extends Component<Props, State> {
                   skin={CheckboxSkin}
                 />
                 <Checkbox
-                  checked={isAddressChecked}
+                  checked={isAddressConfirmed}
                   label={intl.formatMessage(messages.confirmationCheckLabel)}
                   disabled
                   skin={CheckboxSkin}
@@ -438,17 +451,14 @@ export default class WalletReceiveDialog extends Component<Props, State> {
                       )}
                     </p>
                   }
-                  items={map(verificationOptions, (option) => {
-                    const status = keys(option)[0];
-                    const statusValue = option[status];
-                    return {
-                      key: status,
-                      disabled: false,
-                      label: statusValue,
-                      selected: status === selectedVerificationStatus,
-                      onChange: () => this.onChangeVerificationStatus(status),
-                    };
-                  })}
+                  items={map(filteredVerificationOptions, (option) => ({
+                    key: option.status,
+                    disabled: false,
+                    label: option.label,
+                    selected: option.status === selectedVerificationStatus,
+                    onChange: () =>
+                      this.onChangeVerificationStatus(option.status),
+                  }))}
                   verticallyAligned
                 />
               )}

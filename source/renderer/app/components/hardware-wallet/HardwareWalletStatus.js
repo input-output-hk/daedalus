@@ -135,6 +135,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Verify address on your "{walletName}" device',
     description: '"Verify receiving address on your Hardware Wallet device',
   },
+  verifying_address_confirmation: {
+    id: 'wallet.hardware.deviceStatus.verifying_address_confirmation',
+    defaultMessage: '!!!Please answer the question below',
+    description: '"Confirm receiving address on your Hardware Wallet device',
+  },
   verifying_address_failed: {
     id: 'wallet.hardware.deviceStatus.verifying_address_failed',
     defaultMessage: '!!!Address verification failed',
@@ -202,7 +207,8 @@ export default class HardwareWalletStatus extends Component<Props, State> {
       hwDeviceStatus === HwDeviceStatuses.LAUNCHING_CARDANO_APP ||
       hwDeviceStatus === HwDeviceStatuses.EXPORTING_PUBLIC_KEY ||
       hwDeviceStatus === HwDeviceStatuses.VERIFYING_TRANSACTION ||
-      hwDeviceStatus === HwDeviceStatuses.VERIFYING_ADDRESS;
+      hwDeviceStatus === HwDeviceStatuses.VERIFYING_ADDRESS ||
+      hwDeviceStatus === HwDeviceStatuses.VERIFYING_ADDRESS_CONFIRMATION;
 
     const isReady =
       hwDeviceStatus === HwDeviceStatuses.READY ||
@@ -251,7 +257,8 @@ export default class HardwareWalletStatus extends Component<Props, State> {
       walletName &&
       (hwDeviceStatus === HwDeviceStatuses.CONNECTING ||
         hwDeviceStatus === HwDeviceStatuses.VERIFYING_TRANSACTION ||
-        hwDeviceStatus === HwDeviceStatuses.VERIFYING_ADDRESS)
+        hwDeviceStatus === HwDeviceStatuses.VERIFYING_ADDRESS ||
+        hwDeviceStatus === HwDeviceStatuses.VERIFYING_ADDRESS_CONFIRMATION)
     ) {
       const message =
         hwDeviceStatus === HwDeviceStatuses.CONNECTING

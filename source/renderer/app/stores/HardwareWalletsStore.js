@@ -1056,6 +1056,7 @@ export default class HardwareWalletsStore extends Store {
         () => {
           this.isAddressChecked = true;
           this.isListeningForDevice = true;
+          this.hwDeviceStatus = HwDeviceStatuses.VERIFYING_ADDRESS_CONFIRMATION;
         }
       );
     } catch (error) {

@@ -776,6 +776,7 @@
   "wallet.hardware.deviceStatus.wrong_firmware": "Unsupported firmware! {instructionsLink}",
   "wallet.hardware.deviceStatus.wrong_firmware.link.label": "Firmware update instructions",
   "wallet.hardware.deviceStatus.wrong_firmware.link.url": "https://trezor.io/start/",
+  "wallet.hardware.deviceStatus.verifying_address_confirmation": "Please answer the question below",
   "wallet.import.file.dialog.buttonLabel": "Import wallets",
   "wallet.import.file.dialog.description": "<p>This feature enables you to import wallets from ‘secret.key’ files of old versions of Daedalus (Daedalus version 0.15.1 and previous). Importing wallets from state directories of version Daedalus 1.0 onwards is currently not supported.</p> <p>It can be used to import wallets quickly without entering the wallet recovery phrase for each wallet, or to import wallets for which you have lost your wallet recovery phrase.</p> <p>After importing a wallet for which you have lost your wallet recovery phrase, please create a new wallet and transfer all funds from the old wallet to the new wallet. <strong>Keep the wallet recovery phrase for your new wallet secure.</strong></p>",
   "wallet.import.file.dialog.importFromLabel": "Import from:",

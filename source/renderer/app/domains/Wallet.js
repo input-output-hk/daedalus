@@ -54,6 +54,7 @@ export type HwDeviceStatus =
   | 'unsupported_device'
   | 'verifying_transaction_succeeded'
   | 'verifying_address'
+  | 'verifying_address_confirmation'
   | 'verifying_address_failed'
   | 'verifying_address_aborted'
   | 'verifying_address_succeeded';
@@ -73,6 +74,7 @@ export const HwDeviceStatuses: {
   UNSUPPORTED_DEVICE: HwDeviceStatus,
   TREZOR_BRIDGE_FAILURE: HwDeviceStatus,
   VERIFYING_ADDRESS: HwDeviceStatus,
+  VERIFYING_ADDRESS_CONFIRMATION: HwDeviceStatus,
   VERIFYING_ADDRESS_FAILED: HwDeviceStatus,
   VERIFYING_ADDRESS_ABORTED: HwDeviceStatus,
   VERIFYING_ADDRESS_SUCCEEDED: HwDeviceStatus,
@@ -91,6 +93,7 @@ export const HwDeviceStatuses: {
   VERIFYING_TRANSACTION_FAILED: 'verifying_transaction_failed',
   VERIFYING_TRANSACTION_SUCCEEDED: 'verifying_transaction_succeeded',
   VERIFYING_ADDRESS: 'verifying_address',
+  VERIFYING_ADDRESS_CONFIRMATION: 'verifying_address_confirmation',
   VERIFYING_ADDRESS_FAILED: 'verifying_address_failed',
   VERIFYING_ADDRESS_ABORTED: 'verifying_address_aborted',
   VERIFYING_ADDRESS_SUCCEEDED: 'verifying_address_succeeded',
