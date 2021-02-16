@@ -2,7 +2,7 @@
 import type { RequestConfig } from '../../common/types';
 import type { Asset, GetUnknownAssetRequest } from '../types';
 import { request } from '../../utils/request';
-import { getRawWalletId } from '../../utils';
+import { getRawWalletId, isLegacyWalletId } from '../../utils';
 
 export const getUnknownAsset = (
   config: RequestConfig,
@@ -10,6 +10,8 @@ export const getUnknownAsset = (
 ): Promise<Asset> =>
   request({
     method: 'GET',
-    path: `/v2/wallets/${getRawWalletId(walletId)}/assets/${policyId}`,
+    path: `/v2/${
+      isLegacyWalletId(walletId) ? 'byron-wallets' : 'wallets'
+    }/${getRawWalletId(walletId)}/assets/${policyId}`,
     ...config,
   });
