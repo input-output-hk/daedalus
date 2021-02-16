@@ -815,17 +815,31 @@
         }
       },
       {
-        "defaultMessage": "!!!Address verification failed",
-        "description": "\"Address verification failed\" device state",
+        "defaultMessage": "!!!Please answer the question below",
+        "description": "\"Confirm receiving address on your Hardware Wallet device",
         "end": {
           "column": 3,
           "line": 142
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
+        "id": "wallet.hardware.deviceStatus.verifying_address_confirmation",
+        "start": {
+          "column": 34,
+          "line": 138
+        }
+      },
+      {
+        "defaultMessage": "!!!Address verification failed",
+        "description": "\"Address verification failed\" device state",
+        "end": {
+          "column": 3,
+          "line": 147
+        },
+        "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.verifying_address_failed",
         "start": {
           "column": 28,
-          "line": 138
+          "line": 143
         }
       },
       {
@@ -833,13 +847,13 @@
         "description": "\"Address verification aborted\" device state",
         "end": {
           "column": 3,
-          "line": 147
+          "line": 152
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.verifying_address_aborted",
         "start": {
           "column": 29,
-          "line": 143
+          "line": 148
         }
       },
       {
@@ -847,13 +861,13 @@
         "description": "\"Address verified\" device state",
         "end": {
           "column": 3,
-          "line": 152
+          "line": 157
         },
         "file": "source/renderer/app/components/hardware-wallet/HardwareWalletStatus.js",
         "id": "wallet.hardware.deviceStatus.verifying_address_succeeded",
         "start": {
           "column": 31,
-          "line": 148
+          "line": 153
         }
       }
     ],
