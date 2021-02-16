@@ -1274,7 +1274,12 @@ export const createDaedalusComponentsTheme = (
       '--theme-wallet-not-responding-title-text-color': `${text.secondary}`,
     },
     widgets: {
-      '--theme-widgets-asset-token-background-color': `rgba(${chroma(focus)
+      '--theme-widgets-asset-token-background-color': `${chroma(
+        background.primary.regular
+      ).alpha(0.5)}`,
+      '--theme-widgets-asset-token-fingerprint-background-color': `rgba(${chroma(
+        focus
+      )
         .alpha(0.1)
         .rgba()})`,
       '--theme-widgets-asset-token-text-color': `${text.primary}`,

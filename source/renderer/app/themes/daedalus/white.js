@@ -1096,8 +1096,10 @@ export const WHITE_THEME_OUTPUT = {
     '--rp-pop-over-text-color': 'white',
   },
   widgets: {
-    '--theme-widgets-asset-token-background-color': 'rgba(45,45,45,0.1)',
+    '--theme-widgets-asset-token-fingerprint-background-color':
+      'rgba(45,45,45,0.1)',
     '--theme-widgets-asset-token-text-color': '#2d2d2d',
+    '--theme-widgets-asset-token-background-color': '#f4f4f4',
   },
 };
 

@@ -1094,8 +1094,10 @@ export const SHELLEY_TESTNET_THEME_OUTPUT = {
     '--rp-pop-over-text-color': 'white',
   },
   widgets: {
-    '--theme-widgets-asset-token-background-color': 'rgba(255,255,255,0.1)',
+    '--theme-widgets-asset-token-fingerprint-background-color':
+      'rgba(255,255,255,0.1)',
     '--theme-widgets-asset-token-text-color': '#ffffff',
+    '--theme-widgets-asset-token-background-color': '#292a3b',
   },
 };
 

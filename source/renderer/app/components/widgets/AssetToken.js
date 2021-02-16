@@ -32,7 +32,7 @@ export default class AssetToken extends Component<Props, State> {
 
   handleHideTooltip = () => {
     this.setState({
-      isTooltipVisible: false,
+      // isTooltipVisible: false,
     });
   };
 
@@ -109,7 +109,7 @@ export default class AssetToken extends Component<Props, State> {
         <PopOver
           themeVariables={{
             '--rp-pop-over-bg-color':
-              'var(--theme-bordered-box-background-color)',
+              'var(--theme-widgets-asset-token-background-color)',
             '--rp-pop-over-text-color': 'var(--theme-bordered-box-text-color)',
           }}
           contentClassName={styles.popOver}

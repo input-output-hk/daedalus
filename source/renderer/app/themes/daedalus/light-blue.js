@@ -1104,8 +1104,10 @@ export const LIGHT_BLUE_THEME_OUTPUT = {
     '--rp-pop-over-text-color': '#fafbfc',
   },
   widgets: {
-    '--theme-widgets-asset-token-background-color': 'rgba(94,96,102,0.1)',
+    '--theme-widgets-asset-token-fingerprint-background-color':
+      'rgba(94,96,102,0.1)',
     '--theme-widgets-asset-token-text-color': '#5e6066',
+    '--theme-widgets-asset-token-background-color': '#f1f3f5',
   },
 };
 

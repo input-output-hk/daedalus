@@ -298,14 +298,12 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     const { sendFormFields } = this.state;
     const receiverFields = sendFormFields[receiverId];
     if (receiverFields) {
-      receiverFields.asset.map(singleAsset => this.clearAssetValue(singleAsset));
+      receiverFields.asset.map((singleAsset) =>
+        this.clearAssetValue(singleAsset)
+      );
     }
     this.clearReceiverAddress();
-    this.setFormFields(
-      true,
-      1,
-      'receiver1'
-    );
+    this.setFormFields(true, 1, 'receiver1');
   };
 
   disableResetButton = () => {
@@ -941,12 +939,14 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                         <div className={styles.separator} />
                       </div>
                     )}
-                    <div className={classNames([
-                      styles.walletsDropdownWrapper,
-                      this.hasAssetValue(assetFieldProps[assetIndex])
-                        ? styles.hasValue
-                        : null,
-                    ])}>
+                    <div
+                      className={classNames([
+                        styles.walletsDropdownWrapper,
+                        this.hasAssetValue(assetFieldProps[assetIndex])
+                          ? styles.hasValue
+                          : null,
+                      ])}
+                    >
                       <WalletsDropdown
                         className={styles.walletsDropdown}
                         {...walletsDropdownFieldProps[index]}

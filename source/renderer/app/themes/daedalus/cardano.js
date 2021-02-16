@@ -1108,8 +1108,10 @@ export const CARDANO_THEME_OUTPUT = {
     '--rp-pop-over-text-color': '#ffffff',
   },
   widgets: {
-    '--theme-widgets-asset-token-background-color': 'rgba(94,96,102,0.1)',
+    '--theme-widgets-asset-token-fingerprint-background-color':
+      'rgba(94,96,102,0.1)',
     '--theme-widgets-asset-token-text-color': '#5e6066',
+    '--theme-widgets-asset-token-background-color': '#f4f4f4',
   },
 };
 

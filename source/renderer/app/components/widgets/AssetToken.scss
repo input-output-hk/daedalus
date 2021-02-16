@@ -15,7 +15,7 @@
   width: 100%;
 }
 .fingerprint {
-  background: var(--theme-widgets-asset-token-background-color);
+  background: var(--theme-widgets-asset-token-fingerprint-background-color);
   border-radius: 3px;
   color: var(--theme-widgets-asset-token-text-color);
   display: inline-flex;
@@ -45,7 +45,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  cursor: pointer;
   .fingerprint {
     margin-bottom: 10px;
   }
