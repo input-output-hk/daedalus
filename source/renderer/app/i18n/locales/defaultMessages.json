@@ -9960,17 +9960,31 @@
         }
       },
       {
+        "defaultMessage": "!!!https://iohk.zendesk.com/hc/en-us/requests/new/",
+        "description": "Support request link URL",
+        "end": {
+          "column": 3,
+          "line": 83
+        },
+        "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
+        "id": "wallet.receive.dialog.supportRequestLinkUrl",
+        "start": {
+          "column": 25,
+          "line": 79
+        }
+      },
+      {
         "defaultMessage": "!!!Yes, I am sure I have compared the address displayed in Daedalus with the address displayed on the Ledger device by comparing the beginning and ending of the address.",
         "description": "Invalid address confirmation checkbox label",
         "end": {
           "column": 3,
-          "line": 84
+          "line": 89
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.invalidAddressConfirmationLabel",
         "start": {
           "column": 35,
-          "line": 79
+          "line": 84
         }
       },
       {
@@ -9978,13 +9992,13 @@
         "description": "Verification options section label",
         "end": {
           "column": 3,
-          "line": 89
+          "line": 94
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.verificationCheckOptionsLabel",
         "start": {
           "column": 33,
-          "line": 85
+          "line": 90
         }
       },
       {
@@ -9992,13 +10006,13 @@
         "description": "Verification option \"Valid\" label",
         "end": {
           "column": 3,
-          "line": 94
+          "line": 99
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.verificationCheckOptionValid",
         "start": {
           "column": 32,
-          "line": 90
+          "line": 95
         }
       },
       {
@@ -10006,13 +10020,13 @@
         "description": "Verification option \"Invalid\" label",
         "end": {
           "column": 3,
-          "line": 100
+          "line": 105
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.verificationCheckOptionInvalid",
         "start": {
           "column": 34,
-          "line": 95
+          "line": 100
         }
       },
       {
@@ -10020,13 +10034,13 @@
         "description": "Verification option \"Reverify\" label",
         "end": {
           "column": 3,
-          "line": 105
+          "line": 110
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.verificationCheckOptionReverify",
         "start": {
           "column": 35,
-          "line": 101
+          "line": 106
         }
       },
       {
@@ -10034,13 +10048,13 @@
         "description": "Daedalus verification status check label",
         "end": {
           "column": 3,
-          "line": 110
+          "line": 115
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.softwareCheckLabel",
         "start": {
           "column": 22,
-          "line": 106
+          "line": 111
         }
       },
       {
@@ -10048,13 +10062,13 @@
         "description": "User verification status check label",
         "end": {
           "column": 3,
-          "line": 115
+          "line": 120
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.confirmationCheckLabel",
         "start": {
           "column": 26,
-          "line": 111
+          "line": 116
         }
       },
       {
@@ -10062,13 +10076,13 @@
         "description": "Address verification instructions",
         "end": {
           "column": 3,
-          "line": 121
+          "line": 126
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.addressVerificationInstructions",
         "start": {
           "column": 35,
-          "line": 116
+          "line": 121
         }
       },
       {
@@ -10076,13 +10090,13 @@
         "description": "Invalid address \"Warning\" title",
         "end": {
           "column": 3,
-          "line": 126
+          "line": 131
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.invalidAddressWarningTitle",
         "start": {
           "column": 30,
-          "line": 122
+          "line": 127
         }
       },
       {
@@ -10090,13 +10104,13 @@
         "description": "Invalid address \"Warning\" description",
         "end": {
           "column": 3,
-          "line": 132
+          "line": 137
         },
         "file": "source/renderer/app/components/wallet/receive/WalletReceiveDialog.js",
         "id": "wallet.receive.dialog.invalidAddressWarningDescription",
         "start": {
           "column": 36,
-          "line": 127
+          "line": 132
         }
       }
     ],
@@ -15808,13 +15822,13 @@
         "description": "\"Address\" word in the Address PDF export",
         "end": {
           "column": 3,
-          "line": 21
+          "line": 22
         },
         "file": "source/renderer/app/containers/wallet/WalletReceivePage.js",
         "id": "wallet.receive.pdf.filenamePrefix",
         "start": {
           "column": 11,
-          "line": 17
+          "line": 18
         }
       }
     ],

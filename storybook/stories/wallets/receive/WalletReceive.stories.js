@@ -58,6 +58,7 @@ storiesOf('Wallets|Receive', module)
             isAddressDerived={false}
             isAddressChecked={false}
             onChangeVerificationStatus={action('onChangeVerificationStatus')}
+            onSupportRequestClick={action('onSupportRequestClick')}
           />
         )}
       </VerticalFlexContainer>
@@ -107,6 +108,7 @@ storiesOf('Wallets|Receive', module)
             isAddressDerived={false}
             isAddressChecked={false}
             onChangeVerificationStatus={action('onChangeVerificationStatus')}
+            onSupportRequestClick={action('onSupportRequestClick')}
           />
         </VerticalFlexContainer>
       );

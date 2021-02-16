@@ -2050,6 +2050,11 @@ export default class HardwareWalletsStore extends Store {
     this.isListeningForDevice = false;
     this.isAddressVerificationInitiated = false;
     this.unfinishedWalletAddressVerification = null;
+    this.isAddressDerived = false;
+    this.isAddressChecked = false;
+    this.isAddressCorrect = null;
+    this.tempAddressToVerify = {};
+    this.isExportKeyAborted = false;
   };
 
   @action _refreshHardwareWalletsLocalData = async () => {

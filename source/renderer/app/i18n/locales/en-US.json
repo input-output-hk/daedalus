@@ -819,6 +819,7 @@
   "wallet.receive.dialog.spendingPathTooltip": "Receiving address path",
   "wallet.receive.dialog.stakingPathTooltip": "Rewards address path",
   "wallet.receive.dialog.supportRequestButtonLabel": "Submit a request to IOHK Support",
+  "wallet.receive.dialog.supportRequestLinkUrl": "https://iohk.zendesk.com/hc/en-us/requests/new/",
   "wallet.receive.dialog.verificationCheckOptionInvalid": "No, I am sure that address displayed in Daedalus is different from the address displayed on my Ledger device",
   "wallet.receive.dialog.verificationCheckOptionReverify": "No, reverify",
   "wallet.receive.dialog.verificationCheckOptionValid": "Yes",

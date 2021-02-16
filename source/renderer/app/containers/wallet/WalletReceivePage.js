@@ -12,6 +12,7 @@ import type { InjectedProps } from '../../types/injectedPropsType';
 import WalletAddress from '../../domains/WalletAddress';
 import { generateFileNameWithTimestamp } from '../../../../common/utils/files';
 import { ellipsis } from '../../utils/strings';
+import { generateSupportRequestLink } from '../../../../common/utils/reporting';
 
 const messages = defineMessages({
   address: {
@@ -167,6 +168,18 @@ export default class WalletReceivePage extends Component<Props, State> {
     }
   };
 
+  handleSupportRequestClick = async (supportRequestLinkUrl: string) => {
+    const { profile, app } = this.props.stores;
+    const { environment, openExternalLink } = app;
+    const supportUrl = generateSupportRequestLink(
+      supportRequestLinkUrl,
+      environment,
+      profile.currentLocale
+    );
+    openExternalLink(supportUrl);
+    this.handleCloseShareAddress();
+  };
+
   render() {
     const { actions, stores } = this.props;
     const { uiDialogs, addresses, sidebar, hardwareWallets } = stores;
@@ -238,6 +251,7 @@ export default class WalletReceivePage extends Component<Props, State> {
             isAddressDerived={isAddressDerived}
             isAddressChecked={isAddressChecked}
             onChangeVerificationStatus={setAddressVerificationCheckStatus}
+            onSupportRequestClick={this.handleSupportRequestClick}
           />
         )}
       </Fragment>

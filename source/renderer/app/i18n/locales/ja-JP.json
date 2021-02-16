@@ -819,6 +819,7 @@
   "wallet.receive.dialog.spendingPathTooltip": "入金先アドレスのパス",
   "wallet.receive.dialog.stakingPathTooltip": "報酬アドレスのパス",
   "wallet.receive.dialog.supportRequestButtonLabel": "IOHKサポートにリクエストを送信する",
+  "wallet.receive.dialog.supportRequestLinkUrl": "https://iohk.zendesk.com/hc/ja/requests/new/",
   "wallet.receive.dialog.verificationCheckOptionInvalid": "いいえ、Daedalusに表示されたアドレスは、Ledgerデバイスに表示されたアドレスと異なります",
   "wallet.receive.dialog.verificationCheckOptionReverify": "いいえ、もう一度検証します",
   "wallet.receive.dialog.verificationCheckOptionValid": "はい",

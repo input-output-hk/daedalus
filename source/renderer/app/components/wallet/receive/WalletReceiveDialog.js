@@ -76,6 +76,11 @@ const messages = defineMessages({
     defaultMessage: '!!!Submit a request to IOHK Support',
     description: 'Support request button label',
   },
+  supportRequestLinkUrl: {
+    id: 'wallet.receive.dialog.supportRequestLinkUrl',
+    defaultMessage: '!!!https://iohk.zendesk.com/hc/en-us/requests/new/',
+    description: 'Support request link URL',
+  },
   invalidAddressConfirmationLabel: {
     id: 'wallet.receive.dialog.invalidAddressConfirmationLabel',
     defaultMessage:
@@ -146,6 +151,7 @@ type Props = {
   onSaveQRCodeImage: Function,
   onClose: Function,
   onChangeVerificationStatus: Function,
+  onSupportRequestClick: Function,
 };
 
 type State = {
@@ -262,6 +268,7 @@ export default class WalletReceiveDialog extends Component<Props, State> {
       isAddressVerificationEnabled,
       isAddressDerived,
       isAddressChecked,
+      onSupportRequestClick,
     } = this.props;
     const {
       selectedVerificationStatus,
@@ -285,11 +292,14 @@ export default class WalletReceiveDialog extends Component<Props, State> {
 
     let actions;
     if (isSupportRequestButton) {
+      const supportRequestLinkUrl = intl.formatMessage(
+        messages.supportRequestLinkUrl
+      );
       actions = [
         {
           className: buttonClasses,
           label: supportButtonLabel,
-          // onClick: onContinue, // @TODO - add support article link
+          onClick: onSupportRequestClick.bind(this, supportRequestLinkUrl),
           disabled: !isInvalidAddressConfirmed,
           primary: true,
         },
