@@ -600,8 +600,8 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     return receiverField.isValid;
   }
 
-  hasAssetValue = (receiverId: string, assetid: string) => {
-    const assetField = this.form.$(`${receiverId}_asset${assetid}`);
+  hasAssetValue = (receiverId: string, assetId: string) => {
+    const assetField = this.form.$(`${receiverId}_asset${assetId}`);
     return !!assetField.value;
   };
 
@@ -826,7 +826,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                       {...assetFieldProps[assetIndex]}
                       className={styles.assetItem}
                       label={`${intl.formatMessage(messages.assetLabel)} #${
-                        asset.length + 1
+                        assetIndex + 2
                       }`}
                       bigNumberFormat={this.getCurrentNumberFormat()}
                       decimalPlaces={tokenDecimalPlaces}
