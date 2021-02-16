@@ -5,7 +5,7 @@
       "name": { "value": "NiceCoin" },
       "description": { "value": "A nice coin" },
       "acronym": { "value": "NCN" },
-      "unit": { "value":{ "decimals": 9,"name": "GigaNice" } },
+      "unit": { "value": { "decimals": 9, "name": "GigaNice" } },
       "url": { "value": "https://iohk.io" },
       "logo": { "value": "QWxtb3N0IGEgbG9nbw==" }
     }
