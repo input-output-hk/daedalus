@@ -9,11 +9,12 @@ import WalletSummary from '../../components/wallet/summary/WalletSummary';
 import WalletNoTransactions from '../../components/wallet/transactions/WalletNoTransactions';
 import VerticalFlexContainer from '../../components/layout/VerticalFlexContainer';
 import { ROUTES } from '../../routes-config';
-import type { InjectedProps } from '../../types/injectedPropsType';
 import { formattedWalletAmount } from '../../utils/formatters';
 import { getNetworkExplorerUrlByType } from '../../utils/network';
 import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
 import AssetsWalletSummary from '../../components/wallet/summary/AssetsWalletSummary';
+import { ellipsis } from '../../utils/strings';
+import type { InjectedProps } from '../../types/injectedPropsType';
 import type { WalletSummaryAsset } from '../../api/assets/types';
 
 export const messages = defineMessages({
@@ -53,6 +54,14 @@ export default class WalletSummaryPage extends Component<Props> {
     this.props.actions.router.goToRoute.trigger({
       route: ROUTES.WALLETS.PAGE,
       params: { asset, page: 'send' },
+    });
+  };
+
+  handleOnCopyAssetItem = (assetItem: string, fullValue: string) => {
+    const value = ellipsis(fullValue, 15, 15);
+    this.props.actions.wallets.copyAssetItem.trigger({
+      assetItem,
+      value,
     });
   };
 
@@ -195,8 +204,9 @@ export default class WalletSummaryPage extends Component<Props> {
           <AssetsWalletSummary
             wallet={wallet}
             assets={walletAssets}
-            handleOpenAssetSend={this.handleOpenAssetSend}
+            onOpenAssetSend={this.handleOpenAssetSend}
             isLoading={isLoading}
+            onCopyAssetItem={this.handleOnCopyAssetItem}
           />
         )}
         {walletTransactions}

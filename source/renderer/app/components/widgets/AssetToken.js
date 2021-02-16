@@ -1,27 +1,75 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Fragment as F } from 'react';
+import SVGInline from 'react-svg-inline';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
+import { defineMessages, intlShape } from 'react-intl';
+import CopyToClipboard from 'react-copy-to-clipboard';
 import { observer } from 'mobx-react';
 import styles from './AssetToken.scss';
 import { ellipsis } from '../../utils/strings';
 import type { WalletSummaryAsset } from '../../api/assets/types';
+import copyIcon from '../../assets/images/copy-asset.inline.svg';
+import copyCheckmarkIcon from '../../assets/images/check-w.inline.svg';
+import { ASSET_TOKEN_ID_COPY_FEEDBACK } from '../../config/timingConfig';
+
+const messages = defineMessages({
+  fingerprintItem: {
+    id: 'widgets.assetToken.item.fingerprint',
+    defaultMessage: '!!!Fingerprint',
+    description: '"fingerprint" item.',
+  },
+  policyIdItem: {
+    id: 'widgets.assetToken.item.policyId',
+    defaultMessage: '!!!Policy Id',
+    description: '"policyId" item.',
+  },
+  assetNameItem: {
+    id: 'widgets.assetToken.item.assetName',
+    defaultMessage: '!!!Asset Name',
+    description: '"assetName" item.',
+  },
+  nameItem: {
+    id: 'widgets.assetToken.item.name',
+    defaultMessage: '!!!Name',
+    description: '"name" item.',
+  },
+  acronymItem: {
+    id: 'widgets.assetToken.item.acronym',
+    defaultMessage: '!!!Acronym',
+    description: '"acronym" item.',
+  },
+  descriptionItem: {
+    id: 'widgets.assetToken.item.description',
+    defaultMessage: '!!!Description',
+    description: '"description" item.',
+  },
+});
 
 type Props = {
   asset: WalletSummaryAsset,
+  onCopyAssetItem: Function,
+  hideTooltip?: boolean,
   // In case it's not possible to calculate the container width
   // this props defines after how many characters the text will cut off
   policyIdEllipsisLeft?: number,
-  hideTooltip?: boolean,
 };
 
 type State = {
   isTooltipVisible: boolean,
+  itemCopied: ?string,
 };
 
 @observer
 export default class AssetToken extends Component<Props, State> {
+  static contextTypes = {
+    intl: intlShape.isRequired,
+  };
+
+  idCopyFeedbackTimeout: TimeoutID;
+
   state = {
     isTooltipVisible: false,
+    itemCopied: null,
   };
 
   handleShowTooltip = () => {
@@ -32,8 +80,19 @@ export default class AssetToken extends Component<Props, State> {
 
   handleHideTooltip = () => {
     this.setState({
-      // isTooltipVisible: false,
+      isTooltipVisible: false,
     });
+  };
+
+  handleCopyItem = (itemCopied: string, assetItem: string, value: string) => {
+    this.props.onCopyAssetItem(assetItem, value);
+    clearTimeout(this.idCopyFeedbackTimeout);
+    this.setState({
+      itemCopied,
+    });
+    this.idCopyFeedbackTimeout = setTimeout(() => {
+      this.setState({ itemCopied: null });
+    }, ASSET_TOKEN_ID_COPY_FEEDBACK);
   };
 
   contentRender() {
@@ -53,41 +112,92 @@ export default class AssetToken extends Component<Props, State> {
     );
   }
 
+  assetItemRenderer = (
+    assetId: string,
+    assetItem: string,
+    value: string,
+    multiline?: boolean
+  ) => (
+    <CopyToClipboard
+      text={value}
+      onCopy={() => {
+        this.handleCopyItem(assetId, assetItem, value);
+      }}
+    >
+      <div className={styles.assetItem}>
+        <em className={multiline ? styles.multiline : null}>{value}</em>
+        <SVGInline
+          svg={this.state.itemCopied === assetId ? copyCheckmarkIcon : copyIcon}
+          className={styles.copyIcon}
+        />
+      </div>
+    </CopyToClipboard>
+  );
+
   tooltipRender() {
+    const { intl } = this.context;
     const { asset } = this.props;
     const { fingerprint, policyId, assetName, metadata } = asset;
     const { name, acronym, description } = metadata || {};
+    const item = this.assetItemRenderer;
     return (
       <div className={styles.tooltipContent}>
-        <div className={styles.fingerprint}>{fingerprint}</div>
+        <div className={styles.fingerprint}>
+          {item('fingerprint', 'fingerprint', fingerprint)}
+        </div>
         <dl>
-          <dt>Policy Id</dt>
+          <dt>{intl.formatMessage(messages.policyIdItem)}</dt>
           <dd>
-            <em>{policyId}</em>
+            {item(
+              'policyId',
+              intl.formatMessage(messages.policyIdItem),
+              policyId
+            )}
           </dd>
           {assetName && (
-            <>
-              <dt>Asset name</dt>
-              <dd>{assetName}</dd>
-            </>
+            <F>
+              <dt>{intl.formatMessage(messages.assetNameItem)}</dt>
+              <dd>
+                {item(
+                  'assetName',
+                  intl.formatMessage(messages.assetNameItem),
+                  assetName
+                )}
+              </dd>
+            </F>
           )}
           {name && (
-            <>
-              <dt>Name</dt>
-              <dd>{name}</dd>
-            </>
+            <F>
+              <dt>{intl.formatMessage(messages.nameItem)}</dt>
+              <dd>
+                {item('name', intl.formatMessage(messages.nameItem), name)}
+              </dd>
+            </F>
           )}
           {acronym && (
-            <>
-              <dt>Acronym</dt>
-              <dd>{acronym}</dd>
-            </>
+            <F>
+              <dt>{intl.formatMessage(messages.acronymItem)}</dt>
+              <dd>
+                {item(
+                  'acronym',
+                  intl.formatMessage(messages.acronymItem),
+                  acronym
+                )}
+              </dd>
+            </F>
           )}
           {description && (
-            <>
-              <dt>Description</dt>
-              <dd>{description}</dd>
-            </>
+            <F>
+              <dt>{intl.formatMessage(messages.descriptionItem)}</dt>
+              <dd>
+                {item(
+                  'description',
+                  intl.formatMessage(messages.descriptionItem),
+                  description,
+                  true
+                )}
+              </dd>
+            </F>
           )}
         </dl>
       </div>
@@ -131,84 +241,3 @@ export default class AssetToken extends Component<Props, State> {
     );
   }
 }
-
-// @TOKEN TODO: Remove it
-
-// export type PopOverProps = {
-//   allowHTML?: boolean,
-//   children?: ReactElement<any>,
-//   contentClassName?: string,
-//   content: ReactNode,
-//   context?: ThemeContextProp,
-//   isShowingOnHover?: boolean,
-//   isVisible?: boolean,
-//   popperOptions: PopperOptions,
-//   skin?: ComponentType<any>,
-//   theme?: ?Object,
-//   themeId?: string,
-//   themeOverrides?: { [index: string]: string },
-//   themeVariables?: { [index: string]: string },
-// };
-
-// const popperOptions = {
-//   placement?: Placement;
-//   positionFixed?: boolean;
-//   eventsEnabled?: boolean;
-//   modifiers?: Modifiers;
-//   removeOnDestroy?: boolean;
-//   onCreate?(data: Data): void;
-//   onUpdate?(data: Data): void;
-// };
-
-// export type Placement = 'auto-start'
-//   | 'auto'
-//   | 'auto-end'
-//   | 'top-start'
-//   | 'top'
-//   | 'top-end'
-//   | 'right-start'
-//   | 'right'
-//   | 'right-end'
-//   | 'bottom-end'
-//   | 'bottom'
-//   | 'bottom-start'
-//   | 'left-end'
-//   | 'left'
-//   | 'left-start';
-
-// export interface Modifiers {
-//     shift?: BaseModifier;
-//     offset?: BaseModifier & {
-//       offset?: number | string,
-//     };
-//     preventOverflow?: BaseModifier & {
-//       priority?: Position[],
-//       padding?: number | Padding,
-//       boundariesElement?: Boundary | Element,
-//       escapeWithReference?: boolean
-//     };
-//     keepTogether?: BaseModifier;
-//     arrow?: BaseModifier & {
-//       element?: string | Element,
-//     };
-//     flip?: BaseModifier & {
-//       behavior?: Behavior | Position[],
-//       padding?: number | Padding,
-//       boundariesElement?: Boundary | Element,
-//       flipVariations?: boolean,
-//       flipVariationsByContent?: boolean,
-//     };
-//     inner?: BaseModifier;
-//     hide?: BaseModifier;
-//     applyStyle?: BaseModifier & {
-//       onLoad?: Function,
-//       gpuAcceleration?: boolean,
-//     };
-//     computeStyle?: BaseModifier & {
-//       gpuAcceleration?: boolean;
-//       x?: 'bottom' | 'top',
-//       y?: 'left' | 'right'
-//     };
-//
-//     [name: string]: (BaseModifier & Record<string, any>) | undefined;
-//   }

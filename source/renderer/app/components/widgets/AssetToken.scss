@@ -39,38 +39,80 @@
 .metadata {
   display: none;
 }
-
 .tooltipContent {
-  padding: 8px 0;
+  align-items: center;
   display: flex;
   flex-direction: column;
-  align-items: center;
+  padding: 8px 0;
   .fingerprint {
+    cursor: pointer;
     margin-bottom: 10px;
+    position: relative;
+    .copyIcon {
+      position: absolute;
+      right: -18px;
+      top: 5px;
+    }
+    &:hover {
+      .copyIcon {
+        opacity: 1;
+      }
+    }
   }
   dl {
     width: 100%;
   }
   dt {
-    width: 67px;
     display: inline-block;
     font-family: var(--font-medium);
     font-size: 12px;
     line-height: 1.33;
     text-align: right;
-    color: #5e6066;
+    white-space: nowrap;
+    width: 67px;
   }
   dd {
+    cursor: pointer;
     display: inline-flex;
     font-size: 12px;
     line-height: 1.33;
     margin: 0 0 0 10px;
     width: calc(100% - 87px);
     em {
-      width: 100%;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      &:not(.multiline) {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+    .copyIcon {
+      margin: 3px 0 0 10px;
+    }
+    &:hover {
+      .copyIcon {
+        opacity: 1;
+      }
+    }
+  }
+  .assetItem {
+    cursor: pointer;
+    display: inline-flex;
+    width: 100%;
+  }
+  .copyIcon {
+    height: 10px;
+    line-height: 0;
+    opacity: 0;
+    transition: opacity 0.25s;
+    svg {
+      height: 10px;
+      width: 8px;
+    }
+    g {
+      fill: var(--theme-widgets-asset-token-text-color);
+    }
+    svg > path {
+      stroke: var(--theme-widgets-asset-token-text-color);
     }
   }
 }

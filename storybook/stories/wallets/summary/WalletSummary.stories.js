@@ -253,7 +253,8 @@ storiesOf('Wallets|Summary', module)
           wallet={generateWallet('Wallet name', '45119903750165', assets)}
           assets={walletAssets}
           isLoading={boolean('isLoading', true)}
-          handleOpenAssetSend={action('handleOpenAssetSend')}
+          onOpenAssetSend={action('onOpenAssetSend')}
+          onCopyAsset={action('onCopyAsset')}
         />
       </>
     );

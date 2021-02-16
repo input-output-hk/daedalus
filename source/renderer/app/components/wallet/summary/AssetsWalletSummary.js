@@ -44,7 +44,8 @@ const messages = defineMessages({
 type Props = {
   wallet: Wallet,
   assets: Array<WalletSummaryAsset>,
-  handleOpenAssetSend: Function,
+  onOpenAssetSend: Function,
+  onCopyAssetItem: Function,
   isLoading?: boolean,
 };
 
@@ -55,7 +56,13 @@ export default class AssetsWalletSummary extends Component<Props> {
   };
 
   render() {
-    const { wallet, assets, handleOpenAssetSend, isLoading } = this.props;
+    const {
+      wallet,
+      assets,
+      onOpenAssetSend,
+      onCopyAssetItem,
+      isLoading,
+    } = this.props;
     const { intl } = this.context;
 
     const isRestoreActive = wallet.isRestoring;
@@ -83,7 +90,10 @@ export default class AssetsWalletSummary extends Component<Props> {
                 >
                   {asset.fingerprint && (
                     <div className={styles.assetsLeftContainer}>
-                      <AssetToken asset={asset} />
+                      <AssetToken
+                        asset={asset}
+                        onCopyAssetItem={onCopyAssetItem}
+                      />
                       <div className={styles.assetAmount}>
                         {isRestoreActive
                           ? '-'
@@ -116,7 +126,7 @@ export default class AssetsWalletSummary extends Component<Props> {
                             ? styles.disabled
                             : null,
                         ])}
-                        onClick={() => handleOpenAssetSend(asset)}
+                        onClick={() => onOpenAssetSend(asset)}
                       >
                         {intl.formatMessage(messages.tokenSendButton)}
                       </button>
