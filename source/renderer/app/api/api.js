@@ -2648,7 +2648,6 @@ const _createTransactionFromServerData = action(
     const outputAssets = outputs.map(({ assets }) => assets);
     const transactionInputAssets = inputAssets.map((item) => {
       return {
-        id: item ? item.id : '',
         policyId: item ? item.policy_id : '',
         assetName: item ? item.asset_name : '',
         quantity: item ? item.quantity : '',
@@ -2657,7 +2656,6 @@ const _createTransactionFromServerData = action(
 
     const transactionOutputAssets = outputAssets.map((item) => {
       return {
-        id: item ? item.id : '',
         policyId: item ? item.policy_id : '',
         assetName: item ? item.asset_name : '',
         quantity: item ? item.quantity : '',
