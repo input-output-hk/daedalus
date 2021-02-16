@@ -306,8 +306,12 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     const formFields = this.form.fields;
     const receiverField = formFields.get(`receiver${id}`);
     const assetAdaField = formFields.get(`${receiverId}_adaAsset`);
-    const assetField = assetId ? formFields.get(`${receiverId}_${assetId}`) : null;
-    const walletsDropdownField = dropdownId ? formFields.get(`${receiverId}_${dropdownId}`) : null;
+    const assetField = assetId
+      ? formFields.get(`${receiverId}_${assetId}`)
+      : null;
+    const walletsDropdownField = dropdownId
+      ? formFields.get(`${receiverId}_${dropdownId}`)
+      : null;
     const { selectedNativeToken } = this.props;
     if (resetFormFields) {
       this.setState({
@@ -704,9 +708,10 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     ]);
 
     const assetsSeparatorBasicHeight = 140;
-    const assetsSeparatorCalculatedHeight = asset && asset.length ?
-      (assetsSeparatorBasicHeight * (asset.length + 1)) - (40 * asset.length) :
-      assetsSeparatorBasicHeight;
+    const assetsSeparatorCalculatedHeight =
+      asset && asset.length
+        ? assetsSeparatorBasicHeight * (asset.length + 1) - 40 * asset.length
+        : assetsSeparatorBasicHeight;
 
     const tokenDecimalPlaces = 2;
 

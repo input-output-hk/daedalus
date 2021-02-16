@@ -175,3 +175,12 @@ export const STAKE_POOL_REGISTRY_URL = {
   qa:
     'https://explorer.qa.jormungandr-testnet.iohkdev.io/stakepool-registry/registry.zip',
 };
+
+// Used for all non mainnet networks
+export const TOKEN_METADATA_SERVER_URL =
+  'https://metadata.cardano-testnet.iohkdev.io/';
+
+// Used by mock-token-metadata-server
+export const MOCK_TOKEN_METADATA_SERVER_URL = 'http://localhost';
+export const MOCK_TOKEN_METADATA_SERVER_PORT =
+  process.env.MOCK_TOKEN_METADATA_SERVER_PORT || 0;
