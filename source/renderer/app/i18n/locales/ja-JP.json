@@ -767,7 +767,7 @@
   "wallet.hardware.deviceStatus.unsupported_device": "このデバイスはサポートされていません",
   "wallet.hardware.deviceStatus.verifying_address": "「{walletName}」デバイスのアドレスを検証してください",
   "wallet.hardware.deviceStatus.verifying_address_aborted": "検証はユーザーにより中止されました",
-  "wallet.hardware.deviceStatus.verifying_address_confirmation": "!!!Please answer the question below",
+  "wallet.hardware.deviceStatus.verifying_address_confirmation": "下の質問に答えてください",
   "wallet.hardware.deviceStatus.verifying_address_failed": "アドレスが検証できません",
   "wallet.hardware.deviceStatus.verifying_address_succeeded": "アドレスが検証されました",
   "wallet.hardware.deviceStatus.verifying_transaction": "「{walletName}」デバイスを使ってトランザクションを確認してください",
