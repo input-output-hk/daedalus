@@ -854,17 +854,27 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                       className={classNames([
                         styles.removeAssetButton,
                         'flat',
-                        this.state.showAssetRemoveBtn && this.state.showAssetRemoveBtn[assetIndex] ? styles.active : null,
+                        this.state.showAssetRemoveBtn &&
+                        this.state.showAssetRemoveBtn[assetIndex]
+                          ? styles.active
+                          : null,
                       ])}
-                      label={intl.formatMessage(messages.removeReceiverButtonLabel)}
-                      onClick={() => this.removeAssetRow(index + 1, receiverId, assetIndex)}
+                      label={intl.formatMessage(
+                        messages.removeReceiverButtonLabel
+                      )}
+                      onClick={() =>
+                        this.removeAssetRow(index + 1, receiverId, assetIndex)
+                      }
                       skin={ButtonSkin}
                     />
                     <NumericInput
                       {...assetFieldProps[assetIndex]}
                       className={classNames([
                         styles.assetItem,
-                        this.state.showAssetRemoveBtn && this.state.showAssetRemoveBtn[assetIndex] ? styles.hasButton : null,
+                        this.state.showAssetRemoveBtn &&
+                        this.state.showAssetRemoveBtn[assetIndex]
+                          ? styles.hasButton
+                          : null,
                       ])}
                       label={`${intl.formatMessage(messages.assetLabel)} #${
                         assetIndex + 2
@@ -998,13 +1008,17 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     this.form.del(walletsDropdownFieldToDelete);
   };
 
-  updateAssetsStateFormFields = (index: number, receiverId: string, assetIndex: number) => {
+  updateAssetsStateFormFields = (
+    index: number,
+    receiverId: string,
+    assetIndex: number
+  ) => {
     const { sendFormFields } = this.state;
     const receiverFields = sendFormFields[receiverId];
     if (receiverFields) {
       const receiversAssets = receiverFields.asset;
       if (receiversAssets) {
-        sendFormFields[receiverId].asset.splice(assetIndex,1);
+        sendFormFields[receiverId].asset.splice(assetIndex, 1);
         this.setState({
           sendFormFields,
         });
