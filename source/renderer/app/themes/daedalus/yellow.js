@@ -1094,6 +1094,7 @@ export const YELLOW_THEME_OUTPUT = {
       'rgba(45,45,45,0.1)',
     '--theme-widgets-asset-token-text-color': '#2d2d2d',
     '--theme-widgets-asset-token-background-color': '#ffffff',
+    '--theme-widgets-asset-token-box-shadow': 'rgba(0, 0, 0, 0.25)',
   },
 };
 

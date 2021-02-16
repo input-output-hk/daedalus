@@ -1,6 +1,7 @@
 // @flow
 import React, { Component, Fragment as F } from 'react';
 import SVGInline from 'react-svg-inline';
+import classnames from 'classnames';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { defineMessages, intlShape } from 'react-intl';
 import CopyToClipboard from 'react-copy-to-clipboard';
@@ -117,22 +118,25 @@ export default class AssetToken extends Component<Props, State> {
     assetItem: string,
     value: string,
     multiline?: boolean
-  ) => (
-    <CopyToClipboard
-      text={value}
-      onCopy={() => {
-        this.handleCopyItem(assetId, assetItem, value);
-      }}
-    >
-      <div className={styles.assetItem}>
-        <em className={multiline ? styles.multiline : null}>{value}</em>
-        <SVGInline
-          svg={this.state.itemCopied === assetId ? copyCheckmarkIcon : copyIcon}
-          className={styles.copyIcon}
-        />
-      </div>
-    </CopyToClipboard>
-  );
+  ) => {
+    const { itemCopied } = this.state;
+    const icon = itemCopied === assetId ? copyCheckmarkIcon : copyIcon;
+    const iconClassnames = classnames([
+      styles.copyIcon,
+      itemCopied === assetId ? styles.copiedIcon : null,
+    ]);
+    const onCopy = () => {
+      this.handleCopyItem(assetId, assetItem, value);
+    };
+    return (
+      <CopyToClipboard text={value} onCopy={onCopy}>
+        <div className={styles.assetItem}>
+          <em className={multiline ? styles.multiline : null}>{value}</em>
+          <SVGInline svg={icon} className={iconClassnames} />
+        </div>
+      </CopyToClipboard>
+    );
+  };
 
   tooltipRender() {
     const { intl } = this.context;
@@ -226,7 +230,7 @@ export default class AssetToken extends Component<Props, State> {
             '--rp-pop-over-border-width': '1px',
             '--rp-pop-over-border-style': 'solid',
             '--rp-pop-over-box-shadow':
-              '0 5px 20px 0 var(--theme-data-migration-layer-box-shadow-color)',
+              '0 5px 20px 0 var(--theme-widgets-asset-token-box-shadow)',
           }}
           contentClassName={styles.popOver}
           content={tooltipContent}

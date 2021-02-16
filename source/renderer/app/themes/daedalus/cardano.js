@@ -1112,6 +1112,7 @@ export const CARDANO_THEME_OUTPUT = {
       'rgba(94,96,102,0.1)',
     '--theme-widgets-asset-token-text-color': '#5e6066',
     '--theme-widgets-asset-token-background-color': 'rgba(255, 255, 255, 0.97)',
+    '--theme-widgets-asset-token-box-shadow': 'rgba(0, 0, 0, 0.25)',
   },
 };
 
