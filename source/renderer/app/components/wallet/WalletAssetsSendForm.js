@@ -352,8 +352,6 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     }
   };
 
-  receiverFieldRef: Array<Input> = [];
-
   handleSubmitOnEnter = submitOnEnter.bind(this, this.handleOnSubmit);
 
   isDisabled = () =>
@@ -676,6 +674,9 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     const assetsSeparatorCalculatedHeight = asset && asset.length ?
       (assetsSeparatorBasicHeight * asset.length) - 5 :
       assetsSeparatorBasicHeight;
+
+    const tokenDecimalPlaces = 2;
+
     const sortedAssets = orderBy(assets, 'metadata.acronym', 'asc');
 
     return (showReceiverField && index > 0 && showReceiverField[index]) ||
@@ -698,9 +699,6 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
             className="receiver"
             label={receiverLabel}
             {...receiverField.bind()}
-            ref={(input) => {
-              this.receiverFieldRef[index] = input;
-            }}
             error={receiverField.error}
             onChange={(value) => {
               receiverField.onChange(value || '');
@@ -814,6 +812,10 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                         asset.length + 1
                       }`}
                       bigNumberFormat={this.getCurrentNumberFormat()}
+                      decimalPlaces={tokenDecimalPlaces}
+                      numberLocaleOptions={{
+                        minimumFractionDigits: tokenDecimalPlaces,
+                      }}
                       onChange={(value) => {
                         this._isCalculatingTransactionFee = true;
                         this.setState({
