@@ -109,8 +109,14 @@ export default class AssetToken extends Component<Props, State> {
         <PopOver
           themeVariables={{
             '--rp-pop-over-bg-color':
-              'var(--theme-widgets-asset-token-background-color)',
+              'var(--theme-bordered-box-background-color)',
             '--rp-pop-over-text-color': 'var(--theme-bordered-box-text-color)',
+            '--rp-pop-over-border-color':
+              'var(--theme-staking-stake-pool-tooltip-border-color)',
+            '--rp-pop-over-border-width': '1px',
+            '--rp-pop-over-border-style': 'solid',
+            '--rp-pop-over-box-shadow':
+              '0 5px 20px 0 var(--theme-data-migration-layer-box-shadow-color)',
           }}
           contentClassName={styles.popOver}
           content={tooltipContent}
