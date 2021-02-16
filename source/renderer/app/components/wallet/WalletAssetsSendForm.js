@@ -286,18 +286,20 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     }
   };
 
-  handleOnReset = () => {
+  handleOnReset = (receiverId: string) => {
     this.form.reset();
     this.disableResetButton();
     this.hideReceiverField();
-    this.clearAssetValue();
+    const { sendFormFields } = this.state;
+    const receiverFields = sendFormFields[receiverId];
+    if (receiverFields) {
+      receiverFields.asset.map(singleAsset => this.clearAssetValue(singleAsset));
+    }
     this.clearReceiverAddress();
     this.setFormFields(
       true,
       1,
-      'receiver1',
-      'receiver1_asset1',
-      'receiver1_walletsDropdown1'
+      'receiver1'
     );
   };
 
@@ -763,7 +765,8 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                 placement={isClearTooltipOpeningDownward ? 'bottom' : 'top'}
               >
                 <button
-                  onClick={() => this.clearReceiverAddress(index + 1)}
+                  // onClick={() => this.clearReceiverAddress(index + 1)}
+                  onClick={() => this.handleOnReset('receiver1')}
                   className={styles.clearReceiverButton}
                 >
                   <SVGInline
@@ -933,7 +936,12 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                         <div className={styles.separator} />
                       </div>
                     )}
-                    <div className={styles.walletsDropdownWrapper}>
+                    <div className={classNames([
+                      styles.walletsDropdownWrapper,
+                      this.hasAssetValue(assetFieldProps[assetIndex])
+                        ? styles.hasValue
+                        : null,
+                    ])}>
                       <WalletsDropdown
                         className={styles.walletsDropdown}
                         {...walletsDropdownFieldProps[index]}
@@ -1268,7 +1276,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                 <Button
                   className="flat"
                   label={intl.formatMessage(messages.resetButtonLabel)}
-                  onClick={() => this.handleOnReset()}
+                  onClick={() => this.handleOnReset('receiver1')}
                   skin={ButtonSkin}
                   disabled={isResetButtonDisabled}
                 />
