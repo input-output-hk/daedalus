@@ -2430,31 +2430,59 @@
         }
       },
       {
-        "defaultMessage": "!!!Invalid URL",
-        "description": "smashUrlInputInvalidUrl for the \"Smash Custom Server\" selection on the Stake Pools settings page.",
+        "defaultMessage": "!!!Your changes have been saved",
+        "description": "Message \"Your changes have been saved\" for inline editing (eg. on Profile Settings page).",
         "end": {
           "column": 3,
           "line": 116
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
-        "id": "settings.stakePools.smashUrl.input.invalidUrl",
+        "id": "inline.editing.input.changesSaved",
         "start": {
-          "column": 27,
+          "column": 16,
           "line": 111
         }
       },
       {
-        "defaultMessage": "!!!Your changes have been saved",
-        "description": "Message \"Your changes have been saved\" for inline editing (eg. on Profile Settings page).",
+        "defaultMessage": "!!!Invalid URL",
+        "description": "invalidUrl for the \"Smash Custom Server\" selection on the Stake Pools settings page.",
         "end": {
           "column": 3,
           "line": 122
         },
         "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
-        "id": "inline.editing.input.changesSaved",
+        "id": "settings.stakePools.smashUrl.input.invalidUrl",
         "start": {
-          "column": 16,
+          "column": 14,
           "line": 117
+        }
+      },
+      {
+        "defaultMessage": "!!!The URL should start with \"https://\"",
+        "description": "invalidUrlPrefix for the \"Smash Custom Server\" selection on the Stake Pools settings page.",
+        "end": {
+          "column": 3,
+          "line": 128
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "settings.stakePools.smashUrl.input.invalidUrlPrefix",
+        "start": {
+          "column": 20,
+          "line": 123
+        }
+      },
+      {
+        "defaultMessage": "!!!Only \"https://\" protocol and hostname (e.g. domain.com) are allowed",
+        "description": "invalidUrlParameter for the \"Smash Custom Server\" selection on the Stake Pools settings page.",
+        "end": {
+          "column": 3,
+          "line": 135
+        },
+        "file": "source/renderer/app/components/settings/categories/StakePoolsSettings.js",
+        "id": "settings.stakePools.smashUrl.input.invalidUrlParameter",
+        "start": {
+          "column": 23,
+          "line": 129
         }
       }
     ],
