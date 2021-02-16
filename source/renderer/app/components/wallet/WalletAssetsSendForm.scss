@@ -52,6 +52,8 @@
 
 .estimatedFeeInput {
   input {
+    background-color: var(--rp-input-bg-color-disabled) !important;
+    border-color: var(--rp-input-bg-color-disabled) !important;
     font-family: var(--font-regular);
     pointer-events: none;
 

@@ -217,7 +217,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     this._isMounted = true;
     const { selectedNativeToken } = this.props;
     if (selectedNativeToken) {
-      this.onSelectAsset(selectedNativeToken.id, 0, 'receiver1');
+      this.onSelectAsset(selectedNativeToken.fingerprint, 0, 'receiver1');
     }
     this.setFormFields(false, 1, 'receiver1', 'asset1', 'walletsDropdown1');
   }
@@ -584,11 +584,13 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       (assetField) => new BigNumber(assetField.value || 0)
     );
 
-    const showReceiverLabelNumber = Object.keys(sendFormFields).length > 1;
+    // const showReceiverLabelNumber = Object.keys(sendFormFields).length > 1;
 
-    const receiverLabel = showReceiverLabelNumber
+    const receiverLabel = /* showReceiverLabelNumber
       ? `${intl.formatMessage(messages.receiverLabel)} #${index + 1}`
-      : intl.formatMessage(messages.receiverLabel);
+      : */ intl.formatMessage(
+      messages.receiverLabel
+    );
 
     receiverField.set('label', receiverLabel);
 
@@ -717,7 +719,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                           ? selectedNativeToken.metadata.acronym
                           : null
                       }
-                      value={amount[index]}
+                      value={amount[assetIndex]}
                       error={asset.error}
                       skin={AmountInputSkin}
                       onKeyPress={this.handleSubmitOnEnter}
@@ -900,7 +902,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     this.form.$(newWalletsDropdown).set('type', 'select');
   };
 
-  addNewReceiverRow = (
+  /* addNewReceiverRow = (
     index: number,
     receiverId: string,
     assetId: string,
@@ -911,7 +913,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     this.addNewWalletsDropdownField(receiverId, dropdownId);
     this.showReceiverField(index - 1);
     this.setFormFields(false, index, receiverId, assetId, dropdownId);
-  };
+  }; */
 
   addNewAssetRow = (
     index: number,
@@ -931,7 +933,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
 
   getNativeTokenById = (selectedAssetId: string): ?Asset => {
     const { assets } = this.props;
-    return assets.find((asset) => asset.id === selectedAssetId);
+    return assets.find((asset) => asset.fingerprint === selectedAssetId);
   };
 
   render() {
@@ -955,6 +957,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       isResetButtonDisabled,
       sendFormFields,
     } = this.state;
+
     const assetField = form.$('receiver1_asset1');
     const receiverField = form.$('receiver1');
     const receiverFieldProps = receiverField.bind();
@@ -973,10 +976,10 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         ? this.getNativeTokenById(selectedAssetId)
         : null;
 
-    const newReceiverButtonClasses = classNames([
+    /* const newReceiverButtonClasses = classNames([
       styles.addNewReceiverButton,
       'flat',
-    ]);
+    ]); */
 
     const calculatingFeesSpinnerButtonClasses = classNames([
       styles.calculatingFeesSpinnerButton,
@@ -1002,7 +1005,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                   </Fragment>
                 )
               )}
-              {Object.keys(sendFormFields).length > 0 && (
+              {/* Object.keys(sendFormFields).length > 0 && (
                 <Button
                   className={newReceiverButtonClasses}
                   label={intl.formatMessage(messages.addNewReceiverButtonLabel)}
@@ -1016,7 +1019,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                   }
                   skin={ButtonSkin}
                 />
-              )}
+              ) */}
               <div className={styles.estimatedFeeInput}>
                 <ReadOnlyInput
                   label={intl.formatMessage(messages.estimatedFeeLabel)}

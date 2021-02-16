@@ -152,15 +152,15 @@ export default class WalletsDropdown extends Component<Props> {
         )
       : null;
     const assetsData = assets
-      ? assets.map(({ metadata, id, total }: Wallet) => {
+      ? assets.map(({ metadata, fingerprint, quantity }: WalletSummaryAsset) => {
           const formattedAmount = formattedTokenWalletAmount(
-            new BigNumber(total.quantity),
+            new BigNumber(quantity),
             metadata.acronym
           );
           return {
             detail: formattedAmount,
             label: metadata.acronym,
-            value: id,
+            value: fingerprint,
           };
         })
       : null;

@@ -165,15 +165,14 @@ const sendFormAssetData = assets.total.map((assetTotal) => {
   const assetData = allAssets.find(
     (item) => item.policyId === assetTotal.policyId
   );
+  const { policyId, assetName, quantity } = assetTotal;
+  const { metadata, fingerprint } = assetData || {};
   return {
-    metadata: assetData
-      ? assetData.metadata
-      : {
-          name: '',
-          acronym: '',
-          description: '',
-        },
-    total: assetTotal || {},
+    policyId,
+    assetName,
+    fingerprint,
+    quantity,
+    metadata,
   };
 });
 
