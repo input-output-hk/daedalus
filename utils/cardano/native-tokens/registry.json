@@ -1,0 +1,13 @@
+{
+  "subjects": [
+    {
+      "subject": "789ef8ae89617f34c07f7f6a12e4d65146f958c0bc15a97b4ff169f1",
+      "name": { "value": "NiceCoin" },
+      "description": { "value": "A nice coin" },
+      "acronym": { "value": "NCN" },
+      "unit": { "value":{ "decimals": 9,"name": "GigaNice" } },
+      "url": { "value": "https://iohk.io" },
+      "logo": { "value": "QWxtb3N0IGEgbG9nbw==" }
+    }
+  ]
+}

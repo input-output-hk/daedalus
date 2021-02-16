@@ -7,7 +7,7 @@ import * as cardanoLauncher from 'cardano-launcher';
 import type { Launcher } from 'cardano-launcher';
 import type { NodeConfig } from '../config';
 import { environment } from '../environment';
-import { STAKE_POOL_REGISTRY_URL } from '../config';
+import { STAKE_POOL_REGISTRY_URL, TOKEN_METADATA_SERVER_URL } from '../config';
 import {
   MAINNET,
   STAGING,
@@ -127,6 +127,11 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
         // All clusters not flagged as staging except for Mainnet are treated as "Testnets"
         launcherConfig.networkName = TESTNET;
         logger.info('Launching Wallet with --testnet flag');
+      }
+      if (cluster !== MAINNET) {
+        merge(launcherConfig, {
+          tokenMetadataServer: TOKEN_METADATA_SERVER_URL,
+        });
       }
       merge(launcherConfig, { nodeConfig, tlsConfiguration });
       break;

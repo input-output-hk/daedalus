@@ -175,3 +175,6 @@ export const STAKE_POOL_REGISTRY_URL = {
   qa:
     'https://explorer.qa.jormungandr-testnet.iohkdev.io/stakepool-registry/registry.zip',
 };
+
+export const TOKEN_METADATA_SERVER_URL =
+  'https://metadata.cardano-testnet.iohkdev.io/';
