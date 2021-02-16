@@ -197,6 +197,7 @@ type State = {
   selectedAssetId: ?string,
   showReceiverField: Array<boolean>,
   isResetButtonDisabled: boolean,
+  filteredAssets: Array<WalletSummaryAsset>,
 };
 
 @observer
@@ -216,6 +217,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     selectedAssetId: null,
     showReceiverField: [],
     isResetButtonDisabled: true,
+    filteredAssets: [],
   };
 
   // We need to track the fee calculation state in order to disable
@@ -232,16 +234,25 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
 
   componentDidMount() {
     this._isMounted = true;
-    const { selectedNativeToken } = this.props;
+    const { selectedNativeToken, assets } = this.props;
     if (selectedNativeToken) {
       this.onSelectAsset(selectedNativeToken.fingerprint, 0, 'receiver1');
     }
     this.setFormFields(false, 1, 'receiver1');
+    this.filterAssets(assets);
   }
 
   componentWillUnmount() {
     this._isMounted = false;
   }
+
+  filterAssets = (assets: Array<WalletSummaryAsset>, assetToRemove?: WalletSummaryAsset) => {
+    const filteredAssets = assetToRemove ? assets.filter(asset => asset.policyId !== assetToRemove.policyId) : assets;
+    this.setState((prevState) => ({
+      ...prevState.filteredAssets,
+      filteredAssets,
+    }));
+  };
 
   handleOnSubmit = () => {
     if (this.isDisabled()) {
@@ -625,18 +636,16 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
   showAssetRemoveButton = (assetId: number) => {
     const { showAssetRemoveBtn } = this.state;
     showAssetRemoveBtn[assetId] = true;
-    const newShowAssetRemoveBtn = showAssetRemoveBtn;
     this.setState({
-      showAssetRemoveBtn: newShowAssetRemoveBtn,
+      showAssetRemoveBtn,
     });
   };
 
   hideAssetRemoveButton = (assetId: number) => {
     const { showAssetRemoveBtn } = this.state;
     showAssetRemoveBtn[assetId] = false;
-    const newShowAssetRemoveBtn = showAssetRemoveBtn;
     this.setState({
-      showAssetRemoveBtn: newShowAssetRemoveBtn,
+      showAssetRemoveBtn,
     });
   };
 
@@ -645,7 +654,6 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     const {
       isClearTooltipOpeningDownward,
       currencyMaxFractionalDigits,
-      assets,
       walletAmount,
     } = this.props;
 
@@ -656,6 +664,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       isTransactionFeeCalculated,
       transactionFee,
       sendFormFields,
+      filteredAssets,
     } = this.state;
 
     const {
@@ -715,7 +724,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
 
     const tokenDecimalPlaces = 2;
 
-    const sortedAssets = orderBy(assets, 'metadata.acronym', 'asc');
+    const sortedAssets = orderBy(filteredAssets, 'metadata.acronym', 'asc');
 
     return (showReceiverField && index > 0 && showReceiverField[index]) ||
       index === 0 ? (
@@ -1135,6 +1144,8 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
 
   onSelectAsset = (assetId: string, id: number, receiverId: string) => {
     this.setState({ selectedAssetId: assetId });
+    const { assets } = this.props;
+    this.filterAssets(assets);
     this.updateFormFields(id, assetId, receiverId);
   };
 
@@ -1166,7 +1177,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     } = this.state;
 
     const receiverField = form.$('receiver1');
-    const adaAssetField = form.$('receiver1__adaAsset');
+    const adaAssetField = form.$('receiver1_adaAsset');
     const receiverFieldProps = receiverField.bind();
     const adaAssetFieldProps = adaAssetField.bind();
     const amount = new BigNumber(adaAssetFieldProps.value || 0);
