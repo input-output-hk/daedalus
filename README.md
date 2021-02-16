@@ -98,7 +98,7 @@ Mock metadata server running with url http://localhost:65432/
 Then proceed to launch Daedalus and make sure to provide the mock token metadata server port:
 
 ```
-$ TOKEN_METADATA_SERVER_PORT=65432 yarn dev
+$ MOCK_TOKEN_METADATA_SERVER_PORT=65432 yarn dev
 ```
 
 This enables you to modify the metadata directly by modifying the registry file directly:
