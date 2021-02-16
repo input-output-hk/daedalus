@@ -313,21 +313,35 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
           [receiverId]: {
             receiver: receiverField,
             adaAsset: assetAdaField,
-            asset: assetField ? [assetField] : [],
-            walletsDropdown: walletsDropdownField ? [walletsDropdownField] : [],
+            asset: [],
+            walletsDropdown: [],
             selectedNativeToken,
           },
         },
       });
     } else {
+      const { sendFormFields } = this.state;
+      const currentReceiverFields = sendFormFields[receiverId];
+      let currentAssets = [];
+      let currentWalletsDropdown = [];
+      if (currentReceiverFields) {
+        currentAssets = currentReceiverFields.asset;
+        currentWalletsDropdown = currentReceiverFields.walletsDropdown;
+      }
+      if (assetField) {
+        currentAssets.push(assetField);
+      }
+      if (walletsDropdownField) {
+        currentWalletsDropdown.push(walletsDropdownField);
+      }
       this.setState((prevState) => ({
         sendFormFields: {
           ...prevState.sendFormFields,
           [receiverId]: {
             receiver: receiverField,
             adaAsset: assetAdaField,
-            asset: assetField ? [assetField] : [],
-            walletsDropdown: walletsDropdownField ? [walletsDropdownField] : [],
+            asset: currentAssets,
+            walletsDropdown: currentWalletsDropdown,
             selectedNativeToken,
           },
         },
@@ -672,7 +686,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
 
     const assetsSeparatorBasicHeight = 140;
     const assetsSeparatorCalculatedHeight = asset && asset.length ?
-      (assetsSeparatorBasicHeight * asset.length) - 5 :
+      (assetsSeparatorBasicHeight * (asset.length + 1)) - (40 * asset.length) :
       assetsSeparatorBasicHeight;
 
     const tokenDecimalPlaces = 2;
