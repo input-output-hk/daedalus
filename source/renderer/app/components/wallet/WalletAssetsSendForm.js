@@ -246,8 +246,13 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     this._isMounted = false;
   }
 
-  filterAssets = (assets: Array<WalletSummaryAsset>, assetToRemove?: WalletSummaryAsset) => {
-    const filteredAssets = assetToRemove ? assets.filter(asset => asset.policyId !== assetToRemove.policyId) : assets;
+  filterAssets = (
+    assets: Array<WalletSummaryAsset>,
+    assetToRemove?: WalletSummaryAsset
+  ) => {
+    const filteredAssets = assetToRemove
+      ? assets.filter((asset) => asset.policyId !== assetToRemove.policyId)
+      : assets;
     this.setState((prevState) => ({
       ...prevState.filteredAssets,
       filteredAssets,
