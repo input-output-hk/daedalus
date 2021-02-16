@@ -677,12 +677,12 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
             />
             <div className={styles.assetInput}>
               {selectedNativeToken &&
-                selectedNativeToken.total &&
+                selectedNativeToken.quantity &&
                 selectedNativeToken.metadata && (
                   <div className={styles.amountTokenTotal}>
                     {intl.formatMessage(messages.ofLabel)}&nbsp;
                     {formattedWalletAmount(
-                      new BigNumber(selectedNativeToken.total.quantity),
+                      new BigNumber(selectedNativeToken.quantity),
                       false
                     )}
                     &nbsp;{selectedNativeToken.metadata.acronym}

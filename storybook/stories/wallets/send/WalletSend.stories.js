@@ -27,7 +27,7 @@ const allAssets = [
   generateAsset(
     '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
-    'tokenb0ca20391caaf66a4d4d7897d281f9c136cd3513136945b2542',
+    'tokenb0ca20391caaf66a4d4d7897d281f9c136cd3513136945b2342',
     {
       name: 'TrueUSD',
       acronym: 'TUSD',
