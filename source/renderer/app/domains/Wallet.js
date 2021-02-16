@@ -174,6 +174,10 @@ export default class Wallet {
     );
   }
 
+  @computed get isSyncing(): boolean {
+    return get(this, 'syncState.status') === WalletSyncStateStatuses.SYNCING;
+  }
+
   @computed get isNotResponding(): boolean {
     return (
       get(this, 'syncState.status') === WalletSyncStateStatuses.NOT_RESPONDING

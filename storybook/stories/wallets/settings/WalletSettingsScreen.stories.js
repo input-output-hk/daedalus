@@ -174,6 +174,7 @@ export default (props: { currentTheme: string, locale: Locale }) => {
       walletReward={new BigNumber(0)}
       lastDelegationStakePoolStatus={lastDelegationStakePoolStatus}
       isRestoring={false}
+      isSyncing={false}
       walletPublicKey={walletPublicKeyId}
       spendingPasswordUpdateDate={moment().subtract(1, 'month').toDate()}
       isSpendingPasswordSet={boolean(

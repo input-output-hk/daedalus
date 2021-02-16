@@ -121,6 +121,7 @@ export default class WalletSettingsPage extends Component<Props> {
             activeWallet.lastDelegationStakePoolStatus
           }
           isRestoring={activeWallet.isRestoring}
+          isSyncing={activeWallet.isSyncing}
           walletPublicKey={activeWalletPublicKey}
           creationDate={creationDate}
           isIncentivizedTestnet={isIncentivizedTestnet}

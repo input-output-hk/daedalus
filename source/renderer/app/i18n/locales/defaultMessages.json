@@ -10280,8 +10280,8 @@
         }
       },
       {
-        "defaultMessage": "!!!Deposit",
-        "description": "Deposit label in the \"Undelegate wallet\" dialog.",
+        "defaultMessage": "!!!Deposits reclaimed",
+        "description": "Deposits reclaimed label in the \"Undelegate wallet\" dialog.",
         "end": {
           "column": 3,
           "line": 80

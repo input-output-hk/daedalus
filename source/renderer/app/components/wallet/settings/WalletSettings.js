@@ -110,6 +110,7 @@ type Props = {
   walletReward: BigNumber,
   lastDelegationStakePoolStatus: ?string,
   isRestoring: boolean,
+  isSyncing: boolean,
   walletPublicKey: ?string,
   creationDate: Date,
   spendingPasswordUpdateDate: ?Date,
@@ -237,6 +238,7 @@ export default class WalletSettings extends Component<Props, State> {
     const {
       lastDelegationStakePoolStatus,
       isRestoring,
+      isSyncing,
       isLegacy,
       walletReward,
       isDialogOpen,
@@ -260,9 +262,10 @@ export default class WalletSettings extends Component<Props, State> {
 
     if (isDelegating) {
       headerMessage = intl.formatMessage(messages.undelegateWalletHeader);
-      warningMessage = isRestoring
-        ? intl.formatMessage(messages.undelegateWalletDisabledWarning)
-        : intl.formatMessage(messages.undelegateWalletWarning);
+      warningMessage =
+        isRestoring || isSyncing
+          ? intl.formatMessage(messages.undelegateWalletDisabledWarning)
+          : intl.formatMessage(messages.undelegateWalletWarning);
     } else {
       headerMessage = intl.formatMessage(messages.delegateWalletHeader);
       warningMessage = intl.formatMessage(messages.delegateWalletWarning);
@@ -278,7 +281,7 @@ export default class WalletSettings extends Component<Props, State> {
             </div>
             {isDelegating ? (
               <UndelegateWalletButton
-                disabled={isRestoring}
+                disabled={isRestoring || isSyncing}
                 onUndelegate={this.onUndelegateWalletClick}
               />
             ) : (
