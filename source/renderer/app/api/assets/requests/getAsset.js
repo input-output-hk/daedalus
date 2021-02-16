@@ -1,8 +1,9 @@
 // @flow
 import type { RequestConfig } from '../../common/types';
-import type { Asset, GetAssetRequest } from '../types';
+import type { GetAssetRequest } from '../types';
 import { request } from '../../utils/request';
 import { getRawWalletId, isLegacyWalletId } from '../../utils';
+import Asset from '../../../domains/Asset';
 
 export const getAsset = (
   config: RequestConfig,
