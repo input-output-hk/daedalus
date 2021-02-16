@@ -25,6 +25,22 @@ import { formattedAmountToNaturalUnits } from '../../../../source/renderer/app/u
 
 const allAssets = [
   generateAsset(
+    '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
+    '',
+    'tokenb0ca20391caaf66a4d4e7897d282f9c136cd3513136945c2542',
+    {
+      name: 'MakerDAO',
+      acronym: 'DAI',
+      description: 'Test description',
+      unit: {
+        name: 'DAI',
+        decimals: 6,
+      },
+      url: 'http://example.com',
+      logo: '',
+    }
+  ),
+  generateAsset(
     '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
     'tokenb0ca20391caaf66a4d4d7897d281f9c136cd3513136945b2342',
@@ -72,28 +88,18 @@ const allAssets = [
       logo: '',
     }
   ),
-  generateAsset(
-    '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
-    '',
-    'tokenb0ca20391caaf66a4d4e7897d282f9c136cd3513136945c2542',
-    {
-      name: 'MakerDAO',
-      acronym: 'DAI',
-      description: 'Test description',
-      unit: {
-        name: 'DAI',
-        decimals: 6,
-      },
-      url: 'http://example.com',
-      logo: '',
-    }
-  ),
 ];
 
 const assets = {
   available: [
     {
       id: generateHash(),
+      policyId: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
+      assetName: '',
+      quantity: 400,
+    },
+    {
+      id: generateHash(),
       policyId: '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       assetName: '',
       quantity: 100,
@@ -109,17 +115,17 @@ const assets = {
       policyId: '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
       assetName: '',
       quantity: 300,
-    },
-    {
-      id: generateHash(),
-      policyId: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
-      assetName: '',
-      quantity: 400,
     },
   ],
   total: [
     {
       id: generateHash(),
+      policyId: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
+      assetName: '',
+      quantity: 400,
+    },
+    {
+      id: generateHash(),
       policyId: '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
       assetName: '',
       quantity: 100,
@@ -135,12 +141,6 @@ const assets = {
       policyId: '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
       assetName: '',
       quantity: 300,
-    },
-    {
-      id: generateHash(),
-      policyId: '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
-      assetName: '',
-      quantity: 400,
     },
   ],
 };

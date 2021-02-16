@@ -10,7 +10,7 @@ import { InputSkin } from 'react-polymorph/lib/skins/simple/InputSkin';
 import { defineMessages, intlShape } from 'react-intl';
 import vjf from 'mobx-react-form/lib/validators/VJF';
 import BigNumber from 'bignumber.js';
-import { get } from 'lodash';
+import { get, orderBy } from 'lodash';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import SVGInline from 'react-svg-inline';
 import classNames from 'classnames';
@@ -615,6 +615,8 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       (assetsSeparatorBasicHeight * assets.length) - 18 :
       assetsSeparatorBasicHeight; */
 
+    const sortedAssets = orderBy(assets, 'metadata.acronym', 'asc');
+
     return (showReceiverField && index > 0 && showReceiverField[index]) ||
       index === 0 ? (
       <div className={styles.fieldsContainer}>
@@ -751,7 +753,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                         className={styles.walletsDropdown}
                         {...walletsDropdownFieldProps[index]}
                         numberOfStakePools={4}
-                        assets={assets}
+                        assets={sortedAssets}
                         onChange={(id) =>
                           this.onSelectAsset(id, index, receiverId)
                         }
