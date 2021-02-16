@@ -939,6 +939,8 @@
   "wallet.send.form.errors.invalidAmount": "Please enter a valid amount.",
   "wallet.send.form.errors.invalidTitle": "Please enter a title with at least 3 characters.",
   "wallet.send.form.estimatedFee.label": "Estimated fees",
+  "wallet.send.form.minAdaRequired": "a minimum of {adaValue} ADA required",
+  "wallet.send.form.minAdaRequiredTooltip": "A minimum of {adaValue} ADA needs to be sent to this receiver since you are sending other assets.",
   "wallet.send.form.next": "Next",
   "wallet.send.form.of.label": "of",
   "wallet.send.form.receiver.hint": "Wallet Address",

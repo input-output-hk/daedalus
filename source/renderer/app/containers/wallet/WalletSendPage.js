@@ -133,6 +133,7 @@ export default class WalletSendPage extends Component<Props> {
             onExternalLinkClick={app.openExternalLink}
             hwDeviceStatus={hwDeviceStatus}
             isHardwareWallet={isHardwareWallet}
+            walletAmount={activeWallet.amount}
           />
         ) : (
           <WalletSendForm

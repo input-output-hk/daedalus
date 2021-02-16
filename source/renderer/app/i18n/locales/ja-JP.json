@@ -939,6 +939,8 @@
   "wallet.send.form.errors.invalidAmount": "有効な金額を入力してください。",
   "wallet.send.form.errors.invalidTitle": "タイトルを3字以上で入力してください。",
   "wallet.send.form.estimatedFee.label": "推定料金",
+  "wallet.send.form.minAdaRequired": "最低{adaValue}ADAが必要です",
+  "wallet.send.form.minAdaRequiredTooltip": "少なくとも{adaValue}ADAをこれに送信する必要があります 他のアセットを送信しているため、受信者。",
   "wallet.send.form.next": "続ける",
   "wallet.send.form.of.label": "/",
   "wallet.send.form.receiver.hint": "ウォレットアドレス",

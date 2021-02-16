@@ -39,6 +39,7 @@ import WalletsDropdown from '../widgets/forms/WalletsDropdown';
 import ReadOnlyInput from '../widgets/forms/ReadOnlyInput';
 import Asset from '../../domains/Asset';
 import type { WalletSummaryAsset } from '../../api/assets/types';
+import infoIconInline from '../../assets/images/info-icon.inline.svg';
 
 export const messages = defineMessages({
   titleLabel: {
@@ -95,6 +96,19 @@ export const messages = defineMessages({
     id: 'wallet.send.form.of.label',
     defaultMessage: '!!!of',
     description: 'Label for the "of" max ADA value in the wallet send form.',
+  },
+  minAdaRequired: {
+    id: 'wallet.send.form.minAdaRequired',
+    defaultMessage: '!!!a minimum of {adaValue} ADA required',
+    description:
+      'Label for the min ADA required value in the wallet send form.',
+  },
+  minAdaRequiredTooltip: {
+    id: 'wallet.send.form.minAdaRequiredTooltip',
+    defaultMessage:
+      '!!!A minimum of {adaValue} ADA needs to be sent to this receiver since you are sending other assets.',
+    description:
+      'Tooltip for the min ADA required value in the wallet send form.',
   },
   descriptionLabel: {
     id: 'wallet.send.form.description.label',
@@ -169,6 +183,7 @@ type Props = {
   assets: Array<WalletSummaryAsset>,
   isClearTooltipOpeningDownward?: boolean,
   selectedNativeToken: ?Asset,
+  walletAmount: BigNumber,
 };
 
 type State = {
@@ -249,6 +264,15 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     }
   };
 
+  clearAdaAssetValue = (index?: number) => {
+    const receiverField = this.form.$(
+      index ? `receiver${index}_adaAsset` : 'receiver1__adaAsset'
+    );
+    if (receiverField) {
+      receiverField.clear();
+    }
+  };
+
   handleOnReset = () => {
     this.form.reset();
     this.disableResetButton();
@@ -279,6 +303,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
   ) => {
     const formFields = this.form.fields;
     const receiverField = formFields.get(`receiver${id}`);
+    const assetAdaField = formFields.get(`${receiverId}_adaAsset`);
     const assetField = formFields.get(`${receiverId}_${assetId}`);
     const walletsDropdownField = formFields.get(`${receiverId}_${dropdownId}`);
     const { selectedNativeToken } = this.props;
@@ -287,6 +312,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
         sendFormFields: {
           [receiverId]: {
             receiver: receiverField,
+            adaAsset: assetAdaField,
             asset: [assetField],
             walletsDropdown: [walletsDropdownField],
             selectedNativeToken,
@@ -299,6 +325,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
           ...prevState.sendFormFields,
           [receiverId]: {
             receiver: receiverField,
+            adaAsset: assetAdaField,
             asset: [assetField],
             walletsDropdown: [walletsDropdownField],
             selectedNativeToken,
@@ -326,8 +353,6 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
   };
 
   receiverFieldRef: Array<Input> = [];
-
-  assetFieldRef: Array<NumericInput> = [];
 
   handleSubmitOnEnter = submitOnEnter.bind(this, this.handleOnSubmit);
 
@@ -358,6 +383,40 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                 this.context.intl.formatMessage(
                   apiErrorMessages.invalidAddress
                 ),
+              ];
+            },
+          ],
+        },
+        receiver1_adaAsset: {
+          label: `${this.context.intl.formatMessage(messages.assetLabel)} #1`,
+          placeholder: `0${
+            this.getCurrentNumberFormat().decimalSeparator
+          }${'0'.repeat(this.props.currencyMaxFractionalDigits)}`,
+          value: '1',
+          validators: [
+            async ({ field, form }) => {
+              if (field.value === null) {
+                this.resetTransactionFee();
+                return [
+                  false,
+                  this.context.intl.formatMessage(messages.fieldIsRequired),
+                ];
+              }
+              const amountValue = field.value.toString();
+              const isValid = await this.props.validateAmount(
+                formattedAmountToNaturalUnits(amountValue)
+              );
+              const receiverField = form.$('receiver1');
+              const receiverValue = receiverField.value;
+              const isReceiverValid = receiverField.isValid;
+              if (isValid && isReceiverValid) {
+                this.calculateTransactionFee(receiverValue, amountValue);
+              } else {
+                this.resetTransactionFee();
+              }
+              return [
+                isValid,
+                this.context.intl.formatMessage(messages.invalidAmount),
               ];
             },
           ],
@@ -552,6 +611,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       isClearTooltipOpeningDownward,
       currencyMaxFractionalDigits,
       assets,
+      walletAmount,
     } = this.props;
 
     const {
@@ -565,6 +625,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
 
     const {
       receiver,
+      adaAsset,
       asset,
       walletsDropdown,
       selectedNativeToken,
@@ -575,6 +636,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     const walletsDropdownFieldProps = walletsDropdown.map((dropdown) =>
       dropdown.bind()
     );
+    const adaAssetFieldProps = adaAsset.bind();
 
     const assetFieldProps = asset.map((singleAsset) => singleAsset.bind());
 
@@ -680,29 +742,78 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
               }}
             />
             <div className={styles.assetInput}>
-              {selectedNativeToken &&
-                selectedNativeToken.quantity &&
-                selectedNativeToken.metadata && (
+              <Fragment>
+                {walletAmount && (
                   <div className={styles.amountTokenTotal}>
                     {intl.formatMessage(messages.ofLabel)}&nbsp;
-                    {formattedWalletAmount(
-                      new BigNumber(selectedNativeToken.quantity),
-                      false
-                    )}
-                    &nbsp;{selectedNativeToken.metadata.acronym}
+                    {formattedWalletAmount(walletAmount)}
                   </div>
                 )}
+                <NumericInput
+                  {...adaAssetFieldProps}
+                  className="adaAsset"
+                  value={adaAsset.value}
+                  label={`${intl.formatMessage(messages.assetLabel)} #1`}
+                  bigNumberFormat={this.getCurrentNumberFormat()}
+                  decimalPlaces={currencyMaxFractionalDigits}
+                  numberLocaleOptions={{
+                    minimumFractionDigits: currencyMaxFractionalDigits,
+                  }}
+                  onChange={(value) => {
+                    this._isCalculatingTransactionFee = true;
+                    adaAsset.onChange(value);
+                    estimatedField.onChange(fees);
+                  }}
+                  currency={globalMessages.unitAda}
+                  error={adaAsset.error}
+                  onKeyPress={this.handleSubmitOnEnter}
+                  allowSigns={false}
+                />
+                <div className={styles.minAdaRequired}>
+                  <span>
+                    {intl.formatMessage(messages.minAdaRequired, {
+                      adaValue: 1,
+                    })}
+                  </span>
+                  <PopOver
+                    content={intl.formatMessage(
+                      messages.minAdaRequiredTooltip,
+                      {
+                        adaValue: 1,
+                      }
+                    )}
+                    contentClassName={styles.minAdaTooltipContent}
+                    key="tooltip"
+                  >
+                    <SVGInline
+                      svg={infoIconInline}
+                      className={styles.infoIcon}
+                    />
+                  </PopOver>
+                </div>
+              </Fragment>
               <Fragment>
                 {asset.map((singleAsset: any, assetIndex: number) => (
                   // eslint-disable-next-line react/no-array-index-key
                   <Fragment key={`${receiverId}_asset${assetIndex}`}>
+                    {selectedNativeToken &&
+                      selectedNativeToken.quantity &&
+                      selectedNativeToken.metadata && (
+                        <div className={styles.amountTokenTotal}>
+                          {intl.formatMessage(messages.ofLabel)}&nbsp;
+                          {formattedWalletAmount(
+                            new BigNumber(selectedNativeToken.quantity),
+                            false
+                          )}
+                          &nbsp;{selectedNativeToken.metadata.acronym}
+                        </div>
+                      )}
                     <NumericInput
                       {...assetFieldProps[assetIndex]}
-                      className="asset"
-                      ref={(input) => {
-                        this.assetFieldRef[index] = input;
-                      }}
-                      label={intl.formatMessage(messages.assetLabel)}
+                      className={styles.assetItem}
+                      label={`${intl.formatMessage(messages.assetLabel)} #${
+                        asset.length + 1
+                      }`}
                       bigNumberFormat={this.getCurrentNumberFormat()}
                       decimalPlaces={currencyMaxFractionalDigits}
                       numberLocaleOptions={{
