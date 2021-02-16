@@ -11,7 +11,10 @@ import { ellipsis } from '../../utils/strings';
 import type { WalletSummaryAsset } from '../../api/assets/types';
 import copyIcon from '../../assets/images/copy-asset.inline.svg';
 import copyCheckmarkIcon from '../../assets/images/check-w.inline.svg';
-import { ASSET_TOKEN_ID_COPY_FEEDBACK } from '../../config/timingConfig';
+import {
+  ASSET_TOKEN_ID_COPY_FEEDBACK,
+  ASSET_TOKEN_DISPLAY_DELAY,
+} from '../../config/timingConfig';
 
 const messages = defineMessages({
   fingerprintItem: {
@@ -66,7 +69,8 @@ export default class AssetToken extends Component<Props, State> {
     intl: intlShape.isRequired,
   };
 
-  idCopyFeedbackTimeout: TimeoutID;
+  copyNotificationTimeout: TimeoutID;
+  displayDelayTimeout: TimeoutID;
 
   state = {
     isTooltipVisible: false,
@@ -74,24 +78,30 @@ export default class AssetToken extends Component<Props, State> {
   };
 
   handleShowTooltip = () => {
-    this.setState({
-      isTooltipVisible: true,
-    });
+    clearTimeout(this.displayDelayTimeout);
+    this.displayDelayTimeout = setTimeout(() => {
+      this.setState({
+        isTooltipVisible: true,
+      });
+    }, ASSET_TOKEN_DISPLAY_DELAY);
   };
 
   handleHideTooltip = () => {
-    this.setState({
-      isTooltipVisible: false,
-    });
+    clearTimeout(this.displayDelayTimeout);
+    this.displayDelayTimeout = setTimeout(() => {
+      this.setState({
+        isTooltipVisible: false,
+      });
+    }, ASSET_TOKEN_DISPLAY_DELAY);
   };
 
   handleCopyItem = (itemCopied: string, assetItem: string, value: string) => {
     this.props.onCopyAssetItem(assetItem, value);
-    clearTimeout(this.idCopyFeedbackTimeout);
+    clearTimeout(this.copyNotificationTimeout);
     this.setState({
       itemCopied,
     });
-    this.idCopyFeedbackTimeout = setTimeout(() => {
+    this.copyNotificationTimeout = setTimeout(() => {
       this.setState({ itemCopied: null });
     }, ASSET_TOKEN_ID_COPY_FEEDBACK);
   };
