@@ -165,6 +165,18 @@
   }
 }
 
+.adaAssetLabel {
+  color: var(--theme-input-placeholder-color);
+  font-family: var(--font-regular);
+  font-size: 16px;
+  font-weight: 300;
+  line-height: 1.36;
+  position: absolute;
+  right: 20px;
+  top: 46px;
+  z-index: 1;
+}
+
 .minAdaRequired {
   color: var(--theme-input-placeholder-color);
   font-family: var(--font-regular);
@@ -181,7 +193,7 @@
   height: 20px;
   letter-spacing: 0.5px;
   line-height: 1.2;
-  margin-top: 24px;
+  margin-top: 0;
   text-transform: uppercase;
   width: 143px;
 }
@@ -191,7 +203,7 @@
   display: flex;
   height: 48px;
   line-height: 48px;
-  margin-bottom: 43px;
+  margin-bottom: 40px;
   padding-left: 20px;
   position: absolute;
   right: 98px;
@@ -324,7 +336,7 @@
 }
 
 .walletsDropdownWrapper {
-  bottom: 42px;
+  bottom: 38px;
   display: flex;
   position: absolute;
   right: 0;
@@ -389,6 +401,10 @@
   path {
     fill: var(--theme-input-label-color);
   }
+}
+
+.assetItem {
+  margin-bottom: 20px;
 }
 
 .minAdaTooltipContent {

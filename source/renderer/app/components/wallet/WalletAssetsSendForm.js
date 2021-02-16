@@ -234,7 +234,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     if (selectedNativeToken) {
       this.onSelectAsset(selectedNativeToken.fingerprint, 0, 'receiver1');
     }
-    this.setFormFields(false, 1, 'receiver1', 'asset1', 'walletsDropdown1');
+    this.setFormFields(false, 1, 'receiver1');
   }
 
   componentWillUnmount() {
@@ -298,14 +298,14 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     resetFormFields: boolean,
     id: number,
     receiverId: string,
-    assetId: string,
-    dropdownId: string
+    assetId?: string,
+    dropdownId?: string
   ) => {
     const formFields = this.form.fields;
     const receiverField = formFields.get(`receiver${id}`);
     const assetAdaField = formFields.get(`${receiverId}_adaAsset`);
-    const assetField = formFields.get(`${receiverId}_${assetId}`);
-    const walletsDropdownField = formFields.get(`${receiverId}_${dropdownId}`);
+    const assetField = assetId ? formFields.get(`${receiverId}_${assetId}`) : null;
+    const walletsDropdownField = dropdownId ? formFields.get(`${receiverId}_${dropdownId}`) : null;
     const { selectedNativeToken } = this.props;
     if (resetFormFields) {
       this.setState({
@@ -313,8 +313,8 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
           [receiverId]: {
             receiver: receiverField,
             adaAsset: assetAdaField,
-            asset: [assetField],
-            walletsDropdown: [walletsDropdownField],
+            asset: assetField ? [assetField] : [],
+            walletsDropdown: walletsDropdownField ? [walletsDropdownField] : [],
             selectedNativeToken,
           },
         },
@@ -326,8 +326,8 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
           [receiverId]: {
             receiver: receiverField,
             adaAsset: assetAdaField,
-            asset: [assetField],
-            walletsDropdown: [walletsDropdownField],
+            asset: assetField ? [assetField] : [],
+            walletsDropdown: walletsDropdownField ? [walletsDropdownField] : [],
             selectedNativeToken,
           },
         },
@@ -670,7 +670,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       'primary',
     ]);
 
-    const assetsSeparatorBasicHeight = 125;
+    const assetsSeparatorBasicHeight = 140;
     const assetsSeparatorCalculatedHeight = asset && asset.length ?
       (assetsSeparatorBasicHeight * asset.length) - 5 :
       assetsSeparatorBasicHeight;
@@ -746,6 +746,9 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                     {formattedWalletAmount(walletAmount)}
                   </div>
                 )}
+                <div className={styles.adaAssetLabel}>
+                  {intl.formatMessage(globalMessages.unitAda)}
+                </div>
                 <NumericInput
                   {...adaAssetFieldProps}
                   className="adaAsset"
