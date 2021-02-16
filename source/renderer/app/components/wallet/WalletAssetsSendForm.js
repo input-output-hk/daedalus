@@ -588,10 +588,10 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     return receiverField.isValid;
   }
 
-  get hasAssetValue() {
-    const assetField = this.form.$('receiver1_asset1');
+  hasAssetValue = (receiverId: string, assetid: string) => {
+    const assetField = this.form.$(`${receiverId}_asset${assetid}`);
     return !!assetField.value;
-  }
+  };
 
   showRemoveButton = () => {
     this.setState({
@@ -673,10 +673,9 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     ]);
 
     const assetsSeparatorBasicHeight = 125;
-    /* const assetsSeparatorCalculatedHeight = assets && assets.length ?
-      (assetsSeparatorBasicHeight * assets.length) - 18 :
-      assetsSeparatorBasicHeight; */
-
+    const assetsSeparatorCalculatedHeight = asset && asset.length ?
+      (assetsSeparatorBasicHeight * asset.length) - 5 :
+      assetsSeparatorBasicHeight;
     const sortedAssets = orderBy(assets, 'metadata.acronym', 'asc');
 
     return (showReceiverField && index > 0 && showReceiverField[index]) ||
@@ -736,9 +735,9 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
             <div
               className={styles.fieldsLine}
               style={{
-                height: `${assetsSeparatorBasicHeight}px`,
-                top: `${assetsSeparatorBasicHeight - 10}px`,
-                marginTop: `-${assetsSeparatorBasicHeight}px`,
+                height: `${assetsSeparatorCalculatedHeight}px`,
+                top: `${assetsSeparatorCalculatedHeight - 10}px`,
+                marginTop: `-${assetsSeparatorCalculatedHeight}px`,
               }}
             />
             <div className={styles.assetInput}>
@@ -815,10 +814,6 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                         asset.length + 1
                       }`}
                       bigNumberFormat={this.getCurrentNumberFormat()}
-                      decimalPlaces={currencyMaxFractionalDigits}
-                      numberLocaleOptions={{
-                        minimumFractionDigits: currencyMaxFractionalDigits,
-                      }}
                       onChange={(value) => {
                         this._isCalculatingTransactionFee = true;
                         this.setState({
@@ -838,7 +833,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                       onKeyPress={this.handleSubmitOnEnter}
                       allowSigns={false}
                     />
-                    {this.hasAssetValue && (
+                    {this.hasAssetValue(receiverId, assetIndex + 1) && (
                       <div className={styles.clearAssetContainer}>
                         <PopOver
                           content="Clear"

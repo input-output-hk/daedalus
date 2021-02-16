@@ -191,10 +191,10 @@
   display: flex;
   height: 48px;
   line-height: 48px;
+  margin-bottom: 43px;
   padding-left: 20px;
   position: absolute;
   right: 98px;
-  top: 31px;
 
   .clearAssetButton {
     background-color: var(
@@ -328,6 +328,11 @@
   display: flex;
   position: absolute;
   right: 0;
+  width: 100px;
+
+  > div {
+    width: 100px;
+  }
 
   .walletsDropdown {
     input {
@@ -384,10 +389,6 @@
   path {
     fill: var(--theme-input-label-color);
   }
-}
-
-.assetItem {
-  padding-top: 10px;
 }
 
 .minAdaTooltipContent {

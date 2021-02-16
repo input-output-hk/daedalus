@@ -261,6 +261,7 @@ storiesOf('Wallets|Send', module)
       isHardwareWallet={boolean('isHardwareWallet', false)}
       selectedNativeToken={sendFormAssetData[0]}
       assets={sendFormAssetData}
+      walletAmount={new BigNumber(123)}
     />
   ))
   .add('Wallet Tokens Send Confirmation Dialog', () => (
