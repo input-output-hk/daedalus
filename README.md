@@ -84,6 +84,38 @@ Daedalus - Cryptocurrency Wallet
 1. Run `yarn nix:shelley_qa` from `daedalus`.
 2. Run `yarn dev` from the subsequent `nix-shell`
 
+#### Native token metadata server
+
+Daedalus, by default, uses the following metadata server for all networks except for the mainnet: `https://metadata.cardano-testnet.iohkdev.io/`.
+
+It's also possible to use a mock server locally by running the following command in `nix-shell` prior to starting Daedalus:
+
+```
+$ mock-token-metadata-server ./utils/cardano/native-tokens/registry.json
+Mock metadata server running with url http://localhost:65432/
+```
+
+Then proceed to launch Daedalus and make sure to provide the mock token metadata server port:
+
+```
+$ TOKEN_METADATA_SERVER_PORT=65432 yarn dev
+```
+
+This enables you to modify the metadata directly by modifying the registry file directly:
+
+```
+$ vi ./utils/cardano/native-tokens/registry.json        # ..or any other editor, if you prefer
+```
+
+Use the following command to check if the mock server is working correctly:
+
+```
+$ curl -i -H "Content-type: application/json" --data '{"subjects":["789ef8ae89617f34c07f7f6a12e4d65146f958c0bc15a97b4ff169f1"],"properties":["name","description","acronym","unit","logo"]}'
+http://localhost:65432/metadata/query
+```
+... and expect a "200 OK" response.
+
+
 ### Running Daedalus with Jormungandr
 
 #### ITN Selfnode
