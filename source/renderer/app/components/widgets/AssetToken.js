@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { observer } from 'mobx-react';
-import classnames from 'classnames';
 import styles from './AssetToken.scss';
 import { ellipsis } from '../../utils/strings';
 import type { WalletSummaryAsset } from '../../api/assets/types';
@@ -15,14 +14,33 @@ type Props = {
   hideTooltip?: boolean,
 };
 
+type State = {
+  isTooltipVisible: boolean,
+};
+
 @observer
-export default class AssetToken extends Component<Props> {
+export default class AssetToken extends Component<Props, State> {
+  state = {
+    isTooltipVisible: false,
+  };
+
+  handleShowTooltip = () => {
+    this.setState({
+      isTooltipVisible: true,
+    });
+  };
+
+  handleHideTooltip = () => {
+    this.setState({
+      isTooltipVisible: false,
+    });
+  };
+
   contentRender() {
     const { asset, policyIdEllipsisLeft } = this.props;
     const { fingerprint, policyId } = asset;
-    const componentClasses = classnames([styles.component]);
     return (
-      <div className={componentClasses}>
+      <div className={styles.content}>
         <div className={styles.fingerprint}>
           {ellipsis(fingerprint || '', 9, 4)}
         </div>
@@ -78,21 +96,32 @@ export default class AssetToken extends Component<Props> {
 
   render() {
     const { hideTooltip } = this.props;
+    const { isTooltipVisible } = this.state;
     const children = this.contentRender();
     const tooltipContent = this.tooltipRender();
     if (hideTooltip) return children;
     return (
-      <PopOver
-        themeVariables={{
-          '--rp-pop-over-bg-color':
-            'var(--theme-bordered-box-background-color)',
-          '--rp-pop-over-text-color': 'var(--theme-bordered-box-text-color)',
-        }}
-        contentClassName={styles.popOver}
-        content={tooltipContent}
+      <div
+        className={styles.component}
+        onMouseEnter={this.handleShowTooltip}
+        onMouseLeave={this.handleHideTooltip}
       >
-        {children}
-      </PopOver>
+        <PopOver
+          themeVariables={{
+            '--rp-pop-over-bg-color':
+              'var(--theme-bordered-box-background-color)',
+            '--rp-pop-over-text-color': 'var(--theme-bordered-box-text-color)',
+          }}
+          contentClassName={styles.popOver}
+          content={tooltipContent}
+          isShowingOnHover={false}
+          isVisible={isTooltipVisible}
+          appendTo="parent"
+          allowHTML
+        >
+          {children}
+        </PopOver>
+      </div>
     );
   }
 }

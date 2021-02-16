@@ -75,10 +75,11 @@ export default class AssetsWalletSummary extends Component<Props> {
             </div>
           ) : (
             <div className={styles.component}>
-              {assets.map((asset: WalletSummaryAsset) => (
+              {assets.map((asset: WalletSummaryAsset, index: number) => (
                 <BorderedBox
                   className={styles.assetsContainer}
-                  key={asset.fingerprint}
+                  // eslint-disable-next-line react/no-array-index-key
+                  key={asset.policyId + asset.fingerprint + index}
                 >
                   {asset.fingerprint && (
                     <div className={styles.assetsLeftContainer}>
