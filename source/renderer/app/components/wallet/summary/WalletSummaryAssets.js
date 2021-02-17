@@ -5,7 +5,7 @@ import { defineMessages, intlShape } from 'react-intl';
 import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
 import BorderedBox from '../../widgets/BorderedBox';
-import styles from './AssetsWalletSummary.scss';
+import styles from './WalletSummaryAssets.scss';
 import Wallet from '../../../domains/Wallet';
 import AssetToken from '../../widgets/AssetToken';
 import type { WalletSummaryAsset } from '../../../api/assets/types';
@@ -50,7 +50,7 @@ type Props = {
 };
 
 @observer
-export default class AssetsWalletSummary extends Component<Props> {
+export default class WalletSummaryAssets extends Component<Props> {
   static contextTypes = {
     intl: intlShape.isRequired,
   };
