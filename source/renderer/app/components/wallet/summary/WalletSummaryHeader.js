@@ -12,30 +12,15 @@ import { formattedWalletAmount } from '../../../utils/formatters';
 
 const messages = defineMessages({
   transactionsLabel: {
-    id: 'wallet.summary.page.transactionsLabel',
+    id: 'wallet.summary.header.transactionsLabel',
     defaultMessage: '!!!Number of transactions',
-    description: '"Number of transactions" label on Wallet summary page',
+    description: '"Number of transactions" label on Wallet summary header page',
   },
   pendingTransactionsLabel: {
-    id: 'wallet.summary.page.pendingTransactionsLabel',
+    id: 'wallet.summary.header.pendingTransactionsLabel',
     defaultMessage: '!!!Number of pending transactions',
     description:
-      '"Number of pending transactions" label on Wallet summary page',
-  },
-  currencyTitle: {
-    id: 'wallet.summary.page.currency.title',
-    defaultMessage: '!!!Converts as',
-    description: '"Currency - title" label on Wallet summary page',
-  },
-  currencyLastFetched: {
-    id: 'wallet.summary.page.currency.lastFetched',
-    defaultMessage: '!!!converted {fetchedTimeAgo}',
-    description: '"Currency - last fetched" label on Wallet summary page',
-  },
-  currencyIsFetchingRate: {
-    id: 'wallet.summary.page.currency.isFetchingRate',
-    defaultMessage: '!!!fetching conversion rates',
-    description: '"Currency - Fetching" label on Wallet summary page',
+      '"Number of pending transactions" label on Wallet summary header page',
   },
 });
 

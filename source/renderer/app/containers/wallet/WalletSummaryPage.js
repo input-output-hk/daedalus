@@ -19,7 +19,7 @@ import type { WalletSummaryAsset } from '../../api/assets/types';
 
 export const messages = defineMessages({
   noTransactions: {
-    id: 'wallet.summary.no.transactions',
+    id: 'wallet.summary.page.no.transactions',
     defaultMessage: '!!!No recent transactions',
     description:
       'Message shown when wallet has no transactions on wallet summary page.',

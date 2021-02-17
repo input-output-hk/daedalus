@@ -11109,152 +11109,129 @@
   {
     "descriptors": [
       {
-        "defaultMessage": "!!!Number of transactions",
-        "description": "\"Number of transactions\" label on Wallet summary page",
+        "defaultMessage": "!!!Tokens",
+        "description": "Number of tokens title on Wallet summary assets page",
         "end": {
           "column": 3,
           "line": 20
         },
-        "file": "source/renderer/app/components/wallet/summary/AssetsWalletSummary.js",
-        "id": "wallet.summary.page.transactionsLabel",
+        "file": "source/renderer/app/components/wallet/summary/WalletSummaryAssets.js",
+        "id": "wallet.summary.assets.tokensTitle",
         "start": {
-          "column": 21,
+          "column": 15,
           "line": 16
         }
       },
       {
-        "defaultMessage": "!!!Number of pending transactions",
-        "description": "\"Number of pending transactions\" label on Wallet summary page",
+        "defaultMessage": "!!!Send",
+        "description": "Send button on Wallet summary assets page",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 25
         },
-        "file": "source/renderer/app/components/wallet/summary/AssetsWalletSummary.js",
-        "id": "wallet.summary.page.pendingTransactionsLabel",
+        "file": "source/renderer/app/components/wallet/summary/WalletSummaryAssets.js",
+        "id": "wallet.summary.assets.tokenSendButton",
         "start": {
-          "column": 28,
+          "column": 19,
           "line": 21
         }
       },
       {
-        "defaultMessage": "!!!Tokens",
-        "description": "Number of tokens title on Wallet summary page",
-        "end": {
-          "column": 3,
-          "line": 31
-        },
-        "file": "source/renderer/app/components/wallet/summary/AssetsWalletSummary.js",
-        "id": "wallet.summary.page.tokensTitle",
-        "start": {
-          "column": 15,
-          "line": 27
-        }
-      },
-      {
-        "defaultMessage": "!!!Send",
-        "description": "Send button on Wallet summary page",
-        "end": {
-          "column": 3,
-          "line": 36
-        },
-        "file": "source/renderer/app/components/wallet/summary/AssetsWalletSummary.js",
-        "id": "wallet.summary.page.tokenSendButton",
-        "start": {
-          "column": 19,
-          "line": 32
-        }
-      },
-      {
         "defaultMessage": "!!!Unknown",
-        "description": "Unknown label on Wallet summary page",
+        "description": "Unknown label on Wallet summary assets page",
         "end": {
           "column": 3,
-          "line": 41
+          "line": 30
         },
-        "file": "source/renderer/app/components/wallet/summary/AssetsWalletSummary.js",
-        "id": "wallet.summary.page.unknownLabel",
+        "file": "source/renderer/app/components/wallet/summary/WalletSummaryAssets.js",
+        "id": "wallet.summary.assets.unknownLabel",
         "start": {
           "column": 16,
-          "line": 37
+          "line": 26
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/summary/AssetsWalletSummary.json"
+    "path": "source/renderer/app/components/wallet/summary/WalletSummaryAssets.json"
+  },
+  {
+    "descriptors": [
+      {
+        "defaultMessage": "!!!Converts as",
+        "description": "\"Currency - title\" label on Wallet summary currency page",
+        "end": {
+          "column": 3,
+          "line": 20
+        },
+        "file": "source/renderer/app/components/wallet/summary/WalletSummaryCurrency.js",
+        "id": "wallet.summary.currency.title",
+        "start": {
+          "column": 17,
+          "line": 16
+        }
+      },
+      {
+        "defaultMessage": "!!!converted {fetchedTimeAgo}",
+        "description": "\"Currency - last fetched\" label on Wallet summary currency page",
+        "end": {
+          "column": 3,
+          "line": 25
+        },
+        "file": "source/renderer/app/components/wallet/summary/WalletSummaryCurrency.js",
+        "id": "wallet.summary.currency.lastFetched",
+        "start": {
+          "column": 23,
+          "line": 21
+        }
+      },
+      {
+        "defaultMessage": "!!!fetching conversion rates",
+        "description": "\"Currency - Fetching\" label on Wallet summary currency page",
+        "end": {
+          "column": 3,
+          "line": 30
+        },
+        "file": "source/renderer/app/components/wallet/summary/WalletSummaryCurrency.js",
+        "id": "wallet.summary.currency.isFetchingRate",
+        "start": {
+          "column": 26,
+          "line": 26
+        }
+      }
+    ],
+    "path": "source/renderer/app/components/wallet/summary/WalletSummaryCurrency.json"
   },
   {
     "descriptors": [
       {
         "defaultMessage": "!!!Number of transactions",
-        "description": "\"Number of transactions\" label on Wallet summary page",
+        "description": "\"Number of transactions\" label on Wallet summary header page",
         "end": {
           "column": 3,
-          "line": 24
+          "line": 18
         },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
-        "id": "wallet.summary.page.transactionsLabel",
+        "file": "source/renderer/app/components/wallet/summary/WalletSummaryHeader.js",
+        "id": "wallet.summary.header.transactionsLabel",
         "start": {
           "column": 21,
-          "line": 20
+          "line": 14
         }
       },
       {
         "defaultMessage": "!!!Number of pending transactions",
-        "description": "\"Number of pending transactions\" label on Wallet summary page",
+        "description": "\"Number of pending transactions\" label on Wallet summary header page",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 24
         },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
-        "id": "wallet.summary.page.pendingTransactionsLabel",
+        "file": "source/renderer/app/components/wallet/summary/WalletSummaryHeader.js",
+        "id": "wallet.summary.header.pendingTransactionsLabel",
         "start": {
           "column": 28,
-          "line": 25
-        }
-      },
-      {
-        "defaultMessage": "!!!Converts as",
-        "description": "\"Currency - title\" label on Wallet summary page",
-        "end": {
-          "column": 3,
-          "line": 35
-        },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
-        "id": "wallet.summary.page.currency.title",
-        "start": {
-          "column": 17,
-          "line": 31
-        }
-      },
-      {
-        "defaultMessage": "!!!converted {fetchedTimeAgo}",
-        "description": "\"Currency - last fetched\" label on Wallet summary page",
-        "end": {
-          "column": 3,
-          "line": 40
-        },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
-        "id": "wallet.summary.page.currency.lastFetched",
-        "start": {
-          "column": 23,
-          "line": 36
-        }
-      },
-      {
-        "defaultMessage": "!!!fetching conversion rates",
-        "description": "\"Currency - Fetching\" label on Wallet summary page",
-        "end": {
-          "column": 3,
-          "line": 45
-        },
-        "file": "source/renderer/app/components/wallet/summary/WalletSummary.js",
-        "id": "wallet.summary.page.currency.isFetchingRate",
-        "start": {
-          "column": 26,
-          "line": 41
+          "line": 19
         }
       }
     ],
-    "path": "source/renderer/app/components/wallet/summary/WalletSummary.json"
+    "path": "source/renderer/app/components/wallet/summary/WalletSummaryHeader.json"
   },
   {
     "descriptors": [
@@ -12155,7 +12132,7 @@
           "line": 25
         },
         "file": "source/renderer/app/components/wallet/transactions/WalletTransactionsList.js",
-        "id": "wallet.summary.page.todayLabel",
+        "id": "wallet.summary.transactionsList.todayLabel",
         "start": {
           "column": 9,
           "line": 21
@@ -12169,7 +12146,7 @@
           "line": 30
         },
         "file": "source/renderer/app/components/wallet/transactions/WalletTransactionsList.js",
-        "id": "wallet.summary.page.yesterdayLabel",
+        "id": "wallet.summary.transactionsList.yesterdayLabel",
         "start": {
           "column": 13,
           "line": 26
@@ -12183,7 +12160,7 @@
           "line": 36
         },
         "file": "source/renderer/app/components/wallet/transactions/WalletTransactionsList.js",
-        "id": "wallet.summary.page.showMoreTransactionsButtonLabel",
+        "id": "wallet.summary.transactionsList.showMoreTransactionsButtonLabel",
         "start": {
           "column": 35,
           "line": 31
@@ -12197,7 +12174,7 @@
           "line": 42
         },
         "file": "source/renderer/app/components/wallet/transactions/WalletTransactionsList.js",
-        "id": "wallet.summary.page.syncingTransactionsMessage",
+        "id": "wallet.summary.transactionsList.syncingTransactionsMessage",
         "start": {
           "column": 30,
           "line": 37
@@ -16382,7 +16359,7 @@
           "line": 26
         },
         "file": "source/renderer/app/containers/wallet/WalletSummaryPage.js",
-        "id": "wallet.summary.no.transactions",
+        "id": "wallet.summary.page.no.transactions",
         "start": {
           "column": 18,
           "line": 21

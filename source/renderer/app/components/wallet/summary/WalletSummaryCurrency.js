@@ -7,38 +7,27 @@ import SVGInline from 'react-svg-inline';
 import classnames from 'classnames';
 import currencySettingsIcon from '../../../assets/images/currency-settings-ic.inline.svg';
 import globalMessages from '../../../i18n/global-messages';
-import BorderedBox from '../../widgets/BorderedBox';
 import styles from './WalletSummaryCurrency.scss';
 import Wallet from '../../../domains/Wallet';
 import { formattedWalletCurrencyAmount } from '../../../utils/formatters';
 import type { Currency } from '../../../types/currencyTypes';
 
 const messages = defineMessages({
-  transactionsLabel: {
-    id: 'wallet.summary.page.transactionsLabel',
-    defaultMessage: '!!!Number of transactions',
-    description: '"Number of transactions" label on Wallet summary page',
-  },
-  pendingTransactionsLabel: {
-    id: 'wallet.summary.page.pendingTransactionsLabel',
-    defaultMessage: '!!!Number of pending transactions',
-    description:
-      '"Number of pending transactions" label on Wallet summary page',
-  },
   currencyTitle: {
-    id: 'wallet.summary.page.currency.title',
+    id: 'wallet.summary.currency.title',
     defaultMessage: '!!!Converts as',
-    description: '"Currency - title" label on Wallet summary page',
+    description: '"Currency - title" label on Wallet summary currency page',
   },
   currencyLastFetched: {
-    id: 'wallet.summary.page.currency.lastFetched',
+    id: 'wallet.summary.currency.lastFetched',
     defaultMessage: '!!!converted {fetchedTimeAgo}',
-    description: '"Currency - last fetched" label on Wallet summary page',
+    description:
+      '"Currency - last fetched" label on Wallet summary currency page',
   },
   currencyIsFetchingRate: {
-    id: 'wallet.summary.page.currency.isFetchingRate',
+    id: 'wallet.summary.currency.isFetchingRate',
     defaultMessage: '!!!fetching conversion rates',
-    description: '"Currency - Fetching" label on Wallet summary page',
+    description: '"Currency - Fetching" label on Wallet summary currency page',
   },
 });
 

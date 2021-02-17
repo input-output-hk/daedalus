@@ -13,31 +13,20 @@ import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
 
 const messages = defineMessages({
-  transactionsLabel: {
-    id: 'wallet.summary.page.transactionsLabel',
-    defaultMessage: '!!!Number of transactions',
-    description: '"Number of transactions" label on Wallet summary page',
-  },
-  pendingTransactionsLabel: {
-    id: 'wallet.summary.page.pendingTransactionsLabel',
-    defaultMessage: '!!!Number of pending transactions',
-    description:
-      '"Number of pending transactions" label on Wallet summary page',
-  },
   tokensTitle: {
-    id: 'wallet.summary.page.tokensTitle',
+    id: 'wallet.summary.assets.tokensTitle',
     defaultMessage: '!!!Tokens',
-    description: 'Number of tokens title on Wallet summary page',
+    description: 'Number of tokens title on Wallet summary assets page',
   },
   tokenSendButton: {
-    id: 'wallet.summary.page.tokenSendButton',
+    id: 'wallet.summary.assets.tokenSendButton',
     defaultMessage: '!!!Send',
-    description: 'Send button on Wallet summary page',
+    description: 'Send button on Wallet summary assets page',
   },
   unknownLabel: {
-    id: 'wallet.summary.page.unknownLabel',
+    id: 'wallet.summary.assets.unknownLabel',
     defaultMessage: '!!!Unknown',
-    description: 'Unknown label on Wallet summary page',
+    description: 'Unknown label on Wallet summary assets page',
   },
 });
 
