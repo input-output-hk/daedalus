@@ -17,12 +17,10 @@ export default class WholeSelectionText extends Component<Props> {
 
     if (target instanceof HTMLElement) {
       const selection = window.getSelection();
-      if (selection.toString()) {
-        const range = document.createRange();
-        range.selectNodeContents(target);
-        selection.removeAllRanges();
-        selection.addRange(range);
-      }
+      const range = document.createRange();
+      range.selectNodeContents(target);
+      selection.removeAllRanges();
+      selection.addRange(range);
     }
   };
 
