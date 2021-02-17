@@ -199,16 +199,11 @@ export default class WalletSummaryPage extends Component<Props> {
           currencyRate={currencyRate}
           currencySelected={currencySelected}
           onCurrencySettingClick={this.handleCurrencySettingsClick}
+          assets={walletAssets}
+          onOpenAssetSend={this.handleOpenAssetSend}
+          isLoading={isLoading}
+          onCopyAssetItem={this.handleOnCopyAssetItem}
         />
-        {hasAssetsEnabled && hasAssets && (
-          <WalletSummaryAssets
-            wallet={wallet}
-            assets={walletAssets}
-            onOpenAssetSend={this.handleOpenAssetSend}
-            isLoading={isLoading}
-            onCopyAssetItem={this.handleOnCopyAssetItem}
-          />
-        )}
         {walletTransactions}
       </VerticalFlexContainer>
     );

@@ -85,6 +85,7 @@ export default class WalletSummaryAssets extends Component<Props> {
               {assets.map((asset: WalletSummaryAsset, index: number) => (
                 <BorderedBox
                   className={styles.assetsContainer}
+                  // @TOKEN TODO: Remove once we have the correct data being returned
                   // eslint-disable-next-line react/no-array-index-key
                   key={asset.policyId + asset.fingerprint + index}
                 >
