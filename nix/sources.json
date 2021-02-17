@@ -24,17 +24,16 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "cardano-wallet": {
-        "branch": "tags/v2020-12-08",
+        "branch": "master",
         "description": "Official Wallet Backend & API for Cardano decentralized",
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "cardano-wallet",
-        "rev": "4e49b1f12ae7d653eca149b60d67f2a1a578104a",
-        "sha256": "1ypkyn2s12nxwrk1ims8vrhhyy1xl3v5y35yxrwvqp8y8m2sac2x",
+        "rev": "a37c9856b4d96286e3f01a95026c63b986ebbba0",
+        "sha256": "1mg8n58j2mjqhhzjb4p5yp8z06b9arh40pagi9rddil2f3vxzihm",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/cardano-wallet/archive/4e49b1f12ae7d653eca149b60d67f2a1a578104a.tar.gz",
-        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz",
-        "version": "v2021-01-12"
+        "url": "https://github.com/input-output-hk/cardano-wallet/archive/a37c9856b4d96286e3f01a95026c63b986ebbba0.tar.gz",
+        "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "gitignore": {
         "branch": "master",
@@ -61,15 +60,15 @@
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "iohk-nix": {
-        "branch": "nixpkgs-bump",
+        "branch": "master",
         "description": "nix scripts shared across projects",
         "homepage": null,
         "owner": "input-output-hk",
         "repo": "iohk-nix",
-        "rev": "940f3b7c16b9e7d4493d400280eedf2c936aa5c0",
-        "sha256": "1m5c8abw3bi5ij99vbcb5bpjywljy72yig5bbm4158r1mck7hljd",
+        "rev": "4efc38924c64c23a582c84950c8c25f72ff049cc",
+        "sha256": "0nhwyrd0xc72yj5q3jqa2wl4khp4g7n72i45cxy2rgn9nrp8wqh0",
         "type": "tarball",
-        "url": "https://github.com/input-output-hk/iohk-nix/archive/940f3b7c16b9e7d4493d400280eedf2c936aa5c0.tar.gz",
+        "url": "https://github.com/input-output-hk/iohk-nix/archive/4efc38924c64c23a582c84950c8c25f72ff049cc.tar.gz",
         "url_template": "https://github.com/<owner>/<repo>/archive/<rev>.tar.gz"
     },
     "js-chain-libs": {

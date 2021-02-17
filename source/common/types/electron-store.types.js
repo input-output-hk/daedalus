@@ -19,7 +19,10 @@ export type StorageKey =
   | 'WALLET-MIGRATION-STATUS'
   | 'DOWNLOAD-MANAGER'
   | 'APP-AUTOMATIC-UPDATE-FAILED'
-  | 'APP-UPDATE-COMPLETED';
+  | 'APP-UPDATE-COMPLETED'
+  | 'CURRENCY-SELECTED'
+  | 'CURRENCY-ACTIVE'
+  | 'SMASH-SERVER';
 
 export type StoreMessage = {
   type: StorageType,

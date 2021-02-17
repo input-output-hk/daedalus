@@ -40,6 +40,12 @@ export default class WalletSummaryPage extends Component<Props> {
     });
   };
 
+  handleCurrencySettingsClick = () => {
+    this.props.actions.router.goToRoute.trigger({
+      route: ROUTES.SETTINGS.WALLETS,
+    });
+  };
+
   render() {
     const { intl } = this.context;
     const { stores } = this.props;
@@ -57,7 +63,15 @@ export default class WalletSummaryPage extends Component<Props> {
       deleteTransactionRequest,
       pendingTransactionsCount,
     } = transactions;
-    const wallet = wallets.active;
+    const {
+      active: wallet,
+      currencyIsActive,
+      currencyIsAvailable,
+      currencyIsFetchingRate,
+      currencyLastFetched,
+      currencyRate,
+      currencySelected,
+    } = wallets;
     const { currentTimeFormat, currentDateFormat, currentLocale } = profile;
     // Guard against potential null values
     if (!wallet)
@@ -114,6 +128,13 @@ export default class WalletSummaryPage extends Component<Props> {
           numberOfTransactions={totalAvailable}
           numberOfPendingTransactions={pendingTransactionsCount}
           isLoadingTransactions={recentTransactionsRequest.isExecutingFirstTime}
+          currencyIsActive={currencyIsActive}
+          currencyIsAvailable={currencyIsAvailable}
+          currencyIsFetchingRate={currencyIsFetchingRate}
+          currencyLastFetched={currencyLastFetched}
+          currencyRate={currencyRate}
+          currencySelected={currencySelected}
+          onCurrencySettingClick={this.handleCurrencySettingsClick}
         />
         {walletTransactions}
       </VerticalFlexContainer>

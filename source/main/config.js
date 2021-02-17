@@ -69,7 +69,6 @@ export type LauncherConfig = {
   configPath: string,
   syncTolerance: string,
   cliBin: string,
-  exportWalletsBin: string,
   legacyStateDir: string,
   legacySecretKey: string,
   legacyWalletDB: string,
@@ -121,6 +120,7 @@ export const {
   legacyStateDir,
   logsPrefix,
   isFlight,
+  smashUrl,
 } = launcherConfig;
 export const appLogsFolderPath = logsPrefix;
 export const pubLogsFolderPath = path.join(appLogsFolderPath, 'pub');
@@ -144,8 +144,10 @@ export const ALLOWED_LOGS = [
   'node.log',
 ];
 export const ALLOWED_NODE_LOGS = new RegExp(/(node.log-)(\d{14}$)/);
+export const ALLOWED_WALLET_LOGS = new RegExp(/(cardano-wallet.log-)(\d{14}$)/);
 export const ALLOWED_LAUNCHER_LOGS = new RegExp(/(launcher-)(\d{14}$)/);
 export const MAX_NODE_LOGS_ALLOWED = 3;
+export const MAX_WALLET_LOGS_ALLOWED = 3;
 export const MAX_LAUNCHER_LOGS_ALLOWED = 3;
 
 // CardanoNode config
@@ -173,3 +175,12 @@ export const STAKE_POOL_REGISTRY_URL = {
   qa:
     'https://explorer.qa.jormungandr-testnet.iohkdev.io/stakepool-registry/registry.zip',
 };
+
+// Used for all non mainnet networks
+export const TOKEN_METADATA_SERVER_URL =
+  'https://metadata.cardano-testnet.iohkdev.io/';
+
+// Used by mock-token-metadata-server
+export const MOCK_TOKEN_METADATA_SERVER_URL = 'http://localhost';
+export const MOCK_TOKEN_METADATA_SERVER_PORT =
+  process.env.MOCK_TOKEN_METADATA_SERVER_PORT || 0;

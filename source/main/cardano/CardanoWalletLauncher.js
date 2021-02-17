@@ -7,7 +7,12 @@ import * as cardanoLauncher from 'cardano-launcher';
 import type { Launcher } from 'cardano-launcher';
 import type { NodeConfig } from '../config';
 import { environment } from '../environment';
-import { STAKE_POOL_REGISTRY_URL } from '../config';
+import {
+  STAKE_POOL_REGISTRY_URL,
+  TOKEN_METADATA_SERVER_URL,
+  MOCK_TOKEN_METADATA_SERVER_URL,
+  MOCK_TOKEN_METADATA_SERVER_PORT,
+} from '../config';
 import {
   MAINNET,
   STAGING,
@@ -38,7 +43,6 @@ export type WalletOpts = {
   walletLogFile: WriteStream,
   cliBin: string,
   isStaging: boolean,
-  smashUrl?: string,
 };
 
 export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
@@ -57,7 +61,6 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
     walletLogFile,
     cliBin,
     isStaging,
-    smashUrl,
   } = walletOpts;
   // TODO: Update launcher config to pass number
   const syncToleranceSeconds = parseInt(syncTolerance.replace('s', ''), 10);
@@ -97,6 +100,8 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
     await fs.copy('tls', tlsPath);
   }
 
+  let tokenMetadataServer;
+
   // This switch statement handles any node specific
   // configuration, prior to spawning the child process
   logger.info('Node implementation', { nodeImplementation });
@@ -130,13 +135,16 @@ export async function CardanoWalletLauncher(walletOpts: WalletOpts): Launcher {
         launcherConfig.networkName = TESTNET;
         logger.info('Launching Wallet with --testnet flag');
       }
-      if (smashUrl) {
-        logger.info('Launching Wallet with --pool-metadata-fetching flag', {
-          poolMetadataSource: { smashUrl },
+      if (MOCK_TOKEN_METADATA_SERVER_PORT) {
+        tokenMetadataServer = `${MOCK_TOKEN_METADATA_SERVER_URL}:${MOCK_TOKEN_METADATA_SERVER_PORT}/`;
+      } else if (cluster !== MAINNET) {
+        tokenMetadataServer = TOKEN_METADATA_SERVER_URL;
+      }
+      if (tokenMetadataServer) {
+        logger.info('Launching Wallet with --token-metadata-server flag', {
+          tokenMetadataServer,
         });
-        merge(launcherConfig, {
-          poolMetadataSource: { smashUrl },
-        });
+        merge(launcherConfig, { tokenMetadataServer });
       }
       merge(launcherConfig, { nodeConfig, tlsConfiguration });
       break;
