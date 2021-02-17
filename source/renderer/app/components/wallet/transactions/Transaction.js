@@ -18,6 +18,7 @@ import {
   TransactionTypes,
   WalletTransaction,
 } from '../../../domains/WalletTransaction';
+import WholeSelectionText from '../../widgets/WholeSelectionText';
 import globalMessages from '../../../i18n/global-messages';
 import type { TransactionState } from '../../../api/transactions/types';
 import { PENDING_TIME_LIMIT } from '../../../config/txnsConfig';
@@ -423,11 +424,15 @@ export default class Transaction extends Component<Props, State> {
               className={styles.addressRow}
             >
               <Link
-                className={styles.address}
                 onClick={() =>
                   onOpenExternalLink(getUrlByType('address', address))
                 }
-                label={address}
+                label={
+                  <WholeSelectionText
+                    className={styles.address}
+                    text={address}
+                  />
+                }
                 skin={LinkSkin}
               />
             </div>
@@ -499,11 +504,15 @@ export default class Transaction extends Component<Props, State> {
                         className={styles.addressRow}
                       >
                         <Link
-                          className={styles.address}
                           onClick={() =>
                             onOpenExternalLink(getUrlByType('address', address))
                           }
-                          label={address}
+                          label={
+                            <WholeSelectionText
+                              className={styles.address}
+                              text={address}
+                            />
+                          }
                           skin={LinkSkin}
                         />
                       </div>
@@ -519,11 +528,15 @@ export default class Transaction extends Component<Props, State> {
                     className={styles.addressRow}
                   >
                     <Link
-                      className={styles.address}
                       onClick={() =>
                         onOpenExternalLink(getUrlByType('address', address))
                       }
-                      label={address}
+                      label={
+                        <WholeSelectionText
+                          className={styles.address}
+                          text={address}
+                        />
+                      }
                       skin={LinkSkin}
                     />
                   </div>
@@ -556,11 +569,15 @@ export default class Transaction extends Component<Props, State> {
                 <h2>{intl.formatMessage(messages.transactionId)}</h2>
                 <div className={styles.transactionIdRow}>
                   <Link
-                    className={styles.transactionId}
                     onClick={() =>
                       onOpenExternalLink(getUrlByType('tx', data.id))
                     }
-                    label={data.id}
+                    label={
+                      <WholeSelectionText
+                        className={styles.transactionId}
+                        text={data.id}
+                      />
+                    }
                     skin={LinkSkin}
                   />
                 </div>
