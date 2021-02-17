@@ -257,7 +257,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       currentFilteredAssets.push(...newFilteredAssets);
     }
     this.setState({
-      filteredAssets: currentFilteredAssets
+      filteredAssets: currentFilteredAssets,
     });
   };
 
@@ -942,8 +942,17 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                         numberOfStakePools={4}
                         assets={sortedAssets}
                         onChange={(id) => {
-                          this.onSelectAsset(assetIndex, id);
-                          this.updateSelectedNativeTokens(id, assetIndex, receiverId);
+                          this.onSelectAsset(
+                            id,
+                            index,
+                            receiverId,
+                            selectedAssetIds[assetIndex]
+                          );
+                          this.updateSelectedNativeTokens(
+                            id,
+                            assetIndex,
+                            receiverId
+                          );
                         }}
                         syncingLabel={intl.formatMessage(
                           messages.syncingWallet
@@ -1171,9 +1180,14 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     this.filterAssets(assets);
   };
 
-  updateSelectedNativeTokens = (id: string, index: number, receiverId: string) => {
+  updateSelectedNativeTokens = (
+    id: string,
+    index: number,
+    receiverId: string
+  ) => {
     const { sendFormFields } = this.state;
-    const allSelectedNativeToken = sendFormFields[receiverId].selectedNativeTokens;
+    const allSelectedNativeToken =
+      sendFormFields[receiverId].selectedNativeTokens;
     const currentNativeToken = this.getNativeTokenById(id);
     allSelectedNativeToken[index] = currentNativeToken;
     this.setState((prevState) => ({

@@ -259,6 +259,8 @@ let
       });
     } // (lib.optionalAttrs (__hasAttr "smashUrl" envCfg) {
       smashUrl = envCfg.smashUrl;
+    }) // (lib.optionalAttrs (__hasAttr "metadataUrl" envCfg) {
+      metadataUrl = envCfg.metadataUrl;
     });
 
     installerConfig = {
