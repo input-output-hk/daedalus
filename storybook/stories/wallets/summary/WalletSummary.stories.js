@@ -15,7 +15,7 @@ import currencyList from '../_utils/currencies.json';
 
 // Screens
 import WalletSummary from '../../../../source/renderer/app/components/wallet/summary/WalletSummary';
-import AssetsWalletSummary from '../../../../source/renderer/app/components/wallet/summary/AssetsWalletSummary';
+import WalletSummaryAssets from '../../../../source/renderer/app/components/wallet/summary/WalletSummaryAssets';
 import { WALLET_ASSETS_ENABLED } from '../../../../source/renderer/app/config/walletsConfig';
 
 const allAssets = [
@@ -257,7 +257,7 @@ storiesOf('Wallets|Summary', module)
           currencyLastFetched={currencyLastFetched}
           onCurrencySettingClick={action('onCurrencySettingClick')}
         />
-        <AssetsWalletSummary
+        <WalletSummaryAssets
           wallet={generateWallet('Wallet name', '45119903750165', assets)}
           assets={walletAssets}
           isLoading={boolean('isLoading', true)}
@@ -329,7 +329,7 @@ storiesOf('Wallets|Summary', module)
           currencyLastFetched={currencyLastFetched}
           onCurrencySettingClick={action('onCurrencySettingClick')}
         />
-        <AssetsWalletSummary
+        <WalletSummaryAssets
           wallet={generateWallet('Wallet name', '45119903750165', assets)}
           assets={walletAssets}
           isLoading={boolean('isLoading', false)}
