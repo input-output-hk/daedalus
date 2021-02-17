@@ -1098,6 +1098,7 @@ export const FLIGHT_CANDIDATE_THEME_OUTPUT = {
       'rgba(255,255,255,0.1)',
     '--theme-widgets-asset-token-text-color': '#ffffff',
     '--theme-widgets-asset-token-background-color': 'rgba(42, 43, 60, 0.98)',
+    '--theme-widgets-asset-token-box-shadow': 'rgba(0, 0, 0, 0.25)',
   },
 };
 
