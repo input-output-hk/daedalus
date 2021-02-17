@@ -6,7 +6,6 @@ import type { Currency } from '../../../types/currencyTypes';
 import WalletSummaryHeader from './WalletSummaryHeader';
 import WalletSummaryAssets from './WalletSummaryAssets';
 import WalletSummaryCurrency from './WalletSummaryCurrency';
-import BorderedBox from '../../widgets/BorderedBox';
 import type { WalletSummaryAsset } from '../../../api/assets/types';
 
 type Props = {

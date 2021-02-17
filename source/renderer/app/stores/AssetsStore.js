@@ -1,9 +1,10 @@
 // @flow
 import { observable, action, computed } from 'mobx';
+import { get } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import type { GetAssetsResponse } from '../api/assets/types';
 import Asset from '../domains/Asset';
+import type { GetAssetsResponse } from '../api/assets/types';
 
 type WalletId = string;
 
@@ -27,12 +28,22 @@ export default class AssetsStore extends Store {
     if (!wallet) {
       return [];
     }
-    const request = this._getWalletAssetsRequest(wallet.id);
-    if (!request.result) {
-      return [];
-    }
-    return request.result.assets || [];
+    const request = this._retrieveAssetsRequest(wallet.id);
+    return get(request, 'result.assets', []);
   }
+
+  @computed get details(): {
+    [key: string]: Asset,
+  } {
+    return this.all.reduce((details, asset) => {
+      const { policyId, assetName } = asset;
+      details[policyId + assetName] = asset;
+      return details;
+    }, {});
+  }
+
+  getAssetDetails = (policyId: string, assetName: string): ?Asset =>
+    this.details[policyId + assetName];
 
   // =================== PRIVATE ==================
 
@@ -40,7 +51,8 @@ export default class AssetsStore extends Store {
     if (this.stores.networkStatus.isConnected) {
       const { all } = this.stores.wallets;
       for (const wallet of all) {
-        this._createWalletAssetsRequest(wallet.id);
+        const { id: walletId } = wallet;
+        this._retrieveAssetsRequest(walletId).execute({ walletId });
       }
     }
   };
@@ -49,10 +61,9 @@ export default class AssetsStore extends Store {
     walletId: string
   ): Request<GetAssetsResponse> => {
     this.assetsRequests[walletId] = new Request(this.api.ada.getAssets);
-    this.assetsRequests[walletId].execute({ walletId });
     return this.assetsRequests[walletId];
   };
 
-  _getWalletAssetsRequest = (walletId: string): Request<GetAssetsResponse> =>
+  _retrieveAssetsRequest = (walletId: string): Request<GetAssetsResponse> =>
     this.assetsRequests[walletId] || this._createWalletAssetsRequest(walletId);
 }
