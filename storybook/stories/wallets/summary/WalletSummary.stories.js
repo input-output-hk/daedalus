@@ -189,9 +189,10 @@ storiesOf('Wallets|Summary', module)
         currencyLastFetched={currencyLastFetched}
         onCurrencySettingClick={action('onCurrencySettingClick')}
         assets={walletAssets}
-        isLoading={boolean('isLoading', true)}
+        isLoading={boolean('isLoading', false)}
         onOpenAssetSend={action('onOpenAssetSend')}
         onCopyAssetItem={action('onCopyAsset')}
+        hasAssetsEnabled={boolean('hasAssetsEnabled', false)}
       />
     );
   });
