@@ -235,7 +235,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     this._isMounted = true;
     const { assets } = this.props;
     this.setFormFields(false, 1, 'receiver1');
-    this.filterAssets(assets);
+    this.filterAssets(assets, true);
   }
 
   componentWillUnmount() {
@@ -243,14 +243,16 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
   }
 
   filterAssets = (
-    assets: Array<WalletSummaryAsset>,
+    allAssets: Array<WalletSummaryAsset>,
+    firstTimeFiltering?: boolean,
     assetToRemove?: WalletSummaryAsset
   ) => {
     const newFilteredAssets = assetToRemove
-      ? assets.filter((asset) => asset.policyId !== assetToRemove.policyId)
-      : assets;
+      ? allAssets.filter((asset) => asset.fingerprint !== assetToRemove.fingerprint)
+      : [];
     const { filteredAssets } = this.state;
-    const currentFilteredAssets = filteredAssets;
+    const { assets } = this.props;
+    const currentFilteredAssets = firstTimeFiltering ? assets : filteredAssets;
     if (currentFilteredAssets) {
       currentFilteredAssets.push(...newFilteredAssets);
     }
@@ -309,7 +311,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     receiverId: string,
     assetId?: string,
     dropdownId?: string,
-    selectedNativeToken?: Asset,
+    selectedNativeToken?: Asset
   ) => {
     const formFields = this.form.fields;
     const receiverField = formFields.get(`receiver${id}`);
@@ -341,7 +343,8 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       if (currentReceiverFields) {
         currentAssets = currentReceiverFields.asset;
         currentWalletsDropdown = currentReceiverFields.walletsDropdown;
-        currentSelectedNativeTokens = currentReceiverFields.selectedNativeTokens;
+        currentSelectedNativeTokens =
+          currentReceiverFields.selectedNativeTokens;
       }
       if (assetField) {
         currentAssets.push(assetField);
@@ -364,23 +367,6 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
           },
         },
       }));
-    }
-  };
-
-  updateFormFields = (id: string, assetId: string, receiverId: string) => {
-    const { assets } = this.props;
-    const { sendFormFields } = this.state;
-    if (sendFormFields && sendFormFields[receiverId]) {
-      const selectedNativeTokenItem =
-        assetId && assets && assets.length
-          ? this.getNativeTokenById(assetId)
-          : null;
-      const sendFormFieldItem = sendFormFields[receiverId];
-      sendFormFieldItem.selectedNativeTokens.push(selectedNativeTokenItem);
-      sendFormFields[receiverId] = sendFormFieldItem;
-      this.setState({
-        sendFormFields,
-      });
     }
   };
 
@@ -857,10 +843,13 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                         <div className={styles.amountTokenTotal}>
                           {intl.formatMessage(messages.ofLabel)}&nbsp;
                           {formattedWalletAmount(
-                            new BigNumber(selectedNativeTokens[assetIndex].quantity),
+                            new BigNumber(
+                              selectedNativeTokens[assetIndex].quantity
+                            ),
                             false
                           )}
-                          &nbsp;{selectedNativeTokens[assetIndex].metadata.acronym}
+                          &nbsp;
+                          {selectedNativeTokens[assetIndex].metadata.acronym}
                         </div>
                       )}
                     <Button
@@ -906,7 +895,9 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                         estimatedField.onChange(fees);
                       }}
                       currency={
-                        selectedNativeTokens && selectedNativeTokens[assetIndex] && selectedNativeTokens[assetIndex].metadata
+                        selectedNativeTokens &&
+                        selectedNativeTokens[assetIndex] &&
+                        selectedNativeTokens[assetIndex].metadata
                           ? selectedNativeTokens[assetIndex].metadata.acronym
                           : null
                       }
@@ -951,7 +942,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                         numberOfStakePools={4}
                         assets={sortedAssets}
                         onChange={(id) =>
-                          this.onSelectAsset(id, index, receiverId)
+                          this.onSelectAsset(id, index, receiverId, selectedAssetIds[assetIndex])
                         }
                         syncingLabel={intl.formatMessage(
                           messages.syncingWallet
@@ -1148,23 +1139,27 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     assetId: string,
     receiverId: string,
     dropdownId: string,
-    selectedNativeToken?: Asset,
+    selectedNativeToken: Asset
   ) => {
     this.addNewAssetField(receiverId, assetId);
     this.addNewWalletsDropdownField(receiverId, dropdownId);
-    this.setFormFields(false, index, receiverId, assetId, dropdownId, selectedNativeToken);
+    this.setFormFields(
+      false,
+      index,
+      receiverId,
+      assetId,
+      dropdownId,
+      selectedNativeToken
+    );
+    this.onSelectAsset(assetId, index, receiverId, selectedNativeToken.fingerprint);
   };
 
-  onSelectAsset = (assetId: string, id: number, receiverId: string) => {
+  onSelectAsset = (assetId: string, id: number, receiverId: string, fingerprint: string) => {
     this.setState((prevState) => ({
-      selectedAssetIds: [
-        ...prevState.selectedAssetIds,
-        assetId
-      ]
+      selectedAssetIds: [...prevState.selectedAssetIds, fingerprint],
     }));
     const { assets } = this.props;
     this.filterAssets(assets);
-    this.updateFormFields(id, assetId, receiverId);
   };
 
   getNativeTokenById = (selectedAssetId: string): ?Asset => {

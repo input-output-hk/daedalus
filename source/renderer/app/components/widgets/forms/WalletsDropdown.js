@@ -118,7 +118,7 @@ export default class WalletsDropdown extends Component<Props> {
       hasAssetsEnabled,
       ...props
     } = this.props;
-    const walletsData = wallets
+    const walletsData = wallets && wallets.length
       ? wallets.map(
           ({
             name: label,
@@ -151,9 +151,9 @@ export default class WalletsDropdown extends Component<Props> {
           }
         )
       : null;
-    const assetsData = assets
+    const assetsData = assets && assets.length
       ? assets.map(
-          ({ metadata, fingerprint, quantity }: $Shape<WalletSummaryAsset>) => {
+          ({ metadata, fingerprint, quantity }: WalletSummaryAsset) => {
             const formattedAmount = formattedTokenWalletAmount(
               new BigNumber(quantity),
               metadata.acronym
