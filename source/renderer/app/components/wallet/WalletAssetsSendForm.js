@@ -248,7 +248,9 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     assetToRemove?: WalletSummaryAsset
   ) => {
     const newFilteredAssets = assetToRemove
-      ? allAssets.filter((asset) => asset.fingerprint !== assetToRemove.fingerprint)
+      ? allAssets.filter(
+          (asset) => asset.fingerprint !== assetToRemove.fingerprint
+        )
       : [];
     const { filteredAssets } = this.state;
     const { assets } = this.props;
@@ -257,7 +259,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       currentFilteredAssets.push(...newFilteredAssets);
     }
     this.setState({
-      filteredAssets: currentFilteredAssets
+      filteredAssets: currentFilteredAssets,
     });
   };
 
@@ -942,7 +944,12 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                         numberOfStakePools={4}
                         assets={sortedAssets}
                         onChange={(id) =>
-                          this.onSelectAsset(id, index, receiverId, selectedAssetIds[assetIndex])
+                          this.onSelectAsset(
+                            id,
+                            index,
+                            receiverId,
+                            selectedAssetIds[assetIndex]
+                          )
                         }
                         syncingLabel={intl.formatMessage(
                           messages.syncingWallet
@@ -1151,10 +1158,20 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       dropdownId,
       selectedNativeToken
     );
-    this.onSelectAsset(assetId, index, receiverId, selectedNativeToken.fingerprint);
+    this.onSelectAsset(
+      assetId,
+      index,
+      receiverId,
+      selectedNativeToken.fingerprint
+    );
   };
 
-  onSelectAsset = (assetId: string, id: number, receiverId: string, fingerprint: string) => {
+  onSelectAsset = (
+    assetId: string,
+    id: number,
+    receiverId: string,
+    fingerprint: string
+  ) => {
     this.setState((prevState) => ({
       selectedAssetIds: [...prevState.selectedAssetIds, fingerprint],
     }));

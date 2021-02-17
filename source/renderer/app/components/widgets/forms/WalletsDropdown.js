@@ -118,54 +118,58 @@ export default class WalletsDropdown extends Component<Props> {
       hasAssetsEnabled,
       ...props
     } = this.props;
-    const walletsData = wallets && wallets.length
-      ? wallets.map(
-          ({
-            name: label,
-            id: value,
-            amount,
-            delegatedStakePoolId,
-            lastDelegationStakePoolId,
-            pendingDelegations,
-            isRestoring,
-            isHardwareWallet,
-          }: Wallet) => {
-            const hasPendingDelegations =
-              pendingDelegations && pendingDelegations.length > 0;
-            let currentStakePoolId = delegatedStakePoolId;
-            if (hasPendingDelegations) {
-              currentStakePoolId = lastDelegationStakePoolId;
-            }
-            const delegatedStakePool = getStakePoolById(currentStakePoolId);
-            const detail = !isRestoring ? formattedWalletAmount(amount) : null;
-            return {
-              detail,
-              syncing: isRestoring,
-              label,
-              value,
-              numberOfStakePools,
-              delegatedStakePool,
+    const walletsData =
+      wallets && wallets.length
+        ? wallets.map(
+            ({
+              name: label,
+              id: value,
+              amount,
+              delegatedStakePoolId,
+              lastDelegationStakePoolId,
+              pendingDelegations,
+              isRestoring,
               isHardwareWallet,
-              syncingLabel: this.props.syncingLabel,
-            };
-          }
-        )
-      : null;
-    const assetsData = assets && assets.length
-      ? assets.map(
-          ({ metadata, fingerprint, quantity }: WalletSummaryAsset) => {
-            const formattedAmount = formattedTokenWalletAmount(
-              new BigNumber(quantity),
-              metadata.acronym
-            );
-            return {
-              detail: formattedAmount,
-              label: metadata.acronym,
-              value: fingerprint,
-            };
-          }
-        )
-      : null;
+            }: Wallet) => {
+              const hasPendingDelegations =
+                pendingDelegations && pendingDelegations.length > 0;
+              let currentStakePoolId = delegatedStakePoolId;
+              if (hasPendingDelegations) {
+                currentStakePoolId = lastDelegationStakePoolId;
+              }
+              const delegatedStakePool = getStakePoolById(currentStakePoolId);
+              const detail = !isRestoring
+                ? formattedWalletAmount(amount)
+                : null;
+              return {
+                detail,
+                syncing: isRestoring,
+                label,
+                value,
+                numberOfStakePools,
+                delegatedStakePool,
+                isHardwareWallet,
+                syncingLabel: this.props.syncingLabel,
+              };
+            }
+          )
+        : null;
+    const assetsData =
+      assets && assets.length
+        ? assets.map(
+            ({ metadata, fingerprint, quantity }: WalletSummaryAsset) => {
+              const formattedAmount = formattedTokenWalletAmount(
+                new BigNumber(quantity),
+                metadata.acronym
+              );
+              return {
+                detail: formattedAmount,
+                label: metadata.acronym,
+                value: fingerprint,
+              };
+            }
+          )
+        : null;
     let topError;
     let bottomError;
     if (errorPosition === 'bottom') bottomError = error;
