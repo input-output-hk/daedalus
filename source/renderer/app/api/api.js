@@ -227,15 +227,12 @@ import { WALLET_BYRON_KINDS } from '../config/walletRestoreConfig';
 import ApiError from '../domains/ApiError';
 import { formattedAmountToLovelace } from '../utils/formatters';
 import type {
-  GetAssetRequest,
-  GetAssetResponse,
   GetAssetsRequest,
   GetAssetsResponse,
   ApiAsset,
 } from './assets/types';
 import Asset from '../domains/Asset';
 import { getAssets } from './assets/requests/getAssets';
-import { getAsset } from './assets/requests/getAsset';
 
 const { isIncentivizedTestnet } = global;
 
@@ -609,26 +606,6 @@ export default class AdaApi {
       );
     } catch (error) {
       logger.error('AdaApi::getAssets error', { error });
-      throw new ApiError(error);
-    }
-  };
-
-  getAsset = async (request: GetAssetRequest): Promise<GetAssetResponse> => {
-    logger.debug('AdaApi::getAsset called', { parameters: request });
-    const { walletId, policyId, assetName } = request;
-    try {
-      const response = await getAsset(this.config, {
-        walletId,
-        policyId,
-        assetName,
-      });
-      logger.debug('AdaApi::getAsset success', {
-        asset: response,
-      });
-      const asset = _createAssetFromServerData(response);
-      return new Promise((resolve) => resolve({ asset }));
-    } catch (error) {
-      logger.error('AdaApi::getAsset error', { error });
       throw new ApiError(error);
     }
   };
@@ -2648,17 +2625,17 @@ const _createTransactionFromServerData = action(
     const outputAssets = outputs.map(({ assets }) => assets);
     const transactionInputAssets = inputAssets.map((item) => {
       return {
-        policyId: item ? item.policy_id : '',
-        assetName: item ? item.asset_name : '',
-        quantity: item ? item.quantity : '',
+        policyId: item && item.policy_id ? item.policy_id : '',
+        assetName: item && item.asset_name ? item.asset_name : '',
+        quantity: item && item.quantity ? item.quantity : '',
       };
     });
 
     const transactionOutputAssets = outputAssets.map((item) => {
       return {
-        policyId: item ? item.policy_id : '',
-        assetName: item ? item.asset_name : '',
-        quantity: item ? item.quantity : '',
+        policyId: item && item.policy_id ? item.policy_id : '',
+        assetName: item && item.asset_name ? item.asset_name : '',
+        quantity: item && item.quantity ? item.quantity : '',
       };
     });
 

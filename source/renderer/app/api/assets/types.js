@@ -68,12 +68,6 @@ export type WalletTransactionAsset = {
   metadata: ?AssetMetadata,
 };
 
-export type GetAssetRequest = {
-  walletId: string,
-  policyId: string,
-  assetName: string,
-};
-
 export type GetUnknownAssetRequest = {
   walletId: string,
   policyId: string,
@@ -86,8 +80,4 @@ export type GetAssetsRequest = {
 export type GetAssetsResponse = {
   assets: Array<Asset>,
   total: number,
-};
-
-export type GetAssetResponse = {
-  asset: Asset,
 };

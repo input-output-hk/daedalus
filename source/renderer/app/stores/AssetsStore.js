@@ -3,11 +3,7 @@ import { observable, computed, action } from 'mobx';
 import { find } from 'lodash';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import type {
-  GetAssetRequest,
-  GetAssetsResponse,
-  WalletAssetItem,
-} from '../api/assets/types';
+import type { GetAssetsResponse, WalletAssetItem } from '../api/assets/types';
 import Asset from '../domains/Asset';
 
 export default class AssetsStore extends Store {
@@ -15,11 +11,6 @@ export default class AssetsStore extends Store {
     walletId: string,
     allRequest: Request<GetAssetsResponse>,
   }> = [];
-
-  @observable
-  getSingleAssetRequest: Request<GetAssetRequest> = new Request(
-    this.api.ada.getAsset
-  );
 
   setup() {}
 
@@ -66,25 +57,5 @@ export default class AssetsStore extends Store {
           asset.policyId === policyId && asset.assetName === assetName
       ) || {};
     return assetDetail.fingerprint;
-  };
-
-  getSingleAsset = async ({
-    walletId,
-    policyId,
-    assetName,
-  }: {
-    walletId: string,
-    policyId: string,
-    assetName: string,
-  }) => {
-    const wallet = this.stores.wallets.getWalletById(walletId);
-    if (!wallet) {
-      throw new Error('Active wallet required before fetching single asset.');
-    }
-    await this.getSingleAssetRequest.execute({
-      walletId,
-      policyId,
-      assetName,
-    });
   };
 }
