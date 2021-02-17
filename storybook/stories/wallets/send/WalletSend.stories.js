@@ -259,7 +259,6 @@ storiesOf('Wallets|Send', module)
       isRestoreActive={boolean('isRestoreActive', false)}
       hwDeviceStatus={HwDeviceStatuses.READY}
       isHardwareWallet={boolean('isHardwareWallet', false)}
-      selectedNativeToken={sendFormAssetData[0]}
       assets={sendFormAssetData}
       walletAmount={new BigNumber(123)}
     />

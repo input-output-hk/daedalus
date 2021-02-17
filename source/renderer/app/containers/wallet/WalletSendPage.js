@@ -99,8 +99,6 @@ export default class WalletSendPage extends Component<Props> {
       };
     });
 
-    const selectedNativeToken =
-      walletAssets && walletAssets.length ? walletAssets[0] : null;
     // Guard against potential null values
     if (!activeWallet)
       throw new Error('Active wallet required for WalletSendPage.');
@@ -123,7 +121,6 @@ export default class WalletSendPage extends Component<Props> {
               })
             }
             assets={walletAssets}
-            selectedNativeToken={selectedNativeToken}
             addressValidator={isValidAddress}
             isDialogOpen={uiDialogs.isOpen}
             openDialogAction={(params) =>

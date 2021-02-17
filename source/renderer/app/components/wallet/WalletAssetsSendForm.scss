@@ -196,6 +196,11 @@
   margin-top: 0;
   text-transform: uppercase;
   width: 143px;
+
+  &.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
 }
 
 .clearAssetContainer {
