@@ -1,61 +1,58 @@
 // @flow
-import { observable, computed, action } from 'mobx';
-import { find } from 'lodash';
+import { observable, action, computed } from 'mobx';
 import Store from './lib/Store';
 import Request from './lib/LocalizedRequest';
-import type { GetAssetsResponse, WalletAssetItem } from '../api/assets/types';
+import type { GetAssetsResponse } from '../api/assets/types';
 import Asset from '../domains/Asset';
 
-export default class AssetsStore extends Store {
-  @observable assetsRequests: Array<{
-    walletId: string,
-    allRequest: Request<GetAssetsResponse>,
-  }> = [];
+type WalletId = string;
 
-  setup() {}
+export default class AssetsStore extends Store {
+  ASSETS_REFRESH_INTERVAL: number = 1 * 60 * 1000; // 1 second | unit: milliseconds
+
+  @observable assetsRequests: {
+    [key: WalletId]: Request<GetAssetsResponse>,
+  } = {};
+
+  setup() {
+    setInterval(this._refreshAssetsData, this.ASSETS_REFRESH_INTERVAL);
+    const { wallets: walletsActions } = this.actions;
+    walletsActions.refreshWalletsDataSuccess.once(this._refreshAssetsData);
+  }
+
+  // ==================== PUBLIC ==================
 
   @computed get all(): Array<Asset> {
     const wallet = this.stores.wallets.active;
     if (!wallet) {
       return [];
     }
-    const request = this._getAssetsAllRequest(wallet.id);
+    const request = this._getWalletAssetsRequest(wallet.id);
     if (!request.result) {
       return [];
     }
     return request.result.assets || [];
   }
 
-  @computed get totalAvailable(): number {
-    const wallet = this.stores.wallets.active;
-    if (!wallet) return 0;
-    const results = this._getAssetsAllRequest(wallet.id).result;
-    return results ? results.total : 0;
-  }
+  // =================== PRIVATE ==================
 
-  @action _refreshAssets = () => {
+  @action _refreshAssetsData = () => {
     if (this.stores.networkStatus.isConnected) {
       const { all } = this.stores.wallets;
       for (const wallet of all) {
-        const { id: walletId } = wallet;
-        const allRequest = this._getAssetsAllRequest(walletId);
-        allRequest.execute({ walletId });
+        this._createWalletAssetsRequest(wallet.id);
       }
     }
   };
 
-  _getAssetsAllRequest = (walletId: string): Request<GetAssetsResponse> => {
-    const foundRequest = find(this.assetsRequests, { walletId });
-    if (foundRequest && foundRequest.allRequest) return foundRequest.allRequest;
-    return new Request(this.api.ada.getAssets);
+  @action _createWalletAssetsRequest = (
+    walletId: string
+  ): Request<GetAssetsResponse> => {
+    this.assetsRequests[walletId] = new Request(this.api.ada.getAssets);
+    this.assetsRequests[walletId].execute({ walletId });
+    return this.assetsRequests[walletId];
   };
 
-  _getAssetFingerprint = (asset: WalletAssetItem): string => {
-    const assetDetail =
-      this.all.find(
-        ({ policyId, assetName }) =>
-          asset.policyId === policyId && asset.assetName === assetName
-      ) || {};
-    return assetDetail.fingerprint;
-  };
+  _getWalletAssetsRequest = (walletId: string): Request<GetAssetsResponse> =>
+    this.assetsRequests[walletId] || this._createWalletAssetsRequest(walletId);
 }

@@ -12,7 +12,6 @@ import { ROUTES } from '../../routes-config';
 import { formattedWalletAmount } from '../../utils/formatters';
 import { getNetworkExplorerUrlByType } from '../../utils/network';
 import { WALLET_ASSETS_ENABLED } from '../../config/walletsConfig';
-import WalletSummaryAssets from '../../components/wallet/summary/WalletSummaryAssets';
 import { ellipsis } from '../../utils/strings';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import type { WalletSummaryAsset } from '../../api/assets/types';

@@ -11174,7 +11174,7 @@
         "description": "\"Currency - last fetched\" label on Wallet summary currency page",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 26
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummaryCurrency.js",
         "id": "wallet.summary.currency.lastFetched",
@@ -11188,13 +11188,13 @@
         "description": "\"Currency - Fetching\" label on Wallet summary currency page",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 31
         },
         "file": "source/renderer/app/components/wallet/summary/WalletSummaryCurrency.js",
         "id": "wallet.summary.currency.isFetchingRate",
         "start": {
           "column": 26,
-          "line": 26
+          "line": 27
         }
       }
     ],
