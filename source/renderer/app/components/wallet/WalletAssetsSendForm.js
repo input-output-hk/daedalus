@@ -248,7 +248,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     assetToRemove?: WalletSummaryAsset
   ) => {
     const newFilteredAssets = assetToRemove
-      ? allAssets.filter((asset) => asset.fingerprint !== assetToRemove.fingerprint)
+      ? allAssets.filter((asset) => asset.policyId !== assetToRemove.policyId)
       : [];
     const { filteredAssets } = this.state;
     const { assets } = this.props;
@@ -941,9 +941,10 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                         {...walletsDropdownFieldProps[index]}
                         numberOfStakePools={4}
                         assets={sortedAssets}
-                        onChange={(id) =>
-                          this.onSelectAsset(id, index, receiverId, selectedAssetIds[assetIndex])
-                        }
+                        onChange={(id) => {
+                          this.onSelectAsset(assetIndex, id);
+                          this.updateSelectedNativeTokens(id, assetIndex, receiverId);
+                        }}
                         syncingLabel={intl.formatMessage(
                           messages.syncingWallet
                         )}
@@ -1151,20 +1152,44 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       dropdownId,
       selectedNativeToken
     );
-    this.onSelectAsset(assetId, index, receiverId, selectedNativeToken.fingerprint);
+    const splitedAssetId = assetId.split('asset');
+    const assetIndex = splitedAssetId ? parseInt(splitedAssetId[1], 10) : 0;
+    this.onSelectAsset(assetIndex - 1, selectedNativeToken.policyId);
   };
 
-  onSelectAsset = (assetId: string, id: number, receiverId: string, fingerprint: string) => {
-    this.setState((prevState) => ({
-      selectedAssetIds: [...prevState.selectedAssetIds, fingerprint],
-    }));
+  onSelectAsset = (index: number, policyId: string) => {
+    const { selectedAssetIds } = this.state;
+    if (!selectedAssetIds.length) {
+      selectedAssetIds[0] = policyId;
+    } else {
+      selectedAssetIds[index] = policyId;
+    }
+    this.setState({
+      selectedAssetIds,
+    });
     const { assets } = this.props;
     this.filterAssets(assets);
   };
 
+  updateSelectedNativeTokens = (id: string, index: number, receiverId: string) => {
+    const { sendFormFields } = this.state;
+    const allSelectedNativeToken = sendFormFields[receiverId].selectedNativeTokens;
+    const currentNativeToken = this.getNativeTokenById(id);
+    allSelectedNativeToken[index] = currentNativeToken;
+    this.setState((prevState) => ({
+      sendFormFields: {
+        ...prevState.sendFormFields,
+        [receiverId]: {
+          ...prevState.sendFormFields[receiverId],
+          selectedNativeTokens: allSelectedNativeToken,
+        },
+      },
+    }));
+  };
+
   getNativeTokenById = (selectedAssetId: string): ?Asset => {
     const { assets } = this.props;
-    return assets.find((asset) => asset.fingerprint === selectedAssetId);
+    return assets.find((asset) => asset.policyId === selectedAssetId);
   };
 
   render() {
