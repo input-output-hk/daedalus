@@ -15548,13 +15548,13 @@
         "description": "\"fingerprint\" item.",
         "end": {
           "column": 3,
-          "line": 20
+          "line": 24
         },
         "file": "source/renderer/app/components/widgets/AssetToken.js",
         "id": "widgets.assetToken.item.fingerprint",
         "start": {
           "column": 19,
-          "line": 16
+          "line": 20
         }
       },
       {
@@ -15562,13 +15562,13 @@
         "description": "\"policyId\" item.",
         "end": {
           "column": 3,
-          "line": 25
+          "line": 29
         },
         "file": "source/renderer/app/components/widgets/AssetToken.js",
         "id": "widgets.assetToken.item.policyId",
         "start": {
           "column": 16,
-          "line": 21
+          "line": 25
         }
       },
       {
@@ -15576,13 +15576,13 @@
         "description": "\"assetName\" item.",
         "end": {
           "column": 3,
-          "line": 30
+          "line": 34
         },
         "file": "source/renderer/app/components/widgets/AssetToken.js",
         "id": "widgets.assetToken.item.assetName",
         "start": {
           "column": 17,
-          "line": 26
+          "line": 30
         }
       },
       {
@@ -15590,13 +15590,13 @@
         "description": "\"name\" item.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 39
         },
         "file": "source/renderer/app/components/widgets/AssetToken.js",
         "id": "widgets.assetToken.item.name",
         "start": {
           "column": 12,
-          "line": 31
+          "line": 35
         }
       },
       {
@@ -15604,13 +15604,13 @@
         "description": "\"acronym\" item.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 44
         },
         "file": "source/renderer/app/components/widgets/AssetToken.js",
         "id": "widgets.assetToken.item.acronym",
         "start": {
           "column": 15,
-          "line": 36
+          "line": 40
         }
       },
       {
@@ -15618,13 +15618,13 @@
         "description": "\"description\" item.",
         "end": {
           "column": 3,
-          "line": 45
+          "line": 49
         },
         "file": "source/renderer/app/components/widgets/AssetToken.js",
         "id": "widgets.assetToken.item.description",
         "start": {
           "column": 19,
-          "line": 41
+          "line": 45
         }
       }
     ],

@@ -177,7 +177,7 @@ storiesOf('Wallets|Summary', module)
 
     return (
       <WalletSummary
-        wallet={generateWallet('Wallet name', '45119903750165')}
+        wallet={generateWallet('Wallet name', '45119903750165', assets)}
         numberOfTransactions={number('Number of transactions', 100)}
         numberOfRecentTransactions={number(
           'Number of Recent transactions',
