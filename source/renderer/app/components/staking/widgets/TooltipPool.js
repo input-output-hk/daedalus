@@ -539,7 +539,7 @@ export default class TooltipPool extends Component<Props, State> {
                   }),
                 }}
               >
-                {!potentialRewards.isZero() ? (
+                {potentialRewards.isZero && !potentialRewards.isZero() ? (
                   ranking
                 ) : (
                   <>
