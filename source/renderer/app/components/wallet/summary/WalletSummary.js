@@ -1,49 +1,13 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import moment from 'moment';
-import { defineMessages, intlShape } from 'react-intl';
-import SVGInline from 'react-svg-inline';
-import classnames from 'classnames';
-import currencySettingsIcon from '../../../assets/images/currency-settings-ic.inline.svg';
-import globalMessages from '../../../i18n/global-messages';
-import BorderedBox from '../../widgets/BorderedBox';
-import styles from './WalletSummary.scss';
 import Wallet from '../../../domains/Wallet';
-import {
-  formattedWalletAmount,
-  formattedWalletCurrencyAmount,
-} from '../../../utils/formatters';
 import type { Currency } from '../../../types/currencyTypes';
-
-const messages = defineMessages({
-  transactionsLabel: {
-    id: 'wallet.summary.page.transactionsLabel',
-    defaultMessage: '!!!Number of transactions',
-    description: '"Number of transactions" label on Wallet summary page',
-  },
-  pendingTransactionsLabel: {
-    id: 'wallet.summary.page.pendingTransactionsLabel',
-    defaultMessage: '!!!Number of pending transactions',
-    description:
-      '"Number of pending transactions" label on Wallet summary page',
-  },
-  currencyTitle: {
-    id: 'wallet.summary.page.currency.title',
-    defaultMessage: '!!!Converts as',
-    description: '"Currency - title" label on Wallet summary page',
-  },
-  currencyLastFetched: {
-    id: 'wallet.summary.page.currency.lastFetched',
-    defaultMessage: '!!!converted {fetchedTimeAgo}',
-    description: '"Currency - last fetched" label on Wallet summary page',
-  },
-  currencyIsFetchingRate: {
-    id: 'wallet.summary.page.currency.isFetchingRate',
-    defaultMessage: '!!!fetching conversion rates',
-    description: '"Currency - Fetching" label on Wallet summary page',
-  },
-});
+import WalletSummaryHeader from './WalletSummaryHeader';
+import WalletSummaryAssets from './WalletSummaryAssets';
+import WalletSummaryCurrency from './WalletSummaryCurrency';
+import BorderedBox from '../../widgets/BorderedBox';
+import type { WalletSummaryAsset } from '../../../api/assets/types';
 
 type Props = {
   wallet: Wallet,
@@ -59,14 +23,14 @@ type Props = {
   currencyLastFetched: ?Date,
   onCurrencySettingClick: Function,
   hasAssetsEnabled?: boolean,
+  assets: Array<WalletSummaryAsset>,
+  onOpenAssetSend: Function,
+  onCopyAssetItem: Function,
+  isLoading?: boolean,
 };
 
 @observer
 export default class WalletSummary extends Component<Props> {
-  static contextTypes = {
-    intl: intlShape.isRequired,
-  };
-
   render() {
     const {
       wallet,
@@ -82,140 +46,52 @@ export default class WalletSummary extends Component<Props> {
       currencySelected,
       onCurrencySettingClick,
       hasAssetsEnabled,
+      assets,
+      onOpenAssetSend,
+      onCopyAssetItem,
+      isLoading,
     } = this.props;
-    const { intl } = this.context;
-    const isLoadingAllTransactions =
-      numberOfRecentTransactions && !numberOfTransactions;
-    const numberOfTransactionsStyles = classnames([
-      styles.numberOfTransactions,
-      isLoadingAllTransactions ? styles.isLoadingNumberOfTransactions : null,
-      hasAssetsEnabled ? styles.assets : null,
-    ]);
 
-    const numberOfPendingTransactionsStyles = classnames([
-      styles.numberOfPendingTransactions,
-      hasAssetsEnabled ? styles.assets : null,
-    ]);
-
-    const walletNameStyles = classnames([
-      styles.walletName,
-      hasAssetsEnabled ? styles.assets : null,
-    ]);
-
-    const walletAmountStyles = classnames([
-      styles.walletAmount,
-      hasAssetsEnabled ? styles.assets : null,
-    ]);
-
-    const isRestoreActive = wallet.isRestoring;
     const hasCurrency =
       currencyIsActive &&
       currencyIsAvailable &&
       !!currencySelected &&
       (!!currencyRate || currencyIsFetchingRate);
 
-    const walletAmount = isRestoreActive
-      ? '-'
-      : formattedWalletAmount(wallet.amount, false);
-
-    const { decimalDigits } = currencySelected || {};
-
-    let currencyWalletAmount;
-    if (isRestoreActive) currencyWalletAmount = '- ';
-    else if (hasCurrency && currencyRate)
-      currencyWalletAmount = formattedWalletCurrencyAmount(
-        wallet.amount,
-        currencyRate,
-        decimalDigits
-      );
-    const currencyWalletAmountSymbol = currencySelected
-      ? currencySelected.symbol.toUpperCase()
-      : '';
-    const fetchedTimeAgo = moment(currencyLastFetched)
-      .locale(intl.locale)
-      .fromNow();
-
-    const buttonClasses = classnames([
-      styles.currencyLastFetched,
-      currencyIsFetchingRate ? styles.currencyIsFetchingRate : null,
-    ]);
-
     return (
-      <div className={styles.component}>
-        <BorderedBox>
-          <div className={styles.walletContent}>
-            <div>
-              <div className={walletNameStyles}>{wallet.name}</div>
-              <div className={walletAmountStyles}>
-                {walletAmount}
-                {hasAssetsEnabled ? (
-                  <span>
-                    &nbsp;{intl.formatMessage(globalMessages.unitAda)}
-                  </span>
-                ) : (
-                  <span className={styles.currencySymbol}>
-                    {intl.formatMessage(globalMessages.unitAda)}
-                  </span>
-                )}
-              </div>
-              {!isLoadingTransactions && (
-                <div className={styles.transactionsCountWrapper}>
-                  <div className={numberOfPendingTransactionsStyles}>
-                    <span>
-                      {intl.formatMessage(messages.pendingTransactionsLabel)}
-                    </span>
-                    :&nbsp;
-                    <span>{numberOfPendingTransactions}</span>
-                  </div>
-                  <div className={numberOfTransactionsStyles}>
-                    <span>
-                      {intl.formatMessage(messages.transactionsLabel)}
-                    </span>
-                    :&nbsp;
-                    <span>
-                      {numberOfTransactions || numberOfRecentTransactions}
-                    </span>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {hasCurrency && (
-              <div className={styles.currency}>
-                <div className={styles.currencyTitle}>
-                  {intl.formatMessage(messages.currencyTitle)}
-                </div>
-                <div className={styles.currencyWalletAmount}>
-                  {currencyWalletAmount}
-                  <span className={styles.currencySymbol}>
-                    {currencyWalletAmountSymbol}
-                  </span>
-                </div>
-                <div className={styles.currencyRate}>
-                  1 {intl.formatMessage(globalMessages.unitAda)} ={' '}
-                  {currencyRate} {currencyWalletAmountSymbol}
-                </div>
-                <button
-                  className={buttonClasses}
-                  onClick={onCurrencySettingClick}
-                >
-                  <em>
-                    {currencyIsFetchingRate
-                      ? intl.formatMessage(messages.currencyIsFetchingRate)
-                      : intl.formatMessage(messages.currencyLastFetched, {
-                          fetchedTimeAgo,
-                        })}
-                  </em>
-                  <SVGInline
-                    svg={currencySettingsIcon}
-                    className={styles.currencySettingsIcon}
-                  />
-                </button>
-              </div>
-            )}
-          </div>
-        </BorderedBox>
-      </div>
+      <>
+        <WalletSummaryHeader
+          wallet={wallet}
+          numberOfRecentTransactions={numberOfRecentTransactions}
+          numberOfTransactions={numberOfTransactions}
+          numberOfPendingTransactions={numberOfPendingTransactions}
+          isLoadingTransactions={isLoadingTransactions}
+          hasAssetsEnabled={hasAssetsEnabled}
+          currency={
+            hasCurrency && (
+              <WalletSummaryCurrency
+                wallet={wallet}
+                currencyIsFetchingRate={currencyIsFetchingRate}
+                currencyIsAvailable={currencyIsAvailable}
+                currencyIsActive={currencyIsActive}
+                currencySelected={currencySelected}
+                currencyRate={currencyRate}
+                currencyLastFetched={currencyLastFetched}
+                onCurrencySettingClick={onCurrencySettingClick}
+              />
+            )
+          }
+        />
+        {hasAssetsEnabled && (
+          <WalletSummaryAssets
+            wallet={wallet}
+            assets={assets}
+            onOpenAssetSend={onOpenAssetSend}
+            isLoading={isLoading}
+            onCopyAssetItem={onCopyAssetItem}
+          />
+        )}
+      </>
     );
   }
 }

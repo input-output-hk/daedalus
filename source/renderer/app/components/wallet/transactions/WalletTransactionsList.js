@@ -19,23 +19,23 @@ import Asset from '../../../domains/Asset';
 
 const messages = defineMessages({
   today: {
-    id: 'wallet.summary.page.todayLabel',
+    id: 'wallet.summary.transactionsList.todayLabel',
     defaultMessage: '!!!Today',
     description: 'Label for the "Today" label on the wallet summary page.',
   },
   yesterday: {
-    id: 'wallet.summary.page.yesterdayLabel',
+    id: 'wallet.summary.transactionsList.yesterdayLabel',
     defaultMessage: '!!!Yesterday',
     description: 'Label for the "Yesterday" label on the wallet summary page.',
   },
   showMoreTransactionsButtonLabel: {
-    id: 'wallet.summary.page.showMoreTransactionsButtonLabel',
+    id: 'wallet.summary.transactionsList.showMoreTransactionsButtonLabel',
     defaultMessage: '!!!Show more transactions',
     description:
       'Label for the "Show more transactions" button on the wallet summary page.',
   },
   syncingTransactionsMessage: {
-    id: 'wallet.summary.page.syncingTransactionsMessage',
+    id: 'wallet.summary.transactionsList.syncingTransactionsMessage',
     defaultMessage:
       '!!!Your transaction history for this wallet is being synced with the blockchain.',
     description: 'Syncing transactions message on async wallet restore.',

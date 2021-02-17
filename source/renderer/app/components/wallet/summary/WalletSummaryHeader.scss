@@ -1,0 +1,91 @@
+@import '../../../themes/mixins/animations';
+
+%smallText {
+  color: var(--theme-bordered-box-text-color);
+  font-family: var(--font-regular);
+  font-size: 14px;
+  height: 19px;
+  letter-spacing: 0.5px;
+  line-height: 1.36;
+}
+
+.component {
+  padding: 20px;
+}
+
+.walletContent {
+  align-items: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.walletName {
+  color: var(--theme-bordered-box-text-color);
+  font-family: var(--font-regular);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  line-height: 1.38;
+  margin-bottom: 11px;
+  user-select: text;
+
+  &.assets {
+    margin-bottom: 6px;
+  }
+}
+
+.walletAmount {
+  color: var(--theme-bordered-box-text-color);
+  font-family: var(--font-bold);
+  font-size: 22px;
+  line-height: 1;
+  margin: 4px 0 11px;
+  user-select: text;
+  word-break: break-all;
+
+  span {
+    color: var(--theme-icon-add-wallet-dialog-big-button-color);
+    font-size: 16px;
+    font-size: 16px;
+    margin-left: 6px;
+    opacity: 0.7;
+  }
+
+  &.assets {
+    font-family: var(--font-bold);
+    font-size: 22px;
+    line-height: 1.41;
+    margin-bottom: 8px;
+  }
+}
+
+// .currency {
+//   .currencySymbol {
+//     font-size: 12px;
+//     margin-left: 0;
+//   }
+// }
+
+.transactionsCountWrapper {
+  .numberOfTransactions,
+  .numberOfPendingTransactions {
+    @extend %smallText;
+
+    &.assets {
+      span:first-child {
+        font-family: var(--font-medium);
+        opacity: 0.7;
+      }
+
+      span:last-child {
+        font-family: var(--font-light);
+        opacity: 1;
+      }
+    }
+
+    &.isLoadingNumberOfTransactions {
+      @include animated-ellipsis($width: 16px);
+    }
+  }
+}

@@ -19,7 +19,7 @@ import type { WalletSummaryAsset } from '../../api/assets/types';
 
 export const messages = defineMessages({
   noTransactions: {
-    id: 'wallet.summary.no.transactions',
+    id: 'wallet.summary.page.no.transactions',
     defaultMessage: '!!!No recent transactions',
     description:
       'Message shown when wallet has no transactions on wallet summary page.',
@@ -199,16 +199,11 @@ export default class WalletSummaryPage extends Component<Props> {
           currencyRate={currencyRate}
           currencySelected={currencySelected}
           onCurrencySettingClick={this.handleCurrencySettingsClick}
+          assets={walletAssets}
+          onOpenAssetSend={this.handleOpenAssetSend}
+          isLoading={isLoading}
+          onCopyAssetItem={this.handleOnCopyAssetItem}
         />
-        {hasAssetsEnabled && hasAssets && (
-          <WalletSummaryAssets
-            wallet={wallet}
-            assets={walletAssets}
-            onOpenAssetSend={this.handleOpenAssetSend}
-            isLoading={isLoading}
-            onCopyAssetItem={this.handleOnCopyAssetItem}
-          />
-        )}
         {walletTransactions}
       </VerticalFlexContainer>
     );
