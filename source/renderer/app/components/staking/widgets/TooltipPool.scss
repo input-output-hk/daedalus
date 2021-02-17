@@ -4,28 +4,11 @@
 .component {
   @extend %regularText;
   background: var(--theme-staking-stake-pool-tooltip-background-color);
-  border: 1px solid var(--theme-staking-stake-pool-tooltip-border-color);
-  border-radius: 5px;
-  box-shadow: 0 1.5px 5px 0 var(--theme-staking-stake-pool-tooltip-shadow-color);
-  display: none;
   padding: 10px;
-  position: absolute;
   text-align: initial;
   user-select: text;
   width: 280px;
   z-index: 1000;
-
-  &.delegationViewTooltip {
-    background: none;
-    border: none;
-    border-radius: 0;
-    box-shadow: none;
-    cursor: initial;
-    margin-left: -12px;
-    padding: 5px;
-    pointer-events: initial;
-    position: initial;
-  }
 
   :global {
     button.SimpleButton_root {
@@ -145,86 +128,6 @@
 
 .homepage {
   width: initial;
-}
-
-.arrow {
-  border-color: transparent;
-  border-style: solid;
-  height: 0;
-  position: absolute;
-  width: 0;
-
-  &:before {
-    border-color: transparent;
-    border-style: solid;
-    content: '';
-    display: block;
-    height: 0;
-    position: absolute;
-    width: 0;
-  }
-
-  &.tooltipPositionTop {
-    border-top-color: var(--theme-staking-stake-pool-tooltip-border-color);
-    border-width: 11px 11px 0 11px;
-
-    &:before {
-      border-top-color: var(
-        --theme-staking-stake-pool-tooltip-background-color
-      );
-      border-width: 10px 10px 0 10px;
-      left: -10px;
-      top: -11px;
-    }
-  }
-
-  &.tooltipPositionRight {
-    border-right-color: var(--theme-staking-stake-pool-tooltip-border-color);
-    border-width: 11px 11px 11px 0;
-
-    &:before {
-      border-right-color: var(
-        --theme-staking-stake-pool-tooltip-background-color
-      );
-      border-width: 10px 10px 10px 0;
-      right: -11px;
-      top: -10px;
-    }
-  }
-
-  &.tooltipPositionBottom {
-    border-bottom-color: var(--theme-staking-stake-pool-tooltip-border-color);
-    border-width: 0 11px 11px 11px;
-
-    &:before {
-      border-bottom-color: transparent;
-      border-width: 0 10px 10px 10px;
-      left: -10px;
-      top: -11px;
-    }
-
-    &.greyArrow {
-      border-bottom-color: var(--theme-staking-stake-pool-grey-color);
-    }
-  }
-
-  &.tooltipPositionLeft {
-    border-left-color: var(--theme-staking-stake-pool-tooltip-border-color);
-    border-width: 11px 0 11px 11px;
-
-    &:before {
-      border-left-color: var(
-        --theme-staking-stake-pool-tooltip-background-color
-      );
-      border-width: 10px 0 10px 10px;
-      left: -11px;
-      top: -10px;
-    }
-  }
-}
-
-.isVisible {
-  display: block;
 }
 
 .id {

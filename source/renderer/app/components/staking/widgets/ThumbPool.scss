@@ -1,16 +1,6 @@
 .component {
   position: relative;
 
-  > button {
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    height: 100%;
-    position: absolute;
-    width: 100%;
-    z-index: 1;
-  }
-
   .content {
     border-radius: 4px;
 

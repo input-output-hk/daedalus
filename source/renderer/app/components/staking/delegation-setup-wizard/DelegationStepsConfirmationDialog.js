@@ -1,4 +1,5 @@
 // @flow
+import BigNumber from 'bignumber.js/bignumber';
 import React, { Component } from 'react';
 import {
   defineMessages,
@@ -309,23 +310,25 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
                 )}
               </p>
             </div>
-            {transactionFee && !transactionFee.deposit.isZero() && (
-              <>
-                <div className={styles.depositWrapper}>
-                  <p className={styles.depositLabel}>
-                    {intl.formatMessage(messages.depositLabel)}
-                  </p>
-                  <p className={styles.depositAmount}>
-                    <span>
-                      {formattedWalletAmount(transactionFee.deposit, false)}
-                    </span>
-                    <span className={styles.depositAmountLabel}>
-                      &nbsp;{intl.formatMessage(globalMessages.unitAda)}
-                    </span>
-                  </p>
-                </div>
-              </>
-            )}
+            {transactionFee &&
+              BigNumber.isBigNumber(transactionFee.deposit) &&
+              !transactionFee.deposit.isZero() && (
+                <>
+                  <div className={styles.depositWrapper}>
+                    <p className={styles.depositLabel}>
+                      {intl.formatMessage(messages.depositLabel)}
+                    </p>
+                    <p className={styles.depositAmount}>
+                      <span>
+                        {formattedWalletAmount(transactionFee.deposit, false)}
+                      </span>
+                      <span className={styles.depositAmountLabel}>
+                        &nbsp;{intl.formatMessage(globalMessages.unitAda)}
+                      </span>
+                    </p>
+                  </div>
+                </>
+              )}
           </div>
 
           {isHardwareWallet ? (
