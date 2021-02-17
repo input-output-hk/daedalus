@@ -14371,8 +14371,8 @@
         }
       },
       {
-        "defaultMessage": "!!!+ Add another token",
-        "description": "Label for the \"+ Add another token\" button in the wallet send form.",
+        "defaultMessage": "!!!+ Add a token",
+        "description": "Label for the \"+ Add a token\" button in the wallet send form.",
         "end": {
           "column": 3,
           "line": 88

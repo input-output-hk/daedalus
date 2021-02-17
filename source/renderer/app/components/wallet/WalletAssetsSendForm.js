@@ -82,9 +82,9 @@ export const messages = defineMessages({
   },
   addAssetButtonLabel: {
     id: 'wallet.send.form.button.addAssetButtonLabel',
-    defaultMessage: '!!!+ Add another token',
+    defaultMessage: '!!!+ Add a token',
     description:
-      'Label for the "+ Add another token" button in the wallet send form.',
+      'Label for the "+ Add a token" button in the wallet send form.',
   },
   estimatedFeeLabel: {
     id: 'wallet.send.form.estimatedFee.label',
