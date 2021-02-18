@@ -9,6 +9,10 @@ Changelog
 
 ## 3.3.0
 
+### Fixes
+
+- Fixed issue with hardware wallet delegation ([PR 2369](https://github.com/input-output-hk/daedalus/pull/2369))
+
 ### Chores
 
 - Updated `cardano-launcher` to version `0.20210215.0` ([PR 2363](https://github.com/input-output-hk/daedalus/pull/2363))
