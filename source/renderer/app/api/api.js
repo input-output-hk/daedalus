@@ -1,5 +1,5 @@
 // @flow
-import { split, get, map, last, size, concat } from 'lodash';
+import { split, get, map, last, size, concat, flatten } from 'lodash';
 import { action } from 'mobx';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
@@ -154,7 +154,6 @@ import type {
   CreateExternalTransactionResponse,
   GetWithdrawalsRequest,
   GetWithdrawalsResponse,
-  TransactionInputs,
 } from './transactions/types';
 
 // Wallets Types
@@ -2623,12 +2622,12 @@ const _createTransactionFromServerData = action(
     const confirmations = get(depth, 'quantity', 0);
 
     // Mapping asset items from server data
-    const inputAssets = inputs
-      .filter((input) => !!input.assets)
-      .map(({ assets }) => assets);
-    const outputAssets = outputs
-      .filter((output) => !!output.assets)
-      .map(({ assets }) => assets);
+    const inputAssets = flatten(
+      inputs.filter((input) => !!input.assets).map(({ assets }) => assets)
+    );
+    const outputAssets = flatten(
+      outputs.filter((output) => !!output.assets).map(({ assets }) => assets)
+    );
     const transactionInputAssets = map(
       inputAssets,
       ({ policy_id: policyId, asset_name: assetName, quantity }) => ({
@@ -2645,7 +2644,6 @@ const _createTransactionFromServerData = action(
         quantity,
       })
     );
-
     const transactionAssets = {
       inputs: transactionInputAssets,
       outputs: transactionOutputAssets,
