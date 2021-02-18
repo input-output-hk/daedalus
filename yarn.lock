@@ -1020,7 +1020,6 @@
 "@cardano-foundation/ledgerjs-hw-app-cardano@2.2.0":
   version "2.2.0"
   resolved "https://registry.yarnpkg.com/@cardano-foundation/ledgerjs-hw-app-cardano/-/ledgerjs-hw-app-cardano-2.2.0.tgz#ac19a3ee04fb90a71bf556679afdac4775206561"
-  integrity sha512-yPQmgZJOLnD6az6iQSxnLOyjylTV4cWlV4MSEh9I0t4q6/ok99dlNbJUTfTycfch+loDR7trLrgAzz7KzMXfOA==
   dependencies:
     "@ledgerhq/hw-transport" "^5.12.0"
     babel-polyfill "^6.26.0"
