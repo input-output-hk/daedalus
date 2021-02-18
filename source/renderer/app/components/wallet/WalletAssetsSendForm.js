@@ -642,6 +642,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       isClearTooltipOpeningDownward,
       currencyMaxFractionalDigits,
       walletAmount,
+      isHardwareWallet,
     } = this.props;
 
     const {
@@ -969,6 +970,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
               <Button
                 className={addAssetButtonClasses}
                 label={intl.formatMessage(messages.addAssetButtonLabel)}
+                disabled={isHardwareWallet}
                 onClick={() =>
                   this.addNewAssetRow(
                     index + 1,
