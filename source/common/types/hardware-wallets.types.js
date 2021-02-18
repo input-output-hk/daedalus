@@ -191,13 +191,14 @@ export type LedgerSignTransactionRequest = {
 export type TrezorSignTransactionRequest = {
   inputs: TrezorSignTransactionInputsType,
   outputs: TrezorSignTransactionOutputsType,
-  fee: string,
+  fee?: string,
   ttl: string,
   networkId: number,
   protocolMagic: number,
   certificates: Array<?Certificate>,
   reset?: boolean,
   devicePath: string,
+  validityIntervalStartStr?: string,
 };
 
 export type LedgerSignTransactionResponse = {

@@ -589,6 +589,7 @@ export const handleHardwareWalletRequests = async (
       networkId,
       certificates,
       devicePath,
+      validityIntervalStartStr,
     } = params;
 
     if (!TrezorConnect) {
@@ -604,6 +605,7 @@ export const handleHardwareWalletRequests = async (
         protocolMagic,
         networkId,
         certificates,
+        validityIntervalStartStr,
       };
       const signedTransaction = await TrezorConnect.cardanoSignTransaction({
         device: { path: devicePath },

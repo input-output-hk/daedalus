@@ -1184,6 +1184,7 @@ export default class HardwareWalletsStore extends Store {
 
     const { isMainnet } = this.environment;
     const ttl = this._getTtl();
+    const absoluteSlotNumber = this._getAbsoluteSlotNumber();
 
     try {
       const signedTransaction = await signTransactionTrezorChannel.request({
@@ -1191,6 +1192,7 @@ export default class HardwareWalletsStore extends Store {
         outputs: outputsData,
         fee: formattedAmountToLovelace(fee.toString()).toString(),
         ttl: ttl.toString(),
+        validityIntervalStartStr: absoluteSlotNumber.toString(),
         networkId: isMainnet
           ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId
           : HW_SHELLEY_CONFIG.NETWORK.TESTNET.networkId,
