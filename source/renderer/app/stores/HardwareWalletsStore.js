@@ -1325,6 +1325,7 @@ export default class HardwareWalletsStore extends Store {
     const certificatesData = await Promise.all(_certificatesData);
     const fee = formattedAmountToLovelace(flatFee.toString());
     const ttl = this._getTtl();
+    const absoluteSlotNumber = this._getAbsoluteSlotNumber();
     const withdrawals = [];
     const metadataHashHex = null;
     const { isMainnet } = this.environment;
@@ -1335,6 +1336,7 @@ export default class HardwareWalletsStore extends Store {
         outputs: outputsData,
         fee: fee.toString(),
         ttl: ttl.toString(),
+        validityIntervalStartStr: absoluteSlotNumber.toString(),
         networkId: isMainnet
           ? HW_SHELLEY_CONFIG.NETWORK.MAINNET.networkId
           : HW_SHELLEY_CONFIG.NETWORK.TESTNET.networkId,
@@ -1779,6 +1781,12 @@ export default class HardwareWalletsStore extends Store {
     const absoluteSlotNumber = get(networkTip, 'absoluteSlotNumber', 0);
     const ttl = absoluteSlotNumber + TIME_TO_LIVE;
     return ttl;
+  };
+
+  _getAbsoluteSlotNumber = (): number => {
+    const { networkTip } = this.stores.networkStatus;
+    const absoluteSlotNumber = get(networkTip, 'absoluteSlotNumber', 0);
+    return absoluteSlotNumber;
   };
 
   _setHardwareWalletLocalData = async ({

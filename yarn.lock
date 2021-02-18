@@ -1017,9 +1017,10 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
-"@cardano-foundation/ledgerjs-hw-app-cardano@2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@cardano-foundation/ledgerjs-hw-app-cardano/-/ledgerjs-hw-app-cardano-2.1.0.tgz#e2e4b1a0d5b672f8dbe7c46dc514c27d6603082f"
+"@cardano-foundation/ledgerjs-hw-app-cardano@2.2.0":
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@cardano-foundation/ledgerjs-hw-app-cardano/-/ledgerjs-hw-app-cardano-2.2.0.tgz#ac19a3ee04fb90a71bf556679afdac4775206561"
+  integrity sha512-yPQmgZJOLnD6az6iQSxnLOyjylTV4cWlV4MSEh9I0t4q6/ok99dlNbJUTfTycfch+loDR7trLrgAzz7KzMXfOA==
   dependencies:
     "@ledgerhq/hw-transport" "^5.12.0"
     babel-polyfill "^6.26.0"
@@ -1475,6 +1476,7 @@
   dependencies:
     "@storybook/client-logger" "5.3.14"
     "@storybook/theming" "5.3.14"
+    "@types/react-syntax-highlighter" "11.0.2"
     "@types/react-textarea-autosize" "^4.3.3"
     core-js "^3.0.1"
     global "^4.3.2"
@@ -1588,6 +1590,7 @@
   version "5.3.14"
   resolved "https://registry.yarnpkg.com/@storybook/node-logger/-/node-logger-5.3.14.tgz#5e4e02585b37754bbebb8810ffb17c8ce706a1f8"
   dependencies:
+    "@types/npmlog" "^4.1.2"
     chalk "^3.0.0"
     core-js "^3.0.1"
     npmlog "^4.1.2"
@@ -1830,7 +1833,7 @@
     bigi "^1.4.0"
     bip66 "^1.1.0"
     bitcoin-ops "^1.3.0"
-    blake2b "2.1.3"
+    blake2b "https://github.com/BitGo/blake2b#6268e6dd678661e0acc4359e9171b97eb1ebf8ac"
     bs58check "^2.0.0"
     create-hash "^1.1.0"
     create-hmac "^1.1.3"
@@ -1913,6 +1916,7 @@
   resolved "https://registry.yarnpkg.com/@types/react-color/-/react-color-3.0.4.tgz#c63daf012ad067ac0127bdd86725f079d02082bd"
   dependencies:
     "@types/react" "*"
+    "@types/reactcss" "*"
 
 "@types/react-textarea-autosize@^4.3.3":
   version "4.3.5"
@@ -1964,6 +1968,7 @@
     "@types/anymatch" "*"
     "@types/node" "*"
     "@types/tapable" "*"
+    "@types/uglify-js" "*"
     "@types/webpack-sources" "*"
     source-map "^0.6.0"
 
@@ -4616,6 +4621,7 @@ cosmiconfig@^6.0.0:
   version "6.0.0"
   resolved "https://registry.yarnpkg.com/cosmiconfig/-/cosmiconfig-6.0.0.tgz#da4fee853c52f6b1e6935f41c1a2fc50bd4a9982"
   dependencies:
+    "@types/parse-json" "^4.0.0"
     import-fresh "^3.1.0"
     parse-json "^5.0.0"
     path-type "^4.0.0"
@@ -4625,6 +4631,7 @@ cosmiconfig@^7.0.0:
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/cosmiconfig/-/cosmiconfig-7.0.0.tgz#ef9b44d773959cae63ddecd122de23853b60f8d3"
   dependencies:
+    "@types/parse-json" "^4.0.0"
     import-fresh "^3.2.1"
     parse-json "^5.0.0"
     path-type "^4.0.0"
@@ -7917,6 +7924,7 @@ html-webpack-plugin@^4.0.0-beta.2:
   version "4.5.0"
   resolved "https://registry.yarnpkg.com/html-webpack-plugin/-/html-webpack-plugin-4.5.0.tgz#625097650886b97ea5dae331c320e3238f6c121c"
   dependencies:
+    "@types/html-minifier-terser" "^5.0.0"
     "@types/tapable" "^1.0.5"
     "@types/webpack" "^4.41.8"
     html-minifier-terser "^5.0.1"
@@ -10021,6 +10029,7 @@ meow@^7.1.1:
   version "7.1.1"
   resolved "https://registry.yarnpkg.com/meow/-/meow-7.1.1.tgz#7c01595e3d337fcb0ec4e8eed1666ea95903d306"
   dependencies:
+    "@types/minimist" "^1.2.0"
     camelcase-keys "^6.2.2"
     decamelize-keys "^1.1.0"
     hard-rejection "^2.1.0"

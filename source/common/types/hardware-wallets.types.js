@@ -175,7 +175,7 @@ export type LedgerSignTransactionRequest = {
   inputs: LedgerSignTransactionInputsType,
   outputs: LedgerSignTransactionOutputsType,
   fee: string,
-  ttl: string,
+  ttl?: string,
   networkId: number,
   protocolMagic: number,
   // $FlowFixMe
@@ -185,6 +185,7 @@ export type LedgerSignTransactionRequest = {
   metadataHashHex: ?string, // TODO - add once metadata defined
   reset?: boolean,
   devicePath: ?string,
+  validityIntervalStartStr?: string,
 };
 
 export type TrezorSignTransactionRequest = {
