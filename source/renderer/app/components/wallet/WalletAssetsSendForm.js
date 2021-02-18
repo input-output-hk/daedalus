@@ -1327,7 +1327,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                 <Button
                   className="primary"
                   label={intl.formatMessage(messages.sendButtonLabel)}
-                  onClick={{}}
+                  onClick={() => {}}
                   skin={ButtonSkin}
                   disabled={this.isDisabled()}
                 />

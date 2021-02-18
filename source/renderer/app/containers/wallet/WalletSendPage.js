@@ -73,36 +73,37 @@ export default class WalletSendPage extends Component<Props> {
       app,
       profile,
       hardwareWallets,
-      assets,
+      assets: assetsStore,
     } = this.props.stores;
     const { isValidAddress } = wallets;
     const { validateAmount } = transactions;
     const { hwDeviceStatus } = hardwareWallets;
-    const activeWallet = wallets.active;
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
-    const { all } = assets;
-    const allAssets = all;
-    const walletAssets = activeWallet.assets.total.map((assetTotal) => {
-      const assetData = allAssets.find(
-        (item) => item.policyId === assetTotal.policyId
-      );
-      return {
-        id: assetData ? assetData.id : '',
-        metadata: assetData
-          ? assetData.metadata
-          : {
-              name: '',
-              acronym: '',
-              description: '',
-            },
-        total: assetTotal || {},
-      };
-    });
+    const { details: assetsDetails } = assetsStore;
 
     // Guard against potential null values
+    const activeWallet = wallets.active;
     if (!activeWallet)
       throw new Error('Active wallet required for WalletSendPage.');
+
     const { isHardwareWallet } = activeWallet;
+    const assets = activeWallet.assets.total.map((walletAsset) => {
+      const { policyId, assetName } = walletAsset;
+      const assetLocator = policyId + assetName;
+      const assetDetails = assetsDetails[assetLocator];
+      const { fingerprint, metadata } = assetDetails || {};
+      return {
+        policyId,
+        assetName,
+        fingerprint,
+        metadata: {
+          name: '',
+          acronym: '',
+          description: '',
+          ...metadata,
+        },
+      };
+    });
 
     return (
       <>
@@ -120,7 +121,7 @@ export default class WalletSendPage extends Component<Props> {
                 isHardwareWallet,
               })
             }
-            assets={walletAssets}
+            assets={assets}
             addressValidator={isValidAddress}
             isDialogOpen={uiDialogs.isOpen}
             openDialogAction={(params) =>
