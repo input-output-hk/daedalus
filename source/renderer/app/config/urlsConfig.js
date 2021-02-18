@@ -1,4 +1,6 @@
 // @flow
+import { currencyConfig } from './currencyConfig';
+
 export const MAINNET_EXPLORER_URL = 'explorer.cardano.org';
 export const STAGING_EXPLORER_URL = 'explorer.awstest.iohkdev.io';
 export const TESTNET_EXPLORER_URL = 'explorer.cardano-testnet.iohkdev.io';
@@ -51,4 +53,5 @@ export const ALLOWED_EXTERNAL_HOSTNAMES = [
   MAINNET_NEWS_HASH_URL,
   TESTNET_NEWS_HASH_URL,
   STAGING_NEWS_HASH_URL,
+  currencyConfig.hostname,
 ];

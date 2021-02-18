@@ -30,6 +30,16 @@ export const formattedWalletAmount = (
   return formattedAmount.toString();
 };
 
+export const formattedWalletCurrencyAmount = (
+  amount: BigNumber,
+  currencyRate: number,
+  decimalDigits?: ?number,
+  currencySymbol?: ?string
+) =>
+  `${amount ? amount.times(currencyRate).toFormat(decimalDigits || 2) : 0} ${
+    currencySymbol || ''
+  }`;
+
 // Symbol   Name                Scientific Notation
 // K        Thousand            1.00E+03
 // M        Million             1.00E+06

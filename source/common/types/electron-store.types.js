@@ -20,6 +20,8 @@ export type StorageKey =
   | 'DOWNLOAD-MANAGER'
   | 'APP-AUTOMATIC-UPDATE-FAILED'
   | 'APP-UPDATE-COMPLETED'
+  | 'CURRENCY-SELECTED'
+  | 'CURRENCY-ACTIVE'
   | 'SMASH-SERVER';
 
 export type StoreMessage = {

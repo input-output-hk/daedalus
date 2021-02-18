@@ -68,7 +68,7 @@ export default class SidebarStore extends Store {
       isFlight,
       isIncentivizedTestnet,
       isShelleyTestnet,
-      environment: { isDev, isMainnet, isTestnet },
+      environment: { isDev, isMainnet },
     } = global;
 
     const {
@@ -85,7 +85,7 @@ export default class SidebarStore extends Store {
       [categories.STAKING.name]: true,
       [categories.REDEEM_ITN_REWARDS.name]: true,
       [categories.SETTINGS.name]: true,
-      [categories.VOTING.name]: isFlight || isMainnet || isTestnet || isDev,
+      [categories.VOTING.name]: isMainnet || isDev,
       [categories.NETWORK_INFO.name]:
         isFlight || isIncentivizedTestnet || isShelleyTestnet,
     };
