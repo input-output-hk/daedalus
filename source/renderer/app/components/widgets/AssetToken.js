@@ -160,6 +160,39 @@ export default class AssetToken extends Component<Props, State> {
           {item('fingerprint', 'fingerprint', fingerprint)}
         </div>
         <dl>
+          {acronym && (
+            <F>
+              <dt>{intl.formatMessage(messages.acronymItem)}</dt>
+              <dd>
+                {item(
+                  'acronym',
+                  intl.formatMessage(messages.acronymItem),
+                  acronym
+                )}
+              </dd>
+            </F>
+          )}
+          {name && (
+            <F>
+              <dt>{intl.formatMessage(messages.nameItem)}</dt>
+              <dd>
+                {item('name', intl.formatMessage(messages.nameItem), name)}
+              </dd>
+            </F>
+          )}
+          {description && (
+            <F>
+              <dt>{intl.formatMessage(messages.descriptionItem)}</dt>
+              <dd>
+                {item(
+                  'description',
+                  intl.formatMessage(messages.descriptionItem),
+                  description,
+                  true
+                )}
+              </dd>
+            </F>
+          )}
           <dt>{intl.formatMessage(messages.policyIdItem)}</dt>
           <dd>
             {item(
@@ -176,39 +209,6 @@ export default class AssetToken extends Component<Props, State> {
                   'assetName',
                   intl.formatMessage(messages.assetNameItem),
                   assetName
-                )}
-              </dd>
-            </F>
-          )}
-          {name && (
-            <F>
-              <dt>{intl.formatMessage(messages.nameItem)}</dt>
-              <dd>
-                {item('name', intl.formatMessage(messages.nameItem), name)}
-              </dd>
-            </F>
-          )}
-          {acronym && (
-            <F>
-              <dt>{intl.formatMessage(messages.acronymItem)}</dt>
-              <dd>
-                {item(
-                  'acronym',
-                  intl.formatMessage(messages.acronymItem),
-                  acronym
-                )}
-              </dd>
-            </F>
-          )}
-          {description && (
-            <F>
-              <dt>{intl.formatMessage(messages.descriptionItem)}</dt>
-              <dd>
-                {item(
-                  'description',
-                  intl.formatMessage(messages.descriptionItem),
-                  description,
-                  true
                 )}
               </dd>
             </F>
