@@ -33,8 +33,8 @@ export class WalletTransaction {
   @observable fee: BigNumber;
   @observable deposit: BigNumber;
   @observable assets: {
-    input: ?WalletAssetItems,
-    output: ?WalletAssetItems,
+    inputs: ?WalletAssetItems,
+    outputs: ?WalletAssetItems,
   };
   @observable date: ?Date;
   @observable description: string = '';
@@ -58,8 +58,8 @@ export class WalletTransaction {
     deposit: BigNumber,
     date: ?Date,
     assets?: {
-      input: ?WalletAssetItems,
-      output: ?WalletAssetItems,
+      inputs: ?WalletAssetItems,
+      outputs: ?WalletAssetItems,
     },
     description: string,
     addresses: TransactionAddresses,

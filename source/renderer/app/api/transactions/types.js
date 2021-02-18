@@ -127,7 +127,7 @@ export type CreateTransactionRequest = {
   amount: number,
   passphrase: string,
   isLegacy: boolean,
-  assets: ?AssetItems,
+  assets?: AssetItems,
   withdrawal?: 'self' | Array<string>,
 };
 

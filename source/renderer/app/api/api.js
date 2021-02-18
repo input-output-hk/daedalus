@@ -154,6 +154,7 @@ import type {
   CreateExternalTransactionResponse,
   GetWithdrawalsRequest,
   GetWithdrawalsResponse,
+  TransactionInputs,
 } from './transactions/types';
 
 // Wallets Types
@@ -789,6 +790,7 @@ export default class AdaApi {
           data: { ...data, withdrawal },
         });
       }
+      console.log('response', response);
 
       logger.debug('AdaApi::createTransaction success', {
         transaction: response,
@@ -2535,7 +2537,6 @@ const _createWalletFromServerData = action(
     const walletAssets = {
       available: assets.available.map((item) => {
         return {
-          id: item.id,
           policyId: item.policy_id,
           assetName: item.asset_name,
           quantity: item.quantity,
@@ -2543,7 +2544,6 @@ const _createWalletFromServerData = action(
       }),
       total: assets.total.map((item) => {
         return {
-          id: item.id,
           policyId: item.policy_id,
           assetName: item.asset_name,
           quantity: item.quantity,
@@ -2623,23 +2623,28 @@ const _createTransactionFromServerData = action(
     const confirmations = get(depth, 'quantity', 0);
 
     // Mapping asset items from server data
-    const inputAssets = inputs.map(({ assets }) => assets);
-    const outputAssets = outputs.map(({ assets }) => assets);
-    const transactionInputAssets = inputAssets.map((item) => {
-      return {
-        policyId: item && item.policy_id ? item.policy_id : '',
-        assetName: item && item.asset_name ? item.asset_name : '',
-        quantity: item && item.quantity ? item.quantity : '',
-      };
-    });
-
-    const transactionOutputAssets = outputAssets.map((item) => {
-      return {
-        policyId: item && item.policy_id ? item.policy_id : '',
-        assetName: item && item.asset_name ? item.asset_name : '',
-        quantity: item && item.quantity ? item.quantity : '',
-      };
-    });
+    const inputAssets = inputs
+      .filter((input) => !!input.assets)
+      .map(({ assets }) => assets);
+    const outputAssets = outputs
+      .filter((output) => !!output.assets)
+      .map(({ assets }) => assets);
+    const transactionInputAssets = map(
+      inputAssets,
+      ({ policy_id: policyId, asset_name: assetName, quantity }) => ({
+        policyId,
+        assetName,
+        quantity,
+      })
+    );
+    const transactionOutputAssets = map(
+      outputAssets,
+      ({ policy_id: policyId, asset_name: assetName, quantity }) => ({
+        policyId,
+        assetName,
+        quantity,
+      })
+    );
 
     const transactionAssets = {
       inputs: transactionInputAssets,
