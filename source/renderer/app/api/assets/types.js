@@ -3,7 +3,6 @@
 import Asset from '../../domains/Asset';
 
 export type SingleAsset = {
-  id: string,
   policy_id: string,
   asset_name: string,
   metadata?: ?AssetMetadata,
@@ -29,14 +28,12 @@ export type AssetMetadata = {
 };
 
 export type AssetItem = {
-  id: string,
   policy_id: string,
   asset_name: string,
   quantity: number,
 };
 
 export type WalletAssetItem = {
-  id: string,
   policyId: string,
   assetName: string,
   quantity: number,
