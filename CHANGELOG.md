@@ -1,6 +1,12 @@
 Changelog
 =========
 
+## vNext
+
+### Fixes
+
+- Fixed issue on wallet send form with certain amounts ([PR 2379](https://github.com/input-output-hk/daedalus/pull/2379))
+
 ## 3.3.0
 
 ### Fixes
