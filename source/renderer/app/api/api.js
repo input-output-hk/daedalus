@@ -758,6 +758,7 @@ export default class AdaApi {
       amount,
       passphrase,
       isLegacy,
+      assets,
       withdrawal = TransactionWithdrawal,
     } = request;
 
@@ -770,6 +771,7 @@ export default class AdaApi {
               quantity: amount,
               unit: WalletUnits.LOVELACE,
             },
+            assets,
           },
         ],
         passphrase,
