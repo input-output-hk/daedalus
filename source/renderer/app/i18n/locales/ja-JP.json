@@ -932,7 +932,7 @@
   "wallet.settings.changePassword.dialog.title.changePassword": "パスワードを変更する",
   "wallet.settings.changePassword.dialog.title.setPassword": "{walletName}ウォレットにパスワードを設定する",
   "wallet.settings.copyPublicKey": "公開鍵をコピーする",
-  "wallet.settings.delegateWallet.disabledWarning": "このウォレットは現在ブロックチェーンと同期中のため、委任設定状況は不明であり、委任はできません。",
+  "wallet.settings.delegateWallet.disabledWarning": "このウォレットは現在ブロックチェーンと同期中のため、委任設定状況は不明であり、委任設定はできません。",
   "wallet.settings.delegateWallet.header": "ウォレットを委任する",
   "wallet.settings.delegateWallet.warning": "このウォレットは委任されていません。このウォレットのステークを委任し、報酬を稼ぎ、Cardanoネットワークのセキュリティをサポートしてください。",
   "wallet.settings.delegateWalletButtonLabel": "委任する",
