@@ -11095,17 +11095,31 @@
         }
       },
       {
+        "defaultMessage": "!!!This wallet is synchronizing with the blockchain, so this wallet's delegation status is currently unknown, and delegation is not possible.",
+        "description": "Delegate wallet disabled warning explaining why it is disabled.",
+        "end": {
+          "column": 3,
+          "line": 74
+        },
+        "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
+        "id": "wallet.settings.delegateWallet.disabledWarning",
+        "start": {
+          "column": 33,
+          "line": 68
+        }
+      },
+      {
         "defaultMessage": "!!!Delete wallet",
         "description": "Delete wallet header on the wallet settings page.",
         "end": {
           "column": 3,
-          "line": 72
+          "line": 79
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.deleteWallet.header",
         "start": {
           "column": 22,
-          "line": 68
+          "line": 75
         }
       },
       {
@@ -11113,13 +11127,13 @@
         "description": "Delete wallet warning explaining the consequences.",
         "end": {
           "column": 3,
-          "line": 78
+          "line": 85
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.deleteWallet.warning1",
         "start": {
           "column": 24,
-          "line": 73
+          "line": 80
         }
       },
       {
@@ -11127,13 +11141,13 @@
         "description": "Delete wallet warning explaining the consequences.",
         "end": {
           "column": 3,
-          "line": 84
+          "line": 91
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.deleteWallet.warning2",
         "start": {
           "column": 24,
-          "line": 79
+          "line": 86
         }
       },
       {
@@ -11141,13 +11155,13 @@
         "description": "Label for the \"Name\" text input on the wallet settings page.",
         "end": {
           "column": 3,
-          "line": 89
+          "line": 96
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.name.label",
         "start": {
           "column": 8,
-          "line": 85
+          "line": 92
         }
       },
       {
@@ -11155,13 +11169,13 @@
         "description": "Label for the \"Password\" field.",
         "end": {
           "column": 3,
-          "line": 94
+          "line": 101
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.password",
         "start": {
           "column": 17,
-          "line": 90
+          "line": 97
         }
       },
       {
@@ -11169,13 +11183,13 @@
         "description": "Last updated X time ago message.",
         "end": {
           "column": 3,
-          "line": 99
+          "line": 106
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.passwordLastUpdated",
         "start": {
           "column": 23,
-          "line": 95
+          "line": 102
         }
       },
       {
@@ -11183,13 +11197,13 @@
         "description": "You still don't have password set message.",
         "end": {
           "column": 3,
-          "line": 104
+          "line": 111
         },
         "file": "source/renderer/app/components/wallet/settings/WalletSettings.js",
         "id": "wallet.settings.passwordNotSet",
         "start": {
           "column": 18,
-          "line": 100
+          "line": 107
         }
       }
     ],

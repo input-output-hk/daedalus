@@ -932,6 +932,7 @@
   "wallet.settings.changePassword.dialog.title.changePassword": "Change password",
   "wallet.settings.changePassword.dialog.title.setPassword": "Set a password for {walletName} wallet",
   "wallet.settings.copyPublicKey": "Copy public key",
+  "wallet.settings.delegateWallet.disabledWarning": "This wallet is currently synchronizing with the blockchain, so its delegation status is currently unknown, and delegation is not possible.",
   "wallet.settings.delegateWallet.header": "Delegate your wallet",
   "wallet.settings.delegateWallet.warning": "This wallet is not delegated. Please delegate the stake from this wallet to earn rewards and support the security of the Cardano network.",
   "wallet.settings.delegateWalletButtonLabel": "Delegate",

@@ -65,6 +65,13 @@ export const messages = defineMessages({
       "!!!This wallet is not delegated. Please, delegate the stake from this wallet to earn rewards and support the Cardano network's security.",
     description: 'Delegate wallet warning.',
   },
+  delegateWalletDisabledWarning: {
+    id: 'wallet.settings.delegateWallet.disabledWarning',
+    defaultMessage:
+      "!!!This wallet is synchronizing with the blockchain, so this wallet's delegation status is currently unknown, and delegation is not possible.",
+    description:
+      'Delegate wallet disabled warning explaining why it is disabled.',
+  },
   deleteWalletHeader: {
     id: 'wallet.settings.deleteWallet.header',
     defaultMessage: '!!!Delete wallet',
@@ -268,7 +275,10 @@ export default class WalletSettings extends Component<Props, State> {
           : intl.formatMessage(messages.undelegateWalletWarning);
     } else {
       headerMessage = intl.formatMessage(messages.delegateWalletHeader);
-      warningMessage = intl.formatMessage(messages.delegateWalletWarning);
+      warningMessage =
+        isRestoring || isSyncing
+          ? intl.formatMessage(messages.delegateWalletDisabledWarning)
+          : intl.formatMessage(messages.delegateWalletWarning);
     }
 
     return (
@@ -285,7 +295,10 @@ export default class WalletSettings extends Component<Props, State> {
                 onUndelegate={this.onUndelegateWalletClick}
               />
             ) : (
-              <DelegateWalletButton onDelegate={onDelegateClick} />
+              <DelegateWalletButton
+                disabled={isRestoring || isSyncing}
+                onDelegate={onDelegateClick}
+              />
             )}
           </div>
         </BorderedBox>
