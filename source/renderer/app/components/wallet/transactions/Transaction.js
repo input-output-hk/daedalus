@@ -245,7 +245,7 @@ type Props = {
   currentTimeFormat: string,
   walletId: string,
   isDeletingTransaction: boolean,
-  transactionAssets?: Array<WalletTransactionAsset>,
+  transactionAssets: Array<WalletTransactionAsset>,
   hasAssetsEnabled?: boolean,
 };
 
@@ -643,7 +643,7 @@ export default class Transaction extends Component<Props, State> {
                             {transactionAssets.map((asset, assetIndex) => (
                               <div
                                 // eslint-disable-next-line react/no-array-index-key
-                                key={`${data.id}-to-${asset}-${assetIndex}`}
+                                key={`${data.id}-to-${asset.policyId}-${assetIndex}`}
                                 className={styles.assetsContainer}
                               >
                                 <h3>

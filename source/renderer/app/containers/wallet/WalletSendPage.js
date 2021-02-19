@@ -88,7 +88,7 @@ export default class WalletSendPage extends Component<Props> {
 
     const { isHardwareWallet } = activeWallet;
     const assets = activeWallet.assets.total.map((walletAsset) => {
-      const { policyId, assetName } = walletAsset;
+      const { policyId, assetName, quantity } = walletAsset;
       const assetLocator = policyId + assetName;
       const assetDetails = assetsDetails[assetLocator];
       const { fingerprint, metadata } = assetDetails || {};
@@ -96,6 +96,7 @@ export default class WalletSendPage extends Component<Props> {
         policyId,
         assetName,
         fingerprint,
+        quantity,
         metadata: {
           name: '',
           acronym: '',
