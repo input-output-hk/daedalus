@@ -28,6 +28,7 @@ export default class WalletTransactionsPage extends Component<Props> {
       deleteTransactionRequest,
       defaultFilterOptions,
       populatedFilterOptions,
+      isInternalAddress,
     } = this.props.stores.transactions;
     const {
       currentTimeFormat,
@@ -78,6 +79,7 @@ export default class WalletTransactionsPage extends Component<Props> {
         onRequestCSVFile={requestCSVFile.trigger}
         isRenderingAsVirtualList
         hasAssetsEnabled={hasAssetsEnabled}
+        isInternalAddress={isInternalAddress}
       />
     );
   }

@@ -37,6 +37,7 @@ export type WalletAssetItem = {
   policyId: string,
   assetName: string,
   quantity: number,
+  address: ?string,
 };
 
 export type Assets = Array<SingleAsset>;

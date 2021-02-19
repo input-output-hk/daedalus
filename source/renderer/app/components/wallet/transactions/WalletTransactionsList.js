@@ -68,6 +68,7 @@ type Props = {
   currentTimeFormat: string,
   hasAssetsEnabled?: boolean,
   allAssets?: Array<Asset>,
+  isInternalAddress: Function,
 };
 
 const DATE_FORMAT = 'YYYY-MM-DD';
@@ -194,6 +195,7 @@ export default class WalletTransactionsList extends Component<Props> {
       currentTimeFormat,
       hasAssetsEnabled,
       allAssets,
+      isInternalAddress,
     } = this.props;
     const { isFirstInGroup, isLastInGroup, tx } = data;
     const txClasses = classnames([
@@ -248,6 +250,7 @@ export default class WalletTransactionsList extends Component<Props> {
           currentTimeFormat={currentTimeFormat}
           transactionAssets={transactionAssets}
           hasAssetsEnabled={hasAssetsEnabled}
+          isInternalAddress={isInternalAddress}
         />
       </div>
     );

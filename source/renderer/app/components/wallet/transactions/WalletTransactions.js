@@ -48,6 +48,7 @@ type Props = {
   transactions: Array<WalletTransaction>,
   hasAssetsEnabled?: boolean,
   allAssets?: Array<Asset>,
+  isInternalAddress: Function,
 };
 
 type State = {
@@ -109,6 +110,7 @@ export default class WalletTransactions extends Component<Props, State> {
       populatedFilterOptions,
       hasAssetsEnabled,
       allAssets,
+      isInternalAddress,
     } = this.props;
 
     // Guard against potential null values
@@ -152,6 +154,7 @@ export default class WalletTransactions extends Component<Props, State> {
           hasAssetsEnabled={hasAssetsEnabled}
           allAssets={allAssets}
           isRenderingAsVirtualList
+          isInternalAddress={isInternalAddress}
         />
       );
     }

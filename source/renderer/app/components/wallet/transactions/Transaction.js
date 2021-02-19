@@ -247,6 +247,7 @@ type Props = {
   isDeletingTransaction: boolean,
   transactionAssets?: Array<WalletTransactionAsset>,
   hasAssetsEnabled?: boolean,
+  isInternalAddress: Function,
 };
 
 type State = {
@@ -402,6 +403,7 @@ export default class Transaction extends Component<Props, State> {
       currentTimeFormat,
       transactionAssets,
       hasAssetsEnabled,
+      isInternalAddress,
     } = this.props;
     const { intl } = this.context;
     const { showConfirmationDialog } = this.state;
@@ -649,6 +651,11 @@ export default class Transaction extends Component<Props, State> {
                                 <h3>
                                   {intl.formatMessage(messages.assetLabel)}
                                   &nbsp;#{assetIndex + 1}
+                                  <br />- {asset.address}
+                                  <br />-{' '}
+                                  {isInternalAddress(asset.address)
+                                    ? 'Internal'
+                                    : 'External'}
                                 </h3>
                                 {asset.quantity && (
                                   <div className={styles.amountFeesWrapper}>

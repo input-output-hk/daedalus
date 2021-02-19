@@ -2623,26 +2623,36 @@ const _createTransactionFromServerData = action(
 
     // Mapping asset items from server data
     const inputAssets = flatten(
-      inputs.filter((input) => !!input.assets).map(({ assets }) => assets)
+      inputs
+        .filter((input) => !!input.assets)
+        .map(({ assets, address }) =>
+          assets.map((asset) => ({ ...asset, address }))
+        )
     );
     window.inputs = inputs;
     const outputAssets = flatten(
-      outputs.filter((output) => !!output.assets).map(({ assets }) => assets)
+      outputs
+        .filter((output) => !!output.assets)
+        .map(({ assets, address }) =>
+          assets.map((asset) => ({ ...asset, address }))
+        )
     );
     const transactionInputAssets = map(
       inputAssets,
-      ({ policy_id: policyId, asset_name: assetName, quantity }) => ({
+      ({ policy_id: policyId, asset_name: assetName, quantity, address }) => ({
         policyId,
         assetName,
         quantity,
+        address,
       })
     );
     const transactionOutputAssets = map(
       outputAssets,
-      ({ policy_id: policyId, asset_name: assetName, quantity }) => ({
+      ({ policy_id: policyId, asset_name: assetName, quantity, address }) => ({
         policyId,
         assetName,
         quantity,
+        address,
       })
     );
     const transactionAssets = {
