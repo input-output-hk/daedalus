@@ -4,7 +4,6 @@ import type { Node } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
 import moment from 'moment';
-import BigNumber from 'bignumber.js';
 import LocalizableError from '../../../i18n/LocalizableError';
 import {
   IS_WALLET_PUBLIC_KEY_SHARING_ENABLED,
@@ -114,7 +113,6 @@ export const messages = defineMessages({
 type Props = {
   walletId: string,
   walletName: string,
-  walletReward: BigNumber,
   delegationStakePoolStatus: ?string,
   lastDelegationStakePoolStatus: ?string,
   isRestoring: boolean,
@@ -249,7 +247,6 @@ export default class WalletSettings extends Component<Props, State> {
       isRestoring,
       isSyncing,
       isLegacy,
-      walletReward,
       isDialogOpen,
       onDelegateClick,
       undelegateWalletDialogContainer,
@@ -259,11 +256,7 @@ export default class WalletSettings extends Component<Props, State> {
       : delegationStakePoolStatus === WalletDelegationStatuses.DELEGATING;
 
     /// @TODO: Once undelegation for rewarded wallet works fine with api, remove reward checking and config
-    if (
-      !IS_WALLET_UNDELEGATION_ENABLED ||
-      isLegacy ||
-      (isDelegating && !walletReward.isZero())
-    ) {
+    if (!IS_WALLET_UNDELEGATION_ENABLED || isLegacy) {
       return null;
     }
 
