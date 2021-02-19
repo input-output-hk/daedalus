@@ -52,7 +52,7 @@ export default class WalletSummaryPage extends Component<Props> {
   handleOpenAssetSend = async (asset: WalletSummaryAsset) => {
     this.props.actions.router.goToRoute.trigger({
       route: ROUTES.WALLETS.PAGE,
-      params: { asset, page: 'send' },
+      params: { id: this.props.stores.wallets.active.id, asset, page: 'send' },
     });
   };
 
