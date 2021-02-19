@@ -40,6 +40,7 @@ import ReadOnlyInput from '../widgets/forms/ReadOnlyInput';
 import Asset from '../../domains/Asset';
 import type { WalletSummaryAsset } from '../../api/assets/types';
 import infoIconInline from '../../assets/images/info-icon.inline.svg';
+import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
 
 export const messages = defineMessages({
   titleLabel: {
@@ -844,18 +845,23 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                   >
                     {selectedNativeTokens &&
                       selectedNativeTokens[assetIndex] &&
-                      selectedNativeTokens[assetIndex].quantity &&
-                      selectedNativeTokens[assetIndex].metadata && (
+                      selectedNativeTokens[assetIndex].quantity && (
                         <div className={styles.amountTokenTotal}>
                           {intl.formatMessage(messages.ofLabel)}&nbsp;
-                          {formattedWalletAmount(
-                            new BigNumber(
-                              selectedNativeTokens[assetIndex].quantity
-                            ),
-                            false
+                          {new BigNumber(
+                            selectedNativeTokens[assetIndex].quantity
+                          ).toFormat(
+                            selectedNativeTokens[assetIndex].metadata &&
+                              selectedNativeTokens[assetIndex].metadata.unit
+                              ? selectedNativeTokens[assetIndex].metadata.unit
+                                  .decimals
+                              : DECIMAL_PLACES_IN_ADA
                           )}
                           &nbsp;
-                          {selectedNativeTokens[assetIndex].metadata.acronym}
+                          {selectedNativeTokens[assetIndex].metadata &&
+                          selectedNativeTokens[assetIndex].metadata.acronym
+                            ? selectedNativeTokens[assetIndex].metadata.acronym
+                            : null}
                         </div>
                       )}
                     <Button

@@ -37,8 +37,25 @@ type Props = {
 
 const allAssets = [
   generateAsset(
+    '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
+    '',
+    'tokenb0ca20391caaf66a4d4e7897d282f9c136cd3513136945c2542',
+    {
+      name: 'MakerDAO',
+      acronym: 'DAI',
+      description: 'Test description',
+      unit: {
+        name: 'DAI',
+        decimals: 6,
+      },
+      url: 'http://example.com',
+      logo: '',
+    }
+  ),
+  generateAsset(
     '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
+    'tokenb0ca20391caaf66a4d4d7897d281f9c136cd3513136945b2342',
     {
       name: 'TrueUSD',
       acronym: 'TUSD',
@@ -54,6 +71,7 @@ const allAssets = [
   generateAsset(
     '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
+    'tokenb0ca20391caaf66a4d4d7897d281f9c136cd3513136945b2542',
     {
       name: 'Tether',
       acronym: 'USDT',
@@ -69,27 +87,13 @@ const allAssets = [
   generateAsset(
     '65cn72542b0ca10391caaf66a4d4d2897d281f3c136cd3513136945b',
     '',
+    'tokenb0ca10391caaf66a4d4d2897d281f3c136cd3513136945b2542',
     {
       name: 'USD Coin',
       acronym: 'USDC',
       description: 'Test description',
       unit: {
         name: 'USDC',
-        decimals: 6,
-      },
-      url: 'http://example.com',
-      logo: '',
-    }
-  ),
-  generateAsset(
-    '65bc72542b0ca20391caaf66a4d4e7897d282f9c136cd3513136945c',
-    '',
-    {
-      name: 'MakerDAO',
-      acronym: 'DAI',
-      description: 'Test description',
-      unit: {
-        name: 'DAI',
         decimals: 6,
       },
       url: 'http://example.com',

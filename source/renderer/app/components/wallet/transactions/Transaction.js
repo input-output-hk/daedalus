@@ -24,6 +24,7 @@ import { PENDING_TIME_LIMIT } from '../../../config/txnsConfig';
 import CancelTransactionConfirmationDialog from './CancelTransactionConfirmationDialog';
 import { ellipsis } from '../../../utils/strings';
 import type { WalletTransactionAsset } from '../../../api/assets/types';
+import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 
 /* eslint-disable consistent-return */
 
@@ -638,9 +639,10 @@ export default class Transaction extends Component<Props, State> {
                                 {asset.quantity && (
                                   <div className={styles.amountFeesWrapper}>
                                     <div className={styles.amount}>
-                                      {formattedWalletAmount(
-                                        BigNumber(asset.quantity),
-                                        false
+                                      {new BigNumber(asset.quantity).toFormat(
+                                        asset.metadata && asset.metadata.unit
+                                          ? asset.metadata.unit.decimals
+                                          : DECIMAL_PLACES_IN_ADA
                                       )}
                                       &nbsp;{' '}
                                       {asset.metadata && asset.metadata.acronym
