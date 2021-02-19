@@ -5,7 +5,7 @@ Changelog
 
 ### Chores
 
-- Fixed broken staking stories in storybook ([PR 2371](https://github.com/input-output-hk/daedalus/pull/2371))
+- Fixed broken staking stories in Storybook ([PR 2371](https://github.com/input-output-hk/daedalus/pull/2371))
 
 ## 3.3.0
 

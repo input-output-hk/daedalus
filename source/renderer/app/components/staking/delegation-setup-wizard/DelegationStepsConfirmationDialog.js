@@ -1,5 +1,4 @@
 // @flow
-import BigNumber from 'bignumber.js';
 import React, { Component } from 'react';
 import {
   defineMessages,
@@ -313,7 +312,7 @@ export default class DelegationStepsConfirmationDialog extends Component<Props> 
               </p>
             </div>
             {transactionFee &&
-              BigNumber.isBigNumber(transactionFee.deposit) &&
+              transactionFee.deposit.isZero &&
               !transactionFee.deposit.isZero() && (
                 <>
                   <div className={styles.depositWrapper}>
