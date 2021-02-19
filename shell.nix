@@ -51,6 +51,7 @@ let
       daedalusPkgs.daedalus-bridge
       daedalusPkgs.daedalus-installer
       daedalusPkgs.darwin-launcher
+      daedalusPkgs.mock-token-metadata-server
     ] ++ (with pkgs; [
       nix bash binutils coreutils curl gnutar
       git python27 curl jq

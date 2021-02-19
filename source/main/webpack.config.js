@@ -72,6 +72,8 @@ module.exports = {
           'process.env.NETWORK': JSON.stringify(
             process.env.NETWORK || 'development'
           ),
+          'process.env.MOCK_TOKEN_METADATA_SERVER_PORT':
+            process.env.MOCK_TOKEN_METADATA_SERVER_PORT || 0,
           'process.env.MOBX_DEV_TOOLS': process.env.MOBX_DEV_TOOLS || 0,
           'process.env.BUILD_NUMBER': JSON.stringify(
             process.env.BUILD_NUMBER || 'dev'
