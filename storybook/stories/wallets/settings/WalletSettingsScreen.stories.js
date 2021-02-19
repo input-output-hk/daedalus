@@ -120,7 +120,7 @@ export default (props: { currentTheme: string, locale: Locale }) => {
     recoveryPhraseId
   );
 
-  const lastDelegationStakePoolStatus = select(
+  const delegationStakePoolStatus = select(
     'Delegation status',
     {
       Delegating: 'delegating',
@@ -172,7 +172,8 @@ export default (props: { currentTheme: string, locale: Locale }) => {
       walletId="walletid"
       walletName={text('Wallet Name', 'Wallet Name', basicSettingsId)}
       walletReward={new BigNumber(0)}
-      lastDelegationStakePoolStatus={lastDelegationStakePoolStatus}
+      delegationStakePoolStatus={delegationStakePoolStatus}
+      lastDelegationStakePoolStatus={delegationStakePoolStatus}
       isRestoring={false}
       isSyncing={false}
       walletPublicKey={walletPublicKeyId}

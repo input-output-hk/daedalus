@@ -2490,7 +2490,7 @@ const _createWalletFromServerData = action(
     const lastPendingStakePool = next ? last(next) : null;
     const lastTarget = get(lastPendingStakePool, 'target', null);
     const lastStatus = get(lastPendingStakePool, 'status', null);
-    const lastDelegationStakePoolId = isLegacy ? null : lastTarget;
+    const lastDelegatedStakePoolId = isLegacy ? null : lastTarget;
     const lastDelegationStakePoolStatus = isLegacy ? null : lastStatus;
 
     return new Wallet({
@@ -2508,7 +2508,7 @@ const _createWalletFromServerData = action(
       isHardwareWallet,
       delegatedStakePoolId,
       delegationStakePoolStatus,
-      lastDelegationStakePoolId,
+      lastDelegatedStakePoolId,
       lastDelegationStakePoolStatus,
       pendingDelegations: next,
       discovery,

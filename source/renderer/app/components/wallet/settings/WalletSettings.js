@@ -115,6 +115,7 @@ type Props = {
   walletId: string,
   walletName: string,
   walletReward: BigNumber,
+  delegationStakePoolStatus: ?string,
   lastDelegationStakePoolStatus: ?string,
   isRestoring: boolean,
   isSyncing: boolean,
@@ -243,6 +244,7 @@ export default class WalletSettings extends Component<Props, State> {
   renderUndelegateWalletBox = () => {
     const { intl } = this.context;
     const {
+      delegationStakePoolStatus,
       lastDelegationStakePoolStatus,
       isRestoring,
       isSyncing,
@@ -252,8 +254,10 @@ export default class WalletSettings extends Component<Props, State> {
       onDelegateClick,
       undelegateWalletDialogContainer,
     } = this.props;
-    const isDelegating =
-      lastDelegationStakePoolStatus === WalletDelegationStatuses.DELEGATING;
+    const isDelegating = [
+      delegationStakePoolStatus,
+      lastDelegationStakePoolStatus,
+    ].includes(WalletDelegationStatuses.DELEGATING);
 
     /// @TODO: Once undelegation for rewarded wallet works fine with api, remove reward checking and config
     if (

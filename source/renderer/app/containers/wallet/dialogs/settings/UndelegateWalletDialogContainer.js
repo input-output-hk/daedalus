@@ -61,8 +61,8 @@ export default class UndelegateWalletDialogContainer extends Component<
       wallets.allWallets,
       (wallet) => wallet.id === this.selectedWalletId
     );
-    const { lastDelegationStakePoolId, delegatedStakePoolId } = selectedWallet;
-    const poolId = lastDelegationStakePoolId || delegatedStakePoolId || '';
+    const { lastDelegatedStakePoolId, delegatedStakePoolId } = selectedWallet;
+    const poolId = lastDelegatedStakePoolId || delegatedStakePoolId || '';
 
     let stakePoolQuitFee;
     if (selectedWallet.isHardwareWallet) {
@@ -120,11 +120,11 @@ export default class UndelegateWalletDialogContainer extends Component<
     const { name: walletName } = walletToBeUndelegated;
 
     const {
-      lastDelegationStakePoolId,
+      lastDelegatedStakePoolId,
       delegatedStakePoolId,
     } = walletToBeUndelegated;
 
-    const stakePoolId = lastDelegationStakePoolId || delegatedStakePoolId || '';
+    const stakePoolId = lastDelegatedStakePoolId || delegatedStakePoolId || '';
 
     if (
       (!stakePoolId || !isDelegationTransactionPending) &&

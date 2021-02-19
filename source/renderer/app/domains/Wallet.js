@@ -105,7 +105,7 @@ export type WalletProps = {
   isHardwareWallet?: boolean,
   delegatedStakePoolId?: ?string,
   delegationStakePoolStatus?: ?string,
-  lastDelegationStakePoolId?: ?string,
+  lastDelegatedStakePoolId?: ?string,
   lastDelegationStakePoolStatus?: ?string,
   pendingDelegations?: WalletPendingDelegations,
   discovery: Discovery,
@@ -125,7 +125,7 @@ export default class Wallet {
   @observable isLegacy: boolean;
   @observable delegatedStakePoolId: ?string;
   @observable delegationStakePoolStatus: ?string;
-  @observable lastDelegationStakePoolId: ?string;
+  @observable lastDelegatedStakePoolId: ?string;
   @observable lastDelegationStakePoolStatus: ?string;
   @observable pendingDelegations: WalletPendingDelegations;
   @observable discovery: Discovery;
@@ -152,7 +152,7 @@ export default class Wallet {
         'isLegacy',
         'delegatedStakePoolId',
         'delegationStakePoolStatus',
-        'lastDelegationStakePoolId',
+        'lastDelegatedStakePoolId',
         'lastDelegationStakePoolStatus',
         'pendingDelegations',
         'discovery',

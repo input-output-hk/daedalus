@@ -466,7 +466,7 @@ export default class StakingStore extends Store {
         wallet.pendingDelegations && wallet.pendingDelegations.length > 0;
       let lastDelegatedStakePoolId = wallet.delegatedStakePoolId;
       if (hasPendingDelegations) {
-        lastDelegatedStakePoolId = wallet.lastDelegationStakePoolId;
+        lastDelegatedStakePoolId = wallet.lastDelegatedStakePoolId;
       }
       if (lastDelegatedStakePoolId) {
         const delegatingStakePoolExistInList = find(
