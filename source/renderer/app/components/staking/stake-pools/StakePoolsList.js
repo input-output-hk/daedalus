@@ -1,5 +1,4 @@
 // @flow
-import { useSingleton } from '@tippyjs/react';
 import { observer } from 'mobx-react';
 import React, { useEffect, useState } from 'react';
 import { hideAll } from 'tippy.js';
@@ -16,6 +15,7 @@ type StakePoolsListProps = {
   onOpenExternalLink: Function,
   currentTheme: string,
   highlightOnHover?: boolean,
+  highlightWithDelay?: boolean,
   onSelect?: (poolId: string) => void,
   selectOnClick?: boolean,
   showWithSelectButton?: boolean,
@@ -46,6 +46,7 @@ const StakePoolTiles = observer((props: StakePoolsListProps) => {
             key={stakePool.id + stakePool.ranking}
             onOpenExternalLink={props.onOpenExternalLink}
             highlightOnHover={props.highlightOnHover}
+            highlightWithDelay={props.highlightWithDelay}
             showWithSelectButton={props.showWithSelectButton}
             onSelect={props.onSelect}
             selectOnClick={props.selectOnClick}
@@ -80,11 +81,11 @@ export const StakePoolsList = observer((props: StakePoolsListProps) => {
         <LoadingSpinner big />
       </div>
     );
-  } else {
-    return <StakePoolTiles {...props} />;
   }
+  return <StakePoolTiles {...props} />;
 });
 
 StakePoolsList.defaultProps = {
   showWithSelectButton: false,
+  highlightWithDelay: false,
 };

@@ -368,6 +368,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
               numberOfRankedStakePools={numberOfRankedStakePools}
               disabledStakePoolId={activeStakePoolId}
               highlightOnHover
+              highlightWithDelay
               selectOnClick
             />
           </div>
@@ -396,6 +397,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
               numberOfRankedStakePools={numberOfRankedStakePools}
               disabledStakePoolId={activeStakePoolId}
               highlightOnHover
+              highlightWithDelay
               selectOnClick
             />
           </div>

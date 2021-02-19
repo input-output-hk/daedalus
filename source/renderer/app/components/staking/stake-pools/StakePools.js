@@ -68,8 +68,6 @@ const messages = defineMessages({
 });
 
 const SELECTED_INDEX_TABLE = 'selectedIndexTable';
-const STAKE_POOLS_DELEGATING_LIST = 'stakePoolsDelegatingList';
-const SELECTED_INDEX_LIST = 'selectedIndexList';
 
 type Props = {
   wallets: Array<Wallet>,
@@ -281,12 +279,9 @@ export default class StakePools extends Component<Props, State> {
                   </span>
                 </h2>
                 <StakePoolsList
-                  listName={STAKE_POOLS_DELEGATING_LIST}
                   stakePoolsList={stakePoolsDelegatingList}
                   onOpenExternalLink={onOpenExternalLink}
                   currentTheme={currentTheme}
-                  isListActive={selectedList === STAKE_POOLS_DELEGATING_LIST}
-                  setListActive={this.handleSetListActive}
                   containerClassName="StakingWithNavigation_page"
                   onSelect={this.onDelegate}
                   numberOfRankedStakePools={numberOfRankedStakePools}

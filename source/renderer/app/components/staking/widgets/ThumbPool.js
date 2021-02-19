@@ -20,6 +20,7 @@ export function ThumbPool(props: {
   currentTheme: string,
   isSelected: boolean,
   highlightOnHover?: boolean,
+  highlightWithDelay?: boolean,
   onOpenExternalLink: Function,
   onSelect?: (poolId: string) => void,
   selectOnClick?: boolean,
@@ -63,6 +64,7 @@ export function ThumbPool(props: {
         onClose={() => setIsHighlighted(false)}
         onOpen={() => setIsHighlighted(true)}
         onOpenExternalLink={props.onOpenExternalLink}
+        openWithDelay={props.highlightWithDelay}
         onSelect={props.onSelect}
         stakePool={stakePool}
         containerClassName={props.containerClassName}

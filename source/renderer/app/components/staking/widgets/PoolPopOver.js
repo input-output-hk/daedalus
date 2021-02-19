@@ -5,6 +5,7 @@ import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { STAKE_POOL_TOOLTIP_HOVER_WAIT } from '../../../config/timingConfig';
 import StakePool from '../../../domains/StakePool';
 import TooltipPool from './TooltipPool';
+import styles from './PoolPopOver.scss';
 
 /**
  * Stake pool tooltip component that can be wrapped around
@@ -24,47 +25,38 @@ export function PoolPopOver(props: {
   onOpenExternalLink: (string) => void,
   onSelect?: (poolId: string) => void,
   openOnHover?: boolean,
+  openWithDelay?: boolean,
   showWithSelectButton?: boolean,
   stakePool: StakePool,
   containerClassName: string,
   numberOfRankedStakePools: number,
 }) {
-  const [isOpen, setIsOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-  const hoverTimeout = useRef(null);
-  const isVisible = isOpen || (isHovered && props.openOnHover);
+  const triggerTarget = useRef(null);
   const poolId = props.stakePool.id;
 
   const close = () => {
-    setIsOpen(false);
+    setIsHovered(false);
     if (props.onClose) props.onClose();
   };
-
-  const hoverWithDelay = () => {
-    hoverTimeout.current = setTimeout(
-      () => setIsHovered(true),
-      STAKE_POOL_TOOLTIP_HOVER_WAIT
-    );
-  };
-
-  const cancelHover = () => {
-    clearTimeout(hoverTimeout.current);
-    setIsHovered(false);
-  };
-
   return (
-    <div
-      onMouseEnter={hoverWithDelay}
-      onMouseLeave={cancelHover}
-      onClick={() => setIsOpen(true)}
-    >
-      {isVisible ? (
+    <>
+      <div
+        className={styles.triggerTarget}
+        onMouseEnter={() => setIsHovered(true)}
+        ref={triggerTarget}
+      >
+        {props.children}
+      </div>
+      {isHovered ? (
         <PopOver
           interactive
+          delay={props.openWithDelay ? STAKE_POOL_TOOLTIP_HOVER_WAIT : 0}
           appendTo={document.body}
+          trigger={props.openOnHover ? 'mouseenter' : 'click'}
           placement="left"
-          visible={isVisible}
           onShow={() => props.onOpen && props.onOpen(poolId)}
+          onHide={close}
           onClickOutside={close}
           themeVariables={{
             '--rp-pop-over-bg-color':
@@ -77,6 +69,7 @@ export function PoolPopOver(props: {
             '--rp-pop-over-border-style': 'solid',
             '--rp-pop-over-padding': 0,
           }}
+          reference={triggerTarget}
           content={
             <TooltipPool
               color={props.color}
@@ -93,12 +86,12 @@ export function PoolPopOver(props: {
               stakePool={props.stakePool}
             />
           }
-        >
-          {props.children}
-        </PopOver>
-      ) : (
-        props.children
-      )}
-    </div>
+        />
+      ) : null}
+    </>
   );
 }
+
+PoolPopOver.defaultProps = {
+  openWithDelay: false,
+};

@@ -323,6 +323,31 @@
     position: absolute;
     width: 80px;
   }
+
+  .actionButton {
+    margin-top: 48px;
+  }
+
+  &.active {
+    cursor: pointer;
+
+    .stakePoolTicker {
+      top: -5px;
+    }
+
+    .ranking {
+      top: -7px;
+    }
+
+    .saturationBar,
+    .stakePoolRankingIndicator {
+      opacity: 0;
+    }
+
+    .stakePoolUnknown {
+      margin-top: 12px;
+    }
+  }
 }
 
 // STAKE POOL TILE - UN-DELEGATED / UNDEFINED
@@ -377,11 +402,5 @@
 
   &:active {
     background-color: var(--theme-button-primary-background-color-active);
-  }
-}
-
-.stakePoolTile {
-  .actionButton {
-    margin-top: 48px;
   }
 }
