@@ -368,14 +368,14 @@
   float: right;
   left: 10px;
   position: relative;
-  width: 100px;
+  width: auto;
 
   &.hasValue {
     left: 60px;
   }
 
   > div {
-    width: 100px;
+    width: 100%;
   }
 
   .walletsDropdown {
@@ -386,10 +386,22 @@
 
     :global {
       .SimpleSelect_selectInput.SelectOverrides_selectInput
+        .WalletsDropdownOption_component {
+        max-width: 100%;
+      }
+
+      .SimpleSelect_selectInput.SelectOverrides_selectInput
         .WalletsDropdownOption_selected
         .WalletsDropdownOption_topRow {
         justify-content: flex-end;
-        width: 70px !important;
+        // width: 70px !important;
+      }
+
+      .SimpleSelect_selectInput.SelectOverrides_selectInput
+        .WalletsDropdownOption_label {
+        .AssetToken_content {
+          margin-right: 24.5px;
+        }
       }
 
       .SimpleSelect_selectInput.SelectOverrides_selectInput
@@ -400,7 +412,7 @@
       .OptionsOverrides_options {
         left: auto !important;
         right: 52px !important;
-        width: 289px !important;
+        // width: 289px !important;
       }
 
       .SimpleBubble_root:not(.SimpleBubble_openUpward) .SimpleBubble_bubble {

@@ -7,6 +7,7 @@ import { omit } from 'lodash';
 import { BigNumber } from 'bignumber.js';
 import WalletsDropdownOption from './WalletsDropdownOption';
 import styles from './WalletsDropdown.scss';
+import AssetToken from '../AssetToken';
 
 import {
   formattedTokenWalletAmount,
@@ -156,14 +157,15 @@ export default class WalletsDropdown extends Component<Props> {
         : null;
     const assetsData =
       assets && assets.length
-        ? assets.map(({ metadata, policyId, quantity }: WalletSummaryAsset) => {
+        ? assets.map((asset: WalletSummaryAsset) => {
+            const { metadata, policyId, quantity } = asset;
             const formattedAmount = formattedTokenWalletAmount(
               new BigNumber(quantity),
               metadata && metadata.acronym ? metadata.acronym : ''
             );
             return {
               detail: formattedAmount,
-              label: metadata && metadata.acronym ? metadata.acronym : '',
+              label: <AssetToken asset={asset} hideTooltip small />,
               value: policyId,
             };
           })

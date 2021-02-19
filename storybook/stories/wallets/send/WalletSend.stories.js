@@ -43,18 +43,7 @@ const allAssets = [
   generateAsset(
     '65bc72542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
     '',
-    'tokenb0ca20391caaf66a4d4d7897d281f9c136cd3513136945b2342',
-    {
-      name: 'TrueUSD',
-      acronym: 'TUSD',
-      description: 'Test description',
-      unit: {
-        name: 'TUSD',
-        decimals: 6,
-      },
-      url: 'http://example.com',
-      logo: '',
-    }
+    'tokenb0ca20391caaf66a4d4d7897d281f9c136cd3513136945b2342'
   ),
   generateAsset(
     '65ac82542b0ca20391caaf66a4d4d7897d281f9c136cd3513136945b',
@@ -167,10 +156,10 @@ const confirmationAssets = assets.total.map((assetTotal) => {
     metadata: assetData
       ? assetData.metadata
       : {
-        name: '',
-        acronym: '',
-        description: '',
-      },
+          name: '',
+          acronym: '',
+          description: '',
+        },
   };
 });
 
@@ -196,10 +185,10 @@ const sendFormAssetData = assets.total.map((assetTotal) => {
     metadata: assetData
       ? assetData.metadata
       : {
-        name: '',
-        acronym: '',
-        description: '',
-      },
+          name: '',
+          acronym: '',
+          description: '',
+        },
   };
 });
 

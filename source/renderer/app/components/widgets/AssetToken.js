@@ -51,9 +51,9 @@ const messages = defineMessages({
 
 type Props = {
   asset: WalletSummaryAsset,
-  onCopyAssetItem: Function,
   small?: boolean,
   hideTooltip?: boolean,
+  onCopyAssetItem?: Function,
   // In case it's not possible to calculate the container width
   // this props defines after how many characters the `metadata.name` text will cut off
   metadataNameChars?: number,
@@ -97,7 +97,10 @@ export default class AssetToken extends Component<Props, State> {
   };
 
   handleCopyItem = (itemCopied: string, assetItem: string, value: string) => {
-    this.props.onCopyAssetItem(assetItem, value);
+    const { onCopyAssetItem } = this.props;
+    if (onCopyAssetItem) {
+      onCopyAssetItem(assetItem, value);
+    }
     clearTimeout(this.copyNotificationTimeout);
     this.setState({
       itemCopied,
@@ -108,12 +111,15 @@ export default class AssetToken extends Component<Props, State> {
   };
 
   contentRender() {
-    const { asset, metadataNameChars } = this.props;
+    const { asset, metadataNameChars, small } = this.props;
     const { fingerprint, metadata } = asset;
     const { name } = metadata || {};
-
+    const contentStyles = classnames([
+      styles.content,
+      small ? styles.small : null,
+    ]);
     return (
-      <div className={styles.content}>
+      <div className={contentStyles}>
         <div className={styles.fingerprint}>
           {ellipsis(fingerprint || '', 9, 4)}
         </div>
@@ -222,11 +228,11 @@ export default class AssetToken extends Component<Props, State> {
   }
 
   render() {
-    const { hideTooltip } = this.props;
-    const { isTooltipVisible } = this.state;
     const children = this.contentRender();
-    const tooltipContent = this.tooltipRender();
+    const { hideTooltip } = this.props;
     if (hideTooltip) return children;
+    const { isTooltipVisible } = this.state;
+    const tooltipContent = this.tooltipRender();
     return (
       <div
         className={styles.component}
