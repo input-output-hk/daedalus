@@ -15,7 +15,7 @@ export const formattedWalletAmount = (
   long: boolean = true
 ) => {
   let formattedAmount = long
-    ? amount.toFormat(DECIMAL_PLACES_IN_ADA)
+    ? new BigNumber(amount).toFormat(DECIMAL_PLACES_IN_ADA)
     : shortNumber(amount);
   const { decimalSeparator } = BigNumber.config().FORMAT;
   if (!long && decimalSeparator !== '.') {
