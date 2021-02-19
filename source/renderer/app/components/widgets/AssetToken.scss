@@ -1,7 +1,9 @@
 .component {
   width: 100%;
+  display: inline-flex;
+  min-width: 0;
   > span {
-    width: 100%;
+    min-width: 0;
   }
   :global {
     [data-tippy-root] {
@@ -12,23 +14,23 @@
 .content {
   display: flex;
   position: relative;
-  width: 100%;
+  min-width: 0;
 }
 .fingerprint {
   background: var(--theme-widgets-asset-token-fingerprint-background-color);
   border-radius: 3px;
   color: var(--theme-widgets-asset-token-text-color);
   display: inline-flex;
-  font-family: var(--font-regular);
+  font-family: var(--font-medium);
   font-size: 11px;
-  font-weight: bold;
+  font-weight: 500;
   line-height: 1.27;
   padding: 4px;
   white-space: nowrap;
 }
-.policyId {
+.metadataName {
   color: var(--theme-widgets-asset-token-text-color);
-  font-family: var(--font-regular);
+  font-family: var(--font-light);
   font-size: 11px;
   line-height: 1.27;
   margin: 4px 0 4px 4px;
@@ -43,7 +45,7 @@
   align-items: center;
   display: flex;
   flex-direction: column;
-  padding: 8px 0;
+  padding: 7px 0;
   user-select: text;
   .fingerprint {
     cursor: pointer;
@@ -62,12 +64,15 @@
   }
   dl {
     width: 100%;
+    line-height: 1;
   }
   dt {
     display: inline-block;
     font-family: var(--font-medium);
     font-size: 12px;
+    font-weight: 500;
     line-height: 1.33;
+    margin-bottom: 10px;
     text-align: right;
     white-space: nowrap;
     width: 67px;
@@ -75,12 +80,19 @@
   dd {
     cursor: pointer;
     display: inline-flex;
+    font-family: var(--font-light);
     font-size: 12px;
     line-height: 1.33;
-    margin: 0 0 0 10px;
+    margin: 0 0 10px 10px;
     width: calc(100% - 87px);
     em {
-      &:not(.multiline) {
+      &:not(.singleline) {
+        max-height: 47px;
+        overflow-wrap: break-word;
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+      &.singleline {
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;

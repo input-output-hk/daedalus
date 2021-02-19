@@ -65,7 +65,6 @@ export default class WalletSummary extends Component<Props> {
           numberOfTransactions={numberOfTransactions}
           numberOfPendingTransactions={numberOfPendingTransactions}
           isLoadingTransactions={isLoadingTransactions}
-          hasAssetsEnabled={hasAssetsEnabled}
           currency={
             hasCurrency && (
               <WalletSummaryCurrency

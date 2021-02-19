@@ -2625,6 +2625,7 @@ const _createTransactionFromServerData = action(
     const inputAssets = flatten(
       inputs.filter((input) => !!input.assets).map(({ assets }) => assets)
     );
+    window.inputs = inputs;
     const outputAssets = flatten(
       outputs.filter((output) => !!output.assets).map(({ assets }) => assets)
     );

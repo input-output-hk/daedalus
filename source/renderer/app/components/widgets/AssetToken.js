@@ -52,10 +52,11 @@ const messages = defineMessages({
 type Props = {
   asset: WalletSummaryAsset,
   onCopyAssetItem: Function,
+  small?: boolean,
   hideTooltip?: boolean,
   // In case it's not possible to calculate the container width
-  // this props defines after how many characters the text will cut off
-  policyIdEllipsisLeft?: number,
+  // this props defines after how many characters the `metadata.name` text will cut off
+  metadataNameChars?: number,
 };
 
 type State = {
@@ -107,18 +108,20 @@ export default class AssetToken extends Component<Props, State> {
   };
 
   contentRender() {
-    const { asset, policyIdEllipsisLeft } = this.props;
-    const { fingerprint, policyId } = asset;
+    const { asset, metadataNameChars } = this.props;
+    const { fingerprint, metadata } = asset;
+    const { name } = metadata || {};
+
     return (
       <div className={styles.content}>
         <div className={styles.fingerprint}>
           {ellipsis(fingerprint || '', 9, 4)}
         </div>
-        <div className={styles.policyId}>
-          {policyIdEllipsisLeft
-            ? ellipsis(policyId, policyIdEllipsisLeft)
-            : policyId}
-        </div>
+        {name && (
+          <div className={styles.metadataName}>
+            {metadataNameChars ? ellipsis(name, metadataNameChars) : name}
+          </div>
+        )}
       </div>
     );
   }
@@ -127,7 +130,7 @@ export default class AssetToken extends Component<Props, State> {
     assetId: string,
     assetItem: string,
     value: string,
-    multiline?: boolean
+    singleline?: boolean
   ) => {
     const { itemCopied } = this.state;
     const icon = itemCopied === assetId ? copyCheckmarkIcon : copyIcon;
@@ -141,7 +144,7 @@ export default class AssetToken extends Component<Props, State> {
     return (
       <CopyToClipboard text={value} onCopy={onCopy}>
         <div className={styles.assetItem}>
-          <em className={multiline ? styles.multiline : null}>{value}</em>
+          <em className={singleline ? styles.singleline : null}>{value}</em>
           <SVGInline svg={icon} className={iconClassnames} />
         </div>
       </CopyToClipboard>
