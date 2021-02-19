@@ -41,6 +41,9 @@
       flex-direction: column;
       width: 100%;
     }
+    .fieldContainer {
+      position: relative;
+    }
   }
 
   :global {
@@ -203,6 +206,14 @@
   }
 }
 
+.rightContent {
+  bottom: 0;
+  display: inline-flex;
+  height: 48px;
+  position: absolute;
+  right: 0;
+}
+
 .clearAssetContainer {
   bottom: 0.5px;
   display: flex;
@@ -212,8 +223,7 @@
   line-height: 48px;
   padding-left: 20px;
   position: relative;
-  right: 98px;
-  top: -68px;
+  right: 10px;
   width: 50px;
 
   .clearAssetButton {
@@ -363,16 +373,9 @@
 }
 
 .walletsDropdownWrapper {
-  bottom: 68px;
   display: flex;
-  float: right;
-  left: 10px;
   position: relative;
   width: auto;
-
-  &.hasValue {
-    left: 60px;
-  }
 
   > div {
     width: 100%;

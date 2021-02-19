@@ -842,6 +842,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                     key={`${receiverId}_asset${assetIndex}`}
                     onMouseEnter={() => this.showAssetRemoveButton(assetIndex)}
                     onMouseLeave={() => this.hideAssetRemoveButton(assetIndex)}
+                    className={styles.fieldContainer}
                   >
                     {selectedNativeTokens &&
                       selectedNativeTokens[assetIndex] &&
@@ -919,56 +920,58 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                       onKeyPress={this.handleSubmitOnEnter}
                       allowSigns={false}
                     />
-                    {this.hasAssetValue(assetFieldProps[assetIndex]) && (
-                      <div className={styles.clearAssetContainer}>
-                        <PopOver
-                          content="Clear"
-                          placement={
-                            isClearTooltipOpeningDownward ? 'bottom' : 'top'
-                          }
-                        >
-                          <button
-                            onClick={() => this.clearAssetValue(singleAsset)}
-                            className={styles.clearAssetButton}
+                    <div className={styles.rightContent}>
+                      {this.hasAssetValue(assetFieldProps[assetIndex]) && (
+                        <div className={styles.clearAssetContainer}>
+                          <PopOver
+                            content="Clear"
+                            placement={
+                              isClearTooltipOpeningDownward ? 'bottom' : 'top'
+                            }
                           >
-                            <SVGInline
-                              svg={closeIcon}
-                              className={styles.clearReceiverIcon}
-                            />
-                          </button>
-                        </PopOver>
-                        <div className={styles.separator} />
+                            <button
+                              onClick={() => this.clearAssetValue(singleAsset)}
+                              className={styles.clearAssetButton}
+                            >
+                              <SVGInline
+                                svg={closeIcon}
+                                className={styles.clearReceiverIcon}
+                              />
+                            </button>
+                          </PopOver>
+                          <div className={styles.separator} />
+                        </div>
+                      )}
+                      <div
+                        className={classNames([
+                          styles.walletsDropdownWrapper,
+                          this.hasAssetValue(assetFieldProps[assetIndex])
+                            ? styles.hasValue
+                            : null,
+                        ])}
+                      >
+                        <WalletsDropdown
+                          className={styles.walletsDropdown}
+                          {...walletsDropdownFieldProps[index]}
+                          numberOfStakePools={4}
+                          assets={sortedAssets}
+                          onChange={(id) => {
+                            this.onSelectAsset(index, id);
+                            this.updateSelectedNativeTokens(
+                              id,
+                              assetIndex,
+                              receiverId
+                            );
+                          }}
+                          syncingLabel={intl.formatMessage(
+                            messages.syncingWallet
+                          )}
+                          hasAssetsEnabled
+                          value={selectedAssetIds[assetIndex]}
+                          getStakePoolById={() => {}}
+                          errorPosition="bottom"
+                        />
                       </div>
-                    )}
-                    <div
-                      className={classNames([
-                        styles.walletsDropdownWrapper,
-                        this.hasAssetValue(assetFieldProps[assetIndex])
-                          ? styles.hasValue
-                          : null,
-                      ])}
-                    >
-                      <WalletsDropdown
-                        className={styles.walletsDropdown}
-                        {...walletsDropdownFieldProps[index]}
-                        numberOfStakePools={4}
-                        assets={sortedAssets}
-                        onChange={(id) => {
-                          this.onSelectAsset(index, id);
-                          this.updateSelectedNativeTokens(
-                            id,
-                            assetIndex,
-                            receiverId
-                          );
-                        }}
-                        syncingLabel={intl.formatMessage(
-                          messages.syncingWallet
-                        )}
-                        hasAssetsEnabled
-                        value={selectedAssetIds[assetIndex]}
-                        getStakePoolById={() => {}}
-                        errorPosition="bottom"
-                      />
                     </div>
                   </div>
                 ))}
