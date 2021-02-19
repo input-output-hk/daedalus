@@ -9,6 +9,7 @@ Changelog
 
 ### Chores
 
+- Added missing whitespace between amount and ADA in Japanese ([PR 2380](https://github.com/input-output-hk/daedalus/pull/2380))
 - Updated link "Follow instructions and manually update" on testnet and flight ([PR 2372](https://github.com/input-output-hk/daedalus/pull/2372))
 - Fixed broken staking stories in Storybook ([PR 2371](https://github.com/input-output-hk/daedalus/pull/2371))
 
