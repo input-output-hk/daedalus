@@ -489,16 +489,44 @@
       },
       {
         "defaultMessage": "!!!https://daedaluswallet.io/en/download/",
-        "description": "\"manualUpdateButtonUrl\" for the App Update Overlay",
+        "description": "\"manualUpdateButtonUrl\" for the App Update Overlay on Mainnet",
         "end": {
           "column": 3,
-          "line": 101
+          "line": 102
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
-        "id": "appUpdate.overlay.manualUpdate.button.url",
+        "id": "appUpdate.overlay.manualUpdate.button.url.mainnet",
         "start": {
-          "column": 25,
+          "column": 35,
           "line": 97
+        }
+      },
+      {
+        "defaultMessage": "!!!https://daedaluswallet.io/en/flight/",
+        "description": "\"manualUpdateButtonUrl\" for the App Update Overlay on Flight",
+        "end": {
+          "column": 3,
+          "line": 107
+        },
+        "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
+        "id": "appUpdate.overlay.manualUpdate.button.url.flight",
+        "start": {
+          "column": 34,
+          "line": 103
+        }
+      },
+      {
+        "defaultMessage": "!!!https://developers.cardano.org/en/testnets/cardano/get-started/wallet/",
+        "description": "\"manualUpdateButtonUrl\" for the App Update Overlay on Testnet",
+        "end": {
+          "column": 3,
+          "line": 114
+        },
+        "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
+        "id": "appUpdate.overlay.manualUpdate.button.url.testnet",
+        "start": {
+          "column": 35,
+          "line": 108
         }
       }
     ],
