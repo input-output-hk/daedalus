@@ -931,6 +931,7 @@
   "wallet.send.confirmationDialog.totalLabel": "Total",
   "wallet.send.form.amount.label": "Amount",
   "wallet.send.form.asset.label": "Token",
+  "wallet.send.form.asset.adaLabel": "Ada",
   "wallet.send.form.button.addAssetButtonLabel": "+ Add a token",
   "wallet.send.form.button.addNewReceiver": "+ Add another receiver",
   "wallet.send.form.button.removeReceiver": "Remove",

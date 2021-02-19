@@ -69,6 +69,11 @@ export const messages = defineMessages({
     defaultMessage: '!!!Token',
     description: 'Label for the "Token" number input in the wallet send form.',
   },
+  assetAdaLabel: {
+    id: 'wallet.send.form.asset.adaLabel',
+    defaultMessage: '!!!Ada',
+    description: 'Label for the "Ada" input in the wallet send form.',
+  },
   addNewReceiverButtonLabel: {
     id: 'wallet.send.form.button.addNewReceiver',
     defaultMessage: '!!!+ Add another receiver',
@@ -404,7 +409,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
           ],
         },
         receiver1_adaAsset: {
-          label: `${this.context.intl.formatMessage(messages.assetLabel)} #1`,
+          label: `${this.context.intl.formatMessage(messages.assetAdaLabel)}`,
           placeholder: `0${
             this.getCurrentNumberFormat().decimalSeparator
           }${'0'.repeat(this.props.currencyMaxFractionalDigits)}`,
@@ -790,7 +795,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                   {...adaAssetFieldProps}
                   className="adaAsset"
                   value={adaAsset.value}
-                  label={`${intl.formatMessage(messages.assetLabel)} #1`}
+                  label={`${intl.formatMessage(messages.assetAdaLabel)}`}
                   bigNumberFormat={this.getCurrentNumberFormat()}
                   decimalPlaces={currencyMaxFractionalDigits}
                   numberLocaleOptions={{
@@ -880,7 +885,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                           : null,
                       ])}
                       label={`${intl.formatMessage(messages.assetLabel)} #${
-                        assetIndex + 2
+                        assetIndex + 1
                       }`}
                       bigNumberFormat={this.getCurrentNumberFormat()}
                       decimalPlaces={tokenDecimalPlaces}
