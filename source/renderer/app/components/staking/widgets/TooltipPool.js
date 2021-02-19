@@ -283,6 +283,7 @@ export default class TooltipPool extends Component<Props, State> {
             {isIncentivizedTestnet && (
               <PopOver
                 key="experimentalTooltip"
+                appendTo={document.body}
                 content={
                   <div className={styles.tooltipWithHTMLContent}>
                     {intl.formatMessage(messages.experimentalTooltipLabel)}
@@ -478,6 +479,7 @@ export default class TooltipPool extends Component<Props, State> {
           )}
           <PopOver
             key="id"
+            appendTo={document.body}
             content={
               <div className={styles.tooltipWithHTMLContent}>
                 {intl.formatMessage(messages.copyIdTooltipLabel)}
