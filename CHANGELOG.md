@@ -14,6 +14,7 @@ Changelog
 
 ### Chores
 
+- Refactored stake pool lists to use our react-polymorph PopOver component ([PR 2373](https://github.com/input-output-hk/daedalus/pull/2373))
 - Enabled selecting whole addresses and ids when selecting them to copy on transactions and summary screens ([PR 2370](https://github.com/input-output-hk/daedalus/pull/2370))
 - Added missing whitespace between amount and ADA in Japanese ([PR 2380](https://github.com/input-output-hk/daedalus/pull/2380))
 - Updated link "Follow instructions and manually update" on testnet and flight ([PR 2372](https://github.com/input-output-hk/daedalus/pull/2372))
