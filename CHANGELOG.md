@@ -9,6 +9,7 @@ Changelog
 
 ### Chores
 
+- Adjusted hover PopOver styles on the first tile in the delegation center screen ([PR 2386](https://github.com/input-output-hk/daedalus/pull/2386))
 - Fixed broken staking stories in Storybook ([PR 2371](https://github.com/input-output-hk/daedalus/pull/2371))
 
 ## 3.3.0
