@@ -230,7 +230,8 @@ export type CoinSelectionsResponse = {
   inputs: Array<CoinSelectionInput>,
   outputs: Array<CoinSelectionOutput>,
   certificates: CoinSelectionCertificates,
-  feeWithDeposits: BigNumber,
+  deposits: BigNumber,
+  depositsReclaimed: BigNumber,
   fee: BigNumber,
 };
 
