@@ -50,10 +50,16 @@ export default class WalletSummaryPage extends Component<Props> {
   };
 
   handleOpenAssetSend = async (asset: WalletSummaryAsset) => {
-    this.props.actions.router.goToRoute.trigger({
-      route: ROUTES.WALLETS.PAGE,
-      params: { id: this.props.stores.wallets.active.id, asset, page: 'send' },
-    });
+    const { stores } = this.props;
+    const { wallets } = stores;
+    const { active } = wallets;
+    if (active) {
+      const { id } = active;
+      this.props.actions.router.goToRoute.trigger({
+        route: ROUTES.WALLETS.PAGE,
+        params: { id, asset, page: 'send' },
+      });
+    }
   };
 
   handleOnCopyAssetItem = (assetItem: string, fullValue: string) => {

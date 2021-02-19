@@ -102,17 +102,20 @@ export default class WalletsTransactionsWrapper extends Component<
           TransactionTypes.INCOME,
           new Date(),
           new BigNumber(1),
+          new BigNumber(1),
           TransactionStates.OK
         ),
         generateTransaction(
           TransactionTypes.EXPEND,
           new Date(),
           new BigNumber(1),
+          new BigNumber(1),
           TransactionStates.PENDING
         ),
         generateTransaction(
           TransactionTypes.INCOME,
           new Date(2019, 10, 8, 20),
+          new BigNumber(1),
           new BigNumber(1),
           TransactionStates.PENDING,
           true
@@ -121,6 +124,7 @@ export default class WalletsTransactionsWrapper extends Component<
           TransactionTypes.EXPEND,
           new Date(),
           new BigNumber(13),
+          new BigNumber(1),
           TransactionStates.FAILED
         ),
       ],
@@ -130,12 +134,14 @@ export default class WalletsTransactionsWrapper extends Component<
           TransactionTypes.EXPEND,
           new Date(),
           new BigNumber(1),
+          new BigNumber(1),
           TransactionStates.OK,
           true
         ),
         generateTransaction(
           TransactionTypes.INCOME,
           new Date(),
+          new BigNumber(1),
           new BigNumber(1),
           TransactionStates.OK,
           true
@@ -147,7 +153,6 @@ export default class WalletsTransactionsWrapper extends Component<
           new Date(),
           new BigNumber(1),
           new BigNumber(1),
-          new BigNumber(1),
           TransactionStates.OK,
           false,
           true
@@ -155,7 +160,6 @@ export default class WalletsTransactionsWrapper extends Component<
         generateTransaction(
           TransactionTypes.INCOME,
           new Date(),
-          new BigNumber(1),
           new BigNumber(1),
           new BigNumber(1),
           TransactionStates.OK,
@@ -169,7 +173,6 @@ export default class WalletsTransactionsWrapper extends Component<
           new Date(),
           new BigNumber(1),
           new BigNumber(1),
-          new BigNumber(1),
           TransactionStates.OK,
           false,
           false,
@@ -178,7 +181,6 @@ export default class WalletsTransactionsWrapper extends Component<
         generateTransaction(
           TransactionTypes.INCOME,
           new Date(),
-          new BigNumber(1),
           new BigNumber(1),
           new BigNumber(1),
           TransactionStates.OK,

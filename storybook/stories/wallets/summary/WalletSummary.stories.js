@@ -120,14 +120,28 @@ const walletAssets = assets.total.map((assetTotal) => {
   const assetData = allAssets.find(
     (item) => item.policyId === assetTotal.policyId
   );
-  const { policyId, assetName, quantity } = assetTotal;
-  const { metadata, fingerprint } = assetData || {};
+  let fingerprint;
+  if (!assetData || !assetData.fingerprint) {
+    fingerprint = `token${assetTotal.policyId}${assetTotal.assetName}`.substr(
+      0,
+      44
+    );
+  } else {
+    fingerprint = assetData.fingerprint;
+  }
+
   return {
-    policyId,
-    assetName,
+    policyId: assetTotal.policyId,
+    assetName: assetTotal.assetName,
     fingerprint,
-    quantity,
-    metadata,
+    quantity: assetTotal.quantity,
+    metadata: assetData
+      ? assetData.metadata
+      : {
+        name: '',
+        acronym: '',
+        description: '',
+      },
   };
 });
 

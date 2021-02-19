@@ -350,7 +350,7 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
               {assets.map((address, addressIndex) => (
                 <div
                   // eslint-disable-next-line react/no-array-index-key
-                  key={`${address}-${addressIndex}`}
+                  key={`${address.policyId}-${addressIndex}`}
                   className={styles.receiverRow}
                 >
                   <div className={styles.receiverRowItem}>
@@ -361,9 +361,9 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
                       )}
                     </h2>
                     <div className={styles.receiverRowItemAddresses}>
-                      <div className={styles.addressTo}>
+                      {receivers && (<div className={styles.addressTo}>
                         {receivers[addressIndex]}
-                      </div>
+                      </div>)}
                       <div className={styles.assetsWrapper}>
                         <div
                           className={styles.assetsSeparator}
@@ -378,17 +378,17 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
                         {assets.map((asset, assetIndex) => (
                           <div
                             // eslint-disable-next-line react/no-array-index-key
-                            key={`${assets}-${assetIndex}`}
+                            key={`${asset.policyId}-${assetIndex}`}
                             className={styles.assetsContainer}
                           >
                             <h3>
                               {intl.formatMessage(messages.assetLabel)}
                               &nbsp;#{assetIndex + 1}
                             </h3>
-                            {asset.total && (
+                            {asset && asset.quantity && (
                               <div className={styles.amountFeesWrapper}>
                                 <div className={styles.amount}>
-                                  {new BigNumber(asset.total.quantity).toFormat(
+                                  {new BigNumber(asset.quantity).toFormat(
                                     asset.metadata && asset.metadata.unit
                                       ? asset.metadata.unit.decimals
                                       : DECIMAL_PLACES_IN_ADA

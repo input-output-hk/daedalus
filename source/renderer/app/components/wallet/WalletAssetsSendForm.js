@@ -955,10 +955,8 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                         assets={sortedAssets}
                         onChange={(id) => {
                           this.onSelectAsset(
-                            id,
                             index,
-                            receiverId,
-                            selectedAssetIds[assetIndex]
+                            id,
                           );
                           this.updateSelectedNativeTokens(
                             id,
@@ -1026,7 +1024,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     }
   };
 
-  removeSendFormField = (receiverId: number) => {
+  removeSendFormField = (receiverId: string) => {
     const { sendFormFields } = this.state;
     if (sendFormFields && sendFormFields[receiverId]) {
       delete sendFormFields[receiverId];
@@ -1091,7 +1089,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     ]);
   };
 
-  addNewAssetField = (receiverId: number, assetId: string) => {
+  addNewAssetField = (receiverId: string, assetId: string) => {
     const newAsset = `${receiverId}_${assetId}`;
     this.form.add({ name: newAsset, value: null, key: newAsset });
     this.form
@@ -1134,7 +1132,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     ]);
   };
 
-  addNewWalletsDropdownField = (receiverId: string, dropdownId?: string) => {
+  addNewWalletsDropdownField = (receiverId: string, dropdownId: string) => {
     const newWalletsDropdown = `${receiverId}_${dropdownId}`;
     this.form.add({
       name: newWalletsDropdown,
@@ -1214,7 +1212,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     }));
   };
 
-  getNativeTokenById = (selectedAssetId: string): ?Asset => {
+  getNativeTokenById = (selectedAssetId: string): ?WalletSummaryAsset => {
     const { assets } = this.props;
     return assets.find((asset) => asset.policyId === selectedAssetId);
   };
