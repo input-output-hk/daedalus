@@ -253,7 +253,7 @@
   "optionalDependencies": {
     "@ledgerhq/hw-transport-node-hid": "5.26.0"
   },
-  "engines": {
+  "devEngines": {
     "node": ">=12.13.0",
     "yarn": "1.22.4"
   },
