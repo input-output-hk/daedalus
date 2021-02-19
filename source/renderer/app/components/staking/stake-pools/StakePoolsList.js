@@ -1,14 +1,17 @@
 // @flow
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { hideAll } from 'tippy.js';
+import LoadingSpinner from '../../widgets/LoadingSpinner';
 import styles from './StakePoolsList.scss';
 import StakePool from '../../../domains/StakePool';
 import { ThumbPool } from '../widgets/ThumbPool';
 
+// Maximum number of stake pools for which we do not need to use the preloading
+const PRELOADER_THRESHOLD = 100;
+
 function hideAllPopOvers() {
   hideAll();
 }
-
 /**
  * Stake pool list renders ThumbPool tiles
  */
@@ -26,10 +29,19 @@ export function StakePoolsList(props: {
   selectedPoolId?: ?string,
   disabledStakePoolId?: ?string,
 }) {
+  const [isLoading, setIsLoading] = useState(true);
   useEffect(() => {
     window.addEventListener('scroll', hideAllPopOvers, true);
+    setTimeout(() => setIsLoading(false));
     return () => window.removeEventListener('scroll', hideAllPopOvers);
   });
+  if (props.stakePoolsList.length > PRELOADER_THRESHOLD && isLoading) {
+    return (
+      <div className={styles.preloadingBlockWrapper}>
+        <LoadingSpinner big />
+      </div>
+    );
+  }
   return (
     <div className={styles.component}>
       {props.stakePoolsList.map((stakePool) => {
