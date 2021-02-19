@@ -7,9 +7,18 @@
   width: 400px;
 
   :global {
-    .Dialog_content {
-      overflow: visible;
-      padding-bottom: 0;
+    .Dialog_contentWrapper {
+      overflow-x: visible;
+      overflow-y: visible;
+
+      .Dialog_content {
+        margin-bottom: 0;
+        overflow: visible;
+      }
+    }
+
+    .Dialog_actions {
+      display: none;
     }
 
     .TinySelect_component {

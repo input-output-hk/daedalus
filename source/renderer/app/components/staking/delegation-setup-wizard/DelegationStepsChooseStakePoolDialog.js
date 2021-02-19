@@ -184,7 +184,7 @@ export default class DelegationStepsChooseStakePoolDialog extends Component<
     );
     const lastDelegatedStakePoolId = get(
       selectedWallet,
-      'lastDelegationStakePoolId',
+      'lastDelegatedStakePoolId',
       null
     );
     const delegatedStakePoolId = get(

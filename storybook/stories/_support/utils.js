@@ -96,7 +96,8 @@ export const generateWallet = (
   reward?: number = 0,
   delegatedStakePool?: StakePool,
   hasPassword?: boolean,
-  status?: SyncStateStatus = WalletSyncStateStatuses.READY
+  status?: SyncStateStatus = WalletSyncStateStatuses.READY,
+  isHardwareWallet?: boolean = false
 ) =>
   new Wallet({
     id: generateHash(),
@@ -110,6 +111,7 @@ export const generateWallet = (
     passwordUpdateDate: new Date(),
     syncState: { status, ...statusProgress(status) },
     isLegacy: false,
+    isHardwareWallet,
     discovery: 'random',
     recoveryPhraseVerificationDate: new Date(),
     recoveryPhraseVerificationStatus: RECOVERY_PHRASE_VERIFICATION_STATUSES.OK,
