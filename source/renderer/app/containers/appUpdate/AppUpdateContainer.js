@@ -12,8 +12,9 @@ export default class AppUpdateContainer extends Component<InjectedProps> {
   render() {
     const { stores, actions } = this.props;
     const { appUpdate } = stores;
-    const { environment, openExternalLink, isFlight } = stores.app;
+    const { environment, openExternalLink } = stores.app;
     const { version, isLinux, isTestnet } = environment;
+    const { isFlight } = global;
     const {
       downloadProgress,
       isUpdateDownloaded,

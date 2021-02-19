@@ -18,7 +18,6 @@ import type { GpuStatus } from '../types/gpuStatus';
 import type { ApplicationDialog } from '../types/applicationDialogTypes';
 
 export default class AppStore extends Store {
-  isFlight: boolean = global.isFlight;
   @observable error: ?LocalizableError = null;
   @observable isDownloadNotificationVisible = false;
   @observable gpuStatus: ?GpuStatus = null;
