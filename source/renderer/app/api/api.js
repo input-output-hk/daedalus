@@ -1000,9 +1000,12 @@ export default class AdaApi {
         });
       }
 
-      const depositsArr = map(response.deposits, (deposit) => deposit.quantity);
-      const deposits = depositsArr.length
-        ? BigNumber.sum.apply(null, depositsArr)
+      const depositsArray = map(
+        response.deposits,
+        (deposit) => deposit.quantity
+      );
+      const deposits = depositsArray.length
+        ? BigNumber.sum.apply(null, depositsArray)
         : new BigNumber(0);
       // @TODO - Use api response when api is ready
       const depositsReclaimed =
