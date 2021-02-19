@@ -30,10 +30,10 @@
       border-radius: 0 0 2px 2px;
       height: 125px;
       left: 10px;
-      width: 6px;
+      margin-top: -125px;
       position: relative;
       top: 115px;
-      margin-top: -125px;
+      width: 6px;
     }
 
     .fieldsContainer {
@@ -212,8 +212,8 @@
   line-height: 48px;
   padding-left: 20px;
   position: relative;
-  top: -68px;
   right: 98px;
+  top: -68px;
   width: 50px;
 
   .clearAssetButton {
@@ -366,8 +366,8 @@
   bottom: 68px;
   display: flex;
   float: right;
-  position: relative;
   left: 10px;
+  position: relative;
   width: 100px;
 
   &.hasValue {

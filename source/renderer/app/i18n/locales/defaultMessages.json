@@ -489,16 +489,44 @@
       },
       {
         "defaultMessage": "!!!https://daedaluswallet.io/en/download/",
-        "description": "\"manualUpdateButtonUrl\" for the App Update Overlay",
+        "description": "\"manualUpdateButtonUrl\" for the App Update Overlay on Mainnet",
         "end": {
           "column": 3,
-          "line": 101
+          "line": 102
         },
         "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
-        "id": "appUpdate.overlay.manualUpdate.button.url",
+        "id": "appUpdate.overlay.manualUpdate.button.url.mainnet",
         "start": {
-          "column": 25,
+          "column": 35,
           "line": 97
+        }
+      },
+      {
+        "defaultMessage": "!!!https://daedaluswallet.io/en/flight/",
+        "description": "\"manualUpdateButtonUrl\" for the App Update Overlay on Flight",
+        "end": {
+          "column": 3,
+          "line": 107
+        },
+        "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
+        "id": "appUpdate.overlay.manualUpdate.button.url.flight",
+        "start": {
+          "column": 34,
+          "line": 103
+        }
+      },
+      {
+        "defaultMessage": "!!!https://developers.cardano.org/en/testnets/cardano/get-started/wallet/",
+        "description": "\"manualUpdateButtonUrl\" for the App Update Overlay on Testnet",
+        "end": {
+          "column": 3,
+          "line": 114
+        },
+        "file": "source/renderer/app/components/appUpdate/AppUpdateOverlay.js",
+        "id": "appUpdate.overlay.manualUpdate.button.url.testnet",
+        "start": {
+          "column": 35,
+          "line": 108
         }
       }
     ],
@@ -11554,13 +11582,13 @@
         "description": "Transaction type shown for credit card payments.",
         "end": {
           "column": 3,
-          "line": 35
+          "line": 36
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type.card",
         "start": {
           "column": 8,
-          "line": 31
+          "line": 32
         }
       },
       {
@@ -11568,13 +11596,13 @@
         "description": "Transaction type shown for {currency} transactions.",
         "end": {
           "column": 3,
-          "line": 40
+          "line": 41
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type",
         "start": {
           "column": 8,
-          "line": 36
+          "line": 37
         }
       },
       {
@@ -11582,13 +11610,13 @@
         "description": "Transaction type shown for money exchanges between currencies.",
         "end": {
           "column": 3,
-          "line": 46
+          "line": 47
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.type.exchange",
         "start": {
           "column": 12,
-          "line": 41
+          "line": 42
         }
       },
       {
@@ -11596,13 +11624,13 @@
         "description": "Transaction ID.",
         "end": {
           "column": 3,
-          "line": 51
+          "line": 52
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.transactionId",
         "start": {
           "column": 17,
-          "line": 47
+          "line": 48
         }
       },
       {
@@ -11610,13 +11638,13 @@
         "description": "Transaction Metadata.",
         "end": {
           "column": 3,
-          "line": 56
+          "line": 57
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.transactionMetadata",
         "start": {
           "column": 23,
-          "line": 52
+          "line": 53
         }
       },
       {
@@ -11624,13 +11652,13 @@
         "description": "",
         "end": {
           "column": 3,
-          "line": 62
+          "line": 63
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.transactionMetadataDescription",
         "start": {
           "column": 34,
-          "line": 57
+          "line": 58
         }
       },
       {
@@ -11638,13 +11666,13 @@
         "description": "Transaction metadata label",
         "end": {
           "column": 3,
-          "line": 67
+          "line": 68
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.metadataLabel",
         "start": {
           "column": 17,
-          "line": 63
+          "line": 64
         }
       },
       {
@@ -11652,13 +11680,13 @@
         "description": "Transaction metadata disclaimer",
         "end": {
           "column": 3,
-          "line": 73
+          "line": 74
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.metadataDisclaimer",
         "start": {
           "column": 22,
-          "line": 68
+          "line": 69
         }
       },
       {
@@ -11666,13 +11694,13 @@
         "description": "Transaction metadata confirmation toggle",
         "end": {
           "column": 3,
-          "line": 78
+          "line": 79
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.metadataConfirmationLabel",
         "start": {
           "column": 29,
-          "line": 74
+          "line": 75
         }
       },
       {
@@ -11680,13 +11708,13 @@
         "description": "Conversion rate.",
         "end": {
           "column": 3,
-          "line": 83
+          "line": 84
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.conversion.rate",
         "start": {
           "column": 18,
-          "line": 79
+          "line": 80
         }
       },
       {
@@ -11694,13 +11722,13 @@
         "description": "Label \"{transactionsType} sent\" for the transaction.",
         "end": {
           "column": 3,
-          "line": 88
+          "line": 89
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.sent",
         "start": {
           "column": 8,
-          "line": 84
+          "line": 85
         }
       },
       {
@@ -11708,13 +11736,13 @@
         "description": "Label \"{transactionsType} received\" for the transaction.",
         "end": {
           "column": 3,
-          "line": 93
+          "line": 94
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.received",
         "start": {
           "column": 12,
-          "line": 89
+          "line": 90
         }
       },
       {
@@ -11722,13 +11750,13 @@
         "description": "From address",
         "end": {
           "column": 3,
-          "line": 98
+          "line": 99
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.address.from",
         "start": {
           "column": 15,
-          "line": 94
+          "line": 95
         }
       },
       {
@@ -11736,13 +11764,13 @@
         "description": "From addresses",
         "end": {
           "column": 3,
-          "line": 103
+          "line": 104
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.addresses.from",
         "start": {
           "column": 17,
-          "line": 99
+          "line": 100
         }
       },
       {
@@ -11750,13 +11778,13 @@
         "description": "From rewards",
         "end": {
           "column": 3,
-          "line": 108
+          "line": 109
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.rewards.from",
         "start": {
           "column": 15,
-          "line": 104
+          "line": 105
         }
       },
       {
@@ -11764,13 +11792,13 @@
         "description": "To address",
         "end": {
           "column": 3,
-          "line": 113
+          "line": 114
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.address.to",
         "start": {
           "column": 13,
-          "line": 109
+          "line": 110
         }
       },
       {
@@ -11778,13 +11806,13 @@
         "description": "To addresses",
         "end": {
           "column": 3,
-          "line": 118
+          "line": 119
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.addresses.to",
         "start": {
           "column": 15,
-          "line": 114
+          "line": 115
         }
       },
       {
@@ -11792,13 +11820,13 @@
         "description": "Receiver",
         "end": {
           "column": 3,
-          "line": 123
+          "line": 124
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.receiverLabel",
         "start": {
           "column": 17,
-          "line": 119
+          "line": 120
         }
       },
       {
@@ -11806,13 +11834,13 @@
         "description": "Asset",
         "end": {
           "column": 3,
-          "line": 128
+          "line": 129
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.assetLabel",
         "start": {
           "column": 14,
-          "line": 124
+          "line": 125
         }
       },
       {
@@ -11820,13 +11848,13 @@
         "description": "Transaction fee",
         "end": {
           "column": 3,
-          "line": 133
+          "line": 134
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.transactionFee",
         "start": {
           "column": 18,
-          "line": 129
+          "line": 130
         }
       },
       {
@@ -11834,13 +11862,13 @@
         "description": "Deposit",
         "end": {
           "column": 3,
-          "line": 138
+          "line": 139
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.deposit",
         "start": {
           "column": 11,
-          "line": 134
+          "line": 135
         }
       },
       {
@@ -11848,13 +11876,13 @@
         "description": "Transaction amount.",
         "end": {
           "column": 3,
-          "line": 143
+          "line": 144
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.transactionAmount",
         "start": {
           "column": 21,
-          "line": 139
+          "line": 140
         }
       },
       {
@@ -11862,13 +11890,13 @@
         "description": "Multiple tokens.",
         "end": {
           "column": 3,
-          "line": 148
+          "line": 149
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.multipleTokens",
         "start": {
           "column": 18,
-          "line": 144
+          "line": 145
         }
       },
       {
@@ -11876,13 +11904,13 @@
         "description": "Note to cancel a transaction that has been pending too long",
         "end": {
           "column": 3,
-          "line": 154
+          "line": 155
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.pending.cancelPendingTxnNote",
         "start": {
           "column": 24,
-          "line": 149
+          "line": 150
         }
       },
       {
@@ -11890,13 +11918,13 @@
         "description": "Link to support article for canceling a pending transaction",
         "end": {
           "column": 3,
-          "line": 159
+          "line": 160
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.pending.cancelPendingTxnSupportArticle",
         "start": {
           "column": 34,
-          "line": 155
+          "line": 156
         }
       },
       {
@@ -11904,13 +11932,13 @@
         "description": "Url to support article for canceling a pending transaction",
         "end": {
           "column": 3,
-          "line": 165
+          "line": 166
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.pending.supportArticleUrl",
         "start": {
           "column": 21,
-          "line": 160
+          "line": 161
         }
       },
       {
@@ -11918,13 +11946,13 @@
         "description": "Input Addresses label.",
         "end": {
           "column": 3,
-          "line": 170
+          "line": 171
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.noInputAddressesLabel",
         "start": {
           "column": 25,
-          "line": 166
+          "line": 167
         }
       },
       {
@@ -11932,13 +11960,13 @@
         "description": "Unresolved Input Addresses link label.",
         "end": {
           "column": 3,
-          "line": 175
+          "line": 176
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.unresolvedInputAddressesLinkLabel",
         "start": {
           "column": 37,
-          "line": 171
+          "line": 172
         }
       },
       {
@@ -11946,13 +11974,13 @@
         "description": "Unresolved Input Addresses additional label.",
         "end": {
           "column": 3,
-          "line": 180
+          "line": 181
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.unresolvedInputAddressesAdditionalLabel",
         "start": {
           "column": 43,
-          "line": 176
+          "line": 177
         }
       },
       {
@@ -11960,13 +11988,13 @@
         "description": "Note to cancel a transaction that has been failed",
         "end": {
           "column": 3,
-          "line": 186
+          "line": 187
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.failed.cancelFailedTxnNote",
         "start": {
           "column": 23,
-          "line": 181
+          "line": 182
         }
       },
       {
@@ -11974,13 +12002,13 @@
         "description": "Link to support article for removing a failed transaction",
         "end": {
           "column": 3,
-          "line": 191
+          "line": 192
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.failed.cancelFailedTxnSupportArticle",
         "start": {
           "column": 33,
-          "line": 187
+          "line": 188
         }
       },
       {
@@ -11988,13 +12016,13 @@
         "description": "Transaction state \"confirmed\"",
         "end": {
           "column": 3,
-          "line": 199
+          "line": 200
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.confirmed",
         "start": {
           "column": 26,
-          "line": 195
+          "line": 196
         }
       },
       {
@@ -12002,13 +12030,13 @@
         "description": "Transaction state \"pending\"",
         "end": {
           "column": 3,
-          "line": 204
+          "line": 205
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.pending",
         "start": {
           "column": 31,
-          "line": 200
+          "line": 201
         }
       },
       {
@@ -12016,13 +12044,13 @@
         "description": "Transaction state \"failed\"",
         "end": {
           "column": 3,
-          "line": 209
+          "line": 210
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.failed",
         "start": {
           "column": 30,
-          "line": 205
+          "line": 206
         }
       },
       {
@@ -12030,13 +12058,13 @@
         "description": "Transaction state \"confirmed\"",
         "end": {
           "column": 3,
-          "line": 217
+          "line": 218
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.confirmedHeading",
         "start": {
           "column": 26,
-          "line": 213
+          "line": 214
         }
       },
       {
@@ -12044,13 +12072,13 @@
         "description": "Transaction state \"pending\"",
         "end": {
           "column": 3,
-          "line": 222
+          "line": 223
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.failedHeading",
         "start": {
           "column": 31,
-          "line": 218
+          "line": 219
         }
       },
       {
@@ -12058,13 +12086,13 @@
         "description": "Transaction state \"failed\"",
         "end": {
           "column": 3,
-          "line": 227
+          "line": 228
         },
         "file": "source/renderer/app/components/wallet/transactions/Transaction.js",
         "id": "wallet.transaction.state.pendingHeading",
         "start": {
           "column": 30,
-          "line": 223
+          "line": 224
         }
       }
     ],
@@ -16356,13 +16384,13 @@
         "description": "Message shown when wallet has no transactions on wallet summary page.",
         "end": {
           "column": 3,
-          "line": 26
+          "line": 25
         },
         "file": "source/renderer/app/containers/wallet/WalletSummaryPage.js",
         "id": "wallet.summary.page.no.transactions",
         "start": {
           "column": 18,
-          "line": 21
+          "line": 20
         }
       }
     ],
