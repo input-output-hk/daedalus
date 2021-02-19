@@ -23,6 +23,7 @@ import { HwDeviceStatuses } from '../../domains/Wallet';
 import type { HwDeviceStatus } from '../../domains/Wallet';
 import type { WalletTransactionAsset } from '../../api/assets/types';
 import { DECIMAL_PLACES_IN_ADA } from '../../config/numbersConfig';
+import AssetToken from '../widgets/AssetToken';
 
 export const messages = defineMessages({
   dialogTitle: {
@@ -384,8 +385,15 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
                             className={styles.assetsContainer}
                           >
                             <h3>
-                              {intl.formatMessage(messages.assetLabel)}
-                              &nbsp;#{assetIndex + 1}
+                              <span>
+                                {intl.formatMessage(messages.assetLabel)}
+                                &nbsp;#{assetIndex + 1}
+                              </span>
+                              <AssetToken
+                                asset={asset}
+                                componentClassName={styles.assetToken}
+                                hideTooltip
+                              />
                             </h3>
                             {asset && asset.quantity && (
                               <div className={styles.amountFeesWrapper}>

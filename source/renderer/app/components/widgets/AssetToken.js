@@ -54,6 +54,9 @@ type Props = {
   small?: boolean,
   hideTooltip?: boolean,
   onCopyAssetItem?: Function,
+  className?: string,
+  componentClassName?: string,
+  contentClassName?: string,
   // In case it's not possible to calculate the container width
   // this props defines after how many characters the `metadata.name` text will cut off
   metadataNameChars?: number,
@@ -111,12 +114,13 @@ export default class AssetToken extends Component<Props, State> {
   };
 
   contentRender() {
-    const { asset, metadataNameChars, small } = this.props;
+    const { asset, metadataNameChars, small, contentClassName } = this.props;
     const { fingerprint, metadata } = asset;
     const { name } = metadata || {};
     const contentStyles = classnames([
       styles.content,
       small ? styles.small : null,
+      contentClassName,
     ]);
     return (
       <div className={contentStyles}>
@@ -229,13 +233,14 @@ export default class AssetToken extends Component<Props, State> {
 
   render() {
     const children = this.contentRender();
-    const { hideTooltip } = this.props;
+    const { hideTooltip, componentClassName } = this.props;
     if (hideTooltip) return children;
     const { isTooltipVisible } = this.state;
     const tooltipContent = this.tooltipRender();
+    const componentStyles = classnames([styles.component, componentClassName]);
     return (
       <div
-        className={styles.component}
+        className={componentStyles}
         onMouseEnter={this.handleShowTooltip}
         onMouseLeave={this.handleHideTooltip}
       >

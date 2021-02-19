@@ -120,9 +120,17 @@
       width: 100%;
 
       h3 {
+        display: inline-flex;
         font-family: var(--font-light);
+        > span {
+          margin-right: 12px;
+        }
       }
     }
+  }
+
+  .assetToken {
+    margin-top: -2px;
   }
 
   .amountFeesWrapper {
