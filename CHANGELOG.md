@@ -3,6 +3,10 @@ Changelog
 
 ## vNext
 
+### Features
+
+- Implemented "Undelegate wallet" feature on "Wallet settings" screen ([PR 2351](https://github.com/input-output-hk/daedalus/pull/2351))
+
 ### Fixes
 
 - Fixed issue on wallet send form with certain amounts ([PR 2379](https://github.com/input-output-hk/daedalus/pull/2379))
@@ -26,12 +30,6 @@ Changelog
 - Updated `cardano-wallet` to version `2021-02-15` ([PR 2363](https://github.com/input-output-hk/daedalus/pull/2363))
 - Updated `cardano-wallet` to version `2021-02-12` ([PR 2358](https://github.com/input-output-hk/daedalus/pull/2358))
 - Improved the error messages for the custom SMASH server url input ([PR 2355](https://github.com/input-output-hk/daedalus/pull/2355))
-
-## 3.3.0-FC1
-
-### Features
-
-- Implemented "Undelegate wallet" feature on "Wallet settings" screen ([PR 2351](https://github.com/input-output-hk/daedalus/pull/2351))
 
 ## 3.3.0-FC1
 
