@@ -104,6 +104,8 @@ export const REDEEM_ITN_REWARDS_STEPS: {
   RESULT: 'result',
 };
 
+export const DELEGATION_DEPOSIT = 2; // 2 ADA | unit: lovelace
+
 export const DELEGATION_ACTIONS: {
   [key: string]: DelegationAction,
 } = {
