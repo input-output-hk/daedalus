@@ -954,10 +954,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                         numberOfStakePools={4}
                         assets={sortedAssets}
                         onChange={(id) => {
-                          this.onSelectAsset(
-                            index,
-                            id,
-                          );
+                          this.onSelectAsset(index, id);
                           this.updateSelectedNativeTokens(
                             id,
                             assetIndex,

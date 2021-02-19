@@ -167,10 +167,10 @@ const confirmationAssets = assets.total.map((assetTotal) => {
     metadata: assetData
       ? assetData.metadata
       : {
-        name: '',
-        acronym: '',
-        description: '',
-      },
+          name: '',
+          acronym: '',
+          description: '',
+        },
   };
 });
 
@@ -196,10 +196,10 @@ const sendFormAssetData = assets.total.map((assetTotal) => {
     metadata: assetData
       ? assetData.metadata
       : {
-        name: '',
-        acronym: '',
-        description: '',
-      },
+          name: '',
+          acronym: '',
+          description: '',
+        },
   };
 });
 
