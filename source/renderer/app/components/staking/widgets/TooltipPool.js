@@ -388,6 +388,7 @@ export default class TooltipPool extends Component<Props, State> {
                 </div>
                 <PopOver
                   offset={[0, 10]}
+                  appendTo={document.body}
                   key={field.key}
                   content={
                     <div className={styles.tooltipWithHTMLContent}>
@@ -457,7 +458,13 @@ export default class TooltipPool extends Component<Props, State> {
         <div className={colorBandClassnames} style={colorBandStyle} />
         <div className={styles.container}>
           <h3 className={styles.name}>{name}</h3>
-          <button className={styles.closeButton} onClick={onClose}>
+          <button
+            className={styles.closeButton}
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose();
+            }}
+          >
             <SVGInline svg={closeCross} />
           </button>
           <div className={styles.ticker}>{ticker}</div>

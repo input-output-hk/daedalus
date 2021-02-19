@@ -343,12 +343,9 @@ export default class StakePools extends Component<Props, State> {
                 </h2>
                 <StakePoolsList
                   showWithSelectButton
-                  listName={SELECTED_INDEX_LIST}
                   stakePoolsList={filteredStakePoolsList}
                   onOpenExternalLink={onOpenExternalLink}
                   currentTheme={currentTheme}
-                  isListActive={selectedList === SELECTED_INDEX_LIST}
-                  setListActive={this.handleSetListActive}
                   containerClassName="StakingWithNavigation_page"
                   onSelect={this.onDelegate}
                   numberOfRankedStakePools={numberOfRankedStakePools}

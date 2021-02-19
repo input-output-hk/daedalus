@@ -178,7 +178,6 @@ export default class WalletRow extends Component<Props, WalletRowState> {
 
     const futureStakePoolTileStyles = classnames([
       styles.stakePoolTile,
-      highlightedPoolId ? styles.active : null,
       futurePendingDelegationStakePoolId && futurePendingDelegationStakePool
         ? styles.futureStakePoolTileDelegated
         : styles.futureStakePoolTileUndelegated,
@@ -193,7 +192,7 @@ export default class WalletRow extends Component<Props, WalletRowState> {
     ]);
 
     const actionButtonStyles = classnames([
-      styles.action,
+      styles.actionButton,
       highlightedPoolId ? styles.active : null,
     ]);
 
@@ -290,9 +289,10 @@ export default class WalletRow extends Component<Props, WalletRowState> {
                 )}
               </div>
               <SVGInline svg={arrow} className={styles.arrow} />
+
               <div className={futureStakePoolTileStyles}>
                 {futurePendingDelegationStakePoolId ? (
-                  <div>
+                  <>
                     {futurePendingDelegationStakePool ? (
                       <PoolPopOver
                         openOnHover
@@ -357,7 +357,7 @@ export default class WalletRow extends Component<Props, WalletRowState> {
                         {intl.formatMessage(messages.unknownStakePoolLabel)}
                       </div>
                     )}
-                  </div>
+                  </>
                 ) : (
                   <div className={styles.nonDelegatedText}>
                     {notDelegatedText}

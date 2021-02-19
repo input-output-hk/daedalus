@@ -1,5 +1,5 @@
 // @flow
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import type { Node } from 'react';
 import { PopOver } from 'react-polymorph/lib/components/PopOver';
 import { STAKE_POOL_TOOLTIP_HOVER_WAIT } from '../../../config/timingConfig';
@@ -29,53 +29,76 @@ export function PoolPopOver(props: {
   containerClassName: string,
   numberOfRankedStakePools: number,
 }) {
-  const tippyRef = useRef(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const hoverTimeout = useRef(null);
+  const isVisible = isOpen || (isHovered && props.openOnHover);
+  const poolId = props.stakePool.id;
+
   const close = () => {
-    if (tippyRef.current) tippyRef.current.hide();
+    setIsOpen(false);
     if (props.onClose) props.onClose();
   };
-  const poolId = props.stakePool.id;
+
+  const hoverWithDelay = () => {
+    hoverTimeout.current = setTimeout(
+      () => setIsHovered(true),
+      STAKE_POOL_TOOLTIP_HOVER_WAIT
+    );
+  };
+
+  const cancelHover = () => {
+    clearTimeout(hoverTimeout.current);
+    setIsHovered(false);
+  };
+
   return (
-    <PopOver
-      interactive
-      appendTo={document.body}
-      placement="left"
-      delay={props.openOnHover ? STAKE_POOL_TOOLTIP_HOVER_WAIT : 0}
-      trigger={props.openOnHover ? 'mouseenter' : 'click'}
-      onShow={(instance) => {
-        tippyRef.current = instance;
-        if (props.onOpen) props.onOpen(poolId);
-      }}
-      onHide={() => props.onClose && props.onClose()}
-      themeVariables={{
-        '--rp-pop-over-bg-color':
-          'var(--theme-staking-stake-pool-tooltip-background-color)',
-        '--rp-pop-over-box-shadow':
-          '0 1.5px 5px 0 var(--theme-staking-stake-pool-tooltip-shadow-color)',
-        '--rp-pop-over-border-color':
-          'var(--theme-staking-stake-pool-tooltip-border-color)',
-        '--rp-pop-over-border-radius': '5px',
-        '--rp-pop-over-border-style': 'solid',
-        '--rp-pop-over-padding': 0,
-      }}
-      content={
-        <TooltipPool
-          color={props.color}
-          containerClassName={props.containerClassName}
-          currentTheme={props.currentTheme}
-          numberOfRankedStakePools={props.numberOfRankedStakePools}
-          onClose={close}
-          onOpenExternalLink={props.onOpenExternalLink}
-          onSelect={() => {
-            close();
-            if (props.onSelect) props.onSelect(poolId);
-          }}
-          showWithSelectButton={props.showWithSelectButton}
-          stakePool={props.stakePool}
-        />
-      }
+    <div
+      onMouseEnter={hoverWithDelay}
+      onMouseLeave={cancelHover}
+      onClick={() => setIsOpen(true)}
     >
-      {props.children}
-    </PopOver>
+      {isVisible ? (
+        <PopOver
+          interactive
+          appendTo={document.body}
+          placement="left"
+          visible={isVisible}
+          onShow={() => props.onOpen && props.onOpen(poolId)}
+          onClickOutside={close}
+          themeVariables={{
+            '--rp-pop-over-bg-color':
+              'var(--theme-staking-stake-pool-tooltip-background-color)',
+            '--rp-pop-over-box-shadow':
+              '0 1.5px 5px 0 var(--theme-staking-stake-pool-tooltip-shadow-color)',
+            '--rp-pop-over-border-color':
+              'var(--theme-staking-stake-pool-tooltip-border-color)',
+            '--rp-pop-over-border-radius': '5px',
+            '--rp-pop-over-border-style': 'solid',
+            '--rp-pop-over-padding': 0,
+          }}
+          content={
+            <TooltipPool
+              color={props.color}
+              containerClassName={props.containerClassName}
+              currentTheme={props.currentTheme}
+              numberOfRankedStakePools={props.numberOfRankedStakePools}
+              onClose={close}
+              onOpenExternalLink={props.onOpenExternalLink}
+              onSelect={() => {
+                close();
+                if (props.onSelect) props.onSelect(poolId);
+              }}
+              showWithSelectButton={props.showWithSelectButton}
+              stakePool={props.stakePool}
+            />
+          }
+        >
+          {props.children}
+        </PopOver>
+      ) : (
+        props.children
+      )}
+    </div>
   );
 }
