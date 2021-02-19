@@ -1,7 +1,9 @@
 .component {
   width: 100%;
+  display: inline-flex;
+  min-width: 0;
   > span {
-    width: 100%;
+    min-width: 0;
   }
   :global {
     [data-tippy-root] {
@@ -11,9 +13,8 @@
 }
 .content {
   display: flex;
-  // height: 22px;
   position: relative;
-  width: 100%;
+  min-width: 0;
 }
 .fingerprint {
   background: var(--theme-widgets-asset-token-fingerprint-background-color);
