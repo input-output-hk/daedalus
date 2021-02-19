@@ -1,0 +1,14 @@
+@import '../../../themes/mixins/animations';
+
+%smallText {
+  color: var(--theme-bordered-box-text-color);
+  font-family: var(--font-regular);
+  font-size: 14px;
+  height: 19px;
+  letter-spacing: 0.5px;
+  line-height: 1.36;
+}
+
+.component {
+  padding: 20px;
+}

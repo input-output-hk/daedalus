@@ -26,6 +26,7 @@ type Props = {
   onOpenAssetSend: Function,
   onCopyAssetItem: Function,
   isLoading?: boolean,
+  onExternalLinkClick: Function,
 };
 
 @observer
@@ -49,6 +50,7 @@ export default class WalletSummary extends Component<Props> {
       onOpenAssetSend,
       onCopyAssetItem,
       isLoading,
+      onExternalLinkClick,
     } = this.props;
 
     const hasCurrency =
@@ -85,6 +87,7 @@ export default class WalletSummary extends Component<Props> {
             wallet={wallet}
             assets={assets}
             onOpenAssetSend={onOpenAssetSend}
+            onExternalLinkClick={onExternalLinkClick}
             isLoading={isLoading}
             onCopyAssetItem={onCopyAssetItem}
           />

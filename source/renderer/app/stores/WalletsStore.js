@@ -29,8 +29,8 @@ import {
   WALLET_HARDWARE_KINDS,
   RESTORE_WALLET_STEPS,
 } from '../config/walletRestoreConfig';
+import { IS_WALLET_PUBLIC_KEY_SHARING_ENABLED } from '../config/walletsConfig';
 import { CURRENCY_REQUEST_RATE_INTERVAL } from '../config/currencyConfig';
-import { WALLET_PUBLIC_KEY_SHARING_ENABLED } from '../config/walletsConfig';
 import type {
   WalletKind,
   WalletDaedalusKind,
@@ -46,6 +46,7 @@ import type {
   TransferFundsCalculateFeeRequest,
   TransferFundsRequest,
 } from '../api/wallets/types';
+import type { QuitStakePoolRequest } from '../api/staking/types';
 import type {
   TransportDevice,
   HardwareWalletExtendedPublicKeyResponse,
@@ -307,7 +308,7 @@ export default class WalletsStore extends Store {
   }
 
   @action _getWalletPublicKey = async () => {
-    if (!this.active || !WALLET_PUBLIC_KEY_SHARING_ENABLED) {
+    if (!this.active || !IS_WALLET_PUBLIC_KEY_SHARING_ENABLED) {
       return;
     }
 
@@ -675,11 +676,7 @@ export default class WalletsStore extends Store {
     this.refreshWalletsData();
   };
 
-  _undelegateWallet = async (params: {
-    walletId: string,
-    stakePoolId: string,
-    passphrase: string,
-  }) => {
+  _undelegateWallet = async (params: QuitStakePoolRequest) => {
     const { quitStakePoolRequest } = this.stores.staking;
     const { quitStakePool } = this.actions.staking;
     const walletToUndelegate = this.getWalletById(params.walletId);

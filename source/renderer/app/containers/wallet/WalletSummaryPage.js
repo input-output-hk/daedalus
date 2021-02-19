@@ -208,6 +208,7 @@ export default class WalletSummaryPage extends Component<Props> {
           onOpenAssetSend={this.handleOpenAssetSend}
           isLoading={isLoading}
           onCopyAssetItem={this.handleOnCopyAssetItem}
+          onExternalLinkClick={app.openExternalLink}
         />
         {walletTransactions}
       </VerticalFlexContainer>

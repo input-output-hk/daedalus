@@ -6,9 +6,11 @@ Changelog
 ### Features
 
 - Implemented UI for native tokens feature [PR 2292](https://github.com/input-output-hk/daedalus/pull/2292)
+- Implemented "Undelegate wallet" feature on "Wallet settings" screen ([PR 2351](https://github.com/input-output-hk/daedalus/pull/2351))
 
 ### Fixes
 
+- Fixed calendar style issue on Filter dialog on transaction list screen ([PR 2387](https://github.com/input-output-hk/daedalus/pull/2387))
 - Fixed issue on wallet send form with certain amounts ([PR 2379](https://github.com/input-output-hk/daedalus/pull/2379))
 
 ### Chores

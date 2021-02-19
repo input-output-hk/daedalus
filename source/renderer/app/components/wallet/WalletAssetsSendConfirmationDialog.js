@@ -361,9 +361,11 @@ export default class WalletAssetsSendConfirmationDialog extends Component<
                       )}
                     </h2>
                     <div className={styles.receiverRowItemAddresses}>
-                      {receivers && (<div className={styles.addressTo}>
-                        {receivers[addressIndex]}
-                      </div>)}
+                      {receivers && (
+                        <div className={styles.addressTo}>
+                          {receivers[addressIndex]}
+                        </div>
+                      )}
                       <div className={styles.assetsWrapper}>
                         <div
                           className={styles.assetsSeparator}

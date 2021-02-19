@@ -127,7 +127,7 @@ export default class WalletsDropdown extends Component<Props> {
               id: value,
               amount,
               delegatedStakePoolId,
-              lastDelegationStakePoolId,
+              lastDelegatedStakePoolId,
               pendingDelegations,
               isRestoring,
               isHardwareWallet,
@@ -136,7 +136,7 @@ export default class WalletsDropdown extends Component<Props> {
                 pendingDelegations && pendingDelegations.length > 0;
               let currentStakePoolId = delegatedStakePoolId;
               if (hasPendingDelegations) {
-                currentStakePoolId = lastDelegationStakePoolId;
+                currentStakePoolId = lastDelegatedStakePoolId;
               }
               const delegatedStakePool = getStakePoolById(currentStakePoolId);
               const detail = !isRestoring
