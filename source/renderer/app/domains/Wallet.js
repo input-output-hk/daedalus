@@ -104,9 +104,11 @@ export type WalletProps = {
   passwordUpdateDate: ?Date,
   syncState: WalletSyncState,
   isLegacy: boolean,
+  isHardwareWallet?: boolean,
   delegatedStakePoolId?: ?string,
   delegationStakePoolStatus?: ?string,
-  lastDelegationStakePoolId?: ?string,
+  lastDelegatedStakePoolId?: ?string,
+  lastDelegationStakePoolStatus?: ?string,
   pendingDelegations?: WalletPendingDelegations,
   discovery: Discovery,
   hasPassword: boolean,
@@ -126,7 +128,8 @@ export default class Wallet {
   @observable isLegacy: boolean;
   @observable delegatedStakePoolId: ?string;
   @observable delegationStakePoolStatus: ?string;
-  @observable lastDelegationStakePoolId: ?string;
+  @observable lastDelegatedStakePoolId: ?string;
+  @observable lastDelegationStakePoolStatus: ?string;
   @observable pendingDelegations: WalletPendingDelegations;
   @observable discovery: Discovery;
   @observable hasPassword: boolean;
@@ -153,7 +156,8 @@ export default class Wallet {
         'isLegacy',
         'delegatedStakePoolId',
         'delegationStakePoolStatus',
-        'lastDelegationStakePoolId',
+        'lastDelegatedStakePoolId',
+        'lastDelegationStakePoolStatus',
         'pendingDelegations',
         'discovery',
         'hasPassword',
@@ -176,6 +180,10 @@ export default class Wallet {
       get(this, 'syncState.status') === WalletSyncStateStatuses.RESTORING &&
       this.restorationProgress < 100
     );
+  }
+
+  @computed get isSyncing(): boolean {
+    return get(this, 'syncState.status') === WalletSyncStateStatuses.SYNCING;
   }
 
   @computed get isNotResponding(): boolean {

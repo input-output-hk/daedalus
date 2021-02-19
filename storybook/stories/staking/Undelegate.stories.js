@@ -3,16 +3,36 @@ import React from 'react';
 import BigNumber from 'bignumber.js';
 import moment from 'moment';
 import { linkTo } from '@storybook/addon-links';
+import { number } from '@storybook/addon-knobs';
 
+import STAKE_POOLS from '../../../source/renderer/app/config/stakingStakePools.dummy.json';
+import { generateWallet } from '../_support/utils';
 // Screens
-import UndelegateConfirmationDialog from '../../../source/renderer/app/components/staking/delegation-center/UndelegateConfirmationDialog';
-import UndelegateConfirmationResultDialog from '../../../source/renderer/app/components/staking/delegation-center/UndelegateConfirmationResultDialog';
+import UndelegateWalletConfirmationDialog from '../../../source/renderer/app/components/wallet/settings/UndelegateWalletConfirmationDialog';
+import UndelegateWalletSuccessDialog from '../../../source/renderer/app/components/wallet/settings/UndelegateWalletSuccessDialog';
+
+const generalWallet = generateWallet(
+  'Wallet 1',
+  '1000000000',
+  0,
+  STAKE_POOLS[0]
+);
+const hardwareWallet = generateWallet(
+  'Wallet 1',
+  '10000000',
+  0,
+  STAKE_POOLS[0],
+  false,
+  'ready',
+  true
+);
 
 export const StakingUndelegateConfirmationStory = (props: {
   unknownStakePool?: boolean,
+  isHardwareWallet?: boolean,
 }) => (
-  <UndelegateConfirmationDialog
-    walletName="Darko's ADA"
+  <UndelegateWalletConfirmationDialog
+    selectedWallet={props.isHardwareWallet ? hardwareWallet : generalWallet}
     stakePoolName={!props.unknownStakePool ? 'Lush 1' : null}
     stakePoolTicker={!props.unknownStakePool ? 'LSH1' : null}
     onConfirm={linkTo(
@@ -23,7 +43,12 @@ export const StakingUndelegateConfirmationStory = (props: {
     onExternalLinkClick={() => null}
     isSubmitting={false}
     error={null}
-    fees={new BigNumber(33333.33)}
+    fees={{
+      fee: new BigNumber(number('fee', 3)),
+      deposits: new BigNumber(0),
+      depositsReclaimed: new BigNumber(number('depositsReclaimed', 10)),
+    }}
+    hwDeviceStatus="ready"
   />
 );
 
@@ -32,7 +57,7 @@ export const StakingUndelegateConfirmationResultStory = ({
 }: {
   locale: string,
 }) => (
-  <UndelegateConfirmationResultDialog
+  <UndelegateWalletSuccessDialog
     walletName="Darko's ADA"
     slotLength={null}
     onClose={() => null}

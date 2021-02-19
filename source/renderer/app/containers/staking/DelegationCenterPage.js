@@ -3,8 +3,8 @@ import React, { Component, Fragment } from 'react';
 import { observer, inject } from 'mobx-react';
 import DelegationCenter from '../../components/staking/delegation-center/DelegationCenter';
 import DelegationSetupWizardDialogContainer from './dialogs/DelegationSetupWizardDialogContainer';
-import UndelegateDialogContainer from './dialogs/UndelegateDialogContainer';
-import UndelegateConfirmationDialog from '../../components/staking/delegation-center/UndelegateConfirmationDialog';
+import UndelegateWalletDialogContainer from '../wallet/dialogs/settings/UndelegateWalletDialogContainer';
+import UndelegateWalletConfirmationDialog from '../../components/wallet/settings/UndelegateWalletConfirmationDialog';
 import DelegationSetupWizardDialog from '../../components/staking/delegation-setup-wizard/DelegationSetupWizardDialog';
 import DelegationCenterNoWallets from '../../components/staking/delegation-center/DelegationCenterNoWallets';
 import { ROUTES } from '../../routes-config';
@@ -47,31 +47,14 @@ export default class DelegationCenterPage extends Component<Props, State> {
   };
 
   handleUndelegate = async (walletId: string) => {
-    const { actions, stores } = this.props;
-    const { updateDataForActiveDialog } = actions.dialogs;
-    const { isOpen } = stores.uiDialogs;
-    const { calculateDelegationFee } = stores.staking;
+    const { dialogs } = this.props.actions;
 
-    actions.dialogs.open.trigger({ dialog: UndelegateConfirmationDialog });
-    const dialogData = {
-      walletId,
-      stakePoolQuitFee: null,
-    };
-    updateDataForActiveDialog.trigger({ data: dialogData });
-
-    // Update dialog one more time when quit fee is calculated
-    const stakePoolQuitFee = await calculateDelegationFee({ walletId });
-
-    // Update dialog data only if UndelegateConfirmationDialog is still active
-    // and fee calculation was successful
-    if (isOpen(UndelegateConfirmationDialog) && stakePoolQuitFee) {
-      updateDataForActiveDialog.trigger({
-        data: {
-          ...dialogData,
-          stakePoolQuitFee,
-        },
-      });
-    }
+    dialogs.open.trigger({
+      dialog: UndelegateWalletConfirmationDialog,
+    });
+    dialogs.updateDataForActiveDialog.trigger({
+      data: { walletId },
+    });
   };
 
   handleGoToCreateWalletClick = () => {
@@ -137,8 +120,8 @@ export default class DelegationCenterPage extends Component<Props, State> {
           containerClassName="StakingWithNavigation_page"
           setListActive={this.handleSetListActive}
         />
-        {uiDialogs.isOpen(UndelegateConfirmationDialog) ? (
-          <UndelegateDialogContainer
+        {uiDialogs.isOpen(UndelegateWalletConfirmationDialog) ? (
+          <UndelegateWalletDialogContainer
             onExternalLinkClick={app.openExternalLink}
           />
         ) : null}
