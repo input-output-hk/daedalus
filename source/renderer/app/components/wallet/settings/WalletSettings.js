@@ -254,10 +254,9 @@ export default class WalletSettings extends Component<Props, State> {
       onDelegateClick,
       undelegateWalletDialogContainer,
     } = this.props;
-    const isDelegating = [
-      delegationStakePoolStatus,
-      lastDelegationStakePoolStatus,
-    ].includes(WalletDelegationStatuses.DELEGATING);
+    const isDelegating = lastDelegationStakePoolStatus
+      ? lastDelegationStakePoolStatus === WalletDelegationStatuses.DELEGATING
+      : delegationStakePoolStatus === WalletDelegationStatuses.DELEGATING;
 
     /// @TODO: Once undelegation for rewarded wallet works fine with api, remove reward checking and config
     if (
