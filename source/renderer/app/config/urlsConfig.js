@@ -2,7 +2,7 @@
 import { currencyConfig } from './currencyConfig';
 
 export const MAINNET_EXPLORER_URL = 'explorer.cardano.org';
-export const STAGING_EXPLORER_URL = 'explorer.awstest.iohkdev.io';
+export const STAGING_EXPLORER_URL = 'explorer.staging.cardano.org';
 export const TESTNET_EXPLORER_URL = 'explorer.cardano-testnet.iohkdev.io';
 
 // STN
