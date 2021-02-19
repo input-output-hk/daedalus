@@ -93,16 +93,8 @@ export default class WalletSummaryAssets extends Component<Props> {
                                 ? asset.metadata.unit.decimals
                                 : DECIMAL_PLACES_IN_ADA
                             )}
-                        {asset.metadata ? (
+                        {asset.metadata && (
                           <span>&nbsp;{asset.metadata.acronym}</span>
-                        ) : (
-                          <span>
-                            &nbsp;
-                            {intl
-                              .formatMessage(messages.unknownLabel)
-                              .toString()
-                              .substr(0, 3)}
-                          </span>
                         )}
                       </div>
                     </div>

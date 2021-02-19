@@ -192,7 +192,7 @@ storiesOf('Wallets|Summary', module)
         isLoading={boolean('isLoading', false)}
         onOpenAssetSend={action('onOpenAssetSend')}
         onCopyAssetItem={action('onCopyAsset')}
-        hasAssetsEnabled={boolean('hasAssetsEnabled', false)}
+        hasAssetsEnabled={boolean('hasAssetsEnabled', true)}
       />
     );
   });

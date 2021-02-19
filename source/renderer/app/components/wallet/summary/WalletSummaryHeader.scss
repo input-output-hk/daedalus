@@ -27,61 +27,39 @@
   font-weight: 600;
   letter-spacing: 0.5px;
   line-height: 1.38;
-  margin-bottom: 11px;
+  margin-bottom: 6px;
   user-select: text;
-
-  &.assets {
-    margin-bottom: 6px;
-  }
 }
 
 .walletAmount {
   color: var(--theme-bordered-box-text-color);
   font-family: var(--font-bold);
   font-size: 22px;
-  line-height: 1;
-  margin: 4px 0 11px;
+  margin: 4px 0 8px;
   user-select: text;
   word-break: break-all;
 
   span {
-    color: var(--theme-icon-add-wallet-dialog-big-button-color);
     font-size: 16px;
     font-size: 16px;
     margin-left: 6px;
     opacity: 0.7;
   }
-
-  &.assets {
-    font-family: var(--font-bold);
-    font-size: 22px;
-    line-height: 1.41;
-    margin-bottom: 8px;
-  }
 }
-
-// .currency {
-//   .currencySymbol {
-//     font-size: 12px;
-//     margin-left: 0;
-//   }
-// }
 
 .transactionsCountWrapper {
   .numberOfTransactions,
   .numberOfPendingTransactions {
     @extend %smallText;
 
-    &.assets {
-      span:first-child {
-        font-family: var(--font-medium);
-        opacity: 0.7;
-      }
+    span:first-child {
+      font-family: var(--font-medium);
+      opacity: 0.7;
+    }
 
-      span:last-child {
-        font-family: var(--font-light);
-        opacity: 1;
-      }
+    span:last-child {
+      font-family: var(--font-light);
+      opacity: 1;
     }
 
     &.isLoadingNumberOfTransactions {

@@ -30,10 +30,9 @@
   .assetsContainer {
     align-items: center;
     display: flex;
-    height: 76px;
     justify-content: space-between;
     margin: 10px;
-    padding: 20px 30px 20px 20px;
+    padding: 14px 30px 14px 20px;
     width: calc(50% - 20px);
 
     .assetsLeftContainer {
@@ -92,6 +91,7 @@
   font-weight: 300;
   letter-spacing: 0.5px;
   line-height: 1.38;
+  margin-top: 4px;
   user-select: text;
   word-break: break-all;
 

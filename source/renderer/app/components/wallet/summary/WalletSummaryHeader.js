@@ -30,7 +30,6 @@ type Props = {
   numberOfTransactions?: number,
   numberOfPendingTransactions: number,
   isLoadingTransactions: boolean,
-  hasAssetsEnabled?: boolean,
   currency?: Node,
 };
 
@@ -47,7 +46,6 @@ export default class WalletSummaryHeader extends Component<Props> {
       numberOfRecentTransactions,
       numberOfTransactions,
       isLoadingTransactions,
-      hasAssetsEnabled,
       currency,
     } = this.props;
     const { intl } = this.context;
@@ -56,23 +54,15 @@ export default class WalletSummaryHeader extends Component<Props> {
     const numberOfTransactionsStyles = classnames([
       styles.numberOfTransactions,
       isLoadingAllTransactions ? styles.isLoadingNumberOfTransactions : null,
-      hasAssetsEnabled ? styles.assets : null,
     ]);
 
     const numberOfPendingTransactionsStyles = classnames([
       styles.numberOfPendingTransactions,
-      hasAssetsEnabled ? styles.assets : null,
     ]);
 
-    const walletNameStyles = classnames([
-      styles.walletName,
-      hasAssetsEnabled ? styles.assets : null,
-    ]);
+    const walletNameStyles = classnames([styles.walletName]);
 
-    const walletAmountStyles = classnames([
-      styles.walletAmount,
-      hasAssetsEnabled ? styles.assets : null,
-    ]);
+    const walletAmountStyles = classnames([styles.walletAmount]);
 
     const isRestoreActive = wallet.isRestoring;
 
@@ -88,15 +78,9 @@ export default class WalletSummaryHeader extends Component<Props> {
               <div className={walletNameStyles}>{wallet.name}</div>
               <div className={walletAmountStyles}>
                 {walletAmount}
-                {hasAssetsEnabled ? (
-                  <span>
-                    &nbsp;{intl.formatMessage(globalMessages.unitAda)}
-                  </span>
-                ) : (
-                  <span className={styles.currencySymbol}>
-                    {intl.formatMessage(globalMessages.unitAda)}
-                  </span>
-                )}
+                <span className={styles.currencySymbol}>
+                  {intl.formatMessage(globalMessages.unitAda)}
+                </span>
               </div>
               {!isLoadingTransactions && (
                 <div className={styles.transactionsCountWrapper}>
