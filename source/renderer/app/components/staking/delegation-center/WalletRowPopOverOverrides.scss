@@ -1,9 +1,3 @@
 .root {
   transform: translate(0, 25px);
-
-  :global {
-    .tippy-arrow {
-      transform: translate(-22px, 0);
-    }
-  }
 }
