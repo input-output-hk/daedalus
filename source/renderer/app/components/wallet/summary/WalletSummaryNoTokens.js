@@ -1,12 +1,12 @@
 // @flow
 import React, { Component } from 'react';
 import { observer } from 'mobx-react';
-import { defineMessages, intlShape } from 'react-intl';
-import globalMessages from '../../../i18n/global-messages';
+import { /* defineMessages, */ intlShape } from 'react-intl';
+// import globalMessages from '../../../i18n/global-messages';
 import BorderedBox from '../../widgets/BorderedBox';
 import styles from './WalletSummaryNoTokens.scss';
 
-const messages = defineMessages({
+/* const messages = defineMessages({
   transactionsLabel: {
     id: 'wallet.summary.header.transactionsLabel',
     defaultMessage: '!!!Number of transactions',
@@ -18,10 +18,10 @@ const messages = defineMessages({
     description:
       '"Number of pending transactions" label on Wallet summary header page',
   },
-});
+}); */
 
 type Props = {
-  onExternalLinkClick: Function,
+  // onExternalLinkClick: Function,
 };
 
 @observer
@@ -31,13 +31,15 @@ export default class WalletSummaryNoTokens extends Component<Props> {
   };
 
   render() {
-    const { onExternalLinkClick } = this.props;
-    const { intl } = this.context;
+    /* const {
+      onExternalLinkClick,
+    } = this.props;
+    const { intl } = this.context; */
 
     return (
       <div className={styles.component}>
         <BorderedBox>
-          <div className={styles.noTokensContainer}></div>
+          <div className={styles.noTokensContainer} />
         </BorderedBox>
       </div>
     );
