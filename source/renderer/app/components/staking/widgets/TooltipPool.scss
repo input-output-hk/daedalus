@@ -4,6 +4,7 @@
 .component {
   @extend %regularText;
   background: var(--theme-staking-stake-pool-tooltip-background-color);
+  border-radius: 5px;
   padding: 10px;
   text-align: initial;
   user-select: text;
