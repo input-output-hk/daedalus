@@ -11,6 +11,7 @@ import AssetToken from '../../widgets/AssetToken';
 import type { WalletSummaryAsset } from '../../../api/assets/types';
 import { DECIMAL_PLACES_IN_ADA } from '../../../config/numbersConfig';
 import LoadingSpinner from '../../widgets/LoadingSpinner';
+import WalletSummaryNoTokens from './WalletSummaryNoTokens';
 
 const messages = defineMessages({
   tokensTitle: {
@@ -35,6 +36,7 @@ type Props = {
   assets: Array<WalletSummaryAsset>,
   onOpenAssetSend: Function,
   onCopyAssetItem: Function,
+  onExternalLinkClick: Function,
   isLoading?: boolean,
 };
 
@@ -50,78 +52,80 @@ export default class WalletSummaryAssets extends Component<Props> {
       assets,
       onOpenAssetSend,
       onCopyAssetItem,
+      onExternalLinkClick,
       isLoading,
     } = this.props;
     const { intl } = this.context;
 
     const { isHardwareWallet } = wallet;
     const isRestoreActive = wallet.isRestoring;
-    const numberOfAssets = assets ? assets.length : null;
+    const numberOfAssets = assets ? assets.length : 0;
 
     return (
-      numberOfAssets && (
-        <Fragment>
-          {!isLoading && (
-            <div className={styles.numberOfAssets}>
-              {intl.formatMessage(messages.tokensTitle)} ({numberOfAssets})
-            </div>
-          )}
-          {isLoading ? (
-            <div className={styles.syncingWrapper}>
-              <LoadingSpinner />
-            </div>
-          ) : (
-            <div className={styles.component}>
-              {assets.map((asset: WalletSummaryAsset, index: number) => (
-                <BorderedBox
-                  className={styles.assetsContainer}
-                  // @TOKEN TODO: Remove once we have the correct data being returned
-                  // eslint-disable-next-line react/no-array-index-key
-                  key={asset.policyId + asset.fingerprint + index}
-                >
-                  {asset.fingerprint && (
-                    <div className={styles.assetsLeftContainer}>
-                      <AssetToken
-                        asset={asset}
-                        onCopyAssetItem={onCopyAssetItem}
-                      />
-                      <div className={styles.assetAmount}>
-                        {isRestoreActive
-                          ? '-'
-                          : new BigNumber(asset.quantity).toFormat(
-                              asset.metadata && asset.metadata.unit
-                                ? asset.metadata.unit.decimals
-                                : DECIMAL_PLACES_IN_ADA
-                            )}
-                        {asset.metadata && (
-                          <span>&nbsp;{asset.metadata.acronym}</span>
-                        )}
-                      </div>
+      <Fragment>
+        {!isLoading && (
+          <div className={styles.numberOfAssets}>
+            {intl.formatMessage(messages.tokensTitle)} ({numberOfAssets})
+          </div>
+        )}
+        {/* eslint-disable-next-line no-nested-ternary */}
+        {isLoading ? (
+          <div className={styles.syncingWrapper}>
+            <LoadingSpinner />
+          </div>
+        ) : numberOfAssets ? (
+          <div className={styles.component}>
+            {assets.map((asset: WalletSummaryAsset, index: number) => (
+              <BorderedBox
+                className={styles.assetsContainer}
+                // @TOKEN TODO: Remove once we have the correct data being returned
+                // eslint-disable-next-line react/no-array-index-key
+                key={asset.policyId + asset.fingerprint + index}
+              >
+                {asset.fingerprint && (
+                  <div className={styles.assetsLeftContainer}>
+                    <AssetToken
+                      asset={asset}
+                      onCopyAssetItem={onCopyAssetItem}
+                    />
+                    <div className={styles.assetAmount}>
+                      {isRestoreActive
+                        ? '-'
+                        : new BigNumber(asset.quantity).toFormat(
+                            asset.metadata && asset.metadata.unit
+                              ? asset.metadata.unit.decimals
+                              : DECIMAL_PLACES_IN_ADA
+                          )}
+                      {asset.metadata && (
+                        <span>&nbsp;{asset.metadata.acronym}</span>
+                      )}
                     </div>
-                  )}
-                  {asset.fingerprint && (
-                    <div className={styles.assetRightContainer}>
-                      <button
-                        className={classNames([
-                          'primary',
-                          styles.assetSendButton,
-                          new BigNumber(asset.quantity).isZero() ||
-                          isHardwareWallet
-                            ? styles.disabled
-                            : null,
-                        ])}
-                        onClick={() => onOpenAssetSend(asset)}
-                      >
-                        {intl.formatMessage(messages.tokenSendButton)}
-                      </button>
-                    </div>
-                  )}
-                </BorderedBox>
-              ))}
-            </div>
-          )}
-        </Fragment>
-      )
+                  </div>
+                )}
+                {asset.fingerprint && (
+                  <div className={styles.assetRightContainer}>
+                    <button
+                      className={classNames([
+                        'primary',
+                        styles.assetSendButton,
+                        new BigNumber(asset.quantity).isZero() ||
+                        isHardwareWallet
+                          ? styles.disabled
+                          : null,
+                      ])}
+                      onClick={() => onOpenAssetSend(asset)}
+                    >
+                      {intl.formatMessage(messages.tokenSendButton)}
+                    </button>
+                  </div>
+                )}
+              </BorderedBox>
+            ))}
+          </div>
+        ) : (
+          <WalletSummaryNoTokens onExternalLinkClick={onExternalLinkClick} />
+        )}
+      </Fragment>
     );
   }
 }
