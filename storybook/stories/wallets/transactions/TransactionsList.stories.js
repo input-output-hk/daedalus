@@ -220,6 +220,9 @@ storiesOf('Wallets|Transactions', module)
         formattedWalletAmount={formattedWalletAmount}
         getUrlByType={action('getUrlByType')}
         hasMoreToLoad={false}
+        isInternalAddress={() => {
+          return true;
+        }}
         isDeletingTransaction={false}
         isLoadingTransactions={false}
         onFilter={onFilter}
