@@ -48,6 +48,9 @@
       p:first-child {
         margin-bottom: 15px;
       }
+      p:last-child {
+        margin-bottom: 0;
+      }
     }
   }
 
