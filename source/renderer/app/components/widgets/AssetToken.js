@@ -54,7 +54,6 @@ type Props = {
   small?: boolean,
   hideTooltip?: boolean,
   onCopyAssetItem?: Function,
-  className?: string,
   componentClassName?: string,
   contentClassName?: string,
   // In case it's not possible to calculate the container width
