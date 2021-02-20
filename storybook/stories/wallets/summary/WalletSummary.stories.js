@@ -207,6 +207,7 @@ storiesOf('Wallets|Summary', module)
         onOpenAssetSend={action('onOpenAssetSend')}
         onCopyAssetItem={action('onCopyAsset')}
         hasAssetsEnabled={boolean('hasAssetsEnabled', true)}
+        onExternalLinkClick={action('onExternalLinkClick')}
       />
     );
   });

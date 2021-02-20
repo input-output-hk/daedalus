@@ -207,10 +207,10 @@ export default class WalletTransactionsList extends Component<Props> {
     const { inputs, outputs } = assets;
     let availableTransactions = [];
     if (inputs && inputs.length) {
-      availableTransactions = inputs;
+      availableTransactions.push(inputs);
     }
     if (outputs && outputs.length) {
-      availableTransactions = outputs;
+      availableTransactions.push(outputs);
     }
     const transactionAssets =
       availableTransactions && allAssets
@@ -220,6 +220,7 @@ export default class WalletTransactionsList extends Component<Props> {
             );
             return {
               ...txData,
+              fingerprint: assetData ? assetData.fingerprint : 'token',
               metadata: assetData
                 ? assetData.metadata
                 : {

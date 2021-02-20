@@ -837,8 +837,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
               </Fragment>
               <Fragment>
                 {asset.map((singleAsset: any, assetIndex: number) => (
-                  // eslint-disable-next-line react/no-array-index-key
-                  <div
+                  <div // eslint-disable-next-line react/no-array-index-key
                     key={`${receiverId}_asset${assetIndex}`}
                     onMouseEnter={() => this.showAssetRemoveButton(assetIndex)}
                     onMouseLeave={() => this.hideAssetRemoveButton(assetIndex)}

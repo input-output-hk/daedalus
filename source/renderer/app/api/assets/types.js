@@ -37,7 +37,7 @@ export type WalletAssetItem = {
   policyId: string,
   assetName: string,
   quantity: number,
-  address: ?string,
+  address?: ?string,
 };
 
 export type Assets = Array<SingleAsset>;
@@ -63,7 +63,9 @@ export type WalletTransactionAsset = {
   policyId: string,
   assetName: string,
   quantity: number,
+  fingerprint: string,
   metadata: ?AssetMetadata,
+  address?: ?string,
 };
 
 export type GetUnknownAssetRequest = {

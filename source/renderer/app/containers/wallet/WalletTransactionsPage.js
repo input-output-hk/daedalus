@@ -13,11 +13,12 @@ type Props = InjectedProps;
 export default class WalletTransactionsPage extends Component<Props> {
   render() {
     const { actions, stores } = this.props;
-    const { app, wallets, profile } = stores;
+    const { app, wallets, addresses, profile } = stores;
     const {
       openExternalLink,
       environment: { network, rawNetwork },
     } = app;
+    const { isInternalAddress } = addresses;
     const activeWallet = wallets.active;
     const {
       allFiltered,
@@ -28,7 +29,6 @@ export default class WalletTransactionsPage extends Component<Props> {
       deleteTransactionRequest,
       defaultFilterOptions,
       populatedFilterOptions,
-      isInternalAddress,
     } = this.props.stores.transactions;
     const {
       currentTimeFormat,

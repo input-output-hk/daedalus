@@ -76,6 +76,7 @@ export default class WalletSummaryPage extends Component<Props> {
     const {
       app,
       wallets,
+      addresses,
       transactions,
       profile,
       assets,
@@ -83,6 +84,7 @@ export default class WalletSummaryPage extends Component<Props> {
     } = stores;
     const { all } = assets;
     const { isSynced } = networkStatus;
+    const { isInternalAddress } = addresses;
     const {
       openExternalLink,
       environment: { network, rawNetwork },
@@ -182,6 +184,7 @@ export default class WalletSummaryPage extends Component<Props> {
           totalAvailable={totalAvailable}
           currentTimeFormat={currentTimeFormat}
           currentDateFormat={currentDateFormat}
+          isInternalAddress={isInternalAddress}
         />
       );
     } else if (!hasAny) {

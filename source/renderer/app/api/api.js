@@ -791,7 +791,6 @@ export default class AdaApi {
           data: { ...data, withdrawal },
         });
       }
-      console.log('response', response);
 
       logger.debug('AdaApi::createTransaction success', {
         transaction: response,
@@ -2645,7 +2644,6 @@ const _createTransactionFromServerData = action(
           assets.map((asset) => ({ ...asset, address }))
         )
     );
-    window.inputs = inputs;
     const outputAssets = flatten(
       outputs
         .filter((output) => !!output.assets)
