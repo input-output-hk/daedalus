@@ -22,12 +22,15 @@ const messages = defineMessages({
   learnMoreLinkLabel: {
     id: 'wallet.summary.noTokens.learnMore.linkLabel',
     defaultMessage: '!!!Learn more',
-    description: '"Learn more" label or button in the Wallets Summary No Tokens component',
+    description:
+      '"Learn more" label or button in the Wallets Summary No Tokens component',
   },
   learnMoreLinkUrl: {
     id: 'wallet.summary.noTokens.learnMore.linkUrl',
-    defaultMessage: '!!!https://iohk.io/en/blog/posts/2021/02/04/native-tokens-to-bring-new-utility-to-life-on-cardano/',
-    description: '"Learn more" link URL in the Wallets Summary No Tokens component',
+    defaultMessage:
+      '!!!https://iohk.io/en/blog/posts/2021/02/04/native-tokens-to-bring-new-utility-to-life-on-cardano/',
+    description:
+      '"Learn more" link URL in the Wallets Summary No Tokens component',
   },
 });
 
@@ -42,9 +45,7 @@ export default class WalletSummaryNoTokens extends Component<Props> {
   };
 
   render() {
-    const {
-      onExternalLinkClick,
-    } = this.props;
+    const { onExternalLinkClick } = this.props;
     const { intl } = this.context;
 
     const buttonClassNames = classnames([
@@ -65,7 +66,11 @@ export default class WalletSummaryNoTokens extends Component<Props> {
                 className={buttonClassNames}
                 label={intl.formatMessage(messages.learnMoreLinkLabel)}
                 skin={ButtonSkin}
-                onClick={() => onExternalLinkClick(intl.formatMessage(messages.learnMoreLinkUrl))}
+                onClick={() =>
+                  onExternalLinkClick(
+                    intl.formatMessage(messages.learnMoreLinkUrl)
+                  )
+                }
                 linkProps={{
                   hasIconBefore: false,
                   hasIconAfter: true,
