@@ -59,7 +59,7 @@ export default class WalletSummaryAssets extends Component<Props> {
 
     const { isHardwareWallet } = wallet;
     const isRestoreActive = wallet.isRestoring;
-    const numberOfAssets = assets ? assets.length : 0;
+    const numberOfAssets = 0;
 
     return (
       <Fragment>
