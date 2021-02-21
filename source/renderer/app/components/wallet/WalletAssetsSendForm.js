@@ -171,6 +171,7 @@ export const messages = defineMessages({
 messages.fieldIsRequired = globalMessages.fieldIsRequired;
 
 type Props = {
+  currencyUnit: string,
   currencyMaxIntegerDigits?: number,
   currencyMaxFractionalDigits: number,
   validateAmount: (amountInNaturalUnits: string) => Promise<boolean>,
@@ -179,6 +180,7 @@ type Props = {
     amount: number
   ) => Promise<BigNumber>,
   currentNumberFormat: string,
+  walletAmount: BigNumber,
   addressValidator: Function,
   openDialogAction: Function,
   isDialogOpen: Function,
@@ -188,7 +190,7 @@ type Props = {
   isHardwareWallet: boolean,
   assets: Array<WalletSummaryAsset>,
   isClearTooltipOpeningDownward?: boolean,
-  walletAmount: BigNumber,
+  hasAssets: boolean,
 };
 
 type State = {
@@ -527,6 +529,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       feeCalculationRequestQue: prevState.feeCalculationRequestQue + 1,
     }));
     try {
+      this._isCalculatingTransactionFee = true;
       const fee = await this.props.calculateTransactionFee(address, amount);
       if (
         this._isMounted &&
@@ -657,6 +660,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
       selectedAssetIds,
       isTransactionFeeCalculated,
       transactionFee,
+      transactionFeeError,
       sendFormFields,
       filteredAssets,
     } = this.state;
@@ -808,7 +812,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                     estimatedField.onChange(fees);
                   }}
                   currency={globalMessages.unitAda}
-                  error={adaAsset.error}
+                  error={adaAsset.error || transactionFeeError}
                   onKeyPress={this.handleSubmitOnEnter}
                   allowSigns={false}
                 />
@@ -1220,6 +1224,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
     const { form } = this;
     const { intl } = this.context;
     const {
+      currencyUnit,
       currencyMaxFractionalDigits,
       isDialogOpen,
       isRestoreActive,
@@ -1246,9 +1251,9 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
 
     let fees = null;
     let total = null;
-    if (isTransactionFeeCalculated && transactionFee) {
+    if (isTransactionFeeCalculated) {
       fees = transactionFee.toFormat(currencyMaxFractionalDigits);
-      total = amount.add(transactionFee).toFormat(currencyMaxFractionalDigits);
+      total = amount.plus(transactionFee).toFormat(currencyMaxFractionalDigits);
     }
 
     const selectedNativeTokenItem =
@@ -1337,7 +1342,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
                 <Button
                   className="primary"
                   label={intl.formatMessage(messages.sendButtonLabel)}
-                  onClick={() => {}}
+                  onClick={this.handleOnSubmit}
                   skin={ButtonSkin}
                   disabled={this.isDisabled()}
                 />
@@ -1360,7 +1365,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
             currencyUnit={
               selectedNativeTokenItem && selectedNativeTokenItem.metadata
                 ? selectedNativeTokenItem.metadata.acronym
-                : null
+                : currencyUnit
             }
             onExternalLinkClick={onExternalLinkClick}
             hwDeviceStatus={hwDeviceStatus}

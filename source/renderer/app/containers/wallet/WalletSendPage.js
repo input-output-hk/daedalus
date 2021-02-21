@@ -2,7 +2,6 @@
 import React, { Component } from 'react';
 import { observer, inject } from 'mobx-react';
 import { intlShape } from 'react-intl';
-import WalletSendForm from '../../components/wallet/WalletSendForm';
 import type { InjectedProps } from '../../types/injectedPropsType';
 import globalMessages from '../../i18n/global-messages';
 import {
@@ -113,69 +112,41 @@ export default class WalletSendPage extends Component<Props> {
         metadata: assetData
           ? assetData.metadata
           : {
-            name: '',
-            acronym: '',
-            description: '',
-          },
+              name: '',
+              acronym: '',
+              description: '',
+            },
       };
     });
 
     return (
-      <>
-        {hasAssetsEnabled && hasAssets ? (
-          <WalletAssetsSendForm
-            currencyMaxIntegerDigits={MAX_INTEGER_PLACES_IN_ADA}
-            currencyMaxFractionalDigits={DECIMAL_PLACES_IN_ADA}
-            currentNumberFormat={profile.currentNumberFormat}
-            validateAmount={validateAmount}
-            calculateTransactionFee={(address: string, amount: number) =>
-              this.calculateTransactionFee({
-                walletId: activeWallet.id,
-                address,
-                amount,
-                isHardwareWallet,
-              })
-            }
-            assets={assets}
-            addressValidator={isValidAddress}
-            isDialogOpen={uiDialogs.isOpen}
-            openDialogAction={(params) =>
-              this.openDialog(params.dialog, isHardwareWallet, activeWallet.id)
-            }
-            isRestoreActive={activeWallet.isRestoring}
-            onExternalLinkClick={app.openExternalLink}
-            hwDeviceStatus={hwDeviceStatus}
-            isHardwareWallet={isHardwareWallet}
-            walletAmount={activeWallet.amount}
-          />
-        ) : (
-          <WalletSendForm
-            currencyUnit={intl.formatMessage(globalMessages.unitAda)}
-            currencyMaxIntegerDigits={MAX_INTEGER_PLACES_IN_ADA}
-            currencyMaxFractionalDigits={DECIMAL_PLACES_IN_ADA}
-            currentNumberFormat={profile.currentNumberFormat}
-            validateAmount={validateAmount}
-            calculateTransactionFee={(address: string, amount: number) =>
-              this.calculateTransactionFee({
-                walletId: activeWallet.id,
-                address,
-                amount,
-                isHardwareWallet,
-              })
-            }
-            walletAmount={activeWallet.amount}
-            addressValidator={isValidAddress}
-            isDialogOpen={uiDialogs.isOpen}
-            openDialogAction={(params) =>
-              this.openDialog(params.dialog, isHardwareWallet, activeWallet.id)
-            }
-            isRestoreActive={activeWallet.isRestoring}
-            onExternalLinkClick={app.openExternalLink}
-            hwDeviceStatus={hwDeviceStatus}
-            isHardwareWallet={isHardwareWallet}
-          />
-        )}
-      </>
+      <WalletAssetsSendForm
+        currencyUnit={intl.formatMessage(globalMessages.unitAda)}
+        currencyMaxIntegerDigits={MAX_INTEGER_PLACES_IN_ADA}
+        currencyMaxFractionalDigits={DECIMAL_PLACES_IN_ADA}
+        currentNumberFormat={profile.currentNumberFormat}
+        validateAmount={validateAmount}
+        calculateTransactionFee={(address: string, amount: number) =>
+          this.calculateTransactionFee({
+            walletId: activeWallet.id,
+            address,
+            amount,
+            isHardwareWallet,
+          })
+        }
+        walletAmount={activeWallet.amount}
+        assets={assets}
+        addressValidator={isValidAddress}
+        isDialogOpen={uiDialogs.isOpen}
+        openDialogAction={(params) =>
+          this.openDialog(params.dialog, isHardwareWallet, activeWallet.id)
+        }
+        isRestoreActive={activeWallet.isRestoring}
+        onExternalLinkClick={app.openExternalLink}
+        hwDeviceStatus={hwDeviceStatus}
+        isHardwareWallet={isHardwareWallet}
+        hasAssets={hasAssetsEnabled && hasAssets}
+      />
     );
   }
 }

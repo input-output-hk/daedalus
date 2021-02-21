@@ -17,7 +17,6 @@ import { NUMBER_OPTIONS } from '../../../../source/renderer/app/config/profileCo
 import { HwDeviceStatuses } from '../../../../source/renderer/app/domains/Wallet';
 
 // Screens
-import WalletSendForm from '../../../../source/renderer/app/components/wallet/WalletSendForm';
 import WalletAssetsSendForm from '../../../../source/renderer/app/components/wallet/WalletAssetsSendForm';
 import WalletAssetsSendConfirmationDialog from '../../../../source/renderer/app/components/wallet/WalletAssetsSendConfirmationDialog';
 import { DECIMAL_PLACES_IN_ADA } from '../../../../source/renderer/app/config/numbersConfig';
@@ -194,31 +193,35 @@ const sendFormAssetData = assets.total.map((assetTotal) => {
 
 storiesOf('Wallets|Send', module)
   .addDecorator(WalletsWrapper)
-  .add('Send', () => (
-    <WalletSendForm
+  .add('Send - No Assets', () => (
+    <WalletAssetsSendForm
       currencyUnit="Ada"
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
       currentNumberFormat={NUMBER_OPTIONS[0].value}
       validateAmount={promise(true)}
       calculateTransactionFee={promise(true)}
+      walletAmount={new BigNumber(123)}
+      assets={sendFormAssetData}
       addressValidator={action('addressValidator')}
       openDialogAction={action('openDialogAction')}
       isDialogOpen={() => boolean('isDialogOpen', false)}
       isRestoreActive={boolean('isRestoreActive', false)}
-      walletAmount={new BigNumber(123)}
       hwDeviceStatus={HwDeviceStatuses.READY}
       isHardwareWallet={boolean('isHardwareWallet', false)}
+      onExternalLinkClick={action('onExternalLinkClick')}
+      hasAssets={boolean('hasAssets', false)}
     />
   ))
   .add('Send - Hardware wallet verifying transaction', () => (
-    <WalletSendForm
+    <WalletAssetsSendForm
       currencyUnit="Ada"
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
       currentNumberFormat={NUMBER_OPTIONS[0].value}
       validateAmount={promise(true)}
       calculateTransactionFee={promise(true)}
+      assets={sendFormAssetData}
       addressValidator={action('addressValidator')}
       openDialogAction={action('openDialogAction')}
       isDialogOpen={() => boolean('isDialogOpen', false)}
@@ -226,16 +229,19 @@ storiesOf('Wallets|Send', module)
       walletAmount={new BigNumber(123)}
       hwDeviceStatus={HwDeviceStatuses.VERIFYING_TRANSACTION}
       isHardwareWallet={boolean('isHardwareWallet', true)}
+      onExternalLinkClick={action('onExternalLinkClick')}
+      hasAssets={boolean('hasAssets', false)}
     />
   ))
   .add('Send - Hardware wallet verifying transaction succeeded', () => (
-    <WalletSendForm
+    <WalletAssetsSendForm
       currencyUnit="Ada"
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
       currentNumberFormat={NUMBER_OPTIONS[0].value}
       validateAmount={promise(true)}
       calculateTransactionFee={promise(true)}
+      assets={sendFormAssetData}
       addressValidator={action('addressValidator')}
       openDialogAction={action('openDialogAction')}
       isDialogOpen={() => boolean('isDialogOpen', false)}
@@ -243,16 +249,19 @@ storiesOf('Wallets|Send', module)
       walletAmount={new BigNumber(123)}
       hwDeviceStatus={HwDeviceStatuses.VERIFYING_TRANSACTION_SUCCEEDED}
       isHardwareWallet={boolean('isHardwareWallet', true)}
+      onExternalLinkClick={action('onExternalLinkClick')}
+      hasAssets={boolean('hasAssets', false)}
     />
   ))
   .add('Send - Hardware wallet verifying transaction failed', () => (
-    <WalletSendForm
+    <WalletAssetsSendForm
       currencyUnit="Ada"
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
       currentNumberFormat={NUMBER_OPTIONS[0].value}
       validateAmount={promise(true)}
       calculateTransactionFee={promise(true)}
+      assets={sendFormAssetData}
       addressValidator={action('addressValidator')}
       openDialogAction={action('openDialogAction')}
       isDialogOpen={() => boolean('isDialogOpen', false)}
@@ -260,10 +269,13 @@ storiesOf('Wallets|Send', module)
       walletAmount={new BigNumber(123)}
       hwDeviceStatus={HwDeviceStatuses.VERIFYING_TRANSACTION_FAILED}
       isHardwareWallet={boolean('isHardwareWallet', true)}
+      onExternalLinkClick={action('onExternalLinkClick')}
+      hasAssets={boolean('hasAssets', false)}
     />
   ))
-  .add('Wallet Tokens Send', () => (
+  .add('Send - With Assets', () => (
     <WalletAssetsSendForm
+      currencyUnit="Ada"
       currencyMaxFractionalDigits={6}
       currencyMaxIntegerDigits={11}
       currentNumberFormat={NUMBER_OPTIONS[0].value}
@@ -277,9 +289,11 @@ storiesOf('Wallets|Send', module)
       isHardwareWallet={boolean('isHardwareWallet', false)}
       assets={sendFormAssetData}
       walletAmount={new BigNumber(123)}
+      onExternalLinkClick={action('onExternalLinkClick')}
+      hasAssets={boolean('hasAssets', true)}
     />
   ))
-  .add('Wallet Tokens Send Confirmation Dialog', () => (
+  .add('Wallet Send Confirmation Dialog With Assets', () => (
     <div>
       <WalletAssetsSendConfirmationDialog
         amount={new BigNumber(100100).toFormat(DECIMAL_PLACES_IN_ADA)}
