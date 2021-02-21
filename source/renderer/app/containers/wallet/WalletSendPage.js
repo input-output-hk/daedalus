@@ -79,7 +79,7 @@ export default class WalletSendPage extends Component<Props> {
     const { validateAmount } = transactions;
     const { hwDeviceStatus } = hardwareWallets;
     const hasAssetsEnabled = WALLET_ASSETS_ENABLED;
-    const { details: assetsDetails } = assetsStore;
+    const { all: allAssets } = assetsStore;
 
     // Guard against potential null values
     const activeWallet = wallets.active;
@@ -87,28 +87,42 @@ export default class WalletSendPage extends Component<Props> {
       throw new Error('Active wallet required for WalletSendPage.');
 
     const { isHardwareWallet } = activeWallet;
+
+    let { hasAssets } = activeWallet;
+
     const assets = activeWallet.assets.total.map((walletAsset) => {
-      const { policyId, assetName, quantity } = walletAsset;
-      const assetLocator = policyId + assetName;
-      const assetDetails = assetsDetails[assetLocator];
-      const { fingerprint, metadata } = assetDetails || {};
+      const assetData = allAssets.find(
+        (item) => item.policyId === walletAsset.policyId
+      );
+      let fingerprint;
+      if (!assetData || !assetData.fingerprint) {
+        hasAssets = !!assetData;
+        fingerprint = `token${walletAsset.policyId}${walletAsset.assetName}`.substr(
+          0,
+          44
+        );
+      } else {
+        fingerprint = assetData.fingerprint;
+      }
+
       return {
-        policyId,
-        assetName,
+        policyId: walletAsset.policyId,
+        assetName: walletAsset.assetName,
         fingerprint,
-        quantity,
-        metadata: {
-          name: '',
-          acronym: '',
-          description: '',
-          ...metadata,
-        },
+        quantity: walletAsset.quantity,
+        metadata: assetData
+          ? assetData.metadata
+          : {
+            name: '',
+            acronym: '',
+            description: '',
+          },
       };
     });
 
     return (
       <>
-        {hasAssetsEnabled && assets && assets.length ? (
+        {hasAssetsEnabled && hasAssets ? (
           <WalletAssetsSendForm
             currencyMaxIntegerDigits={MAX_INTEGER_PLACES_IN_ADA}
             currencyMaxFractionalDigits={DECIMAL_PLACES_IN_ADA}
