@@ -42,7 +42,7 @@ export const formattedWalletCurrencyAmount = (
 
 export const formattedTokenWalletAmount = (
   amount: BigNumber,
-  currency: string
+  currency: ?string
 ) => {
   let formattedAmount = amount.toFormat(DECIMAL_PLACES_IN_ADA);
   const { decimalSeparator } = BigNumber.config().FORMAT;
@@ -52,7 +52,10 @@ export const formattedTokenWalletAmount = (
     // the correct number format has to be applied manually.
     formattedAmount = formattedAmount.split('.').join(decimalSeparator);
   }
-  return `${formattedAmount} ${currency}`;
+  if (currency) {
+    formattedAmount += ` ${currency}`;
+  }
+  return formattedAmount;
 };
 
 // Symbol   Name                Scientific Notation

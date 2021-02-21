@@ -161,7 +161,7 @@ export default class WalletsDropdown extends Component<Props> {
             const { metadata, policyId, quantity } = asset;
             const formattedAmount = formattedTokenWalletAmount(
               new BigNumber(quantity),
-              metadata && metadata.acronym ? metadata.acronym : ''
+              metadata && metadata.acronym ? metadata.acronym : null
             );
             return {
               detail: formattedAmount,
