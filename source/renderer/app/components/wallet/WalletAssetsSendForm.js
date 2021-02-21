@@ -414,7 +414,7 @@ export default class WalletAssetsSendForm extends Component<Props, State> {
           placeholder: `0${
             this.getCurrentNumberFormat().decimalSeparator
           }${'0'.repeat(this.props.currencyMaxFractionalDigits)}`,
-          value: '1',
+          value: '',
           validators: [
             async ({ field, form }) => {
               if (field.value === null) {

@@ -265,13 +265,13 @@
 }
 
 .calculatingFeesContainer {
-  bottom: 0.5px;
   display: flex;
   height: 48px;
   line-height: 48px;
   padding-left: 20px;
   position: absolute;
   right: 11px;
+  top: 46.5px;
 
   .calculatingFeesSpinnerButton {
     background-color: var(

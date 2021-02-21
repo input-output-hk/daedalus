@@ -2,6 +2,7 @@
 import React, { Component, Fragment } from 'react';
 import { observer } from 'mobx-react';
 import { defineMessages, intlShape } from 'react-intl';
+import { get } from 'lodash';
 import classNames from 'classnames';
 import BigNumber from 'bignumber.js';
 import BorderedBox from '../../widgets/BorderedBox';
@@ -71,7 +72,7 @@ export default class WalletSummaryAssets extends Component<Props> {
         {/* eslint-disable-next-line no-nested-ternary */}
         {isLoading ? (
           <div className={styles.syncingWrapper}>
-            <LoadingSpinner />
+            <LoadingSpinner big />
           </div>
         ) : numberOfAssets ? (
           <div className={styles.component}>
@@ -87,6 +88,7 @@ export default class WalletSummaryAssets extends Component<Props> {
                     <AssetToken
                       asset={asset}
                       onCopyAssetItem={onCopyAssetItem}
+                      metadataNameChars={get('name', asset.metadata, 0)}
                     />
                     <div className={styles.assetAmount}>
                       {isRestoreActive
