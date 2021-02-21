@@ -1067,7 +1067,7 @@
   "wallet.transaction.address.to": "To address",
   "wallet.transaction.addresses.from": "From addresses",
   "wallet.transaction.addresses.to": "To addresses",
-  "wallet.transaction.assetLabel": "Asset",
+  "wallet.transaction.assetLabel": "Token",
   "wallet.transaction.conversion.rate": "Conversion rate",
   "wallet.transaction.deposit": "Deposit",
   "wallet.transaction.failed.cancelFailedTxnNote": "This transaction was submitted to the Cardano network, but it failed as it had expired. Transactions on the Cardano network have a ‘time to live’ attribute, which had passed before the network processed the transaction. You need to remove it to release the funds (UTXOs) used by this transaction for use in another transaction.",
